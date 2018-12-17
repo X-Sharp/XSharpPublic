@@ -30,14 +30,18 @@ namespace Microsoft.CodeAnalysis.UseCoalesceExpression
             context.RegisterCodeFix(new MyCodeAction(
                 c => FixAsync(context.Document, context.Diagnostics[0], c)),
                 context.Diagnostics);
-            return SpecializedTasks.EmptyTask;
+            return Task.CompletedTask;
         }
 
-        protected override Task FixAllAsync(
+        protected override async Task FixAllAsync(
             Document document, ImmutableArray<Diagnostic> diagnostics,
             SyntaxEditor editor, CancellationToken cancellationToken)
         {
+            var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
+            var expressionTypeOpt = semanticModel.Compilation.GetTypeByMetadataName("System.Linq.Expressions.Expression`1");
+
             var syntaxFacts = document.GetLanguageService<ISyntaxFactsService>();
+            var semanticFacts = document.GetLanguageService<ISemanticFactsService>();
             var generator = editor.Generator;
             var root = editor.OriginalRoot;
 
@@ -54,13 +58,20 @@ namespace Microsoft.CodeAnalysis.UseCoalesceExpression
                         syntaxFacts.GetPartsOfConditionalExpression(
                             c, out var currentCondition, out var currentWhenTrue, out var currentWhenFalse);
 
-                        return whenPart == whenTrue
+                        var coalesceExpression = whenPart == whenTrue
                             ? g.CoalesceExpression(conditionExpression, syntaxFacts.WalkDownParentheses(currentWhenTrue))
                             : g.CoalesceExpression(conditionExpression, syntaxFacts.WalkDownParentheses(currentWhenFalse));
+
+                        if (semanticFacts.IsInExpressionTree(
+                                semanticModel, conditionalExpression, expressionTypeOpt, cancellationToken))
+                        {
+                            coalesceExpression = coalesceExpression.WithAdditionalAnnotations(
+                                WarningAnnotation.Create(FeaturesResources.Changes_to_expression_trees_may_result_in_behavior_changes_at_runtime));
+                        }
+
+                        return coalesceExpression;
                     });
             }
-
-            return SpecializedTasks.EmptyTask;
         }
 
         private class MyCodeAction : CodeAction.DocumentChangeAction

@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using XP=LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using System;
-
+using Microsoft.CodeAnalysis.PooledObjects;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     internal sealed partial class OverloadResolution
@@ -37,7 +37,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool Ambiguous = false;
             // Prefer the member not declared in VulcanRT, if applicable
             useSiteDiagnostics = null;
-            if (Compilation.Options.IsDialectVO)
+            if (Compilation.Options.HasRuntime)
             {
                 var asm1 = m1.Member.ContainingAssembly;
                 var asm2 = m2.Member.ContainingAssembly;
@@ -281,6 +281,27 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     return true;
                                 }
                             }
+                            // handle case where argument is usual and the method is not usual
+                            // prefer method with "native VO" parameter type
+                            if (argType == Compilation.UsualType())
+                            {
+                                // no need to check if parleft or parright are usual that was checked above
+                                if (parLeft.Type != parRight.Type)
+                                {
+                                    // is there an VO style conversion possible ?
+                                    var leftConvert = parLeft.Type.IsValidVOUsualType(Compilation);
+                                    var rightConvert = parRight.Type.IsValidVOUsualType(Compilation);
+                                    if (leftConvert != rightConvert)
+                                    {
+                                        // One is a valid conversion, the other is not.
+                                        if (leftConvert)
+                                            result = BetterResult.Left;
+                                        else
+                                            result = BetterResult.Right;
+                                        return true;
+                                    }
+                                }
+                            }
                         }
 
                     }
@@ -330,6 +351,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
+          
+
             // generate warning that function takes precedence over static method
             var func1 = m1.Member.ContainingType.Name.EndsWith("Functions");
             var func2 = m2.Member.ContainingType.Name.EndsWith("Functions");
@@ -505,6 +528,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (op2.LeftType.IsVoidPointer() && op2.RightType.IsVoidPointer())
                             return BetterResult.Right;
                     }
+                    // Prefer Date over DateTime, becuse when one of the two is date then we know that we can't compare the time parts
+                    if (left.Type.SpecialType == SpecialType.System_DateTime && right.Type == Compilation.DateType())
+                        return BetterResult.Right;
+                    if (right.Type.SpecialType == SpecialType.System_DateTime && left.Type == Compilation.DateType())
+                        return BetterResult.Left;
+
 
                 }
 
@@ -546,7 +575,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return BetterResult.Left;
                 }
             }
-            if (Compilation.Options.IsDialectVO)
+            if (Compilation.Options.HasRuntime)
             {
                 var usualType = Compilation.UsualType();
                 if (left.Type != usualType)

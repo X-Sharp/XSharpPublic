@@ -263,6 +263,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ReferenceDirectiveTrivia = 8561,
         BadDirectiveTrivia = 8562,
         SkippedTokensTrivia = 8563,
+        ConflictMarkerTrivia = 8564,
 
         // xml nodes (for xml doc comment structure)
         XmlElement = 8574,
@@ -397,6 +398,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         TrueLiteralExpression = 8752,
         FalseLiteralExpression = 8753,
         NullLiteralExpression = 8754,
+        DefaultLiteralExpression = 8755,
 
         // primary function expressions
         TypeOfExpression = 8760,
@@ -561,5 +563,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         RefExpression = 9050,
         RefType = 9051,
         ThrowExpression = 9052,
+
+        ImplicitStackAllocArrayCreationExpression = 9053,
     }
 }

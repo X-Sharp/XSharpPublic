@@ -26,7 +26,7 @@ using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
-
+using Microsoft.CodeAnalysis.PooledObjects;
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal sealed partial class AnonymousTypeManager
@@ -102,7 +102,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 get { return false; }
             }
 
-            internal override RefKind RefKind
+            public  override RefKind RefKind
             {
                 get { return RefKind.None; }
             }
@@ -219,9 +219,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 get { return ImmutableArray<CustomModifier>.Empty; }
             }
 
-            internal sealed override void AddSynthesizedAttributes(ModuleCompilationState compilationState, ref ArrayBuilder<SynthesizedAttributeData> attributes)
+            internal sealed override void AddSynthesizedAttributes(Emit.PEModuleBuilder modulebuilder, ref ArrayBuilder<SynthesizedAttributeData> attributes)
             {
-                base.AddSynthesizedAttributes(compilationState, ref attributes);
+                base.AddSynthesizedAttributes(modulebuilder, ref attributes);
 
                 var compilation = this.DeclaringCompilation;
 

@@ -1,11 +1,12 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
-using System.Runtime.InteropServices;
+using System.Collections.Immutable;
+using System.Linq;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Automation;
 using EnvDTE;
 using Microsoft.VisualStudio.IntegrationTest.Utilities.InProcess;
 using Microsoft.VisualStudio.IntegrationTest.Utilities.Input;
@@ -17,30 +18,73 @@ namespace Microsoft.VisualStudio.IntegrationTest.Utilities
 {
     public class VisualStudioInstance
     {
-        private readonly Process _hostProcess;
-        private readonly DTE _dte;
         private readonly IntegrationService _integrationService;
         private readonly IpcClientChannel _integrationServiceChannel;
         private readonly VisualStudio_InProc _inProc;
 
-        public SendKeys SendKeys { get; }
+        public ChangeSignatureDialog_OutOfProc ChangeSignatureDialog { get; }
 
-        public CSharpInteractiveWindow_OutOfProc CSharpInteractiveWindow { get; }
+        public CSharpInteractiveWindow_OutOfProc InteractiveWindow { get; }
+
+        public ObjectBrowserWindow_OutOfProc ObjectBrowserWindow { get; }
+
+        public Debugger_OutOfProc Debugger { get; }
+
+        public Dialog_OutOfProc Dialog { get; }
 
         public Editor_OutOfProc Editor { get; }
 
+        public EncapsulateField_OutOfProc EncapsulateField { get; }
+
+        public ErrorList_OutOfProc ErrorList { get; }
+
+        public ExtractInterfaceDialog_OutOfProc ExtractInterfaceDialog { get; }
+
+        public FindReferencesWindow_OutOfProc FindReferencesWindow { get; }
+
+        public GenerateTypeDialog_OutOfProc GenerateTypeDialog { get; }
+
+        public ImmediateWindow_OutOfProc ImmediateWindow { get; }
+
+        public InlineRenameDialog_OutOfProc InlineRenameDialog { get; set; }
+
+        public LocalsWindow_OutOfProc LocalsWindow { get; set; }
+
+        public PreviewChangesDialog_OutOfProc PreviewChangesDialog { get; }
+
+        public SendKeys SendKeys { get; }
+
+        public Shell_OutOfProc Shell { get; }
+
         public SolutionExplorer_OutOfProc SolutionExplorer { get; }
 
-        public VisualStudioWorkspace_OutOfProc VisualStudioWorkspace { get; }
+        public VisualStudioWorkspace_OutOfProc Workspace { get; }
 
-        public VisualStudioInstance(Process hostProcess, DTE dte)
+        internal DTE Dte { get; }
+
+        internal Process HostProcess { get; }
+
+        /// <summary>
+        /// The set of Visual Studio packages that are installed into this instance.
+        /// </summary>
+        public ImmutableHashSet<string> SupportedPackageIds { get; }
+
+        /// <summary>
+        /// The path to the root of this installed version of Visual Studio. This is the folder that contains
+        /// Common7\IDE.
+        /// </summary>
+        public string InstallationPath { get; }
+
+        public VisualStudioInstance(Process hostProcess, DTE dte, ImmutableHashSet<string> supportedPackageIds, string installationPath)
         {
-            _hostProcess = hostProcess;
-            _dte = dte;
+            HostProcess = hostProcess;
+            Dte = dte;
+            SupportedPackageIds = supportedPackageIds;
+            InstallationPath = installationPath;
 
             StartRemoteIntegrationService(dte);
 
-            _integrationServiceChannel = new IpcClientChannel($"IPC channel client for {_hostProcess.Id}", sinkProvider: null);
+            _integrationServiceChannel = new IpcClientChannel($"IPC channel client for {HostProcess.Id}", sinkProvider: null);
             ChannelServices.RegisterChannel(_integrationServiceChannel, ensureSecurity: true);
 
             // Connect to a 'well defined, shouldn't conflict' IPC channel
@@ -56,10 +100,24 @@ namespace Microsoft.VisualStudio.IntegrationTest.Utilities
             // we start executing any actual code.
             _inProc.WaitForSystemIdle();
 
-            CSharpInteractiveWindow = new CSharpInteractiveWindow_OutOfProc(this);
+            ChangeSignatureDialog = new ChangeSignatureDialog_OutOfProc(this);
+            InteractiveWindow = new CSharpInteractiveWindow_OutOfProc(this);
+            ObjectBrowserWindow = new ObjectBrowserWindow_OutOfProc(this);
+            Debugger = new Debugger_OutOfProc(this);
+            Dialog = new Dialog_OutOfProc(this);
             Editor = new Editor_OutOfProc(this);
+            EncapsulateField = new EncapsulateField_OutOfProc(this);
+            ErrorList = new ErrorList_OutOfProc(this);
+            ExtractInterfaceDialog = new ExtractInterfaceDialog_OutOfProc(this);
+            FindReferencesWindow = new FindReferencesWindow_OutOfProc(this);
+            GenerateTypeDialog = new GenerateTypeDialog_OutOfProc(this);
+            InlineRenameDialog = new InlineRenameDialog_OutOfProc(this);
+            ImmediateWindow = new ImmediateWindow_OutOfProc(this);
+            LocalsWindow = new LocalsWindow_OutOfProc(this);
+            PreviewChangesDialog = new PreviewChangesDialog_OutOfProc(this);
+            Shell = new Shell_OutOfProc(this);
             SolutionExplorer = new SolutionExplorer_OutOfProc(this);
-            VisualStudioWorkspace = new VisualStudioWorkspace_OutOfProc(this);
+            Workspace = new VisualStudioWorkspace_OutOfProc(this);
 
             SendKeys = new SendKeys(this);
 
@@ -83,63 +141,47 @@ namespace Microsoft.VisualStudio.IntegrationTest.Utilities
             return (T)Activator.GetObject(typeof(T), $"{_integrationService.BaseUri}/{objectUri}");
         }
 
-        public void ActivateMainWindow()
-            => _inProc.ActivateMainWindow();
+        public void ActivateMainWindow(bool skipAttachingThreads = false)
+            => _inProc.ActivateMainWindow(skipAttachingThreads);
 
-        public void WaitForApplicationIdle()
-            => _inProc.WaitForApplicationIdle();
-
-        public void ExecuteCommand(string commandName)
-            => _inProc.ExecuteCommand(commandName);
-
-        public bool IsRunning => !_hostProcess.HasExited;
-
-        public async Task ClickAutomationElementAsync(string elementName, bool recursive = false)
+        public void WaitForApplicationIdle(CancellationToken cancellationToken)
         {
-            var element = await FindAutomationElementAsync(elementName, recursive).ConfigureAwait(false);
-
-            if (element != null)
-            {
-                var tcs = new TaskCompletionSource<object>();
-
-                Automation.AddAutomationEventHandler(InvokePattern.InvokedEvent, element, TreeScope.Element, (src, e) => {
-                    tcs.SetResult(null);
-                });
-
-                if (element.TryGetCurrentPattern(InvokePattern.Pattern, out var invokePatternObj))
-                {
-                    var invokePattern = (InvokePattern)invokePatternObj;
-                    invokePattern.Invoke();
-                }
-
-                await tcs.Task;
-            }
+            var task = Task.Factory.StartNew(() => _inProc.WaitForApplicationIdle(), cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            task.Wait(cancellationToken);
         }
 
-        private async Task<AutomationElement> FindAutomationElementAsync(string elementName, bool recursive = false)
-        {
-            AutomationElement element = null;
-            var scope = recursive ? TreeScope.Descendants : TreeScope.Children;
-            var condition = new PropertyCondition(AutomationElement.NameProperty, elementName);
+        public void ExecuteCommand(string commandName, string argument = "")
+            => _inProc.ExecuteCommand(commandName, argument);
 
-            // TODO(Dustin): This is code is a bit terrifying. If anything goes wrong and the automation
-            // element can't be found, it'll continue to spin until the heat death of the universe.
-            await IntegrationHelper.WaitForResultAsync(
-                () => (element = AutomationElement.RootElement.FindFirst(scope, condition)) != null, expectedResult: true
-            ).ConfigureAwait(false);
+        public bool IsCommandAvailable(string commandName)
+            => _inProc.IsCommandAvailable(commandName);
 
-            return element;
-        }
+        public string[] GetAvailableCommands()
+            => _inProc.GetAvailableCommands();
+
+        public int ErrorListErrorCount
+            => _inProc.GetErrorListErrorCount();
+
+        public void WaitForNoErrorsInErrorList()
+            => _inProc.WaitForNoErrorsInErrorList();
+
+        public bool IsRunning => !HostProcess.HasExited;
 
         public void CleanUp()
         {
-            VisualStudioWorkspace.CleanUpWaitingService();
-            VisualStudioWorkspace.CleanUpWorkspace();
+            Workspace.CleanUpWaitingService();
+            Workspace.CleanUpWorkspace();
             SolutionExplorer.CleanUpOpenSolution();
-            CSharpInteractiveWindow.CleanUpInteractiveWindow();
+
+            // Close any windows leftover from previous (failed) tests
+            InteractiveWindow.CloseInteractiveWindow();
+            ObjectBrowserWindow.CloseWindow();
+            ChangeSignatureDialog.CloseWindow();
+            GenerateTypeDialog.CloseWindow();
+            ExtractInterfaceDialog.CloseWindow();
         }
 
-        public void Close()
+        public void Close(bool exitHostProcess = true)
         {
             if (!IsRunning)
             {
@@ -149,13 +191,17 @@ namespace Microsoft.VisualStudio.IntegrationTest.Utilities
             CleanUp();
 
             CloseRemotingService();
-            CloseHostProcess();
+
+            if (exitHostProcess)
+            {
+                CloseHostProcess();
+            }
         }
 
         private void CloseHostProcess()
         {
             _inProc.Quit();
-            IntegrationHelper.KillProcess(_hostProcess);
+            IntegrationHelper.KillProcess(HostProcess);
         }
 
         private void CloseRemotingService()
@@ -166,20 +212,21 @@ namespace Microsoft.VisualStudio.IntegrationTest.Utilities
             }
             finally
             {
-                if (_integrationServiceChannel != null)
+                if (_integrationServiceChannel != null
+                    && ChannelServices.RegisteredChannels.Contains(_integrationServiceChannel))
                 {
                     ChannelServices.UnregisterChannel(_integrationServiceChannel);
                 }
             }
         }
 
-        private void StartRemoteIntegrationService(EnvDTE.DTE dte)
+        private void StartRemoteIntegrationService(DTE dte)
         {
             // We use DTE over RPC to start the integration service. All other DTE calls should happen in the host process.
 
-            if (RetryRpcCall(() => dte.Commands.Item(WellKnownCommandNames.Test_IntegrationTestService_Start).IsAvailable))
+            if (dte.Commands.Item(WellKnownCommandNames.Test_IntegrationTestService_Start).IsAvailable)
             {
-                RetryRpcCall(() => dte.ExecuteCommand(WellKnownCommandNames.Test_IntegrationTestService_Start));
+                dte.ExecuteCommand(WellKnownCommandNames.Test_IntegrationTestService_Start);
             }
         }
 
@@ -191,33 +238,38 @@ namespace Microsoft.VisualStudio.IntegrationTest.Utilities
             }
         }
 
-        private static void RetryRpcCall(Action action)
+        public TelemetryVerifier EnableTestTelemetryChannel()
         {
-            do
-            {
-                try
-                {
-                    action();
-                    return;
-                }
-                catch (COMException exception) when ((exception.HResult == VSConstants.RPC_E_CALL_REJECTED) ||
-                                                     (exception.HResult == VSConstants.RPC_E_SERVERCALL_RETRYLATER))
-                {
-                    // We'll just try again in this case
-                }
-            }
-            while (true);
+            _inProc.EnableTestTelemetryChannel();
+            return new TelemetryVerifier(this);
         }
 
-        private static T RetryRpcCall<T>(Func<T> action)
+        private void DisableTestTelemetryChannel()
+            => _inProc.DisableTestTelemetryChannel();
+
+        private void WaitForTelemetryEvents(string[] names)
+            => _inProc.WaitForTelemetryEvents(names);
+
+        public class TelemetryVerifier : IDisposable
         {
-            var result = default(T);
+            internal VisualStudioInstance _instance;
 
-            RetryRpcCall(() => {
-                result = action();
-            });
+            public TelemetryVerifier(VisualStudioInstance instance)
+            {
+                _instance = instance;
+            }
 
-            return result;
+            public void Dispose() => _instance.DisableTestTelemetryChannel();
+
+            /// <summary>
+            /// Asserts that a telemetry event of the given name was fired. Does not
+            /// do any additional validation (of performance numbers, etc).
+            /// </summary>
+            /// <param name="expectedEventNames"></param>
+            public void VerifyFired(params string[] expectedEventNames)
+            {
+                _instance.WaitForTelemetryEvents(expectedEventNames);
+            }
         }
     }
 }

@@ -1,36 +1,36 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
 <topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-  <title>/resource</title>
+  <title>-resource</title>
   <keywords>
-    <keyword>/resource</keyword>
+    <keyword>-resource</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/resource</para>
+      <para styleclass="Heading1">-resource</para>
     </header>
     <para styleclass="Normal">Embeds the specified resource into the output file.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/resource:filename[,identifier[,accessibility-modifier]] &#160;</para>
+    <para styleclass="Code with box">-resource:filename[,identifier[,accessibility-modifier]] &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">filename</text><tab />The .NET Framework resource file that you want to embed in the output file.</para>
+    <para styleclass="List"><text styleclass="Code Example">filename</text><tab ->The .NET Framework resource file that you want to embed in the output file.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">identifier</text> (optional)<tab />The logical name for the resource; the name that is used to load the resource. The default is the name of the file name.</para>
+    <para styleclass="List"><text styleclass="Code Example">identifier</text> (optional)<tab ->The logical name for the resource; the name that is used to load the resource. The default is the name of the file name.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">accessibility-modifier</text> (optional)<tab />The accessibility of the resource: public or private. The default is public.</para>
+    <para styleclass="List"><text styleclass="Code Example">accessibility-modifier</text> (optional)<tab ->The accessibility of the resource: public or private. The default is public.</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Use /linkresource to link a resource to an assembly and not add the resource file to the output file.</para>
+    <para styleclass="Normal">Use -linkresource to link a resource to an assembly and not add the resource file to the output file.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">By default, resources are public in the assembly when they are created by using the X# compiler. To make the resources private, specify <text styleclass="Code Example">private</text> as the accessibility modifier. No other accessibility other than <text styleclass="Code Example">public</text> or <text styleclass="Code Example">private</text> is allowed.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">If <text styleclass="Code Example">filename</text> is a .NET Framework resource file created, for example, by Resgen.exe or in the development environment, it can be accessed with members in the System.Resources namespace. For more information, see System.Resources.ResourceManager. For all other resources, use the <text styleclass="Code Example">GetManifestResource</text>* methods in the Assembly class to access the resource at run time.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">/res is the short form of /resource.</para>
+    <para styleclass="Normal">-res is the short form of -resource.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The order of the resources in the output file is determined from the order specified on the command line.</para>
     <para styleclass="Normal"></para>
@@ -49,7 +49,7 @@
     <para styleclass="Normal">Compile<text styleclass="Code Example"> in.prg</text> and attach resource file <text styleclass="Code Example">rf.resource</text>:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc /resource:rf.resource in.prg &#160;</para>
+    <para styleclass="Code with box">xsc -resource:rf.resource in.prg &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

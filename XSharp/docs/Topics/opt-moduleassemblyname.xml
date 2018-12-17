@@ -1,24 +1,24 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/moduleassemblyname</title>
+  <title>-moduleassemblyname</title>
   <keywords>
-    <keyword>/moduleassemblyname</keyword>
+    <keyword>-moduleassemblyname</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/moduleassemblyname</para>
+      <para styleclass="Heading1">-moduleassemblyname</para>
     </header>
     <para styleclass="Normal">Specifies an assembly whose non-public types a .netmodule can access.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/moduleassemblyname:assembly_name &#160;</para>
+    <para styleclass="Code with box">-moduleassemblyname:assembly_name &#160;</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">assembly_name</text><tab />The name of the assembly whose non-public types the .netmodule can access.</para>
+    <para styleclass="List"><text styleclass="Code Example">assembly_name</text><tab ->The name of the assembly whose non-public types the .netmodule can access.</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">/moduleassemblyname should be used when building a .netmodule, and where the following conditions are true:</para>
+    <para styleclass="Normal">-moduleassemblyname should be used when building a .netmodule, and where the following conditions are true:</para>
     <para styleclass="Normal"></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">The .netmodule needs access to non-public types in an existing assembly.</li>
@@ -26,7 +26,7 @@
       <li styleclass="Normal" style="margin-left:13px;">The existing assembly has granted friend assembly access to the assembly into which the .netmodule will be built.</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <para styleclass="Normal">For more information on building a .netmodule, see <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-target">/target:module</link>.</para>
+    <para styleclass="Normal">For more information on building a .netmodule, see <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-target">-target:module</link>.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">For more information on friend assemblies, see Friend Assemblies.</para>
     <para styleclass="Normal"></para>
@@ -38,21 +38,21 @@
     <para styleclass="Normal">This sample builds an assembly with a private type, and that gives friend assembly access to an assembly called csman_an_assembly.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// moduleassemblyname_1.prg &#160;<br/>// compile with: /target:library &#160;<br/>using System; &#160;<br/>using System.Runtime.CompilerServices; &#160;<br/><br/> &#160;[assembly:InternalsVisibleTo (&quot;csman_an_assembly&quot;)] &#160;<br/><br/> &#160;class An_Internal_Class &#160;<br/><br/>{ &#160;<br/> &#160; &#160;public void Test() &#160; <br/> &#160; &#160;{ &#160; <br/><br/> &#160; &#160; &#160; &#160;Console.WriteLine(&quot;An_Internal_Class.Test called&quot;); &#160; <br/> &#160; &#160;} &#160;<br/>} &#160;<br/></para>
+    <para styleclass="Code with box">-/ moduleassemblyname_1.prg &#160;<br/>-/ compile with: -target:library &#160;<br/>using System; &#160;<br/>using System.Runtime.CompilerServices; &#160;<br/><br/> &#160;[assembly:InternalsVisibleTo (&quot;csman_an_assembly&quot;)] &#160;<br/><br/> &#160;class An_Internal_Class &#160;<br/><br/>{ &#160;<br/> &#160; &#160;public void Test() &#160; <br/> &#160; &#160;{ &#160; <br/><br/> &#160; &#160; &#160; &#160;Console.WriteLine(&quot;An_Internal_Class.Test called&quot;); &#160; <br/> &#160; &#160;} &#160;<br/>} &#160;<br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This sample builds a .netmodule that accesses a non-public type in the assembly moduleassemblyname_1.dll. By knowing that this .netmodule will be built into an assembly called csman_an_assembly, we can specify /moduleassemblyname, allowing the .netmodule to access non-public types in an assembly that has granted friend assembly access to csman_an_assembly.</para>
+    <para styleclass="Normal">This sample builds a .netmodule that accesses a non-public type in the assembly moduleassemblyname_1.dll. By knowing that this .netmodule will be built into an assembly called csman_an_assembly, we can specify -moduleassemblyname, allowing the .netmodule to access non-public types in an assembly that has granted friend assembly access to csman_an_assembly.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// moduleassemblyname_2.prg &#160;<br/>// compile with: /moduleassemblyname:csman_an_assembly /target:module /reference:moduleassemblyname_1.dll &#160;<br/>class B { &#160;<br/> &#160; &#160;public void Test() { &#160;<br/> &#160; &#160; &#160; &#160;An_Internal_Class x = new An_Internal_Class(); &#160;<br/> &#160; &#160; &#160; &#160;x.Test(); &#160;<br/> &#160; &#160;} &#160;<br/>} &#160;</para>
+    <para styleclass="Code with box">-/ moduleassemblyname_2.prg &#160;<br/>-/ compile with: -moduleassemblyname:csman_an_assembly -target:module -reference:moduleassemblyname_1.dll &#160;<br/>class B { &#160;<br/> &#160; &#160;public void Test() { &#160;<br/> &#160; &#160; &#160; &#160;An_Internal_Class x = new An_Internal_Class(); &#160;<br/> &#160; &#160; &#160; &#160;x.Test(); &#160;<br/> &#160; &#160;} &#160;<br/>} &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This code sample builds the assembly csman_an_assembly, referencing the previously-built assembly and .netmodule.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// csman_an_assembly.prg &#160;<br/>// compile with: /addmodule:moduleassemblyname_2.netmodule /reference:moduleassemblyname_1.dll &#160;<br/>class A { &#160;<br/> &#160; &#160;public static void Main() { &#160;<br/> &#160; &#160; &#160; &#160;B bb = new B(); &#160;<br/> &#160; &#160; &#160; &#160;bb.Test(); &#160;<br/> &#160; &#160;} &#160;<br/>} &#160;</para>
+    <para styleclass="Code with box">-/ csman_an_assembly.prg &#160;<br/>-/ compile with: -addmodule:moduleassemblyname_2.netmodule -reference:moduleassemblyname_1.dll &#160;<br/>class A { &#160;<br/> &#160; &#160;public static void Main() { &#160;<br/> &#160; &#160; &#160; &#160;B bb = new B(); &#160;<br/> &#160; &#160; &#160; &#160;bb.Test(); &#160;<br/> &#160; &#160;} &#160;<br/>} &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

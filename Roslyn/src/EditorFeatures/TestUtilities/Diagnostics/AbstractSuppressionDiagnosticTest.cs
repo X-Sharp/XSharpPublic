@@ -1,10 +1,11 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CodeFixes.Suppression;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -23,12 +24,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
 
         protected Task TestAsync(string initial, string expected)
         {
-            return TestAsync(initial, expected, parseOptions: null, index: CodeActionIndex, compareTokens: false);
-        }
-
-        protected Task TestMissingAsync(string initial)
-        {
-            return TestMissingAsync(initial, parseOptions: null);
+            return TestAsync(initial, expected, parseOptions: null, index: CodeActionIndex);
         }
 
         internal abstract Tuple<DiagnosticAnalyzer, ISuppressionFixProvider> CreateDiagnosticProviderAndFixer(Workspace workspace);
@@ -54,7 +50,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
         }
 
         internal override async Task<IEnumerable<Diagnostic>> GetDiagnosticsAsync(
-            TestWorkspace workspace, object fixProviderData)
+            TestWorkspace workspace, TestParameters parameters)
         {
             var providerAndFixer = CreateDiagnosticProviderAndFixer(workspace);
 
@@ -64,8 +60,8 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
             return FilterDiagnostics(diagnostics);
         }
 
-        internal override async Task<IEnumerable<Tuple<Diagnostic, CodeFixCollection>>> GetDiagnosticAndFixesAsync(
-            TestWorkspace workspace, string fixAllActionId, object fixProviderData)
+        internal override async Task<(ImmutableArray<Diagnostic>, ImmutableArray<CodeAction>, CodeAction actionToInvoke)> GetDiagnosticAndFixesAsync(
+            TestWorkspace workspace, TestParameters parameters)
         {
             var providerAndFixer = CreateDiagnosticProviderAndFixer(workspace);
 
@@ -76,17 +72,17 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
                 document = GetDocumentAndAnnotatedSpan(workspace, out annotation, out span);
             }
 
-            using (var testDriver = new TestDiagnosticAnalyzerDriver(document.Project, provider, includeSuppressedDiagnostics: IncludeSuppressedDiagnostics))
-            {
-                var fixer = providerAndFixer.Item2;
-                var diagnostics = (await testDriver.GetAllDiagnosticsAsync(provider, document, span))
-                    .Where(d => fixer.CanBeSuppressedOrUnsuppressed(d));
+            var testDriver = new TestDiagnosticAnalyzerDriver(document.Project, provider, includeSuppressedDiagnostics: IncludeSuppressedDiagnostics);
+            var fixer = providerAndFixer.Item2;
+            var diagnostics = (await testDriver.GetAllDiagnosticsAsync(provider, document, span))
+                .Where(d => fixer.CanBeSuppressedOrUnsuppressed(d));
 
-                var filteredDiagnostics = FilterDiagnostics(diagnostics);
+            var filteredDiagnostics = FilterDiagnostics(diagnostics);
 
-                var wrapperCodeFixer = new WrapperCodeFixProvider(fixer, filteredDiagnostics.Select(d => d.Id));
-                return await GetDiagnosticAndFixesAsync(filteredDiagnostics, provider, wrapperCodeFixer, testDriver, document, span, annotation, fixAllActionId);
-            }
+            var wrapperCodeFixer = new WrapperCodeFixProvider(fixer, filteredDiagnostics.Select(d => d.Id));
+            return await GetDiagnosticAndFixesAsync(
+                filteredDiagnostics, provider, wrapperCodeFixer, testDriver, 
+                document, span, annotation, parameters.index);
         }
     }
 }

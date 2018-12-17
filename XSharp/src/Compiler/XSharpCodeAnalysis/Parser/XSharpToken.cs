@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
-    public class XSharpToken : CommonToken, Microsoft.CodeAnalysis.IMessageSerializable
+    public class XSharpToken : CommonToken, IFormattable
     {
         //internal string SourceFileName;
         internal string MappedFileName;
@@ -111,5 +111,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public int OriginalTokenIndex => _originalTokenIndex;
 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return this.Text;
+        }
     }
 }

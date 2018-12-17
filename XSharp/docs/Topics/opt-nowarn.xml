@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/nowarn</title>
+  <title>-nowarn</title>
   <keywords>
-    <keyword>/nowarn</keyword>
+    <keyword>-nowarn</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/nowarn</para>
+      <para styleclass="Heading1">-nowarn</para>
     </header>
-    <para styleclass="Normal">The /nowarn option lets you suppress the compiler from displaying one or more warnings. Separate multiple warning numbers with a comma.</para>
+    <para styleclass="Normal">The -nowarn option lets you suppress the compiler from displaying one or more warnings. Separate multiple warning numbers with a comma.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/nowarn:number1[,number2,...] &#160;</para>
+    <para styleclass="Code with box">-nowarn:number1[,number2,...] &#160;</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">number1, number2</text><tab />Warning number(s) that you want the compiler to suppress.</para>
+    <para styleclass="List"><text styleclass="Code Example">number1, number2</text><tab ->Warning number(s) that you want the compiler to suppress.</para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">You should only specify the numeric part of the warning identifier. For example, if you want to suppress XS0028, you could specify <text styleclass="Code Example">/nowarn:28</text>.</para>
+    <para styleclass="Normal">You should only specify the numeric part of the warning identifier. For example, if you want to suppress XS0028, you could specify <text styleclass="Code Example">-nowarn:28</text>.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
     <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">

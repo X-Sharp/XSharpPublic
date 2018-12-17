@@ -35,7 +35,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (_inExpressionLambda)
             {
                 TypeSymbol strippedLeftType = rewrittenLeft.Type.StrippedType();
-                Conversion rewrittenConversion = MakeConversion(syntax, leftConversion, strippedLeftType, rewrittenResultType);
+                Conversion rewrittenConversion = TryMakeConversion(syntax, leftConversion, strippedLeftType, rewrittenResultType);
+                if (!rewrittenConversion.Exists)
+                {
+                    return BadExpression(syntax, rewrittenResultType, rewrittenLeft, rewrittenRight);
+                }
+
                 return new BoundNullCoalescingOperator(syntax, rewrittenLeft, rewrittenRight, rewrittenConversion, rewrittenResultType);
             }
 
@@ -53,6 +58,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 Debug.Assert(!rewrittenLeft.ConstantValue.IsNull);
 
+                return GetConvertedLeftForNullCoalescingOperator(rewrittenLeft, leftConversion, rewrittenResultType);
+            }
+
+            // string concatenation is never null.
+            // interpolated string lowering may introduce redundant null coalescing, which we have to remove.
+            if (IsStringConcat(rewrittenLeft))
+            {
                 return GetConvertedLeftForNullCoalescingOperator(rewrittenLeft, leftConversion, rewrittenResultType);
             }
 
@@ -116,7 +128,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             // MakeConversion(temp, rewrittenResultType)
             BoundExpression convertedLeft = GetConvertedLeftForNullCoalescingOperator(boundTemp, leftConversion, rewrittenResultType);
-            Debug.Assert(convertedLeft.Type.Equals(rewrittenResultType, TypeCompareKind.IgnoreDynamicAndTupleNames));
+            Debug.Assert(convertedLeft.HasErrors || convertedLeft.Type.Equals(rewrittenResultType, TypeCompareKind.IgnoreDynamicAndTupleNames));
 
             // (temp != null) ? MakeConversion(temp, LeftConversion) : RightOperand
             BoundExpression conditionalExpression = RewriteConditionalOperator(
@@ -125,7 +137,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 rewrittenConsequence: convertedLeft,
                 rewrittenAlternative: rewrittenRight,
                 constantValueOpt: null,
-                rewrittenType: rewrittenResultType);
+                rewrittenType: rewrittenResultType,
+                isRef: false);
 
             Debug.Assert(conditionalExpression.ConstantValue == null); // we shouldn't have hit this else case otherwise
             Debug.Assert(conditionalExpression.Type.Equals(rewrittenResultType, TypeCompareKind.IgnoreDynamicAndTupleNames));
@@ -136,6 +149,35 @@ namespace Microsoft.CodeAnalysis.CSharp
                 sideEffects: ImmutableArray.Create<BoundExpression>(tempAssignment),
                 value: conditionalExpression,
                 type: rewrittenResultType);
+        }
+
+        private bool IsStringConcat(BoundExpression expression)
+        {
+            if  (expression.Kind != BoundKind.Call)
+            {
+                return false;
+            }
+
+            var boundCall = (BoundCall)expression;
+
+            var method = boundCall.Method;
+
+            if (method.IsStatic && method.ContainingType.SpecialType == SpecialType.System_String)
+            {
+                if ((object)method == (object)_compilation.GetSpecialTypeMember(SpecialMember.System_String__ConcatStringString) ||
+                    (object)method == (object)_compilation.GetSpecialTypeMember(SpecialMember.System_String__ConcatStringStringString) ||
+                    (object)method == (object)_compilation.GetSpecialTypeMember(SpecialMember.System_String__ConcatStringStringStringString) ||
+                    (object)method == (object)_compilation.GetSpecialTypeMember(SpecialMember.System_String__ConcatObject) ||
+                    (object)method == (object)_compilation.GetSpecialTypeMember(SpecialMember.System_String__ConcatObjectObject) ||
+                    (object)method == (object)_compilation.GetSpecialTypeMember(SpecialMember.System_String__ConcatObjectObjectObject) ||
+                    (object)method == (object)_compilation.GetSpecialTypeMember(SpecialMember.System_String__ConcatStringArray) ||
+                    (object)method == (object)_compilation.GetSpecialTypeMember(SpecialMember.System_String__ConcatObjectArray))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private BoundExpression GetConvertedLeftForNullCoalescingOperator(BoundExpression rewrittenLeft, Conversion leftConversion, TypeSymbol rewrittenResultType)
@@ -156,7 +198,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (rewrittenLeftType != rewrittenResultType && rewrittenLeftType.IsNullableType())
             {
                 TypeSymbol strippedLeftType = rewrittenLeftType.GetNullableUnderlyingType();
-                MethodSymbol getValueOrDefault = GetNullableMethod(rewrittenLeft.Syntax, rewrittenLeftType, SpecialMember.System_Nullable_T_GetValueOrDefault);
+                MethodSymbol getValueOrDefault = UnsafeGetNullableMethod(rewrittenLeft.Syntax, rewrittenLeftType, SpecialMember.System_Nullable_T_GetValueOrDefault);
                 rewrittenLeft = BoundCall.Synthesized(rewrittenLeft.Syntax, rewrittenLeft, getValueOrDefault);
                 if (strippedLeftType == rewrittenResultType)
                 {

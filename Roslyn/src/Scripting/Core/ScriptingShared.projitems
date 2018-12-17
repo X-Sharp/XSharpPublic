@@ -33,55 +33,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)..\..\Compilers\Shared\GlobalAssemblyCacheHelpers\MonoGlobalAssemblyCache.cs">
       <Link>Hosting\Resolvers\MonoGlobalAssemblyCache.cs</Link>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\AssemblyLoader\AssemblyAndLocation.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\AssemblyLoader\AssemblyLoadResult.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\AssemblyLoader\CoreAssemblyLoaderImpl.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\AssemblyLoader\DesktopAssemblyLoaderImpl.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\AssemblyLoader\AssemblyLoaderImpl.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\AssemblyLoader\InteractiveAssemblyLoaderException.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\CommandLine\CommandLineHelpers.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\CommandLine\CommandLineScriptGlobals.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\CommandLine\CommandLineRunner.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\CommandLine\ConsoleIO.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\CommandLine\NotImplementedAnalyzerLoader.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\InteractiveScriptGlobals.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\ObjectFormatter\CommonObjectFormatter.BuilderOptions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\ObjectFormatter\CommonPrimitiveFormatterOptions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\ObjectFormatter\CommonPrimitiveFormatter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\ObjectFormatter\CommonTypeNameFormatterOptions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\ObjectFormatter\CommonTypeNameFormatter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\CommonMemberFilter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\MemberFilter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\PrintOptions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\ObjectFormatter\ObjectFormatter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\ObjectFormatter\ObjectFormatterHelpers.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\ObjectFormatter\CommonObjectFormatter.Builder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\ObjectFormatter\CommonObjectFormatter.Visitor.FormattedMember.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\Resolvers\RuntimeMetadataReferenceResolver.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\AssemblyLoader\InteractiveAssemblyLoader.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\AssemblyLoader\MetadataShadowCopy.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\AssemblyLoader\MetadataShadowCopyProvider.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\AssemblyLoader\ShadowCopy.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\Resolvers\NuGetPackageResolver.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\SearchPaths.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\SynchronizedList.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ScriptMetadataResolver.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ScriptCompiler.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ScriptRunner.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\ObjectFormatter\CommonObjectFormatter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\ObjectFormatter\CommonObjectFormatter.Visitor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Script.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ScriptBuilder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CompilationErrorException.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Hosting\ObjectFormatter\MemberDisplayFormat.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ScriptExecutionState.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ScriptOptions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ScriptSourceResolver.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ScriptState.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ScriptVariable.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ConsoleShims.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\IListExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ParameterValidationHelpers.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\TaskExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)**\*.cs" />
   </ItemGroup>
 </Project>

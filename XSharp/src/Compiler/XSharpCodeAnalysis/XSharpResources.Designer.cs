@@ -11,8 +11,8 @@
 namespace LanguageService.CodeAnalysis {
     using System;
     using System.Reflection;
-
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -20,7 +20,7 @@ namespace LanguageService.CodeAnalysis {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class XSharpResources {
@@ -62,15 +62,6 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot have a previousSubmission when not a submission..
-        /// </summary>
-        internal static string CannotHavePreviousSubmission {
-            get {
-                return ResourceManager.GetString("CannotHavePreviousSubmission", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Can&apos;t reference compilation of type &apos;{0}&apos; from {1} compilation..
         /// </summary>
         internal static string CantReferenceCompilationOf {
@@ -103,15 +94,6 @@ namespace LanguageService.CodeAnalysis {
         internal static string CouldNotFindFile {
             get {
                 return ResourceManager.GetString("CouldNotFindFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to element is expected.
-        /// </summary>
-        internal static string ElementIsExpected {
-            get {
-                return ResourceManager.GetString("ElementIsExpected", resourceCulture);
             }
         }
         
@@ -197,7 +179,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The abstract method &apos;{0}&apos; cannot be marked virtual.
+        ///   Looks up a localized string similar to The abstract {0} &apos;{1}&apos; cannot be marked virtual.
         /// </summary>
         internal static string ERR_AbstractNotVirtual {
             get {
@@ -251,15 +233,6 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Properties cannot combine accessor lists with expression bodies..
-        /// </summary>
-        internal static string ERR_AccessorListAndExpressionBody {
-            get {
-                return ResourceManager.GetString("ERR_AccessorListAndExpressionBody", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; cannot be added to this assembly because it already is an assembly.
         /// </summary>
         internal static string ERR_AddModuleAssembly {
@@ -283,15 +256,6 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_AddRemoveMustHaveBody {
             get {
                 return ResourceManager.GetString("ERR_AddRemoveMustHaveBody", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot take the address of a read-only local variable.
-        /// </summary>
-        internal static string ERR_AddrOnReadOnlyLocal {
-            get {
-                return ResourceManager.GetString("ERR_AddrOnReadOnlyLocal", resourceCulture);
             }
         }
         
@@ -346,6 +310,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_AmbigBinaryOps {
             get {
                 return ResourceManager.GetString("ERR_AmbigBinaryOps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operator &apos;{0}&apos; is ambiguous on operands &apos;default&apos; and &apos;default&apos;.
+        /// </summary>
+        internal static string ERR_AmbigBinaryOpsOnDefault {
+            get {
+                return ResourceManager.GetString("ERR_AmbigBinaryOpsOnDefault", resourceCulture);
             }
         }
         
@@ -431,7 +404,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot use ref or out parameter &apos;{0}&apos; inside an anonymous method, lambda expression, or query expression.
+        ///   Looks up a localized string similar to Cannot use ref, out, or in parameter &apos;{0}&apos; inside an anonymous method, lambda expression, query expression, or local function.
         /// </summary>
         internal static string ERR_AnonDelegateCantUse {
             get {
@@ -503,7 +476,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot assign {0} to anonymous type property.
+        ///   Looks up a localized string similar to Cannot assign &apos;{0}&apos; to anonymous type property.
         /// </summary>
         internal static string ERR_AnonymousTypePropertyAssignedBadValue {
             get {
@@ -710,6 +683,24 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot assign to {0} &apos;{1}&apos; because it is a readonly variable.
+        /// </summary>
+        internal static string ERR_AssignReadonlyNotField {
+            get {
+                return ResourceManager.GetString("ERR_AssignReadonlyNotField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot assign to a member of {0} &apos;{1}&apos; because it is a readonly variable.
+        /// </summary>
+        internal static string ERR_AssignReadonlyNotField2 {
+            get {
+                return ResourceManager.GetString("ERR_AssignReadonlyNotField2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The type parameter &apos;{0}&apos; cannot be used with the &apos;as&apos; operator because it does not have a class type constraint nor a &apos;class&apos; constraint.
         /// </summary>
         internal static string ERR_AsWithTypeVar {
@@ -733,6 +724,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_AttributeCantBeGeneric {
             get {
                 return ResourceManager.GetString("ERR_AttributeCantBeGeneric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot use attribute constructor &apos;{0}&apos; because it is has &apos;in&apos; parameters..
+        /// </summary>
+        internal static string ERR_AttributeCtorInParameter {
+            get {
+                return ResourceManager.GetString("ERR_AttributeCtorInParameter", resourceCulture);
             }
         }
         
@@ -832,6 +832,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_AutoPropertyMustOverrideSet {
             get {
                 return ResourceManager.GetString("ERR_AutoPropertyMustOverrideSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto-implemented instance properties in readonly structs must be readonly..
+        /// </summary>
+        internal static string ERR_AutoPropsInRoStruct {
+            get {
+                return ResourceManager.GetString("ERR_AutoPropsInRoStruct", resourceCulture);
             }
         }
         
@@ -953,7 +962,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Async methods cannot have ref or out parameters.
+        ///   Looks up a localized string similar to Async methods cannot have ref, in or out parameters.
         /// </summary>
         internal static string ERR_BadAsyncArgType {
             get {
@@ -980,11 +989,20 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Async methods cannot have by reference locals.
+        ///   Looks up a localized string similar to Async methods cannot have by-reference locals.
         /// </summary>
         internal static string ERR_BadAsyncLocalType {
             get {
                 return ResourceManager.GetString("ERR_BadAsyncLocalType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For type &apos;{0}&apos; to be used as an AsyncMethodBuilder for type &apos;{1}&apos;, its Task property should return type &apos;{1}&apos; instead of type &apos;{2}&apos;..
+        /// </summary>
+        internal static string ERR_BadAsyncMethodBuilderTaskProperty {
+            get {
+                return ResourceManager.GetString("ERR_BadAsyncMethodBuilderTaskProperty", resourceCulture);
             }
         }
         
@@ -1286,7 +1304,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid option &apos;{0}&apos; for /langversion; must be ISO-1, ISO-2, Default or an integer in range 1 to 6..
+        ///   Looks up a localized string similar to Invalid option &apos;{0}&apos; for /langversion. Use &apos;/langversion:?&apos; to list supported values..
         /// </summary>
         internal static string ERR_BadCompatMode {
             get {
@@ -1385,6 +1403,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Provided documentation mode is unsupported or invalid: &apos;{0}&apos;..
+        /// </summary>
+        internal static string ERR_BadDocumentationMode {
+            get {
+                return ResourceManager.GetString("ERR_BadDocumentationMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos;: user-defined conversions to or from the dynamic type are not allowed.
         /// </summary>
         internal static string ERR_BadDynamicConversion {
@@ -1399,6 +1426,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_BadDynamicMethodArg {
             get {
                 return ResourceManager.GetString("ERR_BadDynamicMethodArg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot use a default literal as an argument to a dynamically dispatched operation..
+        /// </summary>
+        internal static string ERR_BadDynamicMethodArgDefaultLiteral {
+            get {
+                return ResourceManager.GetString("ERR_BadDynamicMethodArgDefaultLiteral", resourceCulture);
             }
         }
         
@@ -1498,15 +1534,6 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_BadExtensionAgg {
             get {
                 return ResourceManager.GetString("ERR_BadExtensionAgg", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; does not contain a definition for &apos;{1}&apos; and the best extension method overload &apos;{2}&apos; has some invalid arguments.
-        /// </summary>
-        internal static string ERR_BadExtensionArgTypes {
-            get {
-                return ResourceManager.GetString("ERR_BadExtensionArgTypes", resourceCulture);
             }
         }
         
@@ -1637,7 +1664,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Iterators cannot have ref or out parameters.
+        ///   Looks up a localized string similar to Iterators cannot have ref, in or out parameters.
         /// </summary>
         internal static string ERR_BadIteratorArgType {
             get {
@@ -1646,7 +1673,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Iterators cannot have by reference locals.
+        ///   Looks up a localized string similar to Iterators cannot have by-reference locals.
         /// </summary>
         internal static string ERR_BadIteratorLocalType {
             get {
@@ -1669,6 +1696,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_BadIteratorReturnRef {
             get {
                 return ResourceManager.GetString("ERR_BadIteratorReturnRef", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provided language version is unsupported or invalid: &apos;{0}&apos;..
+        /// </summary>
+        internal static string ERR_BadLanguageVersion {
+            get {
+                return ResourceManager.GetString("ERR_BadLanguageVersion", resourceCulture);
             }
         }
         
@@ -1763,6 +1799,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Named argument &apos;{0}&apos; is used out-of-position but is followed by an unnamed argument.
+        /// </summary>
+        internal static string ERR_BadNonTrailingNamedArgument {
+            get {
+                return ResourceManager.GetString("ERR_BadNonTrailingNamedArgument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Declaration is not valid; use &apos;{0} operator &lt;dest-type&gt; (...&apos; instead.
         /// </summary>
         internal static string ERR_BadOperatorSyntax {
@@ -1772,11 +1817,20 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  The parameter modifier &apos;out&apos; cannot be used with &apos;SELF&apos; .
+        ///   Looks up a localized string similar to Operator &apos;{0}&apos; cannot be applied to operand &apos;{1}&apos;.
         /// </summary>
-        internal static string ERR_BadOutWithThis {
+        internal static string ERR_BadOpOnNullOrDefault {
             get {
-                return ResourceManager.GetString("ERR_BadOutWithThis", resourceCulture);
+                return ResourceManager.GetString("ERR_BadOpOnNullOrDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  The parameter modifier &apos;{0}&apos; cannot be used with &apos;{1}&apos;.
+        /// </summary>
+        internal static string ERR_BadParameterModifiers {
+            get {
+                return ResourceManager.GetString("ERR_BadParameterModifiers", resourceCulture);
             }
         }
         
@@ -1826,7 +1880,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid option &apos;{0}&apos; for /platform; must be anycpu, x86, Itanium or x64.
+        ///   Looks up a localized string similar to Invalid option &apos;{0}&apos; for /platform; must be anycpu, x86, Itanium, arm, arm64 or x64.
         /// </summary>
         internal static string ERR_BadPlatformType {
             get {
@@ -1858,15 +1912,6 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_BadRefReturnExpressionTree {
             get {
                 return ResourceManager.GetString("ERR_BadRefReturnExpressionTree", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to  The parameter modifier &apos;ref&apos; cannot be used with &apos;SELF&apos; .
-        /// </summary>
-        internal static string ERR_BadRefWithThis {
-            get {
-                return ResourceManager.GetString("ERR_BadRefWithThis", resourceCulture);
             }
         }
         
@@ -1912,6 +1957,24 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_BadSKunknown {
             get {
                 return ResourceManager.GetString("ERR_BadSKunknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provided source code kind is unsupported or invalid: &apos;{0}&apos;.
+        /// </summary>
+        internal static string ERR_BadSourceCodeKind {
+            get {
+                return ResourceManager.GetString("ERR_BadSourceCodeKind", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to foreach statement cannot operate on enumerators of type &apos;{0}&apos; in async or iterator methods because &apos;{0}&apos; is a ref struct..
+        /// </summary>
+        internal static string ERR_BadSpecialByRefIterator {
+            get {
+                return ResourceManager.GetString("ERR_BadSpecialByRefIterator", resourceCulture);
             }
         }
         
@@ -2294,7 +2357,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Methods and accessors cannot combine block bodies with expression bodies..
+        ///   Looks up a localized string similar to Block bodies and expression bodies cannot both be provided..
         /// </summary>
         internal static string ERR_BlockBodyAndExpressionBody {
             get {
@@ -2330,7 +2393,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An expression tree lambda may not contain an out or ref parameter.
+        ///   Looks up a localized string similar to An expression tree lambda may not contain a ref, in or out parameter.
         /// </summary>
         internal static string ERR_ByRefParameterInExpressionTree {
             get {
@@ -2353,6 +2416,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_ByRefTypeAndAwait {
             get {
                 return ResourceManager.GetString("ERR_ByRefTypeAndAwait", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This combination of arguments to &apos;{0}&apos; is disallowed because it may expose variables referenced by parameter &apos;{1}&apos; outside of their declaration scope.
+        /// </summary>
+        internal static string ERR_CallArgMixing {
+            get {
+                return ResourceManager.GetString("ERR_CallArgMixing", resourceCulture);
             }
         }
         
@@ -2402,7 +2474,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to /embed switch is only supported when emitting Portable PDB (/debug:portable or /debug:embedded)..
+        ///   Looks up a localized string similar to /embed switch is only supported when emitting a PDB..
         /// </summary>
         internal static string ERR_CannotEmbedWithoutPdb {
             get {
@@ -2447,7 +2519,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; must {2}return by reference to match overridden member &apos;{1}&apos;.
+        ///   Looks up a localized string similar to &apos;{0}&apos; must match by reference return of overridden member &apos;{1}&apos;.
         /// </summary>
         internal static string ERR_CantChangeRefReturnOnOverride {
             get {
@@ -2492,7 +2564,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot convert {0} to delegate type &apos;{1}&apos; because the parameter types do not match the delegate parameter types.
+        ///   Looks up a localized string similar to Cannot convert {0} to type &apos;{1}&apos; because the parameter types do not match the delegate parameter types.
         /// </summary>
         internal static string ERR_CantConvAnonMethParams {
             get {
@@ -2708,11 +2780,29 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to __arglist cannot have an argument passed by &apos;in&apos; or &apos;out&apos;.
+        /// </summary>
+        internal static string ERR_CantUseInOrOutInArglist {
+            get {
+                return ResourceManager.GetString("ERR_CantUseInOrOutInArglist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The RequiredAttribute attribute is not permitted on X# types.
         /// </summary>
         internal static string ERR_CantUseRequiredAttribute {
             get {
                 return ResourceManager.GetString("ERR_CantUseRequiredAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to __arglist cannot have an argument of void type.
+        /// </summary>
+        internal static string ERR_CantUseVoidInArglist {
+            get {
+                return ResourceManager.GetString("ERR_CantUseVoidInArglist", resourceCulture);
             }
         }
         
@@ -2825,7 +2915,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; does not implement interface member &apos;{1}&apos;. &apos;{2}&apos; cannot implement &apos;{1}&apos; because it does not return by {3}.
+        ///   Looks up a localized string similar to &apos;{0}&apos; does not implement interface member &apos;{1}&apos;. &apos;{2}&apos; cannot implement &apos;{1}&apos; because it does not have matching return by reference..
         /// </summary>
         internal static string ERR_CloseUnimplementedInterfaceMemberWrongRefReturn {
             get {
@@ -2834,7 +2924,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; does not implement interface member &apos;{1}&apos;. &apos;{2}&apos; cannot implement &apos;{1}&apos; because it does not have the matching return type of &apos;{3}&apos; or because the name does not match exactly..
+        ///   Looks up a localized string similar to &apos;{0}&apos; does not implement interface member &apos;{1}&apos;. &apos;{2}&apos; cannot implement &apos;{1}&apos; because it does not have the matching return type of &apos;{3}&apos;..
         /// </summary>
         internal static string ERR_CloseUnimplementedInterfaceMemberWrongReturnType {
             get {
@@ -2942,6 +3032,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Compiler version: &apos;{0}&apos;. Language version: {1}..
+        /// </summary>
+        internal static string ERR_CompilerAndLanguageVersion {
+            get {
+                return ResourceManager.GetString("ERR_CompilerAndLanguageVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Compiler option &apos;{0}&apos; ({1}) is not supported for dialect {2}.
         /// </summary>
         internal static string ERR_CompilerOptionNotSupportedForDialect {
@@ -2965,6 +3064,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_ConcreteMissingBody {
             get {
                 return ResourceManager.GetString("ERR_ConcreteMissingBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A conditional expression cannot be used directly in a string interpolation because the &apos;:&apos; ends the interpolation. Parenthesize the conditional expression..
+        /// </summary>
+        internal static string ERR_ConditionalInInterpolation {
+            get {
+                return ResourceManager.GetString("ERR_ConditionalInInterpolation", resourceCulture);
             }
         }
         
@@ -3194,6 +3302,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Type parameter &apos;{1}&apos; has the &apos;unmanaged&apos; constraint so &apos;{1}&apos; cannot be used as a constraint for &apos;{0}&apos;.
+        /// </summary>
+        internal static string ERR_ConWithUnmanagedCon {
+            get {
+                return ResourceManager.GetString("ERR_ConWithUnmanagedCon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Type parameter &apos;{1}&apos; has the &apos;struct&apos; constraint so &apos;{1}&apos; cannot be used as a constraint for &apos;{0}&apos;.
         /// </summary>
         internal static string ERR_ConWithValCon {
@@ -3298,6 +3415,33 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_DeconstructWrongCardinality {
             get {
                 return ResourceManager.GetString("ERR_DeconstructWrongCardinality", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A default literal &apos;default&apos; is not valid as a pattern. Use another literal (e.g. &apos;0&apos; or &apos;null&apos;) as appropriate. To match everything, use a discard pattern &apos;var _&apos;..
+        /// </summary>
+        internal static string ERR_DefaultInPattern {
+            get {
+                return ResourceManager.GetString("ERR_DefaultInPattern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A default literal &apos;default&apos; is not valid as a case constant. Use another literal (e.g. &apos;0&apos; or &apos;null&apos;) as appropriate. If you intended to write the default label, use &apos;default:&apos; without &apos;case&apos;..
+        /// </summary>
+        internal static string ERR_DefaultInSwitch {
+            get {
+                return ResourceManager.GetString("ERR_DefaultInSwitch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use of default literal is not valid in this context.
+        /// </summary>
+        internal static string ERR_DefaultLiteralNotValid {
+            get {
+                return ResourceManager.GetString("ERR_DefaultLiteralNotValid", resourceCulture);
             }
         }
         
@@ -3541,6 +3685,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_DoNotUseFixedBufferAttr {
             get {
                 return ResourceManager.GetString("ERR_DoNotUseFixedBufferAttr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do not use &apos;System.Runtime.CompilerServices.FixedBuffer&apos; attribute on a property.
+        /// </summary>
+        internal static string ERR_DoNotUseFixedBufferAttrOnProperty {
+            get {
+                return ResourceManager.GetString("ERR_DoNotUseFixedBufferAttrOnProperty", resourceCulture);
             }
         }
         
@@ -3806,6 +3959,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot pass argument with dynamic type to generic local function &apos;{0}&apos; with inferred type arguments..
+        /// </summary>
+        internal static string ERR_DynamicLocalFunctionTypeParameter {
+            get {
+                return ResourceManager.GetString("ERR_DynamicLocalFunctionTypeParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to One or more types required to compile a dynamic expression cannot be found. Are you missing a reference?.
         /// </summary>
         internal static string ERR_DynamicRequiredTypesMissing {
@@ -3977,11 +4139,56 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot use a result of &apos;{0}&apos; in this context because it may expose variables referenced by parameter &apos;{1}&apos; outside of their declaration scope.
+        /// </summary>
+        internal static string ERR_EscapeCall {
+            get {
+                return ResourceManager.GetString("ERR_EscapeCall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot use a member of result of &apos;{0}&apos; in this context because it may expose variables referenced by parameter &apos;{1}&apos; outside of their declaration scope.
+        /// </summary>
+        internal static string ERR_EscapeCall2 {
+            get {
+                return ResourceManager.GetString("ERR_EscapeCall2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A &apos;{0}&apos; character may only be escaped by doubling &apos;{0}{0}&apos; in an interpolated string..
         /// </summary>
         internal static string ERR_EscapedCurly {
             get {
                 return ResourceManager.GetString("ERR_EscapedCurly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot use local &apos;{0}&apos; in this context because it may expose referenced variables outside of their declaration scope.
+        /// </summary>
+        internal static string ERR_EscapeLocal {
+            get {
+                return ResourceManager.GetString("ERR_EscapeLocal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expression cannot be used in this context because it may indirectly expose variables outside of their declaration scope.
+        /// </summary>
+        internal static string ERR_EscapeOther {
+            get {
+                return ResourceManager.GetString("ERR_EscapeOther", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A result of a stackalloc expression of type &apos;{0}&apos; cannot be used in this context because it may be exposed outside of the containing method.
+        /// </summary>
+        internal static string ERR_EscapeStackAlloc {
+            get {
+                return ResourceManager.GetString("ERR_EscapeStackAlloc", resourceCulture);
             }
         }
         
@@ -4166,15 +4373,6 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos;: Auto-implemented properties cannot be used inside a type marked with StructLayout(LayoutKind.Explicit).
-        /// </summary>
-        internal static string ERR_ExplicitLayoutAndAutoImplementedProperty {
-            get {
-                return ResourceManager.GetString("ERR_ExplicitLayoutAndAutoImplementedProperty", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; explicit method implementation cannot implement &apos;{1}&apos; because it is an accessor.
         /// </summary>
         internal static string ERR_ExplicitMethodImplAccessor {
@@ -4211,6 +4409,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do not use &apos;{0}&apos;. This is reserved for compiler usage..
+        /// </summary>
+        internal static string ERR_ExplicitReservedAttr {
+            get {
+                return ResourceManager.GetString("ERR_ExplicitReservedAttr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot reference &apos;System.Runtime.CompilerServices.TupleElementNamesAttribute&apos; explicitly. Use the tuple syntax to define tuple names..
         /// </summary>
         internal static string ERR_ExplicitTupleElementNamesAttribute {
@@ -4234,6 +4441,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_ExportedTypesConflict {
             get {
                 return ResourceManager.GetString("ERR_ExportedTypesConflict", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The given expression cannot be used in a fixed statement.
+        /// </summary>
+        internal static string ERR_ExprCannotBeFixed {
+            get {
+                return ResourceManager.GetString("ERR_ExprCannotBeFixed", resourceCulture);
             }
         }
         
@@ -4283,7 +4499,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An expression tree lambda may not contain a coalescing operator with a null literal left-hand side.
+        ///   Looks up a localized string similar to An expression tree lambda may not contain a coalescing operator with a null or default literal left-hand side.
         /// </summary>
         internal static string ERR_ExpressionTreeContainsBadCoalesce {
             get {
@@ -4297,6 +4513,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_ExpressionTreeContainsBaseAccess {
             get {
                 return ResourceManager.GetString("ERR_ExpressionTreeContainsBaseAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An expression tree may not contain a discard..
+        /// </summary>
+        internal static string ERR_ExpressionTreeContainsDiscard {
+            get {
+                return ResourceManager.GetString("ERR_ExpressionTreeContainsDiscard", resourceCulture);
             }
         }
         
@@ -4391,6 +4616,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An expression tree may not contain a tuple == or != operator.
+        /// </summary>
+        internal static string ERR_ExpressionTreeContainsTupleBinOp {
+            get {
+                return ResourceManager.GetString("ERR_ExpressionTreeContainsTupleBinOp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An expression tree may not contain a tuple conversion..
         /// </summary>
         internal static string ERR_ExpressionTreeContainsTupleConversion {
@@ -4414,24 +4648,6 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_ExpressionTreeMustHaveDelegate {
             get {
                 return ResourceManager.GetString("ERR_ExpressionTreeMustHaveDelegate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Out variable and pattern variable declarations are not allowed within constructor initializers, field initializers, or property initializers..
-        /// </summary>
-        internal static string ERR_ExpressionVariableInConstructorOrFieldInitializer {
-            get {
-                return ResourceManager.GetString("ERR_ExpressionVariableInConstructorOrFieldInitializer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Out variable and pattern variable declarations are not allowed within a query clause..
-        /// </summary>
-        internal static string ERR_ExpressionVariableInQueryClause {
-            get {
-                return ResourceManager.GetString("ERR_ExpressionVariableInQueryClause", resourceCulture);
             }
         }
         
@@ -4499,15 +4715,6 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is experimental and unsupported; use &apos;/features:{1}&apos; to enable..
-        /// </summary>
-        internal static string ERR_FeatureIsExperimental {
-            get {
-                return ResourceManager.GetString("ERR_FeatureIsExperimental", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not implemented in this compiler..
         /// </summary>
         internal static string ERR_FeatureIsUnimplemented {
@@ -4526,7 +4733,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 1.  .
+        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 1. Please use language version {1} or greater..
         /// </summary>
         internal static string ERR_FeatureNotAvailableInVersion1 {
             get {
@@ -4535,7 +4742,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 2.  .
+        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 2. Please use language version {1} or greater..
         /// </summary>
         internal static string ERR_FeatureNotAvailableInVersion2 {
             get {
@@ -4544,7 +4751,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 3.  .
+        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 3. Please use language version {1} or greater..
         /// </summary>
         internal static string ERR_FeatureNotAvailableInVersion3 {
             get {
@@ -4553,7 +4760,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 4.  .
+        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 4. Please use language version {1} or greater..
         /// </summary>
         internal static string ERR_FeatureNotAvailableInVersion4 {
             get {
@@ -4562,7 +4769,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 5.  .
+        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 5. Please use language version {1} or greater..
         /// </summary>
         internal static string ERR_FeatureNotAvailableInVersion5 {
             get {
@@ -4571,7 +4778,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 6.  .
+        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 6. Please use language version {1} or greater..
         /// </summary>
         internal static string ERR_FeatureNotAvailableInVersion6 {
             get {
@@ -4580,11 +4787,38 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 7.  Please use language version {1} or greater..
+        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 7.0. Please use language version {1} or greater..
         /// </summary>
         internal static string ERR_FeatureNotAvailableInVersion7 {
             get {
                 return ResourceManager.GetString("ERR_FeatureNotAvailableInVersion7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 7.1. Please use language version {1} or greater..
+        /// </summary>
+        internal static string ERR_FeatureNotAvailableInVersion7_1 {
+            get {
+                return ResourceManager.GetString("ERR_FeatureNotAvailableInVersion7_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 7.2. Please use language version {1} or greater..
+        /// </summary>
+        internal static string ERR_FeatureNotAvailableInVersion7_2 {
+            get {
+                return ResourceManager.GetString("ERR_FeatureNotAvailableInVersion7_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 7.3. Please use language version {1} or greater..
+        /// </summary>
+        internal static string ERR_FeatureNotAvailableInVersion7_3 {
+            get {
+                return ResourceManager.GetString("ERR_FeatureNotAvailableInVersion7_3", resourceCulture);
             }
         }
         
@@ -4594,6 +4828,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_FeatureNotValidInExpressionTree {
             get {
                 return ResourceManager.GetString("ERR_FeatureNotValidInExpressionTree", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Field or auto-implemented property cannot be of type &apos;{0}&apos; unless it is an instance member of a ref struct..
+        /// </summary>
+        internal static string ERR_FieldAutoPropCantBeByRefLike {
+            get {
+                return ResourceManager.GetString("ERR_FieldAutoPropCantBeByRefLike", resourceCulture);
             }
         }
         
@@ -4639,6 +4882,24 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_FieldInitRefNonstatic {
             get {
                 return ResourceManager.GetString("ERR_FieldInitRefNonstatic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Field-like events are not allowed in readonly structs..
+        /// </summary>
+        internal static string ERR_FieldlikeEventsInRoStruct {
+            get {
+                return ResourceManager.GetString("ERR_FieldlikeEventsInRoStruct", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instance fields of readonly structs must be readonly..
+        /// </summary>
+        internal static string ERR_FieldsInRoStruct {
+            get {
+                return ResourceManager.GetString("ERR_FieldsInRoStruct", resourceCulture);
             }
         }
         
@@ -4751,7 +5012,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to foreach statement cannot operate on variables of type &apos;{0}&apos; because &apos;{0}&apos; does not contain a public definition for &apos;{1}&apos;.
+        ///   Looks up a localized string similar to foreach statement cannot operate on variables of type &apos;{0}&apos; because &apos;{0}&apos; does not contain a public instance definition for &apos;{1}&apos;.
         /// </summary>
         internal static string ERR_ForEachMissingMember {
             get {
@@ -4823,7 +5084,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Friend access was granted by &apos;{0}&apos;, but the public key of the output assembly does not match that specified by the attribute in the granting assembly..
+        ///   Looks up a localized string similar to Friend access was granted by &apos;{0}&apos;, but the public key of the output assembly (&apos;{1}&apos;) does not match that specified by the InternalsVisibleTo attribute in the granting assembly..
         /// </summary>
         internal static string ERR_FriendRefNotEqualToThis {
             get {
@@ -5057,7 +5318,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fixed size buffer type must be one of the following: bool, byte, short, int, long, char, sbyte, ushort, uint, ulong, float or double (also ptr or vostruct in vo/vulcan dialect).
+        ///   Looks up a localized string similar to Fixed size buffer type must be one of the following: bool, byte, short, int, long, char, sbyte, ushort, uint, ulong, float or double.
         /// </summary>
         internal static string ERR_IllegalFixedType {
             get {
@@ -5093,7 +5354,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only assignment, call, increment, decrement, and new object expressions can be used as a statement.
+        ///   Looks up a localized string similar to Only assignment, call, increment, decrement, await, and new object expressions can be used as a statement.
         /// </summary>
         internal static string ERR_IllegalStatement {
             get {
@@ -5363,11 +5624,29 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Arguments with &apos;in&apos; modifier cannot be used in dynamically dispatched expessions..
+        /// </summary>
+        internal static string ERR_InDynamicMethodArg {
+            get {
+                return ResourceManager.GetString("ERR_InDynamicMethodArg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;in&apos; expected.
         /// </summary>
         internal static string ERR_InExpected {
             get {
                 return ResourceManager.GetString("ERR_InExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The first parameter of an &apos;in&apos; extension method &apos;{0}&apos; must be a value type..
+        /// </summary>
+        internal static string ERR_InExtensionMustBeValueType {
+            get {
+                return ResourceManager.GetString("ERR_InExtensionMustBeValueType", resourceCulture);
             }
         }
         
@@ -5512,6 +5791,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_InterfaceImplementedByConditional {
             get {
                 return ResourceManager.GetString("ERR_InterfaceImplementedByConditional", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; cannot implement interface member &apos;{1}&apos; in type &apos;{2}&apos; because it has an __arglist parameter.
+        /// </summary>
+        internal static string ERR_InterfaceImplementedImplicitlyByVariadic {
+            get {
+                return ResourceManager.GetString("ERR_InterfaceImplementedImplicitlyByVariadic", resourceCulture);
             }
         }
         
@@ -5687,6 +5975,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to read debug information of method &apos;{0}&apos; (token 0x{1:X8}) from assembly &apos;{2}&apos;.
+        /// </summary>
+        internal static string ERR_InvalidDebugInfo {
+            get {
+                return ResourceManager.GetString("ERR_InvalidDebugInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid debug information format: {0}.
         /// </summary>
         internal static string ERR_InvalidDebugInformationFormat {
@@ -5786,6 +6083,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid hash algorithm name: &apos;{0}&apos;.
+        /// </summary>
+        internal static string ERR_InvalidHashAlgorithmName {
+            get {
+                return ResourceManager.GetString("ERR_InvalidHashAlgorithmName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid initializer member declarator.
         /// </summary>
         internal static string ERR_InvalidInitializerElementInitializer {
@@ -5840,6 +6146,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid object creation.
+        /// </summary>
+        internal static string ERR_InvalidObjectCreation {
+            get {
+                return ResourceManager.GetString("ERR_InvalidObjectCreation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid output name: {0}.
         /// </summary>
         internal static string ERR_InvalidOutputName {
@@ -5854,6 +6169,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_InvalidPathMap {
             get {
                 return ResourceManager.GetString("ERR_InvalidPathMap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid name for a preprocessing symbol; &apos;{0}&apos; is not a valid identifier.
+        /// </summary>
+        internal static string ERR_InvalidPreprocessingSymbol {
+            get {
+                return ResourceManager.GetString("ERR_InvalidPreprocessingSymbol", resourceCulture);
             }
         }
         
@@ -5912,6 +6236,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &quot;Invalid rank specifier: expected &apos;]&apos;.
+        /// </summary>
+        internal static string ERR_InvalidStackAllocArray {
+            get {
+                return ResourceManager.GetString("ERR_InvalidStackAllocArray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid version {0} for /subsystemversion. The version must be 6.02 or greater for ARM or AppContainerExe, and 4.00 or greater otherwise.
         /// </summary>
         internal static string ERR_InvalidSubsystemVersion {
@@ -5930,11 +6263,20 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The specified version string does not conform to the required format - major.minor.build.revision.
+        ///   Looks up a localized string similar to The specified version string does not conform to the required format - major.minor.build.revision (without wildcards).
         /// </summary>
         internal static string ERR_InvalidVersionFormat2 {
             get {
                 return ResourceManager.GetString("ERR_InvalidVersionFormat2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified version string contains wildcards, which are not compatible with determinism. Either remove wildcards from the version string, or disable determinism for this compilation.
+        /// </summary>
+        internal static string ERR_InvalidVersionFormatDeterministic {
+            get {
+                return ResourceManager.GetString("ERR_InvalidVersionFormatDeterministic", resourceCulture);
             }
         }
         
@@ -5993,6 +6335,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Specified language version &apos;{0}&apos; cannot have leading zeroes.
+        /// </summary>
+        internal static string ERR_LanguageVersionCannotHaveLeadingZeroes {
+            get {
+                return ResourceManager.GetString("ERR_LanguageVersionCannotHaveLeadingZeroes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to { expected.
         /// </summary>
         internal static string ERR_LbraceExpected {
@@ -6038,7 +6389,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Local &apos;{0}&apos; or its members cannot have their address taken and be used inside a codeblock, an anonymous method or lambda expression.
+        ///   Looks up a localized string similar to Local &apos;{0}&apos; or its members cannot have their address taken and be used inside an anonymous method or lambda expression.
         /// </summary>
         internal static string ERR_LocalCantBeFixedAndHoisted {
             get {
@@ -6052,6 +6403,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_LocalDuplicate {
             get {
                 return ResourceManager.GetString("ERR_LocalDuplicate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is a local function and must therefore always have a body..
+        /// </summary>
+        internal static string ERR_LocalFunctionMissingBody {
+            get {
+                return ResourceManager.GetString("ERR_LocalFunctionMissingBody", resourceCulture);
             }
         }
         
@@ -6101,16 +6461,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos;: an entry point cannot be marked with the &apos;async&apos; modifier.
-        /// </summary>
-        internal static string ERR_MainCantBeAsync {
-            get {
-                return ResourceManager.GetString("ERR_MainCantBeAsync", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot use &apos;{0}&apos; for Start method because it is imported.
+        ///   Looks up a localized string similar to Cannot use &apos;{0}&apos; for Main method because it is imported.
         /// </summary>
         internal static string ERR_MainClassIsImport {
             get {
@@ -6119,7 +6470,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; specified for Start method must be a valid non-generic class or struct.
+        ///   Looks up a localized string similar to &apos;{0}&apos; specified for Main method must be a valid non-generic class or struct.
         /// </summary>
         internal static string ERR_MainClassNotClass {
             get {
@@ -6128,7 +6479,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not find &apos;{0}&apos; specified for Start method.
+        ///   Looks up a localized string similar to Could not find &apos;{0}&apos; specified for Main method.
         /// </summary>
         internal static string ERR_MainClassNotFound {
             get {
@@ -6227,6 +6578,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Merge conflict marker encountered.
+        /// </summary>
+        internal static string ERR_Merge_conflict_marker_encountered {
+            get {
+                return ResourceManager.GetString("ERR_Merge_conflict_marker_encountered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name &apos;{0}&apos; exceeds the maximum length allowed in metadata..
         /// </summary>
         internal static string ERR_MetadataNameTooLong {
@@ -6254,7 +6614,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot convert method group &apos;{0}&apos; to non-delegate type &apos;{1}&apos;. Did you forget the parenthesis?.
+        ///   Looks up a localized string similar to Cannot convert method group &apos;{0}&apos; to non-delegate type &apos;{1}&apos;. Did you intend to invoke the method?.
         /// </summary>
         internal static string ERR_MethGrpToNonDel {
             get {
@@ -6299,6 +6659,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Branches of a ref ternary operator cannot refer to variables with incompatible declaration scopes.
+        /// </summary>
+        internal static string ERR_MismatchedRefEscapeInTernary {
+            get {
+                return ResourceManager.GetString("ERR_MismatchedRefEscapeInTernary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Argument missing.
         /// </summary>
         internal static string ERR_MissingArgument {
@@ -6335,7 +6704,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No Deconstruct instance or extension method was found for type &apos;{0}&apos;, with {1} out parameters and a void return type..
+        ///   Looks up a localized string similar to No suitable Deconstruct instance or extension method was found for type &apos;{0}&apos;, with {1} out parameters and a void return type..
         /// </summary>
         internal static string ERR_MissingDeconstruct {
             get {
@@ -6407,7 +6776,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos;: instance field types marked with StructLayout(LayoutKind.Explicit) must have a FieldOffset attribute.
+        ///   Looks up a localized string similar to &apos;{0}&apos;: instance field in types marked with StructLayout(LayoutKind.Explicit) must have a FieldOffset attribute.
         /// </summary>
         internal static string ERR_MissingStructOffset {
             get {
@@ -6457,15 +6826,6 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_ModuleEmitFailure {
             get {
                 return ResourceManager.GetString("ERR_ModuleEmitFailure", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A parameter cannot have all the specified modifiers; there are too many modifiers on the parameter.
-        /// </summary>
-        internal static string ERR_MultiParamMod {
-            get {
-                return ResourceManager.GetString("ERR_MultiParamMod", resourceCulture);
             }
         }
         
@@ -6560,11 +6920,20 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Named argument specifications must appear after all fixed arguments have been specified.
+        ///   Looks up a localized string similar to Named argument specifications must appear after all fixed arguments have been specified. Please use language version {0} or greater to allow non-trailing named arguments..
         /// </summary>
         internal static string ERR_NamedArgumentSpecificationBeforeFixedArgument {
             get {
                 return ResourceManager.GetString("ERR_NamedArgumentSpecificationBeforeFixedArgument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Named argument specifications must appear after all fixed arguments have been specified in a dynamic invocation..
+        /// </summary>
+        internal static string ERR_NamedArgumentSpecificationBeforeFixedArgumentInDynamicInvocation {
+            get {
+                return ResourceManager.GetString("ERR_NamedArgumentSpecificationBeforeFixedArgumentInDynamicInvocation", resourceCulture);
             }
         }
         
@@ -6682,6 +7051,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_NewBoundMustBeLast {
             get {
                 return ResourceManager.GetString("ERR_NewBoundMustBeLast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;new()&apos; constraint cannot be used with the &apos;unmanaged&apos; constraint.
+        /// </summary>
+        internal static string ERR_NewBoundWithUnmanaged {
+            get {
+                return ResourceManager.GetString("ERR_NewBoundWithUnmanaged", resourceCulture);
             }
         }
         
@@ -6893,7 +7271,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Program does not contain a static &apos;Start&apos; method suitable for an entry point.
+        ///   Looks up a localized string similar to Program does not contain a static &apos;Main&apos; method suitable for an entry point.
         /// </summary>
         internal static string ERR_NoEntryPoint {
             get {
@@ -6965,7 +7343,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; does not have a suitable static Start method.
+        ///   Looks up a localized string similar to &apos;{0}&apos; does not have a suitable static Main method.
         /// </summary>
         internal static string ERR_NoMainInClass {
             get {
@@ -7010,11 +7388,20 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Elements defined in a namespace cannot be explicitly declared as private, protected, or protected internal.
+        ///   Looks up a localized string similar to Elements defined in a namespace cannot be explicitly declared as private, protected, protected internal, or private protected.
         /// </summary>
         internal static string ERR_NoNamespacePrivate {
             get {
                 return ResourceManager.GetString("ERR_NoNamespacePrivate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot compile net modules when using /refout or /refonly..
+        /// </summary>
+        internal static string ERR_NoNetModuleOutputWhenRefOutOrRefOnly {
+            get {
+                return ResourceManager.GetString("ERR_NoNetModuleOutputWhenRefOutOrRefOnly", resourceCulture);
             }
         }
         
@@ -7055,6 +7442,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A void or int returning entry point cannot be async.
+        /// </summary>
+        internal static string ERR_NonTaskMainCantBeAsync {
+            get {
+                return ResourceManager.GetString("ERR_NonTaskMainCantBeAsync", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No overload for method &apos;{0}&apos; found with {1} arguments and default values for one or more arguments.
         /// </summary>
         internal static string ERR_NoOverloadFoundThatAllowsMissingArguments {
@@ -7091,6 +7487,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do not use refout when using refonly..
+        /// </summary>
+        internal static string ERR_NoRefOutWhenRefOnly {
+            get {
+                return ResourceManager.GetString("ERR_NoRefOutWhenRefOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos;: cannot override because &apos;{1}&apos; does not have an overridable set accessor.
         /// </summary>
         internal static string ERR_NoSetToOverride {
@@ -7118,7 +7523,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; does not contain a definition for &apos;{1}&apos; and no extension method &apos;{1}&apos; accepting a first argument of type &apos;{0}&apos; could be found (are you missing a using directive or an assembly reference?).
+        ///   Looks up a localized string similar to &apos;{0}&apos; does not contain a definition for &apos;{1}&apos; and no accessible extension method &apos;{1}&apos; accepting a first argument of type &apos;{0}&apos; could be found (are you missing a using directive or an assembly reference?).
         /// </summary>
         internal static string ERR_NoSuchMemberOrExtension {
             get {
@@ -7379,7 +7784,16 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot specify only Out attribute on a ref parameter. Use both In and Out attributes, or neither..
+        ///   Looks up a localized string similar to An in parameter cannot have the Out attribute..
+        /// </summary>
+        internal static string ERR_OutAttrOnInParam {
+            get {
+                return ResourceManager.GetString("ERR_OutAttrOnInParam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot specify the Out attribute on a ref parameter without also specifying the In attribute..
         /// </summary>
         internal static string ERR_OutAttrOnRefParam {
             get {
@@ -7406,20 +7820,20 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; cannot define overloaded methods that differ only on ref and out.
+        ///   Looks up a localized string similar to An out variable cannot be declared as a ref local.
         /// </summary>
-        internal static string ERR_OverloadRefOut {
+        internal static string ERR_OutVariableCannotBeByRef {
             get {
-                return ResourceManager.GetString("ERR_OverloadRefOut", resourceCulture);
+                return ResourceManager.GetString("ERR_OutVariableCannotBeByRef", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot define overloaded constructor &apos;{0}&apos; because it differs from another constructor only on ref and out.
+        ///   Looks up a localized string similar to &apos;{0}&apos; cannot define an overloaded {1} that differs only on parameter modifiers &apos;{2}&apos; and &apos;{3}&apos;.
         /// </summary>
-        internal static string ERR_OverloadRefOutCtor {
+        internal static string ERR_OverloadRefKind {
             get {
-                return ResourceManager.GetString("ERR_OverloadRefOutCtor", resourceCulture);
+                return ResourceManager.GetString("ERR_OverloadRefKind", resourceCulture);
             }
         }
         
@@ -7514,11 +7928,11 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The params parameter cannot be declared as ref or out.
+        ///   Looks up a localized string similar to The params parameter cannot be declared as {0}.
         /// </summary>
-        internal static string ERR_ParamsCantBeRefOut {
+        internal static string ERR_ParamsCantBeWithModifier {
             get {
-                return ResourceManager.GetString("ERR_ParamsCantBeRefOut", resourceCulture);
+                return ResourceManager.GetString("ERR_ParamsCantBeWithModifier", resourceCulture);
             }
         }
         
@@ -7649,15 +8063,6 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only methods, classes, structs, or interfaces may be partial.
-        /// </summary>
-        internal static string ERR_PartialMethodOnlyMethods {
-            get {
-                return ResourceManager.GetString("ERR_PartialMethodOnlyMethods", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A partial method may not have multiple implementing declarations.
         /// </summary>
         internal static string ERR_PartialMethodOnlyOneActual {
@@ -7775,6 +8180,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to It is not legal to use the type &apos;dynamic&apos; in a pattern..
+        /// </summary>
+        internal static string ERR_PatternDynamicType {
+            get {
+                return ResourceManager.GetString("ERR_PatternDynamicType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The switch case has already been handled by a previous case..
         /// </summary>
         internal static string ERR_PatternIsSubsumed {
@@ -7793,7 +8207,16 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An expression of type {0} cannot be handled by a pattern of type {1}..
+        ///   Looks up a localized string similar to An expression of type &apos;{0}&apos; cannot be handled by a pattern of type &apos;{1}&apos; in X# {2}. Please use language version {3} or greater..
+        /// </summary>
+        internal static string ERR_PatternWrongGenericTypeInVersion {
+            get {
+                return ResourceManager.GetString("ERR_PatternWrongGenericTypeInVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An expression of type &apos;{0}&apos; cannot be handled by a pattern of type &apos;{1}&apos;..
         /// </summary>
         internal static string ERR_PatternWrongType {
             get {
@@ -7933,6 +8356,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_PredefinedTypeNotFound {
             get {
                 return ResourceManager.GetString("ERR_PredefinedTypeNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Predefined type &apos;{0}&apos; is declared in multiple referenced assemblies: &apos;{1}&apos; and &apos;{2}&apos;.
+        /// </summary>
+        internal static string ERR_PredefinedValueTupleTypeAmbiguous3 {
+            get {
+                return ResourceManager.GetString("ERR_PredefinedValueTupleTypeAmbiguous3", resourceCulture);
             }
         }
         
@@ -8288,6 +8720,42 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot ref-assign &apos;{1}&apos; to &apos;{0}&apos; because &apos;{1}&apos; has a narrower escape scope than &apos;{0}&apos;..
+        /// </summary>
+        internal static string ERR_RefAssignNarrower {
+            get {
+                return ResourceManager.GetString("ERR_RefAssignNarrower", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;await&apos; cannot be used in an expression containing a ref conditional operator.
+        /// </summary>
+        internal static string ERR_RefConditionalAndAwait {
+            get {
+                return ResourceManager.GetString("ERR_RefConditionalAndAwait", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The expression must be of type &apos;{0}&apos; to match the alternative ref value.
+        /// </summary>
+        internal static string ERR_RefConditionalDifferentTypes {
+            get {
+                return ResourceManager.GetString("ERR_RefConditionalDifferentTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Both conditional operator values must be ref values or neither may be a ref value.
+        /// </summary>
+        internal static string ERR_RefConditionalNeedsTwoRefs {
+            get {
+                return ResourceManager.GetString("ERR_RefConditionalNeedsTwoRefs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The type &apos;{2}&apos; must be a reference type in order to use it as parameter &apos;{1}&apos; in the generic type or method &apos;{0}&apos;.
         /// </summary>
         internal static string ERR_RefConstraintNotSatisfied {
@@ -8302,6 +8770,24 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_ReferenceDirectiveOnlyAllowedInScripts {
             get {
                 return ResourceManager.GetString("ERR_ReferenceDirectiveOnlyAllowedInScripts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The first parameter of a &apos;ref&apos; extension method &apos;{0}&apos; must be a value type or a generic type constrained to struct..
+        /// </summary>
+        internal static string ERR_RefExtensionMustBeValueTypeOrConstrainedToOne {
+            get {
+                return ResourceManager.GetString("ERR_RefExtensionMustBeValueTypeOrConstrainedToOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The left-hand side of a ref assignment must be a ref local or parameter..
+        /// </summary>
+        internal static string ERR_RefLocalOrParamExpected {
+            get {
+                return ResourceManager.GetString("ERR_RefLocalOrParamExpected", resourceCulture);
             }
         }
         
@@ -8396,6 +8882,24 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot use {0} &apos;{1}&apos; as a ref or out value because it is a readonly variable.
+        /// </summary>
+        internal static string ERR_RefReadonlyNotField {
+            get {
+                return ResourceManager.GetString("ERR_RefReadonlyNotField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Members of {0} &apos;{1}&apos; cannot be used as a ref or out value because it is a readonly variable.
+        /// </summary>
+        internal static string ERR_RefReadonlyNotField2 {
+            get {
+                return ResourceManager.GetString("ERR_RefReadonlyNotField2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A static readonly field cannot be used as a ref or out value (except in a static constructor).
         /// </summary>
         internal static string ERR_RefReadonlyStatic {
@@ -8410,24 +8914,6 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_RefReadonlyStatic2 {
             get {
                 return ResourceManager.GetString("ERR_RefReadonlyStatic2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot return by reference a result of &apos;{0}&apos; because the argument passed to parameter &apos;{1}&apos; cannot be returned by reference.
-        /// </summary>
-        internal static string ERR_RefReturnCall {
-            get {
-                return ResourceManager.GetString("ERR_RefReturnCall", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot return by reference a member of result of &apos;{0}&apos; because the argument passed to parameter &apos;{1}&apos; cannot be returned by reference.
-        /// </summary>
-        internal static string ERR_RefReturnCall2 {
-            get {
-                return ResourceManager.GetString("ERR_RefReturnCall2", resourceCulture);
             }
         }
         
@@ -8468,7 +8954,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An expression cannot be used in this context because it may not be returned by reference.
+        ///   Looks up a localized string similar to An expression cannot be used in this context because it may not be passed or returned by reference.
         /// </summary>
         internal static string ERR_RefReturnLvalueExpected {
             get {
@@ -8513,7 +8999,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot return or a member of parameter &apos;{0}&apos; by reference because it is not a ref or out parameter.
+        ///   Looks up a localized string similar to Cannot return by reference a member of parameter &apos;{0}&apos; because it is not a ref or out parameter.
         /// </summary>
         internal static string ERR_RefReturnParameter2 {
             get {
@@ -8531,7 +9017,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A readonly field cannot be returned by reference.
+        ///   Looks up a localized string similar to A readonly field cannot be returned by writable reference.
         /// </summary>
         internal static string ERR_RefReturnReadonly {
             get {
@@ -8540,7 +9026,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Members of readonly field &apos;{0}&apos; cannot be returned by reference.
+        ///   Looks up a localized string similar to Members of readonly field &apos;{0}&apos; cannot be returned by writable reference.
         /// </summary>
         internal static string ERR_RefReturnReadonly2 {
             get {
@@ -8576,7 +9062,25 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A static readonly field cannot be returned by reference.
+        ///   Looks up a localized string similar to Cannot return {0} &apos;{1}&apos; by writable reference because it is a readonly variable.
+        /// </summary>
+        internal static string ERR_RefReturnReadonlyNotField {
+            get {
+                return ResourceManager.GetString("ERR_RefReturnReadonlyNotField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Members of {0} &apos;{1}&apos; cannot be returned by writable reference because it is a readonly variable.
+        /// </summary>
+        internal static string ERR_RefReturnReadonlyNotField2 {
+            get {
+                return ResourceManager.GetString("ERR_RefReturnReadonlyNotField2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A static readonly field cannot be returned by writable reference.
         /// </summary>
         internal static string ERR_RefReturnReadonlyStatic {
             get {
@@ -8585,7 +9089,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fields of static readonly field &apos;{0}&apos; cannot be returned by reference.
+        ///   Looks up a localized string similar to Fields of static readonly field &apos;{0}&apos; cannot be returned by writable reference.
         /// </summary>
         internal static string ERR_RefReturnReadonlyStatic2 {
             get {
@@ -8594,20 +9098,29 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot return &apos;{0}&apos; by reference because its receiver may not be returned by reference.
-        /// </summary>
-        internal static string ERR_RefReturnReceiver {
-            get {
-                return ResourceManager.GetString("ERR_RefReturnReceiver", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Struct members cannot return &apos;this&apos; or other instance members by reference.
+        ///   Looks up a localized string similar to Struct members cannot return &apos;SELF&apos; or other instance members by reference.
         /// </summary>
         internal static string ERR_RefReturnStructThis {
             get {
                 return ResourceManager.GetString("ERR_RefReturnStructThis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot return &apos;SELF&apos; by reference..
+        /// </summary>
+        internal static string ERR_RefReturnThis {
+            get {
+                return ResourceManager.GetString("ERR_RefReturnThis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos;: ref structs cannot implement interfaces.
+        /// </summary>
+        internal static string ERR_RefStructInterfaceImpl {
+            get {
+                return ResourceManager.GetString("ERR_RefStructInterfaceImpl", resourceCulture);
             }
         }
         
@@ -8918,16 +9431,16 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to /sourcelink switch is only supported when emitting Portable PDB (/debug:portable or /debug:embedded must be specified)..
+        ///   Looks up a localized string similar to /sourcelink switch is only supported when emitting PDB..
         /// </summary>
-        internal static string ERR_SourceLinkRequiresPortablePdb {
+        internal static string ERR_SourceLinkRequiresPdb {
             get {
-                return ResourceManager.GetString("ERR_SourceLinkRequiresPortablePdb", resourceCulture);
+                return ResourceManager.GetString("ERR_SourceLinkRequiresPdb", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Instance of type &apos;{0}&apos; cannot be used inside an anonymous function, query expression, iterator block or async method.
+        ///   Looks up a localized string similar to Instance of type &apos;{0}&apos; cannot be used inside a nested function, query expression, iterator block or async method.
         /// </summary>
         internal static string ERR_SpecialByRefInLambda {
             get {
@@ -8941,6 +9454,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_SpecialTypeAsBound {
             get {
                 return ResourceManager.GetString("ERR_SpecialTypeAsBound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Conversion of a stackalloc expression of type &apos;{0}&apos; to type &apos;{1}&apos; is not possible..
+        /// </summary>
+        internal static string ERR_StackAllocConversionNotPossible {
+            get {
+                return ResourceManager.GetString("ERR_StackAllocConversionNotPossible", resourceCulture);
             }
         }
         
@@ -9116,7 +9638,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The switch expression must be a value; found {0}..
+        ///   Looks up a localized string similar to The switch expression must be a value; found &apos;{0}&apos;..
         /// </summary>
         internal static string ERR_SwitchExpressionValueExpected {
             get {
@@ -9323,6 +9845,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tuple element name &apos;{0}&apos; is inferred. Please use language version {1} or greater to access an element by its inferred name..
+        /// </summary>
+        internal static string ERR_TupleInferredNamesNotAvailable {
+            get {
+                return ResourceManager.GetString("ERR_TupleInferredNamesNotAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tuple element name &apos;{0}&apos; is only allowed at position {1}..
         /// </summary>
         internal static string ERR_TupleReservedElementName {
@@ -9337,6 +9868,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_TupleReservedElementNameAnyPosition {
             get {
                 return ResourceManager.GetString("ERR_TupleReservedElementNameAnyPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tuple types used as operands of an == or != operator must have matching cardinalities. But this operator has tuple types of cardinality {0} on the left and {1} on the right..
+        /// </summary>
+        internal static string ERR_TupleSizesMismatchForBinOps {
+            get {
+                return ResourceManager.GetString("ERR_TupleSizesMismatchForBinOps", resourceCulture);
             }
         }
         
@@ -9377,6 +9917,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Module &apos;{0}&apos; in assembly &apos;{1}&apos; is forwarding the type &apos;{2}&apos; to multiple assemblies: &apos;{3}&apos; and &apos;{4}&apos;..
+        /// </summary>
+        internal static string ERR_TypeForwardedToMultipleAssemblies {
+            get {
+                return ResourceManager.GetString("ERR_TypeForwardedToMultipleAssemblies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot infer the type of implicitly-typed deconstruction variable &apos;{0}&apos;..
         /// </summary>
         internal static string ERR_TypeInferenceFailedForImplicitlyTypedDeconstructionVariable {
@@ -9395,6 +9944,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The first operand of an &apos;as&apos; operator may not be a tuple literal without a natural type..
+        /// </summary>
+        internal static string ERR_TypelessTupleInAs {
+            get {
+                return ResourceManager.GetString("ERR_TypelessTupleInAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The {0} name &apos;{1}&apos; conflicts with the compiler generated globals class name &apos;{2}&apos;. You should either rename the type or the output assembly..
         /// </summary>
         internal static string ERR_TypeNameMatchesGlobalNamespace {
@@ -9409,6 +9967,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_TypeParamMustBeIdentifier {
             get {
                 return ResourceManager.GetString("ERR_TypeParamMustBeIdentifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type name &apos;{0}&apos; is reserved to be used by the compiler..
+        /// </summary>
+        internal static string ERR_TypeReserved {
+            get {
+                return ResourceManager.GetString("ERR_TypeReserved", resourceCulture);
             }
         }
         
@@ -9629,6 +10196,33 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos;: cannot specify both a constraint class and the &apos;unmanaged&apos; constraint.
+        /// </summary>
+        internal static string ERR_UnmanagedBoundWithClass {
+            get {
+                return ResourceManager.GetString("ERR_UnmanagedBoundWithClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;unmanaged&apos; constraint must come before any other constraints.
+        /// </summary>
+        internal static string ERR_UnmanagedConstraintMustBeFirst {
+            get {
+                return ResourceManager.GetString("ERR_UnmanagedConstraintMustBeFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type &apos;{2}&apos; must be a non-nullable value type, along with all fields at any level of nesting, in order to use it as parameter &apos;{1}&apos; in the generic type or method &apos;{0}&apos;.
+        /// </summary>
+        internal static string ERR_UnmanagedConstraintNotSatisfied {
+            get {
+                return ResourceManager.GetString("ERR_UnmanagedConstraintNotSatisfied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A previous catch clause already catches all exceptions of this or of a super type (&apos;{0}&apos;).
         /// </summary>
         internal static string ERR_UnreachableCatch {
@@ -9755,7 +10349,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A switch expression or case label must be a bool, char, string, integral, enum, or corresponding nullable type.
+        ///   Looks up a localized string similar to A switch expression or case label must be a bool, char, string, integral, enum, or corresponding nullable type in X# 6 and earlier..
         /// </summary>
         internal static string ERR_V6SwitchGoverningTypeValueExpected {
             get {
@@ -9836,7 +10430,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An ellipsis parameter (...) must be the last parameter in a formal parameter list.
+        ///   Looks up a localized string similar to An __arglist parameter must be the last parameter in a formal parameter list.
         /// </summary>
         internal static string ERR_VarargsLast {
             get {
@@ -9890,11 +10484,29 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A value of type &apos;void&apos; may not be assigned..
+        /// </summary>
+        internal static string ERR_VoidAssignment {
+            get {
+                return ResourceManager.GetString("ERR_VoidAssignment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The operation in question is undefined on void pointers.
         /// </summary>
         internal static string ERR_VoidError {
             get {
                 return ResourceManager.GetString("ERR_VoidError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A tuple may not contain a value of type &apos;void&apos;..
+        /// </summary>
+        internal static string ERR_VoidInTuple {
+            get {
+                return ResourceManager.GetString("ERR_VoidInTuple", resourceCulture);
             }
         }
         
@@ -9931,6 +10543,24 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_WinRtEventPassedByRef {
             get {
                 return ResourceManager.GetString("ERR_WinRtEventPassedByRef", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XPP: Class {0} has not been declared..
+        /// </summary>
+        internal static string ERR_XPPClassNotFound {
+            get {
+                return ResourceManager.GetString("ERR_XPPClassNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XPP: Multiple Inheritance is not supported by the .Net Runtime..
+        /// </summary>
+        internal static string ERR_XPPMultipleInheritance {
+            get {
+                return ResourceManager.GetString("ERR_XPPMultipleInheritance", resourceCulture);
             }
         }
         
@@ -9982,9 +10612,9 @@ namespace LanguageService.CodeAnalysis {
         /// <summary>
         ///   Looks up a localized string similar to File name &apos;{0}&apos; is empty, contains invalid characters, has a drive specification without an absolute path, or is too long.
         /// </summary>
-        internal static string FTL_InputFileNameTooLong {
+        internal static string FTL_InvalidInputFileName {
             get {
-                return ResourceManager.GetString("FTL_InputFileNameTooLong", resourceCulture);
+                return ResourceManager.GetString("FTL_InvalidInputFileName", resourceCulture);
             }
         }
         
@@ -10061,6 +10691,24 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} is not a valid X# compound assignment operation.
+        /// </summary>
+        internal static string ICompoundAssignmentOperationIsNotCSharpCompoundAssignment {
+            get {
+                return ResourceManager.GetString("ICompoundAssignmentOperationIsNotCSharpCompoundAssignment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is not a valid X# conversion expression.
+        /// </summary>
+        internal static string IConversionExpressionIsNotCSharpConversion {
+            get {
+                return ResourceManager.GetString("IConversionExpressionIsNotCSharpConversion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to anonymous method.
         /// </summary>
         internal static string IDS_AnonMethod {
@@ -10128,13 +10776,13 @@ namespace LanguageService.CodeAnalysis {
         ///                              X# Compiler Options
         ///
         ///                        - OUTPUT FILES -
-        /// /out:&lt;file&gt;                   Specify output file name (default: base name of
-        ///                               file with main class or first file)
-        /// /target:exe                   Build a console executable (default) (Short
-        ///                               form: /t:exe)
-        /// /target:winexe                Build a Windows executable (Short form:
-        ///                               /t:winexe)
-        /// /target:library               [rest of string was truncated]&quot;;.
+        ///-out:&lt;file&gt;                   Specify output file name (default: base name of
+        ///                              file with main class or first file)
+        ///-target:exe                   Build a console executable (default) (Short
+        ///                              form: -t:exe)
+        ///-target:winexe                Build a Windows executable (Short form:
+        ///                              -t:winexe)
+        ///-target:library               Build  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string IDS_CSCHelp {
             get {
@@ -10188,6 +10836,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to async main.
+        /// </summary>
+        internal static string IDS_FeatureAsyncMain {
+            get {
+                return ResourceManager.GetString("IDS_FeatureAsyncMain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to automatically implemented properties.
         /// </summary>
         internal static string IDS_FeatureAutoImplementedProperties {
@@ -10224,20 +10881,29 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to declaration expression.
-        /// </summary>
-        internal static string IDS_FeatureDeclarationExpression {
-            get {
-                return ResourceManager.GetString("IDS_FeatureDeclarationExpression", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to default operator.
         /// </summary>
         internal static string IDS_FeatureDefault {
             get {
                 return ResourceManager.GetString("IDS_FeatureDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to default literal.
+        /// </summary>
+        internal static string IDS_FeatureDefaultLiteral {
+            get {
+                return ResourceManager.GetString("IDS_FeatureDefaultLiteral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to delegate generic type constraints.
+        /// </summary>
+        internal static string IDS_FeatureDelegateGenericTypeConstraint {
+            get {
+                return ResourceManager.GetString("IDS_FeatureDelegateGenericTypeConstraint", resourceCulture);
             }
         }
         
@@ -10265,6 +10931,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string IDS_FeatureDynamic {
             get {
                 return ResourceManager.GetString("IDS_FeatureDynamic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to enum generic type constraints.
+        /// </summary>
+        internal static string IDS_FeatureEnumGenericTypeConstraint {
+            get {
+                return ResourceManager.GetString("IDS_FeatureEnumGenericTypeConstraint", resourceCulture);
             }
         }
         
@@ -10319,6 +10994,24 @@ namespace LanguageService.CodeAnalysis {
         internal static string IDS_FeatureExpressionBodiedProperty {
             get {
                 return ResourceManager.GetString("IDS_FeatureExpressionBodiedProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to declaration of expression variables in member initializers and queries.
+        /// </summary>
+        internal static string IDS_FeatureExpressionVariablesInQueriesAndInitializers {
+            get {
+                return ResourceManager.GetString("IDS_FeatureExpressionVariablesInQueriesAndInitializers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to extensible fixed statement.
+        /// </summary>
+        internal static string IDS_FeatureExtensibleFixedStatement {
+            get {
+                return ResourceManager.GetString("IDS_FeatureExtensibleFixedStatement", resourceCulture);
             }
         }
         
@@ -10386,6 +11079,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to indexing movable fixed buffers.
+        /// </summary>
+        internal static string IDS_FeatureIndexingMovableFixedBuffers {
+            get {
+                return ResourceManager.GetString("IDS_FeatureIndexingMovableFixedBuffers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to interpolated strings.
         /// </summary>
         internal static string IDS_FeatureInterpolatedStrings {
@@ -10409,6 +11111,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string IDS_FeatureLambda {
             get {
                 return ResourceManager.GetString("IDS_FeatureLambda", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to leading digit separator.
+        /// </summary>
+        internal static string IDS_FeatureLeadingDigitSeparator {
+            get {
+                return ResourceManager.GetString("IDS_FeatureLeadingDigitSeparator", resourceCulture);
             }
         }
         
@@ -10530,6 +11241,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to private protected.
+        /// </summary>
+        internal static string IDS_FeaturePrivateProtected {
+            get {
+                return ResourceManager.GetString("IDS_FeaturePrivateProtected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to access modifiers on properties.
         /// </summary>
         internal static string IDS_FeaturePropertyAccessorMods {
@@ -10553,6 +11273,96 @@ namespace LanguageService.CodeAnalysis {
         internal static string IDS_FeatureReadonlyAutoImplementedProperties {
             get {
                 return ResourceManager.GetString("IDS_FeatureReadonlyAutoImplementedProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to readonly references.
+        /// </summary>
+        internal static string IDS_FeatureReadOnlyReferences {
+            get {
+                return ResourceManager.GetString("IDS_FeatureReadOnlyReferences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to readonly structs.
+        /// </summary>
+        internal static string IDS_FeatureReadOnlyStructs {
+            get {
+                return ResourceManager.GetString("IDS_FeatureReadOnlyStructs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ref conditional expression.
+        /// </summary>
+        internal static string IDS_FeatureRefConditional {
+            get {
+                return ResourceManager.GetString("IDS_FeatureRefConditional", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ref extension methods.
+        /// </summary>
+        internal static string IDS_FeatureRefExtensionMethods {
+            get {
+                return ResourceManager.GetString("IDS_FeatureRefExtensionMethods", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ref for-loop variables.
+        /// </summary>
+        internal static string IDS_FeatureRefFor {
+            get {
+                return ResourceManager.GetString("IDS_FeatureRefFor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ref foreach iteration variables.
+        /// </summary>
+        internal static string IDS_FeatureRefForEach {
+            get {
+                return ResourceManager.GetString("IDS_FeatureRefForEach", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to byref locals and returns.
+        /// </summary>
+        internal static string IDS_FeatureRefLocalsReturns {
+            get {
+                return ResourceManager.GetString("IDS_FeatureRefLocalsReturns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ref reassignment.
+        /// </summary>
+        internal static string IDS_FeatureRefReassignment {
+            get {
+                return ResourceManager.GetString("IDS_FeatureRefReassignment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ref structs.
+        /// </summary>
+        internal static string IDS_FeatureRefStructs {
+            get {
+                return ResourceManager.GetString("IDS_FeatureRefStructs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to stackalloc initializer.
+        /// </summary>
+        internal static string IDS_FeatureStackAllocInitializer {
+            get {
+                return ResourceManager.GetString("IDS_FeatureStackAllocInitializer", resourceCulture);
             }
         }
         
@@ -10584,6 +11394,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to tuple equality.
+        /// </summary>
+        internal static string IDS_FeatureTupleEquality {
+            get {
+                return ResourceManager.GetString("IDS_FeatureTupleEquality", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to tuples.
         /// </summary>
         internal static string IDS_FeatureTuples {
@@ -10598,6 +11417,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string IDS_FeatureTypeVariance {
             get {
                 return ResourceManager.GetString("IDS_FeatureTypeVariance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to unmanaged generic type constraints.
+        /// </summary>
+        internal static string IDS_FeatureUnmanagedGenericTypeConstraint {
+            get {
+                return ResourceManager.GetString("IDS_FeatureUnmanagedGenericTypeConstraint", resourceCulture);
             }
         }
         
@@ -10692,7 +11520,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to method.
+        ///   Looks up a localized string similar to method group.
         /// </summary>
         internal static string IDS_MethodGroup {
             get {
@@ -10769,6 +11597,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string IDS_SK_ALIAS {
             get {
                 return ResourceManager.GetString("IDS_SK_ALIAS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to constructor.
+        /// </summary>
+        internal static string IDS_SK_CONSTRUCTOR {
+            get {
+                return ResourceManager.GetString("IDS_SK_CONSTRUCTOR", resourceCulture);
             }
         }
         
@@ -11034,15 +11871,6 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Must call SetMethodTestData(ConcurrentDictionary) before calling SetMethodTestData(MethodSymbol, ILBuilder).
-        /// </summary>
-        internal static string MustCallSetMethodTestData {
-            get {
-                return ResourceManager.GetString("MustCallSetMethodTestData", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Name conflict for name {0}.
         /// </summary>
         internal static string NameConflictForName {
@@ -11084,15 +11912,6 @@ namespace LanguageService.CodeAnalysis {
         internal static string PositionNotWithinTree {
             get {
                 return ResourceManager.GetString("PositionNotWithinTree", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to separator is expected.
-        /// </summary>
-        internal static string SeparatorIsExpected {
-            get {
-                return ResourceManager.GetString("SeparatorIsExpected", resourceCulture);
             }
         }
         
@@ -11142,7 +11961,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SyntaxTree &apos;{0}&apos; resulted from a #load directive and cannot be removed or replaced directly..
+        ///   Looks up a localized string similar to SyntaxTree resulted from a #load directive and cannot be removed or replaced directly..
         /// </summary>
         internal static string SyntaxTreeFromLoadNoRemoveReplace {
             get {
@@ -11160,11 +11979,20 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SyntaxTree &apos;{0}&apos; not found to remove.
+        ///   Looks up a localized string similar to SyntaxTree is not part of the compilation.
         /// </summary>
-        internal static string SyntaxTreeNotFoundTo {
+        internal static string SyntaxTreeNotFound {
             get {
-                return ResourceManager.GetString("SyntaxTreeNotFoundTo", resourceCulture);
+                return ResourceManager.GetString("SyntaxTreeNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SyntaxTree is not part of the compilation, so it cannot be removed.
+        /// </summary>
+        internal static string SyntaxTreeNotFoundToRemove {
+            get {
+                return ResourceManager.GetString("SyntaxTreeNotFoundToRemove", resourceCulture);
             }
         }
         
@@ -11174,24 +12002,6 @@ namespace LanguageService.CodeAnalysis {
         internal static string SyntaxTreeSemanticModelMust {
             get {
                 return ResourceManager.GetString("SyntaxTreeSemanticModelMust", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The stream cannot be read from..
-        /// </summary>
-        internal static string TheStreamCannotBeReadFrom {
-            get {
-                return ResourceManager.GetString("TheStreamCannotBeReadFrom", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The stream cannot be written to..
-        /// </summary>
-        internal static string TheStreamCannotBeWritten {
-            get {
-                return ResourceManager.GetString("TheStreamCannotBeWritten", resourceCulture);
             }
         }
         
@@ -11241,7 +12051,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use Roslyn.Compilers.CSharp.Syntax.Literal to create numeric literal tokens..
+        ///   Looks up a localized string similar to Use Microsoft.CodeAnalysis.CSharp.SyntaxFactory.Literal to create numeric literal tokens..
         /// </summary>
         internal static string UseLiteralForNumeric {
             get {
@@ -11250,7 +12060,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use Roslyn.Compilers.CSharp.Syntax.Literal to create character literal tokens..
+        ///   Looks up a localized string similar to Use Microsoft.CodeAnalysis.CSharp.SyntaxFactory.Literal to create character literal tokens..
         /// </summary>
         internal static string UseLiteralForTokens {
             get {
@@ -11259,7 +12069,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use Roslyn.Compilers.CSharp.Syntax.Identifier or Roslyn.Compilers.CSharp.Syntax.VerbatimIdentifier to create identifier tokens..
+        ///   Looks up a localized string similar to Use Microsoft.CodeAnalysis.CSharp.SyntaxFactory.Identifier or Microsoft.CodeAnalysis.CSharp.SyntaxFactory.VerbatimIdentifier to create identifier tokens..
         /// </summary>
         internal static string UseVerbatimIdentifier {
             get {
@@ -11354,6 +12164,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_ArgumentNameLocalNamePossibleConflict {
             get {
                 return ResourceManager.GetString("WRN_ArgumentNameLocalNamePossibleConflict", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Argument {0} is passed with REF keyword but should be passed with the &apos;{1}&apos; keyword.
+        /// </summary>
+        internal static string WRN_ArgumentRefParameterOut {
+            get {
+                return ResourceManager.GetString("WRN_ArgumentRefParameterOut", resourceCulture);
             }
         }
         
@@ -11480,6 +12299,33 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_AttributeLocationOnBadDeclaration_Title {
             get {
                 return ResourceManager.GetString("WRN_AttributeLocationOnBadDeclaration_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Field-targeted attributes on auto-properties are not supported in language version {0}. Please use language version {1} or greater..
+        /// </summary>
+        internal static string WRN_AttributesOnBackingFieldsNotAvailable {
+            get {
+                return ResourceManager.GetString("WRN_AttributesOnBackingFieldsNotAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Field-targeted attributes on auto-properties are not supported in this version of the language..
+        /// </summary>
+        internal static string WRN_AttributesOnBackingFieldsNotAvailable_Title {
+            get {
+                return ResourceManager.GetString("WRN_AttributesOnBackingFieldsNotAvailable_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter {0} needs a(n) &apos;{1}&apos; modifier. This modifier was automatically added..
+        /// </summary>
+        internal static string WRN_AutomaticRefGeneration {
+            get {
+                return ResourceManager.GetString("WRN_AutomaticRefGeneration", resourceCulture);
             }
         }
         
@@ -12483,7 +13329,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The compiler generated an automatic conversion from PSZ. This will create a memory leak in your application. Please use String2Psz() to let the compiler manage the lifetime of the PSZ or use StringAlloc() and memory the lifetime of the PSZ yourself..
+        ///   Looks up a localized string similar to The compiler generated an automatic conversion to PSZ. This may create a memory leak in your application. Please use String2Psz() to let the compiler manage the lifetime of the PSZ or use StringAlloc() and manage the lifetime of the PSZ yourself..
         /// </summary>
         internal static string WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak {
             get {
@@ -12582,7 +13428,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid value for &apos;/define&apos;; &apos;{0}&apos; is not a valid identifier.
+        ///   Looks up a localized string similar to Invalid name for a preprocessing symbol; &apos;{0}&apos; is not a valid identifier.
         /// </summary>
         internal static string WRN_DefineIdentifierRequired {
             get {
@@ -12591,7 +13437,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid value for &apos;/define&apos;; not a valid identifier.
+        ///   Looks up a localized string similar to Invalid name for a preprocessing symbol; not a valid identifier.
         /// </summary>
         internal static string WRN_DefineIdentifierRequired_Title {
             get {
@@ -12915,6 +13761,24 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is for evaluation purposes only and is subject to change or removal in future updates..
+        /// </summary>
+        internal static string WRN_Experimental {
+            get {
+                return ResourceManager.GetString("WRN_Experimental", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type is for evaluation purposes only and is subject to change or removal in future updates..
+        /// </summary>
+        internal static string WRN_Experimental_Title {
+            get {
+                return ResourceManager.GetString("WRN_Experimental_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Explicit interface implementation &apos;{0}&apos; matches more than one interface member. Which interface member is actually chosen is implementation-dependent. Consider using a non-explicit implementation instead..
         /// </summary>
         internal static string WRN_ExplicitImplCollision {
@@ -13023,20 +13887,56 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Filter expression is a constant, consider removing the filter.
+        ///   Looks up a localized string similar to Filter expression is a constant &apos;false&apos;, consider removing the catch clause.
         /// </summary>
-        internal static string WRN_FilterIsConstant {
+        internal static string WRN_FilterIsConstantFalse {
             get {
-                return ResourceManager.GetString("WRN_FilterIsConstant", resourceCulture);
+                return ResourceManager.GetString("WRN_FilterIsConstantFalse", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Filter expression is a constant.
+        ///   Looks up a localized string similar to Filter expression is a constant &apos;false&apos;.
         /// </summary>
-        internal static string WRN_FilterIsConstant_Title {
+        internal static string WRN_FilterIsConstantFalse_Title {
             get {
-                return ResourceManager.GetString("WRN_FilterIsConstant_Title", resourceCulture);
+                return ResourceManager.GetString("WRN_FilterIsConstantFalse_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter expression is a constant &apos;false&apos;, consider removing the try-catch block.
+        /// </summary>
+        internal static string WRN_FilterIsConstantFalseRedundantTryCatch {
+            get {
+                return ResourceManager.GetString("WRN_FilterIsConstantFalseRedundantTryCatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter expression is a constant &apos;false&apos;. .
+        /// </summary>
+        internal static string WRN_FilterIsConstantFalseRedundantTryCatch_Title {
+            get {
+                return ResourceManager.GetString("WRN_FilterIsConstantFalseRedundantTryCatch_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter expression is a constant &apos;true&apos;, consider removing the filter.
+        /// </summary>
+        internal static string WRN_FilterIsConstantTrue {
+            get {
+                return ResourceManager.GetString("WRN_FilterIsConstantTrue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter expression is a constant &apos;true&apos;.
+        /// </summary>
+        internal static string WRN_FilterIsConstantTrue_Title {
+            get {
+                return ResourceManager.GetString("WRN_FilterIsConstantTrue_Title", resourceCulture);
             }
         }
         
@@ -13201,6 +14101,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_IllegalPragma_Title {
             get {
                 return ResourceManager.GetString("WRN_IllegalPragma_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The compiler generated an implicit cast to a smaller type from type &apos;{0}&apos; to &apos;{1}&apos;..
+        /// </summary>
+        internal static string WRN_ImplicitCast {
+            get {
+                return ResourceManager.GetString("WRN_ImplicitCast", resourceCulture);
             }
         }
         
@@ -13758,7 +14667,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not part of the standardized ISO C# language specification, and may not be accepted by other compilers.
+        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not part of the standardized ISO X# language specification, and may not be accepted by other compilers.
         /// </summary>
         internal static string WRN_NonECMAFeature {
             get {
@@ -13767,7 +14676,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feature is not part of the standardized ISO C# language specification, and may not be accepted by other compilers.
+        ///   Looks up a localized string similar to Feature is not part of the standardized ISO X# language specification, and may not be accepted by other compilers.
         /// </summary>
         internal static string WRN_NonECMAFeature_Title {
             get {
@@ -14201,7 +15110,25 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The tuple element name &apos;{0}&apos; is ignored because a different name is specified by the target type &apos;{1}&apos;..
+        ///   Looks up a localized string similar to The tuple element name &apos;{0}&apos; is ignored because a different name or no name is specified on the other side of the tuple == or != operator..
+        /// </summary>
+        internal static string WRN_TupleBinopLiteralNameMismatch {
+            get {
+                return ResourceManager.GetString("WRN_TupleBinopLiteralNameMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The tuple element name is ignored because a different name or no name is specified on the other side of the tuple == or != operator..
+        /// </summary>
+        internal static string WRN_TupleBinopLiteralNameMismatch_Title {
+            get {
+                return ResourceManager.GetString("WRN_TupleBinopLiteralNameMismatch_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The tuple element name &apos;{0}&apos; is ignored because a different name or no name is specified by the target type &apos;{1}&apos;..
         /// </summary>
         internal static string WRN_TupleLiteralNameMismatch {
             get {
@@ -14210,11 +15137,29 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The tuple element name is ignored because a different name is specified by the assignment target..
+        ///   Looks up a localized string similar to The tuple element name is ignored because a different name or no name is specified by the assignment target..
         /// </summary>
         internal static string WRN_TupleLiteralNameMismatch_Title {
             get {
                 return ResourceManager.GetString("WRN_TupleLiteralNameMismatch_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type parameter &apos;{0}&apos; has the same name as the type parameter from outer method &apos;{1}&apos;.
+        /// </summary>
+        internal static string WRN_TypeParameterSameAsOuterMethodTypeParameter {
+            get {
+                return ResourceManager.GetString("WRN_TypeParameterSameAsOuterMethodTypeParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type parameter has the same type as the type parameter from outer method..
+        /// </summary>
+        internal static string WRN_TypeParameterSameAsOuterMethodTypeParameter_Title {
+            get {
+                return ResourceManager.GetString("WRN_TypeParameterSameAsOuterMethodTypeParameter_Title", resourceCulture);
             }
         }
         
@@ -14599,6 +15544,24 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The local function &apos;{0}&apos; is declared but never used.
+        /// </summary>
+        internal static string WRN_UnreferencedLocalFunction {
+            get {
+                return ResourceManager.GetString("WRN_UnreferencedLocalFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Local function is declared but never used.
+        /// </summary>
+        internal static string WRN_UnreferencedLocalFunction_Title {
+            get {
+                return ResourceManager.GetString("WRN_UnreferencedLocalFunction_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The variable &apos;{0}&apos; is declared but never used.
         /// </summary>
         internal static string WRN_UnreferencedVar {
@@ -14748,6 +15711,78 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_XMLParseIncludeError_Title {
             get {
                 return ResourceManager.GetString("WRN_XMLParseIncludeError_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The XPP: ASSIGNMENT clause for instance variables is not supported (yet) and ignored..
+        /// </summary>
+        internal static string WRN_XPPAssignmentClause {
+            get {
+                return ResourceManager.GetString("WRN_XPPAssignmentClause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The XPP: FROZEN method modifier is not supported and ignored..
+        /// </summary>
+        internal static string WRN_XPPFrozedNotSupported {
+            get {
+                return ResourceManager.GetString("WRN_XPPFrozedNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XPP: Method {0} has NOT been declared..
+        /// </summary>
+        internal static string WRN_XPPMethodNotDeclared {
+            get {
+                return ResourceManager.GetString("WRN_XPPMethodNotDeclared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XPP: Method {0} has been declared but has not been implemented..
+        /// </summary>
+        internal static string WRN_XPPMethodNotImplemented {
+            get {
+                return ResourceManager.GetString("WRN_XPPMethodNotImplemented", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The XPP: READONLY clause for instance variables is not supported (yet) and ignored..
+        /// </summary>
+        internal static string WRN_XPPReadonlyClause {
+            get {
+                return ResourceManager.GetString("WRN_XPPReadonlyClause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XPP: Variables are SHARED by default in .Net.
+        /// </summary>
+        internal static string WRN_XPPSharedIsDefault {
+            get {
+                return ResourceManager.GetString("WRN_XPPSharedIsDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XPP: The FROM clause is interpreted as SHARING because variables in parent classes are always shared in the .Net Runtime..
+        /// </summary>
+        internal static string WRN_XPPSuperIVarsAlwaysShared {
+            get {
+                return ResourceManager.GetString("WRN_XPPSuperIVarsAlwaysShared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The XPP: VAR .. IS .. IN ..  clause is not supported. There is no multiple inheritance, so this is no longer needed..
+        /// </summary>
+        internal static string WRN_XPPVarIsInNotSupported {
+            get {
+                return ResourceManager.GetString("WRN_XPPVarIsInNotSupported", resourceCulture);
             }
         }
         

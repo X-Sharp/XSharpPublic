@@ -6,21 +6,6 @@
     <header>
       <para styleclass="Heading1">XSharp.VO</para>
     </header>
-    <para styleclass="Normal">This DLL adds the following features to the runtime:</para>
-    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List">XBase specific types , such as DATE, ARRAY, USUAL, PSZ, SYMBOL etc </li>
-      <li styleclass="List">CodeBlock type (base class for compile time codeblocks)</li>
-      <li styleclass="List">_CodeBlock type (base class for macro compiled codeblocks)</li>
-      <li styleclass="List">Runtime functions that accept parameters of these types.</li>
-      <li styleclass="List">Memory related functions (MemAlloc, MemFree etc) </li>
-      <li styleclass="List">Terminal IO functions (QOut(), Accept, Wait).</li>
-      <li styleclass="List">RDD Related functions that have optional parameters or parameters of XBase Type</li>
-      <li styleclass="List">Functions to compile and evaluate macros (MComp, MExec)</li>
-      <li styleclass="List">Late binding functions such as Send(), IVarGet() etc</li>
-      <li styleclass="List">VObject type</li>
-      <li styleclass="List">OLEAutoObject type</li>
-    </list>
-    <para styleclass="List"></para>
-    <para styleclass="List">This assembly should be linked in when you compile for the VO and Vulcan dialect</para>
+    <para styleclass="Normal">This DLL adds some specific types and functions that are unique to the VO and Vulcan dialect</para>
   </body>
 </topic>

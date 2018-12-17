@@ -15,9 +15,7 @@ namespace XSharp.MacroCompiler
         string _Source;
 
         // Configuration
-        bool _Four = false;
-        bool _SingleQuotedStrings = false;
-        bool _OldComment = false;
+        MacroOptions _options;
 
         // Lexer state
         TokenType _lastToken = TokenType.NL;
@@ -35,33 +33,35 @@ namespace XSharp.MacroCompiler
         internal bool HasPPIfdefs = false;
         internal bool HasPPUDCs = false;
 
-        internal Lexer(string source)
+        internal Lexer(string source, MacroOptions options)
         {
             _Source = source;
+            _options = options;
         }
 
         internal bool AllowFourLetterAbbreviations
         {
-            get { return _Four; }
-            set { _Four = value; }
+            get { return _options.AllowFourLetterAbbreviations; }
         }
         internal bool AllowSingleQuotedStrings
         {
-            get { return _SingleQuotedStrings; }
-            set { _SingleQuotedStrings = value; }
+            get { return _options.AllowSingleQuotedStrings; }
 
         }
         internal bool AllowOldStyleComments
         {
-            get { return _OldComment; }
-            set { _OldComment = value; }
+            get { return _options.AllowOldStyleComments; }
+        }
+        internal bool AllowPackedDotOperators
+        {
+            get { return _options.AllowPackedDotOperators; }
         }
 
         IDictionary<string, TokenType> KwIds
         {
             get
             {
-                return _Four ? voKwIds : xsKwIds;
+                return AllowFourLetterAbbreviations ? voKwIds : xsKwIds;
             }
         }
 
@@ -206,7 +206,7 @@ namespace XSharp.MacroCompiler
             {
                 for(int i=1;i<=s.Length;i++)
                 {
-                    if (char.ToLower(La(i + 1)) != s[i])
+                    if (char.ToLower(La(i)) != s[i-1])
                         return false;
                 }
                 Consume(s.Length);
@@ -324,7 +324,7 @@ namespace XSharp.MacroCompiler
                         case TokenType.AMP:
                             if (Expect('&'))
                             {
-                                if (_OldComment)
+                                if (AllowOldStyleComments)
                                 {
                                     t = TokenType.SL_COMMENT;
                                     ch = Channel.HIDDENCHANNEL;
@@ -425,7 +425,7 @@ namespace XSharp.MacroCompiler
                                 ch = Channel.HIDDENCHANNEL;
                                 while (!ReachEol()) ;
                             }
-                            else if (_OldComment && Expect('&', '&'))
+                            else if (AllowOldStyleComments && Expect('&', '&'))
                             {
                                 t = TokenType.LINE_CONT_OLD;
                                 ch = Channel.HIDDENCHANNEL;
@@ -443,7 +443,7 @@ namespace XSharp.MacroCompiler
                             break;
                         case TokenType.DOT:
                             if (La() >= '0' && La() <= '9') goto case TokenType.REAL_CONST;
-                            if (!_inDottedIdentifier)
+                            if (!_inDottedIdentifier || AllowPackedDotOperators)
                             {
                                 if (La(2) == '.')
                                 {
@@ -568,7 +568,7 @@ namespace XSharp.MacroCompiler
                             }
                             break;
                         case TokenType.INT_CONST:
-                            if (c == '0')
+                            if (c == '0' && !ExpectRange('0', '9'))
                             {
                                 if (ExpectAny('X','x'))
                                 {
@@ -585,7 +585,7 @@ namespace XSharp.MacroCompiler
                             {
                                 while (ExpectRange('0', '9')) ;
                                 c = La();
-                                if (c == '.' && (La(2) >= '0' && La(2) <= '9')) { Consume(); goto case TokenType.REAL_CONST; }
+                                if (c == '.') { Consume(); goto case TokenType.REAL_CONST; }
                                 if (La() == 'E' || La() == 'e') goto case TokenType.REAL_CONST_EXP;
                                 ExpectAny('U', 'u', 'L', 'l');
                             }
@@ -635,7 +635,7 @@ namespace XSharp.MacroCompiler
                             value = _Source.Substring(start, _index - start);
                             break;
                         case TokenType.STRING_CONST_SINGLE:
-                            if (!_SingleQuotedStrings)
+                            if (!AllowSingleQuotedStrings)
                                 goto case TokenType.CHAR_CONST;
                             t = TokenType.STRING_CONST;
                             while (!Reach('\'')) ;

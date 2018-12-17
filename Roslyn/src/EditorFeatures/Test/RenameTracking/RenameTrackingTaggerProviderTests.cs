@@ -4,14 +4,15 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.Editor.Host;
 using Microsoft.CodeAnalysis.Editor.Implementation.RenameTracking;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.VisualStudio.Text;
 using Roslyn.Test.Utilities;
 using Xunit;
 
 namespace Microsoft.CodeAnalysis.Editor.UnitTests.RenameTracking
 {
+    [UseExportProvider]
     public class RenameTrackingTaggerProviderTests
     {
         [WpfFact]
@@ -22,7 +23,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.RenameTracking
 class C$$
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 await state.AssertNoTag();
             }
@@ -33,7 +34,7 @@ class C$$
         public async Task RenameTrackingNotInBlankFile()
         {
             var code = @"$$";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("d");
                 await state.AssertNoTag();
@@ -48,7 +49,7 @@ class C$$
 class C$$
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("at");
                 await state.AssertTag("C", "Cat");
@@ -63,7 +64,7 @@ class C$$
 class $$C
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("AB");
                 await state.AssertTag("C", "ABC");
@@ -78,7 +79,7 @@ class $$C
 class AB$$CD
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("ZZ");
                 await state.AssertTag("ABCD", "ABZZCD");
@@ -93,7 +94,7 @@ class AB$$CD
 class ABC$$
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.Backspace();
                 await state.AssertTag("ABC", "AB");
@@ -108,7 +109,7 @@ class ABC$$
 class $$ABC
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.Delete();
                 await state.AssertTag("ABC", "BC");
@@ -123,7 +124,7 @@ class $$ABC
 class AB$$C
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.Backspace();
                 await state.AssertTag("ABC", "AC");
@@ -138,7 +139,7 @@ class AB$$C
 class$$ ABCD
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("d");
                 await state.AssertNoTag();
@@ -152,13 +153,13 @@ class$$ ABCD
             var code = @"
 class ABCD
 {
-    void Foo(int x)
+    void Goo(int x)
     {
         int abc = 3;
-        Foo($$
+        Goo($$
     }
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("a");
                 await state.AssertNoTag();
@@ -176,7 +177,7 @@ class ABCD
 class C$$
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("at");
                 await state.AssertTag("C", "Cat");
@@ -193,12 +194,12 @@ class C$$
             var code = @"
 class C
 {
-    void Foo()
+    void Goo()
     {
         string s = ""abc$$""
     }
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("d");
                 await state.AssertNoTag();
@@ -213,7 +214,7 @@ class C
 class $$C
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("@");
                 await state.AssertTag("C", "@C");
@@ -227,7 +228,7 @@ class $$C
             var code = @"
 Class $$C
 End Class";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.VisualBasic))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.VisualBasic))
             {
                 state.EditorOperations.InsertText("[");
                 await state.AssertNoTag();
@@ -246,7 +247,7 @@ End Class";
 class $$C
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("[");
                 await state.AssertNoTag();
@@ -265,7 +266,7 @@ class $$C
 class C$$
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("\u0414\u046E\u046A\u00DB\u00CA\u00DB\u00C4\u00C1\u00CD\u00E4\u00E1\u0152\u0178\u00F5\u00E0\u0178\u00FC\u00C4\u00B5\u00C1i\u00DBE\u00EA\u00E0\u00EA\u00E8\u00E4\u00E5\u00ED\u00F2\u00E8\u00F4\u00E8\u00EA\u00E0\u00F2\u00EE\u00F0\u00F1\u00EB\u00EE\u00E2\u00EE");
                 await state.AssertTag("C", "C\u0414\u046E\u046A\u00DB\u00CA\u00DB\u00C4\u00C1\u00CD\u00E4\u00E1\u0152\u0178\u00F5\u00E0\u0178\u00FC\u00C4\u00B5\u00C1i\u00DBE\u00EA\u00E0\u00EA\u00E8\u00E4\u00E5\u00ED\u00F2\u00E8\u00F4\u00E8\u00EA\u00E0\u00F2\u00EE\u00F0\u00F1\u00EB\u00EE\u00E2\u00EE");
@@ -280,7 +281,7 @@ class C$$
 class i$$
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("n");
                 await state.AssertNoTag();
@@ -301,7 +302,7 @@ class i$$
 class $$abc
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("9");
                 await state.AssertNoTag();
@@ -320,7 +321,7 @@ class $$abc
 class $$Def
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("Abc");
                 await state.AssertTag("Def", "AbcDef");
@@ -339,7 +340,7 @@ class $$Def
 class C$$
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("s");
                 await state.AssertTag("C", "Cs");
@@ -360,7 +361,7 @@ class C$$
 class C$$
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.Backspace();
                 await state.AssertNoTag();
@@ -378,7 +379,7 @@ class C$$
 class C$$
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.Backspace();
                 state.MoveCaret(-4);
@@ -398,7 +399,7 @@ class C$$
 class  C$$
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.Backspace();
 
@@ -418,7 +419,7 @@ class  C$$
 class Identifi[|er|]$$
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 var textSpan = state.HostDocument.SelectedSpans.Single();
                 state.EditorOperations.ReplaceText(new Span(textSpan.Start, textSpan.Length), "cation");
@@ -434,7 +435,7 @@ class Identifi[|er|]$$
 class $$[|Ident|]ifier
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 var textSpan = state.HostDocument.SelectedSpans.Single();
                 state.EditorOperations.ReplaceText(new Span(textSpan.Start, textSpan.Length), "Complex");
@@ -450,7 +451,7 @@ class $$[|Ident|]ifier
 class [|Cat|]$$
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 var textSpan = state.HostDocument.SelectedSpans.Single();
                 state.EditorOperations.ReplaceText(new Span(textSpan.Start, textSpan.Length), "Dog");
@@ -466,7 +467,7 @@ class [|Cat|]$$
 class Cat$$
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("s");
                 await state.AssertTag("Cat", "Cats", invokeAction: true);
@@ -483,7 +484,7 @@ class Cat$$
 class Cat$$
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("s");
                 await state.AssertTag("Cat", "Cats", invokeAction: true);
@@ -503,7 +504,7 @@ class Cat$$
 class Cat$$
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("abc");
                 await state.AssertTag("Cat", "Catabc", invokeAction: true);
@@ -527,7 +528,7 @@ class Cat$$
 class Cat$$
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("abc");
                 await state.AssertTag("Cat", "Catabc", invokeAction: true);
@@ -551,7 +552,7 @@ class Cat$$
 class Cat$$
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("s");
                 await state.AssertTag("Cat", "Cats", invokeAction: true);
@@ -578,7 +579,7 @@ class Cat$$
 class Cat$$
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("s");
                 await state.AssertTag("Cat", "Cats", invokeAction: true);
@@ -614,7 +615,7 @@ class C
         M(x$$);
     }
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("yz");
                 await state.AssertTag("x", "xyz");
@@ -633,7 +634,7 @@ class C
         M(x$$: x);
     }
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("yz");
                 await state.AssertTag("x", "xyz");
@@ -655,7 +656,7 @@ namespace NS
         }
     }
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("A");
                 await state.AssertTag("NS", "NSA");
@@ -673,7 +674,7 @@ class Cat$$
     {
     }
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("s");
                 await state.AssertTag("Cat", "Cats", invokeAction: true);
@@ -705,7 +706,7 @@ class Cat$$
     {
     }
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp, onBeforeGlobalSymbolRenamedReturnValue: false))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp, onBeforeGlobalSymbolRenamedReturnValue: false))
             {
                 state.EditorOperations.InsertText("s");
                 await state.AssertTag("Cat", "Cats", invokeAction: true);
@@ -739,7 +740,7 @@ class Cat$$
     {
     }
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp, onAfterGlobalSymbolRenamedReturnValue: false))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp, onAfterGlobalSymbolRenamedReturnValue: false))
             {
                 state.EditorOperations.InsertText("s");
                 await state.AssertTag("Cat", "Cats", invokeAction: true);
@@ -771,7 +772,7 @@ Module Program
         Dim [x$$ = 1
     End Sub
 End Module";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.VisualBasic))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.VisualBasic))
             {
                 state.EditorOperations.InsertText("]");
                 await state.AssertNoTag();
@@ -788,7 +789,7 @@ Module Program
         $$main()
     End Sub
 End Module";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.VisualBasic))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.VisualBasic))
             {
                 state.EditorOperations.Delete();
                 await state.AssertTag("main", "ain");
@@ -806,14 +807,14 @@ Module Program
     Sub Main()
         $$[|main|]()
     End Sub
-    Sub Foo()
+    Sub Goo()
     End Sub
 End Module";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.VisualBasic))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.VisualBasic))
             {
                 var textSpan = state.HostDocument.SelectedSpans.Single();
-                state.EditorOperations.ReplaceText(new Span(textSpan.Start, textSpan.Length), "Fo");
-                await state.AssertTag("main", "Fo");
+                state.EditorOperations.ReplaceText(new Span(textSpan.Start, textSpan.Length), "Go");
+                await state.AssertTag("main", "Go");
                 state.EditorOperations.InsertText("o");
                 await state.AssertNoTag();
             }
@@ -827,7 +828,7 @@ End Module";
 Enum E
 $$    
 End Enum";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.VisualBasic))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.VisualBasic))
             {
                 state.EditorOperations.InsertText("    a");
                 state.EditorOperations.InsertText("b");
@@ -854,9 +855,17 @@ End Enum";
             Assert.False(RenameTrackingTaggerProvider.WaitForIsRenamableIdentifier(source.Task, CancellationToken.None));
 
             source = new TaskCompletionSource<RenameTrackingTaggerProvider.TriggerIdentifierKind>();
+            source.TrySetException(new OperationCanceledException());
+            Assert.False(RenameTrackingTaggerProvider.IsRenamableIdentifier(source.Task, waitForResult, CancellationToken.None));
+            Assert.False(RenameTrackingTaggerProvider.WaitForIsRenamableIdentifier(source.Task, CancellationToken.None));
+            Assert.False(RenameTrackingTaggerProvider.WaitForIsRenamableIdentifier(source.Task, new CancellationTokenSource().Token));
+
+            source = new TaskCompletionSource<RenameTrackingTaggerProvider.TriggerIdentifierKind>();
             Assert.Throws<OperationCanceledException>(() => RenameTrackingTaggerProvider.WaitForIsRenamableIdentifier(source.Task, new CancellationToken(canceled: true)));
-            source.TrySetException(new Exception());
-            Assert.Throws<AggregateException>(() => RenameTrackingTaggerProvider.WaitForIsRenamableIdentifier(source.Task, CancellationToken.None));
+            var thrownException = new Exception();
+            source.TrySetException(thrownException);
+            var caughtException = Assert.Throws<Exception>(() => RenameTrackingTaggerProvider.WaitForIsRenamableIdentifier(source.Task, CancellationToken.None));
+            Assert.Same(thrownException, caughtException);
         }
 
         [WpfFact, WorkItem(1063943, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1063943")]
@@ -872,7 +881,7 @@ class C
     }
 }";
 
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("eow");
                 await state.AssertNoTag();
@@ -887,7 +896,7 @@ class C
 class C$$
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("at");
                 await state.AssertTag("C", "Cat");
@@ -904,7 +913,7 @@ class C$$
 Enum E
 $$    
 End Enum";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.VisualBasic))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.VisualBasic))
             {
                 state.EditorOperations.InsertText("    a");
                 state.EditorOperations.InsertText("b");
@@ -924,7 +933,7 @@ End Enum";
 class C$$
 {
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("at");
                 await state.AssertTag("C", "Cat");
@@ -954,7 +963,7 @@ class C
     {
     }
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("at");
 
@@ -990,7 +999,7 @@ class C
         nameof(M).ToString();
     }
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("at");
 
@@ -1026,7 +1035,7 @@ class C
     {
     }
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("at");
 
@@ -1062,7 +1071,7 @@ class C
         var x = nameof(ToString$$);
     }
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("z");
                 await state.AssertNoTag();
@@ -1084,7 +1093,7 @@ class C
         int z = abc$$;
     }
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.Backspace();
                 await state.AssertNoTag();
@@ -1104,7 +1113,7 @@ class C
         C$$ c;
     }
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.Backspace();
                 state.EditorOperations.InsertText("va");
@@ -1135,7 +1144,7 @@ class C
         var$$ c = new C();
     }
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.Backspace();
                 await state.AssertNoTag();
@@ -1154,7 +1163,7 @@ Class C
         Dim x as C$$
     End Sub
 End Class";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.VisualBasic))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.VisualBasic))
             {
                 state.EditorOperations.Backspace();
                 state.EditorOperations.InsertText("var");
@@ -1177,7 +1186,7 @@ class C
         C$$ c;
     }
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.Backspace();
                 state.EditorOperations.InsertText("dynami");
@@ -1208,7 +1217,7 @@ class C
         var y = x.Item1$$;
     }
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.Backspace();
                 state.EditorOperations.Backspace();
@@ -1229,7 +1238,7 @@ class C
     End Sub
 End Class
 ";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.VisualBasic))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.VisualBasic))
             {
                 state.EditorOperations.Backspace();
                 state.EditorOperations.Backspace();
@@ -1252,7 +1261,7 @@ class C
     }
 }
 ";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.Backspace();
                 state.EditorOperations.Backspace();
@@ -1273,7 +1282,7 @@ Class C
     End Sub
 End Class
 ";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.VisualBasic))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.VisualBasic))
             {
                 state.EditorOperations.Backspace();
                 state.EditorOperations.Backspace();
@@ -1296,7 +1305,7 @@ class C
         var y = x.abc;
     }
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.Backspace();
                 state.EditorOperations.Backspace();
@@ -1317,7 +1326,7 @@ class C
         Dim y = x.abc
     End Sub
 End Class";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.VisualBasic))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.VisualBasic))
             {
                 state.EditorOperations.Backspace();
                 state.EditorOperations.Backspace();
@@ -1340,7 +1349,7 @@ class C
         var y = x.abc$$;
     }
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.Backspace();
                 state.EditorOperations.Backspace();
@@ -1361,7 +1370,7 @@ class C
         Dim y = x.abc$$
     End Sub
 End Class";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.VisualBasic))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.VisualBasic))
             {
                 state.EditorOperations.Backspace();
                 state.EditorOperations.Backspace();
@@ -1383,7 +1392,7 @@ class C
         var t = (x$$: 1, y: 2);
     }
 }";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("2");
                 await state.AssertNoTag();
@@ -1401,7 +1410,7 @@ Class C
         Dim t = (x$$:=1, y:=2)
     End Sub
 End Class";
-            using (var state = await RenameTrackingTestState.CreateAsync(code, LanguageNames.VisualBasic))
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.VisualBasic))
             {
                 state.EditorOperations.InsertText("2");
                 await state.AssertNoTag();
@@ -1437,7 +1446,7 @@ namespace System
         </Document>
     </Project>
 </Workspace>";
-            using (var state = await RenameTrackingTestState.CreateFromWorkspaceXmlAsync(workspaceXml, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.CreateFromWorkspaceXml(workspaceXml, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("2");
                 await state.AssertNoTag();
@@ -1468,10 +1477,74 @@ public struct ValueTuple&lt;T1&gt;
         </Document>
     </Project>
 </Workspace>";
-            using (var state = await RenameTrackingTestState.CreateFromWorkspaceXmlAsync(workspaceXml, LanguageNames.CSharp))
+            using (var state = RenameTrackingTestState.CreateFromWorkspaceXml(workspaceXml, LanguageNames.CSharp))
             {
                 state.EditorOperations.InsertText("2");
                 await state.AssertTag("ValueTuple", "ValueTuple2");
+            }
+        }
+
+        [WpfFact]
+        [Trait(Traits.Feature, Traits.Features.RenameTracking)]
+        public async Task RenameTrackingOnDeconstruct()
+        {
+            var code = @"
+class C
+{
+    void Deconstruct$$(out int x1, out int x2) { x1 = 1; x2 = 2; }
+    void M()
+    {
+        var (y1, y2) = this;
+    }
+}";
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
+            {
+                state.EditorOperations.InsertText("2");
+                await state.AssertTag("Deconstruct", "Deconstruct2");
+            }
+        }
+
+        [WpfFact]
+        [Trait(Traits.Feature, Traits.Features.RenameTracking)]
+        public async Task RenameTracking_UnmanagedConstraint_Keyword()
+        {
+            var code = @"
+class C&lt;T&gt; where T : $$unmanaged
+{
+}";
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
+            {
+                await state.AssertNoTag();
+            }
+        }
+
+        [WpfFact]
+        [Trait(Traits.Feature, Traits.Features.RenameTracking)]
+        public async Task RenameTracking_UnmanagedConstraint_Type()
+        {
+            var code = @"
+interface unmanaged
+{
+}
+class C&lt;T&gt; where T : $$unmanaged
+{
+}";
+            using (var state = RenameTrackingTestState.Create(code, LanguageNames.CSharp))
+            {
+                state.EditorOperations.InsertText("my");
+
+                await state.AssertTag("unmanaged", "myunmanaged", invokeAction: true);
+
+                // Make sure the rename completed            
+                var expectedCode = @"
+interface myunmanaged
+{
+}
+class C<T> where T : myunmanaged
+{
+}";
+                Assert.Equal(expectedCode, state.HostDocument.TextBuffer.CurrentSnapshot.GetText());
+                await state.AssertNoTag();
             }
         }
     }

@@ -1,21 +1,20 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.CodeStyle;
 using Microsoft.CodeAnalysis.CSharp.ExtractMethod;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
 using Microsoft.CodeAnalysis.ExtractMethod;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using Xunit;
 
 namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.ExtractMethod
 {
+    [UseExportProvider]
     public class ExtractMethodBase
     {
         protected async Task ExpectExtractMethodToFailAsync(string codeWithMarker, bool allowMovingDeclaration = true, bool dontPutOutOrRefOnStruct = true, string[] features = null)
@@ -27,7 +26,7 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.ExtractMethod
                 parseOptions = new CSharpParseOptions().WithFeatures(featuresMapped);
             }
 
-            using (var workspace = await TestWorkspace.CreateCSharpAsync(codeWithMarker, parseOptions: parseOptions))
+            using (var workspace = TestWorkspace.CreateCSharp(codeWithMarker, parseOptions: parseOptions))
             {
                 var testDocument = workspace.Documents.First();
                 var textSpan = testDocument.SelectedSpans.Single();
@@ -42,7 +41,7 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.ExtractMethod
             bool dontPutOutOrRefOnStruct = true,
             CSharpParseOptions parseOptions = null)
         {
-            using (var workspace = await TestWorkspace.CreateCSharpAsync(codeWithMarker, parseOptions: parseOptions))
+            using (var workspace = TestWorkspace.CreateCSharp(codeWithMarker, parseOptions: parseOptions))
             {
                 var testDocument = workspace.Documents.Single();
                 var subjectBuffer = testDocument.TextBuffer;
@@ -61,7 +60,7 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.ExtractMethod
 
         protected async Task NotSupported_ExtractMethodAsync(string codeWithMarker)
         {
-            using (var workspace = await TestWorkspace.CreateCSharpAsync(codeWithMarker))
+            using (var workspace = TestWorkspace.CreateCSharp(codeWithMarker))
             {
                 Assert.NotNull(await Record.ExceptionAsync(async () =>
                 {
@@ -79,7 +78,7 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.ExtractMethod
             bool dontPutOutOrRefOnStruct = true,
             CSharpParseOptions parseOptions = null)
         {
-            using (var workspace = await TestWorkspace.CreateCSharpAsync(codeWithMarker, parseOptions: parseOptions))
+            using (var workspace = TestWorkspace.CreateCSharp(codeWithMarker, parseOptions: parseOptions))
             {
                 var testDocument = workspace.Documents.Single();
                 var subjectBuffer = testDocument.TextBuffer;
@@ -144,7 +143,7 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.ExtractMethod
 
         protected async Task TestSelectionAsync(string codeWithMarker, bool expectedFail = false, CSharpParseOptions parseOptions = null)
         {
-            using (var workspace = await TestWorkspace.CreateCSharpAsync(codeWithMarker, parseOptions: parseOptions))
+            using (var workspace = TestWorkspace.CreateCSharp(codeWithMarker, parseOptions: parseOptions))
             {
                 var testDocument = workspace.Documents.Single();
                 var namedSpans = testDocument.AnnotatedSpans;
@@ -170,7 +169,7 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.ExtractMethod
 
         protected async Task IterateAllAsync(string code)
         {
-            using (var workspace = await TestWorkspace.CreateCSharpAsync(code, CodeAnalysis.CSharp.Test.Utilities.TestOptions.Regular))
+            using (var workspace = TestWorkspace.CreateCSharp(code, CodeAnalysis.CSharp.Test.Utilities.TestOptions.Regular))
             {
                 var document = workspace.CurrentSolution.GetDocument(workspace.Documents.First().Id);
                 Assert.NotNull(document);

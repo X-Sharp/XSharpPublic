@@ -1,17 +1,19 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.Classification;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Editor.CSharp.QuickInfo;
+using Microsoft.CodeAnalysis.CSharp.QuickInfo;
 using Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.QuickInfo;
-using Microsoft.CodeAnalysis.Editor.Shared.Utilities;
 using Microsoft.CodeAnalysis.Editor.UnitTests.QuickInfo;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
-using Microsoft.VisualStudio.Language.Intellisense;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text.Projection;
+using Microsoft.CodeAnalysis.QuickInfo;
+using Microsoft.CodeAnalysis.Test.Utilities;
+using Microsoft.VisualStudio.Text;
+using Moq;
 using Roslyn.Test.Utilities;
 using Xunit;
 
@@ -262,14 +264,9 @@ if (true)
 {");
         }
 
-        private IQuickInfoProvider CreateProvider(TestWorkspace workspace)
+        private QuickInfoProvider CreateProvider(TestWorkspace workspace)
         {
-            return new SyntacticQuickInfoProvider(
-                workspace.GetService<IProjectionBufferFactoryService>(),
-                workspace.GetService<IEditorOptionsFactoryService>(),
-                workspace.GetService<ITextEditorFactoryService>(),
-                workspace.GetService<IGlyphService>(),
-                workspace.GetService<ClassificationTypeMap>());
+            return new CSharpSyntacticQuickInfoProvider();
         }
 
         protected override async Task AssertNoContentAsync(
@@ -278,7 +275,7 @@ if (true)
             int position)
         {
             var provider = CreateProvider(workspace);
-            Assert.Null(await provider.GetItemAsync(document, position, CancellationToken.None));
+            Assert.Null(await provider.GetQuickInfoAsync(new QuickInfoContext(document, position, CancellationToken.None)));
         }
 
         protected override async Task AssertContentIsAsync(
@@ -289,19 +286,17 @@ if (true)
             string expectedDocumentationComment = null)
         {
             var provider = CreateProvider(workspace);
-            var state = await provider.GetItemAsync(document, position, cancellationToken: CancellationToken.None);
-            Assert.NotNull(state);
+            var info = await provider.GetQuickInfoAsync(new QuickInfoContext(document, position, CancellationToken.None));
+            Assert.NotNull(info);
 
-            var viewHostingControl = (ViewHostingControl)((ElisionBufferDeferredContent)state.Content).Create();
-            try
-            {
-                var actualContent = viewHostingControl.ToString();
-                Assert.Equal(expectedContent, actualContent);
-            }
-            finally
-            {
-                viewHostingControl.TextView_TestOnly.Close();
-            }
+            Assert.NotEqual(0, info.RelatedSpans.Length);
+            var tabSize = document.Project.Solution.Workspace.Options.GetOption(Microsoft.CodeAnalysis.Formatting.FormattingOptions.TabSize, document.Project.Language);
+            var text = await document.GetTextAsync();
+
+            var classifiedSpans = info.RelatedSpans.Select(s => new ClassifiedSpan(ClassificationTypeNames.Text, s));
+            var spans = IndentationHelper.GetSpansWithAlignedIndentation(text, classifiedSpans.ToImmutableArray(), tabSize);
+            var actualText = string.Concat(spans.Select(s => text.GetSubText(s.TextSpan).ToString()));
+            Assert.Equal(expectedContent, actualText);
         }
 
         protected override Task TestInMethodAsync(string code, string expectedContent, string expectedDocumentationComment = null)
@@ -329,7 +324,7 @@ if (true)
             string expectedDocumentationComment = null,
             CSharpParseOptions parseOptions = null)
         {
-            using (var workspace = await TestWorkspace.CreateCSharpAsync(code, parseOptions))
+            using (var workspace = TestWorkspace.CreateCSharp(code, parseOptions))
             {
                 var testDocument = workspace.Documents.Single();
                 var position = testDocument.CursorPosition.Value;

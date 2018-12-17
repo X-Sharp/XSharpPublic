@@ -1,10 +1,11 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security;
+using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.GeneratedCodeRecognition;
 using Microsoft.CodeAnalysis.GenerateType;
@@ -429,7 +430,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.GenerateType
                 var previousProject = _selectedProject;
                 if (SetProperty(ref _selectedProject, value))
                 {
-                    NotifyPropertyChanged("DocumentList");
+                    NotifyPropertyChanged(nameof(DocumentList));
                     this.DocumentSelectIndex = 0;
                     this.ProjectSelectIndex = this.ProjectList.FindIndex(p => p.Project == _selectedProject);
                     if (_selectedProject != _document.Project)
@@ -507,6 +508,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.GenerateType
 
         private Project _previouslyPopulatedProject = null;
         private List<DocumentSelectItem> _previouslyPopulatedDocumentList = null;
+
         public IEnumerable<DocumentSelectItem> DocumentList
         {
             get
@@ -530,13 +532,13 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.GenerateType
 
                     // Populate the rest of the documents for the project
                     _previouslyPopulatedDocumentList.AddRange(_document.Project.Documents
-                        .Where(d => d != _document && !d.IsGeneratedCode())
+                        .Where(d => d != _document && !d.IsGeneratedCode(CancellationToken.None))
                         .Select(d => new DocumentSelectItem(d)));
                 }
                 else
                 {
                     _previouslyPopulatedDocumentList.AddRange(_selectedProject.Documents
-                        .Where(d => !d.IsGeneratedCode())
+                        .Where(d => !d.IsGeneratedCode(CancellationToken.None))
                         .Select(d => new DocumentSelectItem(d)));
 
                     this.SelectedDocument = _selectedProject.Documents.FirstOrDefault();

@@ -1,84 +1,66 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\..\Roslyn\build\Targets\Settings.props" />
-  <Import Project="..\..\..\..\Roslyn\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <Import Project="..\..\Compiler\CompilerCommon.props" />
+
   <PropertyGroup>
-    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-    <RoslynProjectType>Custom</RoslynProjectType>
-    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <CfgPath>$(Configuration)_$(Platform)</CfgPath>
-    <ProjectGuid>{4B45CA0C-03A0-400F-B454-3D4BCB16AF38}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Microsoft.CodeAnalysis.CSharp.CommandLine</RootNamespace>
-    <AssemblyName>csc</AssemblyName>
     <Prefer32Bit>false</Prefer32Bit>
     <LargeAddressAware>true</LargeAddressAware>
     <StartupObject>Microsoft.CodeAnalysis.CSharp.CommandLine.Program</StartupObject>
-    <RestorePackages>true</RestorePackages>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
-    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(CfgPath)\$(AssemblyName)\</IntermediateOutputPath>
-    <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <DefineConstants>$(DefineConstants);XSHARPPRE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
-    <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <TargetFrameworks>$(RoslynPortableTargetFrameworks)</TargetFrameworks>
+    <RuntimeIdentifiers>$(RoslynPortableRuntimeIdentifiers)</RuntimeIdentifiers>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants);XSHARPPRE;NET46</DefineConstants>
+    <DefineConstants Condition="'$(TargetFramework)' != 'net46'">$(DefineConstants);XSHARPPRE</DefineConstants>
+    <CodeAnalysisRuleSet>$(CSharpSource)..\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup Label="Project References">
-    <ProjectReference Include="..\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj">
-      <Project>{7b774abc-83a0-4fd8-91fb-1dbe8829765b}</Project>
-      <Name>CSharpCodeAnalysis</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CSCompiler\CSCompiler.csproj">
-      <Project>{9508f118-f62e-4c16-a6f4-7c3b56e166ad}</Project>
-      <Name>CSCompiler</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\CSCompiler\CSCompiler.csproj" />
+    <ProjectReference Include="..\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj" />
+  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.DiaSymReader.Native" Version="$(MicrosoftDiaSymReaderNativeVersion)" Condition="'$(DotNetBuildFromSource)' != 'true'" />
+    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp2.0'" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Shared\BuildClient.cs">
+    <Compile Include="$(SharedSource)BuildClient.cs">
       <Link>BuildClient.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Shared\BuildServerConnection.cs">
+    <Compile Include="$(SharedSource)BuildServerConnection.cs">
       <Link>BuildServerConnection.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Shared\DesktopBuildClient.cs">
+    <Compile Include="$(SharedSource)CoreClrAnalyzerAssemblyLoader.cs">
+      <Link>CoreClrAnalyzerAssemblyLoader.cs</Link>
+    </Compile>
+    <Compile Include="$(SharedSource)DesktopBuildClient.cs">
       <Link>DesktopBuildClient.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Shared\DesktopAnalyzerAssemblyLoader.cs">
+    <Compile Include="$(SharedSource)DesktopAnalyzerAssemblyLoader.cs">
       <Link>DesktopAnalyzerAssemblyLoader.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Shared\ExitingTraceListener.cs">
+    <Compile Include="$(SharedSource)ExitingTraceListener.cs">
       <Link>ExitingTraceListener.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Shared\Csc.cs">
+    <Compile Include="$(SharedSource)Csc.cs">
       <Link>Csc.cs</Link>
     </Compile>
-    <Compile Include="Program.cs" />
   </ItemGroup>
   <ItemGroup>
-    <InternalsVisibleToTest Include="Roslyn.Compilers.CSharp.CommandLine.UnitTests" />
+    <None Include="App.config" />
+    <None Include="csc.rsp" Condition="'$(TargetFramework)' == 'net46'">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="csc.exe.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="csc.rsp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="project.json" />
+    <Compile Include="$(CscSource)*.cs">
+      <Link>Server\%(RecursiveDir)\%(Filename).%(Extension)</Link>
+    </Compile>
   </ItemGroup>
-  <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\CommandLine\CommandLine.projitems" Label="Shared" />
-  <Import Project="..\..\..\..\Roslyn\build\Targets\Imports.targets" />
+
+  <Import Project="$(CoreSource)..\CommandLine\CommandLine.projitems" Label="Shared" />
 </Project>

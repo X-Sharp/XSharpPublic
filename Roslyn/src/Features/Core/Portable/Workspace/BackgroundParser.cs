@@ -8,6 +8,15 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.Host
 {
+    /// <summary>
+    /// when users type, we chain all those changes as incremental parsing requests 
+    /// but doesn't actually realize those changes. it is saved as a pending request. 
+    /// so if nobody asks for final parse tree, those chain can keep grow. 
+    /// we do this since Roslyn is lazy at the core (don't do work if nobody asks for it)
+    /// 
+    /// but certain host such as VS, we have this (BackgroundParser) which preemptively 
+    /// trying to realize such trees for open/active files expecting users will use them soonish.
+    /// </summary>
     internal class BackgroundParser
     {
         private readonly Workspace _workspace;
@@ -28,8 +37,7 @@ namespace Microsoft.CodeAnalysis.Host
             _taskScheduler = taskSchedulerFactory.CreateBackgroundTaskScheduler();
             _workspace.WorkspaceChanged += this.OnWorkspaceChanged;
 
-            var editorWorkspace = workspace as Workspace;
-            if (editorWorkspace != null)
+            if (workspace is Workspace editorWorkspace)
             {
                 editorWorkspace.DocumentOpened += this.OnDocumentOpened;
                 editorWorkspace.DocumentClosed += this.OnDocumentClosed;
@@ -65,9 +73,21 @@ namespace Microsoft.CodeAnalysis.Host
                     break;
 
                 case WorkspaceChangeKind.ProjectChanged:
-                    foreach (var doc in args.NewSolution.GetProject(args.ProjectId).Documents)
+
+                    var oldProject = args.OldSolution.GetProject(args.ProjectId);
+                    var newProject = args.NewSolution.GetProject(args.ProjectId);
+
+                    // Perf optimization: don't rescan the new project if parse options didn't change. When looking
+                    // at the perf of changing configurations that resulted in many reference additions/removals,
+                    // this consumed around 2%-3% of the trace after some other optimizations I did. Most of that
+                    // was actually walking the documents list since this was causing all the Documents to be realized.
+                    // Since this is on the UI thread, it's best just to not do the work if we don't need it.
+                    if (oldProject.SupportsCompilation && !object.Equals(oldProject.ParseOptions, newProject.ParseOptions))
                     {
-                        this.ParseIfOpen(doc);
+                        foreach (var doc in newProject.Documents)
+                        {
+                            this.ParseIfOpen(doc);
+                        }
                     }
 
                     break;
@@ -167,8 +187,16 @@ namespace Microsoft.CodeAnalysis.Host
 
             var cancellationToken = cancellationTokenSource.Token;
 
+            // We end up creating a chain of parsing tasks that each attempt to produce 
+            // the appropriate syntax tree for any given document. Once we start work to create 
+            // the syntax tree for a given document, we don't want to stop. 
+            // Otherwise we can end up in the unfortunate scenario where we keep cancelling work, 
+            // and then having the next task re-do the work we were just in the middle of. 
+            // By not cancelling, we can reuse the useful results of previous tasks when performing later steps in the chain.
+            //
+            // we still cancel whole task if the task didn't start yet. we just don't cancel if task is started but not finished yet.
             var task = _taskScheduler.ScheduleTask(
-                () => document.GetSyntaxTreeAsync(cancellationToken),
+                () => document.GetSyntaxTreeAsync(CancellationToken.None),
                 "BackgroundParser.ParseDocumentAsync",
                 cancellationToken);
 
@@ -178,7 +206,13 @@ namespace Microsoft.CodeAnalysis.Host
                 {
                     using (_stateLock.DisposableWrite())
                     {
-                        _workMap = _workMap.Remove(document.Id);
+                        // Check that we are still the active parse in the workmap before we remove it.
+                        // Concievably if this continuation got delayed and another parse was put in, we might
+                        // end up removing the tracking for another in-flight task.
+                        if (_workMap.TryGetValue(document.Id, out var sourceInMap) && sourceInMap == cancellationTokenSource)
+                        {
+                            _workMap = _workMap.Remove(document.Id);
+                        }
                     }
                 }, CancellationToken.None, TaskContinuationOptions.None, TaskScheduler.Default);
         }

@@ -1,75 +1,58 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\build\Targets\Settings.props" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\Compiler\CompilerCommon.props" />
   <PropertyGroup>
-    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-    <RoslynProjectType>Custom</RoslynProjectType>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <CfgPath>$(Configuration)_$(Platform)</CfgPath>
-    <RoslynSrc>..\..\..\..\Roslyn\src</RoslynSrc>
-    <RoslynBin>..\Roslyn\Binaries</RoslynBin>
-    <XSharpBuild>..\..\..\..\XSharp\build</XSharpBuild>
-    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
-    <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
-    <ProjectGuid>{014963AE-D6D1-4FF8-8D8A-8D417F5D8D1F}</ProjectGuid>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputType>Library</OutputType>
     <RootNamespace>LanguageService.CodeAnalysis.XSharp.Scripting</RootNamespace>
     <AssemblyName>XSharp.Scripting</AssemblyName>
-    <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
-    <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <DefineConstants>$(DefineConstants);SCRIPTING;XSHARP</DefineConstants>
-    <CscToolPath>$(BaseOutputPath)\$(CfgPath)\</CscToolPath>
-    <RestorePackages>true</RestorePackages>
-    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <NoWarn>1591, CS8032</NoWarn>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <DefineConstants>$(DefineConstants);SCRIPTING</DefineConstants>
+    <!--Use the C# compiler created in this solution-->
+
+    <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
+
   </PropertyGroup>
   <ItemGroup Label="Project References">
-    <ProjectReference Include="..\..\..\src\Tools\csc\csc.csproj">
-      <Project>{4B45CA0C-03A0-400F-B454-3D4BCB16AF38}</Project>
-      <Name>csc</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Compiler\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj">
-      <Project>{f738fd65-ffaf-4f52-8efc-5affd1c42846}</Project>
-      <Name>XSharpCodeAnalysis</Name>
-    </ProjectReference>
-    <!--<ProjectReference Include="..\Core\Scripting.csproj">
-      <Project>{12A68549-4E8C-42D6-8703-A09335F97997}</Project>
-      <Name>Scripting</Name>
-      <Aliases>global,Scripting</Aliases>
-    </ProjectReference>-->
+    <ProjectReference Include="..\..\Compiler\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj" />
+  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
+  <ItemGroup>
+    <PackageReference Include="RoslynTools.LightUp.System.Runtime.Loader" Version="$(RoslynToolsLightUpSystemRuntimeLoaderFixedVersion)" />
+    <PackageReference Include="System.Diagnostics.StackTrace" Version="$(SystemDiagnosticsStackTraceVersion)" />
   </ItemGroup>
   <ItemGroup>
-    <!-- Workaround for https://github.com/NuGet/Home/issues/1471 -->
-    <Reference Include="$(NuGetPackageRoot)\System.Runtime.Loader\$(SystemRuntimeLoaderVersion)\ref\netstandard1.5\System.Runtime.Loader.dll">
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Assembly.cs" />
-    <Compile Include="XSharpMacro.cs" />
-    <Compile Include="ScriptingResources.Designer.cs">
-      <AutoGen>True</AutoGen>
+    <Compile Include="$(CoreSource)FileSystem\RelativePathResolver.cs">
+      <Link>Hosting\Resolvers\RelativePathResolver.cs</Link>
+    </Compile> 
+    <Compile Include="$(SharedSource)GlobalAssemblyCacheHelpers\ClrGlobalAssemblyCache.cs">
+      <Link>Hosting\Resolvers\ClrGlobalAssemblyCache.cs</Link>
+    </Compile>
+    <Compile Include="$(SharedSource)GlobalAssemblyCacheHelpers\FusionAssemblyIdentity.cs">
+      <Link>Hosting\Resolvers\FusionAssemblyIdentity.cs</Link>
+    </Compile>
+    <Compile Include="$(SharedSource)GlobalAssemblyCacheHelpers\GacFileResolver.cs">
+      <Link>Hosting\Resolvers\GacFileResolver.cs</Link>
+    </Compile>
+    <Compile Include="$(SharedSource)GlobalAssemblyCacheHelpers\GlobalAssemblyCache.cs">
+      <Link>Hosting\Resolvers\GlobalAssemblyCache.cs</Link>
+    </Compile>
+    <Compile Include="$(SharedSource)GlobalAssemblyCacheHelpers\GlobalAssemblyCacheLocation.cs">
+      <Link>Hosting\Resolvers\GlobalAssemblyCacheLocation.cs</Link>
+    </Compile>
+    <Compile Include="$(SharedSource)GlobalAssemblyCacheHelpers\MonoGlobalAssemblyCache.cs">
+      <Link>Hosting\Resolvers\MonoGlobalAssemblyCache.cs</Link>
+    </Compile>
+    <Compile Update="ScriptingResources.Designer.cs">
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>ScriptingResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="XSharpMacroCompiler.cs" />
-    <Compile Include="XSharpScriptingResources.Designer.cs">
+    <Compile Update="XSharpScriptingResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>XSharpScriptingResources.resx</DependentUpon>
@@ -77,42 +60,30 @@
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <!--    <InternalsVisibleTo Include="csi" />-->
-    <!-- TODO: remove, see https://github.com/dotnet/roslyn/issues/5661 -->
-    <!--<InternalsVisibleTo Include="Microsoft.CodeAnalysis.CSharp.InteractiveEditorFeatures" />-->
-    <!-- /TODO -->
-    <!--<InternalsVisibleToTest Include="Roslyn.Compilers.CSharp.Emit.UnitTests" />
-    <InternalsVisibleToTest Include="Roslyn.Compilers.UnitTests" />
-    <InternalsVisibleToTest Include="Roslyn.Compilers.VisualBasic.Emit.UnitTests" />
-    <InternalsVisibleToTest Include="Microsoft.CodeAnalysis.Scripting.UnitTests" />
-    <InternalsVisibleToTest Include="Microsoft.CodeAnalysis.CSharp.Scripting.UnitTests" />
-    <InternalsVisibleToTest Include="Microsoft.CodeAnalysis.CSharp.Scripting.Desktop.UnitTests" />
-    <InternalsVisibleToTest Include="Microsoft.CodeAnalysis.Scripting.TestUtilities" />-->
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="XSharpScripting.project.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="XSharpScriptingResources.resx">
+    <EmbeddedResource Update="XSharpScriptingResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>XSharpScriptingResources.Designer.cs</LastGenOutput>
-      <CustomToolNamespace>LanguageService.CodeAnalysis.Scripting</CustomToolNamespace>
+      <CustomToolNamespace>Microsoft.CodeAnalysis.Scripting</CustomToolNamespace>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ScriptingResources.resx">
+    <EmbeddedResource Update="ScriptingResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
-      <CustomToolNamespace>LanguageService.CodeAnalysis.Scripting</CustomToolNamespace>
       <LastGenOutput>ScriptingResources.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>Microsoft.CodeAnalysis.Scripting</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
-  <Import Project="$(RoslynSrc)\Scripting\CSharp\CSharpScriptingShared.projitems" Label="Shared" />
-  <Import Project="$(RoslynSrc)\Scripting\Core\ScriptingShared.projitems" Label="Shared" />
-  <Import Project="$(XSharpBuild)\Targets\Imports.targets" />
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>$(SolutionDir)\build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(RoslynSrc)\Scripting\CSharp\**\*.cs">
+      <Link>CSharp\%(RecursiveDir)\%(Filename)%(Extension)</Link>
+    </Compile>
+    <Compile Remove="$(RoslynSrc)\Scripting\CSharp\CSharpScriptingResources.Designer.cs" />
+    <Compile Include="$(RoslynSrc)\Scripting\Core\**\*.cs">
+      <Link>Core\%(RecursiveDir)\%(Filename)%(Extension)</Link>
+    </Compile>
+    <Compile Remove="$(RoslynSrc)\Scripting\Core\ScriptingResources.Designer.cs" />
+  </ItemGroup>
+
 </Project>

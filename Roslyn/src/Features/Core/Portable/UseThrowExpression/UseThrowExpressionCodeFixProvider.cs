@@ -32,7 +32,7 @@ namespace Microsoft.CodeAnalysis.UseThrowExpression
                 new MyCodeAction(c => FixAsync(context.Document, diagnostic, c)),
                 diagnostic);
 
-            return SpecializedTasks.EmptyTask;
+            return Task.CompletedTask;
         }
 
         protected override Task FixAllAsync(
@@ -51,13 +51,13 @@ namespace Microsoft.CodeAnalysis.UseThrowExpression
                 // First, remote the if-statement entirely.
                 editor.RemoveNode(ifStatement);
 
-                // Now, update the assignemnt value to go from 'a' to 'a ?? throw ...'.
+                // Now, update the assignment value to go from 'a' to 'a ?? throw ...'.
                 editor.ReplaceNode(assignmentValue,
                     generator.CoalesceExpression(assignmentValue,
                     generator.ThrowExpression(throwStatementExpression)));
             }
 
-            return SpecializedTasks.EmptyTask;
+            return Task.CompletedTask;
         }
 
         private class MyCodeAction : CodeAction.DocumentChangeAction

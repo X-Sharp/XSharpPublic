@@ -13,10 +13,9 @@ without warranties or conditions of any kind, either express or implied.
 See the License for the specific language governing permissions and   
 limitations under the License.
 */
+using System;
 using System.IO;
 using Microsoft.CodeAnalysis.CommandLine;
-using Roslyn.Utilities;
-using System;
 
 namespace Microsoft.CodeAnalysis.CSharp.CommandLine
 {
@@ -24,15 +23,28 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine
     {
         public static int Main(string[] args)
         {
-#if (DEBUG)
-            System.Diagnostics.Debug.Listeners.Add(new System.Diagnostics.ConsoleTraceListener());
-            //System.Diagnostics.Trace.Listeners.Add(new System.Diagnostics.ConsoleTraceListener());
-#endif
-            return Main(args, Array.Empty<string>());
+            try
+            {
+                return MainCore(args);
+            }
+            catch (FileNotFoundException e)
+            {
+                // Catch exception from missing compiler assembly.
+                // Report the exception message and terminate the process.
+                Console.WriteLine(e.Message);
+                return CommonCompiler.Failed;
+            }
         }
 
-        public static int Main(string[] args, string[] extraArgs)
-            => DesktopBuildClient.Run(args, extraArgs, RequestLanguage.CSharpCompile, Xsc.Run, new DesktopAnalyzerAssemblyLoader());
+        private static int MainCore(string[] args)
+        {
+#if NET46
+            var loader = new DesktopAnalyzerAssemblyLoader();
+#else
+            var loader = new CoreClrAnalyzerAssemblyLoader();
+#endif
+            return DesktopBuildClient.Run(args, RequestLanguage.CSharpCompile, Xsc.Run, loader);
+        }
 
         public static int Run(string[] args, string clientDir, string workingDir, string sdkDir, string tempDir, TextWriter textWriter, IAnalyzerAssemblyLoader analyzerLoader)
             => Xsc.Run(args, new BuildPaths(clientDir: clientDir, workingDir: workingDir, sdkDir: sdkDir, tempDir: tempDir), textWriter, analyzerLoader);

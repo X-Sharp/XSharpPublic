@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>USING</title>
   <keywords>
     <keyword>#USING</keyword>
@@ -11,8 +11,6 @@
     <header>
       <para styleclass="Heading1">USING</para>
     </header>
-    <para styleclass="Code Example">#USING &lt;NamespaceName&gt;</para>
-    <para styleclass="Code Example">USING &lt;NamespaceName&gt;</para>
-    <para styleclass="Code Example">USING STATIC &lt;StaticClassname&gt;</para>
+    <para styleclass="Code Example">#USING &lt;NamespaceName&gt;<br/>USING &lt;NamespaceName&gt;<br/>USING STATIC &lt;StaticClassname&gt;</para>
   </body>
 </topic>

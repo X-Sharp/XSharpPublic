@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/nostdlib</title>
+  <title>-nostdlib</title>
   <keywords>
-    <keyword>/nostdlib</keyword>
+    <keyword>-nostdlib</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/nostdlib</para>
+      <para styleclass="Heading1">-nostdlib</para>
     </header>
-    <para styleclass="Normal">/nostdlib prevents the import of mscorlib.dll, which defines the entire System namespace.</para>
+    <para styleclass="Normal">-nostdlib prevents the import of mscorlib.dll, which defines the entire System namespace.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/nostdlib[+ | -] &#160;</para>
+    <para styleclass="Code with box">-nostdlib[+ | -] &#160;</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Use this option if you want to define or create your own System namespace and objects.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If you do not specify /nostdlib, mscorlib.dll will be imported into your program (same as specifying /nostdlib-). Specifying /nostdlib is the same as specifying /nostdlib+.</para>
+    <para styleclass="Normal">If you do not specify -nostdlib, mscorlib.dll will be imported into your program (same as specifying -nostdlib-). Specifying -nostdlib is the same as specifying -nostdlib+.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
     <para styleclass="Normal"></para>

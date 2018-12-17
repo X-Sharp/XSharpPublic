@@ -2,11 +2,16 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>PSZ Type</title>
+  <keywords>
+    <keyword>PSZ</keyword>
+    <keyword>XSharp.__Psz</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">PSZ Type</para>
     </header>
     <para styleclass="Normal">This structure contains a pointer to a memory block with an Ansi string. When created with String2Psz() and Cast2Psz() then the compiler will take care of releasing these memory blocks. When created with other runtime functions such as StringAlloc() then you are responsible of releasing the memory yourself.</para>
+    <para styleclass="Normal">The internal type name for this type is XSharp.__Psz</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Note</para>
     <para styleclass="Normal">Please do not use the PSZ type for new code. It is only included for backward compatibility.</para>

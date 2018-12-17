@@ -5,16 +5,4 @@
   <Rules AnalyzerId="Roslyn.Diagnostics.Analyzers.CSharp" RuleNamespace="Roslyn.Diagnostics.Analyzers.CSharp">
     <Rule Id="RS0013" Action="Warning" />
   </Rules>
-  <Rules AnalyzerId="Roslyn.Diagnostics.Analyzers.CSharp" RuleNamespace="Roslyn.Diagnostics.Analyzers.CSharp">
-    <Rule Id="RS0018" Action="Error" />
-  </Rules>
-  <Rules AnalyzerId="System.Collections.Immutable.Analyzers" RuleNamespace="System.Collections.Immutable.Analyzers">
-    <Rule Id="RS0012" Action="None" />
-  </Rules>
-  <Rules AnalyzerId="System.Runtime.Analyzers" RuleNamespace="System.Runtime.Analyzers">
-    <Rule Id="RS0014" Action="None" />
-  </Rules>
-  <Rules AnalyzerId="System.Runtime.CSharp.Analyzers" RuleNamespace="System.Runtime.CSharp.Analyzers">
-    <Rule Id="CA1825" Action="None" />
-  </Rules>
 </RuleSet>

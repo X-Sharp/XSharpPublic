@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
+using System.Collections;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.CodeStyle;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -30,7 +31,8 @@ namespace Microsoft.CodeAnalysis.UseCollectionInitializer
         where TVariableDeclaratorSyntax : SyntaxNode
     {
         public override bool OpenFileOnly(Workspace workspace) => false;
-        public override DiagnosticAnalyzerCategory GetAnalyzerCategory() => DiagnosticAnalyzerCategory.SemanticDocumentAnalysis;
+        public override DiagnosticAnalyzerCategory GetAnalyzerCategory() 
+            => DiagnosticAnalyzerCategory.SemanticSpanAnalysis;
 
         protected AbstractUseCollectionInitializerDiagnosticAnalyzer()
             : base(IDEDiagnosticIds.UseCollectionInitializerDiagnosticId,
@@ -44,7 +46,7 @@ namespace Microsoft.CodeAnalysis.UseCollectionInitializer
 
         private void OnCompilationStart(CompilationStartAnalysisContext context)
         {
-            var ienumerableType = context.Compilation.GetTypeByMetadataName("System.Collections.IEnumerable") as INamedTypeSymbol;
+            var ienumerableType = context.Compilation.GetTypeByMetadataName(typeof(IEnumerable).FullName);
             if (ienumerableType != null)
             {
                 context.RegisterSyntaxNodeAction(
@@ -63,10 +65,12 @@ namespace Microsoft.CodeAnalysis.UseCollectionInitializer
                 return;
             }
 
+            var semanticModel = context.SemanticModel;
             var objectCreationExpression = (TObjectCreationExpressionSyntax)context.Node;
             var language = objectCreationExpression.Language;
             var syntaxTree = objectCreationExpression.SyntaxTree;
             var cancellationToken = context.CancellationToken;
+
             var optionSet = context.Options.GetDocumentOptionSetAsync(syntaxTree, cancellationToken).GetAwaiter().GetResult();
             if (optionSet == null)
             {
@@ -88,21 +92,31 @@ namespace Microsoft.CodeAnalysis.UseCollectionInitializer
                 return;
             }
 
-            var analyzer = new ObjectCreationExpressionAnalyzer<TExpressionSyntax, TStatementSyntax, TObjectCreationExpressionSyntax, TMemberAccessExpressionSyntax, TInvocationExpressionSyntax, TExpressionStatementSyntax, TVariableDeclaratorSyntax>(
-                GetSyntaxFactsService(), objectCreationExpression);
-            var matches = analyzer.Analyze();
+            var matches = ObjectCreationExpressionAnalyzer<TExpressionSyntax, TStatementSyntax, TObjectCreationExpressionSyntax, TMemberAccessExpressionSyntax, TInvocationExpressionSyntax, TExpressionStatementSyntax, TVariableDeclaratorSyntax>.Analyze(
+                semanticModel, GetSyntaxFactsService(), objectCreationExpression, cancellationToken);
+
             if (matches == null || matches.Value.Length == 0)
+            {
+                return;
+            }
+
+            var containingStatement = objectCreationExpression.FirstAncestorOrSelf<TStatementSyntax>();
+            var nodes = ImmutableArray.Create<SyntaxNode>(containingStatement).AddRange(matches.Value);
+            var syntaxFacts = GetSyntaxFactsService();
+            if (syntaxFacts.ContainsInterleavedDirective(nodes, cancellationToken))
             {
                 return;
             }
 
             var locations = ImmutableArray.Create(objectCreationExpression.GetLocation());
 
-            var severity = option.Notification.Value;
-            context.ReportDiagnostic(Diagnostic.Create(
-                CreateDescriptorWithSeverity(severity),
+            var severity = option.Notification.Severity;
+            context.ReportDiagnostic(DiagnosticHelper.Create(
+                Descriptor,
                 objectCreationExpression.GetLocation(),
-                additionalLocations: locations));
+                severity,
+                additionalLocations: locations,
+                properties: null));
 
             FadeOutCode(context, optionSet, matches.Value, locations);
         }

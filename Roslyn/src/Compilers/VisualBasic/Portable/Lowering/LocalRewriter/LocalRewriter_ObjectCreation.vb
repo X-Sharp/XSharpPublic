@@ -2,6 +2,7 @@
 
 Imports System.Collections.Immutable
 Imports System.Diagnostics
+Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
@@ -13,7 +14,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ' save the object initializer away to rewrite them later on and set the initializers to nothing to not rewrite them
             ' two times.
             Dim objectInitializer = node.InitializerOpt
-            node = node.Update(node.ConstructorOpt, node.Arguments, Nothing, node.Type)
+            node = node.Update(node.ConstructorOpt, node.Arguments, node.DefaultArguments, Nothing, node.Type)
 
             Dim ctor = node.ConstructorOpt
             Dim result As BoundExpression = node
@@ -24,6 +25,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 result = node.Update(ctor,
                                      RewriteCallArguments(node.Arguments, ctor.Parameters, temporaries, copyBack, False),
+                                     node.DefaultArguments,
                                      Nothing,
                                      ctor.ContainingType)
 
@@ -67,7 +69,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If ctor IsNot Nothing Then
                 newGuid = factory.[New](ctor, factory.Literal(node.GuidString))
             Else
-                newGuid = New BoundBadExpression(node.Syntax, LookupResultKind.NotCreatable, ImmutableArray(Of Symbol).Empty, ImmutableArray(Of BoundNode).Empty, ErrorTypeSymbol.UnknownResultType, hasErrors:=True)
+                newGuid = New BoundBadExpression(node.Syntax, LookupResultKind.NotCreatable, ImmutableArray(Of Symbol).Empty, ImmutableArray(Of BoundExpression).Empty, ErrorTypeSymbol.UnknownResultType, hasErrors:=True)
             End If
 
             Dim getTypeFromCLSID = If(factory.WellKnownMember(Of MethodSymbol)(WellKnownMember.System_Runtime_InteropServices_Marshal__GetTypeFromCLSID, isOptional:=True),
@@ -76,7 +78,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If getTypeFromCLSID IsNot Nothing Then
                 callGetTypeFromCLSID = factory.Call(Nothing, getTypeFromCLSID, newGuid)
             Else
-                callGetTypeFromCLSID = New BoundBadExpression(node.Syntax, LookupResultKind.OverloadResolutionFailure, ImmutableArray(Of Symbol).Empty, ImmutableArray(Of BoundNode).Empty, ErrorTypeSymbol.UnknownResultType, hasErrors:=True)
+                callGetTypeFromCLSID = New BoundBadExpression(node.Syntax, LookupResultKind.OverloadResolutionFailure, ImmutableArray(Of Symbol).Empty, ImmutableArray(Of BoundExpression).Empty, ErrorTypeSymbol.UnknownResultType, hasErrors:=True)
             End If
 
             Dim createInstance = factory.WellKnownMember(Of MethodSymbol)(WellKnownMember.System_Activator__CreateInstance)
@@ -87,7 +89,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 _diagnostics.Add(node, useSiteDiagnostics)
                 rewrittenObjectCreation = New BoundDirectCast(node.Syntax, factory.Call(Nothing, createInstance, callGetTypeFromCLSID), conversion, node.Type)
             Else
-                rewrittenObjectCreation = New BoundBadExpression(node.Syntax, LookupResultKind.OverloadResolutionFailure, ImmutableArray(Of Symbol).Empty, ImmutableArray(Of BoundNode).Empty, node.Type, hasErrors:=True)
+                rewrittenObjectCreation = New BoundBadExpression(node.Syntax, LookupResultKind.OverloadResolutionFailure, ImmutableArray(Of Symbol).Empty, ImmutableArray(Of BoundExpression).Empty, node.Type, hasErrors:=True)
             End If
 
             If node.InitializerOpt Is Nothing OrElse node.InitializerOpt.HasErrors Then
@@ -146,7 +148,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                        suppressObjectClone:=False,
                                        type:=typeParameter)
             Else
-                result = New BoundBadExpression(syntax, LookupResultKind.NotReferencable, ImmutableArray(Of Symbol).Empty, ImmutableArray(Of BoundNode).Empty, typeParameter, hasErrors:=True)
+                result = New BoundBadExpression(syntax, LookupResultKind.NotReferencable, ImmutableArray(Of Symbol).Empty, ImmutableArray(Of BoundExpression).Empty, typeParameter, hasErrors:=True)
             End If
 
             If node.InitializerOpt IsNot Nothing Then
@@ -401,7 +403,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Select Case rewrittenObjectCreationExpression.Kind
                 Case BoundKind.ObjectCreationExpression
                     Dim objCreation = DirectCast(rewrittenObjectCreationExpression, BoundObjectCreationExpression)
-                    Return objCreation.Update(objCreation.ConstructorOpt, objCreation.Arguments, rewrittenInitializer, objCreation.Type)
+                    Return objCreation.Update(objCreation.ConstructorOpt, objCreation.Arguments, objCreation.DefaultArguments, rewrittenInitializer, objCreation.Type)
 
                 Case BoundKind.NewT
                     Dim newT = DirectCast(rewrittenObjectCreationExpression, BoundNewT)

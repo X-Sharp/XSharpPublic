@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
-using CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax;
+
 using Microsoft.CodeAnalysis.CSharp;
 using System.Linq;
 using System.Collections.Generic;
@@ -22,39 +22,23 @@ using System;
 using Antlr4.Runtime.Tree;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Microsoft.CodeAnalysis;
-#if !TEST
+using Microsoft.CodeAnalysis; 
+#if !VSPARSER
 using MCT = Microsoft.CodeAnalysis.Text;
+using CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax;
+
 #endif
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     public partial class XSharpParser
     {
-        bool _ClsFunc = true;
-        public bool AllowFunctionInsideClass
-        {
-            get { return _ClsFunc; }
-            set { _ClsFunc = value; }
-        }
-        bool _xBaseVars = false;
-        public bool AllowXBaseVariables
-        {
-            get { return _xBaseVars; }
-            set { _xBaseVars = value; }
-        }
-        bool _namedArgs = false;
-        public bool AllowNamedArgs
-        {
-            get { return _namedArgs; }
-            set { _namedArgs = value; }
-        }
-
-        bool _isScript;
-        public bool IsScript
-        {
-            get { return _isScript; }
-            set { _isScript = value; }
-        }
+        public CSharpParseOptions Options { get; set; }
+        public XSharpDialect Dialect => Options.Dialect;
+        public bool AllowFunctionInsideClass => Dialect.AllowFunctionsInsideClass();
+        public bool AllowNamedArgs => Options.AllowNamedArguments;
+        public bool AllowXBaseVariables => Dialect.AllowXBaseVariables();
+        public bool IsScript => Options.Kind == SourceCodeKind.Script;
+        
         void missingToken(string token)
         {
             if (Interpreter.PredictionMode == Antlr4.Runtime.Atn.PredictionMode.Sll)
@@ -93,7 +77,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             la = InputStream.La(1);
             return la != CONSTRUCTOR && la != DESTRUCTOR;
         }
+        public partial class ParenExpressionContext
+        {
+            public ExpressionContext Expr => _Exprs[_Exprs.Count - 1];
+        }
 
+#if !VSPARSER
         public interface IPartialPropertyContext : IEntityContext
         {
             List<MethodContext> PartialProperties { get; set; }
@@ -110,13 +99,22 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public interface IEntityContext : IRuleNode, IXParseTree
         {
             EntityData Data { get; }
-            IList<ParameterContext> Params { get; }
+            ParameterListContext Params { get; }
             DatatypeContext ReturnType { get; }
             String Name { get; }
             String ShortName { get; }
         }
+        internal interface IXPPEntityContext: IEntityContext
+        {
+            XppmemberModifiersContext Mods { get; }
+            AttributesContext Atts { get; }
+            InternalSyntax.XppDeclaredMethodInfo Info { get; }
+            StatementBlockContext Statements { get; set; }
+            ParameterListContext Parameters { get; }
+        }
+
         [FlagsAttribute]
-        enum EntityFlags : short
+        enum EntityFlags : int
         {
             None = 0,
             ClipperCallingConvention = 1 << 0, // Member property
@@ -130,8 +128,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             IsInitAxit = 1 << 8,        // Member property
             HasInstanceCtor = 1 << 9,   // Class property
             Partial = 1 << 10,          // Class property
+            HasStatic = 1 << 10,        // XPP Class property
             PartialProps = 1 << 11,     // Class property
             HasDimVar = 1 << 12,        // Member property
+            HasSync = 1 << 13,          // Member property
+			HasAddressOf = 1 << 14,     // Member property
+            IsInitProcedure = 1 << 15   // Member property
+
         }
 
 
@@ -218,7 +221,27 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 get { return flags.HasFlag(EntityFlags.HasDimVar); }
                 set { flags = setFlag(flags, EntityFlags.HasDimVar, value); }
             }
+            public bool HasSync
+            {
+                get { return flags.HasFlag(EntityFlags.HasSync); }
+                set { flags = setFlag(flags, EntityFlags.HasSync, value); }
+            }
+            public bool HasAddressOf
+            {
+                get { return flags.HasFlag(EntityFlags.HasAddressOf); }
+                set { flags = setFlag(flags, EntityFlags.HasAddressOf, value); }
+            }
+            public bool HasStatic
+            {
+                get { return flags.HasFlag(EntityFlags.HasStatic); }
+                set { flags = setFlag(flags, EntityFlags.HasStatic, value); }
+            }
 
+            public bool IsInitProcedure
+            {
+                get { return flags.HasFlag(EntityFlags.IsInitProcedure); }
+                set { flags = setFlag(flags, EntityFlags.IsInitProcedure, value); }
+            }
             private List<MemVarFieldInfo> Fields;
             public void AddField(string Name, string Alias, bool Field)
             {
@@ -242,6 +265,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         }
 
+
         public partial class RepeatStmtContext : ILoopStmtContext
         {
             public StatementBlockContext Statements { get { return StmtBlk; } }
@@ -263,7 +287,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
-            public IList<ParameterContext> Params => this.ParamList?._Params;
+            public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + ShortName;
             public String ShortName => this.Id.GetText();
@@ -274,7 +298,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
-            public IList<ParameterContext> Params => this.ParamList?._Params;
+            public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
             public String Name => ParentName + ShortName;
             public String ShortName => this.Id.GetText();
@@ -286,7 +310,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
-            public IList<ParameterContext> Params => this.ParamList?._Params;
+            public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
             public String ShortName => this.Id.GetText();
             public String Name
@@ -309,7 +333,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
-            public IList<ParameterContext> Params => null;
+            public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + Key.Text;
             public String ShortName => ParentName + Key.Text;
@@ -319,7 +343,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
-            public IList<ParameterContext> Params => null;
+            public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + Key.Text;
             public String ShortName => ParentName + Key.Text;
@@ -329,7 +353,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
-            public IList<ParameterContext> Params => this.ParamList?._Params;
+            public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + ShortName;
             public String ShortName => "ctor";
@@ -338,7 +362,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
-            public IList<ParameterContext> Params => null;
+            public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + ShortName;
             public String ShortName => "Finalize";
@@ -347,7 +371,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
-            public IList<ParameterContext> Params => null;
+            public ParameterListContext Params => null;
             public DatatypeContext ReturnType => this.Type;
             public String Name => ParentName + ShortName;
             public String ShortName => Id.GetText();
@@ -356,7 +380,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
-            public IList<ParameterContext> Params => null;
+            public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + ShortName;
             public String ShortName => Id.GetText();
@@ -366,8 +390,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public partial class PropertyContext : IEntityContext
         {
             EntityData data = new EntityData();
+
             public EntityData Data { get { return data; } }
-            public IList<ParameterContext> Params => this.ParamList?._Params;
+            public ParameterListContext Params => null;
             public DatatypeContext ReturnType => this.Type;
             public String Name => ParentName + ShortName;
             public String ShortName => Id.GetText();
@@ -376,7 +401,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
-            public IList<ParameterContext> Params => this.ParamList?._Params;
+            public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
             public String Name => ParentName + ShortName;
             public String ShortName
@@ -397,7 +422,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
-            public IList<ParameterContext> Params => this.ParamList?._Params;
+            public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
             public String Name => ParentName + ShortName;
             public String ShortName => this.Id.GetText();
@@ -412,7 +437,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 set { partialProperties = value; }
             } 
             public EntityData Data => data;
-            public IList<ParameterContext> Params => null;
+            public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + ShortName;
             public String ShortName => this.Id.GetText();
@@ -428,7 +453,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 set { partialProperties = value; }
             }
             public EntityData Data => data;
-            public IList<ParameterContext> Params => null;
+            public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + ShortName;
             public String ShortName => Id.GetText();
@@ -443,7 +468,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 set { partialProperties = value; }
             }
             public EntityData Data => data;
-            public IList<ParameterContext> Params => null;
+            public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + ShortName;
             public String ShortName => Id.GetText();
@@ -452,7 +477,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
-            public IList<ParameterContext> Params => this.ParamList?._Params;
+            public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
             public String Name => this.Id.GetText();
             public String ShortName => this.Id.GetText();
@@ -463,7 +488,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
-            public IList<ParameterContext> Params => null;
+            public ParameterListContext Params => null;
             public DatatypeContext ReturnType => this.Vars.DataType;
             public String Name => this.Vars._Var.FirstOrDefault().Id.GetText();
             public String ShortName => this.Vars._Var.FirstOrDefault().Id.GetText();
@@ -478,7 +503,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
-            public IList<ParameterContext> Params => null;
+            public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
             public String Name => this.Id.GetText();
             public String ShortName => this.Id.GetText();
@@ -488,12 +513,87 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
-            public IList<ParameterContext> Params => null;
+            public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
             public String Name => this.Id.GetText();
             public String ShortName => this.Id.GetText();
 
         }
+        public partial class XppclassContext : IEntityContext
+        {
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public ParameterListContext Params => null;
+            public DatatypeContext ReturnType => null;
+            public String Name => ParentName + ShortName;
+            public String ShortName => Id.GetText();
+        }
+        public partial class XppclassvarsContext
+        {
+            public int Visibility { get; set; }
+        }
+
+          public partial class XppmethodContext : IXPPEntityContext
+        {
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public ParameterListContext Params => this.ParamList;
+            public DatatypeContext ReturnType => this.Type;
+            public String ShortName => this.Id.GetText();
+            public String Name
+            {
+                get
+                {
+                    string name = this.Id.GetText() +"()";
+                    return ParentName + name;
+                }
+            }
+            public InternalSyntax.XppDeclaredMethodInfo Info { get; set; }
+            public XppmemberModifiersContext Mods => this.Modifiers;
+            public AttributesContext Atts => this.Attributes;
+            public StatementBlockContext Statements { get { return this.StmtBlk; } set { this.StmtBlk = value; } }
+            public ParameterListContext Parameters => this.ParamList;
+
+        }
+        public partial class XppinlineMethodContext : IXPPEntityContext
+        {
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public ParameterListContext Params => this.ParamList;
+            public DatatypeContext ReturnType => this.Type;
+            public String ShortName => this.Id.GetText();
+            public String Name
+            {
+                get
+                {
+                    string name = this.Id.GetText() + "()";
+                    return ParentName + name;
+                }
+            }
+            public InternalSyntax.XppDeclaredMethodInfo Info { get; set; }
+            public XppmemberModifiersContext Mods => this.Modifiers;
+            public AttributesContext Atts => this.Attributes;
+            public StatementBlockContext Statements { get { return this.StmtBlk; } set { this.StmtBlk = value; } }
+            public ParameterListContext Parameters => this.ParamList;
+
+        }
+        public partial class XpppropertyContext : IEntityContext
+        {
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public ParameterListContext Params => null;
+            public DatatypeContext ReturnType => this.Type;
+            public String ShortName => this.Id.GetText();
+            public String Name
+            {
+                get
+                {
+                    string name = this.Id.GetText() ;
+                    return ParentName + name;
+                }
+            }
+        }
+#endif
     }
 
 
@@ -560,13 +660,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         string MappedFileName { get; }
         int MappedLine { get; }
         IToken SourceSymbol { get; }
-#if ! TEST
+#if !VSPARSER
         Microsoft.CodeAnalysis.Location GetLocation();
 #endif
     }
     [Serializable]
     public class XTerminalNodeImpl : Antlr4.Runtime.Tree.TerminalNodeImpl,
-        IMessageSerializable,
+        IFormattable,
         IXParseTree,
         IErrorNode
     {
@@ -576,6 +676,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool IsHidden { get { return false; } }
         public int Position { get { return Symbol.StartIndex; } }
         public int FullWidth { get { return Symbol.StopIndex - Symbol.StartIndex + 1; } }
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return ToString();
+        }
         public string SourceFileName
         {
             get
@@ -600,7 +704,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
         public override string ToString() { return this.GetText(); }
-#if !TEST
+#if !VSPARSER
         public Microsoft.CodeAnalysis.Location GetLocation()
         {
             var token = this.Symbol;
@@ -633,11 +737,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             IsField = field;
         }
     }
-
+#if !VSPARSER
 
     internal static class RuleExtensions
     {
-#if !TEST
+
         internal static bool IsStatic(this InternalSyntax.ClassDeclarationSyntax classdecl)
         {
             return classdecl.Modifiers.Any((int)SyntaxKind.StaticKeyword);
@@ -647,7 +751,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             return ctordecl.Modifiers.Any((int)SyntaxKind.StaticKeyword);
         }
-#endif
+
         internal static void Put<T>([NotNull] this IXParseTree t, T node)
             where T : InternalSyntax.CSharpSyntaxNode
         {
@@ -748,5 +852,5 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return false;
         }
     }
-
+#endif
 }

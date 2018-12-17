@@ -6,17 +6,22 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using Microsoft.VisualStudio.IntegrationTest.Utilities.Interop;
+using System.Reflection;
+using System.Runtime.ExceptionServices;
+using System.Threading.Tasks;
+using EnvDTE;
 using Microsoft.VisualStudio.Setup.Configuration;
+using RunTests;
+using Process = System.Diagnostics.Process;
 
 namespace Microsoft.VisualStudio.IntegrationTest.Utilities
 {
     public sealed class VisualStudioInstanceFactory : IDisposable
     {
-        public static readonly string VsProductVersion = Settings.Default.VsProductVersion;
+        [ThreadStatic]
+        private static bool s_inHandler;
 
-        public static readonly string VsProgId = $"VisualStudio.DTE.{VsProductVersion}";
+        public static readonly string VsProductVersion = Settings.Default.VsProductVersion;
 
         public static readonly string VsLaunchArgs = $"{(string.IsNullOrWhiteSpace(Settings.Default.VsRootSuffix) ? "/log" : $"/rootsuffix {Settings.Default.VsRootSuffix}")} /log";
 
@@ -24,8 +29,7 @@ namespace Microsoft.VisualStudio.IntegrationTest.Utilities
         /// The instance that has already been launched by this factory and can be reused.
         /// </summary>
         private VisualStudioInstance _currentlyRunningInstance;
-        private ImmutableHashSet<string> _supportedPackageIds;
-        private string _installationPath;
+
         private bool _hasCurrentlyActiveContext;
 
         static VisualStudioInstanceFactory()
@@ -36,39 +40,84 @@ namespace Microsoft.VisualStudio.IntegrationTest.Utilities
             {
                 throw new PlatformNotSupportedException("The Visual Studio Integration Test Framework is only supported on Visual Studio 15.0 and later.");
             }
+        }
 
-            // This looks like it is pointless (since we are returning an assembly that is already loaded) but it is actually required.
-            // The BinaryFormatter, when invoking 'HandleReturnMessage', will end up attempting to call 'BinaryAssemblyInfo.GetAssembly()',
-            // which will itself attempt to call 'Assembly.Load()' using the full name of the assembly for the type that is being deserialized.
-            // Depending on the manner in which the assembly was originally loaded, this may end up actually trying to load the assembly a second
-            // time and it can fail if the standard assembly resolution logic fails. This ensures that we 'succeed' this secondary load by returning
-            // the assembly that is already loaded.
-            AppDomain.CurrentDomain.AssemblyResolve += (sender, eventArgs) => {
-                Debug.WriteLine($"'{eventArgs.RequestingAssembly}' is attempting to resolve '{eventArgs.Name}'");
-                var resolvedAssembly = AppDomain.CurrentDomain.GetAssemblies().Where((assembly) => assembly.FullName.Equals(eventArgs.Name)).SingleOrDefault();
+        public VisualStudioInstanceFactory()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolveHandler;
+            AppDomain.CurrentDomain.FirstChanceException += FirstChanceExceptionHandler;
+        }
 
-                if (resolvedAssembly != null)
-                {
-                    Debug.WriteLine("The assembly was already loaded!");
-                }
+        private static void FirstChanceExceptionHandler(object sender, FirstChanceExceptionEventArgs eventArgs)
+        {
+            if (s_inHandler)
+            {
+                // An exception was thrown from within the handler, resulting in a recursive call to the handler.
+                // Bail out now we so don't recursively throw another exception and overflow the stack.
+                return;
+            }
 
-                return resolvedAssembly;
-            };
+            try
+            {
+                s_inHandler = true;
+
+                var assemblyDirectory = GetAssemblyDirectory();
+                var testName = CaptureTestNameAttribute.CurrentName ?? "Unknown";
+                var logDir = Path.Combine(assemblyDirectory, "xUnitResults", "Screenshots");
+                var baseFileName = $"{testName}-{eventArgs.Exception.GetType().Name}-{DateTime.Now:HH.mm.ss}";
+                ScreenshotService.TakeScreenshot(Path.Combine(logDir, $"{baseFileName}.png"));
+
+                var exception = eventArgs.Exception;
+                File.WriteAllText(
+                    Path.Combine(logDir, $"{baseFileName}.log"),
+                    $"{exception}.GetType().Name{Environment.NewLine}{exception.StackTrace}");
+
+            }
+            finally
+            {
+                s_inHandler = false;
+            }
+        }
+
+        // This looks like it is pointless (since we are returning an assembly that is already loaded) but it is actually required.
+        // The BinaryFormatter, when invoking 'HandleReturnMessage', will end up attempting to call 'BinaryAssemblyInfo.GetAssembly()',
+        // which will itself attempt to call 'Assembly.Load()' using the full name of the assembly for the type that is being deserialized.
+        // Depending on the manner in which the assembly was originally loaded, this may end up actually trying to load the assembly a second
+        // time and it can fail if the standard assembly resolution logic fails. This ensures that we 'succeed' this secondary load by returning
+        // the assembly that is already loaded.
+        private static Assembly AssemblyResolveHandler(object sender, ResolveEventArgs eventArgs)
+        {
+            Debug.WriteLine($"'{eventArgs.RequestingAssembly}' is attempting to resolve '{eventArgs.Name}'");
+            var resolvedAssembly = AppDomain.CurrentDomain.GetAssemblies().Where((assembly) => assembly.FullName.Equals(eventArgs.Name)).SingleOrDefault();
+
+            if (resolvedAssembly != null)
+            {
+                Debug.WriteLine("The assembly was already loaded!");
+            }
+
+            return resolvedAssembly;
         }
 
         /// <summary>
         /// Returns a <see cref="VisualStudioInstanceContext"/>, starting a new instance of Visual Studio if necessary.
         /// </summary>
-        public VisualStudioInstanceContext GetNewOrUsedInstance(ImmutableHashSet<string> requiredPackageIds)
+        public async Task<VisualStudioInstanceContext> GetNewOrUsedInstanceAsync(ImmutableHashSet<string> requiredPackageIds)
         {
             ThrowExceptionIfAlreadyHasActiveContext();
 
-            if (ShouldStartNewInstance(requiredPackageIds))
+            try
             {
-                StartNewInstance(requiredPackageIds);
-            }
+                bool shouldStartNewInstance = ShouldStartNewInstance(requiredPackageIds);
+                await UpdateCurrentlyRunningInstanceAsync(requiredPackageIds, shouldStartNewInstance).ConfigureAwait(false);
 
-            return new VisualStudioInstanceContext(_currentlyRunningInstance, this);
+                return new VisualStudioInstanceContext(_currentlyRunningInstance, this);
+            }
+            catch
+            {
+                // Make sure the next test doesn't try to reuse the same instance
+                NotifyCurrentInstanceContextDisposed(canReuse: false);
+                throw;
+            }
         }
 
         internal void NotifyCurrentInstanceContextDisposed(bool canReuse)
@@ -92,7 +141,7 @@ namespace Microsoft.VisualStudio.IntegrationTest.Utilities
             //  * The current instance is no longer running
 
             return _currentlyRunningInstance == null
-                || (_supportedPackageIds != null && !requiredPackageIds.All((requiredPackageId) => _supportedPackageIds.Contains(requiredPackageId))) // _supportedPackagesIds will be null if ISetupInstance2.GetPackages() is NYI
+                || (!requiredPackageIds.All(id => _currentlyRunningInstance.SupportedPackageIds.Contains(id)))
                 || !_currentlyRunningInstance.IsRunning;
         }
 
@@ -107,43 +156,58 @@ namespace Microsoft.VisualStudio.IntegrationTest.Utilities
         /// <summary>
         /// Starts up a new <see cref="VisualStudioInstance"/>, shutting down any instances that are already running.
         /// </summary>
-        private void StartNewInstance(ImmutableHashSet<string> requiredPackageIds)
+        private async Task UpdateCurrentlyRunningInstanceAsync(ImmutableHashSet<string> requiredPackageIds, bool shouldStartNewInstance)
         {
-            var instance = LocateVisualStudioInstance(requiredPackageIds) as ISetupInstance2;
+            Process hostProcess;
+            DTE dte;
+            ImmutableHashSet<string> supportedPackageIds;
+            string installationPath;
 
-            _supportedPackageIds = ImmutableHashSet.CreateRange(instance.GetPackages().Select((supportedPackage) => supportedPackage.GetId()));
-            _installationPath = instance.GetInstallationPath();
-
-            var process = StartNewVisualStudioProcess(_installationPath);
-            // We wait until the DTE instance is up before we're good
-            var dte = IntegrationHelper.WaitForNotNullAsync(() => IntegrationHelper.TryLocateDteForProcess(process)).Result;
-
-            _currentlyRunningInstance = new VisualStudioInstance(process, dte);
-        }
-
-        private static ISetupConfiguration GetSetupConfiguration()
-        {
-            try
+            if (shouldStartNewInstance)
             {
-                return new SetupConfiguration();
-            }
-            catch (COMException comException) when (comException.HResult == NativeMethods.REGDB_E_CLASSNOTREG)
-            {
-                // Fallback to P/Invoke if the COM registration is missing
-                var hresult = NativeMethods.GetSetupConfiguration(out var setupConfiguration, pReserved: IntPtr.Zero);
-                
-                if (hresult < 0)
+                // We are starting a new instance, so ensure we close the currently running instance, if it exists
+                _currentlyRunningInstance?.Close();
+
+                var instance = LocateVisualStudioInstance(requiredPackageIds) as ISetupInstance2;
+                supportedPackageIds = ImmutableHashSet.CreateRange(instance.GetPackages().Select((supportedPackage) => supportedPackage.GetId()));
+                installationPath = instance.GetInstallationPath();
+
+                hostProcess = StartNewVisualStudioProcess(installationPath);
+
+                var procDumpInfo = ProcDumpInfo.ReadFromEnvironment();
+                if (procDumpInfo != null)
                 {
-                    throw Marshal.GetExceptionForHR(hresult);
+                    ProcDumpUtil.AttachProcDump(procDumpInfo.Value, hostProcess.Id);
                 }
 
-                return setupConfiguration;
+                // We wait until the DTE instance is up before we're good
+                dte = await IntegrationHelper.WaitForNotNullAsync(() => IntegrationHelper.TryLocateDteForProcess(hostProcess)).ConfigureAwait(false);
             }
+            else
+            {
+                // We are going to reuse the currently running instance, so ensure that we grab the host Process and DTE
+                // before cleaning up any hooks or remoting services created by the previous instance. We will then
+                // create a new VisualStudioInstance from the previous to ensure that everything is in a 'clean' state.
+                //
+                // We create a new DTE instance in the current context since the COM object could have been separated
+                // from its RCW during the previous test.
+
+                Debug.Assert(_currentlyRunningInstance != null);
+
+                hostProcess = _currentlyRunningInstance.HostProcess;
+                dte = await IntegrationHelper.WaitForNotNullAsync(() => IntegrationHelper.TryLocateDteForProcess(hostProcess)).ConfigureAwait(false);
+                supportedPackageIds = _currentlyRunningInstance.SupportedPackageIds;
+                installationPath = _currentlyRunningInstance.InstallationPath;
+
+                _currentlyRunningInstance.Close(exitHostProcess: false);
+            }
+
+            _currentlyRunningInstance = new VisualStudioInstance(hostProcess, dte, supportedPackageIds, installationPath);
         }
 
         private static IEnumerable<ISetupInstance> EnumerateVisualStudioInstances()
         {
-            var setupConfiguration = GetSetupConfiguration() as ISetupConfiguration2;
+            var setupConfiguration = new SetupConfiguration();
 
             var instanceEnumerator = setupConfiguration.EnumAllInstances();
             var instances = new ISetupInstance[3];
@@ -169,14 +233,48 @@ namespace Microsoft.VisualStudio.IntegrationTest.Utilities
 
         private static ISetupInstance LocateVisualStudioInstance(ImmutableHashSet<string> requiredPackageIds)
         {
-            var instances = EnumerateVisualStudioInstances().Where((instance) => instance.GetInstallationVersion().StartsWith(VsProductVersion));
+            var vsInstallDir = Environment.GetEnvironmentVariable("__UNITTESTEXPLORER_VSINSTALLPATH__")
+                ?? Environment.GetEnvironmentVariable("VSAPPIDDIR");
+            if (vsInstallDir != null)
+            {
+                vsInstallDir = Path.GetFullPath(Path.Combine(vsInstallDir, @"..\.."));
+            }
+            else
+            {
+                vsInstallDir = Environment.GetEnvironmentVariable("VSInstallDir");
+            }
+
+            var haveVsInstallDir = !string.IsNullOrEmpty(vsInstallDir);
+
+            if (haveVsInstallDir)
+            {
+                vsInstallDir = Path.GetFullPath(vsInstallDir);
+                vsInstallDir = vsInstallDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                Debug.WriteLine($"An environment variable named 'VSInstallDir' (or equivalent) was found, adding this to the specified requirements. (VSInstallDir: {vsInstallDir})");
+            }
+
+            var instances = EnumerateVisualStudioInstances().Where((instance) => {
+                var isMatch = true;
+                {
+                    isMatch &= instance.GetInstallationVersion().StartsWith(VsProductVersion);
+
+                    if (haveVsInstallDir)
+                    {
+                        var installationPath = instance.GetInstallationPath();
+                        installationPath = Path.GetFullPath(installationPath);
+                        installationPath = installationPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                        isMatch &= installationPath.Equals(vsInstallDir, StringComparison.OrdinalIgnoreCase);
+                    }
+                }
+                return isMatch;
+            });
 
             var instanceFoundWithInvalidState = false;
 
             foreach (ISetupInstance2 instance in instances)
             {
                 var packages = instance.GetPackages()
-                                        .Where((package) => requiredPackageIds.Contains(package.GetId()));
+                                       .Where((package) => requiredPackageIds.Contains(package.GetId()));
 
                 if (packages.Count() != requiredPackageIds.Count())
                 {
@@ -198,7 +296,7 @@ namespace Microsoft.VisualStudio.IntegrationTest.Utilities
 
             throw new Exception(instanceFoundWithInvalidState ?
                                 "An instance matching the specified requirements was found but it was in an invalid state." :
-                                "There were no instances of Visual Studio 15.0 or later found that match the specified requirements.");
+                                "There were no instances of Visual Studio found that match the specified requirements.");
         }
 
         private static Process StartNewVisualStudioProcess(string installationPath)
@@ -217,10 +315,15 @@ namespace Microsoft.VisualStudio.IntegrationTest.Utilities
             IntegrationHelper.KillProcess("dexplore");
 
             var process = Process.Start(vsExeFile, VsLaunchArgs);
-
             Debug.WriteLine($"Launched a new instance of Visual Studio. (ID: {process.Id})");
 
             return process;
+        }
+
+        private static string GetAssemblyDirectory()
+        {
+            var assemblyPath = typeof(VisualStudioInstanceFactory).Assembly.Location;
+            return Path.GetDirectoryName(assemblyPath);
         }
 
         public void Dispose()
@@ -230,6 +333,9 @@ namespace Microsoft.VisualStudio.IntegrationTest.Utilities
 
             // We want to make sure everybody cleaned up their contexts by the end of everything
             ThrowExceptionIfAlreadyHasActiveContext();
+
+            AppDomain.CurrentDomain.FirstChanceException -= FirstChanceExceptionHandler;
+            AppDomain.CurrentDomain.AssemblyResolve -= AssemblyResolveHandler;
         }
     }
 }

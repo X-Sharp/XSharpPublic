@@ -2,11 +2,17 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>CodeBlock</title>
+  <keywords>
+    <keyword>CODEBLOCK</keyword>
+    <keyword>XSharp._CodeBlock</keyword>
+    <keyword>XSharp.CodeBlock</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">CodeBlock</para>
     </header>
     <para styleclass="Normal">This is the parent class for compile time codeblocks.</para>
     <para styleclass="Normal">There is also a subclass _CodeBlock which is the parent class for macro compiled (runtime) codeblocks</para>
+    <para styleclass="Normal">The internal type names are XSharp.CodeBlock and XSharp._CodeBlock</para>
   </body>
 </topic>

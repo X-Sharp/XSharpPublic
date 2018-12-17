@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
 <topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-  <title>/vo6</title>
+  <title>-vo6</title>
   <keywords>
-    <keyword>/vo6</keyword>
+    <keyword>-vo6</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/vo6<tab /><tab />Implicit pointer conversions </para>
+      <para styleclass="Heading1">-vo6<tab -><tab ->Implicit pointer conversions </para>
     </header>
-    <para styleclass="Normal">The /vo6 option directs the compiler to resolve typed function pointers to PTR.</para>
+    <para styleclass="Normal">The -vo6 option directs the compiler to resolve typed function pointers to PTR.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/vo6[+|-]</para>
+    <para styleclass="Code with box">-vo6[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">+ | - <tab />Specifying +, or just /vo6, directs the compiler to resolve pointers that would resolve to typed function pointers in Visual Objects to PTR. </para>
+    <para styleclass="List">+ | - <tab ->Specifying +, or just -vo6, directs the compiler to resolve pointers that would resolve to typed function pointers in Visual Objects to PTR. </para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal">X# does not supported typed function pointers. Existing Visual Objects code that declares typed function pointers will not compile in X#, unless the type is changed to PTR or IntPtr.</para>
     <para styleclass="Normal"></para>
@@ -31,12 +31,12 @@
       <li styleclass="Normal" style="margin-left:13px;">In the Visual Objects Compatibility section, modify the <text styleclass="Body Text">&quot;Implicit pointer conversions&quot; </text>property. </li>
     </list>
     <para styleclass="Heading2">Example</para>
-    <para styleclass="Normal">The following code is valid in Visual Objects, but will not compile in X# unless /vo6 is used.</para>
+    <para styleclass="Normal">The following code is valid in Visual Objects, but will not compile in X# unless -vo6 is used.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"> &#160; </para>
     <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Using /vo6 has the same effect as if the GLOBAL declaration were rewritten as:</para>
+    <para styleclass="Normal">Using -vo6 has the same effect as if the GLOBAL declaration were rewritten as:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">GLOBAL pFoo AS PTR </para>

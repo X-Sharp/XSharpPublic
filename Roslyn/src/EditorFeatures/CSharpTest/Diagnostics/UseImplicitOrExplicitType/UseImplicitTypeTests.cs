@@ -1,17 +1,15 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CodeStyle;
 using Microsoft.CodeAnalysis.CSharp.CodeStyle;
 using Microsoft.CodeAnalysis.CSharp.Diagnostics.TypeStyle;
-using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
 using Microsoft.CodeAnalysis.CSharp.TypeStyle;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Editor.UnitTests;
 using Microsoft.CodeAnalysis.Options;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
 
@@ -19,13 +17,11 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Diagnostics.UseImplicit
 {
     public partial class UseImplicitTypeTests : AbstractCSharpDiagnosticProviderBasedUserDiagnosticTest
     {
-        internal override Tuple<DiagnosticAnalyzer, CodeFixProvider> CreateDiagnosticProviderAndFixer(Workspace workspace) =>
-            new Tuple<DiagnosticAnalyzer, CodeFixProvider>(
-                new CSharpUseImplicitTypeDiagnosticAnalyzer(),
-                new UseImplicitTypeCodeFixProvider());
+        internal override (DiagnosticAnalyzer, CodeFixProvider) CreateDiagnosticProviderAndFixer(Workspace workspace)
+            => (new CSharpUseImplicitTypeDiagnosticAnalyzer(), new UseImplicitTypeCodeFixProvider());
 
-        private static readonly CodeStyleOption<bool> onWithNone = new CodeStyleOption<bool>(true, NotificationOption.None);
-        private static readonly CodeStyleOption<bool> offWithNone = new CodeStyleOption<bool>(false, NotificationOption.None);
+        private static readonly CodeStyleOption<bool> onWithSilent = new CodeStyleOption<bool>(true, NotificationOption.Silent);
+        private static readonly CodeStyleOption<bool> offWithSilent = new CodeStyleOption<bool>(false, NotificationOption.Silent);
         private static readonly CodeStyleOption<bool> onWithInfo = new CodeStyleOption<bool>(true, NotificationOption.Suggestion);
         private static readonly CodeStyleOption<bool> offWithInfo = new CodeStyleOption<bool>(false, NotificationOption.Suggestion);
         private static readonly CodeStyleOption<bool> onWithWarning = new CodeStyleOption<bool>(true, NotificationOption.Warning);
@@ -59,46 +55,42 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Diagnostics.UseImplicit
             SingleOption(CSharpCodeStyleOptions.UseImplicitTypeWhereApparent, onWithError),
             SingleOption(CSharpCodeStyleOptions.UseImplicitTypeForIntrinsicTypes, onWithInfo));
 
-        private IDictionary<OptionKey, object> ImplicitTypeNoneEnforcement() => OptionsSet(
-            SingleOption(CSharpCodeStyleOptions.UseImplicitTypeWherePossible, onWithNone),
-            SingleOption(CSharpCodeStyleOptions.UseImplicitTypeWhereApparent, onWithNone),
-            SingleOption(CSharpCodeStyleOptions.UseImplicitTypeForIntrinsicTypes, onWithNone));
+        private IDictionary<OptionKey, object> ImplicitTypeSilentEnforcement() => OptionsSet(
+            SingleOption(CSharpCodeStyleOptions.UseImplicitTypeWherePossible, onWithSilent),
+            SingleOption(CSharpCodeStyleOptions.UseImplicitTypeWhereApparent, onWithSilent),
+            SingleOption(CSharpCodeStyleOptions.UseImplicitTypeForIntrinsicTypes, onWithSilent));
 
         private static IDictionary<OptionKey, object> Options(OptionKey option, object value)
-        {
-            var options = new Dictionary<OptionKey, object>();
-            options.Add(option, value);
-            return options;
-        }
+            => new Dictionary<OptionKey, object> { { option, value } };
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotOnFieldDeclaration()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class Program
 {
     [|int|] _myfield = 5;
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotOnFieldLikeEvents()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class Program
 {
     public event [|D|] _myevent;
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotOnConstants()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class Program
@@ -107,13 +99,13 @@ class Program
     {
         const [|int|] x = 5;
     }
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotOnNullLiteral()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class Program
@@ -122,13 +114,28 @@ class Program
     {
         [|Program|] x = null;
     }
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
+        [WorkItem(27221, "https://github.com/dotnet/roslyn/issues/27221")]
+        public async Task NotOnRefVar()
+        {
+            await TestMissingInRegularAndScriptAsync(@"
+class Program
+{
+    void Method()
+    {
+        ref [|var|] x = Method2();
+    }
+    ref int Method2() => throw null;
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotOnDynamic()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class Program
@@ -137,13 +144,13 @@ class Program
     {
         [|dynamic|] x = 1;
     }
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotOnAnonymousMethodExpression()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class Program
@@ -154,13 +161,13 @@ class Program
             return value != ""0"";
         };
     }
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotOnLambdaExpression()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class Program
@@ -169,13 +176,13 @@ class Program
     {
         [|Func<int, int>|] x = y => y * y;
     }
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotOnMethodGroup()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class Program
@@ -184,13 +191,13 @@ class Program
     {
         [|Func<string, string>|] copyStr = string.Copy;
     }
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotOnDeclarationWithMultipleDeclarators()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class Program
@@ -199,13 +206,13 @@ class Program
     {
         [|int|] x = 5, y = x;
     }
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotOnDeclarationWithoutInitializer()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class Program
@@ -214,13 +221,13 @@ class Program
     {
         [|Program|] x;
     }
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotOnIFormattable()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class Program
@@ -229,13 +236,13 @@ class Program
     {
         [|IFormattable|] s = $""Hello, {name}""
     }
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotOnFormattableString()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class Program
@@ -244,13 +251,13 @@ class Program
     {
         [|FormattableString|] s = $""Hello, {name}""
     }
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotInCatchDeclaration()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class Program
@@ -265,13 +272,13 @@ class Program
             throw;
         }
     }
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotDuringConflicts()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class Program
@@ -284,13 +291,13 @@ class Program
     class var
     {
     }
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotIfAlreadyImplicitlyTyped()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class Program
@@ -299,13 +306,13 @@ class Program
     {
         [|var|] p = new Program();
     }
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotOnImplicitConversion()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class Program
@@ -315,13 +322,13 @@ class Program
         int i = int.MaxValue;
         [|long|] l = i;
     }
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotOnBoxingImplicitConversion()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class Program
@@ -331,13 +338,13 @@ class Program
         int i = int.MaxValue;
         [|object|] o = i;
     }
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotOnRHS()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -346,13 +353,13 @@ class C
     {
         C c = new [|C|]();
     }
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotOnVariablesUsedInInitalizerExpression()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -361,13 +368,13 @@ class C
     {
         [|int|] i = (i = 20);
     }
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotOnAssignmentToInterfaceType()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -384,13 +391,13 @@ class A : IInterface
 
 interface IInterface
 {
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task NotOnArrayInitializerWithoutNewKeyword()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -404,13 +411,13 @@ class C
             8
         };
     }
-}", options: ImplicitTypeEverywhere());
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarOnLocalWithIntrinsicTypeString()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -434,7 +441,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarOnIntrinsicType()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -456,9 +463,67 @@ class C
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
+        [WorkItem(27221, "https://github.com/dotnet/roslyn/issues/27221")]
+        public async Task SuggestVarOnRefIntrinsicType()
+        {
+            await TestInRegularAndScriptAsync(
+@"using System;
+
+class C
+{
+    static void M()
+    {
+        ref [|int|] s = Ref();
+    }
+    static ref int Ref() => throw null;
+}",
+@"using System;
+
+class C
+{
+    static void M()
+    {
+        ref var s = Ref();
+    }
+    static ref int Ref() => throw null;
+}", options: ImplicitTypeEverywhere());
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
+        [WorkItem(27221, "https://github.com/dotnet/roslyn/issues/27221")]
+        public async Task WithRefIntrinsicTypeInForeach()
+        {
+            var before = @"
+class E
+{
+    public ref int Current => throw null;
+    public bool MoveNext() => throw null;
+    public E GetEnumerator() => throw null;
+
+    void M()
+    {
+        foreach (ref [|int|] x in this) { }
+    }
+}";
+            var after = @"
+class E
+{
+    public ref int Current => throw null;
+    public bool MoveNext() => throw null;
+    public E GetEnumerator() => throw null;
+
+    void M()
+    {
+        foreach (ref var x in this) { }
+    }
+}";
+            await TestInRegularAndScriptAsync(before, after, options: ImplicitTypeEverywhere());
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarOnFrameworkType()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System.Collections.Generic;
 
 class C
@@ -482,7 +547,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarOnUserDefinedType()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -506,7 +571,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarOnGenericType()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C<T>
@@ -530,7 +595,7 @@ class C<T>
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarOnSeeminglyConflictingType()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class var<T>
@@ -554,7 +619,7 @@ class var<T>
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarOnSingleDimensionalArrayTypeWithNewOperator()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -578,7 +643,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarOnSingleDimensionalArrayTypeWithNewOperator2()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -602,7 +667,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarOnSingleDimensionalJaggedArrayType()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -632,7 +697,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarOnDeclarationWithObjectInitializer()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -666,7 +731,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarOnDeclarationWithCollectionInitializer()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 using System.Collections.Generic;
 
@@ -692,7 +757,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarOnDeclarationWithCollectionAndObjectInitializers()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 using System.Collections.Generic;
 
@@ -734,7 +799,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarOnForStatement()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -762,8 +827,9 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarOnForeachStatement()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
+using System.Collections.Generic;
 
 class C
 {
@@ -776,6 +842,7 @@ class C
     }
 }",
 @"using System;
+using System.Collections.Generic;
 
 class C
 {
@@ -792,7 +859,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarOnQueryExpression()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -823,8 +890,8 @@ class C
     {
         var customers = new List<Customer>();
         var expr = from c in customers
-                   where c.City == ""London""
-                   select c;
+                                     where c.City == ""London""
+                                     select c;
     }
 
     private class Customer
@@ -838,7 +905,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarInUsingStatement()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -882,7 +949,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarOnExplicitConversion()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class Program
@@ -908,7 +975,7 @@ class Program
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarInConditionalAccessExpression()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -944,7 +1011,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarInCheckedExpression()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -970,7 +1037,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarInUnCheckedExpression()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -996,7 +1063,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarInAwaitExpression()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 using System.Threading.Tasks;
 
@@ -1032,7 +1099,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarInParenthesizedExpression()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -1056,7 +1123,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task DoNotSuggestVarOnBuiltInType_Literal_WithOption()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -1065,13 +1132,13 @@ class C
     {
         [|int|] s = 5;
     }
-}", options: ImplicitTypeButKeepIntrinsics());
+}", new TestParameters(options: ImplicitTypeButKeepIntrinsics()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task DoNotSuggestVarOnBuiltInType_WithOption()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -1082,13 +1149,13 @@ class C
     {
         [|int|] s = (unchecked(maxValue + 10));
     }
-}", options: ImplicitTypeButKeepIntrinsics());
+}", new TestParameters(options: ImplicitTypeButKeepIntrinsics()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
-        public async Task SuggestVarOnFrameworkTypeEquivalentToBuiltInType()
+        public async Task DoNotSuggestVarOnFrameworkTypeEquivalentToBuiltInType()
         {
-            await TestAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -1099,24 +1166,13 @@ class C
     {
         [|Int32|] s = (unchecked(maxValue + 10));
     }
-}",
-@"using System;
-
-class C
-{
-    private const int maxValue = int.MaxValue;
-
-    static void M()
-    {
-        var s = (unchecked(maxValue + 10));
-    }
-}", options: ImplicitTypeButKeepIntrinsics());
+}", new TestParameters(options: ImplicitTypeButKeepIntrinsics()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarWhereTypeIsEvident_DefaultExpression()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -1140,7 +1196,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarWhereTypeIsEvident_Literals()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -1164,7 +1220,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task DoNotSuggestVarWhereTypeIsEvident_Literals()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -1173,13 +1229,13 @@ class C
     {
         [|int|] text = 5;
     }
-}", options: ImplicitTypeWhereApparent());
+}", new TestParameters(options: ImplicitTypeWhereApparent()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarWhereTypeIsEvident_ObjectCreationExpression()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -1203,15 +1259,15 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarWhereTypeIsEvident_CastExpression()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
 {
     public void Process()
     {
-        object o = int.MaxValue;
-        [|Int32|] i = (Int32)o;
+        object o = DateTime.MaxValue;
+        [|DateTime|] date = (DateTime)o;
     }
 }",
 @"using System;
@@ -1220,23 +1276,16 @@ class C
 {
     public void Process()
     {
-        object o = int.MaxValue;
-        var i = (Int32)o;
+        object o = DateTime.MaxValue;
+        var date = (DateTime)o;
     }
 }", options: ImplicitTypeWhereApparent());
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
-        public async Task SuggestVar_BuiltInTypesRulePrecedesOverTypeIsApparentRule()
+        public async Task DoNotSuggestVar_BuiltInTypesRulePrecedesOverTypeIsApparentRule1()
         {
-            // The option settings here say 
-            // "use explicit type for built-in types" and
-            // "use implicit type where apparent".
-            // The rationale for preferring explicit type for built-in types is 
-            // they have short names and using var doesn't gain anything.
-            // Accordingly, the `built-in type` rule precedes over the `where apparent` rule
-            // and we do not suggest `use var` here.
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -1246,13 +1295,29 @@ class C
         object o = int.MaxValue;
         [|int|] i = (Int32)o;
     }
-}", options: ImplicitTypeWhereApparent());
+}", new TestParameters(options: ImplicitTypeWhereApparent()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
-        public async Task SuggestVarWhereTypeIsEvident_IsExpression()
+        public async Task DoNotSuggestVar_BuiltInTypesRulePrecedesOverTypeIsApparentRule2()
         {
-            await TestAsync(
+            await TestMissingInRegularAndScriptAsync(
+@"using System;
+
+class C
+{
+    public void Process()
+    {
+        object o = int.MaxValue;
+        [|Int32|] i = (Int32)o;
+    }
+}", new TestParameters(options: ImplicitTypeWhereApparent()));
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
+        public async Task DoNotSuggestVarWhereTypeIsEvident_IsExpression()
+        {
+            await TestMissingInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -1270,31 +1335,13 @@ class A : IInterface
 
 interface IInterface
 {
-}",
-@"using System;
-
-class C
-{
-    public void Process()
-    {
-        A a = new A();
-        var s = a is IInterface;
-    }
-}
-
-class A : IInterface
-{
-}
-
-interface IInterface
-{
-}", options: ImplicitTypeWhereApparent());
+}", new TestParameters(options: ImplicitTypeWhereApparent()));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarWhereTypeIsEvident_AsExpression()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -1336,14 +1383,14 @@ interface IInterface
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarWhereTypeIsEvident_ConversionHelpers()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
 {
     public void Process()
     {
-        [|Int32|] a = int.Parse(""1"");
+        [|DateTime|] a = DateTime.Parse(""1"");
     }
 }",
 @"using System;
@@ -1352,7 +1399,7 @@ class C
 {
     public void Process()
     {
-        var a = int.Parse(""1"");
+        var a = DateTime.Parse(""1"");
     }
 }", options: ImplicitTypeWhereApparent());
         }
@@ -1360,7 +1407,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarWhereTypeIsEvident_CreationHelpers()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"class C
 {
     public void Process()
@@ -1390,7 +1437,7 @@ class XElement
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarWhereTypeIsEvident_CreationHelpersWithInferredTypeArguments()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -1414,7 +1461,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarWhereTypeIsEvident_ConvertToType()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -1422,7 +1469,7 @@ class C
     public void Process()
     {
         int integralValue = 12534;
-        [|Decimal|] decimalValue = Convert.ToDecimal(integralValue);
+        [|DateTime|] date = Convert.ToDateTime(integralValue);
     }
 }",
 @"using System;
@@ -1432,7 +1479,7 @@ class C
     public void Process()
     {
         int integralValue = 12534;
-        var decimalValue = Convert.ToDecimal(integralValue);
+        var date = Convert.ToDateTime(integralValue);
     }
 }", options: ImplicitTypeWhereApparent());
         }
@@ -1440,7 +1487,7 @@ class C
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task SuggestVarWhereTypeIsEvident_IConvertibleToType()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -1449,7 +1496,7 @@ class C
     {
         int codePoint = 1067;
         IConvertible iConv = codePoint;
-        [|Char|] ch = iConv.ToChar(null);
+        [|DateTime|] date = iConv.ToDateTime(null);
     }
 }",
 @"using System;
@@ -1460,13 +1507,13 @@ class C
     {
         int codePoint = 1067;
         IConvertible iConv = codePoint;
-        var ch = iConv.ToChar(null);
+        var date = iConv.ToDateTime(null);
     }
 }", options: ImplicitTypeWhereApparent());
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
-        public async Task SuggestVarNotificationLevelNone()
+        public async Task SuggestVarNotificationLevelSilent()
         {
             var source =
 @"using System;
@@ -1477,7 +1524,10 @@ class C
         [|C|] n1 = new C();
     }
 }";
-            await TestMissingAsync(source, ImplicitTypeNoneEnforcement());
+            await TestDiagnosticInfoAsync(source,
+                options: ImplicitTypeSilentEnforcement(),
+                diagnosticId: IDEDiagnosticIds.UseImplicitTypeDiagnosticId,
+                diagnosticSeverity: DiagnosticSeverity.Hidden);
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
@@ -1492,9 +1542,8 @@ class C
         [|int|] s = 5;
     }
 }";
-            await TestDiagnosticSeverityAndCountAsync(source,
+            await TestDiagnosticInfoAsync(source,
                 options: ImplicitTypeEnforcements(),
-                diagnosticCount: 1,
                 diagnosticId: IDEDiagnosticIds.UseImplicitTypeDiagnosticId,
                 diagnosticSeverity: DiagnosticSeverity.Info);
         }
@@ -1508,12 +1557,11 @@ class C
 {
     static void M()
     {
-        [|int[]|] n1 = new[] {2, 4, 6, 8};
+        [|C[]|] n1 = new[] { new C() }; // type not apparent and not intrinsic
     }
 }";
-            await TestDiagnosticSeverityAndCountAsync(source,
+            await TestDiagnosticInfoAsync(source,
                 options: ImplicitTypeEnforcements(),
-                diagnosticCount: 1,
                 diagnosticId: IDEDiagnosticIds.UseImplicitTypeDiagnosticId,
                 diagnosticSeverity: DiagnosticSeverity.Warning);
         }
@@ -1530,11 +1578,49 @@ class C
         [|C|] n1 = new C();
     }
 }";
-            await TestDiagnosticSeverityAndCountAsync(source,
+            await TestDiagnosticInfoAsync(source,
                 options: ImplicitTypeEnforcements(),
-                diagnosticCount: 1,
                 diagnosticId: IDEDiagnosticIds.UseImplicitTypeDiagnosticId,
                 diagnosticSeverity: DiagnosticSeverity.Error);
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
+        [WorkItem(23893, "https://github.com/dotnet/roslyn/issues/23893")]
+        public async Task SuggestVarOnLocalWithIntrinsicArrayType()
+        {
+            var before = @"class C { static void M() { [|int[]|] s = new int[0]; } }";
+            var after = @"class C { static void M() { var s = new int[0]; } }";
+
+            //The type is intrinsic and apparent
+            await TestInRegularAndScriptAsync(before, after, options: ImplicitTypeEverywhere());
+            await TestMissingInRegularAndScriptAsync(before, new TestParameters(options: ImplicitTypeButKeepIntrinsics()));
+            await TestMissingInRegularAndScriptAsync(before, new TestParameters(options: ImplicitTypeWhereApparent())); // Preference of intrinsic types dominates
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
+        [WorkItem(23893, "https://github.com/dotnet/roslyn/issues/23893")]
+        public async Task SuggestVarOnLocalWithCustomArrayType()
+        {
+            var before = @"class C { static void M() { [|C[]|] s = new C[0]; } }";
+            var after = @"class C { static void M() { var s = new C[0]; } }";
+
+            //The type is not intrinsic but apparent
+            await TestInRegularAndScriptAsync(before, after, options: ImplicitTypeEverywhere());
+            await TestInRegularAndScriptAsync(before, after, options: ImplicitTypeButKeepIntrinsics());
+            await TestInRegularAndScriptAsync(before, after, options: ImplicitTypeWhereApparent());
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
+        [WorkItem(23893, "https://github.com/dotnet/roslyn/issues/23893")]
+        public async Task SuggestVarOnLocalWithNonApparentCustomArrayType()
+        {
+            var before = @"class C { static void M() { [|C[]|] s = new[] { new C() }; } }";
+            var after = @"class C { static void M() { var s = new[] { new C() }; } }";
+
+            //The type is not intrinsic and not apparent
+            await TestInRegularAndScriptAsync(before, after, options: ImplicitTypeEverywhere());
+            await TestInRegularAndScriptAsync(before, after, options: ImplicitTypeButKeepIntrinsics());
+            await TestMissingInRegularAndScriptAsync(before, new TestParameters(options: ImplicitTypeWhereApparent()));
         }
 
         private static string trivial2uple =
@@ -1561,16 +1647,28 @@ namespace System
             var before = @"class C { static void M() { [|(int a, string)|] s = (a: 1, ""hello""); } }";
             var after = @"class C { static void M() { var s = (a: 1, ""hello""); } }";
 
-            await TestAsync(before, after, options: ImplicitTypeEverywhere(), parseOptions: TestOptions.Regular, withScriptOption: true);
-
-            // We would rather this refactoring also worked. See https://github.com/dotnet/roslyn/issues/11094
-            await TestMissingAsync(before, options: ImplicitTypeWhereApparent(), parseOptions: TestOptions.Regular, withScriptOption: true);
+            await TestInRegularAndScriptAsync(before, after, options: ImplicitTypeEverywhere());
+            await TestInRegularAndScriptAsync(before, after, options: ImplicitTypeWhereApparentAndForIntrinsics());
+            await TestMissingInRegularAndScriptAsync(before, new TestParameters(options: ImplicitTypeWhereApparent()));
         }
 
-        [WpfFact(Skip = "https://github.com/dotnet/roslyn/issues/11154"), Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
+        [WorkItem(11094, "https://github.com/dotnet/roslyn/issues/11094")]
+        public async Task SuggestVarOnLocalWithNonApparentTupleType()
+        {
+            var before = @"class C { static void M(C c) { [|(int a, C b)|] s = (a: 1, b: c); } }";
+            var after = @"class C { static void M(C c) { var s = (a: 1, b: c); } }";
+
+            await TestInRegularAndScriptAsync(before, after, options: ImplicitTypeEverywhere());
+            await TestMissingInRegularAndScriptAsync(before, new TestParameters(options: ImplicitTypeWhereApparentAndForIntrinsics()));
+            await TestMissingInRegularAndScriptAsync(before, new TestParameters(options: ImplicitTypeWhereApparent()));
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
+        [WorkItem(11154, "https://github.com/dotnet/roslyn/issues/11154")]
         public async Task ValueTupleCreate()
         {
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
 @"using System;
 
 class C
@@ -1589,15 +1687,39 @@ class C
         var s = ValueTuple.Create(1, 1);
     }
 }" + trivial2uple,
-options: ImplicitTypeWhereApparent(),
-parseOptions: TestOptions.Regular,
-withScriptOption: true);
+options: ImplicitTypeWhereApparent());
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
+        [WorkItem(11095, "https://github.com/dotnet/roslyn/issues/11095")]
+        public async Task ValueTupleCreate_2()
+        {
+            await TestInRegularAndScriptAsync(
+@"using System;
+
+class C
+{
+    static void M()
+    {
+        [|(int, int)|] s = ValueTuple.Create(1, 1);
+    }
+}" + trivial2uple,
+@"using System;
+
+class C
+{
+    static void M()
+    {
+        var s = ValueTuple.Create(1, 1);
+    }
+}" + trivial2uple,
+options: ImplicitTypeWhereApparent());
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
         public async Task TupleWithDifferentNames()
         {
-            await TestMissingAsync(
+            await TestMissingInRegularAndScriptAsync(
 @"class C
 {
     static void M()
@@ -1605,9 +1727,719 @@ withScriptOption: true);
         [|(int, string)|] s = (c: 1, d: ""hello"");
     }
 }",
-options: ImplicitTypeEverywhere(),
-parseOptions: TestOptions.Regular,
-withScriptOption: true);
+new TestParameters(options: ImplicitTypeEverywhere()));
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
+        [WorkItem(14052, "https://github.com/dotnet/roslyn/issues/14052")]
+        public async Task DoNotOfferOnForEachConversionIfItChangesSemantics()
+        {
+            await TestMissingInRegularAndScriptAsync(
+@"using System;
+using System.Collections.Generic;
+
+interface IContractV1
+{
+}
+
+interface IContractV2 : IContractV1
+{
+}
+
+class ContractFactory
+{
+    public IEnumerable<IContractV1> GetContracts()
+    {
+    }
+}
+
+class Program
+{
+    static void M()
+    {
+        var contractFactory = new ContractFactory();
+        foreach ([|IContractV2|] contract in contractFactory.GetContracts())
+        {
+        }
+    }
+}",
+new TestParameters(options: ImplicitTypeEverywhere()));
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseImplicitType)]
+        [WorkItem(14052, "https://github.com/dotnet/roslyn/issues/14052")]
+        public async Task OfferOnForEachConversionIfItDoesNotChangesSemantics()
+        {
+            await TestInRegularAndScriptAsync(
+@"using System;
+using System.Collections.Generic;
+
+interface IContractV1
+{
+}
+
+interface IContractV2 : IContractV1
+{
+}
+
+class ContractFactory
+{
+    public IEnumerable<IContractV1> GetContracts()
+    {
+    }
+}
+
+class Program
+{
+    static void M()
+    {
+        var contractFactory = new ContractFactory();
+        foreach ([|IContractV1|] contract in contractFactory.GetContracts())
+        {
+        }
+    }
+}",
+@"using System;
+using System.Collections.Generic;
+
+interface IContractV1
+{
+}
+
+interface IContractV2 : IContractV1
+{
+}
+
+class ContractFactory
+{
+    public IEnumerable<IContractV1> GetContracts()
+    {
+    }
+}
+
+class Program
+{
+    static void M()
+    {
+        var contractFactory = new ContractFactory();
+        foreach (var contract in contractFactory.GetContracts())
+        {
+        }
+    }
+}", options: ImplicitTypeEverywhere());
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(20437, "https://github.com/dotnet/roslyn/issues/20437")]
+        public async Task SuggestVarOnDeclarationExpressionSyntax()
+        {
+            await TestInRegularAndScriptAsync(
+@"using System;
+
+class C
+{
+    static void M()
+    {
+        DateTime.TryParse(string.Empty, [|out DateTime|] date);
+    }
+}",
+@"using System;
+
+class C
+{
+    static void M()
+    {
+        DateTime.TryParse(string.Empty, out var date);
+    }
+}",
+options: ImplicitTypeEverywhere());
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(23893, "https://github.com/dotnet/roslyn/issues/23893")]
+        public async Task DoNotSuggestVarOnDeclarationExpressionSyntaxWithIntrinsicType()
+        {
+            var before =
+@"class C
+{
+    static void M(out int x)
+    {
+        M([|out int|] x);
+    }
+}";
+            await TestMissingInRegularAndScriptAsync(before, new TestParameters(options: ImplicitTypeButKeepIntrinsics()));
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(22768, "https://github.com/dotnet/roslyn/issues/22768")]
+        public async Task DoNotSuggestVarOnStackAllocExpressions_SpanType()
+        {
+            await TestMissingInRegularAndScriptAsync(@"
+using System;
+namespace System
+{
+    public readonly ref struct Span<T> 
+    {
+        unsafe public Span(void* pointer, int length) { }
+    }
+}
+class C
+{
+    static void M()
+    {
+        [|Span<int>|] x = stackalloc int [10];
+    }
+}", new TestParameters(options: ImplicitTypeEverywhere()));
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(22768, "https://github.com/dotnet/roslyn/issues/22768")]
+        public async Task DoNotSuggestVarOnStackAllocExpressions_SpanType_NestedConditional()
+        {
+            await TestMissingInRegularAndScriptAsync(@"
+using System;
+namespace System
+{
+    public readonly ref struct Span<T> 
+    {
+        unsafe public Span(void* pointer, int length) { }
+    }
+}
+class C
+{
+    static void M(bool choice)
+    {
+        [|Span<int>|] x = choice ? stackalloc int [10] : stackalloc int [100];
+    }
+}", new TestParameters(options: ImplicitTypeEverywhere()));
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(22768, "https://github.com/dotnet/roslyn/issues/22768")]
+        public async Task DoNotSuggestVarOnStackAllocExpressions_SpanType_NestedCast()
+        {
+            await TestMissingInRegularAndScriptAsync(@"
+using System;
+namespace System
+{
+    public readonly ref struct Span<T> 
+    {
+        unsafe public Span(void* pointer, int length) { }
+    }
+}
+class C
+{
+    static void M()
+    {
+        [|Span<int>|] x = (Span<int>)stackalloc int [100];
+    }
+}", new TestParameters(options: ImplicitTypeEverywhere()));
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(22768, "https://github.com/dotnet/roslyn/issues/22768")]
+        public async Task SuggestVarOnLambdasWithNestedStackAllocs()
+        {
+            await TestInRegularAndScriptAsync(@"
+using System.Linq;
+class C
+{
+    unsafe static void M()
+    {
+        [|int|] x = new int[] { 1, 2, 3 }.First(i =>
+        {
+            int* y = stackalloc int[10];
+            return i == 1;
+        });
+    }
+}", @"
+using System.Linq;
+class C
+{
+    unsafe static void M()
+    {
+        var x = new int[] { 1, 2, 3 }.First(i =>
+        {
+            int* y = stackalloc int[10];
+            return i == 1;
+        });
+    }
+}", options: ImplicitTypeEverywhere());
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(22768, "https://github.com/dotnet/roslyn/issues/22768")]
+        public async Task SuggestVarOnAnonymousMethodsWithNestedStackAllocs()
+        {
+            await TestInRegularAndScriptAsync(@"
+using System.Linq;
+class C
+{
+    unsafe static void M()
+    {
+        [|int|] x = new int[] { 1, 2, 3 }.First(delegate (int i)
+        {
+            int* y = stackalloc int[10];
+            return i == 1;
+        });
+    }
+}", @"
+using System.Linq;
+class C
+{
+    unsafe static void M()
+    {
+        var x = new int[] { 1, 2, 3 }.First(delegate (int i)
+        {
+            int* y = stackalloc int[10];
+            return i == 1;
+        });
+    }
+}", options: ImplicitTypeEverywhere());
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(22768, "https://github.com/dotnet/roslyn/issues/22768")]
+        public async Task SuggestVarOnStackAllocsNestedInLambdas()
+        {
+            await TestInRegularAndScriptAsync(@"
+using System.Linq;
+class C
+{
+    unsafe static void M()
+    {
+        var x = new int[] { 1, 2, 3 }.First(i =>
+        {
+            [|int*|] y = stackalloc int[10];
+            return i == 1;
+        });
+    }
+}", @"
+using System.Linq;
+class C
+{
+    unsafe static void M()
+    {
+        var x = new int[] { 1, 2, 3 }.First(i =>
+        {
+            var y = stackalloc int[10];
+            return i == 1;
+        });
+    }
+}", options: ImplicitTypeEverywhere());
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(22768, "https://github.com/dotnet/roslyn/issues/22768")]
+        public async Task SuggestVarOnStackAllocsNestedInAnonymousMethods()
+        {
+            await TestInRegularAndScriptAsync(@"
+using System.Linq;
+class C
+{
+    unsafe static void M()
+    {
+        var x = new int[] { 1, 2, 3 }.First(delegate (int i)
+        {
+            [|int*|] y = stackalloc int[10];
+            return i == 1;
+        });
+    }
+}", @"
+using System.Linq;
+class C
+{
+    unsafe static void M()
+    {
+        var x = new int[] { 1, 2, 3 }.First(delegate (int i)
+        {
+            var y = stackalloc int[10];
+            return i == 1;
+        });
+    }
+}", options: ImplicitTypeEverywhere());
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(22768, "https://github.com/dotnet/roslyn/issues/22768")]
+        public async Task SuggestVarOnStackAllocsInOuterMethodScope()
+        {
+            await TestInRegularAndScriptAsync(@"
+class C
+{
+    unsafe static void M()
+    {
+        [|int*|] x = stackalloc int [10];
+    }
+}", @"
+class C
+{
+    unsafe static void M()
+    {
+        var x = stackalloc int [10];
+    }
+}", options: ImplicitTypeEverywhere());
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(23116, "https://github.com/dotnet/roslyn/issues/23116")]
+        public async Task DoSuggestForDeclarationExpressionIfItWouldNotChangeOverloadResolution2()
+        {
+            await TestInRegularAndScriptAsync(@"
+class Program
+{
+    static int Main(string[] args)
+    {
+        TryGetValue(""key"", out [|int|] value);
+        return value;
+    }
+
+    public static bool TryGetValue(string key, out int value) => false;
+    public static bool TryGetValue(string key, out bool value, int x) => false;
+}", @"
+class Program
+{
+    static int Main(string[] args)
+    {
+        TryGetValue(""key"", out var value);
+        return value;
+    }
+
+    public static bool TryGetValue(string key, out int value) => false;
+    public static bool TryGetValue(string key, out bool value, int x) => false;
+}", options: ImplicitTypeEverywhere());
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(23116, "https://github.com/dotnet/roslyn/issues/23116")]
+        public async Task DoNotSuggestForDeclarationExpressionIfItWouldChangeOverloadResolution()
+        {
+            await TestMissingInRegularAndScriptAsync(@"
+class Program
+{
+    static int Main(string[] args)
+    {
+        TryGetValue(""key"", out [|int|] value);
+        return value;
+    }
+
+    public static bool TryGetValue(string key, out object value) => false;
+
+    public static bool TryGetValue<T>(string key, out T value) => false;
+}", new TestParameters(options: ImplicitTypeEverywhere()));
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(23116, "https://github.com/dotnet/roslyn/issues/23116")]
+        public async Task DoNotSuggestIfChangesGenericTypeInference()
+        {
+            await TestMissingInRegularAndScriptAsync(@"
+class Program
+{
+    static int Main(string[] args)
+    {
+        TryGetValue(""key"", out [|int|] value);
+        return value;
+    }
+
+    public static bool TryGetValue<T>(string key, out T value) => false;
+}", new TestParameters(options: ImplicitTypeEverywhere()));
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(23116, "https://github.com/dotnet/roslyn/issues/23116")]
+        public async Task SuggestIfDoesNotChangeGenericTypeInference1()
+        {
+            await TestInRegularAndScriptAsync(@"
+class Program
+{
+    static int Main(string[] args)
+    {
+        TryGetValue<int>(""key"", out [|int|] value);
+        return value;
+    }
+
+    public static bool TryGetValue<T>(string key, out T value) => false;
+}", @"
+class Program
+{
+    static int Main(string[] args)
+    {
+        TryGetValue<int>(""key"", out var value);
+        return value;
+    }
+
+    public static bool TryGetValue<T>(string key, out T value) => false;
+}", options: ImplicitTypeEverywhere());
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(23116, "https://github.com/dotnet/roslyn/issues/23116")]
+        public async Task SuggestIfDoesNotChangeGenericTypeInference2()
+        {
+            await TestInRegularAndScriptAsync(@"
+class Program
+{
+    static int Main(string[] args)
+    {
+        TryGetValue(0, out [|int|] value);
+        return value;
+    }
+
+    public static bool TryGetValue<T>(T key, out T value) => false;
+}", @"
+class Program
+{
+    static int Main(string[] args)
+    {
+        TryGetValue(0, out var value);
+        return value;
+    }
+
+    public static bool TryGetValue<T>(T key, out T value) => false;
+}", options: ImplicitTypeEverywhere());
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(23711, "https://github.com/dotnet/roslyn/issues/23711")]
+        public async Task SuggestVarForDelegateType()
+        {
+            await TestInRegularAndScriptAsync(@"
+class Program
+{
+    static void Main(string[] args)
+    {
+        [|GetHandler|] handler = Handler;
+    }
+
+    private static GetHandler Handler;
+
+    delegate object GetHandler();
+}", @"
+class Program
+{
+    static void Main(string[] args)
+    {
+        var handler = Handler;
+    }
+
+    private static GetHandler Handler;
+
+    delegate object GetHandler();
+}", options: ImplicitTypeEverywhere());
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(23711, "https://github.com/dotnet/roslyn/issues/23711")]
+        public async Task DoNotSuggestVarForDelegateType1()
+        {
+            await TestMissingInRegularAndScriptAsync(@"
+class Program
+{
+    static void Main(string[] args)
+    {
+        [|GetHandler|] handler = () => new object();
+    }
+
+    private static GetHandler Handler;
+
+    delegate object GetHandler();
+}", new TestParameters(options: ImplicitTypeEverywhere()));
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(23711, "https://github.com/dotnet/roslyn/issues/23711")]
+        public async Task DoNotSuggestVarForDelegateType2()
+        {
+            await TestMissingInRegularAndScriptAsync(@"
+class Program
+{
+    static void Main(string[] args)
+    {
+        [|GetHandler|] handler = Foo;
+    }
+
+    private static GetHandler Handler;
+
+    private static object Foo() => new object();
+
+    delegate object GetHandler();
+}", new TestParameters(options: ImplicitTypeEverywhere()));
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(23711, "https://github.com/dotnet/roslyn/issues/23711")]
+        public async Task DoNotSuggestVarForDelegateType3()
+        {
+            await TestMissingInRegularAndScriptAsync(@"
+class Program
+{
+    static void Main(string[] args)
+    {
+        [|GetHandler|] handler = delegate { return new object(); };
+    }
+
+    private static GetHandler Handler;
+
+    delegate object GetHandler();
+}", new TestParameters(options: ImplicitTypeEverywhere()));
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(24262, "https://github.com/dotnet/roslyn/issues/24262")]
+        public async Task DoNotSuggestVarForInterfaceVariableInForeachStatement()
+        {
+            await TestMissingInRegularAndScriptAsync(@"
+public interface ITest
+{
+    string Value { get; }
+}
+public class TestInstance : ITest
+{
+    string ITest.Value => ""Hi"";
+}
+
+public class Test
+{
+    public TestInstance[] Instances { get; }
+
+    public void TestIt()
+    {
+        foreach ([|ITest|] test in Instances)
+        {
+            Console.WriteLine(test.Value);
+        }
+    }
+}", new TestParameters(options: ImplicitTypeEverywhere()));
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(24262, "https://github.com/dotnet/roslyn/issues/24262")]
+        public async Task DoNotSuggestVarForInterfaceVariableInDeclarationStatement()
+        {
+    await TestMissingInRegularAndScriptAsync(@"
+public interface ITest
+{
+    string Value { get; }
+}
+public class TestInstance : ITest
+{
+    string ITest.Value => ""Hi"";
+}
+
+public class Test
+{
+    public void TestIt()
+    {
+        [|ITest|] test = new TestInstance();
+        Console.WriteLine(test.Value);
+    }
+}", new TestParameters(options: ImplicitTypeEverywhere()));
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(24262, "https://github.com/dotnet/roslyn/issues/24262")]
+        public async Task DoNotSuggestVarForAbstractClassVariableInForeachStatement()
+        {
+            await TestMissingInRegularAndScriptAsync(@"
+public abstract class MyAbClass
+{
+    string Value { get; }
+}
+
+public class TestInstance : MyAbClass
+{
+    public string Value => ""Hi"";
+}
+
+public class Test
+{
+    public TestInstance[] Instances { get; }
+
+    public void TestIt()
+    {
+        foreach ([|MyAbClass|] instance in Instances)
+        {
+            Console.WriteLine(instance);
+        }
+    }
+}", new TestParameters(options: ImplicitTypeEverywhere()));
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExplicitType)]
+        [WorkItem(24262, "https://github.com/dotnet/roslyn/issues/24262")]
+        public async Task DoNotSuggestVarForAbstractClassVariableInDeclarationStatement()
+        {
+            await TestMissingInRegularAndScriptAsync(@"
+public abstract class MyAbClass
+{
+    string Value { get; }
+}
+
+public class TestInstance : MyAbClass
+{
+    public string Value => ""Hi"";
+}
+
+public class Test
+{
+    public TestInstance[] Instances { get; }
+
+    public void TestIt()
+    {
+        [|MyAbClass|]  test = new TestInstance();
+    }
+}", new TestParameters(options: ImplicitTypeEverywhere()));
+        }
+
+        [Fact]
+        public async Task DoNoSuggestVarForRefForeachVar()
+        {
+            await TestMissingInRegularAndScriptAsync(@"
+using System;
+namespace System
+{
+    public readonly ref struct Span<T>
+    {
+        unsafe public Span(void* pointer, int length) { }
+
+        public ref SpanEnum GetEnumerator() => throw new Exception();
+
+        public struct SpanEnum
+        {
+            public ref int Current => 0;
+            public bool MoveNext() => false;
+        }
+    }
+}
+class C
+{
+    public void M(Span<int> span)
+    {
+        foreach ([|ref|] var rx in span)
+        {
+        }
+    }
+}", new TestParameters(options: ImplicitTypeEverywhere()));
+        }
+
+        [Fact, WorkItem(26923, "https://github.com/dotnet/roslyn/issues/26923")]
+        public async Task NoSuggestionOnForeachCollectionExpression()
+        {
+            await TestMissingInRegularAndScriptAsync(
+@"using System;
+using System.Collections.Generic;
+
+class C
+{
+    static void Main(string[] args)
+    {
+        foreach (string arg in [|args|])
+        {
+
+        }
+    }
+}", new TestParameters(options: ImplicitTypeEverywhere()));
         }
     }
 }

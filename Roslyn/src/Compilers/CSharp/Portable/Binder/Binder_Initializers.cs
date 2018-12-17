@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.PooledObjects;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -91,22 +92,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         //Can't assert that this is a regular C# compilation, because we could be in a nested type of a script class.
                         SyntaxReference syntaxRef = initializer.Syntax;
-#if XSHARP
-                        if (syntaxRef.GetSyntax().IsKind(SyntaxKind.VariableDeclarator) || syntaxRef.GetSyntax().IsKind(SyntaxKind.PropertyDeclaration)) {
-                            var variable = (CSharpSyntaxNode)syntaxRef.GetSyntax();
-                            if (binderFactory == null) binderFactory = compilation.GetBinderFactory(syntaxRef.SyntaxTree);
-                            Binder pb = binderFactory.GetBinder(variable);
-                            Debug.Assert(pb.ContainingMemberOrLambda == fieldSymbol.ContainingType || fieldSymbol.ContainingType.IsImplicitClass);
-                            if (firstDebugImports == null) firstDebugImports = pb.ImportChain;
-                            ConstantValue cv = ConstantValue.Create("", SpecialType.System_String);
-                            TypeSymbol type = compilation.GetSpecialType(SpecialType.System_String);
-                            boundInitializers.Add(new BoundFieldInitializer(
-                                variable, //we want the attached sequence point to indicate the value node
-                                fieldSymbol,
-                                new BoundLiteral(variable, cv, type) { WasCompilerGenerated = true }) { WasCompilerGenerated = true } );
-                            continue;
-                        }
-#endif
+
                         var initializerNode = (EqualsValueClauseSyntax)syntaxRef.GetSyntax();
 
                         if (binderFactory == null)
@@ -125,7 +111,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                         parentBinder = new LocalScopeBinder(parentBinder).WithAdditionalFlagsAndContainingMemberOrLambda(BinderFlags.FieldInitializer, fieldSymbol);
 
-                        BoundFieldInitializer boundInitializer = BindFieldInitializer(parentBinder, fieldSymbol, initializerNode, diagnostics);
+                        BoundFieldEqualsValue boundInitializer = BindFieldInitializer(parentBinder, fieldSymbol, initializerNode, diagnostics);
                         boundInitializers.Add(boundInitializer);
                     }
                 }
@@ -169,8 +155,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
 
                     var syntaxRef = initializer.Syntax;
-                    Debug.Assert(syntaxRef.SyntaxTree.Options.Kind != SourceCodeKind.Regular);
+ 			        var syntaxTree = syntaxRef.SyntaxTree;
+                    Debug.Assert(syntaxTree.Options.Kind != SourceCodeKind.Regular);
 #if XSHARP
+                    // Todo RvdH
+                    /*
                     if (syntaxRef.GetSyntax().IsKind(SyntaxKind.VariableDeclarator) || syntaxRef.GetSyntax().IsKind(SyntaxKind.PropertyDeclaration))
                     {
                         var variable = (CSharpSyntaxNode)syntaxRef.GetSyntax();
@@ -180,17 +169,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (firstDebugImports == null) firstDebugImports = scb.ImportChain;
                         ConstantValue cv = ConstantValue.Create("", SpecialType.System_String);
                         TypeSymbol type = compilation.GetSpecialType(SpecialType.System_String);
-                        boundInitializers.Add(new BoundFieldInitializer(
-                            variable, //we want the attached sequence point to indicate the value node
-                            fieldSymbol,
-                            new BoundLiteral(variable, cv, type) { WasCompilerGenerated = true }) { WasCompilerGenerated = true });
+                        BoundFieldEqualsValue eqvalue = new BoundFieldEqualsValue(variable, fieldSymbol, ImmutableArray<LocalSymbol>.Empty, cv, hasErrors: false) { WasCompilerGenerated = true };
+                        var init = Binder.BindFieldInitializer(scb, fieldSymbol, eqvalue, diagnostics);
+                        boundInitializers.Add(init);
                         continue;
                     }
+                    */
 #endif
 
                     var syntax = (CSharpSyntaxNode)syntaxRef.GetSyntax();
-                    var syntaxTree = syntaxRef.SyntaxTree;
-                    var syntaxRoot = syntaxRef.SyntaxTree.GetCompilationUnitRoot();
+                    var syntaxRoot = syntaxTree.GetCompilationUnitRoot();
 
                     if (binderFactory == null)
                     {
@@ -245,16 +233,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             var statement = binder.BindStatement(statementNode, diagnostics);
             if (isLast && !statement.HasAnyErrors)
             {
-            // the result of the last global expression is assigned to the result storage for submission result:
+                // the result of the last global expression is assigned to the result storage for submission result:
                 if (binder.Compilation.IsSubmission)
-            {
-                // insert an implicit conversion for the submission return type (if needed):
-                    var expression = InitializerRewriter.GetTrailingScriptExpression(statement);
-                if (expression != null &&
-                    ((object)expression.Type == null || expression.Type.SpecialType != SpecialType.System_Void))
                 {
-                    var submissionResultType = scriptInitializer.ResultType;
-                    expression = binder.GenerateConversionForAssignment(submissionResultType, expression, diagnostics);
+                    // insert an implicit conversion for the submission return type (if needed):
+                    var expression = InitializerRewriter.GetTrailingScriptExpression(statement);
+                    if (expression != null &&
+                        ((object)expression.Type == null || expression.Type.SpecialType != SpecialType.System_Void))
+                    {
+                        var submissionResultType = scriptInitializer.ResultType;
+                        expression = binder.GenerateConversionForAssignment(submissionResultType, expression, diagnostics);
                         statement = new BoundExpressionStatement(statement.Syntax, expression, expression.HasErrors);
                     }
                 }
@@ -278,7 +266,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return new BoundGlobalStatementInitializer(statementNode, statement);
         }
 
-        private static BoundFieldInitializer BindFieldInitializer(Binder binder, FieldSymbol fieldSymbol, EqualsValueClauseSyntax equalsValueClauseNode,
+        private static BoundFieldEqualsValue BindFieldInitializer(Binder binder, FieldSymbol fieldSymbol, EqualsValueClauseSyntax equalsValueClauseNode,
             DiagnosticBag diagnostics)
         {
             Debug.Assert(!fieldSymbol.IsMetadataConstant);
@@ -301,17 +289,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             binder = new ExecutableCodeBinder(equalsValueClauseNode, fieldSymbol, new LocalScopeBinder(binder));
-            var boundInitValue = binder.BindVariableOrAutoPropInitializer(equalsValueClauseNode, RefKind.None, fieldSymbol.GetFieldType(fieldsBeingBound), initializerDiagnostics);
+            BoundFieldEqualsValue boundInitValue = binder.BindFieldInitializer(fieldSymbol, equalsValueClauseNode, initializerDiagnostics);
 
             if (isImplicitlyTypedField)
             {
                 initializerDiagnostics.Free();
             }
 
-            return new BoundFieldInitializer(
-                equalsValueClauseNode.Value, //we want the attached sequence point to indicate the value node
-                fieldSymbol,
-                boundInitValue);
+            return boundInitValue;
         }
     }
 }

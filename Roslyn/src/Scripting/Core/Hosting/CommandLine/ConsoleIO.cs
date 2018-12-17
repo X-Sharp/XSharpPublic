@@ -8,7 +8,7 @@ namespace Microsoft.CodeAnalysis.Scripting.Hosting
 {
     internal class ConsoleIO
     {
-        public static readonly ConsoleIO Default = new ConsoleIO(ConsoleShims.Out, ConsoleShims.Error, ConsoleShims.In);
+        public static readonly ConsoleIO Default = new ConsoleIO(Console.Out, Console.Error, Console.In);
 
         public TextWriter Error { get; }
         public TextWriter Out { get; }
@@ -24,14 +24,8 @@ namespace Microsoft.CodeAnalysis.Scripting.Hosting
             In = input;
         }
 
-        public virtual ConsoleColor ForegroundColor
-        {
-            set
-            {
-                ConsoleShims.ForegroundColor = value;
-            }
-        }
+        public virtual void SetForegroundColor(ConsoleColor consoleColor) => Console.ForegroundColor = consoleColor;
 
-        public virtual void ResetColor() => ConsoleShims.ResetColor();
+        public virtual void ResetColor() => Console.ResetColor();
     }
 }

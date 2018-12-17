@@ -1,46 +1,64 @@
-# Required Software
+# Building, Debugging and Testing on Windows
 
-1. [Visual Studio 2015 with Update 3](http://go.microsoft.com/fwlink/?LinkId=691129).
-2. Visual Studio 2015 Extensibility Tools.
- 
-    If you already installed Visual Studio, the Extensibility Tools can be added as follows: 
-    - Open Control Panel -> Programs and Features
-    - Select the entry for your installation of Microsoft Visual Studio. Depending on your version, it may appear as follows:
-        - Microsoft Visual Studio Community 2015 with Update 3
-        - Microsoft Visual Studio Professional 2015
-        - Microsoft Visual Studio Enterprise 2015
-    - Press the 'Change' button
-    - In the resulting window, press the 'Modify' button
-    - Check the "Visual Studio Extensibility Tools Update 3" item and press the 'Next' button
-    - Press the 'Update' button
-3. Install the [RC insider VSIX](https://dotnet.myget.org/F/roslyn/vsix/eb2680f2-4e63-44a8-adf6-2e667d9f689c-2.0.0.6110410.vsix).
+## Working with the code
 
-  - If you need to uninstall this or another version of this VSIX, you must:
-    
-    - Close all instances of VS
-    -	delete %LocalAppdata%\Microsoft\VisualStudio\14.0\ (Note, this will delete all your extensions, not just the Roslyn VSIX)
-    - run `devenv /updateconfiguration` from a developer command prompt
-
-
-
-NOTE: You can also use a [Visual Studio "15" Preview](https://www.visualstudio.com/news/releasenotes/vs15-relnotes). The publicly available version of Visual Studio "15" Preview 4 is a work in progress, and as such, does not fully support developing against the Roslyn solution. If you use Preview 4 with the Roslyn solution, you will see issues that prevent the setup project from building and stop the setup VSIX from getting deployed to the RoslynDev hive even when the build does succeed. As such, we recommend remaining on Visual Studio "15" Preview 3 if you are developing against the Roslyn solution. 
-
-# Getting the Code
+Using the command line Roslyn can be developed using the following pattern:
 
 1. Clone https://github.com/dotnet/roslyn
-2. Run the "Developer Command Prompt for VS2015" from your start menu.
-3. Navigate to the directory of your Git clone.
-4. Run `Restore.cmd` in the command prompt to restore NuGet packages.
-5. Due to [Issue #5876](https://github.com/dotnet/roslyn/issues/5876), you should build on the command line before opening in Visual Studio. Run `msbuild /v:m /m Roslyn.sln`
-6. Open _Roslyn.sln_
+1. Run Restore.cmd 
+1. Run Build.cmd
+1. Run Test.cmd
 
-# Running Tests
+## Recommended version of .NET Framework
 
-Tests cannot be run via Test Explorer due to some Visual Studio limitations.
+The minimal required version of .NET Framework is 4.6, however 4.7.2 is recommended for best developer experience. 
 
-1. Run the "Developer Command Prompt for VS2015" from your start menu.
+The projects in this repository are configured to build with Portable PDBs, which are supported in stack traces starting with .NET Framework 4.7.2. 
+If a stack trace is displayed on .NET Framework older than 4.7.2 (e.g. by xUnit when a test fails) it won't contain source and line information.
+
+.NET Framework 4.7.2 is included in [Windows 10 April 2018 Update](https://blogs.windows.com/windowsexperience/2018/04/30/how-to-get-the-windows-10-april-2018-update/). It can also be installed from the [Microsoft Download Center](https://www.microsoft.com/net/download/dotnet-framework-runtime).
+
+## Developing with Visual Studio 2017
+
+1. [Visual Studio 2017 Version 15.7](https://www.visualstudio.com/vs/preview/)
+    - Ensure C#, VB, MSBuild, .NET Core and Visual Studio Extensibility are included in the selected work loads
+    - Ensure Visual Studio is on Version "15.7" or greater
+1. [.NET Core SDK 2.1.300](https://www.microsoft.com/net/download/core) (the current previews are: [Windows x64 installer](https://dotnetcli.blob.core.windows.net/dotnet/Sdk/2.1.300-rtm-008866/dotnet-sdk-2.1.300-rtm-008866-win-x64.exe), [Windows x86 installer](https://dotnetcli.blob.core.windows.net/dotnet/Sdk/2.1.300-rtm-008866/dotnet-sdk-2.1.300-rtm-008866-win-x86.exe))
+1. [PowerShell 3.0 or newer](https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-windows-powershell). If you are on Windows 10, you are fine; you'll only need to upgrade if you're on Windows 7. The download link is under the "upgrading existing Windows PowerShell" heading.
+1. Run Restore.cmd
+1. Open Roslyn.sln
+
+If you already installed Visual Studio and need to add the necessary work loads or move to version 15.7:
+do the following:
+
+- Run the Visual Studio Installer from your start menu. You can just search for "Visual Studio Installer". If you can't find it, it's typically located at "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe"
+- The Visual Studio installation will be listed under the Installed section
+- Click on the menu icon (three horizontal lines), click Modify 
+- Choose the workloads listed above and click Modify
+
+## Running Tests
+
+There are a number of options for running the core Roslyn unit tests:
+
+### Command Line
+
+The Test.cmd script will run our unit test on already built binaries.  It can be passed the -build arguments to force a new build before running tests.  
+
+1. Run the "Developer Command Prompt for VS2017" from your start menu.
 2. Navigate to the directory of your Git clone.
 3. Run `msbuild /v:m /m /nodereuse:false BuildAndTest.proj` in the command prompt.
+
+### Test Explorer 
+
+Tests can be run and debugged from the Test Explorer window. For best performance, we recommend the following:
+
+1. Open **Tools &rarr; Options... &rarr; Test**
+    1. Check the box for **Discover tests in real time from source files**
+    2. Uncheck the box for **Additionally discover tests from build assemblies...**
+2. Use the Search box of Test Explorer to narrow the scope of visible tests to the feature(s) you are working on
+3. When you are not actively running tests, set the search query to `__NonExistent__` to hide all tests from the UI
+
+### WPF Test Runner
 
 To debug through tests, you can right click the test project that contains your
 tests and choose **Set as Startup Project**. Then press F5. This will run the
@@ -50,17 +68,16 @@ the source from
 [xunit.runner.wpf](https://github.com/pilchie/xunit.runner.wpf), build it and
 give it a try.
 
-# Trying Your Changes in Visual Studio
+## Trying Your Changes in Visual Studio
 
-Starting with Visual Studio 2015 Update 1, it is now possible to run your changes inside Visual
-Studio to try them out. Some projects in Roslyn.sln, listed below, build Visual
-Studio extensions. When you build those projects, they automatically deploy
-into an experimental instance of Visual Studio. The first time you clone, you
-should first do a full build of Roslyn.sln to make sure everything is primed.
-Then, you can run Visual Studio by right clicking the appropriate project in
-Visual Studio, setting it as a startup project, and pressing F5. You can also
-run Visual Studio after building by running a "Developer Command Prompt for
-VS2015" and then running `devenv /rootsuffix RoslynDev`.
+The Rosyln solution is designed to support easy debugging via F5.  Several of our
+projects produce VSIX which deploy into Visual Studio during build.  The F5 operation 
+will start a new Visual Studio instance using those VSIX which override our installed
+binaries.  This means trying out a change to the language, IDE or debugger is as
+simple as hitting F5.
+
+The startup project needs to be set to VisualStudioSetup.  This should be
+the default but in same cases will need to be set explicitly.
 
 Here are what is deployed with each extension, by project that builds it. If
 you're working on a particular area, you probably want to set the appropriate
@@ -114,6 +131,6 @@ command line, run msbuild with `/p:BootstrapBuildPath=YourBootstrapBuildPath`.
 `YourBootstrapBuildPath` could be any directory on your machine so long as it had
 csc and vbc inside it. You can check the cibuild.cmd and see how it is used.
 
-# Contributing
+## Contributing
 
-Please see [Contributing Code](https://github.com/dotnet/roslyn/wiki/Contributing-Code) for details on contributing changes back to the code.
+Please see [Contributing Code](https://github.com/dotnet/roslyn/blob/master/CONTRIBUTING.md) for details on contributing changes back to the code.

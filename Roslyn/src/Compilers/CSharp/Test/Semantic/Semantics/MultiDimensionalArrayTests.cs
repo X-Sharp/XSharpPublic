@@ -191,7 +191,7 @@ class Program {
         int?[ , ] ar1 = { null  };
     }
 }";
-            CreateCompilationWithMscorlib(text).VerifyDiagnostics(
+            CreateCompilation(text).VerifyDiagnostics(
 // (5,27): error CS0846: A nested array initializer is expected
 //         int?[ , ] ar1 = { null  };
 Diagnostic(ErrorCode.ERR_ArrayInitializerExpected, "null")
@@ -291,7 +291,7 @@ Diagnostic(ErrorCode.ERR_ArrayInitializerExpected, "null")
         System.Console.WriteLine(t.Test1()[0]);
     }
 }";
-            var compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseExe);
+            var compilation = CreateCompilationWithILAndMscorlib40(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseExe);
             var verifier = CompileAndVerify(compilation, expectedOutput:
 @"Test1
 -100");
@@ -326,7 +326,7 @@ Diagnostic(ErrorCode.ERR_ArrayInitializerExpected, "null")
         System.Console.WriteLine(t.Test2(a));
     }
 }";
-            var compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseExe);
+            var compilation = CreateCompilationWithILAndMscorlib40(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseExe);
             var verifier = CompileAndVerify(compilation, expectedOutput:
 @"Test1
 Test2
@@ -374,7 +374,7 @@ Test2
         val = 123;
     }
 }";
-            var compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseExe);
+            var compilation = CreateCompilationWithILAndMscorlib40(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseExe);
             var verifier = CompileAndVerify(compilation, expectedOutput:
 @"Test1
 Test2
@@ -414,7 +414,7 @@ Test2
         return null;
     }
 }";
-            var compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseDll);
+            var compilation = CreateCompilationWithILAndMscorlib40(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseDll);
             compilation.VerifyDiagnostics(
     // (3,30): error CS0508: 'C.Test1()': return type must be 'double[*]' to match overridden member 'Test.Test1()'
     //     public override double[] Test1()
@@ -434,7 +434,7 @@ Test2
         return x[0];
     }
 }";
-            var compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseDll);
+            var compilation = CreateCompilationWithILAndMscorlib40(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseDll);
             compilation.VerifyDiagnostics(
     // (3,28): error CS0115: 'C.Test2(double[])': no suitable method found to override
     //     public override double Test2(double[] x)
@@ -465,7 +465,7 @@ Test2
         mdarray = new [] { 3.0d };
     }
 }";
-            var compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseExe);
+            var compilation = CreateCompilationWithILAndMscorlib40(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseExe);
             compilation.VerifyDiagnostics(
     // (6,23): error CS0029: Cannot implicitly convert type 'double[*]' to 'double[]'
     //         double[] a1 = t.Test1();
@@ -525,7 +525,7 @@ Test2
     static void M2<T>(T a, T b){}
     static void M3<T>(System.Collections.Generic.IList<T> a){}
 }";
-            var compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseExe);
+            var compilation = CreateCompilationWithILAndMscorlib40(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseExe);
 
             var m2 = compilation.GetTypeByMetadataName("Test").GetMember<MethodSymbol>("M2");
             var szArray = (IArrayTypeSymbol)m2.Parameters.First().Type;
@@ -594,7 +594,7 @@ Test2
         System.Console.WriteLine(typeof(T));
     }
 }";
-            var compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseExe);
+            var compilation = CreateCompilationWithILAndMscorlib40(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseExe);
             CompileAndVerify(compilation, expectedOutput:
 @"Test1
 System.Double[*]
@@ -619,7 +619,7 @@ System.Double
         }
     }
 }";
-            var compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseExe);
+            var compilation = CreateCompilationWithILAndMscorlib40(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseExe);
             var verifier = CompileAndVerify(compilation, expectedOutput:
 @"Test1
 -100");
@@ -673,7 +673,7 @@ System.Double
         System.Console.WriteLine(t.Test1().Length);
     }
 }";
-            var compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseExe);
+            var compilation = CreateCompilationWithILAndMscorlib40(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseExe);
             var verifier = CompileAndVerify(compilation, expectedOutput:
 @"Test1
 1");
@@ -705,7 +705,7 @@ System.Double
         System.Console.WriteLine(t.Test1().LongLength);
     }
 }";
-            var compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseExe);
+            var compilation = CreateCompilationWithILAndMscorlib40(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseExe);
             var verifier = CompileAndVerify(compilation, expectedOutput:
 @"Test1
 1");
@@ -739,7 +739,7 @@ System.Double
         t.Test3(new double [] {d});
     }
 }";
-            var compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseDll);
+            var compilation = CreateCompilationWithILAndMscorlib40(source, s_arraysOfRank1IlSource, options: TestOptions.ReleaseDll);
             compilation.VerifyDiagnostics(
     // (7,17): error CS1503: Argument 1: cannot convert from 'double' to 'params double[*]'
     //         t.Test3(d);
@@ -1083,7 +1083,7 @@ System.Double
     }
 }
 ";
-            var compilation = CreateCompilationWithCustomILSource(source, ilSource, options: TestOptions.ReleaseExe);
+            var compilation = CreateCompilationWithILAndMscorlib40(source, ilSource, options: TestOptions.ReleaseExe);
 
             var test = compilation.GetTypeByMetadataName("Test");
             var array = (IArrayTypeSymbol)test.GetMember<MethodSymbol>("Test1").ReturnType;
@@ -1531,7 +1531,7 @@ Overriden 16
     }
 }
 ";
-            var compilation = CreateCompilationWithCustomILSource(source, ilSource, options: TestOptions.ReleaseExe);
+            var compilation = CreateCompilationWithILAndMscorlib40(source, ilSource, options: TestOptions.ReleaseExe);
             var verifier = CompileAndVerify(compilation, expectedOutput:
 @"Test1
 Test2
@@ -1566,6 +1566,132 @@ Overriden 14
 Overriden 15
 Overriden 16
 ");
+        }
+
+        [ClrOnlyFact(ClrOnlyReason.Ilasm)]
+        [WorkItem(4958, "https://github.com/dotnet/roslyn/issues/4958")]
+        public void ArraysOfRank1_InAttributes()
+        {
+            var ilSource = @"
+.class public auto ansi beforefieldinit Program
+       extends [mscorlib]System.Object
+{
+  .method public hidebysig instance void
+          Test1() cil managed
+  {
+    .custom instance void TestAttribute::.ctor(class [mscorlib] System.Type) = {type(class 'System.Int32[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089')}
+    // Code size       2 (0x2)
+    .maxstack  8
+    IL_0000:  nop
+    IL_0001:  ret
+  } // end of method Program::Test1
+
+  .method public hidebysig instance void
+          Test2() cil managed
+  {
+    .custom instance void TestAttribute::.ctor(class [mscorlib] System.Type) = {type(class 'System.Int32[*], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089')}
+    // Code size       2 (0x2)
+    .maxstack  8
+    IL_0000:  nop
+    IL_0001:  ret
+  } // end of method Program::Test2
+
+  .method public hidebysig instance void
+          Test3() cil managed
+  {
+    .custom instance void TestAttribute::.ctor(class [mscorlib] System.Type) = {type(class 'System.Int32[*,*], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089')}
+    // Code size       2 (0x2)
+    .maxstack  8
+    IL_0000:  nop
+    IL_0001:  ret
+  } // end of method Program::Test3
+
+  .method public hidebysig instance void
+          Test4() cil managed
+  {
+    .custom instance void TestAttribute::.ctor(class [mscorlib] System.Type) = {type(class 'System.Int32[,*], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089')}
+    // Code size       2 (0x2)
+    .maxstack  8
+    IL_0000:  nop
+    IL_0001:  ret
+  } // end of method Program::Test4
+} // end of class Program
+
+.class public auto ansi beforefieldinit TestAttribute
+       extends [mscorlib]System.Attribute
+{
+  .method public hidebysig specialname rtspecialname 
+          instance void  .ctor(class [mscorlib]System.Type val) cil managed
+  {
+    // Code size       9 (0x9)
+    .maxstack  8
+    IL_0000:  ldarg.0
+    IL_0001:  call       instance void [mscorlib]System.Attribute::.ctor()
+    IL_0006:  nop
+    IL_0007:  nop
+    IL_0008:  ret
+  } // end of method TestAttribute::.ctor
+
+} // end of class TestAttribute
+";
+
+            var source =
+@"
+using System;
+using System.Linq;
+
+class C
+{
+    static void Main()
+    {
+        System.Console.WriteLine(GetTypeFromAttribute(""Test1"")); 
+        System.Console.WriteLine(GetTypeFromAttribute(""Test2"")); 
+
+        try
+        {
+            GetTypeFromAttribute(""Test3"");
+        }
+        catch
+        {
+            System.Console.WriteLine(""Throws""); 
+        }
+
+        try
+        {
+            GetTypeFromAttribute(""Test4"");
+        }
+        catch
+        {
+            System.Console.WriteLine(""Throws""); 
+        }
+    }
+
+    private static Type GetTypeFromAttribute(string target)
+    {
+        return (System.Type)typeof(Program).GetMember(target)[0].GetCustomAttributesData().ElementAt(0).ConstructorArguments[0].Value;
+    }
+}";
+            var compilation = CreateCompilationWithILAndMscorlib40(source, ilSource, references: new [] { SystemCoreRef }, options: TestOptions.ReleaseExe);
+
+            var p = compilation.GetTypeByMetadataName("Program");
+            var a1 = (ArrayTypeSymbol)p.GetMember<MethodSymbol>("Test1").GetAttributes().Single().ConstructorArguments.Single().Value;
+            Assert.Equal("System.Int32[]", a1.ToTestDisplayString());
+            Assert.Equal(1, a1.Rank);
+            Assert.True(a1.IsSZArray);
+
+            var a2 = (ArrayTypeSymbol)p.GetMember<MethodSymbol>("Test2").GetAttributes().Single().ConstructorArguments.Single().Value;
+            Assert.Equal("System.Int32[*]", a2.ToTestDisplayString());
+            Assert.Equal(1, a2.Rank);
+            Assert.False(a2.IsSZArray);
+
+            Assert.True(((TypeSymbol)p.GetMember<MethodSymbol>("Test3").GetAttributes().Single().ConstructorArguments.Single().Value).IsErrorType());
+            Assert.True(((TypeSymbol)p.GetMember<MethodSymbol>("Test4").GetAttributes().Single().ConstructorArguments.Single().Value).IsErrorType());
+
+            CompileAndVerify(compilation, expectedOutput:
+@"System.Int32[]
+System.Int32[*]
+Throws
+Throws");
         }
     }
 }

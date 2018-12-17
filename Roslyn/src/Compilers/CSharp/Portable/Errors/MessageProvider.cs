@@ -9,22 +9,24 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
-    internal sealed class MessageProvider : CommonMessageProvider, IObjectWritable, IObjectReadable
+    internal sealed class MessageProvider : CommonMessageProvider, IObjectWritable
     {
         public static readonly MessageProvider Instance = new MessageProvider();
+
+        static MessageProvider()
+        {
+            ObjectBinder.RegisterTypeReader(typeof(MessageProvider), r => Instance);
+        }
 
         private MessageProvider()
         {
         }
 
+        bool IObjectWritable.ShouldReuseInSerialization => true;
+
         void IObjectWritable.WriteTo(ObjectWriter writer)
         {
             // write nothing, always read/deserialized as global Instance
-        }
-
-        Func<ObjectReader, object> IObjectReadable.GetReader()
-        {
-            return (r) => Instance;
         }
 
         public override DiagnosticSeverity GetSeverity(int code)
@@ -140,7 +142,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public override int ERR_ExpectedSingleScript => (int)ErrorCode.ERR_ExpectedSingleScript;
         public override int ERR_OpenResponseFile => (int)ErrorCode.ERR_OpenResponseFile;
         public override int ERR_InvalidPathMap => (int)ErrorCode.ERR_InvalidPathMap;
-        public override int FTL_InputFileNameTooLong => (int)ErrorCode.FTL_InputFileNameTooLong;
+        public override int FTL_InvalidInputFileName => (int)ErrorCode.FTL_InvalidInputFileName;
         public override int ERR_FileNotFound => (int)ErrorCode.ERR_FileNotFound;
         public override int ERR_NoSourceFile => (int)ErrorCode.ERR_NoSourceFile;
         public override int ERR_CantOpenFileWrite => (int)ErrorCode.ERR_CantOpenFileWrite;
@@ -154,6 +156,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         public override int ERR_CantReadRulesetFile => (int)ErrorCode.ERR_CantReadRulesetFile;
         public override int ERR_CompileCancelled => (int)ErrorCode.ERR_CompileCancelled;
 
+        // parse options:
+        public override int ERR_BadSourceCodeKind => (int)ErrorCode.ERR_BadSourceCodeKind;
+        public override int ERR_BadDocumentationMode => (int)ErrorCode.ERR_BadDocumentationMode;
+
         // compilation options:
         public override int ERR_BadCompilationOptionValue => (int)ErrorCode.ERR_BadCompilationOptionValue;
         public override int ERR_MutuallyExclusiveOptions => (int)ErrorCode.ERR_MutuallyExclusiveOptions;
@@ -164,6 +170,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public override int ERR_InvalidFileAlignment => (int)ErrorCode.ERR_InvalidFileAlignment;
         public override int ERR_InvalidSubsystemVersion => (int)ErrorCode.ERR_InvalidSubsystemVersion;
         public override int ERR_InvalidInstrumentationKind => (int)ErrorCode.ERR_InvalidInstrumentationKind;
+        public override int ERR_InvalidHashAlgorithmName => (int)ErrorCode.ERR_InvalidHashAlgorithmName;
 
         // reference manager:
         public override int ERR_MetadataFileNotAssembly => (int)ErrorCode.ERR_ImportNonAssembly;
@@ -222,6 +229,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public override int ERR_PeWritingFailure => (int)ErrorCode.ERR_PeWritingFailure;
         public override int ERR_ModuleEmitFailure => (int)ErrorCode.ERR_ModuleEmitFailure;
         public override int ERR_EncUpdateFailedMissingAttribute => (int)ErrorCode.ERR_EncUpdateFailedMissingAttribute;
+        public override int ERR_InvalidDebugInfo => (int)ErrorCode.ERR_InvalidDebugInfo;
 
         public override void ReportInvalidAttributeArgument(DiagnosticBag diagnostics, SyntaxNode attributeSyntax, int parameterIndex, AttributeData attribute)
         {

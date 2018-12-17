@@ -19,6 +19,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 namespace Microsoft.CodeAnalysis.CSharp
@@ -34,10 +35,24 @@ namespace Microsoft.CodeAnalysis.CSharp
             NotEqualsUsual,
             SubtractString,
             UsualOther,
-            Shift,
+            Cast,
             PSZCompare,
             SymbolCompare,
             LogicCompare
+        }
+
+        private bool CheckImplicitCast(TypeSymbol sourceType, TypeSymbol targetType, SyntaxNode syntax, DiagnosticBag diagnostics)
+        {
+            if (targetType.IsIntegralType() && sourceType.IsIntegralType())
+            {
+                if (targetType.SpecialType.SizeInBytes() < sourceType.SpecialType.SizeInBytes())
+                {
+                    var distinguisher = new SymbolDistinguisher(this.Compilation, sourceType, targetType);
+                    Error(diagnostics, ErrorCode.WRN_ImplicitCast, syntax, distinguisher.First, distinguisher.Second);
+                    return true;
+                }
+            }
+            return false;
         }
         private BoundExpression BindVOCompareString(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
             BoundExpression left, BoundExpression right, ref int compoundStringLength)
@@ -46,7 +61,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             TypeSymbol type;
             BoundCall opCall = null;
 
-            if (Compilation.Options.IsDialectVO && this.Compilation.Options.VOStringComparisons)
+            if (Compilation.Options.HasRuntime && this.Compilation.Options.VOStringComparisons)
             {
                 // VO Style String Comparison
                 type = Compilation.RuntimeFunctionsType();
@@ -153,6 +168,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         case XSharpParser.NULL_PTR:
                         case XSharpParser.NULL_PSZ:
                             return true;
+                        case XSharpParser.INT_CONST:
+                            return Convert.ToInt64(xnode.Literal.Token.Text) == 0;
                     }
                 }
             }
@@ -208,8 +225,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             var intType = Compilation.GetSpecialType(SpecialType.System_Int32);
             var lit0 = new BoundLiteral(node, ConstantValue.Create(0), intType);
             var lit1 = new BoundLiteral(node, ConstantValue.Create(1), intType);
-            left = new BoundConditionalOperator(node, left, lit1, lit0, null, intType);
-            right = new BoundConditionalOperator(node, right, lit1, lit0, null, intType);
+            left = new BoundConditionalOperator(node, false, left, lit1, lit0, null, intType);
+            right = new BoundConditionalOperator(node, false, right, lit1, lit0, null, intType);
             return null;
         }
 
@@ -374,13 +391,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 xnode = ((XSharpParser.CodeblockCodeContext)node.XNode).Expr as XSharpParser.BinaryExpressionContext;
             else
                 xnode = node.XNode as XSharpParser.BinaryExpressionContext;
-            if (xnode == null)  // this may happen for example for nodes generated in the transformation phase
-                return opType;
 
             TypeSymbol leftType = left.Type;
             TypeSymbol rightType = right.Type;
 
-            if (Compilation.Options.IsDialectVO)
+            if (Compilation.Options.HasRuntime && xnode != null)
             {
                 var typeUsual = Compilation.UsualType();
                 var typePSZ = Compilation.PszType();
@@ -454,14 +469,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 opType = VOOperatorType.CompareString;
                             }
                         }
-                        if (leftType == Compilation.GetSpecialType(SpecialType.System_Boolean) &&
+                        else if (leftType == Compilation.GetSpecialType(SpecialType.System_Boolean) &&
                             rightType == Compilation.GetSpecialType(SpecialType.System_Boolean))
                         {
                             opType = VOOperatorType.LogicCompare;
                         }
+                        else if (leftType == typePSZ || rightType == typePSZ)
+                        {
+                            opType = VOOperatorType.PSZCompare;
+                        }
                         break;
                     case XSharpParser.MINUS:
                     case XSharpParser.PLUS:
+                    //case XSharpParser.MULT:
+                    //case XSharpParser.DIV:
                         if (xnode.Op.Type == XSharpParser.MINUS)
                         {
                             // String Subtract 
@@ -481,6 +502,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 opType = VOOperatorType.SubtractString;
                             }
                         }
+    
                         if (opType == VOOperatorType.None)
                         { 
                             typeDate = Compilation.DateType();
@@ -509,22 +531,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         break;
                     default:
-                        switch (node.Kind())
-                        {
-                            case SyntaxKind.RightShiftExpression:
-                            case SyntaxKind.LeftShiftExpression:
-                            case SyntaxKind.RightShiftAssignmentExpression:
-                            case SyntaxKind.LeftShiftAssignmentExpression:
-                                opType = VOOperatorType.Shift;
-                                break;
-                            default:
-                                opType = VOOperatorType.None;
-                                break;
-                        }
                         break;
                 }
             }
-            else
+            if (opType == VOOperatorType.None)
             {
                 switch (node.Kind())
                 {
@@ -542,9 +552,26 @@ namespace Microsoft.CodeAnalysis.CSharp
                     case SyntaxKind.LeftShiftExpression:
                     case SyntaxKind.RightShiftAssignmentExpression:
                     case SyntaxKind.LeftShiftAssignmentExpression:
-                        opType = VOOperatorType.Shift;
+                    case SyntaxKind.BitwiseAndExpression:
+                    case SyntaxKind.BitwiseOrExpression:
+                    case SyntaxKind.BitwiseNotExpression:
+                        opType = VOOperatorType.Cast;
                         break;
-
+                    case SyntaxKind.AddExpression:
+                    case SyntaxKind.SubtractExpression:
+                    case SyntaxKind.AddAssignmentExpression:
+                    case SyntaxKind.SubtractAssignmentExpression:
+                        if (leftType != rightType && leftType.IsIntegralType() && rightType.IsIntegralType())
+                        {
+                            if (leftType.SpecialType.SizeInBytes() == 4)
+                            {
+                                if (rightType.SpecialType.SizeInBytes() < 4)
+                                {
+                                    right = new BoundConversion(right.Syntax, right, Conversion.ImplicitNumeric, false, false, right.ConstantValue, leftType) { WasCompilerGenerated = true };
+                                }
+                            }
+                        }
+                        break;
                 }
 
             }
@@ -552,7 +579,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         private void AdjustVOUsualLogicOperands(BinaryExpressionSyntax node, ref BoundExpression left, ref BoundExpression right, DiagnosticBag diagnostics)
         {
-            if (!Compilation.Options.IsDialectVO)
+            if (!Compilation.Options.HasRuntime)
                 return;
             XSharpParser.BinaryExpressionContext xnode = null;
             if (node.XNode is XSharpParser.BinaryExpressionContext)
@@ -639,20 +666,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                             return Compilation.GetSpecialType(SpecialType.System_Double);
                     }
                 }
-                if (lit.ConstantValue.Discriminator == ConstantValueTypeDiscriminator.Int32)
-                {
-                    var val = lit.ConstantValue.Int32Value;
-                    if (val >= Byte.MinValue && val <= Byte.MaxValue)
-                        return Compilation.GetSpecialType(SpecialType.System_Byte);
-                    else if (val >= Int16.MinValue && val <= Int16.MaxValue)
-                        return Compilation.GetSpecialType(SpecialType.System_Int16);
-                }
+                // disable this for C642
+                //if (lit.ConstantValue.Discriminator == ConstantValueTypeDiscriminator.Int32)
+                //{
+                //    var val = lit.ConstantValue.Int32Value;
+                //    if (val >= Byte.MinValue && val <= Byte.MaxValue)
+                //        return Compilation.GetSpecialType(SpecialType.System_Byte);
+                //    else if (val >= Int16.MinValue && val <= Int16.MaxValue)
+                //        return Compilation.GetSpecialType(SpecialType.System_Int16);
+                //}
             }
             else if (expr.Kind ==BoundKind.UnaryOperator)
             {
                 var unary = expr as BoundUnaryOperator;
                 var type = VOGetType(unary.Operand);
-                if (unary.OperatorKind.Operator() == UnaryOperatorKind.UnaryMinus)
+                if (unary.OperatorKind.HasFlag(UnaryOperatorKind.UnaryMinus))
                 {
                     // see if we must change unsigned into signed
                     if (type == Compilation.GetSpecialType(SpecialType.System_Byte))
@@ -665,12 +693,112 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     else if (type == Compilation.GetSpecialType(SpecialType.System_UInt32))
                     {
-                        type = Compilation.GetSpecialType(SpecialType.System_Int64);
+                        type = Compilation.GetSpecialType(SpecialType.System_Int64);  
                     }
+                }
+                else if (unary.OperatorKind.HasFlag(UnaryOperatorKind.LogicalNegation ))
+                {
+                    type = Compilation.GetSpecialType(SpecialType.System_Boolean);
                 }
                 return type;
             }
             return expr.Type;
+        }
+
+        public BoundExpression BindXsAddressOfExpression(PrefixUnaryExpressionSyntax node, DiagnosticBag diagnostics)
+        {
+            // In vulcan when we have defined a structure like:
+            // VOSTRUCT _WINWIN32_FIND_DATA
+            //   MEMBER DIM cFileName[10] AS BYTE
+            // This translates to 
+            // [StructLayout(LayoutKind.Sequential, Pack=8), VOStruct(10, 10)]
+            //    public struct _WINWIN32_FIND_DATA
+            //    {
+            //        [FixedBuffer(typeof(byte), 10)]
+            //        public <cFileName>e__FixedBuffer cFileName;
+            //        // Nested Types
+            //        [StructLayout(LayoutKind.Sequential, Size = 10), CompilerGenerated, UnsafeValueType]
+            //        public struct $DIM_Array_cFileName
+            //{
+            //    public byte FixedElementField;
+            //    }
+            //}
+            // The fixedBuffer is represented with a SourceFixedFieldSymbol
+            // and the cFileName element is then accessed by reference:
+            // cTemp := Psz2String(@pData:cFileName)
+            // in C# we do not need the @ sign. 
+            // So when we detect that the Operand is a Field of the type SourceFixedFieldSymbol
+            // we simply return the direct reference to the field without the AddressOf operator
+            if (node.Operand is InvocationExpressionSyntax)
+            {
+                Error(diagnostics, ErrorCode.ERR_CannotTakeAddressOfFunctionOrMethod, node.Operand);
+            }
+
+            var expr = this.BindExpression(node.Operand, diagnostics: diagnostics, invoked: false, indexed: false);
+
+            if (expr.Kind == BoundKind.FieldAccess)
+            {
+                if (expr.ExpressionSymbol is SourceFixedFieldSymbol)
+                {
+                    return expr;
+                }
+                var bfa = expr as BoundFieldAccess;
+                // Externally defined fixed Field. Could be a DIM field in a VoStruct class
+                if (bfa.FieldSymbol.IsFixed)
+                {
+                    var type = bfa.FieldSymbol.ContainingType;
+                    if (type.IsVoStructOrUnion())
+                    {
+                        return expr;
+                    }
+                }
+
+
+            }
+            if (expr.Kind == BoundKind.ArrayAccess)
+            {
+                //translate @var[i]  to var[i]
+                var bac = expr as BoundArrayAccess;
+                var type = expr.Type;
+                if (bac.Expression.ExpressionSymbol is SourceLocalSymbol && type.IsVoStructOrUnion())
+                {
+                    var sls = bac.Expression.ExpressionSymbol as SourceLocalSymbol;
+                    var syntaxes = sls.DeclaringSyntaxReferences;
+                    if (syntaxes.Length > 0)
+                    {
+                        var syntaxNode = syntaxes[0].GetSyntax() as CSharpSyntaxNode;
+                        var lvc = syntaxNode.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.LocalvarContext;
+                        if (lvc.As.Type == LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.AS)
+                        {
+                            return expr;
+                        }
+
+
+                    }
+                }
+            }
+            if (expr.Kind == BoundKind.Local)
+            {
+                var bl = expr as BoundLocal;
+                // only translate @name to @name[0] when not IsDecl
+                if (expr.Type.IsArray())
+                {
+                    var eltype = (expr.Type as ArrayTypeSymbol).ElementType;
+                    // convert from @expr to @expr[0]
+                    var intType = Compilation.GetSpecialType(SpecialType.System_Int32);
+                    var arrType = expr.Type as ArrayTypeSymbol;
+                    var elType = arrType.ElementType;
+                    var aindex = ArrayBuilder<BoundExpression>.GetInstance();
+                    for (int i = 0; i < arrType.Rank; i++)
+                    {
+                        aindex.Add(new BoundLiteral(node, ConstantValue.Create(0), intType));
+                    }
+                    var bacc = new BoundArrayAccess(node.Operand, expr, aindex.ToImmutableAndFree(), elType, false);
+                    TypeSymbol ptrType = new PointerTypeSymbol(elType);
+                    return new BoundAddressOfOperator(node, bacc, false, ptrType, hasErrors: false);
+                }
+            }
+            return null;
         }
         public void VODetermineIIFTypes(ConditionalExpressionSyntax node, DiagnosticBag diagnostics,
             ref BoundExpression trueExpr, ref BoundExpression falseExpr, 
@@ -691,7 +819,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         trueType = falseType;
                 }
 
-                if (trueType != falseType && Compilation.Options.IsDialectVO)
+                if (trueType != falseType && Compilation.Options.HasRuntime)
                 {
                     // convert to usual when one of the two is a usual
                     var usualType = Compilation.UsualType();
@@ -746,3 +874,4 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
     }
 }
+

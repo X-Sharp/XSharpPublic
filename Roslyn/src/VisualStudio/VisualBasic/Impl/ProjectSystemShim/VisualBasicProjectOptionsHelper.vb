@@ -1,4 +1,4 @@
-' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Imports System.Collections.Immutable
 Imports System.Collections.ObjectModel
@@ -172,7 +172,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.ProjectSystemShim
 
         Private Shared Function GetConditionalCompilationSymbols(kind As OutputKind, str As String) As ImmutableArray(Of KeyValuePair(Of String, Object))
             Debug.Assert(str IsNot Nothing)
-            Dim key = KeyValuePair.Create(str, kind)
+            Dim key = KeyValuePairUtil.Create(str, kind)
 
             Dim result As ImmutableArray(Of KeyValuePair(Of String, Object)) = Nothing
             If s_conditionalCompilationSymbolsCache.TryGetValue(key, result) Then
@@ -267,7 +267,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.ProjectSystemShim
                     Return ReportDiagnostic.Error
 
                 Case Else
-                    Throw ExceptionUtilities.Unreachable
+                    Throw ExceptionUtilities.UnexpectedValue(level)
             End Select
         End Function
 

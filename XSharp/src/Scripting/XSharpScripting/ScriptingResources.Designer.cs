@@ -8,10 +8,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace LanguageService.CodeAnalysis.Scripting {
+namespace Microsoft.CodeAnalysis.Scripting {
     using System;
     using System.Reflection;
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -39,7 +40,7 @@ namespace LanguageService.CodeAnalysis.Scripting {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LanguageService.CodeAnalysis.XSharp.Scripting.XSharpScriptingResources", typeof(XSharpScriptingResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LanguageService.CodeAnalysis.XSharp.Scripting.ScriptingResources", typeof(ScriptingResources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -66,6 +67,24 @@ namespace LanguageService.CodeAnalysis.Scripting {
         internal static string AbsolutePathExpected {
             get {
                 return ResourceManager.GetString("AbsolutePathExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assembly &apos;{0}, Version={1}&apos; has already been loaded from &apos;{2}&apos;. A different assembly with the same name and version can&apos;t be loaded: &apos;{3}&apos;..
+        /// </summary>
+        internal static string AssemblyAlreadyLoaded {
+            get {
+                return ResourceManager.GetString("AssemblyAlreadyLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assembly &apos;{0}&apos; has already been loaded from &apos;{1}&apos;. A different assembly with the same name can&apos;t be loaded unless it&apos;s signed: &apos;{2}&apos;..
+        /// </summary>
+        internal static string AssemblyAlreadyLoadedNotSigned {
+            get {
+                return ResourceManager.GetString("AssemblyAlreadyLoadedNotSigned", resourceCulture);
             }
         }
         

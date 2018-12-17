@@ -1,15 +1,18 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
 using Microsoft.CodeAnalysis.LanguageServices;
+using Microsoft.CodeAnalysis.Shared.Extensions;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Test.Utilities;
 using Xunit;
 
 namespace Microsoft.CodeAnalysis.Editor.UnitTests.TypeInferrer
 {
+    [UseExportProvider]
     public abstract class TypeInferrerTestBase<TWorkspaceFixture> : TestBase, IClassFixture<TWorkspaceFixture>, IDisposable
         where TWorkspaceFixture : TestWorkspaceFixture, new()
     {
@@ -22,13 +25,13 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.TypeInferrer
 
         public override void Dispose()
         {
-            this.fixture.CloseTextViewAsync().Wait();
+            this.fixture.DisposeAfterTest();
             base.Dispose();
         }
 
         private static async Task<bool> CanUseSpeculativeSemanticModelAsync(Document document, int position)
         {
-            var service = document.Project.LanguageServices.GetService<ISyntaxFactsService>();
+            var service = document.GetLanguageService<ISyntaxFactsService>();
             var node = (await document.GetSyntaxRootAsync()).FindToken(position).Parent;
 
             return !service.GetMemberBodySpanForSpeculativeBinding(node).IsEmpty;
@@ -55,12 +58,12 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.TypeInferrer
             string expectedType,
             bool useNodeStartPosition)
         {
-            var document = await fixture.UpdateDocumentAsync(text, SourceCodeKind.Regular);
+            var document = fixture.UpdateDocument(text, SourceCodeKind.Regular);
             await TestWorkerAsync(document, textSpan, expectedType, useNodeStartPosition);
 
             if (await CanUseSpeculativeSemanticModelAsync(document, textSpan.Start))
             {
-                var document2 = await fixture.UpdateDocumentAsync(text, SourceCodeKind.Regular, cleanBeforeUpdate: false);
+                var document2 = fixture.UpdateDocument(text, SourceCodeKind.Regular, cleanBeforeUpdate: false);
                 await TestWorkerAsync(document2, textSpan, expectedType, useNodeStartPosition);
             }
         }

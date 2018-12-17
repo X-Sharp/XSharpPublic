@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Reflection;
@@ -21,15 +21,10 @@ namespace Microsoft.CodeAnalysis.UnitTests.Interactive
 
         private static readonly FieldInfo s_ipcServerChannelListenerThread = typeof(IpcServerChannel).GetField("_listenerThread", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        internal static string GetInteractiveHostPath()
-        {
-            return typeof(InteractiveHostEntryPoint).Assembly.Location;
-        }
-
         internal static void DisposeInteractiveHostProcess(InteractiveHost process)
         {
             IpcServerChannel serverChannel = process._ServerChannel;
-            process.Dispose(joinThreads: true);
+            process.Dispose();
 
             var listenerThread = (Thread)s_ipcServerChannelListenerThread.GetValue(serverChannel);
             listenerThread.Join();

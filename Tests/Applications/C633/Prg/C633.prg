@@ -14,4 +14,16 @@ FUNCTION Start() AS VOID
 	? AScan(aArray , u) // ok
 	? AScan(uArray , 123) // ok
 	? AScan(aArray , 123) // ok
+
+	LOCAL dw := 100 AS DWORD
+	dw := Mod(dw , 12)
+	? dw
+	u := 7
+	dw := Mod(dw , u)
+	? u
+	
+	u := "aaa"
+	u := Ansi2Oem(u)
+	u := Oem2Ansi(u)
+	? u
 RETURN

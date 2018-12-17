@@ -71,7 +71,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (compilation.Options.XSharpRuntime)
             {
-                return compilation.GetWellKnownType(WellKnownType.XSharp___VODate);
+                return compilation.GetWellKnownType(WellKnownType.XSharp___Date);
             }
             else
             {
@@ -83,7 +83,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (compilation.Options.XSharpRuntime)
             {
-                return compilation.GetWellKnownType(WellKnownType.XSharp___VOFloat);
+                return compilation.GetWellKnownType(WellKnownType.XSharp___Float);
             }
             else
             {
@@ -112,6 +112,26 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return compilation.GetWellKnownType(WellKnownType.Vulcan___Array);
             }
         }
+
+        static internal NamedTypeSymbol IndexerType(this CSharpCompilation compilation)
+        {
+            if (compilation.Options.XSharpRuntime)
+                return compilation.GetWellKnownType(WellKnownType.XSharp_IIndexer);
+            return null;
+        }
+        static internal NamedTypeSymbol NamedIndexerType(this CSharpCompilation compilation)
+        {
+            if (compilation.Options.XSharpRuntime)
+                return compilation.GetWellKnownType(WellKnownType.XSharp_INamedIndexer);
+            return null;
+        }
+        static internal NamedTypeSymbol IndexedPropertiesType(this CSharpCompilation compilation)
+        {
+            if (compilation.Options.XSharpRuntime)
+                return compilation.GetWellKnownType(WellKnownType.XSharp_IIndexedProperties);
+            return null;
+        }
+
 
         static internal NamedTypeSymbol CodeBlockType(this CSharpCompilation compilation)
         {
@@ -151,7 +171,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (compilation.Options.XSharpRuntime)
             {
-                return compilation.GetWellKnownType(WellKnownType.XSharp_VO_Functions);
+                return compilation.GetWellKnownType(WellKnownType.XSharp_RT_Functions);
             }
             else
             {
@@ -190,6 +210,36 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return true;
                 }
             }
+            return false;
+        }
+
+        static internal bool IsValidVOUsualType(this TypeSymbol type, CSharpCompilation compilation)
+        {
+            switch (type.SpecialType)
+            {
+                case SpecialType.System_Int32:
+                case SpecialType.System_Int64:
+                case SpecialType.System_Boolean:
+                case SpecialType.System_String:
+                case SpecialType.System_IntPtr:
+                case SpecialType.System_Decimal:
+                case SpecialType.System_DateTime:
+                case SpecialType.System_Object:
+                    return true;
+                
+            }
+            if (type == compilation.ArrayType())
+                return true;
+            if (type == compilation.CodeBlockType())
+                return true;
+            if (type == compilation.DateType())
+                return true;
+            if (type == compilation.FloatType())
+                return true;
+            if (type == compilation.SymbolType())
+                return true;
+            if (type == compilation.PszType())
+                return true;
             return false;
         }
     }

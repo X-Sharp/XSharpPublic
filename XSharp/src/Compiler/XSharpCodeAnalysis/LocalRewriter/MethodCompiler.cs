@@ -48,8 +48,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var node = method.GetNonNullSyntaxNode();
                     if (node.XGenerated)
                     {
-                        var oldbody = body as BoundBlock;
-                        if (oldbody != null)
+                        if (body is BoundBlock oldbody )
                         {
                             var newbody = new BoundBlock(oldbody.Syntax, oldbody.Locals,oldbody.Statements,oldbody.HasErrors) { WasCompilerGenerated = true };
                             body = newbody;

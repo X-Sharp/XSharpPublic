@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -27,7 +27,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.NavigationBar
         private readonly IVsDropdownBarManager _manager;
         private readonly IVsCodeWindow _codeWindow;
         private readonly VisualStudioWorkspaceImpl _workspace;
-        private readonly IComEventSink _codeWindowEventsSink;
+        private readonly ComEventSink _codeWindowEventsSink;
         private readonly IVsEditorAdaptersFactoryService _editorAdaptersFactoryService;
         private readonly IntPtr _imageList;
         private readonly IVsImageService2 _imageService;
@@ -50,14 +50,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.NavigationBar
             _currentTypeItems = SpecializedCollections.EmptyList<NavigationBarItem>();
 
             var vsShell = serviceProvider.GetService(typeof(SVsShell)) as IVsShell;
-            if (vsShell != null)
-            {
-                int hresult = vsShell.GetProperty((int)__VSSPROPID.VSSPROPID_ObjectMgrTypesImgList, out var varImageList);
-                if (ErrorHandler.Succeeded(hresult) && varImageList != null)
-                {
-                    _imageList = (IntPtr)(int)varImageList;
-                }
-            }
+            vsShell?.TryGetPropertyValue(__VSSPROPID.VSSPROPID_ObjectMgrTypesImgList, out _imageList);
 
             _codeWindowEventsSink = ComEventSink.Advise<IVsCodeWindowEvents>(codeWindow, this);
             _editorAdaptersFactoryService = serviceProvider.GetMefService<IVsEditorAdaptersFactoryService>();
@@ -290,10 +283,9 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.NavigationBar
             // If this is a project item, try to get the actual proper image from the VSHierarchy it 
             // represents.  That way the icon will always look right no matter which type of project
             // it is.  For example, if phone/Windows projects have different icons, then this can 
-            // ensure we get the right icon, and not just a hardcoded C#/VB icon.
-            if (item is NavigationBarProjectItem)
+            // ensure we get the right icon, and not just a hard-coded C#/VB icon.
+            if (item is NavigationBarProjectItem projectItem)
             {
-                var projectItem = (NavigationBarProjectItem)item;
                 if (_workspace.TryGetImageListAndIndex(_imageService, projectItem.DocumentId.ProjectId, out phImageList, out piImageIndex))
                 {
                     return VSConstants.S_OK;

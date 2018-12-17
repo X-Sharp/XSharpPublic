@@ -57,7 +57,7 @@ namespace Microsoft.CodeAnalysis
         /// The name of an entry point method.
         /// </summary>
 #if XSHARP
-        public const string EntryPointMethodName = "Start";
+        public const string EntryPointMethodName = "__XsStart";
 #else
         public const string EntryPointMethodName = "Main";
 #endif
@@ -256,6 +256,11 @@ namespace Microsoft.CodeAnalysis
         /// The required name for the <c>GetEnumerator</c> method used in a ForEach statement.
         /// </summary>
         public const string GetEnumeratorMethodName = "GetEnumerator";
+
+        /// <summary>
+        /// The required name for the <c>Deconstruct</c> method used in a deconstruction.
+        /// </summary>
+        public const string DeconstructMethodName = "Deconstruct";
 
         /// <summary>
         /// The required name for the <c>MoveNext</c> method used in a ForEach statement.

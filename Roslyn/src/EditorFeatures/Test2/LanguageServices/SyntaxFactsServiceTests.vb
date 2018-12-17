@@ -7,6 +7,7 @@ Imports Microsoft.CodeAnalysis.LanguageServices
 Imports Microsoft.CodeAnalysis.Text
 
 Namespace Microsoft.CodeAnalysis.Editor.UnitTests.LanguageServices
+    <[UseExportProvider]>
     Public Class SyntaxFactsServiceTests
 
         <Fact>
@@ -200,7 +201,7 @@ $$End Class
         End Function
 
         Private Async Function VerifyGetMemberBodySpanForSpeculativeBindingAsync(workspaceDefinition As XElement) As Tasks.Task
-            Using workspace = Await TestWorkspace.CreateAsync(workspaceDefinition)
+            Using workspace = TestWorkspace.Create(workspaceDefinition)
                 Dim cursorDocument = workspace.DocumentWithCursor
                 Dim cursorPosition = cursorDocument.CursorPosition.Value
 

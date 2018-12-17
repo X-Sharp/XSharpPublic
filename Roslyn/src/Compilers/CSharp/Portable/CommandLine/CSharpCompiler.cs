@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+
 namespace Microsoft.CodeAnalysis.CSharp
 {
 #if XSHARP
@@ -179,20 +180,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return null;
             }
 
-            var strongNameProvider = new LoggingStrongNameProvider(Arguments.KeyFileSearchPaths, touchedFilesLogger, _tempDirectory);
+            var loggingFileSystem = new LoggingStrongNameFileSystem(touchedFilesLogger);
 
-            var compilation = CSharpCompilation.Create(
+            return CSharpCompilation.Create(
                 Arguments.CompilationName,
                 trees.WhereNotNull(),
                 resolvedReferences,
                 Arguments.CompilationOptions.
                     WithMetadataReferenceResolver(referenceDirectiveResolver).
                     WithAssemblyIdentityComparer(assemblyIdentityComparer).
-                    WithStrongNameProvider(strongNameProvider).
                     WithXmlReferenceResolver(xmlFileResolver).
+                    WithStrongNameProvider(Arguments.GetStrongNameProvider(loggingFileSystem, _tempDirectory)).
                     WithSourceReferenceResolver(sourceFileResolver));
-
-            return compilation;
         }
 
         private SyntaxTree ParseFile(
@@ -248,18 +247,18 @@ namespace Microsoft.CodeAnalysis.CSharp
         ///   1) The name with which the assembly should be output.
         ///   2) The path of the assembly/module file.
         ///   3) The path of the pdb file.
-        /// 
+        ///
         /// When csc produces an executable, but the name of the resulting assembly
         /// is not specified using the "/out" switch, the name is taken from the name
         /// of the file (note: file, not class) containing the assembly entrypoint
         /// (as determined by binding and the "/main" switch).
-        /// 
+        ///
         /// For example, if the command is "csc /target:exe a.cs b.cs" and b.cs contains the
         /// entrypoint, then csc will produce "b.exe" and "b.pdb" in the output directory,
         /// with assembly name "b" and module name "b.exe" embedded in the file.
         /// </summary>
         protected override string GetOutputFileName(Compilation compilation, CancellationToken cancellationToken)
-        { 
+        {
             if (Arguments.OutputFileName == null)
             {
                 Debug.Assert(Arguments.CompilationOptions.OutputKind.IsApplication());
@@ -309,6 +308,28 @@ namespace Microsoft.CodeAnalysis.CSharp
             consoleOutput.WriteLine();
         }
 
+        public override void PrintLangVersions(TextWriter consoleOutput)
+        {
+            consoleOutput.WriteLine(ErrorFacts.GetMessage(MessageID.IDS_LangVersions, Culture));
+            var defaultVersion = LanguageVersion.Default.MapSpecifiedToEffectiveVersion();
+            var latestVersion = LanguageVersion.Latest.MapSpecifiedToEffectiveVersion();
+            foreach (LanguageVersion v in Enum.GetValues(typeof(LanguageVersion)))
+            {
+                if (v == defaultVersion)
+                {
+                    consoleOutput.WriteLine($"{v.ToDisplayString()} (default)");
+                }
+                else if (v == latestVersion)
+                {
+                    consoleOutput.WriteLine($"{v.ToDisplayString()} (latest)");
+                }
+                else
+                {
+                    consoleOutput.WriteLine(v.ToDisplayString());
+                }
+            }
+            consoleOutput.WriteLine();
+        }
 
         internal override Type Type
         {
@@ -349,7 +370,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             SyntaxTree tree,
             SourceReferenceResolver resolver,
             OrderedSet<string> embeddedFiles,
-            IList<Diagnostic> diagnostics)
+            DiagnosticBag diagnostics)
         {
             foreach (LineDirectiveTriviaSyntax directive in tree.GetRoot().GetDirectives(
                 d => d.IsActive && !d.HasErrors && d.Kind() == SyntaxKind.LineDirectiveTrivia))

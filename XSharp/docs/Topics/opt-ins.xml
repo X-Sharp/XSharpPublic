@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/ins</title>
+  <title>-ins</title>
   <keywords>
-    <keyword>/ins</keyword>
+    <keyword>-ins</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/ins</para>
+      <para styleclass="Heading1">-ins</para>
     </header>
-    <para styleclass="Normal">The /ins option specifies whether the compiler should automatically include namespaces from Vulcan Assemblies or X# assemblies compiled in VO/Vulcan dialect &#160;marked with the VulcanImplicitNameSpaceAttribute (Vulcan runtime) or ImplicitNameSpaceAttribute (X# runtime).</para>
+    <para styleclass="Normal">The -ins option specifies whether the compiler should automatically include namespaces from Vulcan Assemblies or X# assemblies compiled in VO/Vulcan dialect &#160;marked with the VulcanImplicitNameSpaceAttribute (Vulcan runtime) or ImplicitNameSpaceAttribute (X# runtime).</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/ins[+|-]</para>
+    <para styleclass="Code with box">-ins[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />Specifying +, or just /ins, directs the compiler to automatically include namespaces from assemblies marked with the VulcanImplicitNameSpaceAttribute. </para>
+    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab ->Specifying +, or just -ins, directs the compiler to automatically include namespaces from assemblies marked with the VulcanImplicitNameSpaceAttribute. </para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Class Libraries can be compiled with a special attribute:</para>
@@ -34,14 +34,14 @@
     </list>
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following example will compile when the /ins switch is used and the VulcanVOGUIClasses assembly is included. Without /ins, errors will be raised.</para>
+    <para styleclass="Normal">The following example will compile when The -ins switch is used and the VulcanVOGUIClasses assembly is included. Without -ins, errors will be raised.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Note that the App class and ShellWindow class are located in the Vulcan.VO namespace</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">&#32;</para>
     <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If the /ins option is enabled, then the above example will be compiled as if it was written:</para>
+    <para styleclass="Normal">If The -ins option is enabled, then the above example will be compiled as if it was written:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"></para>

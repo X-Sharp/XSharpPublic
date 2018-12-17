@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/s</title>
+  <title>-s</title>
   <keywords>
-    <keyword>/s</keyword>
+    <keyword>-s</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/s</para>
+      <para styleclass="Heading1">-s</para>
     </header>
     <para styleclass="Normal">Performs a syntax check on the input files only. Does not produce the output exe, dll or pdb</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/s[+|-]</para>
+    <para styleclass="Code with box">-s[+|-]</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />Specifying +, or just /s, tells the compiler to only parse the source code and not to generate an output file. When combined with the /ppo option then there will be .ppo files written.</para>
+    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab ->Specifying +, or just -s, tells the compiler to only parse the source code and not to generate an output file. When combined with The -ppo option then there will be .ppo files written.</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This command line option allows you to check the code without generating a binary. </para>

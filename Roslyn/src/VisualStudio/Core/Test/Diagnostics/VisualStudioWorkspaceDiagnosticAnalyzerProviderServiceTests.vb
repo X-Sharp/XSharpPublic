@@ -48,11 +48,14 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.Diagnostics
         Public Sub TestHostAnalyzerAssemblyLoader()
             Using tempRoot = New TempRoot
                 Dim dir = tempRoot.CreateDirectory
-                Dim analyzerFile = TestHelpers.CreateCSharpAnalyzerAssemblyWithTestAnalyzer(dir, "TestAnalyzer")
+                Dim analyzerFile = DesktopTestHelpers.CreateCSharpAnalyzerAssemblyWithTestAnalyzer(dir, "TestAnalyzer")
                 Dim analyzerPackage = New HostDiagnosticAnalyzerPackage("MyPackage", ImmutableArray.Create(analyzerFile.Path))
-                Dim analyzerPackages = SpecializedCollections.SingletonEnumerable(analyzerPackage)
+                Dim analyzerPackages = ImmutableArray.Create(analyzerPackage)
                 Dim analyzerLoader = VisualStudioWorkspaceDiagnosticAnalyzerProviderService.GetLoader()
-                Dim hostAnalyzerManager = New HostAnalyzerManager(analyzerPackages, analyzerLoader, hostDiagnosticUpdateSource:=Nothing)
+                Dim hostAnalyzerManager = New HostAnalyzerManager(New Lazy(Of ImmutableArray(Of HostDiagnosticAnalyzerPackage))(
+                                                                  Function() analyzerPackages), analyzerLoader,
+                                                                  hostDiagnosticUpdateSource:=Nothing,
+                                                                  primaryWorkspace:=Nothing)
                 Dim analyzerReferenceMap = hostAnalyzerManager.GetHostDiagnosticAnalyzersPerReference(LanguageNames.CSharp)
                 Assert.Single(analyzerReferenceMap)
                 Dim analyzers = analyzerReferenceMap.Single().Value

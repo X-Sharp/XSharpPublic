@@ -3,7 +3,7 @@
   <!-- 
     Microsoft ResX Schema 
     
-    Version 2.0
+    Version 2.0 
     
     The primary goals of this format is to allow a simple XML format 
     that is mostly human readable. The generation and parsing of the 
@@ -15,7 +15,7 @@
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader> 
     <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
     <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
     <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
@@ -180,5 +180,11 @@ REPL commands:
 Script directives:
   #r            Add a metadata reference to specified assembly and all its dependencies, e.g. #r "myLib.dll".
   #load         Load specified script file and execute it, e.g. #load "myScript.csx".</value>
+  </data>
+  <data name="AssemblyAlreadyLoaded" xml:space="preserve">
+    <value>Assembly '{0}, Version={1}' has already been loaded from '{2}'. A different assembly with the same name and version can't be loaded: '{3}'.</value>
+  </data>
+  <data name="AssemblyAlreadyLoadedNotSigned" xml:space="preserve">
+    <value>Assembly '{0}' has already been loaded from '{1}'. A different assembly with the same name can't be loaded unless it's signed: '{2}'.</value>
   </data>
 </root>

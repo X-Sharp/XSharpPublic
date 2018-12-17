@@ -3,20 +3,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CodeRefactorings;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
 using Microsoft.CodeAnalysis.Extensions;
 using Microsoft.CodeAnalysis.Host.Mef;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.CodeAnalysis.Text;
-using Roslyn.Test.Utilities;
-using Roslyn.Utilities;
 using Xunit;
 
 namespace Microsoft.CodeAnalysis.Editor.UnitTests.CodeRefactoringService
 {
+    [UseExportProvider]
     public class CodeRefactoringServiceTest
     {
         [Fact]
@@ -31,10 +30,10 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.CodeRefactoringService
             await VerifyRefactoringDisabledAsync(new ErrorCases.ExceptionInComputeRefactoringsAsync());
         }
 
-        public async Task VerifyRefactoringDisabledAsync(CodeRefactoringProvider codeRefactoring)
+        private async Task VerifyRefactoringDisabledAsync(CodeRefactoringProvider codeRefactoring)
         {
             var refactoringService = new CodeRefactorings.CodeRefactoringService(GetMetadata(codeRefactoring));
-            using (var workspace = await TestWorkspace.CreateCSharpAsync(@"class Program {}"))
+            using (var workspace = TestWorkspace.CreateCSharp(@"class Program {}"))
             {
                 var project = workspace.CurrentSolution.Projects.Single();
                 var document = project.Documents.Single();

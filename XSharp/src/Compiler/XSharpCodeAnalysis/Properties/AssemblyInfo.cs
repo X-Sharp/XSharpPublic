@@ -21,4 +21,4 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("XSharp.CodeAnalysis")]
-[assembly: AssemblyDescription("X# CodeAnalysis DLL (non portable)")]
+[assembly: AssemblyDescription("X# CodeAnalysis DLL")]

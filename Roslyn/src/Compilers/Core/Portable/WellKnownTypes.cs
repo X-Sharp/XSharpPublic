@@ -263,6 +263,18 @@ namespace Microsoft.CodeAnalysis
         System_Runtime_CompilerServices_TupleElementNamesAttribute,
 
         Microsoft_CodeAnalysis_Runtime_Instrumentation,
+		System_Runtime_CompilerServices_ReferenceAssemblyAttribute,
+
+        System_Runtime_CompilerServices_IsReadOnlyAttribute,
+        System_Runtime_CompilerServices_IsByRefLikeAttribute,
+        System_Runtime_InteropServices_InAttribute,
+        System_ObsoleteAttribute,
+        System_Span_T,
+        System_ReadOnlySpan_T,
+        System_Runtime_InteropServices_UnmanagedType,
+        System_Runtime_CompilerServices_IsUnmanagedAttribute,
+
+        Microsoft_VisualBasic_Conversion,
 
 #if XSHARP
         System_Runtime_CompilerServices_IsConst,
@@ -284,10 +296,13 @@ namespace Microsoft.CodeAnalysis
         XSharp_Internal_ClassLibraryAttribute,
         XSharp_Internal_CompilerServices,
         XSharp_ImplicitNamespaceAttribute,
-        XSharp_VO_Functions,
+        XSharp_RT_Functions,
         XSharp_Codeblock,
-        XSharp___VOFloat,
-        XSharp___VODate,
+        XSharp_IIndexer,
+        XSharp_INamedIndexer,
+        XSharp_IIndexedProperties,
+        XSharp___Float,
+        XSharp___Date,
         XSharp___Symbol,
         XSharp___Psz,
         XSharp___Usual,
@@ -551,10 +566,21 @@ namespace Microsoft.CodeAnalysis
 
             "System.Runtime.CompilerServices.TupleElementNamesAttribute",
 
-            "Microsoft.CodeAnalysis.Runtime.Instrumentation"
+            "Microsoft.CodeAnalysis.Runtime.Instrumentation",
+
+            "System.Runtime.CompilerServices.ReferenceAssemblyAttribute",
+
+            "System.Runtime.CompilerServices.IsReadOnlyAttribute",
+            "System.Runtime.CompilerServices.IsByRefLikeAttribute",
+            "System.Runtime.InteropServices.InAttribute",
+            "System.ObsoleteAttribute",
+            "System.Span`1",
+            "System.ReadOnlySpan`1",
+            "System.Runtime.InteropServices.UnmanagedType",
+            "System.Runtime.CompilerServices.IsUnmanagedAttribute",
+            "Microsoft.VisualBasic.Conversion",
 
 #if XSHARP
-            ,
             "System.Runtime.CompilerServices.IsConst",
 
             "Vulcan.Internal.VOStructAttribute",
@@ -574,10 +600,13 @@ namespace Microsoft.CodeAnalysis
             "XSharp.Internal.ClassLibraryAttribute",
             "XSharp.Internal.CompilerServices",
             "XSharp.ImplicitNamespaceAttribute",
-            "XSharp.VO.Functions",
+            "XSharp.RT.Functions",
             "XSharp.Codeblock",
-            "XSharp.__VOFloat",
-            "XSharp.__VODate",
+            "XSharp.IIndexer",
+            "XSharp.INamedIndexer",
+            "XSharp.IIndexedProperties",
+            "XSharp.__Float",
+            "XSharp.__Date",
             "XSharp.__Symbol",
             "XSharp.__Psz",
             "XSharp.__Usual",

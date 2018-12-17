@@ -25,7 +25,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         private BoundExpression BindCodeblock(SyntaxNode syntax, UnboundLambda unboundLambda, Conversion conversion, bool isCast, TypeSymbol destination, DiagnosticBag diagnostics)
         {
-            if (!Compilation.Options.IsDialectVO)
+            if (!Compilation.Options.HasRuntime)
                 return null;
             var isCodeblock = syntax.XIsCodeBlock;
             if (!isCodeblock)
@@ -42,7 +42,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 conv = Conversions.ClassifyConversionFromType(Compilation.CodeBlockType(), destination, ref useSiteDiagnostics);
                 diagnostics.Add(syntax, useSiteDiagnostics);
             }
-            if (Compilation.Options.IsDialectVO)
+            if (Compilation.Options.HasRuntime)
             {
                 Debug.Assert(destination == Compilation.CodeBlockType()|| conv.Exists);
             }
@@ -119,7 +119,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             List<BoundStatement> newlist = new List<BoundStatement>();
             if (count == 0)
             {
-                var result = new BoundDefaultOperator(block.Syntax, usualType);
+                var result = new BoundDefaultExpression(block.Syntax, usualType);
                 newlist.Add(new BoundReturnStatement(block.Syntax, RefKind.None, result));
                 block = block.Update(block.Locals, ImmutableArray<LocalFunctionSymbol>.Empty, newlist.ToImmutableArray<BoundStatement>());
             }
@@ -146,7 +146,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 newlist.Add(block.Statements[i]);
                             }
                             newlist.Add(new BoundExpressionStatement(stmt.Syntax, operand));
-                            var result = new BoundDefaultOperator(stmt.Syntax, usualType);
+                            var result = new BoundDefaultExpression(stmt.Syntax, usualType);
                             newlist.Add(new BoundReturnStatement(stmt.Syntax, RefKind.None, result));
                             block = new BoundBlock(block.Syntax, block.Locals, newlist.ToImmutableArray<BoundStatement>());
                         }

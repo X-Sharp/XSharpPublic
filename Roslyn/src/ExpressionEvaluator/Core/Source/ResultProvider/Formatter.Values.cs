@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.ObjectModel;
@@ -201,14 +201,14 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
             return null;
         }
 
-#pragma warning disable RS0010
+#pragma warning disable CA1200 // Avoid using cref tags with a prefix
         /// <remarks>
         /// The corresponding native code is in EEUserStringBuilder::ErrTryAppendConstantEnum.
         /// The corresponding roslyn code is in 
         /// <see cref="M:Microsoft.CodeAnalysis.SymbolDisplay.AbstractSymbolDisplayVisitor`1.AddEnumConstantValue(Microsoft.CodeAnalysis.INamedTypeSymbol, System.Object, System.Boolean)"/>.
         /// NOTE: no curlies for enum values.
         /// </remarks>
-#pragma warning restore RS0010
+#pragma warning restore CA1200 // Avoid using cref tags with a prefix
         private string GetEnumDisplayString(Type lmrType, DkmClrValue value, ObjectDisplayOptions options, bool includeTypeName, DkmInspectionContext inspectionContext)
         {
             Debug.Assert(lmrType.IsEnum);
@@ -383,10 +383,10 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
             object obj;
             if (value.Type.GetLmrType().IsDateTime())
             {
-                DkmClrValue dateDataValue = value.GetFieldValue(DateTimeUtilities.DateTimeDateDataFieldName, inspectionContext);
+                DkmClrValue dateDataValue = value.GetPropertyValue("Ticks", inspectionContext);
                 Debug.Assert(dateDataValue.HostObjectValue != null);
 
-                obj = DateTimeUtilities.ToDateTime((ulong)dateDataValue.HostObjectValue);
+                obj = new DateTime((long)dateDataValue.HostObjectValue);
             }
             else
             {
@@ -409,15 +409,15 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
 
         internal abstract string GetArrayDisplayString(DkmClrAppDomain appDomain, Type lmrType, ReadOnlyCollection<int> sizes, ReadOnlyCollection<int> lowerBounds, ObjectDisplayOptions options);
 
-        internal abstract string GetArrayIndexExpression(int[] indices);
+        internal abstract string GetArrayIndexExpression(string[] indices);
 
-        internal abstract string GetCastExpression(string argument, string type, bool parenthesizeArgument, bool parenthesizeEntireExpression);
+        internal abstract string GetCastExpression(string argument, string type, DkmClrCastExpressionOptions options);
 
         internal abstract string GetNamesForFlagsEnumValue(ArrayBuilder<EnumField> fields, object value, ulong underlyingValue, ObjectDisplayOptions options, Type typeToDisplayOpt);
 
         internal abstract string GetNameForEnumValue(ArrayBuilder<EnumField> fields, object value, ulong underlyingValue, ObjectDisplayOptions options, Type typeToDisplayOpt);
 
-        internal abstract string GetObjectCreationExpression(string type, string arguments);
+        internal abstract string GetObjectCreationExpression(string type, string[] arguments);
 
         internal abstract string GetTupleExpression(string[] values);
 

@@ -35,10 +35,10 @@ namespace Microsoft.CodeAnalysis.SemanticModelWorkspaceService
 
             private readonly ReaderWriterLockSlim _gate = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
 
-            public async Task<SemanticModel> GetSemanticModelForNodeAsync(Document document, SyntaxNode node, CancellationToken cancellationToken = default(CancellationToken))
+            public async Task<SemanticModel> GetSemanticModelForNodeAsync(Document document, SyntaxNode node, CancellationToken cancellationToken = default)
             {
-                var syntaxFactsService = document.Project.LanguageServices.GetService<ISyntaxFactsService>();
-                var semanticFactsService = document.Project.LanguageServices.GetService<ISemanticFactsService>();
+                var syntaxFactsService = document.GetLanguageService<ISyntaxFactsService>();
+                var semanticFactsService = document.GetLanguageService<ISemanticFactsService>();
 
                 if (syntaxFactsService == null || semanticFactsService == null || node == null)
                 {
@@ -473,8 +473,8 @@ namespace Microsoft.CodeAnalysis.SemanticModelWorkspaceService
                         // Document once https://github.com/dotnet/roslyn/issues/5260 is fixed.
                         if (documentId == null)
                         {
-                            Debug.Assert(newProject.Solution.Workspace.Kind == "Interactive");
-                            continue;
+                            Debug.Assert(newProject.Solution.Workspace.Kind == WorkspaceKind.Interactive || newProject.Solution.Workspace.Kind == WorkspaceKind.MiscellaneousFiles);
+                            continue;                                
                         }
 
                         map = map.SetItem(documentId, newTree);
@@ -490,7 +490,7 @@ namespace Microsoft.CodeAnalysis.SemanticModelWorkspaceService
                         var documentId = project.GetDocumentId(tree);
                         if (documentId != null)
                         {
-                            yield return KeyValuePair.Create(documentId, tree);
+                            yield return KeyValuePairUtil.Create(documentId, tree);
                         }
                     }
                 }

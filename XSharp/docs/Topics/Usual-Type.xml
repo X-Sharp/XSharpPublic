@@ -2,12 +2,17 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Usual Type</title>
+  <keywords>
+    <keyword>USUAL</keyword>
+    <keyword>XSharp.__Usual</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">Usual Type</para>
     </header>
     <para styleclass="Normal">The USUAL type in X# is implemented as a .Net structure. It contains a type flag and a value. The value can be one of the following types:</para>
-    <para styleclass="Normal">NIL, Long, Date, Float, Array, Object, String, Logic, Codeblock, Symbol, Ptr, Int64, DateTime, Decimal, DateTime<br/></para>
+    <para styleclass="Normal">NIL, Long, Date, Float, Array, Object, String, Logic, Codeblock, Symbol, Ptr, Int64, DateTime, Decimal, DateTime</para>
+    <para styleclass="Normal">The internal type name for this type is XSharp.__Usual<br/></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="15" colcount="2" style="width:100%; background-color:#ffffff; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
       <thead style="vertical-align:top">
         <td>

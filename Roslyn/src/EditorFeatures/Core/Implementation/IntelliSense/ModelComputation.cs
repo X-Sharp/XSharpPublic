@@ -19,7 +19,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense
         /// <summary>
         /// Set when the first compute task completes
         /// </summary>
-        private TModel _initialUnfilteredModel = default(TModel);
+        private TModel _initialUnfilteredModel = default;
 
         #endregion
 
@@ -121,6 +121,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense
             bool updateController = true)
         {
             AssertIsForeground();
+
             Contract.ThrowIfTrue(_stopCancellationToken.IsCancellationRequested, "should not chain tasks after we've been cancelled");
 
             // Mark that an async operation has begun.  This way tests know to wait until the

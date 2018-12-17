@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd" status="Under Construction">
+  <title>Warning XS9071</title>
+  <keywords>
+    <keyword>XS9071</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS9071</para>
+    </header>
+    <para styleclass="Normal">Parameter {0} needs a(n) &apos;{1}&apos; modifier. This modifier was automatically added.</para>
+  </body>
+</topic>

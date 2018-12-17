@@ -133,7 +133,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         resultBinder = VisitCore(methodDecl.Parent);
                     }
 
-                    SourceMethodSymbol method = null;
+                    SourceMemberMethodSymbol method = null;
 
                     if (usage != NodeUsage.Normal && methodDecl.TypeParameterList != null)
                     {
@@ -208,6 +208,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     // Destructors have neither parameters nor type parameters, so there's nothing special to do here.
                     resultBinder = VisitCore(parent.Parent);
+
+                    SourceMemberMethodSymbol method = GetMethodSymbol(parent, resultBinder);
+                    resultBinder = new InMethodBinder(method, resultBinder);
 
                     resultBinder = resultBinder.WithUnsafeRegionIfNecessary(parent.Modifiers);
 
@@ -440,6 +443,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return ExplicitInterfaceHelpers.GetMemberName(outerBinder, explicitInterfaceSpecifierSyntax, propertyDecl.Identifier.ValueText);
 #if XSHARP
                     case SyntaxKind.IndexerDeclaration:
+                        // X# allows indexers with another name than This
                         var indexerDecl = (IndexerDeclarationSyntax)basePropertyDeclarationSyntax;
                         return ExplicitInterfaceHelpers.GetMemberName(outerBinder, explicitInterfaceSpecifierSyntax, string.IsNullOrEmpty(indexerDecl.ThisKeyword.ValueText) ? WellKnownMemberNames.Indexer : indexerDecl.ThisKeyword.ValueText);
 #else
@@ -456,11 +460,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             // Get the correct methods symbol within container that corresponds to the given method syntax.
-            private SourceMethodSymbol GetMethodSymbol(BaseMethodDeclarationSyntax baseMethodDeclarationSyntax, Binder outerBinder)
+            private SourceMemberMethodSymbol GetMethodSymbol(BaseMethodDeclarationSyntax baseMethodDeclarationSyntax, Binder outerBinder)
             {
                 if (baseMethodDeclarationSyntax == _memberDeclarationOpt)
                 {
-                    return (SourceMethodSymbol)_memberOpt;
+                    return (SourceMemberMethodSymbol)_memberOpt;
                 }
 
                 NamedTypeSymbol container = GetContainerType(outerBinder, baseMethodDeclarationSyntax);
@@ -470,16 +474,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 
                 string methodName = GetMethodName(baseMethodDeclarationSyntax, outerBinder);
-                return (SourceMethodSymbol)GetMemberSymbol(methodName, baseMethodDeclarationSyntax.FullSpan, container, SymbolKind.Method);
+                return (SourceMemberMethodSymbol)GetMemberSymbol(methodName, baseMethodDeclarationSyntax.FullSpan, container, SymbolKind.Method);
             }
 
             private SourcePropertySymbol GetPropertySymbol(BasePropertyDeclarationSyntax basePropertyDeclarationSyntax, Binder outerBinder)
             {
-                if (basePropertyDeclarationSyntax == _memberDeclarationOpt)
-                {
-                    return (SourcePropertySymbol)_memberOpt;
-                }
-
                 Debug.Assert(basePropertyDeclarationSyntax.Kind() == SyntaxKind.PropertyDeclaration || basePropertyDeclarationSyntax.Kind() == SyntaxKind.IndexerDeclaration);
 
                 if (basePropertyDeclarationSyntax == _memberDeclarationOpt)

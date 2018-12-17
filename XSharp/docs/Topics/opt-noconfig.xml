@@ -1,27 +1,27 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/noconfig</title>
+  <title>-noconfig</title>
   <keywords>
-    <keyword>/noconfig</keyword>
+    <keyword>-noconfig</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/noconfig</para>
+      <para styleclass="Heading1">-noconfig</para>
     </header>
-    <para styleclass="Normal">The /noconfig option tells the compiler not to compile with the xsc.rsp file, which is located in and loaded from the same directory as the xsc.exe file.</para>
+    <para styleclass="Normal">The -noconfig option tells the compiler not to compile with the xsc.rsp file, which is located in and loaded from the same directory as the xsc.exe file.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/noconfig &#160;</para>
+    <para styleclass="Code with box">-noconfig &#160;</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The xsc.rsp file references all the assemblies shipped with the .NET Framework. The actual references that the Visual Studio .NET development environment includes depend on the project type.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">You can modify the xsc.rsp file and specify additional compiler options that should be included in every compilation from the command line with xsc.exe (except the /noconfig option).</para>
+    <para styleclass="Normal">You can modify the xsc.rsp file and specify additional compiler options that should be included in every compilation from the command line with xsc.exe (except The -noconfig option).</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The compiler processes the options passed to the xsc command last. Therefore, any option on the command line overrides the setting of the same option in the xsc.rsp file.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If you do not want the compiler to look for and use the settings in the xsc.rsp file, specify /noconfig.</para>
+    <para styleclass="Normal">If you do not want the compiler to look for and use the settings in the xsc.rsp file, specify -noconfig.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This compiler option is unavailable in Visual Studio and cannot be changed programmatically.</para>
   </body>

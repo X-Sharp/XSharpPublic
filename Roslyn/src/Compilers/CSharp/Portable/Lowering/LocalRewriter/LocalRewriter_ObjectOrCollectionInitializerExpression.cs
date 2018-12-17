@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using Microsoft.CodeAnalysis.CSharp.Symbols;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -13,7 +14,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     internal sealed partial class LocalRewriter
     {
-        private static BoundExpression UpdateInitializers(BoundExpression initializerExpression, ImmutableArray<BoundExpression> newInitializers)
+        private static BoundObjectInitializerExpressionBase UpdateInitializers(BoundObjectInitializerExpressionBase initializerExpression, ImmutableArray<BoundExpression> newInitializers)
         {
             if (initializerExpression.Kind == BoundKind.ObjectInitializerExpression)
             {
@@ -174,7 +175,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (_inExpressionLambda)
             {
-                return initializer.Update(addMethod, rewrittenArguments, false, default(ImmutableArray<int>), initializer.InvokedAsExtensionMethod, initializer.ResultKind, rewrittenType);
+                return initializer.Update(addMethod, rewrittenArguments, rewrittenReceiver, expanded: false, argsToParamsOpt: default, initializer.InvokedAsExtensionMethod, initializer.ResultKind, initializer.BinderOpt, rewrittenType);
             }
 
             return MakeCall(null, syntax, rewrittenReceiver, addMethod, rewrittenArguments, default(ImmutableArray<RefKind>), initializer.InvokedAsExtensionMethod, initializer.ResultKind, addMethod.ReturnType, temps);
@@ -242,6 +243,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 memberInit.Expanded,
                                 memberInit.ArgsToParamsOpt,
                                 memberInit.ResultKind,
+                                memberInit.ReceiverType,
+                                memberInit.BinderOpt,
                                 memberInit.Type);
                         }
 
@@ -283,7 +286,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             {
                                 // Rewrite simple assignment to field/property.
                                 var rewrittenRight = VisitExpression(assignment.Right);
-                                result.Add(MakeStaticAssignmentOperator(assignment.Syntax, rewrittenAccess, rewrittenRight, RefKind.None, assignment.Type, used: false));
+                                result.Add(MakeStaticAssignmentOperator(assignment.Syntax, rewrittenAccess, rewrittenRight, false, assignment.Type, used: false));
                                 return;
                             }
                         }
@@ -324,7 +327,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             // Rewrite simple assignment to field/property.
                             var rewrittenRight = VisitExpression(assignment.Right);
-                            result.Add(MakeStaticAssignmentOperator(assignment.Syntax, rewrittenAccess, rewrittenRight, RefKind.None, assignment.Type, used: false));
+                            result.Add(MakeStaticAssignmentOperator(assignment.Syntax, rewrittenAccess, rewrittenRight, false, assignment.Type, used: false));
                             return;
                         }
 
@@ -357,7 +360,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             // Rewrite as simple assignment.
                             var rewrittenRight = VisitExpression(assignment.Right);
-                            result.Add(MakeStaticAssignmentOperator(assignment.Syntax, rewrittenAccess, rewrittenRight, RefKind.None, assignment.Type, used: false));
+                            result.Add(MakeStaticAssignmentOperator(assignment.Syntax, rewrittenAccess, rewrittenRight, false, assignment.Type, used: false));
                             return;
                         }
 

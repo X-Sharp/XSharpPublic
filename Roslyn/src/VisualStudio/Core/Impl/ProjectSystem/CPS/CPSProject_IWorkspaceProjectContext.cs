@@ -96,7 +96,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.ProjectSystem.C
             }
             set
             {
-                ExecuteForegroundAction(() => SetIntellisenseBuildResultAndNotifyWorkspaceHosts(value));
+                ExecuteForegroundAction(() => SetIntellisenseBuildResultAndNotifyWorkspace(value));
             }
         }
 
@@ -120,7 +120,12 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.ProjectSystem.C
             ExecuteForegroundAction(() =>
             {
                 var commandLineArguments = SetArgumentsAndUpdateOptions(commandLineForOptions);
-                PostSetOptions(commandLineArguments);
+                if (commandLineArguments != null)
+                {
+                    // some languages (e.g., F#) don't expose a command line parser and this might be `null`
+                    SetRuleSetFile(commandLineArguments.RuleSetPath);
+                    PostSetOptions(commandLineArguments);
+                }
             });
         }
 
@@ -193,7 +198,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.ProjectSystem.C
         {
             ExecuteForegroundAction(() =>
             {
-                AddFile(filePath, sourceCodeKind, _ => isInCurrentContext, _ => folderNames.ToImmutableArrayOrEmpty());
+                AddFile(filePath, sourceCodeKind, _ => isInCurrentContext, folderNames.ToImmutableArrayOrEmpty());
             });
         }
 

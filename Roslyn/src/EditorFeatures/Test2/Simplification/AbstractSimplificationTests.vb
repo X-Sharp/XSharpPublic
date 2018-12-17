@@ -1,5 +1,6 @@
-' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+Imports System.Collections.Immutable
 Imports Microsoft.CodeAnalysis
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Extensions
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces
@@ -9,10 +10,11 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Roslyn.Utilities
 
 Namespace Microsoft.CodeAnalysis.Editor.UnitTests.Simplification
+    <[UseExportProvider]>
     Public MustInherit Class AbstractSimplificationTests
 
-        Protected Async Function TestAsync(definition As XElement, expected As XElement, Optional simplificationOptions As Dictionary(Of OptionKey, Object) = Nothing) As System.Threading.Tasks.Task
-            Using workspace = Await TestWorkspace.CreateAsync(definition)
+        Protected Async Function TestAsync(definition As XElement, expected As XElement, Optional options As Dictionary(Of OptionKey, Object) = Nothing) As System.Threading.Tasks.Task
+            Using workspace = TestWorkspace.Create(definition)
                 Dim hostDocument = workspace.Documents.Single()
 
                 Dim spansToAddSimplifierAnnotation = hostDocument.AnnotatedSpans.Where(Function(kvp) kvp.Key.StartsWith("Simplify", StringComparison.Ordinal))
@@ -30,16 +32,18 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.Simplification
                                                         explicitSpanToSimplifyAnnotatedSpans.Single().Value,
                                                         Nothing)
 
-                Await TestAsync(workspace, spansToAddSimplifierAnnotation, explicitSpansToSimplifyWithin, expected, simplificationOptions)
+                Await TestAsync(
+                    workspace, spansToAddSimplifierAnnotation,
+                    explicitSpansToSimplifyWithin, expected, options)
             End Using
 
         End Function
 
         Private Async Function TestAsync(workspace As Workspace,
-                         listOfLabelToAddSimplifierAnnotationSpans As IEnumerable(Of KeyValuePair(Of String, IList(Of TextSpan))),
-                         explicitSpansToSimplifyWithin As IEnumerable(Of TextSpan),
+                         listOfLabelToAddSimplifierAnnotationSpans As IEnumerable(Of KeyValuePair(Of String, ImmutableArray(Of TextSpan))),
+                         explicitSpansToSimplifyWithin As ImmutableArray(Of TextSpan),
                          expected As XElement,
-                         simplificationOptions As Dictionary(Of OptionKey, Object)) As System.Threading.Tasks.Task
+                         options As Dictionary(Of OptionKey, Object)) As System.Threading.Tasks.Task
             Dim document = workspace.CurrentSolution.Projects.Single().Documents.Single()
 
             Dim root = Await document.GetSyntaxRootAsync()
@@ -82,8 +86,8 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.Simplification
             Next
 
             Dim optionSet = workspace.Options
-            If simplificationOptions IsNot Nothing Then
-                For Each entry In simplificationOptions
+            If options IsNot Nothing Then
+                For Each entry In options
                     optionSet = optionSet.WithChangedOption(entry.Key, entry.Value)
                 Next
             End If
@@ -91,7 +95,7 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.Simplification
             document = document.WithSyntaxRoot(root)
 
             Dim simplifiedDocument As Document
-            If explicitSpansToSimplifyWithin IsNot Nothing Then
+            If Not explicitSpansToSimplifyWithin.IsDefaultOrEmpty Then
                 simplifiedDocument = Await Simplifier.ReduceAsync(document, explicitSpansToSimplifyWithin, optionSet)
             Else
                 simplifiedDocument = Await Simplifier.ReduceAsync(document, Simplifier.Annotation, optionSet)

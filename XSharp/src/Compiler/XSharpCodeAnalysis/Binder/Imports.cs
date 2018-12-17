@@ -23,7 +23,7 @@ using Microsoft.CodeAnalysis.Collections;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslyn.Utilities;
-
+using Microsoft.CodeAnalysis.PooledObjects;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     internal sealed partial class Imports
@@ -62,7 +62,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (opts.CommandLineArguments != null)
                 {
                     string functionsClass = null;
-                    if (compilation.Options.IsDialectVO )
+                    if (compilation.Options.HasRuntime )
                     {
                         functionsClass = Syntax.InternalSyntax.XSharpVOTreeTransformation.VOGlobalClassName(opts);
                     }
@@ -89,7 +89,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     var declbinder = usingsBinder.WithAdditionalFlags(BinderFlags.SuppressConstraintChecks);
                     var diagnostics = DiagnosticBag.GetInstance();
-                    string[] defNs = { OurNameSpaces.Vulcan, OurNameSpaces.XSharp};
+                    string[] defNs;
+                    if (compilation.Options.XSharpRuntime)
+                        defNs = new string[]{ OurNameSpaces.XSharp}; 
+                    else
+                        defNs = new string[]{ OurNameSpaces.Vulcan}; 
+
                     foreach (var n in defNs)
                     {
                         var name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(n);

@@ -11,6 +11,7 @@ namespace XSharp.MacroCompiler
     internal enum ConversionKind
     {
         NoConversion,
+        NoImplicitConversion,
         Identity,
         ImplicitNumeric,
         //ImplicitEnumeration,
@@ -44,22 +45,31 @@ namespace XSharp.MacroCompiler
         //InterpolatedString, // a conversion from an interpolated string to IFormattable or FormattableString
         ImplicitUsual,
         ExplicitUsual,
+        Refer,
+        Deref,
+        ConstantReduction,
     }
 
-    internal class ConversionSymbol : Symbol
+    internal partial class ConversionSymbol : Symbol
     {
         internal readonly ConversionKind Kind;
 
-        internal bool IsExplicit { get { return (convCost[(int)Kind] & Explicit) != 0; } }
-        internal bool IsImplicit { get { return (convCost[(int)Kind] & Implicit) != 0; } }
-        internal int Cost { get { return convCost[(int)Kind] & (Implicit-1); } }
+        internal virtual bool IsExplicit { get { return (convCost[(int)Kind] & Explicit) != 0; } }
+        internal virtual bool IsImplicit { get { return (convCost[(int)Kind] & Implicit) != 0; } }
+        internal bool Exists { get { return Kind != ConversionKind.NoConversion && Kind != ConversionKind.NoImplicitConversion; } }
+        internal virtual int Cost { get { return convCost[(int)Kind] & (Implicit-1); } }
 
         internal ConversionSymbol(ConversionKind kind) { Kind = kind; }
 
         internal static ConversionSymbol Create(ConversionKind kind) { return simpleConv[(int)kind]; }
         internal static ConversionSymbolWithMethod Create(ConversionKind kind, MethodSymbol method) { return new ConversionSymbolWithMethod(kind, method); }
+        internal static ConversionSymbolToConstant Create(Constant constant) { return new ConversionSymbolToConstant(constant); }
+        internal static ConversionChain Create(ConversionSymbol conv, ConversionSymbol prev) { return new ConversionChain(conv, prev); }
+        internal static ConversionByRef CreateByRef() { return new ConversionByRef(); }
 
-        internal override Symbol Lookup(string name) { throw new NotImplementedException(); }
+        internal override Symbol Lookup(string name) { throw new InternalError(); }
+
+        internal override string FullName { get { return Kind.ToString(); } }
 
         const int Explicit = 0x20000;
         const int Implicit = 0x10000;
@@ -87,6 +97,7 @@ namespace XSharp.MacroCompiler
 #endif
 
             convCost[(int)ConversionKind.NoConversion] = 0;
+            convCost[(int)ConversionKind.NoImplicitConversion] = 0;
 
             convCost[(int)ConversionKind.Identity] = Implicit | 0;
             convCost[(int)ConversionKind.ImplicitNumeric] = Implicit | 1;
@@ -96,6 +107,9 @@ namespace XSharp.MacroCompiler
             convCost[(int)ConversionKind.Boxing] = Implicit | 3;
             convCost[(int)ConversionKind.ImplicitUsual] = Implicit | 4;
             convCost[(int)ConversionKind.ImplicitUserDefined] = Implicit | 4;
+            convCost[(int)ConversionKind.Refer] = Implicit | 0;
+            convCost[(int)ConversionKind.Deref] = Implicit | 0;
+            convCost[(int)ConversionKind.ConstantReduction] = Implicit | 0;
 
             convCost[(int)ConversionKind.ExplicitNumeric] = Explicit | 1;
             convCost[(int)ConversionKind.ExplicitNullable] = Explicit | 2;
@@ -113,11 +127,35 @@ namespace XSharp.MacroCompiler
         }
     }
 
-    internal class ConversionSymbolWithMethod : ConversionSymbol
+    internal partial class ConversionSymbolWithMethod : ConversionSymbol
     {
         internal MethodSymbol Method;
 
         internal ConversionSymbolWithMethod(ConversionKind kind, MethodSymbol method) : base(kind) { Method = method; }
+    }
+
+    internal partial class ConversionSymbolToConstant : ConversionSymbol
+    {
+        internal Constant Constant;
+
+        internal ConversionSymbolToConstant(Constant constant) : base(ConversionKind.ConstantReduction) { Constant = constant; }
+    }
+
+    internal partial class ConversionChain : ConversionSymbol
+    {
+        internal ConversionSymbol Conversion;
+        internal ConversionSymbol Previous;
+
+        internal ConversionChain(ConversionSymbol conv, ConversionSymbol prev) : base(conv.Kind) { Conversion = conv; Previous = prev; }
+
+        internal override bool IsExplicit { get { return Previous.IsExplicit || Conversion.IsExplicit; } }
+        internal override bool IsImplicit { get { return Previous.IsImplicit || Conversion.IsImplicit; } }
+        internal override int Cost { get { return Previous.Cost + Conversion.Cost; } }
+    }
+
+    internal partial class ConversionByRef : ConversionSymbol
+    {
+        internal ConversionByRef() : base(ConversionKind.Refer) { }
     }
 
     internal static class ConversionEasyOut
@@ -178,7 +216,7 @@ namespace XSharp.MacroCompiler
                 };
         }
 
-        private static int TypeToIndex(TypeSymbol type)
+        internal static int TypeToIndex(TypeSymbol type)
         {
             switch (type.NativeType)
             {
@@ -196,12 +234,12 @@ namespace XSharp.MacroCompiler
                 case NativeType.UInt64: return 11;
                 case NativeType.Single: return 12;
                 case NativeType.Double: return 13;
-                case NativeType.Decimal: return 14;
+                //case NativeType.Decimal: return 14; // TODO nvk: easy-out ops
 
-                /*case NativeType.Unknown:
-                    if ((object)type != null && type.Type.IsNullableType())
+                case NativeType.Unknown:
+                    if ((object)type != null && type.IsNullableType())
                     {
-                        TypeSymbol underlyingType = type.GetNullableUnderlyingType();
+                        TypeSymbol underlyingType = type.NullableUnderlyingType;
 
                         switch (underlyingType.NativeType)
                         {
@@ -217,12 +255,12 @@ namespace XSharp.MacroCompiler
                             case NativeType.UInt64: return 24;
                             case NativeType.Single: return 25;
                             case NativeType.Double: return 26;
-                            case NativeType.Decimal: return 27;
+                            //case NativeType.Decimal: return 27; // TODO nvk: easy-out ops
                         }
                     }
 
                     // fall through
-                    goto default;*/
+                    goto default;
 
                 default:
                     return -1;

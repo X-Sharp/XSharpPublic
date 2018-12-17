@@ -153,11 +153,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             else if (root.XNode != null && eof == null && span.Start != 0 && span.End != 0)
             {
                 var snode = (CSharpSyntaxNode)root.ChildThatContainsPosition(span.Start);
-                var enode = snode;
                 while (!snode.Green.IsToken && (span.Start > snode.Position || span.Length < snode.FullWidth))
                 {
                     var sn = (CSharpSyntaxNode)snode.ChildThatContainsPosition(span.Start);
-                    if (sn == null || sn == snode)
+                    if (sn == null || sn == snode) // no child found
                         break;
                     if (span.Start == sn.Position && span.Length > sn.FullWidth)
                     {
@@ -165,12 +164,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (en != null)
                         {
                             snode = sn;
-                            enode = en;
                             break;
                         }
                     }
                     snode = sn;
-                    enode = sn;
                 }
                 var start = 0;
                 var length = 0;
@@ -184,14 +181,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     snode = snode.Parent;
                 }
+                else if (snode is IdentifierNameSyntax )
+                {
+                    // walk until we find the statement
+                    while (snode != null && snode.Parent != null)
+                    {
+                        snode = snode.Parent;
+                        if (snode is StatementSyntax)
+                            break;
+                    }
+                }
                 if (snode.XNode != null)
                 {
                     var xNode = snode.XNode as XSharpParserRuleContext;
                     start = xNode.Position ;
                     length = xNode.FullWidth ;
                     fn = xNode.SourceFileName;
-                    var symbol = xNode.SourceSymbol as XSharpToken;
-                    if (symbol != null )
+                    if (xNode.SourceSymbol is XSharpToken symbol)
                     {
                         // for a define or UDC we want the location in the source and not in the #include 
                         start = symbol.StartIndex;

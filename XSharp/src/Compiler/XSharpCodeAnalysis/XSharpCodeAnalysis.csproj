@@ -1,388 +1,69 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\build\Targets\Settings.props" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\CompilerCommon.props" />
   <PropertyGroup>
-    <!-- Roslyn analyzers disabled because of dependency problems that generate strange build errors-->
-    <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
-    <RoslynProjectType>Custom</RoslynProjectType>
-    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <CfgPath>$(Configuration)_$(Platform)</CfgPath>
-    <RoslynSrc>..\..\..\..\Roslyn\src</RoslynSrc>
-    <RoslynBin>..\Roslyn\Binaries</RoslynBin>
-    <SuppressRoslynBuildVersion>true</SuppressRoslynBuildVersion>
-    <XSharpBuild>..\..\..\..\XSharp\build</XSharpBuild>
-    <ProjectGuid>{F738FD65-FFAF-4F52-8EFC-5AFFD1C42846}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>LanguageService.CodeAnalysis</RootNamespace>
     <AssemblyName>XSharp.CodeAnalysis</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
-    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
-    <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
-    <SyntaxDefinition>$(MSBuildThisFileDirectory)$(RoslynSrc)\Compilers\CSharp\Portable\Syntax\Syntax.xml</SyntaxDefinition>
-    <CompilerGeneratorToolsDir>$(SolutionDir)$(RoslynBin)\$(Configuration)\Exes\DeployCompilerGeneratorToolsRuntime\</CompilerGeneratorToolsDir>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <CscToolPath>$(BaseOutputPath)\$(CfgPath)\</CscToolPath>
-    <RestorePackages>true</RestorePackages>
-    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <DelaySign>false</DelaySign>
-    <NoWarn>1591,CS0649,CS8032,CS3021,RS0008,CS1574,CS0419</NoWarn>
-    <DefineConstants>$(DefineConstants);COMPILERCORE;XSHARP;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS;VSPARSER</DefineConstants>
-    <CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <ServiceablePackage>true</ServiceablePackage>
+    <NoWarn>1591,CS0649,CS8032,CS3021,RS0008,CS1574,CS0419,CS3008,CS3005,CS3001,CS3002,CS3015,</NoWarn> 
+    <DefineConstants>$(DefineConstants);TRACE;DEBUG;COMPILERCORE;XSHARP;NET45;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE;</DefineConstants>
+    <!--<CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>-->
+    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
+    <!-- This is required to prevent downgrade references from CscCore/VbcCode since we must
+         reference Microsoft.NETCore.App to target the shared framework (bug
+         https://github.com/dotnet/sdk/issues/1159) and NETCore.App
+         contains a reference to C# + VB CodeAnalysis. This ensures that the project
+         reference is a higher version than the NuGet reference. -->
+    <Version>$(NuGetPerBuildPreReleaseVersion)</Version>
+    <AntlrCall>java -jar $(SolutionDir).\build\antlr4-csharp-4.6.1-SNAPSHOT-complete.jar</AntlrCall>
+    <AntlrPackage>-package LanguageService.CodeAnalysis.XSharp.SyntaxParser</AntlrPackage>
+    <AntlrOutputDir>$(MSBuildThisFileDirectory)Generated\</AntlrOutputDir>
+    <AntlrInputDir>$(MSBuildThisFileDirectory)Parser\</AntlrInputDir>
+    <AntlrParams>-long-messages  -message-format vs2005 -Dlanguage=CSharp_v4_5 $(AntlrPackage) -listener -o $(AntlrOutputdir)</AntlrParams>
+    <!--Use the C# compiler created in this solution-->
+    <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants)NET46</DefineConstants>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <DebugType>full</DebugType>
+    <GenericDefines>COMPILERCORE;NET45;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE</GenericDefines>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DefineConstants>XSHARP;DEBUG;TRACE;$(Genericdefines)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+    <DefineConstants>XSHARP;NDEBUG;TRACE;$(Genericdefines)</DefineConstants>
   </PropertyGroup>
   <ItemGroup Label="Project References">
-    <!--<ProjectReference Include="$(RoslynSrc)\Tools\Source\CompilerGeneratorTools\Source\CSharpSyntaxGenerator\CSharpSyntaxGenerator.csproj">
-      <Project>{288089C5-8721-458E-BE3E-78990DAB5E2D}</Project>
-      <Name>CSharpSyntaxGenerator</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="$(RoslynSrc)\Tools\Source\CompilerGeneratorTools\Source\BoundTreeGenerator\CompilersBoundTreeGenerator.csproj">
-      <Project>{02459936-CD2C-4F61-B671-5C518F2A3DDC}</Project>
-      <Name>CompilersBoundTreeGenerator</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="$(RoslynSrc)\Tools\Source\CompilerGeneratorTools\Source\CSharpErrorFactsGenerator\CSharpErrorFactsGenerator.csproj">
-      <Project>{288089C5-8721-458E-BE3E-78990DAB5E2E}</Project>
-      <Name>CSharpErrorFactsGenerator</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>-->
-    <ProjectReference Include="$(RoslynSrc)\Tools\Source\CompilerGeneratorTools\DeployCompilerGeneratorToolsRuntime\DeployCompilerGeneratorToolsRuntime.csproj">
-      <Project>{6da08f12-32f2-4dd9-bbad-982eb71a2c9b}</Project>
-      <Name>DeployCompilerGeneratorToolsRuntime</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Tools\csc\csc.csproj">
-      <Project>{4B45CA0C-03A0-400F-B454-3D4BCB16AF38}</Project>
-      <Name>csc</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
+    <PackageReference Include="System.Threading.Tasks.Parallel" Version="$(SystemThreadingTasksParallelVersion)" />
+    <PackageReference Include="System.Linq.Expressions" Version="$(SystemLinqExpressionsVersion)" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Binder\TypeExtensions.cs" />
-    <Compile Include="CodeAnalysisResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CodeAnalysisResources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Parser\VsParser.cs" />
-    <Compile Include="Symbols\PETypedNameSymbol.cs" />
-    <Compile Include="Syntax\XSharpSourceLocation.cs" />
-    <Compile Include="XSharpResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>XSharpResources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+  
   <ItemGroup>
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Constants.cs">
-      <Link>Constants.cs</Link>
+      <Link>Properties\Constants.cs</Link>
     </Compile>
-    <Compile Include="Antlr4.Runtime\AntlrFileStream.cs" />
-    <Compile Include="Antlr4.Runtime\AntlrInputStream.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\AbstractPredicateTransition.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\ActionTransition.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\AmbiguityInfo.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\ArrayPredictionContext.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\ATN.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\ATNConfig.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\ATNConfigSet.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\ATNDeserializationOptions.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\ATNDeserializer.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\ATNSerializer.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\ATNSimulator.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\ATNState.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\ATNType.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\AtomTransition.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\BasicBlockStartState.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\BasicState.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\BlockEndState.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\BlockStartState.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\ConflictInfo.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\ContextSensitivityInfo.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\DecisionEventInfo.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\DecisionInfo.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\DecisionState.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\EmptyPredictionContext.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\EpsilonTransition.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\ErrorInfo.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\ILexerAction.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\LexerActionExecutor.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\LexerActionType.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\LexerATNSimulator.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\LexerChannelAction.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\LexerCustomAction.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\LexerIndexedCustomAction.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\LexerModeAction.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\LexerMoreAction.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\LexerPopModeAction.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\LexerPushModeAction.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\LexerSkipAction.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\LexerTypeAction.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\LL1Analyzer.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\LookaheadEventInfo.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\LoopEndState.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\NotSetTransition.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\OrderedATNConfigSet.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\ParseInfo.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\ParserATNSimulator.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\PlusBlockStartState.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\PlusLoopbackState.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\PrecedencePredicateTransition.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\PredicateEvalInfo.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\PredicateTransition.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\PredictionContext.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\PredictionContextCache.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\PredictionMode.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\ProfilingATNSimulator.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\RangeTransition.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\RuleStartState.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\RuleStopState.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\RuleTransition.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\SemanticContext.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\SetTransition.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\SimulatorState.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\SingletonPredictionContext.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\StarBlockStartState.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\StarLoopbackState.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\StarLoopEntryState.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\StateType.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\TokensStartState.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\Transition.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\TransitionType.cs" />
-    <Compile Include="Antlr4.Runtime\Atn\WildcardTransition.cs" />
-    <Compile Include="Antlr4.Runtime\BailErrorStrategy.cs" />
-    <Compile Include="Antlr4.Runtime\BaseErrorListener.cs" />
-    <Compile Include="Antlr4.Runtime\BufferedTokenStream.cs" />
-    <Compile Include="Antlr4.Runtime\CommonToken.cs" />
-    <Compile Include="Antlr4.Runtime\CommonTokenFactory.cs" />
-    <Compile Include="Antlr4.Runtime\CommonTokenStream.cs" />
-    <Compile Include="Antlr4.Runtime\ConsoleErrorListener.cs" />
-    <Compile Include="Antlr4.Runtime\DefaultErrorStrategy.cs" />
-    <Compile Include="Antlr4.Runtime\Dependents.cs" />
-    <Compile Include="Antlr4.Runtime\Dfa\AbstractEdgeMap`1.cs" />
-    <Compile Include="Antlr4.Runtime\Dfa\AcceptStateInfo.cs" />
-    <Compile Include="Antlr4.Runtime\Dfa\ArrayEdgeMap`1.cs" />
-    <Compile Include="Antlr4.Runtime\Dfa\DFA.cs" />
-    <Compile Include="Antlr4.Runtime\Dfa\DFASerializer.cs" />
-    <Compile Include="Antlr4.Runtime\Dfa\DFAState.cs" />
-    <Compile Include="Antlr4.Runtime\Dfa\EmptyEdgeMap`1.cs" />
-    <Compile Include="Antlr4.Runtime\Dfa\IEdgeMap`1.cs" />
-    <Compile Include="Antlr4.Runtime\Dfa\LexerDFASerializer.cs" />
-    <Compile Include="Antlr4.Runtime\Dfa\SingletonEdgeMap`1.cs" />
-    <Compile Include="Antlr4.Runtime\Dfa\SparseEdgeMap`1.cs" />
-    <Compile Include="Antlr4.Runtime\DiagnosticErrorListener.cs" />
-    <Compile Include="Antlr4.Runtime\FailedPredicateException.cs" />
-    <Compile Include="Antlr4.Runtime\IAntlrErrorListener`1.cs" />
-    <Compile Include="Antlr4.Runtime\IAntlrErrorStrategy.cs" />
-    <Compile Include="Antlr4.Runtime\ICharStream.cs" />
-    <Compile Include="Antlr4.Runtime\IIntStream.cs" />
-    <Compile Include="Antlr4.Runtime\InputMismatchException.cs" />
-    <Compile Include="Antlr4.Runtime\InterpreterRuleContext.cs" />
-    <Compile Include="Antlr4.Runtime\IParserErrorListener.cs" />
-    <Compile Include="Antlr4.Runtime\IRecognizer.cs" />
-    <Compile Include="Antlr4.Runtime\IToken.cs" />
-    <Compile Include="Antlr4.Runtime\ITokenFactory.cs" />
-    <Compile Include="Antlr4.Runtime\ITokenSource.cs" />
-    <Compile Include="Antlr4.Runtime\ITokenStream.cs" />
-    <Compile Include="Antlr4.Runtime\IVocabulary.cs" />
-    <Compile Include="Antlr4.Runtime\IWritableToken.cs" />
-    <Compile Include="Antlr4.Runtime\Lexer.cs" />
-    <Compile Include="Antlr4.Runtime\LexerInterpreter.cs" />
-    <Compile Include="Antlr4.Runtime\LexerNoViableAltException.cs" />
-    <Compile Include="Antlr4.Runtime\ListTokenSource.cs" />
-    <Compile Include="Antlr4.Runtime\Misc\Args.cs" />
-    <None Include="Antlr4.Runtime\Misc\Array2DHashSet`1.cs" />
-    <None Include="Antlr4.Runtime\Misc\DoubleKeyMap`3.cs" />
-    <Compile Include="Antlr4.Runtime\Misc\IIntSet.cs" />
-    <Compile Include="Antlr4.Runtime\Misc\Interval.cs" />
-    <Compile Include="Antlr4.Runtime\Misc\IntervalSet.cs" />
-    <Compile Include="Antlr4.Runtime\Misc\MultiMap`2.cs" />
-    <Compile Include="Antlr4.Runtime\Misc\MurmurHash.cs" />
-    <Compile Include="Antlr4.Runtime\Misc\NotNullAttribute.cs" />
-    <Compile Include="Antlr4.Runtime\Misc\NullableAttribute.cs" />
-    <Compile Include="Antlr4.Runtime\Misc\ParseCanceledException.cs" />
-    <Compile Include="Antlr4.Runtime\Misc\RuleDependencyChecker.cs" />
-    <None Include="Antlr4.Runtime\Misc\RuleDependencyProcessor.cs" />
-    <None Include="Antlr4.Runtime\Misc\TestRig.cs" />
-    <Compile Include="Antlr4.Runtime\Misc\Utils.cs" />
-    <Compile Include="Antlr4.Runtime\NoViableAltException.cs" />
-    <Compile Include="Antlr4.Runtime\Parser.cs" />
-    <Compile Include="Antlr4.Runtime\ParserInterpreter.cs" />
-    <Compile Include="Antlr4.Runtime\ParserRuleContext.cs" />
-    <Compile Include="Antlr4.Runtime\ProxyErrorListener`1.cs" />
-    <Compile Include="Antlr4.Runtime\ProxyParserErrorListener.cs" />
-    <Compile Include="Antlr4.Runtime\RecognitionException.cs" />
-    <Compile Include="Antlr4.Runtime\Recognizer`2.cs" />
-    <Compile Include="Antlr4.Runtime\RuleContext.cs" />
-    <Compile Include="Antlr4.Runtime\RuleContextWithAltNum.cs" />
-    <Compile Include="Antlr4.Runtime\RuleDependencyAttribute.cs" />
-    <Compile Include="Antlr4.Runtime\RuleVersionAttribute.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\Arrays.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\AtomicReference`1.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\BitSet.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\Collections.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\Compat\CollectionDebuggerView`2.cs" />
-    <None Include="Antlr4.Runtime\Sharpen\Compat\ConcurrentDictionary`2.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\Compat\Enumerable.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\Compat\ExtensionAttribute.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\Compat\Funcs.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\Compat\HashSet`1.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\Compat\IReadOnlyCollection`1.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\Compat\IReadOnlyDictionary`2.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\Compat\IStructuralComparable.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\Compat\IStructuralEquatable.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\Compat\NonSerializedAttribute.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\Compat\ReadOnlyDictionary`2.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\Compat\SerializableAttribute.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\Compat\SplitOrderedList`2.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\Compat\Tuple.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\DictionaryExtensions.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\ListExtensions.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\Runtime.cs" />
-    <Compile Include="Antlr4.Runtime\Sharpen\SequenceEqualityComparer`1.cs" />
-    <Compile Include="Antlr4.Runtime\TokenStreamRewriter.cs" />
-    <Compile Include="Antlr4.Runtime\TokenTypes.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\AbstractParseTreeVisitor`1.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\ErrorNodeImpl.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\IErrorNode.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\IParseTree.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\IParseTreeListener.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\IParseTreeVisitor`1.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\IRuleNode.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\ISyntaxTree.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\ITerminalNode.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\ITree.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\ParseTreeProperty`1.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\ParseTreeWalker.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\Pattern\Chunk.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\Pattern\ParseTreeMatch.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\Pattern\ParseTreePattern.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\Pattern\ParseTreePatternMatcher.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\Pattern\RuleTagToken.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\Pattern\TagChunk.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\Pattern\TextChunk.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\Pattern\TokenTagToken.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\TerminalNodeImpl.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\Trees.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\Xpath\XPath.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\Xpath\XPathElement.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\Xpath\XPathLexerErrorListener.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\Xpath\XPathRuleAnywhereElement.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\Xpath\XPathRuleElement.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\Xpath\XPathTokenAnywhereElement.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\Xpath\XPathTokenElement.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\Xpath\XPathWildcardAnywhereElement.cs" />
-    <Compile Include="Antlr4.Runtime\Tree\Xpath\XPathWildcardElement.cs" />
-    <Compile Include="Antlr4.Runtime\UnbufferedCharStream.cs" />
-    <Compile Include="Antlr4.Runtime\UnbufferedTokenStream.cs" />
-    <Compile Include="Antlr4.Runtime\Vocabulary.cs" />
-    <Compile Include="Binder\Binder_Invocation.cs" />
-    <Compile Include="Binder\Binder_Expressions.cs" />
-    <Compile Include="Binder\Binder_Lookup.cs" />
-    <Compile Include="Binder\Binder_Symbols.cs" />
-    <Compile Include="Binder\Binder_Operators.cs" />
-    <Compile Include="Binder\Binder_Codeblock.cs" />
-    <Compile Include="Binder\Imports.cs" />
-    <Compile Include="Binder\Semantics\OverloadResolution.cs" />
-    <Compile Include="CommandLine\Dialect.cs" />
-    <Compile Include="CommandLine\CSharpCommandLineParser.cs" />
-    <Compile Include="CommandLine\XSharpCompilationOptions.cs" />
-    <Compile Include="CommandLine\CSharpCompilationOptions.cs" />
-    <Compile Include="Declarations\MergedTypeDeclaration.cs" />
-    <Compile Include="Generated\XSharpBaseListener.cs" />
-    <Compile Include="Generated\XSharpLexer.cs" />
-    <Compile Include="Generated\XSharpListener.cs" />
-    <Compile Include="Generated\XSharpParser.cs" />
-    <Compile Include="LocalRewriter\MethodCompiler.cs" />
-    <Compile Include="LocalRewriter\LocalRewriter_Vulcan.cs" />
-    <Compile Include="LocalRewriter\LocalRewriter_Conversion.cs" />
-    <Compile Include="LocalRewriter\LocalRewriter_Latebound.cs" />
-    <Compile Include="Lowering\DiagnosticsPass.cs" />
-    <Compile Include="Parser\ParseTreeTypedProperty.cs" />
-    <Compile Include="Parser\XSharpErrorStrategy.cs" />
-    <Compile Include="Parser\XSharpParserCode.cs" />
-    <Compile Include="Parser\XSharpLexerCode.cs" />
-    <Compile Include="Parser\XSharpParseErrorAnalysis.cs" />
-    <Compile Include="Parser\XSharpLanguageParser.cs" />
-    <Compile Include="CommandLine\XSharpParseOptions.cs" />
-    <Compile Include="Parser\XSharpParserRuleContext.cs" />
-    <Compile Include="Parser\XSharpToken.cs" />
-    <Compile Include="Parser\XSharpTokenFactory.cs" />
-    <Compile Include="Preprocessor\XSharpPPHelpers.cs" />
-    <Compile Include="Preprocessor\XSharpPPRuleTokens.cs" />
-    <Compile Include="Preprocessor\XSharpPPTokenExtensions.cs" />
-    <Compile Include="Preprocessor\XSharpPreprocessor.cs" />
-    <Compile Include="Preprocessor\XSharpPPRule.cs" />
-    <Compile Include="Parser\XSharpSyntaxTree.cs" />
-    <Compile Include="Parser\XSharpTokenExtensions.cs" />
-    <Compile Include="Parser\XSharpVOTreeTransformation.cs" />
-    <Compile Include="Parser\XSharpTreeTransformation.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Binder\Semantics\Conversions.cs" />
-    <Compile Include="LiteralNames.cs" />
-    <Compile Include="Symbols\ConstantValueSpecialized.cs" />
-    <Compile Include="Symbols\SourceMemberContainerSymbol.cs" />
-    <Compile Include="Symbols\SourceMemberFieldSymbol.cs" />
-    <Compile Include="Symbols\SourceNamedTypeSymbol.cs" />
-    <Compile Include="Symbols\MemberSymbolExtensions.cs" />
-    <Compile Include="Symbols\TypeSymbolExtensions.cs" />
-    <Compile Include="Symbols\CodeblockType.TypePublicSymbol.cs" />
-    <Compile Include="Syntax\CSharpSyntaxTree.cs" />
-    <Compile Include="Syntax\DeclarationStatementSyntax.cs" />
-    <Compile Include="Assembly.cs" />
-    <None Include="XSharpCodeAnalysis.project.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <BoundTreeDefinition Include="$(RoslynSrc)\Compilers\CSharp\Portable\BoundTree\BoundNodes.xml">
-      <SubType>Designer</SubType>
-    </BoundTreeDefinition>
-    <Compile Include="$(IntermediateOutputPath)BoundNodes.xml.Generated.cs" />
-    <Compile Include="$(IntermediateOutputPath)ErrorFacts.Generated.cs" />
-    <Compile Include="$(IntermediateOutputPath)Syntax.xml.Syntax.Generated.cs" />
-    <Compile Include="$(IntermediateOutputPath)Syntax.xml.Main.Generated.cs" />
-    <Compile Include="$(IntermediateOutputPath)Syntax.xml.Internal.Generated.cs" />
-    <Compile Include="ErrorCode.cs" />
-    <ErrorCode Include="ErrorCode.cs" />
-    <EmbeddedResource Include="XSharpResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <CustomToolNamespace>LanguageService.CodeAnalysis</CustomToolNamespace>
-      <LastGenOutput>XSharpResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CodeAnalysisResources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <CustomToolNamespace>LanguageService.CodeAnalysis</CustomToolNamespace>
-      <LastGenOutput>CodeAnalysisResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="$(RoslynSrc)\Compilers\Core\Portable\Resources\default.win32manifest" />
+    <Compile Remove="Antlr4.Runtime\Properties\AssemblyInfo.cs" />
+    <Compile Remove="ParserTest.cs" />
+    <Compile Remove="Antlr4.Runtime\Misc\Array2DHashSet`1.cs" />
+    <Compile Remove="Antlr4.Runtime\Misc\DoubleKeyMap`3.cs" />
+    <Compile Remove="Antlr4.Runtime\Misc\RuleDependencyProcessor.cs" />
+    <Compile Remove="Antlr4.Runtime\Misc\TestRig.cs" />
+    <Compile Remove="Properties\AssemblyInfoPortable.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.g4" />
     <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.tokens" />
     <None Include="Parser\XSharpLexer.g4" />
     <None Include="Parser\XSharp.g4" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(NuGetPackageRoot)\Microsoft.DiaSymReader.Native\$(MicrosoftDiaSymReaderNativeVersion)\runtimes\win\native\Microsoft.DiaSymReader.Native.x86.dll">
@@ -393,29 +74,106 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>false</Visible>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Preprocessor\harbourppdoc.txt" />
     <Content Include="Preprocessor\preprocessor.txt" />
   </ItemGroup>
-  <Import Project="$(RoslynSrc)\Compilers\Core\Portable\CodeAnalysisShared.projitems" Label="Shared" />
-  <Import Project="$(RoslynSrc)\Compilers\CSharp\Portable\CSharpCodeAnalysisShared.projitems" Label="Shared" />
-  <Import Project="$(RoslynSrc)\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
-  <Import Project="$(RoslynSrc)\Dependencies\CodeAnalysis.Metadata\Microsoft.CodeAnalysis.Metadata.projitems" Label="Shared" />
-  <Import Project="$(RoslynSrc)\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
-  <Import Project="$(RoslynSrc)\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
-  <Import Project="$(XSharpBuild)\Targets\Imports.targets" />
+  <ItemGroup>
+   <Compile Update="XSharpResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>XSharpResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="$(SharedSource)CoreClrShim.cs" Link="InternalUtilities\CoreClrShim.cs" />
+    <Compile Include="$(SharedSource)DesktopShim.cs">
+      <Link>DesktopShim.cs</Link>
+    </Compile>
+    <Compile Update="CodeAnalysisResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CodeAnalysisResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.DiaSymReader.Native" Version="$(MicrosoftDiaSymReaderNativeVersion)" />
+    <PackageReference Include="System.Diagnostics.FileVersionInfo" Version="$(SystemDiagnosticsFileVersionInfoVersion)" />
+    <PackageReference Include="System.Xml.XmlDocument" Version="$(SystemXmlXmlDocumentVersion)" />
+    <PackageReference Include="System.Xml.XPath.XDocument" Version="$(SystemXmlXPathXDocumentVersion)" />
+    <PackageReference Include="System.Collections.Immutable" Version="$(SystemCollectionsImmutableVersion)" />
+    <PackageReference Include="System.Reflection.Metadata" Version="$(SystemReflectionMetadataVersion)" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="$(SystemTextEncodingCodePagesVersion)" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(SystemThreadingTasksExtensionsVersion)" />
+    <PackageReference Include="System.ValueTuple" Version="$(SystemValueTupleVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(CSharpSource)BoundTree\BoundNodes.xml" />
+    <Content Include="$(CSharpSource)Syntax\Syntax.xml" />
+    <Content Include="$(CSharpSource)UseSiteDiagnosticsCheckEnforcer\BaseLine.txt" />
+    <Content Include="$(CSharpSource)UseSiteDiagnosticsCheckEnforcer\Run.bat" />
+    <None Include="$(CSharpSource)FlowAnalysis\Flow Analysis Design.docx" />
+    <None Include="$(CSharpSource)Symbols\PublicSymbolTable.cd" />
+    <None Include="$(CSharpSource)..\CSharpCodeAnalysisRules.ruleset">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="XSharpResources.resx"> 
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>XSharpResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="CodeAnalysisResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>CodeAnalysisResources.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>Microsoft.CodeAnalysis</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(CoreSource)Resources\default.win32manifest" />
+  </ItemGroup>
+  <ItemGroup>
+  	<Compile Include="$(CSharpSource)**\*.cs">
+		<Link>CSharp\%(RecursiveDir)\%(Filename)%(Extension)</Link>
+	  </Compile>
+    <Compile Remove="$(CSharpSource)Errors\ErrorCode.cs" />
+    <Compile Remove="$(CSharpSource)CSharpResources.Designer.cs" />
+    <Compile Remove="$(CSharpSource)Generated\ErrorFacts.Generated.cs" />
+    <Compile Include="$(CoreSource)**\*.cs">
+      <Link>Core\%(RecursiveDir)\%(Filename)%(Extension)</Link>
+    </Compile>
+    <Compile Remove="$(CoreSource)CodeAnalysisResources.Designer.cs" />
+    <!--  RESX files are not included. We have a copy of then in our own folder-->
+    <!-- <EmbeddedResource Include="$(CSharpSource)**\*.resx" /> -->
+    <!--<EmbeddedResource Include="$(CoreSource)**\*.resx" />-->
+
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="VsParser\**" />
+    <EmbeddedResource Remove="VsParser\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(CoreSource)..\CodeAnalysisRules.ruleset">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="$(CoreSource)RuleSet\RuleSetSchema.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Antlr4.Runtime\Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Tools\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj" />
+  </ItemGroup>
+  <Import Project="$(CSharpSource)..\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
+  <Import Project="$(CoreSource)..\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
+  <Import Project="$(RoslynSrc)Dependencies\CodeAnalysis.Debugging\Microsoft.CodeAnalysis.Debugging.projitems" Label="Shared" />
+  <Import Project="$(RoslynSrc)Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>$(SolutionDir)build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
+    <PreBuildEvent>$(AntlrCall) $(AntlrParams) $(AntlrInputdir)XSharpLexer.g4
+$(AntlrCall) $(AntlrParams) $(AntlrInputdir)XSharp.g4
+$(MSBuildThisFileDirectory)TouchFiles.exe  $(AntlrInputdir)XSharpLexer.g4 $(AntlrOutputdir)XSharpLexer.tokens $(AntlrOutputdir)XSharpLexer.cs
+$(MSBuildThisFileDirectory)TouchFiles.exe  $(AntlrInputdir)XSharp.g4      $(AntlrOutputdir)XSharp.tokens      $(AntlrOutputdir)XSharpParser.cs $(AntlrOutputdir)XSharpListener.cs  $(AntlrOutputdir)XSharpBaseListener.cs</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>java -jar $(SolutionDir).\build\antlr4-csharp-4.6.1-SNAPSHOT-complete.jar  -package LanguageService.CodeAnalysis.XSharp.SyntaxParser -long-messages  -message-format vs2005  -listener $(SolutionDir)src\Compiler\XSharpCodeAnalysis\Parser\XSharpLexer.g4 -o $(SolutionDir)src\Compiler\XSharpCodeAnalysis\Generated -Dlanguage=CSharp_v4_5
-java -jar $(SolutionDir).\build\antlr4-csharp-4.6.1-SNAPSHOT-complete.jar  -package LanguageService.CodeAnalysis.XSharp.SyntaxParser -long-messages  -message-format vs2005  -listener $(SolutionDir)src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 -o $(SolutionDir)src\Compiler\XSharpCodeAnalysis\Generated -Dlanguage=CSharp_v4_5
-$(SolutionDir)src\Compiler\XSharpCodeAnalysis\TouchFiles.exe $(SolutionDir)src\Compiler\XSharpCodeAnalysis\parser\XSharp.g4        $(SolutionDir)src\Compiler\XSharpCodeAnalysis\generated\XSharpParser.cs  $(SolutionDir)src\Compiler\XSharpCodeAnalysis\generated\XSharpListener.cs $(SolutionDir)src\Compiler\XSharpCodeAnalysis\generated\XSharpBaseListener.cs $(SolutionDir)src\Compiler\XSharpCodeAnalysis\generated\XSharp.tokens
-$(SolutionDir)src\Compiler\XSharpCodeAnalysis\TouchFiles.exe $(SolutionDir)src\Compiler\XSharpCodeAnalysis\parser\XSharpLexer.g4 $(SolutionDir)src\Compiler\XSharpCodeAnalysis\generated\XSharpLexer.cs  $(SolutionDir)src\Compiler\XSharpCodeAnalysis\generated\XSharpLexer.tokens
-</PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>if "$(Configuration)" == "Debug" XCopy $(TargetDir)$(TargetName).* \Xsharp\DevPublic\External\$(Configuration)\*.* /y</PostBuildEvent>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
 </Project>

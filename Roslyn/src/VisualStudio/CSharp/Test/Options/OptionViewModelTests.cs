@@ -1,11 +1,10 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Formatting;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
-using Microsoft.CodeAnalysis.Options;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.VisualStudio.Composition;
 using Microsoft.VisualStudio.LanguageServices.CSharp.Options.Formatting;
 using Microsoft.VisualStudio.LanguageServices.Implementation.Options;
@@ -15,6 +14,7 @@ using Xunit;
 
 namespace Roslyn.VisualStudio.CSharp.UnitTests.Options
 {
+    [UseExportProvider]
     public class OptionViewModelTests
     {
         private class MockServiceProvider : IServiceProvider
@@ -39,13 +39,13 @@ namespace Roslyn.VisualStudio.CSharp.UnitTests.Options
 
         public OptionViewModelTests()
         {
-            WpfTestCase.RequireWpfFact("Tests create WPF ViewModels and updates previews with them");
+            WpfTestRunner.RequireWpfFact("Tests create WPF ViewModels and updates previews with them");
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.Options)]
-        public async Task TestCheckBox()
+        public void TestCheckBox()
         {
-            using (var workspace = await TestWorkspace.CreateCSharpAsync(""))
+            using (var workspace = TestWorkspace.CreateCSharp(""))
             {
                 var serviceProvider = new MockServiceProvider(workspace.ExportProvider);
                 using (var viewModel = new SpacingViewModel(workspace.Options, serviceProvider))
@@ -69,9 +69,9 @@ namespace Roslyn.VisualStudio.CSharp.UnitTests.Options
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.Options)]
-        public async Task TestOptionLoading()
+        public void TestOptionLoading()
         {
-            using (var workspace = await TestWorkspace.CreateCSharpAsync(""))
+            using (var workspace = TestWorkspace.CreateCSharp(""))
             {
                 var optionSet = workspace.Options.WithChangedOption(CSharpFormattingOptions.SpacingAfterMethodDeclarationName, true);
 
@@ -86,9 +86,9 @@ namespace Roslyn.VisualStudio.CSharp.UnitTests.Options
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.Options)]
-        public async Task TestOptionSaving()
+        public void TestOptionSaving()
         {
-            using (var workspace = await TestWorkspace.CreateCSharpAsync(""))
+            using (var workspace = TestWorkspace.CreateCSharp(""))
             {
                 var serviceProvider = new MockServiceProvider(workspace.ExportProvider);
                 using (var viewModel = new SpacingViewModel(workspace.Options, serviceProvider))

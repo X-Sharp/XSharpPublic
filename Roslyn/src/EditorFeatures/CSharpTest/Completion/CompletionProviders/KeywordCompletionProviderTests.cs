@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis.Completion;
 using Microsoft.CodeAnalysis.CSharp.Completion.Providers;
 using Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Completion.CompletionProviders;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
 
@@ -28,9 +29,9 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.IntelliSense.Completion
         }
 
         [Fact, Trait(Traits.Feature, Traits.Features.KeywordRecommending)]
-        public async Task IsTextualTriggerCharacterTest()
+        public void IsTextualTriggerCharacterTest()
         {
-            await TestCommonIsTextualTriggerCharacterAsync();
+            TestCommonIsTextualTriggerCharacter();
         }
 
         [Fact, Trait(Traits.Feature, Traits.Features.KeywordRecommending)]
@@ -236,17 +237,17 @@ $$
         public async Task UnionOfItemsFromBothContexts()
         {
             var markup = @"<Workspace>
-    <Project Language=""C#"" CommonReferences=""true"" AssemblyName=""Proj1"" PreprocessorSymbols=""FOO"">
+    <Project Language=""C#"" CommonReferences=""true"" AssemblyName=""Proj1"" PreprocessorSymbols=""GOO"">
         <Document FilePath=""CurrentDocument.cs""><![CDATA[
 class C
 {
-#if FOO
-    void foo() {
+#if GOO
+    void goo() {
 #endif
 
 $$
 
-#if FOO
+#if GOO
     }
 #endif
 }
@@ -316,6 +317,66 @@ $$
     void Main() { }
 }";
             await VerifyProviderCommitAsync(markupBeforeCommit, "return", expectedCodeAfterCommit, commitChar: ';', textTypedSoFar: "return");
+        }
+
+        [WorkItem(14218, "https://github.com/dotnet/roslyn/issues/14218")]
+        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task PredefinedTypeKeywordsShouldBeRecommendedAfterCaseInASwitch()
+        {
+            var text = @"
+class Program
+{
+    public static void Test()
+    {
+        object o = null;
+        switch (o)
+        {
+            case $$
+        }
+    }
+}";
+
+            await VerifyItemExistsAsync(text, "int");
+            await VerifyItemExistsAsync(text, "string");
+            await VerifyItemExistsAsync(text, "byte");
+            await VerifyItemExistsAsync(text, "char");
+        }
+    
+        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task PrivateOrProtectedModifiers()
+        {
+            var text = @"
+class C
+{
+$$
+}";
+
+            await VerifyItemExistsAsync(text, "private");
+            await VerifyItemExistsAsync(text, "protected");
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task PrivateProtectedModifier()
+        {
+            var text = @"
+class C
+{
+    private $$
+}";
+
+            await VerifyItemExistsAsync(text, "protected");
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task ProtectedPrivateModifier()
+        {
+            var text = @"
+class C
+{
+    protected $$
+}";
+
+            await VerifyItemExistsAsync(text, "private");
         }
     }
 }

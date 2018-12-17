@@ -1,4 +1,4 @@
-' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Imports System.Threading
 Imports System.Threading.Tasks
@@ -6,6 +6,7 @@ Imports Microsoft.CodeAnalysis.Completion
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Extensions
 Imports Microsoft.CodeAnalysis.Host.Mef
 Imports Microsoft.CodeAnalysis.Snippets
+Imports Microsoft.CodeAnalysis.Tags
 Imports Microsoft.CodeAnalysis.VisualBasic
 Imports Microsoft.VisualStudio.Text
 Imports Microsoft.VisualStudio.Text.Operations
@@ -13,6 +14,7 @@ Imports Microsoft.VisualStudio.Text.Projection
 Imports Roslyn.Utilities
 
 Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
+    <[UseExportProvider]>
     Public Class VisualBasicCompletionCommandHandlerTests
         <WorkItem(546208, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546208")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
@@ -59,7 +61,7 @@ End Class
             Using state = TestState.CreateVisualBasicTestState(
                               <Document>
                                   Module M
-                                      Sub Foo()
+                                      Sub Goo()
                                           If True Then $$Console.WriteLine()
                                       End Sub
                                   End Module
@@ -132,7 +134,7 @@ End Module
                               <Document>
                                   Imports System
                                   Class C
-                                      Sub Foo() Implements ICloneable$$
+                                      Sub Goo() Implements ICloneable$$
                                   End Module
                               </Document>)
 
@@ -573,7 +575,7 @@ End Class
         End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-        Public Async Sub TestFiltering1()
+        Public Async Function TestFiltering1() As Task
             Using state = TestState.CreateVisualBasicTestState(
                   <document>
 Imports System
@@ -588,7 +590,7 @@ End Class</document>)
                 Assert.True(state.CompletionItemsContainsAll(displayText:={"OperatingSystem", "System"}))
                 Assert.False(state.CompletionItemsContainsAny(displayText:={"Exception", "Activator"}))
             End Using
-        End Sub
+        End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestMSCorLibTypes() As Task
@@ -832,15 +834,15 @@ end class
             Using state = TestState.CreateVisualBasicTestState(
                               <Document>
 class c
-    sub Foo(Of X)()
+    sub Goo(Of X)()
         $$
     end sub
 end class
                               </Document>)
-                state.SendTypeChars("Fo(")
+                state.SendTypeChars("Go(")
                 Await state.AssertCompletionSession()
-                Assert.Equal("        Foo(", state.GetLineTextFromCaretPosition())
-                Assert.DoesNotContain("Foo(Of", state.GetLineTextFromCaretPosition(), StringComparison.Ordinal)
+                Assert.Equal("        Goo(", state.GetLineTextFromCaretPosition())
+                Assert.DoesNotContain("Goo(Of", state.GetLineTextFromCaretPosition(), StringComparison.Ordinal)
             End Using
         End Function
 
@@ -850,14 +852,14 @@ end class
             Using state = TestState.CreateVisualBasicTestState(
                               <Document>
 class c
-    sub Foo(Of X)()
+    sub Goo(Of X)()
         $$
     end sub
 end class
                               </Document>)
-                state.SendTypeChars("Fo ")
+                state.SendTypeChars("Go ")
                 Await state.AssertCompletionSession()
-                Assert.Equal("        Foo(Of ", state.GetLineTextFromCaretPosition())
+                Assert.Equal("        Goo(Of ", state.GetLineTextFromCaretPosition())
             End Using
         End Function
 
@@ -975,7 +977,7 @@ Enum Numeros
     Uno
     Dos
 End Enum
-Class Foo
+Class Goo
     Sub Bar(a As Integer, n As Numeros)
     End Sub
     Sub Baz()
@@ -1026,13 +1028,13 @@ End Class
                               <Document>
 Class Class1
     Private Sub Test()
-        Foo(bool:=False,$$
+        Goo(bool:=False,$$
     End Sub
  
-    Private Sub Foo(str As String, character As Char)
+    Private Sub Goo(str As String, character As Char)
     End Sub
  
-    Private Sub Foo(str As String, bool As Boolean)
+    Private Sub Goo(str As String, bool As Boolean)
     End Sub
 End Class
                               </Document>)
@@ -1049,7 +1051,7 @@ End Class
         Public Async Function TestExclusiveNamedParameterCompletion2() As Task
             Using state = TestState.CreateVisualBasicTestState(
                               <Document>
-Class Foo
+Class Goo
     Private Sub Test()
         Dim m As Object = Nothing
         Method(obj:=m, $$
@@ -1327,7 +1329,7 @@ End Class
         Public Async Function NoCompletionAfterBackspaceInStringLiteral() As Task
             Using state = TestState.CreateVisualBasicTestState(
                               <Document>
-                                Sub Foo()
+                                Sub Goo()
                                     Dim z = "aa$$"
                                 End Sub
                               </Document>)
@@ -1341,7 +1343,7 @@ End Class
         Public Async Function CompletionUpAfterDeleteDot() As Task
             Using state = TestState.CreateVisualBasicTestState(
                               <Document>
-                                Sub Foo()
+                                Sub Goo()
                                     Dim z = "a"
                                      z.$$ToString()
                                 End Sub
@@ -1356,7 +1358,7 @@ End Class
         Public Async Function NotCompletionUpAfterDeleteRParen() As Task
             Using state = TestState.CreateVisualBasicTestState(
                               <Document>
-                                Sub Foo()
+                                Sub Goo()
                                     "a".ToString()$$
                                 End Sub
                               </Document>)
@@ -1370,7 +1372,7 @@ End Class
         Public Async Function NotCompletionUpAfterDeleteLParen() As Task
             Using state = TestState.CreateVisualBasicTestState(
                               <Document>
-                                Sub Foo()
+                                Sub Goo()
                                     "a".ToString($$
                                 End Sub
                               </Document>)
@@ -1384,8 +1386,8 @@ End Class
         Public Async Function NotCompletionUpAfterDeleteComma() As Task
             Using state = TestState.CreateVisualBasicTestState(
                               <Document>
-                                Sub Foo(x as Integer, y as Integer)
-                                    Foo(1,$$)
+                                Sub Goo(x as Integer, y as Integer)
+                                    Goo(1,$$)
                                 End Sub
                               </Document>)
 
@@ -1398,8 +1400,8 @@ End Class
         Public Async Function CompletionAfterDeleteKeyword() As Task
             Using state = TestState.CreateVisualBasicTestState(
                               <Document>
-                                Sub Foo(x as Integer, y as Integer)
-                                    Foo(1,2)
+                                Sub Goo(x as Integer, y as Integer)
+                                    Goo(1,2)
                                 End$$ Sub
                               </Document>)
 
@@ -1464,7 +1466,7 @@ End Class
                 <Document><![CDATA[
 Imports System
 Class G
-    Sub foo()
+    Sub goo()
         Dim x as String$$
     End Sub
 End Class
@@ -1482,7 +1484,7 @@ End Class
                 <Document><![CDATA[
 Imports System
 Class G
-    Sub foo()
+    Sub goo()
         Dim x as Str$$ing
     End Sub
 End Class
@@ -1500,7 +1502,7 @@ End Class
                 <Document><![CDATA[
 Imports System
 Class G
-    Sub foo()
+    Sub goo()
         Dim x as $$String
     End Sub
 End Class
@@ -1517,7 +1519,7 @@ End Class
                 <Document><![CDATA[
 Imports System
 Class G
-    Sub foo()
+    Sub goo()
         Dim x as String$$
     End Sub
 End Class
@@ -1535,7 +1537,7 @@ End Class
                 <Document><![CDATA[
 Imports System
 Class G
-    Sub foo()
+    Sub goo()
         Dim x as $$
     End Sub
 End Class
@@ -1554,7 +1556,7 @@ End Class
                 <Document><![CDATA[
 Imports System
 Class G
-    Sub foo()
+    Sub goo()
         Dim x as gggg$$
     End Sub
 End Class
@@ -1571,7 +1573,7 @@ End Class
                 <Document><![CDATA[
 Imports System
 Class G
-    Sub foo()
+    Sub goo()
         Dim x as gggg$$
     End Sub
 End Class
@@ -1590,7 +1592,7 @@ End Class
                 <Document><![CDATA[
 Imports System
 Class G
-    Sub foo()
+    Sub goo()
         Dim x as Integrr$$
     End Sub
 End Class
@@ -1608,7 +1610,7 @@ End Class
                 <Document><![CDATA[
 Imports System
 Class G
-    Sub foo()
+    Sub goo()
         Dim x as String$$
     End Sub
 End Class
@@ -1628,7 +1630,7 @@ End Class
                 <Document><![CDATA[
 Imports System
 Class G
-    Sub foo()
+    Sub goo()
         ?$$
     End Sub
 End Class
@@ -1645,7 +1647,7 @@ End Class
                 <Document><![CDATA[
 Imports System
 Class G
-    Sub foo()
+    Sub goo()
         a?$$
     End Sub
 End Class
@@ -1666,7 +1668,7 @@ Imports System.Linq
 Class Test
     Sub [Select]()
     End Sub
-    Sub Foo()
+    Sub Goo()
         Dim k As Integer = 1
         $$
     End Sub
@@ -1875,7 +1877,7 @@ End Class
             Using state = TestState.CreateVisualBasicTestState(
                               <Document>
 Public Class C
-    Sub Foo()
+    Sub Goo()
         Dim a = new$$
     End Sub
 End Class
@@ -1892,21 +1894,21 @@ End Class
             Using state = TestState.CreateVisualBasicTestState(
                               <Document>
 Enum E
-    Foo
+    Goo
     Bar
 End Enum
 
-Class Foo
+Class Goo
 End Class
 
 Public Class C
-    Sub Foo()
+    Sub Goo()
         E e = $$
     End Sub
 End Class</Document>)
-                state.SendTypeChars("f")
+                state.SendTypeChars("g")
                 Await state.WaitForAsynchronousOperationsAsync()
-                Await state.AssertSelectedCompletionItem("E.Foo", isHardSelected:=True)
+                Await state.AssertSelectedCompletionItem("E.Goo", isHardSelected:=True)
             End Using
         End Function
 
@@ -1917,7 +1919,7 @@ End Class</Document>)
                               <Document>
 Imports System.Threading.Tasks
 Public Class C
-    Sub Foo()
+    Sub Goo()
         Dim a as $$
     End Sub
 End Class
@@ -1939,7 +1941,7 @@ End Class
                               <Document>
 Imports System.Threading.Tasks
 Public Class C
-    Sub Foo()
+    Sub Goo()
         Dim a as $$
     End Sub
 End Class
@@ -2079,7 +2081,7 @@ End Class]]></Document>)
                 <Document><![CDATA[
 Imports System
 Class G
-    Sub foo()
+    Sub goo()
         Dim x as Stri$$ng
     End Sub
 End Class
@@ -2132,7 +2134,7 @@ End Class
                 <Document><![CDATA[
 Imports System
 Class G
-    Sub Foo()
+    Sub Goo()
         $$
     End Sub
 End Class
@@ -2141,7 +2143,7 @@ End Class
                 Await state.WaitForAsynchronousOperationsAsync()
                 ' Should only have one item called 'Double' and it should have a keyword glyph
                 Dim doubleItem = state.CurrentCompletionPresenterSession.CompletionItems.Single(Function(c) c.DisplayText = "Double")
-                Assert.True(doubleItem.Tags.Contains(CompletionTags.Keyword))
+                Assert.True(doubleItem.Tags.Contains(WellKnownTags.Keyword))
             End Using
         End Function
 
@@ -2152,7 +2154,7 @@ End Class
                 <Document><![CDATA[
 Imports System
 Class [Double]
-    Sub Foo()
+    Sub Goo()
         Dim x as $$
     End Sub
 End Class
@@ -2162,8 +2164,8 @@ End Class
                 ' We should have gotten the item corresponding to [Double] and the item for the Double keyword
                 Dim doubleItems = state.CurrentCompletionPresenterSession.CompletionItems.Where(Function(c) c.DisplayText = "Double")
                 Assert.Equal(2, doubleItems.Count())
-                Assert.True(doubleItems.Any(Function(c) c.Tags.Contains(CompletionTags.Keyword)))
-                Assert.True(doubleItems.Any(Function(c) c.Tags.Contains(CompletionTags.Class) AndAlso c.Tags.Contains(CompletionTags.Internal)))
+                Assert.True(doubleItems.Any(Function(c) c.Tags.Contains(WellKnownTags.Keyword)))
+                Assert.True(doubleItems.Any(Function(c) c.Tags.Contains(WellKnownTags.Class) AndAlso c.Tags.Contains(WellKnownTags.Internal)))
             End Using
         End Function
 
@@ -2174,7 +2176,7 @@ End Class
                 <Document><![CDATA[
 Imports System
 Class [Interface]
-    Sub Foo()
+    Sub Goo()
         Dim x As $$
     End Sub
 End Class
@@ -2194,7 +2196,7 @@ End Class
                 <Document><![CDATA[
 Imports System
 Class G
-    Sub Foo()
+    Sub Goo()
         Dim x = String.$$
     End Sub
 End Class
@@ -2211,7 +2213,7 @@ End Class
             Using state = TestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Class C
-    Sub foo()
+    Sub goo()
         $$]]></Document>)
                 ' Note: the caret is at the file, so the Select All command's movement
                 ' of the caret to the end of the selection isn't responsible for 
@@ -2231,10 +2233,10 @@ Class C
 Module Program
     Sub Main(args As String())
         Dim Table As Integer
-        foo(table$$)
+        goo(table$$)
     End Sub
 
-    Sub foo(table As String)
+    Sub goo(table As String)
 
     End Sub
 End Module]]></Document>)
@@ -2271,10 +2273,10 @@ End Module]]></Document>)
                 <Document><![CDATA[
 Module Program
     Sub Main(args As String())
-        foo($$
+        foot($$
     End Sub
 
-    Sub foo (x as boolean)
+    Sub foot(x as boolean)
     End Sub
 End Module]]></Document>)
                 state.SendTypeChars("f")
@@ -2471,10 +2473,10 @@ End Class
                 state.SendInvokeCompletionList()
                 Await state.WaitForAsynchronousOperationsAsync()
                 Await state.AssertSelectedCompletionItem(description:=
-"<Extension> Function IEnumerable(Of 'a).ToArray() As 'a()
+$"<{ VBFeaturesResources.Extension }> Function IEnumerable(Of 'a).ToArray() As 'a()
 
-Anonymous Types:
-    'a is New With { .x As Integer }")
+{ FeaturesResources.Anonymous_Types_colon }
+    'a { FeaturesResources.is_ } New With {{ .x As Integer }}")
             End Using
         End Function
 
@@ -2494,10 +2496,10 @@ End Class
                 state.SendInvokeCompletionList()
                 Await state.WaitForAsynchronousOperationsAsync()
                 Await state.AssertSelectedCompletionItem(description:=
-"<Extension> Function IEnumerable(Of 'a).ToArray() As 'a()
+$"<{ VBFeaturesResources.Extension }> Function IEnumerable(Of 'a).ToArray() As 'a()
 
-Anonymous Types:
-    'a is New With { Key .x As Integer }")
+{ FeaturesResources.Anonymous_Types_colon }
+    'a { FeaturesResources.is_ } New With {{ Key .x As Integer }}")
             End Using
         End Function
 
@@ -2524,21 +2526,75 @@ Anonymous Types:
             End Using
         End Function
 
+        <WpfFact>
+        Public Async Function TestNonTrailingNamedArgumentInVB15_3() As Task
+            Using state = TestState.CreateTestStateFromWorkspace(
+                 <Workspace>
+                     <Project Language="Visual Basic" LanguageVersion="VisualBasic15_3" CommonReferences="true" AssemblyName="VBProj">
+                         <Document FilePath="C.vb">
+Class C
+    Sub M()
+        Dim better As Integer = 2
+        M(a:=1, $$)
+    End Sub
+    Sub M(a As Integer, bar As Integer, c As Integer)
+    End Sub
+End Class
+                         </Document>
+                     </Project>
+                 </Workspace>)
+
+                state.SendTypeChars("b")
+                Await state.AssertSelectedCompletionItem(displayText:="bar:=", isHardSelected:=True)
+                state.SendTypeChars("e")
+                Await state.AssertNoCompletionSession()
+            End Using
+        End Function
+
+        <WpfFact>
+        Public Async Function TestNonTrailingNamedArgumentInVB15_5() As Task
+            Using state = TestState.CreateTestStateFromWorkspace(
+                 <Workspace>
+                     <Project Language="Visual Basic" LanguageVersion="VisualBasic15_5" CommonReferences="true" AssemblyName="VBProj">
+                         <Document FilePath="C.vb">
+Class C
+    Sub M()
+        Dim better As Integer = 2
+        M(a:=1, $$)
+    End Sub
+    Sub M(a As Integer, bar As Integer, c As Integer)
+    End Sub
+End Class
+                         </Document>
+                     </Project>
+                 </Workspace>)
+
+                state.SendTypeChars("bar")
+                Await state.AssertSelectedCompletionItem(displayText:="bar:=", isHardSelected:=True)
+                state.SendBackspace()
+                state.SendBackspace()
+                state.SendTypeChars("et")
+                Await state.AssertSelectedCompletionItem(displayText:="better", isHardSelected:=True)
+                state.SendTypeChars(", ")
+                Assert.Contains("M(a:=1, better,", state.GetLineTextFromCaretPosition(), StringComparison.Ordinal)
+            End Using
+        End Function
+
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestSymbolInTupleLiteral() As Task
             Using state = TestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
-    Public Sub Foo()
+    Public Sub Goo()
         Dim t = ($$)
     End Sub
 End Class
 }]]></Document>)
 
-                state.SendTypeChars("Fo")
-                Await state.AssertSelectedCompletionItem(displayText:="Foo", isHardSelected:=True)
+                state.SendTypeChars("Go")
+                Await state.AssertSelectedCompletionItem(displayText:="Goo", isHardSelected:=True)
                 state.SendTypeChars(":")
-                Assert.Contains("(Fo:", state.GetLineTextFromCaretPosition(), StringComparison.Ordinal)
+                Assert.Contains("(Go:", state.GetLineTextFromCaretPosition(), StringComparison.Ordinal)
             End Using
         End Function
 
@@ -2547,16 +2603,16 @@ End Class
             Using state = TestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
-    Public Sub Foo()
+    Public Sub Goo()
         Dim t = (1, $$)
     End Sub
 End Class
 ]]></Document>)
 
-                state.SendTypeChars("Fo")
-                Await state.AssertSelectedCompletionItem(displayText:="Foo", isHardSelected:=True)
+                state.SendTypeChars("Go")
+                Await state.AssertSelectedCompletionItem(displayText:="Goo", isHardSelected:=True)
                 state.SendTypeChars(":")
-                Assert.Contains("(1, Fo:", state.GetLineTextFromCaretPosition(), StringComparison.Ordinal)
+                Assert.Contains("(1, Go:", state.GetLineTextFromCaretPosition(), StringComparison.Ordinal)
             End Using
         End Function
 
@@ -2568,7 +2624,7 @@ End Class
             Using state = TestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
-    Public Sub Foo()
+    Public Sub Goo()
         Dim t = ($$)
     End Sub
 End Class
@@ -2596,7 +2652,7 @@ End Class
             Using state = TestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
-    Public Sub Foo()
+    Public Sub Goo()
         Dim t = (1, $$)
     End Sub
 End Class
@@ -2616,11 +2672,39 @@ End Class
         End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestSnippetsNotExclusiveWhenAlwaysShowing() As Task
+            Dim snippetProvider As CompletionProvider =
+                New VisualStudio.LanguageServices.VisualBasic.Snippets.
+                    SnippetCompletionProvider(editorAdaptersFactoryService:=Nothing)
+
+            Using state = TestState.CreateVisualBasicTestState(
+                  <Document><![CDATA[
+Class C
+    Public Sub Goo()
+        Dim x as Integer = 3
+        Dim t = $$
+    End Sub
+End Class
+}]]></Document>,
+                  extraCompletionProviders:={snippetProvider},
+                  extraExportedTypes:={GetType(MockSnippetInfoService)}.ToList())
+
+                state.Workspace.Options = state.Workspace.Options.WithChangedOption(CompletionOptions.SnippetsBehavior,
+                                                                                    LanguageNames.VisualBasic,
+                                                                                    SnippetsRule.AlwaysInclude)
+
+                state.SendInvokeCompletionList()
+                Await state.WaitForAsynchronousOperationsAsync()
+                Assert.True(state.CompletionItemsContainsAll({"x", "Shortcut"}))
+            End Using
+        End Function
+
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestBuiltInTypesKeywordInTupleLiteral() As Task
             Using state = TestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
-    Public Sub Foo()
+    Public Sub Goo()
         Dim t = ($$)
     End Sub
 End Class
@@ -2638,7 +2722,7 @@ End Class
             Using state = TestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
-    Public Sub Foo()
+    Public Sub Goo()
         Dim t = (1, $$)
     End Sub
 End Class
@@ -2656,7 +2740,7 @@ End Class
             Using state = TestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
-    Public Sub Foo()
+    Public Sub Goo()
         Dim t = ($$)
     End Sub
 End Class
@@ -2674,7 +2758,7 @@ End Class
             Using state = TestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
-    Public Sub Foo()
+    Public Sub Goo()
         Dim t = (1, $$)
     End Sub
 End Class
@@ -2691,7 +2775,7 @@ End Class
             Using state = TestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
-    Public Sub Foo()
+    Public Sub Goo()
        Dim t As ($$)
     End Sub
 End Class
@@ -2708,8 +2792,8 @@ End Class
             Using state = TestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
-    Public Sub Foo(Alice As Integer)
-       Foo($$)
+    Public Sub Goo(Alice As Integer)
+       Goo($$)
     End Sub
 End Class
 ]]></Document>)
@@ -2717,7 +2801,7 @@ End Class
                 state.SendTypeChars("Alic")
                 Await state.AssertSelectedCompletionItem(displayText:="Alice", isHardSelected:=True)
                 state.SendTypeChars(":")
-                Assert.Contains("Foo(Alice:", state.GetLineTextFromCaretPosition(), StringComparison.Ordinal)
+                Assert.Contains("Goo(Alice:", state.GetLineTextFromCaretPosition(), StringComparison.Ordinal)
             End Using
         End Function
 
@@ -2726,8 +2810,8 @@ End Class
             Using state = TestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
-    Public Sub Foo(Alice As Integer, Bob As Integer)
-       Foo(1, $$)
+    Public Sub Goo(Alice As Integer, Bob As Integer)
+       Goo(1, $$)
     End Sub
 End Class
 ]]></Document>)
@@ -2735,7 +2819,7 @@ End Class
                 state.SendTypeChars("B")
                 Await state.AssertSelectedCompletionItem(displayText:="Bob", isHardSelected:=True)
                 state.SendTypeChars(":")
-                Assert.Contains("Foo(1, Bob:", state.GetLineTextFromCaretPosition(), StringComparison.Ordinal)
+                Assert.Contains("Goo(1, Bob:", state.GetLineTextFromCaretPosition(), StringComparison.Ordinal)
             End Using
         End Function
 
@@ -2744,7 +2828,7 @@ End Class
         Public Async Function CommitGenericDoesNotInsertEllipsis() As Task
             Using state = TestState.CreateVisualBasicTestState(
                             <Document><![CDATA[
-Interface Foo(Of T)
+Interface Goo(Of T)
 End Interface
 
 Class Bar
@@ -2752,10 +2836,10 @@ Class Bar
 End Class]]></Document>)
 
                 Dim unicodeEllipsis = ChrW(&H2026).ToString()
-                state.SendTypeChars("Foo")
+                state.SendTypeChars("Goo")
                 state.SendTab()
                 Await state.WaitForAsynchronousOperationsAsync()
-                Assert.Equal("Implements Foo(Of", state.GetLineTextFromCaretPosition().Trim())
+                Assert.Equal("Implements Goo(Of", state.GetLineTextFromCaretPosition().Trim())
                 Assert.DoesNotContain(unicodeEllipsis, state.GetLineTextFromCaretPosition())
             End Using
         End Function
@@ -2765,7 +2849,7 @@ End Class]]></Document>)
         Public Async Function CommitGenericDoesNotInsertEllipsisCommitOnParen() As Task
             Using state = TestState.CreateVisualBasicTestState(
                             <Document><![CDATA[
-Interface Foo(Of T)
+Interface Goo(Of T)
 End Interface
 
 Class Bar
@@ -2773,9 +2857,9 @@ Class Bar
 End Class]]></Document>)
 
                 Dim unicodeEllipsis = ChrW(&H2026).ToString()
-                state.SendTypeChars("Foo(")
+                state.SendTypeChars("Goo(")
                 Await state.WaitForAsynchronousOperationsAsync()
-                Assert.Equal("Implements Foo(", state.GetLineTextFromCaretPosition().Trim())
+                Assert.Equal("Implements Goo(", state.GetLineTextFromCaretPosition().Trim())
                 Assert.DoesNotContain(unicodeEllipsis, state.GetLineTextFromCaretPosition())
             End Using
         End Function
@@ -2785,7 +2869,7 @@ End Class]]></Document>)
         Public Async Function CommitGenericItemDoesNotInsertEllipsisCommitOnTab() As Task
             Using state = TestState.CreateVisualBasicTestState(
                             <Document><![CDATA[
-Interface Foo(Of T)
+Interface Goo(Of T)
 End Interface
 
 Class Bar
@@ -2793,10 +2877,10 @@ Class Bar
 End Class]]></Document>)
 
                 Dim unicodeEllipsis = ChrW(&H2026).ToString()
-                state.SendTypeChars("Foo")
+                state.SendTypeChars("Goo")
                 state.SendTab()
                 Await state.WaitForAsynchronousOperationsAsync()
-                Assert.Equal("Dim x as Foo(Of", state.GetLineTextFromCaretPosition().Trim())
+                Assert.Equal("Dim x as Goo(Of", state.GetLineTextFromCaretPosition().Trim())
                 Assert.DoesNotContain(unicodeEllipsis, state.GetLineTextFromCaretPosition())
             End Using
         End Function
@@ -2822,21 +2906,65 @@ End Module
             End Using
         End Function
 
+        <WorkItem(394863, "https://devdiv.visualstudio.com/DevDiv/_workitems?_a=edit&id=394863&triage=true")>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function ImplementsClause() As Task
+            Using state = TestState.CreateVisualBasicTestState(
+                            <Document><![CDATA[
+Partial Class TestClass
+    Implements IComparable(Of TestClass)
+
+    Public Function CompareTo(other As TestClass) As Integer Implements I$$
+
+
+    End Function
+
+End Class
+]]></Document>)
+
+                state.SendInvokeCompletionList()
+                Await state.WaitForAsynchronousOperationsAsync()
+                state.SendTab()
+                Assert.Contains("IComparable(Of TestClass)", state.GetLineTextFromCaretPosition())
+            End Using
+        End Function
+
+        <WorkItem(18785, "https://github.com/dotnet/roslyn/issues/18785")>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function BackspaceSoftSelectionIfNotPrefixMatch() As Task
+            Using state = TestState.CreateVisualBasicTestState(
+                            <Document><![CDATA[
+Class C
+    Sub Do()
+        Dim x = new System.Collections.Generic.List(Of String)()
+        x.$$Add("stuff")
+    End Sub
+End Class
+]]></Document>)
+
+                state.SendBackspace()
+                Await state.AssertSelectedCompletionItem("x", isSoftSelected:=True)
+                state.SendTypeChars(".")
+                Await state.WaitForAsynchronousOperationsAsync()
+                Assert.Contains("x.Add", state.GetLineTextFromCaretPosition())
+            End Using
+        End Function
+
         <ExportLanguageService(GetType(ISnippetInfoService), LanguageNames.VisualBasic), System.Composition.Shared>
-		Friend Class MockSnippetInfoService
-			Implements ISnippetInfoService
+        Friend Class MockSnippetInfoService
+            Implements ISnippetInfoService
 
-			Public Function GetSnippetsAsync_NonBlocking() As IEnumerable(Of SnippetInfo) Implements ISnippetInfoService.GetSnippetsIfAvailable
-				Return SpecializedCollections.SingletonEnumerable(New SnippetInfo("Shortcut", "Title", "Description", "Path"))
-			End Function
+            Public Function GetSnippetsAsync_NonBlocking() As IEnumerable(Of SnippetInfo) Implements ISnippetInfoService.GetSnippetsIfAvailable
+                Return SpecializedCollections.SingletonEnumerable(New SnippetInfo("Shortcut", "Title", "Description", "Path"))
+            End Function
 
-			Public Function ShouldFormatSnippet(snippetInfo As SnippetInfo) As Boolean Implements ISnippetInfoService.ShouldFormatSnippet
-				Return False
-			End Function
+            Public Function ShouldFormatSnippet(snippetInfo As SnippetInfo) As Boolean Implements ISnippetInfoService.ShouldFormatSnippet
+                Return False
+            End Function
 
-			Public Function SnippetShortcutExists_NonBlocking(shortcut As String) As Boolean Implements ISnippetInfoService.SnippetShortcutExists_NonBlocking
-				Return shortcut = "Shortcut"
-			End Function
-		End Class
-	End Class
+            Public Function SnippetShortcutExists_NonBlocking(shortcut As String) As Boolean Implements ISnippetInfoService.SnippetShortcutExists_NonBlocking
+                Return shortcut = "Shortcut"
+            End Function
+        End Class
+    End Class
 End Namespace

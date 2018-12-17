@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "CSharpErrorFactsGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "ErrorCode.cs  Generated\\ErrorFacts.Generated.cs ",
+      "workingDirectory": "..\\..\\..\\..\\..\\..\\..\\XSharp\\src\\Compiler\\XSharpCodeAnalysis"
+    }
+  }
+}

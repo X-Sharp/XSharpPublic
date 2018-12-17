@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
 <topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-  <title>/warn</title>
+  <title>-warn</title>
   <keywords>
-    <keyword>/warn</keyword>
+    <keyword>-warn</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/warn</para>
+      <para styleclass="Heading1">-warn</para>
     </header>
-    <para styleclass="Normal">The /warn option specifies the warning level for the compiler to display.</para>
+    <para styleclass="Normal">The -warn option specifies the warning level for the compiler to display.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/warn:option &#160;</para>
+    <para styleclass="Code with box">-warn:option &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">option</text><tab />The warning level you want displayed for the compilation: Lower numbers show only high severity warnings; higher numbers show more warnings. Valid values are 0-4:</para>
+    <para styleclass="List"><text styleclass="Code Example">option</text><tab ->The warning level you want displayed for the compilation: Lower numbers show only high severity warnings; higher numbers show more warnings. Valid values are 0-4:</para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="2">
       <tr style="vertical-align:top">
         <td style="width:285px;">
@@ -72,9 +72,9 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">To get information about an error or warning, you can look up the error code in the Help Index. For other ways to get information about an error or warning, see <link displaytype="text" defaultstyle="true" type="topiclink" href="X-Compiler-Errors">X# Compiler Errors</link>.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Use <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warnaserror">/warnaserror</link> to treat all warnings as errors. Use <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">/nowarn</link> to disable certain warnings.</para>
+    <para styleclass="Normal">Use <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warnaserror">-warnaserror</link> to treat all warnings as errors. Use <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">-nowarn</link> to disable certain warnings.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">/w is the short form of /warn.</para>
+    <para styleclass="Normal">-w is the short form of -warn.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
     <para styleclass="Normal"></para>
@@ -90,7 +90,7 @@
     <para styleclass="Normal">Compile<text styleclass="Code Example"> in.prg</text> and have the compiler only display level 1 warnings:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc /warn:1 in.prg &#160;</para>
+    <para styleclass="Code with box">xsc -warn:1 in.prg &#160;</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

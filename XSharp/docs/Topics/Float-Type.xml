@@ -2,11 +2,16 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Float Type</title>
+  <keywords>
+    <keyword>FLOAT</keyword>
+    <keyword>XSharp.__Float</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">Float Type</para>
     </header>
     <para styleclass="Normal">This structure is a combination of a REAL8 (System.Double) and a width and # of decimals.</para>
     <para styleclass="Normal">It is not a reference type like in VO. </para>
+    <para styleclass="Normal">The internal type name for this type is XSharp.__Float</para>
   </body>
 </topic>

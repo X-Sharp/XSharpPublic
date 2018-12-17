@@ -11,35 +11,56 @@ namespace XSharp.MacroCompiler
 
     internal partial class Binder
     {
-        internal MemberSymbol BindCall(Expr expr, ArgList args, out Expr self)
+        internal MemberSymbol BindMethodCall(Expr expr, Symbol symbol, ArgList args, out Expr self)
         {
-            if (expr is MemberAccessExpr)
+            OverloadResult ovRes = null;
+
+            var res = TryBindCall(expr, symbol, args, out self, ref ovRes, Options.Binding);
+
+            if (res != null)
+                return res;
+
+            throw MethodCallBindError(expr, symbol, args, ovRes);
+        }
+
+        internal Symbol BindCtorCall(Expr expr, Symbol symbol, ArgList args)
+        {
+            if ((symbol as TypeSymbol).IsValueType && args.Args.Count == 0)
             {
-                self = ((MemberAccessExpr)expr).Expr;
+                return new ObjectInitializerSymbol(symbol as TypeSymbol);
             }
-            else
-            {
-                self = null;
-            }
+
+            Expr dummySelf;
 
             OverloadResult ovRes = null;
 
-            if (expr.Symbol is MemberSymbol)
+            var res = TryBindCall(null, symbol.Lookup(SystemNames.CtorName), args, out dummySelf, ref ovRes, Options.Binding);
+
+            if (res != null)
+                return res;
+
+            throw CtorCallBindError(expr, symbol, args, ovRes);
+        }
+
+        internal static MemberSymbol TryBindCall(Expr expr, Symbol symbol, ArgList args, out Expr self, ref OverloadResult ovRes, BindOptions options)
+        {
+            self = (expr as MemberAccessExpr)?.Expr;
+
+            bool isStatic = self == null;
+
+            if ((symbol as MethodSymbol)?.Method.IsStatic == isStatic || symbol is ConstructorSymbol)
             {
-                if (expr.Symbol is MethodSymbol)
-                {
-                    CheckArguments((MethodSymbol)expr.Symbol, args, ref ovRes);
-                }
+                CheckArguments(symbol as MemberSymbol, ((MethodBaseSymbol)symbol).Parameters, args, ref ovRes, options);
             }
-            else if ((expr.Symbol as SymbolList)?.SymbolTypes.HasFlag(MemberTypes.Method) == true)
+            else if ((symbol as SymbolList)?.HasMethodBase == true)
             {
-                var methods = expr.Symbol as SymbolList;
+                var methods = symbol as SymbolList;
                 for (int i = 0; i<methods.Symbols.Count; i++)
                 {
                     var m = methods.Symbols[i];
-                    if (m is MethodSymbol)
+                    if ((m as MethodSymbol)?.Method.IsStatic == isStatic || m is ConstructorSymbol)
                     {
-                        CheckArguments((MethodSymbol)m, args, ref ovRes);
+                        CheckArguments(m as MemberSymbol, ((MethodBaseSymbol)m).Parameters, args, ref ovRes, options);
                         if (ovRes?.Exact == true)
                             break;
                     }
@@ -49,21 +70,89 @@ namespace XSharp.MacroCompiler
             if (ovRes?.Unique == true)
             {
                 ApplyConversions(args, ovRes);
-                return ovRes.Method;
+                return ovRes.Symbol;
             }
+
+            if (options.HasFlag(BindOptions.AllowDynamic) && expr != null && ovRes?.Valid != true)
+            {
+                if (symbol is DynamicSymbol)
+                {
+                    expr = self;
+                    self = null;
+                    Convert(ref expr, Compilation.Get(NativeType.Usual), options);
+                    var obj = new Arg(expr ?? LiteralExpr.Bound(Constant.Create(null)));
+                    var name = new Arg(LiteralExpr.Bound(Constant.Create((symbol as DynamicSymbol).Name)));
+                    var arguments = new Arg(LiteralArray.Bound(args.Args));
+                    args.Args.Clear();
+                    args.Args.Add(obj);
+                    args.Args.Add(name);
+                    args.Args.Add(arguments);
+                    return Compilation.Get(WellKnownMembers.XSharp_RT_Functions___InternalSend);
+                }
+                else if (symbol.Type()?.IsUsualOrObject() == true)
+                {
+                    self = null;
+                    Convert(ref expr, Compilation.Get(NativeType.Usual), options);
+                    var obj = new Arg(expr);
+                    var name = new Arg(LiteralExpr.Bound(Constant.Create(SystemNames.DelegateInvokeName)));
+                    var arguments = new Arg(LiteralArray.Bound(args.Args));
+                    args.Args.Clear();
+                    args.Args.Add(obj);
+                    args.Args.Add(name);
+                    args.Args.Add(arguments);
+                    return Compilation.Get(WellKnownMembers.XSharp_RT_Functions___InternalSend);
+                }
+            }
+
             return null;
         }
 
-        static void CheckArguments(MethodSymbol m, ArgList args, ref OverloadResult ovRes)
+        static void CheckArguments(MemberSymbol symbol, ParameterListSymbol paramList, ArgList args, ref OverloadResult ovRes, BindOptions options)
         {
-            var method = m.Method;
-            var parameters = method.GetParameters();
-            if (parameters.Length == args.Args.Count)
+            var parameters = paramList.Parameters;
+            var nParams = parameters.Length;
+            var fixedArgs = args.Args.Count;
+            var varArgs = 0;
+            var missingArgs = 0;
+            bool hasExtraArgs = false;
+            if (nParams <= fixedArgs)
             {
-                var ovr = OverloadResult.Create(m, args.Args.Count);
-                for (int p = 0; p < args.Args.Count; p++)
+                if (paramList.HasParamArray)
                 {
-                    ovr.ArgConversion(p, ArgumentConversion(args.Args[p], parameters[p]));
+                    varArgs = fixedArgs - (nParams - 1);
+                    fixedArgs = nParams - 1;
+                }
+                else if (nParams < fixedArgs)
+                    hasExtraArgs = true;
+            }
+            else if (nParams > fixedArgs)
+            {
+                if (paramList.HasParamArray)
+                    missingArgs = nParams - fixedArgs - 1;
+                else
+                    missingArgs = nParams - fixedArgs;
+            }
+            if (!hasExtraArgs)
+            {
+                var ovr = OverloadResult.Create(symbol, paramList, fixedArgs, varArgs, missingArgs);
+                for (int p = 0; p < fixedArgs; p++)
+                {
+                    ovr.ArgConversion(p, ArgumentConversion(args.Args[p], parameters[p], options));
+                }
+                if (missingArgs > 0)
+                {
+                    for (int p = fixedArgs; p < fixedArgs + missingArgs; p++)
+                    {
+                        ovr.ArgConversion(p, ArgumentConversion(null, parameters[p], options));
+                    }
+                }
+                else if (paramList.HasParamArray)
+                {
+                    var varArgType = FindType(parameters[fixedArgs].ParameterType.GetElementType());
+                    for (int p = fixedArgs; p < fixedArgs + varArgs; p++)
+                    {
+                        ovr.ArgConversion(p, VarArgumentConversion(args.Args[p], varArgType, options));
+                    }
                 }
                 ovRes = ovr.Better(ovRes);
             }
@@ -71,12 +160,33 @@ namespace XSharp.MacroCompiler
 
         static void ApplyConversions(ArgList args, OverloadResult ovRes)
         {
-            var parameters = ovRes.Method.Method.GetParameters();
-            for (int i = 0; i < args.Args.Count; i++)
+            var parameters = ovRes.Parameters.Parameters;
+            for (int i = 0; i < ovRes.FixedArgs; i++)
             {
                 var conv = ovRes.Conversions[i];
                 if (conv.Kind != ConversionKind.Identity)
                     Convert(ref args.Args[i].Expr, FindType(parameters[i].ParameterType), conv);
+            }
+            if (ovRes.MissingArgs > 0)
+            {
+                for (int i = ovRes.FixedArgs; i < ovRes.FixedArgs + ovRes.MissingArgs; i++)
+                {
+                    var conv = ovRes.Conversions[i];
+                    args.Args.Add(new Arg(LiteralExpr.Bound(((ConversionSymbolToConstant)conv).Constant)));
+                }
+            }
+            else if (ovRes.Parameters.HasParamArray)
+            {
+                var varArgs = new List<Expr>(ovRes.VarArgs);
+                var varArgType = FindType(parameters[ovRes.FixedArgs].ParameterType.GetElementType());
+                for (int i = ovRes.FixedArgs; i < ovRes.FixedArgs + ovRes.VarArgs; i++)
+                {
+                    var conv = ovRes.Conversions[i];
+                    Convert(ref args.Args[i].Expr, varArgType, conv);
+                    varArgs.Add(args.Args[i].Expr);
+                }
+                while (args.Args.Count > ovRes.FixedArgs) args.Args.RemoveAt(args.Args.Count - 1);
+                args.Args.Add(new Arg(LiteralArray.Bound(varArgs, varArgType)));
             }
         }
     }

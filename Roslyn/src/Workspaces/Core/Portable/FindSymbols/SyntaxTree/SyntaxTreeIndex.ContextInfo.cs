@@ -24,7 +24,9 @@ namespace Microsoft.CodeAnalysis.FindSymbols
                 bool containsThisConstructorInitializer,
                 bool containsBaseConstructorInitializer,
                 bool containsElementAccessExpression,
-                bool containsIndexerMemberCref) :
+                bool containsIndexerMemberCref,
+                bool containsDeconstruction,
+                bool containsAwait) :
                 this(predefinedTypes, predefinedOperators,
                      ConvertToContainingNodeFlag(
                          containsForEachStatement,
@@ -34,7 +36,9 @@ namespace Microsoft.CodeAnalysis.FindSymbols
                          containsThisConstructorInitializer,
                          containsBaseConstructorInitializer,
                          containsElementAccessExpression,
-                         containsIndexerMemberCref))
+                         containsIndexerMemberCref,
+                         containsDeconstruction,
+                         containsAwait))
             {
             }
 
@@ -53,7 +57,9 @@ namespace Microsoft.CodeAnalysis.FindSymbols
                 bool containsThisConstructorInitializer,
                 bool containsBaseConstructorInitializer,
                 bool containsElementAccessExpression,
-                bool containsIndexerMemberCref)
+                bool containsIndexerMemberCref,
+                bool containsDeconstruction,
+                bool containsAwait)
             {
                 var containingNodes = ContainingNodes.None;
 
@@ -65,6 +71,8 @@ namespace Microsoft.CodeAnalysis.FindSymbols
                 containingNodes = containsBaseConstructorInitializer ? (containingNodes | ContainingNodes.ContainsBaseConstructorInitializer) : containingNodes;
                 containingNodes = containsElementAccessExpression ? (containingNodes | ContainingNodes.ContainsElementAccessExpression) : containingNodes;
                 containingNodes = containsIndexerMemberCref ? (containingNodes | ContainingNodes.ContainsIndexerMemberCref) : containingNodes;
+                containingNodes = containsDeconstruction ? (containingNodes | ContainingNodes.ContainsDeconstruction) : containingNodes;
+                containingNodes = containsAwait ? (containingNodes | ContainingNodes.ContainsAwait) : containingNodes;
 
                 return containingNodes;
             }
@@ -77,6 +85,12 @@ namespace Microsoft.CodeAnalysis.FindSymbols
 
             public bool ContainsForEachStatement
                 => (_containingNodes & ContainingNodes.ContainsForEachStatement) == ContainingNodes.ContainsForEachStatement;
+
+            public bool ContainsDeconstruction
+                => (_containingNodes & ContainingNodes.ContainsDeconstruction) == ContainingNodes.ContainsDeconstruction;
+
+            public bool ContainsAwait
+                => (_containingNodes & ContainingNodes.ContainsAwait) == ContainingNodes.ContainsAwait;
 
             public bool ContainsLockStatement
                 => (_containingNodes & ContainingNodes.ContainsLockStatement) == ContainingNodes.ContainsLockStatement;
@@ -135,6 +149,8 @@ namespace Microsoft.CodeAnalysis.FindSymbols
                 ContainsBaseConstructorInitializer = 1 << 5,
                 ContainsElementAccessExpression = 1 << 6,
                 ContainsIndexerMemberCref = 1 << 7,
+                ContainsDeconstruction = 1 << 8,
+                ContainsAwait = 1 << 9,
             }
         }
     }

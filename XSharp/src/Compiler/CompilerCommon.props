@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <!-- Note: All directories in this list end with a back slash -->
+    <RoslynDir>$(Solutiondir)\..\Roslyn\</RoslynDir>
+    <RoslynBin>$(RoslynDir)Binaries\</RoslynBin>
+    <RoslynSrc>$(RoslynDir)Src\</RoslynSrc>
+    <CoreSource>$(RoslynSrc)Compilers\Core\Portable\</CoreSource>
+    <SharedSource>$(RoslynSrc)Compilers\Shared\</SharedSource>
+    <CscSource>$(RoslynSrc)Compilers\CSharp\csc\</CscSource>
+    <ServerSource>$(RoslynSrc)Compilers\Server\</ServerSource>
+    <CSharpSource>$(RoslynSrc)Compilers\CSharp\Portable\</CSharpSource>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AssemblyOriginatorKeyFile>$(Solutiondir)src\commmon\XSharp.snk</AssemblyOriginatorKeyFile>
+    <Langversion>7.3</Langversion>
+    <RoslynProjectType>XSharp</RoslynProjectType>
+    <DeveloperBuild>true</DeveloperBuild>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
+    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
+	<BinariesDir>$(Solutiondir)Binaries\$(Configuration)\</BinariesDir>
+    <GeneratedCompilerPath>$(Solutiondir)Binaries\Debug\net46\</GeneratedCompilerPath>
+	<XscToolPath>$(BinariesDir)net46\</XscToolPath>
+	<EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
+  </PropertyGroup>
+
+
+</Project>

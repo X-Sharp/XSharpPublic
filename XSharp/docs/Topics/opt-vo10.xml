@@ -1,44 +1,40 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-  <title>/vo10</title>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-vo10</title>
   <keywords>
-    <keyword>/vo10</keyword>
+    <keyword>-vo10</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/vo10<tab />Compatible IIF Behavior </para>
+      <para styleclass="Heading1">-vo10<tab />Compatible IIF Behavior </para>
     </header>
-    <para styleclass="Normal">The /vo10 option enables the IIF operator to behave in a manner compatible with Visual Objects</para>
+    <para styleclass="Normal">The -vo10 option enables the IIF operator to behave in a manner compatible with Visual Objects</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/vo10[+|-]</para>
+    <para styleclass="Code with box">-vo10[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />Specifying +, or just /vo10, causes the IIF operator to behave as it does in Visual Objects. </para>
+    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />Specifying +, or just -vo10, causes the IIF operator to behave as it does in Visual Objects. </para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">If the true and false expressions in an IIF operator are not the same, or one cannot be implicitly converted to the type of the other, the compiler will raise an error.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Visual Objects allows this, and implicitly converts both expressions to USUAL, causing the IIF expression to also return USUAL. This is neither safe or efficient, but code originally written in Visual Objects may depend on this behavior, and if /vo10 is not used, errors may occur at runtime.</para>
+    <para styleclass="Normal">Visual Objects allows this, and implicitly converts both expressions to USUAL, causing the IIF expression to also return USUAL. This is neither safe or efficient, but code originally written in Visual Objects may depend on this behavior, and if -vo10 is not used, errors may occur at runtime.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example">LOCAL x as LOGIC</para>
-    <para styleclass="Code Example">x := TRUE</para>
-    <para styleclass="Code Example">? IIF( x, 1, &quot;Sunday&quot;)<br/></para>
-    <para styleclass="Code Example"></para>
-    <para styleclass="Normal">When you use the /vo10 compiler option then the compiler will convert this to:</para>
+    <para styleclass="Code Example">LOCAL x as LOGIC<br/>x := TRUE<br/>? IIF( x, 1, &quot;Sunday&quot;)<br/></para>
+    <para styleclass="Normal">When you use The -vo10 compiler option then the compiler will convert this to:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example">? IIF( x, (USUAL)1, &#160;(USUAL) &quot;Sunday&quot;)<tab /><tab />// for the VO and Vulcan dialect</para>
-    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example">? IIF( x, (USUAL)1, &#160;(USUAL) &quot;Sunday&quot;)<tab /><tab />-/ for the VO and Vulcan dialect</para>
     <para styleclass="Normal">or </para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example">? IIF( x, (OBJECT)1, &#160;(OBJECT) &quot;Sunday&quot;)<tab /><tab />// for the Core dialect</para>
+    <para styleclass="Code Example">? IIF( x, (OBJECT)1, &#160;(OBJECT) &quot;Sunday&quot;)<tab /><tab />-/ for the Core dialect</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
       <li styleclass="Normal" style="margin-left:13px;">In the Visual Objects Compatibility section, modify the &quot;Compatible IIF Behavior&quot; property. </li>

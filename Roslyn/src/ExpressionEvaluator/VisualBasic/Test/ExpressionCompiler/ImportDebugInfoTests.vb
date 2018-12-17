@@ -32,7 +32,7 @@ Class C
 End Class
 "
 
-            Dim comp = CreateCompilationWithMscorlib({source}, options:=TestOptions.ReleaseDll)
+            Dim comp = CreateCompilationWithMscorlib40({source}, options:=TestOptions.ReleaseDll)
 
             WithRuntimeInstance(comp,
                 Sub(runtime)
@@ -71,7 +71,7 @@ Class C
 End Class
 "
 
-            Dim comp = CreateCompilationWithMscorlib({source}, options:=TestOptions.ReleaseDll)
+            Dim comp = CreateCompilationWithMscorlib40({source}, options:=TestOptions.ReleaseDll)
 
             WithRuntimeInstance(comp,
                 Sub(runtime)
@@ -147,7 +147,7 @@ End Namespace
                 "<xmlns:F=""http://xml3"">"
             }))
 
-            Dim comp = CreateCompilationWithMscorlib({source}, options:=options)
+            Dim comp = CreateCompilationWithMscorlib40({source}, options:=options)
 
             WithRuntimeInstance(comp,
                 Sub(runtime)
@@ -259,7 +259,7 @@ Public Class C
 End Class
 "
 
-            Dim comp = CreateCompilationWithMscorlib({source})
+            Dim comp = CreateCompilationWithMscorlib40({source})
             Dim exeBytes = comp.EmitToArray()
 
             Dim symReader = ExpressionCompilerTestHelpers.ConstructSymReaderWithImports(
@@ -272,7 +272,7 @@ End Class
             Dim exeModule = ModuleInstance.Create(exeBytes, symReader)
             Dim runtime = CreateRuntimeInstance(exeModule, {MscorlibRef})
             Dim evalContext = CreateMethodContext(runtime, "C.Main")
-            Dim compContext = evalContext.CreateCompilationContext(SyntaxHelpers.ParseDebuggerExpression("Nothing", consumeFullText:=True)) ' Used to throw.
+            Dim compContext = evalContext.CreateCompilationContext(withSyntax:=True) ' Used to throw.
 
             Dim rootNamespace As NamespaceSymbol = Nothing
             Dim currentNamespace As NamespaceSymbol = Nothing
@@ -295,7 +295,7 @@ Public Class C
 End Class
 "
 
-            Dim comp = CreateCompilationWithMscorlib({source})
+            Dim comp = CreateCompilationWithMscorlib40({source})
             Dim exeBytes = comp.EmitToArray()
 
             Dim symReader = ExpressionCompilerTestHelpers.ConstructSymReaderWithImports(
@@ -308,7 +308,7 @@ End Class
             Dim exeModule = ModuleInstance.Create(exeBytes, symReader)
             Dim runtime = CreateRuntimeInstance(exeModule, {MscorlibRef})
             Dim evalContext = CreateMethodContext(runtime, "C.Main")
-            Dim compContext = evalContext.CreateCompilationContext(SyntaxHelpers.ParseDebuggerExpression("Nothing", consumeFullText:=True)) ' Used to throw.
+            Dim compContext = evalContext.CreateCompilationContext(withSyntax:=True) ' Used to throw.
 
             Dim rootNamespace As NamespaceSymbol = Nothing
             Dim currentNamespace As NamespaceSymbol = Nothing
@@ -393,7 +393,7 @@ End Namespace
                 "<xmlns:F=""http://xml3"">"
             }))
 
-            Dim comp = CreateCompilationWithMscorlib({source}, options:=options)
+            Dim comp = CreateCompilationWithMscorlib40({source}, options:=options)
             WithRuntimeInstance(comp,
                 Sub(runtime)
                     Dim info = GetMethodDebugInfo(runtime, "root.N.C.M")
@@ -446,7 +446,6 @@ End Namespace
                     GetImports(
                         runtime,
                         "root.N.C.M",
-                        GetExpressionStatement(comp),
                         rootNamespace,
                         currentNamespace,
                         typesAndNamespaces,
@@ -488,7 +487,7 @@ End Namespace
 "
 
             For Each rootNamespaceName In {"", Nothing}
-                Dim comp = CreateCompilationWithMscorlib({source}, options:=TestOptions.ReleaseDll.WithRootNamespace(rootNamespaceName))
+                Dim comp = CreateCompilationWithMscorlib40({source}, options:=TestOptions.ReleaseDll.WithRootNamespace(rootNamespaceName))
                 comp.GetDiagnostics().Where(Function(d) d.Severity > DiagnosticSeverity.Info).Verify()
 
                 WithRuntimeInstance(comp,
@@ -502,7 +501,6 @@ End Namespace
                         GetImports(
                             runtime,
                             "N.C.M",
-                            GetExpressionStatement(comp),
                             rootNamespace,
                             currentNamespace,
                             typesAndNamespaces,
@@ -553,7 +551,7 @@ End Namespace
                 "<xmlns=""http://xml2"">",
                 "<xmlns:C=""http://xml3"">"
             }))
-            Dim comp = CreateCompilationWithMscorlib({source}, options:=options)
+            Dim comp = CreateCompilationWithMscorlib40({source}, options:=options)
             comp.GetDiagnostics().Where(Function(d) d.Severity > DiagnosticSeverity.Info).Verify()
 
             Dim rootNamespace As NamespaceSymbol = Nothing
@@ -567,7 +565,6 @@ End Namespace
                     GetImports(
                         runtime,
                         "root.N.C.M",
-                        GetExpressionStatement(comp),
                         rootNamespace,
                         currentNamespace,
                         typesAndNamespaces,
@@ -611,10 +608,10 @@ Public Class C2 : Inherits C1
 End Class
 "
 
-            Dim comp1 = CreateCompilationWithReferences(VisualBasicSyntaxTree.ParseText(source1), {MscorlibRef_v20}, TestOptions.DebugDll)
+            Dim comp1 = CreateEmptyCompilationWithReferences(VisualBasicSyntaxTree.ParseText(source1), {MscorlibRef_v20}, TestOptions.DebugDll)
             Dim module1 = comp1.ToModuleInstance()
 
-            Dim comp2 = CreateCompilationWithReferences(VisualBasicSyntaxTree.ParseText(source2), {MscorlibRef_v4_0_30316_17626, module1.GetReference()}, TestOptions.DebugDll)
+            Dim comp2 = CreateEmptyCompilationWithReferences(VisualBasicSyntaxTree.ParseText(source2), {MscorlibRef_v4_0_30316_17626, module1.GetReference()}, TestOptions.DebugDll)
             Dim module2 = comp2.ToModuleInstance()
 
             Dim runtime = CreateRuntimeInstance({module1, module2, MscorlibRef_v4_0_30316_17626.ToModuleInstance(), ExpressionCompilerTestHelpers.IntrinsicAssemblyReference.ToModuleInstance()})
@@ -636,14 +633,9 @@ IL_000a:  ret
 ")
         End Sub
 
-        Private Shared Function GetExpressionStatement(compilation As Compilation) As ExpressionStatementSyntax
-            Return DirectCast(compilation.SyntaxTrees.Single().GetRoot().DescendantNodes().OfType(Of InvocationExpressionSyntax).Single().Parent, ExpressionStatementSyntax)
-        End Function
-
         Private Shared Sub GetImports(
             runtime As RuntimeInstance,
             methodName As String,
-            syntax As ExpressionStatementSyntax,
             <Out> ByRef rootNamespace As NamespaceSymbol,
             <Out> ByRef currentNamespace As NamespaceSymbol,
             <Out> ByRef typesAndNamespaces As ImmutableArray(Of NamespaceOrTypeAndImportsClausePosition),
@@ -651,7 +643,7 @@ IL_000a:  ret
             <Out> ByRef xmlNamespaces As Dictionary(Of String, XmlNamespaceAndImportsClausePosition))
 
             Dim evalContext = CreateMethodContext(runtime, methodName)
-            Dim compContext = evalContext.CreateCompilationContext(syntax)
+            Dim compContext = evalContext.CreateCompilationContext(withSyntax:=True)
 
             GetImports(compContext, rootNamespace, currentNamespace, typesAndNamespaces, aliases, xmlNamespaces)
         End Sub

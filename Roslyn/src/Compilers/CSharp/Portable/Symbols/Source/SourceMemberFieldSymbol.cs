@@ -2,6 +2,7 @@
 
 using Microsoft.CodeAnalysis.CSharp.Emit;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 using System;
 using System.Collections.Generic;
@@ -9,17 +10,16 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Threading;
 using Microsoft.CodeAnalysis.Text;
+
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
 #if XSHARP
     internal abstract partial class SourceMemberFieldSymbol : SourceFieldSymbolWithSyntaxReference
-#else
-    internal abstract class SourceMemberFieldSymbol : SourceFieldSymbolWithSyntaxReference
-#endif
     {
-#if XSHARP
         private DeclarationModifiers _modifiers;
 #else
+    internal abstract class SourceMemberFieldSymbol : SourceFieldSymbolWithSyntaxReference
+    {
         private readonly DeclarationModifiers _modifiers;
 #endif
 
@@ -57,9 +57,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 diagnostics.Add(ErrorCode.ERR_FieldCantHaveVoidType, TypeSyntax.Location);
             }
-            else if (type.IsRestrictedType())
+            else if (type.IsRestrictedType(ignoreSpanLikeTypes: true))
             {
                 diagnostics.Add(ErrorCode.ERR_FieldCantBeRefAny, TypeSyntax.Location, type);
+            }
+            else if (type.IsByRefLikeType && (this.IsStatic || !containingType.IsByRefLikeType))
+            {
+                diagnostics.Add(ErrorCode.ERR_FieldAutoPropCantBeByRefLike, TypeSyntax.Location, type);
             }
             else if (IsConst && !type.CanBeConst())
             {
@@ -94,9 +98,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public abstract bool HasInitializer { get; }
 
-        internal override void AddSynthesizedAttributes(ModuleCompilationState compilationState, ref ArrayBuilder<SynthesizedAttributeData> attributes)
+        internal override void AddSynthesizedAttributes(PEModuleBuilder moduleBuilder, ref ArrayBuilder<SynthesizedAttributeData> attributes)
         {
-            base.AddSynthesizedAttributes(compilationState, ref attributes);
+            base.AddSynthesizedAttributes(moduleBuilder, ref attributes);
 
             var compilation = this.DeclaringCompilation;
             var value = this.GetConstantValue(ConstantFieldsInProgress.Empty, earlyDecodingWellKnownAttributes: false);
@@ -127,12 +131,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get
             {
                 Debug.Assert(!this.IsFixed, "Subclasses representing fixed fields must override");
-                if (state.NotePartComplete(CompletionPart.FixedSize))
-                {
-                    // FixedSize is the last completion part for fields.
-                    DeclaringCompilation.SymbolDeclaredEvent(this);
-                }
-
+                state.NotePartComplete(CompletionPart.FixedSize);
                 return 0;
             }
         }
@@ -251,12 +250,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         GetFieldType(ConsList<FieldSymbol>.Empty);
                         break;
 
-                    case CompletionPart.ConstantValue:
-                        GetConstantValue(ConstantFieldsInProgress.Empty, earlyDecodingWellKnownAttributes: false);
-                        break;
-
                     case CompletionPart.FixedSize:
                         int discarded = this.FixedSize;
+                        break;
+
+                    case CompletionPart.ConstantValue:
+                        GetConstantValue(ConstantFieldsInProgress.Empty, earlyDecodingWellKnownAttributes: false);
                         break;
 
                     case CompletionPart.None:
@@ -446,7 +445,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     type = GetVOGlobalType(compilation, typeSyntax, binder, fieldsBeingBound);
                     if (type == null)
                     {
-                        type = binder.BindType(typeSyntax, diagnosticsForFirstDeclarator);
+                    type = binder.BindType(typeSyntax, diagnosticsForFirstDeclarator);
                     }
 #else
                    type = binder.BindType(typeSyntax, diagnosticsForFirstDeclarator);
@@ -455,7 +454,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 else
                 {
                     bool isVar;
-                    type = binder.BindType(typeSyntax, diagnostics, out isVar);
+                    type = binder.BindTypeOrVarKeyword(typeSyntax, diagnostics, out isVar);
 
                     Debug.Assert((object)type != null || isVar);
 
@@ -474,6 +473,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         else if (fieldSyntax.Declaration.Variables.Count > 1)
                         {
                             diagnosticsForFirstDeclarator.Add(ErrorCode.ERR_ImplicitlyTypedVariableMultipleDeclarator, typeSyntax.Location);
+                        }
+                        else if (this.IsConst && this.ContainingType.IsScriptClass)
+                        {
+                            // For const var in script, we won't try to bind the initializer (case below), as it can lead to an unbound recursion
+                            type = null;
                         }
                         else
                         {
@@ -510,10 +514,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     }
 
                     var elementType = ((PointerTypeSymbol)type).PointedAtType;
-#if XSHARP
-                    int elementSize = DeclaringCompilation.Options.IsDialectVO ? elementType.VoFixedBufferElementSizeInBytes() : elementType.FixedBufferElementSizeInBytes();
-#else
                     int elementSize = elementType.FixedBufferElementSizeInBytes();
+#if XSHARP
+					if (DeclaringCompilation.Options.HasRuntime )
+					{
+	                    elementSize = elementType.VoFixedBufferElementSizeInBytes() ;
+					}
 #endif
                     if (elementSize == 0)
                     {
@@ -524,7 +530,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     if (!binder.InUnsafeRegion)
                     {
 #if XSHARP
-                        if (! binder.Compilation.Options.IsDialectVO)
+                        if (! binder.Compilation.Options.HasRuntime)
                         {
                             diagnosticsForFirstDeclarator.Add(binder.Compilation.Options.AllowUnsafe ? ErrorCode.WRN_UnsafeImplied : ErrorCode.ERR_UnsafeNeeded, declarator.Location);
                         }

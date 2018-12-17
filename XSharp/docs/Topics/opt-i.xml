@@ -1,39 +1,39 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-  <title>/i</title>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-i</title>
   <keywords>
-    <keyword>/i</keyword>
+    <keyword>-i</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/i</para>
+      <para styleclass="Heading1">-i</para>
     </header>
-    <para styleclass="Normal">The /i option adds a directory to the list of directories the compiler searches for include files.</para>
+    <para styleclass="Normal">The -i option adds a directory to the list of directories the compiler searches for include files.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/i:dir</para>
+    <para styleclass="Code with box">-i:dir</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">dir</text>&#32;<tab />A directory to add to list list of directories the compiler searches for include files. </para>
+    <para styleclass="List"><text styleclass="Code Example">dir</text>&#32;<tab ->A directory to add to list list of directories the compiler searches for include files. </para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The compiler searches for files included with #include in the following order:</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+    <list id="2" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">The current working directory </li>
       <li styleclass="Normal" style="margin-left:13px;">The include subdirectory of the Vulcan.NET installation directory </li>
       <li styleclass="Normal" style="margin-left:13px;">The include subdirectory of the XSharp installation directory </li>
-      <li styleclass="Normal" style="margin-left:13px;">Any directories specified with /i </li>
+      <li styleclass="Normal" style="margin-left:13px;">Any directories specified with -i </li>
       <li styleclass="Normal" style="margin-left:13px;">Any directories specified with the INCLUDE environment variable </li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <para styleclass="Normal">Multiple directories can be specified by using the /i option multiple times.</para>
+    <para styleclass="Normal">Multiple directories can be specified by using The -i option multiple times.</para>
     <para styleclass="Normal">The compiler does not search for filenames that are fully qualified in any location other than in the directory specified in the #include directive.</para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+    <list id="3" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Build tab. </li>
       <li styleclass="Normal" style="margin-left:13px;">In the Preprocessor section, modify the &quot;Additional include paths&quot; property. </li>

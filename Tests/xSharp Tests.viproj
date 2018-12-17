@@ -9,6 +9,7 @@ PrgEncoding = Default
 SupportCF = 0
 NoAppFileCreate = 1
 CopyAssembliesToFolder = 
+DebugExecutable = 
 
 [ProjectExportOptions]
 ExportResources = 0
@@ -32825,7 +32826,7 @@ ImplicitNamespace=0
 VO1=0
 VO2=0
 VO3=0
-VO4=0
+VO4=1
 VO5=0
 VO6=0
 VO7=0
@@ -33025,7 +33026,7 @@ ImplicitNamespace=0
 VO1=0
 VO2=0
 VO3=0
-VO4=0
+VO4=1
 VO5=0
 VO6=0
 VO7=0
@@ -35419,8 +35420,8 @@ FileGUID = 6294A93D-97C1-47EB-957C-69E05812804F
 FileType = Code
 [C356 - Issues with PSZ CAST and DIM array References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VO.dll,1,1
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 [C356 - Issues with PSZ CAST and DIM array Resources]
 [C356 - Issues with PSZ CAST and DIM array Native Resources]
 [C356 - Issues with PSZ CAST and DIM array License files]
@@ -35979,7 +35980,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C361 - Runtime problem with passing USUAL to CLIPPER constructor
 
-ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C362 - Missing pinning of locals in unsafe generated code *************
 Application = C362 - Missing pinning of locals in unsafe generated code
 IDEVersion = 1.06
@@ -54850,7 +54851,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C542 - StackOverflowException with FLOAT += USUAL
 
-ApplicationGroup = A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION C543 - Cannot initialize field using value from another initialized field *************
 Application = C543 - Cannot initialize field using value from another initialized field
 IDEVersion = 1.06
@@ -54859,9 +54860,9 @@ GalleryPage =
 GalleryDefaultName = 
 Target = 0
 Platform = x86
-Language = VulcanNet
+Language = XSharp
 Runtime = CLR4
-Dialect = None
+Dialect = Vulcan
 Folder = %ProjectPath%\Applications\C543\
 PrgSubFolder = \Prg
 ResourcesSubFolder = 
@@ -55252,7 +55253,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C546 - Bogus (?) error message about taking the adress of a function
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30
 ; ************** APPLICATION C547 - Preprocessor issue with harbour code *************
 Application = C547 - Preprocessor issue with harbour code
 IDEVersion = 1.06
@@ -55302,7 +55303,7 @@ ReferenceProject = 3FD20812-F1F2-477B-9734-FE2697DED8D6,1,0,C460_helper
 [C547 - Preprocessor issue with harbour code Native Resources]
 [C547 - Preprocessor issue with harbour code License files]
 [C547 - Preprocessor issue with harbour code General Options]
-Switches=/verbose
+Switches=
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0
@@ -56594,8 +56595,8 @@ FileGUID = ADC2A577-4C58-4CC0-89EC-4BA9ABBAFF9C
 FileType = Code
 [C560 - CreateInstance() cannot "see" classes with namespaces References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
 [C560 - CreateInstance() cannot "see" classes with namespaces Resources]
 [C560 - CreateInstance() cannot "see" classes with namespaces Native Resources]
 [C560 - CreateInstance() cannot "see" classes with namespaces License files]
@@ -60744,7 +60745,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C597_helper
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C598 - Another case of no line/col info supplied in error message in ACCESS in PARTIAL CLASS *************
 Application = C598 - Another case of no line/col info supplied in error message in ACCESS in PARTIAL CLASS
 IDEVersion = 1.06
@@ -60944,7 +60945,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C599 - Bogus error when using ++/-- in alias expression
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C600 - Problem defining DIM as OBJECT without /unsafe *************
 Application = C600 - Problem defining DIM as OBJECT without /unsafe
 IDEVersion = 1.06
@@ -61010,7 +61011,7 @@ VO13=0
 VO14=0
 VO16=0
 LateBound=0
-Unsafe=0
+Unsafe=1
 IgnoreStdDefs=0
 Ovf=0
 FOvf=0
@@ -61738,7 +61739,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C607 - Incorrect ARRAY element accesed when using Enum as subscript
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C608 - Preprocessor harbour compatibility issue with different casing of identifiers *************
 Application = C608 - Preprocessor harbour compatibility issue with different casing of identifiers
 IDEVersion = 1.06
@@ -61838,7 +61839,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C608 - Preprocessor harbour compatibility issue with different casing of identifiers
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C609 - Failed to emit module with @ on array element, without /unsafe *************
 Application = C609 - Failed to emit module with @ on array element, without /unsafe
 IDEVersion = 1.06
@@ -61904,7 +61905,7 @@ VO13=0
 VO14=0
 VO16=0
 LateBound=0
-Unsafe=0
+Unsafe=1
 IgnoreStdDefs=0
 Ovf=0
 FOvf=0
@@ -62278,8 +62279,9 @@ FileGUID = 89BCFE16-E9A5-4A9A-9034-0E36F9ED643D
 FileType = Code
 [C613 - Ambiguous overloads References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VO.dll,1,1
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
 [C613 - Ambiguous overloads Resources]
 [C613 - Ambiguous overloads Native Resources]
 [C613 - Ambiguous overloads License files]
@@ -62973,8 +62975,8 @@ FileGUID = 90EA0C80-94BD-4B8A-A2E9-56F455F24DE3
 FileType = Code
 [C620 - Problem resloving method with both instance and static overloads References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.0.0.5
-ReferenceGAC = XSharp.VO,1,0,2.0.0.5
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
 [C620 - Problem resloving method with both instance and static overloads Resources]
 [C620 - Problem resloving method with both instance and static overloads Native Resources]
 [C620 - Problem resloving method with both instance and static overloads License files]
@@ -63724,7 +63726,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C626
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C627 - Static inherits from non static results in strange reference *************
 Application = C627 - Static inherits from non static results in strange reference
 IDEVersion = 1.06
@@ -63862,8 +63864,9 @@ FileGUID = 9574227C-486B-4BF4-A0D6-E96F1FE0F878
 FileType = Code
 [C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.0.0.6
-ReferenceGAC = XSharp.VO,1,0,2.0.0.6
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
 [C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime Resources]
 [C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime Native Resources]
 [C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime License files]
@@ -63962,8 +63965,9 @@ FileGUID = F2FA5D31-7A6B-44FC-947D-17F56E890DE7
 FileType = Code
 [C629 - Incorrect PSZ returned from function returning PSZ References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.0.0.6
-ReferenceGAC = XSharp.VO,1,0,2.0.0.6
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
 [C629 - Incorrect PSZ returned from function returning PSZ Resources]
 [C629 - Incorrect PSZ returned from function returning PSZ Native Resources]
 [C629 - Incorrect PSZ returned from function returning PSZ License files]
@@ -64062,8 +64066,9 @@ FileGUID = 63CF3E67-F634-423C-B999-65EE405FBA4E
 FileType = Code
 [C630 - Problem calling function with PSZ(_CAST) param References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.0.0.6
-ReferenceGAC = XSharp.VO,1,0,2.0.0.6
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
 [C630 - Problem calling function with PSZ(_CAST) param Resources]
 [C630 - Problem calling function with PSZ(_CAST) param Native Resources]
 [C630 - Problem calling function with PSZ(_CAST) param License files]
@@ -64122,7 +64127,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C630 - Problem calling function with PSZ(_CAST) param
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
 ; ************** APPLICATION C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) *************
 Application = C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled)
 IDEVersion = 1.06
@@ -64161,8 +64166,9 @@ File = %AppPath%\Prg\C631.prg
 FileGUID = 81056867-CE75-4691-956E-B63EA6F48535
 FileType = Code
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) References]
-ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) Resources]
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) Native Resources]
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) License files]
@@ -64221,7 +64227,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled)
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
 ; ************** APPLICATION C632 - Incorrect results with iif() and USUAL arguments (sample with /vo10 enabled) *************
 Application = C632 - Incorrect results with iif() and USUAL arguments (sample with /vo10 enabled)
 IDEVersion = 1.06
@@ -64321,7 +64327,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C632 - Incorrect results with iif() and USUAL arguments (sample with /vo10 enabled)
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C633 - Various "the call is ambiguous" errors when calling X# runtime funcs *************
 Application = C633 - Various "the call is ambiguous" errors when calling X# runtime funcs
 IDEVersion = 1.06
@@ -64361,8 +64367,9 @@ FileGUID = A2003895-0D35-481B-BB6F-6D66A73B404C
 FileType = Code
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.6
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.6
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs Resources]
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs Native Resources]
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs License files]
@@ -64405,7 +64412,7 @@ AppConfig = Debug,11111111-1111-1111-1111-111111111111
   SyntaxOnly=0
   WarningsErrors=0
   ForceConsole=0
-  ForceX86=0
+  ForceX86=1
 AppConfig = Release,22222222-2222-2222-2222-222222222222
   Switches=
   SwitchesCF=
@@ -64421,7 +64428,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C633 - Various "the call is ambiguous" errors when calling X# runtime funcs
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C634 - Bogus error about RETURN statements when typed AS System.Void and /vo8 is enabled *************
 Application = C634 - Bogus error about RETURN statements when typed AS System.Void and /vo8 is enabled
 IDEVersion = 1.06
@@ -64520,6 +64527,1709 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
 ENDApplication = C634 - Bogus error about RETURN statements when typed AS System.Void and /vo8 is enabled
+
+ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
+; ************** APPLICATION C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD *************
+Application = C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C635\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C635
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 0CE0C677-563F-44D9-833F-CC65ECB914E5
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD FileGroups]
+[C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD Files]
+File = %AppPath%\Prg\C635.prg
+FileGUID = E8E65A50-6714-4213-805D-01421027D8F3
+FileType = Code
+[C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
+[C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD Resources]
+[C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD Native Resources]
+[C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD License files]
+[C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD
+
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+; ************** APPLICATION C636 - SplitPath() with /vo7- : failed to emit module *************
+Application = C636 - SplitPath() with /vo7- : failed to emit module
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C636\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C636
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 3E3F9638-FE13-4379-A37C-AB2A1B3D161D
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C636 - SplitPath() with /vo7- : failed to emit module FileGroups]
+[C636 - SplitPath() with /vo7- : failed to emit module Files]
+File = %AppPath%\Prg\C636.prg
+FileGUID = 7BB12918-1ABF-4B41-ADB9-C7B282FFFB2B
+FileType = Code
+[C636 - SplitPath() with /vo7- : failed to emit module References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+[C636 - SplitPath() with /vo7- : failed to emit module Resources]
+[C636 - SplitPath() with /vo7- : failed to emit module Native Resources]
+[C636 - SplitPath() with /vo7- : failed to emit module License files]
+[C636 - SplitPath() with /vo7- : failed to emit module General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C636 - SplitPath() with /vo7- : failed to emit module Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C636 - SplitPath() with /vo7- : failed to emit module
+
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
+; ************** APPLICATION C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable *************
+Application = C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C637\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C637
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 29561558-9760-4588-A6A3-586871929DD1
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable FileGroups]
+[C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable Files]
+File = %AppPath%\Prg\C637.prg
+FileGUID = 777295F6-F9CE-456B-B0FB-491504D7DBCF
+FileType = Code
+[C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
+[C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable Resources]
+[C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable Native Resources]
+[C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable License files]
+[C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=1
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable
+
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
+; ************** APPLICATION C638 - Problem with String2Psz() in Start() function *************
+Application = C638 - Problem with String2Psz() in Start() function
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C638\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C638
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 8796F4D6-430E-4603-B36B-5D60CE840BDA
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C638 - Problem with String2Psz() in Start() function FileGroups]
+[C638 - Problem with String2Psz() in Start() function Files]
+File = %AppPath%\Prg\C638.prg
+FileGUID = BED5E352-7F36-4F4C-936C-EDD93090F7B3
+FileType = Code
+[C638 - Problem with String2Psz() in Start() function References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
+[C638 - Problem with String2Psz() in Start() function Resources]
+[C638 - Problem with String2Psz() in Start() function Native Resources]
+[C638 - Problem with String2Psz() in Start() function License files]
+[C638 - Problem with String2Psz() in Start() function General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C638 - Problem with String2Psz() in Start() function Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C638 - Problem with String2Psz() in Start() function
+
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
+; ************** APPLICATION C639 - Integer divisions with /vo12 option *************
+Application = C639 - Integer divisions with /vo12 option
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C639\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C639
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 8A2C4625-5A1B-46DB-81B4-7569D5E91450
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C639 - Integer divisions with /vo12 option FileGroups]
+[C639 - Integer divisions with /vo12 option Files]
+File = %AppPath%\Prg\C639.prg
+FileGUID = 6F48F60B-54C5-48B3-AFD6-312A9E8C64CD
+FileType = Code
+[C639 - Integer divisions with /vo12 option References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
+[C639 - Integer divisions with /vo12 option Resources]
+[C639 - Integer divisions with /vo12 option Native Resources]
+[C639 - Integer divisions with /vo12 option License files]
+[C639 - Integer divisions with /vo12 option General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=1
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C639 - Integer divisions with /vo12 option Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C639 - Integer divisions with /vo12 option
+
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+; ************** APPLICATION C640 - Failed to emit module error when /unsafe is missing *************
+Application = C640 - Failed to emit module error when /unsafe is missing
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 2
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C640\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C640
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 270725C6-A606-4EAC-8C63-F11407003E6D
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C640 - Failed to emit module error when /unsafe is missing FileGroups]
+[C640 - Failed to emit module error when /unsafe is missing Files]
+File = %AppPath%\Prg\C640.prg
+FileGUID = E8469599-9E37-4E51-9226-23086F5E068C
+FileType = Code
+[C640 - Failed to emit module error when /unsafe is missing References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C640 - Failed to emit module error when /unsafe is missing Resources]
+[C640 - Failed to emit module error when /unsafe is missing Native Resources]
+[C640 - Failed to emit module error when /unsafe is missing License files]
+[C640 - Failed to emit module error when /unsafe is missing General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C640 - Failed to emit module error when /unsafe is missing Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C640 - Failed to emit module error when /unsafe is missing
+
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
+; ************** APPLICATION C641 - Runtime error with SHORT( _CAST , usual) *************
+Application = C641 - Runtime error with SHORT( _CAST , usual)
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C641\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C641
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 0FF0F47A-ED55-4D0E-BAEB-4947E34FB800
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C641 - Runtime error with SHORT( _CAST , usual) FileGroups]
+[C641 - Runtime error with SHORT( _CAST , usual) Files]
+File = %AppPath%\Prg\C641.prg
+FileGUID = 7127509A-28AE-4FA8-A076-AEBE73027C9C
+FileType = Code
+[C641 - Runtime error with SHORT( _CAST , usual) References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
+[C641 - Runtime error with SHORT( _CAST , usual) Resources]
+[C641 - Runtime error with SHORT( _CAST , usual) Native Resources]
+[C641 - Runtime error with SHORT( _CAST , usual) License files]
+[C641 - Runtime error with SHORT( _CAST , usual) General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C641 - Runtime error with SHORT( _CAST , usual) Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C641 - Runtime error with SHORT( _CAST , usual)
+
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
+; ************** APPLICATION C642 - Inconistncies in arithmetic between different numeric types *************
+Application = C642 - Inconistncies in arithmetic between different numeric types
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C642\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C642
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 336DABCD-BC5A-48A6-9573-61ED98B2FF09
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C642 - Inconistncies in arithmetic between different numeric types FileGroups]
+[C642 - Inconistncies in arithmetic between different numeric types Files]
+File = %AppPath%\Prg\C642.prg
+FileGUID = 2B5764DE-A9B3-4678-92DE-286A4C24D326
+FileType = Code
+[C642 - Inconistncies in arithmetic between different numeric types References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C642 - Inconistncies in arithmetic between different numeric types Resources]
+[C642 - Inconistncies in arithmetic between different numeric types Native Resources]
+[C642 - Inconistncies in arithmetic between different numeric types License files]
+[C642 - Inconistncies in arithmetic between different numeric types General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=1
+VO5=0
+VO6=1
+VO7=1
+VO8=0
+VO9=1
+VO10=0
+VO11=1
+VO12=1
+VO13=1
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C642 - Inconistncies in arithmetic between different numeric types Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C642 - Inconistncies in arithmetic between different numeric types
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C643 - Problems with overflows of arithmetic between literals *************
+Application = C643 - Problems with overflows of arithmetic between literals
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C643\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C643
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 8E5A8FCC-0D69-42AC-8D9E-B6FAFD266EE1
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C643 - Problems with overflows of arithmetic between literals FileGroups]
+[C643 - Problems with overflows of arithmetic between literals Files]
+File = %AppPath%\Prg\C643.prg
+FileGUID = 3BDB18C8-16D7-4332-8DAF-8109816427C8
+FileType = Code
+[C643 - Problems with overflows of arithmetic between literals References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C643 - Problems with overflows of arithmetic between literals Resources]
+[C643 - Problems with overflows of arithmetic between literals Native Resources]
+[C643 - Problems with overflows of arithmetic between literals License files]
+[C643 - Problems with overflows of arithmetic between literals General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C643 - Problems with overflows of arithmetic between literals Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C643 - Problems with overflows of arithmetic between literals
+
+ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
+; ************** APPLICATION C644 - Problems with && operator in VO dialect *************
+Application = C644 - Problems with && operator in VO dialect
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C644\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C644
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 93243288-7EF7-4BF3-B996-4C3DC70F5975
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C644 - Problems with && operator in VO dialect FileGroups]
+[C644 - Problems with && operator in VO dialect Files]
+File = %AppPath%\Prg\C644.prg
+FileGUID = 0491CACB-7BA1-4AB7-BE6C-BFA15F10A86C
+FileType = Code
+[C644 - Problems with && operator in VO dialect References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C644 - Problems with && operator in VO dialect Resources]
+[C644 - Problems with && operator in VO dialect Native Resources]
+[C644 - Problems with && operator in VO dialect License files]
+[C644 - Problems with && operator in VO dialect General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C644 - Problems with && operator in VO dialect Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C644 - Problems with && operator in VO dialect
+
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
+; ************** APPLICATION C645 - Compiler crash with usuals and decimals with the X# runtime *************
+Application = C645 - Compiler crash with usuals and decimals with the X# runtime
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C645\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C645
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = BB3C9182-DA9C-4FC6-8D04-C9C35585C637
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C645 - Compiler crash with usuals and decimals with the X# runtime FileGroups]
+[C645 - Compiler crash with usuals and decimals with the X# runtime Files]
+File = %AppPath%\Prg\C645.prg
+FileGUID = E9B5C4E8-1211-483D-A356-40804F62353B
+FileType = Code
+[C645 - Compiler crash with usuals and decimals with the X# runtime References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceBrowse = C:\xSharp\DevRt\Bin\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\xSharp\DevRt\Bin\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\xSharp\DevRt\Bin\Debug\XSharp.VO.dll,1,1
+[C645 - Compiler crash with usuals and decimals with the X# runtime Resources]
+[C645 - Compiler crash with usuals and decimals with the X# runtime Native Resources]
+[C645 - Compiler crash with usuals and decimals with the X# runtime License files]
+[C645 - Compiler crash with usuals and decimals with the X# runtime General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=1
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C645 - Compiler crash with usuals and decimals with the X# runtime Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C645 - Compiler crash with usuals and decimals with the X# runtime
+
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
+; ************** APPLICATION C646 - Problem with ENUM arithmetic *************
+Application = C646 - Problem with ENUM arithmetic
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\C646\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C646
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 2876AFF7-BC4B-4850-B468-A005C74DBA78
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C646 - Problem with ENUM arithmetic FileGroups]
+[C646 - Problem with ENUM arithmetic Files]
+File = %AppPath%\Prg\C646.prg
+FileGUID = 2242AC06-D141-4E94-A298-05CAA2AD769E
+FileType = Code
+[C646 - Problem with ENUM arithmetic References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+[C646 - Problem with ENUM arithmetic Resources]
+[C646 - Problem with ENUM arithmetic Native Resources]
+[C646 - Problem with ENUM arithmetic License files]
+[C646 - Problem with ENUM arithmetic General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C646 - Problem with ENUM arithmetic Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C646 - Problem with ENUM arithmetic
+
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
+; ************** APPLICATION C647 - Problem with taking address of DIM USUAL *************
+Application = C647 - Problem with taking address of DIM USUAL
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C647\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C647
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 14D8A5C3-9928-41C5-A9B6-68E524788475
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C647 - Problem with taking address of DIM USUAL FileGroups]
+[C647 - Problem with taking address of DIM USUAL Files]
+File = %AppPath%\Prg\C647.prg
+FileGUID = 9B4F8677-5C13-4065-9687-DD4723ACD30B
+FileType = Code
+[C647 - Problem with taking address of DIM USUAL References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C647 - Problem with taking address of DIM USUAL Resources]
+[C647 - Problem with taking address of DIM USUAL Native Resources]
+[C647 - Problem with taking address of DIM USUAL License files]
+[C647 - Problem with taking address of DIM USUAL General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=1
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C647 - Problem with taking address of DIM USUAL Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C647 - Problem with taking address of DIM USUAL
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C648 - Problems using _FIELD with the X# runtime *************
+Application = C648 - Problems using _FIELD with the X# runtime
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C648\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C648
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 145F9D0D-3D47-4EB0-8F9F-191E896DD3CA
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C648 - Problems using _FIELD with the X# runtime FileGroups]
+[C648 - Problems using _FIELD with the X# runtime Files]
+File = %AppPath%\Prg\C648.prg
+FileGUID = D4AF90EB-61CD-4723-9B1B-8C8CA9B9838C
+FileType = Code
+[C648 - Problems using _FIELD with the X# runtime References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.8
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.8
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.0.8
+[C648 - Problems using _FIELD with the X# runtime Resources]
+[C648 - Problems using _FIELD with the X# runtime Native Resources]
+[C648 - Problems using _FIELD with the X# runtime License files]
+[C648 - Problems using _FIELD with the X# runtime General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C648 - Problems using _FIELD with the X# runtime Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C648 - Problems using _FIELD with the X# runtime
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C649 - Incorrect line info in error message *************
+Application = C649 - Incorrect line info in error message
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\C649\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C649
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 2F784D49-230A-4DBD-AD76-269A30AEA7E9
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C649 - Incorrect line info in error message FileGroups]
+[C649 - Incorrect line info in error message Files]
+File = %AppPath%\Prg\C649.prg
+FileGUID = 18D87781-52EE-44C6-8071-ADA5BEE15B5F
+FileType = Code
+[C649 - Incorrect line info in error message References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+[C649 - Incorrect line info in error message Resources]
+[C649 - Incorrect line info in error message Native Resources]
+[C649 - Incorrect line info in error message License files]
+[C649 - Incorrect line info in error message General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C649 - Incorrect line info in error message Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C649 - Incorrect line info in error message
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C650 - Runtime exception when casting PTR in USUAL to DWORD *************
+Application = C650 - Runtime exception when casting PTR in USUAL to DWORD
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C650\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C650
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 9E22213A-3DBA-4760-B1E5-ACE09FE05375
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C650 - Runtime exception when casting PTR in USUAL to DWORD FileGroups]
+[C650 - Runtime exception when casting PTR in USUAL to DWORD Files]
+File = %AppPath%\Prg\C650.prg
+FileGUID = 2373409A-259B-4525-A11C-48C8E5D7EB5A
+FileType = Code
+[C650 - Runtime exception when casting PTR in USUAL to DWORD References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C650 - Runtime exception when casting PTR in USUAL to DWORD Resources]
+[C650 - Runtime exception when casting PTR in USUAL to DWORD Native Resources]
+[C650 - Runtime exception when casting PTR in USUAL to DWORD License files]
+[C650 - Runtime exception when casting PTR in USUAL to DWORD General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=1
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C650 - Runtime exception when casting PTR in USUAL to DWORD Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C650 - Runtime exception when casting PTR in USUAL to DWORD
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C651 - Runtime error when omitting default param to function call *************
+Application = C651 - Runtime error when omitting default param to function call
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C651\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C651
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = FFB1CE58-DCE5-4A67-8CBB-793AFE4F6EA0
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C651 - Runtime error when omitting default param to function call FileGroups]
+[C651 - Runtime error when omitting default param to function call Files]
+File = %AppPath%\Prg\C651.prg
+FileGUID = B24348D5-64C4-4E44-AF48-33B29C6FDE6A
+FileType = Code
+[C651 - Runtime error when omitting default param to function call References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C651 - Runtime error when omitting default param to function call Resources]
+[C651 - Runtime error when omitting default param to function call Native Resources]
+[C651 - Runtime error when omitting default param to function call License files]
+[C651 - Runtime error when omitting default param to function call General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=1
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C651 - Runtime error when omitting default param to function call Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C651 - Runtime error when omitting default param to function call
 [EndApplications]
 
 [Configurations]

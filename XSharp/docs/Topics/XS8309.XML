@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Error XS8309</title>
+<keywords>
+<keyword>XS8309</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS8309</para>
+  </header>
+  <para styleclass="Normal">Cannot compile net modules when using /refout or /refonly.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

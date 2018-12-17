@@ -1,27 +1,27 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
 <topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-  <title>/win32icon</title>
+  <title>-win32icon</title>
   <keywords>
-    <keyword>/win32icon</keyword>
+    <keyword>-win32icon</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/win32icon</para>
+      <para styleclass="Heading1">-win32icon</para>
     </header>
-    <para styleclass="Normal">The /win32icon option inserts an .ico file in the output file, which gives the output file the desired appearance in the File Explorer.</para>
+    <para styleclass="Normal">The -win32icon option inserts an .ico file in the output file, which gives the output file the desired appearance in the File Explorer.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/win32icon:filename &#160;</para>
+    <para styleclass="Code with box">-win32icon:filename &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">filename<tab />The .ico file that you want to add to your output file.</para>
+    <para styleclass="List">filename<tab ->The .ico file that you want to add to your output file.</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">An .ico file can be created with the Resource Compiler. The Resource Compiler is invoked when you compile a Visual C++ program; an .ico file is created from the .rc file.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">See <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-linkresource">/linkresource</link> (to reference) or <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-resource">/resource</link> (to attach) a .NET Framework resource file. See <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32res">/win32res</link> to import a .res file.</para>
+    <para styleclass="Normal">See <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-linkresource">-linkresource</link> (to reference) or <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-resource">-resource</link> (to attach) a .NET Framework resource file. See <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32res">-win32res</link> to import a .res file.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
     <para styleclass="Normal"></para>
@@ -36,7 +36,7 @@
     <para styleclass="Normal">Compile in.prg and attach an .ico file rf.ico to produce in.exe:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc /win32icon:rf.ico in.prg &#160;</para>
+    <para styleclass="Code with box">xsc -win32icon:rf.ico in.prg &#160;</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

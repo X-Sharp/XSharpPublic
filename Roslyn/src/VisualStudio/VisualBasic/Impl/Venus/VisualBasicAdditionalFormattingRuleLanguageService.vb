@@ -1,4 +1,4 @@
-' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Imports System.Composition
 Imports Microsoft.CodeAnalysis
@@ -12,9 +12,9 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.Venus
     <ExportLanguageService(GetType(IAdditionalFormattingRuleLanguageService), LanguageNames.VisualBasic), [Shared]>
     Friend Class VisualBasicAdditionalFormattingRuleLanguageService
         Implements IAdditionalFormattingRuleLanguageService
-
+        Private Shared ReadOnly s_rule As New LineAdjustmentFormattingRule()
         Public Function GetAdditionalCodeGenerationRule() As IFormattingRule Implements IAdditionalFormattingRuleLanguageService.GetAdditionalCodeGenerationRule
-            Return New LineAdjustmentFormattingRule()
+            Return s_rule
         End Function
     End Class
 End Namespace

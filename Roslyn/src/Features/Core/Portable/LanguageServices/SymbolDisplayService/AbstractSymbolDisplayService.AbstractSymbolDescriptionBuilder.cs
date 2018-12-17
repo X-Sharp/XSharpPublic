@@ -1,11 +1,13 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.DocumentationComments;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis.Shared.Extensions;
 using Roslyn.Utilities;
 
@@ -154,6 +156,7 @@ namespace Microsoft.CodeAnalysis.LanguageServices
                 AddOverloadCountPart(symbols);
                 FixAllAnonymousTypes(symbols[0]);
                 AddExceptions(symbols[0]);
+                AddCaptures(symbols[0]);
             }
 
             private void AddExceptions(ISymbol symbol)
@@ -173,6 +176,58 @@ namespace Microsoft.CodeAnalysis.LanguageServices
                     AddToGroup(SymbolDescriptionGroups.Exceptions, parts);
                 }
             }
+
+            /// <summary>
+            /// If the symbol is a local or anonymous function (lambda or delegate), adds the variables captured
+            /// by that local or anonymous function to the "Captures" group.
+            /// </summary>
+            /// <param name="symbol"></param>
+            protected abstract void AddCaptures(ISymbol symbol);
+
+            /// <summary>
+            /// Given the body of a local or an anonymous function (lambda or delegate), add the variables captured
+            /// by that local or anonymous function to the "Captures" group.
+            /// </summary>
+            protected void AddCaptures(SyntaxNode syntax)
+            {
+                var semanticModel = GetSemanticModel(syntax.SyntaxTree);
+                if(semanticModel.IsSpeculativeSemanticModel)
+                {
+                    // The region analysis APIs used below are not meaningful/applicable in the context of speculation (because they are designed
+                    // to ask questions about an expression if it were in a certain *scope* of code, not if it were inserted at a certain *position*).
+                    //
+                    // But in the context of symbol completion, we do prepare a description for the symbol while speculating. Only the "main description"
+                    // section of that description will be displayed. We still add a "captures" section, just in case.
+                    AddToGroup(SymbolDescriptionGroups.Captures, new SymbolDisplayPart(kind: SymbolDisplayPartKind.Text, symbol: null, text: $"\r\n{WorkspacesResources.Variables_captured_colon} ?"));
+                    return;
+                }
+
+                var analysis = semanticModel.AnalyzeDataFlow(syntax);
+                var captures = analysis.CapturedInside.Except(analysis.VariablesDeclared).ToImmutableArray();
+                if (!captures.IsEmpty)
+                {
+                    var parts = new List<SymbolDisplayPart>();
+                    parts.Add(new SymbolDisplayPart(kind: SymbolDisplayPartKind.Text, symbol: null, text: $"\r\n{WorkspacesResources.Variables_captured_colon}"));
+                    bool first = true;
+                    foreach (var captured in captures)
+                    {
+                        if (!first)
+                        {
+                            parts.AddRange(Punctuation(","));
+                        }
+
+                        parts.AddRange(Space(count: 1));
+                        parts.AddRange(ToMinimalDisplayParts(captured, s_formatForCaptures));
+                        first = false;
+                    }
+
+                    AddToGroup(SymbolDescriptionGroups.Captures, parts);
+                }
+            }
+
+            private static readonly SymbolDisplayFormat s_formatForCaptures = SymbolDisplayFormat.MinimallyQualifiedFormat
+                .RemoveLocalOptions(SymbolDisplayLocalOptions.IncludeType)
+                .RemoveParameterOptions(SymbolDisplayParameterOptions.IncludeType);
 
             public async Task<ImmutableArray<SymbolDisplayPart>> BuildDescriptionAsync(
                 ImmutableArray<ISymbol> symbolGroup, SymbolDescriptionGroups groups)
@@ -204,49 +259,49 @@ namespace Microsoft.CodeAnalysis.LanguageServices
                 {
                     AddDescriptionForDynamicType();
                 }
-                else if (symbol is IFieldSymbol)
+                else if (symbol is IFieldSymbol field)
                 {
-                    await AddDescriptionForFieldAsync((IFieldSymbol)symbol).ConfigureAwait(false);
+                    await AddDescriptionForFieldAsync(field).ConfigureAwait(false);
                 }
-                else if (symbol is ILocalSymbol)
+                else if (symbol is ILocalSymbol local)
                 {
-                    await AddDescriptionForLocalAsync((ILocalSymbol)symbol).ConfigureAwait(false);
+                    await AddDescriptionForLocalAsync(local).ConfigureAwait(false);
                 }
-                else if (symbol is IMethodSymbol)
+                else if (symbol is IMethodSymbol method)
                 {
-                    AddDescriptionForMethod((IMethodSymbol)symbol);
+                    AddDescriptionForMethod(method);
                 }
-                else if (symbol is ILabelSymbol)
+                else if (symbol is ILabelSymbol label)
                 {
-                    AddDescriptionForLabel((ILabelSymbol)symbol);
+                    AddDescriptionForLabel(label);
                 }
-                else if (symbol is INamedTypeSymbol)
+                else if (symbol is INamedTypeSymbol namedType)
                 {
-                    await AddDescriptionForNamedTypeAsync((INamedTypeSymbol)symbol).ConfigureAwait(false);
+                    await AddDescriptionForNamedTypeAsync(namedType).ConfigureAwait(false);
                 }
-                else if (symbol is INamespaceSymbol)
+                else if (symbol is INamespaceSymbol namespaceSymbol)
                 {
-                    AddDescriptionForNamespace((INamespaceSymbol)symbol);
+                    AddDescriptionForNamespace(namespaceSymbol);
                 }
-                else if (symbol is IParameterSymbol)
+                else if (symbol is IParameterSymbol parameter)
                 {
-                    await AddDescriptionForParameterAsync((IParameterSymbol)symbol).ConfigureAwait(false);
+                    await AddDescriptionForParameterAsync(parameter).ConfigureAwait(false);
                 }
-                else if (symbol is IPropertySymbol)
+                else if (symbol is IPropertySymbol property)
                 {
-                    AddDescriptionForProperty((IPropertySymbol)symbol);
+                    AddDescriptionForProperty(property);
                 }
-                else if (symbol is IRangeVariableSymbol)
+                else if (symbol is IRangeVariableSymbol rangeVariable)
                 {
-                    AddDescriptionForRangeVariable((IRangeVariableSymbol)symbol);
+                    AddDescriptionForRangeVariable(rangeVariable);
                 }
-                else if (symbol is ITypeParameterSymbol)
+                else if (symbol is ITypeParameterSymbol typeParameter)
                 {
-                    AddDescriptionForTypeParameter((ITypeParameterSymbol)symbol);
+                    AddDescriptionForTypeParameter(typeParameter);
                 }
-                else if (symbol is IAliasSymbol)
+                else if (symbol is IAliasSymbol alias)
                 {
-                    await AddDescriptionPartAsync(((IAliasSymbol)symbol).Target).ConfigureAwait(false);
+                    await AddDescriptionPartAsync(alias.Target).ConfigureAwait(false);
                 }
                 else
                 {
@@ -295,6 +350,7 @@ namespace Microsoft.CodeAnalysis.LanguageServices
 
                     case SymbolDescriptionGroups.Exceptions:
                     case SymbolDescriptionGroups.TypeParameterMap:
+                    case SymbolDescriptionGroups.Captures:
                         // Everything else is in a group on its own
                         return 2;
 
@@ -324,7 +380,7 @@ namespace Microsoft.CodeAnalysis.LanguageServices
                 }
 
                 var token = await _semanticModel.SyntaxTree.GetTouchingTokenAsync(_position, this.CancellationToken).ConfigureAwait(false);
-                if (token != default(SyntaxToken))
+                if (token != default)
                 {
                     var syntaxFactsService = this.Workspace.Services.GetLanguageServices(token.Language).GetService<ISyntaxFactsService>();
                     if (syntaxFactsService.IsAwaitKeyword(token))

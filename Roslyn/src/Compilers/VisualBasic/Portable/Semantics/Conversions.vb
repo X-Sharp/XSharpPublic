@@ -1,15 +1,11 @@
 ﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Imports System.Collections.Immutable
-Imports System.Diagnostics
-Imports System.Linq
 Imports System.Runtime.InteropServices
-Imports Microsoft.CodeAnalysis.Collections
-Imports Microsoft.CodeAnalysis.Text
+Imports Microsoft.CodeAnalysis.Operations
+Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
-Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols.TypeSymbolExtensions
-Imports TypeKind = Microsoft.CodeAnalysis.TypeKind
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
@@ -18,7 +14,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     ''' associated symbol).
     ''' </summary>
     Public Structure Conversion
-        Implements IEquatable(Of Conversion)
+        Implements IEquatable(Of Conversion), IConvertibleConversion
 
         Private ReadOnly _convKind As ConversionKind
         Private ReadOnly _method As MethodSymbol
@@ -231,6 +227,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Shared Operator <>(left As Conversion, right As Conversion) As Boolean
             Return Not (left = right)
         End Operator
+
+        ''' <summary>
+        ''' Creates a <seealso cref="CommonConversion"/> from this Visual Basic conversion.
+        ''' </summary>
+        ''' <returns>The <see cref="CommonConversion"/> that represents this conversion.</returns>
+        ''' <remarks>
+        ''' This is a lossy conversion; it is not possible to recover the original <see cref="Conversion"/>
+        ''' from the <see cref="CommonConversion"/> struct.
+        ''' </remarks>
+        Public Function ToCommonConversion() As CommonConversion Implements IConvertibleConversion.ToCommonConversion
+            Return New CommonConversion(Exists, IsIdentity, IsNumeric, IsReference, IsWidening, MethodSymbol)
+        End Function
 
         ''' <summary>
         ''' Determines whether the specified object is equal to the current object.
@@ -4026,12 +4034,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Return MethodConversionKind.Error_ByRefByValMismatch
             End If
 
-            Return ClassifyMethodConversionBasedOnReturnType(returnTypeOfConvertFromMethod, returnTypeOfConvertToMethod, useSiteDiagnostics)
+            Return ClassifyMethodConversionBasedOnReturnType(returnTypeOfConvertFromMethod, returnTypeOfConvertToMethod, convertFromMethodIsByRef, useSiteDiagnostics)
         End Function
 
         Public Shared Function ClassifyMethodConversionBasedOnReturnType(
             returnTypeOfConvertFromMethod As TypeSymbol,
             returnTypeOfConvertToMethod As TypeSymbol,
+            isRefReturning As Boolean,
             <[In], Out> ByRef useSiteDiagnostics As HashSet(Of DiagnosticInfo)
         ) As MethodConversionKind
             Debug.Assert(returnTypeOfConvertFromMethod IsNot Nothing)
@@ -4062,8 +4071,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Dim typeConversion As ConversionKind = ClassifyConversion(returnTypeOfConvertFromMethod, returnTypeOfConvertToMethod, useSiteDiagnostics).Key
 
-            Dim result As MethodConversionKind
+            If isRefReturning AndAlso Not IsIdentityConversion(typeConversion) Then
+                Return MethodConversionKind.Error_ReturnTypeMismatch
+            End If
 
+            Dim result As MethodConversionKind
             If IsNarrowingConversion(typeConversion) Then
                 result = MethodConversionKind.ReturnIsWidening
 
@@ -4240,7 +4252,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Debug.Assert(conversion.Operand.IsNothingLiteral() OrElse conversion.Operand.Kind = BoundKind.Lambda)
                 methodConversion = MethodConversionKind.Identity
             Else
-                methodConversion = ClassifyMethodConversionBasedOnReturnType(operandType, conversion.Type, useSiteDiagnostics)
+                methodConversion = ClassifyMethodConversionBasedOnReturnType(operandType, conversion.Type, isRefReturning:=False, useSiteDiagnostics:=useSiteDiagnostics)
             End If
 
             Return DetermineDelegateRelaxationLevel(methodConversion)

@@ -1,13 +1,14 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
+    // Note: instances of this object are pooled
     internal sealed class AnalyzedArguments
     {
         public readonly ArrayBuilder<BoundExpression> Arguments;
@@ -54,7 +55,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (count == 0)
             {
-                return default(ImmutableArray<string>);
+                return default;
             }
 
             var builder = ArrayBuilder<string>.GetInstance(this.Names.Count);
@@ -70,7 +71,15 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             return RefKinds.Count > 0 ? RefKinds[i] : Microsoft.CodeAnalysis.RefKind.None;
         }
-
+#if XSHARP
+        internal void SetRefKind(int i, RefKind newRefKind)
+        {
+            if (i < RefKinds.Count && i >= 0)
+            {
+                RefKinds[i] = newRefKind;
+            }
+        }
+#endif
         public bool IsExtensionMethodThisArgument(int i)
         {
             return (i == 0) && this.IsExtensionMethodInvocation;

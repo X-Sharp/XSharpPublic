@@ -1,25 +1,25 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
 <topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-  <title>/vo3</title>
+  <title>-vo3</title>
   <keywords>
-    <keyword>/vo3</keyword>
+    <keyword>-vo3</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/vo3<tab /><tab />All instance methods virtual </para>
+      <para styleclass="Heading1">-vo3<tab -><tab ->All instance methods virtual </para>
     </header>
-    <para styleclass="Normal">The /vo3 option directs the compiler to treat all methods (including ACCESS and ASSIGN methods) as virtual.</para>
+    <para styleclass="Normal">The -vo3 option directs the compiler to treat all methods (including ACCESS and ASSIGN methods) as virtual.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/vo3[+|-]</para>
+    <para styleclass="Code with box">-vo3[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">+ | - <tab />Specifying +, or just /vo3, directs the compiler to treat all methods (including ACCESS and ASSIGN methods) as virtual, regardless of whether the VIRTUAL modifier is used or not. This provides compatibility with the Visual Objects inheritance model. </para>
+    <para styleclass="List">+ | - <tab ->Specifying +, or just -vo3, directs the compiler to treat all methods (including ACCESS and ASSIGN methods) as virtual, regardless of whether the VIRTUAL modifier is used or not. This provides compatibility with the Visual Objects inheritance model. </para>
     <para styleclass="List"><text styleclass="Heading2">Remarks</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">A class method may always be explicitly declared as a virtual method by using the VIRTUAL keyword, regardless of whether /vo3 is used or not.</para>
+    <para styleclass="Normal">A class method may always be explicitly declared as a virtual method by using the VIRTUAL keyword, regardless of whether -vo3 is used or not.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">For performance reasons, this option is off by default. Virtual methods incur a slight performance penalty since the actual method implementation that is called cannot be determined until run-time, and depends on the run-time type of the instance on which the invocation takes place. In contrast, calls to non-virtual members can be fully resolved at compile time, and the call is always made to the compile-time type of the instance.</para>
     <para styleclass="Normal"></para>
@@ -34,15 +34,15 @@
     <para styleclass="Normal">&#32;</para>
     <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When the /vo3 switch is not used, the call to &apos;c:WhoAmI()&apos; always resolves to the implementation in BaseClass, since the variable &apos;c&apos; is typed as &apos;BaseClass&apos; and &apos;BaseClass.WhoAmI&apos; is a non-virtual method.</para>
+    <para styleclass="Normal">When The -vo3 switch is not used, the call to &apos;c:WhoAmI()&apos; always resolves to the implementation in BaseClass, since the variable &apos;c&apos; is typed as &apos;BaseClass&apos; and &apos;BaseClass.WhoAmI&apos; is a non-virtual method.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When the /vo3 switch is used, the call to &apos;c:WhoAmI()&apos; resolves to the implementation in &apos;DerivedClass&apos;. Even though the variable &apos;c&apos; is typed as &apos;BaseClass&apos;, the actual type of the instance stored in &apos;c&apos; at runtime determines what implementation of &apos;WhoAmI&apos; to invoke since &apos;BaseClass.WhoAmI&apos; is a virtual method.</para>
+    <para styleclass="Normal">When The -vo3 switch is used, the call to &apos;c:WhoAmI()&apos; resolves to the implementation in &apos;DerivedClass&apos;. Even though the variable &apos;c&apos; is typed as &apos;BaseClass&apos;, the actual type of the instance stored in &apos;c&apos; at runtime determines what implementation of &apos;WhoAmI&apos; to invoke since &apos;BaseClass.WhoAmI&apos; is a virtual method.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The same behavior without using /vo3 could be obtained by doing:</para>
+    <para styleclass="Normal">The same behavior without using -vo3 could be obtained by doing:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">VIRTUAL METHOD WhoAmI() AS STRING CLASS BaseClass<br/> &#160; ...<text styleclass="Normal">&#32;</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This is preferable over using /vo3 since you have explicit control over which methods are and are not virtual, and no unnecessary overhead is incurred where virtual inheritance is not required. However, existing Visual Objects code may not work properly without /vo3, and it may not be practical to modify existing code and add the VIRTUAL keyword to those methods that really need it.</para>
+    <para styleclass="Normal">This is preferable over using -vo3 since you have explicit control over which methods are and are not virtual, and no unnecessary overhead is incurred where virtual inheritance is not required. However, existing Visual Objects code may not work properly without -vo3, and it may not be practical to modify existing code and add the VIRTUAL keyword to those methods that really need it.</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

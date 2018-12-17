@@ -70,10 +70,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         #region Properties and Fields
         // Properties to set the behavior of the Lexer
-        public bool AllowFourLetterAbbreviations { get; set; }
-        public bool AllowOldStyleComments { get; set; }
-        public bool AllowSingleQuotedStrings { get; set; }
-        public bool AllowXBaseVariables { get; set; }
+        public CSharpParseOptions Options { get; set; }
+        public XSharpDialect Dialect => Options.Dialect;
+        private bool AllowOldStyleComments => Dialect.AllowOldStyleComments();
+        private bool AllowFourLetterAbbreviations => Dialect.AllowFourLetterAbbreviations();
+        private bool AllowSingleQuotedStrings => Dialect.AllowStringsWithSingleQuotes();
+        private bool AllowXBaseVariables => Dialect.AllowXBaseVariables();
         public bool IsScript { get; set; }
         public bool IsMacroLexer { get; set; }
         // Properties that show what the contents of the Lexer buffer was
@@ -100,6 +102,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         System.Text.StringBuilder _textSb = new System.Text.StringBuilder();
         static Object kwlock = new Object();
         static IDictionary<string, int> voKwIds = null;
+        static IDictionary<string, int> xppKwIds = null;
         static IDictionary<string, int> xsKwIds = null;
         private IDictionary<string, int> _kwIds;
         static IDictionary<string, int> _symPPIds;
@@ -219,7 +222,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         }
                         break;
                     case '&':
-                        if (AllowOldStyleComments && InputStream.La(2) == '&')
+                        if (Dialect.AllowOldStyleComments()  && InputStream.La(2) == '&')
                             break;
                         _type = AMP;
                         _textSb.Clear();
@@ -921,7 +924,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         #region Keywords and Preprocessor Lookup
         private int fixPositionalKeyword(int keyword, int lastToken)
         {
-
+            // after the alias operator we treat everything as ID
+            if (lastToken == XSharpLexer.ALIAS)
+                return ID;
             switch (keyword)
             {
                 // Some keywords are impossible to use as ID
@@ -974,7 +979,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     if (lastToken != EOS && lastToken != NL && lastToken != LOCAL && lastToken != STATIC
                         && lastToken != FOR && lastToken != FOREACH && lastToken != USING)
                     {
-                        return ID;
+                        // in XPP VAR is used in the class definition as well.
+                        if (Dialect != XSharpDialect.XPP)
+                            return ID;
                     }
                     break;
                 case NAMESPACE:
@@ -997,16 +1004,26 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 default:
                     switch (lastToken)
                     {
+                        case CLASS:
+                            if (Dialect == XSharpDialect.XPP)   // XPP uses CLASS instead of STATIC
+                                return keyword;
+                            else
+                                return ID;
+                        case ACCESS:
+                        case ASSIGN:
+                            if (Dialect == XSharpDialect.XPP)   // XPP allows ACCESS ASSIGN or ASSIGN ACCESS in class definition
+                                return keyword;
+                            else
+                                return ID;
+
                         // After these keywords we expect an ID
                         // Some of these also have a possible SELF, DIM, CONST or STATIC clause but these have been excluded above
+
                         case METHOD:
                         case PROCEDURE:
                         case PROC:
                         case FUNCTION:
                         case FUNC:
-                        case ACCESS:
-                        case ASSIGN:
-                        case CLASS:
                         case INTERFACE:
                         case STRUCTURE:
                         case VOSTRUCT:
@@ -1032,6 +1049,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             if (keyword != LOCAL && keyword != VAR)
                                 return ID;
                             break;
+                        case MEMVAR:            // VO & XPP: followed by list of names
+                        case PARAMETERS:
+                            return ID;
 
 
                     }
@@ -1130,10 +1150,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"_CAST", CAST},
                     {"EXPORT", EXPORT},
                     {"FIELD", FIELD},
-                    {"_FIELD", FIELD_},
+                    {"_FIELD", FIELD},
                     {"IF", IF},
                     {"IIF", IIF},
                     {"IS", IS},
+                    {"MEMVAR", MEMVAR},
                     {"_NOT", VO_NOT},
                     {"_OR", VO_OR},
                     {"_XOR", VO_XOR},
@@ -1212,7 +1233,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"EXPORT", EXPORT},
                 {"FASTCALL", FASTCALL},
                 {"FIELD", FIELD},
-                {"_FIELD", FIELD_},
+                {"_FIELD", FIELD},
                 {"FOR", FOR},
                 {"FUNCTION", FUNCTION},
                 {"GLOBAL", GLOBAL},
@@ -1330,6 +1351,64 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                 }
             }
+
+            if (Dialect == XSharpDialect.XPP)
+            {
+                // XBase++ Keywords
+                var xppKeywords = new Dictionary<string, int>
+                {
+                    // normal keywords
+                    {"ENDSEQUENCE", END },
+                    {"ENDFOR",   NEXT },
+                    // class keywords
+                    {"ENDCLASS",ENDCLASS},
+                    {"READONLY",READONLY },
+                    {"DEFERRED",DEFERRED },
+                    {"FREEZE",  FREEZE},
+                    {"FINAL",   FINAL},
+                    {"SHARING", SHARING},
+                    {"SHARED",  SHARED},
+                    {"INLINE",  INLINE},
+                    {"SYNC",    SYNC},
+                    {"ASSIGNMENT",ASSIGNMENT},
+                    {"EXPORTED",EXPORTED},
+                    {"NOSAVE",  NOSAVE},
+                    {"INTRODUCE",INTRODUCE }
+                };
+                var xppKeyWordAbbrev = new Dictionary<string, int>
+                {
+                    {"RETURN ",RETURN },
+                    {"PRIVATE ",PRIVATE  },
+                    {"PUBLIC",  PUBLIC },
+                    {"FUNCTION",    FUNCTION },
+                    {"MEMVAR",      MEMVAR },
+                    {"PARAMETERS",  PARAMETERS},
+                    {"PROCEDURE",   PROCEDURE},
+                    {"OTHERWISE",   OTHERWISE },
+                    {"RECOVER",     RECOVER },
+                    {"SEQUENCE",    SEQUENCE }
+                };
+                foreach (var kw in xppKeywords)
+                {
+                    if (!ids.ContainsKey(kw.Key))
+                        ids.Add(kw.Key, kw.Value);
+                }
+                foreach (var kw in xppKeyWordAbbrev)
+                {
+                    var name = kw.Key;
+                    while (true)
+                    {
+                        if (! ids.ContainsKey(name))
+                        {
+                            ids.Add(name, kw.Value);
+                        }
+                        if (name.Length == 4)
+                            break;
+                        name = name.Substring(0, name.Length - 1);
+                    }
+                }
+           }
+
             if (AllowFourLetterAbbreviations)
             {
                 ids.Add("ANY", USUAL);
@@ -1544,6 +1623,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {
                         if (!AllowFourLetterAbbreviations)
                             _kwIds = xsKwIds;
+                        else if (Dialect == XSharpDialect.XPP)
+                            _kwIds = xppKwIds;
                         else
                             _kwIds = voKwIds;
                     }
@@ -1554,6 +1635,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         {
                             if (!AllowFourLetterAbbreviations)
                                 xsKwIds = _kwIds;
+                            else if (Dialect == XSharpDialect.XPP)
+                                xppKwIds = _kwIds;
                             else
                                 voKwIds = _kwIds;
                         }
@@ -1585,9 +1668,37 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 			    {"#XCOMMAND", PP_COMMAND},		// #xcommand   <matchPattern> => <resultPattern>  // alias for #command   , no 4 letter abbrev
 			    {"#XTRANSLATE", PP_TRANSLATE},	// #xtranslate <matchPattern> => <resultPattern>  // alias for #translate , no 4 letter abbrev
 		    };
+            if (Dialect == XSharpDialect.XPP)
+            {
+                symIds.Add("#XTRANS", PP_TRANSLATE);
+                symIds.Add("#TRANS", PP_TRANSLATE);
+            }
             if (IsMacroLexer)
             {
                 symIds.Clear();
+            }
+            else
+            {
+                if (AllowFourLetterAbbreviations)
+                {
+                    var symFour = new Dictionary<string, int>(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
+                    foreach (var entry in symIds)
+                    {
+                        var name = entry.Key;       // '#' name
+                        while (name.Length > 5)
+                        {
+                            name = name.Substring(0, name.Length - 1);
+                            if (!symIds.ContainsKey(name) && ! symFour.ContainsKey(name))
+                            {
+                                symFour.Add(name, entry.Value);
+                            }
+                        }
+                    }
+                    foreach (var entry in symFour)
+                    {
+                        symIds.Add(entry.Key, entry.Value);
+                    }
+                }
             }
             return symIds.ToImmutableDictionary(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
         }
@@ -1618,9 +1729,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 #if !TEST
             if (options == null)
                 options = CSharpParseOptions.Default;
-            lexer.AllowFourLetterAbbreviations = options.Dialect.AllowFourLetterAbbreviations();
-            lexer.AllowOldStyleComments = options.Dialect.AllowOldStyleComments();
-            lexer.AllowSingleQuotedStrings = options.Dialect.AllowStringsWithSingleQuotes();
+            lexer.Options = options;
             lexer.IsScript = options.Kind == Microsoft.CodeAnalysis.SourceCodeKind.Script;
             lexer.IsMacroLexer = options.MacroScript;
 #endif
@@ -1635,4 +1744,5 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
     }
 }
+
 

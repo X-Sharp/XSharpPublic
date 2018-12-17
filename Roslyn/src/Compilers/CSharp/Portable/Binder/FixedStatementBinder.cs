@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 
@@ -15,7 +16,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         private readonly FixedStatementSyntax _syntax;
 
         public FixedStatementBinder(Binder enclosing, FixedStatementSyntax syntax)
+#if XSHARP
+            : base(enclosing, BinderFlags.AllowManagedAddressOf)
+#else
             : base(enclosing)
+#endif
         {
             Debug.Assert(syntax != null);
             _syntax = syntax;

@@ -1,29 +1,29 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/vo9</title>
+  <title>-vo9</title>
   <keywords>
-    <keyword>/vo9</keyword>
+    <keyword>-vo9</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/vo9<tab /><tab />Allow missing return statements </para>
+      <para styleclass="Heading1">-vo9<tab -><tab ->Allow missing return statements </para>
     </header>
-    <para styleclass="Normal">The /vo9 option prevents the compiler from raising error XS0161 when a function or method does not have any RETURN statements</para>
+    <para styleclass="Normal">The -vo9 option prevents the compiler from raising error XS0161 when a function or method does not have any RETURN statements</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/vo9[+|-]</para>
+    <para styleclass="Code with box">-vo9[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">+ | - <tab />Specifying +, or just /vo9, allows functions and methods that do not have any RETURN statement to compile without raising an error. </para>
+    <para styleclass="List">+ | - <tab ->Specifying +, or just -vo9, allows functions and methods that do not have any RETURN statement to compile without raising an error. </para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Visual Objects allows functions and methods whose return type is not VOID to omit RETURN statements. The return value from any such functions or methods will always be the default value for the return type.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This is illegal in X#: all functions and methods must explicitly return a value unless the return type is VOID. However, this may prevent code that was originally written in Visual Objects from compiling in X#.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If /vo9 is enabled, any non-void functions or methods that do not have any RETURN statements will raise warning XS9025 instead of error XS0106. The warning may be disabled if desired, but it is strongly recommended that you fix the code in question. &#160;If the return value is never used, then type the function or method AS VOID. Otherwise, add a RETURN statement with an appropriate return value.</para>
+    <para styleclass="Normal">If -vo9 is enabled, any non-void functions or methods that do not have any RETURN statements will raise warning XS9025 instead of error XS0106. The warning may be disabled if desired, but it is strongly recommended that you fix the code in question. &#160;If the return value is never used, then type the function or method AS VOID. Otherwise, add a RETURN statement with an appropriate return value.</para>
     <para styleclass="Normal">This compiler option also checks for methods/functions that have a return statement without value. In that case a warning XS9026 is shown.<br/>The final check this compiler option does it for methods that have a return value but are not expected to return anything. If that is found then a warning XS9032 is shown.</para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>

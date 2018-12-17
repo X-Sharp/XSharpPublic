@@ -29,7 +29,8 @@ namespace Microsoft.CodeAnalysis.UseCoalesceExpression
         }
 
         public override bool OpenFileOnly(Workspace workspace) => false;
-        public override DiagnosticAnalyzerCategory GetAnalyzerCategory() => DiagnosticAnalyzerCategory.SemanticDocumentAnalysis;
+        public override DiagnosticAnalyzerCategory GetAnalyzerCategory() 
+            => DiagnosticAnalyzerCategory.SemanticSpanAnalysis;
 
         protected abstract TSyntaxKind GetSyntaxKindToAnalyze();
         protected abstract ISyntaxFactsService GetSyntaxFactsService();
@@ -108,7 +109,7 @@ namespace Microsoft.CodeAnalysis.UseCoalesceExpression
             // actually looking at something Nullable (and not some type that uses a similar 
             // syntactic pattern).
             var semanticModel = context.SemanticModel;
-            var nullableType = semanticModel.Compilation.GetTypeByMetadataName("System.Nullable`1");
+            var nullableType = semanticModel.Compilation.GetTypeByMetadataName(typeof(Nullable<>).FullName);
             if (nullableType == null)
             {
                 return;
@@ -127,10 +128,12 @@ namespace Microsoft.CodeAnalysis.UseCoalesceExpression
                 conditionExpression.GetLocation(),
                 whenPartToKeep.GetLocation());
 
-            context.ReportDiagnostic(Diagnostic.Create(
-                this.GetDescriptorWithSeverity(option.Notification.Value),
+            context.ReportDiagnostic(DiagnosticHelper.Create(
+                Descriptor,
                 conditionalExpression.GetLocation(),
-                locations));
+                option.Notification.Severity,
+                locations,
+                properties: null));
         }
     }
 }

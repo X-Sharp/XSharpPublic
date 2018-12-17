@@ -146,6 +146,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 foreach (var t in tokens)
                 {
                     result = result + t.Text ;
+                    if (!t.Text.EndsWith(" "))
+                        result += " ";
                 }
 
             }
@@ -163,7 +165,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         internal static bool IsName(this IToken token)
         {
-            return token != null && (token.Type == XSharpLexer.ID || XSharpLexer.IsKeyword(token.Type));
+            return token != null && (token.Type == XSharpLexer.ID  || XSharpLexer.IsKeyword(token.Type));
         }
         internal static bool IsEOS(this IToken token)
         {

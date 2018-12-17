@@ -1,11 +1,7 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Collections.Immutable;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeCleanup;
 using Microsoft.CodeAnalysis.CodeCleanup.Providers;
 using Microsoft.CodeAnalysis.Test.Utilities;
@@ -16,6 +12,7 @@ using Xunit;
 
 namespace Microsoft.CodeAnalysis.UnitTests.CodeCleanup
 {
+    [UseExportProvider]
     public class RemoveUnnecessaryLineContinuationTests
     {
         [Fact]
@@ -1310,7 +1307,7 @@ End Module
         }
 
         [Fact]
-        [WorkItem(710, "#710")]
+        [WorkItem(710, "https://github.com/dotnet/roslyn/issues/710")]
         [Trait(Traits.Feature, Traits.Features.RemoveUnnecessaryLineContinuation)]
         public async Task DontRemoveLineContinuationInStringInterpolation1()
         {
@@ -1331,7 +1328,7 @@ End Module
         }
 
         [Fact]
-        [WorkItem(710, "#710")]
+        [WorkItem(710, "https://github.com/dotnet/roslyn/issues/710")]
         [Trait(Traits.Feature, Traits.Features.RemoveUnnecessaryLineContinuation)]
         public async Task DontRemoveLineContinuationInStringInterpolation2()
         {
@@ -1352,7 +1349,7 @@ End Module
         }
 
         [Fact]
-        [WorkItem(710, "#710")]
+        [WorkItem(710, "https://github.com/dotnet/roslyn/issues/710")]
         [Trait(Traits.Feature, Traits.Features.RemoveUnnecessaryLineContinuation)]
         public async Task DontRemoveLineContinuationInStringInterpolation3()
         {
@@ -1455,11 +1452,11 @@ End Class";
 
         private async Task VerifyAsync(string codeWithMarker, string expectedResult, LanguageVersion langVersion = LanguageVersion.VisualBasic14)
         {
-            var textSpans = (IList<TextSpan>)new List<TextSpan>();
-            MarkupTestFile.GetSpans(codeWithMarker, out var codeWithoutMarker, out textSpans);
+            MarkupTestFile.GetSpans(codeWithMarker, 
+                out var codeWithoutMarker, out ImmutableArray<TextSpan> textSpans);
 
             var document = CreateDocument(codeWithoutMarker, LanguageNames.VisualBasic, langVersion);
-            var codeCleanups = CodeCleaner.GetDefaultProviders(document).Where(p => p.Name == PredefinedCodeCleanupProviderNames.RemoveUnnecessaryLineContinuation || p.Name == PredefinedCodeCleanupProviderNames.Format);
+            var codeCleanups = CodeCleaner.GetDefaultProviders(document).WhereAsArray(p => p.Name == PredefinedCodeCleanupProviderNames.RemoveUnnecessaryLineContinuation || p.Name == PredefinedCodeCleanupProviderNames.Format);
 
             var cleanDocument = await CodeCleaner.CleanupAsync(document, textSpans[0], codeCleanups);
 

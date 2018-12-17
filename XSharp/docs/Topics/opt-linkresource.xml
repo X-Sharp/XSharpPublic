@@ -1,34 +1,34 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/linkresource</title>
+  <title>-linkresource</title>
   <keywords>
-    <keyword>/linkresource</keyword>
+    <keyword>-linkresource</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/linkresource</para>
+      <para styleclass="Heading1">-linkresource</para>
     </header>
-    <para styleclass="Normal">Creates a link to a .NET Framework resource in the output file. The resource file is not added to the output file. This differs from the /resource option which does embed a resource file in the output file.</para>
+    <para styleclass="Normal">Creates a link to a .NET Framework resource in the output file. The resource file is not added to the output file. This differs from The -resource option which does embed a resource file in the output file.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/linkresource:filename[,identifier[,accessibility-modifier]] &#160;</para>
+    <para styleclass="Code with box">-linkresource:filename[,identifier[,accessibility-modifier]] &#160;</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">filename<tab />The .NET Framework resource file to which you want to link from the assembly.</para>
-    <para styleclass="List">identifier (optional)<tab />The logical name for the resource; the name that is used to load the resource. The default is the name of the file.</para>
+    <para styleclass="List">filename<tab ->The .NET Framework resource file to which you want to link from the assembly.</para>
+    <para styleclass="List">identifier (optional)<tab ->The logical name for the resource; the name that is used to load the resource. The default is the name of the file.</para>
     <para styleclass="List">accessibility-modifier </para>
-    <para styleclass="List">(optional)<tab />The accessibility of the resource: public or private. The default is public.</para>
+    <para styleclass="List">(optional)<tab ->The accessibility of the resource: public or private. The default is public.</para>
     <para styleclass="List"><text styleclass="Heading2">Remarks</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">By default, linked resources are public in the assembly when they are created with the X# compiler. To make the resources private, specify <text styleclass="Code Example">private</text> as the accessibility modifier. No other modifier other than <text styleclass="Code Example">public</text> or <text styleclass="Code Example">private</text> is allowed.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">/linkresource requires one of the /target options other than /target:module.</para>
+    <para styleclass="Normal">-linkresource requires one of The -target options other than -target:module.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">If <text styleclass="Code Example">filename</text> is a .NET Framework resource file created, for example, by Resgen.exe or in the development environment, it can be accessed with members in the System.Resources namespace. For more information, see System.Resources.ResourceManager. For all other resources, use the <text styleclass="Code Example">GetManifestResource</text>* methods in the Assembly class to access the resource at run time.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The file specified in <text styleclass="Code Example">filename</text> can be any format. For example, you may want to make a native DLL part of the assembly, so that it can be installed into the global assembly cache and accessed from managed code in the assembly. The second of the following examples shows how to do this. You can do the same thing in the Assembly Linker. The third of the following examples shows how to do this. For more information, see Al.exe (Assembly Linker) and Working with Assemblies and the Global Assembly Cache</para>
     <para styleclass="Normal">.</para>
-    <para styleclass="Normal">/linkres is the short form of /linkresource.</para>
+    <para styleclass="Normal">-linkres is the short form of -linkresource.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This compiler option is unavailable in Visual Studio and cannot be changed programmatically.</para>
     <para styleclass="Heading2">Example</para>
@@ -36,21 +36,21 @@
     <para styleclass="Normal">Compile <text styleclass="Code Example">in.prg</text> and link to resource file <text styleclass="Code Example">rf.resource</text>:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc /linkresource:rf.resource in.prg &#160;</para>
+    <para styleclass="Code with box">xsc -linkresource:rf.resource in.prg &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Compile <text styleclass="Code Example">A.prg</text> into a DLL, link to a native DLL N.dll, and put the output in the Global Assembly Cache (GAC). In this example, both A.dll and N.dll will reside in the GAC.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc /linkresource:N.dll /t:library A.prg <br/>gacutil -i A.dll &#160;</para>
+    <para styleclass="Code with box">xsc -linkresource:N.dll -t:library A.prg <br/>gacutil -i A.dll &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This example does the same thing as the previous one, but by using Assembly Linker options.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc /t:module A.prg &#160;<br/>al /out:A.dll A.netmodule /link:N.dll &#160; <br/>gacutil -i A.dll &#160;</para>
+    <para styleclass="Code with box">xsc -t:module A.prg &#160;<br/>al -out:A.dll A.netmodule -link:N.dll &#160; <br/>gacutil -i A.dll &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

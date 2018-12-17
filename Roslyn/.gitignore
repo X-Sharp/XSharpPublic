@@ -4,6 +4,7 @@
 # User-specific files
 *.suo
 *.user
+*.userprefs
 *.sln.docstates
 .vs/
 
@@ -18,8 +19,14 @@ x64/
 # Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets
 !packages/*/build/
 
+# Prevent accidental re-checkin of NuGet.exe
+NuGet.exe
+
 # NuGet restore semaphore
 build/ToolsetPackages/toolsetpackages.semaphore
+
+# NuGet package
+src/Tools/UploadNugetZip/*.zip
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
@@ -30,6 +37,9 @@ UnitTestResults.html
 *-packages.config
 *.nuget.props
 *.nuget.targets
+project.lock.json
+msbuild.binlog
+*.project.lock.json
 
 *_i.c
 *_p.c
@@ -65,6 +75,8 @@ ipch/
 *.opensdf
 *.sdf
 *.cachefile
+*.VC.opendb
+*.VC.db
 
 # Visual Studio profiler
 *.psess
@@ -77,6 +89,7 @@ ipch/
 # ReSharper is a .NET coding add-in
 _ReSharper*/
 *.[Rr]e[Ss]harper
+*.DotSettings
 
 # TeamCity is a build add-in
 _TeamCity*
@@ -166,5 +179,8 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 
-#project Locks
-project.lock.json
+# Visual Studio Code
+.vscode/
+
+# JetBrains Rider
+.idea/

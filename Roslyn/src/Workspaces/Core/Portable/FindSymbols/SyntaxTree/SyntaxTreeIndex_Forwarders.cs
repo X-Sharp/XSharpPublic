@@ -16,7 +16,12 @@ namespace Microsoft.CodeAnalysis.FindSymbols
         public bool ContainsPredefinedType(PredefinedType type) => _contextInfo.ContainsPredefinedType(type);
         public bool ContainsPredefinedOperator(PredefinedOperator op) => _contextInfo.ContainsPredefinedOperator(op);
 
+        public bool ProbablyContainsStringValue(string value) => _literalInfo.ProbablyContainsStringValue(value);
+        public bool ProbablyContainsInt64Value(long value) => _literalInfo.ProbablyContainsInt64Value(value);
+
         public bool ContainsForEachStatement => _contextInfo.ContainsForEachStatement;
+        public bool ContainsDeconstruction => _contextInfo.ContainsDeconstruction;
+        public bool ContainsAwait => _contextInfo.ContainsAwait;
         public bool ContainsLockStatement => _contextInfo.ContainsLockStatement;
         public bool ContainsUsingStatement => _contextInfo.ContainsUsingStatement;
         public bool ContainsQueryExpression => _contextInfo.ContainsQueryExpression;

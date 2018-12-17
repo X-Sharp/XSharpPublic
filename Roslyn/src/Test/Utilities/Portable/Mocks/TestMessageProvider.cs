@@ -59,7 +59,7 @@ namespace Roslyn.Test.Utilities
             get { throw new NotImplementedException(); }
         }
 
-        public override int FTL_InputFileNameTooLong
+        public override int FTL_InvalidInputFileName
         {
             get { throw new NotImplementedException(); }
         }
@@ -425,5 +425,31 @@ namespace Roslyn.Test.Utilities
                 throw new NotImplementedException();
             }
         }
+
+        public override int ERR_BadSourceCodeKind
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public override int ERR_BadDocumentationMode
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public override int ERR_InvalidDebugInfo
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public override int ERR_InvalidHashAlgorithmName => throw new NotImplementedException();
     }
 }

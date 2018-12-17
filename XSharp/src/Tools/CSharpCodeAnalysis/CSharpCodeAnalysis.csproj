@@ -1,132 +1,116 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\..\Roslyn\build\Targets\Settings.props" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\Compiler\CompilerCommon.props" />
   <PropertyGroup>
-    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-    <RoslynProjectType>Custom</RoslynProjectType>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <CfgPath>$(Configuration)_$(Platform)</CfgPath>
-    <RoslynSrc>..\..\..\..\Roslyn\src</RoslynSrc>
-    <RoslynBin>..\Roslyn\Binaries</RoslynBin>
-    <ProjectGuid>{7B774ABC-83A0-4FD8-91FB-1DBE8829765B}</ProjectGuid>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputType>Library</OutputType>
     <RootNamespace>Microsoft.CodeAnalysis.CSharp</RootNamespace>
     <AssemblyName>CSharp.CodeAnalysis</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
-    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(CfgPath)\$(AssemblyName)\</IntermediateOutputPath>
-    <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
-    <SyntaxDefinition>$(MSBuildThisFileDirectory)$(RoslynSrc)\Compilers\CSharp\Portable\Syntax\Syntax.xml</SyntaxDefinition>
-    <CompilerGeneratorToolsDir>$(SolutionDir)$(RoslynBin)\$(Configuration)\Exes\DeployCompilerGeneratorToolsRuntime\</CompilerGeneratorToolsDir>
-    <TargetFrameworkIdentifier>.NETPortable</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <RestorePackages>true</RestorePackages>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <ServiceablePackage>true</ServiceablePackage>
+    <DefineConstants>$(DefineConstants);COMPILERCORE;XSHARPPRE</DefineConstants>
+    <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
+    <CodeAnalysisRuleSet>$(CSharpSource)..\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
+    <!-- This is required to prevent downgrade references from CscCore/VbcCode since we must
+         reference Microsoft.NETCore.App to target the shared framework (bug
+         https://github.com/dotnet/sdk/issues/1159) and NETCore.App
+         contains a reference to C# + VB CodeAnalysis. This ensures that the project
+         reference is a higher version than the NuGet reference. -->
+    <Version>$(NuGetPerBuildPreReleaseVersion)</Version>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
   <ItemGroup Label="Project References">
-    <!-- <ProjectReference Include="$(RoslynSrc)\Tools\Source\CompilerGeneratorTools\Source\CSharpSyntaxGenerator\CSharpSyntaxGenerator.csproj">
-      <Project>{288089C5-8721-458E-BE3E-78990DAB5E2D}</Project>
-      <Name>CSharpSyntaxGenerator</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="$(RoslynSrc)\Tools\Source\CompilerGeneratorTools\Source\BoundTreeGenerator\CompilersBoundTreeGenerator.csproj">
-      <Project>{02459936-CD2C-4F61-B671-5C518F2A3DDC}</Project>
-      <Name>CompilersBoundTreeGenerator</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="$(RoslynSrc)\Tools\Source\CompilerGeneratorTools\Source\CSharpErrorFactsGenerator\CSharpErrorFactsGenerator.csproj">
-      <Project>{288089C5-8721-458E-BE3E-78990DAB5E2E}</Project>
-      <Name>CSharpErrorFactsGenerator</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference> -->
-    <ProjectReference Include="$(RoslynSrc)\Tools\Source\CompilerGeneratorTools\DeployCompilerGeneratorToolsRuntime\DeployCompilerGeneratorToolsRuntime.csproj">
-      <Project>{6da08f12-32f2-4dd9-bbad-982eb71a2c9b}</Project>
-      <Name>DeployCompilerGeneratorToolsRuntime</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
+    <PackageReference Include="System.Threading.Tasks.Parallel" Version="$(SystemThreadingTasksParallelVersion)" />
+    <PackageReference Include="System.Linq.Expressions" Version="$(SystemLinqExpressionsVersion)" />
   </ItemGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>TRACE;DEBUG;COMPILERCORE;XSHARPPRE</DefineConstants>
-    <NoWarn>1591, CS0649</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>TRACE;COMPILERCORE;XSHARPPRE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup>
-    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
-  </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(RoslynSrc)\Compilers\Core\Portable\CodeAnalysisResources.Designer.cs">
-      <Link>CodeAnalysisResources.Designer.cs</Link>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CodeAnalysisResources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="$(RoslynSrc)\Compilers\CSharp\Portable\CSharpResources.Designer.cs">
-      <Link>CSharpResources.Designer.cs</Link>
+    <Content Include="$(NuGetPackageRoot)\microsoft.diasymreader.native\$(MicrosoftDiaSymReaderNativeVersion)\runtimes\win\native\Microsoft.DiaSymReader.Native.x86.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)\microsoft.diasymreader.native\$(MicrosoftDiaSymReaderNativeVersion)\runtimes\win\native\Microsoft.DiaSymReader.Native.amd64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+   <Compile Update="$(CSharpSource)CSharpResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CSharpResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="$(CoreSource)..\..\Shared\CoreClrShim.cs" Link="InternalUtilities\CoreClrShim.cs" />
+    <Compile Include="$(CoreSource)..\..\Shared\DesktopShim.cs">
+      <Link>DesktopShim.cs</Link>
+    </Compile>
+    <Compile Update="$(CoreSource)CodeAnalysisResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CodeAnalysisResources.resx</DependentUpon>
+    </Compile>
+ 
   </ItemGroup>
   <ItemGroup>
-    <BoundTreeDefinition Include="$(RoslynSrc)\Compilers\CSharp\Portable\BoundTree\BoundNodes.xml">
+    <PackageReference Include="Microsoft.DiaSymReader.Native" Version="$(MicrosoftDiaSymReaderNativeVersion)" />
+    <PackageReference Include="System.Diagnostics.FileVersionInfo" Version="$(SystemDiagnosticsFileVersionInfoVersion)" />
+    <PackageReference Include="System.Xml.XmlDocument" Version="$(SystemXmlXmlDocumentVersion)" />
+    <PackageReference Include="System.Xml.XPath.XDocument" Version="$(SystemXmlXPathXDocumentVersion)" />
+    <PackageReference Include="System.Collections.Immutable" Version="$(SystemCollectionsImmutableVersion)" />
+    <PackageReference Include="System.Reflection.Metadata" Version="$(SystemReflectionMetadataVersion)" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="$(SystemTextEncodingCodePagesVersion)" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(SystemThreadingTasksExtensionsVersion)" />
+    <PackageReference Include="System.ValueTuple" Version="$(SystemValueTupleVersion)" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="$(CSharpSource)BoundTree\BoundNodes.xml" />
+    <Content Include="$(CSharpSource)Syntax\Syntax.xml" />
+    <Content Include="$(CSharpSource)UseSiteDiagnosticsCheckEnforcer\BaseLine.txt" />
+    <Content Include="$(CSharpSource)UseSiteDiagnosticsCheckEnforcer\Run.bat" />
+    <None Include="$(CSharpSource)FlowAnalysis\Flow Analysis Design.docx" />
+    <None Include="$(CSharpSource)Symbols\PublicSymbolTable.cd" />
+    <None Include="$(CSharpSource)..\CSharpCodeAnalysisRules.ruleset">
       <SubType>Designer</SubType>
-    </BoundTreeDefinition>
-    <Compile Include="$(IntermediateOutputPath)BoundNodes.xml.Generated.cs" />
-    <Compile Include="$(IntermediateOutputPath)ErrorFacts.Generated.cs" />
-    <Compile Include="$(IntermediateOutputPath)Syntax.xml.Syntax.Generated.cs" />
-    <Compile Include="$(IntermediateOutputPath)Syntax.xml.Main.Generated.cs" />
-    <Compile Include="$(IntermediateOutputPath)Syntax.xml.Internal.Generated.cs" />
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Errors\ErrorCode.cs" />
-    <ErrorCode Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Errors\ErrorCode.cs" />
-    <EmbeddedResource Include="..\..\..\..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisResources.resx">
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="$(CSharpSource)CSharpResources.resx">
+      <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <CustomToolNamespace>Microsoft.CodeAnalysis</CustomToolNamespace>
-      <LastGenOutput>CodeAnalysisResources.Designer.cs</LastGenOutput>
-      <LogicalName>Microsoft.CodeAnalysis.CodeAnalysisResources.resources</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\CSharpResources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <CustomToolNamespace>Microsoft.CodeAnalysis.CSharp</CustomToolNamespace>
       <LastGenOutput>CSharpResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\..\..\..\Roslyn\src\Compilers\Core\Portable\Resources\default.win32manifest" />
+    <EmbeddedResource Update="$(CoreSource)CodeAnalysisResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>CodeAnalysisResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(CoreSource)Resources\default.win32manifest" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assembly.cs" />
+  	<Compile Include="$(CSharpSource)**\*.cs">
+		<Link>CSharp\%(RecursiveDir)\%(Filename)%(Extension)</Link>
+	  </Compile>
+    <EmbeddedResource Include="$(CSharpSource)**\*.resx" />
+    <Compile Include="$(CoreSource)**\*.cs">
+		<Link>Core\%(RecursiveDir)\%(Filename)%(Extension)</Link>
+	</Compile>
+    <EmbeddedResource Include="$(CoreSource)**\*.resx" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="project.json" />
+    <None Include="$(CoreSource)..\CodeAnalysisRules.ruleset">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="$(CoreSource)RuleSet\RuleSetSchema.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="$(NuGetPackageRoot)\Microsoft.DiaSymReader.Native\$(MicrosoftDiaSymReaderNativeVersion)\runtimes\win\native\Microsoft.DiaSymReader.Native.x86.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>false</Visible>
-    </Content>
-    <Content Include="$(NuGetPackageRoot)\Microsoft.DiaSymReader.Native\$(MicrosoftDiaSymReaderNativeVersion)\runtimes\win\native\Microsoft.DiaSymReader.Native.amd64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>false</Visible>
-    </Content>
-  </ItemGroup>
-  <Import Project="$(RoslynSrc)\Compilers\Core\Portable\CodeAnalysisShared.projitems" Label="Shared" />
-  <Import Project="$(RoslynSrc)\Compilers\CSharp\Portable\CSharpCodeAnalysisShared.projitems" Label="Shared" />
-  <Import Project="$(RoslynSrc)\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
-  <Import Project="$(RoslynSrc)\Dependencies\CodeAnalysis.Metadata\Microsoft.CodeAnalysis.Metadata.projitems" Label="Shared" />
-  <Import Project="$(RoslynSrc)\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
-  <Import Project="$(RoslynSrc)\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
-  <Import Project="..\..\..\..\Roslyn\build\Targets\Imports.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-  </PropertyGroup>
+  <Import Project="$(CSharpSource)..\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
+  <Import Project="$(CoreSource)..\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
+  <Import Project="$(CoreSource)..\..\..\Dependencies\CodeAnalysis.Debugging\Microsoft.CodeAnalysis.Debugging.projitems" Label="Shared" />
+  <Import Project="$(CoreSource)..\..\..\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
 </Project>

@@ -75,7 +75,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get { return _underlyingProperty.IsIndexedProperty; }
         }
 #endif
-
         public override ImmutableArray<CustomModifier> RefCustomModifiers
         {
             get { return _containingType.TypeSubstitution.SubstituteCustomModifiers(OriginalDefinition.RefCustomModifiers); }

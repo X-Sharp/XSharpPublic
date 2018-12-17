@@ -1,22 +1,19 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.CaseCorrection;
 using Microsoft.CodeAnalysis.CSharp.GenerateType;
-using Microsoft.CodeAnalysis.Editor.CSharp.LanguageServices;
 using Microsoft.CodeAnalysis.Editor.Implementation.CodeActions;
 using Microsoft.CodeAnalysis.Editor.Implementation.InlineRename;
 using Microsoft.CodeAnalysis.Editor.Implementation.Preview;
 using Microsoft.CodeAnalysis.Editor.Shared.Extensions;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
-using Microsoft.CodeAnalysis.Editor.VisualBasic.LanguageServices;
 using Microsoft.CodeAnalysis.GenerateType;
-using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.ProjectManagement;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Microsoft.CodeAnalysis.VisualBasic.CaseCorrection;
 using Microsoft.CodeAnalysis.VisualBasic.GenerateType;
@@ -35,17 +32,19 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics.GenerateType
         public Project TriggeredProject { get; }
         public string TypeName { get; }
 
-        public static async Task<GenerateTypeTestState> CreateAsync(
+        public static GenerateTypeTestState Create(
             string initial,
-            bool isLine,
             string projectToBeModified,
             string typeName,
             string existingFileName,
             string languageName)
         {
-            var workspace = languageName == LanguageNames.CSharp
-                  ? isLine ? await TestWorkspace.CreateCSharpAsync(initial, exportProvider: s_exportProvider) : await TestWorkspace.CreateAsync(initial, exportProvider: s_exportProvider)
-                  : isLine ? await TestWorkspace.CreateVisualBasicAsync(initial, exportProvider: s_exportProvider) : await TestWorkspace.CreateAsync(initial, exportProvider: s_exportProvider);
+            var exportProvider = s_exportProviderFactory.CreateExportProvider();
+            var workspace = TestWorkspace.IsWorkspaceElement(initial)
+                ? TestWorkspace.Create(initial, exportProvider: exportProvider)
+                : languageName == LanguageNames.CSharp
+                  ? TestWorkspace.CreateCSharp(initial, exportProvider: exportProvider)
+                  : TestWorkspace.CreateVisualBasic(initial, exportProvider: exportProvider);
 
             return new GenerateTypeTestState(projectToBeModified, typeName, existingFileName, workspace);
         }
@@ -105,21 +104,22 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics.GenerateType
             }
         }
 
-        private static readonly ExportProvider s_exportProvider = MinimalTestExportProvider.CreateExportProvider(
-            TestExportProvider.MinimumCatalogWithCSharpAndVisualBasic.WithParts(
-                typeof(TestGenerateTypeOptionsService),
-                typeof(TestProjectManagementService),
-                typeof(CSharpGenerateTypeService),
-                typeof(VisualBasicGenerateTypeService),
-                typeof(CSharpCaseCorrectionService),
-                typeof(VisualBasicCaseCorrectionServiceFactory),
-                typeof(CSharpTypeInferenceService),
-                typeof(VisualBasicTypeInferenceService),
-                typeof(CodeActionEditHandlerService),
-                typeof(PreviewFactoryService),
-                typeof(InlineRenameService),
-                typeof(TextBufferAssociatedViewService),
-                typeof(IProjectionBufferFactoryServiceExtensions)));
+        private static readonly IExportProviderFactory s_exportProviderFactory =
+            ExportProviderCache.GetOrCreateExportProviderFactory(
+                TestExportProvider.MinimumCatalogWithCSharpAndVisualBasic.WithParts(
+                    typeof(TestGenerateTypeOptionsService),
+                    typeof(TestProjectManagementService),
+                    typeof(CSharpGenerateTypeService),
+                    typeof(VisualBasicGenerateTypeService),
+                    typeof(CSharpCaseCorrectionService),
+                    typeof(VisualBasicCaseCorrectionServiceFactory),
+                    typeof(CSharpTypeInferenceService),
+                    typeof(VisualBasicTypeInferenceService),
+                    typeof(CodeActionEditHandlerService),
+                    typeof(PreviewFactoryService),
+                    typeof(InlineRenameService),
+                    typeof(TextBufferAssociatedViewService),
+                    typeof(IProjectionBufferFactoryServiceExtensions)));
 
         public void Dispose()
         {

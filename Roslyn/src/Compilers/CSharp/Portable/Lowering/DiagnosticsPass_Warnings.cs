@@ -4,6 +4,7 @@ using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -32,8 +33,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 var local = (BoundLocal)argument;
                                 if (local.Syntax.Kind() == SyntaxKind.DeclarationExpression)
                                 {
-                                    CheckOutDeclaration(local, method);
+                                    CheckOutDeclaration(local);
                                 }
+                                break;
+                            case BoundKind.DiscardExpression:
+                                CheckDiscard((BoundDiscardExpression)argument);
                                 break;
                         }
                     }
@@ -64,7 +68,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// <remarks>
         /// This is for when we are dotting into a field.
         /// Distinguish from <see cref="CheckFieldAddress"/>.
-        ///
+        /// 
         /// NOTE: dev11 also calls this on string initializers in fixed statements,
         /// but never accomplishes anything since string is a reference type.  This
         /// is probably a bug, but fixing it would be a breaking change.
@@ -202,26 +206,26 @@ namespace Microsoft.CodeAnalysis.CSharp
             switch (expr1.Kind)
             {
                 case BoundKind.Local:
-                    var local1 = expr1 as BoundLocal;
-                    var local2 = expr2 as BoundLocal;
+                    var local1 = (BoundLocal)expr1;
+                    var local2 = (BoundLocal)expr2;
                     return local1.LocalSymbol == local2.LocalSymbol;
                 case BoundKind.FieldAccess:
-                    var field1 = expr1 as BoundFieldAccess;
-                    var field2 = expr2 as BoundFieldAccess;
+                    var field1 = (BoundFieldAccess)expr1;
+                    var field2 = (BoundFieldAccess)expr2;
                     return field1.FieldSymbol == field2.FieldSymbol &&
                         (field1.FieldSymbol.IsStatic || IsSameLocalOrField(field1.ReceiverOpt, field2.ReceiverOpt));
                 case BoundKind.EventAccess:
-                    var event1 = expr1 as BoundEventAccess;
-                    var event2 = expr2 as BoundEventAccess;
+                    var event1 = (BoundEventAccess)expr1;
+                    var event2 = (BoundEventAccess)expr2;
                     return event1.EventSymbol == event2.EventSymbol &&
                         (event1.EventSymbol.IsStatic || IsSameLocalOrField(event1.ReceiverOpt, event2.ReceiverOpt));
                 case BoundKind.Parameter:
-                    var param1 = expr1 as BoundParameter;
-                    var param2 = expr2 as BoundParameter;
+                    var param1 = (BoundParameter)expr1;
+                    var param2 = (BoundParameter)expr2;
                     return param1.ParameterSymbol == param2.ParameterSymbol;
                 case BoundKind.RangeVariable:
-                    var rangeVar1 = expr1 as BoundRangeVariable;
-                    var rangeVar2 = expr2 as BoundRangeVariable;
+                    var rangeVar1 = (BoundRangeVariable)expr1;
+                    var rangeVar2 = (BoundRangeVariable)expr2;
                     return rangeVar1.RangeVariableSymbol == rangeVar2.RangeVariableSymbol;
                 case BoundKind.ThisReference:
                 case BoundKind.PreviousSubmissionReference:
@@ -294,7 +298,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             // Don't bother to check vacuous comparisons where both sides are constant, eg, where someone
             // is doing something like "if (0xFFFFFFFFU == 0)" -- these are likely to be machine-
-            // generated code.
+            // generated code. 
 
             if (node.Left.ConstantValue != null && node.Right.ConstantValue == null && node.Right.Kind == BoundKind.Conversion)
             {
@@ -375,19 +379,19 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             // We wish to detect comparisons between integers and constants which are likely to be wrong
             // because we know at compile time whether they will be true or false. For example:
-            //
+            // 
             // const short s = 1000;
             // byte b = whatever;
             // if (b < s)
             //
             // We know that this will always be true because when b and s are both converted to int for
-            // the comparison, the left side will always be less than the right side.
+            // the comparison, the left side will always be less than the right side. 
             //
-            // We only give the warning if there is no explicit conversion involved on the operand.
+            // We only give the warning if there is no explicit conversion involved on the operand. 
             // For example, if we had:
             //
             // const uint s = 1000;
-            // sbyte b = whatever;
+            // sbyte b = whatever; 
             // if ((byte)b < s)
             //
             // Then we do not give a warning.
@@ -399,7 +403,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // enum == enumConstant           -- enum types must be the same, so it must be in range.
             // enum == integralConstant       -- not legal unless the constant is zero, which is in range.
             // enum == (ENUM)anyConstant      -- if the constant is out of range then this is not legal in the first place
-            //                                   unless we're in an unchecked context, in which case, the user probably does
+            //                                   unless we're in an unchecked context, in which case, the user probably does 
             //                                   not want the warning.
             // integral == enumConstant       -- never legal in the first place
             //
@@ -450,17 +454,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             // int x = 0x0ABC0000;
             // short y = -2; // 0xFFFE
             // int ytemp = y; // 0xFFFFFFFE
-            // int z = x | ytemp;
+            // int z = x | ytemp; 
             //
             // Which gives 0xFFFFFFFE, not 0x0ABCFFFE.
             //
             // However, we wish to suppress the warning if:
             //
-            // * The sign extension is "expected" -- for instance, because there was an explicit cast
+            // * The sign extension is "expected" -- for instance, because there was an explicit cast 
             //   from short to int:  "int z = x | (int)y;" should not produce the warning.
-            //   Note that "uint z = (uint)x | (uint)y;" should still produce the warning because
+            //   Note that "uint z = (uint)x | (uint)y;" should still produce the warning because 
             //   the user might not realize that converting y to uint does a sign extension.
-            //
+            //   
             // * There is the same amount of sign extension on both sides. For example, when
             //   doing "short | sbyte", both sides are sign extended. The left creates two FF bytes
             //   and the right creates three, so we are potentially wiping out information from the
@@ -468,12 +472,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             //
             // The native compiler also suppresses this warning in a bizarre and inconsistent way. If
             // the side whose bits are going to be wiped out by sign extension is a *constant*, then the
-            // warning is suppressed *if the constant, when converted to a signed long, fits into the
-            // range of the type that is being sign-extended.*
+            // warning is suppressed *if the constant, when converted to a signed long, fits into the 
+            // range of the type that is being sign-extended.* 
             //
             // Consider the effects of this rule:
             //
-            // (uint)0xFFFF0000 | y -- gives the warning because 0xFFFF0000 as a long is not in the range of a short,
+            // (uint)0xFFFF0000 | y -- gives the warning because 0xFFFF0000 as a long is not in the range of a short, 
             //                         *even though the result will not be affected by the sign extension*.
             // (ulong)0xFFFFFFFFFFFFFFFF | y -- suppresses the warning, because 0xFFFFFFFFFFFFFFFF as a signed long fits into a short.
             // (int)0x0000ABCD | y -- suppresses the warning, even though the 0000 is going to be wiped out by the sign extension.
@@ -500,7 +504,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // The native compiler skips this warning if both sides of the operator are constants.
             //
             // CONSIDER: Is that sensible? It seems reasonable that if we would warn on int | short
-            // when they are non-constants, or when one is a constant, that we would similarly warn
+            // when they are non-constants, or when one is a constant, that we would similarly warn 
             // when both are constants.
 
             if (node.ConstantValue != null)
@@ -637,7 +641,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (toSize < fromSize)
             {
                 // We are casting from a larger type to a smaller type, and are therefore
-                // losing surprising bits.
+                // losing surprising bits. 
                 switch (toSize)
                 {
                     case 1: return unchecked((ulong)(byte)recursive);
@@ -676,12 +680,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             // We could reason that the sbyte-to-ushort conversion is going to add one byte of
             // unexpected sign extension. The conversion from ushort to uint adds no more bytes.
             // The conversion from uint to int adds no more bytes. Does the conversion from int
-            // to ulong add any more bytes of unexpected sign extension? Well, no, because we
+            // to ulong add any more bytes of unexpected sign extension? Well, no, because we 
             // know that the previous conversion from ushort to uint will ensure that the top bit
-            // of the uint is off!
+            // of the uint is off! 
             //
             // But we are not going to try to be that clever. In the extremely unlikely event that
-            // someone does this, we will record that the unexpectedly turned-on bits are
+            // someone does this, we will record that the unexpectedly turned-on bits are 
             // 0xFFFFFFFF0000FF00, even though we could in theory deduce that only 0x000000000000FF00
             // are the unexpected bits.
 
@@ -832,10 +836,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private static TypeSymbol GetTypeForLiftedComparisonWarning(BoundExpression node)
         {
-            // If we have something like "10 < new sbyte?()" we bind that as
-            // (int?)10 < (int?)(new sbyte?())
+            // If we have something like "10 < new sbyte?()" we bind that as 
+            // (int?)10 < (int?)(new sbyte?()) 
             // but the warning we want to produce is that the null on the right hand
-            // side is of type sbyte?, not int?.
+            // side is of type sbyte?, not int?. 
 
             if ((object)node.Type == null || !node.Type.IsNullableType())
             {
@@ -864,6 +868,49 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return true;
             }
             return false;
+        }
+
+        private void CheckForDeconstructionAssignmentToSelf(BoundTupleLiteral leftTuple, BoundExpression right)
+        {
+            while (right.Kind == BoundKind.Conversion)
+            {
+                var conversion = (BoundConversion)right;
+                switch(conversion.ConversionKind)
+                {
+                    case ConversionKind.Deconstruction:
+                    case ConversionKind.ImplicitTupleLiteral:
+                    case ConversionKind.Identity:
+                        right = conversion.Operand;
+                        break;
+                    default:
+                        return;
+                }
+            }
+
+            if (right.Kind != BoundKind.ConvertedTupleLiteral && right.Kind != BoundKind.TupleLiteral)
+            {
+                return;
+            }
+
+            var rightTuple = (BoundTupleExpression)right;
+            var leftArguments = leftTuple.Arguments;
+            int length = leftArguments.Length;
+            Debug.Assert(length == rightTuple.Arguments.Length);
+
+            for (int i = 0; i < length; i++)
+            {
+                var leftArgument = leftArguments[i];
+                var rightArgument = rightTuple.Arguments[i];
+
+                if (leftArgument.Kind == BoundKind.TupleLiteral)
+                {
+                    CheckForDeconstructionAssignmentToSelf((BoundTupleLiteral)leftArgument, rightArgument);
+                }
+                else if (IsSameLocalOrField(leftArgument, rightArgument))
+                {
+                    Error(ErrorCode.WRN_AssignmentToSelf, leftArgument);
+                }
+            }
         }
 
         public override BoundNode VisitFieldAccess(BoundFieldAccess node)

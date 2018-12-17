@@ -25,7 +25,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">If you want to know in which Assembly a function or type is defined then your &quot;best friend&quot; is the documentation. We are using a tool to generate the documentation, so this is always correct. <br/>Some subsystems have functions XSharp.Core DLL and in XSharp.VO.DLL as well.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="4" style="head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="8" colcount="4" style="head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
       <thead style="vertical-align:top">
         <td style="width:251px;">
           <para styleclass="Normal"><text style="font-weight:bold;">Component</text></para>
@@ -56,16 +56,43 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:251px;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_VO">XSharp.VO.DLL</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_RT">XSharp.RT.DLL</link></para>
         </td>
         <td style="width:618px;">
-          <para styleclass="Normal">This DLL adds features to the runtime that are needed for the VO dialect.</para>
+          <para styleclass="Normal">This DLL is required for all dialects apart from Core</para>
         </td>
         <td style="width:271px;">
-          <para styleclass="Normal">X# VO</para>
+          <para styleclass="Normal">X# non - core</para>
         </td>
         <td style="width:154px;">
           <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:251px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_VO">XSharp.VO.DLL</link></para>
+        </td>
+        <td style="width:618px;">
+          <para styleclass="Normal">This DLL adds features to the runtime that are needed for the VO and Vulcan &#160;dialects.</para>
+        </td>
+        <td style="width:271px;">
+          <para styleclass="Normal">X# VO and X# Vulcan</para>
+        </td>
+        <td style="width:154px;">
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:251px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_XPP">XSharp.XPP.DLL</link></para>
+        </td>
+        <td style="width:618px;">
+          <para styleclass="Normal">This DLL adds features to the runtime that are needed for the Xbase++ dialect.</para>
+        </td>
+        <td style="width:271px;">
+          <para styleclass="Normal">X# XPP</para>
+        </td>
+        <td style="width:154px;">
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -98,14 +125,20 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:251px;">
-          <para styleclass="Normal">VO SDK Class libraries</para>
+          <para styleclass="Normal">VO SDK Class libraries:<br/>VOConsoleClasses.dll</para>
+          <para styleclass="Normal">VOGUIClasses.dll</para>
+          <para styleclass="Normal">VOInternetClasses.dll</para>
+          <para styleclass="Normal">VORDDClasses.dll</para>
+          <para styleclass="Normal">VOReportClasses.dll</para>
+          <para styleclass="Normal">VOSQLClasses.dll</para>
+          <para styleclass="Normal">VOSystemClasses.dll</para>
+          <para styleclass="Normal">VOWin32APILibrary.dll</para>
         </td>
         <td style="width:618px;">
-          <para styleclass="Normal"><text style="font-weight:bold; font-style:italic;">These are &#160;not included.</text></para>
-          <para styleclass="Normal">Beta 2 will include a tool that will read the registration information from your VO installation and will then create a project on your machine to compile the SDK against the X# runtime</para>
+          <para styleclass="Normal">These DLLs represent the class libraries from Visual Objects</para>
         </td>
         <td style="width:271px;">
-          <para styleclass="Normal">X# VO</para>
+          <para styleclass="Normal">X# VO and X# Vulcan</para>
         </td>
         <td style="width:154px;">
           <para styleclass="Normal">4.6</para>
@@ -113,14 +146,9 @@
       </tr>
     </table></para>
     <para styleclass="Heading2">Known Issues</para>
-    <para styleclass="Normal"></para>
-    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List">Some of the string conversion functions such as Str() and NTrim() do not always return the same string as VO . In VO the return value of these functions heavily depends on state settings such as SetFixed, SetDecimals, SetScience and more. This will be most likely fixed in Beta 2</li>
-      <li styleclass="Normal">Some of the TransForm() pictures also depend on the same settings as Str() and NTrim() and have the same problems</li>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">The macro compiler in this release is fully functional but not as fast as we&apos;d like. We are working on a smaller and faster macro compiler.</li>
-    </list>
-    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">The RDD system as well as the Db..() and VoDb..() functions are missing</li>
+      <li styleclass="Normal">The DBFCDX RDD is missing</li>
     </list>
     <para styleclass="Heading2">Missing or incomplete Features </para>
     <para styleclass="Normal"></para>
@@ -141,10 +169,10 @@
           <para styleclass="Normal">RDD system</para>
         </td>
         <td>
-          <para styleclass="Normal">There are some helper classes, defines etc &#160;already defined in the runtime but the RDD system is not complete. You will NOT find the familiar Db functions and VoDb functions. Also functions like BOF(), EOF(), RecNo() and Found() are not included yet. </para>
+          <para styleclass="Normal">The DBFCDX RDD is missing</para>
         </td>
         <td>
-          <para styleclass="Normal">Beta 2 will include the Db.. and VoDb functions and will most likely contain one of more RDDs</para>
+          <para styleclass="Normal">Jan-Feb 2019</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -155,7 +183,7 @@
           <para styleclass="Normal">There are already some statements in the language (like MEMVAR, PRIVATE etc) but the underlying runtime support and compiler support is not ready</para>
         </td>
         <td>
-          <para styleclass="Normal">Beta 3 will most likely contain the MEMVAR support</para>
+          <para styleclass="Normal">Jan 2019</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -166,7 +194,6 @@
           <para styleclass="Normal">These functions will most likely be added in one of the next betas. For now they will throw a notimplementedexception when you use them</para>
         </td>
         <td>
-          <para styleclass="Normal">Beta 2 and Beta 3</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -177,7 +204,6 @@
           <para styleclass="Normal">We are not happy with the speed of the current macro compiler. It is very powerful but compiling a macro simply takes too much time. We are working on a replacement for this. To help increase performance we are caching compiled macros at this moment, so the second time you compile the same macro you will get the same codeblock back as the first time. That helps but is not enough.</para>
         </td>
         <td>
-          <para styleclass="Normal">September 2018.</para>
         </td>
       </tr>
     </table></para>
@@ -230,10 +256,10 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Call Vulcans implementation of Left()</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> cValue </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">STRING</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">cValue := VulcanRTFuncs.Functions.Left(&quot;abcdefg&quot;,2)</text></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> cValue </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">cValue := VulcanRTFuncs.Functions.Left(&quot;abcdefg&quot;,2)</text></para>
     <para styleclass="Normal">If you want to convert an X# usual to a Vulcan usual, cast to OBJECT</para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> xUsual </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USUAL</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> vUsual </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Vulcan.__Usual</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">xUsual := 10</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">vUsual := (OBJECT) xUsual</text></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> xUsual </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">USUAL</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> vUsual </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Vulcan.__Usual</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">xUsual := 10</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">vUsual := (OBJECT) xUsual</text></para>
     <para styleclass="Normal">For dates you can do something similar. In that case you should cast the X# date to a DateTime.</para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> xDate </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> DATE</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> vDate </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Vulcan.__VODate</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">xDate := ToDay() &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// will call the X# implementation of ToDay()</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">vDate := (System.DateTime) xDate</text></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> xDate </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;"> DATE</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> vDate </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Vulcan.__VODate</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">xDate := ToDay() &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// will call the X# implementation of ToDay()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">vDate := (System.DateTime) xDate</text></para>
   </body>
 </topic>

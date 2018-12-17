@@ -8,17 +8,26 @@ using System.Reflection;
 
 namespace XSharp.MacroCompiler
 {
-    internal abstract class Symbol
+    internal abstract partial class Symbol
     {
         internal abstract Symbol Lookup(string name);
     }
-    internal class SymbolList : Symbol
+    internal abstract partial class TypedSymbol : Symbol
+    {
+        internal override Symbol Lookup(string name) { throw new InternalError(); }
+        abstract internal TypeSymbol Type { get; }
+    }
+    internal partial class SymbolList : Symbol
     {
         internal MemberTypes SymbolTypes;
         internal List<Symbol> Symbols;
         internal SymbolList() { Symbols = new List<Symbol>(); }
         internal SymbolList(Symbol s): this() { Add(s); SymbolTypes = 0; }
-        internal void Add(Symbol s) { Symbols.Add(s); SymbolTypes |= (s as MemberSymbol)?.Member.MemberType ?? 0; }
+        internal void Add(Symbol s) { Symbols.Add(s); SymbolTypes |= (s as MemberSymbol)?.MemberType ?? 0; }
+        internal bool HasMethod { get { return SymbolTypes.HasFlag(MemberTypes.Method); } }
+        internal bool HasConstructor { get { return SymbolTypes.HasFlag(MemberTypes.Constructor); } }
+        internal bool HasProperty { get { return SymbolTypes.HasFlag(MemberTypes.Property); } }
+        internal bool HasMethodBase { get { return HasMethod || HasConstructor; } }
         internal override Symbol Lookup(string name)
         {
             foreach (var s in Symbols)
@@ -30,24 +39,48 @@ namespace XSharp.MacroCompiler
             return null;
         }
     }
-    internal class ContainerSymbol : Symbol
+    internal abstract partial class ContainerSymbol : Symbol
     {
         internal Dictionary<string, Symbol> Members = new Dictionary<string, Symbol>(StringComparer.OrdinalIgnoreCase);
         internal ContainerSymbol() { }
         internal override Symbol Lookup(string name) { Symbol s; Members.TryGetValue(name, out s); return s; }
     }
-    internal class NamespaceSymbol : ContainerSymbol
+    internal partial class NamespaceSymbol : ContainerSymbol
     {
         internal string Name;
-        internal NamespaceSymbol(string name) { Name = name; }
-        internal NamespaceSymbol() { Name = null; }
+        internal NamespaceSymbol ParentNamespace;
+        internal NamespaceSymbol(string name, NamespaceSymbol parent) { Name = name; ParentNamespace = parent; }
+        internal NamespaceSymbol() { Name = null; ParentNamespace = null; }
     }
-    internal class TypeSymbol : ContainerSymbol
+    internal partial class TypeSymbol : ContainerSymbol
     {
         bool Cached = false;
-        internal Type Type;
+        internal readonly Type Type;
         internal NativeType NativeType;
+        internal TypeSymbol DeclaringType { get { return Binder.FindType(Type.DeclaringType); } }
+        internal NamespaceSymbol Namespace { get { return Binder.LookupFullName(Type.Namespace) as NamespaceSymbol; } }
         internal TypeSymbol(Type type) { Type = type; }
+        internal bool IsByRef { get { return Type.IsByRef; } }
+        internal bool IsValueType { get { return Type.IsValueType; } }
+        internal bool IsEnum { get { return Type.IsEnum; } }
+        internal TypeSymbol ElementType { get { return Type.HasElementType ? Binder.FindType(Type.GetElementType()) : null; } }
+        internal TypeSymbol EnumUnderlyingType { get { return Type.IsEnum ? Binder.FindType(Type.GetEnumUnderlyingType()) : null; } }
+        internal Dictionary<MemberInfo, Symbol> MemberTable = new Dictionary<MemberInfo, Symbol>();
+        void AddMember(string name, Symbol ms)
+        {
+            Symbol s = null;
+            if (Members.TryGetValue(name, out s))
+            {
+                if (!(s is SymbolList))
+                {
+                    s = new SymbolList(s);
+                    Members[name] = s;
+                }
+                (s as SymbolList).Add(ms);
+            }
+            else
+                Members[name] = ms;
+        }
         internal void UpdateCache()
         {
             if (Cached)
@@ -59,18 +92,23 @@ namespace XSharp.MacroCompiler
             }
             foreach(var m in Type.GetMembers(flags))
             {
-                Symbol s = null;
-                if (Members.TryGetValue(m.Name, out s))
+                var ms = MemberSymbol.Create(this, m);
+                if (ms != null)
                 {
-                    if (!(s is SymbolList))
-                    {
-                        s = new SymbolList(s);
-                        Members[m.Name] = s;
-                    }
-                    (s as SymbolList).Add(MemberSymbol.Create(m));
+                    MemberTable.Add(m, ms);
+                    AddMember(m.Name, ms);
                 }
-                else
-                    Members[m.Name] = MemberSymbol.Create(m);
+            }
+            if (NativeType == NativeType.Array)
+            {
+                Symbol getter;
+                Symbol setter;
+                Members.TryGetValue(XSharpFunctionNames.GetElement, out getter);
+                Members.TryGetValue(XSharpFunctionNames.SetElement, out setter);
+                if (getter is SymbolList) getter = (getter as SymbolList).Symbols.Find(s => (s as MethodSymbol)?.Parameters.Parameters.LastOrDefault()?.ParameterType.IsArray == true);
+                if (setter is SymbolList) setter = (setter as SymbolList).Symbols.Find(s => (s as MethodSymbol)?.Parameters.Parameters.LastOrDefault()?.ParameterType.IsArray == true);
+                if (getter is MethodSymbol && setter is MethodSymbol)
+                    AddMember(SystemNames.IndexerName, new PropertySymbol(this, getter as MethodSymbol, setter as MethodSymbol, false));
             }
             Cached = true;
         }
@@ -79,44 +117,208 @@ namespace XSharp.MacroCompiler
             UpdateCache();
             return base.Lookup(name);
         }
+        internal bool IsNullableType()
+        {
+            return Type.IsGenericType && Type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+        private TypeSymbol _nullableUnderlyingType;
+        internal TypeSymbol NullableUnderlyingType
+        {
+            get
+            {
+                if (_nullableUnderlyingType == null)
+                {
+                    if (IsNullableType())
+                        _nullableUnderlyingType = Binder.FindType(Type.GetGenericArguments()[0]);
+                }
+                return _nullableUnderlyingType;
+            }
+        }
     }
-    internal class LocalSymbol : Symbol
+    internal partial class LocalSymbol : TypedSymbol
     {
         internal string Name;
-        internal TypeSymbol Type;
+        internal override TypeSymbol Type { get; }
+        internal int Index = -1;
         internal LocalSymbol(string name, TypeSymbol type) { Name = name; Type = type; }
         internal override Symbol Lookup(string name) { return null; }
     }
-    internal class MemberSymbol : Symbol
+    internal partial class ArgumentSymbol : LocalSymbol
     {
-        internal MemberInfo Member;
-        internal TypeSymbol Type;
-        internal MemberSymbol(MemberInfo member, TypeSymbol type) { Member = member; Type = type; }
+        internal ArgumentSymbol(string name, TypeSymbol type, int index) : base(name, type) { Index = index; }
+    }
+    internal partial class VariableSymbol : LocalSymbol
+    {
+        internal VariableSymbol(string name, TypeSymbol type) : base(name, type) { }
+    }
+    internal partial class DynamicSymbol : TypedSymbol
+    {
+        internal string Name;
+        internal override TypeSymbol Type { get { return (Binder.LookupFullName(XSharpQualifiedFunctionNames.IVarGet) as MethodSymbol)?.Type ?? Compilation.Get(NativeType.Object); } }
+        internal DynamicSymbol(string name) { Name = name; }
         internal override Symbol Lookup(string name) { return null; }
-        internal static MemberSymbol Create(MemberInfo member)
+    }
+    internal partial class ObjectInitializerSymbol : TypedSymbol
+    {
+        internal override TypeSymbol Type { get; }
+        internal ObjectInitializerSymbol(TypeSymbol type) { Type = type; }
+    }
+    internal abstract partial class MemberSymbol : TypedSymbol
+    {
+        internal TypeSymbol DeclaringType;
+        internal MemberInfo Member;
+        internal readonly MemberTypes MemberType;
+        internal override TypeSymbol Type { get; }
+        internal MemberSymbol(TypeSymbol declType, MemberInfo member, TypeSymbol type, MemberTypes memberType)
+        {
+            DeclaringType = declType;
+            Member = member;
+            Type = type;
+            MemberType = memberType;
+        }
+        internal override Symbol Lookup(string name) { return null; }
+        internal static Symbol Create(TypeSymbol declType, MemberInfo member)
         {
             switch (member.MemberType)
             {
                 case MemberTypes.Method:
-                    return new MethodSymbol((MethodInfo)member);
+                    return new MethodSymbol(declType, (MethodInfo)member);
                 case MemberTypes.Field:
-                    return new MemberSymbol(member, Binder.FindType((member as FieldInfo).FieldType));
+                    {
+                        var field = (FieldInfo)member;
+                        if (field.IsLiteral)
+                        {
+                            return Constant.Create(
+                                field.FieldType.IsEnum ?
+                                    Convert.ChangeType(field.GetValue(null), field.FieldType.GetEnumUnderlyingType()) : field.GetValue(null),
+                                Binder.FindType(field.FieldType));
+                        }
+                        return new FieldSymbol(declType, field);
+                    }
                 case MemberTypes.Event:
-                    return new MemberSymbol(member, Binder.FindType((member as EventInfo).EventHandlerType));
+                    return new EventSymbol(declType, (EventInfo)member);
                 case MemberTypes.Property:
-                    return new MemberSymbol(member, Binder.FindType((member as PropertyInfo).PropertyType));
+                    return new PropertySymbol(declType, (PropertyInfo)member);
                 case MemberTypes.Constructor:
-                    return new MemberSymbol(member, Binder.FindType((member as ConstructorInfo).DeclaringType));
+                    return new ConstructorSymbol(declType, (ConstructorInfo)member);
+                case MemberTypes.NestedType:
+                    return new TypeSymbol(member as Type);
                 default:
-                    return new MemberSymbol(member, null);
+                    return null; // ignore unrecognized types
             }
         }
     }
-    internal class MethodSymbol : MemberSymbol
+    internal partial class ParameterListSymbol : Symbol
     {
+        internal bool HasParamArray { get; }
+        internal ParameterInfo[] Parameters;
+        internal ParameterListSymbol(ParameterInfo[] parameters) : base()
+        {
+            Parameters = parameters;
+            var attrs = Parameters.LastOrDefault()?.CustomAttributes;
+            if (attrs != null)
+            {
+                foreach (var attr in attrs)
+                {
+                    if (attr.AttributeType == typeof(System.ParamArrayAttribute))
+                    {
+                        HasParamArray = true;
+                    }
+                }
+            }
+        }
+        internal override Symbol Lookup(string name) { return null; }
+    }
+    internal abstract partial class MethodBaseSymbol : MemberSymbol
+    {
+        internal MethodBase MethodBase { get { return (MethodBase)base.Member; } }
+        bool _foundAttributes = false;
+        CustomAttributeData _clipperAttr = null;
+        string[] _clipperParams = null;
+        ParameterListSymbol _parameters;
+        internal MethodBaseSymbol(TypeSymbol declType, MethodBase method, TypeSymbol type) : base(declType, method, type, method.MemberType) { }
+        internal ParameterListSymbol Parameters { get { Interlocked.CompareExchange(ref _parameters, new ParameterListSymbol(MethodBase.GetParameters()), null); return _parameters; } }
+        internal bool IsClipper { get { FindAttributes(); return _clipperAttr != null; } }
+        internal string[] ClipperParams { get { FindAttributes(); return _clipperParams; } }
+        void FindAttributes()
+        {
+            if (!_foundAttributes)
+            {
+                if (MethodBase.CustomAttributes != null)
+                {
+                    foreach (var attr in MethodBase.CustomAttributes)
+                    {
+                        if (attr.AttributeType == Compilation.Get(WellKnownTypes.ClipperCallingConventionAttribute).Type)
+                        {
+                            _clipperAttr = attr;
+                            _clipperParams = ((IReadOnlyCollection<CustomAttributeTypedArgument>)_clipperAttr?.ConstructorArguments[0].Value)
+                                .Select(a => (string)a.Value).ToArray();
+                        }
+                    }
+                }
+                _foundAttributes = true;
+            }
+        }
+    }
+    internal partial class MethodSymbol : MethodBaseSymbol
+    {
+        internal bool IsStatic { get { return Method.IsStatic; } }
+        internal bool IsVirtual { get { return Method.IsVirtual; } }
         internal MethodInfo Method { get { return (MethodInfo)base.Member; } }
-        //internal ParameterInfo[] Parameters { get { Interlocked.CompareExchange(ref _parameters, Method.GetParameters(), null); return _parameters; } }
-        //ParameterInfo[] _parameters;
-        internal MethodSymbol(MethodInfo method) : base(method, Binder.FindType(method.ReturnType)) { }
+        internal MethodSymbol(TypeSymbol declType, MethodInfo method) : base(declType, method, Binder.FindType(method.ReturnType)) { }
+    }
+    internal partial class FieldSymbol : MemberSymbol
+    {
+        internal FieldInfo Field { get { return (FieldInfo)base.Member; } }
+        internal FieldSymbol(TypeSymbol declType, FieldInfo field) : base(declType, field, Binder.FindType(field.FieldType), field.MemberType) { }
+    }
+    internal partial class EventSymbol : MemberSymbol
+    {
+        internal EventInfo Event { get { return (EventInfo)base.Member; } }
+        internal EventSymbol(TypeSymbol declType, EventInfo evt) : base(declType, evt, Binder.FindType(evt.EventHandlerType), evt.MemberType) { }
+    }
+    internal partial class PropertySymbol : MemberSymbol
+    {
+        internal bool IsStatic { get { return Getter?.IsStatic ?? Setter?.IsStatic ?? true; } }
+        internal PropertyInfo Property { get { return (PropertyInfo)base.Member; } }
+        internal MethodSymbol Getter { get; }
+        internal MethodSymbol Setter { get; }
+        internal readonly bool ValueLast = true;
+        ParameterListSymbol _parameters;
+        internal ParameterListSymbol Parameters
+        {
+            get
+            {
+                var p = Getter?.Method.GetParameters();
+                if (p == null)
+                {
+                    p = Setter?.Method.GetParameters();
+                    if (p != null)
+                    {
+                        Array.Resize(ref p, p.Length - 1);
+                    }
+                    else
+                        p = new ParameterInfo[] { };
+                }
+                Interlocked.CompareExchange(ref _parameters, new ParameterListSymbol(p), null);
+                return _parameters;
+            }
+        }
+        internal PropertySymbol(TypeSymbol declType, PropertyInfo property) : base(declType, property, Binder.FindType(property.PropertyType), property.MemberType)
+        {
+            Getter = Property.GetMethod != null ? DeclaringType.MemberTable[Property.GetMethod] as MethodSymbol : null;
+            Setter = Property.SetMethod != null ? DeclaringType.MemberTable[Property.SetMethod] as MethodSymbol : null;
+        }
+        internal PropertySymbol(TypeSymbol declType, MethodSymbol getter, MethodSymbol setter, bool valueLast) : base(declType, null, Binder.FindType(getter.Method.ReturnType), MemberTypes.Property)
+        {
+            Getter = getter;
+            Setter = setter;
+            ValueLast = valueLast;
+        }
+    }
+    internal partial class ConstructorSymbol : MethodBaseSymbol
+    {
+        internal ConstructorInfo Constructor { get { return (ConstructorInfo)base.Member; } }
+        internal ConstructorSymbol(TypeSymbol declType, ConstructorInfo ctor) : base(declType, ctor, Binder.FindType(ctor.DeclaringType)) { }
     }
 }

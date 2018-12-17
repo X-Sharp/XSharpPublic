@@ -49,7 +49,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             bool result = base.HasBoxingConversion(source, destination, ref useSiteDiagnostics);
 
-            if (!result && _binder.Compilation.Options.IsDialectVO && destination != null && source is NamedTypeSymbol)
+            if (!result && _binder.Compilation.Options.HasRuntime && destination != null && source is NamedTypeSymbol)
             {
                 var nts = source as NamedTypeSymbol;
                 if (nts.ConstructedFrom == _binder.Compilation.UsualType())
@@ -110,7 +110,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         ConversionKind ClassifyVoNullLiteralConversion(BoundExpression source, TypeSymbol destination, out Conversion conv)
         {
-            if (_binder.Compilation.Options.IsDialectVO && destination is NamedTypeSymbol)
+            if (_binder.Compilation.Options.HasRuntime && destination is NamedTypeSymbol)
             {
                 var usualType = _binder.Compilation.UsualType();
                 var nts = destination as NamedTypeSymbol;
@@ -137,7 +137,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var res = base.IsAnonymousFunctionCompatibleWithType(anonymousFunction, type);
 
-            if (res == LambdaConversionResult.BadTargetType && _binder.Compilation.Options.IsDialectVO)
+            if (res == LambdaConversionResult.BadTargetType && _binder.Compilation.Options.HasRuntime)
             {
                 if (type == Compilation.CodeBlockType() || type == Compilation.UsualType() || type.IsObjectType())
                 {
@@ -210,29 +210,25 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (Compilation.Options.VOSignedUnsignedConversion) // vo4
             {
-                var result = Conversion.NoConversion;
-
-                // when both numeric and both integral or both not integral
+                // This compiler option only applies to numeric types
                 if (srcType.IsNumericType() && dstType.IsNumericType())
                 {
-                    if (srcType.IsIntegralType() == dstType.IsIntegralType())
+                    if (srcType.IsIntegralType() &&  dstType.IsIntegralType())
                     {
                         // when both same # of bits and integral, use Identity conversion
-                        if (srcType.SizeInBytes() == dstType.SizeInBytes() &&
-                            srcType.IsIntegralType() && dstType.IsIntegralType())
-                            result = Conversion.Identity;
+                        if (srcType.SizeInBytes() == dstType.SizeInBytes())
+                            return Conversion.Identity;
                         else
-                            result = Conversion.ImplicitNumeric;
+                            // otherwise implicit conversion
+                            return Conversion.ImplicitNumeric;
                     }
                     // Vulcan also allows to convert floating point types <-> integral types
-                    else
+                    else if (srcType.IsIntegralType() || dstType.IsIntegralType())
                     {
-                        result = Conversion.ImplicitNumeric;
+                        return Conversion.ImplicitNumeric;
                     }
                 }
 
-                if (result != Conversion.NoConversion)
-                    return result;
             }
 
             return Conversion.NoConversion;
@@ -429,7 +425,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (srcType.IsIntegralType() && dstType.IsIntegralType())
             {
-                if (srcType.SizeInBytes() < dstType.SizeInBytes())
+                if (srcType.SizeInBytes() < dstType.SizeInBytes()
+                    || sourceExpression is BoundConditionalOperator)
+					// IIF expressions with literals are always seen as Int, even when the values are asmall
                 {
                     return Conversion.ImplicitNumeric;
                 }
@@ -464,7 +462,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return ClassifyNullConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
             }
-            if (Compilation.Options.IsDialectVO)
+            if (Compilation.Options.HasRuntime)
                 return ClassifyVOImplicitBuiltInConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
             else
                 return ClassifyCoreImplicitConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
@@ -476,7 +474,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (args is ArrayTypeSymbol)
             {
                 var ats = args as ArrayTypeSymbol;
-                if (Compilation.Options.IsDialectVO)
+                if (Compilation.Options.HasRuntime)
                 {
                     result = (ats.ElementType == Compilation.UsualType());
                 }

@@ -15,16 +15,28 @@ namespace XSharp.MacroCompiler
         internal int TotalCost = 0;
         internal int ExtraValid = 0;
         internal bool Valid = true;
-        internal readonly MethodSymbol Method;
+        internal readonly MemberSymbol Symbol;
+        internal readonly ParameterListSymbol Parameters;
         internal OverloadResult Equivalent = null;
 
         internal bool Exact { get { return Valid && TotalCost == 0; } }
 
         internal bool Unique { get { return Valid && ExtraValid == 0; } }
 
+        internal readonly int FixedArgs;
+        internal readonly int VarArgs;
+        internal readonly int MissingArgs;
         internal ConversionSymbol[] Conversions;
 
-        internal OverloadResult(MethodSymbol method, int nargs) { Method = method; Conversions = new ConversionSymbol[nargs]; }
+        internal OverloadResult(MemberSymbol symbol, ParameterListSymbol paramList, int nFixedArgs, int nVarArgs, int nMissingArgs)
+        {
+            Symbol = symbol;
+            Parameters = paramList;
+            FixedArgs = nFixedArgs;
+            VarArgs = nVarArgs;
+            MissingArgs = nMissingArgs;
+            Conversions = new ConversionSymbol[nFixedArgs+ nVarArgs + nMissingArgs];
+        }
 
         internal void ArgConversion(int index, ConversionSymbol conv)
         {
@@ -33,18 +45,19 @@ namespace XSharp.MacroCompiler
             Valid &= conv.IsImplicit;
         }
 
-        internal static OverloadResult Create(MethodSymbol method, int nargs) { return new OverloadResult(method, nargs); }
+        internal static OverloadResult Create(MemberSymbol symbol, ParameterListSymbol paramList, int nFixedArgs, int nVarArgs, int nMissingArgs)
+            { return new OverloadResult(symbol, paramList, nFixedArgs, nVarArgs, nMissingArgs); }
 
         internal OverloadResult Better(OverloadResult other)
         {
             if (other?.Valid == true)
             {
-                if (Valid && other.TotalCost == TotalCost)
+                if (Valid && other.TotalCost == TotalCost && other.VarArgs == VarArgs)
                 {
                     Equivalent = other;
                     ExtraValid += other.ExtraValid + 1;
                 }
-                else if (!Valid || other.TotalCost < TotalCost)
+                else if (!Valid || other.TotalCost < TotalCost || other.VarArgs < VarArgs)
                 {
                     return  other;
                 }

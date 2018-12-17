@@ -26,7 +26,7 @@ using Microsoft.CodeAnalysis.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
-
+using Microsoft.CodeAnalysis.PooledObjects;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     /// <summary>
@@ -124,10 +124,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private BoundExpression BindIndexerOrVOArrayAccess(ExpressionSyntax node, BoundExpression expr, AnalyzedArguments analyzedArguments, DiagnosticBag diagnostics)
         {
-            if (Compilation.Options.IsDialectVO)
+            if (Compilation.Options.HasRuntime)
             {
                 var arrayType = Compilation.ArrayType();
-                var arrayBaseType = Compilation.ArrayBaseType();
                 var usualType = Compilation.UsualType();
                 var pszType = Compilation.PszType();
                 var cf = ((NamedTypeSymbol)expr.Type).ConstructedFrom;
@@ -163,13 +162,57 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return BindIndexerAccess(node, expr, newArgs, diagnostics);
 
                 }
-                if (cf == usualType)
+                var indexerType = Compilation.IndexerType();
+                var namedIndexerType = Compilation.NamedIndexerType();
+                var indexedPropsType = Compilation.IndexedPropertiesType();
+                var arrayBaseType = Compilation.ArrayBaseType();
+                bool numericParams = false;
+                bool mustcast = false;
+                HashSet<DiagnosticInfo> useSiteDiagnostics = null;
+                if (cf == usualType || cf.ConstructedFrom == arrayBaseType)
                 {
-                    // Index operator on USUAL then we convert the usual to an array first
-                    expr = BindCastCore(node, expr, arrayType, wasCompilerGenerated: true, diagnostics: diagnostics);
-                    cf = arrayType;
+                    // Index operator on USUAL then we convert the usual to an array or indexer first
+
+                    if (Compilation.Options.XSharpRuntime)
+                    {
+                        if (analyzedArguments.Arguments.Count == 2 && analyzedArguments.Arguments[1].Type.IsStringType()
+                            && cf.ImplementsInterface(namedIndexerType, ref useSiteDiagnostics))
+                        {
+                            cf = namedIndexerType;
+                            numericParams = true;
+                            mustcast = true;
+                        }
+                        else if (analyzedArguments.Arguments.Count == 1 && analyzedArguments.Arguments[0].Type.IsStringType()
+                            && cf.ImplementsInterface(indexedPropsType, ref useSiteDiagnostics))
+                        {
+                            cf = indexedPropsType;
+                            numericParams = false;
+                            mustcast = true;
+                        }
+                        else if ( cf.ImplementsInterface(indexedPropsType, ref useSiteDiagnostics))
+                        {
+                            cf = indexerType;
+                            numericParams = true;
+                            mustcast = true;
+                        }
+                        else
+                        {
+                            numericParams = true;
+                            mustcast = false;
+                        }
+                        if (mustcast)
+                        {
+                            expr = BindCastCore(node, expr, cf, wasCompilerGenerated: true, diagnostics: diagnostics);
+                        }
+                    }
+                    else
+                    {
+                        expr = BindCastCore(node, expr, arrayType, wasCompilerGenerated: true, diagnostics: diagnostics);
+                        cf = arrayType;
+                        numericParams = true;
+                    }
                 }
-                if (cf == arrayType || (Compilation.Options.XSharpRuntime && cf.ConstructedFrom == arrayBaseType))
+                if (cf == arrayType || numericParams ) 
                 {
                     ImmutableArray<BoundExpression> args;
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
@@ -179,13 +222,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                         BoundExpression newarg;
                         bool mustBeNumeric = false;
                         ++argno;
-                        if (Compilation.Options.XSharpRuntime && cf.ConstructedFrom == arrayBaseType )
-                        {
+                        mustBeNumeric = true;
+                        if (Compilation.Options.XSharpRuntime  && cf == namedIndexerType)
+                        { 
                             mustBeNumeric = argno == 1;
-                        }
-                        else
-                        {
-                            mustBeNumeric = true;
                         }
                         if (mustBeNumeric)
                         {
@@ -262,6 +302,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                             argumentRefKindsOpt: default(ImmutableArray<RefKind>),
                             expanded: false,
                             argsToParamsOpt: default(ImmutableArray<int>),
+                            binderOpt: this,
+                            useSetterForDefaultArgumentGeneration:false ,
                             type: usualType,
                             hasErrors: false)
                         { WasCompilerGenerated = true };
@@ -273,21 +315,43 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         private bool CheckValidRefOmittedArguments(OverloadResolutionResult<MethodSymbol> result, AnalyzedArguments analyzedArguments, DiagnosticBag diagnostics)
         {
+            var member = result.ValidResult.Member;
+            
             for (int i = 0; i < analyzedArguments.Arguments.Count; i++)
             {
-                if (analyzedArguments.RefKind(i) == RefKind.None && result.ValidResult.Member.Parameters[result.ValidResult.Result.ParameterFromArgument(i)].RefKind != RefKind.None)
+                var parNumber = result.ValidResult.Result.ParameterFromArgument(i);
+                var parRefKind = member.Parameters[parNumber].RefKind;
+
+                if (analyzedArguments.RefKind(i) == RefKind.None &&  parRefKind != RefKind.None)
                 {
                     var arg = analyzedArguments.Arguments[i];
 
                     if (Compilation.Options.VOImplicitCastsAndConversions)
                     {
+                        bool adjust = false;
                         if (arg is BoundAddressOfOperator)
                         {
                             arg = (arg as BoundAddressOfOperator).Operand;
+                            adjust = true;
+                        }
+                        else if (arg is BoundLiteral bl && bl.IsLiteralNull())
+                        {
+                            adjust = false;
+                        }
+                        else
+                        {
+                            adjust = true;
+                            Error(diagnostics, ErrorCode.WRN_AutomaticRefGeneration, arg.Syntax, i + 1, parRefKind);
+                        }
+                        if (adjust)
+                        {
                             if (!analyzedArguments.RefKinds.Any())
                             {
+                                // Size the analyzedArguments list
                                 for (int j = 0; j < analyzedArguments.Arguments.Count; j++)
-                                    analyzedArguments.RefKinds.Add(i==j ? RefKind.Ref : RefKind.None);
+                                {
+                                    analyzedArguments.RefKinds.Add(i == j ? parRefKind : RefKind.None);
+                                }
                             }
                             else
                             {
@@ -297,12 +361,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                             // check for correct type
                             if (arg.Type != result.ValidResult.Member.ParameterTypes[i])
                             {
-                                Error(diagnostics,ErrorCode.ERR_BadArgType, arg.Syntax, i+1, arg.Type, result.ValidResult.Member.ParameterTypes[i]);
+                                Error(diagnostics, ErrorCode.ERR_BadArgType, arg.Syntax, i + 1, arg.Type, member.ParameterTypes[i]);
                             }
+
                         }
                     }
-
-                    if (!CheckIsVariable(arg.Syntax, arg, BindValueKind.RefOrOut, checkingReceiver: false, diagnostics: diagnostics))
+                    
+                    if (!CheckValueKind(arg.Syntax, arg, BindValueKind.RefOrOut, checkingReceiver: false, diagnostics: diagnostics))
                         return false;
                 }
             }
@@ -335,7 +400,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         analyzedArguments.Arguments[i] = arg;
                     }
 
-                    if (!CheckIsVariable(arg.Syntax, arg, BindValueKind.RefOrOut, checkingReceiver: false, diagnostics: diagnostics))
+                    if (!CheckValueKind(arg.Syntax, arg, BindValueKind.RefOrOut, checkingReceiver: false, diagnostics: diagnostics))
                         return false;
                 }
             }
@@ -350,7 +415,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool indexed
             )
         {
-            if (Compilation.Options.IsDialectVO && Compilation.Options.LateBinding && right.Kind() != SyntaxKind.GenericName)
+            if (Compilation.Options.HasRuntime && Compilation.Options.LateBinding && right.Kind() != SyntaxKind.GenericName)
             {
                 string propName = right.Identifier.ValueText;
                 if (leftType != null)
@@ -432,7 +497,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             TypeSymbol psz = Compilation.PszType();
             if (source.Type != null && source.Type.SpecialType == SpecialType.System_String &&
-                Compilation.Options.IsDialectVO &&
+                Compilation.Options.HasRuntime &&
                 (destination == psz || destination.IsVoidPointer()))
             {
                 // Note this calls the constructor for __PSZ with a string.
@@ -451,7 +516,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (stringctor != null)
                 {
                     diagnostics.Add(ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak, syntax.Location);
-                    source = new BoundObjectCreationExpression(syntax, stringctor, new BoundExpression[] { source });
+                    source = new BoundObjectCreationExpression(syntax, stringctor, binderOpt: null, new BoundExpression[] { source });
                     return true;
                 }
             }
@@ -668,7 +733,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         symbol = ConstructNamedTypeUnlessTypeArgumentOmitted(node, (NamedTypeSymbol)symbol, typeArgumentList, typeArguments, diagnostics);
                     }
 
-                    expression = BindNonMethod(node, symbol, diagnostics, lookupResult.Kind, isError);
+                    expression = BindNonMethod(node, symbol, diagnostics, lookupResult.Kind, indexed: false, isError);
 
                     if (!isNamedType && (hasTypeArguments || node.Kind() == SyntaxKind.GenericName))
                     {
@@ -677,7 +742,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             syntax: node,
                             resultKind: LookupResultKind.WrongArity,
                             symbols: ImmutableArray.Create<Symbol>(symbol),
-                            childBoundNodes: ImmutableArray.Create<BoundNode>(expression),
+                            childBoundNodes: ImmutableArray.Create<BoundExpression>(expression),
                             type: expression.Type,
                             hasErrors: true);
                     }
@@ -789,7 +854,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression PszFromNull(BoundExpression expression)
         {
             var targetType = Compilation.PszType();
-            return new BoundDefaultOperator(expression.Syntax, targetType);
+            return new BoundDefaultExpression(expression.Syntax, targetType);
         }
     }
     internal static class XsBoundExpressionExtensions

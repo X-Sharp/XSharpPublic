@@ -1,4 +1,4 @@
-PARTIAL CLASS DataServer
+﻿PARTIAL CLASS DataServer
    PROTECT oHyperLabel AS HyperLabel
    PROTECT oHLStatus		AS USUAL
 	PROTECT wFieldCount	AS DWORD
@@ -313,7 +313,7 @@ METHOD UnLock( ) CLIPPER
 	RETURN FALSE
 
 METHOD UnRegisterClient( oClient, lAllowClose ) 
-	LOCAL w AS WORD
+	LOCAL w AS DWORD
 
 	IF ( w := AScan( aClients, oClient ) ) = 0
 		RETURN FALSE

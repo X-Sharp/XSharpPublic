@@ -53,6 +53,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XSharpCodeAnalysis", "src\C
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XSharpScripting", "src\Scripting\XSharpScripting\XSharpScripting.csproj", "{014963AE-D6D1-4FF8-8D8A-8D417F5D8D1F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4B45CA0C-03A0-400F-B454-3D4BCB16AF38} = {4B45CA0C-03A0-400F-B454-3D4BCB16AF38}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2BB506D4-7596-4F79-9B25-1FAAE084BBA8}"
 	ProjectSection(SolutionItems) = preProject
@@ -90,16 +93,28 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildTargets", "BuildTarget
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpVSParser", "src\Compiler\XSharpCodeAnalysis\XSharpVSParser.csproj", "{9F37697B-9FCA-4D91-B8E4-AA34880CFD88}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4B45CA0C-03A0-400F-B454-3D4BCB16AF38} = {4B45CA0C-03A0-400F-B454-3D4BCB16AF38}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MacroCompiler", "MacroCompiler", "{4C1E8A34-027B-4177-8034-03AFD0CF3AD4}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSFullMacroCompiler", "src\Compiler\XSFullMacroCompiler\XSFullMacroCompiler.xsproj", "{5DC40ADC-F250-4611-AD89-B67B150BBC8E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AEBEBC71-1FDE-4901-91E0-5667F9BB211A} = {AEBEBC71-1FDE-4901-91E0-5667F9BB211A}
+	EndProjectSection
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "TestFullMacroCompiler", "src\Compiler\TestMacroCompiler\TestFullMacroCompiler.xsproj", "{DE0191E1-E0C1-4651-B999-0F28167EB96B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AEBEBC71-1FDE-4901-91E0-5667F9BB211A} = {AEBEBC71-1FDE-4901-91E0-5667F9BB211A}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacroCompiler", "src\Scripting\MacroCompiler\MacroCompiler.csproj", "{EB3F3142-07F7-48CA-B38D-F611C45A9511}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "MacroCompiler.Example", "src\Scripting\MacroCompiler.Example\MacroCompiler.Example.xsproj", "{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AEBEBC71-1FDE-4901-91E0-5667F9BB211A} = {AEBEBC71-1FDE-4901-91E0-5667F9BB211A}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

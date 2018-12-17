@@ -7,7 +7,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <!-- Note: All directories in this list end with a back slash -->
-    <RoslynDir>$(Solutiondir)..\Roslyn\</RoslynDir>
+    <RoslynDir>$(Solutiondir)\..\Roslyn\</RoslynDir>
     <RoslynBin>$(RoslynDir)Binaries\</RoslynBin>
     <RoslynSrc>$(RoslynDir)Src\</RoslynSrc>
     <CoreSource>$(RoslynSrc)Compilers\Core\Portable\</CoreSource>
@@ -24,6 +24,8 @@
     <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <GeneratedCompilerPath>$(Solutiondir)Binaries\Debug\net46\</GeneratedCompilerPath>
+	<XscToolPath>$(Solutiondir)Binaries\$(Configuration)\net46\</XscToolPath>
+	<EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
   </PropertyGroup>
 
 

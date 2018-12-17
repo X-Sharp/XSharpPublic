@@ -1,22 +1,17 @@
-@echo on
+@echo off
 if /i "%1" == "Debug" goto Ok
 if /i "%1" == "Release" goto Ok
 goto Error
 :Ok
-set msbuilddir=c:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\
-if exist "%msbuilddir%msbuild.exe" goto found
-set msbuilddir=c:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\
-if exist "%msbuilddir%msbuild.exe" goto found
-set msbuilddir=c:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\
-if exist "%msbuilddir%msbuild.exe" goto found
-goto notfound
-
+call findmsbuild.cmd
+if "%msbuilddir%" == "" goto NotFound
 :found
 set tmpXSharpDev=%XSharpDev%
 rem Reset the XSharpDev path so we will not use the compiler we are generating
 set XSharpDev=
 taskkill  /f /t /fi "IMAGENAME eq XSCompiler.exe" >nul
-Echo Building Compiler %1 Configuration
+Echo Building Compiler %1 Configuration 
+Echo Using MsBuild in %msbuilddir%
 "%msbuilddir%msbuild" Compiler.sln /fl1 /p:Configuration=%1		/t:Build /m /v:m /nologo
 if exist build-%1.log del build-%1.log
 rename msbuild1.log build-%1.log

@@ -21,7 +21,7 @@
 #define Version             "2.0.0.8"
 #define FileNameVersion     "2Beta8"
 #define VIVersion           "2.0.0.8"
-#define TouchDate           "2018-12-12"
+#define TouchDate           "2018-12-17"
 #define TouchTime           "02:00:08"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
@@ -87,8 +87,8 @@
 #define XIDEFolder          DevFolder + "\Xide\"
 
 #define SnippetsSource      DevPublicFolder + "\VisualStudio\ProjectPackage\Snippets\"
-#define XIDESetup           "XIDE_Set_up_1.15.exe"
-#define XIDEVersion         "1.15"
+#define XIDESetup           "XIDE_Set_up_1.16.exe"
+#define XIDEVersion         "1.16"
 #define StdFlags            "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
 #define GACInstall          "gacinstall uninsnosharedfileprompt uninsrestartdelete"
 #define GACShared           "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"
@@ -114,7 +114,8 @@
 ; Registry name for prgx extension
 #define XSScript            "XSharpScript"
 
-; FOlders and registry keys defined by others
+; Folders and registry keys defined by others
+#define VulcanPrjGuid         "{8D3F6D25-C81C-4FD8-9599-2F72B5D4B0C9}"
 #define VulcanEditorGuid     "Editors\{{e6787d5e-718e-4810-9c26-7cc920baa335}\Extensions"
 #define VulcanWedGuid        "Editors\{{e9eecf7e-7aa2-490e-affc-c55fa2acc5a3}\Extensions"
 #define VulcanMedGuid        "Editors\{{adee1755-5ac3-485b-b857-f82d902362ca}\Extensions"
@@ -123,6 +124,7 @@
 #define VS14RegPath          "Software\Microsoft\VisualStudio\14.0"
 #define VS14LocalDir         "{localappdata}\Microsoft\VisualStudio\14.0"
 #define VS15LocalDir         "{localappdata}\Microsoft\VisualStudio\15.0_"
+#define VS16LocalDir         "{localappdata}\Microsoft\VisualStudio\16.0_"
 #define SnippetsPath         "\Snippets\1033"
 
 ; Snippets of code for the Help installer.
@@ -160,6 +162,7 @@ SetupIconFile=Baggage\XSharp.ico
 Compression={#Compression}
 SolidCompression=yes
 SetupLogging=yes
+WindowResizable=yes
 
 ; Version Info for Installer and uninstaller
 VersionInfoVersion={#= VIVersion}
@@ -201,11 +204,11 @@ ChangesEnvironment=yes
 Name: "main";             Description: "The XSharp Compiler and Build System";              Types: full compact custom; Flags: fixed checkablealone disablenouninstallwarning; 
 Name: "main\script";      Description: "Register .prgx as X# Script extension";             Types: full custom;         Flags: disablenouninstallwarning; 
 Name: "main\ngen";        Description: "Optimize performance by generating native images";  Types: full custom;         Flags: disablenouninstallwarning;    
-Name: "main\gac";         Description: "Register runtime DLLs in the GAC (recommended !)";   Types: full custom;         Flags: disablenouninstallwarning; 
+Name: "main\gac";         Description: "Register runtime DLLs in the GAC (recommended !)";  Types: full custom;         Flags: disablenouninstallwarning; 
 Name: "vs2015";           Description: "Visual Studio 2015 Integration";                    Types: full custom;         Flags: disablenouninstallwarning;  Check: Vs2015IsInstalled; 
-Name: "vs2015\help";      Description: "Install VS 2015 documentation";                     Types: full custom;         Flags: disablenouninstallwarning;  Check: HelpViewer22Found; 
-Name: "vs2017";           Description: "Visual Studio 2017 & 2019 Integration";             Types: full custom;         Flags: disablenouninstallwarning;  Check: vs2017IsInstalled; 
-Name: "vs2017\help";      Description: "Install VS 2017 & 2019 documentation";              Types: full custom;         Flags: disablenouninstallwarning;  Check: vs2017IsInstalled; 
+Name: "vs2015\help";      Description: "Install offline VS documentation";                  Types: full custom;         Flags: disablenouninstallwarning;  Check: HelpViewer22Found; 
+Name: "vs2017";           Description: "Visual Studio 2017 & 2019 Integration";             Types: full custom;         Flags: disablenouninstallwarning;  Check: vs2017IsInstalled or Vs2019IsInstalled; 
+Name: "vs2017\help";      Description: "Install offline VS documentation";                  Types: full custom;         Flags: disablenouninstallwarning;  Check: vs2017IsInstalled; 
 Name: "xide";             Description: "Include the XIDE {# XIDEVersion} installer";        Types: full custom;         Flags: disablenouninstallwarning;
 
 
@@ -244,8 +247,10 @@ Components: vs2017; Name: "{userdocs}\Visual Studio 2017\Code Snippets\XSharp\My
 ; user template folders
 Components: vs2015; Name: "{userdocs}\Visual Studio 2015\Templates\ProjectTemplates\XSharp";   
 Components: vs2015; Name: "{userdocs}\Visual Studio 2015\Templates\ItemTemplates\XSharp";   
-Components: vs2017; Name: "{userdocs}\Visual Studio 2017\Templates\ProjectTemplates\XSharp";   
-Components: vs2017; Name: "{userdocs}\Visual Studio 2017\Templates\ItemTemplates\XSharp";   
+Components: vs2017; Name: "{userdocs}\Visual Studio 2017\Templates\ProjectTemplates\XSharp";    Check: vs2017IsInstalled; 
+Components: vs2017; Name: "{userdocs}\Visual Studio 2017\Templates\ItemTemplates\XSharp";       Check: vs2017IsInstalled; 
+Components: vs2017; Name: "{userdocs}\Visual Studio 2019\Templates\ProjectTemplates\XSharp";    Check: vs2019IsInstalled; 
+Components: vs2017; Name: "{userdocs}\Visual Studio 2019\Templates\ItemTemplates\XSharp";       Check: vs2019IsInstalled; 
 
 
 [Languages]
@@ -523,9 +528,12 @@ Source: "{#ExamplesFolder}*.dbf";              DestDir: "{commondocs}\XSharp\Exa
 Source: "{#ExamplesFolder}*.ntx";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
 Source: "{#ExamplesFolder}*.xs*";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
 Source: "{#ExamplesFolder}*.vi*";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Source: "{#ExamplesFolder}*.inf";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Source: "{#ExamplesFolder}*.tpl";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
 Source: "{#ExamplesFolder}*.ico";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
 Source: "{#ExamplesFolder}*.bmp";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
 Source: "{#ExamplesFolder}*.cur";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
+Source: "{#ExamplesFolder}*.man";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
 Source: "{#ExamplesFolder}ca?o*.dll";          DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
 Source: "{#ExamplesFolder}msvc*.dll";          DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
 
@@ -675,6 +683,7 @@ Components: XIDE;        Filename: "{app}\Xide\{#XIDESetup}"; Description:"Run X
 Components: main\ngen;  Filename: "{app}\uninst\instngen.cmd";      Check: CreateNGenTask(); Flags: Runhidden ; StatusMsg: "Generating Native images, please wait.....";
 Components: vs2015;     Filename: "{app}\uninst\deployvs2015.cmd";  Check: DeployToVs2015(); Flags: Runhidden ; StatusMsg: "Deploying extension to VS 2015, please wait.....";
 Components: vs2017;     Filename: "{app}\uninst\deployvs2017.cmd";  Check: DeployToVs2017(); Flags: Runhidden ; StatusMsg: "Deploying extension to VS 2017, please wait.....";
+Components: vs2017;     Filename: "{app}\uninst\deployvs2019.cmd";  Check: DeployToVs2019(); Flags: Runhidden ; StatusMsg: "Deploying extension to VS 2019, please wait.....";
 
 [UninstallRun]
 Components: vs2015\help; Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio14 {#HelpUninstall2}";   StatusMsg:"UnInstalling VS Help for VS2015"; Flags: waituntilidle;
@@ -714,12 +723,21 @@ Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017I
 Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId|1}\ComponentModelCache";       Check: HasVs2017('1');
 Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId|2}\ComponentModelCache";       Check: HasVs2017('2');
 Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId|3}\ComponentModelCache";       Check: HasVs2017('3');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|1}\Extensions\XSharp";  Check: HasVs2017('1');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|2}\Extensions\XSharp";  Check: HasVs2017('2');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|3}\Extensions\XSharp";  Check: HasVs2017('3');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|1}\MsBuild\XSharp";  Check: HasVs2017('1');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|2}\MsBuild\XSharp";  Check: HasVs2017('2');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|3}\MsBuild\XSharp";  Check: HasVs2017('3');
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|1}\Extensions\XSharp";  Check: HasVs2017('1') or HasVs2019('1');
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|2}\Extensions\XSharp";  Check: HasVs2017('2') or HasVs2019('2');
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|3}\Extensions\XSharp";  Check: HasVs2017('3') or HasVs2019('3');
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|1}\MsBuild\XSharp";  Check: HasVs2017('1') or HasVs2019('1');
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|2}\MsBuild\XSharp";  Check: HasVs2017('2') or HasVs2019('2');
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|3}\MsBuild\XSharp";  Check: HasVs2017('3') or HasVs2019('3');
+
+; delete local cache for VS2019
+Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|1}\vtc";                       Check: HasVs2019('1');
+Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|2}\vtc";                       Check: HasVs2019('2');
+Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|3}\vtc";                       Check: HasVs2019('3');
+Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|1}\ComponentModelCache";       Check: HasVs2019('1');
+Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|2}\ComponentModelCache";       Check: HasVs2019('2');
+Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|3}\ComponentModelCache";       Check: HasVs2019('3');
+
 
 Type: filesandordirs; Name: "{group}" ;
 
@@ -753,12 +771,12 @@ Type: filesandordirs; Name: "{commondocs}\XSharp\Scripting";
 Type: dirifempty;     Name: "{commondocs}\XSharp"; 
 
 Components: vs2015; Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp"  ;  
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|1}\Extensions\XSharp" ;  Check: HasVs2017('1');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|2}\Extensions\XSharp";  Check: HasVs2017('2');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|3}\Extensions\XSharp";  Check: HasVs2017('3');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|1}\MsBuild\XSharp";  Check: HasVs2017('1');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|2}\MsBuild\XSharp";  Check: HasVs2017('2');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|3}\MsBuild\XSharp";  Check: HasVs2017('3');
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|1}\Extensions\XSharp" ;  Check: HasVs2017('1') or HasVs2019('1') ;
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|2}\Extensions\XSharp";   Check: HasVs2017('2') or HasVs2019('2');
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|3}\Extensions\XSharp";   Check: HasVs2017('3') or HasVs2019('3');
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|1}\MsBuild\XSharp";     Check: HasVs2017('1') or HasVs2019('1');
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|2}\MsBuild\XSharp";     Check: HasVs2017('2') or HasVs2019('2');
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|3}\MsBuild\XSharp";     Check: HasVs2017('3') or HasVs2019('3');
 
 
 ; Template cache and component cache
@@ -772,6 +790,15 @@ Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017I
 Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId|1}\ComponentModelCache";        Check: HasVs2017('1');
 Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId|2}\ComponentModelCache";        Check: HasVs2017('2');
 Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId|3}\ComponentModelCache";        Check: HasVs2017('3');
+
+;vs2017
+Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|1}\vtc";                        Check: HasVs2019('1');
+Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|2}\vtc";                        Check: HasVs2019('2');
+Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|3}\vtc";                        Check: HasVs2019('3');
+Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|1}\ComponentModelCache";        Check: HasVs2019('1');
+Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|2}\ComponentModelCache";        Check: HasVs2019('2');
+Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|3}\ComponentModelCache";        Check: HasVs2019('3');
+
 
 [Messages]
 WelcomeLabel1=Welcome to {# Product} (X#) 
@@ -799,6 +826,7 @@ var
   vs2017Path2 : String;
   vs2017Path3 : String;
   vs2017Installed: Boolean;
+  vs2019Installed: Boolean;
 
   vs2017Count: Integer;
   vs2017InstanceId1: String;
@@ -812,6 +840,7 @@ var
   vs2017Version1: String;
   vs2017Version2: String;
   vs2017Version3: String;
+
   
   VulcanPrgAssociation: Boolean;
   VulcanGuid : String;
@@ -836,6 +865,15 @@ if not ShellExec('Print', ExpandConstant('{tmp}\license.txt'),
 end;
 {
 VS2017.txt will contain:
+InstanceId: 3a89761f (Complete)
+InstallationVersion: 16.0.28408.50 (4503601489117234)
+InstallationPath: C:\Program Files (x86)\Microsoft Visual Studio\2019\Preview
+Product: Microsoft.VisualStudio.Product.Enterprise
+Workloads:
+    Microsoft.VisualStudio.Workload.CoreEditor
+    Microsoft.VisualStudio.Workload.ManagedDesktop
+    Microsoft.VisualStudio.Workload.NetCoreTools
+    Microsoft.VisualStudio.Workload.VisualStudioExtension
 InstanceId: 8aa9303a (Complete)
 InstallationVersion: 15.0.25914.0 (4222126348959744)
 InstallationPath: C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional
@@ -947,19 +985,20 @@ begin
 end;
 
 
-procedure FindVS2017;
+procedure FindVS201719;
 var FileContents : TArrayOfString;
   ResultCode: Integer;
   i: integer;
   j: integer;
   line: String;
   tokenLength: Integer;
+  tokenPos: Integer;
   token: String;
   vs2017InstanceId: String;
   vs2017BaseDir: String;
   vs2017Version: String;
 begin
-  Log('Detect 2017 start');
+  Log('Detect 2017-2019 start');
   ExtractTemporaryFile('SetupCheck2017.exe');
   if Exec(ExpandConstant('{tmp}\SetupCheck2017.exe'),'','',SW_HIDE, ewWaitUntilTerminated, ResultCode) then
   begin
@@ -1004,48 +1043,54 @@ begin
                      vs2017BaseDir3 := vs2017BaseDir;
                   vs2017Installed := true;
                 end;
-               token := 'Product:';
+              
+               token := 'InstallationVersion:';
+               {InstallationVersion: 16.0.28408.50 (4503601489117234)}
                if Pos(token, line) > 0 then
                 begin
-                  tokenLength := Length(token);
-                  vs2017Version := ExtractFileExt(line);
-                  vs2017Version := Copy(vs2017Version,2,Length(vs2017Version)-1);
+                  tokenPos := Pos(' ', line);
+                  line     := Trim(Copy(line, tokenPos , Length(line) - tokenPos+1));
+                  tokenPos := Pos(' ', line);
+                  vs2017Version := Trim(Copy(line, 1, tokenPos));
                   if vs2017Count = 1 then
                      vs2017Version1 := vs2017Version;
                   if vs2017Count = 2 then
                      vs2017Version2 := vs2017Version;
                   if vs2017Count = 3 then
                      vs2017Version3 := vs2017Version;
-                  vs2017Installed := true;
+                  if Copy(vs2017version,1,2) = '15' then
+                    vs2017Installed := true;
+                  if Copy(vs2017version,1,2) = '16' then
+                    vs2019Installed := true;
                 end
             end
         end
       end;
 
-      Log('Vs 2017 # of installations: '+IntToStr(vs2017Count));
+      Log('Vs 2017-2019 # of installations: '+IntToStr(vs2017Count));
       if vs2017Count > 0 then
       begin
-        Log('Vs 2017 instanceId 1      : '+vs2017InstanceId1);
-        Log('Vs 2017 installation dir 1: '+vs2017BaseDir1);
-        Log('Vs 2017 product version 1 : '+vs2017Version1);
+        Log('Vs 2017-19 instanceId 1      : '+vs2017InstanceId1);
+        Log('Vs 2017-19 installation dir 1: '+vs2017BaseDir1);
+        Log('Vs 2017-19 product version 1 : '+vs2017Version1);
         vs2017path1 := vs2017BaseDir1 + '\Common7\Ide\';
       end;
       if vs2017Count > 1 then
       begin
-        Log('Vs 2017 instanceId 2      : '+vs2017InstanceId2);
-        Log('Vs 2017 installation dir 2: '+vs2017BaseDir2);
-        Log('Vs 2017 product version 2 : '+vs2017Version2);
+        Log('Vs 2017-19 instanceId 2      : '+vs2017InstanceId2);
+        Log('Vs 2017-19 installation dir 2: '+vs2017BaseDir2);
+        Log('Vs 2017-19 product version 2 : '+vs2017Version2);
         vs2017path2 := vs2017BaseDir2 + '\Common7\Ide\';
       end;
       if vs2017Count > 2 then
       begin
-        Log('Vs 2017 instanceId 3      : '+vs2017InstanceId3);
-        Log('Vs 2017 installation dir 3: '+vs2017BaseDir3);
-        Log('Vs 2017 product version  3: '+vs2017Version3);
+        Log('Vs 2017-19 instanceId 3      : '+vs2017InstanceId3);
+        Log('Vs 2017-19 installation dir 3: '+vs2017BaseDir3);
+        Log('Vs 2017-19 product version  3: '+vs2017Version3);
         vs2017path3 := vs2017BaseDir3 + '\Common7\Ide\';
       end
   end;
-  Log('Detect 2017 end');
+  Log('Detect 2017-2019 end');
 end;
 
 
@@ -1057,7 +1102,7 @@ begin
   Vulcan4Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Grafx\Vulcan.NET\4.0','InstallPath',temp) ;  
   Vs2015Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\VisualStudio\SxS\VS7','14.0',Vs2015BaseDir) ;
   if Vs2015Installed then Vs2015Path := Vs2015BaseDir+'Common7\Ide\';
-  FindVS2017;
+  FindVS201719;
 
   HelpViewer22Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\Help\v2.2','AppRoot',HelpViewer22Dir) ;
   HelpViewer23Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\Help\v2.3','AppRoot',HelpViewer23Dir) ;
@@ -1067,7 +1112,7 @@ begin
   VulcanPrgAssociation := RegQueryStringValue(HKEY_LOCAL_MACHINE, '{#Vs14RegPath}\Languages\File Extensions\.prg', '', VulcanGuid) ;
   if VulcanPrgAssociation then 
       begin
-      VulcanPrgAssociation := (UpperCase(VulcanGuid) = '{8D3F6D25-C81C-4FD8-9599-2F72B5D4B0C9}');
+      VulcanPrgAssociation := (UpperCase(VulcanGuid) = '{#VulcanPrjGuid}');
       end
   end;
   Log('End VS Detection');
@@ -1084,9 +1129,9 @@ begin
   Log('Helpviewer22 : ' + HelpViewer22Dir);
   Log('Helpviewer23 : ' + HelpViewer23Dir);
   Log('VS2015       : ' + Vs2015BaseDir); 
-  Log('VS2017       : ' + Vs2017BaseDir1);
-  Log('VS2017       : ' + Vs2017BaseDir2);
-  Log('VS2017       : ' + Vs2017BaseDir3);
+  Log('VS2017-19    : ' + Vs2017BaseDir1);
+  Log('VS2017-19    : ' + Vs2017BaseDir2);
+  Log('VS2017-19    : ' + Vs2017BaseDir3);
  
 
   
@@ -1174,12 +1219,20 @@ end;
 function HasVs2017(version: String): Boolean;
 begin
   case version of
-  '1' : result := Length(vs2017path1) > 0 ;
-  '2' : result := Length(vs2017path2) > 0 ;
-  '3' : result := Length(vs2017path3) > 0 ;
+  '1' : result := Copy(Vs2017Version1,1,2) = '15';
+  '2' : result := Copy(Vs2017Version2,1,2) = '15';
+  '3' : result := Copy(Vs2017Version3,1,2) = '15';
   end;
 end ;
 
+function HasVs2019(version: String): Boolean;
+begin
+  case version of
+  '1' : result := Copy(Vs2017Version1,1,2) = '16';
+  '2' : result := Copy(Vs2017Version2,1,2) = '16';
+  '3' : result := Copy(Vs2017Version3,1,2) = '16';
+  end;
+end ;
 
 
 /////////////////////////////////////////////////////////////////////
@@ -1214,11 +1267,45 @@ begin
         commands := commands + DelFolder(Vs2017BaseDir3+'\MsBuild\XSharp');
         commands := commands + CopyMsBuild(Vs2017BaseDir3+'\MsBuild\XSharp');
       end;
-
       SaveStringToFile( ExpandConstant('{app}\uninst\deployvs2017.cmd'), commands, False);
   end
 end;
 
+function DeployToVs2019: Boolean;
+var commands: string;
+begin
+  result := Vs2019Installed;
+  if result then 
+  begin
+      commands := '';
+      if HasVs2019('1') then 
+      begin
+        commands := commands + DelFolder(Vs2017Path1+'Extensions\XSharp');
+        commands := commands + DelUserFolders(ExpandConstant('{#VS16LocalDir}'+vs2017InstanceId1));
+        commands := commands + CopyToVsFolder(Vs2017Path1);
+        commands := commands + DelFolder(Vs2017BaseDir1+'\MsBuild\XSharp');
+        commands := commands + CopyMsBuild(Vs2017BaseDir1+'\MsBuild\XSharp');
+       end;
+      if HasVs2019('2') then 
+      begin
+        commands := commands + DelFolder(Vs2017Path2+'Extensions\XSharp');
+        commands := commands + DelUserFolders(ExpandConstant('{#VS16LocalDir}'+vs2017InstanceId2));
+        commands := commands + CopyToVsFolder(Vs2017Path2);
+        commands := commands + DelFolder(Vs2017BaseDir2+'\MsBuild\XSharp');
+        commands := commands + CopyMsBuild(Vs2017BaseDir2+'\MsBuild\XSharp');
+       end ;
+      if HasVs2019('3') then 
+      begin
+        commands := commands + DelFolder(Vs2017Path3+'Extensions\XSharp');
+        commands := commands + DelUserFolders(ExpandConstant('{#VS16LocalDir}'+vs2017InstanceId3));
+        commands := commands + CopyToVsFolder(Vs2017Path3);
+        commands := commands + DelFolder(Vs2017BaseDir3+'\MsBuild\XSharp');
+        commands := commands + CopyMsBuild(Vs2017BaseDir3+'\MsBuild\XSharp');
+      end;
+
+      SaveStringToFile( ExpandConstant('{app}\uninst\deployvs2019.cmd'), commands, False);
+  end
+end;
 /////////////////////////////////////////////////////////////////////
 function Vs2015IsInstalled: Boolean;
 begin
@@ -1230,6 +1317,12 @@ function vs2017IsInstalled: Boolean;
 begin
   result := vs2017Installed;
 end;
+
+function vs2019IsInstalled: Boolean;
+begin
+  result := vs2019Installed;
+end;
+
 
 /////////////////////////////////////////////////////////////////////
 function GetVs2015IdeDir(Param: String): String;

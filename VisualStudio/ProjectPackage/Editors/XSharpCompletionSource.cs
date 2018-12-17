@@ -2860,16 +2860,21 @@ namespace XSharpLanguage
                         cType = SearchType(file, currentToken, out foundElement, currentNS);
                     }
                     // We have it
-                    if ( foundElement != null )
+                    if (foundElement != null)
                     {
                         // and we are in an Array, so we need the "other" type
-                        if ( inArray && foundElement.IsGeneric )
+                        if (inArray && foundElement.IsGeneric)
                         {
-
+                            // Retrieve the inner Type
+                            if (foundElement.XSharpElement != null)
+                            {
+                                if (!String.IsNullOrEmpty(foundElement.GenericTypeName))
+                                    cType = new CompletionType(foundElement.GenericTypeName, file, file.Usings);
+                            }
                         }
-                        else if ( foundElement.IsArray )
+                        else if (foundElement.IsArray)
                         {
-                            cType = new CompletionType("System.Array", file, "" );
+                            cType = new CompletionType("System.Array", file, "");
                         }
                     }
                 }
@@ -3753,6 +3758,8 @@ namespace XSharpLanguage
             XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharp.Codecompletion :" + message);
         }
 
+
+
     }
 
     /// <summary>
@@ -3900,6 +3907,40 @@ namespace XSharpLanguage
                     }
                 }
                 return cType;
+            }
+        }
+
+        public String GenericTypeName
+        {
+            get
+            {
+                String ret = "";
+                if (this.isGeneric)
+                {
+                    string searchTypeName = "";
+                    if ((this.XSharpElement is XTypeMember) && (this.XSharpElement.Kind.HasReturnType()))
+                    {
+                        XTypeMember xt = (XTypeMember)this.XSharpElement;
+                        searchTypeName = xt.TypeName;
+                    }
+                    else if (this.XSharpElement is XVariable)
+                    {
+                        XVariable xv = (XVariable)this.XSharpElement;
+                        searchTypeName = xv.TypeName;
+                    }
+                    if (!String.IsNullOrEmpty(searchTypeName))
+                    {
+                        int genMarker = searchTypeName.IndexOf("<");
+                        if (genMarker > -1)
+                        {
+                            searchTypeName = searchTypeName.Substring(genMarker + 1);
+                            searchTypeName = searchTypeName.Substring(0, searchTypeName.Length - 1);
+                            String[] items = searchTypeName.Split(',');
+                            ret = items[0];
+                        }
+                    }
+                }
+                return ret;
             }
         }
 

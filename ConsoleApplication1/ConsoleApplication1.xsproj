@@ -2,12 +2,13 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <ProjectGuid>98b12b1a-d7b0-457a-b3bc-d7fa3c440264</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ConsoleApplication1</RootNamespace>
     <AssemblyName>ConsoleApplication1</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <Name>ConsoleApplication1</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
@@ -40,13 +41,14 @@
     <StartupObject />
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>C:\Download\Ads\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -101,6 +103,34 @@
     </Reference>
     <Reference Include="System.Xml.Linq">
       <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="XSharp.CodeAnalysis, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.CodeAnalysis</Name>
+      <AssemblyName>XSharp.CodeAnalysis.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\Dev\XSharp\Binaries\Debug\Dlls\XSharp.CodeAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.MacroCompiler, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.MacroCompiler</Name>
+      <AssemblyName>XSharp.MacroCompiler.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\Dev\XSharp\Binaries\Obj\XSFullMacroCompiler\Debug\XSharp.MacroCompiler.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.MacroCompiler.Fast, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.MacroCompiler.Fast</Name>
+      <AssemblyName>XSharp.MacroCompiler.Fast.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\Binaries\Debug\XSharp.MacroCompiler.Fast.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.Scripting, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.Scripting</Name>
+      <AssemblyName>XSharp.Scripting.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\Dev\XSharp\Binaries\Debug\Dlls\XSharp.Scripting.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

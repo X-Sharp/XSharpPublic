@@ -103,12 +103,12 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="XSharp.MacroCompiler.Fast, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.MacroCompiler.Fast</Name>
-      <AssemblyName>XSharp.MacroCompiler.Fast.dll</AssemblyName>
+    <Reference Include="XSharp.MacroCompiler, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.MacroCompiler</Name>
+      <AssemblyName>XSharp.MacroCompiler.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\Binaries\Debug\XSharp.MacroCompiler.Fast.dll</HintPath>
+      <HintPath>..\..\..\Dev\XSharp\Binaries\Debug\Dlls\XSharp.MacroCompiler.dll</HintPath>
     </Reference>
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
       <Name>xunit.abstractions</Name>

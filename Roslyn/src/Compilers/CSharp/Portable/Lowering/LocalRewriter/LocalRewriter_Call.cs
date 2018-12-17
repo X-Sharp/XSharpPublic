@@ -409,22 +409,29 @@ namespace Microsoft.CodeAnalysis.CSharp
             //
             // If none of those are the case then we can just take an early out.
 
-#if XSHARP
-            // TODO Check if this is still ok
-#endif            
+       
 
             ArrayBuilder<LocalSymbol> temporariesBuilder = ArrayBuilder<LocalSymbol>.GetInstance();
             rewrittenArguments = _factory.MakeTempsForDiscardArguments(rewrittenArguments, temporariesBuilder);
             ImmutableArray<ParameterSymbol> parameters = methodOrIndexer.GetParameters();
 
-            if (CanSkipRewriting(rewrittenArguments, methodOrIndexer, expanded, argsToParamsOpt, invokedAsExtensionMethod, false, out var isComReceiver))
+#if XSHARP
+            bool isComReceiver = false;
+            if (!_compilation.Options.HasRuntime)
             {
-                temps = temporariesBuilder.ToImmutableAndFree();
-                argumentRefKindsOpt = GetEffectiveArgumentRefKinds(argumentRefKindsOpt, parameters);
+                if (CanSkipRewriting(rewrittenArguments, methodOrIndexer, expanded, argsToParamsOpt, invokedAsExtensionMethod, false, out isComReceiver))
+#else
+                if (CanSkipRewriting(rewrittenArguments, methodOrIndexer, expanded, argsToParamsOpt, invokedAsExtensionMethod, false, out var isComReceiver))
+#endif
+                {
+                    temps = temporariesBuilder.ToImmutableAndFree();
+                    argumentRefKindsOpt = GetEffectiveArgumentRefKinds(argumentRefKindsOpt, parameters);
 
-                return rewrittenArguments;
+                    return rewrittenArguments;
+                }
+#if XSHARP
             }
-
+#endif
             // We have:
             // * a list of arguments, already converted to their proper types, 
             //   in source code order. Some optional arguments might be missing.

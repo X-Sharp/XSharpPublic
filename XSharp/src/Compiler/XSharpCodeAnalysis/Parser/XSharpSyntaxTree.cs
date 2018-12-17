@@ -163,10 +163,10 @@ namespace Microsoft.CodeAnalysis
                 var n = XNode;
                 if (n != null)
                 {
-                    if (n is XSharpParser.NamedArgumentContext)
-                        return ((XSharpParser.NamedArgumentContext)n).Expr == null;
-                    if (n is XSharpParser.UnnamedArgumentContext)
-                        return ((XSharpParser.UnnamedArgumentContext)n).Expr == null;
+                    if (n is XSharpParser.NamedArgumentContext nac)
+                        return nac.Expr == null;
+                    if (n is XSharpParser.UnnamedArgumentContext uac)
+                        return uac.Expr == null;
                 }
                 return false;
             }

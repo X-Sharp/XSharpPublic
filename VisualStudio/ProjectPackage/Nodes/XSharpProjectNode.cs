@@ -1958,6 +1958,10 @@ namespace XSharp.Project
                         ok = false;
                 }
             }
+            if (str.IndexOf("XSharp.VO", StringComparison.OrdinalIgnoreCase) >= 0 && str.IndexOf("XSharp.RT", StringComparison.OrdinalIgnoreCase) == -1)
+            {
+                ok = false;
+            }
             if (!ok)
             {
                 FixProjectFile(BuildProject.FullPath);
@@ -2116,6 +2120,7 @@ namespace XSharp.Project
             MBC.ProjectImportElement iTargets = null;
             changed = moveImports(ref iTargets, filename) || changed;
             changed = moveBuildEvents(iTargets) || changed;
+            changed = addReferences() || changed;
             if (changed)
             {
                 File.Copy(filename, filename + ".bak", true);
@@ -2124,6 +2129,37 @@ namespace XSharp.Project
             }
         }
 
+        private bool addReferences()
+        {
+            MBC.ProjectItemElement voRef = null;
+            bool hasRT = false;
+            bool changed = false;
+            foreach (var grp in BuildProject.Xml.ItemGroups)
+            {
+                foreach (var item in grp.Items)
+                {
+                    if (item.ItemType.ToLower() == "reference")
+                    {
+                        if (item.Include.IndexOf("XSharp.VO", StringComparison.OrdinalIgnoreCase) >= 0)
+                            voRef = item;
+                        if (item.Include.IndexOf("XSharp.RT", StringComparison.OrdinalIgnoreCase) >= 0)
+                            hasRT = true;
+                    }
+
+                }
+            }
+            if (! hasRT && voRef != null)
+            {
+                var grp = voRef.Parent;
+                var newitem = BuildProject.Xml.AddItem("Reference", voRef.Include.Replace(".VO", ".RT"));
+                foreach (var child in voRef.Metadata)
+                {
+                    newitem.AddMetadata(child.Name, child.Value.Replace(".VO", ".RT"));
+                }
+                changed = true;
+            }
+            return changed;
+        }
         private bool moveImports(ref MBC.ProjectImportElement iTargets, string filename)
         {
             bool hasImportDefaultProps = false;

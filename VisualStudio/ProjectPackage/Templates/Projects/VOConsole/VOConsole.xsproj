@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="XSharp.Core" />
+    <Reference Include="XSharp.RT" />
     <Reference Include="XSharp.VO" />
     $endif$
   </ItemGroup>

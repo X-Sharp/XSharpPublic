@@ -18,7 +18,7 @@
     <TargetFrameworkProfile />
     <IncludePaths>$(Solutiondir)src\Common</IncludePaths>
     <NoStandardDefs>true</NoStandardDefs>
-	<OutputPath>$(Solutiondir)Binaries\$(Configuration)\</OutputPath>
+	<OutputPath>$(Binariesdir)</OutputPath>
 	</PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

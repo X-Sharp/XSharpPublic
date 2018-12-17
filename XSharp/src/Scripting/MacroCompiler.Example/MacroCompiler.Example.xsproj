@@ -62,8 +62,7 @@
     <NoStandardDefs>false</NoStandardDefs>
     <IncludePaths />
     <Prefer32Bit>False</Prefer32Bit>
-    <OutputPath>$(OutputPath)\</OutputPath>
-    <IntermediateOutputPath>$(IntermediateOutputPath)\</IntermediateOutputPath>
+    <OutputPath>$(Binariesdir)\Exes</OutputPath>
     <AssemblyOriginatorKeyFile>$(solutiondir)build\strongnamekeys\xsharpkey.private.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">

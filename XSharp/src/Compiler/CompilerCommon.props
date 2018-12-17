@@ -23,8 +23,9 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
+	<BinariesDir>$(Solutiondir)Binaries\$(Configuration)\</BinariesDir>
     <GeneratedCompilerPath>$(Solutiondir)Binaries\Debug\net46\</GeneratedCompilerPath>
-	<XscToolPath>$(Solutiondir)Binaries\$(Configuration)\net46\</XscToolPath>
+	<XscToolPath>$(BinariesDir)net46\</XscToolPath>
 	<EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
   </PropertyGroup>
 

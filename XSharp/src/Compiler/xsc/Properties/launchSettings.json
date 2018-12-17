@@ -2,8 +2,8 @@
   "profiles": {
     "xsc": {
       "commandName": "Project",
-      "commandLineArgs": "@LastXSharpResponseFile.Rsp /parallel-",
-      "workingDirectory": "c:\\ReportPro\\RP2Net\\ReportPro2, Base\\"
+      "commandLineArgs": "@app.rsp",
+      "workingDirectory": "c:\\Xsharp\\Dev\\Tests\\"
     }
   }
 }

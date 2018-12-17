@@ -26,17 +26,18 @@
     <!--Use the C# compiler created in this solution-->
     <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
     <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants)NET46</DefineConstants>
-    <DefineConstants>$(DefineConstants);XSHARP;</DefineConstants>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <GenericDefines>COMPILERCORE;NET45;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE</GenericDefines>
   </PropertyGroup>
   
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DefineConstants>XSHARP;DEBUG;TRACE;$(Genericdefines)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
-    <DefineConstants>$(DefineConstants);TRACE;NDEBUG</DefineConstants>
+    <DefineConstants>XSHARP;NDEBUG;TRACE;$(Genericdefines)</DefineConstants>
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <PackageReference Include="System.Threading.Tasks.Parallel" Version="$(SystemThreadingTasksParallelVersion)" />

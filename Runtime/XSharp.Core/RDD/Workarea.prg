@@ -453,7 +453,7 @@ BEGIN NAMESPACE XSharp.RDD
 			LOCAL result := FALSE AS LOGIC
             IF SELF:_ScopeInfo:ForBlock != NULL
                 SELF:_ScopeInfo:NextCount := 0
-                SELF:_ScopeInfo:Rest      := FALSE
+                SELF:_ScopeInfo:Rest      := TRUE
                 SELF:_ScopeInfo:RecId     := NULL
                 result := SELF:SkipScope(1)
             ENDIF

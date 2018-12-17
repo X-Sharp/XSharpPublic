@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildThisFileDirectory)..\..\..\Directory.Build.props" />
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
-  <Import Project="..\CompilerCommon.targets" />
+  <Import Project="..\CompilerCommon.props" />
   <PropertyGroup>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <ProjectGuid>5dc40adc-f250-4611-ad89-b67b150bbc8e</ProjectGuid>

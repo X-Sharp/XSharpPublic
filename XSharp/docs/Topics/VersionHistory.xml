@@ -29,10 +29,12 @@
       <li styleclass="List"><text styleclass="Body Text">We have added a new preprocessor Match marker &lt;#idMarker&gt; which matches a single token (all characters until the first whitespace character)</text></li>
       <li styleclass="List"><text styleclass="Body Text">When you select a dialect now, then the compiler will automatically add some compiler macros. The VO dialect declares the macro __VO__, the Vulcan dialect declares the macro __VULCAN__ the harbour dialect declares the macro __HARBOUR__ and the XBase++ dialect declares the macro __XPP__. </text></li>
       <li styleclass="List"><text styleclass="Body Text">When compiling against the X# runtime then also the macro __XSHARP_RT__ will be defined.</text></li>
+      <li styleclass="List"><text styleclass="Body Text">We have added a new warning when you pass a parameter without &apos;ref&apos; modifier (or @ prefix) to a method or function that expects a parameter by reference or an out parameter.</text></li>
+      <li styleclass="List"><text styleclass="Body Text">We have also added a warning that will be shown when you assign a value from a larger integral type into a smaller integral type to warn you about possible overflow problems.</text></li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List">This build includes a new (experimental) fast macro compiler. <link displaytype="text" defaultstyle="true" type="topiclink" href="Using-the-new-macro-compiler">See this topic on how to use this macro compiler</link></li>
+      <li styleclass="List">This build includes a new faster macro compiler. It should be fully compatible with the VO macro compiler. Some of the .Net features are not available yet in the macro compiler.</li>
       <li styleclass="List">We moved most of the generic XBase code to XSharp.RT.DLL. XSharp.VO.DLL now only has VO specific code. We have also added XSharp.XPP.DLL for XPP</li>
       <li styleclass="List">Fix Ansi2OEM problem with FRead3(), FWrite3() and FReadStr</li>
       <li styleclass="List">Added &#160;missing functions EnableLBOptimizations() and property Array:Count</li>
@@ -45,9 +47,13 @@
       <li styleclass="List">Fixed several problems in the RDD system and support functions.</li>
       <li styleclass="List">Fixed several problems in the late binding support, such as IsMethod, IsAccess, IVarPut, IVarPutSelf etc.</li>
       <li styleclass="List">Fixed several problems with TransForm()</li>
-      <li styleclass="List">Integer divisions for usuals containing integers now return </li>
-      <li styleclass="List">We fixed several conversions that were used during late bound calls</li>
+      <li styleclass="List">Integer divisions for usuals containing integers now return either integers or else fractional numbers depending on the compiler setting of the main app.</li>
+      <li styleclass="List">We fixed several conversions problems during late bound calls</li>
+      <li styleclass="List">We have fixed several problems with the Val() and Str() functions.</li>
+      <li styleclass="List">The internal type names for DATE and FLOAT have been changed to __Date and __Float. If you rely on these type names please check your code !</li>
+      <li styleclass="List">DebOut32 was not outputting data to the debug terminal if the runtime was compiled in release mode. This has been fixed.</li>
     </list>
+    <para styleclass="List"></para>
     <para styleclass="Heading2">Visual Studio Integration</para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Fixed filtering on &apos;current project&apos; in the error list</li>
@@ -60,6 +66,8 @@
     <para styleclass="Heading2">Tools</para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">VulcanXPorter was always adjusting the referenced VO libraries and &#160;was ignoring the &quot;Use X# Runtime&quot; checkbox</li>
+      <li styleclass="List">VOXPorter now has an option to copy the resources referenced in the AEF files to the Resources subfolder in the project</li>
+      <li styleclass="List">VOXPorter now also copies the cavowed, cavofed and cavoded template files to the properties folders in your project..</li>
     </list>
     <para styleclass="Heading1">Changes in 2.0.0.7 (Bandol Beta 7)</para>
     <para styleclass="Heading2">Compiler</para>

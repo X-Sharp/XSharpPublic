@@ -177,6 +177,7 @@
       <config-value name="make3status">*</config-value>
       <config-value name="tidyxml">1</config-value>
       <config-value name="contents">XSharp</config-value>
+      <config-group name="bookmarks"/>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>

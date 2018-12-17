@@ -14,7 +14,6 @@ Begin
 	END
 End
  
-
  ComposeEmailContextmenu MENU
 Begin
 	POPUP "Click"

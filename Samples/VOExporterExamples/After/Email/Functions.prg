@@ -27,6 +27,10 @@ FUNCTION FileSizeString(uBytes, lTrim)
 	RETURN cResult
 
 
+FUNCTION FullDate (dInDate AS DATE) AS STRING STRICT
+
+	RETURN Left(DToC(dInDate),2)+" "+CMonth(dIndate)+" "+Left(DToS(dInDate),4)
+
 FUNCTION GetAssociatedIcon( cFile AS STRING , lLarge := TRUE AS LOGIC ) AS Icon PASCAL
 
 	LOCAL strucSHFileInfo IS _winSHFILEINFO
@@ -57,9 +61,16 @@ FUNCTION GetAssociatedIcon( cFile AS STRING , lLarge := TRUE AS LOGIC ) AS Icon 
 	RETURN oIcon
 
 
-FUNCTION FullDate (dInDate AS DATE) AS STRING STRICT
+FUNCTION GetTempFilePath() AS STRING PASCAL
+	LOCAL ptrName AS PTR
+	LOCAL cResult AS STRING
 
-	RETURN Left(DToC(dInDate),2)+" "+CMonth(dIndate)+" "+Left(DToS(dInDate),4)
+	ptrName := MemAlloc(250)
+	GetTempPath(250,ptrName)
+	cResult := Psz2String(ptrName)
+	MemFree(ptrName)
+
+	RETURN cResult
 
 FUNCTION SetUserInfo() AS VOID PASCAL
 
@@ -84,17 +95,6 @@ FUNCTION SetUserInfo() AS VOID PASCAL
 	aMailInfo[DEF_STARTINBOX] := oReg:QueryInt("Email_StartupInbox") = 1
 
 	RETURN	
-
-FUNCTION GetTempFilePath() AS STRING PASCAL
-	LOCAL ptrName AS PTR
-	LOCAL cResult AS STRING
-
-	ptrName := MemAlloc(250)
-	GetTempPath(250,ptrName)
-	cResult := Psz2String(ptrName)
-	MemFree(ptrName)
-
-	RETURN cResult
 
 FUNCTION TempFilename (cExt AS STRING) AS STRING PASCAL
    LOCAL cTemp, cPath AS STRING

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			Assert.Equal("1", AsString(1))
 			VAR c1 := GetRTFullPath()
-			Assert.Equal(TRUE, c1:ToLower():IndexOf(".vo.dll") > 0)
+			Assert.Equal(TRUE, c1:ToLower():IndexOf(".rt.dll") > 0)
 
 			VAR n1 := GetThreadCount()
 			Assert.Equal(TRUE, n1 > 1)
@@ -45,9 +45,34 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			c := StrZero(12.3456,10,2)
 			Assert.Equal("0000012.35", c)	// ROunded up
 			c := Str3(2.49999,4,2)
-			assert.Equal("2.50", c )  
+			Assert.Equal("2.50", c )  
 			c := Str3(2.50012,4,2)
-			assert.Equal("2.50", c )  
+			Assert.Equal("2.50", c )  
+
+			c := Str3(70.00 - 65.01 - 4.99 , 16 , 2)
+			Assert.Equal("            0.00", c )  
+			c := Str3(70.00 - 65.01 - 4.99 , 20 , 15)
+			Assert.Equal("  -0.000000000000005", c )  
+
+			c := Str3(123456.7890/2.34, 25,15)
+			Assert.Equal("    52759.311538461545000", c )  
+			c := Str(123456.7890/2.34, 25,15)
+			Assert.Equal("    52759.311538461545000", c )  
+			
+			SetDecimalSep(Asc(","))
+			f := 1.2345999999
+			Assert.Equal("1,2", Str(f, 30,1):Trim() )  
+			Assert.Equal("1,23", Str(f, 30,2):Trim() )  
+			Assert.Equal("1,235", Str(f, 30,3):Trim() )  
+			Assert.Equal("1,2346", Str(f, 30,4):Trim() )  
+			Assert.Equal("1,23460", Str(f, 30,5):Trim() )  
+			Assert.Equal("1,234600", Str(f, 30,6):Trim() )  
+			Assert.Equal("1,2346000", Str(f, 30,7):Trim() )  
+			Assert.Equal("1,23460000", Str(f, 30,8):Trim() )  
+			Assert.Equal("1,234600000", Str(f, 30,9):Trim() )  
+			Assert.Equal("1,2345999999", Str(f, 30,10):Trim() )  
+			Assert.Equal("1,23459999990", Str(f, 30,11):Trim() )  
+			Assert.Equal("1,234599999900", Str(f, 30,12):Trim() )  
 
 		[Fact, Trait("Category", "Val")];
 		METHOD ValTest() AS VOID
@@ -72,6 +97,48 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True(Val("0x100") == 256)
 			Assert.True(Val("0x1AE") == 430)
 
+			SetDecimalSep(',')
+            SetThousandSep('.') 
+
+			u := Val("12,34")
+			Assert.Equal(12.34, (FLOAT) u)
+			u := Val("12.34")
+			Assert.Equal(12.34, (FLOAT) u)
+
+            SetDecimalSep('.')
+            SetThousandSep(',') 
+
+			u := Val("12,34")
+			Assert.Equal(12, (INT) u) // idiotic VO behavior
+			u := Val("12.34")
+			Assert.Equal(12.34, (FLOAT) u)
+
+		[Fact, Trait("Category", "Val")];
+		METHOD ValTests2() AS VOID
+			SetDecimalSep(',')
+			SetThousandSep('.')
+			Assert.Equal(123, (INT) Val("123") )
+			Assert.Equal(123.456, (FLOAT) Val("123,456") )
+	
+			Assert.Equal(0, (INT) Val("") )
+	
+			Assert.Equal(0, (INT) Val("abc") )
+			Assert.Equal(123, (INT) Val("123abc") )
+			Assert.Equal(123, (INT) Val("123abc456") )
+			Assert.Equal(123, (INT) Val("123abc456,789") )
+			Assert.Equal(0, (INT) Val("abc123456,789") )
+			Assert.Equal(255, (INT) Val("0xFF") )
+			Assert.Equal(0xFFFF, (INT) Val("0xFFFF") )
+			Assert.Equal(4294967295, (INT64) Val("0xFFFFFFFF") )
+			Assert.Equal(11, (INT) Val("11L11") )
+	        
+			Assert.Equal(1.000, (FLOAT) Val("1,000.1") )
+			Assert.Equal(1.001, (FLOAT) Val("1,001.1") )
+			SetDecimalSep('.')
+			SetThousandSep(',')
+			Assert.Equal(1.0, (FLOAT) Val("1,000.1") )
+			Assert.Equal(1.0, (FLOAT) Val("1,001.1") )
+		RETURN
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

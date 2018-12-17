@@ -382,7 +382,7 @@ METHOD Relation( nRelation )
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
 #ifdef __VULCAN__
-		IF ! VODBRelation( nRelation,  cRelation )
+		IF ! VODBRelation( nRelation,  @cRelation )
 			BREAK ErrorBuild( _VODBErrInfoPtr() )
 		ENDIF
 #else

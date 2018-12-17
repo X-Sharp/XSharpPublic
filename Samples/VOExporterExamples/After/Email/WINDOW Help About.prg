@@ -1,10 +1,10 @@
-#region DEFINES
+﻿#region DEFINES
 STATIC DEFINE HELPABOUT_ABOUTTEXT := 100
 STATIC DEFINE HELPABOUT_PUSHBUTTON1 := 101
 STATIC DEFINE HELPABOUT_FIXEDBITMAP1 := 102
 #endregion
 
-CLASS HelpAbout INHERIT DIALOGWINDOW
+PARTIAL CLASS HelpAbout INHERIT DIALOGWINDOW
 	PROTECT oDCAboutText AS FIXEDTEXT
 	PROTECT oCCPushButton1 AS PUSHBUTTON
 	PROTECT oDCFixedBitmap1 AS FIXEDBITMAP
@@ -34,12 +34,6 @@ CONSTRUCTOR(oParent,uExtra)
 RETURN
 
 
-method PushButton1() 
-
-	self:EndDialog()
-	
-   RETURN SELF
-
 METHOD PostInit(oParent,uExtra) 
 	LOCAL sVer AS STRING
 	LOCAL oSysLink AS SysLink
@@ -52,7 +46,7 @@ METHOD PostInit(oParent,uExtra)
 	sVer := SubStr(sVer, RAt2(" ", sVer)+1)
 	oDCAboutText:CurrentText := _Chr(13)+" Visual Objects EMail Client Application"+_Chr(13)+_Chr(13);
 		+" Version "+sVer+_Chr(13)+_Chr(13);
-		+" � 1994-2007 GrafX Software Dev. Inc.& CA Int"
+		+" © 1994-2007 GrafX Software Dev. Inc.& CA Int"
 		
 	IF IsThemeEnabled()
 		s := "Visit <A HREF="+_chr(34)+;
@@ -74,20 +68,20 @@ METHOD PostInit(oParent,uExtra)
 		oFont1:Underline := TRUE
 		
 		oHL1 := HyperLink{SELF,-1,point{190,25},dimension{0,0},"http://www.grafxsoft.com"}
-		oHL1:Controlfont := oFont1
+		oHL1:ControlFont := oFont1
 		oHL1:size := dimension{150,20}
 		oHL1:textcolor := color{COLORBLUE}
-		oFont1:underline := TRUE
+		oHL1:ControlFont:underline := TRUE
 		oHL1:show()
 
 		oFont2 := Font{,8,"Microsoft Sans Serif"}
 		oFont2:Underline := TRUE
 
 		oHL2 := HyperLink{SELF,-1,point{190,5},dimension{0,0},"http://www.cavo.com"}
-		oHL2:Controlfont := oFont2
+		oHL2:ControlFont := oFont2
 		oHL2:size := dimension{150,20}
 		oHL2:textcolor := color{COLORBLUE}
-		oFont2:underline := TRUE
+		oHL2:ControlFont:underline := TRUE
 		oHL2:show()
 		
 	ENDIF
@@ -95,5 +89,11 @@ METHOD PostInit(oParent,uExtra)
 
 	RETURN NIL
 
+
+method PushButton1() 
+
+	self:EndDialog()
+	
+   RETURN SELF
 
 END CLASS

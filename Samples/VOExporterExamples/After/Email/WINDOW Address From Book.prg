@@ -1,19 +1,19 @@
-#region DEFINES
-STATIC DEFINE LOOKUP_CONTACT := 100
-STATIC DEFINE LOOKUP_EMAIL := 101
-STATIC DEFINE ADDRESSFROMBOOK_LOOKUP := 100
-STATIC DEFINE ADDRESSFROMBOOK_SLELOOKUP := 101
-STATIC DEFINE ADDRESSFROMBOOK_MULTILINEEDIT1 := 102
-STATIC DEFINE ADDRESSFROMBOOK_PBOK := 103
-STATIC DEFINE ADDRESSFROMBOOK_PBNEW := 104
-STATIC DEFINE ADDRESSFROMBOOK_PBEDIT := 105
-STATIC DEFINE ADDRESSFROMBOOK_PBEXIT := 106
-STATIC DEFINE ADDRESSFROMBOOK_FIXEDTEXT1 := 107
-STATIC DEFINE ADDRESSFROMBOOK_PBMOVE := 108
+﻿#region DEFINES
+STATIC DEFINE ADDRESSFROMBOOK_FIXEDTEXT1 := 107 
+STATIC DEFINE ADDRESSFROMBOOK_LOOKUP := 100 
+STATIC DEFINE ADDRESSFROMBOOK_MULTILINEEDIT1 := 102 
+STATIC DEFINE ADDRESSFROMBOOK_PBEDIT := 105 
+STATIC DEFINE ADDRESSFROMBOOK_PBEXIT := 106 
+STATIC DEFINE ADDRESSFROMBOOK_PBMOVE := 108 
+STATIC DEFINE ADDRESSFROMBOOK_PBNEW := 104 
+STATIC DEFINE ADDRESSFROMBOOK_PBOK := 103 
+STATIC DEFINE ADDRESSFROMBOOK_SLELOOKUP := 101 
+STATIC DEFINE LOOKUP_CONTACT := 100 
+STATIC DEFINE LOOKUP_EMAIL := 101 
 #endregion
 
-CLASS AddressFrombook INHERIT DATADIALOG
-	EXPORT oSFLookUp AS LookUp
+CLASS AddressFrombook INHERIT DATADIALOG 
+
 	EXPORT oDCSleLookUp AS SINGLELINEEDIT
 	EXPORT oDCMultiLineEdit1 AS MULTILINEEDIT
 	EXPORT oCCPBOk AS PUSHBUTTON
@@ -22,8 +22,9 @@ CLASS AddressFrombook INHERIT DATADIALOG
 	EXPORT oCCPBExit AS PUSHBUTTON
 	EXPORT oDCFixedText1 AS FIXEDTEXT
 	EXPORT oCCPBMove AS PUSHBUTTON
+	EXPORT oSFLookUp AS LookUp
 
-	// {{%UC%}} User code starts here (DO NOT remove this line)  
+  //{{%UC%}}
   //USER CODE STARTS HERE (do NOT remove this line)
 	EXPORT oControl AS USUAL
 
@@ -39,11 +40,65 @@ METHOD EditChange(oControlEvent)
 	IF oControl != Null_Object .and. oControl:NameSym == #SLELookUp
 		cContact := Trim(oControl:TextValue)
 		IF !SELF:Server:Seek(cContact)
-			MessageBox(NULL_PTR, PSZ("The case sensitive search failed to find " + cContact), PSZ("Lookup Failed"), MB_ICONSTOP+MB_OK)
+			MessageBox(NULL_PTR, String2Psz("The case sensitive search failed to find " + cContact), String2Psz("Lookup Failed"), MB_ICONSTOP+MB_OK)
 		ENDIF
 	ENDIF		
 
 	RETURN NIL
+
+
+CONSTRUCTOR(oWindow,iCtlID,oServer,uExtra)  
+LOCAL DIM aFonts[2] AS OBJECT
+
+self:PreInit(oWindow,iCtlID,oServer,uExtra)
+
+SUPER(oWindow,ResourceID{"AddressFrombook",_GetInst()},iCtlID)
+
+aFonts[1] := Font{,12,"MS Sans Serif"}
+aFonts[1]:Bold := TRUE
+aFonts[2] := Font{,8,"Microsoft Sans Serif"}
+aFonts[2]:Bold := TRUE
+
+oDCSleLookUp := SingleLineEdit{SELF,ResourceID{ADDRESSFROMBOOK_SLELOOKUP,_GetInst()}}
+oDCSleLookUp:HyperLabel := HyperLabel{#SleLookUp,NULL_STRING,NULL_STRING,NULL_STRING}
+
+oDCMultiLineEdit1 := MultiLineEdit{SELF,ResourceID{ADDRESSFROMBOOK_MULTILINEEDIT1,_GetInst()}}
+oDCMultiLineEdit1:HyperLabel := HyperLabel{#MultiLineEdit1,NULL_STRING,NULL_STRING,NULL_STRING}
+
+oCCPBOk := PushButton{SELF,ResourceID{ADDRESSFROMBOOK_PBOK,_GetInst()}}
+oCCPBOk:HyperLabel := HyperLabel{#PBOk,"OK",NULL_STRING,NULL_STRING}
+
+oCCPBNew := PushButton{SELF,ResourceID{ADDRESSFROMBOOK_PBNEW,_GetInst()}}
+oCCPBNew:HyperLabel := HyperLabel{#PBNew,"New",NULL_STRING,NULL_STRING}
+
+oCCPBEdit := PushButton{SELF,ResourceID{ADDRESSFROMBOOK_PBEDIT,_GetInst()}}
+oCCPBEdit:HyperLabel := HyperLabel{#PBEdit,"Edit",NULL_STRING,NULL_STRING}
+
+oCCPBExit := PushButton{SELF,ResourceID{ADDRESSFROMBOOK_PBEXIT,_GetInst()}}
+oCCPBExit:HyperLabel := HyperLabel{#PBExit,"Exit",NULL_STRING,NULL_STRING}
+
+oDCFixedText1 := FixedText{SELF,ResourceID{ADDRESSFROMBOOK_FIXEDTEXT1,_GetInst()}}
+oDCFixedText1:HyperLabel := HyperLabel{#FixedText1,"Look Up",NULL_STRING,NULL_STRING}
+oDCFixedText1:Font(aFonts[1], FALSE)
+
+oCCPBMove := PushButton{SELF,ResourceID{ADDRESSFROMBOOK_PBMOVE,_GetInst()}}
+oCCPBMove:HyperLabel := HyperLabel{#PBMove,"ADD TO LIST",NULL_STRING,NULL_STRING}
+oCCPBMove:Font(aFonts[2], FALSE)
+
+SELF:Caption := "VO 2.7 Email Client Address Book Look-Up"
+SELF:HyperLabel := HyperLabel{#AddressFrombook,"VO 2.7 Email Client Address Book Look-Up",NULL_STRING,NULL_STRING}
+SELF:AllowServerClose := True
+
+if !IsNil(oServer)
+	SELF:Use(oServer)
+ENDIF
+
+oSFLookUp := LookUp{SELF,ADDRESSFROMBOOK_LOOKUP}
+oSFLookUp:show()
+
+self:PostInit(oWindow,iCtlID,oServer,uExtra)
+
+return self
 
 
 METHOD PBEdit( ) 
@@ -108,58 +163,6 @@ METHOD PBOk( )
 	
 	RETURN SELF
 
-CONSTRUCTOR(oWindow,iCtlID,oServer,uExtra)
-	LOCAL oFont AS Font
-
-	SELF:PreInit(oWindow,iCtlID,oServer,uExtra)
-
-	SUPER(oWindow , ResourceID{"AddressFrombook" , _GetInst()},iCtlID)
-
-	SELF:oDCSleLookUp := SINGLELINEEDIT{SELF , ResourceID{ ADDRESSFROMBOOK_SLELOOKUP  , _GetInst() } }
-	SELF:oDCSleLookUp:HyperLabel := HyperLabel{#SleLookUp , NULL_STRING , NULL_STRING , NULL_STRING}
-
-	SELF:oDCMultiLineEdit1 := MULTILINEEDIT{SELF , ResourceID{ ADDRESSFROMBOOK_MULTILINEEDIT1  , _GetInst() } }
-	SELF:oDCMultiLineEdit1:HyperLabel := HyperLabel{#MultiLineEdit1 , NULL_STRING , NULL_STRING , NULL_STRING}
-
-	SELF:oCCPBOk := PUSHBUTTON{SELF , ResourceID{ ADDRESSFROMBOOK_PBOK  , _GetInst() } }
-	SELF:oCCPBOk:HyperLabel := HyperLabel{#PBOk , "OK" , NULL_STRING , NULL_STRING}
-
-	SELF:oCCPBNew := PUSHBUTTON{SELF , ResourceID{ ADDRESSFROMBOOK_PBNEW  , _GetInst() } }
-	SELF:oCCPBNew:HyperLabel := HyperLabel{#PBNew , "New" , NULL_STRING , NULL_STRING}
-
-	SELF:oCCPBEdit := PUSHBUTTON{SELF , ResourceID{ ADDRESSFROMBOOK_PBEDIT  , _GetInst() } }
-	SELF:oCCPBEdit:HyperLabel := HyperLabel{#PBEdit , "Edit" , NULL_STRING , NULL_STRING}
-
-	SELF:oCCPBExit := PUSHBUTTON{SELF , ResourceID{ ADDRESSFROMBOOK_PBEXIT  , _GetInst() } }
-	SELF:oCCPBExit:HyperLabel := HyperLabel{#PBExit , "Exit" , NULL_STRING , NULL_STRING}
-
-	SELF:oDCFixedText1 := FIXEDTEXT{SELF , ResourceID{ ADDRESSFROMBOOK_FIXEDTEXT1  , _GetInst() } }
-	oFont := Font{  , 12 , "Microsoft Sans Serif" }
-	oFont:Bold := TRUE
-	SELF:oDCFixedText1:Font( oFont )
-	SELF:oDCFixedText1:HyperLabel := HyperLabel{#FixedText1 , "Look Up" , NULL_STRING , NULL_STRING}
-
-	SELF:oCCPBMove := PUSHBUTTON{SELF , ResourceID{ ADDRESSFROMBOOK_PBMOVE  , _GetInst() } }
-	oFont := Font{  , 8 , "Microsoft Sans Serif" }
-	oFont:Bold := TRUE
-	SELF:oCCPBMove:Font( oFont )
-	SELF:oCCPBMove:HyperLabel := HyperLabel{#PBMove , "ADD TO LIST" , NULL_STRING , NULL_STRING}
-
-	SELF:Caption := "VO 2.7 Email Client Address Book Look-Up"
-	SELF:AllowServerClose := True
-	SELF:HyperLabel := HyperLabel{#AddressFrombook , "VO 2.7 Email Client Address Book Look-Up" , NULL_STRING , NULL_STRING}
-	IF !IsNil(oServer)
-		SELF:Use(oServer)
-	ENDIF
-
-	SELF:oSFLookUp := LookUp{SELF , ADDRESSFROMBOOK_LOOKUP }
-	SELF:oSFLookUp:Show()
-
-	SELF:PostInit(oWindow,iCtlID,oServer,uExtra)
-
-RETURN
-
-
 METHOD PostInit(oWindow,iCtlID,oServer,uExtra) 
 
 	IF IsNil(uExtra)
@@ -177,56 +180,47 @@ METHOD PostInit(oWindow,iCtlID,oServer,uExtra)
 
 
 END CLASS
-CLASS LookUpDataBrowser INHERIT DataBrowser
+CLASS Lookup INHERIT DATAWINDOW 
 
-METHOD CellDoubleClick() 
-	
-	SELF:Owner:Owner:PBMove()
-	
-	RETURN SELF
+	PROTECT oDBCONTACT as DataColumn
+	PROTECT oDBEMAIL as DataColumn
 
+  //{{%UC%}} USER CODE STARTS HERE (do NOT remove this line)
 
-END CLASS
-CLASS Lookup INHERIT DATAWINDOW
-	PROTECT oDBCONTACT AS DataColumn
-	PROTECT oDBEMAIL AS DataColumn
+CONSTRUCTOR(oWindow,iCtlID,oServer,uExtra)  
 
-	// {{%UC%}} User code starts here (DO NOT remove this line)  
+self:PreInit(oWindow,iCtlID,oServer,uExtra)
 
-CONSTRUCTOR(oWindow,iCtlID,oServer,uExtra)
+SUPER(oWindow,ResourceID{"Lookup",_GetInst()},iCtlID)
 
-	SELF:PreInit(oWindow,iCtlID,oServer,uExtra)
+SELF:Caption := "DataWindow Caption"
+SELF:HyperLabel := HyperLabel{#Lookup,"DataWindow Caption",NULL_STRING,NULL_STRING}
 
-	SUPER(oWindow , ResourceID{"Lookup" , _GetInst()},iCtlID)
+if !IsNil(oServer)
+	SELF:Use(oServer)
+ELSE
+	SELF:Use(SELF:Owner:Server)
+ENDIF
+self:Browser := LookUpDataBrowser{self}
 
-	SELF:Caption := "DataWindow Caption"
-	SELF:HyperLabel := HyperLabel{#Lookup , "DataWindow Caption" , NULL_STRING , NULL_STRING}
-	IF !IsNil(oServer)
-		SELF:Use(oServer)
-	ELSE
-		SELF:Use(SELF:Owner:Server)
-	ENDIF
+oDBCONTACT := DataColumn{33}
+oDBCONTACT:Width := 33
+oDBCONTACT:HyperLabel := HyperLabel{#CONTACT,"Contact:",NULL_STRING,"Contacts_CONTACT"} 
+oDBCONTACT:Caption := "Contact:"
+self:Browser:AddColumn(oDBCONTACT)
 
-	SELF:Browser := LookUpDataBrowser{SELF}
-
-	SELF:oDBCONTACT := DataColumn{33}
-	SELF:oDBCONTACT:Width := 33
-	SELF:oDBCONTACT:HyperLabel := HyperLabel{#CONTACT,"Contact:", NULL_STRING, "Contacts_CONTACT"}
-	SELF:oDBCONTACT:Caption := "Contact:"
-	SELF:Browser:AddColumn(SELF:oDBCONTACT)
-
-	SELF:oDBEMAIL := DataColumn{35}
-	SELF:oDBEMAIL:Width := 35
-	SELF:oDBEMAIL:HyperLabel := HyperLabel{#EMAIL,"Email:", NULL_STRING, "Contacts_EMAIL"}
-	SELF:oDBEMAIL:Caption := "Email:"
-	SELF:Browser:AddColumn(SELF:oDBEMAIL)
-
-	SELF:ViewAs(#BrowseView)
+oDBEMAIL := DataColumn{35}
+oDBEMAIL:Width := 35
+oDBEMAIL:HyperLabel := HyperLabel{#EMAIL,"Email:",NULL_STRING,"Contacts_EMAIL"} 
+oDBEMAIL:Caption := "Email:"
+self:Browser:AddColumn(oDBEMAIL)
 
 
-	SELF:PostInit(oWindow,iCtlID,oServer,uExtra)
+SELF:ViewAs(#BrowseView)
 
-RETURN
+self:PostInit(oWindow,iCtlID,oServer,uExtra)
+
+return self
 
 
 METHOD PostInit(oWindow,iCtlID,oServer,uExtra) 
@@ -234,6 +228,16 @@ METHOD PostInit(oWindow,iCtlID,oServer,uExtra)
 	SELF:Browser:SetStandardStyle( GBSREADONLY )
 
 	RETURN NIL
+
+
+END CLASS
+CLASS LookUpDataBrowser INHERIT DataBrowser
+
+METHOD CellDoubleClick() 
+	
+	SELF:Owner:Owner:PBMove()
+	
+	RETURN SELF
 
 
 

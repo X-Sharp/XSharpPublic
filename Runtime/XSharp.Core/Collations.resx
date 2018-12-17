@@ -118,97 +118,97 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Brazil" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="BRAZIL" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Brazil.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Croatia" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="CROATIA" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Croatia.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Czech852" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="CZECH852" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Czech852.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Czech895" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="CZECH895" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Czech895.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Danish" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="DANISH" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Danish.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Dutch" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="DUTCH" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Dutch.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Finnish" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="FINNISH" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Finnish.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="French" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="FRENCH" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\French.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Generic" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="GENERIC" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Generic.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="German" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="GERMAN" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\German.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="German2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="GERMAN2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\German2.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Hung852" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="HUNG852" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Hung852.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="HungCWI" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="HUNGCWI" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\HungCWI.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Italian" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="ITALIAN" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Italian.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Norwegn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="NORWEGN" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Norwegn.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Pol852" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="POL852" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Pol852.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Pol-Iso" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="POL-ISO" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Pol-Iso.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Pol-Maz" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="POL-MAZ" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Pol-Maz.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Port850" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="PORT850" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Port850.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Port860" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="PORT860" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Port860.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Romania" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="ROMANIA" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Romania.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Russian" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="RUSSIAN" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Russian.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Serbia" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="SERBIA" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Serbia.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Slov852" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="SLOV852" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Slov852.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Slov895" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="SLOV895" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Slov895.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
- <data name="SL-W-95" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="SL-W-95" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\SL-W-95.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
- <data name="SL-W-AS7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="SL-W-AS7" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\SL-W-AS7.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-<data name="SL-W-EE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="SL-W-EE" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\SL-W-EE.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-<data name="Spanish" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="SPANISH" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Spanish.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-<data name="Swedish" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="SWEDISH" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Swedish.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-<data name="Uk" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="UK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Collations\Uk.collation;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

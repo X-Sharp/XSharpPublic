@@ -1,160 +1,17 @@
 #region DEFINES
-STATIC DEFINE EMAILCOMPOSEDIALOG_TOMLE := 100 
-STATIC DEFINE EMAILCOMPOSEDIALOG_CCMLE := 101 
-STATIC DEFINE EMAILCOMPOSEDIALOG_BCCMLE := 102 
-STATIC DEFINE EMAILCOMPOSEDIALOG_SUBJECTSLE := 103 
-STATIC DEFINE EMAILCOMPOSEDIALOG_ATTACHMENTS := 104 
-STATIC DEFINE EMAILCOMPOSEDIALOG_TOBUTTON := 105 
-STATIC DEFINE EMAILCOMPOSEDIALOG_CCBUTTON := 106 
-STATIC DEFINE EMAILCOMPOSEDIALOG_BCCBUTTON := 107 
 STATIC DEFINE EMAILCOMPOSEDIALOG_ATTACHBUTTON := 108 
-STATIC DEFINE EMAILCOMPOSEDIALOG_SUBJECT_FT := 109 
+STATIC DEFINE EMAILCOMPOSEDIALOG_ATTACHMENTS := 104 
+STATIC DEFINE EMAILCOMPOSEDIALOG_BCCBUTTON := 107 
+STATIC DEFINE EMAILCOMPOSEDIALOG_BCCMLE := 102 
 STATIC DEFINE EMAILCOMPOSEDIALOG_BODY := 110 
+STATIC DEFINE EMAILCOMPOSEDIALOG_CCBUTTON := 106 
+STATIC DEFINE EMAILCOMPOSEDIALOG_CCMLE := 101 
+STATIC DEFINE EMAILCOMPOSEDIALOG_SUBJECT_FT := 109 
+STATIC DEFINE EMAILCOMPOSEDIALOG_SUBJECTSLE := 103 
+STATIC DEFINE EMAILCOMPOSEDIALOG_TOBUTTON := 105 
+STATIC DEFINE EMAILCOMPOSEDIALOG_TOMLE := 100 
 #endregion
 
-CLASS EMailDialog INHERIT DATAWINDOW
-
-   PROTECT oCaller AS OBJECT
-	PROTECT oEmail AS CEmail
-	PROTECT _dwFileCount AS DWORD
-	
-	PROTECT oAttachControl AS Control
-	PROTECT oAttachments   AS AttachmentListView
-	PROTECT oBody          AS Control
-	PROTECT dwAttachXPos   AS DWORD
-
-METHOD ListViewKeyDown(oListViewKeyEvent) 
-
-	SELF:EventReturnValue := 1L	// don't call SUPER
-
-	DO CASE
-	CASE oListViewKeyEvent:KeyCode == VK_DELETE
-	   IF IsMethod(SELF, #DeleteAttachment)
-		   Send(SELF, #DeleteAttachment)
-		ENDIF
-	CASE oListViewKeyEvent:KeyCode == KEYENTER
-		SELF:OpenButton()
-	ENDCASE
-
-	RETURN NIL
-
-
-METHOD ListViewMouseButtonDoubleClick(oListViewMouseEvent) 
-
-	SELF:OpenButton()
-
-	RETURN NIL
-
-
-METHOD __ResizeBody() 
-	LOCAL oSize AS Dimension
-	LOCAL liY   AS LONG
-	LOCAL sRect IS _winRect
-	
-	IF SELF:IsIconic()
-		RETURN NIL
-	ENDIF
-
-   IF oSurface != NULL_OBJECT .AND. oAttachments != NULL_OBJECT .AND. oBody != Null_Object
-
-      oSize := oSurface:Size
-
-      IF _dwFileCount = 0
-         liY := 90
-      ELSE
-
-         SendMessage(oAttachments:Handle(), LVM_GETVIEWRECT , _dwFileCount-1, LONG(_CAST, @sRect))
-
-         liY := sRect.bottom + 1l
-         IF sRect.right > oSize:Width - LONG(dwAttachXPos) - 20L .and. liY < 34l
-            liY += 17
-         ENDIF
-
-         liY := Min(liY, 64) + 4l
-         self:SetControlSize(oAttachments, oSize:Width - LONG(dwAttachXPos), liY)
-         liY := 86l + liY + 2l
-      ENDIF
-
-      SetWindowPos(oBody:Handle(), Null_Ptr, 0, liY, oSize:Width, oSize:Height - liY, _Or(SWP_NOACTIVATE, SWP_NOZORDER))
-   ENDIF
-   RETURN SELF
-
-METHOD Resize(oResizeEvent) 
-	
-	SUPER:Resize(oResizeEvent)
-
-	IF ! SELF:IsIconic()
-		SELF:__ResizeBody()
-	ENDIF
-
-   RETURN SELF
-
-	
-
-METHOD FileSaveAs() 
-
-   oEMailServer:FileSaveAs(SELF, SELF:oEmail)
-	
-	RETURN SELF
-
-METHOD AddressBook() 
-	
-	SELF:oCaller:AddAddress()
-   RETURN SELF
-
-
-METHOD SetAttachments() 
-
-   dwAttachXPos := oAttachments:Origin:X
-
-   SELF:SetControlSize(oAttachments, oSurface:Size:Width - dwAttachXPos)
-
-   _dwFileCount := oAttachments:Fill(SELF:oEmail)
-
-	IF _dwFileCount > 0
-		oAttachControl:Show()
-		oAttachments:Show()
-	ELSE
-		oAttachControl:Hide()
-		oAttachments:Hide()
-	ENDIF
-   RETURN SELF
-
-METHOD SetControlSize(oControl, nWidth, nHeight) 
-    Default(@nHeight, 23)
-    SetWindowPos(oControl:Handle(), Null_Ptr, 0, 0, nWidth, nHeight, _Or(SWP_NOMOVE, SWP_NOACTIVATE, SWP_NOZORDER))		
-		
-    RETURN SELF
-
-METHOD Dispatch (oEvent) 
-
-	IF oEvent:Message == WM_COMMAND
-      IF LoWord(oEvent:wParam) == IDCANCEL .or. LoWord(oEvent:wParam) == KEYESCAPE
-    		// abort window
-		   SELF:EndWindow()
-		   RETURN 1l
-		ENDIF
-   ENDIF
-	
-	RETURN SUPER:Dispatch (oEvent)
-
-
-METHOD SelectAllButton() 
-   oAttachments:SelectAll()
-   RETURN SELF
-
-METHOD OpenButton() 
-
-	oAttachments:Open(SELF:oEmail)
-   RETURN SELF
-
-METHOD SaveButton() 
-
-   oAttachments:Save(SELF:oEmail, Null_String)
-   RETURN SELF
-
-
-END CLASS
 class EmailComposeDialog inherit EMailDialog 
 
 	protect oDCToMLE as MULTILINEEDIT
@@ -170,6 +27,19 @@ class EmailComposeDialog inherit EMailDialog
 	protect oDCBody as MULTILINEEDIT
 
   //{{%UC%}} USER CODE STARTS HERE (do NOT remove this line)
+
+METHOD __GetAdress(oControl) 
+	LOCAL oDlg      AS AddressFromBook
+	LOCAL oContacts AS Contacts
+	
+	oContacts := Contacts{}
+	oContacts:SetOrder("CONTACT")	// use THIS order here
+	oContacts:GoTop()
+	
+	oDlg := AddressFromBook{SELF:Owner,,oContacts, oControl}
+	oDlg:Show()
+
+	RETURN SELF
 
 METHOD AcceptAndSaveEmail(lSend) 
    LOCAL lRet  AS LOGIC
@@ -253,6 +123,97 @@ METHOD AddAttachment()
 	RETURN SELF
 
 
+METHOD AddressBook() 
+	
+	SELF:oCaller:AddAddress()
+
+   RETURN SELF
+
+METHOD AttachButton() 
+	
+	SELF:AddAttachment()
+   RETURN SELF
+
+METHOD BccButton() 
+
+   SELF:__GetAdress(SELF:oDCBccMLE)
+   RETURN SELF
+
+METHOD CCButton() 
+	
+	SELF:__GetAdress(SELF:oDCCcMLE)
+   RETURN SELF
+
+METHOD DeleteAttachment() 
+   oAttachments:Delete(SELF:oEmail)
+   SELF:SetAttachments()
+   SELF:__ResizeBody()
+	
+	RETURN SELF
+
+CONSTRUCTOR(oWindow,iCtlID,oServer,uExtra)  
+local dim aFonts[2] AS OBJECT
+
+self:PreInit(oWindow,iCtlID,oServer,uExtra)
+
+SUPER(oWindow,ResourceID{"EmailComposeDialog",_GetInst()},iCtlID)
+
+aFonts[1] := Font{,8,"Microsoft Sans Serif"}
+aFonts[1]:Bold := TRUE
+aFonts[2] := Font{,8,"Courier New"}
+
+oDCToMLE := MultiLineEdit{self,ResourceID{EMAILCOMPOSEDIALOG_TOMLE,_GetInst()}}
+oDCToMLE:HyperLabel := HyperLabel{#ToMLE,NULL_STRING,NULL_STRING,NULL_STRING}
+oDCToMLE:OwnerAlignment := OA_WIDTH
+
+oDCCcMLE := MultiLineEdit{self,ResourceID{EMAILCOMPOSEDIALOG_CCMLE,_GetInst()}}
+oDCCcMLE:HyperLabel := HyperLabel{#CcMLE,NULL_STRING,NULL_STRING,NULL_STRING}
+oDCCcMLE:OwnerAlignment := OA_WIDTH
+
+oDCBccMLE := MultiLineEdit{self,ResourceID{EMAILCOMPOSEDIALOG_BCCMLE,_GetInst()}}
+oDCBccMLE:HyperLabel := HyperLabel{#BccMLE,NULL_STRING,NULL_STRING,NULL_STRING}
+oDCBccMLE:OwnerAlignment := OA_WIDTH
+
+oDCSubjectSLE := SingleLineEdit{self,ResourceID{EMAILCOMPOSEDIALOG_SUBJECTSLE,_GetInst()}}
+oDCSubjectSLE:HyperLabel := HyperLabel{#SubjectSLE,NULL_STRING,NULL_STRING,NULL_STRING}
+oDCSubjectSLE:OwnerAlignment := OA_WIDTH
+
+oDCAttachments := AttachmentListView{self,ResourceID{EMAILCOMPOSEDIALOG_ATTACHMENTS,_GetInst()}}
+oDCAttachments:HyperLabel := HyperLabel{#Attachments,NULL_STRING,NULL_STRING,NULL_STRING}
+oDCAttachments:ContextMenu := ComposeEmailContextmenu{}
+
+oCCToButton := PushButton{self,ResourceID{EMAILCOMPOSEDIALOG_TOBUTTON,_GetInst()}}
+oCCToButton:HyperLabel := HyperLabel{#ToButton,_chr(38)+"TO:",NULL_STRING,NULL_STRING}
+
+oCCCCButton := PushButton{self,ResourceID{EMAILCOMPOSEDIALOG_CCBUTTON,_GetInst()}}
+oCCCCButton:HyperLabel := HyperLabel{#CCButton,_chr(38)+"CC:",NULL_STRING,NULL_STRING}
+
+oCCBccButton := PushButton{self,ResourceID{EMAILCOMPOSEDIALOG_BCCBUTTON,_GetInst()}}
+oCCBccButton:HyperLabel := HyperLabel{#BccButton,_chr(38)+"BCC:",NULL_STRING,NULL_STRING}
+
+oCCAttachButton := PushButton{self,ResourceID{EMAILCOMPOSEDIALOG_ATTACHBUTTON,_GetInst()}}
+oCCAttachButton:HyperLabel := HyperLabel{#AttachButton,_chr(38)+"Attach:",NULL_STRING,NULL_STRING}
+
+oDCSubject_FT := FixedText{self,ResourceID{EMAILCOMPOSEDIALOG_SUBJECT_FT,_GetInst()}}
+oDCSubject_FT:HyperLabel := HyperLabel{#Subject_FT,"Subject:",NULL_STRING,NULL_STRING}
+oDCSubject_FT:Font(aFonts[1], FALSE)
+
+oDCBody := MultiLineEdit{self,ResourceID{EMAILCOMPOSEDIALOG_BODY,_GetInst()}}
+oDCBody:HyperLabel := HyperLabel{#Body,NULL_STRING,NULL_STRING,NULL_STRING}
+oDCBody:Font(aFonts[2], FALSE)
+
+self:Caption := ""
+self:HyperLabel := HyperLabel{#EmailComposeDialog,NULL_STRING,NULL_STRING,NULL_STRING}
+
+if !IsNil(oServer)
+	self:Use(oServer)
+endif
+
+self:PostInit(oWindow,iCtlID,oServer,uExtra)
+
+return self
+
+
 METHOD MenuCommand(oMenuCommandEvent) 
 
 	DO CASE
@@ -275,6 +236,43 @@ METHOD MenuCommand(oMenuCommandEvent)
 		SELF:EndWindow()
 
 	ENDCASE
+
+	RETURN NIL
+
+
+METHOD PostInit(oWindow,iCtlID,oServer,uExtra) 
+	
+	SELF:Icon			:= Aap_Email_Icon{}
+	SELF:Caption		:= " New Email"
+	
+	SELF:oEmail			:= uExtra[1]
+	SELF:oCaller      := uExtra[2]  // the calling window FOR Send/Receive
+	
+	oAttachControl := oCCAttachButton
+	oAttachments   := oDCAttachments
+	oBody          := oDCBody
+	
+	SELF:EnableStatusBar(TRUE)
+	SELF:StatusBar:DisplayMessage()
+	SELF:StatusBar:DisplayTime()
+	
+	SELF:SetToolbar()
+	
+	SELF:MinSize := SELF:Size
+	
+	SELF:oDCBody:Value   := SELF:oEmail:Body
+	SELF:oDCToMLE:Value  := __Array2StrList(SELF:oEmail:DestList, ", ")
+	SELF:oDCCcMLE:Value  := __Array2StrList(SELF:oEmail:CCList, ", ")
+	SELF:oDCBccMLE:Value := __Array2StrList(SELF:oEmail:BCCList, ", ")
+
+	SELF:oDCSubjectSLE:Value := SELF:oEmail:Subject
+	
+	SELF:oDCAttachments:AddColumn(ListViewColumn{200, HyperLabel{#FilesAttached, "Attached Files"}})
+	oDCAttachments:SetStyle(WS_BORDER, FALSE)
+
+	SELF:SetAttachments()
+	
+	SELF:Size := Dimension{500, 300}
 
 	RETURN NIL
 
@@ -365,150 +363,152 @@ METHOD SetToolbar()
 	RETURN SELF
 
 
-METHOD BccButton() 
-
-   SELF:__GetAdress(SELF:oDCBccMLE)
-   RETURN SELF
-
-METHOD CCButton() 
-	
-	SELF:__GetAdress(SELF:oDCCcMLE)
-   RETURN SELF
-
-METHOD AttachButton() 
-	
-	SELF:AddAttachment()
-   RETURN SELF
-
-METHOD PostInit(oWindow,iCtlID,oServer,uExtra) 
-	
-	SELF:Icon			:= Aap_Email_Icon{}
-	SELF:Caption		:= " New Email"
-	
-	SELF:oEmail			:= uExtra[1]
-	SELF:oCaller      := uExtra[2]  // the calling window FOR Send/Receive
-	
-	oAttachControl := oCCAttachButton
-	oAttachments   := oDCAttachments
-	oBody          := oDCBody
-	
-	SELF:EnableStatusBar(TRUE)
-	SELF:StatusBar:DisplayMessage()
-	SELF:StatusBar:DisplayTime()
-	
-	SELF:SetToolbar()
-	
-	SELF:MinSize := SELF:Size
-	
-	SELF:oDCBody:Value   := SELF:oEmail:Body
-	SELF:oDCToMLE:Value  := __Array2StrList(SELF:oEmail:DestList, ", ")
-	SELF:oDCCcMLE:Value  := __Array2StrList(SELF:oEmail:CCList, ", ")
-	SELF:oDCBccMLE:Value := __Array2StrList(SELF:oEmail:BCCList, ", ")
-
-	SELF:oDCSubjectSLE:Value := SELF:oEmail:Subject
-	
-	SELF:oDCAttachments:AddColumn(ListViewColumn{200, HyperLabel{#FilesAttached, "Attached Files"}})
-	oDCAttachments:SetStyle(WS_BORDER, FALSE)
-
-	SELF:SetAttachments()
-	
-	SELF:Size := Dimension{500, 300}
-
-	RETURN NIL
-
-
-CONSTRUCTOR(oWindow,iCtlID,oServer,uExtra)  
-local dim aFonts[2] AS OBJECT
-
-self:PreInit(oWindow,iCtlID,oServer,uExtra)
-
-SUPER(oWindow,ResourceID{"EmailComposeDialog",_GetInst()},iCtlID)
-
-aFonts[1] := Font{,8,"Microsoft Sans Serif"}
-aFonts[1]:Bold := TRUE
-aFonts[2] := Font{,8,"Courier New"}
-
-oDCToMLE := MultiLineEdit{self,ResourceID{EMAILCOMPOSEDIALOG_TOMLE,_GetInst()}}
-oDCToMLE:HyperLabel := HyperLabel{#ToMLE,NULL_STRING,NULL_STRING,NULL_STRING}
-oDCToMLE:OwnerAlignment := OA_WIDTH
-
-oDCCcMLE := MultiLineEdit{self,ResourceID{EMAILCOMPOSEDIALOG_CCMLE,_GetInst()}}
-oDCCcMLE:HyperLabel := HyperLabel{#CcMLE,NULL_STRING,NULL_STRING,NULL_STRING}
-oDCCcMLE:OwnerAlignment := OA_WIDTH
-
-oDCBccMLE := MultiLineEdit{self,ResourceID{EMAILCOMPOSEDIALOG_BCCMLE,_GetInst()}}
-oDCBccMLE:HyperLabel := HyperLabel{#BccMLE,NULL_STRING,NULL_STRING,NULL_STRING}
-oDCBccMLE:OwnerAlignment := OA_WIDTH
-
-oDCSubjectSLE := SingleLineEdit{self,ResourceID{EMAILCOMPOSEDIALOG_SUBJECTSLE,_GetInst()}}
-oDCSubjectSLE:HyperLabel := HyperLabel{#SubjectSLE,NULL_STRING,NULL_STRING,NULL_STRING}
-oDCSubjectSLE:OwnerAlignment := OA_WIDTH
-
-oDCAttachments := AttachmentListView{self,ResourceID{EMAILCOMPOSEDIALOG_ATTACHMENTS,_GetInst()}}
-oDCAttachments:HyperLabel := HyperLabel{#Attachments,NULL_STRING,NULL_STRING,NULL_STRING}
-oDCAttachments:ContextMenu := ComposeEmailContextmenu{}
-
-oCCToButton := PushButton{self,ResourceID{EMAILCOMPOSEDIALOG_TOBUTTON,_GetInst()}}
-oCCToButton:HyperLabel := HyperLabel{#ToButton,_chr(38)+"TO:",NULL_STRING,NULL_STRING}
-
-oCCCCButton := PushButton{self,ResourceID{EMAILCOMPOSEDIALOG_CCBUTTON,_GetInst()}}
-oCCCCButton:HyperLabel := HyperLabel{#CCButton,_chr(38)+"CC:",NULL_STRING,NULL_STRING}
-
-oCCBccButton := PushButton{self,ResourceID{EMAILCOMPOSEDIALOG_BCCBUTTON,_GetInst()}}
-oCCBccButton:HyperLabel := HyperLabel{#BccButton,_chr(38)+"BCC:",NULL_STRING,NULL_STRING}
-
-oCCAttachButton := PushButton{self,ResourceID{EMAILCOMPOSEDIALOG_ATTACHBUTTON,_GetInst()}}
-oCCAttachButton:HyperLabel := HyperLabel{#AttachButton,_chr(38)+"Attach:",NULL_STRING,NULL_STRING}
-
-oDCSubject_FT := FixedText{self,ResourceID{EMAILCOMPOSEDIALOG_SUBJECT_FT,_GetInst()}}
-oDCSubject_FT:HyperLabel := HyperLabel{#Subject_FT,"Subject:",NULL_STRING,NULL_STRING}
-oDCSubject_FT:Font(aFonts[1], FALSE)
-
-oDCBody := MultiLineEdit{self,ResourceID{EMAILCOMPOSEDIALOG_BODY,_GetInst()}}
-oDCBody:HyperLabel := HyperLabel{#Body,NULL_STRING,NULL_STRING,NULL_STRING}
-oDCBody:Font(aFonts[2], FALSE)
-
-self:Caption := ""
-self:HyperLabel := HyperLabel{#EmailComposeDialog,NULL_STRING,NULL_STRING,NULL_STRING}
-
-if !IsNil(oServer)
-	self:Use(oServer)
-endif
-
-self:PostInit(oWindow,iCtlID,oServer,uExtra)
-
-return self
-
-
-METHOD DeleteAttachment() 
-   oAttachments:Delete(SELF:oEmail)
-   SELF:SetAttachments()
-   SELF:__ResizeBody()
-	
-	RETURN SELF
-
 METHOD ToButton() 
 	
 	SELF:__GetAdress(SELF:oDCToMLE)
    RETURN SELF
 
-METHOD __GetAdress(oControl) 
-	LOCAL oDlg      AS AddressFromBook
-	LOCAL oContacts AS Contacts
-	
-	oContacts := Contacts{}
-	oContacts:SetOrder("CONTACT")	// use THIS order here
-	oContacts:GoTop()
-	
-	oDlg := AddressFromBook{SELF:Owner,,oContacts, oControl}
-	oDlg:Show()
+END CLASS
+CLASS EMailDialog INHERIT DATAWINDOW
 
-	RETURN SELF
+   PROTECT oCaller AS OBJECT
+	PROTECT oEmail AS CEmail
+	PROTECT _dwFileCount AS DWORD
+	
+	PROTECT oAttachControl AS Control
+	PROTECT oAttachments   AS AttachmentListView
+	PROTECT oBody          AS Control
+	PROTECT dwAttachXPos   AS DWORD
+
+METHOD __ResizeBody() 
+	LOCAL oSize AS Dimension
+	LOCAL liY   AS LONG
+	LOCAL sRect IS _winRect
+	
+	IF SELF:IsIconic()
+		RETURN NIL
+	ENDIF
+
+   IF oSurface != NULL_OBJECT .AND. oAttachments != NULL_OBJECT .AND. oBody != Null_Object
+
+      oSize := oSurface:Size
+
+      IF _dwFileCount = 0
+         liY := 90
+      ELSE
+
+         SendMessage(oAttachments:Handle(), LVM_GETVIEWRECT , _dwFileCount-1, LONG(_CAST, @sRect))
+
+         liY := sRect.bottom + 1l
+         IF sRect.right > oSize:Width - LONG(dwAttachXPos) - 20L .and. liY < 34l
+            liY += 17
+         ENDIF
+
+         liY := Min(liY, 64) + 4l
+         self:SetControlSize(oAttachments, oSize:Width - LONG(dwAttachXPos), liY)
+         liY := 86l + liY + 2l
+      ENDIF
+
+      SetWindowPos(oBody:Handle(), Null_Ptr, 0, liY, oSize:Width, oSize:Height - liY, _Or(SWP_NOACTIVATE, SWP_NOZORDER))
+   ENDIF
+   RETURN SELF
 
 METHOD AddressBook() 
 	
 	SELF:oCaller:AddAddress()
+   RETURN SELF
+
+
+METHOD Dispatch (oEvent) 
+
+	IF oEvent:Message == WM_COMMAND
+      IF LoWord(oEvent:wParam) == IDCANCEL .or. LoWord(oEvent:wParam) == KEYESCAPE
+    		// abort window
+		   SELF:EndWindow()
+		   RETURN 1l
+		ENDIF
+   ENDIF
+	
+	RETURN SUPER:Dispatch (oEvent)
+
+
+METHOD FileSaveAs() 
+
+   oEMailServer:FileSaveAs(SELF, SELF:oEmail)
+	
+	RETURN SELF
+
+METHOD ListViewKeyDown(oListViewKeyEvent) 
+
+	SELF:EventReturnValue := 1L	// don't call SUPER
+
+	DO CASE
+	CASE oListViewKeyEvent:KeyCode == VK_DELETE
+	   IF IsMethod(SELF, #DeleteAttachment)
+		   Send(SELF, #DeleteAttachment)
+		ENDIF
+	CASE oListViewKeyEvent:KeyCode == KEYENTER
+		SELF:OpenButton()
+	ENDCASE
+
+	RETURN NIL
+
+
+METHOD ListViewMouseButtonDoubleClick(oListViewMouseEvent) 
+
+	SELF:OpenButton()
+
+	RETURN NIL
+
+
+METHOD OpenButton() 
+
+	oAttachments:Open(SELF:oEmail)
+   RETURN SELF
+
+METHOD Resize(oResizeEvent) 
+	
+	SUPER:Resize(oResizeEvent)
+
+	IF ! SELF:IsIconic()
+		SELF:__ResizeBody()
+	ENDIF
 
    RETURN SELF
+
+	
+
+METHOD SaveButton() 
+
+   oAttachments:Save(SELF:oEmail, Null_String)
+   RETURN SELF
+
+METHOD SelectAllButton() 
+   oAttachments:SelectAll()
+   RETURN SELF
+
+METHOD SetAttachments() 
+
+   dwAttachXPos := oAttachments:Origin:X
+
+   SELF:SetControlSize(oAttachments, oSurface:Size:Width - dwAttachXPos)
+
+   _dwFileCount := oAttachments:Fill(SELF:oEmail)
+
+	IF _dwFileCount > 0
+		oAttachControl:Show()
+		oAttachments:Show()
+	ELSE
+		oAttachControl:Hide()
+		oAttachments:Hide()
+	ENDIF
+   RETURN SELF
+
+METHOD SetControlSize(oControl, nWidth, nHeight) 
+    Default(@nHeight, 23)
+    SetWindowPos(oControl:Handle(), Null_Ptr, 0, 0, nWidth, nHeight, _Or(SWP_NOMOVE, SWP_NOACTIVATE, SWP_NOZORDER))		
+		
+    RETURN SELF
+
 
 END CLASS

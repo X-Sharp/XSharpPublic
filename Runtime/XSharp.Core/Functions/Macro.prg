@@ -46,15 +46,16 @@ INTERNAL CLASS MacroPrecompiler IMPLEMENTS XSharp.IMacroCompiler
     PRIVATE INITONLY originalCompiler AS IMacroCompiler
     CONSTRUCTOR (oCompiler AS IMacroCompiler)
       originalCompiler := oCompiler
-    METHOD Compile(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module, isCodeblock OUT LOGIC) AS ICodeBlock
+    METHOD Compile(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module, isCodeblock REF LOGIC) AS ICodeblock
         LOCAL newmacro AS STRING
         newmacro := PrepareMacro(macro,lAllowSingleQuotes)
-        RETURN originalCompiler:Compile(newmacro, lAllowSingleQuotes, module, OUT isCodeblock)
+
+        RETURN originalCompiler:Compile(newmacro, lAllowSingleQuotes, module, REF isCodeblock)
         
     PRIVATE STATIC METHOD PrepareMacro(cMacro AS STRING, lAllowSingleQuotes AS LOGIC) AS STRING
         VAR sbResult := StringBuilder{cMacro:Length * 2} 
         VAR sbId     := StringBuilder{cMacro:Length}
-        LOCAL   aParams AS STRING[]
+        LOCAL   aParams := NULL AS STRING[]
         LOCAL aElements AS STRING[]
         cMacro := cMacro:Trim()
         IF cMacro:StartsWith("{") .AND. cMacro:EndsWith("}")
@@ -82,9 +83,11 @@ INTERNAL CLASS MacroPrecompiler IMPLEMENTS XSharp.IMacroCompiler
             
         // make sure we remove the _FIELD-> from the existing key
         cMacro := cMacro:Replace("_FIELD->","")
-        LOCAL lInString AS LOGIC
-        LOCAL delimChar AS CHAR
-        LOCAL lInComplexName AS LOGIC
+        LOCAL lInString := FALSE AS LOGIC
+        LOCAL delimChar := '\0' AS CHAR
+        LOCAL lInComplexName := FALSE AS LOGIC
+        LOCAL lastWasZero := FALSE AS LOGIC
+        LOCAL lHex        := FALSE AS LOGIC
         FOREACH cChar AS CHAR IN cMacro
 #region Handle Strings inside macros            
             IF lInString
@@ -116,7 +119,17 @@ INTERNAL CLASS MacroPrecompiler IMPLEMENTS XSharp.IMacroCompiler
 #endregion           
             IF Char.IsLetter(cChar) .OR. cChar = '_'
                 // add char to id
-                sbId:Append(cChar)
+                IF lastWasZero
+                    IF cChar:ToString() $ "XxBb"
+                        sbResult:Append(cChar)
+                        lHex := cChar:ToString() $ "Xx"
+                    ENDIF
+                ELSEIF lHex .AND. cChar:ToString() $ "AaBbCcDdEeFf"
+                    sbResult:Append(cChar)
+                ELSE
+                    sbId:Append(cChar)
+                    lHex := FALSE
+                ENDIF
             ELSEIF Char.IsDigit(cChar)
                 // after letter or _ then it is part of the id
                 IF sbid:Length > 0
@@ -145,10 +158,28 @@ INTERNAL CLASS MacroPrecompiler IMPLEMENTS XSharp.IMacroCompiler
                 sbId:Clear()
                 sbResult:Append(cChar)
                 lInComplexName := FALSE
+            ELSEIF cChar == ' ' .OR. cChar == '\t'
+                IF sbId:Length > 0
+                    sbId:Append(cChar)
+                ELSE
+                    sbResult:Append(cChar)
+                ENDIF
             ELSE
                 // another non character or digit, so add name if it exists
                 GetIdName(sbResult, sbId, aParams)
                 sbResult:Append(cChar)
+            ENDIF
+            IF cChar == '0' .AND. ! lHex
+                lastWasZero := TRUE
+            ELSE
+                IF lastwaszero .AND. cChar:ToString() $ "Xx"
+                    lHex := TRUE
+                ELSEIF lHex .AND. cChar:ToString() $ "AaBbCcDdEeFf"
+                    NOP
+                ELSE
+                    lHex := FALSE
+                ENDIF
+                lastwasZero := FALSE
             ENDIF
         NEXT
         // when we end with an id then append to the end of the result
@@ -159,7 +190,20 @@ INTERNAL CLASS MacroPrecompiler IMPLEMENTS XSharp.IMacroCompiler
         IF sbid:Length > 0
             VAR sName := sbid:ToString():ToUpper()
             IF aParams == NULL .OR. Array.IndexOf(aParams, sName) < 0
-                sbResult:Append("_FIELD->")
+                SWITCH sName
+                CASE "NIL"
+                CASE "NULL_ARRAY"
+                CASE "NULL_CODEBLOCK"
+                CASE "NULL_DATE"
+                CASE "NULL_OBJECT"
+                CASE "NULL_PSZ"
+                CASE "NULL_PTR"
+                CASE "NULL_STRING"
+                CASE "NULL_SYMBOL"
+                    NOP
+                OTHERWISE
+                    sbResult:Append("_FIELD->")
+                END SWITCH
             ENDIF
             sbResult:Append(sbid:ToString())
             sbId:Clear()

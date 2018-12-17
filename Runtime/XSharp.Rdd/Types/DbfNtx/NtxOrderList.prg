@@ -84,8 +84,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         RETURN isOk
                         
                     CATCH e AS Exception
-                        LOCAL dummy AS STRING
-                        dummy := e:Message
+                        System.Diagnostics.Debug.WriteLine(e:Message)
                         RETURN FALSE
                     END TRY
                     

@@ -1,19 +1,38 @@
 ﻿USING System.Globalization
-using SYstem.XML
-using SYstem.XML.Linq
-using System.Linq
-using System.Collections.Generic
-function start as void
-    local cFile as USUAL
-    cFile := ""
-    if (NULL_STRING != cFile)
-        ? "not a null string"
-    else
-        ? "a null string"
-    endif
-    Console.Read()
-    return
-    
+USING SYstem.XML
+USING SYstem.XML.Linq
+USING System.Linq
+USING System.Collections.Generic
+USING XSharp.RDD
+using XSharp.RDD.Enums
+#include "dbcmds.vh"  
+
+FUNCTION Start() AS VOID
+LOCAL cDbf AS STRING
+LOCAL l AS USUAL
+cDbf := System.Environment.CurrentDirectory + "\testdbf.dbf"
+DBCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFNTX", TRUE)
+DBAppend()
+FieldPut(1, "ABC")
+DbDelete()
+DebOut32("Test")
+System.Diagnostics.Debug.WriteLine("test 2")
+? l := DBRecordInfo( DBRI_RECNO ) // exception
+? l := DBRecordInfo( DBRI_DELETED ) // exception
+? l := DBRecordInfo( DBRI_LOCKED ) // exception
+? l:= DbRecordInfo(DBRI_BUFFPTR)
+? l:= DbRecordInfo(DBRI_UPDATED)
+? l:= DbRecordInfo(DBRI_RAWRECORD)
+
+wait
+DBCloseArea()
+
+  
+PROC xAssert(l AS LOGIC)
+IF .not. l
+	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
+END IF
+? "Assertion passed"  
   
 
 CLASS TestClass
@@ -78,7 +97,7 @@ setinternational ( #windows )
 ?
 ? "Current SetCentury() default setting is " + setcentury() + " , should be TRUE"
 ? GetDateFormat()
-wait
+WAIT
 RETURN
 
 FUNCTION Start2a AS VOID
@@ -106,7 +125,7 @@ FUNCTION StartX AS VOID
 	? DOW(Today())
 	? CDOW(Today())
 	? CMonth(Today())
-	wait
+	WAIT
 
 	nMax := 10000000// 40000000
 	cA := "THE QUICK BROWN FOX JUMP OVER THE LAZY DOG"

@@ -1,25 +1,25 @@
 #region DEFINES
-STATIC DEFINE EMAILADDRESSBOOK_PBNEW := 119 
+STATIC DEFINE EMAILADDRESSBOOK_CITY := 113 
+STATIC DEFINE EMAILADDRESSBOOK_COMPANY := 111 
+STATIC DEFINE EMAILADDRESSBOOK_CONTACT := 110 
+STATIC DEFINE EMAILADDRESSBOOK_EMAIL := 118 
+STATIC DEFINE EMAILADDRESSBOOK_FAX := 117 
+STATIC DEFINE EMAILADDRESSBOOK_MOBILE := 116 
 STATIC DEFINE EMAILADDRESSBOOK_PBEXIT := 120 
+STATIC DEFINE EMAILADDRESSBOOK_PBNEW := 119 
 STATIC DEFINE EMAILADDRESSBOOK_PBSAVE := 121 
 STATIC DEFINE EMAILADDRESSBOOK_PHONE := 115 
-STATIC DEFINE EMAILADDRESSBOOK_EMAIL := 118 
-STATIC DEFINE EMAILADDRESSBOOK_COMPANY := 111 
+STATIC DEFINE EMAILADDRESSBOOK_STATE := 114 
+STATIC DEFINE EMAILADDRESSBOOK_STREET := 112 
+STATIC DEFINE EMAILADDRESSBOOK_TCAPTION := 100 
 STATIC DEFINE EMAILADDRESSBOOK_TCITY := 104 
-STATIC DEFINE EMAILADDRESSBOOK_TSTATE := 105 
-STATIC DEFINE EMAILADDRESSBOOK_TPHONE := 106 
+STATIC DEFINE EMAILADDRESSBOOK_TCOMPANY := 102 
+STATIC DEFINE EMAILADDRESSBOOK_TCONTACT := 101 
 STATIC DEFINE EMAILADDRESSBOOK_TEMAIL := 109 
 STATIC DEFINE EMAILADDRESSBOOK_TFAX := 107 
 STATIC DEFINE EMAILADDRESSBOOK_TMOBILE := 108 
-STATIC DEFINE EMAILADDRESSBOOK_TCONTACT := 101 
-STATIC DEFINE EMAILADDRESSBOOK_FAX := 117 
-STATIC DEFINE EMAILADDRESSBOOK_MOBILE := 116 
-STATIC DEFINE EMAILADDRESSBOOK_TCOMPANY := 102 
-STATIC DEFINE EMAILADDRESSBOOK_CONTACT := 110 
-STATIC DEFINE EMAILADDRESSBOOK_STREET := 112 
-STATIC DEFINE EMAILADDRESSBOOK_CITY := 113 
-STATIC DEFINE EMAILADDRESSBOOK_STATE := 114 
-STATIC DEFINE EMAILADDRESSBOOK_TCAPTION := 100 
+STATIC DEFINE EMAILADDRESSBOOK_TPHONE := 106 
+STATIC DEFINE EMAILADDRESSBOOK_TSTATE := 105 
 STATIC DEFINE EMAILADDRESSBOOK_TSTREET := 103 
 #endregion
 
@@ -57,42 +57,6 @@ CLASS EmailAddressBook INHERIT DATADIALOG
   PROTECT _aFields AS ARRAY
 
 
-METHOD PBNew( ) 
-
-	SELF:oCCPBNew:Disable()
-	SELF:oCCPBSave:Disable()
-	SELF:FillControls(TRUE)		 	// append blank entry
-	
-	RETURN SELF
-
-METHOD PBSave( ) 
-   LOCAL dwI AS DWORD
-   LOCAL symField AS SYMBOL
-
-	IF SELF:ControlVerify()
-		IF SELF:lAppend
-			_oDBServer:Append()
-		ENDIF
-   
-      FOR dwI := 1 UPTO 9
-         symField := _aFields[dwI]
-         _oDBServer:FIELDPUT(symField, Trim(SELF:FIELDGET(symField)))
-      NEXT dwI
-   
-		_oDBServer:Commit()
-		SELF:oCCPBNew:Enable()
-		SELF:oCCPBSave:Disable()
-	ENDIF	
-
-	RETURN SELF	
-
-
-METHOD PBExit( ) 
-
-	SELF:EndWindow()
-	
-	RETURN SELF
-
 METHOD ControlVerify() 
 
 	LOCAL aCtrls AS ARRAY
@@ -126,6 +90,38 @@ METHOD ControlVerify()
 
 	RETURN lRet			
 
+
+METHOD EditChange(oControlEvent) 
+
+	LOCAL oControl AS Control
+
+	oControl := IIf(oControlEvent == NULL_OBJECT, NULL_OBJECT, oControlEvent:Control)
+	SUPER:EditChange(oControlEvent)
+
+	IF SELF:InitCompleted
+		IF !Empty(SELF:oDCCompany:TextValue) .AND. !Empty( SELF:oDCEMAIL:TextValue)
+			SELF:oCCPBSave:Enable()
+		ELSE
+			SELF:oCCPBSave:Disable()
+		ENDIF
+	ENDIF			
+
+	RETURN NIL
+
+
+
+METHOD FillControls(lNew AS LOGIC) AS VOID PASCAL 
+   LOCAL dwI AS DWORD
+   LOCAL symField AS SYMBOL
+  
+   SELF:lAppend := lNew
+   
+   FOR dwI := 1 UPTO 9
+      symField := _aFields[dwI]
+      SELF:FIELDPUT(symField, IF(lNew, "", _oDBServer:FIELDGET(symField)))
+   NEXT dwI
+   
+	RETURN
 
 CONSTRUCTOR(oWindow,iCtlID,oServer,uExtra)  
 LOCAL DIM aFonts[2] AS OBJECT
@@ -251,6 +247,42 @@ self:PostInit(oWindow,iCtlID,oServer,uExtra)
 return self
 
 
+METHOD PBExit( ) 
+
+	SELF:EndWindow()
+	
+	RETURN SELF
+
+METHOD PBNew( ) 
+
+	SELF:oCCPBNew:Disable()
+	SELF:oCCPBSave:Disable()
+	SELF:FillControls(TRUE)		 	// append blank entry
+	
+	RETURN SELF
+
+METHOD PBSave( ) 
+   LOCAL dwI AS DWORD
+   LOCAL symField AS SYMBOL
+
+	IF SELF:ControlVerify()
+		IF SELF:lAppend
+			_oDBServer:Append()
+		ENDIF
+   
+      FOR dwI := 1 UPTO 9
+         symField := _aFields[dwI]
+         _oDBServer:FIELDPUT(symField, Trim(SELF:FIELDGET(symField)))
+      NEXT dwI
+   
+		_oDBServer:Commit()
+		SELF:oCCPBNew:Enable()
+		SELF:oCCPBSave:Disable()
+	ENDIF	
+
+	RETURN SELF	
+
+
 METHOD PostInit(oWindow,iCtlID,oServer,uExtra) 
 	
 	Default(@uExtra, FALSE)		// establishes a NEW record if TRUE 
@@ -268,38 +300,6 @@ METHOD PostInit(oWindow,iCtlID,oServer,uExtra)
 	SELF:InitCompleted := TRUE	// finished setting up controls - allow EditChange to work
 
 	RETURN NIL
-
-
-METHOD FillControls(lNew AS LOGIC) AS VOID PASCAL 
-   LOCAL dwI AS DWORD
-   LOCAL symField AS SYMBOL
-  
-   SELF:lAppend := lNew
-   
-   FOR dwI := 1 UPTO 9
-      symField := _aFields[dwI]
-      SELF:FIELDPUT(symField, IF(lNew, "", _oDBServer:FIELDGET(symField)))
-   NEXT dwI
-   
-	RETURN
-
-METHOD EditChange(oControlEvent) 
-
-	LOCAL oControl AS Control
-
-	oControl := IIf(oControlEvent == NULL_OBJECT, NULL_OBJECT, oControlEvent:Control)
-	SUPER:EditChange(oControlEvent)
-
-	IF SELF:InitCompleted
-		IF !Empty(SELF:oDCCompany:TextValue) .AND. !Empty( SELF:oDCEMAIL:TextValue)
-			SELF:oCCPBSave:Enable()
-		ELSE
-			SELF:oCCPBSave:Disable()
-		ENDIF
-	ENDIF			
-
-	RETURN NIL
-
 
 
 END CLASS

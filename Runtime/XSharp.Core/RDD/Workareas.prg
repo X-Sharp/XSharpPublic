@@ -95,13 +95,13 @@ CLASS WorkAreas
 					VAR oRdd := RDDs[ nArea]
 					TRY
 						lResult := oRdd:Close()
-						IF lResult
-							Aliases:Remove(oRdd:Alias:ToUpperInvariant())
-						ENDIF
+						Aliases:Remove(oRdd:Alias:ToUpperInvariant())
 					CATCH e AS Exception
 						lResult			:= FALSE  
 						RuntimeState.LastRDDError 	:= e
 					END TRY
+                ELSE
+                    lResult        := TRUE
 				ENDIF              
 				RDDs[ nArea] 		:= NULL
 			END LOCK               

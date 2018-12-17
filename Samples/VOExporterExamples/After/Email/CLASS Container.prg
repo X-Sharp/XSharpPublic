@@ -1,6 +1,25 @@
 CLASS Container
    PROTECT _aChilds AS ARRAY
 
+METHOD __Find(oObject) 
+   LOCAL dwI, dwCount AS DWORD 
+   
+   dwCount := ALen(_aChilds)
+   FOR dwI:= 1 UPTO dwCount
+      IF _aChilds[dwI] = oObject
+         RETURN dwI
+      ENDIF   
+   NEXT dwI
+   
+   RETURN 0
+
+METHOD Clear() 
+   _aChilds := {}
+   RETURN NIL
+
+ACCESS Elements 
+   RETURN _aChilds       
+
 CONSTRUCTOR() 
    SELF:Clear()
    RETURN SELF
@@ -21,25 +40,6 @@ METHOD UnRegister(oObject)
    ENDIF   
    RETURN oObject
    
-
-METHOD __Find(oObject) 
-   LOCAL dwI, dwCount AS DWORD 
-   
-   dwCount := ALen(_aChilds)
-   FOR dwI:= 1 UPTO dwCount
-      IF _aChilds[dwI] = oObject
-         RETURN dwI
-      ENDIF   
-   NEXT dwI
-   
-   RETURN 0
-
-METHOD Clear() 
-   _aChilds := {}
-   RETURN NIL
-
-ACCESS Elements 
-   RETURN _aChilds       
 
 
 END CLASS

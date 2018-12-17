@@ -1,4 +1,4 @@
-PARTIAL CLASS __FormattedString
+﻿PARTIAL CLASS __FormattedString
 	PROTECT oEditOwner AS SingleLineEdit
 	PROTECT sPicture AS STRING
 	PROTECT sTemplate AS STRING
@@ -562,7 +562,7 @@ METHOD ProcessChar(cChar AS STRING) AS LOGIC STRICT
 
 	IF SELF:MatchesTemplChar(cChar, cTemplChar, FALSE)
 		IF cTemplChar == "!"
-			UpperA(cChar)
+			UpperA(@cChar)
 		ENDIF
 #ifdef __VULCAN__
 		IF ((wOverWrite == OVERWRITE_ALWAYS) .OR. (wOverWrite == OVERWRITE_ONKEY .AND. IsOverWriteModeEnabled())) .OR.	((cType == "N") .AND. (sValue[iCurPos-1]) == 32)

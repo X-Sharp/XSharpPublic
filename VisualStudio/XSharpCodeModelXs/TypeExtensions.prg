@@ -47,24 +47,42 @@ BEGIN NAMESPACE XSharpModel
             lookupTable:Add("XSharp.__WinBool", "LOGIC")
             lookupTable := lookupTable:ToImmutableDictionary<STRING, STRING>(StringComparer.OrdinalIgnoreCase)
 
-        STATIC METHOD GetSystemTypeName( SELF typename AS STRING) AS STRING
+        STATIC METHOD GetSystemTypeName( SELF typename AS STRING, lXSharpNames as LOGIC) AS STRING
             //
 			// Todo: Rename to XSharp type names
 			//
-            SWITCH typename:ToLower()
-                CASE "array"
-                    RETURN "Vulcan.__Array"
-                CASE "date"
-                    RETURN "Vulcan.__VODate"
-                CASE "float"
-                    RETURN "Vulcan.__VOFloat"
-                CASE "psz"
-                    RETURN "Vulcan.__Psz"
-                CASE "symbol"
-                    RETURN "Vulcan.__Symbol"
-                CASE "usual"
-                    RETURN "Vulcan.__Usual"
-            END SWITCH
+            IF lXSharpNames
+                 SWITCH typename:ToLower()
+                    CASE "array"
+                        RETURN "XSharp.__Array"
+                    CASE "date"
+                        RETURN "XSharp.__Date"
+                    CASE "float"
+                        RETURN "XSharp.__Float"
+                    CASE "psz"
+                        RETURN "VulcanXSharp.__Psz"
+                    CASE "symbol"
+                        RETURN "XSharp.__Symbol"
+                    CASE "usual"
+                        RETURN "XSharp.__Usual"
+                END SWITCH
+
+             ELSE
+                 SWITCH typename:ToLower()
+                    CASE "array"
+                        RETURN "Vulcan.__Array"
+                    CASE "date"
+                        RETURN "Vulcan.__VODate"
+                    CASE "float"
+                        RETURN "Vulcan.__VOFloat"
+                    CASE "psz"
+                        RETURN "Vulcan.__Psz"
+                    CASE "symbol"
+                        RETURN "Vulcan.__Symbol"
+                    CASE "usual"
+                        RETURN "Vulcan.__Usual"
+                END SWITCH
+             ENDIF
             RETURN typename
 
         STATIC METHOD GetXSharpTypeName( SELF sysType AS System.Type) AS STRING

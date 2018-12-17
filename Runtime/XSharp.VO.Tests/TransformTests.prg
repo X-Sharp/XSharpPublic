@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -39,13 +39,16 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "TransForm")];
 		METHOD TransformDateTest() AS VOID 
 			// with @R other chars are appended, but only a single YN or TF flag is written. Other positions become a space
+			LOCAL cDF := GetDateFormat() AS STRING
             SetCentury(TRUE)
+			SetDateFormat("dd/mm/yyyy")
 			Assert.Equal("10/12/2010", Transform(2010.12.10,"@E"))
 			Assert.Equal("20/11/2010", Transform(2010.11.20,"@E"))
 			SetDateFormat("dd-mm-yyyy")
 			Assert.Equal("20-11-2010", Transform(2010.11.20,"@D"))
 			SetDateFormat("dd-mm-yy")
 			Assert.Equal("20-11-10", Transform(2010.11.20,"@D"))
+			SetDateFormat(cDF)
 
 		[Fact, Trait("Category", "TransForm")];
 		METHOD TransformStringTest() AS VOID 
@@ -127,6 +130,17 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		SetDecimalSep(dec)
 		SetThousandSep(thou)
+	RETURN
+
+	[Fact, Trait("Category", "TransForm")];
+	METHOD MoreStringTests() AS VOID
+		Assert.Equal("          ", Transform("", "@R XXXXXXXXXX")        )
+		Assert.Equal("Italia    ", Transform("Italia", "@R XXXXXXXXXX")  )
+		Assert.Equal("ITALIA    ", Transform("Italia", "@! XXXXXXXXXX")  )
+		Assert.Equal("Italia    ", Transform("Italia", "XXXXXXXXXX")     )
+		Assert.Equal("1234512345", Transform("1234512345", "XXXXXXXXXX") )
+		Assert.Equal("1234"      , Transform("1234", "XX99") )
+		Assert.Equal("ITALIA"    , Transform("Italia", "@!") )
 	RETURN
 
 
@@ -271,34 +285,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	   Assert.Equal( Str(-12.34 , 4, 1)     	, "****")    //VO: -2.3
 	   Assert.Equal( Str(-12.34 , 2, 1)     	, "**")
 
-
-	[Fact, Trait("Category", "Val")];
-	METHOD ValTests() AS VOID
-		SetDecimalSep(',')
-		SetThousandSep('.')
-		Assert.Equal(123, (INT) Val("123") )
-		Assert.Equal(123.456, (FLOAT) Val("123,456") )
-
-		Assert.Equal(0, (INT) Val("") )
-
-		Assert.Equal(0, (INT) Val("abc") )
-		Assert.Equal(123, (INT) Val("123abc") )
-		Assert.Equal(123, (INT) Val("123abc456") )
-		Assert.Equal(123, (INT) Val("123abc456,789") )
-		Assert.Equal(0, (INT) Val("abc123456,789") )
-		Assert.Equal(255, (INT) Val("0xFF") )
-		Assert.Equal(0xFFFF, (INT) Val("0xFFFF") )
-		Assert.Equal(4294967295, (INT64) Val("0xFFFFFFFF") )
-		Assert.Equal(11, (INT) Val("11L11") )
-        
-		Assert.Equal(1.0001, (FLOAT) Val("1,000.1") )
-		Assert.Equal(1.0011, (FLOAT) Val("1,001.1") )
-		SetDecimalSep('.')
-		SetThousandSep(',')
-		Assert.Equal(1000.1, (FLOAT) Val("1,000.1") )
-		Assert.Equal(1001.1, (FLOAT) Val("1,001.1") )
-	RETURN
-
 	[Fact, Trait("Category", "SplitPath")];
 	METHOD SplitPathTests() AS VOID
 		LOCAL cDrive := "",cDir := "",cFile := "",cExt := "" AS STRING
@@ -388,22 +374,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		z := String2Psz("test")
 		Assert.False(Empty(z))
 
-	[Fact, Trait("Category", "IsClassOf")];
-	METHOD IsClassOf_Tests() AS VOID
-		Assert.True(IsClassOf(#TestClassChild, #TestClassParent))
-		Assert.False(IsClassOf(#TestClassParent, #TestClassChild))
-		Assert.True(IsClassOf(#TestClassChild, #TestClassChild))
-		Assert.True(IsClassOf(#TestClassParent, #TestClassParent))
-		Assert.False(IsClassOf(#None, #None))
-		Assert.False(IsClassOf(#None, #TestClassChild))
-		Assert.False(IsClassOf(#TestClassChild, #None))
-
-	[Fact, Trait("Category", "IsInstanceOf")];
-	METHOD IsInstanceOf_Tests() AS VOID
-		Assert.True(IsInstanceOf(123 , "System.Int32"))
-		Assert.True(IsInstanceOf(TRUE , "System.Boolean"))
-		Assert.False(IsInstanceOf(123 , "Nothing"))
-
 	[Fact, Trait("Category", "AClone")];
 	METHOD AClone_Tests() AS VOID
 		Assert.True(ALen(AClone({1}))==1)
@@ -446,6 +416,100 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		Assert.True(  ALen(  ACloneShallow({NULL_ARRAY,NULL_ARRAY}) ) == 2  )
 		Assert.True(  ACloneShallow({NULL_ARRAY})[1] == NULL_ARRAY  )
 
+	[Fact, Trait("Category", "DBFFuncs")];
+	METHOD DBCreate_Tests() AS VOID
+		LOCAL aFields AS ARRAY
+		aFields := {{"TEST","C",10,0}}
+
+		LOCAL cFileName_WithExt AS STRING
+		LOCAL cFileName_NoExt AS STRING
+		cFileName_NoExt := "DBCreate_Tests"
+		cFileName_WithExt := cFileName_NoExt + ".dbf"
+		IF System.IO.File.Exists(cFileName_WithExt)
+			System.IO.File.Delete(cFileName_WithExt)
+		END IF
+		Assert.True(  DBCreate(cFileName_NoExt , aFields , "DBFNTX")  )
+		Assert.True(  System.IO.File.Exists(cFileName_WithExt) )
+		
+		IF System.IO.File.Exists(cFileName_WithExt)
+			System.IO.File.Delete(cFileName_WithExt)
+		END IF
+		Assert.True(  DBCreate(cFileName_WithExt , aFields , "DBFNTX")  )
+		Assert.True(  System.IO.File.Exists(cFileName_WithExt) )
+
+		cFileName_WithExt := cFileName_NoExt + ".none"
+		IF System.IO.File.Exists(cFileName_WithExt)
+			System.IO.File.Delete(cFileName_WithExt)
+		END IF
+		Assert.True(  DBCreate(cFileName_WithExt , aFields , "DBFNTX")  )
+		Assert.True(  System.IO.File.Exists(cFileName_WithExt) )
+
+	[Fact, Trait("Category", "DBFFuncs")];
+	METHOD DBAppend_Exclusive() AS VOID
+		LOCAL aFields AS ARRAY
+		LOCAL cFileName AS STRING
+		aFields := {{"TEST","C",10,0}}
+		cFileName := "DBAppend_Exclusive"
+
+		Assert.True(  DBCreate(cFileName , aFields , "DBFNTX")  )
+		Assert.True(  DBUseArea(,"DBFNTX",cFileName,,FALSE) )
+		Assert.True(  RecCount() == 0 )
+		Assert.True(  DBAppend() )
+		FieldPut(1 , "test")
+		Assert.True(  AllTrim(FieldGet(1)) == "test" )
+		Assert.True(  DBCloseArea() )
+
+	[Fact, Trait("Category", "DBFFuncs")];
+	METHOD DBAppend_Shared() AS VOID
+		LOCAL aFields AS ARRAY
+		LOCAL cFileName AS STRING
+		aFields := {{"TEST","C",10,0}}
+		cFileName := "DBAppend_Shared"
+
+		Assert.True(  DBCreate(cFileName , aFields , "DBFNTX")  )
+		Assert.True(  DBUseArea(,"DBFNTX",cFileName,,TRUE) )
+		Assert.True(  RecCount() == 0 )
+		Assert.True(  DBAppend() )
+		FieldPut(1 , "test")
+		Assert.True(  AllTrim(FieldGet(1)) == "test" )
+		Assert.True(  DBCloseArea() )
+
+	[Fact, Trait("Category", "DBFFuncs")];
+	METHOD DBAppend_more() AS VOID
+	LOCAL cDbf AS STRING
+		cDbf := "testappend.DbF"
+		RDDSetDefault( "DBFNTX" )
+		Assert.True(  DBCreate(cDbf , { {"TEST","C",10,0} }) )
+		// Appending in exclusive mode:
+		Assert.True( DBUseArea(, , cDbf , "alias1" , FALSE) )
+		Assert.True( DBAppend() )
+		Assert.True( RecCount() == 1 )
+		FieldPut(1, "test") // ok
+		Assert.True( AllTrim(FieldGet(1)) == "test" )
+		Assert.True( DBCloseArea() )
+
+		// Appending in SHARED mode:
+		Assert.True( DBUseArea(, , cDbf , "alias2" , TRUE) )
+		Assert.True( RecCount() == 1 )
+		Assert.True( DBAppend() )// returns true but does not append record
+		Assert.True( RecCount() == 2 )
+		FieldPut(1, "test2") // ok
+		Assert.True( AllTrim(FieldGet(1)) == "test2" )
+		Assert.True( DBCloseArea() )
+
+	[Fact, Trait("Category", "DBFFuncs")];
+	METHOD DBUseArea_same_file_twice() AS VOID
+	LOCAL cDbf AS STRING
+		RDDSetDefault( "DBFNTX" )
+		cDbf := "testtwice.DbF"
+		Assert.True(  DBCreate(cDbf , { {"TEST","C",10,0} }) )
+
+		// shared mode
+		Assert.True( DBUseArea(, , cDbf , , FALSE) )
+		Assert.True( DBCloseArea() )
+
+		Assert.True( DBUseArea(, , cDbf , , FALSE) )
+		Assert.True( DBCloseArea() )
 	END CLASS
 END NAMESPACE
 

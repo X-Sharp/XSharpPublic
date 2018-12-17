@@ -12,7 +12,7 @@ Extension =
 ApplicationIcon = 
 OutputFolder = 
 Frameworks = 1
-GUID = 7023F87A-0EFF-4860-9A26-16F101AA5FFC
+GUID = D9475F0B-A6BB-424C-8DB5-BC0929684972
 IncludeInProjectBuild = 1
 IncludeInProjectSearch = 1
 IncludeInProjectExport = 1
@@ -23,24 +23,24 @@ KeyFile =
 [Files]
 
 File = %AppPath%\Start.prg
-FileGUID = B8E1DEA2-7E15-4CB1-9662-9A3B47EEDB8B
+FileGUID = 786B3A32-780E-4BF8-9114-4C487FA16BC5
 FileType = Code
 File = %AppPath%\Order Dialog.prg
-FileGUID = 82743421-AF79-483A-85AF-F61A3CF3FCC1
+FileGUID = 78524665-087C-4E8A-AC82-0C3EAC052CA1
 FileType = Code
 File = %AppPath%\Images.prg
-FileGUID = 3E1656D3-1111-4C6B-898D-41D4EDB44173
+FileGUID = 122188C8-0ADE-4BF8-BB66-F9DA7C758FC0
 FileType = Code
 NativeResourceFile = External , %AppPath%\Images.rc
-ResourceFileGuid = 05528F9B-C5AC-458C-9698-36CAB9E5B02B
+ResourceFileGuid = 3EE9094D-42C2-4921-ADC1-8CD65919E272
 File = %AppPath%\SubmitDlg.prg
-FileGUID = 10A43B30-9B5C-48DB-A9DC-A8E625E0BE21
+FileGUID = 5B5F63E3-F61E-44CC-AF79-A306F7484B29
 FileType = Code
 File = %AppPath%\TwoBmpButton.prg
-FileGUID = E9266286-D8F0-4556-B4A6-739E8E885368
+FileGUID = 9A7395E3-8FE7-48DA-9539-C9143CF0A5D9
 FileType = Code
 File = %AppPath%\Read Me.prg
-FileGUID = 2D0C3B52-BFC1-47DB-883D-7812874C2CC2
+FileGUID = 13344D0E-CD8B-4557-B7D0-6054B62745A3
 FileType = Code
 
 [References]
@@ -51,7 +51,7 @@ ReferenceGAC = CLR4,VulcanRTFuncs,1,0, 0.0.0.0
 ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0, 0.0.0.0
 ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0, 0.0.0.0
 ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0, 0.0.0.0
-ReferenceBrowse = C:\XporterOutput\SDK_DEFINES.dll,1,1
+ReferenceBrowse = %ProjectPath%\SDK_DEFINES.dll,1,1
 
 [General Options]
 Switches=/nowarn:9032,9043,618,162,649,9025

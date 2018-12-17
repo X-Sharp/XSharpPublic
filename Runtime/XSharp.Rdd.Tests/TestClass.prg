@@ -12,7 +12,7 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using XUnit
+USING XUnit
 BEGIN NAMESPACE XSharp.RDD.Tests
 
 END NAMESPACE

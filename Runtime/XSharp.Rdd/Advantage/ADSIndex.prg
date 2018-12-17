@@ -48,7 +48,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         cCondition := string.Empty
         nonAdditive := TRUE
         mustEval := FALSE
-        IF ! SELF:oRDD:_CheckVODateFormat()
+        IF ! SELF:oRDD:_CheckDateFormat()
             SELF:oRDD:_CheckError(1)
         ENDIF
         mode := 0u
@@ -275,7 +275,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
       SELF:oRDD:ADSERROR(ERDD_UNSUPPORTED, EG_UNKNOWN, "OrderInfo")
     END SWITCH
   CASE DBOI_KEYVAL
-      len  := SELF:oRDD:_MaxKeySize + 1
+      len  := (WORD) (SELF:oRDD:_MaxKeySize + 1)
       chars := CHAR[]{len}
       
       SELF:_CheckError(ACE.AdsExtractKey(hIndex, chars, REF len))
@@ -332,11 +332,11 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
   CASE DBOI_SCOPETOP
     CASE DBOI_SCOPEBOTTOM
         LOCAL wScopeOption AS WORD
-        wScopeOption  := IIF(nOrdinal != DBOI_SCOPEBOTTOM , 1 , 2)
+        wScopeOption  := (WORD) IIF(nOrdinal != DBOI_SCOPEBOTTOM , 1 , 2)
         IF (info:Result != NULL)
           RETURN SELF:oRDD:_SetScope(hIndex, wScopeOption, info:Result)
         ENDIF
-        len := SELF:oRDD:_MaxKeySize +1
+        len := (WORD) (SELF:oRDD:_MaxKeySize +1)
         chars := CHAR[]{ SELF:oRDD:_MaxKeySize +1}
         result := ACE.AdsGetScope(hIndex, wScopeOption, chars, REF len)
         IF result != ACE.AE_NO_SCOPE .AND. result != 0
@@ -347,7 +347,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
     CASE DBOI_SCOPETOPCLEAR
     CASE DBOI_SCOPEBOTTOMCLEAR
         LOCAL wScopeOption AS WORD
-        wScopeOption  := IIF(nOrdinal != DBOI_SCOPEBOTTOMCLEAR , 1 , 2)
+        wScopeOption  := (WORD) (IIF(nOrdinal != DBOI_SCOPEBOTTOMCLEAR , 1 , 2))
         info:Result := NULL
         RETURN SELF:oRDD:_SetScope(hIndex, wScopeOption, info:Result)
         
@@ -392,7 +392,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         IF (SELF:oRDD:_SetPaths() != 0)
             RETURN FALSE
         ENDIF
-        SELF:oRDD:_CheckVODateFormat()
+        SELF:oRDD:_CheckDateFormat()
         SELF:_CheckError(ACE.AdsGetNumIndexes(SELF:Table, OUT numIndexes))
         wLength := 1000
         indices := IntPtr[]{ wLength }
@@ -401,7 +401,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         IF result != ACE.AE_INDEX_ALREADY_OPEN 
             SELF:_CheckError(result)
             IF SELF:Index == IntPtr.Zero .AND. wLength > 0
-                wCurrent := numIndexes +1
+                wCurrent := (WORD)(numIndexes +1)
                 LOCAL hIndex AS IntPtr
                 SELF:_CheckError(ACE.AdsGetIndexHandleByOrder(SELF:Table, wCurrent, OUT hIndex))
                 SELF:Index := hIndex
@@ -520,7 +520,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         SELF:_iProgress := usPercentDone
       ENDIF
       IF SELF:OrderCondInfo != NULL .AND. SELF:OrderCondInfo:EvalBlock != NULL
-        SELF:OrderCondInfo:EvalBlock:EvalBlock(SELF:_iProgress)
+            SELF:OrderCondInfo:EvalBlock:EvalBlock(SELF:_iProgress)
       ENDIF
       RETURN 0u        
 END CLASS

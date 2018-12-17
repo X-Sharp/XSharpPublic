@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -86,7 +86,7 @@ FUNCTION Mod(dividend AS LONG, divisor AS LONG) AS LONG
 /// New value with the nibbles swapped.
 /// </returns>
 FUNCTION SwapByte(b AS BYTE) AS BYTE
-	RETURN (b << 4) | (b >> 4)
+	RETURN (BYTE)  ((b << 4) | (b >> 4))
 
 /// <summary>
 /// Exchange the right and left halves of a double word.
@@ -140,7 +140,7 @@ FUNCTION SwapInt64( i64 AS INT64 ) AS INT64
 /// <returns>
 /// </returns>
 FUNCTION SwapShort(si AS SHORT) AS SHORT
-RETURN	 ((SHORT)((si & 0x00ff) << 8) | ((si >> 8) & 0x00ff))
+RETURN	 (SHORT) (((si & 0x00ff) << 8) | ((si >> 8) & 0x00ff))
 
 /// <summary>
 /// Exchange the right and left halves of a word.
@@ -149,7 +149,7 @@ RETURN	 ((SHORT)((si & 0x00ff) << 8) | ((si >> 8) & 0x00ff))
 /// <returns>
 /// </returns>
 FUNCTION SwapWord(w AS WORD) AS WORD
-RETURN ((WORD)((w & 0x00ff) << 8) | ((w >> 8) & 0x00ff))
+RETURN (WORD) (((w & 0x00ff) << 8) | ((w >> 8) & 0x00ff))
 
 
 

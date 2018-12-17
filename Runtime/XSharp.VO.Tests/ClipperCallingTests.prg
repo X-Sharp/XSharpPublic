@@ -65,7 +65,7 @@ STATIC FUNCTION FTest( x, y, z ) AS INT CLIPPER
    RETURN pcount()
    
 STATIC FUNCTION TestFunc( x, y ) AS LOGIC CLIPPER
-   RETURN x == 1 && y == "2"
+   RETURN x == 1 .AND. y == "2"
 
   
 STATIC FUNCTION TestFunc4( x ) AS USUAL CLIPPER

@@ -2,12 +2,12 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup>
-    <ProjectGuid>6C4320D7-9D00-4306-A6DE-5046CE2E9E0C</ProjectGuid>
+    <ProjectGuid>7DD3A029-F345-4854-A397-421854F0FB1F</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Vopad</RootNamespace>
     <AssemblyName>Vopad</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <Name>Vopad</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
@@ -111,6 +111,16 @@
     <NativeResource Include="PadShell.IDI_VOPADICON.rc">
       <DependentUpon>PadShell.prg</DependentUpon>
     </NativeResource>
+    <None Include="Properties\cavowed.inf" />
+    <None Include="Properties\saswed.inf" />
+    <None Include="Properties\GSGWED.INF" />
+    <None Include="Properties\cavowed.tpl" />
+    <None Include="Properties\cavoded.tpl" />
+    <None Include="Properties\cavofed.tpl" />
+    <None Include="Resources\VOPAD.ICO" />
+    <None Include="Resources\HelpAbt.BMP" />
+    <None Include="Resources\VOPAD.BMP" />
+    <None Include="Resources\cctl6.man" />
     <Compile Include="PadStart.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -162,6 +172,10 @@
     <NativeResource Include="Manifest.CREATEPROCESS_MANIFEST_RESOURCE_ID.rc">
       <DependentUpon>Manifest.prg</DependentUpon>
     </NativeResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

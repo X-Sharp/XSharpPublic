@@ -1,4 +1,4 @@
-PARTIAL CLASS ObjCodeBlock
+﻿PARTIAL CLASS ObjCodeBlock
 	HIDDEN oOwner       AS OBJECT
 	HIDDEN symMethod    AS SYMBOL
 
@@ -9,7 +9,7 @@ METHOD Eval (xParam1)
 	LOCAL i     AS DWORD
 	LOCAL xRet  AS USUAL
 
-	n := PCount()
+	n := (DWORD) PCount()
 
 	aArgs := ArrayCreate( n )
 

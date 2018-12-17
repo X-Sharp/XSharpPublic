@@ -4,24 +4,11 @@
 // See License.txt in the project root for license information.
 //
 BEGIN NAMESPACE XSharp
-	/// <summary>
-	/// This interface defines Compile time and runtime codeblocks
-	/// </summary>
-	/// <seealso cref="T:XSharp.CodeBlock"/>
-	/// <seealso cref="T:XSharp._CodeBlock"/>
-	INTERFACE ICodeBlock
-		/// <summary>Evaluate the codeblock</summary>
-		METHOD	EvalBlock( args PARAMS OBJECT[]) AS OBJECT
-		/// <summary>
-		/// Returns the number of parameters defined for the codeblock
-		/// </summary>
-		METHOD	PCount AS LONG 
-	END INTERFACE
 
 	/// <summary>
 	/// This interface defines Date values
 	/// </summary>
-	/// <seealso cref="T:XSharp.__VODate"/>
+	/// <seealso cref="T:XSharp.__Date"/>
 	/// <seealso cref="T:XSharp.RDD.DbDate"/>
 	INTERFACE IDate
 		/// <summary>Year part of the date. A number between 0 and 9999</summary>
@@ -44,7 +31,7 @@ BEGIN NAMESPACE XSharp
 	/// <summary>
 	/// This interface defines FLOAT values
 	/// </summary>
-	/// <seealso cref="T:XSharp.__VOFloat"/>
+	/// <seealso cref="T:XSharp.__Float"/>
 	/// <seealso cref="T:XSharp.RDD.DbFloat"/>
 	INTERFACE IFloat
 		/// <summary>Double value of the Float</summary>
@@ -57,20 +44,11 @@ BEGIN NAMESPACE XSharp
 		/// <returns>Integer value</returns>
 		PROPERTY Decimals AS INT  GET 
 	END INTERFACE
+
 	/// <summary>
-	/// This interface defines the Macro compiler subsystem
+	/// This interface must be implemented by objects that register themselves for DB Notifications
 	/// </summary>
-	/// <seealso cref="M:XSharp.Core.Functions.SetMacroCompiler(System.Type)"/>
-	/// <seealso cref="M:XSharp.Core.Functions.GetMacroCompiler"/>
-	/// <seealso cref="T:XSharp.ICodeBlock"/>
-	INTERFACE IMacroCompiler
-		/// <summary>Compile a string into a runtime codeblock.</summary>
-		/// <param name="macro">String to compile</param>
-		/// <param name="lAllowSingleQuotes">Should single quotes be allowed</param>
-		/// <param name="module">Module of the main app</param>
-		/// <param name="isCodeblock">will be set to TRUE when the string was a real codeblock (with {|..| }).</param>
-		/// <returns>A compiled codeblock</returns>
-		/// <seealso cref="T:XSharp.ICodeBlock"/>
-		METHOD Compile(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module, isCodeblock OUT LOGIC) AS ICodeBlock
-	END INTERFACE
+    INTERFACE IDbNotify
+        METHOD Notify(nEvent AS LONG, nNotification AS LONG) AS VOID
+    END INTERFACE 
 END NAMESPACE

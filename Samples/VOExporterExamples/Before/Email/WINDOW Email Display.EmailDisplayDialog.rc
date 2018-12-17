@@ -1,4 +1,4 @@
- EmailDisplayDialog DIALOGEX  26, 24, 252, 175
+EmailDisplayDialog DIALOGEX  26, 24, 252, 175
 STYLE	1073741824
 FONT	8, "MS Shell Dlg"
 BEGIN

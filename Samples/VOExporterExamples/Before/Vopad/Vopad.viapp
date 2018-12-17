@@ -12,7 +12,7 @@ Extension =
 ApplicationIcon = 
 OutputFolder = 
 Frameworks = 1
-GUID = 6C4320D7-9D00-4306-A6DE-5046CE2E9E0C
+GUID = 7DD3A029-F345-4854-A397-421854F0FB1F
 IncludeInProjectBuild = 1
 IncludeInProjectSearch = 1
 IncludeInProjectExport = 1
@@ -23,37 +23,37 @@ KeyFile =
 [Files]
 
 File = %AppPath%\PadShell.prg
-FileGUID = 208D3B57-1688-4FC0-B0BC-C23069A636A6
+FileGUID = F227590B-C4A7-46E1-BC31-2A9CC4B731A7
 FileType = Code
 NativeResourceFile = External , %AppPath%\PadShell.rc
-ResourceFileGuid = EAA99BB7-2FE8-4FED-A6C2-127B93519DA8
+ResourceFileGuid = 3DD5FB95-7C2C-4D8C-A8CE-A0B74FB6D3AA
 File = %AppPath%\PadStart.prg
-FileGUID = 879613BA-3B27-4E36-82BA-87689C2396A6
+FileGUID = CA16A2C9-ACCD-4628-8861-48E565644C52
 FileType = Code
 File = %AppPath%\PadHelp About.prg
-FileGUID = DCB344D3-E603-4128-BB4A-90085BFCB13F
+FileGUID = 887A17E0-03BE-442C-B510-7F022951AAFD
 FileType = Code
 NativeResourceFile = External , %AppPath%\PadHelp About.rc
-ResourceFileGuid = CCC50E37-791A-443C-809C-8B653B82B2B4
+ResourceFileGuid = 6335381D-BFD9-4984-8920-3824559ED717
 File = %AppPath%\PadWin.prg
-FileGUID = 1D6D9AB2-C18A-46D2-AEBE-7729918D262A
+FileGUID = CAC96896-9AD5-4DD9-A8F5-073D4DC954E0
 FileType = Code
 File = %AppPath%\PadMenus.prg
-FileGUID = 5DEB39EA-5CB6-4608-931D-EA1330D6CD6E
+FileGUID = 0D071DEE-0D67-4BEE-B7DC-A7C1502D1E5E
 FileType = Code
 File = %AppPath%\image.prg
-FileGUID = 9E8484D2-C67A-4C8A-A402-B59EFBDFBC78
+FileGUID = E25C08C0-BE78-45B8-AB53-8D84D0B0AD4D
 FileType = Code
 NativeResourceFile = External , %AppPath%\image.rc
-ResourceFileGuid = CD2021C2-076D-4DA7-982C-AF884E61E044
+ResourceFileGuid = 7C89394D-A8E1-4B47-B5F1-DD4B146B6FE3
 File = %AppPath%\!Readme!.prg
-FileGUID = 53CD79A5-48D4-4040-9C4C-379025338A07
+FileGUID = ED371050-2A11-4F0B-931C-88888F5C3AC1
 FileType = Code
 File = %AppPath%\Manifest.prg
-FileGUID = F006DB7D-1298-48CE-A28D-3B417342130D
+FileGUID = A2610357-8B36-4517-B613-BD665A1358B2
 FileType = Code
 NativeResourceFile = External , %AppPath%\Manifest.rc
-ResourceFileGuid = 3417F103-D2F1-4E8B-A516-47F805B9E9AB
+ResourceFileGuid = 6F220AF2-5D9E-4953-A45F-7F05F15133E6
 
 [References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
@@ -63,7 +63,7 @@ ReferenceGAC = CLR4,VulcanRTFuncs,1,0, 0.0.0.0
 ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0, 0.0.0.0
 ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0, 0.0.0.0
 ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0, 0.0.0.0
-ReferenceBrowse = C:\XporterOutput\SDK_DEFINES.dll,1,1
+ReferenceBrowse = %ProjectPath%\SDK_DEFINES.dll,1,1
 
 [General Options]
 Switches=/nowarn:9032,9043,618,162,649,9025

@@ -22,9 +22,6 @@ CONSTRUCTOR(oOwner, oMail, cServer, nPort)
    RETURN SELF
 
 
-ASSIGN Progress(oValue) 
-   RETURN _oProgress := oValue
-
 METHOD InternetStatus(nContext, nStatus, xStatus, nStatusLength) 
    LOCAL lRet AS LOGIC
 
@@ -47,6 +44,9 @@ METHOD InternetStatus(nContext, nStatus, xStatus, nStatusLength)
 
    RETURN lRet
 
+
+ASSIGN Progress(oValue) 
+   RETURN _oProgress := oValue
 
 
 END CLASS

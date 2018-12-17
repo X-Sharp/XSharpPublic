@@ -1,53 +1,46 @@
 #region DEFINES
-DEFINE IDM_RtfMenu := "PadMenu"
-Define IDM_EmptyPadMenu := "EmptyPadMenu"
 Define IDA_EmptyPadMenu := "EmptyPadMenu"
+Define IDA_StandardPadMenu := "StandardPadMenu"
+Define IDM_EmptyPadMenu := "EmptyPadMenu"
+Define IDM_EmptyPadMenu_File_Exit_ID := 21011
 Define IDM_EmptyPadMenu_File_ID := 21007
 Define IDM_EmptyPadMenu_File_New_ID := 21008
 Define IDM_EmptyPadMenu_File_Open_ID := 21009
-Define IDM_EmptyPadMenu_File_Exit_ID := 21011
+Define IDM_EmptyPadMenu_Help_About_ID := 21015
 Define IDM_EmptyPadMenu_Help_ID := 21012
 Define IDM_EmptyPadMenu_Help_Index_ID := 21013
-Define IDM_EmptyPadMenu_Help_About_ID := 21015
+DEFINE IDM_RtfMenu := "PadMenu"
 Define IDM_StandardPadMenu := "StandardPadMenu"
-Define IDA_StandardPadMenu := "StandardPadMenu"
+Define IDM_StandardPadMenu_Edit_AlignMent_Center_ID := 22659
+Define IDM_StandardPadMenu_Edit_AlignMent_ID := 22657
+Define IDM_StandardPadMenu_Edit_AlignMent_Left_ID := 22658
+Define IDM_StandardPadMenu_Edit_AlignMent_Right_ID := 22660
+Define IDM_StandardPadMenu_Edit_Copy_ID := 22663
+Define IDM_StandardPadMenu_Edit_Cut_ID := 22662
+Define IDM_StandardPadMenu_Edit_Find_ID := 22666
+Define IDM_StandardPadMenu_Edit_Find_Next_ID := 22667
+Define IDM_StandardPadMenu_Edit_Font_ID := 22654
+Define IDM_StandardPadMenu_Edit_ID := 22653
+Define IDM_StandardPadMenu_Edit_Margins_ID := 22656
+Define IDM_StandardPadMenu_Edit_Paste_ID := 22664
+Define IDM_StandardPadMenu_File_Exit_ID := 22652
 Define IDM_StandardPadMenu_File_ID := 22643
 Define IDM_StandardPadMenu_File_New_ID := 22644
 Define IDM_StandardPadMenu_File_Open_ID := 22645
-Define IDM_StandardPadMenu_File_Save_ID := 22646
+Define IDM_StandardPadMenu_File_Page_Setup_ID := 22650
 Define IDM_StandardPadMenu_File_Print_ID := 22648
 Define IDM_StandardPadMenu_File_Print_Setup_ID := 22649
-Define IDM_StandardPadMenu_File_Exit_ID := 22652
-Define IDM_StandardPadMenu_Edit_ID := 22653
-Define IDM_StandardPadMenu_Edit_Font_ID := 22654
-Define IDM_StandardPadMenu_Edit_Margins_ID := 22656
-Define IDM_StandardPadMenu_Edit_AlignMent_ID := 22657
-Define IDM_StandardPadMenu_Edit_AlignMent_Left_ID := 22658
-Define IDM_StandardPadMenu_Edit_AlignMent_Center_ID := 22659
-Define IDM_StandardPadMenu_Edit_AlignMent_Right_ID := 22660
-Define IDM_StandardPadMenu_Edit_Cut_ID := 22662
-Define IDM_StandardPadMenu_Edit_Copy_ID := 22663
-Define IDM_StandardPadMenu_Edit_Paste_ID := 22664
-Define IDM_StandardPadMenu_Edit_Find_ID := 22666
-Define IDM_StandardPadMenu_Edit_Find_Next_ID := 22667
-Define IDM_StandardPadMenu_Window_ID := 22668
-Define IDM_StandardPadMenu_Window_Cascade_ID := 22669
-Define IDM_StandardPadMenu_Window_Tile_ID := 22670
-Define IDM_StandardPadMenu_Window_Close_ID := 22672
-Define IDM_StandardPadMenu_Window_Close_All_ID := 22673
+Define IDM_StandardPadMenu_File_Save_ID := 22646
+Define IDM_StandardPadMenu_Help_About_ID := 22677
 Define IDM_StandardPadMenu_Help_ID := 22674
 Define IDM_StandardPadMenu_Help_Index_ID := 22675
-Define IDM_StandardPadMenu_Help_About_ID := 22677
-Define IDM_StandardPadMenu_File_Page_Setup_ID := 22650
+Define IDM_StandardPadMenu_Window_Cascade_ID := 22669
+Define IDM_StandardPadMenu_Window_Close_All_ID := 22673
+Define IDM_StandardPadMenu_Window_Close_ID := 22672
+Define IDM_StandardPadMenu_Window_ID := 22668
+Define IDM_StandardPadMenu_Window_Tile_ID := 22670
 #endregion
 
-CLASS StandardPadMenu_Accelerator INHERIT Accelerator
- 
-CONSTRUCTOR( ) 
-	SUPER(ResourceID{IDA_StandardPadMenu, _GetInst( )})
-
-	return self
-END CLASS
 CLASS StandardPadMenu INHERIT Menu
  
 CONSTRUCTOR(oOwner) 
@@ -248,6 +241,13 @@ CONSTRUCTOR(oOwner)
 
 	self:Accelerator := StandardPadMenu_Accelerator{ }
 self:DisableItem(IDM_StandardPadMenu_Edit_AlignMent_ID)
+
+	return self
+END CLASS
+CLASS StandardPadMenu_Accelerator INHERIT Accelerator
+ 
+CONSTRUCTOR( ) 
+	SUPER(ResourceID{IDA_StandardPadMenu, _GetInst( )})
 
 	return self
 END CLASS

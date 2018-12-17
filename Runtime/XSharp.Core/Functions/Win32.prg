@@ -17,7 +17,10 @@ INTERNAL STATIC CLASS Win32
 	[DllImport("kernel32.dll", EntryPoint := "CompareStringA", SetLastError := TRUE)];
 	EXTERN STATIC METHOD  CompareStringAnsi(LCID AS INT, cmpFlags AS DWORD , bString1 AS BYTE[], chCount1 AS INT , bString2 AS BYTE[] , chCount2 AS INT) AS INT PASCAL 
 	[DllImport("kernel32.dll", EntryPoint := "CompareStringA", CharSet := CharSet.Ansi, SetLastError := TRUE)];
-	EXTERN STATIC METHOD  CompareStringAnsi2(LCID AS INT, cmpFlags AS DWORD , bString1 AS STRING, chCount1 AS INT , bString2 AS STRING , chCount2 AS INT) AS INT PASCAL 
+	EXTERN STATIC METHOD  CompareStringAnsi2(LCID AS INT, cmpFlags AS DWORD , bString1 AS STRING, chCount1 AS INT , bString2 AS STRING , chCount2 AS INT) AS INT PASCAL
+
+    [DllImport("kernel32.dll", CharSet := CharSet.Unicode, EntryPoint := "OutputDebugStringW")];
+    EXTERN STATIC METHOD OutputDebugString( lpOutputString as string) as void 
 
 	PUBLIC CONST SORT_STRINGSORT := 0x00001000  AS INT
     PUBLIC CONST CSTR_LESS_THAN := 1 AS INT

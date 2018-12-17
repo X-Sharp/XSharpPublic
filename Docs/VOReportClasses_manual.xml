@@ -12,37 +12,58 @@
         <para>This class manages Report Editor reporting activities, as well as the appearance of the Report Editor window.</para>
       </remarks>
     </member>
-    <member name="M:VO.ReportQueue.#ctor(XSharp.__Usual[])">
+    <member name="M:VO.ReportQueue.#ctor(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Construct a report queue.</para>
         
       </summary>
+      <param name="oAppWindow">
+        
+      </param>
+      <param name="cServerName">
+        
+      </param>
     </member>
-    <member name="M:VO.ReportQueue.Close(XSharp.__Usual[])">
+    <member name="P:VO.ReportQueue.ActiveFile">
+      <summary>
+        <para>The report definition file the Report Editor server was just using. This information can be used within an AppWindow:ReportNotification() method.</para>
+        
+      </summary>
+    </member>
+    
+    <member name="M:VO.ReportQueue.Close">
       <summary>
         <para>Close a report.</para>
         
       </summary>
     </member>
-    <member name="M:VO.ReportQueue.CloseAll(XSharp.__Usual[])">
+    <member name="M:VO.ReportQueue.CloseAll">
       <summary>
         <para>Close all reports.</para>
         
       </summary>
     </member>
-    <member name="M:VO.ReportQueue.ConnectToDB(XSharp.__Usual[])">
+    <member name="M:VO.ReportQueue.ConnectToDB(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Connect to an ODBC data source.</para>
         
       </summary>
+      <param name="cDbName">
+        
+      </param>
+      <param name="cUserName">
+        
+      </param>
+      <param name="cPassword">
+        
+      </param>
+      
       <returns>
         <para>TRUE is successful; otherwise, FALSE.</para>
         
-        <para>TRUE if successful; otherwise FALSE.</para>
-        
       </returns>
     </member>
-    <member name="M:VO.ReportQueue.DataUpdate(XSharp.__Usual[])">
+    <member name="M:VO.ReportQueue.DataUpdate(XSharp.__Usual)">
       <summary>
         <para>Handle DataUpdateEvent, if one occurs. Provide this event handler in your derived ReportQueue class if you require special handling of events.</para>
         
@@ -57,79 +78,18 @@
         </para>
         
       </summary>
+      <param name="oEvent">
+        
+      </param>
+      
     </member>
-    <member name="M:VO.ReportQueue.Edit(XSharp.__Usual[])">
+    <member name="M:VO.ReportQueue.Edit">
       <summary>
         <para>Load a report into the Report Editor for editing.</para>
         
       </summary>
     </member>
-    <member name="M:VO.ReportQueue.Hide(XSharp.__Usual[])">
-      <summary>
-        <para>Hide the Report Editor window and icon so that they are not visible.</para>
-        
-      </summary>
-    </member>
-    <member name="M:VO.ReportQueue.New(XSharp.__Usual[])">
-      <summary>
-        <para>Create a new report definition in the Report Editor for editing.</para>
-        
-      </summary>
-    </member>
-    <member name="M:VO.ReportQueue.Open(XSharp.__Usual[])">
-      <summary>
-        <para>Open a report.</para>
-        
-      </summary>
-    </member>
-    <member name="M:VO.ReportQueue.Preview(XSharp.__Usual[])">
-      <summary>
-        <para>Cause a report to be previewed on screen.</para>
-        
-      </summary>
-    </member>
-    <member name="M:VO.ReportQueue.Print(XSharp.__Usual[])">
-      <summary>
-        <para>Print a report to the Report Editor's selected printer.</para>
-        
-      </summary>
-    </member>
-    <member name="M:VO.ReportQueue.ReportExit(XSharp.__Usual[])">
-      <summary>
-        <para>Exit the Report Editor.</para>
-        
-      </summary>
-    </member>
-    <member name="M:VO.ReportQueue.SaveToFile(XSharp.__Usual[])">
-      <summary>
-        <para>Save a report to the given file name.</para>
-        
-      </summary>
-    </member>
-    <member name="M:VO.ReportQueue.SetSQLFile(XSharp.__Usual[])">
-      <summary>
-        <para>Load an SQL query file as the active SQL query for the report.</para>
-        
-      </summary>
-    </member>
-    <member name="M:VO.ReportQueue.SetSQLText(XSharp.__Usual[])">
-      <summary>
-        <para>Set a text string as the active SQL query for the report.</para>
-        
-      </summary>
-    </member>
-    <member name="M:VO.ReportQueue.Show(XSharp.__Usual[])">
-      <summary>
-        <para>Minimize or maximize the Report Editor window.</para>
-        
-      </summary>
-    </member>
-    <member name="P:VO.ReportQueue.ActiveFile">
-      <summary>
-        <para>The report definition file the Report Editor server was just using. This information can be used within an AppWindow:ReportNotification() method.</para>
-        
-      </summary>
-    </member>
+
     <member name="P:VO.ReportQueue.EventType">
       <summary>
         <para>One of the following constants representing an event:</para>
@@ -162,6 +122,37 @@
         
       </summary>
     </member>
+    <member name="M:VO.ReportQueue.Hide">
+      <summary>
+        <para>Hide the Report Editor window and icon so that they are not visible.</para>
+        
+      </summary>
+    </member>
+    <member name="M:VO.ReportQueue.NEW(XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+        <para>Create a new report definition in the Report Editor for editing.</para>
+        
+      </summary>
+      <param name="cSQLStatement">
+        
+      </param>
+      <param name="iReportStyle">
+        
+      </param>
+      
+    </member>
+    <member name="M:VO.ReportQueue.Open(XSharp.__Usual)">
+      <summary>
+        <para>Open a report.</para>
+        
+      </summary>
+      <param name="cReportName">
+        
+      </param>
+      
+    </member>
+    <member name="P:VO.ReportQueue.OpenIndex"><summary></summary></member>
+    <member name="P:VO.ReportQueue.OpenNames"><summary></summary></member>
     <member name="P:VO.ReportQueue.Origin">
       <summary>
         <para>
@@ -181,6 +172,42 @@
         
       </summary>
     </member>
+    <member name="M:VO.ReportQueue.Preview(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+        <para>Cause a report to be previewed on screen.</para>
+        
+      </summary>
+      <param name="aParams">
+        
+      </param>
+      <param name="cPreviewTitle">
+        
+      </param>
+      <param name="iMC">
+        
+      </param>
+    </member>
+    <member name="M:VO.ReportQueue.Print(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+        <para>Print a report to the Report Editor's selected printer.</para>
+        
+      </summary>
+      <param name="aParams">
+        
+      </param>
+      <param name="oRange">
+        
+      </param>
+      <param name="nCopies">
+        
+      </param>
+    </member>
+    <member name="M:VO.ReportQueue.ReportExit">
+      <summary>
+        <para>Exit the Report Editor.</para>
+        
+      </summary>
+    </member>
     <member name="P:VO.ReportQueue.ReportServer">
       <summary>
         <para>The Report Editor server currently in use by this ReportQueue. The value is set in the ReportQueue:Init() method.</para>
@@ -191,10 +218,63 @@
         
       </summary>
     </member>
+    
+    <member name="M:VO.ReportQueue.SaveToFile(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+        <para>Save a report to the given file name.</para>
+        
+      </summary>
+      <param name="cOutFile">
+        
+      </param>
+      <param name="cFormat">
+        
+      </param>
+      <param name="aParams">
+        
+      </param>
+    </member>
+    <member name="M:VO.ReportQueue.SetPapersize(XSharp.__Usual)">
+      <param name="iSize">
+        
+      </param>
+    </member>
+    <member name="M:VO.ReportQueue.SetPrinterOrientation(XSharp.__Usual)">
+      <param name="bOrientation">
+        
+      </param>
+    </member>
+    <member name="M:VO.ReportQueue.SetReportQuery(XSharp.__Usual)">
+      <param name="sQueryName">
+        
+      </param>
+    </member>
+    <member name="M:VO.ReportQueue.SetSQLFile(XSharp.__Usual)">
+      <summary>
+        <para>Load an SQL query file as the active SQL query for the report.</para>
+        
+      </summary>
+    </member>
+    <member name="M:VO.ReportQueue.SetSQLText(XSharp.__Usual)">
+      <summary>
+        <para>Set a text string as the active SQL query for the report.</para>
+        
+      </summary>
+      <param name="sQuery">
+      </param>
+    </member>
+    <member name="M:VO.ReportQueue.Show(XSharp.__Usual)">
+      <summary>
+        <para>Minimize or maximize the Report Editor window.</para>
+      </summary>
+      <param name="nShowState">
+        
+      </param>
+      
+    </member>
     <member name="P:VO.ReportQueue.Size">
       <summary>
         <para>A dimension representing the current size of the Report Editor window, in canvas coordinates.</para>
-        
       </summary>
     </member>
   </members>

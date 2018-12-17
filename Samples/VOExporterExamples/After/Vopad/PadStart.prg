@@ -1,6 +1,5 @@
 GLOBAL aCB := {} AS ARRAY
 
-
 [STAThread];
 FUNCTION Start() AS INT
 	LOCAL oXApp AS XApp
@@ -38,5 +37,6 @@ METHOD Start()
 	SELF:Exec()
 	
 	
+
 
 END CLASS

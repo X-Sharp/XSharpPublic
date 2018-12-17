@@ -8,10 +8,50 @@ CLASS PadShellWindow INHERIT ShellWindow
 	EXPORT cFName AS STRING	
 	EXPORT oCB AS SearchBox
 
+METHOD AddChild(oNewChild) 
+	IF aChildWindows = NULL_ARRAY
+		aChildWindows := {oNewChild}
+	  ELSE
+		AAdd(aChildWindows, oNewChild)
+	ENDIF
+	
+
+METHOD DoOpenFile(cFileName, lReadOnly) 
+	LOCAL oTB AS TextBox
+
+	IF (Len(cFileName) > 3 ) .AND. ((Upper(Right(cFileName, 4)) == ".RTF") .OR. (Upper(Right(cFileName, 4)) == ".TXT"))
+		SELF:NewEditWindow(cFileName, lReadOnly)
+	ELSE
+		oTB := TextBox{	SELF, ;
+						"File Open Error", ;
+					   	"Cannot open " + cFileName + " - Not a RTF or TXT  file"}
+		oTB:Type := BUTTONOKAY
+		oTB:Show()
+	ENDIF
+	
+
+
+METHOD Drop(oDragEvent) 
+	LOCAL nNumFiles := oDragEvent:FileCount
+	LOCAL nFile AS INT
+	
+	FOR nFile := 1 TO nNumFiles
+		IF File(oDragEvent:FileName(nFile))
+			SELF:DoOpenFile(oDragEvent:FileName(nFile))
+		ENDIF
+	NEXT
+
+
 METHOD FileExit() 
 
 	SELF:EndWindow()
 
+
+METHOD FileNew() 
+	STATIC nCount := 1 AS SHORT
+	SELF:NewEditWindow("Untitled" + Trim(Str(nCount,2)))
+	nCount++
+	
 
 method FileOpen() 
 	local oOD as OpenDialog
@@ -23,6 +63,14 @@ method FileOpen()
 	if !Empty(oOD:FileName)
 		self:DoOpenFile(oOD:FileName, oOD:ReadOnly)
 	endif
+
+
+METHOD FilePrinterSetup() 
+
+	LOCAL oPrinter AS PrintingDevice
+	
+	oPrinter := PrintingDevice{}
+	oPrinter:Setup()
 
 
 CONSTRUCTOR( oOwnerApp ) 
@@ -59,29 +107,6 @@ CONSTRUCTOR( oOwnerApp )
 	RETURN SELF
 
 
-METHOD WindowCascade() 
-
-	SELF:Arrange(ARRANGECASCADE)
-	
-
-METHOD WindowIcon() 
-
-	SELF:Arrange(ARRANGEASICONS)
-
-
-METHOD WindowTile() 
-
-	SELF:Arrange(ARRANGETILE)
-
-
-	
-
-METHOD FileNew() 
-	STATIC nCount := 1 AS SHORT
-	SELF:NewEditWindow("Untitled" + Trim(Str(nCount,2)))
-	nCount++
-	
-
 METHOD NewEditWindow(cFileName,lReadOnly) 
 	LOCAL oNewChild AS PadWin
  	oNewChild := PadWin{SELF, TRUE, TRUE, cFileName, lReadOnly}
@@ -100,29 +125,6 @@ METHOD NewEditWindow(cFileName,lReadOnly)
 	SELF:omenu:DisableItem(IDM_StandardPadMenu_File_Save_ID)
 
 
-METHOD AddChild(oNewChild) 
-	IF aChildWindows = NULL_ARRAY
-		aChildWindows := {oNewChild}
-	  ELSE
-		AAdd(aChildWindows, oNewChild)
-	ENDIF
-	
-
-METHOD DoOpenFile(cFileName, lReadOnly) 
-	LOCAL oTB AS TextBox
-
-	IF (Len(cFileName) > 3 ) .AND. ((Upper(Right(cFileName, 4)) == ".RTF") .OR. (Upper(Right(cFileName, 4)) == ".TXT"))
-		SELF:NewEditWindow(cFileName, lReadOnly)
-	ELSE
-		oTB := TextBox{	SELF, ;
-						"File Open Error", ;
-					   	"Cannot open " + cFileName + " - Not a RTF or TXT  file"}
-		oTB:Type := BUTTONOKAY
-		oTB:Show()
-	ENDIF
-	
-
-
 METHOD RemoveChild(oChild) 
 	LOCAL nALen, n AS DWORD
 	nAlen := ALen(SELF:aChildWindows)
@@ -134,24 +136,22 @@ METHOD RemoveChild(oChild)
 	NEXT	
 		
 
-METHOD Drop(oDragEvent) 
-	LOCAL nNumFiles := oDragEvent:FileCount
-	LOCAL nFile AS INT
+METHOD WindowCascade() 
+
+	SELF:Arrange(ARRANGECASCADE)
 	
-	FOR nFile := 1 TO nNumFiles
-		IF File(oDragEvent:FileName(nFile))
-			SELF:DoOpenFile(oDragEvent:FileName(nFile))
-		ENDIF
-	NEXT
+
+METHOD WindowIcon() 
+
+	SELF:Arrange(ARRANGEASICONS)
 
 
-METHOD FilePrinterSetup() 
+METHOD WindowTile() 
 
-	LOCAL oPrinter AS PrintingDevice
+	SELF:Arrange(ARRANGETILE)
+
+
 	
-	oPrinter := PrintingDevice{}
-	oPrinter:Setup()
-
 
 
 END CLASS

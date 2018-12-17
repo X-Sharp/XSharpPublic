@@ -1,16 +1,15 @@
- BROCOLI Bitmap C:\cavo28SP3\Samples\CONTROLS\BUTTONS\BROCOLI.bmp
- CHEESE Bitmap C:\cavo28SP3\Samples\CONTROLS\BUTTONS\CHEESE.bmp
- CHEF1 Bitmap C:\cavo28SP3\Samples\CONTROLS\BUTTONS\CHEF1.BMP
- CHEF2 Bitmap C:\cavo28SP3\Samples\CONTROLS\BUTTONS\CHEF2.BMP
+BROCOLI Bitmap Resources\BROCOLI.bmp
+CHEESE Bitmap Resources\CHEESE.bmp
+CHEF1 Bitmap Resources\CHEF1.BMP
+CHEF2 Bitmap Resources\CHEF2.BMP
 
-
- EGGPLANT Bitmap C:\cavo28SP3\Samples\CONTROLS\BUTTONS\EGGPLANT.bmp
- MARIOICON Icon C:\cavo28SP3\Samples\controls\buttons\mario.ico
- MUSHROOM Bitmap C:\cavo28SP3\Samples\CONTROLS\BUTTONS\MUSHROOM.bmp
- NOPIZZA Bitmap C:\cavo28SP3\Samples\CONTROLS\BUTTONS\NOPIZZA.bmp
- OLIVES Bitmap C:\cavo28SP3\Samples\CONTROLS\BUTTONS\OLIVES.bmp
- ONION Bitmap C:\cavo28SP3\Samples\CONTROLS\BUTTONS\ONION.bmp
- PEPPER Bitmap C:\cavo28SP3\Samples\CONTROLS\BUTTONS\PEPPER.bmp
- PIZZA Bitmap C:\cavo28SP3\Samples\CONTROLS\BUTTONS\PIZZA.bmp
- SALAMI Bitmap C:\cavo28SP3\Samples\CONTROLS\BUTTONS\SALAMI.bmp
- TOMATO Bitmap C:\cavo28SP3\Samples\CONTROLS\BUTTONS\TOMATO.bmp
+EGGPLANT Bitmap Resources\EGGPLANT.bmp
+MARIOICON Icon Resources\mario.ico
+MUSHROOM Bitmap Resources\MUSHROOM.bmp
+NOPIZZA Bitmap Resources\NOPIZZA.bmp
+OLIVES Bitmap Resources\OLIVES.bmp
+ONION Bitmap Resources\ONION.bmp
+PEPPER Bitmap Resources\PEPPER.bmp
+PIZZA Bitmap Resources\PIZZA.bmp
+SALAMI Bitmap Resources\SALAMI.bmp
+TOMATO Bitmap Resources\TOMATO.bmp

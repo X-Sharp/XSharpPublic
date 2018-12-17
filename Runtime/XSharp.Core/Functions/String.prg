@@ -330,7 +330,7 @@ FUNCTION CharOdd(c AS STRING) AS STRING
 /// </returns>
 FUNCTION CharPos(c AS STRING, nStart AS DWORD) AS STRING
 	LOCAL result := string.Empty AS STRING
-	IF ( nStart >= 1 && nStart <= (DWORD) c:Length )
+	IF ( nStart >= 1 .AND. nStart <= (DWORD) c:Length )
 		result := c:SubString((INT)nStart-1,1)
 	ENDIF
 	RETURN result
@@ -470,14 +470,14 @@ INTERNAL FUNCTION _nibble (c AS CHAR) AS BYTE
 	CASE '7'
 	CASE '8'
 	CASE '9'
-		b := (BYTE) c - '0'
+		b := (BYTE) (c - '0')
 	CASE 'A'
 	CASE 'B'
 	CASE 'C'
 	CASE 'D'
 	CASE 'E'
 	CASE 'F'
-		b := (BYTE) c - 'A' + 10
+		b := (BYTE) (c - 'A' + 10)
 	OTHERWISE
 		b := 0
 	END SWITCH
@@ -496,7 +496,7 @@ FUNCTION Hex2C(c AS STRING) AS STRING
 		VAR b1 := _nibble(c[i])
 		VAR b2 := _nibble(c[i+1])
 		VAR b  := (b1 << 4) + b2
-		sb:Append( Chr( b))
+		sb:Append( Chr( (DWORD) b))
 		i += 2
 	ENDDO
 	RETURN sb:ToString()
@@ -511,7 +511,7 @@ FUNCTION Hex2C(c AS STRING) AS STRING
 /// </returns>
 FUNCTION Instr(cSearch AS STRING,c AS STRING) AS LOGIC
 	LOCAL result := FALSE AS LOGIC
-	IF cSearch != NULL .AND. c != NULL
+	IF cSearch != NULL .AND. c != NULL .AND. cSearch:Length != 0
 		result := c:IndexOf( cSearch, StringComparison.Ordinal ) > -1
 	ENDIF
 	RETURN result   
@@ -626,7 +626,7 @@ FUNCTION Occurs3(cSrc AS STRING,c AS STRING,nOffset AS DWORD) AS DWORD
 	IF nOffSet < (DWORD) c:Length
 		DO WHILE ( pos := c:IndexOf(cSrc, (INT)nOffSet, StringComparison.Ordinal) ) >= 0
 			count++
-			nOffSet := (DWORD)pos + cSrc:Length
+			nOffSet := (DWORD)(pos + cSrc:Length)
 		ENDDO
 	ENDIF
 	

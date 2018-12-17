@@ -12,6 +12,6 @@
 // associated with an assembly.
 //
 [assembly: AssemblyTitle("XSharp.VO")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("XSharp runtime DLL for the VO and Vulcan dialects")]
 [assembly: ImplicitNamespace("XSharp")]
 

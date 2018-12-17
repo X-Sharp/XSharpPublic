@@ -76,7 +76,7 @@ CLASS XSharp.CoreDb
         oTmp := dst:Info( DBInfo.DBI_FCOUNT, NULL )
         dstFieldCount := Convert.ToUInt32( oTmp )
         
-        fMatch := (DWORD) dbti:ItemCount == srcFieldCount && srcFieldCount == dstFieldCount
+        fMatch := (DWORD) dbti:ItemCount == srcFieldCount .AND. srcFieldCount == dstFieldCount
         j := 1
         FOR i := 0 UPTO lpfn:fieldCount -1
         
@@ -108,7 +108,7 @@ CLASS XSharp.CoreDb
         RETURN fMatch
         /// <exclude />   
     INTERNAL STATIC METHOD TransSetInfo(oRdd AS IRDD, info AS DbTransInfo, cFunc AS STRING,nDest AS DWORD, fldNames AS _FieldNames,;
-                                        uCobFor AS ICodeBlock ,uCobWhile AS ICodeBlock ,;
+                                        uCobFor AS ICodeblock ,uCobWhile AS ICodeblock ,;
                                         nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS VOID
         LOCAL oDest := RUntimeState.Workareas.GetRDD(nDest) AS IRDD
         IF oDest == NULL
@@ -225,7 +225,7 @@ CLASS XSharp.CoreDb
         /// <param name="nPos"></param>
         /// <param name="oRet"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <seealso cref="O:XSharp.VO.Functions.VoDbBlobInfo" >VoDbBlobInfo overloads </seealso>
+        /// <seealso cref="O:XSharp.RT.Functions.VoDbBlobInfo" >VoDbBlobInfo overloads </seealso>
         /// <seealso cref="O:XSharp.VoDb.BlobInfo" >BlobInfo overloads in VoDb</seealso>
         /// <seealso cref="O:XSharp.CoreDb.BlobInfo" >BlobInfo overloads in CoreDb</seealso>
         
@@ -252,8 +252,8 @@ CLASS XSharp.CoreDb
         /// current work area, CoreDbBOF() returns TRUE.</returns>
         /// <remarks>This function is like BOF().
         /// <note type="tip">VoDbBof() and CoreDb.Bof() are aliases</note></remarks>
-        /// <seealso cref="M:XSharp.VO.Functions.Bof" >Bof Function </seealso>
-        /// <seealso cref="M:XSharp.VO.Functions.VoDbBof" >VoDbBof Function in XSharp.VO</seealso>
+        /// <seealso cref="M:XSharp.RT.Functions.Bof" >Bof Function </seealso>
+        /// <seealso cref="M:XSharp.RT.Functions.VoDbBof" >VoDbBof Function in XSharp.VO</seealso>
     STATIC METHOD Bof() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
@@ -428,8 +428,8 @@ CLASS XSharp.CoreDb
         /// <param name="lKeep">TRUE specifies that the file should remain open after creating. FALSE closes the file.</param>
         /// <param name="lJustOpen">TRUE specifies that an existing database file be opened. FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
         /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
-        /// <seealso cref="M:XSharp.VO.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)" >DbCreate() function </seealso>
-        /// <seealso cref="O:XSharp.VO.Functions.VoDbCreate" >VoDbCreate overloads</seealso>
+        /// <seealso cref="M:XSharp.RT.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)" >DbCreate() function </seealso>
+        /// <seealso cref="O:XSharp.RT.Functions.VoDbCreate" >VoDbCreate overloads</seealso>
         /// <seealso cref="O:XSharp.CoreDb.Create" >Create overloads in CoreDb</seealso>
     
     STATIC METHOD Create( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS System.Type, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
@@ -455,10 +455,10 @@ CLASS XSharp.CoreDb
             RuntimeState.Workareas:CloseArea(uiNewArea)
         ENDIF
         RuntimeState.Workareas:CurrentWorkAreaNO := uiNewArea
-        IF ret && String.IsNullOrEmpty( cAlias ) && ! ( ret := CoreDb.AliasFromFilename( cName, cAlias ) )
+        IF ret .AND. String.IsNullOrEmpty( cAlias ) && ! ( ret := CoreDb.AliasFromFilename( cName, cAlias ) )
             RddError.PostArgumentError( __FUNCTION__, EDB_BADALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
         ENDIF   
-        IF ret && ! ( ret := CoreDb.IsAliasUnused( cAlias ) )
+        IF ret .AND. ! ( ret := CoreDb.IsAliasUnused( cAlias ) )
             RddError.PostArgumentError( __FUNCTION__, EDB_DUPALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
         ENDIF
         // Now all arguments are valid. So lets create the RDD Object and try to create the file
@@ -521,7 +521,7 @@ CLASS XSharp.CoreDb
         /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbDelete() and CoreDb.Delete() are aliases</note></remarks>
         
-        /// <seealso cref="M:XSharp.VO.Functions.DbDelete">DbDelete Function</seealso>
+        /// <seealso cref="M:XSharp.RT.Functions.DbDelete">DbDelete Function</seealso>
     STATIC METHOD Delete() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
@@ -533,7 +533,7 @@ CLASS XSharp.CoreDb
         /// </summary>
         /// <returns>TRUE if the current record is marked for deletion; otherwise, FALSE.  
         /// If there is no database file in use in the current work area, CoreDbDeleted() returns FALSE.</returns>
-        /// <seealso cref="M:XSharp.VO.Functions.Deleted">Deleted Function</seealso>
+        /// <seealso cref="M:XSharp.RT.Functions.Deleted">Deleted Function</seealso>
         /// <remarks><note type="tip">VoDbDelete() and CoreDb.Delete() are aliases</note></remarks>
         
     STATIC METHOD Deleted() AS LOGIC
@@ -550,8 +550,8 @@ CLASS XSharp.CoreDb
         /// database file open in the current work area, CoreDbEOF() returns TRUE.</returns>
         /// <remarks>This function is like EOF().
         /// <note type="tip">VoDbEof() and CoreDb.Eof() are aliases</note></remarks>
-        /// <seealso cref="M:XSharp.VO.Functions.Eof" >Eof Function </seealso>
-        /// <seealso cref="M:XSharp.VO.Functions.VoDbEof" >VoDbEof Function in XSharp.VO</seealso>
+        /// <seealso cref="M:XSharp.RT.Functions.Eof" >Eof Function </seealso>
+        /// <seealso cref="M:XSharp.RT.Functions.VoDbEof" >VoDbEof Function in XSharp.VO</seealso>
     STATIC METHOD Eof() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
@@ -577,7 +577,7 @@ CLASS XSharp.CoreDb
         /// In fact, many of the database processing commands are created using Eval().
         /// </remarks>
         
-    STATIC METHOD Eval(uBlock AS ICodeBlock,uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock,uNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
+    STATIC METHOD Eval(uBlock AS ICodeblock,uCobFor AS ICodeblock,uCobWhile AS ICodeblock,uNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL nNext AS LONG
         IF uBlock == NULL
@@ -642,7 +642,7 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DBFieldInfo().
         /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
-        /// <seealso cref='O:XSharp.VO.Functions.VoDbFieldInfo' >VoDbFieldInfo overloads </seealso>
+        /// <seealso cref='O:XSharp.RT.Functions.VoDbFieldInfo' >VoDbFieldInfo overloads </seealso>
         /// <seealso cref='O:XSharp.VoDb.FieldInfo' >FieldInfo overloads in CoreDb</seealso>
         /// <seealso cref='O:XSharp.CoreDb.FieldInfo' >FieldInfo overloads in CoreDb</seealso>
         
@@ -839,7 +839,7 @@ CLASS XSharp.CoreDb
         /// <param name="nOrdinal"></param>
         /// <param name="ptrRet"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <seealso cref='O:XSharp.VO.Functions.VoDbInfo' >VoDbInfo overloads </seealso>
+        /// <seealso cref='O:XSharp.RT.Functions.VoDbInfo' >VoDbInfo overloads </seealso>
         /// <seealso cref='O:XSharp.VoDb.Info' >Info overloads in VoDb</seealso>
         /// <seealso cref='O:XSharp.CoreDb.Info' >Info overloads in CoreDb</seealso>
     
@@ -924,7 +924,7 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DBLocate() but strongly typed.  
         /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
-    STATIC METHOD Locate(uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock,nNext AS LONG,uRecId AS OBJECT,lRest AS LOGIC) AS LOGIC
+    STATIC METHOD Locate(uCobFor AS ICodeblock,uCobWhile AS ICodeblock,nNext AS LONG,uRecId AS OBJECT,lRest AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         LOCAL scopeinfo := DbScopeInfo{} AS DbScopeInfo
@@ -990,7 +990,7 @@ CLASS XSharp.CoreDb
         /// </remarks>
         
         
-    STATIC METHOD OrdCreate(cBagName AS STRING,oOrder AS OBJECT,cExpr AS STRING,oCodeBlock AS ICodeBlock,lUnique AS LOGIC,ordCondInfo AS DbOrderCondInfo) AS LOGIC
+    STATIC METHOD OrdCreate(cBagName AS STRING,oOrder AS OBJECT,cExpr AS STRING,oCodeBlock AS ICodeblock,lUnique AS LOGIC,ordCondInfo AS DbOrderCondInfo) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         VAR info := DbOrderCreateInfo{}
@@ -1032,7 +1032,7 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DbOrderInfo() but strongly typed.
         /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
-        /// <seealso cref='O:XSharp.VO.Functions.VoDbOrderInfo' >VoDbOrderInfo overloads </seealso>
+        /// <seealso cref='O:XSharp.RT.Functions.VoDbOrderInfo' >VoDbOrderInfo overloads </seealso>
         /// <seealso cref='O:XSharp.VoDb.OrderInfo' >OrderInfo overloads in VoDb</seealso>
         /// <seealso cref='O:XSharp.CoreDb.OrderInfo' >OrderInfo overloads in CoreDb</seealso>
     
@@ -1183,7 +1183,7 @@ CLASS XSharp.CoreDb
         /// <param name="nOrdinal"></param>
         /// <param name="ptrRet"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <seealso cref='O:XSharp.VO.Functions.VoDbRddInfo' >VoDbRddInfo overloads </seealso>
+        /// <seealso cref='O:XSharp.RT.Functions.VoDbRddInfo' >VoDbRddInfo overloads </seealso>
         /// <seealso cref='O:XSharp.VoDb.RddInfo' >RddInfo overloads in VoDb</seealso>
         /// <seealso cref='O:XSharp.CoreDb.RddInfo' >RddInfo overloads in CoreDb</seealso>
         
@@ -1317,7 +1317,7 @@ CLASS XSharp.CoreDb
         /// <param name="oRecID"></param>
         /// <param name="oRet"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <seealso cref='O:XSharp.VO.Functions.VoDbRecordInfo'  >VoDbRecordInfo overloads</seealso>
+        /// <seealso cref='O:XSharp.RT.Functions.VoDbRecordInfo'  >VoDbRecordInfo overloads</seealso>
         /// <seealso cref='O:XSharp.VoDb.RecordInfo'  >RecordInfo overloads in VoDb</seealso>
         /// <seealso cref='O:XSharp.CoreDb.RecordInfo'  >RecordInfo overloads in CoreDb</seealso>
         
@@ -1330,7 +1330,7 @@ CLASS XSharp.CoreDb
     STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS OBJECT,oRet REF OBJECT) AS LOGIC
         TRY
             LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
-            oRDD:RecInfo(oRecID, (INT) nOrdinal, oRet )
+            oRet := oRDD:RecInfo( (INT) nOrdinal,oRecID, oRet )
             RETURN TRUE
         CATCH e AS Exception
             RuntimeState.LastRDDError := e
@@ -1385,7 +1385,11 @@ CLASS XSharp.CoreDb
         LOCAL lockInfo AS DbLockInfo
         lockInfo := DbLockInfo{}
         lockInfo:RecId := uRecID
-        lockInfo:@@METHOD  := DbLockInfo.LockMethod.Multiple
+        if uRecID == null
+            lockInfo:@@METHOD  := DbLockInfo.LockMethod.Exclusive
+        ELSE
+            lockInfo:@@METHOD  := DbLockInfo.LockMethod.Multiple
+        ENDIF
         RETURN oRDD:Lock(lockInfo)
         })
         /// <summary>
@@ -1464,7 +1468,7 @@ CLASS XSharp.CoreDb
         /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
         
-    STATIC METHOD SetFilter(oBlock AS ICodeBlock,cFilter AS STRING) AS LOGIC
+    STATIC METHOD SetFilter(oBlock AS ICodeblock,cFilter AS STRING) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         VAR info 		 := DbFilterInfo{}
@@ -1497,7 +1501,7 @@ CLASS XSharp.CoreDb
         /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
         
-    STATIC METHOD SetLocate(oBlock AS ICodeBlock) AS LOGIC
+    STATIC METHOD SetLocate(oBlock AS ICodeblock) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         VAR scope := oRDD:GetScope()
@@ -1517,7 +1521,7 @@ CLASS XSharp.CoreDb
         /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
         
-    STATIC METHOD SetRelation(cAlias AS STRING,oKey  AS ICodeBlock,cKey AS STRING) AS LOGIC
+    STATIC METHOD SetRelation(cAlias AS STRING,oKey  AS ICodeblock,cKey AS STRING) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         LOCAL nDest := RuntimeState.Workareas.FindAlias(cAlias) AS DWORD
@@ -1614,7 +1618,7 @@ CLASS XSharp.CoreDb
         /// <param name="sortNames"></param>
         /// <returns>
         /// </returns>
-    STATIC METHOD Sort(nDest AS DWORD,fieldNames AS _FieldNames,uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock, nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC,sortNames AS _FieldNames) AS LOGIC
+    STATIC METHOD Sort(nDest AS DWORD,fieldNames AS _FieldNames,uCobFor AS ICodeblock,uCobWhile AS ICodeblock, nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC,sortNames AS _FieldNames) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         LOCAL info AS DbSortInfo
@@ -1676,7 +1680,7 @@ CLASS XSharp.CoreDb
         /// <param name="nRecno"></param>
         /// <param name="lRest"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
-    STATIC METHOD Trans(nDest AS DWORD,fldNames AS _FieldNames,uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock, nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
+    STATIC METHOD Trans(nDest AS DWORD,fldNames AS _FieldNames,uCobFor AS ICodeblock,uCobWhile AS ICodeblock, nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         LOCAL info AS DbTransInfo

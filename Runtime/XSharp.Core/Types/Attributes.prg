@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharp.Internal
 	/// This class exposes the namespace and globalclass in an assembly
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Assembly)];
-		SEALED CLASS ClassLibraryAttribute INHERIT Attribute
+	SEALED CLASS ClassLibraryAttribute INHERIT Attribute
 		PRIVATE INITONLY _globalClassName AS STRING
 		PRIVATE INITONLY _defaultNameSpace AS STRING
 		///<summary>Name of the class where functions, defines and globals are stored.</summary>
@@ -45,8 +45,8 @@ BEGIN NAMESPACE XSharp.Internal
 	/// with Clipper calling convention
 	/// </summary>
 	
-	[AttributeUsage(AttributeTargets.Method)];
-		SEALED CLASS ClipperCallingConventionAttribute INHERIT Attribute
+	[AttributeUsage(AttributeTargets.Method|AttributeTargets.Constructor)];
+	SEALED CLASS ClipperCallingConventionAttribute INHERIT Attribute
 		PRIVATE INITONLY _parameterNames AS STRING[]
 		///<summary>List of parameter names for the method or constructor </summary>
 		PROPERTY ParameterNames AS STRING[] GET _parameterNames
@@ -110,7 +110,7 @@ BEGIN NAMESPACE XSharp.Internal
 	/// Please note that the size assumes x86 (32 bits) OS.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Struct)];
-		SEALED CLASS VoStructAttribute INHERIT Attribute
+	SEALED CLASS VoStructAttribute INHERIT Attribute
 		PRIVATE _size				AS INT
 		PRIVATE _largestMemberSize  AS INT
 		///<summary>Total size of the VOSTRUCT or UNION.</summary>	
@@ -122,6 +122,19 @@ BEGIN NAMESPACE XSharp.Internal
 		CONSTRUCTOR(size AS INT, largestMemberSize AS INT)
 			_size := size
 			_largestMemberSize := largestMemberSize
+		
+	END CLASS
+
+	/// <summary>
+	/// This class is used to describe fields that have been declared with the INSTANCE modifier
+    /// </summary>
+	[AttributeUsage(AttributeTargets.Field)];
+	SEALED CLASS IsInstanceAttribute INHERIT Attribute
+		
+		/// <summary></summary>	
+		CONSTRUCTOR() 
+			SUPER()
+			RETURN
 		
 	END CLASS
 	

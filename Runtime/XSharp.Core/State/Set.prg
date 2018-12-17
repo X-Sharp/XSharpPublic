@@ -178,7 +178,6 @@ FUNCTION SetDateCountry(dwCountry AS DWORD) AS DWORD
 	RETURN dwOld
 
 
-
 /// <summary>
 /// Return the current Date format.
 /// </summary>
@@ -464,7 +463,7 @@ FUNCTION SetNatDLL(cNewDLL AS STRING) AS LOGIC
 /// <exclude/>
 FUNCTION _SetCollation(cBase AS STRING) AS LOGIC
 	VAR rm := System.Resources.ResourceManager{ "XSharp.Collations", TYPEOF(Functions):Assembly }
-	VAR obj := rm:GetObject(cBase) 
+	VAR obj := rm:GetObject(cBase:ToUpper()) 
 	IF obj != NULL
 		VAR bytes := obj ASTYPE BYTE[]
 		IF bytes != NULL

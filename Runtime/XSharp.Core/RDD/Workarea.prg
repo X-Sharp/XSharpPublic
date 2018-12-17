@@ -5,7 +5,6 @@
 //
 USING System.IO
 USING System.Collections.Generic
-USING XSharp.RDD
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 USING System.Text
@@ -61,9 +60,9 @@ BEGIN NAMESPACE XSharp.RDD
 		/// <summary>Current Record</summary>
 		PUBLIC _RecordBuffer	AS BYTE[]	
 		/// <summary>Field delimiter (for DELIM RDD)</summary>
-		PUBLIC _Delimiter		AS STRING	
+		PUBLIC _Delimiter	:= "" AS STRING	
 		/// <summary>Field separator (for DELIM RDD)</summary>
-		PUBLIC _Separator	    AS STRING	
+		PUBLIC _Separator	:= ""  AS STRING	
 		/// <summary> Is the file opened ReadOnly ?</summary>
 		PUBLIC _ReadOnly		AS LOGIC	
 		/// <summary> Is the file opened Shared ?</summary>
@@ -131,9 +130,9 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL isOk     := TRUE AS LOGIC
             LOCAL lLimit   := FALSE AS LOGIC
             LOCAL lRecordOk := TRUE AS LOGIC
-            LOCAL cbWhile   AS ICodeBlock
-            LOCAL cbFor     AS ICodeBlock
-            LOCAL cbEval    AS ICodeBlock
+            LOCAL cbWhile   AS ICodeblock
+            LOCAL cbFor     AS ICodeblock
+            LOCAL cbEval    AS ICodeblock
             info:ScopeInfo:Compile(SELF)
             cbWhile  := info:ScopeInfo:WhileBlock 
             cbFor    := info:ScopeInfo:ForBlock   
@@ -235,7 +234,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL fromTop      AS LOGIC
             LOCAL recordHidden AS LOGIC
             LOCAL result       AS LOGIC
-            LOCAL cbFilter     AS ICodeBlock
+            LOCAL cbFilter     AS ICodeblock
             LOCAL fRtDeleted   AS LOGIC
             fRtDeleted := RuntimeState.Deleted
             IF SELF:_FilterInfo:Active
@@ -296,8 +295,8 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL lContinue := TRUE AS LOGIC
             LOCAL result    := TRUE AS LOGIC
             LOCAL nextCnt := SELF:_ScopeInfo:NextCount  AS LONG
-            LOCAL cbWhile AS ICodeBlock
-            LOCAL cbFor   AS ICodeBlock
+            LOCAL cbWhile AS ICodeblock
+            LOCAL cbFor   AS ICodeblock
             _ScopeInfo:Compile(SELF)
             cbWhile := _ScopeInfo:WhileBlock
             cbFor   := _ScopeInfo:ForBlock
@@ -454,7 +453,7 @@ BEGIN NAMESPACE XSharp.RDD
 			LOCAL result := FALSE AS LOGIC
             IF SELF:_ScopeInfo:ForBlock != NULL
                 SELF:_ScopeInfo:NextCount := 0
-                SELF:_ScopeInfo:Rest      := FALSE
+                SELF:_ScopeInfo:Rest      := TRUE
                 SELF:_ScopeInfo:RecId     := NULL
                 result := SELF:SkipScope(1)
             ENDIF
@@ -566,23 +565,24 @@ BEGIN NAMESPACE XSharp.RDD
 			
 			/// <inheritdoc />
 		VIRTUAL METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
-			// Note that nFldPos is 1 based
-			IF SELF:_FieldIndexValidate(nFldPos)
+            // Note that nFldPos is 1 based
+            IF SELF:_FieldIndexValidate(nFldPos)
                 LOCAL ofld AS RddFieldInfo
                 ofld := SELF:_Fields[nFldPos-1]
                 SWITCH nOrdinal
-                CASE DBS_NAME
+                CASE DbFieldInfo.DBS_NAME
                     RETURN ofld:Name
-                CASE DBS_TYPE
-                    RETURN oFld:FieldType:ToString()
-                CASE DBS_LEN
+                CASE DbFieldInfo.DBS_TYPE
+                    RETURN oFld:FieldType:ToString():Substring(0,1)
+                CASE DbFieldInfo.DBS_LEN
                     RETURN oFld:Length
-                CASE DBS_DEC
+                CASE DbFieldInfo.DBS_DEC
                     RETURN oFld:Decimals
-                CASE DBS_ALIAS
+                CASE DbFieldInfo.DBS_ALIAS
                     IF oNewValue IS STRING
+                        // set new alias for the field
                         IF _fieldNames:ContainsValue(nFldPos-1)
-                            // Should always be the case
+                            // Should always be the case, but better safe than sorry
                             FOREACH VAR pair IN SELF:_fieldNames
                                 IF pair:value == nFldPos-1
                                     SELF:_fieldNames:Remove(pair:Key)
@@ -592,18 +592,21 @@ BEGIN NAMESPACE XSharp.RDD
                         ENDIF
                         oFld:Alias := ((STRING) oNewValue):ToUpperInvariant()
                         // the new alias could be an empty string !
-                        IF !String.IsNullOrEmpty(oFld:Alias) 
-                            SELF:_fieldNames:Add(oFld:Alias:Trim(), nFldPos-1)
-                        ELSE
-                            SELF:_fieldNames:Add(oFld:Name:Trim(), nFldPos-1)
+                        // When it is then we use the fieldname, because every field
+                        // must be represented in the Names table
+                        VAR cNewName := oFld:Alias:Trim()
+                        IF String.IsNullOrEmpty(cNewName)
+                            oFld:Alias := NULL
+                            cNewName  := oFld:Name:Trim()
                         ENDIF
+                        SELF:_fieldNames:Add(cNewName, nFldPos-1)
                     ENDIF
                     IF oFld:Alias != NULL
                         RETURN oFld:Alias
                     ELSE
                         RETURN oFld:Name
                     ENDIF
-                CASE DBS_PROPERTIES
+                CASE DbFieldInfo.DBS_PROPERTIES
                     RETURN 5
                 END SWITCH
             ENDIF
@@ -818,8 +821,8 @@ BEGIN NAMESPACE XSharp.RDD
 			
 			/// <inheritdoc />
 			VIRTUAL METHOD Trans(info AS DbTransInfo) AS LOGIC
-			    LOCAL cbFor     := info:Scope:ForBlock AS ICodeBlock
-                LOCAL cbWhile   := info:Scope:WhileBlock AS ICodeBlock
+			    LOCAL cbFor     := info:Scope:ForBlock AS ICodeblock
+                LOCAL cbWhile   := info:Scope:WhileBlock AS ICodeblock
                 LOCAL result    := TRUE AS LOGIC
                 LOCAL lQualified:= TRUE AS LOGIC
                 LOCAL lLimit    := TRUE AS LOGIC
@@ -903,15 +906,15 @@ BEGIN NAMESPACE XSharp.RDD
      
 
 			/// <inheritdoc />
-		VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeBlock
-			LOCAL oBlock := NULL AS ICodeBlock
+		VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeblock
+			LOCAL oBlock := NULL AS ICodeblock
 			TRY
 				LOCAL oC AS IMacroCompiler
 				oC          := XSharp.RuntimeState.MacroCompiler
 				LOCAL oType := typeof(Workarea) AS System.Type
 				IF oC != NULL
-					LOCAL isBlock AS LOGIC
-					oBlock := oC:Compile(sBlock, TRUE, oType:Module, OUT isBlock)
+					LOCAL isBlock := FALSE AS LOGIC
+					oBlock := oC:Compile(sBlock, TRUE, oType:Module, REF isBlock)
 				ENDIF
 			CATCH e AS Exception
 				XSharp.RuntimeState.LastRddError := e
@@ -919,7 +922,7 @@ BEGIN NAMESPACE XSharp.RDD
 			RETURN oBlock
 			
 			/// <inheritdoc />
-		VIRTUAL METHOD EvalBlock(oBlock AS ICodeBlock) AS OBJECT
+		VIRTUAL METHOD EvalBlock(oBlock AS ICodeblock) AS OBJECT
 				LOCAL currentWk AS DWORD
                 LOCAL result AS OBJECT
 				currentWk := XSharp.RuntimeState.Workareas:CurrentWorkAreaNO
@@ -943,56 +946,58 @@ BEGIN NAMESPACE XSharp.RDD
 			LOCAL oResult AS OBJECT
 			// todo check basic implementation
 			SWITCH nOrdinal
-			CASE DBI_ISDBF
-				CASE DBI_CANPUTREC
-				CASE DBI_ISFLOCK
-				CASE DBI_TRANSREC
-				CASE DBI_RM_SUPPORTED
+			    CASE DbInfo.DBI_ISDBF
+				CASE DbInfo.DBI_CANPUTREC
+				CASE DbInfo.DBI_ISFLOCK
+				CASE DbInfo.DBI_TRANSREC
+				CASE DbInfo.DBI_RM_SUPPORTED
 					oResult := FALSE      
-				CASE DBI_SHARED
+				CASE DbInfo.DBI_SHARED
 					oResult := SELF:_Shared
-				CASE DBI_ISREADONLY
+				CASE DbInfo.DBI_ISREADONLY
+                CASE DbInfo.DBI_READONLY
 					oResult := SELF:_ReadOnly
-				CASE DBI_GETDELIMITER
+				CASE DbInfo.DBI_GETDELIMITER
 					oResult := SELF:_Delimiter
-				CASE DBI_SEPARATOR
+				CASE DbInfo.DBI_SEPARATOR
 					oResult := SELF:_Separator
-				CASE DBI_SETDELIMITER            
+				CASE DbInfo.DBI_SETDELIMITER            
 					oResult := SELF:_Separator		
 					IF oNewValue != NULL .AND. oNewValue:GetType() == TYPEOF(STRING)
 						SELF:_Separator	:= (STRING) oNewValue
 					ENDIF
-				CASE DBI_DB_VERSION
-				CASE DBI_RDD_VERSION
+				CASE DbInfo.DBI_DB_VERSION
+				CASE DbInfo.DBI_RDD_VERSION
 					oResult := ""
-				CASE DBI_GETHEADERSIZE
-				CASE DBI_LOCKCOUNT
+				CASE DbInfo.DBI_GETHEADERSIZE
+				CASE DbInfo.DBI_LOCKCOUNT
 					oResult := 0     
-				CASE DBI_GETRECSIZE
+				CASE DbInfo.DBI_GETRECSIZE
 					oResult := SELF:_RecordLength
-				CASE DBI_LASTUPDATE
+				CASE DbInfo.DBI_LASTUPDATE
 					oResult := DateTime.MinValue 
-				CASE DBI_GETLOCKARRAY
+				CASE DbInfo.DBI_GETLOCKARRAY
 					oResult := <DWORD>{}
-				CASE DBI_BOF           
+				CASE DbInfo.DBI_BOF           
 					oResult := SELF:_BOF
-				CASE DBI_EOF           
+				CASE DbInfo.DBI_EOF           
 					oResult := SELF:_EOF   
-				CASE DBI_DBFILTER      
-					oResult := SELF:_FilterInfo?:FilterText
-				CASE DBI_FOUND
+				CASE DbInfo.DBI_DBFILTER
+                    IF SELF:_FilterInfo != null
+					    oResult := SELF:_FilterInfo:FilterText
+                    ELSE
+                        oResult := String.Empty
+                    endif
+				CASE DbInfo.DBI_FOUND
 					oResult := SELF:_Found
-				CASE DBI_FCOUNT
+				CASE DbInfo.DBI_FCOUNT
 					oResult := (INT) _Fields?:Length
-				CASE DBI_ALIAS
+				CASE DbInfo.DBI_ALIAS
 					oResult := _Alias
-				CASE DBI_FULLPATH
+				CASE DbInfo.DBI_FULLPATH
 					oResult := SELF:_FileName
-					// CASE DBI_CHILDCOUNT:
-					// CASE DBI_TABLEEXT
-					// CASE DBI_SCOPEDRELATION
-					// CASE DBI_POSITIONED
-					// CASE DBI_CODEPAGE
+                CASE DbInfo.DBI_CHILDCOUNT
+                    oResult := SELF:_Relations:Count
 				OTHERWISE
 					oResult := NULL
 				END SWITCH
@@ -1000,16 +1005,9 @@ BEGIN NAMESPACE XSharp.RDD
 			
 			
 			/// <inheritdoc />
-		VIRTUAL METHOD RecInfo(oRecID AS OBJECT, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT  
-			LOCAL oResult AS OBJECT
-			//Todo: Basic implementation of Recno deleted etc.
-			SWITCH nOrdinal
-			
-				// etc
-				OTHERWISE
-					oResult := NULL
-			END SWITCH
-			RETURN oResult
+		VIRTUAL METHOD RecInfo(nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT  
+
+			RETURN NULL
 			
 			/// <inheritdoc />
 		VIRTUAL METHOD Sort(info AS DbSortInfo) AS LOGIC

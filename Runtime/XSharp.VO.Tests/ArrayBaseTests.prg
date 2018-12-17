@@ -33,18 +33,18 @@ BEGIN NAMESPACE XSharp.VO.Tests
             PROPERTY SELF[index AS INT] AS USUAL
                 GET
                     SWITCH index
-                    CASE 1
+                    CASE 0
                         RETURN FirstName
-                    CASE 2
+                    CASE 1
                         RETURN LastName
                     END SWITCH
                     RETURN NIL
                 END GET
                 SET
                     SWITCH index
-                    CASE 1
+                    CASE 0
                         FirstName := VALUE
-                    CASE 2
+                    CASE 1
                         LastName := VALUE
                     END SWITCH
                     RETURN 

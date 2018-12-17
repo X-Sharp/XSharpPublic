@@ -16,7 +16,9 @@ BEGIN NAMESPACE XSharp.RDD
     CONSTRUCTOR(msg AS STRING)
       SUPER(msg)
          RETURN
-          
+    CONSTRUCTOR(ex AS Exception)
+      SUPER(ex)
+      RETURN          
 
 STATIC METHOD PostArgumentError( funcName AS STRING, subcode AS DWORD, argName AS STRING, argNum AS DWORD, args AS OBJECT[] ) AS VOID
     LOCAL e AS Error

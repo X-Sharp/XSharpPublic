@@ -1,4 +1,4 @@
-PARTIAL CLASS FieldSpec
+﻿PARTIAL CLASS FieldSpec
 	// Class that contains a number of properties of database fields and form fields ( controls )
 	// HyperLabel   describes the FieldSpec
 	// Status           describes the current status of the field or control associated with the FieldSpec,
@@ -255,7 +255,7 @@ METHOD PerformValidations(uValue, arg)
 #ifdef __VULCAN__
                i := 0
                DO WHILE i < wLen
-						IF Char.IsDigit( cTmp, i ) 
+						IF Char.IsDigit( cTmp, (INT) i ) 
 							wDecLen++
 						ENDIF
 						i++

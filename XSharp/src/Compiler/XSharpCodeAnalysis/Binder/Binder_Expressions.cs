@@ -334,6 +334,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                             arg = (arg as BoundAddressOfOperator).Operand;
                             adjust = true;
                         }
+                        else if (arg is BoundLiteral bl && bl.IsLiteralNull())
+                        {
+                            adjust = false;
+                        }
                         else
                         {
                             adjust = true;

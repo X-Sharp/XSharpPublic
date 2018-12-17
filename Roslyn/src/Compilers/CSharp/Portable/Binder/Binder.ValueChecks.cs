@@ -316,27 +316,29 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CheckEventValueKind((BoundEventAccess)expr, valueKind, diagnostics);
             }
 
+#if XSHARP
+            if (Compilation.Options.VOImplicitCastsAndConversions
+                && expr.Kind == BoundKind.Literal && ((BoundLiteral)expr).IsLiteralNull())
+            {
+                if (valueKind == BindValueKind.RValue)
+                { 
+                    return true;
+                }
+                if (valueKind == BindValueKind.RefOrOut)
+                {
+                    // C590 Allow NULL as argument for REF parameters
+                    Error(diagnostics, ErrorCode.WRN_NullPointerForRefParameter, node);
+                    return true;
+                }
+            }
+
+#endif
+
             // easy out for a very common RValue case.
             if (RequiresRValueOnly(valueKind))
             {
                 return CheckNotNamespaceOrType(expr, diagnostics);
             }
-
-#if XSHARP
-            if (expr.Kind == BoundKind.Call)
-            {
-                Error(diagnostics, ErrorCode.ERR_CannotTakeAddressOfFunctionOrMethod, node);
-                return false;
-            }
-            if (valueKind == BindValueKind.RefOrOut && Compilation.Options.VOImplicitCastsAndConversions
-                && expr.Kind == BoundKind.Literal && ((BoundLiteral)expr).IsLiteralNull())
-            {
-                // C590 Allow NULL as argument for REF parameters
-                Error(diagnostics, ErrorCode.WRN_NullPointerForRefParameter, node);
-                return true;
-            }
-
-#endif
             // constants/literals are strictly RValues
             // void is not even an RValue
             if ((expr.ConstantValue != null) || (expr.Type.GetSpecialTypeSafe() == SpecialType.System_Void))

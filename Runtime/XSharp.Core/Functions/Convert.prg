@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -395,8 +395,8 @@ FUNCTION W2Bin(n AS WORD) AS STRING
 /// </returns>
 FUNCTION _Val(cNumber AS STRING) AS OBJECT
     IF String.IsNullOrEmpty(cNumber)
-      return 0
-    endif
+      RETURN 0
+    ENDIF
 	cNumber := cNumber:Trim():ToUpper()
 	// find non numeric characters in cNumber and trim the field to that length
 	VAR pos := 0
@@ -405,9 +405,9 @@ FUNCTION _Val(cNumber AS STRING) AS OBJECT
 	VAR hasdec := FALSE
 	VAR hasexp := FALSE
 	VAR cDec := (CHAR) RuntimeState.DecimalSep
-    VAR cThous := (CHAR) RuntimeState.ThousandSep
-    cNumber := cNumber:Replace(cThous:ToString(),"")
+    
 	IF cDec != '.'
+		cNumber := cNumber:Replace('.', cDec) // VO behavior...
 		cNumber := cNumber:Replace(cDec, '.')
 	ENDIF
 	FOREACH VAR c IN cNumber
@@ -427,7 +427,9 @@ FUNCTION _Val(cNumber AS STRING) AS OBJECT
 			NOP
 		CASE '.'
 		CASE ','
-			IF hasdec
+			IF c == ',' .and. cDec != ',' // Don't ask, VO...
+				done := TRUE
+			ELSEIF hasdec
 				done := TRUE
 			ELSE
 				hasdec := TRUE
@@ -478,7 +480,7 @@ FUNCTION _Val(cNumber AS STRING) AS OBJECT
 		IF hasexp
 			style |= NumberStyles.AllowExponent
 		ENDIF
-		IF System.Double.TryParse(cNumber, style, ConversionHelpers.usCulture, REF r8Result)
+		IF System.Double.TryParse(cNumber, style, ConversionHelpers.usCulture, OUT r8Result)
 			RETURN r8Result
 		ENDIF
 	ELSE
@@ -490,7 +492,7 @@ FUNCTION _Val(cNumber AS STRING) AS OBJECT
 		ELSE
 			style := NumberStyles.Integer
 		ENDIF
-		IF System.Int64.TryParse(cNumber, style, ConversionHelpers.usCulture, REF iResult)
+		IF System.Int64.TryParse(cNumber, style, ConversionHelpers.usCulture, OUT iResult)
 			IF iResult < Int32.MaxValue .AND. iResult > int32.MinValue
 				RETURN (INT) iResult
 			ENDIF

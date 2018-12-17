@@ -1,4 +1,4 @@
-CLASS AttachmentListView INHERIT ListView
+﻿CLASS AttachmentListView INHERIT ListView
 
 METHOD Delete(oEmail AS CEmail) AS VOID PASCAL 
 	LOCAL aItems AS ARRAY
@@ -12,7 +12,7 @@ METHOD Delete(oEmail AS CEmail) AS VOID PASCAL
 		RETURN	// nothing to do!
 	ENDIF
 
-	IF MessageBox(NULL_PTR, PSZ("Remove Selected Attachment" + IF(nItems>1, "s","") + " ?"), PSZ("Delete Warning"), MB_ICONINFORMATION+MB_YESNO) = IDYES
+	IF MessageBox(NULL_PTR, String2Psz("Remove Selected Attachment" + IF(nItems>1, "s","") + " ?"), String2Psz("Delete Warning"), MB_ICONINFORMATION+MB_YESNO) = IDYES
 	   aDeletes := {}
 		FOR nN := 1 UPTO nItems
 			// identify the attachment by name and then scan for its possibly new location
@@ -146,9 +146,9 @@ METHOD Open(oEmail AS CEmail) AS VOID PASCAL
 		IF lContinue
 			cPath := oEmail:GetAttachmentInfo(nPosn, ATTACH_FULLPATH)
 			IF ! Empty(cPath)
-				ShellExecute(NULL_PTR, PSZ("OPEN"),String2Psz(cPath),NULL_PSZ,NULL_PSZ,SW_SHOWNORMAL)
+				ShellExecute(NULL_PTR, String2Psz("OPEN"),String2Psz(cPath),NULL_PSZ,NULL_PSZ,SW_SHOWNORMAL)
 			ELSE
-				MessageBox(NULL_PTR, PSZ("Can't open " + cFileName), PSZ("File Open Error"), MB_ICONSTOP+MB_OK)
+				MessageBox(NULL_PTR, String2Psz("Can't open " + cFileName), String2Psz("File Open Error"), MB_ICONSTOP+MB_OK)
 			ENDIF
 		ENDIF
 

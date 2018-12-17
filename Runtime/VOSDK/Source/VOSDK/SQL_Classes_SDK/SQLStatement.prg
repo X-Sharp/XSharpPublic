@@ -1,4 +1,4 @@
-PARTIAL CLASS SQLStatement
+﻿PARTIAL CLASS SQLStatement
 	
 	HIDDEN  hStmt   			AS PTR
 	HIDDEN  cStatement      AS STRING
@@ -782,7 +782,7 @@ ASSIGN SQLString( uVal )
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLStatement:SQLString uVal="+AsString( uVal ) )
 	#ENDIF
-	EnforceType(uVal, STRING)
+	EnforceType(@uVal, STRING)
 	cRet := SqlDeleteWhiteSpace(uVal )
 	// RvdH 061002 No need to reassign if there are no differences
 	//	This prevents unneccesarry dropping of prepared statements

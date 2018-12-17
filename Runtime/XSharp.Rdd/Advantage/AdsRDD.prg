@@ -106,9 +106,9 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
   INTERNAL METHOD _CheckVODeletedFlag() AS DWORD
     RETURN ACE.AdsShowDeleted(IIF(RuntimeState.Deleted,(WORD)0 ,(WORD)1 ))
     
-  INTERNAL METHOD _CheckVODateFormat() AS LOGIC
+  INTERNAL METHOD _CheckDateFormat() AS LOGIC
     ACE.AdsSetDateFormat(RuntimeState.DateFormat)
-    ACE.AdsSetExact(IIF(RuntimeState.Exact,1 , 0 ))
+    ACE.AdsSetExact((WORD) IIF(RuntimeState.Exact,1 , 0 ))
     ACE.AdsSetDecimals((WORD)RuntimeState.Decimals )
     ACE.AdsSetEpoch((WORD)RuntimeState.Epoch )
     RETURN TRUE
@@ -258,7 +258,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
         strFieldDef += (fld:Length + fld:Decimals*256):ToString()+";" 
       CASE DbFieldType.Number
       CASE DbFieldType.Integer
-        strFieldDef += "N;"+fld:Length:ToString()+", "+fld:Decimals:ToString()+";"
+        strFieldDef += "N,"+fld:Length:ToString()+", "+fld:Decimals:ToString()+";"
       CASE DbFieldType.Date
         strFieldDef += "D;"
       CASE DbFieldType.Logic
@@ -421,10 +421,11 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     LOCAL dwLength AS DWORD
     SELF:_CheckError(ACE.AdsGetRecordLength(SELF:_Table, OUT dwLength))
     SELF:_RecordLength := (LONG) dwLength
-    IF !SUPER:Create(info)
-      SELF:Close()
-      RETURN FALSE
-    ENDIF
+    // Workarea has no implementation of Create
+    //    IF !SUPER:Create(info)            
+    //      SELF:Close()
+    //      RETURN FALSE
+    //    ENDIF
     RETURN SELF:RecordMovement()
     
     
@@ -1015,7 +1016,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
         IF tc != TypeCode.Boolean
           SELF:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","Logic value expected")
         ENDIF
-      SELF:_CheckError(ACE.AdsSetLogical(SELF:_Table, dwField, IIF( (LOGIC) oValue, 1, 0)))
+      SELF:_CheckError(ACE.AdsSetLogical(SELF:_Table, dwField, (WORD)  IIF( (LOGIC) oValue, 1, 0)))
     CASE DbFieldType.Date
         IF tc != TypeCode.DateTime
           SELF:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","Date or DateTime value expected")
@@ -1194,7 +1195,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     VIRTUAL METHOD SetFilter(fi AS DBFILTERINFO) AS LOGIC
       LOCAL result AS DWORD
       // Get the current date format so we can handle literal dates in the filter
-      SELF:_CheckError(IIF(SELF:_CheckVODateFormat(),0,1))
+      SELF:_CheckError((DWORD) IIF(SELF:_CheckDateFormat(),0,1))
       IF String.IsNullOrEmpty(fi:FilterText)
         // clear filter
         // Ignore "No filter" error
@@ -1208,7 +1209,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
         ENDIF
       ELSE
         IF RuntimeState.Optimize
-          SELF:_CheckError(ACE.AdsSetAOF(SELF:_Table, fi:FilterText, (WORD) ACE.ADS_RESOLVE_DYNAMIC | ACE.ADS_DYNAMIC_AOF))
+          SELF:_CheckError(ACE.AdsSetAOF(SELF:_Table, fi:FilterText, (WORD) (ACE.ADS_RESOLVE_DYNAMIC | ACE.ADS_DYNAMIC_AOF)))
         ELSE
           SELF:_CheckError(ACE.AdsSetFilter(SELF:_Table, fi:FilterText))
         ENDIF
@@ -1249,13 +1250,13 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       CASE DBS_BLOB_TYPE
           SELF:_CheckError(ACE.AdsGetFieldType(SELF:_Table, dwFldPos ,  OUT fieldType))
           SWITCH fieldType
-          CASE ACE.ADS_MEMO
-          CASE ACE.ADS_BINARY
+        CASE ACE.ADS_MEMO
+        CASE ACE.ADS_BINARY
         CASE ACE.ADS_IMAGE
-          CASE ACE.ADS_NMEMO
+        CASE ACE.ADS_NMEMO
             RETURN "?"
         END SWITCH
-      CASE DBS_BLOB_LEN
+        CASE DBS_BLOB_LEN
           IF SUPER:_fields[uiPos-1]:fieldType != DBFieldType.Memo  
             RETURN -1
           ELSE
@@ -1275,7 +1276,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       END SWITCH
       RETURN SUPER:FieldInfo(uiPos, uiOrdinal, oNewValue)
       
-    VIRTUAL METHOD RecInfo(iRecID AS OBJECT, uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
+    VIRTUAL METHOD RecInfo(uiOrdinal AS LONG, iRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
       LOCAL dwRecno AS DWORD
       //
       SWITCH (DBRecordInfo) uiOrdinal
@@ -1308,7 +1309,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       OTHERWISE
         SELF:ADSERROR(ERDD_UNSUPPORTED, EG_UNSUPPORTED, "RecInfo")
       END SWITCH
-      RETURN SUPER:RecInfo(iRecID, uiOrdinal, oNewValue)
+      RETURN SUPER:RecInfo( uiOrdinal, iRecID, oNewValue)
       
       
       /// <inheritdoc />
@@ -1343,7 +1344,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
           SELF:_CheckError(ACE.AdsSetDateFormat("MM/DD/YY"))
           SELF:_CheckError(ACE.AdsGetLastTableUpdate(SELF:_Table, aDate, REF DateLen))
           SELF:_CheckError(ACEUNPUB.AdsConvertStringToJulian(aDate, DateLen, OUT julDate))
-          IF !SELF:_CheckVODateFormat()
+          IF !SELF:_CheckDateFormat()
             SELF:_CheckError(1)
           ENDIF
         RETURN (LONG)julDate

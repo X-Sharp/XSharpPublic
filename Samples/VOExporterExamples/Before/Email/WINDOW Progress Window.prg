@@ -1,58 +1,12 @@
 #region DEFINES
-STATIC DEFINE PROGRESSWINDOW_VO_TXTMESSAGE := 100 
-STATIC DEFINE PROGRESSWINDOW_VO_TXTFEEDBACK := 101 
-STATIC DEFINE PROGRESSWINDOW_VO_TXTPERCENT := 102 
+STATIC DEFINE PROGRESSWINDOW_VO_ANIMATION := 105 
 STATIC DEFINE PROGRESSWINDOW_VO_BARFEEDBACK := 103 
 STATIC DEFINE PROGRESSWINDOW_VO_PSHCANCEL := 104 
-STATIC DEFINE PROGRESSWINDOW_VO_ANIMATION := 105 
+STATIC DEFINE PROGRESSWINDOW_VO_TXTFEEDBACK := 101 
+STATIC DEFINE PROGRESSWINDOW_VO_TXTMESSAGE := 100 
+STATIC DEFINE PROGRESSWINDOW_VO_TXTPERCENT := 102 
 #endregion
 
-CLASS ProgressWindow_Vo INHERIT DIALOGWINDOW 
-
-	PROTECT oDCtxtMessage AS FIXEDTEXT
-	PROTECT oDCtxtFeedback AS FIXEDTEXT
-	PROTECT oDCtxtPercent AS FIXEDTEXT
-	PROTECT oDCbarFeedback AS PROGRESSBAR
-	PROTECT oCCpshCancel AS PUSHBUTTON
-	PROTECT oDCAnimation AS ANIMATIONCONTROL
-
-  //{{%UC%}} USER CODE STARTS HERE (do NOT remove this line)
-
-CONSTRUCTOR(oParent,uExtra)  
-
-self:PreInit(oParent,uExtra)
-
-SUPER(oParent,ResourceID{"ProgressWindow_Vo",_GetInst()},TRUE)
-
-oDCtxtMessage := FixedText{SELF,ResourceID{PROGRESSWINDOW_VO_TXTMESSAGE,_GetInst()}}
-oDCtxtMessage:HyperLabel := HyperLabel{#txtMessage,NULL_STRING,NULL_STRING,NULL_STRING}
-
-oDCtxtFeedback := FixedText{SELF,ResourceID{PROGRESSWINDOW_VO_TXTFEEDBACK,_GetInst()}}
-oDCtxtFeedback:HyperLabel := HyperLabel{#txtFeedback,NULL_STRING,NULL_STRING,NULL_STRING}
-
-oDCtxtPercent := FixedText{SELF,ResourceID{PROGRESSWINDOW_VO_TXTPERCENT,_GetInst()}}
-oDCtxtPercent:HyperLabel := HyperLabel{#txtPercent,NULL_STRING,NULL_STRING,NULL_STRING}
-
-oDCbarFeedback := ProgressBar{SELF,ResourceID{PROGRESSWINDOW_VO_BARFEEDBACK,_GetInst()}}
-oDCbarFeedback:TooltipText := "Laufbalken 1-100%"
-oDCbarFeedback:HyperLabel := HyperLabel{#barFeedback,NULL_STRING,NULL_STRING,NULL_STRING}
-
-oCCpshCancel := PushButton{SELF,ResourceID{PROGRESSWINDOW_VO_PSHCANCEL,_GetInst()}}
-oCCpshCancel:HyperLabel := HyperLabel{#pshCancel,_chr(38)+"Cancel",NULL_STRING,NULL_STRING}
-oCCpshCancel:UseHLforToolTip := True
-
-oDCAnimation := AnimationControl{SELF,ResourceID{PROGRESSWINDOW_VO_ANIMATION,_GetInst()}}
-oDCAnimation:HyperLabel := HyperLabel{#Animation,NULL_STRING,NULL_STRING,NULL_STRING}
-
-SELF:Caption := ""
-SELF:HyperLabel := HyperLabel{#ProgressWindow_Vo,NULL_STRING,NULL_STRING,NULL_STRING}
-
-self:PostInit(oParent,uExtra)
-
-return self
-
-
-END CLASS
 CLASS ProgressWindow INHERIT ProgressWindow_vo
 	PROTECT _nCount       AS DWORD
 	PROTECT _nPos         AS DWORD
@@ -72,6 +26,10 @@ CLASS ProgressWindow INHERIT ProgressWindow_vo
 
 ASSIGN AppExec(lValue) 
 	RETURN _lAppExec := lValue
+
+ASSIGN AVIResource(cValue) 
+   oDCAnimation:OpenResource(cValue)
+   RETURN cValue
 
 ACCESS Cancel 
 	RETURN _lCancel
@@ -157,6 +115,18 @@ ASSIGN Percent (lPercent)
 	oDCtxtPercent:caption  := IF(lPercent,NTrim(_nCurrent) + " %","")
 	RETURN _lPercent := lPercent
 
+ACCESS Position 
+   RETURN _nPos
+
+ASSIGN Position(nValue) 
+
+   IF nValue >= 0 .and. nValue <=_nCount
+      _nPos := nValue
+      SELF:StepIt(0)
+   ENDIF
+	RETURN nValue
+
+
 Method pshCancel () 
 	_lCancel := TRUE
 
@@ -225,21 +195,50 @@ METHOD UpdateText (cCaption)
 	RETURN .NOT. _lCancel
 
 
-ASSIGN Position(nValue) 
+END CLASS
+CLASS ProgressWindow_Vo INHERIT DIALOGWINDOW 
 
-   IF nValue >= 0 .and. nValue <=_nCount
-      _nPos := nValue
-      SELF:StepIt(0)
-   ENDIF
-	RETURN nValue
+	PROTECT oDCtxtMessage AS FIXEDTEXT
+	PROTECT oDCtxtFeedback AS FIXEDTEXT
+	PROTECT oDCtxtPercent AS FIXEDTEXT
+	PROTECT oDCbarFeedback AS PROGRESSBAR
+	PROTECT oCCpshCancel AS PUSHBUTTON
+	PROTECT oDCAnimation AS ANIMATIONCONTROL
 
+  //{{%UC%}} USER CODE STARTS HERE (do NOT remove this line)
 
-ACCESS Position 
-   RETURN _nPos
+CONSTRUCTOR(oParent,uExtra)  
 
-ASSIGN AVIResource(cValue) 
-   oDCAnimation:OpenResource(cValue)
-   RETURN cValue
+self:PreInit(oParent,uExtra)
+
+SUPER(oParent,ResourceID{"ProgressWindow_Vo",_GetInst()},TRUE)
+
+oDCtxtMessage := FixedText{SELF,ResourceID{PROGRESSWINDOW_VO_TXTMESSAGE,_GetInst()}}
+oDCtxtMessage:HyperLabel := HyperLabel{#txtMessage,NULL_STRING,NULL_STRING,NULL_STRING}
+
+oDCtxtFeedback := FixedText{SELF,ResourceID{PROGRESSWINDOW_VO_TXTFEEDBACK,_GetInst()}}
+oDCtxtFeedback:HyperLabel := HyperLabel{#txtFeedback,NULL_STRING,NULL_STRING,NULL_STRING}
+
+oDCtxtPercent := FixedText{SELF,ResourceID{PROGRESSWINDOW_VO_TXTPERCENT,_GetInst()}}
+oDCtxtPercent:HyperLabel := HyperLabel{#txtPercent,NULL_STRING,NULL_STRING,NULL_STRING}
+
+oDCbarFeedback := ProgressBar{SELF,ResourceID{PROGRESSWINDOW_VO_BARFEEDBACK,_GetInst()}}
+oDCbarFeedback:TooltipText := "Laufbalken 1-100%"
+oDCbarFeedback:HyperLabel := HyperLabel{#barFeedback,NULL_STRING,NULL_STRING,NULL_STRING}
+
+oCCpshCancel := PushButton{SELF,ResourceID{PROGRESSWINDOW_VO_PSHCANCEL,_GetInst()}}
+oCCpshCancel:HyperLabel := HyperLabel{#pshCancel,_chr(38)+"Cancel",NULL_STRING,NULL_STRING}
+oCCpshCancel:UseHLforToolTip := True
+
+oDCAnimation := AnimationControl{SELF,ResourceID{PROGRESSWINDOW_VO_ANIMATION,_GetInst()}}
+oDCAnimation:HyperLabel := HyperLabel{#Animation,NULL_STRING,NULL_STRING,NULL_STRING}
+
+SELF:Caption := ""
+SELF:HyperLabel := HyperLabel{#ProgressWindow_Vo,NULL_STRING,NULL_STRING,NULL_STRING}
+
+self:PostInit(oParent,uExtra)
+
+return self
 
 
 END CLASS

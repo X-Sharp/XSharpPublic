@@ -20,12 +20,18 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 	/// The TestDbfNtx class.
 	/// </summary>
 	PUBLIC CLASS TestDbfNtx
+
+        METHOD InitTest() AS VOID
+            LOCAL d := __Date{0,0,0} AS __Date
+            SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))
+            RETURN
 	
 		[Fact, Trait("DbfNtx", "Create")];
 		METHOD CreateDBFNtx() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
-			VAR dbInfo := DbOpenInfo{ "TestNtx1.DBF", "TestNtx1", 1, FALSE, FALSE }
+            InitTest()
+            VAR dbInfo := DbOpenInfo{ "TestNtx1.DBF", "TestNtx1", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF AS DbfNtx
 			LOCAL fieldInfo AS STRING[]
@@ -52,7 +58,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			ntxInfo := DbOrderCreateInfo{}
 			ntxInfo:BagName := "TestNtx1"
 			ntxInfo:Order := "TestNtx1"
-			ntxInfo:Expression := "_FIELD->ID"
+			ntxInfo:Expression := "ID"
 			//
 			Assert.Equal( TRUE, myDBF:OrderCreate( ntxInfo ) )
 			//
@@ -62,6 +68,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("DbfNtx", "Open")];
 		METHOD OpenDBFNtx() AS VOID
 			// ID,N,5,0;NAME,C,20,0
+            InitTest()
 			VAR dbInfo := DbOpenInfo{ "TestNTX2.DBF", "customer", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF AS DbfNtx
@@ -87,6 +94,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("DbfNtx", "Read")];
 		METHOD ReadDBFNtx() AS VOID
 			//
+            InitTest()
 			SELF:CheckOrder( "TestNTX2" )
 			RETURN
 			
@@ -94,13 +102,15 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("DbfNtx", "CreateAppend")];
 		METHOD CreateAppend() AS VOID
 			// Create the DBF, Define a Ntx, then add a some Data
-			SELF:CreateAppendData( "XMenTest" )
+            InitTest()
+            SELF:CreateAppendData( "XMenTest" )
 			// Now, Verify
 			SELF:CheckOrder( "XMenTest" )
 
 		[Fact, Trait("DbfNtx", "CreateAppendSkipZero")];
 		METHOD CreateAppendSkipZero() AS VOID
 			// Create the DBF, Define a Ntx, then add a some Data
+            InitTest()
 			SELF:CreateAppendData( "XMenTest" )
 			//
 			VAR dbInfo := DbOpenInfo{ "XMenTest", "", 1, FALSE, FALSE }
@@ -140,7 +150,8 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD CreateAppendData( baseFileName AS STRING ) AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
-			VAR dbInfo := DbOpenInfo{ baseFileName, "" , 1, FALSE, FALSE }
+            InitTest()
+            VAR dbInfo := DbOpenInfo{ baseFileName, "" , 1, FALSE, FALSE }
 			//
 			LOCAL myDBF AS DbfNtx
 			LOCAL fieldInfo AS STRING[]
@@ -194,6 +205,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD BigCreateAppend() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
+            InitTest()
 			VAR dbInfo := DbOpenInfo{ "XMenTest.DBF", "XMenTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF AS DbfNtx
@@ -247,12 +259,12 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			
 		// Read a DBF/NTX who's first Field is a Number used as Index Key
 		METHOD CheckOrder( baseFileName AS STRING ) AS VOID
-			// 
+			//
 			VAR dbInfo := DbOpenInfo{ baseFileName, "", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF AS DbfNtx
 			myDBF := DbfNtx{}
-			
+            InitTest()
 			VAR success := myDBF:Open( dbInfo ) 
 			Assert.Equal( TRUE, success )
 			// WE HAVE TO SET THE WORKAREA INFO !!!!

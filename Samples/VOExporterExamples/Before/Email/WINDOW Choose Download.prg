@@ -1,16 +1,16 @@
 #region DEFINES
-STATIC DEFINE CHOOSEDOWNLOADDIALOG_LISTVIEW1 := 106 
 STATIC DEFINE CHOOSEDOWNLOADDIALOG_CLOSEBUTTON := 104 
-STATIC DEFINE CHOOSEDOWNLOADDIALOG_OKBUTTON := 103 
-STATIC DEFINE CHOOSEDOWNLOADDIALOG_DELETEDOWNLOADEDMAIL := 105 
 STATIC DEFINE CHOOSEDOWNLOADDIALOG_DELETEBUTTON := 101 
+STATIC DEFINE CHOOSEDOWNLOADDIALOG_DELETEDOWNLOADEDMAIL := 105 
 STATIC DEFINE CHOOSEDOWNLOADDIALOG_DOWNLOADBUTTON := 102 
-STATIC DEFINE CHOOSEDOWNLOADDIALOG_SELECTIONOPTIONS := 100 
+STATIC DEFINE CHOOSEDOWNLOADDIALOG_INVERTSELECTIONBUTTON := 110 
+STATIC DEFINE CHOOSEDOWNLOADDIALOG_LISTVIEW1 := 106 
+STATIC DEFINE CHOOSEDOWNLOADDIALOG_OKBUTTON := 103 
 STATIC DEFINE CHOOSEDOWNLOADDIALOG_REPROCESSHEADERS := 107 
 STATIC DEFINE CHOOSEDOWNLOADDIALOG_SELECTALLBUTTON := 108 
-STATIC DEFINE CHOOSEDOWNLOADDIALOG_UNSELECTALLBUTTON := 109 
-STATIC DEFINE CHOOSEDOWNLOADDIALOG_INVERTSELECTIONBUTTON := 110 
+STATIC DEFINE CHOOSEDOWNLOADDIALOG_SELECTIONOPTIONS := 100 
 STATIC DEFINE CHOOSEDOWNLOADDIALOG_TESTMAILIDBUTTON := 111 
+STATIC DEFINE CHOOSEDOWNLOADDIALOG_UNSELECTALLBUTTON := 109 
 #endregion
 
 class ChooseDownloadDialog inherit DIALOGWINDOW 
@@ -34,6 +34,41 @@ class ChooseDownloadDialog inherit DIALOGWINDOW
   	PROTECT lInResize AS LOGIC			// prevent recursive calls to our resize method
   	PROTECT oOriginalSize AS Dimension	// minimum size for the window
   	PROTECT oLVOrigin AS Point			// original position for Listview
+
+
+METHOD AddListViewItem(oMessage, nMail, cMailSize) 
+	LOCAL oItem AS ListViewItem
+	
+	oItem := ListViewItem{}
+	oItem:SetText(DToC(oMessage:MailDate),  #MailDate)
+	oItem:SetText(oMessage:MailTime,        #MailTime)
+	oItem:SetText(oMessage:From,            #MailSender)
+	oItem:SetText(oMessage:Subject,         #MailSubject)
+	oItem:SetValue(nMail,                   #MailNum)
+	oItem:SetText(cMailSize,                #MailSize)
+	oItem:ImageIndex  := 1
+	
+	SELF:oDCListView1:AddItem(oItem)
+
+	RETURN SELF	
+
+
+METHOD ButtonClick(oControlEvent) 
+
+	LOCAL oControl AS OBJECT
+
+	oControl := IIf(oControlEvent == NULL_OBJECT, NULL_OBJECT, oControlEvent:Control)
+	SUPER:ButtonClick(oControlEvent)
+
+	IF IsInstanceOf(oControl, #RadioButton)
+		IF SELF:oDCSelectionOptions:Value = "DOWNLOAD"
+			SELF:oDCDeleteDownloadedMail:Enable()
+		ELSE
+			SELF:oDCDeleteDownloadedMail:Disable()
+		ENDIF
+	ENDIF
+
+	RETURN NIL
 
 
 METHOD CloseButton( ) 
@@ -110,34 +145,24 @@ self:PostInit(oParent,uExtra)
 return self
 
 
-METHOD PostInit(oParent,uExtra) 
+METHOD InvertSelectionButton( ) 
+	
+	LOCAL oListViewItem AS ListViewItem
+	LOCAL dwMail, dwTotal AS DWORD
 
-	LOCAL oImageList AS ImageList
+	dwTotal	:= SELF:oDCListView1:ItemCount
+	FOR dwMail := 1 UPTO dwTotal
+		oListViewItem := SELF:oDCListView1:GetItemAttributes( dwMail )
+		IF oListViewItem:ImageIndex = 2
+			oListViewItem:ImageIndex := 1
+		ELSE
+			oListViewItem:ImageIndex := 2
+		ENDIF
+		SELF:oDCListView1:SetItemAttributes(oListViewItem)
+	NEXT
 
-	// Set up ListView
-	oImageList	:= ImageList{ 2, Dimension{ 16,16 } }
-	oImageList:Add( Box_Icon{} )
-	oImageList:Add( BoxTick_Icon{} )
-	SELF:oDCListView1:SmallImageList := oImageList
-
-	// set up Listview columns
-	SELF:oDCListView1:AddColumn(ListViewColumn{10, HyperLabel{#MailDate, "Date"}})
-	SELF:oDCListView1:AddColumn(ListViewColumn{6, HyperLabel{#MailTime, "Time"}})
-	SELF:oDCListView1:AddColumn(ListViewColumn{20, HyperLabel{#MailSender, "Sender"}})
-	SELF:oDCListView1:AddColumn(ListViewColumn{25, HyperLabel{#MailSubject, "Subject"}})
-	SELF:oDCListView1:AddColumn(ListViewColumn{7, HyperLabel{#MailSize, "Size"},,LVCFMT_RIGHT})
-	SELF:oDCListView1:AddColumn(ListViewColumn{0, HyperLabel{#MailNum, "Number"}})
-
-	// set up download option
-	SELF:oDCDeleteDownloadedMail:Checked := aMailInfo[DEF_DELETEMAIL]
-	SELF:oDCSelectionOptions:Value := "DOWNLOAD"
-
-	// allow resizing events from now
-	SELF:lSetupComplete := TRUE
-	SELF:oOriginalSize := SELF:Size
-	SELF:oLVOrigin := SELF:oDCListView1:Origin
-
-	RETURN NIL
+	RETURN SELF
+	
 
 METHOD ListViewMouseButtonDown(oListViewMouseEvent) 
 
@@ -162,119 +187,6 @@ METHOD ListViewMouseButtonDown(oListViewMouseEvent)
 	RETURN NIL
 
 
-
-METHOD Show(kShowState) 
-	
-	SELF:Size := SELF:Size	// cause one resize event to get things stable
-	
-	SUPER:Show(kShowState)
-	
-	RETURN NIL
-
-METHOD ButtonClick(oControlEvent) 
-
-	LOCAL oControl AS OBJECT
-
-	oControl := IIf(oControlEvent == NULL_OBJECT, NULL_OBJECT, oControlEvent:Control)
-	SUPER:ButtonClick(oControlEvent)
-
-	IF IsInstanceOf(oControl, #RadioButton)
-		IF SELF:oDCSelectionOptions:Value = "DOWNLOAD"
-			SELF:oDCDeleteDownloadedMail:Enable()
-		ELSE
-			SELF:oDCDeleteDownloadedMail:Disable()
-		ENDIF
-	ENDIF
-
-	RETURN NIL
-
-
-METHOD AddListViewItem(oMessage, nMail, cMailSize) 
-	LOCAL oItem AS ListViewItem
-	
-	oItem := ListViewItem{}
-	oItem:SetText(DToC(oMessage:MailDate),  #MailDate)
-	oItem:SetText(oMessage:MailTime,        #MailTime)
-	oItem:SetText(oMessage:From,            #MailSender)
-	oItem:SetText(oMessage:Subject,         #MailSubject)
-	oItem:SetValue(nMail,                   #MailNum)
-	oItem:SetText(cMailSize,                #MailSize)
-	oItem:ImageIndex  := 1
-	
-	SELF:oDCListView1:AddItem(oItem)
-
-	RETURN SELF	
-
-
-METHOD PostShowDialog() 
-
-	LOCAL oPop AS MyPop
-	LOCAL nList, nMail AS DWORD
-	LOCAL aHeaders, aTop AS ARRAY
-	LOCAL oProgWin AS ProgressWindow
-	LOCAL cTitle, cMessage AS STRING
-	LOCAL oMessage AS cMessage
-
-	oProgWin := ProgressWindow{SELF, "Downloading Email Headers", "Logging on to mail server..."}
-	oProgWin:AVIResource := "WebReceiveAVI"
-	oProgWin:Show()
-
-	oPop := MyPop{SELF:Owner, aMailInfo[DEF_POPSERVER]}
-	IF oPop:Logon(aMailInfo[DEF_ACCOUNT],aMailInfo[DEF_PASSWORD])
-		oPop:GetStatus()
-		// construct an array of mail numbers
-		oProgWin:Message("Obtain initial list of headers...")
-		
-		aHeaders := oPop:GetList()	// aHeaders = {...{Mail No., Mail size}...}
-		nList := ALen(aHeaders)
-		oProgWin:Count := nList
-		
-		oMessage := CMessage{}
-		
-		FOR nMail := 1 UPTO nList
-			oProgWin:Message("Downloading " + NTrim(nMail) + " of " + NTrim(nList))
-			aTop := oPop:GetMailTop(aHeaders[nMail,1], 1)
-			IF ! aTop[1] == Null_String
-            oMessage:MailHeader := aTop[1]
-            oMessage:GetHeaderInfo()
-			
-			   SELF:AddListviewItem(oMessage, nMail, aHeaders[nMail,2])
-			ENDIF
-
-			oProgWin:StepIt(1)
-			IF oProgWin:Cancel
-				cTitle := "Download In-Complete"
-				cMessage := "User aborted process part way through"
-				EXIT
-			ENDIF
-		NEXT
-		IF nList = 0
-			cTitle := "Download Complete"
-			cMessage := "There was no mail to collect"
-		ENDIF
-	ELSE
-		cTitle := "Download Failure"
-		cMessage := "Failed to log on to a server - TRY AGAIN"
-	ENDIF
-	oPop:Disconnect()
-	oPop:Close()
-	
-	oProgWin:EndDialog()
-
-	IF !Empty(cMessage)
-		Textbox{,cTitle,cMessage}:Show()
-	ENDIF
-
-	RETURN SELF
-
-
-METHOD ReprocessHeaders( ) 
-	
-	SELF:oDCListView1:DeleteAll()
-	ApplicationExec(EXECWHILEEVENT)
-	SELF:PostShowDialog()
-	
-	RETURN SELF
 
 METHOD OKButton() 
 	LOCAL oListViewItem	AS ListViewItem
@@ -398,6 +310,105 @@ METHOD OKButton()
 	RETURN NIL
 
 
+METHOD PostInit(oParent,uExtra) 
+
+	LOCAL oImageList AS ImageList
+
+	// Set up ListView
+	oImageList	:= ImageList{ 2, Dimension{ 16,16 } }
+	oImageList:Add( Box_Icon{} )
+	oImageList:Add( BoxTick_Icon{} )
+	SELF:oDCListView1:SmallImageList := oImageList
+
+	// set up Listview columns
+	SELF:oDCListView1:AddColumn(ListViewColumn{10, HyperLabel{#MailDate, "Date"}})
+	SELF:oDCListView1:AddColumn(ListViewColumn{6, HyperLabel{#MailTime, "Time"}})
+	SELF:oDCListView1:AddColumn(ListViewColumn{20, HyperLabel{#MailSender, "Sender"}})
+	SELF:oDCListView1:AddColumn(ListViewColumn{25, HyperLabel{#MailSubject, "Subject"}})
+	SELF:oDCListView1:AddColumn(ListViewColumn{7, HyperLabel{#MailSize, "Size"},,LVCFMT_RIGHT})
+	SELF:oDCListView1:AddColumn(ListViewColumn{0, HyperLabel{#MailNum, "Number"}})
+
+	// set up download option
+	SELF:oDCDeleteDownloadedMail:Checked := aMailInfo[DEF_DELETEMAIL]
+	SELF:oDCSelectionOptions:Value := "DOWNLOAD"
+
+	// allow resizing events from now
+	SELF:lSetupComplete := TRUE
+	SELF:oOriginalSize := SELF:Size
+	SELF:oLVOrigin := SELF:oDCListView1:Origin
+
+	RETURN NIL
+
+METHOD PostShowDialog() 
+
+	LOCAL oPop AS MyPop
+	LOCAL nList, nMail AS DWORD
+	LOCAL aHeaders, aTop AS ARRAY
+	LOCAL oProgWin AS ProgressWindow
+	LOCAL cTitle, cMessage AS STRING
+	LOCAL oMessage AS cMessage
+
+	oProgWin := ProgressWindow{SELF, "Downloading Email Headers", "Logging on to mail server..."}
+	oProgWin:AVIResource := "WebReceiveAVI"
+	oProgWin:Show()
+
+	oPop := MyPop{SELF:Owner, aMailInfo[DEF_POPSERVER]}
+	IF oPop:Logon(aMailInfo[DEF_ACCOUNT],aMailInfo[DEF_PASSWORD])
+		oPop:GetStatus()
+		// construct an array of mail numbers
+		oProgWin:Message("Obtain initial list of headers...")
+		
+		aHeaders := oPop:GetList()	// aHeaders = {...{Mail No., Mail size}...}
+		nList := ALen(aHeaders)
+		oProgWin:Count := nList
+		
+		oMessage := CMessage{}
+		
+		FOR nMail := 1 UPTO nList
+			oProgWin:Message("Downloading " + NTrim(nMail) + " of " + NTrim(nList))
+			aTop := oPop:GetMailTop(aHeaders[nMail,1], 1)
+			IF ! aTop[1] == Null_String
+            oMessage:MailHeader := aTop[1]
+            oMessage:GetHeaderInfo()
+			
+			   SELF:AddListviewItem(oMessage, nMail, aHeaders[nMail,2])
+			ENDIF
+
+			oProgWin:StepIt(1)
+			IF oProgWin:Cancel
+				cTitle := "Download In-Complete"
+				cMessage := "User aborted process part way through"
+				EXIT
+			ENDIF
+		NEXT
+		IF nList = 0
+			cTitle := "Download Complete"
+			cMessage := "There was no mail to collect"
+		ENDIF
+	ELSE
+		cTitle := "Download Failure"
+		cMessage := "Failed to log on to a server - TRY AGAIN"
+	ENDIF
+	oPop:Disconnect()
+	oPop:Close()
+	
+	oProgWin:EndDialog()
+
+	IF !Empty(cMessage)
+		Textbox{,cTitle,cMessage}:Show()
+	ENDIF
+
+	RETURN SELF
+
+
+METHOD ReprocessHeaders( ) 
+	
+	SELF:oDCListView1:DeleteAll()
+	ApplicationExec(EXECWHILEEVENT)
+	SELF:PostShowDialog()
+	
+	RETURN SELF
+
 METHOD SelectAllButton( ) 
 
 	LOCAL oListViewItem AS ListViewItem
@@ -413,39 +424,13 @@ METHOD SelectAllButton( )
 	RETURN SELF
 
 
-METHOD UnSelectAllButton( ) 
+METHOD Show(kShowState) 
 	
-	LOCAL oListViewItem AS ListViewItem
-	LOCAL dwMail, dwTotal AS DWORD
-
-	dwTotal	:= SELF:oDCListView1:ItemCount
-	FOR dwMail := 1 UPTO dwTotal
-		oListViewItem := SELF:oDCListView1:GetItemAttributes( dwMail )
-		oListViewItem:ImageIndex := 1
-		SELF:oDCListView1:SetItemAttributes(oListViewItem)
-	NEXT
-
-	RETURN SELF
+	SELF:Size := SELF:Size	// cause one resize event to get things stable
 	
-
-METHOD InvertSelectionButton( ) 
+	SUPER:Show(kShowState)
 	
-	LOCAL oListViewItem AS ListViewItem
-	LOCAL dwMail, dwTotal AS DWORD
-
-	dwTotal	:= SELF:oDCListView1:ItemCount
-	FOR dwMail := 1 UPTO dwTotal
-		oListViewItem := SELF:oDCListView1:GetItemAttributes( dwMail )
-		IF oListViewItem:ImageIndex = 2
-			oListViewItem:ImageIndex := 1
-		ELSE
-			oListViewItem:ImageIndex := 2
-		ENDIF
-		SELF:oDCListView1:SetItemAttributes(oListViewItem)
-	NEXT
-
-	RETURN SELF
-	
+	RETURN NIL
 
 METHOD TestMailIDButton( ) 
 	LOCAL oPop AS MyPop
@@ -493,5 +478,20 @@ METHOD TestMailIDButton( )
 
 	RETURN SELF
 
+
+METHOD UnSelectAllButton( ) 
+	
+	LOCAL oListViewItem AS ListViewItem
+	LOCAL dwMail, dwTotal AS DWORD
+
+	dwTotal	:= SELF:oDCListView1:ItemCount
+	FOR dwMail := 1 UPTO dwTotal
+		oListViewItem := SELF:oDCListView1:GetItemAttributes( dwMail )
+		oListViewItem:ImageIndex := 1
+		SELF:oDCListView1:SetItemAttributes(oListViewItem)
+	NEXT
+
+	RETURN SELF
+	
 
 END CLASS

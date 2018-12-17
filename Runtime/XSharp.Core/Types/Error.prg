@@ -258,7 +258,12 @@ BEGIN NAMESPACE XSharp
     
     /// <exclude/>	
     STATIC METHOD VOError( dwGenCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs AS OBJECT[] ) AS Error
-    RETURN VOError( NULL , dwGenCode, cFuncName, cArgName, iArgNum, aArgs )
+        local e as Error
+        e:= Error{dwGencode,cArgName}
+        e:FuncSym := cFuncName
+        e:ArgNum := iArgNum
+        e:Args := aArgs
+        return e 
     
     /// <exclude/>	
     STATIC METHOD VOError( ex AS Exception, dwGenCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs AS OBJECT[]  ) AS Error
@@ -386,9 +391,9 @@ BEGIN NAMESPACE XSharp
           RETURN __UsualType.array
         CASE "xsharp.__codeblock"
           RETURN __UsualType.codeblock
-        CASE "xsharp.__vodate"
+        CASE "xsharp.__date"
           RETURN __UsualType.date
-        CASE "xsharp.__vofloat"
+        CASE "xsharp.__float"
           RETURN __UsualType.float
         CASE "xsharp.__psz"
           RETURN __UsualType.psz
@@ -416,13 +421,13 @@ BEGIN NAMESPACE XSharp
     CASE __UsualType.codeblock
       typeName := "XSharp.__CodeBlock"
     CASE __UsualType.date
-      typeName := "XSharp.__VODate"
+      typeName := "XSharp.__Date"
     CASE __UsualType.dword
       RETURN typeof(System.UInt32)
     CASE __UsualType.int64
       RETURN typeof(System.Int64)
     CASE __UsualType.float
-      typeName := "XSharp.__VOFloat"
+      typeName := "XSharp.__Float"
     CASE __UsualType.logic
       RETURN typeof(System.Boolean)
     CASE __UsualType.long
@@ -488,7 +493,7 @@ BEGIN NAMESPACE XSharp
         /// <exclude/>	
         MEMBER @@Logic		:=8
         /// <exclude/>	
-        MEMBER @@CodeBlock	:=9
+        MEMBER @@Codeblock	:=9
         /// <exclude/>	
         MEMBER @@Symbol		:=10
         // see below for missing values

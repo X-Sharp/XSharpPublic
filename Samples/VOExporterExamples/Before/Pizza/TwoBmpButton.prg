@@ -3,13 +3,13 @@ class TwoBmpButton inherit PushButton
 	protect oBmpPressed as Bitmap
 	
 
+assign BmpPressed(oNewBmp) 
+	oBmpPressed := oNewBmp
+	return nil
+
 assign BmpUnpressed(oNewBmp) 
 	oBmpUnpressed := oNewBmp
 	self:Image := oBmpUnpressed
-	return nil
-
-assign BmpPressed(oNewBmp) 
-	oBmpPressed := oNewBmp
 	return nil
 
 method Dispatch(oEvt) 

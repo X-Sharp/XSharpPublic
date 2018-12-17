@@ -8,6 +8,10 @@ class SubmitDlg inherit DIALOGWINDOW
 	protect oDCProgressBar1 as PROGRESSBAR
 	protect oCCDoneButton as PUSHBUTTON
 
+METHOD DoneButton( ) 
+	SELF:EndDialog()
+	return nil
+
 CONSTRUCTOR(oParent)  
 
 self:PreInit()
@@ -27,18 +31,6 @@ self:PostInit()
 return self
 
 
-METHOD DoneButton( ) 
-	SELF:EndDialog()
-	return nil
-
-method Wait() 
-	local l := GetTickCount() as DWORD
-	
-	while ((GetTickCount() - l) < 25)
-	end	
-
-	return nil
-
 method ShowModal(lActive) 
   local i as int	
 
@@ -53,5 +45,12 @@ method ShowModal(lActive)
 
 	
 
+method Wait() 
+	local l := GetTickCount() as DWORD
+	
+	while ((GetTickCount() - l) < 25)
+	end	
+
+	return nil
 
 END CLASS

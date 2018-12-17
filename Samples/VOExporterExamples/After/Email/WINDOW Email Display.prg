@@ -1,20 +1,21 @@
-#region DEFINES
-STATIC DEFINE EMAILDISPLAYDIALOG_FROM_FT := 100
-STATIC DEFINE EMAILDISPLAYDIALOG_FROMTEXT := 101
-STATIC DEFINE EMAILDISPLAYDIALOG_DATE_FT := 102
-STATIC DEFINE EMAILDISPLAYDIALOG_DATETEXT := 103
-STATIC DEFINE EMAILDISPLAYDIALOG_TO_FT := 104
-STATIC DEFINE EMAILDISPLAYDIALOG_TOMLE := 105
-STATIC DEFINE EMAILDISPLAYDIALOG_CC_FT := 106
-STATIC DEFINE EMAILDISPLAYDIALOG_CCMLE := 107
-STATIC DEFINE EMAILDISPLAYDIALOG_SUBJECT_FT := 108
-STATIC DEFINE EMAILDISPLAYDIALOG_SUBJECTTEXT := 109
-STATIC DEFINE EMAILDISPLAYDIALOG_ATTACH_FT := 110
-STATIC DEFINE EMAILDISPLAYDIALOG_ATTACHMENTS := 111
-STATIC DEFINE EMAILDISPLAYDIALOG_WEBBROWSER := 112
+﻿#region DEFINES
+STATIC DEFINE EMAILDISPLAYDIALOG_ATTACH_FT := 110 
+STATIC DEFINE EMAILDISPLAYDIALOG_ATTACHMENTS := 111 
+STATIC DEFINE EMAILDISPLAYDIALOG_CC_FT := 106 
+STATIC DEFINE EMAILDISPLAYDIALOG_CCMLE := 107 
+STATIC DEFINE EMAILDISPLAYDIALOG_DATE_FT := 102 
+STATIC DEFINE EMAILDISPLAYDIALOG_DATETEXT := 103 
+STATIC DEFINE EMAILDISPLAYDIALOG_FROM_FT := 100 
+STATIC DEFINE EMAILDISPLAYDIALOG_FROMTEXT := 101 
+STATIC DEFINE EMAILDISPLAYDIALOG_SUBJECT_FT := 108 
+STATIC DEFINE EMAILDISPLAYDIALOG_SUBJECTTEXT := 109 
+STATIC DEFINE EMAILDISPLAYDIALOG_TO_FT := 104 
+STATIC DEFINE EMAILDISPLAYDIALOG_TOMLE := 105 
+STATIC DEFINE EMAILDISPLAYDIALOG_WEBBROWSER := 112 
 #endregion
 
-CLASS EmailDisplayDialog INHERIT EMailDialog
+CLASS EmailDisplayDialog INHERIT EMailDialog 
+
 	PROTECT oDCFrom_FT AS FIXEDTEXT
 	PROTECT oDCFromText AS FIXEDTEXT
 	PROTECT oDCDate_FT AS FIXEDTEXT
@@ -26,96 +27,195 @@ CLASS EmailDisplayDialog INHERIT EMailDialog
 	PROTECT oDCSubject_FT AS FIXEDTEXT
 	PROTECT oDCSubjectText AS FIXEDTEXT
 	PROTECT oDCAttach_FT AS FIXEDTEXT
-	PROTECT oDCAttachments AS AttachmentListView
-	PROTECT oDCWebBrowser AS WebBrowser
+	PROTECT oDCAttachments AS ATTACHMENTLISTVIEW
+	PROTECT oDCWebBrowser AS WEBBROWSER
 
-	// {{%UC%}} User code starts here (DO NOT remove this line)  
+  //{{%UC%}} USER CODE STARTS HERE (do NOT remove this line)
    PROTECT oLVI AS ListViewItem
    EXPORT oServer AS EmailStore
    PROTECT oReplyMenu AS Menu
 
 
-CONSTRUCTOR(oWindow,iCtlID,oServer,uExtra)
-	LOCAL oFont AS Font
+METHOD AttachButton( ) 
+	LOCAL oDlg AS AttachmentsDialog
+	LOCAL oEmail AS CEmail
+	
+	oEmail := oEmailServer:GetEMail()
+	oDlg := AttachmentsDialog{SELF,oEmail}		// send the decoded email object
+	oDlg:Show()
+	
+	RETURN SELF
+	
 
-	SELF:PreInit(oWindow,iCtlID,oServer,uExtra)
+METHOD DeleteMail() 
+	
+	SELF:oCaller:DeleteSingle(SELF:oLVI)
+	SELF:EndWindow()
+	
+	RETURN SELF
 
-	SUPER(oWindow , ResourceID{"EmailDisplayDialog" , _GetInst()},iCtlID)
+METHOD Destroy( ) 
 
-	SELF:oDCFrom_FT := FIXEDTEXT{SELF , ResourceID{ EMAILDISPLAYDIALOG_FROM_FT  , _GetInst() } }
-	oFont := Font{  , 8 , "Microsoft Sans Serif" }
-	oFont:Bold := TRUE
-	SELF:oDCFrom_FT:Font( oFont )
-	SELF:oDCFrom_FT:HyperLabel := HyperLabel{#From_FT , "From:" , NULL_STRING , NULL_STRING}
+   ogOpenWindows:UnRegister(SELF)
+   
+   RETURN SUPER:Destroy()
 
-	SELF:oDCFromText := FIXEDTEXT{SELF , ResourceID{ EMAILDISPLAYDIALOG_FROMTEXT  , _GetInst() } }
-	SELF:oDCFromText:OwnerAlignment := OA_WIDTH
-	SELF:oDCFromText:HyperLabel := HyperLabel{#FromText , "Fixed Text" , NULL_STRING , NULL_STRING}
+CONSTRUCTOR(oWindow,iCtlID,oServer,uExtra)  
+LOCAL DIM aFonts[1] AS OBJECT
 
-	SELF:oDCDate_FT := FIXEDTEXT{SELF , ResourceID{ EMAILDISPLAYDIALOG_DATE_FT  , _GetInst() } }
-	oFont := Font{  , 8 , "Microsoft Sans Serif" }
-	oFont:Bold := TRUE
-	SELF:oDCDate_FT:Font( oFont )
-	SELF:oDCDate_FT:OwnerAlignment := OA_X
-	SELF:oDCDate_FT:HyperLabel := HyperLabel{#Date_FT , "Date:" , NULL_STRING , NULL_STRING}
+self:PreInit(oWindow,iCtlID,oServer,uExtra)
 
-	SELF:oDCDateText := FIXEDTEXT{SELF , ResourceID{ EMAILDISPLAYDIALOG_DATETEXT  , _GetInst() } }
-	SELF:oDCDateText:OwnerAlignment := OA_X
-	SELF:oDCDateText:HyperLabel := HyperLabel{#DateText , "Fixed Text" , NULL_STRING , NULL_STRING}
+SUPER(oWindow,ResourceID{"EmailDisplayDialog",_GetInst()},iCtlID)
 
-	SELF:oDCTo_FT := FIXEDTEXT{SELF , ResourceID{ EMAILDISPLAYDIALOG_TO_FT  , _GetInst() } }
-	oFont := Font{  , 8 , "Microsoft Sans Serif" }
-	oFont:Bold := TRUE
-	SELF:oDCTo_FT:Font( oFont )
-	SELF:oDCTo_FT:HyperLabel := HyperLabel{#To_FT , "To:" , NULL_STRING , NULL_STRING}
+aFonts[1] := Font{,8,"Microsoft Sans Serif"}
+aFonts[1]:Bold := TRUE
 
-	SELF:oDCToMLE := MULTILINEEDIT{SELF , ResourceID{ EMAILDISPLAYDIALOG_TOMLE  , _GetInst() } }
-	SELF:oDCToMLE:OwnerAlignment := OA_WIDTH
-	SELF:oDCToMLE:HyperLabel := HyperLabel{#ToMLE , NULL_STRING , NULL_STRING , NULL_STRING}
+oDCFrom_FT := FixedText{SELF,ResourceID{EMAILDISPLAYDIALOG_FROM_FT,_GetInst()}}
+oDCFrom_FT:HyperLabel := HyperLabel{#From_FT,"From:",NULL_STRING,NULL_STRING}
+oDCFrom_FT:Font(aFonts[1], FALSE)
 
-	SELF:oDCCC_FT := FIXEDTEXT{SELF , ResourceID{ EMAILDISPLAYDIALOG_CC_FT  , _GetInst() } }
-	oFont := Font{  , 8 , "Microsoft Sans Serif" }
-	oFont:Bold := TRUE
-	SELF:oDCCC_FT:Font( oFont )
-	SELF:oDCCC_FT:HyperLabel := HyperLabel{#CC_FT , "Cc:" , NULL_STRING , NULL_STRING}
+oDCFromText := FixedText{SELF,ResourceID{EMAILDISPLAYDIALOG_FROMTEXT,_GetInst()}}
+oDCFromText:HyperLabel := HyperLabel{#FromText,"Fixed Text",NULL_STRING,NULL_STRING}
+oDCFromText:OwnerAlignment := OA_WIDTH
 
-	SELF:oDCCcMLE := MULTILINEEDIT{SELF , ResourceID{ EMAILDISPLAYDIALOG_CCMLE  , _GetInst() } }
-	SELF:oDCCcMLE:OwnerAlignment := OA_WIDTH
-	SELF:oDCCcMLE:HyperLabel := HyperLabel{#CcMLE , NULL_STRING , NULL_STRING , NULL_STRING}
+oDCDate_FT := FixedText{SELF,ResourceID{EMAILDISPLAYDIALOG_DATE_FT,_GetInst()}}
+oDCDate_FT:HyperLabel := HyperLabel{#Date_FT,"Date:",NULL_STRING,NULL_STRING}
+oDCDate_FT:Font(aFonts[1], FALSE)
+oDCDate_FT:OwnerAlignment := OA_X
 
-	SELF:oDCSubject_FT := FIXEDTEXT{SELF , ResourceID{ EMAILDISPLAYDIALOG_SUBJECT_FT  , _GetInst() } }
-	oFont := Font{  , 8 , "Microsoft Sans Serif" }
-	oFont:Bold := TRUE
-	SELF:oDCSubject_FT:Font( oFont )
-	SELF:oDCSubject_FT:HyperLabel := HyperLabel{#Subject_FT , "Subject:" , NULL_STRING , NULL_STRING}
+oDCDateText := FixedText{SELF,ResourceID{EMAILDISPLAYDIALOG_DATETEXT,_GetInst()}}
+oDCDateText:HyperLabel := HyperLabel{#DateText,"Fixed Text",NULL_STRING,NULL_STRING}
+oDCDateText:OwnerAlignment := OA_X
 
-	SELF:oDCSubjectText := FIXEDTEXT{SELF , ResourceID{ EMAILDISPLAYDIALOG_SUBJECTTEXT  , _GetInst() } }
-	SELF:oDCSubjectText:OwnerAlignment := OA_WIDTH
-	SELF:oDCSubjectText:HyperLabel := HyperLabel{#SubjectText , "Fixed Text" , NULL_STRING , NULL_STRING}
+oDCTo_FT := FixedText{SELF,ResourceID{EMAILDISPLAYDIALOG_TO_FT,_GetInst()}}
+oDCTo_FT:HyperLabel := HyperLabel{#To_FT,"To:",NULL_STRING,NULL_STRING}
+oDCTo_FT:Font(aFonts[1], FALSE)
 
-	SELF:oDCAttach_FT := FIXEDTEXT{SELF , ResourceID{ EMAILDISPLAYDIALOG_ATTACH_FT  , _GetInst() } }
-	oFont := Font{  , 8 , "Microsoft Sans Serif" }
-	oFont:Bold := TRUE
-	SELF:oDCAttach_FT:Font( oFont )
-	SELF:oDCAttach_FT:HyperLabel := HyperLabel{#Attach_FT , "Attach:" , NULL_STRING , NULL_STRING}
+oDCToMLE := MultiLineEdit{SELF,ResourceID{EMAILDISPLAYDIALOG_TOMLE,_GetInst()}}
+oDCToMLE:HyperLabel := HyperLabel{#ToMLE,NULL_STRING,NULL_STRING,NULL_STRING}
+oDCToMLE:OwnerAlignment := OA_WIDTH
 
-	SELF:oDCAttachments := AttachmentListView{SELF , ResourceID{ EMAILDISPLAYDIALOG_ATTACHMENTS  , _GetInst() } }
-	SELF:oDCAttachments:ContextMenu := SaveAttachmentsContextMenu{}
-	SELF:oDCAttachments:HyperLabel := HyperLabel{#Attachments , NULL_STRING , NULL_STRING , NULL_STRING}
+oDCCC_FT := FixedText{SELF,ResourceID{EMAILDISPLAYDIALOG_CC_FT,_GetInst()}}
+oDCCC_FT:HyperLabel := HyperLabel{#CC_FT,"Cc:",NULL_STRING,NULL_STRING}
+oDCCC_FT:Font(aFonts[1], FALSE)
 
-	SELF:oDCWebBrowser := WebBrowser{SELF , ResourceID{ EMAILDISPLAYDIALOG_WEBBROWSER  , _GetInst() } }
-	SELF:oDCWebBrowser:HyperLabel := HyperLabel{#WebBrowser , NULL_STRING , NULL_STRING , NULL_STRING}
+oDCCcMLE := MultiLineEdit{SELF,ResourceID{EMAILDISPLAYDIALOG_CCMLE,_GetInst()}}
+oDCCcMLE:HyperLabel := HyperLabel{#CcMLE,NULL_STRING,NULL_STRING,NULL_STRING}
+oDCCcMLE:OwnerAlignment := OA_WIDTH
 
-	SELF:Caption := ""
-	SELF:HyperLabel := HyperLabel{#EmailDisplayDialog , NULL_STRING , NULL_STRING , NULL_STRING}
-	IF !IsNil(oServer)
-		SELF:Use(oServer)
-	ENDIF
+oDCSubject_FT := FixedText{SELF,ResourceID{EMAILDISPLAYDIALOG_SUBJECT_FT,_GetInst()}}
+oDCSubject_FT:HyperLabel := HyperLabel{#Subject_FT,"Subject:",NULL_STRING,NULL_STRING}
+oDCSubject_FT:Font(aFonts[1], FALSE)
+
+oDCSubjectText := FixedText{SELF,ResourceID{EMAILDISPLAYDIALOG_SUBJECTTEXT,_GetInst()}}
+oDCSubjectText:HyperLabel := HyperLabel{#SubjectText,"Fixed Text",NULL_STRING,NULL_STRING}
+oDCSubjectText:OwnerAlignment := OA_WIDTH
+
+oDCAttach_FT := FixedText{SELF,ResourceID{EMAILDISPLAYDIALOG_ATTACH_FT,_GetInst()}}
+oDCAttach_FT:HyperLabel := HyperLabel{#Attach_FT,"Attach:",NULL_STRING,NULL_STRING}
+oDCAttach_FT:Font(aFonts[1], FALSE)
+
+oDCAttachments := AttachmentListView{SELF,ResourceID{EMAILDISPLAYDIALOG_ATTACHMENTS,_GetInst()}}
+oDCAttachments:HyperLabel := HyperLabel{#Attachments,NULL_STRING,NULL_STRING,NULL_STRING}
+oDCAttachments:ContextMenu := SaveAttachmentsContextMenu{}
+
+oDCWebBrowser := WebBrowser{SELF,ResourceID{EMAILDISPLAYDIALOG_WEBBROWSER,_GetInst()}}
+oDCWebBrowser:HyperLabel := HyperLabel{#WebBrowser,NULL_STRING,NULL_STRING,NULL_STRING}
+
+SELF:Caption := ""
+SELF:HyperLabel := HyperLabel{#EmailDisplayDialog,NULL_STRING,NULL_STRING,NULL_STRING}
+
+if !IsNil(oServer)
+	SELF:Use(oServer)
+ENDIF
+
+self:PostInit(oWindow,iCtlID,oServer,uExtra)
+
+return self
 
 
-	SELF:PostInit(oWindow,iCtlID,oServer,uExtra)
+METHOD MailForward() 
 
-RETURN
+	SELF:EndWindow()
+	SELF:oCaller:MailForward()
+
+	RETURN SELF
+
+
+METHOD MailNewFrom() 
+
+	SELF:EndWindow()
+	SELF:oCaller:MailNewFrom()
+
+	RETURN SELF
+
+
+METHOD MailReply() 
+	
+	SELF:EndWindow()
+	SELF:oCaller:MailReply()
+
+	RETURN SELF
+
+METHOD MailReplyAll() 
+	
+	SELF:EndWindow()
+	SELF:oCaller:MailReplyAll()
+
+	RETURN SELF
+
+METHOD MenuCommand(oMenuCommandEvent) 
+   LOCAL dwItemID AS DWORD
+	
+	dwItemID := oMenuCommandEvent:ItemID
+	
+	DO CASE
+	CASE dwItemID = EmailDisplayToolBar_Reply_ID	
+		SELF:ReplyMenu()
+		
+	CASE dwItemID ==  IDM_ReplyMenu_Reply_Reply_to_sender_ID //	Reply only to sender
+		SELF:MailReply()
+		
+	CASE dwItemID ==  IDM_ReplyMenu_Reply_Reply_to_all_ID //	Reply to all addressees list in the email
+		SELF:MailReplyAll()	
+		
+	CASE dwItemID = EmailDisplayToolBar_Forward_ID	//	Forward/New to as yet unselected addressee
+	   IF SELF:oCaller:MailBox = SENTBOX
+	      SELF:MailNewFrom()
+	   ELSE
+		   SELF:MailForward()
+		ENDIF
+		
+	CASE dwItemID = EmailDisplayToolBar_Send_ID		//	Send email
+		SELF:SendMail()
+		
+	CASE dwItemID = EmailDisplayToolBar_Attach_ID	// add an attachment
+		SELF:AttachButton()	
+		
+	CASE dwItemID = EmailDisplayToolBar_Print_ID	//	Print out email
+		SELF:PrintMail()
+		
+	CASE dwItemID = EmailDisplayToolBar_Preview_ID	//	Preview email	
+		SELF:PreviewMail()
+		
+	CASE dwItemID = EmailDisplayToolBar_Delete_ID	//	Delete the email currently selected
+		SELF:DeleteMail()
+
+	CASE dwItemID = EmailDisplayToolBar_Address_ID	//	Goto address book
+		SELF:AddressBook()
+		
+	CASE dwItemID = EmailDisplayToolBar_Close_ID	//	Close display window
+		SELF:EndWindow()
+
+	CASE dwItemID = EmailDisplayToolBar_Back_Page_ID	//	Close display window
+		SELF:oDCWebBrowser:HTMLPageGoBack()
+		
+	CASE dwItemID = EmailDisplayToolBar_Fwd_Page_ID	//	Close display window
+		SELF:oDCWebBrowser:HTMLPageGoForward()
+		
+	ENDCASE
+
+	RETURN NIL
 
 
 METHOD PostInit(oWindow,iCtlID,oServer,uExtra) 
@@ -185,6 +285,40 @@ METHOD PostInit(oWindow,iCtlID,oServer,uExtra)
 	RETURN NIL
 
 
+METHOD PreviewMail() 
+	
+	SELF:oDCWebBrowser:PrintPreview()
+	
+   RETURN SELF
+
+METHOD PrintMail() 
+	AltD()
+	SELF:oDCWebBrowser:Print()
+   RETURN SELF
+
+METHOD ReplyMenu() 
+
+   IF oReplyMenu = Null_Object
+      oReplyMenu := ReplyMenu{SELF}
+   ENDIF
+
+   ((Toolbar) SELF:ToolBar):ShowButtonMenu(EmailDisplayToolBar_Reply_ID, SELF:oReplyMenu)
+   RETURN SELF
+
+METHOD SendMail() 
+   LOCAL oShell  AS EmailWindowMain
+   LOCAL dwRecno AS DWORD
+
+   oShell  := SELF:oCaller
+   dwRecno := SELF:oServer:Recno
+   
+   IF ogINetDial:Verifyconnection()
+	   oShell:SendEMails(dwRecno)
+		ogINetDial:HangUp()
+   ENDIF	 
+   
+	RETURN SELF
+
 METHOD SetToolbar() 
 
 	LOCAL oTB AS ToolBar
@@ -245,149 +379,6 @@ METHOD SetToolbar()
 	SELF:ToolBar := oTB
 
 	RETURN SELF
-
-
-METHOD MenuCommand(oMenuCommandEvent) 
-   LOCAL dwItemID AS DWORD
-	
-	dwItemID := oMenuCommandEvent:ItemID
-	
-	DO CASE
-	CASE dwItemID = EmailDisplayToolBar_Reply_ID	
-		SELF:ReplyMenu()
-		
-	CASE dwItemID ==  IDM_ReplyMenu_Reply_Reply_to_sender_ID //	Reply only to sender
-		SELF:MailReply()
-		
-	CASE dwItemID ==  IDM_ReplyMenu_Reply_Reply_to_all_ID //	Reply to all addressees list in the email
-		SELF:MailReplyAll()	
-		
-	CASE dwItemID = EmailDisplayToolBar_Forward_ID	//	Forward/New to as yet unselected addressee
-	   IF SELF:oCaller:MailBox = SENTBOX
-	      SELF:MailNewFrom()
-	   ELSE
-		   SELF:MailForward()
-		ENDIF
-		
-	CASE dwItemID = EmailDisplayToolBar_Send_ID		//	Send email
-		SELF:SendMail()
-		
-	CASE dwItemID = EmailDisplayToolBar_Attach_ID	// add an attachment
-		SELF:AttachButton()	
-		
-	CASE dwItemID = EmailDisplayToolBar_Print_ID	//	Print out email
-		SELF:PrintMail()
-		
-	CASE dwItemID = EmailDisplayToolBar_Preview_ID	//	Preview email	
-		SELF:PreviewMail()
-		
-	CASE dwItemID = EmailDisplayToolBar_Delete_ID	//	Delete the email currently selected
-		SELF:DeleteMail()
-
-	CASE dwItemID = EmailDisplayToolBar_Address_ID	//	Goto address book
-		SELF:AddressBook()
-		
-	CASE dwItemID = EmailDisplayToolBar_Close_ID	//	Close display window
-		SELF:EndWindow()
-
-	CASE dwItemID = EmailDisplayToolBar_Back_Page_ID	//	Close display window
-		SELF:oDCWebBrowser:HTMLPageGoBack()
-		
-	CASE dwItemID = EmailDisplayToolBar_Fwd_Page_ID	//	Close display window
-		SELF:oDCWebBrowser:HTMLPageGoForward()
-		
-	ENDCASE
-
-	RETURN NIL
-
-
-METHOD DeleteMail() 
-	
-	SELF:oCaller:DeleteSingle(SELF:oLVI)
-	SELF:EndWindow()
-	
-	RETURN SELF
-
-METHOD MailForward() 
-
-	SELF:EndWindow()
-	SELF:oCaller:MailForward()
-
-	RETURN SELF
-
-
-METHOD MailReplyAll() 
-	
-	SELF:EndWindow()
-	SELF:oCaller:MailReplyAll()
-
-	RETURN SELF
-
-METHOD MailReply() 
-	
-	SELF:EndWindow()
-	SELF:oCaller:MailReply()
-
-	RETURN SELF
-
-METHOD SendMail() 
-   LOCAL oShell  AS EmailWindowMain
-   LOCAL dwRecno AS DWORD
-
-   oShell  := SELF:oCaller
-   dwRecno := SELF:oServer:Recno
-   
-   IF ogINetDial:Verifyconnection()
-	   oShell:SendEMails(dwRecno)
-		ogINetDial:HangUp()
-   ENDIF	 
-   
-	RETURN SELF
-
-METHOD PrintMail() 
-	AltD()
-	SELF:oDCWebBrowser:Print()
-   RETURN SELF
-
-METHOD PreviewMail() 
-	
-	SELF:oDCWebBrowser:PrintPreview()
-	
-   RETURN SELF
-
-METHOD AttachButton( ) 
-	LOCAL oDlg AS AttachmentsDialog
-	LOCAL oEmail AS CEmail
-	
-	oEmail := oEmailServer:GetEMail()
-	oDlg := AttachmentsDialog{SELF,oEmail}		// send the decoded email object
-	oDlg:Show()
-	
-	RETURN SELF
-	
-
-METHOD ReplyMenu() 
-
-   IF oReplyMenu = Null_Object
-      oReplyMenu := ReplyMenu{SELF}
-   ENDIF
-
-   ((Toolbar) SELF:ToolBar):ShowButtonMenu(EmailDisplayToolBar_Reply_ID, SELF:oReplyMenu)
-   RETURN SELF
-
-METHOD MailNewFrom() 
-
-	SELF:EndWindow()
-	SELF:oCaller:MailNewFrom()
-
-	RETURN SELF
-
-
-METHOD Destroy( ) 
-
-   ogOpenWindows:UnRegister(SELF)
-   
-   RETURN SUPER:Destroy()
 
 
 END CLASS

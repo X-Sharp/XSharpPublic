@@ -2,4 +2,5 @@ CLASS IMAGE INHERIT Bitmap
 CONSTRUCTOR() 
    SUPER(ResourceID{"IMAGE", _GetInst()})
 
+
 END CLASS

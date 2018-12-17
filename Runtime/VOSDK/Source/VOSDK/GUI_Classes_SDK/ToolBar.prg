@@ -1,4 +1,4 @@
-PARTIAL CLASS __VOToolBarChild  INHERIT VObject
+﻿PARTIAL CLASS __VOToolBarChild  INHERIT VObject
 	//RvdH 0702056 Added to replace Child Toolbar Subarray items
 	EXPORT NameSym 				AS SYMBOL
 	EXPORT Handle					AS PTR
@@ -465,9 +465,9 @@ METHOD AddTipText(nButtonID, nMenuItemID, cText)
 	LOCAL oTipText AS __VOToolBarTipText
 
 	
-	EnforceNumeric(nButtonID)
-	EnforceNumeric(nMenuItemID)
-	EnforceType(cText,STRING)
+	EnforceNumeric(@nButtonID)
+	EnforceNumeric(@nMenuItemID)
+	EnforceType(@cText,STRING)
 	IF cText == TB_NOSTRING
 		cText := NULL_STRING
 	ENDIF

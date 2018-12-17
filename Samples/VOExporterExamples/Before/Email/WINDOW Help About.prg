@@ -1,45 +1,38 @@
 #region DEFINES
-STATIC DEFINE HELPABOUT_PUSHBUTTON1 := 101 
-STATIC DEFINE HELPABOUT_FIXEDBITMAP1 := 102 
-STATIC DEFINE HELPABOUT_ABOUTTEXT := 100 
+STATIC DEFINE HELPABOUT_ABOUTTEXT := 100
+STATIC DEFINE HELPABOUT_PUSHBUTTON1 := 101
+STATIC DEFINE HELPABOUT_FIXEDBITMAP1 := 102
 #endregion
 
-class HelpAbout inherit DIALOGWINDOW 
+PARTIAL CLASS HelpAbout INHERIT DIALOGWINDOW
+	PROTECT oDCAboutText AS FIXEDTEXT
+	PROTECT oCCPushButton1 AS PUSHBUTTON
+	PROTECT oDCFixedBitmap1 AS FIXEDBITMAP
 
-	protect oDCAboutText as FIXEDTEXT
-	protect oCCPushButton1 as PUSHBUTTON
-	protect oDCFixedBitmap1 as FIXEDBITMAP
+	// {{%UC%}} User code starts here (DO NOT remove this line)  
 
-  //{{%UC%}} USER CODE STARTS HERE (do NOT remove this line)
+CONSTRUCTOR(oParent,uExtra)
 
-CONSTRUCTOR(oParent,uExtra)  
+	SELF:PreInit(oParent,uExtra)
 
-self:PreInit(oParent,uExtra)
+	SUPER(oParent , ResourceID{"HelpAbout" , _GetInst()} , TRUE)
 
-SUPER(oParent,ResourceID{"HelpAbout",_GetInst()},TRUE)
+	SELF:oDCAboutText := FIXEDTEXT{SELF , ResourceID{ HELPABOUT_ABOUTTEXT  , _GetInst() } }
+	SELF:oDCAboutText:HyperLabel := HyperLabel{#AboutText , " CA-Visual Objects Standard Application" , NULL_STRING , NULL_STRING}
 
-oDCAboutText := FixedText{self,ResourceID{HELPABOUT_ABOUTTEXT,_GetInst()}}
-oDCAboutText:HyperLabel := HyperLabel{#AboutText," CA-Visual Objects Standard Application",NULL_STRING,NULL_STRING}
+	SELF:oCCPushButton1 := PUSHBUTTON{SELF , ResourceID{ HELPABOUT_PUSHBUTTON1  , _GetInst() } }
+	SELF:oCCPushButton1:HyperLabel := HyperLabel{#PushButton1 , "OK" , NULL_STRING , NULL_STRING}
 
-oCCPushButton1 := PushButton{self,ResourceID{HELPABOUT_PUSHBUTTON1,_GetInst()}}
-oCCPushButton1:HyperLabel := HyperLabel{#PushButton1,"OK",NULL_STRING,NULL_STRING}
+	SELF:oDCFixedBitmap1 := FIXEDBITMAP{SELF , ResourceID{ HELPABOUT_FIXEDBITMAP1  , _GetInst() } }
+	SELF:oDCFixedBitmap1:HyperLabel := HyperLabel{#FixedBitmap1 , "POWVOBMP" , NULL_STRING , NULL_STRING}
 
-oDCFixedBitmap1 := FIXEDBITMAP{self,ResourceID{HELPABOUT_FIXEDBITMAP1,_GetInst()}}
-oDCFixedBitmap1:HyperLabel := HyperLabel{#FixedBitmap1,"POWVOBMP",NULL_STRING,NULL_STRING}
+	SELF:Caption := "About Standard Application"
+	SELF:HyperLabel := HyperLabel{#HelpAbout , "About Standard Application" , NULL_STRING , NULL_STRING}
 
-self:Caption := "About Standard Application"
-self:HyperLabel := HyperLabel{#HelpAbout,"About Standard Application",NULL_STRING,NULL_STRING}
+	SELF:PostInit(oParent,uExtra)
 
-self:PostInit(oParent,uExtra)
+RETURN
 
-return self
-
-
-method PushButton1() 
-
-	self:EndDialog()
-	
-   RETURN SELF
 
 METHOD PostInit(oParent,uExtra) 
 	LOCAL sVer AS STRING
@@ -96,5 +89,11 @@ METHOD PostInit(oParent,uExtra)
 
 	RETURN NIL
 
+
+method PushButton1() 
+
+	self:EndDialog()
+	
+   RETURN SELF
 
 END CLASS

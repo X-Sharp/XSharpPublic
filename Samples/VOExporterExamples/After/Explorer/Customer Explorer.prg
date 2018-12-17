@@ -3,23 +3,25 @@ class CustomerExplorer inherit ExplorerWindow
 	protect oOrdersServer	as OrdersServer
 
 
-method InitData() 
+method BuildListViewColumns() 
+	local oListView			as ListView
+	local oListViewColumn	as ListViewColumn
+	local dwCount			as dword
+	
+	// store list view locally for faster access
+	oListView := self:ListView
+	
+	// for each field in the orders server, create a
+	// list view column and add it to the list view
+	for dwCount := 1 to oOrdersServer:FCount
+		oListViewColumn			:= ListViewColumn{}
+		oListViewColumn:NameSym	:= oOrdersServer:FieldSym(dwCount)
+		oListViewColumn:Caption	:= oOrdersServer:FieldName(dwCount)
+		oListViewColumn:Width	:= oOrdersServer:FieldSpec(dwCount):Length
+		oListView:AddColumn(oListViewColumn)
+	next dwCount
 
-	// create, initialize, and set the relation on the data servers
-	oCustomerServer	:= CustomerServer{}
-	oOrdersServer	:= OrdersServer{}
-	oCustomerServer:SetSelectiveRelation(oOrdersServer, #CustNum)
-	
-	// build list view columns and tree view items; it is unnecessary
-	// to build list view items until a tree view item has been selected
-	self:BuildListViewColumns()
-	self:BuildTreeViewItems()
-	
 	return nil
-
-
-method ViewSmallIcon() 
-	return self:ListView:ViewAs(#SmallIconView)
 
 
 method BuildListViewItems(uValue) 
@@ -98,6 +100,46 @@ method BuildTreeViewItems()
 	return nil
 
 
+METHOD Close(oCloseEvent) 
+	
+	// clean up the open data servers
+	IF oCustomerServer != NULL_OBJECT
+		oCustomerServer:Close()
+		oCustomerServer := NULL_OBJECT
+	ENDIF
+	IF oOrdersServer != NULL_OBJECT
+		oOrdersServer:Close()
+		oOrdersServer := NULL_OBJECT
+	ENDIF
+
+	// force garbage collection
+	CollectForced()
+
+	RETURN SUPER:Close(oCloseEvent)
+
+
+method CloseExplorer() 
+	
+	return self:EndWindow()
+
+
+method DeleteListViewItems() 
+	return self:ListView:DeleteAll()
+
+
+method EditOrder() 
+	local cTitle	as string
+	local cMessage	as string
+	
+	cTitle		:= "Option Not Available"
+	cMessage	:= "This option has not yet been implemented"
+
+	TextBox{self:Owner, cTitle, cMessage}:Show()
+	
+	return nil
+
+
+
 CONSTRUCTOR(oOwner) 
 	local oDimension	as Dimension
 	local oImageList	as ImageList
@@ -145,55 +187,18 @@ CONSTRUCTOR(oOwner)
 	return self
 
 
-method ViewIcon() 
-	return self:ListView:ViewAs(#IconView)
+method InitData() 
 
-
-method ViewList() 
-	return self:ListView:ViewAs(#ListView)
-
-
-method ViewReport() 
-	return self:ListView:ViewAs(#ReportView)
-
-
-method BuildListViewColumns() 
-	local oListView			as ListView
-	local oListViewColumn	as ListViewColumn
-	local dwCount			as dword
+	// create, initialize, and set the relation on the data servers
+	oCustomerServer	:= CustomerServer{}
+	oOrdersServer	:= OrdersServer{}
+	oCustomerServer:SetSelectiveRelation(oOrdersServer, #CustNum)
 	
-	// store list view locally for faster access
-	oListView := self:ListView
+	// build list view columns and tree view items; it is unnecessary
+	// to build list view items until a tree view item has been selected
+	self:BuildListViewColumns()
+	self:BuildTreeViewItems()
 	
-	// for each field in the orders server, create a
-	// list view column and add it to the list view
-	for dwCount := 1 to oOrdersServer:FCount
-		oListViewColumn			:= ListViewColumn{}
-		oListViewColumn:NameSym	:= oOrdersServer:FieldSym(dwCount)
-		oListViewColumn:Caption	:= oOrdersServer:FieldName(dwCount)
-		oListViewColumn:Width	:= oOrdersServer:FieldSpec(dwCount):Length
-		oListView:AddColumn(oListViewColumn)
-	next dwCount
-
-	return nil
-
-
-method DeleteListViewItems() 
-	return self:ListView:DeleteAll()
-
-
-method TreeViewSelectionChanged(oTreeViewSelectionEvent) 
-	local oTreeViewItem	as TreeViewItem
-	
-	super:TreeViewSelectionChanged(oTreeViewSelectionEvent)
-	
-	oTreeViewItem := oTreeViewSelectionEvent:NewTreeViewItem
-	if oTreeViewItem != NULL_OBJECT .and. InStr("CUSTOMERS_", Upper(Symbol2String(oTreeViewItem:NameSym)))
-		// left-click occurred on a customer tree view item
-		self:DeleteListViewItems()
-		self:BuildListViewItems(oTreeViewItem:Value)
-	endif
-
 	return nil
 
 
@@ -243,48 +248,42 @@ method ListViewColumnClick(oListViewClickEvent)
 	return nil
 
 
-METHOD Close(oCloseEvent) 
-	
-	// clean up the open data servers
-	IF oCustomerServer != NULL_OBJECT
-		oCustomerServer:Close()
-		oCustomerServer := NULL_OBJECT
-	ENDIF
-	IF oOrdersServer != NULL_OBJECT
-		oOrdersServer:Close()
-		oOrdersServer := NULL_OBJECT
-	ENDIF
-
-	// force garbage collection
-	CollectForced()
-
-	RETURN SUPER:Close(oCloseEvent)
-
-
-method EditOrder() 
-	local cTitle	as string
-	local cMessage	as string
-	
-	cTitle		:= "Option Not Available"
-	cMessage	:= "This option has not yet been implemented"
-
-	TextBox{self:Owner, cTitle, cMessage}:Show()
-	
-	return nil
-
-
-
-method CloseExplorer() 
-	
-	return self:EndWindow()
-
-
 method Refresh() 
 	// clear and rebuild the list view items
 	self:DeleteListViewItems()
 	self:BuildListViewItems(oCustomerServer:LastName)
 	RETURN SELF
 
+
+method TreeViewSelectionChanged(oTreeViewSelectionEvent) 
+	local oTreeViewItem	as TreeViewItem
+	
+	super:TreeViewSelectionChanged(oTreeViewSelectionEvent)
+	
+	oTreeViewItem := oTreeViewSelectionEvent:NewTreeViewItem
+	if oTreeViewItem != NULL_OBJECT .and. InStr("CUSTOMERS_", Upper(Symbol2String(oTreeViewItem:NameSym)))
+		// left-click occurred on a customer tree view item
+		self:DeleteListViewItems()
+		self:BuildListViewItems(oTreeViewItem:Value)
+	endif
+
+	return nil
+
+
+method ViewIcon() 
+	return self:ListView:ViewAs(#IconView)
+
+
+method ViewList() 
+	return self:ListView:ViewAs(#ListView)
+
+
+method ViewReport() 
+	return self:ListView:ViewAs(#ReportView)
+
+
+method ViewSmallIcon() 
+	return self:ListView:ViewAs(#SmallIconView)
 
 
 END CLASS
@@ -297,22 +296,6 @@ method SortByCustNum(oListViewItem1, oListViewItem2)
 	
     uValue1 := oListViewItem1:GetValue(#CUSTNUM)
     uValue2 := oListViewItem2:GetValue(#CUSTNUM)
-
-    if uValue1 > uValue2
-    	return -1
-    elseif uValue1 < uValue2
-    	return 1
-    endif
-
-	return 0
-
-
-method SortByOrderNum(oListViewItem1, oListViewItem2) 
-	local uValue1	as usual
-	local uValue2	as usual
-	
-    uValue1 := oListViewItem1:GetValue(#ORDERNUM)
-    uValue2 := oListViewItem2:GetValue(#ORDERNUM)
 
     if uValue1 > uValue2
     	return -1
@@ -339,76 +322,12 @@ method SortByOrderDate(oListViewItem1, oListViewItem2)
 	return 0
 
 
-method SortByShippingDate(oListViewItem1, oListViewItem2) 
+method SortByOrderNum(oListViewItem1, oListViewItem2) 
 	local uValue1	as usual
 	local uValue2	as usual
 	
-    uValue1 := oListViewItem1:GetValue(#SHIP_DATE)
-    uValue2 := oListViewItem2:GetValue(#SHIP_DATE)
-
-    if uValue1 > uValue2
-    	return -1
-    elseif uValue1 < uValue2
-    	return 1
-    endif
-
-	return 0
-
-
-method SortByShippingAddress(oListViewItem1, oListViewItem2) 
-	local uValue1	as usual
-	local uValue2	as usual
-	
-    uValue1 := oListViewItem1:GetValue(#SHIP_ADDRS)
-    uValue2 := oListViewItem2:GetValue(#SHIP_ADDRS)
-
-    if uValue1 > uValue2
-    	return -1
-    elseif uValue1 < uValue2
-    	return 1
-    endif
-
-	return 0
-
-
-method SortByShippingCity(oListViewItem1, oListViewItem2) 
-	local uValue1	as usual
-	local uValue2	as usual
-	
-    uValue1 := oListViewItem1:GetValue(#SHIP_CITY)
-    uValue2 := oListViewItem2:GetValue(#SHIP_CITY)
-
-    if uValue1 > uValue2
-    	return -1
-    elseif uValue1 < uValue2
-    	return 1
-    endif
-
-	return 0
-
-
-method SortByShippingState(oListViewItem1, oListViewItem2) 
-	local uValue1	as usual
-	local uValue2	as usual
-	
-    uValue1 := oListViewItem1:GetValue(#SHIP_STATE)
-    uValue2 := oListViewItem2:GetValue(#SHIP_STATE)
-
-    if uValue1 > uValue2
-    	return -1
-    elseif uValue1 < uValue2
-    	return 1
-    endif
-
-	return 0
-
-
-method SortByShippingZipCode(oListViewItem1, oListViewItem2) 
-	local uValue1	as usual
-	local uValue2	as usual
-	
-    uValue1 := oListViewItem1:GetValue(#SHIP_ZIP)
-    uValue2 := oListViewItem2:GetValue(#SHIP_ZIP)
+    uValue1 := oListViewItem1:GetValue(#ORDERNUM)
+    uValue2 := oListViewItem2:GetValue(#ORDERNUM)
 
     if uValue1 > uValue2
     	return -1
@@ -451,6 +370,89 @@ method SortBySellerID(oListViewItem1, oListViewItem2)
 	return 0
 
 
+method SortByShippingAddress(oListViewItem1, oListViewItem2) 
+	local uValue1	as usual
+	local uValue2	as usual
+	
+    uValue1 := oListViewItem1:GetValue(#SHIP_ADDRS)
+    uValue2 := oListViewItem2:GetValue(#SHIP_ADDRS)
+
+    if uValue1 > uValue2
+    	return -1
+    elseif uValue1 < uValue2
+    	return 1
+    endif
+
+	return 0
+
+
+method SortByShippingCity(oListViewItem1, oListViewItem2) 
+	local uValue1	as usual
+	local uValue2	as usual
+	
+    uValue1 := oListViewItem1:GetValue(#SHIP_CITY)
+    uValue2 := oListViewItem2:GetValue(#SHIP_CITY)
+
+    if uValue1 > uValue2
+    	return -1
+    elseif uValue1 < uValue2
+    	return 1
+    endif
+
+	return 0
+
+
+method SortByShippingDate(oListViewItem1, oListViewItem2) 
+	local uValue1	as usual
+	local uValue2	as usual
+	
+    uValue1 := oListViewItem1:GetValue(#SHIP_DATE)
+    uValue2 := oListViewItem2:GetValue(#SHIP_DATE)
+
+    if uValue1 > uValue2
+    	return -1
+    elseif uValue1 < uValue2
+    	return 1
+    endif
+
+	return 0
+
+
+method SortByShippingState(oListViewItem1, oListViewItem2) 
+	local uValue1	as usual
+	local uValue2	as usual
+	
+    uValue1 := oListViewItem1:GetValue(#SHIP_STATE)
+    uValue2 := oListViewItem2:GetValue(#SHIP_STATE)
+
+    if uValue1 > uValue2
+    	return -1
+    elseif uValue1 < uValue2
+    	return 1
+    endif
+
+	return 0
+
+
+method SortByShippingZipCode(oListViewItem1, oListViewItem2) 
+	local uValue1	as usual
+	local uValue2	as usual
+	
+    uValue1 := oListViewItem1:GetValue(#SHIP_ZIP)
+    uValue2 := oListViewItem2:GetValue(#SHIP_ZIP)
+
+    if uValue1 > uValue2
+    	return -1
+    elseif uValue1 < uValue2
+    	return 1
+    endif
+
+	return 0
+
+
 END CLASS
 class CustomerTreeView inherit TreeView
+	
+
+
 END CLASS

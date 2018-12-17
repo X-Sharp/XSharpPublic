@@ -141,13 +141,13 @@ FUNCTION AX_SetServerType( lUseRemoteServer AS LOGIC, lUseInternetServer AS LOGI
 
     usServerTypes := 0
     IF( lUseRemoteServer )
-      usServerTypes := _OR( usServerTypes, ACE.ADS_REMOTE_SERVER )
+      usServerTypes := (WORD) _OR( usServerTypes, ACE.ADS_REMOTE_SERVER )
     ENDIF
     IF( lUseInternetServer )
-      usServerTypes := _OR( usServerTypes, ACE.ADS_AIS_SERVER )
+      usServerTypes := (WORD) _OR( usServerTypes, ACE.ADS_AIS_SERVER )
     ENDIF
     IF( lUseLocalServer )
-      usServerTypes := _OR( usServerTypes, ACE.ADS_LOCAL_SERVER )
+      usServerTypes := (WORD) _OR( usServerTypes, ACE.ADS_LOCAL_SERVER )
     ENDIF
 
     ulRetCode := ACE.AdsSetServerType( usServerTypes )

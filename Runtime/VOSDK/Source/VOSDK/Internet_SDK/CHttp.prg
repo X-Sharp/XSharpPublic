@@ -1,4 +1,4 @@
-PARTIAL CLASS CHttp  INHERIT CSession
+﻿PARTIAL CLASS CHttp  INHERIT CSession
     PROTECT hRequest          	AS PTR
     PROTECT cResponse         	AS STRING
     PROTECT cResponseHeader   	AS STRING
@@ -532,7 +532,7 @@ STATIC FUNCTION __GetFName	(c AS STRING, lDir AS LOGIC)	AS STRING STRICT
 STATIC FUNCTION __GetVOTime	(c AS STRING)		AS STRING STRICT
 	LOCAL n		AS INT
 
-	UpperA(c)
+	UpperA(@c)
 	IF At2("PM", c) > 0
 		n := Val(SubStr(c, 1, 2))
 		n += 12

@@ -2,12 +2,12 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup>
-    <ProjectGuid>BF102398-AABB-4141-BE44-2249006869DE</ProjectGuid>
+    <ProjectGuid>{bf102398-aabb-4141-be44-2249006869de}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Explorer</RootNamespace>
     <AssemblyName>Explorer</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <Name>Explorer</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
@@ -47,6 +47,7 @@
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -59,15 +60,7 @@
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>
     <IncludePaths />
-    <SignAssembly>false</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
-    <CommandLineOption />
-    <Prefer32Bit>True</Prefer32Bit>
-    <DebuggerCommand>$(TargetPath)</DebuggerCommand>
-    <DebuggerCommandArguments />
-    <DebuggerWorkingDirectory />
-    <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -106,9 +99,9 @@
     <Reference Include="VulcanVOWin32APILibrary">
       <SpecificVersion>false</SpecificVersion>
     </Reference>
-    <Reference Include="SDK_Defines.dll">
-      <Name>SDK_Defines.dll</Name>
-      <AssemblyName>SDK_Defines.dll.dll</AssemblyName>
+    <Reference Include="SDK_DEFINES.dll">
+      <Name>SDK_DEFINES.dll</Name>
+      <AssemblyName>SDK_DEFINES.dll.dll</AssemblyName>
       <SpecificVersion>false</SpecificVersion>
       <Private>True</Private>
       <HintPath>..\SDK_DEFINES.dll</HintPath>
@@ -118,6 +111,14 @@
     <Compile Include="Start.prg">
       <SubType>Code</SubType>
     </Compile>
+    <None Include="Properties\cavowed.inf" />
+    <None Include="Properties\saswed.inf" />
+    <None Include="Properties\GSGWED.INF" />
+    <None Include="Properties\cavowed.tpl" />
+    <None Include="Properties\cavoded.tpl" />
+    <None Include="Properties\cavofed.tpl" />
+    <None Include="Resources\ONE.ICO" />
+    <None Include="Resources\TWO.ICO" />
     <Compile Include="Explorer Shell.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -182,7 +183,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Properties" />
+    <Folder Include="Properties\" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

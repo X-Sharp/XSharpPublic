@@ -46,6 +46,19 @@ class EmailPropertiesDialog inherit DIALOGWINDOW
 	PROTECT oEmail AS CEmail
 	PROTECT oServer AS EmailStore
 
+METHOD Close(oEvent) 
+	SUPER:Close(oEvent)
+	
+	SELF:oServer:close()
+
+	RETURN NIL
+
+
+METHOD CloseButton( ) 
+	
+	SELF:EndDialog()
+   RETURN SELF
+
 CONSTRUCTOR(oParent,uExtra)  
 local dim aFonts[1] AS OBJECT
 
@@ -149,20 +162,6 @@ METHOD SourceButton()
 	MessageSourceDialog{SELF, oServer:FIELDGET(#E_HEADER)}:Show(SHOWCENTERED)
 	
 	RETURN SELF
-
-
-METHOD CloseButton( ) 
-	
-	SELF:EndDialog()
-   RETURN SELF
-
-METHOD Close(oEvent) 
-	SUPER:Close(oEvent)
-	
-	SELF:oServer:close()
-
-	RETURN NIL
-
 
 
 END CLASS

@@ -9,13 +9,13 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharp.MacroCompiler</RootNamespace>
-    <AssemblyName>XSharp.MacroCompiler.Fast</AssemblyName>
+    <AssemblyName>XSharp.MacroCompiler</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <OutputPath>$(Solutiondir)Binaries\$(Configuration)\</OutputPath>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    </PropertyGroup>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>

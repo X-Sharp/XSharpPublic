@@ -354,7 +354,7 @@ Components: main\gac;  Source: "{#BinRtFolder}XSharp.RT.dll";                   
 Components: main\gac;  Source: "{#BinRtFolder}XSharp.XPP.dll";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.XPP{#XSharpVersion}" 
 Components: main\gac;  Source: "{#BinDllFolder}XSharp.CodeAnalysis.dll";           DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.CodeAnalysis{#XSharpVersion}" 
 Components: main\gac;  Source: "{#BinDllFolder}XSharp.MacroCompiler.dll";          DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.MacroCompiler{#XSharpVersion}" 
-Components: main\gac;  Source: "{#BinDllFolder}XSharp.MacroCompiler.Fast.dll";     DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.MacroCompiler.Fast{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinDllFolder}XSharp.MacroCompiler.Full.dll";     DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.MacroCompiler.Full{#XSharpVersion}" 
 Components: main\gac;  Source: "{#BinDllFolder}XSharp.Scripting.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.Scripting{#XSharpVersion}" 
 
 Components: main\gac;  Source: "{#BinRtFolder}VOWin32APILibrary.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOWin32APILibrary.dll{#XSharpVersion}" 

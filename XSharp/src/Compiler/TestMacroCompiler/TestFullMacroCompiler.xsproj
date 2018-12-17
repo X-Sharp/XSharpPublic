@@ -19,7 +19,7 @@
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <TargetFrameworkProfile />
-	<OutputPath>$(Binariesdir)\Exes</OutputPath>
+    <OutputPath>$(Binariesdir)\Exes</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -102,13 +102,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\XSFullMacroCompiler\XSFullMacroCompiler.xsproj">
-      <Name>XSFullMacroCompiler</Name>
-      <Project>{5dc40adc-f250-4611-ad89-b67b150bbc8e}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

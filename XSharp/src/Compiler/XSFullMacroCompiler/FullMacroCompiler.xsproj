@@ -8,9 +8,9 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharp.MacroCompiler</RootNamespace>
-    <AssemblyName>XSharp.MacroCompiler</AssemblyName>
+    <AssemblyName>XSharp.MacroCompiler.Full</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <Name>XSFullMacroCompiler</Name>
+    <Name>FullMacroCompiler</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
@@ -18,8 +18,10 @@
     <TargetFrameworkProfile />
     <IncludePaths>$(Solutiondir)src\Common</IncludePaths>
     <NoStandardDefs>true</NoStandardDefs>
-	<OutputPath>$(Binariesdir)</OutputPath>
-	</PropertyGroup>
+    <OutputPath>$(Binariesdir)</OutputPath>
+    <StartupObject />
+    <ApplicationIcon />
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>

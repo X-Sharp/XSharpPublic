@@ -2831,9 +2831,11 @@ namespace XSharpLanguage
                 }
                 else
                 {
+                    bool inArray = false;
                     if (currentToken.EndsWith("[]"))
                     {
                         currentToken = currentToken.Substring(0, currentToken.Length - 2);
+                        inArray = true;
                     }
                     // First token, so it could be a parameter or a local var
                     if (startOfExpression)
@@ -2856,6 +2858,19 @@ namespace XSharpLanguage
                     if (foundElement == null)
                     {
                         cType = SearchType(file, currentToken, out foundElement, currentNS);
+                    }
+                    // We have it
+                    if ( foundElement != null )
+                    {
+                        // and we are in an Array, so we need the "other" type
+                        if ( inArray && foundElement.IsGeneric )
+                        {
+
+                        }
+                        else if ( foundElement.IsArray )
+                        {
+                            cType = new CompletionType("System.Array", file, "" );
+                        }
                     }
                 }
                 //
@@ -3749,6 +3764,9 @@ namespace XSharpLanguage
     {
         object foundElement = null;
 
+        bool isArray;
+        bool isGeneric;
+
         public CompletionElement(XElement XSharpElement)
         {
             this.foundElement = XSharpElement;
@@ -3835,18 +3853,35 @@ namespace XSharpLanguage
         {
             get
             {
+                this.isArray = false;
                 CompletionType cType = new CompletionType();
                 if (this.XSharpElement != null)
                 {
                     if ((this.XSharpElement is XTypeMember) && (this.XSharpElement.Kind.HasReturnType()))
                     {
                         XTypeMember xt = (XTypeMember)this.XSharpElement;
-                        cType = new CompletionType(xt.TypeName, xt.File, xt.FileUsings);
+                        string searchTypeName = xt.TypeName;
+                        if (searchTypeName.EndsWith("[]"))
+                        {
+                            searchTypeName = searchTypeName.Substring(0, searchTypeName.Length - 2);
+                            this.isArray = true;
+                        }
+                        else if (searchTypeName.EndsWith(">"))
+                            this.isGeneric = true;
+                        cType = new CompletionType(searchTypeName, xt.File, xt.FileUsings);
                     }
                     else if (this.XSharpElement is XVariable)
                     {
                         XVariable xv = (XVariable)this.XSharpElement;
-                        cType = new CompletionType(xv.TypeName, xv.File, xv.FileUsings);
+                        string searchTypeName = xv.TypeName;
+                        if (searchTypeName.EndsWith("[]"))
+                        {
+                            searchTypeName = searchTypeName.Substring(0, searchTypeName.Length - 2);
+                            this.isArray = true;
+                        }
+                        else if (searchTypeName.EndsWith(">"))
+                            this.isGeneric = true;
+                        cType = new CompletionType(searchTypeName, xv.File, xv.FileUsings);
                     }
                 }
                 else
@@ -3868,6 +3903,22 @@ namespace XSharpLanguage
             }
         }
 
+
+        public bool IsArray
+        {
+            get
+            {
+                return this.isArray;
+            }
+        }
+
+        public bool IsGeneric
+        {
+            get
+            {
+                return this.isGeneric;
+            }
+        }
     }
 
     // Build a list of all Keywords

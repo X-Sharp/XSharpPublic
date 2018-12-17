@@ -3,13 +3,13 @@
 #define BUILDNUMBER_H
 #define PRODUCT_NAME     "XSharp"
 
-#define VERSION_NUMBER         2,0,0,6
-#define VERSION_NUMBER_STR     "2.0.0.6"
+#define VERSION_NUMBER         2,0,0,8
+#define VERSION_NUMBER_STR     "2.0.0.8"
 // This is the file version number, which is ignored by .NET but used by Windows installer to determine
 // whether one file is newer than another.
 // This typically would change if we're generating a patch, otherwise it should be the same as VERSION_NUMBER
-#define FILEVERSION_NUMBER         2,0,0,6
-#define FILEVERSION_NUMBER_STR     "2.0.0.6"
+#define FILEVERSION_NUMBER         2,0,0,8
+#define FILEVERSION_NUMBER_STR     "2.0.0.8"
 // This is the file version number, which is ignored by .NET but used by Windows installer to determine
 // whether one file is newer than another.
 // This typically would change if we're generating a patch, otherwise it should be the same as VERSION_NUMBER

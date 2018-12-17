@@ -195,13 +195,13 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
  
 
 	/// <inheritdoc />
-   VIRTUAL METHOD RecInfo(iRecID AS OBJECT, uiOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
+   VIRTUAL METHOD RecInfo( uiOrdinal AS INT, iRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
     LOCAL isLive AS BYTE
     LOCAL recNum AS DWORD
     LOCAL dwCRC AS DWORD
     LOCAL dwCRC2 AS DWORD
     IF uiOrdinal != DBRecordInfo.DBRI_UPDATED  
-        RETURN SUPER:RecInfo(iRecID, uiOrdinal, oNewValue)
+        RETURN SUPER:RecInfo(uiOrdinal, iRecID, oNewValue)
     ENDIF
     IF ACEUNPUB.AdsSqlPeekStatement(SUPER:_Table, OUT isLive) == 0 .AND. isLive == 0
         SUPER:_CheckError(ACE.AdsGetRecordNum(SUPER:_Table, ACE.ADS_IGNOREFILTERS, OUT recNum))

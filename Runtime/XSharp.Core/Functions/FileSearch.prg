@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -20,53 +20,66 @@ INTERNAL STATIC CLASS XSharp.FileSearch
         RETURN (DWORD)foundEntries:Count
         
     INTERNAL STATIC METHOD FindFirst( filespec AS STRING , attributes AS DWORD ) AS LOGIC
-        // Split filespec in path and mask
-        // when path is empty then path is current directory
-        // make sure that we only search in the given path
-        LOCAL cPath AS STRING
-        LOCAL cMask AS STRING
-        cPath := Path.GetDirectoryName(filespec)
-        cMask := Path.GetFilename(filespec)
-        IF String.IsNullOrEmpty(cPath)
-            cPath := System.Environment.CurrentDirectory
-        ENDIF
-        foundEntries:Clear()
-        IF attributes == FA_VOLUME
-            LOCAL allDrives := DriveInfo.GetDrives() AS DriveInfo[]
-            FOREACH drive AS DriveInfo IN allDrives
-                foundEntries:Add(drive)
-            NEXT
-        ELSE
-            LOCAL oDirInfo AS DirectoryInfo
-            oDirInfo := DirectoryInfo{cPath}
-            IF (attributes & FA_DIRECTORY) == FA_DIRECTORY
-                LOCAL directories := oDirInfo:GetDirectories(cMask) AS FileSystemInfo[]
-                attributes -= (INT) FA_DIRECTORY
-                attributes += (INT) FA_NORMAL
-                VAR selectedDirs := FROM DirectoryInfo IN directories WHERE (DirectoryInfo:Attributes & (FileAttributes) attributes ) != 0 SELECT DirectoryInfo
-                FOREACH directory AS DirectoryInfo IN selectedDirs
-                    foundEntries:Add(directory)
+        LOCAL lRet := FALSE AS LOGIC
+       
+        TRY
+            
+            XSharp.IO.File.clearErrorState()
+            
+            // Split filespec in path and mask
+            // when path is empty then path is current directory
+            // make sure that we only search in the given path
+            LOCAL cPath AS STRING
+            LOCAL cMask AS STRING
+            cPath := Path.GetDirectoryName(filespec)
+            cMask := Path.GetFilename(filespec)
+            IF String.IsNullOrEmpty(cPath)
+                cPath := System.Environment.CurrentDirectory
+            ENDIF
+            foundEntries:Clear()
+            IF attributes == FA_VOLUME
+                LOCAL allDrives := DriveInfo.GetDrives() AS DriveInfo[]
+                FOREACH drive AS DriveInfo IN allDrives
+                    foundEntries:Add(drive)
                 NEXT
             ELSE
-                attributes += (INT) FA_NORMAL
-                LOCAL files := oDirInfo:GetFiles(filespec) AS FileInfo[]
-                VAR selectedFiles := FROM FileInfo IN files WHERE ( FileInfo:Attributes & (FileAttributes) attributes) != 0 SELECT FileInfo
+                LOCAL oDirInfo AS DirectoryInfo
+                oDirInfo := DirectoryInfo{cPath}
+    
+                LOCAL files := oDirInfo:GetFiles(cMask) AS FileInfo[]
+                VAR selectedFiles := FROM FileInfo IN files WHERE ( FileInfo:Attributes & (FileAttributes) (attributes + FA_NORMAL)) != 0 SELECT FileInfo
                 FOREACH file AS FileInfo IN files
                     foundEntries:Add(file)
                 NEXT
+    
+                IF (attributes & FA_DIRECTORY) == FA_DIRECTORY
+                    LOCAL directories := oDirInfo:GetDirectories(cMask) AS FileSystemInfo[]
+                    VAR selectedDirs := FROM DirectoryInfo IN directories WHERE (DirectoryInfo:Attributes & (FileAttributes) (attributes + FA_NORMAL) ) != 0 SELECT DirectoryInfo
+                    FOREACH directory AS DirectoryInfo IN selectedDirs
+                        foundEntries:Add(directory)
+                    NEXT
+                ENDIF
             ENDIF
-        ENDIF
-        enumerator := foundEntries:GetEnumerator()
-        enumerator:Reset()
-        isAtEnd := !enumerator:MoveNext()
-        IF  !isAtEnd
-            currentItem := enumerator:Current
-        ENDIF
-        RETURN (foundEntries:Count > 0)
+            enumerator := foundEntries:GetEnumerator()
+            enumerator:Reset()
+            isAtEnd := !enumerator:MoveNext()
+            IF  !isAtEnd
+                currentItem := enumerator:Current
+            ENDIF
+            lRet := foundEntries:Count > 0
+        
+        CATCH oEx AS Exception
+            
+            XSharp.IO.File.setErrorState(oEx)
+            lRet := FALSE
+            
+        END TRY
+
+    RETURN lRet
         
     INTERNAL STATIC METHOD FindNext() AS LOGIC
         IF !isAtEnd
-            isAtEnd := enumerator:MoveNext()
+            isAtEnd := !enumerator:MoveNext()
             IF !isAtEnd
                 currentItem := enumerator:Current
             ENDIF
@@ -90,7 +103,9 @@ INTERNAL STATIC CLASS XSharp.FileSearch
         LOCAL size := 0 AS INT
         IF !isAtEnd
             IF currentItem IS DriveInfo
-                size := (INT)((DriveInfo) currentItem):TotalSize
+                IF ((DriveInfo) currentItem):IsReady
+                    size := (INT)((DriveInfo) currentItem):TotalSize
+                ENDIF
             ELSEIF (currentItem IS FileInfo)
                 size := (INT)((FileInfo)currentItem):Length
             ELSEIF currentItem IS DirectoryInfo

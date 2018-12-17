@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -140,7 +140,117 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			u:FULLNAME := "Olympiacos"
 			Assert.Equal("Olympiacos", u:fullNAme)
 		RETURN
+        
+        [Fact, Trait("Category", "OOP")];
+        METHOD IConvertibleTest() AS VOID
+           //Issue 1 - runtime - Object must implement IConvertible
+            LOCAL o AS AzControl
+            LOCAL x AS OBJECT
+                     
+            o := AzControl{}
+            o:cbWhen := {||TRUE}
+       
+            x := o
+       
+            x:cbWhen := {||TRUE}       
 
+            Assert.NotEqual(o:cbWhen, NULL)
+
+		[Fact, Trait("Category", "OOP")];
+		METHOD IsClassOf_Tests() AS VOID
+			Assert.True(IsClassOf(#TestClassChild, #TestClassParent))
+			Assert.False(IsClassOf(#TestClassParent, #TestClassChild))
+			Assert.True(IsClassOf(#TestClassChild, #TestClassChild))
+			Assert.True(IsClassOf(#TestClassParent, #TestClassParent))
+			Assert.False(IsClassOf(#None, #None))
+			Assert.False(IsClassOf(#None, #TestClassChild))
+			Assert.False(IsClassOf(#TestClassChild, #None))
+	
+		[Fact, Trait("Category", "OOP")];
+		METHOD IsInstanceOf_Tests() AS VOID
+			Assert.True(IsInstanceOf(123 , "Int32"))
+			Assert.True(IsInstanceOf(TRUE , "Boolean"))
+			Assert.False(IsInstanceOf(123 , "Nothing"))
+
+        [Fact, Trait("Category", "OOP")];
+        METHOD IsAccessAssignMethod_tests() AS VOID
+        	LOCAL o AS GeneralLBTestClass
+        	o := GeneralLBTestClass{}
+        	Assert.True( IsAccess(o , #acc_exp) )
+        	Assert.True( IsAccess(o , #acc_prot) )
+        	Assert.True( IsAccess(o , #acc_priv) )
+        	Assert.True( IsAssign(o , #asn_exp) )
+        	Assert.True( IsAssign(o , #asn_prot) )
+        	Assert.True( IsAssign(o , #asn_priv) )
+
+        	Assert.False( IsAssign(o , #acc_exp) )
+        	Assert.False( IsAssign(o , #acc_prot) )
+        	Assert.False( IsAccess(o , #asn_exp) )
+        	Assert.False( IsAccess(o , #asn_prot) )
+
+        	Assert.True( IsMethod(o , #meth_exp) )
+        	Assert.True( IsMethod(o , #meth_prot) )
+        	Assert.True( IsMethod(o , #meth_priv) )
+			
+        [Fact, Trait("Category", "OOP")];
+        METHOD IVarPutGetSet_tests() AS VOID
+        	LOCAL o AS GeneralLBTestClass
+        	o := GeneralLBTestClass{}
+        	
+        	IVarPut(o , #fld_exp , 1)
+        	Assert.Equal(1 , (int) IVarGet(o , #fld_exp))
+
+        	IVarPutSelf(o , #fld_prot , 2)
+        	Assert.Equal(2 , (int) IVarGetSelf(o , #fld_prot))
+        	
+        	Assert.ThrowsAny<Exception>( { => IVarPut(o , #fld_prot , 3) })
+        	Assert.Equal(2 , (int) IVarGetSelf(o , #fld_prot))
+        	
+        	Assert.ThrowsAny<Exception>( { => IVarGet(o , #fld_prot) })
+        	Assert.ThrowsAny<Exception>( { => IVarGet(o , #fld_priv) })
+
+        [Fact, Trait("Category", "OOP")];
+        METHOD PtrAndIntPtrMethodCalls() AS VOID
+        	LOCAL o AS GeneralLBTestClass
+        	o := GeneralLBTestClass{}
+        	
+        	LOCAL pPtr AS PTR
+        	LOCAL pIntPtr AS PTR
+        	pPtr := o:MethodPtr()
+        	? pPtr
+        	pIntPtr := o:MethodPtr()
+        	? pIntPtr
+        	Assert.NotEqual((INT)pIntPtr , 0)
+        	Assert.NotEqual((INT)pPtr , 0)
+    
+        	pPtr := o:MethodIntPtr()
+        	? pPtr
+        	pIntPtr := o:MethodIntPtr()
+        	? pIntPtr
+        	Assert.NotEqual((INT)pIntPtr , 0)
+        	Assert.NotEqual((INT)pPtr , 0)
+        	
+        	LOCAL u AS USUAL
+        	u := o
+        	pPtr := u:MethodPtr()
+        	? pPtr
+        	pIntPtr := u:MethodPtr()
+        	? pIntPtr
+        	Assert.NotEqual((INT)pIntPtr , 0)
+        	Assert.NotEqual((INT)pPtr , 0)
+    
+        	pPtr := u:MethodIntPtr()
+        	? pPtr
+        	pIntPtr := u:MethodIntPtr()
+        	? pIntPtr
+        	Assert.NotEqual((INT)pIntPtr , 0)
+        	Assert.NotEqual((INT)pPtr , 0)
+    
+        CLASS AzControl
+       
+            EXPORT cbWhen AS CODEBLOCK
+       
+        END CLASS   
 	END CLASS
 
 
@@ -183,4 +293,41 @@ CLASS AnotherClass
 	RETURN "2" + n:ToString()
 	METHOD TestOther2C(n)
 	RETURN "2" + ((INT)n):ToString()
+END CLASS
+
+CLASS GeneralLBTestClass
+	EXPORT fld_exp AS INT
+	PROTECT fld_prot AS INT
+	PRIVATE fld_priv AS INT
+	INSTANCE fld_inst AS INT
+	ACCESS acc_exp AS INT
+	RETURN 0
+	PROTECT ACCESS acc_prot AS INT
+	RETURN 0
+	PRIVATE ACCESS acc_priv AS INT
+	RETURN 0
+
+	ASSIGN asn_exp(n AS INT)
+	PROTECT ASSIGN asn_prot(n AS INT)
+	PROTECT ASSIGN asn_priv(n AS INT)
+		
+	METHOD meth_exp(a,b,c,d)
+	RETURN NIL
+	PROTECTED METHOD meth_prot(a,b,c,d)
+	RETURN NIL
+	PRIVATE METHOD meth_priv(a,b,c,d)
+	RETURN NIL
+	
+	METHOD MethodPtr() AS PTR
+		LOCAL n AS INT
+	RETURN @n
+	METHOD MethodIntPtr() AS IntPtr
+		LOCAL n AS INT
+	RETURN @n
+END CLASS
+
+
+CLASS TestClassParent
+END CLASS
+CLASS TestClassChild INHERIT TestClassParent
 END CLASS

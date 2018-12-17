@@ -94,7 +94,7 @@ CLASS XSharp.OleDateTime
 		RETURN dt:ToString( s, fp )
 
     /// <inheritdoc cref="M:System.DateTime.ToString(System.String)">	
-	VIRTUAL METHOD ToString() AS STRING
+	OVERRIDE METHOD ToString() AS STRING
 		RETURN dt:ToString()
     /// <exclude/>
 	STATIC OPERATOR IMPLICIT(odt AS OleDateTime) AS DateTime

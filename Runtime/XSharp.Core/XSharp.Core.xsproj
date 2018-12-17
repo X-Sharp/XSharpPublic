@@ -163,15 +163,12 @@
     <Compile Include="Functions\DT.prg" />
     <Compile Include="Functions\File.prg" />
     <Compile Include="Functions\FileIO.prg" />
-    <Compile Include="Functions\International.prg" />
     <Compile Include="Functions\Macro.prg" />
     <Compile Include="Functions\Memo.prg" />
     <Compile Include="Functions\Numeric.prg" />
     <Compile Include="Functions\OS.prg" />
-    <Compile Include="Functions\Registry.prg" />
     <Compile Include="Functions\String.prg" />
     <Compile Include="Functions\StringCompare.prg" />
-    <Compile Include="Functions\unsafe.prg" />
     <Compile Include="Functions\Win32.prg" />
     <Compile Include="Messages.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
@@ -189,6 +186,7 @@
     <Compile Include="RDD\CoreDb.prg" />
     <Compile Include="RDD\Workarea.prg" />
     <Compile Include="RDD\Workareas.prg" />
+    <Compile Include="State\DateCountryEnum.prg" />
     <Compile Include="State\Get.prg" />
     <Compile Include="State\EnumSet.prg" />
     <Compile Include="State\Set.prg" />
@@ -197,6 +195,7 @@
     <Compile Include="Types\Error.prg" />
     <Compile Include="Types\ErrorEnums.prg" />
     <Compile Include="Types\Interfaces.prg" />
+    <Compile Include="Types\MacroSupport.prg" />
     <Compile Include="Types\WrappedException.prg" />
   </ItemGroup>
   <ItemGroup>

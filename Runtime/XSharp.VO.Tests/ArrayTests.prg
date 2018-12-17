@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -134,7 +134,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal( 3, (INT) a[4])
 			Assert.Equal( 4, (INT) a[5])
 			Assert.Equal( 0, (INT) a[6])
-			? a[1],a[2],a[3],a[4],a[5]
+			//? a[1],a[2],a[3],a[4],a[5]
 			
 			a := {}
 			ASort(a)
@@ -310,6 +310,15 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			a := ArrayNew()
 			Assert.Equal(0, (INT) ALen(a))
 		RETURN
+
+ 		[Trait("Category", "ArrayNew")];
+		[Fact];
+		METHOD AEvalNullArray() AS VOID
+			LOCAL a AS ARRAY
+			a := NULL
+			AEval(a, {||TRUE})
+		RETURN
+
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

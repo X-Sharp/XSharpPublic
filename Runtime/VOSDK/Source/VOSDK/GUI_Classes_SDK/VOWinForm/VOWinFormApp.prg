@@ -51,7 +51,7 @@ CLASS XSharp.VOWinFormApp INHERIT App
                 ENDDO
                 
                 // If PreProcessMessage didn't handle it, let it through to VO 
-                IF ! control:PreProcessMessage(netMsg)
+                IF ! control:PreProcessMessage(@netMsg)
                     RETURN TRUE
                 ELSE
                     // Ctrl-Tab needs to be passed through to VO for processing

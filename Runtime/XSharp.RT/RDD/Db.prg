@@ -1171,3 +1171,59 @@ FUNCTION __allocNames(aStruct AS ARRAY) AS _FieldNames
 /// <exclude />
 FUNCTION __TargetFields(cAlias AS STRING, aFields AS ARRAY, list OUT _JoinList ) AS ARRAY 
     RETURN VoDb.TargetFields(cAlias, aFields, OUT list)
+
+
+/// <summary>Determine if the current record in the current workarea is empty.</summary>
+/// <returns>TRUE when the record is empty. FALSE when there is no workarea open or when the record is not empty.</returns>
+FUNCTION EmptyRecord() AS LOGIC
+   LOCAL lRet    AS LOGIC
+   LOCAL aRecord AS BYTE[]
+
+   IF Used()
+      aRecord := VODBRecordGet()
+      lRet := TRUE
+      FOREACH var b in aRecord
+         IF b != 32
+            lRet := FALSE
+            EXIT
+         ENDIF
+      NEXT
+   ELSE
+        lRet := FALSE
+   ENDIF
+   RETURN lRet
+
+/// <summary>Determine if the specified field in the current workarea is empty.</summary>
+/// <remarks>You can empty a string field by writing it with spaces and a date field by writing a NULL_DATE.
+/// Numeric and Logical fields cannot be cleared once they contain data.</remarks>
+/// <returns>TRUE when the field is empty. FALSE when there is no workarea open or when the field is not empty.</returns>
+FUNCTION EmptyField( n AS DWORD ) AS LOGIC
+   LOCAL aRecord AS BYTE[]
+   LOCAL i       AS DWORD
+   LOCAL lRet    AS LOGIC
+   LOCAL nOffset AS DWORD
+   LOCAL nEnd    AS DWORD
+   LOCAL uLen as USUAL
+   IF Used() .and. n > 0 .and. n <= FCount()
+        lRet := TRUE
+        aRecord := VODBRecordGet()
+        nOffset := 2        // skip the Deleted flag
+        FOR i := 1 UPTO n - 1
+            uLen := 0
+            VoDbFieldInfo(DBS_LEN, i, REF uLen)
+            nOffset += uLen
+        NEXT
+        uLen := 0
+        VoDbFieldInfo(DBS_LEN, n, REF uLen)
+        nEnd := uLen + nOffSet -1
+      
+        FOR i := nOffset UPTO nEnd
+            IF aRecord[i] != 32
+                lRet := FALSE
+                EXIT
+            ENDIF
+        NEXT
+    ELSE
+        lRet := FALSE
+    ENDIF
+   RETURN lRet

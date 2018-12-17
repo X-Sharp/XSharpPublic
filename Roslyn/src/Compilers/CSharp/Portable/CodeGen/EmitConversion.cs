@@ -188,7 +188,7 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
             var fromType = conversion.Operand.Type;
             var fromPredefTypeKind = fromType.PrimitiveTypeCode;
 #if XSHARP
-            Debug.Assert(fromPredefTypeKind.IsNumeric() || fromType.IsEnumType());
+            Debug.Assert(fromPredefTypeKind.IsNumeric() || fromType.IsEnumType() || conversion.WasCompilerGenerated);
 #else
             Debug.Assert(fromPredefTypeKind.IsNumeric());
 #endif
@@ -196,7 +196,7 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
             var toType = conversion.Type;
             var toPredefTypeKind = toType.PrimitiveTypeCode;
 #if XSHARP
-            Debug.Assert(toPredefTypeKind.IsNumeric() || toType.IsEnumType());
+            Debug.Assert(toPredefTypeKind.IsNumeric() || toType.IsEnumType() || conversion.WasCompilerGenerated);
 #else
             Debug.Assert(toPredefTypeKind.IsNumeric());
 #endif

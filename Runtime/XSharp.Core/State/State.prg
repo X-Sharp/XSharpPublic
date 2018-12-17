@@ -579,7 +579,7 @@ CLASS XSharp.RuntimeState
             VAR oMacroAsm := AssemblyHelper.Load("XSharp.MacroCompiler")
 		    IF oMacroAsm != NULL_OBJECT
 			    LOCAL oType AS System.Type
-			    oType := oMacroAsm:GetType("XSharp.MacroCompiler",FALSE,TRUE)
+			    oType := oMacroAsm:GetType("XSharp.Runtime.MacroCompiler",FALSE,TRUE)
 			    IF oType != NULL_OBJECT
 				    // create instance of this type
 				    IF TYPEOF(IMacroCompiler):IsAssignableFrom(oType)
@@ -596,11 +596,11 @@ CLASS XSharp.RuntimeState
 		    ENDIF
         ENDIF
         IF _macroCompilerType != NULL_OBJECT
-            IF _macroCompilerType:Assembly:CodeBase:ToLower():Contains(".fast")
-                _macroCompiler := Activator:CreateInstance(_macroCompilerType) ASTYPE IMacroCompiler
+            IF _macroCompilerType:Assembly:CodeBase:ToLower():Contains(".full")
+			    VAR macroCompiler := Activator:CreateInstance(_macroCompilerType) ASTYPE IMacroCompiler
+                _macroCompiler := MacroPreCompiler{macroCompiler}
             ELSE
-			VAR macroCompiler := Activator:CreateInstance(_macroCompilerType) ASTYPE IMacroCompiler
-            _macroCompiler := MacroPreCompiler{macroCompiler}
+                _macroCompiler := Activator:CreateInstance(_macroCompilerType) ASTYPE IMacroCompiler
             ENDIF
 		ENDIF
 		RETURN 

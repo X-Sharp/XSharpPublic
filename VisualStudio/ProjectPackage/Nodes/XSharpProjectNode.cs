@@ -1886,7 +1886,7 @@ namespace XSharp.Project
         {
             bool silent;
             int result;
-
+            bool dialectVO = false;
             silent = (__VSUPGRADEPROJFLAGS)grfUpgradeFlags == __VSUPGRADEPROJFLAGS.UPF_SILENTMIGRATE;
             StringWriter backup = new StringWriter();
             BuildProject.Save(backup);
@@ -1960,11 +1960,16 @@ namespace XSharp.Project
             }
             if (str.IndexOf("XSharp.VO", StringComparison.OrdinalIgnoreCase) >= 0 && str.IndexOf("XSharp.RT", StringComparison.OrdinalIgnoreCase) == -1)
             {
-                ok = false;
+                if (str.IndexOf("<Dialect>VO</Dialect>", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    str.IndexOf("<Dialect>Vulcan</Dialect>", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    ok = false;
+                    dialectVO = true;
+                }
             }
             if (!ok)
             {
-                FixProjectFile(BuildProject.FullPath);
+                FixProjectFile(BuildProject.FullPath, dialectVO);
                 base.UpgradeProject(grfUpgradeFlags);
                 result = VSConstants.S_OK;
             }
@@ -2005,7 +2010,7 @@ namespace XSharp.Project
             }
             return false;
         }
-        private void FixProjectFile(string filename)
+        private void FixProjectFile(string filename, bool dialectVO)
         {
             bool changed = false;
             var xml = BuildProject.Xml;
@@ -2120,12 +2125,16 @@ namespace XSharp.Project
             MBC.ProjectImportElement iTargets = null;
             changed = moveImports(ref iTargets, filename) || changed;
             changed = moveBuildEvents(iTargets) || changed;
-            changed = addReferences() || changed;
+            if (dialectVO)
+            {
+                changed = addReferences() || changed;
+            }
             if (changed)
             {
                 File.Copy(filename, filename + ".bak", true);
                 BuildProject.Xml.Save(filename);
                 BuildProject.ReevaluateIfNecessary();
+                this.Reload();
             }
         }
 
@@ -2134,6 +2143,7 @@ namespace XSharp.Project
             MBC.ProjectItemElement voRef = null;
             bool hasRT = false;
             bool changed = false;
+
             foreach (var grp in BuildProject.Xml.ItemGroups)
             {
                 foreach (var item in grp.Items)
@@ -2151,10 +2161,10 @@ namespace XSharp.Project
             if (! hasRT && voRef != null)
             {
                 var grp = voRef.Parent;
-                var newitem = BuildProject.Xml.AddItem("Reference", voRef.Include.Replace(".VO", ".RT"));
+                var newitem = BuildProject.Xml.AddItem("Reference", voRef.Include.Replace("XSharp.VO", "XSharp.RT"));
                 foreach (var child in voRef.Metadata)
                 {
-                    newitem.AddMetadata(child.Name, child.Value.Replace(".VO", ".RT"));
+                    newitem.AddMetadata(child.Name, child.Value.Replace("XSharp.VO", "XSharp.RT"));
                 }
                 changed = true;
             }

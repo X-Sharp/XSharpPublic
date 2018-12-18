@@ -102,6 +102,13 @@ namespace XSharp.MacroCompiler
 
         internal override string FullName { get { return OperatorSymbol(Kind); } }
 
+        internal BinaryOperatorSymbolWithType AsEnum(TypeSymbol type)
+        {
+            if (this is BinaryOperatorSymbolWithMethod || this is BinaryComparisonSymbolWithMethod || !type.IsEnum || !Binder.TypesMatch(Type, type.EnumUnderlyingType))
+                return null;
+            return new BinaryOperatorSymbolWithType(this, type);
+        }
+
         static BinaryOperatorSymbol()
         {
             var ops = (BinaryOperatorKind[])Enum.GetValues(typeof(BinaryOperatorKind));
@@ -379,6 +386,13 @@ namespace XSharp.MacroCompiler
             ConversionSymbol convLeft, ConversionSymbol convRight) : base(kind, method, convLeft, convRight) { }
 
         internal override TypeSymbol Type { get { return Compilation.Get(NativeType.Boolean); } }
+    }
+
+    internal partial class BinaryOperatorSymbolWithType : BinaryOperatorSymbol
+    {
+        internal BinaryOperatorSymbolWithType(BinaryOperatorSymbol op, TypeSymbol type) : base(op.Kind, op.OpType, op.ResType) { Type = type; }
+
+        internal override TypeSymbol Type { get; }
     }
 
     internal static class BinaryOperatorEasyOut

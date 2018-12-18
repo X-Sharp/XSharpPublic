@@ -36,6 +36,13 @@ namespace XSharp.MacroCompiler
 
         internal override string FullName { get { return OperatorSymbol(Kind); } }
 
+        internal UnaryOperatorSymbolWithType AsEnum(TypeSymbol type)
+        {
+            if (this is UnaryOperatorSymbolWithMethod || !type.IsEnum || !Binder.TypesMatch(Type, type.EnumUnderlyingType))
+                return null;
+            return new UnaryOperatorSymbolWithType(this, type);
+        }
+
         static UnaryOperatorSymbol()
         {
             var ops = (UnaryOperatorKind[])Enum.GetValues(typeof(UnaryOperatorKind));
@@ -163,6 +170,13 @@ namespace XSharp.MacroCompiler
         }
 
         internal override TypeSymbol Type { get { return Method.Type; } }
+    }
+
+    internal partial class UnaryOperatorSymbolWithType : UnaryOperatorSymbol
+    {
+        internal UnaryOperatorSymbolWithType(UnaryOperatorSymbol op, TypeSymbol type) : base(op.Kind,op.OpType) { Type = type; }
+
+        internal override TypeSymbol Type { get; }
     }
 
     internal static class UnaryOperatorEasyOut

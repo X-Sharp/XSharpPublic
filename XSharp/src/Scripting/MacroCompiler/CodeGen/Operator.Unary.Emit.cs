@@ -16,7 +16,7 @@ namespace XSharp.MacroCompiler
     {
         internal override void EmitGet(ILGenerator ilg)
         {
-            EmitUnaryOperator(ilg, this, Type); // TODO nkok: handle checked/unchecked
+            EmitUnaryOperator(ilg, this, OpType.TypeSymbol()); // TODO nkok: handle checked/unchecked
         }
     }
 
@@ -26,5 +26,9 @@ namespace XSharp.MacroCompiler
         {
             ilg.Emit(OpCodes.Call, Method.Method);
         }
+    }
+
+    internal partial class UnaryOperatorSymbolWithType : UnaryOperatorSymbol
+    {
     }
 }

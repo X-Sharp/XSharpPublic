@@ -151,13 +151,8 @@ begin namespace MacroCompilerTest
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a| (testclass)a }",tci) // FAIL - should work (TODO: implement type casts)
         //EvalMacro(mc, e"{|a,b| asdgfafd(123) }") // FAIL - error message is OK but TestMacro() fails
-        EvalMacro(mc, e"(int)testclass.nested.eee+1")
-        EvalMacro(mc, e"(testclass.nested.child)1")
-        local a as testclass.nested.child
-        var b := (long)1
-        a := b + testclass.nested.eee
-        ? a
-        ? (testclass.nested.child)1.4
+        //EvalMacro(mc, e"--testclass.nested.eee") // FAIL -- should produce error that a constant cannot be modified
+        EvalMacro(mc, e"-testclass.nested.eee")
         wait
 
         RunTests(mc)
@@ -423,6 +418,16 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"testclass.nested.ttt", <object>{}, testclass.nested.child.blabla, typeof(testclass.nested.child))
         TestMacro(mc, e"testclass.nested.ccc", <object>{}, 456, typeof(int))
         TestMacro(mc, e"testclass.nested.eee", <object>{}, testclass.nested.child.blabla, typeof(testclass.nested.child))
+        TestMacro(mc, e"(int)testclass.nested.eee", <object>{}, 1, typeof(int))
+        TestMacro(mc, e"(testclass.nested.child)1", <object>{}, testclass.nested.child.blabla, typeof(testclass.nested.child))
+        TestMacro(mc, e"(testclass.nested.child)1.5", <object>{}, testclass.nested.child.blabla, typeof(testclass.nested.child))
+        TestMacro(mc, e"-(-testclass.nested.eee)", <object>{}, testclass.nested.child.blabla, typeof(testclass.nested.child))
+        TestMacro(mc, e"-testclass.nested.eee", <object>{}, -1, typeof(testclass.nested.child))
+        TestMacro(mc, e"2-testclass.nested.eee", <object>{}, testclass.nested.child.blabla, typeof(testclass.nested.child))
+        TestMacro(mc, e"testclass.nested.eee+1", <object>{}, 2, typeof(testclass.nested.child))
+        TestMacro(mc, e"testclass.nested.eee|testclass.nested.child.haha", <object>{}, testclass.nested.child.haha, typeof(testclass.nested.child))
+        TestMacro(mc, e"testclass.nested.eee*2", <object>{}, 2, typeof(int))
+        TestMacro(mc, e"testclass.nested.eee/1", <object>{}, 1, typeof(int))
 
 //        mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
 //        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, nil, typeof(usual))

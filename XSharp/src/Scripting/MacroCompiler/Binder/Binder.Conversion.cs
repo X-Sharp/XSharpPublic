@@ -146,6 +146,12 @@ namespace XSharp.MacroCompiler
                     return ConversionSymbol.Create(ConversionKind.ImplicitReference);
             }
 
+            {
+                var conv = ResolveEnumConversion(expr, type, options);
+                if (conv != null)
+                    return conv;
+            }
+
             if (options.HasFlag(BindOptions.AllowDynamic))
             {
                 var conv = ResolveDynamicConversion(expr, type, options);
@@ -240,6 +246,44 @@ namespace XSharp.MacroCompiler
             }
             return null;
         }
+
+        internal static ConversionSymbol ResolveEnumConversion(Expr expr, TypeSymbol type, BindOptions options)
+        {
+            if (expr.Datatype.IsEnum)
+            {
+                if (TypesMatch(expr.Datatype.EnumUnderlyingType, type))
+                {
+                    return ConversionSymbol.Create(ConversionKind.ImplicitEnumeration);
+                }
+                else
+                {
+                    var inner = ConversionSymbol.Create(ConversionKind.ImplicitEnumeration);
+                    var outer = Conversion(TypeConversion.Bound(expr, expr.Datatype.EnumUnderlyingType, inner), type, options);
+                    if (outer.Exists)
+                    {
+                        return ConversionSymbol.Create(outer, inner);
+                    }
+                }
+            }
+            if (type.IsEnum && options.HasFlag(BindOptions.Explicit))
+            {
+                if (TypesMatch(type.EnumUnderlyingType, expr.Datatype))
+                {
+                    return ConversionSymbol.Create(ConversionKind.ExplicitEnumeration);
+                }
+                else
+                {
+                    var inner = Conversion(expr, type.EnumUnderlyingType, options);
+                    if (inner.Exists)
+                    {
+                        var outer = ConversionSymbol.Create(ConversionKind.ExplicitEnumeration);
+                        return ConversionSymbol.Create(outer, inner);
+                    }
+                }
+            }
+            return null;
+        }
+
         internal static ConversionSymbol ResolveDynamicConversion(Expr expr, TypeSymbol type, BindOptions options)
         {
             if (expr.Datatype.NativeType == NativeType.Object)

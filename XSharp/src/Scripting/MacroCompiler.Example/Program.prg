@@ -2,6 +2,7 @@
 using System.Collections.Generic
 using System.Linq
 using System.Text
+using XSharp.Runtime
 using XSharp.MacroCompiler
 
 function U(u as usual) as usual
@@ -57,6 +58,10 @@ class testclass
         enum child
             haha := 4321
             blabla := 1
+        end enum
+        enum child2
+            haha := 432
+            blabla := 12
         end enum
 
         public static ttt := child.blabla as child
@@ -134,8 +139,6 @@ function MyFieldSetWa(wa as string, name as string, value as usual) as usual
     return "FieldSet(" + wa + "," + name +"):" + (string)value
 
 begin namespace MacroCompilerTest
-    using XSharp.Runtime
-    using XSharp.MacroCompiler
 
 	function Start() as void
 	    SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))
@@ -148,7 +151,13 @@ begin namespace MacroCompilerTest
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a| (testclass)a }",tci) // FAIL - should work (TODO: implement type casts)
         //EvalMacro(mc, e"{|a,b| asdgfafd(123) }") // FAIL - error message is OK but TestMacro() fails
-        EvalMacro(mc, e"testclass.nested.eee")
+        EvalMacro(mc, e"(int)testclass.nested.eee+1")
+        EvalMacro(mc, e"(testclass.nested.child)1")
+        local a as testclass.nested.child
+        var b := (long)1
+        a := b + testclass.nested.eee
+        ? a
+        ? (testclass.nested.child)1.4
         wait
 
         RunTests(mc)
@@ -174,7 +183,7 @@ begin namespace MacroCompilerTest
             var res := cb:EvalBlock(args)
             Console.WriteLine("res = {0}",res)
             return res
-        catch e as XSharp.MacroCompiler.CompilationError
+        catch e as CompilationError
             Console.WriteLine("{0}",e:Message)
             return nil
         end
@@ -508,7 +517,7 @@ begin namespace MacroCompilerTest
                 Console.WriteLine("[FAIL] (res = {0}, type = {1}, no error)", res, res?:GetType())
             end
             return false
-        catch e as XSharp.MacroCompiler.CompilationError
+        catch e as CompilationError
             if e:@@Code == ec
                 TotalSuccess += 1
                 Console.WriteLine("[OK]")

@@ -37,6 +37,10 @@ namespace XSharp.MacroCompiler
                 case ConversionKind.Deref:
                     EmitDereference(ilg, type);
                     break;
+                case ConversionKind.ImplicitEnumeration:
+                    break;
+                case ConversionKind.ExplicitEnumeration:
+                    break;
                 case ConversionKind.NoConversion:
                 case ConversionKind.NoImplicitConversion:
                 default:

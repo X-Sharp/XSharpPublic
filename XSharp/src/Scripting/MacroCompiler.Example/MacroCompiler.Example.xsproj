@@ -3,6 +3,7 @@
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <Import Project="..\..\Compiler\CompilerCommon.props" />
   <PropertyGroup>
+    <XscToolPath></XscToolPath>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <ProjectGuid>cea6079a-eff1-4ae7-acdc-ebafc1555b02</ProjectGuid>
     <OutputType>Exe</OutputType>

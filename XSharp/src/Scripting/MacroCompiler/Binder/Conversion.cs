@@ -14,7 +14,7 @@ namespace XSharp.MacroCompiler
         NoImplicitConversion,
         Identity,
         ImplicitNumeric,
-        //ImplicitEnumeration,
+        ImplicitEnumeration,
         //ImplicitThrow,
         //ImplicitTupleLiteral,
         //ImplicitTuple,
@@ -33,7 +33,7 @@ namespace XSharp.MacroCompiler
         //AnonymousFunction,
         //MethodGroup,
         ExplicitNumeric,
-        //ExplicitEnumeration,
+        ExplicitEnumeration,
         ExplicitNullable,
         ExplicitReference,
         Unboxing,
@@ -100,6 +100,7 @@ namespace XSharp.MacroCompiler
             convCost[(int)ConversionKind.NoImplicitConversion] = 0;
 
             convCost[(int)ConversionKind.Identity] = Implicit | 0;
+            convCost[(int)ConversionKind.ImplicitEnumeration] = Implicit | 1;
             convCost[(int)ConversionKind.ImplicitNumeric] = Implicit | 1;
             convCost[(int)ConversionKind.ImplicitNullable] = Implicit | 2;
             //convCost[(int)ConversionKind.NullLiteral] = Implicit | 0;
@@ -111,6 +112,7 @@ namespace XSharp.MacroCompiler
             convCost[(int)ConversionKind.Deref] = Implicit | 0;
             convCost[(int)ConversionKind.ConstantReduction] = Implicit | 0;
 
+            convCost[(int)ConversionKind.ExplicitEnumeration] = Explicit | 1;
             convCost[(int)ConversionKind.ExplicitNumeric] = Explicit | 1;
             convCost[(int)ConversionKind.ExplicitNullable] = Explicit | 2;
             convCost[(int)ConversionKind.ExplicitReference] = Explicit | 0;

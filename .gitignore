@@ -233,3 +233,9 @@ Tests/Applications/C493/Resources/NativeResources.res
 /XSharp/src/Setup/updatevsix.prg.cfg
 /XSharp/docs/~*
 /XSharp/Runtime
+/XSharp/src/Compiler/XSharpCodeAnalysis/Generated/XSharp.tokens
+/XSharp/src/Compiler/XSharpCodeAnalysis/Generated/XSharpBaseListener.cs
+/XSharp/src/Compiler/XSharpCodeAnalysis/Generated/XSharpLexer.cs
+/XSharp/src/Compiler/XSharpCodeAnalysis/Generated/XSharpLexer.tokens
+/XSharp/src/Compiler/XSharpCodeAnalysis/Generated/XSharpListener.cs
+/XSharp/src/Compiler/XSharpCodeAnalysis/Generated/XSharpParser.cs

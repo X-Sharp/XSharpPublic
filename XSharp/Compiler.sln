@@ -112,9 +112,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacroCompiler", "src\Scripting\MacroCompiler\MacroCompiler.csproj", "{EB3F3142-07F7-48CA-B38D-F611C45A9511}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "MacroCompiler.Example", "src\Scripting\MacroCompiler.Example\MacroCompiler.Example.xsproj", "{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}"
-	ProjectSection(ProjectDependencies) = postProject
-		{AEBEBC71-1FDE-4901-91E0-5667F9BB211A} = {AEBEBC71-1FDE-4901-91E0-5667F9BB211A}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

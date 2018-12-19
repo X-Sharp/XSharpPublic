@@ -441,6 +441,7 @@ BEGIN NAMESPACE XSharpModel
                     ENDIF
                 NEXT
             ENDIF
+
             RETURN NULL
 
         METHOD FindSystemType(name AS STRING, usings AS IList<STRING>) AS Type

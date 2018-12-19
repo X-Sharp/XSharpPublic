@@ -115,7 +115,7 @@ BEGIN NAMESPACE XSharpModel
 		PRIVATE METHOD CheckSystemType(typeName AS STRING, usings AS IList<STRING>) AS VOID
 			LOCAL sType AS System.Type
 			IF SELF:_file != NULL
-                var options := self:_file:Project:ProjectNode:ParseOptions
+                VAR options := SELF:_file:Project:ProjectNode:ParseOptions
 				typeName := typeName:GetSystemTypeName(options:XSharpRuntime)
 				sType := SELF:_file:Project:FindSystemType(typeName, usings)
 			ENDIF

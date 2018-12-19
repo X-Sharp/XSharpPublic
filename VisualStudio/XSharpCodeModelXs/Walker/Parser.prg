@@ -691,6 +691,7 @@ BEGIN NAMESPACE XSharpModel
 							
 						CASE state:lLocal .AND. state:lImpliedLocal .AND. .NOT. lEscapedWord .AND. cUpperWord == "IN"
 							nAfterColonEquals := -nChar // FOREACH
+							context:AfterIn := TRUE
 							
 						CASE state:lLocal .AND. state:lImpliedLocal .AND. nAfterColonEquals != 0
 							// LOCAL IMPLIED type recognition code here
@@ -1862,6 +1863,7 @@ BEGIN NAMESPACE XSharpModel
 		PROPERTY LastMeaningPos AS INT AUTO
 		PROPERTY Status AS WordStatus AUTO
 		PROPERTY SubStatus AS WordSubStatus AUTO
+		PROPERTY AfterIn AS LOGIC AUTO
 	END CLASS
 	
 END NAMESPACE

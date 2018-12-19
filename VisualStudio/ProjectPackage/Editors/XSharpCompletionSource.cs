@@ -1139,7 +1139,7 @@ namespace XSharpLanguage
             switch (member.MemberType)
             {
                 case MemberTypes.Constructor:
-                    this._name = "Constructor";
+                    this._name = member.DeclaringType.Name;
                     this._kind = Kind.Constructor;
                     ConstructorInfo constInfo = member as ConstructorInfo;
                     this._isStatic = constInfo.IsStatic;
@@ -1545,14 +1545,14 @@ namespace XSharpLanguage
                 string vars = "";
                 if (this.Kind.HasParameters())
                 {
-                    vars = "(";
+                    vars = this.Kind == Kind.Constructor ? "{" : "(";
                     foreach (var var in this.Parameters)
                     {
                         if (vars.Length > 1)
                             vars += ", ";
                         vars += var.Name + " " + var.Direction + " " + var.TypeName;
                     }
-                    vars += ")";
+                    vars += this.Kind == Kind.Constructor ? "}" : ")";
                 }
                 //
                 string desc = this.Name;

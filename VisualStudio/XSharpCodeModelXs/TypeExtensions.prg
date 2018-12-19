@@ -44,6 +44,8 @@ BEGIN NAMESPACE XSharpModel
             lookupTable:Add("XSharp.__Usual", "USUAL")
             lookupTable:Add("XSharp.__VODate", "DATE")
             lookupTable:Add("XSharp.__VOFloat", "FLOAT")
+            lookupTable:Add("XSharp.__Date", "DATE")
+            lookupTable:Add("XSharp.__Float", "FLOAT")
             lookupTable:Add("XSharp.__WinBool", "LOGIC")
             lookupTable := lookupTable:ToImmutableDictionary<STRING, STRING>(StringComparer.OrdinalIgnoreCase)
 

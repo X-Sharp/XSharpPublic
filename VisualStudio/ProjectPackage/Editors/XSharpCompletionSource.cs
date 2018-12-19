@@ -3687,6 +3687,24 @@ namespace XSharpLanguage
                     if (xMethod != null)
                         break;
                 }
+                if (xMethod == null)
+                {
+                    foreach (var asm in xFile.Project.AssemblyReferences)
+                    {
+                        if (!String.IsNullOrEmpty(asm.GlobalClassName))
+                        {
+                            var type = asm.GetType(asm.GlobalClassName);
+                            if (type != null )
+                            {
+                                var methods = type.GetMember(currentToken,BindingFlags.IgnoreCase|BindingFlags.Public|BindingFlags.Static);
+                                if (methods.Length > 0)
+                                {
+                                    return new CompletionType(type);
+                                }
+                            }
+                        }
+                    }
+                }
             }
             foundElement = new CompletionElement(xMethod);
             if (xMethod?.Parent != null)

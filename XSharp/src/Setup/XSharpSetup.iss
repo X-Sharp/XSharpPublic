@@ -21,8 +21,8 @@
 #define Version             "2.0.0.8"
 #define FileNameVersion     "2Beta8"
 #define VIVersion           "2.0.0.8"
-#define TouchDate           "2018-12-19"
-#define TouchTime           "02:00:08"
+#define TouchDate           "2018-12-20"
+#define TouchTime           "02:08:00"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
 #define DevPublicFolder     "C:\Xsharp\DevPublic"
@@ -173,7 +173,7 @@ VersionInfoCopyRight={# CopyRight}
 VersionInfoProductName={# Product}
 VersionInfoProductVersion={# VIVersion}
 Wizardsmallimagefile=Baggage\XSharp_Bmp_Banner.bmp 
-WizardImagefile=Baggage\XSharp_Bmp_Dialog.bmp
+WizardImagefile=Baggage\XSharp_Bmp_DialogXMas.bmp
 
 ;Uninstaller
 UninstallFilesDir={app}\uninst

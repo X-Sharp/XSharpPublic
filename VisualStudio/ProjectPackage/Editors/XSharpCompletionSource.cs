@@ -3199,10 +3199,10 @@ namespace XSharpLanguage
         /// </returns>
         internal static CompletionType SearchPropertyOrFieldIn(CompletionType cType, string currentToken, Modifiers minVisibility, out CompletionElement foundElement)
         {
-            CompletionType result = SearchPropertyTypeIn(cType, currentToken, minVisibility, out foundElement);
+            CompletionType result = SearchFieldTypeIn(cType, currentToken, minVisibility, out foundElement);
             if (result.IsEmpty())
             {
-                result = SearchFieldTypeIn(cType, currentToken, minVisibility, out foundElement);
+                result = SearchPropertyTypeIn(cType, currentToken, minVisibility, out foundElement);
             }
             return result;
         }

@@ -299,6 +299,14 @@ CLASS AssemblyInfo
 			    ENDIF
             ENDIF
 
+        PRIVATE METHOD GetPropertySafe(type as System.Type, obj as Object, PropName as STRING) as STRING
+            FOREACH var prop in type:GetProperties()
+                if String.Compare(prop:Name, PropName, StringComparison.OrdinalIgnoreCase) == 0
+                    return prop:GetValue(obj, NULL):ToString()
+                endif
+            NEXT
+            return ""
+
 		INTERNAL METHOD UpdateAssembly() AS VOID
 			LOCAL aTypes AS Dictionary<STRING, System.Type>
 			LOCAL nspace AS STRING
@@ -331,32 +339,24 @@ CLASS AssemblyInfo
 						LOCAL found := 0 AS INT
 						FOREACH VAR custattr IN customAttributes
 							//
-							VAR type := custattr:GetType()
-							SWITCH custattr:ToString()
-								CASE "Vulcan.Internal.VulcanClassLibraryAttribute"
-									SELF:_globalClassName := type:GetProperty("globalClassName"):GetValue(custattr, NULL):ToString()
-									VAR defaultNs := type:GetProperty("defaultNamespace"):GetValue(custattr, NULL):ToString()
-									IF ! String.IsNullOrEmpty(defaultNs)
-										SELF:_implicitNamespaces := SELF:_implicitNamespaces:Add(defaultNs)
-										WriteOutputMessage("   ...implicit Namespace found: "+defaultNs)
-									ENDIF
-									found += 1
-								CASE "XSharp.Internal.ClassLibraryAttribute"
-									SELF:_globalClassName := type:GetProperty("GlobalClassName"):GetValue(custattr, NULL):ToString()
+							LOCAL type := custattr:GetType() as System.Type
+							SWITCH custattr:ToString():ToLower()
+								CASE "vulcan.internal.vulcanclasslibraryattribute"
+                                CASE "xsharp.internal.classlibraryattribute"
+									SELF:_globalClassName := SELF:GetPropertySafe(type, custAttr, "globalclassname")
 									WriteOutputMessage("   ...Globals Classname found: "+_globalClassName )
-
-									VAR defaultNs := type:GetProperty("DefaultNamespace"):GetValue(custattr, NULL):ToString()
+									VAR defaultNs := SELF:GetPropertySafe(type, custAttr, "defaultnamespace")
 									IF ! String.IsNullOrEmpty(defaultNs)
 										SELF:_implicitNamespaces := SELF:_implicitNamespaces:Add(defaultNs)
 										WriteOutputMessage("   ...implicit Namespace found: "+defaultNs)
 									ENDIF
 									found += 1
-								CASE "System.Runtime.CompilerServices.ExtensionAttribute"
+								CASE "system.runtime.compilerservices.extensionattribute"
 									SELF:_HasExtensions  := TRUE
 									found += 2
-								CASE "Vulcan.VulcanImplicitNamespaceAttribute"
-								CASE "XSharp.ImplicitNamespaceAttribute"
-									VAR ns := type:GetProperty("Namespace"):GetValue(custattr, NULL):ToString()
+								CASE "vulcan.vulcanimplicitnamespaceattribute"
+								CASE "xsharp.implicitnamespaceattribute"
+									VAR ns := SELF:GetPropertySafe(type, custAttr, "namespace")
 									IF ! String.IsNullOrEmpty(ns)
 										SELF:_implicitNamespaces := SELF:_implicitNamespaces:Add(ns)
 										WriteOutputMessage("   ...implicit Namespace found: "+ns)

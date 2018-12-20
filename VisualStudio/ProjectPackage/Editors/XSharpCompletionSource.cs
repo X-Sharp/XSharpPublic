@@ -1139,7 +1139,7 @@ namespace XSharpLanguage
             switch (member.MemberType)
             {
                 case MemberTypes.Constructor:
-                    this._name = "Constructor";
+                    this._name = member.DeclaringType.Name;
                     this._kind = Kind.Constructor;
                     ConstructorInfo constInfo = member as ConstructorInfo;
                     this._isStatic = constInfo.IsStatic;
@@ -1545,14 +1545,14 @@ namespace XSharpLanguage
                 string vars = "";
                 if (this.Kind.HasParameters())
                 {
-                    vars = "(";
+                    vars = this.Kind == Kind.Constructor ? "{" : "(";
                     foreach (var var in this.Parameters)
                     {
                         if (vars.Length > 1)
                             vars += ", ";
                         vars += var.Name + " " + var.Direction + " " + var.TypeName;
                     }
-                    vars += ")";
+                    vars += this.Kind == Kind.Constructor ? "}" : ")";
                 }
                 //
                 string desc = this.Name;
@@ -2195,25 +2195,6 @@ namespace XSharpLanguage
         public static List<String> GetTokenList(int triggerPointPosition, int triggerPointLineNumber,
             String bufferText, out IToken stopToken, bool fromGotoDefn, XFile file, bool dotAsSelector, XTypeMember fromMember)
         {
-            List<String> tokenList = new List<string>();
-            String token;
-            string fileName;
-            //
-            stopToken = null;
-            // lex the entire document
-            // Get compiler options
-            XSharpParseOptions parseoptions;
-            if (file != null)
-            {
-                var prj = file.Project.ProjectNode;
-                parseoptions = prj.ParseOptions;
-                fileName = file.FullPath;
-            }
-            else
-            {
-                parseoptions = XSharpParseOptions.Default;
-                fileName = "MissingFile.prg";
-            }
             //////////////////////////////////////
             //////////////////////////////////////
             // Try to speedup the process, Tokenize only the Member source if possible (and not the FULL source text)
@@ -2250,8 +2231,36 @@ namespace XSharpLanguage
 
             ITokenStream tokenStream;
             var reporter = new ErrorIgnorer();
+            // Get compiler options
+            XSharpParseOptions parseoptions;
+            string fileName;
+            if (file != null)
+            {
+                var prj = file.Project.ProjectNode;
+                parseoptions = prj.ParseOptions;
+                fileName = file.FullPath;
+            }
+            else
+            {
+                parseoptions = XSharpParseOptions.Default;
+                fileName = "MissingFile.prg";
+            }
+
+
             bool ok = XSharp.Parser.VsParser.Lex(bufferText, fileName, parseoptions, reporter, out tokenStream);
-            var tokens = tokenStream as BufferedTokenStream;
+            var stream = tokenStream as BufferedTokenStream;
+            return GetTokenList(triggerPointPosition, triggerPointLineNumber, stream, out stopToken, fromGotoDefn, file, dotAsSelector);
+        }
+
+
+        public static List<String> GetTokenList(int triggerPointPosition, int triggerPointLineNumber,
+            BufferedTokenStream tokens, out IToken stopToken, bool fromGotoDefn, XFile file, bool dotAsSelector)
+        {
+            List<String> tokenList = new List<string>();
+            String token;
+            //
+            stopToken = null;
+
             // locate the last token before the trigger point
             // Use binary search in stead of linear search
             var list = tokens.GetTokens();
@@ -3268,10 +3277,10 @@ namespace XSharpLanguage
         /// </returns>
         internal static CompletionType SearchPropertyOrFieldIn(CompletionType cType, string currentToken, Modifiers minVisibility, out CompletionElement foundElement)
         {
-            CompletionType result = SearchPropertyTypeIn(cType, currentToken, minVisibility, out foundElement);
+            CompletionType result = SearchFieldTypeIn(cType, currentToken, minVisibility, out foundElement);
             if (result.IsEmpty())
             {
-                result = SearchFieldTypeIn(cType, currentToken, minVisibility, out foundElement);
+                result = SearchPropertyTypeIn(cType, currentToken, minVisibility, out foundElement);
             }
             return result;
         }
@@ -3764,6 +3773,24 @@ namespace XSharpLanguage
                     xMethod = project.FindFunction(currentToken);
                     if (xMethod != null)
                         break;
+                }
+                if (xMethod == null)
+                {
+                    foreach (var asm in xFile.Project.AssemblyReferences)
+                    {
+                        if (!String.IsNullOrEmpty(asm.GlobalClassName))
+                        {
+                            var type = asm.GetType(asm.GlobalClassName);
+                            if (type != null )
+                            {
+                                var methods = type.GetMember(currentToken,BindingFlags.IgnoreCase|BindingFlags.Public|BindingFlags.Static);
+                                if (methods.Length > 0)
+                                {
+                                    return new CompletionType(type);
+                                }
+                            }
+                        }
+                    }
                 }
             }
             foundElement = new CompletionElement(xMethod);

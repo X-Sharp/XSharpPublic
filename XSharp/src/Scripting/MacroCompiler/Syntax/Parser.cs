@@ -168,6 +168,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.NULL_STRING:
                 case TokenType.NULL_SYMBOL:
                 case TokenType.INCOMPLETE_STRING_CONST:
+                case TokenType.INVALID_NUMBER:
                 case TokenType.ARRAY:
                 case TokenType.CODEBLOCK:
                 case TokenType.DATE:
@@ -281,6 +282,8 @@ namespace XSharp.MacroCompiler
                     return new LiteralExpr(ConsumeAndGet());
                 case TokenType.INCOMPLETE_STRING_CONST:
                     throw Error(Lt(), ErrorCode.UnterminatedString);
+                case TokenType.INVALID_NUMBER:
+                    throw Error(Lt(), ErrorCode.InvalidNumber);
                 case TokenType.ARRAY:
                 case TokenType.CODEBLOCK:
                 case TokenType.DATE:

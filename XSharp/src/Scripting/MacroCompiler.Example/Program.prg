@@ -153,6 +153,9 @@ begin namespace MacroCompilerTest
         //EvalMacro(mc, e"{|a,b| asdgfafd(123) }") // FAIL - error message is OK but TestMacro() fails
         //EvalMacro(mc, e"--testclass.nested.eee") // FAIL -- should produce error that a constant cannot be modified
         EvalMacro(mc, e"-testclass.nested.eee")
+        EvalMacro(mc, e"1_000")
+        EvalMacro(mc, e"1000_")
+        EvalMacro(mc, e"123.45e0m")
         wait
 
         RunTests(mc)

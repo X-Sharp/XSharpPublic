@@ -70,6 +70,8 @@ namespace XSharpDebugger
             s_types.Add("Vulcan.__Array", XSharpType.Array);
             s_types.Add("Vulcan.__Psz", XSharpType.Psz);
             s_types.Add("XSharp.__Usual", XSharpType.Usual);
+            s_types.Add("XSharp.__Date", XSharpType.Date);
+            s_types.Add("XSharp.__Float", XSharpType.Float);
             s_types.Add("XSharp.__VODate", XSharpType.Date);
             s_types.Add("XSharp.__VOFloat", XSharpType.Float);
             s_types.Add("XSharp.__Symbol", XSharpType.Symbol);

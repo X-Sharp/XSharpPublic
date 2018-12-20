@@ -83,6 +83,16 @@ namespace XSharpColorizer
             return null;
         }
 
+        public static XSharpTokens GetTokens(this ITextBuffer buffer)
+        {
+            XSharpTokens tokens;
+            if (buffer.Properties.TryGetProperty(typeof(XSharpTokens), out tokens))
+            {
+                return tokens;
+            }
+            return null;
+        }
+
         public static String GetXAMLFile(this ITextBuffer buffer)
         {
             ITextDocument textDoc;

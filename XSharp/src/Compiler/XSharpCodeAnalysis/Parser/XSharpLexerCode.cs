@@ -99,7 +99,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         bool _currentLineHasEos = true;
         int _lastToken = NL;
         IList<ParseErrorData> _lexErrors = new List<ParseErrorData>();
+
         System.Text.StringBuilder _textSb = new System.Text.StringBuilder();
+        int _lineStartCharIndex;
+        int _startCharIndex;
+        int _startColumn;
+        int _startLine;
+        int _tokenType;
+        int _tokenChannel;
+        int _nextChar = 0;
+
         static Object kwlock = new Object();
         static IDictionary<string, int> voKwIds = null;
         static IDictionary<string, int> xppKwIds = null;
@@ -123,506 +132,478 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return _sourcePair;
             }
         }
+
+        void parseOne(int type)
+        {
+            _tokenType = type;
+            _textSb.Append((char)nextChar);
+            InputStream.Consume();
+            _nextChar = 0;
+        }
+
+        void parseOne()
+        {
+            _textSb.Append((char)nextChar);
+            InputStream.Consume();
+            _nextChar = 0;
+        }
+
+        void parseToEol()
+        {
+            while (nextChar != TokenConstants.Eof && nextChar != '\r' && nextChar != '\n')
+                parseOne();
+        }
+
+        bool parseNewLine()
+        {
+            if (nextChar == '\n' || nextChar == '\r')
+            {
+                if (nextChar == '\r' && InputStream.La(2) == '\n')
+                    parseOne();
+                parseOne();
+                Interpreter.Line += 1;
+                Interpreter.Column = 0;
+                _lineStartCharIndex = InputStream.Index;
+                return true;
+            }
+            return nextChar == TokenConstants.Eof;
+        }
+
+        void parseWhitespace()
+        {
+            parseOne(WS);
+            _tokenChannel = TokenConstants.HiddenChannel;
+            while (nextChar == ' ' || nextChar == '\t')
+                parseOne();
+        }
+
+        void parseSlComment()
+        {
+            parseOne(SL_COMMENT);
+            _tokenChannel = TokenConstants.HiddenChannel;
+            parseToEol();
+        }
+
+        void parseDocComment()
+        {
+            parseOne(DOC_COMMENT);
+            _tokenChannel = XMLDOCCHANNEL;
+            HasDocComments = true;
+            parseToEol();
+        }
+
+        void parseMlComment()
+        {
+            _tokenChannel = TokenConstants.HiddenChannel;
+            while (nextChar != TokenConstants.Eof)
+            {
+                if (nextChar == '*' && InputStream.La(2) == '/')
+                    break;
+                if (!parseNewLine())
+                    parseOne();
+            }
+            if (nextChar != TokenConstants.Eof)
+            {
+                parseOne();
+                parseOne();
+            }
+        }
+
+        void parseId()
+        {
+            _tokenType = ID;
+            if (InputStream.La(1) == '@')
+            {
+                parseOne();
+                parseOne();
+            }
+            parseOne();
+            var c = nextChar;
+            while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_'
+                    || (c >= '\u00C0' && c <= '\u00D6') || (c >= '\u00D8' && c <= '\u00F6')
+                    || (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
+                    || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D')
+                    || c == '\u00B7' || (c >= '\u0300' && c <= '\u036F') || (c >= '\u203F' && c <= '\u2040')
+                    )
+            {
+                parseOne();
+                c = nextChar;
+            }
+        }
+
+        void tryParseSymbol()
+        {
+            var c = nextChar;
+            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
+                || (c >= '\u00C0' && c <= '\u00D6') || (c >= '\u00D8' && c <= '\u00F6')
+                || (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
+                || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D'))
+            {
+                parseOne(SYMBOL_CONST);
+                c = nextChar;
+                while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_'
+                        || (c >= '\u00C0' && c <= '\u00D6') || (c >= '\u00D8' && c <= '\u00F6')
+                        || (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
+                        || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D')
+                        || c == '\u00B7' || (c >= '\u0300' && c <= '\u036F') || (c >= '\u203F' && c <= '\u2040')
+                        )
+                {
+                    parseOne();
+                    c = nextChar;
+                }
+                var text = _textSb.ToString().Substring(1);
+                if (KwIds.ContainsKey(text))
+                {
+                    var kwid = KwIds[text];
+                    if (kwid >= FIRST_NULL && kwid <= LAST_NULL && kwid != NULL)
+                    {
+                        // #NIL or #NULL_STRING etc., however #NULL must be allowed as Symbol
+                        _tokenType = NEQ2;
+                        _textSb.Clear();
+                        _textSb.Append('#');
+                        InputStream.Seek(_startCharIndex + 1);
+                    }
+                }
+                else if (text.Equals("USING", StringComparison.OrdinalIgnoreCase))
+                {
+                    _tokenType = USING;
+                }
+                else if (LastToken == NL && text.Equals("PRAGMA", StringComparison.OrdinalIgnoreCase))
+                {
+                    _tokenType = PRAGMA;
+                    _tokenChannel = PRAGMACHANNEL;
+                    HasPragmas = true;
+                    while (nextChar != TokenConstants.Eof && nextChar != '\r' && nextChar != '\n')
+                        parseOne();
+                }
+            }
+        }
+
+        void parseNumber()
+        {
+            _tokenType = nextChar == '.' ? REAL_CONST : INT_CONST;
+            if (nextChar == '.')
+                parseOne();
+            else if (nextChar == '0')
+            {
+                parseOne();
+                if (nextChar == 'x' || nextChar == 'X')
+                {
+                    parseOne(HEX_CONST);
+                    while ((nextChar >= '0' && nextChar <= '9') || (nextChar >= 'A' && nextChar <= 'F') || (nextChar >= 'a' && nextChar <= 'f'))
+                        parseOne();
+                    if (nextChar == 'U' || nextChar == 'L' || nextChar == 'u' || nextChar == 'l')
+                        parseOne();
+                    return;
+                }
+                else if (nextChar == 'b' || nextChar == 'B')
+                {
+                    parseOne(BIN_CONST);
+                    while (nextChar >= '0' && nextChar <= '1')
+                        parseOne();
+                    if (nextChar == 'U' || nextChar == 'u')
+                        parseOne();
+                    return;
+                }
+            }
+            while (nextChar >= '0' && nextChar <= '9')
+                parseOne();
+            if (_tokenType == INT_CONST)
+            {
+                if (nextChar == 'U' || nextChar == 'L' || nextChar == 'u' || nextChar == 'l')
+                {
+                    parseOne();
+                    return;
+                }
+                if (nextChar == '.' && (InputStream.La(2) >= '0' || InputStream.La(2) <= '9'))
+                {
+                    parseOne(REAL_CONST);
+                    while (nextChar >= '0' && nextChar <= '9')
+                        parseOne();
+                }
+            }
+            if (_tokenType == REAL_CONST)
+            {
+                if (nextChar == '.')
+                {
+                    string s = _textSb.ToString();
+                    int z0 = s.IndexOf('.');
+                    if (z0 > 0 && s.Length - z0 > 1 && s.Length - z0 <= 3 && s.Length <= 7)
+                    {
+                        parseOne(DATE_CONST); // append dot
+                                              // append day number
+                        if (nextChar >= '0' && nextChar <= '9')
+                            parseOne();
+                        if (nextChar >= '0' && nextChar <= '9')
+                            parseOne();
+                        return;
+                    }
+                }
+            }
+            if (nextChar == 'E' || nextChar == 'e')
+            {
+                int c2 = InputStream.La(2);
+                int c3 = InputStream.La(3);
+                if (((c2 == '+' || c2 == '-') && (c3 >= '0' && c3 <= '9')) || (c2 >= '0' && c2 <= '9'))
+                {
+                    parseOne(REAL_CONST);
+                    parseOne();
+                    while (nextChar >= '0' && nextChar <= '9')
+                        parseOne();
+                }
+            }
+            if (nextChar == 'S' || nextChar == 'D' || nextChar == 's' || nextChar == 'd' || nextChar == 'M' || nextChar == 'm')
+                parseOne(REAL_CONST);
+        }
+
+        void parseString()
+        {
+            _tokenType = STRING_CONST;
+            if (!AllowSingleQuotedStrings && nextChar == '\'')
+            {
+                _tokenType = CHAR_CONST;
+            }
+            else if (nextChar == 'c' || nextChar == 'C')
+            {
+                parseOne(CHAR_CONST);
+            }
+            else
+            {
+                if (nextChar == 'E' || nextChar == 'e')
+                {
+                    parseOne(ESCAPED_STRING_CONST);
+                }
+                if (nextChar == 'I' || nextChar == 'i')
+                {
+                    parseOne(INTERPOLATED_STRING_CONST);
+                    if (nextChar == 'E' || nextChar == 'e')
+                        parseOne();
+                }
+            }
+            {
+                int q = nextChar;
+                parseOne();
+                bool allow_esc = _tokenType == CHAR_CONST ?
+                    InputStream.La(1) == '\\' && InputStream.La(3) == q : _tokenType != STRING_CONST;
+                bool esc = false;
+                while (nextChar != TokenConstants.Eof && (nextChar != q || esc))
+                {
+                    esc = allow_esc && !esc && nextChar == '\\';
+                    parseOne();
+                }
+                if (nextChar == q)
+                    parseOne();
+                else if (nextChar == TokenConstants.Eof)
+                    _tokenType = INCOMPLETE_STRING_CONST;
+            }
+        }
+
+        int nextChar { get { return _nextChar == 0 ? _nextChar = InputStream.La(1) : _nextChar; } }
+
         public override IToken NextToken()
         {
             XSharpToken t;
             {
-                var _startCharIndex = InputStream.Index;
-                var _startColumn = Interpreter.Column;
-                var _startLine = Interpreter.Line;
-                int _type = -1;
-                int _channel = TokenConstants.DefaultChannel;
-                int c = InputStream.La(1);
-                switch (c)
+                _lineStartCharIndex = InputStream.Index;
+                _startCharIndex = InputStream.Index;
+                _startColumn = Interpreter.Column;
+                _startLine = Interpreter.Line;
+                _tokenType = -1;
+                _tokenChannel = TokenConstants.DefaultChannel;
+                _textSb.Clear();
+                switch (nextChar)
                 {
                     case '(':
-                        _type = LPAREN;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(LPAREN);
                         break;
                     case ')':
-                        _type = RPAREN;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(RPAREN);
                         break;
                     case '{':
-                        _type = LCURLY;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(LCURLY);
                         break;
                     case '}':
-                        _type = RCURLY;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(RCURLY);
                         break;
                     case '[':
-                        _type = LBRKT;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(LBRKT);
                         break;
                     case ']':
-                        _type = RBRKT;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(RBRKT);
                         break;
                     case ':':
-                        _type = COLON;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == ':')
-                        {
-                            _type = COLONCOLON;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        else if (c == '=')
-                        {
-                            _type = ASSIGN_OP;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        parseOne(COLON);
+                        if (nextChar == ':')
+                            parseOne(COLONCOLON);
+                        else if (nextChar == '=')
+                            parseOne(ASSIGN_OP);
                         break;
                     case ',':
-                        _type = COMMA;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(COMMA);
                         break;
                     case '\\':       // used inside #command to escape '<'
-                        _type = BACKSLASH;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(BACKSLASH);
                         break;
                     case '|':
-                        _type = PIPE;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '|')
-                        {
-                            _type = OR;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        else if (c == '=')
-                        {
-                            _type = ASSIGN_BITOR;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        parseOne(PIPE);
+                        if (nextChar == '|')
+                            parseOne(OR);
+                        else if (nextChar == '=')
+                            parseOne(ASSIGN_BITOR);
                         break;
                     case '&':
-                        _type = AMP;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (Dialect.AllowOldStyleComments() && InputStream.La(2) == '&')
-                        {
-                            _type = SL_COMMENT;
-                            _channel = TokenConstants.HiddenChannel;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                            while (c != TokenConstants.Eof && c != '\r' && c != '\n')
-                            {
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                                c = InputStream.La(1);
-                            }
-                        }
-                        else if (c == '&')
-                        {
-                            _type = AND;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        else if (c == '=')
-                        {
-                            _type = ASSIGN_BITAND;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        parseOne(AMP);
+                        if (Dialect.AllowOldStyleComments() && nextChar == '&')
+                            parseSlComment();
+                        else if (nextChar == '&')
+                            parseOne(AND);
+                        else if (nextChar == '=')
+                            parseOne(ASSIGN_BITAND);
                         break;
                     case '@':
                         if (InputStream.La(2) == '@')
-                        {
                             goto default;
-                        }
-                        _type = ADDROF;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(ADDROF);
                         break;
                     case '-':
-                        _type = MINUS;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '>')
-                        {
-                            _type = ALIAS;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        else if (c == '-')
-                        {
-                            _type = DEC;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        else if (c == '=')
-                        {
-                            _type = ASSIGN_SUB;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        parseOne(MINUS);
+                        if (nextChar == '>')
+                            parseOne(ALIAS);
+                        else if (nextChar == '-')
+                            parseOne(DEC);
+                        else if (nextChar == '=')
+                            parseOne(ASSIGN_SUB);
                         break;
                     case '+':
-                        _type = PLUS;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '+')
-                        {
-                            _type = INC;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        else if (c == '=')
-                        {
-                            _type = ASSIGN_ADD;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        parseOne(PLUS);
+                        if (nextChar == '+')
+                            parseOne(INC);
+                        else if (nextChar == '=')
+                            parseOne(ASSIGN_ADD);
                         break;
-
                     case '/':
-                        _type = DIV;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '*')
+                        parseOne(DIV);
+                        if (nextChar == '*')
                         {
-                            _type = ML_COMMENT;
-                            _channel = TokenConstants.HiddenChannel;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                            while (c != TokenConstants.Eof)
-                            {
-                                if (c == '*' && InputStream.La(2) == '/')
-                                    break;
-                                _textSb.Append((char)c);
-                                if (c == '\n')
-                                    Interpreter.Line += 1;
-                                InputStream.Consume();
-                                c = InputStream.La(1);
-                            }
-                            if (c != TokenConstants.Eof)
-                            {
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                                c = InputStream.La(1);
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                                c = InputStream.La(1);
-                            }
+                            parseOne(ML_COMMENT);
+                            parseMlComment();
                             break;
                         }
-                        else if (c == '/')
+                        else if (nextChar == '/')
                         {
-                            _type = SL_COMMENT;
-                            _channel = TokenConstants.HiddenChannel;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                            if (c == '/')
-                            {
-                                _type = DOC_COMMENT;
-                                _channel = XMLDOCCHANNEL;
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                                c = InputStream.La(1);
-                                HasDocComments = true;
-                            }
-                            while (c != TokenConstants.Eof && c != '\r' && c != '\n')
-                            {
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                                c = InputStream.La(1);
-                            }
+                            parseOne(SL_COMMENT);
+                            if (nextChar == '/')
+                                parseDocComment();
+                            else
+                                parseSlComment();
                         }
-                        else if (c == '=')
-                        {
-                            _type = ASSIGN_DIV;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        else if (nextChar == '=')
+                            parseOne(ASSIGN_DIV);
                         break;
                     case '%':
-                        _type = MOD;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '=')
-                        {
-                            _type = ASSIGN_MOD;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        parseOne(MOD);
+                        if (nextChar == '=')
+                            parseOne(ASSIGN_MOD);
                         break;
                     case '^':
-                        _type = EXP;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '=')
-                        {
-                            _type = ASSIGN_EXP;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        parseOne(EXP);
+                        if (nextChar == '=')
+                            parseOne(ASSIGN_EXP);
                         break;
                     case '<':
-                        _type = LT;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '<')
+                        parseOne(LT);
+                        if (nextChar == '<')
                         {
-                            _type = LSHIFT;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                            if (c == '=')
-                            {
-                                _type = ASSIGN_LSHIFT;
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                            }
+                            parseOne(LSHIFT);
+                            if (nextChar == '=')
+                                parseOne(ASSIGN_LSHIFT);
                         }
-                        else if (c == '=')
-                        {
-                            _type = LTE;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        else if (c == '>')
-                        {
-                            _type = NEQ;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        else if (nextChar == '=')
+                            parseOne(LTE);
+                        else if (nextChar == '>')
+                            parseOne(NEQ);
                         break;
                     case '>':
-                        _type = GT;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
+                        parseOne(GT);
                         // GreaterThanGreaterThanToken is synthesized in the parser since it is ambiguous (with closing nested type parameter lists)
-                        if (c == '>' && InputStream.La(2) == '=')
+                        if (nextChar == '>' && InputStream.La(2) == '=')
                         {
-                            _textSb.Append((char)c);    // >
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                            _textSb.Append((char)c);    // =
-                            InputStream.Consume();
-                            _type = ASSIGN_RSHIFT;
-                            InputStream.Consume();
+                            parseOne(); // >
+                            parseOne(ASSIGN_RSHIFT); // =
                         }
-                        else if (c == '=')
-                        {
-                            _type = GTE;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        else if (nextChar == '=')
+                            parseOne(GTE);
                         break;
                     case '~':
-                        _type = TILDE;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '=')
+                        parseOne(TILDE);
+                        if (nextChar == '=')
+                            parseOne(ASSIGN_XOR);
+                        else if (nextChar == '"')           // Old Style Pragma like ~"ONLYEARLY+", treat it as whitespace
                         {
-                            _type = ASSIGN_XOR;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        else if (c == '"')           // Old Style Pragma like ~"ONLYEARLY+", treat it as whitespace
-                        {
-                            _type = WS;
-                            _channel = TokenConstants.HiddenChannel;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            while (c != TokenConstants.Eof)
-                            {
-                                c = InputStream.La(1);
-                                InputStream.Consume();
-                                _textSb.Append((char)c);
-                                if (c == '"')
-                                    break;
-                            }
+                            parseOne(WS);
+                            _tokenChannel = TokenConstants.HiddenChannel;
+                            while (nextChar != TokenConstants.Eof && nextChar != '"')
+                                parseOne();
+                            if (nextChar != TokenConstants.Eof)
+                                parseOne();
                         }
                         break;
                     case '*':
-                        _type = MULT;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
+                        parseOne(MULT);
                         if (LastToken == NL)
+                            parseSlComment();
+                        else if (nextChar == '=')
+                            parseOne(ASSIGN_MUL);
+                        else if (nextChar == '*')
                         {
-                            _type = SL_COMMENT;
-                            _channel = TokenConstants.HiddenChannel;
-                            while (c != TokenConstants.Eof && c != '\r' && c != '\n')
-                            {
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                                c = InputStream.La(1);
-                            }
-                        }
-                        else if (c == '=')
-                        {
-                            _type = ASSIGN_MUL;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        else if (c == '*')
-                        {
-                            _type = EXP;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                            if (c == '=')
-                            {
-                                _type = ASSIGN_EXP;
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                            }
+                            parseOne(EXP);
+                            if (nextChar == '=')
+                                parseOne(ASSIGN_EXP);
                         }
                         break;
                     case '?':
-                        _type = QMARK;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '?')
-                        {
-                            _type = QQMARK;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        parseOne(QMARK);
+                        if (nextChar == '?')
+                            parseOne(QQMARK);
                         break;
                     case '=':
-                        _type = EQ;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '=')
-                        {
-                            _type = EEQ;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        else if (c == '>')
-                        {
-                            _type = UDCSEP;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        parseOne(EQ);
+                        if (nextChar == '=')
+                            parseOne(EEQ);
+                        else if (nextChar == '>')
+                            parseOne(UDCSEP);
                         break;
                     case '$':
-                        _type = SUBSTR;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(SUBSTR);
                         break;
                     case '!':
-                        _type = NOT;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '=')
-                        {
-                            _type = NEQ;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        parseOne(NOT);
+                        if (nextChar == '=')
+                            parseOne(NEQ);
                         break;
                     case ';':
-                        _type = SEMI;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        while (c == ' ' || c == '\t')
+                        parseOne(SEMI);
+                        do
                         {
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                        }
-                        if (c == '/' && InputStream.La(2) == '/')
-                        {
-                            _type = LINE_CONT;
-                            _channel = TokenConstants.HiddenChannel;
-                            while (c != TokenConstants.Eof && c != '\r' && c != '\n')
+                            while (nextChar == ' ' || nextChar == '\t')
+                                parseOne();
+                            if (nextChar == '/' && InputStream.La(2) == '*')
                             {
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                                c = InputStream.La(1);
+                                parseOne();
+                                parseOne();
+                                parseMlComment();
                             }
-                        }
-                        else if (AllowOldStyleComments && c == '&' && InputStream.La(2) == '&')
+                        } while (nextChar == ' ' || nextChar == '\t');
+                        if (nextChar == '/' && InputStream.La(2) == '/')
+                            parseToEol();
+                        else if (AllowOldStyleComments && nextChar == '&' && InputStream.La(2) == '&')
+                            parseToEol();
+                        if (parseNewLine())
                         {
-                            _type = LINE_CONT;
-                            _channel = TokenConstants.HiddenChannel;
-                            while (c != TokenConstants.Eof && c != '\r' && c != '\n')
-                            {
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                                c = InputStream.La(1);
-                            }
+                            _tokenType = LINE_CONT;
+                            _tokenChannel = TokenConstants.HiddenChannel;
                         }
-                        if (c == '\r')
-                        {
-                            if (_type == SEMI) _type = LINE_CONT;
-                            _channel = TokenConstants.HiddenChannel;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                        }
-                        if (c == '\n')
-                        {
-                            if (_type == SEMI) _type = LINE_CONT;
-                            _channel = TokenConstants.HiddenChannel;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                            Interpreter.Line += 1;
-                        }
-                        if (_type == SEMI && _textSb.Length > 1)
+                        if (_tokenType == SEMI && _textSb.Length > 1)
                         {
                             _textSb.Remove(1, _textSb.Length - 1);
                             InputStream.Seek(_startCharIndex + 1);
@@ -633,129 +614,75 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         {
                             goto case '0';
                         }
-                        _type = DOT;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(DOT);
                         if (!_inDottedIdentifier)       // Do not translate .OR., .AND. etc Keywords that are part of a dotted identifier
                         {
                             if (InputStream.La(2) == '.')
                             {
-                                c = InputStream.La(1);
-                                if (c == 'F' || c == 'N' || c == 'f' || c == 'n')
+                                var c1 = nextChar;
+                                if (c1 == 'F' || c1 == 'N' || c1 == 'f' || c1 == 'n')
                                 {
-                                    _type = FALSE_CONST;
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    _textSb.Append('.');
-                                    InputStream.Consume();
+                                    parseOne(FALSE_CONST);
+                                    parseOne();
                                 }
-                                else if (c == 'T' || c == 'Y' || c == 't' || c == 'y')
+                                else if (c1 == 'T' || c1 == 'Y' || c1 == 't' || c1 == 'y')
                                 {
-                                    _type = TRUE_CONST;
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    _textSb.Append('.');
-                                    InputStream.Consume();
+                                    parseOne(TRUE_CONST);
+                                    parseOne();
                                 }
-                                else if (c == '.')
+                                else if (c1 == '.')
                                 {
-                                    _type = ELLIPSIS;
-                                    _textSb.Append('.');
-                                    InputStream.Consume();
-                                    _textSb.Append('.');
-                                    InputStream.Consume();
+                                    parseOne(ELLIPSIS);
+                                    parseOne();
                                 }
                             }
                             else if (InputStream.La(3) == '.')
                             {
-                                c = InputStream.La(1);
+                                var c1 = nextChar;
                                 var c2 = InputStream.La(2);
-                                if ((c == 'O' || c == 'o') && (c2 == 'R' || c2 == 'r'))
+                                if ((c1 == 'O' || c1 == 'o') && (c2 == 'R' || c2 == 'r'))
                                 {
-                                    _type = LOGIC_OR;
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    _textSb.Append((char)c2);
-                                    InputStream.Consume();
-                                    _textSb.Append('.');
-                                    InputStream.Consume();
+                                    parseOne(LOGIC_OR);
+                                    parseOne();
+                                    parseOne();
                                 }
                             }
                             else if (InputStream.La(4) == '.')
                             {
-                                c = InputStream.La(1);
+                                var c1 = nextChar;
                                 var c2 = InputStream.La(2);
                                 var c3 = InputStream.La(3);
-                                if ((c == 'A' || c == 'a') && (c2 == 'N' || c2 == 'n') && (c3 == 'D' || c3 == 'd'))
+                                if ((c1 == 'A' || c1 == 'a') && (c2 == 'N' || c2 == 'n') && (c3 == 'D' || c3 == 'd'))
                                 {
-                                    _type = LOGIC_AND;
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    _textSb.Append((char)c2);
-                                    InputStream.Consume();
-                                    _textSb.Append((char)c3);
-                                    InputStream.Consume();
-                                    _textSb.Append('.');
-                                    InputStream.Consume();
+                                    parseOne(LOGIC_AND);
+                                    parseOne();
+                                    parseOne();
+                                    parseOne();
                                 }
-                                else if ((c == 'N' || c == 'n') && (c2 == 'O' || c2 == 'o') && (c3 == 'T' || c3 == 't'))
+                                else if ((c1 == 'N' || c1 == 'n') && (c2 == 'O' || c2 == 'o') && (c3 == 'T' || c3 == 't'))
                                 {
-                                    _type = LOGIC_NOT;
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    _textSb.Append((char)c2);
-                                    InputStream.Consume();
-                                    _textSb.Append((char)c3);
-                                    InputStream.Consume();
-                                    _textSb.Append('.');
-                                    InputStream.Consume();
+                                    parseOne(LOGIC_NOT);
+                                    parseOne();
+                                    parseOne();
+                                    parseOne();
                                 }
-                                else if ((c == 'X' || c == 'x') && (c2 == 'O' || c2 == 'o') && (c3 == 'R' || c3 == 'r'))
+                                else if ((c1 == 'X' || c1 == 'x') && (c2 == 'O' || c2 == 'o') && (c3 == 'R' || c3 == 'r'))
                                 {
-                                    _type = LOGIC_XOR;
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    _textSb.Append((char)c2);
-                                    InputStream.Consume();
-                                    _textSb.Append((char)c3);
-                                    InputStream.Consume();
-                                    _textSb.Append('.');
-                                    InputStream.Consume();
+                                    parseOne(LOGIC_XOR);
+                                    parseOne();
+                                    parseOne();
+                                    parseOne();
                                 }
                             }
                         }
                         break;
                     case '\r':
                     case '\n':
-                        _type = NL;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        if (c == '\r' && InputStream.La(1) == '\n')
-                        {
-                            c = InputStream.La(1);
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        Interpreter.Line += 1;
-                        c = InputStream.La(1);
-                        Interpreter.Column = 0 - (InputStream.Index - _startCharIndex);
+                        if (parseNewLine()) _tokenType = NL;
                         break;
                     case '\t':
                     case ' ':
-                        _type = WS;
-                        _channel = TokenConstants.HiddenChannel;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        while (c == ' ' || c == '\t')
-                        {
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                        }
+                        parseWhitespace();
                         break;
                     case 'c':
                     case 'C':
@@ -839,89 +766,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     case 'Y':
                     case 'Z':
                     case '_':
-                        _type = ID;
-                        _textSb.Clear();
-                        if (InputStream.La(1) == '@')
-                        {
-                            c = InputStream.La(1);
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                        }
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_'
-                                || (c >= '\u00C0' && c <= '\u00D6') || (c >= '\u00D8' && c <= '\u00F6')
-                                || (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
-                                || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D')
-                                || c == '\u00B7' || (c >= '\u0300' && c <= '\u036F') || (c >= '\u203F' && c <= '\u2040')
-                                )
-                        {
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                        }
+                        parseId();
                         break;
                     case '#':
-                        _type = NEQ2;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
-                            || (c >= '\u00C0' && c <= '\u00D6') || (c >= '\u00D8' && c <= '\u00F6')
-                            || (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
-                            || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D'))
-                        {
-                            _type = SYMBOL_CONST;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                            while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_'
-                                    || (c >= '\u00C0' && c <= '\u00D6') || (c >= '\u00D8' && c <= '\u00F6')
-                                    || (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
-                                    || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D')
-                                    || c == '\u00B7' || (c >= '\u0300' && c <= '\u036F') || (c >= '\u203F' && c <= '\u2040')
-                                    )
-                            {
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                                c = InputStream.La(1);
-                            }
-                            var text = _textSb.ToString().Substring(1);
-                            if (KwIds.ContainsKey(text))
-                            {
-                                var kwid = KwIds[text];
-                                if (kwid >= FIRST_NULL && kwid <= LAST_NULL && kwid != NULL)
-                                {
-                                    // #NIL or #NULL_STRING etc., however #NULL must be allowed as Symbol
-                                    _type = NEQ2;
-                                    _textSb.Clear();
-                                    _textSb.Append("#");
-                                    InputStream.Seek(_startCharIndex + 1);
-                                }
-                            }
-                            if (text.Equals("USING", StringComparison.OrdinalIgnoreCase))
-                            {
-                                _type = USING;
-                            }
-                            else if (LastToken == NL && text.Equals("PRAGMA", StringComparison.OrdinalIgnoreCase))
-                            {
-                                _type = PRAGMA;
-                                _channel = PRAGMACHANNEL;
-                                HasPragmas = true;
-                                while (c != TokenConstants.Eof && c != '\r' && c != '\n')
-                                {
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    c = InputStream.La(1);
-                                }
-                            }
-                        }
+                        parseOne(NEQ2);
+                        tryParseSymbol();
                         break;
                     case '0':
                     case '1':
@@ -933,236 +782,33 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     case '7':
                     case '8':
                     case '9':
-                        _type = c == '.' ? REAL_CONST : INT_CONST;
-                        _textSb.Clear();
-                        if (c == '.')
-                        {
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                        }
-                        else if (c == '0')
-                        {
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                            if (c == 'x' || c == 'X')
-                            {
-                                _type = HEX_CONST;
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                                c = InputStream.La(1);
-                                while ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f'))
-                                {
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    c = InputStream.La(1);
-                                }
-                                if (c == 'U' || c == 'L' || c == 'u' || c == 'l')
-                                {
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    c = InputStream.La(1);
-                                }
-                                break;
-                            }
-                            else if (c == 'b' || c == 'B')
-                            {
-                                _type = BIN_CONST;
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                                c = InputStream.La(1);
-                                while (c >= '0' && c <= '1')
-                                {
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    c = InputStream.La(1);
-                                }
-                                if (c == 'U' || c == 'u')
-                                {
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    c = InputStream.La(1);
-                                }
-                                break;
-                            }
-                        }
-                        while (c >= '0' && c <= '9')
-                        {
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                        }
-                        if (_type == INT_CONST)
-                        {
-                            if (c == 'U' || c == 'L' || c == 'u' || c == 'l')
-                            {
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                                c = InputStream.La(1);
-                                break;
-                            }
-                            if (c == '.' && (InputStream.La(2) >= '0' || InputStream.La(2) <= '9'))
-                            {
-                                _type = REAL_CONST;
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                                c = InputStream.La(1);
-                                while (c >= '0' && c <= '9')
-                                {
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    c = InputStream.La(1);
-                                }
-                            }
-                        }
-                        if (_type == REAL_CONST)
-                        {
-                            if (c == '.')
-                            {
-                                string s = _textSb.ToString();
-                                int z0 = s.IndexOf('.');
-                                if (z0 > 0 && s.Length - z0 > 1 && s.Length - z0 <= 3 && s.Length <= 7)
-                                {
-                                    // append dot
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    c = InputStream.La(1);
-                                    _type = DATE_CONST;
-                                    // append day number
-                                    if (c >= '0' && c <= '9')
-                                    {
-                                        _textSb.Append((char)c);
-                                        InputStream.Consume();
-                                        c = InputStream.La(1);
-                                    }
-                                    if (c >= '0' && c <= '9')
-                                    {
-                                        _textSb.Append((char)c);
-                                        InputStream.Consume();
-                                        c = InputStream.La(1);
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                        if (c == 'E' || c == 'e')
-                        {
-                            _type = REAL_CONST;
-                            int c2 = InputStream.La(2);
-                            int c3 = InputStream.La(3);
-                            if (((c2 == '+' || c2 == '-') && (c3 >= '0' && c3 <= '9')) || (c2 >= '0' && c2 <= '9'))
-                            {
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                                c = InputStream.La(1);
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                                c = InputStream.La(1);
-                                while (c >= '0' && c <= '9')
-                                {
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    c = InputStream.La(1);
-                                }
-                            }
-                        }
-                        if (c == 'S' || c == 'D' || c == 's' || c == 'd' || c == 'M' || c == 'm')
-                        {
-                            _type = REAL_CONST;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                        }
+                        parseNumber();
                         break;
                     case '\'':
                     case '"':
-                        _type = STRING_CONST;
-                        _textSb.Clear();
-                        if (!AllowSingleQuotedStrings && c == '\'')
-                        {
-                            _type = CHAR_CONST;
-                        }
-                        else if (c == 'c' || c == 'C')
-                        {
-                            _type = CHAR_CONST;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                        }
-                        else
-                        {
-                            if (c == 'E' || c == 'e')
-                            {
-                                _type = ESCAPED_STRING_CONST;
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                                c = InputStream.La(1);
-                            }
-                            if (c == 'I' || c == 'i')
-                            {
-                                _type = INTERPOLATED_STRING_CONST;
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                                c = InputStream.La(1);
-                                if (c == 'E' || c == 'e')
-                                {
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    c = InputStream.La(1);
-                                }
-                            }
-                        }
-                        {
-                            int q = c;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                            bool allow_esc = _type == CHAR_CONST ?
-                                InputStream.La(1) == '\\' && InputStream.La(3) == q : _type != STRING_CONST;
-                            bool esc = false;
-                            while (c != TokenConstants.Eof && (c != q || esc))
-                            {
-                                esc = allow_esc && !esc && c == '\\';
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                                c = InputStream.La(1);
-                            }
-                            if (c == q)
-                            {
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                                c = InputStream.La(1);
-                            }
-                            else if (c == TokenConstants.Eof)
-                            {
-                                _type = INCOMPLETE_STRING_CONST;
-                            }
-                        }
+                        parseString();
                         break;
                     default:
-                        if (c == '@')
                         {
-                            c = InputStream.La(3);
+                            var c = nextChar;
+                            if (c == '@')
+                                c = InputStream.La(3);
+                            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
+                                    || (c >= '\u00C0' && c <= '\u00D6') || (c >= '\u00D8' && c <= '\u00F6')
+                                    || (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
+                                    || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D'))
+                                goto case 'a';
                         }
-                        if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
-                                || (c >= '\u00C0' && c <= '\u00D6') || (c >= '\u00D8' && c <= '\u00F6')
-                                || (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
-                                || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D'))
-                            goto case 'a';
-                        if (c == TokenConstants.Eof)
+                        if (nextChar == TokenConstants.Eof)
                         {
-                            _type = Eof;
+                            _tokenType = Eof;
                             break;
                         }
-                        _type = UNRECOGNIZED;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(UNRECOGNIZED);
                         break;
                 }
                 Interpreter.Column += (InputStream.Index - _startCharIndex);
-                t = TokenFactory.Create(this.SourcePair, _type, _textSb.ToString(), _channel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as XSharpToken;
+                t = TokenFactory.Create(this.SourcePair, _tokenType, _textSb.ToString(), _tokenChannel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as XSharpToken;
                 Emit(t);
                 if (t.Type == ML_COMMENT)
                 {

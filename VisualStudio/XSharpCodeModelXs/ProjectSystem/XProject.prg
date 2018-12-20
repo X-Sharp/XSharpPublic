@@ -77,6 +77,7 @@ BEGIN NAMESPACE XSharpModel
                     IF ! String.IsNullorEmpty(reference:Path)
                         AddAssemblyReference(reference:Path)
                     ELSE
+                        // create an assembly reference with the reference object and no real contents
                         assemblyInfo := SystemTypeController.LoadAssembly(reference)
                         SELF:_AssemblyReferences:Add(assemblyInfo)
                         assemblyInfo:AddProject(SELF)
@@ -106,6 +107,13 @@ BEGIN NAMESPACE XSharpModel
                     ENDIF
                 NEXT
 
+            PRIVATE METHOD LoadReference(cDLL as STRING) as VOID
+                SELF:ProjectNode:SetStatusBarText(String.Format("Loading referenced types for project '{0}' from '{1}'", SELF:Name, System.IO.Path.GetFileName(cDLL)))
+                var assemblyInfo := SystemTypeController.LoadAssembly(cDLL)
+                SELF:_AssemblyReferences:Add(assemblyInfo)
+                assemblyInfo:AddProject(SELF)
+                RETURN
+
             PRIVATE METHOD ResolveUnprocessedAssemblyReferences() AS VOID
                 LOCAL loaded AS List<STRING>
                 //
@@ -113,11 +121,8 @@ BEGIN NAMESPACE XSharpModel
                     SELF:WriteOutputMessage("ResolveUnprocessedAssemblyReferences()")
                     loaded := List<STRING>{}
                     FOREACH path AS STRING IN SELF:_unprocessedAssemblyReferences:Keys
-                        LOCAL assemblyInfo AS AssemblyInfo
                         IF System.IO.File.Exists(path)
-                            assemblyInfo := SystemTypeController.LoadAssembly(path)
-                            SELF:_AssemblyReferences:Add(assemblyInfo)
-                            assemblyInfo:AddProject(SELF)
+                            SELF:LoadReference(path)
                             loaded:Add(path)
                         ENDIF
                     NEXT
@@ -128,6 +133,7 @@ BEGIN NAMESPACE XSharpModel
                         ENDIF
                     NEXT
                     SELF:_clearTypeCache()
+                    SELF:ProjectNode:SetStatusBarText("")
                 ENDIF
                 RETURN
 

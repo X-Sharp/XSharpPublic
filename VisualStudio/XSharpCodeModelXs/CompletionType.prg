@@ -155,7 +155,14 @@ BEGIN NAMESPACE XSharpModel
 			IF ! String.IsNullOrEmpty(defaultNS)
 				usings:Add(defaultNS)
 			ENDIF
-			SELF:CheckType(typeName, xFile, usings)
+            // For fully qualified typenames, search without usings first. That is usually faster
+            IF typename:Contains(".")
+                SELF:CheckType(typeName, xFile, List<String>{})
+            endif
+            IF ! SELF:IsInitialized
+                // Now check all usings
+			    SELF:CheckType(typeName, xFile, usings)
+            ENDIF
 
 		INTERNAL METHOD SimpleTypeToSystemType(kw AS STRING) AS System.Type
 			//

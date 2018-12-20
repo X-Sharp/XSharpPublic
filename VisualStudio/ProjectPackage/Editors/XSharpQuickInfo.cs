@@ -34,7 +34,10 @@ namespace XSharp.Project
         private string lastHelp = "";
         private ITrackingSpan lastSpan = null;
         private int lastVersion = -1;
-
+        static void WriteOutputMessage(string message)
+        {
+            XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharp.QuickInfoSource :" + message);
+        }
         public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> qiContent, out ITrackingSpan applicableToSpan)
         {
             applicableToSpan = null;
@@ -56,17 +59,18 @@ namespace XSharp.Project
                         return;
                     }
                     ITextSnapshot currentSnapshot = subjectTriggerPoint.Value.Snapshot;
+                    WriteOutputMessage($"Triggerpoint: {subjectTriggerPoint.Value.Position}");
 
                     if ( (subjectTriggerPoint.Value.Position == lastTriggerPoint) && ( lastVersion == currentSnapshot.Version.VersionNumber ) )
                     {
                         if (!string.IsNullOrEmpty(lastHelp))
                         {
                             qiContent.Add(lastHelp);
+                            WriteOutputMessage($"Return last help content: {lastHelp}");
                         }
-                        if (lastSpan != null)
+                        if (lastSpan != null   )
                         {
-                            applicableToSpan = currentSnapshot.CreateTrackingSpan(
-                                lastSpan.GetSpan(currentSnapshot), SpanTrackingMode.EdgeInclusive);
+                            applicableToSpan = lastSpan;
                         }
                         return;
                     }
@@ -171,6 +175,8 @@ namespace XSharp.Project
                             lastHelp = (string)qiContent[0];
                             lastSpan = applicableToSpan;
                             lastVersion = currentSnapshot.Version.VersionNumber;
+                            WriteOutputMessage($"Found new help content: {lastHelp}");
+
                         }
                         return;
                     }

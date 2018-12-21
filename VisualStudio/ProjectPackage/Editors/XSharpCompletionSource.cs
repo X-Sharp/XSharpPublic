@@ -2317,9 +2317,12 @@ namespace XSharpLanguage
             if (lineNT != lineTP)
             {
                 // should not happen.
-                //return tokenList;
+                //return tokenList;           
             }
-            nextToken = list[((XSharpToken)nextToken).OriginalTokenIndex + 1];
+            if (nextToken.Type != XSharpLexer.EOS)
+            {
+                nextToken = list[((XSharpToken)nextToken).OriginalTokenIndex + 1];
+            }
             if (stopToken == null)
             {
                 stopToken = nextToken;
@@ -2343,6 +2346,7 @@ namespace XSharpLanguage
                 tokenList.Add(token);
             triggerToken = GetPreviousToken(tokens, nextToken);
             //
+            bool inCtor = false;
             while (triggerToken != null)
             {
                 token = triggerToken.Text;
@@ -2375,6 +2379,7 @@ namespace XSharpLanguage
                             break;
                         // ...
                         token = "{}";
+                        inCtor = true;
                         break;
                     case XSharpLexer.ASSIGN_OP:
                     //case XSharpLexer.COMMA:
@@ -2403,6 +2408,7 @@ namespace XSharpLanguage
                                     break;
                                 case XSharpLexer.LCURLY:
                                     token = "{}";
+                                    inCtor = true;
                                     break;
                                 case XSharpLexer.LBRKT:
                                     token = "[]";
@@ -2433,7 +2439,7 @@ namespace XSharpLanguage
                             token = null;
                             triggerToken = null;
                         }
-                        else if (XSharpLexer.IsOperator(triggerToken.Type))
+                        else if (XSharpLexer.IsOperator(triggerToken.Type) && !inCtor)
                         {
                             token = null;
                             triggerToken = null;
@@ -2468,8 +2474,40 @@ namespace XSharpLanguage
                     if (returnList.Count > 0)
                     {
                         String prevToken = returnList[returnList.Count - 1];
-                        prevToken = prevToken + token;
-                        returnList[returnList.Count - 1] = prevToken;
+                        if (prevToken == ">")
+                        {
+                            // Do we have a "<" ?
+                            int leftGen = 0;
+                            while (leftGen < returnList.Count)
+                            {
+                                if (returnList[leftGen] == "<")
+                                {
+                                    break;
+                                }
+                                leftGen++;
+                            }
+                            if ((leftGen < returnList.Count) && (leftGen > 0))
+                            {
+                                List<String> dummyList = new List<string>();
+                                for (int j = 0; j < leftGen; j++)
+                                    dummyList.Add(returnList[j]);
+                                // Now, concat up to ">"
+                                String genType = "";
+                                for (int j = leftGen; j <= returnList.Count - 1; j++)
+                                {
+                                    genType += returnList[j];
+                                }
+                                //
+                                genType += token;
+                                dummyList[dummyList.Count - 1] = dummyList[dummyList.Count - 1] + genType;
+                                returnList = dummyList;
+                            }
+                        }
+                        else
+                        {
+                            prevToken = prevToken + token;
+                            returnList[returnList.Count - 1] = prevToken;
+                        }
                     }
                 }
                 else if ((token.CompareTo(".") == 0) && !dotAsSelector)
@@ -2872,13 +2910,34 @@ namespace XSharpLanguage
                     if (foundElement != null)
                     {
                         // and we are in an Array, so we need the "other" type
-                        if (inArray && foundElement.IsGeneric)
+                        if (inArray)
                         {
-                            // Retrieve the inner Type
-                            if (foundElement.XSharpElement != null)
+                            if (foundElement.IsGeneric)
                             {
-                                if (!String.IsNullOrEmpty(foundElement.GenericTypeName))
-                                    cType = new CompletionType(foundElement.GenericTypeName, file, file.Usings);
+                                // Retrieve the inner Type
+                                if (foundElement.XSharpElement != null)
+                                {
+                                    if (!String.IsNullOrEmpty(foundElement.GenericTypeName))
+                                    {
+                                        if (foundElement.GenericTypeName.Contains(','))
+                                        {
+                                            // Ok, this is might be wrong, but...
+                                            String[] items = foundElement.GenericTypeName.Split(',');
+                                            if (items.Length > 1)
+                                                cType = new CompletionType(items[1], file, file.Usings);
+                                        }
+                                        else
+                                            cType = new CompletionType(foundElement.GenericTypeName, file, file.Usings);
+                                    }
+                                }
+                            }
+                            else if (foundElement.IsArray)
+                            {
+                                // Retrieve the inner Type
+                                if (foundElement.XSharpElement != null)
+                                {
+                                    cType = foundElement.ReturnType;
+                                }
                             }
                         }
                         else if (foundElement.IsArray)
@@ -3057,9 +3116,28 @@ namespace XSharpLanguage
                                 IToken _stopToken;
                                 List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint, xVar.Range.StartLine, snapshot, out _stopToken, false, xVar.File, false, member);
                                 cType = XSharpTokenTools.RetrieveType(xVar.File, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine);
-                                if (cType != null)
+                                if (foundElement != null)
                                 {
-                                    xVar.TypeName = cType.FullName;
+                                    // Let's set the Std Type for this VAR
+                                    xVar.TypeName = foundElement.ReturnType.FullName;
+                                    // and now, correct it
+                                    if (xVar.VarDefinition.AfterIn)
+                                    {
+                                        if (foundElement.IsGeneric)
+                                        {
+                                            if (foundElement.GenericTypeName.Contains(','))
+                                            {
+                                                // Ok, this is bad, but... temporary solution
+                                                String[] items = foundElement.GenericTypeName.Split(',');
+                                                if (items.Length == 2)
+                                                    xVar.TypeName = "KeyValuePair<" + foundElement.GenericTypeName + ">";
+                                                else
+                                                    xVar.TypeName = items[0];
+                                            }
+                                            else
+                                                xVar.TypeName = foundElement.GenericTypeName;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -3917,6 +3995,11 @@ namespace XSharpLanguage
                             this.isGeneric = true;
                         cType = new CompletionType(searchTypeName, xv.File, xv.FileUsings);
                     }
+                    else if (this.XSharpElement is XType)
+                    {
+                        XType xt = (XType)this.XSharpElement;
+                        cType = new CompletionType(xt.FullName, xt.File, xt.FileUsings);
+                    }
                 }
                 else
                 {
@@ -3962,8 +4045,9 @@ namespace XSharpLanguage
                         {
                             searchTypeName = searchTypeName.Substring(genMarker + 1);
                             searchTypeName = searchTypeName.Substring(0, searchTypeName.Length - 1);
-                            String[] items = searchTypeName.Split(',');
-                            ret = items[0];
+                            ret = searchTypeName;
+                            //String[] items = searchTypeName.Split(',');
+                            //ret = items[0];
                         }
                     }
                 }

@@ -412,7 +412,7 @@ FUNCTION OrdListRebuild ()  AS LOGIC STRICT
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION OrdName(uOrder, cOrdBag) AS LOGIC CLIPPER
+FUNCTION OrdName(uOrder, cOrdBag) AS USUAL CLIPPER
 	
 	IF IsNil(cOrdBag)
 		cOrdBag := ""

@@ -1903,6 +1903,9 @@ CLASS XSharp.CoreDb
         
         /// <summary>Return exception object from last RDD operation.</summary>    
     STATIC METHOD  _ErrInfoPtr AS Exception
+        IF RuntimeState.LastRDDError == NULL
+            RuntimeState.LastRDDError := Exception {"No RDD Exception found in the runtime state"}
+        ENDIF
         RETURN RuntimeState.LastRDDError
         
 END CLASS    

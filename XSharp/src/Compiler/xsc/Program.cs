@@ -25,6 +25,11 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine
         {
             try
             {
+#if NET46
+#if DEBUG
+                System.Diagnostics.Debug.Listeners.Add(new System.Diagnostics.ConsoleTraceListener());
+#endif
+#endif
                 return MainCore(args);
             }
             catch (FileNotFoundException e)

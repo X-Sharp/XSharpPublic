@@ -38,7 +38,7 @@ BEGIN NAMESPACE XSharpModel
             lookupTable:Add("Vulcan.__VOFloat", "FLOAT")
             lookupTable:Add("Vulcan.__WinBool", "LOGIC")
             lookupTable:Add("XSharp._CodeBlock", "CODEBLOCK")
-            lookupTable:Add("XSharp.__Array", "UINT64")
+            lookupTable:Add("XSharp.__Array", "ARRAY")
             lookupTable:Add("XSharp.__Psz", "PSZ")
             lookupTable:Add("XSharp.__Symbol", "SYMBOL")
             lookupTable:Add("XSharp.__Usual", "USUAL")

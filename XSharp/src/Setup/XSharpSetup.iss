@@ -206,9 +206,10 @@ Name: "main\script";      Description: "Register .prgx as X# Script extension"; 
 Name: "main\ngen";        Description: "Optimize performance by generating native images";  Types: full custom;         Flags: disablenouninstallwarning;    
 Name: "main\gac";         Description: "Register runtime DLLs in the GAC (recommended !)";  Types: full custom;         Flags: disablenouninstallwarning; 
 Name: "vs2015";           Description: "Visual Studio 2015 Integration";                    Types: full custom;         Flags: disablenouninstallwarning;  Check: Vs2015IsInstalled; 
-Name: "vs2015\help";      Description: "Install offline VS documentation";                  Types: full custom;         Flags: disablenouninstallwarning;  Check: HelpViewer22Found; 
+Name: "vs2015\help";      Description: "Install offline VS 2015 documentation";             Types: full custom;         Flags: disablenouninstallwarning;  Check: HelpViewer22Found; 
 Name: "vs2017";           Description: "Visual Studio 2017 & 2019 Integration";             Types: full custom;         Flags: disablenouninstallwarning;  Check: vs2017IsInstalled or Vs2019IsInstalled; 
-Name: "vs2017\help";      Description: "Install offline VS documentation";                  Types: full custom;         Flags: disablenouninstallwarning;  Check: vs2017IsInstalled; 
+; Note: if you change the text in the next line remember to also adjust the text in the code that changes this line when the 2017 helpviewer is not installed
+Name: "vs2017\help";      Description: "Install offline VS 2017 documentation";             Types: full custom;         Flags: disablenouninstallwarning;  Check: vs2017IsInstalled; 
 Name: "xide";             Description: "Include the XIDE {# XIDEVersion} installer";        Types: full custom;         Flags: disablenouninstallwarning;
 
 

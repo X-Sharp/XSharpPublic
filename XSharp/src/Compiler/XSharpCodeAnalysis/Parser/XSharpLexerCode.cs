@@ -206,14 +206,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         void parseSlComment()
         {
-            parseOne(SL_COMMENT);
+            parseType(SL_COMMENT);
             _tokenChannel = TokenConstants.HiddenChannel;
             parseToEol();
         }
 
         void parseDocComment()
         {
-            parseOne(DOC_COMMENT);
+            parseType(DOC_COMMENT);
             _tokenChannel = XMLDOCCHANNEL;
             HasDocComments = true;
             parseToEol();
@@ -298,10 +298,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 else if (LastToken == NL && text.Equals("PRAGMA", StringComparison.OrdinalIgnoreCase))
                 {
                     parseType(PRAGMA);
+                    parseToEol();
                     _tokenChannel = PRAGMACHANNEL;
                     HasPragmas = true;
-                    while (La_1 != TokenConstants.Eof && La_1 != '\r' && La_1 != '\n')
-                        parseOne();
                 }
             }
         }
@@ -978,7 +977,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 _currentLineHasEos = false;
             }
-            else if (!_currentLineHasEos && type == Eof)
+            else if (!_currentLineHasEos && type == TokenConstants.Eof)
             {
                 t.Type = EOS;
                 _currentLineHasEos = true;

@@ -1373,7 +1373,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                addParseError(new ParseErrorData(Lt(), ErrorCode.ERR_UnexpectedDirective));
+                addParseError(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Unexpected #endif"));
                 writeToPPO(line, true);
             }
             checkForUnexpectedPPInput(line, 1);

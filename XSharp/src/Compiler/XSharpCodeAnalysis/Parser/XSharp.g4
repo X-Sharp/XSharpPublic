@@ -991,6 +991,7 @@ literalValue        : Token=
                     | BIN_CONST
                     | REAL_CONST
                     | INT_CONST
+                    | INVALID_NUMBER
                     | DATE_CONST
                     | NIL
                     | NULL

@@ -104,6 +104,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var errdata = new ParseErrorData(anchor, err);
                 _parseErrors.Add(errdata);
             }
+            else if (node.Symbol.Type == XSharpLexer.INVALID_NUMBER)
+            {
+                var err = ErrorCode.ERR_InvalidNumber;
+                IToken anchor = node.Symbol;
+                var errdata = new ParseErrorData(anchor, err);
+                _parseErrors.Add(errdata);
+            }
             //else
             //{
             //    _parseErrors.Add(new ParseErrorData(node, ErrorCode.ERR_SyntaxError, node));
@@ -194,7 +201,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     anchor = context.Start;
                 var errdata = new ParseErrorData(anchor, err);
                 _parseErrors.Add(errdata);
-
+            }
+            else if (context.Token.Type == XSharpLexer.INVALID_NUMBER)
+            {
+                var err = ErrorCode.ERR_InvalidNumber;
+                IToken anchor = context.Stop;
+                if (anchor == null)
+                    anchor = context.Start;
+                var errdata = new ParseErrorData(anchor, err);
+                _parseErrors.Add(errdata);
             }
         }
     }

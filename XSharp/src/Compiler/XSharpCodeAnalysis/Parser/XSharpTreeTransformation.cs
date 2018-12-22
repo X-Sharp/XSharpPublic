@@ -821,6 +821,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             type = _objectType;
                         break;
 
+                    case XP.INVALID_NUMBER:
+                        type = _objectType;
+                        break;
+
                     case XP.STRING_CONST:
                     case XP.ESCAPED_STRING_CONST:
                     case XP.INTERPOLATED_STRING_CONST:

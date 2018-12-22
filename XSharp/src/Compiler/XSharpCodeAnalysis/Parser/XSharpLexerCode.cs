@@ -279,6 +279,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         void parseNumber()
         {
             _tokenType = La_1 == '.' ? REAL_CONST : INT_CONST;
+            bool invalid = false;
             if (La_1 == '.')
                 parseOne();
             else if (La_1 == '0')
@@ -287,36 +288,48 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 if (La_1 == 'x' || La_1 == 'X')
                 {
                     parseOne(HEX_CONST);
-                    while ((La_1 >= '0' && La_1 <= '9') || (La_1 >= 'A' && La_1 <= 'F') || (La_1 >= 'a' && La_1 <= 'f'))
+                    while ((La_1 >= '0' && La_1 <= '9') || (La_1 >= 'A' && La_1 <= 'F') || (La_1 >= 'a' && La_1 <= 'f') || La_1 == '_')
                         parseOne();
+                    if (_textSb[_textSb.Length-1]== '_') invalid = true;
                     if (La_1 == 'U' || La_1 == 'L' || La_1 == 'u' || La_1 == 'l')
                         parseOne();
+                    if (invalid)
+                        _tokenType = INVALID_NUMBER;
                     return;
                 }
                 else if (La_1 == 'b' || La_1 == 'B')
                 {
                     parseOne(BIN_CONST);
-                    while (La_1 >= '0' && La_1 <= '1')
+                    while (La_1 >= '0' && La_1 <= '1' || La_1 == '_')
                         parseOne();
                     if (La_1 == 'U' || La_1 == 'u')
                         parseOne();
+                    if (invalid)
+                        _tokenType = INVALID_NUMBER;
                     return;
                 }
             }
-            while (La_1 >= '0' && La_1 <= '9')
+            while ((La_1 >= '0' && La_1 <= '9') || La_1 == '_')
                 parseOne();
+            if (_textSb[_textSb.Length - 1] == '_') invalid = true;
             if (_tokenType == INT_CONST)
             {
                 if (La_1 == 'U' || La_1 == 'L' || La_1 == 'u' || La_1 == 'l')
                 {
                     parseOne();
+                    if (invalid)
+                        _tokenType = INVALID_NUMBER;
                     return;
                 }
                 if (La_1 == '.')
                 {
                     parseOne(REAL_CONST);
-                    while (La_1 >= '0' && La_1 <= '9')
-                        parseOne();
+                    if (La_1 >= '0' && La_1 <= '9')
+                    {
+                        while ((La_1 >= '0' && La_1 <= '9') || La_1 == '_')
+                            parseOne();
+                        if (_textSb[_textSb.Length - 1] == '_') invalid = true;
+                    }
                 }
             }
             if (_tokenType == REAL_CONST)
@@ -325,7 +338,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     string s = _textSb.ToString();
                     int z0 = s.IndexOf('.');
-                    if (z0 > 0 && z0 <= 4 && s.Length > z0 + 1 && s.Length <= 7)
+                    if (z0 > 0 && z0 <= 4 && s.Length > z0 + 1 && s.Length <= 7 && !s.Contains("_"))
                     {
                         parseOne(DATE_CONST); // append dot
                                               // append day number
@@ -347,12 +360,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     parseOne(REAL_CONST);   // e
                     parseOne();             // +/-
-                    while (La_1 >= '0' && La_1 <= '9')
+                    while ((La_1 >= '0' && La_1 <= '9') || La_1 == '_')
                         parseOne();
+                    if (_textSb[_textSb.Length - 1] == '_') invalid = true;
                 }
             }
             if (La_1 == 'S' || La_1 == 'D' || La_1 == 's' || La_1 == 'd')
                 parseOne(REAL_CONST);
+            if (invalid)
+                _tokenType = INVALID_NUMBER;
         }
 
         void parseString()
@@ -824,6 +840,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             if (findKeyWord(t, _lastToken))
             {
                 type = t.Type;
+            }
+            else if (type == REAL_CONST || type == INT_CONST || type == HEX_CONST || type == BIN_CONST)
+            {
+                t.Text = t.Text.Replace("_", "");
             }
             else if (type == SYMBOL_CONST && (LastToken == NL || LastToken == UDCSEP))
             {

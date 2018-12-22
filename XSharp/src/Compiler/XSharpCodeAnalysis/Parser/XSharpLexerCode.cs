@@ -157,6 +157,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             _tokenType = type;
         }
 
+        void parseSkip()
+        {
+            InputStream.Consume();
+        }
+
         void parseOne(int type)
         {
             parseType(type);
@@ -443,6 +448,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             XSharpToken t;
             {
                 parseInit();
+                if (La_1 == '\uFEFF') parseSkip();
                 switch (La_1)
                 {
                     case '(':

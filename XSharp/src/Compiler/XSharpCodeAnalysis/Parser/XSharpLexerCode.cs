@@ -132,9 +132,34 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
-        void parseOne(int type)
+        int La_1 { get { return InputStream.La(1); } }
+        int La_2 { get { return InputStream.La(2); } }
+        int La_3 { get { return InputStream.La(3); } }
+        int La_4 { get { return InputStream.La(4); } }
+
+        void parseInit()
+        {
+            _lineStartCharIndex = InputStream.Index;
+            _startCharIndex = InputStream.Index;
+            _startColumn = Interpreter.Column;
+            _startLine = Interpreter.Line;
+            _tokenType = -2;
+            _tokenChannel = TokenConstants.DefaultChannel;
+            _textSb.Clear();
+        }
+
+        int parseType() => _tokenType;
+
+        bool parsingFailed() => _tokenType == -2;
+
+        void parseType(int type)
         {
             _tokenType = type;
+        }
+
+        void parseOne(int type)
+        {
+            parseType(type);
             _textSb.Append((char)La_1);
             InputStream.Consume();
         }
@@ -151,7 +176,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 parseOne();
         }
 
-        bool parseNewLine()
+        bool tryParseNewLine()
         {
             if (La_1 == '\n' || La_1 == '\r')
             {
@@ -196,7 +221,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 if (La_1 == '*' && La_2 == '/')
                     break;
-                if (!parseNewLine())
+                if (!tryParseNewLine())
                     parseOne();
             }
             if (La_1 != TokenConstants.Eof)
@@ -208,8 +233,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         void parseId()
         {
-            _tokenType = ID;
-            if (InputStream.La(1) == '@')
+            parseType(ID);
+            if (La_1 == '@' && La_2 == '@')
             {
                 parseOne();
                 parseOne();
@@ -228,7 +253,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
-        void tryParseSymbol()
+        void parseSymbol()
         {
             var c = La_1;
             if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
@@ -255,7 +280,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     if (kwid >= FIRST_NULL && kwid <= LAST_NULL && kwid != NULL)
                     {
                         // #NIL or #NULL_STRING etc., however #NULL must be allowed as Symbol
-                        _tokenType = NEQ2;
+                        parseType(NEQ2);
                         _textSb.Clear();
                         _textSb.Append('#');
                         InputStream.Seek(_startCharIndex + 1);
@@ -263,11 +288,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
                 else if (text.Equals("USING", StringComparison.OrdinalIgnoreCase))
                 {
-                    _tokenType = USING;
+                    parseType(USING);
                 }
                 else if (LastToken == NL && text.Equals("PRAGMA", StringComparison.OrdinalIgnoreCase))
                 {
-                    _tokenType = PRAGMA;
+                    parseType(PRAGMA);
                     _tokenChannel = PRAGMACHANNEL;
                     HasPragmas = true;
                     while (La_1 != TokenConstants.Eof && La_1 != '\r' && La_1 != '\n')
@@ -278,7 +303,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         void parseNumber()
         {
-            _tokenType = La_1 == '.' ? REAL_CONST : INT_CONST;
+            parseType(La_1 == '.' ? REAL_CONST : INT_CONST);
             bool invalid = false;
             if (La_1 == '.')
                 parseOne();
@@ -294,7 +319,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     if (La_1 == 'U' || La_1 == 'L' || La_1 == 'u' || La_1 == 'l')
                         parseOne();
                     if (invalid)
-                        _tokenType = INVALID_NUMBER;
+                        parseType(INVALID_NUMBER);
                     return;
                 }
                 else if (La_1 == 'b' || La_1 == 'B')
@@ -305,20 +330,20 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     if (La_1 == 'U' || La_1 == 'u')
                         parseOne();
                     if (invalid)
-                        _tokenType = INVALID_NUMBER;
+                        parseType(INVALID_NUMBER);
                     return;
                 }
             }
             while ((La_1 >= '0' && La_1 <= '9') || La_1 == '_')
                 parseOne();
             if (_textSb[_textSb.Length - 1] == '_') invalid = true;
-            if (_tokenType == INT_CONST)
+            if (parseType() == INT_CONST)
             {
                 if (La_1 == 'U' || La_1 == 'L' || La_1 == 'u' || La_1 == 'l')
                 {
                     parseOne();
                     if (invalid)
-                        _tokenType = INVALID_NUMBER;
+                        parseType(INVALID_NUMBER);
                     return;
                 }
                 if (La_1 == '.')
@@ -332,7 +357,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                 }
             }
-            if (_tokenType == REAL_CONST)
+            if (parseType() == REAL_CONST)
             {
                 if (La_1 == '.')
                 {
@@ -368,15 +393,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             if (La_1 == 'S' || La_1 == 'D' || La_1 == 's' || La_1 == 'd')
                 parseOne(REAL_CONST);
             if (invalid)
-                _tokenType = INVALID_NUMBER;
+                parseType(INVALID_NUMBER);
         }
 
         void parseString()
         {
-            _tokenType = STRING_CONST;
+            parseType(STRING_CONST);
             if (!AllowSingleQuotedStrings && La_1 == '\'')
             {
-                _tokenType = CHAR_CONST;
+                parseType(CHAR_CONST);
             }
             else if (La_1 == 'c' || La_1 == 'C')
             {
@@ -398,8 +423,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 int q = La_1;
                 parseOne();
-                bool allow_esc = _tokenType == CHAR_CONST ?
-                    InputStream.La(1) == '\\' && La_3 == q : _tokenType != STRING_CONST;
+                bool allow_esc = parseType() == CHAR_CONST ?
+                    La_1 == '\\' && La_3 == q : parseType() != STRING_CONST;
                 bool esc = false;
                 while (La_1 != TokenConstants.Eof && (La_1 != q || esc))
                 {
@@ -409,26 +434,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 if (La_1 == q)
                     parseOne();
                 else if (La_1 == TokenConstants.Eof)
-                    _tokenType = INCOMPLETE_STRING_CONST;
+                    parseType(INCOMPLETE_STRING_CONST);
             }
         }
-
-        int La_1 { get { return InputStream.La(1); } }
-        int La_2 { get { return InputStream.La(2); } }
-        int La_3 { get { return InputStream.La(3); } }
-        int La_4 { get { return InputStream.La(4); } }
 
         public override IToken NextToken()
         {
             XSharpToken t;
             {
-                _lineStartCharIndex = InputStream.Index;
-                _startCharIndex = InputStream.Index;
-                _startColumn = Interpreter.Column;
-                _startLine = Interpreter.Line;
-                _tokenType = -1;
-                _tokenChannel = TokenConstants.DefaultChannel;
-                _textSb.Clear();
+                parseInit();
                 switch (La_1)
                 {
                     case '(':
@@ -616,12 +630,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             parseToEol();
                         else if (AllowOldStyleComments && La_1 == '&' && La_2 == '&')
                             parseToEol();
-                        if (parseNewLine())
+                        if (tryParseNewLine())
                         {
-                            _tokenType = LINE_CONT;
+                            parseType(LINE_CONT);
                             _tokenChannel = TokenConstants.HiddenChannel;
                         }
-                        if (_tokenType == SEMI && _textSb.Length > 1)
+                        if (parseType() == SEMI && _textSb.Length > 1)
                         {
                             _textSb.Remove(1, _textSb.Length - 1);
                             InputStream.Seek(_startCharIndex + 1);
@@ -696,7 +710,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         break;
                     case '\r':
                     case '\n':
-                        if (parseNewLine()) _tokenType = NL;
+                        if (tryParseNewLine()) parseType(NL);
                         break;
                     case '\t':
                     case ' ':
@@ -788,7 +802,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         break;
                     case '#':
                         parseOne(NEQ2);
-                        tryParseSymbol();
+                        parseSymbol();
                         break;
                     case '0':
                     case '1':
@@ -817,13 +831,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                     || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D'))
                                 goto case 'a';
                         }
-                        if (La_1 == TokenConstants.Eof)
-                        {
-                            _tokenType = Eof;
-                            break;
-                        }
-                        parseOne(UNRECOGNIZED);
                         break;
+                }
+                if (parsingFailed())
+                {
+                    if (La_1 == TokenConstants.Eof)
+                        parseType(Eof);
+                    else
+                        parseOne(UNRECOGNIZED);
                 }
                 Interpreter.Column += (InputStream.Index - _startCharIndex);
                 t = TokenFactory.Create(this.SourcePair, _tokenType, _textSb.ToString(), _tokenChannel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as XSharpToken;
@@ -904,7 +919,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     // Check if the current token is a valid Identifier (starts with A..Z or _) and is followed by a DOT
                     // In that case we change the type from Keyword to ID
-                    if (_isValidIdentifier(t) && InputStream.La(1) == (int)'.')
+                    if (_isValidIdentifier(t) && La_1 == (int)'.')
                     {
                         if (t.Type != SELF && t.Type != SUPER)
                         {

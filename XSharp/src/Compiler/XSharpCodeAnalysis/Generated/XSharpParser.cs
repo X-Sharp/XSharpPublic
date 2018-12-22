@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\XSharp\Dev\XSharp\src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 by ANTLR 4.6.1-SNAPSHOT
+// Generated from F:\Projects\XSharp\XSharp\src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 by ANTLR 4.6.1-SNAPSHOT
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -75,15 +75,15 @@ public partial class XSharpParser : Parser {
 		RBRKT=263, COLON=264, COMMA=265, PIPE=266, AMP=267, ADDROF=268, ALIAS=269, 
 		DOT=270, COLONCOLON=271, BACKSLASH=272, ELLIPSIS=273, LAST_OPERATOR=274, 
 		FIRST_CONSTANT=275, FALSE_CONST=276, TRUE_CONST=277, HEX_CONST=278, BIN_CONST=279, 
-		INT_CONST=280, DATE_CONST=281, REAL_CONST=282, SYMBOL_CONST=283, CHAR_CONST=284, 
-		STRING_CONST=285, ESCAPED_STRING_CONST=286, INTERPOLATED_STRING_CONST=287, 
-		INCOMPLETE_STRING_CONST=288, LAST_CONSTANT=289, PP_FIRST=290, PP_COMMAND=291, 
-		PP_DEFINE=292, PP_ELSE=293, PP_ENDIF=294, PP_ENDREGION=295, PP_ERROR=296, 
-		PP_IFDEF=297, PP_IFNDEF=298, PP_INCLUDE=299, PP_LINE=300, PP_REGION=301, 
-		PP_TRANSLATE=302, PP_UNDEF=303, PP_WARNING=304, PP_LAST=305, MACRO=306, 
-		UDCSEP=307, ID=308, KWID=309, PRAGMA=310, DOC_COMMENT=311, SL_COMMENT=312, 
-		ML_COMMENT=313, LINE_CONT=314, LINE_CONT_OLD=315, SEMI=316, WS=317, NL=318, 
-		EOS=319, UNRECOGNIZED=320;
+		INT_CONST=280, DATE_CONST=281, REAL_CONST=282, INVALID_NUMBER=283, SYMBOL_CONST=284, 
+		CHAR_CONST=285, STRING_CONST=286, ESCAPED_STRING_CONST=287, INTERPOLATED_STRING_CONST=288, 
+		INCOMPLETE_STRING_CONST=289, LAST_CONSTANT=290, PP_FIRST=291, PP_COMMAND=292, 
+		PP_DEFINE=293, PP_ELSE=294, PP_ENDIF=295, PP_ENDREGION=296, PP_ERROR=297, 
+		PP_IFDEF=298, PP_IFNDEF=299, PP_INCLUDE=300, PP_LINE=301, PP_REGION=302, 
+		PP_TRANSLATE=303, PP_UNDEF=304, PP_WARNING=305, PP_LAST=306, MACRO=307, 
+		UDCSEP=308, ID=309, KWID=310, PRAGMA=311, DOC_COMMENT=312, SL_COMMENT=313, 
+		ML_COMMENT=314, LINE_CONT=315, LINE_CONT_OLD=316, SEMI=317, WS=318, NL=319, 
+		EOS=320, UNRECOGNIZED=321;
 	public const int
 		RULE_script = 0, RULE_scriptEntity = 1, RULE_macroScript = 2, RULE_source = 3, 
 		RULE_entity = 4, RULE_eos = 5, RULE_function = 6, RULE_procedure = 7, 
@@ -213,13 +213,14 @@ public partial class XSharpParser : Parser {
 		"LCURLY", "RCURLY", "LBRKT", "RBRKT", "COLON", "COMMA", "PIPE", "AMP", 
 		"ADDROF", "ALIAS", "DOT", "COLONCOLON", "BACKSLASH", "ELLIPSIS", "LAST_OPERATOR", 
 		"FIRST_CONSTANT", "FALSE_CONST", "TRUE_CONST", "HEX_CONST", "BIN_CONST", 
-		"INT_CONST", "DATE_CONST", "REAL_CONST", "SYMBOL_CONST", "CHAR_CONST", 
-		"STRING_CONST", "ESCAPED_STRING_CONST", "INTERPOLATED_STRING_CONST", "INCOMPLETE_STRING_CONST", 
-		"LAST_CONSTANT", "PP_FIRST", "PP_COMMAND", "PP_DEFINE", "PP_ELSE", "PP_ENDIF", 
-		"PP_ENDREGION", "PP_ERROR", "PP_IFDEF", "PP_IFNDEF", "PP_INCLUDE", "PP_LINE", 
-		"PP_REGION", "PP_TRANSLATE", "PP_UNDEF", "PP_WARNING", "PP_LAST", "MACRO", 
-		"UDCSEP", "ID", "KWID", "PRAGMA", "DOC_COMMENT", "SL_COMMENT", "ML_COMMENT", 
-		"LINE_CONT", "LINE_CONT_OLD", "SEMI", "WS", "NL", "EOS", "UNRECOGNIZED"
+		"INT_CONST", "DATE_CONST", "REAL_CONST", "INVALID_NUMBER", "SYMBOL_CONST", 
+		"CHAR_CONST", "STRING_CONST", "ESCAPED_STRING_CONST", "INTERPOLATED_STRING_CONST", 
+		"INCOMPLETE_STRING_CONST", "LAST_CONSTANT", "PP_FIRST", "PP_COMMAND", 
+		"PP_DEFINE", "PP_ELSE", "PP_ENDIF", "PP_ENDREGION", "PP_ERROR", "PP_IFDEF", 
+		"PP_IFNDEF", "PP_INCLUDE", "PP_LINE", "PP_REGION", "PP_TRANSLATE", "PP_UNDEF", 
+		"PP_WARNING", "PP_LAST", "MACRO", "UDCSEP", "ID", "KWID", "PRAGMA", "DOC_COMMENT", 
+		"SL_COMMENT", "ML_COMMENT", "LINE_CONT", "LINE_CONT_OLD", "SEMI", "WS", 
+		"NL", "EOS", "UNRECOGNIZED"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -18068,7 +18069,7 @@ public partial class XSharpParser : Parser {
 				State = 2780;
 				_localctx.Token = _input.Lt(1);
 				_la = _input.La(1);
-				if ( !(((((_la - 285)) & ~0x3f) == 0 && ((1L << (_la - 285)) & ((1L << (STRING_CONST - 285)) | (1L << (ID - 285)) | (1L << (KWID - 285)))) != 0)) ) {
+				if ( !(((((_la - 286)) & ~0x3f) == 0 && ((1L << (_la - 286)) & ((1L << (STRING_CONST - 286)) | (1L << (ID - 286)) | (1L << (KWID - 286)))) != 0)) ) {
 					_localctx.Token = _errHandler.RecoverInline(this);
 				} else {
 					if (_input.La(1) == TokenConstants.Eof) {
@@ -18256,6 +18257,7 @@ public partial class XSharpParser : Parser {
 		public ITerminalNode BIN_CONST() { return GetToken(XSharpParser.BIN_CONST, 0); }
 		public ITerminalNode REAL_CONST() { return GetToken(XSharpParser.REAL_CONST, 0); }
 		public ITerminalNode INT_CONST() { return GetToken(XSharpParser.INT_CONST, 0); }
+		public ITerminalNode INVALID_NUMBER() { return GetToken(XSharpParser.INVALID_NUMBER, 0); }
 		public ITerminalNode DATE_CONST() { return GetToken(XSharpParser.DATE_CONST, 0); }
 		public ITerminalNode NIL() { return GetToken(XSharpParser.NIL, 0); }
 		public ITerminalNode NULL() { return GetToken(XSharpParser.NULL, 0); }
@@ -18293,7 +18295,7 @@ public partial class XSharpParser : Parser {
 			State = 2790;
 			_localctx.Token = _input.Lt(1);
 			_la = _input.La(1);
-			if ( !(((((_la - 201)) & ~0x3f) == 0 && ((1L << (_la - 201)) & ((1L << (NIL - 201)) | (1L << (NULL - 201)) | (1L << (NULL_ARRAY - 201)) | (1L << (NULL_CODEBLOCK - 201)) | (1L << (NULL_DATE - 201)) | (1L << (NULL_OBJECT - 201)) | (1L << (NULL_PSZ - 201)) | (1L << (NULL_PTR - 201)) | (1L << (NULL_STRING - 201)) | (1L << (NULL_SYMBOL - 201)))) != 0) || ((((_la - 276)) & ~0x3f) == 0 && ((1L << (_la - 276)) & ((1L << (FALSE_CONST - 276)) | (1L << (TRUE_CONST - 276)) | (1L << (HEX_CONST - 276)) | (1L << (BIN_CONST - 276)) | (1L << (INT_CONST - 276)) | (1L << (DATE_CONST - 276)) | (1L << (REAL_CONST - 276)) | (1L << (SYMBOL_CONST - 276)) | (1L << (CHAR_CONST - 276)) | (1L << (STRING_CONST - 276)) | (1L << (ESCAPED_STRING_CONST - 276)) | (1L << (INTERPOLATED_STRING_CONST - 276)) | (1L << (INCOMPLETE_STRING_CONST - 276)))) != 0)) ) {
+			if ( !(((((_la - 201)) & ~0x3f) == 0 && ((1L << (_la - 201)) & ((1L << (NIL - 201)) | (1L << (NULL - 201)) | (1L << (NULL_ARRAY - 201)) | (1L << (NULL_CODEBLOCK - 201)) | (1L << (NULL_DATE - 201)) | (1L << (NULL_OBJECT - 201)) | (1L << (NULL_PSZ - 201)) | (1L << (NULL_PTR - 201)) | (1L << (NULL_STRING - 201)) | (1L << (NULL_SYMBOL - 201)))) != 0) || ((((_la - 276)) & ~0x3f) == 0 && ((1L << (_la - 276)) & ((1L << (FALSE_CONST - 276)) | (1L << (TRUE_CONST - 276)) | (1L << (HEX_CONST - 276)) | (1L << (BIN_CONST - 276)) | (1L << (INT_CONST - 276)) | (1L << (DATE_CONST - 276)) | (1L << (REAL_CONST - 276)) | (1L << (INVALID_NUMBER - 276)) | (1L << (SYMBOL_CONST - 276)) | (1L << (CHAR_CONST - 276)) | (1L << (STRING_CONST - 276)) | (1L << (ESCAPED_STRING_CONST - 276)) | (1L << (INTERPOLATED_STRING_CONST - 276)) | (1L << (INCOMPLETE_STRING_CONST - 276)))) != 0)) ) {
 				_localctx.Token = _errHandler.RecoverInline(this);
 			} else {
 				if (_input.La(1) == TokenConstants.Eof) {
@@ -19354,7 +19356,7 @@ public partial class XSharpParser : Parser {
 		public IList<IToken> _Tokens = new List<IToken>();
 		public IToken _FREEZE;
 		public IToken _FINAL;
-		public IToken _tset9559;
+		public IToken _tset9563;
 		public ITerminalNode[] STATIC() { return GetTokens(XSharpParser.STATIC); }
 		public ITerminalNode STATIC(int i) {
 			return GetToken(XSharpParser.STATIC, i);
@@ -19397,10 +19399,10 @@ public partial class XSharpParser : Parser {
 				{
 				{
 				State = 2899;
-				_localctx._tset9559 = _input.Lt(1);
+				_localctx._tset9563 = _input.Lt(1);
 				_la = _input.La(1);
 				if ( !(_la==STATIC || _la==FREEZE || _la==FINAL) ) {
-					_localctx._tset9559 = _errHandler.RecoverInline(this);
+					_localctx._tset9563 = _errHandler.RecoverInline(this);
 				} else {
 					if (_input.La(1) == TokenConstants.Eof) {
 						matchedEOF = true;
@@ -19409,7 +19411,7 @@ public partial class XSharpParser : Parser {
 					_errHandler.ReportMatch(this);
 					Consume();
 				}
-				_localctx._Tokens.Add(_localctx._tset9559);
+				_localctx._Tokens.Add(_localctx._tset9563);
 				}
 				}
 				State = 2902;
@@ -19865,7 +19867,7 @@ public partial class XSharpParser : Parser {
 		public IToken _OVERRIDE;
 		public IToken _CLASS;
 		public IToken _SYNC;
-		public IToken _tset9746;
+		public IToken _tset9750;
 		public ITerminalNode[] DEFERRED() { return GetTokens(XSharpParser.DEFERRED); }
 		public ITerminalNode DEFERRED(int i) {
 			return GetToken(XSharpParser.DEFERRED, i);
@@ -19920,10 +19922,10 @@ public partial class XSharpParser : Parser {
 				{
 				{
 				State = 2944;
-				_localctx._tset9746 = _input.Lt(1);
+				_localctx._tset9750 = _input.Lt(1);
 				_la = _input.La(1);
 				if ( !(_la==CLASS || ((((_la - 142)) & ~0x3f) == 0 && ((1L << (_la - 142)) & ((1L << (OVERRIDE - 142)) | (1L << (DEFERRED - 142)) | (1L << (FINAL - 142)) | (1L << (INTRODUCE - 142)) | (1L << (SYNC - 142)))) != 0)) ) {
-					_localctx._tset9746 = _errHandler.RecoverInline(this);
+					_localctx._tset9750 = _errHandler.RecoverInline(this);
 				} else {
 					if (_input.La(1) == TokenConstants.Eof) {
 						matchedEOF = true;
@@ -19932,7 +19934,7 @@ public partial class XSharpParser : Parser {
 					_errHandler.ReportMatch(this);
 					Consume();
 				}
-				_localctx._Tokens.Add(_localctx._tset9746);
+				_localctx._Tokens.Add(_localctx._tset9750);
 				}
 				}
 				State = 2947;
@@ -20571,7 +20573,7 @@ public partial class XSharpParser : Parser {
 		public IToken _CLASS;
 		public IList<IToken> _Tokens = new List<IToken>();
 		public IToken _STATIC;
-		public IToken _tset10132;
+		public IToken _tset10136;
 		public ITerminalNode[] CLASS() { return GetTokens(XSharpParser.CLASS); }
 		public ITerminalNode CLASS(int i) {
 			return GetToken(XSharpParser.CLASS, i);
@@ -20610,10 +20612,10 @@ public partial class XSharpParser : Parser {
 				{
 				{
 				State = 3058;
-				_localctx._tset10132 = _input.Lt(1);
+				_localctx._tset10136 = _input.Lt(1);
 				_la = _input.La(1);
 				if ( !(_la==CLASS || _la==STATIC) ) {
-					_localctx._tset10132 = _errHandler.RecoverInline(this);
+					_localctx._tset10136 = _errHandler.RecoverInline(this);
 				} else {
 					if (_input.La(1) == TokenConstants.Eof) {
 						matchedEOF = true;
@@ -20622,7 +20624,7 @@ public partial class XSharpParser : Parser {
 					_errHandler.ReportMatch(this);
 					Consume();
 				}
-				_localctx._Tokens.Add(_localctx._tset10132);
+				_localctx._Tokens.Add(_localctx._tset10136);
 				}
 				}
 				State = 3061;
@@ -20875,7 +20877,7 @@ public partial class XSharpParser : Parser {
 	}
 
 	public static readonly string _serializedATN =
-		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\x142\xC05\x4\x2"+
+		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\x143\xC05\x4\x2"+
 		"\t\x2\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a\t\a\x4\b\t\b\x4"+
 		"\t\t\t\x4\n\t\n\x4\v\t\v\x4\f\t\f\x4\r\t\r\x4\xE\t\xE\x4\xF\t\xF\x4\x10"+
 		"\t\x10\x4\x11\t\x11\x4\x12\t\x12\x4\x13\t\x13\x4\x14\t\x14\x4\x15\t\x15"+
@@ -21165,9 +21167,9 @@ public partial class XSharpParser : Parser {
 		"\xEA\x3\x2\xE2\xE3\x3\x2\xD7\xDF\x4\x2\xED\xED\x100\x100\x4\x2\xEE\xEE"+
 		"\x101\x101\x3\x2\xF4\xFF\x4\x2\x10A\x10A\x110\x110\x3\x2\xE0\xE1\x3\x2"+
 		"\xF0\xF3\x4\x2kk\xAB\xAB\x3\x2&\'\x5\x2\x6\x6kk\xAB\xAB\x4\x2{{\x82\x82"+
-		"\x3\x2\x136\x137\x4\x2\x11F\x11F\x136\x137\a\x2\x9D\x9D\x9F\xA0\xA2\xA2"+
+		"\x3\x2\x137\x138\x4\x2\x120\x120\x137\x138\a\x2\x9D\x9D\x9F\xA0\xA2\xA2"+
 		"\xA7\xA7\xAE\xAF\b\x2\x9E\x9E\xA1\xA1\xA3\xA6\xA8\xAA\xAC\xAD\xB0\xB7"+
-		"\x4\x2\xCB\xD4\x116\x122\x1D\x2\x4\x4\x6\x6\b\n\f\xE\x13\x13\x15\x15\x17"+
+		"\x4\x2\xCB\xD4\x116\x123\x1D\x2\x4\x4\x6\x6\b\n\f\xE\x13\x13\x15\x15\x17"+
 		"\x1E!!##%\'--/\x31\x33\x33\x35\x36\x39\x39;@\x42\x42\x46\x46IIMMOPWW["+
 		"[nnss\xA8\xA8\xF0\xF3\v\x2SUXY^\x64\x66ikloqstvw\xB2\xB2 \x2\x5\x5\v\v"+
 		"\xF\x12\x14\x14\x16\x16\x1F\x1F\"\"$$((,,..\x32\x32\x34\x34\x37\x38::"+
@@ -21221,9 +21223,9 @@ public partial class XSharpParser : Parser {
 		"\x2\x2\x2\x12E\xB68\x3\x2\x2\x2\x130\xB80\x3\x2\x2\x2\x132\xB83\x3\x2"+
 		"\x2\x2\x134\xB88\x3\x2\x2\x2\x136\xBA8\x3\x2\x2\x2\x138\xBAC\x3\x2\x2"+
 		"\x2\x13A\xBC8\x3\x2\x2\x2\x13C\xBE2\x3\x2\x2\x2\x13E\xBF5\x3\x2\x2\x2"+
-		"\x140\xBF9\x3\x2\x2\x2\x142\x143\a\xBB\x2\x2\x143\x144\a\x11F\x2\x2\x144"+
-		"\x149\a\x141\x2\x2\x145\x146\a\xBA\x2\x2\x146\x147\a\x11F\x2\x2\x147\x149"+
-		"\a\x141\x2\x2\x148\x142\x3\x2\x2\x2\x148\x145\x3\x2\x2\x2\x149\x14C\x3"+
+		"\x140\xBF9\x3\x2\x2\x2\x142\x143\a\xBB\x2\x2\x143\x144\a\x120\x2\x2\x144"+
+		"\x149\a\x142\x2\x2\x145\x146\a\xBA\x2\x2\x146\x147\a\x120\x2\x2\x147\x149"+
+		"\a\x142\x2\x2\x148\x142\x3\x2\x2\x2\x148\x145\x3\x2\x2\x2\x149\x14C\x3"+
 		"\x2\x2\x2\x14A\x148\x3\x2\x2\x2\x14A\x14B\x3\x2\x2\x2\x14B\x150\x3\x2"+
 		"\x2\x2\x14C\x14A\x3\x2\x2\x2\x14D\x14F\x5\x4\x3\x2\x14E\x14D\x3\x2\x2"+
 		"\x2\x14F\x152\x3\x2\x2\x2\x150\x14E\x3\x2\x2\x2\x150\x151\x3\x2\x2\x2"+
@@ -21232,7 +21234,7 @@ public partial class XSharpParser : Parser {
 		"\xB2Z\x2\x158\x155\x3\x2\x2\x2\x158\x156\x3\x2\x2\x2\x158\x157\x3\x2\x2"+
 		"\x2\x159\x5\x3\x2\x2\x2\x15A\x15D\x5\xE8u\x2\x15B\x15D\x5\xEAv\x2\x15C"+
 		"\x15A\x3\x2\x2\x2\x15C\x15B\x3\x2\x2\x2\x15D\x15E\x3\x2\x2\x2\x15E\x15F"+
-		"\a\x141\x2\x2\x15F\x160\a\x2\x2\x3\x160\a\x3\x2\x2\x2\x161\x163\x5\f\a"+
+		"\a\x142\x2\x2\x15F\x160\a\x2\x2\x3\x160\a\x3\x2\x2\x2\x161\x163\x5\f\a"+
 		"\x2\x162\x161\x3\x2\x2\x2\x162\x163\x3\x2\x2\x2\x163\x167\x3\x2\x2\x2"+
 		"\x164\x166\x5\n\x6\x2\x165\x164\x3\x2\x2\x2\x166\x169\x3\x2\x2\x2\x167"+
 		"\x165\x3\x2\x2\x2\x167\x168\x3\x2\x2\x2\x168\x16A\x3\x2\x2\x2\x169\x167"+
@@ -21248,7 +21250,7 @@ public partial class XSharpParser : Parser {
 		"\x3\x2\x2\x2\x17F\x175\x3\x2\x2\x2\x17F\x176\x3\x2\x2\x2\x17F\x177\x3"+
 		"\x2\x2\x2\x17F\x178\x3\x2\x2\x2\x17F\x179\x3\x2\x2\x2\x17F\x17A\x3\x2"+
 		"\x2\x2\x17F\x17B\x3\x2\x2\x2\x17F\x17C\x3\x2\x2\x2\x17F\x17D\x3\x2\x2"+
-		"\x2\x17F\x17E\x3\x2\x2\x2\x180\v\x3\x2\x2\x2\x181\x183\a\x141\x2\x2\x182"+
+		"\x2\x17F\x17E\x3\x2\x2\x2\x180\v\x3\x2\x2\x2\x181\x183\a\x142\x2\x2\x182"+
 		"\x181\x3\x2\x2\x2\x183\x184\x3\x2\x2\x2\x184\x182\x3\x2\x2\x2\x184\x185"+
 		"\x3\x2\x2\x2\x185\r\x3\x2\x2\x2\x186\x188\x5\x8A\x46\x2\x187\x186\x3\x2"+
 		"\x2\x2\x187\x188\x3\x2\x2\x2\x188\x18A\x3\x2\x2\x2\x189\x18B\x5 \x11\x2"+
@@ -21263,7 +21265,7 @@ public partial class XSharpParser : Parser {
 		"\x12\n\x2\x19F\x19E\x3\x2\x2\x2\x19F\x1A0\x3\x2\x2\x2\x1A0\x1A3\x3\x2"+
 		"\x2\x2\x1A1\x1A2\a\x1E\x2\x2\x1A2\x1A4\a/\x2\x2\x1A3\x1A1\x3\x2\x2\x2"+
 		"\x1A3\x1A4\x3\x2\x2\x2\x1A4\x1A7\x3\x2\x2\x2\x1A5\x1A6\a\x14\x2\x2\x1A6"+
-		"\x1A8\a\x11F\x2\x2\x1A7\x1A5\x3\x2\x2\x2\x1A7\x1A8\x3\x2\x2\x2\x1A8\x1A9"+
+		"\x1A8\a\x120\x2\x2\x1A7\x1A5\x3\x2\x2\x2\x1A7\x1A8\x3\x2\x2\x2\x1A8\x1A9"+
 		"\x3\x2\x2\x2\x1A9\x1AA\x5\f\a\x2\x1AA\x1AB\x5\x1E\x10\x2\x1AB\xF\x3\x2"+
 		"\x2\x2\x1AC\x1AE\x5\x8A\x46\x2\x1AD\x1AC\x3\x2\x2\x2\x1AD\x1AE\x3\x2\x2"+
 		"\x2\x1AE\x1B0\x3\x2\x2\x2\x1AF\x1B1\x5 \x11\x2\x1B0\x1AF\x3\x2\x2\x2\x1B0"+
@@ -21278,7 +21280,7 @@ public partial class XSharpParser : Parser {
 		"\x2\x1C5\x1C6\x3\x2\x2\x2\x1C6\x1C8\x3\x2\x2\x2\x1C7\x1C9\t\x4\x2\x2\x1C8"+
 		"\x1C7\x3\x2\x2\x2\x1C8\x1C9\x3\x2\x2\x2\x1C9\x1CC\x3\x2\x2\x2\x1CA\x1CB"+
 		"\a\x1E\x2\x2\x1CB\x1CD\a/\x2\x2\x1CC\x1CA\x3\x2\x2\x2\x1CC\x1CD\x3\x2"+
-		"\x2\x2\x1CD\x1D0\x3\x2\x2\x2\x1CE\x1CF\a\x14\x2\x2\x1CF\x1D1\a\x11F\x2"+
+		"\x2\x2\x1CD\x1D0\x3\x2\x2\x2\x1CE\x1CF\a\x14\x2\x2\x1CF\x1D1\a\x120\x2"+
 		"\x2\x1D0\x1CE\x3\x2\x2\x2\x1D0\x1D1\x3\x2\x2\x2\x1D1\x1D2\x3\x2\x2\x2"+
 		"\x1D2\x1D3\x5\f\a\x2\x1D3\x1D4\x5\x1E\x10\x2\x1D4\x11\x3\x2\x2\x2\x1D5"+
 		"\x1D6\t\x5\x2\x2\x1D6\x13\x3\x2\x2\x2\x1D7\x1D9\x5\x8A\x46\x2\x1D8\x1D7"+
@@ -21349,7 +21351,7 @@ public partial class XSharpParser : Parser {
 		"\x282\x5\x10A\x86\x2\x281\x27C\x3\x2\x2\x2\x281\x282\x3\x2\x2\x2\x282"+
 		"\x285\x3\x2\x2\x2\x283\x284\a\x1E\x2\x2\x284\x286\a/\x2\x2\x285\x283\x3"+
 		"\x2\x2\x2\x285\x286\x3\x2\x2\x2\x286\x289\x3\x2\x2\x2\x287\x288\a\x14"+
-		"\x2\x2\x288\x28A\a\x11F\x2\x2\x289\x287\x3\x2\x2\x2\x289\x28A\x3\x2\x2"+
+		"\x2\x2\x288\x28A\a\x120\x2\x2\x289\x287\x3\x2\x2\x2\x289\x28A\x3\x2\x2"+
 		"\x2\x28A\x28B\x3\x2\x2\x2\x28B\x28C\x5\f\a\x2\x28C\x28D\x5\x1E\x10\x2"+
 		"\x28D\'\x3\x2\x2\x2\x28E\x28F\t\t\x2\x2\x28F)\x3\x2\x2\x2\x290\x292\x5"+
 		" \x11\x2\x291\x290\x3\x2\x2\x2\x291\x292\x3\x2\x2\x2\x292\x293\x3\x2\x2"+
@@ -22098,7 +22100,7 @@ public partial class XSharpParser : Parser {
 		"\x2\x2\xA42\xA44\x5\xECw\x2\xA43\xA42\x3\x2\x2\x2\xA43\xA44\x3\x2\x2\x2"+
 		"\xA44\xA46\x3\x2\x2\x2\xA45\xA47\a\x10C\x2\x2\xA46\xA45\x3\x2\x2\x2\xA46"+
 		"\xA47\x3\x2\x2\x2\xA47\xA49\x3\x2\x2\x2\xA48\xA3E\x3\x2\x2\x2\xA48\xA40"+
-		"\x3\x2\x2\x2\xA49\xA4A\x3\x2\x2\x2\xA4A\xA4B\a\x135\x2\x2\xA4B\xA4C\x5"+
+		"\x3\x2\x2\x2\xA49\xA4A\x3\x2\x2\x2\xA4A\xA4B\a\x136\x2\x2\xA4B\xA4C\x5"+
 		"\xEAv\x2\xA4C\xA4D\a\x107\x2\x2\xA4D\xA4F\x3\x2\x2\x2\xA4E\xA31\x3\x2"+
 		"\x2\x2\xA4E\xA3D\x3\x2\x2\x2\xA4F\xE9\x3\x2\x2\x2\xA50\xA52\x5\xB2Z\x2"+
 		"\xA51\xA50\x3\x2\x2\x2\xA51\xA52\x3\x2\x2\x2\xA52\xA58\x3\x2\x2\x2\xA53"+

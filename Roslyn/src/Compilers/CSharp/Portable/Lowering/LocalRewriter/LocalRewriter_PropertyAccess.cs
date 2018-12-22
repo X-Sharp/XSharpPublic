@@ -30,6 +30,24 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool isLeftOfAssignment,
             BoundPropertyAccess oldNodeOpt = null)
         {
+#if XSHARP
+            if (propertySymbol is XsVariableSymbol)
+            {
+                if (isLeftOfAssignment && propertySymbol.RefKind == RefKind.None)
+                {
+                    return oldNodeOpt != null ?
+                        oldNodeOpt.Update(rewrittenReceiverOpt, propertySymbol, resultKind, type) :
+                        new BoundPropertyAccess(syntax, rewrittenReceiverOpt, propertySymbol, resultKind, type);
+                }
+                else
+                {
+                    var getMethod = propertySymbol.GetMethod;
+                    Debug.Assert((object)getMethod != null);
+                    return BoundCall.Synthesized(syntax, null, getMethod,
+                        new BoundLiteral(syntax, ConstantValue.Create(propertySymbol.Name), _compilation.GetSpecialType(SpecialType.System_String)));
+                }
+            }
+#endif
             // check for System.Array.[Length|LongLength] on a single dimensional array,
             // we have a special node for such cases.
             if (rewrittenReceiverOpt != null && rewrittenReceiverOpt.Type.IsArray() && !isLeftOfAssignment)

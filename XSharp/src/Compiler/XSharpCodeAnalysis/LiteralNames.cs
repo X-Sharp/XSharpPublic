@@ -137,6 +137,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string SetElement = "__SetElement";
         // These are in the generated code
         internal const string RunInitProcs = "RunInitProcs";
+        internal const string VarGet = "VarGet";
+        internal const string VarPut = "VarPut";
     }
     internal static class VulcanQualifiedFunctionNames
     {

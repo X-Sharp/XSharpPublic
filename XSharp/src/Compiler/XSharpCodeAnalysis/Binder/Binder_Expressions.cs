@@ -750,6 +750,22 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 members.Free();
             }
+            else if (Compilation.Options.UndeclaredLocalVars)
+            {
+                var type = Compilation.RuntimeFunctionsType();
+                var get = GetCandidateMembers(type, XSharpFunctionNames.VarGet, LookupOptions.MustNotBeInstance, this);
+                var set = GetCandidateMembers(type, XSharpFunctionNames.VarPut, LookupOptions.MustNotBeInstance, this);
+                if (get.Length == 1 && set.Length == 1 && get[0] is MethodSymbol && set[0] is MethodSymbol)
+                {
+                    var ps = new XsVariableSymbol(name, (MethodSymbol)get[0], (MethodSymbol)set[0], Compilation.UsualType());
+                    expression = new BoundPropertyAccess(node, null, ps, LookupResultKind.Viable, Compilation.UsualType());
+                }
+                else
+                {
+                    expression = BadExpression(node);
+                    Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, XSharpFunctionNames.VarGet + "/" + XSharpFunctionNames.VarPut, Compilation.Options.Dialect.ToString());
+                }
+            }
             else
             {
                 // Otherwise, the simple-name is undefined and a compile-time error occurs.

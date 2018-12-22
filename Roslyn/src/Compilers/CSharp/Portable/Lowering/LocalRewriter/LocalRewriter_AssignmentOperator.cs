@@ -288,6 +288,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                     rewrittenRight);
             }
 
+#if XSHARP
+            if (property is XsVariableSymbol)
+            {
+                return BoundCall.Synthesized(syntax, null, setMethod,
+                    new BoundLiteral(syntax, ConstantValue.Create(property.Name), _compilation.GetSpecialType(SpecialType.System_String)),
+                    MakeConversionNode(rewrittenRight, _compilation.UsualType(), false));
+            }
+#endif
             // We have already lowered each argument, but we may need some additional rewriting for the arguments,
             // such as generating a params array, re-ordering arguments based on argsToParamsOpt map, inserting arguments for optional parameters, etc.
             ImmutableArray<LocalSymbol> argTemps;

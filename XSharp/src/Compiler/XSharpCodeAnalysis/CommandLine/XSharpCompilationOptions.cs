@@ -48,6 +48,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool LateBinding { get; private set; }
         public bool NoClipCall { get; private set; }
         public bool HasDefaultTree { get; set; } = false;
+        public bool UndeclaredLocalVars { get; set; }
 
         public bool HasRuntime { get { return this.Dialect.HasRuntime(); } }
         public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars(); } }
@@ -102,6 +103,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Dialect = opt.Dialect;
                 ImplicitNameSpace = opt.ImplicitNameSpace;
                 LateBinding = opt.LateBinding;
+                UndeclaredLocalVars = opt.UndeclaredLocalVars;
                 
                 ParseLevel = opt.ParseLevel;
                 TargetDLL = opt.TargetDLL;
@@ -143,7 +145,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             //VOUntypedAllowed = opt.VOUntypedAllowed; // vo15  // Handled in the parser
             //VOClipperConstructors = opt.VOClipperConstructors; // vo16// Handled in the parser
             ConsoleOutput = opt.ConsoleOutput;
-            ParseLevel = opt.ParseLevel; 
+            ParseLevel = opt.ParseLevel;
+            UndeclaredLocalVars = opt.UndeclaredLocalVars;
         }
 
         internal CSharpCompilationOptions WithXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)

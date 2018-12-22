@@ -363,11 +363,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             if (parseType() == REAL_CONST)
             {
-                if (La_1 == '.')
+                if (La_1 == '.' && La_2 >= '0' && La_2 <= '9' &&
+                    (!(La_3 >= '0' && La_3 <= '9') || !(La_4 >= '0' && La_4 <= '9')))
                 {
                     string s = _textSb.ToString();
                     int z0 = s.IndexOf('.');
-                    if (z0 > 0 && z0 <= 4 && s.Length > z0 + 1 && s.Length <= 7 && !s.Contains("_"))
+                    if (z0 > 0 && z0 <= 4 && s.Length > z0 + 1 && s.Length <= z0+3 && !s.Contains("_"))
                     {
                         parseOne(DATE_CONST); // append dot
                                               // append day number

@@ -285,10 +285,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         _textSb.Append('#');
                         InputStream.Seek(_startCharIndex + 1);
                     }
-                }
-                else if (text.Equals("USING", StringComparison.OrdinalIgnoreCase))
-                {
-                    parseType(USING);
+                    else if (text.Equals("USING", StringComparison.OrdinalIgnoreCase))
+                    {
+                        parseType(USING);
+                    }
                 }
                 else if (LastToken == NL && text.Equals("PRAGMA", StringComparison.OrdinalIgnoreCase))
                 {

@@ -8,6 +8,8 @@ namespace XSharp.MacroCompiler
 {
     internal abstract partial class Constant : TypedSymbol
     {
+        internal Constant() : base(AccessMode.Get) { }
+
         internal static ConstantWithValue<T> Create<T>(T value, NativeType nt) { return new ConstantWithValue<T>(value, nt); }
         internal static ConstantWithValue<T> Create<T>(T value, TypeSymbol t) { return new ConstantWithValue<T>(value, t); }
         internal static ConstantWithValue<bool> Create(bool value) { return new ConstantWithValue<bool>(value, NativeType.Boolean); }

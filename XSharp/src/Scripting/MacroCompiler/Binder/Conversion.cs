@@ -59,7 +59,7 @@ namespace XSharp.MacroCompiler
         internal bool Exists { get { return Kind != ConversionKind.NoConversion && Kind != ConversionKind.NoImplicitConversion; } }
         internal virtual int Cost { get { return convCost[(int)Kind] & (Implicit-1); } }
 
-        internal ConversionSymbol(ConversionKind kind) { Kind = kind; }
+        internal ConversionSymbol(ConversionKind kind) : base(AccessMode.Get) { Kind = kind; }
 
         internal static ConversionSymbol Create(ConversionKind kind) { return simpleConv[(int)kind]; }
         internal static ConversionSymbolWithMethod Create(ConversionKind kind, MethodSymbol method) { return new ConversionSymbolWithMethod(kind, method); }

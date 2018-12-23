@@ -86,5 +86,10 @@ namespace XSharp.MacroCompiler
         {
             return expr.Error(ErrorCode.UnaryOperationNotFound, UnaryOperatorSymbol.OperatorSymbol(kind), expr.Expr.Datatype);
         }
+
+        internal static CompilationError AccessModeError(Expr expr, Symbol s, Symbol.AccessMode access)
+        {
+            return expr.Error(ErrorCode.NoAccessMode, s, access);
+        }
     }
 }

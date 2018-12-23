@@ -42,6 +42,7 @@ namespace XSharp.MacroCompiler
         NotAnExpression = 222,
         NotAMethod = 223,
         NotFound = 224,
+        NoAccessMode = 225,
     }
 
     internal class ErrorString
@@ -81,6 +82,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.NotAnExpression, "{0} is not a valid expression term" },
             { ErrorCode.NotAMethod, "{0} is not a method" },
             { ErrorCode.NotFound, "{0} not found" },
+            { ErrorCode.NoAccessMode, "{0} does not provide {1} access" }
         };
 
         static internal string Get(ErrorCode e) { return _errorStrings[e]; }

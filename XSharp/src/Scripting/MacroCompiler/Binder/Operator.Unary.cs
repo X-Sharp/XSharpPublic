@@ -25,7 +25,7 @@ namespace XSharp.MacroCompiler
     {
         internal readonly UnaryOperatorKind Kind;
         internal readonly OperandType OpType;
-        internal UnaryOperatorSymbol(UnaryOperatorKind kind, OperandType opType) { Kind = kind; OpType = opType; }
+        internal UnaryOperatorSymbol(UnaryOperatorKind kind, OperandType opType) : base(AccessMode.Get) { Kind = kind; OpType = opType; }
 
         internal static UnaryOperatorSymbol Create(UnaryOperatorKind kind, OperandType opType) { return simpleOp[(int)kind, (int)opType]; }
         internal static UnaryOperatorSymbolWithMethod Create(UnaryOperatorKind kind, MethodSymbol method, ConversionSymbol conv) { return new UnaryOperatorSymbolWithMethod(kind, method, conv); }

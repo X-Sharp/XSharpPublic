@@ -69,8 +69,8 @@ namespace XSharp.MacroCompiler
         internal readonly BinaryOperatorKind Kind;
         internal readonly OperandType OpType;
         internal readonly OperandType ResType;
-        internal BinaryOperatorSymbol(BinaryOperatorKind kind, OperandType opType) { Kind = kind; OpType = opType; ResType = opType; }
-        internal BinaryOperatorSymbol(BinaryOperatorKind kind, OperandType opType, OperandType resType) { Kind = kind; OpType = opType; ResType = resType; }
+        internal BinaryOperatorSymbol(BinaryOperatorKind kind, OperandType opType) : base(AccessMode.Get) { Kind = kind; OpType = opType; ResType = opType; }
+        internal BinaryOperatorSymbol(BinaryOperatorKind kind, OperandType opType, OperandType resType) : base(AccessMode.Get) { Kind = kind; OpType = opType; ResType = resType; }
 
         internal static BinaryOperatorSymbol Create(BinaryOperatorKind kind, OperandType opType) { return simpleOp[(int)kind, (int)opType]; }
         internal static BinaryOperatorSymbolWithMethod Create(BinaryOperatorKind kind, MethodSymbol method,

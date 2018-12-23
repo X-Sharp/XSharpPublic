@@ -153,8 +153,6 @@ begin namespace MacroCompilerTest
 
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a| (testclass)a }",tci) // FAIL - should work (TODO: implement type casts)
-        //EvalMacro(mc, e"{|a,b| asdgfafd(123) }") // FAIL - error message is OK but TestMacro() fails
-        //EvalMacro(mc, e"--testclass.nested.eee") // FAIL -- should produce error that a constant cannot be modified
         EvalMacro(mc, e"1_000")
         wait
 
@@ -440,16 +438,13 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"1_001.1_2e1_", Args(), null, null, ErrorCode.InvalidNumber)
         TestMacro(mc, e"1_001.1_e1", Args(), null, null, ErrorCode.InvalidNumber)
         TestMacro(mc, e"123.45e0m", Args(), null, null, ErrorCode.Unexpected)
+        TestMacro(mc, e"--testclass.nested.eee", Args(), null, null, ErrorCode.NoAccessMode)
+        TestMacro(mc, e"testclass(9)", Args(), null, null, ErrorCode.NotAMethod)
+        TestMacro(mc, e"{|a| a(12332) }", Args((@@Func<int,int>)I), 12332, typeof(int))
 
 //        mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
 //        TestMacro(mc, e"{|| NIKOS}", Args(), nil, typeof(usual))
 //        TestMacro(mc, e"{|| NIKOS := 123}", Args(), 123, typeof(int))
-
-        mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
-        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarGet, "MyVarGet")
-        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarPut, "MyVarPut")
-        TestMacro(mc, e"{|| NIKOS}", Args(), "VarGet(NIKOS)", typeof(string))
-        TestMacro(mc, e"{|| NIKOS := \"123\"}", Args(), "VarPut(NIKOS):123", typeof(string))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")
@@ -464,6 +459,13 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|| _FIELD->NIKOS := \"123\"}", Args(), "FieldSet(NIKOS):123", typeof(string))
         TestMacro(mc, e"{|| _FIELD->BASE->NIKOS := \"123\"}", Args(), "FieldSet(BASE,NIKOS):123", typeof(string))
         TestMacro(mc, e"{|| BASE->NIKOS := \"123\"}", Args(), "FieldSet(BASE,NIKOS):123", typeof(string))
+
+        mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarGet, "MyVarGet")
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarPut, "MyVarPut")
+        TestMacro(mc, e"{|| NIKOS}", Args(), "VarGet(NIKOS)", typeof(string))
+        TestMacro(mc, e"{|| NIKOS := \"123\"}", Args(), "VarPut(NIKOS):123", typeof(string))
+        TestMacro(mc, e"{|a,b| asdgfafd(123) }", Args(), null, null, ErrorCode.NotAMethod)
 
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         return

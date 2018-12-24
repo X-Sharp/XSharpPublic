@@ -11,8 +11,8 @@
 ; "lzma/ultra"
 ;#define Compression     "none" 
 #endif
-#define FOX
-;#undef FOX
+;#define FOX
+#undef FOX
 ; define the next line to prevent cab building and have a fast test
 ;#define FAST
 
@@ -227,11 +227,11 @@ Name: "{app}\Assemblies";
 Name: "{app}\Bin";
 #ifdef FOX
 Name: "{app}\Debug";
+Name: "{app}\NetCore20";
 #endif
 Name: "{app}\Help";
 Name: "{app}\Images";
 Name: "{app}\Include";
-Name: "{app}\NetCore20";
 Name: "{app}\ProjectSystem";                                
 Name: "{app}\Redist"
 Name: "{app}\Snippets"
@@ -276,6 +276,7 @@ Source: "{#BinDllFolder}XSharp.Scripting.pdb";            DestDir: "{app}\bin"; 
 
 ; NetCore 2.0 files
 ; json files: see https://natemcmaster.com/blog/2017/12/21/netcore-primitives/
+#ifdef FOX
 Source: "{#BinCoreFolder}xs?.rsp";                          DestDir: "{app}\NetCore20"; Flags: {#StdFlags};   
 Source: "{#BinCoreFolder}xs?.dll";                          DestDir: "{app}\NetCore20"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinCoreFolder}xs?.dll.config";                   DestDir: "{app}\NetCore20"; Flags: {#StdFlags};   
@@ -292,7 +293,7 @@ Source: "{#BinCoreFolder}XSCompiler.pdb";                   DestDir: "{app}\NetC
 ; CodeAnalysis and scripting
 Source: "{#BinCoreFolder}XSharp.*.dll";                     DestDir: "{app}\NetCore20"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinCoreFolder}XSharp.*.pdb";                     DestDir: "{app}\NetCore20"; Flags: {#StdFlags}; 
-
+#endif
 ; native resource compiler
 Source: "{#BinPFolder}baggage\rc.exe";                    DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 Source: "{#BinPFolder}baggage\rcdll.dll";                 DestDir: "{app}\bin"; Flags: {#StdFlags}; 
@@ -747,12 +748,12 @@ Type: filesandordirs; Name: "{app}\Assemblies"                    ;
 Type: filesandordirs; Name: "{app}\Bin"                           ; 
 #ifdef FOX
 Type: filesandordirs; Name: "{app}\Debug"; 
+Type: filesandordirs; Name: "{app}\NetCore20"                      ; 
 #endif
 Type: filesandordirs; Name: "{app}\Extension"                     ; 
 Type: filesandordirs; Name: "{app}\Help"                          ; 
 Type: filesandordirs; Name: "{app}\Images"                        ; 
 Type: dirifempty;     Name: "{app}\Include"; 
-Type: filesandordirs; Name: "{app}\NetCore20"                      ; 
 Type: filesandordirs; Name: "{app}\ProjectSystem"                 ; 
 Type: filesandordirs; Name: "{app}\Redist"                        ; 
 Type: filesandordirs; Name: "{app}\Tools"                         ; 

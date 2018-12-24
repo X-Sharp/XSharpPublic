@@ -141,6 +141,15 @@ function MyFieldGetWa(wa as string, name as string) as usual
 function MyFieldSetWa(wa as string, name as string, value as usual) as usual
     return "FieldSet(" + wa + "," + name +"):" + (string)value
 
+function DoTest(n as int, l as logic, o as System.Collections.ArrayList) as int
+    return n * 5
+
+function DoTestC(n as int, l as logic, o as testclass) as int
+    return o:v1
+
+function DoTestS(n as int, l as logic, o as teststruct) as int
+    return o:v1
+
 begin namespace MacroCompilerTest
 
 	function Start() as void
@@ -447,10 +456,9 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a| USUAL(-a) }", Args(1), -1, typeof(int))
         TestMacro(mc, e"{|a| (USUAL)(-a) }", Args(1), -1, typeof(int))
         TestMacro(mc, e"0.00001", Args(), 1e-5, typeof(float))
-
-//        mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
-//        TestMacro(mc, e"{|| NIKOS}", Args(), nil, typeof(usual))
-//        TestMacro(mc, e"{|| NIKOS := 123}", Args(), 123, typeof(int))
+        TestMacro(mc, e"{|a,b,c|DoTest(a,b,c)}", Args(1, true, nil), 5, typeof(int))
+        TestMacro(mc, e"{|a,b,c|DoTestC(a,b,c)}", Args(1, true, testclass{222}), 222, typeof(int))
+        TestMacro(mc, e"{|a,b,c|DoTestS(a,b,c)}", Args(1, true, teststruct{222}), 222, typeof(int))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")

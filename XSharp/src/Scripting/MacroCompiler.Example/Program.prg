@@ -153,7 +153,8 @@ begin namespace MacroCompilerTest
 
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a| (testclass)a }",tci) // FAIL - should work (TODO: implement type casts)
-        EvalMacro(mc, e"{|a|A*1_000", 123)
+        //EvalMacro(mc, e"{|a|A,1_000", 123)
+        EvalMacro(mc, e"{|a| USUAL(-a) }", 1)
         wait
 
         RunTests(mc)
@@ -442,6 +443,8 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"testclass(9)", Args(), null, null, ErrorCode.NotAMethod)
         TestMacro(mc, e"{|a| a(12332) }", Args((@@Func<int,int>)I), 12332, typeof(int))
         TestMacro(mc, e"{|a|A*1_000", Args(123), 123000, typeof(int))
+        TestMacro(mc, e"{|a| USUAL(-a) }", Args(1), -1, typeof(int))
+        TestMacro(mc, e"{|a| (USUAL)(-a) }", Args(1), -1, typeof(int))
 
 //        mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
 //        TestMacro(mc, e"{|| NIKOS}", Args(), nil, typeof(usual))

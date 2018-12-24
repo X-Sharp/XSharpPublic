@@ -686,11 +686,11 @@ namespace XSharp.MacroCompiler
         {
             var p = new List<IdExpr>();
             if (La() == TokenType.LCURLY && (La(2) == TokenType.PIPE || La(2) == TokenType.OR))
-                return RequireEnd(ParseCodeblock(), ErrorCode.Unexpected, "token");
+                return RequireEnd(ParseCodeblock(), ErrorCode.Unexpected, Lt());
 
             var l = ParseExprList();
             if (l != null)
-                return RequireEnd(new Codeblock(null,l), ErrorCode.Unexpected, "token");
+                return RequireEnd(new Codeblock(null,l), ErrorCode.Unexpected, Lt());
 
             return null;
         }

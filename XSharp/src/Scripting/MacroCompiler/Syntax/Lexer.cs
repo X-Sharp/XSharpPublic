@@ -575,25 +575,22 @@ namespace XSharp.MacroCompiler
                             }
                             break;
                         case TokenType.INT_CONST:
-                            if (c == '0' && !ExpectRange('0', '9'))
+                            if (c == '0' && ExpectAny('X','x'))
                             {
-                                if (ExpectAny('X','x'))
-                                {
-                                    while (ExpectRange('0', '9') || ExpectRange('A', 'F') || ExpectRange('a', 'f') || Expect('_')) ;
-                                    if (Lb() == '_') t = TokenType.INVALID_NUMBER;
-                                    ExpectAny('U', 'u', 'L', 'l');
-                                }
-                                if (ExpectAny('B', 'b'))
-                                {
-                                    while (ExpectRange('0', '1')) ;
-                                    ExpectAny('U', 'u');
-                                }
+                                while (ExpectRange('0', '9') || ExpectRange('A', 'F') || ExpectRange('a', 'f') || Expect('_')) ;
+                                if (Lb() == '_') t = TokenType.INVALID_NUMBER;
+                                ExpectAny('U', 'u', 'L', 'l');
+                            }
+                            else if (c == '0' && ExpectAny('B', 'b'))
+                            {
+                                while (ExpectRange('0', '1')) ;
+                                ExpectAny('U', 'u');
                             }
                             else
                             {
                                 while (ExpectRange('0', '9') || Expect('_')) ;
-                                c = La();
                                 if (Lb() == '_') t = TokenType.INVALID_NUMBER;
+                                c = La();
                                 if (c == '.') { Consume(); goto case TokenType.REAL_CONST; }
                                 if (La() == 'E' || La() == 'e') goto case TokenType.REAL_CONST_EXP;
                                 ExpectAny('U', 'u', 'L', 'l');

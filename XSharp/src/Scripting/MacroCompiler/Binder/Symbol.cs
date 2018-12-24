@@ -58,7 +58,7 @@ namespace XSharp.MacroCompiler
     }
     internal abstract partial class ContainerSymbol : Symbol
     {
-        internal Dictionary<string, Symbol> Members = new Dictionary<string, Symbol>(StringComparer.OrdinalIgnoreCase);
+        internal Dictionary<string, Symbol> Members = new Dictionary<string, Symbol>(Binder.LookupComprer);
         internal ContainerSymbol() { }
         internal override Symbol Lookup(string name) { Symbol s; Members.TryGetValue(name, out s); return s; }
     }

@@ -36,10 +36,12 @@ namespace XSharp.MacroCompiler
         static List<ContainerSymbol> Usings = null;
         static Dictionary<Type, TypeSymbol> TypeCache = null;
 
+        internal static StringComparer LookupComprer = StringComparer.OrdinalIgnoreCase;
+
         internal MacroOptions Options;
         internal bool DynamicUsual = true;
 
-        internal Dictionary<string, Symbol> LocalCache = new Dictionary<string, Symbol>();
+        internal Dictionary<string, Symbol> LocalCache = new Dictionary<string, Symbol>(LookupComprer);
         internal List<LocalSymbol> Locals = new List<LocalSymbol>();
         internal List<ArgumentSymbol> Args = new List<ArgumentSymbol>();
         internal TypeSymbol ObjectType;

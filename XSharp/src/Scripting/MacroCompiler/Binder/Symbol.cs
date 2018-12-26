@@ -58,7 +58,7 @@ namespace XSharp.MacroCompiler
     }
     internal abstract partial class ContainerSymbol : Symbol
     {
-        internal Dictionary<string, Symbol> Members = new Dictionary<string, Symbol>(StringComparer.OrdinalIgnoreCase);
+        internal Dictionary<string, Symbol> Members = new Dictionary<string, Symbol>(Binder.LookupComprer);
         internal ContainerSymbol() { }
         internal override Symbol Lookup(string name) { Symbol s; Members.TryGetValue(name, out s); return s; }
     }
@@ -79,6 +79,7 @@ namespace XSharp.MacroCompiler
         internal TypeSymbol(Type type) { Type = type; }
         internal bool IsByRef { get { return Type.IsByRef; } }
         internal bool IsValueType { get { return Type.IsValueType; } }
+        internal bool IsReferenceType { get { return Type.IsClass || Type.IsInterface; } }
         internal bool IsEnum { get { return Type.IsEnum; } }
         internal TypeSymbol ElementType { get { return Type.HasElementType ? Binder.FindType(Type.GetElementType()) : null; } }
         internal TypeSymbol EnumUnderlyingType { get { return Type.IsEnum ? Binder.FindType(Type.GetEnumUnderlyingType()) : null; } }

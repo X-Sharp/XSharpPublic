@@ -141,6 +141,15 @@ function MyFieldGetWa(wa as string, name as string) as usual
 function MyFieldSetWa(wa as string, name as string, value as usual) as usual
     return "FieldSet(" + wa + "," + name +"):" + (string)value
 
+function DoTest(n as int, l as logic, o as System.Collections.ArrayList) as int
+    return n * 5
+
+function DoTestC(n as int, l as logic, o as testclass) as int
+    return o:v1
+
+function DoTestS(n as int, l as logic, o as teststruct) as int
+    return o:v1
+
 begin namespace MacroCompilerTest
 
 	function Start() as void
@@ -153,7 +162,9 @@ begin namespace MacroCompilerTest
 
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a| (testclass)a }",tci) // FAIL - should work (TODO: implement type casts)
-        EvalMacro(mc, e"1_000")
+        //EvalMacro(mc, e"{|a|A,1_000", 123)
+        //EvalMacro(mc, e"{|a| USUAL(-a) }", 1)
+        EvalMacro(mc, e"0.00001")
         wait
 
         RunTests(mc)
@@ -441,10 +452,13 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"--testclass.nested.eee", Args(), null, null, ErrorCode.NoAccessMode)
         TestMacro(mc, e"testclass(9)", Args(), null, null, ErrorCode.NotAMethod)
         TestMacro(mc, e"{|a| a(12332) }", Args((@@Func<int,int>)I), 12332, typeof(int))
-
-//        mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
-//        TestMacro(mc, e"{|| NIKOS}", Args(), nil, typeof(usual))
-//        TestMacro(mc, e"{|| NIKOS := 123}", Args(), 123, typeof(int))
+        TestMacro(mc, e"{|a|A*1_000", Args(123), 123000, typeof(int))
+        TestMacro(mc, e"{|a| USUAL(-a) }", Args(1), -1, typeof(int))
+        TestMacro(mc, e"{|a| (USUAL)(-a) }", Args(1), -1, typeof(int))
+        TestMacro(mc, e"0.00001", Args(), 1e-5, typeof(float))
+        TestMacro(mc, e"{|a,b,c|DoTest(a,b,c)}", Args(1, true, nil), 5, typeof(int))
+        TestMacro(mc, e"{|a,b,c|DoTestC(a,b,c)}", Args(1, true, testclass{222}), 222, typeof(int))
+        TestMacro(mc, e"{|a,b,c|DoTestS(a,b,c)}", Args(1, true, teststruct{222}), 222, typeof(int))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")

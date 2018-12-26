@@ -19,6 +19,8 @@ namespace XSharp.MacroCompiler
             if (expr != null) expr.Emit(ilg);
             switch (Kind)
             {
+                case ConversionKind.Identity:
+                    break;
                 case ConversionKind.ImplicitNumeric:
                 case ConversionKind.ExplicitNumeric:
                     EmitNumericConversion(ilg, expr.Datatype.NativeType, type.NativeType, false);

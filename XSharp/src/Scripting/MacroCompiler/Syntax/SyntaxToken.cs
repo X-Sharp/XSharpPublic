@@ -453,6 +453,7 @@ namespace XSharp.MacroCompiler.Syntax
                 {"__DIALECT_VO__", TokenType.MACRO},
                 {"__DIALECT_VULCAN__", TokenType.MACRO},
                 {"__DIALECT_HARBOUR__", TokenType.MACRO},
+                { "__DIALECT_XBASEPP__", MACRO},
                 {"__ENTITY__", TokenType.MACRO},
                 {"__FILE__", TokenType.MACRO},
                 {"__FUNCTIONS__", TokenType.MACRO},
@@ -464,6 +465,7 @@ namespace XSharp.MacroCompiler.Syntax
                 {"__TIME__", TokenType.MACRO},
                 {"__UTCTIME__", TokenType.MACRO},
                 {"__VERSION__", TokenType.MACRO},
+                {"__VO__", TokenType.MACRO},
                 {"__VO1__", TokenType.MACRO},
                 {"__VO2__", TokenType.MACRO},
                 {"__VO3__", TokenType.MACRO},
@@ -480,9 +482,12 @@ namespace XSharp.MacroCompiler.Syntax
                 {"__VO14__", TokenType.MACRO},
                 {"__VO15__", TokenType.MACRO},
                 {"__VO16__", TokenType.MACRO},
+                {"__VULCAN__", TokenType.MACRO},
                 {"__WINDIR__", TokenType.MACRO},
                 {"__WINDRIVE__", TokenType.MACRO},
+                {"__XPP__", TokenType.MACRO},
                 {"__XSHARP__", TokenType.MACRO},
+                {"__XSHARP_RT__", TokenType.MACRO},
             };
             // These keywords are inserted without abbreviations
             foreach (var text in Keywords.Keys)

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -232,6 +232,11 @@ FUNCTION SetDecimalSep() AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION SetDecimalSep(wSep AS DWORD) AS DWORD
+	LOCAL oCulture AS System.Globalization.CultureInfo
+	oCulture := (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread:CurrentCulture:Clone()
+	oCulture:NumberFormat:NumberDecimalSeparator := ((Char)wSep):ToString()
+	System.Threading.Thread.CurrentThread:CurrentCulture := oCulture
+
 	SETSTATE DWORD Set.DecimalSep wSep
 
 /// <summary>
@@ -588,6 +593,11 @@ FUNCTION SetThousandSep() AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION SetThousandSep(wSep AS DWORD) AS DWORD
+	LOCAL oCulture AS System.Globalization.CultureInfo
+	oCulture := (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread:CurrentCulture:Clone()
+	oCulture:NumberFormat:NumberGroupSeparator := ((Char)wSep):ToString()
+	System.Threading.Thread.CurrentThread:CurrentCulture := oCulture
+
 	SETSTATE DWORD Set.ThousandSep wSep
 
 /// <summary>

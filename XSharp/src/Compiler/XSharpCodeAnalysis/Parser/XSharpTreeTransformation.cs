@@ -3209,11 +3209,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var initExpr = context.Initializer?.Get<ExpressionSyntax>();
             bool isFixed = (context.Parent.Parent as XP.ClassvarsContext)?.Modifiers?._FIXED != null;
             var varType = ((XP.ClassVarListContext)context.Parent).DataType?.Get<TypeSyntax>() ?? _getMissingType();
-            if (initExpr == null && candefault && IsStringType(varType) && _options.VONullStrings )
-            {
-                initExpr = GenerateLiteral("");
-                initExpr.XGenerated = true;
-            }
             
             if (isDim)
             {

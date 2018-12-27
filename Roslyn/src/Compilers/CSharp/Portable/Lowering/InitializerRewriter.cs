@@ -95,8 +95,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             // should not overwrite a value set in a child class
             // not that we recommend that <g>
             
-            if (((CSharpSyntaxNode)initValue.Syntax).XGenerated && fieldInit.Field.Type.IsStringType() 
-                && fieldInit.Field.DeclaringCompilation.Options.VONullStrings)
+            if (fieldInit.WasCompilerGenerated && fieldInit.Field.Type.IsStringType() 
+                && fieldInit.Field.DeclaringCompilation.Options.VONullStrings &&
+                ! fieldInit.Field.IsStatic)
             {
                 var fldaccess = new BoundFieldAccess(syntax,
                                                     boundReceiver,

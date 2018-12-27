@@ -459,6 +459,8 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a,b,c|DoTest(a,b,c)}", Args(1, true, nil), 5, typeof(int))
         TestMacro(mc, e"{|a,b,c|DoTestC(a,b,c)}", Args(1, true, testclass{222}), 222, typeof(int))
         TestMacro(mc, e"{|a,b,c|DoTestS(a,b,c)}", Args(1, true, teststruct{222}), 222, typeof(int))
+        TestMacro(mc, e"{|a| AScan(a, \"12\") }", Args({"135454","54376","123","53"}, nil), 3, typeof(dword))
+        TestMacro(mc, e"{|a| ALen(a) }", Args({"1235454","54376","12","53"},nil), 4, typeof(dword))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")

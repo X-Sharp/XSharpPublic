@@ -112,6 +112,9 @@ namespace XSharp.MacroCompiler
             if (TypesMatch(expr.Datatype, type))
                 return ConversionSymbol.Create(ConversionKind.Identity);
 
+            if (type.Type.IsGenericType || expr.Datatype.Type.IsGenericType)
+                return ConversionSymbol.Create(noConversion);
+
             MethodSymbol converter = null;
 
             ResolveUserDefinedConversion(expr, type, expr.Datatype.Lookup(OperatorNames.Implicit), type.Lookup(OperatorNames.Implicit), ref converter, options | BindOptions.Special);

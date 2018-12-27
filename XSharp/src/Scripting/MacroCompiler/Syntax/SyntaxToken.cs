@@ -453,7 +453,7 @@ namespace XSharp.MacroCompiler.Syntax
                 {"__DIALECT_VO__", TokenType.MACRO},
                 {"__DIALECT_VULCAN__", TokenType.MACRO},
                 {"__DIALECT_HARBOUR__", TokenType.MACRO},
-                { "__DIALECT_XBASEPP__", MACRO},
+                { "__DIALECT_XBASEPP__", TokenType.MACRO},
                 {"__ENTITY__", TokenType.MACRO},
                 {"__FILE__", TokenType.MACRO},
                 {"__FUNCTIONS__", TokenType.MACRO},

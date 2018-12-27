@@ -1656,6 +1656,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "__DIALECT_VO__", MACRO},
                     { "__DIALECT_VULCAN__", MACRO},
                     { "__DIALECT_HARBOUR__", MACRO},
+                    { "__DIALECT_XBASEPP__", MACRO},
                     { "__ENTITY__", MACRO},
                     { "__FILE__", MACRO},
                     { "__FUNCTION__", MACRO},
@@ -1668,6 +1669,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "__TIME__", MACRO},
                     { "__UTCTIME__", MACRO},
                     { "__VERSION__", MACRO},
+                    { "__VO__", MACRO},
                     { "__VO1__", MACRO},
                     { "__VO2__", MACRO},
                     { "__VO3__", MACRO},
@@ -1684,9 +1686,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "__VO14__", MACRO},
                     { "__VO15__", MACRO},
                     { "__VO16__", MACRO},
+                    { "__VULCAN__", MACRO},
                     { "__WINDIR__", MACRO},
                     { "__WINDRIVE__", MACRO},
+                    { "__XPP__", MACRO},
                     { "__XSHARP__", MACRO},
+                    { "__XSHARP_RT__", MACRO},
                 };
 
             }

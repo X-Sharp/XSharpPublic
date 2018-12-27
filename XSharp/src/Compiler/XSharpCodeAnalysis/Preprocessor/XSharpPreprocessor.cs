@@ -227,6 +227,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private void initStdDefines(CSharpParseOptions options, string fileName)
         {
             // Note Macros such as __ENTITY__ and  __SIG__ are handled in the transformation phase
+            // Make sure you also update the MACROs in XSharpLexerCode.cs !
             macroDefines.Add("__ARRAYBASE__", () => new XSharpToken(XSharpLexer.INT_CONST, _options.ArrayZero ? "0" : "1"));
             if (_options.ClrVersion == 2)
                 macroDefines.Add("__CLR2__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
@@ -1152,6 +1153,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     else if (deftoken.Type == XSharpLexer.INT_CONST)
                     {
                         isdefined = Convert.ToInt64(deftoken.Text) != 0;
+                    }
+                }
+            }
+            else
+            {
+                isdefined = macroDefines.ContainsKey(define);
+                if (isdefined && _options.VOPreprocessorBehaviour)
+                {
+                    var value = macroDefines[define]();
+                    if (value != null)
+                    {
+                        if (value.Type == XSharpLexer.FALSE_CONST)
+                        {
+                            isdefined = false;
+                        }
+                        else if (value.Type == XSharpLexer.INT_CONST)
+                        {
+                            isdefined = Convert.ToInt64(value.Text) != 0;
+                        }
                     }
                 }
             }

@@ -1140,37 +1140,43 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // otherwise #ifdef is TRUE
             // and when there is more than one token, then #ifdef is also TRUE
             bool isdefined= symbolDefines.ContainsKey(define);
-            if (isdefined && _options.VOPreprocessorBehaviour)
+            if (isdefined )
             {
-                var value = symbolDefines[define];
-                if (value?.Count == 1)
-                {
-                    var deftoken = value[0];
-                    if (deftoken.Type == XSharpLexer.FALSE_CONST)
+                if ( _options.VOPreprocessorBehaviour)
+                { 
+                    var value = symbolDefines[define];
+                    if (value?.Count == 1)
                     {
-                        isdefined = false;
-                    }
-                    else if (deftoken.Type == XSharpLexer.INT_CONST)
-                    {
-                        isdefined = Convert.ToInt64(deftoken.Text) != 0;
+                        var deftoken = value[0];
+                        if (deftoken.Type == XSharpLexer.FALSE_CONST)
+                        {
+                            isdefined = false;
+                        }
+                        else if (deftoken.Type == XSharpLexer.INT_CONST)
+                        {
+                            isdefined = Convert.ToInt64(deftoken.Text) != 0;
+                        }
                     }
                 }
             }
             else
             {
                 isdefined = macroDefines.ContainsKey(define);
-                if (isdefined && _options.VOPreprocessorBehaviour)
+                if (isdefined )
                 {
-                    var value = macroDefines[define]();
-                    if (value != null)
-                    {
-                        if (value.Type == XSharpLexer.FALSE_CONST)
+                    if (_options.VOPreprocessorBehaviour)
+                    { 
+                        var value = macroDefines[define]();
+                        if (value != null)
                         {
-                            isdefined = false;
-                        }
-                        else if (value.Type == XSharpLexer.INT_CONST)
-                        {
-                            isdefined = Convert.ToInt64(value.Text) != 0;
+                            if (value.Type == XSharpLexer.FALSE_CONST)
+                            {
+                                isdefined = false;
+                            }
+                            else if (value.Type == XSharpLexer.INT_CONST)
+                            {
+                                isdefined = Convert.ToInt64(value.Text) != 0;
+                            }
                         }
                     }
                 }

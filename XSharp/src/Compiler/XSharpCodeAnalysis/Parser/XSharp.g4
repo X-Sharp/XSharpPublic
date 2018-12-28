@@ -1053,6 +1053,7 @@ xppnamespace        : BEGIN NAMESPACE Name=name e=eos
 					
 xppentity           : xppnamespace
                     | xppclass
+                    | class_                    // also allow the 'normal' class
                     | structure_
                     | interface_
                     | delegate_

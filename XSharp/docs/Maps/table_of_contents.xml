@@ -160,6 +160,9 @@
       <topicref type="topic" id="432585566321085" build="ALL" modified="2018-06-07T17:54:28.515Z" icon="0" href="XSharp_Macrocompiler">
         <caption translate="true">XSharp.Macrocompiler</caption>
       </topicref>
+      <topicref type="topic" id="434627175110269" build="ALL" modified="2018-12-28T13:50:49.929Z" icon="0" href="XSharp_Macrocompiler_Full_DLL">
+        <caption translate="true">XSharp.Macrocompiler.Full.DLL</caption>
+      </topicref>
       <topicref type="topic" id="432587430200533" build="ALL" modified="2018-06-07T17:54:16.764Z" icon="0" href="XSharp_RDD">
         <caption translate="true">XSharp.RDD</caption>
       </topicref>

@@ -8,7 +8,7 @@
     </header>
     <para styleclass="Normal">When you install XSharp you will find the following folders on your machine.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="16" colcount="2">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="17" colcount="2">
       <tr style="vertical-align:top">
         <td style="width:321px;">
           <para styleclass="Normal"><text style="font-weight:bold;">Folder</text></para>
@@ -39,6 +39,14 @@
         </td>
         <td style="width:993px;">
           <para styleclass="Normal">The command line compiler, the Script interpreter and Vulcan XPorter</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:321px;">
+          <para styleclass="Normal">- Debug</para>
+        </td>
+        <td style="width:993px;">
+          <para styleclass="Normal">Debug versions of the runtime DLLs and SDK DLLs (FOX only)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -84,10 +92,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:321px;">
-          <para styleclass="Normal">- Portable</para>
+          <para styleclass="Normal">- NetCore20</para>
         </td>
         <td style="width:993px;">
-          <para styleclass="Normal">A portable version of the X# compiler and script engine</para>
+          <para styleclass="Normal">A version of the X# compiler and script engine for .Net Core 2.0 (FOX only)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

@@ -10,6 +10,11 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="List"><snippet src="Disclaimer" inline="false"/></para>
+    <para styleclass="Heading1">Changes in 2.0.0.9 (Bandol Beta 9)</para>
+    <para styleclass="Heading2">Compiler</para>
+    <para styleclass="Heading2">Runtime</para>
+    <para styleclass="Heading2">Visual Studio Integration</para>
+    <para styleclass="Heading2">Tools</para>
     <para styleclass="Heading1">Changes in 2.0.0.8 (Bandol Beta 8)</para>
     <para styleclass="Heading2">Compiler</para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">

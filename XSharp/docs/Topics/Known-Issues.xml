@@ -10,7 +10,7 @@
     <para styleclass="Body Text">We consider the Vulcan Compatibility of the compiler finished. All Vulcan code should compile without problems now.<br/>The next builds of the compiler will focus on bug fixing and adding some VO compatibility options which are listed below as well as adding some new features.</para>
     <para styleclass="Normal">Below is the complete (but short) list of things that are not supported yet or are known problems in the current build of X#.</para>
     <para styleclass="Heading2">Compiler</para>
-    <list id="82" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Some VO <link displaytype="text" defaultstyle="true" type="topiclink" href="X-Compiler-Options-By-Category">compatibility compiler options</link> are not implemented yet. The command line options are recognized but nothing is done with them<br/>/cs: Case Sensitivity (the compiler is now always Case Insensitive)<br/>/vo 11: VO Compatible Numeric conversions</li>
       <li styleclass="List">The compiler pragmas (#pragma warnings and #pragma options) do not work. They are ignored by the compiler.</li>
       <li styleclass="List">Parser errors need improvements<br/>Erroneous code may generate compiler runtime errors</li>
@@ -19,20 +19,17 @@
       <li styleclass="List">Sometimes you may see a &quot;Include file not found&quot; error, where the file DOES exist. This seems to be a side effect of the codepage that was used to save the include files. <br/>When you save the file as UTF8 (File Advanced Save Options in Visual Studio) then this problem almost always disappears.</li>
     </list>
     <para styleclass="Heading2">Visual Studio</para>
-    <list id="83" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">New features in the Debugger, such as a window for Globals and RDD Workareas</li>
     </list>
     <para styleclass="Heading2">VO Xporter</para>
-    <list id="84" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">DbServer and Fieldspec binaries are not exported yet</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
-    <list id="85" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List">Some of the string conversion functions such as Str() and NTrim() do not always return the same string as VO . In VO the return value of these functions heavily depends on state settings such as SetFixed, SetDecimals, SetScience and more. This will be most likely fixed in Beta 2</li>
-      <li styleclass="Normal">Some of the TransForm() pictures also depend on the same settings as Str() and NTrim() and have the same problems</li>
-      <li styleclass="Normal">The macro compiler in this release is fully functional but not as fast as we&apos;d like. We are working on a smaller and faster macro compiler.</li>
-      <li styleclass="Normal">The RDD system as well as the Db..() and VoDb..() functions are missing</li>
-      <li styleclass="Normal">MEMVAR (PUBLIC &amp; PRIVATE) support is missing</li>
+    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List"><text styleclass="Normal">MEMVAR (PUBLIC &amp; PRIVATE) support is missing</text></li>
+      <li styleclass="Normal">The DBFCDX RDD is missing</li>
       <li styleclass="Normal">Some runtime functions are not supported yet<br/></li>
     </list>
   </body>

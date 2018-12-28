@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XSharp.Macrocompiler.Full.DLL</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">XSharp.Macrocompiler.Full.DLL</para>
+    </header>
+    <para styleclass="Normal">This DLL is the X# &quot;full&quot; macro compiler. The Macro compiler is created as a class wrapper on top of the X# scripting engine<br/><br/>We are working on a smaller and faster macro compiler. More news about that will follow.<br/><br/>Please note that there is no link between XSharp.VO.DLL and XSharp.Macrocompiler.DLL. When you compile a macro then the runtime will try to locate the macro compiler with the method listed below. <br/>You can override this mechanism by calling SetMacroCompiler() with the type of the class that implements the macro compiler. This type should implement the XSharp.IMacroCompiler interface. If you want to use the full macro compiler in stead of the standard (fast) macro compiler then you need to add a reference to XSharp.MacroCompiler.Full.dll and add the following code to the startup code of your application:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">SetMacroCompiler(typeof(XSharp.MacroCompiler))</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If you don&apos;t do this then the runtime will try to locate the standard macro compiler in the following locations:</para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">The directory where the XSharp.R.DLL is loaded from</li>
+      <li styleclass="Normal">The directories in the path. If you use this then make sure that the assemblies listed below are in the same folder as XSharp.MacroCompiler.DLL</li>
+      <li styleclass="Normal">The Global Assembly Cache (GAC). If you use this mechanism then make sure that the assemblies listed below are also in the GAC.</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This assembly depends on:</para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">XSharp.Scripting.DLL</li>
+    </list>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">XSharp.CodeAnalysis.DLL</li>
+      <li styleclass="Normal">System.Collections.Immutable</li>
+      <li styleclass="Normal">System.Reflection.Metadata</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">Note<tab /></para>
+    <para styleclass="Normal">The XSharp installer adds the Macro compiler and the assemblies it depends on to the GAC so you will be able to run your apps without adding the macro compiler to the references list of your application. Please make sure you include the macro compiler in your installer when deploying your applications.</para>
+  </body>
+</topic>

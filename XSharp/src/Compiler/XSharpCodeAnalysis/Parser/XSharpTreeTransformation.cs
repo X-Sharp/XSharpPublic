@@ -4814,94 +4814,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return false;
         }
 
-        protected virtual BlockSyntax GenerateEntryPointBody([NotNull] XP.IEntityContext context, ParameterListSyntax parList)
+        protected virtual BlockSyntax GenerateEntryPoint(SyntaxList<SyntaxToken> modifiers, [NotNull] XP.IEntityContext context, BlockSyntax body,
+                    SyntaxList<AttributeListSyntax> attributeList, ParameterListSyntax parList)
         {
-            ArgumentListSyntax arguments;
-            var parameters = context.Params;
-            var returntype = context.ReturnType?.Get<TypeSyntax>() ?? _voidType;
-            if (parameters?._Params.Count > 0)
-            {
-                arguments = MakeArgumentList(MakeArgument(GenerateSimpleName(parameters._Params[0].Id.GetText())));
-            }
-            else
-            { 
-                arguments = MakeArgumentList();
-            }
-            StatementSyntax stmt;
-            var methodcall = GenerateMethodCall(this._entryPoint, arguments, true);
-            if (isVoidType(returntype))
-            {
-                stmt = GenerateExpressionStatement(methodcall);
-            }
-            else
-            { 
-                stmt = GenerateReturn(methodcall);
-            }
-            return MakeBlock(stmt);
+            // In the core dialect GenerateEntryPoint does nothing special
+            // In other dialects the body of the start function will be changed
+            // and an additional function may be generated
+            return body;
         }
-        protected void CreateEntryPoint(SyntaxList<SyntaxToken> modifiers, [NotNull] XP.IEntityContext context, BlockSyntax body,
-            SyntaxList<AttributeListSyntax> attributeList, ParameterListSyntax parList)
-        {
-            // create _Start function that calls the user generated Start function
-            var returntype = context.ReturnType.Get<TypeSyntax>() ?? _voidType;
-            if (parList.Parameters.Count > 0)
-            {
-                var parameter = parList.Parameters[0];
-                var atype = parameter.Type as ArrayTypeSyntax;
-                if (atype != null)
-                {
-                    var stringtype = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
-                    if (atype.ElementType != stringtype)
-                    {
-                        // need to convert parameters to string[]
-                        var emptysizes = _pool.AllocateSeparated<ExpressionSyntax>();
-                        emptysizes.Add(_syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken)));
-                        var emptyrank = _syntaxFactory.ArrayRankSpecifier(
-                              SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                              emptysizes,
-                              SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
-                       atype = _syntaxFactory.ArrayType(stringtype, emptyrank);
-                       parameter = parameter.Update(EmptyList<AttributeListSyntax>(), EmptyList<SyntaxToken>(),
-                           atype, parameter.Identifier, null);
-                       parList = _syntaxFactory.ParameterList(parList.OpenParenToken, MakeSeparatedList(parameter), parList.CloseParenToken);
-                        _pool.Free(emptysizes);
-                    }
-                }
-                else
-                {
-                    parList = EmptyParameterList();
-                    parList = parList.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_NoEntryPoint));
-                }
-            }
-            var attr = _pool.Allocate<AttributeListSyntax>();
-            foreach (var att in attributeList.Nodes)
-            {
-                if (att.ToString().IndexOf("ClipperCallingConventionAttribute") == -1)
-                { 
-                    attr.Add(att);
-                }
-            }
-            GenerateAttributeList(attr, SystemQualifiedNames.CompilerGenerated);
-            attributeList = attr.ToList();
-            _pool.Free(attr);
-            var id = SyntaxFactory.Identifier(WellKnownMemberNames.EntryPointMethodName);
-            var ep = _syntaxFactory.MethodDeclaration(
-                attributeLists: attributeList,
-                modifiers: modifiers,
-                returnType: returntype,
-                explicitInterfaceSpecifier: null,
-                identifier: id,
-                typeParameterList: null,
-                parameterList: parList,
-                constraintClauses: null,
-                body: body,
-                expressionBody: null,
-                semicolonToken: (body != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            ep.XGenerated = true;
-            ep.XNode = context;
-            GlobalEntities.GlobalClassMembers.Add(ep);
-
-        }
+   
 
         bool hasDllImport(SyntaxList<AttributeListSyntax> attributes)
         {
@@ -4957,9 +4878,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (string.Equals(id.Text, _entryPoint, StringComparison.OrdinalIgnoreCase)
                     && _options.CommandLineArguments.CompilationOptions.OutputKind.IsApplication())
                 {
-                    var epbody = GenerateEntryPointBody(context, parameters);
-                    CreateEntryPoint(modifiers, context, epbody, attributes, parameters);
-                    attributes = EmptyList<AttributeListSyntax>();
+                    body = GenerateEntryPoint(modifiers, context, body, attributes, parameters);
                 }
             }
             context.Put(_syntaxFactory.MethodDeclaration(
@@ -5049,9 +4968,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (string.Equals(id.Text, _entryPoint, StringComparison.OrdinalIgnoreCase)
                     && _options.CommandLineArguments.CompilationOptions.OutputKind.IsApplication())
                 {
-                    var epbody = GenerateEntryPointBody(context,parameters);
-                    CreateEntryPoint(modifiers, context, epbody, attributes, parameters);
-                    attributes = EmptyList<AttributeListSyntax>();
+                    // In the core dialect GenerateEntryPoint does nothing special
+                    // In other dialects the body of the start function will be changed
+                    // and an additional function may be generated
+                    body = GenerateEntryPoint(modifiers, context, body, attributes, parameters);
                 }
             }
             context.Put(_syntaxFactory.MethodDeclaration(
@@ -8402,7 +8322,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         #endregion
         #endregion
-
 
     }
 }

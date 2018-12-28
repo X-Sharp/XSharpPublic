@@ -132,7 +132,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // our runtime DLLs have a fixed Globals Class name
             if (targetDLL != XSharpTargetDLL.Other)
             {
-                    return base.GetGlobalClassName(targetDLL);
+                return base.GetGlobalClassName(targetDLL);
             }
             string name = _options.CommandLineArguments?.CompilationOptions.ModuleName;
             string firstSource = _options.CommandLineArguments?.SourceFiles.FirstOrDefault().Path;
@@ -241,7 +241,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             arguments.Add(_syntaxFactory.AttributeArgument(null, null, GenerateLiteral("X# " + global::XSharp.Constants.Version + " - dialect:" + _options.Dialect.ToString())));
             attributes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
             attributes.Add(_syntaxFactory.Attribute(
-                name: GenerateQualifiedName(_compilerVersionType),argumentList: MakeAttributeArgumentList(arguments)));
+                name: GenerateQualifiedName(_compilerVersionType), argumentList: MakeAttributeArgumentList(arguments)));
 
             var target = _syntaxFactory.AttributeTargetSpecifier(SyntaxFactory.Identifier("assembly"), SyntaxFactory.MakeToken(SyntaxKind.ColonToken));
             var attrlist = MakeAttributeList(
@@ -286,7 +286,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var t = getTransform(options);
             return t.GenerateDefaultSyntaxTree(initprocs, isApp, hasPCall);
         }
-        
+
         public static string VOGlobalClassName(CSharpParseOptions options)
         {
             var t = getTransform(options);
@@ -302,7 +302,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var name in procnames)
             {
                 var invoke = GenerateMethodCall(name, true);
-                stmts.Add(GenerateExpressionStatement(invoke,true));
+                stmts.Add(GenerateExpressionStatement(invoke, true));
             }
             var mods = TokenList(isApp ? SyntaxKind.InternalKeyword : SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
             var pars = EmptyParameterList();
@@ -420,7 +420,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ExpressionSyntax rhs = MakeTypeOf(GenerateQualifiedName(GlobalClassName));
 
             rhs = MakeSimpleMemberAccess(rhs, GenerateSimpleName("Module"));
-            stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs),true));
+            stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs), true));
             // rest of the statements is generated in the LocalRewriter with a check for the existence of the fields in VulcanRT.
             // in Vulcan.Runtime.State
             var body = MakeBlock(stmts);
@@ -464,20 +464,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
 
-        private LocalDeclarationStatementSyntax GenerateReturnVar(TypeSyntax type, ExpressionSyntax expr= null)
+        private LocalDeclarationStatementSyntax GenerateReturnVar(TypeSyntax type, ExpressionSyntax expr = null)
         {
-            var localdecl = GenerateLocalDecl(XSharpSpecialNames.ReturnName, type,expr);
+            var localdecl = GenerateLocalDecl(XSharpSpecialNames.ReturnName, type, expr);
             localdecl.Declaration.XGenerated = true;
             localdecl.XGenerated = true;
             return localdecl;
 
         }
+    
 
-        protected override BlockSyntax GenerateEntryPointBody([NotNull] XP.IEntityContext context, ParameterListSyntax paramList)
+        protected override BlockSyntax GenerateEntryPoint(SyntaxList<SyntaxToken> modifiers, [NotNull] XP.IEntityContext context, BlockSyntax body,
+                     SyntaxList<AttributeListSyntax> attributeList, ParameterListSyntax parList)
         {
-            BlockSyntax epcall;
+            // We handle the following:
+            // 1) when the defined Start function has Clipper calling convention then we generate a new start function
+            //    with string[] parameters and we call the defined start function
+            // 2) we add a block 
+
             var stmts = new List<StatementSyntax>();
-            if (context.Data.HasClipperCallingConvention)
+            BlockSyntax epcall;
+            var returntype = context.ReturnType.Get<TypeSyntax>() ?? _voidType;
+            // XPP dialect has a procedure main as entrypoint
+            if (context.Data.HasClipperCallingConvention && _options.Dialect == XSharpDialect.XPP)
             {
                 InitializeArrayTypes();
                 // var Xs$Array := new List<USUAL>()
@@ -485,14 +494,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var arrayName = _syntaxFactory.IdentifierName(arrayId);
                 var typeparam = _syntaxFactory.TypeArgumentList(SyntaxFactory.MakeToken(SyntaxKind.LessThanToken),
                     MakeSeparatedList(_usualType), SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken));
-                AddUsingWhenMissing(GlobalEntities.Usings, GenerateQualifiedName("System.Collections.Generic"),false,null);
-                
+                AddUsingWhenMissing(GlobalEntities.Usings, GenerateQualifiedName("System.Collections.Generic"), false, null);
+
                 var genlist = _syntaxFactory.GenericName(SyntaxFactory.Identifier("List"), typeparam);
                 var createExpr = _syntaxFactory.ObjectCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
                          genlist, EmptyArgumentList(), null);
                 var init = _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), createExpr);
-                var vardecl = _syntaxFactory.VariableDeclarator(arrayId, null, init);
-                var decl = _syntaxFactory.VariableDeclaration(_impliedType, MakeSeparatedList(vardecl));
+                var vd = _syntaxFactory.VariableDeclarator(arrayId, null, init);
+                var decl = _syntaxFactory.VariableDeclaration(_impliedType, MakeSeparatedList(vd));
                 stmts.Add(_syntaxFactory.LocalDeclarationStatement(null, decl, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                 // create iterator that copies values to  the elements in the array
                 var block = new List<StatementSyntax>();
@@ -515,29 +524,72 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var methodCall = _syntaxFactory.InvocationExpression(toarray, EmptyArgumentList());
                 var arguments = MakeArgumentList(MakeArgument(methodCall));
                 var methodcall = GenerateMethodCall(this._entryPoint, arguments, true);
-                var returntype = context.ReturnType.Get<TypeSyntax>() ?? _voidType;
                 if (isVoidType(returntype))
                 {
-                    stmts.Add( GenerateExpressionStatement(methodcall));
+                    stmts.Add(GenerateExpressionStatement(methodcall));
                 }
                 else
                 {
                     stmts.Add(GenerateReturn(methodcall));
                 }
                 epcall = MakeBlock(stmts);
+                GenerateStartFunction(modifiers, context, epcall, attributeList, parList);
             }
-            else
+            else if (string.Compare(this._entryPoint, WellKnownMemberNames.EntryPointMethodName) != 0)
             {
-                epcall = base.GenerateEntryPointBody(context, paramList);
+                var methodcall = GenerateMethodCall(this._entryPoint, EmptyArgumentList(), true);
+                if (isVoidType(returntype))
+                {
+                    stmts.Add(GenerateExpressionStatement(methodcall));
+                }
+                else
+                {
+                    stmts.Add(GenerateReturn(methodcall));
+                }
+                epcall = MakeBlock(stmts);
+                GenerateStartFunction(modifiers, context, epcall, attributeList, parList);
             }
+
             ExpressionSyntax call;
             stmts.Clear();
             call = GenerateMethodCall(XSharpSpecialNames.ModuleName + "." + XSharpSpecialNames.AppInit, true);
             stmts.Add(GenerateExpressionStatement(call, true));
-            foreach (var stmt in epcall.Statements)
+            var ame = _syntaxFactory.AnonymousMethodExpression(
+                null,
+                SyntaxFactory.MakeToken(SyntaxKind.DelegateKeyword),
+                EmptyParameterList(),
+                body);
+            //ame.XGenerated = true;
+            var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
+            var vardecl = _syntaxFactory.VariableDeclarator(SyntaxFactory.MakeIdentifier("Xs$a"), null,
+               _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), ame));
+            variables.Add(vardecl);
+            vardecl.XNode = stmts[0].XNode;
+            //vardecl.XGenerated = true;
+            var varType = GenerateQualifiedName("System.Action");
+            if (!isVoidType(returntype))
             {
-                stmts.Add(stmt);
+                var typeArgs = _syntaxFactory.TypeArgumentList(
+                    SyntaxFactory.MakeToken(SyntaxKind.LessThanToken),
+                    MakeSeparatedList<TypeSyntax>(returntype),
+                    SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken)
+                    );
+                varType = _syntaxFactory.GenericName(SyntaxFactory.MakeIdentifier("Func"), typeArgs);
             }
+            var localdecl = _syntaxFactory.LocalDeclarationStatement(
+                    EmptyList<SyntaxToken>(),
+                    _syntaxFactory.VariableDeclaration(varType, variables),
+                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            //localdecl.XGenerated = true;
+            localdecl.XNode = stmts[0].XNode;
+            stmts.Add(localdecl);
+            var invoke = _syntaxFactory.InvocationExpression(GenerateSimpleName("Xs$a"), EmptyArgumentList());
+            invoke.XGenerated = true;
+            invoke.XNode = stmts[0].XNode;
+            if (isVoidType(returntype))
+                stmts.Add(GenerateExpressionStatement(invoke));
+            else
+                stmts.Add(GenerateReturn(invoke));
             var tryblock = MakeBlock(stmts);
             stmts.Clear();
             call = GenerateMethodCall(XSharpSpecialNames.ModuleName + "." + XSharpSpecialNames.AppExit, true);
@@ -553,6 +605,73 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                  finallyclause);
             return MakeBlock(trystmt);
         }
+
+        protected void GenerateStartFunction(SyntaxList<SyntaxToken> modifiers, [NotNull] XP.IEntityContext context, BlockSyntax body,
+                    SyntaxList<AttributeListSyntax> attributeList, ParameterListSyntax parList)
+        {
+            // only
+            var returntype = context.ReturnType.Get<TypeSyntax>() ?? _voidType;
+            if (parList.Parameters.Count > 0)
+            {
+                var parameter = parList.Parameters[0];
+                var atype = parameter.Type as ArrayTypeSyntax;
+                if (atype != null)
+                {
+                    var stringtype = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
+                    if (atype.ElementType != stringtype)
+                    {
+                        // need to convert parameters to string[]
+                        var emptysizes = _pool.AllocateSeparated<ExpressionSyntax>(); ;
+                        emptysizes.Add(_syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken)));
+                        var emptyrank = _syntaxFactory.ArrayRankSpecifier(
+                              SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                              emptysizes,
+                              SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                        atype = _syntaxFactory.ArrayType(stringtype, emptyrank);
+                        parameter = parameter.Update(EmptyList<AttributeListSyntax>(), EmptyList<SyntaxToken>(),
+                            atype, parameter.Identifier, null);
+                        parList = _syntaxFactory.ParameterList(parList.OpenParenToken, MakeSeparatedList(parameter), parList.CloseParenToken);
+                        _pool.Free(emptysizes);
+                    }
+                }
+                else
+                {
+                    parList = EmptyParameterList();
+                    parList = parList.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_NoEntryPoint));
+                }
+            }
+            var attr = _pool.Allocate<AttributeListSyntax>();
+            foreach (var att in attributeList.Nodes)
+            {
+                if (att.ToString().IndexOf("ClipperCallingConventionAttribute") == -1)
+                {
+                    attr.Add(att);
+                }
+            }
+            GenerateAttributeList(attr, SystemQualifiedNames.CompilerGenerated);
+            attributeList = attr.ToList();
+            _pool.Free(attr);
+            var id = SyntaxFactory.Identifier(WellKnownMemberNames.EntryPointMethodName);
+            var ep = _syntaxFactory.MethodDeclaration(
+                attributeLists: attributeList,
+                modifiers: modifiers,
+                returnType: returntype,
+                explicitInterfaceSpecifier: null,
+                identifier: id,
+                typeParameterList: null,
+                parameterList: parList,
+                constraintClauses: null,
+                body: body,
+                expressionBody: null,
+                semicolonToken: (body != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            ep.XGenerated = true;
+            ep.XNode = context;
+            GlobalEntities.GlobalClassMembers.Add(ep);
+
+        }
+
+
+
         #endregion
 
         #region MemVar and Fields
@@ -2681,29 +2800,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         protected void Check4ClipperCC(XP.IEntityContext context, IList<XP.ParameterContext> parameters, IToken Convention, XP.DatatypeContext returnType)
         {
-            bool isEntryPoint = false;
-            bool hasConvention = false;
-            if (context is XP.FunctionContext)
-            {
-                var fc = context as XP.FunctionContext;
-                isEntryPoint = fc.Id.GetText().ToLower() == "start";
-            }
-            context.Data.HasMissingReturnType = (returnType == null);
-            context.Data.HasTypedParameter = false;
-            if (context is XP.ProcedureContext)
+        bool isEntryPoint = false;
+        bool hasConvention = false;
+        if (context is XP.FunctionContext fc)
+        {
+            isEntryPoint = fc.Id.GetText().ToLower() == "start";
+        }
+        context.Data.HasTypedParameter = false;
+        context.Data.HasMissingReturnType = (returnType == null);
+        if (context is XP.ProcedureContext pc)
+        {
+            isEntryPoint = pc.Id.GetText().ToLower() == "start";
+            context.Data.MustBeVoid = true;
+        }
+        else if (!context.Data.HasMissingReturnType)
+        {
+            string rtype = returnType.GetText().ToLower();
+            if (rtype == "void" || rtype == "system.void")
             {
                 context.Data.MustBeVoid = true;
             }
-            else if (!context.Data.HasMissingReturnType)
-            {
-                string rtype = returnType.GetText().ToLower();
-                if (rtype == "void" || rtype == "system.void")
-                {
-                    context.Data.MustBeVoid = true;
-                }
 
-            }
-            if (Convention != null)
+        }
+        if (Convention != null)
             {
                 context.Data.HasClipperCallingConvention = (Convention.Type == XP.CLIPPER);
                 hasConvention = true;
@@ -2714,7 +2833,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Function Foo or Function Foo() without convention
             if (paramCount == 0 && !hasConvention)
             {
-                context.Data.HasClipperCallingConvention = _options.VOClipperCallingConvention && !isEntryPoint ;
+                context.Data.HasClipperCallingConvention = _options.VOClipperCallingConvention && !isEntryPoint; 
             }
             if (paramCount > 0)
             {
@@ -2728,8 +2847,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
                 context.Data.HasTypedParameter = bHasTypedParameter;
-                if (!context.Data.HasClipperCallingConvention && !isEntryPoint && !hasConvention && _options.VOUntypedAllowed)
-                    context.Data.HasClipperCallingConvention = !bHasTypedParameter;
+            if (!context.Data.HasClipperCallingConvention && !isEntryPoint && !hasConvention && _options.VOUntypedAllowed)
+                context.Data.HasClipperCallingConvention = !bHasTypedParameter;
             }
         }
 

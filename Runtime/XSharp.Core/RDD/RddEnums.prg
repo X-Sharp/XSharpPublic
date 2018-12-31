@@ -344,7 +344,7 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER DBI_RL_TEST 			:= 1019
 		
 		
-		// advnatage
+		// advantage
 		MEMBER DBI_GET_ACE_TABLE_HANDLE  := 1110
 		MEMBER DBI_GET_ACE_STMT_HANDLE   := 1111
 		
@@ -358,11 +358,13 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 	///</summary>
 
 	ENUM DbOrder_Info
+        // These number match the defines for Vulcan
+        // there are some differences between the various dialects unfortunately
+
 		MEMBER DBOI_CONDITION 	:= 1     // String: The order's conditional expression     
 		MEMBER DBOI_EXPRESSION 	:= 2 	// String: The order's key expression             
 		MEMBER DBOI_POSITION 	:= 3  	// Number: The current key position in scope and filter  
 		MEMBER DBOI_KEYNO	 	:= 3	// Alias
-		MEMBER DBOI_KEYGOTO 	:= 3	// Alias
 		MEMBER DBOI_RECNO 		:= 4  	// Number: The current key position disregarding filters 
 		MEMBER DBOI_NAME 		:= 5   	// String: The name of the order                      
 		MEMBER DBOI_NUMBER 		:= 6 	// Number: The numeric position in the list of orders
@@ -370,23 +372,19 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER DBOI_INDEXNAME 	:= 7	// Alias
 		MEMBER DBOI_BAGEXT 		:= 8    // String: The extension of the file containing this order
 		MEMBER DBOI_INDEXEXT  	:= 8	// Alias
-		MEMBER DBOI_ORDERCOUNT  := 9    // Number: The count of ORDERS contained in an index file or in total
-		MEMBER DBOI_FILEHANDLE 	:= 10 	// IntPtr: The handle of the index
-		MEMBER DBOI_ISCOND 		:= 11 	// Logic : Does the order have a FOR condition?
-		MEMBER DBOI_ISDESC 		:= 12 	// Logic : Is the order DESCENDing? 
-		MEMBER DBOI_UNIQUE 		:= 13 	// Logic : Does the order have the UNIQUE attribute?
 		
-		// 14-19 missign
-		/* Clipper 5.3-level constants */
+		// 14-19 missing
 		MEMBER DBOI_FULLPATH 	:= 20   	// String: The full path to the index file (Bag)
-		// 21-23
+		MEMBER DBOI_FILEHANDLE 	:= 21 	// IntPtr: The handle of the index
+		MEMBER DBOI_ISDESC 		:= 22 	// Logic : Is the order DESCENDing? 
+		MEMBER DBOI_ISCOND 		:= 23 	// Logic : Does the order have a FOR condition?
 		MEMBER DBOI_KEYTYPE 	:= 24 	// The type of the order's key  
 		MEMBER DBOI_KEYSIZE 	:= 25 	// Number: The length of the order's key
 		MEMBER DBOI_KEYCOUNT 	:= 26 	// Number: The count of keys in scope and filter
 		MEMBER DBOI_SETCODEBLOCK:= 27 	// Block : The codeblock that produces the key 
 		MEMBER DBOI_KEYDEC 		:= 28 	// Number: The # of decimals in a numeric key 
 		MEMBER DBOI_HPLOCKING 	:= 29 	// Logic : Using High Performance locking for this order?
-		// 30-34
+		// 30-34 missing
 		MEMBER DBOI_LOCKOFFSET 	:= 35 	// Number: The offset used for logical locking 
 		MEMBER DBOI_KEYADD 		:= 36  	// Logic: Custom Index: Was Key added successfully? 
 		MEMBER DBOI_KEYDELETE 	:= 37 	// Logic: Custom Index: Was Key Deletion successful? 
@@ -395,62 +393,68 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER DBOI_SCOPEBOTTOM := 40 	// Object: Get or Set the scope bottom
 		MEMBER DBOI_SCOPETOPCLEAR := 41  	// None	 :
 		MEMBER DBOI_SCOPEBOTTOMCLEAR:= 42 // None :
-		// 43-44
+		MEMBER DBOI_UNIQUE 		:= 43 	// Logic : Does the order have the UNIQUE attribute?
+		MEMBER DBOI_ORDERCOUNT  := 44    // Number: The count of ORDERS contained in an index file or in total
 		MEMBER DBOI_CUSTOM 		:= 45 // Logic: Is this a Custom Index?  
 		MEMBER DBOI_SKIPUNIQUE 	:= 46 // Logic: Was a skip to adjacent unique Key successful?  
-		// 47-49
-		MEMBER DBOI_KEYSINCLUDED:= 50 	// Number: Number of keys in the index order
-		MEMBER DBOI_KEYNORAW 	:= 51 // Number: The key number disregarding filters
-		MEMBER DBOI_KEYGOTORAW 	:= 51	// Alias
-		MEMBER DBOI_KEYCOUNTRAW := 52  // Number: The key count disregarding filter  
-		/* Query Optimization */ 
-		MEMBER DBOI_OPTLEVEL 	:= 53 // Number: Optimization level for current query
-		
+		MEMBER DBOI_KEYGOTO 	:= 47	// 
+		MEMBER DBOI_KEYSINCLUDED:= 48  // Number: Number of keys in the index order
+		MEMBER DBOI_KEYNORAW 	:= 49  // Number: The key number disregarding filters
+		MEMBER DBOI_OPTLEVEL 	:= 50 // Number: Optimization level for current query
+		MEMBER DBOI_KEYCOUNTRAW := 51  // Number: The key count disregarding filter  
+
 		// 54-59
 		/* These shouldn't need an open table */
-		MEMBER DBOI_STRICTREAD          := 60  /* Flag for avoiding RDD hierarchy and using a bigger buffer when indexing  */
-		MEMBER DBOI_OPTIMIZE            := 61  /* Flag for whether to use query optimization             */
-		MEMBER DBOI_AUTOOPEN            := 62  /* Flag for automatically opening structural indexes      */
-		MEMBER DBOI_AUTOORDER           := 63  /* When a structural index is opened, the order to be set */
-		MEMBER DBOI_AUTOSHARE           := 64  /* When a network is detected, open the index shared, otherwise open exclusively   */ 
+		MEMBER DBOI_STRICTREAD   := 60  /* Flag for avoiding RDD hierarchy and using a bigger buffer when indexing  */
+		MEMBER DBOI_OPTIMIZE     := 61  /* Flag for whether to use query optimization             */
+		MEMBER DBOI_AUTOOPEN     := 62  /* Flag for automatically opening structural indexes      */
+		MEMBER DBOI_AUTOORDER    := 63  /* When a structural index is opened, the order to be set */
+		MEMBER DBOI_AUTOSHARE    := 64  /* When a network is detected, open the index shared, otherwise open exclusively   */ 
+
+        MEMBER DBOI_LOCK_ALL    := 100  //
+        MEMBER DBOI_LOCK_FAIL   := 101 // 
+        MEMBER DBOI_HPLOCK_GATE := 102 // 
+
+
+
 
 		// 65-99
 		/* Harbour extensions */
-		MEMBER DBOI_SKIPEVAL           := 100  /* skip while code block doesn't return TRUE */
-		MEMBER DBOI_SKIPEVALBACK       := 101  /* skip backward while code block doesn't return TRUE */
-		MEMBER DBOI_SKIPREGEX          := 102  /* skip while regular expression on index key doesn't return TRUE */
-		MEMBER DBOI_SKIPREGEXBACK      := 103  /* skip backward while regular expression on index key doesn't return TRUE */
-		MEMBER DBOI_SKIPWILD           := 104  /* skip while while comparison with given pattern with wildcards doesn't return TRUE */
-		MEMBER DBOI_SKIPWILDBACK       := 105  /* skip backward while comparison with given pattern with wildcards doesn't return TRUE */
-		MEMBER DBOI_SCOPEEVAL          := 106  /* skip through index evaluating given C function */
-		MEMBER DBOI_FINDREC            := 107  /* find given record in a Tag beginning from TOP */
-		MEMBER DBOI_FINDRECCONT        := 108  /* find given record in a Tag beginning from current position */
-		MEMBER DBOI_SCOPESET           := 109  /* set both scopes */
-		MEMBER DBOI_SCOPECLEAR         := 110  /* clear both scopes */
-		MEMBER DBOI_BAGCOUNT           := 111  /* number of open order bags */
-		MEMBER DBOI_BAGNUMBER          := 112  /* bag position in bag list */
-		MEMBER DBOI_BAGORDER           := 113  /* number of first order in a bag */
-		MEMBER DBOI_ISMULTITAG         := 114  /* does RDD support multi tag in index file */
-		MEMBER DBOI_ISSORTRECNO        := 115  /* is record number part of key in sorting */
-		MEMBER DBOI_LARGEFILE          := 116  /* is large file size (>=4GB) supported */
-		MEMBER DBOI_TEMPLATE           := 117  /* order with free user keys */
-		MEMBER DBOI_MULTIKEY           := 118  /* custom order with multikeys */
-		MEMBER DBOI_CHGONLY            := 119  /* update only existing keys */
-		MEMBER DBOI_PARTIAL            := 120  /* is index partially updated */
-		MEMBER DBOI_SHARED             := 121  /* is index open in shared mode */
-		MEMBER DBOI_ISREADONLY         := 122  /* is index open in readonly mode */
-		MEMBER DBOI_READLOCK           := 123  /* get/set index read lock */
-		MEMBER DBOI_WRITELOCK          := 124  /* get/set index write lock */
-		MEMBER DBOI_UPDATECOUNTER      := 125  /* get/set update index counter */
-		MEMBER DBOI_EVALSTEP           := 126  /* eval step (EVERY) used in index command */
-		MEMBER DBOI_ISREINDEX          := 127  /* Is reindex in process */
-		MEMBER DBOI_I_BAGNAME          := 128  /* created index name */
-		MEMBER DBOI_I_TAGNAME          := 129  /* created tag name */
-		MEMBER DBOI_RELKEYPOS          := 130  /* get/set relative key position (in range 0 - 1) */
-		MEMBER DBOI_USECURRENT         := 131  /* get/set "use current index" flag */
-		MEMBER DBOI_INDEXTYPE          := 132  /* current index type */
-		MEMBER DBOI_RESETPOS           := 133  /* rest logical and raw positions */
-		MEMBER DBOI_INDEXPAGESIZE      := 134  /* get index page size */
+		MEMBER DBOI_SKIPEVAL           := 200  /* skip while code block doesn't return TRUE */
+		MEMBER DBOI_SKIPEVALBACK       := 201  /* skip backward while code block doesn't return TRUE */
+		MEMBER DBOI_SKIPREGEX          := 202  /* skip while regular expression on index key doesn't return TRUE */
+		MEMBER DBOI_SKIPREGEXBACK      := 203  /* skip backward while regular expression on index key doesn't return TRUE */
+		MEMBER DBOI_SKIPWILD           := 204  /* skip while while comparison with given pattern with wildcards doesn't return TRUE */
+		MEMBER DBOI_SKIPWILDBACK       := 205  /* skip backward while comparison with given pattern with wildcards doesn't return TRUE */
+		MEMBER DBOI_SCOPEEVAL          := 206  /* skip through index evaluating given C function */
+		MEMBER DBOI_FINDREC            := 207  /* find given record in a Tag beginning from TOP */
+		MEMBER DBOI_FINDRECCONT        := 208  /* find given record in a Tag beginning from current position */
+		MEMBER DBOI_SCOPESET           := 209  /* set both scopes */
+		MEMBER DBOI_SCOPECLEAR         := 210  /* clear both scopes */
+		MEMBER DBOI_BAGCOUNT           := 211  /* number of open order bags */
+		MEMBER DBOI_BAGNUMBER          := 212  /* bag position in bag list */
+		MEMBER DBOI_BAGORDER           := 213  /* number of first order in a bag */
+		MEMBER DBOI_ISMULTITAG         := 214  /* does RDD support multi tag in index file */
+		MEMBER DBOI_ISSORTRECNO        := 215  /* is record number part of key in sorting */
+		MEMBER DBOI_LARGEFILE          := 216  /* is large file size (>=4GB) supported */
+		MEMBER DBOI_TEMPLATE           := 217  /* order with free user keys */
+		MEMBER DBOI_MULTIKEY           := 218  /* custom order with multikeys */
+		MEMBER DBOI_CHGONLY            := 219  /* update only existing keys */
+		MEMBER DBOI_PARTIAL            := 220  /* is index partially updated */
+		MEMBER DBOI_SHARED             := 221  /* is index open in shared mode */
+		MEMBER DBOI_ISREADONLY         := 222  /* is index open in readonly mode */
+		MEMBER DBOI_READLOCK           := 223  /* get/set index read lock */
+		MEMBER DBOI_WRITELOCK          := 224  /* get/set index write lock */
+		MEMBER DBOI_UPDATECOUNTER      := 225  /* get/set update index counter */
+		MEMBER DBOI_EVALSTEP           := 226  /* eval step (EVERY) used in index command */
+		MEMBER DBOI_ISREINDEX          := 227  /* Is reindex in process */
+		MEMBER DBOI_I_BAGNAME          := 228  /* created index name */
+		MEMBER DBOI_I_TAGNAME          := 229  /* created tag name */
+		MEMBER DBOI_RELKEYPOS          := 230  /* get/set relative key position (in range 0 - 1) */
+		MEMBER DBOI_USECURRENT         := 231  /* get/set "use current index" flag */
+		MEMBER DBOI_INDEXTYPE          := 232  /* current index type */
+		MEMBER DBOI_RESETPOS           := 233  /* rest logical and raw positions */
+		MEMBER DBOI_INDEXPAGESIZE      := 234  /* get index page size */
 		
 		MEMBER DBOI_USER 				:= 1000 
 		// Advantage

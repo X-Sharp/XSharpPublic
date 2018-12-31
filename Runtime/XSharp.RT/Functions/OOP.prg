@@ -998,6 +998,10 @@ FUNCTION Send(o AS USUAL,uMethod AS USUAL, args PARAMS USUAL[]) AS USUAL
 	IF ! uMethod:IsString  .AND. ! uMethod:IsSymbol
 		THROW Error.VOError( EG_DATATYPE, __FUNCTION__, NAMEOF(uMethod) , 2, <OBJECT>{ uMethod } )
 	ENDIF
+    IF args == NULL
+        // this happens for SEND (oObject, "method", NULL)
+        args := <USUAL>{NULL}
+    ENDIF
 	LOCAL oObject := o AS OBJECT
 	LOCAL cMethod := uMethod AS STRING
 	LOCAL uResult AS USUAL

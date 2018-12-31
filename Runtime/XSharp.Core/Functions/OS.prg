@@ -118,10 +118,10 @@ FUNCTION CurDir() AS STRING
 	IF index > 0
 		cDir := cDir:Substring(index+1)
 	ENDIF
-	IF cDir[0] == Path.DirectorySeparatorChar
+	IF cDir:Length > 0 .AND. cDir[0] == Path.DirectorySeparatorChar
 		cDir := cDir:Substring(1)
 	ENDIF
-	IF cDir[cDir:Length-1]  == Path.DirectorySeparatorChar
+	IF cDir:Length > 0 .AND. cDir[cDir:Length-1]  == Path.DirectorySeparatorChar
 		cDir := cDir:Substring(0, cDir:Length-1)
 	ENDIF
 	RETURN cDir

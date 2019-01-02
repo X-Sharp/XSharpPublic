@@ -456,3 +456,13 @@ FUNCTION GetMimeType(sFileName AS STRING) AS STRING
 /// </returns>
 FUNCTION _GetCmdLine() AS STRING
 RETURN System.Environment.CommandLine
+
+
+
+
+/// <summary>Terminate application processing, close all open files, and return control to the operating system.</summary>
+/// <remarks>This function can be used from anywhere in an application.
+/// A RETURN executed from the Start() function can also be used to QUIT an application.</remarks>
+FUNCTION _Quit() AS VOID
+    System.Diagnostics.Process.GetCurrentProcess():CloseMainWindow()
+    RETURN

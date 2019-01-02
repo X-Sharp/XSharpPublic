@@ -41,6 +41,14 @@ FUNCTION FReadLine(pFile ,nBuffLen) AS STRING CLIPPER
 		RETURN XSharp.Core.Functions.FreadLine((IntPtr) pFile, (DWORD) nBuffLen)
 	ENDIF
 
+/// <inheritdoc cref="M:XSharp.Core.Functions.FReadText3(System.IntPtr,System.Byte[],System.UInt32)" />"
+/// <param name="pData">A block of memory to store the data read from the specified file. The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
+FUNCTION FReadText3(pFile AS IntPtr,pData as IntPtr,dwCount AS DWORD) AS DWORD
+    VAR bData := __FGetBuffer(pFile, (INT) dwCount)
+	VAR dwResult := XSharp.Core.Functions.FReadText3(pFile, bData, dwCount)	
+	Marshal.Copy(bData, 0, pData, (INT) dwResult)
+	RETURN dwResult
+
 
 /// <inheritdoc cref="M:XSharp.Core.Functions.FSeek3(System.IntPtr,System.Int32,System.UInt32)" />
 FUNCTION FSeek(hFile ,nOffset ,nOrigin ) AS LONG CLIPPER

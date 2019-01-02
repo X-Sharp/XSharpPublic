@@ -10,24 +10,21 @@ USING XSharp.Rdd
 USING System.Linq
 USING System.Collections.Generic
 
+
+
 /// <summary>Determine the number of a work area.</summary>
-FUNCTION Select(xValue AS USUAL) AS USUAL
-    LOCAL dwSelect   AS DWORD
-    LOCAL dwCurrent  AS DWORD
-    dwCurrent := VoDb.GetSelect()
-    dwSelect := _SELECT(xValue)
-    VoDb.SetSelect((INT) dwCurrent)
-    RETURN dwSelect
+/// <param name="xValue">A value that identifies the work area.  This can be the number of the work area or its alias, specified either as a symbol or a string.  If <uWorkArea> is not specified, the current work area number is returned.  Therefore, Select() is the same as DBGetSelect().</param>
+/// <returns>A number from 0 to 4096.  0 is returned if <uWorkArea> does not identify a valid work area or does not correspond to a valid alias.</returns>
+FUNCTION Select(xValue) AS USUAL CLIPPER
+    RETURN  _Select(xValue)
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
+/// <summary>Determine the number of a work area.</summary>
+/// <param name="xValue">A value that identifies the work area.  This can be the number of the work area or its alias, specified either as a symbol or a string.  If <uWorkArea> is not specified, the current work area number is returned.  Therefore, Select() is the same as DBGetSelect().</param>
+/// <returns>A number from 0 to 4096.  0 is returned if <uWorkArea> does not identify a valid work area or does not correspond to a valid alias.</returns>
 FUNCTION _Select(xValue) AS USUAL CLIPPER
     LOCAL nSelect           AS LONG
     LOCAL sAlias            AS SYMBOL
     LOCAL xType             AS DWORD
-    LOCAL nAsc              AS DWORD
     
     IF IsNil(xValue)
         RETURN  (INT) VoDb.GetSelect() 
@@ -41,9 +38,8 @@ FUNCTION _Select(xValue) AS USUAL CLIPPER
         nSelect := 0
         LOCAL cValue := xValue AS STRING
         IF SLen(cValue) = 1
-            nSelect := Val(cValue)
-            nAsc := Asc( Upper(cValue) )
-            IF nAsc > 64 .AND. nAsc < 75
+            var nAsc := (word) cValue[1]
+            IF nAsc > 64 .AND. nAsc < 75    // A .. L , M = memvar 
                 nSelect := (INT) nAsc - 64
             ENDIF
         ENDIF

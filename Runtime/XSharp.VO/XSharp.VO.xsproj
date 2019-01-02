@@ -101,6 +101,11 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>System.Drawing</Name>
+      <AssemblyName>System.Drawing.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
       <Name>System.Windows.Forms</Name>
       <AssemblyName>System.Windows.Forms.dll</AssemblyName>
@@ -122,6 +127,7 @@
     <Compile Include="Functions\Registry.prg" />
     <Compile Include="Functions\unsafe.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
+    <Compile Include="Types\ErrorDialog.prg" />
     <Compile Include="Types\NamedArg.prg" />
     <Compile Include="Types\OleAutoObject.prg" />
     <Compile Include="Types\OleAutoObjectFromFile.prg" />

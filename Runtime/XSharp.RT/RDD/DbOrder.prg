@@ -152,8 +152,9 @@ FUNCTION OrdSkipUnique(uCount) AS USUAL CLIPPER
 	
 /// <summary>Return the status of the unique flag for a given order.</summary>	
 FUNCTION OrdIsUnique   (xOrder, cOrderBag) AS USUAL CLIPPER
-	RETURN VoDb.OrderInfo(DBOI_UNIQUE, cOrderBag, xOrder,NULL)
-	
+    LOCAL result := NIL as USUAL
+	RETURN VoDb.OrderInfo(DBOI_UNIQUE, cOrderBag, xOrder,ref result)
+    RETURN result	
 	
 /// <summary>
 /// </summary>
@@ -337,17 +338,22 @@ FUNCTION OrdKeyGoto    (nKeyNo) AS LOGIC CLIPPER
 	
 /// <summary>Return the number of keys in an order.</summary>	
 FUNCTION OrdKeyCount(xOrder, cOrdBag) AS USUAL CLIPPER
-	RETURN VoDb.OrderInfo(DBOI_KEYCOUNT, cOrdBag, xOrder, NIL)
+    LOCAL result := NIL as USUAL
+    VoDb.OrderInfo(DBOI_KEYCOUNT, cOrdBag, xOrder, ref result)
+    return result
 	
 
 /// <summary>Get the logical record number of the current record.</summary>
 FUNCTION OrdKeyNo(xOrder, cOrdBag) 	AS USUAL CLIPPER
-	RETURN VoDb.OrderInfo( DBOI_POSITION, cOrdBag, xOrder, NIL)
-	
+    LOCAL result := NIL as USUAL
+    VoDb.OrderInfo(DBOI_POSITION, cOrdBag, xOrder, ref result)
+    return result
 	
 /// <summary>Get the key value of the current record from the controlling order.</summary>	
 FUNCTION OrdKeyVal() AS USUAL STRICT
-	RETURN VoDb.OrderInfo( DBOI_KEYVAL, NIL ,NIL, NIL)
+    LOCAL result := NIL as USUAL
+    VoDb.OrderInfo(DBOI_KEYVAL, NIL, NIL, ref result)
+    return result
 	
 	
 	
@@ -413,13 +419,12 @@ FUNCTION OrdListRebuild ()  AS LOGIC STRICT
 /// <returns>
 /// </returns>
 FUNCTION OrdName(uOrder, cOrdBag) AS USUAL CLIPPER
-	
 	IF IsNil(cOrdBag)
 		cOrdBag := ""
 	ENDIF
-	
-	RETURN VoDb.OrderInfo(DBOI_NAME, cOrdBag, uOrder, NULL)
-	
+	LOCAL result := NIL as USUAL
+    VoDb.OrderInfo(DBOI_NAME, cOrdBag, uOrder, REF result)
+	RETURN result
 	
 	
 /// <summary>
@@ -431,9 +436,9 @@ FUNCTION OrdNumber(uOrder, cOrdBag) AS USUAL CLIPPER
 	IF IsNil(cOrdBag)
 		cOrdBag := ""
 	ENDIF
-	
-	RETURN VoDb.OrderInfo(DBOI_NUMBER, cOrdBag, uOrder,NULL)
-	
+	LOCAL result := NIL as USUAL
+    VoDb.OrderInfo(DBOI_NUMBER, cOrdBag, uOrder,ref result)
+	RETURN result
 	
 	
 	

@@ -403,6 +403,7 @@ CLASS XSharp.RuntimeState
 		SELF:_SetThreadValue(Set.THOUSANDSEP, (DWORD) 44)	// COMMA ,
 		SELF:_SetThreadValue(Set.DateFormat, "MM/DD/YY")
 		SELF:_SetThreadValue(Set.Intl, CollationMode.Clipper)
+        SELF:_SetThreadValue(Set.Dict, FALSE)
 
 	INTERNAL METHOD _SetInternationalWindows() AS VOID
 		VAR dtInfo	    := System.Globalization.DateTimeFormatInfo.CurrentInfo
@@ -440,6 +441,7 @@ CLASS XSharp.RuntimeState
 		SELF:_SetThreadValue(Set.EpochYear, (DWORD) 10)
 		SELF:_SetThreadValue(Set.EpochCent, (DWORD) 2000)
 		SELF:_SetThreadValue(Set.Intl, CollationMode.Windows)
+        SELF:_SetThreadValue(Set.Dict, TRUE)
 		RETURN
 
 

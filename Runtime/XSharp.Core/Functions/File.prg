@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved. 
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -564,6 +564,10 @@ FUNCTION FGetS(pFile AS IntPtr) AS STRING
 
 
 /// <inheritdoc cref="M:XSharp.Core.Functions.FReadLine(System.IntPtr,System.UInt32)" />"
+FUNCTION FGetS(pFile AS IntPtr,nLineLen AS DWORD) AS STRING
+	RETURN XSharp.IO.File.readLine(pFile, (INT) nLineLen)
+
+/// <inheritdoc cref="M:XSharp.Core.Functions.FReadLine(System.IntPtr,System.UInt32)" />"
 FUNCTION FGetS2(pFile AS IntPtr,nLineLen AS DWORD) AS STRING
 	RETURN XSharp.IO.File.readLine(pFile, (INT) nLineLen)
 
@@ -631,14 +635,20 @@ FUNCTION FReadStr(pFile AS IntPtr,iCount AS DWORD) AS STRING
 	XSharp.IO.File.read(pFile, OUT cResult, (INT) iCount, XSharp.RuntimeState.Ansi)
 	RETURN cResult
 
+/// <inheritdoc cref="M:XSharp.Core.Functions.FReadText(System.IntPtr,System.String@,System.UInt32)" />
+FUNCTION FRead(pFile AS IntPtr,strValue REF STRING,dwCount AS DWORD) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.read(pFile, OUT strValue, (INT) dwCount, XSharp.RuntimeState.Ansi)
+
 /// <inheritdoc cref="M:XSharp.Core.Functions.FRead3(System.IntPtr,System.Byte[],System.UInt32)" />
 /// <summary>
 /// Read characters from a file into a buffer variable that is passed by reference.
 /// </summary>
 /// <param name="strValue"></param>
-/// <returns></returns>
+/// <returns>The number of bytes successfully read.  A return value less than the number specified 0 indicates
+/// end-of-file or some other read error.  FError() can be used to determine the specific error.</returns>
 FUNCTION FReadText(pFile AS IntPtr,strValue REF STRING,dwCount AS DWORD) AS DWORD
 	RETURN (DWORD) XSharp.IO.File.read(pFile, OUT strValue, (INT) dwCount, XSharp.RuntimeState.Ansi)
+
 
 /// <summary>
 /// Read characters from a file into an allocated buffer, with possible OEM to ANSI conversion, based on the current SetAnsi() setting.

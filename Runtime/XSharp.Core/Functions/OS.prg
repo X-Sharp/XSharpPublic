@@ -171,7 +171,14 @@ FUNCTION DiskFree() AS INT64
 
 
 INTERNAL FUNCTION DiskNo2DiskName(nDisk AS INT) AS STRING
-	RETURN ('A'+ (nDisk-1)):ToString()
+    nDisk := _AND(nDisk, 0xFF)
+    IF nDisk >= 0 .AND. nDisk <= 25
+        LOCAL charDrive AS CHAR
+        charDrive := (CHAR) ( 65 + (nDisk-1))
+	    RETURN charDrive:ToString()
+    ELSE
+        RETURN CurDrive()
+    ENDIF
 
 /// <summary>
 /// Return the space available on a specified disk.
@@ -181,8 +188,20 @@ INTERNAL FUNCTION DiskNo2DiskName(nDisk AS INT) AS STRING
 /// The free space on the specified disk drive.
 /// </returns>	   
 FUNCTION DiskFree(cDrive AS STRING) AS INT64
-	RETURN DriveInfo{cDrive}:TotalFreeSpace
-
+    LOCAL result AS INT64
+    IF String.IsNullOrEmpty(cDrive) 
+        cDrive := CurDrive()
+    ELSEIF cDrive:Length > 1
+        cDrive := cDrive:Substring(0,1)+":"
+    ENDIF
+    TRY
+        XSharp.IO.File.clearErrorState()
+	    result :=  DriveInfo{cDrive}:TotalFreeSpace
+    CATCH e AS Exception
+        XSharp.IO.File.SetErrorState(e)
+        result := 0
+    END TRY
+    RETURN result
 
 /// <summary>
 /// Return the space available on a specified disk.
@@ -231,11 +250,24 @@ FUNCTION DiskSpace(nDisk AS INT) AS INT64
 /// <summary>
 /// Return the capacity of the specified disk.
 /// </summary>
-/// <param name="cDisk"></param>
+/// <param name="cDrive"></param>
 /// <returns>
 /// </returns>
-FUNCTION DiskSpace(cDisk AS STRING) AS INT64
-	RETURN DriveInfo{cDisk}:TotalSize
+FUNCTION DiskSpace(cDrive AS STRING) AS INT64
+    LOCAL result AS INT64
+    IF String.IsNullOrEmpty(cDrive) 
+        cDrive := CurDrive() 
+    ELSEIF cDrive:Length > 1 
+        cDrive := cDrive:Substring(0,1)+":"
+    ENDIF
+    TRY
+        XSharp.IO.File.ClearErrorState()
+	    result :=  DriveInfo{cDrive}:TotalSize
+    CATCH e AS Exception
+        XSharp.IO.File.SetErrorState(e)
+        result := 0
+    END TRY
+    RETURN result
 
 /// <summary>
 /// Detect a concurrency conflict.

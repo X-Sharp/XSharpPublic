@@ -30,7 +30,7 @@ FUNCTION FRename( cOldFile AS STRING , cNewFile AS STRING) AS LOGIC
         XSharp.IO.File.clearErrorState()
 		System.IO.File.Move(cOldFile, cNewFile)
 	    renamed := TRUE
-	CATCH e as Exception
+	CATCH e AS Exception
 		XSharp.IO.File.setErrorState(e)
 	END TRY
 	RETURN renamed
@@ -47,7 +47,7 @@ FUNCTION FErase(fileName AS STRING) AS LOGIC
         XSharp.IO.File.clearErrorState()
 		System.IO.File.Delete(fileName)
 		isDeleted := TRUE
-	CATCH e as Exception
+	CATCH e AS Exception
 		XSharp.IO.File.setErrorState(e)
 	END TRY
 	RETURN isDeleted
@@ -77,7 +77,7 @@ FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING, lOverWrite AS LOGIC)
         XSharp.IO.File.clearErrorState()
 		System.IO.File.Copy(cSourceFile,cTargetFile,lOverWrite)
 		IsCopied := TRUE
-	CATCH e as Exception
+	CATCH e AS Exception
 		XSharp.IO.File.setErrorState(e)
 	END TRY
 	RETURN IsCopied

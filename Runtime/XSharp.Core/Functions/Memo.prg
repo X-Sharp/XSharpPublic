@@ -365,18 +365,28 @@ nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS STRING
 	RETURN MemoHelpers.MLine(cMemo, (INT) nLineNum, (INT) nLineLen, (INT) nTabSize, lWrap, FALSE, REF DPos)
 	
 /// <summary>
-/// Return the contents of a text file as a string.
+/// Return the contents of a text file as a string. The system assumes the source file has a 8 bit character format.
+/// For the conversion the system follows the global Ansi setting. The characters are encoded
+/// using either the current Ansi Windows codepage, or the current OEM Windows Codepage.
 /// </summary>
-/// <param name="cFile"></param>
-/// <returns>
+/// <param name="cFile">The name of the text file to read from disk, including an optional drive, directory, and extension.  SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and directory as part of the file name.  No extension is assumed</param>
+/// <returns>The string as Unicode String
 /// </returns>
+/// <remarks>This function should NOT be used to read the contents of a binary file (such as a word document).
+/// Use MemoReadBinary() in stead .</remarks>
+/// <seealso cref='M:XSharp.Core.Functions.MemoReadBinary(System.String)' >MemoReadBinary</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.MemoWrit(System.String,System.String)' >MemoWrit</seealso>
 FUNCTION MemoRead(cFile AS STRING) AS STRING
 	LOCAL cResult AS STRING
 	TRY
         XSharp.IO.File.clearErrorState()
 		IF File(cFile)
 			cFile := FPathName()
-			cResult := System.IO.File.ReadAllText(cFile)
+            IF RuntimeState.Ansi
+			    cResult := System.IO.File.ReadAllText(cFile, RuntimeState.WinEncoding)
+            ELSE
+                cResult := System.IO.File.ReadAllText(cFile, RuntimeState.DosEncoding)
+            ENDIF
 		ELSE
 			cResult := ""
 		ENDIF
@@ -386,20 +396,54 @@ FUNCTION MemoRead(cFile AS STRING) AS STRING
 	END TRY
 	RETURN cResult
 	
+
+/// <summary>
+/// Return the contents of a binary file as an array of bytes.
+/// Use this function in stead of MemoRead() to read the contents of a binary file.
+/// </summary>
+/// <param name="cFile">The name of the binary file to read from disk, including an optional drive, directory, and extension.  SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and directory as part of the file name.  No extension is assumed</param>
+/// <returns>The file as an array of bytes</returns>
+/// <seealso cref='M:XSharp.Core.Functions.MemoRead(System.String)' >MemoRead</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.MemoWritBinary(System.String,System.Byte[])' >MemoWritBinary</seealso>
+
+FUNCTION MemoReadBinary(cFile AS STRING) AS BYTE[]
+	LOCAL bResult AS BYTE[]
+	TRY
+        XSharp.IO.File.clearErrorState()
+		IF File(cFile)
+			cFile := FPathName()
+            bResult := System.IO.File.ReadAllBytes(cFile)
+		ELSE
+			bResult := BYTE[]{0}
+		ENDIF
+	CATCH e as Exception
+		XSharp.IO.File.setErrorState(e)
+		bResult := BYTE[]{0}
+	END TRY
+	RETURN bResult
 	
 	
 /// <summary>
-/// Write a string to a disk file.
+/// Write a string to a disk file. The text is written in 8 bit character format.
+/// For the conversion the system follows the global Ansi setting. The characters are encoded
+/// using either the current Ansi Windows codepage, or the current OEM Windows Codepage.
 /// </summary>
 /// <param name="cFile"></param>
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
+/// <seealso cref='M:XSharp.Core.Functions.MemoRead(System.String)' >MemoRead</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.MemoWritBinary(System.String,System.Byte[])' >MemoWritBinary</seealso>
 FUNCTION MemoWrit(cFile AS STRING,c AS STRING) AS LOGIC
 	LOCAL lOk AS LOGIC
 	TRY
         XSharp.IO.File.clearErrorState()
-		System.IO.File.WriteAllText(cFile, c)
+        IF RuntimeState.Ansi
+			System.IO.File.WriteAllText(cFile, c, RuntimeState.WinEncoding)
+        ELSE
+            System.IO.File.WriteAllText(cFile, c, RuntimeState.DosEncoding)
+        ENDIF
+		
 		lOk := TRUE
 	CATCH e as Exception
 		XSharp.IO.File.setErrorState(e)
@@ -407,6 +451,36 @@ FUNCTION MemoWrit(cFile AS STRING,c AS STRING) AS LOGIC
 	END TRY
 	RETURN lOk
 	
+/// <inheritdoc cref="M:XSharp.Core.Functions.MemoWritBinary(System.String,System.Byte[])" />
+
+FUNCTION MemoWrit(cFile AS STRING,bData AS BYTE[]) AS LOGIC
+    return MemoWritBinary(cFile, bData)
+
+/// <summary>
+/// Write binary data  o a disk file. Use this function for binary files instead of MemoWrit(). This day may be read with MemoReadBinary().
+/// </summary>
+/// <param name="cFile">The name of the target disk file, including an optional drive, directory, and extension.
+/// SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and
+/// directory as part of the file name.  No extension is assumed.
+/// If the file does not exist, it is created.  If it exists, this function attempts to open the file in exclusive
+/// mode and, if successful, the file is overwritten without warning or error.  If access is denied because,
+/// for example, another process is using the file, MemoWrit() returns FALSE and NetErr() is set to TRUE.</param>
+/// <param name="bData">The contents to write</param>
+/// <returns>TRUE if the writing operation is successful; otherwise, FALSE</returns>
+/// <seealso cref='M:XSharp.Core.Functions.MemoReadBinary(System.String)' >MemoReadBinary</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.MemoWrit(System.String,System.String)' >MemoWrit</seealso>
+
+FUNCTION MemoWritBinary(cFile AS STRING,bData AS BYTE[]) AS LOGIC
+	LOCAL lOk AS LOGIC
+	TRY
+        XSharp.IO.File.clearErrorState()
+		System.IO.File.WriteAllBytes(cFile, bData)
+		lOk := TRUE
+	CATCH e as Exception
+		XSharp.IO.File.setErrorState(e)
+		lOk := FALSE
+	END TRY
+	RETURN lOk
 	
 	
 /// <summary>

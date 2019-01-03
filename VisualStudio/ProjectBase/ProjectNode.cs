@@ -4497,6 +4497,10 @@ namespace Microsoft.VisualStudio.Project
         public string GetProjectPropertyUnevaluated(string propertyName)
         {
             var prop = this.buildProject.GetProperty(propertyName);
+            while (prop != null && prop.IsImported)
+            {
+                prop = prop.Predecessor;
+            }
             if (prop != null)
                 return prop.UnevaluatedValue;
             return string.Empty;

@@ -2,7 +2,7 @@
 #ifndef BUILDNUMBER_H
 #define BUILDNUMBER_H
 #define PRODUCT_NAME     "XSharp Bandol Beta 8"
-#define COPYRIGHT_STR    "Copyright (c) XSharp BV 2015-2018."
+#define COPYRIGHT_STR    "Copyright (c) XSharp BV 2015-2019."
 #define COMPANY_NAME     "XSharp BV"
 		
 // This is used for the assembly version number, which the CLR uses to determine binding

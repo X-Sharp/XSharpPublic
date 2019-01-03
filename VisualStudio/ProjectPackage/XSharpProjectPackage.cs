@@ -82,11 +82,12 @@ namespace XSharp.Project
     [Description(ProjectSystemName)]
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
-    [ProvideObject(typeof(XSharpGeneralPropertyPage))]      // 53651BEA-799A-45EB-B58C-C884F5417219
-    [ProvideObject(typeof(XSharpLanguagePropertyPage))]     // 2652FCA6-1C45-4D25-942D-4C5D5EDE9539
-    [ProvideObject(typeof(XSharpBuildPropertyPage))]        // E994C210-9D6D-4CF4-A061-EBBEA2BC626B
-    [ProvideObject(typeof(XSharpBuildEventsPropertyPage))]  // 49306259-9119-466E-8780-486CFBE2597D
-    [ProvideObject(typeof(XSharpDebugPropertyPage))]        // 2955A638-C389-4675-BB1C-6B2BC173C1E7
+    [ProvideObject(typeof(XSharpGeneralPropertyPage))]
+    [ProvideObject(typeof(XSharpLanguagePropertyPage))]
+    [ProvideObject(typeof(XSharpDialectPropertyPage))]
+    [ProvideObject(typeof(XSharpBuildPropertyPage))]
+    [ProvideObject(typeof(XSharpBuildEventsPropertyPage))]
+    [ProvideObject(typeof(XSharpDebugPropertyPage))]
     [ProvideProjectFactory(typeof(XSharpProjectFactory),
         LanguageName, ProjectFileMask, ProjectExtension, ProjectExtensions,
         @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]

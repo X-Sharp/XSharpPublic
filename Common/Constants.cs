@@ -14,7 +14,7 @@ namespace XSharp
         internal const string Product = "XSharp";
         // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE BUILDNUMBER.H FILE
         internal const string Version = "2.0.0.8";
-        internal const string Copyright = "Copyright © XSharp BV 2015-2018";
+        internal const string Copyright = "Copyright © XSharp BV 2015-2019";
 
         internal const string RegistryKey = @"Software\" + RegCompany + @"\" + Product;
         internal const string RegistryKey64 = @"Software\WOW6432Node\" + RegCompany + @"\" + Product;

@@ -153,6 +153,7 @@ namespace XSharp.Project
             AddCATIDMapping(typeof(XSharpBuildPropertyPage), typeof(XSharpBuildPropertyPage).GUID);
             AddCATIDMapping(typeof(XSharpBuildEventsPropertyPage), typeof(XSharpBuildEventsPropertyPage).GUID);
             AddCATIDMapping(typeof(XSharpLanguagePropertyPage), typeof(XSharpLanguagePropertyPage).GUID);
+            AddCATIDMapping(typeof(XSharpDialectPropertyPage), typeof(XSharpDialectPropertyPage).GUID);
             AddCATIDMapping(typeof(XSharpDebugPropertyPage), typeof(XSharpDebugPropertyPage).GUID);
         }
         #endregion
@@ -482,6 +483,7 @@ namespace XSharp.Project
                 {
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
+                typeof(XSharpDialectPropertyPage).GUID,
                 typeof(XSharpBuildPropertyPage).GUID,
                 typeof(XSharpBuildEventsPropertyPage).GUID,
                 typeof(XSharpDebugPropertyPage).GUID
@@ -499,6 +501,7 @@ namespace XSharp.Project
                 {
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
+                 typeof(XSharpDialectPropertyPage).GUID,
                 };
             return result;
         }
@@ -1882,6 +1885,11 @@ namespace XSharp.Project
         const string postBuildEvent = "PostBuildEvent";
         const string preBuildEvent = "PreBuildEvent";
         const string runPostBuildEvent = "RunPostBuildEvent";
+        const string ProjectVersion = "XSharpProjectversion";
+        const string IncludePaths = "Includepaths";
+        const string Nostandarddefs = "Nostandarddefs";
+        const string DocumentationFile = "Documentationfile";
+        const string XSharpProjectExtensionsPath = "XSharpProjectExtensionsPath";
         public override int UpgradeProject(uint grfUpgradeFlags)
         {
             bool silent;
@@ -1893,6 +1901,9 @@ namespace XSharp.Project
             var str = backup.ToString();
             var str2 = System.Text.RegularExpressions.Regex.Replace(str, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             bool ok = true;
+            // we have added a projectversion property to makes checks easier in the future
+            if (str.IndexOf(ProjectVersion, StringComparison.OrdinalIgnoreCase) == -1)
+                ok = false;
             if (str2 != str)
             {
                 ok = false;
@@ -1915,7 +1926,7 @@ namespace XSharp.Project
             {
                 ok = false;
             }
-            if (ok && str.IndexOf("XSharpProjectExtensionsPath", StringComparison.OrdinalIgnoreCase) == -1)
+            if (ok && str.IndexOf(XSharpProjectExtensionsPath, StringComparison.OrdinalIgnoreCase) == -1)
             {
                 ok = false;
             }
@@ -1937,6 +1948,7 @@ namespace XSharp.Project
             {
                 ok = false;
             }
+
             if (ok)
             {
                 int iTargets = str.IndexOf(importTargets, StringComparison.OrdinalIgnoreCase);
@@ -1967,6 +1979,16 @@ namespace XSharp.Project
                     dialectVO = true;
                 }
             }
+            if (ok)
+            {
+                var vers = this.BuildProject.Properties.Where(p => string.Compare(p.Name, ProjectVersion, StringComparison.OrdinalIgnoreCase) == 0).FirstOrDefault();
+                if (vers != null)
+                {
+                    ok = vers.UnevaluatedValue == Constants.Version;
+                }
+                else
+                    ok = false;
+            }
             if (!ok)
             {
                 FixProjectFile(BuildProject.FullPath, dialectVO);
@@ -1984,7 +2006,7 @@ namespace XSharp.Project
         {
             try
             {
-                if (string.Equals(prop.Name, "documentationfile", StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(prop.Name, DocumentationFile, StringComparison.OrdinalIgnoreCase))
                 {
                     string sValue = prop.Value;
                     if (string.Equals(sValue, "true", StringComparison.OrdinalIgnoreCase))
@@ -2016,8 +2038,9 @@ namespace XSharp.Project
             var xml = BuildProject.Xml;
             var groups = xml.PropertyGroups.ToList();
             var groupDict = new Dictionary<string, MBC.ProjectPropertyGroupElement>();
-
-            foreach (var group in groups.Where(grp => grp.Condition.Trim().Length > 0))
+            var debugInclude = "";
+            var debugNoStdDefs = "";
+            foreach (var group in groups.Where(g => g.Condition.Trim().Length > 0))
             {
                 string condition = group.Condition;
                 if (condition.IndexOf(config, StringComparison.OrdinalIgnoreCase) > -1 &&
@@ -2041,7 +2064,24 @@ namespace XSharp.Project
                 {
                     groupDict.Add(condition, group);
                 }
-
+                foreach (var prop in group.Properties.ToArray())
+                {
+                    switch (prop.Name.ToLower())
+                    {
+                        case "includepaths":
+                            if (string.IsNullOrEmpty(debugInclude))
+                                debugInclude = prop.Value;
+                            group.RemoveChild(prop);
+                            changed = true;
+                            break;
+                        case "nostandarddefs":
+                            if (string.IsNullOrEmpty(debugNoStdDefs))
+                                debugNoStdDefs = prop.Value;
+                            group.RemoveChild(prop);
+                            changed = true;
+                            break;
+                    }
+                }
             }
             // remove the first of each condition combination from the list
             foreach (var group in groupDict.Values)
@@ -2055,8 +2095,7 @@ namespace XSharp.Project
             {
                 var firstGroup = groupDict[group.Condition.Trim()];
                 var propsToMove = new List<MBC.ProjectPropertyElement>();
-                var propsToDelete = new List<MBC.ProjectPropertyElement>();
-                foreach (var prop in group.Properties)
+                foreach (var prop in group.Properties.ToArray())
                 {
                     var name = prop.Name;
                     switch (name.ToLower())
@@ -2075,30 +2114,18 @@ namespace XSharp.Project
                         {
                             found = true;
                             current.Value = prop.Value;
-                            propsToDelete.Add(prop);
+                            group.RemoveChild(prop);
+                            changed = true;
                         }
                     }
                     if (!found)
                     {
-                        propsToMove.Add(prop);
+                        group.RemoveChild(prop);
+                        firstGroup.AddProperty(prop.Name, prop.Value);
+                        changed = true;
                     }
                 }
-                foreach (var prop in propsToDelete)
-                {
-                    group.RemoveChild(prop);
-                    changed = true;
-                }
-                foreach (var prop in propsToMove)
-                {
-                    group.RemoveChild(prop);
-                    firstGroup.AddProperty(prop.Name, prop.Value);
-                    changed = true;
-                }
-                if (group.Properties.Count == 0)
-                {
-                    group.Parent.RemoveChild(group);
-                    changed = true;
-                }
+
             }
             foreach (var group in groupDict.Values)
             {
@@ -2108,20 +2135,20 @@ namespace XSharp.Project
                         changed = true;
                 }
             }
-            // check for the XSharpProjectExtensionsPath property inside the first propertygroup
-            bool ok = false;
-            foreach (var child in xml.Properties)
+            // Add ProjectVersion and IncludePaths & NoStandardDefs to first Propertygroup without condition.
+            var grp = groups.Where(g => g.Condition.Trim().Length == 0).FirstOrDefault();
+            if (grp != null)
             {
-                if (child.Name == "XSharpProjectExtensionsPath")
-                {
-                    ok = true;
-                    break;
-                }
+                if (addProperty(grp, ProjectVersion, Constants.Version))
+                    changed = true;
+                if (addProperty(grp, IncludePaths, debugInclude))
+                    changed = true;
+                if (addProperty(grp, Nostandarddefs, debugNoStdDefs))
+                    changed = true;
+                if (addProperty(grp, XSharpProjectExtensionsPath, @"$(MSBuildExtensionsPath)\XSharp\"))
+                    changed = true;
             }
-            if (!ok)
-            {
-                var item = groups[0].AddProperty("XSharpProjectExtensionsPath", @"$(MSBuildExtensionsPath)\XSharp\");
-            }
+
             MBC.ProjectImportElement iTargets = null;
             changed = moveImports(ref iTargets, filename) || changed;
             changed = moveBuildEvents(iTargets) || changed;
@@ -2138,6 +2165,23 @@ namespace XSharp.Project
             }
         }
 
+        private bool addProperty(MBC.ProjectPropertyGroupElement grp,string Name, string Value)
+        {
+            bool changed = false;
+            var prop = grp.Properties.Where(p => String.Equals(p.Name, Name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            if (prop == null)
+            {
+                grp.AddProperty(Name, Value);
+                changed = true;
+            }
+            else if (prop.Value != Value && ! String.IsNullOrEmpty(Value))
+            {
+                prop.Value = Value;
+                changed = true;
+            }
+            return changed;
+
+        }
         private bool addReferences()
         {
             MBC.ProjectItemElement voRef = null;

@@ -73,6 +73,12 @@ namespace XSharp.Build
             set { base.Bag[nameof(NoStandardDefs)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(NoStandardDefs), false); }
         }
+
+        public string StandardDefs
+        {
+            set { base.Bag[nameof(StandardDefs)] = value; }
+            get { return (string)base.Bag[nameof(StandardDefs)]; }
+        }
         public string RootNameSpace { get; set; }
         public Boolean VO1
         {
@@ -728,6 +734,10 @@ namespace XSharp.Build
             commandLine.AppendSwitchIfNotNull("/pdb:", PdbFile);
             commandLine.AppendPlusOrMinusSwitch("/nostdlib", base.Bag, nameof(NoStandardLib));
             commandLine.AppendPlusOrMinusSwitch("/nostddefs", base.Bag, nameof(NoStandardDefs));
+            if (! NoStandardDefs && ! string.IsNullOrEmpty(StandardDefs))
+            {
+                commandLine.AppendSwitchIfNotNull("/stddefs:", StandardDefs);
+            }
             commandLine.AppendSwitchIfNotNull("/platform:", PlatformWith32BitPreference);
             commandLine.AppendSwitchIfNotNull("/errorreport:", ErrorReport);
             commandLine.AppendSwitchWithInteger("/warn:", base.Bag, nameof(WarningLevel));

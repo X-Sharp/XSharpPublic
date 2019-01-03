@@ -261,6 +261,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
 	    SkipCompilerExecution="$(SkipCompilerExecution)"
 	    Sources="@(Compile)"
 	    SubsystemVersion="$(SubsystemVersion)"
+	    StandardDefs="$(StandardDefs)"
 	    TargetType="$(OutputType)"
 	    ToolExe="$(XscToolExe)"
 	    ToolPath="$(XscToolPath)"

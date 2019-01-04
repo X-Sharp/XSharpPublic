@@ -336,14 +336,17 @@ FUNCTION CharPos(c AS STRING, nStart AS DWORD) AS STRING
 	RETURN result
 
 
-
-
 /// <summary>
 /// Convert an ASCII code to a character value.
 /// </summary>
 /// <param name="dwChar"></param>
-/// <returns>
-/// </returns>
+/// <returns>A single character that corresponds to the value of the parameter</returns>
+/// <remarks>
+/// The value of dwChar must be between 0 and 255<br/>
+/// The return value of Chr() in XSharp depends on the setting of SetAnsi().<br/>
+/// When SetAnsi() = TRUE then the active windows Ansi codepage is used to calculate the character.<br/>
+/// When SetAnsi() = FALSE then the active windows Oem codepage is used to calculate the character.<br/>
+/// </remarks>
 FUNCTION Chr(c AS DWORD) AS STRING
   LOCAL b   AS BYTE
   LOCAL ret AS STRING
@@ -353,8 +356,11 @@ FUNCTION Chr(c AS DWORD) AS STRING
       ret := Convert.ToChar( b ):ToString()
    ELSE
       LOCAL encoding AS Encoding
-
-      encoding := StringHelpers.WinEncoding
+      IF RuntimeState.Ansi
+        encoding := StringHelpers.WinEncoding
+      ELSE
+        encoding := StringHelpers.DosEncoding
+      ENDIF
 
       LOCAL chars := CHAR[]{ 1 } AS CHAR[]
       LOCAL bytes := BYTE[]{ 1 } AS BYTE[]

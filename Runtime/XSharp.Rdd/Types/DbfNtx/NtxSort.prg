@@ -13,33 +13,76 @@ USING XSharp.RDD.Enums
 BEGIN NAMESPACE XSharp.RDD.NTX
 
     INTERNAL CLASS NTXSortRecord
-        PRIVATE _data AS BYTE[]
-        PRIVATE _Recno AS DWORD
+        INTERNAL Data AS BYTE[]
+        INTERNAL Recno AS DWORD
         
-        INTERNAL PROPERTY Data AS BYTE[] GET _data
-        
-        INTERNAL PROPERTY Recno AS DWORD GET _Recno
-        
-        INTERNAL CONSTRUCTOR(data AS BYTE[] , uiRecno AS DWORD )
-            SELF:_data := (BYTE[])data:Clone()
-            SELF:_Recno := uiRecno
+        INTERNAL CONSTRUCTOR(data AS BYTE[] , iRecno AS DWORD )
+            SELF:Data := (BYTE[])data:Clone()
+            SELF:Recno := iRecno
             
-            END CLASS
+    END CLASS
             
-            
-            
-    INTERNAL CLASS NTXSortCompare IMPLEMENTS IComparer
-        PRIVATE _sortInfo AS DBSORTINFO
-        PRIVATE _oRdd AS DBFNTX
+    INTERNAL CLASS NtxSortCompare IMPLEMENTS IComparer
+        PROTECTED _sortInfo AS DBSORTINFO
+        PROTECTED _oRdd AS DBFNTX
         
         INTERNAL CONSTRUCTOR( rdd AS DBFNTX , info AS DBSORTINFO )
             SELF:_oRdd := rdd
             SELF:_sortInfo := info
-            
-            
+
+        PROTECTED VIRTUAL METHOD XCompare(x AS NTXSortRecord , y AS NTXSortRecord) AS LONG
+            RETURN 0
+
         PUBLIC METHOD Compare(x AS OBJECT , y AS OBJECT ) AS LONG
-            LOCAL nTXSortRecord AS NTXSortRecord
-            LOCAL nTXSortRecord2 AS NTXSortRecord
+            RETURN XCompare( (NTXSortRecord) x, (NTXSortRecord) y)
+    END CLASS
+    
+    INTERNAL CLASS NTXSortCompareDefault INHERIT NTXSortCompare 
+        
+        INTERNAL CONSTRUCTOR( rdd AS DBFNTX , info AS DBSORTINFO )
+            SUPER(rdd, info)
+            
+            
+        PROTECTED OVERRIDE METHOD XCompare(x AS NTXSortRecord , y AS NTXSortRecord) AS LONG
+            LOCAL dataBuffer AS BYTE[]
+            LOCAL dataBuffer2 AS BYTE[]
+            LOCAL diff AS LONG
+            LOCAL iLen AS LONG
+            LOCAL indxFlags AS DbSortFlags
+            //
+            IF (x:Recno == y:Recno)
+                RETURN 0
+            ENDIF
+            //
+            dataBuffer  := x:data
+            dataBuffer2 := y:data
+            diff        := 0
+            iLen        := SELF:_sortInfo:Items[0]:Length
+            indxFlags   := SELF:_sortInfo:Items[0]:Flags
+            // comparison using string rules
+            diff := SELF:_oRdd:StringCompare(dataBuffer, dataBuffer2, iLen)
+            IF indxFlags:HasFlag(DbSortFlags.Descending) 
+                diff *= -1
+            ENDIF
+            IF (diff == 0)
+                IF x:Recno < y:Recno
+                    diff := -1
+                ELSE
+                    diff := 1
+                ENDIF
+            ENDIF
+            RETURN diff
+            
+            
+    END CLASS
+
+    INTERNAL CLASS NTXSortCompareAscii INHERIT NtxSortCompare 
+        
+        INTERNAL CONSTRUCTOR( rdd AS DBFNTX , info AS DBSORTINFO )
+            SUPER(rdd, info)
+             
+            
+        PROTECTED OVERRIDE METHOD XCompare(x AS NTXSortRecord , y AS NTXSortRecord) AS LONG
             LOCAL dataBuffer AS BYTE[]
             LOCAL dataBuffer2 AS BYTE[]
             LOCAL diff AS LONG
@@ -47,38 +90,35 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL iLen AS LONG
             LOCAL indxFlags AS DbSortFlags
             //
-            nTXSortRecord := (NTXSortRecord)x
-            nTXSortRecord2 := (NTXSortRecord)y
-            IF (nTXSortRecord:Recno == nTXSortRecord2:Recno)
+            IF (x:Recno == y:Recno)
                 RETURN 0
             ENDIF
             //
-            dataBuffer := nTXSortRecord:data
-            dataBuffer2 := nTXSortRecord2:data
-            diff := 0
-            iLen := SELF:_sortInfo:Items[0]:Length
-            indxFlags := SELF:_sortInfo:Items[0]:Flags
-            IF indxFlags:HasFlag(DbSortFlags.ASCII)
-                diff := SELF:_oRdd:StringCompare(dataBuffer, dataBuffer2, iLen)
-            ELSE
-                // Binary comparison
-                FOR i := 0 TO ( iLen - 1 )
-                    diff := dataBuffer[i] - dataBuffer2[i]
-                    IF (diff != 0)
-                        EXIT
-                    ENDIF
-                NEXT
-            ENDIF
+            dataBuffer  := x:data
+            dataBuffer2 := y:data
+            diff        := 0
+            iLen        := SELF:_sortInfo:Items[0]:Length
+            indxFlags   := SELF:_sortInfo:Items[0]:Flags
+            // Binary comparison
+            FOR i := 0 TO ( iLen - 1 )
+                diff := (LONG) dataBuffer[i] - (LONG) dataBuffer2[i]
+                IF (diff != 0)
+                    EXIT
+                ENDIF
+            NEXT
             IF indxFlags:HasFlag(DbSortFlags.Descending) 
                 diff *= -1
             ENDIF
             IF (diff == 0)
-                diff := (LONG)(nTXSortRecord:Recno - nTXSortRecord2:Recno)
+                IF x:Recno < y:Recno
+                    diff := -1
+                ELSE
+                    diff := 1
+                ENDIF
             ENDIF
             RETURN diff
             
             
     END CLASS
-    
     
 END NAMESPACE

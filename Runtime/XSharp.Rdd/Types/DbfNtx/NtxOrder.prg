@@ -153,8 +153,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     SELF:_FileName := SELF:_oRDD:_FileName
                     //SELF:_FileName := Path.ChangeExtension(SELF:_FileName, ".ntx")
                 ENDIF
-                // and be sure to have NTX
-                SELF:_FileName := Path.ChangeExtension(SELF:_FileName, ".ntx")
+                // and be sure to have an extension
+                VAR ext := Path.GetExtension(SELF:_FileName)
+                IF String.IsNullOrEmpty(ext)
+                    SELF:_FileName := Path.ChangeExtension(SELF:_FileName, ".ntx")
+                ENDIF
                 // Check that we have a FullPath
                 IF (Path.GetDirectoryName(SELF:_FileName):Length == 0)									
                     // Check that we have a FullPath
@@ -411,6 +414,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 TRY
                     oValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
                 CATCH
+                    oValue := NULL
                     evalOk := FALSE
                 END TRY
                 IF (!evalOk) 
@@ -840,7 +844,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     RETURN FALSE
                 ENDIF
                 IF (text:Length < sLen)
-                    text := text:PadLeft(valueFloat:Digits, ' ')
+                    text := text:PadLeft(sLen, ' ')
                     chkDigits := TRUE
                 ENDIF
             ELSE
@@ -911,8 +915,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         LOCAL sorting AS RddSortHelper
         LOCAL byteArray AS BYTE[]
         LOCAL result AS LOGIC
-        LOCAL ic AS NTXSortCompare
+        LOCAL ic AS NtxSortCompare
         LOCAL lpLevels AS NtxLevel[]
+        LOCAL lAscii AS LOGIC
         //
         fType := 0
         sourceIndex := 0
@@ -923,7 +928,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN SELF:_CreateEmpty()
         ENDIF
         //
-        sortInfo := DBSORTINFO{0,1}
+        sortInfo := DbSortInfo{0,1}     // 0 trans items, 1 sort item
         //
         hasBlock := SELF:_oRdd:_OrderCondInfo:EvalBlock != NULL
         evalCount := 1
@@ -934,7 +939,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         // 'C', 'N', 'D'
         SWITCH fType
         CASE DbFieldType.Character
-    CASE DbFieldType.Number
+        CASE DbFieldType.Number
         CASE DbFieldType.Date
             sourceIndex := SELF:_oRdd:_Fields[SELF:_SingleField]:OffSet
         OTHERWISE
@@ -943,10 +948,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         //
         sorting := RddSortHelper{sortInfo, (DWORD)lRecCount}
         sortInfo:Items[0]:Length := SELF:_keySize
-        IF (SELF:_KeyExprType == TypeCode.String)
-            sortInfo:Items[0]:Flags := DbSortFlags.Ascii
-        ELSE
+        IF SELF:_KeyExprType == TypeCode.String
+            lAscii := FALSE
             sortInfo:Items[0]:Flags := DbSortFlags.Default
+        ELSE
+            lAscii := TRUE
+            sortInfo:Items[0]:Flags := DbSortFlags.Ascii
+        ENDIF
+        IF SELF:_oRdd:_OrderCondInfo:Descending
+            sortInfo:Items[0]:Flags += DbSortFlags.Descending
         ENDIF
         sortInfo:Items[0]:OffSet := 0
         SELF:_oRdd:GoTo(1)
@@ -954,27 +964,28 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         LOCAL oKeyValue := NULL AS OBJECT
         REPEAT
             result := TRUE
-            TRY
-                oKeyValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
-            CATCH
-                result := FALSE
-            END TRY
-            IF (!result)
-                EXIT
-            ENDIF
             IF (fType != 0)
+                // no need to evaluate the key expression. We can read the value directly from the buffer
                 Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
                 IF (fType == DbFieldType.Number) // 'N'
                     SELF:_checkDigits(byteArray, SELF:_keySize, SELF:_keyDecimals)
                 ENDIF
                 result := TRUE
             ELSE
+                TRY
+                    oKeyValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
+                CATCH
+                    result := FALSE
+                END TRY
+                IF (!result)
+                    EXIT
+                ENDIF
                 result := SELF:_ToString(oKeyValue, SELF:_keySize, SELF:_keyDecimals, byteArray, SELF:_Ansi, REF uiRealLen)
             ENDIF
             IF (!result)
                 EXIT
             ENDIF
-            VAR toSort := NTXSortRecord{byteArray, (DWORD)SELF:_oRdd:RecNo}
+            VAR toSort := NTXSortRecord{byteArray, (DWORD) SELF:_oRdd:RecNo}
             sorting:Add(toSort)
             IF (hasBlock)
                 IF (evalCount >= SELF:_oRdd:_OrderCondInfo:StepSize)
@@ -991,7 +1002,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             result := SELF:_oRdd:GoTo(SELF:_oRdd:RecNo + 1)
         UNTIL ! ((result) .AND. (SELF:_oRdd:_isValid))
         IF (result)
-            ic := NTXSortCompare{SELF:_oRdd, sortInfo}
+            IF lAscii
+                ic := NTXSortCompareAscii{SELF:_oRdd, sortInfo}
+            ELSE
+                ic := NTXSortCompareDefault{SELF:_oRdd, sortInfo}
+            ENDIF
             result := sorting:Sort(ic)
         ENDIF
         NtxItem{SELF:_keySize, SELF:_oRdd}
@@ -1022,52 +1037,37 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         SELF:_levels := NULL
         RETURN result
                     
-                    
+                       
     PRIVATE METHOD _checkDigits(buffer AS BYTE[] , length AS LONG , decimals AS LONG ) AS VOID
-        LOCAL i AS LONG
-        LOCAL j AS LONG
+        LOCAL i := 0 AS LONG
         // Transform starting spaces with zeros
-        i := 0
-        WHILE (i < length) .AND. (buffer[i] == 32)
+        DO WHILE buffer[i] == 32 .AND. i < length
             buffer[i] := (BYTE)'0'
             i++
         ENDDO
-        IF (i == length)
+        IF i == length  // all spaces , now converted to all zeroes.
             // It must be a decimal value ?
-            IF (decimals != 0)
+            IF decimals != 0
                 buffer[length - decimals - 1] := (BYTE)'.'
             ENDIF
-        ELSE
-            IF (((buffer[length - 1] < 48) .OR. (buffer[length - 1] > 57)) .OR. (((decimals != 0) .AND. (buffer[length - decimals - 1] != 46))))
-                i := 0
-                WHILE (i < length) .AND. (buffer[i] == 32)
-                    buffer[i] := (BYTE)'0'
-                    i++
-                ENDDO
-            ENDIF
-            // 
-            IF (buffer[i] == (BYTE)'-')
-                i++
-                j := 0
-                WHILE j < i
-                    buffer[j] := (BYTE)','
-                    j++
-                ENDDO
-                WHILE i < length
-                    // \
-                    buffer[i] := (BYTE)(92 - buffer[i])
-                    i++
-                ENDDO
-            ENDIF
         ENDIF
-                    
-            // IRddSortWriter Interface, used by RddSortHelper
+        IF buffer[i] == '-'
+            i++
+            FOR VAR j := 0 TO i-1 STEP 1
+                buffer[j] := 44 // ,
+            NEXT
+            FOR VAR j := i TO length -1 STEP 1
+                buffer[j] := (BYTE) (92 - buffer[j])
+            NEXT
+        ENDIF
+        RETURN
+        // IRddSortWriter Interface, used by RddSortHelper
         PUBLIC METHOD WriteSorted(si AS DBSORTINFO , o AS OBJECT ) AS LOGIC
             LOCAL nTXSortRecord AS NTXSortRecord
             //
-            nTXSortRecord := (NTXSortRecord)o
-            SELF:_oneItem:PageNo := 0
-            SELF:_oneItem:Recno := nTXSortRecord:Recno
+            nTXSortRecord          := (NTXSortRecord)o
+            SELF:_oneItem:PageNo   := 0
+            SELF:_oneItem:Recno    := nTXSortRecord:Recno
             SELF:_oneItem:KeyBytes := nTXSortRecord:Data
             RETURN SELF:_placeItem(SELF:_oneItem)
                     

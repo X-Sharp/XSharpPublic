@@ -24,7 +24,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		INTERNAL Buffer   AS BYTE[]
 		INTERNAL isHot	AS LOGIC        // Hot ?  => Page has changed ?
 
-	    PROTECTED INTERNAL CONSTRUCTOR( fileHandle AS IntPtr, nPage as Int32 )
+	    PROTECTED INTERNAL CONSTRUCTOR( fileHandle AS IntPtr, nPage AS Int32 )
 			//
 			SELF:_hFile := fileHandle
             SELF:_nPage := nPage
@@ -57,7 +57,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 				RETURN Buffer[ nOffset]
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
-			PROTECTED INTERNAL METHOD _SetByte(nOffSet AS INT, bValue as BYTE) AS VOID
+			PROTECTED INTERNAL METHOD _SetByte(nOffSet AS INT, bValue AS BYTE) AS VOID
 				Buffer[ nOffset] := bValue
                 isHot := TRUE
 
@@ -90,7 +90,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
-			PROTECTED INTERNAL STATIC METHOD _GetString(buffer as byte[], nOffSet AS INT, count AS INT) AS STRING
+			PROTECTED INTERNAL STATIC METHOD _GetString(buffer AS BYTE[], nOffSet AS INT, count AS INT) AS STRING
 				LOCAL str := System.Text.Encoding.ASCII:GetString( buffer,nOffSet, count ) AS STRING
 				IF ( str == NULL )
 					str := String.Empty
@@ -98,15 +98,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 				RETURN str
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
-            PROTECTED INTERNAL STATIC METHOD _GetBytes(buffer as byte[], nOffSet AS INT, count AS INT) AS BYTE[]
-                local result as byte[]
-                result := Byte[]{count}
+            PROTECTED INTERNAL STATIC METHOD _GetBytes(buffer AS BYTE[], nOffSet AS INT, count AS INT) AS BYTE[]
+                LOCAL result AS BYTE[]
+                result := BYTE[]{count}
 			    MemCopy(buffer, nOffSet, result, 0, count)
-                return result
+                RETURN result
 
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
-			PROTECTED INTERNAL STATIC METHOD _SetString(buffer as byte[], nOffSet AS INT, nSize AS INT, sValue AS STRING) AS VOID
+			PROTECTED INTERNAL STATIC METHOD _SetString(buffer AS BYTE[], nOffSet AS INT, nSize AS INT, sValue AS STRING) AS VOID
 				// Be sure to fill the Buffer with 0
 				MemSet( Buffer, nOffSet, nSize , 0)
 				System.Text.Encoding.ASCII:GetBytes( sValue, 0, Math.Min(nSize,sValue:Length), Buffer, nOffSet)
@@ -114,8 +114,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             #endregion
 
         #region MemSet and MemCopy
-        PRIVATE INITONLY STATIC _memSetter as  Action<IntPtr, BYTE, INT>		
-        PRIVATE INITONLY STATIC _memCopier as  Action<IntPtr, IntPtr, INT>
+        PRIVATE INITONLY STATIC _memSetter AS  Action<IntPtr, BYTE, INT>		
+        PRIVATE INITONLY STATIC _memCopier AS  Action<IntPtr, IntPtr, INT>
         
         STATIC CONSTRUCTOR()
             VAR atts := MethodAttributes.Public | MethodAttributes.Static
@@ -137,28 +137,28 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             generator:Emit(OpCodes.Ret)
             _memCopier := (Action<IntPtr, IntPtr, INT>) dm:CreateDelegate(TYPEOF(Action<IntPtr, IntPtr, INT>))
 
-        STATIC METHOD MemSet(bytes as byte[], start as INT, length as Int, value as BYTE) as VOID
-            local h as GcHandle
-            local p as IntPtr
+        STATIC METHOD MemSet(bytes AS BYTE[], start AS INT, length AS INT, VALUE AS BYTE) AS VOID
+            LOCAL h AS GcHandle
+            LOCAL p AS IntPtr
             p := IntPtr.Zero
             TRY
                 h := GCHandle.Alloc(bytes, GCHandleType.Pinned)
                 p := h:AddrOfPinnedObject() + start
-                _memSetter(p, value, length)
+                _memSetter(p, VALUE, length)
             FINALLY
                 IF h:IsAllocated
                     h:Free()
                 ENDIF
             END TRY
 
-        STATIC METHOD MemCopy(source as byte[], target as byte[], length as Int) as VOID
+        STATIC METHOD MemCopy(source AS BYTE[], target AS BYTE[], length AS INT) AS VOID
             MemCopy(source, 0, target, 0, length)
 
-        STATIC METHOD MemCopy(source as byte[], sourceoffset as int, target as byte[], targetoffset as int, length as Int) as VOID
-            local hSrc as GcHandle
-            local pSrc as IntPtr
-            local hTrg as GcHandle
-            local pTrg as IntPtr
+        STATIC METHOD MemCopy(source AS BYTE[], sourceoffset AS INT, target AS BYTE[], targetoffset AS INT, length AS INT) AS VOID
+            LOCAL hSrc AS GcHandle
+            LOCAL pSrc AS IntPtr
+            LOCAL hTrg AS GcHandle
+            LOCAL pTrg AS IntPtr
             pSrc := pTrg := IntPtr.Zero
             TRY
                 hSrc := GCHandle.Alloc(source, GCHandleType.Pinned)

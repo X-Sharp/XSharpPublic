@@ -18,49 +18,7 @@
 // </returns>
 /// <exclude />
 FUNCTION __StringCompare(strLHS AS STRING, strRHS AS STRING) AS INT
-    LOCAL ret AS INT
-    // Only when vo13 is off and SetExact = TRUE
-    IF !RuntimeState.CompilerOptionVO13 .AND. RuntimeState.Exact
-        RETURN String.Compare( strLHS,  strRHS)
-    ENDIF                            
-    IF Object.ReferenceEquals(strLHS, strRHS)
-        ret := 0
-    ELSEIF strLHS == NULL
-        IF strRHS == NULL			// null and null are equal
-            ret := 0
-        ELSE
-            ret := -1				// null precedes a string
-        ENDIF
-    ELSEIF strRHS == NULL			// a string comes after null
-        ret := 1
-    ELSE							// both not null
-        // With Not Exact comparison we only compare the length of the RHS string
-        // and we always use the unicode comparison because that is what vulcan does
-        // This is done to make sure that >= and <= will also return TRUE when the LHS is longer than the RHS
-        // The ordinal comparison can be done here because when both strings start with the same characters
-        // then equality is guaranteed regardless of collations or other rules.
-        // collations and other rules are really only relevant when both strings are different
-        IF  !RuntimeState.Exact
-            LOCAL lengthRHS AS INT
-            lengthRHS := strRHS:Length
-            IF lengthRHS == 0 .OR. lengthRHS <= strLHS:Length  .AND. String.Compare( strLHS, 0, strRHS, 0, lengthRHS , StringComparison.Ordinal ) == 0
-                RETURN 0
-            ENDIF
-        ENDIF
-        // either exact or RHS longer than LHS
-        VAR mode := RuntimeState.CollationMode 
-        SWITCH mode
-        CASE CollationMode.Windows
-            ret := XSharp.StringHelpers.CompareWindows(strLHS, strRHS) 
-        CASE CollationMode.Clipper
-            ret := XSharp.StringHelpers.CompareClipper(strLHS, strRHS)
-        CASE CollationMode.Unicode
-            ret := String.Compare(strLHS, strRHS)
-        OTHERWISE
-            ret := String.CompareOrdinal(strLHS, strRHS)
-        END SWITCH
-    ENDIF
-    RETURN ret
+    RETURN RuntimeState.StringCompare(strLHS, strRHS)
     
     /// <summary>
     /// Compare 2 strings. This function is used by the compiler for string comparisons

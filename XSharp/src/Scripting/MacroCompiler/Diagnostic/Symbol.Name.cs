@@ -70,19 +70,19 @@ namespace XSharp.MacroCompiler
     }
     internal partial class MethodSymbol : MethodBaseSymbol
     {
-        internal override string FullName { get { return DeclaringType.FullName + "." + Method.Name + "()"; } }
+        internal override string FullName { get { return ContainingType.FullName + "." + Method.Name + "()"; } }
     }
     internal partial class FieldSymbol : MemberSymbol
     {
-        internal override string FullName { get { return DeclaringType.FullName + (Field.IsStatic ? "." : ":") + Field.Name; } }
+        internal override string FullName { get { return ContainingType.FullName + (Field.IsStatic ? "." : ":") + Field.Name; } }
     }
     internal partial class EventSymbol : MemberSymbol
     {
-        internal override string FullName { get { return DeclaringType.FullName + "." + Event.Name; } }
+        internal override string FullName { get { return ContainingType.FullName + "." + Event.Name; } }
     }
     internal partial class PropertySymbol : MemberSymbol
     {
-        internal override string FullName { get { return DeclaringType.FullName + (IsStatic ? "." : ":") + Property.Name; } }
+        internal override string FullName { get { return ContainingType.FullName + (IsStatic ? "." : ":") + Property.Name; } }
     }
     internal partial class ConstructorSymbol : MethodBaseSymbol
     {

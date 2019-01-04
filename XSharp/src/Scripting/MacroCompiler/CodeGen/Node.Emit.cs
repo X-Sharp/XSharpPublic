@@ -46,6 +46,16 @@ namespace XSharp.MacroCompiler.Syntax
                 emitted = true;
             }
         }
+        internal override void EmitAddr(ILGenerator ilg)
+        {
+            if (!emitted)
+            {
+                Expr.Emit(ilg);
+                Local.Declare(ilg);
+                Local.EmitSet(ilg);
+            }
+            Local.EmitAddr(ilg);
+        }
     }
     internal partial class NativeTypeExpr : TypeExpr
     {

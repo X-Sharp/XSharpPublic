@@ -95,7 +95,10 @@ namespace XSharp.MacroCompiler
     {
         internal override void EmitGet(ILGenerator ilg)
         {
-            ilg.Emit(IsVirtual ? OpCodes.Callvirt : OpCodes.Call, Method);
+            if (DeclaringType.IsValueType)
+                ilg.Emit(OpCodes.Call, Method);
+            else
+                ilg.Emit(IsVirtual ? OpCodes.Callvirt : OpCodes.Call, Method);
         }
     }
     internal partial class ConstructorSymbol : MethodBaseSymbol

@@ -56,7 +56,18 @@ class testclassdc
         return !(o1 == o2)
 end class
 
-class testclass
+class testbase
+    method BString() as string
+        return "bbase"
+
+    method nString(x as long) as string
+        return "base"
+
+    virtual method FString() as string
+        return "base"
+end class
+
+class testclass inherit testbase
     class nested
         enum child
             haha := 4321
@@ -87,6 +98,17 @@ class testclass
         v1 := i
         prop := i
 
+    method UString() as string
+        return v1:ToString()
+
+    method NString(x as long) as string
+        return "child"
+
+    override method FString() as string
+        return v1:ToString()
+    method FString(prefix as string) as string
+        return prefix+v1:ToString()
+
     override method GetHashCode() as int
         return super:GetHashCode()
     override method Equals(o as object) as logic
@@ -108,6 +130,14 @@ struct teststruct
         v1 := i
         v2 := null
         prop := i
+
+    method UString() as string
+        return v1:ToString()
+
+    method FString() as string
+        return v1:ToString()
+    method FString(prefix as string) as string
+        return prefix+v1:ToString()
 
     override method GetHashCode() as int
         return super:GetHashCode()
@@ -159,12 +189,12 @@ begin namespace MacroCompilerTest
         var mc := CreateMacroCompiler()
 
         //ParseMacro(mc, e"{|a,b| +a[++b] += 100, a[2]}")
-
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
-        //EvalMacro(mc, e"{|a| (testclass)a }",tci) // FAIL - should work (TODO: implement type casts)
         //EvalMacro(mc, e"{|a|A,1_000", 123)
         //EvalMacro(mc, e"{|a| USUAL(-a) }", 1)
+        EvalMacro(mc, e"{|| testclass{}:NString((byte)1) }", Args())
         EvalMacro(mc, e"0.00001")
+        EvalMacro(mc, e"{|a,b| b := testclass{123}, b:ToString() }")
         wait
 
         RunTests(mc)
@@ -347,7 +377,7 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|v| v[2,1,2,1,1] }", <object>{ {{}, {{ "1_78", {{ 'DATEI_1', 'C', 100, 0,'Anhang 1','Anhang1' }}, nil, nil }}} },"DATEI_1", typeof(string))
 //        TestMacro(mc, e"{|v| v[2,1,2,1,1] := 'TEST', v[2,1,2,1,1] }", <object>{ {{}, {{ "1_78", {{ 'DATEI_1', 'C', 100, 0,'Anhang 1','Anhang1' }}, nil, nil }}} },"DATEI_1", typeof(string)) // FAIL - due to ARRAY:__SetElement() bug
 //        TestMacro(mc, e"{|a| a[2,2,2,2,2] := 12, a[2,2,2,2,2] }", <object>{ {1,{1,{1,{1,{1, 3}}}}} }, 12 , typeof(int)) // FAIL - due to ARRAY:__SetElement() bug
-//        TestMacro(mc, e"{|a| a:ToString() }", Args(8), "8", typeof(string)) // FAIL - String:ToString() is overloaded!
+        TestMacro(mc, e"{|a| a:ToString() }", Args(8), "8", typeof(string)) // FAIL - String:ToString() is overloaded!
         TestMacro(mc, e"{|a,b| a $ b}", Args("est", "test"), true, typeof(boolean))
         TestMacro(mc, e"{|a,b| a $ b}", Args("test", "est"), false, typeof(boolean))
         TestMacro(mc, e"{|a,b| sizeof(int) }", Args(), sizeof(int), typeof(dword))
@@ -461,6 +491,30 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a,b,c|DoTestS(a,b,c)}", Args(1, true, teststruct{222}), 222, typeof(int))
         TestMacro(mc, e"{|a| AScan(a, \"12\") }", Args({"135454","54376","123","53"}, nil), 3, typeof(dword))
         TestMacro(mc, e"{|a| ALen(a) }", Args({"1235454","54376","12","53"},nil), 4, typeof(dword))
+        TestMacro(mc, e"{|a| (testclass)a }",Args(tci), tci, typeof(testclass))
+        TestMacro(mc, e"{|a| ((int)a):GetHashCode() }", Args(8), 8, typeof(int))
+        TestMacro(mc, e"{|a| a:GetHashCode() }", Args(8), 8, typeof(int))
+        TestMacro(mc, e"{|a| a:GetHashCode() }", Args(tci), tci:GetHashCode(), typeof(int))
+        TestMacro(mc, e"{|a| a:GetHashCode() }", Args(tsi), tsi:GetHashCode(), typeof(int))
+        TestMacro(mc, e"{|| tci:GetHashCode() }", Args(), tci:GetHashCode(), typeof(int))
+        TestMacro(mc, e"{|| tsi:GetHashCode() }", Args(), tsi:GetHashCode(), typeof(int))
+        TestMacro(mc, e"{|a| ((int)a):ToString() }", Args(8), "8", typeof(string))
+        TestMacro(mc, e"{|a| a:ToString() }", Args(8), "8", typeof(string))
+        TestMacro(mc, e"{|a| a:ToString() }", Args(tci), "testclass", typeof(string))
+        TestMacro(mc, e"{|a| a:ToString() }", Args(tsi), "teststruct", typeof(string))
+        TestMacro(mc, e"{|| tci:ToString() }", Args(), "testclass", typeof(string))
+        TestMacro(mc, e"{|| tsi:ToString() }", Args(), "teststruct", typeof(string))
+        TestMacro(mc, e"{|a| a:UString() }", Args(tci), "1", typeof(string))
+        TestMacro(mc, e"{|a| a:UString() }", Args(tsi), "1", typeof(string))
+        TestMacro(mc, e"{|| testbase{}:FString() }", Args(), "base", typeof(string))
+        TestMacro(mc, e"{|| ((testbase)tci):FString() }", Args(), "1", typeof(string))
+        TestMacro(mc, e"{|| tsi:FString() }", Args(), "1", typeof(string))
+        TestMacro(mc, e"{|| tci:FString('fff') }", Args(), "fff1", typeof(string))
+        TestMacro(mc, e"{|| tsi:FString('fff') }", Args(), "fff1", typeof(string))
+        TestMacro(mc, e"{|| testbase{}:NString((byte)1) }", Args(), "base", typeof(string))
+        TestMacro(mc, e"{|| testclass{}:NString((byte)1) }", Args(), "child", typeof(string))
+        TestMacro(mc, e"{|| ((testbase)testclass{}):NString((byte)1) }", Args(), "base", typeof(string))
+        TestMacro(mc, e"{|| testclass{}:BString() }", Args(), "bbase", typeof(string))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")

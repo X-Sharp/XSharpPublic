@@ -68,7 +68,7 @@ namespace XSharp.MacroCompiler.Syntax
             RequireValue();
             if (Symbol == null)
                 ThrowError(ErrorCode.NotFound, "Expression");
-            if (!Symbol.HasGetAccess)
+            if (!Symbol.HasRefAccess)
                 throw Binder.AccessModeError(this, Symbol, Symbol.AccessMode.Ref);
         }
     }
@@ -145,13 +145,23 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Expr);
             Expr.RequireValue();
-            Symbol = b.Lookup(Expr.Symbol, Member.LookupName);
-            if (Symbol == null)
+            if (Affinity == BindAffinity.Invoke)
             {
-                if (Affinity == BindAffinity.Invoke)
-                    b.Convert(ref Expr, Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object));
-                else
-                    b.Convert(ref Expr, Compilation.Get(NativeType.Object));
+                Symbol = b.Lookup(Expr.Datatype, Member.LookupName);
+                if (Symbol == null)
+                {
+                    if (b.Options.Binding.HasFlag(BindOptions.AllowDynamic) && Expr.Datatype.IsUsualOrObject())
+                    {
+                        b.Convert(ref Expr, Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object));
+                        Symbol = new DynamicSymbol(Member.LookupName);
+                    }
+                    else
+                        ThrowError(Binder.LookupError(Expr, Member));
+                }
+            }
+            else
+            {
+                b.Convert(ref Expr, Compilation.Get(NativeType.Object));
                 Symbol = new DynamicSymbol(Member.LookupName);
             }
             Datatype = Symbol.Type();
@@ -428,6 +438,21 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Args);
             Symbol = b.BindMethodCall(Expr, Expr.Symbol, Args, out Self);
             Datatype = Symbol.Type();
+            if (Self?.Datatype.IsValueType == true)
+            {
+                if ((Symbol as MethodSymbol).DeclaringType.IsValueType)
+                {
+                    if (!Symbol.HasRefAccess)
+                    {
+                        b.Cache(ref Self);
+                    }
+                    b.Convert(ref Self, Binder.ByRefOf(Self.Datatype));
+                }
+                else
+                {
+                    b.Convert(ref Self, Compilation.Get(NativeType.Object));
+                }
+            }
             return null;
         }
     }

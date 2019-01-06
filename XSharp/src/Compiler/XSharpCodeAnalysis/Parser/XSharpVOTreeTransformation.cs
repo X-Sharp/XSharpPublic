@@ -2227,7 +2227,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XP.INT_CONST:
                         if (negative)
                         {
-                            Int64 iValue = Int64.Parse(token.Text) * -1;
+                            string text = token.Text;
+                            switch (text[text.Length-1])
+                            {
+                                case 'L':
+                                case 'l':
+                                case 'U':
+                                case 'u':
+                                    text = text.Substring(0, text.Length - 1);
+                                    break;
+                            }
+                            Int64 iValue = Int64.Parse(text) * -1;
                             return MakeDefaultParameter(GenerateLiteral(iValue), GenerateLiteral(0));   // 0 = regular .Net Value
                         }
                         else
@@ -2266,29 +2276,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // are no Attributes on the parameter, such as [CallerMember]
             if (context.Default != null && context.Attributes == null && ! _options.NoClipCall)
             {
-                /*
-                // only encode when there are parameters in this list after the current one
-                // that have no default. Otherwise we let Roslyn take care of it.
-                var ParamList = context.Parent as XP.ParameterListContext;
-                var needed = false;
-                var found = false;
-                foreach (var param in ParamList._Params)
+                if (CurrentEntity.Data.HasClipperCallingConvention)
                 {
-                    if (param == context)
-                    {
-                        found = true;
-                    }
-                    else if (found && param.Default == null)
-                    {
-                        needed = true;
-                    }
-                }
-                if (!needed)
-                {
-                    // Roslyn can handle it.
+                    var par = context.CsNode as ParameterSyntax;
+                    par = par.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_DefaultParameterValueWithClipperCallingConvention,context.Start.StartIndex, context.FullWidth));
+                    context.Put(par);
                     return;
                 }
-                }*/
                 AttributeSyntax attr = EncodeDefaultParameter(context.Default);
                 if (attr != null)
                 {
@@ -2992,6 +2986,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                         var decl = GenerateLocalDecl(XSharpSpecialNames.ClipperPCount, _intType, len);
                         stmts.Add(decl);
+                        // Now Change argument to X$Args PARAMS USUAL[]
+                        var newparameters = GetClipperParameters();
                         if (parameters.Parameters.Count > 0)
                         {
 
@@ -3005,12 +3001,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 var variable = decl.Declaration.Variables[0];
                                 variable.XGenerated = true;
                                 stmts.Add(decl);
+                                var diag = parm.GetDiagnostics();
+                                if (diag.Length > 0)
+                                    newparameters = newparameters.WithAdditionalDiagnostics(diag);
+
                             }
                         }
+                        parameters = newparameters;
                     }
-                    // Now Change argument to X$Args PARAMS USUAL[]
-                    parameters = GetClipperParameters();
-                }
+               }
                 if (body != null)
                 {
                     FinallyClauseSyntax finallyClause = null;

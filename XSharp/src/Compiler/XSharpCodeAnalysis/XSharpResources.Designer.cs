@@ -3455,6 +3455,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parameters with CLIPPER calling convention cannot have default values..
+        /// </summary>
+        internal static string ERR_DefaultParameterValueWithClipperCallingConvention {
+            get {
+                return ResourceManager.GetString("ERR_DefaultParameterValueWithClipperCallingConvention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Argument of type &apos;{0}&apos; is not applicable for the DefaultParameterValue attribute.
         /// </summary>
         internal static string ERR_DefaultValueBadValueType {

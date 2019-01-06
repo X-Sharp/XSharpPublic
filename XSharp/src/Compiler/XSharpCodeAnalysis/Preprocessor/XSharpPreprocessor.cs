@@ -829,7 +829,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         SourceSymbol = null
                                     };
                                 }
-                                addParseError(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Duplicate define (" + defText + ") found because include file \""+includeName+"\" was included twice"));
+                                addParseError(new ParseErrorData(def, ErrorCode.WRN_PreProcessorWarning, "Duplicate define (" + defText + ") found because include file \""+includeName+"\" was included twice"));
                             }
                         }
                     }

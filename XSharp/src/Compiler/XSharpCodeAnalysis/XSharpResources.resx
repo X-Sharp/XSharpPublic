@@ -5617,5 +5617,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_AutomaticRefGeneration" xml:space="preserve">
     <value>Parameter {0} needs a(n) '{1}' modifier. This modifier was automatically added.</value>
   </data>
+    <data name="ERR_DefaultParameterValueWithClipperCallingConvention" xml:space="preserve">
+    <value>Parameters with CLIPPER calling convention cannot have default values.</value>
+  </data>
 
 </root>

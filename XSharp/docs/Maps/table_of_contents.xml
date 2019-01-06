@@ -420,6 +420,9 @@
               <topicref type="topic" id="423888967356687" build="ALL" modified="2016-01-19T20:56:50.106Z" icon="0" href="CLASS">
                 <caption translate="true">CLASS</caption>
               </topicref>
+              <topicref type="topic" id="434688153269436" build="ALL" modified="2019-01-03T18:00:54.740Z" icon="0" href="CLASS_2">
+                <caption translate="true">CLASS (Xbase++ Syntax)</caption>
+              </topicref>
               <topicref type="topic" id="423889694655495" build="ALL" modified="2016-01-19T20:56:50.161Z" icon="0" href="DELEGATE">
                 <caption translate="true">DELEGATE</caption>
               </topicref>

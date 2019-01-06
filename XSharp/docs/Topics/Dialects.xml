@@ -35,7 +35,7 @@
           <para styleclass="Body Text">No</para>
         </td>
         <td>
-          <para styleclass="Normal">Yes (VO) No (Vulcan) <text style="font-weight:bold;">11</text></para>
+          <para styleclass="Normal">VO: Yes, Vulcan: No (Vulcan) <text style="font-weight:bold;">11</text></para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
@@ -52,7 +52,7 @@
           <para styleclass="Normal">No</para>
         </td>
         <td>
-          <para styleclass="Normal">Yes (VO) No (Vulcan)</para>
+          <para styleclass="Normal">VO: Yes Vulcan: No </para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
@@ -341,7 +341,7 @@
           <para styleclass="Normal">No</para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="color:#ff0000;">Not yet (VO) , No (Vulcan)</text></para>
+          <para styleclass="Normal"><text style="color:#ff0000;">VO: Not yet , </text>Vulcan: <text style="color:#ff0000;">No </text></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#ff0000;">Not yet</text></para>
@@ -375,7 +375,7 @@
           <para styleclass="Normal">n/a</para>
         </td>
         <td>
-          <para styleclass="Normal">1 based (VO) 0 based (Vulcan)</para>
+          <para styleclass="Normal">VO: 1 based, Vulcan 0 based</para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>

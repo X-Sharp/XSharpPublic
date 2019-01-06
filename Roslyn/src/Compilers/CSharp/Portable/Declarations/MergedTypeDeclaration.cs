@@ -12,11 +12,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     // An invariant of a merged type declaration is that all of its children are also merged
     // declarations.
-#if XSHARP
-    internal  sealed partial class MergedTypeDeclaration : MergedNamespaceOrTypeDeclaration
-#else
     internal sealed class MergedTypeDeclaration : MergedNamespaceOrTypeDeclaration
-#endif
     {
         private readonly ImmutableArray<SingleTypeDeclaration> _declarations;
         private ImmutableArray<MergedTypeDeclaration> _lazyChildren;
@@ -81,9 +77,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 attributeSyntaxListBuilder.Add(attributesSyntaxList);
             }
 
-#if XSHARP
-            AddVulcanTypeAttributes(attributeSyntaxListBuilder);
-#endif
+
             return attributeSyntaxListBuilder.ToImmutableAndFree();
         }
 

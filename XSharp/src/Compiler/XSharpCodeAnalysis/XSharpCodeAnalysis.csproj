@@ -159,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Antlr4.Runtime\Properties\" />
+    <Folder Include="Declarations\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Tools\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj" />

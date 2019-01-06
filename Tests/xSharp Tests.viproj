@@ -60048,7 +60048,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C591 - Runtime error with Default(@param , NULL_OBJECT)
 
-ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C592 - Failed to emit module error with default values := NULL_* in params *************
 Application = C592 - Failed to emit module error with default values := NULL_* in params
 IDEVersion = 1.06
@@ -65872,9 +65872,9 @@ FileGUID = D4AF90EB-61CD-4723-9B1B-8C8CA9B9838C
 FileType = Code
 [C648 - Problems using _FIELD with the X# runtime References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.8
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.8
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.0.8
+ReferenceGAC = XSharp.Core,1,0,2.0.0.8
+ReferenceGAC = XSharp.VO,1,0,2.0.0.8
+ReferenceGAC = XSharp.RT,1,0,2.0.0.8
 [C648 - Problems using _FIELD with the X# runtime Resources]
 [C648 - Problems using _FIELD with the X# runtime Native Resources]
 [C648 - Problems using _FIELD with the X# runtime License files]

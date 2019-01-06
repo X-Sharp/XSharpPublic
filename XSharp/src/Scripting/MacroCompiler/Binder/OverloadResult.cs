@@ -86,6 +86,10 @@ namespace XSharp.MacroCompiler
                     return other;
                 else if (HasMostDerivedArgs(other))
                     return this;
+                else if (Symbol.DeclaringType.IsSubclassOf(other.Symbol.DeclaringType))
+                    return this;
+                else if (other.Symbol.DeclaringType.IsSubclassOf(Symbol.DeclaringType))
+                    return other;
                 else
                 {
                     Equivalent = other;

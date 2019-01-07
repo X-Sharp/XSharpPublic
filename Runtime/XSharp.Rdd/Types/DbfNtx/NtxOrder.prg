@@ -677,11 +677,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_oRdd:_dbfError( SubCodes.ERDD_CREATE_ORDER, GenCode.EG_CREATE,createInfo:BagName)
                 RETURN FALSE
             END TRY
-            //
-            SELF:_Shared := SELF:_oRDD:_Shared
-            SELF:_ReadOnly := SELF:_oRDD:_ReadOnly
-            //
-            SELF:_hFile    := Fopen(SELF:FileName, SELF:_oRDD:_OpenInfo:FileMode) 
+            // To create an index we want to open the NTX NOT shared and NOT readonly
+            VAR oldShared   := SELF:_oRDD:_Shared
+            VAR oldReadOnly := SELF:_oRDD:_ReadOnly 
+            SELF:_oRDD:_Shared := FALSE
+            SELF:_oRDD:_ReadOnly  := FALSE
+            SELF:_hFile    := Fopen(SELF:FileName, SELF:_oRDD:_OpenInfo:FileMode)
+            SELF:_oRDD:_Shared := oldShared
+            SELF:_oRDD:_ReadOnly  := oldReadOnly
+
             IF SELF:_hFile == F_ERROR
                 SELF:Close()
                 SELF:_oRdd:_dbfError( SubCodes.ERDD_CREATE_ORDER, GenCode.EG_CREATE, createInfo:BagName)

@@ -319,7 +319,10 @@ BEGIN NAMESPACE XSharp.RDD
 				SELF:_HeaderLocked := SELF:_tryLock( SELF:_lockScheme:Offset, 1, (LONG)XSharp.RuntimeState.LockTries)
 			ELSE
 				TRY
-					SELF:_HeaderLocked := FFUnlock( SELF:_hFile, (DWORD)SELF:_lockScheme:Offset, 1 )
+                    VAR unlocked := FFUnlock( SELF:_hFile, (DWORD)SELF:_lockScheme:Offset, 1 )
+                    IF unlocked
+					    SELF:_HeaderLocked := FALSE
+                    ENDIF
 				CATCH
 					SELF:_HeaderLocked := FALSE
 				END TRY

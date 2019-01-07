@@ -42,9 +42,12 @@ namespace XSharp.LanguageService
         {
             TextSpan span2 = span;
             CommentInfo commentFormat = this.GetCommentFormat();
-            if (span.iStartLine == span.iEndLine)
+            if (span.iStartLine == span.iEndLine )
             {
-                commentFormat.UseLineComments = false;
+                if (span.iStartIndex != span.iEndIndex)
+                    commentFormat.UseLineComments = false;
+                else
+                    commentFormat.UseLineComments = true;
             }
             else
             {
@@ -113,7 +116,7 @@ namespace XSharp.LanguageService
                     }
                 }
             }
-            else 
+            else
             {
                 using (new CompoundAction(this, "Uncomment Selection"))
                 {

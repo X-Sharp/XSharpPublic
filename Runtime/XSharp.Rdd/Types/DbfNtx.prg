@@ -268,7 +268,11 @@ BEGIN NAMESPACE XSharp.RDD
 		#ENDREGION
 		
 		#REGION Move
-		
+
+        INTERNAL METHOD ReadRecord() AS LOGIC
+            RETURN SELF:_ReadRecord()
+
+
 		PUBLIC METHOD Seek(seekInfo AS DBSEEKINFO ) AS LOGIC
 			LOCAL isOk AS LOGIC
 			LOCAL ntxIndex AS NtxOrder

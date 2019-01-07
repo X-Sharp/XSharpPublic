@@ -2317,7 +2317,7 @@ namespace XSharpLanguage
             if (lineNT != lineTP)
             {
                 // should not happen.
-                //return tokenList;           
+                //return tokenList;
             }
             if (nextToken.Type != XSharpLexer.EOS)
             {
@@ -2588,7 +2588,7 @@ namespace XSharpLanguage
         }
         public static XTypeMember FindMemberAtPosition(int nPosition, XFile file)
         {
-            if (file == null)
+            if (file == null || file.EntityList == null)
             {
                 return null;
             }
@@ -2611,7 +2611,7 @@ namespace XSharpLanguage
 
         public static XTypeMember FindMember(int nLine, XFile file)
         {
-            if (file == null)
+            if (file == null || file.EntityList == null)
             {
                 return null;
             }

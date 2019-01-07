@@ -341,8 +341,8 @@ CLASS XSharp.CoreDb
         /// <note type="tip">VoDbCloseArea() and CoreDb.CloseArea() are aliases</note></remarks>
     STATIC METHOD CloseArea() AS LOGIC
         RETURN CoreDb.Do ({ =>
-        LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
-        RETURN oRDD:Close()
+            VAR uiNewArea := RuntimeState.Workareas:CurrentWorkAreaNO
+            RETURN RuntimeState.Workareas:CloseArea(uiNewArea)
         })
         
         /// <summary>

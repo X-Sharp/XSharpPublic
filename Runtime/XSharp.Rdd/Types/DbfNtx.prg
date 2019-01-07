@@ -294,18 +294,6 @@ BEGIN NAMESPACE XSharp.RDD
 				ENDIF
 			END LOCK
 			
-		PUBLIC METHOD GoTo(record AS INT ) AS LOGIC
-			BEGIN LOCK SELF
-				IF SELF:_ntxList:CurrentOrder != NULL
-					SUPER:GoTo(record)
-					RETURN SELF:_ntxList:CurrentOrder:_goTo( (DWORD) SELF:Recno )
-				ELSE
-					RETURN SUPER:GoTo(record)
-				ENDIF
-			END LOCK
-			
-			
-			
 		PUBLIC METHOD GoTop() AS LOGIC
 			BEGIN LOCK SELF
 				IF SELF:_ntxList:CurrentOrder != NULL

@@ -73,10 +73,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL _newKeyLen AS LONG
         INTERNAL _indexVersion AS WORD
         INTERNAL _nextUnusedPageOffset AS DWORD
-        INTERNAL _entrySize AS LONG
+        INTERNAL _entrySize AS WORD
         INTERNAL _KeyExprType AS TypeCode
-        INTERNAL _keySize AS LONG
-        INTERNAL _keyDecimals AS LONG
+        INTERNAL _keySize AS WORD
+        INTERNAL _keyDecimals AS WORD
         INTERNAL _MaxEntry AS LONG
         INTERNAL _halfPage AS LONG
         INTERNAL _TopStack AS DWORD
@@ -622,8 +622,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             FOR i := 0 TO ( SELF:_oRdd:_fields:Length - 1)
                 IF string.Compare(SELF:_KeyExpr, SELF:_oRdd:_fields[i]:Name, TRUE) == 0
                     SELF:_SingleField := i
-                    SELF:_keySize := (LONG)SELF:_oRdd:_fields[i]:Length
-                    SELF:_keyDecimals := (LONG)SELF:_oRdd:_fields[i]:Decimals
+                    SELF:_keySize       := (WORD) SELF:_oRdd:_fields[i]:Length
+                    SELF:_keyDecimals   := (WORD)SELF:_oRdd:_fields[i]:Decimals
                     EXIT
                 ENDIF
             NEXT
@@ -639,7 +639,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 RETURN FALSE
             ENDIF
             // 8 Bytes : PrevPage (4 bytes) + Recno (4 bytes)
-            SELF:_entrySize := SELF:_keySize + 8
+            SELF:_entrySize := SELF:_keySize + (WORD) 8
             //
             num := ( NtxConst.BUFF_SIZE - 4) / (SELF:_keySize + 10)
             SELF:_halfPage := (num - 1) / 2
@@ -769,7 +769,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             //
             BEGIN SWITCH tCode
             CASE TypeCode.String
-                SELF:_keySize := ((STRING)toConvert):Length
+                SELF:_keySize := (WORD) ((STRING)toConvert):Length
             CASE TypeCode.Int16
             CASE TypeCode.UInt16
             CASE TypeCode.Int32
@@ -787,13 +787,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     CATCH
                         RETURN FALSE
                     END TRY
-                    SELF:_keySize := expr:Length
+                    SELF:_keySize := (WORD) expr:Length
                     anyOf := <CHAR>{',', '.' }
                     nPos := expr:IndexOfAny(anyOf)
                     IF nPos < 0
                         SELF:_keyDecimals := 0
                     ELSE
-                        SELF:_keyDecimals := SELF:_keySize - nPos - 1
+                        SELF:_keyDecimals := (WORD) (SELF:_keySize - nPos - 1)
                     ENDIF
                                 
             CATCH //Exception
@@ -911,7 +911,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         LOCAL evalCount AS LONG
         LOCAL uiRealLen AS LONG
         LOCAL lRecCount AS LONG
-        LOCAL sortInfo AS DBSORTINFO
+        LOCAL sortInfo AS DbSortInfo
         LOCAL hasBlock AS LOGIC
         LOCAL sorting AS RddSortHelper
         LOCAL byteArray AS BYTE[]
@@ -1063,10 +1063,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             NEXT
         ENDIF
         RETURN
+
         // IRddSortWriter Interface, used by RddSortHelper
-        PUBLIC METHOD WriteSorted(si AS DBSORTINFO , o AS OBJECT ) AS LOGIC
+        PUBLIC METHOD WriteSorted(si AS DbSortInfo , o AS OBJECT ) AS LOGIC
             LOCAL nTXSortRecord AS NTXSortRecord
-            //
             nTXSortRecord          := (NTXSortRecord)o
             SELF:_oneItem:PageNo   := 0
             SELF:_oneItem:Recno    := nTXSortRecord:Recno
@@ -1076,7 +1076,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     
         INTERNAL METHOD _CreateUnique(ordCondInfo AS DBORDERCONDINFO ) AS LOGIC
             LOCAL Ok AS LOGIC
-            //
             Ok := SELF:_CreateEmpty()
             IF Ok
                 IF ordCondInfo:Active
@@ -1087,7 +1086,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     REPEAT
                         SELF:_KeyUpdate((DWORD) SELF:_oRdd:RecNo, TRUE)
                         SELF:_oRdd:GoTo(SELF:_oRdd:RecNo + 1)
-                    UNTIL !(SELF:_oRdd:_isValid)
+                    UNTIL ! SELF:_oRdd:_isValid
                 ENDIF
                 SELF:_TopStack := 0
             ENDIF
@@ -1218,7 +1217,7 @@ PRIVATE METHOD _CondCreate(ordCondInfo AS DBORDERCONDINFO ) AS LOGIC
             nextRecord := (DWORD)SELF:_oRdd:RecNo + 1
         ENDIF
         SELF:_oRdd:GoToId(nextRecord)
-    UNTIL !(((((toDo == 0) .OR. (done < toDo))) .AND. (!SELF:_oRdd:_Eof)) .AND. (SELF:_oRdd:_isValid))
+    UNTIL !(toDo == 0 .OR. done < toDo) .AND. !SELF:_oRdd:_Eof .AND. SELF:_oRdd:_isValid
     SELF:_oRdd:GoToId(start)
     SELF:_TopStack := 0
     SELF:Flush()
@@ -1226,34 +1225,34 @@ PRIVATE METHOD _CondCreate(ordCondInfo AS DBORDERCONDINFO ) AS LOGIC
                     
                     
 PRIVATE METHOD _placeItem(lpNode AS NtxItem ) AS LOGIC
-    LOCAL num AS DWORD
-    LOCAL nLevel AS NtxLevel
+    LOCAL uiLevel AS DWORD
+    LOCAL level AS NtxLevel
     LOCAL node AS NtxItem
-    LOCAL num2 AS LONG
+    LOCAL page AS LONG
     //
-    num := 0
-    nLevel := SELF:_levels[0]
-    DO WHILE (num < SELF:_levelsCount) .AND. (nLevel:NodeCount >= nLevel:Parents)
-        node := nLevel[nLevel:NodeCount]
+    uiLevel := 0
+    level := SELF:_levels[0]
+    DO WHILE (uiLevel < SELF:_levelsCount) .AND. (level:NodeCount >= level:Parents)
+        node := level[level:NodeCount]
         node:PageNo := SELF:_oneItem:PageNo
-        num2 := SELF:_outPageNo * NtxConst.BUFF_SIZE
-        SELF:_oneItem:PageNo := num2
-        nLevel:PageOffset := num2
+        page := SELF:_outPageNo * NtxConst.BUFF_SIZE
+        SELF:_oneItem:PageNo := page
+        level:PageOffset := page
         SELF:_outPageNo++
-        num++
-        nLevel := SELF:_levels[num]
+        uiLevel++
+        level := SELF:_levels[uiLevel]
     ENDDO
-    IF num >= SELF:_levelsCount
+    IF uiLevel >= SELF:_levelsCount
         RETURN FALSE
     ENDIF
-    node := nLevel[nLevel:NodeCount]
+    node := level[level:NodeCount]
     node:KeyBytes := lpNode:KeyBytes
     node:Recno := lpNode:Recno
     node:PageNo := lpNode:PageNo
-    nLevel:NodeCount++
+    level:NodeCount++
     SELF:_oneItem:Clear()
-    IF num > 0
-        SELF:_ResetLevel(num - 1)
+    IF uiLevel > 0
+        SELF:_ResetLevel(uiLevel - 1)
     ENDIF
     RETURN TRUE
                     

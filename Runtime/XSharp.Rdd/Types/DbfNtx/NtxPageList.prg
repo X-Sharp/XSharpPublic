@@ -20,7 +20,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         
         PRIVATE METHOD _FindPage( offset AS LONG ) AS NtxPage
             LOCAL ntxPage AS NtxPage
-            //
             ntxPage := SELF:_Pages:Find( { p => p:PageOffset == offset } )
             RETURN ntxPage
             
@@ -32,7 +31,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
         INTERNAL METHOD Update( pageNo AS LONG ) AS NtxPage
             LOCAL ntxPage AS NtxPage
-            //
             ntxPage := SELF:Read(pageNo)
             IF ( ntxPage != NULL )
                 ntxPage:Hot := TRUE
@@ -42,7 +40,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
         INTERNAL METHOD Append( offset AS LONG ) AS NtxPage
             LOCAL ntxPage AS NtxPage
-            //
             ntxPage := SELF:_FindPage(offset)
             IF (ntxPage == NULL)
                 ntxPage := NtxPage{SELF:_Order, 0L}

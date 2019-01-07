@@ -170,7 +170,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             END SET
         END PROPERTY
-                        
+
+    INTERNAL METHOD __Compare( aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
+        RETURN RuntimeState.StringCompare(aLHS, aRHS, nLength)
+
     INTERNAL METHOD Open(dbordInfo AS DBORDERINFO ) AS LOGIC
         LOCAL isOk AS LOGIC
         LOCAL i AS LONG
@@ -421,7 +424,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         errorLevel := 1
                     ELSE
                         IF !lNewRecord
-                            changed := SELF:_oRdd:StringCompare(SELF:_newKeyBuffer, SELF:_knownKeyBuffer, SELF:_keySize) != 0
+                            changed := SELF:__Compare(SELF:_newKeyBuffer, SELF:_knownKeyBuffer, SELF:_keySize) != 0
                             IF changed
                                 SELF:_TopStack := 0u
                             ENDIF
@@ -524,16 +527,16 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                             
                             
         PRIVATE METHOD _getHeader() AS LOGIC
-            LOCAL result AS LOGIC
+            LOCAL changed AS LOGIC
             //
-            result := TRUE
+            changed := TRUE
             IF SELF:_Header:Read()
-                result := (SELF:_indexVersion != SELF:_Header:IndexingVersion)
+                changed := (SELF:_indexVersion != SELF:_Header:IndexingVersion)
                 SELF:_indexVersion := SELF:_Header:IndexingVersion
                 SELF:_firstPageOffset := SELF:_Header:FirstPageOffset
                 SELF:_nextUnusedPageOffset := SELF:_Header:NextUnusedPageOffset
             ENDIF
-            RETURN result
+            RETURN changed
                             
                             
         PRIVATE METHOD _PutHeader() AS LOGIC
@@ -552,7 +555,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF  SELF:_lockScheme:Offset == -1
                 ntxSignature |= NtxHeaderFlags.NewLock
             ENDIF
-            SELF:_Header:Signature := ntxSignature
+            SELF:_Header:Signature              := ntxSignature
             SELF:_Header:IndexingVersion        := SELF:_indexVersion
             SELF:_Header:FirstPageOffset        := SELF:_firstPageOffset
             SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
@@ -638,6 +641,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_oRdd:_dbfError( SubCodes.ERDD_NULLKEY, GenCode.EG_DATAWIDTH,createInfo:BagName)
                 RETURN FALSE
             ENDIF
+            IF SELF:_keySize > 0
+                SELF:_knownKeyBuffer := BYTE[]{_Keysize+1}
+                SELF:_newKeyBuffer   := BYTE[]{_Keysize+1}
+            ENDIF
+
             // 8 Bytes : PrevPage (4 bytes) + Recno (4 bytes)
             SELF:_entrySize := SELF:_keySize + (WORD) 8
             //
@@ -806,6 +814,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_keySize := 0
             RETURN FALSE
         END SWITCH
+            IF SELF:_keySize > 0
+                SELF:_knownKeyBuffer := BYTE[]{_Keysize+1}
+                SELF:_newKeyBuffer   := BYTE[]{_Keysize+1}
+            ENDIF
+
         RETURN TRUE
                     
         PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG , nDec AS LONG , buffer AS BYTE[] , isAnsi AS LOGIC ) AS LOGIC    
@@ -903,13 +916,32 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             resultLength := text:Length
             RETURN TRUE
-                    
-                    
+
+    PRIVATE METHOD GetNumFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
+        Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
+        SELF:_checkDigits(byteArray, SELF:_keySize, SELF:_keyDecimals)
+        RETURN TRUE
+
+   PRIVATE METHOD GetFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
+        Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
+        RETURN TRUE
+
+    PRIVATE METHOD GetExpressionValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
+        LOCAL oKeyValue AS OBJECT
+        LOCAL result := TRUE AS LOGIC
+        TRY
+            oKeyValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
+            LOCAL uiRealLen := 0 AS LONG
+            result := SELF:_ToString(oKeyValue, SELF:_keySize, SELF:_keyDecimals, byteArray, SELF:_Ansi, REF uiRealLen)
+        CATCH
+            result := FALSE
+        END TRY
+        RETURN result
+    PRIVATE DELEGATE ValueBlock( sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
     INTERNAL METHOD _CreateIndex() AS LOGIC
         LOCAL fType AS DbFieldType
         LOCAL sourceIndex AS LONG
         LOCAL evalCount AS LONG
-        LOCAL uiRealLen AS LONG
         LOCAL lRecCount AS LONG
         LOCAL sortInfo AS DbSortInfo
         LOCAL hasBlock AS LOGIC
@@ -917,21 +949,19 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         LOCAL byteArray AS BYTE[]
         LOCAL result AS LOGIC
         LOCAL ic AS NtxSortCompare
-        LOCAL lpLevels AS NtxLevel[]
+        
         LOCAL lAscii AS LOGIC
+        LOCAL getKeyValue AS ValueBlock
         //
         fType := 0
         sourceIndex := 0
         evalCount := 0
-        uiRealLen := 0
         lRecCount := (LONG)SELF:_oRdd:RecCount
         IF lRecCount == 0
             RETURN SELF:_CreateEmpty()
         ENDIF
-        //
         sortInfo := DbSortInfo{0,1}     // 0 trans items, 1 sort item
-        //
-        hasBlock := SELF:_oRdd:_OrderCondInfo:EvalBlock != NULL
+        hasBlock    := SELF:_oRdd:_OrderCondInfo:EvalBlock != NULL
         evalCount := 1
         SELF:_levelsCount := 1u
         IF SELF:_SingleField != -1
@@ -962,28 +992,19 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         sortInfo:Items[0]:OffSet := 0
         SELF:_oRdd:GoTo(1)
         byteArray := BYTE[]{ SELF:_keySize }
-        LOCAL oKeyValue := NULL AS OBJECT
+        IF SELF:_SingleField != -1 .AND. fType != 0
+            IF fType ==  DbFieldType.Number
+                getKeyValue := GetNumFieldValue
+            ELSE
+                getKeyValue := GetFieldValue
+            ENDIF
+        ELSE
+            getKeyValue := GetExpressionValue
+        ENDIF
         REPEAT
             result := TRUE
-            IF fType != 0
-                // no need to evaluate the key expression. We can read the value directly from the buffer
-                SELF:_oRdd:ReadRecord()
-                Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
-                IF fType == DbFieldType.Number // 'N'
-                    SELF:_checkDigits(byteArray, SELF:_keySize, SELF:_keyDecimals)
-                ENDIF
-                result := TRUE
-            ELSE
-                TRY
-                    oKeyValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
-                CATCH
-                    result := FALSE
-                END TRY
-                IF !result
-                    EXIT
-                ENDIF
-                result := SELF:_ToString(oKeyValue, SELF:_keySize, SELF:_keyDecimals, byteArray, SELF:_Ansi, REF uiRealLen)
-            ENDIF
+            SELF:_oRdd:ReadRecord()
+            result := getKeyValue(sourceIndex, byteArray)
             IF !result
                 EXIT
             ENDIF
@@ -1002,7 +1023,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             ENDIF
             result := SELF:_oRdd:GoTo(SELF:_oRdd:RecNo + 1)
-        UNTIL ! ((result) .AND. (SELF:_oRdd:_isValid))
+        UNTIL ! (result .AND. SELF:_oRdd:_isValid)
         IF result
             IF lAscii
                 ic := NTXSortCompareAscii{SELF:_oRdd, sortInfo}
@@ -1023,14 +1044,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         SELF:_placeItem(SELF:_oneItem)
         SELF:_firstPageOffset := (DWORD)SELF:_oneItem:PageNo
         SELF:_nextUnusedPageOffset := 0
-        lpLevels := SELF:_levels
-        FOREACH nLevel AS NtxLevel IN lpLevels 
-            IF nLevel != NULL
-                IF nLevel:PageOffset == 0
-                    nLevel:PageOffset := SELF:_outPageNo * NtxConst.BUFF_SIZE
+        VAR lpLevels := SELF:_levels
+        FOREACH level AS NtxLevel IN lpLevels 
+            IF level != NULL
+                IF level:PageOffset == 0
+                    level:PageOffset := SELF:_outPageNo * NtxConst.BUFF_SIZE
                     SELF:_outPageNo++
                 ENDIF
-                nLevel:Write(nLevel:PageOffset)
+                level:Write(level:PageOffset)
             ENDIF
         NEXT
         FSeek3( SELF:_hFile, 0, FS_END )
@@ -1721,13 +1742,13 @@ PRIVATE METHOD _Balance() AS VOID
         LOCAL lplPos2 AS DWORD
         //
         IF (SELF:_hasTopScope)
-            num := SELF:_oRdd:StringCompare(SELF:_knownKeyBuffer, SELF:_topScopeBuffer, SELF:_topScopeSize)
+            num := SELF:__Compare(SELF:_knownKeyBuffer, SELF:_topScopeBuffer, SELF:_topScopeSize)
             IF (num < 0)
                 RETURN 0u
             ENDIF
         ENDIF
         IF (SELF:_hasBottomScope)
-            num := SELF:_oRdd:StringCompare(SELF:_knownKeyBuffer, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize)
+            num := SELF:__Compare(SELF:_knownKeyBuffer, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize)
             IF (num > 0)
                 RETURN 0u
             ENDIF
@@ -1763,7 +1784,7 @@ PRIVATE METHOD _Balance() AS VOID
                 RETURN 0u
             ENDIF
             IF (SELF:_hasBottomScope)
-                num2 := SELF:_oRdd:StringCompare(SELF:_knownKeyBuffer, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize)
+                num2 := SELF:__Compare(SELF:_knownKeyBuffer, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize)
                 IF (num2 > 0)
                     SELF:_oRdd:_Eof := TRUE
                     RETURN result
@@ -1787,7 +1808,7 @@ PRIVATE METHOD _Balance() AS VOID
                     lNumKeys--
                     IF (ntxSkipDirection == NtxSkipDirection.Backward)
                         IF (SELF:_hasTopScope)
-                            num2 := SELF:_oRdd:StringCompare(SELF:_knownKeyBuffer, SELF:_topScopeBuffer, SELF:_topScopeSize)
+                            num2 := SELF:__Compare(SELF:_knownKeyBuffer, SELF:_topScopeBuffer, SELF:_topScopeSize)
                             IF (num2 < 0)
                                 num := SELF:_getNextKey(FALSE, NtxSkipDirection.Forward)
                                 SELF:_oRdd:_Bof := TRUE
@@ -1800,7 +1821,7 @@ PRIVATE METHOD _Balance() AS VOID
                                 SELF:_oRdd:_Eof := TRUE
                                 RETURN result
                             ENDIF
-                            num2 := SELF:_oRdd:StringCompare(SELF:_knownKeyBuffer, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize)
+                            num2 := SELF:__Compare(SELF:_knownKeyBuffer, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize)
                             SELF:_oRdd:_Bof := FALSE
                             IF (num2 > 0)
                                 SELF:_oRdd:_Eof := TRUE
@@ -1866,7 +1887,7 @@ PRIVATE METHOD _Balance() AS VOID
             IF (SELF:_hasBottomScope)
                 itmBottomScope := SELF:_bottomScope
                 SELF:_ToString(itmBottomScope, SELF:_keySize, SELF:_keyDecimals, SELF:_newKeyBuffer, SELF:_Ansi)
-                num := SELF:_oRdd:StringCompare(SELF:_newKeyBuffer, SELF:_knownKeyBuffer, SELF:_keySize)
+                num := SELF:__Compare(SELF:_newKeyBuffer, SELF:_knownKeyBuffer, SELF:_keySize)
                 IF (num >= 0)
                     isOk := TRUE
                 ENDIF
@@ -1887,7 +1908,7 @@ PRIVATE METHOD _Balance() AS VOID
         isOk := TRUE
         SELF:_oRdd:GoCold()
         oldRec := SELF:Recno
-        IF (SELF:_Shared)
+        IF SELF:_Shared
             isOk := SELF:_lockForRead()
             IF (!isOk)
                 RETURN FALSE
@@ -1927,7 +1948,7 @@ PRIVATE METHOD _Balance() AS VOID
             ENDIF
         ENDIF
         SELF:_oRdd:GoTo((INT)oldRec)
-        IF (SELF:_Shared)
+        IF SELF:_Shared
             isOk := SELF:_unLockForRead()
         ENDIF
         RETURN isOk
@@ -2182,7 +2203,7 @@ PRIVATE METHOD _Balance() AS VOID
             RETURN FALSE
         ENDIF
         IF (SELF:_hasTopScope)
-            num := SELF:_oRdd:StringCompare(byteArray, SELF:_topScopeBuffer, SELF:_keySize)
+            num := SELF:__Compare(byteArray, SELF:_topScopeBuffer, SELF:_keySize)
             IF (num < 0)
                 IF (seekInfo:SoftSeek)
                     RETURN SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
@@ -2191,7 +2212,7 @@ PRIVATE METHOD _Balance() AS VOID
             ENDIF
         ENDIF
         IF (SELF:_hasBottomScope)
-            num := SELF:_oRdd:StringCompare(byteArray, SELF:_bottomScopeBuffer, SELF:_keySize)
+            num := SELF:__Compare(byteArray, SELF:_bottomScopeBuffer, SELF:_keySize)
             IF (num > 0)
                 RETURN SELF:_oRdd:GoToId(0)
             ENDIF
@@ -2227,7 +2248,7 @@ PRIVATE METHOD _Balance() AS VOID
             SELF:_oRdd:GoCold()
             locked := SELF:_lockForRead()
             IF (locked)
-                IF (SELF:_Shared)
+                IF SELF:_Shared
                     SELF:_knownRecno := 0
                 ENDIF
                 needPadStr := FALSE
@@ -2260,21 +2281,21 @@ PRIVATE METHOD _Balance() AS VOID
                 IF (SELF:_oRdd:_isValid)
                     IF ((((deletedState) .OR. (SELF:_oRdd:_FilterInfo:Active)) .OR. (seekInfo:SoftSeek)) .OR. (seekInfo:Last))
                         SELF:_ToString(seekInfo:Value, SELF:_keySize, SELF:_keyDecimals, SELF:_newKeyBuffer, SELF:_Ansi, REF SELF:_newKeyLen)
-                        strCmp := SELF:_oRdd:StringCompare(abNewKey, SELF:_knownKeyBuffer, len)
+                        strCmp := SELF:__Compare(abNewKey, SELF:_knownKeyBuffer, len)
                         found := (strCmp == 0)
                         IF ((needPadStr) .AND. (!found))
                             IF (SELF:_Descending)
                                 SELF:_newKeyBuffer[len] := Byte.MaxValue
                                 temp:= SELF:_knownKeyBuffer[len]
                                 SELF:_knownKeyBuffer[len] := 1
-                                cmpMinMax := SELF:_oRdd:StringCompare(abNewKey, SELF:_knownKeyBuffer, padLen)
+                                cmpMinMax := SELF:__Compare(abNewKey, SELF:_knownKeyBuffer, padLen)
                                 IF ((strCmp < 0) .AND. (cmpMinMax > 0))
                                     found := TRUE
                                 ENDIF
                                 IF (!found)
                                     SELF:_newKeyBuffer[len] := 1
                                     SELF:_knownKeyBuffer[len] := Byte.MaxValue
-                                    strCmpMaxMin := SELF:_oRdd:StringCompare(abNewKey, SELF:_knownKeyBuffer, padLen)
+                                    strCmpMaxMin := SELF:__Compare(abNewKey, SELF:_knownKeyBuffer, padLen)
                                     IF ((strCmp > 0) .AND. (strCmpMaxMin < 0))
                                         found := TRUE
                                     ENDIF
@@ -2283,14 +2304,14 @@ PRIVATE METHOD _Balance() AS VOID
                                 SELF:_newKeyBuffer[len] := 1
                                 temp:= SELF:_knownKeyBuffer[len]
                                 SELF:_knownKeyBuffer[len] := Byte.MaxValue
-                                strCmpMaxMin := SELF:_oRdd:StringCompare(SELF:_newKeyBuffer, SELF:_knownKeyBuffer, padLen)
+                                strCmpMaxMin := SELF:__Compare(SELF:_newKeyBuffer, SELF:_knownKeyBuffer, padLen)
                                 IF ((strCmp > 0) .AND. (cmpMinMax < 0))
                                     found := TRUE
                                 ENDIF
                                 IF (!found)
                                     SELF:_newKeyBuffer[len] := Byte.MaxValue
                                     SELF:_knownKeyBuffer[len] := 1
-                                    strCmpMaxMin := SELF:_oRdd:StringCompare(SELF:_newKeyBuffer, SELF:_knownKeyBuffer, padLen)
+                                    strCmpMaxMin := SELF:__Compare(SELF:_newKeyBuffer, SELF:_knownKeyBuffer, padLen)
                                     IF ((strCmp < 0) .AND. (strCmpMaxMin > 0))
                                         found := TRUE
                                     ENDIF
@@ -2314,7 +2335,7 @@ PRIVATE METHOD _Balance() AS VOID
                                     IF (recno == 0)
                                         EXIT
                                     ENDIF
-                                    strCmp := SELF:_oRdd:StringCompare(SELF:_newKeyBuffer, SELF:_knownKeyBuffer, len)
+                                    strCmp := SELF:__Compare(SELF:_newKeyBuffer, SELF:_knownKeyBuffer, len)
                                     IF (strCmp != 0)
                                         recno := SELF:_nextKey(-1)
                                         EXIT
@@ -2330,7 +2351,7 @@ PRIVATE METHOD _Balance() AS VOID
                             IF (seekInfo:Last)
                                 diff := strCmp
                                 recno := SELF:_nextKey(-1)
-                                strCmp := SELF:_oRdd:StringCompare(SELF:_newKeyBuffer, SELF:_knownKeyBuffer, len)
+                                strCmp := SELF:__Compare(SELF:_newKeyBuffer, SELF:_knownKeyBuffer, len)
                                 found := (strCmp == 0)
                                 IF (found)
                                     result := SELF:_oRdd:GoToId(recno)
@@ -2349,7 +2370,7 @@ PRIVATE METHOD _Balance() AS VOID
                             ENDIF
                         ENDIF
                     ELSE
-                        strCmp := SELF:_oRdd:StringCompare(abNewKey, SELF:_knownKeyBuffer, len)
+                        strCmp := SELF:__Compare(abNewKey, SELF:_knownKeyBuffer, len)
                         found := (strCmp == 0)
                     ENDIF
                 ELSE
@@ -2500,146 +2521,146 @@ PRIVATE METHOD _Balance() AS VOID
         ELSE
             length := SELF:_keySize
         ENDIF
-        result := (SELF:_oRdd:StringCompare(SELF:_newKeyBuffer, SELF:_knownKeyBuffer, length) != 0)
+        result := (SELF:__Compare(SELF:_newKeyBuffer, SELF:_knownKeyBuffer, length) != 0)
         RETURN isOk
                 
                 
     PRIVATE METHOD _Seek(dbsi AS DBSEEKINFO , lpval AS OBJECT ) AS LOGIC
-                LOCAL byteArray AS BYTE[]
-                //
-                byteArray := BYTE[]{ 257 }
-                SELF:_ToString(lpval, SELF:_keySize, SELF:_keyDecimals, byteArray, SELF:_Ansi)
-                dbsi:SoftSeek := TRUE
-                RETURN SELF:_Seek(dbsi, byteArray)
+        LOCAL byteArray AS BYTE[]
+        //
+        byteArray := BYTE[]{ 257 }
+        SELF:_ToString(lpval, SELF:_keySize, SELF:_keyDecimals, byteArray, SELF:_Ansi)
+        dbsi:SoftSeek := TRUE
+        RETURN SELF:_Seek(dbsi, byteArray)
                 
                 
-            PRIVATE METHOD _locateKey( keyBuffer AS BYTE[] , bufferLen AS LONG , searchMode AS NtxSearchMode ) AS DWORD
-                SELF:_TopStack := 0u
-                IF (bufferLen > SELF:_keySize)
-                    bufferLen := SELF:_keySize
-                ELSE
-                    IF (bufferLen == 0)
-                        bufferLen := SELF:_keySize
-                    ENDIF
-                ENDIF
-                RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, (INT)SELF:_firstPageOffset)
-                
-                
-            PRIVATE METHOD _locate(keyBuffer AS BYTE[] , bufferLen AS LONG , searchMode AS NtxSearchMode , pageOffset AS LONG ) AS DWORD
-                LOCAL foundPos AS LONG
-                LOCAL ntxPage AS NtxPage
-                LOCAL nodeCount AS LONG
-                LOCAL node AS NtxItem
-                LOCAL minPos AS LONG
-                LOCAL maxPos AS LONG
-                //
-                foundPos := 0
-                //Load the page at pageOffset
-                ntxPage := SELF:_PageList:Read(pageOffset)
-                IF (ntxPage == NULL)
-                    SELF:_TopStack := 0
-                    RETURN 0
-                ENDIF
-                // How many Items in that page ?
-                nodeCount := ntxPage:NodeCount
-                // Get the first one
-                node := ntxPage[0]
-                //
-                BEGIN SWITCH searchMode
-            CASE NtxSearchMode.Right
-                    IF (SELF:_Descending)
-                        // search...
-                        minPos := 0
-                        maxPos := nodeCount
-                        DO WHILE minPos < maxPos
-                            foundPos := (minPos + maxPos) / 2
-                            node:Fill(foundPos, ntxPage)
-                            IF (SELF:_oRdd:StringCompare(node:KeyBytes, keyBuffer, bufferLen) >= 0)
-                                minPos := foundPos + 1
-                            ELSE
-                                maxPos := foundPos
-                            ENDIF
-                        ENDDO
-                        foundPos := minPos
-                    ELSE
-                        minPos := 0
-                        maxPos := nodeCount
-                        DO WHILE minPos < maxPos
-                            foundPos := (minPos + maxPos) / 2
-                            node:Fill(foundPos, ntxPage)
-                            IF (SELF:_oRdd:StringCompare(node:KeyBytes, keyBuffer, bufferLen) <= 0)
-                                minPos := foundPos + 1
-                            ELSE
-                                maxPos := foundPos
-                            ENDIF
-                        ENDDO
-                        foundPos := minPos
-                ENDIF
-            CASE NtxSearchMode.Left
-            CASE NtxSearchMode.LeftFound
-                    minPos := 0
-                    maxPos := nodeCount
-                    DO WHILE minPos < maxPos
-                        foundPos := (minPos + maxPos) / 2
-                        node:Fill(foundPos, ntxPage)
-                        IF (SELF:_Descending)
-                            IF (SELF:_oRdd:StringCompare(node:KeyBytes, keyBuffer, bufferLen) > 0)
-                                minPos := foundPos + 1
-                            ELSE
-                                maxPos := foundPos
-                            ENDIF
-                        ELSE
-                            IF (SELF:_oRdd:StringCompare(node:KeyBytes, keyBuffer, bufferLen) < 0)
-                                minPos := foundPos + 1
-                            ELSE
-                                maxPos := foundPos
-                            ENDIF
-                        ENDIF
-                    ENDDO
-                    foundPos := minPos
-                    node:Fill(foundPos, ntxPage)
-                    IF ((searchMode == NtxSearchMode.Left) .AND. (SELF:_oRdd:StringCompare(node:KeyBytes, keyBuffer, bufferLen) == 0))
-                        searchMode := NtxSearchMode.LeftFound
-                    ENDIF
-                    
-            CASE NtxSearchMode.Bottom
-                    foundPos := nodeCount
-                    node:Fill(foundPos, ntxPage)
-                    IF ((node:PageNo == 0) .AND. (foundPos > 0))
-                        foundPos--
-                        node:Fill(foundPos, ntxPage)
-                ENDIF
-            CASE NtxSearchMode.Top
-                    foundPos := 0
-                node:Fill(foundPos, ntxPage)
-                END SWITCH
-            // Add info in the stack
-            SELF:_TopStack++
-            SELF:_ntxStack[SELF:_TopStack]:Pos := foundPos
-            SELF:_ntxStack[SELF:_TopStack]:Page := pageOffset
-            SELF:_ntxStack[SELF:_TopStack]:Count := nodeCount
-            //
-            node:Fill(foundPos, ntxPage)
-            IF (node:PageNo != 0)
-                RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, node:PageNo)
+    PRIVATE METHOD _locateKey( keyBuffer AS BYTE[] , bufferLen AS LONG , searchMode AS NtxSearchMode ) AS DWORD
+        SELF:_TopStack := 0u
+        IF (bufferLen > SELF:_keySize)
+            bufferLen := SELF:_keySize
+        ELSE
+            IF (bufferLen == 0)
+                bufferLen := SELF:_keySize
             ENDIF
-            //
-            IF (foundPos < nodeCount)
-                BEGIN SWITCH searchMode
+        ENDIF
+        RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, (INT)SELF:_firstPageOffset)
+                
+                
+    PRIVATE METHOD _locate(keyBuffer AS BYTE[] , bufferLen AS LONG , searchMode AS NtxSearchMode , pageOffset AS LONG ) AS DWORD
+        LOCAL foundPos AS LONG
+        LOCAL ntxPage AS NtxPage
+        LOCAL nodeCount AS LONG
+        LOCAL node AS NtxItem
+        LOCAL minPos AS LONG
+        LOCAL maxPos AS LONG
+        //
+        foundPos := 0
+        //Load the page at pageOffset
+        ntxPage := SELF:_PageList:Read(pageOffset)
+        IF (ntxPage == NULL)
+            SELF:_TopStack := 0
+            RETURN 0
+        ENDIF
+        // How many Items in that page ?
+        nodeCount := ntxPage:NodeCount
+        // Get the first one
+        node := ntxPage[0]
+        //
+        BEGIN SWITCH searchMode
+        CASE NtxSearchMode.Right
+            IF (SELF:_Descending)
+                // search...
+                minPos := 0
+                maxPos := nodeCount
+                DO WHILE minPos < maxPos
+                    foundPos := (minPos + maxPos) / 2
+                    node:Fill(foundPos, ntxPage)
+                    IF (SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) >= 0)
+                        minPos := foundPos + 1
+                    ELSE
+                        maxPos := foundPos
+                    ENDIF
+                ENDDO
+                foundPos := minPos
+            ELSE
+                minPos := 0
+                maxPos := nodeCount
+                DO WHILE minPos < maxPos
+                    foundPos := (minPos + maxPos) / 2
+                    node:Fill(foundPos, ntxPage)
+                    IF (SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) <= 0)
+                        minPos := foundPos + 1
+                    ELSE
+                        maxPos := foundPos
+                    ENDIF
+                ENDDO
+                foundPos := minPos
+            ENDIF
+        CASE NtxSearchMode.Left
         CASE NtxSearchMode.LeftFound
+            minPos := 0
+            maxPos := nodeCount
+            DO WHILE minPos < maxPos
+                foundPos := (minPos + maxPos) / 2
+                node:Fill(foundPos, ntxPage)
+                IF (SELF:_Descending)
+                    IF (SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) > 0)
+                        minPos := foundPos + 1
+                    ELSE
+                        maxPos := foundPos
+                    ENDIF
+                ELSE
+                    IF (SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) < 0)
+                        minPos := foundPos + 1
+                    ELSE
+                        maxPos := foundPos
+                    ENDIF
+                ENDIF
+            ENDDO
+            foundPos := minPos
+            node:Fill(foundPos, ntxPage)
+            IF ((searchMode == NtxSearchMode.Left) .AND. (SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) == 0))
+                searchMode := NtxSearchMode.LeftFound
+            ENDIF
+                    
+        CASE NtxSearchMode.Bottom
+            foundPos := nodeCount
+            node:Fill(foundPos, ntxPage)
+            IF ((node:PageNo == 0) .AND. (foundPos > 0))
+                foundPos--
+                node:Fill(foundPos, ntxPage)
+            ENDIF
+         CASE NtxSearchMode.Top
+            foundPos := 0
+            node:Fill(foundPos, ntxPage)
+        END SWITCH
+    // Add info in the stack
+        SELF:_TopStack++
+        SELF:_ntxStack[SELF:_TopStack]:Pos := foundPos
+        SELF:_ntxStack[SELF:_TopStack]:Page := pageOffset
+        SELF:_ntxStack[SELF:_TopStack]:Count := nodeCount
+        //
+        node:Fill(foundPos, ntxPage)
+        IF (node:PageNo != 0)
+            RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, node:PageNo)
+        ENDIF
+        //
+        IF (foundPos < nodeCount)
+            BEGIN SWITCH searchMode
+            CASE NtxSearchMode.LeftFound
             CASE NtxSearchMode.Bottom
             CASE NtxSearchMode.Top
+                IF (SELF:_knownRecno != node:Recno)
+                    SELF:_saveRecordState(node)
+                ENDIF
+                RETURN node:Recno
+            CASE NtxSearchMode.Left
+                IF (SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) == 0)
                     IF (SELF:_knownRecno != node:Recno)
                         SELF:_saveRecordState(node)
                     ENDIF
-                RETURN node:Recno
-            CASE NtxSearchMode.Left
-                    IF (SELF:_oRdd:StringCompare(node:KeyBytes, keyBuffer, bufferLen) == 0)
-                        IF (SELF:_knownRecno != node:Recno)
-                            SELF:_saveRecordState(node)
-                        ENDIF
-                        RETURN node:Recno
-                    ENDIF
+                    RETURN node:Recno
+                ENDIF
                 RETURN 0
             CASE NtxSearchMode.Right
                 RETURN 0
@@ -2666,41 +2687,41 @@ PRIVATE METHOD _Balance() AS VOID
             RETURN 0
             
             
-        PRIVATE METHOD PopPage() AS VOID
-            IF (SELF:_TopStack != 0)
-                SELF:_ntxStack[SELF:_TopStack]:Clear()
-                SELF:_TopStack--
-            ENDIF
+    PRIVATE METHOD PopPage() AS VOID
+        IF SELF:_TopStack != 0
+            SELF:_ntxStack[SELF:_TopStack]:Clear()
+            SELF:_TopStack--
+        ENDIF
             
-        PRIVATE METHOD ClearStack() AS VOID
-            //
-            FOREACH entry AS NtxStack IN SELF:_ntxStack 
-                entry:Clear()
-            NEXT
-            SELF:_TopStack := 0
+    PRIVATE METHOD ClearStack() AS VOID
+        //
+        FOREACH entry AS NtxStack IN SELF:_ntxStack 
+            entry:Clear()
+        NEXT
+        SELF:_TopStack := 0
             
             
-        PRIVATE METHOD AllocPage() AS NtxPage
-            LOCAL ntxPage AS NtxPage
-            LOCAL lNextPage AS LONG
-            //
-            IF (SELF:_nextUnusedPageOffset > 0)
-                lNextPage := (INT)SELF:_nextUnusedPageOffset
-                ntxPage := SELF:_PageList:Update(lNextPage)
-                SELF:_nextUnusedPageOffset := (DWORD)ntxPage[0]:PageNo
-            ELSE
-                lNextPage := SELF:_fileSize
-                SELF:_fileSize += NtxConst.BUFF_SIZE
-                ntxPage := SELF:_PageList:Append(lNextPage)
-            ENDIF
-            RETURN ntxPage
+    PRIVATE METHOD AllocPage() AS NtxPage
+        LOCAL ntxPage AS NtxPage
+        LOCAL lNextPage AS LONG
+        //
+        IF SELF:_nextUnusedPageOffset > 0
+            lNextPage := (INT)SELF:_nextUnusedPageOffset
+            ntxPage := SELF:_PageList:Update(lNextPage)
+            SELF:_nextUnusedPageOffset := (DWORD)ntxPage[0]:PageNo
+        ELSE
+            lNextPage := SELF:_fileSize
+            SELF:_fileSize += NtxConst.BUFF_SIZE
+            ntxPage := SELF:_PageList:Append(lNextPage)
+        ENDIF
+        RETURN ntxPage
             
             
         PRIVATE METHOD _lockForRead() AS LOGIC
             LOCAL locked AS LOGIC
             //
             locked := TRUE
-            IF (SELF:_Shared)
+            IF SELF:_Shared
                 IF !SELF:_HPLocking
                     locked := SELF:_WriteLock()
                 ELSE
@@ -2718,7 +2739,7 @@ PRIVATE METHOD _Balance() AS VOID
             LOCAL result AS LOGIC
             //
             result := TRUE
-            IF (SELF:_Shared)
+            IF SELF:_Shared
                 IF !SELF:_HPLocking
                     result := SELF:_WriteUnLock()
                 ELSE
@@ -2733,13 +2754,13 @@ PRIVATE METHOD _Balance() AS VOID
             //
             isOk := TRUE
             Trace.Assert(SELF:_writeLocks == 0, "Attempting read lock while holding write lock")
-            IF (SELF:_readLocks != 0)
+            IF SELF:_readLocks != 0
                 SELF:_readLocks++
             ELSE
                 REPEAT
                     isOk := TRUE
-                    IF (SELF:_HPLocking)
-                        IF (!SELF:_TryReadLock())
+                    IF SELF:_HPLocking
+                        IF !SELF:_TryReadLock()
                             isOk := FALSE
                         ELSE
                             SELF:_readLocks++
@@ -2762,16 +2783,16 @@ PRIVATE METHOD _Balance() AS VOID
             //
             result := TRUE
             Trace.Assert(SELF:_readLocks != 0, "Attempting read unlock with no pending locks")
-            IF (SELF:_readLocks != 0)
+            IF SELF:_readLocks != 0
                 SELF:_readLocks--
-                IF (SELF:_readLocks == 0)
+                IF SELF:_readLocks == 0
                     Trace.Assert(!SELF:_Hot, "ntx unlock hot")
-                    IF (SELF:_HPLocking)
+                    IF SELF:_HPLocking
                         IF (!SELF:_tryReadUNLOCK())
                             result := FALSE
                         ENDIF
                     ELSE
-                        IF (!SELF:_tryExclUnlock())
+                        IF !SELF:_tryExclUnlock()
                             result := FALSE
                         ENDIF
                     ENDIF
@@ -2784,19 +2805,19 @@ PRIVATE METHOD _Balance() AS VOID
             LOCAL isOk AS LOGIC
             //
             isOk := TRUE
-            IF (SELF:_writeLocks != 0)
+            IF SELF:_writeLocks != 0
                 SELF:_writeLocks++
             ELSE
                 REPEAT
                     isOk := TRUE
-                    IF (SELF:_HPLocking)
-                        IF (!SELF:_TryWriteLock())
+                    IF SELF:_HPLocking
+                        IF !SELF:_TryWriteLock()
                             isOk := FALSE
                         ELSE
                             SELF:_writeLocks++
                         ENDIF
                     ELSE
-                        IF (!SELF:_TryExclLock())
+                        IF !SELF:_TryExclLock()
                             isOk := FALSE
                         ELSE
                             SELF:_writeLocks++
@@ -2812,15 +2833,15 @@ PRIVATE METHOD _Balance() AS VOID
             LOCAL isOk AS LOGIC
             //
             isOk := TRUE
-            IF (SELF:_writeLocks != 0)
+            IF SELF:_writeLocks != 0
                 SELF:_writeLocks--
-                IF (SELF:_writeLocks == 0)
-                    IF (SELF:_HPLocking)
-                        IF (!SELF:_TryWriteUNLOCK())
+                IF SELF:_writeLocks == 0
+                    IF SELF:_HPLocking
+                        IF !SELF:_TryWriteUNLOCK()
                             isOk := FALSE
                         ENDIF
                     ELSE
-                        IF (!SELF:_tryExclUnlock())
+                        IF !SELF:_tryExclUnlock()
                             isOk := FALSE
                         ENDIF
                     ENDIF
@@ -2830,7 +2851,7 @@ PRIVATE METHOD _Balance() AS VOID
             
             
         PRIVATE METHOD _LockStuff() AS VOID
-            IF (SELF:_getHeader())
+            IF SELF:_getHeader()
                 SELF:_PageList:Flush(FALSE)
                 
                 FSeek3( SELF:_hFile, 0, FS_END )
@@ -2924,7 +2945,7 @@ PRIVATE METHOD _Balance() AS VOID
             LOCAL liOffSet AS LONG
             //
             result := FALSE
-            IF (_LockGate(SELF:_tagNumber))
+            IF _LockGate(SELF:_tagNumber)
                 liOffSet := ~(SELF:_getParkLotPlace(SELF:_tagNumber) + SELF:_parkPlace)
                 IF (!SELF:_lockBytes((DWORD)liOffSet, 1))
                     SELF:_unlockBytes( (DWORD)~SELF:_getParkLotGate( SELF:_tagNumber ), 1)
@@ -2986,40 +3007,36 @@ PRIVATE METHOD _Balance() AS VOID
         PRIVATE METHOD _getTypeCode(oValue AS OBJECT ) AS TypeCode
             LOCAL typeCde AS TypeCode
             //
-            IF (oValue == NULL)
+            IF oValue == NULL
                 typeCde := TypeCode.Empty
             ELSE
-                IF (oValue ASTYPE IDate) != NULL
+                typeCde := Type.GetTypeCode(oValue:GetType())
+                SWITCH typeCde
+                CASE TypeCode.SByte
+                CASE TypeCode.Byte
+                CASE TypeCode.Int16
+                CASE TypeCode.UInt16
+                CASE TypeCode.Int32
+                   typeCde := TypeCode.Int32
+                CASE TypeCode.UInt32
+                CASE TypeCode.Int64
+                CASE TypeCode.UInt64
+                CASE TypeCode.Single
+                CASE TypeCode.Double
+                    typeCde := TypeCode.Double
+                CASE TypeCode.Boolean
+                    typeCde := TypeCode.Boolean
+                CASE TypeCode.String
+                    typeCde := TypeCode.String
+                CASE TypeCode.DateTime
                     typeCde := TypeCode.DateTime
-                ELSE
-                    IF (oValue ASTYPE IFloat) != NULL
+                CASE TypeCode.Object
+                    IF oValue IS IDate
+                        typeCde := TypeCode.DateTime
+                    ELSEIF  oValue IS IFloat
                         typeCde := TypeCode.Double
-                    ELSE
-                        typeCde := Type.GetTypeCode(oValue:GetType())
-                        SWITCH typeCde
-                    CASE TypeCode.SByte
-                    CASE TypeCode.Byte
-                        CASE TypeCode.Int16
-                        CASE TypeCode.UInt16
-                        CASE TypeCode.Int32
-                                typeCde := TypeCode.Int32
-                                
-                    CASE TypeCode.UInt32
-                    CASE TypeCode.Int64
-                        CASE TypeCode.UInt64
-                        
-                        CASE TypeCode.Single
-                        CASE TypeCode.Double
-                            typeCde := TypeCode.Double
-                        CASE TypeCode.Boolean
-                            typeCde := TypeCode.Boolean
-                        CASE TypeCode.String
-                            typeCde := TypeCode.String
-                        CASE TypeCode.DateTime
-                            typeCde := TypeCode.DateTime
-                        END SWITCH
                     ENDIF
-                ENDIF
+                END SWITCH
             ENDIF
             RETURN typeCde   
             
@@ -3054,4 +3071,5 @@ PRIVATE METHOD _Balance() AS VOID
     
     
 END NAMESPACE
+
 

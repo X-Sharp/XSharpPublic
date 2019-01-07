@@ -64,20 +64,25 @@ STATIC CLASS XSharp.StringHelpers
 			ENDIF
 			encWin:GetBytes(strLHS, 0, nLen, bLHS, 0)
 			encWin:GetBytes(strRHS, 0, nLen, bRHS, 0)
-            result := Win32.CompareStringAnsi(CultureInfo.CurrentCulture:LCID, Win32.SORT_STRINGSORT,bLHS, nLen, bRHS, nLen)
-            IF result != 0  // 0 = error, 1 = less, 2 = equal, 3 = greater
-                result -= 2
-                IF result == 0          // when equal: if lhs shorter than rhs then return -1
-                    result -= adjust    
-                ENDIF
-            ELSE
-                // what to do ?
-                VAR error := System.Runtime.InteropServices.Marshal.GetLastWin32Error()
-                NOP
+            result := CompareWindows(bLHS, bRHS, nLen)
+            IF result == 0          // when equal: if lhs shorter than rhs then return -1
+                result -= adjust    
             ENDIF
+
         END LOCK
         RETURN result
-        
+
+    STATIC METHOD CompareWindows(bLHS AS BYTE[], bRHS AS BYTE[], nLen AS LONG) AS INT
+        LOCAL result AS INT
+        result := Win32.CompareStringAnsi(CultureInfo.CurrentCulture:LCID, Win32.SORT_STRINGSORT,bLHS, nLen, bRHS, nLen)
+        IF result != 0  // 0 = error, 1 = less, 2 = equal, 3 = greater
+            result -= 2
+        ELSE
+            // what to do ?
+            VAR error := System.Runtime.InteropServices.Marshal.GetLastWin32Error()
+            NOP
+        ENDIF
+        RETURN result
 		
 		
     /// <exclude />
@@ -94,36 +99,43 @@ STATIC CLASS XSharp.StringHelpers
 			ENDIF
 			encDos:GetBytes(strLHS, 0, nLen, bLHS, 0)
 			encDos:GetBytes(strRHS, 0, nLen, bRHS, 0)
-			LOCAL nPos AS LONG
-			BEGIN UNCHECKED
-				FOR nPos := 0 TO nLen -1
-					VAR nL := bLHS[nPos]
-					VAR nR := bRHS[nPos]
-					// no need to lookup the same character. The weight table will
-					// have the same value for both
-					IF nL != nR
-						nL := collationTable[nL]
-						nR := collationTable[nR]
-						IF nL < nR
-							RETURN -1
-						ELSEIF nL > nR
-							RETURN 1
-						ELSE
-							// equal, so continue with the next chars
-							// this normally only happens when 2 characters are mapped to the same weight
-							// that could for example happen when ü and u have the same weight
-							// I am not sure if this ever happens. If would creating an index unreliable
-							// most likely the ü will be sorted between u and v. 
-						ENDIF
-					ENDIF
-				NEXT
-			END UNCHECKED
+            VAR nResult := CompareClipper(bLHS, bRHS, nLen)
+            IF nResult != 0
+                RETURN nResult
+            ENDIF
 		END LOCK
 		// all bytes that we compared are equal so return 0 when the strings have the same length
 		// otherwise the shorter string is smaller than the longer string
 		nLen := strLHS:Length
 		rLen := strRHS:Length
 		RETURN IIF(nLen ==rLen, 0, IIF(nLen < rLen, -1, 1))
+
+   STATIC METHOD CompareClipper(bLHS AS BYTE[], bRHS AS BYTE[], nLen AS LONG) AS INT
+		BEGIN UNCHECKED
+            LOCAL nPos AS LONG
+			FOR nPos := 0 TO nLen -1
+				VAR nL := bLHS[nPos]
+				VAR nR := bRHS[nPos]
+				// no need to lookup the same character. The weight table will
+				// have the same value for both
+				IF nL != nR
+					nL := collationTable[nL]
+					nR := collationTable[nR]
+					IF nL < nR
+						RETURN -1
+					ELSEIF nL > nR
+						RETURN 1
+					ELSE
+						// equal, so continue with the next chars
+						// this normally only happens when 2 characters are mapped to the same weight
+						// that could for example happen when ü and u have the same weight
+						// I am not sure if this ever happens. If would creating an index unreliable
+						// most likely the ü will be sorted between u and v. 
+					ENDIF
+				ENDIF
+			NEXT
+		END UNCHECKED
+        RETURN 0
 END CLASS
 
 

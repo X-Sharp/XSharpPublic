@@ -158,12 +158,18 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     SELF:_currentOrder := NULL
                     SELF:_focusNtx := SELF:FindOrder(oi:Order)
                     isOk := FALSE
-                    IF (SELF:_focusNtx > 0)
+                    IF (SELF:_focusNtx >= 0)
                         isOk := SELF:_oRdd:GoCold()
-                        currentOrder:SetOffLine()
+                        IF currentOrder != NULL_OBJECT
+                            currentOrder:SetOffLine()
+                        ENDIF
                         IF (isOk)
-                            SELF:_currentOrder := SELF:_Orders[SELF:_focusNtx - 1]
-                            SELF:_currentOrder:SetOffLine()
+                            IF SELF:_focusNtx == 0
+                                _currentOrder := NULL
+                            ELSE
+                                SELF:_currentOrder := SELF:_Orders[SELF:_focusNtx - 1]
+                                SELF:_currentOrder:SetOffLine()
+                            ENDIF
                         ENDIF
                     ELSE
                         isOk := FALSE
@@ -184,7 +190,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     //
                     FOREACH order AS NtxOrder IN SELF:_Orders 
                         isOk := order:Truncate()
-                        IF (isOk)
+                        IF isOk
                             IF !order:_Unique .AND. !order:_Conditional .AND. !order:_Descending .AND. !ordCondInfo:Scoped
                                 isOk := order:_CreateIndex()
                             ELSE
@@ -192,9 +198,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                             ENDIF
                         ENDIF
                     NEXT
-                    IF (!isOk)
+                    IF !isOk
                         isOk := SELF:Flush()
-                        IF (!isOk)
+                        IF !isOk
                             RETURN isOk
                         ENDIF
                         FOREACH order2 AS NtxOrder IN SELF:_Orders 
@@ -210,7 +216,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     LOCAL ntxOrder AS NtxOrder
                     //
                     result := TRUE
-                    IF ((iOrder > 0) .AND. (iOrder <= SELF:_Orders:Count))
+                    IF iOrder > 0 .AND. iOrder <= SELF:_Orders:Count
                         ntxOrder := SELF:_Orders[iOrder - 1]
                         BEGIN SWITCH uiType
                     CASE 5
@@ -229,27 +235,27 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 LOCAL result AS LONG
                 LOCAL num AS LONG
                 //
-                result := 0
-                IF (uOrder == NULL)
+                result := -1
+                IF uOrder == NULL
                     RETURN SELF:_focusNtx
                 ENDIF
                 //
                 BEGIN SWITCH Type.GetTypeCode(uOrder:GetType())
-            CASE TypeCode.String
-                result := SELF:__GetNamePos((STRING)uOrder)
-            CASE TypeCode.Int16
-            CASE TypeCode.Int32
-            CASE TypeCode.Int64
-            CASE TypeCode.Single
-            CASE TypeCode.Double
+                CASE TypeCode.String
+                    result := SELF:__GetNamePos((STRING)uOrder)
+                CASE TypeCode.Int16
+                CASE TypeCode.Int32
+                CASE TypeCode.Int64
+                CASE TypeCode.Single
+                CASE TypeCode.Double
                     num := (LONG)uOrder
-                    IF ((num > 0) .AND. (num <= SELF:_Orders:Count))
+                    IF ((num >= 0) .AND. (num <= SELF:_Orders:Count))
                         result := num
-                ENDIF
-            OTHERWISE
-                result := 0
-            END SWITCH
-            RETURN result
+                    ENDIF
+                OTHERWISE
+                    result := -1
+                END SWITCH
+                RETURN result
             
             
         INTERNAL METHOD Flush() AS LOGIC

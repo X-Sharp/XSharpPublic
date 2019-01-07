@@ -687,6 +687,22 @@ CLASS XSharp.RuntimeState
         END SWITCH
         RETURN ret
 
+    STATIC METHOD StringCompare(aLHS AS BYTE[], aRHS AS BYTE[], nLen AS INT) AS INT
+        SWITCH CollationMode
+        CASE CollationMode.Clipper
+            RETURN XSharp.StringHelpers.CompareClipper(aLHS, aRHS, nLen)
+        CASE CollationMode.Windows
+            RETURN XSharp.StringHelpers.CompareWindows(aLHS, aRHS, nLen)
+        CASE CollationMode.Unicode
+            VAR strLHS := RuntimeState.WinEncoding:GetString(aLHS, 0, nLen)
+            VAR strRHS := RuntimeState.WinEncoding:GetString(aRHS, 0, nLen)
+            RETURN String.Compare(strLHS, strRHS)
+        OTHERWISE
+            VAR strLHS := RuntimeState.WinEncoding:GetString(aLHS, 0, nLen)
+            VAR strRHS := RuntimeState.WinEncoding:GetString(aRHS, 0, nLen)
+            RETURN String.CompareOrdinal(strLHS, strRHS)
+        END SWITCH
+        RETURN 0
 END CLASS
 
 

@@ -140,13 +140,13 @@ BEGIN NAMESPACE XSharpModel
 
 
 		METHOD InitTypeList() AS VOID
+			SELF:_usings		:= List<STRING>{}
+			SELF:_usingStatics	:= List<STRING>{}
+			SELF:_entityList    := List<XElement>{}
+		    SELF:_typeList		:= ConcurrentDictionary<STRING, XType>{System.StringComparer.InvariantCultureIgnoreCase}
 			IF SELF:HasCode
-				SELF:_typeList		:= ConcurrentDictionary<STRING, XType>{System.StringComparer.InvariantCultureIgnoreCase}
 				SELF:_globalType	:= XType.CreateGlobalType(SELF)
 				SELF:_typeList:TryAdd(SELF:_globalType:Name, SELF:_globalType)
-				SELF:_usings		:= List<STRING>{}
-				SELF:_usingStatics	:= List<STRING>{}
-				SELF:_entityList    := List<XElement>{}
 			ENDIF
 
 		METHOD SetTypes(types AS IDictionary<STRING, XType>, usings AS IList<STRING>, ;
@@ -296,8 +296,9 @@ BEGIN NAMESPACE XSharpModel
 
 		PROPERTY FullPath AS STRING GET SELF:filePath SET SELF:filePath := VALUE
 		PROPERTY GlobalType AS XType GET SELF:_globalType
-		PROPERTY HasCode AS LOGIC GET SELF:IsSource .OR. SELF:IsXaml
+		PROPERTY HasCode AS LOGIC GET SELF:IsSource .OR. SELF:IsXaml .OR. SELF:IsHeader
 		PROPERTY HasParseErrors AS LOGIC AUTO
+		PROPERTY IsHeader AS LOGIC GET SELF:_type == XFileType.Header
 		PROPERTY IsSource AS LOGIC GET SELF:_type == XFileType.SourceCode
 		PROPERTY IsXaml AS LOGIC GET SELF:_type == XFileType.XAML
 		PROPERTY LastWritten AS System.DateTime GET SELF:_lastWritten SET SELF:_lastWritten := VALUE

@@ -1141,7 +1141,7 @@ BEGIN NAMESPACE XSharp.RDD
 			// Read & Write
 			
 			// Move to the current record, then read the raw Data into the internal RecordBuffer; Set the DELETED Flag
-		PRIVATE METHOD _readRecord() AS LOGIC
+		PROTECTED METHOD _readRecord() AS LOGIC
 			LOCAL isOk AS LOGIC
 			// Buffer is supposed to be correct
 			IF ( SELF:_BufferValid == TRUE )
@@ -1437,8 +1437,12 @@ BEGIN NAMESPACE XSharp.RDD
                     	LOCAL oDate AS IDate
                         LOCAL dt AS DateTime
                         oDate := (IDate) oValue
-						dt := DateTime{oDate:Year, oDate:Month, oDate:Day}
-						str := dt:ToString( "yyyyMMdd" )
+                        IF oDate:IsEmpty
+                            str := Space(8)
+                        ELSE
+						    dt := DateTime{oDate:Year, oDate:Month, oDate:Day}
+						    str := dt:ToString( "yyyyMMdd" )
+                        ENDIF
 						encoding:GetBytes( str, 0, length, buffer, offset )
 						isOk := TRUE
                     ELSE

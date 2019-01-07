@@ -55,6 +55,7 @@ BEGIN NAMESPACE XSharp.RDD
 		PROTECT _addFieldPos    AS LONG     // Used by AddFields Method, and SetFieldsExtent
 		PROTECT _lockScheme     AS DbfLocking
 		PROTECT _NewRecord      AS LOGIC
+
         STATIC PROTECT _Extension := ".DBF" AS STRING
 
 		INTERNAL _Ansi          AS LOGIC
@@ -63,6 +64,8 @@ BEGIN NAMESPACE XSharp.RDD
 		INTERNAL _Encoding      AS Encoding
 		//
         STATIC PRIVATE  culture := System.Globalization.CultureInfo.InvariantCulture AS CultureInfo
+        PRIVATE  _numformat AS NumberFormatInfo
+
         PRIVATE METHOD _AllocateBuffers() AS VOID
             SELF:_RecordBuffer  := BYTE[]{ SELF:_RecordLength}
             SELF:_BlankBuffer   := BYTE[]{ SELF:_RecordLength}
@@ -76,8 +79,9 @@ BEGIN NAMESPACE XSharp.RDD
 			SELF:_Header := DbfHeader{} // DbfHeader is a Structure, so the object is already created, no ?
 			SELF:_Header:initialize()
 			SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )
-			SELF:_Locks := List<LONG>{}
-			
+			SELF:_Locks     := List<LONG>{}
+            SELF:_numformat := (NumberFormatInfo) culture:NumberFormat:Clone()
+            SELF:_numformat:NumberDecimalSeparator := "."
 			
 			//	METHOD DbEval(info AS DbEvalInfo) AS LOGIC
 			/// <inheritdoc />
@@ -1275,8 +1279,8 @@ BEGIN NAMESPACE XSharp.RDD
 						IF ( ( fieldType == DbFieldType.Number ) .AND. (nDec == 0 ) ) .OR. ( fieldType == DbFieldType.Integer ) 
 							r8 := System.Convert.ToInt32(str)
 						ELSE
-                            
-							r8 := System.Convert.ToDouble(str, culture:NumberFormat)
+                            _numformat:NumberDecimalDigits := nDec
+							r8 := System.Convert.ToDouble(str, _numFormat)
 						ENDIF
 					ENDIF
 					data := DbFloat{r8, length, nDec} 
@@ -1396,80 +1400,90 @@ BEGIN NAMESPACE XSharp.RDD
 			CASE TypeCode.UInt64
 				
 	            isNum := TRUE				
-				CASE TypeCode.Boolean
-					IF ( fieldType == DbFieldType.Logic )
-						buffer[offset] := IIF( (LOGIC)oValue, (BYTE)'T', (BYTE)'F' )
-						isOk := TRUE
-					ELSE
-						// Type Error !
-						isOk := FALSE
-					ENDIF
-					
-				CASE TypeCode.DateTime
-					IF ( fieldType == DbFieldType.Date )
-						LOCAL dt AS DateTime
-						dt := (DateTime)oValue
-						//
-						str := dt:ToString( "yyyyMMdd" )
-						encoding:GetBytes( str, 0, length, buffer, offset )
-						isOk := TRUE
-					ELSEIF ( fieldType == DbFieldType.DateTime )
-						LOCAL dat AS LONG
-						LOCAL tim AS LONG
-						LOCAL dt AS DateTime
-						dt := (DateTime)oValue
-						//
-						dat := _dateTimeToJulian( dt )
-						tim := dt:Hour * 3600000 + dt:Minute * 60000 + dt:Second * 1000
-						//
-						LOCAL datBytes := System.BitConverter.GetBytes( (UINT32)dat ) AS BYTE[]
-						LOCAL timBytes := System.BitConverter.GetBytes( (UINT32)tim ) AS BYTE[]
-						//
-						Array.Copy( datBytes, 0, buffer, offset, 4 )
-						Array.Copy( timBytes, 0, buffer, offset+4, 4 )
-						isOk := TRUE
-					ELSE
-						// Type Error !
-						isOk := FALSE
-					ENDIF
-				CASE TypeCode.Object
-                    IF oValue IS IFloat
-                        isNum := TRUE
-                        oValue := ((IFloat) oValue):Value
-                    ELSEIF oValue IS IDate
-                    	LOCAL oDate AS IDate
-                        LOCAL dt AS DateTime
-                        oDate := (IDate) oValue
-                        IF oDate:IsEmpty
-                            str := Space(8)
-                        ELSE
-						    dt := DateTime{oDate:Year, oDate:Month, oDate:Day}
-						    str := dt:ToString( "yyyyMMdd" )
-                        ENDIF
-						encoding:GetBytes( str, 0, length, buffer, offset )
-						isOk := TRUE
-                    ELSE
-                       isOk := FALSE
-                    ENDIF
-				END SWITCH
-                IF IsNum
-					LOCAL format AS NumberFormatInfo
-					//
-					format := culture:NumberFormat:Clone() ASTYPE NumberFormatInfo
-					format:NumberDecimalDigits := dec
-					//
-					str := Convert.ToString( oValue, format )
-					IF ( str:Length > length )
-						str := STRING{'*', length}
-					ELSE
-						str := str:PadLeft(length)
-					ENDIF
-   					encoding:GetBytes( str, 0, length, buffer, offset )
+			CASE TypeCode.Boolean
+				IF ( fieldType == DbFieldType.Logic )
+					buffer[offset] := IIF( (LOGIC)oValue, (BYTE)'T', (BYTE)'F' )
 					isOk := TRUE
-                ENDIF	
+				ELSE
+					// Type Error !
+					isOk := FALSE
+				ENDIF
+					
+			CASE TypeCode.DateTime
+				IF ( fieldType == DbFieldType.Date )
+					LOCAL dt AS DateTime
+					dt := (DateTime)oValue
+					//
+					str := dt:ToString( "yyyyMMdd" )
+					encoding:GetBytes( str, 0, length, buffer, offset )
+					isOk := TRUE
+				ELSEIF ( fieldType == DbFieldType.DateTime )
+					LOCAL dat AS LONG
+					LOCAL tim AS LONG
+					LOCAL dt AS DateTime
+					dt := (DateTime)oValue
+					//
+					dat := _dateTimeToJulian( dt )
+					tim := dt:Hour * 3600000 + dt:Minute * 60000 + dt:Second * 1000
+					//
+					LOCAL datBytes := System.BitConverter.GetBytes( (UINT32)dat ) AS BYTE[]
+					LOCAL timBytes := System.BitConverter.GetBytes( (UINT32)tim ) AS BYTE[]
+					//
+					Array.Copy( datBytes, 0, buffer, offset, 4 )
+					Array.Copy( timBytes, 0, buffer, offset+4, 4 )
+					isOk := TRUE
+				ELSE
+					// Type Error !
+					isOk := FALSE
+				ENDIF
+			CASE TypeCode.Object
+                IF oValue IS IFloat
+                    isNum := TRUE
+                    oValue := ((IFloat) oValue):Value
+                    objTypeCode := TypeCode.Double
+                ELSEIF oValue IS IDate
+                    LOCAL oDate AS IDate
+                    LOCAL dt AS DateTime
+                    oDate := (IDate) oValue
+                    IF oDate:IsEmpty
+                        str := Space(8)
+                    ELSE
+						dt := DateTime{oDate:Year, oDate:Month, oDate:Day}
+						str := dt:ToString( "yyyyMMdd" )
+                    ENDIF
+					encoding:GetBytes( str, 0, length, buffer, offset )
+					isOk := TRUE
+                ELSE
+                    isOk := FALSE
+                ENDIF
+			END SWITCH
+            IF IsNum
 
-			//
-			RETURN isOk
+                _numformat:NumberDecimalDigits := dec
+                SWITCH objTypeCode
+			    CASE TypeCode.Decimal
+                    str := ((Decimal) oValue):ToString("F", _numformat)
+			    CASE TypeCode.Double
+                    str := ((REAL8) oValue):ToString("F", _numformat)
+			    CASE TypeCode.Single
+				    str := ((REAL4) oValue):ToString("F", _numformat)
+			    CASE TypeCode.Int32
+                    str := ((INT) oValue):ToString("F", _numformat)
+			    CASE TypeCode.Int64
+                    str := ((INT64) oValue):ToString("F", _numformat)
+                OTHERWISE
+                	str := Convert.ToString( oValue, _numformat )
+                END SWITCH
+				IF ( str:Length > length )
+					str := STRING{'*', length}
+				ELSE
+					str := str:PadLeft(length)
+				ENDIF
+   				encoding:GetBytes( str, 0, length, buffer, offset )
+				isOk := TRUE
+            ENDIF	
+
+		RETURN isOk
 
         INTERNAL METHOD _dbfError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD) AS VOID
             SELF:_DbfError(ex, iSubCode, iGenCode, String.Empty, ex?:Message, XSharp.Severity.ES_ERROR)
@@ -1677,8 +1691,9 @@ BEGIN NAMESPACE XSharp.RDD
 			IF __ARRAYBASE__ == 0
 				nArrPos -= 1
 			ENDIF
-			LOCAL offSet := SELF:_Fields[nArrPos]:OffSet AS LONG
-            LOCAL length  := SELF:_Fields[nArrPos]:Length AS LONG
+            VAR curField := SELF:_Fields[nArrPos]
+			LOCAL offSet := curField:OffSet AS LONG
+            LOCAL length  := curField:Length AS LONG
 			IF SELF:_isMemoField( nFldPos )
 				IF _oMemo != NULL
 					IF _oMemo:PutValue(nFldPos, oValue)
@@ -1691,7 +1706,7 @@ BEGIN NAMESPACE XSharp.RDD
 					RETURN SUPER:PutValue(nFldPos, oValue)
 				ENDIF
 			ELSE
-				SELF:_convertFieldToData( oValue, SELF:_RecordBuffer, offSet,  length, SELF:_Fields[nArrPos]:FieldType, SELF:_Fields[nArrPos]:Decimals )
+				SELF:_convertFieldToData( oValue, SELF:_RecordBuffer, offSet,  length, curField:FieldType, curField:Decimals )
 				SELF:GoHot()
 			ENDIF
 			RETURN TRUE

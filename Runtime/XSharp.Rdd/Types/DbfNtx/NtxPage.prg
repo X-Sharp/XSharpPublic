@@ -116,7 +116,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     // Move to top of Page
                     FSeek3( SELF:_Order:_hFile, SELF:_Offset /*  * NtxHeader.NTXOFFSETS.SIZE    */, SeekOrigin.Begin )
                     // Read Buffer
-                    isOk := ( FRead3(SELF:_Order:_hFile, SELF:_Bytes, NTXPAGE_SIZE) == NTXPAGE_SIZE )
+                    isOk := FRead3(SELF:_Order:_hFile, SELF:_Bytes, NTXPAGE_SIZE) == NTXPAGE_SIZE 
                 CATCH e AS Exception
                     isOk := FALSE
                     Debug.WriteLine( "Ntx Error : " + e:Message )
@@ -141,7 +141,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 // Move to top of Page
                 FSeek3( SELF:_Order:_hFile, SELF:_Offset  /* * NtxHeader.NTXOFFSETS.SIZE    */ , SeekOrigin.Begin )
                 // Write Buffer
-                isOk := ( FWrite3(SELF:_Order:_hFile, SELF:_Bytes, NTXPAGE_SIZE) == NTXPAGE_SIZE )
+                isOk := FWrite3(SELF:_Order:_hFile, SELF:_Bytes, NTXPAGE_SIZE) == NTXPAGE_SIZE 
                 SELF:_Hot := FALSE
             CATCH e AS Exception
                 isOk := FALSE

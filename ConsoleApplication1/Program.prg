@@ -1,263 +1,82 @@
-﻿USING System.Globalization
-USING SYstem.XML
-USING SYstem.XML.Linq
-USING System.Linq
-USING System.Collections.Generic
-USING XSharp.RDD
-using XSharp.RDD.Enums
-#include "dbcmds.vh"  
-
+﻿//
+// Start.prg
+//
+#include "dbcmds.vh"
 FUNCTION Start() AS VOID
-LOCAL cDbf AS STRING
-LOCAL l AS USUAL
-cDbf := System.Environment.CurrentDirectory + "\testdbf.dbf"
-DBCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFNTX", TRUE)
-DBAppend()
-FieldPut(1, "ABC")
-DbDelete()
-DebOut32("Test")
-System.Diagnostics.Debug.WriteLine("test 2")
-? l := DBRecordInfo( DBRI_RECNO ) // exception
-? l := DBRecordInfo( DBRI_DELETED ) // exception
-? l := DBRecordInfo( DBRI_LOCKED ) // exception
-? l:= DbRecordInfo(DBRI_BUFFPTR)
-? l:= DbRecordInfo(DBRI_UPDATED)
-? l:= DbRecordInfo(DBRI_RAWRECORD)
+    //Start1()
+    //Start2()
+    Start3()
+    wait
+RETURN
 
-wait
-DBCloseArea()
 
-  
-PROC xAssert(l AS LOGIC)
-IF .not. l
-	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
-END IF
-? "Assertion passed"  
-  
+FUNCTION Start1() AS VOID
+LOCAL aStruct AS ARRAY
+LOCAL i AS DWORD
+aStruct := {{"CHARFIELD","C",10,0},{"NUMFIELD","N",3,0},{"DATEFIELD","D", 8,0}}
+SetAnsi(TRUE)
+SetCollation(#Windows)
+SetNatDLL("german2.dll")
+DBCREATE("Test1Ansi",aStruct, "DBFNTX")
+DBCLOSEAREA()
+USE Test1Ansi       
+FOR i := 1 TO 255
+	DBAPPEND()
+	_FIELD->CHARFIELD := Replicate(CHR(i),10)
+	_FIELD->NUMFIELD  := i
+	_FIELD->DATEFIELD := ConDate(1800 + i, 1 + i % 12, 1 + i % 28)
+NEXT
+DBCREATEINDEX("test1Ansi1","CHARFIELD")
+DBCREATEINDEX("test1Ansi2","NUMFIELD")
+DBCREATEINDEX("test1Ansi3","DATEFIELD")
 
-CLASS TestClass
-    EXPORT sym  AS SYMBOL
-END CLASS
+DBCLOSEAREA()
+SetAnsi(FALSE)
+DBCREATE("Test1OEM",aStruct, "DBFNTX")
+DBCLOSEAREA()
+USE Test1OEM       
+FOR i := 1 TO 255
+	DBAPPEND()
+	_FIELD->CHARFIELD := Replicate(CHR(i),10)
+	_FIELD->NUMFIELD  := i
+	_FIELD->DATEFIELD := ConDate(1800 + i, 1 + i % 12, 1 + i % 28)
+NEXT                  
+SetCollation(#Clipper)
+DBCREATEINDEX("test1Oem1","CHARFIELD")
+DBCREATEINDEX("test1Oem2","NUMFIELD")
+DBCREATEINDEX("test1Oem3","DATEFIELD")
+DBCLOSEAREA()
+RETURN
 
-FUNCTION Startzzz() AS VOID
-    LOCAL u AS USUAL
-    u := TestClass{}
-    u:sym := #asd
-RETURN 
-  
-
-FUNCTION Startx1 AS VOID
-    setinternational ( #windows )
-? "setinternational ( #windows )"
-?
-// set the default to true, and it´s in sync with the dateformat at startup.
-// setcentury(TRUE) // <--------------------
-
-? "Current SetCentury() default setting is " + setcentury() + " , should be TRUE"
-? GetDateFormat()
-?
-setcentury( FALSE )
-? "Setcentury(false)"
-? GetDateFormat() + _chr(9) + "only ok, if it shows 'DD.MM.YY'"
-?
-setcentury( TRUE )
-? "Setcentury(true)"
-? GetDateFormat()
-?
-setcentury( FALSE )
-? "Setcentury(false)"
-? GetDateFormat()
-?
-setcentury( TRUE )
-? "Setcentury(true)"
-? GetDateFormat()
-?
-?
-?
-? "The initial Setinternational (#clipper ) behaviour is already compatible with VO"
-SetInternational( #clipper)
-? "SetInternational( #clipper)"
-
-SetDatecountry ( 5 ) // "GERMAN" define in VO.
-?
-? Getdateformat() // "DD.MM.YY"
-? setcentury() // false
-?
-setcentury( TRUE )
-? "Setcentury(true)"
-? GetDateFormat()
-?
-setcentury( FALSE )
-? "Setcentury(false)"
-? GetDateFormat()
-?
-// switch back to #Windows
-setinternational ( #windows )
-? "setinternational ( #windows )"
-?
-? "Current SetCentury() default setting is " + setcentury() + " , should be TRUE"
-? GetDateFormat()
+FUNCTION Start2() AS VOID
+LOCAL f AS FLOAT
+f := seconds()
+USE "c:\XSharp\DevRt\Runtime\XSharp.Rdd.Tests\dbfs\TEST10K.DBF"
+DbCreateIndex("10kName.xxx", "upper(Last+First)")
+DbCreateIndex("10kState", "State")
+DbCreateIndex("10kSalary", "-Salary")
+DbCloseArea()
+? Seconds() - f
 WAIT
 RETURN
 
-FUNCTION Start2a AS VOID
-    LOCAL o AS OBJECT[]
-    LOCAL a AS ARRAY
-	a := {"aa", "bb", {1,2,3}}
-    o := a
-    a := o
-	? o
-    ? a
-    Console.Read()
-    RETURN
 
-FUNCTION StartX AS VOID
-	LOCAL cA, cB AS STRING
-	LOCAL nI, nMax AS INT64
-	LOCAL lOk AS LOGIC
-	LOCAL p AS PTR
-	p := MemAlloc(100)
-	MemFree(p)
-	SetInternational(#Clipper)
-	SetNatDLL("ITALIAN")
-	? DateTime.Now:DayOfWeek:ToString()
-	? (INT) DateTime.Now:DayOfWeek
-	? DOW(Today())
-	? CDOW(Today())
-	? CMonth(Today())
-	WAIT
+FUNCTION Start3() AS VOID
+LOCAL cFileName AS STRING
+cFileName := "C:\Test\teest.dbf"
+? DBCreate(cFileName, {{"FLD1","C",10,0}})
 
-	nMax := 10000000// 40000000
-	cA := "THE QUICK BROWN FOX JUMP OVER THE LAZY DOG"
-	//cB := Left(CA, Slen(Ca)-1)+Lower(right(cA,1))
-	cb := lower(ca)
-	LOCAL aColl AS STRING[]
-	aColl := <STRING>{"Windows", "Clipper","Unicode", "Ordinal"}
-	FOREACH VAR s IN aColl
-		SetCollation(s)
-		LOCAL nSecs AS FLOAT
-		nSecs := Seconds()
-		FOR nI := 1 TO nMax
-			lOk := cA <= cB
-		NEXT
-		? SetCollation(), transform(nMax,"999,999,999"), seconds() - nSecs
-	NEXT
-	_wait()
-	RETURN
+? DBUseArea ( TRUE , , cFileName , "a1")
+? DBGetSelect() // 1
+? DBCloseArea()
 
-FUNCTION Start2 AS VOID
-	LOCAL aDir AS ARRAY
-	aDir := Directory("C:\XSharp\DevRt\Runtime", "AHSD")
-	FOREACH VAR aFile IN aDir
-		? aFile[1], aFile[2], aFile[3], aFile[4], aFile[5]
-	NEXT
-	LOCAL aFiles AS ARRAY
+? DBUseArea ( TRUE , , cFileName , "a2")
+? DBGetSelect() // 2
+? DBCloseArea()
 
-	aFiles := ArrayCreate(ADir("C:\XSharp\DevRt\Runtime\XSharp.Core\*.prg"))
+? DBUseArea ( TRUE , , cFileName , "a3")
+? DBGetSelect() // 3
+? DBCloseArea()
+RETURN
 
-	ADir("C:\XSharp\DevRt\Runtime\XSharp.Core\*.prg", aFiles)
-
-	AEval(aFiles, {|element| QOut(element)})
-
-	_Wait()
-	RETURN
-
-FUNCTION StartA() AS VOID
-	LOCAL nX AS DWORD
-	CultureInfo.DefaultThreadCurrentCulture := CultureInfo{"EN-us"}
-	CultureInfo.DefaultThreadCurrentUICulture := CultureInfo{"EN-us"}
-
-	? Version()
-	? "Size of IntPtr", IntPtr.Size
-	? "Size of USUAL", SIZEOF(USUAL)
-	? "Size of FLOAT", SIZEOF(FLOAT)
-	? "Size of DATE", SIZEOF(DATE)
-	? "Size of SYMBOL", SIZEOF(SYMBOL)
-	?
-	? 1.234:ToString()
-	? SetNatDLL("Dutch.DLL")
-	? GetNatDLL()
-	? GetAppLocaleID()
-	? SetAppLocaleID(1043)
-	? GetAppLocaleID()
-	? 1.234:ToString()
-	? __CavoStr(VOErrors.TMSG_PRESSANYKEY)
-	? VO_Sprintf(VOErrors.__WCSLOADLIBRARYERROR, "CaTo3Cnt.DLL")
-	? DosErrString(2)
-	? ErrString(EG_ARG)
-	Console.WriteLine("")
-	LOCAL mem,mem2 AS INT64
-	mem := GC.GetTotalMemory(TRUE)
-
-	LOCAL a AS ARRAY
-	a := ArrayCreate(1000000)
-
-	mem2 := GC.GetTotalMemory(TRUE) - mem
-	mem := mem2
-	? "Memory for 1M element ARRAY", mem:ToString("###,### bytes")
-	FOR nX := 1 TO 1000000
-		a[nX] := 1
-	NEXT
-	? "Memory for 1M element ARRAY after assigning 1M values", mem:ToString("###,### bytes")
-	a := NULL_ARRAY
-	GC.Collect()
-	a := ArrayCreate(0)
-	mem := GC.GetTotalMemory(TRUE)
-	FOR nX := 1 TO 1000000
-		aadd(a, 1)
-	NEXT
-	mem2 := GC.GetTotalMemory(TRUE) - mem
-	mem := mem2
-	? "Memory for 1M element ARRAY after assigning 1M values with AAdd", mem:ToString("###,### bytes")
-
-	TestUsualFloat()
-	TestDate()
-	GC.KeepAlive(a)
-
-    _wait()
-    RETURN
-
-PROCEDURE TestUsualFloat()
-	LOCAL u1,u2 AS USUAL
-	LOCAL f1,f2 AS FLOAT
-
-    ? "Testing USUAL & Float"
-	? "25.000.000 iterations"
-
-	LOCAL d AS DateTime
-	d := DateTime.Now
-
-	FOR LOCAL n := 1 AS INT UPTO 25000000
-		u1 := 1.1d
-		f1 := 1.3d
-		u2 := u1 + f1
-		f2 := u1 + u2 + f1
-		f1 := f2 + u1
-		f2 := f2 + u2
-	NEXT
-
-	? "Time elapsed:", (DateTime.Now - d):ToString()
-	?
-    RETURN
-
-
-
-PROCEDURE testDate()
-	LOCAL d1, d2 AS DATE
-    ? "Testing DATE"
-	? "25.000.000 iterations"
-
-	LOCAL d AS DateTime
-	d := DateTime.Now
-
-	FOR LOCAL n := 1 AS INT UPTO 25000000
-		d1 := 2018.04.15
-		d2 := d1+1
-		d1 := d2
-
-	NEXT
-
-	? "Time elapsed:", (DateTime.Now - d):ToString()
-	?
-    RETURN
 

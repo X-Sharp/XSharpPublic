@@ -1095,6 +1095,10 @@ BEGIN NAMESPACE XSharp.RDD
 			LOCAL oResult AS OBJECT
 			LOCAL nArrPos := nFldPos AS LONG
 			BEGIN LOCK SELF
+                IF ! SELF:_readRecord()
+                    oResult := SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
+                    RETURN oResult
+                ENDIF
 				IF SELF:_FieldIndexValidate(nArrPos)
 					IF __ARRAYBASE__ == 0
 						nArrPos -= 1
@@ -1691,24 +1695,27 @@ BEGIN NAMESPACE XSharp.RDD
 			IF __ARRAYBASE__ == 0
 				nArrPos -= 1
 			ENDIF
-            VAR curField := SELF:_Fields[nArrPos]
-			LOCAL offSet := curField:OffSet AS LONG
-            LOCAL length  := curField:Length AS LONG
-			IF SELF:_isMemoField( nFldPos )
-				IF _oMemo != NULL
-					IF _oMemo:PutValue(nFldPos, oValue)
-						// Update the Field Info with the new MemoBlock Position
-						SELF:_convertFieldToData( SELF:_oMemo:LastWrittenBlockNumber, SELF:_RecordBuffer, offSet,  length, DbFieldType.Integer, 0 )
-						//
-						SELF:GoHot()
-					ENDIF
-				ELSE
-					RETURN SUPER:PutValue(nFldPos, oValue)
-				ENDIF
-			ELSE
-				SELF:_convertFieldToData( oValue, SELF:_RecordBuffer, offSet,  length, curField:FieldType, curField:Decimals )
-				SELF:GoHot()
-			ENDIF
+			IF SELF:_readRecord()
+                // GoHot() must be called first because this saves the current index values
+                SELF:GoHot()
+                VAR curField := SELF:_Fields[nArrPos]
+			    LOCAL offSet := curField:OffSet AS LONG
+                LOCAL length  := curField:Length AS LONG
+			    IF SELF:_isMemoField( nFldPos )
+				    IF _oMemo != NULL
+					    IF _oMemo:PutValue(nFldPos, oValue)
+						    // Update the Field Info with the new MemoBlock Position
+						    SELF:_convertFieldToData( SELF:_oMemo:LastWrittenBlockNumber, SELF:_RecordBuffer, offSet,  length, DbFieldType.Integer, 0 )
+						    //
+						    SELF:GoHot()
+					    ENDIF
+				    ELSE
+					    RETURN SUPER:PutValue(nFldPos, oValue)
+				    ENDIF
+			    ELSE
+				    SELF:_convertFieldToData( oValue, SELF:_RecordBuffer, offSet,  length, curField:FieldType, curField:Decimals )
+			    ENDIF
+            ENDIF
 			RETURN TRUE
 			
 		/// <inheritdoc />
@@ -1816,7 +1823,7 @@ BEGIN NAMESPACE XSharp.RDD
 		METHOD Seek(info AS DbSeekInfo) AS LOGIC
 			IF _oIndex != NULL
 				RETURN _oIndex:Seek(info)
-				ELSE
+			ELSE
 				RETURN SUPER:Seek(info)
 			ENDIF
 			

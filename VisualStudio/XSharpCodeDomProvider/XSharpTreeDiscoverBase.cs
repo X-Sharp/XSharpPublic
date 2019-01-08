@@ -73,6 +73,7 @@ namespace XSharp.CodeDom
             // or nullableDatatype
             // they all have a TypeName
             XSharpParser.TypeNameContext tn = null;
+            var sName = context.GetText();
             if (context is XSharpParser.PtrDatatypeContext)
             {
                 XSharpParser.PtrDatatypeContext ptrData = (XSharpParser.PtrDatatypeContext)context;
@@ -113,7 +114,12 @@ namespace XSharp.CodeDom
             {
                 expr = new XCodeTypeReference(typeof(void));
             }
-            //
+
+            if (sName.Contains("[") || sName.Contains(">"))
+            {
+                // work around to fix type problems with generics and arrays
+                expr.UserData[XSharpCodeConstants.USERDATA_CODE] = sName;
+            }
             return expr;
         }
         protected CodeExpression BuildLiteralValue(XSharpParser.LiteralValueContext context)
@@ -216,12 +222,6 @@ namespace XSharp.CodeDom
                     expr = BuildSimpleName(id.Name);
                 }
             }
-            if (sName.Contains(">"))
-            {
-                // work around to fix type problems with generics
-                expr.UserData[XSharpCodeConstants.USERDATA_CODE] = sName;
-            }
-            //
             return expr;
         }
         protected TypeAttributes ContextToClassModifiers(XSharpParser.ClassModifiersContext modifiers)

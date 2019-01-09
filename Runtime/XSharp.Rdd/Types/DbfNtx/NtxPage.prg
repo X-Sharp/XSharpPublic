@@ -52,7 +52,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL PROPERTY Hot AS LOGIC GET SELF:_Hot SET SELF:_Hot := VALUE
         
 		// Item Count - how many items this particular page holds : a WORD stored at Offset 0x00
-        INTERNAL PROPERTY NodeCount AS WORD
+        INTERNAL PROPERTY NodeCount AS LONG
             GET
                 LOCAL nCount := 0 AS WORD
                 TRY
@@ -64,9 +64,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             END GET
             
             SET
-                LOCAL nCount := VALUE AS WORD
                 TRY
-                    Array.Copy(BitConverter.GetBytes( nCount), 0, SELF:_bytes, 0, 2)
+                    Array.Copy(BitConverter.GetBytes( (WORD) VALUE), 0, SELF:_bytes, 0, 2)
                 CATCH e AS Exception
                     Debug.WriteLine( "Ntx Error : " + e:Message )
                 END TRY
@@ -79,7 +78,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             GET
                 LOCAL item := NULL AS NtxItem
                 TRY
-                    item := NtxItem{ SELF:_Order:_keySize , SELF:_Order:_oRdd }
+                    item := NtxItem{ SELF:_Order:_keySize  }
                     item:Fill( index, SELF )
                 CATCH e AS Exception
                     Debug.WriteLine( "Ntx Error : " + e:Message )
@@ -150,15 +149,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN isOk
             
 		// Retrieve the Record/Item offset from start of Page
-        INTERNAL  METHOD GetRef( pos AS LONG ) AS SHORT
+        INTERNAL  METHOD GetRef( pos AS LONG ) AS WORD
             TRY
-                RETURN BitConverter.ToInt16(SELF:_bytes, (pos+1) * 2)
+                RETURN BitConverter.ToUInt16(SELF:_bytes, (pos+1) * 2)
             CATCH //Exception
                 RETURN 0
             END TRY
             
         // Set the Record/Item offset from start of Page
-        INTERNAL  METHOD SetRef(pos AS LONG , newValue AS SHORT ) AS VOID
+        INTERNAL  METHOD SetRef(pos AS LONG , newValue AS WORD ) AS VOID
             Array.Copy(BitConverter.GetBytes( newValue), 0, SELF:_bytes, (pos+1) * 2, 2)
             SELF:Hot := TRUE
             

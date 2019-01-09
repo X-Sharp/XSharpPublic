@@ -1,4 +1,4 @@
-PARTIAL CLASS CINetDial
+﻿CLASS CINetDial
    PROTECT _oOwner            AS OBJECT //Owner object, this object receives the notify messages
    PROTECT _symNotify         AS SYMBOL //method name of the Notify method of Owner object
    PROTECT _dwConnection      AS DWORD  //Connection handle of InternetDial()

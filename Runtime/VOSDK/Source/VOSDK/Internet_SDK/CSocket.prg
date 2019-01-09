@@ -1,4 +1,4 @@
-PARTIAL CLASS CSocket
+﻿CLASS CSocket
 	// UH 10/06/1998
 	// PROTECT nSocket AS INT
 	PROTECT nSocket AS DWORD

@@ -1,4 +1,4 @@
-STATIC FUNCTION __GetDataTime(dStart AS DATE, cTime AS STRING, lGmt AS LOGIC)   AS STRING STRICT
+﻿STATIC FUNCTION __GetDataTime(dStart AS DATE, cTime AS STRING, lGmt AS LOGIC)   AS STRING STRICT
     LOCAL cRet      AS STRING
     LOCAL cTemp     AS STRING
 
@@ -15,7 +15,7 @@ STATIC FUNCTION __GetDataTime(dStart AS DATE, cTime AS STRING, lGmt AS LOGIC)   
     RETURN cRet
 
 
-PARTIAL CLASS CNNTP INHERIT CMailAbstract
+CLASS CNNTP INHERIT CMailAbstract
     PROTECT oNews           AS CNews
     PROTECT nReceiveBytes   AS DWORD
     PROTECT nMsgCount       AS DWORD
@@ -33,7 +33,7 @@ METHOD  __DecodeStatus  (n)
     LOCAL nPos      AS DWORD
 
     cBuffer := SELF:cReply
-    Default(@n, SELF:nReply)
+    DEFAULT(@n, SELF:nReply)
 
     DO CASE
     CASE n == 211
@@ -90,14 +90,14 @@ METHOD  __GetGroups     (cCommand, cSearch)
 
     SELF:nError := 0
 
-    Default(@cCommand, "LIST" + CRLF)
+    DEFAULT(@cCommand, "LIST" + CRLF)
 
     SELF:nCurState := SENDING_REQUEST
 
     IF SELF:SendRemote(cCommand)
         SELF:nCurState := RETREIVING_DATA
 
-        Default(@cSearch, "")
+        DEFAULT(@cSearch, "")
         //  UH 05/12/2000
         //  aRet := SELF:oSocket:GetLines(cSearch)
         IF IsArray(cSearch)
@@ -339,7 +339,7 @@ METHOD  GetArticle  (xMsg)
     LOCAL lRet      AS LOGIC
 
     SELF:nError := 0
-    Default(@xMsg, SELF:nMsg)
+    DEFAULT(@xMsg, SELF:nMsg)
 
     cBuffer := SELF:PrepareCommand("ARTICLE ", xMsg)
 
@@ -369,7 +369,7 @@ METHOD  GetBody     (xMsg)
     LOCAL cBuffer   AS STRING
     LOCAL lRet      AS LOGIC
 
-    Default(@xMsg, SELF:nMsg)
+    DEFAULT(@xMsg, SELF:nMsg)
 
     SELF:nError := 0
 
@@ -394,7 +394,7 @@ METHOD  GetHeader   (xMsg)
     LOCAL lRet      AS LOGIC
 
     SELF:nError := 0
-    Default(@xMsg, SELF:nMsg)
+    DEFAULT(@xMsg, SELF:nMsg)
 
     cBuffer := SELF:PrepareCommand("HEAD ", xMsg)
 
@@ -426,10 +426,10 @@ METHOD  GetList         (cSearch)
 METHOD  GetNewGroups    (cSearch, dDate, cTime, lGmt)
     LOCAL cCommand  AS STRING
 
-    Default(@dDate, Today())
-    Default(@cTime, "00:00:00")
-    Default(@cSearch, "")
-    Default(@lGmt, .F. )
+    DEFAULT(@dDate, Today())
+    DEFAULT(@cTime, "00:00:00")
+    DEFAULT(@cSearch, "")
+    DEFAULT(@lGmt, .F. )
 
     cCommand := "NEWGROUPS "
     cCommand += __GetDataTime(dDate, cTime, lGmt)
@@ -442,9 +442,9 @@ METHOD  GetNewGroups    (cSearch, dDate, cTime, lGmt)
 METHOD  GetNewNews      (cGroups, dDate, cTime, lGmt)
     LOCAL cCommand  AS STRING
 
-    Default(@dDate, Today())
-    Default(@cTime, "00:00:00")
-    Default(@lGmt, .F. )
+    DEFAULT(@dDate, Today())
+    DEFAULT(@cTime, "00:00:00")
+    DEFAULT(@lGmt, .F. )
 
     cCommand := "NEWNEWS "
     cCommand += cGroups + " "
@@ -460,7 +460,7 @@ METHOD  GetStatus   (xMsg)
     LOCAL lRet      AS LOGIC
 
     SELF:nError := 0
-    Default(@xMsg, SELF:nMsg)
+    DEFAULT(@xMsg, SELF:nMsg)
 
     cBuffer := SELF:PrepareCommand("STAT ", xMsg)
 
@@ -536,7 +536,7 @@ METHOD  Post        (oMsg)
     LOCAL lRet      AS LOGIC
 
     SELF:nError := 0
-    Default(@oMsg, SELF:oNews)
+    DEFAULT(@oMsg, SELF:oNews)
 
     lRet := IsObject(oMsg)
 
@@ -751,7 +751,7 @@ METHOD  SetNewsGroup    (cGroup)
 
     SELF:nError := 0
 
-    Default(@cGroup, "")
+    DEFAULT(@cGroup, "")
 
     IF SLen(cGroup) > 0
         cBuffer := "GROUP " + cGroup + CRLF

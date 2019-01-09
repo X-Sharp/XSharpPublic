@@ -1,4 +1,4 @@
-#region defines
+﻿#region defines
 DEFINE ATTACH_BEGIN        := BOUNDARY_DELIMITER
 DEFINE ATTACH_CONTENTID          := 2
 DEFINE ATTACH_CONTENTTYPE        := 5
@@ -109,7 +109,7 @@ DEFINE TEMP_REFERENCES           := "References:"
 DEFINE TEMP_REPLY                := "Reply-To:"
 DEFINE TEMP_RETURN_RECEIPT       := "Return-Receipt-To:"
 DEFINE TEMP_SENDER               := "Sender:"
-DEFINE TEMP_STOP                 := '"'
+DEFINE TEMP_STOP                 :=  e"\""
 DEFINE TEMP_SUBJECT              := "Subject:"
 DEFINE TEMP_TO                   := "To:"
 DEFINE UUE_END                   := CRLF + "end"

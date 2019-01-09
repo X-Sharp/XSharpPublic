@@ -1,10 +1,10 @@
-STATIC FUNCTION __FindStatus(h AS PTR) AS DWORD STRICT
+﻿STATIC FUNCTION __FindStatus(h AS PTR) AS DWORD STRICT
     RETURN AScan(agStatus, {|a| a[STATUS_HANDLE] == h} )
 
 
 STATIC GLOBAL agStatus := {} AS ARRAY
 
-PARTIAL CLASS CSession
+CLASS CSession
     PROTECT cHostAddress        AS STRING
     PROTECT cUserName           AS STRING
     PROTECT cPassWord           AS STRING
@@ -75,7 +75,7 @@ METHOD __GetStatusContext   (h)
     //EnterCriticalSection(@csWSA)
     BEGIN LOCK oLock
 
-    Default(@h, NULL_PTR)
+    DEFAULT(@h, NULL_PTR)
 
     IF h == NULL_PTR
         nRet := ALen(agStatus)  + 1
@@ -303,7 +303,7 @@ CONSTRUCTOR(cCaption, n, lStat)
     SELF:nAccessType := INTERNET_OPEN_TYPE_DIRECT
 
     //  UH 02/08/2000
-    Default(@lStat, TRUE)
+    DEFAULT(@lStat, TRUE)
     SELF:lStatus  := lStat
 
 
@@ -326,9 +326,9 @@ METHOD Open(nFlags, xProxy, aProxyByPass)
        RETURN TRUE
     ENDIF
 
-    Default(@nFlags, SELF:nOpenFlags)
-    Default(@xProxy, "")
-    Default(@aProxyByPass, {})
+    DEFAULT(@nFlags, SELF:nOpenFlags)
+    DEFAULT(@xProxy, "")
+    DEFAULT(@aProxyByPass, {})
 
     IF SLen(xProxy) > 0
         lProxy := TRUE

@@ -69,60 +69,63 @@ BEGIN NAMESPACE XSharp
         _ArgTypeReq 	 := TypeToUsualType(VALUE)
       END SET
     END PROPERTY
-    /// <summary></summary>
+    /// <summary>A numeric value representing the type of the new result that the error handler substitutes for the operation that produced the error condition.</summary>
     PROPERTY SubstituteType     AS DWORD AUTO 
-    /// <summary></summary>
+    /// <summary>A numeric value representing the number of the argument supplied to an operator or function when an argument error occurs.</summary>
     PROPERTY ArgNum				AS DWORD AUTO 
-    /// <summary></summary>
+    /// <summary>An object representing the SELF of the method in which the error occurred.</summary>
     PROPERTY MethodSelf			AS OBJECT AUTO 
-    /// <summary></summary>
+    /// <summary>A symbol representing the calling function of the function in which the error occurred.</summary>
     PROPERTY CallFuncSym		AS STRING AUTO 
-    /// <summary></summary>
+    /// <summary>An array of the arguments supplied to an operator or function when an argument error occurs.</summary>
     PROPERTY Args				AS OBJECT[] AUTO
-    /// <summary></summary>
+    /// <summary>An integer numeric value representing the number of times the failed operation has been attempted.</summary>
     PROPERTY Tries				AS INT AUTO 
-    /// <summary></summary>
+    /// <summary>A logical value indicating whether the subsystem can perform default error recovery for the error condition.</summary>
     PROPERTY CanDefault         AS LOGIC AUTO 
-    /// <summary></summary>
+    /// <summary>A logical value indicating whether the subsystem can retry the operation that caused the error condition.</summary>
     PROPERTY CanRetry           AS LOGIC AUTO 
-    /// <summary></summary>
+    /// <summary>A logical value indicating whether a new result can be substituted for the operation that produced the error condition.</summary>
     PROPERTY CanSubstitute      AS LOGIC AUTO 
-    /// <summary></summary> 
+    /// <summary>A string that describes the operation being attempted when the error occurred.</summary> 
     PROPERTY Operation          AS STRING AUTO 
-    /// <summary></summary>
+    /// <summary>A string representing a subsystem-specific error.  A NULL_STRING value indicates that the subsystem does not assign any particular string to the error condition.</summary>
     PROPERTY SubCodeText        AS STRING AUTO 
-    /// <summary></summary>
+    /// <summary>A value of 0 indicates that the error condition was not caused by an error from the operating system.  When Error:OsCode is set to a value other </summary>
     PROPERTY OSCode				AS DWORD AUTO
-    /// <summary></summary>
+    /// <summary>A numeric value representing the file handle supplied to a function when an file error occurs.</summary>
     PROPERTY FileHandle         AS DWORD AUTO 
-    /// <summary></summary>
-    PROPERTY MaxSize			AS DWORD AUTO 
+    /// <summary>A numeric value representing a boundary condition for an operation (such as string overflow or array bound error).</summary>
+    PROPERTY MaxSize			AS DWORD AUTO
+    /// <summary>A value of any data type unused by the Error system.  It is provided as a user-definable slot, allowing arbitrary information to be attached to an Error object and retrieved later</summary>
+    PROPERTY Cargo              AS OBJECT AUTO
     
     PRIVATE METHOD setDefaultValues() AS VOID
-    SELF:Arg 			:= ""
-    SELF:CallFuncSym 	:= ""
-    SELF:Description    := ""
-    SELF:FileName 		:= ""
-    SELF:FuncSym 		:= ""
-    SELF:Operation 		:= ""
-    SELF:SubCodeText 	:= ""
-    SELF:SubSystem 		:= ""
-    SELF:Gencode		:= EG_UNKNOWN
-    SELF:Subcode		:= 0
-    SELF:Subsystem		:= "BASE"
-    SELF:Severity		:= ES_ERROR
-    SELF:CanDefault		:= FALSE
-    SELF:CanRetry		:= FALSE
-    SELF:CanSubstitute	:= FALSE
-    SELF:Tries			:= 0
-    SELF:FuncSym		:= ProcName(2)
-    SELF:OSCode			:= 0
+        SELF:Arg 			:= ""
+        SELF:CallFuncSym 	:= ""
+        SELF:Description    := ""
+        SELF:FileName 		:= ""
+        SELF:FuncSym 		:= ""
+        SELF:Operation 		:= ""
+        SELF:SubCodeText 	:= ""
+        SELF:SubSystem 		:= ""
+        SELF:Gencode		:= EG_UNKNOWN
+        SELF:Subcode		:= 0
+        SELF:Subsystem		:= "BASE"
+        SELF:Severity		:= ES_ERROR
+        SELF:CanDefault		:= FALSE
+        SELF:CanRetry		:= FALSE
+        SELF:CanSubstitute	:= FALSE
+        SELF:Tries			:= 0
+        SELF:FuncSym		:= ProcName(2)
+        SELF:OSCode			:= 0
     
-    /// <summary></summary>
+    /// <summary>Create an Error Object</summary>
     CONSTRUCTOR()
     SELF:setDefaultValues()
     RETURN
 
+    /// <summary>Create an Error Object with the specified Description</summary>
     CONSTRUCTOR (msg AS STRING)
     SUPER(msg)
     SELF:setDefaultValues()
@@ -130,11 +133,12 @@ BEGIN NAMESPACE XSharp
     SELF:GenCode     := EG_EXCEPTION
     RETURN 
 
-    /// <summary></summary>
+    /// <summary>Create an Error Object with the Innner Exception</summary>
     CONSTRUCTOR (ex AS Exception)
     SUPER(ex.Message,ex)
     SELF:setDefaultValues()
     IF ex IS Error
+        // Clone Error properties from Inner Exception
         LOCAL e := (Error) ex AS Error
         VAR props := typeof(error):GetProperties()
         FOREACH oProp AS PropertyInfo IN props
@@ -147,7 +151,7 @@ BEGIN NAMESPACE XSharp
         SELF:GenCode     := EG_EXCEPTION
     ENDIF
 
-    /// <summary></summary>
+    /// <summary>Create an Error Object with the Innner Exception and other parameters</summary>
     CONSTRUCTOR (ex AS Exception, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[])
     SUPER(ex.Message,ex)
     SELF:setDefaultValues()
@@ -159,14 +163,14 @@ BEGIN NAMESPACE XSharp
     
     
     
-    /// <summary></summary>
+    /// <summary>Create an Error Object for a Gencode and Argument Name.</summary>
     CONSTRUCTOR (dwgencode AS DWORD, cArg AS STRING)
     SUPER(ErrString( dwGenCode ))
     SELF:setDefaultValues()
     SELF:Gencode := dwGenCode
     SELF:Arg	 := cArg
     
-    /// <summary></summary>
+    /// <summary>Create an Error Object for a Gencode, Argument Name and Description.</summary>
     CONSTRUCTOR (dwgencode AS DWORD, cArg AS STRING, cDescription AS STRING)
     SUPER(cDescription)
     SELF:setDefaultValues()
@@ -175,7 +179,7 @@ BEGIN NAMESPACE XSharp
     SELF:Description	:= cDescription
     
     
-    /// <summary></summary>
+    /// <summary>Create an Error Object.</summary>
     CONSTRUCTOR (dwgencode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD)
     SUPER(ErrString( dwGenCode ))
     SELF:setDefaultValues()
@@ -185,7 +189,7 @@ BEGIN NAMESPACE XSharp
     SELF:Arg         := cArgName
     SELF:ArgNum      := iArgNum
     
-    /// <summary></summary>
+    /// <summary>Create an Error Object.</summary>
     CONSTRUCTOR (dwgencode AS DWORD, dwSubCode := 0 AS DWORD)
     SELF:setDefaultValues()
     SELF:Gencode := dwgencode
@@ -222,7 +226,7 @@ BEGIN NAMESPACE XSharp
       RETURN sb:ToString()
       
       
-    /// <summary></summary>
+    /// <summary>Throw the error.</summary>
     VIRTUAL METHOD @@Throw AS VOID STRICT
         THROW SELF
     
@@ -258,12 +262,12 @@ BEGIN NAMESPACE XSharp
     
     /// <exclude/>	
     STATIC METHOD VOError( dwGenCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs AS OBJECT[] ) AS Error
-        local e as Error
+        LOCAL e AS Error
         e:= Error{dwGencode,cArgName}
         e:FuncSym := cFuncName
         e:ArgNum := iArgNum
         e:Args := aArgs
-        return e 
+        RETURN e 
     
     /// <exclude/>	
     STATIC METHOD VOError( ex AS Exception, dwGenCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs AS OBJECT[]  ) AS Error

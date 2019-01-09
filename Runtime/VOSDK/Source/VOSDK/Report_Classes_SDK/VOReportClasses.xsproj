@@ -8,6 +8,9 @@
     <Name>VOReportClasses</Name>
     <OutputName>VOReportClasses</OutputName>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <XSharpProjectversion>2.0.0.8</XSharpProjectversion>
+    <Includepaths>$(Solutiondir)Common</Includepaths>
+    <Nostandarddefs>false</Nostandarddefs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>
@@ -73,7 +76,7 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
@@ -86,8 +89,6 @@
     <AssemblyOriginatorKeyFile>c:\xsharp\devrt\runtime\vosdk\source\sharedbinaries\vulcanstrongnamekey.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption>/noclipcall</CommandLineOption>
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths>$(Solutiondir)Common</IncludePaths>
     <DefineConstants>DEBUG;TRACE;__XRUNTIME__;__VULCAN__</DefineConstants>
     <PlatformTarget>x86</PlatformTarget>
     <Prefer32Bit>False</Prefer32Bit>

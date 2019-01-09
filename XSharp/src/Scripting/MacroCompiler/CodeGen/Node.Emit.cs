@@ -302,12 +302,16 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
-            Args.Emit(ilg);
             switch (Kind)
             {
                 case IntrinsicCallType.GetFParam:
                 case IntrinsicCallType.GetMParam:
+                    Args.Emit(ilg);
                     EmitGetElemSafe(ilg, Symbol, Datatype);
+                    break;
+                case IntrinsicCallType.Chr:
+                    Args.Emit(ilg);
+                    Symbol.EmitGet(ilg);
                     break;
                 default:
                     throw new InternalError();

@@ -479,12 +479,17 @@ namespace XSharp.MacroCompiler.Syntax
                 case IntrinsicCallType.GetMParam:
                     b.ConvertArrayBase(Args);
                     b.ConvertExplicit(ref Args.Args[0].Expr, Compilation.Get(NativeType.UInt32));
+                    Symbol = b.Lookup(XSharpSpecialNames.ClipperArgs);
+                    Datatype = Compilation.Get(NativeType.Object);
+                    break;
+                case IntrinsicCallType.Chr:
+                    b.ConvertExplicit(ref Args.Args[0].Expr, Compilation.Get(NativeType.UInt32));
+                    Symbol = Compilation.Get(WellKnownMembers.XSharp_Core_Functions_Chr);
+                    Datatype = Symbol.Type();
                     break;
                 default:
                     throw new InternalError();
             }
-            Symbol = b.Lookup(XSharpSpecialNames.ClipperArgs);
-            Datatype = Compilation.Get(NativeType.Object);
             return null;
         }
     }

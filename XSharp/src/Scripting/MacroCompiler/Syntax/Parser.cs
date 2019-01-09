@@ -473,7 +473,8 @@ namespace XSharp.MacroCompiler
                         {
                             var args = ParseParenArgList();
                             Require(args.Args.Count == 1, ErrorCode.BadNumArgs, 1);
-                            return new TypeCast(new NativeTypeExpr(t.Token, TokenType.CHAR), args.Args.First().Expr);
+                            //return new TypeCast(new NativeTypeExpr(t.Token, TokenType.CHAR), args.Args.First().Expr); // nvk: this should call the runtime Chr()
+                            return new IntrinsicCallExpr(t as IdExpr, args, IntrinsicCallType.Chr);
                         }
                     case "PCALL":
                     case "CCALL":

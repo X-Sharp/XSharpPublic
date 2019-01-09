@@ -10,5 +10,6 @@ namespace XSharp.MacroCompiler.Syntax
     {
         GetMParam,
         GetFParam,
+        Chr,
     }
 }

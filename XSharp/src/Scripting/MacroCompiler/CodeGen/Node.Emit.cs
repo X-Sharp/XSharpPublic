@@ -433,6 +433,8 @@ namespace XSharp.MacroCompiler.Syntax
             ilg.Emit(OpCodes.Ldloc, v.LocalIndex);
             var m = Compilation.Get(Alias != null ? WellKnownMembers.XSharp_RT_Functions___FieldSetWa : WellKnownMembers.XSharp_RT_Functions___FieldSet) as MethodSymbol;
             ilg.Emit(OpCodes.Call, m.Method);
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
         }
     }
     internal partial class SubstrExpr : BinaryExpr
@@ -465,6 +467,8 @@ namespace XSharp.MacroCompiler.Syntax
             ilg.Emit(OpCodes.Ldloc, v.LocalIndex);
             var m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___VarPut) as MethodSymbol;
             ilg.Emit(OpCodes.Call, m.Method);
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
         }
     }
     internal partial class Arg : Node

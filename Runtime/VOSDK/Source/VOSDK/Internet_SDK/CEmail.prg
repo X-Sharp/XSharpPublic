@@ -1,4 +1,4 @@
-PARTIAL CLASS CEmail INHERIT CMessage
+﻿CLASS CEmail INHERIT CMessage
 
 	PROTECT aDestList       AS ARRAY
 	PROTECT aCCList         AS ARRAY
@@ -766,8 +766,8 @@ ASSIGN MailPriority(nNew)
 
 METHOD MimeEncode(c, nCode)
 
-	Default(@c, SELF:MailBody)
-	Default(@nCode, SELF:TransferEncoding)
+	DEFAULT(@c, SELF:MailBody)
+	DEFAULT(@nCode, SELF:TransferEncoding)
 
 	IF nCode = 0
 		nCode := CODING_TYPE_PRINTABLE
@@ -803,7 +803,7 @@ METHOD MimeHeader(nCode, xContentType, cFile, cCID)
 		cContent := SELF:cContentType
 	ENDIF
 
-	Default(@nCode, SELF:TransferEncoding)
+	DEFAULT(@nCode, SELF:TransferEncoding)
 
 	lEncode := TRUE
 
@@ -876,7 +876,7 @@ ASSIGN ReturnReceipt(cFrom)
 
 METHOD SaveAs(cPath, cFile, n)
 
-	Default(@n, 1)
+	DEFAULT(@n, 1)
 
 	IF n < 1
 		RETURN FALSE
@@ -889,7 +889,7 @@ METHOD SaveAs(cPath, cFile, n)
     // Updated to better handle UNC paths
     cPath := __AdJustPath(cPath)
 
-	Default(@cFile, "")
+	DEFAULT(@cFile, "")
 	IF SLen(cFile) = 0
 		cFile := __GetFileName(SELF:aFileList[n])
 	ENDIF

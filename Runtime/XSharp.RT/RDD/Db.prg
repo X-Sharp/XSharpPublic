@@ -38,9 +38,13 @@ FUNCTION _Select(xValue) AS USUAL CLIPPER
         nSelect := 0
         LOCAL cValue := xValue AS STRING
         IF SLen(cValue) = 1
-            var nAsc := (word) cValue[1]
-            IF nAsc > 64 .AND. nAsc < 75    // A .. L , M = memvar 
-                nSelect := (INT) nAsc - 64
+            VAR nAsc := (WORD) UPPER(cValue)[0]
+            IF nAsc > 64 .AND. nAsc <= 90    // A .. Z , M = memvar
+                IF nAsc != 77  // 'M' 
+                    nSelect := (INT) nAsc - 64
+                ELSE
+                    nSelect := 0
+                ENDIF
             ENDIF
         ENDIF
         
@@ -1178,7 +1182,7 @@ FUNCTION EmptyRecord() AS LOGIC
    IF Used()
       aRecord := VODBRecordGet()
       lRet := TRUE
-      FOREACH var b in aRecord
+      FOREACH VAR b IN aRecord
          IF b != 32
             lRet := FALSE
             EXIT
@@ -1199,8 +1203,8 @@ FUNCTION EmptyField( n AS DWORD ) AS LOGIC
    LOCAL lRet    AS LOGIC
    LOCAL nOffset AS DWORD
    LOCAL nEnd    AS DWORD
-   LOCAL uLen as USUAL
-   IF Used() .and. n > 0 .and. n <= FCount()
+   LOCAL uLen AS USUAL
+   IF Used() .AND. n > 0 .AND. n <= FCount()
         lRet := TRUE
         aRecord := VODBRecordGet()
         nOffset := 2        // skip the Deleted flag

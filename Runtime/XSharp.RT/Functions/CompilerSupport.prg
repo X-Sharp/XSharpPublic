@@ -105,7 +105,14 @@ FUNCTION __FieldGet( fieldName AS STRING ) AS USUAL
     // CUSTOMER->NAME
 /// <exclude/>
 FUNCTION __FieldGetWa( alias AS STRING, fieldName AS STRING ) AS USUAL
-    LOCAL ret AS OBJECT
+    // XBase defines that 'M' in 'M->Name' means a Memvar
+    IF String.IsNullOrEmpty(alias)
+        RETURN __FieldGet(fieldName)
+    ENDIF
+    IF alias:ToUpper() == "M"
+        RETURN __MemVarGet(fieldName)
+    ENDIF
+    LOCAL ret AS USUAL
     LOCAL newArea := SELECT( alias ) AS DWORD
     LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
     IF newArea > 0
@@ -136,6 +143,12 @@ FUNCTION __FieldSet( fieldName AS STRING, oValue AS USUAL ) AS USUAL
     // CUSTOMER->Name := "Foo"
 /// <exclude/>
 FUNCTION __FieldSetWa( alias AS STRING, fieldName AS STRING, uValue AS USUAL ) AS USUAL
+    IF String.IsNullOrEmpty(alias)
+        RETURN __FieldSet(fieldName, uValue)
+    ENDIF
+    IF alias:ToUpper() == "M"
+        RETURN __MemVarPut(fieldName, uValue)
+    ENDIF
     LOCAL newArea := SELECT( alias ) AS DWORD
     LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
     IF newArea > 0
@@ -157,13 +170,14 @@ FUNCTION __FieldSetWa( alias AS STRING, fieldName AS STRING, uValue AS USUAL ) A
     // ? MyName
 /// <exclude/>
 FUNCTION __MemVarGet(cName AS STRING) AS USUAL
-    RETURN NIL
+    THROW Error.ArgumentError(__FUNCTION__, cName, "Undeclared identifier: '"+cName+"'. (MemVars are not supported in this build)")
+    
     
     // MEMVAR myName
     // MyName := "NewValue"
 /// <exclude/>
 FUNCTION __MemVarPut(cName AS STRING, uValue AS USUAL) AS USUAL
-    RETURN uValue
+    THROW Error.ArgumentError(__FUNCTION__, cName, "Undeclared identifier: '"+cName+"'. (MemVars are not supported in this build)")
     
 
 /// <exclude/>

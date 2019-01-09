@@ -46,6 +46,9 @@
     <VO16>false</VO16>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <AssemblyOriginatorKeyFile>$(SOlutionDir)Common\xsharp.snk</AssemblyOriginatorKeyFile>
+    <XSharpProjectversion>2.0.0.8</XSharpProjectversion>
+    <Includepaths>$(Solutiondir)Common</Includepaths>
+    <Nostandarddefs>true</Nostandarddefs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -63,8 +66,6 @@
     <DelaySign>false</DelaySign>
     <PPO>false</PPO>
     <NoStdDef>true</NoStdDef>
-    <IncludePaths>$(Solutiondir)Common</IncludePaths>
-    <NoStandardDefs>true</NoStandardDefs>
     <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption>
     </CommandLineOption>
@@ -86,8 +87,6 @@
     <DelaySign>false</DelaySign>
     <PPO>false</PPO>
     <NoStdDef>true</NoStdDef>
-    <IncludePaths>$(Solutiondir)Common</IncludePaths>
-    <NoStandardDefs>false</NoStandardDefs>
     <Prefer32Bit>False</Prefer32Bit>
     <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
@@ -168,7 +167,7 @@ copy $(TargetPath) \xsharp\dev\xsharp\Runtime</PostBuildEvent>
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
@@ -184,8 +183,6 @@ copy $(TargetPath) \xsharp\dev\xsharp\Runtime</PostBuildEvent>
     <DelaySign>false</DelaySign>
     <PPO>false</PPO>
     <NoStdDef>true</NoStdDef>
-    <IncludePaths>$(Solutiondir)Common</IncludePaths>
-    <NoStandardDefs>true</NoStandardDefs>
     <DocumentationFile>XSharp.VO.Xml</DocumentationFile>
     <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption>/noclipcall</CommandLineOption>

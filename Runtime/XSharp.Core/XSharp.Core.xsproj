@@ -33,6 +33,9 @@
     <VO15>false</VO15>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <VO16>false</VO16>
+    <XSharpProjectversion>2.0.0.8</XSharpProjectversion>
+    <Includepaths>$(Solutiondir)Common</Includepaths>
+    <Nostandarddefs>true</Nostandarddefs>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectGuid>535dff14-efb7-43f5-a4e1-71c1c4280040</ProjectGuid>
@@ -65,8 +68,6 @@
     <DelaySign>false</DelaySign>
     <PPO>false</PPO>
     <NoStdDef>true</NoStdDef>
-    <IncludePaths>$(Solutiondir)Common</IncludePaths>
-    <NoStandardDefs>true</NoStandardDefs>
     <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
@@ -87,15 +88,13 @@
     <DelaySign>false</DelaySign>
     <PPO>false</PPO>
     <NoStdDef>false</NoStdDef>
-    <IncludePaths>$(Solutiondir)Common</IncludePaths>
-    <NoStandardDefs>false</NoStandardDefs>
     <Prefer32Bit>False</Prefer32Bit>
     <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
@@ -111,8 +110,6 @@
     <DelaySign>false</DelaySign>
     <PPO>false</PPO>
     <NoStdDef>true</NoStdDef>
-    <IncludePaths>$(Solutiondir)Common</IncludePaths>
-    <NoStandardDefs>true</NoStandardDefs>
     <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <DocumentationFile>XSharp.Core.Xml</DocumentationFile>

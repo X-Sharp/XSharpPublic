@@ -35,6 +35,9 @@
     <VO15>false</VO15>
     <VO16>false</VO16>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
+    <XSharpProjectversion>2.0.0.8</XSharpProjectversion>
+    <Includepaths />
+    <Nostandarddefs>true</Nostandarddefs>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectGuid>a2376bbc-9ff4-47eb-bf57-913cbd850dad</ProjectGuid>
@@ -68,8 +71,6 @@
     <CommandLineOption>
     </CommandLineOption>
     <PPO>false</PPO>
-    <NoStandardDefs>true</NoStandardDefs>
-    <IncludePaths />
     <Prefer32Bit>False</Prefer32Bit>
     <DebuggerCommand>c:\XSharp\DevPublic\packages\xunit.runner.console.2.2.0\tools\xunit.console.exe</DebuggerCommand>
     <DebuggerCommandArguments>$(TargetPath)</DebuggerCommandArguments>
@@ -94,8 +95,6 @@
     <AssemblyOriginatorKeyFile />
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>true</NoStandardDefs>
-    <IncludePaths />
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
@@ -179,7 +178,7 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
@@ -196,8 +195,6 @@
     <AssemblyOriginatorKeyFile />
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths />
     <Prefer32Bit>False</Prefer32Bit>
     <DebuggerCommand>c:\XSharp\DevPublic\packages\xunit.runner.console.2.2.0\tools\xunit.console.exe</DebuggerCommand>
     <DebuggerCommandArguments>$(TargetPath)</DebuggerCommandArguments>

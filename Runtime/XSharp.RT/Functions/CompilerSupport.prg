@@ -19,6 +19,7 @@
 /// <exclude />
 FUNCTION __StringCompare(strLHS AS STRING, strRHS AS STRING) AS INT
     RETURN RuntimeState.StringCompare(strLHS, strRHS)
+
     
     /// <summary>
     /// Compare 2 strings. This function is used by the compiler for string comparisons
@@ -95,7 +96,7 @@ FUNCTION __FieldGet( fieldName AS STRING ) AS USUAL
     LOCAL fieldpos := FieldPos( fieldName ) AS DWORD
     LOCAL ret := NULL AS OBJECT
     IF fieldpos == 0
-        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  fieldName  )
+        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  nameof(fieldName), 1, fieldName  )
     ELSE
          _DbThrowErrorOnFailure(__FUNCTION__, CoreDb.FieldGet( fieldpos, REF ret ))
     ENDIF
@@ -113,7 +114,7 @@ FUNCTION __FieldGetWa( alias AS STRING, fieldName AS STRING ) AS USUAL
         RETURN __MemVarGet(fieldName)
     ENDIF
     LOCAL ret AS USUAL
-    LOCAL newArea := SELECT( alias ) AS DWORD
+    LOCAL newArea := _SelectString( alias ) AS DWORD
     LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
     IF newArea > 0
         RuntimeState.CurrentWorkarea := newArea
@@ -123,7 +124,7 @@ FUNCTION __FieldGetWa( alias AS STRING, fieldName AS STRING ) AS USUAL
             RuntimeState.CurrentWorkarea := curArea
         END TRY   
     ELSE
-        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, alias  )
+        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(alias), 1, alias  )
     ENDIF
     RETURN ret
     
@@ -132,7 +133,7 @@ FUNCTION __FieldGetWa( alias AS STRING, fieldName AS STRING ) AS USUAL
 FUNCTION __FieldSet( fieldName AS STRING, oValue AS USUAL ) AS USUAL
     LOCAL fieldpos := FieldPos( fieldName ) AS DWORD
     IF fieldpos == 0
-        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  fieldName  )
+        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  nameof(fieldName), 1, fieldName  )
     ELSE
         _DbThrowErrorOnFailure(__FUNCTION__, CoreDb.FieldPut( fieldpos, oValue))
     ENDIF
@@ -149,7 +150,7 @@ FUNCTION __FieldSetWa( alias AS STRING, fieldName AS STRING, uValue AS USUAL ) A
     IF alias:ToUpper() == "M"
         RETURN __MemVarPut(fieldName, uValue)
     ENDIF
-    LOCAL newArea := SELECT( alias ) AS DWORD
+    LOCAL newArea := _SelectString( alias ) AS DWORD
     LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
     IF newArea > 0
         RuntimeState.CurrentWorkarea := newArea
@@ -160,7 +161,7 @@ FUNCTION __FieldSetWa( alias AS STRING, fieldName AS STRING, uValue AS USUAL ) A
             RuntimeState.CurrentWorkarea := curArea
         END TRY   
     ELSE
-        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, alias  )
+        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(alias),1, alias  )
     ENDIF
     // Note: must return the same value passed in, to allow chained assignment expressions
     RETURN uValue

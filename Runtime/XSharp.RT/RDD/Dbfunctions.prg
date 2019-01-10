@@ -44,7 +44,7 @@ FUNCTION Bof() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION DBF() AS STRING
-    return VoDb.DBF()
+    RETURN VoDb.DBF()
 /// <summary>
 /// </summary>
 /// <returns>
@@ -110,7 +110,7 @@ FUNCTION Flock() AS LOGIC STRICT
     /// <returns>
     /// </returns>
 FUNCTION FCount() AS DWORD
-    return VoDb.FCount()    
+    RETURN VoDb.FCount()    
     
     /// <summary>
     /// Return the name of a field as a string.
@@ -120,8 +120,8 @@ FUNCTION FCount() AS DWORD
     /// or if no database file is open, FieldName() return an empty string.
     /// </returns>
 FUNCTION FieldName(dwFieldPos AS DWORD) AS STRING
-    IF dwFieldPos > 0 .and. dwFieldPos <= VoDb.FCount() 
-        return VoDb.FieldName(dwFieldPos)
+    IF dwFieldPos > 0 .AND. dwFieldPos <= VoDb.FCount() 
+        RETURN VoDb.FieldName(dwFieldPos)
     ENDIF
     RETURN String.Empty
     
@@ -134,8 +134,8 @@ FUNCTION FieldName(dwFieldPos AS DWORD) AS STRING
     /// or if no database file is open, FieldSym() returns NULL_SYMBOL.
     /// </returns>
 FUNCTION FieldSym(dwFieldPos AS DWORD) AS SYMBOL
-    IF dwFieldPos > 0 .and. dwFieldPos <= VoDb.FCount() 
-        return (SYMBOL) VoDb.FieldName(dwFieldPos)
+    IF dwFieldPos > 0 .AND. dwFieldPos <= VoDb.FCount() 
+        RETURN (SYMBOL) VoDb.FieldName(dwFieldPos)
     ENDIF
     RETURN NULL_SYMBOL
 
@@ -147,7 +147,7 @@ FUNCTION FieldSym(dwFieldPos AS DWORD) AS SYMBOL
     /// <returns>
     /// </returns>
 FUNCTION FieldPos(sFieldName AS STRING) AS DWORD
-    return VoDb.FieldPos(sFieldName)
+    RETURN VoDb.FieldPos(sFieldName)
     
 /// <summary>
 /// Return the position of a field.
@@ -188,7 +188,7 @@ FUNCTION Header() AS LONG
 /// <returns>
 /// </returns>
 FUNCTION LastRec() AS DWORD
-    return (DWORD) VoDb.LastRec()
+    RETURN (DWORD) VoDb.LastRec()
 
 /// <summary>
 /// </summary>
@@ -357,7 +357,7 @@ FUNCTION Used() AS LOGIC
 FUNCTION DoError (cSymFunc AS STRING, nTries:= 0 AS INT) AS OBJECT
 	LOCAL oError    AS Error
     LOCAL bBlock    AS ICodeblock
-    IF RuntimeState.LastRDDError is Error
+    IF RuntimeState.LastRDDError IS Error
 	    oError         := (Error) RuntimeState.LastRDDError
     ELSEIF RuntimeState.LastRDDError != NULL_OBJECT
         oError         := Error{RuntimeState.LastRDDError}

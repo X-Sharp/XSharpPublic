@@ -192,9 +192,11 @@ begin namespace MacroCompilerTest
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a|A,1_000", 123)
         //EvalMacro(mc, e"{|a| USUAL(-a) }", 1)
-        EvalMacro(mc, e"{|| testclass{}:NString((byte)1) }", Args())
+        //EvalMacro(mc, e"{|| testclass{}:NString((byte)1) }", Args())
+        //EvalMacro(mc, e"{|a,b| b := testclass{123}, b:ToString() }")
         EvalMacro(mc, e"0.00001")
-        EvalMacro(mc, e"{|a,b| b := testclass{123}, b:ToString() }")
+        //EvalMacro(mc, "{|foo| bar := 10}")
+        //EvalMacro(mc, "{|foo| bar := 10,foo}")
         wait
 
         RunTests(mc)
@@ -369,8 +371,8 @@ begin namespace MacroCompilerTest
 //        TestMacro(mc, e"{|| _FIELD->BASE->NIKOS := 123}", Args(), 123, typeof(object))
 //        TestMacro(mc, e"{|| BASE->NIKOS := 123}", Args(), 123, typeof(object))
         TestMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", Args({1,2,3}, 1), 102, typeof(int))
-        TestMacro(mc, e"_chr(65)", Args(), 65, typeof(char))
-        TestMacro(mc, e"chr(65)", Args(), 65, typeof(char))
+        TestMacro(mc, e"_chr(65)", Args(), Chr(65), typeof(string))
+        TestMacro(mc, e"chr(65)", Args(), Chr(65), typeof(string))
         TestMacro(mc, e"char(65)", Args(), 65, typeof(char))
         TestMacro(mc, e"slen(\"hello\")", Args(), 5, typeof(dword))
         TestMacro(mc, e"{|v| v[2] }", Args( <object>{ { 'C', 100, 0} } ),100, typeof(int))
@@ -515,6 +517,10 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|| testclass{}:NString((byte)1) }", Args(), "child", typeof(string))
         TestMacro(mc, e"{|| ((testbase)testclass{}):NString((byte)1) }", Args(), "base", typeof(string))
         TestMacro(mc, e"{|| testclass{}:BString() }", Args(), "bbase", typeof(string))
+        TestMacro(mc, "{|abc| Chr(65) + 'B'}", Args(), "AB", typeof(string))
+        TestMacro(mc, '{|abc| Chr(65) + "BB"}', Args(), "ABB", typeof(string))
+        TestMacro(mc, "{|abc| Chr(65):toString() + 'B'}", Args(), "AB", typeof(string))
+        TestMacro(mc, e"{|abc| (usual)\"ABC\" + Chr(123)}", Args(), "ABC"+Chr(123), typeof(string)) 
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")

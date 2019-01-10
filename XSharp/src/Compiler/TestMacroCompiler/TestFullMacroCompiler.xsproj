@@ -20,6 +20,9 @@
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <TargetFrameworkProfile />
     <OutputPath>$(Binariesdir)Exes</OutputPath>
+    <XSharpProjectversion>2.0.0.8</XSharpProjectversion>
+    <Includepaths>$(Solutiondir)src\Common</Includepaths>
+    <Nostandarddefs>false</Nostandarddefs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -37,8 +40,6 @@
     <AssemblyOriginatorKeyFile />
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths>$(Solutiondir)src\Common</IncludePaths>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
@@ -57,8 +58,6 @@
     <AssemblyOriginatorKeyFile />
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths>$(Solutiondir)src\Common</IncludePaths>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />

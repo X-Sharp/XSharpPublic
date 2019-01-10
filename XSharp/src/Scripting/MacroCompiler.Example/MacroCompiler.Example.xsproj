@@ -3,7 +3,8 @@
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <Import Project="..\..\Compiler\CompilerCommon.props" />
   <PropertyGroup>
-    <XscToolPath></XscToolPath>
+    <XscToolPath>
+    </XscToolPath>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <ProjectGuid>cea6079a-eff1-4ae7-acdc-ebafc1555b02</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -44,6 +45,9 @@
     <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>false</VO16>
+    <XSharpProjectversion>2.0.0.8</XSharpProjectversion>
+    <Includepaths />
+    <Nostandarddefs>false</Nostandarddefs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -60,8 +64,6 @@
     <DelaySign>false</DelaySign>
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths />
     <Prefer32Bit>False</Prefer32Bit>
     <OutputPath>$(Binariesdir)Exes</OutputPath>
     <AssemblyOriginatorKeyFile>$(solutiondir)build\strongnamekeys\xsharpkey.private.snk</AssemblyOriginatorKeyFile>

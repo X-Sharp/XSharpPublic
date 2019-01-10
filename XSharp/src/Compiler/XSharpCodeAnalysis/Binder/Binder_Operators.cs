@@ -70,6 +70,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (symbols.Length == 1)
                 {
                     opMeth = (MethodSymbol)symbols[0];
+                    var stringType = Compilation.GetSpecialType(SpecialType.System_String);
+                    if (left.Type.SpecialType != SpecialType.System_String)
+                    {
+                        left = CreateConversion(left, stringType, diagnostics);
+                    }
+                    if (right.Type.SpecialType != SpecialType.System_String)
+                    {
+                        right = CreateConversion(right, stringType, diagnostics);
+                    }
                     opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
                 }
                 else

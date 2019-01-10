@@ -517,6 +517,7 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|| testclass{}:NString((byte)1) }", Args(), "child", typeof(string))
         TestMacro(mc, e"{|| ((testbase)testclass{}):NString((byte)1) }", Args(), "base", typeof(string))
         TestMacro(mc, e"{|| testclass{}:BString() }", Args(), "bbase", typeof(string))
+        TestMacro(mc, "{|abc| Chr(abc) + 'B'}", Args(65), "AB", typeof(string))
         TestMacro(mc, "{|abc| Chr(65) + 'B'}", Args(), "AB", typeof(string))
         TestMacro(mc, '{|abc| Chr(65) + "BB"}', Args(), "ABB", typeof(string))
         TestMacro(mc, "{|abc| Chr(65):toString() + 'B'}", Args(), "AB", typeof(string))

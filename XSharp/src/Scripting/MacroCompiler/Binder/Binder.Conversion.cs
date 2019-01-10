@@ -40,6 +40,11 @@ namespace XSharp.MacroCompiler
             Convert(ref e, type, Conversion(e, type, Options.Binding | BindOptions.Explicit));
         }
 
+        internal void CastExplicit(ref Expr e, TypeSymbol type)
+        {
+            Convert(ref e, type, Conversion(e, type, Options.Binding | BindOptions.Explicit | BindOptions.Cast));
+        }
+
         internal TypeSymbol ConvertResult(ref Expr e1, ref Expr e2)
         {
             return ConvertResult(ref e1, ref e2, Options.Binding);
@@ -94,6 +99,11 @@ namespace XSharp.MacroCompiler
             return Binder.Conversion(expr, type, Options.Binding | BindOptions.Explicit);
         }
 
+        internal ConversionSymbol ExplicitCast(Expr expr, TypeSymbol type)
+        {
+            return Binder.Conversion(expr, type, Options.Binding | BindOptions.Explicit | BindOptions.Cast);
+        }
+
         internal static ConversionSymbol Conversion(Expr expr, TypeSymbol type, BindOptions options)
         {
             var noConversion = ConversionKind.NoConversion;
@@ -103,7 +113,9 @@ namespace XSharp.MacroCompiler
             if (conversion != ConversionKind.NoConversion)
             {
                 var conv = ConversionSymbol.Create(conversion);
-                if (options.HasFlag(BindOptions.Explicit) || conv.IsImplicit)
+                if (!conv.IsCast && options.HasFlag(BindOptions.Explicit) || conv.IsImplicit)
+                    return conv;
+                if (conv.IsCast && options.HasFlag(BindOptions.Cast))
                     return conv;
                 if (conv.Exists)
                     noConversion = ConversionKind.NoImplicitConversion;

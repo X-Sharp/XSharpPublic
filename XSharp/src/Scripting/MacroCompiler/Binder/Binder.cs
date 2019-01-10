@@ -25,6 +25,7 @@ namespace XSharp.MacroCompiler
         Explicit = 256,
         Special = 512,
         Logic = 1024,
+        Cast = 2048,
 
         None = 0,
         Default = AllowDynamic | AllowInexactComparisons

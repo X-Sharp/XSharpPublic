@@ -7,23 +7,27 @@ BEGIN NAMESPACE XSharp
   /// <summary>XSharp Runtime base Error class</summary>
   CLASS Error INHERIT Exception
     /// <summary>A string representing the name of the subsystem generating the error.</summary>
-    PROPERTY SubSystem AS STRING AUTO 
+    PROPERTY SubSystem AS STRING AUTO  := "BASE"
     /// <summary>An integer numeric value representing a Visual Objects generic error code.</summary>
     /// <Seealso cref="T:XSharp.Gencode"/>
-    PROPERTY Gencode AS DWORD AUTO 
+    PROPERTY Gencode AS DWORD AUTO    := EG_UNKNOWN
+    /// <summary>An string containing the description of the Gencode.</summary>
+    PROPERTY GenCodeText AS STRING GET IIF (Gencode != 0, ErrString(Gencode), "Unknown GenCode")
     /// <summary>An integer numeric value representing a subsystem-specific error code.</summary>
-    PROPERTY SubCode AS DWORD AUTO 
+    PROPERTY SubCode AS DWORD AUTO    := 0
+    /// <summary>An string containing the description of the SubCode.</summary>
+    PROPERTY SubCodeText AS STRING GET IIF (SubCode != 0, __CavoStr(SubCode), "Unknown SubCode")
     /// <summary>A string representing the name of the function or method in which the error occurred.</summary>
-    PROPERTY FuncSym AS STRING AUTO 
+    PROPERTY FuncSym AS STRING AUTO   := ""
     /// <summary>A string representing the name used to open the file associated with the error condition.</summary>
-    PROPERTY FileName AS STRING AUTO 
+    PROPERTY FileName AS STRING AUTO  := ""
     /// <summary>A constant indicating the severity of the error condition.</summary>
     /// <Seealso cref="T:XSharp.Severity"/>
-    PROPERTY Severity AS DWORD AUTO 
+    PROPERTY Severity AS DWORD AUTO   := ES_ERROR
     /// <summary>A string that describes the error condition.</summary>
-    PROPERTY Description		AS STRING  AUTO
+    PROPERTY Description		AS STRING AUTO := ""
     /// <summary>A string representing the argument supplied to an operator or function when an argument error occurs.</summary>
-    PROPERTY Arg				AS STRING AUTO
+    PROPERTY Arg				AS STRING AUTO := ""
     PRIVATE  _ArgType			AS DWORD 
     /// <summary>A numeric value representing the data type of the argument that raised the error.</summary>
     PROPERTY ArgType			AS DWORD  
@@ -80,7 +84,7 @@ BEGIN NAMESPACE XSharp
     /// <summary>An array of the arguments supplied to an operator or function when an argument error occurs.</summary>
     PROPERTY Args				AS OBJECT[] AUTO
     /// <summary>An integer numeric value representing the number of times the failed operation has been attempted.</summary>
-    PROPERTY Tries				AS INT AUTO 
+    PROPERTY Tries				AS INT AUTO := 0
     /// <summary>A logical value indicating whether the subsystem can perform default error recovery for the error condition.</summary>
     PROPERTY CanDefault         AS LOGIC AUTO 
     /// <summary>A logical value indicating whether the subsystem can retry the operation that caused the error condition.</summary>
@@ -88,37 +92,22 @@ BEGIN NAMESPACE XSharp
     /// <summary>A logical value indicating whether a new result can be substituted for the operation that produced the error condition.</summary>
     PROPERTY CanSubstitute      AS LOGIC AUTO 
     /// <summary>A string that describes the operation being attempted when the error occurred.</summary> 
-    PROPERTY Operation          AS STRING AUTO 
-    /// <summary>A string representing a subsystem-specific error.  A NULL_STRING value indicates that the subsystem does not assign any particular string to the error condition.</summary>
-    PROPERTY SubCodeText        AS STRING AUTO 
+    PROPERTY Operation          AS STRING AUTO := ""
     /// <summary>A value of 0 indicates that the error condition was not caused by an error from the operating system.  When Error:OsCode is set to a value other </summary>
-    PROPERTY OSCode				AS DWORD AUTO
+    PROPERTY OSCode				AS DWORD AUTO := 0
+    /// <summary>Descripion of the OSCode</summary>
+    PROPERTY OSCodeText			AS STRING GET IIF(OSCode == 0, "", DosErrString(OSCode))
     /// <summary>A numeric value representing the file handle supplied to a function when an file error occurs.</summary>
     PROPERTY FileHandle         AS DWORD AUTO 
     /// <summary>A numeric value representing a boundary condition for an operation (such as string overflow or array bound error).</summary>
     PROPERTY MaxSize			AS DWORD AUTO
     /// <summary>A value of any data type unused by the Error system.  It is provided as a user-definable slot, allowing arbitrary information to be attached to an Error object and retrieved later</summary>
     PROPERTY Cargo              AS OBJECT AUTO
-    
+
+
     PRIVATE METHOD setDefaultValues() AS VOID
-        SELF:Arg 			:= ""
-        SELF:CallFuncSym 	:= ""
-        SELF:Description    := ""
-        SELF:FileName 		:= ""
-        SELF:FuncSym 		:= ""
-        SELF:Operation 		:= ""
-        SELF:SubCodeText 	:= ""
-        SELF:SubSystem 		:= ""
-        SELF:Gencode		:= EG_UNKNOWN
-        SELF:Subcode		:= 0
-        SELF:Subsystem		:= "BASE"
-        SELF:Severity		:= ES_ERROR
-        SELF:CanDefault		:= FALSE
-        SELF:CanRetry		:= FALSE
-        SELF:CanSubstitute	:= FALSE
-        SELF:Tries			:= 0
-        SELF:FuncSym		:= ProcName(2)
-        SELF:OSCode			:= 0
+        SELF:FuncSym := ProcName(2)
+        RETURN
     
     /// <summary>Create an Error Object</summary>
     CONSTRUCTOR()
@@ -162,7 +151,6 @@ BEGIN NAMESPACE XSharp
     SELF:Args		 := aArgs
     
     
-    
     /// <summary>Create an Error Object for a Gencode and Argument Name.</summary>
     CONSTRUCTOR (dwgencode AS DWORD, cArg AS STRING)
     SUPER(ErrString( dwGenCode ))
@@ -199,30 +187,62 @@ BEGIN NAMESPACE XSharp
     /// <inheritdoc />
     OVERRIDE METHOD ToString() AS STRING
       LOCAL sb AS StringBuilder
+      LOCAL nGenCode AS GenCode
+      nGenCode := (GenCode) SELF:GenCode
       sb := StringBuilder{}
-      sb:AppendLine("Description     :" + SELF:Description)
-      sb:AppendLine("SubSystem       :" + SELF:SubSystem )
-      sb:AppendLine("SubCode         :" + SELF:SubCode   )
-      sb:AppendLine("GenCode         :" + ErrString(SELF:GenCode)  )
-      sb:AppendLine("OsCode          :" + SELF:OsCode:ToString() )
-      sb:AppendLine("ArgType         :" + TypeString(SELF:ArgType    ) )
-      sb:AppendLine("ArgNum          :" + SELF:ArgNum:ToString()    )
-      sb:AppendLine("FuncSym         :" + SELF:FuncSym   )
-      sb:AppendLine("Severity        :" + SELF:Severity )
-      sb:AppendLine("CanDefault      :" + SELF:CanDefault)
-      sb:AppendLine("CanRetry        :" + SELF:CanRetry )
-      sb:AppendLine("CanSubstitute   :" + SELF:CanSubstitute)
-      sb:AppendLine("Operation       :" + SELF:Operation)
-      sb:AppendLine("FileName        :" + SELF:FileName )
-      sb:AppendLine("Tries           :" + SELF:Tries    )
-      sb:AppendLine("SubCodeText     :" + SELF:SubCodeText)
-      sb:AppendLine("Arg             :" + SELF:Arg)
-      IF SELF:ArgTypeReqType == NULL
-        sb:AppendLine("ArgTypeReq      :")
-      ELSE
+      sb:AppendLine("Description     : " + SELF:Description)
+      sb:AppendLine("SubSystem       : " + SELF:SubSystem )
+      sb:AppendLine("GenCode         : " + nGenCode:ToString()  )
+      sb:AppendLine("GenCodeText     : " + SELF:GenCodeText  )
+      sb:AppendLine("SubCode         : " + SELF:SubCode )
+      sb:AppendLine("SubCodeText     : " + SELF:SubCodeText)
+      IF SELF:OsCode != 0
+        sb:AppendLine("OsCode          : " + SELF:OsCode:ToString() )
+        sb:AppendLine("OsCodeText      : " + SELF:OsCodeText )
+      ENDIF
+      sb:AppendLine("FuncSym         : " + SELF:FuncSym   )
+      sb:AppendLine("Severity        : " + SELF:Severity )
+      sb:AppendLine("CanDefault      : " + SELF:CanDefault)
+      sb:AppendLine("CanRetry        : " + SELF:CanRetry )
+      sb:AppendLine("CanSubstitute   : " + SELF:CanSubstitute)
+      IF ! String.IsNullOrEmpty(SELF:Operation)
+        sb:AppendLine("Operation       : " + SELF:Operation)
+      ENDIF
+      IF ! String.IsNullOrEmpty(SELF:FileName)
+        sb:AppendLine("FileName        : " + SELF:FileName )
+      ENDIF
+      IF SELF:Tries != 0
+          sb:AppendLine("Tries           : " + SELF:Tries:ToString()    )
+      ENDIF
+      IF SELF:ArgType != 0
+        sb:AppendLine("ArgType         : " + TypeString(SELF:ArgType    ) )
+      ENDIF
+      IF SELF:ArgNum != 0
+        sb:AppendLine("ArgNum          : " + SELF:ArgNum:ToString()    )
+      ENDIF
+      IF SELF:Arg != NULL
+        sb:AppendLine("Arg             : " + SELF:Arg)
+      ENDIF
+      LOCAL cArgs AS STRING
+      IF SELF:Args:Length > 0
+            cArgs := "{"
+            LOCAL lFirst := TRUE AS LOGIC
+            FOREACH VAR oArg IN SELF:Args
+                IF ! lFirst
+                    cArgs += ","
+                ENDIF
+                cArgs += oArg:ToString()
+                lFirst := FALSE
+            NEXT
+            cArgs += "}"
+            sb:AppendLine("Args            : " + cArgs)
+      ENDIF
+      IF SELF:ArgTypeReqType != NULL
         sb:AppendLine("ArgTypeReq      :" + SELF:ArgTypeReqType:FullName)
       END IF
-      sb:AppendLine("CallFuncSym     :" + SELF:CallFuncSym  )
+      IF ! String.IsNullOrEmpty(SELF:CallFuncSym)
+        sb:AppendLine("CallFuncSym     :" + SELF:CallFuncSym  )
+      ENDIF
       RETURN sb:ToString()
       
       
@@ -241,7 +261,7 @@ BEGIN NAMESPACE XSharp
     err:FuncSym     := cFuncName
     err:Description := err:Message
     err:Argnum		:= iArgNum
-    err:args			:= aArgs
+    err:args		:= aArgs
     RETURN err
     
     
@@ -294,6 +314,9 @@ BEGIN NAMESPACE XSharp
     e:FuncSym     := cFuncName
     e:Description := ErrString( dwGenCode )
     e:Args        := aArgs
+    IF aArgs:Length > 0
+        e:Arg := aArgs[0]:ToString()
+    ENDIF
     RETURN e
 
 
@@ -302,8 +325,11 @@ BEGIN NAMESPACE XSharp
     LOCAL e AS Error
     e			  := Error{dwGenCode, dwSubCode}
     e:SubSystem   := "DBCMD"
-    e:Description := ErrString( dwGenCode )
+    e:Description := __CavoStr( dwSubCode)
     e:Args        := aArgs
+    IF aArgs:Length > 0
+        e:Arg := aArgs[0]:ToString()
+    ENDIF
     RETURN e
     
     /// <exclude/>	
@@ -311,14 +337,18 @@ BEGIN NAMESPACE XSharp
     LOCAL e AS Error
     e := Error{dwGenCode, dwSubCode, cFuncName, cArgName, iArgNum}
     e:SubSystem   := "DBCMD"
-    e:Description := ErrString( dwGenCode )
+    IF dwSubCode != 0
+        e:Description := __CavoStr( dwSubCode)
+    ELSE
+        e:Description := ErrString(dwGenCode)
+    ENDIF
     e:Args        := aArgs
     RETURN e
     
     /// <exclude/>	
     STATIC METHOD DataTypeError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[] ) AS Error
     LOCAL e AS Error
-    e				:= Error{ ArgumentException{} , cFuncName, cArgName, iArgNum, aArgs}
+    e			  := Error{ ArgumentException{} , cFuncName, cArgName, iArgNum, aArgs}
     e:GenCode     := EG_DATATYPE
     e:Description := __CavoStr( VOErrors.DATATYPEERROR )
     RETURN e

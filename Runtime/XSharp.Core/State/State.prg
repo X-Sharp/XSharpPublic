@@ -598,12 +598,7 @@ CLASS XSharp.RuntimeState
 		    ENDIF
         ENDIF
         IF _macroCompilerType != NULL_OBJECT
-            IF _macroCompilerType:Assembly:CodeBase:ToLower():Contains(".full")
-			    VAR macroCompiler := Activator:CreateInstance(_macroCompilerType) ASTYPE IMacroCompiler
-                _macroCompiler := MacroPreCompiler{macroCompiler}
-            ELSE
-                _macroCompiler := Activator:CreateInstance(_macroCompilerType) ASTYPE IMacroCompiler
-            ENDIF
+            _macroCompiler := Activator:CreateInstance(_macroCompilerType) ASTYPE IMacroCompiler
 		ENDIF
 		RETURN
 

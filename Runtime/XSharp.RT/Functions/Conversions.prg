@@ -37,9 +37,9 @@ INTERNAL STATIC CLASS ConversionHelpers
 		formatStrings:Add(nKey, cFormat)
 		RETURN cFormat
 
-	PRIVATE CONST NOCHAR := c'\0' AS Char
-	STATIC METHOD NextChar(c AS STRING, nIndex REF INT) AS Char
-		LOCAL cChar AS Char
+	PRIVATE CONST NOCHAR := c'\0' AS CHAR
+	STATIC METHOD NextChar(c AS STRING, nIndex REF INT) AS CHAR
+		LOCAL cChar AS CHAR
 		LOCAL lStart := nIndex == -1 AS LOGIC
 		DO WHILE TRUE
 			nIndex ++
@@ -50,8 +50,8 @@ INTERNAL STATIC CLASS ConversionHelpers
 			IF cChar == c'E'
 				RETURN NOCHAR
 			END IF
-			IF cChar >= c'0' .and. cChar <= c'9'
-				IF cChar == c'0' .and. lStart
+			IF cChar >= c'0' .AND. cChar <= c'9'
+				IF cChar == c'0' .AND. lStart
 					nIndex ++
 					LOOP
 				END IF
@@ -63,7 +63,7 @@ INTERNAL STATIC CLASS ConversionHelpers
 	STATIC METHOD AdjustPrecision(cNum15 AS STRING, cNum17 AS STRING) AS STRING
 		LOCAL cDiff15 := "0", cDiff17 := "0" AS STRING
 		LOCAL cResult AS STRING
-		LOCAL c15,c17 AS Char
+		LOCAL c15,c17 AS CHAR
 		LOCAL n15,n17 AS INT
 		LOCAL nMatch AS INT
 		LOCAL lDiff  AS LOGIC
@@ -74,7 +74,7 @@ INTERNAL STATIC CLASS ConversionHelpers
 		DO WHILE TRUE
 			c15 := NextChar(cNum15 , REF n15)
 			c17 := NextChar(cNum17 , REF n17)
-			IF c15 == NOCHAR .or. c17 == NOCHAR
+			IF c15 == NOCHAR .OR. c17 == NOCHAR
 				IF lDiff
 					EXIT
 				ELSE
@@ -112,7 +112,7 @@ INTERNAL STATIC CLASS ConversionHelpers
         // G17 returns all 17 relevant digits for a REAL8
         // See https://docs.microsoft.com/en-us/dotnet/api/system.double.tostring?view=netframework-4.7.2
 		result := String.Format(usCulture, cFormat, n)
-		IF nLen > 15 .and. result:Length >= 15
+		IF nLen > 15 .AND. result:Length >= 15
 			result := AdjustPrecision(result, n:ToString("G17", usCulture))
 		END IF
 /*      IF result:EndsWith("0") .AND. nDec > 0 .AND. nLen > 15
@@ -774,7 +774,7 @@ FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
    ENDIF
 
  
-   IF dwDec > 0 .AND. dwLen != UInt32.MaxValue .and. ( dwLen < ( dwDec + 2 ) )
+   IF dwDec > 0 .AND. dwLen != UInt32.MaxValue .AND. ( dwLen < ( dwDec + 2 ) )
       RETURN STRING{ c'*', (INT) dwLen }
    ENDIF
    RETURN ConversionHelpers.FormatNumber(f, (INT) dwLen, (INT) dwDec)

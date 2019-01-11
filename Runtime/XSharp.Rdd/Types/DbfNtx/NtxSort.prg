@@ -60,7 +60,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             iLen        := SELF:_sortInfo:Items[0]:Length
             indxFlags   := SELF:_sortInfo:Items[0]:Flags
             // comparison using string rules
-            diff := SELF:_oRdd:StringCompare(dataBuffer, dataBuffer2, iLen)
+            diff := RuntimeState.StringCompare(dataBuffer, dataBuffer2, iLen)
             IF indxFlags:HasFlag(DbSortFlags.Descending) 
                 diff *= -1
             ENDIF

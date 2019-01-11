@@ -19,7 +19,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _Order AS NtxOrder
         PRIVATE _hDump AS IntPtr
         
-        PRIVATE METHOD _FindPage( offset AS LONG ) AS NtxPage
+        PRIVATE METHOD _FindPage( offset AS DWORD ) AS NtxPage
             LOCAL ntxPage AS NtxPage
             ntxPage := SELF:_Pages:Find( { p => p:PageOffset == offset } )
             RETURN ntxPage
@@ -27,8 +27,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL PROPERTY DumpHandle AS IntPtr GET _hDump SET _hDump := VALUE
 
         PRIVATE METHOD _DumpPage(page AS NtxPage) AS VOID
-            IF _hDump != IntPtr.Zero
+            IF _hDump != IntPtr.Zero .AND. ! page:Dumped
                 FWrite(_hDump, page:Dump(SELF:_Order:_KeySize))
+                page:Dumped := TRUE
             ENDIF
             RETURN
             
@@ -37,7 +38,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_Order := order
             
             
-        INTERNAL METHOD Update( pageNo AS LONG ) AS NtxPage
+        INTERNAL METHOD Update( pageNo AS DWORD ) AS NtxPage
             LOCAL ntxPage AS NtxPage
             ntxPage := SELF:Read(pageNo)
             IF ( ntxPage != NULL )
@@ -46,28 +47,28 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN ntxPage
             
             
-        INTERNAL METHOD Append( offset AS LONG ) AS NtxPage
+        INTERNAL METHOD Append( pageNo AS DWORD ) AS NtxPage
             LOCAL ntxPage AS NtxPage
-            ntxPage := SELF:_FindPage(offset)
+            ntxPage := SELF:_FindPage(pageNo)
             IF (ntxPage == NULL)
                 ntxPage := NtxPage{SELF:_Order, 0L}
-                ntxPage:PageOffset := offset
+                ntxPage:PageOffset := pageNo
                 SELF:_Pages:Add(ntxPage)
-                SELF:_dumpPage(ntxPage)
             ENDIF
+            SELF:_dumpPage(ntxPage)
             ntxPage:Hot := TRUE
             RETURN ntxPage
             
             
-        INTERNAL METHOD Read(pageNo AS LONG ) AS NtxPage
+        INTERNAL METHOD Read(pageNo AS DWORD ) AS NtxPage
             LOCAL ntxPage AS NtxPage
             //
             ntxPage := SELF:_FindPage(pageNo)
             IF (ntxPage == NULL)
                 ntxPage := NtxPage{SELF:_Order, pageNo}
                 SELF:_Pages:Add(ntxPage)
-                SELF:_dumpPage(ntxPage)
             ENDIF
+            SELF:_dumpPage(ntxPage)
             RETURN ntxPage
             
             
@@ -94,7 +95,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN isOk
             
             
-        INTERNAL METHOD Write(pageNo AS LONG ) AS LOGIC
+        INTERNAL METHOD Write(pageNo AS DWORD ) AS LOGIC
             LOCAL ntxPage AS NtxPage
             //
             ntxPage := SELF:_FindPage(pageNo)

@@ -22,28 +22,16 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL PROPERTY ExtraKeys AS LONG AUTO
         INTERNAL PROPERTY Parents   AS LONG AUTO
         
-        INTERNAL METHOD InitRefs(uiMaxEntry AS WORD , uiEntrySize AS WORD ) AS VOID
-            LOCAL offSet AS WORD
-            //
-            SELF:Write( SELF:PageOffset)
-            offSet := (WORD) ((uiMaxEntry + 2) * 2)
-            FOR VAR i := 0 TO uiMaxEntry
-                SELF:SetRef(i, offset)
-                offset += uiEntrySize
-            NEXT
-            SUPER:NodeCount := 0
-            
-            
         INTERNAL CONSTRUCTOR(order AS NtxOrder )
-            SUPER(order, 0L)
-            SELF:Exp := 0
-            SELF:BaseKeys := 0
-            SELF:Keys := 0
-            SELF:Parents := 0
-            SELF:ExtraKeys := 0
+            SUPER(order, 0)
+            SELF:Exp        := 0
+            SELF:BaseKeys   := 0
+            SELF:Keys       := 0
+            SELF:Parents    := 0
+            SELF:ExtraKeys  := 0
             
             
-        INTERNAL METHOD Write( offset AS LONG ) AS LOGIC
+        INTERNAL METHOD Write( offset AS DWORD ) AS LOGIC
             LOCAL result AS LOGIC
             //
             SELF:PageOffset := offset

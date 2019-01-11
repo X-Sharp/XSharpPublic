@@ -83,13 +83,13 @@ FUNCTION IsCodeBlock(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsCodeBlock
 
 /// <summary>
-/// Determine if a value is a Date.
+/// Determine if a value is a Date or a DateTime
 /// </summary>
 /// <param name="uVal"></param>
 /// <returns>
 /// </returns>
 FUNCTION IsDate(uVal AS USUAL) AS LOGIC
-	RETURN uVal:IsDate
+	RETURN uVal:IsDate .OR. uVal:IsDateTime
 
 
 /// <summary>
@@ -102,7 +102,7 @@ FUNCTION IsDateTime(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsDateTime
 
 /// <summary>
-/// Determine if a value is a DateTime.
+/// Determine if a value is a Decimal.
 /// </summary>
 /// <param name="uVal"></param>
 /// <returns>
@@ -110,6 +110,14 @@ FUNCTION IsDateTime(uVal AS USUAL) AS LOGIC
 FUNCTION IsDecimal(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsDecimal
 
+/// <summary>
+/// Determine if a value is a Decimal or a Float
+/// </summary>
+/// <param name="uVal"></param>
+/// <returns> 
+/// </returns>
+FUNCTION IsFractional(uVal AS USUAL) AS LOGIC
+	RETURN uVal:IsFloat .OR. uVal:IsDecimal
 
 /// <summary>
 /// Determine if a value is a Float.
@@ -121,7 +129,25 @@ FUNCTION IsFloat(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsFloat
 
 /// <summary>
-/// Determine if a value is a logical.
+/// Determine if a value is a INT64.
+/// </summary>
+/// <param name="uVal"></param>
+/// <returns>
+/// </returns>
+FUNCTION IsInt64(uVal AS USUAL) AS LOGIC
+	RETURN uVal:IsInt64
+
+/// <summary>
+/// Determine if a value is an integer (LONG or INT64).
+/// </summary>
+/// <param name="uVal"></param>
+/// <returns>
+/// </returns>
+FUNCTION IsInteger(uVal AS USUAL) AS LOGIC
+	RETURN uVal:IsInteger
+
+/// <summary>
+/// Determine if a value is a Logic.
 /// </summary>
 /// <param name="uVal"></param>
 /// <returns>
@@ -137,6 +163,7 @@ FUNCTION IsLogic(uVal AS USUAL) AS LOGIC
 /// </returns>
 FUNCTION IsLong(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsLong
+
 
 /// <summary>
 /// Determine if a value is __Usual._NIL.

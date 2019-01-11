@@ -142,7 +142,7 @@
     <Compile Include="Types\DbfNsx.prg" />
     <Compile Include="Types\DbfNtx.prg" />
     <Compile Include="Types\DbfNtx\NtxHeader.prg" />
-    <Compile Include="Types\DbfNtx\NtxItem.prg" />
+    <Compile Include="Types\DbfNtx\NtxNode.prg" />
     <Compile Include="Types\DbfNtx\NtxLevel.prg" />
     <Compile Include="Types\DbfNtx\NtxOrder.prg" />
     <Compile Include="Types\DbfNtx\NtxOrderList.prg" />

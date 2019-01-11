@@ -17,12 +17,20 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     INTERNAL SEALED CLASS NtxPageList
         PRIVATE _Pages AS List<NtxPage>
         PRIVATE _Order AS NtxOrder
+        PRIVATE _hDump AS IntPtr
         
         PRIVATE METHOD _FindPage( offset AS LONG ) AS NtxPage
             LOCAL ntxPage AS NtxPage
             ntxPage := SELF:_Pages:Find( { p => p:PageOffset == offset } )
             RETURN ntxPage
-            
+
+        INTERNAL PROPERTY DumpHandle AS IntPtr GET _hDump SET _hDump := VALUE
+
+        PRIVATE METHOD _DumpPage(page AS NtxPage) AS VOID
+            IF _hDump != IntPtr.Zero
+                FWrite(_hDump, page:Dump(SELF:_Order:_KeySize))
+            ENDIF
+            RETURN
             
         INTERNAL CONSTRUCTOR( order AS NtxOrder )
             SELF:_Pages := List<NtxPage>{}
@@ -45,6 +53,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ntxPage := NtxPage{SELF:_Order, 0L}
                 ntxPage:PageOffset := offset
                 SELF:_Pages:Add(ntxPage)
+                SELF:_dumpPage(ntxPage)
             ENDIF
             ntxPage:Hot := TRUE
             RETURN ntxPage
@@ -57,6 +66,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF (ntxPage == NULL)
                 ntxPage := NtxPage{SELF:_Order, pageNo}
                 SELF:_Pages:Add(ntxPage)
+                SELF:_dumpPage(ntxPage)
             ENDIF
             RETURN ntxPage
             

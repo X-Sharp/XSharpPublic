@@ -170,7 +170,17 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 		PRIVATE CONST NTXOFFSET_ORDNAME         := 538 AS WORD
 		PRIVATE CONST NTXHEADER_SIZE            := 1024 AS WORD
         
-			
+	INTERNAL METHOD Dump(cText AS STRING) AS STRING
+            VAR sb := System.Text.StringBuilder{}
+            sb:AppendLine( String.Format("NTX Header {0}", cText))
+            sb:AppendLine( "----------------------------------------------")
+            sb:AppendLine( String.Format("Signature {0}, Version {1}, First page {2}, Unused Page {3}", SELF:Signature, SELF:IndexingVersion, SELF:FirstPageOffSet, SELF:NextUnusedPageOffset))
+            sb:AppendLine( String.Format("Item size {0}, Key Size {1}, Decimals {2}, Max Items {3}, HalfPage {4}", SELF:EntrySize, SELF:KeySize, SELF:KeyDecimals, SELF:MaxItem, SELF:HalfPage))
+            sb:AppendLine( String.Format("Key Expression: {0}, Unique {1}, Descending {2}", SELF:KeyExpression, SELF:Unique, SELF:Descending))
+            sb:AppendLine( String.Format("For Expression: {0}, OrdName {1}", SELF:ForExpression, SELF:OrdName))
+            sb:AppendLine( "----------------------------------------------")
+            RETURN sb:ToString()
+
 		
     END CLASS
     [Flags];        

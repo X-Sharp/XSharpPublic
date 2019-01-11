@@ -8,10 +8,14 @@
 USING System
 USING System.Collections.Generic
 USING System.Text
+USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp.RDD.NTX
 
+    [DebuggerDisplay("Level: {PageOffset}")];
     INTERNAL CLASS NtxLevel INHERIT NtxPage
+        // This special subclass of NtxPage is used during index creation
+        // It has some extra properties to help keeping track of the number of keys on the page
         INTERNAL PROPERTY Exp       AS LONG AUTO
         INTERNAL PROPERTY BaseKeys  AS LONG AUTO
         INTERNAL PROPERTY Keys      AS LONG AUTO
@@ -44,7 +48,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             //
             SELF:PageOffset := offset
             result := SELF:Write()
-            SELF:PageOffset := 0
             RETURN result
             
             

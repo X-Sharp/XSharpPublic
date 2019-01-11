@@ -194,6 +194,229 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True( DBCloseArea() )
 		RETURN
 
+		// TECH-SAK5955895
+		[Fact, Trait("Category", "DBF")];
+		METHOD SavingDecimalValues() AS VOID
+			LOCAL cFileName AS STRING
+			cFileName := GetTempFileame("mydbf.dbf")
+			DBCreate(cFileName, {{"FLD1","N",10,2},{"FLD2","N",10,0}})
+			DBUseArea(,,cFileName)
+			DBAppend()
+
+			SetDecimalSep(Asc(","))
+			FieldPut(1 , 12.34) // not saved in the dbf
+			Assert.Equal(12.34 , FieldGet(1)) // 0,00
+
+			SetDecimalSep(Asc("."))
+			FieldPut(1 , 12.34)
+			Assert.Equal(12.34 , FieldGet(1))
+
+			DBCloseArea()
+		RETURN
+
+		// TECH-C8WB52EA4A , Runtime exception when reading from a float field, after writing to it and DBCommit()
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBCommitAfterFieldput() AS VOID
+			LOCAL cFileName AS STRING
+			cFileName := GetTempFileame("mydbf1.dbf")
+			DBCreate(cFileName, {{"FLD1","N",10,4}})
+			DBUseArea( , , cFileName , "tempalias")
+			DBAppend()
+			DBCloseArea()
+			
+			DBUseArea( , , cFileName)
+			FieldPut(1 , 46.11) // ! a float isn/t stored !
+			DBCommit()
+			Assert.Equal(46.11 , FieldGet(1)) // runtime exception
+			DBCloseArea()
+		RETURN
+	
+	
+		// TECH-J61EXJ870D , FieldName() and FieldSym() throw an exception with incorrect field no
+		[Fact, Trait("Category", "DBF")];
+		METHOD FieldNameSym() AS VOID
+			LOCAL cFileName AS STRING
+			cFileName := GetTempFileame("mydbf4.dbf")
+			DBCreate(cFileName, {{"FLD1","N",10,4}})
+			DBUseArea( , , cFileName , "tempalias")
+			DBAppend()
+			Assert.Equal("", FieldName(100)) // exception
+			Assert.Equal("", FieldName(0))
+			Assert.Equal(NULL_SYMBOL, FieldSym(100))
+			Assert.Equal(NULL_SYMBOL, FieldSym(0))
+			DBCloseArea()
+		RETURN
+	
+	
+	
+		// TECH-560ANYQI2P , DBRLockList() always returns zero
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBRLockList() AS VOID
+			LOCAL cFileName AS STRING
+			cFileName := GetTempFileame("mydbf3.dbf")
+			DBCreate(cFileName, {{"FLD1","C",10,0}})
+			DBUseArea( , , cFileName , "tempalias" , TRUE)
+			DBAppend()
+			DBAppend()
+			DBGoTop()
+			DBRLock()
+			DBRLockList()
+			Assert.Equal(1, ALen(DBRLockList()))
+			Assert.Equal(1, DBRLockList()[1])
+			DBUnlock()
+			DBSkip()
+			DBRLock()
+			Assert.Equal(1, ALen(DBRLockList()))
+			Assert.Equal(2, DBRLockList()[1])
+			DBCloseArea()
+		RETURN
+	
+		// TECH-34OWD3RR1Z , DBF problems with filters
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBFilter() AS VOID
+			LOCAL cDbf AS STRING
+			cDbf := GetTempFileame("testdbf6.dbf")
+			IF System.IO.File.Exists(cDbf)
+				System.IO.File.Delete(cDbf)
+			END IF
+			DBCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFNTX", TRUE)
+			DBAppend()
+			FieldPut(1, "ABC")
+			DBAppend()
+			FieldPut(1, "DEF")
+			DBAppend()
+			FieldPut(1, "GHI")
+			DBAppend()
+			FieldPut(1, "JKL")
+			Assert.Equal(4 , RecCount())
+			Assert.Equal(4 , LastRec())
+			DBCloseArea()
+						
+			DBUseArea(,,cDbf)
+//			"Setting filter to GHI, should be one record:"
+//			"Instead, record 1 and 3 are shown"
+			DBSetFilter({||AllTrim(FIELD->CFIELD) == "GHI"})
+			DBGoTop()
+			LOCAL nCount := 0 AS INT
+			DO WHILE .not. EoF()
+				Assert.Equal(3 , RecNo())
+				FieldGet(1)
+				DBSkip(+1)
+				nCount ++
+			END DO
+			Assert.Equal(1 , nCount)
+			
+			DBGoBottom()
+			Assert.False( EOF() )
+			nCount := 0
+			DO WHILE .not. EoF()
+				Assert.Equal(3 , RecNo())
+				nCount ++
+				FieldGet(1)
+				DBSkip(+1)
+			END DO
+			Assert.Equal(1 , nCount)
+			
+			DBCloseArea()
+		RETURN
+
+		// TECH-8C175D53DN , DBRecordInfo() always returns NULL_OBJECT
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBRecordInfo_test() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL l AS LOGIC
+			cDbf := GetTempFileame("testdbf7.dbf")
+			DBCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFNTX", TRUE)
+			DBAppend()
+			FieldPut(1, "ABC")
+			
+			l := DBRecordInfo( DBRI_RECNO ) // exception
+			Assert.True(l)
+			l := DBRecordInfo( DBRI_DELETED ) // exception
+			Assert.False(l)
+			l := DBRecordInfo( DBRI_LOCKED ) // exception
+			Assert.True(l)
+			
+			DBCloseArea()
+		RETURN
+		
+		// TECH-NVMBVB2Y44 , NullReferenceExpetion with DBFieldInfo()
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBFieldInfo_test() AS VOID
+			LOCAL cDbf AS STRING
+			cDbf := GetTempFileame("testdbf8.dbf")
+			DBCreate(cDbf, {{"NFIELD","N",10,3}}, "DBFNTX", TRUE)
+			DBAppend()
+			FieldPut(1, "ABC")
+			
+			Assert.Equal("NFIELD",	DBFieldInfo( DBS_NAME , 1 ) ) // NullReferenceException
+			Assert.Equal("N",		DBFieldInfo( DBS_TYPE , 1 ) )
+			Assert.Equal(10,		DBFieldInfo( DBS_LEN , 1 ) )
+			Assert.Equal(3,			DBFieldInfo( DBS_DEC , 1 ) )
+			Assert.Equal(5,			DBFieldInfo( DBS_PROPERTIES , 1 ) )
+			
+			DBCloseArea()
+		RETURN
+
+		// TECH-52M9YX557W , DBRecordInfo() changes record pointer
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBRecordInfo_test2() AS VOID
+			LOCAL cDbf AS STRING
+			cDbf := GetTempFileame("testdbf9.dbf")
+			DBCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFNTX", TRUE)
+			DBAppend()
+			FieldPut(1, "ABC")
+			DBAppend()
+			FieldPut(1, "DEF")
+			
+			DBGoTop()
+			Assert.Equal(1, RecNo())
+			Assert.Equal(FALSE, EOF())
+			
+//			 Any of the below cause the record pointer to go EOF
+			Assert.False( DBRecordInfo(DBRI_DELETED , 0) )
+			DBRecordInfo(DBRI_BUFFPTR , 0)
+			DBRecordInfo(DBRI_RAWDATA , 0)
+			
+			Assert.Equal(1, RecNo())
+			Assert.Equal(FALSE, EOF())
+			
+			DBCloseArea()
+		RETURN
+	
+		// TECH-C6Y1L51V1O , DBContinue() not working correctly
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBContinue_test() AS VOID
+			LOCAL cDbf AS STRING
+			cDbf := GetTempFileame("testdbf10.dbf")
+			DBCreate(cDbf, {{"NFIELD","N",10,0}}, "DBFNTX", TRUE)
+			DBAppend()
+			FieldPut(1, 123)
+			DBAppend()
+			FieldPut(1, 456)
+			DBAppend()
+			FieldPut(1, 789)
+			
+			DBGoTop()
+			Assert.True( DBLocate({||_FIELD->NFIELD > 300} , , , , TRUE) ) // DBSCOPEREST
+			Assert.True( Found() )
+			Assert.Equal(456.0 , FieldGet(1) )
+			
+//			DBContinue() returns TRUE (correct) but does not move record pointer at all
+			Assert.True( DBContinue() )
+			Assert.True( Found() )
+			Assert.Equal( 789.0 , FieldGet(1) )
+			
+			Assert.True( DBContinue() )
+			Assert.False( Found() )
+			Assert.Equal( 0.0 , FieldGet(1) )
+			
+			Assert.True( DBContinue() )
+			Assert.False( Found() )
+			Assert.Equal( 0.0 , FieldGet(1) )
+			
+			DBCloseArea()
+		RETURN
 
 
 

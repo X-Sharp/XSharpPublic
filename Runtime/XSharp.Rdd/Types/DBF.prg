@@ -1964,7 +1964,10 @@ BEGIN NAMESPACE XSharp.RDD
 					oResult := (INT) SELF:_Header:CodePage:ToCodePage()
 
 				CASE DbInfo.DBI_GETLOCKARRAY
-                    oResult := SELF:_Locks:ToArray()
+                    VAR aLocks := SELF:_Locks:ToArray()
+                    System.Array.Sort(aLocks)
+                    oResult := aLocks
+
 				CASE DbInfo.DBI_LOCKCOUNT
                     oResult := SELF:_Locks:Count
                  CASE DbInfo.DBI_LOCKOFFSET
@@ -2113,6 +2116,9 @@ BEGIN NAMESPACE XSharp.RDD
                     oResult := SELF:Deleted
 				CASE DBRI_LOCKED
 					IF ( SELF:_Shared )
+                        IF nNewRec == 0
+                            nNewRec := SELF:RecNo
+                        ENDIF
 						oResult := SELF:_Locks:Contains( nNewRec )
 					ELSE
 						oResult := TRUE

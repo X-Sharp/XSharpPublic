@@ -35,6 +35,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     /// The NtxPage class.
 	/// This is a collection of Items
     /// </summary>
+
+    [DebuggerDisplay("Page: {PageOffset}")];
     INTERNAL CLASS NtxPage
         PRIVATE CONST NTXPAGE_SIZE             := 1024 AS WORD
         PROTECTED _Order    AS NtxOrder
@@ -73,12 +75,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             END SET
         END PROPERTY
         
-		// Retrieve a NtxItem in the current Page, at the specified position
-        INTERNAL PROPERTY SELF[ index AS LONG ] AS NtxItem
+		// Retrieve a NtxNode in the current Page, at the specified position
+        INTERNAL PROPERTY SELF[ index AS LONG ] AS NtxPageNode
             GET
-                LOCAL item := NULL AS NtxItem
+                LOCAL item := NULL AS NtxPageNode
                 TRY
-                    item := NtxItem{ SELF:_Order:_keySize  }
+                    item := NtxPageNode{ SELF:_Order:_keySize  }
                     item:Fill( index, SELF )
                 CATCH e AS Exception
                     Debug.WriteLine( "Ntx Error : " + e:Message )
@@ -115,7 +117,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     // Move to top of Page
                     FSeek3( SELF:_Order:_hFile, SELF:_Offset /*  * NtxHeader.NTXOFFSETS.SIZE    */, SeekOrigin.Begin )
                     // Read Buffer
-                    isOk := FRead3(SELF:_Order:_hFile, SELF:_Bytes, NTXPAGE_SIZE) == NTXPAGE_SIZE 
+                    isOk := FRead3(SELF:_Order:_hFile, SELF:_Bytes, NTXPAGE_SIZE) == NTXPAGE_SIZE
+                    
                 CATCH e AS Exception
                     isOk := FALSE
                     Debug.WriteLine( "Ntx Error : " + e:Message )
@@ -149,7 +152,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN isOk
             
 		// Retrieve the Record/Item offset from start of Page
-        INTERNAL  METHOD GetRef( pos AS LONG ) AS WORD
+        INTERNAL METHOD GetRef( pos AS LONG ) AS WORD
             TRY
                 RETURN BitConverter.ToUInt16(SELF:_bytes, (pos+1) * 2)
             CATCH //Exception
@@ -160,6 +163,18 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL  METHOD SetRef(pos AS LONG , newValue AS WORD ) AS VOID
             Array.Copy(BitConverter.GetBytes( newValue), 0, SELF:_bytes, (pos+1) * 2, 2)
             SELF:Hot := TRUE
+
+        INTERNAL METHOD Dump(keyLen AS WORD) AS STRING
+            VAR sb := System.Text.StringBuilder{}
+            VAR item := NtxPageNode{keyLen}
+            sb:AppendLine(String.Format("Page {0}, # of keys: {1}", SELF:PageOffSet, SELF:NodeCount))
+            FOR VAR i := 0 TO SELF:NodeCount-1
+                item:Fill(i, SELF)
+                sb:AppendLine(String.Format("Item {0,2}, Page {1,6} Record {2,4} : {3} ", i, item:PageNo, item:Recno, item:KeyText))
+            NEXT
+            item:Fill(SELF:NodeCount, SELF)
+            sb:AppendLine(String.Format("Right page reference {0}", item:PageNo))
+            RETURN sb:ToString()
             
     END CLASS
     

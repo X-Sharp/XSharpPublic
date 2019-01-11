@@ -79,7 +79,7 @@ BEGIN NAMESPACE XSharp.RDD
 			result := 0
 			workOrder := NULL
 			orderPos := SELF:_ntxList:FindOrder(info:Order)
-			IF ( orderPos <= 0 )
+			IF orderPos <= 0 
 				workOrder := SELF:_ntxList:CurrentOrder
 			ELSE
 				workOrder := SELF:_ntxList[orderPos - 1]
@@ -87,11 +87,11 @@ BEGIN NAMESPACE XSharp.RDD
 			//
 			BEGIN SWITCH nOrdinal
 			CASE DBOI_CONDITION
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					info:Result := workOrder:Condition
 				ENDIF
 			CASE DBOI_EXPRESSION
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					info:Result := workOrder:Expression
 				ENDIF
 			CASE DBOI_ORDERCOUNT
@@ -107,7 +107,7 @@ BEGIN NAMESPACE XSharp.RDD
 				ENDIF
 			CASE DBOI_KEYCOUNT
 				result := 0
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					info:Result := 0
 					isOk := workOrder:_CountRecords(REF result)
 				ENDIF
@@ -119,55 +119,55 @@ BEGIN NAMESPACE XSharp.RDD
 			CASE DBOI_BAGEXT
 				info:Result := ".NTX"
 			CASE DBOI_FULLPATH
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					info:Result := workOrder:FileName
 				ENDIF
 			CASE DBOI_BAGNAME
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					info:Result := System.IO.Path.GetFileNameWithoutExtension(workOrder:FileName)
 				ENDIF
 			CASE DBOI_NAME
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					info:Result := workOrder:_orderName
 				ENDIF
 			CASE DBOI_FILEHANDLE
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					info:Result := workOrder:_hFile
 				ENDIF
 			CASE DBOI_ISDESC
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					info:Result := workOrder:_Descending
 				ENDIF
 			CASE DBOI_ISCOND
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					info:Result := workOrder:_Conditional
 				ENDIF
 			CASE DBOI_KEYTYPE
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					info:Result := workOrder:_KeyExprType
 				ENDIF
 			CASE DBOI_KEYSIZE
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					info:Result := workOrder:_keySize
 				ENDIF
 			CASE DBOI_KEYDEC
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					info:Result := workOrder:_keyDecimals
 				ENDIF
 			CASE DBOI_HPLOCKING
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					info:Result := workOrder:_HPLocking
 				ENDIF
 			CASE DBOI_UNIQUE
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					info:Result := workOrder:_Unique
 				ENDIF
 			CASE DBOI_LOCKOFFSET
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					info:Result := workOrder:_lockScheme:Offset
 				ENDIF
 			CASE DBOI_SETCODEBLOCK
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					oldvalue := workOrder:_KeyCodeBlock
 					IF (info:Result != NULL)
 						workOrder:_KeyCodeBlock := (ICodeblock)info:Result
@@ -175,7 +175,7 @@ BEGIN NAMESPACE XSharp.RDD
 					info:Result := oldvalue
 				ENDIF
 			CASE DBOI_KEYVAL
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					isOk := TRUE
 					TRY
 						info:Result := SELF:EvalBlock(workOrder:_KeyCodeBlock)
@@ -187,29 +187,35 @@ BEGIN NAMESPACE XSharp.RDD
 					ENDIF
 				ENDIF
 			CASE DBOI_SCOPETOP
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					IF (info:Result != NULL)
 						workOrder:SetOrderScope(info:Result, XSharp.RDD.Enums.DbOrder_Info.DBOI_SCOPETOP)
 					ENDIF
 					info:Result := workOrder:_topScope
 				ENDIF
 			CASE DBOI_SCOPEBOTTOM
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					IF (info:Result != NULL)
 						workOrder:SetOrderScope(info:Result, XSharp.RDD.Enums.DbOrder_Info.DBOI_SCOPEBOTTOM)
 					ENDIF
 					info:Result := workOrder:_bottomScope
 				ENDIF
 			CASE DBOI_SCOPETOPCLEAR
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					workOrder:_hasTopScope := FALSE
 					workOrder:_topScope := NULL
 				ENDIF
 			CASE DBOI_SCOPEBOTTOMCLEAR
-				IF (workOrder != NULL)
+				IF workOrder != NULL
 					workOrder:_hasBottomScope := FALSE
 					workOrder:_bottomScope := NULL
 				ENDIF
+            CASE DBOI_USER + 42
+                // Dump Ntx to Txt file
+				IF workOrder != NULL
+					workOrder:_dump()
+				ENDIF
+
 			OTHERWISE
 				isOk := (LOGIC)SUPER:OrderInfo(nOrdinal, info)
 			END SWITCH

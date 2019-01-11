@@ -51,6 +51,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     
     
     INTERNAL SEALED CLASS NtxOrder INHERIT BaseIndex IMPLEMENTS IRddSortWriter
+        PRIVATE CONST MAX_KEY_LEN       := 256  AS WORD
+        PRIVATE CONST BUFF_SIZE	        := 1024  AS WORD
+        PRIVATE CONST NTX_COUNT         := 16    AS WORD
+        PRIVATE CONST NTX_STACK_COUNT   := 20    AS WORD
+        PRIVATE CONST MIN_BYTE          := 0x01 AS BYTE
+        PRIVATE CONST MAX_BYTE          := 0xFF AS BYTE
+        PRIVATE CONST MAX_TRIES         := 50 AS WORD
     
         INTERNAL _hFile AS IntPtr
         INTERNAL _Encoding AS Encoding
@@ -101,11 +108,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL _bottomScopeSize AS LONG
         INTERNAL _oRdd AS DBFNTX
         INTERNAL _Header AS NtxHeader
-        INTERNAL _oneItem AS NtxItem
+        INTERNAL _oneItem AS NtxNode
         INTERNAL _PageList AS NtxPageList
         PRIVATE _levels AS NtxLevel[]
         PRIVATE _levelsCount AS DWORD
-        PRIVATE _midItem AS NtxItem
+        PRIVATE _midItem AS NtxNode
         PRIVATE _outPageNo AS LONG
         PRIVATE _parkPlace AS LONG
         
@@ -124,18 +131,18 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             //
             LOCAL i AS LONG
             //
-            SELF:_knownKeyBuffer := BYTE[]{ 257 }
-            SELF:_newKeyBuffer := BYTE[]{ 257 }
-            SELF:_fileName := NULL
-            SELF:_hFile := NULL
-            SELF:_oRdd := oRDD
-            SELF:_Header := NULL 
-            SELF:_ntxStack := NtxStack[]{ 20 }
-            SELF:_Encoding := oRDD:_Encoding
-            SELF:_tagNumber := 1
-            SELF:_maxLockTries := 1
+            SELF:_knownKeyBuffer := BYTE[]{ MAX_KEY_LEN+1 }
+            SELF:_newKeyBuffer  := BYTE[]{ MAX_KEY_LEN+1 }
+            SELF:_fileName      := NULL
+            SELF:_hFile         := NULL
+            SELF:_oRdd          := oRDD
+            SELF:_Header        := NULL 
+            SELF:_ntxStack      := NtxStack[]{ NTX_STACK_COUNT }
+            SELF:_Encoding      := oRDD:_Encoding
+            SELF:_tagNumber     := 1
+            SELF:_maxLockTries  := 1
             //Init
-            FOR i := 0 TO ( SELF:_ntxStack:Length - 1 )
+            FOR i := 0 TO NTX_STACK_COUNT - 1 
                 SELF:_ntxStack[i] := NtxStack{}
             NEXT
                             
@@ -149,9 +156,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             END GET
             SET
                 SELF:_FileName := VALUE
-                IF  String.IsNullOrEmpty( SELF:_FileName ) 
+                IF  String.IsNullOrEmpty( SELF:_FileName )
+                    // When empty then take same name as DBF but with NTX extension
                     SELF:_FileName := SELF:_oRDD:_FileName
-                    //SELF:_FileName := Path.ChangeExtension(SELF:_FileName, ".ntx")
+                    SELF:_FileName := Path.ChangeExtension(SELF:_FileName, ".ntx")
                 ENDIF
                 // and be sure to have an extension
                 VAR ext := Path.GetExtension(SELF:_FileName)
@@ -177,24 +185,21 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     INTERNAL METHOD Open(dbordInfo AS DBORDERINFO ) AS LOGIC
         LOCAL isOk AS LOGIC
         LOCAL i AS LONG
-        //
         isOk := FALSE
         SELF:_oRdd:GoCold()
-        //
         SELF:_Shared := SELF:_oRDD:_Shared
         SELF:_ReadOnly := SELF:_oRDD:_ReadOnly
-        //
         SELF:_hFile    := Fopen(SELF:FileName, SELF:_oRDD:_OpenInfo:FileMode) 
         IF SELF:_hFile == F_ERROR 
             SELF:_oRDD:_dbfError( ERDD.OPEN_ORDER, GenCode.EG_OPEN, SELF:fileName)
             RETURN FALSE
         ENDIF
-        //
         SELF:_Header := NtxHeader{ SELF:_hFile }
         IF !SELF:_Header:Read()
             SELF:_oRDD:_dbfError(ERDD.OPEN_ORDER, GenCode.EG_OPEN, SELF:fileName)
             RETURN FALSE
         ENDIF
+        
         SELF:_PageList := NtxPageList{SELF}
         SELF:_Ansi := SELF:_oRdd:_Ansi
         // Key
@@ -247,20 +252,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_Conditional := TRUE
         ENDIF
         // If the Key Expression contains only a Field Name
-        SELF:_SingleField := -1
-        FOR i := 1 TO SELF:_oRDD:FieldCount
-            IF string.Compare(SELF:_KeyExpr, SELF:_oRDD:FieldName(i), TRUE) == 0
-                SELF:_SingleField := i
-                EXIT
-            ENDIF
-        NEXT
-        //
+        SELF:_SingleField := SELF:_oRDD:FieldIndex(SELF:_KeyExpr)
         SELF:_Shared := SELF:_oRdd:_Shared
         FSeek3( SELF:_hFile, 0, FS_END )
         SELF:_fileSize  := (LONG)FTell( SELF:_hFile ) 
         SELF:_Hot := FALSE
         SELF:ClearStack()
-        //
         SELF:_entrySize := SELF:_Header:EntrySize
         SELF:_keySize := SELF:_Header:KeySize
         SELF:_keyDecimals := SELF:_Header:KeyDecimals
@@ -272,8 +269,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         SELF:_Unique := SELF:_Header:Unique
         SELF:_Descending := SELF:_Header:Descending
         //
-        SELF:_midItem := NtxItem{SELF:_keySize}
-        SELF:_oneItem := NtxItem{SELF:_keySize}
+        SELF:_midItem := NtxNode{SELF:_keySize}
+        SELF:_oneItem := NtxNode{SELF:_keySize}
         IF string.IsNullOrEmpty(SELF:_Header:OrdName)
             SELF:_orderName := Path.GetFileNameWithoutExtension(SELF:fileName)
         ELSE
@@ -311,8 +308,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         ENDIF
         RETURN isOk
                             
-                            
-                            
         DESTRUCTOR()
             Close()
                             
@@ -329,7 +324,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             FFlush( SELF:_hFile )
             RETURN TRUE
                             
-                            
     PUBLIC METHOD Commit() AS LOGIC
         SELF:GoCold()
         IF !SELF:_Shared .AND. SELF:_Hot .AND. SELF:_hFile != F_ERROR
@@ -340,7 +334,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         ENDIF
         FFlush( SELF:_hFile )
         RETURN TRUE
-                            
                             
         PUBLIC METHOD Close() AS LOGIC
             SELF:Flush()
@@ -359,13 +352,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             END TRY
             RETURN TRUE
                             
-                            
         PUBLIC METHOD GoCold() AS LOGIC
             IF SELF:_oRDD:IsHot
                 RETURN SELF:_KeyUpdate((DWORD) SELF:_oRDD:RecNo, SELF:_oRDD:IsNewRecord )
             ENDIF
             RETURN TRUE
-                            
                             
         PRIVATE METHOD _KeyUpdate(recordNo AS DWORD , lNewRecord AS LOGIC ) AS LOGIC
             LOCAL condFor := TRUE AS LOGIC
@@ -486,7 +477,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             RETURN TRUE
                             
-                            
         INTERNAL METHOD _keySave(rcno AS DWORD ) AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL uiRealLen AS LONG
@@ -509,15 +499,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             RETURN isOk
                             
-                            
         PUBLIC METHOD Truncate() AS LOGIC
-            SELF:_firstPageOffset := NtxConst.BUFF_SIZE
+            SELF:_firstPageOffset := BUFF_SIZE
             SELF:_nextUnusedPageOffset := 0
             SELF:_Hot := TRUE
             SELF:ClearStack()
             SELF:_knownRecno := 0
-            FChSize( SELF:_hFile, NtxConst.BUFF_SIZE )
-            SELF:_fileSize := NtxConst.BUFF_SIZE
+            FChSize( SELF:_hFile, BUFF_SIZE )
+            SELF:_fileSize := BUFF_SIZE
             SELF:Flush()
             RETURN TRUE
                             
@@ -559,10 +548,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_Header:IndexingVersion        := SELF:_indexVersion
             SELF:_Header:FirstPageOffset        := SELF:_firstPageOffset
             SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
+            System.Diagnostics.Debug.WriteLine(SELF:_Header:Dump("After Update"))
+
             RETURN SELF:_Header:Write()
                             
             // Save informations about the "current" Item	
-        PRIVATE METHOD _saveRecordState( node AS NtxItem ) AS VOID
+        PRIVATE METHOD _saveRecordState( node AS NtxNode ) AS VOID
             SELF:_knownRecno := node:Recno
             Array.Copy(node:KeyBytes, SELF:_knownKeyBuffer, SELF:_keySize)
                             
@@ -573,7 +564,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL orderInfo AS DBORDERINFO
             LOCAL hasForCond AS LOGIC
             LOCAL Expression AS STRING
-            LOCAL i AS LONG
             LOCAL num AS WORD
             //
             ordCondInfo := SELF:_oRdd:_OrderCondInfo
@@ -620,18 +610,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF string.IsNullOrEmpty(SELF:_orderName)
                 SELF:_orderName := Path.GetFileNameWithoutExtension(createInfo:BagName)
             ENDIF
-            SELF:_SingleField := -1
-            //Init
-            FOR i := 0 TO ( SELF:_oRdd:_fields:Length - 1)
-                IF string.Compare(SELF:_KeyExpr, SELF:_oRdd:_fields[i]:Name, TRUE) == 0
-                    SELF:_SingleField := i
-                    SELF:_keySize       := (WORD) SELF:_oRdd:_fields[i]:Length
-                    SELF:_keyDecimals   := (WORD)SELF:_oRdd:_fields[i]:Decimals
-                    EXIT
-                ENDIF
-            NEXT
-            isOk := TRUE
-            IF SELF:_SingleField == -1
+            SELF:_SingleField := SELF:_oRdd:FieldIndex(SELF:_KeyExpr) -1
+            IF SELF:_SingleField >= 0
+                SELF:_keySize       := (WORD) SELF:_oRdd:_fields[_SingleField]:Length
+                SELF:_keyDecimals   := (WORD) SELF:_oRdd:_fields[_SingleField]:Decimals
+                isOk := TRUE
+            ELSE
                 SELF:_keyDecimals := 0
                 SELF:_keySize := 0
                 isOk := SELF:_determineSize(oValue)
@@ -649,10 +633,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             // 8 Bytes : PrevPage (4 bytes) + Recno (4 bytes)
             SELF:_entrySize := SELF:_keySize + (WORD) 8
             //
-            num := (WORD)(  ( NtxConst.BUFF_SIZE - 4) / (SELF:_keySize + 10))
+            num := (WORD)(  ( BUFF_SIZE - 4) / (SELF:_keySize + 10))
             SELF:_halfPage := (WORD) ((num - 1) / 2)
             SELF:_MaxEntry := (WORD) (SELF:_halfPage * 2)
-            SELF:_firstPageOffset := NtxConst.BUFF_SIZE
+            SELF:_firstPageOffset := BUFF_SIZE
             SELF:_fileSize := 0
             SELF:_nextUnusedPageOffset := 0
             SELF:_indexVersion := 1
@@ -716,8 +700,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_Header:KeyExpression          := SELF:_KeyExpr
             SELF:_Header:ForExpression          := SELF:_ForExpr
             SELF:_Header:OrdName                := SELF:_orderName
-            SELF:_midItem                       := NtxItem{SELF:_keySize}
-            SELF:_oneItem                       := NtxItem{SELF:_keySize}
+            SELF:_midItem                       := NtxNode{SELF:_keySize}
+            SELF:_oneItem                       := NtxNode{SELF:_keySize}
             IF SELF:_Conditional .OR. SELF:_Descending .OR. ordCondInfo:Scoped
                 SELF:_Header:Signature |= NtxHeaderFlags.Conditional
             ENDIF
@@ -740,7 +724,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_oRdd:_dbfError(SubCodes.ERDD_WRITE,GenCode.EG_CREATE,  createInfo:BagName)
                 RETURN FALSE
             ENDIF
-            SELF:_fileSize += NtxConst.BUFF_SIZE
+            SELF:_fileSize += BUFF_SIZE
             IF !SELF:_Unique .AND. !SELF:_Conditional .AND. !SELF:_Descending .AND. !ordCondInfo:Scoped
                 isOk := SELF:_CreateIndex()
             ELSE
@@ -753,11 +737,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             RETURN SELF:Flush()
                             
-                            
         PRIVATE METHOD _determineSize(toConvert AS OBJECT ) AS LOGIC
             LOCAL tCode AS TypeCode
             LOCAL expr AS STRING
-            LOCAL anyOf AS CHAR[]
             LOCAL nPos AS INT
             LOCAL sysType AS System.Type
             LOCAL strType AS STRING
@@ -796,8 +778,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         RETURN FALSE
                     END TRY
                     SELF:_keySize := (WORD) expr:Length
-                    anyOf := <CHAR>{',', '.' }
-                    nPos := expr:IndexOfAny(anyOf)
+                    nPos := expr:IndexOfAny(<CHAR>{',', '.' })
                     IF nPos < 0
                         SELF:_keyDecimals := 0
                     ELSE
@@ -814,19 +795,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_keySize := 0
             RETURN FALSE
         END SWITCH
-            IF SELF:_keySize > 0
-                SELF:_knownKeyBuffer := BYTE[]{_Keysize+1}
-                SELF:_newKeyBuffer   := BYTE[]{_Keysize+1}
-            ENDIF
 
         RETURN TRUE
                     
         PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG , nDec AS LONG , buffer AS BYTE[] , isAnsi AS LOGIC ) AS LOGIC    
             LOCAL resultLength AS LONG
-            //
             resultLength := 0
             RETURN SELF:_ToString( toConvert, sLen, nDec, buffer, isAnsi, REF resultLength)
-                    
                     
         PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG , nDec AS LONG , buffer AS BYTE[] , isAnsi AS LOGIC , resultLength REF LONG ) AS LOGIC
             LOCAL text AS STRING
@@ -948,7 +923,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         LOCAL byteArray AS BYTE[]
         LOCAL result AS LOGIC
         LOCAL ic AS NtxSortCompare
-        
         LOCAL lAscii AS LOGIC
         LOCAL getKeyValue AS ValueBlock
         //
@@ -1046,7 +1020,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         FOREACH level AS NtxLevel IN lpLevels 
             IF level != NULL
                 IF level:PageOffset == 0
-                    level:PageOffset := SELF:_outPageNo * NtxConst.BUFF_SIZE
+                    level:PageOffset := SELF:_outPageNo * BUFF_SIZE
                     SELF:_outPageNo++
                 ENDIF
                 level:Write(level:PageOffset)
@@ -1112,7 +1086,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:Flush()
             RETURN Ok
                     
-                    
         PRIVATE METHOD _initLevels(uiBOrder AS LONG , keyCount AS LONG ) AS DWORD
             LOCAL level AS DWORD
             LOCAL exp AS LONG
@@ -1120,7 +1093,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             //
             level := 0
             exp := 1
-            SELF:_levels := NtxLevel[]{ 16 }
+            SELF:_levels := NtxLevel[]{ NTX_COUNT }
             DO WHILE exp <= keyCount
                 nLevel := NtxLevel{SELF}
                 nLevel:Exp := exp
@@ -1131,7 +1104,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDDO
             SELF:_RecalcLevel(level - 1, keyCount, 1)
             RETURN (DWORD) level
-                    
                     
 PRIVATE METHOD _CondCreate(ordCondInfo AS DBORDERCONDINFO ) AS LOGIC
     LOCAL isOk AS LOGIC
@@ -1242,11 +1214,10 @@ PRIVATE METHOD _CondCreate(ordCondInfo AS DBORDERCONDINFO ) AS LOGIC
     SELF:Flush()
     RETURN TRUE
                     
-                    
-PRIVATE METHOD _placeItem(lpNode AS NtxItem ) AS LOGIC
+PRIVATE METHOD _placeItem(lpNode AS NtxNode ) AS LOGIC
     LOCAL uiLevel AS DWORD
     LOCAL level AS NtxLevel
-    LOCAL node AS NtxItem
+    LOCAL node AS NtxNode
     LOCAL page AS LONG
     //
     uiLevel := 0
@@ -1254,7 +1225,7 @@ PRIVATE METHOD _placeItem(lpNode AS NtxItem ) AS LOGIC
     DO WHILE (uiLevel < SELF:_levelsCount) .AND. (level:NodeCount >= level:Parents)
         node := level[level:NodeCount]
         node:PageNo := SELF:_oneItem:PageNo
-        page := SELF:_outPageNo * NtxConst.BUFF_SIZE
+        page := SELF:_outPageNo * BUFF_SIZE
         SELF:_oneItem:PageNo := page
         level:PageOffset := page
         SELF:_outPageNo++
@@ -1275,7 +1246,6 @@ PRIVATE METHOD _placeItem(lpNode AS NtxItem ) AS LOGIC
     ENDIF
     RETURN TRUE
                     
-                    
 PRIVATE METHOD _AddKey() AS LOGIC
     LOCAL uiHalfPage AS LONG
     LOCAL siSize AS WORD
@@ -1283,9 +1253,9 @@ PRIVATE METHOD _AddKey() AS LOGIC
     LOCAL pageNo AS LONG
     LOCAL siRef AS WORD
     LOCAL i AS LONG
-    LOCAL node AS NtxItem
+    LOCAL node AS NtxNode
     LOCAL page2 AS NtxPage
-    LOCAL node2 AS NtxItem
+    LOCAL node2 AS NtxNode
     //
     SELF:_Hot := TRUE
     uiHalfPage := SELF:_halfPage
@@ -1312,7 +1282,7 @@ PRIVATE METHOD _AddKey() AS LOGIC
     IF SELF:_insertKey(page2)
         page2:NodeCount := (WORD)uiHalfPage
         page1 := SELF:AllocPage()
-        Array.Copy(page2:Bytes, page1:Bytes, NtxConst.BUFF_SIZE)
+        Array.Copy(page2:Bytes, page1:Bytes, BUFF_SIZE)
         FOR i := 0 TO uiHalfPage
             siRef := page1:GetRef(i)
             page1:SetRef(i, page1:GetRef(i + uiHalfPage))
@@ -1327,21 +1297,20 @@ PRIVATE METHOD _AddKey() AS LOGIC
     ENDIF
     RETURN TRUE
                     
-                    
 PRIVATE METHOD _insertKey(page AS NtxPage ) AS LOGIC
     LOCAL nodeCount AS LONG
     LOCAL uiPos AS LONG
     LOCAL offset AS WORD
-    LOCAL node2 AS NtxItem
+    LOCAL node2 AS NtxNode
     LOCAL num AS LONG
-    LOCAL node AS NtxItem
+    LOCAL node AS NtxNode
     LOCAL uiHalfPage AS LONG
     LOCAL num2 AS LONG
     LOCAL num3 AS LONG
     LOCAL num4 AS LONG
-    LOCAL node3 AS NtxItem
-    LOCAL ntxNode AS NtxItem
-    LOCAL node4 AS NtxItem
+    LOCAL node3 AS NtxNode
+    LOCAL ntxNode AS NtxNode
+    LOCAL node4 AS NtxNode
     LOCAL pageNo AS LONG
     //
     nodeCount := page:NodeCount
@@ -1380,7 +1349,7 @@ PRIVATE METHOD _insertKey(page AS NtxPage ) AS LOGIC
         num4 := 1
     ENDIF
     node3 := page[uiHalfPage + num2]
-    ntxNode := NtxItem{SELF:_keySize}
+    ntxNode := NtxNode{SELF:_keySize}
     ntxNode:Recno := node3:Recno
     ntxNode:KeyBytes := node3:KeyBytes
     node3 := page[uiHalfPage + num2 + 1]
@@ -1413,7 +1382,7 @@ PRIVATE METHOD _deleteKey() AS VOID
     LOCAL lPage AS LONG
     LOCAL uiPos AS LONG
     LOCAL ntxPage AS NtxPage
-    LOCAL node AS NtxItem
+    LOCAL node AS NtxNode
     LOCAL nodeCount AS LONG
     LOCAL offset AS WORD
     LOCAL i AS LONG
@@ -1461,17 +1430,17 @@ PRIVATE METHOD _Balance() AS VOID
     LOCAL uiCount AS LONG
     LOCAL pageLeft AS NtxPage
     LOCAL pageRight AS NtxPage
-    LOCAL nodeLeft AS NtxItem
-    LOCAL nodeRight AS NtxItem
+    LOCAL nodeLeft AS NtxNode
+    LOCAL nodeRight AS NtxNode
     LOCAL iPos AS LONG
     LOCAL pageNo AS LONG
     LOCAL num2 AS LONG
     LOCAL offset AS WORD
     LOCAL num3 AS LONG
-    LOCAL node3 AS NtxItem
+    LOCAL node3 AS NtxNode
     LOCAL num4 AS LONG
-    LOCAL node4 AS NtxItem
-    LOCAL node5 AS NtxItem
+    LOCAL node4 AS NtxNode
+    LOCAL node5 AS NtxNode
     //
     lPage := SELF:_ntxStack[SELF:_TopStack]:Page
     uiCount := SELF:_ntxStack[SELF:_TopStack]:Count
@@ -1627,7 +1596,7 @@ PRIVATE METHOD _Balance() AS VOID
                     
                     
         PRIVATE METHOD _delToMid(page AS NtxPage , uiPos AS LONG ) AS VOID
-            LOCAL node AS NtxItem
+            LOCAL node AS NtxNode
             LOCAL nodeCount AS LONG
             LOCAL pageNo AS LONG
             LOCAL offSet AS WORD
@@ -1653,7 +1622,7 @@ PRIVATE METHOD _Balance() AS VOID
             LOCAL nLevel AS NtxLevel
             //
             SELF:_firstPageOffset := (DWORD)SELF:_fileSize
-            SELF:_fileSize += NtxConst.BUFF_SIZE
+            SELF:_fileSize += BUFF_SIZE
             nLevel := NtxLevel{SELF}
             nLevel:InitRefs(SELF:_MaxEntry, SELF:_entrySize)
             nLevel:Write((INT)SELF:_firstPageOffset)
@@ -1678,7 +1647,6 @@ PRIVATE METHOD _Balance() AS VOID
             IF (uiLevel > 0)
                 SELF:_RecalcLevel(uiLevel - 1, nLevel:Keys - nLevel:Parents, nLevel:Parents + 1)
             ENDIF
-                    
                     
         PRIVATE METHOD _ResetLevel(uiLevel AS DWORD ) AS VOID
             LOCAL nLevel AS NtxLevel
@@ -1705,7 +1673,6 @@ PRIVATE METHOD _Balance() AS VOID
                 ENDIF
             ENDIF
                     
-                    
         PUBLIC METHOD SetOrderScope(itmScope AS OBJECT , uiScope AS DBOrder_Info ) AS LOGIC
             LOCAL uiRealLen AS LONG
             LOCAL result AS LOGIC
@@ -1717,7 +1684,7 @@ PRIVATE METHOD _Balance() AS VOID
                 SELF:_topScope      := itmScope
                 SELF:_hasTopScope   := (itmScope != NULL)
                 IF itmScope != NULL
-                    SELF:_topScopeBuffer := BYTE[]{ 257 }
+                    SELF:_topScopeBuffer := BYTE[]{ MAX_KEY_LEN+1 }
                     SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_topScopeBuffer, SELF:_Ansi, REF uiRealLen)
                     SELF:_topScopeSize := uiRealLen
                 ENDIF
@@ -1725,7 +1692,7 @@ PRIVATE METHOD _Balance() AS VOID
                 SELF:_bottomScope    := itmScope
                 SELF:_hasBottomScope := (itmScope != NULL)
                 IF itmScope != NULL
-                    SELF:_bottomScopeBuffer := BYTE[]{ 257 }
+                    SELF:_bottomScopeBuffer := BYTE[]{ MAX_KEY_LEN+1 }
                     SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_bottomScopeBuffer, SELF:_Ansi, REF uiRealLen)
                     SELF:_bottomScopeSize := uiRealLen
                 ENDIF
@@ -2035,7 +2002,7 @@ PRIVATE METHOD _Balance() AS VOID
             //
             IF SELF:_hasTopScope
                 result := SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
-                IF (!SELF:_oRdd:_Found)
+                IF !SELF:_oRdd:_Found
                     SELF:_oRdd:_Bof := TRUE
                 ENDIF
                 RETURN result
@@ -2187,7 +2154,6 @@ PRIVATE METHOD _Balance() AS VOID
     PUBLIC METHOD Seek(seekInfo AS DBSEEKINFO ) AS LOGIC
         LOCAL uiRealLen AS LONG
         LOCAL byteArray AS BYTE[]
-        //
         uiRealLen := 0
         byteArray := BYTE[]{ 256 }
         // Convert the seeked key to a byte Array
@@ -2238,7 +2204,7 @@ PRIVATE METHOD _Balance() AS VOID
             deletedState := XSharp.RuntimeState.Deleted
             SELF:_oRdd:GoCold()
             locked := SELF:_lockForRead()
-            IF (locked)
+            IF locked
                 IF SELF:_Shared
                     SELF:_knownRecno := 0
                 ENDIF
@@ -2280,10 +2246,10 @@ PRIVATE METHOD _Balance() AS VOID
                                 temp:= SELF:_knownKeyBuffer[len]
                                 SELF:_knownKeyBuffer[len] := 1
                                 cmpMinMax := SELF:__Compare(abNewKey, SELF:_knownKeyBuffer, padLen)
-                                IF ((strCmp < 0) .AND. (cmpMinMax > 0))
+                                IF strCmp < 0 .AND. cmpMinMax > 0
                                     found := TRUE
                                 ENDIF
-                                IF (!found)
+                                IF !found
                                     SELF:_newKeyBuffer[len] := 1
                                     SELF:_knownKeyBuffer[len] := Byte.MaxValue
                                     strCmpMaxMin := SELF:__Compare(abNewKey, SELF:_knownKeyBuffer, padLen)
@@ -2299,7 +2265,7 @@ PRIVATE METHOD _Balance() AS VOID
                                 IF ((strCmp > 0) .AND. (cmpMinMax < 0))
                                     found := TRUE
                                 ENDIF
-                                IF (!found)
+                                IF !found
                                     SELF:_newKeyBuffer[len] := Byte.MaxValue
                                     SELF:_knownKeyBuffer[len] := 1
                                     strCmpMaxMin := SELF:__Compare(SELF:_newKeyBuffer, SELF:_knownKeyBuffer, padLen)
@@ -2388,20 +2354,20 @@ PRIVATE METHOD _Balance() AS VOID
         LOCAL recno			AS DWORD
         LOCAL moveDirection	AS NtxSkipDirection
         //
-        IF (keyMove == 1)
+        IF keyMove == 1
             recno := SELF:_getNextKey(FALSE, NtxSkipDirection.Forward)
         ELSE
-            IF (keyMove < 0)
+            IF keyMove < 0
                 keyMove := -keyMove
                 moveDirection := NtxSkipDirection.Backward
             ELSE
                 moveDirection := NtxSkipDirection.Forward
             ENDIF
-            IF (keyMove != 0)
+            IF keyMove != 0
                 REPEAT
                     recno := SELF:_getNextKey(FALSE, moveDirection)
                     keyMove--
-                UNTIL !((recno != 0) .AND. (keyMove != 0))
+                UNTIL !(recno != 0 .AND. keyMove != 0)
             ELSE
                 recno := 0
             ENDIF
@@ -2409,9 +2375,9 @@ PRIVATE METHOD _Balance() AS VOID
         RETURN recno
                 
                 
-    PRIVATE METHOD _getNextKey(fThisPage AS LOGIC , moveDirection AS NtxSkipDirection ) AS DWORD
+    PRIVATE METHOD _getNextKey(thisPage AS LOGIC , moveDirection AS NtxSkipDirection ) AS DWORD
         LOCAL ntxPage AS NtxPage
-        LOCAL node AS NtxItem
+        LOCAL node AS NtxPageNode
         // No page loaded ?
         IF (SELF:_TopStack == 0)
             RETURN 0
@@ -2419,46 +2385,46 @@ PRIVATE METHOD _Balance() AS VOID
         //
         ntxPage := SELF:_PageList:Read(SELF:_ntxStack[SELF:_TopStack]:Page)
         node := ntxPage[SELF:_ntxStack[SELF:_TopStack]:Pos]
-        IF (fThisPage)
-            IF (moveDirection == NtxSkipDirection.Backward)
+        IF thisPage
+            IF moveDirection == NtxSkipDirection.Backward
                 SELF:_ntxStack[SELF:_TopStack]:Pos--
                 node:Fill(SELF:_ntxStack[SELF:_TopStack]:Pos, ntxPage)
             ENDIF
-            IF (SELF:_knownRecno != node:Recno)
+            IF SELF:_knownRecno != node:Recno
                 SELF:_saveRecordState(node)
             ENDIF
             RETURN node:Recno
         ENDIF
         //
-        IF (moveDirection == NtxSkipDirection.Forward)
+        IF moveDirection == NtxSkipDirection.Forward
             SELF:_ntxStack[SELF:_TopStack]:Pos++
             node:Fill(SELF:_ntxStack[SELF:_TopStack]:Pos, ntxPage)
-            IF (node:PageNo != 0)
+            IF node:PageNo != 0
                 RETURN SELF:_locate(NULL, 0, NtxSearchMode.Top, node:PageNo)
             ENDIF
-            IF (SELF:_ntxStack[SELF:_TopStack]:Pos == SELF:_ntxStack[SELF:_TopStack]:Count)
+            IF SELF:_ntxStack[SELF:_TopStack]:Pos == SELF:_ntxStack[SELF:_TopStack]:Count
                 DO WHILE (SELF:_TopStack != 0) .AND. (SELF:_ntxStack[SELF:_TopStack]:Pos == SELF:_ntxStack[SELF:_TopStack]:Count)
                     SELF:PopPage()
                 ENDDO
                 RETURN SELF:_getNextKey(TRUE, NtxSkipDirection.Forward)
             ENDIF
-            IF (SELF:_knownRecno != node:Recno)
+            IF SELF:_knownRecno != node:Recno
                 SELF:_saveRecordState(node)
             ENDIF
             RETURN node:Recno
         ENDIF
-        IF (node:PageNo != 0)
+        IF node:PageNo != 0
             RETURN SELF:_locate(NULL, 0, NtxSearchMode.Bottom, node:PageNo)
         ENDIF
-        IF (SELF:_ntxStack[SELF:_TopStack]:Pos == 0)
-            DO WHILE (SELF:_TopStack != 0) .AND. (SELF:_ntxStack[SELF:_TopStack]:Pos == 0)
+        IF SELF:_ntxStack[SELF:_TopStack]:Pos == 0
+            DO WHILE SELF:_TopStack != 0 .AND. SELF:_ntxStack[SELF:_TopStack]:Pos == 0
                 SELF:PopPage()
             ENDDO
             RETURN SELF:_getNextKey(TRUE, NtxSkipDirection.Backward)
         ENDIF
         SELF:_ntxStack[SELF:_TopStack]:Pos--
         node:Fill(SELF:_ntxStack[SELF:_TopStack]:Pos, ntxPage)
-        IF (SELF:_knownRecno != node:Recno)
+        IF SELF:_knownRecno != node:Recno
             SELF:_saveRecordState(node)
         ENDIF
         RETURN node:Recno
@@ -2466,25 +2432,24 @@ PRIVATE METHOD _Balance() AS VOID
                 
     PRIVATE METHOD _findItemPos(record REF DWORD , nodePage AS LOGIC ) AS LOGIC
         LOCAL ntxPage AS NtxPage
-        LOCAL node AS NtxItem
-        //
-        IF (SELF:_TopStack == 0)
+        LOCAL node    AS NtxPageNode
+        IF SELF:_TopStack == 0
             RETURN FALSE
         ENDIF
         ntxPage := SELF:_PageList:Read(SELF:_ntxStack[SELF:_TopStack]:Page)
         node := ntxPage[SELF:_ntxStack[SELF:_TopStack]:Pos]
-        IF (nodePage)
+        IF nodePage
             SELF:_ntxStack[SELF:_TopStack]:Pos--
             record++
             RETURN TRUE
         ENDIF
-        IF (node:PageNo != 0)
+        IF node:PageNo != 0
             SELF:_locate(NULL, 0, NtxSearchMode.Bottom, node:PageNo)
             record += (DWORD)(SELF:_ntxStack[SELF:_TopStack]:Pos + 1)
             SELF:_ntxStack[SELF:_TopStack]:Pos := 0
             RETURN TRUE
         ENDIF
-        IF (SELF:_ntxStack[SELF:_TopStack]:Pos == 0)
+        IF SELF:_ntxStack[SELF:_TopStack]:Pos == 0
             DO WHILE (SELF:_TopStack != 0) .AND. (SELF:_ntxStack[SELF:_TopStack]:Pos == 0)
                 SELF:PopPage()
             ENDDO
@@ -2498,14 +2463,13 @@ PRIVATE METHOD _Balance() AS VOID
         LOCAL isOk AS LOGIC
         LOCAL length AS LONG
         LOCAL text AS STRING
-        //
         // SELF:_knownRecno == lRecno, we are on the same record !!
         isOk := SELF:_ToString(objValue, SELF:_keySize, SELF:_keyDecimals, SELF:_newKeyBuffer, SELF:_Ansi, REF SELF:_newKeyLen)
-        IF (!isOk)
+        IF !isOk
             SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_EVAL, GenCode.EG_DATATYPE,SELF:fileName)
             RETURN FALSE
         ENDIF
-        IF (objValue:GetType() == TYPEOF(STRING))
+        IF objValue:GetType() == TYPEOF(STRING)
             text := (STRING)objValue
             length := text:Length
             SELF:_newKeyLen := text:Length
@@ -2518,8 +2482,7 @@ PRIVATE METHOD _Balance() AS VOID
                 
     PRIVATE METHOD _Seek(dbsi AS DBSEEKINFO , lpval AS OBJECT ) AS LOGIC
         LOCAL byteArray AS BYTE[]
-        //
-        byteArray := BYTE[]{ 257 }
+        byteArray := BYTE[]{ MAX_KEY_LEN+1 }
         SELF:_ToString(lpval, SELF:_keySize, SELF:_keyDecimals, byteArray, SELF:_Ansi)
         dbsi:SoftSeek := TRUE
         RETURN SELF:_Seek(dbsi, byteArray)
@@ -2541,7 +2504,7 @@ PRIVATE METHOD _Balance() AS VOID
         LOCAL foundPos AS LONG
         LOCAL ntxPage AS NtxPage
         LOCAL nodeCount AS LONG
-        LOCAL node AS NtxItem
+        LOCAL node AS NtxPageNode
         LOCAL minPos AS LONG
         LOCAL maxPos AS LONG
         //
@@ -2702,7 +2665,7 @@ PRIVATE METHOD _Balance() AS VOID
             SELF:_nextUnusedPageOffset := (DWORD)ntxPage[0]:PageNo
         ELSE
             lNextPage := SELF:_fileSize
-            SELF:_fileSize += NtxConst.BUFF_SIZE
+            SELF:_fileSize += BUFF_SIZE
             ntxPage := SELF:_PageList:Append(lNextPage)
         ENDIF
         RETURN ntxPage
@@ -2859,7 +2822,6 @@ PRIVATE METHOD _Balance() AS VOID
         PRIVATE METHOD _lockBytes( nOffset AS DWORD, nLong AS DWORD , retries AS DWORD ) AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL counter AS DWORD
-            //
             isOk := FALSE
             counter := 0
             isOk := SELF:_lockBytes( nOffset, nLong )
@@ -2871,26 +2833,22 @@ PRIVATE METHOD _Balance() AS VOID
             
         PRIVATE METHOD _lockBytes( nOffset AS DWORD, nLong AS DWORD  ) AS LOGIC
             LOCAL locked AS LOGIC
-            //
             TRY
                 locked := FFLock( SELF:_hFile, nOffset, nLong )
             CATCH ex AS Exception
                 Trace.WriteLine("Lock Error:" + ex:Message)
                 locked := FALSE
             END TRY
-            //
             RETURN locked
             
         PRIVATE METHOD _unlockBytes( nOffset AS DWORD, nLong AS DWORD  ) AS LOGIC
             LOCAL unlocked AS LOGIC
-            //
             TRY
                 unlocked := FFUnLock( SELF:_hFile, nOffset, nLong )
             CATCH ex AS Exception
                 Trace.WriteLine("UnLock Error:" + ex:Message)
                 unlocked := FALSE
             END TRY
-            //
             RETURN unlocked
             
         PRIVATE METHOD _lockGate( tag AS INT ) AS LOGIC
@@ -2909,13 +2867,11 @@ PRIVATE METHOD _Balance() AS VOID
         PRIVATE METHOD _lockInit() AS LOGIC
             LOCAL tries AS LONG
             LOCAL seed AS LONG
-            //
             tries := 0
             seed := 0
             SELF:_parkPlace := 0
             seed := SELF:_genSeed()
-            // MAX_TRIES := 50 
-            DO WHILE (tries++ < NtxConst.MAX_TRIES ) .AND. (SELF:_parkPlace == 0)
+            DO WHILE (tries++ < MAX_TRIES ) .AND. (SELF:_parkPlace == 0)
                 IF (seed <= 0)
                     seed := 1
                 ENDIF
@@ -2952,14 +2908,12 @@ PRIVATE METHOD _Balance() AS VOID
             
         PRIVATE METHOD _tryReadUnLock() AS LOGIC
             LOCAL liOffSet AS LONG
-            //
             liOffSet := ~( SELF:_getParkLotPlace(SELF:_tagNumber) + SELF:_parkPlace )
             RETURN SELF:_unlockBytes( (DWORD)liOffSet, 1)
             
             
         PRIVATE METHOD _tryWriteUnLock() AS LOGIC
             LOCAL liOffSet AS LONG
-            //
             liOffSet := ~( SELF:_getParkLotPlace(SELF:_tagNumber) + ParkingLot.LOT_SIZE )
             RETURN SELF:_unlockBytes( (DWORD)liOffSet, 1)
             
@@ -2997,7 +2951,6 @@ PRIVATE METHOD _Balance() AS VOID
             
         PRIVATE METHOD _getTypeCode(oValue AS OBJECT ) AS TypeCode
             LOCAL typeCde AS TypeCode
-            //
             IF oValue == NULL
                 typeCde := TypeCode.Empty
             ELSE
@@ -3030,7 +2983,41 @@ PRIVATE METHOD _Balance() AS VOID
                 END SWITCH
             ENDIF
             RETURN typeCde   
-            
+
+        INTERNAL METHOD _dump() AS VOID
+            LOCAL hDump     AS IntPtr
+            LOCAL cFile     AS STRING
+            LOCAL sBlock    AS STRING
+            VAR sRecords := System.Text.StringBuilder{}
+            cFile := SELF:_fileName+".DMP"
+            hDump := FCreate(cFile)
+            IF hDump != F_ERROR
+                SELF:_PageList:DumpHandle := hDump
+                sBlock := SELF:_Header:Dump("Filedump for:"+SELF:_FileName)
+                FWrite(hDump, sBlock)
+                _oRdd:Gotop()
+                sRecords:AppendLine("------------------------------")
+                sRecords:AppendLine("List of Records in Index order")
+                sRecords:AppendLine("------------------------------")
+                sRecords:AppendLine("Recno      KeyValue")
+                sRecords:AppendLine("------------------------------")
+                DO WHILE ! _oRdd:EOF
+                    VAR key := _oRdd:EvalBlock(SELF:_KeyCodeBlock)
+                    IF key IS IDate
+                        VAR d := key ASTYPE IDate
+                        key := DateTime{d:Year, d:Month, d:Day}:ToString("yyyyMMdd")
+                    ELSEIF key IS IFLoat
+                        VAR f := key ASTYPE IFloat
+                        key   :=  f:Value:ToString("F"+f:Decimals:ToString())
+                    ENDIF
+                    sRecords:AppendLine(String.Format("{0,10} {1}", _oRdd:Recno, key))
+                    _oRdd:Skip(1)
+                ENDDO
+                FWrite(hDump, sRecords:ToString())
+                FClose(hDump)
+                SELF:_PageList:DumpHandle := IntPtr.Zero
+            ENDIF
+            RETURN
             
         INTERNAL ENUM ParkingLot
             MEMBER SPACES_SIZE := 1024                              // 1K of token space
@@ -3042,18 +3029,6 @@ PRIVATE METHOD _Balance() AS VOID
             MEMBER ROOT_LOT := ROOT_GATE + GATE_SIZE                // root parking lot
         END ENUM
         
-        INTERNAL ENUM NtxConst
-            MEMBER  BUFF_SIZE	:= 1024
-            MEMBER NTX_COUNT    := 16
-            MEMBER NTX_S_COUNT  := 20
-            
-            MEMBER MIN_BYTE     := 0x01
-            MEMBER MAX_BYTE     := 0xFF
-            MEMBER MAX_KEY_LEN  := 256
-            
-            MEMBER MAX_TRIES    := 50
-            
-        END ENUM
         
         
     END CLASS

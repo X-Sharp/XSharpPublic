@@ -983,11 +983,11 @@ BEGIN NAMESPACE XSharp.RDD
 				CASE DbInfo.DBI_EOF           
 					oResult := SELF:_EOF   
 				CASE DbInfo.DBI_DBFILTER
-                    IF SELF:_FilterInfo != null
+                    IF SELF:_FilterInfo != NULL
 					    oResult := SELF:_FilterInfo:FilterText
                     ELSE
                         oResult := String.Empty
-                    endif
+                    ENDIF
 				CASE DbInfo.DBI_FOUND
 					oResult := SELF:_Found
 				CASE DbInfo.DBI_FCOUNT

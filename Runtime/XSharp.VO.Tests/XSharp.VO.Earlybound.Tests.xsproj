@@ -148,6 +148,9 @@
     <Compile Include="MacroTest.prg" />
     <Compile Include="OemTests.prg" />
     <Compile Include="DateTests.prg" />
+    <Compile Include="DbfTests.prg" />
+    <Compile Include="StringTests.prg" />
+    <Compile Include="MiscTests.prg" />
     <Compile Include="ErrorTests.prg" />
     <Compile Include="FloatTests.prg" />
     <Compile Include="MemoryTests.prg" />

@@ -22,7 +22,7 @@ FUNCTION _DbThrowErrorOnFailure(funcName AS STRING, resultToCheck AS LOGIC) AS L
 
 
 FUNCTION Alias0() AS STRING
-   LOCAL oRDD := VoDb.CWA("Alias0") AS IRDD
+   LOCAL oRDD := VoDb.CWA("Alias0", FALSE) AS IRDD
     IF oRDD != NULL
         RETURN oRDD:Alias
     ENDIF                            

@@ -1964,7 +1964,10 @@ BEGIN NAMESPACE XSharp.RDD
 					oResult := (INT) SELF:_Header:CodePage:ToCodePage()
 
 				CASE DbInfo.DBI_GETLOCKARRAY
-                    oResult := SELF:_Locks:ToArray()
+                    VAR aLocks := SELF:_Locks:ToArray()
+                    System.Array.Sort(aLocks)
+                    oResult := aLocks
+
 				CASE DbInfo.DBI_LOCKCOUNT
                     oResult := SELF:_Locks:Count
                  CASE DbInfo.DBI_LOCKOFFSET
@@ -2088,31 +2091,36 @@ BEGIN NAMESPACE XSharp.RDD
 			LOCAL nNewRec := 0 AS LONG
             LOCAL oResult AS OBJECT
 			LOCAL nOld := 0 AS LONG
-			IF ( oRecID == NULL )
+            
+			IF ( oRecID != NULL )
 				TRY
 					nNewRec := Convert.ToInt32( oRecID )
 				CATCH
-					nNewRec := 0
+					nNewRec := SELF:Recno
     			END TRY
+            ELSE
+                nNewRec := SELF:Recno
 			ENDIF
             // Some operations require the new record te be selected
           IF nNewRec != 0
               SWITCH nOrdinal
-      
-            CASE DBRI_DELETED
-            CASE DBRI_ENCRYPTED
-            CASE DBRI_RAWRECORD
-            CASE DBRI_RAWMEMOS
-            CASE DBRI_RAWDATA
-                nOld     := SELF:Recno
-                SELF:Goto(nNewRec)
-            END SWITCH
-        ENDIF
+                CASE DBRI_DELETED
+                CASE DBRI_ENCRYPTED
+                CASE DBRI_RAWRECORD
+                CASE DBRI_RAWMEMOS
+                CASE DBRI_RAWDATA
+                    nOld     := SELF:Recno
+                    SELF:Goto(nNewRec)
+                END SWITCH
+            ENDIF
 			SWITCH nOrdinal
 				CASE DBRI_DELETED
                     oResult := SELF:Deleted
 				CASE DBRI_LOCKED
 					IF ( SELF:_Shared )
+                        IF nNewRec == 0
+                            nNewRec := SELF:RecNo
+                        ENDIF
 						oResult := SELF:_Locks:Contains( nNewRec )
 					ELSE
 						oResult := TRUE
@@ -2122,11 +2130,18 @@ BEGIN NAMESPACE XSharp.RDD
 				CASE DBRI_RECSIZE
 					oResult := SELF:_RecordLength
                 CASE DBRI_BUFFPTR
+                    SELF:_ReadRecord()
                     oResult := SELF:_RecordBuffer
 				CASE DBRI_RAWRECORD
                     oResult := SELF:_Encoding:GetString(SELF:_RecordBuffer,0, SELF:_RecordLength)
                 CASE DBRI_UPDATED
                     oResult := SELF:_Hot
+                    IF oNewValue IS LOGIC
+                        IF (LOGIC) oNewValue
+                            SELF:_BufferValid := FALSE
+                            SELF:_ReadRecord()
+                        ENDIF
+                    ENDIF
 				CASE DBRI_RAWMEMOS
                 CASE DBRI_RAWDATA
                     // RawData returns a string with the record + memos

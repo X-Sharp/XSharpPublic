@@ -19,11 +19,11 @@ USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD.NTX
 
     // Ntx Stack item
-    // Keep informations 
+    // Keep informations
     INTERNAL SEALED CLASS NtxStack
-        INTERNAL Page AS LONG
-        INTERNAL Pos AS LONG
-        INTERNAL Count AS LONG
+        INTERNAL Page   AS DWORD
+        INTERNAL Pos    AS WORD
+        INTERNAL Count  AS WORD
         
         INTERNAL METHOD Clear() AS VOID
             SELF:Page := 0
@@ -49,7 +49,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     
     
     
-    
+    [DebuggerDisplay("Order {OrderName}: {Expression}")];
     INTERNAL SEALED CLASS NtxOrder INHERIT BaseIndex IMPLEMENTS IRddSortWriter
         PRIVATE CONST MAX_KEY_LEN       := 256  AS WORD
         PRIVATE CONST BUFF_SIZE	        := 1024  AS WORD
@@ -88,7 +88,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL _halfPage AS WORD
         INTERNAL _TopStack AS DWORD
         INTERNAL _firstPageOffset AS DWORD
-        INTERNAL _fileSize AS LONG
+        INTERNAL _fileSize AS DWORD
         INTERNAL _ntxStack AS NtxStack[]
         INTERNAL _HPLocking AS LOGIC
         INTERNAL _readLocks AS DWORD
@@ -113,7 +113,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _levels AS NtxLevel[]
         PRIVATE _levelsCount AS DWORD
         PRIVATE _midItem AS NtxNode
-        PRIVATE _outPageNo AS LONG
+        PRIVATE _outPageNo AS DWORD
         PRIVATE _parkPlace AS LONG
         
         INTERNAL _lockScheme     AS DbfLocking
@@ -184,7 +184,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
     INTERNAL METHOD Open(dbordInfo AS DBORDERINFO ) AS LOGIC
         LOCAL isOk AS LOGIC
-        LOCAL i AS LONG
         isOk := FALSE
         SELF:_oRdd:GoCold()
         SELF:_Shared := SELF:_oRDD:_Shared
@@ -255,7 +254,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         SELF:_SingleField := SELF:_oRDD:FieldIndex(SELF:_KeyExpr)
         SELF:_Shared := SELF:_oRdd:_Shared
         FSeek3( SELF:_hFile, 0, FS_END )
-        SELF:_fileSize  := (LONG)FTell( SELF:_hFile ) 
+        SELF:_fileSize  := FTell( SELF:_hFile ) 
         SELF:_Hot := FALSE
         SELF:ClearStack()
         SELF:_entrySize := SELF:_Header:EntrySize
@@ -436,13 +435,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                             SELF:_midItem:Recno := recordNo
                             SELF:_TopStack := 0u
                             IF SELF:_Unique
-                                IF SELF:_locate(SELF:_midItem:KeyBytes, SELF:_keySize, NtxSearchMode.Left, (LONG)SELF:_firstPageOffset) == 0
+                                IF SELF:_locate(SELF:_midItem:KeyBytes, SELF:_keySize, NtxSearchMode.Left, SELF:_firstPageOffset) == 0
                                     SELF:_AddKey()
                                 ELSE
                                     SELF:_TopStack := 0
                                 ENDIF
                             ELSE
-                                SELF:_locate(SELF:_midItem:KeyBytes, SELF:_keySize, NtxSearchMode.Right, (LONG)SELF:_firstPageOffset)
+                                SELF:_locate(SELF:_midItem:KeyBytes, SELF:_keySize, NtxSearchMode.Right, SELF:_firstPageOffset)
                                 SELF:_AddKey()
                             ENDIF
                             SELF:_TopStack := 0u
@@ -464,7 +463,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     FFlush( SELF:_hFile )
                     SELF:_WriteUnLock()
                     IF SELF:_HPLocking
-                        DO WHILE (lockCount != 0) .AND. (!SELF:_ReadLock())
+                        DO WHILE lockCount != 0 .AND. !SELF:_ReadLock()
                             lockCount--
                         ENDDO
                     ENDIF
@@ -486,7 +485,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF rcno != SELF:_knownRecno .OR. SELF:_Shared
                 SELF:_knownRecno := 0u
                 VAR oValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
-                isOk := ( oValue != NULL )
+                isOk :=  oValue != NULL 
                 IF isOk
                     isOk := SELF:_ToString(oValue, SELF:_keySize, SELF:_keyDecimals, SELF:_knownKeyBuffer, SELF:_Ansi, REF uiRealLen)
                     IF isOk
@@ -1027,8 +1026,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
         NEXT
         FSeek3( SELF:_hFile, 0, FS_END )
-        SELF:_fileSize  := (LONG)FTell( SELF:_hFile ) 
-                    
+        SELF:_fileSize  := FTell( SELF:_hFile ) 
         SELF:_levels := NULL
         RETURN result
                     
@@ -1218,7 +1216,7 @@ PRIVATE METHOD _placeItem(lpNode AS NtxNode ) AS LOGIC
     LOCAL uiLevel AS DWORD
     LOCAL level AS NtxLevel
     LOCAL node AS NtxNode
-    LOCAL page AS LONG
+    LOCAL page AS DWORD
     //
     uiLevel := 0
     level := SELF:_levels[0]
@@ -1247,50 +1245,45 @@ PRIVATE METHOD _placeItem(lpNode AS NtxNode ) AS LOGIC
     RETURN TRUE
                     
 PRIVATE METHOD _AddKey() AS LOGIC
-    LOCAL uiHalfPage AS LONG
-    LOCAL siSize AS WORD
-    LOCAL page1 AS NtxPage
-    LOCAL pageNo AS LONG
-    LOCAL siRef AS WORD
-    LOCAL i AS LONG
-    LOCAL node AS NtxNode
-    LOCAL page2 AS NtxPage
-    LOCAL node2 AS NtxNode
+    LOCAL uiHalfPage    AS WORD
+    LOCAL page          AS NtxPage
+    LOCAL pageNo        AS DWORD
+    LOCAL offset        AS WORD
+    LOCAL node          AS NtxNode
     //
     SELF:_Hot := TRUE
     uiHalfPage := SELF:_halfPage
-    siSize := SELF:_entrySize
     IF SELF:_TopStack == 0
-        page1 := SELF:AllocPage()
-        pageNo := page1:PageOffset
-        siRef := (WORD) ((SELF:_MaxEntry + 2) * 2)
-        FOR i := 0 TO SELF:_MaxEntry
-            page1:SetRef(i, siRef)
-            siRef := (siRef + siSize)
-        NEXT
-        node := page1[0]
-        node:PageNo := (INT)SELF:_firstPageOffset
-        node:Recno := SELF:_midItem:Recno
-        node:KeyBytes := SELF:_midItem:KeyBytes
-        node := page1[1]
-        node:PageNo := SELF:_midItem:PageNo
-        page1:NodeCount := 1
+        // new root 
+        page := SELF:AllocPage()
+        pageNo := page:PageOffset
+        page:InitRefs(_MaxEntry, _EntrySize)
+        node := page[0]
+        node:PageNo     := SELF:_firstPageOffset
+        node:Recno      := SELF:_midItem:Recno
+        node:KeyBytes   := SELF:_midItem:KeyBytes
+        page[1]:PageNo := SELF:_midItem:PageNo
+        page:NodeCount := 1
         SELF:_firstPageOffset := (DWORD)pageNo
         RETURN FALSE
     ENDIF
-    page2 := SELF:_PageList:Update(SELF:_ntxStack[SELF:_TopStack]:Page)
+    VAR page2 := SELF:_PageList:Update(SELF:_ntxStack[SELF:_TopStack]:Page)
     IF SELF:_insertKey(page2)
-        page2:NodeCount := (WORD)uiHalfPage
-        page1 := SELF:AllocPage()
-        Array.Copy(page2:Bytes, page1:Bytes, BUFF_SIZE)
-        FOR i := 0 TO uiHalfPage
-            siRef := page1:GetRef(i)
-            page1:SetRef(i, page1:GetRef(i + uiHalfPage))
-            page1:SetRef(i + uiHalfPage, siRef)
+        // Split pages
+        // Write Left page
+        page2:NodeCount := uiHalfPage
+        // New right page
+        page := SELF:AllocPage()
+        // Copy references from left page
+        // and shift Left
+        Array.Copy(page2:Bytes, page:Bytes, BUFF_SIZE)
+        FOR VAR i := 0 TO uiHalfPage
+            offset := page:GetRef(i)
+            page:SetRef(i, page:GetRef(i + uiHalfPage))
+            page:SetRef(i + uiHalfPage, offset)
         NEXT
-        node2 := page1[0]
-        node2:PageNo := SELF:_midItem:PageNo
-        SELF:_midItem:PageNo := page1:PageOffset
+        page[0]:PageNo := SELF:_midItem:PageNo
+        SELF:_midItem:PageNo := page:PageOffset
         SELF:_TopStack--
         SELF:_AddKey()
         RETURN FALSE
@@ -1298,90 +1291,80 @@ PRIVATE METHOD _AddKey() AS LOGIC
     RETURN TRUE
                     
 PRIVATE METHOD _insertKey(page AS NtxPage ) AS LOGIC
-    LOCAL nodeCount AS LONG
-    LOCAL uiPos AS LONG
+    LOCAL nodeCount AS INT
+    LOCAL uiPos AS WORD
     LOCAL offset AS WORD
-    LOCAL node2 AS NtxNode
-    LOCAL num AS LONG
-    LOCAL node AS NtxNode
-    LOCAL uiHalfPage AS LONG
-    LOCAL num2 AS LONG
-    LOCAL num3 AS LONG
-    LOCAL num4 AS LONG
-    LOCAL node3 AS NtxNode
-    LOCAL ntxNode AS NtxNode
-    LOCAL node4 AS NtxNode
-    LOCAL pageNo AS LONG
+    LOCAL num AS INT
+    LOCAL uiHalfPage AS INT
+    LOCAL num2 AS INT
+    LOCAL shift AS INT
+    LOCAL nStep AS INT
+    LOCAL pageNo AS DWORD
     //
     nodeCount := page:NodeCount
     uiPos := SELF:_ntxStack[SELF:_TopStack]:Pos
     IF nodeCount < SELF:_MaxEntry
+        // it fits, so make space
         offset := page:GetRef(nodeCount + 1)
-        //Init
         num := nodeCount + 1
         DO WHILE num > uiPos
             page:SetRef(num, page:GetRef(num - 1))
-            //Iterators
             num--
         ENDDO
         page:SetRef(uiPos, offset)
-        node := page[uiPos]
-        node:PageNo := page[uiPos + 1]:PageNo
-        node := page[uiPos + 1]
-        node:PageNo := SELF:_midItem:PageNo
-        node2 := page[uiPos]
-        node2:Recno := SELF:_midItem:Recno
-        node2:KeyBytes := SELF:_midItem:KeyBytes
+        page[uiPos]:PageNo    := page[uiPos + 1]:PageNo
+        page[uiPos+ 1]:PageNo := SELF:_midItem:PageNo
+        page[uiPos]:Recno := SELF:_midItem:Recno
+        page[uiPos]:KeyBytes := SELF:_midItem:KeyBytes
         page:NodeCount++
         RETURN FALSE
     ENDIF
+    // else split
     uiHalfPage := SELF:_halfPage
     IF uiPos == SELF:_halfPage
         RETURN TRUE
     ENDIF
     IF uiPos < SELF:_halfPage
         num2 := -1
-        num3 := 1
-        num4 := -1
+        shift := 1
+        nStep := -1
     ELSE
         num2 := 0
-        num3 := 0
-        num4 := 1
+        shift := 0
+        nStep := 1
     ENDIF
-    node3 := page[uiHalfPage + num2]
-    ntxNode := NtxNode{SELF:_keySize}
-    ntxNode:Recno := node3:Recno
-    ntxNode:KeyBytes := node3:KeyBytes
-    node3 := page[uiHalfPage + num2 + 1]
-    ntxNode:PageNo := node3:PageNo
-    node4 := page[uiHalfPage + num2 + 1]
-    node4:PageNo := page[uiHalfPage + num2]:PageNo
+    VAR nodeOnPage := page[uiHalfPage + num2]
+    VAR nodeTemp  := NtxNode{SELF:_keySize}
+    nodeTemp:Recno := nodeOnPage:Recno
+    nodeTemp:KeyBytes := nodeOnPage:KeyBytes
+    nodeOnPage := page[uiHalfPage + num2 + 1]
+    nodeTemp:PageNo := nodeOnPage:PageNo
+    page[uiHalfPage + num2 + 1]:PageNo := page[uiHalfPage + num2]:PageNo
     offset := page:GetRef(uiHalfPage + num2)
-    //Init
+    //Shift up to half
     num := uiHalfPage + num2
-    DO WHILE num + num3 != uiPos
-        page:SetRef(num, page:GetRef(num + num4))
-        //Iterators
-        num += num4
+    DO WHILE num + shift != uiPos
+        page:SetRef(num, page:GetRef(num + nStep))
+        num += nStep
     ENDDO
-    page:SetRef(uiPos - (num3 + num4), offset)
-    node2 := page[uiPos + num3]
+    page:SetRef(uiPos - (shift + nStep), offset)
+    VAR node2 := page[uiPos + shift]
     pageNo := node2:PageNo
     node2:PageNo := SELF:_midItem:PageNo
-    node2 := page[uiPos + num3 - 1]
+    node2 := page[uiPos + shift - 1]
     node2:PageNo := pageNo
     node2:Recno := SELF:_midItem:Recno
     node2:KeyBytes := SELF:_midItem:KeyBytes
-    SELF:_midItem:Recno := ntxNode:Recno
-    SELF:_midItem:KeyBytes := ntxNode:KeyBytes
-    SELF:_midItem:PageNo := ntxNode:PageNo
+    SELF:_midItem:Recno := nodeTemp:Recno
+    SELF:_midItem:KeyBytes := nodeTemp:KeyBytes
+    SELF:_midItem:PageNo := nodeTemp:PageNo
     RETURN TRUE
                     
                     
 PRIVATE METHOD _deleteKey() AS VOID
-    LOCAL lPage AS LONG
+    LOCAL lPage AS DWORD
     LOCAL uiPos AS LONG
-    LOCAL ntxPage AS NtxPage
+    LOCAL page AS NtxPage
     LOCAL node AS NtxNode
     LOCAL nodeCount AS LONG
     LOCAL offset AS WORD
@@ -1389,125 +1372,164 @@ PRIVATE METHOD _deleteKey() AS VOID
     //
     lPage := SELF:_ntxStack[SELF:_TopStack]:Page
     uiPos := SELF:_ntxStack[SELF:_TopStack]:Pos
-    ntxPage := SELF:_PageList:Read(lPage)
-    node := ntxPage[uiPos]
+    page := SELF:_PageList:Read(lPage)
+    node := page[uiPos]
     IF node:PageNo != 0
+        // move key to leaf (copy leaf entry to current)
         SELF:_locate(NULL, 0, NtxSearchMode.Bottom, node:PageNo)
-        ntxPage := SELF:_PageList:Read(SELF:_ntxStack[SELF:_TopStack]:Page)
-        node    := ntxPage[SELF:_ntxStack[SELF:_TopStack]:Pos]
+        page := SELF:_PageList:Read(SELF:_ntxStack[SELF:_TopStack]:Page)
+        // get leaf
+        node    := page[SELF:_ntxStack[SELF:_TopStack]:Pos]
         SELF:_midItem:Recno := node:Recno
         SELF:_midItem:KeyBytes := node:KeyBytes
-        ntxPage := SELF:_PageList:Update(lPage)
-        node        := ntxPage[uiPos]
+        // update parent
+        page        := SELF:_PageList:Update(lPage)
+        node        := page[uiPos]
         node:Recno  := SELF:_midItem:Recno
         node:KeyBytes := SELF:_midItem:KeyBytes
+        // get back leaf
         lPage := SELF:_ntxStack[SELF:_TopStack]:Page
         uiPos := SELF:_ntxStack[SELF:_TopStack]:Pos
-        ntxPage := SELF:_PageList:Read(lPage)
-        node := ntxPage[uiPos]
+        page := SELF:_PageList:Read(lPage)
+        node := page[uiPos]
     ENDIF
-    nodeCount := ntxPage:NodeCount
-    offset := ntxPage:GetRef(uiPos)
+    // delete leaf entry
+    nodeCount := page:NodeCount
+    offset := page:GetRef(uiPos)
     
     FOR i := uiPos TO nodeCount -1
         // Copy the next Item offset at the current place
-        ntxPage:SetRef(i, ntxPage:GetRef(i + 1))
+        page:SetRef(i, page:GetRef(i + 1))
     NEXT
-    ntxPage:SetRef(nodeCount, offset)
+    page:SetRef(nodeCount, offset)
     IF nodeCount > 0
-        ntxPage:NodeCount--
+        page:NodeCount--
     ENDIF
-    SELF:_ntxStack[SELF:_TopStack]:Count := ntxPage:NodeCount
-    SELF:_ntxStack[SELF:_TopStack]:Pos := ntxPage:NodeCount
+    SELF:_ntxStack[SELF:_TopStack]:Count := page:NodeCount
+    SELF:_ntxStack[SELF:_TopStack]:Pos := page:NodeCount
     SELF:_PageList:Write(lPage)
-    IF ntxPage:NodeCount < SELF:_halfPage .AND. SELF:_TopStack > 1
+    IF page:NodeCount < SELF:_halfPage .AND. SELF:_TopStack > 1
         SELF:_Balance()
     ENDIF
                     
                     
 PRIVATE METHOD _Balance() AS VOID
-    LOCAL lPage AS LONG
+    LOCAL leftPageNo AS DWORD
     LOCAL uiCount AS LONG
     LOCAL pageLeft AS NtxPage
     LOCAL pageRight AS NtxPage
     LOCAL nodeLeft AS NtxNode
     LOCAL nodeRight AS NtxNode
     LOCAL iPos AS LONG
-    LOCAL pageNo AS LONG
-    LOCAL num2 AS LONG
+    LOCAL rightPageNo AS DWORD
+    LOCAL num2 AS DWORD
     LOCAL offset AS WORD
-    LOCAL num3 AS LONG
-    LOCAL node3 AS NtxNode
     LOCAL num4 AS LONG
-    LOCAL node4 AS NtxNode
-    LOCAL node5 AS NtxNode
     //
-    lPage := SELF:_ntxStack[SELF:_TopStack]:Page
+    leftPageNo := SELF:_ntxStack[SELF:_TopStack]:Page
     uiCount := SELF:_ntxStack[SELF:_TopStack]:Count
-    IF uiCount < SELF:_halfPage
-        IF SELF:_TopStack == 1
-            IF uiCount == 0
-                pageLeft := SELF:_PageList:Update(lPage)
-                nodeLeft := pageLeft[0]
-                SELF:_firstPageOffset := (DWORD)nodeLeft:PageNo
-                nodeLeft:PageNo := (INT)SELF:_nextUnusedPageOffset
-                SELF:_nextUnusedPageOffset := (DWORD)lPage
-            ENDIF
+    IF uiCount >= SELF:_halfPage
+        // nothing to do
+        RETURN
+    ENDIF
+    IF SELF:_TopStack == 1
+        IF uiCount == 0
+            // delete root
+            pageLeft := SELF:_PageList:Update(leftPageNo)
+
+            nodeLeft := pageLeft[0]
+            SELF:_firstPageOffset := nodeLeft:PageNo
+            // add to list of deleted pages
+            nodeLeft:PageNo := SELF:_nextUnusedPageOffset 
+            SELF:_nextUnusedPageOffset := leftPageNo
+        ENDIF
+    ELSE
+        // get parent page
+        iPos     := SELF:_ntxStack[--SELF:_TopStack]:Pos
+        pageLeft := SELF:_PageList:Read(SELF:_ntxStack[SELF:_TopStack]:Page)
+        // setup left and right siblings
+        IF iPos == SELF:_ntxStack[SELF:_TopStack]:Count
+            // underflow page was a right pointer from parent 
+            rightPageNo := pageLeft[iPos]:PageNo
+            num2 := rightPageNo
+            iPos := --SELF:_ntxStack[SELF:_TopStack]:Pos
+            leftPageNo := pageLeft[iPos]:PageNo
         ELSE
-            // get parent page
-            iPos := SELF:_ntxStack[--SELF:_TopStack]:Pos
-            pageLeft := SELF:_PageList:Read(SELF:_ntxStack[SELF:_TopStack]:Page)
-            IF iPos == SELF:_ntxStack[SELF:_TopStack]:Count
-                pageNo := pageLeft[iPos]:PageNo
-                num2 := pageNo
-                iPos := --SELF:_ntxStack[SELF:_TopStack]:Pos
-                lPage := pageLeft[iPos]:PageNo
-            ELSE
-                lPage := pageLeft[iPos]:PageNo
-                num2 := lPage
-                pageNo := pageLeft[iPos + 1]:PageNo
-            ENDIF
-            SELF:_delToMid(pageLeft, iPos)
-            SELF:_ntxStack[SELF:_TopStack]:Count--
-            SELF:_PageList:Write(SELF:_ntxStack[SELF:_TopStack]:Page)
-            pageLeft := SELF:_PageList:Read(lPage)
-            pageRight := SELF:_PageList:Read(pageNo)
-            pageLeft := SELF:_PageList:Read(lPage)
-            pageRight := SELF:_PageList:Read(pageNo)
-            IF num2 == lPage
-                iPos := pageLeft:NodeCount
-                nodeLeft := pageLeft[iPos]
-                nodeLeft:Recno := SELF:_midItem:Recno
-                nodeLeft:KeyBytes := SELF:_midItem:KeyBytes
-                nodeLeft := pageLeft[iPos + 1]
-                nodeRight := pageRight[0]
-                nodeLeft:PageNo := nodeRight:PageNo
-                nodeRight:PageNo := -1L
-                pageLeft:NodeCount++
-            ELSE
-                uiCount := pageRight:NodeCount
-                offset := pageRight:GetRef(uiCount + 1)
-                //Init
-                num3 := uiCount + 1
-                DO WHILE num3 > 0
-                    pageRight:SetRef(num3, pageRight:GetRef(num3 - 1))
-                    //Iterators
-                    num3--
-                ENDDO
-                pageRight:SetRef(0, offset)
-                nodeRight := pageRight[0]
-                nodeRight:Recno := SELF:_midItem:Recno
-                nodeRight:KeyBytes := SELF:_midItem:KeyBytes
-                nodeRight:PageNo := -1L
-                pageRight:NodeCount++
-            ENDIF
+            // underflow page was a left pointer from parent 
+            leftPageNo := pageLeft[iPos]:PageNo
+            num2 := leftPageNo
+            rightPageNo := pageLeft[iPos + 1]:PageNo
+        ENDIF
+        // delete parent entry into nodeMid
+        SELF:_delToMid(pageLeft, iPos)
+        SELF:_ntxStack[SELF:_TopStack]:Count--
+        SELF:_PageList:Write(SELF:_ntxStack[SELF:_TopStack]:Page)
+        // read sibling pages
+        pageLeft := SELF:_PageList:Read(leftPageNo)
+        pageRight := SELF:_PageList:Read(rightPageNo)
+        // insert parent information into underflow page
+        IF num2 == leftPageNo
+            // save at the end
             iPos := pageLeft:NodeCount
-            uiCount := iPos + pageRight:NodeCount
-            IF uiCount == SELF:_MaxEntry
+            nodeLeft := pageLeft[iPos]
+            nodeLeft:Recno := SELF:_midItem:Recno
+            nodeLeft:KeyBytes := SELF:_midItem:KeyBytes
+            nodeLeft := pageLeft[iPos + 1]
+            nodeRight := pageRight[0]
+            nodeLeft:PageNo := nodeRight:PageNo
+            nodeRight:PageNo := Uint32.MaxValue
+            pageLeft:NodeCount++
+        ELSE
+            // save at the front
+            uiCount := pageRight:NodeCount
+            offset := pageRight:GetRef(uiCount + 1)
+            //Init
+            VAR num3 := uiCount + 1
+            DO WHILE num3 > 0
+                pageRight:SetRef(num3, pageRight:GetRef(num3 - 1))
+                //Iterators
+                num3--
+            ENDDO
+            pageRight:SetRef(0, offset)
+            nodeRight := pageRight[0]
+            // copoy data from Mid
+            nodeRight:Recno := SELF:_midItem:Recno
+            nodeRight:KeyBytes := SELF:_midItem:KeyBytes
+            nodeRight:PageNo := Uint32.MaxValue 
+            pageRight:NodeCount++
+        ENDIF
+        iPos := pageLeft:NodeCount
+        uiCount := iPos + pageRight:NodeCount
+        IF uiCount == SELF:_MaxEntry
+            // the pages can be combined 
+            uiCount := 0
+            nodeLeft := pageLeft[iPos]
+            nodeRight := pageRight[uiCount]
+            DO WHILE iPos < SELF:_MaxEntry
+                nodeLeft:Recno := nodeRight:Recno
+                nodeLeft:KeyBytes := nodeRight:KeyBytes
+                uiCount++
+                iPos++
+                nodeLeft := pageLeft[iPos]
+                nodeRight := pageRight[uiCount]
+                nodeLeft:PageNo := nodeRight:PageNo
+            ENDDO
+            // left page contains all entries 
+            pageLeft:NodeCount := SELF:_MaxEntry
+            // right page is deleted
+            pageRight[0]:PageNo := SELF:_nextUnusedPageOffset
+            SELF:_nextUnusedPageOffset := rightPageNo
+            SELF:_PageList:Write(leftPageNo)
+            SELF:_PageList:Write(rightPageNo)
+            // the stack points to the parent, which may need balancing
+            SELF:_Balance()
+        ELSE
+            num4 := (uiCount - 1) / 2
+            IF iPos <= num4
                 uiCount := 0
                 nodeLeft := pageLeft[iPos]
                 nodeRight := pageRight[uiCount]
-                DO WHILE iPos < SELF:_MaxEntry
+                DO WHILE iPos < num4
                     nodeLeft:Recno := nodeRight:Recno
                     nodeLeft:KeyBytes := nodeRight:KeyBytes
                     uiCount++
@@ -1515,105 +1537,83 @@ PRIVATE METHOD _Balance() AS VOID
                     nodeLeft := pageLeft[iPos]
                     nodeRight := pageRight[uiCount]
                     nodeLeft:PageNo := nodeRight:PageNo
-                ENDDO
-                pageLeft:NodeCount := SELF:_MaxEntry
-                node3 := pageRight[0]
-                node3:PageNo := (INT)SELF:_nextUnusedPageOffset
-                SELF:_nextUnusedPageOffset := (DWORD)pageNo
-                SELF:_PageList:Write(lPage)
-                SELF:_PageList:Write(pageNo)
-                SELF:_Balance()
-            ELSE
-                num4 := (uiCount - 1) / 2
-                IF iPos <= num4
-                    uiCount := 0
-                    nodeLeft := pageLeft[iPos]
-                    nodeRight := pageRight[uiCount]
-                    DO WHILE iPos < num4
-                        nodeLeft:Recno := nodeRight:Recno
-                        nodeLeft:KeyBytes := nodeRight:KeyBytes
-                        uiCount++
-                        iPos++
-                        nodeLeft := pageLeft[iPos]
-                        nodeRight := pageRight[uiCount]
-                        nodeLeft:PageNo := nodeRight:PageNo
-                    END DO
-                    pageLeft:NodeCount := (WORD)iPos
-                    nodeRight := pageRight[uiCount]
-                    SELF:_midItem:Recno := nodeRight:Recno
-                    SELF:_midItem:KeyBytes := nodeRight:KeyBytes
+                END DO
+                pageLeft:NodeCount := (WORD)iPos
+                nodeRight := pageRight[uiCount]
+                SELF:_midItem:Recno := nodeRight:Recno
+                SELF:_midItem:KeyBytes := nodeRight:KeyBytes
+                uiCount++
+                num4 := pageRight:NodeCount
+                iPos := 0
+                //Init
+                DO WHILE uiCount <= num4
+                    offset := pageRight:GetRef(iPos)
+                    pageRight:SetRef(iPos, pageRight:GetRef(uiCount))
+                    pageRight:SetRef(uiCount, offset)
+                    iPos++
+                    //Iterators
                     uiCount++
-                    num4 := pageRight:NodeCount
-                    iPos := 0
+                ENDDO
+                pageRight:NodeCount := (WORD)(iPos - 1)
+            ELSE
+                uiCount := pageRight:NodeCount
+                num4++
+                DO WHILE iPos > num4
+                    offset := pageRight:GetRef(uiCount + 1)
                     //Init
-                    DO WHILE uiCount <= num4
-                        offset := pageRight:GetRef(iPos)
-                        pageRight:SetRef(iPos, pageRight:GetRef(uiCount))
-                        pageRight:SetRef(uiCount, offset)
-                        iPos++
+                    VAR num3 := uiCount + 1
+                    DO WHILE num3 > 0
+                        pageRight:SetRef(num3, pageRight:GetRef(num3 - 1))
                         //Iterators
-                        uiCount++
+                        num3--
                     ENDDO
-                    pageRight:NodeCount := (WORD)(iPos - 1)
-                ELSE
-                    uiCount := pageRight:NodeCount
-                    num4++
-                    DO WHILE iPos > num4
-                        offset := pageRight:GetRef(uiCount + 1)
-                        //Init
-                        num3 := uiCount + 1
-                        DO WHILE num3 > 0
-                            pageRight:SetRef(num3, pageRight:GetRef(num3 - 1))
-                            //Iterators
-                            num3--
-                        ENDDO
-                        pageRight:SetRef(0, offset)
-                        node4 := pageRight[1]
-                        node4:PageNo := pageLeft[iPos]:PageNo
-                        iPos--
-                        nodeRight := pageRight[0]
-                        nodeLeft := pageLeft[iPos]
-                        nodeRight:Recno := nodeLeft:Recno
-                        nodeRight:KeyBytes := nodeLeft:KeyBytes
-                        uiCount++
-                    ENDDO
-                    node5 := pageRight[0]
-                    node5:PageNo := pageLeft[iPos]:PageNo
-                    pageRight:NodeCount := (WORD)uiCount
+                    pageRight:SetRef(0, offset)
+                    pageRight[1]:PageNo := pageLeft[iPos]:PageNo
                     iPos--
+                    nodeRight := pageRight[0]
                     nodeLeft := pageLeft[iPos]
-                    SELF:_midItem:Recno := nodeLeft:Recno
-                    SELF:_midItem:KeyBytes := nodeLeft:KeyBytes
-                    pageLeft:NodeCount := (WORD)iPos
-                ENDIF
-                SELF:_midItem:PageNo := pageNo
-                SELF:_PageList:Write(lPage)
-                SELF:_PageList:Write(pageNo)
-                SELF:_AddKey()
+                    nodeRight:Recno := nodeLeft:Recno
+                    nodeRight:KeyBytes := nodeLeft:KeyBytes
+                    uiCount++
+                ENDDO
+                pageRight[0]:PageNo := pageLeft[iPos]:PageNo
+                pageRight:NodeCount := (WORD)uiCount
+                iPos--
+                nodeLeft := pageLeft[iPos]
+                SELF:_midItem:Recno := nodeLeft:Recno
+                SELF:_midItem:KeyBytes := nodeLeft:KeyBytes
+                pageLeft:NodeCount := (WORD)iPos
             ENDIF
+            SELF:_midItem:PageNo := rightPageNo
+            SELF:_PageList:Write(leftPageNo)
+            SELF:_PageList:Write(rightPageNo)
+            SELF:_AddKey()
         ENDIF
     ENDIF
-                    
-                    
+    RETURN
+
         PRIVATE METHOD _delToMid(page AS NtxPage , uiPos AS LONG ) AS VOID
-            LOCAL node AS NtxNode
+            // copy entry into mid, then delete from page
             LOCAL nodeCount AS LONG
-            LOCAL pageNo AS LONG
+            LOCAL leftPageNo AS DWORD
             LOCAL offSet AS WORD
             LOCAL i AS LONG
-            //
-            node := page[uiPos]
-            SELF:_midItem:Recno := node:Recno
-            SELF:_midItem:KeyBytes := node:KeyBytes
-            nodeCount := page:NodeCount
-            pageNo := node:PageNo
-            offSet := page:GetRef(uiPos)
+
+            VAR node := page[uiPos]
+            SELF:_midItem:Recno     := node:Recno
+            SELF:_midItem:KeyBytes  := node:KeyBytes
+            // delete key from page
+            nodeCount   := page:NodeCount
+            leftPageNo  := node:PageNo
+            offSet      := page:GetRef(uiPos)
+            // shift references
             FOR i := uiPos TO nodeCount -1
                 page:SetRef(i, page:GetRef(i + 1))
             NEXT
             page:SetRef(nodeCount, offSet)
-            node := page[uiPos]
-            node:PageNo := pageNo
+            // restore left page pointer (the right one is deleted)
+            node        := page[uiPos]
+            node:PageNo := leftPageNo
             page:NodeCount--
             RETURN
                     
@@ -1625,7 +1625,7 @@ PRIVATE METHOD _Balance() AS VOID
             SELF:_fileSize += BUFF_SIZE
             nLevel := NtxLevel{SELF}
             nLevel:InitRefs(SELF:_MaxEntry, SELF:_entrySize)
-            nLevel:Write((INT)SELF:_firstPageOffset)
+            nLevel:Write(SELF:_firstPageOffset)
             SELF:ClearStack()
             RETURN TRUE
                     
@@ -2497,16 +2497,16 @@ PRIVATE METHOD _Balance() AS VOID
                 bufferLen := SELF:_keySize
             ENDIF
         ENDIF
-        RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, (INT)SELF:_firstPageOffset)
+        RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, SELF:_firstPageOffset)
                 
                 
-    PRIVATE METHOD _locate(keyBuffer AS BYTE[] , bufferLen AS LONG , searchMode AS NtxSearchMode , pageOffset AS LONG ) AS DWORD
-        LOCAL foundPos AS LONG
-        LOCAL ntxPage AS NtxPage
-        LOCAL nodeCount AS LONG
-        LOCAL node AS NtxPageNode
-        LOCAL minPos AS LONG
-        LOCAL maxPos AS LONG
+    PRIVATE METHOD _locate(keyBuffer AS BYTE[] , bufferLen AS LONG , searchMode AS NtxSearchMode , pageOffset AS DWORD ) AS DWORD
+        LOCAL foundPos  AS WORD
+        LOCAL ntxPage   AS NtxPage
+        LOCAL nodeCount AS WORD
+        LOCAL node      AS NtxPageNode
+        LOCAL minPos    AS WORD
+        LOCAL maxPos    AS WORD
         //
         foundPos := 0
         //Load the page at pageOffset
@@ -2527,10 +2527,10 @@ PRIVATE METHOD _Balance() AS VOID
                 minPos := 0
                 maxPos := nodeCount
                 DO WHILE minPos < maxPos
-                    foundPos := (minPos + maxPos) / 2
+                    foundPos := (WORD) ( (minPos + maxPos) / 2)
                     node:Fill(foundPos, ntxPage)
                     IF (SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) >= 0)
-                        minPos := foundPos + 1
+                        minPos := (WORD)(foundPos + 1)
                     ELSE
                         maxPos := foundPos
                     ENDIF
@@ -2540,10 +2540,10 @@ PRIVATE METHOD _Balance() AS VOID
                 minPos := 0
                 maxPos := nodeCount
                 DO WHILE minPos < maxPos
-                    foundPos := (minPos + maxPos) / 2
+                    foundPos := (WORD) ((minPos + maxPos) / 2)
                     node:Fill(foundPos, ntxPage)
                     IF (SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) <= 0)
-                        minPos := foundPos + 1
+                        minPos := (WORD) (foundPos + 1)
                     ELSE
                         maxPos := foundPos
                     ENDIF
@@ -2555,17 +2555,17 @@ PRIVATE METHOD _Balance() AS VOID
             minPos := 0
             maxPos := nodeCount
             DO WHILE minPos < maxPos
-                foundPos := (minPos + maxPos) / 2
+                foundPos := (WORD) ((minPos + maxPos) / 2)
                 node:Fill(foundPos, ntxPage)
                 IF (SELF:_Descending)
                     IF (SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) > 0)
-                        minPos := foundPos + 1
+                        minPos := (WORD) (foundPos + 1)
                     ELSE
                         maxPos := foundPos
                     ENDIF
                 ELSE
                     IF (SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) < 0)
-                        minPos := foundPos + 1
+                        minPos := (WORD) (foundPos + 1)
                     ELSE
                         maxPos := foundPos
                     ENDIF
@@ -2590,9 +2590,9 @@ PRIVATE METHOD _Balance() AS VOID
         END SWITCH
     // Add info in the stack
         SELF:_TopStack++
-        SELF:_ntxStack[SELF:_TopStack]:Pos := foundPos
-        SELF:_ntxStack[SELF:_TopStack]:Page := pageOffset
-        SELF:_ntxStack[SELF:_TopStack]:Count := nodeCount
+        SELF:_ntxStack[SELF:_TopStack]:Pos      := foundPos
+        SELF:_ntxStack[SELF:_TopStack]:Page     := pageOffset
+        SELF:_ntxStack[SELF:_TopStack]:Count    := nodeCount
         //
         node:Fill(foundPos, ntxPage)
         IF (node:PageNo != 0)
@@ -2657,16 +2657,16 @@ PRIVATE METHOD _Balance() AS VOID
             
     PRIVATE METHOD AllocPage() AS NtxPage
         LOCAL ntxPage AS NtxPage
-        LOCAL lNextPage AS LONG
+        LOCAL nextPage AS DWORD
         //
         IF SELF:_nextUnusedPageOffset > 0
-            lNextPage := (INT)SELF:_nextUnusedPageOffset
-            ntxPage := SELF:_PageList:Update(lNextPage)
+            nextPage := SELF:_nextUnusedPageOffset
+            ntxPage := SELF:_PageList:Update(nextPage)
             SELF:_nextUnusedPageOffset := (DWORD)ntxPage[0]:PageNo
         ELSE
-            lNextPage := SELF:_fileSize
+            nextPage := SELF:_fileSize
             SELF:_fileSize += BUFF_SIZE
-            ntxPage := SELF:_PageList:Append(lNextPage)
+            ntxPage := SELF:_PageList:Append(nextPage)
         ENDIF
         RETURN ntxPage
             
@@ -2809,7 +2809,7 @@ PRIVATE METHOD _Balance() AS VOID
                 SELF:_PageList:Flush(FALSE)
                 
                 FSeek3( SELF:_hFile, 0, FS_END )
-                SELF:_fileSize  := (LONG)FTell( SELF:_hFile ) 
+                SELF:_fileSize  := FTell( SELF:_hFile ) 
                 SELF:ClearStack()
             ENDIF
             
@@ -3014,8 +3014,22 @@ PRIVATE METHOD _Balance() AS VOID
                     _oRdd:Skip(1)
                 ENDDO
                 FWrite(hDump, sRecords:ToString())
-                FClose(hDump)
+                sRecords:Clear()
+                sRecords:AppendLine("------------------------------")
+                sRecords:AppendLine("List of Unused Pages")
+                sRecords:AppendLine("------------------------------")
+                LOCAL nPage AS DWORD
+                nPage := SELF:_nextUnusedPageOffset
                 SELF:_PageList:DumpHandle := IntPtr.Zero
+                SELF:_PageList:Flush(FALSE)
+                DO WHILE nPage != 0
+                    sRecords:AppendLine(nPage:ToString())
+                    VAR page := SELF:_pageList:Read(nPage)
+                    nPage := page:NextPage
+                ENDDO
+                FWrite(hDump, sRecords:ToString())
+                FClose(hDump)
+                
             ENDIF
             RETURN
             

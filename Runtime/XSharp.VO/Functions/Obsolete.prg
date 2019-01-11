@@ -5,8 +5,8 @@
 //
 
 [Obsolete( "ErrorNew() is obsolete. Call the constructor of the Error class directly" )] ;
-FUNCTION ErrorNew() as Error
-    return Error{}
+FUNCTION ErrorNew() AS Error
+    RETURN Error{}
 
 // All Dynamic memory functions that are not supported or dummies
 // And also all the OldSpace functions

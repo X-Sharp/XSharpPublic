@@ -120,7 +120,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD VODBInfo() AS VOID
 			
 			LOCAL cFileName AS STRING
-			cFileName := GetTempFileame("test")
+			cFileName := GetTempFileName("test")
 			DBCreate(cFileName , { {"CFIELD","C",10,0} })
 			DBUseArea(,,cFileName)
 			DBAppend()
@@ -156,13 +156,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD AppendShared() AS VOID
 			LOCAL cDbf AS STRING
-			cDbf := GetTempFileame("testAppendShared")
+			cDbf := GetTempFileName("testAppendShared")
 			RDDSetDefault( "DBFNTX" )
 			DBCreate(cDbf , { {"TEST","C",10,0} })
 			
 //			Appending in exclusive mode:
 			DBUseArea(, , cDbf , "alias2" , FALSE)
-			LOCAL lRet AS LOGIC
 			Assert.True( DBAppend() )
 			Assert.Equal( 1 , RecCount() )
 			FieldPut(1, "test") // ok
@@ -179,7 +178,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD AliasNameReuse() AS VOID
 			LOCAL cDbf AS STRING
-			cDbf := GetTempFileame("testdbf")
+			cDbf := GetTempFileName("testdbf")
 			
 			RDDSetDefault( "DBFNTX" )
 			
@@ -198,7 +197,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD SavingDecimalValues() AS VOID
 			LOCAL cFileName AS STRING
-			cFileName := GetTempFileame("mydbf.dbf")
+			cFileName := GetTempFileName()
 			DBCreate(cFileName, {{"FLD1","N",10,2},{"FLD2","N",10,0}})
 			DBUseArea(,,cFileName)
 			DBAppend()
@@ -218,7 +217,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBCommitAfterFieldput() AS VOID
 			LOCAL cFileName AS STRING
-			cFileName := GetTempFileame("mydbf1.dbf")
+			cFileName := GetTempFileName()
 			DBCreate(cFileName, {{"FLD1","N",10,4}})
 			DBUseArea( , , cFileName , "tempalias")
 			DBAppend()
@@ -236,7 +235,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD FieldNameSym() AS VOID
 			LOCAL cFileName AS STRING
-			cFileName := GetTempFileame("mydbf4.dbf")
+			cFileName := GetTempFileName()
 			DBCreate(cFileName, {{"FLD1","N",10,4}})
 			DBUseArea( , , cFileName , "tempalias")
 			DBAppend()
@@ -253,7 +252,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBRLockList() AS VOID
 			LOCAL cFileName AS STRING
-			cFileName := GetTempFileame("mydbf3.dbf")
+			cFileName := GetTempFileName()
 			DBCreate(cFileName, {{"FLD1","C",10,0}})
 			DBUseArea( , , cFileName , "tempalias" , TRUE)
 			DBAppend()
@@ -275,7 +274,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBFilter() AS VOID
 			LOCAL cDbf AS STRING
-			cDbf := GetTempFileame("testdbf6.dbf")
+			cDbf := GetTempFileName()
 			IF System.IO.File.Exists(cDbf)
 				System.IO.File.Delete(cDbf)
 			END IF
@@ -325,7 +324,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBRecordInfo_test() AS VOID
 			LOCAL cDbf AS STRING
 			LOCAL l AS LOGIC
-			cDbf := GetTempFileame("testdbf7.dbf")
+			cDbf := GetTempFileName()
 			DBCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFNTX", TRUE)
 			DBAppend()
 			FieldPut(1, "ABC")
@@ -344,7 +343,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBFieldInfo_test() AS VOID
 			LOCAL cDbf AS STRING
-			cDbf := GetTempFileame("testdbf8.dbf")
+			cDbf := GetTempFileName()
 			DBCreate(cDbf, {{"NFIELD","N",10,3}}, "DBFNTX", TRUE)
 			DBAppend()
 			FieldPut(1, "ABC")
@@ -362,7 +361,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBRecordInfo_test2() AS VOID
 			LOCAL cDbf AS STRING
-			cDbf := GetTempFileame("testdbf9.dbf")
+			cDbf := GetTempFileName()
 			DBCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFNTX", TRUE)
 			DBAppend()
 			FieldPut(1, "ABC")
@@ -388,7 +387,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBContinue_test() AS VOID
 			LOCAL cDbf AS STRING
-			cDbf := GetTempFileame("testdbf10.dbf")
+			cDbf := GetTempFileName()
 			DBCreate(cDbf, {{"NFIELD","N",10,0}}, "DBFNTX", TRUE)
 			DBAppend()
 			FieldPut(1, 123)
@@ -419,8 +418,300 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 
+		// TECH-Y4UUA09473 , Problem on creating error for invalid RDD command
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBAppendWithNoWorkarea() AS VOID
+			DBCloseAll()
+			Assert.False( DBAppend() )
+		RETURN
 
-		STATIC PRIVATE METHOD GetTempFileame(cFileName AS STRING) AS STRING
+
+		// TECH-8HN2I0UUNA , Index file not correctly created when dbf is opened in SHARED mode
+		[Fact, Trait("Category", "DBF")];
+		METHOD Shared_Ntx() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL cNtx AS STRING
+			cDbf := GetTempFileName()
+			cNtx := cDbf + ".ntx"
+			
+			Assert.True( DBCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 }}) )
+			Assert.True( DBUseArea(,,cDbf,,FALSE) )
+			Assert.True( DBAppend() )
+			FieldPut ( 1 , "B")
+			Assert.True( DBAppend() )
+			FieldPut ( 1 , "A")
+			Assert.True( DBCloseArea() )
+			
+			Assert.True( DBUseArea(,,cDbf,,TRUE) ) // ----- opening in SHARED mode
+			Assert.True( DBCreateIndex(cNtx , "CFIELD") ) // returns TRUE
+			Assert.True( DBCloseArea() )
+			
+			Assert.True( DBUseArea(,,cDbf,,FALSE) )
+			Assert.True( DBSetIndex(cNtx) )
+			DBGoTop()
+			Assert.True( AllTrim(FieldGet(1)) == "A" )
+			DBGoBottom()
+			Assert.True( AllTrim(FieldGet(1)) == "B" )
+			Assert.True( DBCloseArea() ) // XSharp.RDD.RddError here
+		RETURN
+
+		// TECH-U43F26KOT7 , Runtime error saving NULL_DATE to DATE dbf field
+		[Fact, Trait("Category", "DBF")];
+		METHOD Save_NULL_DATE() AS VOID
+			LOCAL cDbf AS STRING
+			cDbf := GetTempFileName()
+			Assert.True(  DBCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 },;
+			{"DFIELD" , "D" , 8 , 0 }}) )
+			Assert.True( DBUseArea(,,cDbf) )
+			DBAppend()
+			FieldPut ( 1 , "B")
+			DBAppend()
+			FieldPut ( 1 , "A")
+			Assert.True( DBCloseArea() )
+			
+			Assert.True( DBUseArea(,,cDbf) )
+			LOCAL u AS USUAL
+			u := FieldGet(2) // it should be a NULL_DATE
+			Assert.True( u == NULL_DATE )
+			FieldPut(2,u) // exception
+			FieldPut(2,NULL_DATE) // exception
+			Assert.True( FieldGet(2) == NULL_DATE )
+			Assert.True(  DBCloseArea() )
+		RETURN
+
+
+		// TECH-588I8LB67J , Problems with NTX indexes
+		[Fact, Trait("Category", "DBF")];
+		METHOD Ntx_Issues() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL cNtx AS STRING
+			LOCAL aResult AS ARRAY
+			
+			cDbf := GetTempFileName()
+			cNtx := cDbf + ".ntx"
+			
+			DBCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 }})
+			DBUseArea(,,cDbf)
+			DBAppend()
+			FieldPut ( 1 , "ABC")
+			DBAppend()
+			FieldPut ( 1 , "GHI")
+			DBAppend()
+			FieldPut ( 1 , "DEF")
+			DBAppend()
+			FieldPut ( 1 , "K")
+			DBCloseArea()
+			
+			Assert.True( DBUseArea(,,cDbf) )
+			Assert.True( DBCreateIndex(cNtx , "CFIELD") )
+			Assert.True( DBCloseArea() )
+			
+			Assert.True( DBUseArea(,,cDbf,,FALSE) )
+			Assert.True( DBSetIndex(cNtx) )
+			aResult := GetRecords()
+//			should be ABC, DEF, GHI, K
+			Assert.True( aResult[1] == "ABC")
+			Assert.True( aResult[2] == "DEF")
+			Assert.True( aResult[3] == "GHI")
+			Assert.True( aResult[4] == "K")
+			
+			DBGoTop()
+			DBSkip()
+			FieldPut(1,"HHH")
+			aResult := GetRecords()
+//			should be ABC, GHI, HHH, K
+			Assert.True( aResult[1] == "ABC")
+			Assert.True( aResult[2] == "GHI")
+			Assert.True( aResult[3] == "HHH")
+			Assert.True( aResult[4] == "K")
+
+			DBGoTop()
+			DBSkip(2)
+			FieldPut(1,"DEF") // restore it
+			
+			Assert.True( DBCloseArea() )
+
+
+			Assert.True( DBUseArea(,,cDbf,,TRUE) )
+			Assert.True( DBSetIndex(cNtx) )
+			aResult := GetRecords()
+//			should be ABC, DEF, GHI, K
+			Assert.True( aResult[1] == "ABC")
+			Assert.True( aResult[2] == "DEF")
+			Assert.True( aResult[3] == "GHI")
+			Assert.True( aResult[4] == "K")
+			
+			DBGoTop()
+			DBSkip()
+			Assert.True(RLock())
+			FieldPut(1,"III")
+			aResult := GetRecords()
+//			should be ABC, GHI, III, K
+			Assert.True( aResult[1] == "ABC")
+			Assert.True( aResult[2] == "GHI")
+			Assert.True( aResult[3] == "III")
+			Assert.True( aResult[4] == "K")
+			
+			Assert.True( DBCloseArea() )
+		RETURN
+
+		PRIVATE STATIC METHOD GetRecords() AS ARRAY
+			LOCAL aResult AS ARRAY
+			aResult := {}
+			DBGoTop()
+			DO WHILE .not. Eof()
+				AAdd(aResult , AllTrim(FieldGet(1)))
+				DBSkip()
+			END DO
+		RETURN aResult
+
+		// TECH-V7A528Z0ZL , Problems with ntx indexes 2
+		[Fact, Trait("Category", "DBF")];
+		METHOD Ntx_Issues2() AS VOID
+			LOCAL cFileName AS STRING
+			cFileName := GetTempFileName()
+			DBCreate(cFileName, {{"FLD1","C",10,0},{"FLD2","N",10,0}})
+			DBUseArea( , , cFileName , , FALSE)
+			FOR LOCAL n := 1 AS INT UPTO 10
+				DBAppend()
+				FieldPut(1, n:ToString())
+				FieldPut(2, n)
+			NEXT
+			Assert.True( DBCreateIndex(cFileName + ".ntx" , "FLD2") )
+			Assert.True( DBCloseArea() )
+
+			DBUseArea( , , cFileName , , FALSE)
+			Assert.True( DBSetIndex(cFileName + ".ntx") )
+			DBGoTop()
+			LOCAL nCount := 0 AS INT
+			DO WHILE ! EOF()
+				nCount ++
+				Assert.True( FieldGet(2) == RecNo() )
+				Assert.True( FieldGet(2) == nCount )
+				Assert.True( DBSkip() )
+			END DO
+			Assert.True( DBCloseArea() )
+		RETURN
+
+		// TECH-965270UG7K , Workareas not being reused
+		[Fact, Trait("Category", "DBF")];
+		METHOD WorkareaNums() AS VOID
+			LOCAL cFileName AS STRING
+			cFileName := GetTempFileName()
+			Assert.True( DBCreate(cFileName, {{"FLD1","C",10,0}}) )
+			
+			Assert.True( DBUseArea ( TRUE , , cFileName , "a1") )
+			Assert.Equal( 1 , DBGetSelect() )
+			Assert.True( DBCloseArea() )
+			
+			Assert.True( DBUseArea ( TRUE , , cFileName , "a2") )
+			Assert.Equal( 1 , DBGetSelect() )
+			Assert.True( DBCloseArea() )
+			
+			Assert.True( DBUseArea ( TRUE , , cFileName , "a3") )
+			Assert.Equal( 1 , DBGetSelect() )
+			Assert.True( DBCloseArea() )
+		RETURN
+
+		// FOX-ES1QLR6Y5L , dbRecordInfo ( DBRI_LOCKED ) always returns .f.
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBRI_LOCKED_test() AS VOID
+			LOCAL cFileName AS STRING
+			cFileName := GetTempFileName()
+			SetExclusive ( FALSE )
+			DBCreate ( cFileName , { {"id", "C", 5, 0} })
+		
+			DBUseArea ( , , cFileName )
+			DBAppend()
+			DBAppend()
+			DBAppend()
+			DBGoTop()
+			
+			Assert.True( DBRLock ( RecNo() ) )
+			Assert.True( DBRecordInfo ( DBRI_LOCKED ) ) // Should show TRUE
+			Assert.True( AScan ( DBRLockList() , RecNo() ) > 0 )
+			
+			DBSkip()
+//			record 2 - no lock
+			Assert.False( DBRecordInfo ( DBRI_LOCKED ) )
+			Assert.False( AScan ( DBRLockList() , RecNo() ) > 0 )
+			
+			DBSkip()
+			Assert.True( DBRLock ( RecNo() ) )
+			Assert.True( DBRecordInfo ( DBRI_LOCKED ) ) // Should show TRUE
+			Assert.True( AScan ( DBRLockList() , RecNo() ) > 0 )
+			
+			LOCAL a AS ARRAY
+			a:= DBRLockList()
+			Assert.Equal( 2 , ALen(a) )
+			Assert.Equal( 1 , a[1] )
+			Assert.Equal( 3 , a[2] )
+
+			DBCloseArea()
+		RETURN
+
+		// TECH-XQES14W9J0 , Aliasxxx() funcs throw exceptions
+		[Fact, Trait("Category", "DBF")];
+		METHOD Alias_test() AS VOID
+			DBCloseAll()
+			Assert.True( Alias() == "" )
+			Assert.True( Alias0() == "" )
+			Assert.True( Alias0Sym() == "" )
+		RETURN
+
+		// TECH-IXV5X91A74 , DBCreate() problem after having opened a dbf in exclusive mode
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBCreate_test() AS VOID
+			LOCAL cFileName AS STRING
+			cFileName := GetTempFileName()
+			
+			DBCreate(cFileName, {{"FLD1","C",10,0}})
+			DBUseArea(,,cFileName,,FALSE)
+			DBCloseArea()
+
+//			exception here
+			Assert.True( DBCreate(cFileName, {{"FLD1","N",10,0}}) )
+			
+			Assert.True( DBUseArea(,,cFileName) )
+			DBAppend()
+			FieldPut(1 , 123)
+			Assert.True( FieldGet(1) == 123 )
+			Assert.True( DBCloseArea() )
+		RETURN
+
+
+		// TECH-ONPOSM84VS , Runtime exception on Error:ToString()
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBError_test() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL cNtx AS STRING
+			LOCAL aResult AS ARRAY
+			
+			cDbf := GetTempFileName()
+			cNtx := cDbf + ".ntx"
+			
+			DBCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 }})
+			DBUseArea(,,cDbf,,TRUE)
+			Assert.True( DBAppend() )
+			Assert.True( DBUnlock() )
+			TRY
+				? FieldPut ( 1 , "ABC") // record not locked
+			CATCH e AS XSharp.Error
+				? e:Message
+				? e:GenCodeText
+				? e:SubCodeText // check if this displays correctly
+				? e:OSCodeText
+				? e:ToString() // exception here
+			FINALLY
+				Assert.True( DBCloseArea() )
+			END TRY
+		RETURN
+
+
+	
+		STATIC PRIVATE METHOD GetTempFileName() AS STRING
+		RETURN GetTempFileName("testdbf")
+		STATIC PRIVATE METHOD GetTempFileName(cFileName AS STRING) AS STRING
 			// we may want to put them to a specific folder etc
 		RETURN cFileName
 			

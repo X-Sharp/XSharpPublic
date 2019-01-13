@@ -1,13 +1,13 @@
 [General]
 PROJECT = Runtime
-IDEVersion = 1.06
+IDEVersion = 1.15a
 OutputFolder = %ProjectPath%\Bin\
 Description = 
 GUID = 3A2B95E7-CF54-4E77-B22D-FDA94582BA81
 StartUpApp = 5A6F39F8-DB5F-4C1E-AC32-0AD778E7653F
 PrgEncoding = Default
 SupportCF = 0
-NoAppFileCreate = 1
+NoAppFileCreate = 0
 CopyAssembliesToFolder = 
 DebugExecutable = 
 
@@ -34,7 +34,7 @@ DefaultPropertiesGuid = E02D3177-9FE5-4634-BC3D-B9108BC76452
 
 ; ************** APPLICATION XSharp.Core *************
 Application = XSharp.Core
-IDEVersion = 1.06
+IDEVersion = 1.15a
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -412,7 +412,7 @@ ENDApplication = XSharp.Core
 
 ; ************** APPLICATION XSharp.VO *************
 Application = XSharp.VO
-IDEVersion = 1.06
+IDEVersion = 1.15a
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -544,7 +544,7 @@ ENDApplication = XSharp.VO
 
 ; ************** APPLICATION Xide.Tests *************
 Application = Xide.Tests
-IDEVersion = 1.06
+IDEVersion = 1.15a
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -651,7 +651,7 @@ ENDApplication = Xide.Tests
 
 ; ************** APPLICATION Xide.Unit *************
 Application = Xide.Unit
-IDEVersion = 1.06
+IDEVersion = 1.15a
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -758,7 +758,7 @@ ENDApplication = Xide.Unit
 
 ; ************** APPLICATION XSharp.Core.Tests *************
 Application = XSharp.Core.Tests
-IDEVersion = 1.06
+IDEVersion = 1.15a
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -890,7 +890,7 @@ ENDApplication = XSharp.Core.Tests
 
 ; ************** APPLICATION XSharp.VO.Tests *************
 Application = XSharp.VO.Tests
-IDEVersion = 1.06
+IDEVersion = 1.15a
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -960,12 +960,21 @@ FileGUID = 8C3C674F-5CA1-40C2-AA39-0186293584A9
 FileType = Code
 File = %AppPath%\UsualTests.prg
 FileGUID = 197DBD0D-7FD6-497A-8752-80F4379C5A73
-FileType = Text
+FileType = Code
 File = %AppPath%\WinBoolTest.prg
 FileGUID = D1466CBE-C746-40D5-8327-3DAA6B0EA60D
 FileType = Code
 File = %AppPath%\RegistryChecks.prg
 FileGUID = A4D5018D-E76C-48DB-887B-50D7FDAF1500
+FileType = Code
+File = %AppPath%\DbfTests.prg
+FileGUID = 83C662F1-347B-4F58-87BB-21F52160A851
+FileType = Code
+File = %AppPath%\StringTests.prg
+FileGUID = 896127EE-D126-467F-B174-33553ECD960F
+FileType = Code
+File = %AppPath%\MiscTests.prg
+FileGUID = 0A407EA6-81F5-4DC9-93DB-EA6D9B68B451
 FileType = Code
 [XSharp.VO.Tests References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
@@ -1034,7 +1043,7 @@ ENDApplication = XSharp.VO.Tests
 
 ; ************** APPLICATION XSharp.Rdd *************
 Application = XSharp.Rdd
-IDEVersion = 1.06
+IDEVersion = 1.15a
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1134,10 +1143,6 @@ FileFileGroup = F1EF860A-FF11-4546-9DB1-8C51F64CF805
 FileType = Code
 File = %AppPath%\Types\DbfNtx\NtxHeader.prg
 FileGUID = 196F2C02-981A-48F2-AD06-B8944B885F09
-FileFileGroup = 78B4009A-F5C4-4277-A7B9-5CD17F99F162
-FileType = Code
-File = %AppPath%\Types\DbfNtx\NtxItem.prg
-FileGUID = ADC9E533-47EC-49DC-B6D6-83F28F9BE247
 FileFileGroup = 78B4009A-F5C4-4277-A7B9-5CD17F99F162
 FileType = Code
 File = %AppPath%\Types\DbfNtx\NtxLevel.prg
@@ -1295,6 +1300,10 @@ File = %AppPath%\Types\DbfCdx\CdxTreePage.prg
 FileGUID = DC205593-B218-4D34-9EA9-5D9D7C20CC62
 FileFileGroup = 0BCBE594-EBAE-4214-A58C-88848F3A9A18
 FileType = Code
+File = %AppPath%\Types\DbfNtx\NtxNode.prg
+FileGUID = BCD800B9-906C-459D-BA8F-BDF02E80461C
+FileFileGroup = 78B4009A-F5C4-4277-A7B9-5CD17F99F162
+FileType = Code
 [XSharp.Rdd References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceProject = 354515DF-76E6-4CF9-B203-F8F632ACC2DC,1,0,XSharp.Core
@@ -1359,7 +1368,7 @@ ENDApplication = XSharp.Rdd
 
 ; ************** APPLICATION XSharp.VO.Latebound.Tests *************
 Application = XSharp.VO.Latebound.Tests
-IDEVersion = 1.06
+IDEVersion = 1.15a
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1461,7 +1470,7 @@ ENDApplication = XSharp.VO.Latebound.Tests
 
 ; ************** APPLICATION XSharp.Rdd.Tests *************
 Application = XSharp.Rdd.Tests
-IDEVersion = 1.06
+IDEVersion = 1.15a
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1574,7 +1583,7 @@ ENDApplication = XSharp.Rdd.Tests
 
 ; ************** APPLICATION XSharp.RT *************
 Application = XSharp.RT
-IDEVersion = 1.06
+IDEVersion = 1.15a
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1873,7 +1882,7 @@ ENDApplication = XSharp.RT
 
 ; ************** APPLICATION XSharp.XPP *************
 Application = XSharp.XPP
-IDEVersion = 1.06
+IDEVersion = 1.15a
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 

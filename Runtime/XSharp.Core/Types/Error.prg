@@ -107,6 +107,7 @@ BEGIN NAMESPACE XSharp
 
     PRIVATE METHOD setDefaultValues() AS VOID
         SELF:FuncSym := ProcName(2)
+        SELF:Args    := <OBJECT>{}
         RETURN
     
     /// <summary>Create an Error Object</summary>

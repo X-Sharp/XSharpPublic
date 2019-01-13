@@ -11,7 +11,7 @@ namespace XSharp.Runtime
     public class MacroCompiler : IMacroCompiler
     {
         private  MacroOptions options;
-        internal Compilation<object, RuntimeCodeblockDelegate> compiler ;
+        internal Compilation<object, RuntimeCodeblockDelegate> compiler;
 
 
         public MacroCompiler()

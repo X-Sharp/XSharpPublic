@@ -132,6 +132,8 @@ namespace XSharp.MacroCompiler.Syntax
                     case VariableResolution.TreatAsField:
                         return AliasExpr.Bound(Name);
                     case VariableResolution.TreatAsFieldOrMemvar:
+                        if (Affinity == BindAffinity.Assign)
+                            b.CreatesAutoVars = true;
                         return AutoVarExpr.Bound(Name);
                 }
             }
@@ -187,6 +189,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
+            Left.Affinity = BindAffinity.Assign;
             b.Bind(ref Left);
             b.Bind(ref Right);
             Left.RequireSetAccess();
@@ -201,6 +204,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
+            Left.Affinity = BindAffinity.Assign;
             b.Bind(ref Left);
             b.Bind(ref Right);
             Left.RequireGetSetAccess();
@@ -274,6 +278,7 @@ namespace XSharp.MacroCompiler.Syntax
         Expr Left;
         internal override Node Bind(Binder b)
         {
+            Expr.Affinity = BindAffinity.Assign;
             b.Bind(ref Expr);
             Expr.RequireGetSetAccess();
             Left = Expr.Cloned(b);
@@ -290,6 +295,7 @@ namespace XSharp.MacroCompiler.Syntax
         Expr Value;
         internal override Node Bind(Binder b)
         {
+            Expr.Affinity = BindAffinity.Assign;
             b.Bind(ref Expr);
             Expr.RequireGetSetAccess();
             Left = Expr.Cloned(b);
@@ -514,6 +520,7 @@ namespace XSharp.MacroCompiler.Syntax
             return this;
         }
         internal override void RequireSetAccess() => RequireGetAccess();
+        internal override void RequireGetSetAccess() => RequireGetAccess();
     }
     internal partial class EmptyExpr : Expr
     {
@@ -623,6 +630,7 @@ namespace XSharp.MacroCompiler.Syntax
         }
         internal override void RequireGetAccess() => RequireValue();
         internal override void RequireSetAccess() => RequireValue();
+        internal override void RequireGetSetAccess() => RequireValue();
     }
     internal partial class SubstrExpr : BinaryExpr
     {
@@ -650,6 +658,7 @@ namespace XSharp.MacroCompiler.Syntax
         }
         internal override void RequireGetAccess() => RequireValue();
         internal override void RequireSetAccess() => RequireValue();
+        internal override void RequireGetSetAccess() => RequireValue();
     }
     internal partial class Arg : Node
     {

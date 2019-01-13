@@ -23,11 +23,37 @@ namespace XSharp.MacroCompiler
     {
         public struct CompilationResult
         {
+            public string Source;
             public R Macro;
-            public int ParamCount;
+            internal Binder<T, R> Binder;
+            internal Syntax.Codeblock SyntaxTree;
+            public int ParamCount { get => Binder.ParamCount; }
+            public bool CreatesAutoVars { get => Binder.CreatesAutoVars; }
             public CompilationError Diagnostic;
-            internal CompilationResult(R macro, int paramCount) { Macro = macro; ParamCount = paramCount; Diagnostic = null; }
-            internal CompilationResult(CompilationError diagnostic) { Macro = null; ParamCount = 0; Diagnostic = diagnostic; }
+            internal CompilationResult(string source, R macro, Binder<T, R> binder)
+            {
+                Source = source;
+                Macro = macro;
+                SyntaxTree = null;
+                Binder = binder;
+                Diagnostic = null;
+            }
+            internal CompilationResult(string source, Syntax.Codeblock syntaxTree, Binder<T, R> binder)
+            {
+                Source = source;
+                Macro = null;
+                SyntaxTree = syntaxTree;
+                Binder = binder;
+                Diagnostic = null;
+            }
+            internal CompilationResult(string source, CompilationError diagnostic)
+            {
+                Source = source;
+                Macro = null;
+                SyntaxTree = null;
+                Binder = null;
+                Diagnostic = diagnostic;
+            }
         }
 
         MacroOptions options;
@@ -43,12 +69,31 @@ namespace XSharp.MacroCompiler
             {
                 Binder<T, R> binder = Binder.Create<T, R>(options);
                 var ast = binder.Bind(Parse(source));
-                return new CompilationResult(binder.Emit(ast,source), binder.ParamCount);
+                return new CompilationResult(source, binder.Emit(ast,source), binder);
             }
             catch (CompilationError e)
             {
-                return new CompilationResult(new CompilationError(e, source));
+                return new CompilationResult(source, new CompilationError(e, source));
             }
+        }
+
+        public CompilationResult Bind(string source)
+        {
+            try
+            {
+                Binder<T, R> binder = Binder.Create<T, R>(options);
+                var ast = binder.Bind(Parse(source));
+                return new CompilationResult(source, binder.Emit(ast, source), binder);
+            }
+            catch (CompilationError e)
+            {
+                return new CompilationResult(source, new CompilationError(e, source));
+            }
+        }
+
+        public R Emit(CompilationResult macro)
+        {
+            return macro.Binder.Emit(macro.SyntaxTree, macro.Source);
         }
 
         internal Syntax.Codeblock Parse(string source)

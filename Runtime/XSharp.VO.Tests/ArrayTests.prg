@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -318,7 +318,49 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			a := NULL
 			AEval(a, {||TRUE})
 		RETURN
-
+	
+		[Fact, Trait("Category", "AClone")];
+		METHOD AClone_Tests() AS VOID
+			Assert.True(ALen(AClone({1}))==1)
+			Assert.True(ALen(AClone({1,2}))==2)
+			Assert.True(  AClone({1,2})[2] ==2  )
+			Assert.True(  AClone({1,{2,3},4})[2,2] == 3  )
+			Assert.True(  AClone({1,{},4})[3] == 4  )
+	
+			Assert.True(AClone(NULL_ARRAY)==NULL_ARRAY)
+			LOCAL aNull := NULL_ARRAY AS ARRAY
+			Assert.True(AClone(aNull)==NULL_ARRAY)
+			Assert.True(ALen(AClone({}))==0)
+			Assert.True(ALen(AClone({{}}))==1)
+	
+	
+		[Fact, Trait("Category", "ACloneShallow")];
+		METHOD ACloneShallow_Tests() AS VOID
+			Assert.True(ALen(ACloneShallow({1}))==1)
+			Assert.True(ALen(ACloneShallow({1,2}))==2)
+			Assert.True(  ACloneShallow({1,2})[2] ==2  )
+			Assert.True(  ACloneShallow({1,{2,3},4})[2,2] == 3  )
+			Assert.True(  ACloneShallow({1,{},4})[3] == 4  )
+			
+			LOCAL aSub AS ARRAY
+			aSub := {1,2}
+			Assert.True(  ACloneShallow({1,aSub,3})[2] == aSub  )
+	
+			Assert.True(ACloneShallow(NULL_ARRAY)==NULL_ARRAY)
+			LOCAL aNull AS ARRAY
+			aNull := NULL_ARRAY
+			Assert.True(ACloneShallow(aNull)==NULL_ARRAY)
+			Assert.True(ALen(ACloneShallow({}))==0)
+			Assert.True(ALen(ACloneShallow({{}}))==1)
+	
+		[Fact, Trait("Category", "AClone")];
+		METHOD ACloneWith_NULL_ARRAY_as_Elements() AS VOID
+			Assert.True(  ALen(  AClone({NULL_ARRAY,NULL_ARRAY}) ) == 2  )
+			Assert.True(  AClone({NULL_ARRAY})[1] == NULL_ARRAY  )
+	
+			Assert.True(  ALen(  ACloneShallow({NULL_ARRAY,NULL_ARRAY}) ) == 2  )
+			Assert.True(  ACloneShallow({NULL_ARRAY})[1] == NULL_ARRAY  )
+	
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

@@ -224,7 +224,7 @@ BEGIN NAMESPACE XSharp
         sb:AppendLine("Arg             : " + SELF:Arg)
       ENDIF
       LOCAL cArgs AS STRING
-      IF SELF:Args:Length > 0
+      IF SELF:Args != NULL .AND. SELF:Args:Length > 0
             cArgs := "{"
             LOCAL lFirst := TRUE AS LOGIC
             FOREACH VAR oArg IN SELF:Args

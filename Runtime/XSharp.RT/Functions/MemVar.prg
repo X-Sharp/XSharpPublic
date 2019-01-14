@@ -1,135 +1,210 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
 
+USING System.Collections.Generic
 
-/// <summary>This function is not implemented yet</summary>
-// <summary>
-// Perform an assignment to a variable whose name is stored in a specified string.
-// </summary>
+
+/// <summary>
+/// Perform an assignment to a variable whose name is stored in a specified string.
+/// </summary>
 /// <param name="cExp"></param>
 /// <param name="xValue"></param>
 /// <returns>
 /// </returns>
 FUNCTION MAssign(cExp AS STRING,xValue AS USUAL) AS USUAL
-	THROW NotImplementedException{}
-RETURN	 NIL   
-
-
-
-/// <summary>This function is not implemented yet</summary>
-// <summary>
-// Return a set-get code block for a given memory variable.
-// </summary>
+    RETURN MemVarPutSym(cExp, xValue)
+    
+    
+/// <summary>
+/// Return a set-get code block for a given memory variable.
+/// </summary>
 /// <param name="cVar"></param>
 /// <returns>
 /// </returns>
 FUNCTION MemVarBlock(cVar AS STRING) AS OBJECT
-	THROW NotImplementedException{}
-RETURN	 NULL_OBJECT   
-
-/// <summary>This function is not implemented yet</summary>
-// <summary>
-// Return the contents of a memory variable.
-// </summary>
-/// <param name="cVar"></param>
-/// <returns>
-/// </returns>
+    RETURN {| uValue| IIF (uValue == NIL, MemVarGetSym(cVar), MemVarPutSym(cVar, uValue))} 
+    
+    
+/// <summary>
+/// Return the contents of a memory variable.
+/// </summary>
+/// <param name="cVar">The name of the memory variable.</param>
+/// <returns>The value of the memory variable. When there is no memory variable with that name then a runtime error is thrown.</returns>
+/// <seealso cref='M:XSharp.RT.Functions.VarGet(System.String)' >VarGet</seealso>
 FUNCTION MemVarGet(cVar AS STRING) AS USUAL
-	THROW NotImplementedException{}
-RETURN	 NIL   
+    RETURN XSharp.MemVar.Get(cVar)
+    
+    
+    
+/// <summary>
+/// Assign a value to a memory variable of a given name.
+/// </summary>
+/// <param name="cVar">The name of the variable you want to create. </param>
+/// <param name="uValue">The value to assign to the variable. </param>
+/// <returns>The value assigned to the memvar.</returns>
+/// <remarks>
+/// If a memory variable with that name does not exits, a new memory variable is created.  Therefore, MemVarPut(), like VarPut() can be used to create undeclared memory variables.  It should be used instead of a macro.
+/// </remarks>
+/// <seealso cref='M:XSharp.RT.Functions.VarPut(System.String,XSharp.__Usual)' >VarPut</seealso>
+FUNCTION MemVarPut(cVar AS STRING,uValue AS USUAL) AS USUAL
+    RETURN XSharp.MemVar.Put(cVar, uValue) 
+    
 
-/// <summary>This function is not implemented yet</summary>
-// <summary>
-// Assign a value to a memory variable of a given name.
-// </summary>
-/// <param name="cVar"></param>
-/// <param name="u"></param>
-/// <returns>
-/// </returns>
-FUNCTION MemVarPut(cVar AS STRING,u AS USUAL) AS USUAL
-	THROW NotImplementedException{}
-RETURN	 NIL   
 
+/// <summary>
+/// Release a memory variable
+/// </summary>
+/// <param name="symVar">The name of the variable you want to release. </param>
+/// <remarks>
+/// The value of this variable will be set to NIL. The variable is NOT deleted.  
+/// </remarks>
 
+FUNCTION MemVarRelease(symVar AS SYMBOL) AS VOID 
+	XSharp.MemVar.Release(symVar)
+	RETURN
 
-
-/// <summary>This function is not implemented yet</summary>
-// <summary>
-// Return the contents of a field or a memory variable.
-// </summary>
-/// <param name="cVar"></param>
-/// <returns>
-/// </returns>
+    
+/// <summary>Return the contents of a field or a memory variable.</summary>
+/// <param name="cVar">The name of the field or memory variable.</param>
+/// <returns>The value of the field or memory variable. When there is no field and also no memory variable then a runtime error is thrown.</returns>
+/// <remarks>
+/// This function is used instead of a macro when the name of the field or memory variable is in a string. 
+/// </remarks>
+/// <seealso cref='M:XSharp.RT.Functions.MemVarGet(System.String)' >MemVarGet</seealso>
 FUNCTION VarGet(cVar AS STRING) AS USUAL
-	THROW NotImplementedException{}
-RETURN	 NIL   
-
-/// <summary>This function is not implemented yet</summary>
-// <summary>
-// Assign a value to a field or a memory variable of a given name.
-// </summary>
-/// <param name="cVar"></param>
-/// <param name="u"></param>
+    RETURN __VarGet(cVar)
+    
+/// <summary>
+/// Assign a value to a field or a memory variable of a given name.
+/// </summary>
+/// <param name="cVar"> The name of the variable or field you want to Assign to </param>
+/// <param name="uValue">The value to assign to the variable</param>
 /// <returns>
 /// </returns>
-FUNCTION VarPut(cVar AS STRING,u AS USUAL) AS USUAL
-	THROW NotImplementedException{}
-RETURN	 NIL   
+/// <remarks>
+/// If a field or memory variable with the specified name does not exist, then a new a memory variable is created.
+/// This function like MemVarPut(), can be used to create undeclared memory variables.  It should be used instead of a macro.
+/// </remarks>
+/// <seealso cref='M:XSharp.RT.Functions.MemVarPut(System.String, XSharp.__Usual)' >MemVarPut</seealso>
+FUNCTION VarPut(cVar AS STRING,uValue AS USUAL) AS USUAL
+    RETURN __VarPut(cVar, uValue)
+    
 
-
-
-
-/// <summary>This function is not implemented yet</summary>
-// <summary>
-// </summary>
-// <param name="symVar"></param>
-/// <returns>
-/// </returns>
+/// <inheritdoc cref='M:XSharp.RT.Functions.VarGet(System.String)' />
+/// <param name="symVar">The name of the variable .</param>
 FUNCTION VarGetSym(symVar AS SYMBOL) AS USUAL
-	THROW NotImplementedException{}
-	RETURN NIL   
+    RETURN __VarGet(symVar)
+    
+/// <inheritdoc cref='M:XSharp.RT.Functions.VarPut(System.String,XSharp.__Usual)' />
+/// <param name="symVar">The name of the variable .</param>
+FUNCTION VarPutSym(symVar AS SYMBOL,uValue AS USUAL) AS USUAL
+    RETURN __VarPut(symVar, uValue)
+    
+/// <inheritdoc cref='M:XSharp.RT.Functions.MemVarBlock(System.String)' />
+/// <param name="symVar">The name of the variable .</param>
+FUNCTION MemVarBlockSym(symVar AS SYMBOL) AS OBJECT
+    RETURN {| uValue| IIF (uValue == NIL, MemVarGetSym(symVar), MemVarPutSym(symVar, uValue))} 
+    
+/// <inheritdoc cref='M:XSharp.RT.Functions.MemVarGet(System.String)' />
+/// <param name="symVar">The name of the variable .</param>
+FUNCTION MemVarGetSym(symVar AS SYMBOL) AS USUAL 
+    RETURN XSharp.MemVar.Get(symVar)
+    
+/// <inheritdoc cref='M:XSharp.RT.Functions.MemVarPut(System.String,XSharp.__Usual)' /> 
+/// <param name="symVar">The name of the variable you want to assign to.</param>
+FUNCTION MemVarPutSym(symVar AS SYMBOL, uValue AS USUAL) AS USUAL  
+    RETURN XSharp.MemVar.Put(symVar, uValue) 
 
-/// <summary>This function is not implemented yet</summary>
-// <summary>
-// </summary>
-// <param name="symVar"></param>
-/// <param name="u"></param>
-/// <returns>
-/// </returns>
-FUNCTION VarPutSym(symVar AS SYMBOL,u AS USUAL) AS USUAL
-	THROW NotImplementedException{}
-	RETURN NIL  
 
-/// <summary>This function is not implemented yet</summary>
+/// <summary>
+/// Clear all memory variables (all public variables and the private variables of the current thread)
+/// </summary>
 
-	// <summary>
-	// Obtain a set-get code block for a given memory variable.
-	// </summary>
-	/// <param name="symVar"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION MemVarBlockSym(symVar AS SYMBOL) AS OBJECT
-		/// THROW NotImplementedException{}
-	RETURN NULL_OBJECT   
+FUNCTION _MClear() AS VOID STRICT  
+	XSharp.MemVar.ClearAll()
+	RETURN
 
-/// <summary>This function is not implemented yet</summary>
+/// <summary>
+/// Release one or more memory variables variables. 
+/// </summary>
+/// <param name="var1">Variable 1</param>
+/// <param name="var2">Variable 2</param>
+/// <param name="var3">Variable 3</param>
+/// <param name="var4">Variable 4</param>
+/// <param name="varn">Variable n</param>
+/// <remarks>
+/// The variables are not removed but their values are replaced with NIL.
+/// </remarks>
+FUNCTION _MxRelease (var1, var2, var3, var4, varn) AS VOID CLIPPER	
+	LOCAL nCount AS LONG
+	LOCAL name AS USUAL
+	nCount := PCount()
+	FOR VAR i := 1 TO nCount
+		name := _GetFParam(i)
+		IF IsString(name)
+			MemVarRelease(String2Symbol(name))
+		ELSEIF IsSymbol(name)			
+			MemVarRelease(String2Symbol(name))
+		ELSE  
+			// throw argument error
+		ENDIF
+	NEXT
+	RETURN 
 
-	// <param name="symVar"></param>
-	/// <returns> 
-	/// </returns>
-	FUNCTION MemVarGetSym(symVar AS SYMBOL) AS USUAL
-		THROW NotImplementedException{}
-	RETURN NIL   
+/// <summary>
+/// Release variables that match a certain wildcard pattern
+/// </summary>
+/// <param name="cMask">The wildcard pattern to use when releasing the memvars. May contain * and ? characters.</param>
+/// <param name="lMatch">Indicates if the variables that need to be released should match (TRUE) or NOT match (FALSE) the pattern.</param>
+/// <remarks>
+/// The variables are not removed but their values are replaced with NIL.
+/// </remarks>
+FUNCTION _MRelease(cMask AS STRING, lMatch AS LOGIC)	AS VOID
+	LOCAL symName AS SYMBOL
+	// Case INsensitive comparison. Symbols are all in UPPER case
+	cMask := Upper(cMask)                                        
+	symName := _PrivateFirst()
+	DO WHILE symName != NULL_SYMBOL
+		IF _Like(cMask, Symbol2String(symName)) == lMatch
+			MemVarPutSym(symName, NIL)
+		ENDIF
+		symName := _PrivateNext()
+	ENDDO
+	RETURN   
 
-/// <summary>This function is not implemented yet</summary>
 
-	// <param name="symVar"></param>
-	/// <param name="u"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION MemVarPutSym(symVar AS SYMBOL,u AS USUAL) AS USUAL
-		THROW NotImplementedException{}
-	RETURN NIL      
+/// <exclude/>
+FUNCTION _PrivateFirst(lCurrentOnly := FALSE AS LOGIC) AS SYMBOL 
+	RETURN XSharp.MemVar.PrivatesFirst(lCurrentOnly)
+
+/// <exclude/>
+FUNCTION _PrivateNext() AS SYMBOL STRICT
+	RETURN XSharp.MemVar.PrivatesNext() 
+
+/// <exclude/>	
+FUNCTION _PublicFirst() AS SYMBOL STRICT 
+	RETURN XSharp.MemVar.PublicsFirst()
+
+/// <exclude/>
+FUNCTION _PublicNext() AS SYMBOL STRICT
+	RETURN XSharp.MemVar.PublicsNext()
+	
+/// <exclude/>
+FUNCTION _PrivateCount(lCurrentOnly := FALSE AS LOGIC) AS INT      
+	RETURN XSharp.MemVar.PrivatesCount(lCurrentOnly)
+
+/// <exclude/>
+FUNCTION _PublicCount() AS INT STRICT    
+	RETURN XSharp.MemVar.PublicsCount()
+
+/// <exclude/>	
+FUNCTION _PrivateEnum(lCurrentOnly := FALSE AS LOGIC) AS IEnumerator<SYMBOL>
+	RETURN XSharp.MemVar.PrivatesEnum(lCurrentOnly)
+
+/// <exclude/>		
+FUNCTION _PublicEnum AS IEnumerator<SYMBOL>
+	RETURN XSharp.MemVar.PublicsEnum()
+

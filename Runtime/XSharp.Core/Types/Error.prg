@@ -1,4 +1,4 @@
-﻿
+
 USING System
 USING System.Collections.Generic
 USING System.Text
@@ -202,7 +202,8 @@ BEGIN NAMESPACE XSharp
         sb:AppendLine("OsCodeText      : " + SELF:OsCodeText )
       ENDIF
       sb:AppendLine("FuncSym         : " + SELF:FuncSym   )
-      sb:AppendLine("Severity        : " + SELF:Severity )
+      LOCAL sev := (Severity) SELF:Severity AS Severity
+      sb:AppendLine("Severity        : " + sev:ToString() )
       sb:AppendLine("CanDefault      : " + SELF:CanDefault)
       sb:AppendLine("CanRetry        : " + SELF:CanRetry )
       sb:AppendLine("CanSubstitute   : " + SELF:CanSubstitute)

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -129,11 +129,11 @@ INTERNAL STATIC CLASS OOPHelpers
 		
 		IF ret != NULL
 			IF lOurAssembliesOnly
-				IF .not. cacheClassesOurAssemblies:ContainsKey(cName)
+				IF .NOT. cacheClassesOurAssemblies:ContainsKey(cName)
 					cacheClassesOurAssemblies:Add(cName , ret)
 				END IF
 			ELSE
-				IF .not. cacheClassesAll:ContainsKey(cName)
+				IF .NOT. cacheClassesAll:ContainsKey(cName)
 					cacheClassesAll:Add(cName , ret)
 				END IF
 			END IF
@@ -144,12 +144,12 @@ INTERNAL STATIC CLASS OOPHelpers
 	STATIC METHOD FindMethod(t AS System.Type, cName AS STRING, lSelf AS LOGIC ) AS MethodInfo
 		LOCAL oMI := NULL AS MethodInfo
 		
-		IF t == NULL .or. String.IsNullOrEmpty(cName)
+		IF t == NULL .OR. String.IsNullOrEmpty(cName)
 			RETURN NULL
 		END IF
 		
 		TRY
-			oMI := t:GetMethod(cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public | iif(lSelf, BindingFlags.NonPublic, BindingFlags.Public) ) 
+			oMI := t:GetMethod(cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public | IIF(lSelf, BindingFlags.NonPublic, BindingFlags.Public) ) 
 		CATCH AS System.Reflection.AmbiguousMatchException
 			oMI := NULL
 		END TRY
@@ -286,7 +286,7 @@ INTERNAL STATIC CLASS OOPHelpers
 
 	STATIC METHOD FindProperty( t AS Type , cName AS STRING, lAccess AS LOGIC, lSelf AS LOGIC) AS PropertyInfo
 		DO WHILE t != NULL
-			VAR oInfo := t:GetProperty( cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public | iif(lSelf , BindingFlags.NonPublic , BindingFlags.Public) | BindingFlags.DeclaredOnly ) 
+			VAR oInfo := t:GetProperty( cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public | IIF(lSelf , BindingFlags.NonPublic , BindingFlags.Public) | BindingFlags.DeclaredOnly ) 
 			IF oInfo != NULL .AND. ( (lAccess .AND. oInfo:CanRead) .OR. (.NOT. lAccess .AND. oInfo:CanWrite) )
 				RETURN oInfo
 			ELSE
@@ -307,7 +307,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		
 	STATIC METHOD FindField( t AS Type, cName AS STRING, lAccess AS LOGIC, lSelf AS LOGIC ) AS FieldInfo
 		DO WHILE t != NULL
-			VAR oInfo := t:GetField( cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public | iif(lSelf, BindingFlags.NonPublic , BindingFlags.Public | BindingFlags.DeclaredOnly ) ) 
+			VAR oInfo := t:GetField( cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public | IIF(lSelf, BindingFlags.NonPublic , BindingFlags.Public | BindingFlags.DeclaredOnly ) ) 
 			IF oInfo != NULL 
 				// check for readonly (initonly) fields
 				IF lAccess .OR. ! oInfo:Attributes:HasFlag(FieldAttributes.InitOnly)
@@ -338,9 +338,13 @@ INTERNAL STATIC CLASS OOPHelpers
 		IF fldInfo != NULL_OBJECT .AND. IsFieldVisible(fldInfo, lSelf)
 			RETURN fldInfo:GetValue(oObject)
 		ENDIF
-		VAR propInfo := FindProperty(t, cIVar, TRUE, lSelf)
+		VAR propInfo := FindProperty(t, cIVar, TRUE, lSelf) 
 		IF propInfo != NULL_OBJECT .AND. propInfo:CanRead .AND. IsPropertyMethodVisible(propInfo:GetMethod, lSelf)
-			RETURN propInfo:GetValue(oObject, NULL)
+            IF propInfo:GetIndexParameters():Length == 0
+			    RETURN propInfo:GetValue(oObject, NULL)
+            ELSE
+                RETURN NULL
+            ENDIF
 		ENDIF
 		LOCAL result AS USUAL
 		IF sendHelper(oObject, "NoIVarGet", <USUAL>{String2Symbol(cIVar)}, OUT result)
@@ -406,7 +410,7 @@ INTERNAL STATIC CLASS OOPHelpers
 					LOCAL arg := uArgs[nPar] AS USUAL
 					IF pi:ParameterType == TYPEOF(USUAL)
 						// We need to box a usual here 
-						oArgs[nPar] := __CastClass(OBJECT, arg)
+						oArgs[nPar] := __CASTCLASS(OBJECT, arg)
 					ELSEIF pi:ParameterType:IsAssignableFrom(arg:SystemType) .OR. arg == NULL
 						oArgs[nPar] := arg
 					ELSEIF pi:GetCustomAttributes( TYPEOF( ParamArrayAttribute ), FALSE ):Length > 0
@@ -454,10 +458,10 @@ INTERNAL STATIC CLASS OOPHelpers
 		ELSE
 			IF toType == TYPEOF(USUAL)
 				// box the usual
-                RETURN __CastClass(OBJECT, uValue)
+                RETURN __CASTCLASS(OBJECT, uValue)
             ELSEIF IsArray(uValue) .AND. totype == typeof(ARRAY)
                 RETURN (ARRAY) uValue
-            ELSEIF IsObject(uValue) .or. isCodeBlock(uValue)
+            ELSEIF IsObject(uValue) .OR. isCodeBlock(uValue)
                 RETURN (OBJECT) uValue
             ENDIF
       		

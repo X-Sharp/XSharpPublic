@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -183,7 +183,7 @@ END CLASS
 FUNCTION AsHexString(uValue AS USUAL) AS STRING
 	LOCAL result AS STRING
 	IF IsString(uValue)
-		result := "0x"+c2Hex( (STRING) uValue)
+		result := c2Hex( (STRING) uValue)
 	ELSEIF IsNumeric(uValue)
 		result := String.Format("{0:X8}", (INT64) uValue)
 	ELSE
@@ -858,3 +858,22 @@ FUNCTION Object2Float(oValue AS OBJECT) AS FLOAT
     END SWITCH
 
 
+
+
+
+FUNCTION Bin2F(c AS STRING) AS FLOAT
+    LOCAL nDec AS WORD
+    LOCAL val  AS REAL8
+	IF slen(c) >= 12
+        nDec := Bin2W(Substr3(c, 11,2))
+        val  := Bin2Real8(Substr3(c, 1,8))
+        RETURN FLOAT{val, 0, nDec}
+        
+    ENDIF
+	RETURN 0.0
+	
+
+
+FUNCTION F2Bin(f AS FLOAT) AS STRING
+    RETURN Real82Bin(f:Value)+ e"\0\0" + W2Bin((WORD)f:Decimals)
+	

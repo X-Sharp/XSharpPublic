@@ -3462,5 +3462,10 @@
   <data name="USUALNOTINDEXED" xml:space="preserve">
     <value>value in USUAL does not support indexed operations. The value needs to implement the interface '{0}'.</value>
   </data>
-
+  <data name="E_OPEN_MRESTORE" xml:space="preserve">
+    <value>The file for the RESTORE command could not be opened.</value>
+  </data>  
+    <data name="E_OPEN_MSAVE" xml:space="preserve">
+    <value>The file for the SAVE command could not be created.</value>
+  </data>  
 </root>

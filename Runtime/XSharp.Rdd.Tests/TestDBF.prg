@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//
 			VAR myDBF := DBF{}
 			
-			Assert.Equal( FALSE, myDBF:Open( dbInfo ) )
+			Assert.Throws( typeof(XSharp.RDD.RddError), {=> myDBF:Open( dbInfo ) })
 			//
 			myDBF:Close()
 			RETURN

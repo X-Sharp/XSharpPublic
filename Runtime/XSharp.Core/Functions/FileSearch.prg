@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -84,7 +84,7 @@ INTERNAL STATIC CLASS XSharp.FileSearch
                 currentItem := enumerator:Current
             ENDIF
         ENDIF
-        RETURN isAtEnd
+        RETURN !isAtEnd
         
     INTERNAL STATIC METHOD FName() AS STRING
         LOCAL name := "" AS STRING

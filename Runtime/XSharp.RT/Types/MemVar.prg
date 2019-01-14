@@ -12,7 +12,7 @@ USING System.Threading
 
 
 // Class that holds the memvars for a certain level on the callstack
-[DebuggerDisplay("Level:{Name}")];	
+[DebuggerDisplay("Level:{Depth}")];	
 INTERNAL CLASS XSharp.MemVarLevel                     
 	PROPERTY Variables AS Dictionary<SYMBOL, MemVar> AUTO    
 	PROPERTY Depth AS INT AUTO GET PRIVATE SET

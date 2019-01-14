@@ -681,8 +681,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var arg2 = MakeArgument(right);
             var args = MakeArgumentList(arg1, arg2);
             var expr = GenerateMethodCall(XSharpQualifiedFunctionNames.MemVarPut, args, true);
-            expr = (ExpressionSyntax)NotInDialect(expr, "MEMVAR");
-            //todo: Implement MemVarPut
             return expr;
         }
 
@@ -691,8 +689,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var arg1 = MakeArgument(GenerateLiteral(memvar));
             var args = MakeArgumentList(arg1);
             var expr = GenerateMethodCall(XSharpQualifiedFunctionNames.MemVarGet, args, true);
-            expr = (ExpressionSyntax)NotInDialect(expr, "MEMVAR");
-            //todo: Implement MemVarGet
+            return expr;
+        }
+        internal ExpressionSyntax GenerateMemVarDecl(string memvar, bool isprivate)
+        {
+            var arg1 = MakeArgument(GenerateLiteral(memvar));
+            var arg2 = MakeArgument(GenerateLiteral(isprivate));
+            var args = MakeArgumentList(arg1, arg2);
+            var expr = GenerateMethodCall(XSharpQualifiedFunctionNames.MemVarDecl, args, true);
             return expr;
         }
 
@@ -865,7 +869,65 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(qtype);
             }
         }
+        public override void EnterXbasedecl([NotNull] XP.XbasedeclContext context)
+        {
+            // declare memvars
+            context.SetSequencePoint(context.end);
+            if (CurrentEntity != null && _options.SupportsMemvars)
+            {
+                CurrentEntity.Data.HasMemVars = true;
+                foreach (var memvar in context._Vars)
+                {
+                    CurrentEntity.Data.AddField(memvar.Id.GetText(), "M", false);
+                }
+            }
+        }
 
+        public override void ExitXbasedecl([NotNull] XP.XbasedeclContext context)
+        {
+            context.SetSequencePoint(context.end);
+            switch (context.T.Type)
+            {
+                case XP.MEMVAR:
+                    // handled in the Enter method
+                    break;
+                case XP.PRIVATE:
+                case XP.PUBLIC:
+                case XP.PARAMETERS:
+                    bool isprivate = context.T.Type == XP.PRIVATE || context.T.Type == XP.PARAMETERS;
+                    if (context._Vars.Count > 1)
+                    { 
+                        var stmts = _pool.Allocate<StatementSyntax>();
+                        foreach (var memvar in context._Vars)
+                        {
+                            var exp = GenerateMemVarDecl(memvar.GetText(), isprivate);
+                            stmts.Add(GenerateExpressionStatement(exp));
+                        }
+                        context.PutList(stmts.ToList());
+                        _pool.Free(stmts);
+                    }
+                    else
+                    {
+                        var exp = GenerateMemVarDecl(context._Vars[0].GetText(), isprivate);
+                        context.Put(GenerateExpressionStatement(exp));
+                    }
+                    if (context.T.Type == XP.PARAMETERS)
+                    {
+                        // assign values like in the Clipper parameters 
+                    }
+                    break;
+            }
+            if (! _options.SupportsMemvars)
+            {
+                var node = context.CsNode as CSharpSyntaxNode;
+                if (node == null)
+                {
+                    node = _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                }
+                node = NotInDialect(node, "Memory Variables","(did you forget the /memvar commandline option ?)");
+                context.Put(node);
+            }
+        }
 
         public override void ExitXbaseType([NotNull] XP.XbaseTypeContext context)
         {
@@ -2935,10 +2997,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 body = MakeBlock(stmts);
                 context.Data.UsesPSZ = false;
             }
-            if (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ)
+            if (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ || context.Data.HasMemVars)
             {
                 var stmts = _pool.Allocate<StatementSyntax>();
-
+                var finallystmts = _pool.Allocate<StatementSyntax>();
                 if (context.Data.HasClipperCallingConvention && _options.NoClipCall)
                 {
                     implementNoClipCall(context, ref parameters, ref dataType);
@@ -3013,21 +3075,39 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (body != null)
                 {
                     FinallyClauseSyntax finallyClause = null;
+                    
                     if (context.Data.UsesPSZ)
                     {
                         // VAR Xs$PszList := List<IntPtr>{}
+                        // and in the finally
+                        // String2PszRelease(Xs$PszList)
                         var listOfIntPtr = _syntaxFactory.QualifiedName(GenerateQualifiedName(SystemQualifiedNames.CollectionsGeneric),
                             SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                             MakeGenericName("List", _ptrType));
                         var expr = CreateObject(listOfIntPtr, EmptyArgumentList());
                         stmts.Add(GenerateLocalDecl(XSharpSpecialNames.VoPszList, _impliedType, expr));
-                        finallyClause = _syntaxFactory.FinallyClause(
-                            SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
-                            MakeBlock(MakeList<StatementSyntax>(
-                                GenerateExpressionStatement(
+                        finallystmts.Add(GenerateExpressionStatement(
                                     GenerateMethodCall(
                                         _options.XSharpRuntime ? XSharpQualifiedFunctionNames.PszRelease : VulcanQualifiedFunctionNames.PszRelease,
-                                        MakeArgumentList(MakeArgument(GenerateSimpleName(XSharpSpecialNames.VoPszList))),true)))));
+                                        MakeArgumentList(MakeArgument(GenerateSimpleName(XSharpSpecialNames.VoPszList))), true)));
+                    }
+                    if (context.Data.HasMemVars)
+                    {
+                        // VAR Xs$PrivatesLevel := XSharp.RT.Functions.__MemVarInit()
+                        // in the finally
+                        // XSharp.RT.Functions.__MemVarRelease(Xs$PrivatesLevel)
+                        var expr = GenerateMethodCall(XSharpQualifiedFunctionNames.MemVarInit,EmptyArgumentList(),true);
+                        var decl = GenerateLocalDecl(XSharpSpecialNames.PrivatesLevel, _impliedType, expr);
+                        stmts.Add(decl);
+                        var arg = MakeArgument(GenerateSimpleName(XSharpSpecialNames.PrivatesLevel));
+                        expr = GenerateMethodCall(XSharpQualifiedFunctionNames.MemVarRelease, MakeArgumentList(arg), true);
+                        finallystmts.Add(GenerateExpressionStatement(expr, true));
+                    }
+                    if (finallystmts.Count > 0)
+                    { 
+                        finallyClause = _syntaxFactory.FinallyClause(
+                            SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
+                            MakeBlock(finallystmts));
                     }
                     // TRY
                     //    original body

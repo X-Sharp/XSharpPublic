@@ -4591,6 +4591,10 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 -vo15[+|-]                     Allow untyped Locals and return types (default = ON for VO/Vulcan)
 -vo16[+|-]                     Generate Clipper calling convention constructors for classes without constructor 
 -xpp1[+|-]                     All classes inherit from the Abstract class (default = OFF)
+-memvar[+|-]                   Should memory variables (PUBLIC and PRIVATE variables) be supported. 
+                               This only works for the VO, XPP and Harbour dialects.
+-undeclared[+|-]               Should the compiler allow undeclared variables
+                               This only works for the VO, XPP and Harbour dialects.
 
                         - PREPROCESOR -
  
@@ -5609,7 +5613,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>XPP: Class {0} has not been declared.</value>
   </data>
   <data name="ERR_FeatureNotAvailableInDialect" xml:space="preserve">
-    <value>Feature '{0}' is not available in the selected dialect {1}</value>
+    <value>Feature '{0}' is not available in the selected dialect {1} {2}</value>
   </data>
   <data name="WRN_ImplicitCast" xml:space="preserve">
     <value>The compiler generated an implicit cast to a smaller type from type '{0}' to '{1}'.</value>

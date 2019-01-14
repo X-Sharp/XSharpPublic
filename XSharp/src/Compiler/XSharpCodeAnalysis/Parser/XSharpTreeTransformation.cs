@@ -738,10 +738,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             CSharpSyntaxNode node = _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             return NotInDialect(node, feature);
         }
-        internal CSharpSyntaxNode NotInDialect(CSharpSyntaxNode node, string feature)
+        internal CSharpSyntaxNode NotInDialect(CSharpSyntaxNode node, string feature, string additional = "")
         {
             return node.WithAdditionalDiagnostics(
-                new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, feature, _options.Dialect.ToString()));
+                new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, feature, _options.Dialect.ToString(), additional));
         }
 
         internal string UniqueNameSuffix
@@ -5559,19 +5559,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(NotInDialect(context.T.Text + " statement"));
         }
 
-        public override void EnterXbasedecl([NotNull] XP.XbasedeclContext context)
-        {
-            // declare memvars
-            context.SetSequencePoint(context.end);
-            if (context.T.Type == XP.MEMVAR && CurrentEntity != null)
-            {
-                foreach (var memvar in context._Vars)
-                {
-                        CurrentEntity.Data.AddField(memvar.Id.GetText(), "M", false);
-                }
-            }
-        }
-
+ 
         public override void ExitVariableDeclaration([NotNull] XP.VariableDeclarationContext context)
         {
             context.Put(_syntaxFactory.VariableDeclaration(

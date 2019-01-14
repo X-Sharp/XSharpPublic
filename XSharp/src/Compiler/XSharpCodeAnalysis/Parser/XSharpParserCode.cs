@@ -133,8 +133,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             HasDimVar = 1 << 12,        // Member property
             HasSync = 1 << 13,          // Member property
 			HasAddressOf = 1 << 14,     // Member property
-            IsInitProcedure = 1 << 15   // Member property
-
+            IsInitProcedure = 1 << 15,  // Member property
+            HasMemVars = 1 << 16,       // Member property
         }
 
 
@@ -235,6 +235,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 get { return flags.HasFlag(EntityFlags.HasStatic); }
                 set { flags = setFlag(flags, EntityFlags.HasStatic, value); }
+            }
+            public bool HasMemVars
+            {
+                get { return flags.HasFlag(EntityFlags.HasMemVars); }
+                set { flags = setFlag(flags, EntityFlags.HasMemVars, value); }
             }
 
             public bool IsInitProcedure

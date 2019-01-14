@@ -49,9 +49,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool NoClipCall { get; private set; }
         public bool HasDefaultTree { get; set; } = false;
         public bool UndeclaredLocalVars { get; set; }
-
+        public bool MemVars { get; private set; } = false;
         public bool HasRuntime { get { return this.Dialect.HasRuntime(); } }
-        public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars(); } }
+        public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars() && MemVars; } }
 
         public XSharpTargetDLL TargetDLL { get; private set; }
         //public bool vo1 => VoInitAxitMethods;
@@ -70,6 +70,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         //public bool vo14 => VOFloatConstants;
         //public bool vo15 => VOUntypedAllowed;
         //public bool vo16 => VOClipperConstructors;
+
         public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
 
         public RuntimeAssemblies RuntimeAssemblies ;
@@ -104,10 +105,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ImplicitNameSpace = opt.ImplicitNameSpace;
                 LateBinding = opt.LateBinding;
                 UndeclaredLocalVars = opt.UndeclaredLocalVars;
-                
+                MemVars = opt.MemVars;
                 ParseLevel = opt.ParseLevel;
                 TargetDLL = opt.TargetDLL;
                 RuntimeAssemblies = opt.RuntimeAssemblies;
+                
             }
         }
 
@@ -147,6 +149,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             ConsoleOutput = opt.ConsoleOutput;
             ParseLevel = opt.ParseLevel;
             UndeclaredLocalVars = opt.UndeclaredLocalVars;
+            MemVars = opt.MemVars;
         }
 
         internal CSharpCompilationOptions WithXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)

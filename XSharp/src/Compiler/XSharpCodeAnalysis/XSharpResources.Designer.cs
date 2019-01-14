@@ -4733,7 +4733,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in the selected dialect {1}.
+        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in the selected dialect {1} {2}.
         /// </summary>
         internal static string ERR_FeatureNotAvailableInDialect {
             get {

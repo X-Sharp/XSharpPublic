@@ -96,9 +96,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOResolveTypedFunctionPointersToPtr { get; private set; }
         public bool VOSignedUnsignedConversion { get; private set; }
         public bool VOStringComparisons { get; private set; }
+        public bool MemVars { get; private set; }
+        public bool UndeclaredLocals { get; private set; }
         public string DefaultNamespace { get; private set; }
         public bool HasRuntime { get { return this.Dialect.HasRuntime(); } }
-        public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars(); } }
+        public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars() && MemVars; } }
 #if !VSPARSER
         public ImmutableArray<string> IncludePaths { get; private set; } = ImmutableArray.Create<string>();
 #else
@@ -184,6 +186,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ParseLevel = opt.ParseLevel;
                 AllowNamedArguments = opt.AllowNamedArguments;
                 SaveAsCSharp = opt.SaveAsCSharp;
+                MemVars = opt.MemVars;
             }
             LanguageVersion = LanguageVersion.CSharp7_3;
         }
@@ -250,6 +253,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             CommandLineArguments = opt.CommandLineArguments;
 #endif
             LanguageVersion = LanguageVersion.CSharp7_3;
+            MemVars = opt.MemVars;
         }
 
         public CSharpParseOptions WithXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)

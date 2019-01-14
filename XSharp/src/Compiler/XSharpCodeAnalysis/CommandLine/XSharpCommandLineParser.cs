@@ -149,6 +149,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "lexonly":
                     options.ParseLevel = ParseLevel.Lex;
                     break;
+                case "memvar":
+                    options.MemVars = positive;
+                    break;
+                case "undeclared":
+                    options.UndeclaredLocalVars = positive;
+                    break;
                 case "parseonly":
                     options.ParseLevel = ParseLevel.Parse;
                     break;

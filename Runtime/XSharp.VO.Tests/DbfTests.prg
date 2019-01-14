@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -132,22 +132,22 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL c AS STRING
 			c := u
 			? c
-			Assert.True(c:EndsWith("test.DBF") .and. c:Contains(":\"))
+			Assert.True(c:EndsWith("test.DBF") .AND. c:Contains(":\"))
 			VODBInfo(DBI_DB_VERSION , REF u)
 			Assert.True(SLen(u) > 1)
 			VODBInfo(DBI_ALIAS , REF u)
 			Assert.Equal("test" , u)
 			
 			VODBInfo(DBI_BOF , REF u)
-			Assert.Equal(TRUE , u)
+			Assert.Equal(TRUE , (LOGIC) u)
 			VODBInfo(DBI_EOF , REF u)
-			Assert.Equal(FALSE , u)
+			Assert.Equal(FALSE ,(LOGIC)  u)
 			VODBInfo(DBI_ISANSI , REF u)
-			Assert.Equal(SetAnsi() , u)
+			Assert.Equal(SetAnsi() ,(LOGIC)  u)
 			VODBInfo(DBI_FCOUNT , REF u)
-			Assert.Equal(1, u)
+			Assert.Equal(1, (LONG)  u)
 			VODBInfo(DBI_READONLY , REF u)
-			Assert.Equal(FALSE, u)
+			Assert.Equal(FALSE,(LOGIC)  u)
 			
 			DBCloseArea()
 		RETURN
@@ -204,11 +204,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			SetDecimalSep(Asc(","))
 			FieldPut(1 , 12.34) // not saved in the dbf
-			Assert.Equal(12.34 , FieldGet(1)) // 0,00
+			Assert.Equal(12.34 , (FLOAT) FieldGet(1)) // 0,00
 
 			SetDecimalSep(Asc("."))
 			FieldPut(1 , 12.34)
-			Assert.Equal(12.34 , FieldGet(1))
+			Assert.Equal(12.34 , (FLOAT) FieldGet(1))
 
 			DBCloseArea()
 		RETURN
@@ -226,7 +226,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBUseArea( , , cFileName)
 			FieldPut(1 , 46.11) // ! a float isn/t stored !
 			DBCommit()
-			Assert.Equal(46.11 , FieldGet(1)) // runtime exception
+			Assert.Equal(46.11 , (FLOAT) FieldGet(1)) // runtime exception
 			DBCloseArea()
 		RETURN
 	
@@ -260,13 +260,13 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBGoTop()
 			DBRLock()
 			DBRLockList()
-			Assert.Equal(1, ALen(DBRLockList()))
-			Assert.Equal(1, DBRLockList()[1])
+			Assert.Equal(1, (INT) ALen(DBRLockList()))
+			Assert.Equal(1, (INT) DBRLockList()[1])
 			DBUnlock()
 			DBSkip()
 			DBRLock()
-			Assert.Equal(1, ALen(DBRLockList()))
-			Assert.Equal(2, DBRLockList()[1])
+			Assert.Equal(1, (INT)  ALen(DBRLockList()))
+			Assert.Equal(2, (INT) DBRLockList()[1])
 			DBCloseArea()
 		RETURN
 	
@@ -287,8 +287,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			FieldPut(1, "GHI")
 			DBAppend()
 			FieldPut(1, "JKL")
-			Assert.Equal(4 , RecCount())
-			Assert.Equal(4 , LastRec())
+			Assert.Equal(4 , (INT) RecCount())
+			Assert.Equal(4 , (INT) LastRec())
 			DBCloseArea()
 						
 			DBUseArea(,,cDbf)
@@ -297,8 +297,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBSetFilter({||AllTrim(FIELD->CFIELD) == "GHI"})
 			DBGoTop()
 			LOCAL nCount := 0 AS INT
-			DO WHILE .not. EoF()
-				Assert.Equal(3 , RecNo())
+			DO WHILE .NOT. EoF()
+				Assert.Equal(3 , (INT) RecNo())
 				FieldGet(1)
 				DBSkip(+1)
 				nCount ++
@@ -308,8 +308,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBGoBottom()
 			Assert.False( EOF() )
 			nCount := 0
-			DO WHILE .not. EoF()
-				Assert.Equal(3 , RecNo())
+			DO WHILE .NOT. EoF()
+				Assert.Equal(3 , (INT) RecNo())
 				nCount ++
 				FieldGet(1)
 				DBSkip(+1)
@@ -350,9 +350,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			Assert.Equal("NFIELD",	DBFieldInfo( DBS_NAME , 1 ) ) // NullReferenceException
 			Assert.Equal("N",		DBFieldInfo( DBS_TYPE , 1 ) )
-			Assert.Equal(10,		DBFieldInfo( DBS_LEN , 1 ) )
-			Assert.Equal(3,			DBFieldInfo( DBS_DEC , 1 ) )
-			Assert.Equal(5,			DBFieldInfo( DBS_PROPERTIES , 1 ) )
+			Assert.Equal(10,		(INT) DBFieldInfo( DBS_LEN , 1 ) )
+			Assert.Equal(3,			(INT) DBFieldInfo( DBS_DEC , 1 ) )
+			Assert.Equal(5,			(INT) DBFieldInfo( DBS_PROPERTIES , 1 ) )
 			
 			DBCloseArea()
 		RETURN
@@ -369,7 +369,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			FieldPut(1, "DEF")
 			
 			DBGoTop()
-			Assert.Equal(1, RecNo())
+			Assert.Equal(1, (INT) RecNo())
 			Assert.Equal(FALSE, EOF())
 			
 //			 Any of the below cause the record pointer to go EOF
@@ -377,7 +377,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBRecordInfo(DBRI_BUFFPTR , 0)
 			DBRecordInfo(DBRI_RAWDATA , 0)
 			
-			Assert.Equal(1, RecNo())
+			Assert.Equal(1, (INT) RecNo())
 			Assert.Equal(FALSE, EOF())
 			
 			DBCloseArea()
@@ -399,20 +399,20 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBGoTop()
 			Assert.True( DBLocate({||_FIELD->NFIELD > 300} , , , , TRUE) ) // DBSCOPEREST
 			Assert.True( Found() )
-			Assert.Equal(456.0 , FieldGet(1) )
+			Assert.Equal(456.0 , (FLOAT)  FieldGet(1) )
 			
 //			DBContinue() returns TRUE (correct) but does not move record pointer at all
 			Assert.True( DBContinue() )
 			Assert.True( Found() )
-			Assert.Equal( 789.0 , FieldGet(1) )
+			Assert.Equal( 789.0 , (FLOAT)  FieldGet(1) )
 			
 			Assert.True( DBContinue() )
 			Assert.False( Found() )
-			Assert.Equal( 0.0 , FieldGet(1) )
+			Assert.Equal( 0.0 , (FLOAT) FieldGet(1) )
 			
 			Assert.True( DBContinue() )
 			Assert.False( Found() )
-			Assert.Equal( 0.0 , FieldGet(1) )
+			Assert.Equal( 0.0 , (FLOAT) FieldGet(1) )
 			
 			DBCloseArea()
 		RETURN
@@ -559,7 +559,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aResult AS ARRAY
 			aResult := {}
 			DBGoTop()
-			DO WHILE .not. Eof()
+			DO WHILE .NOT. Eof()
 				AAdd(aResult , AllTrim(FieldGet(1)))
 				DBSkip()
 			END DO
@@ -601,15 +601,15 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True( DBCreate(cFileName, {{"FLD1","C",10,0}}) )
 			
 			Assert.True( DBUseArea ( TRUE , , cFileName , "a1") )
-			Assert.Equal( 1 , DBGetSelect() )
+			Assert.Equal( 1u , DBGetSelect() )
 			Assert.True( DBCloseArea() )
 			
 			Assert.True( DBUseArea ( TRUE , , cFileName , "a2") )
-			Assert.Equal( 1 , DBGetSelect() )
+			Assert.Equal( 1u , DBGetSelect() )
 			Assert.True( DBCloseArea() )
 			
 			Assert.True( DBUseArea ( TRUE , , cFileName , "a3") )
-			Assert.Equal( 1 , DBGetSelect() )
+			Assert.Equal( 1u , DBGetSelect() )
 			Assert.True( DBCloseArea() )
 		RETURN
 
@@ -643,9 +643,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			LOCAL a AS ARRAY
 			a:= DBRLockList()
-			Assert.Equal( 2 , ALen(a) )
-			Assert.Equal( 1 , a[1] )
-			Assert.Equal( 3 , a[2] )
+			Assert.Equal( 2 , (INT) ALen(a) )
+			Assert.Equal( 1 , (INT) a[1] )
+			Assert.Equal( 3 , (INT) a[2] )
 
 			DBCloseArea()
 		RETURN

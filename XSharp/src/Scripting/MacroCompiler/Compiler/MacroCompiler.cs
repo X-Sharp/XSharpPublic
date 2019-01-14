@@ -33,12 +33,13 @@ namespace XSharp.Runtime
             return compiler;
         }
 
-        public ICodeblock Compile(string macro, bool lAllowSingleQuotes, Module module, ref bool isCodeblock)
+        public ICodeblock Compile(string macro, bool lAllowSingleQuotes, Module module, out bool isCodeblock, out bool addsMemVars)
 
         {
             isCodeblock = macro.Replace(" ", "").StartsWith("{|");
             Compilation<object, RuntimeCodeblockDelegate> compiler = GetCompiler(lAllowSingleQuotes);
             var m = compiler.Compile(macro);
+            addsMemVars = m.CreatesAutoVars;
             if (m.Diagnostic != null)
             {
                 throw m.Diagnostic;

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -1377,4 +1377,67 @@ FUNCTION IsLower(cSource AS STRING) AS LOGIC
 		ret := Char.IsLower(cSource, 0 )
 	ENDIF
 	RETURN ret
+
+
+
+/// <summary>Determine if a string matches a wildcard pattern (like the wildcard pattern for the DIR command in the OS).</summary>
+/// <param name="sWildCard">The wildcard to use. '*' matches 0 or more characters until the next non-wildcard character, '?' matches any character, all other characters must match exactly.</param>
+/// <param name="sSource">The string to examine.</param>
+/// <remarks>This function is case sensitive. If you want to do a case insensitive compare, use Like()</remarks>
+/// <seealso cref='M:XSharp.Core.Functions.Like(System.String, System.String)'>Like</seealso>
+FUNCTION _Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
+    LOCAL nWildLen AS LONG
+    LOCAL nSourceLen AS LONG
+    LOCAL nWildPos  AS LONG
+    LOCAL lAsterisk := FALSE AS LOGIC
+    IF sSource == NULL .OR. sSource:Length == 0
+        RETURN FALSE
+    ENDIF
+    IF sWildCard == NULL .OR. sWildCard:Length == 0
+        RETURN FALSE
+    ENDIF
+    nWildLen    := sWildCard:Length
+    nSourceLen  := sSource:Length
+    nWildPos    := 0
+
+    FOR VAR nSrcPos := 0 TO nSourceLen -1
+        IF nWildPos == nWildLen
+            // when we are at the end of the wildcard and we have no match yet
+            // then return FALSE
+            RETURN FALSE
+        ENDIF
+        SWITCH sWildCard[nWildPos]
+        CASE '*'
+            // when the wildcard ends with '*' then we have a match
+            IF nWildPos == nWildLen -1
+                RETURN TRUE
+            ELSE
+                lAsterisk := TRUE
+                nWildPos++
+            ENDIF
+        CASE '?'
+            nWildPos++
+        OTHERWISE
+            IF sWildCard[nWildPos] == sSource[nSrcPos]
+                // match character after asterisk ?
+                IF lAsterisk 
+                    lAsterisk := FALSE
+                ENDIF
+                nWildPos++
+            ELSE
+                IF ! lAsterisk 
+                    RETURN FALSE
+                ENDIF
+            ENDIF
+        END SWITCH
+    NEXT
+    RETURN TRUE
+
+/// <summary>Determine if a string matches a wildcard pattern (like the wildcard pattern for the DIR command in the OS).</summary>
+/// <param name="sWildCard">The wildcard to use. '*' matches 0 or more characters until the next non-wildcard character, '?' matches any character, all other characters must match exactly.</param>
+/// <param name="sSource">The string to examine.</param>
+/// <remarks>This function is case INsensitive. If you want to do a case sensitive compare, use _Like()</remarks>
+/// <seealso cref='M:XSharp.Core.Functions._Like(System.String, System.String)' >_Like</seealso>
+FUNCTION Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
+    RETURN _Like(Upper(sWildCard), Upper(sSource))
 

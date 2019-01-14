@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved. 
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -213,7 +213,7 @@ BEGIN NAMESPACE XSharp.IO
             
 		INTERNAL STATIC METHOD setErrorState ( o AS Exception ) AS VOID
             lastException := o
-            errorCode := _and ( (DWORD) System.Runtime.InteropServices.Marshal.GetHRForException ( o ) , 0x0000FFFF )
+            errorCode := _AND ( (DWORD) System.Runtime.InteropServices.Marshal.GetHRForException ( o ) , 0x0000FFFF )
             RETURN
             
 		STATIC INTERNAL METHOD CreateFile(cFIle AS STRING, oMode AS VOFileMode) AS IntPtr
@@ -221,7 +221,9 @@ BEGIN NAMESPACE XSharp.IO
 			LOCAL oStream AS FileStream
 			IF System.IO.File.Exists(cFile) .AND. oMode:FileMode == FileMode.Create
 				VAR fi := FileInfo{cFile}
-				fi:Attributes := FileAttributes.Normal
+                IF ! fi:IsReadOnly
+				    fi:Attributes := FileAttributes.Normal
+                ENDIF
 			ENDIF
 			
 			oStream := createManagedFileStream(cFile, oMode)
@@ -292,7 +294,7 @@ BEGIN NAMESPACE XSharp.IO
 		INTERNAL STATIC METHOD readBuff(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS INT, lAnsi AS LOGIC) AS INT64
             LOCAL iResult := 0 AS INT64
             iResult := readBuff(pFile, pBuffer, dwCount)
-            IF FError() == 0 .and. !lAnsi
+            IF FError() == 0 .AND. !lAnsi
 				Oem2AnsiA(pBuffer)
 			ENDIF
 			RETURN iResult

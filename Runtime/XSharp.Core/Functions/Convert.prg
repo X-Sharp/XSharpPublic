@@ -224,6 +224,7 @@ FUNCTION C2Hex(cSource AS STRING) AS STRING
 		_GetHexChar(c, OUT c1, OUT c2)
 		sb:Append(c1)
 		sb:Append(c2)
+        sb:Append(' ')
 	NEXT
 	RETURN sb:ToString()
 
@@ -427,7 +428,7 @@ FUNCTION _Val(cNumber AS STRING) AS OBJECT
 			NOP
 		CASE '.'
 		CASE ','
-			IF c == ',' .and. cDec != ',' // Don't ask, VO...
+			IF c == ',' .AND. cDec != ',' // Don't ask, VO...
 				done := TRUE
 			ELSEIF hasdec
 				done := TRUE
@@ -500,6 +501,11 @@ FUNCTION _Val(cNumber AS STRING) AS OBJECT
 		ENDIF
 	ENDIF
 	RETURN 0
+
+
+
+
+
 
 
 

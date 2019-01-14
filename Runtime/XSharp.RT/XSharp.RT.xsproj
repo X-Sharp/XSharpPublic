@@ -119,6 +119,7 @@
     <Compile Include="Functions\Codeblock.prg" />
     <Compile Include="Functions\CompilerSupport.prg" />
     <Compile Include="Functions\Conversions.prg" />
+    <Compile Include="Functions\MemVarSave.prg" />
     <Compile Include="Functions\Debugging.prg" />
     <Compile Include="Functions\DiskIO.prg" />
     <Compile Include="Functions\Error.prg" />
@@ -156,6 +157,7 @@
     <Compile Include="Types\Date.prg" />
     <Compile Include="Types\Float.prg" />
     <Compile Include="Types\Interfaces.prg" />
+    <Compile Include="Types\MemVar.prg" />
     <Compile Include="Types\PSZ.prg" />
     <Compile Include="Types\FixedMemory.prg" />
     <Compile Include="Types\Symbol.prg" />

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -171,14 +171,14 @@ FUNCTION __FieldSetWa( alias AS STRING, fieldName AS STRING, uValue AS USUAL ) A
     // ? MyName
 /// <exclude/>
 FUNCTION __MemVarGet(cName AS STRING) AS USUAL
-    THROW Error.ArgumentError(__FUNCTION__, cName, "Undeclared identifier: '"+cName+"'. (MemVars are not supported in this build)")
+    RETURN XSharp.MemVar.Get(cName)
     
     
     // MEMVAR myName
     // MyName := "NewValue"
 /// <exclude/>
 FUNCTION __MemVarPut(cName AS STRING, uValue AS USUAL) AS USUAL
-    THROW Error.ArgumentError(__FUNCTION__, cName, "Undeclared identifier: '"+cName+"'. (MemVars are not supported in this build)")
+    RETURN XSharp.MemVar.Put(cName, uValue)
     
 
 /// <exclude/>
@@ -218,3 +218,19 @@ FUNCTION __popWorkarea() AS VOID
     RETURN
     
 
+// this is used to initialize the privates stack at a certain level
+/// <exclude/>
+FUNCTION __MemVarInit() AS INT STRICT 
+	RETURN XSharp.MemVar.InitPrivates()   
+
+// this is used to release the privates stack
+/// <exclude/>
+FUNCTION __MemVarRelease(nLevel AS INT) AS LOGIC  STRICT
+	RETURN XSharp.MemVar.ReleasePrivates(nLevel)	
+
+
+// this is used to declare a private or public variable. The variable is initialized with NIL.
+/// <exclude/>
+FUNCTION __MemVarDecl(name AS SYMBOL, _priv AS LOGIC) AS VOID  STRICT
+	XSharp.MemVar.Add(name, _priv)
+	RETURN 

@@ -224,7 +224,6 @@ FUNCTION C2Hex(cSource AS STRING) AS STRING
 		_GetHexChar(c, OUT c1, OUT c2)
 		sb:Append(c1)
 		sb:Append(c2)
-        sb:Append(' ')
 	NEXT
 	RETURN sb:ToString()
 

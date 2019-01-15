@@ -62,8 +62,8 @@ namespace XSharp.Project
         internal const string VO15Description = "Missing type clauses for locals, instance variables and parameters are treated as USUAL (VO and Vulcan dialect). The default = TRUE for the VO dialect and FALSE for the other dialects. We strongly recommend to set this to FALSE because this will help you to find problems in your code and non optimal code. If you have to use the USUAL type we recommend to explicitly declare variables and parameters as USUAL (/vo15)";
         internal const string VO16Description = "Automatically create clipper calling convention constructors for classes without constructor where the parent class has a Clipper Calling convention constructor.(/vo16)";
         internal const string XPP1Description = "All classes without parent class inherit from the XPP Abstract class.(/xpp1)";
-
-        internal const string CatCompatibility = "VO/Vulcan Compatibility";
+        internal const string CatCompatibility = "All dialects";
+        internal const string CatNotCore = "Not in Core dialect";
         internal const string XPPCompatibility = "Xbase++ Compatibility";
 
         #endregion
@@ -128,19 +128,19 @@ namespace XSharp.Project
             set { this.vo4 = value; this.IsDirty = true; }
         }
 
-        [Category(CatCompatibility), DisplayName(VO5Caption), Description(VO5Description)]
+        [Category(CatNotCore), DisplayName(VO5Caption), Description(VO5Description)]
         public bool VO5
         {
             get { return this.vo5; }
             set { this.vo5 = value; this.IsDirty = true; }
         }
-        [Category(CatCompatibility), DisplayName(VO6Caption), Description(VO6Description)]
+        [Category(CatNotCore), DisplayName(VO6Caption), Description(VO6Description)]
         public bool VO6
         {
             get { return this.vo6; }
             set { this.vo6 = value; this.IsDirty = true; }
         }
-        [Category(CatCompatibility), DisplayName(VO7Caption), Description(VO7Description)]
+        [Category(CatNotCore), DisplayName(VO7Caption), Description(VO7Description)]
         public bool VO7
         {
             get { return this.vo7; }
@@ -168,44 +168,45 @@ namespace XSharp.Project
             set { this.vo10 = value; this.IsDirty = true; }
         }
 
-        [Category(CatCompatibility), DisplayName(VO11Caption), Description(VO11Description)]
+        [Category(CatNotCore), DisplayName(VO11Caption), Description(VO11Description)]
         public bool VO11
         {
             get { return this.vo11; }
             //set { this.vo11 = value; this.IsDirty = true; }
         }
 
-        [Category(CatCompatibility),DisplayName(VO12Caption), Description(VO12Description)]
+        [Category(CatNotCore),DisplayName(VO12Caption), Description(VO12Description)]
         public bool VO12
         {
             get { return this.vo12; }
             set { this.vo12 = value; this.IsDirty = true; }
         }
 
-        [Category(CatCompatibility), DisplayName(VO13Caption), Description(VO13Description)]
+        [Category(CatNotCore), DisplayName(VO13Caption), Description(VO13Description)]
         public bool VO13
         {
             get { return this.vo13; }
             set { this.vo13 = value; this.IsDirty = true; }
         }
 
-        [Category(CatCompatibility), DisplayName(VO14Caption), Description(VO14Description)]
+        [Category(CatNotCore), DisplayName(VO14Caption), Description(VO14Description)]
         public bool VO14
         {
             get { return this.vo14; }
             set { this.vo14 = value; this.IsDirty = true; }
         }
-        [Category(CatCompatibility), DisplayName(VO15Caption), Description(VO15Description)]
+        [Category(CatNotCore), DisplayName(VO15Caption), Description(VO15Description)]
         public bool VO15 {
             get { return this.vo15; }
             set { this.vo15 = value; this.IsDirty = true; }
         }
-        [Category(CatCompatibility), DisplayName(VO16Caption), Description(VO16Description)]
+        [Category(CatNotCore), DisplayName(VO16Caption), Description(VO16Description)]
         public bool VO16
         {
             get { return this.vo16; }
             set { this.vo16 = value; this.IsDirty = true; }
         }
+
         [Category(XPPCompatibility), DisplayName(XPP1Caption), Description(XPP1Description)]
         public bool XPP1
         {
@@ -213,7 +214,7 @@ namespace XSharp.Project
             set { this.xpp1 = value; this.IsDirty = true; }
         }
 
-        #endregion
+         #endregion
         #region Overriden Implementation
         /// <summary>
         /// Returns class FullName property value.
@@ -250,7 +251,6 @@ namespace XSharp.Project
             vo15 = getPrjLogic(nameof(VO15), true);
             vo16 = getPrjLogic(nameof(VO16), false);
 			xpp1 = getPrjLogic(nameof(XPP1), false);
-
         }
 
         /// <summary>

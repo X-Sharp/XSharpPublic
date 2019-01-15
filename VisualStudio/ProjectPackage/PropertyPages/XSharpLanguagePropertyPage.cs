@@ -38,6 +38,9 @@ namespace XSharp.Project
         internal const string NSCaption = "Prefix classes with default Namespace";
         internal const string OVFCaption = "Overflow Exceptions";
         internal const string UnsafeCaption = "Allow Unsafe Code";
+        internal const string MemVarCaption = "Enable Memvar support";
+        internal const string UndeclaredCaption = "Enable Undeclared variables support";
+
         internal const string CSDescription = "Enable/Disable case sensitivity (/cs)";
         internal const string AZDescription = "Use Zero Based Arrays (/az)";
         internal const string INSDescription = "Enable the implicit lookup of classes defined in assemblies with an Implicit Namespace attribute (/ins)";
@@ -53,13 +56,17 @@ namespace XSharp.Project
         internal const string INCDescription = "Additional include paths for the preprocessor (it also looks through the folders set with the include environment variable) (/i)";
         internal const string StdDefCaption = "Alternate standard header file";
         internal const string StdDefDescription = "Name of an alternative standard header file (alternative for XSharpDefs.xh)  (/stddefs)";
+        internal const string MemVarDescription = "Enable support for memory variables (MEMVAR, PUBLIC, PRIVATE & PARAMETERS). (/memvar)\rPlease note that this is NOT supported for the Core and Vulcan dialects";
+        internal const string UndeclaredDescription = "Enable support for undeclared variables (these are resolved to MEMVARs). (/undeclared)\rPlease note that this requires /memvar to be enabled as well.";
 
         internal const string CatGeneral = "General";
         internal const string CatNamespaces = "Namespaces";
         internal const string CatPreprocessor = "Preprocessor";
+        internal const string CatMemVars = "Memory Variables";
 
         #endregion
         #region Fields
+        private bool saving;
         private bool @unsafe;
         private bool az;
         private bool cs;
@@ -71,6 +78,8 @@ namespace XSharp.Project
         private string includepaths;
         private bool nostandarddefs;
         private string standarddefs;
+        private bool memvar;
+        private bool undeclared;
 
         #endregion Fields
 
@@ -155,6 +164,20 @@ namespace XSharp.Project
             get { return this.nostandarddefs; }
             set { this.nostandarddefs = value; this.IsDirty = true; EnableDisableStandardDefs(); }
         }
+        [Category(CatMemVars), DisplayName(MemVarCaption), Description(MemVarDescription)]
+        public bool MemVar
+        {
+            get { return this.memvar; }
+            set { this.memvar = value; this.IsDirty = true; this.EnableMemVars(); }
+        }
+
+        [Category(CatMemVars), DisplayName(UndeclaredCaption), Description(UndeclaredDescription)]
+        [ReadOnly(true)]
+        public bool Undeclared
+        {
+            get { return this.undeclared; }
+            set { this.undeclared = value; this.IsDirty = true; }
+        }
 
         private void EnableDisableStandardDefs()
         {
@@ -184,10 +207,20 @@ namespace XSharp.Project
 
         internal override void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
         {
-            if (e.PropertyName.ToLower() == nameof(NamedArgs).ToLower() )
+            if (!saving)
             {
-                BindNamedArgs();
-                Grid.Refresh();
+
+                if (e.PropertyName.ToLower() == nameof(NamedArgs).ToLower())
+                {
+                    BindNamedArgs();
+                    Grid.Refresh();
+                }
+                if (e.PropertyName.ToLower() == nameof(MemVar).ToLower() ||
+                    e.PropertyName.ToLower() == nameof(Undeclared).ToLower())
+                {
+                    ReadMemvars();
+                    Grid.Refresh();
+                }
             }
         }
 
@@ -206,10 +239,32 @@ namespace XSharp.Project
             }
 
         }
+
+        private void ReadMemvars()
+        {
+            memvar = getPrjLogic(nameof(MemVar), false);
+            undeclared = getPrjLogic(nameof(Undeclared), false);
+        }
+        private void EnableMemVars()
+        {
+            if (memvar == false)
+            {
+                undeclared = false;
+                SetFieldReadOnly(nameof(Undeclared), true);
+            }
+            else
+            {
+                SetFieldReadOnly(nameof(Undeclared), false);
+            }
+
+        }
+
         /// <summary>
         /// Bind properties.
         /// </summary>
         ///
+
+
         protected override void BindProperties()
         {
             if (this.ProjectMgr == null)
@@ -225,12 +280,14 @@ namespace XSharp.Project
             ins = getPrjLogic(nameof(INS), false);
             ns = getPrjLogic(nameof(NS), false);
 
-             nostandarddefs = getPrjLogic(nameof(NoStandardDefs), false);
+            nostandarddefs = getPrjLogic(nameof(NoStandardDefs), false);
             includepaths = getPrjString(nameof(IncludePaths), "");
             standarddefs = getPrjString(nameof(StandardDefs), "");
 
             BindNamedArgs();
+            ReadMemvars();
             EnableDisableStandardDefs();
+            EnableMemVars();
         }
 
         /// <summary>
@@ -243,6 +300,7 @@ namespace XSharp.Project
             {
                 return VSConstants.E_INVALIDARG;
             }
+            saving = true;
 
             this.ProjectMgr.SetProjectProperty(nameof(AZ), this.az.ToString().ToLower());
 
@@ -260,7 +318,9 @@ namespace XSharp.Project
             this.ProjectMgr.SetProjectProperty(nameof(NoStandardDefs), this.nostandarddefs.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(IncludePaths), this.includepaths?.ToString());
             this.ProjectMgr.SetProjectProperty(nameof(StandardDefs), this.standarddefs?.ToString());
-
+            this.ProjectMgr.SetProjectProperty(nameof(MemVar), this.memvar.ToString().ToLower());
+            this.ProjectMgr.SetProjectProperty(nameof(Undeclared), this.undeclared.ToString().ToLower());
+            saving = false;
             this.IsDirty = false;
 
             return VSConstants.S_OK;

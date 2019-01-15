@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -705,6 +705,50 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			FINALLY
 				Assert.True( DBCloseArea() )
 			END TRY
+		RETURN
+
+
+		// TECH-9JPUGAOV3L , NTX problem with EoF after sequence of commands
+		[Fact, Trait("Category", "DBF")];
+		METHOD Ntx_Eof_test() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL cNtx AS STRING
+			
+			cDbf := GetTempFileName()
+			cNtx := cDbf + ".ntx"
+			
+			DBCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
+			DBUseArea(,,cDbf,,FALSE)
+			DBAppend()
+			FieldPut(1,123)
+			DBAppend()
+			FieldPut(1,456)
+			DBCreateIndex(cNtx, "NFIELD")
+			DBCloseArea()
+			
+
+			// necessary sequence to reproduce the problem below
+			DBUseArea(,,cDbf,,FALSE)
+			DBSetIndex(cNtx)
+			DBGoTop()
+			Assert.Equal(1, (INT)RecNo()) // 1
+			DBGoBottom()
+			Assert.Equal(2, (INT)RecNo()) // 2
+			DBSkip(-1)
+			Assert.Equal(1, (INT)RecNo()) // 1
+			DBGoTo(2)
+			Assert.Equal(2, (INT)RecNo()) // 2
+
+
+			DBSkip(+1)
+			Assert.Equal(TRUE, (LOGIC)EOF()) // FALSE, wrong
+			Assert.Equal(3, (INT)RecNo()) // 2, wrong
+
+			DBSkip(+1)
+			Assert.Equal(TRUE, (LOGIC)EOF()) // TRUE
+			Assert.Equal(3, (INT)RecNo()) // 3
+
+			DBCloseArea()
 		RETURN
 
 

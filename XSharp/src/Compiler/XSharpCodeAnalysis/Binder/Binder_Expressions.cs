@@ -750,7 +750,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 members.Free();
             }
-            else if (Compilation.Options.UndeclaredLocalVars)
+            // undeclared variables are allowed when the dialect supports memvars and memvars are enabled
+            // or in the 'full' macro compiler
+            else if (Compilation.Options.UndeclaredLocalVars
+                && (Compilation.Options.MacroScript || Compilation.Options.SupportsMemvars))
             {
                 var type = Compilation.RuntimeFunctionsType();
                 var get = GetCandidateMembers(type, XSharpFunctionNames.VarGet, LookupOptions.MustNotBeInstance, this);
@@ -759,6 +762,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     var ps = new XsVariableSymbol(name, (MethodSymbol)get[0], (MethodSymbol)set[0], Compilation.UsualType());
                     expression = new BoundPropertyAccess(node, null, ps, LookupResultKind.Viable, Compilation.UsualType());
+                    if (!Compilation.Options.MacroScript)
+                    {
+                        Error(diagnostics, ErrorCode.WRN_UndeclaredVariable, node.Location, name);
+                    }
+
                 }
                 else
                 {

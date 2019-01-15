@@ -31,6 +31,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         public override RefKind RefKind => RefKind.None;
 
         public override TypeSymbol Type => _type;
+        public override string Name => _name;
 
         public override ImmutableArray<CustomModifier> TypeCustomModifiers => ImmutableArray<CustomModifier>.Empty;
 

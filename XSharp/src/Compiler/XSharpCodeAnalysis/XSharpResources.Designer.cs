@@ -7937,6 +7937,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You cannot have both a PARAMETERS statement and declared parameters in the same entity..
+        /// </summary>
+        internal static string ERR_ParametersWithDeclaredParameters {
+            get {
+                return ResourceManager.GetString("ERR_ParametersWithDeclaredParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The params parameter cannot be declared as {0}.
         /// </summary>
         internal static string ERR_ParamsCantBeWithModifier {
@@ -15223,6 +15232,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_UnassignedInternalField_Title {
             get {
                 return ResourceManager.GetString("WRN_UnassignedInternalField_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable &apos;{0}&apos; has not been declared. Assuming this is a MEMVAR..
+        /// </summary>
+        internal static string WRN_UndeclaredVariable {
+            get {
+                return ResourceManager.GetString("WRN_UndeclaredVariable", resourceCulture);
             }
         }
         

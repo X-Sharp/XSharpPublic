@@ -1700,6 +1700,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_ImplicitCast = 9070,
 		WRN_AutomaticRefGeneration = 9071,
         ERR_DefaultParameterValueWithClipperCallingConvention = 9072,
+        WRN_UndeclaredVariable = 9073,
+        ERR_ParametersWithDeclaredParameters = 9074,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

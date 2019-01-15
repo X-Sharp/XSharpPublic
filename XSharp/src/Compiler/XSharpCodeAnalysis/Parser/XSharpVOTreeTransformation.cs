@@ -873,12 +873,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // declare memvars
             context.SetSequencePoint(context.end);
-            if (CurrentEntity != null && _options.SupportsMemvars)
+            if (CurrentEntity != null )
             {
-                CurrentEntity.Data.HasMemVars = true;
-                foreach (var memvar in context._Vars)
+                if ( _options.SupportsMemvars)
+                { 
+                    CurrentEntity.Data.HasMemVars = true;
+                    foreach (var memvar in context._Vars)
+                    {
+                        CurrentEntity.Data.AddField(memvar.Id.GetText(), "M", false);
+                    }
+                }
+                if (context.T.Type == XP.PARAMETERS)
                 {
-                    CurrentEntity.Data.AddField(memvar.Id.GetText(), "M", false);
+                    // parameters assume CC
+                    CurrentEntity.Data.HasClipperCallingConvention = true;
                 }
             }
         }
@@ -898,12 +906,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (context._Vars.Count > 1)
                     { 
                         var stmts = _pool.Allocate<StatementSyntax>();
+                        int i = 0;
                         foreach (var memvar in context._Vars)
                         {
+                            ++i;
                             var exp = GenerateMemVarDecl(memvar.GetText(), isprivate);
                             stmts.Add(GenerateExpressionStatement(exp));
+                            if (context.T.Type == XP.PARAMETERS)
+                            {
+                                var val = GenerateGetClipperParam(GenerateLiteral(i));
+                                exp = GenerateMemVarPut(memvar.GetText(), val);
+                                stmts.Add(GenerateExpressionStatement(exp));
+                            }
                         }
-                        context.PutList(stmts.ToList());
+                        if (stmts.Count > 0)
+                        { 
+                            context.Put(MakeBlock(stmts));
+                        }
                         _pool.Free(stmts);
                     }
                     else
@@ -914,6 +933,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (context.T.Type == XP.PARAMETERS)
                     {
                         // assign values like in the Clipper parameters 
+                        if (CurrentEntity.Params != null && CurrentEntity.Params._Params.Count > 0)
+                        {
+                            var node = context.Get<CSharpSyntaxNode>();
+                            node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParametersWithDeclaredParameters));
+                            context.Put(node);
+                        }
+                        else
+                        {
+
+                        }
                     }
                     break;
             }

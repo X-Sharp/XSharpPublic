@@ -280,6 +280,8 @@ Copyright (c) XSharp B.V.  All Rights Reserved
 	    INS="$(INS)"
 	    LB="$(LB)"
       NamedArgs="$(NamedArgs)"
+      MemVar="$(MemVar)"
+      Undeclared="$(Undeclared)"
 	    NS="$(NS)"
 	    OVF="$(OVF)"
 	    PPO="$(PPO)"

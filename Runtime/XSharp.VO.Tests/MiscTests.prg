@@ -124,6 +124,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			z := String2Psz("test")
 			Assert.False(Empty(z))
 
+
+		[Fact, Trait("Category", "Empty")];
+		METHOD W2String_tests() AS VOID
+			LOCAL cText := "The brown fox does the funny stuff that we all know" AS STRING
+			Assert.Equal(cText , W2String(String2W(cText)))
+
 	END CLASS
 
 END NAMESPACE

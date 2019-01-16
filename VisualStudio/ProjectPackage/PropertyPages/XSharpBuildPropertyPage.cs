@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System;
@@ -21,7 +21,7 @@ namespace XSharp.Project
     /// <summary>
     /// This class implements general property page for the project type.
     /// </summary>
-    /// 
+    ///
     [ComVisible(true)]
     [Guid("E994C210-9D6D-4CF4-A061-EBBEA2BC626B")]
     [ClassInterface(ClassInterfaceType.AutoDual)]
@@ -61,14 +61,12 @@ namespace XSharp.Project
 
         internal const string PPOCaption = "Generate preprocessor output";
         internal const string PPODescription = "Save the output from the preprocessor to .ppo files  (/ppo)";
-        internal const string NoStdDefCaption = "Suppress standard header file";
-        internal const string NoStdDefDescription = "Suppress inclusion of the standard header file (XSharpDefs.xh) in every file (/nostddef)";
         internal const string CmdLineCaption = "Extra Command Line Options";
         internal const string CmdLineDescription = "User-Defined Command Line options";
         internal const string DefCaption = "Defines for the preprocessor";
         internal const string DefDescription = "Defines for the preprocessor (/d)";
-        internal const string INCCaption = "Additional Include paths";
-        internal const string INCDescription = "Additional include paths for the preprocessor (it also looks through the folders set with the include environment variable) (/i)";
+        internal const string captPrefer32Bit = "\tPrefer 32 Bit";
+        internal const string descPrefer32Bit = "Prefer 32 bit when AnyCpu platform is selected.";
 
 
         internal const string defaultOutputPath = @"bin\$(Configuration)\";
@@ -88,20 +86,14 @@ namespace XSharp.Project
         private string intermediateoutputpath;
         private bool usesharedcompilation;
         private bool ppo;
-        private string includepaths;
         private string defines;
-        private bool nostandarddefs;
         private string commandlineoption;
         private Platform platformtarget;
         private bool prefer32bit;
 
         #endregion Fields
 
-        #region Constants
-        internal const string captPrefer32Bit = "\tPrefer 32 Bit";
-        internal const string descPrefer32Bit = "Prefer 32 bit when AnyCpu platform is selected.";
 
-        #endregion
         #region Validation
         private int ValidateWarningLevel (int level)
         {
@@ -307,21 +299,6 @@ namespace XSharp.Project
             set { this.defines = value; this.IsDirty = true; }
         }
 
-        [Category(CatPreprocessor), DisplayName(INCCaption), Description(INCDescription)]
-        [Editor(typeof(XSharpSLEPropertyEditor), typeof(System.Drawing.Design.UITypeEditor))]
-        public string IncludePaths
-        {
-            get { return this.includepaths; }
-            set { this.includepaths = value; this.IsDirty = true; }
-        }
-
-        [Category(CatPreprocessor), DisplayName(NoStdDefCaption), Description(NoStdDefDescription)]
-        public bool NoStandardDefs
-        {
-            get { return this.nostandarddefs; }
-            set { this.nostandarddefs = value; this.IsDirty = true; }
-        }
-
 
         #region Overriden Implementation
         /// <summary>
@@ -362,8 +339,6 @@ namespace XSharp.Project
 
             commandlineoption= getCfgString(nameof(CommandLineOption),  "");
             ppo = getCfgLogic(nameof(PPO),  false);
-            nostandarddefs = getCfgLogic(nameof(NoStandardDefs),  false);
-            includepaths = getCfgString(nameof(IncludePaths),  "");
             defines = getCfgString(nameof(DefineConstants), "");
 
             this.prefer32bit = getCfgLogic(nameof(Prefer32Bit), true);
@@ -412,8 +387,6 @@ namespace XSharp.Project
 
             this.SetConfigProperty(nameof(CommandLineOption), this.commandlineoption?.ToString().ToLower());
             this.SetConfigProperty(nameof(PPO), this.ppo.ToString().ToLower());
-            this.SetConfigProperty(nameof(NoStandardDefs), this.nostandarddefs.ToString().ToLower());
-            this.SetConfigProperty(nameof(IncludePaths), this.includepaths?.ToString());
             this.SetConfigProperty(nameof(DefineConstants), this.defines?.ToString());
             this.SetConfigProperty(nameof(PlatformTarget), this.platformtarget.ToString());
             this.SetConfigProperty(nameof(Prefer32Bit), this.prefer32bit.ToString());

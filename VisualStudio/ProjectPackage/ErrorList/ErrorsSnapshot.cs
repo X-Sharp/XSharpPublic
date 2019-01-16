@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using Microsoft.VisualStudio.Shell.Interop;
@@ -102,17 +102,17 @@ namespace XSharp.Project
                         content = "";
                         return true;
                     case StandardTableKeyNames.HelpLink:
-                        string errorcode = error?.ErrorCode.ToLower();
+                    case StandardTableKeyNames.ErrorCodeToolTip:
+                        string errorcode = error?.ErrorCode?.ToLower();
                         if (errorcode != null && errorcode.StartsWith("xs"))
                         {
-                            content = "https://www.xsharp.info/help/" + errorcode + ".html";
+                            if (columnName == StandardTableKeyNames.HelpLink)
+                                content = "https://www.xsharp.info/help/" + errorcode + ".html";
+                            else
+                                content = "Get help for '" + error.ErrorCode + "' from the XSharp website";
                             return true;
                         }
                         break;
-                    case StandardTableKeyNames.ErrorCodeToolTip:
-                        content = "Get help for '"+error.ErrorCode+"' from the XSharp website";
-                        return true;
-
                     case ProjectNames:
                         content = new string[] {  };
                         return true;

@@ -15236,7 +15236,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable &apos;{0}&apos; has not been declared. Assuming this is a MEMVAR..
+        ///   Looks up a localized string similar to Variable &apos;{0}&apos; has not been declared. Assuming this is a FIELD or a MEMVAR..
         /// </summary>
         internal static string WRN_UndeclaredVariable {
             get {

@@ -96,6 +96,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             StatementBlockContext Statements { get; }
         }
+
+        public interface IEntityWithBodyContext : IEntityContext
+        {
+            StatementBlockContext Statements { get; }
+        }
         public interface IEntityContext : IRuleNode, IXParseTree
         {
             EntityData Data { get; }
@@ -104,13 +109,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             String Name { get; }
             String ShortName { get; }
         }
-        internal interface IXPPEntityContext: IEntityContext
+        internal interface IXPPEntityContext: IEntityWithBodyContext
         {
             XppmemberModifiersContext Mods { get; }
             AttributesContext Atts { get; }
             InternalSyntax.XppDeclaredMethodInfo Info { get; }
-            StatementBlockContext Statements { get; set; }
             ParameterListContext Parameters { get; }
+            new StatementBlockContext Statements { get; set; }
         }
 
         [FlagsAttribute]
@@ -122,8 +127,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             UsesPSZ = 1 << 2,           // Member property
             MustBeUnsafe = 1 << 3,      // Member property
             HasTypedParameter = 1 << 4, // Member property
-            UsesPCount = 1 << 5,        // Member property
-            UsesGetMParam = 1 << 6,     // Member property
+            // 5
+            HasParametersStmt = 1 << 6, // Member property
             MustBeVoid = 1 << 7,        // Member property
             IsInitAxit = 1 << 8,        // Member property
             HasInstanceCtor = 1 << 9,   // Class property
@@ -158,6 +163,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 set { flags = setFlag(flags, EntityFlags.ClipperCallingConvention, value); }
             }
 
+            public bool HasParametersStmt
+            {
+                get { return flags.HasFlag(EntityFlags.HasParametersStmt); }
+                set { flags = setFlag(flags, EntityFlags.HasParametersStmt, value); }
+            }
+
             public bool HasMissingReturnType
             {
                 get { return flags.HasFlag(EntityFlags.MissingReturnType); }
@@ -177,17 +188,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 get { return flags.HasFlag(EntityFlags.MustBeUnsafe); }
                 set { flags = setFlag(flags, EntityFlags.MustBeUnsafe, value); }
-            }
-
-            public bool UsesPCount
-            {
-                get { return flags.HasFlag(EntityFlags.UsesPCount); }
-                set { flags = setFlag(flags, EntityFlags.UsesPCount, value); }
-            }
-            public bool UsesGetMParam
-            {
-                get { return flags.HasFlag(EntityFlags.UsesGetMParam); }
-                set { flags = setFlag(flags, EntityFlags.UsesGetMParam, value); }
             }
 
             public bool MustBeVoid            // Assign, SET, Event Accessor
@@ -288,7 +288,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public StatementBlockContext Statements { get { return StmtBlk; } }
         }
 
-        public partial class ProcedureContext : IEntityContext, IGlobalEntityContext
+        public partial class ProcedureContext : IEntityWithBodyContext, IGlobalEntityContext
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -297,9 +297,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String Name => ParentName + ShortName;
             public String ShortName => this.Id.GetText();
             public FuncprocModifiersContext FuncProcModifiers => Modifiers;
+            public StatementBlockContext Statements => StmtBlk;
         }
 
-        public partial class FunctionContext : IEntityContext, IGlobalEntityContext
+        public partial class FunctionContext : IEntityWithBodyContext, IGlobalEntityContext
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -308,10 +309,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String Name => ParentName + ShortName;
             public String ShortName => this.Id.GetText();
             public FuncprocModifiersContext FuncProcModifiers => Modifiers;
+            public StatementBlockContext Statements => StmtBlk;
 
         }
 
-        public partial class MethodContext : IEntityContext
+        public partial class MethodContext : IEntityWithBodyContext
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -332,9 +334,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     return ParentName + name;
                 }
             }
+            public StatementBlockContext Statements => StmtBlk;
         }
 
-        public partial class EventAccessorContext : IEntityContext
+        public partial class EventAccessorContext : IEntityWithBodyContext
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -342,9 +345,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + Key.Text;
             public String ShortName => ParentName + Key.Text;
+            public StatementBlockContext Statements => StmtBlk;
+
         }
 
-        public partial class PropertyAccessorContext : IEntityContext
+        public partial class PropertyAccessorContext : IEntityWithBodyContext
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -352,9 +357,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + Key.Text;
             public String ShortName => ParentName + Key.Text;
+            public StatementBlockContext Statements => StmtBlk;
         }
 
-        public partial class ConstructorContext : IEntityContext
+        public partial class ConstructorContext : IEntityWithBodyContext
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -362,8 +368,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + ShortName;
             public String ShortName => "ctor";
+            public StatementBlockContext Statements => StmtBlk;
         }
-        public partial class DestructorContext :  IEntityContext
+        public partial class DestructorContext : IEntityWithBodyContext
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -371,6 +378,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + ShortName;
             public String ShortName => "Finalize";
+            public StatementBlockContext Statements => StmtBlk;
         }
         public partial class Event_Context : IEntityContext
         {
@@ -390,7 +398,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String Name => ParentName + ShortName;
             public String ShortName => Id.GetText();
             public FuncprocModifiersContext FuncProcModifiers => Modifiers;
-
         }
         public partial class PropertyContext : IEntityContext
         {
@@ -402,7 +409,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String Name => ParentName + ShortName;
             public String ShortName => Id.GetText();
         }
-        public partial class Operator_Context : IEntityContext
+        public partial class Operator_Context : IEntityWithBodyContext
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -422,6 +429,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
 
             }
+            public StatementBlockContext Statements => StmtBlk;
         }
         public partial class Delegate_Context : IEntityContext
         {
@@ -538,7 +546,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public int Visibility { get; set; }
         }
 
-          public partial class XppmethodContext : IXPPEntityContext
+        public partial class XppmethodContext : IXPPEntityContext
         {
             EntityData data = new EntityData();
             public EntityData Data => data;

@@ -887,6 +887,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     // parameters assume CC
                     CurrentEntity.Data.HasClipperCallingConvention = true;
+                    CurrentEntity.Data.HasParametersStmt = true;
                 }
             }
         }
@@ -999,7 +1000,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #region Helpers for Method Init and Method Axit (/vo1)
         protected ConstructorDeclarationSyntax createConstructor(
-            XP.IEntityContext context,
+            XP.IEntityWithBodyContext context,
             SyntaxList<SyntaxToken> modifiers,
             XP.AttributesContext atts,
             XP.ParameterListContext paramlist,
@@ -2986,7 +2987,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _pool.Free(@params);
             }
         }
-        protected override void ImplementClipperAndPSZ(XP.IEntityContext context,
+        protected override void ImplementClipperAndPSZ(XP.IEntityWithBodyContext context,
             ref SyntaxList<AttributeListSyntax> attributes, ref ParameterListSyntax parameters, ref BlockSyntax body,
             ref TypeSyntax dataType)
         {
@@ -3035,6 +3036,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     implementNoClipCall(context, ref parameters, ref dataType);
                     context.Data.HasClipperCallingConvention = false;
                 }
+
                 if (context.Data.HasClipperCallingConvention && ! _options.NoClipCall)
                 {
 
@@ -3047,13 +3049,41 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // using the names from the paramNames list
                         // [ClipperCallingConvention(new string[] { "a", "b" })]
                         // make sure that existing attributes are not removed!
+
+                        List<string> parameternames = new List<String>();
+                        if (context.Data.HasParametersStmt)
+                        {
+                            foreach (var stmt in context.Statements._Stmts)
+                            {
+                                if (stmt is XP.XbasedeclStmtContext x)
+                                {
+                                    var xdecl = x.xbasedecl();
+                                    if (xdecl.T.Type == XP.PARAMETERS)
+                                    {
+                                        foreach (var n in xdecl._Vars)
+                                        {
+                                            parameternames.Add(n.GetText());
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 0; i < parameters.Parameters.Count; i++)
+                            {
+                                var parm = parameters.Parameters[i];
+                                string name = parm.Identifier.Text;
+                                parameternames.Add(name);
+                            }
+                        }
+
                         var attrs = _pool.Allocate<AttributeListSyntax>();
                         attrs.AddRange(attributes); // Copy existing attributes
                         var names = new List<ExpressionSyntax>();
-                        for (int i = 0; i < parameters.Parameters.Count; i++)
+                        foreach (var name in parameternames)
                         {
-                            var parm = parameters.Parameters[i];
-                            string name = parm.Identifier.Text;
                             names.Add(GenerateLiteral(name));
                         }
                         attrs.Add(MakeClipperCallingConventionAttribute(names));
@@ -3315,8 +3345,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, name, argList.Arguments.Count));
                     }
                     context.Put(expr);
-                    if (CurrentEntity != null)
-                        CurrentEntity.Data.UsesPCount = true;
                 }
                 return true;
             }
@@ -3336,9 +3364,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    // _GETMPARAM or _GETFPARAM
-                    if (CurrentEntity != null)
-                        CurrentEntity.Data.UsesGetMParam = true;
                     context.Put(GenerateGetClipperParam(argList.Arguments[0].Expression));
                 }
                 return true;

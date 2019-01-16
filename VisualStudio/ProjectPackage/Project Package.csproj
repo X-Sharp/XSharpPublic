@@ -302,6 +302,7 @@
       <DependentUpon>XSharpSpecialOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="PropertyPages\XBuildEventsPropertyPage.cs" />
+    <Compile Include="PropertyPages\XSharpDialectPropertyPage.cs" />
     <Compile Include="Wix\FolderBrowserTextBox.cs">
       <SubType>UserControl</SubType>
     </Compile>

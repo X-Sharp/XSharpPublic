@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using Microsoft.VisualStudio.Shell.Design.Serialization;
@@ -26,7 +26,7 @@ namespace XSharp.Project
 
         // The parameterless constructor is called by the WPF designer ?
 
-        public VSXSharpCodeDomProvider(XSharpFileNode fileNode)  
+        public VSXSharpCodeDomProvider(XSharpFileNode fileNode)
         {
             _fileNode = fileNode;
             _projectNode = fileNode.ProjectMgr as XSharpProjectNode;
@@ -128,6 +128,11 @@ namespace XSharp.Project
 
         #endregion
 
+        private void CopyClassProperties(CodeTypeDeclaration source, CodeTypeDeclaration target)
+        {
+            target.Name = source.Name;
+            target.Attributes = source.Attributes;
+        }
         // Called by the WinForm designer at save time
         public override void GenerateCodeFromCompileUnit(CodeCompileUnit compileUnit, TextWriter writer, CodeGeneratorOptions options)
         {
@@ -149,6 +154,8 @@ namespace XSharp.Project
                 CodeTypeDeclaration formClass = XSharpCodeDomHelper.FindFirstClass(formCCU);
                 CodeTypeDeclaration designClass = XSharpCodeDomHelper.FindFirstClass(designCCU);
                 // Now, remove the members
+                CopyClassProperties(designerClass, formClass);
+                CopyClassProperties(designerClass, designClass);
                 formClass.Members.Clear();
                 designClass.Members.Clear();
                 // Now, split the members
@@ -190,7 +197,7 @@ namespace XSharp.Project
                 String generatedSource;
                 MemoryStream inMemory = new MemoryStream();
                 StreamWriter designerStream = new StreamWriter(inMemory, Encoding.UTF8);
-                // 
+                //
                 base.GenerateCodeFromCompileUnit(designCCU, designerStream, options);
                 // and force Flush
                 designerStream.Flush();
@@ -233,12 +240,12 @@ namespace XSharp.Project
                 IServiceProvider provider = (DocDataTextWriter)writer;
                 DocData docData = (DocData)provider.GetService(typeof(DocData));
                 DocDataTextReader ddtr = new DocDataTextReader(docData);
-                // Retrieve 
+                // Retrieve
                 generatedSource = ddtr.ReadToEnd();
                 // normalize the line endings
                 generatedSource = generatedSource.Replace("\n", "");
                 generatedSource = generatedSource.Replace("\r", "\r\n");
-                // Don't forget to set the name of the file where the source is... 
+                // Don't forget to set the name of the file where the source is...
                 parser.FileName = prgFileName;
                 resultDesigner = parser.Parse(generatedSource);
                 resultClass = XSharpCodeDomHelper.FindFirstClass(resultDesigner);
@@ -284,7 +291,7 @@ namespace XSharp.Project
                     IServiceProvider provider = (DocDataTextWriter)writer;
                     DocData docData = (DocData)provider.GetService(typeof(DocData));
                     DocDataTextReader ddtr = new DocDataTextReader(docData);
-                    // Retrieve 
+                    // Retrieve
                     string generatedSource = ddtr.ReadToEnd();
                     XSharpCodeParser parser = new XSharpCodeParser(_projectNode);
                     parser.TabSize = XSharpCodeDomProvider.TabSize;

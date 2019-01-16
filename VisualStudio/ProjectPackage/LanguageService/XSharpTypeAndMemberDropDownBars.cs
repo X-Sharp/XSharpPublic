@@ -87,7 +87,7 @@ namespace XSharp.LanguageService
                 return false;
             }
             XElement selectedElement = file.FindMemberAtRow(line);
-            if (selectedElement == _lastSelected)
+            if (selectedElement == _lastSelected && selectedElement != null)
             {
                 // Same element, no changes
                 return false;

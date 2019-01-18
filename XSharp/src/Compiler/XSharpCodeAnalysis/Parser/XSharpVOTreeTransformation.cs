@@ -56,6 +56,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private ArrayTypeSyntax arrayOfUsual = null;
         private ArrayTypeSyntax arrayOfString = null;
         private bool voStructHasDim;
+        private bool hasMemVars = false;
+        private List<MemVarFieldInfo> _memvarNames = new List<MemVarFieldInfo>();
 
         private Dictionary<string, FieldDeclarationSyntax> _literalSymbols;
         private Dictionary<string, Tuple<string, FieldDeclarationSyntax>> _literalPSZs;
@@ -748,7 +750,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string Name = context.Name.GetText();
             ExpressionSyntax expr = context.Name.Get<NameSyntax>();
             MemVarFieldInfo fieldInfo = null;
-            if (CurrentEntity != null)
+            fieldInfo = getFileWideMemVar(Name);
+            if (fieldInfo == null && CurrentEntity != null)
             {
                 fieldInfo = CurrentEntity.Data.GetField(Name);
             }
@@ -892,6 +895,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        public override void EnterFilewidememvar([NotNull] XP.FilewidememvarContext context)
+        {
+            if (_options.SupportsMemvars)
+            {
+                this.hasMemVars = true;
+                foreach (var memvar in context._Vars)
+                {
+                    _memvarNames.Add(new MemVarFieldInfo(memvar.Id.GetText(), "M", false));
+                }
+            }
+        }
+        private MemVarFieldInfo getFileWideMemVar(string name)
+        {
+            MemVarFieldInfo fieldInfo = null;
+            if (this.hasMemVars)
+            {
+                foreach (var memvar in _memvarNames)
+                {
+                    if (string.Compare(name, memvar.Name, StringComparison.OrdinalIgnoreCase) == 0)
+                    {
+                        fieldInfo = memvar;
+                        break;
+                    }
+                }
+            }
+            return fieldInfo;
+        }
         public override void ExitXbasedecl([NotNull] XP.XbasedeclContext context)
         {
             context.SetSequencePoint(context.end);
@@ -1560,7 +1590,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var lit = GenerateLiteral(1);
             string field = nameExpr.GetText();
             MemVarFieldInfo fieldInfo = null;
-            if (CurrentEntity != null)
+            fieldInfo = getFileWideMemVar(field);
+            if (fieldInfo == null && CurrentEntity != null)
             {
                 fieldInfo = CurrentEntity.Data.GetField(field);
             }
@@ -1682,7 +1713,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 XP.NameExpressionContext namecontext = left.XNode.GetChild(0) as XP.NameExpressionContext;
                 string name = namecontext.Name.GetText();
                 MemVarFieldInfo fieldInfo = null;
-                if (CurrentEntity != null)
+                fieldInfo = getFileWideMemVar(name);
+                if (fieldInfo == null && CurrentEntity != null)
                 {
                     fieldInfo = CurrentEntity.Data.GetField(name);
                 }

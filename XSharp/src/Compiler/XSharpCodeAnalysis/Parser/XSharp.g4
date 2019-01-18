@@ -66,6 +66,7 @@ entity              : namespace_
                     | vodll                     // External method of the Globals class
                     | vostruct                  // Compatibility (unsafe) structure
                     | vounion                   // Compatibility (unsafe) structure with members aligned at FieldOffSet 0
+                    | {AllowXBaseVariables}? filewidememvar      // memvar declared at file level         
                     ;
 
 
@@ -241,7 +242,6 @@ class_              : (Attributes=attributes)? (Modifiers=classModifiers)?
 
 classModifiers      : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL) )+
                     ;
-
 
 
 
@@ -485,6 +485,11 @@ globalAttributes    : LBRKT Target=globalAttributeTarget Attributes+=attribute (
 
 globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
                       ;
+
+filewidememvar      : MEMVAR Vars+=identifierName (COMMA Vars+=identifierName)*
+                      end=eos
+                    ;
+
 
 statement           : Decl=localdecl                        #declarationStmt
                     | {AllowXBaseVariables}? xbasedecl               #xbasedeclStmt
@@ -1069,7 +1074,7 @@ xppentity           : xppnamespace
                     | vodll                     // External method of the Globals class
                     | vostruct                  // Compatibility (unsafe) structure
                     | vounion                   // Compatibility (unsafe) structure with members aligned at FieldOffSet 0
-                    | xppmemvar                 // global memvar outside of code 
+                    | filewidememvar            // global memvar outside of code 
                     ;
 
 xppclass           :  (Attributes=attributes)?                                // NEW Optional Attributes
@@ -1181,6 +1186,3 @@ xppinlineMethod     : (Attributes=attributes)?                               // 
 xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+
                     ;
 
-xppmemvar           : MEMVAR Vars+=identifierName (COMMA Vars+=identifierName)*
-                      end=eos
-                    ;

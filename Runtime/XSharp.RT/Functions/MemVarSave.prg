@@ -38,22 +38,22 @@ FUNCTION _MSave(cFileName AS STRING, cSkel AS STRING, lLike AS LOGIC) AS VOID
     IF ! oMemWriter:Ok
         // Throw an error
         ELSE
-            LOCAL symVar AS SYMBOL
-            symVar := _PublicFirst()
+            LOCAL cVar AS STRING
+            cVar := _PublicFirst()
             
-            DO WHILE symVar != NULL_SYMBOL
-                IF lAll .OR. _Like(cSkel, Symbol2String(symVar)) == lLike
-                    oMemWriter:WriteValue(symVar, MemVarGetSym(symVar))
+            DO WHILE !String.IsNullOrEmpty(cVar)
+                IF lAll .OR. _Like(cSkel, cVar) == lLike
+                    oMemWriter:WriteValue(cVar, MemVarGet(cVar))
                 ENDIF
-                symVar := _PublicNext()
+                cVar := _PublicNext()
             ENDDO  
-            symVar := _PrivateFirst()
+            cVar := _PrivateFirst()
             
-            DO WHILE symVar != NULL_SYMBOL
-                IF lAll .OR. _Like(cSkel, Symbol2String(symVar)) == lLike
-                    oMemWriter:WriteValue(symVar, MemVarGetSym(symVar))
+            DO WHILE !String.IsNullOrEmpty(cVar)
+                IF lAll .OR. _Like(cSkel, cVar) == lLike
+                    oMemWriter:WriteValue(cVar, MemVarGet(cVar))
                 ENDIF
-                symVar := _PrivateNext()
+                cVar := _PrivateNext()
             ENDDO  
         oMemWriter:CLose()
     ENDIF 
@@ -153,14 +153,14 @@ INTERNAL CLASS MemWriter
         ENDIF
         RETURN
         
-    METHOD WriteValue(symVar AS SYMBOL, uVal AS USUAL) AS VOID   
+    METHOD WriteValue(cVar AS STRING, uVal AS USUAL) AS VOID   
         LOCAL wType 	AS DWORD
         LOCAL cVarName 	AS STRING
         LOCAL wArrayEl 	AS DWORD             
         LOCAL writeName AS Action
         wType    := UsualType(uVal)
-        IF symVar != NULL_SYMBOL
-            cVarName := Symbol2String(symVar)
+        IF !String.IsNullOrEmpty(cVar)
+            cVarName := cVar
             WriteName := { =>WriteStr(cVarName) }
         ELSE
             WriteName := { =>  }
@@ -240,11 +240,11 @@ INTERNAL CLASS MemWriter
         LOCAL aIVarList AS ARRAY
         LOCAL nLen      AS DWORD
         LOCAL wI        AS DWORD
-        LOCAL symIvar 	AS SYMBOL
+        LOCAL cIVar 	AS STRING
         IF oVar == NULL_OBJECT
             WriteStr("")
         ELSE
-            WriteStr(Symbol2String(ClassName(oVar)))
+            WriteStr(ClassName(oVar))
             AAdd(SELF:aObjectList, oVar)
                 
             aIVarList :=IVarList(oVar)
@@ -252,9 +252,9 @@ INTERNAL CLASS MemWriter
             WriteBytes(W2Bin(WORD(nLen)))
                 
             FOR wI := 1 UPTO nLen   
-                symIvar :=aIVarList[wI]
-                IF IVarGetInfo(oVar, symIVar) > 0
-                    WriteValue(symIvar, IVarGet(oVar, symIvar))
+                cIVar :=aIVarList[wI]
+                IF IVarGetInfo(oVar, cIVar) > 0
+                    WriteValue(cIVar, IVarGet(oVar, cIVar))
                 ENDIF
             NEXT
         ENDIF
@@ -274,7 +274,7 @@ INTERNAL CLASS MemWriter
         FOR wI := 1 UPTO wArrayLen
         
             uVal   :=aVar[wI]        
-            WriteValue(NULL_SYMBOL, uVal)
+            WriteValue(NULL_STRING, uVal)
         NEXT
         
         RETURN
@@ -469,24 +469,23 @@ INTERNAL CLASS MemReader
         RETURN SELF:ReadBytes(nLen)		
         
     METHOD ReadVOFile(wType AS BYTE) AS VOID
-        LOCAL symVar AS SYMBOL
+        LOCAL cVar AS STRING
         LOCAL uValue AS USUAL
         LOCAL lPut := TRUE AS LOGIC
         DO WHILE wType <>ASC_EOF
-            symVar := String2Symbol(ReadString())
-            uValue := ReadValue(wType)   
+            cVar    := ReadString():ToUpper()
+            uValue  := ReadValue(wType)   
             IF lUseMask    
-                lPut := _Like(SELF:cMask, Symbol2String(symVar)) == SELF:lInclude
+                lPut := _Like(SELF:cMask, cVar) == SELF:lInclude
             ENDIF
             IF lPut        		
-                MemVarPutSym(symVar, uValue)
+                MemVarPut(cVar, uValue)
             ENDIF
             wType  := SELF:ReadByte()
         ENDDO
         
         
     METHOD ReadClipperFile(wType AS BYTE) AS VOID    
-        LOCAL symVar AS SYMBOL
         LOCAL cType AS STRING 
         LOCAL nLen AS DWORD   
         LOCAL cVar AS STRING 
@@ -510,12 +509,12 @@ INTERNAL CLASS MemReader
         //        if D length is 8, real8 format
         DO WHILE wType <>ASC_EOF
             cVar	:= Chr(wType)+SELF:ReadBytes(10)
-            symVar 	:= String2Symbol(Left(cVar,At(Chr(0),cVar)-1))
+            cVar 	:= Left(cVar,At(Chr(0),cVar)-1):ToUpper()
             nType   := SELF:ReadByte()
             cType	:= Chr(_AND(nType,127))
             SELF:ReadBytes(4) // pad
             IF lUseMask    
-                lPut := _Like(SELF:cMask, Symbol2String(symVar)) == SELF:lInclude
+                lPut := _Like(SELF:cMask, cVar ) == SELF:lInclude
             ENDIF
             
             DO CASE
@@ -523,25 +522,25 @@ INTERNAL CLASS MemReader
                     nLen:=Bin2W(SELF:ReadBytes(2))
                     SELF:ReadBytes(14) //Class and pad
                     IF lPut
-                        MemVarPutSym(symVar, SELF:ReadBytes(nLen-1))
+                        MemVarPut(cVar, SELF:ReadBytes(nLen-1))
                     ENDIF
                 SELF:ReadBytes(1) //nul byte
                 CASE cType ="N" //Real8
                     SELF:ReadBytes(16) //Len, Dec, Class and pad
                     IF lPut
-                        MemVarPutSym(symVar, Bin2Real8(SELF:ReadBytes(8)))
-                ENDIF
+                        MemVarPut(cVar, Bin2Real8(SELF:ReadBytes(8)))
+                    ENDIF
                 CASE cType ="L" //Logic
                     SELF:ReadBytes(16) //Len, Dec, Class and pad
                     IF lPut
-                        MemVarPutSym(symVar, ReadByte() != 0)  
-                ENDIF
+                        MemVarPut(cVar, ReadByte() != 0)  
+                    ENDIF
                 CASE cType ="D" //Date
                     SELF:ReadBytes(16) //Len, Dec, Class and pad
                     IF lPut            
                         VAR r8 := Bin2Real8(SELF:ReadBytes(8))
-                        MemVarPutSym(symVar, Bin2Date(L2Bin(LONGINT(r8))))
-                ENDIF
+                        MemVarPut(cVar, Bin2Date(L2Bin(LONGINT(r8))))
+                    ENDIF
                 OTHERWISE
                 BREAK
             ENDCASE

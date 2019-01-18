@@ -13,10 +13,10 @@ USING System.Windows.Forms
 BEGIN NAMESPACE $safeprojectname$
 
     PUBLIC PARTIAL CLASS Form1 INHERIT System.Windows.Forms.Form
-    
+
         PUBLIC CONSTRUCTOR()   STRICT//$safeitemrootname$
             InitializeComponent()
 			RETURN
-        
+
     END CLASS
 END NAMESPACE

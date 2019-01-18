@@ -231,6 +231,6 @@ FUNCTION __MemVarRelease(nLevel AS INT) AS LOGIC  STRICT
 
 // this is used to declare a private or public variable. The variable is initialized with NIL.
 /// <exclude/>
-FUNCTION __MemVarDecl(name AS SYMBOL, _priv AS LOGIC) AS VOID  STRICT
+FUNCTION __MemVarDecl(name AS STRING, _priv AS LOGIC) AS VOID  STRICT
 	XSharp.MemVar.Add(name, _priv)
 	RETURN 

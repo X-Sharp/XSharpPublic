@@ -25,7 +25,7 @@ FUNCTION MAssign(cExp AS STRING,xValue AS USUAL) AS USUAL
 /// <returns>
 /// </returns>
 FUNCTION MemVarBlock(cVar AS STRING) AS OBJECT
-    RETURN {| uValue| IIF (uValue == NIL, MemVarGetSym(cVar), MemVarPutSym(cVar, uValue))} 
+    RETURN {| uValue| IIF (uValue == NIL, MemVarGet(cVar), MemVarPut(cVar, uValue))} 
     
     
 /// <summary>
@@ -62,7 +62,7 @@ FUNCTION MemVarPut(cVar AS STRING,uValue AS USUAL) AS USUAL
 /// The value of this variable will be set to NIL. The variable is NOT deleted.  
 /// </remarks>
 
-FUNCTION MemVarRelease(symVar AS SYMBOL) AS VOID 
+FUNCTION MemVarRelease(symVar AS STRING) AS VOID 
 	XSharp.MemVar.Release(symVar)
 	RETURN
 
@@ -145,9 +145,9 @@ FUNCTION _MxRelease (var1, var2, var3, var4, varn) AS VOID CLIPPER
 	FOR VAR i := 1 TO nCount
 		name := _GetFParam(i)
 		IF IsString(name)
-			MemVarRelease(String2Symbol(name))
+			MemVarRelease(name)
 		ELSEIF IsSymbol(name)			
-			MemVarRelease(String2Symbol(name))
+			MemVarRelease(name)
 		ELSE  
 			// throw argument error
 		ENDIF
@@ -163,33 +163,33 @@ FUNCTION _MxRelease (var1, var2, var3, var4, varn) AS VOID CLIPPER
 /// The variables are not removed but their values are replaced with NIL.
 /// </remarks>
 FUNCTION _MRelease(cMask AS STRING, lMatch AS LOGIC)	AS VOID
-	LOCAL symName AS SYMBOL
+	LOCAL cName AS STRING
 	// Case INsensitive comparison. Symbols are all in UPPER case
 	cMask := Upper(cMask)                                        
-	symName := _PrivateFirst()
-	DO WHILE symName != NULL_SYMBOL
-		IF _Like(cMask, Symbol2String(symName)) == lMatch
-			MemVarPutSym(symName, NIL)
+	cName := _PrivateFirst()
+	DO WHILE cName != NULL_SYMBOL
+		IF _Like(cMask, cName) == lMatch
+			MemVarPut(cName, NIL)
 		ENDIF
-		symName := _PrivateNext()
+		cName := _PrivateNext()
 	ENDDO
 	RETURN   
 
 
 /// <exclude/>
-FUNCTION _PrivateFirst(lCurrentOnly := FALSE AS LOGIC) AS SYMBOL 
+FUNCTION _PrivateFirst(lCurrentOnly := FALSE AS LOGIC) AS STRING 
 	RETURN XSharp.MemVar.PrivatesFirst(lCurrentOnly)
 
 /// <exclude/>
-FUNCTION _PrivateNext() AS SYMBOL STRICT
+FUNCTION _PrivateNext() AS STRING STRICT
 	RETURN XSharp.MemVar.PrivatesNext() 
 
 /// <exclude/>	
-FUNCTION _PublicFirst() AS SYMBOL STRICT 
+FUNCTION _PublicFirst() AS STRING STRICT 
 	RETURN XSharp.MemVar.PublicsFirst()
 
 /// <exclude/>
-FUNCTION _PublicNext() AS SYMBOL STRICT
+FUNCTION _PublicNext() AS STRING STRICT
 	RETURN XSharp.MemVar.PublicsNext()
 	
 /// <exclude/>
@@ -201,10 +201,10 @@ FUNCTION _PublicCount() AS INT STRICT
 	RETURN XSharp.MemVar.PublicsCount()
 
 /// <exclude/>	
-FUNCTION _PrivateEnum(lCurrentOnly := FALSE AS LOGIC) AS IEnumerator<SYMBOL>
+FUNCTION _PrivateEnum(lCurrentOnly := FALSE AS LOGIC) AS IEnumerator<STRING>
 	RETURN XSharp.MemVar.PrivatesEnum(lCurrentOnly)
 
 /// <exclude/>		
-FUNCTION _PublicEnum AS IEnumerator<SYMBOL>
+FUNCTION _PublicEnum AS IEnumerator<STRING>
 	RETURN XSharp.MemVar.PublicsEnum()
 

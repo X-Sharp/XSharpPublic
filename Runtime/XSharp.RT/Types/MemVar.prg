@@ -14,10 +14,10 @@ USING System.Threading
 // Class that holds the memvars for a certain level on the callstack
 [DebuggerDisplay("Level:{Depth}")];	
 INTERNAL CLASS XSharp.MemVarLevel                     
-	PROPERTY Variables AS Dictionary<SYMBOL, MemVar> AUTO    
+	PROPERTY Variables AS Dictionary<STRING, MemVar> AUTO    
 	PROPERTY Depth AS INT AUTO GET PRIVATE SET
 	CONSTRUCTOR (nDepth AS INT)              
-		Variables   := Dictionary<SYMBOL, MemVar>{}
+		Variables   := Dictionary<STRING, MemVar>{StringComparer.OrdinalIgnoreCase}
 		Depth       := nDepth
 		RETURN
 
@@ -28,13 +28,13 @@ INTERNAL CLASS XSharp.MemVarLevel
 		Variables:Add(variable:Name, variable)
 		RETURN
 		
-	METHOD ContainsKey(symName AS SYMBOL) AS LOGIC
-		RETURN Variables:ContainsKey(symName) 
+	METHOD ContainsKey(cName AS STRING) AS LOGIC
+		RETURN Variables:ContainsKey(cName) 
 		
-	METHOD TryGetValue(symName AS SYMBOL, VALUE OUT MemVar) AS LOGIC
-		RETURN Variables:TryGetValue(symName, OUT VALUE)
+	METHOD TryGetValue(cName AS STRING, VALUE OUT MemVar) AS LOGIC
+		RETURN Variables:TryGetValue(cName, OUT VALUE)
 	
-	PROPERTY SELF[name AS SYMBOL] AS MemVar
+	PROPERTY SELF[Name AS STRING] AS MemVar
 		GET                     
 			LOCAL memvar AS MemVar
 			IF Variables:TryGetValue(name, OUT memvar)
@@ -44,7 +44,7 @@ INTERNAL CLASS XSharp.MemVarLevel
 		END GET
 	END PROPERTY
 
-	PROPERTY Keys AS IEnumerable<SYMBOL> GET Variables:Keys
+	PROPERTY Keys AS IEnumerable<STRING> GET Variables:Keys
 	
 	METHOD Clear() AS VOID STRICT
 		Variables:Clear()	                 
@@ -57,34 +57,45 @@ END CLASS
 [DebuggerDisplay("Memvar: {Name}")];	
 PUBLIC CLASS XSharp.MemVar 
 
+
+    INTERNAL CLASS MemVarThreadInfo
+        INTERNAL Levels as Stack <MemVarLevel>
+        INTERNAL Depth  as INT
+        CONSTRUCTOR()
+            Levels := Stack <MemVarLevel>{32}
+            Depth  := 0
+            RETURN
+            
+    END CLASS
+
 	// Static fields that monitor all memvars 
 	PRIVATE STATIC Publics  AS MemVarLevel
-	PRIVATE STATIC Current 	AS MemVarLevel
-	PRIVATE STATIC Depth	AS INT
 
     // Stack local privates with initializer and property to access the current stacks privates
-    PRIVATE STATIC PrivatesStack := ThreadLocal< Stack <MemVarLevel> >{ {=> Stack <MemVarLevel>{32} }}  AS ThreadLocal< Stack <MemVarLevel> >
-	PRIVATE STATIC PROPERTY Privates AS Stack <MemVarLevel> GET PrivatesStack:Value
+    PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadInfo{} }}  AS ThreadLocal< MemVarThreadInfo >
+    PRIVATE STATIC PROPERTY Info       as MemVarThreadInfo          GET ThreadList:Value
+	PRIVATE STATIC PROPERTY Privates   AS Stack <MemVarLevel>       GET Info:Levels
+    PRIVATE STATIC PROPERTY Depth      AS INT GET Info:Depth        SET Info:Depth := Value
+	PRIVATE STATIC PROPERTY Current    AS MemVarLevel GET Privates:Peek()
 	
     // for the enumeration.
-	PRIVATE STATIC _PrivatesEnum AS IEnumerator<SYMBOL>
-	PRIVATE STATIC _PublicsEnum  AS IEnumerator<SYMBOL>
+	PRIVATE STATIC _PrivatesEnum AS IEnumerator<STRING>
+	PRIVATE STATIC _PublicsEnum  AS IEnumerator<STRING>
 
 	STATIC CONSTRUCTOR
 		Publics  		:= MemVarLevel{-1}
-		Current  		:= NULL
 		_PrivatesEnum 	:= NULL
 		_PublicsEnum  	:= NULL   
 		Depth           := 0
 
     // Instance fields
-  	PUBLIC Name 	AS SYMBOL
+  	PUBLIC Name 	AS STRING
   	PUBLIC @@Value 	AS USUAL
 #ifdef DEBUG
   	INTERNAL Level	AS MemVarLevel
 #endif
-	CONSTRUCTOR (symName AS SYMBOL, uValue AS USUAL)
-	  		Name := symName
+	CONSTRUCTOR (cName AS STRING, uValue AS USUAL)
+	  		Name := cName:ToUpper()
 	  		SELF:Value := uValue
 	  		RETURN
 #region Privates
@@ -92,16 +103,12 @@ PUBLIC CLASS XSharp.MemVar
 		// Initialize privates for a new function/method
 		// returns # of levels available after initialization
 		Depth 	+= 1   
-		Current := NULL
 		RETURN Depth
 
 	STATIC METHOD CheckCurrent() AS VOID
-		IF Current == NULL
-			IF Privates:Count() == 0 .OR. Privates:Peek():Depth < Depth
-				Privates:Push( MemVarLevel{ Depth })
-			ENDIF   
-			Current := Privates:Peek()
-		ENDIF
+		IF Privates:Count() == 0 .OR. Privates:Peek():Depth < Depth
+			Privates:Push( MemVarLevel{ Depth })
+		ENDIF   
 		
 		
 	STATIC METHOD ReleasePrivates(nLevel AS INT) AS LOGIC
@@ -109,14 +116,10 @@ PUBLIC CLASS XSharp.MemVar
 			Privates:Pop()
 		ENDDO      
 		Depth --
-        Current := NULL
-		IF Privates:Count > 0 .AND. Privates:Peek():Depth == Depth
-			Current := Privates:Peek()
-		ENDIF
 		RETURN TRUE
 		
 	
-	STATIC METHOD GetHigherLevelPrivate(name AS SYMBOL) AS XSharp.MemVar
+	STATIC METHOD GetHigherLevelPrivate(name AS STRING) AS XSharp.MemVar
 		FOREACH VAR previous IN privates    
 			LOCAL memvar AS MemVar
 			IF previous!= current .AND. previous:TryGetValue(name, OUT memvar)
@@ -125,7 +128,7 @@ PUBLIC CLASS XSharp.MemVar
 		NEXT		
 		RETURN NULL	
 		
-	STATIC METHOD PrivatePut(name AS SYMBOL, VALUE AS USUAL) AS LOGIC
+	STATIC METHOD PrivatePut(name AS STRING, VALUE AS USUAL) AS LOGIC
 		CheckCurrent()      
 		LOCAL memvar AS MemVar
 		IF current:TryGetValue(name, OUT memvar)
@@ -139,14 +142,14 @@ PUBLIC CLASS XSharp.MemVar
         ENDIF
 		RETURN FALSE	
 			                                    
-	STATIC METHOD PrivateFind(name AS SYMBOL) AS MemVar
+	STATIC METHOD PrivateFind(name AS STRING) AS MemVar
 		LOCAL memvar AS MemVar
 		IF current != NULL .AND. current:TryGetValue(name, OUT memvar)
 			RETURN memvar
 		ENDIF   
         RETURN GetHigherLevelPrivate(name)
 		
-	STATIC METHOD Release(name AS SYMBOL) AS VOID
+	STATIC METHOD Release(name AS STRING) AS VOID
 		// assign nil to visible private. Does not really release the variable.		
 		VAR Memvar := PrivateFind(name)
 		IF memvar == NULL
@@ -159,8 +162,8 @@ PUBLIC CLASS XSharp.MemVar
 		ENDIF
 		RETURN 
 
-	STATIC PRIVATE METHOD _GetUniquePrivates(lCurrentOnly := FALSE AS LOGIC) AS List<SYMBOL>
-		VAR _TempPrivates := List<SYMBOL>{}  
+	STATIC PRIVATE METHOD _GetUniquePrivates(lCurrentOnly := FALSE AS LOGIC) AS List<STRING>
+		VAR _TempPrivates := List<STRING>{}  
 		IF lCurrentOnly                         
 			IF Current != NULL
 				_TempPrivates:AddRange(current:Keys)			
@@ -180,23 +183,23 @@ PUBLIC CLASS XSharp.MemVar
 		ENDIF
 	    RETURN _TempPrivates  
 	    
-	STATIC METHOD PrivatesEnum(lCurrentOnly := FALSE AS LOGIC) AS IEnumerator<SYMBOL>
+	STATIC METHOD PrivatesEnum(lCurrentOnly := FALSE AS LOGIC) AS IEnumerator<STRING>
 		RETURN _GetUniquePrivates(lCurrentOnly):GetEnumerator()
 
 
- 	STATIC METHOD PrivatesFirst(lCurrentOnly := FALSE AS LOGIC) AS SYMBOL
+ 	STATIC METHOD PrivatesFirst(lCurrentOnly := FALSE AS LOGIC) AS STRING
 		_PrivatesEnum := PrivatesEnum(lCurrentOnly)
 		_PrivatesEnum:Reset()
 		RETURN PrivatesNext()
 
-	STATIC METHOD PrivatesNext() AS SYMBOL
+	STATIC METHOD PrivatesNext() AS STRING
 		IF _PrivatesEnum != NULL
 			IF _PrivatesEnum:MoveNext()
 				RETURN _PrivatesEnum:Current
 			ENDIF
 			_PrivatesEnum  := NULL 
 		ENDIF                
-		RETURN NULL_SYMBOL  				
+		RETURN NULL_STRING
 
 	STATIC METHOD PrivatesCount(lCurrentOnly := FALSE AS LOGIC) AS INT   
 		RETURN _GetUniquePrivates(lCurrentOnly):Count
@@ -214,7 +217,7 @@ PUBLIC CLASS XSharp.MemVar
 
 #region Generic - Public and Private
 		
-	STATIC METHOD Add(name AS SYMBOL, _priv AS LOGIC) AS VOID
+	STATIC METHOD Add(name AS STRING, _priv AS LOGIC) AS VOID
 		IF _priv    
 			CheckCurrent() 
 			IF !Current:ContainsKey(name)
@@ -229,7 +232,7 @@ PUBLIC CLASS XSharp.MemVar
             END LOCK
 		ENDIF  
 
-	STATIC METHOD Get(name AS SYMBOL) AS USUAL 
+	STATIC METHOD Get(name AS STRING) AS USUAL 
 		LOCAL oMemVar AS MemVar
 		// privates take precedence over publics ?
 		oMemVar := PrivateFind(name)
@@ -241,7 +244,7 @@ PUBLIC CLASS XSharp.MemVar
 		ENDIF            
 		THROW Error{"Undeclared variable :"+name:ToString()}
 
-	STATIC METHOD Put(name AS SYMBOL, VALUE AS USUAL) AS USUAL
+	STATIC METHOD Put(name AS STRING, VALUE AS USUAL) AS USUAL
 		LOCAL oMemVar AS MemVar
 		// assign to existing memvar first
 		// privates take precedence over publics ?
@@ -275,7 +278,7 @@ PUBLIC CLASS XSharp.MemVar
 
 #region Publics	
 
-	STATIC METHOD PublicFind(name AS SYMBOL) AS MemVar
+	STATIC METHOD PublicFind(name AS STRING) AS MemVar
 		LOCAL oMemVar AS MemVar
         BEGIN LOCK Publics
 		    IF Publics:TryGetValue(name, OUT oMemVar)
@@ -285,7 +288,7 @@ PUBLIC CLASS XSharp.MemVar
 		RETURN NULL
 		
 				
-	STATIC METHOD PublicPut(name AS SYMBOL, VALUE AS USUAL) AS LOGIC
+	STATIC METHOD PublicPut(name AS STRING, VALUE AS USUAL) AS LOGIC
 		VAR oMemVar := PublicFind(name)
 		IF oMemVar != NULL
             BEGIN LOCK oMemVar
@@ -295,24 +298,24 @@ PUBLIC CLASS XSharp.MemVar
 		ENDIF  
 		RETURN FALSE
 					
-	STATIC METHOD PublicsEnum() AS IEnumerator<SYMBOL>
+	STATIC METHOD PublicsEnum() AS IEnumerator<STRING>
         BEGIN LOCK Publics
 		    RETURN Publics:Keys:GetEnumerator()
         END LOCK
 
-	STATIC METHOD PublicsFirst() AS SYMBOL
+	STATIC METHOD PublicsFirst() AS STRING
 		_PublicsEnum := PublicsEnum()
 		_PublicsEnum:Reset()
 		RETURN PublicsNext()    
 		
-	STATIC METHOD PublicsNext() AS SYMBOL
+	STATIC METHOD PublicsNext() AS STRING
 		IF _PublicsEnum != NULL
 			IF _PublicsEnum:MoveNext()
 				RETURN _PublicsEnum:Current
 			ENDIF
 			_PublicsEnum := NULL
 		ENDIF                
-		RETURN NULL_SYMBOL      
+		RETURN NULL_STRING
 		
 
 	STATIC METHOD PublicsCount() AS INT

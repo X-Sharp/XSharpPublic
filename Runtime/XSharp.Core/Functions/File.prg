@@ -348,9 +348,9 @@ BEGIN NAMESPACE XSharp.IO
 			ENDIF
 			RETURN -1
 		
-		INTERNAL STATIC METHOD write( pFile AS IntPtr, c AS STRING, nLength AS INT ) AS INT
+		INTERNAL STATIC METHOD write( pFile AS IntPtr, c AS STRING, nLength AS INT, lAnsi AS LOGIC ) AS INT
 			LOCAL aBytes := String2Bytes(c) AS BYTE[]
-			RETURN writeBuff(pFile, aBytes, nLength, FALSE)			
+			RETURN writeBuff(pFile, aBytes, nLength, lAnsi)
 
 		INTERNAL STATIC METHOD writeBuff(pFile AS IntPtr,pBuffer AS BYTE[],iCount AS INT) AS INT
 			LOCAL oStream	AS FileStream
@@ -379,7 +379,7 @@ BEGIN NAMESPACE XSharp.IO
 			IF c:Length > nLen
 				c := c:Substring(0, nLen)
 			ENDIF
-			RETURN Write(pFile, c + e"\r\n",nLen+2)
+			RETURN Write(pFile, c + e"\r\n", nLen+2, TRUE)
 		
 		
 		INTERNAL STATIC METHOD lock(pFile AS IntPtr,iOffset AS INT64,iLength AS INT64, lLock AS LOGIC) AS LOGIC
@@ -711,7 +711,7 @@ FUNCTION FTell64(pFile AS IntPtr) AS INT64
 
 /// <inheritdoc cref="M:XSharp.Core.Functions.FWrite(System.IntPtr,System.String,System.UInt32)" />
 FUNCTION FWrite( pFile AS IntPtr, c AS STRING ) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.write( pFile, c,  c:Length )
+	RETURN (DWORD) XSharp.IO.File.write( pFile, c,  c:Length, TRUE )
 
 
 
@@ -725,7 +725,10 @@ FUNCTION FWrite( pFile AS IntPtr, c AS STRING ) AS DWORD
 /// If the return value is less than the nCount or 0, this means that the length of the buffer/string is less than number of bytes,
 /// or the disk is full, or another error has occurred.  FError() can be used to determine the specific error. </returns>
 FUNCTION FWrite( pFile AS IntPtr, c AS STRING, nCount AS DWORD ) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.write(pFile, c, (INT) nCount)
+	RETURN FWrite( pFile, c, nCount, TRUE)
+
+FUNCTION FWrite( pFile AS IntPtr, c AS STRING, nCount AS DWORD, lAnsi AS LOGIC) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.write(pFile, c, (INT) nCount, lAnsi)
 
 
 /// <inheritdoc cref="M:XSharp.Core.Functions.FWrite(System.IntPtr,System.String,System.UInt32)" />
@@ -748,7 +751,7 @@ FUNCTION FWrite4(pFile AS IntPtr,pBuffer AS BYTE[],nCount AS DWORD,lAnsi AS LOGI
 /// <returns>The number of bytes written.  If the value returned is equal to the length of the string +2, the operation was successful.
 /// If the return value is less 0, this means the disk is full, or another error has occurred.</returns>
 FUNCTION FWriteLine(pFile AS IntPtr,c AS STRING) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.write(pFile, c + e"\r\n",c:Length+2)
+	RETURN (DWORD) XSharp.IO.File.write(pFile, c + e"\r\n",c:Length+2, TRUE)
 
 /// <summary>
 /// Write a string, a carriage-return character, and a linefeed character to an open file, specifying strongly-typed arguments.

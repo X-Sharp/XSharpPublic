@@ -76,7 +76,8 @@ PUBLIC CLASS XSharp.MemVar
     PRIVATE STATIC PROPERTY Info       as MemVarThreadInfo          GET ThreadList:Value
 	PRIVATE STATIC PROPERTY Privates   AS Stack <MemVarLevel>       GET Info:Levels
     PRIVATE STATIC PROPERTY Depth      AS INT GET Info:Depth        SET Info:Depth := Value
-	PRIVATE STATIC PROPERTY Current    AS MemVarLevel GET Privates:Peek()
+	PRIVATE STATIC PROPERTY Current    AS MemVarLevel GET IIF (Privates:Count > 0, Privates:Peek(), NULL)
+
 	
     // for the enumeration.
 	PRIVATE STATIC _PrivatesEnum AS IEnumerator<STRING>

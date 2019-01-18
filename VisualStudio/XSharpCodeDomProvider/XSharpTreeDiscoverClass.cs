@@ -382,7 +382,7 @@ namespace XSharp.CodeDom
         #endregion
         public override void EnterNamespace_(XSharpParser.Namespace_Context context)
         {
-            string newNamespaceName = context.Name.GetText();
+            string newNamespaceName = context.Name.GetCleanText();
             // We already have something in Stack
             // so we are nesting Namespaces, get the previous name prefix
             if (this.NamespaceStack.Count > 0 && !string.IsNullOrEmpty(CurrentNamespace.Name))
@@ -428,7 +428,7 @@ namespace XSharp.CodeDom
 
         public override void EnterClass_(XSharpParser.Class_Context context)
         {
-            XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetText());
+            XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText());
             // Set as Current working Class
             AddCodeBefore(newClass.UserData, context.Start.StartIndex);
             CurrentClass = newClass;
@@ -472,7 +472,7 @@ namespace XSharp.CodeDom
             // INHERIT from ?
             if (context.BaseType != null)
             {
-                string baseName = context.BaseType.GetText();
+                string baseName = context.BaseType.GetCleanText();
                 newClass.BaseTypes.Add(BuildTypeReference(baseName));
             }
             // IMPLEMENTS ?
@@ -480,7 +480,7 @@ namespace XSharp.CodeDom
             {
                 foreach (var interfaces in context._Implements)
                 {
-                    var ifName = interfaces.GetText();
+                    var ifName = interfaces.GetCleanText();
                     newClass.BaseTypes.Add(BuildTypeReference(ifName));
                 }
             }
@@ -519,7 +519,7 @@ namespace XSharp.CodeDom
             _locals.Clear();
             var newMethod = new XCodeMemberMethod();
             newMethod.Comments.AddRange(context.GetLeadingComments(_tokens));
-            newMethod.Name = context.Id.GetText();
+            newMethod.Name = context.Id.GetCleanText();
             newMethod.Attributes = MemberAttributes.Public;
             newMethod.Parameters.AddRange(GetParametersList(context.ParamList));
             var returnType = BuildDataType(context.Type);
@@ -587,9 +587,9 @@ namespace XSharp.CodeDom
         {
             var evt = new XCodeMemberEvent();
             evt.Comments.AddRange(context.GetLeadingComments(_tokens));
-            evt.Name = context.Id.GetText();
+            evt.Name = context.Id.GetCleanText();
             evt.Attributes = MemberAttributes.Public;
-            var typeName = context.Type.GetText();
+            var typeName = context.Type.GetCleanText();
             evt.Type = BuildTypeReference(typeName);
             //
             if (context.Modifiers != null)
@@ -776,7 +776,7 @@ namespace XSharp.CodeDom
         private CodeVariableDeclarationStatement BuildLocalVar(XSharpParser.LocalvarContext context, XCodeTypeReference localType)
         {
             CodeVariableDeclarationStatement local = new CodeVariableDeclarationStatement();
-            local.Name = context.Id.GetText();
+            local.Name = context.Id.GetCleanText();
             local.Type = localType;
             if (context.Expression != null)
             {
@@ -891,10 +891,6 @@ namespace XSharp.CodeDom
         private CodeExpression buildTypeMemberExpression(System.Type type, string name)
         {
             var l = new XCodeTypeReferenceExpression(type);
-            if (name.StartsWith("@@"))
-            {
-                name = name.Substring(2);
-            }
 
             if (type.GetFields().Where(f => String.Compare(f.Name, name, true) == 0).Count() > 0)
             {
@@ -918,10 +914,6 @@ namespace XSharp.CodeDom
         private CodeExpression buildTypeMemberExpression(CodeExpression target, TypeXType txtype, string name, out TypeXType memberType)
         {
             // Special Name ? (Keyword)
-            if (name.StartsWith("@@"))
-            {
-                name = name.Substring(2);
-            }
             CodeExpression expr = null;
             memberType = null;
             while (txtype != null)
@@ -1049,15 +1041,15 @@ namespace XSharp.CodeDom
             if (amc.Op.Type == XSharpParser.DOT)
             {
                 // aa.bb.cc.dd
-                type = findType(amc.Expr.GetText());
+                type = findType(amc.Expr.GetCleanText());
                 if (type != null)
                 {
 
-                    var result = buildTypeMemberExpression(type, amc.Name.GetText());
+                    var result = buildTypeMemberExpression(type, amc.Name.GetCleanText());
                     if (result != null)
                         return result;
                 }
-                type = findType(amc.GetText());
+                type = findType(amc.GetCleanText());
                 if (type != null)
                 {
                     return new XCodeTypeReferenceExpression(type);
@@ -1105,12 +1097,12 @@ namespace XSharp.CodeDom
                     var pe = amc.Expr as XSharpParser.PrimaryExpressionContext;
                     var pec = pe.Expr as XSharpParser.ParenExpressionContext;
                     var exp = pec.Expr as XSharpParser.TypeCastContext;
-                    type = findType(exp.Type.GetText());
+                    type = findType(exp.Type.GetCleanText());
                     lhs = BuildExpression(pec.Expr, false);
                     lhs = new CodeCastExpression(type, lhs);
                     break;
                 case XSharpParser.ID:
-                    var lname = amc.Expr.GetText();
+                    var lname = amc.Expr.GetCleanText();
                     if (this.isLocal(lname))
                     {
                         type = _locals[lname];
@@ -1128,7 +1120,7 @@ namespace XSharp.CodeDom
                 for (int i = 0; i < elements.Count; i++)
                 {
                     amc = elements[i];
-                    var rhs = amc.Name.GetText();
+                    var rhs = amc.Name.GetCleanText();
                     TypeXType memberType = null;
                     if (i == 0)
                     {
@@ -1196,7 +1188,7 @@ namespace XSharp.CodeDom
             else
             {
                 // simple method call
-                var methodName = meth.Expr.GetText();
+                var methodName = meth.Expr.GetCleanText();
                 var pos = methodName.LastIndexOf(":");
                 if (pos > 0)
                 {
@@ -1226,7 +1218,7 @@ namespace XSharp.CodeDom
             else if (expression is XSharpParser.TypeCastContext)
             {
                 var tc = expression as XSharpParser.TypeCastContext;
-                var name = tc.Type.GetText();
+                var name = tc.Type.GetCleanText();
                 var typeref = BuildTypeReference(name);
                 expr = BuildExpression(tc.Expr, true);
                 expr = new CodeCastExpression(typeref, expr);
@@ -1419,9 +1411,9 @@ namespace XSharp.CodeDom
                 XCodeTypeReference ctr = BuildDataType(((XSharpParser.TypeOfExpressionContext)ctx).Type);
                 expr = new CodeTypeOfExpression(ctr);
             }
-            else if (ctx is XSharpParser.NameExpressionContext)
+            else if (ctx is XSharpParser.NameExpressionContext )
             {
-                string name = ((XSharpParser.NameExpressionContext)ctx).Name.Id.GetText();
+                string name = ((XSharpParser.NameExpressionContext)ctx).Name.Id.GetCleanText();
                 // Sometimes, we will need to do it that way....
                 if (name.ToLower() == "self")
                 {
@@ -1446,7 +1438,7 @@ namespace XSharp.CodeDom
                 }
                 else
                 {
-                    var tr = BuildTypeReference(((XSharpParser.NameExpressionContext)ctx).Name.Id.GetText());
+                    var tr = BuildTypeReference(((XSharpParser.NameExpressionContext)ctx).Name.Id.GetCleanText());
                     expr = new XCodeTypeReferenceExpression(tr);
                 }
             }
@@ -1465,8 +1457,8 @@ namespace XSharp.CodeDom
                     var qnc = name.Name as XSharpParser.QualifiedNameContext;
                     var left = qnc.Left;
                     var right = qnc.Right;
-                    var tr = new XCodeTypeReferenceExpression(left.GetText());
-                    expr = new XCodePropertyReferenceExpression(tr, right.GetText());
+                    var tr = new XCodeTypeReferenceExpression(left.GetCleanText());
+                    expr = new XCodePropertyReferenceExpression(tr, right.GetCleanText());
                 }
                 else
                 {
@@ -1579,6 +1571,14 @@ namespace XSharp.CodeDom
                 return true;
 
             return false;
+        }
+
+        public static string GetCleanText(this XSharpParserRuleContext context)
+        {
+            string name = context.GetText();
+            if (name.IndexOf("@@") >= 0)
+                name = name.Replace("@@", "");
+            return name;
         }
     }
 }

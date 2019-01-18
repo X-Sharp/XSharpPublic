@@ -208,12 +208,17 @@ namespace XSharp.Project
                 Encoding realencoding = reader.CurrentEncoding;
                 reader.Close();
                 designerStream.Close();
-                // and now write the "real" file
-                designerStream = new StreamWriter(designerPrgFile, false, realencoding);
-                designerStream.Write(generatedSource);
-                designerStream.Flush();
-                designerStream.Close();
-                NormalizeLineEndings(designerPrgFile);
+
+                XSharpFileNode node = _fileNode.FindChild(designerPrgFile) as XSharpFileNode;
+                if (node == null || ! node.DocumentSetText(generatedSource))
+                {
+                    // File is not open in editor, so write to disk
+                    designerStream = new StreamWriter(designerPrgFile, false, realencoding);
+                    designerStream.Write(generatedSource);
+                    designerStream.Flush();
+                    designerStream.Close();
+                    NormalizeLineEndings(designerPrgFile);
+                }
                 // The problem here, is that we "may" have some new members, like EvenHandlers, and we need to update their position (line/col)
                 XSharpCodeParser parser = new XSharpCodeParser(_projectNode);
                 parser.TabSize = XSharpCodeDomProvider.TabSize;

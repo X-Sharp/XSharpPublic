@@ -17,3 +17,10 @@ END CLASS
 CLASS TestClass2 IMPLEMENTS IUnknown
 END CLASS
 
+// same problem for the error message that class does not implement an interface:
+INTERFACE ITest
+METHOD Test() AS VOID
+END INTERFACE
+
+CLASS Test IMPLEMENTS ITest
+END CLASS

@@ -585,6 +585,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 resultLeft = CreateConversion(left, best.LeftConversion, signature.LeftType, diagnostics);
                 resultRight = CreateConversion(right, best.RightConversion, signature.RightType, diagnostics);
                 resultConstant = FoldBinaryOperator(node, resultOperatorKind, resultLeft, resultRight, resultType.SpecialType, diagnostics, ref compoundStringLength);
+#if XSHARP
+                // we have changed FoldBinaryOperator to return an Int64 or UInt64 for 2 Int32 or 2 UInt32 operators
+                // when the result does not fit
+                // In that case, leave from here and return the folded constant.
+                if (resultConstant != null && resultConstant.SpecialType != resultType.SpecialType)
+                {
+                    return new BoundLiteral(node, resultConstant, Compilation.GetSpecialType(resultConstant.SpecialType)) { WasCompilerGenerated = true } ;
+                }
+#endif
             }
 
             hasErrors = hasErrors || resultConstant != null && resultConstant.IsBad;
@@ -1715,12 +1724,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 try
                 {
 #if XSHARP
-                    // Vulcan folds literals and uses int64 buffers internally to prevent overflow errors
-                    // we emulate that by using Unchecked for the VO & Vulcan dialect
-                    if (Compilation.Options.HasRuntime)
-                        newValue = FoldUncheckedIntegralBinaryOperator(kind, valueLeft, valueRight);
-                    else
-                        newValue = FoldCheckedIntegralBinaryOperator(kind, valueLeft, valueRight);
+                    newValue = FoldXsCheckedIntegralBinaryOperator(kind, valueLeft, valueRight, ref resultType);
 #else
                     newValue = FoldCheckedIntegralBinaryOperator(kind, valueLeft, valueRight);
 #endif
@@ -1733,7 +1737,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             else
             {
+#if XSHARP
+                newValue = FoldXsUncheckedIntegralBinaryOperator(kind, valueLeft, valueRight, ref resultType);
+#else
                 newValue = FoldUncheckedIntegralBinaryOperator(kind, valueLeft, valueRight);
+#endif
             }
 
             if (newValue != null)

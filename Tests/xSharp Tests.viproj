@@ -46,7 +46,6 @@ ApplicationGroup = C200-C249,AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD,715D7617-320E-
 ApplicationGroup = C250-C299,F5307DDC-4DCD-4576-89C9-1B07F6C6D655,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C150-C199,EBE227D6-3F55-4251-A268-C654F38F1FAF,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C050-C099,3A527CCD-FFA2-423D-A17F-3B2D5424CFCE,715D7617-320E-41FF-B82F-E314D950CD23
-ApplicationGroup = C001-C049,85737FA8-B9AF-41E9-A347-4C4093D05606,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C350-C399,CB2E170B-0122-4D3B-8692-FF0130BAE231,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C400-C449,C8A205F1-7289-4E5A-A714-71E5A29AFFCE,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C450-C499,6E592304-313A-42E3-8A1D-C66384522531,715D7617-320E-41FF-B82F-E314D950CD23
@@ -55,6 +54,8 @@ ApplicationGroup = C500-C549,A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30,715D7617-320E-
 ApplicationGroup = C100-C149,62CDEEEA-3C4C-4E5E-9B0A-FD8DF7D670BC,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C550-C599,EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C600-C649,A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA,715D7617-320E-41FF-B82F-E314D950CD23
+ApplicationGroup = C650-C699,7D1C4D98-F0BB-48B3-932B-B3AECEE395BA,715D7617-320E-41FF-B82F-E314D950CD23
+ApplicationGroup = C001-C049,85737FA8-B9AF-41E9-A347-4C4093D05606,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = NEW,B9CFE839-D401-428D-94E9-E9D21E9F772D,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 ApplicationGroup = Known Incompatibilities with VO,40E29AF9-85EE-4D50-BADC-953EE318D423,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 
@@ -62977,6 +62978,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,2.0.0.7
 ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = CLR4,XSharp.RT,1,0,
 [C620 - Problem resloving method with both instance and static overloads Resources]
 [C620 - Problem resloving method with both instance and static overloads Native Resources]
 [C620 - Problem resloving method with both instance and static overloads License files]
@@ -65333,7 +65335,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C642 - Inconistncies in arithmetic between different numeric types
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C643 - Problems with overflows of arithmetic between literals *************
 Application = C643 - Problems with overflows of arithmetic between literals
 IDEVersion = 1.06
@@ -65832,7 +65834,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C647 - Problem with taking address of DIM USUAL
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C648 - Problems using _FIELD with the X# runtime *************
 Application = C648 - Problems using _FIELD with the X# runtime
 IDEVersion = 1.06
@@ -66031,7 +66033,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C649 - Incorrect line info in error message
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C650 - Runtime exception when casting PTR in USUAL to DWORD *************
 Application = C650 - Runtime exception when casting PTR in USUAL to DWORD
 IDEVersion = 1.06
@@ -66131,7 +66133,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C650 - Runtime exception when casting PTR in USUAL to DWORD
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C651 - Runtime error when omitting default param to function call *************
 Application = C651 - Runtime error when omitting default param to function call
 IDEVersion = 1.06
@@ -66231,7 +66233,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C651 - Runtime error when omitting default param to function call
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C652 - Compiler error assigning result of iif() to non-INT var *************
 Application = C652 - Compiler error assigning result of iif() to non-INT var
 IDEVersion = 1.06
@@ -66329,7 +66331,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C652 - Compiler error assigning result of iif() to non-INT var
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C653 - Problem with differently CaSeD partial classes *************
 Application = C653 - Problem with differently CaSeD partial classes
 IDEVersion = 1.06

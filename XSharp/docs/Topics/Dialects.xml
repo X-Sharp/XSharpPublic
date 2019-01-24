@@ -321,7 +321,7 @@
           <para styleclass="Normal"><text style="font-weight:bold;">MACRO </text>compiler</para>
         </td>
         <td style="width:71px;">
-          <para styleclass="Normal">No 13</para>
+          <para styleclass="Normal">No <text style="font-weight:bold;">13</text></para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
@@ -335,19 +335,19 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">MEMVAR</text> statement</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">MEMVAR, PUBLIC, PRIVATE, PARAMETERS</text> statement , including undeclared variables 14</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">No</para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="color:#ff0000;">VO: Not yet , </text>Vulcan: <text style="color:#ff0000;">No </text></para>
+          <para styleclass="Normal">VO: Yes, Vulcan: No</para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="color:#ff0000;">Not yet</text></para>
+          <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="color:#ff0000;">Not yet</text></para>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -633,7 +633,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Function class </text><text style="font-weight:normal;">name</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Generated Function class </text><text style="font-weight:normal;">name</text></para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">Functions<br/>X$&lt;ModuleName&gt;$Functions <br/>for static functions and globals</para>
@@ -691,7 +691,8 @@
       <li styleclass="List">The VOSTRUCT and UNION can be replaced with a standard .NET structure. For Union you need to use the [StructLayout(LayoutKind.Explicit)] attribute on the structure and the [FieldOffSet()] attribute on each field to explicitly define the location of the fields. </li>
       <li styleclass="List">Only for VO compatible keywords, not for keywords introduced in Vulcan or XSharp.</li>
       <li styleclass="List">The true and false expressions for an IIF() are optional in Harbour and XBase++</li>
-      <li styleclass="List">The macro compiler is not supported. However when you use the RDD system in the Core dialect then the index expression will still use the macro compiler and a reference to the XSHarp.RT.DLL is needed for the support of the macro compiler.</li>
+      <li styleclass="List">The macro compiler is not supported. However when you use the RDD system in the Core dialect then the index expression will still use the macro compiler and a reference to the XSharp.RT.DLL is needed for the support of the macro compiler.</li>
+      <li styleclass="List">This requires the XSharp runtime.</li>
     </list>
   </body>
 </topic>

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>PARAMETERS</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">PARAMETERS</para>
+    </header>
+    <para styleclass="Body Text">The PARAMETERS statement is NOT available in the Core and Vulcan dialects and will only be enabled if the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">-memvar</link> commandline option is specified.</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">parameters &#160; &#160; : </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">PARAMETERS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link><text style="font-weight:normal; font-style:normal; color:#000000;"> (, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link><text style="font-weight:normal; font-style:normal; color:#000000;">)* </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Helpers" style="font-weight:normal; font-style:normal; color:#000000;">eos</link><br/></para>
+    <para styleclass="Heading2">Description </para>
+    <para styleclass="Body Text">The PARAMETERS statement declares the formal parameters of a user-defined function as variables of the storage class PRIVATE, which are created at runtime and affect the execution speed of a user-defined function or procedure. </para>
+    <para styleclass="Body Text">Since the PARAMETERS statement creates PRIVATE variables, they remain visible in the program until the corresponding method, function or procedure is ended or until they are &quot;hidden&quot; in a subsequently called function or procedure. </para>
+    <para styleclass="Body Text">The PARAMETERS statement is an executable statement and must therefore follow all variable declarations like MEMVAR, FIELD, LOCAL and STATIC within a function or procedure. </para>
+    <para styleclass="Body Text">Note: When the formal parameters of a function or procedure are expressed in the declaration as a list of variable names in parentheses, the parameters are of storage class LOCAL, whose references are resolved at compile time. This increases the execution speed. You cannot combine both formal parameters and a PARAMETERS statement for the same method, function or procedure</para>
+  </body>
+</topic>

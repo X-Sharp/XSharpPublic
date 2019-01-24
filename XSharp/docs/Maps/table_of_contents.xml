@@ -271,6 +271,9 @@
       <topicref type="topic" id="423888812622405" build="ALL" modified="2016-01-19T22:45:58.260Z" icon="0" href="Classes-and-Structures">
         <caption translate="true">Classes and Structures</caption>
       </topicref>
+      <topicref type="topic" id="428997435733357" build="ALL" modified="2017-06-13T18:55:48.750Z" icon="0" href="Codeblock_-Lambda-and-Anonymou">
+        <caption translate="true">Codeblock, Lambda and Anonymous Method Expressions</caption>
+      </topicref>
       <topicref type="topic" id="423890322729183" build="ALL" modified="2016-01-19T22:45:58.309Z" icon="0" href="Delegates">
         <caption translate="true">Delegates</caption>
       </topicref>
@@ -301,6 +304,9 @@
       <topicref type="topic" id="423888175410133" build="ALL" modified="2016-01-19T22:45:58.774Z" icon="0" href="LINQ-Query-Expressions">
         <caption translate="true">LINQ Query Expressions</caption>
       </topicref>
+      <topicref type="topic" id="434895842246435" build="ALL" modified="2019-01-24T12:55:49.711Z" icon="0" href="Memory-Variables">
+        <caption translate="true">Memory Variables</caption>
+      </topicref>
       <topicref type="topic" id="42389463199336" build="ALL" modified="2016-01-19T22:45:58.831Z" icon="0" href="Namespaces2">
         <caption translate="true">Namespaces</caption>
       </topicref>
@@ -321,9 +327,6 @@
       </topicref>
       <topicref type="topic" id="423891384096573" build="ALL" modified="2016-01-19T22:45:59.144Z" icon="0" href="XML-Documentation-Comments">
         <caption translate="true">XML Documentation Comments</caption>
-      </topicref>
-      <topicref type="topic" id="428997435733357" build="ALL" modified="2017-06-13T18:55:48.750Z" icon="0" href="Codeblock_-Lambda-and-Anonymou">
-        <caption translate="true">Codeblock, Lambda and Anonymous Method Expressions</caption>
       </topicref>
     </topicref>
     <topicref type="topic" id="427443291795393" build="ALL" modified="2017-01-09T09:11:10.581Z" icon="0" href="X-Reference">
@@ -583,6 +586,9 @@
             <topicref type="topic" id="426891928711400" build="ALL" modified="2016-11-15T09:12:58.031Z" icon="0" href="NOP2">
               <caption translate="true">NOP</caption>
             </topicref>
+            <topicref type="topic" id="434895648314011" build="ALL" modified="2019-01-24T12:51:11.431Z" icon="0" href="PARAMETERS2">
+              <caption translate="true">PARAMETERS</caption>
+            </topicref>
             <topicref type="topic" id="425384312782120" build="ALL" modified="2016-06-17T11:27:21.982Z" icon="0" href="PRIVATE">
               <caption translate="true">PRIVATE</caption>
             </topicref>
@@ -809,14 +815,14 @@
           <topicref type="topic" id="423895088794327" build="ALL" modified="2016-01-20T09:46:11.902Z" icon="0" href="opt-debug">
             <caption translate="true">-debug</caption>
           </topicref>
-          <topicref type="topic" id="424765344913340" build="ALL" modified="2016-04-16T16:40:08.634Z" icon="0" href="opt-dialect">
-            <caption translate="true">-dialect</caption>
-          </topicref>
           <topicref type="topic" id="423894830081676" build="ALL" modified="2016-01-20T09:46:13.247Z" icon="0" href="opt-define">
             <caption translate="true">-define</caption>
           </topicref>
           <topicref type="topic" id="42390944922440" build="ALL" modified="2016-01-20T09:46:14.505Z" icon="0" href="opt-delaysign">
             <caption translate="true">-delaysign</caption>
+          </topicref>
+          <topicref type="topic" id="424765344913340" build="ALL" modified="2016-04-16T16:40:08.634Z" icon="0" href="opt-dialect">
+            <caption translate="true">-dialect</caption>
           </topicref>
           <topicref type="topic" id="42390665422030" build="ALL" modified="2016-01-20T09:46:15.692Z" icon="0" href="opt-doc">
             <caption translate="true">-doc</caption>
@@ -871,6 +877,9 @@
           </topicref>
           <topicref type="topic" id="423894825097684" build="ALL" modified="2016-01-20T09:46:59.258Z" icon="0" href="opt-main">
             <caption translate="true">-main</caption>
+          </topicref>
+          <topicref type="topic" id="434894709779629" build="ALL" modified="2019-01-24T12:20:14.327Z" icon="0" href="opt-memvar">
+            <caption translate="true">-memvar</caption>
           </topicref>
           <topicref type="topic" id="42388171085567" build="ALL" modified="2016-01-20T09:47:00.545Z" icon="0" href="opt-moduleassemblyname">
             <caption translate="true">-moduleassemblyname</caption>
@@ -941,11 +950,11 @@
           <topicref type="topic" id="42099679105" build="ALL" modified="2018-12-04T13:12:12.211Z" icon="0" href="opt-refout">
             <caption translate="true">-refout</caption>
           </topicref>
-          <topicref type="topic" id="423893013499884" build="ALL" modified="2016-01-20T09:47:28.436Z" icon="0" href="opt-ruleset">
-            <caption translate="true">-ruleset</caption>
-          </topicref>
           <topicref type="topic" id="423894484316881" build="ALL" modified="2016-01-20T09:47:30.260Z" icon="0" href="opt-resource">
             <caption translate="true">-resource</caption>
+          </topicref>
+          <topicref type="topic" id="423893013499884" build="ALL" modified="2016-01-20T09:47:28.436Z" icon="0" href="opt-ruleset">
+            <caption translate="true">-ruleset</caption>
           </topicref>
           <topicref type="topic" id="428115605166614" build="ALL" modified="2017-03-17T16:02:09.990Z" icon="0" href="opt-s">
             <caption translate="true">-s</caption>
@@ -971,6 +980,9 @@
           <topicref type="topic" id="426331860794285" build="ALL" modified="2016-09-20T09:17:14.803Z" icon="0" href="opt-touchedfiles">
             <caption translate="true">-touchedfiles</caption>
           </topicref>
+          <topicref type="topic" id="434896988151906" build="ALL" modified="2019-01-24T12:20:27.033Z" icon="0" href="opt-undeclared">
+            <caption translate="true">-undeclared</caption>
+          </topicref>
           <topicref type="topic" id="423894071853707" build="ALL" modified="2016-01-20T09:47:54.682Z" icon="0" href="opt-unsafe">
             <caption translate="true">-unsafe</caption>
           </topicref>
@@ -979,6 +991,27 @@
           </topicref>
           <topicref type="topic" id="423893850878914" build="ALL" modified="2016-01-20T09:47:56.869Z" icon="0" href="opt-vo1">
             <caption translate="true">-vo1</caption>
+          </topicref>
+          <topicref type="topic" id="42390811694964" build="ALL" modified="2016-01-20T09:48:06.086Z" icon="0" href="opt-vo10">
+            <caption translate="true">-vo10</caption>
+          </topicref>
+          <topicref type="topic" id="423894115008435" build="ALL" modified="2016-01-20T09:48:06.986Z" icon="0" href="opt-vo11">
+            <caption translate="true">-vo11</caption>
+          </topicref>
+          <topicref type="topic" id="423892167710843" build="ALL" modified="2016-01-20T09:48:07.918Z" icon="0" href="opt-vo12">
+            <caption translate="true">-vo12</caption>
+          </topicref>
+          <topicref type="topic" id="423893391153373" build="ALL" modified="2016-01-20T09:48:08.880Z" icon="0" href="opt-vo13">
+            <caption translate="true">-vo13</caption>
+          </topicref>
+          <topicref type="topic" id="424475874975800" build="ALL" modified="2016-05-26T08:29:50.517Z" icon="0" href="opt-vo14">
+            <caption translate="true">-vo14</caption>
+          </topicref>
+          <topicref type="topic" id="425163894787003" build="ALL" modified="2016-05-26T09:05:09.907Z" icon="0" href="opt-vo15">
+            <caption translate="true">-vo15</caption>
+          </topicref>
+          <topicref type="topic" id="428177565857255" build="ALL" modified="2017-03-23T21:32:33.398Z" icon="0" href="opt-vo16">
+            <caption translate="true">-vo16</caption>
           </topicref>
           <topicref type="topic" id="423894049775832" build="ALL" modified="2016-01-20T09:47:58.052Z" icon="0" href="opt-vo2">
             <caption translate="true">-vo2</caption>
@@ -1003,27 +1036,6 @@
           </topicref>
           <topicref type="topic" id="423894376298841" build="ALL" modified="2016-01-20T09:48:05.125Z" icon="0" href="opt-vo9">
             <caption translate="true">-vo9</caption>
-          </topicref>
-          <topicref type="topic" id="42390811694964" build="ALL" modified="2016-01-20T09:48:06.086Z" icon="0" href="opt-vo10">
-            <caption translate="true">-vo10</caption>
-          </topicref>
-          <topicref type="topic" id="423894115008435" build="ALL" modified="2016-01-20T09:48:06.986Z" icon="0" href="opt-vo11">
-            <caption translate="true">-vo11</caption>
-          </topicref>
-          <topicref type="topic" id="423892167710843" build="ALL" modified="2016-01-20T09:48:07.918Z" icon="0" href="opt-vo12">
-            <caption translate="true">-vo12</caption>
-          </topicref>
-          <topicref type="topic" id="423893391153373" build="ALL" modified="2016-01-20T09:48:08.880Z" icon="0" href="opt-vo13">
-            <caption translate="true">-vo13</caption>
-          </topicref>
-          <topicref type="topic" id="424475874975800" build="ALL" modified="2016-05-26T08:29:50.517Z" icon="0" href="opt-vo14">
-            <caption translate="true">-vo14</caption>
-          </topicref>
-          <topicref type="topic" id="425163894787003" build="ALL" modified="2016-05-26T09:05:09.907Z" icon="0" href="opt-vo15">
-            <caption translate="true">-vo15</caption>
-          </topicref>
-          <topicref type="topic" id="428177565857255" build="ALL" modified="2017-03-23T21:32:33.398Z" icon="0" href="opt-vo16">
-            <caption translate="true">-vo16</caption>
           </topicref>
           <topicref type="topic" id="423892403560623" build="ALL" modified="2016-01-20T09:48:09.787Z" icon="0" href="opt-w">
             <caption translate="true">-w</caption>

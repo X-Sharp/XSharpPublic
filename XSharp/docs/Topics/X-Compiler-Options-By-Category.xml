@@ -24,15 +24,15 @@
       </thead>
       <tr style="vertical-align:top">
         <td style="width:33%;">
-          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-dialect">/dialect</link></para>
+          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-dialect">-dialect</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies the dialect to use when compiling. The following values are supported: Core, VO, Vulcan, dBase, FoxPro, xBase++ and Harbour. Work on the VO and Vulcan dialects has started.</para>
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2">VO/Vulcan Compatibility</para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="33" colcount="2">
+    <para styleclass="Heading2">XBase Compatibility</para>
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="35" colcount="2">
       <thead style="vertical-align:top">
         <td>
           <para styleclass="Normal">Option</para>
@@ -43,7 +43,7 @@
       </thead>
       <tr style="vertical-align:top">
         <td style="width:33%;">
-          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-az">/az</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-az">-az</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies that arrays are zero-based rather than one-based </para>
@@ -51,7 +51,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-cs">/cs</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-cs">-cs</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#ff0000;">Specifies that the compiler should use case-sensitive type names </text></para>
@@ -59,7 +59,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-debug">/d</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-debug">-d</link></para>
         </td>
         <td>
           <para styleclass="Normal">Instruct the compiler to emit debugging information. (short for /debug)</para>
@@ -67,7 +67,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fovf">/fovf</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fovf">-fovf</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies that exceptions will be raised on invalid floating point operations </para>
@@ -75,7 +75,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-i">/i</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-i">-i</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Specifies a directory to add to the #include file search path </text></para>
@@ -83,7 +83,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ins">/ins</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ins">-ins</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Use implicit namespace lookup mechanism</text></para>
@@ -91,7 +91,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-lb">/lb</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-lb">-lb</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Specifies that the compiler should generate late bound calls when necessary </text></para>
@@ -99,7 +99,15 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-namedargs">/namedargs</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">-memvar</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="color:#000000;">Enables support for memory variables</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-namedargs">-namedargs</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Specifies whether to allow named arguments in the parser or not.</text></para>
@@ -107,7 +115,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostddefs">/nostddefs</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostddefs">-nostddefs</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Suppresses preprocessor definitions in XSharpDefs.xh </text></para>
@@ -115,7 +123,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ns">/ns</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ns">-ns</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specify the default namespace for the output assembly</para>
@@ -123,7 +131,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ovf">/ovf</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ovf">-ovf</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies that exceptions will be raised on integer overflows </para>
@@ -131,7 +139,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ppo">/ppo</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ppo">-ppo</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Writes preprocessor output to file </text></para>
@@ -139,7 +147,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-showincludes">/showincludes</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-showincludes">-showincludes</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Lists #include files in compiler output </text></para>
@@ -147,7 +155,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-snk">/snk</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-snk">-snk</link></para>
         </td>
         <td>
           <para styleclass="Normal">Signs assembly with strong name key pair </para>
@@ -155,7 +163,15 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo1">/vo1</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-undeclared">-undeclared</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Enables support for undeclared variables</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo1">-vo1</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Use Init and Axit methods in stead of Constructors and Destructors</text></para>
@@ -163,7 +179,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">/vo2</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">-vo2</link></para>
         </td>
         <td>
           <para styleclass="Normal">Initialize STRING variables, fields and DIM arrays to empty strings </para>
@@ -171,7 +187,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo3">/vo3</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo3">-vo3</link></para>
         </td>
         <td>
           <para styleclass="Normal">Treats All Methods As VIRTUAL </para>
@@ -179,7 +195,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo4">/vo4</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo4">-vo4</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Allows implicit signed/unsigned integer conversions </text></para>
@@ -187,7 +203,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo5">/vo5</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo5">-vo5</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Implicit CLIPPER Calling Convention for Zero-Argument Functions </text></para>
@@ -195,7 +211,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo6">/vo6</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo6">-vo6</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Resolves typed function pointers to PTR </text></para>
@@ -203,7 +219,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo7">/vo7</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo7">-vo7</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Allows compatible implicit casts and conversions </text></para>
@@ -211,7 +227,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo8">/vo8</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo8">-vo8</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Enables compatible preprocessor behavior </text></para>
@@ -219,7 +235,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo9">/vo9</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo9">-vo9</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Allows missing RETURN statements </text></para>
@@ -227,7 +243,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo10">/vo10</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo10">-vo10</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Enables compatible IIF behavior</text></para>
@@ -235,7 +251,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo11">/vo11</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo11">-vo11</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#ff0000;">Enables Visual Objects compatible arithmetic conversions </text></para>
@@ -243,7 +259,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo12">/vo12</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo12">-vo12</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Enables Clipper compatible integer divisions</text><text style="color:#ff0000;">&#32;</text></para>
@@ -251,7 +267,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo13">/vo13</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo13">-vo13</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Enables Visual Objects compatible string comparisons </text></para>
@@ -259,7 +275,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo14">/vo14</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo14">-vo14</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Insert floating point literals as FLOAT</text></para>
@@ -267,7 +283,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo15">/vo15</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo15">-vo15</link></para>
         </td>
         <td>
           <para styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Body Text">Allow untyped Locals and return types</text></para>
@@ -275,7 +291,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo16">/vo16</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo16">-vo16</link></para>
         </td>
         <td>
           <para styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Body Text">Automatically generate Clipper calling convention constructors for classes without constructor</text></para>
@@ -283,18 +299,18 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-w">/w</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-w">-w</link></para>
         </td>
         <td>
-          <para styleclass="Normal">This option is not supported. use <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">/NoWarn</link> in stead</para>
+          <para styleclass="Normal">This option is not supported. use <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">-NoWarn</link> in stead</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-wx">/wx</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-wx">-wx</link></para>
         </td>
         <td>
-          <para styleclass="Normal">Treats all warnings as errors (alias for <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warnaserror">/warnaserror</link>)</para>
+          <para styleclass="Normal">Treats all warnings as errors (alias for <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warnaserror">-warnaserror</link>)</para>
         </td>
       </tr>
     </table></para>
@@ -310,7 +326,7 @@
       </thead>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-filealign">/filealign</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-filealign">-filealign</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies the size of sections in the output file.</para>
@@ -318,7 +334,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-optimize">/optimize</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-optimize">-optimize</link></para>
         </td>
         <td>
           <para styleclass="Normal">Enables/disables optimizations.</para>
@@ -337,7 +353,7 @@
       </thead>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-doc">/doc</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-doc">-doc</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies an XML file where processed documentation comments are to be written.</para>
@@ -345,7 +361,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-modulenamestring">/modulename</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-modulenamestring">-modulename</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specify the name of the source module</para>
@@ -353,7 +369,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-out">/out</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-out">-out</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies the output file.</para>
@@ -361,7 +377,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-pathmap">/pathmap</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-pathmap">-pathmap</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specify a mapping for source path names output by the compiler.</para>
@@ -369,7 +385,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-pdb">/pdb</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-pdb">-pdb</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies the file name and location of the .pdb file.</para>
@@ -377,7 +393,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-platform">/platform</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-platform">-platform</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specify the output platform.</para>
@@ -385,7 +401,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-preferreduilang">/preferreduilang</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-preferreduilang">-preferreduilang</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specify a language for compiler output.</para>
@@ -393,7 +409,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-target">/target</link></para>
+          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-target">-target</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies the format of the output file using one of five options: /target:<text styleclass="Body Text">appcon</text>tainerexe, /target:exe, /target:library, /target:module, /target:winexe, or /target:winmdobj.</para>
@@ -401,7 +417,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-touchedfiles" styleclass="Body Text">/touchedfiles</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-touchedfiles" styleclass="Body Text">-touchedfiles</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specify filename that will be updated with list of files read and written by the compiler</para>
@@ -420,7 +436,7 @@
       </thead>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-_analyzer">/analyzer</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-_analyzer">-analyzer</link></para>
         </td>
         <td>
           <para styleclass="Normal">Run the analyzers from this assembly (Short form: /a)</para>
@@ -428,7 +444,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-additionalfile">/additionalfile</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-additionalfile">-additionalfile</link></para>
         </td>
         <td>
           <para styleclass="Normal">Names additional files that don&apos;t directly affect code generation but may be used by analyzers for producing errors or warnings.</para>
@@ -436,7 +452,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-addmodule">/addmodule</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-addmodule">-addmodule</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies one or more modules to be part of this assembly.</para>
@@ -444,7 +460,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-delaysign">/delaysign</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-delaysign">-delaysign</link></para>
         </td>
         <td>
           <para styleclass="Normal">Instructs the compiler to add the public key but to leave the assembly unsigned.</para>
@@ -452,7 +468,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-keycontainer">/keycontainer</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-keycontainer">-keycontainer</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies the name of the cryptographic key container.</para>
@@ -460,7 +476,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-keyfile">/keyfile</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-keyfile">-keyfile</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies the filename containing the cryptographic key.</para>
@@ -468,7 +484,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-lib">/lib</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-lib">-lib</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies the location of assemblies referenced by means of /reference.</para>
@@ -476,7 +492,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostdlib">/nostdlib</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostdlib">-nostdlib</link></para>
         </td>
         <td>
           <para styleclass="Normal">Instructs the compiler not to import the standard library (mscorlib.dll).</para>
@@ -484,7 +500,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-reference">/reference</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-reference">-reference</link></para>
         </td>
         <td>
           <para styleclass="Normal">Imports metadata from a file that contains an assembly.</para>
@@ -503,7 +519,7 @@
       </thead>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-checked">/checked</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-checked">-checked</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies whether integer arithmetic that overflows the bounds of the data type will cause an exception at run time.</para>
@@ -511,7 +527,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-debug">/debug</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-debug">-debug</link></para>
         </td>
         <td>
           <para styleclass="Normal">Instruct the compiler to emit debugging information.</para>
@@ -519,7 +535,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-errorendlocation">/errorendlocation</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-errorendlocation">-errorendlocation</link></para>
         </td>
         <td>
           <para styleclass="Normal">Output line and column of the end location of each error</para>
@@ -527,7 +543,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-errorreport">/errorreport</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-errorreport">-errorreport</link></para>
         </td>
         <td>
           <para styleclass="Normal">Sets error reporting behavior.</para>
@@ -535,7 +551,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fullpaths">/fullpaths</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fullpaths">-fullpaths</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies the absolute path to the file in compiler output.</para>
@@ -543,7 +559,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">/nowarn</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">-nowarn</link></para>
         </td>
         <td>
           <para styleclass="Normal">Suppresses the compiler&apos;s generation of specified warnings.</para>
@@ -551,7 +567,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ruleset">/ruleset</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ruleset">-ruleset</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specify a ruleset file that disables specific diagnostics.</para>
@@ -559,7 +575,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warn">/warn</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warn">-warn</link></para>
         </td>
         <td>
           <para styleclass="Normal">Sets the warning level.</para>
@@ -567,7 +583,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warnaserror">/warnaserror</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warnaserror">-warnaserror</link></para>
         </td>
         <td>
           <para styleclass="Normal">Promotes warnings to errors.</para>
@@ -575,10 +591,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-wx">/wx</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-wx">-wx</link></para>
         </td>
         <td>
-          <para styleclass="Normal">This is an alias for the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warnaserror">/warnaserror</link> option</para>
+          <para styleclass="Normal">This is an alias for the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warnaserror">-warnaserror</link> option</para>
         </td>
       </tr>
     </table></para>
@@ -594,7 +610,7 @@
       </thead>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-define">/define</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-define">-define</link></para>
         </td>
         <td>
           <para styleclass="Normal">Defines preprocessor symbols.</para>
@@ -602,7 +618,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-i">/i</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-i">-i</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies a directory to add to the #include file search path </para>
@@ -610,7 +626,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ppo">/ppo</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ppo">-ppo</link></para>
         </td>
         <td>
           <para styleclass="Normal">Writes preprocessor output to file </para>
@@ -618,7 +634,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostddefs">/nostddef</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostddefs">-nostddef</link></para>
         </td>
         <td>
           <para styleclass="Normal">Suppresses preprocessor definitions in XSharpDefs.xh &#160;</para>
@@ -626,7 +642,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="_showdefs">/showdefs</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="_showdefs">-showdefs</link></para>
         </td>
         <td>
           <para styleclass="Normal">Show the defines that are added from the header files and their usage</para>
@@ -634,7 +650,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-showincludes">/showincludes</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-showincludes">-showincludes</link></para>
         </td>
         <td>
           <para styleclass="Normal">Lists #include files in compiler output </para>
@@ -653,7 +669,7 @@
       </thead>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-link">/link</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-link">-link</link></para>
         </td>
         <td>
           <para styleclass="Normal">Makes COM type information in specified assemblies available to the project.</para>
@@ -661,7 +677,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-linkresource">/linkresource</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-linkresource">-linkresource</link></para>
         </td>
         <td>
           <para styleclass="Normal">Creates a link to a managed resource.</para>
@@ -669,7 +685,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-resource">/resource</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-resource">-resource</link></para>
         </td>
         <td>
           <para styleclass="Normal">Embeds a .NET Framework resource into the output file.</para>
@@ -677,7 +693,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32icon">/win32icon</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32icon">-win32icon</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies an .ico file to insert into the output file.</para>
@@ -685,7 +701,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32res">/win32res</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32res">-win32res</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies a Win32 resource to insert into the output file.</para>
@@ -712,7 +728,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-help">/?</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-help">-?</link></para>
         </td>
         <td>
           <para styleclass="Normal">Lists compiler options to stdout.</para>
@@ -720,7 +736,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-appconfig">/appconfig</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-appconfig">-appconfig</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specify an application configuration file containing assembly binding settings</para>
@@ -728,7 +744,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-baseaddress">/baseaddress</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-baseaddress">-baseaddress</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies the preferred base address at which to load a DLL.</para>
@@ -736,7 +752,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-checksumalgorithm">/checksumalgorithm</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-checksumalgorithm">-checksumalgorithm</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specify the algorithm for calculating the source file checksum stored in PDB. Supported values are: SHA1 (default) or SHA256.</para>
@@ -744,7 +760,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-codepage">/codepage</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-codepage">-codepage</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies the code page to use for all source code files in the compilation.</para>
@@ -752,7 +768,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-help">/help</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-help">-help</link></para>
         </td>
         <td>
           <para styleclass="Normal">Lists compiler options to stdout.</para>
@@ -760,7 +776,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-highentroyva">/highentropyva</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-highentroyva">-highentropyva</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies that the executable file supports address space layout randomization (ASLR).</para>
@@ -768,7 +784,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-langversion">/langversion</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-langversion">-langversion</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specify language version mode: core, VO, Vulcan, Harbour, FoxPro, dBase</para>
@@ -776,7 +792,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-main">/main</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-main">-main</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies the location of the Main method.</para>
@@ -784,7 +800,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-noconfig">/noconfig</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-noconfig">-noconfig</link></para>
         </td>
         <td>
           <para styleclass="Normal">Instructs the compiler not to compile with xsc.rsp.</para>
@@ -792,7 +808,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nologo">/nologo</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nologo">-nologo</link></para>
         </td>
         <td>
           <para styleclass="Normal">Suppresses compiler banner information.</para>
@@ -800,7 +816,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-parallel">/parallel</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-parallel">-parallel</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies whether to use concurrent build (+).</para>
@@ -808,7 +824,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-recurse">/recurse</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-recurse">-recurse</link></para>
         </td>
         <td>
           <para styleclass="Normal">Searches subdirectories for source files to compile.</para>
@@ -816,7 +832,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-s">/s</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-s">-s</link></para>
         </td>
         <td>
           <para styleclass="Normal">Syntax check only</para>
@@ -824,7 +840,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-subsystemversion">/subsystemversion</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-subsystemversion">-subsystemversion</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies the minimum version of the subsystem that the executable file can use.</para>
@@ -832,7 +848,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-unsafe">/unsafe</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-unsafe">-unsafe</link></para>
         </td>
         <td>
           <para styleclass="Normal">Enables compilation of code that uses the unsafe keyword.</para>
@@ -840,7 +856,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-utf8output">/utf8output</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-utf8output">-utf8output</link></para>
         </td>
         <td>
           <para styleclass="Normal">Displays compiler output using UTF-8 encoding.</para>
@@ -848,7 +864,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32manifest">/win32manifest</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32manifest">-win32manifest</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specify a user-defined Win32 application manifest file to be embedded into a executable file.</para>

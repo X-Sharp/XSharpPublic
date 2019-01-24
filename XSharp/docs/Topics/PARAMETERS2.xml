@@ -6,12 +6,26 @@
     <header>
       <para styleclass="Heading1">PARAMETERS</para>
     </header>
-    <para styleclass="Body Text">The PARAMETERS statement is NOT available in the Core and Vulcan dialects and will only be enabled if the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">-memvar</link> commandline option is specified.</para>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">parameters &#160; &#160; : </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">PARAMETERS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link><text style="font-weight:normal; font-style:normal; color:#000000;"> (, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link><text style="font-weight:normal; font-style:normal; color:#000000;">)* </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Helpers" style="font-weight:normal; font-style:normal; color:#000000;">eos</link><br/></para>
-    <para styleclass="Heading2">Description </para>
-    <para styleclass="Body Text">The PARAMETERS statement declares the formal parameters of a user-defined function as variables of the storage class PRIVATE, which are created at runtime and affect the execution speed of a user-defined function or procedure. </para>
-    <para styleclass="Body Text">Since the PARAMETERS statement creates PRIVATE variables, they remain visible in the program until the corresponding method, function or procedure is ended or until they are &quot;hidden&quot; in a subsequently called function or procedure. </para>
-    <para styleclass="Body Text">The PARAMETERS statement is an executable statement and must therefore follow all variable declarations like MEMVAR, FIELD, LOCAL and STATIC within a function or procedure. </para>
-    <para styleclass="Body Text">Note: When the formal parameters of a function or procedure are expressed in the declaration as a list of variable names in parentheses, the parameters are of storage class LOCAL, whose references are resolved at compile time. This increases the execution speed. You cannot combine both formal parameters and a PARAMETERS statement for the same method, function or procedure</para>
+    <para styleclass="NotesBox">The PARAMETERS statement is NOT available in the Core and Vulcan dialects and will only be enabled if the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">-memvar</link> commandline option is specified.</para>
+    <para styleclass="Heading2">Purpose</para>
+    <para styleclass="Body Text">Create private variables to receive passed values or references.</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">PARAMETERS &lt;idPrivateList&gt;</para>
+    <para styleclass="Heading2">Arguments</para>
+    <para styleclass="List">&lt;idPrivateList&gt;<tab /><text styleclass="Body Text">One or more parameter variables separated by commas. These variables are used to receive arguments that you pass when you call the routine.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Description</para>
+    <para styleclass="Body Text">When a PARAMETERS statement executes, all variables in the parameter list are created as private variables and all public or private variables with the same names are hidden until the current procedure or function terminates. A PARAMETERS statement is an executable statement and can, therefore, occur anywhere in a procedure or function.</para>
+    <para styleclass="Body Text">Parameters can also be declared as local variables if specified as a part of the PROCEDURE or FUNCTION declaration statement (see the example). Parameters specified in this way are referred to as formal parameters. Note that you cannot specify both formal parameters and a PARAMETERS statement within a procedure or function definition. </para>
+    <para styleclass="Body Text">Attempting to do this results in a compiler error.</para>
+    <para styleclass="Body Text">The number of receiving variables does not have to match the number of arguments passed by the calling routine. If you specify more arguments than parameters, the extra arguments are ignored. If you specify fewer arguments than parameters, the extra parameters are created with a NIL value. If you skip an argument, the corresponding parameter is initialized to NIL.</para>
+    <para styleclass="Body Text">The PCount() function returns the position of the last argument passed in the list of arguments. This is different than the number of parameters passed, since it includes skipped parameters.</para>
+    <para styleclass="Body Text">For more information on passing parameters, refer to the &quot;Functions and Procedures&quot; chapter in the Programmer&apos;s Guide.</para>
+    <para styleclass="Heading2">Examples</para>
+    <para styleclass="Body Text">This function receives values passed into private parameters with a PARAMETERS statement:</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> MyFunc()</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">PARAMETERS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> cOne, cTwo, cThree</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? cOne, cTwo, cThree</text></para>
+    <para styleclass="Body Text">The next example is similar, but receives values passed into local variables, by declaring the parameter variables within the FUNCTION declaration:</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> MyFunc(cOne, cTwo, cThree)</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? cOne, cTwo, cThree</text></para>
   </body>
 </topic>

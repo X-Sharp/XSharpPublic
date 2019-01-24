@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>#else</title>
   <keywords>
     <keyword>#else</keyword>
@@ -12,13 +12,6 @@
     </header>
     <para styleclass="Body Text">#else lets you create a compound conditional directive, so that, if the expression in the preceding <link displaytype="text" defaultstyle="true" type="topiclink" href="">#ifdef</link> directive or <link displaytype="text" defaultstyle="true" type="topiclink" href="">#ifndef</link> directive does not evaluate to true, the compiler will evaluate all code between #else and the subsequent <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Endif">#endif</link>.</para>
     <para styleclass="Body Text">For example, the following code will show the string &quot;Debug Version&quot; if the symbol DEBUG is defined on the command line, else it will show the text &quot;Release Version&quot; </para>
-    <para styleclass="Code Example">// DEBUG may be defined from the command line</para>
-    <para styleclass="Code Example">// ...</para>
-    <para styleclass="Code Example">#if DEBUG</para>
-    <para styleclass="Code Example"> &#160; &#160;Console.WriteLine(&quot;Debug version&quot;);</para>
-    <para styleclass="Code Example">#else</para>
-    <para styleclass="Code Example"> &#160; &#160;Console.WriteLine(&quot;Release version&quot;);</para>
-    <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">#endif</para>
+    <para styleclass="Code Example">// DEBUG may be defined from the command line<br/>// ...<br/>#if DEBUG<br/> &#160; &#160;Console.WriteLine(&quot;Debug version&quot;);<br/>#else<br/> &#160; &#160;Console.WriteLine(&quot;Release version&quot;);<br/>#endif</para>
   </body>
 </topic>

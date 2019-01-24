@@ -8,6 +8,6 @@
     </header>
     <para styleclass="Normal">Object Initializers allow you to instantiate an object and assign values to its properties in one line of code.<br/>The example below uses object initializers to set the FirstName and LastName property of the Person object</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><snippet src="Initializers" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="new-feat-Initializers" inline="false"/></para>
   </body>
 </topic>

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>STATIC</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">STATIC</para>
+    </header>
+    <para styleclass="Heading2">Purpose</para>
+    <para styleclass="Body Text">Declare and initialize static variables and arrays.</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Body Text">STATIC [LOCAL] &lt;idVar&gt; [:= &lt;uValue&gt;] [, ...] [AS | IS &lt;idType&gt;] [, ...]<br/>STATIC [LOCAL] DIM &lt;ArraySpec&gt; [, ...] AS | IS &lt;idType&gt; [, ...]<br/>STATIC [LOCAL] &lt;ArraySpec&gt; [, ...] [AS&#32;ARRAY] [, ...]</para>
+    <para styleclass="Body Text">Note: The STATIC statement is shown using several syntax diagrams for convenience only. You can declare variables, dynamic arrays, and dimensioned arrays using a single STATIC statement if each definition is separated by a comma.</para>
+    <para styleclass="Heading2">Description</para>
+    <para styleclass="Body Text">The STATIC keyword serves as a lifetime modifier for variables declared with the LOCAL statement, preventing them from being released from memory when the creating entity returns to its calling routine. It is listed here as a separate entry because, the LOCAL keyword being optional, STATIC can stand alone in a routine as a variable declaration statement. Refer to the LOCAL statement for a description and notes concerning static variable declarations.</para>
+    <para styleclass="Heading2">See Also</para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="LOCAL">LOCAL</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

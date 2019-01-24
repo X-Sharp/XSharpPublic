@@ -9,6 +9,22 @@
     <header>
       <para styleclass="Heading1">RETURN</para>
     </header>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">returnstmt &#160; </text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">: </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> (</text><text style="font-weight:bold; font-style:normal; color:#3366ff;">VOID</text><text style="font-weight:normal; font-style:normal; color:#000000;"> | expression)? </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Helpers" style="font-weight:normal; font-style:normal; color:#000000;">eos</link><br/></para>
+    <para styleclass="Heading2">Purpose</para>
+    <para styleclass="Body Text">Terminate a routine by returning control to the calling routine or operating system if executed from the Start() routine.</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Body Text">RETURN [&lt;uValue&gt;]</para>
+    <para styleclass="Heading2">Arguments</para>
+    <para styleclass="List">&lt;uValue&gt;<tab />May be specified in a function or method definition to designate its return value. Procedure definitions do not allow &lt;uValue&gt; as part of the RETURN statement. See the FUNCTION and METHOD entries in this guide for information about default return values if &lt;uValue&gt; is not specified.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading2">Description</para>
+    <para styleclass="Body Text">All private variables created and local variables declared in the current routine are released from memory when control returns.</para>
+    <para styleclass="Heading2">Examples</para>
+    <para styleclass="Body Text">These examples illustrate the general form of the RETURN statement in a procedure and in a function:</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">PROCEDURE</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &lt;idProcedure&gt;()</text><br/><tab /><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&lt;Statements&gt;...</text><br/><tab /><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">RETURN</text><br/><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &lt;idFunction&gt;()</text><br/><tab /><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&lt;Statements&gt;...</text><br/><tab /><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &lt;uValue&gt;</text></para>
+    <para styleclass="Body Text">The next example returns an array, created in a function, to a calling routine:</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> PassArrayBack()</text><br/><tab /><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> aArray[10][10] AS ARRAY</text><br/><tab /><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">aArray[1][1] = &quot;myString&quot;</text><br/><tab /><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> aArray</text></para>
+    <para styleclass="Body Text">See Also</para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="BEGIN-SEQUENCE">BEGIN SEQUENCE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function2">FUNCTION</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="LOCAL">LOCAL</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="PRIVATE">PRIVATE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Procedure2">PROCEDURE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="PUBLIC">PUBLIC</link>, QUIT</para>
+    <para styleclass="Body Text"></para>
   </body>
 </topic>

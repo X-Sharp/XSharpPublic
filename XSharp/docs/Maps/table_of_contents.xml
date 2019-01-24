@@ -24,82 +24,82 @@
       </topicref>
       <topicref type="topic" id="423886741980303" build="ALL" modified="2017-05-17T10:10:08.820Z" icon="0" href="New-features">
         <caption translate="true">New language features </caption>
-        <topicref type="topic" id="423997726350447" build="ALL" modified="2016-01-30T21:22:45.037Z" icon="0" href="Anonymous-Methods">
+        <topicref type="topic" id="423997726350447" build="ALL" modified="2019-01-24T16:49:26.499Z" icon="0" href="new-feat-Anonymous-Methods">
           <caption translate="true">Anonymous Methods</caption>
         </topicref>
-        <topicref type="topic" id="425338296933191" build="ALL" modified="2016-06-12T16:17:47.965Z" icon="0" href="Anonymous-Classes">
+        <topicref type="topic" id="425338296933191" build="ALL" modified="2019-01-24T16:49:31.748Z" icon="0" href="new-feat-Anonymous-Classes">
           <caption translate="true">Anonymous Types</caption>
         </topicref>
-        <topicref type="topic" id="427816560780984" build="ALL" modified="2017-02-15T19:12:05.823Z" icon="0" href="ASTYPE">
+        <topicref type="topic" id="427816560780984" build="ALL" modified="2019-01-24T16:49:36.770Z" icon="0" href="new-feat-ASTYPE">
           <caption translate="true">ASTYPE</caption>
         </topicref>
-        <topicref type="topic" id="423997260438779" build="ALL" modified="2016-01-30T21:22:44.821Z" icon="0" href="ASYNC---AWAIT">
+        <topicref type="topic" id="423997260438779" build="ALL" modified="2019-01-24T16:50:51.157Z" icon="0" href="new-feat-ASYNC-AWAIT">
           <caption translate="true">ASYNC - AWAIT</caption>
         </topicref>
-        <topicref type="topic" id="42401026480448" build="ALL" modified="2016-01-30T21:22:44.432Z" icon="0" href="BEGIN-CHECKED2">
+        <topicref type="topic" id="42401026480448" build="ALL" modified="2019-01-24T16:50:43.058Z" icon="0" href="new-feat-BEGIN-CHECKED">
           <caption translate="true">BEGIN CHECKED</caption>
         </topicref>
-        <topicref type="topic" id="426352866521165" build="ALL" modified="2016-09-22T11:56:37.489Z" icon="0" href="BEGIN-FIXED">
+        <topicref type="topic" id="426352866521165" build="ALL" modified="2019-01-24T16:50:38.051Z" icon="0" href="new-feat-BEGIN-FIXED">
           <caption translate="true">BEGIN FIXED</caption>
         </topicref>
-        <topicref type="topic" id="423997235399279" build="ALL" modified="2016-01-30T21:22:44.484Z" icon="0" href="BEGIN-UNCHECKED">
+        <topicref type="topic" id="423997235399279" build="ALL" modified="2019-01-24T16:50:33.851Z" icon="0" href="new-feat-BEGIN-UNCHECKED">
           <caption translate="true">BEGIN UNCHECKED</caption>
         </topicref>
-        <topicref type="topic" id="423997459416966" build="ALL" modified="2016-01-30T21:22:44.363Z" icon="0" href="BEGIN-UNSAFE2">
+        <topicref type="topic" id="423997459416966" build="ALL" modified="2019-01-24T16:50:29.215Z" icon="0" href="new-feat-BEGIN-UNSAFE">
           <caption translate="true">BEGIN UNSAFE</caption>
         </topicref>
-        <topicref type="topic" id="423998818673834" build="ALL" modified="2016-01-30T21:26:07.774Z" icon="0" href="BEGIN-USING2">
+        <topicref type="topic" id="423998818673834" build="ALL" modified="2019-01-24T16:50:23.679Z" icon="0" href="new-feat-BEGIN-USING">
           <caption translate="true">BEGIN USING</caption>
         </topicref>
-        <topicref type="topic" id="426887200470279" build="ALL" modified="2016-11-14T20:02:01.132Z" icon="0" href="Collection-Initializers">
+        <topicref type="topic" id="426887200470279" build="ALL" modified="2019-01-24T16:50:17.926Z" icon="0" href="new-feat-Collection-Initializers">
           <caption translate="true">Collection Initializers</caption>
         </topicref>
-        <topicref type="topic" id="423997959494963" build="ALL" modified="2016-01-30T21:22:44.712Z" icon="0" href="Conditional-Access-Expression">
+        <topicref type="topic" id="423997959494963" build="ALL" modified="2019-01-24T16:51:04.265Z" icon="0" href="new-feat-Conditional-Access-Expression">
           <caption translate="true">Conditional Access Expression</caption>
         </topicref>
-        <topicref type="topic" id="423999550018776" build="ALL" modified="2016-01-30T21:22:44.876Z" icon="0" href="Creating-Generic-Classes">
+        <topicref type="topic" id="423999550018776" build="ALL" modified="2019-01-24T16:51:10.634Z" icon="0" href="new-feat-Creating-Generic-Classes">
           <caption translate="true">Creating Generic Classes</caption>
         </topicref>
-        <topicref type="topic" id="423996909584445" build="ALL" modified="2016-01-30T21:22:44.657Z" icon="0" href="DEFAULT-Expressions">
+        <topicref type="topic" id="423996909584445" build="ALL" modified="2019-01-24T16:51:14.782Z" icon="0" href="new-feat-DEFAULT-Expressions">
           <caption translate="true">DEFAULT Expressions</caption>
         </topicref>
-        <topicref type="topic" id="425845216712740" build="ALL" modified="2016-08-02T16:39:01.126Z" icon="0" href="EVENT-(Add-and-Remove)">
+        <topicref type="topic" id="425845216712740" build="ALL" modified="2019-01-24T16:51:18.995Z" icon="0" href="new-feat-EVENT-(Add-and-Remove)">
           <caption translate="true">EVENT (Add and Remove)</caption>
         </topicref>
-        <topicref type="topic" id="424000368292699" build="ALL" modified="2016-01-30T21:22:44.766Z" icon="0" href="Expression-IS-Type">
+        <topicref type="topic" id="424000368292699" build="ALL" modified="2019-01-24T16:51:23.044Z" icon="0" href="new-feat-Expression-IS-Type">
           <caption translate="true">Expression IS Type</caption>
         </topicref>
-        <topicref type="topic" id="426888066632269" build="ALL" modified="2016-11-14T20:15:03.627Z" icon="0" href="Initializers">
+        <topicref type="topic" id="426888066632269" build="ALL" modified="2019-01-24T16:51:26.885Z" icon="0" href="new-feat-Initializers">
           <caption translate="true">Initializers</caption>
         </topicref>
-        <topicref type="topic" id="426356253849712" build="ALL" modified="2016-09-22T11:36:55.248Z" icon="0" href="Interpolated-Strings">
+        <topicref type="topic" id="426356253849712" build="ALL" modified="2019-01-24T16:51:30.766Z" icon="0" href="new-feat-Interpolated-Strings">
           <caption translate="true">Interpolated Strings</caption>
         </topicref>
-        <topicref type="topic" id="424000721218508" build="ALL" modified="2016-01-30T21:22:44.928Z" icon="0" href="LINQ-Query-Expressions2">
+        <topicref type="topic" id="424000721218508" build="ALL" modified="2019-01-24T16:51:38.324Z" icon="0" href="new-feat-LINQ">
           <caption translate="true">LINQ Query Expressions</caption>
         </topicref>
-        <topicref type="topic" id="424477017488013" build="ALL" modified="2016-03-18T18:44:43.833Z" icon="0" href="NOP">
+        <topicref type="topic" id="424477017488013" build="ALL" modified="2019-01-24T16:51:42.583Z" icon="0" href="new-feat-NOP">
           <caption translate="true">NOP</caption>
         </topicref>
-        <topicref type="topic" id="426887424244545" build="ALL" modified="2018-05-03T08:44:31.828Z" icon="0" href="Object-Initializers">
+        <topicref type="topic" id="426887424244545" build="ALL" modified="2019-01-24T16:51:46.899Z" icon="0" href="new-feat-Object-Initializers">
           <caption translate="true">Object Initializers</caption>
         </topicref>
-        <topicref type="topic" id="424000091554061" build="ALL" modified="2016-01-30T21:26:07.878Z" icon="0" href="PROCEDURE-inside-CLASS">
+        <topicref type="topic" id="424000091554061" build="ALL" modified="2019-01-24T16:49:46.375Z" icon="0" href="new-feat-PROCEDURE-inside-CLASS">
           <caption translate="true">PROCEDURE inside CLASS</caption>
         </topicref>
-        <topicref type="topic" id="424000696810158" build="ALL" modified="2016-01-30T21:22:44.541Z" icon="0" href="SWITCH2">
+        <topicref type="topic" id="424000696810158" build="ALL" modified="2019-01-24T16:49:18.714Z" icon="0" href="new-feat-SWITCH">
           <caption translate="true">SWITCH</caption>
         </topicref>
-        <topicref type="topic" id="423998464245427" build="ALL" modified="2016-01-30T21:26:07.621Z" icon="0" href="USING2">
+        <topicref type="topic" id="423998464245427" build="ALL" modified="2019-01-24T16:50:02.107Z" icon="0" href="new-feat-USING">
           <caption translate="true">USING</caption>
         </topicref>
-        <topicref type="topic" id="423999741385489" build="ALL" modified="2016-01-30T21:22:44.981Z" icon="0" href="VAR2">
+        <topicref type="topic" id="423999741385489" build="ALL" modified="2019-01-24T16:49:54.154Z" icon="0" href="new-feat-VAR">
           <caption translate="true">VAR</caption>
         </topicref>
-        <topicref type="topic" id="424000672684667" build="ALL" modified="2016-11-03T15:16:02.923Z" icon="0" href="YIELD-RETURN-EXAMPLE">
+        <topicref type="topic" id="424000672684667" build="ALL" modified="2019-01-24T16:50:10.529Z" icon="0" href="new-feat-YIELD">
           <caption translate="true">YIELD </caption>
         </topicref>
-        <topicref type="topic" id="434413139318325" build="ALL" modified="2018-12-07T11:16:16.160Z" icon="0" href="XBase-class-declarations">
+        <topicref type="topic" id="434413139318325" build="ALL" modified="2019-01-24T16:51:58.120Z" icon="0" href="new-feat-XBase-class-declarations">
           <caption translate="true">XBase++ class declarations</caption>
         </topicref>
       </topicref>
@@ -618,6 +618,9 @@
             </topicref>
             <topicref type="topic" id="423888261978880" build="ALL" modified="2016-11-03T15:16:16.346Z" icon="0" href="YIELD-RETURN">
               <caption translate="true">YIELD RETURN</caption>
+            </topicref>
+            <topicref type="topic" id="434896410971555" build="ALL" modified="2019-01-24T16:14:22.642Z" icon="0" href="STATIC">
+              <caption translate="true">STATIC</caption>
             </topicref>
           </topicref>
           <topicref type="topic" id="423890220586711" build="ALL" modified="2016-01-19T20:51:14.267Z" icon="0" href="Literals">

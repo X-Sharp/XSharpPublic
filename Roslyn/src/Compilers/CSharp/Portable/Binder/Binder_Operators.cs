@@ -589,7 +589,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // we have changed FoldBinaryOperator to return an Int64 or UInt64 for 2 Int32 or 2 UInt32 operators
                 // when the result does not fit
                 // In that case, leave from here and return the folded constant.
-                if (resultConstant != null && resultConstant.SpecialType != resultType.SpecialType)
+                if (resultType.SpecialType != SpecialType.None && resultConstant != null && !resultConstant.IsBad && resultConstant.SpecialType != resultType.SpecialType )
                 {
                     return new BoundLiteral(node, resultConstant, Compilation.GetSpecialType(resultConstant.SpecialType)) { WasCompilerGenerated = true } ;
                 }

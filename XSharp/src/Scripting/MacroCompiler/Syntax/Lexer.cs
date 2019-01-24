@@ -580,11 +580,13 @@ namespace XSharp.MacroCompiler
                                 while (ExpectRange('0', '9') || ExpectRange('A', 'F') || ExpectRange('a', 'f') || Expect('_')) ;
                                 if (Lb() == '_') t = TokenType.INVALID_NUMBER;
                                 ExpectAny('U', 'u', 'L', 'l');
+                                t = TokenType.HEX_CONST;
                             }
                             else if (c == '0' && ExpectAny('B', 'b'))
                             {
                                 while (ExpectRange('0', '1')) ;
                                 ExpectAny('U', 'u');
+                                t = TokenType.BIN_CONST;
                             }
                             else
                             {

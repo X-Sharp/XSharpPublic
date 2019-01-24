@@ -881,9 +881,36 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if ( _options.SupportsMemvars)
                 { 
                     CurrentEntity.Data.HasMemVars = true;
-                    foreach (var memvar in context._Vars)
+                    if (context.T.Type == XP.MEMVAR || context.T.Type == XP.PARAMETERS)
+                    { 
+                        foreach (var memvar in context._Vars)
+                        {
+                            var name = memvar.Id.GetText();
+                            if (CurrentEntity.Data.GetField(name) != null)
+                            {
+                                context.AddError(new ParseErrorData(ErrorCode.ERR_MemvarFieldWithSameName, name));
+                            }
+                            else
+                            { 
+                                CurrentEntity.Data.AddField(name, "M", false);
+                            }
+                        }
+                    }
+                    else if (context.T.Type == XP.PUBLIC || context.T.Type == XP.PRIVATE)
                     {
-                        CurrentEntity.Data.AddField(memvar.Id.GetText(), "M", false);
+                        foreach (var memvar in context._XVars)
+                        {
+                            var name = memvar.Id.GetText();
+                            if (CurrentEntity.Data.GetField(name) != null )
+                            {
+                                context.AddError(new ParseErrorData(ErrorCode.ERR_MemvarFieldWithSameName, name));
+                            }
+                            else
+                            { 
+                                CurrentEntity.Data.AddField(name, "M", false);
+                            }
+                        }
+
                     }
                 }
                 if (context.T.Type == XP.PARAMETERS)
@@ -902,7 +929,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 this.hasMemVars = true;
                 foreach (var memvar in context._Vars)
                 {
-                    _memvarNames.Add(new MemVarFieldInfo(memvar.Id.GetText(), "M", false));
+                    _memvarNames.Add(new MemVarFieldInfo(memvar.Id.GetText(), "M", false, context));
                 }
             }
         }
@@ -927,55 +954,59 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.end);
             switch (context.T.Type)
             {
-                case XP.MEMVAR:
-                    // handled in the Enter method
+                case XP.PARAMETERS:
+                    var stmts = _pool.Allocate<StatementSyntax>(); 
+                    int i = 0;
+                    foreach (var memvar in context._Vars)
+                    {
+                        var name = memvar.GetText();
+                        ++i;
+                        var exp = GenerateMemVarDecl(name, true);
+                        stmts.Add(GenerateExpressionStatement(exp));
+
+                        var val = GenerateGetClipperParam(GenerateLiteral(i));
+                        exp = GenerateMemVarPut(memvar.GetText(), val);
+                        stmts.Add(GenerateExpressionStatement(exp));
+                    }
+                    context.Put(MakeBlock(stmts));
+                    _pool.Free(stmts);
+                    if (CurrentEntity.Params != null && CurrentEntity.Params._Params.Count > 0)
+                    {
+                        var node = context.Get<CSharpSyntaxNode>();
+                        node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParametersWithDeclaredParameters));
+                        context.Put(node);
+                    }
                     break;
                 case XP.PRIVATE:
                 case XP.PUBLIC:
-                case XP.PARAMETERS:
-                    bool isprivate = context.T.Type == XP.PRIVATE || context.T.Type == XP.PARAMETERS;
-                    if (context._Vars.Count > 1)
-                    { 
-                        var stmts = _pool.Allocate<StatementSyntax>();
-                        int i = 0;
-                        foreach (var memvar in context._Vars)
-                        {
-                            ++i;
-                            var exp = GenerateMemVarDecl(memvar.GetText(), isprivate);
-                            stmts.Add(GenerateExpressionStatement(exp));
-                            if (context.T.Type == XP.PARAMETERS)
-                            {
-                                var val = GenerateGetClipperParam(GenerateLiteral(i));
-                                exp = GenerateMemVarPut(memvar.GetText(), val);
-                                stmts.Add(GenerateExpressionStatement(exp));
-                            }
-                        }
-                        if (stmts.Count > 0)
-                        { 
-                            context.Put(MakeBlock(stmts));
-                        }
-                        _pool.Free(stmts);
-                    }
-                    else
+                   bool isprivate = context.T.Type == XP.PRIVATE ;
+                    var stmts2 = _pool.Allocate<StatementSyntax>();
+                    foreach (var memvar in context._XVars)
                     {
-                        var exp = GenerateMemVarDecl(context._Vars[0].GetText(), isprivate);
-                        context.Put(GenerateExpressionStatement(exp));
-                    }
-                    if (context.T.Type == XP.PARAMETERS)
-                    {
-                        // assign values like in the Clipper parameters 
-                        if (CurrentEntity.Params != null && CurrentEntity.Params._Params.Count > 0)
+                        var name = memvar.Id.GetText();
+                        var exp = GenerateMemVarDecl(name, isprivate);
+                        stmts2.Add(GenerateExpressionStatement(exp));
+                        if (memvar.Expression != null)
                         {
-                            var node = context.Get<CSharpSyntaxNode>();
-                            node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParametersWithDeclaredParameters));
-                            context.Put(node);
+                            exp = GenerateMemVarPut(memvar.Id.GetText(), memvar.Expression.Get<ExpressionSyntax>());
+                            stmts2.Add(GenerateExpressionStatement(exp));
                         }
-                        else
+                        else if (!isprivate)
                         {
-
+                            // Assign FALSE to PUBLIC variables or TRUE when the name is CLIPPER
+                            bool publicvalue = memvar.Id.GetText().ToUpper() == "CLIPPER";
+                            exp = GenerateMemVarPut(memvar.Id.GetText(), GenerateLiteral(publicvalue));
+                            stmts2.Add(GenerateExpressionStatement(exp));
                         }
                     }
+                    context.Put(MakeBlock(stmts2));
+                    _pool.Free(stmts2);
                     break;
+                case XP.MEMVAR:
+                default:
+                    // handled in the Enter method
+                    break;
+
             }
             if (! _options.SupportsMemvars)
             {
@@ -1674,10 +1705,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Check for Field or MemVar assignments
             ExpressionSyntax left = context.Left.Get<ExpressionSyntax>();
             ExpressionSyntax right = context.Right.Get<ExpressionSyntax>();
-            if (left.XNode is XP.PrimaryExpressionContext && left.XNode.GetChild(0) is XP.AliasedFieldContext)
+            if (left.XNode is XP.PrimaryExpressionContext && left.XNode.GetChild(0) is XP.AliasedFieldContext fieldNode)
             {
-                XP.AliasedFieldContext fieldNode = left.XNode.GetChild(0) as XP.AliasedFieldContext;
-                //ToDo
                 // Convert _FIELD->NAME += 1 to _FIELD->NAME := _FIELD->NAME + 1
 
                 ExpressionSyntax expr;
@@ -1708,9 +1737,41 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;
 
             }
-            else if (left.XNode is XP.PrimaryExpressionContext && left.XNode.GetChild(0) is XP.NameExpressionContext)
+            else if (left.XNode is XP.PrimaryExpressionContext && left.XNode.GetChild(0) is XP.AliasedMemvarContext memvarNode)
             {
-                XP.NameExpressionContext namecontext = left.XNode.GetChild(0) as XP.NameExpressionContext;
+                // Convert MEMVAR->NAME += 1 to MEMVAR->NAME := MEMVAR->NAME + 1
+
+                ExpressionSyntax expr;
+                string varName = memvarNode.VarName.GetText();
+                if (context.Op.Type == XP.ASSIGN_OP)
+                {
+                    expr = GenerateMemVarPut(varName, right);
+                }
+                else
+                {
+                    // MEMVAR->NAME+= 1 gets converted to
+                    // MemVarPut("Name", MemVarGet("Name") + 1)
+                    // left already has the MemVarGet
+                    var op = context.Op.ComplexToSimpleBinaryOp();
+                    var token = context.Op.ComplexToSimpleToken();
+                    if (op == SyntaxKind.EmptyStatement)
+                    {
+                        expr = GenerateMemVarPut(varName, right);
+                        expr = (ExpressionSyntax)NotInDialect(expr, "Complex operation: " + context.Op.Text);
+                    }
+                    else
+                    {
+                        expr = _syntaxFactory.BinaryExpression(op, left, token, right);
+                        expr = GenerateMemVarPut(varName, expr);
+                    }
+
+                }
+                context.Put(expr);
+                return;
+
+            }
+            else if (left.XNode is XP.PrimaryExpressionContext && left.XNode.GetChild(0) is XP.NameExpressionContext namecontext)
+            {
                 string name = namecontext.Name.GetText();
                 MemVarFieldInfo fieldInfo = null;
                 fieldInfo = getFileWideMemVar(name);
@@ -3678,7 +3739,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 foreach (var field in context._Fields)
                 {
-                    CurrentEntity.Data.AddField(field.Id.GetText(), Alias, true);
+                    var name = field.Id.GetText();
+                    if (CurrentEntity.Data.GetField(name) != null)
+                    {
+                        context.AddError(new ParseErrorData(ErrorCode.ERR_MemvarFieldWithSameName, name));
+                    }
+                    else
+                    {
+                        CurrentEntity.Data.AddField(name, Alias, true);
+                    }
                 }
             }
         }
@@ -3764,6 +3833,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             }
 
+        }
+
+        public override void ExitAliasedMemvar([NotNull] XP.AliasedMemvarContext context)
+        {
+            //MEMVAR->NAME
+            ExpressionSyntax expr;
+            string field = context.VarName.GetText();
+            expr = GenerateMemVarGet(field);
+            context.Put(expr);
+            return;
         }
 
         public override void ExitAliasedField([NotNull] XP.AliasedFieldContext context)
@@ -4098,3 +4177,4 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
  
     }
 }
+

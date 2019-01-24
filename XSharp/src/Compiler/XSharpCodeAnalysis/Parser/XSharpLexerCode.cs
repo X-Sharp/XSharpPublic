@@ -1081,7 +1081,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return ID;
                     }
                     break;
-                case MEMVAR:
                 case PARAMETERS:
                     if (!AllowXBaseVariables)
                         return ID;
@@ -1243,6 +1242,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"IIF", IIF},
                     {"IS", IS},
                     {"MEMVAR", MEMVAR},
+                    {"_MEMVAR", MEMVAR},
                     {"_NOT", VO_NOT},
                     {"_OR", VO_OR},
                     {"_XOR", VO_XOR},
@@ -1338,6 +1338,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"LOCAL", LOCAL},
                 {"LOOP", LOOP},
                 {"MEMBER", MEMBER},
+                {"_MEMVAR", MEMVAR},
                 {"MEMVAR", MEMVAR},
                 {"METHOD", METHOD},
                 {"NEXT", NEXT},

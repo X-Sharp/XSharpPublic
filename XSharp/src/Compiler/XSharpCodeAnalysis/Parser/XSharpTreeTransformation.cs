@@ -5514,6 +5514,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _syntaxFactory.RefExpression(SyntaxFactory.MakeToken(SyntaxKind.RefKeyword), GenerateSimpleName(staticName)))
                 : (initExpr == null) ? null : _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), initExpr));
             vardecl.XVoIsDim = isDim;
+            var name = context.Id.GetText();
+            if (CurrentEntity.Data.GetField(name) != null)
+            {
+                vardecl = vardecl.WithAdditionalDiagnostics( new SyntaxDiagnosticInfo(ErrorCode.ERR_MemvarFieldWithSameName, name));
+            }
             variables.Add(vardecl);
             var modifiers = _pool.Allocate();
             if (isConst)
@@ -5566,6 +5571,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool isStatic = (context.Parent as XP.VarLocalDeclContext).Static != null;
             context.SetSequencePoint();
             var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
+            var name = context.Id.GetText();
+            if (CurrentEntity.Data.GetField(name) != null)
+            {
+                context.AddError(new ParseErrorData(ErrorCode.ERR_MemvarFieldWithSameName, name));
+            }
             var variable = _syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null,
                 (context.Expression == null) ? null :
                 _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), context.Expression.Get<ExpressionSyntax>()));
@@ -7427,13 +7437,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(GenerateLiteral(context.XsToken.Token.Text));
             else if (context.VnToken != null)
                 context.Put(GenerateLiteral(context.VnToken.Token.Text));
+            else if (context.XppToken != null)
+                context.Put(GenerateLiteral(context.XppToken.Token.Text));
         }
 
         public override void ExitIdentifier([NotNull] XP.IdentifierContext context)
         {
             context.Put(context.Token?.SyntaxIdentifier()
                 ?? context.XsToken?.Token.SyntaxIdentifier()
-                ?? context.VnToken?.Token.SyntaxIdentifier());
+                ?? context.VnToken?.Token.SyntaxIdentifier()
+                ?? context.XppToken?.Token.SyntaxIdentifier()); 
         }
 
         public override void ExitKeyword([NotNull] XP.KeywordContext context)
@@ -8273,7 +8286,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(NoAlias());
             return;
         }
-
+        public override void ExitAliasedMemvar([NotNull] XP.AliasedMemvarContext context)
+        {
+            context.Put(NoAlias());
+            return;
+        }
         public override void ExitAliasedField([NotNull] XP.AliasedFieldContext context)
         {
             context.Put(NoAlias());

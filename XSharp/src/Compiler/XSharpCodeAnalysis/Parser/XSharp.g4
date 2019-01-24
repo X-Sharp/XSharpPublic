@@ -492,7 +492,7 @@ filewidememvar      : MEMVAR Vars+=identifierName (COMMA Vars+=identifierName)*
 
 
 statement           : Decl=localdecl                        #declarationStmt
-                    | {AllowXBaseVariables}? xbasedecl               #xbasedeclStmt
+                    | {AllowXBaseVariables}? xbasedecl      #xbasedeclStmt
                     | Decl=fielddecl                        #fieldStmt
                     | DO? WHILE Expr=expression end=eos
                       StmtBlk=statementBlock 
@@ -645,12 +645,15 @@ fielddecl          : FIELD Fields+=identifierName (COMMA Fields+=identifierName)
 
 // Old Style xBase declarations
 
-xbasedecl           : T=(PRIVATE                               // PRIVATE Foo, Bar
-                      |PUBLIC                               // PUBLIC  Foo, Bar
-                      |MEMVAR                               // MEMVAR  Foo, Bar
-                      |PARAMETERS                           // PARAMETERS Foo, Bar
-                      ) Vars+=identifierName (COMMA Vars+=identifierName)*
+xbasedecl           : T=(MEMVAR|PARAMETERS)      // MEMVAR  Foo, Bar or PARAMETERS Foo, Bar
+                      Vars+=identifierName (COMMA Vars+=identifierName)*
                       end=eos
+                    | T=(PRIVATE | PUBLIC)
+                      XVars+=xbasevar (COMMA XVars+=xbasevar)*   // PRIVATE Foo := 123,  PUBLIC Bar
+                      end=eos
+                    ;
+
+xbasevar            : Id=identifierName (ASSIGN_OP Expression=expression)?
                     ;
 
 // The operators in VO have the following precedence level:
@@ -1025,8 +1028,8 @@ keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST 
 
 
 keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CHAR | CONST |  DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | INITONLY | INTERNAL
-                            | LOCK | NAMESPACE | NEW | OUT | PARTIAL | SCOPE | SEALED | SET |  TRY | UNICODE |  VALUE | VIRTUAL  
-                            )
+                    | LOCK | NAMESPACE | NEW | OUT | PARTIAL | SCOPE | SEALED | SET |  TRY | UNICODE |  VALUE | VIRTUAL  
+                    )
                     ;
 
 keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM 

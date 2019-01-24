@@ -6587,6 +6587,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A MEMVAR or FIELD with the name &apos;{0}&apos; has already been defined..
+        /// </summary>
+        internal static string ERR_MemvarFieldWithSameName {
+            get {
+                return ResourceManager.GetString("ERR_MemvarFieldWithSameName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Merge conflict marker encountered.
         /// </summary>
         internal static string ERR_Merge_conflict_marker_encountered {

@@ -3233,9 +3233,46 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (initExpr == null)
                     {
+                        InitializerExpressionSyntax init = null;
+                        if (_options.VONullStrings)
+                        {
+                            // initialize the DIM array with empty strings when neeeded
+                            var cvl = context.Parent as XP.ClassVarListContext;
+                            if (cvl != null)
+                            {
+                                var dt = cvl.DataType.GetText();
+                                if (dt.ToLower() == "string" || dt.ToLower() == "system.string")
+                                {
+                                    var sub = context.ArraySub;
+                                    var l = _pool.AllocateSeparated<ExpressionSyntax>();
+                                    if (sub._ArrayIndex.Count == 1)
+                                    {
+                                        int dims = Int32.Parse(sub._ArrayIndex[0].GetText());
+                                        for (int i = 0; i < dims; i++)
+                                        {
+                                            if (i > 0)
+                                            {
+                                                l.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                                            }
+                                            l.Add(GenerateLiteral(""));
+                                        }
+                                        init = _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
+                                            SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                                            l.ToList(),
+                                            SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+                                        _pool.Free(l);
+                                    }
+                                    else
+                                    {
+                                        varType = varType.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError, "DIM string arrays must have one dimension"));
+                                    }
+                                }
+                            }
+                        }
+
                         initExpr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
                             _syntaxFactory.ArrayType(varType, context.ArraySub.Get<ArrayRankSpecifierSyntax>()),
-                            null);
+                            init);
                     }
                 }
             }

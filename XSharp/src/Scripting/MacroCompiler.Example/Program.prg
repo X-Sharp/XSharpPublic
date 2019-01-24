@@ -524,6 +524,9 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|abc| (usual)\"ABC\" + Chr(123)}", Args(), "ABC"+Chr(123), typeof(string)) 
         TestMacro(mc, e"0x1234", Args(), 0x1234, typeof(int))
         TestMacro(mc, e"0b110011", Args(), 0b110011, typeof(int))
+        TestMacro(mc, e"0xFFFF", Args(), 0xFFFF, typeof(int))
+        TestMacro(mc, e"0XFFFF", Args(), 0xFFFF, typeof(int))
+        TestMacro(mc, e"0xffff", Args(), 0xFFFF, typeof(int))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")

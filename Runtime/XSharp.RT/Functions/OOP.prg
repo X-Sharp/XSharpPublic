@@ -623,7 +623,6 @@ FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
 		oRet := ctor:Invoke( oArgs )
 	CATCH
 		THROW Error.VOError( EG_NOMETHOD, __FUNCTION__, "Constructor", 0 , NULL)
-		oRet := NULL_OBJECT
 	END TRY
 	RETURN oRet
 	
@@ -643,7 +642,7 @@ FUNCTION ClassTreeClass(cName AS STRING) AS ARRAY
 	ELSE
 		THROW Error{EG_NOCLASS,0}
 	ENDIF
-	RETURN NULL_ARRAY   
+	
 	
 	
 	
@@ -1118,7 +1117,7 @@ FUNCTION MParamCount(cClass AS STRING,cMethod AS STRING) AS DWORD
 	ELSE
 		THROW Error.VOError( EG_WRONGCLASS,  "MParamCount", NAMEOF(cClass), 1, <OBJECT>{cClass} )
 	ENDIF
-	RETURN 0   
+
 	
 	
 	
@@ -1149,7 +1148,7 @@ FUNCTION FParamCount(symFunction AS STRING) AS DWORD
 	ELSE
 		THROW Error.VOError( EG_NOFUNC,  "FParamCount", NAMEOF(symFunction), 1, <OBJECT>{symFunction} )
 	ENDIF
-	RETURN 0   
+
 	
 /// <summary>Call a clipper function by name</summary>
 /// <param name="symFunction">The name of the function to call.</param>

@@ -154,7 +154,7 @@ FUNCTION OrdSkipUnique(uCount) AS USUAL CLIPPER
 FUNCTION OrdIsUnique   (xOrder, cOrderBag) AS USUAL CLIPPER
     LOCAL result := NIL as USUAL
 	RETURN VoDb.OrderInfo(DBOI_UNIQUE, cOrderBag, xOrder,ref result)
-    RETURN result	
+
 	
 /// <summary>
 /// </summary>

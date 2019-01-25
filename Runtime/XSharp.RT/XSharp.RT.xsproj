@@ -15,7 +15,7 @@
     <Name>XSharp.RT</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>VO</Dialect>
+    <Dialect>Vulcan</Dialect>
     <OutputName>XSharp.RT</OutputName>
     <StartupObject />
     <ApplicationIcon />
@@ -62,7 +62,7 @@
     <Prefer32Bit>False</Prefer32Bit>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings>162,553</DisabledWarnings>
+    <DisabledWarnings>553</DisabledWarnings>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <PPO>false</PPO>
@@ -83,7 +83,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings>162,553</DisabledWarnings>
+    <DisabledWarnings>553</DisabledWarnings>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <PPO>false</PPO>

@@ -227,7 +227,7 @@ PUBLIC CLASS XSharp.MemVar
 		ELSE
             BEGIN LOCK Publics
 			    IF !Publics:ContainsKey(name)  
-				    VAR memvar := MemVar{name,NIL}
+				    VAR memvar := MemVar{name,FALSE}        // publics are always initialized with FALSE
 				    Publics:Add(memvar )
 			    ENDIF
             END LOCK

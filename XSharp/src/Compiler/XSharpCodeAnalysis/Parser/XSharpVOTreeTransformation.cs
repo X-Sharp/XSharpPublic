@@ -56,8 +56,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private ArrayTypeSyntax arrayOfUsual = null;
         private ArrayTypeSyntax arrayOfString = null;
         private bool voStructHasDim;
-        private bool hasMemVars = false;
-        private List<MemVarFieldInfo> _memvarNames = new List<MemVarFieldInfo>();
+        private Dictionary<string, MemVarFieldInfo> _memvars = null;
 
         private Dictionary<string, FieldDeclarationSyntax> _literalSymbols;
         private Dictionary<string, Tuple<string, FieldDeclarationSyntax>> _literalPSZs;
@@ -113,6 +112,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _actualType = VulcanQualifiedTypeNames.ActualType;
                 _clipperCallingConvention = VulcanQualifiedTypeNames.ClipperCallingConvention;
                 _winBoolType = VulcanQualifiedTypeNames.WinBool;
+            }
+            if (_options.SupportsMemvars)
+            {
+                _memvars = new Dictionary<string, MemVarFieldInfo>(StringComparer.OrdinalIgnoreCase);
             }
             _stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
             _intType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
@@ -706,6 +709,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             string method = "";
             ArgumentListSyntax args;
+            if (!String.IsNullOrEmpty(alias) && alias.ToUpper() == "M")
+            {
+                return GenerateMemVarPut(field, right);
+            }
             var argField = MakeArgument(GenerateLiteral(field));
             var argValue = MakeArgument(right);
             if (!String.IsNullOrEmpty(alias))
@@ -735,6 +742,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
+                if (alias.ToUpper() == "M")
+                    return GenerateMemVarGet(field);
                 method = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.FieldGetWa : VulcanQualifiedFunctionNames.FieldGetWa;
                 var argWA = MakeArgument(GenerateLiteral(alias));
                 args = MakeArgumentList(argWA, argField);
@@ -750,7 +759,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string Name = context.Name.GetText();
             ExpressionSyntax expr = context.Name.Get<NameSyntax>();
             MemVarFieldInfo fieldInfo = null;
-            fieldInfo = getFileWideMemVar(Name);
+            if (_options.SupportsMemvars)
+            {
+                fieldInfo = getFileWideMemVar(Name);
+            }
             if (fieldInfo == null && CurrentEntity != null)
             {
                 fieldInfo = CurrentEntity.Data.GetField(Name);
@@ -926,28 +938,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (_options.SupportsMemvars)
             {
-                this.hasMemVars = true;
                 foreach (var memvar in context._Vars)
                 {
-                    _memvarNames.Add(new MemVarFieldInfo(memvar.Id.GetText(), "M", false, context));
+                    var mv = new MemVarFieldInfo(memvar.Id.GetText(), "M", false);
+                    _memvars.Add(mv.Name, mv);
                 }
             }
         }
         private MemVarFieldInfo getFileWideMemVar(string name)
         {
-            MemVarFieldInfo fieldInfo = null;
-            if (this.hasMemVars)
-            {
-                foreach (var memvar in _memvarNames)
-                {
-                    if (string.Compare(name, memvar.Name, StringComparison.OrdinalIgnoreCase) == 0)
-                    {
-                        fieldInfo = memvar;
-                        break;
-                    }
-                }
+
+            MemVarFieldInfo memvar = null;
+            if (_options.SupportsMemvars)
+            { 
+                _memvars.TryGetValue(name, out memvar);
             }
-            return fieldInfo;
+            return memvar;
         }
         public override void ExitXbasedecl([NotNull] XP.XbasedeclContext context)
         {
@@ -3754,10 +3760,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
 
         public CSharpSyntaxNode GenerateAliasedExpression(
-            [NotNull] XP.AliasedExprContext context,
+            [NotNull] XSharpParserRuleContext context,
             ExpressionSyntax wa, ExpressionSyntax expr)
         {
             // Adjust the expression that is evaluated in the other workarea
+            /*
+            | Id=identifier ALIAS Expr=expression                       #aliasedExpr          // id -> expr       // when id = 'M' then redirect to aliasedMemvar
+            | LPAREN Alias=expression RPAREN ALIAS Expr=expression      #aliasedExpr          // (expr) -> expr   // when expression = 'M' then redirect to aliasedMemvar
+            */
             if (expr is AssignmentExpressionSyntax)
             {
                 // If the expression is a assignment expression 
@@ -3837,7 +3847,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitAliasedMemvar([NotNull] XP.AliasedMemvarContext context)
         {
-            //MEMVAR->NAME
+            // | MEMVAR ALIAS VarName=identifier   #aliasedMemvar        // MEMVAR->Name
             ExpressionSyntax expr;
             string field = context.VarName.GetText();
             expr = GenerateMemVarGet(field);
@@ -3847,39 +3857,64 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitAliasedField([NotNull] XP.AliasedFieldContext context)
         {
+            /*
+            | FIELD ALIAS (Alias=identifier ALIAS)? Field=identifier    #aliasedField		      // _FIELD->CUSTOMER->NAME is equal to CUSTOMER->NAME
+            | {InputStream.La(4) != LPAREN}?                            // this makes sure that CUSTOMER->NAME() is not matched
+                          Alias=identifier ALIAS Field=identifier               #aliasedField		      // CUSTOMER->NAME
+            */
             //_FIELD->NAME, CUSTOMER-NAME, _FIELD->CUSTOMER->NAME
             // translate to either __FieldGetWa(cArea,cField)
             // or __FieldGet(cField)
             ExpressionSyntax expr;
             string alias = context.Alias?.GetText();
             string field = context.Field.GetText();
-            if (!String.IsNullOrEmpty(alias) && alias.ToUpper() == "M")
-            {
-                // M->FIELD
-                expr = GenerateMemVarGet(field);
-            }
-            else
-            {
-                expr = GenerateFieldGet(alias, field);
-            }
+            expr = GenerateFieldGet(alias, field);      // also handles M->Name and translates that to _MemVarGet("Name")
             context.Put(expr);
             return;
         }
+        public override void ExitAliasedFieldLate([NotNull] XP.AliasedFieldLateContext context)
+        {
+            /*
+             | FIELD ALIAS (Alias=identifier ALIAS)? AMP Expr=expression #aliasedFieldLate     // _FIELD->CUSTOMER->&expression expression must evaluate to a string. 
+                                                                                               // Expression can of course be a parenExpression. And can also be LHS of an assigment !
+
+            */
+            var alias = context.Alias.Get<ExpressionSyntax>();
+            var expr = GenerateAliasedExpression(
+                        context,
+                        alias,     // workarea
+                        context.Expr.Get<ExpressionSyntax>() // expression
+                    );
+            context.Put(expr);
+
+        }
         public override void ExitAliasedExpr([NotNull] XP.AliasedExprContext context)
         {
-            ExpressionSyntax alias = context.Alias.Get<ExpressionSyntax>();
+            /*
+            | Id=identifier ALIAS Expr=expression                       #aliasedExpr          // id -> expr       // when id = 'M' then redirect to aliasedMemvar
+            | LPAREN Alias=expression RPAREN ALIAS Expr=expression      #aliasedExpr          // (expr) -> expr   // when expression = 'M' then redirect to aliasedMemvar
+            */
+            ExpressionSyntax alias ;
             if (context.Id != null)
             {
+                var name = context.Id.GetText();
+                // when Expr is a simple name then this should generate a fieldGet or MemVarGet
                 if (context.Expr is XP.PrimaryExpressionContext && context.Expr.GetChild(0) is XP.NameExpressionContext)
                 {
                     string field = context.Expr.GetText();
-                    context.Put(GenerateFieldGet(context.Id.GetText(), field));
+                    if (name.ToUpper() == "M")
+                        context.Put(GenerateMemVarGet(field));
+                    else
+                        context.Put(GenerateFieldGet(name, field));
                     return;
                 }
-                alias = GenerateLiteral(context.Id.GetText());
+                alias = GenerateLiteral(name);
             }
-            var expr =
-                GenerateAliasedExpression(
+            else
+            {
+                alias = context.Alias.Get<ExpressionSyntax>();
+            }
+            var expr = GenerateAliasedExpression(
                         context,
                         alias,     // workarea
                         context.Expr.Get<ExpressionSyntax>() // expression
@@ -3924,6 +3959,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // expression:&identifierName
             // needs to translate to either IVarGet() or IVarPut() when the parent is a assignment expression
+            /*
+            | Left=expression Op=(DOT | COLON) AMP LPAREN Right=expression RPAREN  #accessMemberLate
+                // aa:&(Expr). Expr must evaluate to a string which is the ivar name
+                // can become IVarGet() or IVarPut when this expression is the LHS of an assignment
+            | Left=expression Op=(DOT | COLON) AMP Name=identifierName  #accessMemberLateName
+                // aa:&Name  Expr must evaluate to a string which is the ivar name
+            */
             var left = context.Left.Get<ExpressionSyntax>();
             var right = context.Name.Get<IdentifierNameSyntax>();
             var args = MakeArgumentList(MakeArgument(left), MakeArgument(right));

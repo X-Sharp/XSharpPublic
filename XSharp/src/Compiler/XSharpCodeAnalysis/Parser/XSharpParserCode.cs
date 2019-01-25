@@ -247,14 +247,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 get { return flags.HasFlag(EntityFlags.IsInitProcedure); }
                 set { flags = setFlag(flags, EntityFlags.IsInitProcedure, value); }
             }
-            private List<MemVarFieldInfo> Fields;
-            public void AddField(string Name, string Alias, bool Field)
+            private List<MemVarFieldInfo> Fields = null;
+            internal void AddField(string Name, string Alias, bool Field)
             {
                 if (Fields == null)
+                { 
                     Fields = new List<MemVarFieldInfo>();
+                }
                 Fields.Add(new MemVarFieldInfo(Name, Alias, Field));
             }
-            public MemVarFieldInfo GetField(string Name)
+            internal MemVarFieldInfo GetField(string Name)
             {
                 if (Fields != null)
                 {
@@ -737,7 +739,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 #endif
     }
 
-
+#if !VSPARSER
     public class MemVarFieldInfo
     {
         public string Name { get; private set; }
@@ -750,7 +752,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             IsField = field;
         }
     }
-#if !VSPARSER
+
 
     internal static class RuleExtensions
     {

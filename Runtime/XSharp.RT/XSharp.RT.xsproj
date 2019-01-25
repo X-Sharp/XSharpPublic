@@ -50,6 +50,7 @@
     <XSharpProjectversion>2.0.0.8</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
+    <XPP1>false</XPP1>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

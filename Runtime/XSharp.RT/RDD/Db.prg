@@ -1073,7 +1073,6 @@ FUNCTION DbCopyXStruct(cFile AS STRING) AS LOGIC STRICT
     CATCH e AS RddError
         e:FuncSym := __FUNCTION__
         THROW e
-        lRetCode := .F.
     END TRY
     
     RETURN (lRetCode)

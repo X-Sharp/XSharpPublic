@@ -1052,7 +1052,7 @@ INTERNAL STRUCTURE ArraySortComparer  IMPLEMENTS System.Collections.Generic.ICom
 		LOCAL u AS USUAL
 		u := _cb:EvalBlock( x, y )
 		RETURN IIF (  (LOGIC) u , -1, 1 ) 
-	RETURN 0
+	
 		
 END STRUCTURE
  
@@ -1065,13 +1065,13 @@ INTERNAL STRUCTURE ArraySortComparer<T, U>  IMPLEMENTS System.Collections.Generi
 		RETURN
 		
 	METHOD Compare( x AS T, y AS T ) AS INT
-		IF x:Equals( y )  
+		IF Object.ReferenceEquals(x, y )  
 			RETURN 0
 		ENDIF
 		LOCAL u AS LOGIC
 		u := _cb( x, y )
 		RETURN IIF (  u , -1, 1 ) 
-	RETURN 0
+	
 		
 END STRUCTURE
 

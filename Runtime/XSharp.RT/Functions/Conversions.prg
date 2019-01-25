@@ -58,7 +58,7 @@ INTERNAL STATIC CLASS ConversionHelpers
 				RETURN cChar
 			END IF
 		END DO
-	RETURN NOCHAR
+	
 	
 	STATIC METHOD AdjustPrecision(cNum15 AS STRING, cNum17 AS STRING) AS STRING
 		LOCAL cDiff15 := "0", cDiff17 := "0" AS STRING

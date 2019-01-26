@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
-  <Import Project="..\..\..\build\Targets\Settings.props" />
+  <Import Project="..\..\Compiler\CompilerCommon.props" />
   <PropertyGroup>
     <Name>VODesigners</Name>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
@@ -12,8 +12,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharp.VODesigners</RootNamespace>
     <AssemblyName>XSharp.VODesigners</AssemblyName>
-    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
-    <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
@@ -46,6 +44,10 @@
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <StartupObject />
     <ApplicationIcon />
+    <XSharpProjectversion>2.0.0.8</XSharpProjectversion>
+    <Includepaths>$(Solutiondir)src\common</Includepaths>
+    <Nostandarddefs>false</Nostandarddefs>
+	<OutputPath>$(Solutiondir)Binaries\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -63,8 +65,6 @@
     <AssemblyOriginatorKeyFile>$(solutiondir)src\common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths>$(Solutiondir)src\common</IncludePaths>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
@@ -83,8 +83,6 @@
     <AssemblyOriginatorKeyFile>$(solutiondir)src\common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths>$(Solutiondir)src\common</IncludePaths>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />

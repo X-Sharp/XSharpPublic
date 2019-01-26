@@ -2,8 +2,8 @@
   "profiles": {
     "xsc": {
       "commandName": "Project",
-      "commandLineArgs": "@memvars.rsp",
-      "workingDirectory": "c:\\Xsharp\\Dev\\Tests\\"
+      "commandLineArgs": "@VOWin32APILibrary.rsp ",
+      "workingDirectory": "c:\\XSharp\\DevRt\\Runtime\\VOSDK\\Source\\VOSDK\\Win32_API_Library_SDK\\"
     }
   }
 }

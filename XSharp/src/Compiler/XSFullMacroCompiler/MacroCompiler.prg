@@ -29,11 +29,12 @@ CLASS XSharp.MacroCompiler IMPLEMENTS XSharp.IMacroCompiler
 		    options := options:AddReferences(args:LoadedAssembly)
         ENDIF
 		RETURN
-    METHOD Compile (cMacro AS STRING, lAllowSingleQuotes AS LOGIC, Module AS System.Reflection.Module, lIsBlock REF LOGIC) AS ICodeBlock
+    METHOD Compile (cMacro AS STRING, lAllowSingleQuotes AS LOGIC, Module AS System.Reflection.Module, lIsBlock OUT LOGIC, lHasMemVars OUT LOGIC) AS ICodeBlock
         IF string.IsNullOrEmpty(cMacro)
             cMacro := "{||}"
         ENDIF
-        lIsBlock := cMacro:Replace(" ",""):StartsWith("{|")
+        lIsBlock    := cMacro:Replace(" ",""):StartsWith("{|")
+        lHasMemVars := FALSE
         IF cache:ContainsKey(cMacro)
 	       	RETURN cache[cMacro]
         ENDIF
@@ -41,7 +42,8 @@ CLASS XSharp.MacroCompiler IMPLEMENTS XSharp.IMacroCompiler
             options := ScriptOptions:Default:WithReferences( ;
 			System.AppDomain:CurrentDomain:GetAssemblies().Where({a => !string.IsNullOrEmpty(a:Location)}) ;
 			)
-        ENDIF                                         
+        ENDIF
+        
         VAR result := XSharpMacro.Compile<XSharp.Codeblock>(cMacro, options, lAllowSingleQuotes)
         cache:Add(cMacro, result)
         RETURN result

@@ -62978,7 +62978,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,2.0.0.7
 ReferenceGAC = XSharp.VO,1,0,2.0.0.7
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.0.8
+ReferenceGAC = XSharp.RT,1,0,2.0.0.8
 [C620 - Problem resloving method with both instance and static overloads Resources]
 [C620 - Problem resloving method with both instance and static overloads Native Resources]
 [C620 - Problem resloving method with both instance and static overloads License files]
@@ -65935,7 +65935,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C648 - Problems using _FIELD with the X# runtime
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C649 - Incorrect line info in error message *************
 Application = C649 - Incorrect line info in error message
 IDEVersion = 1.06
@@ -66431,7 +66431,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C653 - Problem with differently CaSeD partial classes
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C654 - Compiler crash with function with negative asnd postfixed default value *************
 Application = C654 - Compiler crash with function with negative asnd postfixed default value
 IDEVersion = 1.06
@@ -66531,7 +66531,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C654 - Compiler crash with function with negative asnd postfixed default value
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C655 - Incorrect line/col error number for missing type in INHERIT and IMPLEMENTS clause *************
 Application = C655 - Incorrect line/col error number for missing type in INHERIT and IMPLEMENTS clause
 IDEVersion = 1.06
@@ -66729,7 +66729,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C656 - Compiler error with DIM STRING and /vo2+
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C657 - Problem with the <= operator comparing USUAL and 2 STRIGNS added in the same expression *************
 Application = C657 - Problem with the <= operator comparing USUAL and 2 STRIGNS added in the same expression
 IDEVersion = 1.06

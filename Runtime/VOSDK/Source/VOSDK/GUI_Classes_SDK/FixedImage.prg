@@ -1,4 +1,4 @@
-PARTIAL CLASS FixedImage INHERIT Control
+CLASS FixedImage INHERIT Control
 	PROTECT oImage AS OBJECT
 
 	//PP-030828 Strong typing

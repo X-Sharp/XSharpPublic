@@ -1,8 +1,12 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+
+[Obsolete( "ErrorNew() is obsolete. Call the constructor of the Error class directly" )] ;
+FUNCTION ErrorNew() AS Error
+    RETURN Error{}
 
 // All Dynamic memory functions that are not supported or dummies
 // And also all the OldSpace functions
@@ -610,19 +614,7 @@ FUNCTION OMemSize(o AS OBJECT) AS DWORD
 FUNCTION PClone(x AS USUAL) AS USUAL
 	RETURN NIL   
 	
-/// <exclude/>
-[ObsoleteAttribute( "'Bin2F()' is not supported and always returns 0")];
-FUNCTION Bin2F(c AS STRING) AS FLOAT
-	// VO stores the 8 bytes real8 + float header = 12 bytes.
-	RETURN 0   
-	
-/// <exclude/>
-[ObsoleteAttribute( "'F2Bin()' is not supported and always returns an empty string")];
-FUNCTION F2Bin(f AS FLOAT) AS STRING
-	// VO stores the 8 bytes real8 + float header = 12 bytes.
-	RETURN String.Empty
-	
-	
+
 /// <exclude/>
 [ObsoleteAttribute( "'FloatNext()' is not supported and always returns 0")];
 FUNCTION FloatNext(f AS FLOAT) AS FLOAT

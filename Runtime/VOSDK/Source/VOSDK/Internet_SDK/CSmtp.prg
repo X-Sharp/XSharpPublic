@@ -1,4 +1,4 @@
-PARTIAL CLASS CSmtp INHERIT CMailAbstract
+﻿CLASS CSmtp INHERIT CMailAbstract
 
 	// the class to send an email
 
@@ -199,7 +199,7 @@ CONSTRUCTOR(oMail, cServer, nPort)
 	
 	// the class to send an email - the email is expected to be fully formatted
 	// the owner window is used to find and report transmission status
-    Default(@nPort, IPPORT_SMTP)
+    DEFAULT(@nPort, IPPORT_SMTP)
 
 	SUPER(nPort, cServer)
 

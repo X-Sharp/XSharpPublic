@@ -1,4 +1,4 @@
-PARTIAL CLASS TreeView INHERIT TextControl
+CLASS TreeView INHERIT TextControl
 	PROTECT oImageList AS ImageList
 	PROTECT oStateImageList AS ImageList
 	PROTECT oDragImageList AS ImageList
@@ -986,7 +986,7 @@ ACCESS VisibleCount
 	RETURN TreeView_GetVisibleCount(SELF:Handle())
 END CLASS
 
-PARTIAL CLASS TreeViewItem INHERIT VObject
+CLASS TreeViewItem INHERIT VObject
 	PROTECT symName AS SYMBOL
 	PROTECT cText AS STRING
 	PROTECT uValue AS USUAL

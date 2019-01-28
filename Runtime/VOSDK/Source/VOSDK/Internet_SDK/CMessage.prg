@@ -1,4 +1,4 @@
-PARTIAL CLASS CMessage
+﻿PARTIAL CLASS CMessage
 
    PROTECT cHeader             AS STRING
 	PROTECT cBody               AS STRING
@@ -44,7 +44,7 @@ METHOD __CheckAttachment(cMail, nPart)
     LOCAL cTemp      AS STRING
     LOCAL dwSize     AS DWORD
 
-    Default(@nPart, 1)
+    DEFAULT(@nPart, 1)
 
 	 dwNewBound := At2(TEMP_BOUNDARY, cMail)
 
@@ -184,7 +184,7 @@ METHOD BodyExtract(c)
     LOCAL cRet      AS STRING
     LOCAL nPos      AS DWORD
 
-    Default(@c, SELF:cBody)
+    DEFAULT(@c, SELF:cBody)
 
     cRet  := c
     cTemp := __GetMailInfo(c, TEMP_ENCODE, .T. )
@@ -273,7 +273,7 @@ METHOD Decode(cMail)
 
     IF (dwPos := At2(TEMP_BOUND, cMail)) > 0
         dwPos += SLen(TEMP_BOUND)
-        IF (dwStop := At3(TEMP_STOP, cMail, dwPos)) > 0
+        IF (dwStop := At3(TEMP_STOP, cMail, dwPos)) > 0 
            cBound := SubStr(cMail, dwPos, dwStop - dwPos)
         ENDIF
     ENDIF
@@ -418,8 +418,8 @@ METHOD  GetAttachInfo (c, lNewsGroupMessage)
 
     cBound := SELF:cBoundary
 
-    Default(@c, SELF:cAttach)
-	 Default(@lNewsGroupMessage, .F. )
+    DEFAULT(@c, SELF:cAttach)
+	 DEFAULT(@lNewsGroupMessage, .F. )
 
     cRest  := c
 
@@ -551,7 +551,7 @@ METHOD SaveAs(cPath, cFile, n)
     LOCAL nRet      AS DWORD
     LOCAL nCodeType AS DWORD
 
-    Default(@n, 1)
+    DEFAULT(@n, 1)
 
     IF n < 1
         RETURN .F.
@@ -564,7 +564,7 @@ METHOD SaveAs(cPath, cFile, n)
     // Updated to better handle UNC paths
     cPath := __AdJustPath(cPath)
 
-    Default(@cFile, "")
+    DEFAULT(@cFile, "")
     IF SLen(cFile) = 0
         cFile := SELF:aFileList[n]
     ENDIF

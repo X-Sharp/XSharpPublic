@@ -11,7 +11,7 @@
 /// </returns>
 FUNCTION _Break(uError AS USUAL) AS USUAL
 	BREAK uError
-RETURN 	NIL   
+
 
 
 /// <summary>
@@ -58,7 +58,6 @@ FUNCTION ErrorBlock(cobError AS CODEBLOCK) AS USUAL
 		ENDIF
 	ENDIF
 	THROW oError
-	RETURN NIL
 
 /// <exclude />
 FUNCTION VO_Sprintf( format AS USUAL,  args PARAMS OBJECT[] ) AS STRING

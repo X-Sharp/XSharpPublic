@@ -10,7 +10,7 @@ USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFDBT RDD. For DBF/DBT. No index support at this level</summary>
     CLASS DBFDBT INHERIT DBF
-        PRIVATE _oDBtMemo as DbtMemo
+        PRIVATE _oDBtMemo AS DbtMemo
         CONSTRUCTOR
             SUPER()
             SELF:_oMemo := _oDbtMemo := DBTMemo{SELF}
@@ -55,25 +55,25 @@ BEGIN NAMESPACE XSharp.RDD
                 ELSE
                     oResult := DbtMemo.DefExt
                 ENDIF
-                IF oNewValue is STRING
-                    DbtMemo.DefExt := (String) oNewValue
+                IF oNewValue IS STRING
+                    DbtMemo.DefExt := (STRING) oNewValue
                 ENDIF
             CASE DbInfo.DBI_MEMOBLOCKSIZE
                 oResult := SELF:_oDbtMemo:BlockSize
-            case DBInfo.DBI_MEMOFIELD
+            CASE DBInfo.DBI_MEMOFIELD
                 oResult := ""
-                if oNewValue != NULL
+                IF oNewValue != NULL
                     TRY
-                       local fldPos as Long
+                       LOCAL fldPos AS LONG
                        fldPos := Convert.ToInt32(oNewValue)
                        oResult := SELF:GetValue(fldPos)
                     CATCH
                         oResult := ""   
                     END TRY
-                endif
-			case DbInfo.DBI_MEMOTYPE
+                ENDIF
+			CASE DbInfo.DBI_MEMOTYPE
                 oResult := DB_MEMO_DBT
-            case DbInfo.DBI_MEMOVERSION
+            CASE DbInfo.DBI_MEMOVERSION
                 oResult := DB_MEMOVER_STD
             OTHERWISE
                 oResult := SUPER:Info(nOrdinal, oNewValue)

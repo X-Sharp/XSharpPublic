@@ -1,4 +1,4 @@
-PARTIAL CLASS SQLErrorInfo  INHERIT Error
+CLASS SQLErrorInfo  INHERIT Error
 	HIDDEN cSQLState     AS STRING
 	HIDDEN nNativeError  AS INT
 	HIDDEN cErrorMessage AS STRING

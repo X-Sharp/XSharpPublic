@@ -1,4 +1,4 @@
-PARTIAL CLASS __DDImp INHERIT DialogWindow
+CLASS __DDImp INHERIT DialogWindow
 
 METHOD Default() 
 	//PP-040410

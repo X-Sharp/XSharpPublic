@@ -1,4 +1,4 @@
-PARTIAL CLASS ResourceString INHERIT VObject
+CLASS ResourceString INHERIT VObject
 	PROTECT iLength AS INT
 	PROTECT sBuffer AS STRING
 

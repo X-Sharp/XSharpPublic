@@ -4,7 +4,7 @@ STATIC DEFINE __WCLightWeight 		:= 200
 STATIC DEFINE __WCNormalWeight 		:= 400
 STATIC DEFINE __WCVariablePitch 	:= 2
 
-PARTIAL CLASS Font INHERIT VObject
+CLASS Font INHERIT VObject
 	PROTECT hFont 			AS PTR
 	PROTECT lStdFont 		AS LOGIC
 	PROTECT iStdFontType AS INT

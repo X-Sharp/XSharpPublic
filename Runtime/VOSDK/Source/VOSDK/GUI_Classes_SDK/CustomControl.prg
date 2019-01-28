@@ -1,4 +1,4 @@
-PARTIAL CLASS CustomControl INHERIT Control
+CLASS CustomControl INHERIT Control
 
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle, lDataAware) 
 

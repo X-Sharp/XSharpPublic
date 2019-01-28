@@ -110,7 +110,7 @@ FUNCTION Max(u1 AS USUAL,u2 AS USUAL) AS USUAL
 	ELSE
         THROW Error.ArgumentError( __FUNCTION__, NAMEOF(u2) , "Incompatible types")
 	ENDIF
-	RETURN u1
+	
 
 
 
@@ -144,7 +144,7 @@ FUNCTION Min(u1 AS USUAL,u2 AS USUAL) AS USUAL
 	ELSE
         THROW Error.ArgumentError( __FUNCTION__, NAMEOF(u2) , "Incompatible types")
 	ENDIF
-	RETURN u1
+	
 
 
 /// <summary>This function is not implemented yet</summary>
@@ -158,7 +158,7 @@ FUNCTION Min(u1 AS USUAL,u2 AS USUAL) AS USUAL
 /// </returns>
 FUNCTION PaletteRGB(bR AS USUAL,bG AS USUAL,bB AS BYTE) AS INT
 	THROW NotImplementedException{}
-	RETURN 0   
+	
 
 /// <summary>This function is not implemented yet</summary>
 // <summary>
@@ -168,7 +168,7 @@ FUNCTION PaletteRGB(bR AS USUAL,bG AS USUAL,bB AS BYTE) AS INT
 /// </returns>
 FUNCTION Pause() AS DWORD
 	THROW NotImplementedException{}
-	RETURN 0   
+	
 
 
 

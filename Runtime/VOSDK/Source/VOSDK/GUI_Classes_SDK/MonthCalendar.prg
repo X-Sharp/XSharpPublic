@@ -1,4 +1,4 @@
-PARTIAL CLASS DateRange INHERIT VObject
+CLASS DateRange INHERIT VObject
 	PROTECT dStartDate AS DATE
 	PROTECT dEndDate AS DATE
 
@@ -24,7 +24,7 @@ ASSIGN Min(dNewVal)
 
 END CLASS
 
-PARTIAL CLASS MonthCalendar INHERIT TextControl
+CLASS MonthCalendar INHERIT TextControl
 
 	//PP-030828 Strong typing
 	METHOD __GetColor(dwColorID AS DWORD) AS color STRICT 

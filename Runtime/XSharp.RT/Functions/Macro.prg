@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -74,9 +74,10 @@ FUNCTION MCompile(cMacro AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Code
 		ENDIF
 		LOCAL iResult AS ICodeblock
 		LOCAL oResult AS XSharp._Codeblock
-		LOCAL lIsCodeblock := FALSE AS LOGIC
-		iResult := oMC:Compile(cMacro, lAllowSingleQuotes, oMod, REF lIsCodeBlock)
-		oResult := XSharp._Codeblock{iResult, cMacro, lIsCodeBlock}
+		LOCAL lIsCodeblock  AS LOGIC
+        LOCAL addsMemVars   AS LOGIC
+		iResult := oMC:Compile(cMacro, lAllowSingleQuotes, oMod, OUT lIsCodeBlock, OUT addsMemVars)
+		oResult := XSharp._Codeblock{iResult, cMacro, lIsCodeBlock, addsMemVars}
 		RETURN oResult
 	ENDIF
 	RETURN NULL_OBJECT	
@@ -92,7 +93,7 @@ FUNCTION MCompile(cMacro AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Code
 	/// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String)" />
 	/// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String,System.Boolean)" />
 FUNCTION MExec(cb AS CODEBLOCK) AS USUAL
-	IF cb:PCount() == -1
+	IF cb:PCount() != -1
 		RETURN cb:EvalBlock()
 	ENDIF
 	RETURN cb

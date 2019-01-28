@@ -35,22 +35,28 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     /// The NtxPage class.
 	/// This is a collection of Items
     /// </summary>
+
+    [DebuggerDisplay("Page: {PageOffset}")];
     INTERNAL CLASS NtxPage
         PRIVATE CONST NTXPAGE_SIZE             := 1024 AS WORD
         PROTECTED _Order    AS NtxOrder
-        PROTECTED _Offset   AS LONG
+        PROTECTED _Offset   AS DWORD
         PROTECTED _Hot      AS LOGIC
         
         PROTECTED _Bytes AS BYTE[]
         
-        // Current Page Number / Page Offset
-		INTERNAL PROPERTY PageOffset AS LONG GET SELF:_Offset SET SELF:_Offset := VALUE
-        
+        // Current Page Number = Page Offset
+		INTERNAL PROPERTY PageOffset AS DWORD GET SELF:_Offset SET SELF:_Offset := VALUE
+        // The locationof the next page in case this is part of the unused pages list
+        INTERNAL PROPERTY NextPage   AS DWORD GET SELF[ 0]:PageNo SET SELF[ 0]:PageNo := VALUE
+
 		// Bytes of the Page (1024)
         INTERNAL PROPERTY Bytes AS BYTE[] GET SELF:_Bytes
         
         INTERNAL PROPERTY Hot AS LOGIC GET SELF:_Hot SET SELF:_Hot := VALUE
-        
+
+        INTERNAL PROPERTY Dumped AS LOGIC AUTO
+
 		// Item Count - how many items this particular page holds : a WORD stored at Offset 0x00
         INTERNAL PROPERTY NodeCount AS WORD
             GET
@@ -64,9 +70,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             END GET
             
             SET
-                LOCAL nCount := VALUE AS WORD
                 TRY
-                    Array.Copy(BitConverter.GetBytes( nCount), 0, SELF:_bytes, 0, 2)
+                    Array.Copy(BitConverter.GetBytes( VALUE), 0, SELF:_bytes, 0, 2)
                 CATCH e AS Exception
                     Debug.WriteLine( "Ntx Error : " + e:Message )
                 END TRY
@@ -74,12 +79,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             END SET
         END PROPERTY
         
-		// Retrieve a NtxItem in the current Page, at the specified position
-        INTERNAL PROPERTY SELF[ index AS LONG ] AS NtxItem
+		// Retrieve a NtxNode in the current Page, at the specified position
+        INTERNAL PROPERTY SELF[ index AS LONG ] AS NtxPageNode
             GET
-                LOCAL item := NULL AS NtxItem
+                LOCAL item := NULL AS NtxPageNode
                 TRY
-                    item := NtxItem{ SELF:_Order:_keySize , SELF:_Order:_oRdd }
+                    item := NtxPageNode{ SELF:_Order:_keySize  }
                     item:Fill( index, SELF )
                 CATCH e AS Exception
                     Debug.WriteLine( "Ntx Error : " + e:Message )
@@ -89,7 +94,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         END PROPERTY
         
 		// Initialize the NtxPage; The pageNumber is in fact the offset of the page in the File
-        INTERNAL CONSTRUCTOR( order AS NtxOrder, pageNumber AS LONG )
+        INTERNAL CONSTRUCTOR( order AS NtxOrder, pageNumber AS DWORD )
             //
             SELF:_Order := order
             SELF:_Offset := pageNumber
@@ -114,9 +119,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF isOk
                 TRY
                     // Move to top of Page
-                    FSeek3( SELF:_Order:_hFile, SELF:_Offset /*  * NtxHeader.NTXOFFSETS.SIZE    */, SeekOrigin.Begin )
+                    FSeek3( SELF:_Order:_hFile, (LONG) SELF:_Offset /*  * NtxHeader.NTXOFFSETS.SIZE    */, SeekOrigin.Begin )
                     // Read Buffer
-                    isOk := ( FRead3(SELF:_Order:_hFile, SELF:_Bytes, NTXPAGE_SIZE) == NTXPAGE_SIZE )
+                    isOk := FRead3(SELF:_Order:_hFile, SELF:_Bytes, NTXPAGE_SIZE) == NTXPAGE_SIZE
+                    SELF:Dumped := FALSE
                 CATCH e AS Exception
                     isOk := FALSE
                     Debug.WriteLine( "Ntx Error : " + e:Message )
@@ -139,9 +145,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             TRY
                 // Move to top of Page
-                FSeek3( SELF:_Order:_hFile, SELF:_Offset  /* * NtxHeader.NTXOFFSETS.SIZE    */ , SeekOrigin.Begin )
+                FSeek3( SELF:_Order:_hFile, (LONG) SELF:_Offset  /* * NtxHeader.NTXOFFSETS.SIZE    */ , SeekOrigin.Begin )
                 // Write Buffer
-                isOk := ( FWrite3(SELF:_Order:_hFile, SELF:_Bytes, NTXPAGE_SIZE) == NTXPAGE_SIZE )
+                isOk := FWrite3(SELF:_Order:_hFile, SELF:_Bytes, NTXPAGE_SIZE) == NTXPAGE_SIZE 
                 SELF:_Hot := FALSE
             CATCH e AS Exception
                 isOk := FALSE
@@ -150,17 +156,40 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN isOk
             
 		// Retrieve the Record/Item offset from start of Page
-        INTERNAL  METHOD GetRef( pos AS LONG ) AS SHORT
+        INTERNAL METHOD GetRef( pos AS LONG ) AS WORD
             TRY
-                RETURN BitConverter.ToInt16(SELF:_bytes, (pos+1) * 2)
+                RETURN BitConverter.ToUInt16(SELF:_bytes, (pos+1) * 2)
             CATCH //Exception
                 RETURN 0
             END TRY
             
         // Set the Record/Item offset from start of Page
-        INTERNAL  METHOD SetRef(pos AS LONG , newValue AS SHORT ) AS VOID
+        INTERNAL  METHOD SetRef(pos AS LONG , newValue AS WORD ) AS VOID
             Array.Copy(BitConverter.GetBytes( newValue), 0, SELF:_bytes, (pos+1) * 2, 2)
             SELF:Hot := TRUE
+
+       INTERNAL METHOD InitRefs(uiMaxEntry AS WORD , uiEntrySize AS WORD ) AS VOID
+            LOCAL offSet AS WORD
+            SELF:Write( )
+            offSet := (WORD) ((uiMaxEntry + 2) * 2)
+            FOR VAR i := 0 TO uiMaxEntry
+                SELF:SetRef(i, offset)
+                offset += uiEntrySize
+            NEXT
+            NodeCount := 0
+
+
+        INTERNAL METHOD Dump(keyLen AS WORD) AS STRING
+            VAR sb := System.Text.StringBuilder{}
+            VAR item := NtxPageNode{keyLen}
+            sb:AppendLine(String.Format("Page {0}, # of keys: {1}", SELF:PageOffSet, SELF:NodeCount))
+            FOR VAR i := 0 TO SELF:NodeCount-1
+                item:Fill(i, SELF)
+                sb:AppendLine(String.Format("Item {0,2}, Page {1,6} Record {2,4} : {3} ", i, item:PageNo, item:Recno, item:KeyText))
+            NEXT
+            item:Fill(SELF:NodeCount, SELF)
+            sb:AppendLine(String.Format("Right page reference {0}", item:PageNo))
+            RETURN sb:ToString()
             
     END CLASS
     

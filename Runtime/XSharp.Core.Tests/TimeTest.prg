@@ -70,7 +70,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			SetPMExt("")
 			cTime1 := Time()
 			// can't control the time of the day the test is run
-			IF cTime2 > "13:00:00"
+			IF cTime2 > "13:00:00" .or. cTime2:StartsWith("00")
 				Assert.NotEqual(cTime1, cTIme2)
 			ELSE
 				Assert.Equal(cTime1, cTIme2)

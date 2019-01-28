@@ -1,4 +1,4 @@
-PARTIAL CLASS AppWindow INHERIT Window
+CLASS AppWindow INHERIT Window
 	PROTECT oVertScroll AS WindowVerticalScrollBar
 	PROTECT oHorzScroll AS WindowHorizontalScrollBar
 	PROTECT oSysMenu AS SystemMenu

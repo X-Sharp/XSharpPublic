@@ -15,7 +15,7 @@
     <Name>XSharp.RT</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>VO</Dialect>
+    <Dialect>Vulcan</Dialect>
     <OutputName>XSharp.RT</OutputName>
     <StartupObject />
     <ApplicationIcon />
@@ -47,6 +47,10 @@
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <AssemblyOriginatorKeyFile>$(SOlutionDir)Common\xsharp.snk</AssemblyOriginatorKeyFile>
     <NamedArgs />
+    <XSharpProjectversion>2.0.0.8</XSharpProjectversion>
+    <Includepaths>$(Solutiondir)Common</Includepaths>
+    <Nostandarddefs>true</Nostandarddefs>
+    <XPP1>false</XPP1>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -59,13 +63,11 @@
     <Prefer32Bit>False</Prefer32Bit>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings>162,553</DisabledWarnings>
+    <DisabledWarnings>553</DisabledWarnings>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <PPO>false</PPO>
     <NoStdDef>true</NoStdDef>
-    <IncludePaths>$(Solutiondir)Common</IncludePaths>
-    <NoStandardDefs>true</NoStandardDefs>
     <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption>
     </CommandLineOption>
@@ -82,13 +84,11 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings>162,553</DisabledWarnings>
+    <DisabledWarnings>553</DisabledWarnings>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <PPO>false</PPO>
     <NoStdDef>true</NoStdDef>
-    <IncludePaths>$(Solutiondir)Common</IncludePaths>
-    <NoStandardDefs>false</NoStandardDefs>
     <Prefer32Bit>False</Prefer32Bit>
     <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
@@ -120,6 +120,7 @@
     <Compile Include="Functions\Codeblock.prg" />
     <Compile Include="Functions\CompilerSupport.prg" />
     <Compile Include="Functions\Conversions.prg" />
+    <Compile Include="Functions\MemVarSave.prg" />
     <Compile Include="Functions\Debugging.prg" />
     <Compile Include="Functions\DiskIO.prg" />
     <Compile Include="Functions\Error.prg" />
@@ -157,6 +158,7 @@
     <Compile Include="Types\Date.prg" />
     <Compile Include="Types\Float.prg" />
     <Compile Include="Types\Interfaces.prg" />
+    <Compile Include="Types\MemVar.prg" />
     <Compile Include="Types\PSZ.prg" />
     <Compile Include="Types\FixedMemory.prg" />
     <Compile Include="Types\Symbol.prg" />
@@ -176,6 +178,9 @@
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="RTComments.Xml" />
+  </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>
     <ProjectCapabilities>
@@ -193,7 +198,7 @@ copy $(TargetPath) \xsharp\dev\xsharp\Runtime</PostBuildEvent>
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
@@ -209,8 +214,6 @@ copy $(TargetPath) \xsharp\dev\xsharp\Runtime</PostBuildEvent>
     <DelaySign>false</DelaySign>
     <PPO>false</PPO>
     <NoStdDef>true</NoStdDef>
-    <IncludePaths>$(Solutiondir)Common</IncludePaths>
-    <NoStandardDefs>true</NoStandardDefs>
     <DocumentationFile>XSharp.RT.Xml</DocumentationFile>
     <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption>/noclipcall</CommandLineOption>

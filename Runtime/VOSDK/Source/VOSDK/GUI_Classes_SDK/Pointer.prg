@@ -1,4 +1,4 @@
-PARTIAL CLASS Pointer INHERIT VObject
+CLASS Pointer INHERIT VObject
 	PROTECT hPointer AS PTR
 
 METHOD Confine(oRect) 

@@ -1,4 +1,4 @@
-PARTIAL CLASS ChildAppWindow INHERIT AppWindow
+CLASS ChildAppWindow INHERIT AppWindow
 	PROTECT oImp AS Window
 	
 	//PP-030828 Strong typing

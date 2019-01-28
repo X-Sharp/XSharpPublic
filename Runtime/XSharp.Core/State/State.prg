@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -59,7 +59,7 @@ CLASS XSharp.RuntimeState
 			SELF:_SetThreadValue(Set.Decimals , (DWORD) 2)
 			SELF:_SetThreadValue(Set.Digits , (DWORD) 10 )
 			SELF:_SetThreadValue(Set.Exact , FALSE)
-			SELF:_SetThreadValue(Set.FLoatDelta , 0.0000000000001)
+			SELF:_SetThreadValue(Set.FloatDelta , 0.0000000000001)
 			SELF:_SetThreadValue(Set.DOSCODEPAGE, Win32.GetDosCodePage())
 			SELF:_SetThreadValue(Set.WINCODEPAGE, Win32.GetWinCodePage())
 			// Add null value for Clipper collation 
@@ -138,12 +138,18 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The current compiler setting for the VO11 compiler option as defined when compiling the main application.
 	/// This value gets assigned in the startup code for applications in the VO or Vulcan dialect.</summary>
+    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO13" />
+    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionOVF" />
+    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionFOVF" />
 	STATIC PROPERTY CompilerOptionVO11 AS LOGIC ;
         GET GetValue<LOGIC>(Set.OPTIONVO11);
         SET SetValue<LOGIC>(Set.OPTIONVO11, VALUE)
 
 	/// <summary>The current compiler setting for the VO13 compiler option as defined when compiling the main application.
 	/// This value gets assigned in the startup code for applications in the VO or Vulcan dialect.</summary>
+    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO11" />
+    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionOVF" />
+    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionFOVF" />
 	STATIC PROPERTY CompilerOptionVO13 AS LOGIC ;
         GET GetValue<LOGIC>(Set.OPTIONVO13);
         SET SetValue<LOGIC>(Set.OPTIONVO13, VALUE)
@@ -156,12 +162,18 @@ CLASS XSharp.RuntimeState
 
     /// <summary>The current compiler setting for the OVF compiler option as defined when compiling the main application.
 	/// This value gets assigned in the startup code for applications in the VO or Vulcan dialect.</summary>
+    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO11" />
+    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO13" />
+    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionFOVF" />
 	STATIC PROPERTY CompilerOptionOVF AS LOGIC ;
         GET GetValue<LOGIC>(Set.OPTIONOVF);
         SET SetValue<LOGIC>(Set.OPTIONOVF, VALUE)
 
 	/// <summary>The current compiler setting for the FOVF compiler option as defined when compiling the main application.
 	/// This value gets assigned in the startup code for applications in the VO or Vulcan dialect.</summary>
+    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO11" />
+    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO13" />
+    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionOVF" />
 	STATIC PROPERTY CompilerOptionFOVF AS LOGIC ;
         GET GetValue<LOGIC>(Set.OPTIONOVF);
         SET SetValue<LOGIC>(Set.OPTIONOVF, VALUE)
@@ -180,16 +192,22 @@ CLASS XSharp.RuntimeState
         SET SetValue<LOGIC>(Set.Ansi, VALUE)
 
 	/// <summary>The current AutoOrder setting (used by the RDD system).</summary>
+    /// <seealso cref="P:XSharp.RuntimeState.AutoOpen" />
+    /// <seealso cref="P:XSharp.RuntimeState.AutoShareMode" />
     STATIC PROPERTY AutoOrder AS LOGIC ;
         GET GetValue<LOGIC>(Set.AutoOrder);
         SET SetValue<LOGIC>(Set.AutoOrder, VALUE)
 
 	/// <summary>The current AutoOpen setting (used by the RDD system).</summary>
+    /// <seealso cref="P:XSharp.RuntimeState.AutoOrder" />
+    /// <seealso cref="P:XSharp.RuntimeState.AutoShareMode" />
     STATIC PROPERTY AutoOpen AS LOGIC ;
         GET GetValue<LOGIC>(Set.AutoOpen);
         SET SetValue<LOGIC>(Set.AutoOpen, VALUE)
 
 	/// <summary>The current AutoShareMode setting (used by the RDD system).</summary>
+    /// <seealso cref="P:XSharp.RuntimeState.AutoOpen" />
+    /// <seealso cref="P:XSharp.RuntimeState.AutoOrder" />
     STATIC PROPERTY AutoShareMode AS AutoShareMode ;
         GET GetValue<AutoShareMode>(Set.AutoShare);
         SET SetValue<AutoShareMode>(Set.AutoShare, VALUE)
@@ -214,6 +232,7 @@ CLASS XSharp.RuntimeState
 	END PROPERTY
 
 	/// <summary>The current DateCountry setting mode (used in DATE &lt;-&gt; STRING conversions).</summary>
+    /// <seealso cref="P:XSharp.RuntimeState.DateFormat" />
    STATIC PROPERTY DateCountry AS DWORD ;
         GET GetValue<DWORD>(Set.DateCountry);
         SET _SetDateCountry(VALUE)
@@ -223,10 +242,12 @@ CLASS XSharp.RuntimeState
 	/// For example DD-MM-YYYY for italian date format, MM/DD/YYYY for American date format or DD/MM/YYYY for British Date format.
 	/// Note that all other characters except the four groups mentioned above are copied to the output string verbatim.
 	/// </remarks>
+    /// <seealso cref="P:XSharp.RuntimeState.DateCountry" />
     STATIC PROPERTY DateFormat AS STRING ;
         GET GetValue<STRING>(Set.DateFormat);
         SET _SetDateFormat(VALUE)
 
+    /// <summary>A cached copy of the string that is returned for empty dates, matching the current DateFormat</summary>
 	STATIC PROPERTY NullDateString AS STRING GET GetValue<STRING>(Set.DateFormatEmpty)
 
 	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals</summary>
@@ -237,6 +258,7 @@ CLASS XSharp.RuntimeState
 
 
 	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals</summary>
+    /// <seealso cref="P:XSharp.RuntimeState.ThousandSep" />
     STATIC PROPERTY DecimalSep AS DWORD ;
         GET GetValue<DWORD>(Set.DecimalSep);
         SET SetValue<DWORD>(Set.DecimalSep, VALUE)
@@ -264,6 +286,7 @@ CLASS XSharp.RuntimeState
 
 
 	/// <summary>The DOS Codepage. This gets read at startup from the OS().</summary>
+    /// <seealso cref="P:XSharp.RuntimeState.DosEncoding" />
     STATIC PROPERTY DosCodePage AS LONG 
         GET 
 			RETURN GetValue<LONG>(Set.DOSCODEPAGE)
@@ -354,6 +377,7 @@ CLASS XSharp.RuntimeState
         SET SetValue<LOGIC>(Set.SOFTSEEK, VALUE)
 
 	/// <summary>The Thousand separator</summary>
+    /// <seealso cref="P:XSharp.RuntimeState.DecimalSep" />
     STATIC PROPERTY ThousandSep AS DWORD ;
         GET GetValue<DWORD>(Set.THOUSANDSEP);
         SET SetValue<DWORD>(Set.THOUSANDSEP, VALUE)
@@ -365,6 +389,7 @@ CLASS XSharp.RuntimeState
         SET SetValue<LOGIC>(Set.UNIQUE, VALUE)
 
 	/// <summary>The Windows Codepage. This gets read at startup from the OS().</summary>
+    /// <seealso cref="P:XSharp.RuntimeState.WinEncoding" />
     STATIC PROPERTY WinCodePage AS LONG
 	GET
         RETURN GetValue<LONG>(Set.WINCODEPAGE)
@@ -377,9 +402,13 @@ CLASS XSharp.RuntimeState
 	END SET
 	END PROPERTY
 
+    /// <summary>The DOS Encoding. This is based on the corrent Win Codepage.</summary>
+    /// <seealso cref="P:XSharp.RuntimeState.WinCodePage" />
     STATIC PROPERTY WinEncoding AS System.Text.Encoding ;
         GET System.Text.Encoding.GetEncoding(WinCodePage)
-        
+
+    /// <summary>The DOS Encoding. This is based on the corrent DOS Codepage.</summary>
+    /// <seealso cref="P:XSharp.RuntimeState.DosCodePage" />
     STATIC PROPERTY DosEncoding AS System.Text.Encoding ;
         GET System.Text.Encoding.GetEncoding(DosCodePage)
 
@@ -403,6 +432,7 @@ CLASS XSharp.RuntimeState
 		SELF:_SetThreadValue(Set.THOUSANDSEP, (DWORD) 44)	// COMMA ,
 		SELF:_SetThreadValue(Set.DateFormat, "MM/DD/YY")
 		SELF:_SetThreadValue(Set.Intl, CollationMode.Clipper)
+        SELF:_SetThreadValue(Set.Dict, FALSE)
 
 	INTERNAL METHOD _SetInternationalWindows() AS VOID
 		VAR dtInfo	    := System.Globalization.DateTimeFormatInfo.CurrentInfo
@@ -440,6 +470,7 @@ CLASS XSharp.RuntimeState
 		SELF:_SetThreadValue(Set.EpochYear, (DWORD) 10)
 		SELF:_SetThreadValue(Set.EpochCent, (DWORD) 2000)
 		SELF:_SetThreadValue(Set.Intl, CollationMode.Windows)
+        SELF:_SetThreadValue(Set.Dict, TRUE)
 		RETURN
 
 
@@ -569,9 +600,11 @@ CLASS XSharp.RuntimeState
             _macrocompiler := VALUE
         END SET
     END PROPERTY
-	/// <summary></summary>	
+	/// <summary>This event is thrown when the codepage of the runtimestate is changed</summary>
+    /// <remarks>Clients can refresh cached information by registering to this event</remarks>
 	PUBLIC STATIC EVENT OnCodePageChanged AS EventHandler
-	/// <summary></summary>	
+	/// <summary>This event is thrown when the collation of the runtimestate is changed</summary>
+    /// <remarks>Clients can refresh cached information by registering to this event</remarks>
 	PUBLIC STATIC EVENT OnCollationChanged AS EventHandler
 
     PRIVATE STATIC METHOD _LoadMacroCompiler() AS VOID
@@ -596,16 +629,109 @@ CLASS XSharp.RuntimeState
 		    ENDIF
         ENDIF
         IF _macroCompilerType != NULL_OBJECT
-            IF _macroCompilerType:Assembly:CodeBase:ToLower():Contains(".full")
-			    VAR macroCompiler := Activator:CreateInstance(_macroCompilerType) ASTYPE IMacroCompiler
-                _macroCompiler := MacroPreCompiler{macroCompiler}
-            ELSE
-                _macroCompiler := Activator:CreateInstance(_macroCompilerType) ASTYPE IMacroCompiler
-            ENDIF
+            _macroCompiler := Activator:CreateInstance(_macroCompilerType) ASTYPE IMacroCompiler
 		ENDIF
-		RETURN 
+		RETURN
 
+    /// <overloads>
+    /// <summary>Compare 2 strings respecting the runtime string comparison rules.</summary>
+    /// </overloads>
+    /// <include file="CoreComments.xml" path="Comments/StringCompare/*" />
+    /// <param name="strLHS">The first string .</param>
+    /// <param name="strRHS">The second string.</param>
+    /// <remarks>
+    /// The StringCompare method takes into account: <br/>
+    /// - the setting of SetExact()<br/>
+    /// - the setting of VO13 of the main app<br/>
+    /// - the setting of Collation mode <br/>
+    /// This method respects the current setting of SetCollation(): <br/>
+    /// - When the current collationmode is Clipper or Windows then a Unicode - Ansi conversions will be performed.
+    /// The Clipper collation uses the current DOS codepage and the Windows collation the current Windows codepage.<br/>
+    /// - When the current collationmode is Unicode or Ordinal then the original strings will be compared.
+    /// </remarks>
+    STATIC METHOD StringCompare(strLHS AS STRING, strRHS AS STRING) AS INT
+       LOCAL ret AS INT
+        // Only when vo13 is off and SetExact = TRUE
+        IF !RuntimeState.CompilerOptionVO13 .AND. RuntimeState.Exact
+            RETURN String.Compare( strLHS,  strRHS)
+        ENDIF                            
+        IF Object.ReferenceEquals(strLHS, strRHS)
+            ret := 0
+        ELSEIF strLHS == NULL
+            IF strRHS == NULL			// null and null are equal
+                ret := 0
+            ELSE
+                ret := -1				// null precedes a string
+            ENDIF
+        ELSEIF strRHS == NULL			// a string comes after null
+            ret := 1
+        ELSE							// both not null
+            // With Not Exact comparison we only compare the length of the RHS string
+            // and we always use the unicode comparison because that is what vulcan does
+            // This is done to make sure that >= and <= will also return TRUE when the LHS is longer than the RHS
+            // The ordinal comparison can be done here because when both strings start with the same characters
+            // then equality is guaranteed regardless of collations or other rules.
+            // collations and other rules are really only relevant when both strings are different
+            IF  !RuntimeState.Exact
+                LOCAL lengthRHS AS INT
+                lengthRHS := strRHS:Length
+                IF lengthRHS == 0 .OR. lengthRHS <= strLHS:Length  .AND. String.Compare( strLHS, 0, strRHS, 0, lengthRHS , StringComparison.Ordinal ) == 0
+                    RETURN 0
+                ENDIF
+            ENDIF
+            ret := StringCompareCollation(strLHS, strRHS)
+        ENDIF
+        RETURN ret
 
+    /// <include file="CoreComments.xml" path="Comments/StringCompare/*" />
+    /// <param name="strLHS">The first string .</param>
+    /// <param name="strRHS">The second string.</param>
+    /// <remarks>
+    /// This method only checks for SetCollation and does not check fot SetExact() or the VO13 setting
+    /// </remarks>
+    STATIC METHOD StringCompareCollation(strLHS AS STRING, strRHS AS STRING) AS INT
+       LOCAL ret AS INT
+        // either exact or RHS longer than LHS
+        VAR mode := RuntimeState.CollationMode 
+        SWITCH mode
+        CASE CollationMode.Windows
+            ret := XSharp.StringHelpers.CompareWindows(strLHS, strRHS) 
+        CASE CollationMode.Clipper
+            ret := XSharp.StringHelpers.CompareClipper(strLHS, strRHS) 
+        CASE CollationMode.Unicode
+            ret := String.Compare(strLHS, strRHS)
+        OTHERWISE
+            ret := String.CompareOrdinal(strLHS, strRHS)
+        END SWITCH
+        RETURN ret
+
+    /// <inheritdoc cref="M:XSharp.RuntimeState.StringCompare(System.String,System.String)"/>
+    /// <summary>Compare 2 byte arrays respecting the runtime string comparison rules.</summary>
+    /// <param name="aLHS">The first list of bytes.</param>
+    /// <param name="aRHS">The second list of bytes.</param>
+    /// <param name="nLen">The # of bytes to compare.</param>
+    /// <remarks>This method works on BYTE arrays and is used by the RDD system. <br/>
+    /// This method respects the current setting of SetCollation(): <br/>
+    /// - When the current collationmode is Clipper or Windows then no Ansi - Unicode conversions will be done.<br/>
+    /// - When the current collationmode is Unicode or Ordinal then the byte arrays will be converted to Unicode before
+    /// the comparison is executed. 
+    /// </remarks>
+    STATIC METHOD StringCompare(aLHS AS BYTE[], aRHS AS BYTE[], nLen AS INT) AS INT
+        SWITCH CollationMode
+        CASE CollationMode.Clipper
+            RETURN XSharp.StringHelpers.CompareClipper(aLHS, aRHS, nLen)
+        CASE CollationMode.Windows
+            RETURN XSharp.StringHelpers.CompareWindows(aLHS, aRHS, nLen)
+        CASE CollationMode.Unicode
+            VAR strLHS := RuntimeState.WinEncoding:GetString(aLHS, 0, nLen)
+            VAR strRHS := RuntimeState.WinEncoding:GetString(aRHS, 0, nLen)
+            RETURN String.Compare(strLHS, strRHS)
+        OTHERWISE
+            VAR strLHS := RuntimeState.WinEncoding:GetString(aLHS, 0, nLen)
+            VAR strRHS := RuntimeState.WinEncoding:GetString(aRHS, 0, nLen)
+            RETURN String.CompareOrdinal(strLHS, strRHS)
+        END SWITCH
+        RETURN 0
 END CLASS
 
 

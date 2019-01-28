@@ -90,6 +90,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "OOP")];
 		METHOD ParamCountTests() AS VOID
+            VObject{}
 			assert.Equal(3, (INT) FParamCount("STR"))            
 			assert.Equal(2, (INT) FParamCount("STR2"))            
 			assert.Equal(3, (INT) FParamCount("STR3"))            
@@ -198,13 +199,13 @@ BEGIN NAMESPACE XSharp.VO.Tests
         	o := GeneralLBTestClass{}
         	
         	IVarPut(o , #fld_exp , 1)
-        	Assert.Equal(1 , (int) IVarGet(o , #fld_exp))
+        	Assert.Equal(1 , (INT) IVarGet(o , #fld_exp))
 
         	IVarPutSelf(o , #fld_prot , 2)
-        	Assert.Equal(2 , (int) IVarGetSelf(o , #fld_prot))
+        	Assert.Equal(2 , (INT) IVarGetSelf(o , #fld_prot))
         	
         	Assert.ThrowsAny<Exception>( { => IVarPut(o , #fld_prot , 3) })
-        	Assert.Equal(2 , (int) IVarGetSelf(o , #fld_prot))
+        	Assert.Equal(2 , (INT) IVarGetSelf(o , #fld_prot))
         	
         	Assert.ThrowsAny<Exception>( { => IVarGet(o , #fld_prot) })
         	Assert.ThrowsAny<Exception>( { => IVarGet(o , #fld_priv) })

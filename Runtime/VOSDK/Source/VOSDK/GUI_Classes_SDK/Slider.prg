@@ -1,4 +1,4 @@
-PARTIAL CLASS HorizontalSelectionSlider INHERIT SelectionSlider
+CLASS HorizontalSelectionSlider INHERIT SelectionSlider
 
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
 	
@@ -10,7 +10,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 
 END CLASS
 
-PARTIAL CLASS HorizontalSlider INHERIT Slider
+CLASS HorizontalSlider INHERIT Slider
 
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
 	
@@ -22,7 +22,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 
 END CLASS
 
-PARTIAL CLASS SelectionSlider INHERIT Slider
+CLASS SelectionSlider INHERIT Slider
 	PROTECT oSelectionRange AS Range
 
 METHOD ClearSelection() 
@@ -66,7 +66,7 @@ ASSIGN SelectionRange(oNewSelectionRange)
 
 END CLASS
 
-PARTIAL CLASS Slider INHERIT ScrollBar
+CLASS Slider INHERIT ScrollBar
 	PROTECT symTickAlignment AS SYMBOL
 
 ACCESS BlockSize 
@@ -260,7 +260,7 @@ ASSIGN UnitSize(nUnitSize)
 	RETURN 
 END CLASS
 
-PARTIAL CLASS VerticalSelectionSlider INHERIT SelectionSlider
+CLASS VerticalSelectionSlider INHERIT SelectionSlider
 
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
 	
@@ -272,7 +272,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 
 END CLASS
 
-PARTIAL CLASS VerticalSlider INHERIT Slider
+CLASS VerticalSlider INHERIT Slider
 
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
 	

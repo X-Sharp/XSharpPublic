@@ -1,4 +1,4 @@
-PARTIAL CLASS ModelessDialog INHERIT DialogWindow
+CLASS ModelessDialog INHERIT DialogWindow
 
 CONSTRUCTOR(oOwner, xResourceID) 
 	

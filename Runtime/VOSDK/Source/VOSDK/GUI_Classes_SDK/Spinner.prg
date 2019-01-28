@@ -1,4 +1,4 @@
-PARTIAL CLASS HorizontalSpinner INHERIT Spinner
+CLASS HorizontalSpinner INHERIT Spinner
 
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
 	
@@ -17,7 +17,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 
 END CLASS
 
-PARTIAL CLASS Spinner INHERIT ScrollBar
+CLASS Spinner INHERIT ScrollBar
 	PROTECT oClient AS Control
 
 ACCESS Client 
@@ -107,7 +107,7 @@ ASSIGN ThumbPosition(nThumbPosition)
 
 END CLASS
 
-PARTIAL CLASS VerticalSpinner INHERIT Spinner
+CLASS VerticalSpinner INHERIT Spinner
 
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
 	

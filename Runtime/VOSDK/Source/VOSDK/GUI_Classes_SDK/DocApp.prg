@@ -1,4 +1,4 @@
-PARTIAL CLASS __DocApp INHERIT AppWindow
+CLASS __DocApp INHERIT AppWindow
 	PROTECT oShellWin AS ShellWindow
 
 METHOD __AssociateAccel(lSwitch AS LOGIC) AS Window STRICT 

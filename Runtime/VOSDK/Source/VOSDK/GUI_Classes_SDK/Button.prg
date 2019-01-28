@@ -1,4 +1,4 @@
-PARTIAL CLASS Button INHERIT TextControl
+CLASS Button INHERIT TextControl
 	PROTECT oImage AS VObject
 
 METHOD __GetImage() 
@@ -153,7 +153,7 @@ METHOD SetStyle(kStyle, lEnable)
 
 END CLASS
 
-PARTIAL CLASS ButtonImageList INHERIT ImageList
+CLASS ButtonImageList INHERIT ImageList
 	//PP-030915 from S Ebert
 	HIDDEN _oImage AS VObject
 

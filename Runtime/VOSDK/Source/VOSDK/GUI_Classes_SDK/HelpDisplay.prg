@@ -1,4 +1,4 @@
-PARTIAL CLASS HelpDisplay INHERIT VObject
+CLASS HelpDisplay INHERIT VObject
 	PROTECT cFileName AS STRING
 	PROTECT wError AS LONGINT				        //RvdH 070205 changed from WORD to LONG
 	PROTECT oTopApp AS TopAppWindow

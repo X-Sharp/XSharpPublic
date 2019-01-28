@@ -1,4 +1,4 @@
-PARTIAL CLASS SQLListTypeInfo INHERIT SQLCatalogQuery
+CLASS SQLListTypeInfo INHERIT SQLCatalogQuery
 	EXPORT SqlType          AS SHORTINT
 
 METHOD Execute()  

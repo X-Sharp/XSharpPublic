@@ -1,4 +1,4 @@
-PARTIAL CLASS CPop INHERIT CMailAbstract
+﻿CLASS CPop INHERIT CMailAbstract
 
 	// Class to retrieve mail or mail info
 	PROTECT nDecodeBytes       AS DWORD
@@ -335,7 +335,7 @@ METHOD GetStatus()
 
 CONSTRUCTOR(cServer, cUserName, cPassword, nPort, oEMailStorage)
 
-	Default(@nPort, IPPORT_POP)
+	DEFAULT(@nPort, IPPORT_POP)
 
 	SUPER(nPort, cServer)
 
@@ -380,8 +380,8 @@ METHOD ListMail()
 
 METHOD LogOn(cUID, cPwd)
    //SE-040628
-	Default(@cUID, "")
-	Default(@cPwd, "")
+	DEFAULT(@cUID, "")
+	DEFAULT(@cPwd, "")
 
 	SELF:nError := 0
 

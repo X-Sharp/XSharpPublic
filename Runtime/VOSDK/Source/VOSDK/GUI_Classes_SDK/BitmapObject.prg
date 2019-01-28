@@ -1,4 +1,4 @@
-PARTIAL CLASS BitmapObject INHERIT ShapeObject
+CLASS BitmapObject INHERIT ShapeObject
 	PROTECT oBitmap AS Bitmap
 	
 

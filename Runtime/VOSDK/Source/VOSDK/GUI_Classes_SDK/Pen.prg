@@ -1,4 +1,4 @@
-PARTIAL CLASS Pen INHERIT VObject
+CLASS Pen INHERIT VObject
 	HIDDEN hPen AS PTR
 
 METHOD Destroy() 

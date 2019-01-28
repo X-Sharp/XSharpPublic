@@ -1,4 +1,4 @@
-PARTIAL CLASS TextObject INHERIT DrawObject
+CLASS TextObject INHERIT DrawObject
 	PROTECT oFont AS Font
 	PROTECT oColor AS Color
 	PROTECT cText AS STRING

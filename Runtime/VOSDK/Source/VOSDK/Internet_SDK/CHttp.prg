@@ -1,4 +1,4 @@
-﻿PARTIAL CLASS CHttp  INHERIT CSession
+﻿CLASS CHttp  INHERIT CSession
     PROTECT hRequest          	AS PTR
     PROTECT cResponse         	AS STRING
     PROTECT cResponseHeader   	AS STRING
@@ -54,8 +54,8 @@ METHOD CloseRequest ()
 METHOD ConnectRemote(cIP, cID, cPw)                     
 	LOCAL lRet		AS LOGIC
 
-    Default(@cID, "")
-    Default(@cPw, "")
+    DEFAULT(@cID, "")
+    DEFAULT(@cPw, "")
 
     SELF:Password := cPw
     SELF:UserName := cID
@@ -135,8 +135,8 @@ METHOD GetDocumentByURL		(cURL, nFlags)
     LOCAL cRet              AS STRING
     LOCAL lRet				AS LOGIC
 
-    Default(@nFlags, INTERNET_FLAG_DONT_CACHE)
-    Default(@cURL, SELF:cCurrentUrl)
+    DEFAULT(@nFlags, INTERNET_FLAG_DONT_CACHE)
+    DEFAULT(@cURL, SELF:cCurrentUrl)
 	cRet := ""
 
     IF cUrl == SELF:cCurrentUrl
@@ -174,8 +174,8 @@ METHOD GetDocumentByURL		(cURL, nFlags)
 METHOD GetDocumentFromServer	(cServer, cDocument, cID, cPw)          
     LOCAL cRet              AS STRING
 
-    Default(@cServer, URL_LOCAL_HOST)
-    Default(@cDocument, "")
+    DEFAULT(@cServer, URL_LOCAL_HOST)
+    DEFAULT(@cDocument, "")
 
     SELF:ConnectRemote(cServer, cID, cPw)
 
@@ -201,9 +201,9 @@ METHOD GetFile (cRemoteFile, cNewFile, lFailIfExists)
     LOCAL cUrl		AS STRING
     LOCAL cRet		AS STRING
 
-	Default(@lFailIfExists, .F. )
-    Default(@cRemoteFile, "")
-    Default(@cNewFile, "")
+	DEFAULT(@lFailIfExists, .F. )
+    DEFAULT(@cRemoteFile, "")
+    DEFAULT(@cNewFile, "")
 
  	IF SLen(cRemoteFile) == 0
 		RETURN .F. 
@@ -353,7 +353,7 @@ METHOD OpenRequest(cMethod, cDocument, nFlags)
 		dwFlags := DWORD(_CAST, INTERNET_FLAG_RELOAD + INTERNET_FLAG_NO_CACHE_WRITE + INTERNET_FLAG_KEEP_CONNECTION)
     ENDIF
 
-	Default(@cDocument, "")
+	DEFAULT(@cDocument, "")
 
 	IF SLen(cDocument) > 0
 		MemCopy(@abObj[1], String2Psz( cDocument), SLen(cDocument) + 1)

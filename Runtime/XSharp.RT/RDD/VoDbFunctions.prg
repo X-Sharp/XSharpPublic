@@ -19,7 +19,7 @@ USING System.Text
 /// <inheritdoc cref="M:XSharp.CoreDb.Alias(System.UInt32)"  />
 /// <seealso cref="M:XSharp.CoreDb.Alias(System.UInt32)"  />
 FUNCTION VoDbAlias(nArea AS DWORD) AS STRING
-    return VoDb.Alias(nArea)
+    RETURN VoDb.Alias(nArea)
 
 /// <inheritdoc cref="M:XSharp.CoreDb.Alias(System.UInt32)"  />
 /// <seealso cref="M:XSharp.CoreDb.Alias(System.UInt32)"  />
@@ -30,80 +30,80 @@ FUNCTION VoDbAliasSym(nArea AS DWORD) AS SYMBOL
 /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)"  />
 /// <seealso cref="M:XSharp.CoreDb.Append(System.Boolean)"  />
 FUNCTION VoDbAppend(lReleaseLocks AS LOGIC) AS LOGIC
-    return VoDb.Append(lReleaseLocks)
+    RETURN VoDb.Append(lReleaseLocks)
 
 /// <inheritdoc cref="M:XSharp.CoreDb.Bof"  />
 /// <seealso cref="M:XSharp.CoreDb.Bof"  />
 FUNCTION VoDbBof() AS LOGIC
-    return VoDb.Bof()
+    RETURN VoDb.Bof()
 
 // <inheritdoc cref="M:XSharp.CoreDb.BlobInfo(System.UInt32,System.UInt32,System.Object@)"  />
 // <remarks> <inheritdoc cref="M:XSharp.CoreDb.BlobInfo(System.UInt32,System.UInt32,System.Object@)"  />
 /// <br/> <note type="tip">The difference between VoDbBlobInfo and CoreDb.BlobInfo is that VoDbBlobInfo takes a USUAL parameter</note></remarks>
 // <seealso cref="O:XSharp.CoreDb.BlobInfo"  />
 FUNCTION VoDbBlobInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF USUAL) AS LOGIC
-    return VoDb.BlobInfo(nOrdinal, nPos, REF ptrRet)
+    RETURN VoDb.BlobInfo(nOrdinal, nPos, REF ptrRet)
 
 /// <inheritdoc cref="M:XSharp.CoreDb.BlobInfo(System.UInt32,System.UInt32,System.Object)"  />
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.BlobInfo(System.UInt32,System.UInt32,System.Object)"  />
 /// <br/> <note type="tip">The difference between VoDbBlobInfo and CoreDb.BlobInfo is that VoDbBlobInfo takes a USUAL parameter</note></remarks>
 /// <seealso cref="O:XSharp.CoreDb.BlobInfo"  />
 FUNCTION VoDbBlobInfo(nOrdinal AS DWORD,nPos AS DWORD,uValue AS USUAL) AS LOGIC
-    return VoDb.BlobInfo(nOrdinal, nPos,  uValue)
+    RETURN VoDb.BlobInfo(nOrdinal, nPos,  uValue)
 
 
 
 /// <inheritdoc cref="M:XSharp.CoreDb.BuffRefresh"  />
 /// <seealso cref="M:XSharp.CoreDb.BuffRefresh"  />
 FUNCTION VoDbBuffRefresh() AS LOGIC
-    return VoDb.BuffRefresh()
+    RETURN VoDb.BuffRefresh()
     
 /// <inheritdoc cref="M:XSharp.CoreDb.ClearFilter"  />    
 /// <seealso cref="M:XSharp.CoreDb.ClearFilter"  />    
 FUNCTION VoDbClearFilter() AS LOGIC
-    return VoDb.ClearFilter()
+    RETURN VoDb.ClearFilter()
 
 /// <inheritdoc cref="M:XSharp.CoreDb.ClearLocate"  />    
 /// <seealso cref="M:XSharp.CoreDb.ClearLocate"  />    
 FUNCTION VoDbClearLocate() AS LOGIC
-    return VoDb.ClearLocate()
+    RETURN VoDb.ClearLocate()
     
 /// <inheritdoc cref="M:XSharp.CoreDb.ClearRelation"  /> 
 /// <seealso cref="M:XSharp.CoreDb.ClearRelation"  /> 
 FUNCTION VoDbClearRelation() AS LOGIC
-    return VoDb.ClearRelation()
+    RETURN VoDb.ClearRelation()
     
 /// <inheritdoc cref="M:XSharp.CoreDb.ClearScope"  /> 
 /// <seealso cref="M:XSharp.CoreDb.ClearScope"  /> 
 FUNCTION VoDbClearScope() AS LOGIC
-    return VoDb.ClearScope()
+    RETURN VoDb.ClearScope()
     
 /// <inheritdoc cref="M:XSharp.CoreDb.CloseAll"  /> 
 /// <seealso cref="M:XSharp.CoreDb.CloseAll"  /> 
 FUNCTION VoDbCloseAll() AS LOGIC
-    return VoDb.CloseAll()
+    RETURN VoDb.CloseAll()
 
 /// <inheritdoc cref="M:XSharp.CoreDb.CloseArea"  /> 
 /// <seealso cref="M:XSharp.CoreDb.CloseArea"  /> 
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.CloseArea"  /> 
 /// <br/> <note type="tip">VoDbCloseArea() is an alias for CoreDbCloseArea()</note></remarks>
 FUNCTION VoDbCloseArea() AS LOGIC
-    return VoDb.CloseArea()
+    RETURN VoDb.CloseArea()
     
 /// <inheritdoc cref="M:XSharp.CoreDb.Commit"  /> 
 /// <seealso cref="M:XSharp.CoreDb.Commit"  /> 
 FUNCTION VoDbCommit() AS LOGIC
-    return VoDb.Commit()
+    RETURN VoDb.Commit()
 
 /// <inheritdoc cref="M:XSharp.CoreDb.CommitAll"  /> 
 /// <seealso cref="M:XSharp.CoreDb.CommitAll"  /> 
 FUNCTION VoDbCommitAll() AS LOGIC
-   return VoDb.CommitAll()
+   RETURN VoDb.CommitAll()
 
 /// <inheritdoc cref="M:XSharp.CoreDb.Continue"  /> 
 /// <seealso cref="M:XSharp.CoreDb.Continue"  /> 
 FUNCTION VoDbContinue() AS LOGIC
-    return VoDb.Continue()
+    RETURN VoDb.Continue()
 
 /// <inheritdoc cref="M:XSharp.CoreDb.Create(System.String,XSharp.RDD.Support.RddFieldInfo[],System.Type,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
 /// <param name="aStruct">Array with structure to use when creating the file.</param>
@@ -132,17 +132,17 @@ FUNCTION VoDbCreate( cName AS STRING, aStruct AS ARRAY, aList AS _RddList, lNew 
 /// <inheritdoc cref="M:XSharp.CoreDb.Delete"  /> 
 /// <seealso cref="M:XSharp.CoreDb.Delete"  /> 
 FUNCTION VoDbDelete() AS LOGIC
-    return VoDb.Delete()
+    RETURN VoDb.Delete()
     
 /// <inheritdoc cref="M:XSharp.CoreDb.Deleted"  /> 
 /// <seealso cref="M:XSharp.CoreDb.Deleted"  /> 
 FUNCTION VoDbDeleted() AS LOGIC
-     return VoDb.Deleted()
+     RETURN VoDb.Deleted()
     
 /// <inheritdoc cref="M:XSharp.CoreDb.Eof"  /> 
 /// <seealso cref="M:XSharp.CoreDb.Eof"  /> 
 FUNCTION VoDbEof() AS LOGIC
-     return VoDb.Eof()
+     RETURN VoDb.Eof()
 
 /// <inheritdoc cref="M:XSharp.CoreDb.Eval(XSharp.ICodeblock,XSharp.ICodeblock,XSharp.ICodeblock,System.Object,System.Object,System.Boolean)"  />
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.Eval(XSharp.ICodeblock,XSharp.ICodeblock,XSharp.ICodeblock,System.Object,System.Object,System.Boolean)"/>
@@ -156,7 +156,7 @@ FUNCTION VoDbEval(uBlock AS USUAL,uCobFor AS USUAL,uCobWhile AS USUAL,nNext AS U
 /// <br/> <note type="tip">The difference between VoDbFieldGet and CoreDb.FieldGet is that VoDbFieldGet takes a USUAL parameter</note></remarks>
 /// <seealso cref="M:XSharp.CoreDb.FieldGet(System.UInt32,System.Object@)"  />
 FUNCTION VoDbFieldGet(nPos AS DWORD,uRet REF USUAL) AS LOGIC
-    RETURN VoDb.FieldGet(nPos, ref uRet)
+    RETURN VoDb.FieldGet(nPos, REF uRet)
 
 
 /// <inheritdoc cref="M:XSharp.CoreDb.FieldInfo(System.UInt32,System.UInt32,System.Object@)"  />
@@ -164,14 +164,14 @@ FUNCTION VoDbFieldGet(nPos AS DWORD,uRet REF USUAL) AS LOGIC
 /// <br/> <note type="tip">The difference between VoDbFieldInfo and CoreDb.FieldInfo is that VoDbFieldInfo takes a USUAL parameter</note></remarks>
 /// <seealso cref="O:XSharp.CoreDb.FieldInfo"  />
 FUNCTION VoDbFieldInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF USUAL) AS LOGIC
-   RETURN VoDb.FieldInfo(nOrdinal, nPos, ref ptrRet)
+   RETURN VoDb.FieldInfo(nOrdinal, nPos, REF ptrRet)
 
 /// <inheritdoc cref="M:XSharp.CoreDb.FieldInfo(System.UInt32,System.UInt32,System.Object)"  />
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.FieldInfo(System.UInt32,System.UInt32,System.Object)"/> 
 /// <br/> <note type="tip">The difference between VoDbFieldInfo and CoreDb.FieldInfo is that VoDbFieldInfo takes a USUAL parameter</note></remarks>
 /// <seealso cref="O:XSharp.CoreDb.FieldInfo"  />
 FUNCTION VoDbFieldInfo(nOrdinal AS DWORD,nPos AS DWORD,uValue AS USUAL) AS LOGIC
-    return VoDb.FieldInfo(nOrdinal, nPos, uValue)
+    RETURN VoDb.FieldInfo(nOrdinal, nPos, uValue)
     
 /// <inheritdoc cref="M:XSharp.CoreDb.FieldPut(System.UInt32,System.Object)"  />
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.FieldPut(System.UInt32,System.Object)"/> 
@@ -183,37 +183,37 @@ FUNCTION VoDbFieldPut(nPos AS DWORD,xValue AS USUAL) AS LOGIC
 /// <inheritdoc cref="M:XSharp.CoreDb.FileGet(System.UInt32,System.String)"  />
 /// <seealso cref="M:XSharp.CoreDb.FileGet(System.UInt32,System.String)"  />
 FUNCTION VoDbFileGet(nPos AS DWORD,cFile AS STRING) AS LOGIC
-    return VoDb.FileGet(nPos, cFile)
+    RETURN VoDb.FileGet(nPos, cFile)
     
 /// <inheritdoc cref="M:XSharp.CoreDb.FilePut(System.UInt32,System.String)"  />
 /// <seealso cref="M:XSharp.CoreDb.FilePut(System.UInt32,System.String)"  />
 FUNCTION VoDbFilePut(nPos AS DWORD,cFile AS STRING) AS LOGIC
-    return VoDb.FilePut(nPos, cFile)
+    RETURN VoDb.FilePut(nPos, cFile)
     
 /// <inheritdoc cref="M:XSharp.CoreDb.Filter"  /> 
 /// <seealso cref="M:XSharp.CoreDb.Filter"  /> 
 FUNCTION VoDbFilter() AS STRING
-    return VoDb.Filter()
+    RETURN VoDb.Filter()
     
 /// <inheritdoc cref="M:XSharp.CoreDb.Flock"  /> 
 /// <seealso cref="M:XSharp.CoreDb.Flock"  /> 
 FUNCTION VoDbFlock() AS LOGIC
-    return VoDb.Flock()
+    RETURN VoDb.Flock()
 
 /// <inheritdoc cref="M:XSharp.CoreDb.Found"  /> 
 /// <seealso cref="M:XSharp.CoreDb.Found"  /> 
 FUNCTION VoDbFound() AS LOGIC
-    return VoDb.Found()
+    RETURN VoDb.Found()
     
 /// <inheritdoc cref="M:XSharp.CoreDb.GetSelect"  /> 
 /// <seealso cref="M:XSharp.CoreDb.GetSelect"  /> 
 FUNCTION VoDbGetSelect() AS DWORD
-    return VoDb.GetSelect()
+    RETURN VoDb.GetSelect()
     
 /// <inheritdoc cref="M:XSharp.CoreDb.GoBottom"  />     
 /// <seealso cref="M:XSharp.CoreDb.GoBottom"  />     
 FUNCTION VoDbGoBottom() AS LOGIC
-    return VoDb.GoBottom()
+    RETURN VoDb.GoBottom()
 
     
 /// <inheritdoc cref="M:XSharp.CoreDb.Goto(System.Object)"  />
@@ -226,7 +226,7 @@ FUNCTION VoDbGoto(uRecId AS USUAL) AS LOGIC
 /// <inheritdoc cref="M:XSharp.CoreDb.GoTop"  />        
 /// <seealso cref="M:XSharp.CoreDb.GoTop"  />        
 FUNCTION VoDbGoTop() AS LOGIC
-    return VoDb.GoTop()
+    RETURN VoDb.GoTop()
 
     
 /// <inheritdoc cref="M:XSharp.CoreDb.Info(System.UInt32,System.Object@)"  />
@@ -234,7 +234,7 @@ FUNCTION VoDbGoTop() AS LOGIC
 /// <br/> <note type="tip">The difference between VoDbInfo and CoreDb.Info is that VoDbInfo takes a USUAL parameter</note></remarks>
 /// <seealso cref="O:XSharp.CoreDb.Info"  />
 FUNCTION VoDbInfo(nOrdinal AS DWORD,ptrRet REF USUAL) AS LOGIC
-    return VoDb.Info(nOrdinal, ref ptrRet)
+    RETURN VoDb.Info(nOrdinal, REF ptrRet)
     
 /// <inheritdoc cref="M:XSharp.CoreDb.Info(System.UInt32,System.Object)"  />
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.Info(System.UInt32,System.Object)"  />
@@ -248,13 +248,13 @@ FUNCTION VoDbInfo(nOrdinal AS DWORD,uValue AS USUAL) AS LOGIC
 /// <inheritdoc cref="M:XSharp.CoreDb.JoinAppend(System.UInt32,XSharp._JoinList)"  />        
 /// <seealso cref="M:XSharp.CoreDb.JoinAppend(System.UInt32,XSharp._JoinList)"  />        
 FUNCTION VoDbJoinAppend(nSelect AS DWORD,struList AS _JoinList) AS LOGIC
-    return VoDb.JoinAppend(nSelect, struList )
+    RETURN VoDb.JoinAppend(nSelect, struList )
       
       
 /// <inheritdoc cref="M:XSharp.CoreDb.LastRec"  />   
 /// <seealso cref="M:XSharp.CoreDb.LastRec"  />   
 FUNCTION VoDbLastRec() AS LONG
-    return VoDb.LastRec() 
+    RETURN VoDb.LastRec() 
 
 /// <inheritdoc cref="M:XSharp.CoreDb.Locate(XSharp.ICodeblock,XSharp.ICodeblock,System.Int32,System.Object,System.Boolean)"  />
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.Locate(XSharp.ICodeblock,XSharp.ICodeblock,System.Int32,System.Object,System.Boolean)"  />
@@ -268,17 +268,17 @@ FUNCTION VoDbLocate(uCobFor AS USUAL,uCobWhile AS USUAL,nNext AS LONG,uRecId AS 
 /// <inheritdoc cref="M:XSharp.CoreDb.MemoExt(System.String)"  /> 
 /// <seealso cref="M:XSharp.CoreDb.MemoExt(System.String)"  /> 
 FUNCTION VoDbMemoExt(cDriver AS STRING) AS STRING
-    return VoDb.MemoExt(cDriver)
+    RETURN VoDb.MemoExt(cDriver)
     
 /// <inheritdoc cref="M:XSharp.CoreDb.OrdBagExt"  /> 
 /// <seealso cref="M:XSharp.CoreDb.OrdBagExt"  /> 
 FUNCTION VoDbOrdBagExt() AS STRING
-    return VoDb.OrdBagExt()
+    RETURN VoDb.OrdBagExt()
 
 /// <inheritdoc cref="M:XSharp.CoreDb.OrdCondSet(XSharp.RDD.Support.DbOrderCondInfo)"  />  
 /// <seealso cref="M:XSharp.CoreDb.OrdCondSet(XSharp.RDD.Support.DbOrderCondInfo)"  />  
 FUNCTION VoDbOrdCondSet(ordCondInfo AS DbOrderCondInfo) AS LOGIC
-    return VoDb.OrdCondSet(ordCondInfo)
+    RETURN VoDb.OrdCondSet(ordCondInfo)
 
 /// <inheritdoc cref="M:XSharp.CoreDb.OrdCreate(System.String,System.Object,System.String,XSharp.ICodeblock,System.Boolean,XSharp.RDD.Support.DbOrderCondInfo)"  />
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.OrdCreate(System.String,System.Object,System.String,XSharp.ICodeblock,System.Boolean,XSharp.RDD.Support.DbOrderCondInfo)"  />
@@ -301,7 +301,7 @@ FUNCTION VoDbOrdDestroy(cOrdBag AS STRING,uOrder AS USUAL) AS LOGIC
 /// <seealso cref="O:XSharp.CoreDb.OrderInfo"  />
 
 FUNCTION VoDbOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS USUAL,uRet REF USUAL) AS LOGIC
-    return VoDb.OrderInfo(nOrdinal, cBagName, uOrder, REF uRet)
+    RETURN VoDb.OrderInfo(nOrdinal, cBagName, uOrder, REF uRet)
 
 /// <inheritdoc cref="M:XSharp.CoreDb.OrderInfo(System.UInt32,System.String,System.Object,System.Object)"  />
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.OrderInfo(System.UInt32,System.String,System.Object,System.Object)"  />
@@ -328,7 +328,7 @@ FUNCTION VoDbOrdListClear(cOrdBag AS STRING,uOrder AS USUAL) AS LOGIC
 /// <inheritdoc cref="M:XSharp.CoreDb.OrdListRebuild"  /> 
 /// <seealso cref="M:XSharp.CoreDb.OrdListRebuild"  /> 
 FUNCTION VoDbOrdListRebuild() AS LOGIC
-    return VoDb.OrdListRebuild()
+    RETURN VoDb.OrdListRebuild()
 
 /// <inheritdoc cref="M:XSharp.CoreDb.OrdSetFocus(System.String,System.Object,System.String@)"  />
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.OrdSetFocus(System.String,System.Object,System.String@)"  />
@@ -340,7 +340,7 @@ FUNCTION VoDbOrdSetFocus(cOrdBag AS STRING,uOrder AS USUAL,cOrder OUT STRING) AS
 /// <inheritdoc cref="M:XSharp.CoreDb.Pack"  /> 
 /// <seealso cref="M:XSharp.CoreDb.Pack"  /> 
 FUNCTION VoDbPack() AS LOGIC
-    return VoDb.Pack()
+    RETURN VoDb.Pack()
     
 [Obsolete( "'VoDbRddCount( nRddType )' is not supported, use VoDbRddCount() instead", TRUE )];
 FUNCTION VoDbRddCount(nRddType AS DWORD) AS DWORD
@@ -349,14 +349,14 @@ FUNCTION VoDbRddCount(nRddType AS DWORD) AS DWORD
 /// <inheritdoc cref="M:XSharp.CoreDb.RddCount"  /> 
 /// <seealso cref="M:XSharp.CoreDb.RddCount"  /> 
 FUNCTION VoDbRddCount() AS DWORD
-    return VoDb.RddCount()
+    RETURN VoDb.RddCount()
 
 /// <inheritdoc cref="M:XSharp.CoreDb.RddInfo(System.UInt32,System.Object@)"  />
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.RddInfo(System.UInt32,System.Object@)"  />
 /// <br/> <note type="tip">The difference between VoDbRddInfo and CoreDb.RddInfo is that VoDbRddInfo takes a USUAL parameter</note></remarks>
 /// <seealso cref="O:XSharp.CoreDb.RddInfo"  />
 FUNCTION VoDbRddInfo(nOrdinal AS DWORD,uRet REF USUAL) AS LOGIC
-    return VoDb.RddInfo(nOrdinal, REF uRet)
+    RETURN VoDb.RddInfo(nOrdinal, REF uRet)
     
 /// <inheritdoc cref="M:XSharp.CoreDb.RddInfo(System.UInt32,System.Object)"  />
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.RddInfo(System.UInt32,System.Object)"  />
@@ -373,51 +373,51 @@ FUNCTION VoDbRddList(rddList AS _RddList,nRddType AS DWORD) AS LOGIC
 /// <inheritdoc cref="M:XSharp.CoreDb.RddList"  /> 
 /// <seealso cref="M:XSharp.CoreDb.RddList"  /> 
 FUNCTION VoDbRddList() AS STRING[]
-  return VoDb.RddList()
+  RETURN VoDb.RddList()
     
 /// <inheritdoc cref="M:XSharp.CoreDb.RddName"  /> 
 /// <seealso cref="M:XSharp.CoreDb.RddName"  /> 
 FUNCTION VoDbRddName() AS STRING
-    return VoDb.RddName()
+    RETURN VoDb.RddName()
 
 /// <inheritdoc cref="M:XSharp.CoreDb.RddSetDefault(System.String)"  /> 
 /// <seealso cref="M:XSharp.CoreDb.RddSetDefault(System.String)"  /> 
 FUNCTION VoDbRddSetDefault(cNewRDD AS STRING) AS STRING
-    return VoDb.RddSetDefault(cNewRDD)
+    RETURN VoDb.RddSetDefault(cNewRDD)
     
 /// <inheritdoc cref="M:XSharp.CoreDb.Recall"  /> 
 /// <seealso cref="M:XSharp.CoreDb.Recall"  /> 
 FUNCTION VoDbRecall() AS LOGIC
-    return VoDb.Recall()
+    RETURN VoDb.Recall()
 
 /// <inheritdoc cref="M:XSharp.CoreDb.Recno"  /> 
 /// <seealso cref="M:XSharp.CoreDb.Recno"  /> 
 FUNCTION VoDbRecno() AS DWORD
-    return VoDb.Recno()
+    RETURN VoDb.Recno()
     
 /// <inheritdoc cref="M:XSharp.CoreDb.RecordGet"  /> 
 /// <seealso cref="M:XSharp.CoreDb.RecordGet"  /> 
 FUNCTION VoDbRecordGet() AS BYTE[]
-    return VoDb.RecordGet()
+    RETURN VoDb.RecordGet()
 
 /// <inheritdoc cref="M:XSharp.CoreDb.RecordInfo(System.UInt32,System.Object,System.Object@)"  />
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.RecordInfo(System.UInt32,System.Object,System.Object@)"  />
 /// <br/> <note type="tip">The difference between VoDbRecordInfo and CoreDb.RecordInfo is that VoDbRecordInfo takes a USUAL parameter</note></remarks>
 /// <seealso cref="M:XSharp.CoreDb.RecordInfo(System.UInt32,System.Object,System.Object@)"  />
 FUNCTION VoDbRecordInfo(nOrdinal AS DWORD,uRecId AS USUAL,uRet REF USUAL) AS LOGIC
-    return VoDb.RecordInfo(nOrdinal, uRecID, REF uRet)
+    RETURN VoDb.RecordInfo(nOrdinal, uRecID, REF uRet)
 
 /// <inheritdoc cref="M:XSharp.CoreDb.RecordInfo(System.UInt32,System.Object,System.Object)"  />
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.RecordInfo(System.UInt32,System.Object,System.Object)"  />
 /// <br/> <note type="tip">The difference between VoDbRecordInfo and CoreDb.RecordInfo is that VoDbRecordInfo takes a USUAL parameter</note></remarks>
 /// <seealso cref="M:XSharp.CoreDb.RecordInfo(System.UInt32,System.Object,System.Object)"  />
 FUNCTION VoDbRecordInfo(nOrdinal AS DWORD,uRecId AS USUAL,uValue AS USUAL) AS LOGIC
-    return VoDb.RecordInfo(nOrdinal, uRecID, uValue)    
+    RETURN VoDb.RecordInfo(nOrdinal, uRecID, uValue)    
    
 /// <inheritdoc cref="M:XSharp.CoreDb.RecordPut(System.Byte[])"  />  
 /// <seealso cref="M:XSharp.CoreDb.RecordPut(System.Byte[])"  />  
 FUNCTION VoDbRecordPut(aRecord AS BYTE[]) AS LOGIC
-    return VoDb.RecordPut(aRecord)
+    RETURN VoDb.RecordPut(aRecord)
     
 /// <inheritdoc cref="M:XSharp.CoreDb.Relation(System.UInt32,System.String@)"  />
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.Relation(System.UInt32,System.String@)"  />
@@ -453,20 +453,20 @@ FUNCTION VoDbSeek(xValue AS USUAL,lSoft AS LOGIC) AS LOGIC
 /// <inheritdoc cref="M:XSharp.CoreDb.RSelect(System.UInt32)"  />
 /// <seealso cref="M:XSharp.CoreDb.RSelect(System.UInt32)"  />
 FUNCTION VoDbRSelect(nPos AS DWORD) AS DWORD
-    return VoDb.RSelect(nPos)
+    RETURN VoDb.RSelect(nPos)
 
 /// <inheritdoc cref="M:XSharp.CoreDb.Select(System.UInt32,System.UInt32@)"  />
 /// <seealso cref="M:XSharp.CoreDb.Select(System.UInt32,System.UInt32@)"  />
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.Select(System.UInt32,System.UInt32@)"  />
 /// <br/> <note type="tip">The difference between VoDbSelect and CoreDb.Select is that VoDbSelect takes a USUAL parameter</note></remarks>
 FUNCTION VoDbSelect(nNew AS DWORD,nOld REF USUAL) AS LOGIC
-    return VoDb.Select(nNew, REF nOld)
+    RETURN VoDb.Select(nNew, REF nOld)
     
     
 /// <inheritdoc cref="M:XSharp.CoreDb.Select(System.UInt32,System.UInt32@)"  />  
 /// <seealso cref="M:XSharp.CoreDb.Select(System.UInt32,System.UInt32@)"  />  
 FUNCTION VoDbSelect(nNew AS DWORD,nOld REF DWORD ) AS LOGIC
-  return VoDb.Select(nNew, REF nOld)
+  RETURN VoDb.Select(nNew, REF nOld)
     
 /// <inheritdoc cref="M:XSharp.CoreDb.SetFilter(XSharp.ICodeblock,System.String)"  />
 /// <seealso cref="M:XSharp.CoreDb.SetFilter(XSharp.ICodeblock,System.String)"  />
@@ -481,7 +481,7 @@ FUNCTION VoDbSetFilter(uCobFilter AS USUAL,cFilter AS STRING) AS LOGIC
 /// <inheritdoc cref="M:XSharp.CoreDb.SetFound(System.Boolean)"  />  
 /// <seealso cref="M:XSharp.CoreDb.SetFound(System.Boolean)"  />  
 FUNCTION VoDbSetFound(lFound AS LOGIC) AS LOGIC
-    return VoDb.SetFound(lFound)
+    RETURN VoDb.SetFound(lFound)
 
 /// <inheritdoc cref="M:XSharp.CoreDb.SetLocate(XSharp.ICodeblock)"  />
 /// <seealso cref="M:XSharp.CoreDb.SetLocate(XSharp.ICodeblock)"  />
@@ -501,22 +501,22 @@ FUNCTION VoDbSetRelation(cAlias AS STRING,uCobKey AS USUAL,cKey AS STRING) AS LO
 /// <inheritdoc cref="M:XSharp.CoreDb.SetScope(XSharp.RDD.Support.DbScopeInfo)"  />  
 /// <seealso cref="M:XSharp.CoreDb.SetScope(XSharp.RDD.Support.DbScopeInfo)"  />  
 FUNCTION VoDbSetScope(scope AS DbScopeInfo) AS LOGIC
-    return VoDb.SetScope(scope)
+    RETURN VoDb.SetScope(scope)
     
 /// <inheritdoc cref="M:XSharp.CoreDb.SetSelect(System.Int32)"  />    
 /// <seealso cref="M:XSharp.CoreDb.SetSelect(System.Int32)"  />    
 FUNCTION VoDbSetSelect(siNew AS INT) AS DWORD
-    return VoDb.SetSelect(siNew)
+    RETURN VoDb.SetSelect(siNew)
     
 /// <inheritdoc cref="M:XSharp.CoreDb.Skip(System.Int32)"  /> 
 /// <seealso cref="M:XSharp.CoreDb.Skip(System.Int32)"  /> 
 FUNCTION VoDbSkip(nRecords AS LONG) AS LOGIC
-    return VoDb.Skip(nRecords)
+    RETURN VoDb.Skip(nRecords)
     
 /// <inheritdoc cref="M:XSharp.CoreDb.SkipScope(System.Int32,XSharp.RDD.Support.DbScopeInfo)"  />  
 /// <seealso cref="M:XSharp.CoreDb.SkipScope(System.Int32,XSharp.RDD.Support.DbScopeInfo)"  />  
 FUNCTION VoDbSkipScope(nRecords AS LONG,scope AS DBSCOPEINFO) AS LOGIC
-    return VoDb.SkipScope(nRecords, scope)
+    RETURN VoDb.SkipScope(nRecords, scope)
 
 /// <inheritdoc cref="M:XSharp.CoreDb.Sort(System.UInt32,XSharp._FieldNames,XSharp.ICodeblock,XSharp.ICodeblock,System.Object,System.Object,System.Boolean,XSharp._FieldNames)"  />
 /// <seealso cref="M:XSharp.CoreDb.Sort(System.UInt32,XSharp._FieldNames,XSharp.ICodeblock,XSharp.ICodeblock,System.Object,System.Object,System.Boolean,XSharp._FieldNames)"  />
@@ -530,7 +530,7 @@ FUNCTION VoDbSort(nDest AS DWORD,fnNames AS _FieldNames,uCobFor AS USUAL,uCobWhi
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.SymSelect(System.String)"  />
 /// <br/> <note type="tip">The difference between VoDbSymSelect and CoreDb.SymSelect is that VoDbSymSelect takes SYMBOL parameters</note></remarks>
 FUNCTION VoDbSymSelect(symAlias AS SYMBOL) AS INT
-    return VoDb.SymSelect(symAlias)
+    RETURN VoDb.SymSelect(symAlias)
 
 /// <inheritdoc cref="M:XSharp.CoreDb.Trans(System.UInt32,XSharp._FieldNames,XSharp.ICodeblock,XSharp.ICodeblock,System.Object,System.Object,System.Boolean)"  />
 /// <seealso cref="M:XSharp.CoreDb.Trans(System.UInt32,XSharp._FieldNames,XSharp.ICodeblock,XSharp.ICodeblock,System.Object,System.Object,System.Boolean)"  />
@@ -542,7 +542,7 @@ FUNCTION VoDbTrans(nDest AS DWORD,fldNames AS _FieldNames,uCobFor AS USUAL,uCobW
 /// <inheritdoc cref="M:XSharp.CoreDb.TransRec(System.UInt32,XSharp._FieldNames)"  />   
 /// <seealso cref="M:XSharp.CoreDb.TransRec(System.UInt32,XSharp._FieldNames)"  />   
 FUNCTION VoDbTransRec(nDest AS DWORD,fldNames AS _FieldNames) AS LOGIC
-    return VoDb.TransRec(nDest, fldNames)
+    RETURN VoDb.TransRec(nDest, fldNames)
 
 /// <inheritdoc cref="M:XSharp.CoreDb.Unlock(System.Object)"  />
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.Unlock(System.Object)"  />
@@ -553,27 +553,27 @@ FUNCTION VoDbUnlock(uRecno AS USUAL) AS LOGIC
 /// <inheritdoc cref="M:XSharp.CoreDb.OrdBagExt"  /> 
 /// <seealso cref="M:XSharp.CoreDb.OrdBagExt"  /> 
 FUNCTION VoDbUnlockAll() AS LOGIC
-    return VoDb.UnlockAll()
+    RETURN VoDb.UnlockAll()
     
 /// <inheritdoc cref="M:XSharp.CoreDb.UseArea(System.Boolean,XSharp._RddList,System.String,System.String,System.Boolean,System.Boolean)"  />  
 /// <seealso cref="M:XSharp.CoreDb.UseArea(System.Boolean,XSharp._RddList,System.String,System.String,System.Boolean,System.Boolean)"  />  
 FUNCTION VoDbUseArea(lNew AS LOGIC,rddList AS _RddList,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
-    return VoDb.UseArea(lNew, rddList, cName, cAlias, lShare, lReadOnly)
+    RETURN VoDb.UseArea(lNew, rddList, cName, cAlias, lShare, lReadOnly)
     
 /// <inheritdoc cref="M:XSharp.CoreDb.UseArea(System.Boolean,System.String,System.String,System.String,System.Boolean,System.Boolean)"  />    
 /// <seealso cref="M:XSharp.CoreDb.UseArea(System.Boolean,System.String,System.String,System.String,System.Boolean,System.Boolean)"  />    
 FUNCTION VoDbUseArea(lNew AS LOGIC,rddName AS STRING,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
-    return VoDb.UseArea(lNew, rddName, cName, cAlias, lShare, lReadOnly)
+    RETURN VoDb.UseArea(lNew, rddName, cName, cAlias, lShare, lReadOnly)
     
 /// <inheritdoc cref="M:XSharp.CoreDb.UseArea(System.Boolean,System.Type,System.String,System.String,System.Boolean,System.Boolean)"  />    
 /// <seealso cref="M:XSharp.CoreDb.UseArea(System.Boolean,System.Type,System.String,System.String,System.Boolean,System.Boolean)"  />    
 FUNCTION VoDbUseArea(lNew AS LOGIC,rddType AS System.Type,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
-    return VoDb.UseArea(lNew ,rddType ,cName ,cAlias ,lShare ,lReadOnly ) 
+    RETURN VoDb.UseArea(lNew ,rddType ,cName ,cAlias ,lShare ,lReadOnly ) 
     
 /// <inheritdoc cref="M:XSharp.CoreDb.Zap"  /> 
 /// <seealso cref="M:XSharp.CoreDb.Zap"  /> 
 FUNCTION VoDbZap() AS LOGIC
-    return VoDb.Zap()
+    RETURN VoDb.Zap()
 
 /// <inheritdoc cref="M:XSharp.CoreDb._ErrInfoPtr"  />     
 /// <seealso cref="M:XSharp.CoreDb._ErrInfoPtr"  />     

@@ -5,7 +5,7 @@
 
 #endif
 
-PARTIAL CLASS IpcServer INHERIT @@EventContext
+CLASS IpcServer INHERIT @@EventContext
 	PROTECT dwIdInst AS DWORD
 	PROTECT hInst AS PTR
 	PROTECT hStr AS PTR

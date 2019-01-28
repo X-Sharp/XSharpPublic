@@ -1,4 +1,4 @@
-PARTIAL CLASS SQLListColumns INHERIT SQLCatalogQuery
+CLASS SQLListColumns INHERIT SQLCatalogQuery
     EXPORT Qualifier    AS STRING
     EXPORT Owner        AS STRING
     EXPORT TableName    AS STRING

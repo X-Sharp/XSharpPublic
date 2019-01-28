@@ -10,24 +10,46 @@ USING XSharp.Rdd
 USING System.Linq
 USING System.Collections.Generic
 
+
+
 /// <summary>Determine the number of a work area.</summary>
-FUNCTION Select(xValue AS USUAL) AS USUAL
-    LOCAL dwSelect   AS DWORD
-    LOCAL dwCurrent  AS DWORD
-    dwCurrent := VoDb.GetSelect()
-    dwSelect := _SELECT(xValue)
-    VoDb.SetSelect((INT) dwCurrent)
-    RETURN dwSelect
+/// <param name="xValue">A value that identifies the work area.  This can be the number of the work area or its alias, specified either as a symbol or a string.  If <uWorkArea> is not specified, the current work area number is returned.  Therefore, Select() is the same as DBGetSelect().</param>
+/// <returns>A number from 0 to 4096.  0 is returned if <uWorkArea> does not identify a valid work area or does not correspond to a valid alias.</returns>
+FUNCTION Select(xValue) AS USUAL CLIPPER
+    RETURN  _Select(xValue)
+
+
+/// <summary>Determine the number of a work area.</summary>
+/// <param name="cValue">The aliasof a workarea.  If cValue is empty then  the current work area number is returned.  </param>
+/// <returns>A number from 0 to 4096.  0 is returned if cValue does not identify a valid work area or does not correspond to a valid alias.</returns>
+
+FUNCTION _SelectString(cValue AS STRING) AS DWORD
+    LOCAL nSelect := 0 AS DWORD
+    cValue := AllTrim(cValue)
+    IF SLen(cValue) = 1
+        VAR nAsc := (WORD) UPPER(cValue)[0]
+        IF nAsc > 64 .AND. nAsc <= 90    // A .. Z , M = memvar
+            IF nAsc != 77  // 'M' 
+                nSelect :=  (DWORD) (nAsc - 64)
+            ELSE
+                nSelect := 0
+            ENDIF
+        ENDIF
+    ENDIF
+        
+    IF nSelect > 0 .OR. "0" == cValue
+        nSelect := VoDb.SetSelect((INT) nSelect)
+    ELSE
+        nSelect := (DWORD) VoDb.SymSelect(cValue)
+    ENDIF
+    RETURN nSelect
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
+/// <summary>Determine the number of a work area.</summary>
+/// <param name="xValue">A value that identifies the work area.  This can be the number of the work area or its alias, specified either as a symbol or a string.  If xValue is not specified, the current work area number is returned.</param>
+/// <returns>A number from 0 to 4096.  0 is returned if xValue does not identify a valid work area or does not correspond to a valid alias.</returns>
 FUNCTION _Select(xValue) AS USUAL CLIPPER
-    LOCAL nSelect           AS LONG
-    LOCAL sAlias            AS SYMBOL
+    LOCAL nSelect           AS DWORD
     LOCAL xType             AS DWORD
-    LOCAL nAsc              AS DWORD
     
     IF IsNil(xValue)
         RETURN  (INT) VoDb.GetSelect() 
@@ -36,27 +58,12 @@ FUNCTION _Select(xValue) AS USUAL CLIPPER
     SWITCH xType
     CASE SYMBOL
         LOCAL symSelect := xValue AS SYMBOL
-        nSelect := VoDb.SymSelect(symSelect)
+        nSelect := (DWORD) VoDb.SymSelect(symSelect)
     CASE STRING
-        nSelect := 0
-        LOCAL cValue := xValue AS STRING
-        IF SLen(cValue) = 1
-            nSelect := Val(cValue)
-            nAsc := Asc( Upper(cValue) )
-            IF nAsc > 64 .AND. nAsc < 75
-                nSelect := (INT) nAsc - 64
-            ENDIF
-        ENDIF
-        
-        IF (nSelect > 0) .OR. ("0" == cValue)
-            nSelect := (INT) VoDb.SetSelect(nSelect)
-        ELSE
-            sAlias  := AsSymbol( AllTrim(cValue) )
-            nSelect := VoDb.SymSelect(sAlias)
-        ENDIF
+        nSelect := _SelectString(xValue)
     CASE LONG
     CASE FLOAT
-        nSelect := (INT) VoDb.SetSelect(xValue)
+        nSelect := VoDb.SetSelect(xValue)
     OTHERWISE
         nSelect := 0
     END SWITCH
@@ -1066,7 +1073,6 @@ FUNCTION DbCopyXStruct(cFile AS STRING) AS LOGIC STRICT
     CATCH e AS RddError
         e:FuncSym := __FUNCTION__
         THROW e
-        lRetCode := .F.
     END TRY
     
     RETURN (lRetCode)
@@ -1182,7 +1188,7 @@ FUNCTION EmptyRecord() AS LOGIC
    IF Used()
       aRecord := VODBRecordGet()
       lRet := TRUE
-      FOREACH var b in aRecord
+      FOREACH VAR b IN aRecord
          IF b != 32
             lRet := FALSE
             EXIT
@@ -1203,8 +1209,8 @@ FUNCTION EmptyField( n AS DWORD ) AS LOGIC
    LOCAL lRet    AS LOGIC
    LOCAL nOffset AS DWORD
    LOCAL nEnd    AS DWORD
-   LOCAL uLen as USUAL
-   IF Used() .and. n > 0 .and. n <= FCount()
+   LOCAL uLen AS USUAL
+   IF Used() .AND. n > 0 .AND. n <= FCount()
         lRet := TRUE
         aRecord := VODBRecordGet()
         nOffset := 2        // skip the Deleted flag

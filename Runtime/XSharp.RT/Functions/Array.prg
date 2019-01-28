@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -700,14 +700,14 @@ FUNCTION AScanBin(a AS ARRAY,x AS USUAL) AS DWORD
 FUNCTION AScanBinExact(a AS ARRAY,x AS USUAL) AS DWORD
 	RETURN ArrayHelpers.AScanBin( "AscanBin" , a, x, TRUE )
 
-/// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
+/// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, element AS T) AS DWORD WHERE T IS NEW()
 	RETURN ArrayHelpers.Ascan( aTarget, element,1, (INT) aTarget:Length) 
 
 /// <summary>
 /// Scan an array until an expression returns TRUE.
 /// </summary>
-/// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
+/// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>) AS DWORD WHERE T IS NEW()
 	RETURN ArrayHelpers.Ascan( aTarget, act,1, (INT) aTarget:Length) 
 
@@ -715,7 +715,7 @@ FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>) AS DWORD WH
 /// <summary>
 /// Scan an array until value is found.
 /// </summary>
-/// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
+/// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, element AS T, nStart AS LONG) AS DWORD WHERE T IS NEW()
 	RETURN ArrayHelpers.Ascan( aTarget, element, nStart, (INT) aTarget:Length- nStart +1) 
 
@@ -724,7 +724,7 @@ FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, element AS T, nStart AS LONG) AS DW
 /// Scan an array until an expression returns TRUE.
 /// </summary>
 /// <param name="act">The lambda expression to use for looking up the correct element.</param>
-/// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
+/// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG) AS DWORD WHERE T IS NEW()
 	RETURN ArrayHelpers.Ascan( aTarget, act, nStart, (INT) aTarget:Length - nStart +1) 
 
@@ -734,7 +734,7 @@ FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS L
 /// Scan an array until value is found.
 /// </summary>
 /// <param name="act">The lambda expression to use for looking up the correct element.</param>
-/// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
+/// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, element AS T, nStart AS LONG, nCount AS LONG) AS DWORD WHERE T IS NEW()
 	RETURN ArrayHelpers.Ascan( aTarget, element, nStart, nCount) 
 
@@ -742,7 +742,7 @@ FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, element AS T, nStart AS LONG, nCoun
 /// Scan an array until an expression returns TRUE.
 /// </summary>
 /// <param name="act">The lambda expression to use for looking up the correct element.</param>
-/// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
+/// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG, nCount  AS LONG) AS DWORD WHERE T IS NEW()
 	RETURN ArrayHelpers.Ascan( aTarget, act, nStart, nCount) 
 
@@ -1052,7 +1052,7 @@ INTERNAL STRUCTURE ArraySortComparer  IMPLEMENTS System.Collections.Generic.ICom
 		LOCAL u AS USUAL
 		u := _cb:EvalBlock( x, y )
 		RETURN IIF (  (LOGIC) u , -1, 1 ) 
-	RETURN 0
+	
 		
 END STRUCTURE
  
@@ -1065,13 +1065,13 @@ INTERNAL STRUCTURE ArraySortComparer<T, U>  IMPLEMENTS System.Collections.Generi
 		RETURN
 		
 	METHOD Compare( x AS T, y AS T ) AS INT
-		IF x:Equals( y )  
+		IF Object.ReferenceEquals(x, y )  
 			RETURN 0
 		ENDIF
 		LOCAL u AS LOGIC
 		u := _cb( x, y )
 		RETURN IIF (  u , -1, 1 ) 
-	RETURN 0
+	
 		
 END STRUCTURE
 

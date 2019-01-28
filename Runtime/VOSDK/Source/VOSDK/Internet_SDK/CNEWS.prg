@@ -1,4 +1,4 @@
-PARTIAL CLASS CNews INHERIT CMessage
+﻿CLASS CNews INHERIT CMessage
 	PROTECT cExpires        AS STRING
 	PROTECT cNewsGroups     AS STRING
 	PROTECT cPath           AS STRING
@@ -34,7 +34,7 @@ METHOD GetAttachInfo(c)
 	LOCAL cRest     AS STRING
 	LOCAL cBefore   AS STRING
 
-	Default(@c, SELF:cAttach)
+	DEFAULT(@c, SELF:cAttach)
 
 	IF SELF:cBoundary == DEFAULT_BOUNDARY
 		cRest := c

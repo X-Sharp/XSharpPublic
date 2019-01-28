@@ -21,15 +21,15 @@ CLASS DBFCDX INHERIT DBFFPT
 	PROPERTY SysName AS STRING GET typeof(DBFCDX):ToString()
 
     METHOD Open(info AS XSharp.RDD.Support.DbOpenInfo) AS LOGIC
-        LOCAL lOk as LOGIC
+        LOCAL lOk AS LOGIC
         lOk := SUPER:Open(info)
         IF lOk
             VAR cCdxFileName := System.IO.Path.ChangeExtension(info:FileName, ".CDX")
-            if RuntimeState.AutoOpen .and. file(cCdxFileName)
+            IF RuntimeState.AutoOpen .AND. file(cCdxFileName)
                 info:FileName := cCdxFileName
                 info:Extension := ".CDX"
                 lOk := _orderBagList:Add(info)
-            endif
+            ENDIF
         ENDIF
         RETURN lOk
             

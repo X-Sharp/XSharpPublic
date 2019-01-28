@@ -1,4 +1,4 @@
-PARTIAL CLASS CFtp INHERIT CSession
+﻿CLASS CFtp INHERIT CSession
 
 METHOD Append (cLocalFile, nFlags) 
 
@@ -14,9 +14,9 @@ METHOD Append (cLocalFile, nFlags)
     ENDIF
 
     nDefFlags := FTP_TRANSFER_TYPE_BINARY
-    Default(@nFlags, nDefFlags)
+    DEFAULT(@nFlags, nDefFlags)
 
-    Default(@cLocalFile, "")
+    DEFAULT(@cLocalFile, "")
 
     IF !File(cLocalFile)
         RETURN .F. 
@@ -39,9 +39,9 @@ METHOD ConnectRemote(cIP, cID, cPw, lBypass)
 
 	LOCAL lRet          AS LOGIC
 
-	Default(@cID, "")
-	Default(@cPw, "")
-	Default(@lBypass, FALSE)
+	DEFAULT(@cID, "")
+	DEFAULT(@cPw, "")
+	DEFAULT(@lBypass, FALSE)
 
 	SELF:Password := cPw
 	SELF:UserName := cID
@@ -142,10 +142,10 @@ METHOD Directory (cFile, nFlags)
 
     aRet := {}
 
-    Default(@cFile, "*.*")
+    DEFAULT(@cFile, "*.*")
 
     //  UH 05/25/2000
-    Default(@nFlags, INTERNET_FLAG_RELOAD + INTERNET_FLAG_RESYNCHRONIZE)
+    DEFAULT(@nFlags, INTERNET_FLAG_RELOAD + INTERNET_FLAG_RESYNCHRONIZE)
 
     IF SELF:hConnect = NULL_PTR
         RETURN aRet
@@ -222,10 +222,10 @@ METHOD GetFile(cRemoteFile, cNewFile, lFailIfExists, nFlags)
         RETURN .F. 
     ENDIF
 
-    Default(@lFailIfExists, .F. )
-    Default(@nFlags, INTERNET_FLAG_TRANSFER_BINARY)
-    Default(@cRemoteFile, "")
-    Default(@cNewFile, "")
+    DEFAULT(@lFailIfExists, .F. )
+    DEFAULT(@nFlags, INTERNET_FLAG_TRANSFER_BINARY)
+    DEFAULT(@cRemoteFile, "")
+    DEFAULT(@cNewFile, "")
 
     IF SLen(cRemoteFile) = 0
         RETURN .F. 
@@ -348,9 +348,9 @@ METHOD OpenFile(cRemoteFile, nAccess, nFlags)
     LOCAL n         AS DWORD
     LOCAL nContxt   AS DWORD
 
-    Default(@nFlags, FTP_TRANSFER_TYPE_BINARY + INTERNET_FLAG_RELOAD)
-    Default(@nAccess, 0)
-    Default(@cRemoteFile, "")
+    DEFAULT(@nFlags, FTP_TRANSFER_TYPE_BINARY + INTERNET_FLAG_RELOAD)
+    DEFAULT(@nAccess, 0)
+    DEFAULT(@cRemoteFile, "")
 
     nContxt := SELF:__GetStatusContext()
 
@@ -403,11 +403,11 @@ METHOD PutFile(cLocalFile, cRemoteFile, lFailIfExists, nFlags)
     //  UH 10/28/2001
     //  Default(@nFlags, 0)
     nDefFlags := FTP_TRANSFER_TYPE_BINARY
-    Default(@nFlags, nDefFlags)
+    DEFAULT(@nFlags, nDefFlags)
 
-    Default(@cLocalFile, "")
-    Default(@cRemoteFile, "")
-    Default(@lFailIfExists, .F. )
+    DEFAULT(@cLocalFile, "")
+    DEFAULT(@cRemoteFile, "")
+    DEFAULT(@lFailIfExists, .F. )
 
     IF !File(cLocalFile)
         RETURN .F. 

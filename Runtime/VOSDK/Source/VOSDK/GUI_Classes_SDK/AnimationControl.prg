@@ -1,4 +1,4 @@
-PARTIAL CLASS AnimationControl INHERIT Control
+CLASS AnimationControl INHERIT Control
 	PROTECT oAVIFileSpec AS FileSpec
 	PROTECT resID AS ResourceID
 	PROTECT hInstance AS PTR

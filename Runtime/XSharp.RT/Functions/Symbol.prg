@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -11,6 +11,7 @@
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
+/// <include file="RTComments.xml" path="Comments/Symbol/*" />
 FUNCTION String2Atom(c AS STRING) AS SYMBOL
 	RETURN SYMBOL{c, FALSE}
 	
@@ -20,6 +21,7 @@ FUNCTION String2Atom(c AS STRING) AS SYMBOL
 	/// <param name="c"></param>
 	/// <returns>
 	/// </returns>
+/// <include file="RTComments.xml" path="Comments/Symbol/*" />
 FUNCTION String2Symbol(c AS STRING) AS SYMBOL
 	RETURN SYMBOL{c, TRUE}
 	
@@ -30,6 +32,7 @@ FUNCTION String2Symbol(c AS STRING) AS SYMBOL
 	/// <param name="s"></param>
 	/// <returns>
 	/// </returns>
+/// <include file="RTComments.xml" path="Comments/Symbol/*" />
 FUNCTION Symbol2String(s AS SYMBOL) AS STRING
 	RETURN s:ToString()
 
@@ -40,6 +43,7 @@ FUNCTION Symbol2String(s AS SYMBOL) AS STRING
 	/// <param name="s2"></param>
 	/// <returns>
 	/// </returns>
+/// <include file="RTComments.xml" path="Comments/Symbol/*" />
 FUNCTION ConcatAtom(s1 AS SYMBOL,s2 AS SYMBOL) AS SYMBOL
 	RETURN SYMBOL{ s1:ToString()+ s2:ToString()}
 	
@@ -51,6 +55,7 @@ FUNCTION ConcatAtom(s1 AS SYMBOL,s2 AS SYMBOL) AS SYMBOL
 	/// <param name="s3"></param>
 	/// <returns>
 	/// </returns>
+    /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 FUNCTION ConcatAtom3(s1 AS SYMBOL,s2 AS SYMBOL,s3 AS SYMBOL) AS SYMBOL
 	RETURN SYMBOL{ s1:ToString() +s2:ToString() +s3:ToString() }
 
@@ -62,6 +67,7 @@ FUNCTION ConcatAtom3(s1 AS SYMBOL,s2 AS SYMBOL,s3 AS SYMBOL) AS SYMBOL
 	/// <param name="s4"></param>
 	/// <returns>
 	/// </returns>
+    /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 FUNCTION ConcatAtom4(s1 AS SYMBOL,s2 AS SYMBOL,s3 AS SYMBOL,s4 AS SYMBOL) AS SYMBOL
 	RETURN SYMBOL{ s1:ToString() +s2:ToString() +s3:ToString() +s4:ToString() }
 	
@@ -74,6 +80,7 @@ FUNCTION ConcatAtom4(s1 AS SYMBOL,s2 AS SYMBOL,s3 AS SYMBOL,s4 AS SYMBOL) AS SYM
 	/// <param name="s5"></param>
 	/// <returns>
 	/// </returns>
+    /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 FUNCTION ConcatAtom5(s1 AS SYMBOL,s2 AS SYMBOL,s3 AS SYMBOL,s4 AS SYMBOL,s5 AS SYMBOL) AS SYMBOL
 	RETURN SYMBOL{ s1:ToString() +s2:ToString() +s3:ToString() +s4:ToString() +s5:ToString()}
 	
@@ -83,6 +90,7 @@ FUNCTION ConcatAtom5(s1 AS SYMBOL,s2 AS SYMBOL,s3 AS SYMBOL,s4 AS SYMBOL,s5 AS S
 	/// </summary>
 	/// <returns>
 	/// </returns>
+/// <include file="RTComments.xml" path="Comments/Symbol/*" />
 FUNCTION MaxAtom() AS DWORD
 	RETURN (DWORD) __Symbol.SymbolTable.Strings:Count
 	
@@ -94,6 +102,7 @@ FUNCTION MaxAtom() AS DWORD
 	/// <param name="s2"></param>
 	/// <returns>
 	/// </returns>
+    /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 FUNCTION SysCompAtom(s1 AS SYMBOL,s2 AS SYMBOL) AS INT
 	RETURN __StringCompare(s1:ToString(), s2:ToString())
 
@@ -104,6 +113,7 @@ FUNCTION SysCompAtom(s1 AS SYMBOL,s2 AS SYMBOL) AS INT
 	/// <param name="s"></param>
 	/// <returns>
 	/// </returns>
+    /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 FUNCTION SysAddAtom(s AS STRING) AS SYMBOL
 	RETURN SYMBOL { s, FALSE} 
 
@@ -114,6 +124,7 @@ FUNCTION SysAddAtom(s AS STRING) AS SYMBOL
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
+    /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 	FUNCTION SysAddAtom(p AS PSZ) AS SYMBOL
 		RETURN SYMBOL { Psz2String(p), FALSE} 
 
@@ -124,6 +135,7 @@ FUNCTION SysAddAtom(s AS STRING) AS SYMBOL
 	/// <param name="s"></param>
 	/// <returns>
 	/// </returns>
+    /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 	FUNCTION SysAddAtomUpperA(s AS STRING) AS SYMBOL
 		RETURN SYMBOL { s, TRUE} 	
 	
@@ -133,6 +145,7 @@ FUNCTION SysAddAtom(s AS STRING) AS SYMBOL
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
+    /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 	FUNCTION SysAddAtomUpperA(p AS PSZ) AS SYMBOL
 		RETURN SYMBOL { Psz2String(p), TRUE} 	
 
@@ -142,6 +155,7 @@ FUNCTION SysAddAtom(s AS STRING) AS SYMBOL
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
+    /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 	FUNCTION SysFindAtom(s AS STRING) AS SYMBOL
 		RETURN __Symbol.Find(s)
 			
@@ -151,6 +165,7 @@ FUNCTION SysAddAtom(s AS STRING) AS SYMBOL
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
+    /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 	FUNCTION SysFindAtom(p AS PSZ) AS SYMBOL
 		RETURN __Symbol.Find(Psz2String(p))
 	
@@ -160,5 +175,6 @@ FUNCTION SysAddAtom(s AS STRING) AS SYMBOL
 	/// <param name="s"></param>
 	/// <returns>
 	/// </returns>
+    /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 	FUNCTION SysGetAtomName(s AS SYMBOL) AS PSZ
 		RETURN s:SysGetAtomName()

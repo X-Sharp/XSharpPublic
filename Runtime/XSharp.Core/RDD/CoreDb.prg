@@ -341,8 +341,8 @@ CLASS XSharp.CoreDb
         /// <note type="tip">VoDbCloseArea() and CoreDb.CloseArea() are aliases</note></remarks>
     STATIC METHOD CloseArea() AS LOGIC
         RETURN CoreDb.Do ({ =>
-        LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
-        RETURN oRDD:Close()
+            VAR uiNewArea := RuntimeState.Workareas:CurrentWorkAreaNO
+            RETURN RuntimeState.Workareas:CloseArea(uiNewArea)
         })
         
         /// <summary>
@@ -1385,7 +1385,7 @@ CLASS XSharp.CoreDb
         LOCAL lockInfo AS DbLockInfo
         lockInfo := DbLockInfo{}
         lockInfo:RecId := uRecID
-        if uRecID == null
+        IF uRecID == NULL
             lockInfo:@@METHOD  := DbLockInfo.LockMethod.Exclusive
         ELSE
             lockInfo:@@METHOD  := DbLockInfo.LockMethod.Multiple
@@ -1655,17 +1655,17 @@ CLASS XSharp.CoreDb
         })
         
         /// <summary>
-        /// Select a new work area by specifying its alias as a symbol and return the number of the current work area.
+        /// Select a new work area by specifying its alias as a string and return the number of the current work area.
         /// </summary>
-        /// <param name="symAlias"></param>
+        /// <param name="sAlias"></param>
         /// <returns>
         /// </returns>
-    STATIC METHOD SymSelect(symAlias AS STRING) AS INT
+    STATIC METHOD SymSelect(sAlias AS STRING) AS INT
         LOCAL ret AS DWORD
-        IF symAlias == NULL_SYMBOL
+        IF String.IsNullOrEmpty(sAlias)
             ret := RuntimeState.CurrentWorkarea
         ELSE
-            ret := RuntimeState.Workareas:FindAlias( symAlias )
+            ret := RuntimeState.Workareas:FindAlias( sAlias )
             IF ret != 0
                 CoreDB.SetSelect( (INT) ret )
             ENDIF
@@ -1903,6 +1903,9 @@ CLASS XSharp.CoreDb
         
         /// <summary>Return exception object from last RDD operation.</summary>    
     STATIC METHOD  _ErrInfoPtr AS Exception
+        IF RuntimeState.LastRDDError == NULL
+            RuntimeState.LastRDDError := Exception {"No RDD Exception found in the runtime state"}
+        ENDIF
         RETURN RuntimeState.LastRDDError
         
 END CLASS    

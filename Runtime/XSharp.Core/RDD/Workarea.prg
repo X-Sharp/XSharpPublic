@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -913,8 +913,9 @@ BEGIN NAMESPACE XSharp.RDD
 				oC          := XSharp.RuntimeState.MacroCompiler
 				LOCAL oType := typeof(Workarea) AS System.Type
 				IF oC != NULL
-					LOCAL isBlock := FALSE AS LOGIC
-					oBlock := oC:Compile(sBlock, TRUE, oType:Module, REF isBlock)
+					LOCAL isBlock       AS LOGIC
+                    LOCAL addsMemvars   AS LOGIC
+					oBlock := oC:Compile(sBlock, TRUE, oType:Module, OUT isBlock, OUT addsMemVars)
 				ENDIF
 			CATCH e AS Exception
 				XSharp.RuntimeState.LastRddError := e
@@ -983,11 +984,11 @@ BEGIN NAMESPACE XSharp.RDD
 				CASE DbInfo.DBI_EOF           
 					oResult := SELF:_EOF   
 				CASE DbInfo.DBI_DBFILTER
-                    IF SELF:_FilterInfo != null
+                    IF SELF:_FilterInfo != NULL
 					    oResult := SELF:_FilterInfo:FilterText
                     ELSE
                         oResult := String.Empty
-                    endif
+                    ENDIF
 				CASE DbInfo.DBI_FOUND
 					oResult := SELF:_Found
 				CASE DbInfo.DBI_FCOUNT

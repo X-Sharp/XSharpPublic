@@ -1,4 +1,4 @@
-PARTIAL CLASS Accelerator INHERIT VObject
+CLASS Accelerator INHERIT VObject
 	PROTECT hAccel  AS PTR
 	PROTECT aAccels AS ARRAY //SE-060525
 

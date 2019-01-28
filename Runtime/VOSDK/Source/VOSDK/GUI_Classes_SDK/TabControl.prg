@@ -6,7 +6,7 @@ STATIC DEFINE TIP_TEXT   := 2
 
 /*
 TODO: OPTIMIZATION
-PARTIAL CLASS TabControlEntry
+CLASS TabControlEntry
    EXPORT SymName    as SYMBOL
    EXPORT Index      AS LONG
    EXPORT Page       as Object
@@ -14,7 +14,7 @@ PARTIAL CLASS TabControlEntry
 */
 
 
-PARTIAL CLASS TabControl INHERIT TextControl
+CLASS TabControl INHERIT TextControl
 	PROTECT oImageList		AS ImageList
 	PROTECT aPages			 AS ARRAY
 	PROTECT aTipsText		 AS ARRAY

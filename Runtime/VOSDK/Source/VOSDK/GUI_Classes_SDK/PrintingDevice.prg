@@ -1,4 +1,4 @@
-PARTIAL CLASS PrintingDevice INHERIT VObject
+CLASS PrintingDevice INHERIT VObject
 	PROTECT cDriver AS STRING
 	PROTECT cDevice AS STRING
 	PROTECT cPort AS STRING

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -72,16 +72,20 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock
 	PROTECT _cMacro		AS STRING
 	/// <exclude />
 	PROTECT _lIsBlock   AS LOGIC
+	/// <exclude />
+	PROTECT _addsMemVars AS LOGIC
 	
 	/// <summary>This constructor is used by the Macro Compiler</summary>
 	/// <param name="innerBlock">Compiled codeblock created by the macro compiler.</param>
 	/// <param name="cMacro">Macro string that was used to create the codeblock.</param>
 	/// <param name="lIsBlock">Did the macro string start with "{|".</param>
-	PUBLIC CONSTRUCTOR(innerBlock AS ICodeblock, cMacro AS STRING, lIsBlock AS LOGIC)
+	/// <param name="lAddsMemvars">Does the macro create Memvars .</param>
+	PUBLIC CONSTRUCTOR(innerBlock AS ICodeblock, cMacro AS STRING, lIsBlock AS LOGIC, lAddsMemvars AS LOGIC)
 		SUPER(IIF (lIsBlock, innerBlock:Pcount(), -1))
 		_innerBlock := innerBlock
 		_cMacro		:= cMacro
 		_lIsBlock   := lIsBlock
+        _addsMemVars := lAddsMemVars
 		
 	/// <summary>
 	/// Executes the codeblock.</summary>
@@ -90,11 +94,23 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock
 	/// If the last expression in the codeblock is of type VOID, then the codeblock
 	/// returns NIL.</returns>
 	PUBLIC OVERRIDE METHOD Eval(args PARAMS USUAL[]) AS USUAL
-		LOCAL uRes AS USUAL
-		LOCAL oRes AS OBJECT
-		VAR oArgs := __UsualArrayToObjectArray(args)
-		oRes := SELF:_innerBlock:EvalBlock(oArgs)
-		uRes := __Usual{oRes}
+		LOCAL uRes      AS USUAL
+		LOCAL oRes      AS OBJECT
+        LOCAL iLevel    AS INT
+        IF _addsMemVars
+            iLevel := XSharp.MemVar.InitPrivates()
+        ELSE
+            iLevel := 0
+        ENDIF
+        TRY
+		    VAR oArgs := __UsualArrayToObjectArray(args)
+		    oRes := SELF:_innerBlock:EvalBlock(oArgs)
+		    uRes := __Usual{oRes}
+        FINALLY
+            IF _addsMemVars
+                XSharp.MemVar.ReleasePrivates(iLevel)
+            ENDIF
+        END TRY
 		RETURN uRes
 		
 	/// <summary>

@@ -1,4 +1,4 @@
-PARTIAL CLASS PushButton INHERIT Button
+CLASS PushButton INHERIT Button
 
 CONSTRUCTOR( oOwner, xID, oPoint, oDimension, cText, kStyle) 
 	

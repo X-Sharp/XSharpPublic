@@ -1,4 +1,4 @@
-PARTIAL CLASS DDEMC
+CLASS DDEMC
 	EXPORT isModal AS LOGIC
 	EXPORT cCmd AS STRING
 	
@@ -9,7 +9,7 @@ CONSTRUCTOR(lModal, cCommandString)
 	RETURN 
 END CLASS
 
-PARTIAL CLASS HiddenWndClass INHERIT ChildAppWindow
+CLASS HiddenWndClass INHERIT ChildAppWindow
 	HIDDEN oParentWnd AS OBJECT //ReportQueue
 	
 
@@ -42,7 +42,7 @@ ASSIGN ParentWnd(oWindow)
 	
 END CLASS
 
-PARTIAL CLASS RCError INHERIT Error
+CLASS RCError INHERIT Error
 	
 
 CONSTRUCTOR(VAR, varnum) 
@@ -67,7 +67,7 @@ CONSTRUCTOR(VAR, varnum)
 	RETURN 
 END CLASS
 
-PARTIAL CLASS ReportQueue //INHERIT IpcClient
+CLASS ReportQueue //INHERIT IpcClient
 	HIDDEN RETname AS STRING    // The *.RET file for commands being Queued
 	HIDDEN oOwner                // object to be told about ReportClosed
 	

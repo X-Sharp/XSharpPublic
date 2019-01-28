@@ -1,4 +1,4 @@
-PARTIAL CLASS SQLConnection
+CLASS SQLConnection
 	HIDDEN cSourceName    AS STRING
 	HIDDEN cUser          AS STRING
 	HIDDEN cAuthString    AS STRING

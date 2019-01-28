@@ -73,6 +73,11 @@ namespace XSharp.MacroCompiler
             }
         }
 
+        char Lb()
+        {
+            return _index > 0 ? _Source[_index-1] : (char)0;
+        }
+
         char La()
         {
             return _index < _Source.Length ? _Source[_index] : (char)0;
@@ -82,6 +87,8 @@ namespace XSharp.MacroCompiler
         {
             return (_index+n-1) < _Source.Length ? _Source[_index+n-1] : (char)0;
         }
+
+        bool InRange(char c, char first, char last) => c >= first && c <= last;
 
         bool Eoi()
         {
@@ -163,7 +170,7 @@ namespace XSharp.MacroCompiler
 
         bool ExpectRange(char c1, char c2)
         {
-            if (La() >= c1 && La() <= c2)
+            if (InRange(La(), c1, c2))
             {
                 Consume();
                 return true;
@@ -243,7 +250,7 @@ namespace XSharp.MacroCompiler
             if (!Eoi())
             {
                 var c = La();
-                if (c != '\r' && c == '\n')
+                if (c != '\r' && c != '\n')
                 {
                     Consume();
                     return false;
@@ -568,37 +575,39 @@ namespace XSharp.MacroCompiler
                             }
                             break;
                         case TokenType.INT_CONST:
-                            if (c == '0' && !ExpectRange('0', '9'))
+                            if (c == '0' && ExpectAny('X','x'))
                             {
-                                if (ExpectAny('X','x'))
-                                {
-                                    while (ExpectRange('0', '9') || ExpectRange('A', 'F') || ExpectRange('a', 'f')) ;
-                                    ExpectAny('U', 'u', 'L', 'l');
-                                }
-                                if (ExpectAny('B', 'b'))
-                                {
-                                    while (ExpectRange('0', '1')) ;
-                                    ExpectAny('U', 'u');
-                                }
+                                while (ExpectRange('0', '9') || ExpectRange('A', 'F') || ExpectRange('a', 'f') || Expect('_')) ;
+                                if (Lb() == '_') t = TokenType.INVALID_NUMBER;
+                                ExpectAny('U', 'u', 'L', 'l');
+                                t = TokenType.HEX_CONST;
+                            }
+                            else if (c == '0' && ExpectAny('B', 'b'))
+                            {
+                                while (ExpectRange('0', '1')) ;
+                                ExpectAny('U', 'u');
+                                t = TokenType.BIN_CONST;
                             }
                             else
                             {
-                                while (ExpectRange('0', '9')) ;
+                                while (ExpectRange('0', '9') || Expect('_')) ;
+                                if (Lb() == '_') t = TokenType.INVALID_NUMBER;
                                 c = La();
                                 if (c == '.') { Consume(); goto case TokenType.REAL_CONST; }
                                 if (La() == 'E' || La() == 'e') goto case TokenType.REAL_CONST_EXP;
                                 ExpectAny('U', 'u', 'L', 'l');
                             }
-                            value = _Source.Substring(start, _index - start);
+                            value = _Source.Substring(start, _index - start).Replace("_", "");
                             break;
                         case TokenType.REAL_CONST:
-                            t = TokenType.REAL_CONST;
-                            while (ExpectRange('0', '9')) ;
-                            if (La() == '.' && (La(2) >= '0' && La(2) <= '9')) goto case TokenType.DATE_CONST;
+                            if (t != TokenType.INVALID_NUMBER) t = TokenType.REAL_CONST;
+                            if (ExpectRange('0', '9')) while (ExpectRange('0', '9') || Expect('_')) ;
+                            if (Lb() == '_') t = TokenType.INVALID_NUMBER;
+                            if (La() == '.' && InRange(La(2), '0', '9') && (!InRange(La(3), '0', '9') || !InRange(La(4), '0', '9'))) goto case TokenType.DATE_CONST;
                             if (La() == 'E' || La() == 'e') goto case TokenType.REAL_CONST_EXP;
                             if (!ExpectAny('S', 's', 'D', 'd'))
                                 ExpectAny('M', 'm');
-                            value = _Source.Substring(start, _index - start);
+                            value = _Source.Substring(start, _index - start).Replace("_", "");
                             break;
                         case TokenType.REAL_CONST_EXP:
                             if (La() == 'E' || La() == 'e')
@@ -606,19 +615,23 @@ namespace XSharp.MacroCompiler
                                 c = La(2);
                                 if (c == '+' || c == '-' || (c >= '0' && c <= '9'))
                                 {
-                                    t = TokenType.REAL_CONST;
-                                    Consume(2);
-                                    while (ExpectRange('0', '9')) ;
+                                    if (t != TokenType.INVALID_NUMBER) t = TokenType.REAL_CONST;
+                                    Consume();
+                                    if (!(c >= '0' && c <= '9'))
+                                        Consume();
+                                    if (ExpectRange('0', '9')) while (ExpectRange('0', '9') || Expect('_')) ;
+                                    if (Lb() == '_') t = TokenType.INVALID_NUMBER;
                                     ExpectAny('S', 's', 'D', 'd');
                                 }
                             }
-                            value = _Source.Substring(start, _index - start);
+                            value = _Source.Substring(start, _index - start).Replace("_","");
                             break;
                         case TokenType.DATE_CONST:
                             {
                                 string s = _Source.Substring(start, _index - start);
                                 int z0 = s.IndexOf('.');
                                 if (z0 > 0 && s.Length - z0 > 1 && s.Length - z0 <= 3 && s.Length <= 7)
+                                if (z0 > 0 && z0 <= 4 && s.Length > z0 + 1 && s.Length <= z0+3 && !s.Contains("_"))
                                 {
                                     t = TokenType.DATE_CONST;
                                     Expect('.');

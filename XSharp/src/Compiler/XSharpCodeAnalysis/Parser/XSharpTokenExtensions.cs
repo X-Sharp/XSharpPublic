@@ -1192,6 +1192,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.INT_CONST:
                     r = SyntaxKind.NumericLiteralExpression;
                     break;
+                case XSharpParser.INVALID_NUMBER:
+                    r = SyntaxKind.NumericLiteralExpression;
+                    break;
                 case XSharpParser.DATE_CONST:
                     r = SyntaxKind.NumericLiteralExpression;
                     break;

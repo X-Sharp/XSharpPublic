@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-memvar</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">-memvar</para>
+    </header>
+    <para styleclass="Normal">The -<text styleclass="Body Text">memvar</text> option tells the compiler to enable the support for &#160;&apos;memory variables&apos;</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">-memvar [+ | -] &#160;</para>
+    <para styleclass="Heading2">Arguments</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List">+ | - <tab />Specifying +, or just -memvar, directs the compiler to enable support for memory variables.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This will NOT work with the Core and Vulcan dialects.</para>
+    <para styleclass="Normal">Enabling this option will enable the following commands in the compiler:<br/></para>
+    <para styleclass="Body Text">MEMVAR &lt;MemvarName,...&gt; </para>
+    <para styleclass="Body Text">PUBLIC &lt;MemVarName,...&gt; &#160;</para>
+    <para styleclass="Body Text">PRIVATE &lt;MemVarName,...&gt; </para>
+    <para styleclass="Body Text">PARAMETERS &lt;ParameterName,,...&gt; </para>
+  </body>
+</topic>

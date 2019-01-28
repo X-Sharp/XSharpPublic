@@ -168,6 +168,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.NULL_STRING:
                 case TokenType.NULL_SYMBOL:
                 case TokenType.INCOMPLETE_STRING_CONST:
+                case TokenType.INVALID_NUMBER:
                 case TokenType.ARRAY:
                 case TokenType.CODEBLOCK:
                 case TokenType.DATE:
@@ -281,6 +282,8 @@ namespace XSharp.MacroCompiler
                     return new LiteralExpr(ConsumeAndGet());
                 case TokenType.INCOMPLETE_STRING_CONST:
                     throw Error(Lt(), ErrorCode.UnterminatedString);
+                case TokenType.INVALID_NUMBER:
+                    throw Error(Lt(), ErrorCode.InvalidNumber);
                 case TokenType.ARRAY:
                 case TokenType.CODEBLOCK:
                 case TokenType.DATE:
@@ -470,7 +473,8 @@ namespace XSharp.MacroCompiler
                         {
                             var args = ParseParenArgList();
                             Require(args.Args.Count == 1, ErrorCode.BadNumArgs, 1);
-                            return new TypeCast(new NativeTypeExpr(t.Token, TokenType.CHAR), args.Args.First().Expr);
+                            //return new TypeCast(new NativeTypeExpr(t.Token, TokenType.CHAR), args.Args.First().Expr); // nvk: this should call the runtime Chr()
+                            return new IntrinsicCallExpr(t as IdExpr, args, IntrinsicCallType.Chr);
                         }
                     case "PCALL":
                     case "CCALL":
@@ -683,11 +687,11 @@ namespace XSharp.MacroCompiler
         {
             var p = new List<IdExpr>();
             if (La() == TokenType.LCURLY && (La(2) == TokenType.PIPE || La(2) == TokenType.OR))
-                return RequireEnd(ParseCodeblock(), ErrorCode.Unexpected, "token");
+                return RequireEnd(ParseCodeblock(), ErrorCode.Unexpected, Lt());
 
             var l = ParseExprList();
             if (l != null)
-                return RequireEnd(new Codeblock(null,l), ErrorCode.Unexpected, "token");
+                return RequireEnd(new Codeblock(null,l), ErrorCode.Unexpected, Lt());
 
             return null;
         }

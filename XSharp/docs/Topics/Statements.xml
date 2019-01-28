@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Statements</title>
   <keywords>
     <keyword>Expression Statement</keyword>
@@ -10,7 +10,6 @@
       <para styleclass="Heading1">Statements</para>
     </header>
     <para styleclass="Normal">The X# language knows the following statement types</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Iteration Statements</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="5" style="width:100%; border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
@@ -491,7 +490,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Declaration Statements</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="10" colcount="5" style="border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="11" colcount="5" style="border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
       <thead style="vertical-align:top">
         <td style="vertical-align:middle;">
           <para styleclass="Normal"><text style="font-weight:bold;">Keyword</text></para>
@@ -576,6 +575,22 @@
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="MEMVAR">MEMVAR</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PARAMETERS2">PARAMETERS</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>

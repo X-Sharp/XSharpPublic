@@ -48,18 +48,52 @@ namespace XSharp.MacroCompiler
         internal static OverloadResult Create(MemberSymbol symbol, ParameterListSymbol paramList, int nFixedArgs, int nVarArgs, int nMissingArgs)
             { return new OverloadResult(symbol, paramList, nFixedArgs, nVarArgs, nMissingArgs); }
 
+        bool HasMostDerivedArgs(OverloadResult other)
+        {
+            for (int i = 0; i < Parameters.Parameters.Length; i++)
+            {
+                var pt = Binder.FindType(Parameters.Parameters[i].ParameterType);
+                var po = Binder.FindType(other.Parameters.Parameters[i].ParameterType);
+                if (pt.IsSubclassOf(po))
+                    return true;
+            }
+            return false;
+        }
+
         internal OverloadResult Better(OverloadResult other)
         {
             if (other?.Valid == true)
             {
-                if (Valid && other.TotalCost == TotalCost && other.VarArgs == VarArgs)
+                if (!Valid)
+                    return other;
+                else if (other.TotalCost < TotalCost)
+                    return other;
+                else if (other.TotalCost > TotalCost)
+                    return this;
+                else if (other.VarArgs < VarArgs)
+                    return other;
+                else if (other.VarArgs > VarArgs)
+                    return this;
+                else if (other.MissingArgs < MissingArgs)
+                    return other;
+                else if (other.MissingArgs > MissingArgs)
+                    return this;
+                else if (other.Parameters.Parameters.Length < Parameters.Parameters.Length)
+                    return other;
+                else if (other.Parameters.Parameters.Length > Parameters.Parameters.Length)
+                    return this;
+                else if (other.HasMostDerivedArgs(this))
+                    return other;
+                else if (HasMostDerivedArgs(other))
+                    return this;
+                else if (Symbol.DeclaringType.IsSubclassOf(other.Symbol.DeclaringType))
+                    return this;
+                else if (other.Symbol.DeclaringType.IsSubclassOf(Symbol.DeclaringType))
+                    return other;
+                else
                 {
                     Equivalent = other;
                     ExtraValid += other.ExtraValid + 1;
-                }
-                else if (!Valid || other.TotalCost < TotalCost || other.VarArgs < VarArgs)
-                {
-                    return  other;
                 }
             }
             return this;

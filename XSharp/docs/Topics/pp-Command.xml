@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>#command and #xcommand</title>
   <keywords>
     <keyword>#command</keyword>
@@ -11,11 +11,8 @@
       <para styleclass="Heading1">#command and #xcommand</para>
     </header>
     <para styleclass="Normal">Specify a user-defined command or translation directive</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code Example"> &#160; &#160; #command &#160; <tab />&lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;</para>
-    <para styleclass="Code Example"> &#160; &#160; #xcommand &#160; <tab />&lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;</para>
-    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"> &#160; &#160; #command &#160; <tab />&lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;<br/> &#160; &#160; #xcommand &#160; <tab />&lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;</para>
     <para styleclass="Normal"><snippet src="Command-translate" inline="false"/></para>
   </body>
 </topic>

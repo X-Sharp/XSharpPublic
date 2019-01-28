@@ -14,7 +14,7 @@ namespace XSharp.MacroCompiler
         NoImplicitConversion,
         Identity,
         ImplicitNumeric,
-        //ImplicitEnumeration,
+        ImplicitEnumeration,
         //ImplicitThrow,
         //ImplicitTupleLiteral,
         //ImplicitTuple,
@@ -33,7 +33,7 @@ namespace XSharp.MacroCompiler
         //AnonymousFunction,
         //MethodGroup,
         ExplicitNumeric,
-        //ExplicitEnumeration,
+        ExplicitEnumeration,
         ExplicitNullable,
         ExplicitReference,
         Unboxing,
@@ -54,12 +54,13 @@ namespace XSharp.MacroCompiler
     {
         internal readonly ConversionKind Kind;
 
+        internal virtual bool IsCast { get { return (convCost[(int)Kind] & Cast) != 0; } }
         internal virtual bool IsExplicit { get { return (convCost[(int)Kind] & Explicit) != 0; } }
         internal virtual bool IsImplicit { get { return (convCost[(int)Kind] & Implicit) != 0; } }
         internal bool Exists { get { return Kind != ConversionKind.NoConversion && Kind != ConversionKind.NoImplicitConversion; } }
         internal virtual int Cost { get { return convCost[(int)Kind] & (Implicit-1); } }
 
-        internal ConversionSymbol(ConversionKind kind) { Kind = kind; }
+        internal ConversionSymbol(ConversionKind kind) : base(AccessMode.Get) { Kind = kind; }
 
         internal static ConversionSymbol Create(ConversionKind kind) { return simpleConv[(int)kind]; }
         internal static ConversionSymbolWithMethod Create(ConversionKind kind, MethodSymbol method) { return new ConversionSymbolWithMethod(kind, method); }
@@ -71,6 +72,7 @@ namespace XSharp.MacroCompiler
 
         internal override string FullName { get { return Kind.ToString(); } }
 
+        const int Cast     = 0x40000;
         const int Explicit = 0x20000;
         const int Implicit = 0x10000;
         private static readonly ConversionSymbol[] simpleConv;
@@ -100,6 +102,7 @@ namespace XSharp.MacroCompiler
             convCost[(int)ConversionKind.NoImplicitConversion] = 0;
 
             convCost[(int)ConversionKind.Identity] = Implicit | 0;
+            convCost[(int)ConversionKind.ImplicitEnumeration] = Implicit | 1;
             convCost[(int)ConversionKind.ImplicitNumeric] = Implicit | 1;
             convCost[(int)ConversionKind.ImplicitNullable] = Implicit | 2;
             //convCost[(int)ConversionKind.NullLiteral] = Implicit | 0;
@@ -111,10 +114,11 @@ namespace XSharp.MacroCompiler
             convCost[(int)ConversionKind.Deref] = Implicit | 0;
             convCost[(int)ConversionKind.ConstantReduction] = Implicit | 0;
 
+            convCost[(int)ConversionKind.ExplicitEnumeration] = Explicit | 1;
             convCost[(int)ConversionKind.ExplicitNumeric] = Explicit | 1;
             convCost[(int)ConversionKind.ExplicitNullable] = Explicit | 2;
             convCost[(int)ConversionKind.ExplicitReference] = Explicit | 0;
-            convCost[(int)ConversionKind.Unboxing] = Explicit | 3;
+            convCost[(int)ConversionKind.Unboxing] = Explicit | Cast | 3;
             convCost[(int)ConversionKind.ExplicitUsual] = Explicit | 4;
             convCost[(int)ConversionKind.ExplicitUserDefined] = Explicit | 4;
 

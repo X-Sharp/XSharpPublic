@@ -20,10 +20,10 @@ namespace XSharp
         // Do not forget to update the version number in the buildnumber.h file !
         internal const string Company = "XSharp BV";
         internal const string RegCompany = "XSharpBV";
-        internal const string ProductName = "XSharp Bandol Beta 8";
+        internal const string ProductName = "XSharp Bandol Beta 9";
         internal const string Product = "XSharp";
-        internal const string Version = "2.0.0.8";
-        internal const string Copyright = "Copyright © XSharp BV 2015-2018";
+        internal const string Version = "2.0.0.9";
+        internal const string Copyright = "Copyright © XSharp BV 2015-2019";
 
         internal const string RegistryKey = @"Software\" + RegCompany + @"\" + Product;
         internal const string RegistryKey64 = @"Software\WOW6432Node\" + RegCompany + @"\" + Product;

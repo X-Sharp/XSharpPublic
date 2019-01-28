@@ -114,7 +114,8 @@ namespace XSharp.MacroCompiler.Syntax
         // Logics
         FALSE_CONST, TRUE_CONST,
         // Consts
-        HEX_CONST, BIN_CONST, INT_CONST, DATE_CONST, REAL_CONST, REAL_CONST_EXP, SYMBOL_CONST, CHAR_CONST, STRING_CONST, ESCAPED_STRING_CONST, INTERPOLATED_STRING_CONST, INCOMPLETE_STRING_CONST,
+        HEX_CONST, BIN_CONST, INT_CONST, DATE_CONST, REAL_CONST, REAL_CONST_EXP, SYMBOL_CONST, CHAR_CONST, INVALID_NUMBER,
+        STRING_CONST, ESCAPED_STRING_CONST, INTERPOLATED_STRING_CONST, INCOMPLETE_STRING_CONST,
         STRING_CONST_SINGLE,
 
         LAST_CONSTANT,
@@ -171,6 +172,7 @@ namespace XSharp.MacroCompiler.Syntax
             this.value = value;
         }
         internal static readonly Token None = new Token(TokenType.UNRECOGNIZED, TokenType.UNRECOGNIZED, -1, 0, null, Channel.DEFOUTCHANNEL);
+        public override string ToString() => "'" + value + "'";
     }
 
     internal class TokenAttr
@@ -451,6 +453,7 @@ namespace XSharp.MacroCompiler.Syntax
                 {"__DIALECT_VO__", TokenType.MACRO},
                 {"__DIALECT_VULCAN__", TokenType.MACRO},
                 {"__DIALECT_HARBOUR__", TokenType.MACRO},
+                { "__DIALECT_XBASEPP__", TokenType.MACRO},
                 {"__ENTITY__", TokenType.MACRO},
                 {"__FILE__", TokenType.MACRO},
                 {"__FUNCTIONS__", TokenType.MACRO},
@@ -462,6 +465,7 @@ namespace XSharp.MacroCompiler.Syntax
                 {"__TIME__", TokenType.MACRO},
                 {"__UTCTIME__", TokenType.MACRO},
                 {"__VERSION__", TokenType.MACRO},
+                {"__VO__", TokenType.MACRO},
                 {"__VO1__", TokenType.MACRO},
                 {"__VO2__", TokenType.MACRO},
                 {"__VO3__", TokenType.MACRO},
@@ -478,9 +482,12 @@ namespace XSharp.MacroCompiler.Syntax
                 {"__VO14__", TokenType.MACRO},
                 {"__VO15__", TokenType.MACRO},
                 {"__VO16__", TokenType.MACRO},
+                {"__VULCAN__", TokenType.MACRO},
                 {"__WINDIR__", TokenType.MACRO},
                 {"__WINDRIVE__", TokenType.MACRO},
+                {"__XPP__", TokenType.MACRO},
                 {"__XSHARP__", TokenType.MACRO},
+                {"__XSHARP_RT__", TokenType.MACRO},
             };
             // These keywords are inserted without abbreviations
             foreach (var text in Keywords.Keys)

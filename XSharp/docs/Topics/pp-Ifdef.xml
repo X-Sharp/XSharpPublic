@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>#ifdef</title>
   <keywords>
     <keyword>#ifdef</keyword>
@@ -13,14 +13,9 @@
     <para styleclass="Body Text">When the X# compiler encounters an #ifdef directive, followed eventually by an <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Endif">#endif</link> directive, it will compile the code between the directives only if the specified symbol is defined. </para>
     <para styleclass="Body Text">The #ifdef statement in X# is Boolean and only tests whether the symbol has been defined or not. For example,</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example">#define DEBUG</para>
-    <para styleclass="Code Example">// ...</para>
-    <para styleclass="Code Example">#ifdef DEBUG</para>
-    <para styleclass="Code Example"> &#160; &#160;Console.WriteLine(&quot;Debug version&quot;);</para>
-    <para styleclass="Code Example">#endif</para>
-    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example">// DEBUG may be defined from the command line<br/>// ...<br/>#if DEBUG<br/> &#160; &#160;Console.WriteLine(&quot;Debug version&quot;);<br/>#else<br/> &#160; &#160;Console.WriteLine(&quot;Release version&quot;);<br/>#endif</para>
     <para styleclass="Heading3">Note</para>
-    <para styleclass="Body Text">The <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo8">/vo8</link> compiler option (<text style="color:#ff0000;">which has not been implemented yet</text>) will change this behavior:</para>
+    <para styleclass="Body Text">The <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo8">/vo8</link> compiler option will change this behavior:</para>
     <para styleclass="Body Text">when /vo8 is active then any symbol defined with TRUE or a non-0 numeric value will be seen as &quot;defined&quot;, symbols defined with FALSE or a 0 numeric value will be seen as &quot;undefined&quot;.</para>
   </body>
 </topic>

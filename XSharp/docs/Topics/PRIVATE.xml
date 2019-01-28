@@ -9,7 +9,36 @@
     <header>
       <para styleclass="Heading1">PRIVATE</para>
     </header>
-    <para styleclass="Body Text">The private statement has been added to the language already but the runtime is not ready for it yet</para>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">private &#160; &#160; : </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">PRIVATE</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link><text style="font-weight:normal; font-style:normal; color:#000000;"> (, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link><text style="font-weight:normal; font-style:normal; color:#000000;">)* </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Helpers" style="font-weight:normal; font-style:normal; color:#000000;">eos</link><br/></para>
+    <para styleclass="NotesBox">The PRIVATE statement is NOT available in the Core and Vulcan dialects and will only be enabled if the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">-memvar</link> commandline option is specified.</para>
+    <para styleclass="Heading2">Purpose</para>
+    <para styleclass="Body Text">Create variables and arrays visible within current and invoked routines.</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">PRIVATE &lt;idVar&gt; [:= &lt;uValue&gt;]<text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; color:#000000;">[, ...]</text>&#32;</para>
+    <para styleclass="Heading2">Arguments</para>
+    <para styleclass="List">&lt;idVar&gt;<tab />A valid identifier name for the private variable to create.</para>
+    <para styleclass="List">&lt;uValue&gt;<tab />The initial value to assign to the variable. If not specified, the variable is initialized to NIL.</para>
+    <para styleclass="Heading2">Description</para>
+    <para styleclass="Body Text">When you create a private variable or array, existing and visible private and public variables of the same name are hidden until the current routine terminates or the private variable is explicitly released.</para>
+    <para styleclass="Body Text">Attempting to specify a private variable that conflicts with a visible local variable is recognized by the compiler as an error. Private variables with the same name as a GLOBAL or DEFINE will not be recognized by the compiler.</para>
+    <para styleclass="Body Text">In class methods, if the private variable conflicts with an instance variables, you should use the _MEMVAR-&gt; prefix to access the private variable and the SELF: prefix to access the instance variable to make sure that the right variable is used within a method if there is a name conflict. </para>
+    <para styleclass="Body Text">In addition to the PRIVATE statement, you can create private variables by:</para>
+    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Assigning to a variable that does not exist or is not visible will create a private variable (only possible if you compile with the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-undeclared">-undeclared</link> command line option)</li>
+      <li styleclass="Body Text">Receiving parameters using the PARAMETERS statement</li>
+    </list>
+    <para styleclass="Body Text">Private variables are dynamically scoped. They exist until the creating routine returns to its caller or until explicitly released with CLEAR ALL, or CLEAR MEMORY.</para>
+    <para styleclass="Heading2">Notes</para>
+    <para styleclass="Body Text">Compatibility: The ALL, LIKE, and EXCEPT clauses of the PRIVATE statement supported by other Xbase dialects are not supported.</para>
+    <para styleclass="Heading3">Examples</para>
+    <para styleclass="Body Text">The following example creates two PRIVATE arrays and three other PRIVATE variables:</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> aArray1[10], aArray2[20], var1, var2, var3</text></para>
+    <para styleclass="Body Text">The next example creates a multi-dimensional private array using each element addressing convention:</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> aArray[10][10][10], aArray2[10, 10, 10]</text></para>
+    <para styleclass="Body Text">This example uses PRIVATE statements to create and initialize arrays and variables:</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> aArray := { 1, 2, 3, 4 }, ;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">aArray2 := ArrayNew(12, 24)</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> cChar := Space(10), cColor := SetColor()</text></para>
+    <para styleclass="Heading2">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="LOCAL">LOCAL</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="MEMVAR">MEMVAR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="PARAMETERS2">PARAMETERS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="PUBLIC">PUBLIC</link></para>
+    <para styleclass="Body Text"></para>
   </body>
 </topic>

@@ -184,11 +184,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 else if (snode is IdentifierNameSyntax )
                 {
                     // walk until we find the statement
-                    while (snode != null && snode.Parent != null)
+                    var tmpnode = snode;
+                    while (tmpnode != null && tmpnode.Parent != null)
                     {
-                        snode = snode.Parent;
-                        if (snode is StatementSyntax)
+                        tmpnode = tmpnode.Parent;
+                        if (tmpnode is StatementSyntax)
+                        {
+                            snode = tmpnode;
                             break;
+                        }
                     }
                 }
                 if (snode.XNode != null)

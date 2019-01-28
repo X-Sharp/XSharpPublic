@@ -9,7 +9,6 @@
     <TargetFramework>netstandard1.3</TargetFramework>
     <ServiceablePackage>true</ServiceablePackage>
     <NoWarn>1591,CS0649,CS8032,CS3021,RS0008,CS1574,CS0419,CS3008,CS3005,CS3001,CS3002,CS3015,</NoWarn> 
-    <DefineConstants>$(DefineConstants);TRACE;DEBUG;COMPILERCORE;XSHARP;NET45;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE;</DefineConstants>
     <!--<CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>-->
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <!-- This is required to prevent downgrade references from CscCore/VbcCode since we must
@@ -25,19 +24,20 @@
     <AntlrParams>-long-messages  -message-format vs2005 -Dlanguage=CSharp_v4_5 $(AntlrPackage) -listener -o $(AntlrOutputdir)</AntlrParams>
     <!--Use the C# compiler created in this solution-->
     <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants)NET46</DefineConstants>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <GenericDefines>COMPILERCORE;NET45;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE</GenericDefines>
   </PropertyGroup>
   
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DefineConstants>XSHARP;DEBUG;TRACE;$(Genericdefines)</DefineConstants>
+    <DefineConstants>$(Genericdefines);XSHARP;DEBUG;TRACE;</DefineConstants>
+  <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants);NET46;</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
-    <DefineConstants>XSHARP;NDEBUG;TRACE;$(Genericdefines)</DefineConstants>
+    <DefineConstants>$(Genericdefines);XSHARP;NDEBUG;TRACE;</DefineConstants>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants);NET46;</DefineConstants>
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <PackageReference Include="System.Threading.Tasks.Parallel" Version="$(SystemThreadingTasksParallelVersion)" />
@@ -159,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Antlr4.Runtime\Properties\" />
+    <Folder Include="Declarations\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Tools\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj" />

@@ -66,6 +66,7 @@ entity              : namespace_
                     | vodll                     // External method of the Globals class
                     | vostruct                  // Compatibility (unsafe) structure
                     | vounion                   // Compatibility (unsafe) structure with members aligned at FieldOffSet 0
+                    | {AllowXBaseVariables}? filewidememvar      // memvar declared at file level         
                     ;
 
 
@@ -241,7 +242,6 @@ class_              : (Attributes=attributes)? (Modifiers=classModifiers)?
 
 classModifiers      : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL) )+
                     ;
-
 
 
 
@@ -486,8 +486,13 @@ globalAttributes    : LBRKT Target=globalAttributeTarget Attributes+=attribute (
 globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
                       ;
 
+filewidememvar      : MEMVAR Vars+=identifierName (COMMA Vars+=identifierName)*
+                      end=eos
+                    ;
+
+
 statement           : Decl=localdecl                        #declarationStmt
-                    | {AllowXBaseVariables}? xbasedecl               #xbasedeclStmt
+                    | {AllowXBaseVariables}? xbasedecl      #xbasedeclStmt
                     | Decl=fielddecl                        #fieldStmt
                     | DO? WHILE Expr=expression end=eos
                       StmtBlk=statementBlock 
@@ -640,12 +645,15 @@ fielddecl          : FIELD Fields+=identifierName (COMMA Fields+=identifierName)
 
 // Old Style xBase declarations
 
-xbasedecl           : T=(PRIVATE                               // PRIVATE Foo, Bar
-                      |PUBLIC                               // PUBLIC  Foo, Bar
-                      |MEMVAR                               // MEMVAR  Foo, Bar
-                      |PARAMETERS                           // PARAMETERS Foo, Bar
-                      ) Vars+=identifierName (COMMA Vars+=identifierName)*
+xbasedecl           : T=(MEMVAR|PARAMETERS)      // MEMVAR  Foo, Bar or PARAMETERS Foo, Bar
+                      Vars+=identifierName (COMMA Vars+=identifierName)*
                       end=eos
+                    | T=(PRIVATE | PUBLIC)
+                      XVars+=xbasevar (COMMA XVars+=xbasevar)*   // PRIVATE Foo := 123,  PUBLIC Bar
+                      end=eos
+                    ;
+
+xbasevar            : Id=identifierName (ASSIGN_OP Expression=expression)?
                     ;
 
 // The operators in VO have the following precedence level:
@@ -991,6 +999,7 @@ literalValue        : Token=
                     | BIN_CONST
                     | REAL_CONST
                     | INT_CONST
+                    | INVALID_NUMBER
                     | DATE_CONST
                     | NIL
                     | NULL
@@ -1019,8 +1028,8 @@ keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST 
 
 
 keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CHAR | CONST |  DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | INITONLY | INTERNAL
-                            | LOCK | NAMESPACE | NEW | OUT | PARTIAL | SCOPE | SEALED | SET |  TRY | UNICODE |  VALUE | VIRTUAL  
-                            )
+                    | LOCK | NAMESPACE | NEW | OUT | PARTIAL | SCOPE | SEALED | SET |  TRY | UNICODE |  VALUE | VIRTUAL  
+                    )
                     ;
 
 keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM 
@@ -1052,6 +1061,7 @@ xppnamespace        : BEGIN NAMESPACE Name=name e=eos
 					
 xppentity           : xppnamespace
                     | xppclass
+                    | class_                    // also allow the 'normal' class
                     | structure_
                     | interface_
                     | delegate_
@@ -1067,7 +1077,7 @@ xppentity           : xppnamespace
                     | vodll                     // External method of the Globals class
                     | vostruct                  // Compatibility (unsafe) structure
                     | vounion                   // Compatibility (unsafe) structure with members aligned at FieldOffSet 0
-                    | xppmemvar                 // global memvar outside of code 
+                    | filewidememvar            // global memvar outside of code 
                     ;
 
 xppclass           :  (Attributes=attributes)?                                // NEW Optional Attributes
@@ -1179,6 +1189,3 @@ xppinlineMethod     : (Attributes=attributes)?                               // 
 xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+
                     ;
 
-xppmemvar           : MEMVAR Vars+=identifierName (COMMA Vars+=identifierName)*
-                      end=eos
-                    ;

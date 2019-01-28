@@ -69,8 +69,8 @@ namespace XSharp.MacroCompiler
         internal readonly BinaryOperatorKind Kind;
         internal readonly OperandType OpType;
         internal readonly OperandType ResType;
-        internal BinaryOperatorSymbol(BinaryOperatorKind kind, OperandType opType) { Kind = kind; OpType = opType; ResType = opType; }
-        internal BinaryOperatorSymbol(BinaryOperatorKind kind, OperandType opType, OperandType resType) { Kind = kind; OpType = opType; ResType = resType; }
+        internal BinaryOperatorSymbol(BinaryOperatorKind kind, OperandType opType) : base(AccessMode.Get) { Kind = kind; OpType = opType; ResType = opType; }
+        internal BinaryOperatorSymbol(BinaryOperatorKind kind, OperandType opType, OperandType resType) : base(AccessMode.Get) { Kind = kind; OpType = opType; ResType = resType; }
 
         internal static BinaryOperatorSymbol Create(BinaryOperatorKind kind, OperandType opType) { return simpleOp[(int)kind, (int)opType]; }
         internal static BinaryOperatorSymbolWithMethod Create(BinaryOperatorKind kind, MethodSymbol method,
@@ -101,6 +101,13 @@ namespace XSharp.MacroCompiler
         private static readonly BinaryOperatorSymbol[,] simpleOp;
 
         internal override string FullName { get { return OperatorSymbol(Kind); } }
+
+        internal BinaryOperatorSymbolWithType AsEnum(TypeSymbol type)
+        {
+            if (this is BinaryOperatorSymbolWithMethod || this is BinaryComparisonSymbolWithMethod || !type.IsEnum || !Binder.TypesMatch(Type, type.EnumUnderlyingType))
+                return null;
+            return new BinaryOperatorSymbolWithType(this, type);
+        }
 
         static BinaryOperatorSymbol()
         {
@@ -379,6 +386,13 @@ namespace XSharp.MacroCompiler
             ConversionSymbol convLeft, ConversionSymbol convRight) : base(kind, method, convLeft, convRight) { }
 
         internal override TypeSymbol Type { get { return Compilation.Get(NativeType.Boolean); } }
+    }
+
+    internal partial class BinaryOperatorSymbolWithType : BinaryOperatorSymbol
+    {
+        internal BinaryOperatorSymbolWithType(BinaryOperatorSymbol op, TypeSymbol type) : base(op.Kind, op.OpType, op.ResType) { Type = type; }
+
+        internal override TypeSymbol Type { get; }
     }
 
     internal static class BinaryOperatorEasyOut

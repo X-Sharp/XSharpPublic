@@ -8,7 +8,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
 {
     internal sealed class XSharpMacroCompiler : ScriptCompiler
     {
-        private static XSharpSpecificCompilationOptions xsOptions = new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.VO, NoStdDef = true };
+        private static XSharpSpecificCompilationOptions xsOptions = new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.VO, NoStdDef = true, UndeclaredLocalVars = true };
         private static ScriptCompiler[] compilers = {null,null};    // first = VO, second = Vulcan
 
         private XSharpSpecificCompilationOptions xoptions;

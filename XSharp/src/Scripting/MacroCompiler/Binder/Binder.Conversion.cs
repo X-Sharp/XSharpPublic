@@ -40,6 +40,11 @@ namespace XSharp.MacroCompiler
             Convert(ref e, type, Conversion(e, type, Options.Binding | BindOptions.Explicit));
         }
 
+        internal void CastExplicit(ref Expr e, TypeSymbol type)
+        {
+            Convert(ref e, type, Conversion(e, type, Options.Binding | BindOptions.Explicit | BindOptions.Cast));
+        }
+
         internal TypeSymbol ConvertResult(ref Expr e1, ref Expr e2)
         {
             return ConvertResult(ref e1, ref e2, Options.Binding);
@@ -94,6 +99,11 @@ namespace XSharp.MacroCompiler
             return Binder.Conversion(expr, type, Options.Binding | BindOptions.Explicit);
         }
 
+        internal ConversionSymbol ExplicitCast(Expr expr, TypeSymbol type)
+        {
+            return Binder.Conversion(expr, type, Options.Binding | BindOptions.Explicit | BindOptions.Cast);
+        }
+
         internal static ConversionSymbol Conversion(Expr expr, TypeSymbol type, BindOptions options)
         {
             var noConversion = ConversionKind.NoConversion;
@@ -103,7 +113,9 @@ namespace XSharp.MacroCompiler
             if (conversion != ConversionKind.NoConversion)
             {
                 var conv = ConversionSymbol.Create(conversion);
-                if (options.HasFlag(BindOptions.Explicit) || conv.IsImplicit)
+                if (!conv.IsCast && options.HasFlag(BindOptions.Explicit) || conv.IsImplicit)
+                    return conv;
+                if (conv.IsCast && options.HasFlag(BindOptions.Cast))
                     return conv;
                 if (conv.Exists)
                     noConversion = ConversionKind.NoImplicitConversion;
@@ -111,6 +123,9 @@ namespace XSharp.MacroCompiler
 
             if (TypesMatch(expr.Datatype, type))
                 return ConversionSymbol.Create(ConversionKind.Identity);
+
+            if (type.Type.IsGenericType || expr.Datatype.Type.IsGenericType)
+                return ConversionSymbol.Create(noConversion);
 
             MethodSymbol converter = null;
 
@@ -144,6 +159,34 @@ namespace XSharp.MacroCompiler
                     return ConversionSymbol.Create(ConversionKind.Boxing);
                 else
                     return ConversionSymbol.Create(ConversionKind.ImplicitReference);
+            }
+            else if (expr.Datatype.NativeType == NativeType.Object)
+            {
+                if (!options.HasFlag(BindOptions.AllowDynamic))
+                {
+                    if (options.HasFlag(BindOptions.Explicit))
+                        return type.IsValueType ? ConversionSymbol.Create(ConversionKind.Unboxing) : ConversionSymbol.Create(ConversionKind.ExplicitReference);
+                    else
+                        noConversion = ConversionKind.NoImplicitConversion;
+                }
+            }
+            else if (type.IsReferenceType && expr.Datatype.IsReferenceType)
+            {
+                if (expr.Datatype.IsSubclassOf(type))
+                    return ConversionSymbol.Create(ConversionKind.ImplicitReference);
+                if (type.IsSubclassOf(expr.Datatype))
+                {
+                    if (options.HasFlag(BindOptions.Explicit))
+                        return ConversionSymbol.Create(ConversionKind.ExplicitReference);
+                    else
+                        noConversion = ConversionKind.NoImplicitConversion;
+                }
+            }
+
+            {
+                var conv = ResolveEnumConversion(expr, type, options);
+                if (conv != null)
+                    return conv;
             }
 
             if (options.HasFlag(BindOptions.AllowDynamic))
@@ -206,18 +249,35 @@ namespace XSharp.MacroCompiler
 
         internal static ConversionSymbol ResolveUsualConversion(Expr expr, TypeSymbol type, BindOptions options)
         {
-            if (expr.Datatype.NativeType == NativeType.Usual && type.NativeType == NativeType.Object)
+            if (expr.Datatype.NativeType == NativeType.Usual)
             {
-                if (options.HasFlag(BindOptions.BoxUsual))
+                if (type.NativeType == NativeType.Object)
                 {
-                    return ConversionSymbol.Create(ConversionKind.Boxing);
+                    if (options.HasFlag(BindOptions.BoxUsual))
+                    {
+                        return ConversionSymbol.Create(ConversionKind.Boxing);
+                    }
+                    else
+                    {
+                        MethodSymbol converter = null;
+                        ResolveConversionMethod(expr, type, Compilation.Get(NativeType.Usual).Lookup(XSharpFunctionNames.ToObject), ref converter, options);
+                        if (converter != null)
+                            return ConversionSymbol.Create(ConversionKind.ImplicitUserDefined, converter);
+                    }
                 }
                 else
                 {
                     MethodSymbol converter = null;
-                    ResolveConversionMethod(expr, type, Compilation.Get(NativeType.Usual).Lookup(XSharpFunctionNames.ToObject), ref converter, options);
+                    ResolveConversionMethod(expr, Compilation.Get(NativeType.Object), Compilation.Get(NativeType.Usual).Lookup(XSharpFunctionNames.ToObject), ref converter, options);
                     if (converter != null)
-                        return ConversionSymbol.Create(ConversionKind.ImplicitUserDefined, converter);
+                    {
+                        var inner = ConversionSymbol.Create(ConversionKind.ImplicitUserDefined, converter);
+                        var outer = type.IsReferenceType ? ConversionSymbol.Create(ConversionKind.ExplicitReference)
+                            : type.IsValueType ? ConversionSymbol.Create(ConversionKind.Unboxing)
+                            : ConversionSymbol.Create(ConversionKind.NoConversion);
+                        if (outer.Exists)
+                            return ConversionSymbol.Create(outer, inner);
+                    }
                 }
             }
             return null;
@@ -240,6 +300,44 @@ namespace XSharp.MacroCompiler
             }
             return null;
         }
+
+        internal static ConversionSymbol ResolveEnumConversion(Expr expr, TypeSymbol type, BindOptions options)
+        {
+            if (expr.Datatype.IsEnum)
+            {
+                if (TypesMatch(expr.Datatype.EnumUnderlyingType, type))
+                {
+                    return ConversionSymbol.Create(ConversionKind.ImplicitEnumeration);
+                }
+                else
+                {
+                    var inner = ConversionSymbol.Create(ConversionKind.ImplicitEnumeration);
+                    var outer = Conversion(TypeConversion.Bound(expr, expr.Datatype.EnumUnderlyingType, inner), type, options);
+                    if (outer.Exists)
+                    {
+                        return ConversionSymbol.Create(outer, inner);
+                    }
+                }
+            }
+            if (type.IsEnum && options.HasFlag(BindOptions.Explicit))
+            {
+                if (TypesMatch(type.EnumUnderlyingType, expr.Datatype))
+                {
+                    return ConversionSymbol.Create(ConversionKind.ExplicitEnumeration);
+                }
+                else
+                {
+                    var inner = Conversion(expr, type.EnumUnderlyingType, options);
+                    if (inner.Exists)
+                    {
+                        var outer = ConversionSymbol.Create(ConversionKind.ExplicitEnumeration);
+                        return ConversionSymbol.Create(outer, inner);
+                    }
+                }
+            }
+            return null;
+        }
+
         internal static ConversionSymbol ResolveDynamicConversion(Expr expr, TypeSymbol type, BindOptions options)
         {
             if (expr.Datatype.NativeType == NativeType.Object)

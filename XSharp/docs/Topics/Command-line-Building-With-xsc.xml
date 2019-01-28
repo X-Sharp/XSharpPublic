@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Command-line Building With xsc.exe</title>
   <keywords>
     <keyword>compiler options</keyword>
@@ -33,14 +33,14 @@
       <li styleclass="Normal">Backslashes are interpreted literally, unless they immediately precede a double quotation mark.</li>
       <li styleclass="Normal">If an even number of backslashes is followed by a double quotation mark, one backslash is put in the compiler options array for every pair of backslashes, and the double quotation mark is interpreted as a string delimiter.</li>
       <li styleclass="Normal">If an odd number of backslashes is followed by a double quotation mark, one backslash is put in the compiler options array for every pair of backslashes, and the double quotation mark is &quot;escaped&quot; by the remaining backslash. This causes a literal double quotation mark (&quot;) to be added in compiler options array.</li>
+      <li styleclass="Normal">Commandline options can start with a hyphen (-) or a slash (/). On Non windows platforms the hyphen should be used because the slash may be seen as a path delimiter character</li>
     </list>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Sample commands for the X# Compiler</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="2">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="T_Code">xcs file.prg</text></para>
+          <para styleclass="Normal"><text styleclass="T_Code" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">xcs file.prg</text></para>
           <para styleclass="Normal"></para>
         </td>
         <td>
@@ -49,7 +49,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="T_Code">xcs /target:library file.prg</text></para>
+          <para styleclass="Normal"><text styleclass="T_Code" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">xcs -target:library file.prg</text></para>
           <para styleclass="Normal"></para>
         </td>
         <td>
@@ -58,7 +58,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="T_Code">xcs /out:Program.exe file.prg</text></para>
+          <para styleclass="Normal"><text styleclass="T_Code" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">xcs -out:Program.exe file.prg</text></para>
           <para styleclass="Normal"></para>
         </td>
         <td>
@@ -67,7 +67,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:64px left,128px left,192px left,256px left,320px left,384px left,448px left,511px left,575px left ;"><text styleclass="T_Code">xsc /define:DEBUG /optimize /out:File.exe *.prg</text></para>
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:64px left,128px left,192px left,256px left,320px left,384px left,448px left,511px left,575px left ;"><text styleclass="T_Code" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">xsc -define:DEBUG -optimize -out:File.exe *.prg</text></para>
           <para styleclass="Normal"></para>
         </td>
         <td>
@@ -77,7 +77,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:64px left,128px left,192px left,256px left,320px left,384px left,448px left,511px left,575px left ;"><text styleclass="T_Code">xsc /target:library /out:File2.dll /warn:0 /nologo /debug *.prg</text></para>
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:64px left,128px left,192px left,256px left,320px left,384px left,448px left,511px left,575px left ;"><text styleclass="T_Code" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">xsc /target:library /out:File2.dll /warn:0 /nologo /debug *.prg</text></para>
           <para styleclass="Normal"></para>
         </td>
         <td>
@@ -87,7 +87,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:64px left,128px left,192px left,256px left,320px left,384px left,448px left,511px left,575px left ;"><text styleclass="T_Code">xsc /target:library /out:MyBase.rdd *.prg</text></para>
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:64px left,128px left,192px left,256px left,320px left,384px left,448px left,511px left,575px left ;"><text styleclass="T_Code" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">xsc /target:library /out:MyBase.rdd *.prg</text></para>
           <para styleclass="Normal"></para>
         </td>
         <td>

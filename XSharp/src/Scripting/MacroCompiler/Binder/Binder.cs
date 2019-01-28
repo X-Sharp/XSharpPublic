@@ -12,6 +12,8 @@ namespace XSharp.MacroCompiler
     internal enum BindAffinity
     {
         Access,
+        Assign,
+        AccessAndAssign,
         Invoke,
     }
 
@@ -25,6 +27,7 @@ namespace XSharp.MacroCompiler
         Explicit = 256,
         Special = 512,
         Logic = 1024,
+        Cast = 2048,
 
         None = 0,
         Default = AllowDynamic | AllowInexactComparisons
@@ -36,14 +39,17 @@ namespace XSharp.MacroCompiler
         static List<ContainerSymbol> Usings = null;
         static Dictionary<Type, TypeSymbol> TypeCache = null;
 
-        internal MacroOptions Options;
-        internal bool DynamicUsual = true;
+        internal static StringComparer LookupComprer = StringComparer.OrdinalIgnoreCase;
 
-        internal Dictionary<string, Symbol> LocalCache = new Dictionary<string, Symbol>();
+        internal MacroOptions Options;
+
+        internal Dictionary<string, Symbol> LocalCache = new Dictionary<string, Symbol>(LookupComprer);
         internal List<LocalSymbol> Locals = new List<LocalSymbol>();
         internal List<ArgumentSymbol> Args = new List<ArgumentSymbol>();
         internal TypeSymbol ObjectType;
         internal Type DelegateType;
+
+        internal bool CreatesAutoVars = false;
 
         protected Binder(Type objectType, Type delegateType, MacroOptions options)
         {

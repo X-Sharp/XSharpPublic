@@ -61,6 +61,13 @@ namespace XSharp.MacroCompiler
                     return op;
             }
 
+            // Enum operations
+            {
+                var op = EnumUnaryOperator(kind, ref expr, options);
+                if (op != null)
+                    return op;
+            }
+
             return null;
         }
 
@@ -169,6 +176,25 @@ namespace XSharp.MacroCompiler
             }
 
             return op;
+        }
+
+        static UnaryOperatorSymbol EnumUnaryOperator(UnaryOperatorKind kind, ref Expr expr, BindOptions options)
+        {
+            var e = expr;
+            var dt = expr.Datatype;
+
+            if (dt.IsEnum)
+            {
+                Convert(ref e, dt.EnumUnderlyingType, options);
+                var op = UnaryOperation(kind, ref e, options);
+                if (op != null)
+                {
+                    expr = e;
+                    return op.AsEnum(dt) ?? op;
+                }
+            }
+
+            return null;
         }
     }
 }

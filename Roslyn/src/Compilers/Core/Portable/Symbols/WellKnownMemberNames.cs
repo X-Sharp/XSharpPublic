@@ -57,7 +57,7 @@ namespace Microsoft.CodeAnalysis
         /// The name of an entry point method.
         /// </summary>
 #if XSHARP
-        public const string EntryPointMethodName = "__XsStart";
+        public const string EntryPointMethodName = "Start";
 #else
         public const string EntryPointMethodName = "Main";
 #endif

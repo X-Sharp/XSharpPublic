@@ -61,9 +61,7 @@
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
           <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#3366ff;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">CHECKED</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&lt;Statements&gt; &#160;</text><br/><text style="font-weight:normal; font-style:normal; color:#3366ff;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;"> [</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">CHECKED</text><text style="font-weight:normal; font-style:normal; color:#000000;">]</text></para>
-          <para styleclass="Code Example"></para>
-          <para styleclass="Code Example">Also allowed as expression</para>
-          <para styleclass="Code Example"></para>
+          <para styleclass="Body Text">Also allowed as expression</para>
           <para styleclass="Code Example">x := CHECKED(y)</para>
         </td>
         <td style="vertical-align:top;">
@@ -73,9 +71,7 @@
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
           <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#3366ff;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">UNCHECKED</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&lt;Statements&gt; &#160;</text><br/><text style="font-weight:normal; font-style:normal; color:#3366ff;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;"> [</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">UNCHECKED</text><text style="font-weight:normal; font-style:normal; color:#000000;">]</text></para>
-          <para styleclass="Code Example"></para>
-          <para styleclass="Code Example">Also allowed as expression</para>
-          <para styleclass="Code Example"></para>
+          <para styleclass="Body Text">Also allowed as expression</para>
           <para styleclass="Code Example">x := UNCHECKED(y)</para>
         </td>
         <td style="vertical-align:top;">

@@ -99,7 +99,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         bool _currentLineHasEos = true;
         int _lastToken = NL;
         IList<ParseErrorData> _lexErrors = new List<ParseErrorData>();
+
         System.Text.StringBuilder _textSb = new System.Text.StringBuilder();
+        int _lineStartCharIndex;
+        int _startCharIndex;
+        int _startColumn;
+        int _startLine;
+        int _tokenType;
+        int _tokenChannel;
+
         static Object kwlock = new Object();
         static IDictionary<string, int> voKwIds = null;
         static IDictionary<string, int> xppKwIds = null;
@@ -123,542 +131,624 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return _sourcePair;
             }
         }
+
+        int La_1 { get { return InputStream.La(1); } }
+        int La_2 { get { return InputStream.La(2); } }
+        int La_3 { get { return InputStream.La(3); } }
+        int La_4 { get { return InputStream.La(4); } }
+
+        void parseInit()
+        {
+            _lineStartCharIndex = InputStream.Index;
+            _startCharIndex = InputStream.Index;
+            _startColumn = Interpreter.Column;
+            _startLine = Interpreter.Line;
+            _tokenType = -2;
+            _tokenChannel = TokenConstants.DefaultChannel;
+            _textSb.Clear();
+        }
+
+        int parseType() => _tokenType;
+
+        bool parsingFailed() => _tokenType == -2;
+
+        void parseType(int type)
+        {
+            _tokenType = type;
+        }
+
+        void parseSkip()
+        {
+            InputStream.Consume();
+        }
+
+        void parseOne(int type)
+        {
+            parseType(type);
+            _textSb.Append((char)La_1);
+            InputStream.Consume();
+        }
+
+        void parseOne()
+        {
+            _textSb.Append((char)La_1);
+            InputStream.Consume();
+        }
+
+        void parseToEol()
+        {
+            while (La_1 != TokenConstants.Eof && La_1 != '\r' && La_1 != '\n')
+                parseOne();
+        }
+
+        bool tryParseNewLine()
+        {
+            if (La_1 == '\n' || La_1 == '\r')
+            {
+                if (La_1 == '\r' && La_2 == '\n')
+                    parseOne();
+                parseOne();
+                Interpreter.Line += 1;
+                Interpreter.Column = 0;
+                _lineStartCharIndex = InputStream.Index;
+                return true;
+            }
+            return La_1 == TokenConstants.Eof;
+        }
+
+        void parseWhitespace()
+        {
+            parseOne(WS);
+            _tokenChannel = TokenConstants.HiddenChannel;
+            while (La_1 == ' ' || La_1 == '\t')
+                parseOne();
+        }
+
+        void parseSlComment()
+        {
+            parseType(SL_COMMENT);
+            _tokenChannel = TokenConstants.HiddenChannel;
+            parseToEol();
+        }
+
+        void parseDocComment()
+        {
+            parseType(DOC_COMMENT);
+            _tokenChannel = XMLDOCCHANNEL;
+            HasDocComments = true;
+            parseToEol();
+        }
+
+        void parseMlComment()
+        {
+            _tokenChannel = TokenConstants.HiddenChannel;
+            while (La_1 != TokenConstants.Eof)
+            {
+                if (La_1 == '*' && La_2 == '/')
+                    break;
+                if (!tryParseNewLine())
+                    parseOne();
+            }
+            if (La_1 != TokenConstants.Eof)
+            {
+                parseOne();
+                parseOne();
+            }
+        }
+
+        void parseId()
+        {
+            parseType(ID);
+            if (La_1 == '@' && La_2 == '@')
+            {
+                parseOne();
+                parseOne();
+            }
+            parseOne();
+            var c = La_1;
+            while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_'
+                    || (c >= '\u00C0' && c <= '\u00D6') || (c >= '\u00D8' && c <= '\u00F6')
+                    || (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
+                    || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D')
+                    || c == '\u00B7' || (c >= '\u0300' && c <= '\u036F') || (c >= '\u203F' && c <= '\u2040')
+                    )
+            {
+                parseOne();
+                c = La_1;
+            }
+        }
+
+        void parseSymbol()
+        {
+            var c = La_1;
+            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
+                || (c >= '\u00C0' && c <= '\u00D6') || (c >= '\u00D8' && c <= '\u00F6')
+                || (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
+                || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D'))
+            {
+                parseOne(SYMBOL_CONST);
+                c = La_1;
+                while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_'
+                        || (c >= '\u00C0' && c <= '\u00D6') || (c >= '\u00D8' && c <= '\u00F6')
+                        || (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
+                        || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D')
+                        || c == '\u00B7' || (c >= '\u0300' && c <= '\u036F') || (c >= '\u203F' && c <= '\u2040')
+                        )
+                {
+                    parseOne();
+                    c = La_1;
+                }
+                var text = _textSb.ToString().Substring(1);
+                if (KwIds.ContainsKey(text))
+                {
+                    var kwid = KwIds[text];
+                    if (kwid >= FIRST_NULL && kwid <= LAST_NULL && kwid != NULL)
+                    {
+                        // #NIL or #NULL_STRING etc., however #NULL must be allowed as Symbol
+                        parseType(NEQ2);
+                        _textSb.Clear();
+                        _textSb.Append('#');
+                        InputStream.Seek(_startCharIndex + 1);
+                    }
+                    else if (text.Equals("USING", StringComparison.OrdinalIgnoreCase))
+                    {
+                        parseType(USING);
+                    }
+                }
+                else if (LastToken == NL && text.Equals("PRAGMA", StringComparison.OrdinalIgnoreCase))
+                {
+                    parseType(PRAGMA);
+                    parseToEol();
+                    _tokenChannel = PRAGMACHANNEL;
+                    HasPragmas = true;
+                }
+            }
+        }
+
+        void parseNumber()
+        {
+            parseType(La_1 == '.' ? REAL_CONST : INT_CONST);
+            bool invalid = false;
+            if (La_1 == '.')
+                parseOne();
+            else if (La_1 == '0')
+            {
+                parseOne();
+                if (La_1 == 'x' || La_1 == 'X')
+                {
+                    parseOne(HEX_CONST);
+                    while ((La_1 >= '0' && La_1 <= '9') || (La_1 >= 'A' && La_1 <= 'F') || (La_1 >= 'a' && La_1 <= 'f') || La_1 == '_')
+                        parseOne();
+                    if (_textSb[_textSb.Length-1]== '_') invalid = true;
+                    if (La_1 == 'U' || La_1 == 'L' || La_1 == 'u' || La_1 == 'l')
+                        parseOne();
+                    if (invalid)
+                        parseType(INVALID_NUMBER);
+                    return;
+                }
+                else if (La_1 == 'b' || La_1 == 'B')
+                {
+                    parseOne(BIN_CONST);
+                    while (La_1 >= '0' && La_1 <= '1' || La_1 == '_')
+                        parseOne();
+                    if (La_1 == 'U' || La_1 == 'u')
+                        parseOne();
+                    if (invalid)
+                        parseType(INVALID_NUMBER);
+                    return;
+                }
+            }
+            while ((La_1 >= '0' && La_1 <= '9') || La_1 == '_')
+                parseOne();
+            if (_textSb[_textSb.Length - 1] == '_') invalid = true;
+            if (parseType() == INT_CONST)
+            {
+                if (La_1 == 'U' || La_1 == 'L' || La_1 == 'u' || La_1 == 'l')
+                {
+                    parseOne();
+                    if (invalid)
+                        parseType(INVALID_NUMBER);
+                    return;
+                }
+                if (La_1 == '.')
+                {
+                    parseOne(REAL_CONST);
+                    if (La_1 >= '0' && La_1 <= '9')
+                    {
+                        while ((La_1 >= '0' && La_1 <= '9') || La_1 == '_')
+                            parseOne();
+                        if (_textSb[_textSb.Length - 1] == '_') invalid = true;
+                    }
+                }
+            }
+            if (parseType() == REAL_CONST)
+            {
+                if (La_1 == '.' && La_2 >= '0' && La_2 <= '9' &&
+                    (!(La_3 >= '0' && La_3 <= '9') || !(La_4 >= '0' && La_4 <= '9')))
+                {
+                    string s = _textSb.ToString();
+                    int z0 = s.IndexOf('.');
+                    if (z0 > 0 && z0 <= 4 && s.Length > z0 + 1 && s.Length <= z0+3 && !s.Contains("_"))
+                    {
+                        parseOne(DATE_CONST); // append dot
+                                              // append day number
+                        if (La_1 >= '0' && La_1 <= '9')
+                            parseOne();
+                        if (La_1 >= '0' && La_1 <= '9')
+                            parseOne();
+                        return;
+                    }
+                }
+            }
+            if (La_1 == 'M' || La_1 == 'm')
+                parseOne(REAL_CONST);
+            if (La_1 == 'E' || La_1 == 'e')
+            {
+                int c2 = La_2;
+                int c3 = La_3;
+                if (((c2 == '+' || c2 == '-') && (c3 >= '0' && c3 <= '9')) || (c2 >= '0' && c2 <= '9'))
+                {
+                    parseOne(REAL_CONST);   // e
+                    parseOne();             // +/-
+                    while ((La_1 >= '0' && La_1 <= '9') || La_1 == '_')
+                        parseOne();
+                    if (_textSb[_textSb.Length - 1] == '_') invalid = true;
+                }
+            }
+            if (La_1 == 'S' || La_1 == 'D' || La_1 == 's' || La_1 == 'd')
+                parseOne(REAL_CONST);
+            if (invalid)
+                parseType(INVALID_NUMBER);
+        }
+
+        void parseString()
+        {
+            parseType(STRING_CONST);
+            if (!AllowSingleQuotedStrings && La_1 == '\'')
+            {
+                parseType(CHAR_CONST);
+            }
+            else if (La_1 == 'c' || La_1 == 'C')
+            {
+                parseOne(CHAR_CONST);
+            }
+            else
+            {
+                if (La_1 == 'E' || La_1 == 'e')
+                {
+                    parseOne(ESCAPED_STRING_CONST);
+                }
+                if (La_1 == 'I' || La_1 == 'i')
+                {
+                    parseOne(INTERPOLATED_STRING_CONST);
+                    if (La_1 == 'E' || La_1 == 'e')
+                        parseOne();
+                }
+            }
+            {
+                int q = La_1;
+                parseOne();
+                bool allow_esc = parseType() == CHAR_CONST ?
+                    La_1 == '\\' && La_3 == q : parseType() != STRING_CONST;
+                bool esc = false;
+                while (La_1 != TokenConstants.Eof && (La_1 != q || esc))
+                {
+                    esc = allow_esc && !esc && La_1 == '\\';
+                    parseOne();
+                }
+                if (La_1 == q)
+                    parseOne();
+                else if (La_1 == TokenConstants.Eof)
+                    parseType(INCOMPLETE_STRING_CONST);
+            }
+        }
+
         public override IToken NextToken()
         {
             XSharpToken t;
             {
-                var _startCharIndex = InputStream.Index;
-                var _startColumn = Interpreter.Column;
-                var _startLine = Interpreter.Line;
-                int _type = -1;
-                int _channel = TokenConstants.DefaultChannel;
-                int c = InputStream.La(1);
-                switch (c)
+                parseInit();
+                if (La_1 == '\uFEFF') parseSkip();
+                switch (La_1)
                 {
                     case '(':
-                        _type = LPAREN;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(LPAREN);
                         break;
                     case ')':
-                        _type = RPAREN;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(RPAREN);
                         break;
                     case '{':
-                        _type = LCURLY;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(LCURLY);
                         break;
                     case '}':
-                        _type = RCURLY;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(RCURLY);
                         break;
                     case '[':
-                        _type = LBRKT;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(LBRKT);
                         break;
                     case ']':
-                        _type = RBRKT;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(RBRKT);
                         break;
                     case ':':
-                        _type = COLON;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == ':')
-                        {
-                            _type = COLONCOLON;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        else if (c == '=')
-                        {
-                            _type = ASSIGN_OP;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        parseOne(COLON);
+                        if (La_1 == ':')
+                            parseOne(COLONCOLON);
+                        else if (La_1 == '=')
+                            parseOne(ASSIGN_OP);
                         break;
                     case ',':
-                        _type = COMMA;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(COMMA);
                         break;
                     case '\\':       // used inside #command to escape '<'
-                        _type = BACKSLASH;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(BACKSLASH);
                         break;
                     case '|':
-                        _type = PIPE;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '|')
-                        {
-                            _type = OR;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        else if (c == '=')
-                        {
-                            _type = ASSIGN_BITOR;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        parseOne(PIPE);
+                        if (La_1 == '|')
+                            parseOne(OR);
+                        else if (La_1 == '=')
+                            parseOne(ASSIGN_BITOR);
                         break;
                     case '&':
-                        if (Dialect.AllowOldStyleComments()  && InputStream.La(2) == '&')
-                            break;
-                        _type = AMP;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '&')
-                        {
-                            _type = AND;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        else if (c == '=')
-                        {
-                            _type = ASSIGN_BITAND;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        parseOne(AMP);
+                        if (Dialect.AllowOldStyleComments() && La_1 == '&')
+                            parseSlComment();
+                        else if (La_1 == '&')
+                            parseOne(AND);
+                        else if (La_1 == '=')
+                            parseOne(ASSIGN_BITAND);
                         break;
                     case '@':
-                        if (InputStream.La(2) == '@')
-                        {
-                            break;
-                        }
-                        _type = ADDROF;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        if (La_2 == '@')
+                            goto default;
+                        parseOne(ADDROF);
                         break;
                     case '-':
-                        _type = MINUS;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '>')
-                        {
-                            _type = ALIAS;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        else if (c == '-')
-                        {
-                            _type = DEC;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        else if (c == '=')
-                        {
-                            _type = ASSIGN_SUB;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        parseOne(MINUS);
+                        if (La_1 == '>')
+                            parseOne(ALIAS);
+                        else if (La_1 == '-')
+                            parseOne(DEC);
+                        else if (La_1 == '=')
+                            parseOne(ASSIGN_SUB);
                         break;
                     case '+':
-                        _type = PLUS;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '+')
-                        {
-                            _type = INC;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        else if (c == '=')
-                        {
-                            _type = ASSIGN_ADD;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        parseOne(PLUS);
+                        if (La_1 == '+')
+                            parseOne(INC);
+                        else if (La_1 == '=')
+                            parseOne(ASSIGN_ADD);
                         break;
-
                     case '/':
-                        if (InputStream.La(2) == '/' || InputStream.La(2) == '*')
+                        parseOne(DIV);
+                        if (La_1 == '*')
                         {
+                            parseOne(ML_COMMENT);
+                            parseMlComment();
                             break;
                         }
-                        _type = DIV;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '=')
+                        else if (La_1 == '/')
                         {
-                            _type = ASSIGN_DIV;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
+                            parseOne(SL_COMMENT);
+                            if (La_1 == '/')
+                                parseDocComment();
+                            else
+                                parseSlComment();
                         }
+                        else if (La_1 == '=')
+                            parseOne(ASSIGN_DIV);
                         break;
                     case '%':
-                        _type = MOD;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '=')
-                        {
-                            _type = ASSIGN_MOD;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        parseOne(MOD);
+                        if (La_1 == '=')
+                            parseOne(ASSIGN_MOD);
                         break;
                     case '^':
-                        _type = EXP;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '=')
-                        {
-                            _type = ASSIGN_EXP;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        parseOne(EXP);
+                        if (La_1 == '=')
+                            parseOne(ASSIGN_EXP);
                         break;
                     case '<':
-                        _type = LT;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '<')
+                        parseOne(LT);
+                        if (La_1 == '<')
                         {
-                            _type = LSHIFT;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                            if (c == '=')
-                            {
-                                _type = ASSIGN_LSHIFT;
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                            }
+                            parseOne(LSHIFT);
+                            if (La_1 == '=')
+                                parseOne(ASSIGN_LSHIFT);
                         }
-                        else if (c == '=')
-                        {
-                            _type = LTE;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        else if (c == '>')
-                        {
-                            _type = NEQ;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        else if (La_1 == '=')
+                            parseOne(LTE);
+                        else if (La_1 == '>')
+                            parseOne(NEQ);
                         break;
                     case '>':
-                        _type = GT;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
+                        parseOne(GT);
                         // GreaterThanGreaterThanToken is synthesized in the parser since it is ambiguous (with closing nested type parameter lists)
-                        if (c == '>' && InputStream.La(2) == '=')
+                        if (La_1 == '>' && La_2 == '=')
                         {
-                            _textSb.Append((char)c);    // >
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                            _textSb.Append((char)c);    // =
-                            InputStream.Consume();
-                            _type = ASSIGN_RSHIFT;
-                            InputStream.Consume();
+                            parseOne(); // >
+                            parseOne(ASSIGN_RSHIFT); // =
                         }
-                        else if (c == '=')
-                        {
-                            _type = GTE;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        else if (La_1 == '=')
+                            parseOne(GTE);
                         break;
                     case '~':
-                        _type = TILDE;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '=')
+                        parseOne(TILDE);
+                        if (La_1 == '=')
+                            parseOne(ASSIGN_XOR);
+                        else if (La_1 == '"')           // Old Style Pragma like ~"ONLYEARLY+", treat it as whitespace
                         {
-                            _type = ASSIGN_XOR;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        if (c == '"')           // Old Style Pragma like ~"ONLYEARLY+", treat it as whitespace
-                        {
-                            _type = WS;
-                            _channel = TokenConstants.HiddenChannel;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            while (true)
-                            {
-                                c = InputStream.La(1);
-                                InputStream.Consume();
-                                _textSb.Append((char)c);
-                                if (c == '"')
-                                    break;
-                            }
+                            parseOne(WS);
+                            _tokenChannel = TokenConstants.HiddenChannel;
+                            while (La_1 != TokenConstants.Eof && La_1 != '"')
+                                parseOne();
+                            if (La_1 != TokenConstants.Eof)
+                                parseOne();
                         }
                         break;
                     case '*':
+                        parseOne(MULT);
                         if (LastToken == NL)
-                            break;
-                        _type = MULT;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '=')
+                            parseSlComment();
+                        else if (La_1 == '=')
+                            parseOne(ASSIGN_MUL);
+                        else if (La_1 == '*')
                         {
-                            _type = ASSIGN_MUL;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        else if (c == '*')
-                        {
-                            _type = EXP;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                            if (c == '=')
-                            {
-                                _type = ASSIGN_EXP;
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                            }
+                            parseOne(EXP);
+                            if (La_1 == '=')
+                                parseOne(ASSIGN_EXP);
                         }
                         break;
                     case '?':
-                        _type = QMARK;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '?')
-                        {
-                            _type = QQMARK;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        parseOne(QMARK);
+                        if (La_1 == '?')
+                            parseOne(QQMARK);
                         break;
                     case '=':
-                        _type = EQ;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '=')
-                        {
-                            _type = EEQ;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        else if (c == '>')
-                        {
-                            _type = UDCSEP;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
+                        parseOne(EQ);
+                        if (La_1 == '=')
+                            parseOne(EEQ);
+                        else if (La_1 == '>')
+                            parseOne(UDCSEP);
                         break;
                     case '$':
-                        _type = SUBSTR;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(SUBSTR);
                         break;
                     case '!':
-                        _type = NOT;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        if (c == '=')
+                        parseOne(NOT);
+                        if (La_1 == '=')
+                            parseOne(NEQ);
+                        break;
+                    case ';':
+                        parseOne(SEMI);
+                        do
                         {
-                            _type = NEQ;
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
+                            while (La_1 == ' ' || La_1 == '\t')
+                                parseOne();
+                            if (La_1 == '/' && La_2 == '*')
+                            {
+                                parseOne();
+                                parseOne();
+                                parseMlComment();
+                            }
+                        } while (La_1 == ' ' || La_1 == '\t');
+                        if (La_1 == '/' && La_2 == '/')
+                            parseToEol();
+                        else if (AllowOldStyleComments && La_1 == '&' && La_2 == '&')
+                            parseToEol();
+                        if (tryParseNewLine())
+                        {
+                            parseType(LINE_CONT);
+                            _tokenChannel = TokenConstants.HiddenChannel;
+                        }
+                        if (parseType() == SEMI && _textSb.Length > 1)
+                        {
+                            _textSb.Remove(1, _textSb.Length - 1);
+                            InputStream.Seek(_startCharIndex + 1);
                         }
                         break;
                     case '.':
-                        if (InputStream.La(2) >= '0' && InputStream.La(2) <= '9')
+                        if (La_2 >= '0' && La_2 <= '9')
                         {
-                            break;
+                            goto case '0';
                         }
-                        _type = DOT;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
+                        parseOne(DOT);
                         if (!_inDottedIdentifier)       // Do not translate .OR., .AND. etc Keywords that are part of a dotted identifier
                         {
-                            if (InputStream.La(2) == '.')
+                            if (La_2 == '.')
                             {
-                                c = InputStream.La(1);
-                                if (c == 'F' || c == 'N' || c == 'f' || c == 'n')
+                                var c1 = La_1;
+                                if (c1 == 'F' || c1 == 'N' || c1 == 'f' || c1 == 'n')
                                 {
-                                    _type = FALSE_CONST;
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    _textSb.Append('.');
-                                    InputStream.Consume();
+                                    parseOne(FALSE_CONST);
+                                    parseOne();
                                 }
-                                else if (c == 'T' || c == 'Y' || c == 't' || c == 'y')
+                                else if (c1 == 'T' || c1 == 'Y' || c1 == 't' || c1 == 'y')
                                 {
-                                    _type = TRUE_CONST;
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    _textSb.Append('.');
-                                    InputStream.Consume();
+                                    parseOne(TRUE_CONST);
+                                    parseOne();
                                 }
-                                else if (c == '.')
+                                else if (c1 == '.')
                                 {
-                                    _type = ELLIPSIS;
-                                    _textSb.Append('.');
-                                    InputStream.Consume();
-                                    _textSb.Append('.');
-                                    InputStream.Consume();
+                                    parseOne(ELLIPSIS);
+                                    parseOne();
                                 }
                             }
-                            else if (InputStream.La(3) == '.')
+                            else if (La_3 == '.')
                             {
-                                c = InputStream.La(1);
-                                var c2 = InputStream.La(2);
-                                if ((c == 'O' || c == 'o') && (c2 == 'R' || c2 == 'r'))
+                                var c1 = La_1;
+                                var c2 = La_2;
+                                if ((c1 == 'O' || c1 == 'o') && (c2 == 'R' || c2 == 'r'))
                                 {
-                                    _type = LOGIC_OR;
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    _textSb.Append((char)c2);
-                                    InputStream.Consume();
-                                    _textSb.Append('.');
-                                    InputStream.Consume();
+                                    parseOne(LOGIC_OR);
+                                    parseOne();
+                                    parseOne();
                                 }
                             }
-                            else if (InputStream.La(4) == '.')
+                            else if (La_4 == '.')
                             {
-                                c = InputStream.La(1);
-                                var c2 = InputStream.La(2);
-                                var c3 = InputStream.La(3);
-                                if ((c == 'A' || c == 'a') && (c2 == 'N' || c2 == 'n') && (c3 == 'D' || c3 == 'd'))
+                                var c1 = La_1;
+                                var c2 = La_2;
+                                var c3 = La_3;
+                                if ((c1 == 'A' || c1 == 'a') && (c2 == 'N' || c2 == 'n') && (c3 == 'D' || c3 == 'd'))
                                 {
-                                    _type = LOGIC_AND;
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    _textSb.Append((char)c2);
-                                    InputStream.Consume();
-                                    _textSb.Append((char)c3);
-                                    InputStream.Consume();
-                                    _textSb.Append('.');
-                                    InputStream.Consume();
+                                    parseOne(LOGIC_AND);
+                                    parseOne();
+                                    parseOne();
+                                    parseOne();
                                 }
-                                else if ((c == 'N' || c == 'n') && (c2 == 'O' || c2 == 'o') && (c3 == 'T' || c3 == 't'))
+                                else if ((c1 == 'N' || c1 == 'n') && (c2 == 'O' || c2 == 'o') && (c3 == 'T' || c3 == 't'))
                                 {
-                                    _type = LOGIC_NOT;
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    _textSb.Append((char)c2);
-                                    InputStream.Consume();
-                                    _textSb.Append((char)c3);
-                                    InputStream.Consume();
-                                    _textSb.Append('.');
-                                    InputStream.Consume();
+                                    parseOne(LOGIC_NOT);
+                                    parseOne();
+                                    parseOne();
+                                    parseOne();
                                 }
-                                else if ((c == 'X' || c == 'x') && (c2 == 'O' || c2 == 'o') && (c3 == 'R' || c3 == 'r'))
+                                else if ((c1 == 'X' || c1 == 'x') && (c2 == 'O' || c2 == 'o') && (c3 == 'R' || c3 == 'r'))
                                 {
-                                    _type = LOGIC_XOR;
-                                    _textSb.Append((char)c);
-                                    InputStream.Consume();
-                                    _textSb.Append((char)c2);
-                                    InputStream.Consume();
-                                    _textSb.Append((char)c3);
-                                    InputStream.Consume();
-                                    _textSb.Append('.');
-                                    InputStream.Consume();
+                                    parseOne(LOGIC_XOR);
+                                    parseOne();
+                                    parseOne();
+                                    parseOne();
                                 }
                             }
                         }
                         break;
                     case '\r':
                     case '\n':
-                        _type = NL;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        if (c == '\r' && InputStream.La(1) == '\n')
-                        {
-                            c = InputStream.La(1);
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                        }
-                        Interpreter.Line += 1;
-                        c = InputStream.La(1);
-                        Interpreter.Column = 0 - (InputStream.Index - _startCharIndex);
+                        if (tryParseNewLine()) parseType(NL);
                         break;
                     case '\t':
                     case ' ':
-                        _type = WS;
-                        _channel = TokenConstants.HiddenChannel;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        while (c == ' ' || c == '\t')
-                        {
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
-                        }
+                        parseWhitespace();
                         break;
                     case 'c':
                     case 'C':
-                        if (InputStream.La(2) == '"' || InputStream.La(2) == '\'') // char const
+                        if (La_2 == '"' || La_2 == '\'') // char const
                         {
-                            break;
+                            goto case '\'';
                         }
                         goto case 'a';
                     case 'e':
                     case 'E':
-                        if (InputStream.La(2) == '"') // escaped string
+                        if (La_2 == '"') // escaped string
                         {
-                            break;
+                            goto case '\'';
                         }
-                        if ((InputStream.La(2) == 'i' || InputStream.La(2) == 'I') && InputStream.La(3) == '"') // interpolated escaped string
+                        if ((La_2 == 'i' || La_2 == 'I') && La_3 == '"') // interpolated escaped string
                         {
-                            break;
+                            goto case '\'';
                         }
                         goto case 'a';
                     case 'i':
                     case 'I':
-                        if (InputStream.La(2) == '"') // interpolated string
+                        if (La_2 == '"') // interpolated string
                         {
-                            break;
+                            goto case '\'';
                         }
-                        if ((InputStream.La(2) == 'e' || InputStream.La(2) == 'E') && InputStream.La(3) == '"') // interpolated escaped string
+                        if ((La_2 == 'e' || La_2 == 'E') && La_3 == '"') // interpolated escaped string
                         {
-                            break;
+                            goto case '\'';
                         }
                         goto case 'a';
                     case 'a':
@@ -714,71 +804,67 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     case 'Y':
                     case 'Z':
                     case '_':
-                        _type = ID;
-                        _textSb.Clear();
-                        _textSb.Append((char)c);
-                        InputStream.Consume();
-                        c = InputStream.La(1);
-                        while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_'
-                                || (c >= '\u00C0' && c <= '\u00D6') || (c >= '\u00D8' && c <= '\u00F6')
-                                || (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
-                                || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D')
-                                || c == '\u00B7' || (c >= '\u0300' && c <= '\u036F') || (c >= '\u203F' && c <= '\u2040')
-                                )
+                        parseId();
+                        break;
+                    case '#':
+                        parseOne(NEQ2);
+                        parseSymbol();
+                        break;
+                    case '0':
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                        parseNumber();
+                        break;
+                    case '\'':
+                    case '"':
+                        parseString();
+                        break;
+                    default:
                         {
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            c = InputStream.La(1);
+                            var c = La_1;
+                            if (c == '@')
+                                c = La_3;
+                            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
+                                    || (c >= '\u00C0' && c <= '\u00D6') || (c >= '\u00D8' && c <= '\u00F6')
+                                    || (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
+                                    || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D'))
+                                goto case 'a';
                         }
                         break;
                 }
-                if (_type >= 0)
+                if (parsingFailed())
                 {
-                    Interpreter.Column += (InputStream.Index - _startCharIndex);
-                    t = TokenFactory.Create(this.SourcePair, _type, _textSb.ToString(), _channel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as XSharpToken;
-                    Emit(t);
+                    if (La_1 == TokenConstants.Eof)
+                        parseType(Eof);
+                    else
+                        parseOne(UNRECOGNIZED);
                 }
-                else
+                Interpreter.Column += (InputStream.Index - _startCharIndex);
+                t = TokenFactory.Create(this.SourcePair, _tokenType, _textSb.ToString(), _tokenChannel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as XSharpToken;
+                Emit(t);
+                if (t.Type == ML_COMMENT)
                 {
-                    t = base.NextToken() as XSharpToken;
-                    switch (t.Type)
+                    if (!t.Text.EndsWith("*/"))
                     {
-                        case ML_COMMENT:
-
-                            if (!t.Text.EndsWith("*/"))
-                            {
-                                _lexErrors.Add(new ParseErrorData(t, ErrorCode.ERR_OpenEndedComment));
-                            }
-                            break;
-                        case DOC_COMMENT:
-                            HasDocComments = true;
-                            break;
-                        case PRAGMA:
-                            HasPragmas = true;
-                            break;
-                        case SYMBOL_CONST:
-                            var text = t.Text.Substring(1);
-                            if (KwIds.ContainsKey(text))
-                            {
-                                var kwid = KwIds[text];
-                                if (kwid >= FIRST_NULL && kwid <= LAST_NULL && kwid != NULL)
-                                {
-                                    // #NIL or #NULL_STRING etc., however #NULL must be allowed as Symbol
-                                    t.Text = "#";
-                                    t.Type = NEQ2;
-                                    t.StopIndex = t.StartIndex;
-                                    InputStream.Seek(t.StartIndex + 1);
-                                }
-                            }
-                            break;
+                        _lexErrors.Add(new ParseErrorData(t, ErrorCode.ERR_OpenEndedComment));
                     }
-                
                 }
             }
             var type = t.Type;
             if (findKeyWord(t, _lastToken))
             {
                 type = t.Type;
+            }
+            else if (type == REAL_CONST || type == INT_CONST || type == HEX_CONST || type == BIN_CONST)
+            {
+                t.Text = t.Text.Replace("_", "");
             }
             else if (type == SYMBOL_CONST && (LastToken == NL || LastToken == UDCSEP))
             {
@@ -833,34 +919,37 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                 }
             }
-            if (!_inDottedIdentifier)
+            if (type != Eof)
             {
-                // Check if the current token is a valid Identifier (starts with A..Z or _) and is followed by a DOT
-                // In that case we change the type from Keyword to ID
-                if (_isValidIdentifier(t) && InputStream.La(1) == (int)'.')
+                if (!_inDottedIdentifier)
                 {
-                    if (t.Type != SELF && t.Type != SUPER)
+                    // Check if the current token is a valid Identifier (starts with A..Z or _) and is followed by a DOT
+                    // In that case we change the type from Keyword to ID
+                    if (_isValidIdentifier(t) && La_1 == (int)'.')
+                    {
+                        if (t.Type != SELF && t.Type != SUPER)
+                        {
+                            t.Type = ID;
+                        }
+                        _inDottedIdentifier = true;
+                    }
+                    else if (type == ID || type == KWID)
+                    {
+                        _inDottedIdentifier = true;
+                    }
+                }
+                else
+                {
+                    // Check if the current token is a valid Identifier (starts with A..Z or _) 
+                    if (_isValidIdentifier(t))
                     {
                         t.Type = ID;
+                        // keep _inDottedIdentifier true
                     }
-                    _inDottedIdentifier = true;
-                }
-                else if (type == ID || type == KWID)
-                {
-                    _inDottedIdentifier = true;
-                }
-            }
-            else
-            {
-                // Check if the current token is a valid Identifier (starts with A..Z or _) 
-                if (_isValidIdentifier(t))
-                {
-                    t.Type = ID;
-                    // keep _inDottedIdentifier true
-                }
-                else if (type != DOT && type != ID && type != KWID)
-                {
-                    _inDottedIdentifier = false;
+                    else if (type != DOT && type != ID && type != KWID)
+                    {
+                        _inDottedIdentifier = false;
+                    }
                 }
             }
             if (type == NL || type == SEMI)
@@ -889,7 +978,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 _currentLineHasEos = false;
             }
-            else if (!_currentLineHasEos && type == Eof)
+            else if (!_currentLineHasEos && type == TokenConstants.Eof)
             {
                 t.Type = EOS;
                 _currentLineHasEos = true;
@@ -946,7 +1035,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     break;
                 case DESTRUCTOR:
                     // can also appear after attribute
-                    if (lastToken != EOS && lastToken != NL && lastToken != EXTERN && lastToken != RBRKT)
+                    if (lastToken != EOS && lastToken != NL && lastToken != SEMI && lastToken != EXTERN && lastToken != RBRKT)
                     {
                         return ID;
                     }
@@ -963,20 +1052,20 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case REPEAT:
                 case UNTIL:
                 case YIELD:
-                    if (lastToken != EOS && lastToken != NL)
+                    if (lastToken != EOS && lastToken != NL && lastToken != SEMI)
                     {
                         return ID;
                     }
                     break;
                 case SWITCH:
-                    if (lastToken != EOS && lastToken != NL && lastToken != BEGIN && lastToken != DO && lastToken != END)
+                    if (lastToken != EOS && lastToken != NL && lastToken != SEMI && lastToken != BEGIN && lastToken != DO && lastToken != END)
                     {
                         return ID;
                     }
                     break;
                 case IMPLIED:
                 case VAR:
-                    if (lastToken != EOS && lastToken != NL && lastToken != LOCAL && lastToken != STATIC
+                    if (lastToken != EOS && lastToken != NL && lastToken != SEMI && lastToken != LOCAL && lastToken != STATIC
                         && lastToken != FOR && lastToken != FOREACH && lastToken != USING)
                     {
                         // in XPP VAR is used in the class definition as well.
@@ -992,11 +1081,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return ID;
                     }
                     break;
-                case MEMVAR:
                 case PARAMETERS:
                     if (!AllowXBaseVariables)
                         return ID;
-                    if (lastToken != EOS && lastToken != NL)
+                    if (lastToken != EOS && lastToken != NL && lastToken != SEMI)
                     {
                         return ID;
                     }
@@ -1149,12 +1237,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"BREAK", BREAK},
                     {"_CAST", CAST},
                     {"EXPORT", EXPORT},
-                    {"FIELD", FIELD},
                     {"_FIELD", FIELD},
                     {"IF", IF},
                     {"IIF", IIF},
                     {"IS", IS},
                     {"MEMVAR", MEMVAR},
+                    {"_MEMVAR", MEMVAR},
                     {"_NOT", VO_NOT},
                     {"_OR", VO_OR},
                     {"_XOR", VO_XOR},
@@ -1250,6 +1338,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"LOCAL", LOCAL},
                 {"LOOP", LOOP},
                 {"MEMBER", MEMBER},
+                {"_MEMVAR", MEMVAR},
                 {"MEMVAR", MEMVAR},
                 {"METHOD", METHOD},
                 {"NEXT", NEXT},
@@ -1568,6 +1657,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "__DIALECT_VO__", MACRO},
                     { "__DIALECT_VULCAN__", MACRO},
                     { "__DIALECT_HARBOUR__", MACRO},
+                    { "__DIALECT_XBASEPP__", MACRO},
                     { "__ENTITY__", MACRO},
                     { "__FILE__", MACRO},
                     { "__FUNCTION__", MACRO},
@@ -1580,6 +1670,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "__TIME__", MACRO},
                     { "__UTCTIME__", MACRO},
                     { "__VERSION__", MACRO},
+                    { "__VO__", MACRO},
                     { "__VO1__", MACRO},
                     { "__VO2__", MACRO},
                     { "__VO3__", MACRO},
@@ -1596,9 +1687,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "__VO14__", MACRO},
                     { "__VO15__", MACRO},
                     { "__VO16__", MACRO},
+                    { "__VULCAN__", MACRO},
                     { "__WINDIR__", MACRO},
                     { "__WINDRIVE__", MACRO},
+                    { "__XPP__", MACRO},
                     { "__XSHARP__", MACRO},
+                    { "__XSHARP_RT__", MACRO},
                 };
 
             }

@@ -1,4 +1,4 @@
-#using System.Collections
+﻿#using System.Collections
 #using System.Text
 #using System.Xml
 #using System.IO
@@ -573,7 +573,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 	RETURN
 
 	METHOD __ReadVNFrmControl(oReader AS BinaryReader) AS VOWEDItem
-		LOCAL nLeft,nRight,nTop,nBottom AS Int16
+		LOCAL nLeft,nRight,nTop,nBottom AS Int
 		LOCAL nAt , nPropLength AS INT
 		LOCAL cName , cValue AS STRING
 		LOCAL cControl AS STRING
@@ -592,14 +592,14 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		oItem:cControl := cControl
 		oItem:cCaption := SELF:__ReadString(oReader , 65)
 	
-		nLeft := oReader:ReadInt16() + 1
-		nTop := oReader:ReadInt16() + 1
-		nRight := oReader:ReadInt16() + 1
-		nBottom := oReader:ReadInt16() + 1
-		oItem:nLeft := (Int16)nLeft
-		oItem:nTop := (Int16)nTop
-		oItem:nWidth := (Int16)nRight - (Int16)nLeft
-		oItem:nHeight := (Int16)nBottom - (Int16)nTop
+		nLeft := oReader:ReadInt16() +  1
+		nTop := oReader:ReadInt16() +  1
+		nRight := oReader:ReadInt16() +  1
+		nBottom := oReader:ReadInt16() +  1
+		oItem:nLeft := nLeft
+		oItem:nTop := nTop
+		oItem:nWidth := nRight - nLeft
+		oItem:nHeight := nBottom - nTop
 		
 		oItem:nDeleted := oReader:ReadInt16()
 		oItem:nBrowseIndex := oReader:ReadInt16()

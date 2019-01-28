@@ -3,8 +3,12 @@ You are allowed to distribute the following XSharp DLLs with your projects:
 XSharp.Runtime
 ================
 XSharp.Core.dll
+XSharp.RT.DLL
+XSharp.RDD.DLL
 XSharp.VO.dll
+XSharp.XPP.DLL
 XSharp.MacroCompiler.dll
+XSharp.MacroCompiler.Full.dll
 XSharp.Scripting.dll
 XSharp.CodeAnalysis.dll
 

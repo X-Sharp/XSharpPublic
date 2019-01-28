@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Expression IS Type</title>
+  <keywords>
+    <keyword>IS</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Expression IS Type</para>
+    </header>
+    <para styleclass="Normal"><snippet src="Expression-Examples" inline="false"/></para>
+  </body>
+</topic>

@@ -4591,6 +4591,10 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 -vo15[+|-]                     Allow untyped Locals and return types (default = ON for VO/Vulcan)
 -vo16[+|-]                     Generate Clipper calling convention constructors for classes without constructor 
 -xpp1[+|-]                     All classes inherit from the Abstract class (default = OFF)
+-memvar[+|-]                   Should memory variables (PUBLIC and PRIVATE variables) be supported. 
+                               This only works for the VO, XPP and Harbour dialects.
+-undeclared[+|-]               Should the compiler allow undeclared variables
+                               This only works for the VO, XPP and Harbour dialects.
 
                         - PREPROCESOR -
  
@@ -5609,7 +5613,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>XPP: Class {0} has not been declared.</value>
   </data>
   <data name="ERR_FeatureNotAvailableInDialect" xml:space="preserve">
-    <value>Feature '{0}' is not available in the selected dialect {1}</value>
+    <value>Feature '{0}' is not available in the selected dialect {1} {2}</value>
   </data>
   <data name="WRN_ImplicitCast" xml:space="preserve">
     <value>The compiler generated an implicit cast to a smaller type from type '{0}' to '{1}'.</value>
@@ -5617,5 +5621,18 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_AutomaticRefGeneration" xml:space="preserve">
     <value>Parameter {0} needs a(n) '{1}' modifier. This modifier was automatically added.</value>
   </data>
-
+    <data name="ERR_DefaultParameterValueWithClipperCallingConvention" xml:space="preserve">
+    <value>Parameters with CLIPPER calling convention cannot have default values.</value>
+  </data>
+  <data name="WRN_UndeclaredVariable" xml:space="preserve">
+    <value>Variable '{0}' has not been declared. Assuming this is a FIELD or a MEMVAR.</value>
+  </data>
+  <data name="ERR_ParametersWithDeclaredParameters" xml:space="preserve">
+    <value>You cannot have both a PARAMETERS statement and declared parameters in the same entity.</value>
+  </data>
+  <data name="ERR_MemvarFieldWithSameName" xml:space="preserve">
+    <value>A MEMVAR or FIELD with the name '{0}' has already been defined.</value>
+  </data>
+  
+  
 </root>

@@ -8,7 +8,7 @@
     </header>
     <para styleclass="Normal">When you install XSharp you will find the following folders on your machine.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="16" colcount="2">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="17" colcount="2">
       <tr style="vertical-align:top">
         <td style="width:321px;">
           <para styleclass="Normal"><text style="font-weight:bold;">Folder</text></para>
@@ -39,6 +39,14 @@
         </td>
         <td style="width:993px;">
           <para styleclass="Normal">The command line compiler, the Script interpreter and Vulcan XPorter</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:321px;">
+          <para styleclass="Normal">- Debug</para>
+        </td>
+        <td style="width:993px;">
+          <para styleclass="Normal">Debug versions of the runtime DLLs and SDK DLLs (FOX only)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -84,10 +92,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:321px;">
-          <para styleclass="Normal">- Portable</para>
+          <para styleclass="Normal">- NetCore20</para>
         </td>
         <td style="width:993px;">
-          <para styleclass="Normal">A portable version of the X# compiler and script engine</para>
+          <para styleclass="Normal">A version of the X# compiler and script engine for .Net Core 2.0 (FOX only)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -151,7 +159,11 @@
       <li styleclass="Normal">c:\Program Files (x86)\Microsoft Visual Studio\2017\<text style="font-weight:bold; font-style:italic;">&lt;Version&gt;</text>\Common7\IDE\Extensions\XSharp</li>
       <li styleclass="Normal">c:\Program Files (x86)\Microsoft Visual Studio\2017\<text style="font-weight:bold; font-style:italic;">&lt;Version&gt;</text>\MSBuild\XSharp</li>
     </list>
-    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">For Visual Studio 2019</para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">c:\Program Files (x86)\Microsoft Visual Studio\2019\<text style="font-weight:bold; font-style:italic;">&lt;Version&gt;</text>\Common7\IDE\Extensions\XSharp</li>
+      <li styleclass="Normal">c:\Program Files (x86)\Microsoft Visual Studio\2019\<text style="font-weight:bold; font-style:italic;">&lt;Version&gt;</text>\MSBuild\XSharp</li>
+    </list>
     <para styleclass="Heading3">Registry</para>
     <para styleclass="Normal">The installer will also write some changes to the registry:</para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

@@ -86,6 +86,13 @@ namespace XSharp.MacroCompiler
                     return op;
             }
 
+            // Emun operations
+            {
+                var op = EnumBinaryOperator(kind, ref left, ref right, options);
+                if (op != null)
+                    return op;
+            }
+
             return null;
         }
 
@@ -287,6 +294,45 @@ namespace XSharp.MacroCompiler
             }
 
             return op;
+        }
+
+        static BinaryOperatorSymbol EnumBinaryOperator(BinaryOperatorKind kind, ref Expr left, ref Expr right, BindOptions options)
+        {
+            var l = left;
+            var r = right;
+
+            TypeSymbol dt;
+
+            if (l.Datatype.IsEnum)
+            {
+                if (r.Datatype.IsEnum && !TypesMatch(l.Datatype,r.Datatype))
+                    return null;
+                dt = l.Datatype;
+            }
+            else if (r.Datatype.IsEnum)
+            {
+                dt = r.Datatype;
+            }
+            else
+                return null;
+
+            Convert(ref l, dt.EnumUnderlyingType, options);
+            Convert(ref r, dt.EnumUnderlyingType, options);
+
+            var op = BinaryOperation(kind, ref l, ref r, options);
+
+            if (op != null)
+            {
+                left = l;
+                right = r;
+                if (kind == BinaryOperatorKind.Addition || kind == BinaryOperatorKind.Subtraction || kind == BinaryOperatorKind.Or ||
+                    kind == BinaryOperatorKind.And || kind == BinaryOperatorKind.Xor)
+                    return op.AsEnum(dt) ?? op;
+                else
+                    return op;
+            }
+
+            return null;
         }
     }
 }

@@ -106,6 +106,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string ExVarName = "Xs$Exception";
         internal const string ReturnName = "Xs$Return";
         internal const string ArrayName = "Xs$Array";
+        internal const string PrivatesLevel = "Xs$PrivatesLevel";
 
         internal const string FunctionsClass = "Functions";
         internal const string VOExeFunctionsClass = ".Exe.Functions";
@@ -137,6 +138,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string SetElement = "__SetElement";
         // These are in the generated code
         internal const string RunInitProcs = "RunInitProcs";
+        internal const string VarGet = "__VarGet";
+        internal const string VarPut = "__VarPut";
     }
     internal static class VulcanQualifiedFunctionNames
     {
@@ -177,6 +180,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string FieldSetWa = "global::XSharp.RT.Functions.__FieldSetWa";
         internal const string MemVarGet = "global::XSharp.RT.Functions.__MemVarGet";
         internal const string MemVarPut = "global::XSharp.RT.Functions.__MemVarPut";
+        internal const string MemVarInit = "global::XSharp.RT.Functions.__MemVarInit";
+        internal const string MemVarRelease = "global::XSharp.RT.Functions.__MemVarRelease";
+        internal const string MemVarDecl = "global::XSharp.RT.Functions.__MemVarDecl";
         internal const string NullDate = "global::XSharp.__Date.NullDate";
         internal const string UsualNIL = "global::XSharp.__Usual._NIL";
         internal const string PszRelease = "global::XSharp.Internal.CompilerServices.String2PszRelease";

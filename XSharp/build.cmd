@@ -13,8 +13,11 @@ taskkill  /f /t /fi "IMAGENAME eq XSCompiler.exe" >nul
 Echo Building Compiler %1 Configuration 
 Echo Using MsBuild in %msbuilddir%
 "%msbuilddir%msbuild" Compiler.sln /fl1 /p:Configuration=%1		/t:Build /m /v:m /nologo
+"%msbuilddir%msbuild" Tools.sln /fl2 /p:Configuration=%1		/t:Build /m /v:m /nologo
 if exist build-%1.log del build-%1.log
+if exist buildtools-%1.log del buildtools-%1.log
 rename msbuild1.log build-%1.log
+rename msbuild2.log buildtools-%1.log
 set XSharpDev=%tmpXSharpDev%
 Goto End
 :Error

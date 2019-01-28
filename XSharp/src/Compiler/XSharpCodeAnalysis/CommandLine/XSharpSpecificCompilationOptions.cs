@@ -98,7 +98,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal RuntimeAssemblies RuntimeAssemblies { get; set; } = RuntimeAssemblies.None;
         public bool Overflow { get; internal set; } = false;
         public bool OverflowHasBeenSet { get; internal set; } = false;
-        
+        public bool MemVars { get; internal set; } = false;
+        public bool UndeclaredLocalVars { get; internal set; } = false;
+
         public string PreviousArgument { get; internal set; } = string.Empty;
         public TextWriter ConsoleOutput { get; internal set; }
     }

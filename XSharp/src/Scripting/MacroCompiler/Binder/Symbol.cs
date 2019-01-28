@@ -10,10 +10,27 @@ namespace XSharp.MacroCompiler
 {
     internal abstract partial class Symbol
     {
+        [Flags]
+        internal enum AccessMode
+        {
+            None = 0,
+            Get = 1,
+            Set = 2,
+            Ref = 3,
+            GetSet = Get | Set,
+            All = Get | Set | Ref,
+        };
+        AccessMode access_ = AccessMode.None;
+        internal Symbol() { }
+        internal Symbol(AccessMode access) { access_ = access; }
         internal abstract Symbol Lookup(string name);
+        internal bool HasGetAccess { get => access_.HasFlag(AccessMode.Get); }
+        internal bool HasSetAccess { get => access_.HasFlag(AccessMode.Set); }
+        internal bool HasRefAccess { get => access_.HasFlag(AccessMode.Ref); }
     }
     internal abstract partial class TypedSymbol : Symbol
     {
+        internal TypedSymbol(AccessMode access) : base(access) { }
         internal override Symbol Lookup(string name) { throw new InternalError(); }
         abstract internal TypeSymbol Type { get; }
     }
@@ -41,7 +58,7 @@ namespace XSharp.MacroCompiler
     }
     internal abstract partial class ContainerSymbol : Symbol
     {
-        internal Dictionary<string, Symbol> Members = new Dictionary<string, Symbol>(StringComparer.OrdinalIgnoreCase);
+        internal Dictionary<string, Symbol> Members = new Dictionary<string, Symbol>(Binder.LookupComprer);
         internal ContainerSymbol() { }
         internal override Symbol Lookup(string name) { Symbol s; Members.TryGetValue(name, out s); return s; }
     }
@@ -62,6 +79,7 @@ namespace XSharp.MacroCompiler
         internal TypeSymbol(Type type) { Type = type; }
         internal bool IsByRef { get { return Type.IsByRef; } }
         internal bool IsValueType { get { return Type.IsValueType; } }
+        internal bool IsReferenceType { get { return Type.IsClass || Type.IsInterface; } }
         internal bool IsEnum { get { return Type.IsEnum; } }
         internal TypeSymbol ElementType { get { return Type.HasElementType ? Binder.FindType(Type.GetElementType()) : null; } }
         internal TypeSymbol EnumUnderlyingType { get { return Type.IsEnum ? Binder.FindType(Type.GetEnumUnderlyingType()) : null; } }
@@ -140,7 +158,7 @@ namespace XSharp.MacroCompiler
         internal string Name;
         internal override TypeSymbol Type { get; }
         internal int Index = -1;
-        internal LocalSymbol(string name, TypeSymbol type) { Name = name; Type = type; }
+        internal LocalSymbol(string name, TypeSymbol type) : base(AccessMode.All) { Name = name; Type = type; }
         internal override Symbol Lookup(string name) { return null; }
     }
     internal partial class ArgumentSymbol : LocalSymbol
@@ -155,34 +173,35 @@ namespace XSharp.MacroCompiler
     {
         internal string Name;
         internal override TypeSymbol Type { get { return (Binder.LookupFullName(XSharpQualifiedFunctionNames.IVarGet) as MethodSymbol)?.Type ?? Compilation.Get(NativeType.Object); } }
-        internal DynamicSymbol(string name) { Name = name; }
+        internal DynamicSymbol(string name) : base(AccessMode.GetSet) { Name = name; }
         internal override Symbol Lookup(string name) { return null; }
     }
     internal partial class ObjectInitializerSymbol : TypedSymbol
     {
         internal override TypeSymbol Type { get; }
-        internal ObjectInitializerSymbol(TypeSymbol type) { Type = type; }
+        internal ObjectInitializerSymbol(TypeSymbol type) : base(AccessMode.Get) { Type = type; }
     }
     internal abstract partial class MemberSymbol : TypedSymbol
     {
-        internal TypeSymbol DeclaringType;
+        internal TypeSymbol ContainingType;
         internal MemberInfo Member;
         internal readonly MemberTypes MemberType;
+        internal TypeSymbol DeclaringType { get => Binder.FindType(Member.DeclaringType); }
         internal override TypeSymbol Type { get; }
-        internal MemberSymbol(TypeSymbol declType, MemberInfo member, TypeSymbol type, MemberTypes memberType)
+        internal MemberSymbol(TypeSymbol contType, MemberInfo member, TypeSymbol type, MemberTypes memberType, AccessMode access) : base(access)
         {
-            DeclaringType = declType;
+            ContainingType = contType;
             Member = member;
             Type = type;
             MemberType = memberType;
         }
         internal override Symbol Lookup(string name) { return null; }
-        internal static Symbol Create(TypeSymbol declType, MemberInfo member)
+        internal static Symbol Create(TypeSymbol contType, MemberInfo member)
         {
             switch (member.MemberType)
             {
                 case MemberTypes.Method:
-                    return new MethodSymbol(declType, (MethodInfo)member);
+                    return new MethodSymbol(contType, (MethodInfo)member);
                 case MemberTypes.Field:
                     {
                         var field = (FieldInfo)member;
@@ -193,14 +212,14 @@ namespace XSharp.MacroCompiler
                                     Convert.ChangeType(field.GetValue(null), field.FieldType.GetEnumUnderlyingType()) : field.GetValue(null),
                                 Binder.FindType(field.FieldType));
                         }
-                        return new FieldSymbol(declType, field);
+                        return new FieldSymbol(contType, field);
                     }
                 case MemberTypes.Event:
-                    return new EventSymbol(declType, (EventInfo)member);
+                    return new EventSymbol(contType, (EventInfo)member);
                 case MemberTypes.Property:
-                    return new PropertySymbol(declType, (PropertyInfo)member);
+                    return new PropertySymbol(contType, (PropertyInfo)member);
                 case MemberTypes.Constructor:
-                    return new ConstructorSymbol(declType, (ConstructorInfo)member);
+                    return new ConstructorSymbol(contType, (ConstructorInfo)member);
                 case MemberTypes.NestedType:
                     return new TypeSymbol(member as Type);
                 default:
@@ -236,7 +255,7 @@ namespace XSharp.MacroCompiler
         CustomAttributeData _clipperAttr = null;
         string[] _clipperParams = null;
         ParameterListSymbol _parameters;
-        internal MethodBaseSymbol(TypeSymbol declType, MethodBase method, TypeSymbol type) : base(declType, method, type, method.MemberType) { }
+        internal MethodBaseSymbol(TypeSymbol contType, MethodBase method, TypeSymbol type) : base(contType, method, type, method.MemberType, AccessMode.Get) { }
         internal ParameterListSymbol Parameters { get { Interlocked.CompareExchange(ref _parameters, new ParameterListSymbol(MethodBase.GetParameters()), null); return _parameters; } }
         internal bool IsClipper { get { FindAttributes(); return _clipperAttr != null; } }
         internal string[] ClipperParams { get { FindAttributes(); return _clipperParams; } }
@@ -265,17 +284,17 @@ namespace XSharp.MacroCompiler
         internal bool IsStatic { get { return Method.IsStatic; } }
         internal bool IsVirtual { get { return Method.IsVirtual; } }
         internal MethodInfo Method { get { return (MethodInfo)base.Member; } }
-        internal MethodSymbol(TypeSymbol declType, MethodInfo method) : base(declType, method, Binder.FindType(method.ReturnType)) { }
+        internal MethodSymbol(TypeSymbol contType, MethodInfo method) : base(contType, method, Binder.FindType(method.ReturnType)) { }
     }
     internal partial class FieldSymbol : MemberSymbol
     {
         internal FieldInfo Field { get { return (FieldInfo)base.Member; } }
-        internal FieldSymbol(TypeSymbol declType, FieldInfo field) : base(declType, field, Binder.FindType(field.FieldType), field.MemberType) { }
+        internal FieldSymbol(TypeSymbol contType, FieldInfo field) : base(contType, field, Binder.FindType(field.FieldType), field.MemberType, AccessMode.All) { }
     }
     internal partial class EventSymbol : MemberSymbol
     {
         internal EventInfo Event { get { return (EventInfo)base.Member; } }
-        internal EventSymbol(TypeSymbol declType, EventInfo evt) : base(declType, evt, Binder.FindType(evt.EventHandlerType), evt.MemberType) { }
+        internal EventSymbol(TypeSymbol contType, EventInfo evt) : base(contType, evt, Binder.FindType(evt.EventHandlerType), evt.MemberType, AccessMode.GetSet) { }
     }
     internal partial class PropertySymbol : MemberSymbol
     {
@@ -304,12 +323,12 @@ namespace XSharp.MacroCompiler
                 return _parameters;
             }
         }
-        internal PropertySymbol(TypeSymbol declType, PropertyInfo property) : base(declType, property, Binder.FindType(property.PropertyType), property.MemberType)
+        internal PropertySymbol(TypeSymbol contType, PropertyInfo property) : base(contType, property, Binder.FindType(property.PropertyType), property.MemberType, AccessMode.GetSet)
         {
-            Getter = Property.GetMethod != null ? DeclaringType.MemberTable[Property.GetMethod] as MethodSymbol : null;
-            Setter = Property.SetMethod != null ? DeclaringType.MemberTable[Property.SetMethod] as MethodSymbol : null;
+            Getter = Property.GetMethod != null ? ContainingType.MemberTable[Property.GetMethod] as MethodSymbol : null;
+            Setter = Property.SetMethod != null ? ContainingType.MemberTable[Property.SetMethod] as MethodSymbol : null;
         }
-        internal PropertySymbol(TypeSymbol declType, MethodSymbol getter, MethodSymbol setter, bool valueLast) : base(declType, null, Binder.FindType(getter.Method.ReturnType), MemberTypes.Property)
+        internal PropertySymbol(TypeSymbol contType, MethodSymbol getter, MethodSymbol setter, bool valueLast) : base(contType, null, Binder.FindType(getter.Method.ReturnType), MemberTypes.Property, AccessMode.GetSet)
         {
             Getter = getter;
             Setter = setter;
@@ -319,6 +338,6 @@ namespace XSharp.MacroCompiler
     internal partial class ConstructorSymbol : MethodBaseSymbol
     {
         internal ConstructorInfo Constructor { get { return (ConstructorInfo)base.Member; } }
-        internal ConstructorSymbol(TypeSymbol declType, ConstructorInfo ctor) : base(declType, ctor, Binder.FindType(ctor.DeclaringType)) { }
+        internal ConstructorSymbol(TypeSymbol contType, ConstructorInfo ctor) : base(contType, ctor, Binder.FindType(ctor.DeclaringType)) { }
     }
 }

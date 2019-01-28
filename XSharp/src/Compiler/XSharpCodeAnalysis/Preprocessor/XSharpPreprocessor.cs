@@ -227,6 +227,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private void initStdDefines(CSharpParseOptions options, string fileName)
         {
             // Note Macros such as __ENTITY__ and  __SIG__ are handled in the transformation phase
+            // Make sure you also update the MACROs in XSharpLexerCode.cs !
             macroDefines.Add("__ARRAYBASE__", () => new XSharpToken(XSharpLexer.INT_CONST, _options.ArrayZero ? "0" : "1"));
             if (_options.ClrVersion == 2)
                 macroDefines.Add("__CLR2__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
@@ -821,7 +822,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         SourceSymbol = null
                                     };
                                 }
-                                addParseError(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Duplicate define (" + defText + ") found because include file \""+includeName+"\" was included twice"));
+                                addParseError(new ParseErrorData(def, ErrorCode.WRN_PreProcessorWarning, "Duplicate define (" + defText + ") found because include file \""+includeName+"\" was included twice"));
                             }
                         }
                     }
@@ -1132,19 +1133,44 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // otherwise #ifdef is TRUE
             // and when there is more than one token, then #ifdef is also TRUE
             bool isdefined= symbolDefines.ContainsKey(define);
-            if (isdefined && _options.VOPreprocessorBehaviour)
+            if (isdefined )
             {
-                var value = symbolDefines[define];
-                if (value?.Count == 1)
-                {
-                    var deftoken = value[0];
-                    if (deftoken.Type == XSharpLexer.FALSE_CONST)
+                if ( _options.VOPreprocessorBehaviour)
+                { 
+                    var value = symbolDefines[define];
+                    if (value?.Count == 1)
                     {
-                        isdefined = false;
+                        var deftoken = value[0];
+                        if (deftoken.Type == XSharpLexer.FALSE_CONST)
+                        {
+                            isdefined = false;
+                        }
+                        else if (deftoken.Type == XSharpLexer.INT_CONST)
+                        {
+                            isdefined = Convert.ToInt64(deftoken.Text) != 0;
+                        }
                     }
-                    else if (deftoken.Type == XSharpLexer.INT_CONST)
-                    {
-                        isdefined = Convert.ToInt64(deftoken.Text) != 0;
+                }
+            }
+            else
+            {
+                isdefined = macroDefines.ContainsKey(define);
+                if (isdefined )
+                {
+                    if (_options.VOPreprocessorBehaviour)
+                    { 
+                        var value = macroDefines[define]();
+                        if (value != null)
+                        {
+                            if (value.Type == XSharpLexer.FALSE_CONST)
+                            {
+                                isdefined = false;
+                            }
+                            else if (value.Type == XSharpLexer.INT_CONST)
+                            {
+                                isdefined = Convert.ToInt64(value.Text) != 0;
+                            }
+                        }
                     }
                 }
             }
@@ -1366,7 +1392,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                addParseError(new ParseErrorData(Lt(), ErrorCode.ERR_UnexpectedDirective));
+                addParseError(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Unexpected #endif"));
                 writeToPPO(line, true);
             }
             checkForUnexpectedPPInput(line, 1);

@@ -11,7 +11,11 @@ namespace XSharp.MacroCompiler
     internal static class SymbolExtensions
     {
         internal static bool IsUsualOrObject(this TypeSymbol s) => s.NativeType == NativeType.Usual || s.NativeType == NativeType.Object;
+
+        internal static bool IsSubclassOf(this TypeSymbol ts, TypeSymbol tb) => ts.Type.IsSubclassOf(tb.Type);
+
         internal static TypeSymbol Type(this Symbol s) => (s as TypedSymbol)?.Type;
+
         internal static string MemberName(this Symbol s)
         {
             return

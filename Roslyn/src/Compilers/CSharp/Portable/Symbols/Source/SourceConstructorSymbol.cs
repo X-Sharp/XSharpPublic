@@ -43,13 +43,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             // clipper calling convention constructor then we must return an empty
             // parameter list
             _noParams = syntax.suppressGeneratedConstructorParams(containingType);
-#endif
+
+            // no need to check for the identifier. This is generated in the parser and is always correct
+            // we do not recognize constructors by name but by the keyword "CONSTRUCTOR"
+
+#else                  
             if (syntax.Identifier.ValueText != containingType.Name)
             {
                 // This is probably a method declaration with the type missing.
                 diagnostics.Add(ErrorCode.ERR_MemberNeedsType, location);
             }
 
+#endif
+ 
             bool hasBlockBody = syntax.Body != null;
             _isExpressionBodied = !hasBlockBody && syntax.ExpressionBody != null;
 

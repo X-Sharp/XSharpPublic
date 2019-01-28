@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
-  <Import Project="..\..\..\build\Targets\Settings.props" />
+  <Import Project="..\..\Compiler\CompilerCommon.props" />
   <PropertyGroup>
     <Name>CodeGenerator</Name>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
@@ -12,8 +12,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CodeGenerator</RootNamespace>
     <AssemblyName>XSharp.CodeGenerator</AssemblyName>
-    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
-    <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
@@ -21,6 +19,10 @@
     <OutputName>CodeGenerator</OutputName>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <XSharpProjectversion>2.0.0.8</XSharpProjectversion>
+    <Includepaths>$(Solutiondir)src\Common</Includepaths>
+    <Nostandarddefs>false</Nostandarddefs>
+	<OutputPath>$(Solutiondir)Binaries\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -38,8 +40,6 @@
     <AssemblyOriginatorKeyFile>$(solutiondir)src\common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths>$(Solutiondir)src\Common</IncludePaths>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
@@ -58,8 +58,6 @@
     <AssemblyOriginatorKeyFile>$(solutiondir)src\common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths>$(Solutiondir)src\Common</IncludePaths>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
@@ -70,7 +68,6 @@
       <AssemblyName>System.Drawing.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Drawing.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

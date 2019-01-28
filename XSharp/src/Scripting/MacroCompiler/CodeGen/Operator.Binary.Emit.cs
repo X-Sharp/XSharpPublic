@@ -16,7 +16,7 @@ namespace XSharp.MacroCompiler
     {
         internal override void EmitGet(ILGenerator ilg)
         {
-            EmitBinaryOperator(ilg, this, Type); // TODO nkok: handle checked/unchecked
+            EmitBinaryOperator(ilg, this, OpType.TypeSymbol()); // TODO nkok: handle checked/unchecked
         }
     }
 
@@ -36,5 +36,9 @@ namespace XSharp.MacroCompiler
             EmitConstant_I4(ilg, 0);
             EmitBinaryOperator(ilg, this, Compilation.Get(NativeType.Int32));
         }
+    }
+
+    internal partial class BinaryOperatorSymbolWithType : BinaryOperatorSymbol
+    {
     }
 }

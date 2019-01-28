@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>#endif</title>
   <keywords>
     <keyword>#endif</keyword>
@@ -11,11 +11,7 @@
       <para styleclass="Heading1">#endif</para>
     </header>
     <para styleclass="Body Text">#endif specifies the end of a conditional directive, which began with the <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifdef">#ifdef</link> &#160;or <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifndef">#ifndef</link> directive. For example:</para>
-    <para styleclass="Code Example">#define DEBUG</para>
-    <para styleclass="Code Example">// ...</para>
-    <para styleclass="Code Example">#if DEBUG</para>
-    <para styleclass="Code Example"> &#160; &#160;Console.WriteLine(&quot;Debug version&quot;);</para>
-    <para styleclass="Code Example">#endif</para>
+    <para styleclass="Code Example">// DEBUG may be defined from the command line<br/>// ...<br/>#if DEBUG<br/> &#160; &#160;Console.WriteLine(&quot;Debug version&quot;);<br/>#else<br/> &#160; &#160;Console.WriteLine(&quot;Release version&quot;);<br/>#endif</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

@@ -37,13 +37,45 @@ namespace XSharp.MacroCompiler.Syntax
             if (!(Symbol is TypeSymbol))
                 ThrowError(ErrorCode.NotAType, Symbol);
         }
+        internal virtual void RequireGetAccess()
+        {
+            RequireValue();
+            if (Symbol == null)
+                ThrowError(ErrorCode.NotFound, "Expression");
+            if (!Symbol.HasGetAccess)
+                throw Binder.AccessModeError(this, Symbol, Symbol.AccessMode.Get);
+        }
+        internal virtual void RequireSetAccess()
+        {
+            RequireValue();
+            if (Symbol == null)
+                ThrowError(ErrorCode.NotFound, "Expression");
+            if (!Symbol.HasSetAccess)
+                throw Binder.AccessModeError(this, Symbol, Symbol.AccessMode.Set);
+        }
+        internal virtual void RequireGetSetAccess()
+        {
+            RequireValue();
+            if (Symbol == null)
+                ThrowError(ErrorCode.NotFound, "Expression");
+            if (!Symbol.HasGetAccess)
+                throw Binder.AccessModeError(this, Symbol, Symbol.AccessMode.Get);
+            if (!Symbol.HasSetAccess)
+                throw Binder.AccessModeError(this, Symbol, Symbol.AccessMode.Set);
+        }
+        internal virtual void RequireRefAccess()
+        {
+            RequireValue();
+            if (Symbol == null)
+                ThrowError(ErrorCode.NotFound, "Expression");
+            if (!Symbol.HasRefAccess)
+                throw Binder.AccessModeError(this, Symbol, Symbol.AccessMode.Ref);
+        }
     }
     abstract internal partial class TypeExpr : Expr
     {
         internal override void RequireValue()
         {
-            if (Symbol == null)
-                ThrowError(ErrorCode.NotFound, "Expression");
             if (Symbol is MethodBaseSymbol)
                 ThrowError(ErrorCode.NotAnExpression, Symbol);
             base.RequireValue();
@@ -68,14 +100,12 @@ namespace XSharp.MacroCompiler.Syntax
         {
             return new CachedExpr(b, expr);
         }
-        internal override void RequireValue()
-        {
-            Expr.RequireValue();
-        }
-        internal override void RequireType()
-        {
-            Expr.RequireType();
-        }
+        internal override void RequireValue() => Expr.RequireValue();
+        internal override void RequireType() => Expr.RequireType();
+        internal override void RequireGetAccess() => Expr.RequireGetAccess();
+        internal override void RequireSetAccess() => Expr.RequireSetAccess();
+        internal override void RequireGetSetAccess() => Expr.RequireGetSetAccess();
+        internal override void RequireRefAccess() => Expr.RequireRefAccess();
     }
     internal partial class NativeTypeExpr : TypeExpr
     {
@@ -102,6 +132,8 @@ namespace XSharp.MacroCompiler.Syntax
                     case VariableResolution.TreatAsField:
                         return AliasExpr.Bound(Name);
                     case VariableResolution.TreatAsFieldOrMemvar:
+                        if (Affinity == BindAffinity.Assign)
+                            b.CreatesAutoVars = true;
                         return AutoVarExpr.Bound(Name);
                 }
             }
@@ -115,13 +147,23 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Expr);
             Expr.RequireValue();
-            Symbol = b.Lookup(Expr.Symbol, Member.LookupName);
-            if (Symbol == null)
+            if (Affinity == BindAffinity.Invoke)
             {
-                if (Affinity == BindAffinity.Invoke)
-                    b.Convert(ref Expr, Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object));
-                else
-                    b.Convert(ref Expr, Compilation.Get(NativeType.Object));
+                Symbol = b.Lookup(Expr.Datatype, Member.LookupName);
+                if (Symbol == null)
+                {
+                    if (b.Options.Binding.HasFlag(BindOptions.AllowDynamic) && Expr.Datatype.IsUsualOrObject())
+                    {
+                        b.Convert(ref Expr, Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object));
+                        Symbol = new DynamicSymbol(Member.LookupName);
+                    }
+                    else
+                        ThrowError(Binder.LookupError(Expr, Member));
+                }
+            }
+            else
+            {
+                b.Convert(ref Expr, Compilation.Get(NativeType.Object));
                 Symbol = new DynamicSymbol(Member.LookupName);
             }
             Datatype = Symbol.Type();
@@ -147,10 +189,11 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
+            Left.Affinity = BindAffinity.Assign;
             b.Bind(ref Left);
             b.Bind(ref Right);
-            Left.RequireValue();
-            Right.RequireValue();
+            Left.RequireSetAccess();
+            Right.RequireGetAccess();
             b.Convert(ref Right, Left.Datatype);
             Symbol = Left.Symbol;
             Datatype = Left.Datatype;
@@ -161,10 +204,11 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
+            Left.Affinity = BindAffinity.Assign;
             b.Bind(ref Left);
             b.Bind(ref Right);
-            Left.RequireValue();
-            Right.RequireValue();
+            Left.RequireGetSetAccess();
+            Right.RequireGetAccess();
             Right = BinaryExpr.Bound(Left.Cloned(b), Token, Right, BinaryOperatorSymbol.OperatorKind(Kind), false, b.Options.Binding);
             b.Convert(ref Right, Left.Datatype);
             Symbol = Left.Symbol;
@@ -178,8 +222,8 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Left);
             b.Bind(ref Right);
-            Left.RequireValue();
-            Right.RequireValue();
+            Left.RequireGetAccess();
+            Right.RequireGetAccess();
             if (BinaryOperatorSymbol.OperatorIsLogic(Kind))
                 Symbol = b.BindBinaryLogicOperation(this, BinaryOperatorSymbol.OperatorKind(Kind));
             else
@@ -201,8 +245,8 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Left);
             b.Bind(ref Right);
-            Left.RequireValue();
-            Right.RequireValue();
+            Left.RequireGetAccess();
+            Right.RequireGetAccess();
             Symbol = b.BindBinaryLogicOperation(this, BinaryOperatorSymbol.OperatorKind(Kind));
             Datatype = Symbol.Type();
             return null;
@@ -213,7 +257,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr);
-            Expr.RequireValue();
+            Expr.RequireGetAccess();
             if (UnaryOperatorSymbol.OperatorIsLogic(Kind))
                 Symbol = b.BindUnaryLogicOperation(this, UnaryOperatorSymbol.OperatorKind(Kind));
             else
@@ -234,8 +278,9 @@ namespace XSharp.MacroCompiler.Syntax
         Expr Left;
         internal override Node Bind(Binder b)
         {
+            Expr.Affinity = BindAffinity.Assign;
             b.Bind(ref Expr);
-            Expr.RequireValue();
+            Expr.RequireGetSetAccess();
             Left = Expr.Cloned(b);
             Expr = Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind), b.Options.Binding);
             b.Convert(ref Expr, Left.Datatype);
@@ -250,8 +295,9 @@ namespace XSharp.MacroCompiler.Syntax
         Expr Value;
         internal override Node Bind(Binder b)
         {
+            Expr.Affinity = BindAffinity.Assign;
             b.Bind(ref Expr);
-            Expr.RequireValue();
+            Expr.RequireGetSetAccess();
             Left = Expr.Cloned(b);
             Value = b.Cache(ref Expr);
             Expr = Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind), b.Options.Binding);
@@ -319,6 +365,7 @@ namespace XSharp.MacroCompiler.Syntax
             Datatype = Compilation.Get(NativeType.UInt32);
             return null;
         }
+        internal override void RequireGetAccess() => base.RequireValue();
     }
     internal partial class DefaultExpr : Expr
     {
@@ -330,6 +377,7 @@ namespace XSharp.MacroCompiler.Syntax
             Datatype = Symbol as TypeSymbol;
             return null;
         }
+        internal override void RequireGetAccess() => base.RequireValue();
     }
     internal partial class TypeCast : Expr
     {
@@ -356,7 +404,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Expr);
             b.Bind(ref Type);
-            Expr.RequireValue();
+            Expr.RequireGetAccess();
             Type.RequireType();
             Symbol = Type.Symbol as TypeSymbol;
             if (Expr.Datatype.IsValueType)
@@ -379,7 +427,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Expr);
             b.Bind(ref Type);
-            Expr.RequireValue();
+            Expr.RequireGetAccess();
             Type.RequireType();
             Symbol = Type.Symbol as TypeSymbol;
             Datatype = Type.Symbol as TypeSymbol;
@@ -396,6 +444,21 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Args);
             Symbol = b.BindMethodCall(Expr, Expr.Symbol, Args, out Self);
             Datatype = Symbol.Type();
+            if (Self?.Datatype.IsValueType == true)
+            {
+                if ((Symbol as MethodSymbol).DeclaringType.IsValueType)
+                {
+                    if (!Symbol.HasRefAccess)
+                    {
+                        b.Cache(ref Self);
+                    }
+                    b.Convert(ref Self, Binder.ByRefOf(Self.Datatype));
+                }
+                else
+                {
+                    b.Convert(ref Self, Compilation.Get(NativeType.Object));
+                }
+            }
             return null;
         }
     }
@@ -422,12 +485,17 @@ namespace XSharp.MacroCompiler.Syntax
                 case IntrinsicCallType.GetMParam:
                     b.ConvertArrayBase(Args);
                     b.ConvertExplicit(ref Args.Args[0].Expr, Compilation.Get(NativeType.UInt32));
+                    Symbol = b.Lookup(XSharpSpecialNames.ClipperArgs);
+                    Datatype = Compilation.Get(NativeType.Object);
+                    break;
+                case IntrinsicCallType.Chr:
+                    b.ConvertExplicit(ref Args.Args[0].Expr, Compilation.Get(NativeType.UInt32));
+                    Symbol = Compilation.Get(WellKnownMembers.XSharp_Core_Functions_Chr);
+                    Datatype = Symbol.Type();
                     break;
                 default:
                     throw new InternalError();
             }
-            Symbol = b.Lookup(XSharpSpecialNames.ClipperArgs);
-            Datatype = Compilation.Get(NativeType.Object);
             return null;
         }
     }
@@ -436,7 +504,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr);
-            Expr.RequireValue();
+            Expr.RequireGetAccess();
             b.Bind(ref Args);
             b.Convert(ref Expr, Compilation.Get(NativeType.Array));
             Self = Expr;
@@ -451,6 +519,8 @@ namespace XSharp.MacroCompiler.Syntax
             foreach (var arg in Args.Args) b.Cache(ref arg.Expr);
             return this;
         }
+        internal override void RequireSetAccess() => RequireGetAccess();
+        internal override void RequireGetSetAccess() => RequireGetAccess();
     }
     internal partial class EmptyExpr : Expr
     {
@@ -520,6 +590,7 @@ namespace XSharp.MacroCompiler.Syntax
             Symbol = et;
             Datatype = dt ?? Binder.ArrayOf(et);
         }
+        internal override void RequireGetAccess() => base.RequireValue();
     }
     internal partial class IifExpr : Expr
     {
@@ -528,13 +599,14 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Cond);
             b.Bind(ref True);
             b.Bind(ref False);
-            Cond.RequireValue();
-            True.RequireValue();
-            False.RequireValue();
+            Cond.RequireGetAccess();
+            True.RequireGetAccess();
+            False.RequireGetAccess();
             b.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
             Datatype = b.ConvertResult(ref True, ref False);
             return null;
         }
+        internal override void RequireGetAccess() => base.RequireValue();
     }
     internal partial class AliasExpr : Expr
     {
@@ -543,11 +615,11 @@ namespace XSharp.MacroCompiler.Syntax
             if (Alias != null)
             {
                 b.Bind(ref Alias);
-                Alias.RequireValue();
+                Alias.RequireGetAccess();
                 b.Convert(ref Alias, Compilation.Get(NativeType.String));
             }
             b.Bind(ref Field);
-            Field.RequireValue();
+            Field.RequireGetAccess();
             b.Convert(ref Field, Compilation.Get(NativeType.String));
             Datatype = Compilation.Get(NativeType.Usual);
             return null;
@@ -556,6 +628,9 @@ namespace XSharp.MacroCompiler.Syntax
         {
             return new AliasExpr(null, LiteralExpr.Bound(Constant.Create(fieldName)), Token.None) { Datatype = Compilation.Get(NativeType.Usual) };
         }
+        internal override void RequireGetAccess() => RequireValue();
+        internal override void RequireSetAccess() => RequireValue();
+        internal override void RequireGetSetAccess() => RequireValue();
     }
     internal partial class SubstrExpr : BinaryExpr
     {
@@ -563,8 +638,8 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Left);
             b.Bind(ref Right);
-            Left.RequireValue();
-            Right.RequireValue();
+            Left.RequireGetAccess();
+            Right.RequireGetAccess();
             b.Convert(ref Left, Compilation.Get(NativeType.String));
             b.Convert(ref Right, Compilation.Get(NativeType.String));
             Datatype = Compilation.Get(NativeType.Boolean);
@@ -581,13 +656,16 @@ namespace XSharp.MacroCompiler.Syntax
             var e = LiteralExpr.Bound(Constant.Create(varName));
             return new AutoVarExpr(e) { Symbol = e.Symbol, Datatype = Compilation.Get(NativeType.Usual) };
         }
+        internal override void RequireGetAccess() => RequireValue();
+        internal override void RequireSetAccess() => RequireValue();
+        internal override void RequireGetSetAccess() => RequireValue();
     }
     internal partial class Arg : Node
     {
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr);
-            Expr.RequireValue();
+            Expr.RequireGetAccess();
             return null;
         }
     }

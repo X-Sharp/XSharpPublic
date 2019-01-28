@@ -218,7 +218,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public static MemberAnalysisResult BadArgumentConversions(ImmutableArray<int> argsToParamsOpt, ImmutableArray<int> badArguments, ImmutableArray<Conversion> conversions)
         {
+#if !XSHARP
             Debug.Assert(conversions.Length != 0);
+#endif
             Debug.Assert(badArguments.Length != 0);
             return new MemberAnalysisResult(
                 MemberResolutionKind.BadArgumentConversion,

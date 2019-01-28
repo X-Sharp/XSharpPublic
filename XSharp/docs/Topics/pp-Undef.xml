@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>#undef</title>
   <keywords>
     <keyword>#undef</keyword>
@@ -11,7 +11,6 @@
       <para styleclass="Heading1">#undef</para>
     </header>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">#undef identifier</text></para>
-    <para styleclass="Code Example"></para>
     <para styleclass="Body Text">#undef lets you undefine a symbol, such that, by using the symbol as the expression in a <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifdef">#ifdef</link> directive, the expression will evaluate to false or in a or <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifndef">#ifndef</link> &#160;directive the expression will evaluate to true.</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"></para>

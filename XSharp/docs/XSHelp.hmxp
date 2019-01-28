@@ -69,18 +69,18 @@
         <style-set media="screen" type="para">margin-bottom:10px;</style-set>
       </styleclass>
       <styleclass name="List" parentclass="Body Text" shortcut="32882">
-        <style-set media="screen" type="para">text-indent:-48px; margin-bottom:0px; margin-left:48px; tabstops:48px left,96px left,144px left ;</style-set>
+        <style-set media="screen" type="para">text-indent:-144px; margin-bottom:0px; margin-left:144px; tabstops:144px left,192px left ;</style-set>
       </styleclass>
       <styleclass name="Callouts" parentclass="Normal" shortcut="0">
         <style-set media="screen" type="para">margin-bottom:5px;</style-set>
         <style-set media="screen" type="text">font-family:Verdana; font-size:10pt; letter-spacing:-1px;</style-set>
       </styleclass>
       <styleclass name="Code Example" parentclass="Normal" shortcut="24643">
-        <style-set media="screen" type="para">margin-top:24px; margin-right:24px; margin-bottom:24px; margin-left:24px; padding:10px; border-style:single; border-width:1px;</style-set>
+        <style-set media="screen" type="para">margin-top:24px; margin-right:24px; margin-bottom:24px; margin-left:24px; border-style:single; border-width:1px; padding:10px;</style-set>
         <style-set media="screen" type="text">font-family:Consolas; font-size:10pt;</style-set>
       </styleclass>
       <styleclass name="Code with box" parentclass="Code Example" shortcut="16507">
-        <style-set media="screen" type="para">margin-right:24px; margin-left:24px; padding:10px; border-style:single; border-width:1px;</style-set>
+        <style-set media="screen" type="para">margin-right:24px; margin-left:24px; border-style:single; border-width:1px; padding:10px;</style-set>
       </styleclass>
       <styleclass name="Comment" parentclass="Normal" shortcut="0">
         <style-set media="screen" type="para">text-align:center;</style-set>
@@ -532,7 +532,7 @@
       <config-value name="tocname">Table of Contents</config-value>
     </config-group>
     <variables>
-      <variable id="TXTVERSION" type="text" translate="true">Bandol beta 6 (2.0.0.6)</variable>
+      <variable id="TXTVERSION" type="text" translate="true">Bandol beta 9 (2.0.0.9)</variable>
     </variables>
     <helpcontext-numbers/>
   </config>
@@ -540,13 +540,32 @@
   <project-files>
     <file href="Topics/*.xml" build="ALL" filetype="topic">
       <file-mod href="Stylesheet-for-Style-Test.xml"/>
-      <file-mod href="Project-System.xml"/>
-      <file-mod href="Source-Code-Editor.xml"/>
-      <file-mod href="X-Programming-guide.xml"/>
       <file-mod href="Debugger.xml"/>
       <file-mod href="X-Compiler-Errors.xml" build="CHM,HTML,HXS"/>
       <file-mod href="X-Compiler-Warnings.xml" build="CHM,HTML,HXS"/>
       <file-mod href="X-Compiler-Errors-and-Warnings.xml" build="EBOOK,PDF,PRINT"/>
+      <file-mod href="Quick-Start.xml"/>
+      <file-mod href="Arrays.xml"/>
+      <file-mod href="Classes-and-Structures.xml"/>
+      <file-mod href="Codeblock_-Lambda-and-Anonymou.xml"/>
+      <file-mod href="Delegates.xml"/>
+      <file-mod href="Enumeration-Types.xml"/>
+      <file-mod href="Events.xml"/>
+      <file-mod href="Exceptions-and-Exception-Handl.xml"/>
+      <file-mod href="File-System-and-the-Registry.xml"/>
+      <file-mod href="Generics.xml"/>
+      <file-mod href="Indexers.xml"/>
+      <file-mod href="Interfaces.xml"/>
+      <file-mod href="Interoperability.xml"/>
+      <file-mod href="LINQ-Query-Expressions.xml"/>
+      <file-mod href="Namespaces2.xml"/>
+      <file-mod href="Nullable-Types.xml"/>
+      <file-mod href="Statements_-Expressions-and-Op.xml"/>
+      <file-mod href="Strings.xml"/>
+      <file-mod href="Types.xml"/>
+      <file-mod href="Unsafe-Code-and-Pointers.xml"/>
+      <file-mod href="XML-Documentation-Comments.xml"/>
+      <file-mod href="new-feat-PROCEDURE-inside-CLASS.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

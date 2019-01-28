@@ -13,8 +13,8 @@
     <TargetFrameworks>$(RoslynPortableTargetFrameworks)</TargetFrameworks>
     <RuntimeIdentifiers>$(RoslynPortableRuntimeIdentifiers)</RuntimeIdentifiers>
     <ServerGarbageCollection>true</ServerGarbageCollection>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants);XSHARPPRE;NET46</DefineConstants>
-    <DefineConstants Condition="'$(TargetFramework)' != 'net46'">$(DefineConstants);XSHARPPRE</DefineConstants>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants);XSHARPPRE;NET46;</DefineConstants>
+    <DefineConstants Condition="'$(TargetFramework)' != 'net46'">$(DefineConstants);XSHARPPRE;</DefineConstants>
     <CodeAnalysisRuleSet>$(CSharpSource)..\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup Label="Project References">

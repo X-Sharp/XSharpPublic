@@ -3455,6 +3455,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parameters with CLIPPER calling convention cannot have default values..
+        /// </summary>
+        internal static string ERR_DefaultParameterValueWithClipperCallingConvention {
+            get {
+                return ResourceManager.GetString("ERR_DefaultParameterValueWithClipperCallingConvention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Argument of type &apos;{0}&apos; is not applicable for the DefaultParameterValue attribute.
         /// </summary>
         internal static string ERR_DefaultValueBadValueType {
@@ -4724,7 +4733,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in the selected dialect {1}.
+        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in the selected dialect {1} {2}.
         /// </summary>
         internal static string ERR_FeatureNotAvailableInDialect {
             get {
@@ -6578,6 +6587,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A MEMVAR or FIELD with the name &apos;{0}&apos; has already been defined..
+        /// </summary>
+        internal static string ERR_MemvarFieldWithSameName {
+            get {
+                return ResourceManager.GetString("ERR_MemvarFieldWithSameName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Merge conflict marker encountered.
         /// </summary>
         internal static string ERR_Merge_conflict_marker_encountered {
@@ -7924,6 +7942,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_ParameterNotValidForType {
             get {
                 return ResourceManager.GetString("ERR_ParameterNotValidForType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You cannot have both a PARAMETERS statement and declared parameters in the same entity..
+        /// </summary>
+        internal static string ERR_ParametersWithDeclaredParameters {
+            get {
+                return ResourceManager.GetString("ERR_ParametersWithDeclaredParameters", resourceCulture);
             }
         }
         
@@ -15214,6 +15241,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_UnassignedInternalField_Title {
             get {
                 return ResourceManager.GetString("WRN_UnassignedInternalField_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable &apos;{0}&apos; has not been declared. Assuming this is a FIELD or a MEMVAR..
+        /// </summary>
+        internal static string WRN_UndeclaredVariable {
+            get {
+                return ResourceManager.GetString("WRN_UndeclaredVariable", resourceCulture);
             }
         }
         

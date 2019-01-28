@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-undeclared</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">-undeclared</para>
+    </header>
+    <para styleclass="Normal">The -<text styleclass="Body Text">undeclared</text> option tells the compiler to enable the support for &#160;&apos;undeclared variables&apos;</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">-undeclared [+ | -] &#160;</para>
+    <para styleclass="Heading2">Arguments</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List">+ | - <tab />Specifying +, or just -undeclared, directs the compiler to <text styleclass="Normal">enable the support for &#160;&apos;undeclared variables&apos;</text></para>
+    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">When the compiler detects an &apos;unknown identifier&apos; it will assume that this is either a field in the current workarea or a memory variable.</para>
+    <para styleclass="Normal">The compiler option will only have effect when you also enabled -memvar</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

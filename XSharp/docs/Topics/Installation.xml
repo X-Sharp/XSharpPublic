@@ -159,7 +159,11 @@
       <li styleclass="Normal">c:\Program Files (x86)\Microsoft Visual Studio\2017\<text style="font-weight:bold; font-style:italic;">&lt;Version&gt;</text>\Common7\IDE\Extensions\XSharp</li>
       <li styleclass="Normal">c:\Program Files (x86)\Microsoft Visual Studio\2017\<text style="font-weight:bold; font-style:italic;">&lt;Version&gt;</text>\MSBuild\XSharp</li>
     </list>
-    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">For Visual Studio 2019</para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">c:\Program Files (x86)\Microsoft Visual Studio\2019\<text style="font-weight:bold; font-style:italic;">&lt;Version&gt;</text>\Common7\IDE\Extensions\XSharp</li>
+      <li styleclass="Normal">c:\Program Files (x86)\Microsoft Visual Studio\2019\<text style="font-weight:bold; font-style:italic;">&lt;Version&gt;</text>\MSBuild\XSharp</li>
+    </list>
     <para styleclass="Heading3">Registry</para>
     <para styleclass="Normal">The installer will also write some changes to the registry:</para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

@@ -28,8 +28,7 @@
     </list>
     <para styleclass="Heading2">Runtime</para>
     <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List"><text styleclass="Normal">MEMVAR (PUBLIC &amp; PRIVATE) support is missing</text></li>
-      <li styleclass="Normal">The DBFCDX RDD is missing</li>
+      <li styleclass="List"><text styleclass="Normal">The DBFCDX RDD is missing</text></li>
       <li styleclass="Normal">Some runtime functions are not supported yet<br/></li>
     </list>
   </body>

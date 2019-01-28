@@ -1,4 +1,4 @@
-PARTIAL CLASS IpcClientErrorEvent INHERIT @@Event
+CLASS IpcClientErrorEvent INHERIT @@Event
 
 ACCESS ErrorType 
 	
@@ -13,7 +13,7 @@ CONSTRUCTOR(nErrorType)
 	RETURN 
 END CLASS
 
-PARTIAL CLASS IpcDataRequestEvent INHERIT IpcEvent
+CLASS IpcDataRequestEvent INHERIT IpcEvent
 
 CONSTRUCTOR(wT, wF, hC, h1, h2, hD, dwD1, dwD2, oIpc) 
     
@@ -23,7 +23,7 @@ CONSTRUCTOR(wT, wF, hC, h1, h2, hD, dwD1, dwD2, oIpc)
 RETURN 
 END CLASS
 
-PARTIAL CLASS IpcDataUpdateEvent INHERIT IpcEvent
+CLASS IpcDataUpdateEvent INHERIT IpcEvent
 	PROTECT cData AS STRING
 
 ACCESS AsString 
@@ -47,7 +47,7 @@ CONSTRUCTOR(wT, wF, hC, h1, h2, hD, dwD1, dwD2, oIpc)
 
 END CLASS
 
-PARTIAL CLASS IpcEvent INHERIT VObject
+CLASS IpcEvent INHERIT VObject
 	EXPORT dwType AS DWORD
 	EXPORT dwFmt AS DWORD
 	EXPORT hConv AS PTR
@@ -161,7 +161,7 @@ ACCESS Topic
 
 END CLASS
 
-PARTIAL CLASS IpcExecuteRequestEvent INHERIT IpcEvent
+CLASS IpcExecuteRequestEvent INHERIT IpcEvent
 	PROTECT cCommand AS STRING
 
 ACCESS Command 

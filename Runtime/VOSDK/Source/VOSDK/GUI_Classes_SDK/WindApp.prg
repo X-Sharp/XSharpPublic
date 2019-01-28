@@ -1,4 +1,4 @@
-PARTIAL CLASS __WindApp INHERIT AppWindow
+CLASS __WindApp INHERIT AppWindow
 	PROTECT lTopApp AS LOGIC
 
 METHOD Default(oEvent) 

@@ -8,13 +8,17 @@ USING System.Text
 // Array of chars used for the various trim functions
 INTERNAL GLOBAL trimChars := <CHAR>{ ' ' } AS CHAR[]
 
-
-
-FUNCTION AllTrim(c AS STRING) AS STRING
-	IF ( c == NULL )
-		RETURN c
+/// <summary>Remove leading and trailing spaces from a string. </summary>
+/// <param name="cString">The string to trim.</param>
+/// <seealso cref='M:XSharp.Core.Functions.Trim(System.String)' />
+/// <seealso cref='M:XSharp.Core.Functions.RTrim(System.String)' />
+/// <seealso cref='M:XSharp.Core.Functions.LTrim(System.String)' />
+/// <returns>A trimmed string, with leading and trailing spaces removed.</returns>
+FUNCTION AllTrim(cString AS STRING) AS STRING
+	IF ( cString == NULL )
+		RETURN cString
 	ENDIF
-	RETURN c:Trim(trimChars)
+	RETURN cString:Trim(trimChars)
 
 
 /// <summary>
@@ -546,10 +550,10 @@ FUNCTION Left(c AS STRING, dwLen AS DWORD) AS STRING
 /// <summary>
 /// Convert the uppercase and mixed case characters in a string to lowercase.
 /// </summary>
-/// <param name="cSource">THe string to be converted.</param>
-/// <returns>
-/// Returns the input string with all characters converted to lowercase.
-/// </returns>
+/// <param name="cSource">The string to be converted.</param>
+/// <returns>Returns the input string with all characters converted to lowercase.</returns>
+/// <seealso cref='M:XSharp.Core.Functions.LowerA(System.String@)'>LowerA</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.Upper(System.String)'>Upper</seealso>
 FUNCTION Lower(cSource AS STRING) AS STRING
 	IF cSource != NULL
 		cSource := cSource:ToLower()
@@ -559,12 +563,10 @@ FUNCTION Lower(cSource AS STRING) AS STRING
 /// <summary>
 /// Convert the uppercase and mixed case characters in a string to lowercase, 
 /// changing the contents of the argument as well as the return value.
-///
 /// </summary>
-/// <param name="cSorce"></param>
-/// <returns>
-/// Returns the input string with all characters converted to lowercase.
-/// </returns>
+/// <param name="cSource">The string to be converted.</param>
+/// <returns>Returns the input string with all characters converted to lowercase.</returns>
+/// <seealso cref='M:XSharp.Core.Functions.Lower(System.String)'>Lower</seealso>
 FUNCTION LowerA(cSource REF STRING) AS STRING
 	IF cSource != NULL
 		cSource := cSource:ToLower()
@@ -578,6 +580,9 @@ FUNCTION LowerA(cSource REF STRING) AS STRING
 /// <returns>
 /// The input strings without eading spaces.
 /// </returns>
+/// <seealso cref='M:XSharp.Core.Functions.RTrim(System.String)' />
+/// <seealso cref='M:XSharp.Core.Functions.Trim(System.String)' />
+/// <seealso cref='M:XSharp.Core.Functions.AllTrim(System.String)' />
 FUNCTION LTrim(c AS STRING) AS STRING
 	IF (c == NULL)
 		RETURN c
@@ -589,38 +594,28 @@ FUNCTION LTrim(c AS STRING) AS STRING
 /// <summary>
 /// Return the number of times a substring occurs in a string.
 /// </summary>
-/// <param name="c">The string to be search in.</param>
-/// <param name="cSearch">THe string of which its occurance should be counted</param>
-/// <returns>
-/// THe number how often the string to be searched for occurs in the original string.
-/// </returns>
-FUNCTION Occurs(cSearch AS STRING,c AS STRING) AS DWORD
-	RETURN Occurs3(cSearch,c, 0)   
+/// <inheritdoc cref="M:XSharp.Core.Functions.Occurs3(System.String,System.String,System.UInt32)" />
+FUNCTION Occurs(cSearch AS STRING,cTarget AS STRING) AS DWORD
+	RETURN Occurs3(cSearch,cTarget, 0)   
 
-/// <summary>
-/// Return the number of times a substring occurs in a string.
-/// </summary>
-/// <param name="c">The string to be search in.</param>
-/// <param name="cSearch">THe string of which its occurance should be counted</param>
-/// <returns>
-/// THe number how often the string to be searched for occurs in the original string.
-/// </returns>
-FUNCTION Occurs2(cSearch AS STRING,c AS STRING) AS DWORD
-	RETURN Occurs3(cSearch,c, 0)   
+/// <inheritdoc cref="M:XSharp.Core.Functions.Occurs(System.String,System.String)" />
+FUNCTION Occurs2(cSearch AS STRING,cTarget AS STRING) AS DWORD
+	RETURN Occurs3(cSearch,cTarget, 0)   
 
 /// <summary>
 /// Return the number of times a substring occurs in a string, starting at a specified position.
 /// </summary>
-/// <param name="cSrc"></param>
-/// <param name="c"></param>
-/// <param name="nOffs"></param>
+/// <param name="cSearch">The substring to search for. </param>
+/// <param name="cTarget">The string in which to search. </param>
+/// <param name="nOffset">The position in the string at which to start searching.  A value of zero (0) specifies the first byte. </param>
 /// <returns>
+/// The number of times that the search string occurs in the original string.
 /// </returns>
-FUNCTION Occurs3(cSrc AS STRING,c AS STRING,nOffset AS DWORD) AS DWORD
+FUNCTION Occurs3(cSearch AS STRING,cTarget AS STRING,nOffset AS DWORD) AS DWORD
 	LOCAL pos AS INT
 	LOCAL count AS DWORD
 	
-	IF String.IsNullOrEmpty(cSrc) .OR. String.IsNullOrEmpty(c)
+	IF String.IsNullOrEmpty(cSearch) .OR. String.IsNullOrEmpty(cTarget)
 		RETURN 0
 	ENDIF
 	
@@ -629,30 +624,30 @@ FUNCTION Occurs3(cSrc AS STRING,c AS STRING,nOffset AS DWORD) AS DWORD
 	ENDIF
 	
 	count := 0
-	IF nOffSet < (DWORD) c:Length
-		DO WHILE ( pos := c:IndexOf(cSrc, (INT)nOffSet, StringComparison.Ordinal) ) >= 0
+	IF nOffSet < (DWORD) cTarget:Length
+		DO WHILE ( pos := cTarget:IndexOf(cSearch, (INT)nOffSet, StringComparison.Ordinal) ) >= 0
 			count++
-			nOffSet := (DWORD)(pos + cSrc:Length)
+			nOffSet := (DWORD)(pos + cSearch:Length)
 		ENDDO
 	ENDIF
 	
 	RETURN count
 
-/// <summary>
-/// Convert a string of ANSI characters to OEM characters.
-/// </summary>
+/// <overloads>
+/// <summary>Convert a string of ANSI characters to OEM characters.</summary>
+/// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
+/// <seealso cref="O:XSharp.Core.Functions.Oem2Ansi" />
+/// <seealso cref="O:XSharp.Core.Functions.Ansi2OemA" />
+/// </overloads>
+/// <summary>Convert a string of ANSI characters to OEM characters.</summary>
 /// <param name="cSource">String in Ansi format</param>
 /// <returns>String converted to Unicode
 /// </returns>
-/// <remarks>This is a compatibility function. Do not use this unless you really have to.
-/// X# is a Unicode app and conversions from Unicode - Ansi - Oem - Unicode will take place
-/// if you use this function. <br/>
-/// You should also realize that Ansi2Oem(Oem2Ansi(cSource)) will not always return cSource. Some characters may
-/// not be available in the OEM codepage and could be translated to other characters.
-/// For example: Windows codepage 1252 has Capital E Umlaut on position 203.
-/// When translated to OEM codepage 437 this will become captial E without umlaut (69). Converting back to Ansi
-/// this will remain a E without umlaut.
-/// </remarks>
+/// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
+/// <seealso cref="O:XSharp.Core.Functions.Ansi2OemA" />
+/// <seealso cref="M:XSharp.Core.Functions.Ansi2OemBuff(System.Byte[],System.Byte[],System.UInt32)" />
+/// <seealso cref="O:XSharp.Core.Functions.Oem2Ansi" />
+/// <seealso cref="O:XSharp.Core.Functions.Oem2AnsiA" />
 FUNCTION Ansi2Oem(cSource AS STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -664,35 +659,33 @@ FUNCTION Ansi2Oem(cSource AS STRING) AS STRING
 /// <summary>
 /// Convert an array of bytes from ANSI to OEM.
 /// </summary>
+/// <param name="bSource">String in Ansi format</param>
+/// <inheritdoc cref="M:XSharp.Core.Functions.Ansi2Oem(System.String)" />
 FUNCTION Ansi2Oem(bSource AS BYTE[]) AS BYTE[]
 	RETURN Ansi2Oem(bSource, bSource:Length)
 
 
-/// <summary>
-/// Convert an array of bytes from ANSI to OEM.
-/// </summary>
+/// <param name="iLen">Length of the source array</param>
+/// <inheritdoc cref="M:XSharp.Core.Functions.Ansi2Oem(System.Byte[])" />
 FUNCTION Ansi2Oem(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 	LOCAL bDest AS BYTE[]
 	bDest := BYTE[]{iLen}
 	CharToOemBuffA(bSource, bDest, (DWORD) iLen)
 	RETURN bDest
 
+/// <overloads>
+/// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
+/// <seealso cref="O:XSharp.Core.Functions.Oem2AnsiA" />
+/// <seealso cref="O:XSharp.Core.Functions.Ansi2Oem" />
+/// </overloads>
 /// <summary>
 /// Convert a string of ANSI characters to OEM characters, changing the contents of the original string as well as the returned string.
 /// </summary>
-/// <param name="cSource">String in Ansi format</param>
-/// <returns>String converted to Unicode
-/// </returns>
-/// <remarks>This is a compatibility function. Do not use this unless you really have to.
-/// X# is a Unicode app and conversions from Unicode - Oem - Ansi - Unicode will take place
-/// if you use this function.<br/>
-/// You should also realize that Ansi2Oem(Oem2Ansi(cSource)) will not always return cSource. Some characters may
-/// not be available in the OEM codepage and could be translated to other characters.
-/// For example: Windows codepage 1252 has Capital E Umlaut on position 203.
-/// When translated to OEM codepage 437 this will become captial E without umlaut (69). Converting back to Ansi
-/// this will remain a E without umlaut.
-/// </remarks>
-
+/// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
+/// <seealso cref="O:XSharp.Core.Functions.Ansi2Oem" />
+/// <seealso cref="M:XSharp.Core.Functions.Ansi2OemBuff(System.Byte[],System.Byte[],System.UInt32)" />
+/// <seealso cref="O:XSharp.Core.Functions.Oem2Ansi" />
+/// <seealso cref="O:XSharp.Core.Functions.Oem2AnsiA" />
 FUNCTION Ansi2OemA(cSource REF STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -704,19 +697,32 @@ FUNCTION Ansi2OemA(cSource REF STRING) AS STRING
 
 
 /// <summary>
+/// Convert an array of ANSI characters to OEM characters, changing the contents of the argument as well as the return value.
+/// </summary>
+/// <param name="bSource">A byte array that contains the string to convert</param>
+/// <inheritdoc cref="O:XSharp.Core.Functions.Oem2AnsiA(System.String@)" />
+FUNCTION Ansi2OemA(bSource AS BYTE[]) AS VOID
+	LOCAL bDest AS BYTE[]
+	bDest := Ansi2Oem(bSource, bSource:Length)
+	System.Array.Copy(bDest, bSource, bSource:Length)
+    RETURN
+
+
+/// <overloads>
+/// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
+/// <seealso cref="O:XSharp.Core.Functions.Ansi2Oem" />
+/// <seealso cref="O:XSharp.Core.Functions.Oem2AnsiA" />
+/// </overloads>
+/// <summary>
 /// Convert a string of OEM characters to ANSI characters.
 /// </summary>
+/// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
 /// <param name="cSource">String in OEM format</param>
 /// <returns>String converted to Ansi</returns>
-/// <remarks>This is a compatibility function. Do not use this unless you really have to.
-/// X# is a Unicode app and conversions from Unicode - Oem - Ansi - Unicode will take place
-/// if you use this function.<br/>
-/// You should also realize that Ansi2Oem(Oem2Ansi(cSource)) will not always return cSource. Some characters may
-/// not be available in the OEM codepage and could be translated to other characters.
-/// For example: Windows codepage 1252 has Capital E Umlaut on position 203.
-/// When translated to OEM codepage 437 this will become captial E without umlaut (69). Converting back to Ansi
-/// this will remain a E without umlaut.
-/// </remarks>
+/// <seealso cref="M:XSharp.Core.Functions.Oem2AnsiBuff(System.Byte[],System.Byte[],System.UInt32)" />
+/// <seealso cref="O:XSharp.Core.Functions.Ansi2Oem" />
+/// <seealso cref="O:XSharp.Core.Functions.Ansi2OemA" />
+/// <seealso cref="O:XSharp.Core.Functions.Oem2AnsiA" />
 FUNCTION Oem2Ansi(cSource AS STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -726,75 +732,25 @@ FUNCTION Oem2Ansi(cSource AS STRING) AS STRING
 	RETURN Bytes2String(aBytes, iLen)
 
 /// <summary>
-/// Convert an array of bytes from OEM to ANSI .
+/// Convert an array of OEM characters to ANSI characters.
 /// </summary>
+/// <param name="bSource">A byte array that contains the string to convert</param>
+/// <inheritdoc cref="M:XSharp.Core.Functions.Oem2Ansi(System.String)" />
 FUNCTION Oem2Ansi(bSource AS BYTE[]) AS BYTE[]
 	RETURN Oem2Ansi(bSource, bSource:Length)
 
-/// <summary>
-/// Convert an array of bytes from OEM to ANSI .
-/// </summary>
-FUNCTION Oem2AnsiA(bSource AS BYTE[]) AS VOID
-	LOCAL bDest AS BYTE[]
-	bDest := Oem2Ansi(bSource, bSource:Length)
-	System.Array.Copy(bDest, bSource, bSource:Length)
-    RETURN
-	
-
-/// <summary>
-/// Convert an array of bytes from OEM to ANSI .
-/// </summary>
-FUNCTION Oem2Ansi(bSource AS BYTE[], iLen AS INT) AS BYTE[]
-	LOCAL bDest AS BYTE[]
-	bDest := BYTE[]{iLen}
-	OemToCharBuffA(bSource, bDest, (DWORD) iLen)
-	RETURN bDest
-
-/// <summary>
-/// Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
-/// </summary>
-/// <param name="pszDest"></param>
-/// <param name="pszSource"></param>
-/// <param name="dwCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION Oem2AnsiBuff(bDest AS BYTE[],bSource AS BYTE[],dwCount AS DWORD) AS BYTE[]
-	OemToCharBuffA(bSource, bDest, dwCount)
-	RETURN bDest
-
-/// <summary>
-/// Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
-/// </summary>
-/// <param name="pszDest"></param>
-/// <param name="pszSource"></param>
-/// <param name="dwCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION Ansi2OemBuff(bDest AS BYTE[],bSource AS BYTE[],dwCount AS DWORD) AS BYTE[]
-	CharToOemBuffA(bSource, bDest, dwCount)
-	RETURN bDest
-
-
-
-INTERNAL _DLL FUNCTION CharToOemBuffA( lpszSrc AS BYTE[], lpszDst AS BYTE[], cchDstLength AS DWORD ) AS LOGIC PASCAL:USER32.CharToOemBuffA
-INTERNAL _DLL FUNCTION OemToCharBuffA( lpszSrc AS BYTE[], lpszDst AS BYTE[], cchDstLength AS DWORD ) AS LOGIC PASCAL:USER32.OemToCharBuffA
-
-
+/// <overloads>
+/// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
+/// <seealso cref="O:XSharp.Core.Functions.Oem2Ansi" />
+/// <seealso cref="O:XSharp.Core.Functions.Ansi2OemA" />
+/// </overloads>
 /// <summary>
 /// Convert a string of OEM characters to ANSI characters, changing the contents of the argument as well as the return value.
 /// </summary>
-/// <param name="cSource">String in OEM format</param>
-/// <returns>String converted to Ansi
-/// </returns>
-/// <remarks>This is a compatibility function. Do not use this unless you really have to.
-/// X# is a Unicode app and conversions from Unicode - Oem - Ansi - Unicode will take place
-/// if you use this function.<br/>
-/// You should also realize that Ansi2Oem(Oem2Ansi(cSource)) will not always return cSource. Some characters may
-/// not be available in the OEM codepage and could be translated to other characters.
-/// For example: Windows codepage 1252 has Capital E Umlaut on position 203.
-/// When translated to OEM codepage 437 this will become captial E without umlaut (69). Converting back to Ansi
-/// this will remain a E without umlaut.
-/// </remarks>
+/// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
+/// <seealso cref="O:XSharp.Core.Functions.Ansi2Oem" />
+/// <seealso cref="O:XSharp.Core.Functions.Ansi2OemA" />
+/// <seealso cref="O:XSharp.Core.Functions.Oem2Ansi" />
 FUNCTION Oem2AnsiA(cSource REF STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -804,14 +760,68 @@ FUNCTION Oem2AnsiA(cSource REF STRING) AS STRING
 	cSource := Bytes2String(aBytes, iLen)
 	RETURN cSource
 
+/// <summary>
+/// Convert an array of OEM characters to ANSI characters, changing the contents of the argument as well as the return value.
+/// </summary>
+/// <param name="bSource">A byte array that contains the string to convert</param>
+/// <inheritdoc cref="M:XSharp.Core.Functions.Oem2AnsiA(System.String@)" />
+FUNCTION Oem2AnsiA(bSource AS BYTE[]) AS VOID
+	LOCAL bDest AS BYTE[]
+	bDest := Oem2Ansi(bSource, bSource:Length)
+	System.Array.Copy(bDest, bSource, bSource:Length)
+    RETURN
+	
+
+/// <inheritdoc cref="M:XSharp.Core.Functions.Oem2Ansi(System.Byte[])" />
+/// <param name="iLen">The number of characters to convert</param>
+/// <returns>String converted to Ansi</returns>
+/// <seealso cref="M:XSharp.Core.Functions.Ansi2Oem(System.Byte[],System.Int32)" />
+FUNCTION Oem2Ansi(bSource AS BYTE[], iLen AS INT) AS BYTE[]
+	LOCAL bDest AS BYTE[]
+	bDest := BYTE[]{iLen}
+	OemToCharBuffA(bSource, bDest, (DWORD) iLen)
+	RETURN bDest
+
+/// <summary>
+/// Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
+/// </summary>
+/// <param name="bDest">A byte array that will contain the converted characters</param>
+/// <param name="bSource">A byte array that contains the characters to convert</param>
+/// <param name="dwCount">The number of characters to convert</param>
+/// <returns>The byte array with the converted characters</returns>
+/// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
+/// <seealso cref="M:XSharp.Core.Functions.Ansi2OemBuff(System.Byte[],System.Byte[],System.UInt32)" />
+FUNCTION Oem2AnsiBuff(bDest AS BYTE[],bSource AS BYTE[],dwCount AS DWORD) AS BYTE[]
+	OemToCharBuffA(bSource, bDest, dwCount)
+	RETURN bDest
+
+/// <summary>
+/// Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
+/// </summary>
+/// <param name="bDest">A byte array that will contain the converted characters</param>
+/// <param name="bSource">A byte array that contains the characters to convert</param>
+/// <param name="dwCount">The number of characters to convert</param>
+/// <returns>The byte array with the converted characters</returns>
+/// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
+/// <seealso cref="M:XSharp.Core.Functions.Oem2AnsiBuff(System.Byte[],System.Byte[],System.UInt32)" />
+FUNCTION Ansi2OemBuff(bDest AS BYTE[],bSource AS BYTE[],dwCount AS DWORD) AS BYTE[]
+	CharToOemBuffA(bSource, bDest, dwCount)
+	RETURN bDest
+
+INTERNAL _DLL FUNCTION CharToOemBuffA( lpszSrc AS BYTE[], lpszDst AS BYTE[], cchDstLength AS DWORD ) AS LOGIC PASCAL:USER32.CharToOemBuffA
+INTERNAL _DLL FUNCTION OemToCharBuffA( lpszSrc AS BYTE[], lpszDst AS BYTE[], cchDstLength AS DWORD ) AS LOGIC PASCAL:USER32.OemToCharBuffA
+
+
+
 
 /// <summary>
 /// Change the first character of each word to uppercase
 /// </summary>
-/// <param name="c">The string to be converted.</param>
+/// <param name="cString">The string to be converted.</param>
 /// <returns>
 /// The converted string according to the CurrentCulture
 /// </returns>
+/// <seealso cref="M:XSharp.Core.Functions.ProperA(System.String@)" />
 FUNCTION Proper(cString AS STRING) AS STRING
 	LOCAL sb AS StringBuilder
 	LOCAL inside AS LOGIC
@@ -841,12 +851,15 @@ FUNCTION Proper(cString AS STRING) AS STRING
 /// <summary>
 /// Capitalize a proper name correctly, changing the contents of the argument as well as the return value.
 /// </summary>
-/// <param name="c"></param>
+/// <param name="cText"></param>
 /// <returns>
+/// The converted string according to the CurrentCulture
 /// </returns>
-FUNCTION ProperA(c REF STRING) AS STRING
-	c := Proper(c)
-	RETURN c
+/// <inheritdoc cref="M:XSharp.Core.Functions.Proper(System.String)" />
+/// <seealso cref="M:XSharp.Core.Functions.Proper(System.String)" />
+FUNCTION ProperA(cText REF STRING) AS STRING
+	cText := Proper(cText)
+	RETURN cText
 
 /// <summary>
 /// </summary>
@@ -866,6 +879,9 @@ FUNCTION QPEncString(cIn AS STRING) AS STRING
 /// <returns>
 /// The right most position of the string to be searched inside the searched string.
 /// </returns>
+/// <seealso cref="M:XSharp.Core.Functions.RAt3(System.String,System.String,System.UInt32)" />
+/// <seealso cref="M:XSharp.Core.Functions.RAt2(System.String,System.String)" />
+/// <seealso cref="M:XSharp.Core.Functions.RAt(System.String,System.String)" />
 FUNCTION RAt(cSearch AS STRING,c AS STRING) AS DWORD
 	LOCAL rightMost := 0 AS DWORD
 	IF cSearch != NULL .AND. c != NULL
@@ -875,26 +891,12 @@ FUNCTION RAt(cSearch AS STRING,c AS STRING) AS DWORD
 	ENDIF
 	RETURN rightMost
 
-/// <summary>
-/// Return the position of the last occurrence of a substring within a string.
-/// </summary>
-/// <param name="cSearch">THe string to be searched.</param>
-/// <param name="c">The string to be searched in.</param>
-/// <returns>
-/// The right most position of the string to be searched inside the searched string.
-/// </returns>
+/// <inheritdoc cref="M:XSharp.Core.Functions.RAt(System.String,System.String)" />
 FUNCTION RAt2(cSearch AS STRING,c AS STRING) AS DWORD
 	RETURN RAt(cSearch,c) 
 
-/// <summary>
-/// Return the position of the last occurrence of a substring within a string.
-/// </summary>
-/// <param name="cSearch"></param>
-/// <param name="c"></param>
-/// <param name="dwOff"></param>
-/// <returns>
-/// </returns>
-
+/// <param name="dwOffSet">The position in the string at which to start searching.  A value of zero (0) specifies the first byte.</param>
+/// <inheritdoc cref="M:XSharp.Core.Functions.RAt(System.String,System.String)" />
 FUNCTION RAt3(cSearch AS STRING,c AS STRING,dwOffSet AS DWORD) AS DWORD
 	LOCAL nResult := 0 AS DWORD
 	IF cSearch != NULL .AND. c != NULL
@@ -914,10 +916,7 @@ FUNCTION RAt3(cSearch AS STRING,c AS STRING,dwOffSet AS DWORD) AS DWORD
 /// <summary>
 /// Return the line number of the last occurrence of a substring within a multiline string.
 /// </summary>
-/// <param name="cSearch"></param>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
+/// <inheritdoc cref="M:XSharp.Core.Functions.RAt(System.String,System.String)" />
 FUNCTION RAtLine(cSearch AS STRING, c AS STRING) AS DWORD
 	LOCAL nPos AS DWORD
 	IF cSearch == NULL .OR. c == NULL .OR. cSearch:Length == 0 .OR. c:Length == 0
@@ -930,13 +929,7 @@ FUNCTION RAtLine(cSearch AS STRING, c AS STRING) AS DWORD
 
 
 
-/// <summary>
-/// Return the line number of the last occurrence of a substring within a multiline string.
-/// </summary>
-/// <param name="cSearch"></param>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
+/// <inheritdoc cref="M:XSharp.Core.Functions.RAtLine(System.String,System.String)" />
 FUNCTION RATLine2(cSearch AS STRING,c AS STRING) AS DWORD
 	RETURN RAtLine(cSearch, c)
 
@@ -950,14 +943,8 @@ FUNCTION RATLine2(cSearch AS STRING,c AS STRING) AS DWORD
 /// </returns>
 FUNCTION Repl(c AS STRING,dwCount AS DWORD) AS STRING
 	RETURN Replicate(c, dwCount)
-/// <summary>
-/// Repeat a string a specified number of times.
-/// </summary>
-/// <param name="c">The string to be repeated.</param>
-/// <param name="dwCount">The number of replications.</param>
-/// <returns>
-/// A string which consist of dwCount replications of c.
-/// </returns>
+
+/// <inheritdoc cref="M:XSharp.Core.Functions.Repl(System.String,System.UInt32)" />
 FUNCTION Replicate(c AS STRING,dwCount AS DWORD) AS STRING
 	LOCAL cReturn := "" AS STRING
 	IF dwCount > 0 .AND. c != NULL
@@ -987,9 +974,11 @@ FUNCTION Right(c AS STRING,dwLen AS DWORD) AS STRING
 /// <summary>
 /// Remove trailing spaces from a string.
 /// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
+/// <param name="c">The string to trim.</param>
+/// <returns>The string with the trailing spaces removed.  If the source string  is a NULL_STRING or all spaces, RTrim() returns a NULL_STRING.</returns>
+/// <seealso cref='M:XSharp.Core.Functions.LTrim(System.String)' />
+/// <seealso cref='M:XSharp.Core.Functions.Trim(System.String)' />
+/// <seealso cref='M:XSharp.Core.Functions.AllTrim(System.String)' />
 FUNCTION RTrim(c AS STRING) AS STRING
 	IF ( c == NULL )
 		RETURN c
@@ -1004,7 +993,7 @@ FUNCTION RTrim(c AS STRING) AS STRING
 /// </summary>
 /// <param name="c">The string be cloned.</param>
 /// <returns>
-/// A opy of the input string.
+/// A copy of the input string.
 /// </returns>
 FUNCTION SClone(c AS STRING) AS STRING
 	LOCAL clonedString := NULL AS STRING
@@ -1018,21 +1007,14 @@ FUNCTION SClone(c AS STRING) AS STRING
 /// <summary>
 /// Create a string of spaces.
 /// </summary>
-/// <param name="dwSize"></param>
-/// <returns>
-/// </returns>
-FUNCTION Space(dwSize AS DWORD) AS STRING
-	RETURN STRING{' ',(INT)dwSize}
+/// <param name="count">The number of spaces to return.</param>
+/// <returns>A string of spaces.</returns>
+FUNCTION Space(count AS DWORD) AS STRING
+	RETURN String{' ',(INT)count}
 
-/// <summary>
-/// Create a string of spaces.
-/// </summary>
-/// <param name="dwSize"></param>
-/// <returns>
-/// </returns>
-FUNCTION Space(iSize AS INT) AS STRING
-	RETURN STRING{' ',iSize}
-
+/// <inheritdoc cref="M:XSharp.Core.Functions.Space(System.UInt32)" />
+FUNCTION Space(count AS INT) AS STRING
+	RETURN String{' ',count}
 
 /// <summary>
 /// Return the length of a strongly typed string.
@@ -1041,6 +1023,9 @@ FUNCTION Space(iSize AS INT) AS STRING
 /// <returns>
 /// The length of the string.
 /// </returns>
+/// <remarks>
+/// The compiler will replace calls to SLen() as much as possible with a direct call to the Length property of a string.
+/// </remarks>
 FUNCTION SLen(c AS STRING) AS DWORD
 	LOCAL len := 0 AS DWORD
 	IF c != NULL
@@ -1052,9 +1037,16 @@ FUNCTION SLen(c AS STRING) AS DWORD
 /// <summary>
 /// Convert a string to Soundex form.
 /// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
+/// <param name="c"> The string to convert. </param>
+/// <returns>A 4-digit string starting with an alphabetic character and ending with three digits.</returns>
+/// <remarks>
+/// Soundex() is a character function that indexes and searches for sound-alike or phonetic matches.
+/// It is used in applications where the precise spelling of character keys is not known or where there is a
+/// high probability of misspelled names.  Misspelling is common in real-time transaction systems where the
+/// data entry operator is receiving information over the telephone.  Soundex() works by bringing sound-alikes
+/// together under the same key value.  Note, however, the soundex method is not absolute.
+/// Keys that are quite different can result in the same soundex value.
+/// </remarks>
 FUNCTION SoundEx(c AS STRING) AS STRING
 	LOCAL sb		AS StringBuilder
 	LOCAL iLen		AS INT
@@ -1218,9 +1210,11 @@ FUNCTION SubStr3(c AS STRING,dwStart AS DWORD,dwLen AS DWORD) AS STRING
 /// <summary>
 /// Remove trailing spaces from a string.
 /// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
+/// <param name="c">The string to trim. </param>
+/// <returns>The string with the trailing spaces removed.  If the string is a NULL_STRING or all spaces, Trim() returns a NULL_STRING.</returns>
+/// <seealso cref='M:XSharp.Core.Functions.RTrim(System.String)' />
+/// <seealso cref='M:XSharp.Core.Functions.LTrim(System.String)' />
+/// <seealso cref='M:XSharp.Core.Functions.AllTrim(System.String)' />
 FUNCTION Trim(c AS STRING) AS STRING
 	IF ( c == NULL )
 		RETURN c
@@ -1232,9 +1226,10 @@ FUNCTION Trim(c AS STRING) AS STRING
 /// <summary>
 /// Convert the lowercase and mixed case characters in a string to uppercase.
 /// </summary>
-/// <param name="cSorce"></param>
-/// <returns>
-/// </returns>
+/// <param name="cSource"> The string to convert to uppercase. </param>
+/// <returns>String with all alphabetical characters converted to uppercase.  All other characters remain the same as in the original string.</returns>
+/// <seealso cref='M:XSharp.Core.Functions.UpperA(System.String@)'>UpperA</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.Lower(System.String)'>Lower</seealso>
 FUNCTION Upper(cSource AS STRING) AS STRING
 	IF cSource != NULL
 		cSource := cSource:ToUpper()
@@ -1245,9 +1240,10 @@ FUNCTION Upper(cSource AS STRING) AS STRING
 /// <summary>
 /// Convert the lowercase and mixed case characters in a string to uppercase, changing the contents of the argument as well as the return value.
 /// </summary>
-/// <param name="cSorce"></param>
-/// <returns>
-/// </returns>
+/// <param name="cSource"> The string to convert to uppercase. </param>
+/// <returns>String with all alphabetical characters converted to uppercase.  All other characters remain the same as in the original string.</returns>
+/// <seealso cref='M:XSharp.Core.Functions.Upper(System.String)'>Upper</seealso>
+/// <remarks>UpperA() is similar to Upper() except that it changes the contents of the argument as well as the return value.  See Upper() for details.</remarks>
 FUNCTION UpperA(cSource REF STRING) AS STRING
 	IF cSource != NULL
 		cSource := cSource:ToUpper()
@@ -1284,6 +1280,8 @@ FUNCTION UUEncLine(c AS STRING) AS STRING
 /// <summary>Determine if the leftmost character in a string is alphabetic.</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is alphabetic.</returns>
+/// <seealso cref='M:XSharp.Core.Functions.IsAlNum(System.String)'>IsAlNum</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.IsAlphaNum(System.String)'>IsAlphaNum</seealso>
 FUNCTION IsAlpha(cSource AS STRING) AS LOGIC
 	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( cSource )
@@ -1294,6 +1292,8 @@ FUNCTION IsAlpha(cSource AS STRING) AS LOGIC
 /// <summary>Determine if the leftmost character in a string is alphanumeric.</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is either alphabetic or numeric otherwise FALSE.</returns>
+/// <seealso cref='M:XSharp.Core.Functions.IsAlNum(System.String)'>IsAlpha</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.IsAlphaNum(System.String)'>IsAlphaNum</seealso>
 FUNCTION IsAlNum(cSource AS STRING) AS LOGIC
 	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( cSource )
@@ -1304,6 +1304,8 @@ FUNCTION IsAlNum(cSource AS STRING) AS LOGIC
 /// <summary>Determine if the leftmost character in a string is alphanumeric..</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is either alphabetic or numeric otherwise FALSE.</returns>
+/// <seealso cref='M:XSharp.Core.Functions.IsAlNum(System.String)'>IsAlNum</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.IsAlpha(System.String)'>IsAlpha</seealso>
 FUNCTION IsAlphaNum(cSource AS STRING) AS LOGIC
 	RETURN IsAlNum(cSource)
 
@@ -1311,6 +1313,8 @@ FUNCTION IsAlphaNum(cSource AS STRING) AS LOGIC
 /// <summary>Determine if the leftmost character in a string is a digit (that is, a numeric digit between 0 and 9).</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character of the string is a number from 0 to 9; otherwise FALSE.</returns>
+/// <seealso cref='M:XSharp.Core.Functions.IsBDigit(System.String)'>IsBDigit</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.IsXDigit(System.String)'>IsXDigit</seealso>
 FUNCTION IsDigit(cSource AS STRING) AS LOGIC
 	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( cSource )
@@ -1321,6 +1325,8 @@ FUNCTION IsDigit(cSource AS STRING) AS LOGIC
 /// <summary>Determine if the leftmost character in a string is a binary digit  (0 or 1)).</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character of the string is 0 or 1 otherwise FALSE.</returns>
+/// <seealso cref='M:XSharp.Core.Functions.IsXDigit(System.String)'>IsXDigit</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.IsDigit(System.String)'>IsDigit</seealso>
 FUNCTION IsBDigit(cSource AS STRING) AS LOGIC
 	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( cSource )
@@ -1335,6 +1341,8 @@ FUNCTION IsBDigit(cSource AS STRING) AS LOGIC
 /// <summary>Determine if the leftmost character in a string is a hex character (that is, digits from 1 through 9 and letters from A through F).</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is hex otherwise FALSE.</returns>
+/// <seealso cref='M:XSharp.Core.Functions.IsBDigit(System.String)'>IsBDigit</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.IsDigit(System.String)'>IsDigit</seealso>
 FUNCTION IsXDigit(cSource AS STRING) AS LOGIC
 	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( cSource )
@@ -1361,6 +1369,7 @@ FUNCTION IsSpace(cSource AS STRING) AS LOGIC
 /// <summary>Determine if the leftmost character in a string is uppercase.</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is an uppercase letter otherwise, FALSE.</returns>
+/// <seealso cref='M:XSharp.Core.Functions.IsLower(System.String)'>IsLower</seealso>
 FUNCTION IsUpper(cSource AS STRING) AS LOGIC
 	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( cSource )
@@ -1371,6 +1380,7 @@ FUNCTION IsUpper(cSource AS STRING) AS LOGIC
 /// <summary>Determine if the leftmost character in a string is lower.</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is a lowercase letter otherwise, FALSE.</returns>
+/// <seealso cref='M:XSharp.Core.Functions.IsUpper(System.String)'>IsUpper</seealso>
 FUNCTION IsLower(cSource AS STRING) AS LOGIC
 	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( cSource )
@@ -1384,7 +1394,7 @@ FUNCTION IsLower(cSource AS STRING) AS LOGIC
 /// <param name="sWildCard">The wildcard to use. '*' matches 0 or more characters until the next non-wildcard character, '?' matches any character, all other characters must match exactly.</param>
 /// <param name="sSource">The string to examine.</param>
 /// <remarks>This function is case sensitive. If you want to do a case insensitive compare, use Like()</remarks>
-/// <seealso cref='M:XSharp.Core.Functions.Like(System.String, System.String)'>Like</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.Like(System.String,System.String)'>Like</seealso>
 FUNCTION _Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
     LOCAL nWildLen AS LONG
     LOCAL nSourceLen AS LONG
@@ -1437,7 +1447,7 @@ FUNCTION _Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
 /// <param name="sWildCard">The wildcard to use. '*' matches 0 or more characters until the next non-wildcard character, '?' matches any character, all other characters must match exactly.</param>
 /// <param name="sSource">The string to examine.</param>
 /// <remarks>This function is case INsensitive. If you want to do a case sensitive compare, use _Like()</remarks>
-/// <seealso cref='M:XSharp.Core.Functions._Like(System.String, System.String)' >_Like</seealso>
+/// <seealso cref='M:XSharp.Core.Functions._Like(System.String,System.String)' >_Like</seealso>
 FUNCTION Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
     RETURN _Like(Upper(sWildCard), Upper(sSource))
 

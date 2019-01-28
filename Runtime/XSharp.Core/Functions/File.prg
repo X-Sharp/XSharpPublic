@@ -171,7 +171,7 @@ BEGIN NAMESPACE XSharp.IO
 			streams := Dictionary<IntPtr, FileCacheElement >{}
 			random := Random{}
 		
-		STATIC PRIVATE METHOD findStream(pStream AS IntPtr) AS FileStream
+		STATIC INTERNAL METHOD findStream(pStream AS IntPtr) AS FileStream
 			IF streams:ContainsKey(pStream)
 				RETURN streams[pStream]:Stream
 			ENDIF
@@ -249,7 +249,7 @@ BEGIN NAMESPACE XSharp.IO
 				ENDIF
 				RETURN element:Bytes
 			ENDIF
-			RETURN BYTE[]{nSize}
+			RETURN NULL
 		
 		STATIC INTERNAL METHOD close(pStream AS IntPtr) AS LOGIC
 			IF hasStream(pStream)
@@ -497,33 +497,37 @@ FUNCTION FException() AS Exception
 /// <summary>
 /// Change the size of a file opened with a low-level file function.
 /// </summary>
-/// <param name="pFile">The handle of the file.</param>
+/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
 /// <param name="nSize">The new length to which the file should be set. </param>
 /// <returns>The new length of the file if successful; otherwise, F_ERROR.  FError() can be used to determine the specific error.</returns>
+/// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FChSize(pFile AS IntPtr,nSize AS DWORD) AS LOGIC
 	RETURN XSharp.IO.File.Chsize(pFile, nSize)
 
 /// <summary>
 /// Close an open file and write the buffers to disk.
 /// </summary>
-/// <param name="pFile">The handle of an open file.</param>
+/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param>
 /// <returns>FALSE if an error occurs while writing; otherwise, TRUE.</returns>
+/// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FClose(pFile AS IntPtr) AS LOGIC
 	RETURN XSharp.IO.File.Close(pFile)
 
 /// <summary>
 /// Flush file buffers.
 /// </summary>
-/// <param name="pFile">The handle of an open file.</param>
+/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
 /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+/// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FCommit(pFile AS IntPtr) AS LOGIC
 	RETURN XSharp.IO.File.flush(pFile, TRUE)
 
 /// <summary>
 /// Determine if the file pointer is positioned at the end-of-file.
 /// </summary>
-/// <param name="pFile">The handle of an open file.</param>
+/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
 /// <returns>TRUE if the file pointer is at end-of-file; otherwise, FALSE.</returns>
+/// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FEof(pFile AS IntPtr) AS LOGIC
 	RETURN XSharp.IO.File.eof(pFile) 
 
@@ -531,10 +535,11 @@ FUNCTION FEof(pFile AS IntPtr) AS LOGIC
 /// <summary>
 /// Lock a portion of an open file.
 /// </summary>
-/// <param name="pFile">The handle of an open file.</param>
+/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
 /// <param name="dwOffset">The file offset at which to start locking.  A value of zero corresponds to the first byte of the file. </param>
 /// <param name="dwLength">The number of bytes to lock. </param>
 /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+/// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FFLock(pFile AS IntPtr,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
 	RETURN XSharp.IO.File.lock(pFile, (INT64) dwOffset, (INT64) dwLength, TRUE)
 
@@ -542,8 +547,9 @@ FUNCTION FFLock(pFile AS IntPtr,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
 /// <summary>
 /// Flush to disk a file opened with a low-level file function.
 /// </summary>
-/// <param name="pFile">The handle of the file.</param>
+/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
 /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+/// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FFlush(pFile AS IntPtr) AS LOGIC
 	RETURN XSharp.IO.File.flush(pFile, FALSE)
 
@@ -551,10 +557,8 @@ FUNCTION FFlush(pFile AS IntPtr) AS LOGIC
 /// <summary>
 /// UnLock a portion of an open file.
 /// </summary>
-/// <param name="pFile">The handle of an open file.</param>
 /// <param name="dwOffset">The file offset at which to start unlocking.  A value of zero corresponds to the first byte of the file. </param>
-/// <param name="dwLength">The number of bytes to unlock. </param>
-/// <returns>TRUE if successful; otherwise, FALSE.</returns>
+/// <inheritdoc cref="M:XSharp.Core.Functions.FFLock(System.IntPtr,System.UInt32,System.UInt32)" />"
 FUNCTION FFUnLock(pFile AS IntPtr,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
 	RETURN XSharp.IO.File.lock(pFile, (INT64) dwOffset, (INT64) dwLength, FALSE)
 
@@ -590,10 +594,11 @@ FUNCTION FPutS3(pFile AS IntPtr,c AS STRING, nCount AS DWORD) AS DWORD
 /// <summary>
 /// Read characters from a file into an allocated buffer.
 /// </summary>
-/// <param name="pFile">The handle of the file.</param>
+/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
 /// <param name="pBuffer">An array of bytes to store the data read from the specified file. The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
 /// <param name="dwCount">The number of bytes to read into the buffer.</param>
 /// <returns>The number of bytes successfully read.  A return value less than the number of bytes requested indicates end-of-file or some other read error.  FError() can be used to determine the specific error.</returns>
+/// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FRead3(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD) AS DWORD
 	RETURN (DWORD) XSharp.IO.File.readBuff(pFile, pBuffer, (INT) dwCount)
 
@@ -609,12 +614,13 @@ FUNCTION FRead4(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD,lAnsi AS LOGI
 /// <summary>
 /// Read a line from an open file, specifying two strongly-typed arguments.
 /// </summary>
-/// <param name="pFile">The handle of the file to read from. </param>
+/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
 /// <param name="nLineLen">The maximum number of characters to read per line.</param>
 /// <returns>The line read.  When the end-of-file is reached while attempting to read, the function returns a NULL_STRING and FError() is set to 257.</returns>
 /// <remarks>This function is assumed to handle raw binary data and are not dependent upon the status of SetAnsi().
 /// FReadText() and FRead4(), on the other hand, are dependent upon SetAnsi().
 /// </remarks>
+/// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FReadLine(pFile AS IntPtr,nLineLen AS DWORD) AS STRING
 	RETURN XSharp.IO.File.readLine(pFile, (INT) nLineLen)
 
@@ -625,13 +631,14 @@ FUNCTION FReadLine2(pFile AS IntPtr,nLineLen AS DWORD) AS STRING
 
 
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FReadLine(System.IntPtr,System.UInt32)" />
 /// <summary>
 /// Read characters from a file.
 /// </summary>
 /// <param name="dwCount">The number of bytes to read, beginning at the current DOS file pointer position.  Characters are read up to this number or until end-of-file is encountered.
 /// The file pointer is then moved forward.  If the number is greater than the number of bytes from the pointer position to the end of the file, the file pointer is positioned at the last byte in the file.
 /// </param>
+/// <inheritdoc cref="M:XSharp.Core.Functions.FReadLine(System.IntPtr,System.UInt32)" />
+/// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FReadStr(pFile AS IntPtr,iCount AS DWORD) AS STRING
 	LOCAL cResult AS STRING
 	XSharp.IO.File.read(pFile, OUT cResult, (INT) iCount, XSharp.RuntimeState.Ansi)
@@ -641,13 +648,14 @@ FUNCTION FReadStr(pFile AS IntPtr,iCount AS DWORD) AS STRING
 FUNCTION FRead(pFile AS IntPtr,strValue REF STRING,dwCount AS DWORD) AS DWORD
 	RETURN (DWORD) XSharp.IO.File.read(pFile, OUT strValue, (INT) dwCount, XSharp.RuntimeState.Ansi)
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FRead3(System.IntPtr,System.Byte[],System.UInt32)" />
 /// <summary>
 /// Read characters from a file into a buffer variable that is passed by reference.
 /// </summary>
 /// <param name="strValue"></param>
 /// <returns>The number of bytes successfully read.  A return value less than the number specified 0 indicates
 /// end-of-file or some other read error.  FError() can be used to determine the specific error.</returns>
+/// <inheritdoc cref="M:XSharp.Core.Functions.FRead3(System.IntPtr,System.Byte[],System.UInt32)" />
+/// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FReadText(pFile AS IntPtr,strValue REF STRING,dwCount AS DWORD) AS DWORD
 	RETURN (DWORD) XSharp.IO.File.read(pFile, OUT strValue, (INT) dwCount, XSharp.RuntimeState.Ansi)
 
@@ -655,19 +663,21 @@ FUNCTION FReadText(pFile AS IntPtr,strValue REF STRING,dwCount AS DWORD) AS DWOR
 /// <summary>
 /// Read characters from a file into an allocated buffer, with possible OEM to ANSI conversion, based on the current SetAnsi() setting.
 /// </summary>
-/// <param name="pFile">The handle of the file.</param>
+/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
 /// <param name="pBuffer">Pointer to an array of bytes to store data read from the specified file.  The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
 /// <param name="dwCount"></param>
-/// <returns><inheritdoc cref="M:XSharp.Core.Functions.FRead3(System.IntPtr,System.Byte[],System.UInt32)" /></returns>
+/// <inheritdoc cref="M:XSharp.Core.Functions.FRead3(System.IntPtr,System.Byte[],System.UInt32)" />
+/// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FReadText3(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD) AS DWORD
 	RETURN (DWORD) XSharp.IO.File.readBuff(pFile, pBuffer, (INT) dwCount, XSharp.RuntimeState.Ansi)	
 
 /// <summary>
 /// Set the file pointer at the top of an open file.
 /// </summary>
-/// <param name="pFile"></param>
+/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
 /// <returns>
 /// </returns>
+/// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FRewind(pFile AS IntPtr) AS LOGIC
 	RETURN XSharp.IO.File.Seek(pFile, 0, FS_SET) == 0
 
@@ -675,7 +685,7 @@ FUNCTION FRewind(pFile AS IntPtr) AS LOGIC
 /// <summary>
 /// Set the file pointer to a new position, specifying three strongly-typed arguments.
 /// </summary>
-/// <param name="pFile">The handle of the open file.</param>
+/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
 /// <param name="lOffset">The number of bytes to move the file pointer, from the position defined in the next parameter.It can be a positive or negative number.
 /// A positive number moves the pointer forward in the file, and a negative number moves the pointer backward.
 /// If the origin is the end-of-file, then this must be 0 or negative.</param>
@@ -692,14 +702,16 @@ FUNCTION FRewind(pFile AS IntPtr) AS LOGIC
 /// <item><term>FS_SET</term>       <description>Beginning-of-file </description></item>
 /// </list>
 /// </remarks>
+/// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FSeek3(pFile AS IntPtr,lOffset AS LONG, dwOrigin AS DWORD) AS LONG
 	RETURN (LONG) XSharp.IO.File.Seek(pFile, (INT64) lOffset, dwOrigin)
 
 /// <summary>
 /// Return the current position of the file pointer.
 /// </summary>
-/// <param name="pFile">The handle of an open file.</param>
+/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
 /// <returns>The current position of the file pointer, relative to the beginning of the file.</returns>
+/// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FTell(pFile AS IntPtr) AS DWORD
 	RETURN (DWORD) XSharp.IO.File.Tell(pFile)
 
@@ -715,15 +727,22 @@ FUNCTION FWrite( pFile AS IntPtr, c AS STRING ) AS DWORD
 
 
 
+/// <overloads>
 /// <summary>
 /// Write a string to an open file
 /// </summary>
-/// <param name="pFile">The handle of the file.</param>
+/// <include file="CoreComments.xml" path="Comments/File/*" />
+/// </overloads>
+/// <summary>
+/// Write a string to an open file
+/// </summary>
+/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
 /// <param name="c"> The string to write. </param>
 /// <param name="nCount">The number of characters from the string to write, beginning at the current file pointer position.</param>
 /// <returns>The number of bytes written.  If the value returned is equal to nCount, the operation was successful.
 /// If the return value is less than the nCount or 0, this means that the length of the buffer/string is less than number of bytes,
 /// or the disk is full, or another error has occurred.  FError() can be used to determine the specific error. </returns>
+/// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FWrite( pFile AS IntPtr, c AS STRING, nCount AS DWORD ) AS DWORD
 	RETURN FWrite( pFile, c, nCount, TRUE)
 
@@ -753,15 +772,22 @@ FUNCTION FWrite4(pFile AS IntPtr,pBuffer AS BYTE[],nCount AS DWORD,lAnsi AS LOGI
 FUNCTION FWriteLine(pFile AS IntPtr,c AS STRING) AS DWORD
 	RETURN (DWORD) XSharp.IO.File.write(pFile, c + e"\r\n",c:Length+2, TRUE)
 
+/// <overloads>
+/// <summary>
+/// Write a string, a carriage-return character, and a linefeed character to an open file.
+/// </summary>
+/// <include file="CoreComments.xml" path="Comments/File/*" />
+/// </overloads>
 /// <summary>
 /// Write a string, a carriage-return character, and a linefeed character to an open file, specifying strongly-typed arguments.
 /// </summary>
-/// <param name="pFile">The handle of the file.</param>
+/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
 /// <param name="c">The string to write.</param>
 /// <param name="nCount">The number of bytes in the string to write, beginning at the current file pointer position.</param>
 /// <returns>The number of bytes written.  If the value returned is equal to the nCount + 2, the operation was successful.
 /// If the return value is less than nCount + 2 or 0, this means that the length of  the string was less than nCount,
 /// or the disk is full, or another error has occurred.</returns>
+/// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FWriteLine(pFile AS IntPtr,c AS STRING,nCount AS DWORD) AS DWORD
 	RETURN (DWORD) XSharp.IO.File.writeLine(pFile, c, (INT) nCount)
 
@@ -829,6 +855,7 @@ FUNCTION AdjustFNameA(cName REF STRING) AS STRING
 /// </list>
 /// </remarks> 
 /// <returns>The file handle of the new file.  If an error occurs, the function returns  F_ERROR.  FError() can be used to determine the specific error.</returns>
+/// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FCreate2(cFile AS STRING,kAttributes AS DWORD) AS IntPtr
 	LOCAL oFileMode AS VOFileMode
 	oFileMode := VOFileMode{ FO_CREATE, kAttributes }
@@ -848,15 +875,20 @@ FUNCTION FCreate(cFile AS STRING ,kAttributes AS DWORD) AS IntPtr
 	RETURN FCreate2(cFile, kAttributes)
 
 
-
 /// <summary>
 /// Open a file.
 /// </summary>
 /// <inheritdoc cref="M:XSharp.Core.Functions.FOpen(System.String,System.UInt32)" />
-/// <remarks>This opens the file with FO_READ and FO_EXCLUSIVE mode </remarks> 
+/// <remarks>This opens the file with FO_READ and FO_EXCLUSIVE mode.
+/// <inheritdoc cref="M:XSharp.Core.Functions.FOpen(System.String,System.UInt32)" />
+/// </remarks> 
 FUNCTION FOpen(cFile AS STRING) AS IntPtr
 	RETURN FOpen2(cFile, FC_NORMAL)
 
+/// <overloads>
+/// <summary>Open a file.</summary>
+/// <include file="CoreComments.xml" path="Comments/File/*" />
+/// </overloads>
 /// <summary>
 /// Open a file, specifying two strongly-typed arguments.
 /// </summary>
@@ -889,7 +921,14 @@ FUNCTION FOpen(cFile AS STRING) AS IntPtr
 /// <item><term>FO_SHARED</term>        <description>Same as FO_DENYNONE </description></item> 
 /// </list>
 /// </remarks> 
-/// <returns>The file handle of the new file.  If an error occurs, the function returns F_ERROR.  FError() can be used to determine the specific error.</returns>
+/// <returns>
+/// <include file="CoreComments.xml" path="Comments/FileHandle/*" /><br/>
+/// If an error occurs, the function returns F_ERROR.  <br/>
+/// FError() and FException() can be used to determine the specific error.
+/// </returns>
+/// <include file="CoreComments.xml" path="Comments/File/*" />
+/// <seealso cref="M:XSharp.Core.Functions.FError" />
+/// <seealso cref="M:XSharp.Core.Functions.FException" />
 FUNCTION FOpen(cFile AS STRING,dwMode AS DWORD) AS IntPtr
 	RETURN FOpen2(cFile, dwMode)
 
@@ -1058,5 +1097,28 @@ INTERNAL FUNCTION Bytes2Line(aBytes AS BYTE[], nBuffLen REF INT) AS STRING
 	ENDIF
 	RETURN STRING{aChars, 0, nLF}
 
-FUNCTION __FGetBuffer(hFile AS IntPtr, nSize AS INT) AS BYTE[]
+/// <summary>Access or allocate the File I/O Buffer used by the X# Runtime for Low Level File Access for a file.</summary>
+/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param>
+/// <param name="nSize">The size of the buffer that you would like to allocate.s</param> 
+/// <returns>The Byte[] associated with the file handle for an open file.
+/// When the file handle is invalid then a NULL object will be returned.</returns>
+/// <remarks>This function will either return the existing buffer or allocate a new buffer of the requested size. <br/>
+/// When there is already a buffer allocated for the file handle, and this buffer is large enough then the existing buffer is returned.
+/// When the size requested exceeds the size of the allocated buffer, or when no buffer exists, then a new byte array will be allocated.
+/// </remarks>
+/// <seealso cref="M:XSharp.Core.Functions.FClose(System.IntPtr)" />
+
+FUNCTION FGetBuffer(hFile AS IntPtr, nSize AS INT) AS BYTE[]
     RETURN XSharp.IO.File.GetBuffer(hFile, nSize)
+
+/// <summary>Access the FileStream object used by the X# Runtime for Low Level File Access </summary>
+/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
+/// <returns>The FileStream object or NULL when the handle is not valid </returns>
+/// <remarks><note type="warning">You are not supposed to close the stream object that you retrieve with this function.
+/// The Lifetime management of the stream should be left to the X# Runtime <br/>
+/// If you want to close the stream, please use the FClose() function </note>
+/// </remarks>
+/// <seealso cref="M:XSharp.Core.Functions.FClose(System.IntPtr)" />
+FUNCTION FGetStream(pFile as IntPtr) AS FileStream
+    RETURN XSharp.IO.File.FindStream(pFile)
+

@@ -1,6 +1,6 @@
 STATIC DEFINE __EXPW_LABEL_HEIGHT	:= 19
 
-PARTIAL CLASS __ExplorerLV INHERIT ListView
+CLASS __ExplorerLV INHERIT ListView
 	EXPORT symSortCol AS SYMBOL
 
 METHOD DefaultSort(oLVItem1, oLVItem2) 
@@ -37,7 +37,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 RETURN 
 END CLASS
 
-PARTIAL CLASS __ExplorerTV INHERIT TreeView
+CLASS __ExplorerTV INHERIT TreeView
 
 METHOD Dispatch(oEvent) 
 	LOCAL oEvt := oEvent AS @@Event	
@@ -56,7 +56,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 RETURN 
 END CLASS
 
-PARTIAL CLASS ExplorerWindow INHERIT SplitWindow
+CLASS ExplorerWindow INHERIT SplitWindow
 	PROTECT oLabelLeft	AS FixedText
 	PROTECT oLabelRight	AS FixedText
 	PROTECT oTreeView	AS TreeView

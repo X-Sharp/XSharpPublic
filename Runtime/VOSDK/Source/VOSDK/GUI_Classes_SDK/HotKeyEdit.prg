@@ -1,4 +1,4 @@
-PARTIAL CLASS HotKey INHERIT VObject
+CLASS HotKey INHERIT VObject
 	PROTECT bKey			AS BYTE
 	PROTECT lAltKey		AS LOGIC
 	PROTECT lCtrlKey		AS LOGIC
@@ -79,7 +79,7 @@ ASSIGN ShiftKey(lEnable)
 
 END CLASS
 
-PARTIAL CLASS HotKeyEdit INHERIT TextControl
+CLASS HotKeyEdit INHERIT TextControl
 	PROTECT oHotKeyRule	AS HotKeyRule
 
 	//PP-030828 Strong typing
@@ -221,7 +221,7 @@ ASSIGN Rule(oNewRule)
 	RETURN 
 END CLASS
 
-PARTIAL CLASS HotKeyRule INHERIT VObject
+CLASS HotKeyRule INHERIT VObject
 	PROTECT lAltKeyInvalid			AS LOGIC
 	PROTECT lCtrlKeyInvalid			AS LOGIC
 	PROTECT lCtrlAltKeysInvalid		AS LOGIC

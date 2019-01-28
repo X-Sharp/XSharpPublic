@@ -1,4 +1,4 @@
-PARTIAL CLASS SQLListProcedureColumns INHERIT SQLCatalogQuery
+CLASS SQLListProcedureColumns INHERIT SQLCatalogQuery
 	EXPORT Qualifier AS STRING
 	EXPORT Owner     AS STRING
 	EXPORT ProcName  AS STRING

@@ -1,4 +1,4 @@
-PARTIAL CLASS WindowHorizontalScrollBar INHERIT WindowScrollBar
+CLASS WindowHorizontalScrollBar INHERIT WindowScrollBar
 
 METHOD Destroy() 
 	
@@ -18,7 +18,7 @@ CONSTRUCTOR(oOwner)
 
 END CLASS
 
-PARTIAL CLASS WindowScrollBar INHERIT ScrollBar
+CLASS WindowScrollBar INHERIT ScrollBar
 
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lDataAware) 
     
@@ -28,7 +28,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lDataAware)
 RETURN 
 END CLASS
 
-PARTIAL CLASS WindowVerticalScrollBar INHERIT WindowScrollBar
+CLASS WindowVerticalScrollBar INHERIT WindowScrollBar
 
 METHOD Destroy() 
 	

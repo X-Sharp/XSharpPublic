@@ -1,4 +1,4 @@
-PARTIAL CLASS WCError INHERIT error
+CLASS WCError INHERIT error
 
 CONSTRUCTOR(methodName, className, desc, VAR, varnum, lAllowIgnore) 
 	LOCAL rsSubSystem AS ResourceString

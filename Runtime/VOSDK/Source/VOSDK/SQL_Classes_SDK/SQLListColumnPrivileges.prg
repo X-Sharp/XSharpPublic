@@ -1,4 +1,4 @@
-PARTIAL CLASS SQLListColumnPrivileges INHERIT SQLCatalogQuery
+CLASS SQLListColumnPrivileges INHERIT SQLCatalogQuery
 	EXPORT Qualifier AS STRING
 	EXPORT Owner     AS STRING
 	EXPORT TableName AS STRING

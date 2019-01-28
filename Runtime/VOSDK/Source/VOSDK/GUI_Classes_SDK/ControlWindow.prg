@@ -1,4 +1,4 @@
-PARTIAL CLASS ControlWindow INHERIT Window
+CLASS ControlWindow INHERIT Window
 	//export __ptrOldProc as ptr
 	EXPORT __lpfnDefaultProc AS PTR
 	PROTECT oCtrl AS OBJECT

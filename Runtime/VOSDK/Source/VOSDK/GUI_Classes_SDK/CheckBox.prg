@@ -1,4 +1,4 @@
-PARTIAL CLASS CheckBox INHERIT Button
+CLASS CheckBox INHERIT Button
 	PROTECT lSavedChecked AS LOGIC
 
 ACCESS Checked 

@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Comments>
+  <Ansi2Oem>
+    <span>
+      <note type="warning">
+      The Ansi2Oem() and Oem2Ansi() family of functions are compatibility functions. Do not use them unless you really have to.
+      X# is a Unicode language and conversions from Unicode - Ansi - Oem - Unicode will take place
+      if you use these functions. <br/>
+        You should also realize that Ansi2Oem(Oem2Ansi(cSource)) will not always return cSource. Some characters may
+        not be available in the OEM codepage and could be translated to other characters.
+        For example: Windows codepage 1252 has Capital E Umlaut (Ë) on position 203.
+        When translated to OEM codepage 437 this will become capital E without umlaut (69). Converting back to Ansi
+        this will remain a E without umlaut.
+        </note>
+    </span>
+  </Ansi2Oem>
+  <StringCompare>
+    <summary>
+      Compare 2 strings. This function is used by the compiler for string comparisons.
+    </summary>
+    <returns>
+      This function returns a numeric value to indicate the order in which the strings should be sorted: <br/>
+      <table>
+        <tr>
+          <td>-1</td>
+          <td>LHS precedes RHS in the sort order. </td>
+        </tr>
+        <tr>
+          <td>0</td>
+          <td>LHS occurs in the same position as RHS in the sort order.</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>LHS follows RHS in the sort order.</td>
+        </tr>
+        </table>
+    </returns>
+  </StringCompare>
+  <File>
+    <remarks>
+      <note type="tip">
+        The low level File IO functions in the X# runtime are using .Net filestreams in the background. <br/>
+        That means that the file handles returned by FOpen() and FCreate() are not 'normal' file handles,
+        but unique identifiers that are used to find the underlying stream object in a collection of
+        streams in the runtime. <br/>
+        That also means that you can't use file handles for functions such as FRead() and FWrite() that were not
+        created in the X# runtime.<br/>
+        If you want to access the underlying FileStream, then you should call the 
+        function <see cref="M:XSharp.Core.Functions.FGetStream(System.IntPtr)">FGetStream() </see>
+      </note>
+    </remarks>
+  </File>
+  <PtrBin>
+    <remarks>
+      <note type="warning">
+        This is a compatibility function that only works in x86 mode. The function will throw an exception when running in x64 mode.
+      </note>
+    </remarks>
+  </PtrBin>
+  <FileHandle>
+    <span>
+      The handle of the file. <em>Please see the remark below about the compatibility of X# Runtime file handles and Win32 file handles.</em>
+    </span>
+  </FileHandle>
+</Comments>

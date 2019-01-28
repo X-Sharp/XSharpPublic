@@ -1,4 +1,4 @@
-PARTIAL CLASS ShapeObject INHERIT DrawObject
+CLASS ShapeObject INHERIT DrawObject
 	PROTECT oDimension AS Dimension
 	PROTECT oPen AS Pen
 	PROTECT oBrush AS Brush

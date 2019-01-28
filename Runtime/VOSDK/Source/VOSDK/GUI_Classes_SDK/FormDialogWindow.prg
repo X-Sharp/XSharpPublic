@@ -1,4 +1,4 @@
-PARTIAL CLASS __FormDialogWindow INHERIT ModelessDialog
+CLASS __FormDialogWindow INHERIT ModelessDialog
 	PROTECT oSubFormsParent AS __FormDialogWindow //
 	//PP-030627
 	EXPORT symFormDialog AS SYMBOL

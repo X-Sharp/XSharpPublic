@@ -1,4 +1,4 @@
-PARTIAL CLASS RectangleObject INHERIT ShapeObject
+CLASS RectangleObject INHERIT ShapeObject
 
 METHOD Draw() 
 	LOCAL hDC AS PTR

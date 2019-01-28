@@ -119,6 +119,10 @@
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
+    <Reference Include="System">
+      <Name>System</Name>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -227,6 +231,7 @@
     <None Include="Collations\Spanish.collation" />
     <None Include="Collations\Swedish.collation" />
     <None Include="Collations\Uk.collation" />
+    <None Include="CoreComments.Xml" />
     <None Include="README.md" />
     <None Include="State\GetSet.xh" />
   </ItemGroup>

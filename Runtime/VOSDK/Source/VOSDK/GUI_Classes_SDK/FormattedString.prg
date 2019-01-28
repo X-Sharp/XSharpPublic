@@ -1,4 +1,4 @@
-﻿PARTIAL CLASS __FormattedString
+CLASS __FormattedString
 	PROTECT oEditOwner AS SingleLineEdit
 	PROTECT sPicture AS STRING
 	PROTECT sTemplate AS STRING

@@ -14,6 +14,7 @@ USING System.Collections.Generic
 /// <param name="xValue"></param>
 /// <returns>
 /// </returns>
+/// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION MAssign(cExp AS STRING,xValue AS USUAL) AS USUAL
     RETURN MemVarPutSym(cExp, xValue)
     
@@ -24,6 +25,7 @@ FUNCTION MAssign(cExp AS STRING,xValue AS USUAL) AS USUAL
 /// <param name="cVar"></param>
 /// <returns>
 /// </returns>
+/// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION MemVarBlock(cVar AS STRING) AS OBJECT
     RETURN {| uValue| IIF (uValue == NIL, MemVarGet(cVar), MemVarPut(cVar, uValue))} 
     
@@ -34,6 +36,7 @@ FUNCTION MemVarBlock(cVar AS STRING) AS OBJECT
 /// <param name="cVar">The name of the memory variable.</param>
 /// <returns>The value of the memory variable. When there is no memory variable with that name then a runtime error is thrown.</returns>
 /// <seealso cref='M:XSharp.RT.Functions.VarGet(System.String)' >VarGet</seealso>
+/// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION MemVarGet(cVar AS STRING) AS USUAL
     RETURN XSharp.MemVar.Get(cVar)
     
@@ -49,6 +52,7 @@ FUNCTION MemVarGet(cVar AS STRING) AS USUAL
 /// If a memory variable with that name does not exits, a new memory variable is created.  Therefore, MemVarPut(), like VarPut() can be used to create undeclared memory variables.  It should be used instead of a macro.
 /// </remarks>
 /// <seealso cref='M:XSharp.RT.Functions.VarPut(System.String,XSharp.__Usual)' >VarPut</seealso>
+/// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION MemVarPut(cVar AS STRING,uValue AS USUAL) AS USUAL
     RETURN XSharp.MemVar.Put(cVar, uValue) 
     
@@ -61,7 +65,7 @@ FUNCTION MemVarPut(cVar AS STRING,uValue AS USUAL) AS USUAL
 /// <remarks>
 /// The value of this variable will be set to NIL. The variable is NOT deleted.  
 /// </remarks>
-
+/// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION MemVarRelease(symVar AS STRING) AS VOID 
 	XSharp.MemVar.Release(symVar)
 	RETURN
@@ -74,6 +78,7 @@ FUNCTION MemVarRelease(symVar AS STRING) AS VOID
 /// This function is used instead of a macro when the name of the field or memory variable is in a string. 
 /// </remarks>
 /// <seealso cref='M:XSharp.RT.Functions.MemVarGet(System.String)' >MemVarGet</seealso>
+/// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION VarGet(cVar AS STRING) AS USUAL
     RETURN __VarGet(cVar)
     
@@ -88,7 +93,8 @@ FUNCTION VarGet(cVar AS STRING) AS USUAL
 /// If a field or memory variable with the specified name does not exist, then a new a memory variable is created.
 /// This function like MemVarPut(), can be used to create undeclared memory variables.  It should be used instead of a macro.
 /// </remarks>
-/// <seealso cref='M:XSharp.RT.Functions.MemVarPut(System.String, XSharp.__Usual)' >MemVarPut</seealso>
+/// <seealso cref='M:XSharp.RT.Functions.MemVarPut(System.String,XSharp.__Usual)' >MemVarPut</seealso>
+/// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION VarPut(cVar AS STRING,uValue AS USUAL) AS USUAL
     RETURN __VarPut(cVar, uValue)
     
@@ -122,7 +128,7 @@ FUNCTION MemVarPutSym(symVar AS SYMBOL, uValue AS USUAL) AS USUAL
 /// <summary>
 /// Clear all memory variables (all public variables and the private variables of the current thread)
 /// </summary>
-
+/// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION _MClear() AS VOID STRICT  
 	XSharp.MemVar.ClearAll()
 	RETURN
@@ -138,6 +144,7 @@ FUNCTION _MClear() AS VOID STRICT
 /// <remarks>
 /// The variables are not removed but their values are replaced with NIL.
 /// </remarks>
+/// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION _MxRelease (var1, var2, var3, var4, varn) AS VOID CLIPPER	
 	LOCAL nCount AS LONG
 	LOCAL name AS USUAL
@@ -162,6 +169,7 @@ FUNCTION _MxRelease (var1, var2, var3, var4, varn) AS VOID CLIPPER
 /// <remarks>
 /// The variables are not removed but their values are replaced with NIL.
 /// </remarks>
+/// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION _MRelease(cMask AS STRING, lMatch AS LOGIC)	AS VOID
 	LOCAL cName AS STRING
 	// Case INsensitive comparison. Symbols are all in UPPER case

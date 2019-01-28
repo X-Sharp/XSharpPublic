@@ -2,7 +2,7 @@
    #using System.Runtime.InteropServices
 #endif
 
-PARTIAL CLASS IpcClient INHERIT EventContext
+CLASS IpcClient INHERIT EventContext
 	PROTECT dwIdInst AS DWORD
 	PROTECT hServHstr AS PTR
 	PROTECT hConv AS PTR

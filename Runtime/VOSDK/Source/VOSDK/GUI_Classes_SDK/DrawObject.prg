@@ -1,4 +1,4 @@
-PARTIAL CLASS DrawObject INHERIT VObject
+CLASS DrawObject INHERIT VObject
 	PROTECT oPoint AS Point
 	PROTECT wROP AS LONGINT    		//RvdH 070205 changed from WORD to LONG
 	PROTECT oWnd AS Window

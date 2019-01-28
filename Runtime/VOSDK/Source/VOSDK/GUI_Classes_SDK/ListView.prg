@@ -1,4 +1,4 @@
-PARTIAL CLASS ListView INHERIT TextControl
+CLASS ListView INHERIT TextControl
 	PROTECT aColumns AS ARRAY
 	PROTECT aDeleted AS ARRAY
 	PROTECT oLargeImageList AS ImageList
@@ -1401,7 +1401,7 @@ ACCESS ViewOrigin
 	RETURN Point{}
 END CLASS
 
-PARTIAL CLASS ListViewColumn INHERIT VObject
+CLASS ListViewColumn INHERIT VObject
 	PROTECT aValues AS ARRAY
 	PROTECT nAlignment AS INT
 	PROTECT nWidth AS INT
@@ -1665,7 +1665,7 @@ ASSIGN Width(nNewWidth)
 
 END CLASS
 
-PARTIAL CLASS ListViewItem INHERIT VObject
+CLASS ListViewItem INHERIT VObject
 	PROTECT nItem AS INT
 	PROTECT nSubItem AS INT
 	PROTECT nImageIndex AS INT

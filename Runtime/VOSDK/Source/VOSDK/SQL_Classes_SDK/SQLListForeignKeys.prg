@@ -1,4 +1,4 @@
-PARTIAL CLASS SQLListForeignKeys INHERIT SQLCatalogQuery
+CLASS SQLListForeignKeys INHERIT SQLCatalogQuery
 	EXPORT PQualifier AS STRING
 	EXPORT POwner     AS STRING
 	EXPORT PTableName AS STRING

@@ -1,4 +1,4 @@
-PARTIAL CLASS DBSelectionIndex
+CLASS DBSelectionIndex
 	PROTECT oServer AS DBSERVER
 	PROTECT cExpression AS STRING
 	PROTECT cbExpression AS _CODEBLOCK

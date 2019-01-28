@@ -1,4 +1,4 @@
-PARTIAL CLASS EditWindow INHERIT ControlWindow
+CLASS EditWindow INHERIT ControlWindow
 
 METHOD AsString() 
 	

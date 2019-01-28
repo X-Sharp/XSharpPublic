@@ -1,4 +1,4 @@
-PARTIAL CLASS MultiLineEdit INHERIT Edit
+CLASS MultiLineEdit INHERIT Edit
 	PROTECT ptrOldMLEProc AS PTR
 
 METHOD Dispatch(oEvent) 

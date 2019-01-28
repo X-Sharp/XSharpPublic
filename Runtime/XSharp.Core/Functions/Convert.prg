@@ -89,11 +89,7 @@ FUNCTION Bin2Logic(c AS STRING) AS LOGIC
 /// <summary>
 /// Convert a intptr to a string
 /// </summary>
-/// <remarks>
-/// <note type="warning">
-/// This is a compatibility function that only works in x86 mode. The function will throw an exception when running in x64 mode.
-/// </note>
-/// </remarks>
+/// <include file="CoreComments.xml" path="Comments/PtrBin/*" />
 /// <seealso cref='M:XSharp.Core.Functions.Bin2Ptr(System.String)' >Bin2Ptr</seealso>
 FUNCTION Ptr2Bin(p AS IntPtr) AS STRING
     IF IntPtr.Size == 4
@@ -105,11 +101,7 @@ FUNCTION Ptr2Bin(p AS IntPtr) AS STRING
 /// <summary>
 /// </summary>
 /// <param name="cPointer"></param>
-/// <remarks>
-/// <note type="warning">
-/// This is a compatibility function that only works in x86 mode. The function will throw an exception when running in x64 mode.
-/// </note>
-/// </remarks>
+/// <include file="CoreComments.xml" path="Comments/PtrBin/*" />
 /// <seealso cref='M:XSharp.Core.Functions.Ptr2Bin(System.IntPtr)' >Ptr2Bin</seealso>
 FUNCTION Bin2Ptr(cPointer AS STRING) AS IntPtr
     IF IntPtr.Size == 4

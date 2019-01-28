@@ -1,4 +1,4 @@
-PARTIAL CLASS ResourceFile INHERIT VObject
+CLASS ResourceFile INHERIT VObject
 	PROTECT hLib AS PTR
 
 METHOD Destroy() 

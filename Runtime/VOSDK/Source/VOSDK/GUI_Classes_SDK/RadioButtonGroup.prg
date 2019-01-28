@@ -1,4 +1,4 @@
-PARTIAL CLASS RadioButtonGroup INHERIT GroupBox
+CLASS RadioButtonGroup INHERIT GroupBox
 	PROTECT wPressedButton AS DWORD
 	PROTECT aButtons AS ARRAY
 	PROTECT aValues AS ARRAY

@@ -1,4 +1,4 @@
-PARTIAL CLASS Color INHERIT VObject
+CLASS Color INHERIT VObject
 	PROTECT dwColorRef AS DWORD
 
 ACCESS Blue 

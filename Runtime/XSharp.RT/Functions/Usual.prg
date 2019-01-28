@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -58,15 +58,14 @@ FUNCTION EmptyUsual(dwType AS DWORD) AS __Usual
 /// Determine if a value is an Array.
 /// </summary>
 /// <param name="uVal"></param>
-/// <returns>
-/// </returns>
+/// <returns>TRUE if the value is an ARRAY data type; otherwise, FALSE. </returns>
 FUNCTION IsArray(uVal AS __Usual) AS LOGIC
 	RETURN uVal:IsArray
 
 /// <summary>
 /// Determine if a value is passed by reference
 /// </summary>
-/// <param name="uVal"></param>
+/// <param name="uVal">The value to examine.</param>
 /// <returns>
 /// </returns>
 FUNCTION IsByRef(uVal AS USUAL) AS LOGIC
@@ -76,18 +75,16 @@ FUNCTION IsByRef(uVal AS USUAL) AS LOGIC
 /// <summary>
 /// Determine if a value is a code block.
 /// </summary>
-/// <param name="uVal"></param>
-/// <returns>
-/// </returns>
+/// <param name="uVal">The value to examine.</param>
+/// <returns>TRUE if the value is a CODEBLOCK data type; otherwise, FALSE. </returns>
 FUNCTION IsCodeBlock(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsCodeBlock
 
 /// <summary>
 /// Determine if a value is a Date or a DateTime
 /// </summary>
-/// <param name="uVal"></param>
-/// <returns>
-/// </returns>
+/// <param name="uVal">The value to examine.</param>
+/// <returns>TRUE if the value is a DATE or DATETIME data type; otherwise, FALSE. </returns>
 FUNCTION IsDate(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsDate .OR. uVal:IsDateTime
 
@@ -95,72 +92,64 @@ FUNCTION IsDate(uVal AS USUAL) AS LOGIC
 /// <summary>
 /// Determine if a value is a DateTime.
 /// </summary>
-/// <param name="uVal"></param>
-/// <returns>
-/// </returns>
+/// <param name="uVal">The value to examine.</param>
+/// <returns>TRUE if the value is a DATETIME data type; otherwise, FALSE. </returns>
 FUNCTION IsDateTime(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsDateTime
 
 /// <summary>
 /// Determine if a value is a Decimal.
 /// </summary>
-/// <param name="uVal"></param>
-/// <returns>
-/// </returns>
+/// <param name="uVal">The value to examine.</param>
+/// <returns>TRUE if the value is a DECIMAL data type; otherwise, FALSE. </returns>
 FUNCTION IsDecimal(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsDecimal
 
 /// <summary>
 /// Determine if a value is a Decimal or a Float
 /// </summary>
-/// <param name="uVal"></param>
-/// <returns> 
-/// </returns>
+/// <param name="uVal">The value to examine.</param>
+/// <returns>TRUE if the value is a DECIMAL or FLOAT data type; otherwise, FALSE. </returns>
 FUNCTION IsFractional(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsFloat .OR. uVal:IsDecimal
 
 /// <summary>
 /// Determine if a value is a Float.
 /// </summary>
-/// <param name="uVal"></param>
-/// <returns> 
-/// </returns>
+/// <param name="uVal">The value to examine.</param>
+/// <returns>TRUE if the value is a FLOAT data type; otherwise, FALSE. </returns>
 FUNCTION IsFloat(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsFloat
 
 /// <summary>
 /// Determine if a value is a INT64.
 /// </summary>
-/// <param name="uVal"></param>
-/// <returns>
-/// </returns>
+/// <param name="uVal">The value to examine.</param>
+/// <returns>TRUE if the value is a INT64 data type; otherwise, FALSE. </returns>
 FUNCTION IsInt64(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsInt64
 
 /// <summary>
 /// Determine if a value is an integer (LONG or INT64).
 /// </summary>
-/// <param name="uVal"></param>
-/// <returns>
-/// </returns>
+/// <param name="uVal">The value to examine.</param>
+/// <returns>TRUE if the value is a LONG or INT64 data type; otherwise, FALSE. </returns>
 FUNCTION IsInteger(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsInteger
 
 /// <summary>
 /// Determine if a value is a Logic.
 /// </summary>
-/// <param name="uVal"></param>
-/// <returns>
-/// </returns>
+/// <param name="uVal">The value to examine.</param>
+/// <returns>TRUE if the value is a LOGIC data type; otherwise, FALSE. </returns>
 FUNCTION IsLogic(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsLogic
 
 /// <summary>
 /// Determine if a value is a LONGINT.
 /// </summary>
-/// <param name="uVal"></param>
-/// <returns>
-/// </returns>
+/// <param name="uVal">The value to examine.</param>
+/// <returns>TRUE if the value is a LONG data type; otherwise, FALSE. </returns>
 FUNCTION IsLong(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsLong
 
@@ -168,27 +157,25 @@ FUNCTION IsLong(uVal AS USUAL) AS LOGIC
 /// <summary>
 /// Determine if a value is __Usual._NIL.
 /// </summary>
-/// <param name="uVal"></param>
-/// <returns>
-/// </returns>
+/// <param name="uVal">The value to examine.</param>
+/// <returns>TRUE if the value is NIL otherwise, FALSE. </returns>
+
 FUNCTION IsNil(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsNil
 
 /// <summary>
 /// Determine if a value is a numeric.
 /// </summary>
-/// <param name="uVal"></param>
-/// <returns>
-/// </returns>
+/// <param name="uVal">The value to examine.</param>
+/// <returns>TRUE if the value is a LONG, FLOAT, IN64 or DECIMAL data type; otherwise, FALSE. </returns>
 FUNCTION IsNumeric(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsNumeric
 
 /// <summary>
 /// Determine if a value is an object.
 /// </summary>
-/// <param name="uVal"></param>
-/// <returns>
-/// </returns>
+/// <param name="uVal">The value to examine.</param>
+/// <returns>TRUE if the value is a OBJECT data type; otherwise, FALSE. </returns>
 FUNCTION IsObject(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsObject
 
@@ -196,39 +183,33 @@ FUNCTION IsObject(uVal AS USUAL) AS LOGIC
 /// <summary>
 /// Determine if a value is a pointer.
 /// </summary>
-/// <param name="uVal"></param>
-/// <returns>
-/// </returns>
+/// <param name="uVal">The value to examine.</param>
+/// <returns>TRUE if the value is a PTR data type; otherwise, FALSE. </returns>
 FUNCTION IsPtr(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsPtr
 
 /// <summary>
 /// Determine if a value is a string.
 /// </summary>
-/// <param name="uVal"></param>
-/// <returns>
-/// </returns>
+/// <param name="uVal">The value to examine.</param>
+/// <returns>TRUE if the value is a STRING data type; otherwise, FALSE. </returns>
 FUNCTION IsString(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsString
 
 /// <summary>
 /// Determine if a value is a Symbol.
 /// </summary>
-/// <param name="uVal"></param>
-/// <returns>
-/// </returns>
+/// <param name="uVal">The value to examine.</param>
+/// <returns>TRUE if the value is a SYMBOL data type; otherwise, FALSE. </returns>
 FUNCTION IsSymbol(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsSymbol
-
-
 
 
 /// <summary>
 /// Return the length of a string or an Array.
 /// </summary>
-/// <param name="u"></param>
-/// <returns>
-/// </returns>
+/// <param name="u">The string or array to measure.  In a string, each byte counts as 1, including an embedded null character (Chr(0)).  A NULL_STRING counts as 0.  In an array, each element counts as 1.</param>
+/// <returns>The length of the value.</returns>
 FUNCTION Len(u AS USUAL) AS DWORD
 	IF u:IsArray
 		RETURN (DWORD) ((ARRAY) u):Length

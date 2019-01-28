@@ -1,4 +1,4 @@
-PARTIAL CLASS Menu INHERIT VObject
+CLASS Menu INHERIT VObject
 	PROTECT oParent 	AS Menu
 	PROTECT hMenu 		AS PTR
 	PROTECT aChildren AS ARRAY
@@ -500,7 +500,7 @@ METHOD UnregisterItem(nItemID)
 
 END CLASS
 
-PARTIAL CLASS SystemMenu INHERIT Menu
+CLASS SystemMenu INHERIT Menu
 
 METHOD Destroy() 
 	

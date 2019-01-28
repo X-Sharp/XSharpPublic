@@ -1,4 +1,4 @@
-﻿PARTIAL CLASS DataServer
+CLASS DataServer
    PROTECT oHyperLabel AS HyperLabel
    PROTECT oHLStatus		AS USUAL
 	PROTECT wFieldCount	AS DWORD

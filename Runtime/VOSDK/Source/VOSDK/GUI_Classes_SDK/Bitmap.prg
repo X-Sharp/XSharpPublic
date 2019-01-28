@@ -1,4 +1,4 @@
-PARTIAL CLASS Bitmap INHERIT VObject
+CLASS Bitmap INHERIT VObject
 	PROTECT hBitmap AS PTR
 	
 	//PP-030828 Strong typing

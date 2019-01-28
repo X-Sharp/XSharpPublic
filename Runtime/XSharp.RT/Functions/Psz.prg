@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -17,6 +17,7 @@ USING System.Text
 /// <param name="dwCount"></param>
 /// <returns>
 /// </returns>
+/// <include file="RTComments.xml" path="Comments/PSZ/*" />
 FUNCTION Oem2AnsiBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 	VAR aSource := BYTE[]{dwCount}
 	VAR aDest   := BYTE[]{dwCount}
@@ -33,6 +34,7 @@ FUNCTION Oem2AnsiBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 /// <param name="dwCount"></param>
 /// <returns>
 /// </returns>
+/// <include file="RTComments.xml" path="Comments/PSZ/*" />
 FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 	VAR aSource := BYTE[]{dwCount}
 	VAR aDest   := BYTE[]{dwCount}
@@ -50,6 +52,7 @@ FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
+    /// <include file="RTComments.xml" path="Comments/PSZ/*" />
 	FUNCTION Bin2Logic(pszC AS PSZ) AS LOGIC
 		IF pszC != NULL_PSZ
 			RETURN pszC:Item[0] != 0
@@ -62,6 +65,7 @@ FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 	/// <param name="PSZValue"></param>
 	/// <returns>
 	/// </returns>
+    /// <include file="RTComments.xml" path="Comments/PSZ/*" />
 	FUNCTION EmptyPSZ(PSZValue AS PSZ) AS LOGIC
 		   RETURN PSZValue:IsEmpty
 
@@ -73,6 +77,7 @@ FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 	/// <param name="pszSource"></param>
 	/// <returns>
 	/// </returns>
+    /// <include file="RTComments.xml" path="Comments/PSZ/*" />
 	FUNCTION Psz2String(pszSource AS PSZ) AS STRING
 		// The compiler converts to a call to the implicit converter
 		RETURN pszSource:ToString()
@@ -83,6 +88,7 @@ FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 	/// <param name="pszSource"></param>
 	/// <returns>
 	/// </returns>
+    /// <include file="RTComments.xml" path="Comments/PSZ/*" />
 	FUNCTION Psz2Usual(pszSource AS PSZ) AS USUAL
 		// The compiler converts to a call to the implicit converter
 		RETURN pszSource
@@ -93,6 +99,7 @@ FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 	/// <param name="ptrSource"></param>
 	/// <returns>
 	/// </returns>
+    /// <include file="RTComments.xml" path="Comments/PSZ/*" />
 	FUNCTION PszAlloc(ptrSource AS PSZ) AS PSZ
 		RETURN PSZ{ ptrSource:Address }
 
@@ -102,6 +109,7 @@ FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 	/// <param name="pszX"></param>
 	/// <returns>
 	/// </returns>
+    /// <include file="RTComments.xml" path="Comments/PSZ/*" />
 	FUNCTION PszLen(pszX AS PSZ) AS DWORD
 		RETURN pszX:Length
 
@@ -113,6 +121,7 @@ FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 	/// <param name="cSource"></param>
 	/// <returns>
 	/// </returns>
+    /// <include file="RTComments.xml" path="Comments/PSZ/*" />
 	FUNCTION StringAlloc(cSource AS STRING) AS PSZ
 		LOCAL pMem := String2Mem(cSource) AS IntPtr
         RETURN PSZ{pMem}
@@ -124,6 +133,7 @@ FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 	/// </summary>
 	/// <returns>
 	/// </returns>
+    /// <include file="RTComments.xml" path="Comments/PSZ/*" />
 	FUNCTION TimePsz() AS PSZ
 		RETURN String2Psz(Time())
 
@@ -131,6 +141,7 @@ FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 	/// </summary>
 	/// <returns>
 	/// </returns>
+    /// <include file="RTComments.xml" path="Comments/PSZ/*" />
 	FUNCTION TimePsz24() AS PSZ
 		RETURN String2Psz(Time24())
 

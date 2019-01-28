@@ -1,4 +1,4 @@
-PARTIAL CLASS LineObject INHERIT DrawObject
+CLASS LineObject INHERIT DrawObject
 	PROTECT oEnd AS Point
 	PROTECT oPen AS Pen
 

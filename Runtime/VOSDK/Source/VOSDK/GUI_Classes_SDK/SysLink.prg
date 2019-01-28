@@ -1,4 +1,4 @@
-PARTIAL CLASS SysLink INHERIT TextControl
+CLASS SysLink INHERIT TextControl
 
 	//PP-030828 Strong typing
 	METHOD __StripTags(sHTML AS STRING) AS VOID STRICT 

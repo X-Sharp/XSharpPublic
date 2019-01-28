@@ -1,4 +1,4 @@
-PARTIAL CLASS SqlParameter
+CLASS SqlParameter
 	/*
 	The SQLParameter class provides a structured way to specify parameters in SQL statements.  In the SQL library, both the cSQLStatement and cSQLSelect Execute methods take an optional array of parameters.  These parameters can be specified as either SQLParameter objects or standard CA-Visual Objects data types.
 	

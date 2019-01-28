@@ -3,7 +3,7 @@
 #endif
 
 /*   // dcaton 070739 this is not used anymore, obsolete as per MSDN
-PARTIAL CLASS __IMalloc
+CLASS __IMalloc
 	METHOD AddRef() AS DWORD STRICT 
 RETURN DWORD(_CAST,E_NOTIMPL)
 
@@ -38,7 +38,7 @@ RETURN DWORD(_CAST,E_NOTIMPL)
 END CLASS
 */
 
-PARTIAL CLASS OpenDialog INHERIT StandardFileDialog
+CLASS OpenDialog INHERIT StandardFileDialog
 
 CONSTRUCTOR(oOwnWnd, cInitPath, dwFlag) 
 	
@@ -57,7 +57,7 @@ CONSTRUCTOR(oOwnWnd, cInitPath, dwFlag)
 
 END CLASS
 
-PARTIAL CLASS PaletteDialog INHERIT StandardColorDialog
+CLASS PaletteDialog INHERIT StandardColorDialog
 
 CONSTRUCTOR(uOwner,oColor) 
 	
@@ -82,7 +82,7 @@ CONSTRUCTOR(uOwner,oColor)
 
 END CLASS
 
-PARTIAL CLASS SaveAsDialog INHERIT StandardFileDialog
+CLASS SaveAsDialog INHERIT StandardFileDialog
 
 CONSTRUCTOR(oOwnWnd, cInitPath, dwFlag) 
 	
@@ -99,7 +99,7 @@ CONSTRUCTOR(oOwnWnd, cInitPath, dwFlag)
 
 END CLASS
 
-PARTIAL CLASS SelectDialog INHERIT StandardColorDialog
+CLASS SelectDialog INHERIT StandardColorDialog
 
 CONSTRUCTOR(uOwner,oColor) 
 	
@@ -123,7 +123,7 @@ CONSTRUCTOR(uOwner,oColor)
 
 END CLASS
 
-PARTIAL CLASS StandardColorDialog INHERIT StandardDialog
+CLASS StandardColorDialog INHERIT StandardDialog
 	PROTECT liFlags AS LONGINT
 	PROTECT dwDefColor AS DWORD
 	PROTECT pCustClr AS PTR
@@ -214,7 +214,7 @@ METHOD Show()
 
 END CLASS
 
-PARTIAL CLASS StandardDialog INHERIT VObject
+CLASS StandardDialog INHERIT VObject
 
 CONSTRUCTOR() 
     
@@ -224,7 +224,7 @@ CONSTRUCTOR()
 RETURN 
 END CLASS
 
-PARTIAL CLASS StandardFileDialog INHERIT StandardDialog
+CLASS StandardFileDialog INHERIT StandardDialog
 	PROTECT hWnd AS PTR
 	PROTECT cDefExt AS STRING
 	PROTECT Result AS USUAL
@@ -690,7 +690,7 @@ METHOD Show()
 
 END CLASS
 
-PARTIAL CLASS StandardFolderDialog INHERIT StandardDialog
+CLASS StandardFolderDialog INHERIT StandardDialog
 	PROTECT hwndParent AS PTR
 	PROTECT sTitle AS STRING
 	PROTECT sStart AS STRING
@@ -792,7 +792,7 @@ METHOD Show()
 
 END CLASS
 
-PARTIAL CLASS StandardFontDialog INHERIT StandardDialog
+CLASS StandardFontDialog INHERIT StandardDialog
 	PROTECT lFlags AS LONGINT
 	PROTECT lFixPitchFlag AS LONGINT
 	PROTECT lTTYFlag AS LONGINT

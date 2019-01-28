@@ -1,4 +1,4 @@
-PARTIAL CLASS SQLCatalogQuery INHERIT SQLSelect
+CLASS SQLCatalogQuery INHERIT SQLSelect
 
 ACCESS CursorName 
 

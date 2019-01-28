@@ -2,7 +2,7 @@
    #using System.Runtime.InteropServices
 #endif
 
-PARTIAL CLASS DataBrowser INHERIT Control
+CLASS DataBrowser INHERIT Control
 	PROTECT iBufferGranularity AS INT
 	PROTECT iBufferMaximum AS INT
 	PROTECT iFTHeight AS INT
@@ -3136,7 +3136,7 @@ METHOD Validate()
 	// DataColumn
 END CLASS
 
-PARTIAL CLASS DataColumn INHERIT VObject
+CLASS DataColumn INHERIT VObject
 	PROTECT strucFI AS _WinFieldInfo
 	PROTECT strucSelf AS SelfPtr
 	PROTECT iTtlBkgdLoc AS INT

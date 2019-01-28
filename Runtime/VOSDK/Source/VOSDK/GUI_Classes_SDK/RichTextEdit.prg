@@ -3,7 +3,7 @@
    INTERNAL DELEGATE RichEditCallback( dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LONGINT, pcb AS LONGINT PTR ) AS DWORD
 #endif
 
-PARTIAL CLASS RichEdit INHERIT MultiLineEdit
+CLASS RichEdit INHERIT MultiLineEdit
 	PROTECT oBackgroundColor AS Color
 	PROTECT pStreamPos AS BYTE PTR
 

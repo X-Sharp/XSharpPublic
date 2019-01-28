@@ -1,4 +1,4 @@
-PARTIAL CLASS ProgressBar INHERIT Control
+CLASS ProgressBar INHERIT Control
 	PROTECT dwUnitSize		AS DWORD
 	PROTECT dwPosition		AS DWORD
 	PROTECT dwOldPosition	AS DWORD

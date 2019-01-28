@@ -1,4 +1,4 @@
-﻿PARTIAL CLASS FieldSpec
+CLASS FieldSpec
 	// Class that contains a number of properties of database fields and form fields ( controls )
 	// HyperLabel   describes the FieldSpec
 	// Status           describes the current status of the field or control associated with the FieldSpec,

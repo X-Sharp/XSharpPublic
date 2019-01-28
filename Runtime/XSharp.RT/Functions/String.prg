@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -286,26 +286,14 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
 
    RETURN sbRet:ToString()
 
-/// <summary>
-/// Extract a substring from a string.
-/// </summary>
-/// <param name="c"></param>
-/// <param name="iStart"></param>
-/// <param name="wLen"></param>
-/// <returns>
-/// </returns>
+/// <seealso cref='M:XSharp.RT.Functions.SubStr(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' />
 FUNCTION SubS(c ,iStart ,wLen ) AS STRING CLIPPER
 	RETURN SubStr(c, iStart, wLen)
 
 
-/// <summary>
-/// Extract a substring from a string.
-/// </summary>
-/// <param name="c"></param>
-/// <param name="iStart"></param>
-/// <param name="wLen"></param>
-/// <returns>
-/// </returns>
+/// <param name="uStart">The starting position from which the substring should be extracted.</param>
+/// <param name="uLen">The length of the substring to beextracted</param>
+/// <seealso cref='M:XSharp.Core.Functions.SubStr3(System.String,System.UInt32,System.UInt32)' />
 FUNCTION SubStr(c ,uStart ,uLen ) AS STRING CLIPPER
 	IF ! c:IsString
 		THROW Error.ArgumentError(__FUNCTION__, NAMEOF(c), 1, <OBJECT>{c})

@@ -1,4 +1,4 @@
-PARTIAL CLASS DataField
+CLASS DataField
 	PROTECT oFieldSpec		AS FieldSpec
 	PROTECT oHyperLabel	AS HyperLabel
 

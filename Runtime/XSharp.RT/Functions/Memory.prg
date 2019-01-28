@@ -31,6 +31,7 @@ FUNCTION MemTrace() AS LOGIC
 /// <param name="cb"></param>
 /// <returns>
 /// </returns>
+/// <include file="RTComments.xml" path="Comments/StaticMemory/*" />
 FUNCTION MemAlloc(cb AS DWORD) AS IntPtr
 	RETURN FixedMemory.Alloc(1, cb)
 
@@ -40,6 +41,7 @@ FUNCTION MemAlloc(cb AS DWORD) AS IntPtr
 /// </summary>
 /// <param name="cb">A pointer to a previously allocated memory buffer.</param>
 /// <returns>0 if successful; otherwise, 65,535.</returns>
+/// <include file="RTComments.xml" path="Comments/StaticMemory/*" />
 FUNCTION MemFree(pMem AS IntPtr) AS WORD
 	RETURN FixedMemory.Free(pMem)
 
@@ -50,6 +52,7 @@ FUNCTION MemFree(pMem AS IntPtr) AS WORD
 /// <returns>
 /// A pointer to the allocated space if there is sufficient memory available; otherwise, a IntPtr.Zero.  You should always check the return value for a successful allocation.
 /// </returns>
+/// <include file="RTComments.xml" path="Comments/StaticMemory/*" />
 FUNCTION MemCAlloc(ui AS DWORD,cbCell AS DWORD) AS IntPtr
 	RETURN FixedMemory.Alloc(1, ui * cbCell)
 
@@ -63,6 +66,7 @@ FUNCTION MemCAlloc(ui AS DWORD,cbCell AS DWORD) AS IntPtr
 /// <returns>Returns the original pointer when the nSize parameter is smaller or equal to the current size.<br/>
 //  Extraneous bytes are zeroed out. Returns a new buffer when the requesed size is bigger than the original size.
 /// </returns>
+/// <include file="RTComments.xml" path="Comments/StaticMemory/*" />
 FUNCTION MemRealloc( pBuffer AS IntPtr, nSize AS DWORD ) AS IntPtr
 	RETURN FixedMemory.Realloc(pBuffer, nSize)
 
@@ -123,6 +127,7 @@ FUNCTION MemGrpAlloc(dwGroup AS DWORD,cb AS DWORD) AS IntPtr
 /// <returns>
 /// If successful, the handle of the new group; otherwise, 0.  You should always check for a valid group handle.
 /// </returns>
+/// <include file="RTComments.xml" path="Comments/StaticMemory/*" />
 FUNCTION MemGrpOpen() AS DWORD
 	LOCAL oGroup AS MemGroup
 	oGroup := FixedMemory.AddGroup()
@@ -140,6 +145,7 @@ FUNCTION MemGrpOpen() AS DWORD
 /// <param name="cbCell"></param>
 /// <returns>
 /// </returns>
+/// <include file="RTComments.xml" path="Comments/StaticMemory/*" />
 FUNCTION MemGrpCAlloc(dwGroup AS DWORD,cb AS DWORD,cbCell AS DWORD) AS IntPtr
 	RETURN FixedMemory.Alloc(dwGroup, cb * cbCell)
 

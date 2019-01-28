@@ -2,7 +2,7 @@
    #using System.Runtime.InteropServices
 #endif
 
-PARTIAL CLASS DialogWindow INHERIT Window
+CLASS DialogWindow INHERIT Window
 	//RvdH 060627 Changed Hidden Ivars to Protect 
 	PROTECT oResourceID 	AS ResourceID
 	PROTECT bModal 			AS LOGIC

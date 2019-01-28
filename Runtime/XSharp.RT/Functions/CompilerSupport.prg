@@ -5,18 +5,8 @@
 //
 // functions used by the compiler
 
-// <summary>
-// Compare 2 strings. This function is used by the compiler for string comparisons
-// </summary>
-// <param name="strLHS">The first string .</param>
-// <param name="strRHS">The second string.</param>
-// <returns>
-// -1 strLHS precedes strRHS in the sort order. 
-//  0 strLHS occurs in the same position as strRHS in the sort order. 
-//  1 strLHS follows strRHS in the sort order. 
-// Note this this function respects SetCollation() and SetExact()
-// </returns>
-/// <exclude />
+
+/// <inheritdoc cref="M:XSharp.RuntimeState.StringCompare(System.String,System.String)" />
 FUNCTION __StringCompare(strLHS AS STRING, strRHS AS STRING) AS INT
     RETURN RuntimeState.StringCompare(strLHS, strRHS)
 

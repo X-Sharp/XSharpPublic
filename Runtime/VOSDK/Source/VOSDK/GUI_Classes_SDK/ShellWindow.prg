@@ -1,6 +1,6 @@
 STATIC DEFINE __WCMdiFirstChildID := 0x8001
 
-PARTIAL CLASS ShellWindow INHERIT AppWindow
+CLASS ShellWindow INHERIT AppWindow
 	PROTECT hWndClient AS PTR
 	PROTECT lOpened AS LOGIC
 	PROTECT lUsingChildMenu AS LOGIC

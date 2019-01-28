@@ -1,4 +1,4 @@
-PARTIAL CLASS SQLColumn         INHERIT SQLValue
+CLASS SQLColumn         INHERIT SQLValue
 	//  UH 08/09/2001
 	//  EXPORT DisplaySize  AS INT
 	EXPORT DisplaySize  AS DWORD

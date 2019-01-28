@@ -1,6 +1,6 @@
 STATIC DEFINE SYSTEM_KEYCODE := 0x20000000
 
-PARTIAL CLASS AppCommandEvent INHERIT @@Event
+CLASS AppCommandEvent INHERIT @@Event
 	//PP-030904
 	//RvdH 061218 Declared properties for performance
 	ACCESS Command AS DWORD STRICT 
@@ -49,7 +49,7 @@ ACCESS oTarget AS OBJECT STRICT
 
 END CLASS
 
-PARTIAL CLASS ComboBoxExEndEditEvent INHERIT ControlNotifyEvent
+CLASS ComboBoxExEndEditEvent INHERIT ControlNotifyEvent
 	//SE-060519              
 	//RvdH 061218 Declared properties for performance
 	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
@@ -107,7 +107,7 @@ ACCESS Why AS LONGINT STRICT
 
 END CLASS
 
-PARTIAL CLASS ControlEvent INHERIT @@Event
+CLASS ControlEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 
 ACCESS Control AS Control STRICT 
@@ -183,7 +183,7 @@ ACCESS NameSym AS SYMBOL STRICT
 
 END CLASS
 
-PARTIAL CLASS ControlFocusChangeEvent INHERIT FocusChangeEvent  
+CLASS ControlFocusChangeEvent INHERIT FocusChangeEvent  
 	//RvdH 061218 Declared properties for performance
 	ACCESS Control AS CONTROL STRICT 
   RETURN SELF:Window
@@ -196,7 +196,7 @@ CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 RETURN 
 END CLASS
 
-PARTIAL CLASS ControlNotifyEvent INHERIT ControlEvent
+CLASS ControlNotifyEvent INHERIT ControlEvent
 	//RvdH 061218 Declared properties for performance
 ACCESS Control AS Control STRICT 
 	LOCAL strucNotify AS _winNMHDR
@@ -221,7 +221,7 @@ ACCESS NotifyCode AS DWORD STRICT
 
 END CLASS
 
-PARTIAL CLASS DateTimeSelectionEvent INHERIT ControlNotifyEvent
+CLASS DateTimeSelectionEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
     
@@ -253,7 +253,7 @@ ACCESS SelectedTime AS STRING STRICT
 
 END CLASS
 
-PARTIAL CLASS DragEvent INHERIT @@Event
+CLASS DragEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 	PROTECT oControl AS Control
 	ACCESS Control AS OBJECT STRICT 
@@ -340,7 +340,7 @@ ACCESS Origin
 
 END CLASS
 
-PARTIAL CLASS EditFocusChangeEvent INHERIT ControlEvent 
+CLASS EditFocusChangeEvent INHERIT ControlEvent 
 	//RvdH 061218 Declared properties for performance
 	ACCESS GotFocus AS LOGIC STRICT 
 	LOCAL dwHiWord AS DWORD
@@ -357,7 +357,7 @@ CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 RETURN 
 END CLASS
 
-PARTIAL CLASS @@Event //inherit object
+CLASS @@Event //inherit object
 	//RvdH 061218 Declared properties for performance
 	EXPORT hWnd 	AS PTR
 	EXPORT uMsg 	AS DWORD
@@ -407,7 +407,7 @@ ACCESS Window AS OBJECT STRICT
 
 END CLASS
 
-PARTIAL CLASS ExposeEvent INHERIT @@Event
+CLASS ExposeEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 	ACCESS ExposedArea AS BoundingBox STRICT 
 	LOCAL hwndWindow AS PTR
@@ -442,7 +442,7 @@ CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 RETURN 
 END CLASS
 
-PARTIAL CLASS FocusChangeEvent INHERIT @@Event
+CLASS FocusChangeEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 	ACCESS GotFocus AS LOGIC STRICT 
 	
@@ -456,7 +456,7 @@ CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 RETURN 
 END CLASS
 
-PARTIAL CLASS HelpRequestEvent INHERIT @@Event
+CLASS HelpRequestEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 	ACCESS HelpContext AS STRING STRICT 
 	LOCAL oHL AS HyperLabel
@@ -600,7 +600,7 @@ ACCESS WindowRegion() AS LONGINT STRICT
 
 END CLASS
 
-PARTIAL CLASS KeyEvent INHERIT @@Event
+CLASS KeyEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 	ACCESS ASCIIChar AS DWORD STRICT 
 	LOCAL retVal AS DWORD
@@ -647,7 +647,7 @@ ACCESS System AS LOGIC STRICT
 
 END CLASS
 
-PARTIAL CLASS ListViewColumnClickEvent INHERIT ControlNotifyEvent
+CLASS ListViewColumnClickEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
     
@@ -667,7 +667,7 @@ ACCESS ListViewColumn AS ListViewCOlumn STRICT
 
 END CLASS
 
-PARTIAL CLASS ListViewDeleteEvent INHERIT ListViewItemEvent
+CLASS ListViewDeleteEvent INHERIT ListViewItemEvent
 
 CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
     
@@ -677,7 +677,7 @@ CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 RETURN 
 END CLASS
 
-PARTIAL CLASS ListViewDragEvent INHERIT ListViewItemEvent
+CLASS ListViewDragEvent INHERIT ListViewItemEvent
 	//RvdH 061218 Declared properties for performance
 	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
     
@@ -717,7 +717,7 @@ ACCESS Position AS POINT STRICT
 
 END CLASS
 
-PARTIAL CLASS ListViewEditEvent INHERIT ControlNotifyEvent
+CLASS ListViewEditEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 	ACCESS EditBeginning AS LOGIC STRICT 
 	
@@ -760,7 +760,7 @@ ACCESS ListViewItem
 
 END CLASS
 
-PARTIAL CLASS ListViewItemEvent INHERIT ControlNotifyEvent
+CLASS ListViewItemEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
     
@@ -783,7 +783,7 @@ ACCESS ListViewItem AS ListViewItem STRICT
 
 END CLASS
 
-PARTIAL CLASS ListViewKeyEvent INHERIT ControlNotifyEvent
+CLASS ListViewKeyEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
     
@@ -802,7 +802,7 @@ ACCESS KeyCode AS LONGINT STRICT
 
 END CLASS
 
-PARTIAL CLASS ListViewMouseEvent INHERIT ControlNotifyEvent
+CLASS ListViewMouseEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 	PROTECT nX AS INT
 	PROTECT nY AS INT
@@ -984,7 +984,7 @@ ACCESS Position AS POINT STRICT
 
 END CLASS
 
-PARTIAL CLASS MenuCommandEvent INHERIT @@Event
+CLASS MenuCommandEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 	PROTECT oMenu AS Menu
 
@@ -1096,7 +1096,7 @@ ACCESS NameSym AS SYMBOL STRICT
 
 END CLASS
 
-PARTIAL CLASS MenuInitEvent INHERIT @@Event
+CLASS MenuInitEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
 	
@@ -1112,7 +1112,7 @@ ACCESS Menu AS Menu STRICT
 
 END CLASS
 
-PARTIAL CLASS MenuSelectEvent INHERIT @@Event
+CLASS MenuSelectEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 	METHOD AsString() AS STRING STRICT 
 	LOCAL hMenu AS PTR
@@ -1190,7 +1190,7 @@ ACCESS NameSym AS SYMBOL STRICT
 
 END CLASS
 
-PARTIAL CLASS MinMaxInfoEvent INHERIT @@Event                          
+CLASS MinMaxInfoEvent INHERIT @@Event                          
 	//RvdH 061218 Declared properties for performance
 	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
     
@@ -1265,7 +1265,7 @@ ASSIGN MinTrackSize(oSize AS Dimension)  STRICT
 
 END CLASS
 
-PARTIAL CLASS MonthCalSelectionEvent INHERIT ControlNotifyEvent
+CLASS MonthCalSelectionEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 	ACCESS Explicit AS LOGIC STRICT 
 	RETURN (SELF:NotifyCode == MCN_SELECT)
@@ -1285,7 +1285,7 @@ ACCESS Selection AS DateRange STRICT
 
 END CLASS
 
-PARTIAL CLASS MouseEvent INHERIT @@Event
+CLASS MouseEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 	ACCESS ButtonID AS LONGINT STRICT 
 	LOCAL retVal AS LONGINT
@@ -1444,7 +1444,7 @@ ACCESS Width AS LONGINT STRICT
 
 END CLASS
 
-PARTIAL CLASS MoveEvent INHERIT @@Event
+CLASS MoveEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
     
@@ -1461,7 +1461,7 @@ ACCESS Origin AS Point STRICT
 
 END CLASS
 
-PARTIAL CLASS PrinterErrorEvent INHERIT @@Event
+CLASS PrinterErrorEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 	ACCESS ErrorType AS DWORD STRICT 
 	
@@ -1475,7 +1475,7 @@ CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 RETURN 
 END CLASS
 
-PARTIAL CLASS PrinterExposeEvent INHERIT @@Event
+CLASS PrinterExposeEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 	ACCESS ExposedArea AS OBJECT STRICT 
 	
@@ -1496,7 +1496,7 @@ ACCESS PageNo AS DWORD STRICT
 
 END CLASS
 
-PARTIAL CLASS ResizeEvent INHERIT @@Event
+CLASS ResizeEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 	ACCESS Height AS LONGINT STRICT 
 	LOCAL dw := DWORD(_CAST,lParam) AS DWORD	
@@ -1519,7 +1519,7 @@ ACCESS Width AS LONGINT STRICT
 
 END CLASS
 
-PARTIAL CLASS RichEditProtectEvent INHERIT ControlNotifyEvent
+CLASS RichEditProtectEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
     
@@ -1550,7 +1550,7 @@ ACCESS SelectionRange AS Range STRICT
 
 END CLASS
 
-PARTIAL CLASS RichEditSelectionEvent INHERIT ControlNotifyEvent
+CLASS RichEditSelectionEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
     
@@ -1586,7 +1586,7 @@ ACCESS SelectionType AS LONGINT STRICT
 
 END CLASS
 
-PARTIAL CLASS ScrollEvent INHERIT @@Event
+CLASS ScrollEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
     
@@ -1809,7 +1809,7 @@ ACCESS TYPE AS LONGINT STRICT
 
 END CLASS
 
-PARTIAL CLASS SliderEvent INHERIT ScrollEvent
+CLASS SliderEvent INHERIT ScrollEvent
 	//RvdH 061218 Declared properties for performance
 	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
     
@@ -1828,7 +1828,7 @@ ACCESS Slider AS OBJECT STRICT
 
 END CLASS
 
-PARTIAL CLASS SpinnerEvent INHERIT @@Event
+CLASS SpinnerEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
     
@@ -1953,7 +1953,7 @@ ACCESS Value AS LONGINT STRICT
 
 END CLASS
 
-PARTIAL CLASS SysLinkSelectEvent INHERIT ControlNotifyEvent
+CLASS SysLinkSelectEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 	ACCESS ID AS STRING STRICT 
 	LOCAL DIM szUrl[MAX_LINKID_TEXT] AS BYTE
@@ -1985,7 +1985,7 @@ ACCESS URL AS STRING STRICT
 
 END CLASS
 
-PARTIAL CLASS TreeViewDeleteEvent INHERIT ControlNotifyEvent
+CLASS TreeViewDeleteEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
     
@@ -2007,7 +2007,7 @@ ACCESS TreeViewItem AS TreeViewItem STRICT
 
 END CLASS
 
-PARTIAL CLASS TreeViewDragEvent INHERIT ControlNotifyEvent
+CLASS TreeViewDragEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
     
@@ -2053,7 +2053,7 @@ ACCESS TreeViewItem AS TreeViewItem STRICT
 
 END CLASS
 
-PARTIAL CLASS TreeViewEditEvent INHERIT ControlNotifyEvent
+CLASS TreeViewEditEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 	ACCESS EditBeginning AS LOGIC STRICT 
 	
@@ -2097,7 +2097,7 @@ ACCESS TreeViewItem AS TreeViewItem STRICT
 
 END CLASS
 
-PARTIAL CLASS TreeViewExpandedEvent INHERIT ControlNotifyEvent
+CLASS TreeViewExpandedEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 	ACCESS Collapsed AS LOGIC STRICT 
 	LOCAL strucTreeView AS _winNM_TreeView
@@ -2137,7 +2137,7 @@ ACCESS TreeViewItem AS TreeViewItem STRICT
 
 END CLASS
 
-PARTIAL CLASS TreeViewExpandingEvent INHERIT ControlNotifyEvent
+CLASS TreeViewExpandingEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
    CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
     
@@ -2159,7 +2159,7 @@ ACCESS TreeViewItem AS TreeViewItem STRICT
 
 END CLASS
 
-PARTIAL CLASS TreeViewKeyEvent INHERIT ControlNotifyEvent
+CLASS TreeViewKeyEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
     
@@ -2178,7 +2178,7 @@ ACCESS KeyCode AS LONGINT STRICT
 
 END CLASS
 
-PARTIAL CLASS TreeViewMouseEvent INHERIT ControlNotifyEvent
+CLASS TreeViewMouseEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 	PROTECT nX AS LONGINT
 	PROTECT nY AS LONGINT
@@ -2389,7 +2389,7 @@ ACCESS TreeViewItem AS TreeViewItem STRICT
 
 END CLASS
 
-PARTIAL CLASS TreeViewSelectionEvent INHERIT ControlNotifyEvent
+CLASS TreeViewSelectionEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
     

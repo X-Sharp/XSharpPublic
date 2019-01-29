@@ -210,7 +210,20 @@ namespace XSharp.Project
                 designerStream.Close();
 
                 XSharpFileNode node = _fileNode.FindChild(designerPrgFile) as XSharpFileNode;
-                if (node == null || ! node.DocumentSetText(generatedSource))
+                bool done = false;
+                if (node != null )
+                {
+                    // assign the source to the open buffer when possible
+                    if (node.DocumentSetText(generatedSource))
+                    {
+                        // then use automation to save the file, because that is much easier
+                        // since we do not have to worry about the docdata etc.
+                        var oaFile = (OAXSharpFileItem)node.GetAutomationObject();
+                        oaFile.Save(designerPrgFile);
+                        done = true;
+                    }
+                }
+                if (! done)
                 {
                     // File is not open in editor, so write to disk
                     designerStream = new StreamWriter(designerPrgFile, false, realencoding);

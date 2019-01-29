@@ -6348,6 +6348,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ExpressionSyntax arg;
             SyntaxToken token;
             context.SetSequencePoint(context.end);
+            if (CurrentEntity != null)
+                CurrentEntity.Data.HasYield = true;
             if (context.Break != null)  // yield exit or yield break
             {
                 kind = SyntaxKind.YieldBreakStatement;

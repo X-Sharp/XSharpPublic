@@ -2158,10 +2158,10 @@ namespace XSharp.Project
             }
             if (changed)
             {
-                File.Copy(filename, filename + ".bak", true);
+                File.Copy(filename, filename + ".backup", true);
                 BuildProject.Xml.Save(filename);
                 BuildProject.ReevaluateIfNecessary();
-                this.Reload();
+                //this.Reload();
             }
         }
 

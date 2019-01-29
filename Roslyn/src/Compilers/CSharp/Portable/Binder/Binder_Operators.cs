@@ -1724,8 +1724,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 try
                 {
 #if XSHARP
-                    //newValue = FoldXsUncheckedIntegralBinaryOperator(kind, valueLeft, valueRight, ref resultType);
-                    newValue = FoldUncheckedIntegralBinaryOperator(kind, valueLeft, valueRight);
+                    newValue = FoldXsUncheckedIntegralBinaryOperator(kind, valueLeft, valueRight, ref resultType);
+                    //newValue = FoldUncheckedIntegralBinaryOperator(kind, valueLeft, valueRight);
 #else
                     newValue = FoldCheckedIntegralBinaryOperator(kind, valueLeft, valueRight);
 #endif

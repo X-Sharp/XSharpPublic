@@ -1001,19 +1001,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     case BinaryOperatorKind.ULongAddition:
                         return valueLeft.UInt64Value + valueRight.UInt64Value;
                     case BinaryOperatorKind.IntSubtraction:
-                        result = (long)valueLeft.Int32Value - (long)valueRight.Int32Value;
-                        if (result <= Int32.MaxValue && result >= Int32.MinValue)
-                            return (Int32)result;
-                        resultType = SpecialType.System_Int64;
-                        return result;
+                        return valueLeft.Int32Value - valueRight.Int32Value;
                     case BinaryOperatorKind.LongSubtraction:
                         return valueLeft.Int64Value - valueRight.Int64Value;
                     case BinaryOperatorKind.UIntSubtraction:
-                        result2 = (ulong)valueLeft.UInt32Value - (ulong)valueRight.UInt32Value;
-                        if (result2 <= UInt32.MaxValue && result2 >= UInt32.MinValue)
-                            return (UInt32)result2;
-                        resultType = SpecialType.System_UInt64;
-                        return result2;
+                        return valueLeft.UInt32Value - valueRight.UInt32Value;
                     case BinaryOperatorKind.ULongSubtraction:
                         return valueLeft.UInt64Value - valueRight.UInt64Value;
                     case BinaryOperatorKind.IntMultiplication:

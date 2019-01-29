@@ -140,6 +140,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 			HasAddressOf = 1 << 14,     // Member property
             IsInitProcedure = 1 << 15,  // Member property
             HasMemVars = 1 << 16,       // Member property
+            HasYield = 1 << 17,         // Member property
         }
 
 
@@ -240,6 +241,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 get { return flags.HasFlag(EntityFlags.HasMemVars); }
                 set { flags = setFlag(flags, EntityFlags.HasMemVars, value); }
+            }
+
+            public bool HasYield
+            {
+                get { return flags.HasFlag(EntityFlags.HasYield); }
+                set { flags = setFlag(flags, EntityFlags.HasYield, value); }
             }
 
             public bool IsInitProcedure

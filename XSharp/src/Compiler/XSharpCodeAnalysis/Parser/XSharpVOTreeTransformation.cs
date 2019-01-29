@@ -2066,7 +2066,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (stmts.Count == 0)
                 return true;
             var stmt = stmts.Last();
-            if (stmt is XP.ReturnStmtContext)
+            if (stmt is XP.ReturnStmtContext || stmt is XP.YieldStmtContext)
             {
                 return false;
             }
@@ -2197,19 +2197,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected override BlockSyntax AddMissingReturnStatement(BlockSyntax body, XP.StatementBlockContext stmtBlock, TypeSyntax returnType)
         {
-            if (_options.VOAllowMissingReturns && stmtBlock != null && NeedsReturn(stmtBlock._Stmts))
+            if (CurrentEntity != null && !CurrentEntity.Data.HasYield) 
             {
-                var result = GetReturnExpression(returnType);
-                if (result != null) // this happens for the Void Type
+                if (_options.VOAllowMissingReturns && stmtBlock != null && NeedsReturn(stmtBlock._Stmts))
                 {
-                    var statements = _pool.Allocate<StatementSyntax>();
-                    statements.AddRange(body.Statements);
-                    statements.Add(GenerateReturn(result));
 
-                    body = MakeBlock(statements).WithAdditionalDiagnostics(
-                                new SyntaxDiagnosticInfo(ErrorCode.WRN_MissingReturnStatement));
-                    _pool.Free(statements);
+                    var result = GetReturnExpression(returnType);
+                    if (result != null) // this happens for the Void Type
+                    {
+                        var statements = _pool.Allocate<StatementSyntax>();
+                        statements.AddRange(body.Statements);
+                        statements.Add(GenerateReturn(result));
 
+                        body = MakeBlock(statements).WithAdditionalDiagnostics(
+                                    new SyntaxDiagnosticInfo(ErrorCode.WRN_MissingReturnStatement));
+                        _pool.Free(statements);
+
+                    }
                 }
             }
             return body;

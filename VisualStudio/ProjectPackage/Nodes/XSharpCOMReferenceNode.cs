@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System;
@@ -11,12 +11,14 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Project;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace XSharp.Project
 {
     /// <summary>
     /// Knows about special requirements for project to project references
     /// </summary>
+    [DebuggerDisplay("{Caption}")]
     public class XSharpComReferenceNode : ComReferenceNode
    {
 
@@ -182,7 +184,7 @@ namespace XSharp.Project
          string typeLibPath = QueryPathOfRegTypeLib(this.TypeGuid, (short)MajorVersionNumber, (short)MinorVersionNumber, Convert.ToInt32(this.LCID));
          typeLibPath = typeLibPath.Replace("\0", "");
          if (File.Exists(typeLibPath))
-         { 
+         {
             ITypeLib itypelib;
             int iresult = LoadTypeLib(typeLibPath, out itypelib);
             if (iresult == VSConstants.S_OK && itypelib != null)
@@ -212,7 +214,7 @@ namespace XSharp.Project
         {
 
         }
-        
+
         private void LoadAssembly()
         {
             if (assembly == null && !tryLoad)
@@ -267,7 +269,7 @@ namespace XSharp.Project
                 return System.IO.Path.GetFileNameWithoutExtension(this.Path);
             }
 
-        }        
+        }
         public override string Path
         {
             get

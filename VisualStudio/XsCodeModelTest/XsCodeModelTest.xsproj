@@ -19,6 +19,9 @@
     <TargetFrameworkProfile />
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <XSharpProjectversion>2.0.0.9</XSharpProjectversion>
+    <Includepaths />
+    <Nostandarddefs>true</Nostandarddefs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -38,8 +41,6 @@
     <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>true</NoStandardDefs>
-    <IncludePaths />
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
@@ -60,8 +61,6 @@
     <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>true</NoStandardDefs>
-    <IncludePaths />
     <Prefer32Bit>True</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />

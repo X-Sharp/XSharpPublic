@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System;
@@ -10,12 +10,14 @@ using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio;
+using System.Diagnostics;
 
 namespace XSharp.Project
 {
     /// <summary>
     /// Knows about special requirements for project to project references
     /// </summary>
+    [DebuggerDisplay("{Caption}")]
     public class XSharpProjectReferenceNode : ProjectReferenceNode
     {
         public XSharpProjectReferenceNode(ProjectNode root, ProjectElement element)
@@ -45,7 +47,7 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="errorHandler">The error handler delegate to return</param>
         /// <returns>false if reference cannot be added, otherwise true</returns>
-        /// 
+        ///
 
         protected override bool CanAddReference(out CannotAddReferenceErrorMessage errorHandler, out ReferenceNode existingNode)
         {

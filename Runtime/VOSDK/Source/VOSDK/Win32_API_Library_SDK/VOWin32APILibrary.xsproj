@@ -8,7 +8,7 @@
     <Name>VOWin32APILibrary</Name>
     <AssemblyName>VOWin32APILibrary</AssemblyName>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <XSharpProjectversion>2.0.0.8</XSharpProjectversion>
+    <XSharpProjectversion>2.0.0.9</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs />
   </PropertyGroup>

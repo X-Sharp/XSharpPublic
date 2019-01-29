@@ -190,6 +190,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         readonly SourceHashAlgorithm _checksumAlgorithm;
 
         IList<ParseErrorData> _parseErrors;
+        IList<ParseErrorData> _skippedErrors;
         bool _duplicateFile = false;
 
         IList<string> includeDirs;
@@ -387,11 +388,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (_parseErrors.Count < MAXERRORS)
                 _parseErrors.Add(error);
-            else if (! maxErrorsReported)
+            else
             {
-                maxErrorsReported = true;
-                error = new ParseErrorData(error.Node, ErrorCode.ERR_PreProcessorError, "Too many errors and warnings");
-                _parseErrors.Add(error);
+                _skippedErrors.Add(error);
+                if (!maxErrorsReported)
+                {
+                    maxErrorsReported = true;
+                    error = new ParseErrorData(error.Node, ErrorCode.WRN_PreProcessorWarning, "Too many preprocessor errors and warnings.");
+                    _parseErrors.Add(error);
+                }
             }
 
         }
@@ -413,6 +418,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _encoding = encoding;
             _checksumAlgorithm = checksumAlgorithm;
             _parseErrors = parseErrors;
+            _skippedErrors = new List<ParseErrorData>();
             includeDirs = new List<string>(options.IncludePaths);
             if (!String.IsNullOrEmpty(fileName) && File.Exists(fileName))
             {
@@ -507,6 +513,39 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     result.Add(t);
             }
             doEOFChecks();
+            if (maxErrorsReported)
+            {
+                var dict = new Dictionary<ErrorCode, int>();
+                foreach (var error in _skippedErrors)
+                {
+                    if (dict.ContainsKey(error.Code))
+                    {
+                        dict[error.Code] += 1;
+                    }
+                    else
+                    {
+                        dict.Add(error.Code, 1);
+                    }
+                }
+                var msg = new StringBuilder();
+                var last = _parseErrors[_parseErrors.Count - 1];
+                msg.Append(" The following errors and warnings were suppressed: ");
+                int i = 0;
+                bool isError = false;
+                foreach (var item in dict)
+                {
+                    if (i > 0)
+                        msg.Append(", ");
+                    msg.Append("XS" + ((int)item.Key).ToString("0000")+": " + item.Value.ToString());
+                    if (!ErrorFacts.IsWarning(item.Key) && !ErrorFacts.IsInfo(item.Key))
+                        isError = true;
+                    i++;
+                }
+                string errorMsg = last.Args[0].ToString();
+                errorMsg += " " + msg.ToString();
+                _parseErrors[_parseErrors.Count - 1] = new ParseErrorData(last.Node,
+                    isError ? ErrorCode.ERR_PreProcessorError: ErrorCode.WRN_PreProcessorWarning, errorMsg);
+            }
             return result;
         }
 
@@ -1823,5 +1862,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
     }
 }
+
 
 

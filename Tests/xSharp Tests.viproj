@@ -66829,7 +66829,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C657 - Problem with the <= operator comparing USUAL and 2 STRIGNS added in the same expression
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C658 - Compiler error with YIELD RETURN and /vo9+ *************
 Application = C658 - Compiler error with YIELD RETURN and /vo9+
 IDEVersion = 1.06
@@ -66869,9 +66869,9 @@ FileGUID = CF83065D-2747-4C3C-ABBD-9CFEE05FBE2C
 FileType = Code
 [C658 - Compiler error with YIELD RETURN and /vo9+ References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.8
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.0.8
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.8
+ReferenceGAC = XSharp.VO,1,0,2.0.0.8
+ReferenceGAC = XSharp.RT,1,0,2.0.0.8
+ReferenceGAC = XSharp.Core,1,0,2.0.0.8
 [C658 - Compiler error with YIELD RETURN and /vo9+ Resources]
 [C658 - Compiler error with YIELD RETURN and /vo9+ Native Resources]
 [C658 - Compiler error with YIELD RETURN and /vo9+ License files]

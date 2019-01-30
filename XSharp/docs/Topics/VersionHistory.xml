@@ -35,6 +35,7 @@
       <li styleclass="List">Fixed a problem with methods containing <link displaytype="text" defaultstyle="true" type="topiclink" href="YIELD-RETURN">YIELD</link> statements in combination with compiler option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo9">/vo9</link></li>
       <li styleclass="List">When a visibility modifier was missing on a generic method then this method was created as a private method. This has been fixed.</li>
       <li styleclass="List">When choosing between overloaded functions in XSharp.RT and XSharp.Core the function in the XSharp.RT assembly would sometimes be chosen although the overload in XSharp.Core was better</li>
+      <li styleclass="List">CASE statements without CASE block but only a OTHERWISE block would crash the compiler. This has been fixed and an warning about an empty CASE statement has been added.</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <list id="63" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">

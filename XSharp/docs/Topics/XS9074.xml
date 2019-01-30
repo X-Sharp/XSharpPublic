@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9074</title>
+  <keywords>
+    <keyword>Declared parameters</keyword>
+    <keyword>PARAMETERS statement</keyword>
+    <keyword>XS9074</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9074</para>
+    </header>
+    <para styleclass="Normal">You cannot have both a PARAMETERS statement and declared parameters in the same entity.</para>
+    <para styleclass="Normal">This error message may occur in code like the following (and will only be shown if you have enabled the<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar"> -memvar</link> commandline option)</para>
+    <para styleclass="Normal">You either remove the declared parameters par1 and par2 or the PARAMETERS statement with par3 and par4.</para>
+    <para styleclass="Normal">The declared parameters are preferred over the PARAMETERS statement because this declares local variables which are faster than dynamic variables.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> DoSomething(par1, par2) </text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">PARAMETERS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> par3, par4</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">return</text><text style="font-weight:normal; font-style:normal; color:#000000;"> par3 + par4</text></para>
+  </body>
+</topic>

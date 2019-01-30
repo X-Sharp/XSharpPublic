@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9072</title>
+  <keywords>
+    <keyword>CLIPPER calling convention</keyword>
+    <keyword>Default value</keyword>
+    <keyword>Parameter</keyword>
+    <keyword>XS9072</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9072</para>
+    </header>
+    <para styleclass="Normal">Parameters with CLIPPER calling convention cannot have default values.</para>
+    <para styleclass="Normal">This error occurs in code like the following.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Test(a, b := 10, c := 20) </text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160;a+b+c</text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">This will become a function with CLIPPER calling convention since the parameters are not typed.</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">The following will work:</text></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Test(a AS USUAL, b := 10 AS USUAL, c := 20 AS USUAL) </text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160;a+b+c</text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">or</text></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Test(a,b,c) </text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">Default(@b, 10) &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// or better: Default( REF b, 10)</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">Default(@c, 20) &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// or better: Default( REF c, 20)</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160;a+b+c</text></para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

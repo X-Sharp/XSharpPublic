@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9075</title>
+  <keywords>
+    <keyword>already defined</keyword>
+    <keyword>Field already defined</keyword>
+    <keyword>Memvar already defined</keyword>
+    <keyword>XS9075</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9075</para>
+    </header>
+    <para styleclass="Normal">A MEMVAR or FIELD with the name &apos;{0}&apos; has already been defined.</para>
+    <para styleclass="Normal">This happens in code where a local statement, memvar statement or field statement redefines a name that has been defined before in the same entity, such as in the code below</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> DoSomething()</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">MEMVAR</text><text style="font-weight:normal; font-style:normal; color:#000000;"> name</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> name </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// &lt;-- Error 9075 here</text></para>
+    <para styleclass="Normal">or</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> DoSomething()</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">MEMVAR</text><text style="font-weight:normal; font-style:normal; color:#000000;"> name</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FIELD</text><text style="font-weight:normal; font-style:normal; color:#000000;"> name </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;CUSTOMER </text><text style="font-weight:bold; font-style:italic; color:#339966;">// &lt;-- Error 9075 here</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

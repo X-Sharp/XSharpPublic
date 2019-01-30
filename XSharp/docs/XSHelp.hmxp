@@ -69,7 +69,7 @@
         <style-set media="screen" type="para">margin-bottom:10px;</style-set>
       </styleclass>
       <styleclass name="List" parentclass="Body Text" shortcut="32882">
-        <style-set media="screen" type="para">text-indent:-144px; margin-bottom:0px; margin-left:144px; tabstops:144px left,192px left ;</style-set>
+        <style-set media="screen" type="para">text-indent:-96px; margin-bottom:0px; margin-left:96px; tabstops:96px left,144px left,192px left ;</style-set>
       </styleclass>
       <styleclass name="Callouts" parentclass="Normal" shortcut="0">
         <style-set media="screen" type="para">margin-bottom:5px;</style-set>

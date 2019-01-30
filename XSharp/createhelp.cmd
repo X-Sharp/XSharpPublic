@@ -24,7 +24,6 @@ Echo =======================
 Echo Creating PDF
 Echo =======================
 %HM% "/tsk=Recent Publishes:Publish as PDF"
-makecab %OUT%xsvulcan.mshc %OUT%xsvulcan.cab
 makecab %OUT%xsharp.mshc %OUT%xsharp.cab
 SET HM=
 SET OUT=

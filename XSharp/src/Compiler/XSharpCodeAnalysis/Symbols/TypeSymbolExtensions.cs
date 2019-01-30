@@ -20,20 +20,23 @@ using System.Diagnostics;
 using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.Symbols;
 using Microsoft.CodeAnalysis;
+using System.Collections.Concurrent;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal static partial class TypeSymbolExtensions
     {
-
+        private static ConcurrentDictionary<string, XSharpTargetDLL> dictionary;
+        static TypeSymbolExtensions()
+        {
+            dictionary = new ConcurrentDictionary<string, XSharpTargetDLL>(StringComparer.OrdinalIgnoreCase);
+        }
 
         public static bool IsOurAttribute(this NamedTypeSymbol atype, String name)
         {
             if (atype == null)
                 return false;
-            string aName = atype.ContainingAssembly.Name;
-            if (String.Equals(aName, VulcanAssemblyNames.VulcanRT, System.StringComparison.OrdinalIgnoreCase) ||
-                String.Equals(aName, XSharpAssemblyNames.XSharpCore, System.StringComparison.OrdinalIgnoreCase))
+            if (atype.ContainingAssembly.IsRT())
             {
                 return String.Equals(atype.Name, name, System.StringComparison.OrdinalIgnoreCase);
             }
@@ -150,33 +153,41 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return elementSize;
         }
 
+        
         public static bool IsRT(this AssemblySymbol _asm)
         {
-            return _asm.IsVulcanRT() || _asm.IsXSharpRT();
+            if ((object) _asm == null)  // cast to null to prevent calling equals operator on AssemblySymbol
+                return false;
+            XSharpTargetDLL target;
+            if (dictionary.TryGetValue(_asm.Name, out target))
+            {
+                return target != XSharpTargetDLL.Other;
+            }
+            switch (_asm.Name.ToLower())
+            {
+                case XSharpAssemblyNames.XSharpCore:
+                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.Core);
+                    return true;
+                case XSharpAssemblyNames.XSharpVO:
+                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VO);
+                    return true;
+                case XSharpAssemblyNames.XSharpRT:
+                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.RT);
+                    return true;
+                case XSharpAssemblyNames.XSharpXPP:
+                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.XPP);
+                    return true;
+                case VulcanAssemblyNames.VulcanRT:
+                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VulcanRT);
+                    return true;
+                case VulcanAssemblyNames.VulcanRTFuncs:
+                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VulcanRTFuncs);
+                    return true;
+                default:
+                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.Other);
+                    return false;
+            }
         }
-
-        public static bool IsVulcanRT(this AssemblySymbol _asm)
-        {
-            // TODO (nvk): there must be a better way!
-            return
-                (object)_asm != null &&
-                (_asm.Name.ToLower() == VulcanAssemblyNames.VulcanRTFuncs || _asm.Name.ToLower() == VulcanAssemblyNames.VulcanRT);
-        }
-        public static bool IsXSharpRT(this AssemblySymbol _asm)
-        {
-            return _asm.IsXSharpCore() || _asm.IsXSharpVO();
-        }
-        public static bool IsXSharpCore(this AssemblySymbol _asm)
-        {
-            // TODO (nvk): there must be a better way!
-            return (object)_asm != null && _asm.Name.ToLower() == XSharpAssemblyNames.XSharpCore ;
-        }
-        public static bool IsXSharpVO(this AssemblySymbol _asm)
-        {
-            // TODO (nvk): there must be a better way!
-            return (object)_asm != null && _asm.Name.ToLower() == XSharpAssemblyNames.XSharpVO;
-        }
-
 
         public static bool HasVODefaultParameter(this ParameterSymbol param)
         {

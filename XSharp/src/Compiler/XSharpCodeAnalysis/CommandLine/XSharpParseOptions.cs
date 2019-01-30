@@ -49,7 +49,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         RDD = 2,
         RT = 3,
         VO = 4,
-        XPP = 5
+        XPP = 5,
+        VulcanRT = 6,    // strictly not a target but we use this in the OverloadResolution
+        VulcanRTFuncs= 7  // strictly not a target but we use this in the OverloadResolution
     }
 
     public sealed partial class CSharpParseOptions

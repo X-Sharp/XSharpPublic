@@ -190,7 +190,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         readonly SourceHashAlgorithm _checksumAlgorithm;
 
         IList<ParseErrorData> _parseErrors;
-        IList<ParseErrorData> _skippedErrors;
         bool _duplicateFile = false;
 
         IList<string> includeDirs;
@@ -382,23 +381,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             _ppoStream = null;
         }
-        bool maxErrorsReported = false;
-        const int MAXERRORS = 500;
         internal void addParseError(ParseErrorData error)
         {
-            if (_parseErrors.Count < MAXERRORS)
-                _parseErrors.Add(error);
-            else
-            {
-                _skippedErrors.Add(error);
-                if (!maxErrorsReported)
-                {
-                    maxErrorsReported = true;
-                    error = new ParseErrorData(error.Node, ErrorCode.WRN_PreProcessorWarning, "Too many preprocessor errors and warnings.");
-                    _parseErrors.Add(error);
-                }
+#if !VSPARSER
+            // use the filter mechanism in the compiler to only add errors that are not suppressed.
+            var d = Diagnostic.Create(new SyntaxDiagnosticInfo(error.Code));
+            d = _options.CommandLineArguments.CompilationOptions.FilterDiagnostic(d);
+            if (d != null)
+            { 
+               _parseErrors.Add(error);
             }
-
+#else
+            _parseErrors.Add(error);
+#endif
         }
         internal XSharpPreprocessor(XSharpLexer lexer, ITokenStream lexerStream, CSharpParseOptions options, string fileName, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
         {
@@ -418,7 +413,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _encoding = encoding;
             _checksumAlgorithm = checksumAlgorithm;
             _parseErrors = parseErrors;
-            _skippedErrors = new List<ParseErrorData>();
             includeDirs = new List<string>(options.IncludePaths);
             if (!String.IsNullOrEmpty(fileName) && File.Exists(fileName))
             {
@@ -513,39 +507,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     result.Add(t);
             }
             doEOFChecks();
-            if (maxErrorsReported)
-            {
-                var dict = new Dictionary<ErrorCode, int>();
-                foreach (var error in _skippedErrors)
-                {
-                    if (dict.ContainsKey(error.Code))
-                    {
-                        dict[error.Code] += 1;
-                    }
-                    else
-                    {
-                        dict.Add(error.Code, 1);
-                    }
-                }
-                var msg = new StringBuilder();
-                var last = _parseErrors[_parseErrors.Count - 1];
-                msg.Append(" The following errors and warnings were suppressed: ");
-                int i = 0;
-                bool isError = false;
-                foreach (var item in dict)
-                {
-                    if (i > 0)
-                        msg.Append(", ");
-                    msg.Append("XS" + ((int)item.Key).ToString("0000")+": " + item.Value.ToString());
-                    if (!ErrorFacts.IsWarning(item.Key) && !ErrorFacts.IsInfo(item.Key))
-                        isError = true;
-                    i++;
-                }
-                string errorMsg = last.Args[0].ToString();
-                errorMsg += " " + msg.ToString();
-                _parseErrors[_parseErrors.Count - 1] = new ParseErrorData(last.Node,
-                    isError ? ErrorCode.ERR_PreProcessorError: ErrorCode.WRN_PreProcessorWarning, errorMsg);
-            }
             return result;
         }
 

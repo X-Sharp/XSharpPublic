@@ -576,18 +576,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        protected SyntaxList<SyntaxToken> DefaultMethodModifiers(bool inInterface, bool inStructure)
+        protected SyntaxList<SyntaxToken> DefaultMethodModifiers(bool inInterface, bool inStructure, bool noOverride = false)
         {
             var rb = _pool.Allocate();
             if (!inInterface)
             {
                 rb.FixDefaultVisibility();
                 // structures do not get virtual or override modifiers
-                if (!inStructure)
+                if (!inStructure && ! noOverride)
                 {
                     if (_options.VirtualInstanceMethods)
                         rb.FixDefaultVirtual();
-                    else
+                    else 
                         rb.FixDefaultMethod();
                 }
             }
@@ -3776,8 +3776,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var idName = context.Id.Get<SyntaxToken>();
             var isInInterface = context.isInInterface();
-            var noOverride = isInInterface || context.TypeParameters != null;
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(noOverride, context.isInStructure());
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface, context.isInStructure(), context.TypeParameters != null);
             var isExtern = mods.Any((int)SyntaxKind.ExternKeyword);
             var isAbstract = mods.Any((int)SyntaxKind.AbstractKeyword);
             var hasNoBody = isInInterface || isExtern || isAbstract;

@@ -13671,6 +13671,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Empty CASE statement.
+        /// </summary>
+        internal static string WRN_EmptyCase {
+            get {
+                return ResourceManager.GetString("WRN_EmptyCase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Empty switch block.
         /// </summary>
         internal static string WRN_EmptySwitch {

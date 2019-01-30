@@ -239,6 +239,7 @@
                 case ErrorCode.WRN_ImplicitCast:
                 case ErrorCode.WRN_AutomaticRefGeneration:
                 case ErrorCode.WRN_UndeclaredVariable:
+                case ErrorCode.WRN_EmptyCase:
                 case ErrorCode.WRN_XPPSuperIVarsAlwaysShared:
                 case ErrorCode.WRN_XPPFrozedNotSupported:
                 case ErrorCode.WRN_XPPVarIsInNotSupported:

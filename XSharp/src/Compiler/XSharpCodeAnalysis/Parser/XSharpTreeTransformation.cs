@@ -5851,9 +5851,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
                 context.SetSequencePoint(context.end);
-            StatementSyntax caseStmt = (StatementSyntax)context.CaseStmt?.Get<IfStatementSyntax>() ??
-                _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            context.Put(caseStmt);
+            if (context.CaseStmt.Key.Type == XP.OTHERWISE)
+            {
+                // DO case without case block, so we should always execute the otherwise block
+                var block = context.CaseStmt.CsNode as StatementSyntax;
+                block = block.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_EmptyCase));
+                context.Put(block);
+            }
+            else
+            { 
+                StatementSyntax caseStmt = (StatementSyntax)context.CaseStmt?.Get<IfStatementSyntax>() ??
+                    _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                context.Put(caseStmt);
+            }
         }
 
         public override void ExitCaseBlock([NotNull] XP.CaseBlockContext context)

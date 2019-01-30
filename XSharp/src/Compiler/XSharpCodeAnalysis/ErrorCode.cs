@@ -1703,6 +1703,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_UndeclaredVariable = 9073,
         ERR_ParametersWithDeclaredParameters = 9074,
         ERR_MemvarFieldWithSameName = 9075,
+        WRN_EmptyCase = 9076,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

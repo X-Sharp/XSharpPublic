@@ -389,7 +389,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
            
                 if (! hasErrors)
                 {
-                    walker.Walk(treeTransform, tree);
+                    try
+                    {
+                        walker.Walk(treeTransform, tree);
+                    }
+                    catch (Exception e)
+                    {
+                        parseErrors.Add(new ParseErrorData(ErrorCode.ERR_Internal, e.Message, e.StackTrace));
+                    }
                     eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                     if (!parseErrors.IsEmpty())
                     {

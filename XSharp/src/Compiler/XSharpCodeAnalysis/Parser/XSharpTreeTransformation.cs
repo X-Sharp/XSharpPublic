@@ -3238,7 +3238,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             // initialize the DIM array with empty strings when neeeded
                             var cvl = context.Parent as XP.ClassVarListContext;
-                            if (cvl != null)
+                            if (cvl != null && cvl.DataType != null)
                             {
                                 var dt = cvl.DataType.GetText();
                                 if (dt.ToLower() == "string" || dt.ToLower() == "system.string")

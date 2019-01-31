@@ -5867,6 +5867,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An internal compiler error has occurred: &apos;{0}&apos;, {1}.
+        /// </summary>
+        internal static string ERR_Internal {
+            get {
+                return ResourceManager.GetString("ERR_Internal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Embedded interop method &apos;{0}&apos; contains a body..
         /// </summary>
         internal static string ERR_InteropMethodWithBody {

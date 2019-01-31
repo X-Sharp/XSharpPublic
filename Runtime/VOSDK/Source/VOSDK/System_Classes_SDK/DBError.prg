@@ -30,7 +30,7 @@ CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2
 	Severity := ES_ERROR
 	RETURN 
 
-#ifdef __XRUNTIME__
+#ifdef __XSHARP_RT__
 METHOD @@Throw() AS VOID STRICT
 #else
 METHOD @@Throw()

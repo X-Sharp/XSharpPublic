@@ -203,7 +203,7 @@ FUNCTION ShellAutoComplete(hWnd AS PTR, dwFlags AS DWORD) AS LOGIC
 
 	RETURN lOK
 
-FUNCTION GetFolderPath(nFolder AS INT,lCreate := FALSE AS LOGIC,hToken := NULL_PTR AS PTR,;
+FUNCTION GetFolderPath(nFolder AS INT,lCreate := FALSE AS LOGIC,hToken := NULL AS PTR,;
 	dwFlags := SHGFP_TYPE_CURRENT AS DWORD) AS STRING
 	//PP-030909 Requires >= IE4 (Shell 4.71)
 	LOCAL hwndOwner AS PTR

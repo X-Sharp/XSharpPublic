@@ -700,7 +700,7 @@ FUNCTION Ansi2OemA(cSource REF STRING) AS STRING
 /// Convert an array of ANSI characters to OEM characters, changing the contents of the argument as well as the return value.
 /// </summary>
 /// <param name="bSource">A byte array that contains the string to convert</param>
-/// <inheritdoc cref="O:XSharp.Core.Functions.Oem2AnsiA(System.String@)" />
+/// <inheritdoc cref="O:XSharp.Core.Functions.Ansi2OemA(System.String@)" />
 FUNCTION Ansi2OemA(bSource AS BYTE[]) AS VOID
 	LOCAL bDest AS BYTE[]
 	bDest := Ansi2Oem(bSource, bSource:Length)

@@ -6,6 +6,7 @@
     <header>
       <para styleclass="Heading1">XSharp.RDD</para>
     </header>
-    <para styleclass="Normal">This will contain the various RDDs implemented for X#. <text style="font-weight:bold; font-style:italic;">It is not included yet.</text></para>
+    <para styleclass="Normal">This will contain the various RDDs implemented for X#.</para>
+    <para styleclass="Normal"><text style="font-weight:bold; font-style:italic;">The DBFCDX RDD is not included yet</text></para>
   </body>
 </topic>

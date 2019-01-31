@@ -19,6 +19,7 @@
               <task-config-value name="outputfile">..\Binaries\Help\HTML\index.html</task-config-value>
               <task-config-value name="skin">XSharp_WebHelp.hmskin</task-config-value>
               <task-config-value name="make3include">HTML</task-config-value>
+              <task-config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER,OPT_BREADOFF,OPT_NOSERVER</task-config-value>
               <task-config-value name="make3status">*</task-config-value>
             </task-config-group>
           </export-task>
@@ -177,6 +178,7 @@
       <config-value name="make3status">*</config-value>
       <config-value name="tidyxml">1</config-value>
       <config-value name="contents">XSharp</config-value>
+      <config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER,OPT_BREADOFF,OPT_NOSERVER</config-value>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>
@@ -473,7 +475,7 @@
     <config-group name="user">
       <config-group name="robert">
         <config-group name="project">
-          <config-value name="lastexport">0</config-value>
+          <config-value name="lastexport">3</config-value>
         </config-group>
         <config-group name="report">
           <config-value name="type">4</config-value>
@@ -540,31 +542,9 @@
   <project-files>
     <file href="Topics/*.xml" build="ALL" filetype="topic">
       <file-mod href="Stylesheet-for-Style-Test.xml"/>
-      <file-mod href="Debugger.xml"/>
       <file-mod href="X-Compiler-Errors.xml" build="CHM,HTML,HXS"/>
       <file-mod href="X-Compiler-Warnings.xml" build="CHM,HTML,HXS"/>
       <file-mod href="X-Compiler-Errors-and-Warnings.xml" build="EBOOK,PDF,PRINT"/>
-      <file-mod href="Quick-Start.xml"/>
-      <file-mod href="Arrays.xml"/>
-      <file-mod href="Classes-and-Structures.xml"/>
-      <file-mod href="Codeblock_-Lambda-and-Anonymou.xml"/>
-      <file-mod href="Delegates.xml"/>
-      <file-mod href="Enumeration-Types.xml"/>
-      <file-mod href="Events.xml"/>
-      <file-mod href="Exceptions-and-Exception-Handl.xml"/>
-      <file-mod href="File-System-and-the-Registry.xml"/>
-      <file-mod href="Generics.xml"/>
-      <file-mod href="Indexers.xml"/>
-      <file-mod href="Interfaces.xml"/>
-      <file-mod href="Interoperability.xml"/>
-      <file-mod href="LINQ-Query-Expressions.xml"/>
-      <file-mod href="Namespaces2.xml"/>
-      <file-mod href="Nullable-Types.xml"/>
-      <file-mod href="Statements_-Expressions-and-Op.xml"/>
-      <file-mod href="Strings.xml"/>
-      <file-mod href="Types.xml"/>
-      <file-mod href="Unsafe-Code-and-Pointers.xml"/>
-      <file-mod href="XML-Documentation-Comments.xml"/>
       <file-mod href="new-feat-PROCEDURE-inside-CLASS.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>

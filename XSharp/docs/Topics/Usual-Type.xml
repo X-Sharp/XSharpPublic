@@ -136,7 +136,7 @@
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Note that some Usual Type numbers are not included in this table. There are defines in the compiler for these numbers, but they are never stored inside a USUAL.<br/>So you can write UsualType(uValue) == REAL8 but that will NEVER be true.</para>
+    <para styleclass="Normal">Note that some Usual Type numbers are not included in this table. There are defines in the compiler for these numbers, but <text style="font-weight:bold;">they are never stored</text> inside a USUAL.<br/>So you can write UsualType(uValue) == REAL8 but that will NEVER be true.</para>
     <para styleclass="Normal"><br/>You can assign values of these other types to a USUAL but the values will be converted to a type listed in the first table. For example if you assign a DWORD to a USUAL then the runtime will look at the value of the DWORD and if it is smaller or equal to MAX_LONG then it will store the value as a LONG. Otherwise it will store it as a FLOAT. Please note that although we support the Int64 type the DWORD conversion does not use this to be compatible with VO. Also if you assign a PSZ to a USUAL then it will be stored as a STRING. So the runtime will automatically call Psz2String() to get the string representation.<br/></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="12" colcount="2" style="background-color:#ffffff; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
       <thead style="vertical-align:top">

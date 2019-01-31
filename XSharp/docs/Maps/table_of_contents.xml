@@ -256,76 +256,76 @@
           <caption translate="true">Item Templates</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="423887105698173" modified="2017-04-20T14:09:49.869Z" icon="0" href="Debugger">
+      <topicref type="topic" id="423887105698173" build="ALL" modified="2019-01-31T09:48:27.343Z" icon="0" href="Debugger">
         <caption translate="true">Debugger</caption>
       </topicref>
     </topicref>
     <topicref type="topic" id="423889242125195" build="ALL" modified="2019-01-27T16:06:07.284Z" icon="0" href="X-Programming-guide">
       <caption translate="true">X# Programming guide</caption>
-      <topicref type="topic" id="423891170408015" modified="2019-01-27T16:06:18.173Z" icon="0" href="Quick-Start">
+      <topicref type="topic" id="423891170408015" build="ALL" modified="2019-01-31T09:46:42.769Z" icon="0" href="Quick-Start">
         <caption translate="true">Quick Start</caption>
       </topicref>
-      <topicref type="topic" id="423890630286744" modified="2019-01-27T16:06:18.188Z" icon="0" href="Arrays">
+      <topicref type="topic" id="423890630286744" build="ALL" modified="2019-01-31T09:46:42.784Z" icon="0" href="Arrays">
         <caption translate="true">Arrays</caption>
       </topicref>
-      <topicref type="topic" id="423888812622405" modified="2019-01-27T16:06:18.202Z" icon="0" href="Classes-and-Structures">
+      <topicref type="topic" id="423888812622405" build="ALL" modified="2019-01-31T09:46:42.797Z" icon="0" href="Classes-and-Structures">
         <caption translate="true">Classes and Structures</caption>
       </topicref>
-      <topicref type="topic" id="428997435733357" modified="2019-01-27T16:06:18.214Z" icon="0" href="Codeblock_-Lambda-and-Anonymou">
+      <topicref type="topic" id="428997435733357" build="ALL" modified="2019-01-31T09:46:42.812Z" icon="0" href="Codeblock_-Lambda-and-Anonymou">
         <caption translate="true">Codeblock, Lambda and Anonymous Method Expressions</caption>
       </topicref>
-      <topicref type="topic" id="423890322729183" modified="2019-01-27T16:06:18.226Z" icon="0" href="Delegates">
+      <topicref type="topic" id="423890322729183" build="ALL" modified="2019-01-31T09:46:42.826Z" icon="0" href="Delegates">
         <caption translate="true">Delegates</caption>
       </topicref>
-      <topicref type="topic" id="423890157788231" modified="2019-01-27T16:06:18.238Z" icon="0" href="Enumeration-Types">
+      <topicref type="topic" id="423890157788231" build="ALL" modified="2019-01-31T09:46:42.841Z" icon="0" href="Enumeration-Types">
         <caption translate="true">Enumeration Types</caption>
       </topicref>
-      <topicref type="topic" id="423889529120510" modified="2019-01-27T16:06:18.249Z" icon="0" href="Events">
+      <topicref type="topic" id="423889529120510" build="ALL" modified="2019-01-31T09:46:42.854Z" icon="0" href="Events">
         <caption translate="true">Events</caption>
       </topicref>
-      <topicref type="topic" id="423890144002277" modified="2019-01-27T16:06:18.261Z" icon="0" href="Exceptions-and-Exception-Handl">
+      <topicref type="topic" id="423890144002277" build="ALL" modified="2019-01-31T09:46:42.868Z" icon="0" href="Exceptions-and-Exception-Handl">
         <caption translate="true">Exceptions and Exception Handling</caption>
       </topicref>
-      <topicref type="topic" id="423887634112346" modified="2019-01-27T16:06:18.273Z" icon="0" href="File-System-and-the-Registry">
+      <topicref type="topic" id="423887634112346" build="ALL" modified="2019-01-31T09:46:42.880Z" icon="0" href="File-System-and-the-Registry">
         <caption translate="true">File System and the Registry</caption>
       </topicref>
-      <topicref type="topic" id="423887518590729" modified="2019-01-27T16:06:18.286Z" icon="0" href="Generics">
+      <topicref type="topic" id="423887518590729" build="ALL" modified="2019-01-31T09:46:42.892Z" icon="0" href="Generics">
         <caption translate="true">Generics</caption>
       </topicref>
-      <topicref type="topic" id="423888716547497" modified="2019-01-27T16:06:18.300Z" icon="0" href="Indexers">
+      <topicref type="topic" id="423888716547497" build="ALL" modified="2019-01-31T09:46:42.904Z" icon="0" href="Indexers">
         <caption translate="true">Indexers</caption>
       </topicref>
-      <topicref type="topic" id="423887935410958" modified="2019-01-27T16:06:18.313Z" icon="0" href="Interfaces">
+      <topicref type="topic" id="423887935410958" build="ALL" modified="2019-01-31T09:46:42.916Z" icon="0" href="Interfaces">
         <caption translate="true">Interfaces</caption>
       </topicref>
-      <topicref type="topic" id="423888497357636" modified="2019-01-27T16:06:18.325Z" icon="0" href="Interoperability">
+      <topicref type="topic" id="423888497357636" build="ALL" modified="2019-01-31T09:46:42.928Z" icon="0" href="Interoperability">
         <caption translate="true">Interoperability</caption>
       </topicref>
-      <topicref type="topic" id="423888175410133" modified="2019-01-27T16:06:18.337Z" icon="0" href="LINQ-Query-Expressions">
+      <topicref type="topic" id="423888175410133" build="ALL" modified="2019-01-31T09:46:42.940Z" icon="0" href="LINQ-Query-Expressions">
         <caption translate="true">LINQ Query Expressions</caption>
       </topicref>
-      <topicref type="topic" id="434895842246435" build="ALL" modified="2019-01-24T12:55:49.711Z" icon="0" href="Memory-Variables">
+      <topicref type="topic" id="434895842246435" build="ALL" modified="2019-01-31T09:46:42.954Z" icon="0" href="Memory-Variables">
         <caption translate="true">Memory Variables</caption>
       </topicref>
-      <topicref type="topic" id="42389463199336" modified="2019-01-27T16:06:27.612Z" icon="0" href="Namespaces2">
+      <topicref type="topic" id="42389463199336" build="ALL" modified="2019-01-31T09:46:42.966Z" icon="0" href="Namespaces2">
         <caption translate="true">Namespaces</caption>
       </topicref>
-      <topicref type="topic" id="423889985895203" modified="2019-01-27T16:06:27.627Z" icon="0" href="Nullable-Types">
+      <topicref type="topic" id="423889985895203" build="ALL" modified="2019-01-31T09:46:42.980Z" icon="0" href="Nullable-Types">
         <caption translate="true">Nullable Types</caption>
       </topicref>
-      <topicref type="topic" id="423890724030365" modified="2019-01-27T16:06:27.642Z" icon="0" href="Statements_-Expressions-and-Op">
+      <topicref type="topic" id="423890724030365" build="ALL" modified="2019-01-31T09:46:42.993Z" icon="0" href="Statements_-Expressions-and-Op">
         <caption translate="true">Statements, Expressions and Operators</caption>
       </topicref>
-      <topicref type="topic" id="423888819569735" modified="2019-01-27T16:06:27.656Z" icon="0" href="Strings">
+      <topicref type="topic" id="423888819569735" build="ALL" modified="2019-01-31T09:46:43.007Z" icon="0" href="Strings">
         <caption translate="true">Strings</caption>
       </topicref>
-      <topicref type="topic" id="42388775368697" modified="2019-01-27T16:06:27.669Z" icon="0" href="Types">
+      <topicref type="topic" id="42388775368697" build="ALL" modified="2019-01-31T09:46:43.020Z" icon="0" href="Types">
         <caption translate="true">Types</caption>
       </topicref>
-      <topicref type="topic" id="423888708711938" modified="2019-01-27T16:06:27.682Z" icon="0" href="Unsafe-Code-and-Pointers">
+      <topicref type="topic" id="423888708711938" build="ALL" modified="2019-01-31T09:46:43.033Z" icon="0" href="Unsafe-Code-and-Pointers">
         <caption translate="true">Unsafe Code and Pointers</caption>
       </topicref>
-      <topicref type="topic" id="423891384096573" modified="2019-01-27T16:06:27.696Z" icon="0" href="XML-Documentation-Comments">
+      <topicref type="topic" id="423891384096573" build="ALL" modified="2019-01-31T09:46:43.047Z" icon="0" href="XML-Documentation-Comments">
         <caption translate="true">XML Documentation Comments</caption>
       </topicref>
     </topicref>

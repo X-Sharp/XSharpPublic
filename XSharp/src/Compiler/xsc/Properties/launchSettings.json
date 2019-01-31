@@ -2,7 +2,7 @@
   "profiles": {
     "xsc": {
       "commandName": "Project",
-      "commandLineArgs": "@app.rsp ",
+      "commandLineArgs": "@MSG_dbServerLib.rsp ",
       "workingDirectory": "c:\\XSharp\\Dev\\tests\\"
     }
   }

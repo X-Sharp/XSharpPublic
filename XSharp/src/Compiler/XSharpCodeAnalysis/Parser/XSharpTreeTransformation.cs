@@ -7087,11 +7087,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.Op.Type == XP.IS)
             {
-                context.Put(_syntaxFactory.BinaryExpression(
-                    SyntaxKind.IsExpression,
-                    context.Expr.Get<ExpressionSyntax>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
-                    context.Type.Get<ExpressionSyntax>()));
+                if (context.Id != null)
+                {
+                    var id = SyntaxFactory.Identifier(context.Id.GetText());
+                    var designation = _syntaxFactory.SingleVariableDesignation(id);
+                    var pattern =  _syntaxFactory.DeclarationPattern(context.Type.Get<TypeSyntax>(), designation);
+                    context.Put(_syntaxFactory.IsPatternExpression(
+                        context.Expr.Get<ExpressionSyntax>(),
+                        SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
+                        (PatternSyntax)pattern));
+                }
+                else
+                { 
+                    context.Put(_syntaxFactory.BinaryExpression(
+                        SyntaxKind.IsExpression,
+                        context.Expr.Get<ExpressionSyntax>(),
+                        SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
+                        context.Type.Get<ExpressionSyntax>()));
+                }
             }
             else if (context.Op.Type == XP.ASTYPE)
             {

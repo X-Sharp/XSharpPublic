@@ -684,7 +684,7 @@ expression          : Expr=expression Op=(DOT | COLON) Name=simpleName          
                     | Expr=expression Op=(INC | DEC)                            #postfixExpression      // expr ++/--
                     | Op=AWAIT Expr=expression                                  #awaitExpression        // AWAIT expr
                     | Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC) Expr=expression #prefixExpression   // +/-/~/&/++/-- expr
-                    | Expr=expression Op=IS Type=datatype                       #typeCheckExpression    // expr IS typeORid
+                    | Expr=expression Op=IS Type=datatype  (Id=identifier)?     #typeCheckExpression    // expr IS typeORid [identifier] 
                     | Expr=expression Op=ASTYPE Type=datatype                   #typeCheckExpression    // expr AS TYPE typeORid
                     | Left=expression Op=EXP Right=expression                   #binaryExpression       // expr ^ expr
                     | Left=expression Op=(MULT | DIV | MOD) Right=expression    #binaryExpression       // expr * expr

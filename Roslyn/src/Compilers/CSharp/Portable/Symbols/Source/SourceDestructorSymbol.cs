@@ -24,8 +24,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             bool modifierErrors;
             var declarationModifiers = MakeModifiers(syntax.Modifiers, location, diagnostics, out modifierErrors);
             this.MakeFlags(methodKind, declarationModifiers, returnsVoid: true, isExtensionMethod: false);
-
+#if XSHARP
+            if (! string.Equals(syntax.Identifier.ValueText,containingType.Name,System.StringComparison.OrdinalIgnoreCase))
+#else
             if (syntax.Identifier.ValueText != containingType.Name)
+#endif
             {
                 diagnostics.Add(ErrorCode.ERR_BadDestructorName, syntax.Identifier.GetLocation());
             }

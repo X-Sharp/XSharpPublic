@@ -4300,6 +4300,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         );
         }
 
+        internal ExpressionSyntax MakeConditional(ExpressionSyntax condition, ExpressionSyntax left, ExpressionSyntax right)
+        {
+            return _syntaxFactory.ConditionalExpression(
+                                       condition,
+                                       SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
+                                       left,
+                                       SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
+                                       right);
+        }
+
         internal SyntaxList<AttributeListSyntax> MakeCompilerGeneratedAttribute(bool lWithGlobalScope = false)
         {
             SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
@@ -5752,11 +5762,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             iterExpr,
                             SyntaxFactory.MakeToken(SyntaxKind.GreaterThanEqualsToken),
                             context.FinalExpr.Get<ExpressionSyntax>());
-                    whileExpr = _syntaxFactory.ConditionalExpression(compExpr,
-                        SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
-                        ltExpr,
-                        SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
-                        gtExpr);
+                    whileExpr = MakeConditional(compExpr,ltExpr,gtExpr);
 
                     incrExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.AddAssignmentExpression,
                                 iterExpr,
@@ -6547,12 +6553,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 right = context.FalseExpr.Get<ExpressionSyntax>();
             }
-            context.Put(_syntaxFactory.ConditionalExpression(
-                context.Cond.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
-                left,
-                SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
-                right));
+            context.Put(MakeConditional(context.Cond.Get<ExpressionSyntax>(),left,right));
         }
 
         #endregion
@@ -6687,7 +6688,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                     var condition = _syntaxFactory.BinaryExpression(SyntaxKind.EqualsExpression, context.Left.Get<ExpressionSyntax>(),
                         SyntaxFactory.MakeToken(SyntaxKind.EqualsEqualsToken), GenerateLiteralNull());
-                    var lhsExp = GenerateLiteral(false);
                     var indexof = _syntaxFactory.ConditionalAccessExpression(
                                     context.Right.Get<ExpressionSyntax>(),
                                     SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
@@ -6697,9 +6697,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken),
                                 GenerateLiteral("-1", -1));
 
-                    var exp = _syntaxFactory.ConditionalExpression(condition,
-                                SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
-                                lhsExp, SyntaxFactory.MakeToken(SyntaxKind.ColonToken), rhsExp);
+                    var exp = MakeConditional(condition, GenerateLiteral(false), rhsExp);
 
                     context.Put(exp);
                     break;

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -426,7 +426,7 @@ CLASS XSharp.CoreDb
         /// <param name="cAlias">The alias to be associated with the work area where the file is opened.  Within a single thread, X# will not accept duplicate aliases.  cAlias is useful only when lOpen has a value of TRUE.  The default alias is the filename without extension</param>
         /// <param name="cDelim">The delimiter for fields within a delimited database file. The default is a NULL string </param>
         /// <param name="lKeep">TRUE specifies that the file should remain open after creating. FALSE closes the file.</param>
-        /// <param name="lJustOpen">TRUE specifies that an existing database file be opened. FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
+        /// <param name="lJustOpen">TRUE specifies that an existing database file be opened. FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header ? in which case, an empty aStruct should be used.</param>
         /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
         /// <seealso cref="M:XSharp.RT.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)" >DbCreate() function </seealso>
         /// <seealso cref="O:XSharp.RT.Functions.VoDbCreate" >VoDbCreate overloads</seealso>
@@ -1049,6 +1049,7 @@ CLASS XSharp.CoreDb
             VAR info := DbOrderInfo{}
             info:BagName := cBagName
             info:Order   := oOrder
+            info:Result  := oValue
 			oRDD:OrderInfo(nOrdinal, info)
             oValue :=  info:Result
             RETURN TRUE

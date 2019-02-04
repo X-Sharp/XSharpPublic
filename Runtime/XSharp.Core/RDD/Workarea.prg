@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 USING System.IO
+USING System.Reflection
 USING System.Collections.Generic
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
@@ -903,7 +904,26 @@ BEGIN NAMESPACE XSharp.RDD
 		VIRTUAL METHOD BlobInfo(uiPos AS DWORD, uiOrdinal AS DWORD) AS OBJECT
 			THROW NotImplementedException{__ENTITY__}
 
-     
+        PRIVATE STATIC oCbType AS System.Type     
+
+        PRIVATE STATIC METHOD FindCbType AS VOID
+            FOREACH VAR asm IN AppDomain.CurrentDomain:GetAssemblies()
+                IF asm:GetName():Name:ToLower() == "xsharp.rt"
+                    oCbType := asm:GetType("XSharp._Codeblock")
+                    IF oCbType == NULL
+                        FOREACH VAR oT IN asm:GetTypes()
+                            IF oT:FullName:ToLower() == "xsharp._codeblock"
+                                oCbType := oT
+                                EXIT
+                            ENDIF
+                        NEXT
+                    ENDIF
+                ENDIF
+                IF oCbType != NULL
+                    EXIT
+                ENDIF
+            NEXT
+            RETURN
 
 			/// <inheritdoc />
 		VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeblock
@@ -916,6 +936,15 @@ BEGIN NAMESPACE XSharp.RDD
 					LOCAL isBlock       AS LOGIC
                     LOCAL addsMemvars   AS LOGIC
 					oBlock := oC:Compile(sBlock, TRUE, oType:Module, OUT isBlock, OUT addsMemVars)
+                    // Convert to _CodeBlock when needed
+                    IF oBlock IS XSharp.RuntimeCodeBlock
+                        IF (oCbType == NULL)
+                            FindCbType()
+                        ENDIF
+                        IF oCbType != NULL
+                            oBlock := Activator.CreateInstance(oCbType, <OBJECT>{oBlock, sBlock, isBlock, addsMemVars})
+                        ENDIF
+                    ENDIF
 				ENDIF
 			CATCH e AS Exception
 				XSharp.RuntimeState.LastRddError := e

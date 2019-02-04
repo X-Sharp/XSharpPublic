@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -19,7 +19,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _Order AS NtxOrder
         PRIVATE _hDump AS IntPtr
         
-        PRIVATE METHOD _FindPage( offset AS DWORD ) AS NtxPage
+        PRIVATE METHOD _FindPage( offset AS LONG ) AS NtxPage
             LOCAL ntxPage AS NtxPage
             ntxPage := SELF:_Pages:Find( { p => p:PageOffset == offset } )
             RETURN ntxPage
@@ -38,7 +38,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_Order := order
             
             
-        INTERNAL METHOD Update( pageNo AS DWORD ) AS NtxPage
+        INTERNAL METHOD Update( pageNo AS LONG ) AS NtxPage
             LOCAL ntxPage AS NtxPage
             ntxPage := SELF:Read(pageNo)
             IF ( ntxPage != NULL )
@@ -47,7 +47,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN ntxPage
             
             
-        INTERNAL METHOD Append( pageNo AS DWORD ) AS NtxPage
+        INTERNAL METHOD Append( pageNo AS LONG ) AS NtxPage
             LOCAL ntxPage AS NtxPage
             ntxPage := SELF:_FindPage(pageNo)
             IF (ntxPage == NULL)
@@ -60,7 +60,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN ntxPage
             
             
-        INTERNAL METHOD Read(pageNo AS DWORD ) AS NtxPage
+        INTERNAL METHOD Read(pageNo AS LONG ) AS NtxPage
             LOCAL ntxPage AS NtxPage
             //
             ntxPage := SELF:_FindPage(pageNo)
@@ -95,7 +95,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN isOk
             
             
-        INTERNAL METHOD Write(pageNo AS DWORD ) AS LOGIC
+        INTERNAL METHOD Write(pageNo AS LONG ) AS LOGIC
             LOCAL ntxPage AS NtxPage
             //
             ntxPage := SELF:_FindPage(pageNo)

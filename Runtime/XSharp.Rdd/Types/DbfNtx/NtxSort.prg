@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -14,9 +14,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
     INTERNAL CLASS NTXSortRecord
         INTERNAL Data AS BYTE[]
-        INTERNAL Recno AS DWORD
+        INTERNAL Recno AS LONG
         
-        INTERNAL CONSTRUCTOR(data AS BYTE[] , iRecno AS DWORD )
+        INTERNAL CONSTRUCTOR(data AS BYTE[] , iRecno AS LONG )
             SELF:Data := (BYTE[])data:Clone()
             SELF:Recno := iRecno
             

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -22,8 +22,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     INTERNAL CLASS NtxNode
         PROTECTED _keyLength      AS LONG
         PROTECTED _bytesKey       AS BYTE[]
-        PROTECTED _PageNo         AS DWORD
-        PROTECTED _RecNo          AS DWORD
+        PROTECTED _PageNo         AS LONG
+        PROTECTED _RecNo          AS LONG
         PROTECTED _Offset         AS LONG				// Item offset from start of Page
         PROTECTED _Pos            AS LONG				// Index of the Item in the page array of Offsets
 		// Retrieve the Key as String
@@ -59,9 +59,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 		// Retrieve/set the PageNo/PageOffset of the Item
 		// It is on top of the Item's bytes
 		// it is the Record offset from start of page 
-        INTERNAL VIRTUAL PROPERTY PageNo AS DWORD GET _PageNo SET _PageNo := VALUE
+        INTERNAL VIRTUAL PROPERTY PageNo AS LONG GET _PageNo SET _PageNo := VALUE
 
-        INTERNAL VIRTUAL PROPERTY Recno AS DWORD GET _Recno SET _Recno := VALUE
+        INTERNAL VIRTUAL PROPERTY Recno AS LONG GET _Recno SET _Recno := VALUE
         
         INTERNAL CONSTRUCTOR( keylen AS LONG  )
             SELF:_keyLength := keylen
@@ -117,10 +117,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         END PROPERTY
 
 
-        INTERNAL OVERRIDE PROPERTY PageNo AS DWORD
+        INTERNAL OVERRIDE PROPERTY PageNo AS LONG
             GET
                 IF SELF:HasPage
-                    _PageNo := BitConverter.ToUInt32(_Page:Bytes, _Offset+PAGE_OFFSET)
+                    _PageNo := BitConverter.ToInt32(_Page:Bytes, _Offset+PAGE_OFFSET)
                 ENDIF
                 RETURN _PageNo
                 
@@ -136,10 +136,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
 	    // Retrieve/set the Recno of the Item
 		// It is after the page_offset, which is a long, so 4 bytes after
-        INTERNAL OVERRIDE PROPERTY Recno AS DWORD
+        INTERNAL OVERRIDE PROPERTY Recno AS LONG
             GET
                 IF SELF:HasPage
-                    _Recno :=BitConverter.ToUInt32(_Page:Bytes,  _Offset + REC_OFFSET)
+                    _Recno :=BitConverter.ToInt32(_Page:Bytes,  _Offset + REC_OFFSET)
                 ENDIF
                 RETURN _Recno
             END GET

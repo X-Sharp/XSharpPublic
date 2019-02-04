@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -28,7 +28,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     
     // A Page is organized as follows :
     // 0x00 - (WORD) Item Count - how many items this particular page holds.
-    // 0x02 - (DWORD) Items Offset - This is an array of <Item Count> elements, that contains the offset within the page of each Item
+    // 0x02 - (LONG) Items Offset - This is an array of <Item Count> elements, that contains the offset within the page of each Item
     // 0x?? - The area where Item values are stored
     
     /// <summary>
@@ -40,15 +40,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     INTERNAL CLASS NtxPage
         PRIVATE CONST NTXPAGE_SIZE             := 1024 AS WORD
         PROTECTED _Order    AS NtxOrder
-        PROTECTED _Offset   AS DWORD
+        PROTECTED _Offset   AS LONG
         PROTECTED _Hot      AS LOGIC
         
         PROTECTED _Bytes AS BYTE[]
         
         // Current Page Number = Page Offset
-		INTERNAL PROPERTY PageOffset AS DWORD GET SELF:_Offset SET SELF:_Offset := VALUE
+		INTERNAL PROPERTY PageOffset AS LONG GET SELF:_Offset SET SELF:_Offset := VALUE
         // The locationof the next page in case this is part of the unused pages list
-        INTERNAL PROPERTY NextPage   AS DWORD GET SELF[ 0]:PageNo SET SELF[ 0]:PageNo := VALUE
+        INTERNAL PROPERTY NextPage   AS LONG GET SELF[ 0]:PageNo SET SELF[ 0]:PageNo := VALUE
 
 		// Bytes of the Page (1024)
         INTERNAL PROPERTY Bytes AS BYTE[] GET SELF:_Bytes
@@ -94,7 +94,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         END PROPERTY
         
 		// Initialize the NtxPage; The pageNumber is in fact the offset of the page in the File
-        INTERNAL CONSTRUCTOR( order AS NtxOrder, pageNumber AS DWORD )
+        INTERNAL CONSTRUCTOR( order AS NtxOrder, pageNumber AS LONG )
             //
             SELF:_Order := order
             SELF:_Offset := pageNumber

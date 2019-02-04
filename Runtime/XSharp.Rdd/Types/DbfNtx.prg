@@ -70,7 +70,7 @@ BEGIN NAMESPACE XSharp.RDD
 			
 		OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD , info AS DBORDERINFO ) AS OBJECT
 			LOCAL isOk AS LOGIC
-			LOCAL result AS DWORD
+			LOCAL result AS LONG
 			LOCAL workOrder AS NtxOrder
 			LOCAL orderPos AS LONG
 			LOCAL oldvalue AS OBJECT
@@ -313,13 +313,18 @@ BEGIN NAMESPACE XSharp.RDD
 				ENDIF
 			END LOCK
 
+        METHOD __Goto(nRec AS LONG, lSeekNtx := FALSE AS LOGIC) AS LOGIC
+            BEGIN LOCK SELF
+                IF lSeekNtx
+                    IF SELF:_ntxList:CurrentOrder != NULL
+                        SELF:_ntxList:CurrentOrder:_GoTo(nRec)
+                    ENDIF
+                ENDIF
+                RETURN SUPER:Goto(nRec)
+            END LOCK
+
 		METHOD GoTo(nRec AS LONG) AS LOGIC
-			BEGIN LOCK SELF
-                IF SELF:_ntxList:CurrentOrder != NULL
-                    SELF:_ntxList:CurrentOrder:_TopStack := 0
-				ENDIF
-				RETURN SUPER:GoTo(nRec)
-			END LOCK
+            RETURN SELF:__Goto(nRec, TRUE)
 			
 		PUBLIC METHOD SkipRaw( move AS LONG ) AS LOGIC
 			BEGIN LOCK SELF

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -87,14 +87,21 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 			Array.Copy(BitConverter.GetBytes(wValue),0, Buffer, nOffSet, SIZEOF(WORD))
 			isHot := TRUE
 				
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];        
-		PRIVATE METHOD _GetDWord(nOffSet AS INT) AS DWORD
-			RETURN BitConverter.ToUInt32(Buffer, nOffset)
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+		//PRIVATE METHOD _GetDWord(nOffSet AS INT) AS DWORD
+		//	RETURN BitConverter.ToUInt32(Buffer, nOffset)
 				
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];        
-		PRIVATE METHOD _SetDWord(nOffSet AS INT, dwValue AS DWORD) AS VOID
-			Array.Copy(BitConverter.GetBytes(dwValue),0, Buffer, nOffSet, SIZEOF(DWORD))
-			isHot := TRUE
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+		//PRIVATE METHOD _SetDWord(nOffSet AS INT, dwValue AS DWORD) AS VOID
+		//	Array.Copy(BitConverter.GetBytes(dwValue),0, Buffer, nOffSet, SIZEOF(DWORD))
+		//	isHot := TRUE
+
+        PRIVATE METHOD _GetLong(nOffSet AS INT) AS LONG
+            RETURN BitConverter.ToInt32(Buffer, nOffSet)
+
+        PRIVATE METHOD _SetLong(nOffSet AS INT, nValue AS LONG) AS VOID
+            Array.Copy(BitConverter.GetBytes(nValue), 0, Buffer, nOffset, sizeof(LONG))
+            isHot := TRUE
 
  		INTERNAL PROPERTY Signature  AS NtxHeaderFlags	;
 		    GET (NtxHeaderFlags) _GetWord(NTXOFFSET_SIG) ;
@@ -104,13 +111,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 		    GET _GetWord(NTXOFFSET_INDEXING_VER);
 		    SET _SetWord(NTXOFFSET_INDEXING_VER, VALUE)
 			
-		INTERNAL PROPERTY FirstPageOffset		AS DWORD			;
-		    GET _GetDWord(NTXOFFSET_FPAGE_OFFSET);
-		    SET _SetDWord(NTXOFFSET_FPAGE_OFFSET, VALUE)
+		INTERNAL PROPERTY FirstPageOffset		AS LONG			;
+		    GET _GetLong(NTXOFFSET_FPAGE_OFFSET);
+		    SET _SetLong(NTXOFFSET_FPAGE_OFFSET, VALUE)
 			
-		INTERNAL PROPERTY NextUnusedPageOffset		AS DWORD			;
-		    GET _GetDWord(NTXOFFSET_NUPAGE_OFFSET)	;
-		    SET _SetDWord(NTXOFFSET_NUPAGE_OFFSET, VALUE)
+		INTERNAL PROPERTY NextUnusedPageOffset		AS LONG			;
+		    GET _GetLong(NTXOFFSET_NUPAGE_OFFSET)	;
+		    SET _SetLong(NTXOFFSET_NUPAGE_OFFSET, VALUE)
 			
 		// keysize + 2 longs. ie.e Left pointer + record no.
 		INTERNAL PROPERTY EntrySize		AS WORD			;

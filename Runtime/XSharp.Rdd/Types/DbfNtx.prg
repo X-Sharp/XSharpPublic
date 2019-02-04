@@ -312,6 +312,14 @@ BEGIN NAMESPACE XSharp.RDD
 					RETURN SUPER:GoTop()
 				ENDIF
 			END LOCK
+
+		METHOD GoTo(nRec AS LONG) AS LOGIC
+			BEGIN LOCK SELF
+                IF SELF:_ntxList:CurrentOrder != NULL
+                    SELF:_ntxList:CurrentOrder:_TopStack := 0
+				ENDIF
+				RETURN SUPER:GoTo(nRec)
+			END LOCK
 			
 		PUBLIC METHOD SkipRaw( move AS LONG ) AS LOGIC
 			BEGIN LOCK SELF

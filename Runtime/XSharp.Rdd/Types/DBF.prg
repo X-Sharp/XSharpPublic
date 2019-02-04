@@ -53,7 +53,7 @@ BEGIN NAMESPACE XSharp.RDD
 		PROTECT _oMemo			AS BaseMemo
 		PROTECT _Hot            AS LOGIC
 		PROTECT _addFieldPos    AS LONG     // Used by AddFields Method, and SetFieldsExtent
-		INTERNAL _lockScheme     AS DbfLocking
+		PROTECT _lockScheme     AS DbfLocking
 		PROTECT _NewRecord      AS LOGIC
 
         STATIC PROTECT _Extension := ".DBF" AS STRING

@@ -58,6 +58,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE CONST MIN_BYTE          := 0x01 AS BYTE
         PRIVATE CONST MAX_BYTE          := 0xFF AS BYTE
         PRIVATE CONST MAX_TRIES         := 50 AS WORD
+        PRIVATE CONST LOCKOFFSET_OLD    := 1000000000 AS LONG
+        PRIVATE CONST LOCKOFFSET_NEW    := -1 AS LONG
     
         INTERNAL _hFile AS IntPtr
         INTERNAL _Encoding AS Encoding
@@ -116,7 +118,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _outPageNo AS DWORD
         PRIVATE _parkPlace AS LONG
         
-        INTERNAL _lockScheme     AS DbfLocking
+        INTERNAL _lockOffSet AS LONG
         
         INTERNAL PROPERTY Expression AS STRING GET _KeyExpr
         
@@ -280,10 +282,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         ENDIF
         //
         // Copy locking scheme from DBF.
-        SELF:_lockScheme  := SELF:_oRDD:_lockScheme
+        
         // Except
         IF SELF:_Header:Signature:HasFlag(NtxHeaderFlags.NewLock)
-            SELF:_lockScheme:Offset := -1
+            SELF:_LockOffSet := LOCKOFFSET_NEW
+        ELSE
+            SELF:_LockOffSet:= LOCKOFFSET_OLD
         ENDIF
         // NTX has only one Tag index
         SELF:_tagNumber := 1
@@ -540,7 +544,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF SELF:_HPLocking
                 ntxSignature |= NtxHeaderFlags.HpLock
             ENDIF
-            IF  SELF:_lockScheme:Offset == -1
+            IF  _LockOffSet == LOCKOFFSET_NEW
                 ntxSignature |= NtxHeaderFlags.NewLock
             ENDIF
             SELF:_Header:Signature              := ntxSignature
@@ -709,10 +713,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             SELF:_maxLockTries := 99 //(LONG)XSharp.RuntimeState.LockTries
             SELF:_tagNumber := 1
-            SELF:_lockScheme := SELF:_oRdd:_lockScheme
             IF  XSharp.RuntimeState.NewIndexLock 
                 SELF:_Header:Signature |= NtxHeaderFlags.NewLock
-                SELF:_lockScheme:Offset := -1
+                SELF:_lockOffset := LOCKOFFSET_NEW
+            ELSE
+                SELF:_lockOffset := LOCKOFFSET_OLD
             ENDIF
             IF  XSharp.RuntimeState.HPLocking
                 SELF:_HPLocking := TRUE
@@ -2943,11 +2948,11 @@ PRIVATE METHOD _Balance() AS VOID
             RETURN ParkingLot.ROOT_GATE + ParkingLot:LOT_SIZE * tagNumber
             
         PRIVATE METHOD _tryExclLock() AS LOGIC
-            RETURN SELF:_lockBytes( (DWORD)SELF:_lockScheme:Offset, 1, (DWORD)SELF:_maxLockTries)
+            RETURN SELF:_lockBytes( (DWORD)SELF:_lockOffset, 1, (DWORD)SELF:_maxLockTries)
             
             
         PRIVATE METHOD _tryExclUnlock() AS LOGIC
-            RETURN SELF:_unlockBytes( (DWORD)SELF:_lockScheme:Offset, 1)
+            RETURN SELF:_unlockBytes( (DWORD)SELF:_lockOffset, 1)
             
         PRIVATE METHOD _getTypeCode(oValue AS OBJECT ) AS TypeCode
             LOCAL typeCde AS TypeCode

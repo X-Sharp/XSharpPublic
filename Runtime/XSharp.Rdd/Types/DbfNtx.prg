@@ -164,7 +164,7 @@ BEGIN NAMESPACE XSharp.RDD
 				ENDIF
 			CASE DBOI_LOCKOFFSET
 				IF workOrder != NULL
-					info:Result := workOrder:_lockScheme:Offset
+					info:Result := workOrder:_lockOffset
 				ENDIF
 			CASE DBOI_SETCODEBLOCK
 				IF workOrder != NULL

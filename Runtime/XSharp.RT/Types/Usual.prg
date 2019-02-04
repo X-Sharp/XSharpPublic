@@ -289,7 +289,7 @@ BEGIN NAMESPACE XSharp
 
         /// No checks for typeflag. These private properties should always be accessed after checking the correct type
         PRIVATE PROPERTY _arrayValue    AS ARRAY			GET (ARRAY) _refData
-        PRIVATE PROPERTY _codeblockValue AS CODEBLOCK		GET (CODEBLOCK) _refData
+        PRIVATE PROPERTY _codeblockValue AS ICodeBlock		GET (ICodeBlock) _refData
         PRIVATE PROPERTY _dateValue		AS DATE				GET _valueData:d
         PRIVATE PROPERTY _dateTimeValue AS DateTime			GET _valueData:dt
         PRIVATE PROPERTY _decimalValue	AS System.Decimal	GET (System.Decimal) _refData
@@ -1456,7 +1456,7 @@ BEGIN NAMESPACE XSharp
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS CODEBLOCK
             SWITCH u:_usualType
-                CASE __UsualType.Codeblock ; RETURN u:_codeblockValue
+                CASE __UsualType.Codeblock ; RETURN (CODEBLOCK) u:_codeblockValue
                 CASE __UsualType.Void      ; RETURN NULL_CODEBLOCK
                 CASE __UsualType.Object    
                     IF u:_refData == NULL

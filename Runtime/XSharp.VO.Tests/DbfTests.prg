@@ -648,6 +648,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal( 3 , (INT) a[2] )
 
 			DBCloseArea()
+			
+			SetExclusive ( TRUE ) // restore
 		RETURN
 
 		// TECH-XQES14W9J0 , Aliasxxx() funcs throw exceptions

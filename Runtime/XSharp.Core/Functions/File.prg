@@ -114,12 +114,14 @@ BEGIN NAMESPACE XSharp.IO
 			ENDIF
 			// Create
 			fileMode := FileMode.Open
-			IF (DWORD)_AND(dwMode,FO_CREATE) == FO_CREATE
+			FileShare  := FileShare.readWrite
+			IF _AND(dwMode,FO_CREATE) == FO_CREATE
 				fileMode	:= FileMode.Create
 				fileAccess	:= FileAccess.readWrite
+                fileShare   := FileShare.None
+                RETURN
 			ENDIF
 			
-			FileShare  := FileShare.readWrite
 			LOCAL dwTempMode AS DWORD
 			dwTempMode := (DWORD)_OR(OF_SHARE_DENY_WRITE, OF_SHARE_DENY_READ, OF_SHARE_DENY_NONE)
 			dwTempMode := (DWORD)_AND(dwMode,dwTempMode)
@@ -551,7 +553,7 @@ FUNCTION FFLock(pFile AS IntPtr,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
 /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 /// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FFlush(pFile AS IntPtr) AS LOGIC
-	RETURN XSharp.IO.File.flush(pFile, FALSE)
+	RETURN XSharp.IO.File.flush(pFile, TRUE)
 
 
 /// <summary>
@@ -868,7 +870,7 @@ FUNCTION FCreate2(cFile AS STRING,kAttributes AS DWORD) AS IntPtr
 /// <inheritdoc cref="M:XSharp.Core.Functions.FCreate2(System.String,System.UInt32)" /> 
 /// <remarks>This creates the file with a FC_NORMAL attribute </remarks>
 FUNCTION FCreate(cFile AS STRING ) AS IntPtr
-	RETURN FCreate2(cFile, FC_NORMAL)
+	RETURN FCreate2(cFile, _OR(FC_NORMAL, FO_EXCLUSIVE))
 
 /// <inheritdoc cref="M:XSharp.Core.Functions.FCreate2(System.String,System.UInt32)" />
 FUNCTION FCreate(cFile AS STRING ,kAttributes AS DWORD) AS IntPtr

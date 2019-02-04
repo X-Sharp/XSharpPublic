@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -279,8 +279,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_HPLocking := TRUE
         ENDIF
         //
-        // Standard Locking Scheme
-        SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )
+        // Copy locking scheme from DBF.
+        SELF:_lockScheme  := SELF:_oRDD:_lockScheme
         // Except
         IF SELF:_Header:Signature:HasFlag(NtxHeaderFlags.NewLock)
             SELF:_lockScheme:Offset := -1
@@ -709,7 +709,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             SELF:_maxLockTries := 99 //(LONG)XSharp.RuntimeState.LockTries
             SELF:_tagNumber := 1
-            SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )
+            SELF:_lockScheme := SELF:_oRdd:_lockScheme
             IF  XSharp.RuntimeState.NewIndexLock 
                 SELF:_Header:Signature |= NtxHeaderFlags.NewLock
                 SELF:_lockScheme:Offset := -1

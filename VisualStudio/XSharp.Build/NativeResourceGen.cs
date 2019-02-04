@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using Microsoft.Build.Framework;
@@ -65,12 +65,12 @@ namespace XSharp.Build {
         [return: MarshalAs(UnmanagedType.U1)]
         public override bool Execute() {
             string rcPath = GenerateFullPathToTool();
-            if (!System.IO.File.Exists(rcPath)){ 
+            if (!System.IO.File.Exists(rcPath)){
                 base.Log.LogError("Cannot find the Native Resource compiler in the XSharp Bin folder", null);
                 return false;
             }
             bool ok = base.Execute();
-            return ok; 
+            return ok;
         }
 
         protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands) {
@@ -81,7 +81,7 @@ namespace XSharp.Build {
             var time = DateTime.Now - start;
             var timestring = time.ToString();
             Log.LogMessageFromText("Native Resource Compilation time: " + timestring, MessageImportance.High);
-            return iResult;   
+            return iResult;
         }
 
 
@@ -159,7 +159,7 @@ namespace XSharp.Build {
         protected override string GetResponseFileSwitch(string responseFilePath)
         {
             string newfile = Path.Combine(Path.GetDirectoryName(responseFilePath), "LastXSharpNativeResourceResponseFile.Rsp");
-            System.IO.File.Copy(responseFilePath, newfile, true);
+            Utilities.CopyFileSafe(responseFilePath, newfile);
             return ("\"" + responseFilePath + "\"");
         }
 
@@ -189,7 +189,7 @@ namespace XSharp.Build {
                     base.Log.LogError("Input file: {0} not found", fileName);
                     return true;
                 }
-                DateTime fileTime = File.GetLastWriteTime(fileName); 
+                DateTime fileTime = File.GetLastWriteTime(fileName);
                 if(fileTime > outputTime) {
                     base.Log.LogMessage("Input file: {0} is newer than output file {1}, last updated on {2:f}" , Path.GetFileName(fileName), outName, fileTime);
                     return true;
@@ -289,12 +289,12 @@ namespace XSharp.Build {
             if(this.OutputPath == null) {
                 base.Log.LogError("No output path specified", null);
                 return false;
-            } 
+            }
             this.outputFileName = this.OutputPath + outputName;
             return parametersValid;
         }
 
-        /// <summary> 
+        /// <summary>
         /// Additional Include Paths (next to XSharp\Include)
         /// </summary>
         public string IncludePaths { get; set; }

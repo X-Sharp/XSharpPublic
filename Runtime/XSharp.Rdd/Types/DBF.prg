@@ -53,7 +53,7 @@ BEGIN NAMESPACE XSharp.RDD
 		PROTECT _oMemo			AS BaseMemo
 		PROTECT _Hot            AS LOGIC
 		PROTECT _addFieldPos    AS LONG     // Used by AddFields Method, and SetFieldsExtent
-		PROTECT _lockScheme     AS DbfLocking
+		INTERNAL _lockScheme     AS DbfLocking
 		PROTECT _NewRecord      AS LOGIC
 
         STATIC PROTECT _Extension := ".DBF" AS STRING
@@ -78,7 +78,6 @@ BEGIN NAMESPACE XSharp.RDD
 			SELF:_hFile := F_ERROR
 			SELF:_Header := DbfHeader{} // DbfHeader is a Structure, so the object is already created, no ?
 			SELF:_Header:initialize()
-			SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )
 			SELF:_Locks     := List<LONG>{}
             SELF:_numformat := (NumberFormatInfo) culture:NumberFormat:Clone()
             SELF:_numformat:NumberDecimalSeparator := "."
@@ -777,7 +776,7 @@ BEGIN NAMESPACE XSharp.RDD
 			SELF:_Shared := SELF:_OpenInfo:Shared
 			SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
 			//
-			SELF:_hFile    := FCreate( SELF:_FileName)
+			SELF:_hFile    := FCreate2( SELF:_FileName, FO_EXCLUSIVE)
 			IF ( SELF:_hFile != F_ERROR )
 				LOCAL fieldCount :=  SELF:_Fields:Length AS INT
 				LOCAL fieldDefSize := fieldCount * DbfField.SIZE AS INT
@@ -793,6 +792,12 @@ BEGIN NAMESPACE XSharp.RDD
 					SELF:_Ansi := FALSE
 					codePage := XSharp.RuntimeState.DosCodePage
 				ENDIF
+                IF SELF:_Ansi
+                    SELF:_lockScheme:Initialize( DbfLockingModel.VoAnsi )
+                ELSE
+			        SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )
+                ENDIF
+
 				SELF:_Encoding := System.Text.Encoding.GetEncoding( codePage ) 
 				//
 				IF ( SELF:_oMemo != NULL )
@@ -920,6 +925,12 @@ BEGIN NAMESPACE XSharp.RDD
                 LOCAL ex := FException() AS Exception
 				SELF:_DbfError( ex, ERDD.OPEN_FILE, XSharp.Gencode.EG_OPEN )
 			ENDIF
+            IF SELF:_Ansi
+                SELF:_lockScheme:Initialize( DbfLockingModel.VoAnsi )
+            ELSE
+			    SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )
+            ENDIF
+
 			//
 			RETURN isOk
 			
@@ -2731,6 +2742,11 @@ BEGIN NAMESPACE XSharp.RDD
 					CASE DbfLockingModel.Harbour64
 						SELF:Offset := 0x7FFFFFFF00000001
 						SELF:FileSize := 0x7ffffffeU
+						SELF:RecordSize := 1U
+						SELF:Direction := 1
+					CASE DbfLockingModel.VOAnsi
+						SELF:Offset     := 0x80000000
+						SELF:FileSize   := 0x7fffffffU
 						SELF:RecordSize := 1U
 						SELF:Direction := 1
 				END SWITCH

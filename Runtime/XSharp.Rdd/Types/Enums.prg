@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -100,6 +100,7 @@ BEGIN NAMESPACE XSharp.RDD
         MEMBER FoxProExt    // Visual FoxPro locking scheme
         MEMBER Clipper53Ext // Clipper 5.3 with Files up to 4GB
         MEMBER Harbour64    // Locking scheme for files > 4GB
+        MEMBER VoAnsi       // VO Locking scheme for Ansi DBF files 
     END ENUM
     
     /// <summary>DBF Table flags.</summary>                            

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -210,27 +210,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     ENDIF
                     RETURN isOk
                     
-                    
-                PRIVATE METHOD __GetName(iOrder AS LONG , uiType AS DWORD , strValue REF STRING ) AS LOGIC
-                    LOCAL result AS LOGIC
-                    LOCAL ntxOrder AS NtxOrder
-                    //
-                    result := TRUE
-                    IF iOrder > 0 .AND. iOrder <= SELF:_Orders:Count
-                        ntxOrder := SELF:_Orders[iOrder - 1]
-                        BEGIN SWITCH uiType
-                    CASE 5
-                        strValue := ntxOrder:OrderName
-                    CASE 7
-                        strValue := ntxOrder:FileName
-                    OTHERWISE
-                            strValue := NULL
-                        result := FALSE
-                    END SWITCH
-                    ENDIF
-                RETURN result
-                
-                
             INTERNAL METHOD FindOrder(uOrder AS OBJECT ) AS LONG
                 LOCAL result AS LONG
                 LOCAL num AS LONG
@@ -298,7 +277,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             isOk := TRUE
             FOR i := 0 TO SELF:_Orders:Count-1
                 ntxIndex := SELF:_Orders[i]
-                isOk := ntxIndex:_KeySave((DWORD)SELF:_oRdd:RecNo)
+                isOk := ntxIndex:_KeySave(SELF:_oRdd:RecNo)
                 IF (!isOk)
                     EXIT
                 ENDIF

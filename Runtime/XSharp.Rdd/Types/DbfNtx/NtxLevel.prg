@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -31,7 +31,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:ExtraKeys  := 0
             
             
-        INTERNAL METHOD Write( offset AS DWORD ) AS LOGIC
+        INTERNAL METHOD Write( offset AS LONG ) AS LOGIC
             LOCAL result AS LOGIC
             //
             SELF:PageOffset := offset

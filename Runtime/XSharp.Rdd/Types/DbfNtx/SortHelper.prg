@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -19,18 +19,18 @@ BEGIN NAMESPACE XSharp.RDD
             
     INTERNAL CLASS RddSortHelper
         PRIVATE _sortInfo AS DBSORTINFO
-        PRIVATE _recCount AS DWORD
+        PRIVATE _recCount AS LONG
         PRIVATE _dataBuffer AS OBJECT[]
         PRIVATE _currentPos AS LONG
         PRIVATE _Length AS LONG
         
         
-        INTERNAL CONSTRUCTOR( sortInfo AS DBSORTINFO , len AS DWORD )
+        INTERNAL CONSTRUCTOR( sortInfo AS DBSORTINFO , len AS LONG )
             SELF:_sortInfo := sortInfo
             SELF:_recCount := len
             SELF:_dataBuffer := OBJECT[]{ len }
             SELF:_currentPos := 0
-            SELF:_Length := (LONG)len
+            SELF:_Length    := len
             
             
         INTERNAL METHOD Add(o AS OBJECT ) AS LOGIC
@@ -66,7 +66,7 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL METHOD Clear() AS VOID
             SELF:_dataBuffer := NULL
             SELF:_sortInfo := NULL
-            SELF:_recCount := 0u
+            SELF:_recCount := 0
             SELF:_currentPos := (SELF:_Length := 0)
             
             

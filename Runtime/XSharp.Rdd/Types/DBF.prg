@@ -2197,7 +2197,7 @@ BEGIN NAMESPACE XSharp.RDD
 			trInfo:Scope:Compile(SELF)
 			hasWhile := trInfo:Scope:WhileBlock != NULL
 			hasFor   := trInfo:Scope:ForBlock != NULL
-			sort := RddSortHelper{info, (DWORD)SELF:RecCount}
+			sort := RddSortHelper{info, SELF:RecCount}
 			// 
 			i := 0
 			WHILE i < info:Items:Length

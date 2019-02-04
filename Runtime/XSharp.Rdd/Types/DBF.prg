@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -555,7 +555,9 @@ BEGIN NAMESPACE XSharp.RDD
 				SELF:_RecordBuffer[ 0 ] := (BYTE)' '
 				SELF:_Deleted := FALSE
 				//
-				SELF:GoHot()
+                IF ! SELF:_Hot
+				    SELF:GoHot()
+                ENDIF
 			ELSE
 				SELF:_DbfError( ERDD.READ, XSharp.Gencode.EG_READ )
 			ENDIF
@@ -572,7 +574,9 @@ BEGIN NAMESPACE XSharp.RDD
 						SELF:_RecordBuffer[ 0 ] := (BYTE)'*'
 						SELF:_Deleted := TRUE
 						//
-						SELF:GoHot()
+                        IF ! SELF:_Hot
+				            SELF:GoHot()
+                        ENDIF
 					ENDIF
 				ELSE
 					SELF:_DbfError( ERDD.READ, XSharp.Gencode.EG_READ )
@@ -600,7 +604,11 @@ BEGIN NAMESPACE XSharp.RDD
 			IF ( aRec:Length == SELF:_RecordLength )
 				IF SELF:_readRecord()
 					Array.Copy( aRec, 0, SELF:_RecordBuffer, 0, SELF:_RecordLength)
-					isOk := SELF:GoHot()
+                    IF ! SELF:_Hot
+				        isOk := SELF:GoHot()
+                    ELSE
+                        isOk := TRUE
+                    ENDIF
 				ENDIF
 			ELSE
 				SELF:_dbfError( ERDD.DATAWIDTH, XSharp.Gencode.EG_DATAWIDTH )
@@ -1697,7 +1705,9 @@ BEGIN NAMESPACE XSharp.RDD
 			ENDIF
 			IF SELF:_readRecord()
                 // GoHot() must be called first because this saves the current index values
-                SELF:GoHot()
+                IF ! SELF:_Hot
+                    SELF:GoHot()
+                ENDIF
                 VAR curField := SELF:_Fields[nArrPos]
 			    LOCAL offSet := curField:OffSet AS LONG
                 LOCAL length  := curField:Length AS LONG
@@ -1706,8 +1716,6 @@ BEGIN NAMESPACE XSharp.RDD
 					    IF _oMemo:PutValue(nFldPos, oValue)
 						    // Update the Field Info with the new MemoBlock Position
 						    SELF:_convertFieldToData( SELF:_oMemo:LastWrittenBlockNumber, SELF:_RecordBuffer, offSet,  length, DbFieldType.Integer, 0 )
-						    //
-						    SELF:GoHot()
 					    ENDIF
 				    ELSE
 					    RETURN SUPER:PutValue(nFldPos, oValue)
@@ -2529,8 +2537,8 @@ BEGIN NAMESPACE XSharp.RDD
 				For example, the value 0x03 indicates the table has a structural .cdx and a
 				Memo field.
 				29 	Code page mark
-				30 – 31 	Reserved, contains 0x00
-				32 – n 	Field subrecords
+				30 ? 31 	Reserved, contains 0x00
+				32 ? n 	Field subrecords
 				The number of fields determines the number of field subrecords.
 				One field subrecord exists for each field in the table.
 				n+1 			Header record terminator (0x0D)

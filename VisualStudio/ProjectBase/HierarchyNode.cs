@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -757,7 +757,7 @@ namespace Microsoft.VisualStudio.Project
                     {
 #if XSHARP
                         unchecked
-                        { 
+                        {
                             result = (IntPtr) (int)parentHierarchyItemId; // VS requires VT_I4 | VT_INT_PTR
                         }
 #else
@@ -1066,7 +1066,7 @@ namespace Microsoft.VisualStudio.Project
 
             // Dispose the node now that is deleted.
             this.Dispose(true);
-            
+
         }
 
         /// <summary>
@@ -2940,7 +2940,7 @@ namespace Microsoft.VisualStudio.Project
                             this.DeleteFromStorage(docNew);
                             if(this is ProjectNode && File.Exists(docNew))
                             {
-                                File.Delete(docNew);
+                                Utilities.DeleteFileSafe(docNew);
                             }
 
                             if(ff != null)

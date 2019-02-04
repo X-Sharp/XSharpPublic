@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -561,23 +561,23 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>true if file name is invalid</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0",
             Justification = "The name is validated.")]
-        public static bool ContainsInvalidFileNameChars(string name) 
+        public static bool ContainsInvalidFileNameChars(string name)
 		{
-            if (String.IsNullOrEmpty(name)) 
+            if (String.IsNullOrEmpty(name))
 			{
                 return true;
             }
 
-            try 
+            try
 			{
-                if (Path.IsPathRooted(name) && !name.StartsWith(@"\\", StringComparison.Ordinal)) 
+                if (Path.IsPathRooted(name) && !name.StartsWith(@"\\", StringComparison.Ordinal))
 				{
                     string root = Path.GetPathRoot(name);
                     name = name.Substring(root.Length);
                 }
             }
                 // The Path methods used by ContainsInvalidFileNameChars return argument exception if the filePath contains invalid characters.
-            catch (ArgumentException) 
+            catch (ArgumentException)
 			{
                 return true;
             }
@@ -585,14 +585,14 @@ namespace Microsoft.VisualStudio.Project
             Microsoft.VisualStudio.Shell.Url uri = new Microsoft.VisualStudio.Shell.Url(name);
 
             // This might be confusing bur Url.IsFile means that the uri represented by the name is either absolut or relative.
-            if (uri.IsFile) 
+            if (uri.IsFile)
 			{
                 string[] segments = uri.Segments;
-                if (segments != null && segments.Length > 0) 
+                if (segments != null && segments.Length > 0)
 				{
-                    foreach (string segment in segments) 
+                    foreach (string segment in segments)
 					{
-                        if (IsFilePartInValid(segment)) 
+                        if (IsFilePartInValid(segment))
 						{
                             return true;
                         }
@@ -602,17 +602,17 @@ namespace Microsoft.VisualStudio.Project
                     string lastSegment = segments[segments.Length - 1];
                     string filePart = Path.GetFileNameWithoutExtension(lastSegment);
                     // if the file is only an extension (.fob) then it's ok, otherwise we need to do the special checks.
-                    if (filePart.Length != 0 && (IsFileNameAllGivenCharacter('.', filePart) || IsFileNameAllGivenCharacter(' ', filePart))) 
+                    if (filePart.Length != 0 && (IsFileNameAllGivenCharacter('.', filePart) || IsFileNameAllGivenCharacter(' ', filePart)))
 					{
                         return true;
                     }
                 }
-            } 
-			else 
+            }
+			else
 			{
                 // The assumption here is that we got a file name.
                 string filePart = Path.GetFileNameWithoutExtension(name);
-                if (IsFileNameAllGivenCharacter('.', filePart) || IsFileNameAllGivenCharacter(' ', filePart)) 
+                if (IsFileNameAllGivenCharacter('.', filePart) || IsFileNameAllGivenCharacter(' ', filePart))
 				{
                     return true;
                 }
@@ -1188,5 +1188,23 @@ namespace Microsoft.VisualStudio.Project
 
 			ErrorHandler.ThrowOnFailure(solution.SetProperty((int)__VSPROPID2.VSPROPID_ProjectLoadSecurityDialogState, projectLoadSecurityDialogState));
 		}
+        internal static bool DeleteFileSafe(string fileName)
+        {
+            try
+            {
+                if (System.IO.File.Exists(fileName))
+                {
+                    System.IO.File.SetAttributes(fileName, FileAttributes.Normal);
+                    System.IO.File.Delete(fileName);
+
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+                return false;
+            }
+            return true;
+        }
 	}
 }

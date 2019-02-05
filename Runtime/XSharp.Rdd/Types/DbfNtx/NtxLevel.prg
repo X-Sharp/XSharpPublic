@@ -33,6 +33,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
         INTERNAL METHOD Write( offset AS LONG ) AS LOGIC
             LOCAL result AS LOGIC
+            //
             SELF:PageOffset := offset
             result := SELF:Write()
             RETURN result

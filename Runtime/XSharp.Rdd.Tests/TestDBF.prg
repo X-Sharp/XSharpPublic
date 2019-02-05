@@ -576,12 +576,12 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL fieldInfo AS STRING[]
 			LOCAL rddInfo AS RddFieldInfo[]
 			rddInfo := RddFieldInfo[]{fields:Length}
-            LOCAL i := 0 AS INT
-			FOREACH VAR fld IN fields
-				fieldInfo := fld:Split( ',' )
-				VAR currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
-				rddInfo[i + __ARRAYBASE__ ] := currentField
-                i++
+			FOR VAR i := __ARRAYBASE__ TO fields:Length - (1-__ARRAYBASE__)
+				// 
+				LOCAL currentField AS RddFieldInfo
+				fieldInfo := fields[i]:Split( ',' )
+				currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
+				rddInfo[i] := currentField
 			NEXT
 			//
 			myDBF:SetFieldExtent( fields:Length )
@@ -594,9 +594,9 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL data := datas:Split( ';' ) AS STRING[]
 			VAR Memos := List<STRING>{} 
 			//
-			FOREACH VAR element IN data
+			FOR VAR i := __ARRAYBASE__ TO data:Length - (1-__ARRAYBASE__)
 				// 
-				LOCAL elt :=element:Split( ',' ) AS STRING[]
+				LOCAL elt := data[i]:Split( ',' ) AS STRING[]
 				myDBF:Append( FALSE )
 				myDBF:PutValue( 1, Convert.ToInt32(elt[__ARRAYBASE__] ))
 				myDBF:PutValue( 2, elt[__ARRAYBASE__+1])
@@ -608,10 +608,9 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			myDBF:Close()
 			// Now, Verify
 			myDBF:Open( dbInfo )
-            i := 1
-			FOREACH VAR element IN data
+			FOR VAR i := __ARRAYBASE__ TO data:Length - (1-__ARRAYBASE__)
 				// 
-				LOCAL elt := element:Split( ',' ) AS STRING[]
+				LOCAL elt := data[i]:Split( ',' ) AS STRING[]
 				Assert.Equal( Convert.ToInt32(elt[__ARRAYBASE__] ), Convert.ToInt32(myDBF:GetValue(1) ))
 				LOCAL tmp AS STRING
 				tmp := (STRING)myDBF:GetValue(2)
@@ -633,7 +632,6 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				VAR res := String.Compare( temp1, temp2 )
 				Assert.Equal( TRUE, res == 0 )
 				myDBF:Skip(1)
-                i++
 			NEXT
 			//
 			myDBF:Close()

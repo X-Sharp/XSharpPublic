@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -30,8 +30,8 @@ CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
 		
 	/// <inheritdoc />
 	VIRTUAL METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
-		SWITCH nOrdinal
-        CASE DBOI_NUMBER
+		switch nOrdinal
+        case DBOI_NUMBER
         CASE DBOI_KEYNO
         // CASE DBOI_POSITION alias for KEYNO
         // CASE DBOI_KEYGOTO  alias for KEYNO	 	
@@ -47,7 +47,7 @@ CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
 		CASE DBOI_KEYCOUNTRAW 
 		CASE DBOI_KEYDEC 	
 		CASE DBOI_LOCKOFFSET 
-            RETURN 0
+            return 0
 		CASE DBOI_CONDITION 
         CASE DBOI_EXPRESSION
 		CASE DBOI_NAME 		
@@ -56,15 +56,15 @@ CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
 		CASE DBOI_BAGEXT 	
 		//CASE DBOI_INDEXEXT  alias for BAGEXT
 		CASE DBOI_FULLPATH 	
-            RETURN ""
+            return ""
         CASE DBOI_FILEHANDLE
-            RETURN Intptr.Zero
+            return Intptr.Zero
 		CASE DBOI_ISCOND 	
 		CASE DBOI_ISDESC 	
         CASE DBOI_UNIQUE
 		CASE DBOI_CUSTOM 		
 		CASE DBOI_HPLOCKING 
-            RETURN FALSE
+            return FALSE
 		CASE DBOI_KEYADD 	
 		CASE DBOI_KEYDELETE 
 		CASE DBOI_KEYVAL 	
@@ -74,9 +74,9 @@ CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
 		CASE DBOI_SCOPEBOTTOMCLEAR
 		CASE DBOI_SETCODEBLOCK
 		CASE DBOI_SKIPUNIQUE 	
-            RETURN NULL		
-        END SWITCH
-        RETURN NULL		
+            return null		
+        end switch
+        return null		
 		
 	/// <inheritdoc />
 	VIRTUAL METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC

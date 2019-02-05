@@ -35,6 +35,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("F x", Transform(FALSE, "@R L x"))
 			Assert.Equal("O x", Transform(TRUE, "@R YYx"))
 			Assert.Equal("N x", Transform(FALSE, "@R YYx"))
+			SetNatDll("UK") // restore
+			
 
 		[Fact, Trait("Category", "TransForm")];
 		METHOD TransformDateTest() AS VOID 

@@ -813,6 +813,34 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBCloseArea()
 		RETURN
 		
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD OrdScope_test_with_Ordinal_Collation() AS VOID
+			LOCAL cDbf AS STRING
+			cDbf := GetTempFileName()
+			
+			LOCAL uCollation AS USUAL
+			uCollation := SetCollation(#ORDINAL)
+			
+			DBCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
+			DBUseArea(,"DBFNTX",cDbf)
+			FOR LOCAL n := 1 AS INT UPTO 20
+				DBAppend()
+				FieldPut(1,n)
+			NEXT
+			DBCreateIndex(cDbf , "NFIELD")
+			DBCloseArea()
+			
+			DBUseArea(,"DBFNTX",cDbf)
+			DBSetIndex ( cDbf )
+			Assert.Equal( (INT) DBOrderInfo( DBOI_KEYCOUNT ) , 20)
+			Assert.Equal( UsualType( DBOrderInfo( DBOI_KEYCOUNT )  ) , 1) // first time returns 6
+			Assert.Equal( UsualType( DBOrderInfo( DBOI_KEYCOUNT )  ) , 1) // second time it returns 1 correctly
+			DBCloseArea()
+			
+			SetCollation(uCollation)
+		RETURN
+		
 		
 		// TECH-9TW65Q3XQE, NTX corruption with updating multiple fields and shared mode
 		[Fact, Trait("Category", "DBF")];

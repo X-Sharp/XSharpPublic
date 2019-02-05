@@ -687,7 +687,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBError_test() AS VOID
 			LOCAL cDbf AS STRING
 			LOCAL cNtx AS STRING
-			LOCAL aResult AS ARRAY
 			
 			cDbf := GetTempFileName()
 			cNtx := cDbf + ".ntx"
@@ -796,12 +795,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			DBUseArea(,"DBFNTX",cDbf) // 20 records
 			DBSetIndex ( cDbf )
-			Assert.Equal( DBOrderInfo( DBOI_KEYCOUNT ) , 20)
-			Assert.Equal( OrdScope(TOPSCOPE, 5) , 5) // NULL
-			Assert.Equal( OrdScope(BOTTOMSCOPE, 10) , 10) // NULL
+			Assert.Equal( (INT) DBOrderInfo( DBOI_KEYCOUNT ) , 20)
+			Assert.Equal( (INT) OrdScope(TOPSCOPE, 5) , 5) // NULL
+			Assert.Equal( (INT) OrdScope(BOTTOMSCOPE, 10) , 10) // NULL
 			DBGoTop()
 			
-			Assert.Equal( DBOrderInfo( DBOI_KEYCOUNT ) , 6) // still 20 - but must be 6
+			Assert.Equal( (INT) DBOrderInfo( DBOI_KEYCOUNT ) , 6) // still 20 - but must be 6
 			LOCAL nCount := 0 AS INT
 			DO WHILE ! EOF() // all 20 records are listed
 				? FieldGet ( 1 )
@@ -809,8 +808,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				nCount ++
 			ENDDO
 			Assert.Equal( 6 , nCount)
-			Assert.Equal( 5 , DBOrderInfo( DBOI_SCOPETOP ) ) // {(0x0000)0x00000000} CLASS
-			Assert.Equal( 10 , DBOrderInfo( DBOI_SCOPEBOTTOM ) ) // {(0x0000)0x00000000} CLASS
+			Assert.Equal( 5 , (INT) DBOrderInfo( DBOI_SCOPETOP ) ) // {(0x0000)0x00000000} CLASS
+			Assert.Equal( 10 , (INT) DBOrderInfo( DBOI_SCOPEBOTTOM ) ) // {(0x0000)0x00000000} CLASS
 			DBCloseArea()
 		RETURN
 		

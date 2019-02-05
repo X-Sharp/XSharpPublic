@@ -116,7 +116,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _midItem AS NtxNode
         PRIVATE _outPageNo AS LONG
         PRIVATE _parkPlace AS LONG
-        INTERNAL _MustSeek AS LOGIC
         
         INTERNAL _lockOffSet AS LONG
         
@@ -1135,8 +1134,8 @@ PRIVATE METHOD _CondCreate(ordCondInfo AS DBORDERCONDINFO ) AS LOGIC
         IF ordCondInfo:StartRecNo > 0
             record := ordCondInfo:StartRecNo
         ENDIF
-        IF SELF:_oRdd:_ntxList:Focus != 0
-            nOrder := SELF:_oRdd:_ntxList:CurrentOrder
+        IF SELF:_oRdd:_indexList:Focus != 0
+            nOrder := SELF:_oRdd:_indexList:CurrentOrder
         ENDIF
         IF ordCondInfo:All
             record := 1

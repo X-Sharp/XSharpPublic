@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -17,24 +17,28 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	/// The CdxTagList class is a special CdxLeaf. Its NodeAttribute must be Root + Leaf = 3
 	/// </summary>
 	INTERNAL CLASS CdxTagList INHERIT CdxLeafPage
-        PROTECTED _tagList as List<CdxTag>
-	    PROTECTED INTERNAL CONSTRUCTOR( fileHandle AS IntPtr, nPage as Int32 , nKeyLen as Int32)
-            SUPER(fileHandle, nPage, nKeyLen)
+        PROTECTED _tagList AS List<CdxTag>
+
+	    PROTECTED INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS Int32)
+            SUPER(bag  , nPage , buffer ,nKeyLen)
             _tagList := List<CdxTag>{}
+
 		PROTECTED INTERNAL OVERRIDE METHOD Read() AS LOGIC
-            LOCAL lOk := SUPER:Read() as LOGIC
+            LOCAL lOk := SUPER:Read() AS LOGIC
             Debug.Assert (SELF:NodeAttribute == CdxNodeAttribute.TagList)
             // Decode the keys
-            FOR VAR nI := 0 to SELF:NumKeys-1
-                local nRecno    := SELF:GetRecno(nI) as Int32
-                local bName     := SELF:GetKey(nI)  as byte[]
-                local cName     := System.Text.Encoding.ASCII:GetString( bName, 0, bName:Length) as STRING
-                var tag         := CdxTag{SELF:_hFile, nRecno, cName:Trim()}
+            FOR VAR nI := 0 TO SELF:NumKeys-1
+                LOCAL nRecno    := SELF:GetRecno(nI) AS Int32
+                LOCAL bName     := SELF:GetKey(nI)  AS BYTE[]
+                LOCAL cName     := System.Text.Encoding.ASCII:GetString( bName, 0, bName:Length) AS STRING
+                LOCAL oPage     AS CdxPage
+                oPage           := _bag:GetPage(nRecno, 0)
+                VAR tag         := CdxTag{_bag,  nRecno, oPage:Buffer, cName:Trim()}
                 _tagList:Add(tag)
             NEXT
             // default sort for tags in an orderbag is on pageno. 
             _tagList:Sort( { tagX, tagY => tagX:Page - tagY:Page} ) 
             RETURN lOk
-        PROPERTY Tags as IList<cdxTag> Get _tagList
+        PROPERTY Tags AS IList<cdxTag> GET _tagList
     END CLASS
 END NAMESPACE 

@@ -19,197 +19,197 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _currentOrder AS NtxOrder
         INTERNAL PROPERTY Count AS LONG GET _Orders:Count
         INTERNAL PROPERTY Focus AS LONG GET _focusNtx
-            INTERNAL PROPERTY CurrentOrder AS NtxOrder GET _currentOrder
-                INTERNAL PROPERTY SELF[index AS LONG ] AS NtxOrder
-                    GET
-                        IF ((index >= 0) .AND. (index < _Orders:Count))
-                            RETURN _Orders[index]
-                        ENDIF
-                        RETURN NULL
-                        
-                    END GET
-                END PROPERTY
+        INTERNAL PROPERTY CurrentOrder AS NtxOrder GET _currentOrder SET _currentOrder := VALUE
+        INTERNAL PROPERTY SELF[index AS LONG ] AS NtxOrder
+                GET
+                    IF ((index >= 0) .AND. (index < _Orders:Count))
+                        RETURN _Orders[index]
+                    ENDIF
+                    RETURN NULL
+                    
+                END GET
+            END PROPERTY
+            
+            INTERNAL CONSTRUCTOR(area AS DBFNTX )
+                SELF:_focusNtx := 0
+                SELF:_Orders := List<NtxOrder>{}
+                SELF:_oRdd := area
+                SELF:_currentOrder := NULL
                 
-                INTERNAL CONSTRUCTOR(area AS DBFNTX )
-                    SELF:_focusNtx := 0
-                    SELF:_Orders := List<NtxOrder>{}
-                    SELF:_oRdd := area
-                    SELF:_currentOrder := NULL
-                    
-                    
-                INTERNAL METHOD Add(oi AS DbOrderInfo , filePath AS STRING ) AS LOGIC
-                    LOCAL flag AS LOGIC
-                    LOCAL ntxIndex AS NtxOrder
-                    //
-                    flag := FALSE
-                    TRY
-                        IF ((LONG)SELF:_Orders:Count >= 16L)
-                            SELF:_oRdd:_dbfError(SubCodes.ERDD_NTXLIMIT, GenCode.EG_LIMIT,  filePath)
-                            flag := FALSE
-                        ELSE
-                            ntxIndex := NtxOrder{SELF:_oRdd, filePath}
-                            SELF:_Orders:Add(ntxIndex)
-                            flag := ntxIndex:Open(oi)
-                            IF (flag)
-                                SELF:_focusNtx := SELF:_Orders:Count
-                                SELF:_currentOrder := ntxIndex
-                                oi:BagName := ntxIndex:FileName
-                            ENDIF
-                        ENDIF
-                        
-                    CATCH //Exception
-                        flag := FALSE
-                    END TRY
-                    IF (!flag)
-                        SELF:_focusNtx := 0
-                        SELF:_currentOrder := NULL
-                    ENDIF
-                    RETURN flag
-                    
-                    
-                INTERNAL METHOD Create(dboci AS DBORDERCREATEINFO ) AS LOGIC
-                    LOCAL ntxIndex AS NtxOrder
-                    LOCAL isOk AS LOGIC
-                    //
-                    TRY
-                        ntxIndex := NtxOrder{SELF:_oRdd}
-                        isOk := ntxIndex:Create(dboci)
-                        IF (!isOk)
-                            RETURN isOk
-                        ENDIF
+                
+            INTERNAL METHOD Add(oi AS DbOrderInfo , filePath AS STRING ) AS LOGIC
+                LOCAL isOk AS LOGIC
+                LOCAL ntxIndex AS NtxOrder
+                //
+                isOk := FALSE
+                TRY
+                    IF SELF:_Orders:Count >= 16
+                        SELF:_oRdd:_dbfError(SubCodes.ERDD_NTXLIMIT, GenCode.EG_LIMIT,  filePath)
+                        isOk := FALSE
+                    ELSE
+                        ntxIndex := NtxOrder{SELF:_oRdd, filePath}
                         SELF:_Orders:Add(ntxIndex)
-                        SELF:_focusNtx := SELF:_Orders:Count
-                        SELF:_currentOrder := ntxIndex
-                        ntxIndex:GoTop()
+                        isOk := ntxIndex:Open(oi)
+                        IF isOk
+                            SELF:_focusNtx := SELF:_Orders:Count
+                            SELF:_currentOrder := ntxIndex
+                            oi:BagName := ntxIndex:FileName
+                        ENDIF
+                    ENDIF
+                    
+                CATCH //Exception
+                    isOk := FALSE
+                END TRY
+                IF !isOk
+                    SELF:_focusNtx := 0
+                    SELF:_currentOrder := NULL
+                ENDIF
+                RETURN isOk
+                
+                
+            INTERNAL METHOD Create(dboci AS DBORDERCREATEINFO ) AS LOGIC
+                LOCAL ntxIndex AS NtxOrder
+                LOCAL isOk AS LOGIC
+                //
+                TRY
+                    ntxIndex := NtxOrder{SELF:_oRdd}
+                    isOk := ntxIndex:Create(dboci)
+                    IF (!isOk)
                         RETURN isOk
-                        
-                    CATCH e AS Exception
-                        System.Diagnostics.Debug.WriteLine(e:Message)
-                        RETURN FALSE
-                    END TRY
+                    ENDIF
+                    SELF:_Orders:Add(ntxIndex)
+                    SELF:_focusNtx := SELF:_Orders:Count
+                    SELF:_currentOrder := ntxIndex
+                    ntxIndex:GoTop()
+                    RETURN isOk
                     
-                INTERNAL METHOD Delete( orderInfo AS DbOrderInfo) AS LOGIC
-                    LOCAL ntxIndex AS NtxOrder
-                    LOCAL found AS LOGIC
-                    LOCAL pos AS INT
-                    //
-                    IF (SELF:_Orders:Count == 0)
-                        RETURN TRUE
-                    ENDIF
-                    //
-                    IF ( orderInfo:AllTags )
-                        RETURN SELF:CloseAll()
-                    ENDIF
-                    //
-                    found := FALSE
-                    pos := SELF:_Orders:Count
-                    WHILE pos > 0
-                        ntxIndex := SELF:_Orders[pos - 1]
-                        IF ( ntxIndex:OrderName == orderInfo:BagName )
-                            ntxIndex:Flush()
-                            ntxIndex:Close()
-                            //
-                            SELF:_Orders:RemoveAt(pos - 1)
-                            found := TRUE
-                            EXIT
-                        ENDIF
-                    ENDDO
-                    IF ( found ) 
-                        IF ( SELF:_Orders:Count > 0 ) .AND. ( ( pos >= SELF:_focusNtx ) .AND. (pos < SELF:_Orders:Count ) )
-                            SELF:_focusNtx :=- 1
-                            SELF:_currentOrder := SELF:_Orders[pos - 1]
-                        ELSE
-                            SELF:_focusNtx := 0
-                            SELF:_currentOrder := NULL
-                        ENDIF
-                    ENDIF
+                CATCH e AS Exception
+                    System.Diagnostics.Debug.WriteLine(e:Message)
+                    RETURN FALSE
+                END TRY
+                
+            INTERNAL METHOD Delete( orderInfo AS DbOrderInfo) AS LOGIC
+                LOCAL ntxIndex AS NtxOrder
+                LOCAL found AS LOGIC
+                LOCAL pos AS INT
+                //
+                IF (SELF:_Orders:Count == 0)
                     RETURN TRUE
-                    
-                INTERNAL METHOD CloseAll() AS LOGIC
-                    LOCAL ntxIndex AS NtxOrder
-                    //
-                    IF (SELF:_Orders:Count == 0)
-                        RETURN TRUE
-                    ENDIF
-                    //
-                    WHILE SELF:_Orders:Count > 0
-                        ntxIndex := SELF:_Orders[SELF:_Orders:Count - 1]
+                ENDIF
+                //
+                IF ( orderInfo:AllTags )
+                    RETURN SELF:CloseAll()
+                ENDIF
+                //
+                found := FALSE
+                pos := SELF:_Orders:Count
+                WHILE pos > 0
+                    ntxIndex := SELF:_Orders[pos - 1]
+                    IF ( ntxIndex:OrderName == orderInfo:BagName )
                         ntxIndex:Flush()
                         ntxIndex:Close()
                         //
-                        SELF:_Orders:RemoveAt(SELF:_Orders:Count - 1)
-                    ENDDO
-                    SELF:_focusNtx := 0
-                    SELF:_currentOrder := NULL
+                        SELF:_Orders:RemoveAt(pos - 1)
+                        found := TRUE
+                        EXIT
+                    ENDIF
+                ENDDO
+                IF ( found ) 
+                    IF ( SELF:_Orders:Count > 0 ) .AND. ( ( pos >= SELF:_focusNtx ) .AND. (pos < SELF:_Orders:Count ) )
+                        SELF:_focusNtx :=- 1
+                        SELF:_currentOrder := SELF:_Orders[pos - 1]
+                    ELSE
+                        SELF:_focusNtx := 0
+                        SELF:_currentOrder := NULL
+                    ENDIF
+                ENDIF
+                RETURN TRUE
+                
+            INTERNAL METHOD CloseAll() AS LOGIC
+                LOCAL ntxIndex AS NtxOrder
+                //
+                IF (SELF:_Orders:Count == 0)
                     RETURN TRUE
-                    
-                    
-                INTERNAL METHOD SetFocus(oi AS DbOrderInfo ) AS LOGIC
-                    LOCAL currentOrder AS NtxOrder
-                    LOCAL isOk AS LOGIC
+                ENDIF
+                //
+                WHILE SELF:_Orders:Count > 0
+                    ntxIndex := SELF:_Orders[SELF:_Orders:Count - 1]
+                    ntxIndex:Flush()
+                    ntxIndex:Close()
                     //
-                    currentOrder := SELF:_currentOrder
-                    IF (currentOrder != NULL)
-                        oi:BagName := currentOrder:FileName
-                    ELSE
-                        oi:BagName := NULL
+                    SELF:_Orders:RemoveAt(SELF:_Orders:Count - 1)
+                ENDDO
+                SELF:_focusNtx := 0
+                SELF:_currentOrder := NULL
+                RETURN TRUE
+                
+                
+            INTERNAL METHOD SetFocus(oi AS DbOrderInfo ) AS LOGIC
+                LOCAL currentOrder AS NtxOrder
+                LOCAL isOk AS LOGIC
+                //
+                currentOrder := SELF:_currentOrder
+                IF (currentOrder != NULL)
+                    oi:BagName := currentOrder:FileName
+                ELSE
+                    oi:BagName := NULL
+                ENDIF
+                SELF:_focusNtx := 0
+                SELF:_currentOrder := NULL
+                SELF:_focusNtx := SELF:FindOrder(oi:Order)
+                isOk := FALSE
+                IF (SELF:_focusNtx >= 0)
+                    isOk := SELF:_oRdd:GoCold()
+                    IF currentOrder != NULL_OBJECT
+                        currentOrder:SetOffLine()
                     ENDIF
-                    SELF:_focusNtx := 0
-                    SELF:_currentOrder := NULL
-                    SELF:_focusNtx := SELF:FindOrder(oi:Order)
+                    IF (isOk)
+                        IF SELF:_focusNtx == 0
+                            _currentOrder := NULL
+                        ELSE
+                            SELF:_currentOrder := SELF:_Orders[SELF:_focusNtx - 1]
+                            SELF:_currentOrder:SetOffLine()
+                        ENDIF
+                    ENDIF
+                ELSE
                     isOk := FALSE
-                    IF (SELF:_focusNtx >= 0)
-                        isOk := SELF:_oRdd:GoCold()
-                        IF currentOrder != NULL_OBJECT
-                            currentOrder:SetOffLine()
+                    SELF:_oRdd:_dbfError(SubCodes.ERDD_INVALID_ORDER, GenCode.EG_NOORDER,  NULL)
+                ENDIF
+                RETURN isOk
+                
+                
+            INTERNAL METHOD Rebuild() AS LOGIC
+                LOCAL ordCondInfo AS DBORDERCONDINFO
+                LOCAL isOk AS LOGIC
+                //
+                ordCondInfo := SELF:_oRdd:_OrderCondInfo
+                isOk := SELF:GoCold()
+                IF (!isOk)
+                    RETURN FALSE
+                ENDIF
+                //
+                FOREACH order AS NtxOrder IN SELF:_Orders 
+                    isOk := order:Truncate()
+                    IF isOk
+                        IF !order:_Unique .AND. !order:_Conditional .AND. !order:_Descending .AND. !ordCondInfo:Scoped
+                            isOk := order:_CreateIndex()
+                        ELSE
+                            isOk := order:_CreateUnique(ordCondInfo)
                         ENDIF
-                        IF (isOk)
-                            IF SELF:_focusNtx == 0
-                                _currentOrder := NULL
-                            ELSE
-                                SELF:_currentOrder := SELF:_Orders[SELF:_focusNtx - 1]
-                                SELF:_currentOrder:SetOffLine()
-                            ENDIF
-                        ENDIF
-                    ELSE
-                        isOk := FALSE
-                        SELF:_oRdd:_dbfError(SubCodes.ERDD_INVALID_ORDER, GenCode.EG_NOORDER,  NULL)
                     ENDIF
-                    RETURN isOk
-                    
-                    
-                INTERNAL METHOD Rebuild() AS LOGIC
-                    LOCAL ordCondInfo AS DBORDERCONDINFO
-                    LOCAL isOk AS LOGIC
-                    //
-                    ordCondInfo := SELF:_oRdd:_OrderCondInfo
-                    isOk := SELF:GoCold()
-                    IF (!isOk)
-                        RETURN FALSE
-                    ENDIF
-                    //
-                    FOREACH order AS NtxOrder IN SELF:_Orders 
-                        isOk := order:Truncate()
-                        IF isOk
-                            IF !order:_Unique .AND. !order:_Conditional .AND. !order:_Descending .AND. !ordCondInfo:Scoped
-                                isOk := order:_CreateIndex()
-                            ELSE
-                                isOk := order:_CreateUnique(ordCondInfo)
-                            ENDIF
-                        ENDIF
-                    NEXT
+                NEXT
+                IF !isOk
+                    isOk := SELF:Flush()
                     IF !isOk
-                        isOk := SELF:Flush()
-                        IF !isOk
-                            RETURN isOk
-                        ENDIF
-                        FOREACH order2 AS NtxOrder IN SELF:_Orders 
-                            order2:_Hot := FALSE
-                        NEXT
-                        isOk := SELF:_oRdd:GoTop()
+                        RETURN isOk
                     ENDIF
-                    RETURN isOk
-                    
+                    FOREACH order2 AS NtxOrder IN SELF:_Orders 
+                        order2:_Hot := FALSE
+                    NEXT
+                    isOk := SELF:_oRdd:GoTop()
+                ENDIF
+                RETURN isOk
+                
             INTERNAL METHOD FindOrder(uOrder AS OBJECT ) AS LONG
                 LOCAL result AS LONG
                 LOCAL num AS LONG
@@ -220,21 +220,21 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
                 //
                 BEGIN SWITCH Type.GetTypeCode(uOrder:GetType())
-                CASE TypeCode.String
-                    result := SELF:__GetNamePos((STRING)uOrder)
-                CASE TypeCode.Int16
-                CASE TypeCode.Int32
-                CASE TypeCode.Int64
-                CASE TypeCode.Single
-                CASE TypeCode.Double
+            CASE TypeCode.String
+                result := SELF:__GetNamePos((STRING)uOrder)
+            CASE TypeCode.Int16
+            CASE TypeCode.Int32
+            CASE TypeCode.Int64
+        CASE TypeCode.Single
+            CASE TypeCode.Double
                     num := (LONG)uOrder
                     IF ((num >= 0) .AND. (num <= SELF:_Orders:Count))
                         result := num
-                    ENDIF
-                OTHERWISE
-                    result := -1
-                END SWITCH
-                RETURN result
+                ENDIF
+            OTHERWISE
+                result := -1
+            END SWITCH
+            RETURN result
             
             
         INTERNAL METHOD Flush() AS LOGIC

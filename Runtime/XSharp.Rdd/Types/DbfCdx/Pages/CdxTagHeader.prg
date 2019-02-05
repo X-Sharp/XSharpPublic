@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -53,9 +53,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     	INTERNAL ExprBuffer   AS CdxPage
         INTERNAL TagName      AS STRING
 			
-	    INTERNAL CONSTRUCTOR( fileHandle AS IntPtr, nPage AS Int32, cTagName AS STRING  )
-            SUPER(fileHandle, nPage)
-            SELF:ExprBuffer := CdxPage{fileHandle, nPage + CDXPAGE_SIZE}
+	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], cTagName AS STRING)
+            SUPER(bag, nPage, buffer)
+            SELF:ExprBuffer := bag:GetPage(nPage +CDXPAGE_SIZE)
             SELF:TagName    := cTagName
 #region Read/Write            
         PROTECTED INTERNAL OVERRIDE METHOD Read() AS LOGIC

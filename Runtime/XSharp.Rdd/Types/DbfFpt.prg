@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -20,24 +20,26 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL rawData AS BYTE[]
             LOCAL buffer AS BYTE[]
             LOCAL nType AS LONG
-            // At this level, the return value is the raw Data, in BYTE[]
-            rawData := (BYTE[])SUPER:GetValue(nFldPos)
-            // So, extract the "real" Data
-            buffer := BYTE[]{ rawData:Length - 8}
-            Array.Copy(rawData,8, buffer, 0, buffer:Length)
-            // Get the Underlying type from the MemoBlock
-            // 0 : Picture (on MacOS); 1: Memo; 2 : Object
-            nType := BitConverter.ToInt32( rawData, 0)
-            IF SELF:_isMemoField( nFldPos ) .AND. ( nType == 1 )
-                LOCAL encoding AS Encoding //ASCIIEncoding
-                LOCAL str AS STRING
-                encoding := SELF:_Encoding //ASCIIEncoding{}
-                str :=  encoding:GetString(buffer)
-                // Convert to String and return
-                RETURN str
+            IF SELF:_isMemoField( nFldPos )
+                // At this level, the return value is the raw Data, in BYTE[]
+                rawData := (BYTE[])SUPER:GetValue(nFldPos)
+                // So, extract the "real" Data
+                buffer := BYTE[]{ rawData:Length - 8}
+                Array.Copy(rawData,8, buffer, 0, buffer:Length)
+                // Get the Underlying type from the MemoBlock
+                // 0 : Picture (on MacOS); 1: Memo; 2 : Object
+                nType := BitConverter.ToInt32( rawData, 0)
+                IF SELF:_isMemoField( nFldPos ) .AND. ( nType == 1 )
+                    LOCAL encoding AS Encoding //ASCIIEncoding
+                    LOCAL str AS STRING
+                    encoding := SELF:_Encoding //ASCIIEncoding{}
+                    str :=  encoding:GetString(buffer)
+                    // Convert to String and return
+                    RETURN str
+                ENDIF
+                RETURN buffer
             ENDIF
-            RETURN buffer
-            
+            RETURN SUPER:GetValue(nFldPos)
             // Indicate if a Field is a Memo; Called by GetValue() in Parent Class
             // At DbfFpt Level, TRUE for DbFieldType.Memo, DbFieldType.Picture, DbFieldType.Object
         INTERNAL VIRTUAL METHOD _isMemoFieldType( fieldType AS DbFieldType ) AS LOGIC

@@ -1,13 +1,14 @@
-﻿//
+//
 // Start.prg
 //
 #include "dbcmds.vh"
 FUNCTION Start() AS VOID
     LOCAL cb AS CODEBLOCK
     TRY
+        TestCdx()
         //DumpNtx()
         //Start1a()
-        Start1b()
+        //Start1b()
         //Start2()
         //Start3()
         //Start4()
@@ -23,7 +24,25 @@ FUNCTION Start() AS VOID
     END TRY
     WAIT
     RETURN
-    
+
+FUNCTION TestCdx() AS VOID
+    ? VoDbUseArea(TRUE, "DBFCDX", "c:\test\TEST10K.DBF", "TEST",TRUE,TRUE)
+   	? DbSetIndex("c:\test\TEST10Ka.Cdx")
+    ? Used()
+    ? DbInfo(DBI_FULLPATH)
+    ? "OrderCount", DbOrderInfo(DBOI_ORDERCOUNT)
+    ? DbOrderInfo(DBOI_EXPRESSION,,"Age")
+    ? DbOrderInfo(DBOI_BAGNAME,,8)
+    ? DbOrderInfo(DBOI_FULLPATH,,1)
+    ? DbOrderInfo(DBOI_FULLPATH,,8)
+    ? DbOrderInfo(DBOI_INDEXEXT)
+    ? DbOrderInfo(DBOI_INDEXEXT,,8)
+    FOR VAR nI := 1 TO DbOrderInfo(DBOI_ORDERCOUNT)
+        ? nI, DbOrderInfo(DBOI_EXPRESSION,,nI), DbOrderInfo(DBOI_KEYSIZE,,nI), ;
+            DbOrderInfo(DBOI_CONDITION,,nI), DbOrderInfo(DBOI_ISDESC,,nI), DbOrderInfo(DBOI_NUMBER,,nI) ,DbOrderInfo(DBOI_UNIQUE ,,nI),DbOrderInfo(DBOI_KEYTYPE ,,nI)
+    NEXT
+    WAIT
+    RETURN
     
 FUNCTION DumpNtx() AS VOID
     SetAnsi(TRUE)

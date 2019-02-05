@@ -126,16 +126,17 @@
     <Compile Include="Types\DbfCdx.prg" />
     <Compile Include="Types\DbfCdx\CdxEnums.prg" />
     <Compile Include="Types\DbfCdx\CdxInterfaces.prg" />
-    <Compile Include="Types\DbfCdx\CdxLeafPage.prg" />
-    <Compile Include="Types\DbfCdx\CdxTagHeader.prg" />
     <Compile Include="Types\DbfCdx\CdxTag.prg" />
     <Compile Include="Types\DbfCdx\CdxOrderBag.prg" />
-    <Compile Include="Types\DbfCdx\CdxBranchePage.prg" />
-    <Compile Include="Types\DbfCdx\CdxPage.prg" />
     <Compile Include="Types\DbfCdx\CdxOrderBagList.prg" />
     <Compile Include="Types\DbfCdx\CdxTagList.prg" />
-    <Compile Include="Types\DbfCdx\CdxFileHeader.prg" />
-    <Compile Include="Types\DbfCdx\CdxTreePage.prg" />
+    <Compile Include="Types\DbfCdx\Pages\CdxPage.prg" />
+    <Compile Include="Types\DbfCdx\Pages\CdxBranchePage.prg" />
+    <Compile Include="Types\DbfCdx\Pages\CdxFileHeader.prg" />
+    <Compile Include="Types\DbfCdx\Pages\CdxLeafPage.prg" />
+    <Compile Include="Types\DbfCdx\Pages\CdxTreePage.prg" />
+    <Compile Include="Types\DbfCdx\Pages\CdxTagHeader.prg" />
+    <Compile Include="Types\DbfCdx\Pages\CdxUnusedPage.prg" />
     <Compile Include="Types\DbfDbt.prg" />
     <Compile Include="Types\DbfFpt.prg" />
     <Compile Include="Types\DbfMemo.prg" />
@@ -164,6 +165,7 @@
     <Folder Include="Advantage\" />
     <Folder Include="Types" />
     <Folder Include="Properties\" />
+    <Folder Include="Types\DbfCdx\Pages" />
     <Folder Include="Types\DbfNtx\" />
     <Folder Include="Types\DbfCdx" />
   </ItemGroup>

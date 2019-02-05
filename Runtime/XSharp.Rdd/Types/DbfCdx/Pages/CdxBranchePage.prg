@@ -1,4 +1,4 @@
-﻿/*
+/*
 BRANCH Page
 - Branch pages are used to link the tree. Their contents is
   BYTE     attr    [ 2 ];    node type 
@@ -17,7 +17,7 @@ USING System.Collections.Generic
 USING System.Text
 USING System.IO
 USING System.Runtime.CompilerServices
-using System.Diagnostics
+USING System.Diagnostics
 BEGIN NAMESPACE XSharp.RDD.CDX
 
 	/// <summary>
@@ -38,44 +38,45 @@ BEGIN NAMESPACE XSharp.RDD.CDX
           // BYTE child page [4]
     */
 	INTERNAL CLASS CdxBranchePage INHERIT CdxTreePage IMPLEMENTS ICdxKeyValue
-		PROTECTED _keyLen as Int32
+		PROTECTED _keyLen AS Int32
         
-        INTERNAL CONSTRUCTOR( fileHandle AS IntPtr, nPage as Int32 , nKeyLen as Int32)
-            SUPER(fileHandle, nPage)
+        INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS Int32)
+            SUPER(bag, nPage, buffer)
+            _KeyLen := nKeyLen
 
         #region ICdxKeyValue
-        Method GetKey(nPos as Int32) as BYTE[]
-            LOCAL nStart as int
-            Debug.Assert(nPos >= 0 .and. nPos < Self:NumKeys)
+        PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
+            LOCAL nStart AS INT
+            Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_KEY_OFFSET + nPos * (_keyLen + 8)
-            return _GetBytes(SELF:Buffer, nStart, _KeyLen)
+            RETURN _GetBytes(SELF:Buffer, nStart, _KeyLen)
 
-        METHOD GetRecno(nPos as Int32) as Int32
-            LOCAL nStart as int
-            Debug.Assert(nPos >= 0 .and. nPos < Self:NumKeys)
+        PUBLIC METHOD GetRecno(nPos AS Int32) AS Int32
+            LOCAL nStart AS INT
+            Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_KEY_OFFSET + nPos * (_keyLen + 8)
-            return _GetLong(nStart+_KeyLen)
+            RETURN _GetLong(nStart+_KeyLen)
             
         #endregion
         
-        METHOD GetChildPage(nPos as Int32) as Int32
-            LOCAL nStart as int
-            Debug.Assert(nPos >= 0 .and. nPos < Self:NumKeys)
+        METHOD GetChildPage(nPos AS Int32) AS Int32
+            LOCAL nStart AS INT
+            Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_KEY_OFFSET + nPos * (_keyLen + 8)
-            return _GetLong(nStart+_KeyLen+4)
+            RETURN _GetLong(nStart+_KeyLen+4)
             
 #region Properties
-        PROPERTY NumKeys as WORD ;
+        PUBLIC PROPERTY NumKeys AS WORD ;
           GET _GetWord(CDXBRANCH_OFFSET_NUMKEYS) ;
-          SET _SetWord(CDXBRANCH_OFFSET_NUMKEYS, value), isHot := TRUE
+          SET _SetWord(CDXBRANCH_OFFSET_NUMKEYS, VALUE), isHot := TRUE
 
-        PROPERTY LeftPtr as Int32 ;
+        PROPERTY LeftPtr AS Int32 ;
           GET _GetLong(CDXBRANCH_OFFSET_LEFTPTR) ;
-          SET _SetLong(CDXBRANCH_OFFSET_LEFTPTR, value), isHot := TRUE
+          SET _SetLong(CDXBRANCH_OFFSET_LEFTPTR, VALUE), isHot := TRUE
 
-        PROPERTY RightPtr as Int32 ;
+        PROPERTY RightPtr AS Int32 ;
           GET _GetLong(CDXBRANCH_OFFSET_RIGHTPTR) ;
-          SET _SetLong(CDXBRANCH_OFFSET_RIGHTPTR, value), isHot := TRUE
+          SET _SetLong(CDXBRANCH_OFFSET_RIGHTPTR, VALUE), isHot := TRUE
 #endregion                
 #region Constants
         PRIVATE CONST CDXBRANCHE_NODEATTR	        := 0	AS WORD 

@@ -3781,6 +3781,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var isAbstract = mods.Any((int)SyntaxKind.AbstractKeyword);
             var hasNoBody = isInInterface || isExtern || isAbstract;
             context.SetSequencePoint(context.end);
+            if (context.T.Token.Type != XP.METHOD)
+            {
+                // no type parameters on access and assign
+                if (context.TypeParameters != null || context._ConstraintsClauses.Count > 0)
+                {
+                    context.AddError(new ParseErrorData(ErrorCode.Err_TypeParametersAccessAssign));
+                }
+            }
             if (isInInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0)
             {
                 context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_InterfaceMemberHasBody));
@@ -5291,15 +5299,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitMemberModifiers([NotNull] XP.MemberModifiersContext context)
         {
             SyntaxListBuilder modifiers = _pool.Allocate();
+            bool genericParent = false;
+            // Membermodifiers are used for Methods and Properties
+            if (context.Parent is XP.MethodContext mc)
+            {
+                genericParent = mc.TypeParameters != null || mc._ConstraintsClauses.Count > 0;
+            }
             bool isInInterface = context.Parent.isInInterface();
             AddUniqueModifiers(modifiers, context._Tokens, false, isInInterface);
             if (!isInInterface)
             {
                 modifiers.FixDefaultVisibility();
-                if (_options.VirtualInstanceMethods && ! context.Parent.isInStructure())
+                if (_options.VirtualInstanceMethods && !context.Parent.isInStructure())
                     modifiers.FixDefaultVirtual();
-                else
+                else if (!genericParent)
+                {
                     modifiers.FixDefaultMethod();
+                }
             }
             context.PutList(modifiers.ToList<SyntaxToken>());
             _pool.Free(modifiers);

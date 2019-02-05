@@ -9998,6 +9998,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Type parameters or constraints are not allowed on ACCESS and ASSIGN methods.
+        /// </summary>
+        internal static string Err_TypeParametersAccessAssign {
+            get {
+                return ResourceManager.GetString("Err_TypeParametersAccessAssign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Type parameter declaration must be an identifier not a type.
         /// </summary>
         internal static string ERR_TypeParamMustBeIdentifier {

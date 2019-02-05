@@ -5636,6 +5636,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_EmptyCase" xml:space="preserve">
     <value>Empty CASE statement</value>
   </data>
+  <data name="Err_TypeParametersAccessAssign" xml:space="preserve">
+    <value>Type parameters or constraints are not allowed on ACCESS and ASSIGN methods</value>
+  </data>
   <data name="ERR_Internal" xml:space="preserve">
     <value>An internal compiler error has occurred: '{0}', {1}</value>
   </data>

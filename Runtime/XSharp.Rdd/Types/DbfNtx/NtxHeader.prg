@@ -31,7 +31,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 			// Move to top
 			FSeek3( SELF:_hFile, 0, SeekOrigin.Begin )
 			// Read Buffer
-			isOk := ( FRead3(SELF:_hFile, SELF:Buffer, NTXHEADER_SIZE) == NTXHEADER_SIZE )
+			isOk := FRead3(SELF:_hFile, SELF:Buffer, NTXHEADER_SIZE) == NTXHEADER_SIZE 
 			//
 			RETURN isOk
 			
@@ -40,14 +40,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 			// Move to top
 			FSeek3( SELF:_hFile, 0, SeekOrigin.Begin )
 			// Write Buffer
-			isOk := ( FWrite3(SELF:_hFile, SELF:Buffer, NTXHEADER_SIZE) == NTXHEADER_SIZE )
-			//
+			isOk :=  FWrite3(SELF:_hFile, SELF:Buffer, NTXHEADER_SIZE) == NTXHEADER_SIZE 
 			RETURN isOk
 			
 			
 			
 		INTERNAL CONSTRUCTOR( fileHandle AS IntPtr )
-			//
 			SELF:_hFile := fileHandle
 			Buffer := BYTE[]{NTXHEADER_SIZE}
 			isHot  := FALSE
@@ -65,7 +63,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 				count := nSize
 			ENDIF
 			LOCAL str := System.Text.Encoding.ASCII:GetString( tmp,0, count ) AS STRING
-			IF ( str == NULL )
+			IF  str == NULL 
 				str := String.Empty
 			ENDIF
 			str := str:Trim()
@@ -87,19 +85,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 			Array.Copy(BitConverter.GetBytes(wValue),0, Buffer, nOffSet, SIZEOF(WORD))
 			isHot := TRUE
 				
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
-		//PRIVATE METHOD _GetDWord(nOffSet AS INT) AS DWORD
-		//	RETURN BitConverter.ToUInt32(Buffer, nOffset)
-				
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
-		//PRIVATE METHOD _SetDWord(nOffSet AS INT, dwValue AS DWORD) AS VOID
-		//	Array.Copy(BitConverter.GetBytes(dwValue),0, Buffer, nOffSet, SIZEOF(DWORD))
-		//	isHot := TRUE
-
-        PRIVATE METHOD _GetLong(nOffSet AS INT) AS LONG
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+		PRIVATE METHOD _GetLong(nOffSet AS INT) AS LONG
             RETURN BitConverter.ToInt32(Buffer, nOffSet)
 
-        PRIVATE METHOD _SetLong(nOffSet AS INT, nValue AS LONG) AS VOID
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+		PRIVATE METHOD _SetLong(nOffSet AS INT, nValue AS LONG) AS VOID
             Array.Copy(BitConverter.GetBytes(nValue), 0, Buffer, nOffset, sizeof(LONG))
             isHot := TRUE
 

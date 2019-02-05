@@ -30,6 +30,7 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE _unprocessedAssemblyReferences			AS ConcurrentDictionary<STRING, STRING>
         PRIVATE _unprocessedProjectReferences			AS List<STRING>
         PRIVATE _unprocessedStrangerProjectReferences	AS List<STRING>
+        PRIVATE _failedStrangerProjectReferences        AS List<STRING>
         PRIVATE _mergedTypes							AS ConcurrentDictionary<STRING, XType>
         PUBLIC  FileWalkComplete						AS XProject.OnFileWalkComplete
         PRIVATE _OtherFilesDict							AS ConcurrentDictionary<STRING, XFile>
@@ -44,6 +45,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:_unprocessedAssemblyReferences := ConcurrentDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
             SELF:_unprocessedProjectReferences := List<STRING>{}
             SELF:_unprocessedStrangerProjectReferences := List<STRING>{}
+            SELF:_failedStrangerProjectReferences := List<STRING>{}
             SELF:_projectOutputDLLs := ConcurrentDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
             SELF:_mergedTypes   := ConcurrentDictionary<STRING, XType>{StringComparer.OrdinalIgnoreCase}
             SELF:_ReferencedProjects := List<XProject>{}
@@ -107,9 +109,9 @@ BEGIN NAMESPACE XSharpModel
                     ENDIF
                 NEXT
 
-            PRIVATE METHOD LoadReference(cDLL as STRING) as VOID
+            PRIVATE METHOD LoadReference(cDLL AS STRING) AS VOID
                 SELF:ProjectNode:SetStatusBarText(String.Format("Loading referenced types for project '{0}' from '{1}'", SELF:Name, System.IO.Path.GetFileName(cDLL)))
-                var assemblyInfo := SystemTypeController.LoadAssembly(cDLL)
+                VAR assemblyInfo := SystemTypeController.LoadAssembly(cDLL)
                 SELF:_AssemblyReferences:Add(assemblyInfo)
                 assemblyInfo:AddProject(SELF)
                 RETURN
@@ -302,6 +304,11 @@ BEGIN NAMESPACE XSharpModel
                 SELF:_unprocessedStrangerProjectReferences:Remove(url)
                 RETURN TRUE
             ENDIF
+            IF SELF:_failedStrangerProjectReferences:Contains(url)
+                SELF:_failedStrangerProjectReferences:Remove(url)
+                RETURN TRUE
+            ENDIF
+
             SELF:RemoveProjectOutput(url)
             prj := SELF:ProjectNode:FindProject(url)
             IF prj != NULL .AND. SELF:_StrangerProjects:Contains(prj)
@@ -331,7 +338,7 @@ BEGIN NAMESPACE XSharpModel
                         mustAdd := TRUE
                     ENDIF
                     IF mustAdd
-                        SELF:_unprocessedStrangerProjectReferences:Add(sProjectURL)
+                        SELF:AddStrangerProjectReference(sProjectURL)
                     ENDIF
                 NEXT
                 WriteOutputMessage("<-- RefreshStrangerProjectDLLOutputFiles()")
@@ -350,13 +357,20 @@ BEGIN NAMESPACE XSharpModel
                         SELF:_StrangerProjects:Add(p)
                         outputFile := SELF:GetStrangerOutputDLL(sProject, p)
                         IF !String.IsNullOrEmpty(outputFile)
-                            existing:Add(sProject)
                             SELF:AddProjectOutput(sProject, outputFile)
+                        ELSE
+                            IF ! SELF:_failedStrangerProjectReferences:Contains(sProject)
+                                SELF:_failedStrangerProjectReferences:Add(sProject)
+                            ENDIF
                         ENDIF
+			// Always remove the project, to prevent endless retries
+                        existing:Add(sProject)
                     ENDIF
                 NEXT
                 FOREACH sProject AS STRING IN existing
-                    SELF:_unprocessedStrangerProjectReferences:Remove(sProject)
+                    IF SELF:_unprocessedStrangerProjectReferences:Contains(sProject)
+                        SELF:_unprocessedStrangerProjectReferences:Remove(sProject)
+                    ENDIF
                 NEXT
                 SELF:_clearTypeCache()
             ENDIF

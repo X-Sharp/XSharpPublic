@@ -21,8 +21,6 @@ BEGIN NAMESPACE XSharp.RDD
 			
 		PROPERTY SysName AS STRING GET TYPEOF(DbfNtx):ToString()	
 		
-		
-		
 		#REGION Order Support 
 		VIRTUAL METHOD OrderCreate(orderInfo AS DBORDERCREATEINFO ) AS LOGIC
 			RETURN SELF:_ntxList:Create(orderInfo)
@@ -32,9 +30,7 @@ BEGIN NAMESPACE XSharp.RDD
 			
 			
 		VIRTUAL METHOD OrderListAdd( orderInfo AS DbOrderInfo) AS LOGIC
-			//
 			BEGIN LOCK SELF
-				//
 				SELF:GoCold()
 				LOCAL fullPath AS STRING
 				fullPath := orderInfo:BagName
@@ -45,25 +41,23 @@ BEGIN NAMESPACE XSharp.RDD
 			END LOCK
 			
 		VIRTUAL METHOD OrderListDelete(orderInfo AS DbOrderInfo) AS LOGIC
-			//
+
 			BEGIN LOCK SELF
-				//
+	
 				SELF:GoCold()
 				RETURN SELF:_ntxList:CloseAll()
 			END LOCK            
 			
 		VIRTUAL METHOD OrderListFocus(orderInfo AS DbOrderInfo) AS LOGIC
-			//
+
 			BEGIN LOCK SELF
-				//
+	
 				SELF:GoCold()
 				RETURN SELF:_ntxList:SetFocus(orderInfo)
 			END LOCK
 			
 		VIRTUAL METHOD OrderListRebuild() AS LOGIC
-			//
 			BEGIN LOCK SELF
-				//
 				SELF:GoCold()
 				RETURN SELF:_ntxList:Rebuild()
 			END LOCK
@@ -74,7 +68,7 @@ BEGIN NAMESPACE XSharp.RDD
 			LOCAL workOrder AS NtxOrder
 			LOCAL orderPos AS LONG
 			LOCAL oldvalue AS OBJECT
-			//
+
 			isOk := TRUE
 			result := 0
 			workOrder := NULL
@@ -84,7 +78,7 @@ BEGIN NAMESPACE XSharp.RDD
 			ELSE
 				workOrder := SELF:_ntxList[orderPos - 1]
 			ENDIF
-			//
+
 			BEGIN SWITCH nOrdinal
 			CASE DBOI_CONDITION
 				IF workOrder != NULL
@@ -97,11 +91,11 @@ BEGIN NAMESPACE XSharp.RDD
 			CASE DBOI_ORDERCOUNT
 				info:Result := SELF:_ntxList:Count
 			CASE DBOI_POSITION
-				IF (workOrder == NULL)
+				IF workOrder == NULL
 					info:Result := SELF:RecNo
 				ELSE
 					isOk := workOrder:_getRecPos( REF result)
-					IF (isOk)
+					IF isOk
 						info:Result := result
 					ENDIF
 				ENDIF
@@ -111,7 +105,7 @@ BEGIN NAMESPACE XSharp.RDD
 					info:Result := 0
 					isOk := workOrder:_CountRecords(REF result)
 				ENDIF
-				IF (isOk)
+				IF isOk
 					info:Result := result
 				ENDIF
 			CASE DBOI_NUMBER
@@ -169,7 +163,7 @@ BEGIN NAMESPACE XSharp.RDD
 			CASE DBOI_SETCODEBLOCK
 				IF workOrder != NULL
 					oldvalue := workOrder:_KeyCodeBlock
-					IF (info:Result != NULL)
+					IF info:Result != NULL
 						workOrder:_KeyCodeBlock := (ICodeblock)info:Result
 					ENDIF
 					info:Result := oldvalue
@@ -182,20 +176,20 @@ BEGIN NAMESPACE XSharp.RDD
 					CATCH
 						isOk := FALSE
 					END TRY
-					IF (!isOk)
+					IF !isOk
 						info:Result := NULL
 					ENDIF
 				ENDIF
 			CASE DBOI_SCOPETOP
 				IF workOrder != NULL
-					IF (info:Result != NULL)
+					IF info:Result != NULL
 						workOrder:SetOrderScope(info:Result, XSharp.RDD.Enums.DbOrder_Info.DBOI_SCOPETOP)
 					ENDIF
 					info:Result := workOrder:_topScope
 				ENDIF
 			CASE DBOI_SCOPEBOTTOM
 				IF workOrder != NULL
-					IF (info:Result != NULL)
+					IF info:Result != NULL
 						workOrder:SetOrderScope(info:Result, XSharp.RDD.Enums.DbOrder_Info.DBOI_SCOPEBOTTOM)
 					ENDIF
 					info:Result := workOrder:_bottomScope
@@ -226,10 +220,10 @@ BEGIN NAMESPACE XSharp.RDD
 		#region Pack, Zap
 		METHOD Pack() AS LOGIC
 			LOCAL isOk AS LOGIC
-			//
+
 			isOk := SUPER:Pack()
-			IF (isOk)
-				//
+			IF isOk
+	
 				isOk := SELF:OrderListRebuild()
 			ENDIF
 			RETURN isOk
@@ -237,9 +231,9 @@ BEGIN NAMESPACE XSharp.RDD
 			
 		PUBLIC METHOD Zap() AS LOGIC
 			LOCAL isOk AS LOGIC
-			//
+
 			isOk := SUPER:Zap()
-			IF (isOk)
+			IF isOk
 				isOk := SELF:OrderListRebuild()
 			ENDIF
 			RETURN isOk
@@ -250,7 +244,7 @@ BEGIN NAMESPACE XSharp.RDD
 		
 		PUBLIC OVERRIDE METHOD Close() AS LOGIC
 			LOCAL orderInfo AS DbOrderInfo
-			//
+
 			orderInfo := DbOrderInfo{}
 			orderInfo:AllTags := TRUE
 			SELF:OrderListDelete(orderInfo)
@@ -259,14 +253,14 @@ BEGIN NAMESPACE XSharp.RDD
 			
 		PUBLIC OVERRIDE METHOD Create( openInfo AS DBOPENINFO ) AS LOGIC
 			LOCAL isOk AS LOGIC
-			//
+
 			isOk := SUPER:Create(openInfo)
-			IF ( XSharp.RuntimeState.Ansi .AND. isOk)
+			IF  XSharp.RuntimeState.Ansi .AND. isOk
 				VAR sig := SELF:_Header:Version
-				// Set bit to Force Ansi Signature
+	            //SET bit TO Force ANSI Signature
 				sig := sig |4
-				// Should we also set the CodePage ??
-				//SELF:_Header:DbfCodePage := DbfCodePage.CP_DBF_WIN_ANSI
+	            //Should we also SET the CodePage ??
+	            //SELF:_Header:DbfCodePage := DbfCodePage.CP_DBF_WIN_ANSI
 				SELF:_Header:Version := sig
 			ENDIF
 			RETURN isOk
@@ -282,14 +276,14 @@ BEGIN NAMESPACE XSharp.RDD
 		PUBLIC METHOD Seek(seekInfo AS DBSEEKINFO ) AS LOGIC
 			LOCAL isOk AS LOGIC
 			LOCAL ntxIndex AS NtxOrder
-			//
+
 			isOk := FALSE
 			BEGIN LOCK SELF
 				ntxIndex := SELF:_ntxList:CurrentOrder
-				IF (ntxIndex != NULL)
+				IF ntxIndex != NULL
 					isOk := ntxIndex:Seek(seekInfo)
 				ENDIF
-				IF ( !isOk )
+				IF  !isOk 
 					SELF:_DbfError(SubCodes.ERDD_DATATYPE, GenCode.EG_NOORDER )
 				ENDIF
 			END LOCK
@@ -316,8 +310,9 @@ BEGIN NAMESPACE XSharp.RDD
         METHOD __Goto(nRec AS LONG, lSeekNtx := FALSE AS LOGIC) AS LOGIC
             BEGIN LOCK SELF
                 IF lSeekNtx
+                    // Position index on the current record
                     IF SELF:_ntxList:CurrentOrder != NULL
-                        SELF:_ntxList:CurrentOrder:_GoTo(nRec)
+                        SELF:_ntxList:CurrentOrder:_GoToRecNo(nRec)
                     ENDIF
                 ENDIF
                 RETURN SUPER:Goto(nRec)
@@ -340,14 +335,14 @@ BEGIN NAMESPACE XSharp.RDD
 		#REGION GoCold, GoHot, Flush
 		PUBLIC OVERRIDE METHOD GoCold() AS LOGIC
 			LOCAL isOk AS LOGIC
-			//
+
 			isOk := TRUE
 			BEGIN LOCK SELF
-				IF ( !SELF:IsHot )
+				IF !SELF:IsHot 
 					RETURN isOk
 				ENDIF
 				isOk := SELF:_ntxList:GoCold()
-				IF (!isOk)
+				IF !isOk
 					RETURN isOk
 				ENDIF
 				RETURN SUPER:GoCold()
@@ -355,11 +350,11 @@ BEGIN NAMESPACE XSharp.RDD
 			
 		PUBLIC OVERRIDE METHOD GoHot() AS LOGIC
 			LOCAL isOk AS LOGIC
-			//
+
 			isOk := TRUE
 			BEGIN LOCK SELF
 				isOk := SUPER:GoHot()
-				IF (!isOk)
+				IF !isOk
 					RETURN isOk
 				ENDIF
 				RETURN SELF:_ntxList:GoHot()
@@ -367,7 +362,7 @@ BEGIN NAMESPACE XSharp.RDD
 			
 		PUBLIC OVERRIDE METHOD Flush() AS LOGIC
 			LOCAL isOk AS LOGIC
-			//
+
 			isOk := TRUE
 			BEGIN LOCK SELF
 				isOk := SUPER:Flush()
@@ -375,12 +370,5 @@ BEGIN NAMESPACE XSharp.RDD
 			END LOCK
 			
 		#ENDREGION
-		
-		
-		
-		
-		
-		
 	END CLASS
-	
 END NAMESPACE

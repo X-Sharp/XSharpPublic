@@ -1,13 +1,18 @@
-﻿//
+//
 // Start.prg
 //
 #include "dbcmds.vh"
 FUNCTION Start() AS VOID
     LOCAL cb AS CODEBLOCK
     TRY
+        //Locker()
+        Skipper()
+        //MultiUpdatesNtx()
+        //BlockTest()
+        //Scopes()
         //DumpNtx()
         //Start1a()
-        Start1b()
+        //Start1b()
         //Start2()
         //Start3()
         //Start4()
@@ -23,7 +28,198 @@ FUNCTION Start() AS VOID
     END TRY
     WAIT
     RETURN
-    
+
+FUNCTION Locker() AS INT
+LOCAL cDbf AS STRING
+LOCAL lXSharp := FALSE AS LOGIC
+
+#IFDEF __XSHARP__
+? "Testing in X#:"
+#ELSE
+? "Testing in VO/Vulcan:"
+#ENDIF
+
+cDbf := "C:\test\rlock.dbf"
+
+BEGIN SEQUENCE // do nothing if file is in alerady use
+DBCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
+DBUseArea(,,cDbf,,FALSE)
+DBAppend()
+FieldPut(1,1)
+DBCommit()
+DBCloseArea()
+END SEQUENCE
+
+? DBUseArea(TRUE,"DBFNTX",cDbf,"alias1",TRUE)
+? "First RLock()", RLock()
+? "Field value before fieldput:", FieldGet(1)
+FieldPut(1,FieldGet(1) + 1)
+? DBCommit()
+? "Field value after fieldput:", FieldGet(1)
+
+? DBUseArea(TRUE,"DBFNTX",cDbf,"alias2",TRUE)
+? "Second RLock()", RLock()
+? "Field value in second area :", FieldGet(1)
+WAIT "test now in the other environment"
+? DBCloseAll()
+
+RETURN 0
+
+
+FUNCTION Skipper AS VOID
+LOCAL cDbf AS STRING
+LOCAL cNtx AS STRING
+
+cDbf := "C:\test\testdbf"
+cNtx := cDbf + ".ntx"
+
+DBCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
+DBUseArea(,,cDbf,,FALSE)
+DBAppend()
+FieldPut(1,123)
+DBAppend()
+FieldPut(1,456)
+DBCreateIndex(cNtx, "NFIELD")
+DBCloseArea()
+
+
+DBUseArea(,,cDbf,,FALSE)
+DBSetIndex(cNtx)
+DBGoTop()
+? "Top RecNo:", RecNo() // 1
+DBGoBottom()
+? "Bottom RecNo:", RecNo() // 2
+DBSkip(-1)
+? "RecNo after Skip(-1):", RecNo() // 1
+DBGoTo(2)
+? "RecNo after GoTo(2):", RecNo() // 2
+?
+? "DBSkip(+1):", DBSkip(+1)
+? "EoF, must be TRUE now:", EOF() // FALSE, wrong
+? "RecNo after Skip(+1):", RecNo() // 2 again, wrong
+?
+? "DBSkip(+1) again:", DBSkip(+1)
+? "EoF, must be TRUE again:", EOF() // TRUE, correct
+? "RecNo after 2nd Skip(+1):", RecNo() // now it is 3
+DBCloseArea()
+RETURN
+
+FUNCTION MultiUpdatesNtx() AS VOID
+LOCAL aValues AS ARRAY
+LOCAL i AS DWORD
+LOCAL cDBF, cNTX AS STRING
+
+aValues := { "ssss" , "hhhh", "wwww" , "aaaa" }
+cDBF := "Foo2"
+cNTX := "Foox2"
+DBCreate( cDBF , {{"LAST" , "C" , 20 , 0 } , ;
+{"TEXT1" , "C" , 10 , 0 } , ;
+{"NUM1" , "N" , 10 , 2 }})
+
+DBUseArea(,,cDBF,,FALSE)
+FOR i := 1 UPTO ALen ( aValues )
+DBAppend()
+FieldPut(1,aValues [i])
+NEXT
+DBCreateIndex(cNTX, "Upper ( Last)")
+DBCloseArea()
+
+DBUseArea(,,cDBF,,TRUE) // open shared !
+DBSetIndex(cNTX)
+DBGoTop()
+? "current (indexed) order"
+DO WHILE ! EOF()
+? FieldGet ( 1 )
+DBSkip ( 1 )
+ENDDO
+DBGoTop()
+?
+? "now replace the index field #LAST content 'aaaa' with 'pppp'"
+? "and also update another field"
+IF DBRLock ( RecNo() )
+? "Replacing", AllTrim(FieldGet(1)), "with 'pppp'"
+FieldPut ( 1 , "pppp" ) // Note: This is the index field
+
+// this is what causes the problem, updating a second field
+// if this fieldput is put above the first one, then sample works correctly
+// either one of the fieldputs below cause the problem to surface
+FieldPut ( 2 , "Eins" )
+FieldPut ( 3 , 123.45 )
+
+DBCommit()
+
+DBRUnlock ( RecNo() )
+
+? "Seek 'AAAA'" , DBSeek( "AAAA" ) , "must show .F."
+? "Seek 'PPPP'" , DBSeek ("PPPP" ) , "must show .T."
+?
+? "Record order now:"
+? "(should be hhhh, pppp, ssss , wwww)"
+DBGoTop()
+DO WHILE ! EOF()
+? AllTrim(FieldGet(1)) , FieldGet(3) , AllTrim(FieldGet(2))
+DBSkip ( 1 )
+ENDDO
+ELSE
+? "No lock"
+ENDIF
+DBCloseArea()
+RETURN
+
+FUNCTION BlockTest() AS VOID
+LOCAL cDBF, cNTX AS STRING
+
+cDBF := "test"
+cNTX := "testX"
+
+DBCreate( cDBF , {{"ID" , "C" , 5 , 0 }})
+DBUseArea(,,cDBF)
+
+DBAppend()
+FieldPut(1, "one")
+
+DBCreateIndex(cNTX , "Upper (ID)")
+DBCloseArea()
+
+DBUseArea(,,cDBF)
+DBSetIndex(cNTX)
+
+? "DBOI_SETCODEBLOCK" , DBOrderInfo( DBOI_SETCODEBLOCK )
+
+DBCloseArea()
+
+RETURN
+FUNCTION Scopes() AS VOID
+LOCAL cDbf AS STRING
+LOCAL n AS LONG
+cDbf := "C:\test\test"
+DBCREATE( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
+DBUSEAREA(,"DBFNTx",cDbf)
+FOR n := 1  UPTO 20
+DBAPPEND()
+FIELDPUT(1,n)
+NEXT
+DBCREATEINDEX(cDbf , "NFIELD")
+DBCLOSEAREA()
+
+? DBUSEAREA(,"DBFNTX",cDbf) // 20 records
+? DbSetIndex ( cDbf )
+? "Order KeyCount" , DbOrderInfo( DBOI_KEYCOUNT ) // 20
+? OrdScope(TOPSCOPE, 5) // NULL
+? OrdScope(BOTTOMSCOPE, 10) // NULL
+? DbGotop()
+?
+? "Order KeyCount" , DbOrderInfo( DBOI_KEYCOUNT ) // still 20 - but must be 6
+?
+DO WHILE ! EOF() // all 20 records are listed
+? FIELDGET ( 1 )
+DBSKIP ( 1 )
+ENDDO
+? "TopScope" , DbOrderInfo( DBOI_SCOPETOP ) // {(0x0000)0x00000000} CLASS
+? "BottomScope" , DbOrderInfo( DBOI_SCOPEBOTTOM ) // {(0x0000)0x00000000} CLASS
+? DBCLOSEAREA()
+WAIT
+RETURN
     
 FUNCTION DumpNtx() AS VOID
     SetAnsi(TRUE)

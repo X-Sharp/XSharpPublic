@@ -1,4 +1,4 @@
-﻿// CdxBlock.prg
+// CdxBlock.prg
 // Created by    : fabri
 // Creation Date : 10/25/2018 10:43:18 PM
 // Created for   : 
@@ -24,13 +24,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     /// </remarks>
 	INTERNAL CLASS CdxFileHeader INHERIT CdxPage
 
-    INTERNAL CONSTRUCTOR( fileHandle AS IntPtr )
-        SUPER(fileHandle, 0)
+    INTERNAL CONSTRUCTOR( oBag AS CdxOrderBag, buffer AS BYTE[])
+        SUPER(oBag, 0, buffer)
         
 #region Properties
-	INTERNAL PROPERTY TagList		AS DWORD;
-		GET _GetDWORD(CDXROOT_TAGLIST);
-		SET _SetDWORD(CDXROOT_TAGLIST, VALUE), isHot := TRUE
+	INTERNAL PROPERTY TagList		AS Int32;
+		GET _GetLONG(CDXROOT_TAGLIST);
+		SET _SetLONG(CDXROOT_TAGLIST, VALUE), isHot := TRUE
 
     INTERNAL PROPERTY FreeList		AS DWORD;
 		GET _GetDWORD(CDXROOT_FREELIST);

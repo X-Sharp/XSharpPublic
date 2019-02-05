@@ -11,19 +11,19 @@ BEGIN NAMESPACE XSharp.RDD
 	/// <summary>DBFNTX RDD. For DBF/DBT/NTX.</summary>
 	CLASS DBFNTX INHERIT DBFDBT
 	
-		INTERNAL _ntxList AS NtxOrderList
-		
+		INTERNAL _indexList AS NtxOrderList
+		INTERNAL PROPERTY CurrentOrder AS NtxOrder GET _indexList:CurrentOrder
 		CONSTRUCTOR()
 			SUPER()
-			SELF:_ntxList := NtxOrderList{SELF}
-			SELF:_oIndex := NtxOrder{SELF}
+			SELF:_indexList := NtxOrderList{SELF}
+			SELF:_oIndex 	:= NULL
 			RETURN
 			
 		PROPERTY SysName AS STRING GET TYPEOF(DbfNtx):ToString()	
 		
 		#REGION Order Support 
 		VIRTUAL METHOD OrderCreate(orderInfo AS DBORDERCREATEINFO ) AS LOGIC
-			RETURN SELF:_ntxList:Create(orderInfo)
+			RETURN SELF:_indexList:Create(orderInfo)
 			
 		VIRTUAL METHOD OrderDestroy(orderInfo AS DBORDERINFO ) AS LOGIC
 			RETURN SUPER:OrderDestroy(orderInfo)
@@ -35,9 +35,11 @@ BEGIN NAMESPACE XSharp.RDD
 				LOCAL fullPath AS STRING
 				fullPath := orderInfo:BagName
 				IF String.IsNullOrEmpty(System.IO.Path.GetDirectoryName(fullPath))
-					fullPath := System.IO.Path.Combine(SYstem.IO.Path.GetDirectoryName(SELF:_FileName), fullPath)
+					fullPath := System.IO.Path.Combine(System.IO.Path.GetDirectoryName(SELF:_FileName), fullPath)
 				ENDIF
-				RETURN SELF:_ntxList:Add(orderInfo, fullPath)
+                VAR lOk := SELF:_indexList:Add(orderInfo, fullPath)
+                SELF:_oIndex := SELF:_indexList:CurrentOrder
+                RETURN lOk
 			END LOCK
 			
 		VIRTUAL METHOD OrderListDelete(orderInfo AS DbOrderInfo) AS LOGIC
@@ -45,7 +47,7 @@ BEGIN NAMESPACE XSharp.RDD
 			BEGIN LOCK SELF
 	
 				SELF:GoCold()
-				RETURN SELF:_ntxList:CloseAll()
+				RETURN SELF:_indexList:CloseAll()
 			END LOCK            
 			
 		VIRTUAL METHOD OrderListFocus(orderInfo AS DbOrderInfo) AS LOGIC
@@ -53,13 +55,13 @@ BEGIN NAMESPACE XSharp.RDD
 			BEGIN LOCK SELF
 	
 				SELF:GoCold()
-				RETURN SELF:_ntxList:SetFocus(orderInfo)
+				RETURN SELF:_indexList:SetFocus(orderInfo)
 			END LOCK
 			
 		VIRTUAL METHOD OrderListRebuild() AS LOGIC
 			BEGIN LOCK SELF
 				SELF:GoCold()
-				RETURN SELF:_ntxList:Rebuild()
+				RETURN SELF:_indexList:Rebuild()
 			END LOCK
 			
 		OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD , info AS DBORDERINFO ) AS OBJECT
@@ -72,11 +74,11 @@ BEGIN NAMESPACE XSharp.RDD
 			isOk := TRUE
 			result := 0
 			workOrder := NULL
-			orderPos := SELF:_ntxList:FindOrder(info:Order)
+			orderPos := SELF:_indexList:FindOrder(info)
 			IF orderPos <= 0 
-				workOrder := SELF:_ntxList:CurrentOrder
+				workOrder := SELF:CurrentOrder
 			ELSE
-				workOrder := SELF:_ntxList[orderPos - 1]
+				workOrder := SELF:_indexList[orderPos - 1]
 			ENDIF
 
 			BEGIN SWITCH nOrdinal
@@ -89,7 +91,7 @@ BEGIN NAMESPACE XSharp.RDD
 					info:Result := workOrder:Expression
 				ENDIF
 			CASE DBOI_ORDERCOUNT
-				info:Result := SELF:_ntxList:Count
+				info:Result := SELF:_indexList:Count
 			CASE DBOI_POSITION
 				IF workOrder == NULL
 					info:Result := SELF:RecNo
@@ -279,7 +281,7 @@ BEGIN NAMESPACE XSharp.RDD
 
 			isOk := FALSE
 			BEGIN LOCK SELF
-				ntxIndex := SELF:_ntxList:CurrentOrder
+				ntxIndex := SELF:CurrentOrder
 				IF ntxIndex != NULL
 					isOk := ntxIndex:Seek(seekInfo)
 				ENDIF
@@ -291,8 +293,8 @@ BEGIN NAMESPACE XSharp.RDD
 			
 		PUBLIC METHOD GoBottom() AS LOGIC
 			BEGIN LOCK SELF
-				IF SELF:_ntxList:CurrentOrder != NULL
-					RETURN SELF:_ntxList:CurrentOrder:GoBottom()
+				IF SELF:CurrentOrder != NULL
+					RETURN SELF:CurrentOrder:GoBottom()
 				ELSE
 					RETURN SUPER:GoBottom()
 				ENDIF
@@ -300,8 +302,8 @@ BEGIN NAMESPACE XSharp.RDD
 			
 		PUBLIC METHOD GoTop() AS LOGIC
 			BEGIN LOCK SELF
-				IF SELF:_ntxList:CurrentOrder != NULL
-					RETURN SELF:_ntxList:CurrentOrder:GoTop()
+				IF SELF:CurrentOrder != NULL
+					RETURN SELF:CurrentOrder:GoTop()
 				ELSE
 					RETURN SUPER:GoTop()
 				ENDIF
@@ -311,8 +313,8 @@ BEGIN NAMESPACE XSharp.RDD
             BEGIN LOCK SELF
                 IF lSeekNtx
                     // Position index on the current record
-                    IF SELF:_ntxList:CurrentOrder != NULL
-                        SELF:_ntxList:CurrentOrder:_GoToRecNo(nRec)
+                    IF SELF:CurrentOrder != NULL
+                        SELF:CurrentOrder:_GoToRecNo(nRec)
                     ENDIF
                 ENDIF
                 RETURN SUPER:Goto(nRec)
@@ -323,8 +325,8 @@ BEGIN NAMESPACE XSharp.RDD
 			
 		PUBLIC METHOD SkipRaw( move AS LONG ) AS LOGIC
 			BEGIN LOCK SELF
-				IF SELF:_ntxList:CurrentOrder != NULL
-					RETURN SELF:_ntxList:CurrentOrder:SkipRaw(move)
+				IF SELF:CurrentOrder != NULL
+					RETURN SELF:CurrentOrder:SkipRaw(move)
 				ELSE
 					RETURN SUPER:SkipRaw(move)
 				ENDIF
@@ -341,7 +343,7 @@ BEGIN NAMESPACE XSharp.RDD
 				IF !SELF:IsHot 
 					RETURN isOk
 				ENDIF
-				isOk := SELF:_ntxList:GoCold()
+				isOk := SELF:_indexList:GoCold()
 				IF !isOk
 					RETURN isOk
 				ENDIF
@@ -357,7 +359,7 @@ BEGIN NAMESPACE XSharp.RDD
 				IF !isOk
 					RETURN isOk
 				ENDIF
-				RETURN SELF:_ntxList:GoHot()
+				RETURN SELF:_indexList:GoHot()
 			END LOCK
 			
 		PUBLIC OVERRIDE METHOD Flush() AS LOGIC
@@ -366,9 +368,10 @@ BEGIN NAMESPACE XSharp.RDD
 			isOk := TRUE
 			BEGIN LOCK SELF
 				isOk := SUPER:Flush()
-				RETURN SELF:_ntxList:Flush()
+				RETURN SELF:_indexList:Flush()
 			END LOCK
 			
 		#ENDREGION
 	END CLASS
+
 END NAMESPACE

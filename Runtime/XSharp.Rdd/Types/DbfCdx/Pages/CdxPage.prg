@@ -1,4 +1,4 @@
-﻿// CdxBlock.prg
+// CdxBlock.prg
 // Created by    : fabri
 // Creation Date : 10/25/2018 10:43:18 PM
 // Created for   : 
@@ -18,37 +18,30 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	/// <summary>
 	/// The CdxPageBase class.
 	/// </summary>
-	INTERNAL CLASS CdxPage
-	    PROTECTED _hFile AS IntPtr
+	INTERNAL ABSTRACT CLASS CdxPage
+	    PROTECTED _bag AS CDXOrderBag
         PROTECTED _nPage AS Int32
-		INTERNAL Buffer   AS BYTE[]
+		PROTECTED _buffer   AS BYTE[]
 		INTERNAL isHot	AS LOGIC        // Hot ?  => Page has changed ?
 
-	    PROTECTED INTERNAL CONSTRUCTOR( fileHandle AS IntPtr, nPage AS Int32 )
+        PROPERTY Buffer AS BYTE[] GET _buffer
+        PROPERTY PageNo AS Int32 GET _nPage
+
+	    PROTECTED INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[])
 			//
-			SELF:_hFile := fileHandle
-            SELF:_nPage := nPage
-			SELF:Buffer := BYTE[]{CDXPAGE_SIZE}
+			SELF:_bag    := bag
+            SELF:_nPage  := nPage
+			SELF:_buffer := buffer
 			SELF:isHot  := FALSE
 		RETURN
         #region Read/Write
-		PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
-			LOCAL isOk AS LOGIC
-			// Move to top
-			FSeek3( SELF:_hFile, _nPage, SeekOrigin.Begin )
-			// Read Buffer
-			isOk := ( FRead3(SELF:_hFile, SELF:Buffer, CDXPAGE_SIZE) == CDXPAGE_SIZE )
-			//
-			RETURN isOk
 			
 		PROTECTED INTERNAL VIRTUAL METHOD Write() AS LOGIC
-			LOCAL isOk AS LOGIC
-			// Move to top
-			FSeek3( SELF:_hFile, _nPage, SeekOrigin.Begin )
-			// Write Buffer
-			isOk := ( FWrite3(SELF:_hFile, SELF:Buffer, CDXPAGE_SIZE) == CDXPAGE_SIZE )
-			//
-			RETURN isOk
+			RETURN _Bag:Write(SELF)
+
+    	PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
+			RETURN _Bag:Read(SELF)
+
         #endregion
         #region Helper Methods to read/write numbers are strings out of the buffer
         
@@ -141,6 +134,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL h AS GcHandle
             LOCAL p AS IntPtr
             p := IntPtr.Zero
+            
             TRY
                 h := GCHandle.Alloc(bytes, GCHandleType.Pinned)
                 p := h:AddrOfPinnedObject() + start
@@ -176,7 +170,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END TRY
         #endregion
 
-		PROTECTED CONST CDXPAGE_SIZE        := 512 AS WORD
-
+		INTERNAL CONST CDXPAGE_SIZE        := 512 AS WORD
+       
 	END CLASS
 END NAMESPACE 

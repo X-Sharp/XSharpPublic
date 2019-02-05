@@ -66,7 +66,11 @@ STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS OBJECT,uR
     LOCAL oRet := uRet AS OBJECT   
     LOCAL result AS LOGIC
     result := CoreDb.OrderInfo(nOrdinal, cBagName,  uOrder, REF oRet)
-    uRet := oRet
+    IF oRet == NULL
+        uRet := NIL
+    ELSE
+        uRet := oRet
+    ENDIF
     RETURN result
 
 /// <inheritdoc cref="M:XSharp.CoreDb.OrderInfo(System.UInt32,System.String,System.Object,System.Object)" />

@@ -1805,7 +1805,7 @@ BEGIN NAMESPACE XSharp.RDD
 		METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
 			IF _oIndex != NULL
 				RETURN _oIndex:OrderInfo(nOrdinal,info )
-				ELSE
+			ELSE
 				RETURN SUPER:OrderInfo(nOrdinal,info )
 			ENDIF
 			

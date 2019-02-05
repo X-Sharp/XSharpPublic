@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -54,17 +54,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     /// Manipulating the page is implemented in the CdxTag class
 	/// </summary>
 	INTERNAL CLASS CdxLeafPage INHERIT CdxTreePage IMPLEMENTS ICdxKeyValue
-		PROTECTED _keyLen AS Int32
+		PROTECTED _keyLen   AS Int32
         PROTECTED _keys     AS BYTE[]
         PROTECTED _recnos   AS Int32[]
 		
-	    PROTECTED INTERNAL CONSTRUCTOR( fileHandle AS IntPtr , nPage AS Int32 , nKeyLen AS Int32)
-            SUPER(fileHandle, nPage)
+	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS Int32)
+            SUPER(bag, nPage, buffer)
             _keyLen     := nKeyLen
-            _keys := NULL
+            _keys       := NULL
 
 #region ICdxKeyValue
-        METHOD GetRecno(nPos AS Int32) AS Int32
+        PUBLIC METHOD GetRecno(nPos AS Int32) AS Int32
             Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             IF _recnos == NULL
                 SELF:_ExpandKeys()
@@ -72,7 +72,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN _recnos[nPos ]
                 
 
-        METHOD GetKey(nPos AS Int32) AS BYTE[]
+        PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
             Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             IF _keys == NULL
                 SELF:_ExpandKeys()
@@ -114,7 +114,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         
 
 #region Properties
-		PROTECTED INTERNAL PROPERTY NumKeys  AS WORD	;
+		PUBLIC PROPERTY NumKeys  AS WORD	;
 			GET _GetWord(CDXBLKOFFSET_NUMKEYS);
 			SET _SetWord(CDXBLKOFFSET_NUMKEYS, VALUE), isHot := TRUE
 

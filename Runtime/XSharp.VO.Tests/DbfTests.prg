@@ -648,6 +648,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal( 3 , (INT) a[2] )
 
 			DBCloseArea()
+			
+			SetExclusive ( TRUE ) // restore
 		RETURN
 
 		// TECH-XQES14W9J0 , Aliasxxx() funcs throw exceptions
@@ -752,6 +754,138 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 
+		// TECH-546935N337, DBOrderInfo(DBOI_SETCODEBLOCK) causes an invalid cast exception, but only if a index is opened
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBOrderInfo_DBOI_SETCODEBLOCK() AS VOID
+			LOCAL cDBF, cNTX AS STRING
+			
+			cDBF := GetTempFileName("test")
+			cNTX := cDBF + ".ntx"
+			
+			DBCreate( cDBF , {{"ID" , "C" , 5 , 0 }})
+			DBUseArea(,,cDBF)
+			
+			DBAppend()
+			FieldPut(1, "one")
+			
+			DBCreateIndex(cNTX , "Upper (ID)")
+			DBCloseArea()
+			
+			DBUseArea(,,cDBF)
+			DBSetIndex(cNTX)
+			
+			? "DBOI_SETCODEBLOCK" , DBOrderInfo( DBOI_SETCODEBLOCK )
+			
+			DBCloseArea()		
+		RETURN
+
+		
+		// TECH-3NY78C93EK, OrdScope() not working
+		[Fact, Trait("Category", "DBF")];
+		METHOD OrdScope_test() AS VOID
+			LOCAL cDbf AS STRING
+			cDbf := GetTempFileName()
+			DBCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
+			DBUseArea(,"DBFNTX",cDbf)
+			FOR LOCAL n := 1 AS INT UPTO 20
+				DBAppend()
+				FieldPut(1,n)
+			NEXT
+			DBCreateIndex(cDbf , "NFIELD")
+			DBCloseArea()
+			
+			DBUseArea(,"DBFNTX",cDbf) // 20 records
+			DBSetIndex ( cDbf )
+			Assert.Equal( DBOrderInfo( DBOI_KEYCOUNT ) , 20)
+			Assert.Equal( OrdScope(TOPSCOPE, 5) , 5) // NULL
+			Assert.Equal( OrdScope(BOTTOMSCOPE, 10) , 10) // NULL
+			DBGoTop()
+			
+			Assert.Equal( DBOrderInfo( DBOI_KEYCOUNT ) , 6) // still 20 - but must be 6
+			LOCAL nCount := 0 AS INT
+			DO WHILE ! EOF() // all 20 records are listed
+				? FieldGet ( 1 )
+				DBSkip ( 1 )
+				nCount ++
+			ENDDO
+			Assert.Equal( 6 , nCount)
+			Assert.Equal( 5 , DBOrderInfo( DBOI_SCOPETOP ) ) // {(0x0000)0x00000000} CLASS
+			Assert.Equal( 10 , DBOrderInfo( DBOI_SCOPEBOTTOM ) ) // {(0x0000)0x00000000} CLASS
+			DBCloseArea()
+		RETURN
+		
+		
+		// TECH-9TW65Q3XQE, NTX corruption with updating multiple fields and shared mode
+		[Fact, Trait("Category", "DBF")];
+		METHOD NTX_test() AS VOID
+			LOCAL aValues AS ARRAY
+			LOCAL i AS DWORD
+			LOCAL cDBF, cNTX AS STRING
+			
+			aValues := { "ssss" , "hhhh", "wwww" , "aaaa" }
+			cDBF := "Foo2"
+			cNTX := "Foox2"
+			DBCreate( cDBF , {{"LAST" , "C" , 20 , 0 } , ;
+								{"TEXT1" , "C" , 10 , 0 } , ;
+								{"NUM1" , "N" , 10 , 2 }})
+			
+			DBUseArea(,,cDBF,,FALSE)
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut(1,aValues [i])
+			NEXT
+			DBCreateIndex(cNTX, "Upper ( Last)")
+			DBCloseArea()
+			
+			DBUseArea(,,cDBF,,TRUE) // open shared !
+			DBSetIndex(cNTX)
+			DBGoTop()
+			? "current (indexed) order"
+			DO WHILE ! EOF()
+				? FieldGet ( 1 )
+				DBSkip ( 1 )
+			ENDDO
+			DBGoTop()
+			// "now replace the index field #LAST content 'aaaa' with 'pppp'"
+			// "and also update another field"
+			Assert.True( DBRLock ( RecNo() )  )
+			// "Replacing", AllTrim(FieldGet(1)), "with 'pppp'"
+			FieldPut ( 1 , "pppp" ) // Note: This is the index field
+				
+//	 this is what causes the problem, updating a second field
+//	 if this fieldput is put above the first one, then sample works correctly
+//	 either one of the fieldputs below cause the problem to surface
+			FieldPut ( 2 , "Eins" )
+			FieldPut ( 3 , 123.45 )
+			
+			DBCommit()
+			
+			DBRUnlock ( RecNo() )
+			
+			Assert.False( DBSeek( "AAAA" ) ) // must show .F.
+			Assert.True( DBSeek ("PPPP" ) ) // must show .T.
+			// "Record order now:"
+			// "(should be hhhh, pppp, ssss , wwww)"
+			DBGoTop()
+			LOCAL nCount := 0 AS INT
+			DO WHILE ! EOF()
+				? AllTrim(FieldGet(1)) , FieldGet(3) , AllTrim(FieldGet(2))
+				nCount ++
+				DO CASE
+				CASE nCount == 1
+					Assert.Equal( "hhhh", AllTrim(FieldGet(1)) )
+				CASE nCount == 2
+					Assert.Equal( "pppp", AllTrim(FieldGet(1)) )
+				CASE nCount == 3
+					Assert.Equal( "ssss", AllTrim(FieldGet(1)) )
+				CASE nCount == 4
+					Assert.Equal( "wwww", AllTrim(FieldGet(1)) )
+				END CASE
+				DBSkip ( 1 )
+			ENDDO
+			DBCloseArea()
+		RETURN
+	
 	
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
 		RETURN GetTempFileName("testdbf")

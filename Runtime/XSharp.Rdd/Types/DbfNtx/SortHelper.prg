@@ -34,7 +34,7 @@ BEGIN NAMESPACE XSharp.RDD
             
             
         INTERNAL METHOD Add(o AS OBJECT ) AS LOGIC
-            IF (SELF:_currentPos < SELF:_Length)
+            IF SELF:_currentPos < SELF:_Length
                 SELF:_dataBuffer[SELF:_currentPos++] := o
                 RETURN TRUE
             ENDIF

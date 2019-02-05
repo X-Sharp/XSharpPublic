@@ -100,7 +100,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_Offset := pageNumber
             SELF:_Bytes := BYTE[]{NTXPAGE_SIZE}
             SELF:_Hot := FALSE
-            IF ( SELF:_Offset != 0 )
+            IF SELF:_Offset != 0 
                 SELF:Read()
             ENDIF
             RETURN
@@ -111,7 +111,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL isOk AS LOGIC
             //
             isOk := TRUE
-            IF ( SELF:_Hot )
+            IF SELF:_Hot 
                 BEGIN LOCK SELF
                     isOk := SELF:Write()
                 END LOCK
@@ -136,11 +136,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL isOk AS LOGIC
             //
             isOk := TRUE
-            IF ( !SELF:_Hot )
+            IF !SELF:_Hot 
                 RETURN isOk
             ENDIF
             // Should it be <= ?
-            IF ( SELF:_Offset < 0 )
+            IF SELF:_Offset < 0 
                 RETURN FALSE
             ENDIF
             TRY

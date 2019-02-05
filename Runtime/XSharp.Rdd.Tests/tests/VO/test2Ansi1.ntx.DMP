@@ -1,0 +1,476 @@
+NTX Header Filedump for:c:\XSharp\DevRt\Runtime\XSharp.Rdd.Tests\tests\VO\test2Ansi1.ntx
+----------------------------------------------
+Signature Default, Version 1, First page 6144, Unused Page 5120
+Item size 18, Key Size 10, Decimals 0, Max Items 50, HalfPage 25
+Key Expression: CHARFIELD, Unique False, Descending False
+For Expression: , OrdName test2Ansi1
+----------------------------------------------
+Page 6144, # of keys: 6
+Item  0, Page   1024 Record   48 : 20202020202020202020            
+Item  1, Page   8192 Record   74 : 20202020202020202020            
+Item  2, Page   9216 Record  100 : 20202020202020202020            
+Item  3, Page   7168 Record  126 : 20202020202020202020            
+Item  4, Page   3072 Record  159 : 20202020202020202020            
+Item  5, Page   2048 Record  191 : 20202020202020202020            
+Right page reference 4096
+Page 1024, # of keys: 47
+Item  0, Page      0 Record    1 : 20202020202020202020            
+Item  1, Page      0 Record    2 : 20202020202020202020            
+Item  2, Page      0 Record    3 : 20202020202020202020            
+Item  3, Page      0 Record    4 : 20202020202020202020            
+Item  4, Page      0 Record    5 : 20202020202020202020            
+Item  5, Page      0 Record    6 : 20202020202020202020            
+Item  6, Page      0 Record    7 : 20202020202020202020            
+Item  7, Page      0 Record    8 : 20202020202020202020            
+Item  8, Page      0 Record    9 : 20202020202020202020            
+Item  9, Page      0 Record   10 : 20202020202020202020            
+Item 10, Page      0 Record   11 : 20202020202020202020            
+Item 11, Page      0 Record   12 : 20202020202020202020            
+Item 12, Page      0 Record   13 : 20202020202020202020            
+Item 13, Page      0 Record   14 : 20202020202020202020            
+Item 14, Page      0 Record   15 : 20202020202020202020            
+Item 15, Page      0 Record   16 : 20202020202020202020            
+Item 16, Page      0 Record   17 : 20202020202020202020            
+Item 17, Page      0 Record   18 : 20202020202020202020            
+Item 18, Page      0 Record   19 : 20202020202020202020            
+Item 19, Page      0 Record   20 : 20202020202020202020            
+Item 20, Page      0 Record   21 : 20202020202020202020            
+Item 21, Page      0 Record   22 : 20202020202020202020            
+Item 22, Page      0 Record   23 : 20202020202020202020            
+Item 23, Page      0 Record   24 : 20202020202020202020            
+Item 24, Page      0 Record   25 : 20202020202020202020            
+Item 25, Page      0 Record   26 : 20202020202020202020            
+Item 26, Page      0 Record   27 : 20202020202020202020            
+Item 27, Page      0 Record   28 : 20202020202020202020            
+Item 28, Page      0 Record   29 : 20202020202020202020            
+Item 29, Page      0 Record   30 : 20202020202020202020            
+Item 30, Page      0 Record   31 : 20202020202020202020            
+Item 31, Page      0 Record   32 : 20202020202020202020            
+Item 32, Page      0 Record   33 : 20202020202020202020            
+Item 33, Page      0 Record   34 : 20202020202020202020            
+Item 34, Page      0 Record   35 : 20202020202020202020            
+Item 35, Page      0 Record   36 : 20202020202020202020            
+Item 36, Page      0 Record   37 : 20202020202020202020            
+Item 37, Page      0 Record   38 : 20202020202020202020            
+Item 38, Page      0 Record   39 : 20202020202020202020            
+Item 39, Page      0 Record   40 : 20202020202020202020            
+Item 40, Page      0 Record   41 : 20202020202020202020            
+Item 41, Page      0 Record   42 : 20202020202020202020            
+Item 42, Page      0 Record   43 : 20202020202020202020            
+Item 43, Page      0 Record   44 : 20202020202020202020            
+Item 44, Page      0 Record   45 : 20202020202020202020            
+Item 45, Page      0 Record   46 : 20202020202020202020            
+Item 46, Page      0 Record   47 : 20202020202020202020            
+Right page reference 0
+Page 8192, # of keys: 25
+Item  0, Page      0 Record   49 : 20202020202020202020            
+Item  1, Page      0 Record   50 : 20202020202020202020            
+Item  2, Page      0 Record   51 : 20202020202020202020            
+Item  3, Page      0 Record   52 : 20202020202020202020            
+Item  4, Page      0 Record   53 : 20202020202020202020            
+Item  5, Page      0 Record   54 : 20202020202020202020            
+Item  6, Page      0 Record   55 : 20202020202020202020            
+Item  7, Page      0 Record   56 : 20202020202020202020            
+Item  8, Page      0 Record   57 : 20202020202020202020            
+Item  9, Page      0 Record   58 : 20202020202020202020            
+Item 10, Page      0 Record   59 : 20202020202020202020            
+Item 11, Page      0 Record   60 : 20202020202020202020            
+Item 12, Page      0 Record   61 : 20202020202020202020            
+Item 13, Page      0 Record   62 : 20202020202020202020            
+Item 14, Page      0 Record   63 : 20202020202020202020            
+Item 15, Page      0 Record   64 : 20202020202020202020            
+Item 16, Page      0 Record   65 : 20202020202020202020            
+Item 17, Page      0 Record   66 : 20202020202020202020            
+Item 18, Page      0 Record   67 : 20202020202020202020            
+Item 19, Page      0 Record   68 : 20202020202020202020            
+Item 20, Page      0 Record   69 : 20202020202020202020            
+Item 21, Page      0 Record   70 : 20202020202020202020            
+Item 22, Page      0 Record   71 : 20202020202020202020            
+Item 23, Page      0 Record   72 : 20202020202020202020            
+Item 24, Page      0 Record   73 : 20202020202020202020            
+Right page reference 0
+Page 9216, # of keys: 25
+Item  0, Page      0 Record   75 : 20202020202020202020            
+Item  1, Page      0 Record   76 : 20202020202020202020            
+Item  2, Page      0 Record   77 : 20202020202020202020            
+Item  3, Page      0 Record   78 : 20202020202020202020            
+Item  4, Page      0 Record   79 : 20202020202020202020            
+Item  5, Page      0 Record   80 : 20202020202020202020            
+Item  6, Page      0 Record   81 : 20202020202020202020            
+Item  7, Page      0 Record   82 : 20202020202020202020            
+Item  8, Page      0 Record   83 : 20202020202020202020            
+Item  9, Page      0 Record   84 : 20202020202020202020            
+Item 10, Page      0 Record   85 : 20202020202020202020            
+Item 11, Page      0 Record   86 : 20202020202020202020            
+Item 12, Page      0 Record   87 : 20202020202020202020            
+Item 13, Page      0 Record   88 : 20202020202020202020            
+Item 14, Page      0 Record   89 : 20202020202020202020            
+Item 15, Page      0 Record   90 : 20202020202020202020            
+Item 16, Page      0 Record   91 : 20202020202020202020            
+Item 17, Page      0 Record   92 : 20202020202020202020            
+Item 18, Page      0 Record   93 : 20202020202020202020            
+Item 19, Page      0 Record   94 : 20202020202020202020            
+Item 20, Page      0 Record   95 : 20202020202020202020            
+Item 21, Page      0 Record   96 : 20202020202020202020            
+Item 22, Page      0 Record   97 : 20202020202020202020            
+Item 23, Page      0 Record   98 : 20202020202020202020            
+Item 24, Page      0 Record   99 : 20202020202020202020            
+Right page reference 0
+Page 7168, # of keys: 25
+Item  0, Page      0 Record  101 : 20202020202020202020            
+Item  1, Page      0 Record  102 : 20202020202020202020            
+Item  2, Page      0 Record  103 : 20202020202020202020            
+Item  3, Page      0 Record  104 : 20202020202020202020            
+Item  4, Page      0 Record  105 : 20202020202020202020            
+Item  5, Page      0 Record  106 : 20202020202020202020            
+Item  6, Page      0 Record  107 : 20202020202020202020            
+Item  7, Page      0 Record  108 : 20202020202020202020            
+Item  8, Page      0 Record  109 : 20202020202020202020            
+Item  9, Page      0 Record  110 : 20202020202020202020            
+Item 10, Page      0 Record  111 : 20202020202020202020            
+Item 11, Page      0 Record  112 : 20202020202020202020            
+Item 12, Page      0 Record  113 : 20202020202020202020            
+Item 13, Page      0 Record  114 : 20202020202020202020            
+Item 14, Page      0 Record  115 : 20202020202020202020            
+Item 15, Page      0 Record  116 : 20202020202020202020            
+Item 16, Page      0 Record  117 : 20202020202020202020            
+Item 17, Page      0 Record  118 : 20202020202020202020            
+Item 18, Page      0 Record  119 : 20202020202020202020            
+Item 19, Page      0 Record  120 : 20202020202020202020            
+Item 20, Page      0 Record  121 : 20202020202020202020            
+Item 21, Page      0 Record  122 : 20202020202020202020            
+Item 22, Page      0 Record  123 : 20202020202020202020            
+Item 23, Page      0 Record  124 : 20202020202020202020            
+Item 24, Page      0 Record  125 : 20202020202020202020            
+Right page reference 0
+Page 3072, # of keys: 32
+Item  0, Page      0 Record  127 : 20202020202020202020            
+Item  1, Page      0 Record  128 : 20202020202020202020            
+Item  2, Page      0 Record  129 : 20202020202020202020            
+Item  3, Page      0 Record  130 : 20202020202020202020            
+Item  4, Page      0 Record  131 : 20202020202020202020            
+Item  5, Page      0 Record  132 : 20202020202020202020            
+Item  6, Page      0 Record  133 : 20202020202020202020            
+Item  7, Page      0 Record  134 : 20202020202020202020            
+Item  8, Page      0 Record  135 : 20202020202020202020            
+Item  9, Page      0 Record  136 : 20202020202020202020            
+Item 10, Page      0 Record  137 : 20202020202020202020            
+Item 11, Page      0 Record  138 : 20202020202020202020            
+Item 12, Page      0 Record  139 : 20202020202020202020            
+Item 13, Page      0 Record  140 : 20202020202020202020            
+Item 14, Page      0 Record  141 : 20202020202020202020            
+Item 15, Page      0 Record  142 : 20202020202020202020            
+Item 16, Page      0 Record  143 : 20202020202020202020            
+Item 17, Page      0 Record  144 : 20202020202020202020            
+Item 18, Page      0 Record  145 : 20202020202020202020            
+Item 19, Page      0 Record  146 : 20202020202020202020            
+Item 20, Page      0 Record  147 : 20202020202020202020            
+Item 21, Page      0 Record  148 : 20202020202020202020            
+Item 22, Page      0 Record  149 : 20202020202020202020            
+Item 23, Page      0 Record  150 : 20202020202020202020            
+Item 24, Page      0 Record  151 : 20202020202020202020            
+Item 25, Page      0 Record  152 : 20202020202020202020            
+Item 26, Page      0 Record  153 : 20202020202020202020            
+Item 27, Page      0 Record  154 : 20202020202020202020            
+Item 28, Page      0 Record  155 : 20202020202020202020            
+Item 29, Page      0 Record  156 : 20202020202020202020            
+Item 30, Page      0 Record  157 : 20202020202020202020            
+Item 31, Page      0 Record  158 : 20202020202020202020            
+Right page reference 0
+Page 2048, # of keys: 31
+Item  0, Page      0 Record  160 : 20202020202020202020            
+Item  1, Page      0 Record  161 : 20202020202020202020            
+Item  2, Page      0 Record  162 : 20202020202020202020            
+Item  3, Page      0 Record  163 : 20202020202020202020            
+Item  4, Page      0 Record  164 : 20202020202020202020            
+Item  5, Page      0 Record  165 : 20202020202020202020            
+Item  6, Page      0 Record  166 : 20202020202020202020            
+Item  7, Page      0 Record  167 : 20202020202020202020            
+Item  8, Page      0 Record  168 : 20202020202020202020            
+Item  9, Page      0 Record  169 : 20202020202020202020            
+Item 10, Page      0 Record  170 : 20202020202020202020            
+Item 11, Page      0 Record  171 : 20202020202020202020            
+Item 12, Page      0 Record  172 : 20202020202020202020            
+Item 13, Page      0 Record  173 : 20202020202020202020            
+Item 14, Page      0 Record  174 : 20202020202020202020            
+Item 15, Page      0 Record  175 : 20202020202020202020            
+Item 16, Page      0 Record  176 : 20202020202020202020            
+Item 17, Page      0 Record  177 : 20202020202020202020            
+Item 18, Page      0 Record  178 : 20202020202020202020            
+Item 19, Page      0 Record  179 : 20202020202020202020            
+Item 20, Page      0 Record  180 : 20202020202020202020            
+Item 21, Page      0 Record  181 : 20202020202020202020            
+Item 22, Page      0 Record  182 : 20202020202020202020            
+Item 23, Page      0 Record  183 : 20202020202020202020            
+Item 24, Page      0 Record  184 : 20202020202020202020            
+Item 25, Page      0 Record  185 : 20202020202020202020            
+Item 26, Page      0 Record  186 : 20202020202020202020            
+Item 27, Page      0 Record  187 : 20202020202020202020            
+Item 28, Page      0 Record  188 : 20202020202020202020            
+Item 29, Page      0 Record  189 : 20202020202020202020            
+Item 30, Page      0 Record  190 : 20202020202020202020            
+Right page reference 0
+Page 4096, # of keys: 33
+Item  0, Page      0 Record  192 : 20202020202020202020            
+Item  1, Page      0 Record  193 : 20202020202020202020            
+Item  2, Page      0 Record  194 : 20202020202020202020            
+Item  3, Page      0 Record  195 : 20202020202020202020            
+Item  4, Page      0 Record  196 : 20202020202020202020            
+Item  5, Page      0 Record  197 : 20202020202020202020            
+Item  6, Page      0 Record  198 : 20202020202020202020            
+Item  7, Page      0 Record  199 : 20202020202020202020            
+Item  8, Page      0 Record  200 : 20202020202020202020            
+Item  9, Page      0 Record  201 : 20202020202020202020            
+Item 10, Page      0 Record  202 : 20202020202020202020            
+Item 11, Page      0 Record  203 : 20202020202020202020            
+Item 12, Page      0 Record  204 : 20202020202020202020            
+Item 13, Page      0 Record  205 : 20202020202020202020            
+Item 14, Page      0 Record  206 : 20202020202020202020            
+Item 15, Page      0 Record  207 : 20202020202020202020            
+Item 16, Page      0 Record  208 : 20202020202020202020            
+Item 17, Page      0 Record  209 : 20202020202020202020            
+Item 18, Page      0 Record  210 : 20202020202020202020            
+Item 19, Page      0 Record  211 : 20202020202020202020            
+Item 20, Page      0 Record  212 : 20202020202020202020            
+Item 21, Page      0 Record  213 : 20202020202020202020            
+Item 22, Page      0 Record  214 : 20202020202020202020            
+Item 23, Page      0 Record  215 : 20202020202020202020            
+Item 24, Page      0 Record  216 : 20202020202020202020            
+Item 25, Page      0 Record  217 : 20202020202020202020            
+Item 26, Page      0 Record  218 : 20202020202020202020            
+Item 27, Page      0 Record  219 : 20202020202020202020            
+Item 28, Page      0 Record  220 : 20202020202020202020            
+Item 29, Page      0 Record  221 : 20202020202020202020            
+Item 30, Page      0 Record  222 : 20202020202020202020            
+Item 31, Page      0 Record  223 : 20202020202020202020            
+Item 32, Page      0 Record  224 : 20202020202020202020            
+Right page reference 0
+------------------------------
+List of Records in Index order
+------------------------------
+Recno      KeyValue
+------------------------------
+         1           
+         2           
+         3           
+         4           
+         5           
+         6           
+         7           
+         8           
+         9           
+        10           
+        11           
+        12           
+        13           
+        14           
+        15           
+        16           
+        17           
+        18           
+        19           
+        20           
+        21           
+        22           
+        23           
+        24           
+        25           
+        26           
+        27           
+        28           
+        29           
+        30           
+        31           
+        32           
+        33           
+        34           
+        35           
+        36           
+        37           
+        38           
+        39           
+        40           
+        41           
+        42           
+        43           
+        44           
+        45           
+        46           
+        47           
+        48           
+        49           
+        50           
+        51           
+        52           
+        53           
+        54           
+        55           
+        56           
+        57           
+        58           
+        59           
+        60           
+        61           
+        62           
+        63           
+        64           
+        65           
+        66           
+        67           
+        68           
+        69           
+        70           
+        71           
+        72           
+        73           
+        74           
+        75           
+        76           
+        77           
+        78           
+        79           
+        80           
+        81           
+        82           
+        83           
+        84           
+        85           
+        86           
+        87           
+        88           
+        89           
+        90           
+        91           
+        92           
+        93           
+        94           
+        95           
+        96           
+        97           
+        98           
+        99           
+       100           
+       101           
+       102           
+       103           
+       104           
+       105           
+       106           
+       107           
+       108           
+       109           
+       110           
+       111           
+       112           
+       113           
+       114           
+       115           
+       116           
+       117           
+       118           
+       119           
+       120           
+       121           
+       122           
+       123           
+       124           
+       125           
+       126           
+       127           
+       128           
+       129           
+       130           
+       131           
+       132           
+       133           
+       134           
+       135           
+       136           
+       137           
+       138           
+       139           
+       140           
+       141           
+       142           
+       143           
+       144           
+       145           
+       146           
+       147           
+       148           
+       149           
+       150           
+       151           
+       152           
+       153           
+       154           
+       155           
+       156           
+       157           
+       158           
+       159           
+       160           
+       161           
+       162           
+       163           
+       164           
+       165           
+       166           
+       167           
+       168           
+       169           
+       170           
+       171           
+       172           
+       173           
+       174           
+       175           
+       176           
+       177           
+       178           
+       179           
+       180           
+       181           
+       182           
+       183           
+       184           
+       185           
+       186           
+       187           
+       188           
+       189           
+       190           
+       191           
+       192           
+       193           
+       194           
+       195           
+       196           
+       197           
+       198           
+       199           
+       200           
+       201           
+       202           
+       203           
+       204           
+       205           
+       206           
+       207           
+       208           
+       209           
+       210           
+       211           
+       212           
+       213           
+       214           
+       215           
+       216           
+       217           
+       218           
+       219           
+       220           
+       221           
+       222           
+       223           
+       224           

@@ -5849,7 +5849,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             StatementSyntax ifStmt = context.IfStmt.Get<IfStatementSyntax>();
             context.SetSequencePoint(context.IfStmt.Cond);
             ifStmt = CheckForGarbage(ifStmt, context.Ignored, "Expression after END IF");
-            context.Put(ifStmt);
+            if (context.IfStmt.Cond.CsNode is IsPatternExpressionSyntax)
+            {
+                // wrap the ifStmt in a block to make sure that variable introduced in IF x IS Foo oFoo is not visible after the block
+                var stmts = new List<StatementSyntax>();
+                stmts.Add(ifStmt);
+                context.Put(MakeBlock(stmts));
+            }
+            else
+            { 
+                context.Put(ifStmt);
+            }
         }
 
         public override void ExitIfElseBlock([NotNull] XP.IfElseBlockContext context)

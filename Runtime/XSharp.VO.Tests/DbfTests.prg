@@ -914,6 +914,38 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 	
 	
+		// TECH-4JX6H10741, DBOrderInfo( DBOI_KEYCOUNT ) returns NIL when record pointer is at EoF
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBOrderInfo_DBOI_KEYCOUNT() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL aValues AS ARRAY 
+			LOCAL i AS DWORD
+			
+			cDBF := "Foo"
+			aValues := { 44 , 12, 34 , 21 }                                 
+			DBCreate( cDBF , {{"AGE" , "N" , 3 , 0 } })
+			DBUseArea(,"DBFNTX",cDBF,,FALSE) 
+			Assert.Equal(0 , DBOrderInfo( DBOI_KEYCOUNT ) ) // 0,  ok
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut(1,aValues [i])  
+			NEXT 
+			Assert.Equal(0 , DBOrderInfo( DBOI_KEYCOUNT ) ) // 0,  ok
+			DBCreateIndex(cDbf, "age" ) 
+			Assert.Equal(4 , DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
+			DBGoTop() 
+			Assert.Equal(4 , DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
+			DO WHILE ! EOF()
+//			? FieldGet ( 1 ) 
+				DBSkip(1)
+			ENDDO 
+			Assert.Equal(4 , DBOrderInfo( DBOI_KEYCOUNT ) ) // NIL, should be 4
+			DBSkip(-1)
+			Assert.Equal(4 , DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
+			DBCloseArea ()
+		RETURN
+	
+	
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
 		RETURN GetTempFileName("testdbf")
 		STATIC PRIVATE METHOD GetTempFileName(cFileName AS STRING) AS STRING

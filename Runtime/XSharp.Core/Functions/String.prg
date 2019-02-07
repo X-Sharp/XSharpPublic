@@ -1255,7 +1255,7 @@ FUNCTION UpperA(cSource REF STRING) AS STRING
 /// <param name="hfOut"></param>
 /// <returns>
 /// </returns>
-UNSAFE FUNCTION UUDecodeLine(cLine AS STRING,hfOut AS PTR) AS DWORD
+FUNCTION UUDecodeLine(cLine AS STRING,hfOut AS IntPtr) AS DWORD
 	THROW NotImplementedException{}
 RETURN 0   
 

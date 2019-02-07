@@ -127,18 +127,29 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 #endregion
 #region constants
-		PRIVATE CONST CDXOFFSET_ROOT		   := 0	AS WORD		// Byte offset to Root
-		PRIVATE CONST CDXOFFSET_FREELIST	   := 4	AS WORD		// Byte offset to next free block
-		PRIVATE CONST CDXOFFSET_VERSION		   := 8	AS WORD		// to increment on modification
-		PRIVATE CONST CDXOFFSET_KEYLENGTH	   := 12	AS WORD		// Length of key 
-		PRIVATE CONST CDXOFFSET_OPTIONS		   := 14	AS WORD		// CdxOptions : bit field
-		PRIVATE CONST CDXOFFSET_Sig			   := 15   AS WORD
-        // bytes 16 - 501 are all reserved
-		PRIVATE CONST CDXOFFSET_DESCENDING	   := 502	AS WORD		// 0 = Ascending, 1 = Descending
-		PRIVATE CONST CDXOFFSET_FOREXPRPOS     := 504	AS WORD		// Offset of Filter expression
-		PRIVATE CONST CDXOFFSET_FOREXPRLEN     := 506	AS WORD		// Length of filter expression incl zero terminator
-		PRIVATE CONST CDXOFFSET_KEYEXPRPOS     := 508	AS WORD		// Offset of Key expression
-		PRIVATE CONST CDXOFFSET_KEYEXPRLEN     := 510	AS WORD		// Length of key expression incl zero terminator
+		PRIVATE CONST CDXOFFSET_ROOT		   := 0x00	AS WORD		// Byte offset to Root
+		PRIVATE CONST CDXOFFSET_FREELIST	   := 0x04	AS WORD		// Byte offset to next free block
+		PRIVATE CONST CDXOFFSET_VERSION		   := 0x08	AS WORD		// to increment on modification
+		PRIVATE CONST CDXOFFSET_KEYLENGTH	   := 0x0c	AS WORD		// Length of key
+		PRIVATE CONST CDXOFFSET_OPTIONS		   := 0x0e	AS WORD		// CdxOptions : bit field
+		PRIVATE CONST CDXOFFSET_Sig			   := 0x0f   AS WORD
+        // Harbour documents these values
+        PRIVATE CONST CDXOFFSET_HEADERLEN      := 0x10 AS WORD  // 2
+        PRIVATE CONST CDXOFFSET_PAGELEN        := 0x12 AS WORD  // 2
+        PRIVATE CONST CDXOFFSET_COLLATION      := 0x14 AS WORD  // 4
+        PRIVATE CONST CDXOFFSET_RESERVED       := 0x18 AS WORD // 68 bytes
+        PRIVATE CONST CDXOFFSET_LANG           := 0x44 AS WORD // 26 bytes
+        PRIVATE CONST CDXOFFSET_COLLATVER      := 0x76 AS WORD // 4 bytes
+        PRIVATE CONST CDXOFFSET_RESERVED2      := 0x7a AS WORD // 372 bytes
+        PRIVATE CONST CDXOFFSET_VFPCODEPAGE    := 0x1ee AS WORD // 5 bytes
+        PRIVATE CONST CDXOFFSET_IGNORECASE     := 0x1f3 AS WORD // 1 byte
+        PRIVATE CONST CDXOFFSET_EXPR_LEN       := 0x1f4 AS WORD // 2 byte2
+        // end of Harbour defines
+		PRIVATE CONST CDXOFFSET_DESCENDING	   := 0x1f6	AS WORD		// 0 = Ascending, 1 = Descending
+		PRIVATE CONST CDXOFFSET_FOREXPRPOS     := 0x1f8	AS WORD		// Offset of Filter expression
+		PRIVATE CONST CDXOFFSET_FOREXPRLEN     := 0x1fa	AS WORD		// Length of filter expression incl zero terminator
+		PRIVATE CONST CDXOFFSET_KEYEXPRPOS     := 0x1fc	AS WORD		// Offset of Key expression
+		PRIVATE CONST CDXOFFSET_KEYEXPRLEN     := 0x1fe	AS WORD		// Length of key expression incl zero terminator
 #endregion			
 
 		

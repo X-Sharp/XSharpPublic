@@ -813,6 +813,34 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBCloseArea()
 		RETURN
 		
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD OrdScope_test_with_Ordinal_Collation() AS VOID
+			LOCAL cDbf AS STRING
+			cDbf := GetTempFileName()
+			
+			LOCAL uCollation AS USUAL
+			uCollation := SetCollation(#ORDINAL)
+			
+			DBCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
+			DBUseArea(,"DBFNTX",cDbf)
+			FOR LOCAL n := 1 AS INT UPTO 20
+				DBAppend()
+				FieldPut(1,n)
+			NEXT
+			DBCreateIndex(cDbf , "NFIELD")
+			DBCloseArea()
+			
+			DBUseArea(,"DBFNTX",cDbf)
+			DBSetIndex ( cDbf )
+			Assert.Equal( (INT) DBOrderInfo( DBOI_KEYCOUNT ) , 20)
+			Assert.Equal( UsualType( DBOrderInfo( DBOI_KEYCOUNT )  ) , 1) // first time returns 6
+			Assert.Equal( UsualType( DBOrderInfo( DBOI_KEYCOUNT )  ) , 1) // second time it returns 1 correctly
+			DBCloseArea()
+			
+			SetCollation(uCollation)
+		RETURN
+		
 		
 		// TECH-9TW65Q3XQE, NTX corruption with updating multiple fields and shared mode
 		[Fact, Trait("Category", "DBF")];
@@ -883,6 +911,38 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				DBSkip ( 1 )
 			ENDDO
 			DBCloseArea()
+		RETURN
+	
+	
+		// TECH-4JX6H10741, DBOrderInfo( DBOI_KEYCOUNT ) returns NIL when record pointer is at EoF
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBOrderInfo_DBOI_KEYCOUNT() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL aValues AS ARRAY 
+			LOCAL i AS DWORD
+			
+			cDBF := "Foo"
+			aValues := { 44 , 12, 34 , 21 }                                 
+			DBCreate( cDBF , {{"AGE" , "N" , 3 , 0 } })
+			DBUseArea(,"DBFNTX",cDBF,,FALSE) 
+			Assert.Equal(0 , DBOrderInfo( DBOI_KEYCOUNT ) ) // 0,  ok
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut(1,aValues [i])  
+			NEXT 
+			Assert.Equal(0 , DBOrderInfo( DBOI_KEYCOUNT ) ) // 0,  ok
+			DBCreateIndex(cDbf, "age" ) 
+			Assert.Equal(4 , DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
+			DBGoTop() 
+			Assert.Equal(4 , DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
+			DO WHILE ! EOF()
+//			? FieldGet ( 1 ) 
+				DBSkip(1)
+			ENDDO 
+			Assert.Equal(4 , DBOrderInfo( DBOI_KEYCOUNT ) ) // NIL, should be 4
+			DBSkip(-1)
+			Assert.Equal(4 , DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
+			DBCloseArea ()
 		RETURN
 	
 	

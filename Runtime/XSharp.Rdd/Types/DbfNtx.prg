@@ -309,19 +309,17 @@ BEGIN NAMESPACE XSharp.RDD
 				ENDIF
 			END LOCK
 
-        METHOD __Goto(nRec AS LONG, lSeekNtx := FALSE AS LOGIC) AS LOGIC
-            BEGIN LOCK SELF
-                IF lSeekNtx
-                    // Position index on the current record
-                    IF SELF:CurrentOrder != NULL
-                        SELF:CurrentOrder:_GoToRecNo(nRec)
-                    ENDIF
-                ENDIF
-                RETURN SUPER:Goto(nRec)
-            END LOCK
+        METHOD __Goto(nRec AS LONG) AS LOGIC
+             // Skip without reset of topstack
+             RETURN SUPER:Goto(nRec)
 
 		METHOD GoTo(nRec AS LONG) AS LOGIC
-            RETURN SELF:__Goto(nRec, TRUE)
+            SELF:GoCold()
+            IF SELF:CurrentOrder != NULL
+                SELF:CurrentOrder:_TopStack := 0    // force to reseek later
+            ENDIF
+            RETURN SUPER:Goto(nRec)
+
 			
 		PUBLIC METHOD SkipRaw( move AS LONG ) AS LOGIC
 			BEGIN LOCK SELF

@@ -17,6 +17,7 @@ USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.RDD.NTX
 
+    INTERNAL DELEGATE ValueBlock( sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
     // Ntx Stack item
     // Keep informations
     INTERNAL SEALED CLASS NtxStack
@@ -51,7 +52,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     [DebuggerDisplay("Order {OrderName}: {Expression}")];
     INTERNAL SEALED CLASS NtxOrder INHERIT BaseIndex IMPLEMENTS IRddSortWriter
         PRIVATE CONST MAX_KEY_LEN       := 256  AS WORD
-        PRIVATE CONST BUFF_SIZE	        := 1024  AS WORD
+        PRIVATE CONST BUFF_SIZE	        := 1024  AS WORD 
         PRIVATE CONST NTX_COUNT         := 16    AS WORD
         PRIVATE CONST NTX_STACK_COUNT   := 20    AS WORD
         PRIVATE CONST MIN_BYTE          := 0x01 AS BYTE
@@ -181,6 +182,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         END PROPERTY
 
     INTERNAL METHOD __Compare( aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
+        IF aRHS == NULL
+            return 0
+        ENDIF
         RETURN RuntimeState.StringCompare(aLHS, aRHS, nLength)
 
     INTERNAL METHOD Open(dbordInfo AS DBORDERINFO ) AS LOGIC
@@ -914,7 +918,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             result := FALSE
         END TRY
         RETURN result
-    PRIVATE DELEGATE ValueBlock( sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
+
+
     INTERNAL METHOD _CreateIndex() AS LOGIC
         LOCAL fType AS DbFieldType
         LOCAL sourceIndex AS LONG

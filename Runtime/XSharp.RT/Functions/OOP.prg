@@ -155,7 +155,147 @@ INTERNAL STATIC CLASS OOPHelpers
 		END TRY
 		
 		RETURN oMI
-		
+
+
+    STATIC METHOD CompareMethods(m1 as MethodBase, m2 as MethodBase, uArgs as USUAL[]) as LONG
+        var p1 := m1:GetParameters()
+        var p2 := m2:GetParameters()
+
+        if p1:Length != p2:Length
+            if p1:Length == uArgs:Length
+                return 1
+            elseif p2:Length == uArgs:Length
+                return 2
+            endif
+        endif
+        // when we get here then the parameter counts are the same
+        FOR VAR nPar := 1 to p1:Length
+            if nPar > uArgs:Length
+                exit
+            endif
+            var par1 := p1[nPar]
+            var par2 := p2[nPar]
+            var arg  := uArgs[nPar]
+            if par1:ParameterType != par2:ParameterType
+                if par1:ParameterType:IsAssignableFrom(arg:SystemType)
+                    return 1
+                endif
+                if par2:ParameterType:IsAssignableFrom(arg:SystemType)
+                    return 2
+                endif
+                if par1:ParameterType = typeof(USUAL)
+                    return 1
+                endif
+                if par2:ParameterType = typeof(USUAL)
+                    return 2
+                endif
+            endif
+        NEXT
+        return 0
+
+    STATIC METHOD FindBestOverLoad<T>(overloads as T[], cFunction as STRING, uArgs AS USUAL[]) as T where T is MethodBase
+        if overloads:Length == 0
+            return null
+        elseif overloads:Length = 1
+            return overloads[1]
+        endif
+        // More than one
+        var found := List<T>{}
+        // first look for methods with the same ! of parametes
+        foreach var m in overloads
+            if m:GetParameters():Length == uArgs:Length
+                found:Add(m)
+            endif
+        next
+        if found:Count == 1
+            return found[0] // collection, so 0 based !
+        endif
+        // then look for methods with
+        found:Clear()
+        for var nMethod := 1 to overloads:Length -1
+            var m1     := overloads[nMethod]
+            var m2     := overloads[nMethod+1]
+            var result := compareMethods(m1, m2, uArgs)
+            if result == 1
+                if ! found:Contains(m1)
+                    found:Add(m1)
+                endif
+            elseif result == 2
+                if ! found:Contains(m2)
+                    found:Add(m2)
+                endif
+            endif
+        next
+        if found:Count == 1
+            return found[0] // collection, so 0 based !
+        endif
+        local cClass as STRING
+        cClass := overloads[1]:DeclaringType:Name
+        THROW Error.VOError( EG_AMBIGUOUSMETHOD, cFunction, "MethodName", 1, <OBJECT>{cClass+":"+overloads[1]:Name})
+        
+
+    STATIC METHOD MatchParameters<T>( methodinfo as T, args as USUAL[]) AS OBJECT[] where T is MethodBase
+        // args contains the list of arguments. The methodname has already been deleted when appropriated
+		LOCAL oArgs AS OBJECT[]
+        LOCAL lClipper := FALSE AS LOGIC
+        VAR aPars := methodInfo:GetParameters()
+        if aPars:Length == 1 .and. methodinfo:IsDefined(TYPEOF(ClipperCallingconventionAttribute),FALSE)
+            lClipper := TRUE
+        ENDIF
+        DO CASE
+        CASE lClipper
+			oArgs  := <OBJECT>{args}
+        CASE aPars:Length == 0 
+			// no args
+			oArgs := NULL
+		OTHERWISE
+			// convert args to array of objects
+			oArgs := OBJECT[]{aPars:Length}
+            VAR nMax := args:Length
+            IF aPars:Length < nMax
+                nMax := aPars:Length 
+            ENDIF
+			FOR VAR nPar := 1 TO nMax
+                VAR     pi := aPars[nPar] // ParameterInfo
+                LOCAL   arg := args[nPar] AS USUAL
+                IF pi:ParameterType == TYPEOF(USUAL)
+					// We need to box a usual here 
+    				oArgs[nPar] := __CASTCLASS(OBJECT, arg)
+                ELSEIF pi:ParameterType:IsAssignableFrom(arg:SystemType) .OR. arg == NULL
+					oArgs[nPar] := arg
+                ELSEIF pi:GetCustomAttributes( TYPEOF( ParamArrayAttribute ), FALSE ):Length > 0
+                    // Parameter array of certain type
+					// -> convert remaining elements from uArgs to an array and assign that to oArgs[i] 
+					LOCAL elementType := pi:ParameterType:GetElementType() AS System.Type
+					LOCAL aVarArgs    := System.Array.CreateInstance(elementType, args:Length - nPar +1) AS System.Array
+					FOR VAR nArg := nPar TO args:Length
+						TRY
+							IF elementType:IsAssignableFrom(args[nArg]:SystemType)
+								aVarArgs:SetValue(args[nArg], nArg-nPar)
+							ELSE
+								aVarArgs:SetValue(VOConvert(args[nArg], elementType), nArg-nPar)
+							ENDIF
+						CATCH
+							aVarArgs:SetValue(NULL, nArg-nPar)
+						END TRY
+					NEXT
+					oArgs[nPar] := aVarArgs
+                    EXIT    // done with parameters
+                ELSE	// try to convert to the expected type
+					oArgs[nPar]  := VOConvert(args[nPar], pi:ParameterType)
+                ENDIF
+			NEXT 
+            // set default parameters for missing parameters
+            for VAR nArg := nMax+1 to aPars:Length
+                local oPar as ParameterInfo
+                oPar        := aPars[nArg]
+                IF oPar:HasDefaultValue
+                    oArgs[nArg] := oPar:DefaultValue
+                ENDIF
+            next
+		ENDCASE
+        return oArgs
+
 	STATIC METHOD IsMethod( t AS System.Type, cName AS STRING ) AS LOGIC
 		RETURN FindMethod(t, cName, TRUE) != NULL
 		
@@ -382,7 +522,22 @@ INTERNAL STATIC CLASS OOPHelpers
 			THROW Error.NullArgumentError( __ENTITY__, NAMEOF(oObject), 1 )
 		ENDIF
 		LOCAL mi AS MethodInfo
-		mi := t:GetMethod(cMethod,BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase )
+        TRY
+		    mi := t:GetMethod(cMethod,BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase )
+        CATCH  as AmbiguousMatchException
+            try
+                var list := List<MethodInfo>{}
+                foreach var minfo in t:GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                    if String.Compare(minfo:Name, cMethod, StringComparison.OrdinalIgnoreCase) == 0
+                        list:Add(minfo)
+                    endif
+                next
+                var mis := list:ToArray()
+                mi := FindBestOverload(mis, "SendHelper",uArgs)
+            catch as Exception
+                mi := null
+            end try
+        END TRY
 		IF mi == NULL
 			// No Error Here. THat is done in the calling code
 			RETURN FALSE
@@ -390,57 +545,9 @@ INTERNAL STATIC CLASS OOPHelpers
 		RETURN sendHelper(oObject, mi, uArgs, OUT result)
 		
 	STATIC METHOD SendHelper(oObject AS OBJECT, mi AS MethodInfo , uArgs AS USUAL[], result OUT USUAL) AS LOGIC
-		LOCAL paramInfo AS ParameterInfo[]
-		result := NIL
-		paramInfo := mi:GetParameters()
-		// Clipper calling convention ?
-		LOCAL lClipper := FALSE AS LOGIC
-		IF paramInfo:Length == 1 .AND. mi:IsDefined( TYPEOF( ClipperCallingConventionAttribute ), FALSE )
-			lClipper := TRUE
-		ENDIF
-		LOCAL oArgs AS OBJECT[]
-		IF lClipper
-			oArgs := <OBJECT>{uArgs}
-		ELSEIF paramInfo:Length > 0
-			oArgs := OBJECT[]{ paramInfo:Length }
-			LOCAL nPar AS INT
-			FOR nPar := 1 TO paramInfo:Length
-				LOCAL pi := paramInfo[nPar] AS ParameterInfo
-				IF nPar <= uArgs:Length
-					LOCAL arg := uArgs[nPar] AS USUAL
-					IF pi:ParameterType == TYPEOF(USUAL)
-						// We need to box a usual here 
-						oArgs[nPar] := __CASTCLASS(OBJECT, arg)
-					ELSEIF pi:ParameterType:IsAssignableFrom(arg:SystemType) .OR. arg == NULL
-						oArgs[nPar] := arg
-					ELSEIF pi:GetCustomAttributes( TYPEOF( ParamArrayAttribute ), FALSE ):Length > 0
-						// Parameter array of certain type
-						// -> convert remaining elements from uArgs to an array and assign that to oArgs[i] 
-						LOCAL elementType := pi:ParameterType:GetElementType() AS System.Type
-						LOCAL aVarArgs    := System.Array.CreateInstance(elementType, uArgs:Length - nPar +1) AS System.Array
-						LOCAL nArg AS INT
-						FOR nArg := nPar TO uArgs:Length
-							TRY
-								IF elementType:IsAssignableFrom(uArgs[nArg]:SystemType)
-									aVarArgs:SetValue(uArgs[nArg], nArg-nPar)
-								ELSE
-									aVarArgs:SetValue(VOConvert(uArgs[nArg], elementType), nArg-nPar)
-								ENDIF
-							CATCH
-								aVarArgs:SetValue(NULL, nArg-nPar)
-							END TRY
-						NEXT
-						oArgs[nPar] := aVarArgs
-						EXIT	// parameter loop
-					ELSE	// try to convert to the expected type
-						oArgs[nPar]  := VOConvert(uArgs[nPar], pi:ParameterType)
-					ENDIF
-				ENDIF 
-			NEXT
-		ELSE
-			oArgs := NULL
-		ENDIF
+        result := NULL
 		IF mi != NULL   
+            VAR oArgs := MatchParameters(mi, uArgs) 
 			IF mi:ReturnType == typeof(USUAL)
                 result := mi:Invoke(oObject, oArgs)
             ELSE
@@ -588,38 +695,17 @@ FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
 	IF t == NULL
 		 THROW Error.VOError( EG_NOCLASS, __FUNCTION__, NAMEOF(cClassName), 1,  <OBJECT>{cClassName}  )
 	ENDIF
-	VAR constructors := t:getConstructors() 
-	IF constructors:Length > 1
-		THROW Error.VOError( EG_AMBIGUOUSMETHOD, __FUNCTION__, NAMEOF(cClassName), 0 , NULL)
-	ENDIF
-	LOCAL ctor := constructors[1] AS ConstructorInfo
-	LOCAL nPCount AS INT
-	LOCAL nArg AS INT
-	nPCount := PCount()
+	VAR constructors := t:getConstructors()
+    VAR nPCount := PCount() 
+	VAR args := USUAL[]{nPCount-1}
+	FOR VAR nArg := 2 TO nPCount
+		args[nArg-1] := _GetFParam(nArg)
+	NEXT 
+    LOCAL ctor := OOPHelpers.FindBestOverLoad(constructors, __FUNCTION__ ,args) as ConstructorInfo
+	
 	LOCAL oRet AS OBJECT  
 	TRY
-		LOCAL oArgs AS OBJECT[]
-		IF ctor:IsDefined(TYPEOF(ClipperCallingconventionAttribute),FALSE)
-			LOCAL args AS USUAL[]
-			args := USUAL[]{nPCount-1}
-			FOR nArg := 2 TO nPCount
-				args[nArg-1] := _GetFParam(nArg)
-			NEXT 
-			oArgs  := <OBJECT>{args}
-		ELSEIF ctor:IsDefined(TYPEOF( CompilerGeneratedAttribute ), FALSE )
-			// generated default ctor without args
-			oArgs := NULL
-		ELSEIF ctor:GetParameters():Length == 0
-			oArgs := NULL
-		ELSE
-			// convert args to array of objects
-			LOCAL args AS OBJECT[]
-			args := OBJECT[]{nPCount-1}
-			FOR nArg := 2 TO nPCount
-				args[nArg-1] := _GetFParam(nArg)
-			NEXT 
-			oArgs  := args
-		ENDIF
+		LOCAL oArgs := OOPHelpers.MatchParameters(ctor, args) as OBJECT[]
 		oRet := ctor:Invoke( oArgs )
 	CATCH
 		THROW Error.VOError( EG_NOMETHOD, __FUNCTION__, "Constructor", 0 , NULL)

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -20,6 +20,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "OOP")];
 		METHOD CreateInstanceTests() AS VOID
 			LOCAL oObject AS OBJECT
+            LOCAL oObject2 AS TestStrong
 			/// note that vulcan does not return true for IsClassOf(#Tester, "Object")
 			oObject := CreateInstance(#Tester)
 			Assert.NotEqual(NULL_OBJECT, oObject)
@@ -27,6 +28,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("X#", IVarGet(oObject, "Name"))
 			IVarPut(oObject,"Age",42)
 			Assert.Equal(42, (INT) IVarGet(oObject, "Age"))
+            oObject2 := CreateInstance(#TestStrong) // no parameters passed
+            Assert.Equal(NULL, oObject2:Param)
+            oObject2 := CreateInstance(#TestStrong, oObject, oObject) // too many parameters passed
+            Assert.Equal(oObject, oObject2:Param)
+
 		
 		[Fact, Trait("Category", "OOP")];
 		METHOD MetadataTests() AS VOID
@@ -76,8 +82,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			oObject := CreateInstance(#Tester)
 			Assert.Equal(2121+1+2+3, (INT) Send(oObject, #TestMe,1,2,3))
 			Assert.Equal(4242+1+2+3, (INT) Send(oObject, #TestMe2,1,2,3))
-			Assert.Equal(6363+1+2+3, (INT) Send(oObject, #TestMe3,1,2,3))
-			Assert.Equal(6363+1+2+3, (INT) __InternalSend(oObject, #TestMe3,1,2,3))
+			Assert.Equal(6363+1+2+3, (INT) Send(oObject, #TestMe3,1.0,2,3))             // the float causes the USUAL overload to be called
+			Assert.Equal(8484+1+2+3, (INT) __InternalSend(oObject, #TestMe3,1,2,3))     // all int so the int overload gets called
 			
 		[Fact, Trait("Category", "OOP")];
 		METHOD NoMethodTests() AS VOID
@@ -127,7 +133,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			u := Tester{}
 			Assert.Equal(2121+1+2+3, (INT)u:TestMe(1,2,3))
 			Assert.Equal(4242+1+2+3, (INT)u:TestMe2(1,2,3))
-			Assert.Equal(6363+1+2+3, (INT)u:TestMe3(1,2,3))
+            Assert.Equal(6363+1+2+3, (INT)u:TestMe3(1.0,2,3))   // overloaded. The float calls the USUAL variant
+			Assert.Equal(8484+1+2+3, (INT)u:TestMe3(1,2,3))     // overloaded. all ints, so the INT variant is called
 		RETURN
 
 		[Fact, Trait("Category", "OOP")];
@@ -268,6 +275,9 @@ CONSTRUCTOR CLIPPER
 		RETURN 4242+a+b+c
 	METHOD TestMe3(a AS USUAL,b AS USUAL, c AS USUAL) AS LONG
 		RETURN 6363+a+b+c
+	METHOD TestMe3(a AS INT,b AS INT, c AS INT) AS LONG
+        RETURN 8484+a+b+c
+
 END CLASS
 	
 CLASS Father
@@ -331,4 +341,10 @@ END CLASS
 CLASS TestClassParent
 END CLASS
 CLASS TestClassChild INHERIT TestClassParent
+END CLASS
+
+CLASS TestStrong
+    PROPERTY Param AS OBJECT AUTO
+    CONSTRUCTOR(otest AS OBJECT)
+        SELF:Param := oTest
 END CLASS

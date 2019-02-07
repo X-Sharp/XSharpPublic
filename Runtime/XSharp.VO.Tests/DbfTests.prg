@@ -834,8 +834,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBUseArea(,"DBFNTX",cDbf)
 			DBSetIndex ( cDbf )
 			Assert.Equal( (INT) DBOrderInfo( DBOI_KEYCOUNT ) , 20)
-			Assert.Equal( (int) UsualType( DBOrderInfo( DBOI_KEYCOUNT )  ) , 1) // first time returns 6
-			Assert.Equal( (int) UsualType( DBOrderInfo( DBOI_KEYCOUNT )  ) , 1) // second time it returns 1 correctly
+			Assert.Equal( (INT) UsualType( DBOrderInfo( DBOI_KEYCOUNT )  ) , 1) // first time returns 6
+			Assert.Equal( (INT) UsualType( DBOrderInfo( DBOI_KEYCOUNT )  ) , 1) // second time it returns 1 correctly
 			DBCloseArea()
 			
 			SetCollation(uCollation)
@@ -850,8 +850,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cDBF, cNTX AS STRING
 			
 			aValues := { "ssss" , "hhhh", "wwww" , "aaaa" }
-			cDBF := "Foo2"
-			cNTX := "Foox2"
+			cDBF := GetTempFileName()
+			cNTX := cDbf
 			DBCreate( cDBF , {{"LAST" , "C" , 20 , 0 } , ;
 								{"TEXT1" , "C" , 10 , 0 } , ;
 								{"NUM1" , "N" , 10 , 2 }})
@@ -921,31 +921,129 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aValues AS ARRAY 
 			LOCAL i AS DWORD
 			
-			cDBF := "Foo"
+			cDBF := GetTempFileName()
 			aValues := { 44 , 12, 34 , 21 }                                 
 			DBCreate( cDBF , {{"AGE" , "N" , 3 , 0 } })
 			DBUseArea(,"DBFNTX",cDBF,,FALSE) 
-			Assert.Equal(0 , (int) DBOrderInfo( DBOI_KEYCOUNT ) ) // 0,  ok
+			Assert.Equal(0 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 0,  ok
 			FOR i := 1 UPTO ALen ( aValues )
 				DBAppend()
 				FieldPut(1,aValues [i])  
 			NEXT 
-			Assert.Equal(0 , (int) DBOrderInfo( DBOI_KEYCOUNT ) ) // 0,  ok
+			Assert.Equal(0 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 0,  ok
 			DBCreateIndex(cDbf, "age" ) 
-			Assert.Equal(4 , (int) DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
+			Assert.Equal(4 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
 			DBGoTop() 
-			Assert.Equal(4 , (int) DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
+			Assert.Equal(4 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
 			DO WHILE ! EOF()
 //			? FieldGet ( 1 ) 
 				DBSkip(1)
 			ENDDO 
-			Assert.Equal(4 , (int) DBOrderInfo( DBOI_KEYCOUNT ) ) // NIL, should be 4
+			Assert.Equal(4 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // NIL, should be 4
 			DBSkip(-1)
-			Assert.Equal(4 , (int) DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
+			Assert.Equal(4 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
 			DBCloseArea ()
 		RETURN
-	
-	
+
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD SetDeleted_FALSE() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL aValues AS ARRAY 
+			LOCAL i AS DWORD
+			
+			cDBF := GetTempFileName()
+		
+			SetDeleted(FALSE)
+			
+//			test also with those
+//			aValues := { "vaa" , "abba", "acb" , "aaab"  , "adab"  , "baac"  , "aeab"  , "baaAaa" }
+			aValues := { "vvv" , "abb", "acb" , "aaa"  , "bbb" }
+			DBCreate( cDBF , {{"LAST" , "C" ,10 , 0 } })
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut(1,aValues [i])  
+			NEXT 
+		
+			DBUseArea(,"DBFNTX",cDBF,,TRUE) 
+			Assert.Equal(0 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			DBCreateIndex(cDbf, "Upper(LAST)" ) 
+			Assert.Equal(5 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			// ? "Setting scope"
+			LOCAL u AS USUAL
+			u := "A"
+			VODBOrderInfo( DBOI_SCOPETOP, "", NIL, REF u )
+			VODBOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF u )
+		
+			DBGoTop()
+			Assert.Equal(4 , (INT)RecNo())
+			DBGoBottom()
+			Assert.Equal(3 , (INT)RecNo())
+		
+			DBGoTop() 
+		
+			Assert.Equal(3 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			DO WHILE ! EOF()
+				DBSkip(1)
+			ENDDO 
+			Assert.Equal(3 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			DBCloseArea()
+
+			SetDeleted(FALSE)
+		RETURN
+
+
+		// TECH-W0KKQ1I50C, Problems with SetDeleted(TRUE)
+		[Fact, Trait("Category", "DBF")];
+		METHOD SetDeleted_TRUE() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL aValues AS ARRAY 
+			LOCAL i AS DWORD
+			
+			cDBF := GetTempFileName()
+		
+			SetDeleted(TRUE)
+			
+//			test also with those
+//			aValues := { "vaa" , "abba", "acb" , "aaab"  , "adab"  , "baac"  , "aeab"  , "baaAaa" }
+			aValues := { "vvv" , "abb", "acb" , "aaa"  , "bbb" }
+			DBCreate( cDBF , {{"LAST" , "C" ,10 , 0 } })
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut(1,aValues [i])  
+			NEXT 
+		
+			DBUseArea(,"DBFNTX",cDBF,,TRUE) 
+			Assert.Equal(0 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			DBCreateIndex(cDbf, "Upper(LAST)" ) 
+			Assert.Equal(5 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			// ? "Setting scope"
+			LOCAL u AS USUAL
+			u := "A"
+			VODBOrderInfo( DBOI_SCOPETOP, "", NIL, REF u )
+			VODBOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF u )
+		
+			DBGoTop()
+			Assert.Equal(4 , (INT)RecNo())
+			DBGoBottom()
+			Assert.Equal(3 , (INT)RecNo())
+		
+			DBGoTop() 
+		
+			Assert.Equal(3 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			DO WHILE ! EOF()
+				DBSkip(1)
+			ENDDO 
+			Assert.Equal(3 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			DBCloseArea()
+
+			SetDeleted(FALSE)
+		RETURN
+
+
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
 		RETURN GetTempFileName("testdbf")
 		STATIC PRIVATE METHOD GetTempFileName(cFileName AS STRING) AS STRING

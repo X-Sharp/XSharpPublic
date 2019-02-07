@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -32,7 +32,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			VAR sym1 := #TestSymbol1
 			VAR sym2 := #TestSymbol2
 			Assert.Equal(#Windows,SetCollation())
-			SetCollation(#Ordinal)
+			LOCAL uCollation AS USUAL
+			uCollation := SetCollation(#Ordinal)
 			Assert.Equal(TRUE,sym1<=sym2)
 			Assert.Equal(TRUE,sym1<sym2)
 			Assert.Equal(FALSE,sym1 > sym2)
@@ -46,6 +47,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			// with setequal FALSE then #TestSymbol1 == #testSymbol
 			Assert.Equal(FALSE,sym1<sym2)
 			Assert.Equal(TRUE,sym1<=sym2)
+			SetCollation(uCollation)
 		RETURN
 
 		[Fact, Trait("Category", "Symbol")];
@@ -87,9 +89,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			sym2 := SysFindAtom("RobertIsNotThere")		// Find should not have added the new symbol
 			Assert.Equal(MaxAtom(),dwstart+2)
 			Assert.NotEqual(sym1, sym2)
-			sym1 := ConCatAtom(#one, #two)
+			sym1 := ConcatAtom(#one, #two)
 			Assert.Equal(sym1, #onetwo)
-			sym1 := ConCatAtom3(#one, #two,#three)
+			sym1 := ConcatAtom3(#one, #two,#three)
 			Assert.Equal(sym1, #onetwothree)
 			sym1 := ConCatAtom5(#one, #two,#three,#four,#five)
 			Assert.Equal(sym1, #onetwothreefourfive)

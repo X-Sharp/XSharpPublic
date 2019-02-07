@@ -104,14 +104,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 FOREACH VAR tag IN _tags
                     LOCAL nIndex AS INT
                     nIndex := _oRdd:FieldIndex(tag:KeyExpression)
+                    VAR oBlock := _oRDD:Compile(tag:KeyExpression)
+                    tag:KeyBlock := oBlock
                     LOCAL oVal AS OBJECT
                     IF  nIndex > 0
                         tag:SingleField := TRUE
                         tag:fieldIndex := nIndex
                         oVal := _oRDD:GetValue(nIndex)
                     ELSE
-                        VAR oBlock := _oRDD:Compile(tag:KeyExpression)
-                        tag:KeyBlock := oBlock
+                        
                         oVal := _oRdd:EvalBlock(oBlock)
                     ENDIF
                     IF oVal IS System.String

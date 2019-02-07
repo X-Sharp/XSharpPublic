@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROPERTY KeyBlock       AS ICodeblock AUTO
         PROPERTY ForExpression  AS STRING AUTO
         PROPERTY ForBlock       AS ICodeblock AUTO
-        PROPERTY IsConditional  AS LOGIC GET ! String.IsNullOrEmpty(ForExpression)
+        PROPERTY IsConditional  AS LOGIC GET Options:HasFlag(CdxOptions.HasFor)
         PROPERTY KeyLength      AS INT AUTO
         PROPERTY KeyDecimals    AS INT AUTO
         PROPERTY KeyType        AS INT AUTO

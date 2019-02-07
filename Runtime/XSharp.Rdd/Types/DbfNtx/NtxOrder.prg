@@ -1914,7 +1914,7 @@ PRIVATE METHOD _Balance() AS VOID
                 ENDIF
             ENDIF
         ENDIF
-        SELF:_oRdd:GoTo((INT)oldRec)
+        SELF:_oRdd:__Goto(oldRec)
         IF SELF:_Shared
             isOk := SELF:_unLockForRead()
         ENDIF

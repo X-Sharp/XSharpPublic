@@ -2147,7 +2147,7 @@ PRIVATE METHOD _Balance() AS VOID
                 
                 
     PRIVATE METHOD _skipFilter(recno AS LONG , iPolar AS LONG ) AS LONG
-        IF SELF:_oRdd:GoTo(recno)
+        IF SELF:_oRdd:__Goto(recno)
             SELF:_oRdd:SkipFilter(iPolar)
             recno := SELF:_Recno
         ENDIF

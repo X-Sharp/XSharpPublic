@@ -5642,5 +5642,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_Internal" xml:space="preserve">
     <value>An internal compiler error has occurred: '{0}', {1}</value>
   </data>
-
+  <data name="Err_StringConcat" xml:space="preserve">
+    <value>All elements of a string concatenation must be of type 'string'. Element {0} is of type '{1}' </value>
+  </data>
+  
 </root>

@@ -9620,6 +9620,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All elements of a string concatenation must be of type &apos;string&apos;. Element {0} is of type &apos;{1}&apos; .
+        /// </summary>
+        internal static string Err_StringConcat {
+            get {
+                return ResourceManager.GetString("Err_StringConcat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Struct member &apos;{0}&apos; of type &apos;{1}&apos; causes a cycle in the struct layout.
         /// </summary>
         internal static string ERR_StructLayoutCycle {

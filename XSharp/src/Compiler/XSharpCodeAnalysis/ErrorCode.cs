@@ -1705,6 +1705,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_MemvarFieldWithSameName = 9075,
         WRN_EmptyCase = 9076,
         Err_TypeParametersAccessAssign = 9077,
+        Err_StringConcat = 9078,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

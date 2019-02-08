@@ -101,6 +101,11 @@ BEGIN NAMESPACE XSharp
     PROPERTY FileHandle         AS DWORD AUTO 
     /// <summary>A numeric value representing a boundary condition for an operation (such as string overflow or array bound error).</summary>
     PROPERTY MaxSize			AS DWORD AUTO
+    /// <summary>A pointer to the function in which the error occurred.</summary>
+    /// <remarks><em>Note</em> This property is for compatibility only. It is not being used in the X# runtime.</remarks>
+    PROPERTY FuncPtr            AS IntPtr AUTO := IntPtr.Zero
+
+
     /// <summary>A value of any data type unused by the Error system.  It is provided as a user-definable slot, allowing arbitrary information to be attached to an Error object and retrieved later</summary>
     PROPERTY Cargo              AS OBJECT AUTO
 
@@ -233,7 +238,11 @@ BEGIN NAMESPACE XSharp
                 IF ! lFirst
                     cArgs += ","
                 ENDIF
-                cArgs += oArg:ToString()
+                IF oArg == NULL
+                    cArgs += "(NULL)"
+                else
+                    cArgs += oArg:ToString()
+                ENDIF
                 lFirst := FALSE
             NEXT
             cArgs += "}"

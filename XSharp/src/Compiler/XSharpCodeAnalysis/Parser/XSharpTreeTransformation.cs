@@ -5439,17 +5439,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected ExpressionSyntax GenerateDimArrayInitExpression(ArrayTypeSyntax arrayType, XP.ArraysubContext sub)
         {
             InitializerExpressionSyntax init = null;
-            if (!_options.VONullStrings)
-                return null;
+            var dims = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),arrayType, null);
             bool isstring = false;
-            if (arrayType.ElementType is PredefinedTypeSyntax pdt)
+            if (_options.VONullStrings && arrayType.ElementType is PredefinedTypeSyntax pdt)
             {
                 isstring = pdt.Keyword.Kind == SyntaxKind.StringKeyword;
+
             }
             if (!isstring)
-                return null;
+                return dims;
             if (sub._ArrayIndex.Count == 1)
             {
+                // for single dim indexes we inline the initialization
                 var l = _pool.AllocateSeparated<ExpressionSyntax>();
                 int dimensions = Int32.Parse(sub._ArrayIndex[0].GetText());
                 for (int i = 0; i < dimensions; i++)
@@ -5467,33 +5468,37 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _pool.Free(l);
                 return _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword), arrayType, init);
             }
-
+            // multi dim is not supported yet in X# runtime.
             if (_options.XSharpRuntime)
             {
                 sub.AddError(new ParseErrorData(ErrorCode.ERR_ParserError, "DIM string arrays must have one dimension"));
                 return null;
             }
             // Vulcan has StringArrayInit, but that does not return a string, so we have to generate a special function for this
+            // this function creates the array, initializes it and returns it.
+            // StringArrayInit has no return type because it can handle arrays of different dimensions
+            // 
             var funcname = "$StringArrayInit" + UniqueNameSuffix;
             var stmts = _pool.Allocate<StatementSyntax>();
-            var dims = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
-                arrayType, null);
             StatementSyntax stmt = GenerateLocalDecl(XSharpSpecialNames.ArrayName, arrayType, dims);
             stmt.XNode = sub.Parent as XSharpParserRuleContext;
             stmt.XGenerated = true;
             stmts.Add(stmt);
+
             var varname = GenerateSimpleName(XSharpSpecialNames.ArrayName);
             var args = MakeArgumentList(MakeArgument(varname));
-            
             stmt = GenerateExpressionStatement(GenerateMethodCall(VulcanQualifiedFunctionNames.StringArrayInit, args, true));
+            stmt.XNode = sub.Parent as XSharpParserRuleContext;
             stmts.Add(stmt);
+
             stmt = GenerateReturn(varname,true);
             stmt.XNode = sub.Parent as XSharpParserRuleContext;
             stmts.Add(stmt);
             var body = MakeBlock(stmts);
             _pool.Free(stmts);
             var attributes = MakeCompilerGeneratedAttribute();
-            var modifiers = MakeList<SyntaxToken>(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword), SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword));
+            var modifiers = MakeList<SyntaxToken>(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword),
+                                                    SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword));
             var funcdecl = _syntaxFactory.MethodDeclaration(
                     attributeLists: attributes,
                     modifiers: modifiers,

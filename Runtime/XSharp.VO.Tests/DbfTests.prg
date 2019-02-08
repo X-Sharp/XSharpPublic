@@ -1043,6 +1043,46 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 
+		// TECH-DD1J2Z3UVI, DBOrderInfo( DBOI_NUMBER ) incorrect results
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBOrderInfo_DBOI_NUMBER() AS VOID
+			LOCAL aValues AS ARRAY
+			LOCAL i AS DWORD
+			LOCAL cDBF AS STRING
+			LOCAL cNTX AS STRING
+			aValues := { 44 , 12, 34 , 21 }                                
+			cDBF := GetTempFileName("testdbf")
+			cNTX := cDbf + ".ntx"
+			IF System.IO.File.Exists(cNtx)
+				System.IO.file.Delete(cNtx)
+			END IF
+			DBCreate( cDBF , {{"AGE" , "N" , 3 , 0 } })                                        
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			Assert.Equal(0, (INT)DBOrderInfo( DBOI_KEYCOUNT ) )   //  0  ok
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut(1,aValues [i]) 
+			NEXT
+			Assert.Equal(0, (INT)DBOrderInfo( DBOI_KEYCOUNT ) ) //  0 ,ok
+			Assert.Equal(0, (INT)DBOrderInfo( DBOI_NUMBER ) )  //  -1,  but should show 0
+
+			DBCreateIndex( cNTX, "age" )
+			DBGoTop()
+			DO WHILE ! EOF()
+//				? FieldGet ( 1 )
+				DBSkip(1)
+			ENDDO
+
+			Assert.True( DBClearIndex( cNTX) )
+			Assert.True( DBSetIndex ( cNTX ) )
+
+			Assert.Equal(4, (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, ok
+			Assert.Equal(1, (INT) DBOrderInfo( DBOI_NUMBER ) )  // still  -1 , but should show  1
+			Assert.Equal("TESTDBF", (STRING) DBOrderInfo( DBOI_NAME ) )  // ok , "TESTDBF"
+			DBCloseArea ()
+		RETURN
+
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
 		RETURN GetTempFileName("testdbf")

@@ -151,6 +151,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string UsualNIL = "global::Vulcan.__Usual._NIL";
         internal const string PszRelease = "global::Vulcan.Internal.CompilerServices.String2PszRelease";
         internal const string String2Psz = "global::Vulcan.Internal.CompilerServices.String2Psz";
+        internal const string StringArrayInit = "global::Vulcan.Internal.CompilerServices.StringArrayInit";
         internal const string ArrayNew = "global::Vulcan.__Array.__ArrayNew";
         internal const string InStr = "global::VulcanRTFuncs.Functions.Instr";
         internal const string EnterSequence = "global::Vulcan.Internal.CompilerServices.EnterBeginSequence";

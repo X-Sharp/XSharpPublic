@@ -41,8 +41,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private readonly TypeSyntax _symbolType;
         private readonly TypeSyntax _pszType;
         private readonly TypeSyntax _codeblockType;
-        private readonly TypeSyntax _stringType;
-        private readonly TypeSyntax _intType;
         private readonly string _errorType;
         private readonly string _classLibraryType;
         private readonly string _wrappedExceptionType;
@@ -117,8 +115,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _memvars = new Dictionary<string, MemVarFieldInfo>(StringComparer.OrdinalIgnoreCase);
             }
-            _stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
-            _intType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
+            
+
             _literalSymbols = new Dictionary<string, FieldDeclarationSyntax>();
             _literalPSZs = new Dictionary<string, Tuple<string, FieldDeclarationSyntax>>();
             // calculate the global class name;

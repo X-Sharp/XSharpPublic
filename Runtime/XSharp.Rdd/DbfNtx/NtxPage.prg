@@ -119,7 +119,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF isOk
                 TRY
                     // Move to top of Page
-                    FSeek3( SELF:_Order:_hFile, (LONG) SELF:_Offset /*  * NtxHeader.NTXOFFSETS.SIZE    */, SeekOrigin.Begin )
+                    FSeek3( SELF:_Order:_hFile, SELF:_Offset /*  * NtxHeader.NTXOFFSETS.SIZE    */, SeekOrigin.Begin )
                     // Read Buffer
                     isOk := FRead3(SELF:_Order:_hFile, SELF:_Bytes, NTXPAGE_SIZE) == NTXPAGE_SIZE
                     SELF:Dumped := FALSE
@@ -145,7 +145,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             TRY
                 // Move to top of Page
-                FSeek3( SELF:_Order:_hFile, (LONG) SELF:_Offset  /* * NtxHeader.NTXOFFSETS.SIZE    */ , SeekOrigin.Begin )
+                FSeek3( SELF:_Order:_hFile, SELF:_Offset  /* * NtxHeader.NTXOFFSETS.SIZE    */ , SeekOrigin.Begin )
                 // Write Buffer
                 isOk := FWrite3(SELF:_Order:_hFile, SELF:_Bytes, NTXPAGE_SIZE) == NTXPAGE_SIZE 
                 SELF:_Hot := FALSE

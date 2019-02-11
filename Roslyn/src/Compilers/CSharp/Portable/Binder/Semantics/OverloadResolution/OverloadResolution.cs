@@ -740,9 +740,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (allowUnexpandedForm && Compilation.Options.HasRuntime
                 && arguments.Arguments.Count == 1 && arguments.Arguments[0].Type  == Compilation.UsualType())
             {
-                if (arguments.RefKinds.Count == 0 ||arguments.RefKinds[0] == RefKind.None)
+                if (arguments.RefKinds.Count == 0 || arguments.RefKinds[0] == RefKind.None)
                 {
-                    allowUnexpandedForm = false;
+                    // We have seen an example where the customer is mixing different versions of the Vulcan runtime.
+                    // when we set allowUnexpandedForm to false then strange errors will happen later.
+                    if (!member.HasUseSiteError)
+                    { 
+                        allowUnexpandedForm = false;
+                    }
                 }
             }
 #endif
@@ -2478,6 +2483,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     type2 == Conversions.Compilation.UsualType())
                     return BetterResult.Left;
             }
+
 #endif
             // Given two different types T1 and T2, T1 is a better conversion target than T2 if no implicit conversion from T2 to T1 exists, 
             // and at least one of the following holds:

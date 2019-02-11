@@ -111,7 +111,8 @@ BEGIN NAMESPACE XSharp.RDD
 					info:Result := result
 				ENDIF
 			CASE DBOI_NUMBER
-				info:Result := orderPos
+                info:Result := SELF:_indexList:OrderPos(workOrder)
+
 			CASE DBOI_BAGEXT
 				info:Result := ".NTX"
 			CASE DBOI_FULLPATH

@@ -177,7 +177,17 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
                 RETURN isOk
                 
-                
+          METHOD OrderPos(oToFind AS NtxOrder) AS LONG
+                LOCAL nPos := 0 AS LONG
+                IF oToFind != NULL
+                    FOREACH oOrder AS NtxOrder IN _Orders
+                        ++nPos
+                        IF oToFind == oOrder
+                            RETURN nPos
+                        ENDIF
+                    NEXT
+                ENDIF
+                RETURN 0                
             INTERNAL METHOD Rebuild() AS LOGIC
                 LOCAL ordCondInfo AS DBORDERCONDINFO
                 LOCAL isOk AS LOGIC

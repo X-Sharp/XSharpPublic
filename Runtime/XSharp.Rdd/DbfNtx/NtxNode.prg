@@ -12,7 +12,7 @@ USING System.Text
 BEGIN NAMESPACE XSharp.RDD.NTX
 
     /// <summary>
-    /// The NtxNode class. (Should it be called NtxNode ?)
+    /// The NtxNode class. 
 	/// The size of each item is: 8 + Key Size ( the last item doesn't contain a key value, only a pointer to a sub-tree.)
     /// The structure of an Item is 
     /// long page_offset - file offset (within ntx file) where sub-tree is. if there's no subtree, a 0 is stored.

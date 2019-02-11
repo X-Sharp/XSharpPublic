@@ -1690,7 +1690,7 @@ BEGIN NAMESPACE XSharp.RDD
 			ret := TRUE
 			IF ( !SELF:_Hot )
 				BEGIN LOCK SELF
-					IF SELF:_Shared .AND. !SELF:_fLocked .AND. !SELF:_Locks:Contains( (LONG)SELF:RecNo )
+					IF SELF:_Shared .AND. !SELF:_fLocked .AND. !SELF:_Locks:Contains( SELF:RecNo )
 						SELF:_DbfError( ERDD.UNLOCKED, XSharp.Gencode.EG_UNLOCKED )
 						ret := FALSE
 					ENDIF
@@ -2189,7 +2189,7 @@ BEGIN NAMESPACE XSharp.RDD
 			LOCAL isQualified AS LOGIC
 			LOCAL readMore AS LOGIC
 			LOCAL limit AS LOGIC
-			LOCAL rec AS DBFSortRecord
+			LOCAL rec AS SortRecord
 			LOCAL sc AS DbfSortCompare
 			//
 			recordNumber := 0
@@ -2254,7 +2254,7 @@ BEGIN NAMESPACE XSharp.RDD
 				IF ((isOk) .AND. (isQualified))
 					isOk := SELF:_readRecord()
 					IF (isOk)
-						rec := DBFSortRecord{SELF:_RecordBuffer, (DWORD)SELF:_RecNo}
+						rec := SortRecord{SELF:_RecordBuffer, SELF:_RecNo}
 						isOk := sort:Add(rec)
 					ENDIF
 				ENDIF
@@ -2275,10 +2275,7 @@ BEGIN NAMESPACE XSharp.RDD
 			RETURN isOk            
 			
 		// IRddSortWriter Interface, used by RddSortHelper
-		PUBLIC METHOD WriteSorted( sortInfo AS DBSORTINFO , o AS OBJECT ) AS LOGIC			
-			LOCAL record AS DBFSortRecord
-			//
-			record := (DBFSortRecord)o
+		PUBLIC METHOD WriteSorted( sortInfo AS DBSORTINFO , record AS SortRecord ) AS LOGIC			
 			Array.Copy(record:Data, SELF:_RecordBuffer, SELF:_RecordLength)
 			RETURN SELF:TransRec(sortInfo:TransInfo)
 			
@@ -2755,21 +2752,6 @@ BEGIN NAMESPACE XSharp.RDD
 			
 			
 	
-	INTERNAL CLASS DBFSortRecord
-		PRIVATE _data AS BYTE[]
-		PRIVATE _Recno AS DWORD
-		
-		INTERNAL PROPERTY Data AS BYTE[] GET _data
-		
-		INTERNAL PROPERTY Recno AS DWORD GET _Recno
-		
-		INTERNAL CONSTRUCTOR(data AS BYTE[] , uiRecno AS DWORD )
-			SELF:_data  := (BYTE[])data:Clone()
-			SELF:_Recno := uiRecno
-			
-		END CLASS
-		
-		
 		
 	INTERNAL CLASS DBFSortCompare IMPLEMENTS System.Collections.IComparer
 	
@@ -2780,10 +2762,11 @@ BEGIN NAMESPACE XSharp.RDD
 			SELF:_oRdd := rdd
 			SELF:_sortInfo := info
 			
-			
-		PUBLIC METHOD Compare(x AS OBJECT , y AS OBJECT ) AS LONG
-			LOCAL recordX AS DBFSortRecord
-			LOCAL recordY AS DBFSortRecord
+
+        PUBLIC METHOD Compare(x AS OBJECT , y AS OBJECT ) AS LONG
+            return Compare( (SortRecord) x, (SortRecord) y)
+
+		PUBLIC METHOD Compare(recordX AS SortRecord , recordY AS SortRecord ) AS LONG
 			LOCAL dataBuffer AS BYTE[]
 			LOCAL dataBuffer2 AS BYTE[]
 			LOCAL diff AS LONG
@@ -2795,9 +2778,6 @@ BEGIN NAMESPACE XSharp.RDD
 			LOCAL dataY AS BYTE[]
 			LOCAL longValue1 AS LONG
 			LOCAL longValue2 AS LONG
-			//
-			recordX := (DBFSortRecord)x
-			recordY := (DBFSortRecord)y
 			IF (recordX:Recno == recordY:Recno)
 				RETURN 0
 			ENDIF
@@ -2842,7 +2822,7 @@ BEGIN NAMESPACE XSharp.RDD
 				i++
 			END WHILE
 			IF (diff == 0)
-				diff := (LONG)(recordX:Recno - recordY:Recno)
+				diff := recordX:Recno - recordY:Recno
 			ENDIF
 			RETURN diff
 			

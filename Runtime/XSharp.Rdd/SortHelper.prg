@@ -12,28 +12,28 @@ USING XSharp.Rdd.Support
 BEGIN NAMESPACE XSharp.RDD
 
     INTERNAL INTERFACE IRddSortWriter
-        METHOD WriteSorted( sortInfo AS DBSORTINFO , obj AS OBJECT ) AS LOGIC
+        METHOD WriteSorted( sortInfo AS DBSORTINFO , obj AS SortRecord ) AS LOGIC
     
 	END INTERFACE
             
             
     INTERNAL CLASS RddSortHelper
-        PRIVATE _sortInfo AS DBSORTINFO
-        PRIVATE _recCount AS LONG
-        PRIVATE _dataBuffer AS OBJECT[]
+        PRIVATE _sortInfo   AS DBSORTINFO
+        PRIVATE _recCount   AS LONG
+        PRIVATE _dataBuffer AS SortRecord[]
         PRIVATE _currentPos AS LONG
-        PRIVATE _Length AS LONG
+        PRIVATE _Length     AS LONG
         
         
         INTERNAL CONSTRUCTOR( sortInfo AS DBSORTINFO , len AS LONG )
             SELF:_sortInfo := sortInfo
             SELF:_recCount := len
-            SELF:_dataBuffer := OBJECT[]{ len }
+            SELF:_dataBuffer := SortRecord[]{ len }
             SELF:_currentPos := 0
             SELF:_Length    := len
             
             
-        INTERNAL METHOD Add(o AS OBJECT ) AS LOGIC
+        INTERNAL METHOD Add(o AS SortRecord ) AS LOGIC
             IF SELF:_currentPos < SELF:_Length
                 SELF:_dataBuffer[SELF:_currentPos++] := o
                 RETURN TRUE
@@ -53,7 +53,7 @@ BEGIN NAMESPACE XSharp.RDD
             
         INTERNAL METHOD Write(isw AS IRddSortWriter ) AS LOGIC
             TRY
-                FOREACH o AS OBJECT IN SELF:_dataBuffer 
+                FOREACH o AS SortRecord IN SELF:_dataBuffer 
                     isw:WriteSorted(SELF:_sortInfo, o)
                 NEXT
                 RETURN TRUE

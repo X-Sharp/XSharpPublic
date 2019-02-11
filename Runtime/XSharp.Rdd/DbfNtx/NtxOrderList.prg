@@ -225,7 +225,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             CASE TypeCode.Int16
             CASE TypeCode.Int32
             CASE TypeCode.Int64
-        CASE TypeCode.Single
+            CASE TypeCode.Single
             CASE TypeCode.Double
                     num := (LONG)uOrder
                     IF ((num >= 0) .AND. (num <= SELF:_Orders:Count))
@@ -277,7 +277,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             isOk := TRUE
             FOR i := 0 TO SELF:_Orders:Count-1
                 ntxIndex := SELF:_Orders[i]
-                isOk := ntxIndex:_KeySave(SELF:_oRdd:RecNo)
+                isOk := ntxIndex:_saveCurrentKey(SELF:_oRdd:RecNo)
                 IF (!isOk)
                     EXIT
                 ENDIF

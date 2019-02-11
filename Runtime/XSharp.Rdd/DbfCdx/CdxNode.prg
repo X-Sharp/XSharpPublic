@@ -24,7 +24,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROTECTED _bytesKey       AS BYTE[]
         PROTECTED _PageNo         AS LONG
         PROTECTED _RecNo          AS LONG
-        PROTECTED _Offset         AS LONG				// Item offset from start of Page
         PROTECTED _Pos            AS LONG				// Index of the Item in the page array of Offsets
 		// Retrieve the Key as String
         INTERNAL PROPERTY Pos       AS LONG     GET _Pos
@@ -77,8 +76,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     END CLASS
 
     INTERNAL CLASS CdxPageNode INHERIT CdxNode
-        PRIVATE _Page           AS CdxTreePage			// Page that olds the Item
-       
+        PRIVATE   _Page           AS CdxTreePage			// Page that olds the Item
+        PROTECTED _Offset         AS LONG				// Item offset from start of Page
 
         PRIVATE  PROPERTY HasPage   AS LOGIC    GET _Page != NULL
 
@@ -87,9 +86,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         // Set the informations for the current Item
 		INTERNAL METHOD Fill( pos AS LONG , page AS CdxTreePage ) AS VOID
-            SELF:_Page  := page
-            SELF:_Pos   := pos
-
+            SELF:_Page   := page
+            SELF:_Pos    := pos
+            SELF:_Offset := pos
         INTERNAL OVERRIDE METHOD Clear() AS VOID
             SUPER:Clear()
             SELF:_Page   := NULL

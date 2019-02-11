@@ -15,10 +15,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     /// Orderbag = CDX file. Contains one or more orders = Tags
     /// </summary>
     INTERNAL CLASS CdxOrderBag INHERIT BaseIndex 
+#region constants
+    PRIVATE CONST ComixXLockOfs		:= 0xfffeffffL AS LONG
+    PRIVATE CONST ComixSLockOfs		:= 0xffff0000L AS LONG
+    PRIVATE CONST ComixXLockLen		:= 0x00010000L AS LONG
+    PRIVATE CONST FoxXLockOfs		:= 0x7ffffffeL AS LONG
+    PRIVATE CONST FoxXLockLen		:= 1           AS LONG
+    PRIVATE CONST FoxSLockOfs		:= 0x7ffffffeL AS LONG
+    PRIVATE CONST FoxSLockLen		:= 1 AS LONG
+
+#endregion
         INTERNAL _hFile     AS IntPtr
         INTERNAL _OpenInfo	AS DbOpenInfo
         INTERNAL _Encoding  AS Encoding
-        INTERNAL _PageList  as CdxPageList
+        INTERNAL _PageList  AS CdxPageList
         INTERNAL PROPERTY Shared    AS LOGIC GET _OpenInfo:Shared
         INTERNAL PROPERTY ReadOnly  AS LOGIC GET _OpenInfo:ReadOnly
         INTERNAL _Hot       AS LOGIC
@@ -35,7 +45,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL CONSTRUCTOR(oRDD AS DBFCDX )
             SUPER( oRdd )
             SELF:_oRdd     := oRDD
-            SELF:_PageList := CdxPageList{Self}
+            SELF:_PageList := CdxPageList{SELF}
             
         #region RDD Overloads
             /// <inheritdoc />		
@@ -110,8 +120,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     tag:KeyBlock := oBlock
                     LOCAL oVal AS OBJECT
                     IF  nIndex > 0
-                        tag:SingleField := TRUE
-                        tag:fieldIndex := nIndex
+                        tag:_SingleField := nIndex
                         oVal := _oRDD:GetValue(nIndex)
                     ELSE
                         
@@ -152,12 +161,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             RETURN lOk
 
-        METHOD AllocBuffer as BYTE[]
+        METHOD AllocBuffer AS BYTE[]
             RETURN BYTE[]{CDXPAGE_SIZE}
 
 
 
-        METHOD Read(nPage as LONG, buffer AS byte[]) AS LOGIC
+        METHOD Read(nPage AS LONG, buffer AS BYTE[]) AS LOGIC
             LOCAL isOk AS LOGIC
 			// Move to top
 			FSeek3( SELF:_hFile, nPage, SeekOrigin.Begin )
@@ -186,15 +195,29 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _Hot := TRUE
             RETURN TRUE
 
-        METHOD GetPage(nPage AS Int32, nKeyLen := 0 AS Int32) as CdxPage
-            return self:_PageList:GetPage(nPage, nKeyLen)
+        METHOD GetPage(nPage AS Int32, nKeyLen := 0 AS Int32) AS CdxPage
+           RETURN SELF:_PageList:GetPage(nPage, nKeyLen)
   
 
         #region properties
 
         PROPERTY Count AS LONG GET _tags:Count
 
+        PROPERTY BagHasChanged AS LOGIC 
+            GET
+                LOCAL nVersion AS DWORD
+                LOCAL lChanged AS LOGIC
+                nVersion := _root:Version
+                SELF:Read(SELF:_root)
+                lChanged := (nVersion != _root:Version)
+                IF lChanged
+                    // we 
+                ENDIF
+                RETURN lChanged
 
+
+            END GET
+        END PROPERTY
 
         PROPERTY IsHot AS LOGIC
         GET
@@ -208,6 +231,77 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         END PROPERTY
         #endregion
 
+#region Locking
+        PRIVATE _sharedLocks    := 0 AS LONG
+        PRIVATE _exclusiveLocks := 0 AS LONG
+        PRIVATE _useFoxLock     := FALSE AS LOGIC
+        PRIVATE _sLockGate      := 0 AS LONG
+        PRIVATE _sLockOffSet    := 0 AS DWORD
+        PRIVATE _xLockedInOne   := FALSE AS LOGIC
+
+        INTERNAL METHOD SLock() AS LOGIC
+            IF !SELF:Shared
+                RETURN TRUE
+            ENDIF
+            IF _useFoxLock
+                NOP
+            ELSE
+                NOP
+            ENDIF
+            RETURN TRUE
+        INTERNAL METHOD XLock() AS LOGIC
+            IF !SELF:Shared
+                RETURN TRUE
+            ENDIF
+            IF _useFoxLock
+                NOP
+            ELSE
+                NOP
+            ENDIF
+            RETURN TRUE
+
+        INTERNAL METHOD UnLock() AS VOID
+            IF !SELF:Shared
+                RETURN
+            ENDIF
+            IF _useFoxLock
+                IF _sharedLocks > 0
+                    _sharedLocks -= 1
+                   IF _sharedLocks == 0
+                        // Unlock at the fox offset for shared
+                        NOP
+                   ENDIF
+                ELSEIF _exclusiveLocks > 0
+                    _exclusiveLocks -= 1
+                    IF _exclusiveLocks == 0
+                       // update Bag header version
+                       // write Bag Header
+                       NOP
+                    ENDIF
+                ENDIF
+            ELSE
+                IF _sharedLocks > 0
+                    _sharedLocks -= 1
+                   IF _sharedLocks == 0
+                        // Unlock at the comix offset for shared
+                   ENDIF
+                ELSEIF _exclusiveLocks > 0
+                    _exclusiveLocks -= 1
+                    IF _exclusiveLocks == 0
+                        // update Bag header version
+                        // write Bag Header
+                       IF _xLockedInOne
+                        // special unlocking for comix
+                            NOP
+                       ELSE
+                        NOP
+                       ENDIF
+                    ENDIF
+                ELSE
+                ENDIF
+            ENDIF
+            RETURN
+#endregion
 
 
     END CLASS

@@ -21,14 +21,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         #region constants
         PRIVATE CONST MAX_KEY_LEN       := 256  AS WORD
         PRIVATE CONST NTX_COUNT         := 16    AS WORD
-        PRIVATE CONST NTX_STACK_COUNT   := 20    AS WORD
         PRIVATE CONST MIN_BYTE          := 0x01 AS BYTE
         PRIVATE CONST MAX_BYTE          := 0xFF AS BYTE
         PRIVATE CONST MAX_TRIES         := 50 AS WORD
+        PRIVATE CONST STACK_DEPTH       := 20 as LONG
         PRIVATE CONST LOCKOFFSET_OLD    := 1000000000 AS LONG
         PRIVATE CONST LOCKOFFSET_NEW    := -1 AS LONG
         #endregion
         #region fields
+        INTERNAL _Encoding AS Encoding
         INTERNAL _Hot AS LOGIC
         INTERNAL _Unique AS LOGIC
         INTERNAL _Conditional AS LOGIC
@@ -43,25 +44,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _currentKeyBuffer AS BYTE[]
         INTERNAL _newKeyBuffer AS BYTE[]
         INTERNAL _newKeyLen AS LONG
-        INTERNAL _indexVersion AS WORD
-        INTERNAL _nextUnusedPageOffset AS LONG
-        INTERNAL _entrySize AS WORD
+        INTERNAL _version AS WORD
         INTERNAL _KeyExprType AS TypeCode
         INTERNAL _keySize AS WORD
         INTERNAL _keyDecimals AS WORD
-        INTERNAL _MaxEntry AS WORD
-        INTERNAL _halfPage AS WORD
         INTERNAL _TopStack AS LONG
         INTERNAL _firstPageOffset AS LONG
-        INTERNAL _fileSize AS LONG
-        INTERNAL _stack AS CdxStack[]
-        INTERNAL _HPLocking AS LOGIC
-        INTERNAL _readLocks AS LONG
-        INTERNAL _writeLocks AS LONG
+        INTERNAL _stack AS RddStack[]
         INTERNAL _tagNumber AS INT
-        INTERNAL _maxLockTries AS INT
         INTERNAL _orderName AS STRING
-        INTERNAL _fileName AS STRING
         INTERNAL _Ansi AS LOGIC
         INTERNAL _hasTopScope AS LOGIC
         INTERNAL _hasBottomScope AS LOGIC
@@ -71,68 +62,135 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _bottomScope AS OBJECT
         INTERNAL _topScopeSize AS LONG
         INTERNAL _bottomScopeSize AS LONG
+        INTERNAL _oRdd   AS DbfCdx
+        INTERNAL _Header AS CdxTagHeader
         INTERNAL _oneItem AS CdxNode
-        PRIVATE _levelsCount AS LONG
         PRIVATE _midItem AS CdxNode
-        PRIVATE _outPageNo AS LONG
-        PRIVATE _parkPlace AS LONG
-        INTERNAL _lockOffSet AS LONG
-	
-        PROTECT oHeader AS CdxTagHeader
-        PROTECT _bag    AS CdxOrderBag
-        protect _oRdd   as DbfCdx
+        PRIVATE _outPageNo AS LONG      // has to move to OrderBag later
+
+        PRIVATE _bag    AS CdxOrderBag
 #endregion
 
 #region Properties
-        PROPERTY _Shared as LOGIC GET _bag:Shared
-        PROPERTY _Recno AS LONG GET _oRDD:Recno
-        PROPERTY FileName as STRING GET _bag:FileName
+        INTERNAL PROPERTY Expression AS STRING GET _KeyExpr
+        
+        INTERNAL PROPERTY Condition AS STRING GET _ForExpr
+ 
+        INTERNAL PROPERTY OrderName AS STRING GET _orderName
+	    PROPERTY Shared 	    AS LOGIC GET _bag:Shared
+        PROPERTY _Recno 	    AS LONG GET _oRDD:Recno
+        PROPERTY FileName 	    AS STRING GET _bag:FileName
+        PROPERTY OrderBag       AS CdxOrderBag GET SELF:_bag
+        PROPERTY Page           AS Int32 AUTO
+        PROPERTY Descending     AS LOGIC GET _Descending
+        PROPERTY IsConditional  AS LOGIC GET Options:HasFlag(CdxOptions.HasFor)
+        PROPERTY IsHot          AS LOGIC GET _Hot
+        PROPERTY KeyBlock       AS ICodeBlock GET SELF:_KeyCodeBlock SET _KeyCodeBlock := VALUE
+        PROPERTY KeyExpression  AS STRING GET SELF:_KeyExpr
+       
+        PROPERTY KeyLength      AS INT GET SELF:_keySize
+        PROPERTY KeyDecimals    AS INT AUTO
+        PROPERTY KeyType        AS INT AUTO
+        PROPERTY ForExpression  AS STRING GET SELF:_ForExpr
+        PROPERTY ForBlock       AS ICodeBlock GET SELF:_ForCodeBlock SET _ForCodeBlock := VALUE
+        PROPERTY Custom         AS LOGIC GET Options:HasFlag(CdxOptions.IsCustom)
+        PROPERTY Unique         AS LOGIC GET Options:HasFlag(CdxOptions.IsUnique)
+        PROPERTY Signature      AS BYTE AUTO
+        PROPERTY FieldIndex     AS INT AUTO             // 1 based FieldIndex
+        PROPERTY Options        AS CdxOptions AUTO
+        PROPERTY LockOffSet     AS LONG AUTO
+       
 #endregion
 
 
         INTERNAL CONSTRUCTOR (oBag AS CdxOrderBag, nPage AS Int32, buffer AS BYTE[], cName AS STRING)
+	    SUPER()
+            LOCAL i AS LONG
+
+            SELF:_currentKeyBuffer := BYTE[]{ MAX_KEY_LEN+1 }
+            SELF:_newKeyBuffer  := BYTE[]{ MAX_KEY_LEN+1 }
             SELF:_bag := oBag
             SELF:_oRDD := oBag:_oRDD
-            SELF:Name := cName
+            SELF:_orderName := cName
+            SELF:_stack         := RddStack[]{ STACK_DEPTH }
+            SELF:_Encoding      := _oRDD:_Encoding
+            //Init
+            FOR i := 0 TO STACK_DEPTH - 1 
+                SELF:_stack[i] := RddStack{}
+            NEXT
             SELF:Page := nPage
             SELF:FieldIndex  := 0
-            SELF:SingleField := FALSE
-            oHeader := CdxTagHeader{oBag, nPage, buffer, SELF:Name}
-            SELF:KeyExpression := oHeader:KeyExpression
-            SELF:ForExpression := oHeader:ForExpression
-            SELF:KeyLength     := oHeader:KeySize
-            SELF:Descending    := oHeader:Descending
-            SELF:Options       := oHeader:Options
-            SELF:Signature     := oHeader:Signature
-            
+            SELF:_SingleField := -1
+            SELF:_Header := CdxTagHeader{oBag, nPage, buffer, SELF:OrderName}
+            SELF:Open()
 
-#region Properties
-        PROPERTY OrderBag       AS CdxOrderBag GET SELF:_bag
-        PROPERTY Name           AS STRING AUTO
-        PROPERTY Page           AS Int32 AUTO
-        PROPERTY KeyExpression  AS STRING AUTO
-        PROPERTY KeyBlock       AS ICodeblock AUTO
-        PROPERTY ForExpression  AS STRING AUTO
-        PROPERTY ForBlock       AS ICodeblock AUTO
-        PROPERTY IsConditional  AS LOGIC GET Options:HasFlag(CdxOptions.HasFor)
-        PROPERTY KeyLength      AS INT AUTO
-        PROPERTY KeyDecimals    AS INT AUTO
-        PROPERTY KeyType        AS INT AUTO
-        PROPERTY Custom         AS LOGIC GET Options:HasFlag(CdxOptions.IsCustom)
-        PROPERTY Descending     AS LOGIC AUTO
-        PROPERTY Unique         AS LOGIC GET Options:HasFlag(CdxOptions.IsUnique)
-        PROPERTY Signature      AS BYTE AUTO
-        PROPERTY SingleField    AS LOGIC AUTO
-        PROPERTY FieldIndex     AS INT AUTO             // 1 based FieldIndex
-        PROPERTY Options        AS CdxOptions AUTO
-        PROPERTY TopScope       AS OBJECT AUTO
-        PROPERTY BottomScope    AS OBJECT AUTO
-        PROPERTY HasTopScope    AS LOGIC AUTO
-        PROPERTY HasBottomScope AS LOGIC AUTO
-        PROPERTY IsHot          AS LOGIC AUTO
-        PROPERTY LockOffSet     AS LONG AUTO
-        
-#endregion
+
+	    METHOD Open() AS LOGIC
+            SELF:_KeyExpr := SELF:_Header:KeyExpression
+            TRY
+                SELF:_oRdd:Compile(SELF:_KeyExpr)
+            CATCH
+                SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
+                RETURN FALSE
+            END TRY
+            SELF:_KeyCodeBlock := (ICodeblock)SELF:_oRDD:_LastCodeBlock
+
+            SELF:_oRdd:GoTo(1)
+            LOCAL evalOk AS LOGIC
+            LOCAL oResult AS OBJECT
+            evalOk := TRUE
+            TRY
+                oResult := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
+            CATCH
+                evalOk := FALSE
+                oResult := NULL
+            END TRY
+            IF !evalOk
+                SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBFNTX.Compile")
+                RETURN FALSE
+            ENDIF
+            SELF:_KeyExprType := SELF:_getTypeCode(oResult)
+            // For Condition
+            SELF:_Conditional := FALSE
+            SELF:_ForExpr := SELF:_Header:ForExpression
+            IF SELF:_ForExpr:Length > 0
+                TRY
+                    SELF:_oRdd:Compile(SELF:_Header:ForExpression)
+                CATCH
+                    SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
+                    RETURN FALSE
+                END TRY
+                SELF:_ForCodeBlock := (ICodeblock)SELF:_oRdd:_LastCodeBlock
+                SELF:_oRdd:GoTo(1)
+                evalOk := TRUE
+                TRY
+                    VAR lOk := (LOGIC) SELF:_oRdd:EvalBlock(SELF:_ForCodeBlock)
+                CATCH
+                    evalOk := FALSE
+                END TRY
+                IF !evalOk
+                    SELF:_oRdd:_dbfError(SubCodes.EDB_EXPRESSION,GenCode.EG_SYNTAX,  "DBFNTX.Compile") 
+                    RETURN FALSE
+                ENDIF
+                SELF:_Conditional := TRUE
+            ENDIF
+            // If the Key Expression contains only a Field Name
+            SELF:_SingleField := SELF:_oRDD:FieldIndex(SELF:_KeyExpr)
+            SELF:_Hot := FALSE
+            SELF:ClearStack()
+            SELF:_keySize       := SELF:_Header:KeySize
+            //SELF:_keyDecimals   := SELF:_Header:KeyDecimals
+            SELF:Options        := SELF:_Header:Options
+            SELF:Signature      := SELF:_Header:Signature
+            SELF:_Unique        := SELF:_Header:Options:HasFlag(CdxOptions.IsUnique)
+            SELF:_Descending    := SELF:_Header:Descending
+            SELF:_Partial       := SELF:_Header:Options:HasFlag(CdxOptions.IsCustom)
+            SELF:_firstPageOffset := SELF:_Header:RootPage
+
+            SELF:_Version  := SELF:_Header:Version
+            SELF:_midItem := CdxNode{SELF:_keySize}
+            SELF:_oneItem := CdxNode{SELF:_keySize}
+            RETURN TRUE
 
         DESTRUCTOR()
             Close()
@@ -168,16 +226,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             /*
             SELF:Flush()
             TRY
-                IF SELF:_Shared .AND. SELF:_HPLocking
-                    SELF:_LockExit()
-                ENDIF
                 IF SELF:_hFile != F_ERROR
                     FClose( SELF:_hFile )
                     SELF:_hFile := F_ERROR
                 ENDIF
                 
             FINALLY
-                SELF:_HPLocking := FALSE
                 SELF:_hFile := F_ERROR
             END TRY
             */
@@ -192,7 +246,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL METHOD __Compare( aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
             IF aRHS == NULL
-                return 0
+                RETURN 0
             ENDIF
             RETURN RuntimeState.StringCompare(aLHS, aRHS, nLength)
 
@@ -217,14 +271,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ntxSignature |= NtxHeaderFlags.NewLock
             ENDIF
             SELF:_Header:Signature              := ntxSignature
-            SELF:_Header:IndexingVersion        := SELF:_indexVersion
+            SELF:_Header:Version        := SELF:_Version
             SELF:_Header:FirstPageOffset        := SELF:_firstPageOffset
             SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
             System.Diagnostics.Debug.WriteLine(SELF:_Header:Dump("After Update"))
             
             RETURN SELF:_Header:Write()
 	    */
-	    return true
+	    RETURN TRUE
             
             // Save informations about the "current" Item	
         PRIVATE METHOD _saveCurrentRecord( node AS CdxNode ) AS VOID
@@ -359,20 +413,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             result := TRUE
             SWITCH uiScope
             CASE DBOrder_Info.DBOI_SCOPETOP
-                    SELF:_topScope      := itmScope
-                    SELF:_hasTopScope   := (itmScope != NULL)
-                    IF itmScope != NULL
-                        SELF:_topScopeBuffer := BYTE[]{ MAX_KEY_LEN+1 }
-                        SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_topScopeBuffer, SELF:_Ansi, REF uiRealLen)
-                        SELF:_topScopeSize := uiRealLen
+                SELF:_topScope      := itmScope
+                SELF:_hasTopScope   := (itmScope != NULL)
+                IF itmScope != NULL
+                    SELF:_topScopeBuffer := BYTE[]{ MAX_KEY_LEN+1 }
+                    SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_topScopeBuffer, SELF:_Ansi, REF uiRealLen)
+                    SELF:_topScopeSize := uiRealLen
                 ENDIF
             CASE DBOrder_Info.DBOI_SCOPEBOTTOM
-                    SELF:_bottomScope    := itmScope
-                    SELF:_hasBottomScope := (itmScope != NULL)
-                    IF itmScope != NULL
-                        SELF:_bottomScopeBuffer := BYTE[]{ MAX_KEY_LEN+1 }
-                        SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_bottomScopeBuffer, SELF:_Ansi, REF uiRealLen)
-                        SELF:_bottomScopeSize := uiRealLen
+                SELF:_bottomScope    := itmScope
+                SELF:_hasBottomScope := (itmScope != NULL)
+                IF itmScope != NULL
+                    SELF:_bottomScopeBuffer := BYTE[]{ MAX_KEY_LEN+1 }
+                    SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_bottomScopeBuffer, SELF:_Ansi, REF uiRealLen)
+                    SELF:_bottomScopeSize := uiRealLen
                 ENDIF
             OTHERWISE
                 result := FALSE
@@ -389,8 +443,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             isOk := TRUE
             SELF:_oRdd:GoCold()
             oldRec := SELF:_Recno
-            IF SELF:_Shared
-                isOk := SELF:_lockForRead()
+            IF SELF:Shared
+                isOk := SELF:SLock()
                 IF !isOk
                     RETURN FALSE
                 ENDIF
@@ -430,8 +484,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             ENDIF
             SELF:_oRdd:__Goto(oldRec)
-            IF SELF:_Shared
-                isOk := SELF:_unLockForRead()
+            IF SELF:Shared
+                isOk := SELF:UnLock()
             ENDIF
             RETURN isOk
         INTERNAL METHOD _getRecPos(record REF LONG ) AS LOGIC
@@ -441,7 +495,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
             SELF:_oRdd:GoCold()
             oldRec := SELF:_Recno
-            IF !SELF:_lockForRead()
+            IF !SELF:SLock()
                 RETURN FALSE
             ENDIF
             recno := record
@@ -478,7 +532,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             ENDIF
             SELF:_oRdd:__Goto(oldRec)
-            RETURN SELF:_unLockForRead()
+            RETURN SELF:UnLock()
             
         PRIVATE METHOD _nextKey( keyMove AS LONG ) AS LONG
             LOCAL recno			AS LONG
@@ -511,7 +565,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
         PRIVATE METHOD ClearStack() AS VOID
         
-            FOREACH entry AS CdxStack IN SELF:_stack 
+            FOREACH entry AS RddStack IN SELF:_stack 
                 entry:Clear()
             NEXT
             SELF:_TopStack := 0

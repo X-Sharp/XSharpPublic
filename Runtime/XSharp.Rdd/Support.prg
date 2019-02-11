@@ -38,5 +38,20 @@ BEGIN NAMESPACE XSharp.RDD
         MEMBER Top
         
     END ENUM
-    
+
+      // Rdd Stack item
+    // Keep informations
+    INTERNAL SEALED CLASS RddStack
+        INTERNAL Page   AS LONG
+        INTERNAL Pos    AS WORD
+        INTERNAL Count  AS WORD
+        
+        INTERNAL METHOD Clear() AS VOID
+            SELF:Page := 0
+            SELF:Count := 0
+            SELF:Pos := 0
+            
+    END CLASS
+
+
 END NAMESPACE

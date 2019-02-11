@@ -209,12 +209,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF SELF:_TopStack == 0
                 RETURN 0
             ENDIF
-            ntxPage := SELF:_PageList:Read(SELF:_ntxStack[SELF:_TopStack]:Page)
-            node := ntxPage[SELF:_ntxStack[SELF:_TopStack]:Pos]
+            ntxPage := SELF:_PageList:Read(SELF:_stack[SELF:_TopStack]:Page)
+            node := ntxPage[SELF:_stack[SELF:_TopStack]:Pos]
             IF thisPage
                 IF moveDirection == SkipDirection.Backward
-                    SELF:_ntxStack[SELF:_TopStack]:Pos--
-                    node:Fill(SELF:_ntxStack[SELF:_TopStack]:Pos, ntxPage)
+                    SELF:_stack[SELF:_TopStack]:Pos--
+                    node:Fill(SELF:_stack[SELF:_TopStack]:Pos, ntxPage)
                 ENDIF
                 IF SELF:_currentRecno != node:Recno
                     SELF:_saveCurrentRecord(node)
@@ -223,13 +223,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             
             IF moveDirection == SkipDirection.Forward
-                SELF:_ntxStack[SELF:_TopStack]:Pos++
-                node:Fill(SELF:_ntxStack[SELF:_TopStack]:Pos, ntxPage)
+                SELF:_stack[SELF:_TopStack]:Pos++
+                node:Fill(SELF:_stack[SELF:_TopStack]:Pos, ntxPage)
                 IF node:PageNo != 0
                     RETURN SELF:_locate(NULL, 0, SearchMode.Top, node:PageNo)
                 ENDIF
-                IF SELF:_ntxStack[SELF:_TopStack]:Pos == SELF:_ntxStack[SELF:_TopStack]:Count
-                    DO WHILE SELF:_TopStack != 0 .AND. SELF:_ntxStack[SELF:_TopStack]:Pos == SELF:_ntxStack[SELF:_TopStack]:Count
+                IF SELF:_stack[SELF:_TopStack]:Pos == SELF:_stack[SELF:_TopStack]:Count
+                    DO WHILE SELF:_TopStack != 0 .AND. SELF:_stack[SELF:_TopStack]:Pos == SELF:_stack[SELF:_TopStack]:Count
                         SELF:PopPage()
                     ENDDO
                     RETURN SELF:_getNextKey(TRUE, SkipDirection.Forward)
@@ -242,14 +242,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF node:PageNo != 0
                 RETURN SELF:_locate(NULL, 0, SearchMode.Bottom, node:PageNo)
             ENDIF
-            IF SELF:_ntxStack[SELF:_TopStack]:Pos == 0
-                DO WHILE SELF:_TopStack != 0 .AND. SELF:_ntxStack[SELF:_TopStack]:Pos == 0
+            IF SELF:_stack[SELF:_TopStack]:Pos == 0
+                DO WHILE SELF:_TopStack != 0 .AND. SELF:_stack[SELF:_TopStack]:Pos == 0
                     SELF:PopPage()
                 ENDDO
                 RETURN SELF:_getNextKey(TRUE, SkipDirection.Backward)
             ENDIF
-            SELF:_ntxStack[SELF:_TopStack]:Pos--
-            node:Fill(SELF:_ntxStack[SELF:_TopStack]:Pos, ntxPage)
+            SELF:_stack[SELF:_TopStack]:Pos--
+            node:Fill(SELF:_stack[SELF:_TopStack]:Pos, ntxPage)
             IF SELF:_currentRecno != node:Recno
                 SELF:_saveCurrentRecord(node)
             ENDIF
@@ -262,27 +262,27 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF SELF:_TopStack == 0
                 RETURN FALSE
             ENDIF
-            ntxPage := SELF:_PageList:Read(SELF:_ntxStack[SELF:_TopStack]:Page)
-            node := ntxPage[SELF:_ntxStack[SELF:_TopStack]:Pos]
+            ntxPage := SELF:_PageList:Read(SELF:_stack[SELF:_TopStack]:Page)
+            node := ntxPage[SELF:_stack[SELF:_TopStack]:Pos]
             IF nodePage
-                SELF:_ntxStack[SELF:_TopStack]:Pos--
+                SELF:_stack[SELF:_TopStack]:Pos--
                 record++
                 RETURN TRUE
             ENDIF
             IF node:PageNo != 0
                 SELF:_locate(NULL, 0, SearchMode.Bottom, node:PageNo)
-                record += (SELF:_ntxStack[SELF:_TopStack]:Pos + 1)
-                SELF:_ntxStack[SELF:_TopStack]:Pos := 0
+                record += (SELF:_stack[SELF:_TopStack]:Pos + 1)
+                SELF:_stack[SELF:_TopStack]:Pos := 0
                 RETURN TRUE
             ENDIF
-            IF SELF:_ntxStack[SELF:_TopStack]:Pos == 0
-                DO WHILE SELF:_TopStack != 0 .AND. SELF:_ntxStack[SELF:_TopStack]:Pos == 0
+            IF SELF:_stack[SELF:_TopStack]:Pos == 0
+                DO WHILE SELF:_TopStack != 0 .AND. SELF:_stack[SELF:_TopStack]:Pos == 0
                     SELF:PopPage()
                 ENDDO
                 RETURN SELF:_findItemPos(REF record, TRUE)
             ENDIF
-            record += SELF:_ntxStack[SELF:_TopStack]:Pos
-            SELF:_ntxStack[SELF:_TopStack]:Pos := 0
+            record += SELF:_stack[SELF:_TopStack]:Pos
+            SELF:_stack[SELF:_TopStack]:Pos := 0
             RETURN TRUE
             
             //    PRIVATE METHOD _isEqual(lRecno AS LONG , objValue AS OBJECT , result REF LOGIC ) AS LOGIC
@@ -613,9 +613,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             END SWITCH
             // Add info in the stack
             SELF:_TopStack++
-            SELF:_ntxStack[SELF:_TopStack]:Pos      := foundPos
-            SELF:_ntxStack[SELF:_TopStack]:Page     := pageOffset
-            SELF:_ntxStack[SELF:_TopStack]:Count    := nodeCount
+            SELF:_stack[SELF:_TopStack]:Pos      := foundPos
+            SELF:_stack[SELF:_TopStack]:Page     := pageOffset
+            SELF:_stack[SELF:_TopStack]:Count    := nodeCount
             
             node:Fill(foundPos, ntxPage)
             IF node:PageNo != 0
@@ -643,16 +643,16 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     RETURN 0
                 END SWITCH
             ELSEIF searchMode == SearchMode.LeftFound
-                DO WHILE SELF:_TopStack != 0 .AND. SELF:_ntxStack[SELF:_TopStack]:Pos == SELF:_ntxStack[SELF:_TopStack]:Count
+                DO WHILE SELF:_TopStack != 0 .AND. SELF:_stack[SELF:_TopStack]:Pos == SELF:_stack[SELF:_TopStack]:Count
                     SELF:PopPage()
                 ENDDO
                 IF SELF:_TopStack != 0
-                    ntxPage := SELF:_PageList:Read(SELF:_ntxStack[SELF:_TopStack]:Page)
+                    ntxPage := SELF:_PageList:Read(SELF:_stack[SELF:_TopStack]:Page)
                     IF ntxPage == NULL
                         SELF:ClearStack()
                         RETURN 0
                     ENDIF
-                    node:Fill(SELF:_ntxStack[SELF:_TopStack]:Pos, ntxPage)
+                    node:Fill(SELF:_stack[SELF:_TopStack]:Pos, ntxPage)
                     IF SELF:_currentRecno != node:Recno
                         SELF:_saveCurrentRecord(node)
                     ENDIF

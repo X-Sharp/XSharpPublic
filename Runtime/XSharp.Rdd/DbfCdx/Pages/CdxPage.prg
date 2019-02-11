@@ -28,7 +28,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Dumped as LOGIC GET _dumped SET _dumped := Value
         INTERNAL PROPERTY IsHot  AS LOGIC get _hot SET _hot := Value
         INTERNAL PROPERTY Tag    AS CDXTag Get _tag SET _tag := Value
-        INTERNAL PROPERTY KeyLength as LONG GET IIF(_tag == NULL, 0, _tag:KeyLength)
+        INTERNAL PROPERTY KeyLength as LONG GET IIF(_tag == NULL, 0, _tag:_keySize)
         PROPERTY Buffer AS BYTE[] GET _buffer
         PROPERTY PageNo AS Int32 GET _nPage
 

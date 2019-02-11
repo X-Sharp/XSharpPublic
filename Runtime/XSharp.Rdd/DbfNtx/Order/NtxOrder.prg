@@ -23,7 +23,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE CONST MAX_KEY_LEN       := 256  AS WORD
         PRIVATE CONST BUFF_SIZE	        := 1024  AS WORD 
         PRIVATE CONST NTX_COUNT         := 16    AS WORD
-        PRIVATE CONST NTX_STACK_COUNT   := 20    AS WORD
+        PRIVATE CONST STACK_DEPTH       := 20    AS WORD
         PRIVATE CONST MIN_BYTE          := 0x01 AS BYTE
         PRIVATE CONST MAX_BYTE          := 0xFF AS BYTE
         PRIVATE CONST MAX_TRIES         := 50 AS WORD
@@ -61,7 +61,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL _TopStack AS LONG
         INTERNAL _firstPageOffset AS LONG
         INTERNAL _fileSize AS LONG
-        INTERNAL _ntxStack AS NtxStack[]
+        INTERNAL _stack AS RddStack[]
         INTERNAL _HPLocking AS LOGIC
         INTERNAL _readLocks AS LONG
         INTERNAL _writeLocks AS LONG
@@ -141,13 +141,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_hFile         := NULL
             SELF:_oRdd          := oRDD
             SELF:_Header        := NULL 
-            SELF:_ntxStack      := NtxStack[]{ NTX_STACK_COUNT }
+            SELF:_stack         := RddStack[]{ STACK_DEPTH }
             SELF:_Encoding      := oRDD:_Encoding
             SELF:_tagNumber     := 1
             SELF:_maxLockTries  := 1
             //Init
-            FOR i := 0 TO NTX_STACK_COUNT - 1 
-                SELF:_ntxStack[i] := NtxStack{}
+            FOR i := 0 TO STACK_DEPTH - 1 
+                SELF:_stack[i] := RddStack{}
             NEXT
             
         INTERNAL CONSTRUCTOR(oRDD AS DBFNTX , filePath AS STRING )
@@ -657,13 +657,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
         PRIVATE METHOD PopPage() AS VOID
             IF SELF:_TopStack != 0
-                SELF:_ntxStack[SELF:_TopStack]:Clear()
+                SELF:_stack[SELF:_TopStack]:Clear()
                 SELF:_TopStack--
             ENDIF
             
         PRIVATE METHOD ClearStack() AS VOID
         
-            FOREACH entry AS NtxStack IN SELF:_ntxStack 
+            FOREACH var entry IN SELF:_stack 
                 entry:Clear()
             NEXT
             SELF:_TopStack := 0

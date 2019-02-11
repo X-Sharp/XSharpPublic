@@ -361,8 +361,10 @@ BEGIN NAMESPACE XSharp.RDD
 						ENDIF
 					ENDIF
 					IF ( SELF:_fLocked ) .AND. ( recordNbr == 0 )
-						SELF:_fLocked := SELF:_unlockFile( )
-						isOk := isOk .AND. SELF:_fLocked
+						isOk := SELF:_unlockFile( )
+						if isOk
+                            self:_fLocked := FALSE
+                        ENDIF
 					ENDIF
 				END LOCK
 			ELSE
@@ -467,12 +469,11 @@ BEGIN NAMESPACE XSharp.RDD
 						SELF:_unlockRecord( nbr )
 					NEXT
 					SELF:_Locks:Clear()
-					//
-					SELF:_fLocked := SELF:_lockFile()
-					// Invalidate Buffer
-					SELF:Goto( SELF:RecNo )
-					isOk := SELF:_fLocked
-				ENDIF
+                ENDIF
+				SELF:_fLocked := SELF:_lockFile()
+				// Invalidate Buffer
+				SELF:Goto( SELF:RecNo )
+				isOk := SELF:_fLocked
 			ENDIF
 			RETURN isOk
 			

@@ -18,6 +18,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _hFile     AS IntPtr
         INTERNAL _OpenInfo	AS DbOpenInfo
         INTERNAL _Encoding  AS Encoding
+        INTERNAL _PageList  as CdxPageList
         INTERNAL PROPERTY Shared    AS LOGIC GET _OpenInfo:Shared
         INTERNAL PROPERTY ReadOnly  AS LOGIC GET _OpenInfo:ReadOnly
         INTERNAL _Hot       AS LOGIC
@@ -33,7 +34,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Name AS STRING AUTO
         INTERNAL CONSTRUCTOR(oRDD AS DBFCDX )
             SUPER( oRdd )
-            SELF:_oRdd := oRDD
+            SELF:_oRdd     := oRDD
+            SELF:_PageList := CdxPageList{Self}
             
         #region RDD Overloads
             /// <inheritdoc />		
@@ -150,33 +152,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             RETURN lOk
 
-        METHOD GetPage(nPage AS Int32, nKeyLen := 0 AS Int32) AS CdxPage
-         	LOCAL isOk AS LOGIC
-            LOCAL buffer AS BYTE[]
-            buffer := BYTE[]{CDXPAGE_SIZE}
+        METHOD AllocBuffer as BYTE[]
+            RETURN BYTE[]{CDXPAGE_SIZE}
+
+
+
+        METHOD Read(nPage as LONG, buffer AS byte[]) AS LOGIC
+            LOCAL isOk AS LOGIC
 			// Move to top
 			FSeek3( SELF:_hFile, nPage, SeekOrigin.Begin )
-			// Read Buffer
-			isOk := FRead3(SELF:_hFile, buffer, CDXPAGE_SIZE) == CDXPAGE_SIZE 
-			//
-            // Inspect first 2 byte and determine the page
-            LOCAL nType AS SHORT
-            nType := BitConverter.ToInt16(buffer, 0)
-            SWITCH nType
-            CASE 1  // Root
-                RETURN CdxGeneralPage{SELF, nPage, buffer} 
-            CASE 2  // Leaf
-                RETURN CdxLeafPage{SELF, nPage, buffer, nKeyLen}
-            CASE 3  // List of Tags
-                RETURN CdxLeafPage{SELF, nPage, buffer, nKeyLen}
-            CASE 0
-                RETURN CdxBranchePage{SELF, nPage, buffer,nKeyLen}
-            CASE -1 // Unused
-            OTHERWISE // Could be tag header
-               RETURN CdxGeneralPage{SELF, nPage, buffer} 
-            END SWITCH
-            
-
+			// Write Buffer
+			isOk :=  FRead3(SELF:_hFile, buffer, CDXPAGE_SIZE) == CDXPAGE_SIZE 
+            RETURN IsOk
+ 
         METHOD Read(oPage AS CdxPage) AS LOGIC
             LOCAL isOk AS LOGIC
 			// Move to top
@@ -198,6 +186,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _Hot := TRUE
             RETURN TRUE
 
+        METHOD GetPage(nPage AS Int32, nKeyLen := 0 AS Int32) as CdxPage
+            return self:_PageList:GetPage(nPage, nKeyLen)
   
 
         #region properties

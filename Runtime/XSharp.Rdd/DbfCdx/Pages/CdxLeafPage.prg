@@ -70,7 +70,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_ExpandKeys()
             ENDIF
             RETURN _recnos[nPos ]
-                
+
+        PUBLIC METHOD GetChildPage(nPos AS Int32) AS Int32
+            return 0
 
         PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
             Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)

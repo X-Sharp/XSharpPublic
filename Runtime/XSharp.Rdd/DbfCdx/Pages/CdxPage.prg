@@ -19,11 +19,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	/// The CdxPageBase class.
 	/// </summary>
 	INTERNAL ABSTRACT CLASS CdxPage
-	    PROTECTED _bag AS CDXOrderBag
-        PROTECTED _nPage AS Int32
+	    PROTECTED _bag      AS CDXOrderBag
+        PROTECTED _tag      AS CDXTag
+        PROTECTED _nPage    AS Int32
 		PROTECTED _buffer   AS BYTE[]
-		INTERNAL isHot	AS LOGIC        // Hot ?  => Page has changed ?
-
+		PROTECTED _hot      AS LOGIC        // Hot ?  => Page has changed ?
+        PROTECTED _dumped   as LOGIC
+        INTERNAL PROPERTY Dumped as LOGIC GET _dumped SET _dumped := Value
+        INTERNAL PROPERTY IsHot  AS LOGIC get _hot SET _hot := Value
+        INTERNAL PROPERTY Tag    AS CDXTag Get _tag SET _tag := Value
+        INTERNAL PROPERTY KeyLength as LONG GET IIF(_tag == NULL, 0, _tag:KeyLength)
         PROPERTY Buffer AS BYTE[] GET _buffer
         PROPERTY PageNo AS Int32 GET _nPage
 
@@ -171,6 +176,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         #endregion
 
 		INTERNAL CONST CDXPAGE_SIZE        := 512 AS WORD
+
+        METHOD Dump AS STRING
+            RETURN String.Empty
+
        
 	END CLASS
 END NAMESPACE 

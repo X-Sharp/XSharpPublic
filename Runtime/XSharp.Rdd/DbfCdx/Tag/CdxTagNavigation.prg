@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:_oRdd:GoCold()
                     SELF:_oRdd:_Top := FALSE
                     SELF:_oRdd:_Bottom := TRUE
-                    locked := SELF:_lockForRead()
+                    locked := SELF:SLock()
                     IF !locked
                         RETURN FALSE
                     ENDIF
@@ -38,7 +38,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN result
             FINALLY
                 IF locked
-                    SELF:_unLockForRead()
+                    SELF:UnLock()
                 ENDIF
             END TRY
 
@@ -57,7 +57,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ELSE
                     SELF:_oRdd:_Top := TRUE
                     SELF:_oRdd:_Bottom := FALSE
-                    locked := SELF:_lockForRead()
+                    locked := SELF:SLock()
                     IF !locked
                         RETURN FALSE
                     ENDIF
@@ -70,7 +70,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN result    
             FINALLY
                 IF locked
-                    result := SELF:_unLockForRead()
+                    result := SELF:UnLock()
                 ENDIF
             END TRY
             
@@ -127,7 +127,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             TRY
                 orgToSkip := nToSkip
                 SELF:_oRdd:GoCold()
-                locked := SELF:_lockForRead()
+                locked := SELF:SLock()
                 IF !locked
                     RETURN FALSE
                 ENDIF
@@ -184,7 +184,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 System.Diagnostics.Debug.WriteLine(e:Message)  
             FINALLY
                 IF locked
-                    result := SELF:_unLockForRead()
+                    result := SELF:UnLock()
                 ENDIF
             END TRY
             RETURN result
@@ -244,7 +244,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN node:Recno
             */
-            return 0
+            RETURN 0
             
             
         PRIVATE METHOD _findItemPos(record REF LONG , nodePage AS LOGIC ) AS LOGIC
@@ -334,7 +334,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
             isOk := TRUE
             uiRealLen := 0
-            IF rcno != SELF:_currentRecno .OR. SELF:_Shared
+            IF rcno != SELF:_currentRecno .OR. SELF:Shared
                 SELF:_currentRecno := 0
                 VAR oValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
                 isOk :=  oValue != NULL 
@@ -526,7 +526,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // find a key starting at the pageOffSet passed 
             foundPos := 0
             //Load the page at pageOffset
-            page := SELF:_Bag:GetPage(pageOffset, self:KeyLength)
+            page := SELF:_Bag:GetPage(pageOffset, SELF:_keySize)
             page:Tag := SELF
             IF page == NULL
                 SELF:_TopStack := 0
@@ -641,7 +641,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:PopPage()
                 ENDDO
                 IF SELF:_TopStack != 0
-                    page := SELF:_Bag:GetPage(SELF:_stack[SELF:_TopStack]:Page, SELF:KeyLength)
+                    page := SELF:_Bag:GetPage(SELF:_stack[SELF:_TopStack]:Page, SELF:_keySize)
                     IF page == NULL
                         SELF:ClearStack()
                         RETURN 0
@@ -689,9 +689,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             TRY
                 deletedState := XSharp.RuntimeState.Deleted
                 SELF:_oRdd:GoCold()
-                locked := SELF:_lockForRead()
+                locked := SELF:SLock()
                 IF locked
-                    IF SELF:_Shared
+                    IF SELF:Shared
                         SELF:_currentRecno := 0
                     ENDIF
                     needPadStr := FALSE
@@ -830,7 +830,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 
             FINALLY
                 IF locked
-                    result := SELF:_unLockForRead()
+                    result := SELF:UnLock()
                 ENDIF
             END TRY
             

@@ -97,7 +97,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_firstPageOffset := BUFF_SIZE
             SELF:_fileSize := 0
             SELF:_nextUnusedPageOffset := 0
-            SELF:_indexVersion := 1
+            SELF:_Version := 1
             SELF:_Shared := FALSE
             SELF:_Hot := TRUE
             SELF:_TopStack := 0
@@ -107,7 +107,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_Descending := FALSE
             SELF:_writeLocks := 0
             SELF:_Partial := ordCondInfo:Scoped
-            SELF:_HPLocking := FALSE
             IF ordCondInfo:Active
                 SELF:_Descending := ordCondInfo:Descending
                 IF hasForCond .AND. !string.IsNullOrEmpty(ordCondInfo:ForExpression)
@@ -145,7 +144,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
 //            SELF:_Header := NtxHeader{ SELF:_hFile }
 //            SELF:_Header:Signature              := NtxHeaderFlags.Default
-//            SELF:_Header:IndexingVersion        := SELF:_indexVersion
+//            SELF:_Header:Version                := SELF:_Version
 //            SELF:_Header:FirstPageOffset        := SELF:_firstPageOffset
 //            SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
 //            SELF:_Header:EntrySize              := SELF:_entrySize
@@ -173,10 +172,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_lockOffset := LOCKOFFSET_NEW
             ELSE
                 SELF:_lockOffset := LOCKOFFSET_OLD
-            ENDIF
-            IF  XSharp.RuntimeState.HPLocking
-                SELF:_HPLocking := TRUE
-                SELF:_Header:Signature |= NtxHeaderFlags.Partial
             ENDIF
             IF !SELF:_Header:Write()
                 SELF:Close()
@@ -523,7 +518,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_levels := NULL
             RETURN result
             */
-            return true
+            RETURN TRUE
             
             // IRddSortWriter Interface, used by RddSortHelper
         PUBLIC METHOD WriteSorted(si AS DbSortInfo , record AS SortRecord) AS LOGIC
@@ -553,7 +548,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN Ok
             
         PRIVATE METHOD _initLevels(uiBOrder AS LONG , keyCount AS LONG ) AS LONG
-            LOCAL level AS LONG
+            LOCAL level := 0 AS LONG
             /*
             LOCAL exp AS LONG
             LOCAL nLevel AS NtxLevel

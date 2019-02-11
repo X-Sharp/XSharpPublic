@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -24,18 +24,5 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 			
 	END ENUM
 	
-	// Ntx Stack item
-    // Keep informations
-    INTERNAL SEALED CLASS CdxStack
-        INTERNAL Page   AS LONG
-        INTERNAL Pos    AS WORD
-        INTERNAL Count  AS WORD
-        
-        INTERNAL METHOD Clear() AS VOID
-            SELF:Page := 0
-            SELF:Count := 0
-            SELF:Pos := 0
-            
-    END CLASS
 	
 END NAMESPACE 

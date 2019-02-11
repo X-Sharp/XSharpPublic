@@ -118,7 +118,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     String.Compare(oBag:Name, cBagName, StringComparison.OrdinalIgnoreCase) == 0 .OR. ;
                     String.Compare(oBag:FileName, cBagName, StringComparison.OrdinalIgnoreCase) == 0
                     FOREACH oTag AS CdxTag IN oBag:Tags
-                        IF String.Compare(oTag:Name, cName, StringComparison.OrdinalIgnoreCase) == 0
+                        IF String.Compare(oTag:OrderName, cName, StringComparison.OrdinalIgnoreCase) == 0
                             RETURN oTag
                         ENDIF
                     NEXT

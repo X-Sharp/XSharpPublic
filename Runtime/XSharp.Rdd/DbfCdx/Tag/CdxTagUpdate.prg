@@ -121,16 +121,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF errorLevel <= 1
                 IF SELF:_Shared
                     SELF:_PageList:Flush(TRUE)
-                    SELF:_indexVersion++
+                    SELF:_Version++
                     SELF:_PutHeader()
                     SELF:_Hot := FALSE
                     FFlush( SELF:_hFile )
                     SELF:_WriteUnLock()
-                    IF SELF:_HPLocking
-                        DO WHILE lockCount != 0 .AND. !SELF:_ReadLock()
-                            lockCount--
-                        ENDDO
-                    ENDIF
                 ENDIF
                 RETURN TRUE
             ENDIF

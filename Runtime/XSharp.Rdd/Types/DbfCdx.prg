@@ -121,7 +121,7 @@ BEGIN NAMESPACE XSharp.RDD
 				ENDIF
 			CASE DBOI_NAME
 				IF workOrder != NULL
-					info:Result := workOrder:Name
+					info:Result := workOrder:OrderName
 				ENDIF
 			CASE DBOI_FILEHANDLE
 				IF workOrder != NULL
@@ -180,24 +180,24 @@ BEGIN NAMESPACE XSharp.RDD
 					IF info:Result != NULL
 						workOrder:SetOrderScope(info:Result, XSharp.RDD.Enums.DbOrder_Info.DBOI_SCOPETOP)
 					ENDIF
-					RETURN info:Result := workOrder:TopScope
+					RETURN info:Result := workOrder:_topScope
 				ENDIF
 			CASE DBOI_SCOPEBOTTOM
 				IF workOrder != NULL
 					IF info:Result != NULL
 						workOrder:SetOrderScope(info:Result, XSharp.RDD.Enums.DbOrder_Info.DBOI_SCOPEBOTTOM)
 					ENDIF
-					info:Result := workOrder:BottomScope
+					info:Result := workOrder:_bottomScope
 				ENDIF
 			CASE DBOI_SCOPETOPCLEAR
 				IF workOrder != NULL
-					workOrder:HasTopScope := FALSE
-					workOrder:TopScope := NULL
+					workOrder:_hasTopScope := FALSE
+					workOrder:_topScope := NULL
 				ENDIF
 			CASE DBOI_SCOPEBOTTOMCLEAR
 				IF workOrder != NULL
-					workOrder:HasBottomScope := FALSE
-					workOrder:BottomScope := NULL
+					workOrder:_hasBottomScope := FALSE
+					workOrder:_bottomScope := NULL
 				ENDIF
             CASE DBOI_USER + 42
                 // Dump Ntx to Txt file

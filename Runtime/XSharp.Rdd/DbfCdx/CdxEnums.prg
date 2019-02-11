@@ -23,4 +23,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		MEMBER IsHeader			:= 0x80		// CDX Header (contains the names of the tags)
 			
 	END ENUM
+	
+	// Ntx Stack item
+    // Keep informations
+    INTERNAL SEALED CLASS CdxStack
+        INTERNAL Page   AS LONG
+        INTERNAL Pos    AS WORD
+        INTERNAL Count  AS WORD
+        
+        INTERNAL METHOD Clear() AS VOID
+            SELF:Page := 0
+            SELF:Count := 0
+            SELF:Pos := 0
+            
+    END CLASS
+	
 END NAMESPACE 

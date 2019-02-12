@@ -1083,6 +1083,40 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 
+		// TECH-RGU0U0636C, DBSetOrderCondition() results to NotImplementedException
+		[Fact, Trait("Category", "DBF")];
+			METHOD DBSetOrderCondition_test() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL aValues AS ARRAY
+			LOCAL i AS DWORD
+			
+			cDBF := GetTempFileName()
+			aValues := { 1,4,2,3 }
+			DBCreate( cDBF , {{"NUM" , "N" ,5 , 0 } })
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut(1,aValues [i])
+			NEXT
+			DBGoTop()
+			
+			// DESCENDING = TRUE
+			Assert.True( DBSetOrderCondition(,,,,,,,,,,TRUE) )
+			Assert.True( DBCreateIndex(cDbf, "NUM" ) )
+			
+			DBGoTop()
+			aValues := { 4,3,2,1 }
+			LOCAL nCount := 0 AS INT
+			DO WHILE .not. EoF()
+				nCount ++
+				Assert.Equal((INT)aValues[nCount] , (INT)FieldGet(1))
+				DBSkip()
+			END DO
+			
+			DBCloseArea()
+		RETURN
+
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
 		RETURN GetTempFileName("testdbf")

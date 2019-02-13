@@ -101,12 +101,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_Shared := FALSE
             SELF:_Hot := TRUE
             SELF:_TopStack := 0
-            SELF:_Unique := createInfo:Unique
+            SELF:Unique := createInfo:Unique
             SELF:_Ansi := SELF:_oRdd:_Ansi
             SELF:_Conditional := FALSE
             SELF:_Descending := FALSE
             SELF:_writeLocks := 0
-            SELF:_Partial := ordCondInfo:Scoped
+            SELF:Custom := ordCondInfo:Scoped
             IF ordCondInfo:Active
                 SELF:_Descending := ordCondInfo:Descending
                 IF hasForCond .AND. !string.IsNullOrEmpty(ordCondInfo:ForExpression)
@@ -162,7 +162,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:_Conditional .OR. SELF:_Descending .OR. ordCondInfo:Scoped
                 SELF:_Header:Signature |= NtxHeaderFlags.Conditional
             ENDIF
-            IF SELF:_Partial
+            IF SELF:Custom
                 SELF:_Header:Signature |= NtxHeaderFlags.Partial
             ENDIF
             SELF:_maxLockTries  := 99 //(LONG)XSharp.RuntimeState.LockTries
@@ -179,7 +179,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FALSE
             ENDIF
             SELF:_fileSize += BUFF_SIZE
-            IF !SELF:_Unique .AND. !SELF:_Conditional .AND. !SELF:_Descending .AND. !ordCondInfo:Scoped
+            IF !SELF:Unique .AND. !SELF:_Conditional .AND. !SELF:_Descending .AND. !ordCondInfo:Scoped
                 isOk := SELF:_CreateIndex()
             ELSE
                 isOk := SELF:_CreateUnique(ordCondInfo)
@@ -204,7 +204,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _getExpressionValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             LOCAL result := TRUE AS LOGIC
             TRY
-                VAR oKeyValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
+                VAR oKeyValue := SELF:_oRdd:EvalBlock(SELF:KeyBlock)
                 LOCAL uiRealLen := 0 AS LONG
                 result := SELF:_ToString(oKeyValue, SELF:_keySize, SELF:_keyDecimals, byteArray, SELF:_Ansi, REF uiRealLen)
             CATCH
@@ -246,7 +246,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             CASE TypeCode.Double
             CASE TypeCode.Decimal
                 TRY
-                    expr := "STR(" + SELF:_KeyExpr + ")"
+                    expr := "STR(" + SELF:KeyExpression + ")"
                     TRY
                         VAR oBlock := SELF:_oRdd:Compile(expr)
                         expr := (STRING) SELF:_oRdd:EvalBlock(oBlock)

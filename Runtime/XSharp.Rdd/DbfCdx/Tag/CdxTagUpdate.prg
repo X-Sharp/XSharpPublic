@@ -88,7 +88,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                     SELF:_deleteKey()
                                 ENDIF
                             ELSE
-                                IF !SELF:_Unique .AND. !SELF:_Conditional .AND. !SELF:_Partial
+                                IF !SELF:Unique .AND. !SELF:_Conditional .AND. !SELF:Custom
                                     SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_NOT_FOUND, GenCode.EG_DATATYPE,SELF:fileName)
                                 ENDIF
                             ENDIF
@@ -98,7 +98,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             SELF:_midItem:PageNo := 0
                             SELF:_midItem:Recno := recordNo
                             SELF:_TopStack := 0
-                            IF SELF:_Unique
+                            IF SELF:Unique
                                 IF SELF:_locate(SELF:_midItem:KeyBytes, SELF:_keySize, SearchMode.Left, SELF:_firstPageOffset) == 0
                                     SELF:_addKey()
                                 ELSE

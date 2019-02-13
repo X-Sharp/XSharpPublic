@@ -336,7 +336,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             uiRealLen := 0
             IF rcno != SELF:_currentRecno .OR. SELF:Shared
                 SELF:_currentRecno := 0
-                VAR oValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
+                VAR oValue := SELF:_oRdd:EvalBlock(SELF:KeyBlock)
                 isOk :=  oValue != NULL 
                 IF isOk
                     isOk := SELF:_ToString(oValue, SELF:_keySize, SELF:_keyDecimals, SELF:_currentKeyBuffer, SELF:_Ansi, REF uiRealLen)
@@ -494,7 +494,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_saveCurrentKey(recno)
             IF SELF:_goRecord(SELF:_currentKeyBuffer, SELF:_keySize, recno) != recno
                 IF SELF:_goRecord(NULL, 0, recno) != recno
-                    IF !SELF:_Unique .AND. !SELF:_Conditional .AND. !SELF:_Partial
+                    IF !SELF:Unique .AND. !SELF:Conditional .AND. !SELF:Custom
                         SELF:_oRdd:_dbfError( SubCodes.ERDD_RECNO_MISSING, GenCode.EG_CORRUPTION,SELF:fileName)
                         result := FALSE
                     ENDIF

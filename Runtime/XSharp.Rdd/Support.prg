@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharp.RDD
         
     END ENUM
 
-	INTERNAL CLASS SortRecord
+	PUBLIC CLASS SortRecord
 		PRIVATE _data AS BYTE[]
 		PRIVATE _Recno AS LONG
 		

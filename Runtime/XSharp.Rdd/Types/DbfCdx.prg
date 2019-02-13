@@ -113,15 +113,15 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
 			CASE DBOI_FULLPATH
 				IF workOrder != NULL
-					info:Result := workOrder:OrderBag:FileName
+					info:Result := workOrder:FileName
 				ENDIF
 			CASE DBOI_BAGNAME
 				IF workOrder != NULL
-					info:Result := System.IO.Path.GetFileNameWithoutExtension(workOrder:OrderBag:FileName)
+					info:Result := System.IO.Path.GetFileNameWithoutExtension(workOrder:FileName)
 				ENDIF
 			CASE DBOI_NAME
 				IF workOrder != NULL
-					info:Result := workOrder:OrderName
+					info:Result := workOrder:_orderName
 				ENDIF
 			CASE DBOI_FILEHANDLE
 				IF workOrder != NULL
@@ -129,31 +129,31 @@ BEGIN NAMESPACE XSharp.RDD
 				ENDIF
 			CASE DBOI_ISDESC
 				IF workOrder != NULL
-					info:Result := workOrder:Descending
-				ENDIF
-			CASE DBOI_UNIQUE
-				IF workOrder != NULL
-					info:Result := workOrder:Unique
+					info:Result := workOrder:_Descending
 				ENDIF
 			CASE DBOI_ISCOND
 				IF workOrder != NULL
-					info:Result := workOrder:IsConditional
+					info:Result := workOrder:Conditional
 				ENDIF
 			CASE DBOI_KEYTYPE
 				IF workOrder != NULL
-					info:Result := workOrder:KeyType
+					info:Result := workOrder:_KeyExprType
 				ENDIF
 			CASE DBOI_KEYSIZE
 				IF workOrder != NULL
-					info:Result := workOrder:KeyLength
+					info:Result := workOrder:_keySize
 				ENDIF
 			CASE DBOI_KEYDEC
 				IF workOrder != NULL
 					info:Result := workOrder:keyDecimals
 				ENDIF
+			CASE DBOI_UNIQUE
+				IF workOrder != NULL
+					info:Result := workOrder:Unique
+				ENDIF
 			CASE DBOI_LOCKOFFSET
 				IF workOrder != NULL
-					info:Result := workOrder:LockOffset
+					info:Result := workOrder:OrderBag:_lockOffset
 				ENDIF
 			CASE DBOI_SETCODEBLOCK
 				IF workOrder != NULL
@@ -180,7 +180,7 @@ BEGIN NAMESPACE XSharp.RDD
 					IF info:Result != NULL
 						workOrder:SetOrderScope(info:Result, XSharp.RDD.Enums.DbOrder_Info.DBOI_SCOPETOP)
 					ENDIF
-					RETURN info:Result := workOrder:_topScope
+					info:Result := workOrder:_topScope
 				ENDIF
 			CASE DBOI_SCOPEBOTTOM
 				IF workOrder != NULL
@@ -261,7 +261,7 @@ BEGIN NAMESPACE XSharp.RDD
 	            lOk := SUPER:Open(info)
 	            IF lOk
 	                VAR cCdxFileName := System.IO.Path.ChangeExtension(info:FileName, ".CDX")
-	                IF RuntimeState.AutoOpen .AND. file(cCdxFileName)
+	                IF RuntimeState.AutoOpen .AND. System.IO.File.Exists(cCdxFileName)
                         LOCAL orderinfo := DbOrderInfo{} AS XSharp.RDD.Support.DbOrderInfo
                         orderInfo:BagName := cCdxFileName
 	                    lOk := _indexList:Add(orderinfo)
@@ -310,19 +310,17 @@ BEGIN NAMESPACE XSharp.RDD
 				ENDIF
 			END LOCK
 
-        METHOD __Goto(nRec AS LONG, lSeekNtx := FALSE AS LOGIC) AS LOGIC
-            BEGIN LOCK SELF
-                IF lSeekNtx
-                    // Position index on the current record
-                    IF SELF:CurrentOrder != NULL
-                        SELF:CurrentOrder:_GoToRecNo(nRec)
-                    ENDIF
-                ENDIF
-                RETURN SUPER:Goto(nRec)
-            END LOCK
+        METHOD __Goto(nRec AS LONG) AS LOGIC
+             // Skip without reset of topstack
+             RETURN SUPER:Goto(nRec)
 
 		METHOD GoTo(nRec AS LONG) AS LOGIC
-            RETURN SELF:__Goto(nRec, TRUE)
+            SELF:GoCold()
+            IF SELF:CurrentOrder != NULL
+                SELF:CurrentOrder:_TopStack := 0    // force to reseek later
+            ENDIF
+            RETURN SUPER:Goto(nRec)
+
 			
 		PUBLIC METHOD SkipRaw( move AS LONG ) AS LOGIC
 			BEGIN LOCK SELF

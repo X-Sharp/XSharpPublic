@@ -28,7 +28,10 @@ BEGIN NAMESPACE XSharp.RDD
 		VIRTUAL METHOD OrderDestroy(orderInfo AS DBORDERINFO ) AS LOGIC
 			RETURN SUPER:OrderDestroy(orderInfo)
 			
-			
+		METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
+            SELF:_OrderCondInfo := info
+            RETURN TRUE
+            
 		VIRTUAL METHOD OrderListAdd( orderInfo AS DbOrderInfo) AS LOGIC
 			BEGIN LOCK SELF
 				SELF:GoCold()
@@ -230,7 +233,6 @@ BEGIN NAMESPACE XSharp.RDD
 				isOk := SELF:OrderListRebuild()
 			ENDIF
 			RETURN isOk
-			
 			
 		PUBLIC METHOD Zap() AS LOGIC
 			LOCAL isOk AS LOGIC

@@ -1107,7 +1107,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBGoTop()
 			aValues := { 4,3,2,1 }
 			LOCAL nCount := 0 AS INT
-			DO WHILE .not. EoF()
+			DO WHILE .NOT. EoF()
 				nCount ++
 				Assert.Equal((INT)aValues[nCount] , (INT)FieldGet(1))
 				DBSkip()

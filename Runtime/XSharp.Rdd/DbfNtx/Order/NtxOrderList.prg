@@ -230,13 +230,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
                 //
                 BEGIN SWITCH Type.GetTypeCode(uOrder:GetType())
-            CASE TypeCode.String
-                result := SELF:__GetNamePos((STRING)uOrder)
-            CASE TypeCode.Int16
-            CASE TypeCode.Int32
-            CASE TypeCode.Int64
-            CASE TypeCode.Single
-            CASE TypeCode.Double
+                CASE TypeCode.String
+                    result := SELF:__GetNamePos((STRING)uOrder)
+                CASE TypeCode.Int16
+                CASE TypeCode.Int32
+                CASE TypeCode.Int64
+                CASE TypeCode.Single
+                CASE TypeCode.Double
                     num := (LONG)uOrder
                     IF ((num >= 0) .AND. (num <= SELF:_Orders:Count))
                         result := num

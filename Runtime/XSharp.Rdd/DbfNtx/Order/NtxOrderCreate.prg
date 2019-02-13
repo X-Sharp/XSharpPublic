@@ -63,7 +63,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             SELF:_oRdd:__Goto(1)
             VAR oValue          := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock) 
-            SELF:_KeyExprType   := SELF:_getTypeCode(oValue)
+            SELF:_KeyExprType   := SELF:_oRdd:_getUsualType(oValue)
             SELF:_KeyExpr := createInfo:Expression
             IF ordCondInfo != NULL .AND. ordCondInfo:ForExpression != NULL
                 SELF:_ForExpr := ordCondInfo:ForExpression
@@ -225,37 +225,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             
         PRIVATE METHOD _determineSize(toConvert AS OBJECT ) AS LOGIC
-            LOCAL tCode AS TypeCode
             LOCAL expr AS STRING
             LOCAL nPos AS INT
-            LOCAL sysType AS System.Type
-            LOCAL strType AS STRING
-            
-            sysType := toConvert:GetType()
-            strType := sysType:ToString()
-            // Compatibility ??
-            SWITCH strType
-            CASE "XSharp.__Date"
-                tCode := TypeCode.DateTime
-            CASE "XSharp.__Float"
-                tCode := TypeCode.Double
-            OTHERWISE
-        
-            tCode := Type.GetTypeCode(sysType)
-            END SWITCH
-            
-            SWITCH tCode
-            CASE TypeCode.String
+
+            VAR type := SELF:_oRdd:_getUsualType(toConvert)
+            SWITCH type
+            CASE __UsualType.String
                 SELF:_keySize := (WORD) ((STRING)toConvert):Length
-            CASE TypeCode.Int16
-            CASE TypeCode.UInt16
-            CASE TypeCode.Int32
-            CASE TypeCode.UInt32
-            CASE TypeCode.Int64
-            CASE TypeCode.UInt64
-            CASE TypeCode.Single
-            CASE TypeCode.Double
-            CASE TypeCode.Decimal
+            CASE __UsualType.Long
+            CASE __UsualType.Float
                 TRY
                     expr := "STR(" + SELF:_KeyExpr + ")"
                     TRY
@@ -275,13 +253,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 CATCH //Exception
                     SELF:_keyDecimals := 0
                 END TRY
-            CASE TypeCode.DateTime
+            CASE __UsualType.Date
                 SELF:_keySize := 8
-            CASE TypeCode.Boolean
+            CASE __UsualType.Logic
                 SELF:_keySize := 1
             OTHERWISE
                 SELF:_keySize := 0
-            RETURN FALSE
+                RETURN FALSE
             END SWITCH
             
             RETURN TRUE

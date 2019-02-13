@@ -362,8 +362,8 @@ BEGIN NAMESPACE XSharp.RDD
 					ENDIF
 					IF ( SELF:_fLocked ) .AND. ( recordNbr == 0 )
 						isOk := SELF:_unlockFile( )
-						if isOk
-                            self:_fLocked := FALSE
+						IF isOk
+                            SELF:_fLocked := FALSE
                         ENDIF
 					ENDIF
 				END LOCK
@@ -1380,22 +1380,16 @@ BEGIN NAMESPACE XSharp.RDD
 			
 			// Convert the value (OBJECT) to the corresponding DBF Type (fieldType), and put the result in binary form (buffer)
 		INTERNAL VIRTUAL METHOD _convertFieldToData( oValue AS OBJECT, buffer AS BYTE[], offset AS LONG, length AS LONG, fieldType AS DbFieldType, dec AS LONG) AS LOGIC
-			LOCAL objType AS System.Type
-			LOCAL objTypeCode AS System.TypeCode
 			LOCAL encoding AS Encoding //ASCIIEncoding
 			LOCAL isOk := FALSE AS LOGIC
 			LOCAL str AS STRING
-            LOCAL isNum := FALSE AS LOGIC
 			//
 			encoding := SELF:_Encoding
-			objType := oValue:GetType()
-			objTypeCode := Type.GetTypeCode( objType )
-			//
-			SWITCH objTypeCode
-			CASE TypeCode.String
-			CASE TypeCode.Char
+            VAR type := SELF:_getUsualType(oValue)
+			SWITCH type
+			CASE __UsualType.String
 				IF ( fieldType == DbFieldType.Character )
-					IF ( objTypeCode == TypeCode.Char )
+					IF ( oValue IS CHAR)
 						str := STRING{ (CHAR)oValue, 1 }
 					ELSE
 						str := oValue ASTYPE STRING
@@ -1409,22 +1403,30 @@ BEGIN NAMESPACE XSharp.RDD
 					// Type Error !
 					isOk := FALSE
 				ENDIF
-					
-			CASE TypeCode.Decimal
-			CASE TypeCode.Double
-			CASE TypeCode.Single
+			CASE __UsualType.Float
+			CASE __UsualType.Long
+                IF oValue IS IFloat
+                    oValue := ((IFloat) oValue):Value
+                ENDIF
+
+                _numformat:NumberDecimalDigits := dec
+                SWITCH type
+			    CASE __UsualType.Float
+                    str := ((REAL8) oValue):ToString("F", _numformat)
+			    CASE __UsualType.Long
+                    str := ((INT) oValue):ToString("F", _numformat)
+                OTHERWISE
+                	str := Convert.ToString( oValue, _numformat )
+                END SWITCH
+				IF ( str:Length > length )
+					str := STRING{'*', length}
+				ELSE
+					str := str:PadLeft(length)
+				ENDIF
+   				encoding:GetBytes( str, 0, length, buffer, offset )
+				isOk := TRUE
 				
-			CASE TypeCode.Byte
-			CASE TypeCode.SByte
-			CASE TypeCode.Int16
-			CASE TypeCode.Int32
-			CASE TypeCode.Int64
-			CASE TypeCode.UInt16
-			CASE TypeCode.UInt32
-			CASE TypeCode.UInt64
-				
-	            isNum := TRUE				
-			CASE TypeCode.Boolean
+			CASE __UsualType.Logic
 				IF ( fieldType == DbFieldType.Logic )
 					buffer[offset] := IIF( (LOGIC)oValue, (BYTE)'T', (BYTE)'F' )
 					isOk := TRUE
@@ -1433,8 +1435,21 @@ BEGIN NAMESPACE XSharp.RDD
 					isOk := FALSE
 				ENDIF
 					
-			CASE TypeCode.DateTime
-				IF ( fieldType == DbFieldType.Date )
+			CASE __UsualType.Date
+			CASE __UsualType.DateTime
+                IF oValue IS IDate
+                    LOCAL oDate AS IDate
+                    LOCAL dt AS DateTime
+                    oDate := (IDate) oValue
+                    IF oDate:IsEmpty
+                        str := Space(8)
+                    ELSE
+						dt := DateTime{oDate:Year, oDate:Month, oDate:Day}
+						str := dt:ToString( "yyyyMMdd" )
+                    ENDIF
+					encoding:GetBytes( str, 0, length, buffer, offset )
+					isOk := TRUE
+                ELSEIF ( fieldType == DbFieldType.Date )
 					LOCAL dt AS DateTime
 					dt := (DateTime)oValue
 					//
@@ -1460,52 +1475,8 @@ BEGIN NAMESPACE XSharp.RDD
 					// Type Error !
 					isOk := FALSE
 				ENDIF
-			CASE TypeCode.Object
-                IF oValue IS IFloat
-                    isNum := TRUE
-                    oValue := ((IFloat) oValue):Value
-                    objTypeCode := TypeCode.Double
-                ELSEIF oValue IS IDate
-                    LOCAL oDate AS IDate
-                    LOCAL dt AS DateTime
-                    oDate := (IDate) oValue
-                    IF oDate:IsEmpty
-                        str := Space(8)
-                    ELSE
-						dt := DateTime{oDate:Year, oDate:Month, oDate:Day}
-						str := dt:ToString( "yyyyMMdd" )
-                    ENDIF
-					encoding:GetBytes( str, 0, length, buffer, offset )
-					isOk := TRUE
-                ELSE
-                    isOk := FALSE
-                ENDIF
 			END SWITCH
-            IF IsNum
 
-                _numformat:NumberDecimalDigits := dec
-                SWITCH objTypeCode
-			    CASE TypeCode.Decimal
-                    str := ((Decimal) oValue):ToString("F", _numformat)
-			    CASE TypeCode.Double
-                    str := ((REAL8) oValue):ToString("F", _numformat)
-			    CASE TypeCode.Single
-				    str := ((REAL4) oValue):ToString("F", _numformat)
-			    CASE TypeCode.Int32
-                    str := ((INT) oValue):ToString("F", _numformat)
-			    CASE TypeCode.Int64
-                    str := ((INT64) oValue):ToString("F", _numformat)
-                OTHERWISE
-                	str := Convert.ToString( oValue, _numformat )
-                END SWITCH
-				IF ( str:Length > length )
-					str := STRING{'*', length}
-				ELSE
-					str := str:PadLeft(length)
-				ENDIF
-   				encoding:GetBytes( str, 0, length, buffer, offset )
-				isOk := TRUE
-            ENDIF	
 
 		RETURN isOk
 
@@ -1546,7 +1517,44 @@ BEGIN NAMESPACE XSharp.RDD
 
 			//
 			THROW oError
+		
+        INTERNAL METHOD _getUsualType(oValue AS OBJECT) AS __UsualType
+            LOCAL typeCde AS TypeCode
+            IF oValue == NULL
+                RETURN __UsualType.VOID
+            ELSE
+                typeCde := Type.GetTypeCode(oValue:GetType())
+                SWITCH typeCde
+                CASE TypeCode.SByte
+                CASE TypeCode.Byte
+                CASE TypeCode.Int16
+                CASE TypeCode.UInt16
+                CASE TypeCode.Int32
+                    RETURN __UsualType.LONG
+                CASE TypeCode.UInt32
+                CASE TypeCode.Int64
+                CASE TypeCode.UInt64
+                CASE TypeCode.Single
+                CASE TypeCode.Double
+                    RETURN __UsualType.FLOAT
+                CASE TypeCode.Boolean
+                    RETURN __UsualType.LOGIC
+                CASE TypeCode.String
+                    RETURN __UsualType.STRING
+                CASE TypeCode.DateTime
+                    RETURN __UsualType.DateTime
+                CASE TypeCode.Object
+                    IF oValue IS IDate
+                        RETURN __UsualType.DATE
+                    ELSEIF  oValue IS IFloat
+                        RETURN __UsualType.FLOAT
+                    ENDIF
+                END SWITCH
+            ENDIF
+            RETURN __UsualType.OBJECT
+            
 			
+
 		// Like FiedName, but on DbFieldType
 		INTERNAL VIRTUAL METHOD _FieldType( nFldPos AS LONG ) AS DbFieldType
 			LOCAL nArrPos := nFldPos AS LONG
@@ -1782,7 +1790,7 @@ BEGIN NAMESPACE XSharp.RDD
 		METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
 			IF _oIndex != NULL
 				RETURN _oIndex:OrderCondition(info)
-				ELSE
+			ELSE
 				RETURN SUPER:OrderCondition(info)
 			ENDIF
 			
@@ -2020,8 +2028,6 @@ BEGIN NAMESPACE XSharp.RDD
 
                  CASE DbInfo.DBI_ISFLOCK
                     oResult := SELF:_fLocked
-
-
 
                  CASE DbInfo.DBI_MEMOHANDLE
                     oResult := IntPtr.Zero      // Should be handled in the memo subclass
@@ -2765,7 +2771,7 @@ BEGIN NAMESPACE XSharp.RDD
 			
 
         PUBLIC METHOD Compare(x AS OBJECT , y AS OBJECT ) AS LONG
-            return Compare( (SortRecord) x, (SortRecord) y)
+            RETURN Compare( (SortRecord) x, (SortRecord) y)
 
 		PUBLIC METHOD Compare(recordX AS SortRecord , recordY AS SortRecord ) AS LONG
 			LOCAL dataBuffer AS BYTE[]
@@ -2826,7 +2832,6 @@ BEGIN NAMESPACE XSharp.RDD
 				diff := recordX:Recno - recordY:Recno
 			ENDIF
 			RETURN diff
-			
 	END CLASS
 	
 	

@@ -53,7 +53,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL _indexVersion AS WORD
         INTERNAL _nextUnusedPageOffset AS LONG
         INTERNAL _entrySize AS WORD
-        INTERNAL _KeyExprType AS TypeCode
+        INTERNAL _KeyExprType AS LONG
         INTERNAL _keySize AS WORD
         INTERNAL _keyDecimals AS WORD
         INTERNAL _MaxEntry AS WORD
@@ -197,22 +197,22 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBFNTX.Compile")
                 RETURN FALSE
             ENDIF
-            SELF:_KeyExprType := SELF:_getTypeCode(oResult)
+            SELF:_KeyExprType := SELF:_oRdd:_getUsualType(oResult)
             // For Condition
             SELF:_Conditional := FALSE
             SELF:_ForExpr := SELF:_Header:ForExpression
             IF SELF:_ForExpr:Length > 0
                 TRY
-                    SELF:_oRdd:Compile(SELF:_Header:ForExpression)
+                    SELF:_ForCodeBlock := SELF:_oRdd:Compile(SELF:_ForExpr)
                 CATCH
                     SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
                     RETURN FALSE
                 END TRY
-                SELF:_ForCodeBlock := (ICodeblock)SELF:_oRdd:_LastCodeBlock
                 SELF:_oRdd:GoTo(1)
                 evalOk := TRUE
                 TRY
-                    VAR lOk := (LOGIC) SELF:_oRdd:EvalBlock(SELF:_ForCodeBlock)
+                    VAR oValue := SELF:_oRdd:EvalBlock(SELF:_ForCodeBlock)
+                    evalOk     := SELF:_oRdd:_getUsualType(oValue) == __UsualType.Logic
                 CATCH
                     evalOk := FALSE
                 END TRY
@@ -334,7 +334,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
         INTERNAL METHOD __Compare( aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
             IF aRHS == NULL
-                return 0
+                RETURN 0
             ENDIF
             RETURN RuntimeState.StringCompare(aLHS, aRHS, nLength)
 
@@ -383,7 +383,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG , nDec AS LONG , buffer AS BYTE[] , isAnsi AS LOGIC , resultLength REF LONG ) AS LOGIC
             LOCAL text AS STRING
             LOCAL chkDigits AS LOGIC
-            LOCAL typeCde AS TypeCode
             LOCAL valueFloat AS IFloat
             LOCAL sBuilder AS StringBuilder
             LOCAL valueDate AS IDate
@@ -399,8 +398,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 valueFloat := (IFloat)toConvert
                 toConvert := valueFloat:Value
                 formatInfo:NumberDecimalDigits := valueFloat:Decimals
-                typeCde := TypeCode.Double
                 text := valueFloat:Value:ToString("F", formatInfo)
+
                 // Too long ?
                 IF text:Length > sLen
                     sBuilder := StringBuilder{}
@@ -413,52 +412,37 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     text := text:PadLeft(sLen, ' ')
                     chkDigits := TRUE
                 ENDIF
-            ELSE
-                IF (toConvert ASTYPE IDate) != NULL
-                    valueDate := (IDate)toConvert
-                    text := valueDate:Value:ToString("yyyyMMdd")
-                    typeCde := TypeCode.String
+            ENDIF
+            VAR type := SELF:_oRdd:_getUsualType(toConvert)
+            SWITCH type
+            CASE __UsualType.Date
+                valueDate := (IDate)toConvert
+                text := valueDate:Value:ToString("yyyyMMdd")
+            CASE __UsualType.String
+                text := (STRING)toConvert
+            CASE __UsualType.DateTime
+                text := ((DateTime)toConvert):ToString("yyyyMMdd")
+            CASE __UsualType.Logic
+                text := (IIF(((LOGIC)toConvert) , "T" , "F"))
+            CASE __UsualType.Float
+            CASE __UsualType.Long
+                formatInfo:NumberDecimalDigits := nDec
+                IF type == __UsualType.Float
+                    text := ((REAL8)toConvert):ToString("F", formatInfo)
                 ELSE
-                    typeCde := Type.GetTypeCode(toConvert:GetType())
+                    text := ((LONG)toConvert):ToString("F", formatInfo)
                 ENDIF
-            ENDIF
-            IF text == NULL
-                SWITCH typeCde
-                CASE TypeCode.String
-                    text := (STRING)toConvert
-                CASE TypeCode.Int16
-                CASE TypeCode.Int32
-            CASE TypeCode.Int64
-                CASE TypeCode.Single
-                CASE TypeCode.Double
-                CASE TypeCode.Decimal
-                        formatInfo:NumberDecimalDigits := nDec
-                        SWITCH typeCde
-                        CASE TypeCode.Int32
-                            text := ((LONG)toConvert):ToString("F", formatInfo)
-                        CASE TypeCode.Double
-                            text := ((REAL8)toConvert):ToString("F", formatInfo)
-                        OTHERWISE
-                            text := ((Decimal)toConvert):ToString("F", formatInfo)
-                        END SWITCH
-                        VAR length := text:Length
-                        IF length > sLen
-                            sBuilder := StringBuilder{}
-                            text := sBuilder:Insert(0, "*", sLen):ToString()
-                            SELF:_oRDD:_Encoding:GetBytes( text, 0, slen, buffer, 0)
-                            resultLength := text:Length
-                            RETURN FALSE
-                        ENDIF
-                        text := text:PadLeft(sLen, ' ')
-                    chkDigits := TRUE
-                CASE TypeCode.DateTime
-                    text := ((DateTime)toConvert):ToString("yyyyMMdd")
-                CASE TypeCode.Boolean
-                    text := (IIF(((LOGIC)toConvert) , "T" , "F"))
-                OTHERWISE
+                VAR length := text:Length
+                IF length > sLen
+                    sBuilder := StringBuilder{}
+                    text := sBuilder:Insert(0, "*", sLen):ToString()
+                    SELF:_oRDD:_Encoding:GetBytes( text, 0, slen, buffer, 0)
+                    resultLength := text:Length
                     RETURN FALSE
-                END SWITCH
-            ENDIF
+                ENDIF
+                text := text:PadLeft(sLen, ' ')
+                chkDigits := TRUE
+            END SWITCH
             IF sLen > text:Length
                 sLen := text:Length
             ENDIF
@@ -474,7 +458,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE METHOD _checkDigits(buffer AS BYTE[] , length AS LONG , decimals AS LONG ) AS VOID
             LOCAL i := 0 AS LONG
             // Transform starting spaces with zeros
-            DO WHILE buffer[i] == 32 .AND. i < length
+            DO WHILE buffer[i] == 32 .AND. i < length -1
                 buffer[i] := (BYTE)'0'
                 i++
             ENDDO
@@ -663,7 +647,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
         PRIVATE METHOD ClearStack() AS VOID
         
-            FOREACH var entry IN SELF:_stack 
+            FOREACH VAR entry IN SELF:_stack 
                 entry:Clear()
             NEXT
             SELF:_TopStack := 0
@@ -689,40 +673,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             
             
-        PRIVATE METHOD _getTypeCode(oValue AS OBJECT ) AS TypeCode
-            LOCAL typeCde AS TypeCode
-            IF oValue == NULL
-                typeCde := TypeCode.Empty
-            ELSE
-                typeCde := Type.GetTypeCode(oValue:GetType())
-                SWITCH typeCde
-            CASE TypeCode.SByte
-                CASE TypeCode.Byte
-            CASE TypeCode.Int16
-            CASE TypeCode.UInt16
-                CASE TypeCode.Int32
-                    typeCde := TypeCode.Int32
-            CASE TypeCode.UInt32
-            CASE TypeCode.Int64
-            CASE TypeCode.UInt64
-                CASE TypeCode.Single
-                CASE TypeCode.Double
-                    typeCde := TypeCode.Double
-                CASE TypeCode.Boolean
-                    typeCde := TypeCode.Boolean
-                CASE TypeCode.String
-                    typeCde := TypeCode.String
-                CASE TypeCode.DateTime
-                    typeCde := TypeCode.DateTime
-                CASE TypeCode.Object
-                        IF oValue IS IDate
-                            typeCde := TypeCode.DateTime
-                        ELSEIF  oValue IS IFloat
-                            typeCde := TypeCode.Double
-                    ENDIF
-                END SWITCH
-            ENDIF
-            RETURN typeCde   
+        
             
         INTERNAL METHOD _dump() AS VOID
             LOCAL hDump     AS IntPtr

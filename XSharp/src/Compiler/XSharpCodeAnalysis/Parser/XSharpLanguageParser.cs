@@ -177,18 +177,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         internal CompilationUnitSyntax ParseCompilationUnitCore()
         {
-
-            if (_options.ShowIncludes)  
+#if DEBUG && DUMP_TIMES
+             DateTime t = DateTime.Now;
+#endif
+            if (_options.ShowIncludes)
             {
-                _options.ConsoleOutput.WriteLine("Compiling {0}",_fileName);
+                _options.ConsoleOutput.WriteLine("Compiling {0}", _fileName);
             }
             var sourceText = _text.ToString();
-            var lexer = XSharpLexer.Create(sourceText, _fileName, _options);
-            lexer.Options = _options;
-            _lexerTokenStream = lexer.GetTokenStream();
-#if DEBUG && DUMP_TIMES
-                        DateTime t = DateTime.Now;
-#endif
+            XSharpLexer lexer = null;
+            XSharpPreprocessor pp = null;
+            XSharpParserRuleContext tree = new XSharpParserRuleContext();
+            XSharpParser parser = null;
+            bool hasPragmas = false;
+            var parseErrors = ParseErrorData.NewBag();
+            try
+            {
+                lexer = XSharpLexer.Create(sourceText, _fileName, _options);
+                lexer.Options = _options;
+                _lexerTokenStream = lexer.GetTokenStream();
+            }
+            catch (Exception e)
+            {
+                // Exception during Lexing 
+                parseErrors.Add(new ParseErrorData(ErrorCode.ERR_Internal, e.Message, e.StackTrace));
+                // create empty token stream so we can continue the rest of the code
+                _lexerTokenStream = new BufferedTokenStream(new ListTokenSource(new List<IToken>()));
+            }
 #if DEBUG && DUMP_TIMES
             {
                 var ts = DateTime.Now - t;
@@ -196,70 +211,65 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Debug.WriteLine("Lexing completed in {0}",ts);
             }
 #endif
+            // do not pre-process when there were lexer exceptions
+            if (lexer != null && parseErrors.Count == 0)
+            {
+                foreach (var e in lexer.LexErrors)
+                {
+                    parseErrors.Add(e);
+                }
+                hasPragmas = lexer.HasPragmas;
+                BufferedTokenStream ppStream = null;
+                try
+                {
+                    // Check for #pragma in the lexerTokenStream
+                    _lexerTokenStream.Fill();
 
-            var parseErrors = ParseErrorData.NewBag();
-            // Check for #pragma in the lexerTokenStream
-            _lexerTokenStream.Fill();
-            if (lexer.HasPragmas)
-            {
-                var pragmaTokens = _lexerTokenStream.FilterForChannel(0, _lexerTokenStream.Size - 1, XSharpLexer.PRAGMACHANNEL);
-                foreach (var pragmaToken in pragmaTokens)
-                {
-                    parseErrors.Add(new ParseErrorData(pragmaToken, ErrorCode.WRN_PreProcessorNoPragma, "#pragma not (yet) supported, command is ignored"));
-                }
-            }
-            XSharpPreprocessor pp = null;
-            BufferedTokenStream ppStream = null;
-            if (!_options.MacroScript)
-            {
-                pp = new XSharpPreprocessor(lexer, _lexerTokenStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
-            }
+                    if (hasPragmas)
+                    {
+                        var pragmaTokens = _lexerTokenStream.FilterForChannel(0, _lexerTokenStream.Size - 1, XSharpLexer.PRAGMACHANNEL);
+                        foreach (var pragmaToken in pragmaTokens)
+                        {
+                            parseErrors.Add(new ParseErrorData(pragmaToken, ErrorCode.WRN_PreProcessorNoPragma, "#pragma not (yet) supported, command is ignored"));
+                        }
+                    }
+                    if (!_options.MacroScript)
+                    {
+                        pp = new XSharpPreprocessor(lexer, _lexerTokenStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
+                    }
+                    var mustPreprocess = !_options.MacroScript && (lexer.HasPreprocessorTokens || !_options.NoStdDef);
+                    if (mustPreprocess)
+                    {
+                        var ppTokens = pp.PreProcess();
+                        ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));
+                    }
+                    else
+                    {
+                        // No Standard Defs and no preprocessor tokens in the lexer
+                        // so we bypass the preprocessor and use the lexer tokenstream
+                        // but if a .ppo is required we must use the preprocessor to
+                        // write the source text to the .ppo file
+                        if (_options.PreprocessorOutput && pp != null)
+                        {
+                            pp.writeToPPO(sourceText, false);
+                        }
+                        BufferedTokenStream ts = (BufferedTokenStream)_lexerTokenStream;
+                        var tokens = ts.GetTokens();
+                        // commontokenstream filters on tokens on the default channel. All other tokens are ignored
+                        ppStream = new CommonTokenStream(new ListTokenSource(tokens));
+                    }
+                    ppStream.Fill();
+                    _preprocessorTokenStream = ppStream;
 
-            #region Determine if we really need the preprocessor
-            bool mustPreprocess = true;
-            if (_options.MacroScript)
-            {
-                mustPreprocess = false;
-            }
-            else
-            {
-                if (lexer.HasPreprocessorTokens || !_options.NoStdDef)
-                {
-                    mustPreprocess = true;
                 }
-                else
+                catch (Exception e)
                 {
-                    mustPreprocess = false;
-
+                    // Exception during Preprocessing
+                    parseErrors.Add(new ParseErrorData(ErrorCode.ERR_Internal, e.Message, e.StackTrace));
+                    // create empty token stream so we can continue the rest of the code
+                    _preprocessorTokenStream = new BufferedTokenStream(new ListTokenSource(new List<IToken>()));
                 }
             }
-            #endregion
-            if (mustPreprocess)
-            {
-                var ppTokens = pp.PreProcess();
-                ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));
-            }
-            else
-            {
-                // No Standard Defs and no preprocessor tokens in the lexer
-                // so we bypass the preprocessor and use the lexer tokenstream
-                // but if a .ppo is required we must use the preprocessor to
-                // write the source text to the .ppo file
-                if (_options.PreprocessorOutput && pp != null)
-                {
-                    pp.writeToPPO(sourceText, false);
-                }
-                BufferedTokenStream ts = (BufferedTokenStream)_lexerTokenStream;
-                var tokens = ts.GetTokens();
-                // commontokenstream filters on tokens on the default channel. All other tokens are ignored
-                ppStream = new CommonTokenStream(new ListTokenSource(tokens));
-            }
-            ppStream.Fill();
-            _preprocessorTokenStream = ppStream;
-            var parser = new XSharpParser(ppStream) { Options = _options };
-            // See https://github.com/tunnelvisionlabs/antlr4/blob/master/doc/optimized-fork.md
-            // for info about optimization flags such as the next line
-            
 #if DEBUG && DUMP_TIMES
            {
                 var ts = DateTime.Now - t;
@@ -267,12 +277,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Debug.WriteLine("Preprocessing completed in {0}",ts);
             }
 #endif
-            XSharpParserRuleContext tree = null;
-            if (_options.ParseLevel == ParseLevel.Lex)
-            {
-                tree = new XSharpParserRuleContext();
-            }
-            else // ParseLevel.Parse and Complete
+            parser = new XSharpParser(_preprocessorTokenStream) { Options = _options };
+
+            tree = new XSharpParserRuleContext();
+            if (_options.ParseLevel != ParseLevel.Lex)
             {
                 // When parsing in Sll mode we do not record any parser errors.
                 // When this fails, then we try again with LL mode and then we record errors
@@ -302,7 +310,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     parser.Interpreter.force_global_context = true;
                     parser.Interpreter.enable_global_context_dfa = true;
                     parser.Interpreter.PredictionMode = PredictionMode.Ll;
-                    ppStream.Reset();
+                    _preprocessorTokenStream.Reset();
                     if (_options.Verbose && pp != null)
                     {
                         pp.DumpStats();
@@ -325,8 +333,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             _options.ConsoleOutput.WriteLine("Antlr: LL parsing also failed with failure: " + msg);
                         }
                     }
-
                 }
+            }// _options.ParseLevel < Complete
 #if DEBUG && DUMP_TIMES
             {
                 var ts = DateTime.Now - t;
@@ -334,27 +342,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Debug.WriteLine("Parsing completed in {0}",ts);
             }
 #endif
-            }   // _options.ParseLevel < Complete
             if (_options.DumpAST && tree != null)
             {
                 string strTree = tree.ToStringTree();
                 string file = System.IO.Path.ChangeExtension(_fileName, "ast");
-                strTree = strTree.Replace(@"\r\n)))))", @"\r\n*)))))"+ "\r\n");
+                strTree = strTree.Replace(@"\r\n)))))", @"\r\n*)))))" + "\r\n");
                 strTree = strTree.Replace(@"\r\n))))", @"\r\n*)))" + "\r\n");
                 strTree = strTree.Replace(@"\r\n)))", @"\r\n*)))" + "\r\n");
                 strTree = strTree.Replace(@"\r\n))", @"\r\n*))" + "\r\n");
                 strTree = strTree.Replace(@"\r\n)", @"\r\n*)" + "\r\n");
-                strTree = strTree.Replace(@"\r\n*)", @"\r\n)" );
+                strTree = strTree.Replace(@"\r\n*)", @"\r\n)");
                 System.IO.File.WriteAllText(file, strTree);
             }
             var walker = new ParseTreeWalker();
 
-            foreach (var e in lexer.LexErrors)
-            {
-                parseErrors.Add(e);
-            }
 
-            if ( _options.ParseLevel == ParseLevel.Complete)
+            if (_options.ParseLevel == ParseLevel.Complete)
             {
                 // check for parser errors, such as missing tokens
                 // This adds items to the parseErrors list for missing
@@ -362,48 +365,45 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var errchecker = new XSharpParseErrorAnalysis(parser, parseErrors);
                 walker.Walk(errchecker, tree);
             }
-            //
-             
             var treeTransform = CreateTransform(parser, _options, _pool, _syntaxFactory, _fileName);
             bool hasErrors = false;
             SyntaxToken eof = null;
             try
+            { 
+  
+            if (_options.ParseLevel < ParseLevel.Complete || parser.NumberOfSyntaxErrors != 0 ||
+                (parseErrors.Count != 0 && parseErrors.Contains(p => !ErrorFacts.IsWarning(p.Code))))
             {
+                eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
+                eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
+                if (tree != null)
+                {
+                    eof.XNode = new XTerminalNodeImpl(tree.Stop);
+                }
+                else
+                {
+                    eof.XNode = new XTerminalNodeImpl(_lexerTokenStream.Get(_lexerTokenStream.Size - 1));
+                }
+                hasErrors = true;
+            }
 
-                if ( _options.ParseLevel < ParseLevel.Complete|| 
-                    parser.NumberOfSyntaxErrors != 0 || 
-                    (parseErrors.Count != 0 && parseErrors.Contains(p => !ErrorFacts.IsWarning(p.Code))))
+            if (!hasErrors)
+            {
+                try
                 {
-                    eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
+                    walker.Walk(treeTransform, tree);
+                }
+                catch (Exception e)
+                {
+                    parseErrors.Add(new ParseErrorData(ErrorCode.ERR_Internal, e.Message, e.StackTrace));
+                }
+                eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
+                if (!parseErrors.IsEmpty())
+                {
                     eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
-                    if (tree != null)
-                    {
-                        eof.XNode = new XTerminalNodeImpl(tree.Stop);
-                    }
-                    else
-                    {
-                        eof.XNode = new XTerminalNodeImpl(_lexerTokenStream.Get(_lexerTokenStream.Size - 1));
-                    }
-                    hasErrors = true;
                 }
-           
-                if (! hasErrors)
-                {
-                    try
-                    {
-                        walker.Walk(treeTransform, tree);
-                    }
-                    catch (Exception e)
-                    {
-                        parseErrors.Add(new ParseErrorData(ErrorCode.ERR_Internal, e.Message, e.StackTrace));
-                    }
-                    eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
-                    if (!parseErrors.IsEmpty())
-                    {
-                        eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
-                    }
-                }
-                var result = _syntaxFactory.CompilationUnit(
+            }
+            var result = _syntaxFactory.CompilationUnit(
                     treeTransform.GlobalEntities.Externs, 
                     treeTransform.GlobalEntities.Usings,
                     treeTransform.GlobalEntities.Attributes, 

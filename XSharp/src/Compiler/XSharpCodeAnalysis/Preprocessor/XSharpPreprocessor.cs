@@ -1218,7 +1218,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private void doRegionDirective(IList<XSharpToken> original)
         {
             var line = stripWs(original);
-            Debug.Assert(line?.Count > 0);
+            if (line.Count < 2)
+            {
+                addParseError(new ParseErrorData(line[0], ErrorCode.WRN_PreProcessorWarning, "Region name expected"));
+            }
             if (IsActive())
             {
                 var token = line[0];
@@ -1255,7 +1258,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private void doDefineDirective(IList<XSharpToken> original)
         {
             var line = stripWs(original);
-            Debug.Assert(line?.Count > 0);
+            if (line.Count < 2)
+            {
+                addParseError(new ParseErrorData(line[0], ErrorCode.ERR_PreProcessorError, "Identifier expected"));
+                return;
+            }
             if (IsActive())
             {
                 writeToPPO(original, true);
@@ -1271,7 +1278,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private void doUnDefDirective(IList<XSharpToken> original)
         {
             var line = stripWs(original);
-            Debug.Assert(line?.Count > 0);
+            if (line.Count < 2)
+            {
+                addParseError(new ParseErrorData(line[0], ErrorCode.ERR_PreProcessorError, "Identifier expected"));
+                return;
+            }
             if (IsActive())
             {
                 removeDefine(line);
@@ -1287,27 +1298,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private void doErrorWarningDirective(IList<XSharpToken> original)
         {
             var line = stripWs(original);
-            Debug.Assert(line?.Count > 0);
             int nextType = line[0].Type;
             if (IsActive())
             {
                 string text;
                 XSharpToken ln;
-                writeToPPO(original, true);
                 ln = line[0];
-                if (line.Count > 1)
+                if (line.Count < 2)
                 {
-                    int start = line[1].StartIndex;
-                    int end = line[line.Count - 1].StopIndex;
-                    text = line[1].TokenSource.InputStream.GetText(new Interval(start, end));
+                    text = "<Empty message>";
                 }
                 else
                 {
-                    if (nextType == XSharpLexer.PP_ERROR)
-                        text = "Empty error clause";
-                    else
-                        text = "Empty warning clause";
-
+                    
+                    writeToPPO(original, true);
+                    int start = line[1].StartIndex;
+                    int end = line[line.Count - 1].StopIndex;
+                    text = line[1].TokenSource.InputStream.GetText(new Interval(start, end));
                 }
                 if (ln.SourceSymbol != null)
                     ln = ln.SourceSymbol;
@@ -1326,7 +1333,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private void doIfDefDirective(IList<XSharpToken> original, bool isIfDef)
         {
             var line = stripWs(original);
-            Debug.Assert(line?.Count > 0);
+            if (line.Count < 2)
+            {
+                addParseError(new ParseErrorData(line[0], ErrorCode.ERR_PreProcessorError, "Identifier expected"));
+                return;
+            }
             if (IsActive())
             {
                 var def = line[1];
@@ -1408,7 +1419,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private void doIncludeDirective(IList<XSharpToken> original)
         {
             var line = stripWs(original);
-            Debug.Assert(line?.Count > 0);
+            if (line.Count < 2)
+            {
+                addParseError(new ParseErrorData(line[0], ErrorCode.ERR_PreProcessorError, "Filename expected"));
+                return;
+            }
             if (IsActive())
             {
                 writeToPPO(original, true);

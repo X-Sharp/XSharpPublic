@@ -153,7 +153,6 @@
     <Compile Include="DbfNtx\NtxPage.prg" />
     <Compile Include="DbfNtx\NtxPageList.prg" />
     <Compile Include="DbfNtx\NtxSort.prg" />
-    <Compile Include="DbfNtx\NtxSupport.prg" />
     <Compile Include="SortHelper.prg" />
     <Compile Include="SubCodes.prg" />
     <Compile Include="Types\DBF.prg" />

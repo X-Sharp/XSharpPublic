@@ -1117,6 +1117,88 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 
+		// TECH-P956TFHW74, Cannot use fields in macro exceptions when they are named after a function
+		[Fact, Trait("Category", "DBF")];
+		METHOD Fields_Named_After_Funcs() AS VOID
+			LOCAL cDbf AS STRING
+			cDBF := GetTempFileName()
+			
+			DBCloseAll() // worakaroudn for previous test crashing
+			
+			DBCreate( cDBF , {{"LEFT" , "N" ,5 , 0 } , {"STR" , "C" ,5 , 0 } })
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			DBAppend()
+			FieldPut(1,1)
+			FieldPut(2,"A")
+			DBAppend()
+			FieldPut(1,11)
+			FieldPut(2,"B")
+			DBGoTop()
+			Assert.True( DBCreateIndex(cDbf, "STR" ) )
+			Assert.True( DBSetFilter(&("{||LEFT<10}")) )
+			DBGoTop()
+			DBSkip()
+			Assert.True( EOF() )
+			DBCloseArea()
+		RETURN
+
+
+		// TECH-R933ZKYT9Q, Problem creating index on dbf with "uninitialized" fields
+		[Fact, Trait("Category", "DBF")];
+		METHOD Uninitialized_fields() AS VOID
+			LOCAL cDbf AS STRING
+			DBCloseAll() // worakaroudn for previous test crashing
+			
+			cDBF := GetTempFileName()
+			DBCreate( cDBF , {{"FIELDN" , "N" ,5 , 0 } })
+			DBUseArea(,"DBFNTX",cDBF)
+			DBAppend()
+			FieldPut(1,1)
+			DBAppend() // no field assigned
+			DBCloseArea()
+			
+			DBUseArea(,"DBFNTX",cDBF)
+			Assert.True( DBCreateIndex(cDbf, "FIELDN" ) )
+			DBCloseArea()
+		RETURN
+
+
+		// TECH-T365UMTY4V, Incorrect values returned by DBOrderInfo( DBOI_KEYTYPE )
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBOrderInfo_DBOI_KEYTYPE() AS VOID
+			LOCAL cDbf AS STRING
+			DBCloseAll()
+			
+			cDBF := GetTempFileName("testnewer")
+			DBCreate( cDBF , {{"FIELDN" , "N" ,5 , 0 } , ;
+			{"FIELDS" , "C" ,15 , 0 } , ;
+			{"FIELDL" , "L" ,1 , 0 } , ;
+			{"FIELDD" , "D" ,8 , 0 } })
+			DBUseArea(,"DBFNTX",cDBF)
+			DBAppend()
+			FieldPut(1,1)
+			DBCloseArea()
+			
+			DBUseArea(,"DBFNTX",cDBF)
+			DBCreateIndex(cDbf, "FIELDN" )
+			Assert.Equal(3, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 14 (), should be 3 (FLOAT)
+			DBCloseArea()
+			
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			DBCreateIndex(cDbf, "FIELDS" )
+			Assert.Equal(7, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 18 (PTR), should be 7 (STRING)
+			
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			DBCreateIndex(cDbf, "FIELDD" )
+			Assert.Equal(2, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 16, should be 2 (DATE)
+			
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			DBCreateIndex(cDbf, "FIELDL" )
+			Assert.Equal(8, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 3 (FLOAT), should be 8
+			
+			DBCloseArea()
+		RETURN
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
 		RETURN GetTempFileName("testdbf")

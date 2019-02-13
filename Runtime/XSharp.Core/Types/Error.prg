@@ -200,7 +200,7 @@ BEGIN NAMESPACE XSharp
       sb:AppendLine("SubSystem       : " + SELF:SubSystem )
       sb:AppendLine("GenCode         : " + nGenCode:ToString()  )
       sb:AppendLine("GenCodeText     : " + SELF:GenCodeText  )
-      sb:AppendLine("SubCode         : " + SELF:SubCode )
+      sb:AppendLine("SubCode         : " + SELF:SubCode:ToString() )
       sb:AppendLine("SubCodeText     : " + SELF:SubCodeText)
       IF SELF:OsCode != 0
         sb:AppendLine("OsCode          : " + SELF:OsCode:ToString() )
@@ -240,7 +240,7 @@ BEGIN NAMESPACE XSharp
                 ENDIF
                 IF oArg == NULL
                     cArgs += "(NULL)"
-                else
+                ELSE
                     cArgs += oArg:ToString()
                 ENDIF
                 lFirst := FALSE
@@ -249,10 +249,10 @@ BEGIN NAMESPACE XSharp
             sb:AppendLine("Args            : " + cArgs)
       ENDIF
       IF SELF:ArgTypeReqType != NULL
-        sb:AppendLine("ArgTypeReq      :" + SELF:ArgTypeReqType:FullName)
+        sb:AppendLine("ArgTypeReq      : " + SELF:ArgTypeReqType:FullName)
       END IF
       IF ! String.IsNullOrEmpty(SELF:CallFuncSym)
-        sb:AppendLine("CallFuncSym     :" + SELF:CallFuncSym  )
+        sb:AppendLine("CallFuncSym     : " + SELF:CallFuncSym  )
       ENDIF
       RETURN sb:ToString()
       

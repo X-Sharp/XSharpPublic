@@ -2229,17 +2229,30 @@ BEGIN NAMESPACE XSharp
             GET
               IF SELF:IsArray
                  RETURN  SELF:_arrayValue:__GetElement(index)
-              ELSEIF index:Length == 1
-                  RETURN SELF[index[1]]
+              ELSEIF SELF:IsObject .AND. _refData IS IIndexedProperties
+                  VAR props := (IIndexedProperties) _refData
+                  IF index:Length == 1
+                      LOCAL pos AS LONG
+                      pos := index[1]
+                      RETURN props[pos]
+                  ENDIF
               ENDIF
-              RETURN NIL  
+              THROW ConversionError(ARRAY , typeof(ARRAY), SELF)
             END GET
             SET
               IF SELF:IsArray
                  SELF:_arrayValue:__SetElement(VALUE, index)
-              ELSEIF index:Length == 1
-                  SELF[index[1]] := VALUE
+                 RETURN
+              ELSEIF SELF:IsObject .AND. _refData IS IIndexedProperties
+                  VAR props := (IIndexedProperties) _refData
+                  IF index:Length == 1
+                      LOCAL pos AS LONG
+                      pos := index[1]
+                      props[pos] := VALUE
+                   ENDIF
+                   RETURN
               ENDIF
+              THROW ConversionError(ARRAY , typeof(ARRAY), SELF)
             END SET
         END PROPERTY
         #endregion
@@ -2261,6 +2274,7 @@ BEGIN NAMESPACE XSharp
                 indexer[index] := VALUE
             END SET
         END PROPERTY
+
         PROPERTY SELF[name  AS STRING] AS USUAL 
             GET
                 VAR indexer := _refData ASTYPE IIndexedProperties

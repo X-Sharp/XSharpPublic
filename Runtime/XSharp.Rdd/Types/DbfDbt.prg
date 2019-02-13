@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -127,7 +127,7 @@ BEGIN NAMESPACE XSharp.RDD
         CONSTRUCTOR (oRDD AS DBF)
             SUPER(oRDD)
             SELF:_oRdd := oRDD
-            SELF:_hFile := F_ERROR
+            SELF:_hFile := IntPtr.Zero
             SELF:_Shared := SELF:_oRDD:_Shared
             SELF:_ReadOnly := SELF:_oRdd:_ReadOnly
             SELF:_Encoding := SELF:_oRdd:_Encoding

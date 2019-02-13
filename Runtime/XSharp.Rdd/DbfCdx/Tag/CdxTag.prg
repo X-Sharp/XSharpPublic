@@ -24,28 +24,21 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE CONST MIN_BYTE          := 0x01 AS BYTE
         PRIVATE CONST MAX_BYTE          := 0xFF AS BYTE
         PRIVATE CONST MAX_TRIES         := 50 AS WORD
-        PRIVATE CONST STACK_DEPTH       := 20 as LONG
+        PRIVATE CONST STACK_DEPTH       := 20 AS LONG
         PRIVATE CONST LOCKOFFSET_OLD    := 1000000000 AS LONG
         PRIVATE CONST LOCKOFFSET_NEW    := -1 AS LONG
         #endregion
         #region fields
         INTERNAL _Encoding AS Encoding
         INTERNAL _Hot AS LOGIC
-        INTERNAL _Unique AS LOGIC
-        INTERNAL _Conditional AS LOGIC
         INTERNAL _Descending AS LOGIC
-        INTERNAL _Partial AS LOGIC
         INTERNAL _SingleField AS LONG
-        INTERNAL _KeyCodeBlock AS ICodeblock
-        INTERNAL _ForCodeBlock AS ICodeblock
-        INTERNAL _KeyExpr AS STRING
-        INTERNAL _ForExpr AS STRING
         INTERNAL _currentRecno AS LONG
         INTERNAL _currentKeyBuffer AS BYTE[]
         INTERNAL _newKeyBuffer AS BYTE[]
         INTERNAL _newKeyLen AS LONG
         INTERNAL _version AS WORD
-        INTERNAL _KeyExprType AS TypeCode
+        INTERNAL _KeyExprType AS LONG
         INTERNAL _keySize AS WORD
         INTERNAL _keyDecimals AS WORD
         INTERNAL _TopStack AS LONG
@@ -72,10 +65,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #endregion
 
 #region Properties
-        INTERNAL PROPERTY Expression AS STRING GET _KeyExpr
         
-        INTERNAL PROPERTY Condition AS STRING GET _ForExpr
- 
         INTERNAL PROPERTY OrderName AS STRING GET _orderName
 	    PROPERTY Shared 	    AS LOGIC GET _bag:Shared
         PROPERTY _Recno 	    AS LONG GET _oRDD:Recno
@@ -85,14 +75,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROPERTY Descending     AS LOGIC GET _Descending
         PROPERTY IsConditional  AS LOGIC GET Options:HasFlag(CdxOptions.HasFor)
         PROPERTY IsHot          AS LOGIC GET _Hot
-        PROPERTY KeyBlock       AS ICodeBlock GET SELF:_KeyCodeBlock SET _KeyCodeBlock := VALUE
-        PROPERTY KeyExpression  AS STRING GET SELF:_KeyExpr
-       
+        PROPERTY KeyExpression  AS STRING AUTO
+        PROPERTY KeyBlock       AS ICodeBlock AUTO       
         PROPERTY KeyLength      AS INT GET SELF:_keySize
         PROPERTY KeyDecimals    AS INT AUTO
         PROPERTY KeyType        AS INT AUTO
-        PROPERTY ForExpression  AS STRING GET SELF:_ForExpr
-        PROPERTY ForBlock       AS ICodeBlock GET SELF:_ForCodeBlock SET _ForCodeBlock := VALUE
+        PROPERTY ForExpression  AS STRING AUTO
+        PROPERTY ForBlock       AS ICodeBlock AUTO
+        PROPERTY Conditional    AS LOGIC GET ForBlock != NULL
+        PROPERTY Partial        AS LOGIC GET SELF:Custom
         PROPERTY Custom         AS LOGIC GET Options:HasFlag(CdxOptions.IsCustom)
         PROPERTY Unique         AS LOGIC GET Options:HasFlag(CdxOptions.IsUnique)
         PROPERTY Signature      AS BYTE AUTO
@@ -126,21 +117,21 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
 	    METHOD Open() AS LOGIC
-            SELF:_KeyExpr := SELF:_Header:KeyExpression
+            SELF:KeyExpression := SELF:_Header:KeyExpression
             TRY
-                SELF:_oRdd:Compile(SELF:_KeyExpr)
+                SELF:_oRdd:Compile(SELF:KeyExpression)
             CATCH
                 SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
                 RETURN FALSE
             END TRY
-            SELF:_KeyCodeBlock := (ICodeblock)SELF:_oRDD:_LastCodeBlock
+            SELF:KeyBlock := (ICodeblock)SELF:_oRDD:_LastCodeBlock
 
             SELF:_oRdd:GoTo(1)
             LOCAL evalOk AS LOGIC
             LOCAL oResult AS OBJECT
             evalOk := TRUE
             TRY
-                oResult := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
+                oResult := SELF:_oRdd:EvalBlock(SELF:KeyBlock)
             CATCH
                 evalOk := FALSE
                 oResult := NULL
@@ -149,22 +140,21 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBFNTX.Compile")
                 RETURN FALSE
             ENDIF
-            SELF:_KeyExprType := SELF:_getTypeCode(oResult)
+            SELF:_KeyExprType := SELF:_oRdd:_getUsualType(oResult)
             // For Condition
-            SELF:_Conditional := FALSE
-            SELF:_ForExpr := SELF:_Header:ForExpression
-            IF SELF:_ForExpr:Length > 0
+            SELF:ForExpression := SELF:_Header:ForExpression
+            IF SELF:ForExpression:Length > 0
                 TRY
-                    SELF:_oRdd:Compile(SELF:_Header:ForExpression)
+                    SELF:ForBlock := SELF:_oRdd:Compile(SELF:ForExpression)
                 CATCH
                     SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
                     RETURN FALSE
                 END TRY
-                SELF:_ForCodeBlock := (ICodeblock)SELF:_oRdd:_LastCodeBlock
                 SELF:_oRdd:GoTo(1)
                 evalOk := TRUE
                 TRY
-                    VAR lOk := (LOGIC) SELF:_oRdd:EvalBlock(SELF:_ForCodeBlock)
+                    VAR oValue := SELF:_oRdd:EvalBlock(SELF:ForBlock)
+                    evalOk     := SELF:_oRdd:_getUsualType(oValue) == __UsualType.Logic
                 CATCH
                     evalOk := FALSE
                 END TRY
@@ -172,19 +162,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:_oRdd:_dbfError(SubCodes.EDB_EXPRESSION,GenCode.EG_SYNTAX,  "DBFNTX.Compile") 
                     RETURN FALSE
                 ENDIF
-                SELF:_Conditional := TRUE
             ENDIF
             // If the Key Expression contains only a Field Name
-            SELF:_SingleField := SELF:_oRDD:FieldIndex(SELF:_KeyExpr)
+            SELF:_SingleField := SELF:_oRDD:FieldIndex(SELF:KeyExpression)
             SELF:_Hot := FALSE
             SELF:ClearStack()
             SELF:_keySize       := SELF:_Header:KeySize
             //SELF:_keyDecimals   := SELF:_Header:KeyDecimals
             SELF:Options        := SELF:_Header:Options
             SELF:Signature      := SELF:_Header:Signature
-            SELF:_Unique        := SELF:_Header:Options:HasFlag(CdxOptions.IsUnique)
             SELF:_Descending    := SELF:_Header:Descending
-            SELF:_Partial       := SELF:_Header:Options:HasFlag(CdxOptions.IsCustom)
             SELF:_firstPageOffset := SELF:_Header:RootPage
 
             SELF:_Version  := SELF:_Header:Version
@@ -261,7 +248,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:_Conditional .OR. SELF:_Descending
                 ntxSignature |= NtxHeaderFlags.Conditional
             ENDIF
-            IF SELF:_Partial
+            IF SELF:Custom
                 ntxSignature |= NtxHeaderFlags.Partial
             ENDIF
             IF SELF:_HPLocking
@@ -569,42 +556,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 entry:Clear()
             NEXT
             SELF:_TopStack := 0
-            
-            
-        PRIVATE METHOD _getTypeCode(oValue AS OBJECT ) AS TypeCode
-            LOCAL typeCde AS TypeCode
-            IF oValue == NULL
-                typeCde := TypeCode.Empty
-            ELSE
-                typeCde := Type.GetTypeCode(oValue:GetType())
-                SWITCH typeCde
-            CASE TypeCode.SByte
-                CASE TypeCode.Byte
-            CASE TypeCode.Int16
-            CASE TypeCode.UInt16
-                CASE TypeCode.Int32
-                    typeCde := TypeCode.Int32
-            CASE TypeCode.UInt32
-            CASE TypeCode.Int64
-            CASE TypeCode.UInt64
-                CASE TypeCode.Single
-                CASE TypeCode.Double
-                    typeCde := TypeCode.Double
-                CASE TypeCode.Boolean
-                    typeCde := TypeCode.Boolean
-                CASE TypeCode.String
-                    typeCde := TypeCode.String
-                CASE TypeCode.DateTime
-                    typeCde := TypeCode.DateTime
-                CASE TypeCode.Object
-                        IF oValue IS IDate
-                            typeCde := TypeCode.DateTime
-                        ELSEIF  oValue IS IFloat
-                            typeCde := TypeCode.Double
-                    ENDIF
-                END SWITCH
-            ENDIF
-            RETURN typeCde   
             
         INTERNAL METHOD _dump() AS VOID
 	    /*

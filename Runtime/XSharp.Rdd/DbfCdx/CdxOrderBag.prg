@@ -238,6 +238,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _sLockGate      := 0 AS LONG
         PRIVATE _sLockOffSet    := 0 AS DWORD
         PRIVATE _xLockedInOne   := FALSE AS LOGIC
+        INTERNAL _LockOffSet    AS LONG
 
         INTERNAL METHOD SLock() AS LOGIC
             IF !SELF:Shared

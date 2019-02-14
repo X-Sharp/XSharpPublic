@@ -17,15 +17,17 @@ USING System.Collections.Generic
 BEGIN NAMESPACE XSharp.RDD
 	/// <summary>DBF RDD. Usually not used 'stand alone'</summary>
 	CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
+		PROTECT _RelInfoPending  AS DbRelInfo
+
 		PROTECT _Header			AS DbfHeader
 		PROTECT _HeaderLength	AS LONG  	// Size of header
 		PROTECT _BufferValid	AS LOGIC	// Current Record is Valid
         PROTECT _BlankBuffer    AS BYTE[]
 		INTERNAL _isValid        AS LOGIC    // Current Position is Valid
 		PROTECT _HasMemo		AS LOGIC
-		PROTECT _HasTags		AS LOGIC
-		PROTECT _HasAutoInc		AS LOGIC
-		PROTECT _HasTimeStamp	AS LOGIC
+		//PROTECT _HasTags		AS LOGIC
+		//PROTECT _HasAutoInc		AS LOGIC
+		//PROTECT _HasTimeStamp	AS LOGIC
 		//PROTECT _LastUpdate	    AS DateTime
 		PROTECT _RecCount		AS LONG
 		PROTECT _RecNo			AS LONG
@@ -34,14 +36,14 @@ BEGIN NAMESPACE XSharp.RDD
 		//PROTECT _NullOffSet		AS LONG
 		PROTECT _RecordChanged	AS LOGIC 	// Current record has changed ?
 		PROTECT _Positioned		AS LOGIC 	//
-		PROTECT _Appended		AS LOGIC	// Record has been added ?
+		//PROTECT _Appended		AS LOGIC	// Record has been added ?
 		PROTECT _Deleted		AS LOGIC	// Record has been deleted ?
-		PROTECT _HeaderDirty	AS LOGIC	// Header is dirty ?
+		//PROTECT _HeaderDirty	AS LOGIC	// Header is dirty ?
 		PROTECT _fLocked		AS LOGIC    // File Locked ?
 		PROTECT _HeaderLocked	AS LOGIC
-		PROTECT _PackMemo		AS LOGIC
+		//PROTECT _PackMemo		AS LOGIC
 		INTERNAL _OpenInfo		AS DbOpenInfo // current dbOpenInfo structure in OPEN/CREATE method
-		PROTECT _ParentRelInfo	AS DbRelInfo  // parent rel struct
+		//PROTECT _ParentRelInfo	AS DbRelInfo  // parent rel struct
 		PROTECT _Locks			AS List<LONG>
 		//PROTECT _DirtyRead		AS LONG
 		//PROTECT _HasTrigger		AS LOGIC
@@ -52,7 +54,7 @@ BEGIN NAMESPACE XSharp.RDD
 		PROTECT _oIndex			AS BaseIndex
 		PROTECT _oMemo			AS BaseMemo
 		PROTECT _Hot            AS LOGIC
-		PROTECT _addFieldPos    AS LONG     // Used by AddFields Method, and SetFieldsExtent
+		//PROTECT _addFieldPos    AS LONG     // Used by AddFields Method, and SetFieldsExtent
 		PROTECT _lockScheme     AS DbfLocking
 		PROTECT _NewRecord      AS LOGIC
 
@@ -60,7 +62,6 @@ BEGIN NAMESPACE XSharp.RDD
 
 		INTERNAL _Ansi          AS LOGIC
 		//
-		INTERNAL _LastCodeBlock AS ICodeblock
 		INTERNAL _Encoding      AS Encoding
 		//
         STATIC PRIVATE  culture := System.Globalization.CultureInfo.InvariantCulture AS CultureInfo
@@ -81,6 +82,7 @@ BEGIN NAMESPACE XSharp.RDD
 			SELF:_Locks     := List<LONG>{}
             SELF:_numformat := (NumberFormatInfo) culture:NumberFormat:Clone()
             SELF:_numformat:NumberDecimalSeparator := "."
+    		SELF:_RelInfoPending    := NULL
 			
 			//	METHOD DbEval(info AS DbEvalInfo) AS LOGIC
 			/// <inheritdoc />
@@ -170,11 +172,7 @@ BEGIN NAMESPACE XSharp.RDD
 			/// <inheritdoc />
 		METHOD Skip(nToSkip AS INT) AS LOGIC
 			LOCAL result := FALSE AS LOGIC
-			//
-			IF SELF:_RelInfo != NULL
-				SELF:ForceRel()
-			ENDIF
-			//
+			SELF:ForceRel()
 			IF ( SELF:_hFile != F_ERROR )
 				SELF:_Top := FALSE
 				SELF:_Bottom := FALSE
@@ -1279,15 +1277,9 @@ BEGIN NAMESPACE XSharp.RDD
 			
 			// Convert the data stored in the buffer (BYTE[]) to an .NET Object. The convertion is drived by fieldType
 		INTERNAL VIRTUAL METHOD _convertDataToField( buffer AS BYTE[], offSet AS INT, fieldType AS DbFieldType, length AS LONG, nDec AS LONG) AS OBJECT
-			LOCAL str := NULL AS STRING
-			LOCAL data AS OBJECT
-			//			LOCAL encoding AS ASCIIEncoding
-			//			// Read actual Data
-			//			encoding := ASCIIEncoding{}
-			str :=  SELF:_Encoding:GetString(buffer,offSet, length)
+			LOCAL data := NULL AS OBJECT
+			VAR str :=  SELF:_Encoding:GetString(buffer,offSet, length)
 			// !!! WARNING !!! Space char can be significant (specially in Memo!)
-			// str := str:Trim()
-			data := NULL
 			SWITCH fieldType
 				CASE DbFieldType.Float
 				CASE DbFieldType.Number
@@ -1308,15 +1300,9 @@ BEGIN NAMESPACE XSharp.RDD
 						ENDIF
 					ENDIF
 					data := DbFloat{r8, length, nDec} 
-					//					IF ((DbFieldType:Flags & DBFFieldFlags.AllowNullValues) != DBFFieldFlags.AllowNullValues)
-						//						//
-						//						data := 0.0
-					//					ENDIF
 				CASE DbFieldType.Character
 					// Keep the size ??
-					//str := str:Trim()
-					IF (!String.IsNullOrWhiteSpace(str))
-						//
+					IF !String.IsNullOrWhiteSpace(str)
 						data := str
 					ELSE
 						// Default value is a empty string, with the correct length
@@ -1324,7 +1310,7 @@ BEGIN NAMESPACE XSharp.RDD
 					ENDIF
 				CASE DbFieldType.Date
 					// Default Value is an EmptyDate
-					IF (!String.IsNullOrWhiteSpace(str))
+					IF !String.IsNullOrWhiteSpace(str)
 						// WARNING !!! Only digits in DATE Field, unless return an EmptyDate
 						LOCAL emptyDate := FALSE AS LOGIC
 						FOREACH VAR ch IN str
@@ -1334,7 +1320,7 @@ BEGIN NAMESPACE XSharp.RDD
 							ENDIF
 						NEXT
 						//
-						IF (!emptyDate )
+						IF !emptyDate 
                             VAR year  := Int32.Parse(str:Substring(0,4))
 							VAR month := Int32.Parse(str:Substring(4,2))
                             VAR day   := Int32.Parse(str:Substring(6,2))
@@ -1353,9 +1339,16 @@ BEGIN NAMESPACE XSharp.RDD
 				CASE DbFieldType.Logic
 					// Default Value is FALSE
 					data := FALSE
-					IF (! String.IsNullOrWhiteSpace(str))
-						//
-						data := ( ( String.Compare( str, "T", TRUE ) == 0 ) .OR. ( String.Compare( str, "Y", TRUE ) == 0 ) )
+					IF ! String.IsNullOrWhiteSpace(str)
+						SWITCH str[0]
+                        CASE 'T'
+                        CASE 't'
+                        CASE 'Y'
+                        CASE 'y'
+						    data := TRUE
+                        OTHERWISE
+                            data := FALSE
+                        END SWITCH
 					ENDIF
 					//                    IF ((FIELD:Flags & DBFFieldFlags.AllowNullValues) != DBFFieldFlags.AllowNullValues)
 						//                        //
@@ -1388,7 +1381,7 @@ BEGIN NAMESPACE XSharp.RDD
             VAR type := SELF:_getUsualType(oValue)
 			SWITCH type
 			CASE __UsualType.String
-				IF ( fieldType == DbFieldType.Character )
+				IF fieldType == DbFieldType.Character 
 					IF ( oValue IS CHAR)
 						str := STRING{ (CHAR)oValue, 1 }
 					ELSE
@@ -1427,7 +1420,7 @@ BEGIN NAMESPACE XSharp.RDD
 				isOk := TRUE
 				
 			CASE __UsualType.Logic
-				IF ( fieldType == DbFieldType.Logic )
+				IF fieldType == DbFieldType.Logic 
 					buffer[offset] := IIF( (LOGIC)oValue, (BYTE)'T', (BYTE)'F' )
 					isOk := TRUE
 				ELSE
@@ -1449,14 +1442,14 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
 					encoding:GetBytes( str, 0, length, buffer, offset )
 					isOk := TRUE
-                ELSEIF ( fieldType == DbFieldType.Date )
+                ELSEIF fieldType == DbFieldType.Date 
 					LOCAL dt AS DateTime
 					dt := (DateTime)oValue
 					//
 					str := dt:ToString( "yyyyMMdd" )
 					encoding:GetBytes( str, 0, length, buffer, offset )
 					isOk := TRUE
-				ELSEIF ( fieldType == DbFieldType.DateTime )
+				ELSEIF fieldType == DbFieldType.DateTime 
 					LOCAL dat AS LONG
 					LOCAL tim AS LONG
 					LOCAL dt AS DateTime
@@ -1788,11 +1781,7 @@ BEGIN NAMESPACE XSharp.RDD
 			// Indexes
 		/// <inheritdoc />
 		METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
-			IF _oIndex != NULL
-				RETURN _oIndex:OrderCondition(info)
-			ELSE
-				RETURN SUPER:OrderCondition(info)
-			ENDIF
+            RETURN SUPER:OrderCondition(info)
 			
 		/// <inheritdoc />
 		METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
@@ -1857,9 +1846,7 @@ BEGIN NAMESPACE XSharp.RDD
 			
 		// Relations
 		METHOD ChildEnd(info AS DbRelInfo) AS LOGIC
-			IF SELF:_RelInfo != NULL
-				SELF:ForceRel()
-			ENDIF
+			SELF:ForceRel()
 			RETURN SUPER:ChildEnd( info )
 			
 		METHOD ChildStart(info AS DbRelInfo) AS LOGIC
@@ -1868,30 +1855,28 @@ BEGIN NAMESPACE XSharp.RDD
 			
 		METHOD ChildSync(info AS DbRelInfo) AS LOGIC
 			SELF:GoCold()
-			SELF:_RelInfo := info
+			SELF:_RelInfoPending := info
 			SELF:SyncChildren()
 			RETURN TRUE
 			
 		//	METHOD ClearRel() AS LOGIC
 		METHOD ForceRel() AS LOGIC
-			LOCAL isOk AS LOGIC
-			LOCAL gotoRec AS DWORD
-			//
-			gotoRec := 0
-			isOk := TRUE
-			IF SELF:_RelInfo != NULL
+			LOCAL isOk    := TRUE AS LOGIC
+			LOCAL gotoRec := 0 AS LONG
+			IF SELF:_RelInfoPending != NULL
 				// Save the current context
-				LOCAL currentRelation := SELF:_RelInfo AS DbRelInfo
-				SELF:_RelInfo := NULL
+				LOCAL currentRelation := SELF:_RelInfoPending AS DbRelInfo
+				SELF:_RelInfoPending := NULL
 				//
 				isOk := SELF:RelEval( currentRelation )
 				IF isOk .AND. !((DBF)currentRelation:Parent):_Eof
 					TRY
-						gotoRec := Convert.ToUInt32( SELF:_EvalResult )
+						gotoRec := Convert.ToInt32( SELF:_EvalResult )
 					CATCH AS InvalidCastException
+                        gotoRec := 0
 					END TRY
 				ENDIF
-				isOk := SELF:Goto( (INT)gotoRec )
+				isOk := SELF:Goto( gotoRec )
 				SELF:_Found := SELF:_isValid
 				SELF:_Bof := FALSE
 			ENDIF
@@ -1955,7 +1940,6 @@ BEGIN NAMESPACE XSharp.RDD
 			IF result == NULL
 				SELF:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBF.Compile")
 			ENDIF
-			SELF:_LastCodeBlock := result
 			RETURN result
 			
 		//	METHOD EvalBlock(oBlock AS OBJECT) AS OBJECT
@@ -1963,10 +1947,9 @@ BEGIN NAMESPACE XSharp.RDD
 			LOCAL result := NULL AS OBJECT
 			TRY
 				result := SUPER:EvalBlock(cbBlock)
-				CATCH ex AS Exception
+            CATCH ex AS Exception
 				SELF:_dbfError(SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBF.EvalBlock", ex:Message)
 			END TRY
-			SELF:_EvalResult := result
 			RETURN result
 			
 			// Other
@@ -2059,7 +2042,7 @@ BEGIN NAMESPACE XSharp.RDD
                     RETURN 0
 				CASE DbInfo.DBI_ROLLBACK
                     IF SELF:_Hot
-                        IF SELF:_Appended
+                        IF SELF:_NewRecord
                              System.Array.Copy(SELF:_BlankBuffer, SELF:_RecordBuffer, SELF:_RecordLength)
                              SELF:_Deleted := FALSE
                         ELSE
@@ -2291,9 +2274,7 @@ BEGIN NAMESPACE XSharp.RDD
 		/// <inheritdoc />
 		PROPERTY BoF 		AS LOGIC
 			GET 
-				IF SELF:_RelInfo != NULL
-					SELF:ForceRel()
-				ENDIF
+				SELF:ForceRel()
 				RETURN SELF:_Bof
 			END GET
 		END PROPERTY
@@ -2301,9 +2282,7 @@ BEGIN NAMESPACE XSharp.RDD
 		/// <inheritdoc />
 		PROPERTY Deleted 	AS LOGIC 
 			GET
-				IF SELF:_RelInfo != NULL
-					SELF:ForceRel()
-				ENDIF				
+				SELF:ForceRel()
 				// Update ?
 				SELF:_readRecord()
 				RETURN SELF:_Deleted
@@ -2313,9 +2292,7 @@ BEGIN NAMESPACE XSharp.RDD
 		/// <inheritdoc />
 		PROPERTY EoF 		AS LOGIC
 			GET 
-				IF SELF:_RelInfo != NULL
-					SELF:ForceRel()
-				ENDIF
+				SELF:ForceRel()
 				RETURN SELF:_Eof
 			END GET
 		END PROPERTY
@@ -2336,9 +2313,7 @@ BEGIN NAMESPACE XSharp.RDD
 		//	PROPERTY FilterText	AS STRING GET
 		PROPERTY Found		AS LOGIC
 			GET 
-				IF SELF:_RelInfo != NULL
-					SELF:ForceRel()
-				ENDIF
+				SELF:ForceRel()
 				RETURN SELF:_Found
 			END GET
 		END PROPERTY
@@ -2370,9 +2345,7 @@ BEGIN NAMESPACE XSharp.RDD
 		/// <inheritdoc />
 		PROPERTY RecNo		AS INT
 			GET
-				IF SELF:_RelInfo != NULL
-					SELF:ForceRel()
-				ENDIF
+				SELF:ForceRel()
 				RETURN SELF:_RecNo
 			END GET
 		END PROPERTY

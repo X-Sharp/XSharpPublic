@@ -46,8 +46,7 @@ BEGIN NAMESPACE XSharp.RDD
 		PUBLIC _FilterInfo	    AS DbFilterInfo  
 		/// <summary>Current Order condition</summary>
 		PUBLIC _OrderCondInfo	AS DbOrderCondInfo
-		/// <summary>Current Relation info</summary>
-		PUBLIC _RelInfo		    AS DbRelInfo
+		/// <summary>List of children</summary>
 		PUBLIC _Relations       AS List<DbRelInfo>
 		/// <summary># of parents</summary>
 		PUBLIC _Parents		    AS LONG		
@@ -105,7 +104,6 @@ BEGIN NAMESPACE XSharp.RDD
 			SELF:_Shared	 := FALSE
 			SELF:_ReadOnly   := FALSE
 			SELF:_MaxFieldNameLength := 10
-			SELF:_RelInfo    := NULL
 			SELF:_Alias		 := String.Empty
 			SELF:_RecordBuffer := NULL
 			SELF:_Disposed   := FALSE
@@ -784,12 +782,19 @@ BEGIN NAMESPACE XSharp.RDD
 				/// <inheritdoc />
 			VIRTUAL METHOD RelEval(relinfo AS DbRelInfo) AS LOGIC
                 // Evaluate block in the Area of the Parent
-                RETURN relinfo:Parent:EvalBlock(relinfo:Block) != NULL
+                VAR originalArea := XSharp.RuntimeState.CurrentWorkArea
+                TRY
+                    XSharp.RuntimeState.CurrentWorkArea := relinfo:Parent:Area
+                    SELF:_EvalResult := relinfo:Parent:EvalBlock(relinfo:Block)
+                FINALLY
+                    XSharp.RuntimeState.CurrentWorkArea := originalArea
+                END TRY
+                RETURN SELF:_EvalResult != NULL
 				
 				/// <inheritdoc />
 			VIRTUAL METHOD RelText(nRelNum AS DWORD) AS STRING
 				LOCAL textRelation := "" AS STRING
-				IF ( nRelNum < SELF:_Relations:Count )
+				IF nRelNum < SELF:_Relations:Count 
 					textRelation := SELF:_Relations[ (INT)nRelNum ]:Key
 				ENDIF
 				RETURN textRelation

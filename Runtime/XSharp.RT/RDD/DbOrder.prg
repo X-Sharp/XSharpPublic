@@ -184,13 +184,17 @@ FUNCTION OrdCondSet(cFor, uCobFor, lAll, uCobWhile, uCobEval, nStep, nStart,    
 	LOCAL dbOrdCondInfo     AS DbOrderCondInfo
 	
 	dbOrdCondInfo := DbOrderCondInfo{}
-	IF !IsNil(cFor)
-        dbOrdCondInfo:ForExpression := cFor
-	ENDIF
+
 	
     dbOrdCondInfo:ForBlock := VoDb.ValidBlock(uCobFor)
     dbOrdCondInfo:WhileBlock := VoDb.ValidBlock(uCobWhile)
 	dbOrdCondInfo:EvalBlock := VoDb.ValidBlock(uCobEval)
+	IF !IsNil(cFor)
+        dbOrdCondInfo:ForExpression := cFor
+        IF dbOrdCondInfo:ForBlock == NULL
+            dbOrdCondInfo:ForBlock := MCompile(dbOrdCondInfo:ForExpression)
+        ENDIF
+	ENDIF
 	IF IsNumeric(nStep)
 		dbOrdCondInfo:StepSize := nStep
 	ENDIF

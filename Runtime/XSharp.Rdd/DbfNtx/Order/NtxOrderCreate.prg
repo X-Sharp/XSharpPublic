@@ -53,13 +53,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_KeyCodeBlock := createInfo:Block
             ELSE
                 TRY
-                    SELF:_oRdd:Compile(Expression)
+                    SELF:_KeyCodeBlock := SELF:_oRdd:Compile(Expression)
                 CATCH
                     isOk := FALSE
                 END TRY
-                IF isOk
-                    SELF:_KeyCodeBlock := (ICodeblock)SELF:_oRdd:_LastCodeBlock
-                ENDIF
             ENDIF
             SELF:_oRdd:__Goto(1)
             VAR oValue          := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock) 
@@ -267,52 +264,50 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             
         PRIVATE METHOD _CondCreate(ordCondInfo AS DBORDERCONDINFO ) AS LOGIC
-            LOCAL isOk AS LOGIC
-            LOCAL nOrder AS NtxOrder
-            LOCAL hasWhile AS LOGIC
-            LOCAL hasEvalBlock AS LOGIC
-            LOCAL record AS LONG
-            LOCAL count AS LONG
-            LOCAL toDo AS LONG
-            LOCAL done AS LONG
-            LOCAL nextRecord AS LONG
-            LOCAL start AS LONG
-            LOCAL result AS LOGIC
+            LOCAL isOk          := TRUE AS LOGIC
+            LOCAL leadingOrder  := NULL AS NtxOrder
+            LOCAL lUseOrder     := FALSE AS LOGIC
+            LOCAL hasWhile      := FALSE AS LOGIC
+            LOCAL hasEvalBlock  := FALSE AS LOGIC
+            LOCAL record        := 1 AS LONG
+            LOCAL count         := 1 AS LONG
+            LOCAL toDo          := 0 AS LONG
+            LOCAL done          := 0 AS LONG
+            LOCAL nextRecord    := 0 AS LONG
+            LOCAL start         := 0 AS LONG
+            LOCAL result        := FALSE AS LOGIC
             
-            isOk := TRUE
-            nOrder := NULL
-            hasWhile := FALSE
-            hasEvalBlock := FALSE
-            record := 1
-            count := 1
-            nextRecord := 0
-            toDo := 0
-            done := 0
             start := ordCondInfo:StartRecNo
             IF ordCondInfo:Scoped
                 IF ordCondInfo:StartRecNo > 0
                     record := ordCondInfo:StartRecNo
                 ENDIF
                 IF SELF:_oRdd:_indexList:Focus != 0
-                    nOrder := SELF:_oRdd:_indexList:CurrentOrder
+                    leadingOrder := SELF:_oRdd:_indexList:CurrentOrder
+                    lUseOrder    := leadingOrder != NULL
                 ENDIF
                 IF ordCondInfo:All
-                    record := 1
-                    IF nOrder != NULL
-                        record := nOrder:_locateKey(NULL, 0, SearchMode.Top)
+                    // All overrules start record no
+                    IF lUseOrder
+                        // start from first record in index
+                        record := leadingOrder:_locateKey(NULL, 0, SearchMode.Top)
+                    ELSE
+                        record := 1 // start from first record in file
                     ENDIF
                 ENDIF
             ENDIF
             IF ordCondInfo:RecNo > 0
+                // start with record indicated. This overrules ALL again
                 record := ordCondInfo:RecNo
                 toDo := 1
             ENDIF
             IF ordCondInfo:NextCount > 0
                 toDo := ordCondInfo:NextCount
             ENDIF
-            SELF:_oRdd:GoTo(record)
+            SELF:_oRdd:__Goto(record)
+            // IF record is EOF then do nothing
             IF !SELF:_oRdd:_isValid .AND. !SELF:_oRdd:_Eof
-                SELF:_oRdd:GoTo(start)
+                SELF:_oRdd:__Goto(start)
                 SELF:_TopStack := 0
                 RETURN FALSE
             ENDIF
@@ -322,13 +317,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF ordCondInfo:EvalBlock != NULL
                 hasEvalBlock := TRUE
             ENDIF
-            IF nOrder != NULL .AND. nOrder:_TopStack != 0
-                result := nOrder:_GoToRecno(SELF:_RecNo)
+            IF lUseOrder .AND. leadingOrder:_TopStack != 0
+                result := leadingOrder:_GoToRecno(SELF:_RecNo)
                 IF !result
                     RETURN result
                 ENDIF
             ENDIF
-            REPEAT
+            DO WHILE TRUE
                 IF hasWhile
                     isOk := TRUE
                     TRY
@@ -363,13 +358,20 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     ENDIF
                 ENDIF
                 done++
-                IF nOrder != NULL 
-                    nextRecord := _getNextKey(FALSE, SkipDirection.Forward)
+                IF lUseOrder 
+                    nextRecord := leadingOrder:_getNextKey(FALSE, SkipDirection.Forward)
                 ELSE
                     nextRecord := SELF:_RecNo + 1
                 ENDIF
-                SELF:_oRdd:__Goto( (LONG)nextRecord)
-            UNTIL !(toDo == 0 .OR. done < toDo) .AND. !SELF:_oRdd:_Eof .AND. SELF:_oRdd:_isValid
+                SELF:_oRdd:__Goto( nextRecord)
+                IF todo != 0 .AND. done >= todo
+                    EXIT
+                ENDIF
+                IF SELF:_oRdd:_Eof 
+                    EXIT
+                ENDIF
+            ENDDO
+
             SELF:_oRdd:__Goto(start)
             SELF:_TopStack := 0
             SELF:Flush()

@@ -15,13 +15,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     /// The NtxPageList class.
     /// </summary>
     INTERNAL SEALED CLASS NtxPageList
-        PRIVATE _Pages AS List<NtxPage>
+        PRIVATE _Pages AS Dictionary<LONG, NtxPage>
         PRIVATE _Order AS NtxOrder
         PRIVATE _hDump AS IntPtr
         
         PRIVATE METHOD _FindPage( offset AS LONG ) AS NtxPage
             LOCAL ntxPage AS NtxPage
-            ntxPage := SELF:_Pages:Find( { p => p:PageOffset == offset } )
+            _pages:TryGetValue(offset, OUT ntxPage)
             RETURN ntxPage
 
         INTERNAL PROPERTY DumpHandle AS IntPtr GET _hDump SET _hDump := VALUE
@@ -34,7 +34,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN
             
         INTERNAL CONSTRUCTOR( order AS NtxOrder )
-            SELF:_Pages := List<NtxPage>{}
+            SELF:_Pages := Dictionary<LONG, NtxPage>{}
             SELF:_Order := order
             
             
@@ -53,7 +53,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF ntxPage == NULL
                 ntxPage := NtxPage{SELF:_Order, 0L}
                 ntxPage:PageOffset := pageNo
-                SELF:_Pages:Add(ntxPage)
+                SELF:_Pages:Add(pageNo, ntxPage)
             ENDIF
             SELF:_dumpPage(ntxPage)
             ntxPage:Hot := TRUE
@@ -66,7 +66,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ntxPage := SELF:_FindPage(pageNo)
             IF ntxPage == NULL
                 ntxPage := NtxPage{SELF:_Order, pageNo}
-                SELF:_Pages:Add(ntxPage)
+                SELF:_Pages:Add(pageNo, ntxPage)
             ENDIF
             SELF:_dumpPage(ntxPage)
             RETURN ntxPage
@@ -77,8 +77,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
             isOk := TRUE
             TRY
-                FOREACH page AS NtxPage IN SELF:_Pages 
-                    isOk := page:Write()
+                FOREACH VAR pair IN SELF:_Pages 
+                    isOk := pair:Value:Write()
                     IF (!isOk)
                         EXIT
                     ENDIF

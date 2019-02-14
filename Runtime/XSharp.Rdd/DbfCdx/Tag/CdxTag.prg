@@ -37,7 +37,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _currentKeyBuffer AS BYTE[]
         INTERNAL _newKeyBuffer AS BYTE[]
         INTERNAL _newKeyLen AS LONG
-        INTERNAL _version AS WORD
+        INTERNAL _version AS DWORD
         INTERNAL _KeyExprType AS LONG
         INTERNAL _keySize AS WORD
         INTERNAL _keyDecimals AS WORD
@@ -117,14 +117,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
 	    METHOD Open() AS LOGIC
+            
             SELF:KeyExpression := SELF:_Header:KeyExpression
             TRY
-                SELF:_oRdd:Compile(SELF:KeyExpression)
+                SELF:KeyBlock := SELF:_oRdd:Compile(SELF:KeyExpression)
             CATCH
                 SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
+                SELF:KeyBlock := NULL
                 RETURN FALSE
             END TRY
-            SELF:KeyBlock := (ICodeblock)SELF:_oRDD:_LastCodeBlock
 
             SELF:_oRdd:GoTo(1)
             LOCAL evalOk AS LOGIC

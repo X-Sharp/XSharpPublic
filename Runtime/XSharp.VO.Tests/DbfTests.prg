@@ -1200,6 +1200,52 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 
+		// TECH-YV2072YP4B, DBSetOrderCondition() not respecting FOR condition
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBSetOrderCondition_with_FOR() AS VOID
+			LOCAL cDbf AS STRING
+			DBCloseAll()
+			
+			cDBF := GetTempFileName("testnewer")
+			DBCreate( cDBF , {{"FIELDN" , "N" ,5 , 0 } })
+			DBUseArea(,"DBFNTX",cDBF) 
+			DBAppend()
+			FieldPut(1,1)
+			DBAppend()
+			FieldPut(1,4)
+			DBAppend()
+			FieldPut(1,2)
+			DBAppend()
+			FieldPut(1,3)
+			DBCloseArea()
+		
+			DBUseArea(,"DBFNTX",cDBF) 
+			
+			// Should show only 4,3, but it shows all records 4,3,2,1
+			DBSetOrderCondition( "FIELDN>2",{||_FIELD->FIELDN>2},,,,,,,,, TRUE)
+			DBCreateIndex(cDbf, "FIELDN" )
+			DBGoTop()
+			LOCAL nCount := 0 AS INT
+			DO WHILE .not. EoF()
+				nCount ++
+				IF nCount == 1
+					Assert.Equal(4 ,(INT)FieldGet(1))
+				ELSEIF nCount == 1
+					Assert.Equal(3 ,(INT)FieldGet(1))
+				END IF
+				DBSkip()
+			END DO
+		    
+			Assert.Equal(2 ,nCount)
+			
+			// Should both show true, but both return false
+			Assert.True( DBOrderInfo( DBOI_ISCOND ) )
+			Assert.True( DBOrderInfo( DBOI_ISDESC ) )
+			
+			DBCloseArea()
+		RETURN
+
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
 		RETURN GetTempFileName("testdbf")
 		STATIC PRIVATE METHOD GetTempFileName(cFileName AS STRING) AS STRING

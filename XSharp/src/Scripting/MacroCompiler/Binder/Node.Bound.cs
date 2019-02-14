@@ -120,6 +120,11 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             Symbol = b.Lookup(Name);
+            if (Symbol is MethodSymbol && this.Affinity != BindAffinity.Invoke)
+            {
+                // IdExpr can't be a method
+                Symbol = null;
+            }
             if (Symbol == null)
             {
                 switch (b.Options.UndeclaredVariableResolution)

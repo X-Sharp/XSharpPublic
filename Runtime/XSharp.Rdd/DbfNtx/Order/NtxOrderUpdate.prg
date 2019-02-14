@@ -61,6 +61,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         EXIT
                     ENDIF
                 ENDIF
+                IF lNewRecord .AND. ! condFor
+                    // No need to update or delete anything
+                    RETURN TRUE
+                ENDIF
                 evalOk := TRUE
                 LOCAL oValue AS OBJECT
                 TRY

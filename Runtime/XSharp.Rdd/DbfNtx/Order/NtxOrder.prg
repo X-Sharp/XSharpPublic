@@ -14,6 +14,7 @@ USING System.Text
 USING System.Threading
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
+USING System.Runtime.CompilerServices
 
 BEGIN NAMESPACE XSharp.RDD.NTX
 
@@ -176,12 +177,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             // Key
             SELF:_KeyExpr := SELF:_Header:KeyExpression
             TRY
-                SELF:_oRdd:Compile(SELF:_KeyExpr)
+                SELF:_KeyCodeBlock := SELF:_oRdd:Compile(SELF:_KeyExpr)
             CATCH
                 SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
                 RETURN FALSE
             END TRY
-            SELF:_KeyCodeBlock := (ICodeblock)SELF:_oRDD:_LastCodeBlock
             
             SELF:_oRdd:GoTo(1)
             LOCAL evalOk AS LOGIC
@@ -331,7 +331,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             RETURN TRUE
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];
         INTERNAL METHOD __Compare( aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
             IF aRHS == NULL
                 RETURN 0

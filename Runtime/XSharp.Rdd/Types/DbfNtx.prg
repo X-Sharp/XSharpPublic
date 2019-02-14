@@ -29,8 +29,7 @@ BEGIN NAMESPACE XSharp.RDD
 			RETURN SUPER:OrderDestroy(orderInfo)
 			
 		METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
-            SELF:_OrderCondInfo := info
-            RETURN TRUE
+            RETURN SUPER:OrderCondition(info)
             
 		VIRTUAL METHOD OrderListAdd( orderInfo AS DbOrderInfo) AS LOGIC
 			BEGIN LOCK SELF

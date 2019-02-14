@@ -47,13 +47,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_KeyCodeBlock := createInfo:Block
             ELSE
                 TRY
-                    SELF:_oRdd:Compile(Expression)
+                    SELF:_KeyCodeBlock :=  SELF:_oRdd:Compile(Expression)
                 CATCH
                     isOk := FALSE
                 END TRY
-                IF isOk
-                    SELF:_KeyCodeBlock := (ICodeblock)SELF:_oRdd:_LastCodeBlock
-                ENDIF
             ENDIF
             SELF:_oRdd:__Goto(1)
             VAR oValue          := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock) 

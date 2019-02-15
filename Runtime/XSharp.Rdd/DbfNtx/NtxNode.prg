@@ -42,15 +42,17 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL PROPERTY KeyText AS STRING
             GET
             VAR sb := System.Text.StringBuilder{}
-            FOREACH VAR b IN SELF:KeyBytes
-                IF b > 0
-                    sb:Append( String.Format("{0:X2}",b))
-                ENDIF
-            NEXT
-            sb:Append(" ")
+//            FOREACH VAR b IN SELF:KeyBytes
+//                IF b > 0
+//                    sb:Append( String.Format("{0:X2}",b))
+//                ENDIF
+//            NEXT
+//            sb:Append(" ")
             FOREACH VAR b IN SELF:KeyBytes
                 IF b > 31 .AND. b < 128
                     sb:Append( (CHAR) b)
+                ELSEIF b > 0
+                    sb:Append( '.')
                 ENDIF
             NEXT
             RETURN sb:ToString()

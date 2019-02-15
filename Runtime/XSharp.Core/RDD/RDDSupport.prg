@@ -140,6 +140,8 @@ CLASS DbOpenInfo
 		RETURN nMode
 	END GET
 	END PROPERTY
+    PUBLIC METHOD Clone() AS DbOpenInfo
+        RETURN (DbOpenInfo) SELF:MemberwiseClone()
 END CLASS  
 
 /// <summary>Helper class to store information needed to create a conditional order.</summary> 

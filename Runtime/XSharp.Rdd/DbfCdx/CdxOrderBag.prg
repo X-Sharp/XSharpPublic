@@ -23,6 +23,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     PRIVATE CONST FoxXLockLen		:= 1           AS LONG
     PRIVATE CONST FoxSLockOfs		:= 0x7ffffffeL AS LONG
     PRIVATE CONST FoxSLockLen		:= 1 AS LONG
+    INTERNAL CONST CDX_EXTENSION := ".CDX" AS STRING
 
 #endregion
         INTERNAL _hFile     AS IntPtr
@@ -39,9 +40,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL CONST CDXPAGE_SIZE        := 512 AS WORD
 
         INTERNAL PROPERTY FileName AS STRING AUTO
+        INTERNAL PROPERTY Name AS STRING GET Path.GetFileNameWithoutExtension(FileName)
+        INTERNAL PROPERTY FullPath AS STRING AUTO
         INTERNAL PROPERTY Handle AS IntPtr GET _hFile
         INTERNAL PROPERTY Tags AS IList<CdxTag> GET _tags
-        INTERNAL PROPERTY Name AS STRING AUTO
         INTERNAL CONSTRUCTOR(oRDD AS DBFCDX )
             SUPER( oRdd )
             SELF:_oRdd     := oRDD
@@ -82,6 +84,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END GET
         END PROPERTY
         #endregion
+
         #region Open and Close etc
         METHOD Close() AS LOGIC
             FOREACH oTag AS CdxTag IN _tags
@@ -90,18 +93,37 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             FClose(SELF:_hFile)
             RETURN TRUE
 
-        INTERNAL METHOD Open(info AS XSharp.RDD.Support.DbOrderInfo) AS LOGIC
-            IF !File(info:BagName)
+        INTERNAL METHOD Open(info AS DbOrderInfo) AS LOGIC
+            // Filename may have path or not
+            // When the filename does not have a path then we look in the path of the DBF
+            LOCAL cPath     AS STRING
+            LOCAL cFileName AS STRING
+            LOCAL cFullName AS STRING
+            IF info == NULL
                 RETURN FALSE
             ENDIF
+            cFullName := cFileName := info:BagName
+            IF String.IsNullOrEmpty(Path.GetExtension(cFullName))
+                cFullName := Path.ChangeExtension(cFullname, CDX_EXTENSION)
+            ENDIF
+            cPath := Path.GetDirectoryName(cFullName)
+            IF String.IsNullOrEmpty(cPath)
+                cPath := (STRING) SELF:_oRDD:Info(DBI_FULLPATH,NULL)
+                cPath := Path.GetDirectoryName(cPath)
+                cFullName := Path.Combine(cPath, cFileName)
+            ENDIF
+            IF !File(cFullName)
+                RETURN FALSE
+            ENDIF
+            SELF:FullPath := cFullName
+            SELF:FileName := cFileName
             SELF:_openInfo := _oRdd:_OpenInfo
-            SELF:_hFile    := FOpen(info:BagName, _openInfo:FileMode)
+            SELF:_hFile    := FOpen(cFullName, _openInfo:FileMode)
             SELF:_Encoding := _oRdd:_Encoding
             IF SELF:_hFile == F_ERROR
                 RETURN FALSE
             ENDIF
             SELF:FileName := info:BagName
-            SELF:Name     := System.IO.Path.GetFileNameWithoutExtension(SELF:FileName)
             LOCAL buffer AS BYTE[]
             buffer := BYTE[]{CDXPAGE_SIZE}
             _root := CdxFileHeader{SELF, buffer}
@@ -114,38 +136,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 _tags := _tagList:Tags
                 // Compile expressions
                 FOREACH VAR tag IN _tags
-                    LOCAL nIndex AS INT
-                    nIndex := _oRdd:FieldIndex(tag:KeyExpression)
-                    VAR oBlock := _oRDD:Compile(tag:KeyExpression)
-                    tag:KeyBlock := oBlock
-                    LOCAL oVal AS OBJECT
-                    IF  nIndex > 0
-                        tag:_SingleField := nIndex
-                        oVal := _oRDD:GetValue(nIndex)
-                    ELSE
-                        
-                        oVal := _oRdd:EvalBlock(oBlock)
-                    ENDIF
-                    IF oVal IS System.String
-                        tag:KeyType := __UsualType.STRING
-                    ELSEIF oVal IS DbDate 
-                        tag:KeyType := __UsualType.DATE   
-                    ELSEIF oVal IS DbFloat 
-                        tag:KeyType := __UsualType.FLOAT   
-                    ELSEIF oVal IS LOGIC
-                        tag:KeyType := __UsualType.LOGIC   
-                    ELSE
-                        tag:KeyType := 0
-                        // Throw exception unknown key type ?
-                    ENDIF
-                    IF !String.IsNullOrEmpty(tag:ForExpression)
-                        tag:ForBlock := _oRDD:Compile(tag:ForExpression)
-                        oVal := _oRdd:EvalBlock(tag:KeyBlock)
-                        // should be logical
-                        IF ! oVal IS LOGIC
-                            // raise an error
-                        ENDIF
-                    ENDIF
+                    tag:EvaluateExpressions()
                 NEXT
             ENDIF
             RETURN TRUE

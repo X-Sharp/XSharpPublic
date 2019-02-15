@@ -172,7 +172,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL locked AS LOGIC
             
             locked := TRUE
-            IF SELF:_Shared
+            IF SELF:Shared
                 IF !SELF:_HPLocking
                     locked := SELF:_WriteLock()
                 ELSE
@@ -190,7 +190,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL result AS LOGIC
             
             result := TRUE
-            IF SELF:_Shared
+            IF SELF:Shared
                 IF !SELF:_HPLocking
                     result := SELF:_WriteUnLock()
                 ELSE

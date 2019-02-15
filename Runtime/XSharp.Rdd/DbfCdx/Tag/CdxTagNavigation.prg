@@ -336,13 +336,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             uiRealLen := 0
             IF rcno != SELF:_currentRecno .OR. SELF:Shared
                 SELF:_currentRecno := 0
-                VAR oValue := SELF:_oRdd:EvalBlock(SELF:KeyBlock)
-                isOk :=  oValue != NULL 
+                isOk := SELF:getKeyValue(SELF:_SourceIndex, SELF:_currentKeyBuffer)
                 IF isOk
-                    isOk := SELF:_ToString(oValue, SELF:_keySize, SELF:_keyDecimals, SELF:_currentKeyBuffer, SELF:_Ansi, REF uiRealLen)
-                    IF isOk
-                        SELF:_currentRecno := rcno
-                    ENDIF
+                    SELF:_currentRecno := rcno
                 ENDIF
             ENDIF
             IF !isOk

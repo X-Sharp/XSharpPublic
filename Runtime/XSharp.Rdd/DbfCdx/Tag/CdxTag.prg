@@ -31,8 +31,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         #region fields
         INTERNAL _Encoding AS Encoding
         INTERNAL _Hot AS LOGIC
+        INTERNAL _Conditional AS LOGIC
         INTERNAL _Descending AS LOGIC
+        INTERNAL _Partial AS LOGIC
         INTERNAL _SingleField AS LONG
+        INTERNAL _SourceIndex AS LONG
+        INTERNAL _KeyCodeBlock AS ICodeblock
+        INTERNAL _ForCodeBlock AS ICodeblock
+        INTERNAL _KeyExpr AS STRING
+        INTERNAL _ForExpr AS STRING
         INTERNAL _currentRecno AS LONG
         INTERNAL _currentKeyBuffer AS BYTE[]
         INTERNAL _newKeyBuffer AS BYTE[]
@@ -62,34 +69,33 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _outPageNo AS LONG      // has to move to OrderBag later
 
         PRIVATE _bag    AS CdxOrderBag
+        PRIVATE getKeyValue AS ValueBlock       // Delegate to calculate the key
 #endregion
 
 #region Properties
+        INTERNAL PROPERTY Expression AS STRING GET _KeyExpr
         
+        INTERNAL PROPERTY Condition AS STRING GET _ForExpr
         INTERNAL PROPERTY OrderName AS STRING GET _orderName
-	    PROPERTY Shared 	    AS LOGIC GET _bag:Shared
-        PROPERTY _Recno 	    AS LONG GET _oRDD:Recno
-        PROPERTY FileName 	    AS STRING GET _bag:FileName
-        PROPERTY OrderBag       AS CdxOrderBag GET SELF:_bag
-        PROPERTY Page           AS Int32 AUTO
-        PROPERTY Descending     AS LOGIC GET _Descending
-        PROPERTY IsConditional  AS LOGIC GET Options:HasFlag(CdxOptions.HasFor)
-        PROPERTY IsHot          AS LOGIC GET _Hot
-        PROPERTY KeyExpression  AS STRING AUTO
-        PROPERTY KeyBlock       AS ICodeBlock AUTO       
-        PROPERTY KeyLength      AS INT GET SELF:_keySize
-        PROPERTY KeyDecimals    AS INT AUTO
-        PROPERTY KeyType        AS INT AUTO
-        PROPERTY ForExpression  AS STRING AUTO
-        PROPERTY ForBlock       AS ICodeBlock AUTO
-        PROPERTY Conditional    AS LOGIC GET ForBlock != NULL
-        PROPERTY Partial        AS LOGIC GET SELF:Custom
-        PROPERTY Custom         AS LOGIC GET Options:HasFlag(CdxOptions.IsCustom)
-        PROPERTY Unique         AS LOGIC GET Options:HasFlag(CdxOptions.IsUnique)
-        PROPERTY Signature      AS BYTE AUTO
-        PROPERTY FieldIndex     AS INT AUTO             // 1 based FieldIndex
-        PROPERTY Options        AS CdxOptions AUTO
-        PROPERTY LockOffSet     AS LONG AUTO
+	INTERNAL PROPERTY Shared 	 AS LOGIC GET _bag:Shared
+        INTERNAL PROPERTY _Recno 	 AS LONG GET _oRDD:Recno
+        INTERNAL PROPERTY FileName 	 AS STRING GET _bag:FileName
+        INTERNAL PROPERTY OrderBag       AS CdxOrderBag GET SELF:_bag
+        INTERNAL PROPERTY Page           AS Int32 AUTO
+        INTERNAL PROPERTY Descending     AS LOGIC GET _Descending
+        INTERNAL PROPERTY IsConditional  AS LOGIC GET Options:HasFlag(CdxOptions.HasFor)
+        INTERNAL PROPERTY IsHot          AS LOGIC GET _Hot
+        PROPERTY KeyType        	AS INT AUTO
+        PROPERTY ForExpression  	AS STRING AUTO
+        PROPERTY ForBlock       	AS ICodeBlock AUTO
+        PROPERTY Conditional    	AS LOGIC GET ForBlock != NULL
+        PROPERTY Partial        	AS LOGIC GET SELF:Custom
+        PROPERTY Custom         	AS LOGIC GET Options:HasFlag(CdxOptions.IsCustom)
+        PROPERTY Unique         	AS LOGIC GET Options:HasFlag(CdxOptions.IsUnique)
+        PROPERTY Signature      	AS BYTE AUTO
+        PROPERTY FieldIndex     	AS INT AUTO             // 1 based FieldIndex
+        PROPERTY Options        	AS CdxOptions AUTO
+        PROPERTY LockOffSet     	AS LONG AUTO
        
 #endregion
 
@@ -118,54 +124,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 	    METHOD Open() AS LOGIC
             
-            SELF:KeyExpression := SELF:_Header:KeyExpression
-            TRY
-                SELF:KeyBlock := SELF:_oRdd:Compile(SELF:KeyExpression)
-            CATCH
-                SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
-                SELF:KeyBlock := NULL
-                RETURN FALSE
-            END TRY
-
+            SELF:_KeyExpr := SELF:_Header:KeyExpression
+            SELF:_ForExpr := SELF:_Header:ForExpression
             SELF:_oRdd:GoTo(1)
-            LOCAL evalOk AS LOGIC
-            LOCAL oResult AS OBJECT
-            evalOk := TRUE
-            TRY
-                oResult := SELF:_oRdd:EvalBlock(SELF:KeyBlock)
-            CATCH
-                evalOk := FALSE
-                oResult := NULL
-            END TRY
-            IF !evalOk
-                SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBFNTX.Compile")
+            IF ! SELF:EvaluateExpressions()
                 RETURN FALSE
             ENDIF
-            SELF:_KeyExprType := SELF:_oRdd:_getUsualType(oResult)
-            // For Condition
-            SELF:ForExpression := SELF:_Header:ForExpression
-            IF SELF:ForExpression:Length > 0
-                TRY
-                    SELF:ForBlock := SELF:_oRdd:Compile(SELF:ForExpression)
-                CATCH
-                    SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
-                    RETURN FALSE
-                END TRY
-                SELF:_oRdd:GoTo(1)
-                evalOk := TRUE
-                TRY
-                    VAR oValue := SELF:_oRdd:EvalBlock(SELF:ForBlock)
-                    evalOk     := SELF:_oRdd:_getUsualType(oValue) == __UsualType.Logic
-                CATCH
-                    evalOk := FALSE
-                END TRY
-                IF !evalOk
-                    SELF:_oRdd:_dbfError(SubCodes.EDB_EXPRESSION,GenCode.EG_SYNTAX,  "DBFNTX.Compile") 
-                    RETURN FALSE
-                ENDIF
-            ENDIF
-            // If the Key Expression contains only a Field Name
-            SELF:_SingleField := SELF:_oRDD:FieldIndex(SELF:KeyExpression)
+
             SELF:_Hot := FALSE
             SELF:ClearStack()
             SELF:_keySize       := SELF:_Header:KeySize
@@ -183,6 +148,79 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         DESTRUCTOR()
             Close()
             
+        INTERNAL METHOD EvaluateExpressions() AS LOGIC
+            LOCAL evalOk AS LOGIC
+            LOCAL oKey AS OBJECT
+            evalOk := TRUE
+            TRY
+                SELF:_KeyCodeBlock := SELF:_oRdd:Compile(SELF:_KeyExpr)
+            CATCH
+                SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
+                RETURN FALSE
+            END TRY
+
+            TRY
+                oKey := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
+            CATCH
+                evalOk := FALSE
+                oKey := NULL
+            END TRY
+            IF !evalOk
+                SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBFNTX.Compile")
+                RETURN FALSE
+            ENDIF
+            SELF:_KeyExprType := SELF:_oRdd:_getUsualType(oKey)
+
+            // If the Key Expression contains only a Field Name
+            SELF:_SingleField := SELF:_oRDD:FieldIndex(SELF:_KeyExpr) -1
+            SELF:_SourceIndex := 0
+            LOCAL isOk AS LOGIC
+            IF SELF:_SingleField >= 0
+                SELF:_keySize       := (WORD) SELF:_oRdd:_fields[_SingleField]:Length
+                SELF:_keyDecimals   := (WORD) SELF:_oRdd:_fields[_SingleField]:Decimals
+                SELF:_SourceIndex   := (WORD) SELF:_oRdd:_fields[_SingleField]:OffSet
+                VAR fType           := SELF:_oRdd:_fields[_SingleField]:FieldType
+                IF fType ==  DbFieldType.Number
+                    SELF:getKeyValue := _getNumFieldValue
+                ELSE
+                    SELF:getKeyValue := _getFieldValue
+                ENDIF
+                isOk := TRUE
+            ELSE
+                SELF:_keyDecimals := 0
+                SELF:_keySize := 0
+                SELF:getKeyValue := _getExpressionValue
+                isOk := SELF:_determineSize(oKey)
+            ENDIF
+            IF ! isOk
+                RETURN FALSE
+            ENDIF
+            SELF:_Conditional := FALSE
+            IF SELF:_ForExpr:Length > 0
+                TRY
+                    SELF:_ForCodeBlock := SELF:_oRdd:Compile(SELF:_ForExpr)
+                CATCH
+                    SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
+                    RETURN FALSE
+                END TRY
+                SELF:_oRdd:GoTo(1)
+                evalOk := TRUE
+                TRY
+                    VAR oValue := SELF:_oRdd:EvalBlock(SELF:_ForCodeBlock)
+                    evalOk     := SELF:_oRdd:_getUsualType(oValue) == __UsualType.Logic
+                CATCH
+                    evalOk := FALSE
+                END TRY
+                IF !evalOk
+                    SELF:_oRdd:_dbfError(SubCodes.EDB_EXPRESSION,GenCode.EG_SYNTAX,  "DBFNTX.Compile") 
+                    RETURN FALSE
+                ENDIF
+                SELF:_Conditional := TRUE
+            ENDIF
+ 
+
+            RETURN isOk
+
         PUBLIC METHOD Flush() AS LOGIC
             /*
             IF !SELF:_Shared .AND. SELF:_Hot 
@@ -476,6 +514,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 isOk := SELF:UnLock()
             ENDIF
             RETURN isOk
+
+
         INTERNAL METHOD _getRecPos(record REF LONG ) AS LOGIC
             LOCAL oldRec AS LONG
             LOCAL recno AS LONG
@@ -606,7 +646,28 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 FClose(hDump)
                 
             ENDIF
-	    */
+        */
             RETURN
+        // Three methods to calculate keys. We have split these to optimize index creating
+        PRIVATE METHOD _getNumFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
+            Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
+            SELF:_checkDigits(byteArray, SELF:_keySize, SELF:_keyDecimals)
+            RETURN TRUE
+            
+        PRIVATE METHOD _getFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
+            Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
+            RETURN TRUE
+            
+        PRIVATE METHOD _getExpressionValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
+            LOCAL result := TRUE AS LOGIC
+            TRY
+                VAR oKeyValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
+                LOCAL uiRealLen := 0 AS LONG
+                result := SELF:_ToString(oKeyValue, SELF:_keySize, SELF:_keyDecimals, byteArray, SELF:_Ansi, REF uiRealLen)
+            CATCH
+                result := FALSE
+            END TRY
+            RETURN result
+
     END CLASS
 END NAMESPACE

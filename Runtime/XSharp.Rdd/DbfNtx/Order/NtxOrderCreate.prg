@@ -120,7 +120,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:fileName := createInfo:BagName
             
             TRY
-                SELF:_hFile    := FCreate( SELF:fileName) 
+                SELF:_hFile    := FCreate( SELF:FullPath) 
                 IF SELF:_hFile != F_ERROR 
                     FClose( SELF:_hFile )
                 ENDIF
@@ -135,7 +135,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             VAR oldReadOnly := SELF:_oRDD:_ReadOnly 
             SELF:_oRDD:_Shared := FALSE
             SELF:_oRDD:_ReadOnly  := FALSE
-            SELF:_hFile    := Fopen(SELF:FileName, SELF:_oRDD:_OpenInfo:FileMode)
+            SELF:_hFile    := Fopen(SELF:FullPath, SELF:_oRDD:_OpenInfo:FileMode)
             SELF:_oRDD:_Shared := oldShared
             SELF:_oRDD:_ReadOnly  := oldReadOnly
             

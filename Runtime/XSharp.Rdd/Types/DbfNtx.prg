@@ -116,54 +116,83 @@ BEGIN NAMESPACE XSharp.RDD
                 info:Result := SELF:_indexList:OrderPos(workOrder)
 
 			CASE DBOI_BAGEXT
-				info:Result := ".NTX"
+                IF workOrder != NULL
+				    info:Result := System.IO.Path.GetExtension(workOrder:FullPath)
+                ELSE
+                    info:Result := NtxOrder.NTX_EXTENSION
+                ENDIF
 			CASE DBOI_FULLPATH
 				IF workOrder != NULL
-					info:Result := workOrder:FileName
+					info:Result := workOrder:FullPath
+                ELSE
+                    info:Result := ""
 				ENDIF
 			CASE DBOI_BAGNAME
+            //CASE DBOI_INDEXNAME // alias
 				IF workOrder != NULL
-					info:Result := System.IO.Path.GetFileNameWithoutExtension(workOrder:FileName)
+					info:Result := workOrder:FileName
+                ELSE
+                    info:Result := ""
 				ENDIF
 			CASE DBOI_NAME
 				IF workOrder != NULL
 					info:Result := workOrder:_orderName
+                ELSE
+                    info:Result := ""
 				ENDIF
 			CASE DBOI_FILEHANDLE
 				IF workOrder != NULL
 					info:Result := workOrder:_hFile
+                ELSE
+                    info:Result := IntPtr.Zero
 				ENDIF
 			CASE DBOI_ISDESC
 				IF workOrder != NULL
 					info:Result := workOrder:_Descending
+                ELSE
+                    info:Result := FALSE
 				ENDIF
 			CASE DBOI_ISCOND
 				IF workOrder != NULL
 					info:Result := workOrder:_Conditional
+                ELSE
+                    info:Result := FALSE
 				ENDIF
 			CASE DBOI_KEYTYPE
 				IF workOrder != NULL
 					info:Result := workOrder:_KeyExprType
+                ELSE
+                    info:Result := 0
 				ENDIF
 			CASE DBOI_KEYSIZE
 				IF workOrder != NULL
 					info:Result := workOrder:_keySize
+                ELSE
+                    info:Result := 0
 				ENDIF
 			CASE DBOI_KEYDEC
 				IF workOrder != NULL
 					info:Result := workOrder:_keyDecimals
+                ELSE
+                    info:Result := 0
 				ENDIF
 			CASE DBOI_HPLOCKING
 				IF workOrder != NULL
 					info:Result := workOrder:_HPLocking
+                ELSE
+                    info:Result := FALSE
 				ENDIF
 			CASE DBOI_UNIQUE
 				IF workOrder != NULL
 					info:Result := workOrder:_Unique
+                ELSE
+                    info:Result := FALSE
 				ENDIF
 			CASE DBOI_LOCKOFFSET
 				IF workOrder != NULL
 					info:Result := workOrder:_lockOffset
+                ELSE
+                    info:Result := 0
 				ENDIF
 			CASE DBOI_SETCODEBLOCK
 				IF workOrder != NULL
@@ -184,6 +213,8 @@ BEGIN NAMESPACE XSharp.RDD
 					IF !isOk
 						info:Result := NULL
 					ENDIF
+                ELSE
+                    info:Result := NULL
 				ENDIF
 			CASE DBOI_SCOPETOP
 				IF workOrder != NULL
@@ -191,6 +222,8 @@ BEGIN NAMESPACE XSharp.RDD
 						workOrder:SetOrderScope(info:Result, XSharp.RDD.Enums.DbOrder_Info.DBOI_SCOPETOP)
 					ENDIF
 					info:Result := workOrder:_topScope
+                ELSE
+                    info:Result := NULL
 				ENDIF
 			CASE DBOI_SCOPEBOTTOM
 				IF workOrder != NULL
@@ -198,6 +231,8 @@ BEGIN NAMESPACE XSharp.RDD
 						workOrder:SetOrderScope(info:Result, XSharp.RDD.Enums.DbOrder_Info.DBOI_SCOPEBOTTOM)
 					ENDIF
 					info:Result := workOrder:_bottomScope
+                ELSE
+                    info:Result := NULL
 				ENDIF
 			CASE DBOI_SCOPETOPCLEAR
 				IF workOrder != NULL

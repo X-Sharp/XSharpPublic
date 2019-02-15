@@ -523,6 +523,8 @@ BEGIN NAMESPACE XSharp.RDD
               ELSE
                 result := FALSE
               ENDIF
+            ELSE
+                RddError.PostArgumentError("VoDbCreate",EDB_WRONGFIELDNAME, "Name", 1, <OBJECT>{info:Name})
             ENDIF
 			RETURN result
             

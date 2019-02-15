@@ -1968,7 +1968,6 @@ BEGIN NAMESPACE XSharp.RDD
 				CASE DbInfo.DBI_GETHEADERSIZE
 					oResult := SELF:_Header:HeaderLen
                  CASE DbInfo.DBI_CODEPAGE
-                    oResult := (INT) SELF:_Header:CodePage
                 CASE DbInfo.DBI_DOSCODEPAGE
                 CASE DbInfo.DBI_CODEPAGE_HB
                     // DOS or Windows codepage based on DBF Codepage
@@ -2014,7 +2013,7 @@ BEGIN NAMESPACE XSharp.RDD
 
                  CASE DbInfo.DBI_MEMOHANDLE
                     oResult := IntPtr.Zero      // Should be handled in the memo subclass
-                 CASE DbInfo.DBI_MEMOExt
+                 CASE DbInfo.DBI_MEMOEXT
                     oResult := ""               // Should be handled in the memo subclass
                  CASE DbInfo.DBI_MEMOBLOCKSIZE
                     oResult := 0

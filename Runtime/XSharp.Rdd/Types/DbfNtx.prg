@@ -196,11 +196,7 @@ BEGIN NAMESPACE XSharp.RDD
 				ENDIF
 			CASE DBOI_SETCODEBLOCK
 				IF workOrder != NULL
-					oldvalue := workOrder:_KeyCodeBlock
-					IF info:Result != NULL
-						workOrder:_KeyCodeBlock := (ICodeblock)info:Result
-					ENDIF
-					info:Result := oldvalue
+					info:Result := workOrder:_KeyCodeBlock
 				ENDIF
 			CASE DBOI_KEYVAL
 				IF workOrder != NULL

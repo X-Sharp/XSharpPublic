@@ -100,7 +100,7 @@ BEGIN NAMESPACE XSharp.RDD
         STATIC PRIVATE _defExt    := DBT_MEMOEXT AS STRING
         PROTECT _lockScheme AS DbfLocking
         
-        
+        PROPERTY Shared AS LOGIC GET _Shared
         STATIC PROPERTY DefExt AS STRING
             GET
                 RETURN _defExt
@@ -273,7 +273,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDIF
             IF newBlock
-                IF ( SELF:_Shared )
+                IF SELF:Shared 
                     locked := SELF:_tryLock( (UINT64)SELF:_lockScheme:Offset, 1, (LONG)XSharp.RuntimeState.LockTries )
                 ENDIF
                 // Go to the end of end, where we will add the new data

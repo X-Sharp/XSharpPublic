@@ -48,38 +48,19 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ELSE
                 hasForCond := FALSE
             ENDIF
-            Expression := createInfo:Expression
-            IF createInfo:Block != NULL
-                SELF:_KeyCodeBlock := createInfo:Block
-            ELSE
-                TRY
-                    SELF:_KeyCodeBlock := SELF:_oRdd:Compile(Expression)
-                CATCH
-                    isOk := FALSE
-                END TRY
-            ENDIF
-            SELF:_oRdd:__Goto(1)
-            VAR oValue          := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock) 
-            SELF:_KeyExprType   := SELF:_oRdd:_getUsualType(oValue)
             SELF:_KeyExpr := createInfo:Expression
             IF ordCondInfo != NULL .AND. ordCondInfo:ForExpression != NULL
                 SELF:_ForExpr := ordCondInfo:ForExpression
             ELSE
                 SELF:_ForExpr := string.Empty
             ENDIF
+            SELF:_oRdd:__Goto(1)
+            IF ! SELF:EvaluateExpressions()
+                RETURN FALSE
+            ENDIF
             SELF:_orderName := (STRING)createInfo:Order
             IF string.IsNullOrEmpty(SELF:_orderName)
                 SELF:_orderName := Path.GetFileNameWithoutExtension(createInfo:BagName)
-            ENDIF
-            SELF:_SingleField := SELF:_oRdd:FieldIndex(SELF:_KeyExpr) -1
-            IF SELF:_SingleField >= 0
-                SELF:_keySize       := (WORD) SELF:_oRdd:_fields[_SingleField]:Length
-                SELF:_keyDecimals   := (WORD) SELF:_oRdd:_fields[_SingleField]:Decimals
-                isOk := TRUE
-            ELSE
-                SELF:_keyDecimals := 0
-                SELF:_keySize := 0
-                isOk := SELF:_determineSize(oValue)
             ENDIF
             IF !isOk .OR. SELF:_keySize == 0
                 SELF:Close()
@@ -131,13 +112,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 RETURN FALSE
             END TRY
             // To create an index we want to open the NTX NOT shared and NOT readonly
-            VAR oldShared   := SELF:_oRDD:_Shared
-            VAR oldReadOnly := SELF:_oRDD:_ReadOnly 
-            SELF:_oRDD:_Shared := FALSE
-            SELF:_oRDD:_ReadOnly  := FALSE
-            SELF:_hFile    := Fopen(SELF:FullPath, SELF:_oRDD:_OpenInfo:FileMode)
-            SELF:_oRDD:_Shared := oldShared
-            SELF:_oRDD:_ReadOnly  := oldReadOnly
+            LOCAL openInfo AS DbOpenInfo
+            openInfo := SELF:_oRdd:_OpenInfo:Clone()
+            openInfo:Shared   := FALSE
+            openInfo:ReadOnly := FALSE
+            SELF:_hFile    := Fopen(SELF:FullPath, openInfo:FileMode)
             
             IF SELF:_hFile == F_ERROR
                 SELF:Close()
@@ -199,29 +178,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             RETURN SELF:Flush()
             
-        // Three methods to calculate keys. We have split these to optimize index creating
-        PRIVATE METHOD _getNumFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
-            Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
-            SELF:_checkDigits(byteArray, SELF:_keySize, SELF:_keyDecimals)
-            RETURN TRUE
-            
-        PRIVATE METHOD _getFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
-            Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
-            RETURN TRUE
-            
-        PRIVATE METHOD _getExpressionValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
-            LOCAL result := TRUE AS LOGIC
-            TRY
-                VAR oKeyValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
-                LOCAL uiRealLen := 0 AS LONG
-                result := SELF:_ToString(oKeyValue, SELF:_keySize, SELF:_keyDecimals, byteArray, SELF:_Ansi, REF uiRealLen)
-            CATCH
-                result := FALSE
-            END TRY
-            RETURN result
+
             
             
-        PRIVATE METHOD _determineSize(toConvert AS OBJECT ) AS LOGIC
+        INTERNAL METHOD _determineSize(toConvert AS OBJECT ) AS LOGIC
             LOCAL expr AS STRING
             LOCAL nPos AS INT
 
@@ -389,7 +349,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
         INTERNAL METHOD _CreateIndex() AS LOGIC
             LOCAL fType AS DbFieldType
-            LOCAL sourceIndex AS LONG
+            LOCAL sourceIndex := 0 AS LONG
             LOCAL evalCount AS LONG
             LOCAL lRecCount AS LONG
             LOCAL sortInfo AS DbSortInfo
@@ -399,7 +359,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL result AS LOGIC
             LOCAL ic AS NtxSortCompare
             LOCAL lAscii AS LOGIC
-            LOCAL getKeyValue AS ValueBlock
+            
             
             fType := 0
             sourceIndex := 0
@@ -440,15 +400,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             sortInfo:Items[0]:OffSet := 0
             SELF:_oRdd:GoTo(1)
             byteArray := BYTE[]{ SELF:_keySize }
-            IF SELF:_SingleField != -1 .AND. fType != 0
-                IF fType ==  DbFieldType.Number
-                    getKeyValue := _getNumFieldValue
-                ELSE
-                    getKeyValue := _getFieldValue
-                ENDIF
-            ELSE
-                getKeyValue := _getExpressionValue
-            ENDIF
             REPEAT
                 result := TRUE
                 SELF:_oRdd:ReadRecord()

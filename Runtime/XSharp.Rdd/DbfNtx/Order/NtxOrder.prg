@@ -43,6 +43,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL _Descending AS LOGIC
         INTERNAL _Partial AS LOGIC
         INTERNAL _SingleField AS LONG
+        INTERNAL _SourceIndex AS LONG
         INTERNAL _KeyCodeBlock AS ICodeblock
         INTERNAL _ForCodeBlock AS ICodeblock
         INTERNAL _KeyExpr AS STRING
@@ -90,6 +91,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _midItem AS NtxNode
         PRIVATE _outPageNo AS LONG
         PRIVATE _parkPlace AS LONG
+        PRIVATE getKeyValue AS ValueBlock       // Delegate to calculate the key
         
         INTERNAL _lockOffSet AS LONG
         #endregion
@@ -99,7 +101,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL PROPERTY Condition AS STRING GET _ForExpr
         
         INTERNAL PROPERTY OrderName AS STRING GET _orderName
-        
+	INTERNAL PROPERTY Shared    AS LOGIC GET _Shared
         INTERNAL PROPERTY _Recno AS LONG GET _oRdd:Recno
 
         INTERNAL PROPERTY FullPath AS STRING GET _fullPath
@@ -168,7 +170,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_oRdd:GoCold()
             SELF:_Shared := SELF:_oRDD:_Shared
             SELF:_ReadOnly := SELF:_oRDD:_ReadOnly
-            SELF:_hFile    := Fopen(SELF:FileName, SELF:_oRDD:_OpenInfo:FileMode) 
+            SELF:_hFile    := Fopen(SELF:FullPath, SELF:_oRDD:_OpenInfo:FileMode) 
             IF SELF:_hFile == F_ERROR 
                 SELF:_oRDD:_dbfError( ERDD.OPEN_ORDER, GenCode.EG_OPEN, SELF:fileName)
                 RETURN FALSE
@@ -181,56 +183,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             SELF:_PageList := NtxPageList{SELF}
             SELF:_Ansi := SELF:_oRdd:_Ansi
-            // Key
+            // Key & For Expression
             SELF:_KeyExpr := SELF:_Header:KeyExpression
-            TRY
-                SELF:_KeyCodeBlock := SELF:_oRdd:Compile(SELF:_KeyExpr)
-            CATCH
-                SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
-                RETURN FALSE
-            END TRY
-            
-            SELF:_oRdd:GoTo(1)
-            LOCAL evalOk AS LOGIC
-            LOCAL oResult AS OBJECT
-            evalOk := TRUE
-            TRY
-                oResult := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
-            CATCH
-                evalOk := FALSE
-                oResult := NULL
-            END TRY
-            IF !evalOk
-                SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBFNTX.Compile")
-                RETURN FALSE
-            ENDIF
-            SELF:_KeyExprType := SELF:_oRdd:_getUsualType(oResult)
-            // For Condition
-            SELF:_Conditional := FALSE
             SELF:_ForExpr := SELF:_Header:ForExpression
-            IF SELF:_ForExpr:Length > 0
-                TRY
-                    SELF:_ForCodeBlock := SELF:_oRdd:Compile(SELF:_ForExpr)
-                CATCH
-                    SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
-                    RETURN FALSE
-                END TRY
-                SELF:_oRdd:GoTo(1)
-                evalOk := TRUE
-                TRY
-                    VAR oValue := SELF:_oRdd:EvalBlock(SELF:_ForCodeBlock)
-                    evalOk     := SELF:_oRdd:_getUsualType(oValue) == __UsualType.Logic
-                CATCH
-                    evalOk := FALSE
-                END TRY
-                IF !evalOk
-                    SELF:_oRdd:_dbfError(SubCodes.EDB_EXPRESSION,GenCode.EG_SYNTAX,  "DBFNTX.Compile") 
-                    RETURN FALSE
-                ENDIF
-                SELF:_Conditional := TRUE
+             
+            SELF:_oRdd:GoTo(1)
+            IF ! SELF:EvaluateExpressions()
+                RETURN FALSE
             ENDIF
-            // If the Key Expression contains only a Field Name
-            SELF:_SingleField := SELF:_oRDD:FieldIndex(SELF:_KeyExpr)
+            // For Condition
             SELF:_Shared := SELF:_oRdd:_Shared
             FSeek3( SELF:_hFile, 0, FS_END )
             SELF:_fileSize  := (LONG) FTell( SELF:_hFile ) 
@@ -272,7 +233,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_readLocks := 0
             
             isOk := TRUE
-            IF SELF:_HPLocking .AND. SELF:_Shared
+            IF SELF:_HPLocking .AND. SELF:Shared
                 //DO
                 REPEAT
                     IF !SELF:_LockInit()
@@ -291,9 +252,82 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         DESTRUCTOR()
             Close()
             
-            
+
+        PRIVATE METHOD EvaluateExpressions() AS LOGIC
+            LOCAL evalOk AS LOGIC
+            LOCAL oKey AS OBJECT
+            evalOk := TRUE
+            TRY
+                SELF:_KeyCodeBlock := SELF:_oRdd:Compile(SELF:_KeyExpr)
+            CATCH
+                SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
+                RETURN FALSE
+            END TRY
+
+            TRY
+                oKey := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
+            CATCH
+                evalOk := FALSE
+                oKey := NULL
+            END TRY
+            IF !evalOk
+                SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBFNTX.Compile")
+                RETURN FALSE
+            ENDIF
+            SELF:_KeyExprType := SELF:_oRdd:_getUsualType(oKey)
+
+            // If the Key Expression contains only a Field Name
+            SELF:_SingleField := SELF:_oRDD:FieldIndex(SELF:_KeyExpr) -1
+            SELF:_SourceIndex := 0
+            LOCAL isOk AS LOGIC
+            IF SELF:_SingleField >= 0
+                SELF:_keySize       := (WORD) SELF:_oRdd:_fields[_SingleField]:Length
+                SELF:_keyDecimals   := (WORD) SELF:_oRdd:_fields[_SingleField]:Decimals
+                SELF:_SourceIndex   := (WORD) SELF:_oRdd:_fields[_SingleField]:OffSet
+                VAR fType           := SELF:_oRdd:_fields[_SingleField]:FieldType
+                IF fType ==  DbFieldType.Number
+                    SELF:getKeyValue := _getNumFieldValue
+                ELSE
+                    SELF:getKeyValue := _getFieldValue
+                ENDIF
+                isOk := TRUE
+            ELSE
+                SELF:_keyDecimals := 0
+                SELF:_keySize := 0
+                SELF:getKeyValue := _getExpressionValue
+                isOk := SELF:_determineSize(oKey)
+            ENDIF
+            IF ! isOk
+                RETURN FALSE
+            ENDIF
+            SELF:_Conditional := FALSE
+            IF SELF:_ForExpr:Length > 0
+                TRY
+                    SELF:_ForCodeBlock := SELF:_oRdd:Compile(SELF:_ForExpr)
+                CATCH
+                    SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
+                    RETURN FALSE
+                END TRY
+                SELF:_oRdd:GoTo(1)
+                evalOk := TRUE
+                TRY
+                    VAR oValue := SELF:_oRdd:EvalBlock(SELF:_ForCodeBlock)
+                    evalOk     := SELF:_oRdd:_getUsualType(oValue) == __UsualType.Logic
+                CATCH
+                    evalOk := FALSE
+                END TRY
+                IF !evalOk
+                    SELF:_oRdd:_dbfError(SubCodes.EDB_EXPRESSION,GenCode.EG_SYNTAX,  "DBFNTX.Compile") 
+                    RETURN FALSE
+                ENDIF
+                SELF:_Conditional := TRUE
+            ENDIF
+ 
+
+            RETURN isOk
+
         PUBLIC METHOD Flush() AS LOGIC
-            IF !SELF:_Shared .AND. SELF:_Hot .AND. SELF:_hFile != F_ERROR
+            IF !SELF:Shared .AND. SELF:_Hot .AND. SELF:_hFile != F_ERROR
                 SELF:GoCold()
                 SELF:_PageList:Flush(TRUE)
                 SELF:_Header:IndexingVersion        := 1
@@ -306,7 +340,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
         PUBLIC METHOD Commit() AS LOGIC
             SELF:GoCold()
-            IF !SELF:_Shared .AND. SELF:_Hot .AND. SELF:_hFile != F_ERROR
+            IF !SELF:Shared .AND. SELF:_Hot .AND. SELF:_hFile != F_ERROR
                 SELF:_Header:IndexingVersion        := 1
                 SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
                 SELF:_Header:FirstPageOffset        := SELF:_firstPageOffset
@@ -318,7 +352,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PUBLIC METHOD Close() AS LOGIC
             SELF:Flush()
             TRY
-                IF SELF:_Shared .AND. SELF:_HPLocking
+                IF SELF:Shared .AND. SELF:_HPLocking
                     SELF:_LockExit()
                 ENDIF
                 IF SELF:_hFile != F_ERROR
@@ -464,23 +498,28 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
         PRIVATE METHOD _checkDigits(buffer AS BYTE[] , length AS LONG , decimals AS LONG ) AS VOID
             LOCAL i := 0 AS LONG
+            LOCAL last := length -1 AS LONG
             // Transform starting spaces with zeros
-            DO WHILE buffer[i] == 32 .AND. i < length -1
-                buffer[i] := (BYTE)'0'
-                i++
-            ENDDO
-            IF i == length  // all spaces , now converted to all zeroes.
+            FOR i := 0 TO length -1
+                IF buffer[i] ==  32
+                    buffer[i] := (BYTE)'0'
+                ELSE
+                    last := i
+                    EXIT
+                ENDIF
+            NEXT
+            IF last == length -1 // all spaces , now converted to all zeroes.
                 // It must be a decimal value ?
                 IF decimals != 0
                     buffer[length - decimals - 1] := (BYTE)'.'
                 ENDIF
             ENDIF
-            IF buffer[i] == '-'
+            IF buffer[last] == '-'
                 i++
-                FOR VAR j := 0 TO i-1 STEP 1
+                FOR VAR j := 0 TO last-1 STEP 1
                     buffer[j] := 44 // ,
                 NEXT
-                FOR VAR j := i TO length -1 STEP 1
+                FOR VAR j := last TO length -1 STEP 1
                     buffer[j] := (BYTE) (92 - buffer[j])
                 NEXT
             ENDIF
@@ -527,7 +566,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             isOk := TRUE
             SELF:_oRdd:GoCold()
             oldRec := SELF:_Recno
-            IF SELF:_Shared
+            IF SELF:Shared
                 isOk := SELF:_lockForRead()
                 IF !isOk
                     RETURN FALSE
@@ -568,7 +607,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             ENDIF
             SELF:_oRdd:__Goto(oldRec)
-            IF SELF:_Shared
+            IF SELF:Shared
                 isOk := SELF:_unLockForRead()
             ENDIF
             RETURN isOk
@@ -730,7 +769,30 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 
             ENDIF
             RETURN
+        // Three methods to calculate keys. We have split these to optimize index creating
+        PRIVATE METHOD _getNumFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
+            SELF:_oRDD:Validate()
+            Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
+            SELF:_checkDigits(byteArray, SELF:_keySize, SELF:_keyDecimals)
+            RETURN TRUE
             
+        PRIVATE METHOD _getFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
+            SELF:_oRDD:Validate()
+            Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
+            RETURN TRUE
+            
+        PRIVATE METHOD _getExpressionValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
+            LOCAL result := TRUE AS LOGIC
+            TRY
+                SELF:_oRDD:Validate()
+                VAR oKeyValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
+                LOCAL uiRealLen := 0 AS LONG
+                result := SELF:_ToString(oKeyValue, SELF:_keySize, SELF:_keyDecimals, byteArray, SELF:_Ansi, REF uiRealLen)
+            CATCH
+                result := FALSE
+            END TRY
+            RETURN result
+
     END CLASS
     
 END NAMESPACE

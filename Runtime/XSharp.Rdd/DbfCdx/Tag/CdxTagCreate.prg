@@ -42,38 +42,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSE
                 hasForCond := FALSE
             ENDIF
-            Expression := createInfo:Expression
-            IF createInfo:Block != NULL
-                SELF:_KeyCodeBlock := createInfo:Block
-            ELSE
-                TRY
-                    SELF:_KeyCodeBlock :=  SELF:_oRdd:Compile(Expression)
-                CATCH
-                    isOk := FALSE
-                END TRY
-            ENDIF
-            SELF:_oRdd:__Goto(1)
-            VAR oValue          := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock) 
-            SELF:_KeyExprType   := SELF:_getTypeCode(oValue)
             SELF:_KeyExpr := createInfo:Expression
             IF ordCondInfo != NULL .AND. ordCondInfo:ForExpression != NULL
                 SELF:_ForExpr := ordCondInfo:ForExpression
             ELSE
                 SELF:_ForExpr := string.Empty
             ENDIF
+            SELF:_oRdd:__Goto(1)
+            IF ! SELF:EvaluateExpressions()
+                RETURN FALSE
+            ENDIF
             SELF:_orderName := (STRING)createInfo:Order
             IF string.IsNullOrEmpty(SELF:_orderName)
                 SELF:_orderName := Path.GetFileNameWithoutExtension(createInfo:BagName)
-            ENDIF
-            SELF:_SingleField := SELF:_oRdd:FieldIndex(SELF:_KeyExpr) -1
-            IF SELF:_SingleField >= 0
-                SELF:_keySize       := (WORD) SELF:_oRdd:_fields[_SingleField]:Length
-                SELF:_keyDecimals   := (WORD) SELF:_oRdd:_fields[_SingleField]:Decimals
-                isOk := TRUE
-            ELSE
-                SELF:_keyDecimals := 0
-                SELF:_keySize := 0
-                isOk := SELF:_determineSize(oValue)
             ENDIF
             IF !isOk .OR. SELF:_keySize == 0
                 SELF:Close()
@@ -113,7 +94,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:fileName := createInfo:BagName
             
             TRY
-                SELF:_hFile    := FCreate( SELF:fileName) 
+                SELF:_hFile    := FCreate( SELF:FullPath) 
                 IF SELF:_hFile != F_ERROR 
                     FClose( SELF:_hFile )
                 ENDIF
@@ -128,7 +109,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR oldReadOnly := SELF:_oRDD:_ReadOnly 
             SELF:_oRDD:_Shared := FALSE
             SELF:_oRDD:_ReadOnly  := FALSE
-            SELF:_hFile    := Fopen(SELF:FileName, SELF:_oRDD:_OpenInfo:FileMode)
+            SELF:_hFile    := Fopen(SELF:FullPath, SELF:_oRDD:_OpenInfo:FileMode)
             SELF:_oRDD:_Shared := oldShared
             SELF:_oRDD:_ReadOnly  := oldReadOnly
             
@@ -188,62 +169,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             */
             RETURN SELF:Flush()
-        // Three methods to calculate keys. We have split these to optimize index creating
-        PRIVATE METHOD _getNumFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
-            Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
-            SELF:_checkDigits(byteArray, SELF:_keySize, SELF:_keyDecimals)
-            RETURN TRUE
-            
-        PRIVATE METHOD _getFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
-            Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
-            RETURN TRUE
-            
-        PRIVATE METHOD _getExpressionValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
-            LOCAL result := TRUE AS LOGIC
-            TRY
-                VAR oKeyValue := SELF:_oRdd:EvalBlock(SELF:KeyBlock)
-                LOCAL uiRealLen := 0 AS LONG
-                result := SELF:_ToString(oKeyValue, SELF:_keySize, SELF:_keyDecimals, byteArray, SELF:_Ansi, REF uiRealLen)
-            CATCH
-                result := FALSE
-            END TRY
-            RETURN result
             
             
-        PRIVATE METHOD _determineSize(toConvert AS OBJECT ) AS LOGIC
-            LOCAL tCode AS TypeCode
+        INTERNAL METHOD _determineSize(toConvert AS OBJECT ) AS LOGIC
             LOCAL expr AS STRING
             LOCAL nPos AS INT
-            LOCAL sysType AS System.Type
-            LOCAL strType AS STRING
-            
-            sysType := toConvert:GetType()
-            strType := sysType:ToString()
-            // Compatibility ??
-            SWITCH strType
-            CASE "XSharp.__Date"
-                tCode := TypeCode.DateTime
-            CASE "XSharp.__Float"
-                tCode := TypeCode.Double
-            OTHERWISE
-        
-            tCode := Type.GetTypeCode(sysType)
-            END SWITCH
-            
-            SWITCH tCode
-            CASE TypeCode.String
+
+            VAR type := SELF:_oRdd:_getUsualType(toConvert)
+            SWITCH type
+            CASE __UsualType.String
                 SELF:_keySize := (WORD) ((STRING)toConvert):Length
-            CASE TypeCode.Int16
-            CASE TypeCode.UInt16
-            CASE TypeCode.Int32
-            CASE TypeCode.UInt32
-            CASE TypeCode.Int64
-            CASE TypeCode.UInt64
-            CASE TypeCode.Single
-            CASE TypeCode.Double
-            CASE TypeCode.Decimal
+            CASE __UsualType.Long
+            CASE __UsualType.Float
                 TRY
-                    expr := "STR(" + SELF:KeyExpression + ")"
+                    expr := "STR(" + SELF:_KeyExpr + ")"
                     TRY
                         VAR oBlock := SELF:_oRdd:Compile(expr)
                         expr := (STRING) SELF:_oRdd:EvalBlock(oBlock)
@@ -261,13 +200,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 CATCH //Exception
                     SELF:_keyDecimals := 0
                 END TRY
-            CASE TypeCode.DateTime
+            CASE __UsualType.Date
                 SELF:_keySize := 8
-            CASE TypeCode.Boolean
+            CASE __UsualType.Logic
                 SELF:_keySize := 1
             OTHERWISE
                 SELF:_keySize := 0
-            RETURN FALSE
+                RETURN FALSE
             END SWITCH
             
             RETURN TRUE
@@ -275,7 +214,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _CondCreate(ordCondInfo AS DBORDERCONDINFO ) AS LOGIC
             /*
             LOCAL isOk AS LOGIC
-            LOCAL nOrder AS NtxOrder
+            LOCAL leadingOrder  := NULL AS NtxOrder
+            LOCAL lUseOrder     := FALSE AS LOGIC
             LOCAL hasWhile AS LOGIC
             LOCAL hasEvalBlock AS LOGIC
             LOCAL record AS LONG
@@ -301,25 +241,31 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     record := ordCondInfo:StartRecNo
                 ENDIF
                 IF SELF:_oRdd:_indexList:Focus != 0
-                    nOrder := SELF:_oRdd:_indexList:CurrentOrder
+                    leadingOrder := SELF:_oRdd:_indexList:CurrentOrder
+                    lUseOrder    := leadingOrder != NULL
                 ENDIF
                 IF ordCondInfo:All
-                    record := 1
-                    IF nOrder != NULL
-                        record := nOrder:_locateKey(NULL, 0, SearchMode.Top)
+                    // All overrules start record no
+                    IF lUseOrder
+                        // start from first record in index
+                        record := leadingOrder:_locateKey(NULL, 0, SearchMode.Top)
+                    ELSE
+                        record := 1 // start from first record in file
                     ENDIF
                 ENDIF
             ENDIF
             IF ordCondInfo:RecNo > 0
+                // start with record indicated. This overrules ALL again
                 record := ordCondInfo:RecNo
                 toDo := 1
             ENDIF
             IF ordCondInfo:NextCount > 0
                 toDo := ordCondInfo:NextCount
             ENDIF
-            SELF:_oRdd:GoTo(record)
+            SELF:_oRdd:__Goto(record)
+            // IF record is EOF then do nothing
             IF !SELF:_oRdd:_isValid .AND. !SELF:_oRdd:_Eof
-                SELF:_oRdd:GoTo(start)
+                SELF:_oRdd:__Goto(start)
                 SELF:_TopStack := 0
                 RETURN FALSE
             ENDIF
@@ -329,13 +275,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF ordCondInfo:EvalBlock != NULL
                 hasEvalBlock := TRUE
             ENDIF
-            IF nOrder != NULL .AND. nOrder:_TopStack != 0
-                result := nOrder:_GoToRecno(SELF:_RecNo)
+            IF lUseOrder .AND. leadingOrder:_TopStack != 0
+                result := leadingOrder:_GoToRecno(SELF:_RecNo)
                 IF !result
                     RETURN result
                 ENDIF
             ENDIF
-            REPEAT
+            DO WHILE TRUE
                 IF hasWhile
                     isOk := TRUE
                     TRY
@@ -370,13 +316,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                 ENDIF
                 done++
-                IF nOrder != NULL 
-                    nextRecord := _getNextKey(FALSE, SkipDirection.Forward)
+                IF lUseOrder 
+                    nextRecord := leadingOrder:_getNextKey(FALSE, SkipDirection.Forward)
                 ELSE
                     nextRecord := SELF:_RecNo + 1
                 ENDIF
-                SELF:_oRdd:__Goto( (LONG)nextRecord)
-            UNTIL !(toDo == 0 .OR. done < toDo) .AND. !SELF:_oRdd:_Eof .AND. SELF:_oRdd:_isValid
+                SELF:_oRdd:__Goto( nextRecord)
+                IF todo != 0 .AND. done >= todo
+                    EXIT
+                ENDIF
+                IF SELF:_oRdd:_Eof 
+                    EXIT
+                ENDIF
+            ENDDO
+
             SELF:_oRdd:__Goto(start)
             SELF:_TopStack := 0
             SELF:Flush()
@@ -408,7 +361,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL result AS LOGIC
             LOCAL ic AS CdxSortCompare
             LOCAL lAscii AS LOGIC
-            LOCAL getKeyValue AS ValueBlock
             
             fType := 0
             sourceIndex := 0
@@ -449,15 +401,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             sortInfo:Items[0]:OffSet := 0
             SELF:_oRdd:GoTo(1)
             byteArray := BYTE[]{ SELF:_keySize }
-            IF SELF:_SingleField != -1 .AND. fType != 0
-                IF fType ==  DbFieldType.Number
-                    getKeyValue := _getNumFieldValue
-                ELSE
-                    getKeyValue := _getFieldValue
-                ENDIF
-            ELSE
-                getKeyValue := _getExpressionValue
-            ENDIF
             REPEAT
                 result := TRUE
                 SELF:_oRdd:ReadRecord()

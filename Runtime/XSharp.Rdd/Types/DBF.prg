@@ -120,7 +120,7 @@ BEGIN NAMESPACE XSharp.RDD
 					// Validate any pending change
 					SELF:GoCold()
 					// On Shared env, it can be correct to guess that some changes have been made
-					IF ( SELF:_Shared .AND. nRec > SELF:RecCount )
+					IF SELF:Shared .AND. nRec > SELF:RecCount 
 						SELF:_RecCount := SELF:_calculateRecCount()
 					ENDIF
 					//
@@ -225,13 +225,13 @@ BEGIN NAMESPACE XSharp.RDD
 					isOk := SELF:GoCold()
 					IF ( isOk )
 						//
-						IF ( SELF:_ReadOnly )
+						IF SELF:_ReadOnly 
 							// Error !! Cannot be written !
 							SELF:_DbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
 							isOk := FALSE
 						ENDIF
-						IF ( SELF:_Shared )
-							IF ( SELF:_Locks:Count > 0 ) .AND. lReleaseLock
+						IF  SELF:Shared 
+							IF  SELF:_Locks:Count > 0  .AND. lReleaseLock
 								SELF:UnLock( 0 ) // Unlock All Records
 							ENDIF
 							SELF:AppendLock( DbLockMode.Lock )
@@ -337,7 +337,7 @@ BEGIN NAMESPACE XSharp.RDD
 			LOCAL recordNbr AS LONG
 			LOCAL isOk AS LOGIC
 			//
-			IF ( SELF:_Shared )
+			IF SELF:Shared 
 				BEGIN LOCK SELF
 					//
 					SELF:GoCold()
@@ -458,7 +458,7 @@ BEGIN NAMESPACE XSharp.RDD
 		PROTECTED METHOD _lockDBFFile() AS LOGIC
 			LOCAL isOk := TRUE AS LOGIC
 			//
-			IF ( SELF:_Shared .AND. !SELF:_fLocked )
+			IF SELF:Shared .AND. !SELF:_fLocked 
 				//
 				SELF:GoCold()
 				IF ( SELF:_Locks:Count > 0 )
@@ -525,7 +525,7 @@ BEGIN NAMESPACE XSharp.RDD
 			//
 			IF ( isOk )
 				// Already locked ?
-				IF ( SELF:_Shared .AND. !SELF:_Locks:Contains( (LONG)nToLock ) )
+				IF SELF:Shared .AND. !SELF:_Locks:Contains( (LONG)nToLock ) 
 					IF ( lockInfo:@@METHOD == DbLockInfo.LockMethod.Multiple )
 						// Just add the lock to the list
 						isOk := SELF:_lockRecord( (LONG)nToLock )
@@ -623,7 +623,7 @@ BEGIN NAMESPACE XSharp.RDD
 				RETURN FALSE
 			ENDIF
 			//
-			IF ( SELF:_Shared )
+			IF SELF:Shared 
 				// Error !! Cannot be written !
 				SELF:_DbfError( ERDD.SHARED, XSharp.Gencode.EG_SHARED )
 				RETURN FALSE
@@ -1220,7 +1220,7 @@ BEGIN NAMESPACE XSharp.RDD
 							FWrite3( SELF:_hFile, SELF:_RecordBuffer, (DWORD)SELF:_RecordLength )
 							// Don't forget to Update Header
 							SELF:_Header:isHot := TRUE
-							IF ( SELF:_Shared )
+							IF SELF:Shared 
 								SELF:_writeHeader()
 							ENDIF
 						CATCH
@@ -1655,12 +1655,12 @@ BEGIN NAMESPACE XSharp.RDD
 			ENDIF
 			isOk := SELF:GoCold()
 			IF isOk
-				IF ( SELF:_Shared )
+				IF SELF:Shared 
 					SELF:HeaderLock( DbLockMode.Lock )
 				ENDIF
 				SELF:_putEndOfFileMarker()
 				SELF:_writeHeader()
-				IF ( SELF:_Shared )
+				IF SELF:Shared 
 					SELF:HeaderLock( DbLockMode.UnLock )
 				ENDIF
 			ENDIF
@@ -1998,7 +1998,7 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
   
                  CASE DbInfo.DBI_SHARED
-                    oResult := SELF:_Shared
+                    oResult := SELF:Shared 
 
                  CASE DbInfo.DBI_READONLY
                  CASE DbInfo.DBI_ISREADONLY
@@ -2267,7 +2267,11 @@ BEGIN NAMESPACE XSharp.RDD
 		PUBLIC METHOD WriteSorted( sortInfo AS DBSORTINFO , record AS SortRecord ) AS LOGIC			
 			Array.Copy(record:Data, SELF:_RecordBuffer, SELF:_RecordLength)
 			RETURN SELF:TransRec(sortInfo:TransInfo)
-			
+
+        INTERNAL METHOD Validate() AS VOID
+            IF !SELF:_BufferValid 
+                SELF:_readRecord()
+            ENDIF			
 			// Properties
 			//	PROPERTY Alias 		AS STRING GET
 		/// <inheritdoc />
@@ -2320,7 +2324,7 @@ BEGIN NAMESPACE XSharp.RDD
 		/// <inheritdoc />
 		PROPERTY RecCount	AS LONG
 			GET
-				IF ( SELF:_Shared )
+				IF SELF:Shared 
 					SELF:_RecCount := SELF:_calculateRecCount()
 				ENDIF
 				RETURN SELF:_RecCount
@@ -2804,6 +2808,7 @@ BEGIN NAMESPACE XSharp.RDD
 				diff := recordX:Recno - recordY:Recno
 			ENDIF
 			RETURN diff
+
 	END CLASS
 	
 	

@@ -63,21 +63,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                 ENDIF
                 evalOk := TRUE
-                LOCAL oValue AS OBJECT
-                TRY
-                    oValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
-                CATCH
-                    oValue := NULL
-                    evalOk := FALSE
-                END TRY
-                IF !evalOk
-                    errorLevel := 1
-                ELSE
-                    LOCAL changed := FALSE AS LOGIC
-                    IF !SELF:_ToString(oValue, SELF:_keySize, SELF:_keyDecimals, SELF:_newKeyBuffer, SELF:_Ansi)
-                        errorLevel := 1
-                    ELSE
-                        IF !lNewRecord
+                IF SELF:getKeyValue(0, SELF:_newKeyBuffer)
+                    LOCAL changed AS LOGIC
+                    IF !lNewRecord
                             changed := SELF:__Compare(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, SELF:_keySize) != 0
                             IF changed
                                 SELF:_TopStack := 0

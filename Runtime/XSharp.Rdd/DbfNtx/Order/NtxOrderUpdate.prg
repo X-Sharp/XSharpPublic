@@ -31,7 +31,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             errorLevel := 0
             lockCount := 0
             DO WHILE TRUE
-                IF SELF:_Shared
+                IF SELF:Shared
                     IF SELF:_HPLocking
                         lockCount := SELF:_readLocks
                         DO WHILE SELF:_readLocks != 0
@@ -65,64 +65,51 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     // No need to update or delete anything
                     RETURN TRUE
                 ENDIF
-                evalOk := TRUE
-                LOCAL oValue AS OBJECT
-                TRY
-                    oValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
-                CATCH
-                    oValue := NULL
-                    evalOk := FALSE
-                END TRY
-                IF !evalOk
-                    errorLevel := 1
-                ELSE
-                    LOCAL changed := FALSE AS LOGIC
-                    IF !SELF:_ToString(oValue, SELF:_keySize, SELF:_keyDecimals, SELF:_newKeyBuffer, SELF:_Ansi)
-                        errorLevel := 1
-                    ELSE
-                        IF !lNewRecord
-                            changed := SELF:__Compare(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, SELF:_keySize) != 0
-                            IF changed
+
+                IF SELF:getKeyValue(SELF:_SourceIndex, SELF:_newKeyBuffer)
+                    LOCAL changed AS LOGIC
+                    IF !lNewRecord
+                        changed := SELF:__Compare(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, SELF:_keySize) != 0
+                        IF changed
+                            SELF:_TopStack := 0
+                        ENDIF
+                        num := SELF:_goRecord(SELF:_currentKeyBuffer, SELF:_keySize, recordNo)
+                        IF (SELF:_TopStack != 0 .AND. !SELF:_Conditional) .OR. num != 0
+                            IF changed .OR. !condFor
+                                SELF:_deleteKey()
+                            ENDIF
+                        ELSE
+                            IF !SELF:_Unique .AND. !SELF:_Conditional .AND. !SELF:_Partial
+                                SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_NOT_FOUND, GenCode.EG_DATATYPE,SELF:fileName)
+                            ENDIF
+                        ENDIF
+                    ENDIF
+                    IF (lNewRecord .OR. changed) .AND. condFor
+                        SELF:_midItem:KeyBytes := SELF:_newKeyBuffer
+                        SELF:_midItem:PageNo := 0
+                        SELF:_midItem:Recno := recordNo
+                        SELF:_TopStack := 0
+                        IF SELF:_Unique
+                            IF SELF:_locate(SELF:_midItem:KeyBytes, SELF:_keySize, SearchMode.Left, SELF:_firstPageOffset) == 0
+                                SELF:_addKey()
+                            ELSE
                                 SELF:_TopStack := 0
                             ENDIF
-                            num := SELF:_goRecord(SELF:_currentKeyBuffer, SELF:_keySize, recordNo)
-                            IF (SELF:_TopStack != 0 .AND. !SELF:_Conditional) .OR. num != 0
-                                IF changed .OR. !condFor
-                                    SELF:_deleteKey()
-                                ENDIF
-                            ELSE
-                                IF !SELF:_Unique .AND. !SELF:_Conditional .AND. !SELF:_Partial
-                                    SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_NOT_FOUND, GenCode.EG_DATATYPE,SELF:fileName)
-                                ENDIF
-                            ENDIF
+                        ELSE
+                            SELF:_locate(SELF:_midItem:KeyBytes, SELF:_keySize, SearchMode.Right, SELF:_firstPageOffset)
+                            SELF:_addKey()
                         ENDIF
-                        IF (lNewRecord .OR. changed) .AND. condFor
-                            SELF:_midItem:KeyBytes := SELF:_newKeyBuffer
-                            SELF:_midItem:PageNo := 0
-                            SELF:_midItem:Recno := recordNo
-                            SELF:_TopStack := 0
-                            IF SELF:_Unique
-                                IF SELF:_locate(SELF:_midItem:KeyBytes, SELF:_keySize, SearchMode.Left, SELF:_firstPageOffset) == 0
-                                    SELF:_addKey()
-                                ELSE
-                                    SELF:_TopStack := 0
-                                ENDIF
-                            ELSE
-                                SELF:_locate(SELF:_midItem:KeyBytes, SELF:_keySize, SearchMode.Right, SELF:_firstPageOffset)
-                                SELF:_addKey()
-                            ENDIF
-                            SELF:_TopStack := 0
-                            SELF:_Hot := TRUE
-                        ENDIF
-                        Array.Copy(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, SELF:_keySize + 1)
-                        SELF:_currentRecno := recordNo
-                        errorLevel := 0
+                        SELF:_TopStack := 0
+                        SELF:_Hot := TRUE
                     ENDIF
+                    Array.Copy(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, SELF:_keySize + 1)
+                    SELF:_currentRecno := recordNo
+                    errorLevel := 0
                 ENDIF
                 EXIT
             ENDDO 
             IF errorLevel <= 1
-                IF SELF:_Shared
+                IF SELF:Shared
                     SELF:_PageList:Flush(TRUE)
                     SELF:_indexVersion++
                     SELF:_PutHeader()

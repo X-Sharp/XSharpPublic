@@ -114,7 +114,7 @@ FUNCTION At2(cSearch AS STRING,c AS STRING) AS DWORD
 /// </summary>
 /// <param name="cSearch">The string to search for.</param>
 /// <param name="c">The string to search in.</param>
-/// <param name="dwOff">The position to begin the search with. This offset is ZERO based</param>
+/// <param name="dwOff">The position to begin the search with. <em>This offset is ZERO based</em></param>
 /// <returns>
 /// The position of the first occurrence of cSearch within cTarget behind the give position.  If cSearch is not found, At() returns 0.
 /// If cSearch is empty or c is empty, At3() returns 0.
@@ -124,7 +124,7 @@ FUNCTION At3(cSearch AS STRING,c AS STRING,dwOff AS DWORD) AS DWORD
 	// note dwOffset is ZERO based in VO
 	IF ( c != NULL .AND. cSearch != NULL .AND. dwOff <= c:Length )
 		IF c:Length != 0 .AND. cSearch:Length != 0
-			position := (DWORD) c:IndexOf(cSearch,(INT)dwOff) +1
+			position := (DWORD) c:IndexOf(cSearch,(INT)dwOff, StringComparison.Ordinal) +1
 		ENDIF
 	ENDIF
 	RETURN position
@@ -1010,11 +1010,11 @@ FUNCTION SClone(c AS STRING) AS STRING
 /// <param name="count">The number of spaces to return.</param>
 /// <returns>A string of spaces.</returns>
 FUNCTION Space(count AS DWORD) AS STRING
-	RETURN String{' ',(INT)count}
+	RETURN STRING{' ',(INT)count}
 
 /// <inheritdoc cref="M:XSharp.Core.Functions.Space(System.UInt32)" />
 FUNCTION Space(count AS INT) AS STRING
-	RETURN String{' ',count}
+	RETURN STRING{' ',count}
 
 /// <summary>
 /// Return the length of a strongly typed string.

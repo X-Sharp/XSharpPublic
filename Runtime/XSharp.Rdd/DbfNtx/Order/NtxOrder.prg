@@ -30,6 +30,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE CONST MAX_TRIES         := 50 AS WORD
         PRIVATE CONST LOCKOFFSET_OLD    := 1000000000 AS LONG
         PRIVATE CONST LOCKOFFSET_NEW    := -1 AS LONG
+        INTERNAL CONST NTX_EXTENSION     := ".NTX" AS STRING
         #endregion
         #region fields
         INTERNAL _hFile AS IntPtr
@@ -70,6 +71,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL _maxLockTries AS INT
         INTERNAL _orderName AS STRING
         INTERNAL _fileName AS STRING
+        INTERNAL _fullPath AS STRING
         INTERNAL _Ansi AS LOGIC
         INTERNAL _hasTopScope AS LOGIC
         INTERNAL _hasBottomScope AS LOGIC
@@ -99,7 +101,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL PROPERTY OrderName AS STRING GET _orderName
         
         INTERNAL PROPERTY _Recno AS LONG GET _oRdd:Recno
-            
+
+        INTERNAL PROPERTY FullPath AS STRING GET _fullPath
+
         INTERNAL PROPERTY FileName AS STRING
             GET
                 RETURN SELF:_fileName
@@ -109,22 +113,25 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 IF  String.IsNullOrEmpty( SELF:_FileName )
                     // When empty then take same name as DBF but with NTX extension
                     SELF:_FileName := SELF:_oRDD:_FileName
-                    SELF:_FileName := Path.ChangeExtension(SELF:_FileName, ".ntx")
+                    // force extenstion here, so change DBF to NTX
+                    SELF:_FileName := Path.ChangeExtension(SELF:_FileName, NTX_EXTENSION)
+                ENDIF
+                SELF:_fullPath := SELF:_FileName
+                // Check that we have a FullPath
+                IF Path.GetDirectoryName(SELF:_fullPath):Length == 0
+                    // Get the path from the RDD's open info
+                    VAR cPath := Path.GetDirectoryName(SELF:_oRDD:_OpenInfo:FileName)
+                    IF String.IsNullOrEmpty(cPath)
+                        cPath := (STRING) SELF:_oRDD:Info(DBI_FULLPATH,NULL)
+                        cPath := Path.GetDirectoryName(cPath)
+                    ENDIF
+                    SELF:_fullPath := Path.Combine(cPath, SELF:_fullPath)
+                ELSE
+                    SELF:_fullPath := SELF:_fileName
                 ENDIF
                 // and be sure to have an extension
-                VAR ext := Path.GetExtension(SELF:_FileName)
-                IF String.IsNullOrEmpty(ext)
-                    SELF:_FileName := Path.ChangeExtension(SELF:_FileName, ".ntx")
-                ENDIF
-                // Check that we have a FullPath
-                IF Path.GetDirectoryName(SELF:_FileName):Length == 0
-                    // Check that we have a FullPath
-                    IF Path.GetDirectoryName(SELF:_oRDD:_FileName):Length == 0
-                        //TODO: Change that code to take care of DefaultPath, ...
-                        SELF:_FileName := AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar + SELF:_FileName
-                    ELSE
-                        SELF:_FileName := Path.GetDirectoryName(SELF:_oRDD:_FileName) + Path.DirectorySeparatorChar + SELF:_FileName
-                    ENDIF
+                IF String.IsNullOrEmpty(Path.GetExtension(_fullPath))
+                    SELF:_fullPath := Path.ChangeExtension(_fullPath, NTX_EXTENSION)
                 ENDIF
             END SET
         END PROPERTY
@@ -139,7 +146,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_currentKeyBuffer := BYTE[]{ MAX_KEY_LEN+1 }
             SELF:_newKeyBuffer  := BYTE[]{ MAX_KEY_LEN+1 }
             SELF:_fileName      := NULL
-            SELF:_hFile         := NULL
+            SELF:_hFile         := IntPtr.Zero
             SELF:_oRdd          := oRDD
             SELF:_Header        := NULL 
             SELF:_stack         := RddStack[]{ STACK_DEPTH }

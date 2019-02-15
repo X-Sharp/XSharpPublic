@@ -43,14 +43,14 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL oResult AS OBJECT
             SWITCH nOrdinal
             CASE DbInfo.DBI_MEMOHANDLE
-                IF ( SELF:_oDbtMemo != NULL )
+                IF ( SELF:_oDbtMemo != NULL .AND. SELF:_oDBtMemo:_Open)
                     oResult := SELF:_oDbtMemo:_hFile
                 ELSE
                     oResult := IntPtr.Zero
                 ENDIF
                     
             CASE DbInfo.DBI_MEMOEXT
-                IF ( SELF:_oDbtMemo != NULL )
+                IF ( SELF:_oDbtMemo != NULL .AND. SELF:_oDBtMemo:_Open)
                     oResult := System.IO.Path.GetExtension(SELF:_oDbtMemo:_FileName)
                 ELSE
                     oResult := DbtMemo.DefExt
@@ -92,6 +92,7 @@ BEGIN NAMESPACE XSharp.RDD
     INTERNAL CLASS DBTMemo INHERIT BaseMemo IMPLEMENTS IMemo
         INTERNAL _hFile	    AS IntPtr
         INTERNAL _FileName  AS STRING
+        INTERNAL _Open      AS LOGIC
         PROTECT _Shared     AS LOGIC
         PROTECT _ReadOnly   AS LOGIC
         PROTECT _oRDD       AS DBF
@@ -137,7 +138,8 @@ BEGIN NAMESPACE XSharp.RDD
             
         VIRTUAL PROTECTED METHOD _initContext() AS VOID
             SELF:_blockSize := DBT_DEFBLOCKSIZE
-            SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )            
+            SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )
+            SELF:_Open  := TRUE
             
             
             /// <inheritdoc />
@@ -337,6 +339,7 @@ BEGIN NAMESPACE XSharp.RDD
                     isOk := FALSE
                 END TRY
                 SELF:_hFile := F_ERROR
+                SELF:_Open  := FALSE
             ENDIF
             RETURN isOk
             

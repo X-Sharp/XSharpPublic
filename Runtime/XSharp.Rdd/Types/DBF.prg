@@ -350,6 +350,7 @@ BEGIN NAMESPACE XSharp.RDD
 					isOk := TRUE
 					IF ( SELF:_Locks:Count > 0 )
 						IF ( recordNbr == 0 )
+                            // Create a copy with ToArray() because _unlockRecord modifies the collection
 							FOREACH VAR nbr IN SELF:_Locks:ToArray()
 								isOk := isOk .AND. SELF:_unlockRecord( nbr )
 							NEXT
@@ -462,8 +463,9 @@ BEGIN NAMESPACE XSharp.RDD
 				//
 				SELF:GoCold()
 				IF ( SELF:_Locks:Count > 0 )
-					//
-					FOREACH VAR nbr IN SELF:_Locks
+					// create a copy of the collection by calling ToArray to avoid a runtime error
+                    // because the collection will be changed by the call to _unlockRecord()
+                    FOREACH VAR nbr IN SELF:_Locks:ToArray()
 						SELF:_unlockRecord( nbr )
 					NEXT
 					SELF:_Locks:Clear()
@@ -481,7 +483,7 @@ BEGIN NAMESPACE XSharp.RDD
 			LOCAL iOffset AS INT64
 			//
 			iOffset := SELF:_lockScheme:Offset
-			IF ( SELF:_lockScheme:Direction < 0 )
+			IF SELF:_lockScheme:Direction < 0 
 				iOffset -= (INT64)recordNbr
 			ELSEIF( SELF:_lockScheme:Direction == 2 )
 				iOffset += (INT64)( ( recordNbr - 1 ) * SELF:_RecordLength + SELF:_HeaderLength )
@@ -2353,7 +2355,7 @@ BEGIN NAMESPACE XSharp.RDD
 			END GET
 		END PROPERTY
 		
-		//	PROPERTY Shared		AS LOGIC GET
+		VIRTUAL PROPERTY Shared		AS LOGIC GET SELF:_Shared
 		/// <inheritdoc />
 		VIRTUAL PROPERTY SysName AS STRING GET TYPEOF(Dbf):ToString()
 		
@@ -2363,15 +2365,6 @@ BEGIN NAMESPACE XSharp.RDD
 		//	PROPERTY LastSubCode	AS LONG GET
 		//	PROPERTY LastError		AS Exception GET
 		
-		INTERNAL METHOD StringCompare( leftStr AS BYTE[], rightStr AS BYTE[], len AS LONG ) AS LONG
-            IF rightStr == NULL .OR. leftStr == NULL
-                RETURN 0
-            ENDIF
-			VAR strLHS := SELF:_Encoding:GetString( leftStr )
-			VAR strRHS := SELF:_Encoding:GetString( rightStr )
-	        // we do not call StringCompare. We already know that strLHS and strRHS have the same length
-            // and we want to always use the collation tables.
-    		RETURN RuntimeState.StringCompareCollation(strLHS, strRHS)
 			
 		/// <summary>DBF Header.</summary>
 		STRUCTURE DbfHeader
@@ -2740,71 +2733,68 @@ BEGIN NAMESPACE XSharp.RDD
 	
 		PRIVATE _sortInfo AS DBSORTINFO
 		PRIVATE _oRdd AS DBF
+        PRIVATE _dataX AS BYTE[]
+        PRIVATE _dataY AS BYTE[]
 		
 		INTERNAL CONSTRUCTOR( rdd AS DBF, info AS DBSORTINFO )
-			SELF:_oRdd := rdd
-			SELF:_sortInfo := info
+			SELF:_oRdd      := rdd
+			SELF:_sortInfo  := info
+            LOCAL max       := 0 AS INT
+            FOREACH VAR item IN info:Items
+                max := Math.Max(max, item:Length)
+            NEXT
+            SELF:_dataX := BYTE[]{ max}     
+            SELF:_dataY := BYTE[]{ max}
 			
 
         PUBLIC METHOD Compare(x AS OBJECT , y AS OBJECT ) AS LONG
             RETURN Compare( (SortRecord) x, (SortRecord) y)
 
 		PUBLIC METHOD Compare(recordX AS SortRecord , recordY AS SortRecord ) AS LONG
-			LOCAL dataBuffer AS BYTE[]
-			LOCAL dataBuffer2 AS BYTE[]
+			LOCAL dataBufferX AS BYTE[]
+			LOCAL dataBufferY AS BYTE[]
 			LOCAL diff AS LONG
-			LOCAL i AS LONG
-			LOCAL iLen AS LONG
-			LOCAL flags AS DbSortFlags
-			LOCAL start AS LONG
-			LOCAL dataX AS BYTE[]
-			LOCAL dataY AS BYTE[]
-			LOCAL longValue1 AS LONG
-			LOCAL longValue2 AS LONG
 			IF (recordX:Recno == recordY:Recno)
 				RETURN 0
 			ENDIF
 			//
-			dataBuffer := recordX:data
-			dataBuffer2 := recordY:data
+			dataBufferX := recordX:data
+			dataBufferY := recordY:data
 			diff := 0
-			i := 0
-			WHILE (diff == 0) .AND. (i < (LONG)SELF:_sortInfo:Items:Length)
-				start := SELF:_sortInfo:Items[i]:OffSet
-				iLen := SELF:_sortInfo:Items[i]:Length
-				flags := SELF:_sortInfo:Items[i]:Flags
+            FOREACH VAR item IN SELF:_sortInfo:Items
+				VAR start := item:OffSet
+				VAR iLen := item:Length
+				VAR flags := item:Flags
 				// Long Value ?
 				IF flags:HasFlag(DbSortFlags.Long)
-					longValue1 := BitConverter.ToInt32(dataBuffer, start)
-					longValue2 := BitConverter.ToInt32(dataBuffer2, start)
+					VAR longValue1 := BitConverter.ToInt32(dataBufferX, start)
+					VAR longValue2 := BitConverter.ToInt32(dataBufferY, start)
 					diff := longValue1 - longValue2
 				ELSE
 					// String Value ?
 					IF flags:HasFlag(DbSortFlags.Ascii)
 						// String ASCII : Use Runtime comparer
-						dataX := BYTE[]{ iLen }
-						dataY := BYTE[]{ iLen }
-						Array.Copy(dataBuffer, start, dataX, 0, iLen)
-						Array.Copy(dataBuffer2, start, dataY, 0, iLen)
-						diff := SELF:_oRDD:StringCompare(dataX, dataY, iLen)
+						Array.Copy(dataBufferX, start, _dataX, 0, iLen)
+						Array.Copy(dataBufferY, start, _dataY, 0, iLen)
+						diff := XSharp.RuntimeState.StringCompare(_dataX, _dataY, iLen)
 						//
                     ELSE
-						i := 0
-						WHILE i < iLen
-							diff := dataBuffer[i + start] - dataBuffer2[i + start]
-							IF (diff != 0)
+						FOR VAR i := 0 TO iLen
+							diff := dataBufferX[i + start] - dataBufferY[i + start]
+							IF diff != 0
 								EXIT
 							ENDIF
-							i++
-						ENDDO
+						NEXT
 					ENDIF
 				ENDIF
-				IF flags:HasFlag(DbSortFlags.Descending)
-					diff *= -1
-				ENDIF
-				i++
-			END WHILE
-			IF (diff == 0)
+                IF diff != 0
+                    IF flags:HasFlag(DbSortFlags.Descending)
+					    diff *= -1
+				    ENDIF
+                    EXIT
+                ENDIF
+			NEXT
+			IF diff == 0
 				diff := recordX:Recno - recordY:Recno
 			ENDIF
 			RETURN diff

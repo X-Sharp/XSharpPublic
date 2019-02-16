@@ -1124,13 +1124,14 @@ METHOD ClearScope( )
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
-
 	cbStoredForBlock := NIL
 	cbStoredWhileBlock := NIL
 	lStoredRestOfFile := FALSE
 	lStoredAllRecords := FALSE
 	nStoredNextCount := 0
 	uStoredScope := NIL
+    // RvdH 2019-02-16 Fixed. This should be set to make sure that the scope is really cleared
+    lActiveScope := FALSE
 
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__)
@@ -1242,7 +1243,7 @@ METHOD Commit( )
 
 METHOD ConstructUniqueAlias( cFileName ) 
     LOCAL sResult AS SYMBOL
-	Default( @cFileName, "" )
+	DEFAULT( @cFileName, "" )
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF

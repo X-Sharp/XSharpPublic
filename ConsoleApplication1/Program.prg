@@ -2,10 +2,12 @@
 // Start.prg
 //
 #include "dbcmds.vh"
+USING System.Reflection
 FUNCTION Start() AS VOID
     LOCAL cb AS CODEBLOCK
     TRY
-        TestCdx()
+        TestChris()
+        //TestCdx()
         //DumpNtx()
         //Start1a()
         //Start1b()
@@ -25,7 +27,56 @@ FUNCTION Start() AS VOID
     WAIT
     RETURN
 
+
+FUNCTION TestChris() AS VOID
+LOCAL aDbf AS ARRAY
+    LOCAL cDBF AS STRING
+
+    cDBF := "Foo"
+    aDBF := {{ "AGE" , "N" , 2 , 0 }}
+    ? DBCreate( cDBF , aDbf)
+    ? DBUseArea(,"DBFNTX",cDBF,,FALSE)
+    DBAppend()
+    DBAppend()
+    DBAppend()
+
+    DBCloseArea()
+   
+    //  ----------------
+    ? DBUseArea( TRUE ,"DBFNTX",cDBF,"AREA1" ,TRUE )  // open shared
+   
+    ? "Records" , RecCount() , "must be 3"
+    ?
+    DBGoTop()
+    DBRLock ( RecNo() ) // lock first record
+    ? "AREA1 locklist len is" , ALen ( DBRLockList() ) , "must be 1"
+    DBGoBottom()
+    DBRLock ( RecNo() )  // lock last record
+    ? "AREA1 locklist len is" , ALen ( DBRLockList() ) , "must be 2"
+    ?
+//     try a flock() - it throws a invalidOperationException
+//     but only if the current length of the locklist is > 0
+    IF FLock()
+                   ? "Flock() success"
+    ELSE
+                   ? "Flock() failed"
+    ENDIF
+    // No matter if a Flock() attempt returns true or false (if another record is locked in another instance),
+    // afterwards the locklist is empty in VO. Not sure if this is as it should be.
+    ?  "AREA1 locklist len after Flock() is" , ALen ( DBRLockList() ) , "must be 0"
+    ?
+    ? DBCloseArea()
+
+    WAIT
+
+RETURN
+
+FUNCTION Progress() AS LOGIC
+? Recno()
+RETURN TRUE
 FUNCTION TestCdx() AS VOID
+    LOCAL f AS FLOAT
+    f := Seconds()
     ? VoDbUseArea(TRUE, "DBFCDX", "c:\test\TEST10K.DBF", "TEST",TRUE,TRUE)
    	? DbSetIndex("c:\test\TEST10Ka.Cdx")
     ? Used()
@@ -36,11 +87,12 @@ FUNCTION TestCdx() AS VOID
     ? DbOrderInfo(DBOI_FULLPATH,,1)
     ? DbOrderInfo(DBOI_FULLPATH,,8)
     ? DbOrderInfo(DBOI_INDEXEXT)
-    ? DbOrderInfo(DBOI_INDEXEXT,,8)
-    FOR VAR nI := 1 TO DbOrderInfo(DBOI_ORDERCOUNT)
+    ? DbOrderInfo(DBOI_NUMBER,"TEST10K","Age")
+    FOR LOCAL IMPLIED nI := 1 TO DbOrderInfo(DBOI_ORDERCOUNT)
         ? nI, DbOrderInfo(DBOI_EXPRESSION,,nI), DbOrderInfo(DBOI_KEYSIZE,,nI), ;
             DbOrderInfo(DBOI_CONDITION,,nI), DbOrderInfo(DBOI_ISDESC,,nI), DbOrderInfo(DBOI_NUMBER,,nI) ,DbOrderInfo(DBOI_UNIQUE ,,nI),DbOrderInfo(DBOI_KEYTYPE ,,nI)
     NEXT
+    ? Seconds() -f
     WAIT
     RETURN
     

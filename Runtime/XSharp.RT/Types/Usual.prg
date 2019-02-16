@@ -2260,6 +2260,10 @@ BEGIN NAMESPACE XSharp
         #region IIndexedProperties
         PROPERTY SELF[index AS INT   ] AS USUAL
             GET
+                IF SELF:IsArray
+                    VAR a := SELF:_arrayValue
+                    RETURN a:__GetElement(index)
+                ENDIF
                 VAR indexer := _refData ASTYPE IIndexedProperties
                 IF indexer == NULL
                     THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
@@ -2267,6 +2271,11 @@ BEGIN NAMESPACE XSharp
                 RETURN indexer[index]                    
             END GET
             SET
+                IF SELF:IsArray
+                    VAR a := SELF:_arrayValue 
+                    a:__SetElement(index,VALUE)
+                    RETURN
+                ENDIF
                 VAR indexer := _refData ASTYPE IIndexedProperties
                 IF indexer == NULL
                     THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}

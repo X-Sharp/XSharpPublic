@@ -365,7 +365,8 @@ STRUCTURE DbSortItem
 	PUBLIC OffSet	AS LONG
 	/// <summary>The length of the field in the workarea buffer.</summary>
 	PUBLIC Length	AS LONG
-	/// <summary>One or more constants that function as sort optimization and control flags.  They are passed to your RDD Sort() routine from the high-level wrapper function for the DBSort() function.</summary>
+	/// <summary>One or more constants that function as sort optimization and control flags.
+    /// They are passed to your RDD Sort() routine from the high-level wrapper function for the DBSort() function.</summary>
 	PUBLIC Flags	AS  DbSortFlags  
 
 END STRUCTURE

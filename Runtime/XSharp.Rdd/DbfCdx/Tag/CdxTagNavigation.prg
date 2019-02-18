@@ -191,19 +191,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
             
         PRIVATE METHOD _getNextKey(thisPage AS LOGIC , moveDirection AS SkipDirection ) AS LONG
-            /*
-            LOCAL CdxPage AS CdxPage
+            LOCAL oPage AS CdxTreePage
             LOCAL node AS CdxPageNode
             // No page loaded ?
             IF SELF:_TopStack == 0
                 RETURN 0
             ENDIF
-            CdxPage := SELF:_PageList:Read(SELF:_stack[SELF:_TopStack]:Page)
-            node := CdxPage[SELF:_stack[SELF:_TopStack]:Pos]
+            
+            oPage := SELF:_Bag:GetPage(SELF:_stack[SELF:_TopStack]:Page, SELF:KeyLength)
+            node    := oPage[SELF:_stack[SELF:_TopStack]:Pos]
             IF thisPage
                 IF moveDirection == SkipDirection.Backward
                     SELF:_stack[SELF:_TopStack]:Pos--
-                    node:Fill(SELF:_stack[SELF:_TopStack]:Pos, CdxPage)
+                    node:Fill(SELF:_stack[SELF:_TopStack]:Pos, oPage)
                 ENDIF
                 IF SELF:_currentRecno != node:Recno
                     SELF:_saveCurrentRecord(node)
@@ -213,15 +213,28 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
             IF moveDirection == SkipDirection.Forward
                 SELF:_stack[SELF:_TopStack]:Pos++
-                node:Fill(SELF:_stack[SELF:_TopStack]:Pos, CdxPage)
-                IF node:PageNo != 0
+                node:Fill(SELF:_stack[SELF:_TopStack]:Pos, oPage)
+                IF node:Pos < oPage:NumKeys .AND. node:PageNo != 0
                     RETURN SELF:_locate(NULL, 0, SearchMode.Top, node:PageNo)
                 ENDIF
+                // Once we are at the bottom level then we simply skip forward using the Right Pointers
                 IF SELF:_stack[SELF:_TopStack]:Pos == SELF:_stack[SELF:_TopStack]:Count
-                    DO WHILE SELF:_TopStack != 0 .AND. SELF:_stack[SELF:_TopStack]:Pos == SELF:_stack[SELF:_TopStack]:Count
-                        SELF:PopPage()
-                    ENDDO
+                    IF oPage:RightPtr != 0 .AND. oPage:RightPtr != -1
+                        LOCAL nPage AS LONG
+                        nPage := oPage:RightPtr
+                        oPage := SELF:_Bag:GetPage(nPage, SELF:KeyLength)
+                        SELF:_stack[SELF:_TopStack]:Page  := nPage
+                        SELF:_stack[SELF:_TopStack]:Pos   := 0
+                        SELF:_stack[SELF:_TopStack]:Count := oPage:NumKeys
+                    ELSE
+                        // At the end of the leaf list
+                        SELF:ClearStack()
+                        RETURN 0
+                    ENDIF
                     RETURN SELF:_getNextKey(TRUE, SkipDirection.Forward)
+                ENDIF
+                IF node:Pos >= oPage:NumKeys
+                    NOP
                 ENDIF
                 IF SELF:_currentRecno != node:Recno
                     SELF:_saveCurrentRecord(node)
@@ -238,13 +251,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN SELF:_getNextKey(TRUE, SkipDirection.Backward)
             ENDIF
             SELF:_stack[SELF:_TopStack]:Pos--
-            node:Fill(SELF:_stack[SELF:_TopStack]:Pos, CdxPage)
+            node:Fill(SELF:_stack[SELF:_TopStack]:Pos, oPage)
             IF SELF:_currentRecno != node:Recno
                 SELF:_saveCurrentRecord(node)
             ENDIF
             RETURN node:Recno
-            */
-            RETURN 0
             
             
         PRIVATE METHOD _findItemPos(record REF LONG , nodePage AS LOGIC ) AS LOGIC

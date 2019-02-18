@@ -186,7 +186,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _Hot := TRUE
             RETURN TRUE
 
-        METHOD GetPage(nPage AS Int32, nKeyLen := 0 AS Int32) AS CdxPage
+        METHOD GetPage(nPage AS Int32, nKeyLen AS Int32) AS CdxPage
            RETURN SELF:_PageList:GetPage(nPage, nKeyLen)
   
 

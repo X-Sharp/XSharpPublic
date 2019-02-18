@@ -86,6 +86,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY IsConditional  AS LOGIC GET Options:HasFlag(CdxOptions.HasFor)
         INTERNAL PROPERTY IsHot          AS LOGIC GET _Hot
         PROPERTY KeyType        	AS INT GET SELF:_KeyExprType
+        PROPERTY KeyLength          AS INT GET SELF:_keySize
         PROPERTY Partial        	AS LOGIC GET SELF:Custom
         PROPERTY Conditional        AS LOGIC GET !String.IsNullOrEmpty(_ForExpr)
         PROPERTY Custom         	AS LOGIC GET Options:HasFlag(CdxOptions.IsCustom)

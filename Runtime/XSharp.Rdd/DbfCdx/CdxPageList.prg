@@ -15,21 +15,26 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
     /// The pageList class.
     /// </summary>
     INTERNAL SEALED CLASS CdxPageList
-        PRIVATE _Pages AS List<CdxPage>
+        PRIVATE _Pages AS Dictionary<LONG, CdxPage>
         PRIVATE _Bag   AS CdxOrderBag
         PRIVATE _hDump AS IntPtr
         INTERNAL CONST CDXPAGE_SIZE        := 512 AS WORD
         
         PRIVATE METHOD _FindPage( offset AS LONG ) AS CdxPage
             LOCAL page AS Cdxpage
-            page := SELF:_Pages:Find( { p => p:PageNo == offset } )
+            SELF:_Pages:TryGetValue(offSet, OUT page)
             RETURN page
 
-       INTERNAL  METHOD GetPage(nPage AS Int32, nKeyLen := 0 AS Int32) AS CdxPage
+       INTERNAL METHOD GetPage(nPage AS Int32, nKeyLen := 0 AS Int32) AS CdxPage
          	LOCAL isOk AS LOGIC
             LOCAL buffer AS BYTE[]
+            LOCAL oResult AS CdxPage
+            oResult := _FindPage(nPage)
+            IF oResult != NULL_OBJECT
+                RETURN oResult
+            ENDIF
             buffer  := SELF:_Bag:AllocBuffer()
-            isOk    := self:_Bag:Read(nPage, buffer)
+            isOk    := SELF:_Bag:Read(nPage, buffer)
 			//
             // Inspect first 2 byte and determine the page
             LOCAL nType AS SHORT
@@ -37,14 +42,16 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             SWITCH nType
             CASE 0  // Branche
             CASE 1  // Root
-                 RETURN CdxBranchePage{SELF:_Bag, nPage, buffer,nKeyLen}
+                 oResult :=  CdxBranchePage{SELF:_Bag, nPage, buffer,nKeyLen}
             CASE 2  // Leaf
-                RETURN CdxLeafPage{SELF:_Bag, nPage, buffer, nKeyLen}
+                oResult := CdxLeafPage{SELF:_Bag, nPage, buffer, nKeyLen}
             CASE 3  // List of Tags
-                RETURN CdxLeafPage{SELF:_Bag, nPage, buffer, nKeyLen}
+                oResult := CdxLeafPage{SELF:_Bag, nPage, buffer, nKeyLen}
             OTHERWISE 
-               RETURN CdxGeneralPage{SELF:_Bag, nPage, buffer} 
+               oResult := CdxGeneralPage{SELF:_Bag, nPage, buffer} 
             END SWITCH
+            SELF:_Pages:Add(nPage, oResult)
+            RETURN oResult
             
 
         INTERNAL PROPERTY DumpHandle AS IntPtr GET _hDump SET _hDump := VALUE
@@ -57,7 +64,7 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             RETURN
             
         INTERNAL CONSTRUCTOR( bag AS CdxOrderBag )
-            SELF:_Pages := List<CdxPage>{}
+            SELF:_Pages := Dictionary<LONG, CdxPage>{}
             SELF:_Bag   := bag
             
             
@@ -75,7 +82,7 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             page := SELF:_FindPage(pageNo)
             IF page == NULL
                 page := SELF:GetPage(pageNo, 0)
-                SELF:_Pages:Add(page)
+                SELF:_Pages:Add(pageNo, page)
             ENDIF
             SELF:_dumpPage(page)
             page:IsHot := TRUE
@@ -88,7 +95,7 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             page := SELF:_FindPage(pageNo)
             IF page == NULL
                 page := SELF:GetPage(pageNo, 0)
-                SELF:_Pages:Add(page)
+                SELF:_Pages:Add(pageNo, page)
             ENDIF
             SELF:_dumpPage(page)
             RETURN page

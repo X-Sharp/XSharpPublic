@@ -43,6 +43,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS Int32)
             SUPER(bag, nPage, buffer)
             _KeyLen := nKeyLen
+            //? "Branch Page", SELF:PageNo:ToString("X"), SELF:NumKeys, "Startswith ", GetRecno(0), _bag:_oRDD:_Encoding:GetString(GetKey(0),0,_keyLen)
 
         #region ICdxKeyValue
         PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
@@ -55,7 +56,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL nStart AS INT
             Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_KEY_OFFSET + nPos * (_keyLen + 8)
-            RETURN _GetLong(nStart+_KeyLen)
+            RETURN _GetLongLE(nStart+_KeyLen)
             
         #endregion
         
@@ -72,12 +73,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
           GET _GetWord(CDXBRANCH_OFFSET_NUMKEYS) ;
           SET _SetWord(CDXBRANCH_OFFSET_NUMKEYS, VALUE), isHot := TRUE
 
-        PROPERTY LeftPtr AS Int32 ;
+        INTERNAL PROPERTY LeftPtr AS Int32 ;
           GET _GetLong(CDXBRANCH_OFFSET_LEFTPTR) ;
           SET _SetLong(CDXBRANCH_OFFSET_LEFTPTR, VALUE), isHot := TRUE
 
-        PROPERTY RightPtr AS Int32 ;
-          GET _GetLong(CDXBRANCH_OFFSET_RIGHTPTR) ;
+        INTERNAL PROPERTY RightPtr AS Int32 ;
+          GET _GetLong(CDXBRANCH_OFFSET_RIGHTPTR) ; 
           SET _SetLong(CDXBRANCH_OFFSET_RIGHTPTR, VALUE), isHot := TRUE
 #endregion                
 #region Constants

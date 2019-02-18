@@ -57,24 +57,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		PROTECTED _keyLen    AS Int32
         PROTECTED _keys      AS BYTE[]
         PROTECTED _recnos    AS Int32[]
-        PROTECTED _dupMask   AS BYTE
-        PROTECTED _dupBits   AS BYTE
-        PROTECTED _trailMask AS BYTE
-        PROTECTED _trailBits AS BYTE
-        PROTECTED _recnoMask AS Int32
-        PROTECTED _recnoBits AS Int32
         //PROTECTED _bytesNeeded AS BYTE
 		
 	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS Int32)
             SUPER(bag, nPage, buffer)
             _keyLen     := nKeyLen
             _keys       := NULL
-            _dupMask    := SELF:DuplicateMask
-            _dupBits    := SELF:DuplicateBits
-            _trailMask  := SELF:TrailingMask
-            _trailBits  := SELF:TrailingBits
-            _recnoMask  := SELF:RecnoMask
-            _recnoBits  := SELF:RecordBits
+            //SELF:_ExpandKeys()
             /*
 
             LOCAL keyBits := 0 AS INT
@@ -86,6 +75,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             */
             RETURN
 
+        PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
+			VAR Ok := SUPER:Read()
+            IF Ok
+                SELF:_ExpandKeys()
+            ENDIF
+            RETURN ok
 
 #region ICdxKeyValue
         PUBLIC METHOD GetRecno(nPos AS Int32) AS Int32
@@ -93,9 +88,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF _recnos == NULL
                 SELF:_ExpandKeys()
             ENDIF
+           
             RETURN _recnos[nPos ]
 
         PUBLIC METHOD GetChildPage(nPos AS Int32) AS Int32
+            IF _recnos == NULL
+                SELF:_ExpandKeys()
+            ENDIF
             RETURN 0
 
         PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
@@ -118,6 +117,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL nStart    AS Int32
             LOCAL nStep     AS Int32
             LOCAL nLast     AS Int32
+            VAR dupMask    := SELF:DuplicateMask
+            VAR dupBits    := SELF:DuplicateBits
+            VAR trailMask  := SELF:TrailingMask
+            VAR trailBits  := SELF:TrailingBits
+            VAR recnoMask  := SELF:RecnoMask
+            VAR recnoBits  := SELF:RecordBits
             
             // First key starts at end of page
             nStart := CDXPAGE_SIZE
@@ -130,10 +135,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             FOR VAR nI := 0 TO nLast
                 LOCAL iTemp AS Int32
                 nRecno      := _GetLong(nOffSet) 
-                _recnos[nI] := (INT) _AND( nRecno , SELF:_recnoMask)
-                iTemp   := nRecno >> SELF:_recnoBits 
-                nDup    := IIF(nI ==0, 0,  _AND(iTemp , SELF:_dupMask))
-                nTrail  := _AND((iTemp >> SELF:_dupBits) , SELF:_trailMask)
+                _recnos[nI] := (INT) _AND( nRecno , recnoMask)
+                iTemp   := nRecno >> recnoBits 
+                nDup    := IIF(nI ==0, 0,  _AND(iTemp , dupMask))
+                nTrail  := _AND((iTemp >> dupBits) , trailMask)
                 nKey    := _KeyLen - nTrail - nDup
                 // Copy to aBytes from pos nDup
                 MemCopy(Buffer, nStart - nKey, aBytes, nDup, nKey)
@@ -141,6 +146,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 MemCopy(aBytes, 0, _keys, nI * _KeyLen, nKey+nDup)
                 nOffSet      += nStep
             NEXT
+            //? "Leaf Page", SELF:PageNo:ToString("X"), SELF:NumKeys,"Startswith", _bag:_oRDD:_Encoding:GetString(GetKey(0),0,_keyLen)
+            //? "Leaf Page", SELF:PageNo:ToString("X"), SELF:NumKeys,"Endswith", _bag:_oRDD:_Encoding:GetString(GetKey(SELF:NumKeys-1),0,_keyLen)
             RETURN TRUE
            
         
@@ -150,13 +157,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 			GET _GetWord(CDXBLKOFFSET_NUMKEYS);
 			SET _SetWord(CDXBLKOFFSET_NUMKEYS, VALUE), isHot := TRUE
 
-		PROTECTED INTERNAL PROPERTY LeftPtr		AS DWORD			;
-			GET _GetDWord(CDXBLKOFFSET_LEFTPTR);
-			SET _SetDWord(CDXBLKOFFSET_LEFTPTR, VALUE), isHot := TRUE
+		INTERNAL PROPERTY LeftPtr		AS Int32			;
+			GET _GetLong(CDXBLKOFFSET_LEFTPTR);
+			SET _SetLong(CDXBLKOFFSET_LEFTPTR, VALUE), isHot := TRUE
 
-		PROTECTED INTERNAL PROPERTY RightPtr		AS DWORD			;
-			GET _GetDWord(CDXBLKOFFSET_RIGHTPTR);
-			SET _SetDWord(CDXBLKOFFSET_RIGHTPTR, VALUE), isHot := TRUE
+		INTERNAL PROPERTY RightPtr		AS Int32			;
+			GET _GetLong(CDXBLKOFFSET_RIGHTPTR);
+			SET _SetLong(CDXBLKOFFSET_RIGHTPTR, VALUE), isHot := TRUE
 			
 		PROTECTED INTERNAL PROPERTY Freespace		AS WORD			;
 			GET _GetWord(CDXBLKOFFSET_FREESPACE);

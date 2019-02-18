@@ -67,8 +67,7 @@ BEGIN NAMESPACE XSharp.RDD
             OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD , info AS DBORDERINFO ) AS OBJECT
                 LOCAL result AS LONG
                 LOCAL workOrder AS CdxTag
-                LOCAL oldvalue AS OBJECT
-                LOCAL isOk AS LOGIC
+                LOCAL isOk := FALSE AS LOGIC
                 
                 result := 0
                 workOrder := SELF:_indexList:FindOrder(info)
@@ -220,7 +219,7 @@ BEGIN NAMESPACE XSharp.RDD
                         workOrder:_bottomScope := NULL
                 ENDIF
             CASE DBOI_USER + 42
-                    // Dump Ntx to Txt file
+                    // Dump Cdx to Txt file
                     IF workOrder != NULL
                         workOrder:_dump()
                     ENDIF

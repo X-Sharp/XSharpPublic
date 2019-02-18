@@ -56,7 +56,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	INTERNAL CLASS CdxLeafPage INHERIT CdxTreePage IMPLEMENTS ICdxKeyValue
 		PROTECTED _keyLen    AS Int32
         PROTECTED _keys      AS BYTE[]
-        PROTECTED _recnos    AS Int32[]
         //PROTECTED _bytesNeeded AS BYTE
 		
 	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS Int32)
@@ -77,24 +76,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
 			VAR Ok := SUPER:Read()
-            IF Ok
-                SELF:_ExpandKeys()
-            ENDIF
             RETURN ok
 
 #region ICdxKeyValue
         PUBLIC METHOD GetRecno(nPos AS Int32) AS Int32
+            LOCAL nOffSet   AS Int32
+            LOCAL nRecno    AS Int32
             Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
-            IF _recnos == NULL
-                SELF:_ExpandKeys()
-            ENDIF
-           
-            RETURN _recnos[nPos ]
+            nOffSet     := CDXBLKOFFSET_STARTOFDATA + nPos * SELF:DataBytes
+            nRecno      := _GetLong(nOffSet) 
+            nRecno      := _AND( nRecno , SELF:RecnoMask)
+            RETURN nRecno
 
         PUBLIC METHOD GetChildPage(nPos AS Int32) AS Int32
-            IF _recnos == NULL
-                SELF:_ExpandKeys()
-            ENDIF
             RETURN 0
 
         PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
@@ -120,25 +114,25 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR dupMask    := SELF:DuplicateMask
             VAR dupBits    := SELF:DuplicateBits
             VAR trailMask  := SELF:TrailingMask
-            VAR trailBits  := SELF:TrailingBits
-            VAR recnoMask  := SELF:RecnoMask
             VAR recnoBits  := SELF:RecordBits
             
             // First key starts at end of page
             nStart := CDXPAGE_SIZE
             _keys    := BYTE[]{SELF:NumKeys * _KeyLen}
-            MemSet(_keys, 0, _keys:Length, 32)
-            _recnos  := Int32[]{SELF:NumKeys}
+            IF SELF:Tag != NULL .AND. SELF:Tag:KeyType != __UsualType.String
+                MemSet(_keys, 0, _keys:Length, 0)
+            ELSE
+                MemSet(_keys, 0, _keys:Length, 32)
+            ENDIF
             nOffSet := CDXBLKOFFSET_STARTOFDATA
             nStep := SELF:DataBytes
             nLast := SELF:NumKeys-1
             FOR VAR nI := 0 TO nLast
                 LOCAL iTemp AS Int32
-                nRecno      := _GetLong(nOffSet) 
-                _recnos[nI] := (INT) _AND( nRecno , recnoMask)
+                nRecno  := _GetLong(nOffSet) 
                 iTemp   := nRecno >> recnoBits 
                 nDup    := IIF(nI ==0, 0,  _AND(iTemp , dupMask))
-                nTrail  := _AND((iTemp >> dupBits) , trailMask)
+                nTrail  := (BYTE) _AND((iTemp >> dupBits) , trailMask)
                 nKey    := _KeyLen - nTrail - nDup
                 // Copy to aBytes from pos nDup
                 MemCopy(Buffer, nStart - nKey, aBytes, nDup, nKey)
@@ -216,13 +210,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL Sb AS stringBuilder
             sb := stringBuilder{}
             VAR item := CdxPageNode{_KeyLen}
-            sb:AppendLine(String.Format("Leaf Page {0:X}, # of keys: {1}", SELF:PageNo, SELF:NumKeys))
-            sb:AppendLine(String.Format("Left page reference {0:X}", SELF:LeftPtr))
+            sb:AppendLine("--------------------------")
+            sb:AppendLine(String.Format("{0} Page {1:X6}, # of keys: {2}", SELF:NodeAttribute, SELF:PageNo, SELF:NumKeys))
+            sb:AppendLine(String.Format("Left page reference {0:X6}", SELF:LeftPtr))
             FOR VAR i := 0 TO SELF:NumKeys-1
                 item:Fill(i, SELF)
-                sb:AppendLine(String.Format("Item {0,2}, Record {1,4} : {2} ", i,  item:Recno, item:KeyText))
+                sb:AppendLine(String.Format("Item {0,2}, Record {1,5} : {2} ", i,  item:Recno, item:KeyText))
             NEXT
-            sb:AppendLine(String.Format("Right page reference {0:X}", SELF:RightPtr))
+            sb:AppendLine(String.Format("Right page reference {0:X6}", SELF:RightPtr))
             RETURN sb:ToString()
            
 			

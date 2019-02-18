@@ -127,11 +127,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL buffer AS BYTE[]
             buffer := BYTE[]{CDXPAGE_SIZE}
             _root := CdxFileHeader{SELF, buffer}
+            SELF:SetPage(0, _root)
             IF _root:Read()
                 LOCAL nTagList AS Int32
                 nTagList := SELF:_root:TagList
                 buffer := BYTE[]{CDXPAGE_SIZE}
                 _tagList := CdxTagList{SELF,  nTagList, buffer, _root:KeyLength}
+                SELF:SetPage(nTagList, _tagList)
                 _tagList:Read()
                 _tags := _tagList:Tags
                 // Compile expressions
@@ -186,9 +188,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _Hot := TRUE
             RETURN TRUE
 
-        METHOD GetPage(nPage AS Int32, nKeyLen AS Int32) AS CdxPage
-           RETURN SELF:_PageList:GetPage(nPage, nKeyLen)
+        METHOD GetPage(nPage AS Int32, nKeyLen AS Int32,tag AS CdxTag) AS CdxPage
+           RETURN SELF:_PageList:GetPage(nPage, nKeyLen,tag)
   
+         METHOD SetPage(nPage AS Int32, page AS CdxPage) AS VOID
+            SELF:_PageList:SetPage(nPage, page)
 
         #region properties
 
@@ -226,10 +230,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _sharedLocks    := 0 AS LONG
         PRIVATE _exclusiveLocks := 0 AS LONG
         PRIVATE _useFoxLock     := FALSE AS LOGIC
-        PRIVATE _sLockGate      := 0 AS LONG
-        PRIVATE _sLockOffSet    := 0 AS DWORD
+        //PRIVATE _sLockGate      := 0 AS LONG
+        //PRIVATE _sLockOffSet    := 0 AS DWORD
         PRIVATE _xLockedInOne   := FALSE AS LOGIC
-        INTERNAL _LockOffSet    AS LONG
+        INTERNAL _LockOffSet    := 0 AS LONG
 
         INTERNAL METHOD SLock() AS LOGIC
             IF !SELF:Shared

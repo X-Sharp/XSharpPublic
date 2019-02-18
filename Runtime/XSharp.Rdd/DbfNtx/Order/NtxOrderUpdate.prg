@@ -67,7 +67,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
 
                 IF SELF:getKeyValue(SELF:_SourceIndex, SELF:_newKeyBuffer)
-                    LOCAL changed AS LOGIC
+                    LOCAL changed := FALSE AS LOGIC
                     IF !lNewRecord
                         changed := SELF:__Compare(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, SELF:_keySize) != 0
                         IF changed

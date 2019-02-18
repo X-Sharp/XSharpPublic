@@ -38,11 +38,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
           // BYTE child page [4]
     */
 	INTERNAL CLASS CdxBranchePage INHERIT CdxTreePage IMPLEMENTS ICdxKeyValue
-		PROTECTED _keyLen AS Int32
-        PROPERTY KeyLength AS Int32 GET _keyLen
+        PROTECTED _keyLen    AS Int32
         INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS Int32)
             SUPER(bag, nPage, buffer)
-            _KeyLen := nKeyLen
+            SELF:_keyLen := nKeyLen
             //? "Branch Page", SELF:PageNo:ToString("X"), SELF:NumKeys, "Startswith ", GetRecno(0), _bag:_oRDD:_Encoding:GetString(GetKey(0),0,_keyLen)
 
         #region ICdxKeyValue
@@ -50,13 +49,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL nStart AS INT
             Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_KEY_OFFSET + nPos * (_keyLen + 8)
-            RETURN _GetBytes(SELF:Buffer, nStart, _KeyLen)
+            RETURN _GetBytes(SELF:Buffer, nStart, _keyLen)
 
         PUBLIC METHOD GetRecno(nPos AS Int32) AS Int32
             LOCAL nStart AS INT
             Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_KEY_OFFSET + nPos * (_keyLen + 8)
-            RETURN _GetLongLE(nStart+_KeyLen)
+            RETURN _GetLongLE(nStart+_keyLen)
             
         #endregion
         
@@ -64,7 +63,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL nStart AS INT
             Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_KEY_OFFSET + nPos * (_keyLen + 8)
-            RETURN _GetLongLE(nStart+_KeyLen+4)
+            RETURN _GetLongLE(nStart+_keyLen+4)
 
             
             
@@ -92,14 +91,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
       METHOD Dump AS STRING
             LOCAL Sb AS stringBuilder
             sb := stringBuilder{}
-            VAR item := CdxPageNode{_KeyLen}
-            sb:AppendLine(String.Format("Branche Page {0:X}, # of keys: {1}", SELF:PageNo, SELF:NumKeys))
-            sb:AppendLine(String.Format("Left page reference {0:X}", SELF:LeftPtr))
+            VAR item := CdxPageNode{_keyLen}
+            sb:AppendLine("--------------------------")
+            sb:AppendLine(String.Format("{0} Page {1:X6}, # of keys: {2}", SELF:NodeAttribute, SELF:PageNo, SELF:NumKeys))
+            sb:AppendLine(String.Format("Left page reference {0:X6}", SELF:LeftPtr))
             FOR VAR i := 0 TO SELF:NumKeys-1
                 item:Fill(i, SELF)
-                sb:AppendLine(String.Format("Item {0,2}, Page {1:X}, Record {2,4} : {3} ", i, item:PageNo, item:Recno, item:KeyText))
+                sb:AppendLine(String.Format("Item {0,2}, Page {1:X6}, Record {2,5} : {3} ", i, item:PageNo, item:Recno, item:KeyText))
             NEXT
-            sb:AppendLine(String.Format("Right page reference {0:X}", SELF:RightPtr))
+            sb:AppendLine(String.Format("Right page reference {0:X6}", SELF:RightPtr))
             RETURN sb:ToString()
 	END CLASS
 END NAMESPACE 

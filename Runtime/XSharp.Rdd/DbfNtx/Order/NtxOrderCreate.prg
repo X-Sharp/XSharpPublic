@@ -27,7 +27,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL isOk AS LOGIC
             LOCAL orderInfo AS DBORDERINFO
             LOCAL hasForCond AS LOGIC
-            LOCAL Expression AS STRING
             LOCAL num AS WORD
             
             ordCondInfo := SELF:_oRdd:_OrderCondInfo

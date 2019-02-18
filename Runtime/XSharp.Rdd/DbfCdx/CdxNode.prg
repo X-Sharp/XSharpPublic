@@ -42,14 +42,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             GET
             VAR sb := System.Text.StringBuilder{}
             FOREACH VAR b IN SELF:KeyBytes
-                IF b > 0
+                //IF b > 0
                     sb:Append( String.Format("{0:X2}",b))
-                ENDIF
+                //ENDIF
             NEXT
             sb:Append(" ")
             FOREACH VAR b IN SELF:KeyBytes
                 IF b > 31 .AND. b < 128
                     sb:Append( (CHAR) b)
+                ELSE
+                    sb:Append('.')
                 ENDIF
             NEXT
             RETURN sb:ToString()
@@ -89,6 +91,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_Page   := page
             SELF:_Pos    := pos
             SELF:_Offset := pos
+
         INTERNAL OVERRIDE METHOD Clear() AS VOID
             SUPER:Clear()
             SELF:_Page   := NULL
@@ -98,7 +101,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN SELF:_Page:GetKey(_Pos)
             END GET
             SET
-                
+               // Todo 
             END SET
         END PROPERTY
 
@@ -108,6 +111,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN SELF:_Page:GetChildPage(_Pos)                
             END GET
             SET
+                // Todo
             END SET
         END PROPERTY
 
@@ -118,6 +122,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN SELF:_Page:GetRecno(_Pos)
             END GET
             SET
+                // Todo
             END SET
         END PROPERTY
 

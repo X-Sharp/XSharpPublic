@@ -70,8 +70,8 @@ BEGIN NAMESPACE XSharp.RDD
 			LOCAL result AS LONG
 			LOCAL workOrder AS NtxOrder
 			LOCAL orderPos AS LONG
-			LOCAL oldvalue AS OBJECT
-            LOCAL isOk AS LOGIC
+			//LOCAL oldvalue AS OBJECT
+            LOCAL isOk := FALSE AS LOGIC
 
 			result := 0
 			workOrder := NULL

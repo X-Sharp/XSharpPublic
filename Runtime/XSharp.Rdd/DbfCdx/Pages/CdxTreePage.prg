@@ -27,7 +27,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         ABSTRACT PUBLIC METHOD GetRecno(nPos AS Int32) AS Int32
         ABSTRACT PUBLIC METHOD GetChildPage(nPos AS Int32) AS Int32
         ABSTRACT PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
+
+        INTERNAL PROPERTY Parent    AS CdxPage AUTO
         
+
         ABSTRACT PUBLIC PROPERTY NumKeys AS WORD  GET
         PROTECTED CONST CDXPAGE_NODEATTR	:= 0	AS WORD // WORD
 
@@ -39,7 +42,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             GET
                 LOCAL item := NULL AS CdxPageNode
                 TRY
-                    item := CdxPageNode{ 0 }
+                    item := CdxPageNode{ SELF:KeyLength }
                     item:Fill( index, SELF )
                 CATCH e AS Exception
                     Debug.WriteLine( "Cdx Error : " + e:Message )

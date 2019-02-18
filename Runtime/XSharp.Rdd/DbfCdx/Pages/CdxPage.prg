@@ -246,7 +246,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 		INTERNAL CONST CDXPAGE_SIZE        := 512 AS WORD
 
-        METHOD Dump AS STRING
+        VIRTUAL METHOD Dump AS STRING
             RETURN String.Empty
 
        

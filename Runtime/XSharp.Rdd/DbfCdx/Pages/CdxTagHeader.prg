@@ -69,6 +69,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN SELF:ExprBuffer:Write()
             ENDIF
             RETURN FALSE
+
+         METHOD Dump(sIntro AS string) AS STRING
+            LOCAL oSb AS stringBuilder
+            osb := stringBuilder{}
+            oSb:AppendLine(sIntro)
+            oSb:AppendLine("Tag  : "+SELF:TagName)
+            oSb:AppendLine("Key  : "+SELF:KeyExpression)
+            oSb:AppendLine("For  : "+SELF:ForExpression)
+            oSb:AppendLine("Page : "+SELF:PageNo:ToString("X"))
+            oSb:AppendLine("Root : "+SELF:RootPage:ToString("X"))
+            oSb:AppendLine("Sig  : "+SELF:Signature:ToString())
+            RETURN oSb:ToString()
+
 #endregion
 #region properties
 

@@ -39,7 +39,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     */
 	INTERNAL CLASS CdxBranchePage INHERIT CdxTreePage IMPLEMENTS ICdxKeyValue
 		PROTECTED _keyLen AS Int32
-        
+        PROPERTY KeyLength AS Int32 GET _keyLen
         INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS Int32)
             SUPER(bag, nPage, buffer)
             _KeyLen := nKeyLen
@@ -87,6 +87,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE CONST CDXBRANCH_OFFSET_LEFTPTR		:= 4	AS WORD 
         PRIVATE CONST CDXBRANCH_OFFSET_RIGHTPTR		:= 8	AS WORD 
         PRIVATE CONST CDXBRANCH_KEY_OFFSET          := 12	AS WORD
-#endregion        
+#endregion
+
+      METHOD Dump AS STRING
+            LOCAL Sb AS stringBuilder
+            sb := stringBuilder{}
+            VAR item := CdxPageNode{_KeyLen}
+            sb:AppendLine(String.Format("Branche Page {0:X}, # of keys: {1}", SELF:PageNo, SELF:NumKeys))
+            sb:AppendLine(String.Format("Left page reference {0:X}", SELF:LeftPtr))
+            FOR VAR i := 0 TO SELF:NumKeys-1
+                item:Fill(i, SELF)
+                sb:AppendLine(String.Format("Item {0,2}, Page {1:X}, Record {2,4} : {3} ", i, item:PageNo, item:Recno, item:KeyText))
+            NEXT
+            sb:AppendLine(String.Format("Right page reference {0:X}", SELF:RightPtr))
+            RETURN sb:ToString()
 	END CLASS
 END NAMESPACE 

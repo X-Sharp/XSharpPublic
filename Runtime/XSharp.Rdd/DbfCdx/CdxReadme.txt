@@ -64,6 +64,11 @@ BRANCH Page
   // BYTE Key data [keyLen]
   // BYTE record number[ 4]
   // BYTE child page [4]
+  The recno/key on the branch page is the same as the last recno/key of the child page that they point to
+  So this key should not be processed when skipping.
+  This into is only used to quickly determine which child page should be selected.
+  So the last key on the root page is also the last key in the file.
+  There can be more than one level of branch keys, but the bottom level in the tree consists of leaf pages.
        
 LEAF Page
 - A Leaf page has type 2. The List of CDX tags is a special leaf page with type 3 (Root + Leaf)

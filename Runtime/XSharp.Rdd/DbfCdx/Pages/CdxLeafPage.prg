@@ -210,6 +210,21 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		PRIVATE CONST CDXBLKOFFSET_TRAILINGBITS := 22	AS WORD // Number of bits used for trailing count
 		PRIVATE CONST CDXBLKOFFSET_DATABYTES	:= 23	AS WORD // Bytes needed for recno+dups+trailing (sum of 20,21 & 22)
 		PRIVATE CONST CDXBLKOFFSET_STARTOFDATA	:= 24	AS WORD 	
+
+
+        METHOD Dump AS STRING
+            LOCAL Sb AS stringBuilder
+            sb := stringBuilder{}
+            VAR item := CdxPageNode{_KeyLen}
+            sb:AppendLine(String.Format("Leaf Page {0:X}, # of keys: {1}", SELF:PageNo, SELF:NumKeys))
+            sb:AppendLine(String.Format("Left page reference {0:X}", SELF:LeftPtr))
+            FOR VAR i := 0 TO SELF:NumKeys-1
+                item:Fill(i, SELF)
+                sb:AppendLine(String.Format("Item {0,2}, Record {1,4} : {2} ", i,  item:Recno, item:KeyText))
+            NEXT
+            sb:AppendLine(String.Format("Right page reference {0:X}", SELF:RightPtr))
+            RETURN sb:ToString()
+           
 			
 
     END CLASS
@@ -220,7 +235,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         MEMBER TagList := 3
         MEMBER Unused  := 0xFF
     END ENUM
-
 
 
 END NAMESPACE 

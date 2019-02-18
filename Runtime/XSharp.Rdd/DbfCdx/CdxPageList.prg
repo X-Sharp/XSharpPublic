@@ -51,6 +51,7 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
                oResult := CdxGeneralPage{SELF:_Bag, nPage, buffer} 
             END SWITCH
             SELF:_Pages:Add(nPage, oResult)
+            SELF:_DumpPage(oResult)
             RETURN oResult
             
 
@@ -60,6 +61,12 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             IF _hDump != IntPtr.Zero .AND. ! page:Dumped
                 FWrite(_hDump, page:Dump())
                 page:Dumped := TRUE
+            ENDIF
+            IF page IS CdxBranchePage
+                VAR tPage := (CdxBranchePage) page
+                IF tpage:RightPtr != 0 .AND.  tpage:RightPtr != -1
+                      tpage := GetPage(tpage:RightPtr, tpage:KeyLength)
+                ENDIF
             ENDIF
             RETURN
             

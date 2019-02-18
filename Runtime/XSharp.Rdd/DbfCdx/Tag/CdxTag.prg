@@ -603,16 +603,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_TopStack := 0
             
         INTERNAL METHOD _dump() AS VOID
-	    /*
+	    
             LOCAL hDump     AS IntPtr
             LOCAL cFile     AS STRING
             LOCAL sBlock    AS STRING
+            LOCAL sName AS STRING
+            sName := SELF:_bag:FullPath+"_"+SELF:OrderName
             VAR sRecords := System.Text.StringBuilder{}
-            cFile := SELF:_fileName+".DMP"
+            cFile := sName+".DMP"
             hDump := FCreate(cFile)
             IF hDump != F_ERROR
-                SELF:_PageList:DumpHandle := hDump
-                sBlock := SELF:_Header:Dump("Filedump for:"+SELF:_FileName)
+                SELF:_bag:_PageList:DumpHandle := hDump
+                sBlock := SELF:_Header:Dump("Filedump for:"+sName)
                 FWrite(hDump, sBlock)
                 _oRdd:Gotop()
                 sRecords:AppendLine("------------------------------")
@@ -633,24 +635,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     _oRdd:Skip(1)
                 ENDDO
                 FWrite(hDump, sRecords:ToString())
-                sRecords:Clear()
-                sRecords:AppendLine("------------------------------")
-                sRecords:AppendLine("List of Unused Pages")
-                sRecords:AppendLine("------------------------------")
-                LOCAL nPage AS LONG
-                nPage := SELF:_nextUnusedPageOffset
-                SELF:_PageList:DumpHandle := IntPtr.Zero
-                SELF:_PageList:Flush(FALSE)
-                DO WHILE nPage != 0
-                    sRecords:AppendLine(nPage:ToString())
-                    VAR page := SELF:_pageList:Read(nPage)
-                    nPage := page:NextPage
-                ENDDO
-                FWrite(hDump, sRecords:ToString())
                 FClose(hDump)
                 
             ENDIF
-        */
             RETURN
         // Three methods to calculate keys. We have split these to optimize index creating
         PRIVATE METHOD _getNumFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC

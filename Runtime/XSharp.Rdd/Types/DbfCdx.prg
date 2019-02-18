@@ -76,7 +76,7 @@ BEGIN NAMESPACE XSharp.RDD
                 BEGIN SWITCH nOrdinal
             CASE DBOI_CONDITION
                     IF workOrder != NULL
-                        info:Result := workOrder:ForExpression
+                        info:Result := workOrder:Condition
                 ENDIF
             CASE DBOI_EXPRESSION
                     IF workOrder != NULL

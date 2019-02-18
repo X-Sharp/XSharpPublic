@@ -16,7 +16,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _oRdd AS DbfCdx
         PRIVATE _list AS List<CdxOrderBag>
         
-        INTERNAL PROPERTY CurrentOrder AS CdxTag GET NULL
+        INTERNAL PROPERTY CurrentOrder AS CdxTag auto
         
         CONSTRUCTOR(oRdd AS DbfCdx)
             _oRdd := oRdd
@@ -109,8 +109,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN FALSE
             
         METHOD SetFocus(orderinfo AS DbOrderInfo) AS LOGIC
-            // Todo
-            RETURN FALSE
+            VAR oOrder := FindOrder(orderinfo)
+            SELF:CurrentOrder := oOrder
+            RETURN TRUE
 
         METHOD FindOrderByName(cBagName AS STRING, cName AS STRING) AS CdxTag
             FOREACH oBag AS CdxOrderBag IN _list

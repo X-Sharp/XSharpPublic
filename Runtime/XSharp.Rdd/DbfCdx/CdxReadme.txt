@@ -84,17 +84,16 @@ LEAF Page
   (which are stored from the end of the page forward)
   Each key descriptor consists of 3 numbers
   1) The record number
-  2) The number of Duplicate bytes (so for 2 keys following eachother with the same start bytes only the different bytes for the )
-     2nd one are stored
+  2) The number of Duplicate bytes (so for 2 keys following eachother with the same start bytes only the different bytes for the 2nd one are stored)
   3) The number of Trailing bytes (trailing spaces are trimmed)
-  The header describes how many bits each of these elements occupies and how many bytes the 3 together 
+  The header describes how many bits each of these elements occupies and how many bytes (in keyBytes) the 3 together 
   (often 4 bytes, but for larger CDX files more bytes may be needed for the recno, so more bytes will be used for the key descriptors)
   The header also contains "masks" that help to mask out the record number, duplicate and trailing bytes counts
   This is stored in the file as dddddtttttrrrrrrrrrr  where ddd are the duplicate bits, tttt the trail bits and rrrr the recno bits
 
   Key data is stored as:
   Character: ASCII
-  Date     : Julian date converted to number
+  Date     : Julian date converted to number, so also stored as 8 bytes
   Number   : IEEE double (8 bytes), swapped the order of bytes. When negative invert all bits, otherwise only highest order bit.
              This is complicated but allows to use memcmp to compare numeric values
 

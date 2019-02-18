@@ -35,16 +35,14 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             LOCAL nType AS SHORT
             nType := BitConverter.ToInt16(buffer, 0)
             SWITCH nType
+            CASE 0  // Branche
             CASE 1  // Root
-                RETURN CdxGeneralPage{SELF:_Bag, nPage, buffer} 
+                 RETURN CdxBranchePage{SELF:_Bag, nPage, buffer,nKeyLen}
             CASE 2  // Leaf
                 RETURN CdxLeafPage{SELF:_Bag, nPage, buffer, nKeyLen}
             CASE 3  // List of Tags
                 RETURN CdxLeafPage{SELF:_Bag, nPage, buffer, nKeyLen}
-            CASE 0
-                RETURN CdxBranchePage{SELF:_Bag, nPage, buffer,nKeyLen}
-            CASE -1 // Unused
-            OTHERWISE // Could be tag header
+            OTHERWISE 
                RETURN CdxGeneralPage{SELF:_Bag, nPage, buffer} 
             END SWITCH
             

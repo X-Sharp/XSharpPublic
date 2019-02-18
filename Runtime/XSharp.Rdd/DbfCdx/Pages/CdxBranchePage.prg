@@ -63,7 +63,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL nStart AS INT
             Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_KEY_OFFSET + nPos * (_keyLen + 8)
-            RETURN _GetLong(nStart+_KeyLen+4)
+            RETURN _GetLongLE(nStart+_KeyLen+4)
+
+            
             
 #region Properties
         PUBLIC PROPERTY NumKeys AS WORD ;

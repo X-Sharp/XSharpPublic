@@ -115,7 +115,7 @@ BEGIN NAMESPACE XSharp.RDD
 			
 			/// <inheritdoc />
 		METHOD GoTo(nRec AS LONG) AS LOGIC
-			IF ( SELF:_hFile != F_ERROR )
+			IF SELF:_hFile != F_ERROR 
 				BEGIN LOCK SELF
 					// Validate any pending change
 					SELF:GoCold()
@@ -123,16 +123,17 @@ BEGIN NAMESPACE XSharp.RDD
 					IF SELF:Shared .AND. nRec > SELF:RecCount 
 						SELF:_RecCount := SELF:_calculateRecCount()
 					ENDIF
-					//
 					IF ( nRec <= SELF:RecCount ) .AND. ( nRec > 0 )
-						// virtual pos
+						// Normal positioning
+                        // VO does not set _Found to TRUE for a succesfull Goto. It does set _Found to false for a failed Goto
 						SELF:_RecNo := nRec
 						SELF:_EOF := FALSE
 						SELF:_Bof := FALSE
-						SELF:_Found :=TRUE
+						//SELF:_Found :=TRUE    
 						SELF:_BufferValid := FALSE
 						SELF:_isValid := TRUE
 					ELSEIF nRec < 0
+                        // skip to  BOF. Move to record 1
 						SELF:_RecNo := 1
 						SELF:_EOF := FALSE
 						SELF:_Bof := TRUE
@@ -156,7 +157,6 @@ BEGIN NAMESPACE XSharp.RDD
 			/// <inheritdoc />
 		METHOD GoToId(oRec AS OBJECT) AS LOGIC
 			LOCAL result AS LOGIC
-			//
 			BEGIN LOCK SELF
 				TRY
 					VAR nRec := Convert.ToInt32( oRec )

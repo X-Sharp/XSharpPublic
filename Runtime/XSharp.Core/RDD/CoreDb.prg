@@ -957,9 +957,17 @@ CLASS XSharp.CoreDb
         /// </returns>
     STATIC METHOD OrdBagExt() AS STRING
         RETURN CoreDb.Do ({ =>
-        LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
+        LOCAL oRDD := CoreDb.CWA(__FUNCTION__,FALSE) AS IRDD
+        IF oRDD == NULL
+            // Get an RDD object
+            LOCAL oRegRDD AS RegisteredRDD
+            oRegRDD:= RegisteredRDD.Find(RuntimeState.DefaultRDD)
+            oRegRdd:Load()
+            oRDD := CoreDb.CreateRDDInstance( oRegRdd:RddType, "XXTEMPXX" )
+        ENDIF
         VAR info := DbOrderInfo{}
-        RETURN (STRING) oRDD:OrderInfo( DBOI_BAGEXT, info)
+        oRDD:OrderInfo(DBOI_BAGEXT, info)
+        RETURN (STRING) info:Result
         })
         
         /// <summary>
@@ -1490,7 +1498,7 @@ CLASS XSharp.CoreDb
     STATIC METHOD SetFound(lFound AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
-        oRDD:Found := TRUE
+        oRDD:Found := lFound
         RETURN TRUE
         })
         /// <summary>

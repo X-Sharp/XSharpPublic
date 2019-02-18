@@ -65,12 +65,11 @@ BEGIN NAMESPACE XSharp.RDD
                 
                 
             OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD , info AS DBORDERINFO ) AS OBJECT
-                LOCAL isOk AS LOGIC
                 LOCAL result AS LONG
                 LOCAL workOrder AS CdxTag
                 LOCAL oldvalue AS OBJECT
+                LOCAL isOk AS LOGIC
                 
-                isOk := TRUE
                 result := 0
                 workOrder := SELF:_indexList:FindOrder(info)
                 
@@ -106,11 +105,8 @@ BEGIN NAMESPACE XSharp.RDD
             CASE DBOI_NUMBER
                 info:Result := SELF:_indexList:OrderPos(workOrder)
             CASE DBOI_BAGEXT
-                    IF workOrder != NULL
-                        info:Result := System.IO.Path.GetExtension(workOrder:OrderBag:FileName)
-                    ELSE
-                        info:Result := CdxOrderBag.CDX_EXTENSION
-                ENDIF
+                // according to the docs this should always return the default extension and not the actual extension
+                info:Result := CdxOrderBag.CDX_EXTENSION
             CASE DBOI_FULLPATH
                     IF workOrder != NULL
                         info:Result := workOrder:OrderBag:FullPath
@@ -230,9 +226,9 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                     
             OTHERWISE
-                isOk := (LOGIC)SUPER:OrderInfo(nOrdinal, info)
+                SUPER:OrderInfo(nOrdinal, info)
             END SWITCH
-            RETURN isOk
+            RETURN info:Result
             
             #endregion
 

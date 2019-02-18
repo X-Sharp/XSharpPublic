@@ -33,7 +33,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _Hot AS LOGIC
         INTERNAL _Conditional AS LOGIC
         INTERNAL _Descending AS LOGIC
-        INTERNAL _Partial AS LOGIC
+        //INTERNAL _Partial AS LOGIC
         INTERNAL _SingleField AS LONG
         INTERNAL _SourceIndex AS LONG
         INTERNAL _KeyCodeBlock AS ICodeblock
@@ -51,7 +51,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _TopStack AS LONG
         INTERNAL _firstPageOffset AS LONG
         INTERNAL _stack AS RddStack[]
-        INTERNAL _tagNumber AS INT
+        //INTERNAL _tagNumber AS INT
         INTERNAL _orderName AS STRING
         INTERNAL _Ansi AS LOGIC
         INTERNAL _hasTopScope AS LOGIC
@@ -66,7 +66,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _Header AS CdxTagHeader
         INTERNAL _oneItem AS CdxNode
         PRIVATE _midItem AS CdxNode
-        PRIVATE _outPageNo AS LONG      // has to move to OrderBag later
+        //PRIVATE _outPageNo AS LONG      // has to move to OrderBag later
 
         PRIVATE _bag    AS CdxOrderBag
         PRIVATE getKeyValue AS ValueBlock       // Delegate to calculate the key
@@ -110,6 +110,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_orderName := cName
             SELF:_stack         := RddStack[]{ STACK_DEPTH }
             SELF:_Encoding      := _oRDD:_Encoding
+            SELF:_Ansi          := _oRDD:_Ansi
             //Init
             FOR i := 0 TO STACK_DEPTH - 1 
                 SELF:_stack[i] := RddStack{}
@@ -118,6 +119,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:FieldIndex  := 0
             SELF:_SingleField := -1
             SELF:_Header := CdxTagHeader{oBag, nPage, buffer, SELF:OrderName}
+            SELF:_Bag:SetPage(nPage, SELF:_Header)
             SELF:Open()
 
 
@@ -313,7 +315,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // Save informations about the "current" Item	
         PRIVATE METHOD _saveCurrentRecord( node AS CdxNode ) AS VOID
             SELF:_currentRecno := node:Recno
-            Array.Copy(node:KeyBytes, SELF:_currentKeyBuffer, SELF:_keySize)
+            //Array.Copy(node:KeyBytes, SELF:_currentKeyBuffer, SELF:_keySize)
 
 
         PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG , nDec AS LONG , buffer AS BYTE[] , isAnsi AS LOGIC ) AS LOGIC    

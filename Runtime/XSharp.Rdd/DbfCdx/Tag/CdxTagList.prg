@@ -32,7 +32,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 LOCAL bName     := SELF:GetKey(nI)  AS BYTE[]
                 LOCAL cName     := System.Text.Encoding.ASCII:GetString( bName, 0, bName:Length) AS STRING
                 LOCAL oPage     AS CdxPage
-                oPage           := _bag:GetPage(nRecno, 0)
+                oPage           := _bag:GetPage(nRecno, 0,NULL)
                 VAR tag         := CdxTag{_bag,  nRecno, oPage:Buffer, cName:Trim()}
                 _tagList:Add(tag)
             NEXT

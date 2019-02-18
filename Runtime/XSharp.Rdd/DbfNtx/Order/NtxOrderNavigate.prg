@@ -337,10 +337,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
         INTERNAL METHOD _saveCurrentKey(rcno AS LONG ) AS LOGIC
             LOCAL isOk AS LOGIC
-            LOCAL uiRealLen AS LONG
             
             isOk := TRUE
-            uiRealLen := 0
             IF rcno != SELF:_currentRecno .OR. SELF:Shared
                 SELF:_currentRecno := 0
                 isOk := SELF:getKeyValue(SELF:_SourceIndex, SELF:_currentKeyBuffer)

@@ -1246,6 +1246,171 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 
+		// TECH-3KG4A5V124, DBSetFound() always sets the Found flag to TRUE, no matter the value passed
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBSetFound_test() AS VOID
+			LOCAL aDbf AS ARRAY
+			LOCAL cDbf AS STRING
+			DBCloseAll()
+			
+			cDBF := GetTempFileName()
+			aDbf := {{ "AGE" , "N" , 2 , 0 }}
+			DBCreate( cDBF , aDbf)
+			
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			DBAppend()
+			
+			Assert.False( Found() )// FALSE, ok
+			Assert.True( DBSetFound( FALSE ) )
+			Assert.False( Found() ) // TRUE! wrong
+			Assert.True( DBSetFound( TRUE ) )
+			Assert.True( Found() ) // TRUE correct
+			DBCloseArea()
+		RETURN
+
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBSetFound_test2() AS VOID
+			LOCAL aDbf AS ARRAY
+			LOCAL cDbf AS STRING
+			DBCloseAll()
+			
+			cDBF := GetTempFileName()
+			aDbf := {{ "AGE" , "N" , 2 , 0 }}
+			DBCreate( cDBF , aDbf)
+			
+		    DBCreate( cDBF , aDbf)
+		    DBUseArea(,"DBFNTX",cDBF,,FALSE)
+		   
+		    DBAppend()
+		   
+		    DBCloseArea()
+		   
+		    DBUseArea( TRUE ,"DBFNTX",cDBF,"AREA1" ,TRUE )
+		    DBUseArea( TRUE ,"DBFNTX",cDBF,"AREA2" ,TRUE )
+		    
+		    Assert.True( DBSelectArea ( "AREA1" ) )
+		    Assert.Equals("AREA1", Alias() )
+		    Assert.False( Found() )
+		    Assert.True( DBSetFound ( TRUE ) )
+		    Assert.True( Found() )
+		   
+		    Assert.True( DBSelectArea ( "AREA2" ) )
+		    Assert.Equal( "AREA2" , Alias() )
+		    Assert.False( Found() )
+		    Assert.True( DBSetFound  ( FALSE ) )
+		    Assert.False( Found() )
+
+		    Assert.True( DBCloseArea() )
+		    Assert.True( DBSelectArea ( "AREA1" ) )
+		    Assert.True( DBCloseArea() )
+		RETURN
+
+
+		// TECH-56GA29Y57C, Found() does not return correct results for the active workarea
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBSetFound_test3() AS VOID
+			LOCAL aDbf AS ARRAY
+			LOCAL cDbf AS STRING
+			DBCloseAll()
+			
+			cDBF := GetTempFileName()
+		    aDbf := {{ "AGE" , "N" , 2 , 0 }}
+		    DBCreate( cDBF , aDbf)
+		    DBUseArea(,"DBFNTX",cDBF,,FALSE)
+		   
+		    DBAppend()
+		    FieldPut(1,1)
+		    DBCloseArea()
+		   
+		    DBUseArea( TRUE ,"DBFNTX",cDBF,"AREA1" ,TRUE )
+		    DBUseArea( TRUE ,"DBFNTX",cDBF,"AREA2" ,TRUE )
+		    
+		    DBSelectArea ( "AREA1" )  
+		    Assert.True( DBLocate({||_FIELD->AGE == 1}) )
+		    Assert.True( Found() )
+		   
+		    DBSelectArea ( "AREA2" )   
+		    Assert.False( Found() )
+		
+		    DBCloseAll()
+		RETURN
+
+
+		// TECH-5YKDFJWM4N, FLock() runtime exception when some records are already locked
+		[Fact, Trait("Category", "DBF")];
+		METHOD FLock_test() AS VOID
+			LOCAL aDbf AS ARRAY
+			LOCAL cDbf AS STRING
+			DBCloseAll()
+			
+			cDBF := GetTempFileName()
+		    aDbf := {{ "AGE" , "N" , 2 , 0 }}
+			DBCreate( cDBF , aDbf)
+
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			DBAppend()
+			DBAppend()
+			DBAppend()
+			DBCloseArea()
+			
+			Assert.True( DBUseArea( TRUE ,"DBFNTX",cDBF,"AREA1" ,TRUE ) )// open shared
+			DBGoTop()
+			Assert.True( DBRLock ( RecNo() ) ) // lock first record
+			Assert.Equal( 1 , (INT) ALen ( DBRLockList() ) )
+			
+			Assert.True( DBUseArea( TRUE ,"DBFNTX",cDBF,"AREA2" ,TRUE ) ) // open shared
+			DBGoBottom()
+			Assert.True( DBRLock ( RecNo() ) ) // lock last record
+			Assert.Equal( 1 , (INT) ALen ( DBRLockList() ) )
+			
+			Assert.False( FLock() )
+			// what's the correct return value here??
+			// Assert.Equal( 0 , (INT) ALen ( DBRLockList() ) )
+			DBCloseAll()
+		RETURN
+
+
+		// TECH-429V6Q2959, IndexExt() problems
+		[Fact, Trait("Category", "DBF")];
+		METHOD IndexExt_test() AS VOID
+			LOCAL aDbf AS ARRAY
+			LOCAL cDBF AS STRING
+			LOCAL aValues AS ARRAY
+			LOCAL i AS DWORD       
+			DBCloseAll()
+			
+			cDBF := GetTempFileName()
+
+			RDDSetDefault("DBFNTX")
+			Assert.True( IndexKey() == "")
+			Assert.True( IndexOrd() == 0)
+			Assert.True( IndexCount() == 0)
+			Assert.True( Upper(IndexExt()) ==  ".NTX")
+			Assert.True( DBOrderInfo(DBOI_INDEXEXT) == NIL )
+			
+			aValues := { 44 , 12, 34 , 21 }
+			aDbf := {{ "AGE" , "N" , 2 , 0 }}
+			
+			DBCreate( cDBF , aDbf)
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)                    
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut(1,aValues [i])
+			NEXT    
+			DBCreateIndex( cDbf, "age" )
+			
+			Assert.True( IndexKey() == "age")
+			Assert.True( IndexOrd() == 1 )
+			Assert.True( IndexCount() == 1 )
+			Assert.True( Upper(IndexExt()) == ".NTX")
+			Assert.True( DBOrderInfo(DBOI_INDEXEXT) == ".NTX")
+			
+			DBCloseArea()
+		RETURN
+
+
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
 		RETURN GetTempFileName("testdbf")
 		STATIC PRIVATE METHOD GetTempFileName(cFileName AS STRING) AS STRING

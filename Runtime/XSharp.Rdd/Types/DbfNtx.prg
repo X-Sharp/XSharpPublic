@@ -67,13 +67,12 @@ BEGIN NAMESPACE XSharp.RDD
 			END LOCK
 			
 		OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD , info AS DBORDERINFO ) AS OBJECT
-			LOCAL isOk AS LOGIC
 			LOCAL result AS LONG
 			LOCAL workOrder AS NtxOrder
 			LOCAL orderPos AS LONG
 			LOCAL oldvalue AS OBJECT
+            LOCAL isOk AS LOGIC
 
-			isOk := TRUE
 			result := 0
 			workOrder := NULL
 			orderPos := SELF:_indexList:FindOrder(info)
@@ -116,11 +115,8 @@ BEGIN NAMESPACE XSharp.RDD
                 info:Result := SELF:_indexList:OrderPos(workOrder)
 
 			CASE DBOI_BAGEXT
-                IF workOrder != NULL
-				    info:Result := System.IO.Path.GetExtension(workOrder:FullPath)
-                ELSE
-                    info:Result := NtxOrder.NTX_EXTENSION
-                ENDIF
+                // according to the docs this should always return the default extension and not the actual extension
+                info:Result := NtxOrder.NTX_EXTENSION
 			CASE DBOI_FULLPATH
 				IF workOrder != NULL
 					info:Result := workOrder:FullPath
@@ -247,9 +243,9 @@ BEGIN NAMESPACE XSharp.RDD
 				ENDIF
 
 			OTHERWISE
-				isOk := (LOGIC)SUPER:OrderInfo(nOrdinal, info)
+				SUPER:OrderInfo(nOrdinal, info)
 			END SWITCH
-			RETURN isOk
+			RETURN info:Result
 			
 		#endregion
 		

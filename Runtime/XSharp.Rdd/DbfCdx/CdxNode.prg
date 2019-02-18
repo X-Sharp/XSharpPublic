@@ -61,7 +61,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL VIRTUAL PROPERTY PageNo AS LONG GET _PageNo SET _PageNo := VALUE
 
         INTERNAL VIRTUAL PROPERTY Recno AS LONG GET _Recno SET _Recno := VALUE
-        
+
         INTERNAL CONSTRUCTOR( keylen AS LONG  )
             SELF:_keyLength := keylen
             SELF:Clear()
@@ -95,7 +95,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
        INTERNAL OVERRIDE PROPERTY KeyBytes AS BYTE[]
             GET
-                return self:_Page:GetKey(_Pos)
+                RETURN SELF:_Page:GetKey(_Pos)
             END GET
             SET
                 
@@ -105,7 +105,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL OVERRIDE PROPERTY PageNo AS LONG
             GET
-                return self:_Page:GetChildPage(_Pos)                
+                RETURN SELF:_Page:GetChildPage(_Pos)                
             END GET
             SET
             END SET
@@ -115,7 +115,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		// It is after the page_offset, which is a long, so 4 bytes after
         INTERNAL OVERRIDE PROPERTY Recno AS LONG
             GET
-                return SELF:_Page:GetRecno(_Pos)
+                RETURN SELF:_Page:GetRecno(_Pos)
             END GET
             SET
             END SET

@@ -55,7 +55,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 			
 	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], cTagName AS STRING)
             SUPER(bag, nPage, buffer)
-            SELF:ExprBuffer := bag:GetPage(nPage +CDXPAGE_SIZE)
+            SELF:ExprBuffer := bag:GetPage(nPage +CDXPAGE_SIZE,0)
             SELF:TagName    := cTagName
 #region Read/Write            
         PROTECTED INTERNAL OVERRIDE METHOD Read() AS LOGIC

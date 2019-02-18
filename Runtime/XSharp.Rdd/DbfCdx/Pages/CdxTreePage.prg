@@ -31,6 +31,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         ABSTRACT PUBLIC PROPERTY NumKeys AS WORD  GET
         PROTECTED CONST CDXPAGE_NODEATTR	:= 0	AS WORD // WORD
 
+        ABSTRACT INTERNAL PROPERTY LeftPtr		AS Int32 GET
+        ABSTRACT INTERNAL PROPERTY RightPtr		AS Int32 GET
+
     		// Retrieve a NtxNode in the current Page, at the specified position
         INTERNAL PROPERTY SELF[ index AS LONG ] AS CdxPageNode
             GET

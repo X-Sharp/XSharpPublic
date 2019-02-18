@@ -5,7 +5,8 @@
 FUNCTION Start() AS VOID
     LOCAL cb AS CODEBLOCK
     TRY
-        TestCdx()
+        TestChris()
+        //TestCdx()
         //DumpNtx()
         //Start1a()
         //Start1b()
@@ -24,6 +25,107 @@ FUNCTION Start() AS VOID
     END TRY
     WAIT
     RETURN
+FUNCTION TestChris AS VOID
+   LOCAL aDbf AS ARRAY
+    LOCAL cDBF AS STRING
+    
+    SetCollation(#CLIPPER)
+    ? SetNatDll("GERMAN")
+    
+    cDBF := "Foo"
+    aDbf := {{ "FTEST" , "C" , 2 , 0 }}
+    DBCreate( cDBF , aDbf)
+    DBUseArea(,"DBFNTX",cDBF,,FALSE)
+
+    DBAppend()
+    FieldPut(1,"u")
+    DBAppend()
+    FieldPut(1,"Ü")
+    DBAppend()
+    FieldPut(1,"Ä")
+    DBAppend()
+    FieldPut(1,"ü")
+    DBAppend()
+    FieldPut(1,"Ö")
+    DBAppend()
+    FieldPut(1,"o")
+    DBAppend()
+    FieldPut(1,"O")
+    DBAppend()
+    FieldPut(1,"Y")
+    DBAppend()
+    FieldPut(1,"Z")
+    DBAppend()
+    FieldPut(1,"ä")
+    DBAppend()
+    FieldPut(1,"ö")
+    DBAppend()
+    FieldPut(1,"A")
+    DBAppend()
+    FieldPut(1,"a")
+    DBAppend()
+    FieldPut(1,"B")
+    DBCloseArea()
+
+    DBUseArea(,"DBFNTX",cDBF,,FALSE)
+    ? DBCreateIndex(cDBF , "ftest")
+    DBGoTop()
+    DO WHILE .NOT. eof()
+        ? FieldGet(1)
+        DBSkip()
+    END DO
+    DBCloseAll() 
+
+RETURN 
+FUNCTION TestChris1() AS VOID
+LOCAL aDbf AS ARRAY
+LOCAL cDBF, cNtx AS STRING
+LOCAL aValues AS ARRAY
+LOCAL i AS DWORD
+
+// dbcloseAll()
+
+? RDDSetDefault() // "DBFNTX"
+
+// no workarea opened !
+
+? IndexKey() // "" ok
+? IndexOrd() // 0 ok
+? IndexCount() // 0 ok
+? IndexExt() // shows NULL_STRING instead of ".NTX" --------
+? DBOrderInfo(DBOI_INDEXEXT) // NIL ok
+
+
+aValues := { 44 , 12, 34 , 21 }
+
+cDBF := "Foo"
+cNTX := "FooX"
+
+aDbf := {{ "AGE" , "N" , 2 , 0 }}
+
+DBCreate( cDBF , aDbf)
+DBUseArea(,"DBFNTX",cDBF,,FALSE)
+
+FOR i := 1 UPTO ALen ( aValues )
+
+DBAppend()
+
+FieldPut(1,aValues [i])
+
+NEXT
+
+DBCreateIndex( cNTX, "age" )
+
+?
+
+? IndexKey() // "age" ok
+? IndexOrd() // 1 ok
+? IndexCount() // 1 ok
+? IndexExt() // ---- InvalidCastException instead of ".NTX"
+? DBOrderInfo(DBOI_INDEXEXT) // ".NTX" ok
+
+DBCloseArea()
+RETURN
 
 FUNCTION TestCdx() AS VOID
     ? VoDbUseArea(TRUE, "DBFCDX", "c:\test\TEST10K.DBF", "TEST",TRUE,TRUE)

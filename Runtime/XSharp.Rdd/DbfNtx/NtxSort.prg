@@ -50,10 +50,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             iLen        := SELF:_sortInfo:Items[0]:Length
             // comparison using string rules
             diff := RuntimeState.StringCompare(dataBuffer, dataBuffer2, iLen)
-            IF SELF:_sortInfo:Items[0]:Flags:HasFlag(DbSortFlags.Descending) 
-                diff *= -1
-            ENDIF
-            IF (diff == 0)
+            IF diff != 0
+                IF SELF:_sortInfo:Items[0]:Flags:HasFlag(DbSortFlags.Descending) 
+                    diff *= -1
+                ENDIF
+            ELSE
                 IF x:Recno < y:Recno
                     diff := -1
                 ELSE
@@ -96,10 +97,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     EXIT
                 ENDIF
             NEXT
-            IF SELF:_sortInfo:Items[0]:Flags:HasFlag(DbSortFlags.Descending) 
-                diff *= -1
-            ENDIF
-            IF (diff == 0)
+            IF diff != 0
+                IF SELF:_sortInfo:Items[0]:Flags:HasFlag(DbSortFlags.Descending) 
+                    diff *= -1
+                ENDIF
+            ELSE
                 IF x:Recno < y:Recno
                     diff := -1
                 ELSE

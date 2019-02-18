@@ -54,14 +54,38 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     /// Manipulating the page is implemented in the CdxTag class
 	/// </summary>
 	INTERNAL CLASS CdxLeafPage INHERIT CdxTreePage IMPLEMENTS ICdxKeyValue
-		PROTECTED _keyLen   AS Int32
-        PROTECTED _keys     AS BYTE[]
-        PROTECTED _recnos   AS Int32[]
+		PROTECTED _keyLen    AS Int32
+        PROTECTED _keys      AS BYTE[]
+        PROTECTED _recnos    AS Int32[]
+        PROTECTED _dupMask   AS BYTE
+        PROTECTED _dupBits   AS BYTE
+        PROTECTED _trailMask AS BYTE
+        PROTECTED _trailBits AS BYTE
+        PROTECTED _recnoMask AS Int32
+        PROTECTED _recnoBits AS Int32
+        //PROTECTED _bytesNeeded AS BYTE
 		
 	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS Int32)
             SUPER(bag, nPage, buffer)
             _keyLen     := nKeyLen
             _keys       := NULL
+            _dupMask    := SELF:DuplicateMask
+            _dupBits    := SELF:DuplicateBits
+            _trailMask  := SELF:TrailingMask
+            _trailBits  := SELF:TrailingBits
+            _recnoMask  := SELF:RecnoMask
+            _recnoBits  := SELF:RecordBits
+            /*
+
+            LOCAL keyBits := 0 AS INT
+            DO WHILE nKeyLen > 0
+                keyBits += 1
+                nKeyLen >>= 1
+            ENDDO
+            _bytesNeeded := IIF(keyBits > 12, 5, IIF(keyBits > 8, 4, 3))
+            */
+            RETURN
+
 
 #region ICdxKeyValue
         PUBLIC METHOD GetRecno(nPos AS Int32) AS Int32
@@ -72,7 +96,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN _recnos[nPos ]
 
         PUBLIC METHOD GetChildPage(nPos AS Int32) AS Int32
-            return 0
+            RETURN 0
 
         PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
             Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
@@ -83,33 +107,39 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN _GetBytes(_keys, nStart, _KeyLen)
 #endregion
 
+         // For Debugging we calculate all Recnos and KeyBytes
+         // Later we will remove this
          PRIVATE METHOD _ExpandKeys()  AS LOGIC
             LOCAL nOffSet   AS Int32
             LOCAL aBytes := BYTE[]{_KeyLen+1} AS BYTE[]
-            LOCAL nDup, nTrail AS BYTE
             LOCAL nRecno    AS Int32
+            LOCAL nDup, nTrail AS BYTE
             LOCAL nKey      AS Int32
             LOCAL nStart    AS Int32
+            LOCAL nStep     AS Int32
+            LOCAL nLast     AS Int32
+            
             // First key starts at end of page
             nStart := CDXPAGE_SIZE
             _keys    := BYTE[]{SELF:NumKeys * _KeyLen}
             MemSet(_keys, 0, _keys:Length, 32)
             _recnos  := Int32[]{SELF:NumKeys}
-            FOR VAR nI := 0 TO SELF:NumKeys-1
-                nOffSet     := CDXBLKOFFSET_STARTOFDATA + nI * SELF:DataBytes
-                nRecno      := _GetLong(nOffSet)
-                _recnos[nI] := (INT) _AND( nRecno , RecnoMask) 
-                nTrail  := nDup := (BYTE) (nRecno >> SELF:RecordBits)
-                nTrail  := (BYTE) (nTrail >> SELF:DuplicateBits)
-                nTrail  := (BYTE) (nTrail & SELF:TrailingMask)
-                // Shift Left and Right to remove the trailbits and keep the duplicates
-                nDup    := (BYTE) (nDup << SELF:TrailingBits)
-                nDup    := (BYTE) (nDup >> SELF:TrailingBits)
+            nOffSet := CDXBLKOFFSET_STARTOFDATA
+            nStep := SELF:DataBytes
+            nLast := SELF:NumKeys-1
+            FOR VAR nI := 0 TO nLast
+                LOCAL iTemp AS Int32
+                nRecno      := _GetLong(nOffSet) 
+                _recnos[nI] := (INT) _AND( nRecno , SELF:_recnoMask)
+                iTemp   := nRecno >> SELF:_recnoBits 
+                nDup    := IIF(nI ==0, 0,  _AND(iTemp , SELF:_dupMask))
+                nTrail  := _AND((iTemp >> SELF:_dupBits) , SELF:_trailMask)
                 nKey    := _KeyLen - nTrail - nDup
                 // Copy to aBytes from pos nDup
                 MemCopy(Buffer, nStart - nKey, aBytes, nDup, nKey)
                 nStart := nStart - nKey
                 MemCopy(aBytes, 0, _keys, nI * _KeyLen, nKey+nDup)
+                nOffSet      += nStep
             NEXT
             RETURN TRUE
            
@@ -175,13 +205,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		PRIVATE CONST CDXBLKOFFSET_STARTOFDATA	:= 24	AS WORD 	
 			
 
-        PRIVATE STATIC METHOD SwapEndian(VALUE AS Int32) AS Int32
-            VAR b1 := (VALUE >> 0)  & 0xFF
-            VAR b2 := (VALUE >> 8)  & 0xFF
-            VAR b3 := (VALUE >> 16)  & 0xFF
-            VAR b4 := (VALUE >> 24)  & 0xFF
-            RETURN b1 << 24 | b2 << 16 | b3 << 8 | b4 << 0
-
     END CLASS
     INTERNAL ENUM CdxNodeAttribute AS WORD
         MEMBER Branch  := 0
@@ -194,4 +217,5 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
 END NAMESPACE 
+
 

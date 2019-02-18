@@ -16,7 +16,7 @@ USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.RDD.CDX
-    [DebuggerDisplay("Tag: {Name}, Key: {KeyExpression}, For: {ForExpression}")];
+    [DebuggerDisplay("Tag: {OrderName}, Key: {Expression}, For: {Condition}")];
     INTERNAL PARTIAL CLASS CdxTag
         #region constants
         PRIVATE CONST MAX_KEY_LEN       := 256  AS WORD
@@ -77,7 +77,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         
         INTERNAL PROPERTY Condition AS STRING GET _ForExpr
         INTERNAL PROPERTY OrderName AS STRING GET _orderName
-	INTERNAL PROPERTY Shared 	 AS LOGIC GET _bag:Shared
+	    INTERNAL PROPERTY Shared 	 AS LOGIC GET _bag:Shared
         INTERNAL PROPERTY _Recno 	 AS LONG GET _oRDD:Recno
         INTERNAL PROPERTY FileName 	 AS STRING GET _bag:FileName
         INTERNAL PROPERTY OrderBag       AS CdxOrderBag GET SELF:_bag
@@ -85,11 +85,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Descending     AS LOGIC GET _Descending
         INTERNAL PROPERTY IsConditional  AS LOGIC GET Options:HasFlag(CdxOptions.HasFor)
         INTERNAL PROPERTY IsHot          AS LOGIC GET _Hot
-        PROPERTY KeyType        	AS INT AUTO
-        PROPERTY ForExpression  	AS STRING AUTO
-        PROPERTY ForBlock       	AS ICodeBlock AUTO
-        PROPERTY Conditional    	AS LOGIC GET ForBlock != NULL
+        PROPERTY KeyType        	AS INT GET SELF:_KeyExprType
         PROPERTY Partial        	AS LOGIC GET SELF:Custom
+        PROPERTY Conditional        AS LOGIC GET !String.IsNullOrEmpty(_ForExpr)
         PROPERTY Custom         	AS LOGIC GET Options:HasFlag(CdxOptions.IsCustom)
         PROPERTY Unique         	AS LOGIC GET Options:HasFlag(CdxOptions.IsUnique)
         PROPERTY Signature      	AS BYTE AUTO
@@ -176,15 +174,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_SourceIndex := 0
             LOCAL isOk AS LOGIC
             IF SELF:_SingleField >= 0
-                SELF:_keySize       := (WORD) SELF:_oRdd:_fields[_SingleField]:Length
                 SELF:_keyDecimals   := (WORD) SELF:_oRdd:_fields[_SingleField]:Decimals
                 SELF:_SourceIndex   := (WORD) SELF:_oRdd:_fields[_SingleField]:OffSet
                 VAR fType           := SELF:_oRdd:_fields[_SingleField]:FieldType
-                IF fType ==  DbFieldType.Number
+                SWITCH fType
+                CASE DbFieldType.Number
+                    SELF:_keySize   := 8
                     SELF:getKeyValue := _getNumFieldValue
-                ELSE
+                CASE DbFieldType.Date
+                    SELF:_keySize   := 8
+                    SELF:getKeyValue := _getDateFieldValue
+                OTHERWISE
+                    SELF:_keySize   := (WORD) SELF:_oRdd:_fields[_SingleField]:Length
                     SELF:getKeyValue := _getFieldValue
-                ENDIF
+                END SWITCH
                 isOk := TRUE
             ELSE
                 SELF:_keyDecimals := 0
@@ -650,10 +653,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN
         // Three methods to calculate keys. We have split these to optimize index creating
         PRIVATE METHOD _getNumFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
-            Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
-            SELF:_checkDigits(byteArray, SELF:_keySize, SELF:_keyDecimals)
+            //Todo
             RETURN TRUE
             
+        PRIVATE METHOD _getDateFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
+            //Todo
+            RETURN TRUE
         PRIVATE METHOD _getFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
             RETURN TRUE

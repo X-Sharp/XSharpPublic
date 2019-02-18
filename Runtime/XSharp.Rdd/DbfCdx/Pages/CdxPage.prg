@@ -15,6 +15,15 @@ USING System.Runtime.InteropServices
 
 BEGIN NAMESPACE XSharp.RDD.CDX
 
+    [StructLayout(LayoutKind.Explicit)];
+    INTERNAL STRUCTURE NumStruct
+        [FieldOffset(0)]  INTERNAL longValue  AS Int32
+        [FieldOffset(0)]  INTERNAL dwordValue AS UInt32
+        [FieldOffset(0)]  INTERNAL b1 AS BYTE
+        [FieldOffset(1)]  INTERNAL b2 AS BYTE
+        [FieldOffset(2)]  INTERNAL b3 AS BYTE
+        [FieldOffset(3)]  INTERNAL b4 AS BYTE
+    END STRUCTURE
 	/// <summary>
 	/// The CdxPageBase class.
 	/// </summary>
@@ -24,11 +33,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROTECTED _nPage    AS Int32
 		PROTECTED _buffer   AS BYTE[]
 		PROTECTED _hot      AS LOGIC        // Hot ?  => Page has changed ?
-        PROTECTED _dumped   as LOGIC
-        INTERNAL PROPERTY Dumped as LOGIC GET _dumped SET _dumped := Value
-        INTERNAL PROPERTY IsHot  AS LOGIC get _hot SET _hot := Value
-        INTERNAL PROPERTY Tag    AS CDXTag Get _tag SET _tag := Value
-        INTERNAL PROPERTY KeyLength as LONG GET IIF(_tag == NULL, 0, _tag:_keySize)
+        PROTECTED _dumped   AS LOGIC
+        INTERNAL PROPERTY Dumped AS LOGIC GET _dumped SET _dumped := VALUE
+        INTERNAL PROPERTY IsHot  AS LOGIC GET _hot SET _hot := VALUE
+        INTERNAL PROPERTY Tag    AS CDXTag GET _tag SET _tag := VALUE
+        INTERNAL PROPERTY KeyLength AS LONG GET IIF(_tag == NULL, 0, _tag:_keySize)
         PROPERTY Buffer AS BYTE[] GET _buffer
         PROPERTY PageNo AS Int32 GET _nPage
 
@@ -70,20 +79,80 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 				
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _GetDWord(nOffSet AS INT) AS DWORD
-				RETURN BitConverter.ToUInt32(Buffer, nOffset)
+                LOCAL nValue AS NumStruct
+	            nValue:b1 := buffer[nOffSet]
+                nValue:b2 := buffer[nOffSet+1]
+                nValue:b3 := buffer[nOffSet+2]
+                nValue:b4 := buffer[nOffSet+3]
+                RETURN nValue:dwordValue
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			PROTECTED INTERNAL METHOD _GetDWordLE(nOffSet AS INT) AS DWORD
+                LOCAL nValue AS NumStruct
+	            nValue:b4 := buffer[nOffSet]
+                nValue:b3 := buffer[nOffSet+1]
+                nValue:b2 := buffer[nOffSet+2]
+                nValue:b1 := buffer[nOffSet+3]
+                RETURN nValue:dwordValue
 				
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _SetDWord(nOffSet AS INT, dwValue AS DWORD) AS VOID
-				Array.Copy(BitConverter.GetBytes(dwValue),0, Buffer, nOffSet, SIZEOF(DWORD))
+                LOCAL nValue AS NumStruct
+                nValue:dwordValue := dwValue
+	            buffer[nOffSet]   :=  nValue:b1  
+                buffer[nOffSet+1] :=  nValue:b2  
+                buffer[nOffSet+2] :=  nValue:b3  
+                buffer[nOffSet+3] :=  nValue:b4  
+				isHot := TRUE
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			PROTECTED INTERNAL METHOD _SetDWordLE(nOffSet AS INT, dwValue AS DWORD) AS VOID
+                LOCAL nValue AS NumStruct
+                nValue:dwordValue := dwValue
+	            buffer[nOffSet]   :=  nValue:b4  
+                buffer[nOffSet+1] :=  nValue:b3  
+                buffer[nOffSet+2] :=  nValue:b2  
+                buffer[nOffSet+3] :=  nValue:b1  
 				isHot := TRUE
                 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _GetLong(nOffSet AS INT) AS Int32
-				RETURN BitConverter.ToInt32(Buffer, nOffset)
+                LOCAL nValue AS NumStruct
+	            nValue:b1 := buffer[nOffSet]
+                nValue:b2 := buffer[nOffSet+1]
+                nValue:b3 := buffer[nOffSet+2]
+                nValue:b4 := buffer[nOffSet+3]
+                RETURN nValue:LongValue
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			PROTECTED INTERNAL METHOD _GetLongLE(nOffSet AS INT) AS Int32
+                LOCAL nValue AS NumStruct
+	            nValue:b4 := buffer[nOffSet]
+                nValue:b3 := buffer[nOffSet+1]
+                nValue:b2 := buffer[nOffSet+2]
+                nValue:b1 := buffer[nOffSet+3]
+                RETURN nValue:LongValue
+			
+
 				
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _SetLong(nOffSet AS INT, liValue AS Int32) AS VOID
-				Array.Copy(BitConverter.GetBytes(liValue),0, Buffer, nOffSet, SIZEOF(Int32))
+                LOCAL nValue AS NumStruct
+                nValue:LongValue := liValue
+	            buffer[nOffSet]   :=  nValue:b1  
+                buffer[nOffSet+1] :=  nValue:b2  
+                buffer[nOffSet+2] :=  nValue:b3  
+                buffer[nOffSet+3] :=  nValue:b4  
+				isHot := TRUE
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			PROTECTED INTERNAL METHOD _SetLongLE(nOffSet AS INT, liValue AS Int32) AS VOID
+                LOCAL nValue AS NumStruct
+                nValue:LongValue := liValue
+	            buffer[nOffSet]   :=  nValue:b4 
+                buffer[nOffSet+1] :=  nValue:b3  
+                buffer[nOffSet+2] :=  nValue:b2  
+                buffer[nOffSet+3] :=  nValue:b1  
 				isHot := TRUE
 
 

@@ -591,10 +591,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                     
             CASE SearchMode.Bottom
-                    foundPos := nodeCount
+                    foundPos := nodeCount-1
                     node:Fill(foundPos, page)
                     IF node:PageNo == 0 .AND. foundPos > 0
-                        foundPos--
+                        //foundPos--
                         node:Fill(foundPos, page)
                 ENDIF
             CASE SearchMode.Top

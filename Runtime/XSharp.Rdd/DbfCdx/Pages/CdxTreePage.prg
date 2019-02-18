@@ -9,7 +9,7 @@ USING System.Collections.Generic
 USING System.Text
 USING System.IO
 USING System.Runtime.CompilerServices
-using System.Diagnostics
+USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp.RDD.CDX
 

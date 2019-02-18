@@ -387,7 +387,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             sorting := RddSortHelper{sortInfo, lRecCount}
             sortInfo:Items[0]:Length := SELF:_keySize
-            IF SELF:_KeyExprType == TypeCode.String
+            IF SELF:_KeyExprType == __UsualType.String
                 lAscii := FALSE
                 sortInfo:Items[0]:Flags := DbSortFlags.Default
             ELSE

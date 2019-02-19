@@ -158,11 +158,7 @@ BEGIN NAMESPACE XSharp.RDD
                         info:Result := 0
                 ENDIF
             CASE DBOI_KEYDEC
-                    IF workOrder != NULL
-					info:Result := workOrder:_keyDecimals
-                    ELSE
-                        info:Result := 0
-                ENDIF
+			    info:Result := 0
             CASE DBOI_UNIQUE
                     IF workOrder != NULL
                         info:Result := workOrder:Unique
@@ -343,7 +339,7 @@ BEGIN NAMESPACE XSharp.RDD
         METHOD GoTo(nRec AS LONG) AS LOGIC
             SELF:GoCold()
             IF SELF:CurrentOrder != NULL
-                SELF:CurrentOrder:_TopStack := 0    // force to reseek later
+                SELF:CurrentOrder:ClearStack()
             ENDIF
             RETURN SUPER:Goto(nRec)
             

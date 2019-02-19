@@ -17,16 +17,14 @@ USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.RDD.CDX
     [DebuggerDisplay("Tag: {OrderName}, Key: {Expression}, For: {Condition}")];
+    DELEGATE CompareFunc(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
     INTERNAL PARTIAL CLASS CdxTag
         #region constants
         PRIVATE CONST MAX_KEY_LEN       := 256  AS WORD
         PRIVATE CONST NTX_COUNT         := 16    AS WORD
         PRIVATE CONST MIN_BYTE          := 0x01 AS BYTE
         PRIVATE CONST MAX_BYTE          := 0xFF AS BYTE
-        PRIVATE CONST MAX_TRIES         := 50 AS WORD
         PRIVATE CONST STACK_DEPTH       := 20 AS LONG
-        PRIVATE CONST LOCKOFFSET_OLD    := 1000000000 AS LONG
-        PRIVATE CONST LOCKOFFSET_NEW    := -1 AS LONG
         #endregion
         #region fields
         INTERNAL _Encoding AS Encoding
@@ -41,19 +39,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _KeyExpr AS STRING
         INTERNAL _ForExpr AS STRING
         INTERNAL _currentRecno AS LONG
-        PRIVATE _currentNode    AS CdxNode
         INTERNAL _newKeyBuffer AS BYTE[]
         INTERNAL _newKeyLen AS LONG
         INTERNAL _version AS DWORD
         INTERNAL _KeyExprType AS LONG
         INTERNAL _keySize AS WORD
-        INTERNAL _keyDecimals AS WORD
-        INTERNAL _TopStack AS LONG
-        INTERNAL _firstPageOffset AS LONG
-        INTERNAL _stack AS RddStack[]
+        INTERNAL _rootPage AS LONG
         //INTERNAL _tagNumber AS INT
         INTERNAL _orderName AS STRING
         INTERNAL _Ansi AS LOGIC
+        // Scopes
         INTERNAL _hasTopScope AS LOGIC
         INTERNAL _hasBottomScope AS LOGIC
         INTERNAL _topScopeBuffer AS BYTE[]
@@ -62,11 +57,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _bottomScope AS OBJECT
         INTERNAL _topScopeSize AS LONG
         INTERNAL _bottomScopeSize AS LONG
+        // siblings
         INTERNAL _oRdd   AS DbfCdx
         INTERNAL _Header AS CdxTagHeader
-        INTERNAL _oneItem AS CdxNode
+
+        PRIVATE _stack AS RddStack[]
+        PRIVATE _topStack AS LONG
+        PRIVATE _oneItem AS CdxNode
         PRIVATE _midItem AS CdxNode
-        //PRIVATE _outPageNo AS LONG      // has to move to OrderBag later
+        PRIVATE _compareFunc AS CompareFunc
+        PRIVATE _currentNode    AS CdxNode
 
         PRIVATE _bag    AS CdxOrderBag
         PRIVATE getKeyValue AS ValueBlock       // Delegate to calculate the key
@@ -95,7 +95,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROPERTY FieldIndex     	AS INT AUTO             // 1 based FieldIndex
         PROPERTY Options        	AS CdxOptions AUTO
         PROPERTY LockOffSet     	AS LONG AUTO
-        PROPERTY CurrentStack       AS RddStack GET  SELF:_stack[SELF:_TopStack]
+        PROPERTY CurrentStack       AS RddStack GET  SELF:_stack[SELF:_topStack]
 #endregion
 
 
@@ -134,15 +134,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_Hot := FALSE
             SELF:ClearStack()
             SELF:_keySize       := SELF:_Header:KeySize
-            //SELF:_keyDecimals   := SELF:_Header:KeyDecimals
             SELF:Options        := SELF:_Header:Options
             SELF:Signature      := SELF:_Header:Signature
             SELF:_Descending    := SELF:_Header:Descending
-            SELF:_firstPageOffset := SELF:_Header:RootPage
+            SELF:_rootPage      := SELF:_Header:RootPage
 
-            SELF:_Version  := SELF:_Header:Version
-            SELF:_midItem := CdxNode{SELF:_keySize}
-            SELF:_oneItem := CdxNode{SELF:_keySize}
+            SELF:_Version   := SELF:_Header:Version
+            SELF:_midItem   := CdxNode{SELF:_keySize}
+            SELF:_oneItem   := CdxNode{SELF:_keySize}
             RETURN TRUE
 
         DESTRUCTOR()
@@ -170,13 +169,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FALSE
             ENDIF
             SELF:_KeyExprType := SELF:_oRdd:_getUsualType(oKey)
+            IF SELF:_KeyExprType == __UsualType.String
+                SELF:_compareFunc := _compareText
+            ELSE
+                SELF:_compareFunc := _compareBin
+            ENDIF
 
             // If the Key Expression contains only a Field Name
             SELF:_SingleField := SELF:_oRDD:FieldIndex(SELF:_KeyExpr) -1
             SELF:_SourceIndex := 0
             LOCAL isOk AS LOGIC
             IF SELF:_SingleField >= 0
-                SELF:_keyDecimals   := (WORD) SELF:_oRdd:_fields[_SingleField]:Decimals
                 SELF:_SourceIndex   := (WORD) SELF:_oRdd:_fields[_SingleField]:OffSet
                 VAR fType           := SELF:_oRdd:_fields[_SingleField]:FieldType
                 SWITCH fType
@@ -184,6 +187,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:_keySize   := 8
                     SELF:getKeyValue := _getNumFieldValue
                 CASE DbFieldType.Date
+                    // CDX converts the Date to a Julian Number and stores that as a Real8 in the index
                     SELF:_keySize   := 8
                     SELF:getKeyValue := _getDateFieldValue
                 OTHERWISE
@@ -192,11 +196,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 END SWITCH
                 isOk := TRUE
             ELSE
-                SELF:_keyDecimals := 0
                 SELF:_keySize := 0
                 SELF:getKeyValue := _getExpressionValue
                 isOk := SELF:_determineSize(oKey)
             ENDIF
+            SELF:_newKeyBuffer  := BYTE[]{_keySize+1 }
             IF ! isOk
                 RETURN FALSE
             ENDIF
@@ -233,7 +237,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_PageList:Flush(TRUE)
                 SELF:_Header:IndexingVersion        := 1
                 SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
-                SELF:_Header:FirstPageOffset        := SELF:_firstPageOffset
+                SELF:_Header:FirstPageOffset        := SELF:_rootPage
                 SELF:_Header:Write( )
             ENDIF
             FFlush( SELF:_hFile )
@@ -246,7 +250,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF !SELF:_Shared .AND. SELF:_Hot .AND. SELF:_hFile != F_ERROR
                 SELF:_Header:IndexingVersion        := 1
                 SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
-                SELF:_Header:FirstPageOffset        := SELF:_firstPageOffset
+                SELF:_Header:FirstPageOffset        := SELF:_rootPage
                 SELF:_Header:Write( )
             ENDIF
             FFlush( SELF:_hFile )
@@ -263,13 +267,26 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN TRUE
 
-
-        INTERNAL METHOD __Compare( aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
+        INTERNAL STATIC METHOD _compareText(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
             IF aRHS == NULL
                 RETURN 0
             ENDIF
             RETURN RuntimeState.StringCompare(aLHS, aRHS, nLength)
 
+        INTERNAL STATIC METHOD _compareBin(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
+            IF aRHS == NULL
+                RETURN 0
+            ENDIF
+            FOR VAR nI := 0 TO nLength -1
+                VAR bL := aLHS[nI]
+                VAR bR := aRHS[nI]
+                IF bL < bR
+                    RETURN -1
+                ELSEIF bl > bR
+                    RETURN 1
+                ENDIF
+            NEXT
+            RETURN 0
 
         PUBLIC METHOD SetOffLine() AS VOID
             SELF:ClearStack()
@@ -292,7 +309,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             SELF:_Header:Signature              := ntxSignature
             SELF:_Header:Version        := SELF:_Version
-            SELF:_Header:FirstPageOffset        := SELF:_firstPageOffset
+            SELF:_Header:FirstPageOffset        := SELF:_rootPage
             SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
             System.Diagnostics.Debug.WriteLine(SELF:_Header:Dump("After Update"))
             
@@ -307,126 +324,62 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             SELF:_currentNode := node
 
+        PRIVATE STATIC METHOD _toJulian(dt AS DateTime) AS LONG
+            VAR baseDate  := DateTime{1901, 1, 1 }
+            VAR days      := dt:Subtract( baseDate )
+            RETURN Convert.ToInt32( days:TotalDays ) + 2415386
 
-        PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG , nDec AS LONG , buffer AS BYTE[] , isAnsi AS LOGIC ) AS LOGIC    
+        PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG ,  buffer AS BYTE[] ) AS LOGIC    
             LOCAL resultLength AS LONG
             resultLength := 0
-            RETURN SELF:_ToString( toConvert, sLen, nDec, buffer, isAnsi, REF resultLength)
+            RETURN SELF:_ToString( toConvert, sLen, buffer,  REF resultLength)
 
-        PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG , nDec AS LONG , buffer AS BYTE[] , isAnsi AS LOGIC , resultLength REF LONG ) AS LOGIC
+        PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG ,  buffer AS BYTE[] ,  resultLength REF LONG ) AS LOGIC
             LOCAL text AS STRING
-            LOCAL chkDigits AS LOGIC
             LOCAL typeCde AS TypeCode
-            LOCAL valueFloat AS IFloat
-            LOCAL sBuilder AS StringBuilder
-            LOCAL valueDate AS IDate
-            LOCAL formatInfo AS NumberFormatInfo
-            
-            formatInfo := NumberFormatInfo{}
-            formatInfo:NumberDecimalSeparator := "."
-            
             text := NULL
-            chkDigits := FALSE
-            // Float Value ?
-            IF (toConvert ASTYPE IFloat) != NULL
-                valueFloat := (IFloat)toConvert
-                toConvert := valueFloat:Value
-                formatInfo:NumberDecimalDigits := valueFloat:Decimals
-                typeCde := TypeCode.Double
-                text := valueFloat:Value:ToString("F", formatInfo)
-                // Too long ?
-                IF text:Length > sLen
-                    sBuilder := StringBuilder{}
-                    text := sBuilder:Insert(0, "*", sLen):ToString()
-                    SELF:_oRDD:_Encoding:GetBytes( text, 0, slen, buffer, 0)
-                    resultLength := text:Length
-                    RETURN FALSE
-                ENDIF
-                IF text:Length < sLen
-                    text := text:PadLeft(sLen, ' ')
-                    chkDigits := TRUE
-                ENDIF
+            IF (toConvert ASTYPE IFloat) != NULL // Float Value ?
+                VAR valueFloat := (IFloat)toConvert
+                typeCde   := TypeCode.Double
+            ELSEIF (toConvert ASTYPE IDate) != NULL // Date Value
+                VAR valueDate := (IDate)toConvert
+                toconvert := DateTime{valueDate:Year, valueDate:Month, valueDate:Day}
+                typeCde   := TypeCode.DateTime
             ELSE
-                IF (toConvert ASTYPE IDate) != NULL
-                    valueDate := (IDate)toConvert
-                    text := valueDate:Value:ToString("yyyyMMdd")
-                    typeCde := TypeCode.String
-                ELSE
-                    typeCde := Type.GetTypeCode(toConvert:GetType())
+                typeCde := Type.GetTypeCode(toConvert:GetType())
+            ENDIF
+            IF typeCde == TypeCode.DateTime
+                // Convert to Julian number and then process as normal numeric value
+                toConvert     := _toJulian((DateTime) toConvert)
+                typeCde       := TypeCode.Int32
+            ENDIF
+            SWITCH typeCde
+            CASE TypeCode.Int16
+            CASE TypeCode.Int32
+            CASE TypeCode.Int64
+            CASE TypeCode.Single
+            CASE TypeCode.Double
+            CASE TypeCode.Decimal
+                LOCAL ds := DoubleStruct{} AS DoubleStruct
+                ds:doubleValue := Convert.ToDouble(toConvert)
+                ds:SaveToIndex(buffer)
+                resultLength := 8
+                RETURN TRUE
+            CASE TypeCode.String
+                text := (STRING)toConvert
+            CASE TypeCode.Boolean
+                text := "F"
+                IF (LOGIC) toConvert
+                    text := "T"
                 ENDIF
-            ENDIF
-            IF text == NULL
-                SWITCH typeCde
-                CASE TypeCode.String
-                    text := (STRING)toConvert
-                CASE TypeCode.Int16
-                CASE TypeCode.Int32
-                CASE TypeCode.Int64
-                CASE TypeCode.Single
-                CASE TypeCode.Double
-                CASE TypeCode.Decimal
-                    formatInfo:NumberDecimalDigits := nDec
-                    SWITCH typeCde
-                    CASE TypeCode.Int32
-                        text := ((LONG)toConvert):ToString("F", formatInfo)
-                    CASE TypeCode.Double
-                        text := ((REAL8)toConvert):ToString("F", formatInfo)
-                    OTHERWISE
-                        text := ((Decimal)toConvert):ToString("F", formatInfo)
-                    END SWITCH
-                    VAR length := text:Length
-                    IF length > sLen
-                        sBuilder := StringBuilder{}
-                        text := sBuilder:Insert(0, "*", sLen):ToString()
-                        SELF:_oRDD:_Encoding:GetBytes( text, 0, slen, buffer, 0)
-                        resultLength := text:Length
-                        RETURN FALSE
-                    ENDIF
-                    text := text:PadLeft(sLen, ' ')
-                    chkDigits := TRUE
-                CASE TypeCode.DateTime
-                    text := ((DateTime)toConvert):ToString("yyyyMMdd")
-                CASE TypeCode.Boolean
-                    text := (IIF(((LOGIC)toConvert) , "T" , "F"))
-                OTHERWISE
-                    RETURN FALSE
-                END SWITCH
-            ENDIF
+            END SWITCH
             IF sLen > text:Length
                 sLen := text:Length
             ENDIF
+            resultLength := sLen
             SELF:_oRDD:_Encoding:GetBytes( text, 0, slen, buffer, 0)
-            IF chkDigits
-                SELF:_checkDigits(buffer, SELF:_keySize, SELF:_keyDecimals )
-            ENDIF
-            resultLength := text:Length
             RETURN TRUE
             
-            
-            
-        PRIVATE METHOD _checkDigits(buffer AS BYTE[] , length AS LONG , decimals AS LONG ) AS VOID
-            LOCAL i := 0 AS LONG
-            // Transform starting spaces with zeros
-            DO WHILE buffer[i] == 32 .AND. i < length
-                buffer[i] := (BYTE)'0'
-                i++
-            ENDDO
-            IF i == length  // all spaces , now converted to all zeroes.
-                // It must be a decimal value ?
-                IF decimals != 0
-                    buffer[length - decimals - 1] := (BYTE)'.'
-                ENDIF
-            ENDIF
-            IF buffer[i] == '-'
-                i++
-                FOR VAR j := 0 TO i-1 STEP 1
-                    buffer[j] := 44 // ,
-                NEXT
-                FOR VAR j := i TO length -1 STEP 1
-                    buffer[j] := (BYTE) (92 - buffer[j])
-                NEXT
-            ENDIF
-            RETURN
         METHOD SetOrderScope(itmScope AS OBJECT , uiScope AS DBOrder_Info ) AS LOGIC
             LOCAL uiRealLen AS LONG
             LOCAL result AS LOGIC
@@ -439,7 +392,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_hasTopScope   := (itmScope != NULL)
                 IF itmScope != NULL
                     SELF:_topScopeBuffer := BYTE[]{ MAX_KEY_LEN+1 }
-                    SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_topScopeBuffer, SELF:_Ansi, REF uiRealLen)
+                    SELF:_ToString(itmScope, SELF:_keySize,  SELF:_topScopeBuffer, REF uiRealLen)
                     SELF:_topScopeSize := uiRealLen
                 ENDIF
             CASE DBOrder_Info.DBOI_SCOPEBOTTOM
@@ -447,7 +400,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_hasBottomScope := (itmScope != NULL)
                 IF itmScope != NULL
                     SELF:_bottomScopeBuffer := BYTE[]{ MAX_KEY_LEN+1 }
-                    SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_bottomScopeBuffer, SELF:_Ansi, REF uiRealLen)
+                    SELF:_ToString(itmScope, SELF:_keySize, SELF:_bottomScopeBuffer, REF uiRealLen)
                     SELF:_bottomScopeSize := uiRealLen
                 ENDIF
             OTHERWISE
@@ -535,7 +488,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF recno == 0
                 recno := SELF:_Recno
             ENDIF
-            IF SELF:_TopStack == 0
+            IF SELF:_topStack == 0
                 SELF:_GoToRecno(recno)
             ENDIF
             IF SELF:_hasTopScope .OR. SELF:_hasBottomScope
@@ -590,18 +543,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN recno
             
-        PRIVATE METHOD PopPage() AS VOID
-            IF SELF:_TopStack != 0
+        PRIVATE METHOD PopPage() AS RddStack
+            IF SELF:_topStack != 0
                 SELF:CurrentStack:Clear()
-                SELF:_TopStack--
+                SELF:_topStack--
             ENDIF
+            RETURN SELF:CurrentStack
             
-        PRIVATE METHOD ClearStack() AS VOID
-        
+        INTERNAL METHOD ClearStack() AS VOID
             FOREACH entry AS RddStack IN SELF:_stack 
                 entry:Clear()
             NEXT
-            SELF:_TopStack := 0
+            SELF:_topStack := 0
+            RETURN
             
         INTERNAL METHOD _dump() AS VOID
 	    
@@ -640,14 +594,30 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 
             ENDIF
             RETURN
+
         // Three methods to calculate keys. We have split these to optimize index creating
         PRIVATE METHOD _getNumFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
-            //Todo
+            LOCAL r8 := DoubleStruct{} AS DoubleStruct
+            LOCAL oValue := SELF:_oRdd:GetValue(sourceIndex) AS OBJECT
+            r8:DoubleValue := Convert.ToDouble(oValue)
+            r8:SaveToIndex(byteArray)
             RETURN TRUE
             
         PRIVATE METHOD _getDateFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
-            //Todo
-            RETURN TRUE
+            LOCAL oValue := SELF:_oRdd:GetValue(sourceIndex) AS OBJECT
+            IF oValue IS IDate
+                VAR valueDate := (IDate)oValue
+                oValue := DateTime{valueDate:Year, valueDate:Month, valueDate:Day}
+            ENDIF
+            IF oValue IS DateTime
+                LOCAL r8 := DoubleStruct{} AS DoubleStruct
+                VAR longValue  := _toJulian((DateTime) oValue)
+                r8:DoubleValue := Convert.ToDouble(longValue)
+                r8:SaveToIndex(byteArray)
+                RETURN TRUE
+            ENDIF
+            RETURN FALSE
+        
         PRIVATE METHOD _getFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
             RETURN TRUE
@@ -657,7 +627,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             TRY
                 VAR oKeyValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
                 LOCAL uiRealLen := 0 AS LONG
-                result := SELF:_ToString(oKeyValue, SELF:_keySize, SELF:_keyDecimals, byteArray, SELF:_Ansi, REF uiRealLen)
+                result := SELF:_ToString(oKeyValue, SELF:_keySize,  byteArray,  REF uiRealLen)
             CATCH
                 result := FALSE
             END TRY

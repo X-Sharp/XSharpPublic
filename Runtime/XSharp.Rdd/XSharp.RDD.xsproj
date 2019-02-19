@@ -123,6 +123,7 @@
     <Compile Include="DbfCdx\CdxNode.prg" />
     <Compile Include="DbfCdx\CdxPageList.prg" />
     <Compile Include="DbfCdx\CdxSort.prg" />
+    <Compile Include="DbfCdx\CdxHelpers.prg" />
     <Compile Include="DbfCdx\Pages\CdxTagList.prg" />
     <Compile Include="DbfCdx\Tag\CdxTag.prg" />
     <Compile Include="DbfCdx\Tag\CdxTagCreate.prg" />

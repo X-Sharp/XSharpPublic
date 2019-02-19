@@ -415,12 +415,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             Array.Copy(node:KeyBytes, SELF:_currentKeyBuffer, SELF:_keySize)
             
             
-        PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG , nDec AS LONG , buffer AS BYTE[] , isAnsi AS LOGIC ) AS LOGIC    
+        PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG , nDec AS LONG , buffer AS BYTE[] ) AS LOGIC    
             LOCAL resultLength AS LONG
             resultLength := 0
-            RETURN SELF:_ToString( toConvert, sLen, nDec, buffer, isAnsi, REF resultLength)
+            RETURN SELF:_ToString( toConvert, sLen, nDec, buffer, REF resultLength)
             
-        PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG , nDec AS LONG , buffer AS BYTE[] , isAnsi AS LOGIC , resultLength REF LONG ) AS LOGIC
+        PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG , nDec AS LONG , buffer AS BYTE[] , resultLength REF LONG ) AS LOGIC
             LOCAL text AS STRING
             LOCAL chkDigits AS LOGIC
             LOCAL valueFloat AS IFloat
@@ -537,7 +537,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     SELF:_hasTopScope   := (itmScope != NULL)
                     IF itmScope != NULL
                         SELF:_topScopeBuffer := BYTE[]{ MAX_KEY_LEN+1 }
-                        SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_topScopeBuffer, SELF:_Ansi, REF uiRealLen)
+                        SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_topScopeBuffer,  REF uiRealLen)
                         SELF:_topScopeSize := uiRealLen
                 ENDIF
             CASE DBOrder_Info.DBOI_SCOPEBOTTOM
@@ -545,7 +545,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     SELF:_hasBottomScope := (itmScope != NULL)
                     IF itmScope != NULL
                         SELF:_bottomScopeBuffer := BYTE[]{ MAX_KEY_LEN+1 }
-                        SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_bottomScopeBuffer, SELF:_Ansi, REF uiRealLen)
+                        SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_bottomScopeBuffer,  REF uiRealLen)
                         SELF:_bottomScopeSize := uiRealLen
                 ENDIF
             OTHERWISE
@@ -684,11 +684,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             
 
-        PRIVATE METHOD PopPage() AS VOID
+        PRIVATE METHOD PopPage() AS RddStack
             IF SELF:_TopStack != 0
                 SELF:CurrentStack:Clear()
                 SELF:_TopStack--
             ENDIF
+            RETURN SELF:CurrentStack
             
         PRIVATE METHOD ClearStack() AS VOID
         
@@ -786,7 +787,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_oRDD:Validate()
                 VAR oKeyValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
                 LOCAL uiRealLen := 0 AS LONG
-                result := SELF:_ToString(oKeyValue, SELF:_keySize, SELF:_keyDecimals, byteArray, SELF:_Ansi, REF uiRealLen)
+                result := SELF:_ToString(oKeyValue, SELF:_keySize, SELF:_keyDecimals, byteArray, REF uiRealLen)
             CATCH
                 result := FALSE
             END TRY

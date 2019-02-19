@@ -91,7 +91,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             uiRealLen := 0
             byteArray := BYTE[]{ 256 }
             // Convert the seeked key to a byte Array
-            IF !SELF:_ToString(seekInfo:Value, SELF:_keySize, SELF:_keyDecimals, byteArray, SELF:_Ansi, REF uiRealLen)
+            IF !SELF:_ToString(seekInfo:Value, SELF:_keySize, SELF:_keyDecimals, byteArray, REF uiRealLen)
                 SELF:_oRdd:_dbfError( SubCodes.ERDD_VAR_TYPE, GenCode.EG_DATATYPE,SELF:fileName)
                 RETURN FALSE
             ENDIF
@@ -233,8 +233,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
                 IF topStack:Pos == topStack:Count
                     DO WHILE SELF:_TopStack != 0 .AND. topStack:Pos == topStack:Count
-                        SELF:PopPage()
-                        topStack := SELF:CurrentStack
+                        topStack := SELF:PopPage()
                     ENDDO
                     RETURN SELF:_getNextKey(TRUE, SkipDirection.Forward)
                 ENDIF
@@ -249,8 +248,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             IF topStack:Pos == 0
                 DO WHILE SELF:_TopStack != 0 .AND. topStack:Pos == 0
-                    SELF:PopPage()
-                    topStack := SELF:CurrentStack
+                    topStack := SELF:PopPage()
                 ENDDO
                 RETURN SELF:_getNextKey(TRUE, SkipDirection.Backward)
             ENDIF
@@ -285,8 +283,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             IF topStack:Pos == 0
                 DO WHILE SELF:_TopStack != 0 .AND. topStack:Pos == 0
-                    SELF:PopPage()
-                    topStack := SELF:CurrentStack
+                    topStack := SELF:PopPage()
                 ENDDO
                 RETURN SELF:_findItemPos(REF record, TRUE)
             ENDIF
@@ -455,7 +452,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF !isOk .AND. SELF:_RecNo != 0
                 IF SELF:_hasBottomScope
                     itmBottomScope := SELF:_bottomScope
-                    SELF:_ToString(itmBottomScope, SELF:_keySize, SELF:_keyDecimals, SELF:_newKeyBuffer, SELF:_Ansi)
+                    SELF:_ToString(itmBottomScope, SELF:_keySize, SELF:_keyDecimals, SELF:_newKeyBuffer)
                     
                     IF SELF:__Compare(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, SELF:_keySize) >= 0
                         isOk := TRUE
@@ -631,8 +628,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 END SWITCH
             ELSEIF searchMode == SearchMode.LeftFound
                 DO WHILE SELF:_TopStack != 0 .AND. topStack:Pos == topStack:Count
-                    SELF:PopPage()
-                    topStack := SELF:CurrentStack
+                    topStack := SELF:PopPage()
                 ENDDO
                 IF SELF:_TopStack != 0
                     page := SELF:_PageList:Read(topStack:Page)
@@ -718,7 +714,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     LOCAL found AS LOGIC
                     IF SELF:_oRdd:_isValid
                         IF deletedState .OR. SELF:_oRdd:_FilterInfo:Active .OR. seekInfo:SoftSeek .OR. seekInfo:Last
-                            SELF:_ToString(seekInfo:Value, SELF:_keySize, SELF:_keyDecimals, SELF:_newKeyBuffer, SELF:_Ansi, REF SELF:_newKeyLen)
+                            SELF:_ToString(seekInfo:Value, SELF:_keySize, SELF:_keyDecimals, SELF:_newKeyBuffer, REF SELF:_newKeyLen)
                             strCmp := SELF:__Compare(abNewKey, SELF:_currentKeyBuffer, len)
                             found := (strCmp == 0)
                             IF needPadStr .AND. !found
@@ -831,8 +827,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
         PRIVATE METHOD _Seek(dbsi AS DBSEEKINFO , lpval AS OBJECT ) AS LOGIC
             LOCAL byteArray AS BYTE[]
-            byteArray := BYTE[]{ MAX_KEY_LEN+1 }
-            SELF:_ToString(lpval, SELF:_keySize, SELF:_keyDecimals, byteArray, SELF:_Ansi)
+            byteArray := BYTE[]{ SELF:_keySize+1 }
+            SELF:_ToString(lpval, SELF:_keySize, SELF:_keyDecimals, byteArray)
             dbsi:SoftSeek := TRUE
             RETURN SELF:_Seek(dbsi, byteArray)
             

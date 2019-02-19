@@ -72,13 +72,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             num := (WORD)(  ( BUFF_SIZE - 4) / (SELF:_keySize + 10))
             SELF:_halfPage := (WORD) ((num - 1) / 2)
             SELF:_MaxEntry := (WORD) (SELF:_halfPage * 2)
-            SELF:_firstPageOffset := BUFF_SIZE
+            SELF:_rootPage := BUFF_SIZE
             SELF:_fileSize := 0
             SELF:_nextUnusedPageOffset := 0
             SELF:_Version := 1
             SELF:_Shared := FALSE
             SELF:_Hot := TRUE
-            SELF:_TopStack := 0
+            SELF:ClearStack()
             SELF:Unique := createInfo:Unique
             SELF:_Ansi := SELF:_oRdd:_Ansi
             SELF:_Conditional := FALSE
@@ -123,11 +123,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 //            SELF:_Header := NtxHeader{ SELF:_hFile }
 //            SELF:_Header:Signature              := NtxHeaderFlags.Default
 //            SELF:_Header:Version                := SELF:_Version
-//            SELF:_Header:FirstPageOffset        := SELF:_firstPageOffset
+//            SELF:_Header:FirstPageOffset        := SELF:_rootPage
 //            SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
 //            SELF:_Header:EntrySize              := SELF:_entrySize
 //            SELF:_Header:KeySize                := SELF:_keySize
-//            SELF:_Header:KeyDecimals            := SELF:_keyDecimals
 //            SELF:_Header:MaxItem                := SELF:_MaxEntry
 //            SELF:_Header:HalfPage               := SELF:_halfPage
 //            SELF:_Header:Unique                 := SELF:_Unique
@@ -172,8 +171,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
             
         INTERNAL METHOD _determineSize(toConvert AS OBJECT ) AS LOGIC
-            LOCAL expr AS STRING
-            LOCAL nPos AS INT
 
             VAR type := SELF:_oRdd:_getUsualType(toConvert)
             SWITCH type
@@ -181,27 +178,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_keySize := (WORD) ((STRING)toConvert):Length
             CASE __UsualType.Long
             CASE __UsualType.Float
-                TRY
-                    expr := "STR(" + SELF:_KeyExpr + ")"
-                    TRY
-                        VAR oBlock := SELF:_oRdd:Compile(expr)
-                        expr := (STRING) SELF:_oRdd:EvalBlock(oBlock)
-                    CATCH
-                        RETURN FALSE
-                    END TRY
-                    SELF:_keySize := (WORD) expr:Length
-                    nPos := expr:IndexOfAny(<CHAR>{',', '.' })
-                    IF nPos < 0
-                        SELF:_keyDecimals := 0
-                    ELSE
-                        SELF:_keyDecimals := (WORD) (SELF:_keySize - nPos - 1)
-                    ENDIF
-                    
-                CATCH //Exception
-                    SELF:_keyDecimals := 0
-                END TRY
             CASE __UsualType.Date
-                SELF:_keySize := 8
+                SELF:_keySize := 8      // all stored as numeric
             CASE __UsualType.Logic
                 SELF:_keySize := 1
             OTHERWISE
@@ -266,7 +244,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // IF record is EOF then do nothing
             IF !SELF:_oRdd:_isValid .AND. !SELF:_oRdd:_Eof
                 SELF:_oRdd:__Goto(start)
-                SELF:_TopStack := 0
+                SELF:ClearStack()
                 RETURN FALSE
             ENDIF
             IF ordCondInfo:WhileBlock != NULL
@@ -275,7 +253,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF ordCondInfo:EvalBlock != NULL
                 hasEvalBlock := TRUE
             ENDIF
-            IF lUseOrder .AND. leadingOrder:_TopStack != 0
+            IF lUseOrder .AND. leadingOrder:_topStack != 0
                 result := leadingOrder:_GoToRecno(SELF:_RecNo)
                 IF !result
                     RETURN result
@@ -331,7 +309,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDDO
 
             SELF:_oRdd:__Goto(start)
-            SELF:_TopStack := 0
+            SELF:ClearStack()
             SELF:Flush()
             */
             RETURN TRUE
@@ -339,11 +317,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             /*
             LOCAL nLevel AS NtxLevel
             
-            SELF:_firstPageOffset := SELF:_fileSize
+            SELF:_rootPage := SELF:_fileSize
             SELF:_fileSize += BUFF_SIZE
             nLevel := NtxLevel{SELF}
             nLevel:InitRefs(SELF:_MaxEntry, SELF:_entrySize)
-            nLevel:Write(SELF:_firstPageOffset)
+            nLevel:Write(SELF:_rootPage)
             SELF:ClearStack()
             */
             RETURN TRUE
@@ -441,7 +419,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             sorting := NULL
             SELF:_oneItem:PageNo := 0
             SELF:_placeItem(SELF:_oneItem)
-            SELF:_firstPageOffset := SELF:_oneItem:PageNo
+            SELF:_rootPage := SELF:_oneItem:PageNo
             SELF:_nextUnusedPageOffset := 0
             VAR lpLevels := SELF:_levels
             FOREACH level AS NtxLevel IN lpLevels 
@@ -482,7 +460,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         SELF:_oRdd:GoTo(SELF:_RecNo + 1)
                     UNTIL ! SELF:_oRdd:_isValid
                 ENDIF
-                SELF:_TopStack := 0
+                SELF:ClearStack()
             ENDIF
             SELF:Flush()
             RETURN Ok
@@ -589,7 +567,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             */
         PUBLIC METHOD Truncate() AS LOGIC
-//            SELF:_firstPageOffset := CDXPAGE_SIZE
+//            SELF:_rootPage := CDXPAGE_SIZE
 //            SELF:_nextUnusedPageOffset := 0
 //            SELF:_Hot := TRUE
 //            SELF:ClearStack()

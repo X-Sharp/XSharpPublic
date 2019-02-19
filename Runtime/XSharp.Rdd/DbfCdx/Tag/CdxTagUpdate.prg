@@ -68,10 +68,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF !lNewRecord
                             changed := SELF:__Compare(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, SELF:_keySize) != 0
                             IF changed
-                                SELF:_TopStack := 0
+                                SELF:_topStack := 0
                             ENDIF
                             num := SELF:_goRecord(SELF:_currentKeyBuffer, SELF:_keySize, recordNo)
-                            IF (SELF:_TopStack != 0 .AND. !SELF:_Conditional) .OR. num != 0
+                            IF (SELF:_topStack != 0 .AND. !SELF:_Conditional) .OR. num != 0
                                 IF changed .OR. !condFor
                                     SELF:_deleteKey()
                                 ENDIF
@@ -85,18 +85,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             SELF:_midItem:KeyBytes := SELF:_newKeyBuffer
                             SELF:_midItem:PageNo := 0
                             SELF:_midItem:Recno := recordNo
-                            SELF:_TopStack := 0
+                            SELF:ClearStack()
                             IF SELF:Unique
-                                IF SELF:_locate(SELF:_midItem:KeyBytes, SELF:_keySize, SearchMode.Left, SELF:_firstPageOffset) == 0
+                                IF SELF:_locate(SELF:_midItem:KeyBytes, SELF:_keySize, SearchMode.Left, SELF:_rootPage) == 0
                                     SELF:_addKey()
                                 ELSE
-                                    SELF:_TopStack := 0
+                                    SELF:ClearStack()
                                 ENDIF
                             ELSE
-                                SELF:_locate(SELF:_midItem:KeyBytes, SELF:_keySize, SearchMode.Right, SELF:_firstPageOffset)
+                                SELF:_locate(SELF:_midItem:KeyBytes, SELF:_keySize, SearchMode.Right, SELF:_rootPage)
                                 SELF:_addKey()
                             ENDIF
-                            SELF:_TopStack := 0
+                            SELF:ClearStack()
                             SELF:_Hot := TRUE
                         ENDIF
                         Array.Copy(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, SELF:_keySize + 1)
@@ -134,21 +134,21 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
             SELF:_Hot := TRUE
             uiHalfPage := SELF:_halfPage
-            IF SELF:_TopStack == 0
+            IF SELF:_topStack == 0
                 // new root 
                 page := SELF:AllocPage()
                 pageNo := page:PageOffset
                 page:InitRefs(_MaxEntry, _EntrySize)
                 node := page[0]
-                node:PageNo     := SELF:_firstPageOffset
+                node:PageNo     := SELF:_rootPage
                 node:Recno      := SELF:_midItem:Recno
                 node:KeyBytes   := SELF:_midItem:KeyBytes
                 page[1]:PageNo := SELF:_midItem:PageNo
                 page:NodeCount := 1
-                SELF:_firstPageOffset := pageNo
+                SELF:_rootPage := pageNo
                 RETURN FALSE
             ENDIF
-            VAR page2 := SELF:_PageList:Update(SELF:_stack[SELF:_TopStack]:Page)
+            VAR page2 := SELF:_PageList:Update(SELF:CurrentStack:Page)
             IF SELF:_insertKey(page2)
                 // Split pages
                 // Write Left page
@@ -165,7 +165,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 NEXT
                 page[0]:PageNo := SELF:_midItem:PageNo
                 SELF:_midItem:PageNo := page:PageOffset
-                SELF:_TopStack--
+                SELF:_topStack--
                 SELF:_addKey()
                 RETURN FALSE
             ENDIF
@@ -183,16 +183,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL offset AS WORD
             LOCAL i AS LONG
             
-            lPage := SELF:_stack[SELF:_TopStack]:Page
-            uiPos := SELF:_stack[SELF:_TopStack]:Pos
+            lPage := SELF:CurrentStack:Page
+            uiPos := SELF:CurrentStack:Pos
             page := SELF:_PageList:Read(lPage)
             node := page[uiPos]
             IF node:PageNo != 0
                 // move key to leaf (copy leaf entry to current)
                 SELF:_locate(NULL, 0, SearchMode.Bottom, node:PageNo)
-                page := SELF:_PageList:Read(SELF:_stack[SELF:_TopStack]:Page)
+                page := SELF:_PageList:Read(SELF:CurrentStack:Page)
                 // get leaf
-                node    := page[SELF:_stack[SELF:_TopStack]:Pos]
+                node    := page[SELF:CurrentStack:Pos]
                 SELF:_midItem:Recno := node:Recno
                 SELF:_midItem:KeyBytes := node:KeyBytes
                 // update parent
@@ -201,8 +201,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 node:Recno  := SELF:_midItem:Recno
                 node:KeyBytes := SELF:_midItem:KeyBytes
                 // get back leaf
-                lPage := SELF:_stack[SELF:_TopStack]:Page
-                uiPos := SELF:_stack[SELF:_TopStack]:Pos
+                lPage := SELF:CurrentStack:Page
+                uiPos := SELF:CurrentStack:Pos
                 page := SELF:_PageList:Read(lPage)
                 node := page[uiPos]
             ENDIF
@@ -218,10 +218,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF nodeCount > 0
                 page:NodeCount--
             ENDIF
-            SELF:_stack[SELF:_TopStack]:Count := page:NodeCount
-            SELF:_stack[SELF:_TopStack]:Pos := page:NodeCount
+            SELF:CurrentStack:Count := page:NodeCount
+            SELF:CurrentStack:Pos := page:NodeCount
             SELF:_PageList:Write(lPage)
-            IF page:NodeCount < SELF:_halfPage .AND. SELF:_TopStack > 1
+            IF page:NodeCount < SELF:_halfPage .AND. SELF:_topStack > 1
                 SELF:_Balance()
             ENDIF
             */
@@ -240,33 +240,34 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL offset AS WORD
             LOCAL num4 AS LONG
             
-            leftPageNo := SELF:_stack[SELF:_TopStack]:Page
-            uiCount := SELF:_stack[SELF:_TopStack]:Count
+            leftPageNo := SELF:CurrentStack:Page
+            uiCount := SELF:CurrentStack:Count
             IF uiCount >= SELF:_halfPage
                 // nothing to do
                 RETURN
             ENDIF
-            IF SELF:_TopStack == 1
+            IF SELF:_topStack == 1
                 IF uiCount == 0
                     // delete root
                     pageLeft := SELF:_PageList:Update(leftPageNo)
                     
                     nodeLeft := pageLeft[0]
-                    SELF:_firstPageOffset := nodeLeft:PageNo
+                    SELF:_rootPage := nodeLeft:PageNo
                     // add to list of deleted pages
                     nodeLeft:PageNo := SELF:_nextUnusedPageOffset 
                     SELF:_nextUnusedPageOffset := leftPageNo
                 ENDIF
             ELSE
                 // get parent page
-                iPos     := SELF:_stack[--SELF:_TopStack]:Pos
-                pageLeft := SELF:_PageList:Read(SELF:_stack[SELF:_TopStack]:Page)
+                --SELF:_topStack
+                iPos     := CurrentStack:Pos
+                pageLeft := SELF:_PageList:Read(SELF:CurrentStack:Page)
                 // setup left and right siblings
-                IF iPos == SELF:_stack[SELF:_TopStack]:Count
+                IF iPos == SELF:CurrentStack:Count
                     // underflow page was a right pointer from parent 
                     rightPageNo := pageLeft[iPos]:PageNo
                     num2 := rightPageNo
-                    iPos := --SELF:_stack[SELF:_TopStack]:Pos
+                    iPos := --SELF:CurrentStack:Pos
                     leftPageNo := pageLeft[iPos]:PageNo
                 ELSE
                     // underflow page was a left pointer from parent 
@@ -276,8 +277,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 // delete parent entry into nodeMid
                 SELF:_delToMid(pageLeft, iPos)
-                SELF:_stack[SELF:_TopStack]:Count--
-                SELF:_PageList:Write(SELF:_stack[SELF:_TopStack]:Page)
+                SELF:CurrentStack:Count--
+                SELF:_PageList:Write(SELF:CurrentStack:Page)
                 // read sibling pages
                 pageLeft := SELF:_PageList:Read(leftPageNo)
                 pageRight := SELF:_PageList:Read(rightPageNo)
@@ -447,7 +448,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL pageNo AS LONG
             
             nodeCount := page:NodeCount
-            uiPos := SELF:_stack[SELF:_TopStack]:Pos
+            uiPos := SELF:CurrentStack:Pos
             IF nodeCount < SELF:_MaxEntry
                 // it fits, so make space
                 offset := page:GetRef(nodeCount + 1)

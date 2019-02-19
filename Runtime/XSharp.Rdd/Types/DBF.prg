@@ -1234,7 +1234,7 @@ BEGIN NAMESPACE XSharp.RDD
 			RETURN isOk
 			
 			// Convert a Julian Date to a System.DateTime Date
-		PROTECT METHOD _julianToDateTime(julianDateAsLong AS INT64) AS System.DateTime
+		INTERNAL METHOD _julianToDateTime(julianDateAsLong AS INT64) AS System.DateTime
 			LOCAL num2 AS REAL8
 			LOCAL num3 AS REAL8
 			LOCAL num4 AS REAL8
@@ -1263,7 +1263,7 @@ BEGIN NAMESPACE XSharp.RDD
 			RETURN System.DateTime{System.Convert.ToInt32(num11), System.Convert.ToInt32(num10), System.Convert.ToInt32(num8)}
 			
 			// Convert a System.DateTime Date to a Julian Date
-		PROTECT METHOD _dateTimeToJulian( dt AS DateTime ) AS LONG
+		INTERNAL METHOD _dateTimeToJulian( dt AS DateTime ) AS LONG
 			LOCAL Month := dt:Month AS INT
 			LOCAL Day := dt:Day AS INT
 			LOCAL Year := dt:Year AS INT

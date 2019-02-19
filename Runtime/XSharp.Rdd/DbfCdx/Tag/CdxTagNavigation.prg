@@ -284,27 +284,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             */
             RETURN TRUE
             
-            //    PRIVATE METHOD _isEqual(lRecno AS LONG , objValue AS OBJECT , result REF LOGIC ) AS LOGIC
-            //        LOCAL isOk AS LOGIC
-            //        LOCAL length AS LONG
-            //        LOCAL text AS STRING
-            //        // SELF:_currentRecno == lRecno, we are on the same record !!
-            //        isOk := SELF:_ToString(objValue, SELF:_keySize, SELF:_keyDecimals, SELF:_newKeyBuffer, SELF:_Ansi, REF SELF:_newKeyLen)
-            //        IF !isOk
-            //            SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_EVAL, GenCode.EG_DATATYPE,SELF:fileName)
-            //            RETURN FALSE
-            //        ENDIF
-            //        IF objValue:GetType() == TYPEOF(STRING)
-            //            text := (STRING)objValue
-            //            length := text:Length
-            //            SELF:_newKeyLen := text:Length
-            //        ELSE
-            //            length := SELF:_keySize
-            //        ENDIF
-            //        result := (SELF:__Compare(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, length) != 0)
-            //        RETURN isOk
-            
-            
+              
             
         PRIVATE METHOD _getScopePos() AS LONG
             LOCAL first AS LONG
@@ -334,13 +314,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN first - last + 1
             
             
-        INTERNAL METHOD _saveCurrentKey(rcno AS LONG ) AS LOGIC
+        INTERNAL METHOD _saveCurrentKey(rcno AS LONG, currentKeyBuffer AS BYTE[]) AS LOGIC
             LOCAL isOk AS LOGIC
             
             isOk := TRUE
             IF rcno != SELF:_currentRecno .OR. SELF:Shared
                 SELF:_currentRecno := 0
-                VAR currentKeyBuffer := SELF:_currentNode:KeyBytes
                 isOk := SELF:getKeyValue(SELF:_SourceIndex, currentKeyBuffer)
                 IF isOk
                     SELF:_currentRecno := rcno
@@ -494,9 +473,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
         INTERNAL METHOD _GoToRecno(recno AS LONG ) AS LOGIC
             LOCAL result AS LOGIC
+            LOCAL currentKeyBuffer AS BYTE[]
             result := TRUE
-            SELF:_saveCurrentKey(recno)
-            VAR currentKeyBuffer := SELF:_currentNode:KeyBytes
+            currentKeyBuffer := BYTE[]{ SELF:_keySize+1 }
+            SELF:_saveCurrentKey(recno,currentKeyBuffer)
             IF SELF:_goRecord(currentKeyBuffer, SELF:_keySize, recno) != recno
                 IF SELF:_goRecord(NULL, 0, recno) != recno
                     IF !SELF:Unique .AND. !SELF:Conditional .AND. !SELF:Custom

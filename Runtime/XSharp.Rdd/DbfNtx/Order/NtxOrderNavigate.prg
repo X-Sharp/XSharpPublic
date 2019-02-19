@@ -294,27 +294,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             topStack:Pos := 0
             RETURN TRUE
             
-            //    PRIVATE METHOD _isEqual(lRecno AS LONG , objValue AS OBJECT , result REF LOGIC ) AS LOGIC
-            //        LOCAL isOk AS LOGIC
-            //        LOCAL length AS LONG
-            //        LOCAL text AS STRING
-            //        // SELF:_currentRecno == lRecno, we are on the same record !!
-            //        isOk := SELF:_ToString(objValue, SELF:_keySize, SELF:_keyDecimals, SELF:_newKeyBuffer, SELF:_Ansi, REF SELF:_newKeyLen)
-            //        IF !isOk
-            //            SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_EVAL, GenCode.EG_DATATYPE,SELF:fileName)
-            //            RETURN FALSE
-            //        ENDIF
-            //        IF objValue:GetType() == TYPEOF(STRING)
-            //            text := (STRING)objValue
-            //            length := text:Length
-            //            SELF:_newKeyLen := text:Length
-            //        ELSE
-            //            length := SELF:_keySize
-            //        ENDIF
-            //        result := (SELF:__Compare(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, length) != 0)
-            //        RETURN isOk
-            
-            
+          
             
         PRIVATE METHOD _getScopePos() AS LONG
             LOCAL first AS LONG

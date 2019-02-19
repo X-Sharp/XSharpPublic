@@ -254,18 +254,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
             
         PUBLIC METHOD Close() AS LOGIC
-            /*
             SELF:Flush()
-            TRY
-                IF SELF:_hFile != F_ERROR
-                    FClose( SELF:_hFile )
-                    SELF:_hFile := F_ERROR
-                ENDIF
-                
-            FINALLY
-                SELF:_hFile := F_ERROR
-            END TRY
-            */
             RETURN TRUE
 
         PUBLIC METHOD GoCold() AS LOGIC
@@ -372,28 +361,28 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     text := (STRING)toConvert
                 CASE TypeCode.Int16
                 CASE TypeCode.Int32
-            CASE TypeCode.Int64
+                CASE TypeCode.Int64
                 CASE TypeCode.Single
                 CASE TypeCode.Double
                 CASE TypeCode.Decimal
-                        formatInfo:NumberDecimalDigits := nDec
-                        SWITCH typeCde
-                        CASE TypeCode.Int32
-                            text := ((LONG)toConvert):ToString("F", formatInfo)
-                        CASE TypeCode.Double
-                            text := ((REAL8)toConvert):ToString("F", formatInfo)
-                        OTHERWISE
-                            text := ((Decimal)toConvert):ToString("F", formatInfo)
-                        END SWITCH
-                        VAR length := text:Length
-                        IF length > sLen
-                            sBuilder := StringBuilder{}
-                            text := sBuilder:Insert(0, "*", sLen):ToString()
-                            SELF:_oRDD:_Encoding:GetBytes( text, 0, slen, buffer, 0)
-                            resultLength := text:Length
-                            RETURN FALSE
-                        ENDIF
-                        text := text:PadLeft(sLen, ' ')
+                    formatInfo:NumberDecimalDigits := nDec
+                    SWITCH typeCde
+                    CASE TypeCode.Int32
+                        text := ((LONG)toConvert):ToString("F", formatInfo)
+                    CASE TypeCode.Double
+                        text := ((REAL8)toConvert):ToString("F", formatInfo)
+                    OTHERWISE
+                        text := ((Decimal)toConvert):ToString("F", formatInfo)
+                    END SWITCH
+                    VAR length := text:Length
+                    IF length > sLen
+                        sBuilder := StringBuilder{}
+                        text := sBuilder:Insert(0, "*", sLen):ToString()
+                        SELF:_oRDD:_Encoding:GetBytes( text, 0, slen, buffer, 0)
+                        resultLength := text:Length
+                        RETURN FALSE
+                    ENDIF
+                    text := text:PadLeft(sLen, ' ')
                     chkDigits := TRUE
                 CASE TypeCode.DateTime
                     text := ((DateTime)toConvert):ToString("yyyyMMdd")

@@ -2,11 +2,18 @@
 // Start.prg
 //
 #include "dbcmds.vh"
+USING XSharp.RDD
 FUNCTION Start() AS VOID
     LOCAL cb AS CODEBLOCK
     TRY
-        TestChris()
-        //TestCdx()
+//        TestCdxForward()
+//        wait
+//        TestCdxBackward()
+//        wait
+        //TestCdxSeek()
+        //TestCdxCount()
+        TestCdxNumSeek()
+        //TestCdxDateSeek()
         //DumpNtx()
         //Start1a()
         //Start1b()
@@ -25,127 +32,166 @@ FUNCTION Start() AS VOID
     END TRY
     WAIT
     RETURN
-FUNCTION TestChris AS VOID
-   LOCAL aDbf AS ARRAY
-    LOCAL cDBF AS STRING
-    
-    SetCollation(#CLIPPER)
-    ? SetNatDll("GERMAN")
-    
-    cDBF := "Foo"
-    aDbf := {{ "FTEST" , "C" , 2 , 0 }}
-    DBCreate( cDBF , aDbf)
-    DBUseArea(,"DBFNTX",cDBF,,FALSE)
 
-    DBAppend()
-    FieldPut(1,"u")
-    DBAppend()
-    FieldPut(1,"Ü")
-    DBAppend()
-    FieldPut(1,"Ä")
-    DBAppend()
-    FieldPut(1,"ü")
-    DBAppend()
-    FieldPut(1,"Ö")
-    DBAppend()
-    FieldPut(1,"o")
-    DBAppend()
-    FieldPut(1,"O")
-    DBAppend()
-    FieldPut(1,"Y")
-    DBAppend()
-    FieldPut(1,"Z")
-    DBAppend()
-    FieldPut(1,"ä")
-    DBAppend()
-    FieldPut(1,"ö")
-    DBAppend()
-    FieldPut(1,"A")
-    DBAppend()
-    FieldPut(1,"a")
-    DBAppend()
-    FieldPut(1,"B")
-    DBCloseArea()
-
-    DBUseArea(,"DBFNTX",cDBF,,FALSE)
-    ? DBCreateIndex(cDBF , "ftest")
-    DBGoTop()
-    DO WHILE .NOT. eof()
-        ? FieldGet(1)
-        DBSkip()
-    END DO
-    DBCloseAll() 
-
-RETURN 
-FUNCTION TestChris1() AS VOID
-LOCAL aDbf AS ARRAY
-LOCAL cDBF, cNtx AS STRING
-LOCAL aValues AS ARRAY
-LOCAL i AS DWORD
-
-// dbcloseAll()
-
-? RDDSetDefault() // "DBFNTX"
-
-// no workarea opened !
-
-? IndexKey() // "" ok
-? IndexOrd() // 0 ok
-? IndexCount() // 0 ok
-? IndexExt() // shows NULL_STRING instead of ".NTX" --------
-? DBOrderInfo(DBOI_INDEXEXT) // NIL ok
-
-
-aValues := { 44 , 12, 34 , 21 }
-
-cDBF := "Foo"
-cNTX := "FooX"
-
-aDbf := {{ "AGE" , "N" , 2 , 0 }}
-
-DBCreate( cDBF , aDbf)
-DBUseArea(,"DBFNTX",cDBF,,FALSE)
-
-FOR i := 1 UPTO ALen ( aValues )
-
-DBAppend()
-
-FieldPut(1,aValues [i])
-
-NEXT
-
-DBCreateIndex( cNTX, "age" )
-
-?
-
-? IndexKey() // "age" ok
-? IndexOrd() // 1 ok
-? IndexCount() // 1 ok
-? IndexExt() // ---- InvalidCastException instead of ".NTX"
-? DBOrderInfo(DBOI_INDEXEXT) // ".NTX" ok
-
-DBCloseArea()
-RETURN
-
-FUNCTION TestCdx() AS VOID
-    ? VoDbUseArea(TRUE, "DBFCDX", "c:\test\TEST10K.DBF", "TEST",TRUE,TRUE)
-   	? DbSetIndex("c:\test\TEST10Ka.Cdx")
-    ? Used()
-    ? DbInfo(DBI_FULLPATH)
-    ? "OrderCount", DbOrderInfo(DBOI_ORDERCOUNT)
-    ? DbOrderInfo(DBOI_EXPRESSION,,"Age")
-    ? DbOrderInfo(DBOI_BAGNAME,,8)
-    ? DbOrderInfo(DBOI_FULLPATH,,1)
-    ? DbOrderInfo(DBOI_FULLPATH,,8)
-    ? DbOrderInfo(DBOI_INDEXEXT)
-    ? DbOrderInfo(DBOI_INDEXEXT,,8)
-    FOR VAR nI := 1 TO DbOrderInfo(DBOI_ORDERCOUNT)
-        ? nI, DbOrderInfo(DBOI_EXPRESSION,,nI), DbOrderInfo(DBOI_KEYSIZE,,nI), ;
-            DbOrderInfo(DBOI_CONDITION,,nI), DbOrderInfo(DBOI_ISDESC,,nI), DbOrderInfo(DBOI_NUMBER,,nI) ,DbOrderInfo(DBOI_UNIQUE ,,nI),DbOrderInfo(DBOI_KEYTYPE ,,nI)
+    FUNCTION TestCdxNumSeek AS VOID
+    ? VoDBUSEAREA(TRUE, typeof(DBFCDX), "c:\XSharp\DevRt\Runtime\XSharp.Rdd.Tests\dbfs\TEST10K.DBF", "TEST",TRUE,TRUE)
+    DbSetOrder("Age")
+    FOR VAR i := 20 TO 90
+        IF DbSeek(i,TRUE,FALSE)
+            ? FieldGetSym(#Age), str(Recno(),4), FieldGetSym(#First), FieldGetSym(#Last)
+        ENDIF
+        IF DbSeek(i,TRUE,TRUE)
+            ? FieldGetSym(#Age), str(Recno(),4), FieldGetSym(#First), FieldGetSym(#Last)
+        ENDIF
     NEXT
-    WAIT
     RETURN
-    
+    FUNCTION TestCdxDateSeek AS VOID
+    ? VoDBUSEAREA(TRUE, typeof(DBFCDX), "c:\XSharp\DevRt\Runtime\XSharp.Rdd.Tests\dbfs\TEST10K.DBF", "TEST",TRUE,TRUE)
+    DbSetOrder("Hiredate")
+    ? DbSeek(1989.06.15,TRUE,FALSE)
+    ? Recno(), FieldGetSym(#First), FieldGetSym(#Last), FieldGetSym(#HireDate)
+    RETURN
+    FUNCTION TestCdxCount() AS VOID
+    LOCAL aTags AS ARRAY
+    LOCAL f AS FLOAT
+    f := seconds()
+
+    ? VoDbUseArea(TRUE, TYPEOF(DBFCDX), "c:\XSharp\DevRt\Runtime\XSharp.Rdd.Tests\dbfs\TEST10K.DBF", "TEST",TRUE,TRUE)
+    aTags := {"AGE", "CITY", "STATE", "FIRST","LAST","HIREDATE","SALARY"} 
+    FOR VAR i := 1 TO  alen(aTags)
+        DbSetOrder(aTags[i])
+        ? aTags[i], DbOrderInfo(DBOI_KeyCount)
+    NEXT
+    ? Seconds() - f
+    RETURN    
+
+FUNCTION TestCdxSeek() AS VOID
+    //LOCAL aTags AS ARRAY
+    ? VoDbUseArea(TRUE, TYPEOF(DBFCDX), "c:\XSharp\DevRt\Runtime\XSharp.Rdd.Tests\dbfs\TEST10K.DBF", "TEST",TRUE,TRUE)
+    //aTags := {"AGE", "CITY", "STATE", "FIRST","LAST","HIREDATE","SALARY"} 
+    //FOR VAR i := 1 TO  alen(aTags)
+    VAR nCount := 0
+    /*
+    ? DbSetOrder("LAST")
+    ? "Seek Peters"
+    ? DbSeek("Peters",TRUE, FALSE), Found(), Eof()
+    DO WHILE ! EOF() .AND. FieldGetSym(#Last) = "Peters"
+        ? Recno(), FieldGetSym(#First), FieldGetSym(#Last)
+        ++nCount
+        VoDbSkip(1)
+    ENDDO
+
+    ? nCount
+    ? DbSeek("Peters",TRUE, TRUE), Found(), Eof()
+    nCount := 0
+    DO WHILE ! BOF() .AND. FieldGetSym(#Last) = "Peters"
+        ? Recno(), FieldGetSym(#First), FieldGetSym(#Last)
+        ++nCount
+        VoDbSkip(-1)
+    ENDDO
+    ? nCount
+    wait
+
+    ? "Seek State MI"
+    ? DbSetOrder("STATE")
+    nCount := 0
+    ? DbSeek("MI",TRUE, FALSE), Found(), Eof()
+    DO WHILE ! EOF() .AND. FieldGetSym(#State) == "MI"
+        ? Recno(), FieldGetSym(#First), FieldGetSym(#Last), FieldGetSym(#State)
+        ++nCount
+        VoDbSkip(1)
+    ENDDO
+    ? nCount
+    wait
+    ? "Seek last State MI"
+    ? DbSeek("MI",TRUE, TRUE), Found(), Eof()
+    nCount := 0
+    DO WHILE ! BOF() .AND. FieldGetSym(#State) = "MI"
+        ? Recno(), FieldGetSym(#First), FieldGetSym(#Last), FieldGetSym(#State)
+        ++nCount
+        VoDbSkip(-1)
+    ENDDO
+    ? nCount
+    */
+    ? "Seek First Yao"
+    ? DbSetOrder("FIRST")
+    nCount := 0
+    //? DbSeek("Yao",TRUE, FALSE), Found(), Eof()
+    DbGoto(81)
+    DO WHILE ! EOF() .AND. FieldGetSym(#First) = "Yao"
+        ? Recno(), FieldGetSym(#First), FieldGetSym(#Last)
+        ++nCount
+        VoDbSkip(1)
+    ENDDO
+    ? nCount
+    WAIT
+    ? "Seek last Yao"
+    ? DbSeek("Yao",TRUE, TRUE), Found(), Eof()
+    nCount := 0
+    DO WHILE ! BOF() .AND. FieldGetSym(#First) = "Yao"
+        ? Recno(), FieldGetSym(#First), FieldGetSym(#Last)
+        ++nCount
+        VoDbSkip(-1)
+    ENDDO
+
+    ? nCount
+    VoDbCLoseArea()
+
+    RETURN
+FUNCTION TestCdxForward() AS VOID
+    LOCAL f AS FLOAT
+    ? VoDbUseArea(TRUE, TYPEOF(DBFCDX), "c:\XSharp\DevRt\Runtime\XSharp.Rdd.Tests\dbfs\TEST10K.DBF", "TEST",TRUE,TRUE)
+    LOCAL aTags AS ARRAY
+    f := seconds()
+    aTags := {"AGE", "CITY", "STATE", "FIRST","LAST","HIREDATE","SALARY"}
+    ? " Count skip +1"
+    FOR VAR i := 1 TO  alen(aTags)
+        DbSetOrder(aTags[i])
+        ? aTags[i]
+        //DbOrderInfo(DBOI_USER+42,,aTags[i])
+        VoDbGoTop()
+        //? Recno(), FieldGetSym(#First), FieldGetSym(#Last), FieldGetSym(AsSymbol(aTags[i]))
+        VAR nCount := 0
+        DO WHILE ! VoDbEof()
+            nCount++
+            LOCAL u AS USUAL
+            VoDbFIeldGet(1, REF u)
+            VoDbSkip(1)
+        ENDDO
+        //DbGoBottom()
+        //? Recno(), FieldGetSym(#First), FieldGetSym(#Last), FieldGetSym(AsSymbol(aTags[i]))
+        ? nCount
+     
+    NEXT
+    ? Seconds() - f
+    DbCloseArea()
+    RETURN
+FUNCTION TestCdxBackward() AS VOID
+    LOCAL f AS FLOAT
+    ? VoDbUseArea(TRUE, TYPEOF(DBFCDX), "c:\XSharp\DevRt\Runtime\XSharp.Rdd.Tests\dbfs\TEST10K.DBF", "TEST",TRUE,TRUE)
+    LOCAL aTags AS ARRAY
+    f := seconds()
+    aTags := {"AGE", "CITY", "STATE", "FIRST","LAST","HIREDATE","SALARY"}
+    ? " Count skip -1"
+    FOR VAR i := 1 TO  alen(aTags)
+        DbSetOrder(aTags[i])
+        ? aTags[i]
+        //DbOrderInfo(DBOI_USER+42,,aTags[i])
+        VoDbGoBottom()
+        ? Recno(), FieldGetSym(#First), FieldGetSym(#Last), FieldGetSym(AsSymbol(aTags[i]))
+        VAR nCount := 0
+        DO WHILE ! VoDbBof()
+            nCount++
+            VoDbSkip(-1)
+        ENDDO
+        ? Recno(), FieldGetSym(#First), FieldGetSym(#Last), FieldGetSym(AsSymbol(aTags[i]))
+
+        ? nCount
+     
+    NEXT
+    DbCloseArea()
+    ? Seconds() - f
+    RETURN    
 FUNCTION DumpNtx() AS VOID
     SetAnsi(TRUE)
     SetCollation(#Windows)

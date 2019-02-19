@@ -1226,7 +1226,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBCreateIndex(cDbf, "FIELDN" )
 			DBGoTop()
 			LOCAL nCount := 0 AS INT
-			DO WHILE .not. EoF()
+			DO WHILE .NOT. EoF()
 				nCount ++
 				IF nCount == 1
 					Assert.Equal(4 ,(INT)FieldGet(1))
@@ -1290,7 +1290,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		    DBUseArea( TRUE ,"DBFNTX",cDBF,"AREA2" ,TRUE )
 		    
 		    Assert.True( DBSelectArea ( "AREA1" ) )
-		    Assert.Equals("AREA1", Alias() )
+		    Assert.Equal("AREA1", Alias() )
 		    Assert.False( Found() )
 		    Assert.True( DBSetFound ( TRUE ) )
 		    Assert.True( Found() )

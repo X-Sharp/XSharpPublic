@@ -12,7 +12,7 @@ USING System.Globalization
 
 BEGIN NAMESPACE XSharp.VO.Tests
 
-	CLASS DbfTests
+	CLASS DbfCdxTests
 
 		[Fact, Trait("Category", "DBFFuncs")];
 		METHOD DBCreate_Tests() AS VOID
@@ -26,20 +26,20 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			IF System.IO.File.Exists(cFileName_WithExt)
 				System.IO.File.Delete(cFileName_WithExt)
 			END IF
-			Assert.True(  DBCreate(cFileName_NoExt , aFields , "DBFNTX")  )
+			Assert.True(  DBCreate(cFileName_NoExt , aFields , "DBFCDX")  )
 			Assert.True(  System.IO.File.Exists(cFileName_WithExt) )
 			
 			IF System.IO.File.Exists(cFileName_WithExt)
 				System.IO.File.Delete(cFileName_WithExt)
 			END IF
-			Assert.True(  DBCreate(cFileName_WithExt , aFields , "DBFNTX")  )
+			Assert.True(  DBCreate(cFileName_WithExt , aFields , "DBFCDX")  )
 			Assert.True(  System.IO.File.Exists(cFileName_WithExt) )
 	
 			cFileName_WithExt := cFileName_NoExt + ".none"
 			IF System.IO.File.Exists(cFileName_WithExt)
 				System.IO.File.Delete(cFileName_WithExt)
 			END IF
-			Assert.True(  DBCreate(cFileName_WithExt , aFields , "DBFNTX")  )
+			Assert.True(  DBCreate(cFileName_WithExt , aFields , "DBFCDX")  )
 			Assert.True(  System.IO.File.Exists(cFileName_WithExt) )
 		RETURN
 	
@@ -50,8 +50,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			aFields := {{"TEST","C",10,0}}
 			cFileName := "DBAppend_Exclusive"
 	
-			Assert.True(  DBCreate(cFileName , aFields , "DBFNTX")  )
-			Assert.True(  DBUseArea(,"DBFNTX",cFileName,,FALSE) )
+			Assert.True(  DBCreate(cFileName , aFields , "DBFCDX")  )
+			Assert.True(  DBUseArea(,"DBFCDX",cFileName,,FALSE) )
 			Assert.True(  RecCount() == 0 )
 			Assert.True(  DBAppend() )
 			FieldPut(1 , "test")
@@ -66,8 +66,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			aFields := {{"TEST","C",10,0}}
 			cFileName := "DBAppend_Shared"
 	
-			Assert.True(  DBCreate(cFileName , aFields , "DBFNTX")  )
-			Assert.True(  DBUseArea(,"DBFNTX",cFileName,,TRUE) )
+			Assert.True(  DBCreate(cFileName , aFields , "DBFCDX")  )
+			Assert.True(  DBUseArea(,"DBFCDX",cFileName,,TRUE) )
 			Assert.True(  RecCount() == 0 )
 			Assert.True(  DBAppend() )
 			FieldPut(1 , "test")
@@ -79,7 +79,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBAppend_more() AS VOID
 		LOCAL cDbf AS STRING
 			cDbf := "testappend.DbF"
-			RDDSetDefault( "DBFNTX" )
+			RDDSetDefault( "DBFCDX" )
 			Assert.True(  DBCreate(cDbf , { {"TEST","C",10,0} }) )
 			// Appending in exclusive mode:
 			Assert.True( DBUseArea(, , cDbf , "alias1" , FALSE) )
@@ -102,7 +102,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBFFuncs")];
 		METHOD DBUseArea_same_file_twice() AS VOID
 		LOCAL cDbf AS STRING
-			RDDSetDefault( "DBFNTX" )
+			RDDSetDefault( "DBFCDX" )
 			cDbf := "testtwice.DbF"
 			Assert.True(  DBCreate(cDbf , { {"TEST","C",10,0} }) )
 	
@@ -121,6 +121,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName("test")
+
+			RDDSetDefault("DBFCDX")
+
 			DBCreate(cFileName , { {"CFIELD","C",10,0} })
 			DBUseArea(,,cFileName)
 			DBAppend()
@@ -157,7 +160,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD AppendShared() AS VOID
 			LOCAL cDbf AS STRING
 			cDbf := GetTempFileName("testAppendShared")
-			RDDSetDefault( "DBFNTX" )
+			RDDSetDefault( "DBFCDX" )
 			DBCreate(cDbf , { {"TEST","C",10,0} })
 			
 //			Appending in exclusive mode:
@@ -180,7 +183,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cDbf AS STRING
 			cDbf := GetTempFileName("testdbf")
 			
-			RDDSetDefault( "DBFNTX" )
+			RDDSetDefault( "DBFCDX" )
 			
 			DBCreate(cDbf , { {"TEST","C",10,0} })
 			
@@ -198,6 +201,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD SavingDecimalValues() AS VOID
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName()
+
+			RDDSetDefault("DBFCDX")
+
 			DBCreate(cFileName, {{"FLD1","N",10,2},{"FLD2","N",10,0}})
 			DBUseArea(,,cFileName)
 			DBAppend()
@@ -218,6 +224,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBCommitAfterFieldput() AS VOID
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName()
+
+			RDDSetDefault("DBFCDX")
+
 			DBCreate(cFileName, {{"FLD1","N",10,4}})
 			DBUseArea( , , cFileName , "tempalias")
 			DBAppend()
@@ -236,6 +245,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD FieldNameSym() AS VOID
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName()
+
+			RDDSetDefault("DBFCDX")
+
 			DBCreate(cFileName, {{"FLD1","N",10,4}})
 			DBUseArea( , , cFileName , "tempalias")
 			DBAppend()
@@ -253,6 +265,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBRLockList() AS VOID
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName()
+
+			RDDSetDefault("DBFCDX")
+
 			DBCreate(cFileName, {{"FLD1","C",10,0}})
 			DBUseArea( , , cFileName , "tempalias" , TRUE)
 			DBAppend()
@@ -275,10 +290,13 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBFilter() AS VOID
 			LOCAL cDbf AS STRING
 			cDbf := GetTempFileName()
+
+			RDDSetDefault("DBFCDX")
+
 			IF System.IO.File.Exists(cDbf)
 				System.IO.File.Delete(cDbf)
 			END IF
-			DBCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFNTX", TRUE)
+			DBCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFCDX", TRUE)
 			DBAppend()
 			FieldPut(1, "ABC")
 			DBAppend()
@@ -325,7 +343,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cDbf AS STRING
 			LOCAL l AS LOGIC
 			cDbf := GetTempFileName()
-			DBCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFNTX", TRUE)
+			DBCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFCDX", TRUE)
 			DBAppend()
 			FieldPut(1, "ABC")
 			
@@ -344,7 +362,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBFieldInfo_test() AS VOID
 			LOCAL cDbf AS STRING
 			cDbf := GetTempFileName()
-			DBCreate(cDbf, {{"NFIELD","N",10,3}}, "DBFNTX", TRUE)
+			DBCreate(cDbf, {{"NFIELD","N",10,3}}, "DBFCDX", TRUE)
 			DBAppend()
 			FieldPut(1, "ABC")
 			
@@ -362,7 +380,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBRecordInfo_test2() AS VOID
 			LOCAL cDbf AS STRING
 			cDbf := GetTempFileName()
-			DBCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFNTX", TRUE)
+			DBCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFCDX", TRUE)
 			DBAppend()
 			FieldPut(1, "ABC")
 			DBAppend()
@@ -388,7 +406,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBContinue_test() AS VOID
 			LOCAL cDbf AS STRING
 			cDbf := GetTempFileName()
-			DBCreate(cDbf, {{"NFIELD","N",10,0}}, "DBFNTX", TRUE)
+
+			RDDSetDefault("DBFCDX")
+
+			DBCreate(cDbf, {{"NFIELD","N",10,0}}, "DBFCDX", TRUE)
 			DBAppend()
 			FieldPut(1, 123)
 			DBAppend()
@@ -421,6 +442,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		// TECH-Y4UUA09473 , Problem on creating error for invalid RDD command
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBAppendWithNoWorkarea() AS VOID
+			RDDSetDefault("DBFCDX")
+
 			DBCloseAll()
 			Assert.False( DBAppend() )
 		RETURN
@@ -430,12 +453,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD Shared_Ntx() AS VOID
 			LOCAL cDbf AS STRING
-			LOCAL cNtx AS STRING
-			
-			RDDSetDefault("DBFNTX")
-
-			cDbf := GetTempFileName()
-			cNtx := cDbf + ".ntx"
+			LOCAL cCdx AS STRING
+			cDbf := GetTempFileName("testcdx")
+			cCdx := cDbf + ".cdx"
 			
 			Assert.True( DBCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 }}) )
 			Assert.True( DBUseArea(,,cDbf,,FALSE) )
@@ -446,11 +466,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True( DBCloseArea() )
 			
 			Assert.True( DBUseArea(,,cDbf,,TRUE) ) // ----- opening in SHARED mode
-			Assert.True( DBCreateIndex(cNtx , "CFIELD") ) // returns TRUE
+			System.IO.File.WriteAllBytes(cCdx , Convert.FromBase64String("AAQAAAAAAAAAAAAACgDgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAQD//////////94B//8AAA8PEAQEAwAGMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABURVNUQ0RYAAoAAAAAAAAAAAAACgBgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwABAAAABwBDRklFTEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAgD//////////+AB//8AAA8PEAQEAwIAkAEAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEJB"))
+//			Assert.True( DBCreateIndex(cNtx , "CFIELD") ) // returns TRUE
 			Assert.True( DBCloseArea() )
 			
 			Assert.True( DBUseArea(,,cDbf,,FALSE) )
-			Assert.True( DBSetIndex(cNtx) )
+			Assert.True( DBSetIndex(cCdx) )
 			DBGoTop()
 			Assert.True( AllTrim(FieldGet(1)) == "A" )
 			DBGoBottom()
@@ -463,6 +484,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD Save_NULL_DATE() AS VOID
 			LOCAL cDbf AS STRING
 			cDbf := GetTempFileName()
+
+			RDDSetDefault("DBFCDX")
+
 			Assert.True(  DBCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 },;
 			{"DFIELD" , "D" , 8 , 0 }}) )
 			Assert.True( DBUseArea(,,cDbf) )
@@ -489,8 +513,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cDbf AS STRING
 			LOCAL cNtx AS STRING
 			LOCAL aResult AS ARRAY
-
-			RDDSetDefault("DBFNTX")
 			
 			cDbf := GetTempFileName()
 			cNtx := cDbf + ".ntx"
@@ -575,9 +597,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD Ntx_Issues2() AS VOID
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName()
-
-			RDDSetDefault("DBFNTX")
-
 			DBCreate(cFileName, {{"FLD1","C",10,0},{"FLD2","N",10,0}})
 			DBUseArea( , , cFileName , , FALSE)
 			FOR LOCAL n := 1 AS INT UPTO 10
@@ -606,6 +625,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD WorkareaNums() AS VOID
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName()
+
+			RDDSetDefault("DBFCDX")
+
 			Assert.True( DBCreate(cFileName, {{"FLD1","C",10,0}}) )
 			
 			Assert.True( DBUseArea ( TRUE , , cFileName , "a1") )
@@ -626,6 +648,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBRI_LOCKED_test() AS VOID
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName()
+
+			RDDSetDefault("DBFCDX")
+
 			SetExclusive ( FALSE )
 			DBCreate ( cFileName , { {"id", "C", 5, 0} })
 		
@@ -663,6 +688,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		// TECH-XQES14W9J0 , Aliasxxx() funcs throw exceptions
 		[Fact, Trait("Category", "DBF")];
 		METHOD Alias_test() AS VOID
+
+			RDDSetDefault("DBFCDX")
+
 			DBCloseAll()
 			Assert.True( Alias() == "" )
 			Assert.True( Alias0() == "" )
@@ -675,6 +703,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName()
 			
+			RDDSetDefault("DBFCDX")
+
 			DBCreate(cFileName, {{"FLD1","C",10,0}})
 			DBUseArea(,,cFileName,,FALSE)
 			DBCloseArea()
@@ -695,6 +725,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBError_test() AS VOID
 			LOCAL cDbf AS STRING
 			
+			RDDSetDefault("DBFCDX")
+
 			cDbf := GetTempFileName()
 			
 			DBCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 }})
@@ -721,8 +753,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cDbf AS STRING
 			LOCAL cNtx AS STRING
 			
-			RDDSetDefault("DBFNTX")
-
 			cDbf := GetTempFileName()
 			cNtx := cDbf + ".ntx"
 			
@@ -766,8 +796,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBOrderInfo_DBOI_SETCODEBLOCK() AS VOID
 			LOCAL cDBF, cNTX AS STRING
 			
-			RDDSetDefault("DBFNTX")
-
 			cDBF := GetTempFileName("test")
 			cNTX := cDBF + ".ntx"
 			
@@ -858,8 +886,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aValues AS ARRAY
 			LOCAL i AS DWORD
 			LOCAL cDBF, cNTX AS STRING
-
-			RDDSetDefault("DBFNTX")
 			
 			aValues := { "ssss" , "hhhh", "wwww" , "aaaa" }
 			cDBF := GetTempFileName()
@@ -1159,11 +1185,14 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD Uninitialized_fields() AS VOID
 			LOCAL cDbf AS STRING
-			DBCloseAll() // worakaroudn for previous test crashing
+
+			RDDSetDefault("DBFCDX")
+
+			DBCloseAll()
 			
 			cDBF := GetTempFileName()
 			DBCreate( cDBF , {{"FIELDN" , "N" ,5 , 0 } })
-			DBUseArea(,"DBFNTX",cDBF)
+			DBUseArea(,"DBFCDX",cDBF)
 			DBAppend()
 			FieldPut(1,1)
 			DBAppend() // no field assigned
@@ -1263,13 +1292,16 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBSetFound_test() AS VOID
 			LOCAL aDbf AS ARRAY
 			LOCAL cDbf AS STRING
+
+			RDDSetDefault("DBFCDX")
+
 			DBCloseAll()
 			
 			cDBF := GetTempFileName()
 			aDbf := {{ "AGE" , "N" , 2 , 0 }}
 			DBCreate( cDBF , aDbf)
 			
-			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			DBUseArea(,"DBFCDX",cDBF,,FALSE)
 			DBAppend()
 			
 			Assert.False( Found() )// FALSE, ok
@@ -1285,6 +1317,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBSetFound_test2() AS VOID
 			LOCAL aDbf AS ARRAY
 			LOCAL cDbf AS STRING
+
+			RDDSetDefault("DBFCDX")
+
 			DBCloseAll()
 			
 			cDBF := GetTempFileName()
@@ -1298,8 +1333,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		   
 		    DBCloseArea()
 		   
-		    DBUseArea( TRUE ,"DBFNTX",cDBF,"AREA1" ,TRUE )
-		    DBUseArea( TRUE ,"DBFNTX",cDBF,"AREA2" ,TRUE )
+		    DBUseArea( TRUE ,"DBFCDX",cDBF,"AREA1" ,TRUE )
+		    DBUseArea( TRUE ,"DBFCDX",cDBF,"AREA2" ,TRUE )
 		    
 		    Assert.True( DBSelectArea ( "AREA1" ) )
 		    Assert.Equal("AREA1", Alias() )
@@ -1324,12 +1359,15 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBSetFound_test3() AS VOID
 			LOCAL aDbf AS ARRAY
 			LOCAL cDbf AS STRING
+
+			RDDSetDefault("DBFCDX")
+
 			DBCloseAll()
 			
 			cDBF := GetTempFileName()
 		    aDbf := {{ "AGE" , "N" , 2 , 0 }}
 		    DBCreate( cDBF , aDbf)
-		    DBUseArea(,"DBFNTX",cDBF,,FALSE)
+		    DBUseArea(,,cDBF,,FALSE)
 		   
 		    DBAppend()
 		    FieldPut(1,1)
@@ -1354,13 +1392,16 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD FLock_test() AS VOID
 			LOCAL aDbf AS ARRAY
 			LOCAL cDbf AS STRING
+			
+			RDDSetDefault("DBFCDX")
+			
 			DBCloseAll()
 			
 			cDBF := GetTempFileName()
 		    aDbf := {{ "AGE" , "N" , 2 , 0 }}
 			DBCreate( cDBF , aDbf)
 
-			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			DBUseArea(,"DBFCDX",cDBF,,FALSE)
 			DBAppend()
 			DBAppend()
 			DBAppend()

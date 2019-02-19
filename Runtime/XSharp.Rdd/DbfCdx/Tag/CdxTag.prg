@@ -454,7 +454,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 result := FALSE
             END SWITCH
             RETURN result
-            // Todo
+
         INTERNAL METHOD _CountRecords(records REF LONG ) AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL oldRec AS LONG
@@ -495,12 +495,21 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         records := count
                     ENDIF
                 ELSE
-                    SELF:_oRdd:GoBottom()
-                    records := 0
-                    IF !SELF:_oRdd:_Eof
-                        records := 1
-                        DO WHILE SELF:_findItemPos(REF records, FALSE)
-                            NOP
+                     records := 0
+                    IF SELF:GoTop()
+                        VAR topStack := SELF:CurrentStack
+                        VAR pageNo   := topStack:Page
+                        DO WHILE TRUE
+                            VAR page   := (CdxTreePage) SELF:_bag:GetPage(pageNo,SELF:KeyLength,SELF)
+                            IF page == NULL
+                                EXIT
+                            ENDIF
+                            records += page:NumKeys
+                            IF page:HasRight
+                                pageNo := page:RightPtr
+                            ELSE
+                                EXIT
+                            ENDIF
                         ENDDO
                     ENDIF
                 ENDIF

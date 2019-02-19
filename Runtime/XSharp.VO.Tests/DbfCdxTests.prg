@@ -451,7 +451,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		// TECH-8HN2I0UUNA , Index file not correctly created when dbf is opened in SHARED mode
 		[Fact, Trait("Category", "DBF")];
-		METHOD Shared_Ntx() AS VOID
+		METHOD Shared_Cdx() AS VOID
 			LOCAL cDbf AS STRING
 			LOCAL cCdx AS STRING
 			cDbf := GetTempFileName("testcdx")

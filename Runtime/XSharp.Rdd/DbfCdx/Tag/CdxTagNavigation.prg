@@ -254,34 +254,34 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
             
         PRIVATE METHOD _findItemPos(record REF LONG , nodePage AS LOGIC ) AS LOGIC
-            /*
-            LOCAL CdxPage AS CdxPage
-            LOCAL node    AS CdxPageNode
+            LOCAL page  AS CdxTreePage
+            LOCAL node  AS CdxPageNode
             IF SELF:_TopStack == 0
                 RETURN FALSE
             ENDIF
-            CdxPage := SELF:_PageList:Read(SELF:_stack[SELF:_TopStack]:Page)
-            node := CdxPage[SELF:_stack[SELF:_TopStack]:Pos]
+            VAR topStack := SELF:CurrentStack
+            page := SELF:_bag:GetPage(topStack:Page,SELF:KeyLength,SELF)
+            node := page[topStack:Pos]
             IF nodePage
-                SELF:_stack[SELF:_TopStack]:Pos--
+                topStack:Pos--
                 record++
                 RETURN TRUE
             ENDIF
             IF node:PageNo != 0
-                SELF:_locate(NULL, 0, SearchMode.Bottom, node:PageNo)
-                record += (SELF:_stack[SELF:_TopStack]:Pos + 1)
-                SELF:_stack[SELF:_TopStack]:Pos := 0
+                SELF:_locate(NULL, 0, SearchMode.Bottom, node:PageNo, page)
+                record += topStack:Pos 
+                topStack:Pos := 0
                 RETURN TRUE
             ENDIF
-            IF SELF:_stack[SELF:_TopStack]:Pos == 0
-                DO WHILE SELF:_TopStack != 0 .AND. SELF:_stack[SELF:_TopStack]:Pos == 0
+            IF topStack:Pos == 0
+                DO WHILE SELF:_TopStack != 0 .AND. topStack:Pos == 0
                     SELF:PopPage()
+                    topStack := SELF:CurrentStack
                 ENDDO
                 RETURN SELF:_findItemPos(REF record, TRUE)
             ENDIF
-            record += SELF:_stack[SELF:_TopStack]:Pos
-            SELF:_stack[SELF:_TopStack]:Pos := 0
-            */
+            record += topStack:Pos
+            topStack:Pos := 0
             RETURN TRUE
             
               

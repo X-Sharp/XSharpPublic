@@ -71,6 +71,9 @@ BEGIN NAMESPACE XSharp.RDD
                 
                 result := 0
                 workOrder := SELF:_indexList:FindOrder(info)
+                IF workOrder == NULL
+                    workOrder := SELF:CurrentOrder
+                ENDIF
                 
                 BEGIN SWITCH nOrdinal
             CASE DBOI_CONDITION

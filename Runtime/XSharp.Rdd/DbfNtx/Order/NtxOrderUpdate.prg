@@ -144,16 +144,16 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 page := SELF:AllocPage()
                 pageNo := page:PageOffset
                 page:InitRefs(_MaxEntry, _EntrySize)
-                node := page[0]
+                node            := page[0]
                 node:PageNo     := SELF:_firstPageOffset
                 node:Recno      := SELF:_midItem:Recno
                 node:KeyBytes   := SELF:_midItem:KeyBytes
-                page[1]:PageNo := SELF:_midItem:PageNo
-                page:NodeCount := 1
+                page[1]:PageNo  := SELF:_midItem:PageNo
+                page:NodeCount  := 1
                 SELF:_firstPageOffset := pageNo
                 RETURN FALSE
             ENDIF
-            VAR page2 := SELF:_PageList:Update(SELF:_stack[SELF:_TopStack]:Page)
+            VAR page2 := SELF:_PageList:Update(SELF:CurrentStack:Page)
             IF SELF:_insertKey(page2)
                 // Split pages
                 // Write Left page
@@ -185,17 +185,17 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL nodeCount AS LONG
             LOCAL offset AS WORD
             LOCAL i AS LONG
-            
-            lPage := SELF:_stack[SELF:_TopStack]:Page
-            uiPos := SELF:_stack[SELF:_TopStack]:Pos
+            VAR topStack := SELF:CurrentStack
+            lPage := topStack:Page
+            uiPos := topStack:Pos
             page := SELF:_PageList:Read(lPage)
             node := page[uiPos]
             IF node:PageNo != 0
                 // move key to leaf (copy leaf entry to current)
                 SELF:_locate(NULL, 0, SearchMode.Bottom, node:PageNo)
-                page := SELF:_PageList:Read(SELF:_stack[SELF:_TopStack]:Page)
+                page := SELF:_PageList:Read(topStack:Page)
                 // get leaf
-                node    := page[SELF:_stack[SELF:_TopStack]:Pos]
+                node    := page[topStack:Pos]
                 SELF:_midItem:Recno := node:Recno
                 SELF:_midItem:KeyBytes := node:KeyBytes
                 // update parent
@@ -204,10 +204,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 node:Recno  := SELF:_midItem:Recno
                 node:KeyBytes := SELF:_midItem:KeyBytes
                 // get back leaf
-                lPage := SELF:_stack[SELF:_TopStack]:Page
-                uiPos := SELF:_stack[SELF:_TopStack]:Pos
-                page := SELF:_PageList:Read(lPage)
-                node := page[uiPos]
+                lPage := topStack:Page
+                uiPos := topStack:Pos
+                page  := SELF:_PageList:Read(lPage)
+                node  := page[uiPos]
             ENDIF
             // delete leaf entry
             nodeCount := page:NodeCount
@@ -221,8 +221,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF nodeCount > 0
                 page:NodeCount--
             ENDIF
-            SELF:_stack[SELF:_TopStack]:Count := page:NodeCount
-            SELF:_stack[SELF:_TopStack]:Pos := page:NodeCount
+            topStack:Count := page:NodeCount
+            topStack:Pos := page:NodeCount
             SELF:_PageList:Write(lPage)
             IF page:NodeCount < SELF:_halfPage .AND. SELF:_TopStack > 1
                 SELF:_Balance()
@@ -241,9 +241,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL num2 AS LONG
             LOCAL offset AS WORD
             LOCAL num4 AS LONG
-            
-            leftPageNo := SELF:_stack[SELF:_TopStack]:Page
-            uiCount := SELF:_stack[SELF:_TopStack]:Count
+            VAR topStack := SELF:CurrentStack
+            leftPageNo  := topStack:Page
+            uiCount     := topStack:Count
             IF uiCount >= SELF:_halfPage
                 // nothing to do
                 RETURN
@@ -261,14 +261,17 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             ELSE
                 // get parent page
-                iPos     := SELF:_stack[--SELF:_TopStack]:Pos
-                pageLeft := SELF:_PageList:Read(SELF:_stack[SELF:_TopStack]:Page)
+                --SELF:_TopStack
+                topStack := SELF:CurrentStack
+                iPos     := topStack:Pos
+                
+                pageLeft := SELF:_PageList:Read(topStack:Page)
                 // setup left and right siblings
-                IF iPos == SELF:_stack[SELF:_TopStack]:Count
+                IF iPos == topStack:Count
                     // underflow page was a right pointer from parent 
                     rightPageNo := pageLeft[iPos]:PageNo
                     num2 := rightPageNo
-                    iPos := --SELF:_stack[SELF:_TopStack]:Pos
+                    iPos := --topStack:Pos
                     leftPageNo := pageLeft[iPos]:PageNo
                 ELSE
                     // underflow page was a left pointer from parent 
@@ -278,8 +281,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
                 // delete parent entry into nodeMid
                 SELF:_delToMid(pageLeft, iPos)
-                SELF:_stack[SELF:_TopStack]:Count--
-                SELF:_PageList:Write(SELF:_stack[SELF:_TopStack]:Page)
+                topStack:Count--
+                SELF:_PageList:Write(topStack:Page)
                 // read sibling pages
                 pageLeft := SELF:_PageList:Read(leftPageNo)
                 pageRight := SELF:_PageList:Read(rightPageNo)
@@ -445,7 +448,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL pageNo AS LONG
             
             nodeCount := page:NodeCount
-            uiPos := SELF:_stack[SELF:_TopStack]:Pos
+            VAR topStack := SELF:CurrentStack
+            uiPos := topStack:Pos
             IF nodeCount < SELF:_MaxEntry
                 // it fits, so make space
                 offset := page:GetRef(nodeCount + 1)
@@ -455,10 +459,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     num--
                 ENDDO
                 page:SetRef(uiPos, offset)
-                page[uiPos]:PageNo    := page[uiPos + 1]:PageNo
-                page[uiPos+ 1]:PageNo := SELF:_midItem:PageNo
-                page[uiPos]:Recno := SELF:_midItem:Recno
-                page[uiPos]:KeyBytes := SELF:_midItem:KeyBytes
+                page[uiPos]:PageNo      := page[uiPos + 1]:PageNo
+                page[uiPos+ 1]:PageNo   := SELF:_midItem:PageNo
+                page[uiPos]:Recno       := SELF:_midItem:Recno
+                page[uiPos]:KeyBytes    := SELF:_midItem:KeyBytes
                 page:NodeCount++
                 RETURN FALSE
             ENDIF

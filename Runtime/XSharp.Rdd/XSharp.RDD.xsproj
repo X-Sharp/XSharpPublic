@@ -123,9 +123,9 @@
     <Compile Include="DbfCdx\CdxNode.prg" />
     <Compile Include="DbfCdx\CdxPageList.prg" />
     <Compile Include="DbfCdx\CdxSort.prg" />
+    <Compile Include="DbfCdx\Pages\CdxTagList.prg" />
     <Compile Include="DbfCdx\Tag\CdxTag.prg" />
     <Compile Include="DbfCdx\Tag\CdxTagCreate.prg" />
-    <Compile Include="DbfCdx\Tag\CdxTagList.prg" />
     <Compile Include="DbfCdx\Tag\CdxTagLock.prg" />
     <Compile Include="DbfCdx\Tag\CdxTagNavigation.prg" />
     <Compile Include="DbfCdx\Tag\CdxTagUpdate.prg" />

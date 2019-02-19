@@ -24,8 +24,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     /// </remarks>
 	INTERNAL CLASS CdxFileHeader INHERIT CdxPage
 
-    INTERNAL CONSTRUCTOR( oBag AS CdxOrderBag, buffer AS BYTE[])
-        SUPER(oBag, 0, buffer)
+    INTERNAL CONSTRUCTOR( oBag AS CdxOrderBag, page AS CdxPage)
+        SUPER(oBag, page:PageNo, page:Buffer)
         
 #region Properties
 	INTERNAL PROPERTY TagList		AS Int32;

@@ -82,14 +82,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 		// Retrieve a NtxNode in the current Page, at the specified position
         INTERNAL PROPERTY SELF[ index AS LONG ] AS NtxPageNode
             GET
-                LOCAL item := NULL AS NtxPageNode
+                LOCAL node := NULL AS NtxPageNode
                 TRY
-                    item := NtxPageNode{ SELF:_Order:_keySize  }
-                    item:Fill( index, SELF )
+                    node := NtxPageNode{ SELF:_Order:_keySize  }
+                    node:Fill( index, SELF )
                 CATCH e AS Exception
                     Debug.WriteLine( "Ntx Error : " + e:Message )
                 END TRY
-                RETURN item
+                RETURN node
             END GET
         END PROPERTY
         

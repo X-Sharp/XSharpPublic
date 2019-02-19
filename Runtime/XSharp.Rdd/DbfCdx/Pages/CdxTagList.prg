@@ -19,14 +19,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	INTERNAL CLASS CdxTagList INHERIT CdxLeafPage
         PROTECTED _tagList AS List<CdxTag>
 
-	    PROTECTED INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS Int32)
-            SUPER(bag  , nPage , buffer ,nKeyLen)
-            _tagList := List<CdxTag>{}
+	    PROTECTED INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , page AS CdxPage)
+            SUPER(bag  , page)
 
-		PROTECTED INTERNAL OVERRIDE METHOD Read() AS LOGIC
-            LOCAL lOk := SUPER:Read() AS LOGIC
-            Debug.Assert (SELF:NodeAttribute == CdxNodeAttribute.TagList)
-            // Decode the keys
+        INTERNAL METHOD ReadTags() AS List<CdxTag>
+            _tagList := List<CdxTag>{}
+            Debug.Assert (SELF:NodeAttribute:HasFlag(CdxNodeAttribute.TagList))
             FOR VAR nI := 0 TO SELF:NumKeys-1
                 LOCAL nRecno    := SELF:GetRecno(nI) AS Int32
                 LOCAL bName     := SELF:GetKey(nI)  AS BYTE[]
@@ -38,7 +36,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             // default sort for tags in an orderbag is on pageno. 
             _tagList:Sort( { tagX, tagY => tagX:Page - tagY:Page} ) 
-            RETURN lOk
+            RETURN _tagList
         PROPERTY Tags AS IList<cdxTag> GET _tagList
     END CLASS
 END NAMESPACE 

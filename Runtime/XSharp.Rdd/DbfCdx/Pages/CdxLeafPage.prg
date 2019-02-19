@@ -54,14 +54,21 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     /// Manipulating the page is implemented in the CdxTag class
 	/// </summary>
 	INTERNAL CLASS CdxLeafPage INHERIT CdxTreePage IMPLEMENTS ICdxKeyValue
-		PROTECTED _keyLen    AS Int32
+		PROTECTED _keyLen    AS WORD
         PROTECTED _keys      AS BYTE[]
-        //PROTECTED _bytesNeeded AS BYTE
-		
-	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS Int32)
+
+        INTERNAL PROPERTY KeyLength AS WORD GET _keyLen
+
+
+        INTERNAL CONSTRUCTOR( bag AS CdxOrderBag, page AS CdxPage)
+            SELF(bag, page:PageNo, page:Buffer, page:KeyLength)
+
+	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS WORD)
             SUPER(bag, nPage, buffer)
             _keyLen     := nKeyLen
             _keys       := NULL
+            Debug.Assert (SELF:NodeAttribute:HasFlag(CdxNodeAttribute.Leaf))
+
             //SELF:_ExpandKeys()
             /*
 
@@ -76,6 +83,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
 			VAR Ok := SUPER:Read()
+            Debug.Assert (SELF:NodeAttribute:HasFlag(CdxNodeAttribute.Leaf))
             RETURN ok
 
 #region ICdxKeyValue
@@ -228,6 +236,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         MEMBER Root    := 1
         MEMBER Leaf    := 2
         MEMBER TagList := 3
+        MEMBER None    := 4
         MEMBER Unused  := 0xFF
     END ENUM
 

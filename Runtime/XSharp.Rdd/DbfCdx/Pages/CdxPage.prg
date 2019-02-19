@@ -85,28 +85,24 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _GetWord(nOffSet AS INT) AS WORD
-                LOCAL nValue AS Num2Struct
-                nValue:Clear()
+                LOCAL nValue := Num2Struct{} AS Num2Struct
 	            nValue:b1 := buffer[nOffSet]
                 nValue:b2 := buffer[nOffSet+1]
                 RETURN nValue:wordValue
 				
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _SetWord(nOffSet AS INT, wValue AS WORD) AS VOID
-                LOCAL nValue AS Num2Struct
-                nValue:Clear()
+                LOCAL nValue := Num2Struct{} AS Num2Struct
                 nValue:wordValue := wValue
 	            buffer[nOffSet]   := nValue:b1
                 buffer[nOffSet+1] := nValue:b2
+				isHot := TRUE
                 RETURN 
 
-				Array.Copy(BitConverter.GetBytes(wValue),0, Buffer, nOffSet, SIZEOF(WORD))
-				isHot := TRUE
 				
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _GetDWord(nOffSet AS INT) AS DWORD
-                LOCAL nValue AS Num4Struct
-                nValue:Clear()
+                LOCAL nValue := Num4Struct{} AS Num4Struct
 	            nValue:b1 := buffer[nOffSet]
                 nValue:b2 := buffer[nOffSet+1]
                 nValue:b3 := buffer[nOffSet+2]
@@ -115,8 +111,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _GetDWordLE(nOffSet AS INT) AS DWORD
-                LOCAL nValue AS Num4Struct
-                nValue:Clear()
+                LOCAL nValue := Num4Struct{} AS Num4Struct
 	            nValue:b4 := buffer[nOffSet]
                 nValue:b3 := buffer[nOffSet+1]
                 nValue:b2 := buffer[nOffSet+2]
@@ -125,8 +120,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 				
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _SetDWord(nOffSet AS INT, dwValue AS DWORD) AS VOID
-                LOCAL nValue AS Num4Struct
-                //snValue:Clear()
+                LOCAL nValue  := Num4Struct{} AS Num4Struct
                 nValue:dwordValue := dwValue
 	            buffer[nOffSet]   :=  nValue:b1  
                 buffer[nOffSet+1] :=  nValue:b2  
@@ -136,8 +130,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _SetDWordLE(nOffSet AS INT, dwValue AS DWORD) AS VOID
-                LOCAL nValue AS Num4Struct
-                nValue:Clear()
+                LOCAL nValue := Num4Struct{} AS Num4Struct
                 nValue:dwordValue := dwValue
 	            buffer[nOffSet]   :=  nValue:b4  
                 buffer[nOffSet+1] :=  nValue:b3  
@@ -147,8 +140,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _GetLong(nOffSet AS INT) AS Int32
-                LOCAL nValue AS Num4Struct
-                nValue:Clear()
+                LOCAL nValue := Num4Struct{} AS Num4Struct
 	            nValue:b1 := buffer[nOffSet]
                 nValue:b2 := buffer[nOffSet+1]
                 nValue:b3 := buffer[nOffSet+2]
@@ -157,8 +149,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _GetLongLE(nOffSet AS INT) AS Int32
-                LOCAL nValue AS Num4Struct
-                //snValue:Clear()
+                LOCAL nValue := Num4Struct{} AS Num4Struct
 	            nValue:b4 := buffer[nOffSet]
                 nValue:b3 := buffer[nOffSet+1]
                 nValue:b2 := buffer[nOffSet+2]
@@ -169,8 +160,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 				
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _SetLong(nOffSet AS INT, liValue AS Int32) AS VOID
-                LOCAL nValue AS Num4Struct
-                //snValue:Clear()
+                LOCAL nValue := Num4Struct{} AS Num4Struct
                 nValue:LongValue := liValue
 	            buffer[nOffSet]   :=  nValue:b1  
                 buffer[nOffSet+1] :=  nValue:b2  
@@ -180,8 +170,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _SetLongLE(nOffSet AS INT, liValue AS Int32) AS VOID
-                LOCAL nValue AS Num4Struct
-                nValue:Clear()
+                LOCAL nValue := Num4Struct{} AS Num4Struct
                 nValue:LongValue := liValue
 	            buffer[nOffSet]   :=  nValue:b4 
                 buffer[nOffSet+1] :=  nValue:b3  
@@ -240,7 +229,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
         STATIC METHOD MemSet(bytes AS BYTE[], start AS INT, length AS INT, VALUE AS BYTE) AS VOID
-            LOCAL h AS GcHandle
+            LOCAL h := GcHandle{} AS GcHandle
             LOCAL p AS IntPtr
             p := IntPtr.Zero
             
@@ -258,9 +247,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             MemCopy(source, 0, target, 0, length)
 
         STATIC METHOD MemCopy(source AS BYTE[], sourceoffset AS INT, target AS BYTE[], targetoffset AS INT, length AS INT) AS VOID
-            LOCAL hSrc AS GcHandle
+            LOCAL hSrc := GcHandle{} AS GcHandle
             LOCAL pSrc AS IntPtr
-            LOCAL hTrg AS GcHandle
+            LOCAL hTrg := GcHandle{} AS GcHandle
             LOCAL pTrg AS IntPtr
             pSrc := pTrg := IntPtr.Zero
             TRY

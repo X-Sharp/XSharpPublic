@@ -16,8 +16,10 @@ USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.RDD.CDX
-    [DebuggerDisplay("Tag: {OrderName}, Key: {Expression}, For: {Condition}")];
+
     DELEGATE CompareFunc(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
+
+    [DebuggerDisplay("Tag: {OrderName}, Key: {Expression}, For: {Condition}")];
     INTERNAL PARTIAL CLASS CdxTag
         #region constants
         PRIVATE CONST MAX_KEY_LEN       := 256  AS WORD

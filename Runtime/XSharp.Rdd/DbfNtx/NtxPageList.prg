@@ -20,9 +20,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _hDump AS IntPtr
         
         PRIVATE METHOD _FindPage( offset AS LONG ) AS NtxPage
-            LOCAL ntxPage AS NtxPage
-            _pages:TryGetValue(offset, OUT ntxPage)
-            RETURN ntxPage
+            LOCAL page AS NtxPage
+            _pages:TryGetValue(offset, OUT page)
+            RETURN page
 
         INTERNAL PROPERTY DumpHandle AS IntPtr GET _hDump SET _hDump := VALUE
 
@@ -39,37 +39,37 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             
         INTERNAL METHOD Update( pageNo AS LONG ) AS NtxPage
-            LOCAL ntxPage AS NtxPage
-            ntxPage := SELF:Read(pageNo)
-            IF ( ntxPage != NULL )
-                ntxPage:Hot := TRUE
+            LOCAL page AS NtxPage
+            page := SELF:Read(pageNo)
+            IF page != NULL 
+                page:Hot := TRUE
             ENDIF
-            RETURN ntxPage
+            RETURN page
             
             
         INTERNAL METHOD Append( pageNo AS LONG ) AS NtxPage
-            LOCAL ntxPage AS NtxPage
-            ntxPage := SELF:_FindPage(pageNo)
-            IF ntxPage == NULL
-                ntxPage := NtxPage{SELF:_Order, 0L}
-                ntxPage:PageOffset := pageNo
-                SELF:_Pages:Add(pageNo, ntxPage)
+            LOCAL page AS NtxPage
+            page := SELF:_FindPage(pageNo)
+            IF page == NULL
+                page := NtxPage{SELF:_Order, 0L}
+                page:PageOffset := pageNo
+                SELF:_Pages:Add(pageNo, page)
             ENDIF
-            SELF:_dumpPage(ntxPage)
-            ntxPage:Hot := TRUE
-            RETURN ntxPage
+            SELF:_dumpPage(page)
+            page:Hot := TRUE
+            RETURN page
             
             
         INTERNAL METHOD Read(pageNo AS LONG ) AS NtxPage
-            LOCAL ntxPage AS NtxPage
+            LOCAL page AS NtxPage
 
-            ntxPage := SELF:_FindPage(pageNo)
-            IF ntxPage == NULL
-                ntxPage := NtxPage{SELF:_Order, pageNo}
-                SELF:_Pages:Add(pageNo, ntxPage)
+            page := SELF:_FindPage(pageNo)
+            IF page == NULL
+                page := NtxPage{SELF:_Order, pageNo}
+                SELF:_Pages:Add(pageNo, page)
             ENDIF
-            SELF:_dumpPage(ntxPage)
-            RETURN ntxPage
+            SELF:_dumpPage(page)
+            RETURN page
             
             
         INTERNAL METHOD Flush( keepData AS LOGIC ) AS LOGIC
@@ -96,12 +96,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             
         INTERNAL METHOD Write(pageNo AS LONG ) AS LOGIC
-            LOCAL ntxPage AS NtxPage
+            LOCAL page AS NtxPage
 
-            ntxPage := SELF:_FindPage(pageNo)
-            IF ntxPage != NULL
-                ntxPage:Hot := TRUE
-                RETURN ntxPage:Write()
+            page := SELF:_FindPage(pageNo)
+            IF page != NULL
+                page:Hot := TRUE
+                RETURN page:Write()
             ENDIF
             RETURN FALSE
             

@@ -124,23 +124,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FALSE
             ENDIF
             SELF:FileName := info:BagName
-            LOCAL buffer AS BYTE[]
-            buffer := BYTE[]{CDXPAGE_SIZE}
-            _root := CdxFileHeader{SELF, buffer}
-            SELF:SetPage(0, _root)
-            IF _root:Read()
-                LOCAL nTagList AS Int32
-                nTagList := SELF:_root:TagList
-                buffer := BYTE[]{CDXPAGE_SIZE}
-                _tagList := CdxTagList{SELF,  nTagList, buffer, _root:KeyLength}
-                SELF:SetPage(nTagList, _tagList)
-                _tagList:Read()
-                _tags := _tagList:Tags
-                // Compile expressions
-                FOREACH VAR tag IN _tags
-                    tag:EvaluateExpressions()
-                NEXT
-            ENDIF
+            VAR page := SELF:GetPage(0, 0, NULL)
+            _root := CdxFileHeader{SELF, page}
+            SELF:SetPage(_root)
+            LOCAL nTagList AS Int32
+            nTagList := SELF:_root:TagList
+            page     := SELF:GetPage(nTagList, _root:KeyLength, NULL)
+            _tagList := CdxTagList{SELF,  page}
+            SELF:SetPage(_tagList)
+            _tags := _tagList:ReadTags()
+            // Compile expressions
+            FOREACH VAR tag IN _tags
+                tag:EvaluateExpressions()
+            NEXT
             RETURN TRUE
         #endregion
 
@@ -156,8 +152,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         METHOD AllocBuffer AS BYTE[]
             RETURN BYTE[]{CDXPAGE_SIZE}
-
-
 
         METHOD Read(nPage AS LONG, buffer AS BYTE[]) AS LOGIC
             LOCAL isOk AS LOGIC
@@ -188,11 +182,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _Hot := TRUE
             RETURN TRUE
 
-        METHOD GetPage(nPage AS Int32, nKeyLen AS Int32,tag AS CdxTag) AS CdxPage
+        METHOD GetPage(nPage AS Int32, nKeyLen AS WORD,tag AS CdxTag) AS CdxPage
            RETURN SELF:_PageList:GetPage(nPage, nKeyLen,tag)
   
-         METHOD SetPage(nPage AS Int32, page AS CdxPage) AS VOID
-            SELF:_PageList:SetPage(nPage, page)
+         METHOD SetPage(page AS CdxPage) AS VOID
+            SELF:_PageList:SetPage(Page:PageNo, page)
 
         #region properties
 

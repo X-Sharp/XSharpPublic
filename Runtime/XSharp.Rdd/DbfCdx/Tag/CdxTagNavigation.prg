@@ -190,73 +190,68 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN result
             
             
-        PRIVATE METHOD _getNextKey(thisPage AS LOGIC , moveDirection AS SkipDirection ) AS LONG
-            LOCAL oPage AS CdxTreePage
-            LOCAL node AS CdxPageNode
+        PRIVATE METHOD _getNextKey(moveDirection AS SkipDirection ) AS LONG
+            LOCAL page  AS CdxTreePage
+            LOCAL node  AS CdxPageNode
+            LOCAL result AS LONG
             // No page loaded ?
             IF SELF:_TopStack == 0
                 RETURN 0
             ENDIF
-            VAR topStack := SELF:_stack[SELF:_TopStack]
-            oPage := SELF:_Bag:GetPage(topStack:Page, SELF:KeyLength,SELF)
-            node    := oPage[topStack:Pos]
-            IF thisPage
-                IF moveDirection == SkipDirection.Backward
-                    topStack:Pos--
-                    node:Fill(topStack:Pos, oPage)
-                ENDIF
-                IF SELF:_currentRecno != node:Recno
-                    SELF:_saveCurrentRecord(node)
-                ENDIF
-                RETURN node:Recno
-            ENDIF
-            
+            VAR topStack := SELF:CurrentStack
+            page := SELF:_Bag:GetPage(topStack:Page, SELF:KeyLength,SELF)
+            node    := page[topStack:Pos]
+
             IF moveDirection == SkipDirection.Forward
                 topStack:Pos++
-                node:Fill(topStack:Pos, oPage)
-                IF node:Pos < oPage:NumKeys .AND. node:PageNo != 0
-                    RETURN SELF:_locate(NULL, 0, SearchMode.Top, node:PageNo, oPage)
+                node:Fill(topStack:Pos, page)
+                IF node:Pos < page:NumKeys .AND. node:PageNo != 0
+                    RETURN SELF:_locate(NULL, 0, SearchMode.Top, node:PageNo, page)
                 ENDIF
                 // Once we are at the bottom level then we simply skip forward using the Right Pointers
                 IF topStack:Pos == topStack:Count
-                    IF oPage:RightPtr != 0 .AND. oPage:RightPtr != -1
-                        LOCAL nPage AS LONG
-                        nPage := oPage:RightPtr
-                        oPage := SELF:_Bag:GetPage(nPage, SELF:KeyLength,SELF)
-                        topStack:Page  := nPage
+                    IF page:HasRight
+                        VAR rightPtr := page:RightPtr
+                        page := SELF:_Bag:GetPage(rightPtr, SELF:KeyLength,SELF)
+                        topStack:Page  := rightPtr
                         topStack:Pos   := 0
-                        topStack:Count := oPage:NumKeys
+                        topStack:Count := page:NumKeys
                     ELSE
                         // At the end of the leaf list
                         SELF:ClearStack()
                         RETURN 0
                     ENDIF
-                    RETURN SELF:_getNextKey(TRUE, SkipDirection.Forward)
+                    RETURN SELF:_getNextKey(SkipDirection.Forward)
                 ENDIF
-                IF node:Pos >= oPage:NumKeys
+                IF node:Pos >= page:NumKeys
                     NOP
                 ENDIF
-                IF SELF:_currentRecno != node:Recno
-                    SELF:_saveCurrentRecord(node)
-                ENDIF
-                RETURN node:Recno
+                result := node:Recno
+                SELF:_saveCurrentRecord(result)
+                RETURN result
             ENDIF
             IF node:PageNo != 0
-                RETURN SELF:_locate(NULL, 0, SearchMode.Bottom, node:PageNo, oPage)
+                RETURN SELF:_locate(NULL, 0, SearchMode.Bottom, node:PageNo, page)
             ENDIF
             IF topStack:Pos == 0
-                DO WHILE SELF:_TopStack != 0 .AND. topStack:Pos == 0
-                    SELF:PopPage()
-                    topStack := SELF:_stack[SELF:_TopStack]
-                ENDDO
-                RETURN SELF:_getNextKey(TRUE, SkipDirection.Backward)
+                IF page:HasLeft
+                    VAR leftPtr := page:LeftPtr
+                    page := SELF:_Bag:GetPage(leftPtr, SELF:KeyLength,SELF)
+                    topStack:Page  := leftPtr
+                    topStack:Pos   := page:NumKeys // will be decremented below
+                    topStack:Count := page:NumKeys
+                ELSE
+                    // At the end of the leaf list
+                    SELF:ClearStack()
+                    RETURN 0
+                ENDIF
+                RETURN SELF:_getNextKey(SkipDirection.Backward)
             ENDIF
             topStack:Pos--
-            node:Fill(topStack:Pos, oPage)
-            IF SELF:_currentRecno != node:Recno
-                SELF:_saveCurrentRecord(node)
-            ENDIF
-            RETURN node:Recno
+            node:Fill(topStack:Pos, page)
+            result := node:Recno
+            SELF:_saveCurrentRecord(result)
+            RETURN result
             
             
         PRIVATE METHOD _findItemPos(record REF LONG , nodePage AS LOGIC ) AS LOGIC
@@ -366,7 +361,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR RT_Deleted := XSharp.RuntimeState.Deleted
             result := SELF:_RecNo
             IF lNumKeys == 1
-                recno := SELF:_getNextKey(FALSE, SkipDirection.Forward)
+                recno := SELF:_getNextKey(SkipDirection.Forward)
                 IF RT_Deleted .OR. SELF:_oRdd:_FilterInfo:Active
                     recno := SELF:_skipFilter(recno, SkipDirection.Forward)
                 ENDIF
@@ -389,7 +384,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 IF lNumKeys != 0
                     REPEAT
-                        recno := SELF:_getNextKey(FALSE, SkipDirection)
+                        recno := SELF:_getNextKey( SkipDirection)
                         IF rT_Deleted .OR. SELF:_oRdd:_FilterInfo:Active
                             recno := SELF:_skipFilter(recno, SkipDirection)
                         ENDIF
@@ -397,7 +392,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         IF SkipDirection == SkipDirection.Backward
                             IF SELF:_hasTopScope
                                 IF SELF:__Compare(SELF:_currentKeyBuffer, SELF:_topScopeBuffer, SELF:_topScopeSize) < 0
-                                    recno := SELF:_getNextKey(FALSE, SkipDirection.Forward)
+                                    recno := SELF:_getNextKey(SkipDirection.Forward)
                                     SELF:_oRdd:_Bof := TRUE
                                     EXIT
                                 ENDIF
@@ -489,7 +484,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             recno := SELF:_locateKey(keyBytes, keyLen, SearchMode.Left)
             // Now, move until we found the right Recno
             DO WHILE recno != 0 .AND. recno != gotoRec
-                recno := SELF:_getNextKey(FALSE, SkipDirection.Forward)
+                recno := SELF:_getNextKey(SkipDirection.Forward)
             ENDDO
             RETURN recno
             
@@ -529,6 +524,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL node      AS CdxPageNode
             LOCAL minPos    AS WORD
             LOCAL maxPos    AS WORD
+            LOCAL result    AS LONG
             // find a key starting at the pageOffSet passed 
             foundPos := 0
             //Load the page at pageOffset
@@ -540,7 +536,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             // How many Items in that page ?
             nodeCount := page:NumKeys
-            // Get the first one
+            // Get the first node on the page
             node := page[0]
             
             SWITCH searchMode
@@ -608,7 +604,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END SWITCH
             // Add info in the stack
             SELF:_TopStack++
-            VAR topStack := SELF:_stack[SELF:_TopStack]
+            VAR topStack      := SELF:CurrentStack
             topStack:Pos      := foundPos
             topStack:Page     := pageOffset
             topStack:Count    := nodeCount
@@ -622,37 +618,34 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 CASE SearchMode.LeftFound
                 CASE SearchMode.Bottom
                 CASE SearchMode.Top
-                    IF SELF:_currentRecno != node:Recno
-                        SELF:_saveCurrentRecord(node)
-                    ENDIF
-                    RETURN node:Recno
+                    result := node:Recno
+                    SELF:_saveCurrentRecord(result)
+                    RETURN result
                 CASE SearchMode.Left
                     IF SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) == 0
-                        IF SELF:_currentRecno != node:Recno
-                            SELF:_saveCurrentRecord(node)
-                        ENDIF
-                        RETURN node:Recno
+                        result := node:Recno
+                        SELF:_saveCurrentRecord(result)
+                        RETURN result
                     ENDIF
                     RETURN 0
                 CASE SearchMode.Right
                     RETURN 0
                 END SWITCH
             ELSEIF searchMode == SearchMode.LeftFound
-                DO WHILE SELF:_TopStack != 0 .AND. SELF:_stack[SELF:_TopStack]:Pos == SELF:_stack[SELF:_TopStack]:Count
+                DO WHILE SELF:_TopStack != 0 .AND. topStack:Pos == topStack:Count
                     SELF:PopPage()
+                    topStack := SELF:CurrentStack
                 ENDDO
                 IF SELF:_TopStack != 0
-                    topStack := SELF:_stack[SELF:_TopStack]
                     page := SELF:_Bag:GetPage(topStack:Page, SELF:_keySize,SELF)
                     IF page == NULL
                         SELF:ClearStack()
                         RETURN 0
                     ENDIF
                     node:Fill(topStack:Pos, page)
-                    IF SELF:_currentRecno != node:Recno
-                        SELF:_saveCurrentRecord(node)
-                    ENDIF
-                    RETURN node:Recno
+                    result := node:Recno
+                    SELF:_saveCurrentRecord(result)
+                    RETURN result
                 ENDIF
             ENDIF
             RETURN 0

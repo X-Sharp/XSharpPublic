@@ -86,7 +86,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY IsConditional  AS LOGIC GET Options:HasFlag(CdxOptions.HasFor)
         INTERNAL PROPERTY IsHot          AS LOGIC GET _Hot
         PROPERTY KeyType        	AS INT GET SELF:_KeyExprType
-        PROPERTY KeyLength          AS INT GET SELF:_keySize
+        PROPERTY KeyLength          AS WORD GET SELF:_keySize
         PROPERTY Partial        	AS LOGIC GET SELF:Custom
         PROPERTY Conditional        AS LOGIC GET !String.IsNullOrEmpty(_ForExpr)
         PROPERTY Custom         	AS LOGIC GET Options:HasFlag(CdxOptions.IsCustom)
@@ -95,7 +95,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROPERTY FieldIndex     	AS INT AUTO             // 1 based FieldIndex
         PROPERTY Options        	AS CdxOptions AUTO
         PROPERTY LockOffSet     	AS LONG AUTO
-       
+        PROPERTY CurrentStack       AS RddStack GET  SELF:_stack[SELF:_TopStack]
 #endregion
 
 
@@ -119,7 +119,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:FieldIndex  := 0
             SELF:_SingleField := -1
             SELF:_Header := CdxTagHeader{oBag, nPage, buffer, SELF:OrderName}
-            SELF:_Bag:SetPage(nPage, SELF:_Header)
+            SELF:_Bag:SetPage(SELF:_Header)
             SELF:Open()
 
 
@@ -313,8 +313,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	    RETURN TRUE
             
             // Save informations about the "current" Item	
-        PRIVATE METHOD _saveCurrentRecord( node AS CdxNode ) AS VOID
-            SELF:_currentRecno := node:Recno
+        PRIVATE METHOD _saveCurrentRecord( nRecno AS LONG ) AS VOID
+            IF SELF:_currentRecno != nRecno
+                SELF:_currentRecno := nRecno
+            ENDIF
             //Array.Copy(node:KeyBytes, SELF:_currentKeyBuffer, SELF:_keySize)
 
 
@@ -572,7 +574,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL recno			AS LONG
             LOCAL moveDirection	AS SkipDirection
             IF keyMove == 1
-                recno := SELF:_getNextKey(FALSE, SkipDirection.Forward)
+                recno := SELF:_getNextKey(SkipDirection.Forward)
             ELSE
                 IF keyMove < 0
                     keyMove := -keyMove
@@ -582,7 +584,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 IF keyMove != 0
                     REPEAT
-                        recno := SELF:_getNextKey(FALSE, moveDirection)
+                        recno := SELF:_getNextKey( moveDirection)
                         keyMove--
                     UNTIL !(recno != 0 .AND. keyMove != 0)
                 ELSE
@@ -593,7 +595,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
         PRIVATE METHOD PopPage() AS VOID
             IF SELF:_TopStack != 0
-                SELF:_stack[SELF:_TopStack]:Clear()
+                SELF:CurrentStack:Clear()
                 SELF:_TopStack--
             ENDIF
             

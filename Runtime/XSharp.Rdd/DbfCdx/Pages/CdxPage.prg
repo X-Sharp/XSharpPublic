@@ -48,6 +48,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		PROTECTED _buffer   AS BYTE[]
 		PROTECTED _hot      AS LOGIC        // Hot ?  => Page has changed ?
         PROTECTED _dumped   AS LOGIC
+        INTERNAL VIRTUAL PROPERTY NodeAttribute AS CdxNodeAttribute GET CdxNodeAttribute.None SET 
         INTERNAL PROPERTY Dumped AS LOGIC GET _dumped SET _dumped := VALUE
         INTERNAL PROPERTY IsHot  AS LOGIC GET _hot SET _hot := VALUE
         INTERNAL PROPERTY Tag    AS CDXTag GET _tag SET _tag := VALUE
@@ -236,6 +237,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             generator:Emit(OpCodes.Cpblk)
             generator:Emit(OpCodes.Ret)
             _memCopier := (Action<IntPtr, IntPtr, INT>) dm:CreateDelegate(TYPEOF(Action<IntPtr, IntPtr, INT>))
+
 
         STATIC METHOD MemSet(bytes AS BYTE[], start AS INT, length AS INT, VALUE AS BYTE) AS VOID
             LOCAL h AS GcHandle

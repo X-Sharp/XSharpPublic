@@ -99,13 +99,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL PROPERTY Expression AS STRING GET _KeyExpr
         
         INTERNAL PROPERTY Condition AS STRING GET _ForExpr
-        
+        INTERNAL PROPERTY CurrentStack       AS RddStack GET  SELF:_stack[SELF:_TopStack]
         INTERNAL PROPERTY OrderName AS STRING GET _orderName
-	INTERNAL PROPERTY Shared    AS LOGIC GET _Shared
+	    INTERNAL PROPERTY Shared    AS LOGIC GET _Shared
         INTERNAL PROPERTY _Recno AS LONG GET _oRdd:Recno
 
         INTERNAL PROPERTY FullPath AS STRING GET _fullPath
-
         INTERNAL PROPERTY FileName AS STRING
             GET
                 RETURN SELF:_fileName
@@ -687,7 +686,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
         PRIVATE METHOD PopPage() AS VOID
             IF SELF:_TopStack != 0
-                SELF:_stack[SELF:_TopStack]:Clear()
+                SELF:CurrentStack:Clear()
                 SELF:_TopStack--
             ENDIF
             

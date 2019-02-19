@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             SELF:_Pages:TryGetValue(offSet, OUT page)
             RETURN page
 
-       INTERNAL METHOD GetPage(nPage AS Int32, nKeyLen AS Int32, tag AS CdxTag) AS CdxPage
+       INTERNAL METHOD GetPage(nPage AS Int32, nKeyLen AS WORD, tag AS CdxTag) AS CdxPage
          	LOCAL isOk AS LOGIC
             LOCAL buffer AS BYTE[]
             LOCAL oResult AS CdxPage
@@ -68,7 +68,7 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             ENDIF
             IF page IS CdxBranchePage
                 VAR tPage := (CdxBranchePage) page
-                IF tpage:RightPtr != 0 .AND.  tpage:RightPtr != -1
+                IF tpage:HasRight
                    tpage := GetPage(tpage:RightPtr, tpage:KeyLength,tPage:Tag)
                 ENDIF
             ENDIF

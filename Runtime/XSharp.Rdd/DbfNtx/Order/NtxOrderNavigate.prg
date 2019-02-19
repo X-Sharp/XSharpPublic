@@ -203,86 +203,95 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             
         PRIVATE METHOD _getNextKey(thisPage AS LOGIC , moveDirection AS SkipDirection ) AS LONG
-            LOCAL ntxPage AS NtxPage
+            LOCAL page AS NtxPage
             LOCAL node AS NtxPageNode
+            LOCAL result AS LONG
             // No page loaded ?
             IF SELF:_TopStack == 0
                 RETURN 0
             ENDIF
-            ntxPage := SELF:_PageList:Read(SELF:_stack[SELF:_TopStack]:Page)
-            node := ntxPage[SELF:_stack[SELF:_TopStack]:Pos]
+            VAR topStack := SELF:CurrentStack
+            page := SELF:_PageList:Read(topStack:Page)
+            node := page[topStack:Pos]
             IF thisPage
                 IF moveDirection == SkipDirection.Backward
-                    SELF:_stack[SELF:_TopStack]:Pos--
-                    node:Fill(SELF:_stack[SELF:_TopStack]:Pos, ntxPage)
+                    topStack:Pos--
+                    node:Fill(topStack:Pos, page)
                 ENDIF
-                IF SELF:_currentRecno != node:Recno
+                result := node:Recno
+                IF SELF:_currentRecno != result 
                     SELF:_saveCurrentRecord(node)
                 ENDIF
-                RETURN node:Recno
+                RETURN result
             ENDIF
             
             IF moveDirection == SkipDirection.Forward
-                SELF:_stack[SELF:_TopStack]:Pos++
-                node:Fill(SELF:_stack[SELF:_TopStack]:Pos, ntxPage)
+                topStack:Pos++
+                node:Fill(topStack:Pos, page)
                 IF node:PageNo != 0
                     RETURN SELF:_locate(NULL, 0, SearchMode.Top, node:PageNo)
                 ENDIF
-                IF SELF:_stack[SELF:_TopStack]:Pos == SELF:_stack[SELF:_TopStack]:Count
-                    DO WHILE SELF:_TopStack != 0 .AND. SELF:_stack[SELF:_TopStack]:Pos == SELF:_stack[SELF:_TopStack]:Count
+                IF topStack:Pos == topStack:Count
+                    DO WHILE SELF:_TopStack != 0 .AND. topStack:Pos == topStack:Count
                         SELF:PopPage()
+                        topStack := SELF:CurrentStack
                     ENDDO
                     RETURN SELF:_getNextKey(TRUE, SkipDirection.Forward)
                 ENDIF
-                IF SELF:_currentRecno != node:Recno
+                result := node:Recno
+                IF SELF:_currentRecno != result
                     SELF:_saveCurrentRecord(node)
                 ENDIF
-                RETURN node:Recno
+                RETURN result
             ENDIF
             IF node:PageNo != 0
                 RETURN SELF:_locate(NULL, 0, SearchMode.Bottom, node:PageNo)
             ENDIF
-            IF SELF:_stack[SELF:_TopStack]:Pos == 0
-                DO WHILE SELF:_TopStack != 0 .AND. SELF:_stack[SELF:_TopStack]:Pos == 0
+            IF topStack:Pos == 0
+                DO WHILE SELF:_TopStack != 0 .AND. topStack:Pos == 0
                     SELF:PopPage()
+                    topStack := SELF:CurrentStack
                 ENDDO
                 RETURN SELF:_getNextKey(TRUE, SkipDirection.Backward)
             ENDIF
-            SELF:_stack[SELF:_TopStack]:Pos--
-            node:Fill(SELF:_stack[SELF:_TopStack]:Pos, ntxPage)
-            IF SELF:_currentRecno != node:Recno
+            topStack:Pos--
+            node:Fill(topStack:Pos, page)
+            result := node:Recno
+            IF SELF:_currentRecno != result
                 SELF:_saveCurrentRecord(node)
             ENDIF
-            RETURN node:Recno
+            RETURN result
             
             
         PRIVATE METHOD _findItemPos(record REF LONG , nodePage AS LOGIC ) AS LOGIC
-            LOCAL ntxPage AS NtxPage
-            LOCAL node    AS NtxPageNode
+            LOCAL page   AS NtxPage
+            LOCAL node   AS NtxPageNode
             IF SELF:_TopStack == 0
                 RETURN FALSE
             ENDIF
-            ntxPage := SELF:_PageList:Read(SELF:_stack[SELF:_TopStack]:Page)
-            node := ntxPage[SELF:_stack[SELF:_TopStack]:Pos]
+            VAR topStack := SELF:CurrentStack
+            page := SELF:_PageList:Read(topStack:Page)
+            node := page[topStack:Pos]
             IF nodePage
-                SELF:_stack[SELF:_TopStack]:Pos--
+                topStack:Pos--
                 record++
                 RETURN TRUE
             ENDIF
             IF node:PageNo != 0
                 SELF:_locate(NULL, 0, SearchMode.Bottom, node:PageNo)
-                record += (SELF:_stack[SELF:_TopStack]:Pos + 1)
-                SELF:_stack[SELF:_TopStack]:Pos := 0
+                record += (topStack:Pos + 1)
+                topStack:Pos := 0
                 RETURN TRUE
             ENDIF
-            IF SELF:_stack[SELF:_TopStack]:Pos == 0
-                DO WHILE SELF:_TopStack != 0 .AND. SELF:_stack[SELF:_TopStack]:Pos == 0
+            IF topStack:Pos == 0
+                DO WHILE SELF:_TopStack != 0 .AND. topStack:Pos == 0
                     SELF:PopPage()
+                    topStack := SELF:CurrentStack
                 ENDDO
                 RETURN SELF:_findItemPos(REF record, TRUE)
             ENDIF
-            record += SELF:_stack[SELF:_TopStack]:Pos
-            SELF:_stack[SELF:_TopStack]:Pos := 0
+            record += topStack:Pos
+            topStack:Pos := 0
             RETURN TRUE
             
             //    PRIVATE METHOD _isEqual(lRecno AS LONG , objValue AS OBJECT , result REF LOGIC ) AS LOGIC
@@ -519,23 +528,24 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
         PRIVATE METHOD _locate(keyBuffer AS BYTE[] , bufferLen AS LONG , searchMode AS SearchMode , pageOffset AS LONG ) AS LONG
             LOCAL foundPos  AS WORD
-            LOCAL ntxPage   AS NtxPage
+            LOCAL page   AS NtxPage
             LOCAL nodeCount AS WORD
             LOCAL node      AS NtxPageNode
             LOCAL minPos    AS WORD
             LOCAL maxPos    AS WORD
+            LOCAL result    AS LONG
             // find a key starting at the pageOffSet passed 
             foundPos := 0
             //Load the page at pageOffset
-            ntxPage := SELF:_PageList:Read(pageOffset)
-            IF ntxPage == NULL
+            page := SELF:_PageList:Read(pageOffset)
+            IF page == NULL
                 SELF:_TopStack := 0
                 RETURN 0
             ENDIF
             // How many Items in that page ?
-            nodeCount := ntxPage:NodeCount
+            nodeCount := page:NodeCount
             // Get the first one
-            node := ntxPage[0]
+            node := page[0]
             
             SWITCH searchMode
             CASE SearchMode.Right
@@ -545,7 +555,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         maxPos := nodeCount
                         DO WHILE minPos < maxPos
                             foundPos := (WORD) ( (minPos + maxPos) / 2)
-                            node:Fill(foundPos, ntxPage)
+                            node:Fill(foundPos, page)
                             IF SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) >= 0
                                 minPos := (WORD)(foundPos + 1)
                             ELSE
@@ -558,7 +568,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         maxPos := nodeCount
                         DO WHILE minPos < maxPos
                             foundPos := (WORD) ((minPos + maxPos) / 2)
-                            node:Fill(foundPos, ntxPage)
+                            node:Fill(foundPos, page)
                             IF SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) <= 0
                                 minPos := (WORD) (foundPos + 1)
                             ELSE
@@ -573,7 +583,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     maxPos := nodeCount
                     DO WHILE minPos < maxPos
                         foundPos := (WORD) ((minPos + maxPos) / 2)
-                        node:Fill(foundPos, ntxPage)
+                        node:Fill(foundPos, page)
                         IF SELF:_Descending
                             IF SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) > 0
                                 minPos := (WORD) (foundPos + 1)
@@ -589,29 +599,30 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         ENDIF
                     ENDDO
                     foundPos := minPos
-                    node:Fill(foundPos, ntxPage)
+                    node:Fill(foundPos, page)
                     IF searchMode == SearchMode.Left .AND. SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) == 0
                         searchMode := SearchMode.LeftFound
                     ENDIF
                     
             CASE SearchMode.Bottom
                     foundPos := nodeCount
-                    node:Fill(foundPos, ntxPage)
+                    node:Fill(foundPos, page)
                     IF node:PageNo == 0 .AND. foundPos > 0
                         foundPos--
-                        node:Fill(foundPos, ntxPage)
+                        node:Fill(foundPos, page)
                 ENDIF
             CASE SearchMode.Top
                     foundPos := 0
-                node:Fill(foundPos, ntxPage)
+                node:Fill(foundPos, page)
             END SWITCH
             // Add info in the stack
             SELF:_TopStack++
-            SELF:_stack[SELF:_TopStack]:Pos      := foundPos
-            SELF:_stack[SELF:_TopStack]:Page     := pageOffset
-            SELF:_stack[SELF:_TopStack]:Count    := nodeCount
+            VAR topStack := SELF:CurrentStack
+            topStack:Pos      := foundPos
+            topStack:Page     := pageOffset
+            topStack:Count    := nodeCount
             
-            node:Fill(foundPos, ntxPage)
+            node:Fill(foundPos, page)
             IF node:PageNo != 0
                 RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, node:PageNo)
             ENDIF
@@ -621,36 +632,40 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 CASE SearchMode.LeftFound
                 CASE SearchMode.Bottom
                 CASE SearchMode.Top
-                    IF SELF:_currentRecno != node:Recno
+                    result := node:Recno
+                    IF SELF:_currentRecno != result
                         SELF:_saveCurrentRecord(node)
                     ENDIF
-                    RETURN node:Recno
+                    RETURN result
                 CASE SearchMode.Left
                     IF SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) == 0
-                        IF SELF:_currentRecno != node:Recno
+                        result := node:Recno
+                        IF SELF:_currentRecno != result
                             SELF:_saveCurrentRecord(node)
                         ENDIF
-                        RETURN node:Recno
+                        RETURN result
                     ENDIF
                     RETURN 0
                 CASE SearchMode.Right
                     RETURN 0
                 END SWITCH
             ELSEIF searchMode == SearchMode.LeftFound
-                DO WHILE SELF:_TopStack != 0 .AND. SELF:_stack[SELF:_TopStack]:Pos == SELF:_stack[SELF:_TopStack]:Count
+                DO WHILE SELF:_TopStack != 0 .AND. topStack:Pos == topStack:Count
                     SELF:PopPage()
+                    topStack := SELF:CurrentStack
                 ENDDO
                 IF SELF:_TopStack != 0
-                    ntxPage := SELF:_PageList:Read(SELF:_stack[SELF:_TopStack]:Page)
-                    IF ntxPage == NULL
+                    page := SELF:_PageList:Read(topStack:Page)
+                    IF page == NULL
                         SELF:ClearStack()
                         RETURN 0
                     ENDIF
-                    node:Fill(SELF:_stack[SELF:_TopStack]:Pos, ntxPage)
-                    IF SELF:_currentRecno != node:Recno
+                    node:Fill(topStack:Pos, page)
+                    result := node:Recno
+                    IF SELF:_currentRecno != result
                         SELF:_saveCurrentRecord(node)
                     ENDIF
-                    RETURN node:Recno
+                    RETURN result
                 ENDIF
             ENDIF
             RETURN 0
@@ -662,6 +677,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 recno := SELF:_Recno
             ENDIF
             RETURN recno
+
         PRIVATE METHOD _Seek(seekInfo AS DBSEEKINFO , abNewKey AS BYTE[] ) AS LOGIC
             LOCAL recno AS LONG
             LOCAL result AS LOGIC

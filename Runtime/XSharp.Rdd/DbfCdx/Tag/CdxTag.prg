@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _KeyExpr AS STRING
         INTERNAL _ForExpr AS STRING
         INTERNAL _currentRecno AS LONG
-        INTERNAL _currentKeyBuffer AS BYTE[]
+        PRIVATE _currentNode    AS CdxNode
         INTERNAL _newKeyBuffer AS BYTE[]
         INTERNAL _newKeyLen AS LONG
         INTERNAL _version AS DWORD
@@ -103,7 +103,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	    SUPER()
             LOCAL i AS LONG
 
-            SELF:_currentKeyBuffer := BYTE[]{ MAX_KEY_LEN+1 }
             SELF:_newKeyBuffer  := BYTE[]{ MAX_KEY_LEN+1 }
             SELF:_bag := oBag
             SELF:_oRDD := oBag:_oRDD
@@ -313,11 +312,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	    RETURN TRUE
             
             // Save informations about the "current" Item	
-        PRIVATE METHOD _saveCurrentRecord( nRecno AS LONG ) AS VOID
-            IF SELF:_currentRecno != nRecno
-                SELF:_currentRecno := nRecno
+        PRIVATE METHOD _saveCurrentRecord( node AS CdxNode) AS VOID
+            IF SELF:_currentRecno != node:Recno
+                SELF:_currentRecno := node:Recno
             ENDIF
-            //Array.Copy(node:KeyBytes, SELF:_currentKeyBuffer, SELF:_keySize)
+            SELF:_currentNode := node
 
 
         PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG , nDec AS LONG , buffer AS BYTE[] , isAnsi AS LOGIC ) AS LOGIC    

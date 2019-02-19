@@ -193,7 +193,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _getNextKey(moveDirection AS SkipDirection ) AS LONG
             LOCAL page  AS CdxTreePage
             LOCAL node  AS CdxPageNode
-            LOCAL result AS LONG
             // No page loaded ?
             IF SELF:_TopStack == 0
                 RETURN 0
@@ -216,19 +215,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         topStack:Page  := rightPtr
                         topStack:Pos   := 0
                         topStack:Count := page:NumKeys
+                        node    := page[topStack:Pos]
+                        SELF:_saveCurrentRecord(node)
+                        RETURN node:Recno
                     ELSE
                         // At the end of the leaf list
                         SELF:ClearStack()
                         RETURN 0
                     ENDIF
-                    RETURN SELF:_getNextKey(SkipDirection.Forward)
                 ENDIF
                 IF node:Pos >= page:NumKeys
                     NOP
                 ENDIF
-                result := node:Recno
-                SELF:_saveCurrentRecord(result)
-                RETURN result
+                SELF:_saveCurrentRecord(node)
+                RETURN node:Recno
             ENDIF
             IF node:PageNo != 0
                 RETURN SELF:_locate(NULL, 0, SearchMode.Bottom, node:PageNo, page)
@@ -249,9 +249,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             topStack:Pos--
             node:Fill(topStack:Pos, page)
-            result := node:Recno
-            SELF:_saveCurrentRecord(result)
-            RETURN result
+            SELF:_saveCurrentRecord(node)
+            RETURN node:Recno
             
             
         PRIVATE METHOD _findItemPos(record REF LONG , nodePage AS LOGIC ) AS LOGIC
@@ -310,14 +309,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _getScopePos() AS LONG
             LOCAL first AS LONG
             LOCAL last AS LONG
-            
+            VAR currentKeyBuffer := SELF:_currentNode:KeyBytes
             IF SELF:_hasTopScope
-                IF SELF:__Compare(SELF:_currentKeyBuffer, SELF:_topScopeBuffer, SELF:_topScopeSize) < 0
+                IF SELF:__Compare(currentKeyBuffer, SELF:_topScopeBuffer, SELF:_topScopeSize) < 0
                     RETURN 0
                 ENDIF
             ENDIF
             IF SELF:_hasBottomScope
-                IF SELF:__Compare(SELF:_currentKeyBuffer, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize) > 0
+                IF SELF:__Compare(currentKeyBuffer, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize) > 0
                     RETURN 0
                 ENDIF
             ENDIF
@@ -341,7 +340,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             isOk := TRUE
             IF rcno != SELF:_currentRecno .OR. SELF:Shared
                 SELF:_currentRecno := 0
-                isOk := SELF:getKeyValue(SELF:_SourceIndex, SELF:_currentKeyBuffer)
+                VAR currentKeyBuffer := SELF:_currentNode:KeyBytes
+                isOk := SELF:getKeyValue(SELF:_SourceIndex, currentKeyBuffer)
                 IF isOk
                     SELF:_currentRecno := rcno
                 ENDIF
@@ -370,7 +370,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN 0
                 ENDIF
                 IF SELF:_hasBottomScope
-                    IF SELF:__Compare(SELF:_currentKeyBuffer, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize) > 0
+                    VAR currentKeyBuffer := SELF:_currentNode:KeyBytes
+                    IF SELF:__Compare(currentKeyBuffer, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize) > 0
                         SELF:_oRdd:_Eof := TRUE
                         RETURN result
                     ENDIF
@@ -391,7 +392,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         lNumKeys--
                         IF SkipDirection == SkipDirection.Backward
                             IF SELF:_hasTopScope
-                                IF SELF:__Compare(SELF:_currentKeyBuffer, SELF:_topScopeBuffer, SELF:_topScopeSize) < 0
+                                VAR currentKeyBuffer := SELF:_currentNode:KeyBytes
+                                IF SELF:__Compare(currentKeyBuffer, SELF:_topScopeBuffer, SELF:_topScopeSize) < 0
                                     recno := SELF:_getNextKey(SkipDirection.Forward)
                                     SELF:_oRdd:_Bof := TRUE
                                     EXIT
@@ -404,7 +406,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                     RETURN result
                                 ENDIF
                                 SELF:_oRdd:_Bof := FALSE
-                                IF SELF:__Compare(SELF:_currentKeyBuffer, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize) > 0
+                                VAR currentKeyBuffer := SELF:_currentNode:KeyBytes
+                                IF SELF:__Compare(currentKeyBuffer, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize) > 0
                                     SELF:_oRdd:_Eof := TRUE
                                     RETURN result
                                 ENDIF
@@ -467,8 +470,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF SELF:_hasBottomScope
                     itmBottomScope := SELF:_bottomScope
                     SELF:_ToString(itmBottomScope, SELF:_keySize, SELF:_keyDecimals, SELF:_newKeyBuffer, SELF:_Ansi)
-                    
-                    IF SELF:__Compare(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, SELF:_keySize) >= 0
+                    VAR currentKeyBuffer := _currentNode:KeyBytes
+                    IF SELF:__Compare(SELF:_newKeyBuffer, currentKeyBuffer, SELF:_keySize) >= 0
                         isOk := TRUE
                     ENDIF
                 ELSE
@@ -493,7 +496,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL result AS LOGIC
             result := TRUE
             SELF:_saveCurrentKey(recno)
-            IF SELF:_goRecord(SELF:_currentKeyBuffer, SELF:_keySize, recno) != recno
+            VAR currentKeyBuffer := SELF:_currentNode:KeyBytes
+            IF SELF:_goRecord(currentKeyBuffer, SELF:_keySize, recno) != recno
                 IF SELF:_goRecord(NULL, 0, recno) != recno
                     IF !SELF:Unique .AND. !SELF:Conditional .AND. !SELF:Custom
                         SELF:_oRdd:_dbfError( SubCodes.ERDD_RECNO_MISSING, GenCode.EG_CORRUPTION,SELF:fileName)
@@ -524,7 +528,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL node      AS CdxPageNode
             LOCAL minPos    AS WORD
             LOCAL maxPos    AS WORD
-            LOCAL result    AS LONG
             // find a key starting at the pageOffSet passed 
             foundPos := 0
             //Load the page at pageOffset
@@ -534,6 +537,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_TopStack := 0
                 RETURN 0
             ENDIF
+            VAR topStack      := SELF:CurrentStack
             // How many Items in that page ?
             nodeCount := page:NumKeys
             // Get the first node on the page
@@ -576,17 +580,27 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 DO WHILE minPos < maxPos
                     foundPos := (WORD) ((minPos + maxPos) / 2)
                     node:Fill(foundPos, page)
+                    VAR cmp := SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen)
                     IF SELF:_Descending
-                        IF SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) > 0
+                        IF  cmp > 0
                             minPos := (WORD) (foundPos + 1)
                         ELSE
                             maxPos := foundPos
                         ENDIF
                     ELSE
-                        IF SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) < 0
+                        IF cmp  < 0
                             minPos := (WORD) (foundPos + 1)
                         ELSE
                             maxPos := foundPos
+                        ENDIF
+                    ENDIF
+                    IF minPos >= maxPos .AND. cmp < 0
+                        IF page:HasRight
+                            pageOffset  := page:RightPtr
+                            page        :=  SELF:_Bag:GetPage(pageOffset, SELF:_keySize,SELF)
+                            nodeCount   := page:NumKeys
+                            minPos := 0
+                            maxPos := nodeCount
                         ENDIF
                     ENDIF
                 ENDDO
@@ -604,7 +618,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END SWITCH
             // Add info in the stack
             SELF:_TopStack++
-            VAR topStack      := SELF:CurrentStack
+            topStack      := SELF:CurrentStack
             topStack:Pos      := foundPos
             topStack:Page     := pageOffset
             topStack:Count    := nodeCount
@@ -618,14 +632,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 CASE SearchMode.LeftFound
                 CASE SearchMode.Bottom
                 CASE SearchMode.Top
-                    result := node:Recno
-                    SELF:_saveCurrentRecord(result)
-                    RETURN result
+                    SELF:_saveCurrentRecord(node)
+                    RETURN node:Recno
                 CASE SearchMode.Left
                     IF SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) == 0
-                        result := node:Recno
-                        SELF:_saveCurrentRecord(result)
-                        RETURN result
+                        SELF:_saveCurrentRecord(node)
+                        RETURN node:Recno
                     ENDIF
                     RETURN 0
                 CASE SearchMode.Right
@@ -643,9 +655,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         RETURN 0
                     ENDIF
                     node:Fill(topStack:Pos, page)
-                    result := node:Recno
-                    SELF:_saveCurrentRecord(result)
-                    RETURN result
+                    SELF:_saveCurrentRecord(node)
+                    RETURN node:Recno
                 ENDIF
             ENDIF
             RETURN 0
@@ -716,46 +727,48 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                     LOCAL found AS LOGIC
                     IF SELF:_oRdd:_isValid
+                        // Get Current Key
+                        VAR currentKeyBuffer := _currentNode:KeyBytes
                         IF deletedState .OR. SELF:_oRdd:_FilterInfo:Active .OR. seekInfo:SoftSeek .OR. seekInfo:Last
                             SELF:_ToString(seekInfo:Value, SELF:_keySize, SELF:_keyDecimals, SELF:_newKeyBuffer, SELF:_Ansi, REF SELF:_newKeyLen)
-                            strCmp := SELF:__Compare(abNewKey, SELF:_currentKeyBuffer, len)
+                            strCmp := SELF:__Compare(abNewKey, currentKeyBuffer, len)
                             found := (strCmp == 0)
                             IF needPadStr .AND. !found
                                 IF SELF:_Descending
                                     SELF:_newKeyBuffer[len] := Byte.MaxValue
-                                    temp:= SELF:_currentKeyBuffer[len]
-                                    SELF:_currentKeyBuffer[len] := 1
-                                    cmpMinMax := SELF:__Compare(abNewKey, SELF:_currentKeyBuffer, padLen)
+                                    temp:= currentKeyBuffer[len]
+                                    currentKeyBuffer[len] := 1
+                                    cmpMinMax := SELF:__Compare(abNewKey, currentKeyBuffer, padLen)
                                     IF strCmp < 0 .AND. cmpMinMax > 0
                                         found := TRUE
                                     ENDIF
                                     IF !found
                                         SELF:_newKeyBuffer[len] := 1
-                                        SELF:_currentKeyBuffer[len] := Byte.MaxValue
-                                        strCmpMaxMin := SELF:__Compare(abNewKey, SELF:_currentKeyBuffer, padLen)
+                                        currentKeyBuffer[len] := Byte.MaxValue
+                                        strCmpMaxMin := SELF:__Compare(abNewKey, currentKeyBuffer, padLen)
                                         IF strCmp > 0 .AND. strCmpMaxMin < 0
                                             found := TRUE
                                         ENDIF
                                     ENDIF
                                 ELSE
                                     SELF:_newKeyBuffer[len] := 1
-                                    temp:= SELF:_currentKeyBuffer[len]
-                                    SELF:_currentKeyBuffer[len] := Byte.MaxValue
-                                    strCmpMaxMin := SELF:__Compare(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, padLen)
+                                    temp:= currentKeyBuffer[len]
+                                    currentKeyBuffer[len] := Byte.MaxValue
+                                    strCmpMaxMin := SELF:__Compare(SELF:_newKeyBuffer, currentKeyBuffer, padLen)
                                     IF strCmp > 0 .AND. cmpMinMax < 0
                                         found := TRUE
                                     ENDIF
                                     IF !found
                                         SELF:_newKeyBuffer[len] := Byte.MaxValue
-                                        SELF:_currentKeyBuffer[len] := 1
-                                        strCmpMaxMin := SELF:__Compare(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, padLen)
+                                        currentKeyBuffer[len] := 1
+                                        strCmpMaxMin := SELF:__Compare(SELF:_newKeyBuffer, currentKeyBuffer, padLen)
                                         IF strCmp < 0 .AND. strCmpMaxMin > 0
                                             found := TRUE
                                         ENDIF
                                     ENDIF
                                 ENDIF
                                 SELF:_newKeyBuffer[len] := 0
-                                SELF:_currentKeyBuffer[len] := temp
+                                currentKeyBuffer[len] := temp
                                 seekInfo:SoftSeek := fSoft
                             ENDIF
                             IF found
@@ -772,7 +785,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                         IF recno == 0
                                             EXIT
                                         ENDIF
-                                        strCmp := SELF:__Compare(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, len)
+                                        currentKeyBuffer := _currentNode:KeyBytes
+                                        strCmp := SELF:__Compare(SELF:_newKeyBuffer, currentKeyBuffer, len)
                                         IF strCmp != 0
                                             recno := SELF:_nextKey(-1)
                                             EXIT
@@ -788,7 +802,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                 IF seekInfo:Last
                                     diff := strCmp
                                     recno := SELF:_nextKey(-1)
-                                    strCmp := SELF:__Compare(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, len)
+                                    strCmp := SELF:__Compare(SELF:_newKeyBuffer, currentKeyBuffer, len)
                                     found := (strCmp == 0)
                                     IF found
                                         result := SELF:_oRdd:__Goto(recno)
@@ -807,7 +821,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                 ENDIF
                             ENDIF
                         ELSE
-                            strCmp := SELF:__Compare(abNewKey, SELF:_currentKeyBuffer, len)
+                            strCmp := SELF:__Compare(abNewKey, currentKeyBuffer, len)
                             found := (strCmp == 0)
                         ENDIF
                     ELSE

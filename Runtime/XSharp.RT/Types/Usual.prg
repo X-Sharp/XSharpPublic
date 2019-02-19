@@ -1843,7 +1843,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long	; RETURN FLOAT{(REAL8) u:_intValue}
                 CASE __UsualType.Int64	; RETURN FLOAT{(REAL8) u:_i64Value}
                 CASE __UsualType.Float	; RETURN u:_floatValue
-                CASE __UsualType.Decimal; RETURN FLOAT{(REAL8) u:_decimalValue}
+                CASE __UsualType.Decimal; RETURN FLOAT{(REAL8) u:_decimalValue, -1}
                 CASE __UsualType.Logic	; RETURN FLOAT{IIF(u:_logicValue, 1, 0)}
                 CASE __UsualType.Void	; RETURN FLOAT{0}
                 OTHERWISE

@@ -577,10 +577,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             CASE SearchMode.LeftFound
                 minPos := 0
                 maxPos := nodeCount
+                VAR found := FALSE 
                 DO WHILE minPos < maxPos
                     foundPos := (WORD) ((minPos + maxPos) / 2)
                     node:Fill(foundPos, page)
                     VAR cmp := SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen)
+                    IF cmp == 0
+                        found := TRUE
+                    ENDIF
                     IF SELF:_Descending
                         IF  cmp > 0
                             minPos := (WORD) (foundPos + 1)
@@ -594,7 +598,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             maxPos := foundPos
                         ENDIF
                     ENDIF
-                    IF minPos >= maxPos .AND. cmp < 0
+                    IF minPos >= maxPos .AND. ! found
                         IF page:HasRight
                             pageOffset  := page:RightPtr
                             page        :=  SELF:_Bag:GetPage(pageOffset, SELF:_keySize,SELF)
@@ -603,8 +607,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             maxPos := nodeCount
                         ENDIF
                     ENDIF
+                    
                 ENDDO
                 foundPos := minPos
+                node:Fill(foundPos, page)
                 IF searchMode == SearchMode.Left .AND. SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) == 0
                     searchMode := SearchMode.LeftFound
                 ENDIF

@@ -140,6 +140,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
         #endregion
 
+         METHOD Flush() AS LOGIC
+            LOCAL lOk AS LOGIC
+            lOk := TRUE
+             FOREACH oTag AS CdxTag IN _tags
+                IF ! oTag:Flush()
+                    lOk := FALSE
+                ENDIF
+            NEXT
+            RETURN lOk
+
+
          METHOD GoCold() AS LOGIC
             LOCAL lOk AS LOGIC
             lOk := TRUE

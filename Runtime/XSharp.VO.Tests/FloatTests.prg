@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -16,7 +16,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	CLASS FloatTests
 		[Fact, Trait("Category", "Numeric")];
 		METHOD CONTIMETest() AS VOID
-			Assert.Equal("13:34:54",CONTIME((DWORD)13,(DWORD)34,(DWORD)54))
+			Assert.Equal("13:34:54",ConTime((DWORD)13,(DWORD)34,(DWORD)54))
 		RETURN
 
 		[Fact, Trait("Category", "Numeric")];
@@ -41,7 +41,81 @@ BEGIN NAMESPACE XSharp.VO.Tests
             f := Object2Float(o)
             Assert.Equal ( (REAL8) 1234, (REAL8) f)
              
+        [Fact, Trait("Category", "Numeric")];
+        METHOD FloatComparisons AS VOID
+			LOCAL f1,f2 AS FLOAT
+			LOCAL fDelta AS FLOAT
+			fDelta := SetFloatDelta()
 
+			SetFloatDelta(0.0000000001)
+			
+			f1 := 0.00001
+			f2 := 0.00001
+			Assert.False( f1 < f2  )
+			Assert.True( f1 <= f2 )
+			Assert.False( f1 > f2  )
+			Assert.True( f1 >= f2 )
+			Assert.True( f1 == f2 )
+
+			f1 := 0.00001
+			f2 := 0.00002
+			Assert.True( f1 < f2  )
+			Assert.True( f1 <= f2 )
+			Assert.False( f1 > f2  )
+			Assert.False( f1 >= f2 )
+			Assert.False( f1 == f2 )
+
+			f1 := 0.00002
+			f2 := 0.00001
+			Assert.False( f1 < f2  )
+			Assert.False( f1 <= f2 )
+			Assert.True( f1 > f2  )
+			Assert.True( f1 >= f2 )
+			Assert.False( f1 == f2 )
+
+			f1 := -0.00001
+			f2 := -0.00002
+			Assert.False( f1 < f2  )
+			Assert.False( f1 <= f2 )
+			Assert.True( f1 > f2  )
+			Assert.True( f1 >= f2 )
+			Assert.False( f1 == f2 )
+
+			SetFloatDelta(0.01)
+
+			f1 := 0.00001
+			f2 := 0.00001
+			Assert.False( f1 < f2  )
+			Assert.True( f1 <= f2 )
+			Assert.False( f1 > f2  )
+			Assert.True( f1 >= f2 )
+			Assert.True( f1 == f2 )
+
+			f1 := 0.00001
+			f2 := 0.00002
+			Assert.False( f1 < f2  )
+			Assert.True( f1 <= f2 )
+			Assert.False( f1 > f2  )
+			Assert.True( f1 >= f2 )
+			Assert.True( f1 == f2 )
+
+			f1 := 0.00002
+			f2 := 0.00001
+			Assert.False( f1 < f2  )
+			Assert.True( f1 <= f2 )
+			Assert.False( f1 > f2  )
+			Assert.True( f1 >= f2 )
+			Assert.True( f1 == f2 )
+
+			f1 := -0.00001
+			f2 := -0.00002
+			Assert.False( f1 < f2  )
+			Assert.True( f1 <= f2 )
+			Assert.False( f1 > f2  )
+			Assert.True( f1 >= f2 )
+			Assert.True( f1 == f2 )
+
+			SetFloatDelta(fDelta)
     END CLASS
             
 END NAMESPACE

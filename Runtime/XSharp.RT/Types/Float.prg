@@ -148,7 +148,7 @@ BEGIN NAMESPACE XSharp
             IF (delta == 0.0)
                 RETURN diff < 0.0
             ENDIF
-            RETURN diff < delta
+            RETURN diff < -delta
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR >=(lhs AS FLOAT, rhs AS FLOAT) AS LOGIC

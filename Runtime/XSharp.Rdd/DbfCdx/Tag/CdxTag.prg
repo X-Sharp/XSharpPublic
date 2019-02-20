@@ -24,8 +24,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         #region constants
         PRIVATE CONST MAX_KEY_LEN       := 256  AS WORD
         PRIVATE CONST NTX_COUNT         := 16    AS WORD
-        PRIVATE CONST MIN_BYTE          := 0x01 AS BYTE
-        PRIVATE CONST MAX_BYTE          := 0xFF AS BYTE
         PRIVATE CONST STACK_DEPTH       := 20 AS LONG
         #endregion
         #region fields

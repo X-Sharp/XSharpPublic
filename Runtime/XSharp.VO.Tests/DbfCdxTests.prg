@@ -454,8 +454,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD Shared_Cdx() AS VOID
 			LOCAL cDbf AS STRING
 			LOCAL cCdx AS STRING
+            RDDSetDefault("DBFCDX")
 			cDbf := GetTempFileName("testcdx")
 			cCdx := cDbf + ".cdx"
+            Ferase(cCdx)
 			
 			Assert.True( DBCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 }}) )
 			Assert.True( DBUseArea(,,cDbf,,FALSE) )
@@ -471,7 +473,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True( DBCloseArea() )
 			
 			Assert.True( DBUseArea(,,cDbf,,FALSE) )
-			Assert.True( DBSetIndex(cCdx) )
+			//Assert.True( DBSetIndex(cCdx) )
+            DbSetOrder(1)
 			DBGoTop()
 			Assert.True( AllTrim(FieldGet(1)) == "A" )
 			DBGoBottom()

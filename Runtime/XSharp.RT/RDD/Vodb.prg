@@ -233,7 +233,7 @@ STATIC METHOD Select(nNew AS DWORD,riOld REF USUAL) AS LOGIC
         LOCAL   aRdds  := NULL_ARRAY AS ARRAY
         LOCAL   n       AS DWORD
         LOCAL   i       AS DWORD
-        LOCAL   lBlob  := FALSE AS LOGIC
+        LOCAL   lFPT  := FALSE AS LOGIC
         LOCAL   lDbf    AS LOGIC
         
         IF IsArray(xDriver)
@@ -253,21 +253,25 @@ STATIC METHOD Select(nNew AS DWORD,riOld REF USUAL) AS LOGIC
         ELSEIF nType == STRING
             aRdds := {}
             xDriver := upper(xDriver)
-            DO CASE
-            CASE xDriver = "DBFNTX"
+            SWITCH (STRING) xDriver
+            CASE "DBFNTX"
+            CASE "DBFMEMO"
+            CASE "DBFDBT"
                 lDbf := .T.
-            CASE xDriver = "_DBFCDX"
+            CASE "_DBFCDX"
+            CASE "DBFFPT"
+                xDriver := "DBFFPT"
                 lDbf := .T.
-            CASE xDriver = "DBFCDX"
-                    lBlob := .T.
-                    lDbf  := .T.
-                xDriver := "_DBFCDX"
-            CASE xDriver = "DBFMDX"
+            CASE "DBFCDX"
+                lFPT := .T.
+                lDbf  := .T.
+                xDriver := "DBFFPT"
+            CASE "DBFMDX"
                 lDbf := .T.
             OTHERWISE
-                    lDbf := .F.
-                lBlob := .F.
-            ENDCASE
+                lDbf := .F.
+                lFPT := .F.
+            END SWITCH
             
             IF lDbf
                 AAdd(aRdds, "DBF")  
@@ -275,7 +279,7 @@ STATIC METHOD Select(nNew AS DWORD,riOld REF USUAL) AS LOGIC
             
             AAdd(aRdds, xDriver)
             
-            IF lBlob
+            IF lFPT
                 AAdd(aRdds, "DBFCDX")
             ENDIF
             

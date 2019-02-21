@@ -457,7 +457,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
             RDDSetDefault("DBFCDX")
 			cDbf := GetTempFileName("testcdx")
 			cCdx := cDbf + ".cdx"
-            Ferase(cCdx)
+            FErase(cCdx)
 			
 			Assert.True( DBCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 }}) )
 			Assert.True( DBUseArea(,,cDbf,,FALSE) )
@@ -474,12 +474,16 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			Assert.True( DBUseArea(,,cDbf,,FALSE) )
 			//Assert.True( DBSetIndex(cCdx) )
-            DbSetOrder(1)
+            DBSetOrder(1)
 			DBGoTop()
 			Assert.True( AllTrim(FieldGet(1)) == "A" )
 			DBGoBottom()
 			Assert.True( AllTrim(FieldGet(1)) == "B" )
 			Assert.True( DBCloseArea() ) // XSharp.RDD.RddError here
+			
+            Assert.True( FErase(cDbf + ".dbf") )
+            Assert.True( FErase(cCdx) )
+			
 		RETURN
 
 		// TECH-U43F26KOT7 , Runtime error saving NULL_DATE to DATE dbf field
@@ -516,6 +520,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cDbf AS STRING
 			LOCAL cNtx AS STRING
 			LOCAL aResult AS ARRAY
+			
+			RDDSetDefault("DBFNTX")
 			
 			cDbf := GetTempFileName()
 			cNtx := cDbf + ".ntx"
@@ -600,6 +606,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD Ntx_Issues2() AS VOID
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName()
+
+			RDDSetDefault("DBFNTX")
+
 			DBCreate(cFileName, {{"FLD1","C",10,0},{"FLD2","N",10,0}})
 			DBUseArea( , , cFileName , , FALSE)
 			FOR LOCAL n := 1 AS INT UPTO 10
@@ -756,6 +765,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cDbf AS STRING
 			LOCAL cNtx AS STRING
 			
+			RDDSetDefault("DBFNTX")
+
 			cDbf := GetTempFileName()
 			cNtx := cDbf + ".ntx"
 			
@@ -799,6 +810,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBOrderInfo_DBOI_SETCODEBLOCK() AS VOID
 			LOCAL cDBF, cNTX AS STRING
 			
+			RDDSetDefault("DBFNTX")
+
 			cDBF := GetTempFileName("test")
 			cNTX := cDBF + ".ntx"
 			
@@ -825,6 +838,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD OrdScope_test() AS VOID
 			LOCAL cDbf AS STRING
 			cDbf := GetTempFileName()
+
+			RDDSetDefault("DBFNTX")
+
 			DBCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
 			DBUseArea(,"DBFNTX",cDbf)
 			FOR LOCAL n := 1 AS INT UPTO 20
@@ -860,6 +876,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cDbf AS STRING
 			cDbf := GetTempFileName()
 			
+			RDDSetDefault("DBFNTX")
+
 			LOCAL uCollation AS USUAL
 			uCollation := SetCollation(#ORDINAL)
 			
@@ -890,6 +908,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL i AS DWORD
 			LOCAL cDBF, cNTX AS STRING
 			
+			RDDSetDefault("DBFNTX")
+
 			aValues := { "ssss" , "hhhh", "wwww" , "aaaa" }
 			cDBF := GetTempFileName()
 			cNTX := cDbf
@@ -962,6 +982,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aValues AS ARRAY 
 			LOCAL i AS DWORD
 			
+			RDDSetDefault("DBFNTX")
+
 			cDBF := GetTempFileName()
 			aValues := { 44 , 12, 34 , 21 }                                 
 			DBCreate( cDBF , {{"AGE" , "N" , 3 , 0 } })
@@ -995,6 +1017,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			cDBF := GetTempFileName()
 		
+			RDDSetDefault("DBFNTX")
 			SetDeleted(FALSE)
 			
 //			test also with those
@@ -1042,6 +1065,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aValues AS ARRAY 
 			LOCAL i AS DWORD
 			
+			RDDSetDefault("DBFNTX")
+
 			cDBF := GetTempFileName()
 		
 			SetDeleted(TRUE)
@@ -1091,6 +1116,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL i AS DWORD
 			LOCAL cDBF AS STRING
 			LOCAL cNTX AS STRING
+
+			RDDSetDefault("DBFNTX")
+
 			aValues := { 44 , 12, 34 , 21 }                                
 			cDBF := GetTempFileName("testdbf")
 			cNTX := cDbf + ".ntx"
@@ -1131,6 +1159,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aValues AS ARRAY
 			LOCAL i AS DWORD
 			
+			RDDSetDefault("DBFNTX")
+
 			cDBF := GetTempFileName()
 			aValues := { 1,4,2,3 }
 			DBCreate( cDBF , {{"NUM" , "N" ,5 , 0 } })
@@ -1164,6 +1194,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cDbf AS STRING
 			cDBF := GetTempFileName()
 			
+			RDDSetDefault("DBFNTX")
+
 			DBCloseAll() // worakaroudn for previous test crashing
 			
 			DBCreate( cDBF , {{"LEFT" , "N" ,5 , 0 } , {"STR" , "C" ,5 , 0 } })
@@ -1213,6 +1245,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cDbf AS STRING
 			DBCloseAll()
 			
+			RDDSetDefault("DBFNTX")
+
 			cDBF := GetTempFileName("testnewer")
 			DBCreate( cDBF , {{"FIELDN" , "N" ,5 , 0 } , ;
 			{"FIELDS" , "C" ,15 , 0 } , ;
@@ -1250,6 +1284,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cDbf AS STRING
 			DBCloseAll()
 			
+			RDDSetDefault("DBFNTX")
+
 			cDBF := GetTempFileName("testnewer")
 			DBCreate( cDBF , {{"FIELDN" , "N" ,5 , 0 } })
 			DBUseArea(,"DBFNTX",cDBF) 
@@ -1434,6 +1470,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cDBF AS STRING
 			LOCAL aValues AS ARRAY
 			LOCAL i AS DWORD       
+
+			RDDSetDefault("DBFNTX")
+
 			DBCloseAll()
 			
 			cDBF := GetTempFileName()

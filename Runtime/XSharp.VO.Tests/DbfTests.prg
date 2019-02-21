@@ -978,7 +978,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			FOR i := 1 UPTO ALen ( aValues )
 				DBAppend()
 				FieldPut(1,aValues [i])  
-			NEXT 
+			NEXT
+			DBCloseArea()
 		
 			DBUseArea(,"DBFNTX",cDBF,,TRUE) 
 			Assert.Equal(0 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
@@ -1088,6 +1089,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			ENDDO
 
 			Assert.True( DBClearIndex( cNTX) )
+			
+			DBGoTop()
+			Assert.Equal(1, (INT)RecNo())
+			
 			Assert.True( DBSetIndex ( cNTX ) )
 
 			Assert.Equal(4, (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, ok

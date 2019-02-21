@@ -674,6 +674,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBCreate_test() AS VOID
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName()
+
+			RDDSetDefault("DBFNTX")
 			
 			DBCreate(cFileName, {{"FLD1","C",10,0}})
 			DBUseArea(,,cFileName,,FALSE)

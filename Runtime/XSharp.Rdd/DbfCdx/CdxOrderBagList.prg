@@ -6,7 +6,7 @@
 USING System
 USING System.Collections.Generic
 USING XSharp.RDD.Support
-
+USING System.io
 
 BEGIN NAMESPACE XSharp.RDD.CDX
     /// <summary>
@@ -16,7 +16,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _oRdd AS DbfCdx
         PRIVATE _list AS List<CdxOrderBag>
         
-        INTERNAL PROPERTY CurrentOrder AS CdxTag auto
+        INTERNAL PROPERTY CurrentOrder AS CdxTag AUTO
         
         CONSTRUCTOR(oRdd AS DbfCdx)
             _oRdd := oRdd
@@ -25,10 +25,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
         METHOD Add(info AS DbOrderInfo) AS LOGIC
             LOCAL oBag AS CdxOrderBag
-            IF File(info:BagName)
-                oBag := CdxOrderBag{_oRdd}
-                _list:Add(oBag)
-                RETURN oBag:Open(info)
+             IF File(info:BagName)
+                info:BagName := FPathName()
+                IF SELF:FindOrderBag(info:BagName) == NULL_OBJECT
+                    oBag := CdxOrderBag{_oRdd}
+                    _list:Add(oBag)
+                    RETURN oBag:Open(info)
+                ENDIF
+                RETURN TRUE
             ENDIF
             RETURN FALSE
             
@@ -47,7 +51,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
             
         METHOD CloseAll() AS LOGIC
-            // todo
+            FOREACH oBag AS CdxOrderBag IN _list
+                 oBag:Close()
+            NEXT
+            _list:Clear()
             RETURN FALSE
             
         METHOD Remove(cFileName AS STRING) AS LOGIC
@@ -55,7 +62,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 cFileName := FPathName()
             ENDIF
             FOREACH oBag AS CdxOrderBag IN _list
-                IF String.Compare(oBag:FileName, cFileName, StringComparison.OrdinalIgnoreCase) == 0
+                IF oBag:MatchesFileName(cFileName)
                     oBag:Close()
                     _list:Remove(oBag)
                     RETURN TRUE
@@ -113,11 +120,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:CurrentOrder := oOrder
             RETURN TRUE
 
+        METHOD FindOrderBag(cBagName AS STRING) AS CdxOrderBag
+            FOREACH oBag AS CdxOrderBag IN _list
+                IF oBag:MatchesFileName(cBagName)
+                    RETURN oBag
+                ENDIF
+            NEXT
+            RETURN NULL
+
         METHOD FindOrderByName(cBagName AS STRING, cName AS STRING) AS CdxTag
             FOREACH oBag AS CdxOrderBag IN _list
-                IF String.IsNullOrEmpty(cBagName) .OR. ;
-                    String.Compare(oBag:Name, cBagName, StringComparison.OrdinalIgnoreCase) == 0 .OR. ;
-                    String.Compare(oBag:FileName, cBagName, StringComparison.OrdinalIgnoreCase) == 0
+                IF String.IsNullOrEmpty(cBagName) .OR.  oBag:MatchesFileName(cBagName)
                     FOREACH oTag AS CdxTag IN oBag:Tags
                         IF String.Compare(oTag:OrderName, cName, StringComparison.OrdinalIgnoreCase) == 0
                             RETURN oTag

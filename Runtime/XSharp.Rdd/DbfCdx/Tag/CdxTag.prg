@@ -79,7 +79,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY OrderName AS STRING GET _orderName
 	    INTERNAL PROPERTY Shared 	 AS LOGIC GET _bag:Shared
         INTERNAL PROPERTY _Recno 	 AS LONG GET _oRDD:Recno
-        INTERNAL PROPERTY FileName 	 AS STRING GET _bag:FileName
+        INTERNAL PROPERTY FileName 	 AS STRING GET _bag:FullPath
         INTERNAL PROPERTY OrderBag       AS CdxOrderBag GET SELF:_bag
         INTERNAL PROPERTY Page           AS Int32 AUTO
         INTERNAL PROPERTY Descending     AS LOGIC GET _Descending

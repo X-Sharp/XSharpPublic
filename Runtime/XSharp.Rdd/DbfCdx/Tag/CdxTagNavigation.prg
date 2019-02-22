@@ -29,7 +29,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF !locked
                         RETURN FALSE
                     ENDIF
-                    VAR recno := SELF:_locateKey(NULL, 0, SearchMode.Bottom)
+                    LOCAL recno AS LONG
+                    IF SELF:Descending
+                        recno := SELF:_locateKey(NULL, 0, SearchMode.Top)
+                    ELSE
+                        recno := SELF:_locateKey(NULL, 0, SearchMode.Bottom)
+                    ENDIF
                     result := SELF:_oRdd:__Goto(recno)
                     IF result
                         result := SELF:_oRdd:SkipFilter(-1)
@@ -61,7 +66,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF !locked
                         RETURN FALSE
                     ENDIF
-                    VAR recno := SELF:_locateKey(NULL, 0, SearchMode.Top)
+                    LOCAL recno AS LONG
+                    IF SELF:Descending
+                        recno := SELF:_locateKey(NULL, 0, SearchMode.Bottom)
+                    ELSE
+                        recno := SELF:_locateKey(NULL, 0, SearchMode.Top)
+                    ENDIF
                     result := SELF:_oRdd:__Goto(recno)
                     IF result
                         result := SELF:_oRdd:SkipFilter(1)
@@ -130,6 +140,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 locked := SELF:SLock()
                 IF !locked
                     RETURN FALSE
+                ENDIF
+                IF SELF:Descending
+                    nToSkip := - nToSkip
                 ENDIF
                 IF !SELF:_oRdd:_isValid
                     IF nToSkip < 0
@@ -524,34 +537,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
             SWITCH searchMode
             CASE SearchMode.Right
-                IF SELF:_Descending
-                    // search...
-                    minPos := 0
-                    maxPos := nodeCount
-                    DO WHILE minPos < maxPos
-                        foundPos := (WORD) ( (minPos + maxPos) / 2)
-                        node:Fill(foundPos, page)
-                        IF SELF:_compareFunc(node:KeyBytes, keyBuffer, bufferLen) >= 0
-                            minPos := (WORD)(foundPos + 1)
-                        ELSE
-                            maxPos := foundPos
-                        ENDIF
-                    ENDDO
-                    foundPos := minPos
-                ELSE
-                    minPos := 0
-                    maxPos := nodeCount
-                    DO WHILE minPos < maxPos
-                        foundPos := (WORD) ((minPos + maxPos) / 2)
-                        node:Fill(foundPos, page)
-                        IF SELF:_compareFunc(node:KeyBytes, keyBuffer, bufferLen) <= 0
-                            minPos := (WORD) (foundPos + 1)
-                        ELSE
-                            maxPos := foundPos
-                        ENDIF
-                    ENDDO
-                    foundPos := minPos
-                ENDIF
+                minPos := 0
+                maxPos := nodeCount
+                DO WHILE minPos < maxPos
+                    foundPos := (WORD) ((minPos + maxPos) / 2)
+                    node:Fill(foundPos, page)
+                    IF SELF:_compareFunc(node:KeyBytes, keyBuffer, bufferLen) <= 0
+                        minPos := (WORD) (foundPos + 1)
+                    ELSE
+                        maxPos := foundPos
+                    ENDIF
+                ENDDO
+                foundPos := minPos
             CASE SearchMode.Left
             CASE SearchMode.LeftFound
                 minPos := 0
@@ -564,18 +561,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF cmp >= 0
                         found := TRUE
                     ENDIF
-                    IF SELF:_Descending
-                        IF  cmp > 0
-                            minPos := (WORD) (foundPos + 1)
-                        ELSE
-                            maxPos := foundPos
-                        ENDIF
-                    ELSE
                         IF cmp  < 0
-                            minPos := (WORD) (foundPos + 1)
-                        ELSE
-                            maxPos := foundPos
-                        ENDIF
+                        minPos := (WORD) (foundPos + 1)
+                    ELSE
+                        maxPos := foundPos
                     ENDIF
                     IF minPos >= maxPos .AND. ! found
                         // all keys are smaller than what we are looking for
@@ -691,11 +680,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         padLen := len
                         IF len < SELF:_keySize
                             needPadStr := TRUE
-                            IF SELF:_Descending
-                                abNewKey[len] := Byte.MaxValue
-                            ELSE
-                                abNewKey[len] := 1
-                            ENDIF
+                            abNewKey[len] := 1
                             padLen := len + 1
                             fSoft := seekInfo:SoftSeek
                             seekInfo:SoftSeek := TRUE
@@ -714,42 +699,27 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF SELF:_oRdd:_isValid
                         // Get Current Key
                         VAR currentKeyBuffer := _currentNode:KeyBytes
+                        IF SELF:Descending
+                             seekInfo:Last := !seekInfo:Last
+                        ENDIF
                         IF deletedState .OR. SELF:_oRdd:_FilterInfo:Active .OR. seekInfo:SoftSeek .OR. seekInfo:Last
                             SELF:_ToString(seekInfo:Value, SELF:_keySize, SELF:_newKeyBuffer, REF SELF:_newKeyLen)
                             strCmp := SELF:_compareFunc(abNewKey, currentKeyBuffer, len)
                             found := (strCmp == 0)
                             IF needPadStr .AND. !found
-                                IF SELF:_Descending
+                                SELF:_newKeyBuffer[len] := 1
+                                temp:= currentKeyBuffer[len]
+                                currentKeyBuffer[len] := Byte.MaxValue
+                                strCmpMaxMin := SELF:_compareFunc(SELF:_newKeyBuffer, currentKeyBuffer, padLen)
+                                IF strCmp > 0 .AND. cmpMinMax < 0
+                                    found := TRUE
+                                ENDIF
+                                IF !found
                                     SELF:_newKeyBuffer[len] := Byte.MaxValue
-                                    temp:= currentKeyBuffer[len]
                                     currentKeyBuffer[len] := 1
-                                    cmpMinMax := SELF:_compareFunc(abNewKey, currentKeyBuffer, padLen)
-                                    IF strCmp < 0 .AND. cmpMinMax > 0
-                                        found := TRUE
-                                    ENDIF
-                                    IF !found
-                                        SELF:_newKeyBuffer[len] := 1
-                                        currentKeyBuffer[len] := Byte.MaxValue
-                                        strCmpMaxMin := SELF:_compareFunc(abNewKey, currentKeyBuffer, padLen)
-                                        IF strCmp > 0 .AND. strCmpMaxMin < 0
-                                            found := TRUE
-                                        ENDIF
-                                    ENDIF
-                                ELSE
-                                    SELF:_newKeyBuffer[len] := 1
-                                    temp:= currentKeyBuffer[len]
-                                    currentKeyBuffer[len] := Byte.MaxValue
                                     strCmpMaxMin := SELF:_compareFunc(SELF:_newKeyBuffer, currentKeyBuffer, padLen)
-                                    IF strCmp > 0 .AND. cmpMinMax < 0
+                                    IF strCmp < 0 .AND. strCmpMaxMin > 0
                                         found := TRUE
-                                    ENDIF
-                                    IF !found
-                                        SELF:_newKeyBuffer[len] := Byte.MaxValue
-                                        currentKeyBuffer[len] := 1
-                                        strCmpMaxMin := SELF:_compareFunc(SELF:_newKeyBuffer, currentKeyBuffer, padLen)
-                                        IF strCmp < 0 .AND. strCmpMaxMin > 0
-                                            found := TRUE
-                                        ENDIF
                                     ENDIF
                                 ENDIF
                                 SELF:_newKeyBuffer[len] := 0

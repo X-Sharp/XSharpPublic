@@ -35,7 +35,7 @@ BEGIN NAMESPACE XSharp
         CONSTRUCTOR (r8 AS REAL8)
             SELF:_value    := r8
             SELF:_length   := 0
-            SELF:_decimals := 0
+            SELF:_decimals := -1
             
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)];        

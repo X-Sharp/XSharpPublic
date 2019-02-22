@@ -473,8 +473,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True( DBCloseArea() )
 			
 			Assert.True( DBUseArea(,,cDbf,,FALSE) )
-			//Assert.True( DBSetIndex(cCdx) )
-            DBSetOrder(1)
+			Assert.True( DBSetIndex(cCdx) )
 			DBGoTop()
 			Assert.True( AllTrim(FieldGet(1)) == "A" )
 			DBGoBottom()

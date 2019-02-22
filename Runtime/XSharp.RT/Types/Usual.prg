@@ -460,11 +460,11 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.Float
                     SWITCH rhs:_usualType
-                    CASE __UsualType.Date		; RETURN _r8Value:CompareTo( (REAL8) (INT) rhs:_dateValue)
-                    CASE __UsualType.Decimal	; RETURN _r8Value:CompareTo( (REAL8) rhs:_decimalValue)
-                    CASE __UsualType.Long		; RETURN _r8Value:CompareTo( (REAL8) rhs:_intValue)
-                    CASE __UsualType.Int64		; RETURN _r8Value:CompareTo( (REAL8) rhs:_i64Value)
-                    OTHERWISE
+                    CASE __UsualType.Date		; RETURN FLOAT{_r8Value}:CompareTo( FLOAT{(REAL8) (INT) rhs:_dateValue})
+                    CASE __UsualType.Decimal	; RETURN FLOAT{_r8Value}:CompareTo( FLOAT{(REAL8) rhs:_decimalValue})
+                    CASE __UsualType.Long		; RETURN FLOAT{_r8Value}:CompareTo( FLOAT{(REAL8) rhs:_intValue})
+                    CASE __UsualType.Int64		; RETURN FLOAT{_r8Value}:CompareTo( FLOAT{(REAL8) rhs:_i64Value})
+                    OTHERWISE                           
                         NOP	// uses comparison by type
                     END SWITCH
 
@@ -543,10 +543,10 @@ BEGIN NAMESPACE XSharp
 
             CASE __UsualType.Float
                 SWITCH rhs:_usualType
-                CASE __UsualType.Long		; RETURN lhs:_r8Value > rhs:_intValue
-                CASE __UsualType.Int64		; RETURN lhs:_r8Value > rhs:_i64Value
-                CASE __UsualType.Float		; RETURN lhs:_r8Value > rhs:_r8Value
-                CASE __UsualType.Decimal	; RETURN lhs:_r8Value > (REAL8) rhs:_decimalValue
+                CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value } > FLOAT{rhs:_intValue}
+                CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value } > FLOAT{rhs:_i64Value}
+                CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value } > FLOAT{rhs:_r8Value}
+                CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value } > FLOAT{(REAL8) rhs:_decimalValue}
                 OTHERWISE
                     THROW BinaryError(">", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
                 END SWITCH
@@ -616,10 +616,10 @@ BEGIN NAMESPACE XSharp
                 END SWITCH
             CASE __UsualType.Float
                 SWITCH rhs:_usualType
-                CASE __UsualType.Long		; RETURN lhs:_r8Value >= rhs:_intValue
-                CASE __UsualType.Int64		; RETURN lhs:_r8Value >= rhs:_i64Value
-                CASE __UsualType.Float		; RETURN lhs:_r8Value >= rhs:_r8Value
-                CASE __UsualType.Decimal	; RETURN lhs:_r8Value >= (REAL8) rhs:_decimalValue
+                CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value} >= FLOAT{ rhs:_intValue}
+                CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value} >= FLOAT{ rhs:_i64Value}
+                CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value} >= FLOAT{ rhs:_r8Value}
+                CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value} >= FLOAT{ (REAL8) rhs:_decimalValue}
                 OTHERWISE
                     THROW BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
                 END SWITCH
@@ -689,10 +689,10 @@ BEGIN NAMESPACE XSharp
                 END SWITCH
             CASE __UsualType.Float
                 SWITCH rhs:_usualType
-                CASE __UsualType.Long		; RETURN lhs:_r8Value < rhs:_intValue
-                CASE __UsualType.Int64		; RETURN lhs:_r8Value < rhs:_i64Value
-                CASE __UsualType.Float		; RETURN lhs:_r8Value < rhs:_r8Value
-                CASE __UsualType.Decimal	; RETURN lhs:_r8Value < (REAL8) rhs:_decimalValue
+                CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value} < FLOAT{rhs:_intValue              }
+                CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value} < FLOAT{rhs:_i64Value              }
+                CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value} < FLOAT{rhs:_r8Value               }
+                CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value} < FLOAT{(REAL8) rhs:_decimalValue  }
                 OTHERWISE
                     THROW BinaryError("<", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
                 END SWITCH
@@ -762,10 +762,10 @@ BEGIN NAMESPACE XSharp
                 END SWITCH
             CASE __UsualType.Float
                 SWITCH rhs:_usualType
-                CASE __UsualType.Long		; RETURN lhs:_r8Value <= rhs:_intValue
-                CASE __UsualType.Int64		; RETURN lhs:_r8Value <= rhs:_i64Value
-                CASE __UsualType.Float		; RETURN lhs:_r8Value <= rhs:_r8Value
-                CASE __UsualType.Decimal	; RETURN lhs:_r8Value <= (REAL8) rhs:_decimalValue
+                CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value} <= FLOAT{rhs:_intValue             } 
+                CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value} <= FLOAT{rhs:_i64Value             } 
+                CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value} <= FLOAT{rhs:_r8Value              } 
+                CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value} <= FLOAT{(REAL8) rhs:_decimalValue } 
                 OTHERWISE
                     THROW BinaryError("<=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
                 END SWITCH
@@ -883,7 +883,7 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                         CASE __UsualType.Long		; RETURN _i64Value == (INT64) rhs:_intValue
                         CASE __UsualType.Int64		; RETURN _i64Value == rhs:_i64Value
-                    CASE __UsualType.Float		; RETURN  (REAL8) _i64Value == rhs:_r8Value
+                        CASE __UsualType.Float		; RETURN  FLOAT{(REAL8) _i64Value} == FLOAT{rhs:_r8Value}
                         CASE __UsualType.Decimal	; RETURN _i64Value == rhs:_decimalValue
                         CASE __UsualType.Logic		; RETURN rhs:_logicValue == (SELF:_i64Value <> 0)
                         OTHERWISE
@@ -892,10 +892,10 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.Float
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN SELF:_r8Value == (REAL8) rhs:_intValue
-                        CASE __UsualType.Int64		; RETURN SELF:_r8Value == (REAL8) rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN SELF:_r8Value ==  rhs:_r8Value
-                        CASE __UsualType.Decimal	; RETURN SELF:_r8Value ==  (REAL8) rhs:_decimalValue
+                        CASE __UsualType.Long		; RETURN FLOAT{_r8Value} == FLOAT{(REAL8) rhs:_intValue}
+                        CASE __UsualType.Int64		; RETURN FLOAT{_r8Value} == FLOAT{(REAL8) rhs:_i64Value}
+                        CASE __UsualType.Float		; RETURN FLOAT{_r8Value} == FLOAT{ rhs:_r8Value}
+                        CASE __UsualType.Decimal	; RETURN FLOAT{_r8Value} == FLOAT{ (REAL8) rhs:_decimalValue}
                         OTHERWISE
                             NOP // error below
                     END SWITCH
@@ -1840,12 +1840,12 @@ BEGIN NAMESPACE XSharp
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS FLOAT
             TRY
                 SWITCH u:_usualType
-                CASE __UsualType.Long	; RETURN FLOAT{(REAL8) u:_intValue}
-                CASE __UsualType.Int64	; RETURN FLOAT{(REAL8) u:_i64Value}
+                CASE __UsualType.Long	; RETURN FLOAT{(REAL8) u:_intValue,0}
+                CASE __UsualType.Int64	; RETURN FLOAT{(REAL8) u:_i64Value,0}
                 CASE __UsualType.Float	; RETURN u:_floatValue
                 CASE __UsualType.Decimal; RETURN FLOAT{(REAL8) u:_decimalValue, -1}
-                CASE __UsualType.Logic	; RETURN FLOAT{IIF(u:_logicValue, 1, 0)}
-                CASE __UsualType.Void	; RETURN FLOAT{0}
+                CASE __UsualType.Logic	; RETURN FLOAT{IIF(u:_logicValue, 1, 0),0}
+                CASE __UsualType.Void	; RETURN FLOAT{0,0}
                 OTHERWISE
                     THROW ConversionError(FLOAT, TYPEOF(FLOAT), u)
                 END SWITCH

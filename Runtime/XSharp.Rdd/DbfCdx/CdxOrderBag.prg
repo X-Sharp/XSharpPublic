@@ -39,9 +39,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _tags      AS IList<CdxTag>
         INTERNAL CONST CDXPAGE_SIZE        := 512 AS WORD
 
-        INTERNAL PROPERTY FileName AS STRING AUTO
-        INTERNAL PROPERTY Name AS STRING GET Path.GetFileNameWithoutExtension(FileName)
+        //INTERNAL PROPERTY FileName AS STRING AUTO
         INTERNAL PROPERTY FullPath AS STRING AUTO
+        INTERNAL PROPERTY Name AS STRING GET Path.GetFileNameWithoutExtension(FullPath)
         INTERNAL PROPERTY Handle AS IntPtr GET _hFile
         INTERNAL PROPERTY Tags AS IList<CdxTag> GET _tags
         INTERNAL CONSTRUCTOR(oRDD AS DBFCDX )
@@ -90,6 +90,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             FOREACH oTag AS CdxTag IN _tags
                 oTag:GoCold()
             NEXT
+            SELF:_PageList:Flush(FALSE)
             FClose(SELF:_hFile)
             RETURN TRUE
 
@@ -116,14 +117,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FALSE
             ENDIF
             SELF:FullPath := cFullName
-            SELF:FileName := cFileName
             SELF:_openInfo := _oRdd:_OpenInfo
             SELF:_hFile    := FOpen(cFullName, _openInfo:FileMode)
             SELF:_Encoding := _oRdd:_Encoding
             IF SELF:_hFile == F_ERROR
                 RETURN FALSE
             ENDIF
-            SELF:FileName := info:BagName
             VAR page := SELF:GetPage(0, 0, NULL)
             _root := CdxFileHeader{SELF, page}
             SELF:SetPage(_root)
@@ -139,6 +138,23 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             RETURN TRUE
         #endregion
+
+         METHOD MatchesFileName(cFileName AS STRING) AS LOGIC
+            VAR cExt := Path.GetExtension(cFileName)
+            IF String.IsNullOrEmpty(cExt)
+                cFileName := Path.ChangeExtension(cFileName, CDX_EXTENSION)
+            ENDIF
+            IF string.Compare(SELF:FullPath, cFileName, StringComparison.OrdinalIgnoreCase) == 0
+                RETURN TRUE
+            ENDIF
+            VAR cPath := Path.GetDirectoryName(cFileName)
+            IF string.IsNullOrEmpty(cPath)
+                IF String.Compare(Path.GetFileName(FullPath), cFileName, StringComparison.OrdinalIgnoreCase) == 0
+                    RETURN TRUE
+                ENDIF
+            ENDIF
+            RETURN FALSE
+
 
          METHOD Flush() AS LOGIC
             LOCAL lOk AS LOGIC

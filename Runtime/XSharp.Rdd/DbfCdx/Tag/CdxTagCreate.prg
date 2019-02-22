@@ -156,7 +156,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FALSE
             ENDIF
             SELF:_fileSize += BUFF_SIZE
-            IF !SELF:Unique .AND. !SELF:_Conditional .AND. !SELF:_Descending .AND. !ordCondInfo:Scoped
+            IF !SELF:Unique .AND. !SELF:_Conditional .AND. !ordCondInfo:Scoped
                 isOk := SELF:_CreateIndex()
             ELSE
                 isOk := SELF:_CreateUnique(ordCondInfo)
@@ -372,9 +372,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSE
                 lAscii := TRUE
                 sortInfo:Items[0]:Flags := DbSortFlags.Ascii
-            ENDIF
-            IF SELF:_oRdd:_OrderCondInfo:Descending
-                sortInfo:Items[0]:Flags += DbSortFlags.Descending
             ENDIF
             sortInfo:Items[0]:OffSet := 0
             SELF:_oRdd:GoTo(1)

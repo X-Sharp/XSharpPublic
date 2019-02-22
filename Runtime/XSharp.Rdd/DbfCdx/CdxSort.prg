@@ -39,23 +39,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL dataBuffer2 AS BYTE[]
             LOCAL diff AS LONG
             LOCAL iLen AS LONG
-            LOCAL indxFlags AS DbSortFlags
-            //
-            IF (x:Recno == y:Recno)
+            IF x:Recno == y:Recno
                 RETURN 0
             ENDIF
-            //
             dataBuffer  := x:data
             dataBuffer2 := y:data
             diff        := 0
             iLen        := SELF:_sortInfo:Items[0]:Length
-            indxFlags   := SELF:_sortInfo:Items[0]:Flags
             // comparison using string rules
             diff := RuntimeState.StringCompare(dataBuffer, dataBuffer2, iLen)
-            IF indxFlags:HasFlag(DbSortFlags.Descending) 
-                diff *= -1
-            ENDIF
-            IF (diff == 0)
+            IF diff == 0
                 IF x:Recno < y:Recno
                     diff := -1
                 ELSE
@@ -79,28 +72,21 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL diff AS LONG
             LOCAL i AS LONG
             LOCAL iLen AS LONG
-            LOCAL indxFlags AS DbSortFlags
-            //
-            IF (x:Recno == y:Recno)
+            IF x:Recno == y:Recno
                 RETURN 0
             ENDIF
-            //
             dataBuffer  := x:data
             dataBuffer2 := y:data
             diff        := 0
             iLen        := SELF:_sortInfo:Items[0]:Length
-            indxFlags   := SELF:_sortInfo:Items[0]:Flags
             // Binary comparison
             FOR i := 0 TO ( iLen - 1 )
                 diff := (LONG) dataBuffer[i] - (LONG) dataBuffer2[i]
-                IF (diff != 0)
+                IF diff != 0
                     EXIT
                 ENDIF
             NEXT
-            IF indxFlags:HasFlag(DbSortFlags.Descending) 
-                diff *= -1
-            ENDIF
-            IF (diff == 0)
+            IF diff == 0
                 IF x:Recno < y:Recno
                     diff := -1
                 ELSE

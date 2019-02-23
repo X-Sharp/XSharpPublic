@@ -13,16 +13,24 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	// Index options represented as the sum of the following values:
     [Flags];
 	INTERNAL ENUM CdxOptions AS BYTE
-		MEMBER IsUnique			:= 0x01		// Unique
-		MEMBER IsWhile   		:= 0x02		// WHILE, ...
-		MEMBER IsCustom			:= 0x04		// is a custom built Index
+		MEMBER Unique			:= 0x01		// Unique
+		MEMBER While   		    := 0x02		// WHILE, ...
+		MEMBER Custom			:= 0x04		// is a custom built Index
 		MEMBER HasFor			:= 0x08		// FOR Clause
 		MEMBER BitVector		:= 0x10		// Bit vector (SoftC)
-		MEMBER IsCompact		:= 0x20		// Compact index format
-		MEMBER IsTag			:= 0x40		// Tag inside CDX (Compounding index header)
-		MEMBER IsHeader			:= 0x80		// CDX Header (contains the names of the tags)
+		MEMBER Compact		    := 0x20		// Compact index format
+		MEMBER Tag			    := 0x40		// Tag inside CDX (Compounding index header)
+		MEMBER Header			:= 0x80		// CDX Header (contains the names of the tags)
 			
 	END ENUM
-	
+
+    INTERNAL ENUM CdxPageType AS WORD
+        MEMBER Branch  := 0
+        MEMBER Root    := 1
+        MEMBER Leaf    := 2
+        MEMBER TagList := 3
+        MEMBER None    := 4
+        MEMBER Unused  := 0xFF
+    END ENUM
 	
 END NAMESPACE 

@@ -50,25 +50,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	INTERNAL CLASS CdxTagHeader INHERIT CdxPage
         // TagHeader consists of 2 pages. One with flags and one with Expressions
         // so therefore allocate extra 2nd page
-    	INTERNAL ExprBuffer   AS CdxPage
-        INTERNAL TagName      AS STRING
-			
-	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], cTagName AS STRING)
-            SUPER(bag, nPage, buffer)
-            SELF:ExprBuffer := bag:GetPage(nPage +CDXPAGE_SIZE,0,NULL)
+        INTERNAL PROPERTY TagName      AS STRING AUTO
+
+	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , cTagName AS STRING)
+            SUPER(bag)
+            SELF:_nPage := nPage
+            SELF:_buffer := bag:AllocBuffer(2)
             SELF:TagName    := cTagName
 #region Read/Write            
-        PROTECTED INTERNAL OVERRIDE METHOD Read() AS LOGIC
-            IF SUPER:Read()
-                RETURN SELF:ExprBuffer:Read()
-            ENDIF
-            RETURN FALSE
-            
-        PROTECTED INTERNAL OVERRIDE METHOD Write() AS LOGIC
-            IF SUPER:Write()
-                RETURN SELF:ExprBuffer:Write()
-            ENDIF
-            RETURN FALSE
 
          METHOD Dump(sIntro AS STRING) AS STRING
             LOCAL oSb AS stringBuilder
@@ -86,83 +75,83 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #region properties
 
         PROTECTED INTERNAL PROPERTY RootPage AS LONG ;
-			GET _GetLong(CDXOFFSET_ROOT);
-			SET _SetLong(CDXOFFSET_ROOT, VALUE), isHot := TRUE
+			GET _GetLong(CDXTAGHEADER_ROOT);
+			SET _SetLong(CDXTAGHEADER_ROOT, VALUE), isHot := TRUE
             
         PROTECTED INTERNAL PROPERTY FreeList AS LONG ;
-			GET _GetLong(CDXOFFSET_FREELIST);
-			SET _SetLong(CDXOFFSET_FREELIST, VALUE), isHot := TRUE
+			GET _GetLong(CDXTAGHEADER_FREELIST);
+			SET _SetLong(CDXTAGHEADER_FREELIST, VALUE), isHot := TRUE
 
 		PROTECTED INTERNAL PROPERTY Version		AS DWORD			;
-			GET _GetDWord(CDXOFFSET_VERSION);
-			SET _SetDWord(CDXOFFSET_VERSION, VALUE), isHot := TRUE
+			GET _GetDWord(CDXTAGHEADER_VERSION);
+			SET _SetDWord(CDXTAGHEADER_VERSION, VALUE), isHot := TRUE
 			
 		PROTECTED INTERNAL PROPERTY KeySize		AS WORD			;
-			GET _GetWord(CDXOFFSET_KEYLENGTH);
-			SET _SetWord(CDXOFFSET_KEYLENGTH, VALUE), isHot := TRUE
+			GET _GetWord(CDXTAGHEADER_KEYLENGTH);
+			SET _SetWord(CDXTAGHEADER_KEYLENGTH, VALUE), isHot := TRUE
 
         PROTECTED INTERNAL PROPERTY Options	AS CdxOptions			;
-			GET (CdxOptions)Buffer[CDXOFFSET_OPTIONS];
-			SET Buffer[CDXOFFSET_OPTIONS] := VALUE, isHot := TRUE
+			GET (CdxOptions)Buffer[CDXTAGHEADER_OPTIONS];
+			SET Buffer[CDXTAGHEADER_OPTIONS] := VALUE, isHot := TRUE
 
 		PROTECTED INTERNAL PROPERTY Signature  AS BYTE	;
-			GET _GetByte(CDXOFFSET_SIG) ;
-            SET _SetByte(CDXOFFSET_SIG, VALUE)
+			GET _GetByte(CDXTAGHEADER_SIG) ;
+            SET _SetByte(CDXTAGHEADER_SIG, VALUE)
 
 	    PROTECTED INTERNAL PROPERTY KeyExprPos		AS WORD			;
-			GET _GetWord(CDXOFFSET_KEYEXPRPOS);
-			SET _SetWord(CDXOFFSET_KEYEXPRPOS, VALUE), isHot := TRUE
+			GET _GetWord(CDXTAGHEADER_KEYEXPRPOS);
+			SET _SetWord(CDXTAGHEADER_KEYEXPRPOS, VALUE), isHot := TRUE
 
 	    PROTECTED INTERNAL PROPERTY KeyExprLen	AS WORD			;
-			GET _GetWord(CDXOFFSET_KEYEXPRLEN);
-			SET _SetWord(CDXOFFSET_KEYEXPRLEN, VALUE), isHot := TRUE
+			GET _GetWord(CDXTAGHEADER_KEYEXPRLEN);
+			SET _SetWord(CDXTAGHEADER_KEYEXPRLEN, VALUE), isHot := TRUE
 
         PROTECTED INTERNAL PROPERTY ForExprPos		AS WORD			;
-			GET _GetWord(CDXOFFSET_FOREXPRPOS);
-			SET _SetWord(CDXOFFSET_FOREXPRPOS, VALUE), isHot := TRUE
+			GET _GetWord(CDXTAGHEADER_FOREXPRPOS);
+			SET _SetWord(CDXTAGHEADER_FOREXPRPOS, VALUE), isHot := TRUE
 
 	    PROTECTED INTERNAL PROPERTY ForExprLen		AS WORD			;
-			GET _GetWord(CDXOFFSET_FOREXPRLEN);
-			SET _SetWord(CDXOFFSET_FOREXPRLEN, VALUE), isHot := TRUE
+			GET _GetWord(CDXTAGHEADER_FOREXPRLEN);
+			SET _SetWord(CDXTAGHEADER_FOREXPRLEN, VALUE), isHot := TRUE
 
   			
 		PROTECTED INTERNAL PROPERTY Descending	AS LOGIC  ;
-			GET _GetWord( CDXOFFSET_DESCENDING ) != 0 ;
-			SET _SetWord( CDXOFFSET_DESCENDING, (WORD) IIF(VALUE,1,0) ), isHot := TRUE
+			GET _GetWord( CDXTAGHEADER_DESCENDING ) != 0 ;
+			SET _SetWord( CDXTAGHEADER_DESCENDING, (WORD) IIF(VALUE,1,0) ), isHot := TRUE
 
         PROTECTED INTERNAL PROPERTY KeyExpression AS STRING ;
-            GET _GetString(ExprBuffer:buffer, KeyExprPos, KeyExprLen-1) ;
-            SET _SetString(ExprBuffer:Buffer, KeyExprPos, KeyExprLen, VALUE) , isHot := TRUE
+            GET _GetString(_buffer, KeyExprPos+CDXPAGE_SIZE, KeyExprLen-1) ;
+            SET _SetString(_Buffer, KeyExprPos+CDXPAGE_SIZE, KeyExprLen, VALUE) , isHot := TRUE
 
         PROTECTED INTERNAL PROPERTY ForExpression AS STRING ;
-            GET _GetString(ExprBuffer:buffer, ForExprPos, ForExprLen-1) ;
-            SET _SetString(ExprBuffer:buffer, ForExprPos, ForExprLen, VALUE) , isHot := TRUE
+            GET _GetString(_buffer, ForExprPos+CDXPAGE_SIZE, ForExprLen-1) ;
+            SET _SetString(_buffer, ForExprPos+CDXPAGE_SIZE, ForExprLen, VALUE) , isHot := TRUE
 
 #endregion
 #region constants
-		PRIVATE CONST CDXOFFSET_ROOT		   := 0x00	AS WORD		// Byte offset to Root
-		PRIVATE CONST CDXOFFSET_FREELIST	   := 0x04	AS WORD		// Byte offset to next free block
-		PRIVATE CONST CDXOFFSET_VERSION		   := 0x08	AS WORD		// to increment on modification
-		PRIVATE CONST CDXOFFSET_KEYLENGTH	   := 0x0c	AS WORD		// Length of key
-		PRIVATE CONST CDXOFFSET_OPTIONS		   := 0x0e	AS WORD		// CdxOptions : bit field
-		PRIVATE CONST CDXOFFSET_Sig			   := 0x0f   AS WORD
+		PRIVATE CONST CDXTAGHEADER_ROOT		   := 0x00	AS WORD		// Byte offset to Root
+		PRIVATE CONST CDXTAGHEADER_FREELIST	   := 0x04	AS WORD		// Byte offset to next free block
+		PRIVATE CONST CDXTAGHEADER_VERSION		   := 0x08	AS WORD		// to increment on modification
+		PRIVATE CONST CDXTAGHEADER_KEYLENGTH	   := 0x0c	AS WORD		// Length of key
+		PRIVATE CONST CDXTAGHEADER_OPTIONS		   := 0x0e	AS WORD		// CdxOptions : bit field
+		PRIVATE CONST CDXTAGHEADER_Sig			   := 0x0f   AS WORD
         // Harbour documents these values
-        PRIVATE CONST CDXOFFSET_HEADERLEN      := 0x10 AS WORD  // 2
-        PRIVATE CONST CDXOFFSET_PAGELEN        := 0x12 AS WORD  // 2
-        PRIVATE CONST CDXOFFSET_COLLATION      := 0x14 AS WORD  // 4
-        PRIVATE CONST CDXOFFSET_RESERVED       := 0x18 AS WORD // 68 bytes
-        PRIVATE CONST CDXOFFSET_LANG           := 0x44 AS WORD // 26 bytes
-        PRIVATE CONST CDXOFFSET_COLLATVER      := 0x76 AS WORD // 4 bytes
-        PRIVATE CONST CDXOFFSET_RESERVED2      := 0x7a AS WORD // 372 bytes
-        PRIVATE CONST CDXOFFSET_VFPCODEPAGE    := 0x1ee AS WORD // 5 bytes
-        PRIVATE CONST CDXOFFSET_IGNORECASE     := 0x1f3 AS WORD // 1 byte
-        PRIVATE CONST CDXOFFSET_EXPR_LEN       := 0x1f4 AS WORD // 2 byte2
+        PRIVATE CONST CDXTAGHEADER_HEADERLEN      := 0x10 AS WORD  // 2
+        PRIVATE CONST CDXTAGHEADER_PAGELEN        := 0x12 AS WORD  // 2
+        PRIVATE CONST CDXTAGHEADER_COLLATION      := 0x14 AS WORD  // 4
+        PRIVATE CONST CDXTAGHEADER_RESERVED       := 0x18 AS WORD // 68 bytes
+        PRIVATE CONST CDXTAGHEADER_LANG           := 0x44 AS WORD // 26 bytes
+        PRIVATE CONST CDXTAGHEADER_COLLATVER      := 0x76 AS WORD // 4 bytes
+        PRIVATE CONST CDXTAGHEADER_RESERVED2      := 0x7a AS WORD // 372 bytes
+        PRIVATE CONST CDXTAGHEADER_VFPCODEPAGE    := 0x1ee AS WORD // 5 bytes
+        PRIVATE CONST CDXTAGHEADER_IGNORECASE     := 0x1f3 AS WORD // 1 byte
+        PRIVATE CONST CDXTAGHEADER_EXPR_LEN       := 0x1f4 AS WORD // 2 byte2
         // end of Harbour defines
-		PRIVATE CONST CDXOFFSET_DESCENDING	   := 0x1f6	AS WORD		// 0 = Ascending, 1 = Descending
-		PRIVATE CONST CDXOFFSET_FOREXPRPOS     := 0x1f8	AS WORD		// Offset of Filter expression
-		PRIVATE CONST CDXOFFSET_FOREXPRLEN     := 0x1fa	AS WORD		// Length of filter expression incl zero terminator
-		PRIVATE CONST CDXOFFSET_KEYEXPRPOS     := 0x1fc	AS WORD		// Offset of Key expression
-		PRIVATE CONST CDXOFFSET_KEYEXPRLEN     := 0x1fe	AS WORD		// Length of key expression incl zero terminator
+		PRIVATE CONST CDXTAGHEADER_DESCENDING	   := 0x1f6	AS WORD		// 0 = Ascending, 1 = Descending
+		PRIVATE CONST CDXTAGHEADER_FOREXPRPOS     := 0x1f8	AS WORD		// Offset of Filter expression
+		PRIVATE CONST CDXTAGHEADER_FOREXPRLEN     := 0x1fa	AS WORD		// Length of filter expression incl zero terminator
+		PRIVATE CONST CDXTAGHEADER_KEYEXPRPOS     := 0x1fc	AS WORD		// Offset of Key expression
+		PRIVATE CONST CDXTAGHEADER_KEYEXPRLEN     := 0x1fe	AS WORD		// Length of key expression incl zero terminator
 #endregion			
 
 		

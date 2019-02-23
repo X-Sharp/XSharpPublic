@@ -216,7 +216,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF thisPage
                 IF moveDirection == SkipDirection.Backward
                     topStack:Pos--
-                    node:Fill(topStack:Pos, page)
+                    node:Pos := topStack:Pos
                 ENDIF
                 result := node:Recno
                 IF SELF:_currentRecno != result 
@@ -227,7 +227,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             IF moveDirection == SkipDirection.Forward
                 topStack:Pos++
-                node:Fill(topStack:Pos, page)
+                node:Pos := topStack:Pos
                 IF node:PageNo != 0
                     RETURN SELF:_locate(NULL, 0, SearchMode.Top, node:PageNo)
                 ENDIF
@@ -253,7 +253,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 RETURN SELF:_getNextKey(TRUE, SkipDirection.Backward)
             ENDIF
             topStack:Pos--
-            node:Fill(topStack:Pos, page)
+            node:Pos := topStack:Pos
             result := node:Recno
             IF SELF:_currentRecno != result
                 SELF:_saveCurrentRecord(node)
@@ -526,33 +526,31 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             SWITCH searchMode
             CASE SearchMode.Right
-                    IF SELF:_Descending
-                        // search...
-                        minPos := 0
-                        maxPos := nodeCount
-                        DO WHILE minPos < maxPos
-                            foundPos := (WORD) ( (minPos + maxPos) / 2)
-                            node:Fill(foundPos, page)
-                            IF SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) >= 0
-                                minPos := (WORD)(foundPos + 1)
-                            ELSE
-                                maxPos := foundPos
-                            ENDIF
-                        ENDDO
-                        foundPos := minPos
-                    ELSE
-                        minPos := 0
-                        maxPos := nodeCount
-                        DO WHILE minPos < maxPos
-                            foundPos := (WORD) ((minPos + maxPos) / 2)
-                            node:Fill(foundPos, page)
-                            IF SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) <= 0
-                                minPos := (WORD) (foundPos + 1)
-                            ELSE
-                                maxPos := foundPos
-                            ENDIF
-                        ENDDO
-                        foundPos := minPos
+                IF SELF:_Descending
+                    // search...
+                    minPos := 0
+                    maxPos := nodeCount
+                    DO WHILE minPos < maxPos
+                        node:Pos := foundPos := (WORD) ( (minPos + maxPos) / 2)
+                        IF SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) >= 0
+                            minPos := (WORD)(foundPos + 1)
+                        ELSE
+                            maxPos := foundPos
+                        ENDIF
+                    ENDDO
+                    foundPos := minPos
+                ELSE
+                    minPos := 0
+                    maxPos := nodeCount
+                    DO WHILE minPos < maxPos
+                        node:Pos := foundPos := (WORD) ((minPos + maxPos) / 2)
+                        IF SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) <= 0
+                            minPos := (WORD) (foundPos + 1)
+                        ELSE
+                            maxPos := foundPos
+                        ENDIF
+                    ENDDO
+                    foundPos := minPos
                 ENDIF
             CASE SearchMode.Left
             CASE SearchMode.LeftFound
@@ -560,7 +558,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     maxPos := nodeCount
                     DO WHILE minPos < maxPos
                         foundPos := (WORD) ((minPos + maxPos) / 2)
-                        node:Fill(foundPos, page)
+                        node:Pos := foundPos
                         IF SELF:_Descending
                             IF SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) > 0
                                 minPos := (WORD) (foundPos + 1)
@@ -575,22 +573,19 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                             ENDIF
                         ENDIF
                     ENDDO
-                    foundPos := minPos
-                    node:Fill(foundPos, page)
+                    node:Pos := foundPos := minPos
                     IF searchMode == SearchMode.Left .AND. SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) == 0
                         searchMode := SearchMode.LeftFound
                     ENDIF
                     
             CASE SearchMode.Bottom
-                    foundPos := nodeCount
-                    node:Fill(foundPos, page)
-                    IF node:PageNo == 0 .AND. foundPos > 0
-                        foundPos--
-                        node:Fill(foundPos, page)
+                node:Pos := foundPos := nodeCount
+                IF node:PageNo == 0 .AND. foundPos > 0
+                    foundPos--
+                    node:Pos := foundPos
                 ENDIF
             CASE SearchMode.Top
-                    foundPos := 0
-                node:Fill(foundPos, page)
+                node:Pos := foundPos := 0
             END SWITCH
             // Add info in the stack
             SELF:_TopStack++
@@ -599,7 +594,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             topStack:Page     := pageOffset
             topStack:Count    := nodeCount
             
-            node:Fill(foundPos, page)
+            node:Pos := foundPos
             IF node:PageNo != 0
                 RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, node:PageNo)
             ENDIF
@@ -636,7 +631,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         SELF:ClearStack()
                         RETURN 0
                     ENDIF
-                    node:Fill(topStack:Pos, page)
+                    node := page[topStack:Pos]
                     result := node:Recno
                     IF SELF:_currentRecno != result
                         SELF:_saveCurrentRecord(node)

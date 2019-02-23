@@ -18,9 +18,9 @@ USING System.Runtime.CompilerServices
 
 BEGIN NAMESPACE XSharp.RDD.NTX
 
-    [DebuggerDisplay("Order {OrderName}: {Expression}")];
+     [DebuggerDisplay("Order {OrderName}: {Expression}")];
     INTERNAL PARTIAL SEALED CLASS NtxOrder INHERIT BaseIndex IMPLEMENTS IRddSortWriter
-        #region constants
+       #region constants
         PRIVATE CONST MAX_KEY_LEN       := 256  AS WORD
         PRIVATE CONST BUFF_SIZE	        := 1024  AS WORD 
         PRIVATE CONST NTX_COUNT         := 16    AS WORD
@@ -31,10 +31,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL CONST NTX_EXTENSION     := ".NTX" AS STRING
         #endregion
         #region fields
-        INTERNAL _hFile AS IntPtr
-        INTERNAL _Encoding AS Encoding
-        INTERNAL _Shared AS LOGIC
-        INTERNAL _ReadOnly       AS LOGIC
+        PRIVATE _hFile AS IntPtr
+        PRIVATE _Encoding AS Encoding
+        PRIVATE _Shared AS LOGIC
         INTERNAL _Hot AS LOGIC
         INTERNAL _Unique AS LOGIC
         INTERNAL _Conditional AS LOGIC
@@ -47,8 +46,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL _KeyExpr AS STRING
         INTERNAL _ForExpr AS STRING
         
-        INTERNAL _currentRecno AS LONG
-        INTERNAL _currentKeyBuffer AS BYTE[]
+        PRIVATE _currentRecno AS LONG
+        PRIVATE _currentKeyBuffer AS BYTE[]
         INTERNAL _newKeyBuffer AS BYTE[]
         INTERNAL _newKeyLen AS LONG
         INTERNAL _indexVersion AS WORD
@@ -57,15 +56,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL _KeyExprType AS LONG
         INTERNAL _keySize AS WORD
         INTERNAL _keyDecimals AS WORD
-        INTERNAL _MaxEntry AS WORD
-        INTERNAL _halfPage AS WORD
-        INTERNAL _TopStack AS LONG
+        PRIVATE _MaxEntry AS WORD
+        PRIVATE _halfPage AS WORD
         INTERNAL _firstPageOffset AS LONG
         INTERNAL _fileSize AS LONG
-        INTERNAL _stack AS RddStack[]
+        PRIVATE _stack AS RddStack[]
         INTERNAL _HPLocking AS LOGIC
-        INTERNAL _readLocks AS LONG
-        INTERNAL _writeLocks AS LONG
+        PRIVATE _readLocks AS LONG
+        PRIVATE _writeLocks AS LONG
         INTERNAL _tagNumber AS INT
         INTERNAL _maxLockTries AS INT
         INTERNAL _orderName AS STRING
@@ -80,10 +78,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL _bottomScope AS OBJECT
         INTERNAL _topScopeSize AS LONG
         INTERNAL _bottomScopeSize AS LONG
-        INTERNAL _oRdd AS DBFNTX
-        INTERNAL _Header AS NtxHeader
-        INTERNAL _oneItem AS NtxNode
-        INTERNAL _PageList AS NtxPageList
+        PRIVATE _oRdd AS DBFNTX
+        PRIVATE _Header AS NtxHeader
+        PRIVATE _oneItem AS NtxNode
+        PRIVATE _PageList AS NtxPageList
+
+        PRIVATE _TopStack AS LONG
         PRIVATE _levels AS NtxLevel[]
         PRIVATE _levelsCount AS LONG
         PRIVATE _midItem AS NtxNode
@@ -95,7 +95,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         #endregion
         #region properties
         INTERNAL PROPERTY Expression AS STRING GET _KeyExpr
-        
+        INTERNAL PROPERTY Handle AS IntPtr GET _hFile
         INTERNAL PROPERTY Condition AS STRING GET _ForExpr
         INTERNAL PROPERTY CurrentStack       AS RddStack GET  SELF:_stack[SELF:_TopStack]
         INTERNAL PROPERTY OrderName AS STRING GET _orderName
@@ -166,7 +166,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             isOk := FALSE
             SELF:_oRdd:GoCold()
             SELF:_Shared := SELF:_oRDD:_Shared
-            SELF:_ReadOnly := SELF:_oRDD:_ReadOnly
             SELF:_hFile    := Fopen(SELF:FullPath, SELF:_oRDD:_OpenInfo:FileMode) 
             IF SELF:_hFile == F_ERROR 
                 SELF:_oRDD:_dbfError( ERDD.OPEN_ORDER, GenCode.EG_OPEN, SELF:fileName)
@@ -689,7 +688,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             RETURN SELF:CurrentStack
             
-        PRIVATE METHOD ClearStack() AS VOID
+        INTERNAL METHOD ClearStack() AS VOID
         
             FOREACH VAR entry IN SELF:_stack 
                 entry:Clear()
@@ -698,26 +697,20 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             
         PRIVATE METHOD AllocPage() AS NtxPage
-            LOCAL ntxPage AS NtxPage
+            LOCAL page AS NtxPage
             LOCAL nextPage AS LONG
             
             IF SELF:_nextUnusedPageOffset > 0
                 nextPage := SELF:_nextUnusedPageOffset
-                ntxPage := SELF:_PageList:Update(nextPage)
-                SELF:_nextUnusedPageOffset := ntxPage[0]:PageNo
+                page := SELF:_PageList:Update(nextPage)
+                SELF:_nextUnusedPageOffset := page:NextPage
+                page:Clear()
             ELSE
                 nextPage := SELF:_fileSize
                 SELF:_fileSize += BUFF_SIZE
-                ntxPage := SELF:_PageList:Append(nextPage)
+                page := SELF:_PageList:Append(nextPage)
             ENDIF
-            RETURN ntxPage
-            
-            
-            
-            
-            
-            
-        
+            RETURN page
             
         INTERNAL METHOD _dump() AS VOID
             LOCAL hDump     AS IntPtr

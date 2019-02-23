@@ -22,43 +22,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
   	/// The root points to the list of tags (which is a LEAF page)
   	/// The freepage points to the list of free pages at BAG level.
     /// </remarks>
-	INTERNAL CLASS CdxFileHeader INHERIT CdxPage
+	INTERNAL CLASS CdxFileHeader INHERIT CdxTagHeader
 
-    INTERNAL CONSTRUCTOR( oBag AS CdxOrderBag, page AS CdxPage)
-        SUPER(oBag, page:PageNo, page:Buffer)
+    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag )
+        SUPER(bag, 0, "__ROOT__")
         
-#region Properties
-	INTERNAL PROPERTY TagList		AS Int32;
-		GET _GetLONG(CDXROOT_TAGLIST);
-		SET _SetLONG(CDXROOT_TAGLIST, VALUE), isHot := TRUE
 
-    INTERNAL PROPERTY FreeList		AS DWORD;
-		GET _GetDWORD(CDXROOT_FREELIST);
-		SET _SetDWORD(CDXROOT_FREELIST, VALUE), isHot := TRUE
-
-    INTERNAL PROPERTY Version		AS DWORD;
-		GET _GetDWORD(CDXROOT_VERSION);
-		SET _SetDWORD(CDXROOT_VERSION, VALUE), isHot := TRUE
-
-    INTERNAL OVERRIDE PROPERTY KeyLength		AS WORD;
-		GET _GetWORD(CDXROOT_KEYLENGTH);
-		SET _SetWord(CDXROOT_KEYLENGTH, VALUE), isHot := TRUE
-
-    INTERNAL PROPERTY Options		AS CdxOptions;
-		GET (CdxOptions) _GetByte(CDXROOT_OPTIONS);
-		SET _SetByte(CDXROOT_OPTIONS, VALUE), isHot := TRUE
-
-    INTERNAL PROPERTY Signature		AS BYTE;
-		GET _GetByte(CDXROOT_Sig);
-		SET _SetByte(CDXROOT_Sig, VALUE), isHot := TRUE
-#endregion
-#region constants
-        PRIVATE CONST CDXROOT_TAGLIST	:= 0	AS INT 
-		PRIVATE CONST CDXROOT_FREELIST  := 4    AS INT
-		PRIVATE CONST CDXROOT_VERSION	:= 8	AS INT		// to increment on modification
-		PRIVATE CONST CDXROOT_KEYLENGTH	:= 12	AS INT		// Length of key
-		PRIVATE CONST CDXROOT_OPTIONS	:= 14	AS INT		// CdxOptions : bit field
-		PRIVATE CONST CDXROOT_Sig		:= 15   AS INT
-#endregion
+        METHOD Initialize() AS VOID
+            SELF:FreeList   := 0
+            SELF:KeySize  := 10
+            SELF:RootPage   := CDXPAGE_SIZE *2
+            SELF:Options    := CdxOptions.Compact | CdxOptions.Header| CdxOptions.Tag
+            SELF:Signature  := 1
+            SELF:KeyExprLen := 1
+            SELF:ForExprPos    := 1
+            SELF:ForExprLen   := 1
 	END CLASS
 END NAMESPACE 

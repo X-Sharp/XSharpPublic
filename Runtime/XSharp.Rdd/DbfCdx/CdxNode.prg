@@ -22,11 +22,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     INTERNAL CLASS CdxNode
         PROTECTED _keyLength      AS LONG
         PROTECTED _bytesKey       AS BYTE[]
-        PROTECTED _PageNo         AS LONG
-        PROTECTED _RecNo          AS LONG
-        PROTECTED _Pos            AS LONG				// Index of the Item in the page array of Offsets
+        PROTECTED _childPage      AS LONG
+        PROTECTED _recNo          AS LONG
+        PROTECTED _pos            AS LONG				// Index of the Item in the page array of Offsets
 		// Retrieve the Key as String
-        INTERNAL PROPERTY Pos       AS LONG     GET _Pos
+        INTERNAL PROPERTY Pos       AS LONG     GET _pos SET _pos := VALUE
         
 		// Get/Set the Key info as Bytes, copied from/to the Page it belongs to
         INTERNAL VIRTUAL PROPERTY KeyBytes AS BYTE[]
@@ -57,40 +57,37 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN sb:ToString()
             END GET
         END PROPERTY
+
 		// Retrieve/set the PageNo/PageOffset of the Item
 		// It is on top of the Item's bytes
 		// it is the Record offset from start of page 
-        INTERNAL VIRTUAL PROPERTY PageNo AS LONG GET _PageNo SET _PageNo := VALUE
+        INTERNAL VIRTUAL PROPERTY ChildPageNo AS LONG GET _childPage SET _childPage := VALUE
 
-        INTERNAL VIRTUAL PROPERTY Recno AS LONG GET _Recno SET _Recno := VALUE
+        INTERNAL VIRTUAL PROPERTY Recno AS LONG GET _recNo SET _recNo := VALUE
 
-        INTERNAL CONSTRUCTOR( keylen AS LONG  )
+        INTERNAL CONSTRUCTOR( keylen AS LONG , pos AS INT )
             SELF:_keyLength := keylen
+            SELF:_pos       := pos
             SELF:Clear()
 
         INTERNAL VIRTUAL METHOD Clear() AS VOID
-            SELF:_Recno  := 0
-            SELF:_PageNo := 0
+            SELF:_recNo  := 0
+            SELF:_childPage := 0
             SELF:_bytesKey  := BYTE[]{ _keyLength+1 }
-            
 
- 
     END CLASS
 
     INTERNAL CLASS CdxPageNode INHERIT CdxNode
         PRIVATE   _Page           AS CdxTreePage			// Page that olds the Item
-        PROTECTED _Offset         AS LONG				// Item offset from start of Page
 
         PRIVATE  PROPERTY HasPage   AS LOGIC    GET _Page != NULL
 
-        INTERNAL CONSTRUCTOR( keylen AS LONG  )
-            SUPER( keylen )
+        INTERNAL CONSTRUCTOR( keylen AS LONG , page AS CdxTreePage, pos AS INT )
+            SUPER( keylen , pos)
+            _Page := page
+            _Pos  := pos
 
-        // Set the informations for the current Item
-		INTERNAL METHOD Fill( pos AS LONG , page AS CdxTreePage ) AS VOID
-            SELF:_Page   := page
-            SELF:_Pos    := pos
-            SELF:_Offset := pos
+        INTERNAL PROPERTY Page AS CdxTreePage GET _Page SET _Page := VALUE
 
         INTERNAL OVERRIDE METHOD Clear() AS VOID
             SUPER:Clear()
@@ -98,7 +95,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
        INTERNAL OVERRIDE PROPERTY KeyBytes AS BYTE[]
             GET
-                RETURN SELF:_Page:GetKey(_Pos)
+                RETURN SELF:_Page:GetKey(_pos)
             END GET
             SET
                // Todo 
@@ -106,9 +103,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         END PROPERTY
 
 
-        INTERNAL OVERRIDE PROPERTY PageNo AS LONG
+        INTERNAL OVERRIDE PROPERTY ChildPageNo AS LONG
             GET
-                RETURN SELF:_Page:GetChildPage(_Pos)                
+                RETURN SELF:_Page:GetChildPage(_pos)                
             END GET
             SET
                 // Todo
@@ -119,7 +116,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		// It is after the page_offset, which is a long, so 4 bytes after
         INTERNAL OVERRIDE PROPERTY Recno AS LONG
             GET
-                RETURN SELF:_Page:GetRecno(_Pos)
+                RETURN SELF:_Page:GetRecno(_pos)
             END GET
             SET
                 // Todo
@@ -128,5 +125,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     END CLASS
 
+    INTERNAL CLASS CdxLeafPageNode INHERIT CdxPageNode
+        INTERNAL CONSTRUCTOR( keylen AS LONG , page AS CdxTreePage, pos AS INT)
+            SUPER( keylen, page  , pos)
+        INTERNAL OVERRIDE PROPERTY ChildPageNo AS LONG GET 0 SET 
+
+    END CLASS
 
 END NAMESPACE 

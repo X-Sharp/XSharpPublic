@@ -130,6 +130,7 @@
     <Compile Include="DbfCdx\Tag\CdxTagLock.prg" />
     <Compile Include="DbfCdx\Tag\CdxTagNavigation.prg" />
     <Compile Include="DbfCdx\Tag\CdxTagUpdate.prg" />
+    <Compile Include="DbfNtx\Order\NtxOrderIO.prg" />
     <Compile Include="DbfNtx\Order\NtxOrder.prg" />
     <Compile Include="DbfNtx\Order\NtxOrderCreate.prg" />
     <Compile Include="DbfNtx\Order\NtxOrderList.prg" />
@@ -138,7 +139,6 @@
     <Compile Include="DbfNtx\Order\NtxOrderUpdate.prg" />
     <Compile Include="Support.prg" />
     <Compile Include="DbfCdx\CdxEnums.prg" />
-    <Compile Include="DbfCdx\CdxInterfaces.prg" />
     <Compile Include="DbfCdx\CdxOrderBag.prg" />
     <Compile Include="DbfCdx\CdxOrderBagList.prg" />
     <Compile Include="DbfCdx\Pages\CdxBranchePage.prg" />

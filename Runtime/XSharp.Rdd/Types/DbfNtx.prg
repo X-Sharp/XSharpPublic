@@ -29,7 +29,7 @@ BEGIN NAMESPACE XSharp.RDD
 			RETURN SUPER:OrderDestroy(orderInfo)
 			
 		METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
-            RETURN SUPER:OrderCondition(info)
+            		RETURN SUPER:OrderCondition(info)
             
 		VIRTUAL METHOD OrderListAdd( orderInfo AS DbOrderInfo) AS LOGIC
 			BEGIN LOCK SELF
@@ -138,7 +138,7 @@ BEGIN NAMESPACE XSharp.RDD
 				ENDIF
 			CASE DBOI_FILEHANDLE
 				IF workOrder != NULL
-					info:Result := workOrder:_hFile
+					info:Result := workOrder:Handle
                 ELSE
                     info:Result := IntPtr.Zero
 				ENDIF
@@ -345,7 +345,7 @@ BEGIN NAMESPACE XSharp.RDD
 		METHOD GoTo(nRec AS LONG) AS LOGIC
             SELF:GoCold()
             IF SELF:CurrentOrder != NULL
-                SELF:CurrentOrder:_TopStack := 0    // force to reseek later
+                SELF:CurrentOrder:ClearStack() // force to reseek later
             ENDIF
             RETURN SUPER:Goto(nRec)
 

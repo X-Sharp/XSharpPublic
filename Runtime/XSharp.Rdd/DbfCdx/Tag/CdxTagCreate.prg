@@ -15,27 +15,23 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     INTERNAL PARTIAL SEALED CLASS CdxTag
 
         // Methods for Creating Indices
-        PUBLIC METHOD Create(createInfo AS DBORDERCREATEINFO ) AS LOGIC
-        /*
-            LOCAL ordCondInfo AS DBORDERCONDINFO
+        PUBLIC METHOD Create(createInfo AS DbOrderCreateInfo ) AS LOGIC
+            LOCAL ordCondInfo AS DbOrderCondInfo
             LOCAL isOk AS LOGIC
-            LOCAL orderInfo AS DBORDERINFO
+            LOCAL orderInfo AS DbOrderInfo
             LOCAL hasForCond AS LOGIC
-            LOCAL Expression AS STRING
-            LOCAL num AS WORD
             
             ordCondInfo := SELF:_oRdd:_OrderCondInfo
             IF string.IsNullOrEmpty(createInfo:BagName)
-                SELF:_oRDD:_dbfError( GenCode.EG_ARG, SubCodes.EDB_CREATEINDEX)
+                SELF:_oRDD:_dbfError(  SubCodes.EDB_CREATEINDEX, GenCode.EG_ARG,"OrdCreate", "Missing Orderbag Name")
                 RETURN FALSE
             ENDIF
             isOk := SELF:_oRdd:GoCold()
-            orderInfo := DBORDERINFO{}
+            orderInfo := DbOrderInfo{}
             IF !ordCondInfo:Scoped
                 orderInfo:AllTags := TRUE
                 SELF:_oRdd:OrderListDelete(orderInfo)
             ENDIF
-            SELF:_hFile := F_ERROR
             IF ordCondInfo:ForBlock != NULL
                 hasForCond := TRUE
                 SELF:_ForCodeBlock := ordCondInfo:ForBlock
@@ -54,108 +50,33 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             SELF:_orderName := (STRING)createInfo:Order
             IF string.IsNullOrEmpty(SELF:_orderName)
-                SELF:_orderName := Path.GetFileNameWithoutExtension(createInfo:BagName)
+                SELF:_oRDD:_dbfError( GenCode.EG_ARG, SubCodes.EDB_CREATEINDEX)
             ENDIF
             IF !isOk .OR. SELF:_keySize == 0
                 SELF:Close()
-                SELF:_oRdd:_dbfError( SubCodes.ERDD_NULLKEY, GenCode.EG_DATAWIDTH,createInfo:BagName)
+                SELF:_oRDD:_dbfError(  SubCodes.EDB_CREATEINDEX, GenCode.EG_ARG,"OrdCreate", "Missing Order Name")
                 RETURN FALSE
             ENDIF
             IF SELF:_keySize > 0
-                SELF:_currentKeyBuffer := BYTE[]{_Keysize+1}
                 SELF:_newKeyBuffer   := BYTE[]{_Keysize+1}
             ENDIF
             
-            // 8 Bytes : PrevPage (4 bytes) + Recno (4 bytes)
-            SELF:_entrySize := SELF:_keySize + (WORD) 8
-            
-            num := (WORD)(  ( BUFF_SIZE - 4) / (SELF:_keySize + 10))
-            SELF:_halfPage := (WORD) ((num - 1) / 2)
-            SELF:_MaxEntry := (WORD) (SELF:_halfPage * 2)
-            SELF:_rootPage := BUFF_SIZE
-            SELF:_fileSize := 0
-            SELF:_nextUnusedPageOffset := 0
-            SELF:_Version := 1
-            SELF:_Shared := FALSE
-            SELF:_Hot := TRUE
-            SELF:ClearStack()
-            SELF:Unique := createInfo:Unique
+            SELF:_Unique := createInfo:Unique
             SELF:_Ansi := SELF:_oRdd:_Ansi
             SELF:_Conditional := FALSE
             SELF:_Descending := FALSE
-            SELF:_writeLocks := 0
-            SELF:Custom := ordCondInfo:Scoped
+            SELF:_Custom := ordCondInfo:Scoped
             IF ordCondInfo:Active
                 SELF:_Descending := ordCondInfo:Descending
                 IF hasForCond .AND. !string.IsNullOrEmpty(ordCondInfo:ForExpression)
                     SELF:_Conditional := TRUE
                 ENDIF
             ENDIF
-            SELF:fileName := createInfo:BagName
-            
-            TRY
-                SELF:_hFile    := FCreate( SELF:FullPath) 
-                IF SELF:_hFile != F_ERROR 
-                    FClose( SELF:_hFile )
-                ENDIF
-                SELF:_hFile := F_ERROR
-            CATCH
+            IF ! SELF:_HeaderCreate()
                 SELF:Close()
-                SELF:_oRdd:_dbfError( SubCodes.ERDD_CREATE_ORDER, GenCode.EG_CREATE,createInfo:BagName)
-                RETURN FALSE
-            END TRY
-            // To create an index we want to open the NTX NOT shared and NOT readonly
-            VAR oldShared   := SELF:_oRDD:_Shared
-            VAR oldReadOnly := SELF:_oRDD:_ReadOnly 
-            SELF:_oRDD:_Shared := FALSE
-            SELF:_oRDD:_ReadOnly  := FALSE
-            SELF:_hFile    := Fopen(SELF:FullPath, SELF:_oRDD:_OpenInfo:FileMode)
-            SELF:_oRDD:_Shared := oldShared
-            SELF:_oRDD:_ReadOnly  := oldReadOnly
-            
-            IF SELF:_hFile == F_ERROR
-                SELF:Close()
-                SELF:_oRdd:_dbfError( SubCodes.ERDD_CREATE_ORDER, GenCode.EG_CREATE, createInfo:BagName)
+                SELF:_oRdd:_dbfError(GenCode.EG_CREATE,  SubCodes.ERDD_WRITE,"OrdCreate", "Could not write Header ")
                 RETURN FALSE
             ENDIF
-            SELF:_PageList := CdxPageList{SELF}
-            
-//            SELF:_Header := NtxHeader{ SELF:_hFile }
-//            SELF:_Header:Signature              := NtxHeaderFlags.Default
-//            SELF:_Header:Version                := SELF:_Version
-//            SELF:_Header:FirstPageOffset        := SELF:_rootPage
-//            SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
-//            SELF:_Header:EntrySize              := SELF:_entrySize
-//            SELF:_Header:KeySize                := SELF:_keySize
-//            SELF:_Header:MaxItem                := SELF:_MaxEntry
-//            SELF:_Header:HalfPage               := SELF:_halfPage
-//            SELF:_Header:Unique                 := SELF:_Unique
-//            SELF:_Header:Descending             := SELF:_Descending
-//            SELF:_Header:KeyExpression          := SELF:_KeyExpr
-//            SELF:_Header:ForExpression          := SELF:_ForExpr
-//            SELF:_Header:OrdName                := SELF:_orderName
-//            SELF:_midItem                       := CdxNode{SELF:_keySize}
-            SELF:_oneItem                       := CdxNode{SELF:_keySize}
-            IF SELF:_Conditional .OR. SELF:_Descending .OR. ordCondInfo:Scoped
-                SELF:_Header:Signature |= NtxHeaderFlags.Conditional
-            ENDIF
-            IF SELF:Custom
-                SELF:_Header:Signature |= NtxHeaderFlags.Partial
-            ENDIF
-            SELF:_maxLockTries  := 99 //(LONG)XSharp.RuntimeState.LockTries
-            SELF:_tagNumber     := 1
-            IF  XSharp.RuntimeState.NewIndexLock 
-                SELF:_Header:Signature |= NtxHeaderFlags.NewLock
-                SELF:_lockOffset := LOCKOFFSET_NEW
-            ELSE
-                SELF:_lockOffset := LOCKOFFSET_OLD
-            ENDIF
-            IF !SELF:_Header:Write()
-                SELF:Close()
-                SELF:_oRdd:_dbfError(SubCodes.ERDD_WRITE,GenCode.EG_CREATE,  createInfo:BagName)
-                RETURN FALSE
-            ENDIF
-            SELF:_fileSize += BUFF_SIZE
             IF !SELF:Unique .AND. !SELF:_Conditional .AND. !ordCondInfo:Scoped
                 isOk := SELF:_CreateIndex()
             ELSE
@@ -166,9 +87,27 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:Close()
                 RETURN isOk
             ENDIF
-            */
-            RETURN SELF:Flush()
-            
+            SELF:Flush()
+            RETURN isOk
+
+        PRIVATE METHOD _HeaderCreate() AS LOGIC
+            SELF:_Header            := CdxTagHeader{_bag, CdxPage.CDXPAGE_SIZE*2 ,_orderName}
+            SELF:_Header:Descending := SELF:_Descending
+            SELF:_Header:RootPage   := 0
+            SELF:_Header:FreeList   := 0
+            SELF:_Header:Version    := 0
+            SELF:_Header:KeySize    := _keySize
+            SELF:_Header:KeyExprPos := 0
+            SELF:_Header:KeyExprLen := (WORD) _KeyExpr:Length
+            SELF:_Header:KeyExpression := _KeyExpr
+            SELF:_Header:ForExprPos     := (WORD) (SELF:_Header:KeyExprPos + SELF:_Header:KeyExprLen + 1)
+            IF SELF:_Conditional
+                SELF:_Header:ForExprLen    := (WORD) _ForExpr:Length
+                SELF:_Header:ForExpression := _ForExpr
+            ELSE
+                SELF:_Header:ForExprLen    := 0
+            ENDIF
+            RETURN SELF:_Header:Write()
             
         INTERNAL METHOD _determineSize(toConvert AS OBJECT ) AS LOGIC
 
@@ -189,7 +128,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
             RETURN TRUE
             
-        PRIVATE METHOD _CondCreate(ordCondInfo AS DBORDERCONDINFO ) AS LOGIC
+        PRIVATE METHOD _CondCreate(ordCondInfo AS DbOrderCondInfo ) AS LOGIC
             /*
             LOCAL isOk AS LOGIC
             LOCAL leadingOrder  := NULL AS NtxOrder
@@ -437,13 +376,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
             // IRddSortWriter Interface, used by RddSortHelper
         PUBLIC METHOD WriteSorted(si AS DbSortInfo , record AS SortRecord) AS LOGIC
-            SELF:_oneItem:PageNo    := 0
-            SELF:_oneItem:Recno     := record:Recno
-            SELF:_oneItem:KeyBytes  := record:Data
+            SELF:_oneItem:ChildPageNo   := 0
+            SELF:_oneItem:Recno         := record:Recno
+            SELF:_oneItem:KeyBytes      := record:Data
             RETURN SELF:_placeItem(SELF:_oneItem)
             
             
-        INTERNAL METHOD _CreateUnique(ordCondInfo AS DBORDERCONDINFO ) AS LOGIC
+        INTERNAL METHOD _CreateUnique(ordCondInfo AS DbOrderCondInfo ) AS LOGIC
             LOCAL Ok AS LOGIC
             Ok := SELF:_CreateEmpty()
             IF Ok

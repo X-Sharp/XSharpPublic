@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		PROTECTED _buffer   AS BYTE[]
 		PROTECTED _hot      AS LOGIC        // Hot ?  => Page has changed ?
         PROTECTED _dumped   AS LOGIC
-        INTERNAL VIRTUAL PROPERTY NodeAttribute AS CdxNodeAttribute GET CdxNodeAttribute.None SET 
+        INTERNAL VIRTUAL PROPERTY PageType AS CdxPageType GET CdxPageType.None SET 
         INTERNAL PROPERTY Dumped AS LOGIC GET _dumped SET _dumped := VALUE
         INTERNAL PROPERTY IsHot  AS LOGIC GET _hot SET _hot := VALUE
         INTERNAL PROPERTY Tag    AS CDXTag GET _tag SET _tag := VALUE
@@ -33,12 +33,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROPERTY Buffer AS BYTE[] GET _buffer
         PROPERTY PageNo AS Int32 GET _nPage
 
-	    PROTECTED INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[])
-			//
+        PROTECTED INTERNAL CONSTRUCTOR( bag AS CdxOrderBag )
 			SELF:_bag    := bag
+
+	    PROTECTED INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[])
+			SELF(bag)
             SELF:_nPage  := nPage
-			SELF:_buffer := buffer
 			SELF:isHot  := FALSE
+            IF nPage == -1
+                _buffer := bag:AllocBuffer()
+            ELSE
+    			SELF:_buffer := buffer
+            ENDIF
 		RETURN
         #region Read/Write
 			
@@ -252,4 +258,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
        
 	END CLASS
+
+
+
+
 END NAMESPACE 

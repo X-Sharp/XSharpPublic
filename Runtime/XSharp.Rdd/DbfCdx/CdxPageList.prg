@@ -15,14 +15,14 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
     /// The pageList class.
     /// </summary>
     INTERNAL SEALED CLASS CdxPageList
-        PRIVATE _Pages AS Dictionary<LONG, CdxPage>
-        PRIVATE _Bag   AS CdxOrderBag
+        PRIVATE _pages AS Dictionary<LONG, CdxPage>
+        PRIVATE _bag   AS CdxOrderBag
         PRIVATE _hDump AS IntPtr
         INTERNAL CONST CDXPAGE_SIZE        := 512 AS WORD
         
         PRIVATE METHOD _FindPage( offset AS LONG ) AS CdxPage
             LOCAL page AS Cdxpage
-            SELF:_Pages:TryGetValue(offSet, OUT page)
+            SELF:_pages:TryGetValue(offSet, OUT page)
             RETURN page
 
        INTERNAL METHOD GetPage(nPage AS Int32, nKeyLen AS WORD, tag AS CdxTag) AS CdxPage
@@ -34,8 +34,8 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
                 oResult:Tag := tag
                 RETURN oResult
             ENDIF
-            buffer  := SELF:_Bag:AllocBuffer()
-            isOk    := SELF:_Bag:Read(nPage, buffer)
+            buffer  := SELF:_bag:AllocBuffer()
+            isOk    := SELF:_bag:Read(nPage, buffer)
 			//
             // Inspect first 2 byte and determine the page
             LOCAL nType AS SHORT
@@ -43,12 +43,12 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             SWITCH nType
             CASE 0  // Branche
             CASE 1  // Root
-                 oResult :=  CdxBranchePage{SELF:_Bag, nPage, buffer,nKeyLen}
+                 oResult :=  CdxBranchePage{SELF:_bag, nPage, buffer,nKeyLen}
             CASE 2  // Leaf
             CASE 3  // List of Tags
-                oResult := CdxLeafPage{SELF:_Bag, nPage, buffer, nKeyLen}
+                oResult := CdxLeafPage{SELF:_bag, nPage, buffer, nKeyLen}
             OTHERWISE 
-               oResult := CdxGeneralPage{SELF:_Bag, nPage, buffer} 
+               oResult := CdxGeneralPage{SELF:_bag, nPage, buffer} 
             END SWITCH
             SELF:SetPage(nPage, oResult)
             oResult:Tag := tag
@@ -59,7 +59,7 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
         INTERNAL PROPERTY DumpHandle AS IntPtr GET _hDump SET _hDump := VALUE
 
         INTERNAL METHOD SetPage(nPage AS LONG, page AS CdxPage) AS VOID
-            SELF:_Pages[nPage] :=  page
+            SELF:_pages[nPage] :=  page
 
         PRIVATE METHOD _DumpPage(page AS CdxPage) AS VOID
             IF _hDump != IntPtr.Zero .AND. ! page:Dumped
@@ -75,8 +75,8 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             RETURN
             
         INTERNAL CONSTRUCTOR( bag AS CdxOrderBag )
-            SELF:_Pages := Dictionary<LONG, CdxPage>{}
-            SELF:_Bag   := bag
+            SELF:_pages := Dictionary<LONG, CdxPage>{}
+            SELF:_bag   := bag
             
          DESTRUCTOR()
             SELF:Flush(TRUE)
@@ -84,11 +84,14 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
         INTERNAL METHOD Update( pageNo AS LONG ) AS CdxPage
             LOCAL page AS CdxPage
             page := SELF:Read(pageNo)
-            IF ( page != NULL )
+            IF page != NULL 
                 page:IsHot := TRUE
             ENDIF
             RETURN page
             
+      INTERNAL METHOD Add( page AS CdxPage ) AS void
+            SELF:SetPage(page:PageNo, page)
+            RETURN 
             
         INTERNAL METHOD Append( pageNo AS LONG ) AS CdxPage
             LOCAL page AS CdxTreePage
@@ -108,7 +111,7 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             page := SELF:_FindPage(pageNo)
             IF page == NULL
                 page := SELF:GetPage(pageNo, 0,NULL)
-                SELF:_Pages:Add(pageNo, page)
+                SELF:_pages:Add(pageNo, page)
             ENDIF
             SELF:_dumpPage(page)
             RETURN page
@@ -119,7 +122,7 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
 
             isOk := TRUE
 //            TRY
-//                FOREACH page AS CdxPage IN SELF:_Pages 
+//                FOREACH page AS CdxPage IN SELF:_pages 
 //                    isOk := page:Write()
 //                    IF (!isOk)
 //                        EXIT
@@ -132,7 +135,7 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
 //                isOk := FALSE
 //            END TRY
 //            IF isOk .AND. !keepData
-//                SELF:_Pages:Clear()
+//                SELF:_pages:Clear()
 //            ENDIF
             RETURN isOk
             

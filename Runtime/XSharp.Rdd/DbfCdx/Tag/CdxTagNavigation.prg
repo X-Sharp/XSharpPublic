@@ -216,9 +216,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
             IF moveDirection == SkipDirection.Forward
                 topStack:Pos++
-                node:Fill(topStack:Pos, page)
-                IF node:Pos < page:NumKeys .AND. node:PageNo != 0
-                    RETURN SELF:_locate(NULL, 0, SearchMode.Top, node:PageNo, page)
+                node:Pos := topStack:Pos
+                IF node:Pos < page:NumKeys .AND. node:ChildPageNo != 0
+                    RETURN SELF:_locate(NULL, 0, SearchMode.Top, node:ChildPageNo, page)
                 ENDIF
                 // Once we are at the bottom level then we simply skip forward using the Right Pointers
                 IF topStack:Pos == topStack:Count
@@ -243,8 +243,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_saveCurrentRecord(node)
                 RETURN node:Recno
             ENDIF
-            IF node:PageNo != 0
-                RETURN SELF:_locate(NULL, 0, SearchMode.Bottom, node:PageNo, page)
+            IF node:ChildPageNo != 0
+                RETURN SELF:_locate(NULL, 0, SearchMode.Bottom, node:ChildPageNo, page)
             ENDIF
             IF topStack:Pos == 0
                 IF page:HasLeft
@@ -261,7 +261,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN SELF:_getNextKey(SkipDirection.Backward)
             ENDIF
             topStack:Pos--
-            node:Fill(topStack:Pos, page)
+            node:Pos := topStack:Pos
             SELF:_saveCurrentRecord(node)
             RETURN node:Recno
             
@@ -280,8 +280,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 record++
                 RETURN TRUE
             ENDIF
-            IF node:PageNo != 0
-                SELF:_locate(NULL, 0, SearchMode.Bottom, node:PageNo, page)
+            IF node:ChildPageNo != 0
+                SELF:_locate(NULL, 0, SearchMode.Bottom, node:ChildPageNo, page)
                 record += topStack:Pos 
                 topStack:Pos := 0
                 RETURN TRUE
@@ -541,7 +541,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 maxPos := nodeCount
                 DO WHILE minPos < maxPos
                     foundPos := (WORD) ((minPos + maxPos) / 2)
-                    node:Fill(foundPos, page)
+                    node:Pos := foundPos
                     IF SELF:_compareFunc(node:KeyBytes, keyBuffer, bufferLen) <= 0
                         minPos := (WORD) (foundPos + 1)
                     ELSE
@@ -556,7 +556,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR found := FALSE 
                 DO WHILE minPos < maxPos
                     foundPos := (WORD) ((minPos + maxPos) / 2)
-                    node:Fill(foundPos, page)
+                    node:Pos := foundPos
                     VAR cmp := SELF:_compareFunc(node:KeyBytes, keyBuffer, bufferLen)
                     IF cmp >= 0
                         found := TRUE
@@ -579,27 +579,28 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     
                 ENDDO
                 foundPos := minPos
-                node:Fill(foundPos, page)
+                node:Pos := foundPos
                 IF searchMode == SearchMode.Left .AND. SELF:_compareFunc(node:KeyBytes, keyBuffer, bufferLen) == 0
                     searchMode := SearchMode.LeftFound
                 ENDIF
                     
             CASE SearchMode.Bottom
                 foundPos := (WORD) (nodeCount-1)
-                node:Fill(foundPos, page)
+                node:Pos := foundPos
             CASE SearchMode.Top
                 foundPos := 0
-                node:Fill(foundPos, page)
+                node:Pos := foundPos
             END SWITCH
             // Add info in the stack
+
             SELF:_topStack++
             topStack        := SELF:CurrentStack
             topStack:Pos    := foundPos
             topStack:Page   := pageOffset
             topStack:Count  := nodeCount
             
-            IF page IS CdxBranchePage .AND. node:PageNo != 0
-                RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, node:PageNo, page)
+            IF page IS CdxBranchePage .AND. node:ChildPageNo != 0
+                RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, node:ChildPageNo, page)
             ENDIF
             
             IF foundPos < nodeCount
@@ -628,7 +629,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         SELF:ClearStack()
                         RETURN 0
                     ENDIF
-                    node:Fill(topStack:Pos, page)
+                    node := page[topStack:Pos]
                     SELF:_saveCurrentRecord(node)
                     RETURN node:Recno
                 ENDIF

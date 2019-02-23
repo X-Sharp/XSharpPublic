@@ -14,13 +14,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     /// </summary>
     INTERNAL CLASS CdxOrderBagList
         PRIVATE _oRdd AS DbfCdx
-        PRIVATE _list AS List<CdxOrderBag>
+        PRIVATE _bags AS List<CdxOrderBag>
         
         INTERNAL PROPERTY CurrentOrder AS CdxTag AUTO
         
         CONSTRUCTOR(oRdd AS DbfCdx)
             _oRdd := oRdd
-            _list := List<CdxOrderBag>{}
+            _bags := List<CdxOrderBag>{}
             RETURN
             
         METHOD Add(info AS DbOrderInfo) AS LOGIC
@@ -29,16 +29,32 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 info:BagName := FPathName()
                 IF SELF:FindOrderBag(info:BagName) == NULL_OBJECT
                     oBag := CdxOrderBag{_oRdd}
-                    _list:Add(oBag)
+                    _bags:Add(oBag)
                     RETURN oBag:Open(info)
                 ENDIF
                 RETURN TRUE
             ENDIF
             RETURN FALSE
             
-        METHOD Create(info AS DBORDERCREATEINFO) AS LOGIC
-            // todo
-            RETURN FALSE
+        METHOD Create(info AS DbOrderCreateInfo) AS LOGIC
+                LOCAL oBag AS CdxOrderBag
+                //
+                TRY
+                    IF File(info:BagName)
+                        info:BagName := FPathName()
+                    ENDIF
+                    oBag := SELF:FindOrderBag(info:BagName)
+                    IF oBag == NULL_OBJECT
+                        // Create new OrderBag
+                        oBag := CdxOrderBag{_oRDD}
+                        oBag:Create(info:BagName)
+                    ENDIF
+                    RETURN oBag:OrderCreate(info)
+                    
+                CATCH e AS Exception
+                    System.Diagnostics.Debug.WriteLine(e:Message)
+                    RETURN FALSE
+                END TRY
             
         METHOD Close(orderInfo AS DbOrderInfo) AS LOGIC
             LOCAL oTag AS CdxTag
@@ -46,25 +62,25 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF oTag != NULL
                 VAR bag := oTag:OrderBag
                 bag:Close()
-                SELF:_list:Remove(bag)
+                SELF:_bags:Remove(bag)
             ENDIF
             RETURN TRUE
             
         METHOD CloseAll() AS LOGIC
-            FOREACH oBag AS CdxOrderBag IN _list
+            FOREACH oBag AS CdxOrderBag IN _bags
                  oBag:Close()
             NEXT
-            _list:Clear()
+            _bags:Clear()
             RETURN FALSE
             
         METHOD Remove(cFileName AS STRING) AS LOGIC
             IF File(cFileName)
                 cFileName := FPathName()
             ENDIF
-            FOREACH oBag AS CdxOrderBag IN _list
+            FOREACH oBag AS CdxOrderBag IN _bags
                 IF oBag:MatchesFileName(cFileName)
                     oBag:Close()
-                    _list:Remove(oBag)
+                    _bags:Remove(oBag)
                     RETURN TRUE
                 ENDIF
             NEXT
@@ -72,7 +88,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
         PROPERTY IsHot AS LOGIC
             GET
-                FOREACH oBag AS CdxOrderBag IN _list
+                FOREACH oBag AS CdxOrderBag IN _bags
                     IF oBag:IsHot
                         RETURN TRUE
                     ENDIF
@@ -84,7 +100,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD GoCold() AS LOGIC
             LOCAL lOk AS LOGIC
             lOk := TRUE
-            FOREACH oBag AS CdxOrderBag IN _list
+            FOREACH oBag AS CdxOrderBag IN _bags
                 IF ! oBag:GoCold()
                     lOk := FALSE
                 ENDIF
@@ -94,7 +110,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD GoHot() AS LOGIC
             LOCAL lOk AS LOGIC
             lOk := TRUE
-            FOREACH oBag AS CdxOrderBag IN _list
+            FOREACH oBag AS CdxOrderBag IN _bags
                 IF ! oBag:GoHot()
                     lOk := FALSE
                 ENDIF
@@ -104,7 +120,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD Flush() AS LOGIC
             LOCAL lOk AS LOGIC
             lOk := TRUE
-            FOREACH oBag AS CdxOrderBag IN _list
+            FOREACH oBag AS CdxOrderBag IN _bags
                 IF ! oBag:Flush()
                     lOk := FALSE
                 ENDIF
@@ -121,7 +137,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
 
         METHOD FindOrderBag(cBagName AS STRING) AS CdxOrderBag
-            FOREACH oBag AS CdxOrderBag IN _list
+            FOREACH oBag AS CdxOrderBag IN _bags
                 IF oBag:MatchesFileName(cBagName)
                     RETURN oBag
                 ENDIF
@@ -129,7 +145,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN NULL
 
         METHOD FindOrderByName(cBagName AS STRING, cName AS STRING) AS CdxTag
-            FOREACH oBag AS CdxOrderBag IN _list
+            FOREACH oBag AS CdxOrderBag IN _bags
                 IF String.IsNullOrEmpty(cBagName) .OR.  oBag:MatchesFileName(cBagName)
                     FOREACH oTag AS CdxTag IN oBag:Tags
                         IF String.Compare(oTag:OrderName, cName, StringComparison.OrdinalIgnoreCase) == 0
@@ -145,7 +161,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FindOrderByName(orderinfo:BagName, name)
             ELSEIF orderInfo:Order IS LONG number
                 IF number > 0
-                    FOREACH oBag AS CdxOrderBag IN _list
+                    FOREACH oBag AS CdxOrderBag IN _bags
                         IF number <= oBag:Tags:Count
                             RETURN oBag:Tags[number-1]
                         ELSE
@@ -159,7 +175,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROPERTY Count AS INT 
             GET
                 LOCAL nResult := 0 AS LONG
-                FOREACH oBag AS CdxOrderBag IN _list
+                FOREACH oBag AS CdxOrderBag IN _bags
                     nResult += oBag:Count
                 NEXT
                 RETURN nResult
@@ -169,7 +185,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD OrderPos(oTagToFind AS CdxTag) AS LONG
             LOCAL nPos := 0 AS LONG
             IF oTagToFind != NULL
-                FOREACH oBag AS CdxOrderBag IN _List
+                FOREACH oBag AS CdxOrderBag IN _bags
                     FOREACH oTag AS CdxTag IN oBag:Tags
                         ++nPos
                         IF oTag == oTagToFind

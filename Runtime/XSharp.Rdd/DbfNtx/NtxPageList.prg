@@ -84,7 +84,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     ENDIF
                 NEXT
                 IF isOk
-					FFlush( SELF:_Order:_hFile )
+					SELF:_Order:Flush()
                 ENDIF
             CATCH AS Exception
                 isOk := FALSE

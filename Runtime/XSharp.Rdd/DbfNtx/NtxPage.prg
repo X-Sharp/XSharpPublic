@@ -38,7 +38,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
     [DebuggerDisplay("Page: {PageOffset}")];
     INTERNAL CLASS NtxPage
-        PRIVATE CONST NTXPAGE_SIZE             := 1024 AS WORD
+        INTERNAL CONST NTXPAGE_SIZE             := 1024 AS WORD
         PROTECTED _Order    AS NtxOrder
         PROTECTED _Offset   AS LONG
         PROTECTED _Hot      AS LOGIC
@@ -54,6 +54,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL PROPERTY Bytes AS BYTE[] GET SELF:_Bytes
         
         INTERNAL PROPERTY Hot AS LOGIC GET SELF:_Hot SET SELF:_Hot := VALUE
+
+        INTERNAL METHOD Clear() AS VOID
+            SELF:_Bytes := BYTE[]{NTXPAGE_SIZE}
+            SELF:_Hot   := TRUE
 
         INTERNAL PROPERTY Dumped AS LOGIC AUTO
 
@@ -84,8 +88,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             GET
                 LOCAL node := NULL AS NtxPageNode
                 TRY
-                    node := NtxPageNode{ SELF:_Order:_keySize  }
-                    node:Fill( index, SELF )
+                    node := NtxPageNode{ SELF:_Order:_keySize ,SELF }
+                    node:Pos := index
                 CATCH e AS Exception
                     Debug.WriteLine( "Ntx Error : " + e:Message )
                 END TRY
@@ -118,10 +122,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             IF isOk
                 TRY
-                    // Move to top of Page
-                    FSeek3( SELF:_Order:_hFile, SELF:_Offset /*  * NtxHeader.NTXOFFSETS.SIZE    */, SeekOrigin.Begin )
-                    // Read Buffer
-                    isOk := FRead3(SELF:_Order:_hFile, SELF:_Bytes, NTXPAGE_SIZE) == NTXPAGE_SIZE
+                    isOk := SELF:_Order:ReadPage(SELF)
                     SELF:Dumped := FALSE
                 CATCH e AS Exception
                     isOk := FALSE
@@ -144,10 +145,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 RETURN FALSE
             ENDIF
             TRY
-                // Move to top of Page
-                FSeek3( SELF:_Order:_hFile, SELF:_Offset  /* * NtxHeader.NTXOFFSETS.SIZE    */ , SeekOrigin.Begin )
-                // Write Buffer
-                isOk := FWrite3(SELF:_Order:_hFile, SELF:_Bytes, NTXPAGE_SIZE) == NTXPAGE_SIZE 
+                isOk := SELF:_order:WritePage(SELF)
                 SELF:_Hot := FALSE
             CATCH e AS Exception
                 isOk := FALSE
@@ -181,13 +179,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
         INTERNAL METHOD Dump(keyLen AS WORD) AS STRING
             VAR sb := System.Text.StringBuilder{}
-            VAR item := NtxPageNode{keyLen}
+            VAR item := NtxPageNode{keyLen,SELF}
             sb:AppendLine(String.Format("Page {0}, # of keys: {1}", SELF:PageOffSet, SELF:NodeCount))
             FOR VAR i := 0 TO SELF:NodeCount-1
-                item:Fill(i, SELF)
+                item:Pos := i
                 sb:AppendLine(String.Format("Item {0,2}, Page {1,6} Record {2,4} : {3} ", i, item:PageNo, item:Recno, item:KeyText))
             NEXT
-            item:Fill(SELF:NodeCount, SELF)
+            item:Pos := SELF:NodeCount
             sb:AppendLine(String.Format("Right page reference {0}", item:PageNo))
             RETURN sb:ToString()
             

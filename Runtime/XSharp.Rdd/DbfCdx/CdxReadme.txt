@@ -10,20 +10,14 @@ Important: All numbers in the CDX file are stored in Little Endian !
 
 There are 3 types of tree pages: Branch (0), Root (1) and Leaf(2).
   Unused pages have the type -1 (0xFF) 
+- The TAG header and Root of the orderbag have the same structure and are both 2 pages.
+  they contain some flags and a pointer to the top page of the tag. it is followed by a page with the key
+  expression and for expression. The positions of these strings in this second page are in the first page.
+  Some of these values are meaningless in the root of the orderbag (there is no index expression) but the 
+  fields are there and the KeyExprLen, ForExprPos and ForExpLen are all set to 1 in the root page.
+  The root node in the File header points to the list of tags, the root node in the tag header points to 
+  the first page of the tag. This can be either a BRANCH or a LEAF page. The TagList is  special LEAF page.
 
-- The first page in the file is the FILE Header (Bag Header). This is a special version of the Tag Header.
-  The keysize is fixed to 10 (which is the tag length)
-  The root points to the list of tags (which is a LEAF page)
-  The freepage points to the list of free pages at BAG level.
-
-- The list of tags is a LEAF page (see below)
-  It has a special NodeAttr (a combination of Root and Leaf 1 +2 = 3)
-  Each tag is reprented as a key (the tag name) and the recno is an an index to the tag header
-  leftPtr and RightPtr are normally empty (unless there are VERY MANY tags)
-  Duplicate and Trail are used like normal Leaf pages. The filler = ' '
-
-- The TAG Header contains some flags and a pointer to the top page of the tag. it is followed by a page with the key
-  expression and for expression. The positions of these strings in this second page are in the first page
         type    description         start   length
         =====================================================================
 		long	root;		        0x00	4       offset of the root node
@@ -73,7 +67,7 @@ BRANCH Page
 LEAF Page
 - A Leaf page has type 2. The List of CDX tags is a special leaf page with type 3 (Root + Leaf)
 - It starts with 24 bytes:
-  BYTE     attr    [ 2 ];    node type 
+  BYTE     attr    [ 2 ];    node type = 2 or 3 (for the taglist)
   BYTE     nKeys   [ 2 ];    number of keys 
   BYTE     leftPtr [ 4 ];    offset of left node or -1 
   BYTE     rightPtr[ 4 ];    offset of right node or -1

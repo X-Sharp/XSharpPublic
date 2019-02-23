@@ -31,6 +31,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _Hot AS LOGIC
         INTERNAL _Conditional AS LOGIC
         INTERNAL _Descending AS LOGIC
+        INTERNAL _Unique AS LOGIC
+        INTERNAL _Custom AS LOGIC
         //INTERNAL _Partial AS LOGIC
         INTERNAL _SingleField AS LONG
         INTERNAL _SourceIndex AS LONG
@@ -89,8 +91,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROPERTY KeyLength          AS WORD GET SELF:_keySize
         PROPERTY Partial        	AS LOGIC GET SELF:Custom
         PROPERTY Conditional        AS LOGIC GET !String.IsNullOrEmpty(_ForExpr)
-        PROPERTY Custom         	AS LOGIC GET Options:HasFlag(CdxOptions.IsCustom)
-        PROPERTY Unique         	AS LOGIC GET Options:HasFlag(CdxOptions.IsUnique)
+        PROPERTY Custom         	AS LOGIC GET Options:HasFlag(CdxOptions.Custom)
+        PROPERTY Unique         	AS LOGIC GET Options:HasFlag(CdxOptions.Unique)
         PROPERTY Signature      	AS BYTE AUTO
         PROPERTY FieldIndex     	AS INT AUTO             // 1 based FieldIndex
         PROPERTY Options        	AS CdxOptions AUTO
@@ -99,7 +101,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #endregion
 
 
-        INTERNAL CONSTRUCTOR (oBag AS CdxOrderBag, nPage AS Int32, buffer AS BYTE[], cName AS STRING)
+        INTERNAL CONSTRUCTOR (oBag AS CdxOrderBag, nPage AS Int32, cName AS STRING)
 	    SUPER()
             LOCAL i AS LONG
 
@@ -117,7 +119,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:Page := nPage
             SELF:FieldIndex  := 0
             SELF:_SingleField := -1
-            SELF:_Header := CdxTagHeader{oBag, nPage, buffer, SELF:OrderName}
+            SELF:_Header := CdxTagHeader{oBag, nPage,SELF:OrderName}
             SELF:_Bag:SetPage(SELF:_Header)
             SELF:Open()
 
@@ -140,8 +142,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_rootPage      := SELF:_Header:RootPage
 
             SELF:_Version   := SELF:_Header:Version
-            SELF:_midItem   := CdxNode{SELF:_keySize}
-            SELF:_oneItem   := CdxNode{SELF:_keySize}
+            SELF:_midItem   := CdxNode{SELF:_keySize,0}
+            SELF:_oneItem   := CdxNode{SELF:_keySize,0}
             RETURN TRUE
 
         DESTRUCTOR()

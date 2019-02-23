@@ -37,7 +37,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
           // BYTE record number[ 4]
           // BYTE child page [4]
     */
-	INTERNAL CLASS CdxBranchePage INHERIT CdxTreePage IMPLEMENTS ICdxKeyValue
+	INTERNAL CLASS CdxBranchePage INHERIT CdxTreePage 
         PROTECTED _keyLen    AS Int32
         INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS Int32)
             SUPER(bag, nPage, buffer)
@@ -81,7 +81,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
           SET _SetLong(CDXBRANCH_OFFSET_RIGHTPTR, VALUE), isHot := TRUE
 #endregion                
 #region Constants
-        PRIVATE CONST CDXBRANCHE_NODEATTR	        := 0	AS WORD 
      	PRIVATE CONST CDXBRANCH_OFFSET_NUMKEYS		:= 2	AS WORD 
         PRIVATE CONST CDXBRANCH_OFFSET_LEFTPTR		:= 4	AS WORD 
         PRIVATE CONST CDXBRANCH_OFFSET_RIGHTPTR		:= 8	AS WORD 
@@ -91,13 +90,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
       METHOD Dump AS STRING
             LOCAL Sb AS stringBuilder
             sb := stringBuilder{}
-            VAR item := CdxPageNode{_keyLen}
+            VAR item := SELF[0]
             sb:AppendLine("--------------------------")
-            sb:AppendLine(String.Format("{0} Page {1:X6}, # of keys: {2}", SELF:NodeAttribute, SELF:PageNo, SELF:NumKeys))
+            sb:AppendLine(String.Format("{0} Page {1:X6}, # of keys: {2}", SELF:PageType, SELF:PageNo, SELF:NumKeys))
             sb:AppendLine(String.Format("Left page reference {0:X6}", SELF:LeftPtr))
             FOR VAR i := 0 TO SELF:NumKeys-1
-                item:Fill(i, SELF)
-                sb:AppendLine(String.Format("Item {0,2}, Page {1:X6}, Record {2,5} : {3} ", i, item:PageNo, item:Recno, item:KeyText))
+                item:Pos := i
+                sb:AppendLine(String.Format("Item {0,2}, Page {1:X6}, Record {2,5} : {3} ", i, item:ChildPageNo, item:Recno, item:KeyText))
             NEXT
             sb:AppendLine(String.Format("Right page reference {0:X6}", SELF:RightPtr))
             RETURN sb:ToString()

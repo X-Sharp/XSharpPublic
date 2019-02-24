@@ -1429,6 +1429,97 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 
+		// TECH-TFF4K29132, VO-incompatible results with workarea numbering
+		[Fact, Trait("Category", "DBF")];
+		METHOD WorkareaNums_2() AS VOID
+			LOCAL aDbf AS ARRAY
+			LOCAL cDBF AS STRING
+			LOCAL aFields AS ARRAY 
+			LOCAL aValues AS ARRAY
+			LOCAL i AS DWORD       
+			DBCloseAll()
+			
+			cDBF := GetTempFileName()
+
+			RDDSetDefault("DBFNTX")
+
+		  	aFields := {{ "LAST"  , "C" ,  10 , 0 }  }
+		    		 
+			DBCreate( cDbf , aFields , "DBFNTX" ) 
+			DBUseArea( TRUE ,"DBFNTX",cDbf, "FOO1", TRUE) 		
+			Assert.Equal(1 , (INT) DBGetSelect() ) // 1  ok
+			
+			DBUseArea( TRUE ,"DBFNTX",cDbf, "FOO2", TRUE) 		
+			Assert.Equal(2 , (INT) DBGetSelect() )
+		
+			DBUseArea( TRUE ,"DBFNTX",cDbf, "FOO3", TRUE) 		
+			Assert.Equal(3 , (INT) DBGetSelect() ) // 3  ok
+			
+			DBUseArea( TRUE ,"DBFNTX",cDbf, "FOO4", TRUE) 		
+			Assert.Equal(4 , (INT) DBGetSelect() )
+			
+			Assert.Equal(3 , (INT) DBSetSelect ( 3 ) ) // 3 ok
+
+			DBCloseAll() 
+			Assert.Equal(1 , (INT) DBGetSelect() ) // Shows  3 instead of 1
+			Assert.Equal(1 , (INT) select() )      // Shows  3 instead of 1
+			
+			DBUseArea( ,"DBFNTX",cDbf, "FOO1", TRUE) 		
+			Assert.Equal(1 , (INT) DBGetSelect() ) // shows 3 instead of 1
+			
+			DBUseArea( TRUE ,"DBFNTX",cDbf, "FOO2", TRUE) 	
+			Assert.Equal(2 , (INT) DBGetSelect() ) // shows 1 instead of 2 !
+			
+			DBCloseAll()
+		RETURN
+
+
+		// TECH-02UU54BZ37, Problem with DBApp() function
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBApp_test() AS VOID
+			LOCAL aDbf AS ARRAY
+			LOCAL cDBF AS STRING
+			LOCAL cDBFto AS STRING
+			LOCAL aFields AS ARRAY 
+			LOCAL aValues AS ARRAY
+			LOCAL i AS DWORD       
+			DBCloseAll()
+			
+			cDBF := GetTempFileName("dbftestfrom")
+			cDBFto := GetTempFileName("dbftestto")
+
+			RDDSetDefault("DBFNTX")
+
+			aFields := {{ "GRUPPE" , "C" , 30 , 0 } ,;
+			{ "ID" , "C" , 5 , 0 } }
+			
+			aValues := { { "Grp1" , "00001" } ,;
+			{ "Grp2" , "00002" } }
+			
+			DBCreate( cDbf , aFields , "DBFNTX" )
+			DBUseArea(,"DBFNTX",cDbf,,FALSE)
+			
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut ( 1 , aValues [ i , 1 ] )
+				FieldPut ( 2 , aValues [ i , 2 ] )
+			NEXT
+
+//			 --------- create To.dbf ----------
+//			 error happens also without that
+			AAdd ( aFields , { "ID2", "N" , 5 , 0 } )
+			
+			
+			
+			DBCreate( cDbfTo , aFields , "DBFNTX" )
+			DBCloseAll()
+
+			DBUseArea(,"DBFNTX",cDbfTo,,FALSE)
+			Assert.True( DBApp ( cDbf ) )// ------- IndexOutofRangeException
+			DBCloseAll()
+		RETURN
+
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
 		RETURN GetTempFileName("testdbf")

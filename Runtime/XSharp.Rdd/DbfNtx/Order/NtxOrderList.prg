@@ -201,7 +201,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 FOREACH order AS NtxOrder IN SELF:_Orders 
                     isOk := order:Truncate()
                     IF isOk
-                        IF !order:_Unique .AND. !order:_Conditional .AND. !order:_Descending .AND. !ordCondInfo:Scoped
+                        IF !order:Unique .AND. !order:Conditional .AND. !order:Descending .AND. !ordCondInfo:Scoped
                             isOk := order:_CreateIndex()
                         ELSE
                             isOk := order:_CreateUnique(ordCondInfo)
@@ -213,9 +213,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     IF !isOk
                         RETURN isOk
                     ENDIF
-                    FOREACH order2 AS NtxOrder IN SELF:_Orders 
-                        order2:_Hot := FALSE
-                    NEXT
                     isOk := SELF:_oRdd:GoTop()
                 ENDIF
                 RETURN isOk
@@ -256,7 +253,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             FOR i := 0 TO SELF:_Orders:Count-1
                 ntxIndex := SELF:_Orders[i]
                 isOk := ntxIndex:Commit()
-                IF (!isOk)
+                IF !isOk
                     EXIT
                 ENDIF
             NEXT

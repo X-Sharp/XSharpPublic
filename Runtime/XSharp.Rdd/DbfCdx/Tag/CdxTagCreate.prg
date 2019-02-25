@@ -7,12 +7,13 @@ USING System
 USING System.Diagnostics
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
+USING System.Collections.Generic
 
 BEGIN NAMESPACE XSharp.RDD.CDX
 
     INTERNAL DELEGATE ValueBlock( sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
 
-    INTERNAL PARTIAL SEALED CLASS CdxTag
+    INTERNAL PARTIAL SEALED CLASS CdxTag IMPLEMENTS IRddSortWriter
 
         // Methods for Creating Indices
         PUBLIC METHOD Create(createInfo AS DbOrderCreateInfo ) AS LOGIC
@@ -77,8 +78,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_oRdd:_dbfError(GenCode.EG_CREATE,  SubCodes.ERDD_WRITE,"OrdCreate", "Could not write Header ")
                 RETURN FALSE
             ENDIF
-            IF !SELF:Unique .AND. !SELF:_Conditional .AND. !ordCondInfo:Scoped
-                isOk := SELF:_CreateIndex()
+            IF SELF:_oRdd:RecCount == 0
+                isOk := SELF:_CreateEmpty()
+            ELSEIF !SELF:Unique .AND. !SELF:_Conditional .AND. !ordCondInfo:Scoped
+                isOk := SELF:_CreateNormalIndex()
             ELSE
                 isOk := SELF:_CreateUnique(ordCondInfo)
             ENDIF
@@ -91,22 +94,34 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN isOk
 
         PRIVATE METHOD _HeaderCreate() AS LOGIC
-            SELF:_Header            := CdxTagHeader{_bag, CdxPage.CDXPAGE_SIZE*2 ,_orderName}
+            SELF:_Header            := CdxTagHeader{_bag, -1 ,_orderName}
+            SELF:_Header:Tag        := SELF
             SELF:_Header:Descending := SELF:_Descending
+            SELF:_Header:Version    := SELF:_version
+            SELF:_Header:Signature  := 1
             SELF:_Header:RootPage   := 0
             SELF:_Header:FreeList   := 0
             SELF:_Header:Version    := 0
             SELF:_Header:KeySize    := _keySize
             SELF:_Header:KeyExprPos := 0
-            SELF:_Header:KeyExprLen := (WORD) _KeyExpr:Length
+            SELF:_Header:KeyExprLen := (WORD)(_KeyExpr:Length +1)
             SELF:_Header:KeyExpression := _KeyExpr
             SELF:_Header:ForExprPos     := (WORD) (SELF:_Header:KeyExprPos + SELF:_Header:KeyExprLen + 1)
-            IF SELF:_Conditional
-                SELF:_Header:ForExprLen    := (WORD) _ForExpr:Length
-                SELF:_Header:ForExpression := _ForExpr
-            ELSE
-                SELF:_Header:ForExprLen    := 0
+            VAR options := CdxOptions.Compact + CdxOptions.Tag
+            IF SELF:_Unique
+                options |= CdxOptions.Unique
             ENDIF
+            IF SELF:_Custom
+                options |= CdxOptions.Custom
+            ENDIF
+            IF SELF:_Conditional
+                SELF:_Header:ForExprLen    := (WORD)(_ForExpr:Length +1)
+                SELF:_Header:ForExpression := _ForExpr
+                options |= CdxOptions.HasFor
+            ELSE
+                SELF:_Header:ForExprLen    := 1
+            ENDIF
+            SELF:_Header.Options := options
             RETURN SELF:_Header:Write()
             
         INTERNAL METHOD _determineSize(toConvert AS OBJECT ) AS LOGIC
@@ -129,35 +144,25 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
             
         PRIVATE METHOD _CondCreate(ordCondInfo AS DbOrderCondInfo ) AS LOGIC
-            /*
-            LOCAL isOk AS LOGIC
-            LOCAL leadingOrder  := NULL AS NtxOrder
+            LOCAL isOk          := TRUE AS LOGIC
+            LOCAL leadingOrder  := NULL AS CdxTag
             LOCAL lUseOrder     := FALSE AS LOGIC
-            LOCAL hasWhile AS LOGIC
-            LOCAL hasEvalBlock AS LOGIC
-            LOCAL record AS LONG
-            LOCAL count AS LONG
-            LOCAL toDo AS LONG
-            LOCAL done AS LONG
-            LOCAL nextRecord AS LONG
-            LOCAL start AS LONG
-            LOCAL result AS LOGIC
+            LOCAL hasWhile      := FALSE AS LOGIC
+            LOCAL hasEvalBlock  := FALSE AS LOGIC
+            LOCAL record        := 1 AS LONG
+            LOCAL count         := 1 AS LONG
+            LOCAL toDo          := 0 AS LONG
+            LOCAL done          := 0 AS LONG
+            LOCAL nextRecord    := 0 AS LONG
+            LOCAL start         := 0 AS LONG
+            LOCAL result        := FALSE AS LOGIC
             
-            isOk := TRUE
-            nOrder := NULL
-            hasWhile := FALSE
-            hasEvalBlock := FALSE
-            record := 1
-            count := 1
-            nextRecord := 0
-            toDo := 0
-            done := 0
             start := ordCondInfo:StartRecNo
             IF ordCondInfo:Scoped
                 IF ordCondInfo:StartRecNo > 0
                     record := ordCondInfo:StartRecNo
                 ENDIF
-                IF SELF:_oRdd:_indexList:Focus != 0
+                IF SELF:_oRdd:_indexList:CurrentOrder != NULL
                     leadingOrder := SELF:_oRdd:_indexList:CurrentOrder
                     lUseOrder    := leadingOrder != NULL
                 ENDIF
@@ -234,7 +239,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 done++
                 IF lUseOrder 
-                    nextRecord := leadingOrder:_getNextKey(FALSE, SkipDirection.Forward)
+                    nextRecord := leadingOrder:_getNextKey(SkipDirection.Forward)
                 ELSE
                     nextRecord := SELF:_RecNo + 1
                 ENDIF
@@ -250,80 +255,81 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_oRdd:__Goto(start)
             SELF:ClearStack()
             SELF:Flush()
-            */
             RETURN TRUE
+
         PRIVATE METHOD _CreateEmpty() AS LOGIC
-            /*
-            LOCAL nLevel AS NtxLevel
-            
-            SELF:_rootPage := SELF:_fileSize
-            SELF:_fileSize += BUFF_SIZE
-            nLevel := NtxLevel{SELF}
-            nLevel:InitRefs(SELF:_MaxEntry, SELF:_entrySize)
-            nLevel:Write(SELF:_rootPage)
+            LOCAL oPage AS CdxLeafPage
+            LOCAL buffer AS BYTE[]
+            buffer := SELF:_Bag:AllocBuffer()
+            oPage := CdxLeafPage{SELF:_Bag, -1, buffer, SELF:_keySize}
+	        oPage:Write()
             SELF:ClearStack()
-            */
             RETURN TRUE
-            
-        INTERNAL METHOD _CreateIndex() AS LOGIC
-            /*
-            LOCAL fType AS DbFieldType
-            LOCAL sourceIndex AS LONG
-            LOCAL evalCount AS LONG
-            LOCAL lRecCount AS LONG
-            LOCAL sortInfo AS DbSortInfo
-            LOCAL hasBlock AS LOGIC
+
+        INTERNAL METHOD _InitSort(lRecCount AS LONG, sourceIndex OUT LONG, lAscii OUT LOGIC) AS RDDSortHelper
             LOCAL sorting AS RddSortHelper
-            LOCAL byteArray AS BYTE[]
-            LOCAL result AS LOGIC
-            LOCAL ic AS CdxSortCompare
-            LOCAL lAscii AS LOGIC
-            
-            fType := 0
+            LOCAL sortInfo AS DbSortInfo
+            LOCAL fType  := 0 AS DbFieldType
             sourceIndex := 0
-            evalCount := 0
-            lRecCount := SELF:_oRdd:RecCount
-            IF lRecCount == 0
-                RETURN SELF:_CreateEmpty()
-            ENDIF
+            lAscii := FALSE
             sortInfo := DbSortInfo{0,1}     // 0 trans items, 1 sort item
-            hasBlock    := SELF:_oRdd:_OrderCondInfo:EvalBlock != NULL
-            evalCount := 1
-            SELF:_levelsCount := 1
+            //SELF:_levelsCount := 1
             IF SELF:_SingleField != -1
                 fType := SELF:_oRdd:_Fields[SELF:_SingleField]:fieldType
+                // 'C', 'N', 'D'
+                SWITCH fType
+                CASE DbFieldType.Character
+                CASE DbFieldType.Number
+                CASE DbFieldType.Date
+                    sourceIndex := SELF:_oRdd:_Fields[SELF:_SingleField]:OffSet
+                OTHERWISE
+                    fType := 0
+                END SWITCH
             ENDIF
-            // 'C', 'N', 'D'
-            SWITCH fType
-            CASE DbFieldType.Character
-            CASE DbFieldType.Number
-            CASE DbFieldType.Date
-                sourceIndex := SELF:_oRdd:_Fields[SELF:_SingleField]:OffSet
-            OTHERWISE
-                fType := 0
-            END SWITCH
             
             sorting := RddSortHelper{sortInfo, lRecCount}
             sortInfo:Items[0]:Length := SELF:_keySize
-            IF SELF:_KeyExprType == TypeCode.String
+            IF SELF:_KeyExprType == __UsualType.String
                 lAscii := FALSE
                 sortInfo:Items[0]:Flags := DbSortFlags.Default
             ELSE
                 lAscii := TRUE
                 sortInfo:Items[0]:Flags := DbSortFlags.Ascii
             ENDIF
+            //IF SELF:_oRdd:_OrderCondInfo:Descending
+            //    sortInfo:Items[0]:Flags += DbSortFlags.Descending
+            //ENDIF
             sortInfo:Items[0]:OffSet := 0
+            RETURN sorting
+
+        INTERNAL METHOD _CreateNormalIndex() AS LOGIC
+            LOCAL evalCount AS LONG
+            LOCAL lRecCount AS LONG
+            LOCAL result AS LOGIC
+            LOCAL hasBlock AS LOGIC
+            LOCAL ic AS CdxSortCompare
+            LOCAL sourceIndex := 0 AS LONG
+            LOCAL lAscii AS LOGIC
+           
+            evalCount := 0
+            lRecCount := SELF:_oRdd:RecCount
+            IF lRecCount == 0
+                RETURN SELF:_CreateEmpty()
+            ENDIF
+            VAR sortHelper := SELF:_initSort(lRecCount, OUT sourceIndex, OUT lAscii)
+            hasBlock    := SELF:_oRdd:_OrderCondInfo:EvalBlock != NULL
+            evalCount := 1
             SELF:_oRdd:GoTo(1)
-            byteArray := BYTE[]{ SELF:_keySize }
+            VAR buffer := BYTE[]{ SELF:_keySize }
             REPEAT
                 result := TRUE
                 SELF:_oRdd:ReadRecord()
-                result := getKeyValue(sourceIndex, byteArray)
+                result := getKeyValue(sourceIndex, buffer)
                 IF !result
                     EXIT
                 ENDIF
-                VAR toSort := SortRecord{byteArray, SELF:_RecNo}
-                sorting:Add(toSort)
+                VAR toSort := SortRecord{buffer, SELF:_RecNo}
+                sortHelper:Add(toSort)
                 IF hasBlock
                     IF evalCount >= SELF:_oRdd:_OrderCondInfo:StepSize
                         TRY
@@ -340,43 +346,25 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             UNTIL ! (result .AND. SELF:_oRdd:_isValid)
             IF result
                 IF lAscii
-                    ic := CdxSortCompareAscii{SELF:_oRdd, sortInfo}
+                    ic := CdxSortCompareAscii{SELF:_oRdd, sortHelper}
                 ELSE
-                    ic := CdxSortCompareDefault{SELF:_oRdd, sortInfo}
+                    ic := CdxSortCompareDefault{SELF:_oRdd, sortHelper}
                 ENDIF
-                result := sorting:Sort(ic)
+                result := sortHelper:Sort(ic)
             ENDIF
-            SELF:_levelsCount := SELF:_initLevels(SELF:_MaxEntry + 1, lRecCount)
-            SELF:_outPageNo := 1
+            SELF:_oneItem := CdxNode{SELF:_keySize, 0}
+            SELF:ClearStack()
+
             IF result
-                result := sorting:Write(SELF)
+                SELF:_newLeafPage()
+                result := sortHelper:Write(SELF)
             ENDIF
-            sorting:Clear()
-            sorting := NULL
-            SELF:_oneItem:PageNo := 0
-            SELF:_placeItem(SELF:_oneItem)
-            SELF:_rootPage := SELF:_oneItem:PageNo
-            SELF:_nextUnusedPageOffset := 0
-            VAR lpLevels := SELF:_levels
-            FOREACH level AS NtxLevel IN lpLevels 
-                IF level != NULL
-                    IF level:PageOffset == 0
-                        level:PageOffset := SELF:_outPageNo * BUFF_SIZE
-                        SELF:_outPageNo++
-                    ENDIF
-                    level:Write(level:PageOffset)
-                ENDIF
-            NEXT
-            FSeek3( SELF:_hFile, 0, FS_END )
-            SELF:_fileSize  := (LONG) FTell( SELF:_hFile ) 
-            SELF:_levels := NULL
+            sortHelper:Clear()
+            sortHelper := NULL
             RETURN result
-            */
-            RETURN TRUE
             
             // IRddSortWriter Interface, used by RddSortHelper
         PUBLIC METHOD WriteSorted(si AS DbSortInfo , record AS SortRecord) AS LOGIC
-            SELF:_oneItem:ChildPageNo   := 0
             SELF:_oneItem:Recno         := record:Recno
             SELF:_oneItem:KeyBytes      := record:Data
             RETURN SELF:_placeItem(SELF:_oneItem)
@@ -400,117 +388,101 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             SELF:Flush()
             RETURN Ok
-            
-        PRIVATE METHOD _initLevels(uiBOrder AS LONG , keyCount AS LONG ) AS LONG
-            LOCAL level := 0 AS LONG
-            /*
-            LOCAL exp AS LONG
-            LOCAL nLevel AS NtxLevel
-            
-            level := 0
-            exp := 1
-            SELF:_levels := NtxLevel[]{ NTX_COUNT }
-            DO WHILE exp <= keyCount
-                nLevel := NtxLevel{SELF}
-                nLevel:Exp := exp
-                nLevel:InitRefs(SELF:_MaxEntry, SELF:_entrySize)
-                SELF:_levels[level] := nLevel
-                level++
-                exp *= uiBOrder
-            ENDDO
-            SELF:_RecalcLevel(level - 1, keyCount, 1)
-            */
-            RETURN level
-           
-        PRIVATE METHOD _placeItem(lpNode AS CdxNode ) AS LOGIC
-            /*
-            LOCAL iLevel AS LONG
-            LOCAL level AS NtxLevel
-            LOCAL node AS CdxNode
-            LOCAL page AS LONG
-            
-            iLevel := 0
-            level := SELF:_levels[0]
-            DO WHILE iLevel < SELF:_levelsCount .AND. level:NodeCount >= level:Parents
-                node := level[level:NodeCount]
-                node:PageNo := SELF:_oneItem:PageNo
-                page := SELF:_outPageNo * BUFF_SIZE
-                SELF:_oneItem:PageNo := page
-                level:PageOffset := page
-                SELF:_outPageNo++
-                iLevel++
-                level := SELF:_levels[iLevel]
-            ENDDO
-            IF iLevel >= SELF:_levelsCount
-                RETURN FALSE
-            ENDIF
-            node := level[level:NodeCount]
-            node:KeyBytes := lpNode:KeyBytes
-            node:Recno := lpNode:Recno
-            node:PageNo := lpNode:PageNo
-            level:NodeCount++
-            SELF:_oneItem:Clear()
-            IF iLevel > 0
-                SELF:_ResetLevel(iLevel - 1)
-            ENDIF
-            */
-            RETURN TRUE
-            
-        PRIVATE METHOD _RecalcLevel(uiLevel AS LONG , lKeys AS LONG , uiBOrder AS LONG ) AS VOID
-            /*
-            LOCAL nLevel AS NtxLevel
-            
-            nLevel := SELF:_levels[uiLevel]
-            nLevel:Write(nLevel:PageOffset)
-            nLevel:NodeCount := 0
-            nLevel:BaseKeys := lKeys / uiBOrder
-            nLevel:ExtraKeys := lKeys - nLevel:BaseKeys * uiBOrder
-            nLevel:Keys := nLevel:BaseKeys
-            IF nLevel:ExtraKeys > 0
-                nLevel:ExtraKeys--
-                nLevel:Keys++
-            ENDIF
-            nLevel:Parents := nLevel:Keys / nLevel:Exp
-            IF uiLevel > 0
-                SELF:_RecalcLevel(uiLevel - 1, nLevel:Keys - nLevel:Parents, nLevel:Parents + 1)
-            ENDIF
-            */
 
-        PRIVATE METHOD _ResetLevel(uiLevel AS LONG ) AS VOID
-            /*
-            LOCAL nLevel AS NtxLevel
-            
-            nLevel := SELF:_levels[uiLevel]
-            nLevel:Write(nLevel:PageOffset)
-            nLevel:NodeCount := 0
-            IF nLevel:ExtraKeys > 0
-                nLevel:ExtraKeys--
-                IF uiLevel > 0
-                    SELF:_RecalcLevel(uiLevel - 1, nLevel:Keys - nLevel:Parents, nLevel:Parents + 1)
+
+        PRIVATE METHOD _finishCreate() AS LOGIC
+            // at the end of the index creation we will create the branch pages (when needed)
+            // that point to the leaf pages that were allocated in this process.
+            // To do that:
+            // - first write each leaf node to disk, so we have a page number
+            //   to do that quickly we write from Right to left, so we only have to
+            //   write each page once
+            // - based on the number of leaf pages we know how many branch keys we have
+            //   and based on that we can determine the # of levels we need.
+            //   when there was only one leaf page then we don't create a branch, otherwise
+            //   we create as many branches as necessary.
+            LOCAL oLeaf AS CdxLeafPage
+            LOCAL oLeafs   AS List<CdxLeafPage>
+            oLeafs      := List<CdxLeafPage>{}
+            oLeaf       := _currentLeaf
+            DO WHILE oLeaf != NULL
+                oLeaf:Write()
+                oLeafs:Insert(0, oLeaf)
+                oLeaf := oLeaf:Left
+
+            ENDDO
+            IF oLeafs:Count > 1
+                VAR nodes := List<CdxPageNode>{}
+                // one level is needed
+                // we collect the last nodes on every leaf page and then create branch pages from this list
+                FOREACH VAR leaf IN oLeafs
+                    VAR node := leaf:LastNode
+                    nodes:Add(node)
+                NEXT
+                LOCAL max AS LONG
+                max := SELF:MaxKeysPerPage
+                LOCAL oBranch AS CdxBranchePage
+                IF oLeafs:Count <= max
+                    oBranch := SELF:_newBranchPage(nodes, 0)
+                ELSE
+                    // implement later becayse this will create a list of branches and a level above it.
                 ENDIF
             ELSE
-                IF nLevel:Keys == nLevel:BaseKeys
-                    IF uiLevel > 0
-                        SELF:_RecalcLevel(uiLevel - 1, nLevel:Keys - nLevel:Parents, nLevel:Parents + 1)
-                    ENDIF
-                ELSE
-                    nLevel:Keys := nLevel:BaseKeys
-                    nLevel:Parents := nLevel:Keys / nLevel:Exp
-                    IF uiLevel > 0
-                        SELF:_RecalcLevel(uiLevel - 1, nLevel:Keys - nLevel:Parents, nLevel:Parents + 1)
-                    ENDIF
+                // register as root page
+            ENDIF
+            RETURN TRUE
+
+        PRIVATE _currentLeaf AS CdxLeafPage
+
+        PRIVATE METHOD _newBranchPage(nodes AS IList<CdxPageNode>, nOffSet AS LONG) AS CdxBranchePage
+           LOCAL oBranch AS CdxBranchePage 
+            LOCAL buffer AS BYTE[]
+            LOCAL last AS Int32
+            buffer := _bag:AllocBuffer()
+            oBranch := CdxBranchePage{_bag, -1, buffer, _keySize}
+            last  := Math.Min(nodes:Count - nOffSet, oBranch:MaxKeys)
+            FOR VAR i := 0 TO last -1
+                oBranch:Add( nodes[nOffset+i] )
+            NEXT
+            RETURN oBranch
+
+
+
+        PRIVATE METHOD _newLeafPage() AS CdxLeafPage
+            LOCAL oLeaf AS CdxLeafPage
+            LOCAL buffer AS BYTE[]
+            buffer := _bag:AllocBuffer()
+            oLeaf := CdxLeafPage{_bag, -1, buffer, _keySize}
+            oLeaf:Initialize(_keySize)
+            oLeaf:Right  := NULL
+            oLeaf:Left   := _currentLeaf
+            IF _currentLeaf != NULL
+                _currentLeaf:Right  := oLeaf
+            ENDIF
+            _currentLeaf := oLeaf
+            RETURN oLeaf
+ 
+        PRIVATE METHOD _placeItem(lpNode AS CdxNode ) AS LOGIC
+            // place item on current leaf node.
+            // When Leafnode is full then allocate a new leaf node
+            LOCAL oLeaf AS CdxLeafPage
+            oLeaf := _currentLeaf
+            IF oLeaf == NULL // should not happen !
+                oLeaf  := SELF:_newLeafPage()
+            ENDIF
+            IF ! oLeaf:Add(lpNode)
+                // this means that it did not fit
+                oLeaf := SELF:_newLeafPage()
+                IF ! oLeaf:Add(lpNode)
+                    // Exception, this should not happen
+                    RETURN FALSE
                 ENDIF
             ENDIF
-            */
+            RETURN TRUE            
+            
         PUBLIC METHOD Truncate() AS LOGIC
-//            SELF:_rootPage := CDXPAGE_SIZE
-//            SELF:_nextUnusedPageOffset := 0
-//            SELF:_Hot := TRUE
-//            SELF:ClearStack()
-//            SELF:_currentRecno := 0
-//            FChSize( SELF:_hFile, CDXPAGE_SIZE )
-//            SELF:_fileSize := CDXPAGE_SIZE
-//            SELF:Flush()
+            // Find all pages of the tag and delete them
+            // then also delete the tag header and return everything to the OrderBag 
             RETURN TRUE
             
     END CLASS

@@ -10,16 +10,17 @@ USING System.Collections
 USING System.Text
 USING XSharp.Rdd.Support
 USING XSharp.RDD.Enums
+USING XSharp.RDD
 BEGIN NAMESPACE XSharp.RDD.CDX
 
             
     INTERNAL CLASS CdxSortCompare IMPLEMENTS IComparer
-        PROTECTED _sortInfo AS DBSORTINFO
-        PROTECTED _oRdd AS DBFNTX
+        PROTECTED _sortInfo AS DbSortInfo
+        PROTECTED _oRdd AS DBF
         
-        INTERNAL CONSTRUCTOR( rdd AS DBFNTX , info AS DBSORTINFO )
+        INTERNAL CONSTRUCTOR( rdd AS DBF , helper AS RddSortHelper)
             SELF:_oRdd := rdd
-            SELF:_sortInfo := info
+            SELF:_sortInfo := helper:SortInfo
 
         PROTECTED VIRTUAL METHOD XCompare(x AS SortRecord , y AS SortRecord) AS LONG
             RETURN 0
@@ -30,8 +31,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     
     INTERNAL CLASS CdxSortCompareDefault INHERIT CdxSortCompare 
         
-        INTERNAL CONSTRUCTOR( rdd AS DBFNTX , info AS DBSORTINFO )
-            SUPER(rdd, info)
+        INTERNAL CONSTRUCTOR( rdd AS DBF , helper AS RddSortHelper )
+            SUPER(rdd, helper)
             
             
         PROTECTED OVERRIDE METHOD XCompare(x AS SortRecord , y AS SortRecord) AS LONG
@@ -62,8 +63,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     INTERNAL CLASS CdxSortCompareAscii INHERIT CdxSortCompare 
         
-        INTERNAL CONSTRUCTOR( rdd AS DBFNTX , info AS DBSORTINFO )
-            SUPER(rdd, info)
+        INTERNAL CONSTRUCTOR( rdd AS DBF , helper AS RddSortHelper)
+            SUPER(rdd, helper)
              
             
         PROTECTED OVERRIDE METHOD XCompare(x AS SortRecord , y AS SortRecord) AS LONG

@@ -5,7 +5,7 @@
 //
 USING XSharp.RDD.Support
 USING XSharp.RDD.NTX
-
+USING XSharp.RDD.Enums
 
 BEGIN NAMESPACE XSharp.RDD
 	/// <summary>DBFNTX RDD. For DBF/DBT/NTX.</summary>
@@ -132,7 +132,7 @@ BEGIN NAMESPACE XSharp.RDD
 				ENDIF
 			CASE DBOI_NAME
 				IF workOrder != NULL
-					info:Result := workOrder:_orderName
+					info:Result := workOrder:OrderName
                 ELSE
                     info:Result := ""
 				ENDIF
@@ -144,43 +144,43 @@ BEGIN NAMESPACE XSharp.RDD
 				ENDIF
 			CASE DBOI_ISDESC
 				IF workOrder != NULL
-					info:Result := workOrder:_Descending
+					info:Result := workOrder:Descending
                 ELSE
                     info:Result := FALSE
 				ENDIF
 			CASE DBOI_ISCOND
 				IF workOrder != NULL
-					info:Result := workOrder:_Conditional
+					info:Result := workOrder:Conditional
                 ELSE
                     info:Result := FALSE
 				ENDIF
 			CASE DBOI_KEYTYPE
 				IF workOrder != NULL
-					info:Result := workOrder:_KeyExprType
+					info:Result := workOrder:KeyExprType
                 ELSE
                     info:Result := 0
 				ENDIF
 			CASE DBOI_KEYSIZE
 				IF workOrder != NULL
-					info:Result := workOrder:_keySize
+					info:Result := workOrder:KeyLength
                 ELSE
                     info:Result := 0
 				ENDIF
 			CASE DBOI_KEYDEC
 				IF workOrder != NULL
-					info:Result := workOrder:_keyDecimals
+					info:Result := workOrder:KeyDecimals
                 ELSE
                     info:Result := 0
 				ENDIF
 			CASE DBOI_HPLOCKING
 				IF workOrder != NULL
-					info:Result := workOrder:_HPLocking
+					info:Result := workOrder:HPLocking
                 ELSE
                     info:Result := FALSE
 				ENDIF
 			CASE DBOI_UNIQUE
 				IF workOrder != NULL
-					info:Result := workOrder:_Unique
+					info:Result := workOrder:Unique
                 ELSE
                     info:Result := FALSE
 				ENDIF
@@ -192,13 +192,13 @@ BEGIN NAMESPACE XSharp.RDD
 				ENDIF
 			CASE DBOI_SETCODEBLOCK
 				IF workOrder != NULL
-					info:Result := workOrder:_KeyCodeBlock
+					info:Result := workOrder:KeyCodeBlock
 				ENDIF
 			CASE DBOI_KEYVAL
 				IF workOrder != NULL
 					isOk := TRUE
 					TRY
-						info:Result := SELF:EvalBlock(workOrder:_KeyCodeBlock)
+						info:Result := SELF:EvalBlock(workOrder:KeyCodeBlock)
 					CATCH
 						isOk := FALSE
 					END TRY
@@ -208,33 +208,21 @@ BEGIN NAMESPACE XSharp.RDD
                 ELSE
                     info:Result := NULL
 				ENDIF
-			CASE DBOI_SCOPETOP
-				IF workOrder != NULL
-					IF info:Result != NULL
-						workOrder:SetOrderScope(info:Result, XSharp.RDD.Enums.DbOrder_Info.DBOI_SCOPETOP)
-					ENDIF
-					info:Result := workOrder:_topScope
-                ELSE
-                    info:Result := NULL
-				ENDIF
-			CASE DBOI_SCOPEBOTTOM
-				IF workOrder != NULL
-					IF info:Result != NULL
-						workOrder:SetOrderScope(info:Result, XSharp.RDD.Enums.DbOrder_Info.DBOI_SCOPEBOTTOM)
-					ENDIF
-					info:Result := workOrder:_bottomScope
-                ELSE
-                    info:Result := NULL
-				ENDIF
 			CASE DBOI_SCOPETOPCLEAR
-				IF workOrder != NULL
-					workOrder:_hasTopScope := FALSE
-					workOrder:_topScope := NULL
-				ENDIF
 			CASE DBOI_SCOPEBOTTOMCLEAR
+			CASE DBOI_SCOPETOP
+            CASE DBOI_SCOPEBOTTOM
 				IF workOrder != NULL
-					workOrder:_hasBottomScope := FALSE
-					workOrder:_bottomScope := NULL
+					IF info:Result != NULL
+						workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
+					ENDIF
+                    IF nOrdinal == DBOI_SCOPETOP
+					    info:Result := workOrder:TopScope
+                    ELSEIF nOrdinal == DBOI_SCOPEBOTTOM
+                        info:Result := workOrder:BottomScope
+                    ENDIF
+                ELSE
+                    info:Result := NULL
 				ENDIF
             CASE DBOI_USER + 42
                 // Dump Ntx to Txt file

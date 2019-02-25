@@ -29,9 +29,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Dumped AS LOGIC GET _dumped SET _dumped := VALUE
         INTERNAL PROPERTY IsHot  AS LOGIC GET _hot SET _hot := VALUE
         INTERNAL PROPERTY Tag    AS CDXTag GET _tag SET _tag := VALUE
-        INTERNAL VIRTUAL PROPERTY KeyLength AS WORD GET (WORD) IIF(_tag == NULL, 0, _tag:_keySize)
+        INTERNAL VIRTUAL PROPERTY KeyLength AS WORD GET (WORD) IIF(_tag == NULL, 0, _tag:KeyLength)
         PROPERTY Buffer AS BYTE[] GET _buffer
-        PROPERTY PageNo AS Int32 GET _nPage
+        PROPERTY PageNo AS Int32 GET _nPage SET _nPage := VALUE
 
         PROTECTED INTERNAL CONSTRUCTOR( bag AS CdxOrderBag )
 			SELF:_bag    := bag
@@ -253,7 +253,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 		INTERNAL CONST CDXPAGE_SIZE        := 512 AS WORD
 
-        VIRTUAL METHOD Dump AS STRING
+        INTERNAL VIRTUAL METHOD Dump AS STRING
             RETURN String.Empty
 
        

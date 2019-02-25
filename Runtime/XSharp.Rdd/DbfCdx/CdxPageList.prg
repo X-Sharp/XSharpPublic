@@ -89,7 +89,7 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             ENDIF
             RETURN page
             
-      INTERNAL METHOD Add( page AS CdxPage ) AS void
+      INTERNAL METHOD Add( page AS CdxPage ) AS VOID
             SELF:SetPage(page:PageNo, page)
             RETURN 
             

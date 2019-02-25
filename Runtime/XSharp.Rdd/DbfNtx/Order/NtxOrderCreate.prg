@@ -85,7 +85,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_Hot := TRUE
             SELF:_TopStack := 0
             SELF:_Unique := createInfo:Unique
-            SELF:_Ansi := SELF:_oRdd:_Ansi
             SELF:_Conditional := FALSE
             SELF:_Descending := FALSE
             SELF:_writeLocks := 0
@@ -267,7 +266,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             // IF record is EOF then do nothing
             IF !SELF:_oRdd:_isValid .AND. !SELF:_oRdd:_Eof
                 SELF:_oRdd:__Goto(start)
-                SELF:_TopStack := 0
+                SELF:ClearStack()
                 RETURN FALSE
             ENDIF
             IF ordCondInfo:WhileBlock != NULL
@@ -332,7 +331,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDDO
 
             SELF:_oRdd:__Goto(start)
-            SELF:_TopStack := 0
+            SELF:ClearStack()
             SELF:Flush()
             RETURN TRUE
         PRIVATE METHOD _CreateEmpty() AS LOGIC
@@ -358,7 +357,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL result AS LOGIC
             LOCAL ic AS NtxSortCompare
             LOCAL lAscii AS LOGIC
-            
             
             fType := 0
             sourceIndex := 0
@@ -478,7 +476,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         SELF:_oRdd:GoTo(SELF:_RecNo + 1)
                     UNTIL ! SELF:_oRdd:_isValid
                 ENDIF
-                SELF:_TopStack := 0
+                SELF:ClearStack()
             ENDIF
             SELF:Flush()
             RETURN Ok

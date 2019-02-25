@@ -27,88 +27,95 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE CONST STACK_DEPTH       := 20 AS LONG
         #endregion
         #region fields
-        INTERNAL _Encoding AS Encoding
-        INTERNAL _Hot AS LOGIC
-        INTERNAL _Conditional AS LOGIC
-        INTERNAL _Descending AS LOGIC
-        INTERNAL _Unique AS LOGIC
-        INTERNAL _Custom AS LOGIC
+        PRIVATE _Encoding AS Encoding
+        PRIVATE _Hot AS LOGIC
+        PRIVATE _Conditional AS LOGIC
+        PRIVATE _Descending AS LOGIC
+        PRIVATE _Unique AS LOGIC
+        PRIVATE _Custom AS LOGIC
         //INTERNAL _Partial AS LOGIC
-        INTERNAL _SingleField AS LONG
-        INTERNAL _SourceIndex AS LONG
-        INTERNAL _KeyCodeBlock AS ICodeblock
-        INTERNAL _ForCodeBlock AS ICodeblock
-        INTERNAL _KeyExpr AS STRING
-        INTERNAL _ForExpr AS STRING
-        INTERNAL _currentRecno AS LONG
-        INTERNAL _newKeyBuffer AS BYTE[]
-        INTERNAL _newKeyLen AS LONG
-        INTERNAL _version AS DWORD
-        INTERNAL _KeyExprType AS LONG
-        INTERNAL _keySize AS WORD
-        INTERNAL _rootPage AS LONG
+        PRIVATE _SingleField AS LONG            // 0 based FieldIndex
+        PRIVATE _SourceIndex AS LONG
+        PRIVATE _KeyCodeBlock AS ICodeblock
+        PRIVATE _ForCodeBlock AS ICodeblock
+        PRIVATE _KeyExpr AS STRING
+        PRIVATE _ForExpr AS STRING
+        PRIVATE _currentRecno AS LONG
+        PRIVATE _newKeyBuffer AS BYTE[]
+        PRIVATE _newKeyLen AS LONG
+        PRIVATE _version AS DWORD
+        PRIVATE _KeyExprType AS LONG
+        PRIVATE _keySize AS WORD
+        PRIVATE _rootPage AS LONG
         //INTERNAL _tagNumber AS INT
         INTERNAL _orderName AS STRING
         INTERNAL _Ansi AS LOGIC
         // Scopes
-        INTERNAL _hasTopScope AS LOGIC
-        INTERNAL _hasBottomScope AS LOGIC
-        INTERNAL _topScopeBuffer AS BYTE[]
-        INTERNAL _bottomScopeBuffer AS BYTE[]
-        INTERNAL _topScope AS OBJECT
-        INTERNAL _bottomScope AS OBJECT
-        INTERNAL _topScopeSize AS LONG
-        INTERNAL _bottomScopeSize AS LONG
+        PRIVATE _topScopeBuffer AS BYTE[]
+        PRIVATE _bottomScopeBuffer AS BYTE[]
+        PRIVATE _topScope AS OBJECT
+        PRIVATE _bottomScope AS OBJECT
+        PRIVATE _topScopeSize AS LONG
+        PRIVATE _bottomScopeSize AS LONG
         // siblings
-        INTERNAL _oRdd   AS DbfCdx
-        INTERNAL _Header AS CdxTagHeader
+        PRIVATE _oRdd   AS DbfCdx
+        PRIVATE _Header AS CdxTagHeader
 
-        PRIVATE _stack AS RddStack[]
-        PRIVATE _topStack AS LONG
-        PRIVATE _oneItem AS CdxNode
-        PRIVATE _midItem AS CdxNode
-        PRIVATE _compareFunc AS CompareFunc
+        PRIVATE _stack          AS RddStack[]
+        PRIVATE _topStack       AS LONG
+        PRIVATE _oneItem        AS CdxNode
+        PRIVATE _midItem        AS CdxNode
+        PRIVATE _compareFunc    AS CompareFunc
         PRIVATE _currentNode    AS CdxNode
 
-        PRIVATE _bag    AS CdxOrderBag
-        PRIVATE getKeyValue AS ValueBlock       // Delegate to calculate the key
+        PRIVATE _bag            AS CdxOrderBag
+        PRIVATE getKeyValue     AS ValueBlock       // Delegate to calculate the key
+
+        PRIVATE _maxKeysPerPage AS WORD
+
 #endregion
 
 #region Properties
         INTERNAL PROPERTY Expression AS STRING GET _KeyExpr
         
-        INTERNAL PROPERTY Condition AS STRING GET _ForExpr
-        INTERNAL PROPERTY OrderName AS STRING GET _orderName
-	    INTERNAL PROPERTY Shared 	 AS LOGIC GET _bag:Shared
-        INTERNAL PROPERTY _Recno 	 AS LONG GET _oRDD:Recno
-        INTERNAL PROPERTY FileName 	 AS STRING GET _bag:FullPath
-        INTERNAL PROPERTY OrderBag       AS CdxOrderBag GET SELF:_bag
-        INTERNAL PROPERTY Page           AS Int32 AUTO
-        INTERNAL PROPERTY Descending     AS LOGIC GET _Descending
-        INTERNAL PROPERTY IsConditional  AS LOGIC GET Options:HasFlag(CdxOptions.HasFor)
-        INTERNAL PROPERTY IsHot          AS LOGIC GET _Hot
-        PROPERTY KeyType        	AS INT GET SELF:_KeyExprType
-        PROPERTY KeyLength          AS WORD GET SELF:_keySize
-        PROPERTY Partial        	AS LOGIC GET SELF:Custom
-        PROPERTY Conditional        AS LOGIC GET !String.IsNullOrEmpty(_ForExpr)
-        PROPERTY Custom         	AS LOGIC GET Options:HasFlag(CdxOptions.Custom)
-        PROPERTY Unique         	AS LOGIC GET Options:HasFlag(CdxOptions.Unique)
-        PROPERTY Signature      	AS BYTE AUTO
-        PROPERTY FieldIndex     	AS INT AUTO             // 1 based FieldIndex
-        PROPERTY Options        	AS CdxOptions AUTO
-        PROPERTY LockOffSet     	AS LONG AUTO
-        PROPERTY CurrentStack       AS RddStack GET  SELF:_stack[SELF:_topStack]
+        INTERNAL PROPERTY Condition         AS STRING GET _ForExpr
+        INTERNAL PROPERTY OrderName         AS STRING GET _orderName
+	    INTERNAL PROPERTY Shared 	        AS LOGIC GET _bag:Shared
+        INTERNAL PROPERTY _Recno 	        AS LONG GET _oRDD:Recno
+        INTERNAL PROPERTY FileName 	        AS STRING GET _bag:FullPath
+        INTERNAL PROPERTY OrderBag          AS CdxOrderBag GET SELF:_bag
+        INTERNAL PROPERTY Page              AS Int32 AUTO
+        INTERNAL PROPERTY Descending        AS LOGIC GET _Descending
+        INTERNAL PROPERTY IsConditional     AS LOGIC GET Options:HasFlag(CdxOptions.HasFor)
+        INTERNAL PROPERTY IsHot             AS LOGIC GET _Hot
+        INTERNAL PROPERTY Header            AS CdxTagHeader GET _Header
+        INTERNAL PROPERTY KeyType        	AS INT GET SELF:_KeyExprType
+        INTERNAL PROPERTY KeyCodeBlock      AS ICodeBlock GET _KeyCodeBlock
+        INTERNAL PROPERTY KeyLength         AS WORD GET SELF:_keySize
+        INTERNAL PROPERTY Partial        	AS LOGIC GET SELF:Custom
+        INTERNAL PROPERTY Conditional       AS LOGIC GET !String.IsNullOrEmpty(_ForExpr)
+        INTERNAL PROPERTY Custom         	AS LOGIC GET Options:HasFlag(CdxOptions.Custom)
+        INTERNAL PROPERTY Unique         	AS LOGIC GET Options:HasFlag(CdxOptions.Unique)
+        INTERNAL PROPERTY Signature      	AS BYTE AUTO
+        INTERNAL PROPERTY Options        	AS CdxOptions AUTO
+        INTERNAL PROPERTY LockOffSet     	AS LONG AUTO
+        INTERNAL PROPERTY CurrentStack      AS RddStack GET  SELF:_stack[SELF:_topStack]
+
+        INTERNAL PROPERTY MaxKeysPerPage    AS WORD GET _maxKeysPerPage
+
+        // Scopes
+        INTERNAL PROPERTY TopScope          AS OBJECT GET _topScope SET _topScope := VALUE
+        INTERNAL PROPERTY BottomScope       AS OBJECT GET _bottomScope SET _bottomScope := VALUE
+        INTERNAL PROPERTY HasTopScope       AS LOGIC GET _topScope != NULL
+        INTERNAL PROPERTY HasBottomScope    AS LOGIC GET _bottomScope != NULL
 #endregion
 
 
-        INTERNAL CONSTRUCTOR (oBag AS CdxOrderBag, nPage AS Int32, cName AS STRING)
-	    SUPER()
+        PRIVATE METHOD _InitFields(oBag AS CdxOrderBag) AS VOID
             LOCAL i AS LONG
-
             SELF:_newKeyBuffer  := BYTE[]{ MAX_KEY_LEN+1 }
-            SELF:_bag := oBag
-            SELF:_oRDD := oBag:_oRDD
-            SELF:_orderName := cName
+            SELF:_bag           := oBag
+            SELF:_oRDD          := oBag:_oRDD
             SELF:_stack         := RddStack[]{ STACK_DEPTH }
             SELF:_Encoding      := _oRDD:_Encoding
             SELF:_Ansi          := _oRDD:_Ansi
@@ -116,9 +123,21 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             FOR i := 0 TO STACK_DEPTH - 1 
                 SELF:_stack[i] := RddStack{}
             NEXT
+            SELF:_SingleField   := -1
+
+        // Constructor for Creation of tags
+        INTERNAL CONSTRUCTOR (oBag AS CdxOrderBag)
+	        SUPER()
+            _InitFields(oBag)
+
+
+
+        // Constructor for Opening of tags
+        INTERNAL CONSTRUCTOR (oBag AS CdxOrderBag, nPage AS Int32, cName AS STRING)
+	    SUPER()
+            _InitFields(oBag)
+            SELF:_orderName := cName
             SELF:Page := nPage
-            SELF:FieldIndex  := 0
-            SELF:_SingleField := -1
             SELF:_Header := CdxTagHeader{oBag, nPage,SELF:OrderName}
             SELF:_Bag:SetPage(SELF:_Header)
             SELF:Open()
@@ -203,6 +222,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 isOk := SELF:_determineSize(oKey)
             ENDIF
             SELF:_newKeyBuffer  := BYTE[]{_keySize+1 }
+            SELF:_maxKeysPerPage    := CdxBranchePage.MaxKeysPerPage(_keySize)
             IF ! isOk
                 RETURN FALSE
             ENDIF
@@ -389,19 +409,25 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             uiRealLen := 0
             result := TRUE
             SWITCH uiScope
+            CASE DBOrder_Info.DBOI_SCOPETOPCLEAR
+                SELF:_topScope       := NULL
+                SELF:_topScopeBuffer := NULL
+                SELF:_topScopeSize   := 0
+            CASE DBOrder_Info.DBOI_SCOPEBOTTOMCLEAR
+                SELF:_bottomScope       := NULL
+                SELF:_bottomScopeBuffer := NULL
+                SELF:_bottomScopeSize   := 0
             CASE DBOrder_Info.DBOI_SCOPETOP
                 SELF:_topScope      := itmScope
-                SELF:_hasTopScope   := (itmScope != NULL)
                 IF itmScope != NULL
-                    SELF:_topScopeBuffer := BYTE[]{ MAX_KEY_LEN+1 }
+                    SELF:_topScopeBuffer := BYTE[]{ SELF:_keySize+1 }
                     SELF:_ToString(itmScope, SELF:_keySize,  SELF:_topScopeBuffer, REF uiRealLen)
                     SELF:_topScopeSize := uiRealLen
                 ENDIF
             CASE DBOrder_Info.DBOI_SCOPEBOTTOM
                 SELF:_bottomScope    := itmScope
-                SELF:_hasBottomScope := (itmScope != NULL)
                 IF itmScope != NULL
-                    SELF:_bottomScopeBuffer := BYTE[]{ MAX_KEY_LEN+1 }
+                    SELF:_bottomScopeBuffer := BYTE[]{ SELF:_keySize+1 }
                     SELF:_ToString(itmScope, SELF:_keySize, SELF:_bottomScopeBuffer, REF uiRealLen)
                     SELF:_bottomScopeSize := uiRealLen
                 ENDIF
@@ -426,7 +452,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN FALSE
                 ENDIF
             ENDIF
-            IF SELF:_hasTopScope .OR. SELF:_hasBottomScope
+            IF SELF:HasTopScope .OR. SELF:HasBottomScope
                 SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPEBOTTOM)
                 records := SELF:_getScopePos()
             ELSE
@@ -493,7 +519,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:_topStack == 0
                 SELF:_GoToRecno(recno)
             ENDIF
-            IF SELF:_hasTopScope .OR. SELF:_hasBottomScope
+            IF SELF:HasTopScope .OR. SELF:HasBottomScope
                 record := SELF:_getScopePos()
             ELSE
                 IF XSharp.RuntimeState.Deleted .OR. SELF:_oRdd:_FilterInfo:Active

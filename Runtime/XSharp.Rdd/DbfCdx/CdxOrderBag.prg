@@ -44,6 +44,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Name AS STRING GET Path.GetFileNameWithoutExtension(FullPath)
         INTERNAL PROPERTY Handle AS IntPtr GET _hFile
         INTERNAL PROPERTY Tags AS IList<CdxTag> GET _tags
+        INTERNAL PROPERTY Structural AS LOGIC AUTO
         INTERNAL CONSTRUCTOR(oRDD AS DBFCDX )
             SUPER( oRdd )
             SELF:_oRdd     := oRDD
@@ -55,7 +56,28 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             THROW NotImplementedException{}
             /// <inheritdoc />
         METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
-            RETURN TRUE
+            LOCAL cTag AS STRING
+            IF info:Order IS STRING
+                cTag := (STRING) info:Order
+            ELSE
+                cTag := Path.GetFileNameWithoutExtension(info:BagName)
+                info:Order := cTag
+            ENDIF
+            IF String.IsNullOrEmpty(cTag)
+                // Exception ?
+                RETURN FALSE 
+            ENDIF
+            VAR oTag := SELF:_FindTagByName(cTag)
+            IF oTag != NULL_OBJECT
+                // Delete Tag, Free its pages and add them to the free page list
+            ENDIF
+            oTag := CdxTag{SELF}
+            VAR lOk := oTag:Create(info)
+            IF lOk
+                SELF:_tags:Add(oTag)
+                SELF:_tagList:Add(oTag)
+            ENDIF
+            RETURN lOk
 
 
             /// <inheritdoc />
@@ -88,7 +110,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         #endregion
 
         #region Open and Close etc
-        METHOD Create(cBagName AS STRING) AS LOGIC
+        METHOD CreateBag(cBagName AS STRING) AS LOGIC
             LOCAL cPath     AS STRING
             LOCAL cFullName AS STRING
 
@@ -114,10 +136,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // taglist page
             VAR page := SELF:GetPage(_root:RootPage, _root:KeyLength, NULL)
             _tagList := CdxTagList{SELF,  page}
-            _tagList:Initialize(10, 0)
+            _tagList:Initialize(10)
             SELF:Write(_tagList)
+            _tags := List<CdxTag>{}
             // we now have a 
             RETURN TRUE
+
+        METHOD _FindTagByName(cName AS STRING) AS CdxTag
+            FOREACH oTag AS CdxTag IN _tags
+                IF String.Compare(oTag:OrderName, cName,StringComparison.OrdinalIgnoreCase) == 0
+                    RETURN oTag
+                ENDIF
+            NEXT
+            RETURN NULL
+
 
         METHOD Close() AS LOGIC
             FOREACH oTag AS CdxTag IN _tags
@@ -157,9 +189,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FALSE
             ENDIF
             _root := CdxFileHeader{SELF}
+            _root:Read()
             SELF:SetPage(_root)
-            LOCAL nTagList AS Int32
-            nTagList := SELF:_root:RootPage
+            VAR nTagList := SELF:_root:RootPage
             VAR page     := SELF:GetPage(nTagList, _root:KeyLength, NULL)
             _tagList := CdxTagList{SELF,  page}
             SELF:SetPage(_tagList)
@@ -209,30 +241,31 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             RETURN lOk
 
+        METHOD FindFreePage() AS LONG
+            // Todo: Return page from list of free pages
+            RETURN FSeek3( SELF:_hFile, 0, SeekOrigin.End )
+
         METHOD AllocBuffer(nSize := 1 AS LONG)  AS BYTE[]
             RETURN BYTE[]{CDXPAGE_SIZE *nSize}
 
         METHOD Read(nPage AS LONG, buffer AS BYTE[]) AS LOGIC
             LOCAL isOk AS LOGIC
-			// Move to top
 			FSeek3( SELF:_hFile, nPage, SeekOrigin.Begin )
-			// Write Buffer
-			isOk :=  FRead3(SELF:_hFile, buffer, CDXPAGE_SIZE) == CDXPAGE_SIZE 
+			isOk :=  FRead3(SELF:_hFile, buffer, (DWORD) Buffer:Length) == (DWORD) Buffer:Length 
             RETURN IsOk
  
         METHOD Read(oPage AS CdxPage) AS LOGIC
             LOCAL isOk AS LOGIC
-			// Move to top
 			FSeek3( SELF:_hFile, oPage:PageNo, SeekOrigin.Begin )
-			// Write Buffer
 			isOk :=  FRead3(SELF:_hFile, oPage:Buffer, (DWORD) oPage:Buffer:Length) == (DWORD) oPage:Buffer:Length 
             RETURN IsOk
 
         METHOD Write(oPage AS CdxPage) AS LOGIC
             LOCAL isOk AS LOGIC
-			// Move to top
-			FSeek3( SELF:_hFile, oPage:PageNo, SeekOrigin.Begin )
-			// Write Buffer
+            IF oPage:PageNo == -1
+                oPage:PageNo := SELF:FindFreePage()
+            ENDIF
+            FSeek3( SELF:_hFile, oPage:PageNo, SeekOrigin.Begin )
 			isOk :=  FWrite3(SELF:_hFile, oPage:Buffer, (DWORD) oPage:Buffer:Length) == (DWORD) oPage:Buffer:Length
             RETURN IsOk
 

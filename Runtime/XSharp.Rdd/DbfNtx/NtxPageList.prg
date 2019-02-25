@@ -28,7 +28,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
         PRIVATE METHOD _DumpPage(page AS NtxPage) AS VOID
             IF _hDump != IntPtr.Zero .AND. ! page:Dumped
-                FWrite(_hDump, page:Dump(SELF:_Order:_KeySize))
+                FWrite(_hDump, page:Dump(SELF:_Order:KeyLength))
                 page:Dumped := TRUE
             ENDIF
             RETURN

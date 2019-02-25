@@ -369,7 +369,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             oLeaf := _currentLeaf
             IF ! oLeaf:Add(record:Recno, record:Data)
                 // this means that it did not fit
-                oLeaf := SELF:_newLeafPage()
+                oLeaf:Right := SELF:_newLeafPage()
+                oLeaf:Write()
+                oLeaf :=oLeaf:Right
                 IF ! oLeaf:Add(record:Recno, record:Data)
                     // Exception, this should not happen
                     RETURN FALSE
@@ -449,10 +451,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL last AS Int32
             buffer := _bag:AllocBuffer()
             oBranch := CdxBranchePage{_bag, -1, buffer, _keySize}
+            oBranch:Tag := SELF
+            oBranch:Initialize()
+            oBranch:Write()
+            SELF:Header:RootPage := oBranch:PageNo
+            SELF:Header:Write()
             last  := Math.Min(nodes:Count - nOffSet, oBranch:MaxKeys)
             FOR VAR i := 0 TO last -1
-                oBranch:Add( nodes[nOffset+i] )
+                oBranch:Add(nodes[nOffset+i])
             NEXT
+            oBranch:PageType := CdxPageType.Root
+            oBranch:Write()
             RETURN oBranch
 
 
@@ -470,6 +479,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             _currentLeaf := oLeaf
             oLeaf:Tag := SELF
+            oLeaf:Write()
             RETURN oLeaf
  
         PUBLIC METHOD Truncate() AS LOGIC

@@ -49,7 +49,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_maxKeys := MaxKeysPerPage(nKeyLen)
             
             //? "Branch Page", SELF:PageNo:ToString("X"), SELF:NumKeys, "Startswith ", GetRecno(0), _bag:_oRDD:_Encoding:GetString(GetKey(0),0,_keyLen)
-            
+           INTERNAL VIRTUAL METHOD Initialize() AS VOID
+            SELF:PageType   := CdxPageType.Branch
+            SELF:NumKeys    := 0
+            SELF:LeftPtr    := SELF:RightPtr   := -1
+            RETURN   
             #region ICdxKeyValue
         PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
             LOCAL nStart AS INT
@@ -126,14 +130,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         
         
         INTERNAL METHOD Add(node AS CdxPageNode) AS LOGIC
-            LOCAL nPos := SELF:NumKeys AS WORD
-            IF nPos >= SELF:MaxKeys
+            IF SELF:NumKeys >= SELF:MaxKeys
                 RETURN FALSE
             ENDIF
+            LOCAL nPos := SELF:NumKeys AS WORD
+            SELF:NumKeys++
             // node contains recno & keydata
             // node:Page has value for ChildPageNo
             SELF:_setNode(nPos, node)
-            SELF:NumKeys += 1
             RETURN TRUE
             
         INTERNAL METHOD Insert(nPos AS LONG, node AS CdxPageNode) AS LOGIC
@@ -177,7 +181,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:SetKey(nTrg, SELF:GetKey(nSrc))
             RETURN 
             
-        PRIVATE METHOD _setNode(nPos AS LONG, node AS CdxPageNode) AS VOID
+        INTERNAL METHOD _setNode(nPos AS LONG, node AS CdxPageNode) AS VOID
             SELF:SetRecno(nPos, node:Recno)
             SELF:SetChildPage(nPos, node:Page:PageNo)
             SELF:SetKey(nPos, node:KeyBytes)

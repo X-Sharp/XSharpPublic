@@ -95,7 +95,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN
 
         INTERNAL VIRTUAL METHOD Initialize(keyLength AS WORD) AS VOID
-            SELF:PageType   := CdxPageType.TagList
+            SELF:PageType   := CdxPageType.Leaf
             SELF:NumKeys    := 0
             SELF:LeftPtr    := SELF:RightPtr   := -1
             SELF:Freespace  := CDXLEAF_BYTESFREE
@@ -298,7 +298,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FALSE
             ENDIF
             MemCopy(data, _prevData, _KeyLen)
-            LOCAL nStart := CDXLEAF_HEADERLEN + SELF:Freespace - nBytesToCopy AS INT
+            LOCAL nHeaderLen := CDXLEAF_HEADERLEN + SELF:NumKeys * SELF:DataBytes AS INT
+            LOCAL nStart := nHeaderLen + SELF:Freespace - nBytesToCopy  AS INT
             SELF:_placeRecno(SELF:NumKeys, recno, SELF:_makeDupTrail(nDupCount, nTrailCount))
             MemCopy(data, nDupCount, buffer, nStart,  nBytesToCopy)
             SELF:Freespace := (WORD) (SELF:Freespace -  nBytesToCopy - SELF:DataBytes)
@@ -364,9 +365,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
        PRIVATE METHOD _placeRecno(nIndex AS INT, recno AS LONG, dupLen AS WORD) AS VOID
             LOCAL nOffset AS LONG
+            LOCAL nValue := LongStruct{} AS LongStruct
             nOffSet     := CDXLEAF_HEADERLEN + nIndex * SELF:DataBytes
-            MemSet(_buffer, nOffSet, SELF:DataBytes, 0)
-            _SetLong(nOffset, recno)
+            nValue:LongValue := recno
+	        buffer[nOffSet]   :=  nValue:b1
+            buffer[nOffSet+1] :=  nValue:b2  
+            buffer[nOffSet+2] :=  nValue:b3
+            IF SELF:DataBytes > 3
+               buffer[nOffSet+3] :=  nValue:b4
+            ENDIF
             nOffSet := nOffSet + SELF:DataBytes - 2
             LOCAL wValue := _GetWord(nOffSet) AS WORD
             wValue |= dupLen

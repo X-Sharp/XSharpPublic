@@ -59,7 +59,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:TagName    := cTagName
 #region Read/Write            
 
-         METHOD Dump(sIntro AS STRING) AS STRING
+         INTERNAL METHOD Dump(sIntro AS STRING) AS STRING
             LOCAL oSb AS stringBuilder
             osb := stringBuilder{}
             oSb:AppendLine(sIntro)
@@ -153,6 +153,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		PRIVATE CONST CDXTAGHEADER_KEYEXPRPOS     := 0x1fc	AS WORD		// Offset of Key expression
 		PRIVATE CONST CDXTAGHEADER_KEYEXPRLEN     := 0x1fe	AS WORD		// Length of key expression incl zero terminator
 #endregion			
+
 
 		
 	END CLASS

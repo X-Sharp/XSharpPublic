@@ -37,8 +37,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN _tags
         PROPERTY Tags AS IList<cdxTag> GET _tags
 
-        INTERNAL OVERRIDE METHOD Initialize(keyLength AS INT, numRecs AS INT) AS VOID
-            SUPER:Initialize(keyLength, numRecs)
+        INTERNAL OVERRIDE METHOD Initialize(keyLength AS WORD) AS VOID
+            SUPER:Initialize(keyLength)
+            _tags := List<CdxTag>{}
             SELF:PageType := CdxPageType.TagList
+
+
+        METHOD Add(oTag AS CdxTag) AS LOGIC
+            SELF:NumKeys += 1
+            SELF:SetRecno (SELF:NumKeys-1, oTag:header:PageNo)
+            VAR buffer := BYTE[]{oTag:OrderName:Length}
+            _SetString(buffer, 0, buffer:Length, oTag:OrderName)
+            SELF:SetKey(SELF:NumKeys-1, buffer)
+            SELF:Write()
+            RETURN TRUE
     END CLASS
 END NAMESPACE 

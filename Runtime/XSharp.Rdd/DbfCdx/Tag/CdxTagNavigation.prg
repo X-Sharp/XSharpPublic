@@ -19,7 +19,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
             locked := FALSE
             TRY
-                IF SELF:_hasBottomScope
+                IF SELF:HasBottomScope
                     result := SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPEBOTTOM)
                 ELSE
                     SELF:_oRdd:GoCold()
@@ -54,7 +54,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             TRY
                 SELF:_oRdd:GoCold()
                 
-                IF SELF:_hasTopScope
+                IF SELF:HasTopScope
                     result := SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
                     IF !SELF:_oRdd:_Found
                         SELF:_oRdd:_Bof := TRUE
@@ -96,7 +96,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_oRdd:_dbfError( SubCodes.ERDD_VAR_TYPE, GenCode.EG_DATATYPE,SELF:fileName)
                 RETURN FALSE
             ENDIF
-            IF SELF:_hasTopScope
+            IF SELF:HasTopScope
                 IF SELF:_compareFunc(byteArray, SELF:_topScopeBuffer, SELF:_keySize) < 0
                     IF seekInfo:SoftSeek
                         RETURN SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
@@ -104,7 +104,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN SELF:_oRdd:__Goto(0)
                 ENDIF
             ENDIF
-            IF SELF:_hasBottomScope
+            IF SELF:HasBottomScope
                 IF SELF:_compareFunc(byteArray, SELF:_bottomScopeBuffer, SELF:_keySize) > 0
                     RETURN SELF:_oRdd:__Goto(0)
                 ENDIF
@@ -159,7 +159,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 
                 IF orgToSkip != 0
-                    IF SELF:_hasTopScope .OR. SELF:_hasBottomScope
+                    IF SELF:HasTopScope .OR. SELF:HasBottomScope
                         isBof := SELF:_oRdd:_Bof
                         isEof := SELF:_oRdd:_Eof
                         recno := SELF:_ScopeSkip(nToSkip)
@@ -182,7 +182,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                 ENDIF
                 result := SELF:_oRdd:__Goto(recno)
-                IF !SELF:_hasTopScope .AND. !SELF:_hasBottomScope
+                IF !SELF:HasTopScope .AND. !SELF:HasBottomScope
                     RETURN result
                 ENDIF
                 IF changedBof
@@ -302,12 +302,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL first AS LONG
             LOCAL last AS LONG
             VAR currentKeyBuffer := SELF:_currentNode:KeyBytes
-            IF SELF:_hasTopScope
+            IF SELF:HasTopScope
                 IF SELF:_compareFunc(currentKeyBuffer, SELF:_topScopeBuffer, SELF:_topScopeSize) < 0
                     RETURN 0
                 ENDIF
             ENDIF
-            IF SELF:_hasBottomScope
+            IF SELF:HasBottomScope
                 IF SELF:_compareFunc(currentKeyBuffer, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize) > 0
                     RETURN 0
                 ENDIF
@@ -317,7 +317,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             DO WHILE SELF:_findItemPos(REF first, FALSE)
                 NOP
             ENDDO
-            IF SELF:_hasTopScope
+            IF SELF:HasTopScope
                 SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
                 DO WHILE SELF:_findItemPos(REF last, FALSE)
                     NOP
@@ -360,7 +360,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:_oRdd:_Eof := TRUE
                     RETURN 0
                 ENDIF
-                IF SELF:_hasBottomScope
+                IF SELF:HasBottomScope
                     VAR currentKeyBuffer := SELF:_currentNode:KeyBytes
                     IF SELF:_compareFunc(currentKeyBuffer, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize) > 0
                         SELF:_oRdd:_Eof := TRUE
@@ -382,7 +382,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         ENDIF
                         lNumKeys--
                         IF SkipDirection == SkipDirection.Backward
-                            IF SELF:_hasTopScope
+                            IF SELF:HasTopScope
                                 VAR currentKeyBuffer := SELF:_currentNode:KeyBytes
                                 IF SELF:_compareFunc(currentKeyBuffer, SELF:_topScopeBuffer, SELF:_topScopeSize) < 0
                                     recno := SELF:_getNextKey(SkipDirection.Forward)
@@ -391,7 +391,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                 ENDIF
                             ENDIF
                         ELSE
-                            IF SELF:_hasBottomScope
+                            IF SELF:HasBottomScope
                                 IF recno != 0
                                     SELF:_oRdd:_Eof := TRUE
                                     RETURN result
@@ -458,7 +458,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
             isOk := SELF:_oRdd:_Found
             IF !isOk .AND. SELF:_RecNo != 0
-                IF SELF:_hasBottomScope
+                IF SELF:HasBottomScope
                     itmBottomScope := SELF:_bottomScope
                     SELF:_ToString(itmBottomScope, SELF:_keySize, SELF:_newKeyBuffer)
                     VAR currentKeyBuffer := _currentNode:KeyBytes

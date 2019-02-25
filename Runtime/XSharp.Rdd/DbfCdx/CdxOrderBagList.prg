@@ -23,12 +23,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _bags := List<CdxOrderBag>{}
             RETURN
             
-        METHOD Add(info AS DbOrderInfo) AS LOGIC
+        METHOD Add(info AS DbOrderInfo, lStructural := FALSE AS LOGIC) AS LOGIC
             LOCAL oBag AS CdxOrderBag
              IF File(info:BagName)
                 info:BagName := FPathName()
                 IF SELF:FindOrderBag(info:BagName) == NULL_OBJECT
                     oBag := CdxOrderBag{_oRdd}
+                    oBag:Structural := lStructural
                     _bags:Add(oBag)
                     RETURN oBag:Open(info)
                 ENDIF
@@ -47,7 +48,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF oBag == NULL_OBJECT
                         // Create new OrderBag
                         oBag := CdxOrderBag{_oRDD}
-                        oBag:Create(info:BagName)
+                        oBag:CreateBag(info:BagName)
                     ENDIF
                     RETURN oBag:OrderCreate(info)
                     
@@ -67,11 +68,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
             
         METHOD CloseAll() AS LOGIC
+            LOCAL oStruct := NULL AS CdxOrderBag
             FOREACH oBag AS CdxOrderBag IN _bags
-                 oBag:Close()
+                 IF oBag:Structural
+                    oStruct := oBag
+                 ELSE
+                    oBag:Close()
+                ENDIF
             NEXT
             _bags:Clear()
-            RETURN FALSE
+            IF oStruct != NULL
+                _bags:Add(oStruct)
+            ENDIF
+            RETURN TRUE
             
         METHOD Remove(cFileName AS STRING) AS LOGIC
             IF File(cFileName)
@@ -147,11 +156,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD FindOrderByName(cBagName AS STRING, cName AS STRING) AS CdxTag
             FOREACH oBag AS CdxOrderBag IN _bags
                 IF String.IsNullOrEmpty(cBagName) .OR.  oBag:MatchesFileName(cBagName)
-                    FOREACH oTag AS CdxTag IN oBag:Tags
-                        IF String.Compare(oTag:OrderName, cName, StringComparison.OrdinalIgnoreCase) == 0
-                            RETURN oTag
-                        ENDIF
-                    NEXT
+                    VAR oTag := oBag:_FindTagByName(cName)
+                    IF oTag != NULL
+                        RETURN oTag
+                    ENDIF
                 ENDIF
             NEXT
             RETURN NULL

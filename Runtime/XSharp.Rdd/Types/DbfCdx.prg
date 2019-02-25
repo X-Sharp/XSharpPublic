@@ -6,6 +6,7 @@
 
 USING XSharp.RDD.Support
 USING XSharp.RDD.CDX
+USING XSharp.RDD.Enums
 USING System.IO
 BEGIN NAMESPACE XSharp.RDD
     // Inherits all standard DBF and Memo behavior
@@ -157,25 +158,25 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             CASE DBOI_ISDESC
                 IF workOrder != NULL
-                    info:Result := workOrder:_Descending
+                    info:Result := workOrder:Descending
                 ELSE
                     info:Result := FALSE
                 ENDIF
             CASE DBOI_ISCOND
                 IF workOrder != NULL
-				    info:Result := workOrder:_Conditional
+				    info:Result := workOrder:Conditional
                 ELSE
                     info:Result := FALSE
                 ENDIF
             CASE DBOI_KEYTYPE
                 IF workOrder != NULL
-                    info:Result := workOrder:_KeyExprType
+                    info:Result := workOrder:KeyType
                 ELSE
                     info:Result := 0
                 ENDIF
             CASE DBOI_KEYSIZE
                 IF workOrder != NULL
-                    info:Result := workOrder:_keySize
+                    info:Result := workOrder:KeyLength
                 ELSE
                     info:Result := 0
                 ENDIF
@@ -195,13 +196,13 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             CASE DBOI_SETCODEBLOCK
                 IF workOrder != NULL
-					info:Result := workOrder:_KeyCodeBlock
+					info:Result := workOrder:KeyCodeBlock
 				ENDIF
             CASE DBOI_KEYVAL
                 IF workOrder != NULL
                     isOk := TRUE
                     TRY
-					info:Result := SELF:EvalBlock(workOrder:_KeyCodeBlock)
+					info:Result := SELF:EvalBlock(workOrder:KeyCodeBlock)
                     CATCH
                         isOk := FALSE
                     END TRY
@@ -212,32 +213,22 @@ BEGIN NAMESPACE XSharp.RDD
                     info:Result := NULL
                 ENDIF
             CASE DBOI_SCOPETOP
-                IF workOrder != NULL
-                    IF info:Result != NULL
-                        workOrder:SetOrderScope(info:Result, XSharp.RDD.Enums.DbOrder_Info.DBOI_SCOPETOP)
-                    ENDIF
-                    info:Result := workOrder:_topScope
-                ELSE
-                    info:Result := NULL
-                ENDIF
             CASE DBOI_SCOPEBOTTOM
-                IF workOrder != NULL
-                    IF info:Result != NULL
-                        workOrder:SetOrderScope(info:Result, XSharp.RDD.Enums.DbOrder_Info.DBOI_SCOPEBOTTOM)
-                    ENDIF
-                    info:Result := workOrder:_bottomScope
-                ELSE
-                    info:Result := NULL
-                ENDIF
             CASE DBOI_SCOPETOPCLEAR
-                IF workOrder != NULL
-                    workOrder:_hasTopScope := FALSE
-                    workOrder:_topScope := NULL
-                ENDIF
             CASE DBOI_SCOPEBOTTOMCLEAR
                 IF workOrder != NULL
-                    workOrder:_hasBottomScope := FALSE
-                    workOrder:_bottomScope := NULL
+                    IF info:Result != NULL
+                        workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
+                    ENDIF
+                    IF nOrdinal == DBOI_SCOPETOP
+                        info:Result := workOrder:TopScope
+                    ELSEIF nOrdinal == DBOI_SCOPEBOTTOM
+                        info:Result := workOrder:BottomScope
+                    ELSE
+                        info:Result := NULL
+                    ENDIF
+                ELSE
+                    info:Result := NULL
                 ENDIF
             CASE DBOI_USER + 42
                 // Dump Cdx to Txt file
@@ -304,7 +295,7 @@ BEGIN NAMESPACE XSharp.RDD
                     IF System.IO.File.Exists(cCdxFileName)
                         LOCAL orderinfo := DbOrderInfo{} AS DbOrderInfo
                         orderInfo:BagName := cCdxFileName
-                        SELF:OrderListAdd(orderInfo)
+                        SELF:_indexList:Add(orderInfo, TRUE)
                     ENDIF
                 ENDIF
             ENDIF

@@ -87,7 +87,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _Page := page
             _Pos  := pos
 
-        INTERNAL PROPERTY Page AS CdxTreePage GET _Page SET _Page := VALUE
+        INTERNAL PROPERTY Page AS CdxTreePage GET _Page // SET _Page := VALUE
 
         INTERNAL OVERRIDE METHOD Clear() AS VOID
             SUPER:Clear()

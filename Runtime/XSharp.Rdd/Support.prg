@@ -25,9 +25,9 @@ BEGIN NAMESPACE XSharp.RDD
 		
 		INTERNAL PROPERTY Recno AS LONG GET _Recno
 		
-		INTERNAL CONSTRUCTOR(data AS BYTE[] , uiRecno AS LONG )
+		INTERNAL CONSTRUCTOR(data AS BYTE[] , lRecno AS LONG )
 			SELF:_data  := (BYTE[])data:Clone()
-			SELF:_Recno := uiRecno
+			SELF:_Recno := lRecno
 			
 	END CLASS
     INTERNAL ENUM SearchMode

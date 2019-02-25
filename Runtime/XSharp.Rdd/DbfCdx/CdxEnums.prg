@@ -13,6 +13,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	// Index options represented as the sum of the following values:
     [Flags];
 	INTERNAL ENUM CdxOptions AS BYTE
+        MEMBER None             := 0x00     // Uninitialized
 		MEMBER Unique			:= 0x01		// Unique
 		MEMBER While   		    := 0x02		// WHILE, ...
 		MEMBER Custom			:= 0x04		// is a custom built Index

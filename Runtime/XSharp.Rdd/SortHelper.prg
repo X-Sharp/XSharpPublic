@@ -18,14 +18,15 @@ BEGIN NAMESPACE XSharp.RDD
             
             
     INTERNAL CLASS RddSortHelper
-        PRIVATE _sortInfo   AS DBSORTINFO
+        PRIVATE _sortInfo   AS DbSortInfo
         PRIVATE _recCount   AS LONG
         PRIVATE _dataBuffer AS SortRecord[]
         PRIVATE _currentPos AS LONG
         PRIVATE _Length     AS LONG
+
+        INTERNAL PROPERTY SortInfo AS DbSortInfo GET _sortInfo
         
-        
-        INTERNAL CONSTRUCTOR( sortInfo AS DBSORTINFO , len AS LONG )
+        INTERNAL CONSTRUCTOR( sortInfo AS DbSortInfo , len AS LONG )
             SELF:_sortInfo := sortInfo
             SELF:_recCount := len
             SELF:_dataBuffer := SortRecord[]{ len }

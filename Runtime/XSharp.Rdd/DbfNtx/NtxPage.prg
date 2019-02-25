@@ -88,7 +88,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             GET
                 LOCAL node := NULL AS NtxPageNode
                 TRY
-                    node := NtxPageNode{ SELF:_Order:_keySize ,SELF }
+                    node := NtxPageNode{ SELF:_Order:KeyLength ,SELF }
                     node:Pos := index
                 CATCH e AS Exception
                     Debug.WriteLine( "Ntx Error : " + e:Message )

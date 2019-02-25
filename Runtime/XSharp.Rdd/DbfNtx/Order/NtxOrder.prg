@@ -34,50 +34,47 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _hFile AS IntPtr
         PRIVATE _Encoding AS Encoding
         PRIVATE _Shared AS LOGIC
-        INTERNAL _Hot AS LOGIC
-        INTERNAL _Unique AS LOGIC
-        INTERNAL _Conditional AS LOGIC
-        INTERNAL _Descending AS LOGIC
-        INTERNAL _Partial AS LOGIC
-        INTERNAL _SingleField AS LONG
-        INTERNAL _SourceIndex AS LONG
-        INTERNAL _KeyCodeBlock AS ICodeblock
-        INTERNAL _ForCodeBlock AS ICodeblock
-        INTERNAL _KeyExpr AS STRING
-        INTERNAL _ForExpr AS STRING
+        PRIVATE _Hot AS LOGIC
+        PRIVATE _Unique AS LOGIC
+        PRIVATE _Conditional AS LOGIC
+        PRIVATE _Descending AS LOGIC
+        PRIVATE _Partial AS LOGIC
+        PRIVATE _SingleField AS LONG
+        PRIVATE _SourceIndex AS LONG
+        PRIVATE _KeyCodeBlock AS ICodeblock
+        PRIVATE _ForCodeBlock AS ICodeblock
+        PRIVATE _KeyExpr AS STRING
+        PRIVATE _ForExpr AS STRING
         
         PRIVATE _currentRecno AS LONG
         PRIVATE _currentKeyBuffer AS BYTE[]
-        INTERNAL _newKeyBuffer AS BYTE[]
-        INTERNAL _newKeyLen AS LONG
-        INTERNAL _indexVersion AS WORD
-        INTERNAL _nextUnusedPageOffset AS LONG
-        INTERNAL _entrySize AS WORD
-        INTERNAL _KeyExprType AS LONG
-        INTERNAL _keySize AS WORD
-        INTERNAL _keyDecimals AS WORD
+        PRIVATE _newKeyBuffer AS BYTE[]
+        PRIVATE _newKeyLen AS LONG
+        PRIVATE _indexVersion AS WORD
+        PRIVATE _nextUnusedPageOffset AS LONG
+        PRIVATE _entrySize AS WORD
+        PRIVATE _KeyExprType AS LONG
+        PRIVATE _keySize AS WORD
+        PRIVATE _keyDecimals AS WORD
         PRIVATE _MaxEntry AS WORD
         PRIVATE _halfPage AS WORD
-        INTERNAL _firstPageOffset AS LONG
-        INTERNAL _fileSize AS LONG
+        PRIVATE _firstPageOffset AS LONG
+        PRIVATE _fileSize AS LONG
         PRIVATE _stack AS RddStack[]
-        INTERNAL _HPLocking AS LOGIC
+        PRIVATE _HPLocking AS LOGIC
         PRIVATE _readLocks AS LONG
         PRIVATE _writeLocks AS LONG
-        INTERNAL _tagNumber AS INT
-        INTERNAL _maxLockTries AS INT
-        INTERNAL _orderName AS STRING
-        INTERNAL _fileName AS STRING
-        INTERNAL _fullPath AS STRING
-        INTERNAL _Ansi AS LOGIC
-        INTERNAL _hasTopScope AS LOGIC
-        INTERNAL _hasBottomScope AS LOGIC
-        INTERNAL _topScopeBuffer AS BYTE[]
-        INTERNAL _bottomScopeBuffer AS BYTE[]
-        INTERNAL _topScope AS OBJECT
-        INTERNAL _bottomScope AS OBJECT
-        INTERNAL _topScopeSize AS LONG
-        INTERNAL _bottomScopeSize AS LONG
+        PRIVATE _tagNumber AS INT
+        PRIVATE _maxLockTries AS INT
+        PRIVATE _orderName AS STRING
+        PRIVATE _fileName AS STRING
+        PRIVATE _fullPath AS STRING
+        PRIVATE _topScopeBuffer AS BYTE[]
+        PRIVATE _bottomScopeBuffer AS BYTE[]
+        PRIVATE _topScope AS OBJECT
+        PRIVATE _bottomScope AS OBJECT
+        PRIVATE _topScopeSize AS LONG
+        PRIVATE _bottomScopeSize AS LONG
         PRIVATE _oRdd AS DBFNTX
         PRIVATE _Header AS NtxHeader
         PRIVATE _oneItem AS NtxNode
@@ -95,14 +92,25 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         #endregion
         #region properties
         INTERNAL PROPERTY Expression AS STRING GET _KeyExpr
+        INTERNAL PROPERTY KeyCodeBlock AS ICodeBlock GET _KeyCodeBlock
+        INTERNAL PROPERTY KeyLength     AS WORD GET _keySize
+        INTERNAL PROPERTY KeyDecimals     AS WORD GET _keyDecimals
+        INTERNAL PROPERTY KeyExprType     AS LONG GET _keyExprType
         INTERNAL PROPERTY Handle AS IntPtr GET _hFile
         INTERNAL PROPERTY Condition AS STRING GET _ForExpr
         INTERNAL PROPERTY CurrentStack       AS RddStack GET  SELF:_stack[SELF:_TopStack]
         INTERNAL PROPERTY OrderName AS STRING GET _orderName
 	    INTERNAL PROPERTY Shared    AS LOGIC GET _Shared
         INTERNAL PROPERTY _Recno AS LONG GET _oRdd:Recno
-
+        INTERNAL PROPERTY HasTopScope AS LOGIC GET _topScope != NULL
+        INTERNAL PROPERTY HasBottomScope AS LOGIC GET _bottomScope != NULL
+        INTERNAL PROPERTY TopScope AS OBJECT GET _topScope
+        INTERNAL PROPERTY BottomScope AS OBJECT GET _bottomScope
         INTERNAL PROPERTY FullPath AS STRING GET _fullPath
+        INTERNAL PROPERTY HPLocking AS LOGIC GET _HpLocking
+        INTERNAL PROPERTY Unique AS LOGIC GET _Unique
+        INTERNAL PROPERTY Descending AS LOGIC GET _Descending
+        INTERNAL PROPERTY Conditional AS LOGIC GET _Conditional
         INTERNAL PROPERTY FileName AS STRING
             GET
                 RETURN SELF:_fileName
@@ -178,7 +186,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             
             SELF:_PageList := NtxPageList{SELF}
-            SELF:_Ansi := SELF:_oRdd:_Ansi
             // Key & For Expression
             SELF:_KeyExpr := SELF:_Header:KeyExpression
             SELF:_ForExpr := SELF:_Header:ForExpression
@@ -525,19 +532,26 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             uiRealLen := 0
             result := TRUE
             SWITCH uiScope
+            CASE DBOrder_Info.DBOI_SCOPETOPCLEAR
+                SELF:_topScope      := NULL
+                SELF:_topScopeBuffer := NULL
+                SELF:_topScopeSize   := 0
+
+            CASE DBOrder_Info.DBOI_SCOPEBOTTOMCLEAR
+                SELF:_bottomScope       := itmScope
+                SELF:_bottomScopeBuffer := NULL
+                SELF:_bottomScopeSize   := 0
             CASE DBOrder_Info.DBOI_SCOPETOP
                 SELF:_topScope      := itmScope
-                SELF:_hasTopScope   := (itmScope != NULL)
                 IF itmScope != NULL
-                    SELF:_topScopeBuffer := BYTE[]{ MAX_KEY_LEN+1 }
+                    SELF:_topScopeBuffer := BYTE[]{ SELF:_keySize+1 }
                     SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_topScopeBuffer,  REF uiRealLen)
                     SELF:_topScopeSize := uiRealLen
                 ENDIF
             CASE DBOrder_Info.DBOI_SCOPEBOTTOM
                 SELF:_bottomScope    := itmScope
-                SELF:_hasBottomScope := (itmScope != NULL)
                 IF itmScope != NULL
-                    SELF:_bottomScopeBuffer := BYTE[]{ MAX_KEY_LEN+1 }
+                    SELF:_bottomScopeBuffer := BYTE[]{ SELF:_keySize+1 }
                     SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_bottomScopeBuffer,  REF uiRealLen)
                     SELF:_bottomScopeSize := uiRealLen
                 ENDIF
@@ -564,7 +578,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     RETURN FALSE
                 ENDIF
             ENDIF
-            IF SELF:_hasTopScope .OR. SELF:_hasBottomScope
+            IF SELF:HasTopScope .OR. SELF:HasBottomScope
                 SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPEBOTTOM)
                 records := SELF:_getScopePos()
             ELSE
@@ -622,7 +636,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF SELF:_TopStack == 0
                 SELF:_GoToRecno(recno)
             ENDIF
-            IF SELF:_hasTopScope .OR. SELF:_hasBottomScope
+            IF SELF:HasTopScope .OR. SELF:HasBottomScope
                 record := SELF:_getScopePos()
             ELSE
                 IF XSharp.RuntimeState.Deleted .OR. SELF:_oRdd:_FilterInfo:Active

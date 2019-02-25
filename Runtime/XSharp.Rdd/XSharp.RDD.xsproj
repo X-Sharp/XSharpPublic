@@ -162,6 +162,7 @@
     <Compile Include="Types\DbfDbt.prg" />
     <Compile Include="Types\DbfFpt.prg" />
     <Compile Include="Types\DbfMemo.prg" />
+    <Compile Include="Types\Dbf_NotImplemented.prg" />
     <Compile Include="Types\DbfNsx.prg" />
     <Compile Include="Types\DbfNtx.prg" />
     <Compile Include="Types\DbfSmt.prg" />

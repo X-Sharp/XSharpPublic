@@ -379,8 +379,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PUBLIC METHOD SetOffLine() AS VOID
             SELF:ClearStack()
             
-
-            
             
         PRIVATE METHOD _PutHeader() AS LOGIC
             LOCAL ntxSignature AS NtxHeaderFlags
@@ -420,7 +418,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG , nDec AS LONG , buffer AS BYTE[] , resultLength REF LONG ) AS LOGIC
             LOCAL text AS STRING
             LOCAL chkDigits AS LOGIC
-            LOCAL valueFloat AS IFloat
             LOCAL sBuilder AS StringBuilder
             LOCAL valueDate AS IDate
             LOCAL formatInfo AS NumberFormatInfo
@@ -431,8 +428,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             text := NULL
             chkDigits := FALSE
             // Float Value ?
-            IF (toConvert ASTYPE IFloat) != NULL
-                valueFloat := (IFloat)toConvert
+            IF toConvert IS  IFloat valueFloat
                 toConvert := valueFloat:Value
                 formatInfo:NumberDecimalDigits := valueFloat:Decimals
                 text := valueFloat:Value:ToString("F", formatInfo)
@@ -530,20 +526,20 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             result := TRUE
             SWITCH uiScope
             CASE DBOrder_Info.DBOI_SCOPETOP
-                    SELF:_topScope      := itmScope
-                    SELF:_hasTopScope   := (itmScope != NULL)
-                    IF itmScope != NULL
-                        SELF:_topScopeBuffer := BYTE[]{ MAX_KEY_LEN+1 }
-                        SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_topScopeBuffer,  REF uiRealLen)
-                        SELF:_topScopeSize := uiRealLen
+                SELF:_topScope      := itmScope
+                SELF:_hasTopScope   := (itmScope != NULL)
+                IF itmScope != NULL
+                    SELF:_topScopeBuffer := BYTE[]{ MAX_KEY_LEN+1 }
+                    SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_topScopeBuffer,  REF uiRealLen)
+                    SELF:_topScopeSize := uiRealLen
                 ENDIF
             CASE DBOrder_Info.DBOI_SCOPEBOTTOM
-                    SELF:_bottomScope    := itmScope
-                    SELF:_hasBottomScope := (itmScope != NULL)
-                    IF itmScope != NULL
-                        SELF:_bottomScopeBuffer := BYTE[]{ MAX_KEY_LEN+1 }
-                        SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_bottomScopeBuffer,  REF uiRealLen)
-                        SELF:_bottomScopeSize := uiRealLen
+                SELF:_bottomScope    := itmScope
+                SELF:_hasBottomScope := (itmScope != NULL)
+                IF itmScope != NULL
+                    SELF:_bottomScopeBuffer := BYTE[]{ MAX_KEY_LEN+1 }
+                    SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_bottomScopeBuffer,  REF uiRealLen)
+                    SELF:_bottomScopeSize := uiRealLen
                 ENDIF
             OTHERWISE
                 result := FALSE

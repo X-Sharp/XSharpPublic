@@ -37,13 +37,7 @@ CLASS WorkAreas
 		iCurrentWorkArea	:= 1
         workAreaStack       := Stack<DWORD>{}
 
-    DESTRUCTOR()
-        TRY
-            SELF:CloseAll()
-		CATCH e AS Exception
-			RuntimeState.LastRDDError  := e
-        END TRY
-
+   
 	///<summary>Convert 1 based Workarea number to 0 based with validation</summary>
 	PRIVATE METHOD AdjustArea( nArea REF DWORD) AS LOGIC
 		IF  nArea > 0 .AND.  nArea <= MaxWorkAreas

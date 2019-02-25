@@ -16,7 +16,7 @@ USING System.Collections.Generic
 
 BEGIN NAMESPACE XSharp.RDD
 	/// <summary>DBF RDD. Usually not used 'stand alone'</summary>
-	CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
+	PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
 		PROTECT _RelInfoPending  AS DbRelInfo
 
 		PROTECT _Header			AS DbfHeader
@@ -84,7 +84,6 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_numformat:NumberDecimalSeparator := "."
     		SELF:_RelInfoPending    := NULL
 			
-			//	METHOD DbEval(info AS DbEvalInfo) AS LOGIC
 			/// <inheritdoc />
 		METHOD GoTop() AS LOGIC
 			IF ( SELF:_hFile != F_ERROR )
@@ -198,7 +197,7 @@ BEGIN NAMESPACE XSharp.RDD
 			RETURN result
 			
 			
-			//	METHOD SkipFilter(nToSkip AS INT) AS LOGIC
+		/// <inheritdoc />
 		METHOD SkipRaw(nToSkip AS INT) AS LOGIC 
 			LOCAL isOk := TRUE AS LOGIC
 			//
@@ -214,7 +213,6 @@ BEGIN NAMESPACE XSharp.RDD
 			ENDIF
 			RETURN isOK 
 			
-			//	METHOD SkipScope(nToSkip AS INT) AS LOGIC
 			
 			// Append and Delete
 		METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
@@ -239,7 +237,7 @@ BEGIN NAMESPACE XSharp.RDD
 							SELF:_HeaderLocked := FALSE
 						ENDIF
 						IF ( isOk )
-                            System.Array.Copy(SELF:_BlankBuffer, SELF:_RecordBuffer, SELF:_RecordLength)
+                            Array.Copy(SELF:_BlankBuffer, SELF:_RecordBuffer, SELF:_RecordLength)
 							// Now, update state
 							SELF:_RecCount++
 							SELF:_RecNo := SELF:_RecCount
@@ -592,7 +590,7 @@ BEGIN NAMESPACE XSharp.RDD
 				IF SELF:_readRecord()
 					//
 					records := BYTE[]{ SELF:_RecordLength }
-					Array.Copy( SELF:_RecordBuffer, 0, records, 0, SELF:_RecordLength)
+                    Array.Copy(SELF:_RecordBuffer, records, SELF:_RecordLength)
 				ENDIF
 			END LOCK
 			RETURN records
@@ -603,7 +601,7 @@ BEGIN NAMESPACE XSharp.RDD
 			// First, Check the Size
 			IF ( aRec:Length == SELF:_RecordLength )
 				IF SELF:_readRecord()
-					Array.Copy( aRec, 0, SELF:_RecordBuffer, 0, SELF:_RecordLength)
+                    Array.Copy(aRec, SELF:_RecordBuffer, SELF:_RecordLength)
                     IF ! SELF:_Hot
 				        isOk := SELF:GoHot()
                     ELSE
@@ -862,7 +860,7 @@ BEGIN NAMESPACE XSharp.RDD
 				currentField:Len := (BYTE)SELF:_Fields[ i ]:Length
 				currentField:Dec := (BYTE)SELF:_Fields[ i ]:Decimals
 				//
-				Array.Copy( currentField:Buffer, 0, fieldsBuffer, i*DbfField.SIZE, DbfField.SIZE )
+                Array.Copy(currentField:Buffer, 0, fieldsBuffer, i*DbfField.SIZE, DbfField.SIZE )
 			NEXT
 			// Terminator
 			fieldsBuffer[fieldDefSize] := 13
@@ -981,7 +979,7 @@ BEGIN NAMESPACE XSharp.RDD
 				ENDIF
 				FOR VAR i := nStart TO fieldCount - ( 1 - nStart )
 					//
-					Array.Copy( fieldsBuffer, i*DbfField.SIZE, currentField:Buffer, 0, DbfField.SIZE )
+                    Array.Copy(fieldsBuffer, i*DbfField.SIZE, currentField:Buffer, 0, DbfField.SIZE )
 					LOCAL info AS RddFieldInfo
 					info := RddFieldInfo{ currentField:Name, currentField:Type, currentField:Len, currentField:Dec }
 					//SELF:_Fields[ i ] := info
@@ -1036,21 +1034,16 @@ BEGIN NAMESPACE XSharp.RDD
 			//
 			RETURN ret
 			
-			// Filtering and Scoping
-			//	METHOD ClearFilter() 	AS LOGIC
-			//	METHOD ClearScope() 	AS LOGIC
-			//	METHOD Continue()		AS LOGIC
-			//	METHOD GetScope()		AS DbScopeInfo
-			//	METHOD SetFilter(info AS DbFilterInfo) AS LOGIC
-			//	METHOD SetScope(info AS DbScopeInfo) AS LOGIC
-			
+		
 			// Fields
 			// Set the Number of Fields the AddField Method will add
+			/// <inheritdoc />
 		METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
 			SELF:_HasMemo := FALSE
 			RETURN SUPER:SetFieldExtent(fieldCount)
 			
 			// Add a Field to the _Fields List. Fields are added in the order of method call
+			/// <inheritdoc />
 		METHOD AddField(info AS RddFieldInfo) AS LOGIC
 			LOCAL isOk AS LOGIC
  			isok := SUPER:AddField( info )
@@ -1101,14 +1094,6 @@ BEGIN NAMESPACE XSharp.RDD
 					info:FieldType := DbFieldType.Unknown
 			END SWITCH
 			RETURN TRUE
-			
-		// Add the list of Fields ot the DBF, by calling SetFieldExtent and AddField
-		METHOD CreateFields(aFields AS RddFieldInfo[]) AS LOGIC
-			RETURN SUPER:CreateFields(aFields)
-			
-			/// <inheritdoc />
-		METHOD FieldIndex(fieldName AS STRING) AS LONG
-			RETURN SUPER:FieldIndex(fieldName)
 			
 			/// <inheritdoc />
 		METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
@@ -1163,10 +1148,6 @@ BEGIN NAMESPACE XSharp.RDD
 					END SWITCH
 			END LOCK
 			RETURN oResult
-			
-			/// <inheritdoc />
-		METHOD FieldName(nFldPos AS LONG) AS STRING
-			RETURN SUPER:FieldName( nFldPos )
 			
 			
 			// Read & Write
@@ -1463,7 +1444,7 @@ BEGIN NAMESPACE XSharp.RDD
 					LOCAL datBytes := System.BitConverter.GetBytes( (UINT32)dat ) AS BYTE[]
 					LOCAL timBytes := System.BitConverter.GetBytes( (UINT32)tim ) AS BYTE[]
 					//
-					Array.Copy( datBytes, 0, buffer, offset, 4 )
+                    Array.Copy( datBytes, 0, buffer, offset, 4 )
 					Array.Copy( timBytes, 0, buffer, offset+4, 4 )
 					isOk := TRUE
 				ELSE
@@ -1745,7 +1726,7 @@ BEGIN NAMESPACE XSharp.RDD
 		METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
 			IF _oMemo != NULL
 				RETURN _oMemo:PutValueFile(nFldPos, fileName)
-				ELSE
+			ELSE
 				RETURN SUPER:PutValue(nFldPos, fileName)
 			ENDIF
 			
@@ -1761,7 +1742,7 @@ BEGIN NAMESPACE XSharp.RDD
 		METHOD CloseMemFile() 	AS LOGIC
 			IF _oMemo != NULL
 				RETURN _oMemo:CloseMemFile()
-				ELSE
+			ELSE
 				RETURN SUPER:CloseMemFile()
 			ENDIF
 		/// <inheritdoc />
@@ -1776,20 +1757,17 @@ BEGIN NAMESPACE XSharp.RDD
 		METHOD OpenMemFile(info AS DbOpenInfo) 	AS LOGIC
 			IF _oMemo != NULL
 				RETURN _oMemo:OpenMemFile(info)
-				ELSE
+			ELSE
 				RETURN SUPER:OpenMemFile(info)
 			ENDIF
 			
 			// Indexes
-		/// <inheritdoc />
-		METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
-            RETURN SUPER:OrderCondition(info)
 			
 		/// <inheritdoc />
 		METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
 			IF _oIndex != NULL
 				RETURN _oIndex:OrderCreate(info)
-				ELSE
+			ELSE
 				RETURN SUPER:OrderCreate(info)
 			ENDIF
 			
@@ -1813,7 +1791,7 @@ BEGIN NAMESPACE XSharp.RDD
 		METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
 			IF _oIndex != NULL
 				RETURN _oIndex:OrderListAdd(info)
-				ELSE
+			ELSE
 				RETURN SUPER:OrderListAdd(info)
 			ENDIF
 			
@@ -1821,7 +1799,7 @@ BEGIN NAMESPACE XSharp.RDD
 		METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
 			IF _oIndex != NULL
 				RETURN _oIndex:OrderListDelete(info)
-				ELSE
+			ELSE
 				RETURN SUPER:OrderListDelete(info)
 			ENDIF
 		/// <inheritdoc />
@@ -1847,21 +1825,24 @@ BEGIN NAMESPACE XSharp.RDD
 			ENDIF
 			
 		// Relations
+        /// <inheritdoc />
 		METHOD ChildEnd(info AS DbRelInfo) AS LOGIC
 			SELF:ForceRel()
 			RETURN SUPER:ChildEnd( info )
 			
+        /// <inheritdoc />
 		METHOD ChildStart(info AS DbRelInfo) AS LOGIC
 			SELF:ChildSync( info )
 			RETURN SUPER:ChildStart( info )
 			
+        /// <inheritdoc />
 		METHOD ChildSync(info AS DbRelInfo) AS LOGIC
 			SELF:GoCold()
 			SELF:_RelInfoPending := info
 			SELF:SyncChildren()
 			RETURN TRUE
 			
-		//	METHOD ClearRel() AS LOGIC
+        /// <inheritdoc />
 		METHOD ForceRel() AS LOGIC
 			LOCAL isOk    := TRUE AS LOGIC
 			LOCAL gotoRec := 0 AS LONG
@@ -1885,11 +1866,12 @@ BEGIN NAMESPACE XSharp.RDD
 			RETURN isOk
 			
 			
-			//	METHOD RelArea(nRelNum AS LONG) AS LONG 
-				//	METHOD RelEval(info AS DbRelInfo) AS LOGIC
-				//	METHOD RelText(nRelNum AS LONG) AS STRING
-		//	METHOD SetRel(info AS DbRelInfo) AS LOGIC  
-		METHOD SyncChildren() AS LOGIC
+			/// <inheritdoc />
+			METHOD RelArea(nRelNum AS DWORD) AS DWORD
+                RETURN SUPER:RelArea(nRelNum)
+
+		/// <inheritdoc />
+		    METHOD SyncChildren() AS LOGIC
 			LOCAL isOk AS LOGIC
 			//
 			isOk := TRUE
@@ -1901,38 +1883,7 @@ BEGIN NAMESPACE XSharp.RDD
 			NEXT
 			RETURN isOk
 			
-			// Trans	
-		//    METHOD Trans(info AS DbTransInfo) 		AS LOGIC
-		METHOD TransRec(info AS DbTransInfo) 	AS LOGIC
-			LOCAL isOk AS LOGIC
-			LOCAL isDeleted AS LOGIC
-			//
-			isOk := TRUE
-			isDeleted := FALSE
-			BEGIN LOCK SELF
-				IF ((info:Flags & DbTransInfo.PutRec) == 0)
-					RETURN SUPER:TransRec(info)
-				ENDIF
-				//
-				isOk := info:Destination:Append(TRUE)
-				IF isOk
-					isOk := SELF:_readRecord()
-					IF isOk
-						isOk := info:Destination:PutRec(SELF:_RecordBuffer)
-						IF isOk
-							isDeleted := SELF:_Deleted
-							IF isDeleted
-								isOk := info:Destination:Delete()
-							ENDIF
-						ENDIF
-					ENDIF
-				ENDIF
-				RETURN isOk
-			END LOCK
 			
-			
-			// Blob
-			//	METHOD BlobInfo(uiPos AS DWORD, uiOrdinal AS DWORD) AS OBJECT
 			
 			// Codeblock Support
 			
@@ -1944,7 +1895,6 @@ BEGIN NAMESPACE XSharp.RDD
 			ENDIF
 			RETURN result
 			
-		//	METHOD EvalBlock(oBlock AS OBJECT) AS OBJECT
 		VIRTUAL METHOD EvalBlock( cbBlock AS ICodeblock ) AS OBJECT
 			LOCAL result := NULL AS OBJECT
 			TRY
@@ -2044,8 +1994,8 @@ BEGIN NAMESPACE XSharp.RDD
 				CASE DbInfo.DBI_ROLLBACK
                     IF SELF:_Hot
                         IF SELF:_NewRecord
-                             System.Array.Copy(SELF:_BlankBuffer, SELF:_RecordBuffer, SELF:_RecordLength)
-                             SELF:_Deleted := FALSE
+                            Array.Copy(SELF:_BlankBuffer, SELF:_RecordBuffer, SELF:_RecordLength)
+                            SELF:_Deleted := FALSE
                         ELSE
                             SELF:_BufferValid := FALSE
                         ENDIF
@@ -2266,7 +2216,7 @@ BEGIN NAMESPACE XSharp.RDD
 			RETURN isOk            
 			
 		// IRddSortWriter Interface, used by RddSortHelper
-		PUBLIC METHOD WriteSorted( sortInfo AS DBSORTINFO , record AS SortRecord ) AS LOGIC			
+		PUBLIC METHOD WriteSorted( sortInfo AS DBSORTINFO , record AS SortRecord ) AS LOGIC
 			Array.Copy(record:Data, SELF:_RecordBuffer, SELF:_RecordLength)
 			RETURN SELF:TransRec(sortInfo:TransInfo)
 
@@ -2358,12 +2308,6 @@ BEGIN NAMESPACE XSharp.RDD
 		VIRTUAL PROPERTY Shared		AS LOGIC GET SELF:_Shared
 		/// <inheritdoc />
 		VIRTUAL PROPERTY SysName AS STRING GET TYPEOF(Dbf):ToString()
-		
-		//
-		// Error Handling
-		//	PROPERTY LastGenCode	AS LONG GET
-		//	PROPERTY LastSubCode	AS LONG GET
-		//	PROPERTY LastError		AS Exception GET
 		
 			
 		/// <summary>DBF Header.</summary>
@@ -2672,7 +2616,7 @@ BEGIN NAMESPACE XSharp.RDD
 				[FieldOffSet(44)] PUBLIC Reserved3	 AS LONG
 				
 			END STRUCTURE
-			
+
 		END CLASS
 		// Inpired by Harbour
 		STRUCTURE DbfLocking
@@ -2798,6 +2742,9 @@ BEGIN NAMESPACE XSharp.RDD
 				diff := recordX:Recno - recordY:Recno
 			ENDIF
 			RETURN diff
+
+
+
 
 	END CLASS
 	

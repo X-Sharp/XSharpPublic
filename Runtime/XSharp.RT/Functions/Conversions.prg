@@ -148,7 +148,13 @@ INTERNAL STATIC CLASS ConversionHelpers
             ENDIF
         ENDIF*/
 		IF result:Length > nLen
-			result := Replicate("*", (DWORD) nLen)
+			LOCAL nSepIndex AS INT
+			nSepIndex := result:IndexOf(usCulture:NumberFormat:NumberDecimalSeparator)
+			IF nSepIndex != -1 .and. nSepIndex <= nLen
+				result := result:Substring(0, nLen)
+			ELSE
+				result := Replicate("*", (DWORD) nLen)
+			END IF
 		ENDIF
 		RETURN result
 
@@ -171,6 +177,16 @@ INTERNAL STATIC CLASS ConversionHelpers
 			ENDIF
 		ENDIF
 		RETURN cString
+
+	STATIC METHOD GetSignificantWholeDigits(r AS REAL8) AS INT
+		LOCAL nRet := iif(r < 0.0 , 1 , 0) AS INT
+		r := Math.Floor(Math.Abs(r))
+		DO WHILE r > 0.0
+			nRet ++
+			r := r /10.0
+			r := Math.Floor(r)
+		END DO
+	RETURN nRet
 
 END CLASS
 
@@ -706,6 +722,9 @@ INTERNAL FUNCTION _Str1(f AS FLOAT) AS STRING
 	ENDIF
 	IF nDigits <= 0 .OR. RuntimeState.DigitsFixed
 		nDigits := (SHORT) RuntimeState.Digits
+    	IF ConversionHelpers.GetSignificantWholeDigits(f) > nDigits
+    		RETURN STRING{ c'*', (INT) nDigits}
+    	END IF
         IF nDecimals != 0
             nDigits += nDecimals +1
         ENDIF
@@ -751,6 +770,7 @@ FUNCTION Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 
 /// <exclude/>
 FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
+	LOCAL lDecSpecified := dwDec != UInt32.MaxValue AS LOGIC
 
 
    IF dwDec == UInt32.MaxValue
@@ -764,7 +784,10 @@ FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
    ENDIF
     
    IF dwLen == 0 .OR. dwLen == UInt32.MaxValue 
-        IF dwDec > 0 
+        IF dwDec > 0
+        	IF ConversionHelpers.GetSignificantWholeDigits(f) > RuntimeState.Digits
+        		RETURN STRING{ c'*', (INT) (RuntimeState.Digits + dwDec +1) } // VO's behavior...
+        	END IF
             dwLen := (DWORD) RuntimeState.Digits + dwDec +1
         ELSE
             dwLen := (DWORD) RuntimeState.Digits
@@ -864,9 +887,9 @@ FUNCTION Object2Float(oValue AS OBJECT) AS FLOAT
 FUNCTION Bin2F(c AS STRING) AS FLOAT
     LOCAL nDec AS WORD
     LOCAL val  AS REAL8
-	IF slen(c) >= 12
-        nDec := Bin2W(Substr3(c, 11,2))
-        val  := Bin2Real8(Substr3(c, 1,8))
+	IF SLen(c) >= 12
+        nDec := Bin2W(SubStr3(c, 11,2))
+        val  := Bin2Real8(SubStr3(c, 1,8))
         RETURN FLOAT{val, 0, nDec}
         
     ENDIF

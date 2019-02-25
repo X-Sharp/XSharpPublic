@@ -83,9 +83,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         EXIT
                     ENDIF
                 NEXT
-                IF isOk
-					SELF:_Order:Flush()
-                ENDIF
             CATCH AS Exception
                 isOk := FALSE
             END TRY

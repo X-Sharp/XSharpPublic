@@ -75,20 +75,21 @@ CLASS XSharp.CoreDb
         srcFieldCount := Convert.ToUInt32( oTmp )
         oTmp := dst:Info( DBInfo.DBI_FCOUNT, NULL )
         dstFieldCount := Convert.ToUInt32( oTmp )
-        
-        fMatch := (DWORD) dbti:ItemCount == srcFieldCount .AND. srcFieldCount == dstFieldCount
-        j := 1
+        i := (INT) src:Info(DbInfo.DBI_GETRECSIZE, NULL)
+        j := (INT) dst:Info(DbInfo.DBI_GETRECSIZE, NULL)
+        fMatch := (DWORD) dbti:ItemCount == srcFieldCount .AND. srcFieldCount == dstFieldCount .AND. i == j
+        j := 0
         FOR i := 0 UPTO lpfn:fieldCount -1
         
-            uiSrc := src:FieldIndex( lpfn:fields[i] )
+            uiSrc := src:FieldIndex( lpfn:fields[i] )       // returns a 1 based index
             uiDst := dst:FieldIndex( lpfn:fields[i]  )
             
             IF uiSrc == 0 || uiDst == 0
                 fMatch := FALSE
             ELSE
-                // Note that lpTransItems wants the Field Positions to start with 0
-                dbti:Items[j]:Source       := uiSrc - 1
-                dbti:Items[j]:Destination  := uiDst - 1
+                
+                dbti:Items[j]:Source       := uiSrc 
+                dbti:Items[j]:Destination  := uiDst 
                 j++
                 
                 IF fMatch
@@ -103,26 +104,25 @@ CLASS XSharp.CoreDb
             ENDIF 
         NEXT
         
-        dbti:ItemCount := j -1
+        dbti:ItemCount := j 
         
         RETURN fMatch
         /// <exclude />   
     INTERNAL STATIC METHOD TransSetInfo(oRdd AS IRDD, info AS DbTransInfo, cFunc AS STRING,nDest AS DWORD, fldNames AS _FieldNames,;
                                         uCobFor AS ICodeblock ,uCobWhile AS ICodeblock ,;
                                         nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS VOID
-        LOCAL oDest := RUntimeState.Workareas.GetRDD(nDest) AS IRDD
+        LOCAL oDest := RuntimeState.Workareas.GetRDD(nDest) AS IRDD
         IF oDest == NULL
             RddError.PostNoTableError(cFunc)
         ENDIF
         info:Destination := oDest
-        IF !CoreDb.BuildTrans( info, fldNames, oRDD, oDest )
-            RddError.PostArgumentError( cFunc, EDB_DBSTRUCT, nameof(fldNames), 2, <OBJECT>{fldNames} )
-        ENDIF
-        info:Flags := DbTransInfo.Match
-        LOCAL oCanPutRec AS OBJECT
-        oCanPutRec := oRdd:Info(DBInfo.DBI_CANPUTREC, NULL)
-        IF oCanPutRec IS LOGIC .AND. (LOGIC) oCanPutRec
-            info:Flags |= DbTransInfo.PutRec
+        IF CoreDb.BuildTrans( info, fldNames, oRDD, oDest )
+            info:Flags |= DbTransInfoFlags.SameStructure
+            LOCAL oCanPutRec AS OBJECT
+            oCanPutRec := oRdd:Info(DBInfo.DBI_CANPUTREC, NULL)
+            IF oCanPutRec IS LOGIC .AND. (LOGIC) oCanPutRec 
+                info:Flags |= DbTransInfoFlags.CanPutRec
+            ENDIF
         ENDIF
         info:Scope:ForBlock := uCobFor
         info:Scope:WhileBlock := uCobWhile
@@ -1706,27 +1706,26 @@ CLASS XSharp.CoreDb
         
     STATIC METHOD TransRec(nDest AS DWORD,fldNames AS _FieldNames) AS LOGIC
         RETURN CoreDb.Do ({ =>
-        LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
-        LOCAL dbti := DbTransInfo{ fldNames:fieldCount} AS DBTRANSINFO
-        LOCAL oDest := RUntimeState.Workareas.GetRDD(nDest) AS IRDD
-        IF oDest == NULL_OBJECT
-            RddError.PostNoTableError(__FUNCTION__)
-        ENDIF
-        dbti:Destination := oDest
-        dbti:ItemCount := fldNames:FieldCount
-        IF !CoreDb.BuildTrans( dbti, fldNames, oRDD, oDest )
-            RddError.PostArgumentError( __FUNCTION__, EDB_DBSTRUCT, nameof(fldNames), 2, <OBJECT>{fldNames} )
-        ENDIF
-        LOCAL oCanPutRec AS OBJECT
-        dbti:Flags |= DBTRANSINFO.Match
-        oCanPutRec := oRDD:Info( DBInfo.DBI_CANPUTREC, NULL )
-        IF oCanPutRec != NULL .AND. (LOGIC) oCanPutRec
-            oCanPutRec := oDest:Info(DBInfo.DBI_CANPUTREC, NULL )
-            IF oCanPutRec != NULL .AND. (LOGIC) oCanPutRec
-                dbti:Flags |= DBTRANSINFO.PutRec
+            LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
+            LOCAL dbti := DbTransInfo{ fldNames:fieldCount} AS DBTRANSINFO
+            LOCAL oDest := RUntimeState.Workareas.GetRDD(nDest) AS IRDD
+            IF oDest == NULL_OBJECT
+                RddError.PostNoTableError(__FUNCTION__)
             ENDIF
-        ENDIF
-        RETURN oRDD:TransRec( dbti )
+            dbti:Destination := oDest
+            dbti:ItemCount := fldNames:FieldCount
+            IF CoreDb.BuildTrans( dbti, fldNames, oRDD, oDest )
+                dbti:Flags |= DbTransInfoFlags.SameStructure
+                LOCAL oCanPutRec AS OBJECT
+                oCanPutRec := oRDD:Info( DBInfo.DBI_CANPUTREC, NULL )
+                IF oCanPutRec != NULL .AND. (LOGIC) oCanPutRec
+                    oCanPutRec := oDest:Info(DBInfo.DBI_CANPUTREC, NULL )
+                    IF oCanPutRec != NULL .AND. (LOGIC) oCanPutRec
+                        dbti:Flags |= DbTransInfoFlags.CanPutRec
+                    ENDIF
+                ENDIF
+            ENDIF
+            RETURN oRDD:TransRec( dbti )
         })
         
         /// <summary>

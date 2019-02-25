@@ -371,6 +371,7 @@ STRUCTURE DbSortItem
 
 END STRUCTURE
 
+
 /// <summary>Helper class to store information needed for the global transfer of data items from one work area to another. </summary> 
 CLASS DbTransInfo  
 	/// <summary>A DbScopeInfo object describing the limits of the scope of the transfer. </summary>
@@ -382,11 +383,7 @@ CLASS DbTransInfo
 	/// <summary>An array of DbTransItem structures defining the items to transfer to the destination work area. This is usually a list of column mappings from the source to the destination. </summary>
 	PUBLIC Items		AS DbTransItem[]
 	/// <summary>Transfer attributes specified using one or more of the constants Match or PutRec. </summary>
-	PUBLIC Flags		AS LONG
-	/// <summary>Both this work area and the destination work area have identical row structures (i.e., all columns match).</summary>
-	PUBLIC CONST Match	:= 1 AS LONG
-	/// <summary>The RDD has the ability to transfer an entire row.</summary>
-	PUBLIC CONST PutRec	:= 2 AS LONG
+	PUBLIC Flags		AS DbTransInfoFlags
     /// <summary>Number of items in the Items array.</summary>
     PUBLIC PROPERTY ItemCount AS LONG AUTO
     /// <summary>Construct a DbTransInfo object.</summary>
@@ -394,6 +391,7 @@ CLASS DbTransInfo
         SELF:Items := DbTransItem[]{itemCount}
         SELF:Scope := DbScopeInfo{}
         SELF:ItemCount := itemCount
+        SELF:Flags := DbTransInfoFlags.None
 END CLASS
 
 /// <summary>Helper structure to store information about a single piece of data (usually a column) to transfer from one work area to another.</summary> 

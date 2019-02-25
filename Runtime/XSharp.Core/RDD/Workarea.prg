@@ -616,7 +616,7 @@ BEGIN NAMESPACE XSharp.RDD
 			
 		VIRTUAL METHOD GetField(nFldPos AS INT) AS RDDFieldInfo
 			IF SELF:_FieldIndexValidate(nFldPos)
-				RETURN SELF:_Fields[nFldPos]
+				RETURN SELF:_Fields[nFldPos-1]
 			ENDIF          
 			RETURN NULL
 			
@@ -887,13 +887,11 @@ BEGIN NAMESPACE XSharp.RDD
                 LOCAL oValue AS OBJECT
                 oDest := info:Destination
                 result := oDest:Append(TRUE)
-                IF _AND(info:Flags , DbTransInfo.PutRec) != 0
-                    VAR buffer := SELF:GetRec()
-                    result := oDest:PutRec(buffer)
+                IF info:Flags:HasFlag(DbTransInfoFlags.CanPutRec) 
+                    VAR buffer  := SELF:GetRec()
+                    result      := oDest:PutRec(buffer)
                 ELSE
-                    FOR VAR i := 0 TO info:ItemCount
-                        LOCAL oItem AS DbTransItem
-                        oItem  := info:Items[i]
+                    FOREACH oItem AS DbTransItem IN info:Items
                         oValue := SELF:GetValue(oItem:Source)
                         result := oDest:PutValue(oItem:Destination, oValue)
                         IF ! result

@@ -104,9 +104,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_Header:Version    := 0
             SELF:_Header:KeySize    := _keySize
             SELF:_Header:KeyExprPos := 0
-            SELF:_Header:KeyExprLen := (WORD)(_KeyExpr:Length +1)
+            SELF:_Header:KeyExprLen := (WORD)(_KeyExpr:Length + 1)
+            SELF:_Header:ForExprPos := (WORD) (SELF:_Header:KeyExprLen )
             SELF:_Header:KeyExpression := _KeyExpr
-            SELF:_Header:ForExprPos     := (WORD) (SELF:_Header:KeyExprPos + SELF:_Header:KeyExprLen + 1)
             VAR options := CdxOptions.Compact + CdxOptions.Tag
             IF SELF:_Unique
                 options |= CdxOptions.Unique
@@ -259,11 +259,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PRIVATE METHOD _CreateEmpty() AS LOGIC
             LOCAL oPage AS CdxLeafPage
-            LOCAL buffer AS BYTE[]
-            buffer := SELF:_Bag:AllocBuffer()
-            oPage := CdxLeafPage{SELF:_Bag, -1, buffer, SELF:_keySize}
-	        oPage:Write()
-            SELF:ClearStack()
+            oPage := SELF:_newLeafPage()
+            SELF:_finishCreate()
             RETURN TRUE
 
         INTERNAL METHOD _InitSort(lRecCount AS LONG, sourceIndex OUT LONG, lAscii OUT LOGIC) AS RDDSortHelper
@@ -359,15 +356,26 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_newLeafPage()
                 result := sortHelper:Write(SELF)
             ENDIF
+            SELF:_finishCreate()
             sortHelper:Clear()
             sortHelper := NULL
             RETURN result
             
             // IRddSortWriter Interface, used by RddSortHelper
         PUBLIC METHOD WriteSorted(si AS DbSortInfo , record AS SortRecord) AS LOGIC
-            SELF:_oneItem:Recno         := record:Recno
-            SELF:_oneItem:KeyBytes      := record:Data
-            RETURN SELF:_placeItem(SELF:_oneItem)
+          // place item on current leaf node.
+            // When Leafnode is full then allocate a new leaf node
+            LOCAL oLeaf AS CdxLeafPage
+            oLeaf := _currentLeaf
+            IF ! oLeaf:Add(record:Recno, record:Data)
+                // this means that it did not fit
+                oLeaf := SELF:_newLeafPage()
+                IF ! oLeaf:Add(record:Recno, record:Data)
+                    // Exception, this should not happen
+                    RETURN FALSE
+                ENDIF
+            ENDIF
+            RETURN TRUE            
             
             
         INTERNAL METHOD _CreateUnique(ordCondInfo AS DbOrderCondInfo ) AS LOGIC
@@ -428,7 +436,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     // implement later becayse this will create a list of branches and a level above it.
                 ENDIF
             ELSE
-                // register as root page
+                SELF:Header:RootPage := oLeafs[0]:PageNo
+                SELF:Header:Write()
             ENDIF
             RETURN TRUE
 
@@ -460,26 +469,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 _currentLeaf:Right  := oLeaf
             ENDIF
             _currentLeaf := oLeaf
+            oLeaf:Tag := SELF
             RETURN oLeaf
  
-        PRIVATE METHOD _placeItem(lpNode AS CdxNode ) AS LOGIC
-            // place item on current leaf node.
-            // When Leafnode is full then allocate a new leaf node
-            LOCAL oLeaf AS CdxLeafPage
-            oLeaf := _currentLeaf
-            IF oLeaf == NULL // should not happen !
-                oLeaf  := SELF:_newLeafPage()
-            ENDIF
-            IF ! oLeaf:Add(lpNode)
-                // this means that it did not fit
-                oLeaf := SELF:_newLeafPage()
-                IF ! oLeaf:Add(lpNode)
-                    // Exception, this should not happen
-                    RETURN FALSE
-                ENDIF
-            ENDIF
-            RETURN TRUE            
-            
         PUBLIC METHOD Truncate() AS LOGIC
             // Find all pages of the tag and delete them
             // then also delete the tag header and return everything to the OrderBag 

@@ -282,10 +282,29 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #endregion
 
 
-      
-        INTERNAL METHOD Add(node AS CdxNode) AS LOGIC
-            // Todo
+
+        // This method is called during Index creation.
+        INTERNAL METHOD Add(recno AS LONG, data AS BYTE[]) AS LOGIC
+            LOCAL nTrailCount AS BYTE
+            LOCAL nDupCount   AS BYTE
+            nTrailCount := _getTrailCount(data)
+            IF SELF:NumKeys == 0
+                nDupCount := 0
+            ELSE
+                nDupCount := _getDupCount(data, nTrailCount)
+            ENDIF
+            LOCAL nBytesToCopy := SELF:_keyLen - nDupCount - nTrailCount AS WORD
+            IF SELF:Freespace < (nBytesToCopy+SELF:DataBytes)
+                RETURN FALSE
+            ENDIF
+            MemCopy(data, _prevData, _KeyLen)
+            LOCAL nStart := CDXLEAF_HEADERLEN + SELF:Freespace - nBytesToCopy AS INT
+            SELF:_placeRecno(SELF:NumKeys, recno, SELF:_makeDupTrail(nDupCount, nTrailCount))
+            MemCopy(data, nDupCount, buffer, nStart,  nBytesToCopy)
+            SELF:Freespace := (WORD) (SELF:Freespace -  nBytesToCopy - SELF:DataBytes)
+            SELF:NumKeys += 1
             RETURN TRUE
+
         INTERNAL METHOD Insert(nPos AS LONG, node AS CdxNode) AS LOGIC
             RETURN TRUE
         INTERNAL METHOD Delete(nPos AS LONG) AS LOGIC
@@ -307,10 +326,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             MemCopy(bValue, 0, _keys, nOffSet, Math.Min(_KeyLen, bValue:Length))
             RETURN
             
-        PUBLIC METHOD SetRecno(nPos AS Int32, lValue AS LONG) AS VOID
-            RETURN 
-
-       PRIVATE METHOD _getTrailCount(data AS BYTE[]) AS LONG
+   
+       PRIVATE METHOD _getTrailCount(data AS BYTE[]) AS BYTE
            LOCAL bTrail AS BYTE
            IF Tag != NULL
                 bTrail := (BYTE) (IIF(Tag:KeyType == __UsualType.String, 32, 0) )
@@ -319,23 +336,23 @@ BEGIN NAMESPACE XSharp.RDD.CDX
            ENDIF
            LOCAL iLastNonDup AS LONG
            iLastNonDup  := data:Length
-           FOR VAR i := iLastNonDup DOWNTO 0 STEP -1
+           FOR VAR i := iLastNonDup-1 DOWNTO 0 
                 IF data[i] != bTrail
                     iLastNonDup := i
                     EXIT
                 ENDIF
            NEXT
-           RETURN data:Length - iLastNonDup
+           RETURN (BYTE)  (data:Length - iLastNonDup -1)
 
-        PRIVATE METHOD _getDupCount(data AS BYTE[], trailCount AS LONG) AS LONG
+        PRIVATE METHOD _getDupCount(data AS BYTE[], trailCount AS LONG) AS BYTE
            LOCAL last := data:Length - trailCount  AS LONG
            LOCAL dup AS LONG
-           FOR dup := 0 TO last -1 STEP 1
+           FOR dup := 0 UPTO last -1 
               IF data[dup] != _prevData[dup]
-                 RETURN dup
+                 EXIT
               ENDIF
            NEXT
-           RETURN dup
+           RETURN (BYTE) dup
 
        PRIVATE METHOD _makeDupTrail(dupCount AS BYTE, trailCount AS BYTE) AS WORD
             LOCAL w     := wordStruct{} AS wordStruct

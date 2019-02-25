@@ -652,7 +652,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE METHOD _Seek(seekInfo AS DBSEEKINFO , abNewKey AS BYTE[] ) AS LOGIC
             LOCAL recno AS LONG
             LOCAL result AS LOGIC
-            LOCAL cmpMinMax AS LONG
             LOCAL fSoft AS LOGIC
             LOCAL recnoOk AS LONG
             LOCAL locked AS LOGIC
@@ -668,7 +667,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             recno := 0
             result := FALSE
-            cmpMinMax := 0
             fSoft := FALSE
             recnoOK := 0
             locked := FALSE
@@ -717,8 +715,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                                     SELF:_newKeyBuffer[len] := Byte.MaxValue
                                     temp:= SELF:_currentKeyBuffer[len]
                                     SELF:_currentKeyBuffer[len] := 1
-                                    cmpMinMax := SELF:__Compare(abNewKey, SELF:_currentKeyBuffer, padLen)
-                                    IF strCmp < 0 .AND. cmpMinMax > 0
+                                    strCmpMaxMin := SELF:__Compare(abNewKey, SELF:_currentKeyBuffer, padLen)
+                                    IF strCmp < 0 .AND. strCmpMaxMin > 0
                                         found := TRUE
                                     ENDIF
                                     IF !found
@@ -734,7 +732,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                                     temp:= SELF:_currentKeyBuffer[len]
                                     SELF:_currentKeyBuffer[len] := Byte.MaxValue
                                     strCmpMaxMin := SELF:__Compare(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, padLen)
-                                    IF strCmp > 0 .AND. cmpMinMax < 0
+                                    IF strCmp > 0 .AND. strCmpMaxMin < 0
                                         found := TRUE
                                     ENDIF
                                     IF !found

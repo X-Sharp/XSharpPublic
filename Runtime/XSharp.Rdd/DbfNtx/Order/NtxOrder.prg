@@ -333,7 +333,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             FFlush( SELF:_hFile )
             RETURN TRUE
-            
+
         PUBLIC METHOD Commit() AS LOGIC
             SELF:GoCold()
             IF !SELF:Shared .AND. SELF:_Hot .AND. SELF:_hFile != F_ERROR

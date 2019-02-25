@@ -48,7 +48,7 @@ There are 3 types of tree pages: Branch (0), Root (1) and Leaf(2).
 
 BRANCH Page
 - Branch pages are used to link the tree. Their contents is
-  BYTE     attr    [ 2 ];    node type 
+  BYTE     attr    [ 2 ];    node type = 1 for the top level branch and 0 for other branches
   BYTE     nKeys   [ 2 ];    number of keys 
   BYTE     leftPtr [ 4 ];    offset of left node or -1 
   BYTE     rightPtr[ 4 ];    offset of right node or -1

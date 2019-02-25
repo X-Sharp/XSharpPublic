@@ -76,6 +76,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF lOk
                 SELF:_tags:Add(oTag)
                 SELF:_tagList:Add(oTag)
+                SELF:_tagList:Write()
+                
             ENDIF
             RETURN lOk
 

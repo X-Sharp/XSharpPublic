@@ -44,11 +44,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
         METHOD Add(oTag AS CdxTag) AS LOGIC
-            SELF:NumKeys += 1
-            SELF:SetRecno (SELF:NumKeys-1, oTag:header:PageNo)
-            VAR buffer := BYTE[]{oTag:OrderName:Length}
-            _SetString(buffer, 0, buffer:Length, oTag:OrderName)
-            SELF:SetKey(SELF:NumKeys-1, buffer)
+            LOCAL buffer AS BYTE[]
+            buffer := BYTE[]{ keyLength}
+            memset(buffer, 0, keyLength,32)
+            VAR name := oTag:OrderName
+            _SetString(buffer, 0, Math.Min(name:Length, keyLength), name)
+            SELF:Add(oTag:Header:PageNo, buffer)
             SELF:Write()
             RETURN TRUE
     END CLASS

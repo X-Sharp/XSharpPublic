@@ -100,7 +100,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Options        	AS CdxOptions AUTO
         INTERNAL PROPERTY LockOffSet     	AS LONG AUTO
         INTERNAL PROPERTY CurrentStack      AS RddStack GET  SELF:_stack[SELF:_topStack]
-
+        INTERNAL PROPERTY RootPage          AS LONG AUTO
         INTERNAL PROPERTY MaxKeysPerPage    AS WORD GET _maxKeysPerPage
 
         // Scopes

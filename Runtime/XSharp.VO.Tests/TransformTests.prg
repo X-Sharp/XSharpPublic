@@ -100,6 +100,16 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal("    124,00", Transform (     124 , "@R 999,999.99" )  )  
             Assert.Equal("   -124,00", Transform (    -124 , "@R 999,999.99" )  ) 
 
+            Assert.Equal("  1", Transform(1, 	"@Z 999")  ) 
+            Assert.Equal(" 10", Transform(10, 	"@Z 999")  ) 
+            Assert.Equal(" 20", Transform(20, 	"@Z 999")  ) 
+            Assert.Equal("100", Transform(100, 	"@Z 999")  ) 
+            Assert.Equal("999", Transform(999, 	"@Z 999")  ) 
+
+            Assert.Equal(" ", 		Transform(0, "@Z 9")  ) 
+            Assert.Equal("   ", 	Transform(0, "@Z 999")  ) 
+            Assert.Equal("     ", 	Transform(0, "@Z 99999")  ) 
+
         [Fact, Trait("Category", "Unformat")];
         METHOD UnformatCTest AS VOID
             Assert.Equal("8161XV", Unformat("8161 XV", "@R! 9999 AA","C"))

@@ -30,12 +30,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         METHOD Initialize() AS VOID
             SELF:FreeList   := 0
-            SELF:KeySize  := 10
+            SELF:KeySize    := 10
             SELF:RootPage   := CDXPAGE_SIZE *2
             SELF:Options    := CdxOptions.Compact | CdxOptions.Header| CdxOptions.Tag
             SELF:Signature  := 1
             SELF:KeyExprLen := 1
-            SELF:ForExprPos    := 1
-            SELF:ForExprLen   := 1
+            SELF:ForExprPos := 1
+            SELF:ForExprLen := 1
 	END CLASS
 END NAMESPACE 

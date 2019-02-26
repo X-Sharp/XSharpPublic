@@ -141,7 +141,7 @@
     <Compile Include="DbfCdx\CdxEnums.prg" />
     <Compile Include="DbfCdx\CdxOrderBag.prg" />
     <Compile Include="DbfCdx\CdxOrderBagList.prg" />
-    <Compile Include="DbfCdx\Pages\CdxBranchePage.prg" />
+    <Compile Include="DbfCdx\Pages\CdxBranchPage.prg" />
     <Compile Include="DbfCdx\Pages\CdxFileHeader.prg" />
     <Compile Include="DbfCdx\Pages\CdxLeafPage.prg" />
     <Compile Include="DbfCdx\Pages\CdxPage.prg" />

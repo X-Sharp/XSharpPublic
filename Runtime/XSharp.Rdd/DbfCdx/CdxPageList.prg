@@ -43,7 +43,7 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             SWITCH nType
             CASE 0  // Branche
             CASE 1  // Root
-                 oResult :=  CdxBranchePage{SELF:_bag, nPage, buffer,nKeyLen}
+                 oResult :=  CdxBranchPage{SELF:_bag, nPage, buffer,nKeyLen}
             CASE 2  // Leaf
             CASE 3  // List of Tags
                 oResult := CdxLeafPage{SELF:_bag, nPage, buffer, nKeyLen}
@@ -66,10 +66,10 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
                 FWrite(_hDump, page:Dump())
                 page:Dumped := TRUE
             ENDIF
-            IF page IS CdxBranchePage
-                VAR tPage := (CdxBranchePage) page
+            IF page IS CdxBranchPage
+                VAR tPage := (CdxBranchPage) page
                 IF tpage:HasRight
-                   tpage := GetPage(tpage:RightPtr, tpage:KeyLength,tPage:Tag)
+                   tpage := GetPage(tpage:RightPtr, tpage:Tag:KeyLength,tPage:Tag)
                 ENDIF
             ENDIF
             RETURN

@@ -510,7 +510,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     bufferLen := SELF:_keySize
                 ENDIF
             ENDIF
-            RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, SELF:_rootPage, SELF:_Header)
+            RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, SELF:_rootPage, NULL)
             
             
         PRIVATE METHOD _locate(keyBuffer AS BYTE[] , bufferLen AS LONG , searchMode AS SearchMode , pageOffset AS LONG , oParent AS CdxPage) AS LONG
@@ -599,7 +599,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             topStack:Page   := pageOffset
             topStack:Count  := nodeCount
             
-            IF page IS CdxBranchePage .AND. node:ChildPageNo != 0
+            IF page IS CdxBranchPage .AND. node:ChildPageNo != 0
                 RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, node:ChildPageNo, page)
             ENDIF
             

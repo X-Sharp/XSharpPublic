@@ -80,11 +80,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROTECTED _lenShift  AS INT
         PROTECTED _keys      AS BYTE[]
         PROTECTED _prevData  AS BYTE[]
-        PROTECTED _right  := NULL AS CdxLeafPage
-        PROTECTED _left   := NULL AS CdxLeafPage
 
         INTERNAL CONSTRUCTOR( bag AS CdxOrderBag, page AS CdxPage)
-            SELF(bag, page:PageNo, page:Buffer, page:KeyLength)
+            SELF(bag, page:PageNo, page:Buffer, (WORD) IIF(page:Tag != NULL, page:Tag:KeyLength,0))
 
 	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS WORD)
             SUPER(bag, nPage, buffer)
@@ -93,10 +91,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _prevData   := BYTE[]{nKeyLen}
 
             RETURN
+        INTERNAL METHOD InitBlank() AS VOID
+            SELF:Initialize(_keyLen)
 
-        INTERNAL VIRTUAL METHOD Initialize(keyLength AS WORD) AS VOID
+        PROTECTED VIRTUAL METHOD Initialize(keyLength AS WORD) AS VOID
             SELF:PageType   := CdxPageType.Leaf
-            SELF:NumKeys    := 0
             SELF:LeftPtr    := SELF:RightPtr   := -1
             SELF:Freespace  := CDXLEAF_BYTESFREE
             _keyLen         := keyLength
@@ -115,19 +114,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 			VAR Ok := SUPER:Read()
             Debug.Assert (SELF:PageType:HasFlag(CdxPageType.Leaf))
             RETURN ok
-
-        PROTECTED INTERNAL VIRTUAL METHOD Write() AS LOGIC
-            IF SELF:Right != NULL
-                SELF:RightPtr := SELF:Right:PageNo
-            ELSE
-                SELF:RightPtr := -1
-            ENDIF
-            IF SELF:Left  != NULL
-                SELF:LeftPtr := SELF:Left:PageNo
-            ELSE
-                SELF:LeftPtr := -1
-            ENDIF
-            RETURN SUPER:Write()
 
 
 #region ICdxKeyValue
@@ -163,19 +149,22 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL nStart    AS Int32
             LOCAL nStep     AS Int32
             LOCAL nLast     AS Int32
+            LOCAL trailchar  AS BYTE
             VAR dupMask    := SELF:DuplicateMask
             VAR dupBits    := SELF:DuplicateBits
             VAR trailMask  := SELF:TrailingMask
             VAR recnoBits  := SELF:RecordBits
+
             
             // First key starts at end of page
             nStart := CDXPAGE_SIZE
             _keys    := BYTE[]{SELF:NumKeys * _KeyLen}
             IF SELF:Tag != NULL
-                MemSet(_keys, 0, _keys:Length, (BYTE) IIF (Tag:KeyType == __UsualType.String, 32, 0))
+                trailChar :=  (BYTE) IIF (Tag:KeyType == __UsualType.String, 32, 0)
             ELSE
-                MemSet(_keys, 0, _keys:Length, 32)
+                trailChar := 32
             ENDIF
+            MemSet(_keys, 0, _keys:Length, trailChar)
             nOffSet := CDXLEAF_HEADERLEN
             nStep := SELF:DataBytes
             nLast := SELF:NumKeys-1
@@ -186,6 +175,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 nDup    := IIF(nI ==0, 0,  _AND(iTemp , dupMask))
                 nTrail  := (BYTE) _AND((iTemp >> dupBits) , trailMask)
                 nKey    := _KeyLen - nTrail - nDup
+                IF nTrail > 0
+                    MemSet(aBytes, _KeyLen - nTrail, nTrail, trailChar)
+                ENDIF
                 // Copy to aBytes from pos nDup
                 MemCopy(Buffer, nStart - nKey, aBytes, nDup, nKey)
                 nStart := nStart - nKey
@@ -265,8 +257,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY BuffLen      AS WORD  GET CDXLEAF_BYTESFREE
 
         INTERNAL PROPERTY KeyLength AS WORD GET _keyLen
-        INTERNAL PROPERTY Right  AS CdxLeafPage GET _right  SET _right  := VALUE
-        INTERNAL PROPERTY Left   AS CdxLeafPage GET _left   SET _left   := VALUE
 
             
         // Retrieve an index node in the current Page, at the specified position

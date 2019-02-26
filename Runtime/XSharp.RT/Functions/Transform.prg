@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -407,7 +407,7 @@ INTERNAL STATIC CLASS TransFormHelpers
                         nSrc++
                     ELSEIF nPictures:HasFlag(TransFormPictures:ZeroBlank) .AND. cType == c'N' .AND. srcChar == c'0'
                         LOCAL lHasDig := FALSE AS LOGIC
-                        FOR VAR x := 0 TO nDest
+                        FOR VAR x := __ARRAYBASE__ TO nDest
                             IF Char.IsDigit(result[x])
                                 lHasDig := TRUE
                                 EXIT

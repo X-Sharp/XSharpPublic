@@ -1432,11 +1432,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		// TECH-TFF4K29132, VO-incompatible results with workarea numbering
 		[Fact, Trait("Category", "DBF")];
 		METHOD WorkareaNums_2() AS VOID
-			LOCAL aDbf AS ARRAY
 			LOCAL cDBF AS STRING
 			LOCAL aFields AS ARRAY 
-			LOCAL aValues AS ARRAY
-			LOCAL i AS DWORD       
 			DBCloseAll()
 			
 			cDBF := GetTempFileName()
@@ -1477,7 +1474,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		// TECH-02UU54BZ37, Problem with DBApp() function
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBApp_test() AS VOID
-			LOCAL aDbf AS ARRAY
 			LOCAL cDBF AS STRING
 			LOCAL cDBFto AS STRING
 			LOCAL aFields AS ARRAY 

@@ -524,8 +524,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD Cdx_Issues() AS VOID
-			Cdx_Issues_Helper(TRUE)
-			Cdx_Issues_Helper(FALSE)
+			#warning Disabled sample, updates index fields
+//			Cdx_Issues_Helper(TRUE)
+//			Cdx_Issues_Helper(FALSE)
 		RETURN
 		PRIVATE METHOD Cdx_Issues_Helper(lUseIndexFormVO AS LOGIC) AS VOID
 			LOCAL cDbf AS STRING

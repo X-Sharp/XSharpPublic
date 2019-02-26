@@ -49,6 +49,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SUPER( oRdd )
             SELF:_oRdd     := oRDD
             SELF:_PageList := CdxPageList{SELF}
+            SELF:_OpenInfo := oRDD:_OpenInfo
             
         #region RDD Overloads
             /// <inheritdoc />		
@@ -74,8 +75,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             oTag := CdxTag{SELF}
             VAR lOk := oTag:Create(info)
             IF lOk
+                // Read the tag from disk to get all the normal stuff
+                oTag  := CdxTag{SELF,oTag:Header:PageNo, oTag:OrderName}
                 SELF:_tags:Add(oTag)
                 SELF:_tagList:Add(oTag)
+                SELF:_tagList:Write()
+                
             ENDIF
             RETURN lOk
 
@@ -127,6 +132,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF File(cFullName)
                 RETURN FALSE
             ENDIF
+            SELF:FullPath := cFullName
             SELF:_hFile    := FCreate(cFullName)
             // Allocate Root Page
             _root   := CdxFileHeader{SELF}
@@ -134,9 +140,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _pageList:Add(_root)
             SELF:Write(_root)
             // taglist page
-            VAR page := SELF:GetPage(_root:RootPage, _root:KeyLength, NULL)
-            _tagList := CdxTagList{SELF,  page}
-            _tagList:Initialize(10)
+            VAR page := SELF:GetPage(_root:RootPage, _root:KeySize, NULL)
+            _tagList := CdxTagList{SELF,  page, _root:KeySize}
+            _taglist:InitBlank()
             SELF:Write(_tagList)
             _tags := List<CdxTag>{}
             // we now have a 
@@ -154,7 +160,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD Close() AS LOGIC
             FOREACH oTag AS CdxTag IN _tags
                 oTag:GoCold()
+                oTag:Close()
             NEXT
+            _tags:Clear()
             SELF:_PageList:Flush(FALSE)
             FClose(SELF:_hFile)
             RETURN TRUE
@@ -192,8 +200,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _root:Read()
             SELF:SetPage(_root)
             VAR nTagList := SELF:_root:RootPage
-            VAR page     := SELF:GetPage(nTagList, _root:KeyLength, NULL)
-            _tagList := CdxTagList{SELF,  page}
+            VAR page     := SELF:GetPage(nTagList, _root:KeySize, NULL)
+            _tagList := CdxTagList{SELF,  page, _root:KeySize}
             SELF:SetPage(_tagList)
             _tags := _tagList:ReadTags()
             // Compile expressions

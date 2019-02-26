@@ -19,8 +19,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	INTERNAL CLASS CdxTagList INHERIT CdxLeafPage
         PROTECTED _tags AS List<CdxTag>
 
-	    PROTECTED INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , page AS CdxPage)
-            SUPER(bag  , page)
+	    PROTECTED INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , page AS CdxPage, keyLen AS WORD)
+            SUPER(bag  , page:PageNo, page:Buffer, keyLen)
 
         INTERNAL METHOD ReadTags() AS List<CdxTag>
             _tags := List<CdxTag>{}
@@ -37,18 +37,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN _tags
         PROPERTY Tags AS IList<cdxTag> GET _tags
 
-        INTERNAL OVERRIDE METHOD Initialize(keyLength AS WORD) AS VOID
+        PROTECTED VIRTUAL METHOD Initialize(keyLength AS WORD) AS VOID
             SUPER:Initialize(keyLength)
             _tags := List<CdxTag>{}
             SELF:PageType := CdxPageType.TagList
 
 
         METHOD Add(oTag AS CdxTag) AS LOGIC
-            SELF:NumKeys += 1
-            SELF:SetRecno (SELF:NumKeys-1, oTag:header:PageNo)
-            VAR buffer := BYTE[]{oTag:OrderName:Length}
-            _SetString(buffer, 0, buffer:Length, oTag:OrderName)
-            SELF:SetKey(SELF:NumKeys-1, buffer)
+            LOCAL buffer AS BYTE[]
+            buffer := BYTE[]{ keyLength}
+            memset(buffer, 0, keyLength,32)
+            VAR name := oTag:OrderName
+            _SetString(buffer, 0, Math.Min(name:Length, keyLength), name)
+            SELF:Add(oTag:Header:PageNo, buffer)
             SELF:Write()
             RETURN TRUE
     END CLASS

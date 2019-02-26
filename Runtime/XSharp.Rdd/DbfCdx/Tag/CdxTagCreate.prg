@@ -536,7 +536,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF oRoot != NULL
                 SELF:SetRoot(oRoot)
             ELSE
-                SELF:SetRoot(oParent)
+                SELF:SetRoot(CurrentLeaf)
             ENDIF
             SELF:Clear()
             RETURN TRUE

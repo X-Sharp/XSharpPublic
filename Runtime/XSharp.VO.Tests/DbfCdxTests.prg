@@ -120,6 +120,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName("test")
+			FErase(cFileName + ".cdx")
 
 			RDDSetDefault("DBFCDX")
 
@@ -158,6 +159,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD AppendShared() AS VOID
 			LOCAL cDbf AS STRING
 			cDbf := GetTempFileName("testAppendShared")
+			FErase(cDbf + ".cdx")
+
 			RDDSetDefault( "DBFCDX" )
 			DBCreate(cDbf , { {"TEST","C",10,0} })
 			
@@ -179,6 +182,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD AliasNameReuse() AS VOID
 			LOCAL cDbf AS STRING
 			cDbf := GetTempFileName("testdbf")
+			FErase(cDbf + ".cdx")
 			
 			RDDSetDefault( "DBFCDX" )
 			
@@ -197,6 +201,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD SavingDecimalValues() AS VOID
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName()
+			FErase(cFileName + ".cdx")
 
 			RDDSetDefault("DBFCDX")
 
@@ -219,6 +224,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBCommitAfterFieldput() AS VOID
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName()
+			FErase(cFileName + ".cdx")
 
 			RDDSetDefault("DBFCDX")
 
@@ -239,6 +245,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD FieldNameSym() AS VOID
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName()
+			FErase(cFileName + ".cdx")
 
 			RDDSetDefault("DBFCDX")
 
@@ -258,6 +265,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBRLockList() AS VOID
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName()
+			FErase(cFileName + ".cdx")
 
 			RDDSetDefault("DBFCDX")
 
@@ -282,6 +290,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBFilter() AS VOID
 			LOCAL cDbf AS STRING
 			cDbf := GetTempFileName()
+			FErase(cDbf + ".cdx")
 
 			RDDSetDefault("DBFCDX")
 
@@ -334,6 +343,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cDbf AS STRING
 			LOCAL l AS LOGIC
 			cDbf := GetTempFileName()
+			FErase(cDbf + ".cdx")
+			
 			DBCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFCDX", TRUE)
 			DBAppend()
 			FieldPut(1, "ABC")
@@ -352,6 +363,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBFieldInfo_test() AS VOID
 			LOCAL cDbf AS STRING
 			cDbf := GetTempFileName()
+			FErase(cDbf + ".cdx")
+			
 			DBCreate(cDbf, {{"NFIELD","N",10,3}}, "DBFCDX", TRUE)
 			DBAppend()
 			FieldPut(1, "ABC")
@@ -369,6 +382,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBRecordInfo_test2() AS VOID
 			LOCAL cDbf AS STRING
 			cDbf := GetTempFileName()
+			FErase(cDbf + ".cdx")
+			
 			DBCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFCDX", TRUE)
 			DBAppend()
 			FieldPut(1, "ABC")
@@ -394,6 +409,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBContinue_test() AS VOID
 			LOCAL cDbf AS STRING
 			cDbf := GetTempFileName()
+			FErase(cDbf + ".cdx")
 
 			RDDSetDefault("DBFCDX")
 
@@ -482,6 +498,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD Save_NULL_DATE() AS VOID
 			LOCAL cDbf AS STRING
 			cDbf := GetTempFileName()
+			FErase(cDbf + ".cdx")
 
 			RDDSetDefault("DBFCDX")
 
@@ -649,6 +666,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD WorkareaNums() AS VOID
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName()
+			FErase(cFileName + ".cdx")
 
 			RDDSetDefault("DBFCDX")
 
@@ -672,6 +690,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBRI_LOCKED_test() AS VOID
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName()
+			FErase(cFileName + ".cdx")
 
 			RDDSetDefault("DBFCDX")
 
@@ -724,6 +743,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBCreate_test() AS VOID
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName()
+			FErase(cFileName + ".cdx")
 			
 			RDDSetDefault("DBFCDX")
 
@@ -749,6 +769,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			RDDSetDefault("DBFCDX")
 
 			cDbf := GetTempFileName()
+			FErase(cDbf + ".cdx")
 			
 			DBCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 }})
 			DBUseArea(,,cDbf,,TRUE)
@@ -832,6 +853,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			cDBF := GetTempFileName("test")
 			cCDX := cDBF + ".cdx"
+			FErase(cCdx)
 			
 			DBCreate( cDBF , {{"ID" , "C" , 5 , 0 }})
 			DBUseArea(,,cDBF)
@@ -904,23 +926,24 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD OrdScope_test_with_Ordinal_Collation() AS VOID
 			LOCAL cDbf AS STRING
 			cDbf := GetTempFileName()
+			FErase(cDbf + ".cdx")
 			
 			RDDSetDefault("DBFCDX")
 
 			LOCAL uCollation AS USUAL
 			uCollation := SetCollation(#ORDINAL)
 			
-			DBCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
+			DBCreate( cDbf, {{"NFIELD" , "N" , 5 , 0 }})
 			DBUseArea(,"DBFCDX",cDbf)
 			FOR LOCAL n := 1 AS INT UPTO 20
 				DBAppend()
 				FieldPut(1,n)
 			NEXT
-			DBCreateIndex(cDbf , "NFIELD")
+			DBCreateIndex(cDbf + ".cdx" , "NFIELD")
 			DBCloseArea()
 			
 			DBUseArea(,"DBFCDX",cDbf)
-			DBSetIndex ( cDbf )
+			DBSetIndex ( cDbf + ".cdx" )
 			Assert.Equal( (INT) DBOrderInfo( DBOI_KEYCOUNT ) , 20)
 			Assert.Equal( (INT) UsualType( DBOrderInfo( DBOI_KEYCOUNT )  ) , 1) // first time returns 6
 			Assert.Equal( (INT) UsualType( DBOrderInfo( DBOI_KEYCOUNT )  ) , 1) // second time it returns 1 correctly
@@ -929,10 +952,34 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			SetCollation(uCollation)
 		RETURN
 		
+		[Fact, Trait("Category", "DBF")];
+		METHOD CDX_index_without_extension() AS VOID
+			LOCAL cDbf AS STRING
+			cDbf := "noextension"
+			FErase(cDbf + ".cdx")
+			FErase(cDbf)
+			
+			RDDSetDefault("DBFCDX")
+			
+			DBCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
+			DBUseArea(,"DBFCDX",cDbf)
+			FOR LOCAL n := 1 AS INT UPTO 20
+				DBAppend()
+				FieldPut(1,n)
+			NEXT
+			DBCreateIndex(cDbf , "NFIELD")
+			Assert.True( File(cDbf + ".dbf" ) )
+			Assert.True( File(cDbf + ".cdx" ) )
+			Assert.False( File(cDbf) )
+			DBCloseArea()
+			
+		RETURN
 		
+
 		[Fact, Trait("Category", "DBF")];
 		METHOD CDX_test() AS VOID
-			LOCAL aValues AS ARRAY
+			#warning Disabled sample, updates index fields
+/*			LOCAL aValues AS ARRAY
 			LOCAL i AS DWORD
 			LOCAL cDBF, cCDX AS STRING
 			
@@ -941,6 +988,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			aValues := { "ssss" , "hhhh", "wwww" , "aaaa" }
 			cDBF := GetTempFileName()
 			cCDX := cDbf
+			FErase(cCdx + ".cdx")
 			DBCreate( cDBF , {{"LAST" , "C" , 20 , 0 } , ;
 								{"TEXT1" , "C" , 10 , 0 } , ;
 								{"NUM1" , "N" , 10 , 2 }})
@@ -999,7 +1047,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				END CASE
 				DBSkip ( 1 )
 			ENDDO
-			DBCloseArea()
+			DBCloseArea()*/
 		RETURN
 	
 	
@@ -1191,6 +1239,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			aValues := { 44 , 12, 34 , 21 }                                
 			cDBF := GetTempFileName("testcdx")
 			cCdx := cDbf + ".cdx"
+			FErase(cCdx)
 			IF System.IO.File.Exists(cCdx)
 				System.IO.file.Delete(cCdx)
 			END IF
@@ -1244,6 +1293,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			RDDSetDefault("DBFCDX")
 
 			cDBF := GetTempFileName()
+			FErase(cDbf + ".cdx")
 			aValues := { 1,4,2,3 }
 			DBCreate( cDBF , {{"NUM" , "N" ,5 , 0 } })
 			DBUseArea(,"DBFCDX",cDBF,,FALSE)
@@ -1274,6 +1324,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD Fields_Named_After_Funcs() AS VOID
 			LOCAL cDbf AS STRING
 			cDBF := GetTempFileName()
+			FErase(cDbf + ".cdx")
 			
 			RDDSetDefault("DBFCDX")
 
@@ -1306,6 +1357,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBCloseAll()
 			
 			cDBF := GetTempFileName()
+			FErase(cDbf + ".cdx")
 			DBCreate( cDBF , {{"FIELDN" , "N" ,5 , 0 } })
 			DBUseArea(,"DBFCDX",cDBF)
 			DBAppend()
@@ -1327,6 +1379,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			RDDSetDefault("DBFCDX")
 
 			cDBF := GetTempFileName("testnewer")
+			FErase(cDbf + ".cdx")
 			DBCreate( cDBF , {{"FIELDN" , "N" ,5 , 0 } , ;
 			{"FIELDS" , "C" ,15 , 0 } , ;
 			{"FIELDL" , "L" ,1 , 0 } , ;
@@ -1337,20 +1390,20 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBCloseArea()
 			
 			DBUseArea(,"DBFCDX",cDBF)
-			DBCreateIndex(cDbf, "FIELDN" )
+			DBCreateIndex(cDbf + ".cdx", "FIELDN" )
 			Assert.Equal(3, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 14 (), should be 3 (FLOAT)
 			DBCloseArea()
 			
 			DBUseArea(,"DBFCDX",cDBF,,FALSE)
-			DBCreateIndex(cDbf, "FIELDS" )
+			DBCreateIndex(cDbf + ".cdx", "FIELDS" )
 			Assert.Equal(7, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 18 (PTR), should be 7 (STRING)
 			
 			DBUseArea(,"DBFCDX",cDBF,,FALSE)
-			DBCreateIndex(cDbf, "FIELDD" )
+			DBCreateIndex(cDbf + ".cdx", "FIELDD" )
 			Assert.Equal(2, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 16, should be 2 (DATE)
 			
 			DBUseArea(,"DBFCDX",cDBF,,FALSE)
-			DBCreateIndex(cDbf, "FIELDL" )
+			DBCreateIndex(cDbf + ".cdx", "FIELDL" )
 			Assert.Equal(8, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 3 (FLOAT), should be 8
 			
 			DBCloseArea()
@@ -1425,7 +1478,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			DBCloseAll()
 			
-			cDBF := GetTempFileName()
+			cDBF := GetTempFileName("testcdx1")
+			FErase(cDbf + ".cdx")
 			aDbf := {{ "AGE" , "N" , 2 , 0 }}
 			DBCreate( cDBF , aDbf)
 			
@@ -1450,7 +1504,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			DBCloseAll()
 			
-			cDBF := GetTempFileName()
+			cDBF := GetTempFileName("testcdx1")
+			FErase(cDbf + ".cdx")
 			aDbf := {{ "AGE" , "N" , 2 , 0 }}
 			DBCreate( cDBF , aDbf)
 			
@@ -1491,7 +1546,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			DBCloseAll()
 			
-			cDBF := GetTempFileName()
+			cDBF := GetTempFileName("testcdx1")
+			FErase(cDbf + ".cdx")
 		    aDbf := {{ "AGE" , "N" , 2 , 0 }}
 		    DBCreate( cDBF , aDbf)
 		    DBUseArea(,,cDBF,,FALSE)
@@ -1524,6 +1580,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBCloseAll()
 			
 			cDBF := GetTempFileName()
+			FErase(cDbf + ".cdx")
+			
 		    aDbf := {{ "AGE" , "N" , 2 , 0 }}
 			DBCreate( cDBF , aDbf)
 
@@ -1562,6 +1620,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBCloseAll()
 			
 			cDBF := GetTempFileName()
+			FErase(cDbf + ".cdx")
 
 			RDDSetDefault("DBFCDX")
 			Assert.True( IndexKey() == "")

@@ -364,15 +364,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
            ELSE
                 bTrail := 32
            ENDIF
-           LOCAL iLastNonDup AS LONG
-           iLastNonDup  := data:Length
-           FOR VAR i := iLastNonDup-1 DOWNTO 0 
+           LOCAL iLastTrail AS LONG
+           iLastTrail  := 0
+           FOR VAR i := data:Length -1 DOWNTO 0 
                 IF data[i] != bTrail
-                    iLastNonDup := i
+                    iLastTrail := i
                     EXIT
                 ENDIF
            NEXT
-           RETURN (BYTE)  (data:Length - iLastNonDup -1)
+           RETURN (BYTE)  (data:Length - iLastTrail -1)
 
         PRIVATE METHOD _getDupCount(data AS BYTE[], trailCount AS LONG) AS BYTE
            LOCAL last := data:Length - trailCount  AS LONG

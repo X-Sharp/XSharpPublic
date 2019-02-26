@@ -304,6 +304,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 CASE DbFieldType.Character
                 CASE DbFieldType.Number
                 CASE DbFieldType.Date
+                CASE DbFieldType.Logic
                     SELF:_sorter:SourceIndex := SELF:_oRdd:_Fields[SELF:_SingleField]:OffSet
                 OTHERWISE
                     fType := 0
@@ -311,7 +312,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 END SWITCH
             ENDIF
             sortInfo:Items[0]:Length := SELF:_keySize
-            IF SELF:_KeyExprType == __UsualType.String
+            IF SELF:_KeyExprType == __UsualType.String .OR. SELF:_KeyExprType == __UsualType.LOGIC
                 SELF:_sorter:AScii := FALSE
                 sortInfo:Items[0]:Flags := DbSortFlags.Default
             ELSE

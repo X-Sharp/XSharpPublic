@@ -634,7 +634,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL oValue := SELF:_oRdd:GetValue(_SingleField+1) AS OBJECT
             IF oValue IS IDate
                 VAR valueDate := (IDate)oValue
-                oValue := DateTime{valueDate:Year, valueDate:Month, valueDate:Day}
+                IF !valueDate:IsEmpty
+                    oValue := DateTime{valueDate:Year, valueDate:Month, valueDate:Day}
+                ELSE
+                    oValue := DateTime.MinValue
+                ENDIF
             ENDIF
             IF oValue IS DateTime
                 LOCAL r8 := DoubleStruct{} AS DoubleStruct

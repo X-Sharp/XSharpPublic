@@ -118,15 +118,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD CreateBag(cBagName AS STRING) AS LOGIC
             LOCAL cPath     AS STRING
             LOCAL cFullName AS STRING
-
+            LOCAL cDbf      AS STRING
             cFullName := cBagName
+            cDbf      := (STRING) SELF:_oRDD:Info(DBI_FULLPATH,NULL)
             IF String.IsNullOrEmpty(Path.GetExtension(cFullName))
                 cFullName := Path.ChangeExtension(cFullname, CDX_EXTENSION)
             ENDIF
+            IF String.Compare(cDbf, cFullName, StringComparison.OrdinalIgnoreCase) == 0
+                 cFullName := Path.ChangeExtension(cFullname, CDX_EXTENSION)
+            ENDIF
             cPath := Path.GetDirectoryName(cFullName)
             IF String.IsNullOrEmpty(cPath)
-                cPath := (STRING) SELF:_oRDD:Info(DBI_FULLPATH,NULL)
-                cPath := Path.GetDirectoryName(cPath)
+                cPath := Path.GetDirectoryName(cDbf)
                 cFullName := Path.Combine(cPath, cBagName)
             ENDIF
             IF File(cFullName)

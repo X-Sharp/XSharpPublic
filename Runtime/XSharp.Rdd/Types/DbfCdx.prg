@@ -70,7 +70,7 @@ BEGIN NAMESPACE XSharp.RDD
             
                 BEGIN LOCK SELF
                     SELF:GoCold()
-                    RETURN SELF:_indexList:CloseAll()
+                    RETURN SELF:_indexList:CloseAll(orderInfo)
                 END LOCK            
                 
             VIRTUAL METHOD OrderListFocus(orderInfo AS DbOrderInfo) AS LOGIC

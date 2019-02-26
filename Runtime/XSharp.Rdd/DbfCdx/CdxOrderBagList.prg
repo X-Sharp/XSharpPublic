@@ -22,7 +22,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _oRdd := oRdd
             _bags := List<CdxOrderBag>{}
             RETURN
-            
+
         METHOD Add(info AS DbOrderInfo, lStructural := FALSE AS LOGIC) AS LOGIC
             LOCAL oBag AS CdxOrderBag
              IF File(info:BagName)
@@ -49,8 +49,22 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         // Create new OrderBag
                         oBag := CdxOrderBag{_oRDD}
                         oBag:CreateBag(info:BagName)
+                        VAR cBag := info:BagName.ToLower()
+                        VAR cDbf := (STRING) SELF:_oRDD:Info(DBI_FULLPATH,NULL)
+                        cDbf := cDbf:ToLower()
+                        LOCAL lStructural := Path.GetFileNameWithoutExtension(cDBF) == Path.GetFileNameWithoutExtension(cBag) AS LOGIC
+                        oBag:Structural := lStructural
+                        _bags:Add(oBag)
                     ENDIF
-                    RETURN oBag:OrderCreate(info)
+                    VAR lOk := oBag:OrderCreate(info)
+                    IF lOk
+                        LOCAL oI AS DbOrderInfo
+                        oI := DbOrderInfo{}
+                        oI:BagName := info:BagName
+                        oi:Order   := info:Order
+                        lOk := SELF:SetFocus(oi)
+                    ENDIF
+                    RETURN lOk
                     
                 CATCH e AS Exception
                     System.Diagnostics.Debug.WriteLine(e:Message)
@@ -67,10 +81,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN TRUE
             
-        METHOD CloseAll() AS LOGIC
+        METHOD CloseAll(orderInfo AS DbOrderInfo) AS LOGIC
             LOCAL oStruct := NULL AS CdxOrderBag
             FOREACH oBag AS CdxOrderBag IN _bags
-                 IF oBag:Structural
+                 IF oBag:Structural .AND. ! orderInfo:AllTags
                     oStruct := oBag
                  ELSE
                     oBag:Close()

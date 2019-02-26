@@ -97,9 +97,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROTECTED VIRTUAL METHOD Initialize(keyLength AS WORD) AS VOID
             SELF:PageType   := CdxPageType.Leaf
             SELF:LeftPtr    := SELF:RightPtr   := -1
-            SELF:Freespace  := CDXLEAF_BYTESFREE
+            SELF:_Clear()
             _keyLen         := keyLength
-            VAR bits := GetBits(keyLength)
+            VAR bits        := GetBits(keyLength)
             // base dupCountMask, trailCountMNask, numbitsRecno and other info are based on keylength 
             SELF:DataBytes      := IIF (bits > 12, 5, IIF( bits > 8, 4, 3))
             SELF:RecordBits     := (SELF:DataBytes << 3) - (bits << 1)
@@ -109,6 +109,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_lenShift      := (keyLength << 8 ) | (8 - SELF:DuplicateBits)
             RETURN
 
+
+        PRIVATE METHOD _Clear() AS VOID
+            SELF:Freespace  := CDXLEAF_BYTESFREE
+            SELF:NumKeys    := 0
+            SELF:_Keys      := NULL
+            RETURN
 
         PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
 			VAR Ok := SUPER:Read()
@@ -272,11 +278,44 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #endregion
 
 
+        PRIVATE METHOD ExpandRecno() AS LOGIC
+            LOCAL aRecNos AS INT[]
+            LOCAL nCount := NumKeys AS INT
+            LOCAL aKeys   AS BYTE[][]
+            IF SELF:Freespace < nCount
+                // we need at least nCount extra bytes because we are adding 1 byte for every recno
+                // Not enough space. We have to add another leaf page
+                // This will not work for the TagList but should never happen with the Tag List
+                Debug.Assert(! SELF IS CdxTagList)
+                RETURN FALSE
+            ENDIF
+            aRecNos := INT[]{nCount}
+            aKeys    := BYTE[][]{nCount}            
+            FOR VAR i := 0 TO nCount-1
+                aRecNos[i] := SELF:GetRecno(i)
+                aKeys[i]   := SELF:GetKey(i)
+            NEXT
+            SELF:DataBytes  += 1
+            SELF:RecordBits += 8
+            SELF:RecnoMask  := (DWORD) (1 << SELF:RecordBits) -1
+            SELF:_Clear()
+            FOR VAR i := 0 TO nCount-1
+                SELF:Add(aRecNos[i], aKeys[i])
+            NEXT
+            RETURN TRUE
+
+
+
 
         // This method is called during Index creation.
         INTERNAL METHOD Add(recno AS LONG, data AS BYTE[]) AS LOGIC
             LOCAL nTrailCount AS BYTE
             LOCAL nDupCount   AS BYTE
+            IF _AND( recno, SELF:RecnoMask) != recno
+                IF ! SELF:ExpandRecno()
+                    RETURN FALSE
+                ENDIF
+            ENDIF
             nTrailCount := _getTrailCount(data)
             IF SELF:NumKeys == 0
                 nDupCount := 0

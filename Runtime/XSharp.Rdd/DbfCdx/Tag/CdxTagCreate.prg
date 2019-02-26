@@ -14,6 +14,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     INTERNAL DELEGATE ValueBlock( sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
 
     INTERNAL PARTIAL SEALED CLASS CdxTag IMPLEMENTS IRddSortWriter
+        PRIVATE _sorter AS CdxSortHelper
         
         // Methods for Creating Indices
         PUBLIC METHOD Create(createInfo AS DbOrderCreateInfo ) AS LOGIC
@@ -21,7 +22,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL isOk AS LOGIC
             LOCAL orderInfo AS DbOrderInfo
             LOCAL hasForCond AS LOGIC
-            
+            LOCAL ic AS CdxSortCompare
+
             ordCondInfo := SELF:_oRdd:_OrderCondInfo
             IF string.IsNullOrEmpty(createInfo:BagName)
                 SELF:_oRDD:_dbfError(  SubCodes.EDB_CREATEINDEX, GenCode.EG_ARG,"OrdCreate", "Missing Orderbag Name")
@@ -30,8 +32,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             isOk := SELF:_oRdd:GoCold()
             orderInfo := DbOrderInfo{}
             IF !ordCondInfo:Scoped
-                orderInfo:AllTags := TRUE
-                SELF:_oRdd:OrderListDelete(orderInfo)
+                //orderInfo:AllTags := FALSE
+                //SELF:_oRdd:OrderListDelete(orderInfo)
+                SELF:_oRdd:OrderListFocus(orderInfo)
             ENDIF
             IF ordCondInfo:ForBlock != NULL
                 hasForCond := TRUE
@@ -83,6 +86,24 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSE
                 isOk := SELF:_CreateUnique(ordCondInfo)
             ENDIF
+            IF isOk
+                IF _sorter:Ascii
+                    ic := CdxSortCompareAscii{SELF:_oRdd, _sorter}
+                ELSE
+                    ic := CdxSortCompareDefault{SELF:_oRdd, _sorter}
+                ENDIF
+                isOk := _sorter:Sort(ic)
+            ENDIF
+            IF isOk
+                SELF:_sorter:StartWrite()
+                isOk := _sorter:Write(SELF)
+            ENDIF
+            IF isOk
+                SELF:_sorter:EndWrite()
+            ENDIF
+            SELF:_sorter := NULL
+            SELF:ClearStack()
+
             IF !isOk
                 SELF:Flush()
                 SELF:Close()
@@ -91,6 +112,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:Flush()
             SELF:OrderBag:Flush()
             RETURN isOk
+        PRIVATE METHOD _sortGetRecord(buffer AS BYTE[]) AS LOGIC
+            // Get Key Values
+            SELF:_oRdd:ReadRecord()
+            VAR result := getKeyValue(_sorter:SourceIndex, buffer)
+            IF result
+                _sorter:Add(SortRecord{buffer, SELF:_RecNo})
+            ENDIF
+            RETURN result
 
         PRIVATE METHOD _HeaderCreate() AS LOGIC
             SELF:_Header            := CdxTagHeader{_bag, -1 ,_orderName}
@@ -202,6 +231,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN result
                 ENDIF
             ENDIF
+            VAR buffer := BYTE[]{ SELF:_keySize }
             DO WHILE TRUE
                 IF hasWhile
                     isOk := TRUE
@@ -216,7 +246,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                     
                 ENDIF
-                IF !SELF:_keyUpdate( SELF:_RecNo, TRUE)
+                IF ! SELF:_sortGetRecord(buffer)
                     EXIT
                 ENDIF
                 IF hasEvalBlock
@@ -262,14 +292,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_sorter := NULL
             RETURN TRUE
 
-        PRIVATE _sorter AS CdxSortHelper
-        INTERNAL METHOD _InitSort(lRecCount AS LONG, sourceIndex OUT LONG, lAscii OUT LOGIC) AS LOGIC
+        INTERNAL METHOD _InitSort(lRecCount AS LONG) AS LOGIC
             LOCAL sortInfo AS DbSortInfo
             LOCAL fType  := 0 AS DbFieldType
-            sourceIndex := 0
-            lAscii := FALSE
             sortInfo := DbSortInfo{0,1}     // 0 trans items, 1 sort item
-            //SELF:_levelsCount := 1
+            SELF:_sorter := CdxSortHelper{sortInfo, lRecCount, SELF}
             IF SELF:_SingleField != -1
                 fType := SELF:_oRdd:_Fields[SELF:_SingleField]:fieldType
                 // 'C', 'N', 'D'
@@ -277,19 +304,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 CASE DbFieldType.Character
                 CASE DbFieldType.Number
                 CASE DbFieldType.Date
-                    sourceIndex := SELF:_oRdd:_Fields[SELF:_SingleField]:OffSet
+                    SELF:_sorter:SourceIndex := SELF:_oRdd:_Fields[SELF:_SingleField]:OffSet
                 OTHERWISE
                     fType := 0
+                    SELF:_sorter:SourceIndex := -1
                 END SWITCH
             ENDIF
-            
-            SELF:_sorter := CdxSortHelper{sortInfo, lRecCount, SELF}
             sortInfo:Items[0]:Length := SELF:_keySize
             IF SELF:_KeyExprType == __UsualType.String
-                lAscii := FALSE
+                SELF:_sorter:AScii := FALSE
                 sortInfo:Items[0]:Flags := DbSortFlags.Default
             ELSE
-                lAscii := TRUE
+                SELF:_sorter:AScii := TRUE
                 sortInfo:Items[0]:Flags := DbSortFlags.Ascii
             ENDIF
             sortInfo:Items[0]:OffSet := 0
@@ -300,14 +326,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL lRecCount AS LONG
             LOCAL result AS LOGIC
             LOCAL hasBlock AS LOGIC
-            LOCAL ic AS CdxSortCompare
-            LOCAL sourceIndex := 0 AS LONG
-            LOCAL lAscii AS LOGIC
            
             evalCount := 0
             lRecCount := SELF:_oRdd:RecCount
             // create sorthelper 
-            SELF:_initSort(lRecCount, OUT sourceIndex, OUT lAscii)
+            SELF:_initSort(lRecCount)
             IF lRecCount == 0
                 RETURN SELF:_CreateEmpty()
             ENDIF
@@ -317,12 +340,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR buffer := BYTE[]{ SELF:_keySize }
             REPEAT
                 result := TRUE
-                SELF:_oRdd:ReadRecord()
-                result := getKeyValue(sourceIndex, buffer)
-                IF !result
+                IF ! SELF:_sortGetRecord(buffer)
                     EXIT
                 ENDIF
-                _sorter:Add(SortRecord{buffer, SELF:_RecNo})
                 IF hasBlock
                     IF evalCount >= SELF:_oRdd:_OrderCondInfo:StepSize
                         TRY
@@ -337,23 +357,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 result := SELF:_oRdd:GoTo(SELF:_RecNo + 1)
             UNTIL ! (result .AND. SELF:_oRdd:_isValid)
-            IF result
-                IF lAscii
-                    ic := CdxSortCompareAscii{SELF:_oRdd, _sorter}
-                ELSE
-                    ic := CdxSortCompareDefault{SELF:_oRdd, _sorter}
-                ENDIF
-                result := _sorter:Sort(ic)
-            ENDIF
-            IF result
-                SELF:_sorter:StartWrite()
-                result := _sorter:Write(SELF)
-            ENDIF
-            IF result
-                SELF:_sorter:EndWrite()
-            ENDIF
-            SELF:_sorter := NULL
-            SELF:ClearStack()
             RETURN result
             
             // IRddSortWriter Interface, used by RddSortHelper
@@ -363,19 +366,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD _CreateUnique(ordCondInfo AS DbOrderCondInfo ) AS LOGIC
             LOCAL LRecCount AS LONG
             lRecCount := SELF:_oRdd:RecCount
-            LOCAL sourceIndex := 0 AS LONG
-            LOCAL lAscii AS LOGIC
             // create sorthelper
-            SELF:_initSort(lRecCount, OUT sourceIndex, OUT lAscii)
+            SELF:_initSort(lRecCount)
             SELF:_sorter:StartWrite()
             IF ordCondInfo:Active
                 RETURN SELF:_CondCreate(ordCondInfo)
             ENDIF
             SELF:_oRdd:GoTo(1)
             IF SELF:_oRdd:_isValid
+                VAR buffer := BYTE[]{ SELF:_keySize }
                 REPEAT
-                    SELF:_keyUpdate( SELF:_RecNo, TRUE)
                     SELF:_oRdd:GoTo(SELF:_RecNo + 1)
+                    IF ! SELF:_sortGetRecord(buffer)
+                        EXIT
+                    ENDIF
                 UNTIL ! SELF:_oRdd:_isValid
             ENDIF
             SELF:ClearStack()
@@ -383,8 +387,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
 
 
-
- 
         PUBLIC METHOD Truncate() AS LOGIC
             // Find all pages of the tag and delete them
             // then also delete the tag header and return everything to the OrderBag 
@@ -393,6 +395,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     END CLASS
     INTERNAL CLASS CdxSortHelper INHERIT RddSortHelper
         INTERNAL PROPERTY CurrentLeaf    AS CdxLeafPage AUTO
+        INTERNAL PROPERTY SourceIndex    AS INT AUTO
+        INTERNAL PROPERTY Ascii          AS LOGIC AUTO
         PRIVATE _bag                     AS CdxOrderBag
         PRIVATE _tag                     AS CdxTag
         INTERNAL CONSTRUCTOR( sortInfo   AS DbSortInfo , len AS LONG, tag AS CdxTag )
@@ -505,7 +509,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF ! oParent:Add(node)      // It can happen and will happen that the last key does not fit and we need another branch
                     oParent:Write()
                     oParent := SELF:NewBranchPage(oLeaf:LastNode, oParent)
-                endif
+                ENDIF
                 node    := oParent:LastNode
                 oParent := oParent:Parent
             ENDDO

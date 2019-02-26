@@ -63,7 +63,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PRIVATE _stack          AS RddStack[]
         PRIVATE _topStack       AS LONG
-        PRIVATE _oneItem        AS CdxNode
         PRIVATE _midItem        AS CdxNode
         PRIVATE _compareFunc    AS CompareFunc
         PRIVATE _currentNode    AS CdxNode
@@ -100,7 +99,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Options        	AS CdxOptions AUTO
         INTERNAL PROPERTY LockOffSet     	AS LONG AUTO
         INTERNAL PROPERTY CurrentStack      AS RddStack GET  SELF:_stack[SELF:_topStack]
-
+        INTERNAL PROPERTY RootPage          AS LONG AUTO
         INTERNAL PROPERTY MaxKeysPerPage    AS WORD GET _maxKeysPerPage
 
         // Scopes
@@ -144,7 +143,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
 	    METHOD Open() AS LOGIC
-            
+            SELF:_Header:Read()
             SELF:_KeyExpr := SELF:_Header:KeyExpression
             SELF:_ForExpr := SELF:_Header:ForExpression
             SELF:_oRdd:GoTo(1)
@@ -162,7 +161,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
             SELF:_Version   := SELF:_Header:Version
             SELF:_midItem   := CdxNode{SELF:_keySize,0}
-            SELF:_oneItem   := CdxNode{SELF:_keySize,0}
             RETURN TRUE
 
         DESTRUCTOR()
@@ -217,16 +215,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 END SWITCH
                 isOk := TRUE
             ELSE
-                SELF:_keySize := 0
+                SELF:_keySize    := 0
                 SELF:getKeyValue := _getExpressionValue
-                isOk := SELF:_determineSize(oKey)
+                isOk             := SELF:_determineSize(oKey)
             ENDIF
-            SELF:_newKeyBuffer  := BYTE[]{_keySize+1 }
-            SELF:_maxKeysPerPage    := CdxBranchePage.MaxKeysPerPage(_keySize)
             IF ! isOk
                 RETURN FALSE
             ENDIF
-            SELF:_Conditional := FALSE
+            SELF:_newKeyBuffer      := BYTE[]{_keySize+1 }
+            SELF:_maxKeysPerPage    := CdxBranchPage.MaxKeysPerPage(_keySize)
+            SELF:_Conditional       := FALSE
             IF SELF:_ForExpr:Length > 0
                 TRY
                     SELF:_ForCodeBlock := SELF:_oRdd:Compile(SELF:_ForExpr)
@@ -312,6 +310,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PUBLIC METHOD SetOffLine() AS VOID
             SELF:ClearStack()
+
         PRIVATE METHOD _PutHeader() AS LOGIC
 	    /*
             LOCAL ntxSignature AS NtxHeaderFlags
@@ -626,13 +625,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         // Three methods to calculate keys. We have split these to optimize index creating
         PRIVATE METHOD _getNumFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             LOCAL r8 := DoubleStruct{} AS DoubleStruct
-            LOCAL oValue := SELF:_oRdd:GetValue(sourceIndex) AS OBJECT
+            LOCAL oValue := SELF:_oRdd:GetValue(_SingleField+1) AS OBJECT
             r8:DoubleValue := Convert.ToDouble(oValue)
             r8:SaveToIndex(byteArray)
             RETURN TRUE
             
         PRIVATE METHOD _getDateFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
-            LOCAL oValue := SELF:_oRdd:GetValue(sourceIndex) AS OBJECT
+            LOCAL oValue := SELF:_oRdd:GetValue(_SingleField+1) AS OBJECT
             IF oValue IS IDate
                 VAR valueDate := (IDate)oValue
                 oValue := DateTime{valueDate:Year, valueDate:Month, valueDate:Day}

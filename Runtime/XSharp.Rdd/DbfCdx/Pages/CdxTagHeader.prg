@@ -25,7 +25,7 @@
         char    ignorecase          0x1f3       1       .
         char    expression length   0x1f4       2       .
 		int2	descend;			0x1f6 = 502 2       . 
-		int2	foxExprPos          0x1f8 = 504 2       .
+		int2	forExprPos          0x1f8 = 504 2       .
 		int2	forExprLen;			0x1fa = 506 2       . Key Expression Length + For Expression Length Max 512
 		int2    keyExprPos          0x1fc = 508 2       . bytes
 		int2	keyExprLen;			0x1fe = 510 2       .

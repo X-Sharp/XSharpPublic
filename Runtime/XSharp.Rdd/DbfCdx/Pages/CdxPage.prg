@@ -25,11 +25,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		PROTECTED _buffer   AS BYTE[]
 		PROTECTED _hot      AS LOGIC        // Hot ?  => Page has changed ?
         PROTECTED _dumped   AS LOGIC
-        INTERNAL VIRTUAL PROPERTY PageType AS CdxPageType GET CdxPageType.None SET 
+        INTERNAL VIRTUAL PROPERTY PageType AS CdxPageType GET CdxPageType.None SET
+        
         INTERNAL PROPERTY Dumped AS LOGIC GET _dumped SET _dumped := VALUE
         INTERNAL PROPERTY IsHot  AS LOGIC GET _hot SET _hot := VALUE
         INTERNAL PROPERTY Tag    AS CDXTag GET _tag SET _tag := VALUE
-        INTERNAL VIRTUAL PROPERTY KeyLength AS WORD GET (WORD) IIF(_tag == NULL, 0, _tag:KeyLength)
         PROPERTY Buffer AS BYTE[] GET _buffer
         PROPERTY PageNo AS Int32 GET _nPage SET _nPage := VALUE
 

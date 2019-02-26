@@ -494,9 +494,11 @@ FUNCTION Str(n ,uLen ,uDec ) AS STRING CLIPPER
 	LOCAL result AS STRING
 	LOCAL nLen AS DWORD
     LOCAL nDec AS DWORD
+    LOCAL lTrimSpaces := FALSE AS LOGIC
 	IF IsNumeric(uLen)
         IF uLen < 0
 	        nLen := System.UInt32.MaxValue
+	        lTrimSpaces := TRUE
         ELSE
             nLen := (DWORD) uLen
         ENDIF
@@ -513,6 +515,9 @@ FUNCTION Str(n ,uLen ,uDec ) AS STRING CLIPPER
         ENDIF
     ENDIF
 	result := _str3(n, nLen, nDec)
+	IF lTrimSpaces
+		result := result:TrimStart()
+	END IF
 	RETURN ConversionHelpers.AdjustDecimalSeparator(result)
 
 

@@ -14,6 +14,23 @@ namespace XSharp.MacroCompiler
 
         internal static bool IsSubclassOf(this TypeSymbol ts, TypeSymbol tb) => ts.Type.IsSubclassOf(tb.Type);
 
+        internal static bool IsMethodOrMethodGroup(this Symbol s)
+        {
+            if (s is MethodBaseSymbol)
+                return true;
+            if (s is SymbolList)
+            {
+                bool methods = true;
+                foreach(var m in (s as SymbolList).Symbols)
+                {
+                    if (!(m is MethodBaseSymbol))
+                        methods = false;
+                }
+                return methods;
+            }
+            return false;
+        }
+
         internal static TypeSymbol Type(this Symbol s) => (s as TypedSymbol)?.Type;
 
         internal static string MemberName(this Symbol s)

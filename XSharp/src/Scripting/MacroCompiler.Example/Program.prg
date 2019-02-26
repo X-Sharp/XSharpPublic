@@ -11,6 +11,9 @@ function Args(args params object[]) as object[]
 function U(u as usual) as usual
     return u
 
+function U(s as string) as usual
+    return s
+
 function R(r as real8) as real8
     return r
 

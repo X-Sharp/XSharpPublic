@@ -49,6 +49,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SUPER( oRdd )
             SELF:_oRdd     := oRDD
             SELF:_PageList := CdxPageList{SELF}
+            SELF:_OpenInfo := oRDD:_OpenInfo
             
         #region RDD Overloads
             /// <inheritdoc />		
@@ -74,6 +75,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             oTag := CdxTag{SELF}
             VAR lOk := oTag:Create(info)
             IF lOk
+                // Read the tag from disk to get all the normal stuff
+                oTag  := CdxTag{SELF,oTag:Header:PageNo, oTag:OrderName}
                 SELF:_tags:Add(oTag)
                 SELF:_tagList:Add(oTag)
                 SELF:_tagList:Write()
@@ -129,6 +132,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF File(cFullName)
                 RETURN FALSE
             ENDIF
+            SELF:FullPath := cFullName
             SELF:_hFile    := FCreate(cFullName)
             // Allocate Root Page
             _root   := CdxFileHeader{SELF}
@@ -156,7 +160,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD Close() AS LOGIC
             FOREACH oTag AS CdxTag IN _tags
                 oTag:GoCold()
+                oTag:Close()
             NEXT
+            _tags:Clear()
             SELF:_PageList:Flush(FALSE)
             FClose(SELF:_hFile)
             RETURN TRUE

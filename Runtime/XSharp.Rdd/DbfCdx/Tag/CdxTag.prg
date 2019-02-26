@@ -215,16 +215,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 END SWITCH
                 isOk := TRUE
             ELSE
-                SELF:_keySize := 0
+                SELF:_keySize    := 0
                 SELF:getKeyValue := _getExpressionValue
-                isOk := SELF:_determineSize(oKey)
+                isOk             := SELF:_determineSize(oKey)
             ENDIF
-            SELF:_newKeyBuffer  := BYTE[]{_keySize+1 }
-            SELF:_maxKeysPerPage    := CdxBranchPage.MaxKeysPerPage(_keySize)
             IF ! isOk
                 RETURN FALSE
             ENDIF
-            SELF:_Conditional := FALSE
+            SELF:_newKeyBuffer      := BYTE[]{_keySize+1 }
+            SELF:_maxKeysPerPage    := CdxBranchPage.MaxKeysPerPage(_keySize)
+            SELF:_Conditional       := FALSE
             IF SELF:_ForExpr:Length > 0
                 TRY
                     SELF:_ForCodeBlock := SELF:_oRdd:Compile(SELF:_ForExpr)
@@ -310,6 +310,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PUBLIC METHOD SetOffLine() AS VOID
             SELF:ClearStack()
+
         PRIVATE METHOD _PutHeader() AS LOGIC
 	    /*
             LOCAL ntxSignature AS NtxHeaderFlags

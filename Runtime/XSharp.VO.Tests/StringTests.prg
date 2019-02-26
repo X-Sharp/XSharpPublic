@@ -201,6 +201,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		   Assert.True( Str(123456789.1):StartsWith("*"))
 		   Assert.True(Str1(123456789.1):StartsWith("*"))
+
+		   Assert.Equal( "12.34" , Str(12.34 , -1))
+		   Assert.Equal( "12.3400" , Str(12.34 , -1 , 4))
+		   Assert.Equal( "1.1" , Str(1.1 , -1 , 1))
 	
 	END CLASS
 

@@ -407,7 +407,7 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a,b| int is ValueType }", Args(), null, null, ErrorCode.NotAnExpression)
         TestMacro(mc, e"{|a,b| int }", Args(), null, null, ErrorCode.NotAnExpression)
         TestMacro(mc, e"{|a,b| U(int) }", Args(), null, null, ErrorCode.NotAnExpression)
-        TestMacro(mc, "U", Args(), null, null, ErrorCode.NotAnExpression)
+//        TestMacro(mc, "U", Args(), null, null, ErrorCode.NotAnExpression) // It is treated as field/memvar
 //        TestMacro(mc, e"{|a,b| asdgfafd(123) }", Args(), null, null, ErrorCode.NotAMethod)
         TestMacro(mc, e"{|a,b| testclass.nested(123) }", Args(), null, null, ErrorCode.NotAMethod)
         TestMacro(mc, e"{|a,b| Console.Write(null) }", Args(), null, typeof(object))
@@ -533,6 +533,7 @@ begin namespace MacroCompilerTest
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSet, "MyFieldSet")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGetWa, "MyFieldGetWa")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSetWa, "MyFieldSetWa")
+        TestMacro(mc, "U", Args(), "FieldGet(U)", typeof(string))
         TestMacro(mc, e"{|| NIKOS}", Args(), "FieldGet(NIKOS)", typeof(string))
         TestMacro(mc, e"{|| NIKOS := \"123\"}", Args(), "FieldSet(NIKOS):123", typeof(string))
         TestMacro(mc, e"{|| _FIELD->NIKOS}", Args(), "FieldGet(NIKOS)", typeof(string))

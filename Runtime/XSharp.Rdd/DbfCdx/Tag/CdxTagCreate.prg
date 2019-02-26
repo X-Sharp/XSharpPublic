@@ -14,7 +14,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     INTERNAL DELEGATE ValueBlock( sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
 
     INTERNAL PARTIAL SEALED CLASS CdxTag IMPLEMENTS IRddSortWriter
-
+        
         // Methods for Creating Indices
         PUBLIC METHOD Create(createInfo AS DbOrderCreateInfo ) AS LOGIC
             LOCAL ordCondInfo AS DbOrderCondInfo
@@ -78,9 +78,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_oRdd:_dbfError(GenCode.EG_CREATE,  SubCodes.ERDD_WRITE,"OrdCreate", "Could not write Header ")
                 RETURN FALSE
             ENDIF
-            IF SELF:_oRdd:RecCount == 0
-                isOk := SELF:_CreateEmpty()
-            ELSEIF !SELF:Unique .AND. !SELF:_Conditional .AND. !ordCondInfo:Scoped
+            IF !SELF:Unique .AND. !SELF:_Conditional .AND. !ordCondInfo:Scoped
                 isOk := SELF:_CreateNormalIndex()
             ELSE
                 isOk := SELF:_CreateUnique(ordCondInfo)
@@ -91,6 +89,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN isOk
             ENDIF
             SELF:Flush()
+            SELF:OrderBag:Flush()
             RETURN isOk
 
         PRIVATE METHOD _HeaderCreate() AS LOGIC
@@ -258,13 +257,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
 
         PRIVATE METHOD _CreateEmpty() AS LOGIC
-            LOCAL oPage AS CdxLeafPage
-            oPage := SELF:_newLeafPage()
-            SELF:_finishCreate()
+            SELF:_sorter:StartWrite()
+            SELF:_sorter:EndWrite()
+            SELF:_sorter := NULL
             RETURN TRUE
 
-        INTERNAL METHOD _InitSort(lRecCount AS LONG, sourceIndex OUT LONG, lAscii OUT LOGIC) AS RDDSortHelper
-            LOCAL sorting AS RddSortHelper
+        PRIVATE _sorter AS CdxSortHelper
+        INTERNAL METHOD _InitSort(lRecCount AS LONG, sourceIndex OUT LONG, lAscii OUT LOGIC) AS LOGIC
             LOCAL sortInfo AS DbSortInfo
             LOCAL fType  := 0 AS DbFieldType
             sourceIndex := 0
@@ -284,7 +283,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 END SWITCH
             ENDIF
             
-            sorting := RddSortHelper{sortInfo, lRecCount}
+            SELF:_sorter := CdxSortHelper{sortInfo, lRecCount, SELF}
             sortInfo:Items[0]:Length := SELF:_keySize
             IF SELF:_KeyExprType == __UsualType.String
                 lAscii := FALSE
@@ -293,11 +292,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 lAscii := TRUE
                 sortInfo:Items[0]:Flags := DbSortFlags.Ascii
             ENDIF
-            //IF SELF:_oRdd:_OrderCondInfo:Descending
-            //    sortInfo:Items[0]:Flags += DbSortFlags.Descending
-            //ENDIF
             sortInfo:Items[0]:OffSet := 0
-            RETURN sorting
+            RETURN TRUE
 
         INTERNAL METHOD _CreateNormalIndex() AS LOGIC
             LOCAL evalCount AS LONG
@@ -310,10 +306,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
            
             evalCount := 0
             lRecCount := SELF:_oRdd:RecCount
+            // create sorthelper 
+            SELF:_initSort(lRecCount, OUT sourceIndex, OUT lAscii)
             IF lRecCount == 0
                 RETURN SELF:_CreateEmpty()
             ENDIF
-            VAR sortHelper := SELF:_initSort(lRecCount, OUT sourceIndex, OUT lAscii)
             hasBlock    := SELF:_oRdd:_OrderCondInfo:EvalBlock != NULL
             evalCount := 1
             SELF:_oRdd:GoTo(1)
@@ -325,8 +322,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF !result
                     EXIT
                 ENDIF
-                VAR toSort := SortRecord{buffer, SELF:_RecNo}
-                sortHelper:Add(toSort)
+                _sorter:Add(SortRecord{buffer, SELF:_RecNo})
                 IF hasBlock
                     IF evalCount >= SELF:_oRdd:_OrderCondInfo:StepSize
                         TRY
@@ -343,64 +339,152 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             UNTIL ! (result .AND. SELF:_oRdd:_isValid)
             IF result
                 IF lAscii
-                    ic := CdxSortCompareAscii{SELF:_oRdd, sortHelper}
+                    ic := CdxSortCompareAscii{SELF:_oRdd, _sorter}
                 ELSE
-                    ic := CdxSortCompareDefault{SELF:_oRdd, sortHelper}
+                    ic := CdxSortCompareDefault{SELF:_oRdd, _sorter}
                 ENDIF
-                result := sortHelper:Sort(ic)
+                result := _sorter:Sort(ic)
             ENDIF
-            SELF:_oneItem := CdxNode{SELF:_keySize, 0}
-            SELF:ClearStack()
-
             IF result
-                SELF:_newLeafPage()
-                result := sortHelper:Write(SELF)
+                SELF:_sorter:StartWrite()
+                result := _sorter:Write(SELF)
             ENDIF
-            SELF:_finishCreate()
-            sortHelper:Clear()
-            sortHelper := NULL
+            IF result
+                SELF:_sorter:EndWrite()
+            ENDIF
+            SELF:_sorter := NULL
+            SELF:ClearStack()
             RETURN result
             
             // IRddSortWriter Interface, used by RddSortHelper
         PUBLIC METHOD WriteSorted(si AS DbSortInfo , record AS SortRecord) AS LOGIC
-          // place item on current leaf node.
-            // When Leafnode is full then allocate a new leaf node
+            RETURN _sorter:AddRecord(record:Recno, record:Data)
+            
+        INTERNAL METHOD _CreateUnique(ordCondInfo AS DbOrderCondInfo ) AS LOGIC
+            LOCAL LRecCount AS LONG
+            lRecCount := SELF:_oRdd:RecCount
+            LOCAL sourceIndex := 0 AS LONG
+            LOCAL lAscii AS LOGIC
+            // create sorthelper
+            SELF:_initSort(lRecCount, OUT sourceIndex, OUT lAscii)
+            SELF:_sorter:StartWrite()
+            IF ordCondInfo:Active
+                RETURN SELF:_CondCreate(ordCondInfo)
+            ENDIF
+            SELF:_oRdd:GoTo(1)
+            IF SELF:_oRdd:_isValid
+                REPEAT
+                    SELF:_keyUpdate( SELF:_RecNo, TRUE)
+                    SELF:_oRdd:GoTo(SELF:_RecNo + 1)
+                UNTIL ! SELF:_oRdd:_isValid
+            ENDIF
+            SELF:ClearStack()
+            SELF:Flush()
+            RETURN TRUE
+
+
+
+ 
+        PUBLIC METHOD Truncate() AS LOGIC
+            // Find all pages of the tag and delete them
+            // then also delete the tag header and return everything to the OrderBag 
+            RETURN TRUE
+            
+    END CLASS
+    INTERNAL CLASS CdxSortHelper INHERIT RddSortHelper
+        INTERNAL PROPERTY CurrentLeaf    AS CdxLeafPage AUTO
+        PRIVATE _bag                     AS CdxOrderBag
+        PRIVATE _tag                     AS CdxTag
+        INTERNAL CONSTRUCTOR( sortInfo   AS DbSortInfo , len AS LONG, tag AS CdxTag )
+            SUPER(sortInfo, len)
+            _tag := tag
+            _bag := tag:OrderBag
+            CurrentLeaf := NULL
+
+        INTERNAL METHOD NewLeafPage(parent AS CdxBranchPage) AS CdxLeafPage
             LOCAL oLeaf AS CdxLeafPage
-            oLeaf := _currentLeaf
-            IF ! oLeaf:Add(record:Recno, record:Data)
+            LOCAL buffer AS BYTE[]
+            buffer := _bag:AllocBuffer()
+            oLeaf  := CdxLeafPage{_bag, -1, buffer, _tag:KeyLength}
+            oLeaf:InitBlank()
+            oLeaf:Right  := NULL
+            oLeaf:Left   := CurrentLeaf
+            IF CurrentLeaf != NULL
+               CurrentLeaf:Right  := oLeaf
+            ENDIF
+            oLeaf:Tag := _tag
+            oLeaf:Parent := parent
+            oLeaf:Write()
+            CurrentLeaf := oLeaf
+            RETURN oLeaf
+
+        INTERNAL METHOD newBranchPage(node AS CdxPageNode, brother AS CdxBranchPage) AS CdxBranchPage
+            LOCAL oBranch AS CdxBranchPage
+            LOCAL oParent AS CdxBranchPage
+            LOCAL buffer AS BYTE[]
+            // Allocate new Branch Page
+            buffer  := _bag:AllocBuffer()
+            oBranch := CdxBranchPage{_bag, -1, buffer, _tag:KeyLength}
+            oBranch:Initialize()
+            oBranch:Write()
+            IF brother != NULL
+                // When we allocate a 2nd page at the same level
+                // then we must also have a parent level above this one
+                oParent := brother:Parent
+                IF oParent == NULL
+                    oParent := newBranchPage(brother:LastNode, NULL)
+                ELSE
+                    oParent:Add(brother:LastNode)
+                ENDIF
+                brother:Parent := oParent
+                brother:Right   := oBranch
+                brother:Write()
+            ELSE
+                // No brother page, so this is the first Branch page in the tree
+                oParent := NULL 
+            ENDIF
+            
+            oBranch:Tag    := _tag
+            oBranch:Parent := oParent
+            oBranch:Left   := brother
+            node:Page:Parent := oBranch
+            oBranch:Add(node)
+            oBranch:Write()
+            RETURN oBranch
+
+        INTERNAL METHOD AddRecord(nRecno AS LONG, data AS BYTE[]) AS LOGIC
+            VAR oLeaf    := CurrentLeaf
+            VAR oParent  := CurrentLeaf:Parent
+            // place item on current leaf node.
+            // When Leafnode is full then allocate a new leaf node
+            // and add this leaf to the parent
+            IF ! oLeaf:Add(nRecno, data)
                 // this means that it did not fit
-                oLeaf:Right := SELF:_newLeafPage()
+                oLeaf:Right  := SELF:NewLeafPage(oParent)
+                IF oParent == NULL
+                   oParent := SELF:NewBranchPage(oLeaf:LastNode, NULL)
+                ELSE
+                    IF ! oParent:Add(oLeaf:LastNode)
+                        // Write Full parent to disk
+                        oParent:Write()
+                        oParent := SELF:NewBranchPage(oLeaf:LastNode, oParent)
+                    ENDIF
+                ENDIF
                 oLeaf:Write()
-                oLeaf :=oLeaf:Right
-                IF ! oLeaf:Add(record:Recno, record:Data)
+                oLeaf := oLeaf:Right
+                oLeaf:Parent := oParent
+                IF ! oLeaf:Add(nRecno, data)
                     // Exception, this should not happen
                     RETURN FALSE
                 ENDIF
             ENDIF
-            RETURN TRUE            
-            
-            
-        INTERNAL METHOD _CreateUnique(ordCondInfo AS DbOrderCondInfo ) AS LOGIC
-            LOCAL Ok AS LOGIC
-            Ok := SELF:_CreateEmpty()
-            IF Ok
-                IF ordCondInfo:Active
-                    RETURN SELF:_CondCreate(ordCondInfo)
-                ENDIF
-                SELF:_oRdd:GoTo(1)
-                IF SELF:_oRdd:_isValid
-                    REPEAT
-                        SELF:_keyUpdate( SELF:_RecNo, TRUE)
-                        SELF:_oRdd:GoTo(SELF:_RecNo + 1)
-                    UNTIL ! SELF:_oRdd:_isValid
-                ENDIF
-                SELF:ClearStack()
-            ENDIF
-            SELF:Flush()
-            RETURN Ok
+            RETURN TRUE
 
+        INTERNAL METHOD StartWrite() AS LOGIC
+            SELF:NewLeafPage(NULL)
+            RETURN TRUE
 
-        PRIVATE METHOD _finishCreate() AS LOGIC
+        INTERNAL METHOD EndWrite() AS LOGIC
             // at the end of the index creation we will create the branch pages (when needed)
             // that point to the leaf pages that were allocated in this process.
             // To do that:
@@ -411,81 +495,67 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             //   and based on that we can determine the # of levels we need.
             //   when there was only one leaf page then we don't create a branch, otherwise
             //   we create as many branches as necessary.
-            LOCAL oLeaf AS CdxLeafPage
-            LOCAL oLeafs   AS List<CdxLeafPage>
-            oLeafs      := List<CdxLeafPage>{}
-            oLeaf       := _currentLeaf
+            LOCAL oLeaf    AS CdxLeafPage
+            LOCAL oParent   := NULL AS CdxBranchPage
+            oLeaf           := CurrentLeaf
+            // Write the last key in leaf and its parents all the way up into the tree
+            oParent  := oLeaf:Parent
+            VAR node := oLeaf:LastNode
+            DO WHILE oParent != NULL
+                IF ! oParent:Add(node)      // It can happen and will happen that the last key does not fit and we need another branch
+                    oParent:Write()
+                    oParent := SELF:NewBranchPage(oLeaf:LastNode, oParent)
+                endif
+                node    := oParent:LastNode
+                oParent := oParent:Parent
+            ENDDO
+            // write the whole leaf level to disk
             DO WHILE oLeaf != NULL
                 oLeaf:Write()
-                oLeafs:Insert(0, oLeaf)
                 oLeaf := oLeaf:Left
-
             ENDDO
-            IF oLeafs:Count > 1
-                VAR nodes := List<CdxPageNode>{}
-                // one level is needed
-                // we collect the last nodes on every leaf page and then create branch pages from this list
-                FOREACH VAR leaf IN oLeafs
-                    VAR node := leaf:LastNode
-                    nodes:Add(node)
+            // Walk the tree to the root level
+            // and write all pages
+            oParent     := CurrentLeaf:Parent
+            LOCAL oRoot := NULL AS CdxBranchPage
+            VAR oPages  := List<CdxBranchPage>{}
+            // Recursively add all pages, we start at the rightmost leaf node
+            IF SELF:AddParents(oParent, oPages)
+                // Walk all pages and force them to be written
+                FOREACH oPage AS CDxBranchPage IN oPages
+                    IF oPage:Parent == NULL // this must be the root
+                        oRoot := oPage
+                    ENDIF
+                    oPage:Write()
                 NEXT
-                LOCAL max AS LONG
-                max := SELF:MaxKeysPerPage
-                LOCAL oBranch AS CdxBranchePage
-                IF oLeafs:Count <= max
-                    oBranch := SELF:_newBranchPage(nodes, 0)
-                ELSE
-                    // implement later becayse this will create a list of branches and a level above it.
-                ENDIF
+            ENDIF
+            IF oRoot != NULL
+                SELF:SetRoot(oRoot)
             ELSE
-                SELF:Header:RootPage := oLeafs[0]:PageNo
-                SELF:Header:Write()
+                SELF:SetRoot(oParent)
             ENDIF
+            SELF:Clear()
             RETURN TRUE
 
-        PRIVATE _currentLeaf AS CdxLeafPage
+         PRIVATE METHOD AddParents(oPage AS CdxBranchPage, oPages AS List<CdxBranchPage>) AS LOGIC
+            // Recursively add all pages using the parent level and the left pointers to left siblings
+            DO WHILE oPage != NULL
+                IF ! oPages:Contains(oPage)
+                    oPages:Add(oPage)
+                ENDIF
+                IF oPage:Parent != NULL .AND. ! oPages:Contains(oPage:Parent)
+                    oPages:Add(oPage:Parent)
+                    AddParents(oPage:Parent, oPages)
+                ENDIF
+                oPage := oPage:Left
+            ENDDO
+            RETURN oPages:Count > 0
 
-        PRIVATE METHOD _newBranchPage(nodes AS IList<CdxPageNode>, nOffSet AS LONG) AS CdxBranchePage
-           LOCAL oBranch AS CdxBranchePage 
-            LOCAL buffer AS BYTE[]
-            LOCAL last AS Int32
-            buffer := _bag:AllocBuffer()
-            oBranch := CdxBranchePage{_bag, -1, buffer, _keySize}
-            oBranch:Tag := SELF
-            oBranch:Initialize()
-            oBranch:Write()
-            SELF:Header:RootPage := oBranch:PageNo
-            SELF:Header:Write()
-            last  := Math.Min(nodes:Count - nOffSet, oBranch:MaxKeys)
-            FOR VAR i := 0 TO last -1
-                oBranch:Add(nodes[nOffset+i])
-            NEXT
-            oBranch:PageType := CdxPageType.Root
-            oBranch:Write()
-            RETURN oBranch
-
-
-
-        PRIVATE METHOD _newLeafPage() AS CdxLeafPage
-            LOCAL oLeaf AS CdxLeafPage
-            LOCAL buffer AS BYTE[]
-            buffer := _bag:AllocBuffer()
-            oLeaf := CdxLeafPage{_bag, -1, buffer, _keySize}
-            oLeaf:Initialize(_keySize)
-            oLeaf:Right  := NULL
-            oLeaf:Left   := _currentLeaf
-            IF _currentLeaf != NULL
-                _currentLeaf:Right  := oLeaf
-            ENDIF
-            _currentLeaf := oLeaf
-            oLeaf:Tag := SELF
-            oLeaf:Write()
-            RETURN oLeaf
- 
-        PUBLIC METHOD Truncate() AS LOGIC
-            // Find all pages of the tag and delete them
-            // then also delete the tag header and return everything to the OrderBag 
-            RETURN TRUE
-            
+        PRIVATE METHOD SetRoot(oPage AS CdxTreePage) AS VOID
+            _tag:Header:RootPage := oPage:PageNo
+            _tag:Header:Write()
+            oPage:SetRoot()
+            oPage:Write()
+            RETURN
     END CLASS
 END NAMESPACE

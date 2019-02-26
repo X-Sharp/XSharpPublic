@@ -136,9 +136,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _pageList:Add(_root)
             SELF:Write(_root)
             // taglist page
-            VAR page := SELF:GetPage(_root:RootPage, _root:KeyLength, NULL)
-            _tagList := CdxTagList{SELF,  page}
-            _tagList:Initialize(10)
+            VAR page := SELF:GetPage(_root:RootPage, _root:KeySize, NULL)
+            _tagList := CdxTagList{SELF,  page, _root:KeySize}
+            _taglist:InitBlank()
             SELF:Write(_tagList)
             _tags := List<CdxTag>{}
             // we now have a 
@@ -194,8 +194,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _root:Read()
             SELF:SetPage(_root)
             VAR nTagList := SELF:_root:RootPage
-            VAR page     := SELF:GetPage(nTagList, _root:KeyLength, NULL)
-            _tagList := CdxTagList{SELF,  page}
+            VAR page     := SELF:GetPage(nTagList, _root:KeySize, NULL)
+            _tagList := CdxTagList{SELF,  page, _root:KeySize}
             SELF:SetPage(_tagList)
             _tags := _tagList:ReadTags()
             // Compile expressions

@@ -37,11 +37,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     // BYTE record number[ 4]
     // BYTE child page [4]
     */
-    INTERNAL CLASS CdxBranchePage INHERIT CdxTreePage 
+    INTERNAL CLASS CdxBranchPage INHERIT CdxTreePage 
         PROTECTED _keyLen    AS Int32
         PROTECTED _maxKeys   AS Int32
-        PROTECTED _right    := NULL AS CdxBranchePage
-        PROTECTED _left     := NULL AS CdxBranchePage
         
         INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS Int32)
             SUPER(bag, nPage, buffer)
@@ -53,7 +51,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:PageType   := CdxPageType.Branch
             SELF:NumKeys    := 0
             SELF:LeftPtr    := SELF:RightPtr   := -1
-            RETURN   
+            RETURN
+
             #region ICdxKeyValue
         PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
             LOCAL nStart AS INT
@@ -122,8 +121,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE CONST CDXBRANCH_HEADERLEN           := 12	AS WORD
         PRIVATE CONST CDXBRANCH_BYTESFREE           := 500  AS WORD
         #endregion
-        INTERNAL PROPERTY Right  AS CdxBranchePage GET _right SET _right := VALUE
-        INTERNAL PROPERTY Left   AS CdxBranchePage GET _left  SET _left := VALUE
         INTERNAL PROPERTY LastNode AS CdxPageNode GET SELF[SELF:NumKeys-1]
         
         INTERNAL PROPERTY MaxKeys AS LONG GET _maxKeys

@@ -19,8 +19,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	INTERNAL CLASS CdxTagList INHERIT CdxLeafPage
         PROTECTED _tags AS List<CdxTag>
 
-	    PROTECTED INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , page AS CdxPage)
-            SUPER(bag  , page)
+	    PROTECTED INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , page AS CdxPage, keyLen AS WORD)
+            SUPER(bag  , page:PageNo, page:Buffer, keyLen)
 
         INTERNAL METHOD ReadTags() AS List<CdxTag>
             _tags := List<CdxTag>{}
@@ -37,7 +37,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN _tags
         PROPERTY Tags AS IList<cdxTag> GET _tags
 
-        INTERNAL OVERRIDE METHOD Initialize(keyLength AS WORD) AS VOID
+        PROTECTED VIRTUAL METHOD Initialize(keyLength AS WORD) AS VOID
             SUPER:Initialize(keyLength)
             _tags := List<CdxTag>{}
             SELF:PageType := CdxPageType.TagList

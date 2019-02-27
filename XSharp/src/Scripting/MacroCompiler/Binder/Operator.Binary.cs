@@ -530,8 +530,6 @@ namespace XSharp.MacroCompiler
                     for (int j = 0; j < 13; j++)
                     {
                         var t = x[i, j];
-                        if (k == BinaryOperatorKind.ExactEqual && i != j)
-                            t = OperandType.Error;
                         var nt = OperandTypeHelper.IsNullable(t + OperandTypeHelper.NullableDelta) ? t + OperandTypeHelper.NullableDelta : t;
                         res[i + 2, j + 2] = BinaryOperatorSymbol.Create(k, t);
                         res[i + 2 + 13, j + 2] = BinaryOperatorSymbol.Create(k, nt);

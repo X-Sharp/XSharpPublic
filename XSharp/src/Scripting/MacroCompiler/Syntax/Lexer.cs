@@ -746,7 +746,7 @@ namespace XSharp.MacroCompiler
                         _lastToken = t;
                         return new Token(t, st, start, _index - start, value, ch);
                     }
-                } while (true);
+                } while (!Eoi());
             }
             if (!_hasEos)
             {

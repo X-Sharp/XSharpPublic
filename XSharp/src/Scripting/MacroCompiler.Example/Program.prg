@@ -200,6 +200,7 @@ begin namespace MacroCompilerTest
         EvalMacro(mc, e"0.00001")
         //EvalMacro(mc, "{|foo| bar := 10}")
         //EvalMacro(mc, "{|foo| bar := 10,foo}")
+        //EvalMacro(mc, e"{|a|Len(a) == 4}", "test")
         wait
 
         RunTests(mc)
@@ -530,6 +531,7 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"0xFFFF", Args(), 0xFFFF, typeof(int))
         TestMacro(mc, e"0XFFFF", Args(), 0xFFFF, typeof(int))
         TestMacro(mc, e"0xffff", Args(), 0xFFFF, typeof(int))
+        TestMacro(mc, "1+1 ", Args(), 2, typeof(int))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")

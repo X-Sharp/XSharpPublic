@@ -62,7 +62,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         oI := DbOrderInfo{}
                         oI:BagName := info:BagName
                         oi:Order   := info:Order
-                        lOk := SELF:SetFocus(oi)
+                        lOk := SELF:Focus(oi)
                     ENDIF
                     RETURN lOk
                     
@@ -76,38 +76,60 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             oTag := SELF:FindOrder(orderInfo)
             IF oTag != NULL
                 VAR bag := oTag:OrderBag
-                bag:Close()
-                SELF:_bags:Remove(bag)
+                RETURN _CloseBag(bag)
             ENDIF
             RETURN TRUE
-            
-        METHOD CloseAll(orderInfo AS DbOrderInfo) AS LOGIC
+
+        INTERNAL METHOD _CloseBag(oBag AS CdxOrderBag) AS LOGIC
+            VAR lOk := oBag:Close()
+            IF lOk .AND. _bags:Contains(oBag)
+                _bags:Remove(oBag)
+            ENDIF
+            RETURN lOk
+
+        METHOD Delete(orderInfo AS DbOrderInfo, lCloseStructural AS LOGIC) AS LOGIC
             LOCAL oStruct := NULL AS CdxOrderBag
-            FOREACH oBag AS CdxOrderBag IN _bags
-                 IF oBag:Structural .AND. ! orderInfo:AllTags
-                    oStruct := oBag
-                 ELSE
-                    oBag:Close()
+            LOCAL lOk := TRUE AS LOGIC
+            SELF:CurrentOrder := NULL
+            IF orderInfo:AllTags
+                FOREACH oBag AS CdxOrderBag IN _bags
+                    IF lCloseStructural 
+                        oBag:Close()
+                    ELSEIF ! oBag:Structural
+                        oBag:Close()
+                    ELSE
+                        oStruct := oBag
+                    ENDIF
+                NEXT
+                _bags:Clear()
+                IF oStruct != NULL
+                    _bags:Add(oStruct)
                 ENDIF
-            NEXT
-            _bags:Clear()
-            IF oStruct != NULL
-                _bags:Add(oStruct)
+            ELSE
+                IF ! String.IsNullOrEmpty(orderInfo:BagName)
+                    VAR oBag := SELF:FindOrderBag(orderInfo:BagName)
+                    IF oBag != NULL
+                        lOk := SELF:_CloseBag(oBag)
+                    ENDIF
+                ELSE
+                    VAR oTag := SELF:FindOrder(orderInfo)
+                    IF oTag != NULL
+                        VAR oBag := oTag:OrderBag
+                        lOk :=  SELF:_CloseBag(oBag)
+                    ENDIF
+                ENDIF
+
             ENDIF
             RETURN TRUE
             
-        METHOD Remove(cFileName AS STRING) AS LOGIC
-            IF File(cFileName)
-                cFileName := FPathName()
+        METHOD Destroy(orderInfo AS DbOrderInfo) AS LOGIC
+            LOCAL oTag AS CdxTag
+            oTag := SELF:FindOrder(orderInfo)
+            IF oTag != NULL
+                VAR bag := oTag:OrderBag
+                RETURN bag:Destroy(oTag)
             ENDIF
-            FOREACH oBag AS CdxOrderBag IN _bags
-                IF oBag:MatchesFileName(cFileName)
-                    oBag:Close()
-                    _bags:Remove(oBag)
-                    RETURN TRUE
-                ENDIF
-            NEXT
-            RETURN FALSE
+            RETURN TRUE
             
         PROPERTY IsHot AS LOGIC
             GET
@@ -154,7 +176,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // Todo
             RETURN FALSE
             
-        METHOD SetFocus(orderinfo AS DbOrderInfo) AS LOGIC
+        METHOD Focus(orderinfo AS DbOrderInfo) AS LOGIC
             VAR oOrder := FindOrder(orderinfo)
             SELF:CurrentOrder := oOrder
             RETURN TRUE

@@ -56,6 +56,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF string.IsNullOrEmpty(SELF:_orderName)
                 SELF:_oRDD:_dbfError( GenCode.EG_ARG, SubCodes.EDB_CREATEINDEX)
             ENDIF
+            SELF:_orderName := SELF:_orderName:ToUpper()
             IF !isOk .OR. SELF:_keySize == 0
                 SELF:Close()
                 SELF:_oRDD:_dbfError(  SubCodes.EDB_CREATEINDEX, GenCode.EG_ARG,"OrdCreate", "Missing Order Name")

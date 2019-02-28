@@ -28,10 +28,10 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN SELF:_indexList:Create(orderInfo)
                 
             VIRTUAL METHOD OrderDestroy(orderInfo AS DbOrderInfo ) AS LOGIC
-                RETURN SUPER:OrderDestroy(orderInfo)
+                RETURN SELF:_indexList:Destroy(orderInfo)
 
-		METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
-            		RETURN SUPER:OrderCondition(info)
+		    METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
+                RETURN SUPER:OrderCondition(info)
                 
             VIRTUAL METHOD OrderListAdd( orderInfo AS DbOrderInfo) AS LOGIC
                 BEGIN LOCK SELF
@@ -53,31 +53,32 @@ BEGIN NAMESPACE XSharp.RDD
                     LOCAL lOk := FALSE AS LOGIC
                     IF SELF:_indexList:FindOrderBag(orderInfo:BagName) == NULL
                         lOk := SELF:_indexList:Add(orderInfo)
-                        IF lOk .AND. SELF:_indexList:Count == 1
-                            // After opening the first index file the first order in the file becomes active
-                            orderInfo := DbOrderInfo{}
-                            orderInfo:Order := 1
-                            lOk := SELF:OrderListFocus(orderInfo)
-                        ENDIF
                     ELSE
                         // Already open, do nothing
                         lOk := TRUE
                     ENDIF
+                    IF lOk
+                         orderInfo:Order := 1
+                         lOk := SELF:OrderListFocus(orderInfo)
+                    ENDIF
                     RETURN lOk
                 END LOCK
-                
-            VIRTUAL METHOD OrderListDelete(orderInfo AS DbOrderInfo) AS LOGIC
-            
-                BEGIN LOCK SELF
+
+
+            METHOD _CloseAllIndexes(orderInfo AS DbOrderInfo, lCloseStructural AS LOGIC) AS LOGIC
                     SELF:GoCold()
-                    RETURN SELF:_indexList:CloseAll(orderInfo)
-                END LOCK            
+                    RETURN SELF:_indexList:Delete(orderInfo, lCloseStructural)
+
+            VIRTUAL METHOD OrderListDelete(orderInfo AS DbOrderInfo) AS LOGIC
+                BEGIN LOCK SELF
+                    RETURN SELF:_CloseAllIndexes(orderInfo, FALSE)
+                END LOCK
                 
             VIRTUAL METHOD OrderListFocus(orderInfo AS DbOrderInfo) AS LOGIC
             
                 BEGIN LOCK SELF
                     SELF:GoCold()
-                    RETURN SELF:_indexList:SetFocus(orderInfo)
+                    RETURN SELF:_indexList:Focus(orderInfo)
                 END LOCK
                 
             VIRTUAL METHOD OrderListRebuild() AS LOGIC
@@ -123,6 +124,8 @@ BEGIN NAMESPACE XSharp.RDD
                 IF workOrder != NULL
                     info:Result := 0
                     isOk := workOrder:_CountRecords(REF result)
+                ELSE
+                    isOk := TRUE
                 ENDIF
                 IF isOk
                     info:Result := result
@@ -265,12 +268,13 @@ BEGIN NAMESPACE XSharp.RDD
         #REGION Open, Close, Create
         PUBLIC OVERRIDE METHOD Close() AS LOGIC
             LOCAL orderInfo AS DbOrderInfo
-            
-            orderInfo := DbOrderInfo{}
-            orderInfo:AllTags := TRUE
-            SELF:OrderListDelete(orderInfo)
-            RETURN SUPER:Close()
-            
+            BEGIN LOCK SELF
+                orderInfo := DbOrderInfo{}
+                orderInfo:AllTags := TRUE
+                SELF:_CloseAllIndexes(orderInfo, TRUE)
+                RETURN SUPER:Close()
+            END LOCK
+
             
         PUBLIC OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
             LOCAL isOk AS LOGIC

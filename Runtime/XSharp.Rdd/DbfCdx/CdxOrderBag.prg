@@ -55,6 +55,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             /// <inheritdoc />		
         METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
             THROW NotImplementedException{}
+
+
             /// <inheritdoc />
         METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
             LOCAL cTag AS STRING
@@ -84,6 +86,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN lOk
 
+        METHOD Destroy(oTag AS CdxTag) AS LOGIC
+            RETURN TRUE
 
             /// <inheritdoc />
         METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
@@ -171,6 +175,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             FClose(SELF:_hFile)
             RETURN TRUE
 
+
         INTERNAL METHOD Open(info AS DbOrderInfo) AS LOGIC
             // Filename may have path or not
             // When the filename does not have a path then we look in the path of the DBF
@@ -214,6 +219,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             RETURN TRUE
         #endregion
+
 
          METHOD MatchesFileName(cFileName AS STRING) AS LOGIC
             VAR cExt := Path.GetExtension(cFileName)
@@ -343,6 +349,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 NOP
             ENDIF
             RETURN TRUE
+
         INTERNAL METHOD XLock() AS LOGIC
             IF !SELF:Shared
                 RETURN TRUE

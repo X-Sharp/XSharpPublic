@@ -1111,7 +1111,7 @@ CLASS XSharp.CoreDb
         ELSE
             VAR info := DbOrderInfo{}
             info:BagName := cBagName
-            IF oOrder == NULL
+            IF oOrder == NULL .AND. STRING.IsNullOrEmpty(cBagName)
                 info:AllTags := TRUE
             ELSE
                 info:Order   := oOrder

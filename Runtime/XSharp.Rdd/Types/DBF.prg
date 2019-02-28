@@ -59,7 +59,7 @@ BEGIN NAMESPACE XSharp.RDD
 		PROTECT _NewRecord      AS LOGIC
 
         STATIC PROTECT _Extension := ".DBF" AS STRING
-
+        INTERNAL PROPERTY FullPath AS STRING GET _FileName
 		INTERNAL _Ansi          AS LOGIC
 		//
 		INTERNAL _Encoding      AS Encoding

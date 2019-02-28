@@ -10,6 +10,8 @@ USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 USING System.Text
 USING System.IO
+USING System.Linq
+
 BEGIN NAMESPACE XSharp.RDD.CDX
     /// <summary>
     /// Orderbag = CDX file. Contains one or more orders = Tags
@@ -36,14 +38,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _oRDD      AS DBFCDX
         INTERNAL _root      AS CdxFileHeader
         INTERNAL _tagList   AS CdxTagList
-        INTERNAL _tags      AS IList<CdxTag>
         INTERNAL CONST CDXPAGE_SIZE        := 512 AS WORD
 
         //INTERNAL PROPERTY FileName AS STRING AUTO
         INTERNAL PROPERTY FullPath AS STRING AUTO
         INTERNAL PROPERTY Name AS STRING GET Path.GetFileNameWithoutExtension(FullPath)
         INTERNAL PROPERTY Handle AS IntPtr GET _hFile
-        INTERNAL PROPERTY Tags AS IList<CdxTag> GET _tags
+        INTERNAL PROPERTY Tags AS IList<CdxTag> GET _tagList:Tags
         INTERNAL PROPERTY Structural AS LOGIC AUTO
         INTERNAL CONSTRUCTOR(oRDD AS DBFCDX )
             SUPER( oRdd )
@@ -79,15 +80,32 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF lOk
                 // Read the tag from disk to get all the normal stuff
                 oTag  := CdxTag{SELF,oTag:Header:PageNo, oTag:OrderName}
-                SELF:_tags:Add(oTag)
-                SELF:_tagList:Add(oTag)
-                SELF:_tagList:Write()
+                SELF:AddTag(oTag)
                 
             ENDIF
             RETURN lOk
 
-        METHOD Destroy(oTag AS CdxTag) AS LOGIC
+        METHOD AddTag(oTag AS CdxTag) AS LOGIC
+            _tagList:Add(oTag)
             RETURN TRUE
+
+        METHOD Destroy(oTag AS CdxTag) AS LOGIC
+            LOCAL found := FALSE AS LOGIC
+            VAR aTags := SELF:Tags:ToArray()
+            FOREACH VAR tag IN aTags
+                IF String.Compare(oTag:OrderName, tag:OrderName, StringComparison.OrdinalIgnoreCase) == 0
+                    oTag := tag
+                    found := TRUE
+                    EXIT
+                ENDIF
+            NEXT
+            IF found
+                // rewrite the taglist
+                SELF:_tagList:Remove(oTag)
+                // todo
+                // Delete the pages from the tag
+            ENDIF
+            RETURN found
 
             /// <inheritdoc />
         METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
@@ -124,12 +142,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL cFullName AS STRING
             LOCAL cDbf      AS STRING
             cFullName := cBagName
-            cDbf      := (STRING) SELF:_oRDD:Info(DBI_FULLPATH,NULL)
-            IF String.IsNullOrEmpty(Path.GetExtension(cFullName))
+            cDbf      := SELF:_oRDD:_FileName
+            IF String.IsNullOrEmpty(cFullName)
+                cFullName := Path.ChangeExtension(cDBF, CDX_EXTENSION)
+            ELSEIF String.IsNullOrEmpty(Path.GetExtension(cFullName))
                 cFullName := Path.ChangeExtension(cFullname, CDX_EXTENSION)
-            ENDIF
-            // if they create Foo.DBF with index Foo.DBF then change the extension to CDX
-            IF String.Compare(cDbf, cFullName, StringComparison.OrdinalIgnoreCase) == 0
+            ELSEIF String.Compare(cDbf, cFullName, StringComparison.OrdinalIgnoreCase) == 0
                  cFullName := Path.ChangeExtension(cFullname, CDX_EXTENSION)
             ENDIF
             cPath := Path.GetDirectoryName(cFullName)
@@ -152,12 +170,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _tagList := CdxTagList{SELF,  page, _root:KeySize}
             _taglist:InitBlank()
             SELF:Write(_tagList)
-            _tags := List<CdxTag>{}
             // we now have a 
             RETURN TRUE
 
         METHOD _FindTagByName(cName AS STRING) AS CdxTag
-            FOREACH oTag AS CdxTag IN _tags
+            FOREACH oTag AS CdxTag IN SELF:Tags
                 IF String.Compare(oTag:OrderName, cName,StringComparison.OrdinalIgnoreCase) == 0
                     RETURN oTag
                 ENDIF
@@ -166,11 +183,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
         METHOD Close() AS LOGIC
-            FOREACH oTag AS CdxTag IN _tags
+            FOREACH oTag AS CdxTag IN Tags
                 oTag:GoCold()
                 oTag:Close()
             NEXT
-            _tags:Clear()
             SELF:_PageList:Flush(FALSE)
             FClose(SELF:_hFile)
             RETURN TRUE
@@ -191,7 +207,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             cPath := Path.GetDirectoryName(cFullName)
             IF String.IsNullOrEmpty(cPath)
-                cPath := (STRING) SELF:_oRDD:Info(DBI_FULLPATH,NULL)
+                cPath := SELF:_oRDD:_FileName
                 cPath := Path.GetDirectoryName(cPath)
                 cFullName := Path.Combine(cPath, cFileName)
             ENDIF
@@ -212,9 +228,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR page     := SELF:GetPage(nTagList, _root:KeySize, NULL)
             _tagList := CdxTagList{SELF,  page, _root:KeySize}
             SELF:SetPage(_tagList)
-            _tags := _tagList:ReadTags()
+            _tagList:ReadTags()
             // Compile expressions
-            FOREACH VAR tag IN _tags
+            FOREACH VAR tag IN Tags
                 tag:EvaluateExpressions()
             NEXT
             RETURN TRUE
@@ -241,7 +257,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
          METHOD Flush() AS LOGIC
             LOCAL lOk AS LOGIC
             lOk := TRUE
-             FOREACH oTag AS CdxTag IN _tags
+             FOREACH oTag AS CdxTag IN SELF:Tags
                 IF ! oTag:Flush()
                     lOk := FALSE
                 ENDIF
@@ -252,7 +268,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
          METHOD GoCold() AS LOGIC
             LOCAL lOk AS LOGIC
             lOk := TRUE
-             FOREACH oTag AS CdxTag IN _tags
+             FOREACH oTag AS CdxTag IN SELF:Tags
                 IF ! oTag:GoCold()
                     lOk := FALSE
                 ENDIF
@@ -300,7 +316,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         #region properties
 
-        PROPERTY Count AS LONG GET _tags:Count
+        PROPERTY Count AS LONG GET SELF:Tags:Count
 
         PROPERTY BagHasChanged AS LOGIC 
             GET
@@ -320,7 +336,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PROPERTY IsHot AS LOGIC
         GET
-            FOREACH oTag AS CdxTag IN _tags
+            FOREACH oTag AS CdxTag IN SELF:Tags
                 IF oTag:IsHot
                     RETURN TRUE
                 ENDIF

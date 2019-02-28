@@ -41,6 +41,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 LOCAL oBag AS CdxOrderBag
                 //
                 TRY
+                    IF String.IsNullOrEmpty(info:BagName)
+                        info:BagName := Path.ChangeExtension(_oRDD:FullPath, CdxOrderBag.CDX_EXTENSION)
+                    ENDIF
                     IF File(info:BagName)
                         info:BagName := FPathName()
                     ENDIF
@@ -49,10 +52,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         // Create new OrderBag
                         oBag := CdxOrderBag{_oRDD}
                         oBag:CreateBag(info:BagName)
-                        VAR cBag := info:BagName.ToLower()
-                        VAR cDbf := (STRING) SELF:_oRDD:Info(DBI_FULLPATH,NULL)
-                        cDbf := cDbf:ToLower()
-                        LOCAL lStructural := Path.GetFileNameWithoutExtension(cDBF) == Path.GetFileNameWithoutExtension(cBag) AS LOGIC
+                        VAR cBag := oBag:FullPath
+                        VAR cDbf := SELF:_oRDD:FullPath
+                        info:BagName := oBag:FullPath
+                        VAR lStructural := String.Compare(Path.GetFileNameWithoutExtension(cDBF), Path.GetFileNameWithoutExtension(cBag),StringComparison.OrdinalIgnoreCase) == 0
                         oBag:Structural := lStructural
                         _bags:Add(oBag)
                     ENDIF
@@ -182,11 +185,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
 
         METHOD FindOrderBag(cBagName AS STRING) AS CdxOrderBag
-            FOREACH oBag AS CdxOrderBag IN _bags
-                IF oBag:MatchesFileName(cBagName)
-                    RETURN oBag
-                ENDIF
-            NEXT
+            IF ! String.IsNullOrEmpty(cBagName)
+                FOREACH oBag AS CdxOrderBag IN _bags
+                    IF oBag:MatchesFileName(cBagName)
+                        RETURN oBag
+                    ENDIF
+                NEXT
+            ENDIF
             RETURN NULL
 
         METHOD FindOrderByName(cBagName AS STRING, cName AS STRING) AS CdxTag

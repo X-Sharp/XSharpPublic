@@ -18,7 +18,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	/// </summary>
 	INTERNAL CLASS CdxTagList INHERIT CdxLeafPage
         PROTECTED _tags AS List<CdxTag>
-
+        
 	    PROTECTED INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , page AS CdxPage, keyLen AS WORD)
             SUPER(bag  , page:PageNo, page:Buffer, keyLen)
 
@@ -35,22 +35,54 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // default sort for tags in an orderbag is on pageno. 
             _tags:Sort( { tagX, tagY => tagX:Page - tagY:Page} ) 
             RETURN _tags
+
         PROPERTY Tags AS IList<cdxTag> GET _tags
 
-        PROTECTED VIRTUAL METHOD Initialize(keyLength AS WORD) AS VOID
+        INTERNAL VIRTUAL METHOD Initialize(keyLength AS WORD) AS VOID
             SUPER:Initialize(keyLength)
             _tags := List<CdxTag>{}
             SELF:PageType := CdxPageType.TagList
 
+        METHOD Remove(oTag AS CdxTag) AS LOGIC
+            LOCAL found := FALSE AS LOGIC
+            IF _Tags:Contains(oTag)
+                _tags:Remove(oTag)
+                found := TRUE
+            ELSE
+                FOREACH VAR tag IN _tags
+                    IF String.Compare(tag:OrderName, oTag:OrderName, StringComparison.OrdinalIgnoreCase) == 0
+                        _tags:Remove(tag)
+                        found := TRUE
+                        EXIT
+                    ENDIF
+                NEXT
+            ENDIF
+            IF found
+                SELF:_WriteTags(_tags)
+            ENDIF
+            RETURN found
+
+        PRIVATE METHOD _WriteTags(tags AS List<CdxTag>) AS LOGIC
+            VAR aTags := tags:ToArray()
+            IF aTags:Length > 1
+                System.Array.Sort(aTags,  { x,y => IIF (x:OrderName < y:Ordername , -1, 1)})
+            ENDIF
+            SELF:Initialize(_keyLen)
+            VAR bytes := BYTE[]{ keyLength}
+            FOREACH VAR tag IN aTags
+                memset(bytes, 0, keyLength,32)
+                VAR name := tag:OrderName
+                _SetString(bytes, 0, Math.Min(name:Length, keyLength), name)
+                SELF:Add(tag:Header:PageNo, bytes)
+            NEXT
+            SELF:Write()
+            _tags:Clear()
+            _tags:AddRange(aTags)
+            RETURN TRUE
 
         METHOD Add(oTag AS CdxTag) AS LOGIC
-            LOCAL buffer AS BYTE[]
-            buffer := BYTE[]{ keyLength}
-            memset(buffer, 0, keyLength,32)
-            VAR name := oTag:OrderName
-            _SetString(buffer, 0, Math.Min(name:Length, keyLength), name)
-            SELF:Add(oTag:Header:PageNo, buffer)
-            SELF:Write()
+            SELF:_Tags:Add(oTag)
+            SELF:_WriteTags(_Tags)
             RETURN TRUE
     END CLASS
 END NAMESPACE 

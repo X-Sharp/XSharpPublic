@@ -6,6 +6,7 @@
 
 USING System
 USING System.Collections
+USING System.Collections.Generic
 USING System.Text
 USING XSharp.Rdd.Support
 
@@ -20,34 +21,38 @@ BEGIN NAMESPACE XSharp.RDD
     INTERNAL CLASS RddSortHelper
         PRIVATE _sortInfo   AS DbSortInfo
         PRIVATE _recCount   AS LONG
-        PRIVATE _dataBuffer AS SortRecord[]
+        PRIVATE _dataBuffer AS List<SortRecord>
         PRIVATE _currentPos AS LONG
         PRIVATE _Length     AS LONG
+        PRIVATE _oRdd       AS DBF
 
         INTERNAL PROPERTY SortInfo AS DbSortInfo GET _sortInfo
         
-        INTERNAL CONSTRUCTOR( sortInfo AS DbSortInfo , len AS LONG )
+        INTERNAL CONSTRUCTOR( rdd AS DBF, sortInfo AS DbSortInfo , len AS LONG )
+            SELF:_oRDD      := rdd
             SELF:_sortInfo := sortInfo
             SELF:_recCount := len
-            SELF:_dataBuffer := SortRecord[]{ len }
+            SELF:_dataBuffer := List<SortRecord>{len}
             SELF:_currentPos := 0
             SELF:_Length    := len
             
             
         INTERNAL METHOD Add(o AS SortRecord ) AS LOGIC
             IF SELF:_currentPos < SELF:_Length
-                SELF:_dataBuffer[SELF:_currentPos++] := o
+                SELF:_dataBuffer:Add(o)
                 RETURN TRUE
             ENDIF
             RETURN FALSE
             
             
-        INTERNAL METHOD Sort(ic AS IComparer ) AS LOGIC
+        INTERNAL METHOD Sort(ic AS IComparer<SortRecord> ) AS LOGIC
             TRY
-                Array.Sort(SELF:_dataBuffer, ic)
+                SELF:_dataBuffer:Sort(ic)
                 RETURN TRUE
                 
-            CATCH
+            CATCH ex AS Exception
+                SELF:_oRdd:_dbfError(ex, SubCodes.ERDD_SORT_SORT,GenCode.EG_CORRUPTION,  "RddSortHelper.Sort") 
+                
                 RETURN FALSE
             END TRY
             
@@ -59,7 +64,8 @@ BEGIN NAMESPACE XSharp.RDD
                 NEXT
                 RETURN TRUE
                 
-            CATCH
+            CATCH ex AS Exception
+                SELF:_oRdd:_dbfError(ex, SubCodes.ERDD_SORT_END,GenCode.EG_WRITE,  "RddSortHelper.Write") 
                 RETURN FALSE
             END TRY
             

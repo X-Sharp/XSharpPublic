@@ -76,7 +76,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 #region Properties
         INTERNAL PROPERTY Expression AS STRING GET _KeyExpr
-        
+        INTERNAL PROPERTY RDD               AS Dbfcdx GET _oRDD
         INTERNAL PROPERTY Condition         AS STRING GET _ForExpr
         INTERNAL PROPERTY OrderName         AS STRING GET _orderName
 	    INTERNAL PROPERTY Shared 	        AS LOGIC GET _bag:Shared
@@ -172,19 +172,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             evalOk := TRUE
             TRY
                 SELF:_KeyCodeBlock := SELF:_oRdd:Compile(SELF:_KeyExpr)
-            CATCH
-                SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
+            CATCH ex AS Exception
+                SELF:_oRdd:_dbfError( ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
                 RETURN FALSE
             END TRY
 
             TRY
                 oKey := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
-            CATCH
+            CATCH ex AS Exception
+                SELF:_oRdd:_dbfError( ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBFNTX.Compile")
                 evalOk := FALSE
                 oKey := NULL
             END TRY
             IF !evalOk
-                SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBFNTX.Compile")
                 RETURN FALSE
             ENDIF
             SELF:_KeyExprType := SELF:_oRdd:_getUsualType(oKey)
@@ -228,8 +228,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:_ForExpr:Length > 0
                 TRY
                     SELF:_ForCodeBlock := SELF:_oRdd:Compile(SELF:_ForExpr)
-                CATCH
-                    SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
+                CATCH ex AS Exception
+                    SELF:_oRdd:_dbfError( ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
                     RETURN FALSE
                 END TRY
                 SELF:_oRdd:GoTo(1)
@@ -237,11 +237,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 TRY
                     VAR oValue := SELF:_oRdd:EvalBlock(SELF:_ForCodeBlock)
                     evalOk     := SELF:_oRdd:_getUsualType(oValue) == __UsualType.Logic
-                CATCH
+                CATCH ex AS Exception
+                    SELF:_oRdd:_dbfError(ex, SubCodes.EDB_EXPRESSION,GenCode.EG_SYNTAX,  "DBFNTX.Compile") 
                     evalOk := FALSE
                 END TRY
                 IF !evalOk
-                    SELF:_oRdd:_dbfError(SubCodes.EDB_EXPRESSION,GenCode.EG_SYNTAX,  "DBFNTX.Compile") 
                     RETURN FALSE
                 ENDIF
                 SELF:_Conditional := TRUE
@@ -485,10 +485,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                 EXIT
                             ENDIF
                             records += page:NumKeys
-                            IF page:HasRight
-                                pageNo := page:RightPtr
+                            IF SELF:_Descending
+                                IF page:HasLeft
+                                    pageNo := page:LeftPtr
+                                ELSE
+                                    EXIT
+                                ENDIF
                             ELSE
-                                EXIT
+                                IF page:HasRight
+                                    pageNo := page:RightPtr
+                                ELSE
+                                    EXIT
+                                ENDIF
                             ENDIF
                         ENDDO
                     ENDIF
@@ -659,7 +667,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR oKeyValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
                 LOCAL uiRealLen := 0 AS LONG
                 result := SELF:_ToString(oKeyValue, SELF:_keySize,  byteArray,  REF uiRealLen)
-            CATCH
+            CATCH Ex AS Exception
+                SELF:_oRdd:_dbfError(ex, SubCodes.EDB_EXPRESSION,GenCode.EG_SYNTAX,  "DBFCDX._GetExpressionValue") 
                 result := FALSE
             END TRY
             RETURN result

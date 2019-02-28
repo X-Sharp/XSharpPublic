@@ -126,16 +126,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY MaxKeys AS LONG GET _maxKeys
         
         
-        INTERNAL METHOD Add(node AS CdxPageNode) AS LOGIC
+        INTERNAL METHOD Add(node AS CdxPageNode) AS CdxResult
             IF SELF:NumKeys >= SELF:MaxKeys
-                RETURN FALSE
+                RETURN CdxResult.Full
             ENDIF
             LOCAL nPos := SELF:NumKeys AS WORD
             SELF:NumKeys++
             // node contains recno & keydata
             // node:Page has value for ChildPageNo
             SELF:_setNode(nPos, node)
-            RETURN TRUE
+            RETURN CdxResult.Ok
             
         INTERNAL METHOD Insert(nPos AS LONG, node AS CdxPageNode) AS LOGIC
             LOCAL nMax := SELF:NumKeys AS WORD

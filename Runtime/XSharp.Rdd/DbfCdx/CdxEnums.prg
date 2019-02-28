@@ -33,5 +33,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         MEMBER None    := 4
         MEMBER Unused  := 0xFF
     END ENUM
+
+    [Flags];
+    INTERNAL ENUM CdxResult
+        MEMBER Ok              := 0
+        MEMBER Full            := 1
+        MEMBER Split           := 2
+        MEMBER Merge           := 4
+        MEMBER ExpandFailed    := 4
+    END ENUM
 	
 END NAMESPACE 

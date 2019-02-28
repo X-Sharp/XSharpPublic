@@ -55,30 +55,24 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	/// </summary>
 	INTERNAL CLASS CdxLeafPage INHERIT CdxTreePage
 
-#region Static methods
-       STATIC CONSTRUCTOR
-            KeyBitsTable := Dictionary <WORD, BYTE>{}
+        [DebuggerDisplay("{Recno} {KeyText}")];
+        INTERNAL STRUCTURE Leaf
+            INTERNAL Recno AS LONG
+            INTERNAL Key   AS BYTE[]
+            INTERNAL PROPERTY KeyText AS STRING GET SELF:Key:ToAscii()
+            CONSTRUCTOR (nRecno AS LONG, bKey AS BYTE[])
+                SELF:Recno := nRecno
+                SELF:Key   := (BYTE[]) bKey:Clone()
+                RETURN
+        END STRUCTURE
 
-        INTERNAL STATIC KeyBitsTable AS Dictionary <WORD, BYTE>
-        INTERNAL STATIC METHOD GetBits(wLength AS WORD) AS BYTE
-            LOCAL bits AS BYTE
-            
-            IF KeyBitsTable:TryGetValue(wLength, OUT bits)
-                RETURN bits
-            ENDIF
-            bits := 0
-            LOCAL original := wLength AS WORD
-            DO WHILE wLength > 0
-                bits++
-                wLength >>= 1
-            ENDDO
-            KeyBitsTable:Add(original, bits)
-            RETURN bits
+#region Static methods
+      
 
 #endregion
 		PROTECTED _keyLen    AS WORD
         PROTECTED _lenShift  AS INT
-        PROTECTED _keys      AS BYTE[]
+        PROTECTED _leaves    AS List<Leaf>
         PROTECTED _prevData  AS BYTE[]
 
         INTERNAL CONSTRUCTOR( bag AS CdxOrderBag, page AS CdxPage)
@@ -87,7 +81,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS WORD)
             SUPER(bag, nPage, buffer)
             _keyLen     := nKeyLen
-            _keys       := NULL
+            _leaves     := NULL
             _prevData   := BYTE[]{nKeyLen}
 
             RETURN
@@ -98,8 +92,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:PageType   := CdxPageType.Leaf
             SELF:LeftPtr    := SELF:RightPtr   := -1
             SELF:_Clear()
-            _keyLen         := keyLength
-            VAR bits        := GetBits(keyLength)
+            _keyLen             := keyLength
+            VAR bits            := CdxHelpers.GetBits(keyLength)
             // base dupCountMask, trailCountMNask, numbitsRecno and other info are based on keylength 
             SELF:DataBytes      := IIF (bits > 12, 5, IIF( bits > 8, 4, 3))
             SELF:RecordBits     := (SELF:DataBytes << 3) - (bits << 1)
@@ -113,7 +107,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _Clear() AS VOID
             SELF:Freespace  := CDXLEAF_BYTESFREE
             SELF:NumKeys    := 0
-            SELF:_Keys      := NULL
+            SELF:_leaves    := NULL
+            MemSet(SELF:Buffer, CDXLEAF_HEADERLEN, CDXLEAF_BYTESFREE, 0)
             RETURN
 
         PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
@@ -121,9 +116,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             Debug.Assert (SELF:PageType:HasFlag(CdxPageType.Leaf))
             RETURN ok
 
-
+        INTERNAL PROPERTY ValidLeaves AS LOGIC GET _leaves != NULL .AND. _leaves:Count == SELF:NumKeys
 #region ICdxKeyValue
         PUBLIC METHOD GetRecno(nPos AS Int32) AS Int32
+            IF SELF:ValidLeaves
+                RETURN _leaves[nPos]:Recno
+            ENDIF
             LOCAL nOffSet   AS Int32
             LOCAL nRecno    AS Int32
             Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
@@ -137,18 +135,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
             Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
-            IF _keys == NULL
+            IF !SELF:ValidLeaves
                 SELF:_ExpandKeys()
             ENDIF
-            LOCAL nStart := nPos * _KeyLen AS INT
-            RETURN _GetBytes(_keys, nStart, _KeyLen)
+            RETURN _leaves[nPos]:Key
 #endregion
 
          // For Debugging we calculate all Recnos and KeyBytes
          // Later we will remove this
          PRIVATE METHOD _ExpandKeys()  AS LOGIC
             LOCAL nOffSet   AS Int32
-            LOCAL aBytes := BYTE[]{_KeyLen+1} AS BYTE[]
+            LOCAL aBytes := BYTE[]{_KeyLen} AS BYTE[]
             LOCAL nRecno    AS Int32
             LOCAL nDup, nTrail AS BYTE
             LOCAL nKey      AS Int32
@@ -164,13 +161,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
             // First key starts at end of page
             nStart := CDXPAGE_SIZE
-            _keys    := BYTE[]{SELF:NumKeys * _KeyLen}
+            _leaves := List<Leaf>{}
             IF SELF:Tag != NULL
                 trailChar :=  (BYTE) IIF (Tag:KeyType == __UsualType.String, 32, 0)
             ELSE
                 trailChar := 32
             ENDIF
-            MemSet(_keys, 0, _keys:Length, trailChar)
             nOffSet := CDXLEAF_HEADERLEN
             nStep := SELF:DataBytes
             nLast := SELF:NumKeys-1
@@ -187,7 +183,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 // Copy to aBytes from pos nDup
                 MemCopy(Buffer, nStart - nKey, aBytes, nDup, nKey)
                 nStart := nStart - nKey
-                MemCopy(aBytes, 0, _keys, nI * _KeyLen, nKey+nDup)
+                _leaves.Add( Leaf{ _AND(nRecno, RecnoMask), aBytes})
                 nOffSet      += nStep
             NEXT
             //? "Leaf Page", SELF:PageNo:ToString("X"), SELF:NumKeys,"Startswith", _bag:_oRDD:_Encoding:GetString(GetKey(0),0,_keyLen)
@@ -305,15 +301,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
 
 
-
-
         // This method is called during Index creation.
-        INTERNAL METHOD Add(recno AS LONG, data AS BYTE[]) AS LOGIC
+        INTERNAL METHOD Add(recno AS LONG, data AS BYTE[]) AS CdxResult
             LOCAL nTrailCount AS BYTE
             LOCAL nDupCount   AS BYTE
             IF _AND( recno, SELF:RecnoMask) != recno
                 IF ! SELF:ExpandRecno()
-                    RETURN FALSE
+                    RETURN CdxResult.ExpandFailed
                 ENDIF
             ENDIF
             nTrailCount := _getTrailCount(data)
@@ -324,7 +318,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             LOCAL nBytesToCopy := SELF:_keyLen - nDupCount - nTrailCount AS WORD
             IF SELF:Freespace < (nBytesToCopy+SELF:DataBytes)
-                RETURN FALSE
+                RETURN CdxResult.Full
             ENDIF
             MemCopy(data, _prevData, _KeyLen)
             LOCAL nHeaderLen := CDXLEAF_HEADERLEN + SELF:NumKeys * SELF:DataBytes AS INT
@@ -332,8 +326,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_placeRecno(SELF:NumKeys, recno, SELF:_makeDupTrail(nDupCount, nTrailCount))
             MemCopy(data, nDupCount, buffer, nStart,  nBytesToCopy)
             SELF:Freespace := (WORD) (SELF:Freespace -  nBytesToCopy - SELF:DataBytes)
+            IF SELF:ValidLeaves
+                _leaves:Add( Leaf{recno, data})
+            ENDIF
             SELF:NumKeys += 1
-            RETURN TRUE
+            RETURN CdxResult.Ok
 
         INTERNAL METHOD Insert(nPos AS LONG, node AS CdxNode) AS LOGIC
             RETURN TRUE
@@ -346,17 +343,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _setNode(nPos AS LONG, node AS CdxNode) AS VOID
             RETURN 
  
-       PUBLIC METHOD SetKey(nPos AS Int32,  bValue AS BYTE[]) AS VOID
-            IF _keys == NULL
-                SELF:_ExpandKeys()
-            ENDIF
-            LOCAL nOffSet := nPos * _KeyLen AS INT
-            // Clear old buffer
-			MemSet( _keys, nOffSet, _KeyLen , 0)
-            MemCopy(bValue, 0, _keys, nOffSet, Math.Min(_KeyLen, bValue:Length))
-            RETURN
-            
-   
        PRIVATE METHOD _getTrailCount(data AS BYTE[]) AS BYTE
            LOCAL bTrail AS BYTE
            IF Tag != NULL

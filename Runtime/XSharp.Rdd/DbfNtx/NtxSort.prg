@@ -7,13 +7,14 @@
 
 USING System
 USING System.Collections
+USING System.Collections.Generic
 USING System.Text
 USING XSharp.Rdd.Support
 USING XSharp.RDD.Enums
 BEGIN NAMESPACE XSharp.RDD.NTX
 
             
-    INTERNAL CLASS NtxSortCompare IMPLEMENTS IComparer
+    INTERNAL CLASS NtxSortCompare IMPLEMENTS IComparer<SortRecord>
         PROTECTED _sortInfo AS DBSORTINFO
         PROTECTED _oRdd AS DBFNTX
         
@@ -21,11 +22,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_oRdd := rdd
             SELF:_sortInfo := info
 
-        PROTECTED VIRTUAL METHOD XCompare(x AS SortRecord , y AS SortRecord) AS LONG
+        VIRTUAL METHOD Compare(x AS SortRecord , y AS SortRecord) AS LONG
             RETURN 0
 
-        PUBLIC METHOD Compare(x AS OBJECT , y AS OBJECT ) AS LONG
-            RETURN XCompare( (SortRecord) x, (SortRecord) y)
     END CLASS
     
     INTERNAL CLASS NTXSortCompareDefault INHERIT NTXSortCompare 
@@ -34,7 +33,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SUPER(rdd, info)
             
             
-        PROTECTED OVERRIDE METHOD XCompare(x AS SortRecord , y AS SortRecord) AS LONG
+        OVERRIDE METHOD Compare(x AS SortRecord , y AS SortRecord) AS LONG
             LOCAL dataBuffer AS BYTE[]
             LOCAL dataBuffer2 AS BYTE[]
             LOCAL diff AS LONG
@@ -72,7 +71,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SUPER(rdd, info)
              
             
-        PROTECTED OVERRIDE METHOD XCompare(x AS SortRecord , y AS SortRecord) AS LONG
+        OVERRIDE METHOD Compare(x AS SortRecord , y AS SortRecord) AS LONG
             LOCAL dataBuffer AS BYTE[]
             LOCAL dataBuffer2 AS BYTE[]
             LOCAL diff AS LONG

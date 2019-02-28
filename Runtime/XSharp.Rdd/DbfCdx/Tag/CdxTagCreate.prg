@@ -172,7 +172,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
             
         PRIVATE METHOD _CondCreate(ordCondInfo AS DbOrderCondInfo ) AS LOGIC
-            LOCAL isOk          := TRUE AS LOGIC
             LOCAL leadingOrder  := NULL AS CdxTag
             LOCAL lUseOrder     := FALSE AS LOGIC
             LOCAL hasWhile      := FALSE AS LOGIC
@@ -184,6 +183,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL nextRecord    := 0 AS LONG
             LOCAL start         := 0 AS LONG
             LOCAL result        := FALSE AS LOGIC
+            LOCAL includeRecord := TRUE AS LOGIC
             
             start := ordCondInfo:StartRecNo
             IF ordCondInfo:Scoped
@@ -234,31 +234,21 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR buffer := BYTE[]{ SELF:_keySize }
             DO WHILE TRUE
                 IF hasWhile
-                    isOk := TRUE
-                    TRY
-                        isOk := (LOGIC) SELF:_oRdd:EvalBlock(ordCondInfo:WhileBlock)
-                    CATCH
-                        SELF:_oRdd:_dbfError(SubCodes.ERDD_KEY_EVAL, GenCode.EG_DATATYPE, SELF:fileName)
-                        isOk := FALSE
-                    END TRY
-                    IF ! isOk
+                    IF ! SELF:_EvalBlock(ordCondInfo:WhileBlock, TRUE)
                         EXIT
                     ENDIF
-                    
                 ENDIF
-                IF ! SELF:_sortGetRecord(buffer)
-                    EXIT
+                IF SELF:_Conditional
+                    includeRecord := SELF:_EvalBlock(ordCondInfo:ForBlock, TRUE)
+                ENDIF
+                IF includeRecord
+                    IF ! SELF:_sortGetRecord(buffer)
+                        EXIT
+                    ENDIF
                 ENDIF
                 IF hasEvalBlock
                     IF count >= ordCondInfo:StepSize
-                        isOk := TRUE
-                        TRY
-                            isOk := (LOGIC) SELF:_oRdd:EvalBlock(ordCondInfo:EvalBlock)
-                        CATCH
-                            SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_EVAL,GenCode.EG_DATATYPE, SELF:fileName)
-                            isOk := FALSE
-                        END TRY
-                        IF ! isOk
+                        IF ! SELF:_EvalBlock(ordCondInfo:EvalBlock,FALSE)
                             EXIT
                         ENDIF
                         count := 1
@@ -280,23 +270,41 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     EXIT
                 ENDIF
             ENDDO
-
+            // evaluate the block once more at eof
+            IF hasEvalBlock
+                SELF:_EvalBlock(ordCondInfo:EvalBlock,FALSE)
+            ENDIF
             SELF:_oRdd:__Goto(start)
             SELF:ClearStack()
             SELF:Flush()
             RETURN TRUE
 
-        PRIVATE METHOD _CreateEmpty() AS LOGIC
-            SELF:_sorter:StartWrite()
-            SELF:_sorter:EndWrite()
-            SELF:_sorter := NULL
-            RETURN TRUE
-
+        PRIVATE METHOD _EvalBlock(oBlock AS ICodeBlock, lMustBeLogic AS LOGIC) AS LOGIC
+            LOCAL isOk  := FALSE AS LOGIC
+            LOCAL error := FALSE AS LOGIC
+            TRY
+                VAR res := SELF:_oRdd:EvalBlock(oBlock)
+                IF res IS LOGIC 
+                    isOk := (LOGIC) res
+                ELSEIF lMustBeLogic
+                    error := TRUE
+                ELSE
+                    isOk := TRUE
+                ENDIF
+            CATCH 
+                error := TRUE
+                isOk := FALSE
+            END TRY
+            IF error
+                SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_EVAL,GenCode.EG_DATATYPE, SELF:fileName)
+            ENDIF
+            RETURN isOk
+            
         INTERNAL METHOD _InitSort(lRecCount AS LONG) AS LOGIC
             LOCAL sortInfo AS DbSortInfo
             LOCAL fType  := 0 AS DbFieldType
             sortInfo := DbSortInfo{0,1}     // 0 trans items, 1 sort item
-            SELF:_sorter := CdxSortHelper{sortInfo, lRecCount, SELF}
+            SELF:_sorter := CdxSortHelper{SELF:_oRDD, sortInfo, lRecCount, SELF}
             IF SELF:_SingleField != -1
                 fType := SELF:_oRdd:_Fields[SELF:_SingleField]:fieldType
                 // 'C', 'N', 'D'
@@ -325,32 +333,30 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD _CreateNormalIndex() AS LOGIC
             LOCAL evalCount AS LONG
             LOCAL lRecCount AS LONG
-            LOCAL result AS LOGIC
-            LOCAL hasBlock AS LOGIC
+            LOCAL result    AS LOGIC
+            LOCAL hasBlock  AS LOGIC
            
             evalCount := 0
             lRecCount := SELF:_oRdd:RecCount
             // create sorthelper 
             SELF:_initSort(lRecCount)
             IF lRecCount == 0
-                RETURN SELF:_CreateEmpty()
+                RETURN TRUE
             ENDIF
             hasBlock    := SELF:_oRdd:_OrderCondInfo:EvalBlock != NULL
             evalCount := 1
             SELF:_oRdd:GoTo(1)
             VAR buffer := BYTE[]{ SELF:_keySize }
+            result    := TRUE
             REPEAT
-                result := TRUE
                 IF ! SELF:_sortGetRecord(buffer)
                     EXIT
                 ENDIF
                 IF hasBlock
                     IF evalCount >= SELF:_oRdd:_OrderCondInfo:StepSize
-                        TRY
-                            SELF:_oRdd:EvalBlock(SELF:_oRdd:_OrderCondInfo:EvalBlock)
-                        CATCH
-                            result := FALSE
-                        END TRY
+                        IF ! SELF:_EvalBlock(SELF:_oRdd:_OrderCondInfo:EvalBlock, FALSE)
+                            EXIT
+                        ENDIF
                         evalCount := 1
                     ELSE
                         evalCount++
@@ -400,10 +406,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Ascii          AS LOGIC AUTO
         PRIVATE _bag                     AS CdxOrderBag
         PRIVATE _tag                     AS CdxTag
-        INTERNAL CONSTRUCTOR( sortInfo   AS DbSortInfo , len AS LONG, tag AS CdxTag )
-            SUPER(sortInfo, len)
+        PRIVATE _pages                   AS List<CdxTreePage>
+        INTERNAL CONSTRUCTOR( rdd AS DBF, sortInfo   AS DbSortInfo , len AS LONG, tag AS CdxTag )
+            SUPER(rdd, sortInfo, len)
             _tag := tag
             _bag := tag:OrderBag
+            _pages := List<CdxTreePage>{}
             CurrentLeaf := NULL
 
         INTERNAL METHOD NewLeafPage(parent AS CdxBranchPage) AS CdxLeafPage
@@ -421,9 +429,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             oLeaf:Parent := parent
             oLeaf:Write()
             CurrentLeaf := oLeaf
+            _pages:Add(oLeaf)
             RETURN oLeaf
 
-        INTERNAL METHOD newBranchPage(node AS CdxPageNode, brother AS CdxBranchPage) AS CdxBranchPage
+        INTERNAL METHOD NewBranchPage(node AS CdxPageNode, brother AS CdxBranchPage) AS CdxBranchPage
             LOCAL oBranch AS CdxBranchPage
             LOCAL oParent AS CdxBranchPage
             LOCAL buffer AS BYTE[]
@@ -434,12 +443,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             oBranch:Write()
             IF brother != NULL
                 // When we allocate a 2nd page at the same level
-                // then we must also have a parent level above this one
+                // then we must also have a parent level above this one etc etc
                 oParent := brother:Parent
                 IF oParent == NULL
                     oParent := newBranchPage(brother:LastNode, NULL)
                 ELSE
-                    oParent:Add(brother:LastNode)
+                    VAR result := oParent:Add(brother:LastNode)
+                    SWITCH result
+                    CASE CdxResult.Ok
+                        NOP
+                    OTHERWISE
+                        // throw an exception
+                        Error("CdxSortHelper.NewBranchPage","Could not add key to Branch page for "+SELF:_tag:Filename+" "+SELF:_tag:OrderName )
+                    END SWITCH
                 ENDIF
                 brother:Parent := oParent
                 brother:Right   := oBranch
@@ -455,6 +471,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             node:Page:Parent := oBranch
             oBranch:Add(node)
             oBranch:Write()
+            _pages:Add(oBranch)
             RETURN oBranch
 
         INTERNAL METHOD AddRecord(nRecno AS LONG, data AS BYTE[]) AS LOGIC
@@ -463,26 +480,48 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // place item on current leaf node.
             // When Leafnode is full then allocate a new leaf node
             // and add this leaf to the parent
-            IF ! oLeaf:Add(nRecno, data)
-                // this means that it did not fit
+            VAR result := oLeaf:Add(nRecno, data)
+            SWITCH result
+            CASE CdxResult.Ok
+                NOP
+            CASE CdxResult.Full
+                // this means that it did not fit. So allocate a sibling
+                // if there is no parent yet then we allocate the parent afterwards
+                // to stay binary compatibile with the Comix implementation
                 oLeaf:Right  := SELF:NewLeafPage(oParent)
                 IF oParent == NULL
+                    // allocate a parent and set the first node on the parent to the page that is full
                    oParent := SELF:NewBranchPage(oLeaf:LastNode, NULL)
                 ELSE
-                    IF ! oParent:Add(oLeaf:LastNode)
-                        // Write Full parent to disk
+                    // add the leaf node to the parent. When the parent is full we must
+                    // also add a sibling to the parent page. Added a level above that is
+                    // done inside NewBranchPage
+                    result := oParent:Add(oLeaf:LastNode)
+                    SWITCH result
+                    CASE CdxResult.Ok
+                        NOP
+                    CASE CdxResult.Full
+                        // parent is full, so write it to disk and create a new sibling for the parent
                         oParent:Write()
                         oParent := SELF:NewBranchPage(oLeaf:LastNode, oParent)
-                    ENDIF
+                    END SWITCH
                 ENDIF
+                // write the existing page to disk and continue with the new page
                 oLeaf:Write()
                 oLeaf := oLeaf:Right
                 oLeaf:Parent := oParent
-                IF ! oLeaf:Add(nRecno, data)
-                    // Exception, this should not happen
+                result := oLeaf:Add(nRecno, data)
+                IF result != CdxResult.Ok
+                    // report a corruption error
+                    Error("CdxSortHelper.AddRecord","Could not add key to leaf page for "+SELF:_tag:Filename+" "+SELF:_tag:OrderName)
                     RETURN FALSE
                 ENDIF
-            ENDIF
+            CASE CdxResult.ExpandFailed
+                // Todo
+                // Expanding the record numbers failed
+                // we must split the page and then try again
+                 Error("CdxSortHelper.AddRecord","Expanding the record numbers failed for "+SELF:_tag:Filename+" "+SELF:_tag:OrderName+" page splitting needs to be implemented")
+            END SWITCH
             RETURN TRUE
 
         INTERNAL METHOD StartWrite() AS LOGIC
@@ -507,10 +546,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             oParent  := oLeaf:Parent
             VAR node := oLeaf:LastNode
             DO WHILE oParent != NULL
-                IF ! oParent:Add(node)      // It can happen and will happen that the last key does not fit and we need another branch
+                VAR result := oParent:Add(node)      // It can happen and will happen that the last key does not fit and we need another branch
+                SWITCH result
+                CASE CdxResult.Ok
+                    NOP
+                CASE CdxResult.Full
                     oParent:Write()
                     oParent := SELF:NewBranchPage(oLeaf:LastNode, oParent)
-                ENDIF
+                END SWITCH
                 node    := oParent:LastNode
                 oParent := oParent:Parent
             ENDDO
@@ -525,6 +568,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL oRoot := NULL AS CdxBranchPage
             VAR oPages  := List<CdxBranchPage>{}
             // Recursively add all pages, we start at the rightmost leaf node
+            // until we have the top level. Find all pages and force them to be written.
             IF SELF:AddParents(oParent, oPages)
                 // Walk all pages and force them to be written
                 FOREACH oPage AS CDxBranchPage IN oPages
@@ -534,6 +578,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     oPage:Write()
                 NEXT
             ENDIF
+            FOREACH VAR page IN _Pages
+                page:Write()
+            NEXT
+            _pages:Clear()
             IF oRoot != NULL
                 SELF:SetRoot(oRoot)
             ELSE
@@ -562,5 +610,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             oPage:SetRoot()
             oPage:Write()
             RETURN
+
+        PRIVATE METHOD Error(strFunction AS STRING, strMessage AS STRING) AS VOID
+            SELF:_tag:RDD:_dbfError(ERDD.CREATE_ORDER, GenCode.EG_CORRUPTION, strFunction, strMessage)
+            RETURN
+
     END CLASS
 END NAMESPACE

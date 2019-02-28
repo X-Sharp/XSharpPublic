@@ -124,13 +124,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF String.IsNullOrEmpty(Path.GetExtension(cFullName))
                 cFullName := Path.ChangeExtension(cFullname, CDX_EXTENSION)
             ENDIF
+            // if they create Foo.DBF with index Foo.DBF then change the extension to CDX
             IF String.Compare(cDbf, cFullName, StringComparison.OrdinalIgnoreCase) == 0
                  cFullName := Path.ChangeExtension(cFullname, CDX_EXTENSION)
             ENDIF
             cPath := Path.GetDirectoryName(cFullName)
             IF String.IsNullOrEmpty(cPath)
                 cPath := Path.GetDirectoryName(cDbf)
-                cFullName := Path.Combine(cPath, cBagName)
+                cFullName := Path.Combine(cPath, cFullName)
             ENDIF
             IF File(cFullName)
                 RETURN FALSE

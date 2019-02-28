@@ -88,7 +88,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD InitBlank() AS VOID
             SELF:Initialize(_keyLen)
 
-        PROTECTED VIRTUAL METHOD Initialize(keyLength AS WORD) AS VOID
+        INTERNAL VIRTUAL METHOD Initialize(keyLength AS WORD) AS VOID
             SELF:PageType   := CdxPageType.Leaf
             SELF:LeftPtr    := SELF:RightPtr   := -1
             SELF:_Clear()

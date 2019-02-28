@@ -57,11 +57,21 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_oRDD:_dbfError( GenCode.EG_ARG, SubCodes.EDB_CREATEINDEX)
             ENDIF
             SELF:_orderName := SELF:_orderName:ToUpper()
+
             IF !isOk .OR. SELF:_keySize == 0
                 SELF:Close()
                 SELF:_oRDD:_dbfError(  SubCodes.EDB_CREATEINDEX, GenCode.EG_ARG,"OrdCreate", "Missing Order Name")
                 RETURN FALSE
             ENDIF
+
+            // now verify if the order already exists in the bag and when so, then delete it from the orderbag
+            FOREACH VAR tag IN SELF:OrderBag:Tags
+                IF string.Compare(tag:OrderName, SELF:OrderName, StringComparison.OrdinalIgnoreCase) == 0
+                    SELF:OrderBag:Destroy(tag)
+                    EXIT
+                ENDIF
+            NEXT
+
             IF SELF:_keySize > 0
                 SELF:_newKeyBuffer   := BYTE[]{_Keysize+1}
             ENDIF

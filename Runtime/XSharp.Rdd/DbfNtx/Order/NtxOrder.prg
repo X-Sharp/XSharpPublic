@@ -129,7 +129,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     // Get the path from the RDD's open info
                     VAR cPath := Path.GetDirectoryName(SELF:_oRDD:_OpenInfo:FileName)
                     IF String.IsNullOrEmpty(cPath)
-                        cPath := (STRING) SELF:_oRDD:Info(DBI_FULLPATH,NULL)
+                        cPath := SELF:_oRDD:_FileName
                         cPath := Path.GetDirectoryName(cPath)
                     ENDIF
                     SELF:_fullPath := Path.Combine(cPath, SELF:_fullPath)

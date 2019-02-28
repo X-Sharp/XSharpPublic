@@ -160,7 +160,8 @@ BEGIN NAMESPACE XSharp.RDD
 				TRY
 					VAR nRec := Convert.ToInt32( oRec )
 					result := SELF:Goto( nRec )
-				CATCH
+				CATCH ex AS Exception
+                    SELF:_dbfError(ex, SubCodes.EDB_GOTO,GenCode.EG_DATATYPE,  "DBF.GoToId") 
 					result := FALSE
 				END TRY
 			END LOCK
@@ -322,8 +323,9 @@ BEGIN NAMESPACE XSharp.RDD
                     IF unlocked
 					    SELF:_HeaderLocked := FALSE
                     ENDIF
-				CATCH
+				CATCH ex AS Exception
 					SELF:_HeaderLocked := FALSE
+                    SELF:_dbfError(ex, SubCodes.ERDD_WRITE_UNLOCK,GenCode.EG_LOCK_ERROR,  "DBF.HeaderLock") 
 				END TRY
 			ENDIF
 			//
@@ -341,8 +343,9 @@ BEGIN NAMESPACE XSharp.RDD
 					SELF:GoCold()
 					TRY
 						recordNbr := Convert.ToInt32( oRecId )
-					CATCH
+					CATCH ex AS Exception
 						recordNbr := 0
+                        SELF:_dbfError(ex, SubCodes.ERDD_DATATYPE,GenCode.EG_LOCK_ERROR,  "DBF.UnLock") 
 					END TRY
 					//
 					isOk := TRUE
@@ -383,8 +386,9 @@ BEGIN NAMESPACE XSharp.RDD
 			//
 			TRY
 				unlocked := FFUnlock( SELF:_hFile, (DWORD)iOffset, (DWORD)SELF:_lockScheme:FileSize )
-			CATCH
+			CATCH ex AS Exception
 				unlocked := FALSE
+                SELF:_dbfError(ex, SubCodes.ERDD_WRITE_UNLOCK,GenCode.EG_LOCK_ERROR,  "DBF._unlockFile") 
 			END TRY
 			RETURN unlocked
 			
@@ -404,8 +408,9 @@ BEGIN NAMESPACE XSharp.RDD
 			//
 			TRY
 				unlocked := FFUnlock( SELF:_hFile, (DWORD)iOffset, (DWORD)SELF:_lockScheme:RecordSize )
-			CATCH
+			CATCH ex AS Exception
 				unlocked := FALSE
+                SELF:_dbfError(ex, SubCodes.ERDD_WRITE_UNLOCK,GenCode.EG_LOCK_ERROR,  "DBF._unlockRecord") 
 			END TRY
 			IF( unlocked )
 				SELF:_Locks:Remove( recordNbr )
@@ -426,8 +431,9 @@ BEGIN NAMESPACE XSharp.RDD
 			//
 			TRY
 				locked := FFLock( SELF:_hFile, (DWORD)iOffset, (DWORD)SELF:_lockScheme:FileSize )
-			CATCH
-				locked := FALSE
+			CATCH ex AS Exception
+            	locked := FALSE
+			    SELF:_dbfError(ex, SubCodes.ERDD_WRITE_LOCK,GenCode.EG_LOCK_ERROR,  "DBF._lockFile") 
 			END TRY
 			RETURN locked
 			
@@ -440,8 +446,9 @@ BEGIN NAMESPACE XSharp.RDD
 			REPEAT
 				TRY
 					locked := FFLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
-				CATCH
+				CATCH ex AS Exception
 					locked := FALSE
+                    SELF:_dbfError(ex, SubCodes.ERDD_WRITE_LOCK,GenCode.EG_LOCK_ERROR,  "DBF._tryLock") 
 				END TRY
 				IF ( !locked )
 					nTries --
@@ -491,8 +498,9 @@ BEGIN NAMESPACE XSharp.RDD
 			//
 			TRY
 				locked := FFLock( SELF:_hFile, (DWORD)iOffset, (DWORD)SELF:_lockScheme:RecordSize )
-			CATCH
+			CATCH ex AS Exception
 				locked := FALSE
+                SELF:_dbfError(ex, SubCodes.ERDD_WRITE_LOCK,GenCode.EG_LOCK_ERROR,  "DBF._lockRecord") 
 			END TRY
 			IF locked
 				SELF:_Locks:Add( recordNbr )
@@ -512,8 +520,8 @@ BEGIN NAMESPACE XSharp.RDD
 			ELSE
 				TRY
 					nToLock := Convert.ToUInt64( lockInfo:RecId )
-				CATCH
-					SELF:_dbfError( ERDD.DATATYPE, XSharp.Gencode.EG_DATATYPE )
+				CATCH ex AS Exception
+					SELF:_dbfError( ex, ERDD.DATATYPE, XSharp.Gencode.EG_DATATYPE )
 					isOk := FALSE
 				END TRY
 				IF isOk
@@ -728,8 +736,10 @@ BEGIN NAMESPACE XSharp.RDD
 						ENDIF
 
                         isOk := SUPER:Close() .AND. isOk
-					CATCH
+					CATCH ex AS Exception
 						isOk := FALSE
+                        SELF:_dbfError(ex, SubCodes.ERDD_CLOSE_FILE,GenCode.EG_CLOSE,  "DBF.Close") 
+
 					END TRY
 					SELF:_hFile := F_ERROR
 				ENDIF
@@ -870,8 +880,8 @@ BEGIN NAMESPACE XSharp.RDD
 				// Write Fields and Terminator
 				TRY
 					isOk := ( FWrite3( SELF:_hFile, fieldsBuffer, (DWORD)fieldsBuffer:Length ) == (DWORD)fieldsBuffer:Length )
-				CATCH
-					SELF:_DbfError( ERDD.WRITE, XSharp.Gencode.EG_WRITE )
+				CATCH ex AS Exception
+					SELF:_DbfError( ex, ERDD.WRITE, XSharp.Gencode.EG_WRITE )
 				END TRY
 			ENDIF
 			//
@@ -1024,8 +1034,8 @@ BEGIN NAMESPACE XSharp.RDD
 				// Write just the File Header
 				TRY
 					ret := ( FWrite3( SELF:_hFile, SELF:_Header:Buffer, (DWORD)DbfHeader.SIZE ) == (DWORD)DbfHeader.SIZE )
-				CATCH
-					SELF:_DbfError( ERDD.WRITE, XSharp.Gencode.EG_WRITE )
+				CATCH ex AS Exception
+					SELF:_DbfError( ex, ERDD.WRITE, XSharp.Gencode.EG_WRITE )
 					ret := FALSE
 				END TRY
 				// Ok, go Cold
@@ -1206,8 +1216,8 @@ BEGIN NAMESPACE XSharp.RDD
 							IF SELF:Shared 
 								SELF:_writeHeader()
 							ENDIF
-						CATCH
-							SELF:_DbfError( ERDD.WRITE, XSharp.Gencode.EG_WRITE )
+						CATCH ex AS Exception
+							SELF:_DbfError( ex, ERDD.WRITE, XSharp.Gencode.EG_WRITE )
 						END TRY
 					ENDIF
 				ENDIF
@@ -1459,15 +1469,20 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL METHOD _dbfError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD) AS VOID
             SELF:_DbfError(ex, iSubCode, iGenCode, String.Empty, ex?:Message, XSharp.Severity.ES_ERROR)
         			
-		// Throw a Error, indicating the SubSystem Code and the General Code
 		INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD) AS VOID
 			SELF:_DbfError(NULL, iSubCode, iGenCode, String.Empty, String.Empty, XSharp.Severity.ES_ERROR)
 			
-		INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, iSeverity AS DWORD) AS VOID
+		INTERNAL METHOD _dbfError(ex AS Exception,iSubCode AS DWORD, iGenCode AS DWORD, iSeverity AS DWORD) AS VOID
+			SELF:_DbfError(ex, iSubCode, iGenCode, String.Empty, String.Empty, iSeverity)
+
+        INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, iSeverity AS DWORD) AS VOID
 			SELF:_DbfError(NULL, iSubCode, iGenCode, String.Empty, String.Empty, iSeverity)
-			
+
 		INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING) AS VOID
 			SELF:_DbfError(NULL, iSubCode, iGenCode, strFunction, String.Empty, XSharp.Severity.ES_ERROR)
+
+		INTERNAL METHOD _dbfError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING) AS VOID
+			SELF:_DbfError(ex, iSubCode, iGenCode, strFunction, String.Empty, XSharp.Severity.ES_ERROR)
 			
 		INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, strMessage AS STRING) AS VOID
 			SELF:_DbfError(NULL, iSubCode, iGenCode, strFunction,strMessage, XSharp.Severity.ES_ERROR)
@@ -1490,7 +1505,7 @@ BEGIN NAMESPACE XSharp.RDD
                 strMessage := ex:Message
             ENDIF
 			oError:Description := IIF(strMessage == NULL , "", strMessage)
-
+            RuntimeState.LastRDDError := oError
 			//
 			THROW oError
 		
@@ -1855,8 +1870,10 @@ BEGIN NAMESPACE XSharp.RDD
 				IF isOk .AND. !((DBF)currentRelation:Parent):_Eof
 					TRY
 						gotoRec := Convert.ToInt32( SELF:_EvalResult )
-					CATCH AS InvalidCastException
+					CATCH ex AS InvalidCastException
                         gotoRec := 0
+                        SELF:_dbfError(ex, SubCodes.ERDD_DATATYPE,GenCode.EG_DATATYPE,  "DBF.ForceRel") 
+
 					END TRY
 				ENDIF
 				isOk := SELF:Goto( gotoRec )
@@ -1900,7 +1917,7 @@ BEGIN NAMESPACE XSharp.RDD
 			TRY
 				result := SUPER:EvalBlock(cbBlock)
             CATCH ex AS Exception
-				SELF:_dbfError(SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBF.EvalBlock", ex:Message)
+				SELF:_dbfError(ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBF.EvalBlock")
 			END TRY
 			RETURN result
 			
@@ -2055,8 +2072,10 @@ BEGIN NAMESPACE XSharp.RDD
 			IF ( oRecID != NULL )
 				TRY
 					nNewRec := Convert.ToInt32( oRecID )
-				CATCH
+				CATCH ex AS exception
 					nNewRec := SELF:Recno
+				    SELF:_dbfError(ex, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, "DBF.RecInfo")
+
     			END TRY
             ELSE
                 nNewRec := SELF:Recno
@@ -2138,7 +2157,7 @@ BEGIN NAMESPACE XSharp.RDD
 			trInfo:Scope:Compile(SELF)
 			hasWhile := trInfo:Scope:WhileBlock != NULL
 			hasFor   := trInfo:Scope:ForBlock != NULL
-			sort := RddSortHelper{info, SELF:RecCount}
+			sort := RddSortHelper{SELF, info, SELF:RecCount}
 			// 
 			i := 0
 			WHILE i < info:Items:Length
@@ -2673,7 +2692,7 @@ BEGIN NAMESPACE XSharp.RDD
 			
 	
 		
-	INTERNAL CLASS DBFSortCompare IMPLEMENTS System.Collections.IComparer
+	INTERNAL CLASS DBFSortCompare IMPLEMENTS IComparer<SortRecord>
 	
 		PRIVATE _sortInfo AS DBSORTINFO
 		PRIVATE _oRdd AS DBF
@@ -2690,9 +2709,6 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_dataX := BYTE[]{ max}     
             SELF:_dataY := BYTE[]{ max}
 			
-
-        PUBLIC METHOD Compare(x AS OBJECT , y AS OBJECT ) AS LONG
-            RETURN Compare( (SortRecord) x, (SortRecord) y)
 
 		PUBLIC METHOD Compare(recordX AS SortRecord , recordY AS SortRecord ) AS LONG
 			LOCAL dataBufferX AS BYTE[]

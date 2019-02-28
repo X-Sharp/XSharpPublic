@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -97,6 +97,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     oError:Severity := iSeverity
     oError:FuncSym  := strFunction
     oError:FileName := SELF:_dbfName
+    RuntimeState.LastRDDError := oError
     THROW oError
     
     

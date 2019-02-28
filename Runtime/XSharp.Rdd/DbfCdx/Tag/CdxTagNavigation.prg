@@ -193,8 +193,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 SELF:_oRdd:_Eof := isEof
                 
-            CATCH e AS Exception
-                System.Diagnostics.Debug.WriteLine(e:Message)  
+            CATCH ex AS Exception
+                SELF:_oRdd:_dbfError(ex, SubCodes.EDB_SKIP,GenCode.EG_CORRUPTION,  "CdxTag.SkipRaw") 
             FINALLY
                 IF locked
                     result := SELF:UnLock() .AND. result

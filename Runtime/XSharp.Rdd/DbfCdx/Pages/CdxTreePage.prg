@@ -16,6 +16,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	/// <summary>
 	/// The CdxPageBase class.
 	/// </summary>
+    [DebuggerDisplay(e"{PageType} {PageNo.ToString(\"X\"),nq} Keys: {NumKeys}")];
 	INTERNAL ABSTRACT CLASS CdxTreePage INHERIT CdxPage 
 
         PROTECTED CONST CDXPAGE_TYPE	:= 0	AS WORD // WORD

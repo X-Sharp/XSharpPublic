@@ -84,4 +84,45 @@ BEGIN NAMESPACE XSharp.RDD.CDX
            RETURN
 
     END STRUCTURE
+    STATIC CLASS CdxHelpers
+        STATIC METHOD ToAscii (SELF bytes AS BYTE[]) AS STRING
+            RETURN ToAscii(bytes, FALSE)
+
+        STATIC METHOD ToAscii (SELF bytes AS BYTE[], lHex AS LOGIC) AS STRING
+            VAR sb := System.Text.StringBuilder{}
+            IF lHex
+                FOREACH VAR b IN bytes
+                    //IF b > 0
+                        sb:Append( String.Format("{0:X2}",b))
+                    //ENDIF
+                NEXT
+                sb:Append(" ")
+            ENDIF
+            FOREACH VAR b IN bytes
+                IF b > 31 .AND. b < 128
+                    sb:Append( (CHAR) b)
+                ELSE
+                    sb:Append('.')
+                ENDIF
+            NEXT
+            RETURN sb:ToString()
+        STATIC CONSTRUCTOR
+            KeyBitsTable := Dictionary <WORD, BYTE>{}
+
+        INTERNAL STATIC KeyBitsTable AS Dictionary <WORD, BYTE>
+        INTERNAL STATIC METHOD GetBits(wLength AS WORD) AS BYTE
+            LOCAL bits AS BYTE
+            
+            IF KeyBitsTable:TryGetValue(wLength, OUT bits)
+                RETURN bits
+            ENDIF
+            bits := 0
+            LOCAL original := wLength AS WORD
+            DO WHILE wLength > 0
+                bits++
+                wLength >>= 1
+            ENDDO
+            KeyBitsTable:Add(original, bits)
+            RETURN bits
+    END CLASS
 END NAMESPACE

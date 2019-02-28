@@ -38,25 +38,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END SET
         END PROPERTY
 
-        INTERNAL PROPERTY KeyText AS STRING
-            GET
-            VAR sb := System.Text.StringBuilder{}
-            FOREACH VAR b IN SELF:KeyBytes
-                //IF b > 0
-                    sb:Append( String.Format("{0:X2}",b))
-                //ENDIF
-            NEXT
-            sb:Append(" ")
-            FOREACH VAR b IN SELF:KeyBytes
-                IF b > 31 .AND. b < 128
-                    sb:Append( (CHAR) b)
-                ELSE
-                    sb:Append('.')
-                ENDIF
-            NEXT
-            RETURN sb:ToString()
-            END GET
-        END PROPERTY
+        INTERNAL PROPERTY KeyText AS STRING GET KeyBytes:ToAscii(TRUE)
 
 		// Retrieve/set the PageNo/PageOffset of the Item
 		// It is on top of the Item's bytes

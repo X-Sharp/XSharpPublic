@@ -67,8 +67,9 @@ BEGIN NAMESPACE XSharp.RDD
                        LOCAL fldPos AS LONG
                        fldPos := Convert.ToInt32(oNewValue)
                        oResult := SELF:GetValue(fldPos)
-                    CATCH
+                    CATCH ex AS exception
                         oResult := ""   
+                        SELF:_dbfError(ex, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, "DBFDBT.Info")
                     END TRY
                 ENDIF
 			CASE DbInfo.DBI_MEMOTYPE
@@ -335,8 +336,11 @@ BEGIN NAMESPACE XSharp.RDD
                 //
                 TRY
                     isOk := FClose( SELF:_hFile )
-                CATCH
+
+                CATCH ex AS Exception
                     isOk := FALSE
+                    SELF:_oRDD:_dbfError(ex, SubCodes.ERDD_CLOSE_MEMO, GenCode.EG_CLOSE, "DBFDBT.CloseMemFile")
+
                 END TRY
                 SELF:_hFile := F_ERROR
                 SELF:_Open  := FALSE
@@ -435,8 +439,9 @@ BEGIN NAMESPACE XSharp.RDD
             REPEAT
                 TRY
                     locked := FFLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
-                CATCH
+                CATCH ex AS Exception
                     locked := FALSE
+                    SELF:_oRDD:_dbfError(ex, SubCodes.ERDD_INIT_LOCK, GenCode.EG_LOCK_ERROR, "DBFDBT._tryLock")
                 END TRY
                 IF ( !locked )
                     nTries --
@@ -453,8 +458,10 @@ BEGIN NAMESPACE XSharp.RDD
             //
             TRY
                 unlocked := FFUnLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
-            CATCH
+            CATCH ex AS Exception
                 unlocked := FALSE
+                SELF:_oRDD:_dbfError(ex, SubCodes.ERDD_UNLOCKED, GenCode.EG_UNLOCKED, "DBFDBT._unlock")
+
             END TRY
             RETURN unlocked
             

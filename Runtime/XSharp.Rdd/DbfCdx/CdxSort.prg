@@ -7,6 +7,7 @@
 
 USING System
 USING System.Collections
+USING System.Collections.Generic
 USING System.Text
 USING XSharp.Rdd.Support
 USING XSharp.RDD.Enums
@@ -14,7 +15,7 @@ USING XSharp.RDD
 BEGIN NAMESPACE XSharp.RDD.CDX
 
             
-    INTERNAL CLASS CdxSortCompare IMPLEMENTS IComparer
+    INTERNAL CLASS CdxSortCompare IMPLEMENTS IComparer<SortRecord>
         PROTECTED _sortInfo AS DbSortInfo
         PROTECTED _oRdd AS DBF
         
@@ -22,11 +23,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_oRdd := rdd
             SELF:_sortInfo := helper:SortInfo
 
-        PROTECTED VIRTUAL METHOD XCompare(x AS SortRecord , y AS SortRecord) AS LONG
+        VIRTUAL METHOD Compare(x AS SortRecord , y AS SortRecord) AS LONG
             RETURN 0
 
-        PUBLIC METHOD Compare(x AS OBJECT , y AS OBJECT ) AS LONG
-            RETURN XCompare( (SortRecord) x, (SortRecord) y)
     END CLASS
     
     INTERNAL CLASS CdxSortCompareDefault INHERIT CdxSortCompare 
@@ -35,7 +34,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SUPER(rdd, helper)
             
             
-        PROTECTED OVERRIDE METHOD XCompare(x AS SortRecord , y AS SortRecord) AS LONG
+        OVERRIDE METHOD Compare(x AS SortRecord , y AS SortRecord) AS LONG
             LOCAL dataBuffer AS BYTE[]
             LOCAL dataBuffer2 AS BYTE[]
             LOCAL diff AS LONG
@@ -67,7 +66,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SUPER(rdd, helper)
              
             
-        PROTECTED OVERRIDE METHOD XCompare(x AS SortRecord , y AS SortRecord) AS LONG
+        OVERRIDE METHOD Compare(x AS SortRecord , y AS SortRecord) AS LONG
             LOCAL dataBuffer AS BYTE[]
             LOCAL dataBuffer2 AS BYTE[]
             LOCAL diff AS LONG

@@ -199,8 +199,9 @@ BEGIN NAMESPACE XSharp.RDD
 					isOk := TRUE
 					TRY
 						info:Result := SELF:EvalBlock(workOrder:KeyCodeBlock)
-					CATCH
+					CATCH ex AS Exception
 						isOk := FALSE
+                        SELF:_dbfError(ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBFNTX.OrderInfo")
 					END TRY
 					IF !isOk
 						info:Result := NULL

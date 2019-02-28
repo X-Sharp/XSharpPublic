@@ -66,8 +66,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                     RETURN lOk
                     
-                CATCH e AS Exception
-                    System.Diagnostics.Debug.WriteLine(e:Message)
+                CATCH ex AS Exception
+                    SELF:_oRdd:_dbfError(ex, SubCodes.EDB_CREATEINDEX,GenCode.EG_CORRUPTION,  "CdxOrderBagList.Create") 
                     RETURN FALSE
                 END TRY
             

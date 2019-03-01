@@ -8,19 +8,21 @@
 USING System
 USING System.Collections.Generic
 USING System.Text
+USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp.RDD.Cdx
 
     /// <summary>
     /// The pageList class.
     /// </summary>
+    [DebuggerDisplay("Pages: {Count}")];
     INTERNAL SEALED CLASS CdxPageList
         PRIVATE _pages AS Dictionary<LONG, CdxPage>
         PRIVATE _bag   AS CdxOrderBag
         PRIVATE _hDump AS IntPtr
         INTERNAL CONST CDXPAGE_SIZE        := 512 AS WORD
         
-        PRIVATE METHOD _FindPage( offset AS LONG ) AS CdxPage
+        INTERNAL METHOD _FindPage( offset AS LONG ) AS CdxPage
             LOCAL page AS Cdxpage
             SELF:_pages:TryGetValue(offSet, OUT page)
             RETURN page
@@ -44,18 +46,20 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             CASE 0  // Branche
             CASE 1  // Root
                  oResult :=  CdxBranchPage{SELF:_bag, nPage, buffer,nKeyLen}
+                 oResult:Tag := tag
             CASE 2  // Leaf
             CASE 3  // List of Tags
                 oResult := CdxLeafPage{SELF:_bag, nPage, buffer, nKeyLen}
+                oResult:Tag := tag
             OTHERWISE 
-               oResult := CdxGeneralPage{SELF:_bag, nPage, buffer} 
+               oResult := CdxGeneralPage{SELF:_bag, nPage, buffer}
+               oResult:Tag := tag
             END SWITCH
             SELF:SetPage(nPage, oResult)
-            oResult:Tag := tag
             SELF:_DumpPage(oResult)
             RETURN oResult
             
-
+        INTERNAL PROPERTY Count AS INT GET _pages:Count
         INTERNAL PROPERTY DumpHandle AS IntPtr GET _hDump SET _hDump := VALUE
 
         INTERNAL METHOD SetPage(nPage AS LONG, page AS CdxPage) AS VOID
@@ -89,9 +93,16 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             ENDIF
             RETURN page
             
-      INTERNAL METHOD Add( page AS CdxPage ) AS VOID
+         INTERNAL METHOD Add( page AS CdxPage ) AS VOID
             SELF:SetPage(page:PageNo, page)
-            RETURN 
+            RETURN
+
+        INTERNAL METHOD Delete(pageNo AS LONG) AS LOGIC
+           IF _pages:ContainsKey(pageNo)
+                _pages:Remove(pageNo)
+                RETURN TRUE
+           ENDIF
+           RETURN FALSE
             
         INTERNAL METHOD Append( pageNo AS LONG ) AS CdxPage
             LOCAL page AS CdxTreePage
@@ -118,37 +129,31 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             
             
         INTERNAL METHOD Flush( keepData AS LOGIC ) AS LOGIC
-            LOCAL isOk AS LOGIC
+            LOCAL lOk := TRUE AS LOGIC
+            FOREACH VAR pair IN _pages
+                IF pair:Value:IsHot
+                    IF ! pair:Value:Write()
+                        lOk := FALSE
+                    ENDIF
+                ENDIF
+            NEXT
+            IF ! keepData
+                SELF:_pages:Clear()
+            ENDIF
+            RETURN lOk
 
-            isOk := TRUE
-//            TRY
-//                FOREACH page AS CdxPage IN SELF:_pages 
-//                    isOk := page:Write()
-//                    IF (!isOk)
-//                        EXIT
-//                    ENDIF
-//                NEXT
-//                IF isOk
-//					FFlush( SELF:_Order:_hFile )
-//                ENDIF
-//            CATCH AS Exception
-//                isOk := FALSE
-//            END TRY
-//            IF isOk .AND. !keepData
-//                SELF:_pages:Clear()
-//            ENDIF
-            RETURN isOk
-            
-            
         INTERNAL METHOD Write(pageNo AS LONG ) AS LOGIC
-//            LOCAL page AS CdxPage
-//
-//            page := SELF:_FindPage(pageNo)
-//            IF page != NULL
-//                page:Hot := TRUE
-//                RETURN page:Write()
-//            ENDIF
-            RETURN FALSE
+            // Write a single page from the buffer
+            LOCAL lOk := FALSE AS LOGIC
+            VAR page := _FindPage(pageNo)
+            IF page != NULL
+                IF page:IsHot
+                    lOk := page:Write()
+                ELSE
+                    lOk := TRUE
+                ENDIF
+            ENDIF
+            RETURN lOk
             
             
     END CLASS

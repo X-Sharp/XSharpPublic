@@ -73,7 +73,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
 
             IF SELF:_keySize > 0
-                SELF:_newKeyBuffer   := BYTE[]{_Keysize+1}
+                SELF:AllocateBuffers()
             ENDIF
             
             SELF:_Unique := createInfo:Unique
@@ -123,12 +123,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:Flush()
             SELF:OrderBag:Flush()
             RETURN isOk
-        PRIVATE METHOD _sortGetRecord(buffer AS BYTE[]) AS LOGIC
+        PRIVATE METHOD _sortGetRecord() AS LOGIC
             // Get Key Values
             SELF:_oRdd:ReadRecord()
-            VAR result := getKeyValue(_sorter:SourceIndex, buffer)
+            VAR result := getKeyValue(_sorter:SourceIndex, _newValue:Key)
             IF result
-                _sorter:Add(SortRecord{buffer, SELF:_RecNo})
+                _sorter:Add(SortRecord{_newValue:Key, SELF:_RecNo})
             ENDIF
             RETURN result
 
@@ -136,7 +136,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_Header            := CdxTagHeader{_bag, -1 ,_orderName}
             SELF:_Header:Tag        := SELF
             SELF:_Header:Descending := SELF:_Descending
-            SELF:_Header:Version    := SELF:_version
+            SELF:_Header:Version    := 0
             SELF:_Header:Signature  := 1
             SELF:_Header:RootPage   := 0
             SELF:_Header:FreeList   := 0
@@ -242,7 +242,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN result
                 ENDIF
             ENDIF
-            VAR buffer := BYTE[]{ SELF:_keySize }
             DO WHILE TRUE
                 IF hasWhile
                     IF ! SELF:_EvalBlock(ordCondInfo:WhileBlock, TRUE)
@@ -253,7 +252,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     includeRecord := SELF:_EvalBlock(ordCondInfo:ForBlock, TRUE)
                 ENDIF
                 IF includeRecord
-                    IF ! SELF:_sortGetRecord(buffer)
+                    IF ! SELF:_sortGetRecord()
                         EXIT
                     ENDIF
                 ENDIF
@@ -357,10 +356,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             hasBlock    := SELF:_oRdd:_OrderCondInfo:EvalBlock != NULL
             evalCount := 1
             SELF:_oRdd:GoTo(1)
-            VAR buffer := BYTE[]{ SELF:_keySize }
             result    := TRUE
             REPEAT
-                IF ! SELF:_sortGetRecord(buffer)
+                IF ! SELF:_sortGetRecord()
                     EXIT
                 ENDIF
                 IF hasBlock
@@ -392,10 +390,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             SELF:_oRdd:GoTo(1)
             IF SELF:_oRdd:_isValid
-                VAR buffer := BYTE[]{ SELF:_keySize }
                 REPEAT
                     SELF:_oRdd:GoTo(SELF:_RecNo + 1)
-                    IF ! SELF:_sortGetRecord(buffer)
+                    IF ! SELF:_sortGetRecord()
                         EXIT
                     ENDIF
                 UNTIL ! SELF:_oRdd:_isValid
@@ -417,126 +414,43 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Ascii          AS LOGIC AUTO
         PRIVATE _bag                     AS CdxOrderBag
         PRIVATE _tag                     AS CdxTag
-        PRIVATE _pages                   AS List<CdxTreePage>
         INTERNAL CONSTRUCTOR( rdd AS DBF, sortInfo   AS DbSortInfo , len AS LONG, tag AS CdxTag )
             SUPER(rdd, sortInfo, len)
             _tag := tag
             _bag := tag:OrderBag
-            _pages := List<CdxTreePage>{}
             CurrentLeaf := NULL
-
-        INTERNAL METHOD NewLeafPage(parent AS CdxBranchPage) AS CdxLeafPage
-            LOCAL oLeaf AS CdxLeafPage
-            LOCAL buffer AS BYTE[]
-            buffer := _bag:AllocBuffer()
-            oLeaf  := CdxLeafPage{_bag, -1, buffer, _tag:KeyLength}
-            oLeaf:InitBlank()
-            oLeaf:Right  := NULL
-            oLeaf:Left   := CurrentLeaf
-            IF CurrentLeaf != NULL
-               CurrentLeaf:Right  := oLeaf
-            ENDIF
-            oLeaf:Tag := _tag
-            oLeaf:Parent := parent
-            oLeaf:Write()
-            CurrentLeaf := oLeaf
-            _pages:Add(oLeaf)
-            RETURN oLeaf
-
-        INTERNAL METHOD NewBranchPage(node AS CdxPageNode, brother AS CdxBranchPage) AS CdxBranchPage
-            LOCAL oBranch AS CdxBranchPage
-            LOCAL oParent AS CdxBranchPage
-            LOCAL buffer AS BYTE[]
-            // Allocate new Branch Page
-            buffer  := _bag:AllocBuffer()
-            oBranch := CdxBranchPage{_bag, -1, buffer, _tag:KeyLength}
-            oBranch:Initialize()
-            oBranch:Write()
-            IF brother != NULL
-                // When we allocate a 2nd page at the same level
-                // then we must also have a parent level above this one etc etc
-                oParent := brother:Parent
-                IF oParent == NULL
-                    oParent := newBranchPage(brother:LastNode, NULL)
-                ELSE
-                    VAR result := oParent:Add(brother:LastNode)
-                    SWITCH result
-                    CASE CdxResult.Ok
-                        NOP
-                    OTHERWISE
-                        // throw an exception
-                        Error("CdxSortHelper.NewBranchPage","Could not add key to Branch page for "+SELF:_tag:Filename+" "+SELF:_tag:OrderName )
-                    END SWITCH
-                ENDIF
-                brother:Parent := oParent
-                brother:Right   := oBranch
-                brother:Write()
-            ELSE
-                // No brother page, so this is the first Branch page in the tree
-                oParent := NULL 
-            ENDIF
-            
-            oBranch:Tag    := _tag
-            oBranch:Parent := oParent
-            oBranch:Left   := brother
-            node:Page:Parent := oBranch
-            oBranch:Add(node)
-            oBranch:Write()
-            _pages:Add(oBranch)
-            RETURN oBranch
 
         INTERNAL METHOD AddRecord(nRecno AS LONG, data AS BYTE[]) AS LOGIC
             VAR oLeaf    := CurrentLeaf
-            VAR oParent  := CurrentLeaf:Parent
             // place item on current leaf node.
             // When Leafnode is full then allocate a new leaf node
             // and add this leaf to the parent
+            _tag:_newValue:Recno := nRecno
+            _tag:_newValue:Key   := data
             VAR result := oLeaf:Add(nRecno, data)
-            SWITCH result
-            CASE CdxResult.Ok
-                NOP
-            CASE CdxResult.Full
-                // this means that it did not fit. So allocate a sibling
-                // if there is no parent yet then we allocate the parent afterwards
-                // to stay binary compatibile with the Comix implementation
-                oLeaf:Right  := SELF:NewLeafPage(oParent)
-                IF oParent == NULL
-                    // allocate a parent and set the first node on the parent to the page that is full
-                   oParent := SELF:NewBranchPage(oLeaf:LastNode, NULL)
-                ELSE
-                    // add the leaf node to the parent. When the parent is full we must
-                    // also add a sibling to the parent page. Added a level above that is
-                    // done inside NewBranchPage
-                    result := oParent:Add(oLeaf:LastNode)
-                    SWITCH result
-                    CASE CdxResult.Ok
-                        NOP
-                    CASE CdxResult.Full
-                        // parent is full, so write it to disk and create a new sibling for the parent
-                        oParent:Write()
-                        oParent := SELF:NewBranchPage(oLeaf:LastNode, oParent)
-                    END SWITCH
+            IF result != CdxResult.OK
+                IF result == CdxResult.SplitLeaf
+                    result := CdxResult.AddLeaf
                 ENDIF
-                // write the existing page to disk and continue with the new page
-                oLeaf:Write()
-                oLeaf := oLeaf:Right
-                oLeaf:Parent := oParent
+                result := _tag.DoAction(result)
+                oLeaf  := CurrentLeaf := _tag:CurrentLeaf
                 result := oLeaf:Add(nRecno, data)
+                // this may be another CdxResult.ExpandRecnos for a new page
                 IF result != CdxResult.Ok
-                    // report a corruption error
-                    Error("CdxSortHelper.AddRecord","Could not add key to leaf page for "+SELF:_tag:Filename+" "+SELF:_tag:OrderName)
-                    RETURN FALSE
+                    result := _tag.DoAction(result)
+                    result := oLeaf:Add(nRecno, data)
                 ENDIF
-            CASE CdxResult.ExpandFailed
-                // Todo
-                // Expanding the record numbers failed
-                // we must split the page and then try again
-                 Error("CdxSortHelper.AddRecord","Expanding the record numbers failed for "+SELF:_tag:Filename+" "+SELF:_tag:OrderName+" page splitting needs to be implemented")
-            END SWITCH
+                IF result != CdxResult.OK
+                    Error("CdxSortHelper.AddRecord","Could not add record to leaf")
+                ENDIF
+            ENDIF
+            _tag:CurrentStack:Pos++
             RETURN TRUE
 
         INTERNAL METHOD StartWrite() AS LOGIC
-            SELF:NewLeafPage(NULL)
+            VAR page := SELF:_tag:NewLeafPage()
+            SELF:_tag:PushPage(page)
+            CurrentLeaf := page
             RETURN TRUE
 
         INTERNAL METHOD EndWrite() AS LOGIC
@@ -554,66 +468,41 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL oParent   := NULL AS CdxBranchPage
             oLeaf           := CurrentLeaf
             // Write the last key in leaf and its parents all the way up into the tree
-            oParent  := oLeaf:Parent
+            oParent  := _tag:GetParent(oLeaf)
             VAR node := oLeaf:LastNode
             DO WHILE oParent != NULL
-                VAR result := oParent:Add(node)      // It can happen and will happen that the last key does not fit and we need another branch
+                VAR result := oParent:Add(node)
+                // It can happen and will happen that the last key does not fit on the parent
+                // when that happens we will have to create a new parent page
+                IF result != CdxResult.OK
+                    _tag:DoAction(result)
+                ENDIF
+                /*
                 SWITCH result
                 CASE CdxResult.Ok
                     NOP
-                CASE CdxResult.Full
+                CASE CdxResult.Split
                     oParent:Write()
                     oParent := SELF:NewBranchPage(oLeaf:LastNode, oParent)
                 END SWITCH
+                */
                 node    := oParent:LastNode
-                oParent := oParent:Parent
+                oParent := _tag:GetParent(oParent)
             ENDDO
-            // write the whole leaf level to disk
-            DO WHILE oLeaf != NULL
-                oLeaf:Write()
-                oLeaf := oLeaf:Left
-            ENDDO
-            // Walk the tree to the root level
-            // and write all pages
-            oParent     := CurrentLeaf:Parent
-            LOCAL oRoot := NULL AS CdxBranchPage
-            VAR oPages  := List<CdxBranchPage>{}
-            // Recursively add all pages, we start at the rightmost leaf node
-            // until we have the top level. Find all pages and force them to be written.
-            IF SELF:AddParents(oParent, oPages)
-                // Walk all pages and force them to be written
-                FOREACH oPage AS CDxBranchPage IN oPages
-                    IF oPage:Parent == NULL // this must be the root
-                        oRoot := oPage
-                    ENDIF
-                    oPage:Write()
-                NEXT
-            ENDIF
-            FOREACH VAR page IN _Pages
-                page:Write()
-            NEXT
-            _pages:Clear()
-            IF oRoot != NULL
-                SELF:SetRoot(oRoot)
-            ELSE
-                SELF:SetRoot(CurrentLeaf)
+            VAR rootPageNo := _tag:CurrentStack:Page
+            DO WHILE _tag:CurrentStack:Page != 0
+                rootPageNo := _tag:CurrentStack:Page
+                _tag:Poppage()
+            ENDDO 
+            IF rootPageNo != 0
+                VAR root := _tag:GetPage(rootPageNo)
+                IF root != NULL
+                    SetRoot(root)
+                ENDIF
             ENDIF
             SELF:Clear()
             RETURN TRUE
 
-         PRIVATE METHOD AddParents(oPage AS CdxBranchPage, oPages AS List<CdxBranchPage>) AS LOGIC
-            // Recursively add all pages using the parent level and the left pointers to left siblings
-            DO WHILE oPage != NULL
-                IF ! oPages:Contains(oPage)
-                    oPages:Add(oPage)
-                ENDIF
-                IF oPage:Parent != NULL .AND. ! oPages:Contains(oPage:Parent)
-                    oPages:Add(oPage:Parent)
-                    AddParents(oPage:Parent, oPages)
-                ENDIF
-                oPage := oPage:Left
-            ENDDO
-            RETURN oPages:Count > 0
 
         PRIVATE METHOD SetRoot(oPage AS CdxTreePage) AS VOID
             _tag:Header:RootPage := oPage:PageNo

@@ -25,6 +25,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         METHOD Add(info AS DbOrderInfo, lStructural := FALSE AS LOGIC) AS LOGIC
             LOCAL oBag AS CdxOrderBag
+            // add Existing order bag to the list.
+            // looks for bags through the normal paths
              IF File(info:BagName)
                 info:BagName := FPathName()
                 IF SELF:FindOrderBag(info:BagName) == NULL_OBJECT
@@ -36,7 +38,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN TRUE
             ENDIF
             RETURN FALSE
-            
+
+        PRIVATE METHOD _CreateBag(info AS DbOrderCreateInfo) AS CdxOrderBag
+            // Create new OrderBag on disk 
+            LOCAL oBag AS CdxOrderBag
+            oBag := CdxOrderBag{_oRDD}
+            oBag:CreateBag(info:BagName)
+            VAR cBag := oBag:FullPath
+            VAR cDbf := SELF:_oRDD:FullPath
+            info:BagName := oBag:FullPath
+            VAR lStructural := String.Compare(Path.GetFileNameWithoutExtension(cDBF), Path.GetFileNameWithoutExtension(cBag),StringComparison.OrdinalIgnoreCase) == 0
+            oBag:Structural := lStructural
+            _bags:Add(oBag)
+            RETURN oBag
+
         METHOD Create(info AS DbOrderCreateInfo) AS LOGIC
                 LOCAL oBag AS CdxOrderBag
                 //
@@ -49,15 +64,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                     oBag := SELF:FindOrderBag(info:BagName)
                     IF oBag == NULL_OBJECT
-                        // Create new OrderBag
-                        oBag := CdxOrderBag{_oRDD}
-                        oBag:CreateBag(info:BagName)
-                        VAR cBag := oBag:FullPath
-                        VAR cDbf := SELF:_oRDD:FullPath
-                        info:BagName := oBag:FullPath
-                        VAR lStructural := String.Compare(Path.GetFileNameWithoutExtension(cDBF), Path.GetFileNameWithoutExtension(cBag),StringComparison.OrdinalIgnoreCase) == 0
-                        oBag:Structural := lStructural
-                        _bags:Add(oBag)
+                        // bag does not exist
+                        oBag := SELF:_CreateBag(info)
                     ENDIF
                     VAR lOk := oBag:OrderCreate(info)
                     IF lOk
@@ -76,6 +84,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
         METHOD Close(orderInfo AS DbOrderInfo) AS LOGIC
             LOCAL oTag AS CdxTag
+            // close the bag that matches the orderinfo. Structural indexes are also closed. Is that correct ?
             oTag := SELF:FindOrder(orderInfo)
             IF oTag != NULL
                 VAR bag := oTag:OrderBag
@@ -85,6 +94,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL METHOD _CloseBag(oBag AS CdxOrderBag) AS LOGIC
             VAR lOk := oBag:Close()
+            // worker method to close bags and remove them from the list
             IF lOk .AND. _bags:Contains(oBag)
                 _bags:Remove(oBag)
             ENDIF
@@ -127,6 +137,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
         METHOD Destroy(orderInfo AS DbOrderInfo) AS LOGIC
             LOCAL oTag AS CdxTag
+            // destroy the first bag that matches the orderInfo.
+            // when 2 bags exist with the same tag name then the first one will be destroyed.
             oTag := SELF:FindOrder(orderInfo)
             IF oTag != NULL
                 VAR bag := oTag:OrderBag
@@ -136,6 +148,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
         PROPERTY IsHot AS LOGIC
             GET
+                // return TRUE as soon as one bag is hot
                 FOREACH oBag AS CdxOrderBag IN _bags
                     IF oBag:IsHot
                         RETURN TRUE
@@ -147,6 +160,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         
         METHOD GoCold() AS LOGIC
             LOCAL lOk AS LOGIC
+            // Process all even of one fails
             lOk := TRUE
             FOREACH oBag AS CdxOrderBag IN _bags
                 IF ! oBag:GoCold()
@@ -157,6 +171,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
         METHOD GoHot() AS LOGIC
             LOCAL lOk AS LOGIC
+            // Process all even of one fails
             lOk := TRUE
             FOREACH oBag AS CdxOrderBag IN _bags
                 IF ! oBag:GoHot()
@@ -167,6 +182,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
         METHOD Flush() AS LOGIC
             LOCAL lOk AS LOGIC
+            // Process all even of one fails
             lOk := TRUE
             FOREACH oBag AS CdxOrderBag IN _bags
                 IF ! oBag:Flush()
@@ -195,6 +211,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN NULL
 
         METHOD FindOrderByName(cBagName AS STRING, cName AS STRING) AS CdxTag
+            // Return first match even if a tag with the same name exists in other bags
             FOREACH oBag AS CdxOrderBag IN _bags
                 IF String.IsNullOrEmpty(cBagName) .OR.  oBag:MatchesFileName(cBagName)
                     VAR oTag := oBag:_FindTagByName(cName)
@@ -233,6 +250,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         
         METHOD OrderPos(oTagToFind AS CdxTag) AS LONG
             LOCAL nPos := 0 AS LONG
+            // return relative position over all the orderbags
             IF oTagToFind != NULL
                 FOREACH oBag AS CdxOrderBag IN _bags
                     FOREACH oTag AS CdxTag IN oBag:Tags

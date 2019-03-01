@@ -55,7 +55,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL VIRTUAL METHOD Clear() AS VOID
             SELF:_recNo  := 0
             SELF:_childPage := 0
-            SELF:_bytesKey  := BYTE[]{ _keyLength+1 }
+            SELF:_bytesKey  := BYTE[]{ _keyLength }
 
     END CLASS
 
@@ -79,9 +79,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             GET
                 RETURN SELF:_Page:GetKey(_pos)
             END GET
-            SET
-               // Todo 
-            END SET
         END PROPERTY
 
 
@@ -89,9 +86,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             GET
                 RETURN SELF:_Page:GetChildPage(_pos)                
             END GET
-            SET
-                // Todo
-            END SET
         END PROPERTY
 
 	    // Retrieve/set the Recno of the Item
@@ -100,9 +94,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             GET
                 RETURN SELF:_Page:GetRecno(_pos)
             END GET
-            SET
-                // Todo
-            END SET
         END PROPERTY
 
     END CLASS

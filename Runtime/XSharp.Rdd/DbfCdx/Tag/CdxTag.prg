@@ -18,11 +18,31 @@ USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD.CDX
 
     DELEGATE CompareFunc(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
+    INTERNAL CLASS CdxKeyData
+        EXPORT Recno   AS LONG
+        EXPORT Key     AS BYTE[]
+        EXPORT ForCond AS LOGIC
+        INTERNAL CONSTRUCTOR (nKeyLen AS LONG)
+            SELF:ForCond := TRUE
+            SELF:Recno   := -1
+            SELF:Key     := BYTE[]{nKeyLen}
+            RETURN
+
+        INTERNAL METHOD CopyTo(oOther AS CdxKeyData) AS VOID
+            oOther:ForCond := SELF:ForCond
+            oOther:Recno   := SELF:Recno
+            IF oOther:Key:Length != SELF:Key:Length
+                oOther:Key  := (BYTE[]) SELF:Key:Clone()
+            ELSE
+                Array.Copy(SELF:Key, oOther:Key, SELF:Key:Length)
+            ENDIF
+    END CLASS
+
 
     [DebuggerDisplay("Tag: {OrderName}, Key: {Expression}, For: {Condition}")];
     INTERNAL PARTIAL CLASS CdxTag
         #region constants
-        PRIVATE CONST MAX_KEY_LEN       := 256  AS WORD
+        PRIVATE CONST MAX_KEY_LEN       := 240  AS WORD
         PRIVATE CONST NTX_COUNT         := 16    AS WORD
         PRIVATE CONST STACK_DEPTH       := 20 AS LONG
         #endregion
@@ -40,10 +60,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _ForCodeBlock AS ICodeblock
         PRIVATE _KeyExpr AS STRING
         PRIVATE _ForExpr AS STRING
-        PRIVATE _currentRecno AS LONG
-        PRIVATE _newKeyBuffer AS BYTE[]
+        PRIVATE _currentvalue AS CdxKeyData
+        INTERNAL _newvalue     AS CdxKeyData 
         PRIVATE _newKeyLen AS LONG
-        PRIVATE _version AS DWORD
         PRIVATE _KeyExprType AS LONG
         PRIVATE _keySize AS WORD
         PRIVATE _rootPage AS LONG
@@ -63,7 +82,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PRIVATE _stack          AS RddStack[]
         PRIVATE _topStack       AS LONG
-        PRIVATE _midItem        AS CdxNode
         PRIVATE _compareFunc    AS CompareFunc
         PRIVATE _currentNode    AS CdxNode
 
@@ -73,6 +91,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _maxKeysPerPage AS WORD
 
 #endregion
+
+    STATIC possibleActions AS CdxResult[]
+    STATIC CONSTRUCTOR()
+        VAR values := Enum.GetValues(typeof(CdxResult))
+        VAR list   := List<CdxResult>{}
+        FOREACH VAR val IN values
+            IF (INT) val != 0
+                list:Add((CdxResult) val)
+            ENDIF
+        NEXT
+        possibleActions := list:ToArray()
+        RETURN
+
 
 #region Properties
         INTERNAL PROPERTY Expression AS STRING GET _KeyExpr
@@ -112,7 +143,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PRIVATE METHOD _InitFields(oBag AS CdxOrderBag) AS VOID
             LOCAL i AS LONG
-            SELF:_newKeyBuffer  := BYTE[]{ MAX_KEY_LEN+1 }
             SELF:_bag           := oBag
             SELF:_oRDD          := oBag:_oRDD
             SELF:_stack         := RddStack[]{ STACK_DEPTH }
@@ -123,6 +153,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_stack[i] := RddStack{}
             NEXT
             SELF:_SingleField   := -1
+            SELF:_currentValue := CdxKeyData{MAX_KEY_LEN}
+            SELF:_newValue     := CdxKeyData{MAX_KEY_LEN}
+
 
         // Constructor for Creation of tags
         INTERNAL CONSTRUCTOR (oBag AS CdxOrderBag)
@@ -133,7 +166,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         // Constructor for Opening of tags
         INTERNAL CONSTRUCTOR (oBag AS CdxOrderBag, nPage AS Int32, cName AS STRING)
-	    SUPER()
+	        SUPER()
             _InitFields(oBag)
             SELF:_orderName := cName
             SELF:Page := nPage
@@ -147,10 +180,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_KeyExpr := SELF:_Header:KeyExpression
             SELF:_ForExpr := SELF:_Header:ForExpression
             SELF:_oRdd:GoTo(1)
-            IF ! SELF:EvaluateExpressions()
-                RETURN FALSE
-            ENDIF
-
             SELF:_Hot := FALSE
             SELF:ClearStack()
             SELF:_keySize       := SELF:_Header:KeySize
@@ -158,14 +187,22 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:Signature      := SELF:_Header:Signature
             SELF:_Descending    := SELF:_Header:Descending
             SELF:_rootPage      := SELF:_Header:RootPage
-
-            SELF:_Version   := SELF:_Header:Version
-            SELF:_midItem   := CdxNode{SELF:_keySize,0}
+            IF ! SELF:EvaluateExpressions()
+                RETURN FALSE
+            ENDIF
+            SELF:AllocateBuffers()
             RETURN TRUE
 
         DESTRUCTOR()
             Close()
-            
+
+        INTERNAL METHOD AllocateBuffers() AS VOID
+            SELF:_newValue          := CdxKeyData{_keySize}
+            SELF:_currentValue      := CdxKeyData{_keySize}
+            SELF:_topScopeBuffer := BYTE[]{ SELF:_keySize }
+            SELF:_bottomScopeBuffer := BYTE[]{ SELF:_keySize }
+            RETURN
+     
         INTERNAL METHOD EvaluateExpressions() AS LOGIC
             LOCAL evalOk AS LOGIC
             LOCAL oKey AS OBJECT
@@ -222,7 +259,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF ! isOk
                 RETURN FALSE
             ENDIF
-            SELF:_newKeyBuffer      := BYTE[]{_keySize+1 }
+            SELF:AllocateBuffers()
             SELF:_maxKeysPerPage    := CdxBranchPage.MaxKeysPerPage(_keySize)
             SELF:_Conditional       := FALSE
             IF SELF:_ForExpr:Length > 0
@@ -278,7 +315,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
             
         PUBLIC METHOD Close() AS LOGIC
-            SELF:Flush()
+            LOCAL lOk AS LOGIC
+            lOk := SELF:GoCold()
+            IF lOk
+                lOk := SELF:Flush()
+            ENDIF
             RETURN TRUE
 
         PUBLIC METHOD GoCold() AS LOGIC
@@ -286,6 +327,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN SELF:_KeyUpdate( SELF:_RecNo, SELF:_oRDD:IsNewRecord )
             ENDIF
             RETURN TRUE
+
+        INTERNAL METHOD GoHot() AS LOGIC
+            // Is called to save the current for value and key value
+            RETURN _saveCurrentKey(SELF:_oRdd:RecNo, SELF:_currentValue)
+
+        INTERNAL METHOD GetPage(nPage AS LONG) AS CdxTreePage
+            IF nPage == -1
+                RETURN NULL
+            ENDIF
+            VAR page := SELF:_bag:GetPage(nPage, SELF:_KeySize, SELF)
+            page:Tag := SELF
+            RETURN page ASTYPE CdxTreePage
 
         INTERNAL STATIC METHOD _compareText(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
             IF aRHS == NULL
@@ -340,8 +393,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
             // Save informations about the "current" Item	
         PRIVATE METHOD _saveCurrentRecord( node AS CdxNode) AS VOID
-            IF SELF:_currentRecno != node:Recno
-                SELF:_currentRecno := node:Recno
+            IF SELF:_currentValue:Recno != node:Recno
+                SELF:_currentValue:Recno := node:Recno
+                Array.Copy(node:KeyBytes, SELF:_currentValue:Key, _keySize)
             ENDIF
             SELF:_currentNode := node
 
@@ -419,14 +473,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             CASE DBOrder_Info.DBOI_SCOPETOP
                 SELF:_topScope      := itmScope
                 IF itmScope != NULL
-                    SELF:_topScopeBuffer := BYTE[]{ SELF:_keySize+1 }
                     SELF:_ToString(itmScope, SELF:_keySize,  SELF:_topScopeBuffer, REF uiRealLen)
                     SELF:_topScopeSize := uiRealLen
                 ENDIF
             CASE DBOrder_Info.DBOI_SCOPEBOTTOM
                 SELF:_bottomScope    := itmScope
                 IF itmScope != NULL
-                    SELF:_bottomScopeBuffer := BYTE[]{ SELF:_keySize+1 }
                     SELF:_ToString(itmScope, SELF:_keySize, SELF:_bottomScopeBuffer, REF uiRealLen)
                     SELF:_bottomScopeSize := uiRealLen
                 ENDIF
@@ -443,6 +495,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL count AS LONG
             
             isOk := TRUE
+            SELF:_bag:Flush()
             SELF:_oRdd:GoCold()
             oldRec := SELF:_Recno
             IF SELF:Shared
@@ -578,13 +631,98 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN recno
             
-        PRIVATE METHOD PopPage() AS RddStack
+        INTERNAL METHOD PopPage() AS RddStack
             IF SELF:_topStack != 0
                 SELF:CurrentStack:Clear()
                 SELF:_topStack--
             ENDIF
             RETURN SELF:CurrentStack
-            
+
+        INTERNAL METHOD PushPage(oPage AS CdxTreePage) AS VOID
+            SELF:PushPage(oPage:PageNo, 0, oPage:NumKeys)
+            RETURN
+
+        INTERNAL PROPERTY CurrentLeaf AS CdxLeafPage GET CurrentTop ASTYPE  CdxLeafPage
+
+        INTERNAL PROPERTY CurrentTop  AS CdxTreePage
+            GET
+                LOCAL nPage AS LONG
+                IF _topStack > 0
+                    nPage := SELF:CurrentStack:Page
+                    RETURN SELF:GetPage(nPage) ASTYPE CdxTreePage
+                ENDIF
+                RETURN NULL
+            END GET
+        END PROPERTY
+        INTERNAL METHOD InsertOnStack(oPage AS CdxTreePage, oBefore AS CdxTreePage) AS LOGIC
+            LOCAL pos := -1 AS INT
+            FOR VAR i := 1 TO SELF:_Stack:Length-1
+                IF SELF:_Stack[i]:Page == oBefore:PageNo
+                    pos := i
+                    EXIT
+                ENDIF
+            NEXT
+            IF pos == -1
+                // throw an exception ?
+                RETURN FALSE
+            ENDIF
+            FOR VAR i := SELF:_Stack:Length-1 DOWNTO Pos
+                SELF:_Stack[i] := SELF:_Stack[i-1]
+            NEXT
+            VAR oStack := RddStack{}
+            SELF:_Stack[pos] := oStack
+            oStack:Page := oPage:PageNo
+            oStack:Pos  := 0
+            oStack:Count := oPage:NumKeys
+            SELF:_TopStack ++
+            RETURN TRUE
+
+        INTERNAL METHOD SetPage(oPage AS CdxTreePage, nPos AS WORD) AS VOID
+            VAR topStack    := SELF:CurrentStack
+            topStack:Page   := oPage:PageNo
+            topStack:Pos    := nPos
+            topStack:Count  := oPage:NumKeys
+            RETURN
+
+
+        INTERNAL METHOD PushPage(nPage AS LONG, nPos AS WORD, nCount AS WORD) AS VOID
+            SELF:_topStack++
+            VAR topStack    := SELF:CurrentStack
+            topStack:Page   := nPage
+            topStack:Pos    := nPos
+            topStack:Count  := nCount
+            RETURN 
+
+        PRIVATE METHOD FindLevel(child AS CdxTreePage) AS LONG
+            IF child != NULL
+                VAR pageNo := child:PageNo
+                FOR VAR nLevel := _topStack DOWNTO 1 STEP 1
+                    IF SELF:_stack[nLevel]:Page == pageNo
+                        RETURN nLevel
+                    ENDIF
+                NEXT
+            ENDIF
+            RETURN -1
+
+        INTERNAL METHOD GetParent(child AS CdxTreePage) AS CdxBranchPage
+            VAR nLevel := SELF:FindLevel(child)
+            IF nLevel > 1
+                VAR nParent := SELF:_stack[nLevel-1]:Page
+                RETURN SELF:GetPage(nParent) ASTYPE CdxBranchPage
+            ENDIF
+            RETURN NULL
+
+        INTERNAL METHOD SetParent(child AS CdxTreePage, parent AS CdxTreePage, nPos AS WORD) AS LOGIC
+            VAR nLevel := FindLevel(child)
+            IF nLevel > 1
+                VAR stack := SELF:_stack[nLevel-1]
+                stack:Page   := parent:PageNo
+                stack:Count  := parent:NumKeys
+                stack:Pos    := nPos
+            ENDIF
+            RETURN FALSE
+
+
         INTERNAL METHOD ClearStack() AS VOID
             FOREACH entry AS RddStack IN SELF:_stack 
                 entry:Clear()
@@ -604,6 +742,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             hDump := FCreate(cFile)
             IF hDump != F_ERROR
                 SELF:_bag:_PageList:DumpHandle := hDump
+                SELF:_bag:_PageList:Flush(FALSE)
                 sBlock := SELF:_Header:Dump("Filedump for:"+sName)
                 FWrite(hDump, sBlock)
                 _oRdd:Gotop()
@@ -624,6 +763,24 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     sRecords:AppendLine(String.Format("{0,10} {1}", _oRdd:Recno, key))
                     _oRdd:Skip(1)
                 ENDDO
+                // Collect Recycled pages
+                LOCAL sbFree AS StringBuilder
+                sbFree := StringBuilder{}
+                LOCAL nPage := SELF:OrderBag:Root:FreeList AS LONG
+                sbFree:AppendLine("-------------------------------")
+                sbFree:AppendLine("List of Free pages (Bag Level) ")
+                sbFree:AppendLine("-------------------------------")
+                sbFree:AppendLine("First free: "+ nPage:ToString("X8"))
+                DO WHILE nPage != 0 .AND. nPage != -1
+                    VAR oPage := SELF:GetPage(nPage) ASTYPE CdxTreePage
+                    IF oPage != NULL
+                        nPage := oPage:LeftPtr
+                        sbFree:AppendLine("Next free: "+ nPage:ToString("X8"))
+                    ELSE
+                        EXIT
+                    ENDIF
+                ENDDO
+                FWrite(hDump, sbFree:ToString())
                 FWrite(hDump, sRecords:ToString())
                 FClose(hDump)
                 

@@ -354,7 +354,7 @@ BEGIN NAMESPACE XSharp.RDD
         METHOD GoTo(nRec AS LONG) AS LOGIC
             SELF:GoCold()
             IF SELF:CurrentOrder != NULL
-                SELF:CurrentOrder:ClearStack()
+                SELF:CurrentOrder:ClearStack() // force to reseek later
             ENDIF
             RETURN SUPER:Goto(nRec)
             

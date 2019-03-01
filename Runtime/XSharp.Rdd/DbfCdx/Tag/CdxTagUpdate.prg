@@ -317,7 +317,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN result
             
             
-
+        /*
         PRIVATE METHOD SplitBranch(oPage AS CdxBranchPage, oNewPage OUT CdxBranchPage) AS CdxResult
             LOCAL result AS CdxResult
             LOCAL nParentPos AS LONG
@@ -391,11 +391,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 //                _UpdateError(NULL,"CdxTag.SplitBranch","Split failed")            
 //            ENDIF
             RETURN result
-  
-            
-            
-        PRIVATE METHOD _insertKey(oLeafPage AS CdxLeafPage, nRecord AS LONG, aBytes AS BYTE[], nPos := -1 AS LONG) AS CdxResult
-            RETURN CdxResult.Ok
+        */
             
         PRIVATE METHOD _keyUpdate(recordNo AS LONG , lNewRecord AS LOGIC ) AS LOGIC
             IF SELF:Shared

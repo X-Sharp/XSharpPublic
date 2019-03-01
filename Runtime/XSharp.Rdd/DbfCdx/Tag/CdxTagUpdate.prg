@@ -19,493 +19,484 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     INTERNAL PARTIAL SEALED CLASS CdxTag
         // Methods for updating (adding, inserting, deleting) keys into indices
+        PRIVATE METHOD _UpdateError(ex AS Exception, strFunction AS STRING, strMessage AS STRING) AS VOID
+            SELF:RDD:_dbfError(ERDD.CREATE_ORDER, GenCode.EG_CORRUPTION, strFunction, strMessage+" for "+SELF:Filename+" "+SELF:OrderName )
+            RETURN
+            
+        INTERNAL METHOD NewLeafPage() AS CdxLeafPage
+            LOCAL oLeaf := NULL AS CdxLeafPage
+            TRY
+                LOCAL buffer AS BYTE[]
+                buffer := _bag:AllocBuffer()
+                oLeaf  := CdxLeafPage{_bag, -1, buffer, SELF:KeyLength}
+                oLeaf:InitBlank(SELF)
+                oLeaf:Write() // will give it a pagenumber
+                SELF:OrderBag:SetPage(oLeaf)
+            CATCH ex AS Exception
+                _UpdateError(ex,"CdxTag.NewLeafPage","Could not allocate Leaf page")
+            END TRY
+            RETURN oLeaf
+
+        INTERNAL METHOD NewBranchPage() AS CdxBranchPage
+            LOCAL oBranch := NULL AS CdxBranchPage
+            TRY
+                LOCAL buffer AS BYTE[]
+                // Allocate new Branch Page
+                buffer  := _bag:AllocBuffer()
+                oBranch := CdxBranchPage{_bag, -1, buffer, SELF:KeyLength}
+                oBranch:InitBlank(SELF)
+                oBranch:Tag    := SELF
+                oBranch:Write() // will give it a pagenumber
+                SELF:OrderBag:SetPage(oBranch)
+            CATCH ex AS Exception
+                _UpdateError(ex,"CdxTag.NewBranchPage","Could not allocate Branch page")
+            END TRY
+            RETURN oBranch
+
+        INTERNAL METHOD DoAction(action AS CdxResult) AS CdxResult
+            // Dispatcher that evaluates actions that have to be done.
+            // action is a Flag value, so we look for each of the following actions
+            LOCAL nextAction AS CdxResult
+            LOCAL nextLevel  AS LOGIC
+            LOCAL stackSave AS INT
+            stackSave   := SELF:_topStack
+            nextAction := CdxResult.OK
+            DO WHILE action != CdxResult.OK
+                FOREACH flag AS CdxResult IN possibleActions
+                    IF action:HasFlag(flag)
+                        nextLevel := TRUE
+                        SWITCH flag
+                        CASE CdxResult.SplitLeaf
+                            nextAction |= SELF:SplitLeaf()
+                            // after splitting we want to write a new key to the newly allocated page
+                            nextLevel := FALSE
+                        CASE CdxResult.AddLeaf
+                            // after adding the leaf we want to write a new key to the newly allocated page
+                            nextAction |= SELF:AddLeaf()
+                            nextLevel := FALSE
+                        CASE CdxResult.Delete
+                            // this will return DeleteFromParent so we increase the next level
+                            nextAction |= SELF:DeletePage()
+
+                        CASE CdxResult.ChangeParent
+                            // can't pass oLeaf because we also change the parent of branch pages
+                            // after this is done we may have to continue on the upper level if the last
+                            // key on the parents page was changed
+                            nextAction |= SELF:ChangeParent()
+
+                        CASE CdxResult.InsertParent
+                            // insert parent above current level on the stack
+                            nextAction |= SELF:InsertParent()
+                            stackSave++
+                            nextLevel := FALSE
+                        CASE CdxResult.SplitParent
+                            // split parent. This may trigger an insert of a higher level parent
+                            // and will most likely also trigger an update of the higher level parent for the
+                            // last key on the LHS of the split
+                            nextAction |= SELF:SplitParent()
+                            nextLevel := FALSE
+                        CASE CdxResult.DeleteFromParent
+                            // This removes the key for a page from its parent page
+                            nextAction |= SELF:DeleteFromParent()
+                            nextLevel := FALSE
+                        CASE CdxResult.OutOfBounds
+                            // Throw an exception
+                            _UpdateError(NULL, "CdxTag.DoAction","Out of Bounds when writing to a page")
+                        CASE CdxResult.ExpandRecnos
+                            // after expanding we either need to split or update the current page, so no nextlevel
+                            nextAction |= SELF:ExpandRecnos()
+                            nextLevel := FALSE
+                        OTHERWISE
+                            _UpdateError(NULL, "CdxTag.DoAction","Unexpected Enum value "+flag:ToString())
+                        END SWITCH
+                        action := _AND (Action, _NOT(flag))
+                        IF nextLevel
+                            SELF:_topStack --
+                        ENDIF
+                    ENDIF
+                    IF action == CdxResult.OK
+                        EXIT
+                    ENDIF
+                    
+                NEXT
+                action := nextAction
+                nextAction := CdxResult.OK
+                
+            ENDDO
+            // maybe we need to handle insert of new root page
+            SELF:_topStack := stackSave 
+            RETURN cdxResult.Ok
+
+        INTERNAL METHOD DeletePage() AS CdxResult
+            // Establish Link between our Left and Right
+            VAR oPage := SELF:CurrentTop
+            IF oPage == NULL
+                // Should not happen...
+                RETURN CdxResult.Ok
+            ENDIF
+            IF oPage:HasLeft
+                VAR pageL := SELF:GetPage(oPage:LeftPtr)
+                IF pageL != NULL
+                    pageL:RightPtr := oPage:RightPtr
+                    pageL:Write()
+                ENDIF
+                oPage:LeftPtr := -1
+            ENDIF
+            IF oPage:HasRight
+                VAR pageR := SELF:GetPage(oPage:RightPtr)
+                pageR:LeftPtr := oPage:LeftPtr
+                pageR:Write()
+                oPage:RightPtr := -1
+            ENDIF
+            // now update the reference to this page in the parent node
+            VAR oParent := SELF:GetParent(oPage)
+            IF oParent == NULL
+                // Top level page, don't remove
+                oPage:InitBlank(SELF)
+                RETURN CdxResult.Ok
+            ELSE
+                SELF:OrderBag:FreePage(oPage)
+                RETURN CdxResult.DeleteFromParent
+            ENDIF
+
+        INTERNAL METHOD DeleteFromParent() AS CdxResult
+            VAR oTop    := SELF:CurrentTop ASTYPE CdxBranchPage
+            VAR oParent := SELF:GetParent(oTop)
+            VAR result := CdxResult.OK
+            IF oParent != NULL_PTR
+                // this can be the top level. In that case we should not get here at all
+                LOCAL nPos AS LONG
+                nPos := oParent:FindPage(oTop:PageNo)
+                IF nPos != -1
+                    result := oParent:Delete(nPos)
+                    // when the last key of the parent was changed then
+                    // we need to propagate that to the top
+                    IF nPos == oParent:NumKeys -1
+                        oParent := SELF:GetParent(oParent)
+                        IF oParent != NULL
+                            result := CdxResult.ChangeParent
+                        ENDIF
+                    ENDIF
+                ELSE
+                    // Todo: this is a logical problem
+                     _UpdateError(NULL, "CdxTag.DeleteFromParent","Could not find entry for page # ";
+                        +oTop:PageNo:ToString() +" in page "+oParent:PageNo:ToString())
+                ENDIF 
+                
+            ENDIF
+            RETURN CdxResult.Ok
+        PRIVATE oPendingNode AS CdxPageNode
+        INTERNAL METHOD ChangeParent() AS CdxResult
+            VAR oTop      := SELF:CurrentTop 
+            VAR oParent   := SELF:GetParent(oTop)
+            VAR result    := CdxResult.Ok
+            // the page on the top is the new page.
+            oTop          := SELF:GetPage(oTop:LeftPtr)
+            
+            VAR oLast     := oTop:LastNode 
+            IF oParent != NULL_PTR
+                LOCAL nPos AS LONG
+                nPos := oParent:FindPage(oTop:PageNo)
+                IF nPos != -1
+                    result := oParent:Replace(nPos, oLast)
+                    // when the last key of the parent was changed then
+                    // we need to propagate that to the top
+                    IF nPos == oParent:NumKeys -1
+                        oParent := SELF:GetParent(oParent)
+                        IF oParent != NULL
+                            result := CdxResult.ChangeParent
+                        ENDIF
+                    ENDIF
+                ELSE
+                    // insert page in parent
+                    result := oParent:Add(oLast)
+                    IF result == CdxResult.SplitParent
+                        // failed to insert the key
+                        oPendingNode := oLast
+                    ENDIF
+                ENDIF
+            ENDIF
+            RETURN result
+
+        INTERNAL METHOD InsertParent() AS CdxResult
+            LOCAL oParent AS CdxBranchPage
+            LOCAL oTop    AS CdxTreePage
+            LOCAL nTop    AS LONG
+            nTop    := SELF:CurrentStack:Page
+            oTop    := SELF:GetPage(nTop)
+            oParent := SELF:NewBranchPage()
+            SELF:InsertOnStack(oParent, oTop)
+            RETURN CdxResult.Ok
+
+        INTERNAL METHOD SplitParent() AS CdxResult
+            LOCAL oNewPage AS CdxBranchPage
+            LOCAL oBranch  AS CdxBranchPage
+            VAR result   := CdxResult.Ok
+            oBranch  := SELF:CurrentTop
+            oNewPage := SELF:NewBranchPage()
+            IF oNewPage != NULL_PTR
+                oNewPage:LeftPtr := oBranch:PageNo
+                oBranch:RightPtr := oNewPage:PageNo
+            ENDIF
+            IF SELF:GetParent(oBranch) == NULL
+                result := CdxResult.InsertParent
+            ENDIF
+            result |= CdxResult.ChangeParent
+            IF oPendingNode != NULL
+                oNewPage:Add(oPendingNode)
+                oPendingNode := NULL
+            ENDIF
+            SELF:SetPage(oNewPage, oNewPage:NumKeys)
+            RETURN result
+
+
+        INTERNAL METHOD AddLeaf() AS CdxResult
+            // Allocate a new leaf page and leave it empty
+            VAR result      := CdxResult.OK
+            VAR oPage       := SELF:CurrentLeaf
+            VAR pageR       := SELF:NewLeafPage()
+            IF  oPage != NULL
+                oPage:RightPtr := pageR:PageNo
+                pageR:LeftPtr  := oPage:PageNo
+                oPage:Write()
+            ENDIF
+            // when we are at the top then we must insert a parent above this level
+            IF SELF:_topStack == 1
+                result |= CdxResult.InsertParent
+            ENDIF
+            // make sure that the last node from the current leaf is added to the parent
+            result |= CdxResult.ChangeParent
+            // set the new page as "current" page on the stack
+            SELF:SetPage(pageR, pageR:NumKeys)
+            RETURN result
+
+        INTERNAL METHOD SplitLeaf() AS CdxResult
+            // Assumes Leaf page is on top of the stack
+            LOCAL oNewPage  AS CdxLeafPage
+            VAR oPage     := SELF:CurrentLeaf
+            // allocate a new page and also takes care of updating the parent level when needed
+            VAR result    := SELF:AddLeaf()         
+            oNewPage      := SELF:CurrentLeaf    // should be the new page
+            LOCAL numKeys := oPage:NumKeys AS LONG
+            LOCAL nRight  := numKeys / 2 AS LONG
+            LOCAL nLeft   := numKeys - nRight AS LONG
+            // Force expand on oPage
+            LOCAL oLeaves := oPage:GetLeaves() AS IList<CdxLeaf>
+            // Copy 2nd half to page on the right
+            oNewPage:InitBlank(SELF)
+            FOR VAR i := nLeft TO oLeaves:Count -1
+                result := oNewPage:Add(oLeaves[i]:Recno, oLeaves[i]:Key)
+                IF result != CdxResult.Ok
+                    // should not happen
+                    _UpdateError(NULL, "CdxTag.SplitLeaf","Could not insert key in Right Page")
+                ENDIF
+            NEXT
+            oNewPage:LeftPtr := oPage:PageNo
+            // Copy 1st half to page on the Left
+            // In theory it would be enough to set the numkeys and recalc the Freespace
+            // but this works easier
+            oPage:InitBlank(SELF)
+            FOR VAR i := 0 TO nLeft -1
+                result := oPage:Add(oLeaves[i]:Recno, oLeaves[i]:Key)
+                IF result != CdxResult.Ok
+                    // should not happen
+                    _UpdateError(NULL,"CdxTag.SplitLeaf","Could not insert key in Left Page")
+                ENDIF
+            NEXT
+            oPage:RightPtr := oNewPage:PageNo
+            // we must add the last record of the current page to 
+            result |= CdxResult.ChangeParent
+            RETURN result
+
+        PRIVATE METHOD ExpandRecnos() AS CdxResult
+            VAR oLeaf := SELF:CurrentLeaf
+            IF oLeaf == NULL
+                _UpdateError(NULL, "CdxTag.ExpandRecnos","Attempt to Expand recnos when top of stack is not a leaf")
+            ENDIF
+            VAR result := oLeaf:ExpandRecnos()
+            RETURN result
+            
+            
+
+        PRIVATE METHOD SplitBranch(oPage AS CdxBranchPage, oNewPage OUT CdxBranchPage) AS CdxResult
+            LOCAL result AS CdxResult
+            LOCAL nParentPos AS LONG
+            VAR parent := SELF:GetParent(oPage)
+            IF parent == NULL
+                // This can only happen when oLeaf was top level and we will add a parent to the leaf
+                Debug.Assert(_Header:RootPage == oPage:PageNo)
+                parent := NewBranchPage()
+                nParentPos := -1
+            ELSE
+                VAR oNode  := oPage:LastNode
+                nParentPos := parent:FindPage(oPage:PageNo)       // position of our lastkey on the parent page
+                IF parent:NumKeys != 0 .AND. nParentPos == -1
+                    _UpdateError(NULL, "CdxTag.SplitBranch","Could not locate reference to Branch page in parent")
+                ENDIF
+            ENDIF
+            oNewPage := SELF:NewBranchPage()
+            LOCAL numKeys := oPage:NumKeys AS LONG
+            LOCAL nRight  := numKeys / 2 AS LONG
+            LOCAL nLeft   := numKeys - nRight AS LONG
+            // Force expand on oLeafPage
+            LOCAL oBranches := oPage:Branches AS IList<CdxBranch>
+            
+            // Copy 2nd half to page on the right
+            oNewPage:InitBlank(SELF)
+            FOR VAR i := nLeft TO oBranches:Count -1
+                result := oNewPage:Add(oBranches[i]:Recno, oBranches[i]:ChildPage ,oBranches[i]:Key)
+                IF result != CdxResult.Ok
+                    // should not happen
+                    _UpdateError(NULL, "CdxTag.SplitLeaf","Could not insert key in Right Page")
+                ENDIF
+            NEXT
+            oNewPage:LeftPtr := oPage:PageNo
+            oNewPage:Write()
+            // Copy 1st half to page on the Left
+            // In theory it would be enough to set the numkeys and recalc the Freespace
+            // but this works easier
+            oPage:InitBlank(SELF)
+            FOR VAR i := 0 TO nLeft -1
+                result := oPage:Add(oBranches[i]:Recno, oBranches[i]:ChildPage ,oBranches[i]:Key)
+                IF result != CdxResult.Ok
+                    // should not happen
+                    _UpdateError(NULL,"CdxTag.SplitBranch","Could not insert key in Left Page")
+                ENDIF
+            NEXT
+            oPage:RightPtr := oNewPage:PageNo
+            oPage:Write()
+            // if there was a parent then we need to remove the old node from the parent
+            // and insert 2 nodes at that position
+            // The delete and insert methods on the Branch page will take care of updating a parent page when this parent exists
+            IF nParentPos != -1
+                result      := parent:Replace(nParentPos, oNewPage:LastNode)
+                result      := parent:Insert(nParentPos, oPage:LastNode)
+            ELSE
+                // this can/should only happen if the parent is new
+                result  := parent:Insert(0, oNewPage:LastNode)
+                result  := parent:Insert(0, oPage:LastNode)
+            ENDIF
+//            IF result == CdxResult.Split
+//                // The parent node is full and must be extended to the right
+//                LOCAL newParent AS CdxBranchPage
+//                result := SELF:SplitBranch(parent, OUT newParent)
+//                IF result == CdxResult.Ok
+//                    result := newParent.Insert(newParent.NumKeys, oPage:LastNode)
+//                ENDIF
+//                IF result != CdxResult.Ok
+//                    _UpdateError(NULL,"CdxTag.SplitBranch","Split failed")            
+//                ENDIF
+//            ENDIF
+//            IF result != CdxResult.Ok
+//                _UpdateError(NULL,"CdxTag.SplitBranch","Split failed")            
+//            ENDIF
+            RETURN result
+  
+            
+            
+        PRIVATE METHOD _insertKey(oLeafPage AS CdxLeafPage, nRecord AS LONG, aBytes AS BYTE[], nPos := -1 AS LONG) AS CdxResult
+            RETURN CdxResult.Ok
             
         PRIVATE METHOD _keyUpdate(recordNo AS LONG , lNewRecord AS LOGIC ) AS LOGIC
-        /*
-            LOCAL condFor := TRUE AS LOGIC
-            LOCAL num AS LONG
-            LOCAL noMoreLock AS LOGIC
-            LOCAL errorLevel AS LONG
-            LOCAL lockCount AS LONG
-            num := 0
-            noMoreLock := TRUE
-            errorLevel := 0
-            lockCount := 0
-            DO WHILE TRUE
-                IF SELF:_Shared
-                    IF SELF:_HPLocking
-                        lockCount := SELF:_readLocks
-                        DO WHILE SELF:_readLocks != 0
-                            noMoreLock := SELF:_ReadUnLock()
-                            IF !noMoreLock
-                                errorLevel := 2
-                                EXIT
-                            ENDIF
-                        ENDDO
-                    ENDIF
-                    IF noMoreLock .AND. !SELF:_WriteLock()
-                        errorLevel := 2
-                        EXIT
-                    ENDIF
-                ENDIF
-                LOCAL evalOk AS LOGIC
-                IF SELF:_Conditional
-                    evalOk := TRUE
-                    TRY
-                        condFor := (LOGIC)SELF:_oRdd:EvalBlock(SELF:_ForCodeBlock)
-                    CATCH
-                        evalOk := FALSE
-                        SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_EVAL,GenCode.EG_DATATYPE, SELF:fileName)
-                    END TRY
-                    IF !evalOk
-                        errorLevel := 1
-                        EXIT
-                    ENDIF
-                ENDIF
-                evalOk := TRUE
-                IF SELF:getKeyValue(0, SELF:_newKeyBuffer)
-                    LOCAL changed AS LOGIC
-                    IF !lNewRecord
-                            changed := SELF:__Compare(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, SELF:_keySize) != 0
-                            IF changed
-                                SELF:_topStack := 0
-                            ENDIF
-                            num := SELF:_goRecord(SELF:_currentKeyBuffer, SELF:_keySize, recordNo)
-                            IF (SELF:_topStack != 0 .AND. !SELF:_Conditional) .OR. num != 0
-                                IF changed .OR. !condFor
-                                    SELF:_deleteKey()
-                                ENDIF
-                            ELSE
-                                IF !SELF:Unique .AND. !SELF:_Conditional .AND. !SELF:Custom
-                                    SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_NOT_FOUND, GenCode.EG_DATATYPE,SELF:fileName)
-                                ENDIF
-                            ENDIF
-                        ENDIF
-                        IF (lNewRecord .OR. changed) .AND. condFor
-                            SELF:_midItem:KeyBytes := SELF:_newKeyBuffer
-                            SELF:_midItem:PageNo := 0
-                            SELF:_midItem:Recno := recordNo
-                            SELF:ClearStack()
-                            IF SELF:Unique
-                                IF SELF:_locate(SELF:_midItem:KeyBytes, SELF:_keySize, SearchMode.Left, SELF:_rootPage) == 0
-                                    SELF:_addKey()
-                                ELSE
-                                    SELF:ClearStack()
-                                ENDIF
-                            ELSE
-                                SELF:_locate(SELF:_midItem:KeyBytes, SELF:_keySize, SearchMode.Right, SELF:_rootPage)
-                                SELF:_addKey()
-                            ENDIF
-                            SELF:ClearStack()
-                            SELF:_Hot := TRUE
-                        ENDIF
-                        Array.Copy(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, SELF:_keySize + 1)
-                        SELF:_currentRecno := recordNo
-                        errorLevel := 0
-                    ENDIF
-                ENDIF
-                EXIT
-            ENDDO 
-            IF errorLevel <= 1
-                IF SELF:_Shared
-                    SELF:_PageList:Flush(TRUE)
-                    SELF:_Version++
-                    SELF:_PutHeader()
-                    SELF:_Hot := FALSE
-                    FFlush( SELF:_hFile )
-                    SELF:_WriteUnLock()
-                ENDIF
+            IF SELF:Shared
+                SELF:XLock()
+            ENDIF
+            SELF:_saveCurrentKey(recordNo, SELF:_newvalue)
+            IF lNewRecord .AND. ! _newvalue:ForCond
+                // New record and it does not meet the for condition, so no need to update or delete anything
+                SELF:_newValue:CopyTo(SELF:_currentValue)
                 RETURN TRUE
             ENDIF
-            IF errorLevel == 2
-                SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_EVAL, GenCode.EG_DATATYPE)
-                RETURN FALSE
+            LOCAL changed := FALSE AS LOGIC
+            IF !lNewRecord
+                // find and delete existing key
+                changed := SELF:_compareFunc(SELF:_newValue:Key, SELF:_currentValue:Key, SELF:_keySize) != 0
+                IF changed
+                    SELF:_topStack := 0
+                ENDIF
+                VAR recno := SELF:_goRecord(SELF:_currentValue:Key, SELF:_keySize, recordNo)
+                IF (SELF:_TopStack != 0 .AND. !SELF:_Conditional) .OR. recno  != 0
+                    IF changed .OR. !_newValue:ForCond
+                        SELF:_deleteKey()
+                    ENDIF
+                ELSE
+                    IF !SELF:Unique .AND. !SELF:_Conditional .AND. !SELF:Custom
+                        SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_NOT_FOUND, GenCode.EG_DATATYPE,SELF:fileName)
+                    ENDIF
+                ENDIF
             ENDIF
-            */
+            IF (lNewRecord .OR. changed) .AND. _newvalue:ForCond
+                // new record or changed record, so insert the new key in the tree
+                SELF:ClearStack()
+                IF SELF:Unique
+                    // Todo
+                    IF SELF:_locate(SELF:_newValue:Key, SELF:_keySize, SearchMode.Left, SELF:_rootPage) == 0
+                        SELF:_addKey()
+                    ELSE
+                        SELF:ClearStack()
+                    ENDIF
+                ELSE
+                    // position on the new key
+                    SELF:_locate(SELF:_newValue:Key, SELF:_keySize, SearchMode.Right, SELF:_rootPage)
+                    SELF:_addKey()
+                ENDIF
+                SELF:ClearStack()
+                SELF:_Hot := TRUE
+            ENDIF
+            SELF:_newValue:CopyTo(SELF:_currentValue)
+
+            IF SELF:Shared
+                SELF:_Header:Version++
+                SELF:_Header:Write()
+                SELF:GoCold()
+                SELF:UnLock()
+            ENDIF
             RETURN TRUE
             
         PRIVATE METHOD _addKey() AS LOGIC
-            /*
-            LOCAL uiHalfPage    AS WORD
-            LOCAL page          AS CdxTreePage
-            LOCAL pageNo        AS LONG
-            LOCAL offset        AS WORD
-            LOCAL node          AS CdxNode
-            
-            SELF:_Hot := TRUE
-            uiHalfPage := SELF:_halfPage
-            IF SELF:_topStack == 0
-                // new root 
-                page := SELF:AllocPage()
-                pageNo := page:PageOffset
-                page:InitRefs(_MaxEntry, _EntrySize)
-                node := page[0]
-                node:PageNo     := SELF:_rootPage
-                node:Recno      := SELF:_midItem:Recno
-                node:KeyBytes   := SELF:_midItem:KeyBytes
-                page[1]:PageNo := SELF:_midItem:PageNo
-                page:NodeCount := 1
-                SELF:_rootPage := pageNo
-                RETURN FALSE
+            LOCAL page   AS CdxLeafPage
+            LOCAL pos    AS LONG
+            LOCAL result AS CdxResult
+            page    := SELF:_readPagesFromStack()
+            pos     := SELF:CurrentStack:Pos
+            IF pos == SELF:CurrentStack:Count
+                // append at end of page
+                result := page:Insert(pos, SELF:_newValue)
+            ELSE
+                // insert on the page
+                result := page:Insert(pos, SELF:_newValue)
             ENDIF
-            VAR page2 := SELF:_PageList:Update(SELF:CurrentStack:Page)
-            IF SELF:_insertKey(page2)
-                // Split pages
-                // Write Left page
-                page2:NodeCount := uiHalfPage
-                // New right page
-                page := SELF:AllocPage()
-                // Copy references from left page
-                // and shift Left
-                Array.Copy(page2:Bytes, page:Bytes, BUFF_SIZE)
-                FOR VAR i := 0 TO uiHalfPage
-                    offset := page:GetRef(i)
-                    page:SetRef(i, page:GetRef(i + uiHalfPage))
-                    page:SetRef(i + uiHalfPage, offset)
-                NEXT
-                page[0]:PageNo := SELF:_midItem:PageNo
-                SELF:_midItem:PageNo := page:PageOffset
-                SELF:_topStack--
-                SELF:_addKey()
-                RETURN FALSE
+            IF pos == page:NumKeys -1
+                // Todo must update the parent of the page
+//                IF page:Parent != NULL
+//                    LOCAL parentPos := page:parent:FindPage(page:PageNo) AS LONG
+//                    IF parentPos != -1
+//                        page:parent:SetRecno(parentPos, _newValue:Recno)
+//                        page:parent:SetKey(parentPos, _newValue:Key)
+//                    ENDIF
+//                ENDIF
             ENDIF
-            */
+            IF result != CdxResult.OK
+                result := SELF:DoAction(result)
+            ENDIF
             RETURN TRUE
-            
+
+        PRIVATE METHOD _readPagesFromStack AS CdxLeafPage
+            VAR pageNo  := SELF:CurrentStack:Page
+            VAR page    := (CdxLeafPage) SELF:OrderBag:GetPage(pageNo, _keySize, SELF)
+            RETURN page
             
         PRIVATE METHOD _deleteKey() AS VOID
-            /*
-            LOCAL lPage AS LONG
-            LOCAL uiPos AS LONG
-            LOCAL page AS CdxTreePage
-            LOCAL node AS CdxNode
-            LOCAL nodeCount AS LONG
-            LOCAL offset AS WORD
-            LOCAL i AS LONG
-            
-            lPage := SELF:CurrentStack:Page
-            uiPos := SELF:CurrentStack:Pos
-            page := SELF:_PageList:Read(lPage)
-            node := page[uiPos]
-            IF node:PageNo != 0
-                // move key to leaf (copy leaf entry to current)
-                SELF:_locate(NULL, 0, SearchMode.Bottom, node:PageNo)
-                page := SELF:_PageList:Read(SELF:CurrentStack:Page)
-                // get leaf
-                node    := page[SELF:CurrentStack:Pos]
-                SELF:_midItem:Recno := node:Recno
-                SELF:_midItem:KeyBytes := node:KeyBytes
-                // update parent
-                page        := SELF:_PageList:Update(lPage)
-                node        := page[uiPos]
-                node:Recno  := SELF:_midItem:Recno
-                node:KeyBytes := SELF:_midItem:KeyBytes
-                // get back leaf
-                lPage := SELF:CurrentStack:Page
-                uiPos := SELF:CurrentStack:Pos
-                page := SELF:_PageList:Read(lPage)
-                node := page[uiPos]
+            LOCAL page   AS CdxLeafPage
+            LOCAL pos    AS LONG
+            LOCAL result AS CdxResult
+            page := SELF:_readPagesFromStack()
+            pos     := SELF:CurrentStack:Pos
+            result  := page:Delete(pos)
+            IF result != CdxResult.OK
+                result := SELF:DoAction(result)
             ENDIF
-            // delete leaf entry
-            nodeCount := page:NodeCount
-            offset := page:GetRef(uiPos)
-            
-            FOR i := uiPos TO nodeCount -1
-                // Copy the next Item offset at the current place
-                page:SetRef(i, page:GetRef(i + 1))
-            NEXT
-            page:SetRef(nodeCount, offset)
-            IF nodeCount > 0
-                page:NodeCount--
-            ENDIF
-            SELF:CurrentStack:Count := page:NodeCount
-            SELF:CurrentStack:Pos := page:NodeCount
-            SELF:_PageList:Write(lPage)
-            IF page:NodeCount < SELF:_halfPage .AND. SELF:_topStack > 1
-                SELF:_Balance()
-            ENDIF
-            */
-            
-        PRIVATE METHOD _balance() AS VOID
-            /*
-            LOCAL leftPageNo AS LONG
-            LOCAL uiCount AS LONG
-            LOCAL pageLeft AS CdxTreePage
-            LOCAL pageRight AS CdxTreePage
-            LOCAL nodeLeft AS CdxNode
-            LOCAL nodeRight AS CdxNode
-            LOCAL iPos AS LONG
-            LOCAL rightPageNo AS LONG
-            LOCAL num2 AS LONG
-            LOCAL offset AS WORD
-            LOCAL num4 AS LONG
-            
-            leftPageNo := SELF:CurrentStack:Page
-            uiCount := SELF:CurrentStack:Count
-            IF uiCount >= SELF:_halfPage
-                // nothing to do
-                RETURN
-            ENDIF
-            IF SELF:_topStack == 1
-                IF uiCount == 0
-                    // delete root
-                    pageLeft := SELF:_PageList:Update(leftPageNo)
-                    
-                    nodeLeft := pageLeft[0]
-                    SELF:_rootPage := nodeLeft:PageNo
-                    // add to list of deleted pages
-                    nodeLeft:PageNo := SELF:_nextUnusedPageOffset 
-                    SELF:_nextUnusedPageOffset := leftPageNo
-                ENDIF
-            ELSE
-                // get parent page
-                --SELF:_topStack
-                iPos     := CurrentStack:Pos
-                pageLeft := SELF:_PageList:Read(SELF:CurrentStack:Page)
-                // setup left and right siblings
-                IF iPos == SELF:CurrentStack:Count
-                    // underflow page was a right pointer from parent 
-                    rightPageNo := pageLeft[iPos]:PageNo
-                    num2 := rightPageNo
-                    iPos := --SELF:CurrentStack:Pos
-                    leftPageNo := pageLeft[iPos]:PageNo
-                ELSE
-                    // underflow page was a left pointer from parent 
-                    leftPageNo := pageLeft[iPos]:PageNo
-                    num2 := leftPageNo
-                    rightPageNo := pageLeft[iPos + 1]:PageNo
-                ENDIF
-                // delete parent entry into nodeMid
-                SELF:_delToMid(pageLeft, iPos)
-                SELF:CurrentStack:Count--
-                SELF:_PageList:Write(SELF:CurrentStack:Page)
-                // read sibling pages
-                pageLeft := SELF:_PageList:Read(leftPageNo)
-                pageRight := SELF:_PageList:Read(rightPageNo)
-                // insert parent information into underflow page
-                IF num2 == leftPageNo
-                    // save at the end
-                    iPos := pageLeft:NodeCount
-                    nodeLeft := pageLeft[iPos]
-                    nodeLeft:Recno := SELF:_midItem:Recno
-                    nodeLeft:KeyBytes := SELF:_midItem:KeyBytes
-                    nodeLeft := pageLeft[iPos + 1]
-                    nodeRight := pageRight[0]
-                    nodeLeft:PageNo := nodeRight:PageNo
-                    nodeRight:PageNo := -1
-                    pageLeft:NodeCount++
-                ELSE
-                    // save at the front
-                    uiCount := pageRight:NodeCount
-                    offset := pageRight:GetRef(uiCount + 1)
-                    //Init
-                    VAR num3 := uiCount + 1
-                    DO WHILE num3 > 0
-                        pageRight:SetRef(num3, pageRight:GetRef(num3 - 1))
-                        //Iterators
-                        num3--
-                    ENDDO
-                    pageRight:SetRef(0, offset)
-                    nodeRight := pageRight[0]
-                    // copoy data from Mid
-                    nodeRight:Recno := SELF:_midItem:Recno
-                    nodeRight:KeyBytes := SELF:_midItem:KeyBytes
-                    nodeRight:PageNo := -1
-                    pageRight:NodeCount++
-                ENDIF
-                iPos := pageLeft:NodeCount
-                uiCount := iPos + pageRight:NodeCount
-                IF uiCount == SELF:_MaxEntry
-                    // the pages can be combined 
-                    uiCount := 0
-                    nodeLeft := pageLeft[iPos]
-                    nodeRight := pageRight[uiCount]
-                    DO WHILE iPos < SELF:_MaxEntry
-                        nodeLeft:Recno := nodeRight:Recno
-                        nodeLeft:KeyBytes := nodeRight:KeyBytes
-                        uiCount++
-                        iPos++
-                        nodeLeft := pageLeft[iPos]
-                        nodeRight := pageRight[uiCount]
-                        nodeLeft:PageNo := nodeRight:PageNo
-                    ENDDO
-                    // left page contains all entries 
-                    pageLeft:NodeCount := SELF:_MaxEntry
-                    // right page is deleted
-                    pageRight[0]:PageNo := SELF:_nextUnusedPageOffset
-                    SELF:_nextUnusedPageOffset := rightPageNo
-                    SELF:_PageList:Write(leftPageNo)
-                    SELF:_PageList:Write(rightPageNo)
-                    // the stack points to the parent, which may need balancing
-                    SELF:_Balance()
-                ELSE
-                    num4 := (uiCount - 1) / 2
-                    IF iPos <= num4
-                        uiCount := 0
-                        nodeLeft := pageLeft[iPos]
-                        nodeRight := pageRight[uiCount]
-                        DO WHILE iPos < num4
-                            nodeLeft:Recno := nodeRight:Recno
-                            nodeLeft:KeyBytes := nodeRight:KeyBytes
-                            uiCount++
-                            iPos++
-                            nodeLeft := pageLeft[iPos]
-                            nodeRight := pageRight[uiCount]
-                            nodeLeft:PageNo := nodeRight:PageNo
-                        END DO
-                        pageLeft:NodeCount := (WORD)iPos
-                        nodeRight := pageRight[uiCount]
-                        SELF:_midItem:Recno := nodeRight:Recno
-                        SELF:_midItem:KeyBytes := nodeRight:KeyBytes
-                        uiCount++
-                        num4 := pageRight:NodeCount
-                        iPos := 0
-                        //Init
-                        DO WHILE uiCount <= num4
-                            offset := pageRight:GetRef(iPos)
-                            pageRight:SetRef(iPos, pageRight:GetRef(uiCount))
-                            pageRight:SetRef(uiCount, offset)
-                            iPos++
-                            //Iterators
-                            uiCount++
-                        ENDDO
-                        pageRight:NodeCount := (WORD)(iPos - 1)
-                    ELSE
-                        uiCount := pageRight:NodeCount
-                        num4++
-                        DO WHILE iPos > num4
-                            offset := pageRight:GetRef(uiCount + 1)
-                            //Init
-                            VAR num3 := uiCount + 1
-                            DO WHILE num3 > 0
-                                pageRight:SetRef(num3, pageRight:GetRef(num3 - 1))
-                                //Iterators
-                                num3--
-                            ENDDO
-                            pageRight:SetRef(0, offset)
-                            pageRight[1]:PageNo := pageLeft[iPos]:PageNo
-                            iPos--
-                            nodeRight := pageRight[0]
-                            nodeLeft := pageLeft[iPos]
-                            nodeRight:Recno := nodeLeft:Recno
-                            nodeRight:KeyBytes := nodeLeft:KeyBytes
-                            uiCount++
-                        ENDDO
-                        pageRight[0]:PageNo := pageLeft[iPos]:PageNo
-                        pageRight:NodeCount := (WORD)uiCount
-                        iPos--
-                        nodeLeft := pageLeft[iPos]
-                        SELF:_midItem:Recno := nodeLeft:Recno
-                        SELF:_midItem:KeyBytes := nodeLeft:KeyBytes
-                        pageLeft:NodeCount := (WORD)iPos
-                    ENDIF
-                    SELF:_midItem:PageNo := rightPageNo
-                    SELF:_PageList:Write(leftPageNo)
-                    SELF:_PageList:Write(rightPageNo)
-                    SELF:_addKey()
-                ENDIF
-            ENDIF
-            */
             RETURN
-            
-        PRIVATE METHOD _delToMid(page AS CdxTreePage , uiPos AS LONG ) AS VOID
-            /*
-            // copy entry into mid, then delete from page
-            LOCAL nodeCount AS LONG
-            LOCAL leftPageNo AS LONG
-            LOCAL offSet AS WORD
-            LOCAL i AS LONG
-            
-            VAR node := page[uiPos]
-            SELF:_midItem:Recno     := node:Recno
-            SELF:_midItem:KeyBytes  := node:KeyBytes
-            // delete key from page
-            nodeCount   := page:NodeCount
-            leftPageNo  := node:PageNo
-            offSet      := page:GetRef(uiPos)
-            // shift references
-            FOR i := uiPos TO nodeCount -1
-                page:SetRef(i, page:GetRef(i + 1))
-            NEXT
-            page:SetRef(nodeCount, offSet)
-            // restore left page pointer (the right one is deleted)
-            node        := page[uiPos]
-            node:PageNo := leftPageNo
-            page:NodeCount--
-            */
-            RETURN
-            
-        PRIVATE METHOD _insertKey(page AS CdxTreePage ) AS LOGIC
-            /*
-            LOCAL nodeCount AS INT
-            LOCAL uiPos AS WORD
-            LOCAL offset AS WORD
-            LOCAL num AS INT
-            LOCAL uiHalfPage AS INT
-            LOCAL num2 AS INT
-            LOCAL shift AS INT
-            LOCAL nStep AS INT
-            LOCAL pageNo AS LONG
-            
-            nodeCount := page:NodeCount
-            uiPos := SELF:CurrentStack:Pos
-            IF nodeCount < SELF:_MaxEntry
-                // it fits, so make space
-                offset := page:GetRef(nodeCount + 1)
-                num := nodeCount + 1
-                DO WHILE num > uiPos
-                    page:SetRef(num, page:GetRef(num - 1))
-                    num--
-                ENDDO
-                page:SetRef(uiPos, offset)
-                page[uiPos]:PageNo    := page[uiPos + 1]:PageNo
-                page[uiPos+ 1]:PageNo := SELF:_midItem:PageNo
-                page[uiPos]:Recno := SELF:_midItem:Recno
-                page[uiPos]:KeyBytes := SELF:_midItem:KeyBytes
-                page:NodeCount++
-                RETURN FALSE
-            ENDIF
-            // else split
-            uiHalfPage := SELF:_halfPage
-            IF uiPos == SELF:_halfPage
-                RETURN TRUE
-            ENDIF
-            IF uiPos < SELF:_halfPage
-                num2 := -1
-                shift := 1
-                nStep := -1
-            ELSE
-                num2 := 0
-                shift := 0
-                nStep := 1
-            ENDIF
-            VAR nodeOnPage := page[uiHalfPage + num2]
-            VAR nodeTemp  := CdxNode{SELF:_keySize}
-            nodeTemp:Recno := nodeOnPage:Recno
-            nodeTemp:KeyBytes := nodeOnPage:KeyBytes
-            nodeOnPage := page[uiHalfPage + num2 + 1]
-            nodeTemp:PageNo := nodeOnPage:PageNo
-            page[uiHalfPage + num2 + 1]:PageNo := page[uiHalfPage + num2]:PageNo
-            offset := page:GetRef(uiHalfPage + num2)
-            //Shift up to half
-            num := uiHalfPage + num2
-            DO WHILE num + shift != uiPos
-                page:SetRef(num, page:GetRef(num + nStep))
-                num += nStep
-            ENDDO
-            page:SetRef(uiPos - (shift + nStep), offset)
-            VAR node2 := page[uiPos + shift]
-            pageNo := node2:PageNo
-            node2:PageNo := SELF:_midItem:PageNo
-            node2 := page[uiPos + shift - 1]
-            node2:PageNo := pageNo
-            node2:Recno := SELF:_midItem:Recno
-            node2:KeyBytes := SELF:_midItem:KeyBytes
-            SELF:_midItem:Recno := nodeTemp:Recno
-            SELF:_midItem:KeyBytes := nodeTemp:KeyBytes
-            SELF:_midItem:PageNo := nodeTemp:PageNo
-            */
-            RETURN TRUE
             
     END CLASS
     

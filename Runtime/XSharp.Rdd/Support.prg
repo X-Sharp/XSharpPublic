@@ -8,7 +8,7 @@ USING System
 USING System.Collections
 USING System.Text
 USING XSharp.Rdd.Support
-
+USING System.Diagnostics
 BEGIN NAMESPACE XSharp.RDD
 
     INTERNAL ENUM SkipDirection
@@ -39,9 +39,10 @@ BEGIN NAMESPACE XSharp.RDD
         
     END ENUM
 
-      // Rdd Stack item
+    // Rdd Stack item
     // Keep informations
-    INTERNAL SEALED CLASS RddStack
+    [DebuggerDisplay("Page {Page}, Pos {Pos}, Count {Count}")];
+    INTERNAL CLASS RddStack
         INTERNAL Page   AS LONG
         INTERNAL Pos    AS WORD
         INTERNAL Count  AS WORD

@@ -37,10 +37,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     [Flags];
     INTERNAL ENUM CdxResult
         MEMBER Ok              := 0
-        MEMBER Full            := 1
-        MEMBER Split           := 2
-        MEMBER Merge           := 4
-        MEMBER ExpandFailed    := 4
+        MEMBER SplitLeaf       := 1 << 0
+        MEMBER AddLeaf         := 1 << 1
+        MEMBER Delete          := 1 << 2
+        MEMBER InsertParent    := 1 << 3
+        MEMBER ChangeParent    := 1 << 4
+        MEMBER SplitParent     := 1 << 5
+        MEMBER DeleteFromParent:= 1 << 6
+        MEMBER ExpandRecnos    := 1 << 7
+        MEMBER OutofBounds     := 1 << 8
     END ENUM
 	
 END NAMESPACE 

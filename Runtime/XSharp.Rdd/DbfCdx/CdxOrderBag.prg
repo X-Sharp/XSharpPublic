@@ -34,7 +34,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _PageList  AS CdxPageList
         INTERNAL PROPERTY Shared    AS LOGIC GET _OpenInfo:Shared
         INTERNAL PROPERTY ReadOnly  AS LOGIC GET _OpenInfo:ReadOnly
-        INTERNAL _Hot       AS LOGIC
         INTERNAL _oRDD      AS DBFCDX
         INTERNAL _root      AS CdxFileHeader
         INTERNAL _tagList   AS CdxTagList
@@ -46,6 +45,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Handle AS IntPtr GET _hFile
         INTERNAL PROPERTY Tags AS IList<CdxTag> GET _tagList:Tags
         INTERNAL PROPERTY Structural AS LOGIC AUTO
+        INTERNAL PROPERTY Root      AS CdxFileHeader GET _root
         INTERNAL CONSTRUCTOR(oRDD AS DBFCDX )
             SUPER( oRdd )
             SELF:_oRdd     := oRDD
@@ -73,7 +73,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             VAR oTag := SELF:_FindTagByName(cTag)
             IF oTag != NULL_OBJECT
-                // Delete Tag, Free its pages and add them to the free page list
+                SELF:_tagList:Remove(oTag)
             ENDIF
             oTag := CdxTag{SELF}
             VAR lOk := oTag:Create(info)
@@ -89,21 +89,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _tagList:Add(oTag)
             RETURN TRUE
 
-        METHOD Destroy(oTag AS CdxTag) AS LOGIC
+        METHOD Destroy(oParam AS CdxTag) AS LOGIC
             LOCAL found := FALSE AS LOGIC
             VAR aTags := SELF:Tags:ToArray()
-            FOREACH VAR tag IN aTags
-                IF String.Compare(oTag:OrderName, tag:OrderName, StringComparison.OrdinalIgnoreCase) == 0
-                    oTag := tag
+            FOREACH tag AS CdxTag IN aTags
+                IF String.Compare(tag:OrderName, oParam:OrderName, StringComparison.OrdinalIgnoreCase) == 0
+                    oParam := tag
                     found := TRUE
                     EXIT
                 ENDIF
             NEXT
             IF found
                 // rewrite the taglist
-                SELF:_tagList:Remove(oTag)
-                // todo
-                // Delete the pages from the tag
+                SELF:_tagList:Remove(oParam)
+                // We do not Delete the pages from the tag. Comix also does not do that
             ENDIF
             RETURN found
 
@@ -168,7 +167,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // taglist page
             VAR page := SELF:GetPage(_root:RootPage, _root:KeySize, NULL)
             _tagList := CdxTagList{SELF,  page, _root:KeySize}
-            _taglist:InitBlank()
+            _taglist:InitBlank(NULL)
             SELF:Write(_tagList)
             // we now have a 
             RETURN TRUE
@@ -183,13 +182,21 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
         METHOD Close() AS LOGIC
-            FOREACH oTag AS CdxTag IN Tags
-                oTag:GoCold()
-                oTag:Close()
+            LOCAL lOk AS LOGIC
+            // Process all tags even if one fails
+            lOk := TRUE
+            FOREACH tag AS CdxTag IN Tags
+                IF ! tag:Close()
+                    lOk := FALSE
+                ENDIF
             NEXT
-            SELF:_PageList:Flush(FALSE)
-            FClose(SELF:_hFile)
-            RETURN TRUE
+            IF ! SELF:_PageList:Flush(FALSE)
+                lOk := FALSE
+            ENDIF
+            IF ! FClose(SELF:_hFile)
+                lOk := FALSE
+            ENDIF
+            RETURN lOk
 
 
         INTERNAL METHOD Open(info AS DbOrderInfo) AS LOGIC
@@ -256,28 +263,65 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
          METHOD Flush() AS LOGIC
             LOCAL lOk AS LOGIC
+            // Process all tags even if one fails
             lOk := TRUE
-             FOREACH oTag AS CdxTag IN SELF:Tags
-                IF ! oTag:Flush()
+            FOREACH tag AS CdxTag IN SELF:Tags
+                IF ! tag:Flush()
                     lOk := FALSE
                 ENDIF
             NEXT
+            SELF:_PageList:Flush(FALSE)
             RETURN lOk
 
 
          METHOD GoCold() AS LOGIC
             LOCAL lOk AS LOGIC
+            // Process all tags even if one fails
             lOk := TRUE
-             FOREACH oTag AS CdxTag IN SELF:Tags
-                IF ! oTag:GoCold()
+            FOREACH tag AS CdxTag IN SELF:Tags
+                IF ! tag:GoCold()
+                    lOk := FALSE
+                ENDIF
+            NEXT
+            RETURN lOk
+
+        METHOD GoHot() AS LOGIC
+            LOCAL lOk AS LOGIC
+            // Process all tags even if one fails
+            lOk := TRUE
+            FOREACH VAR tag IN SELF:Tags
+                IF ! tag:GoHot()
                     lOk := FALSE
                 ENDIF
             NEXT
             RETURN lOk
 
         METHOD FindFreePage() AS LONG
-            // Todo: Return page from list of free pages
+            LOCAL nPage AS LONG
+            LOCAL nNext AS LONG
+            IF SELF:_root:FreeList != 0
+                nPage := SELF:_root:FreeList
+                VAR oPage := SELF:_PageList:_FindPage(nPage)
+                IF oPage IS CdxTreePage tpage
+                    nNext := tpage:LeftPtr
+                    IF nNext == -1
+                        nNext          := 0
+                    ENDIF
+                    SELF:_root:FreeList := nNext
+                ENDIF
+                SELF:_PageList:Delete(nPage)
+                RETURN nPage
+            ENDIF
             RETURN FSeek3( SELF:_hFile, 0, SeekOrigin.End )
+
+         METHOD FreePage(oPage AS CdxTreePage) AS LOGIC
+            oPage:LeftPtr      := SELF:_root:FreeList
+            oPage:RightPtr     := -1
+            SELF:_root:FreeList := oPage:PageNo
+            SELF:_root:Write()
+            SELF:_PageList:Delete(oPage:PageNo)
+            oPage:Write()
+            RETURN TRUE
 
         METHOD AllocBuffer(nSize := 1 AS LONG)  AS BYTE[]
             RETURN BYTE[]{CDXPAGE_SIZE *nSize}
@@ -303,13 +347,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 			isOk :=  FWrite3(SELF:_hFile, oPage:Buffer, (DWORD) oPage:Buffer:Length) == (DWORD) oPage:Buffer:Length
             RETURN IsOk
 
-        METHOD GoHot() AS LOGIC
-            // Todo
-            _Hot := TRUE
-            RETURN TRUE
+
 
         METHOD GetPage(nPage AS Int32, nKeyLen AS WORD,tag AS CdxTag) AS CdxPage
-           RETURN SELF:_PageList:GetPage(nPage, nKeyLen,tag)
+           VAR page := SELF:_PageList:GetPage(nPage, nKeyLen,tag)
+           IF page != NULL
+                SELF:_PageList:Add(page)
+           ENDIF
+           RETURN page
   
          METHOD SetPage(page AS CdxPage) AS VOID
             SELF:_PageList:SetPage(Page:PageNo, page)
@@ -336,6 +381,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PROPERTY IsHot AS LOGIC
         GET
+            // return true as soon as one tag is hot
             FOREACH oTag AS CdxTag IN SELF:Tags
                 IF oTag:IsHot
                     RETURN TRUE

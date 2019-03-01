@@ -65,10 +65,23 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	/// </summary>
 	INTERNAL CLASS CdxLeafPage INHERIT CdxTreePage
 
-#region Static methods
-      
-
+#region constants				
+		PRIVATE CONST CDXLEAF_NUMKEYS		:= 2	AS WORD // 2 WORD
+		PRIVATE CONST CDXLEAF_LEFTPTR		:= 4	AS WORD // 4 LONGINT
+		PRIVATE CONST CDXLEAF_RIGHTPTR 	    := 8	AS WORD // 4 LONGINT
+		PRIVATE CONST CDXLEAF_FREESPACE	    := 12	AS WORD // 2 WORD		: Free space in this key
+		PRIVATE CONST CDXLEAF_RECNOMASK	    := 14	AS WORD // 4 LONGINT	: Bit mask for record number
+		PRIVATE CONST CDXLEAF_DUPMASK		:= 18	AS WORD // 1 Bit mask for duplicate byte count
+		PRIVATE CONST CDXLEAF_TRAILMASK     := 19	AS WORD // 1 Bit mask for trailing byte count
+		PRIVATE CONST CDXLEAF_RECNUMBITS	:= 20	AS WORD // 1 Number of bits used for record number
+		PRIVATE CONST CDXLEAF_DUPCOUNTBITS  := 21	AS WORD // 1 Number of bits used for duplicate count
+		PRIVATE CONST CDXLEAF_TRAILINGBITS  := 22	AS WORD // 1 Number of bits used for trailing count
+		PRIVATE CONST CDXLEAF_DATABYTES	    := 23	AS WORD // 1 Bytes needed for recno+dups+trailing (sum of 20,21 & 22)
+        PRIVATE CONST CDXLEAF_MASKLEN       := 10   AS WORD // length of the info that gets copied to new brother pages (recnomask .. DataBytes)
+        PRIVATE CONST CDXLEAF_HEADERLEN     := 24   AS WORD // length of the page header
+        PRIVATE CONST CDXLEAF_BYTESFREE     := 488  AS WORD // 512 - 24
 #endregion
+
 		PROTECTED _keyLen    AS WORD
         PROTECTED _lenShift  AS INT
         PROTECTED _leaves    AS List<CdxLeaf>
@@ -193,32 +206,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 // Copy to aBytes from pos nDup
                 MemCopy(Buffer, nStart - nKey, aBytes, nDup, nKey)
                 nStart := nStart - nKey
-                _leaves.Add( CdxLeaf{ _AND(nRecno, RecnoMask), aBytes})
+                _leaves.Add( CdxLeaf{ nRecno, aBytes})
                 nOffSet      += nStep
             NEXT
-            //? "Leaf Page", SELF:PageNo:ToString("X"), SELF:NumKeys,"Startswith", _bag:_oRDD:_Encoding:GetString(GetKey(0),0,_keyLen)
-            //? "Leaf Page", SELF:PageNo:ToString("X"), SELF:NumKeys,"Endswith", _bag:_oRDD:_Encoding:GetString(GetKey(SELF:NumKeys-1),0,_keyLen)
             RETURN TRUE
 
  
 
 #region Properties that map to the buffer 
-#region constants				
-		PRIVATE CONST CDXLEAF_NUMKEYS		:= 2	AS WORD // 2 WORD
-		PRIVATE CONST CDXLEAF_LEFTPTR		:= 4	AS WORD // 4 LONGINT
-		PRIVATE CONST CDXLEAF_RIGHTPTR 	    := 8	AS WORD // 4 LONGINT
-		PRIVATE CONST CDXLEAF_FREESPACE	    := 12	AS WORD // 2 WORD		: Free space in this key
-		PRIVATE CONST CDXLEAF_RECNOMASK	    := 14	AS WORD // 4 LONGINT	: Bit mask for record number
-		PRIVATE CONST CDXLEAF_DUPMASK		:= 18	AS WORD // 1 Bit mask for duplicate byte count
-		PRIVATE CONST CDXLEAF_TRAILMASK     := 19	AS WORD // 1 Bit mask for trailing byte count
-		PRIVATE CONST CDXLEAF_RECNUMBITS	:= 20	AS WORD // 1 Number of bits used for record number
-		PRIVATE CONST CDXLEAF_DUPCOUNTBITS  := 21	AS WORD // 1 Number of bits used for duplicate count
-		PRIVATE CONST CDXLEAF_TRAILINGBITS  := 22	AS WORD // 1 Number of bits used for trailing count
-		PRIVATE CONST CDXLEAF_DATABYTES	    := 23	AS WORD // 1 Bytes needed for recno+dups+trailing (sum of 20,21 & 22)
-        PRIVATE CONST CDXLEAF_MASKLEN       := 10   AS WORD // length of the info that gets copied to new brother pages (recnomask .. DataBytes)
-        PRIVATE CONST CDXLEAF_HEADERLEN     := 24   AS WORD // length of the page header
-        PRIVATE CONST CDXLEAF_BYTESFREE     := 488  AS WORD // 512 - 24
-#endregion
 
 		PUBLIC PROPERTY NumKeys  AS WORD	;
 			GET _GetWord(CDXLEAF_NUMKEYS);
@@ -266,10 +261,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #endregion			
 
 #region Other properties
-        INTERNAL PROPERTY BuffLen      AS WORD  GET CDXLEAF_BYTESFREE
-
         INTERNAL PROPERTY KeyLength AS WORD GET _keyLen
-
             
         // Retrieve an index node in the current Page, at the specified position
         // return CdxLeagPageNode which always returns 0 for the ChildPage
@@ -287,10 +279,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END GET
         END PROPERTY
 #endregion
+
         INTERNAL METHOD GetLeaves() AS IList<CdxLeaf>
             SELF:_ExpandLeaves(TRUE)
             RETURN SELF:_leaves
-
 
         INTERNAL PROPERTY DebugLeaves AS IList<CdxLeaf>
             GET
@@ -325,7 +317,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN CdxResult.OK
 
 
-        // This method is called during Index creation.
+        // This method assumes keys are added in the right order.
+        // It assymes that the _prevData array contains the key from the previous record
         INTERNAL METHOD Add(recno AS LONG, data AS BYTE[]) AS CdxResult
             LOCAL nTrailCount AS BYTE
             LOCAL nDupCount   AS BYTE
@@ -354,7 +347,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:NumKeys += 1
             RETURN CdxResult.Ok
 
+
         INTERNAL METHOD Insert(nPos AS LONG, data AS CdxKeyData) AS CdxResult
+            // Todo: optimize. We are now expanding the leaves which could be overkill.
             _ExpandLeaves(FALSE)
             IF nPos < 0 .OR. nPos > _Leaves:Count
                 RETURN CdxResult.OutofBounds
@@ -364,8 +359,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSE // IF nPos >= 0 .AND. nPos < _Leaves:Count
                 _Leaves:Insert(nPos, CdxLeaf{data:Recno, data:Key})
             ENDIF
+            VAR result := CdxResult.Ok
+            IF nPos == SELF:NumKeys
+                result := CdxResult.ChangeParent
+            ENDIF
             SELF:NumKeys += 1
-            VAR result := SELF:Compress()
+            result |= SELF:Compress()
             IF result != CdxResult.Ok
                 SELF:NumKeys -= 1
             ENDIF
@@ -373,27 +372,38 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
 
         INTERNAL METHOD Delete(nPos AS LONG) AS CdxResult
+             // Todo: optimize. We are now expanding the leaves which could be overkill.
             _ExpandLeaves(FALSE)
             IF nPos >= 0 .AND. nPos < _Leaves:Count
+                VAR result := CdxResult.Ok
+                IF nPos == SELF:NumKeys -1
+                    result := CdxResult.ChangeParent
+                ENDIF
                 _Leaves:RemoveAt(nPos)
                 SELF:NumKeys -= 1
                 IF SELF:NumKeys = 0
                     SELF:_ClearRecordsAndKeys()
                     RETURN CdxResult.Delete
                 ENDIF
-                RETURN SELF:Compress()
+                result |=  SELF:Compress()
+                RETURN result
             ENDIF
             RETURN CdxResult.OutofBounds
 
         INTERNAL METHOD Replace(nPos AS LONG, node AS CdxNode) AS CdxResult
+            // Todo: optimize. We are now expanding the leaves which could be overkill.
             _ExpandLeaves(FALSE)
             IF nPos >= 0 .AND. nPos < _Leaves:Count
-                _setNode(nPos, node)
+                _Leaves[nPos] := CdxLeaf{node:Recno, node:KeyBytes}
                 RETURN SELF:Compress()
             ENDIF
             RETURN CdxResult.OutofBounds
 
         INTERNAL METHOD Compress() AS CdxResult
+            // Todo: optimize. We are now expanding and compressing the leaves which could be overkill.
+            // Also the buffer is saved (because we may discover a 'page full' and we need to restore then
+            // maybe we can restore from disk ?
+            // finally: do we have to call Write? Or is it enough to set the page as dirty
             IF !SELF:ValidLeaves
                 RETURN CdxResult.Ok
             ENDIF
@@ -411,9 +421,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:Write()
             RETURN CdxResult.Ok
 
-        PRIVATE METHOD _setNode(nPos AS LONG, node AS CdxNode) AS VOID
-            _Leaves[nPos] := CdxLeaf{node:Recno, node:KeyBytes}
-            RETURN 
  
        PRIVATE METHOD _getTrailCount(data AS BYTE[]) AS BYTE
            LOCAL bTrail AS BYTE

@@ -35,7 +35,7 @@ BEGIN NAMESPACE XSharp
         CONSTRUCTOR (r8 AS REAL8)
             SELF:_value    := r8
             SELF:_length   := 0
-            SELF:_decimals := 0
+            SELF:_decimals := -1
             
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)];        
@@ -148,7 +148,7 @@ BEGIN NAMESPACE XSharp
             IF (delta == 0.0)
                 RETURN diff < 0.0
             ENDIF
-            RETURN diff < delta
+            RETURN diff < -delta
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR >=(lhs AS FLOAT, rhs AS FLOAT) AS LOGIC

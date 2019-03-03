@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -615,4 +615,19 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 	    /// <summary>A descending sort        </summary>
 	    MEMBER Descending := 0x100 
     END ENUM
+
+    /// <summary>Flags that describe how a DbTrans operation can be done.</summary>
+    [Flags];
+    ENUM DbTransInfoFlags
+        /// <summary>Default</summary>
+        MEMBER None := 0
+        /// <summary>Both this work area and the destination work area have identical row structures (i.e., all columns match).</summary>
+        MEMBER SameStructure := 1
+	    /// <summary>The RDD has the ability to transfer an entire row.</summary>
+        MEMBER CanPutRec        := 2
+    END ENUM
+
+
 END NAMESPACE
+
+

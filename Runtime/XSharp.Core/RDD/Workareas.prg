@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -37,6 +37,7 @@ CLASS WorkAreas
 		iCurrentWorkArea	:= 1
         workAreaStack       := Stack<DWORD>{}
 
+   
 	///<summary>Convert 1 based Workarea number to 0 based with validation</summary>
 	PRIVATE METHOD AdjustArea( nArea REF DWORD) AS LOGIC
 		IF  nArea > 0 .AND.  nArea <= MaxWorkAreas
@@ -59,10 +60,11 @@ CLASS WorkAreas
 						lResult := FALSE
 						RuntimeState.LastRDDError  := e
 					END TRY
+    				RDDs[i] 	:= NULL
 				ENDIF              
-				RDDs[i] 	:= NULL
-			NEXT           
+			NEXT
 			Aliases:Clear()
+            iCurrentWorkarea := 1
 		END LOCK                       
 		RETURN lResult 
 

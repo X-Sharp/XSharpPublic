@@ -1,4 +1,4 @@
-﻿// TestDbfNtx.prg
+// TestDbfNtx.prg
 // Created by    : fabri
 // Creation Date : 9/16/2018 4:17:53 PM
 // Created for   : 
@@ -103,9 +103,9 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD CreateAppend() AS VOID
 			// Create the DBF, Define a Ntx, then add a some Data
             InitTest()
-            SELF:CreateAppendData( "XMenTest" )
+            SELF:CreateAppendData( "XMenTestMe" )
 			// Now, Verify
-			SELF:CheckOrder( "XMenTest" )
+			SELF:CheckOrder( "XMenTestMe" )
 
 		[Fact, Trait("DbfNtx", "CreateAppendSkipZero")];
 		METHOD CreateAppendSkipZero() AS VOID

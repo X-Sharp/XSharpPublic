@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -77,7 +77,7 @@ INTERFACE XSharp.RDD.IRdd
 	/// <summary>Set the filter condition.</summary>
 	METHOD SetFilter(info AS DbFilterInfo)	AS LOGIC 
 	/// <summary>Set the locate condition.</summary>
-	/// <param name="info">object  containing the scope information.</param>
+	/// <param name="info">object containing the scope information.</param>
 	METHOD SetScope(info AS DbScopeInfo)	AS LOGIC
 		
 	// Fields                          

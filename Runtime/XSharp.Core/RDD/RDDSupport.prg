@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -140,6 +140,8 @@ CLASS DbOpenInfo
 		RETURN nMode
 	END GET
 	END PROPERTY
+    PUBLIC METHOD Clone() AS DbOpenInfo
+        RETURN (DbOpenInfo) SELF:MemberwiseClone()
 END CLASS  
 
 /// <summary>Helper class to store information needed to create a conditional order.</summary> 
@@ -181,14 +183,30 @@ CLASS DbOrderCondInfo
 	/// <summary>A string defining the for while condition to use for the creation and maintenance of the order.</summary>
 	PUBLIC WhileExpression	AS STRING    
 
-METHOD Compile(oRDD AS IRDD) AS VOID
+    METHOD Compile(oRDD AS IRDD) AS VOID
         IF SELF:WhileBlock == NULL .AND. ! String.IsNullOrWhiteSpace(SELF:WhileExpression)
             SELF:WhileBlock := oRDD:Compile(SELF:WhileExpression)
         ENDIF
         IF SELF:ForBlock == NULL .AND. ! String.IsNullOrWhiteSpace(SELF:ForExpression)
             SELF:ForBlock := oRDD:Compile(SELF:ForExpression)
         ENDIF
-    
+    METHOD Validate() AS VOID
+        SELF:Active := FALSE
+        SELF:Scoped := FALSE
+        IF SELF:All .OR. SELF:ForBlock != NULL .OR. SELF:WhileBlock != NULL .OR.  ! String.IsNullOrEmpty(SELF:ForExpression ) ;
+            .OR. SELF:NextCount != 0 .OR. SELF:RecNo != 0 .OR. SELF:Rest  .OR. SELF:Descending .OR. ! String.IsNullOrEmpty(SELF:WhileExpression)
+            SELF:Active := TRUE
+        ENDIF
+        IF SELF:EvalBlock != NULL .AND. SELF:StepSize == 0
+            SELF:StepSize := 1
+        ENDIF
+        IF SELF:Active
+            IF SELF:All .OR. SELF:WhileBlock != NULL .OR. SELF:NextCount != 0 .OR. SELF:RecNo != 0 .OR. SELF:Rest
+                SELF:Scoped := TRUE
+            ENDIF
+        ENDIF
+
+
 END CLASS
 
 /// <summary>Helper class to store information needed to create a new order.</summary> 
@@ -347,10 +365,12 @@ STRUCTURE DbSortItem
 	PUBLIC OffSet	AS LONG
 	/// <summary>The length of the field in the workarea buffer.</summary>
 	PUBLIC Length	AS LONG
-	/// <summary>One or more constants that function as sort optimization and control flags.  They are passed to your RDD Sort() routine from the high-level wrapper function for the DBSort() function.</summary>
+	/// <summary>One or more constants that function as sort optimization and control flags.
+    /// They are passed to your RDD Sort() routine from the high-level wrapper function for the DBSort() function.</summary>
 	PUBLIC Flags	AS  DbSortFlags  
 
 END STRUCTURE
+
 
 /// <summary>Helper class to store information needed for the global transfer of data items from one work area to another. </summary> 
 CLASS DbTransInfo  
@@ -363,11 +383,7 @@ CLASS DbTransInfo
 	/// <summary>An array of DbTransItem structures defining the items to transfer to the destination work area. This is usually a list of column mappings from the source to the destination. </summary>
 	PUBLIC Items		AS DbTransItem[]
 	/// <summary>Transfer attributes specified using one or more of the constants Match or PutRec. </summary>
-	PUBLIC Flags		AS LONG
-	/// <summary>Both this work area and the destination work area have identical row structures (i.e., all columns match).</summary>
-	PUBLIC CONST Match	:= 1 AS LONG
-	/// <summary>The RDD has the ability to transfer an entire row.</summary>
-	PUBLIC CONST PutRec	:= 2 AS LONG
+	PUBLIC Flags		AS DbTransInfoFlags
     /// <summary>Number of items in the Items array.</summary>
     PUBLIC PROPERTY ItemCount AS LONG AUTO
     /// <summary>Construct a DbTransInfo object.</summary>
@@ -375,6 +391,7 @@ CLASS DbTransInfo
         SELF:Items := DbTransItem[]{itemCount}
         SELF:Scope := DbScopeInfo{}
         SELF:ItemCount := itemCount
+        SELF:Flags := DbTransInfoFlags.None
 END CLASS
 
 /// <summary>Helper structure to store information about a single piece of data (usually a column) to transfer from one work area to another.</summary> 

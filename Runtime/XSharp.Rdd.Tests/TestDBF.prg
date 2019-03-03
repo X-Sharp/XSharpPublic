@@ -562,7 +562,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//
 			myDBF:Close()
 			//
-			LOCAL isFile := System.IO.File.Exists( "XMenTest.DBT" ) AS LOGIC
+			LOCAL isFile := System.IO.File.Exists( "XMenTestI.DBT" ) AS LOGIC
 			Assert.Equal( TRUE, isFile  )
 			RETURN           
 			
@@ -643,7 +643,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			// Create and put some Data
 			SELF:CheckCreateAppendDBFDBT()
 			// Now Modify in the same space
-			VAR dbInfo := DbOpenInfo{ "XMenTest.DBF", "XMenTest", 1, FALSE, FALSE }
+			VAR dbInfo := DbOpenInfo{ "XMenTestJ.DBF", "XMenTest", 1, FALSE, FALSE }
 			LOCAL myDBF := DBFDBT{} AS DBFDBT
 			VAR Memos := List<STRING>{} 
 			// Now, Modify the Memo
@@ -679,7 +679,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			// Create and put some Data
 			SELF:CheckCreateAppendDBFDBT()
 			// Now Modify in the same space
-			VAR dbInfo := DbOpenInfo{ "XMenTest.DBF", "XMenTest", 1, FALSE, FALSE }
+			VAR dbInfo := DbOpenInfo{ "XMenTestJ.DBF", "XMenTest", 1, FALSE, FALSE }
 			LOCAL myDBF := DBFDBT{} AS DBFDBT
 			VAR Memos := List<STRING>{} 
 			// Now, Modify the Memo

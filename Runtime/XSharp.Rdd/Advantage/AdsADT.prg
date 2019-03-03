@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -15,7 +15,7 @@ CLASS XSharp.ADS.ADSADT INHERIT ADSRDD
         SUPER:_TableType := ACE.ADS_ADT
         SUPER:_Driver := "Advantage.ADSADT"
         SUPER:_MaxKeySize := ACE.ADS_MAX_KEY_LENGTH
-    VIRTUAL PROPERTY SysName AS STRING GET typeof(ADSADT):ToString()
+    VIRTUAL PROPERTY SysName AS STRING GET "ADSADT"
 END CLASS
 
 CLASS XSharp.ADS.AXSQLADT INHERIT AXSQLRDD 
@@ -24,5 +24,5 @@ CLASS XSharp.ADS.AXSQLADT INHERIT AXSQLRDD
         SUPER:_TableType := ACE.ADS_ADT
         SUPER:_Driver := "Advantage.AXSQLADT"
         SUPER:_MaxKeySize := ACE.ADS_MAX_KEY_LENGTH
-    VIRTUAL PROPERTY SysName AS STRING GET typeof(AXSQLADT):ToString()
+    VIRTUAL PROPERTY SysName AS STRING GET "AXSQLADT"
 END CLASS

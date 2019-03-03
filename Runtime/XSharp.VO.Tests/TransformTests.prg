@@ -35,6 +35,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("F x", Transform(FALSE, "@R L x"))
 			Assert.Equal("O x", Transform(TRUE, "@R YYx"))
 			Assert.Equal("N x", Transform(FALSE, "@R YYx"))
+			SetNatDll("UK") // restore
+			
 
 		[Fact, Trait("Category", "TransForm")];
 		METHOD TransformDateTest() AS VOID 
@@ -97,6 +99,16 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal("     -2,45", Transform (   -2.45 , "@R 999,999.99" ) )
             Assert.Equal("    124,00", Transform (     124 , "@R 999,999.99" )  )  
             Assert.Equal("   -124,00", Transform (    -124 , "@R 999,999.99" )  ) 
+
+            Assert.Equal("  1", Transform(1, 	"@Z 999")  ) 
+            Assert.Equal(" 10", Transform(10, 	"@Z 999")  ) 
+            Assert.Equal(" 20", Transform(20, 	"@Z 999")  ) 
+            Assert.Equal("100", Transform(100, 	"@Z 999")  ) 
+            Assert.Equal("999", Transform(999, 	"@Z 999")  ) 
+
+            Assert.Equal(" ", 		Transform(0, "@Z 9")  ) 
+            Assert.Equal("   ", 	Transform(0, "@Z 999")  ) 
+            Assert.Equal("     ", 	Transform(0, "@Z 99999")  ) 
 
         [Fact, Trait("Category", "Unformat")];
         METHOD UnformatCTest AS VOID

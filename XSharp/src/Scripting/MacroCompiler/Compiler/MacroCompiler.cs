@@ -37,13 +37,14 @@ namespace XSharp.Runtime
 
         {
             isCodeblock = macro.Replace(" ", "").StartsWith("{|");
+            addsMemVars = false;
             Compilation<object, RuntimeCodeblockDelegate> compiler = GetCompiler(lAllowSingleQuotes);
             var m = compiler.Compile(macro);
-            addsMemVars = m.CreatesAutoVars;
             if (m.Diagnostic != null)
             {
                 throw m.Diagnostic;
             }
+            addsMemVars = m.CreatesAutoVars;
             return new RuntimeCodeblock(m.Macro, m.ParamCount);
         }
 

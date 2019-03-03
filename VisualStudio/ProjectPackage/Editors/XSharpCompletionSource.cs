@@ -2813,6 +2813,10 @@ namespace XSharpLanguage
                 {
                     // Look for a type
                     currentToken = currentToken.Substring(0, currentToken.Length - 2);
+
+                    SearchType(currentMember.File, currentToken, out foundElement, currentMember.Parent.NameSpace);
+
+
                     cType = new CompletionType(currentToken, currentMember.File, currentMember.Parent.NameSpace);
                     if (!cType.IsEmpty())
                     {
@@ -2820,6 +2824,28 @@ namespace XSharpLanguage
                         if (foundElement.XSharpElement == null && cType.XType != null)
                         {
                             foundElement = new CompletionElement(cType.XType);
+                        }
+                        else if (foundElement.SystemElement == null && cType.SType != null)
+                        {
+                            foundElement = new CompletionElement(cType.SType);
+                        }
+                        if ( ( foundElement != null ) && (foundElement.IsGeneric))
+                        {
+                            if ( String.IsNullOrEmpty(foundElement.GenericTypeName) )
+                            {
+                                if (currentToken.EndsWith(">"))
+                                {
+                                    string genName = currentToken;
+                                    int index = genName.IndexOf('<');
+                                    if (index != -1)
+                                    {
+                                        // Extract the Generic params
+                                        genName = genName.Substring(index+1);
+                                        genName = genName.Substring(0, genName.Length - 1);
+                                        foundElement.GenericTypeName = genName;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -3011,12 +3037,25 @@ namespace XSharpLanguage
             WriteOutputMessage($"SearchType in file {xFile.SourcePath} {currentToken}");
             // check for a system type
             var usings = xFile.Usings.ToList();
-            usings.Add(currentNs);
+            if ( !String.IsNullOrEmpty(currentNs))
+                usings.Add(currentNs);
             var stype = xFile.Project.FindSystemType(currentToken, usings);
             if (stype != null)
             {
                 cType = new CompletionType(stype);
                 foundElement = new CompletionElement(stype);
+                if ( foundElement.IsGeneric)
+                {
+                    // We may need to adapt...
+                    string searchTypeName = currentToken;
+                    int genMarker = searchTypeName.IndexOf("<");
+                    if (genMarker > -1)
+                    {
+                        searchTypeName = searchTypeName.Substring(genMarker + 1);
+                        searchTypeName = searchTypeName.Substring(0, searchTypeName.Length - 1);
+                        foundElement.GenericTypeName = searchTypeName;
+                    }
+                }
             }
             if (cType == null)
             {
@@ -3121,21 +3160,39 @@ namespace XSharpLanguage
                                     // Let's set the Std Type for this VAR
                                     xVar.TypeName = foundElement.ReturnType.FullName;
                                     // and now, correct it
-                                    if (xVar.VarDefinition.AfterIn)
+                                    if (foundElement.IsGeneric)
                                     {
-                                        if (foundElement.IsGeneric)
+                                        if (xVar.VarDefinition.AfterIn)
                                         {
-                                            if (foundElement.GenericTypeName.Contains(','))
+                                            // Get the underlying Enumerated Type
+                                            CompletionType enumType = foundElement.EnumeratorType;
+                                            if (!enumType.IsEmpty())
                                             {
-                                                // Ok, this is bad, but... temporary solution
-                                                String[] items = foundElement.GenericTypeName.Split(',');
-                                                if (items.Length == 2)
-                                                    xVar.TypeName = "KeyValuePair<" + foundElement.GenericTypeName + ">";
-                                                else
-                                                    xVar.TypeName = items[0];
+                                                int numParam = 0;
+                                                string genName = enumType.FullName;
+                                                // Per default
+                                                xVar.TypeName = foundElement.GenericTypeName;
+                                                // Now, try to resolve T, or TKey, TValue, ...
+                                                int index = genName.IndexOf('<');
+                                                if (index != -1)
+                                                {
+                                                    // Extract the Generic params
+                                                    genName = genName.Substring(index);
+                                                    String[] items = genName.Split(',');
+                                                    numParam = items.Length;
+                                                    // Compare with the value that we have
+                                                    items = foundElement.GenericTypeName.Split(',');
+                                                    if (numParam == items.Length)
+                                                    {
+                                                        xVar.TypeName = enumType.FullName.Substring(0, index) + "<" + foundElement.GenericTypeName + ">";
+                                                    }
+                                                }
                                             }
                                             else
-                                                xVar.TypeName = foundElement.GenericTypeName;
+                                            {
+
+                                            }
+                                            //   xVar.TypeName = foundElement.GenericTypeName;
                                         }
                                     }
                                 }
@@ -3781,9 +3838,9 @@ namespace XSharpLanguage
                         if (!String.IsNullOrEmpty(asm.GlobalClassName))
                         {
                             var type = asm.GetType(asm.GlobalClassName);
-                            if (type != null )
+                            if (type != null)
                             {
-                                var methods = type.GetMember(currentToken,BindingFlags.IgnoreCase|BindingFlags.Public|BindingFlags.Static);
+                                var methods = type.GetMember(currentToken, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Static);
                                 if (methods.Length > 0)
                                 {
                                     return new CompletionType(type);
@@ -3878,6 +3935,7 @@ namespace XSharpLanguage
 
         bool isArray;
         bool isGeneric;
+        string genTypeName;
 
         public CompletionElement(XElement XSharpElement)
         {
@@ -3887,6 +3945,8 @@ namespace XSharpLanguage
         public CompletionElement(MemberInfo SystemElement)
         {
             this.foundElement = SystemElement;
+            if (SystemElement.Name.EndsWith(">"))
+                this.isGeneric = true;
         }
 
 
@@ -4015,6 +4075,12 @@ namespace XSharpLanguage
                     {
                         cType = new CompletionType(((FieldInfo)this.SystemElement).FieldType);
                     }
+                    else if (this.SystemElement is ConstructorInfo)
+                    {
+                        cType = new CompletionType(((ConstructorInfo)this.SystemElement).DeclaringType);
+                    }
+                    if (cType.FullName.EndsWith(">"))
+                        this.isGeneric = true;
                 }
                 return cType;
             }
@@ -4027,34 +4093,46 @@ namespace XSharpLanguage
                 String ret = "";
                 if (this.isGeneric)
                 {
-                    string searchTypeName = "";
-                    if ((this.XSharpElement is XTypeMember) && (this.XSharpElement.Kind.HasReturnType()))
+                    if (this.genTypeName == null)
                     {
-                        XTypeMember xt = (XTypeMember)this.XSharpElement;
-                        searchTypeName = xt.TypeName;
-                    }
-                    else if (this.XSharpElement is XVariable)
-                    {
-                        XVariable xv = (XVariable)this.XSharpElement;
-                        searchTypeName = xv.TypeName;
-                    }
-                    if (!String.IsNullOrEmpty(searchTypeName))
-                    {
-                        int genMarker = searchTypeName.IndexOf("<");
-                        if (genMarker > -1)
+                        string searchTypeName = "";
+                        if ((this.XSharpElement is XTypeMember) && (this.XSharpElement.Kind.HasReturnType()))
                         {
-                            searchTypeName = searchTypeName.Substring(genMarker + 1);
-                            searchTypeName = searchTypeName.Substring(0, searchTypeName.Length - 1);
-                            ret = searchTypeName;
-                            //String[] items = searchTypeName.Split(',');
-                            //ret = items[0];
+                            XTypeMember xt = (XTypeMember)this.XSharpElement;
+                            searchTypeName = xt.TypeName;
+                        }
+                        else if (this.XSharpElement is XVariable)
+                        {
+                            XVariable xv = (XVariable)this.XSharpElement;
+                            searchTypeName = xv.TypeName;
+                        }
+                        if (!String.IsNullOrEmpty(searchTypeName))
+                        {
+                            int genMarker = searchTypeName.IndexOf("<");
+                            if (genMarker > -1)
+                            {
+                                searchTypeName = searchTypeName.Substring(genMarker + 1);
+                                searchTypeName = searchTypeName.Substring(0, searchTypeName.Length - 1);
+                                this.genTypeName = searchTypeName;
+                                ret = this.genTypeName;
+                                //String[] items = searchTypeName.Split(',');
+                                //ret = items[0];
+                            }
                         }
                     }
+                    else
+                    {
+                        ret = this.genTypeName;
+                    }
                 }
-                return ret;
+                return ret; // this.genTypeName;
+            }
+
+            set
+            {
+                this.genTypeName = value;
             }
         }
-
 
         public bool IsArray
         {
@@ -4069,6 +4147,64 @@ namespace XSharpLanguage
             get
             {
                 return this.isGeneric;
+            }
+        }
+
+        public CompletionType EnumeratorType
+        {
+            get
+            {
+                CompletionType cType = null;
+                if (IsGeneric)
+                {
+                    CompletionType rType = this.ReturnType;
+                    if (rType.XType != null)
+                    {
+                    }
+                    else if (rType.SType != null)
+                    {
+                        // 1- search for GetEnumerator Method
+                        MemberInfo[] members;
+                        //  Get Public Members WITH inheritance
+                        members = rType.SType.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+                        //
+                        MethodInfo method = null;
+                        foreach (var member in members)
+                        {
+                            if (member.MemberType == MemberTypes.Method)
+                            {
+                                if (String.Equals(member.Name, "GetEnumerator"))
+                                {
+                                    method = member as MethodInfo;
+                                    break;
+                                }
+                            }
+                        }
+                        // Exist ?
+                        if (method != null)
+                        {
+                            // 2- Return Type has a Current property
+                            //  Get Public Members WITH inheritance
+                            members = method.ReturnType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+                            PropertyInfo prop = null;
+                            foreach (var member in members)
+                            {
+                                if (String.Equals(member.Name, "Current"))
+                                {
+                                    prop = member as PropertyInfo;
+                                    break;
+                                }
+                            }
+                            // Exist ?
+                            if (prop != null)
+                            {
+                                // 3- Get the Property Type
+                                cType = new CompletionType(prop.PropertyType);
+                            }
+                        }
+                    }
+                }
+                return cType;
             }
         }
     }

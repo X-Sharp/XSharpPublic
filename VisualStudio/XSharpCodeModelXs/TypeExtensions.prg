@@ -117,10 +117,10 @@ BEGIN NAMESPACE XSharpModel
                 LOCAL first := TRUE AS LOGIC
                 FOREACH VAR genArg IN GenericTypeArguments
                     IF first
-                        genericString += genArg:FullName
+                        genericString += genArg:Name
                         First := FALSE
                     ELSE
-                        genericString += "," + genArg:FullName
+                        genericString += "," + genArg:Name
                     ENDIF
                 NEXT
                 //

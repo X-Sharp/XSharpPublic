@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp.RDD
                 _indexList := CdxOrderBagList{SELF}
                 RETURN
                 
-            PROPERTY SysName AS STRING GET typeof(DBFCDX):ToString()
+            PROPERTY SysName AS STRING GET "DBFCDX"
             #REGION Order Support
             
             VIRTUAL METHOD OrderCreate(orderInfo AS DbOrderCreateInfo ) AS LOGIC

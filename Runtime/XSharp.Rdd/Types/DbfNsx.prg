@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -14,7 +14,7 @@ CLASS DBFNSX INHERIT DBFSMT
 		SELF:_oIndex := NsxIndex{SELF}
 		RETURN
 		
-	PROPERTY SysName AS STRING GET typeof(DbfNsx):ToString()
+	PROPERTY SysName AS STRING GET "DBFNSX"
 
 /// <summary>DBFNSX worker class that implements the NSX support.</summary>
 CLASS NsxIndex INHERIT BaseIndex    

@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using Microsoft.VisualStudio.Shell.Design.Serialization;
@@ -26,7 +26,7 @@ namespace XSharp.Project
 
         // The parameterless constructor is called by the WPF designer ?
 
-        public VSXSharpCodeDomProvider(XSharpFileNode fileNode)  
+        public VSXSharpCodeDomProvider(XSharpFileNode fileNode)
         {
             _fileNode = fileNode;
             _projectNode = fileNode.ProjectMgr as XSharpProjectNode;
@@ -128,6 +128,11 @@ namespace XSharp.Project
 
         #endregion
 
+        private void CopyClassProperties(CodeTypeDeclaration source, CodeTypeDeclaration target)
+        {
+            target.Name = source.Name;
+            target.Attributes = source.Attributes;
+        }
         // Called by the WinForm designer at save time
         public override void GenerateCodeFromCompileUnit(CodeCompileUnit compileUnit, TextWriter writer, CodeGeneratorOptions options)
         {
@@ -149,6 +154,8 @@ namespace XSharp.Project
                 CodeTypeDeclaration formClass = XSharpCodeDomHelper.FindFirstClass(formCCU);
                 CodeTypeDeclaration designClass = XSharpCodeDomHelper.FindFirstClass(designCCU);
                 // Now, remove the members
+                CopyClassProperties(designerClass, formClass);
+                CopyClassProperties(designerClass, designClass);
                 formClass.Members.Clear();
                 designClass.Members.Clear();
                 // Now, split the members
@@ -190,7 +197,7 @@ namespace XSharp.Project
                 String generatedSource;
                 MemoryStream inMemory = new MemoryStream();
                 StreamWriter designerStream = new StreamWriter(inMemory, Encoding.UTF8);
-                // 
+                //
                 base.GenerateCodeFromCompileUnit(designCCU, designerStream, options);
                 // and force Flush
                 designerStream.Flush();
@@ -201,12 +208,30 @@ namespace XSharp.Project
                 Encoding realencoding = reader.CurrentEncoding;
                 reader.Close();
                 designerStream.Close();
-                // and now write the "real" file
-                designerStream = new StreamWriter(designerPrgFile, false, realencoding);
-                designerStream.Write(generatedSource);
-                designerStream.Flush();
-                designerStream.Close();
-                NormalizeLineEndings(designerPrgFile);
+
+                XSharpFileNode node = _fileNode.FindChild(designerPrgFile) as XSharpFileNode;
+                bool done = false;
+                if (node != null )
+                {
+                    // assign the source to the open buffer when possible
+                    if (node.DocumentSetText(generatedSource))
+                    {
+                        // then use automation to save the file, because that is much easier
+                        // since we do not have to worry about the docdata etc.
+                        var oaFile = (OAXSharpFileItem)node.GetAutomationObject();
+                        oaFile.Save(designerPrgFile);
+                        done = true;
+                    }
+                }
+                if (! done)
+                {
+                    // File is not open in editor, so write to disk
+                    designerStream = new StreamWriter(designerPrgFile, false, realencoding);
+                    designerStream.Write(generatedSource);
+                    designerStream.Flush();
+                    designerStream.Close();
+                    NormalizeLineEndings(designerPrgFile);
+                }
                 // The problem here, is that we "may" have some new members, like EvenHandlers, and we need to update their position (line/col)
                 XSharpCodeParser parser = new XSharpCodeParser(_projectNode);
                 parser.TabSize = XSharpCodeDomProvider.TabSize;
@@ -233,12 +258,12 @@ namespace XSharp.Project
                 IServiceProvider provider = (DocDataTextWriter)writer;
                 DocData docData = (DocData)provider.GetService(typeof(DocData));
                 DocDataTextReader ddtr = new DocDataTextReader(docData);
-                // Retrieve 
+                // Retrieve
                 generatedSource = ddtr.ReadToEnd();
                 // normalize the line endings
                 generatedSource = generatedSource.Replace("\n", "");
                 generatedSource = generatedSource.Replace("\r", "\r\n");
-                // Don't forget to set the name of the file where the source is... 
+                // Don't forget to set the name of the file where the source is...
                 parser.FileName = prgFileName;
                 resultDesigner = parser.Parse(generatedSource);
                 resultClass = XSharpCodeDomHelper.FindFirstClass(resultDesigner);
@@ -284,7 +309,7 @@ namespace XSharp.Project
                     IServiceProvider provider = (DocDataTextWriter)writer;
                     DocData docData = (DocData)provider.GetService(typeof(DocData));
                     DocDataTextReader ddtr = new DocDataTextReader(docData);
-                    // Retrieve 
+                    // Retrieve
                     string generatedSource = ddtr.ReadToEnd();
                     XSharpCodeParser parser = new XSharpCodeParser(_projectNode);
                     parser.TabSize = XSharpCodeDomProvider.TabSize;

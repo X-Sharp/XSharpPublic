@@ -1,4 +1,4 @@
-PARTIAL CLASS Cursor INHERIT VObject
+CLASS Cursor INHERIT VObject
 	PROTECT oWnd AS window
 	PROTECT oDim AS Dimension
 	PROTECT oBitmap AS Bitmap

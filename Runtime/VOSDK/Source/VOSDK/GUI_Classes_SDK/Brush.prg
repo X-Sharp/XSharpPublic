@@ -1,4 +1,4 @@
-PARTIAL CLASS Brush INHERIT VObject
+CLASS Brush INHERIT VObject
 	PROTECT hBrush   AS PTR
 	PROTECT _hParent AS PTR
 

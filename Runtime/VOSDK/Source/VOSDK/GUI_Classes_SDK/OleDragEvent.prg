@@ -1,4 +1,4 @@
-PARTIAL CLASS OleDragEvent INHERIT VObject
+CLASS OleDragEvent INHERIT VObject
 //RvdH 030825 This code has been moved from the Ole Classes
         PROTECT hWnd AS PTR
         PROTECT dwDragEvent AS DWORD

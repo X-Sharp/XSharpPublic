@@ -4202,11 +4202,11 @@ namespace Microsoft.VisualStudio.Project
             // Remove the duplicates
             if (duplicates.Count > 0)
             {
-                string bakfile = buildProject.FullPath + ".backup";
-                System.IO.File.Delete(bakfile);
-                StreamWriter backup = new StreamWriter(bakfile);
-                buildProject.Save(backup);
-
+                string backupName = Path.ChangeExtension(buildProject.FullPath, ".backup");
+                if (Utilities.DeleteFileSafe(backupName))
+                {
+                    File.Copy(buildProject.FullPath, backupName);
+                }
                 foreach (var item in duplicates)
                 {
                     this.buildProject.RemoveItem(item);
@@ -4497,6 +4497,10 @@ namespace Microsoft.VisualStudio.Project
         public string GetProjectPropertyUnevaluated(string propertyName)
         {
             var prop = this.buildProject.GetProperty(propertyName);
+            while (prop != null && prop.IsImported)
+            {
+                prop = prop.Predecessor;
+            }
             if (prop != null)
                 return prop.UnevaluatedValue;
             return string.Empty;

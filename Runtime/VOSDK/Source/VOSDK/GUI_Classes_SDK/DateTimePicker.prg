@@ -1,4 +1,4 @@
-PARTIAL CLASS DateTimePicker INHERIT TextControl
+CLASS DateTimePicker INHERIT TextControl
     HIDDEN _lNoAssign AS LOGIC   
     PROTECT lNullFormat       AS LOGIC
     PROTECT cOldFormat        AS STRING

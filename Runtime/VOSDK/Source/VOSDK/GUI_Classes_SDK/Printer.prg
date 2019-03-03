@@ -1,4 +1,4 @@
-PARTIAL CLASS Printer INHERIT Window
+CLASS Printer INHERIT Window
 	PROTECT oPerr AS PrinterErrorEvent
 	PROTECT lprValid AS LOGIC
 	EXPORT lprAbort AS LOGIC

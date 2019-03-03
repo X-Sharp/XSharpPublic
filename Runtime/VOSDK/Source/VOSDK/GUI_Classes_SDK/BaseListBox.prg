@@ -1,4 +1,4 @@
-PARTIAL CLASS BaseListBox INHERIT TextControl
+CLASS BaseListBox INHERIT TextControl
 	PROTECT MsgGroup 					AS INT
 	PROTECT liSavedCurrentItemNo 	AS LONGINT
 	PROTECT sSavedCurrentItem 		AS STRING

@@ -232,6 +232,11 @@ FUNCTION SetDecimalSep() AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION SetDecimalSep(wSep AS DWORD) AS DWORD
+	LOCAL oCulture AS System.Globalization.CultureInfo
+	oCulture := (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread:CurrentCulture:Clone()
+	oCulture:NumberFormat:NumberDecimalSeparator := ((Char)wSep):ToString()
+	System.Threading.Thread.CurrentThread:CurrentCulture := oCulture
+
 	SETSTATE DWORD Set.DecimalSep wSep
 
 /// <summary>
@@ -487,6 +492,13 @@ INTERNAL FUNCTION	_SetNatDLL(cNewDLL AS STRING) AS STRING
 FUNCTION SetPath() AS STRING
 	GETSTATE STRING Set.Path 
 
+/// <exclude/>
+FUNCTION _SetDict() AS LOGIC
+    GETSTATE LOGIC Set.DICT
+
+/// <exclude/>
+FUNCTION _SetDict(lNewSetting as LOGIC) AS LOGIC
+    SETSTATE LOGIC Set.DICT lNewSetting
 
 /// <summary>
 /// Change the setting that determines the search path for opening files.
@@ -588,6 +600,11 @@ FUNCTION SetThousandSep() AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION SetThousandSep(wSep AS DWORD) AS DWORD
+	LOCAL oCulture AS System.Globalization.CultureInfo
+	oCulture := (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread:CurrentCulture:Clone()
+	oCulture:NumberFormat:NumberGroupSeparator := ((Char)wSep):ToString()
+	System.Threading.Thread.CurrentThread:CurrentCulture := oCulture
+
 	SETSTATE DWORD Set.ThousandSep wSep
 
 /// <summary>

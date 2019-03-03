@@ -1,4 +1,4 @@
-PARTIAL CLASS MultiMediaContainer INHERIT Control
+CLASS MultiMediaContainer INHERIT Control
 	PROTECT pBitmap AS PTR
 	PROTECT sMajorType AS STRING
 	PROTECT sMinorType AS STRING

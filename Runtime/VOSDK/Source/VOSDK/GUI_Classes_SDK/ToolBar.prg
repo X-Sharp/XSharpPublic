@@ -1,4 +1,4 @@
-﻿PARTIAL CLASS __VOToolBarChild  INHERIT VObject
+﻿CLASS __VOToolBarChild  INHERIT VObject
 	//RvdH 0702056 Added to replace Child Toolbar Subarray items
 	EXPORT NameSym 				AS SYMBOL
 	EXPORT Handle					AS PTR
@@ -14,7 +14,7 @@ CONSTRUCTOR()
 RETURN 
 END CLASS
 
-PARTIAL CLASS __VOToolBarExtraBitmap INHERIT VObject                     
+CLASS __VOToolBarExtraBitmap INHERIT VObject                     
 	//RvdH 0702056 Added to replace Toolbar ExtraBitmap subarray items
 	EXPORT Bitmap				AS OBJECT
 	EXPORT ImageCount			AS LONGINT
@@ -29,7 +29,7 @@ CONSTRUCTOR()
 RETURN 
 END CLASS
 
-PARTIAL CLASS __VOToolBarTipText	INHERIT VObject                                  
+CLASS __VOToolBarTipText	INHERIT VObject                                  
 	//RvdH 0702056 Added to replace Toolbar Tiptext subarray Items
 	EXPORT ButtonID 	AS LONGINT
 	EXPORT MenuItemID	AS LONGINT
@@ -44,7 +44,7 @@ CONSTRUCTOR()
 RETURN 
 END CLASS
 
-PARTIAL CLASS __VOToolBarUpdate  INHERIT VObject 
+CLASS __VOToolBarUpdate  INHERIT VObject 
 	//RvdH 0702056 Added to replace Toolbar ptrUpdate structure elements
 	EXPORT symAction	 	AS SYMBOL
 	EXPORT nButtonID	 	AS LONGINT
@@ -67,7 +67,7 @@ CONSTRUCTOR()
 RETURN 
 END CLASS
 
-PARTIAL CLASS ToolBar INHERIT Control
+CLASS ToolBar INHERIT Control
 	PROTECT oBitmap 			AS Bitmap
 	PROTECT aExtraBitmaps 	AS ARRAY
 	PROTECT nButtonStyle 	AS DWORD

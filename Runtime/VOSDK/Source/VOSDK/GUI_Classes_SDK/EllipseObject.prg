@@ -1,4 +1,4 @@
-PARTIAL CLASS EllipseObject INHERIT ShapeObject
+CLASS EllipseObject INHERIT ShapeObject
 
 METHOD Draw() 
 	LOCAL hDC AS PTR

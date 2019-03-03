@@ -1,66 +1,15 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
 // functions used by the compiler
 
-// <summary>
-// Compare 2 strings. This function is used by the compiler for string comparisons
-// </summary>
-// <param name="strLHS">The first string .</param>
-// <param name="strRHS">The second string.</param>
-// <returns>
-// -1 strLHS precedes strRHS in the sort order. 
-//  0 strLHS occurs in the same position as strRHS in the sort order. 
-//  1 strLHS follows strRHS in the sort order. 
-// Note this this function respects SetCollation() and SetExact()
-// </returns>
-/// <exclude />
+
+/// <inheritdoc cref="M:XSharp.RuntimeState.StringCompare(System.String,System.String)" />
 FUNCTION __StringCompare(strLHS AS STRING, strRHS AS STRING) AS INT
-    LOCAL ret AS INT
-    // Only when vo13 is off and SetExact = TRUE
-    IF !RuntimeState.CompilerOptionVO13 .AND. RuntimeState.Exact
-        RETURN String.Compare( strLHS,  strRHS)
-    ENDIF                            
-    IF Object.ReferenceEquals(strLHS, strRHS)
-        ret := 0
-    ELSEIF strLHS == NULL
-        IF strRHS == NULL			// null and null are equal
-            ret := 0
-        ELSE
-            ret := -1				// null precedes a string
-        ENDIF
-    ELSEIF strRHS == NULL			// a string comes after null
-        ret := 1
-    ELSE							// both not null
-        // With Not Exact comparison we only compare the length of the RHS string
-        // and we always use the unicode comparison because that is what vulcan does
-        // This is done to make sure that >= and <= will also return TRUE when the LHS is longer than the RHS
-        // The ordinal comparison can be done here because when both strings start with the same characters
-        // then equality is guaranteed regardless of collations or other rules.
-        // collations and other rules are really only relevant when both strings are different
-        IF  !RuntimeState.Exact
-            LOCAL lengthRHS AS INT
-            lengthRHS := strRHS:Length
-            IF lengthRHS == 0 .OR. lengthRHS <= strLHS:Length  .AND. String.Compare( strLHS, 0, strRHS, 0, lengthRHS , StringComparison.Ordinal ) == 0
-                RETURN 0
-            ENDIF
-        ENDIF
-        // either exact or RHS longer than LHS
-        VAR mode := RuntimeState.CollationMode 
-        SWITCH mode
-        CASE CollationMode.Windows
-            ret := XSharp.StringHelpers.CompareWindows(strLHS, strRHS) 
-        CASE CollationMode.Clipper
-            ret := XSharp.StringHelpers.CompareClipper(strLHS, strRHS)
-        CASE CollationMode.Unicode
-            ret := String.Compare(strLHS, strRHS)
-        OTHERWISE
-            ret := String.CompareOrdinal(strLHS, strRHS)
-        END SWITCH
-    ENDIF
-    RETURN ret
+    RETURN RuntimeState.StringCompare(strLHS, strRHS)
+
     
     /// <summary>
     /// Compare 2 strings. This function is used by the compiler for string comparisons
@@ -137,7 +86,7 @@ FUNCTION __FieldGet( fieldName AS STRING ) AS USUAL
     LOCAL fieldpos := FieldPos( fieldName ) AS DWORD
     LOCAL ret := NULL AS OBJECT
     IF fieldpos == 0
-        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  fieldName  )
+        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  nameof(fieldName), 1, fieldName  )
     ELSE
          _DbThrowErrorOnFailure(__FUNCTION__, CoreDb.FieldGet( fieldpos, REF ret ))
     ENDIF
@@ -147,8 +96,15 @@ FUNCTION __FieldGet( fieldName AS STRING ) AS USUAL
     // CUSTOMER->NAME
 /// <exclude/>
 FUNCTION __FieldGetWa( alias AS STRING, fieldName AS STRING ) AS USUAL
-    LOCAL ret AS OBJECT
-    LOCAL newArea := SELECT( alias ) AS DWORD
+    // XBase defines that 'M' in 'M->Name' means a Memvar
+    IF String.IsNullOrEmpty(alias)
+        RETURN __FieldGet(fieldName)
+    ENDIF
+    IF alias:ToUpper() == "M"
+        RETURN __MemVarGet(fieldName)
+    ENDIF
+    LOCAL ret AS USUAL
+    LOCAL newArea := _SelectString( alias ) AS DWORD
     LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
     IF newArea > 0
         RuntimeState.CurrentWorkarea := newArea
@@ -158,7 +114,7 @@ FUNCTION __FieldGetWa( alias AS STRING, fieldName AS STRING ) AS USUAL
             RuntimeState.CurrentWorkarea := curArea
         END TRY   
     ELSE
-        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, alias  )
+        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(alias), 1, alias  )
     ENDIF
     RETURN ret
     
@@ -167,7 +123,7 @@ FUNCTION __FieldGetWa( alias AS STRING, fieldName AS STRING ) AS USUAL
 FUNCTION __FieldSet( fieldName AS STRING, oValue AS USUAL ) AS USUAL
     LOCAL fieldpos := FieldPos( fieldName ) AS DWORD
     IF fieldpos == 0
-        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  fieldName  )
+        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  nameof(fieldName), 1, fieldName  )
     ELSE
         _DbThrowErrorOnFailure(__FUNCTION__, CoreDb.FieldPut( fieldpos, oValue))
     ENDIF
@@ -178,7 +134,13 @@ FUNCTION __FieldSet( fieldName AS STRING, oValue AS USUAL ) AS USUAL
     // CUSTOMER->Name := "Foo"
 /// <exclude/>
 FUNCTION __FieldSetWa( alias AS STRING, fieldName AS STRING, uValue AS USUAL ) AS USUAL
-    LOCAL newArea := SELECT( alias ) AS DWORD
+    IF String.IsNullOrEmpty(alias)
+        RETURN __FieldSet(fieldName, uValue)
+    ENDIF
+    IF alias:ToUpper() == "M"
+        RETURN __MemVarPut(fieldName, uValue)
+    ENDIF
+    LOCAL newArea := _SelectString( alias ) AS DWORD
     LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
     IF newArea > 0
         RuntimeState.CurrentWorkarea := newArea
@@ -189,7 +151,7 @@ FUNCTION __FieldSetWa( alias AS STRING, fieldName AS STRING, uValue AS USUAL ) A
             RuntimeState.CurrentWorkarea := curArea
         END TRY   
     ELSE
-        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, alias  )
+        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(alias),1, alias  )
     ENDIF
     // Note: must return the same value passed in, to allow chained assignment expressions
     RETURN uValue
@@ -199,13 +161,14 @@ FUNCTION __FieldSetWa( alias AS STRING, fieldName AS STRING, uValue AS USUAL ) A
     // ? MyName
 /// <exclude/>
 FUNCTION __MemVarGet(cName AS STRING) AS USUAL
-    RETURN NIL
+    RETURN XSharp.MemVar.Get(cName)
+    
     
     // MEMVAR myName
     // MyName := "NewValue"
 /// <exclude/>
 FUNCTION __MemVarPut(cName AS STRING, uValue AS USUAL) AS USUAL
-    RETURN uValue
+    RETURN XSharp.MemVar.Put(cName, uValue)
     
 
 /// <exclude/>
@@ -245,3 +208,19 @@ FUNCTION __popWorkarea() AS VOID
     RETURN
     
 
+// this is used to initialize the privates stack at a certain level
+/// <exclude/>
+FUNCTION __MemVarInit() AS INT STRICT 
+	RETURN XSharp.MemVar.InitPrivates()   
+
+// this is used to release the privates stack
+/// <exclude/>
+FUNCTION __MemVarRelease(nLevel AS INT) AS LOGIC  STRICT
+	RETURN XSharp.MemVar.ReleasePrivates(nLevel)	
+
+
+// this is used to declare a private or public variable. The variable is initialized with NIL.
+/// <exclude/>
+FUNCTION __MemVarDecl(name AS STRING, _priv AS LOGIC) AS VOID  STRICT
+	XSharp.MemVar.Add(name, _priv)
+	RETURN 

@@ -1,4 +1,4 @@
-PARTIAL CLASS __SplitView INHERIT Control
+CLASS __SplitView INHERIT Control
 	PROTECT	dwDeferPaintCount	AS DWORD
 	PROTECT	oPanes			 	AS Dimension
 	PROTECT	oBackgroundBrush	AS Brush
@@ -475,7 +475,7 @@ ACCESS VerticalDrag
 
 END CLASS
 
-PARTIAL CLASS SplitWindow INHERIT ChildAppWindow
+CLASS SplitWindow INHERIT ChildAppWindow
 	PROTECT oSplitView	AS __SplitView
 	PROTECT lInDestroy AS LOGIC
 

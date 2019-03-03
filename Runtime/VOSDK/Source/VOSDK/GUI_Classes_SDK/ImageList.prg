@@ -1,4 +1,4 @@
-PARTIAL CLASS ImageList INHERIT VObject
+CLASS ImageList INHERIT VObject
 	PROTECT hImageList AS PTR
 	PROTECT hDragWindow AS PTR
 	PROTECT iDragYOffset AS INT

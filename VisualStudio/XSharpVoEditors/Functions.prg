@@ -1,23 +1,23 @@
 ﻿// Functions.prg
 // Created by    : robert
 // Creation Date : 8/8/2017 11:57:43 AM
-// Created for   : 
+// Created for   :
 // WorkStation   : ZEUS
 
 USING System.Collections.Generic
 USING XSharpModel
 USING System.Windows.Forms
-
+USING System.IO
 STATIC CLASS XFuncs
 
 STATIC METHOD FindItemsOfType(oProject AS XProject, xType AS XFileType, aProjects := NULL  AS List<XProject>) AS List<XFile>
 	VAR aResult := List<XFile>{}
-	IF (aProjects == null)
+	IF (aProjects == NULL)
 		aProjects := List<XProject>{}
 	ENDIF
 	FOREACH oOther AS XFile IN oProject:OtherFiles
 		IF oOther:XFileType == xType
-			aResult:Add(oOther)	
+			aResult:Add(oOther)
 		ENDIF
 	NEXT
 	aProjects:Add(oProject)
@@ -26,13 +26,13 @@ STATIC METHOD FindItemsOfType(oProject AS XProject, xType AS XFileType, aProject
 			aProjects:Add(oRef)
 			VAR aTmp := XFuncs.FindItemsOfType(oRef, xType, aProjects)
 			aResult:AddRange(aTmp)
-		ENDIF		
+		ENDIF
 	NEXT
 	RETURN aResult
 
    STATIC METHOD QuestionBox(cMessage AS STRING , cCaption AS STRING) AS LOGIC
 	   RETURN MessageBox.Show(cMessage , cCaption , MessageBoxButtons.YesNo , MessageBoxIcon.Question) == DialogResult.Yes
-   
+
 STATIC METHOD ErrorBox(cMessage AS STRING , cCaption AS STRING) AS VOID
       MessageBox.Show(cMessage , cCaption , MessageBoxButtons.OK , MessageBoxIcon.Error)
    RETURN
@@ -99,9 +99,10 @@ STATIC METHOD ErrorBox(cMessage AS STRING , cCaption AS STRING) AS VOID
 		oXProject:RemoveFile(cFile)
 		IF System.IO.File.Exists(cFile)
 			TRY
+                System.IO.File.SetAttributes(cFile, FileAttributes.Normal)
 				System.IO.File.Delete(cFile)
 			END TRY
 		END IF
 END CLASS
 
-	
+

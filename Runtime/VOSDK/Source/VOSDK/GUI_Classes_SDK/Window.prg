@@ -1,4 +1,4 @@
-PARTIAL CLASS __ForeignWindow INHERIT Window
+CLASS __ForeignWindow INHERIT Window
 	
 CONSTRUCTOR(hwndSelf)
 	

@@ -1,4 +1,4 @@
-PARTIAL CLASS SQLColumnAttributes INHERIT SQLColumn
+CLASS SQLColumnAttributes INHERIT SQLColumn
 	EXPORT Unsigned      AS LOGIC
 	EXPORT Money         AS LOGIC
 	EXPORT Updatable     AS LOGIC

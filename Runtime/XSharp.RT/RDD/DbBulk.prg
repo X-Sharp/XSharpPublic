@@ -368,7 +368,6 @@ FUNCTION DBFileCopy( hfFrom AS IntPtr, cFile AS STRING, cFullPath AS STRING) AS 
 		
 		THROW oError
 		
-		lRetCode := .F.
 		
 	ELSE
 		

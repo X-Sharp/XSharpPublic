@@ -1,4 +1,4 @@
-PARTIAL CLASS DataListView INHERIT ListView
+CLASS DataListView INHERIT ListView
 	PROTECT oDLVServer AS DataServer
 	PROTECT iColumns AS INT
 	PROTECT lNoNotifies AS LOGIC

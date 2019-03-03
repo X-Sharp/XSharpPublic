@@ -12,7 +12,7 @@
     <Name>ConsoleApplication1</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>Vulcan</Dialect>
+    <Dialect>VO</Dialect>
     <OutputName>ConsoleApplication1</OutputName>
     <AZ>false</AZ>
     <CS>false</CS>
@@ -42,13 +42,17 @@
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <TargetFrameworkProfile />
+    <XSharpProjectversion>2.0.0.9</XSharpProjectversion>
+    <Includepaths />
+    <Nostandarddefs>false</Nostandarddefs>
+    <NamedArgs />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>C:\Download\Ads\</OutputPath>
+    <OutputPath>c:\XSharp\DevRt\Runtime\XSharp.Rdd.Tests\tests\XSharp\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -61,8 +65,6 @@
     <AssemblyOriginatorKeyFile />
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths />
     <Prefer32Bit>True</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
@@ -83,9 +85,7 @@
     <AssemblyOriginatorKeyFile />
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths />
-    <Prefer32Bit>True</Prefer32Bit>
+    <Prefer32Bit>False</Prefer32Bit>
     <DebuggerCommand>$(TargetPath)</DebuggerCommand>
     <DebuggerCommandArguments />
     <DebuggerWorkingDirectory />
@@ -98,39 +98,23 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <Name>System.Windows.Forms</Name>
+      <AssemblyName>System.Windows.Forms.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="System.Xml">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System.Xml.Linq">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="XSharp.CodeAnalysis, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.CodeAnalysis</Name>
-      <AssemblyName>XSharp.CodeAnalysis.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\Dev\XSharp\Binaries\Debug\Dlls\XSharp.CodeAnalysis.dll</HintPath>
-    </Reference>
     <Reference Include="XSharp.MacroCompiler, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.MacroCompiler</Name>
       <AssemblyName>XSharp.MacroCompiler.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\Dev\XSharp\Binaries\Obj\XSFullMacroCompiler\Debug\XSharp.MacroCompiler.dll</HintPath>
-    </Reference>
-    <Reference Include="XSharp.MacroCompiler.Fast, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.MacroCompiler.Fast</Name>
-      <AssemblyName>XSharp.MacroCompiler.Fast.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\Binaries\Debug\XSharp.MacroCompiler.Fast.dll</HintPath>
-    </Reference>
-    <Reference Include="XSharp.Scripting, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.Scripting</Name>
-      <AssemblyName>XSharp.Scripting.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\Dev\XSharp\Binaries\Debug\Dlls\XSharp.Scripting.dll</HintPath>
+      <HintPath>..\..\Dev\XSharp\Binaries\Debug\Dlls\XSharp.MacroCompiler.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -179,7 +163,7 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
@@ -196,8 +180,6 @@
     <AssemblyOriginatorKeyFile />
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths />
     <Prefer32Bit>True</Prefer32Bit>
     <OutputPath>bin\Documentation\</OutputPath>
   </PropertyGroup>

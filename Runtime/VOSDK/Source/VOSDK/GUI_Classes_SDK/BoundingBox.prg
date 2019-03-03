@@ -1,4 +1,4 @@
-PARTIAL CLASS BoundingBox INHERIT VObject
+CLASS BoundingBox INHERIT VObject
 	PROTECT _Origin AS Point
 	PROTECT _Extent AS Point
 	

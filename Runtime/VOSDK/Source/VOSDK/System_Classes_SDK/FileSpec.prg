@@ -1,4 +1,4 @@
-PARTIAL CLASS FileSpec
+CLASS FileSpec
 	// The FileSpec class contains the identification of a disk file
 	// ( its drive, path and filename ), as well as a few useful methods.
 	// The FileSpec class itself is intended mainly for keeping track of the file,

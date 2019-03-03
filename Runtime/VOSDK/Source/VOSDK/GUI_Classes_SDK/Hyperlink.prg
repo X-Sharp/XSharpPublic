@@ -1,4 +1,4 @@
-PARTIAL CLASS CurHand INHERIT Pointer
+CLASS CurHand INHERIT Pointer
 
 CONSTRUCTOR () 
 	SUPER(ResourceID{"CURHAND", _GetInst()})
@@ -6,7 +6,7 @@ CONSTRUCTOR ()
 
 END CLASS
 
-PARTIAL CLASS HyperLink INHERIT FixedText
+CLASS HyperLink INHERIT FixedText
 	// Another generous contribution from S Ebert
 	PROTECT _oPointer AS Pointer
 

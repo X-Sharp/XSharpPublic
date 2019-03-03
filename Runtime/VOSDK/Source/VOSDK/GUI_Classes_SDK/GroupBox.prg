@@ -1,4 +1,4 @@
-PARTIAL CLASS GroupBox INHERIT TextControl
+CLASS GroupBox INHERIT TextControl
 
 METHOD AsString () 
 	

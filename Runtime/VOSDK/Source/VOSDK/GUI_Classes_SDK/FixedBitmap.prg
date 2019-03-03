@@ -1,4 +1,4 @@
-PARTIAL CLASS FixedBitmap INHERIT FixedImage
+CLASS FixedBitmap INHERIT FixedImage
 
 METHOD __SetImage(uResID AS USUAL) AS OBJECT STRICT 
 	//PP-030828 Strong typing

@@ -1,4 +1,4 @@
-PARTIAL CLASS IPAddress INHERIT TextControl
+CLASS IPAddress INHERIT TextControl
 
 METHOD __SetText(sNewText AS STRING) AS STRING STRICT 
 	//PP-030828 Strong typing

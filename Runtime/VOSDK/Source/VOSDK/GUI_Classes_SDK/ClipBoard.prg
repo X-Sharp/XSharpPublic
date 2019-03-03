@@ -1,4 +1,4 @@
-PARTIAL CLASS Clipboard INHERIT VObject
+CLASS Clipboard INHERIT VObject
 
 METHOD Clear() 
 	

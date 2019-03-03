@@ -1,4 +1,4 @@
-PARTIAL CLASS DragDropClient INHERIT VObject
+CLASS DragDropClient INHERIT VObject
 	PROTECT hOwner AS PTR
 	PROTECT oParent AS Window
 	//SE-060520

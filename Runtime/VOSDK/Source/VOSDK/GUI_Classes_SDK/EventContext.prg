@@ -1,4 +1,4 @@
-PARTIAL CLASS EventContext INHERIT VObject
+CLASS EventContext INHERIT VObject
 	PROTECT ptrSelfPtr AS SelfPtr // PTR  dcaton 070301 - type it as it really is!
 
 METHOD Destroy() 

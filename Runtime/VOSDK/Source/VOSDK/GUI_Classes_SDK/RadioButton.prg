@@ -1,4 +1,4 @@
-PARTIAL CLASS RadioButton INHERIT Button
+CLASS RadioButton INHERIT Button
 	PROTECT lSavedPressed AS LOGIC
 
 METHOD Destroy() 

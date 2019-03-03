@@ -1,4 +1,4 @@
-PARTIAL CLASS CMailAbstract
+﻿CLASS CMailAbstract
 
 	PROTECT cHostAddress    AS STRING
 	PROTECT nFlags          AS DWORD

@@ -1,4 +1,4 @@
-PARTIAL CLASS Edit INHERIT TextControl
+CLASS Edit INHERIT TextControl
 	PROTECT lNoNotify AS LOGIC
 	PROTECT lForceModFlag2True AS LOGIC
 
@@ -340,7 +340,7 @@ METHOD Undo()
 	RETURN FALSE
 END CLASS
 
-PARTIAL CLASS SingleLineEdit INHERIT Edit
+CLASS SingleLineEdit INHERIT Edit
 	PROTECT oEditString AS __FormattedString
 	PROTECT wOverWrite AS LONGINT  		//RvdH 070205 changed from WORD to LONG
 	PROTECT wScrMode AS LONGINT      	//RvdH 070205 changed from WORD to LONG

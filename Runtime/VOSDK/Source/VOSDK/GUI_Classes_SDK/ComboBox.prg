@@ -1,4 +1,4 @@
-PARTIAL CLASS ComboBox INHERIT ListBox
+CLASS ComboBox INHERIT ListBox
 	METHOD __EditChange() AS VOID STRICT 
 	//PP-030923 Update value with control contents on editchange (triggered by window dispatch)
 	//PP-040508 Update S.Ebert
@@ -182,7 +182,7 @@ METHOD ShowEditBalloonTip(cTitle,cText,dwIcon)
 
 END CLASS
 
-PARTIAL CLASS ComboBoxEx INHERIT ComboBox
+CLASS ComboBoxEx INHERIT ComboBox
 	PROTECT oImgList AS ImageList
 
 METHOD AddItem(cItem, nItemNumber, uRetValue, iImageIdx, iSelectedIdx, iOverlayIdx, iIndent) 
@@ -394,7 +394,7 @@ METHOD SetItemAttributes(uComboBoxExItem)
 
 END CLASS
 
-PARTIAL CLASS ComboBoxExItem INHERIT VObject
+CLASS ComboBoxExItem INHERIT VObject
 	//SE-060519
 	EXPORT ItemIndex AS INT
 	EXPORT ImageIndex AS INT

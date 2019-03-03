@@ -1,4 +1,4 @@
-PARTIAL CLASS ListBox INHERIT BaseListBox
+CLASS ListBox INHERIT BaseListBox
 	PROTECT aRetValues 		AS ARRAY
 	PROTECT aDisplayValues 	AS ARRAY
 	PROTECT wSelectNum 		AS DWORD

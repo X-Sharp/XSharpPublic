@@ -42,6 +42,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <VsixType>v3</VsixType>
+	<DeployExtension Condition=" '$(Configuration)' == 'Release' " >false</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <StartAction>Program</StartAction>
@@ -302,6 +303,7 @@
       <DependentUpon>XSharpSpecialOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="PropertyPages\XBuildEventsPropertyPage.cs" />
+    <Compile Include="PropertyPages\XSharpDialectPropertyPage.cs" />
     <Compile Include="Wix\FolderBrowserTextBox.cs">
       <SubType>UserControl</SubType>
     </Compile>

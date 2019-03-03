@@ -1,4 +1,4 @@
-PARTIAL CLASS Icon INHERIT VObject
+CLASS Icon INHERIT VObject
 	PROTECT hIcon AS PTR
 
 METHOD Destroy() 

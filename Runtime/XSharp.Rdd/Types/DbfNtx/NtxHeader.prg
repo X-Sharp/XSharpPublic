@@ -95,63 +95,63 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 		PRIVATE METHOD _SetDWord(nOffSet AS INT, dwValue AS DWORD) AS VOID
 			Array.Copy(BitConverter.GetBytes(dwValue),0, Buffer, nOffSet, SIZEOF(DWORD))
 			isHot := TRUE
-				
-		INTERNAL PROPERTY Signature  AS NtxHeaderFlags	;
-		GET (NtxHeaderFlags) _GetWord(NTXOFFSET_SIG) ;
-		SET _SetWord(NTXOFFSET_SIG, VALUE)
+
+ 		INTERNAL PROPERTY Signature  AS NtxHeaderFlags	;
+		    GET (NtxHeaderFlags) _GetWord(NTXOFFSET_SIG) ;
+		    SET _SetWord(NTXOFFSET_SIG, VALUE)
 			
 		INTERNAL PROPERTY IndexingVersion		AS WORD			;
-		GET _GetWord(NTXOFFSET_INDEXING_VER);
-		SET _SetWord(NTXOFFSET_INDEXING_VER, VALUE)
+		    GET _GetWord(NTXOFFSET_INDEXING_VER);
+		    SET _SetWord(NTXOFFSET_INDEXING_VER, VALUE)
 			
 		INTERNAL PROPERTY FirstPageOffset		AS DWORD			;
-		GET _GetDWord(NTXOFFSET_FPAGE_OFFSET);
-		SET _SetDWord(NTXOFFSET_FPAGE_OFFSET, VALUE)
+		    GET _GetDWord(NTXOFFSET_FPAGE_OFFSET);
+		    SET _SetDWord(NTXOFFSET_FPAGE_OFFSET, VALUE)
 			
 		INTERNAL PROPERTY NextUnusedPageOffset		AS DWORD			;
-		GET _GetDWord(NTXOFFSET_NUPAGE_OFFSET)	;
-		SET _SetDWord(NTXOFFSET_NUPAGE_OFFSET, VALUE)
+		    GET _GetDWord(NTXOFFSET_NUPAGE_OFFSET)	;
+		    SET _SetDWord(NTXOFFSET_NUPAGE_OFFSET, VALUE)
 			
 		// keysize + 2 longs. ie.e Left pointer + record no.
 		INTERNAL PROPERTY EntrySize		AS WORD			;
-		GET _GetWord(NTXOFFSET_ENTRYSIZE);
-		SET _SetWord(NTXOFFSET_ENTRYSIZE, VALUE)
+		    GET _GetWord(NTXOFFSET_ENTRYSIZE);
+		    SET _SetWord(NTXOFFSET_ENTRYSIZE, VALUE)
 			
 		INTERNAL PROPERTY KeySize		AS WORD			;
-		GET _GetWord(NTXOFFSET_KEYSIZE);
-		SET _SetWord(NTXOFFSET_KEYSIZE, VALUE)
+		    GET _GetWord(NTXOFFSET_KEYSIZE);
+		    SET _SetWord(NTXOFFSET_KEYSIZE, VALUE)
 			
 		INTERNAL PROPERTY KeyDecimals	AS WORD			;
-		GET _GetWord(NTXOFFSET_KEYDECIMALS);
-		SET _SetWord(NTXOFFSET_KEYDECIMALS, VALUE)
+		    GET _GetWord(NTXOFFSET_KEYDECIMALS);
+		    SET _SetWord(NTXOFFSET_KEYDECIMALS, VALUE)
 			
 		INTERNAL PROPERTY MaxItem	AS WORD			;
-		GET _GetWord(NTXOFFSET_MAXITEM);
-		SET _SetWord(NTXOFFSET_MAXITEM, VALUE)
+		    GET _GetWord(NTXOFFSET_MAXITEM);
+		    SET _SetWord(NTXOFFSET_MAXITEM, VALUE)
 			
 		INTERNAL PROPERTY HalfPage	AS WORD			;
-		GET _GetWord(NTXOFFSET_HALFPAGE);
-		SET _SetWord(NTXOFFSET_HALFPAGE, VALUE)
+		    GET _GetWord(NTXOFFSET_HALFPAGE);
+		    SET _SetWord(NTXOFFSET_HALFPAGE, VALUE)
 			
 		INTERNAL PROPERTY KeyExpression	 AS STRING ;
-		GET _GetString(NTXOFFSET_KEYEXPRESSION, NTXOFFSET_EXPRESSION_SIZE ) ;
-		SET _SetString(NTXOFFSET_KEYEXPRESSION, NTXOFFSET_EXPRESSION_SIZE, VALUE)
+		    GET _GetString(NTXOFFSET_KEYEXPRESSION, NTXOFFSET_EXPRESSION_SIZE ) ;
+		    SET _SetString(NTXOFFSET_KEYEXPRESSION, NTXOFFSET_EXPRESSION_SIZE, VALUE)
 			
 		INTERNAL PROPERTY Unique	AS LOGIC  ;
-		GET Buffer[ NTXOFFSET_UNIQUE] != 0 ;
-		SET Buffer[ NTXOFFSET_UNIQUE ] := (BYTE) IIF(VALUE,1,0), isHot := TRUE
+		    GET Buffer[ NTXOFFSET_UNIQUE] != 0 ;
+		    SET Buffer[ NTXOFFSET_UNIQUE ] := (BYTE) IIF(VALUE,1,0), isHot := TRUE
 
 		INTERNAL PROPERTY Descending	AS LOGIC  ;
-		GET Buffer[ NTXOFFSET_DESCENDING] != 0 ;
-		SET Buffer[ NTXOFFSET_DESCENDING ] := (BYTE) IIF(VALUE,1,0), isHot := TRUE
+		    GET Buffer[ NTXOFFSET_DESCENDING] != 0 ;
+		    SET Buffer[ NTXOFFSET_DESCENDING ] := (BYTE) IIF(VALUE,1,0), isHot := TRUE
 			
 		INTERNAL PROPERTY ForExpression	 AS STRING ;
-		GET _GetString(NTXOFFSET_FOREXPRESSION, NTXOFFSET_EXPRESSION_SIZE ) ;
-		SET _SetString(NTXOFFSET_FOREXPRESSION, NTXOFFSET_EXPRESSION_SIZE, VALUE)
+		    GET _GetString(NTXOFFSET_FOREXPRESSION, NTXOFFSET_EXPRESSION_SIZE ) ;
+		    SET _SetString(NTXOFFSET_FOREXPRESSION, NTXOFFSET_EXPRESSION_SIZE, VALUE)
 			
 		INTERNAL PROPERTY OrdName	 AS STRING ;
-		GET _GetString(NTXOFFSET_ORDNAME, NTXOFFSET_EXPRESSION_SIZE );
-		SET _SetString(NTXOFFSET_ORDNAME, NTXOFFSET_EXPRESSION_SIZE, VALUE)
+		    GET _GetString(NTXOFFSET_ORDNAME, NTXOFFSET_EXPRESSION_SIZE );
+		    SET _SetString(NTXOFFSET_ORDNAME, NTXOFFSET_EXPRESSION_SIZE, VALUE)
 			
 		PRIVATE CONST NTXOFFSET_SIG			    := 0   AS WORD
 		PRIVATE CONST NTXOFFSET_INDEXING_VER    := 2   AS WORD
@@ -170,7 +170,17 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 		PRIVATE CONST NTXOFFSET_ORDNAME         := 538 AS WORD
 		PRIVATE CONST NTXHEADER_SIZE            := 1024 AS WORD
         
-			
+	INTERNAL METHOD Dump(cText AS STRING) AS STRING
+            VAR sb := System.Text.StringBuilder{}
+            sb:AppendLine( String.Format("NTX Header {0}", cText))
+            sb:AppendLine( "----------------------------------------------")
+            sb:AppendLine( String.Format("Signature {0}, Version {1}, First page {2}, Unused Page {3}", SELF:Signature, SELF:IndexingVersion, SELF:FirstPageOffSet, SELF:NextUnusedPageOffset))
+            sb:AppendLine( String.Format("Item size {0}, Key Size {1}, Decimals {2}, Max Items {3}, HalfPage {4}", SELF:EntrySize, SELF:KeySize, SELF:KeyDecimals, SELF:MaxItem, SELF:HalfPage))
+            sb:AppendLine( String.Format("Key Expression: {0}, Unique {1}, Descending {2}", SELF:KeyExpression, SELF:Unique, SELF:Descending))
+            sb:AppendLine( String.Format("For Expression: {0}, OrdName {1}", SELF:ForExpression, SELF:OrdName))
+            sb:AppendLine( "----------------------------------------------")
+            RETURN sb:ToString()
+
 		
     END CLASS
     [Flags];        

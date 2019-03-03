@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -29,9 +29,11 @@ BEGIN NAMESPACE XSharp
 		/// <param name="lAllowSingleQuotes">Should single quotes be allowed</param>
 		/// <param name="module">Module of the main app</param>
 		/// <param name="isCodeblock">will be set to TRUE when the string was a real codeblock (with {|..| }).</param>
+		/// <param name="addsMemVars">will be set to TRUE when the macro contains code that may result in adding new MemVars).</param>
 		/// <returns>A compiled codeblock</returns>
 		/// <seealso cref="T:XSharp.ICodeblock"/>
-		METHOD Compile(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module, isCodeblock REF LOGIC) AS ICodeblock
+		METHOD Compile(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module, ;
+            isCodeblock OUT LOGIC, addsMemVars OUT LOGIC) AS ICodeblock
     END INTERFACE
 
     /// <summary>Delegate used for Runtime Codeblocks </summary>

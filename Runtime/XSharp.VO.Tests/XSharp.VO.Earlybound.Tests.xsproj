@@ -47,6 +47,9 @@
     <VO15>true</VO15>
     <VO16>false</VO16>
     <TargetFrameworkProfile />
+    <XSharpProjectversion>2.0.0.9</XSharpProjectversion>
+    <Includepaths />
+    <Nostandarddefs>true</Nostandarddefs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -69,8 +72,6 @@
     <AssemblyOriginatorKeyFile />
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>true</NoStandardDefs>
-    <IncludePaths />
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
@@ -91,8 +92,6 @@
     <AssemblyOriginatorKeyFile />
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>true</NoStandardDefs>
-    <IncludePaths />
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
@@ -149,6 +148,9 @@
     <Compile Include="MacroTest.prg" />
     <Compile Include="OemTests.prg" />
     <Compile Include="DateTests.prg" />
+    <Compile Include="DbfTests.prg" />
+    <Compile Include="StringTests.prg" />
+    <Compile Include="MiscTests.prg" />
     <Compile Include="ErrorTests.prg" />
     <Compile Include="FloatTests.prg" />
     <Compile Include="MemoryTests.prg" />
@@ -201,7 +203,7 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>

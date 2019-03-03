@@ -1,4 +1,4 @@
-PARTIAL CLASS CImap INHERIT CPop
+﻿CLASS CImap INHERIT CPop
     PROTECT nPrefix     AS DWORD
     PROTECT cMailBox    AS STRING
 
@@ -105,7 +105,7 @@ METHOD  CheckReply      ()
 METHOD  ClientCommand   (cBuffer)    
     LOCAL lRet      AS LOGIC
 
-    Default(@cBuffer, "")
+    DEFAULT(@cBuffer, "")
 
     SELF:nError := 0
 
@@ -276,8 +276,8 @@ CONSTRUCTOR            (cServer, cUid, cPwd)
 METHOD  LogOn           (cUID, cPwd)    
     LOCAL cBuffer AS STRING
 
-    Default(@cUID, "")
-    Default(@cPwd, "")
+    DEFAULT(@cUID, "")
+    DEFAULT(@cPwd, "")
 
     SELF:nError := 0
 
@@ -323,7 +323,7 @@ ACCESS  MailBox         ()
     RETURN SELF:cMailBox
 
 ASSIGN  MailBox         (xNew)                              
-    Default(@xNew, "")
+    DEFAULT(@xNew, "")
     IF SELF:nCurState > 0
         IF SLen(xNew) > 0
             IF SELF:ClientCommand("SELECT " + xNew)

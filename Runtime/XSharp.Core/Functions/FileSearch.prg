@@ -84,7 +84,7 @@ INTERNAL STATIC CLASS XSharp.FileSearch
                 currentItem := enumerator:Current
             ENDIF
         ENDIF
-        RETURN isAtEnd
+        RETURN !isAtEnd
         
     INTERNAL STATIC METHOD FName() AS STRING
         LOCAL name := "" AS STRING
@@ -215,9 +215,6 @@ FUNCTION FSize() AS DWORD
     /// </returns>
 FUNCTION FTime() AS STRING
     RETURN XSharp.FileSearch.FTime()
-    
-    
-    
     
     /// <summary>
     /// Determine if any file matches a given file specification.

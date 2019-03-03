@@ -1,4 +1,4 @@
-PARTIAL CLASS ErrorBox INHERIT TextBox
+CLASS ErrorBox INHERIT TextBox
 
 CONSTRUCTOR(uParent, uText) 
 	
@@ -16,7 +16,7 @@ CONSTRUCTOR(uParent, uText)
 
 END CLASS
 
-PARTIAL CLASS InfoBox INHERIT TextBox
+CLASS InfoBox INHERIT TextBox
 
 CONSTRUCTOR(uParent, uCaption, uText) 
 	
@@ -34,7 +34,7 @@ CONSTRUCTOR(uParent, uCaption, uText)
 	RETURN 
 END CLASS
 
-PARTIAL CLASS TextBox INHERIT VObject
+CLASS TextBox INHERIT VObject
 	PROTECT oParent AS Window
 	PROTECT dwType AS DWORD
 	PROTECT ctext AS STRING
@@ -169,7 +169,7 @@ ASSIGN TYPE(uType)
 
 END CLASS
 
-PARTIAL CLASS WarningBox INHERIT TextBox
+CLASS WarningBox INHERIT TextBox
 
 CONSTRUCTOR(uParent, uCaption, uText) 
 	

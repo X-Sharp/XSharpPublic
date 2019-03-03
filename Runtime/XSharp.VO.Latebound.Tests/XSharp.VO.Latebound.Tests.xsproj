@@ -47,6 +47,9 @@
     <VO15>true</VO15>
     <VO16>false</VO16>
     <NamedArgs>false</NamedArgs>
+    <XSharpProjectversion>2.0.0.9</XSharpProjectversion>
+    <Includepaths />
+    <Nostandarddefs />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -71,6 +74,13 @@
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="XSharp.MacroCompiler, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.MacroCompiler</Name>
+      <AssemblyName>XSharp.MacroCompiler.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\Dev\XSharp\Binaries\Debug\Dlls\XSharp.MacroCompiler.dll</HintPath>
+    </Reference>
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
       <Name>xunit.abstractions</Name>
       <AssemblyName>xunit.abstractions.dll</AssemblyName>
@@ -145,7 +155,7 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>

@@ -1,4 +1,4 @@
-PARTIAL CLASS DataDialog INHERIT DataWindow 
+CLASS DataDialog INHERIT DataWindow 
 /*
 METHOD Activate(oEvent) 
 	

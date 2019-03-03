@@ -1,4 +1,4 @@
-PARTIAL CLASS FixedText INHERIT TextControl
+CLASS FixedText INHERIT TextControl
 	//PP-030915
 	PROTECT _dwDrawStyle AS DWORD
 	PROTECT _dwMargin AS DWORD

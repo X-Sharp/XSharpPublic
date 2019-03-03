@@ -262,36 +262,41 @@ BEGIN NAMESPACE XSharp
 		#endregion
 
 		#region Insert and Delete elements
-		INTERNAL METHOD Add(u AS T) AS VOID
+        /// <exclude />
+		PUBLIC METHOD Add(u AS T) AS VOID
 			IF SELF:CheckLock()
 				_internalList:Add(u)
 			ENDIF
 			RETURN
 
-		INTERNAL METHOD Delete(position AS INT) AS __ArrayBase<T>
+        /// <exclude />
+		PUBLIC METHOD Delete(position AS INT) AS __ArrayBase<T>
 			SELF:RemoveAt(position)
 			SELF:Add(T{})
 			RETURN SELF
 
-		INTERNAL METHOD Insert(index AS INT,u AS T) AS VOID
+        /// <exclude />
+		PUBLIC METHOD Insert(index AS INT,u AS T) AS VOID
 			IF SELF:CheckLock()
 				_internalList:RemoveAt(_internalList:Count - 1)
 				_internalList:Insert((INT) index-__ARRAYBASE__ ,u)
 			ENDIF
 			RETURN
 
-		INTERNAL METHOD Insert(position AS INT) AS __ArrayBase<T>
+        /// <exclude />
+		PUBLIC METHOD Insert(position AS INT) AS __ArrayBase<T>
 			SELF:Insert( position, DEFAULT(T))
 			RETURN SELF
 
-
-		INTERNAL METHOD RemoveAt(index AS INT) AS VOID
+        /// <exclude />
+		PUBLIC METHOD RemoveAt(index AS INT) AS VOID
 			IF SELF:CheckLock()
 				_internalList:RemoveRange(index-__ARRAYBASE__,1 )
 			ENDIF
 			RETURN
 
-		INTERNAL METHOD Resize(newSize AS INT) AS VOID
+        /// <exclude />
+		PUBLIC METHOD Resize(newSize AS INT) AS VOID
 			IF SELF:CheckLock()
 				IF newSize == 0
 					_internalList:Clear()

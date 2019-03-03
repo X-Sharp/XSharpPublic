@@ -1,4 +1,4 @@
-PARTIAL CLASS HyperLabel
+CLASS HyperLabel
 	PROTECT symName AS SYMBOL       // A programmer's identifier
 	PROTECT rCaption AS STRING      // A human-readable identifier,
 	// used for things such as

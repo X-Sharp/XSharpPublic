@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System;
@@ -10,14 +10,32 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Build.Utilities;
 using Microsoft.Build.Framework;
+using System.IO;
 
 namespace XSharp.Build
 {
-    
+
     class Utilities
     {
 
-
+        internal static bool CopyFileSafe(string source, string target)
+        {
+            try
+            {
+                if (System.IO.File.Exists(target))
+                {
+                    System.IO.File.SetAttributes(target, FileAttributes.Normal);
+                    System.IO.File.Delete(target);
+                }
+                System.IO.File.Copy(source, target, true);
+                return true;
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return false;
+            }
+        }
         internal static string AddSlash(string Path)
         {
             if (!String.IsNullOrEmpty(Path) && !Path.EndsWith("\\"))
@@ -47,7 +65,7 @@ namespace XSharp.Build
 
 
         /// <summary>
-        /// Converts a string to a bool.  We consider "true/false", "on/off", and 
+        /// Converts a string to a bool.  We consider "true/false", "on/off", and
         /// "yes/no" to be valid boolean representations in the XML.
         /// </summary>
         /// <param name="parameterValue">The string to convert.</param>
@@ -98,11 +116,11 @@ namespace XSharp.Build
         /// "DefineConstants" property.  It worked fine in the IDE, because it
         /// effectively munged up the string so that it ended up being valid for
         /// the compiler.  We do the equivalent munging here now.
-        /// 
+        ///
         /// Basically, we take the incoming string, and split it on comma/semicolon/space.
         /// Then we look at the resulting list of strings, and remove any that are
         /// illegal identifiers, and pass the remaining ones through to the compiler.
-        /// 
+        ///
         /// Note that CSharp does support assigning a value to the constants ... in
         /// other words, a constant is either defined or not defined ... it can't have
         /// an actual value.

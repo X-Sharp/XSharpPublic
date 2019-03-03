@@ -92,6 +92,15 @@ namespace XSharp.Project
                 this.IsDirty = true;
                 this.ProjectMgr.SetProjectProperty(nameof(Dialect), this.dialect.ToString());
                 this.ProjectMgr.SetProjectProperty("NamedArgs", "");
+                switch (dialect)
+                {
+                    case Dialect.Core:
+                    case Dialect.Vulcan:
+                        this.ProjectMgr.SetProjectProperty("Memvar", "");
+                        this.ProjectMgr.SetProjectProperty("Undeclared", "");
+                        break;
+                }
+            ;
             }
         }
 

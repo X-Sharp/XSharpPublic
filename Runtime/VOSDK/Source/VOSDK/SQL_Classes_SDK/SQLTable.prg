@@ -1,4 +1,4 @@
-PARTIAL CLASS SQLTable INHERIT SQLSelect
+CLASS SQLTable INHERIT SQLSelect
 
 	PROTECT cTblStmt            AS STRING
 	PROTECT cTable              AS STRING

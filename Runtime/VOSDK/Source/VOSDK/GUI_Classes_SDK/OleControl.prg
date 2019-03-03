@@ -1,6 +1,6 @@
 #ifndef __VULCAN__
 
-PARTIAL CLASS OleControl INHERIT OleObject
+CLASS OleControl INHERIT OleObject
 	PROTECT oAuto AS OleAutoObject
 
 ACCESS __oAuto 

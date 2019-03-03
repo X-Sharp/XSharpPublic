@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -301,6 +301,79 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			d --
 		RETURN d
 		
+        [Fact, Trait("Category", "Usual conversion tests")];
+		METHOD UsualIsTests() AS VOID
+			LOCAL u AS USUAL
+            u := Today()
+            Assert.Equal(TRUE, IsDate(u))
+            Assert.Equal(FALSE, IsDateTime(u))
+            u := DateTime.Now
+            Assert.Equal(TRUE, IsDate(u))
+            Assert.Equal(TRUE, IsDateTime(u))
+            u := 1L
+            Assert.Equal(TRUE, IsLong(u))
+            Assert.Equal(FALSE, IsInt64(u))
+            Assert.Equal(TRUE, IsInteger(u))
+            Assert.Equal(TRUE, IsNumeric(u))
+            Assert.Equal(FALSE, IsFLoat(u))
+            Assert.Equal(FALSE, IsFractional(u))
+            Assert.Equal(FALSE, IsDecimal(u))
+            u := Int64.MaxValue
+            Assert.Equal(FALSE, IsLong(u))
+            Assert.Equal(TRUE, IsInt64(u))
+            Assert.Equal(TRUE, IsInteger(u))
+            Assert.Equal(TRUE, IsNumeric(u))
+            Assert.Equal(FALSE, IsFLoat(u))
+            Assert.Equal(FALSE, IsFractional(u))
+            Assert.Equal(FALSE, IsDecimal(u))
+            u := FLOAT{1,1,0}
+            Assert.Equal(FALSE, IsLong(u))
+            Assert.Equal(FALSE, IsInt64(u))
+            Assert.Equal(FALSE, IsInteger(u))
+            Assert.Equal(TRUE, IsNumeric(u))
+            Assert.Equal(TRUE, IsFLoat(u))
+            Assert.Equal(TRUE, IsFractional(u))
+            Assert.Equal(FALSE, IsDecimal(u))
+            u := 1m
+            Assert.Equal(FALSE, IsLong(u))
+            Assert.Equal(FALSE, IsInt64(u))
+            Assert.Equal(FALSE, IsInteger(u))
+            Assert.Equal(TRUE, IsNumeric(u))
+            Assert.Equal(FALSE, IsFLoat(u))
+            Assert.Equal(TRUE, IsFractional(u))
+            Assert.Equal(TRUE, IsDecimal(u))
+            u := "abc"
+            Assert.Equal(FALSE, IsLong(u))
+            Assert.Equal(TRUE, IsString(u))
+            Assert.Equal(FALSE, IsSymbol(u))
+            u := #abc
+            Assert.Equal(FALSE, IsLong(u))
+            Assert.Equal(FALSE, IsString(u))
+            Assert.Equal(TRUE, IsSymbol(u))
+            u := {}
+            Assert.Equal(FALSE, IsLong(u))
+            Assert.Equal(FALSE, IsString(u))
+            Assert.Equal(TRUE, IsArray(u))
+            u := NIL
+            Assert.Equal(FALSE, IsLong(u))
+            Assert.Equal(FALSE, IsString(u))
+            Assert.Equal(TRUE, IsNil(u))
+            u := {|e|e+1}
+            Assert.Equal(FALSE, IsLong(u))
+            Assert.Equal(FALSE, IsString(u))
+            Assert.Equal(TRUE, IsCodeBlock(u))
+            u := MemAlloc(1)
+            Assert.Equal(FALSE, IsLong(u))
+            Assert.Equal(FALSE, IsString(u))
+            Assert.Equal(TRUE, IsPtr(u))
+            MemFree(u)
 
+            u := Exception{}
+            Assert.Equal(FALSE, IsLong(u))
+            Assert.Equal(FALSE, IsString(u))
+            Assert.Equal(TRUE, IsObject(u))
+
+            RETURN
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests
+

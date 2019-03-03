@@ -1,0 +1,112 @@
+﻿https://www.clicketyclick.dk/databases/xbase/format/ntx.html#NTX_STRUCT
+
+Xbase: Clipper Index Files (*.ntx)
+
+The Structure of Clipper Index files (*.ntx)
+
+The CA-Clipper index file is a modified B+ tree. The size of a page is 1024 bytes. The first page is the header:
+
+     _______________________  _______
+ 00h /   0  | Signature byte      *9|  ^
+ 00h /   1  | (binary)           *12|  | 
+            |-----------------------|  |
+ 00h /   2  | Indexing version no.  |  |
+ 00h /   3  | (Compiler version)    |  |
+            |-----------------------|  |
+ 00h /   4  | Offset in file for    | File
+ 00h /   5  | first index page.     | header
+ 00h /   6  | (root)                |  |
+ 00h /   7  |                       | (page 0)
+            |-----------------------|  |
+ 00h /   8  | Offset to an unused   |  |
+ 00h /   9  | next key page.     *11|  |
+ 00h /  10  |                       |  |
+ 00h /  11  |                       |  |
+            |-----------------------|  |
+ 00h /  12  | Key size + 8 bytes  *1|  |
+ 00h /  13  |                       |  |
+            |-----------------------|  |
+ 00h /  14  | Key size              |  |
+ 00h /  15  |                       |  |
+            |-----------------------|  |
+ 00h /  16  | No. of decimals in    |  |
+ 00h /  17  | key                   |  |
+            |-----------------------|  |
+ 00h /  18  | Max. item           *6|  |
+ 00h /  19  |                       |  |
+            |-----------------------|  |
+ 00h /  20  | Half page           *7|  |
+ 00h /  21  |                       |  |
+            |-----------------------|  |
+ 00h /  22  | Key expression.     *8|  |
+ 00h /  23  | (NULL terminated)     |  |
+            :                       :  |
+ 00h /  277 |                       |  |
+            |-----------------------|  |
+ 00h /  278 | Unique index flag   *3|  |
+            |-----------------------|  |
+ 00h /  279 | (Unused)              |  |
+            :                       :  |
+            :                       :  |
+ 00h /  1023|                       |  |
+   1 x 1024 |=======================| _v_____
+ 00h /     0| Address of next empty |    ^
+ 00h /     1| page               *11|    |
+ 00h /     2|                       |    |
+ 00h /     3|                       |    |
+            |-----------------------|   Empty page
+            : (Reserved)            |   (in linked list)
+            :                       |    |
+            :                       |    |
+ 00h /  1023:                       |    |
+   2 x 1024 |=======================| ___V___
+            | No. of used entries   |    |
+            | on current page (N)   |    |
+            |-----------------------|   Used
+            | Array of N unsigned   |   page
+            : longs               *5:    |
+            :                       :    |
+            |-----------------------|    |
+            | Array of index        |    |
+            : entries               :    |
+            :                       :    |         __  |=======================|
+            :                       :    |        /   0| Address of left page  |
+            |                       |    |       /    1| in tree             *4|
+            |                       |    |      /     2|                       |
+            |                       |    |     /      3|                       |
+            |=======================| ___|____/        |-----------------------|
+            |  Array of index       |    |            4| Record no. in DBF     |
+            :                       :    |            5|                       |
+            :                       :    |            6|                       |
+            :                       :    |            7|                       |
+            :                       :    |             |-----------------------|
+            :                       :    |            8| Key field             |
+            :                       : ___|____         :                       :
+            |=======================|    |    \       N|                       |
+            |                       |    |     \_____  |=======================|
+            :                       :    |
+            |__End_of_File__________| ___v____  End of file ( 1Ah )
+
+See NDX example
+
+    Also called signature. Distance between key pages. size + 2 longs. ie.e Left pointer + record no.
+    The first, or root page of an indes has a minimum of 1 entry regardless of this value.
+    Unique index flag
+    1 	Unique
+    0 	NOT unique
+    Address of left page in tree This number will be between the minimum (half page) and maximum (max. item) defined in the header unless it is the root page.
+    Array on unsigned longs The array length is equal to the maximum number of key entries per page +1. Value 00h = No record. Other values: Record offset from start of page
+    Max. item. The maximum number of keys (with their pointers) that can fit on an index page.
+    Half page. The maximum number of keys that can fit on an index page, divided by two. This is an important value in a B-tree system as it is the minimum number of keys that must be on a page.
+    Key expression The actual expression on which the index was built. It is a NULL terminated string with at max length of 256 bytes.
+    Version no
+    0003h 	Clipper 87
+    0006h 	Clipper 5.x
+    ?? This is a reference to the first page in a linked list of empty pages in beteen valid data.
+    Offset of next unused pages Address 00 00 00 00h is the last empty page in chain.
+    Binary version no Stored as:
+    Value 	Description
+    03h 00h 	Default
+    00h 03h 	Clipper 87
+    00h 06h 	Clipper 5.x
+

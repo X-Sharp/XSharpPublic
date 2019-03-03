@@ -1,4 +1,4 @@
-PARTIAL CLASS TopAppWindow INHERIT AppWindow
+CLASS TopAppWindow INHERIT AppWindow
 	//PP-030828 Strong typing
 	METHOD __ResizeChild() AS TopAppWindow STRICT 
 	//PP-030828 Strong typing

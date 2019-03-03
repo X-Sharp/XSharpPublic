@@ -1,6 +1,6 @@
 ﻿begin namespace $rootnamespace$
 
-    partial class $safeitemrootname$ inherit System.Windows.Forms.Form
+    partial class $safeitemrootname$ INHERIT System.Windows.Forms.Form
 
         /// <summary>
         /// Required designer variable.

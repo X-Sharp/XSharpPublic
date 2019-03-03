@@ -1,4 +1,4 @@
-PARTIAL CLASS CStorage
+﻿CLASS CStorage
    PROTECT _cPath           AS STRING
    PROTECT _lNoSave         AS LOGIC
    PROTECT _hAttFile        AS PTR

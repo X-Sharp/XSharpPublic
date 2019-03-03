@@ -47,6 +47,11 @@ namespace XSharp.Build
             set { base.Bag[nameof(PPO)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(PPO), false); }
         }
+        public Boolean MemVar
+        {
+            set { base.Bag[nameof(MemVar)] = value; }
+            get { return base.GetBoolParameterWithDefault(nameof(MemVar), false); }
+        }
         public Boolean NamedArgs
         {
             set { base.Bag[nameof(NamedArgs)] = value; }
@@ -73,7 +78,19 @@ namespace XSharp.Build
             set { base.Bag[nameof(NoStandardDefs)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(NoStandardDefs), false); }
         }
+
+        public string StandardDefs
+        {
+            set { base.Bag[nameof(StandardDefs)] = value; }
+            get { return (string)base.Bag[nameof(StandardDefs)]; }
+        }
         public string RootNameSpace { get; set; }
+        public Boolean Undeclared
+        {
+            set { base.Bag[nameof(Undeclared)] = value; }
+            get { return base.GetBoolParameterWithDefault(nameof(Undeclared), false); }
+        }
+
         public Boolean VO1
         {
             set { base.Bag[nameof(VO1)] = value; }
@@ -474,7 +491,7 @@ namespace XSharp.Build
         protected override string GetResponseFileSwitch(string responseFilePath)
         {
             string newfile = Path.Combine(Path.GetDirectoryName(responseFilePath) , "LastXSharpResponseFile.Rsp");
-            System.IO.File.Copy(responseFilePath, newfile, true);
+            Utilities.CopyFileSafe(responseFilePath, newfile);
             return base.GetResponseFileSwitch(responseFilePath);
         }
 
@@ -655,6 +672,8 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitch("/ins", base.Bag, nameof(INS));
             commandline.AppendPlusOrMinusSwitch("/lb", base.Bag, nameof(LB));
             commandline.AppendPlusOrMinusSwitch("/namedarguments", base.Bag, nameof(NamedArgs));
+            commandline.AppendPlusOrMinusSwitch("/memvar", base.Bag, nameof(MemVar));
+            commandline.AppendPlusOrMinusSwitch("/undeclared", base.Bag, nameof(Undeclared));
             commandline.AppendPlusOrMinusSwitch("/ovf", base.Bag, nameof(OVF));
             commandline.AppendPlusOrMinusSwitch("/ppo", base.Bag, nameof(PPO));
             commandline.AppendPlusOrMinusSwitch("/vo1", base.Bag, nameof(VO1));
@@ -675,6 +694,7 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitch("/vo16", base.Bag, nameof(VO16));
             commandline.AppendPlusOrMinusSwitch("/xpp1", base.Bag, nameof(XPP1));
             commandline.AppendPlusOrMinusSwitch("/xpp2", base.Bag, nameof(XPP2));
+
             // User-defined CommandLine Option (in order to support switches unknown at that time)
             // cannot use appendswitch because it will quote the string when there are embedded spaces
             if (!String.IsNullOrEmpty(this.CommandLineOption))
@@ -728,6 +748,10 @@ namespace XSharp.Build
             commandLine.AppendSwitchIfNotNull("/pdb:", PdbFile);
             commandLine.AppendPlusOrMinusSwitch("/nostdlib", base.Bag, nameof(NoStandardLib));
             commandLine.AppendPlusOrMinusSwitch("/nostddefs", base.Bag, nameof(NoStandardDefs));
+            if (! NoStandardDefs && ! string.IsNullOrEmpty(StandardDefs))
+            {
+                commandLine.AppendSwitchIfNotNull("/stddefs:", StandardDefs);
+            }
             commandLine.AppendSwitchIfNotNull("/platform:", PlatformWith32BitPreference);
             commandLine.AppendSwitchIfNotNull("/errorreport:", ErrorReport);
             commandLine.AppendSwitchWithInteger("/warn:", base.Bag, nameof(WarningLevel));

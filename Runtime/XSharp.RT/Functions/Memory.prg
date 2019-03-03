@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -31,6 +31,7 @@ FUNCTION MemTrace() AS LOGIC
 /// <param name="cb"></param>
 /// <returns>
 /// </returns>
+/// <include file="RTComments.xml" path="Comments/StaticMemory/*" />
 FUNCTION MemAlloc(cb AS DWORD) AS IntPtr
 	RETURN FixedMemory.Alloc(1, cb)
 
@@ -40,6 +41,7 @@ FUNCTION MemAlloc(cb AS DWORD) AS IntPtr
 /// </summary>
 /// <param name="cb">A pointer to a previously allocated memory buffer.</param>
 /// <returns>0 if successful; otherwise, 65,535.</returns>
+/// <include file="RTComments.xml" path="Comments/StaticMemory/*" />
 FUNCTION MemFree(pMem AS IntPtr) AS WORD
 	RETURN FixedMemory.Free(pMem)
 
@@ -48,8 +50,9 @@ FUNCTION MemFree(pMem AS IntPtr) AS WORD
 /// <param name="ui">The number of items to allocate memory for.</param>
 /// <param name="cbCell">The number of bytes to allocate for each item.</param>
 /// <returns>
-/// A pointer to the allocated space if there is sufficient memory available; otherwise, a NULL_PTR.  You should always check the return value for a successful allocation.
+/// A pointer to the allocated space if there is sufficient memory available; otherwise, a IntPtr.Zero.  You should always check the return value for a successful allocation.
 /// </returns>
+/// <include file="RTComments.xml" path="Comments/StaticMemory/*" />
 FUNCTION MemCAlloc(ui AS DWORD,cbCell AS DWORD) AS IntPtr
 	RETURN FixedMemory.Alloc(1, ui * cbCell)
 
@@ -63,6 +66,7 @@ FUNCTION MemCAlloc(ui AS DWORD,cbCell AS DWORD) AS IntPtr
 /// <returns>Returns the original pointer when the nSize parameter is smaller or equal to the current size.<br/>
 //  Extraneous bytes are zeroed out. Returns a new buffer when the requesed size is bigger than the original size.
 /// </returns>
+/// <include file="RTComments.xml" path="Comments/StaticMemory/*" />
 FUNCTION MemRealloc( pBuffer AS IntPtr, nSize AS DWORD ) AS IntPtr
 	RETURN FixedMemory.Realloc(pBuffer, nSize)
 
@@ -123,6 +127,7 @@ FUNCTION MemGrpAlloc(dwGroup AS DWORD,cb AS DWORD) AS IntPtr
 /// <returns>
 /// If successful, the handle of the new group; otherwise, 0.  You should always check for a valid group handle.
 /// </returns>
+/// <include file="RTComments.xml" path="Comments/StaticMemory/*" />
 FUNCTION MemGrpOpen() AS DWORD
 	LOCAL oGroup AS MemGroup
 	oGroup := FixedMemory.AddGroup()
@@ -140,6 +145,7 @@ FUNCTION MemGrpOpen() AS DWORD
 /// <param name="cbCell"></param>
 /// <returns>
 /// </returns>
+/// <include file="RTComments.xml" path="Comments/StaticMemory/*" />
 FUNCTION MemGrpCAlloc(dwGroup AS DWORD,cb AS DWORD,cbCell AS DWORD) AS IntPtr
 	RETURN FixedMemory.Alloc(dwGroup, cb * cbCell)
 
@@ -226,10 +232,10 @@ RETURN result
 FUNCTION MemAtSpecial( pMemory AS IntPtr, dwCount AS DWORD ) AS DWORD
 	
 	LOCAL ret := 0 AS DWORD
-	IF pMemory == NULL_PTR
+	IF pMemory == IntPtr.Zero
 	   THROW Error.NullArgumentError( __FUNCTION__, NAMEOF(pMemory), 1 )
 	ENDIF
-	VAR pBytes := (BYTE PTR) pMemory
+	VAR pBytes := (BYTE PTR) pMemory:ToPointer()
 	LOCAL x AS DWORD
 	FOR X := 1 TO dwCount
       IF pBytes[x] <= 13  // Note: indexer on PSZ class is 0-based
@@ -244,7 +250,7 @@ FUNCTION MemAtSpecial( pMemory AS IntPtr, dwCount AS DWORD ) AS DWORD
 /// <param name="bChar">The byte value to match. </param>
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of bChar within the first dwCount bytes of pMemory.  
-/// If bChar is not matched, MemChr() returns a NULL_PTR.</returns>
+/// If bChar is not matched, MemChr() returns a IntPtr.Zero.</returns>
 FUNCTION MemByte( pMemory AS IntPtr, bChar AS BYTE, dwCount AS DWORD ) AS IntPtr
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(pMemory), 1)
@@ -256,19 +262,19 @@ FUNCTION MemByte( pMemory AS IntPtr, bChar AS BYTE, dwCount AS DWORD ) AS IntPtr
 /// <param name="bChar">The byte value to match. </param>
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of bChar within the first dwCount bytes of pMemory.  
-/// If bChar is not matched, MemChr() returns a NULL_PTR.</returns>
+/// If bChar is not matched, MemChr() returns a IntPtr.Zero.</returns>
 FUNCTION MemChr( pMemory AS IntPtr, bChar AS BYTE, dwCount AS DWORD ) AS IntPtr
 	LOCAL pChr   AS BYTE PTR
-	LOCAL pRet   AS BYTE PTR
+	LOCAL pRet   AS IntPtr
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(pMemory), 1)
 	ENDIF
 
-	pRet	:= NULL_PTR
-	pChr	:= (BYTE PTR) pMemory
+	pRet	:= IntPtr.Zero
+	pChr	:= pMemory:ToPointer()
 	FOR VAR x := 1 TO dwCount
 		IF pChr[x] == bChar
-			pRet := @pChr[x]
+			pRet := IntPtr{@pChr[x]}
 			EXIT
 		ENDIF
 	NEXT
@@ -302,8 +308,8 @@ FUNCTION MemComp( pMem1 AS IntPtr, pMem2 AS IntPtr, dwCount AS DWORD ) AS INT
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(pMem2), 2)
 	ENDIF
 
-	pByte1 := (BYTE PTR) pMem1
-	pByte2 := (BYTE PTR) pMem2
+	pByte1 := pMem1:ToPointer()
+	pByte2 := pMem2:ToPointer()
 	result := 0
 	FOR VAR x  := 1 TO dwCount
 		IF pByte1[x] < pByte2[x]
@@ -346,7 +352,7 @@ FUNCTION MemCopy( pDestination AS IntPtr, pSource AS IntPtr, dwCount AS DWORD ) 
 /// </remarks>
 FUNCTION MemCopyString( pDestination AS IntPtr, cSource AS STRING, dwCount AS DWORD ) AS VOID
    // Convert the String to Ansi before copying
-   IF pDestination == NULL_PTR
+   IF pDestination == IntPtr.Zero
       THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(pDestination), 1)
    ENDIF
    IF cSource == NULL
@@ -373,18 +379,18 @@ FUNCTION MemCopyString( pDestination AS IntPtr, cSource AS STRING, dwCount AS DW
 /// <param name="dwValue">The dword value to match. </param>
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of dwValue within the first dwCount bytes of pMemory.  
-/// If dwValue is not matched, MemDWord() returns a NULL_PTR.</returns>
+/// If dwValue is not matched, MemDWord() returns a IntPtr.Zero.</returns>
 FUNCTION MemDWord( pMemory AS IntPtr, dwValue AS DWORD, dwCount AS DWORD ) AS IntPtr
 	LOCAL pDword AS DWORD PTR
-	LOCAL pRet   AS DWORD PTR
+	LOCAL pRet   AS IntPtr 
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(pMemory), 1)
 	ENDIF
-	pRet   := NULL_PTR
-	pDword := (DWORD PTR) pMemory
+	pRet   := IntPtr.Zero
+	pDword := pMemory:ToPointer()
 	FOR VAR x := 1 TO dwCount
 		IF pDword[x] == dwValue
-			pRet := @pDword[x]
+			pRet := IntPtr{@pDword[x]}
 			EXIT
 		ENDIF
 	NEXT
@@ -395,18 +401,18 @@ FUNCTION MemDWord( pMemory AS IntPtr, dwValue AS DWORD, dwCount AS DWORD ) AS In
 /// <param name="iValue">The int value to match. </param>
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of iValue within the first dwCount bytes of pMemory.  
-/// If iValue is not matched, MemInt() returns a NULL_PTR.</returns>
+/// If iValue is not matched, MemInt() returns a IntPtr.Zero.</returns>
 FUNCTION MemInt( pMemory AS IntPtr, iValue AS INT, dwCount AS DWORD ) AS IntPtr
 	LOCAL pInt   AS INT PTR
-	LOCAL pRet   AS INT PTR
+	LOCAL pRet   AS IntPtr
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(pMemory), 1)
 	ENDIF
-	pRet	:= NULL_PTR
-	pInt	:= (INT PTR) pMemory
+	pRet	:= IntPtr.Zero
+	pInt	:= (INT PTR) pMemory:ToPointer()
 	FOR VAR x := 1 TO dwCount
 		IF pInt[x] == iValue
-			pRet := @pInt[x]
+			pRet := IntPtr{@pInt[x]}
 			EXIT
 		ENDIF
 	NEXT
@@ -428,7 +434,7 @@ FUNCTION MemLen( pMemory AS IntPtr ) AS DWORD
 /// <param name="liValue">The long value to match. </param>
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of liValue within the first dwCount bytes of pMemory.  
-/// If liValue is not matched, MemLong() returns a NULL_PTR.</returns>
+/// If liValue is not matched, MemLong() returns a IntPtr.Zero.</returns>
 FUNCTION MemLong( pMemory AS IntPtr, liValue AS INT, dwCount AS DWORD ) AS IntPtr
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(pMemory), 1)
@@ -448,10 +454,10 @@ FUNCTION MemLower( pMemory AS IntPtr, dwCount AS DWORD ) AS IntPtr
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(pMemory), 1)
 	ENDIF
-	pChr	:= (BYTE PTR) pMemory
+	pChr := pMemory:ToPointer() 
 	FOR VAR x := 1 TO dwCount
-		IF pChr[x] >= 'A' .AND. pChr[x] <= 'Z'
-			pChr[x] += c'a' - c'A' 
+        IF pChr[x] >= c'A' .AND. pChr[x] <= c'Z'
+			pChr[x] |= (BYTE) 32
 		ENDIF
 	NEXT
 	RETURN pMemory
@@ -466,8 +472,6 @@ FUNCTION MemLower( pMemory AS IntPtr, dwCount AS DWORD ) AS IntPtr
 /// of the destination buffer, the overlapping region is copied and kept for the duration of 
 /// the operation before it is overwritten.</remarks>
 FUNCTION MemMove( pDestination AS IntPtr, pSource AS IntPtr, nSize AS DWORD ) AS IntPtr
-   LOCAL dst AS BYTE PTR
-   LOCAL src AS BYTE PTR
 
 	IF pDestination == IntPtr.Zero
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(pDestination), 1)
@@ -475,19 +479,22 @@ FUNCTION MemMove( pDestination AS IntPtr, pSource AS IntPtr, nSize AS DWORD ) AS
 	IF pSource == IntPtr.Zero
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(pSource), 2)
 	ENDIF
-	dst := (BYTE PTR) pDestination 
-	src := (BYTE PTR) pSource      
-	
-	IF (dst <= src) || dst >= (BYTE PTR) ( (DWORD) src + (DWORD) nSize)
-		// copy from source to dest from lower to higher bound
-		FixedMemory.Copy(pDestination, pSource, (INT) nSize)
-	ELSE
-		// overlapping
-		// copy from higher address to lower address
-		FOR VAR x := nSize DOWNTO 1 
-			dst[x] := src[x]
-		NEXT
-	ENDIF
+    IF nSize > 0
+	    IF (pDestination:ToInt32() <= pSource:ToInt32() || pDestination:ToInt32() >= (pSource:ToInt32() + (int) nSize))
+		    // copy from source to dest from lower to higher bound
+		    FixedMemory.Copy(pDestination, pSource, (INT) nSize)
+	    ELSE
+		    // overlapping
+		    // copy from higher address to lower address
+            LOCAL dst AS BYTE PTR
+            LOCAL src AS BYTE PTR
+	        dst := pDestination:ToPointer()
+	        src := pSource:ToPointer()
+		    FOR VAR x := nSize DOWNTO 1 
+			    dst[x] := src[x]
+		    NEXT
+	    ENDIF
+    ENDIF
 	RETURN pDestination
 
 /// <summary>Fill a memory buffer with a specified character.</summary>
@@ -506,18 +513,18 @@ FUNCTION MemSet( pMemory AS IntPtr, bValue AS BYTE, dwCount AS DWORD ) AS IntPtr
 /// <param name="siValue">The short value to match. </param>
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of siValue within the first dwCount bytes of pMemory.  
-/// If siValue is not matched, MemShort() returns a NULL_PTR.</returns>
+/// If siValue is not matched, MemShort() returns a IntPtr.Zero.</returns>
 FUNCTION MemShort( pMemory AS IntPtr, siValue AS SHORT, dwCount AS DWORD ) AS IntPtr
 	LOCAL pShort  AS SHORT PTR
-	LOCAL pRet   AS SHORT PTR
+	LOCAL pRet   AS IntPtr
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(pMemory), 1)
 	ENDIF
-	pRet	:= NULL_PTR
-	pShort	:= (SHORT PTR) pMemory
+	pRet	:= IntPtr.Zero
+	pShort	:= pMemory:ToPointer()
 	FOR VAR x := 1 TO dwCount
 		IF pShort[x] == siValue
-			pRet := @pShort[x]
+			pRet := IntPtr{@pShort[x]}
 			EXIT
 		ENDIF
 	NEXT
@@ -534,11 +541,10 @@ FUNCTION MemUpper( pMemory AS IntPtr, dwCount AS DWORD ) AS IntPtr
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(pMemory), 1)
 	ENDIF
-
-	pChr	:= (BYTE PTR) pMemory
+    pChr := pMemory:ToPointer() 
 	FOR VAR x := 1 TO dwCount
-		IF pChr[x] >= c'a' .AND. pChr[x] <= 'z'
-			pChr[x] -= c'a' - c'A' 
+        IF pChr[x] >= c'a' .AND. pChr[x] <= c'z'
+			pChr[x] -= (BYTE) 32
 		ENDIF
 	NEXT
 	RETURN pMemory
@@ -548,18 +554,18 @@ FUNCTION MemUpper( pMemory AS IntPtr, dwCount AS DWORD ) AS IntPtr
 /// <param name="wValue">The word value to match. </param>
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of wValue within the first dwCount bytes of pMemory.  
-/// If wValue is not matched, MemWord() returns a NULL_PTR.</returns>
+/// If wValue is not matched, MemWord() returns a IntPtr.Zero.</returns>
 FUNCTION MemWord( pMemory AS IntPtr, wValue AS WORD, dwCount AS DWORD ) AS IntPtr
 	LOCAL pWord  AS WORD PTR
-	LOCAL pRet   AS WORD PTR
+	LOCAL pRet   AS IntPtr
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(pMemory), 1)
 	ENDIF
-	pRet	:= NULL_PTR
-	pWord	:= (WORD PTR) pMemory
+	pRet	:= IntPtr.Zero
+	pWord	:= pMemory:ToPointer()
 	FOR VAR x := 1 TO dwCount
 		IF pWord[x] == wValue
-			pRet := @pWord[x]
+			pRet := IntPtr{@pWord[x]}
 			EXIT
 		ENDIF
 	NEXT

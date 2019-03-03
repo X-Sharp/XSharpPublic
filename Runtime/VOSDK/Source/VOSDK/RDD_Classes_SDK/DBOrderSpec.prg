@@ -1,4 +1,4 @@
-PARTIAL CLASS OrderSpec
+CLASS OrderSpec
 	PROTECT oDBF            AS DBFileSpec
 
 	// index order items

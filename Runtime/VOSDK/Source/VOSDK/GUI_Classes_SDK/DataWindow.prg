@@ -1,4 +1,4 @@
-PARTIAL CLASS DataWindow INHERIT ChildAppWindow
+ CLASS DataWindow INHERIT ChildAppWindow
 	PROTECT sCurrentView AS SYMBOL
 	PROTECT nCCMode AS INT
 	PROTECT nLastLock AS INT

@@ -54,7 +54,6 @@ FUNCTION QOut( o PARAMS USUAL[] ) AS VOID
 
 /// <summary>Display the results of one or more expressions in the terminal window to the console.</summary>
 FUNCTION QQOut( o AS USUAL ) AS VOID
-   //Console.Write( _ToVOString( o ) )
    Console.Write( AsString( o ) )
    RETURN
 

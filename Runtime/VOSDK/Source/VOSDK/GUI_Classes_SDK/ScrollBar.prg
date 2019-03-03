@@ -1,4 +1,4 @@
-PARTIAL CLASS HorizontalScrollBar INHERIT ScrollBar
+CLASS HorizontalScrollBar INHERIT ScrollBar
 
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
 	
@@ -12,7 +12,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 
 END CLASS
 
-PARTIAL CLASS ScrollBar INHERIT Control
+CLASS ScrollBar INHERIT Control
 	PROTECT wType AS LONGINT			// RvdH 070205 Changed from WORD to LONG
 	PROTECT wBlockSize AS LONGINT		// RvdH 070205 Changed from WORD to LONG
 	PROTECT wUnitSize AS LONGINT		// RvdH 070205 Changed from WORD to LONG
@@ -297,7 +297,7 @@ ASSIGN Value(nValue)
 
 END CLASS
 
-PARTIAL CLASS VerticalScrollBar INHERIT ScrollBar
+CLASS VerticalScrollBar INHERIT ScrollBar
 
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
 

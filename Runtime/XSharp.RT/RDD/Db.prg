@@ -1,4 +1,4 @@
-ï»¿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -643,10 +643,7 @@ FUNCTION DbSetDriver(cDriver) AS STRING CLIPPER
     
     
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
+/// <inheritdoc cref="M:XSharp.RT.Functions.VoDbSetFilter(XSharp.__Usual,System.String)" />
 FUNCTION DbSetFilter(cbFilter, cFilter) AS LOGIC CLIPPER
     IF IsNil(cFilter)
         cFilter := "UNKNOWN"
@@ -1131,7 +1128,7 @@ FUNCTION IndexHPLock(lSet AS USUAL) AS LOGIC
     RETURN lOld
     
     /// <summary>
-    /// Return and optionally change the setting that determines whether to use the new locking offset of -1Â (0xFFFFFFFF) for .NTX files.
+    /// Return and optionally change the setting that determines whether to use the new locking offset of -1 (0xFFFFFFFF) for .NTX files.
     /// </summary>
     /// <param name="lSet"></param>
     /// <returns>
@@ -1147,7 +1144,7 @@ FUNCTION NewIndexLock(lSet AS USUAL) AS LOGIC
     
     
     /// <summary>
-    /// Return the setting that determines whether to use the new locking offset of -1Â (0xFFFFFFFF) for .NTX files.
+    /// Return the setting that determines whether to use the new locking offset of -1 (0xFFFFFFFF) for .NTX files.
     /// </summary>
     /// <returns>
     /// </returns>

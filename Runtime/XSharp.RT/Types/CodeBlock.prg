@@ -117,7 +117,11 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock
 	/// Returns the original string that was used to create the macro compiled codeblock.
 	/// </summary>
 	PUBLIC OVERRIDE METHOD ToString() AS STRING
-		RETURN _cMacro
+        IF _lIsBlock
+		    RETURN _cMacro
+        ELSE
+            RETURN "{|| "+_cMacro+" }"
+        ENDIF
 
 	/// <summary>Was the codeblock created from a string that started with "{|" </summary>
 	PUBLIC PROPERTY IsBlock AS LOGIC GET _lIsBlock

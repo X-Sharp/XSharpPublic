@@ -1131,7 +1131,7 @@ METHOD ClearScope( )
 	lStoredAllRecords := FALSE
 	nStoredNextCount := 0
 	uStoredScope := NIL
-
+    lActiveScope := FALSE // RvdH 2019-02-16 needs to be reset
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__)
 	#ENDIF
@@ -1242,7 +1242,7 @@ METHOD Commit( )
 
 METHOD ConstructUniqueAlias( cFileName ) 
     LOCAL sResult AS SYMBOL
-	Default( @cFileName, "" )
+	DEFAULT( @cFileName, "" )
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF

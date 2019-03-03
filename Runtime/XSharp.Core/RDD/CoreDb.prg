@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -75,20 +75,21 @@ CLASS XSharp.CoreDb
         srcFieldCount := Convert.ToUInt32( oTmp )
         oTmp := dst:Info( DBInfo.DBI_FCOUNT, NULL )
         dstFieldCount := Convert.ToUInt32( oTmp )
-        
-        fMatch := (DWORD) dbti:ItemCount == srcFieldCount .AND. srcFieldCount == dstFieldCount
-        j := 1
+        i := (INT) src:Info(DbInfo.DBI_GETRECSIZE, NULL)
+        j := (INT) dst:Info(DbInfo.DBI_GETRECSIZE, NULL)
+        fMatch := (DWORD) dbti:ItemCount == srcFieldCount .AND. srcFieldCount == dstFieldCount .AND. i == j
+        j := 0
         FOR i := 0 UPTO lpfn:fieldCount -1
         
-            uiSrc := src:FieldIndex( lpfn:fields[i] )
+            uiSrc := src:FieldIndex( lpfn:fields[i] )       // returns a 1 based index
             uiDst := dst:FieldIndex( lpfn:fields[i]  )
             
             IF uiSrc == 0 || uiDst == 0
                 fMatch := FALSE
             ELSE
-                // Note that lpTransItems wants the Field Positions to start with 0
-                dbti:Items[j]:Source       := uiSrc - 1
-                dbti:Items[j]:Destination  := uiDst - 1
+                
+                dbti:Items[j]:Source       := uiSrc 
+                dbti:Items[j]:Destination  := uiDst 
                 j++
                 
                 IF fMatch
@@ -103,26 +104,25 @@ CLASS XSharp.CoreDb
             ENDIF 
         NEXT
         
-        dbti:ItemCount := j -1
+        dbti:ItemCount := j 
         
         RETURN fMatch
         /// <exclude />   
     INTERNAL STATIC METHOD TransSetInfo(oRdd AS IRDD, info AS DbTransInfo, cFunc AS STRING,nDest AS DWORD, fldNames AS _FieldNames,;
                                         uCobFor AS ICodeblock ,uCobWhile AS ICodeblock ,;
                                         nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS VOID
-        LOCAL oDest := RUntimeState.Workareas.GetRDD(nDest) AS IRDD
+        LOCAL oDest := RuntimeState.Workareas.GetRDD(nDest) AS IRDD
         IF oDest == NULL
             RddError.PostNoTableError(cFunc)
         ENDIF
         info:Destination := oDest
-        IF !CoreDb.BuildTrans( info, fldNames, oRDD, oDest )
-            RddError.PostArgumentError( cFunc, EDB_DBSTRUCT, nameof(fldNames), 2, <OBJECT>{fldNames} )
-        ENDIF
-        info:Flags := DbTransInfo.Match
-        LOCAL oCanPutRec AS OBJECT
-        oCanPutRec := oRdd:Info(DBInfo.DBI_CANPUTREC, NULL)
-        IF oCanPutRec IS LOGIC .AND. (LOGIC) oCanPutRec
-            info:Flags |= DbTransInfo.PutRec
+        IF CoreDb.BuildTrans( info, fldNames, oRDD, oDest )
+            info:Flags |= DbTransInfoFlags.SameStructure
+            LOCAL oCanPutRec AS OBJECT
+            oCanPutRec := oRdd:Info(DBInfo.DBI_CANPUTREC, NULL)
+            IF oCanPutRec IS LOGIC .AND. (LOGIC) oCanPutRec 
+                info:Flags |= DbTransInfoFlags.CanPutRec
+            ENDIF
         ENDIF
         info:Scope:ForBlock := uCobFor
         info:Scope:WhileBlock := uCobWhile
@@ -426,7 +426,7 @@ CLASS XSharp.CoreDb
         /// <param name="cAlias">The alias to be associated with the work area where the file is opened.  Within a single thread, X# will not accept duplicate aliases.  cAlias is useful only when lOpen has a value of TRUE.  The default alias is the filename without extension</param>
         /// <param name="cDelim">The delimiter for fields within a delimited database file. The default is a NULL string </param>
         /// <param name="lKeep">TRUE specifies that the file should remain open after creating. FALSE closes the file.</param>
-        /// <param name="lJustOpen">TRUE specifies that an existing database file be opened. FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
+        /// <param name="lJustOpen">TRUE specifies that an existing database file be opened. FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header ? in which case, an empty aStruct should be used.</param>
         /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
         /// <seealso cref="M:XSharp.RT.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)" >DbCreate() function </seealso>
         /// <seealso cref="O:XSharp.RT.Functions.VoDbCreate" >VoDbCreate overloads</seealso>
@@ -947,7 +947,14 @@ CLASS XSharp.CoreDb
         
     STATIC METHOD MemoExt(cDriver AS STRING) AS STRING
         RETURN CoreDb.Do ({ =>
-        LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
+        LOCAL oRDD := CoreDb.CWA(__FUNCTION__, FALSE) AS IRDD
+        IF oRDD == NULL
+            // Get an RDD object
+            LOCAL oRegRDD AS RegisteredRDD
+            oRegRDD:= RegisteredRDD.Find(RuntimeState.DefaultRDD)
+            oRegRdd:Load()
+            oRDD := CoreDb.CreateRDDInstance( oRegRdd:RddType, "XXTEMPXX" )
+        ENDIF
         RETURN (STRING) oRDD:Info(DBI_MEMOEXT, NULL)
         })
         /// <summary>
@@ -957,9 +964,17 @@ CLASS XSharp.CoreDb
         /// </returns>
     STATIC METHOD OrdBagExt() AS STRING
         RETURN CoreDb.Do ({ =>
-        LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
+        LOCAL oRDD := CoreDb.CWA(__FUNCTION__,FALSE) AS IRDD
+        IF oRDD == NULL
+            // Get an RDD object
+            LOCAL oRegRDD AS RegisteredRDD
+            oRegRDD:= RegisteredRDD.Find(RuntimeState.DefaultRDD)
+            oRegRdd:Load()
+            oRDD := CoreDb.CreateRDDInstance( oRegRdd:RddType, "XXTEMPXX" )
+        ENDIF
         VAR info := DbOrderInfo{}
-        RETURN (STRING) oRDD:OrderInfo( DBOI_BAGEXT, info)
+        oRDD:OrderInfo(DBOI_BAGEXT, info)
+        RETURN (STRING) info:Result
         })
         
         /// <summary>
@@ -1049,6 +1064,7 @@ CLASS XSharp.CoreDb
             VAR info := DbOrderInfo{}
             info:BagName := cBagName
             info:Order   := oOrder
+            info:Result  := oValue
 			oRDD:OrderInfo(nOrdinal, info)
             oValue :=  info:Result
             RETURN TRUE
@@ -1102,7 +1118,7 @@ CLASS XSharp.CoreDb
         ELSE
             VAR info := DbOrderInfo{}
             info:BagName := cBagName
-            IF oOrder == NULL
+            IF oOrder == NULL .AND. STRING.IsNullOrEmpty(cBagName)
                 info:AllTags := TRUE
             ELSE
                 info:Order   := oOrder
@@ -1489,7 +1505,7 @@ CLASS XSharp.CoreDb
     STATIC METHOD SetFound(lFound AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
-        oRDD:Found := TRUE
+        oRDD:Found := lFound
         RETURN TRUE
         })
         /// <summary>
@@ -1697,27 +1713,26 @@ CLASS XSharp.CoreDb
         
     STATIC METHOD TransRec(nDest AS DWORD,fldNames AS _FieldNames) AS LOGIC
         RETURN CoreDb.Do ({ =>
-        LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
-        LOCAL dbti := DbTransInfo{ fldNames:fieldCount} AS DBTRANSINFO
-        LOCAL oDest := RUntimeState.Workareas.GetRDD(nDest) AS IRDD
-        IF oDest == NULL_OBJECT
-            RddError.PostNoTableError(__FUNCTION__)
-        ENDIF
-        dbti:Destination := oDest
-        dbti:ItemCount := fldNames:FieldCount
-        IF !CoreDb.BuildTrans( dbti, fldNames, oRDD, oDest )
-            RddError.PostArgumentError( __FUNCTION__, EDB_DBSTRUCT, nameof(fldNames), 2, <OBJECT>{fldNames} )
-        ENDIF
-        LOCAL oCanPutRec AS OBJECT
-        dbti:Flags |= DBTRANSINFO.Match
-        oCanPutRec := oRDD:Info( DBInfo.DBI_CANPUTREC, NULL )
-        IF oCanPutRec != NULL .AND. (LOGIC) oCanPutRec
-            oCanPutRec := oDest:Info(DBInfo.DBI_CANPUTREC, NULL )
-            IF oCanPutRec != NULL .AND. (LOGIC) oCanPutRec
-                dbti:Flags |= DBTRANSINFO.PutRec
+            LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
+            LOCAL dbti := DbTransInfo{ fldNames:fieldCount} AS DBTRANSINFO
+            LOCAL oDest := RUntimeState.Workareas.GetRDD(nDest) AS IRDD
+            IF oDest == NULL_OBJECT
+                RddError.PostNoTableError(__FUNCTION__)
             ENDIF
-        ENDIF
-        RETURN oRDD:TransRec( dbti )
+            dbti:Destination := oDest
+            dbti:ItemCount := fldNames:FieldCount
+            IF CoreDb.BuildTrans( dbti, fldNames, oRDD, oDest )
+                dbti:Flags |= DbTransInfoFlags.SameStructure
+                LOCAL oCanPutRec AS OBJECT
+                oCanPutRec := oRDD:Info( DBInfo.DBI_CANPUTREC, NULL )
+                IF oCanPutRec != NULL .AND. (LOGIC) oCanPutRec
+                    oCanPutRec := oDest:Info(DBInfo.DBI_CANPUTREC, NULL )
+                    IF oCanPutRec != NULL .AND. (LOGIC) oCanPutRec
+                        dbti:Flags |= DbTransInfoFlags.CanPutRec
+                    ENDIF
+                ENDIF
+            ENDIF
+            RETURN oRDD:TransRec( dbti )
         })
         
         /// <summary>

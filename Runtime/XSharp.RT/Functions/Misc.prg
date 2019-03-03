@@ -104,8 +104,17 @@ FUNCTION Max(u1 AS USUAL,u2 AS USUAL) AS USUAL
 	ELSEIF u1:IsDate .AND. u2:IsDate
 		RETURN IIF ((DATE) u1 > (DATE) u2, u1, u2)
 
+	ELSEIF u1:IsDateTime .AND. u2:IsDateTime
+		RETURN IIF ((DateTime) u1 > (DateTime) u2, u1, u2)
+
+	ELSEIF (u1:IsDateTime .or. u1:IsDate) .AND. (u2:IsDateTime .or. u2:IsDate)
+		RETURN IIF ((DateTime) u1 > (DateTime) u2, u1, u2)
+
 	ELSEIF u1:IsString .AND. u2:IsString
 		RETURN IIF ((STRING) u1 > (STRING) u2, u1, u2)
+
+	ELSEIF u1:IsSymbol .AND. u2:IsSymbol
+		RETURN IIF ((SYMBOL) u1 > (SYMBOL) u2, u1, u2)
 
 	ELSE
         THROW Error.ArgumentError( __FUNCTION__, NAMEOF(u2) , "Incompatible types")

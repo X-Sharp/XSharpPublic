@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 USING System.IO
+USING System.Reflection
 USING System.Collections.Generic
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
@@ -45,8 +46,7 @@ BEGIN NAMESPACE XSharp.RDD
 		PUBLIC _FilterInfo	    AS DbFilterInfo  
 		/// <summary>Current Order condition</summary>
 		PUBLIC _OrderCondInfo	AS DbOrderCondInfo
-		/// <summary>Current Relation info</summary>
-		PUBLIC _RelInfo		    AS DbRelInfo
+		/// <summary>List of children</summary>
 		PUBLIC _Relations       AS List<DbRelInfo>
 		/// <summary># of parents</summary>
 		PUBLIC _Parents		    AS LONG		
@@ -104,7 +104,6 @@ BEGIN NAMESPACE XSharp.RDD
 			SELF:_Shared	 := FALSE
 			SELF:_ReadOnly   := FALSE
 			SELF:_MaxFieldNameLength := 10
-			SELF:_RelInfo    := NULL
 			SELF:_Alias		 := String.Empty
 			SELF:_RecordBuffer := NULL
 			SELF:_Disposed   := FALSE
@@ -524,6 +523,8 @@ BEGIN NAMESPACE XSharp.RDD
               ELSE
                 result := FALSE
               ENDIF
+            ELSE
+                RddError.PostArgumentError("VoDbCreate",EDB_WRONGFIELDNAME, "Name", 1, <OBJECT>{info:Name})
             ENDIF
 			RETURN result
             
@@ -615,7 +616,7 @@ BEGIN NAMESPACE XSharp.RDD
 			
 		VIRTUAL METHOD GetField(nFldPos AS INT) AS RDDFieldInfo
 			IF SELF:_FieldIndexValidate(nFldPos)
-				RETURN SELF:_Fields[nFldPos]
+				RETURN SELF:_Fields[nFldPos-1]
 			ENDIF          
 			RETURN NULL
 			
@@ -783,12 +784,19 @@ BEGIN NAMESPACE XSharp.RDD
 				/// <inheritdoc />
 			VIRTUAL METHOD RelEval(relinfo AS DbRelInfo) AS LOGIC
                 // Evaluate block in the Area of the Parent
-                RETURN relinfo:Parent:EvalBlock(relinfo:Block) != NULL
+                VAR originalArea := XSharp.RuntimeState.CurrentWorkArea
+                TRY
+                    XSharp.RuntimeState.CurrentWorkArea := relinfo:Parent:Area
+                    SELF:_EvalResult := relinfo:Parent:EvalBlock(relinfo:Block)
+                FINALLY
+                    XSharp.RuntimeState.CurrentWorkArea := originalArea
+                END TRY
+                RETURN SELF:_EvalResult != NULL
 				
 				/// <inheritdoc />
 			VIRTUAL METHOD RelText(nRelNum AS DWORD) AS STRING
 				LOCAL textRelation := "" AS STRING
-				IF ( nRelNum < SELF:_Relations:Count )
+				IF nRelNum < SELF:_Relations:Count 
 					textRelation := SELF:_Relations[ (INT)nRelNum ]:Key
 				ENDIF
 				RETURN textRelation
@@ -879,13 +887,11 @@ BEGIN NAMESPACE XSharp.RDD
                 LOCAL oValue AS OBJECT
                 oDest := info:Destination
                 result := oDest:Append(TRUE)
-                IF _AND(info:Flags , DbTransInfo.PutRec) != 0
-                    VAR buffer := SELF:GetRec()
-                    result := oDest:PutRec(buffer)
+                IF info:Flags:HasFlag(DbTransInfoFlags.CanPutRec) 
+                    VAR buffer  := SELF:GetRec()
+                    result      := oDest:PutRec(buffer)
                 ELSE
-                    FOR VAR i := 0 TO info:ItemCount
-                        LOCAL oItem AS DbTransItem
-                        oItem  := info:Items[i]
+                    FOREACH oItem AS DbTransItem IN info:Items
                         oValue := SELF:GetValue(oItem:Source)
                         result := oDest:PutValue(oItem:Destination, oValue)
                         IF ! result
@@ -903,7 +909,26 @@ BEGIN NAMESPACE XSharp.RDD
 		VIRTUAL METHOD BlobInfo(uiPos AS DWORD, uiOrdinal AS DWORD) AS OBJECT
 			THROW NotImplementedException{__ENTITY__}
 
-     
+        PRIVATE STATIC oCbType AS System.Type     
+
+        PRIVATE STATIC METHOD FindCbType AS VOID
+            FOREACH VAR asm IN AppDomain.CurrentDomain:GetAssemblies()
+                IF asm:GetName():Name:ToLower() == "xsharp.rt"
+                    oCbType := asm:GetType("XSharp._Codeblock")
+                    IF oCbType == NULL
+                        FOREACH VAR oT IN asm:GetTypes()
+                            IF oT:FullName:ToLower() == "xsharp._codeblock"
+                                oCbType := oT
+                                EXIT
+                            ENDIF
+                        NEXT
+                    ENDIF
+                ENDIF
+                IF oCbType != NULL
+                    EXIT
+                ENDIF
+            NEXT
+            RETURN
 
 			/// <inheritdoc />
 		VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeblock
@@ -916,6 +941,15 @@ BEGIN NAMESPACE XSharp.RDD
 					LOCAL isBlock       AS LOGIC
                     LOCAL addsMemvars   AS LOGIC
 					oBlock := oC:Compile(sBlock, TRUE, oType:Module, OUT isBlock, OUT addsMemVars)
+                    // Convert to _CodeBlock when needed
+                    IF oBlock IS XSharp.RuntimeCodeBlock
+                        IF (oCbType == NULL)
+                            FindCbType()
+                        ENDIF
+                        IF oCbType != NULL
+                            oBlock := Activator.CreateInstance(oCbType, <OBJECT>{oBlock, sBlock, isBlock, addsMemVars})
+                        ENDIF
+                    ENDIF
 				ENDIF
 			CATCH e AS Exception
 				XSharp.RuntimeState.LastRddError := e
@@ -1057,7 +1091,7 @@ BEGIN NAMESPACE XSharp.RDD
 		VIRTUAL PROPERTY Shared AS LOGIC GET FALSE
 		
 		/// <inheritdoc />
-		VIRTUAL PROPERTY SysName AS STRING GET TYPEOF(Workarea):ToString()
+		VIRTUAL PROPERTY SysName AS STRING GET "WORKAREA"
 		
 	END CLASS
 

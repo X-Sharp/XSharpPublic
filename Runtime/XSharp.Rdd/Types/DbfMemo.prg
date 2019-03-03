@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -43,7 +43,7 @@ VIRTUAL METHOD OpenMemFile( info AS DbOpenInfo) AS LOGIC
 	THROW NotImplementedException{}
 
 /// <inheritdoc />
-VIRTUAL PROPERTY SysName AS STRING GET typeof(DbfMemo):ToString()
+VIRTUAL PROPERTY SysName AS STRING GET "DBFMEMO"
 
 END CLASS
 END NAMESPACE

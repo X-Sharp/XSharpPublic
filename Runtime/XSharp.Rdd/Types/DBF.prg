@@ -2326,7 +2326,7 @@ BEGIN NAMESPACE XSharp.RDD
 		
 		VIRTUAL PROPERTY Shared		AS LOGIC GET SELF:_Shared
 		/// <inheritdoc />
-		VIRTUAL PROPERTY SysName AS STRING GET TYPEOF(Dbf):ToString()
+		VIRTUAL PROPERTY SysName AS STRING GET "DBF"
 		
 			
 		/// <summary>DBF Header.</summary>

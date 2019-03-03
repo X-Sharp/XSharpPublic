@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -17,7 +17,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
         SUPER:_Driver := "Advantage.AXSQLRDD"
 
 	/// <inheritdoc />
-    VIRTUAL PROPERTY SysName AS STRING GET typeof(AXSQLRDD):ToString()
+    VIRTUAL PROPERTY SysName AS STRING GET "AXSQLRDD"
 	/// <inheritdoc />
     VIRTUAL METHOD Close() AS LOGIC
         IF (! SUPER:Close())

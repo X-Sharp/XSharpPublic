@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharp.RDD
             SUPER()
             SELF:_oMemo := _oDbtMemo := DBTMemo{SELF}
             
-        VIRTUAL PROPERTY SysName AS STRING GET TYPEOF(DbfDbt):ToString()
+        VIRTUAL PROPERTY SysName AS STRING GET "DBFDBT"
                 
         // Return the memo content as STRING
         METHOD GetValue(nFldPos AS LONG) AS OBJECT

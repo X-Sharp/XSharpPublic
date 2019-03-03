@@ -14,7 +14,7 @@ BEGIN NAMESPACE XSharp.RDD
             SUPER()
             SELF:_oMemo := FptMemo{SELF}
             /// <inheritdoc />	
-        VIRTUAL PROPERTY SysName AS STRING GET TYPEOF(DBFFPT):ToString()
+        VIRTUAL PROPERTY SysName AS STRING GET "DBFFPT"
         
         METHOD GetValue(nFldPos AS LONG) AS OBJECT
             LOCAL rawData AS BYTE[]

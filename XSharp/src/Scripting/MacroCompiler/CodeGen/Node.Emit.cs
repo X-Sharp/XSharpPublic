@@ -150,10 +150,10 @@ namespace XSharp.MacroCompiler.Syntax
                 switch (op.Kind)
                 {
                     case BinaryOperatorKind.And:
-                        ilg.Emit(OpCodes.Brfalse_S, lb);
+                        ilg.Emit(OpCodes.Brfalse, lb);
                         break;
                     case BinaryOperatorKind.Or:
-                        ilg.Emit(OpCodes.Brtrue_S, lb);
+                        ilg.Emit(OpCodes.Brtrue, lb);
                         break;
                     default:
                         throw new InternalError();
@@ -402,7 +402,7 @@ namespace XSharp.MacroCompiler.Syntax
             Cond.Emit(ilg);
             var lbFalse = ilg.DefineLabel();
             var lbTrue = ilg.DefineLabel();
-            ilg.Emit(OpCodes.Brfalse_S, lbFalse);
+            ilg.Emit(OpCodes.Brfalse, lbFalse);
             True.Emit(ilg);
             ilg.Emit(OpCodes.Br, lbTrue);
             ilg.MarkLabel(lbFalse);
@@ -508,7 +508,7 @@ namespace XSharp.MacroCompiler.Syntax
                     ilg.Emit(OpCodes.Conv_I4);
                     lidx.EmitGet(ilg);
                     ilg.Emit(OpCodes.Cgt);
-                    ilg.Emit(OpCodes.Brfalse_S, skip);
+                    ilg.Emit(OpCodes.Brfalse, skip);
 
                     ParamArray.EmitGet(ilg);
                     lidx.EmitGet(ilg);

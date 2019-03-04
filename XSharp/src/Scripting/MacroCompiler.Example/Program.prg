@@ -192,6 +192,10 @@ class ctest
         b := b_
     constructor (o as ctest)
         fld := o
+    method fieldget(s as string)
+        return s
+    method propget(s as string, m as string)
+        return s + m
     operator ==(o1 as ctest, o2 as ctest) as logic
         return o1:a == o2:a .and. o1:b == o2:b
     operator !=(o1 as ctest, o2 as ctest) as logic
@@ -223,8 +227,6 @@ begin namespace MacroCompilerTest
         EvalMacro(mc, e"0.00001")
         //EvalMacro(mc, "{|foo| bar := 10}")
         //EvalMacro(mc, "{|foo| bar := 10,foo}")
-//        EvalMacro(mc, e"l := true, l := l .or. oserver:fieldget(#FUERMITARB)!= owindow:getproperty(#oldFUERMITARB, '-')")
-//        EvalMacro(mc, e"l := oserver:fieldget(#FUERMITARB)!= owindow:getproperty(#oldFUERMITARB, '-')")
         wait
 
         RunTests(mc)
@@ -567,6 +569,7 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|o|o:fld := ctest{1,0}}", Args(ctest{0,0}), ctest{1,0}, typeof(ctest))
         TestMacro(mc, e"ctest{ctest{1,2}}", Args(), ctest{0,0}, typeof(ctest))
         TestMacro(mc, e"Foo{Foo{}}", Args(), Foo{}, typeof(Foo))
+        TestMacro(mc, e"{|o|l := true, l := l .or. (o:fieldget(#F1)!= o:propget(#F2, '-') .or. o:fieldget(#F1)!= o:propget(#F3, '-') .or. o:fieldget(#F1)!= o:propget(#F4, '-'))}", Args(ctest{1,2}), true, typeof(logic))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")

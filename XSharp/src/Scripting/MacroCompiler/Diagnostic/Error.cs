@@ -64,7 +64,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.IdentifierNotFound, "Identifier {0} not found" },
             { ErrorCode.NoSuitableOverload, "No suitable overload of {0}" },
             { ErrorCode.MemberNotMethod, "Member is not a method: {0}" },
-            { ErrorCode.ArgumentsNotMatch, "Aruments do not match method {0}" },
+            { ErrorCode.ArgumentsNotMatch, "Arguments do not match method {0}" },
             { ErrorCode.MemberNotFound, "No accessible member {0} found" },
             { ErrorCode.AmbiguousCall, "Ambiguous call" },
             { ErrorCode.CtorNotFound, "No accessible constructor found" },

@@ -270,9 +270,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     lOk := FALSE
                 ENDIF
             NEXT
-            SELF:_PageList:Flush(FALSE)
+            SELF:FlushPages()
             RETURN lOk
 
+         INTERNAL METHOD FlushPages() AS LOGIC
+            RETURN SELF:_PageList:Flush(FALSE)
 
          METHOD GoCold() AS LOGIC
             LOCAL lOk AS LOGIC
@@ -315,8 +317,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN FSeek3( SELF:_hFile, 0, SeekOrigin.End )
 
          METHOD FreePage(oPage AS CdxTreePage) AS LOGIC
-            oPage:LeftPtr      := SELF:_root:FreeList
-            oPage:RightPtr     := -1
+            oPage:Clear()
+            oPage:NextFree     := SELF:_root:FreeList
             SELF:_root:FreeList := oPage:PageNo
             SELF:_root:Write()
             SELF:_PageList:Delete(oPage:PageNo)

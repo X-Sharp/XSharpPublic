@@ -193,9 +193,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:AllocateBuffers()
             RETURN TRUE
 
-        DESTRUCTOR()
-            Close()
-
         INTERNAL METHOD AllocateBuffers() AS VOID
             SELF:_newValue          := CdxKeyData{_keySize}
             SELF:_currentValue      := CdxKeyData{_keySize}
@@ -771,10 +768,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 sbFree:AppendLine("List of Free pages (Bag Level) ")
                 sbFree:AppendLine("-------------------------------")
                 sbFree:AppendLine("First free: "+ nPage:ToString("X8"))
+                // stop dumping pages because from now on we only dump the page numbers
+                SELF:_bag:_PageList:DumpHandle := IntPtr.Zero
                 DO WHILE nPage != 0 .AND. nPage != -1
                     VAR oPage := SELF:GetPage(nPage) ASTYPE CdxTreePage
                     IF oPage != NULL
-                        nPage := oPage:LeftPtr
+                        nPage := oPage:NextFree
                         sbFree:AppendLine("Next free: "+ nPage:ToString("X8"))
                     ELSE
                         EXIT

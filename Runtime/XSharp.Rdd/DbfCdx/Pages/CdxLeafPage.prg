@@ -103,7 +103,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL VIRTUAL METHOD Initialize(keyLength AS WORD) AS VOID
             SELF:PageType   := CdxPageType.Leaf
-            SELF:LeftPtr    := SELF:RightPtr   := -1
             SELF:_ClearRecordsAndKeys()
             _keyLen             := keyLength
             VAR bits            := CdxHelpers.GetBits(keyLength)
@@ -195,8 +194,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             nLast := SELF:NumKeys-1
             FOR VAR nI := 0 TO nLast
                 LOCAL iTemp AS Int32
-                nRecno  := _GetLong(nOffSet) 
-                iTemp   := nRecno >> recnoBits 
+                nRecno  := _GetLong(nOffSet)
+                IF SELF:DataBytes <= 4
+                    iTemp := nRecno >> recnoBits
+                ELSE
+                    iTemp   := _GetWord(nOffSet + recnoBits/8)
+                ENDIF
                 nDup    := IIF(nI ==0, 0,  _AND(iTemp , dupMask))
                 nTrail  := (BYTE) _AND((iTemp >> dupBits) , trailMask)
                 nKey    := _KeyLen - nTrail - nDup
@@ -206,6 +209,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 // Copy to aBytes from pos nDup
                 MemCopy(Buffer, nStart - nKey, aBytes, nDup, nKey)
                 nStart := nStart - nKey
+                nRecno      := _AND( nRecno , SELF:RecnoMask)
                 _leaves.Add( CdxLeaf{ nRecno, aBytes})
                 nOffSet      += nStep
             NEXT
@@ -349,18 +353,26 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
         INTERNAL METHOD Insert(nPos AS LONG, data AS CdxKeyData) AS CdxResult
-            // Todo: optimize. We are now expanding the leaves which could be overkill.
-            _ExpandLeaves(FALSE)
             IF nPos < 0 .OR. nPos > _Leaves:Count
                 RETURN CdxResult.OutofBounds
             ENDIF
-            IF nPos == _Leaves:Count
+            // A quick calculation if we have enough room, ignoring the duplicate count
+            LOCAL nTrailCount AS LONG
+            nTrailCount := _getTrailCount(data:Key)
+            VAR nBytesNeeded := SELF:DataBytes + SELF:_keyLen - nTrailCount
+            IF SELF:Freespace < nBytesNeeded
+                RETURN CdxResult.SplitLeaf
+            ENDIF
+            // Todo: optimize. We are now expanding the leaves which could be overkill.
+            _ExpandLeaves(FALSE)
+            IF nPos >= _Leaves:Count
                 _Leaves:Add(CdxLeaf{data:Recno, data:Key})
             ELSE // IF nPos >= 0 .AND. nPos < _Leaves:Count
                 _Leaves:Insert(nPos, CdxLeaf{data:Recno, data:Key})
             ENDIF
             VAR result := CdxResult.Ok
             IF nPos == SELF:NumKeys
+                SELF:Tag:SetChildToProcess(SELF:PageNo)
                 result := CdxResult.ChangeParent
             ENDIF
             SELF:NumKeys += 1
@@ -373,16 +385,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL METHOD Delete(nPos AS LONG) AS CdxResult
              // Todo: optimize. We are now expanding the leaves which could be overkill.
-            _ExpandLeaves(FALSE)
-            IF nPos >= 0 .AND. nPos < _Leaves:Count
+            IF nPos >= 0 .AND. nPos < SELF:NumKeys
+                _ExpandLeaves(FALSE)
                 VAR result := CdxResult.Ok
                 IF nPos == SELF:NumKeys -1
+                    SELF:Tag:SetChildToProcess(SELF:PageNo)
                     result := CdxResult.ChangeParent
                 ENDIF
                 _Leaves:RemoveAt(nPos)
                 SELF:NumKeys -= 1
                 IF SELF:NumKeys = 0
-                    SELF:_ClearRecordsAndKeys()
                     RETURN CdxResult.Delete
                 ENDIF
                 result |=  SELF:Compress()
@@ -392,8 +404,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL METHOD Replace(nPos AS LONG, node AS CdxNode) AS CdxResult
             // Todo: optimize. We are now expanding the leaves which could be overkill.
-            _ExpandLeaves(FALSE)
-            IF nPos >= 0 .AND. nPos < _Leaves:Count
+            IF nPos >= 0 .AND. nPos < SELF:NumKeys
+                _ExpandLeaves(FALSE)
                 _Leaves[nPos] := CdxLeaf{node:Recno, node:KeyBytes}
                 RETURN SELF:Compress()
             ENDIF

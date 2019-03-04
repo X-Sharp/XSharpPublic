@@ -49,10 +49,26 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         #region Read/Write
 			
 		PROTECTED INTERNAL VIRTUAL METHOD Write() AS LOGIC
-			RETURN _Bag:Write(SELF)
+			VAR lOk :=  _Bag:Write(SELF)
+            SELF:IsHot := FALSE
+            RETURN lOk
 
     	PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
-			RETURN _Bag:Read(SELF)
+			VAR lOk :=  _Bag:Read(SELF)
+            SELF:IsHot := FALSE
+            RETURN lOk
+
+        INTERNAL METHOD Clear() AS VOID
+            MemSet(Buffer, 0, Buffer:Length, 0)
+            RETURN
+
+        INTERNAL METHOD SetEmptyRoot() AS VOID
+            SELF:Clear()
+            SELF:PageType  := CdxPageType.Leaf
+            VAR oLeaf := CdxLeafPage{SELF:_bag,SELF}
+            oLeaf:InitBlank(SELF:_tag)
+            SELF:PageType  := CdxPageType.Leaf | CdxPageType.Root
+            SELF:Write()
 
         #endregion
         #region Helper Methods to read/write numbers are strings out of the buffer

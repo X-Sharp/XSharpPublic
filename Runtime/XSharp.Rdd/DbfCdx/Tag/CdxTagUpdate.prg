@@ -62,6 +62,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             stackSave   := SELF:_topStack
             nextAction := CdxResult.OK
             DO WHILE action != CdxResult.OK
+                LOCAL lExit := FALSE AS LOGIC
                 FOREACH flag AS CdxResult IN possibleActions
                     IF action:HasFlag(flag)
                         nextLevel := TRUE
@@ -106,6 +107,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             // after expanding we either need to split or update the current page, so no nextlevel
                             nextAction |= SELF:ExpandRecnos()
                             nextLevel := FALSE
+                        CASE CdxResult.ClearStack
+                            stackSave := 0
+                            lExit := TRUE
+                            SELF:ClearStack()
+                            nextAction := CdxResult.OK
                         OTHERWISE
                             _UpdateError(NULL, "CdxTag.DoAction","Unexpected Enum value "+flag:ToString())
                         END SWITCH
@@ -114,7 +120,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             SELF:_topStack --
                         ENDIF
                     ENDIF
-                    IF action == CdxResult.OK
+                    IF action == CdxResult.OK .OR. lExit
                         EXIT
                     ENDIF
                     
@@ -129,7 +135,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL METHOD DeletePage() AS CdxResult
             // Establish Link between our Left and Right
-            VAR oPage := SELF:CurrentTop
+            VAR oPage := SELF:GetPage(nChildPage) ASTYPE CdxTreePage
             IF oPage == NULL
                 // Should not happen...
                 RETURN CdxResult.Ok
@@ -151,49 +157,59 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // now update the reference to this page in the parent node
             VAR oParent := SELF:GetParent(oPage)
             IF oParent == NULL
-                // Top level page, don't remove
-                oPage:InitBlank(SELF)
-                RETURN CdxResult.Ok
+                // Top level page, don't remove, but change from Root Branch to Leaf
+                oPage:SetEmptyRoot()
+                SELF:OrderBag:FlushPages()
+                RETURN CdxResult.ClearStack
             ELSE
+                SELF:SetChildToProcess(oPage:PageNo)
                 SELF:OrderBag:FreePage(oPage)
                 RETURN CdxResult.DeleteFromParent
             ENDIF
 
         INTERNAL METHOD DeleteFromParent() AS CdxResult
-            VAR oTop    := SELF:CurrentTop ASTYPE CdxBranchPage
-            VAR oParent := SELF:GetParent(oTop)
+            VAR oParent := SELF:GetPage(nParentPage) ASTYPE CdxBranchPage
             VAR result := CdxResult.OK
             IF oParent != NULL_PTR
                 // this can be the top level. In that case we should not get here at all
                 LOCAL nPos AS LONG
-                nPos := oParent:FindPage(oTop:PageNo)
+                nPos := oParent:FindPage(nChildPage)
                 IF nPos != -1
                     result := oParent:Delete(nPos)
-                    // when the last key of the parent was changed then
-                    // we need to propagate that to the top
-                    IF nPos == oParent:NumKeys -1
-                        oParent := SELF:GetParent(oParent)
-                        IF oParent != NULL
-                            result := CdxResult.ChangeParent
-                        ENDIF
-                    ENDIF
                 ELSE
                     // Todo: this is a logical problem
                      _UpdateError(NULL, "CdxTag.DeleteFromParent","Could not find entry for page # ";
-                        +oTop:PageNo:ToString() +" in page "+oParent:PageNo:ToString())
+                        +nChildPage:ToString() +" in page "+nParentPage:ToString())
                 ENDIF 
                 
             ENDIF
-            RETURN CdxResult.Ok
+            RETURN result
         PRIVATE oPendingNode AS CdxPageNode
+        PRIVATE nParentPage AS LONG
+        PRIVATE nChildPage  AS LONG
+
+        INTERNAL METHOD SetChildToProcess(nChild AS LONG) AS VOID
+            SELF:nChildPage := nChild
+            SELF:nParentPage := -1
+            FOR VAR i := SELF:_TopStack DOWNTO 1
+                IF SELF:_Stack[i]:Page == nChild
+                    SELF:nParentPage := SELF:_Stack[i-1]:Page
+                    EXIT
+                ENDIF
+            NEXT
+            RETURN
+
+
+
+
         INTERNAL METHOD ChangeParent() AS CdxResult
-            VAR oTop      := SELF:CurrentTop 
-            VAR oParent   := SELF:GetParent(oTop)
+            VAR oTop      := SELF:GetPage(SELF:nChildPage ) ASTYPE  CdxTreePage
+            VAR oParent   := SELF:GetPage(SELF:nParentPage) ASTYPE  CdxBranchPage
             VAR result    := CdxResult.Ok
-            // the page on the top is the new page.
-            oTop          := SELF:GetPage(oTop:LeftPtr)
-            
-            VAR oLast     := oTop:LastNode 
+            VAR oLast     := oTop:LastNode
+            IF oParent == NULL
+                oParent := SELF:GetParent(oTop)
+            ENDIF
             IF oParent != NULL_PTR
                 LOCAL nPos AS LONG
                 nPos := oParent:FindPage(oTop:PageNo)
@@ -204,6 +220,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF nPos == oParent:NumKeys -1
                         oParent := SELF:GetParent(oParent)
                         IF oParent != NULL
+                            SELF:nChildPage := oParent:PageNo
                             result := CdxResult.ChangeParent
                         ENDIF
                     ENDIF
@@ -213,6 +230,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF result == CdxResult.SplitParent
                         // failed to insert the key
                         oPendingNode := oLast
+                        SELF:SetChildToProcess(oParent:PageNo)
                     ENDIF
                 ENDIF
             ENDIF
@@ -226,13 +244,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             oTop    := SELF:GetPage(nTop)
             oParent := SELF:NewBranchPage()
             SELF:InsertOnStack(oParent, oTop)
+            IF nParentPage == 0
+                nParentPage := oParent:PageNo
+            ENDIF
             RETURN CdxResult.Ok
 
         INTERNAL METHOD SplitParent() AS CdxResult
             LOCAL oNewPage AS CdxBranchPage
             LOCAL oBranch  AS CdxBranchPage
             VAR result   := CdxResult.Ok
-            oBranch  := SELF:CurrentTop
+            oBranch  := SELF:GetPage(SELF:nChildPage)
             oNewPage := SELF:NewBranchPage()
             IF oNewPage != NULL_PTR
                 oNewPage:LeftPtr := oBranch:PageNo
@@ -241,6 +262,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:GetParent(oBranch) == NULL
                 result := CdxResult.InsertParent
             ENDIF
+            SELF:nChildPage := oBranch:PageNo
             result |= CdxResult.ChangeParent
             IF oPendingNode != NULL
                 oNewPage:Add(oPendingNode)
@@ -265,6 +287,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 result |= CdxResult.InsertParent
             ENDIF
             // make sure that the last node from the current leaf is added to the parent
+            SELF:SetChildToProcess(oPage:PageNo)
             result |= CdxResult.ChangeParent
             // set the new page as "current" page on the stack
             SELF:SetPage(pageR, pageR:NumKeys)
@@ -304,7 +327,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             NEXT
             oPage:RightPtr := oNewPage:PageNo
-            // we must add the last record of the current page to 
+            // we must add the last record of the current page to
+            SELF:SetChildToProcess(oPage:PageNo)
             result |= CdxResult.ChangeParent
             RETURN result
 

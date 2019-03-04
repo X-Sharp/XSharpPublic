@@ -46,6 +46,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         MEMBER DeleteFromParent:= 1 << 6
         MEMBER ExpandRecnos    := 1 << 7
         MEMBER OutofBounds     := 1 << 8
+        MEMBER ClearStack      := 1 << 9
     END ENUM
 	
 END NAMESPACE 

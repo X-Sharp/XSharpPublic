@@ -137,6 +137,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         
         INTERNAL METHOD Add(node AS CdxPageNode) AS CdxResult
             IF SELF:NumKeys >= SELF:MaxKeys
+                SELF:Tag:SetChildToProcess(SELF:PageNo)
                 RETURN CdxResult.SplitParent
             ENDIF
             LOCAL nPos := SELF:NumKeys AS WORD
@@ -148,6 +149,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
          INTERNAL METHOD Add(recno AS LONG, childPage AS LONG, key AS BYTE[]) AS CdxResult
             IF SELF:NumKeys >= SELF:MaxKeys
+               SELF:Tag:SetChildToProcess(SELF:PageNo)
                 RETURN CdxResult.SplitParent
             ENDIF
             LOCAL nPos := SELF:NumKeys AS WORD
@@ -164,6 +166,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL nMax := SELF:NumKeys AS WORD
             // we allow to write at the position nMax
             IF nPos >= SELF:MaxKeys -1
+                SELF:Tag:SetChildToProcess(SELF:PageNo)
                 RETURN CdxResult.SplitParent
             ENDIF
             IF nPos == nMax                 // Insert at end of list
@@ -201,10 +204,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_copyNode(nI+1, nI)
             NEXT
             SELF:NumKeys -= 1
-            IF nPos == SELF:NumKeys
-                result := CdxResult.ChangeParent
-            ELSEIF SELF:NumKeys == 0
+            IF SELF:NumKeys == 0
+                SELF:Tag:SetChildToProcess(SELF:PageNo)
                 result := CdxResult.Delete
+            ELSEIF nPos == SELF:NumKeys
+               SELF:Tag:SetChildToProcess(SELF:PageNo)
+                result := CdxResult.ChangeParent
             ELSE
                 result := CdxResult.OK
             ENDIF

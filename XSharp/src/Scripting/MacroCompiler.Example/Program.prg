@@ -183,6 +183,29 @@ function DoTestC(n as int, l as logic, o as testclass) as int
 function DoTestS(n as int, l as logic, o as teststruct) as int
     return o:v1
 
+class ctest
+    public property fld as ctest auto
+    public a as real8
+    public b as real8
+    constructor (a_ as real8, b_ as real8)
+        a := a_
+        b := b_
+    constructor (o as ctest)
+        fld := o
+    operator ==(o1 as ctest, o2 as ctest) as logic
+        return o1:a == o2:a .and. o1:b == o2:b
+    operator !=(o1 as ctest, o2 as ctest) as logic
+        return !(o1 == o2)
+end class
+
+Class Foo
+   constructor() CLIPPER
+    operator ==(o1 as Foo, o2 as Foo) as logic
+        return true
+    operator !=(o1 as Foo, o2 as Foo) as logic
+        return !(o1 == o2)
+end class
+
 begin namespace MacroCompilerTest
 
 	function Start() as void
@@ -200,8 +223,6 @@ begin namespace MacroCompilerTest
         EvalMacro(mc, e"0.00001")
         //EvalMacro(mc, "{|foo| bar := 10}")
         //EvalMacro(mc, "{|foo| bar := 10,foo}")
-//        EvalMacro(mc, e"odta:Origin := point{1,0}")
-//        EvalMacro(mc, e"oWindow:Background:= Brush{Color{ 200, 200, 220},0}}")
 //        EvalMacro(mc, e"l := true, l := l .or. oserver:fieldget(#FUERMITARB)!= owindow:getproperty(#oldFUERMITARB, '-')")
 //        EvalMacro(mc, e"l := oserver:fieldget(#FUERMITARB)!= owindow:getproperty(#oldFUERMITARB, '-')")
         wait
@@ -543,6 +564,9 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"right('abcdef',3)", Args(), "def", typeof(string))
         TestMacro(mc, e"left('abcdef',3)", Args(), "abc", typeof(string))
         TestMacro(mc, e"left('abcdef',3+1)", Args(), "abcd", typeof(string))
+        TestMacro(mc, e"{|o|o:fld := ctest{1,0}}", Args(ctest{0,0}), ctest{1,0}, typeof(ctest))
+        TestMacro(mc, e"ctest{ctest{1,2}}", Args(), ctest{0,0}, typeof(ctest))
+        TestMacro(mc, e"Foo{Foo{}}", Args(), Foo{}, typeof(Foo))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")

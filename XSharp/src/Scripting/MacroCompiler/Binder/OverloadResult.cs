@@ -42,7 +42,7 @@ namespace XSharp.MacroCompiler
         {
             Conversions[index] = conv;
             TotalCost += conv.Cost;
-            Valid &= conv.IsImplicit;
+            Valid &= conv.Exists;
         }
 
         internal static OverloadResult Create(MemberSymbol symbol, ParameterListSymbol paramList, int nFixedArgs, int nVarArgs, int nMissingArgs)

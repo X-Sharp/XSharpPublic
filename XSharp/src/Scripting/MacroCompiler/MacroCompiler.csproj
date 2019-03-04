@@ -39,6 +39,7 @@
       <Link>Properties\Constants.cs</Link>
     </Compile>
     <Compile Include="Binder\Binder.Error.cs" />
+    <Compile Include="Binder\Node.Constant.cs" />
     <Compile Include="Binder\Operator.Binary.cs" />
     <Compile Include="Binder\Binder.Argument.cs" />
     <Compile Include="Binder\Binder.Array.cs" />

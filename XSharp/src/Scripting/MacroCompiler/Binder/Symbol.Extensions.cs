@@ -39,5 +39,7 @@ namespace XSharp.MacroCompiler
                 (s as MemberSymbol)?.FullName
                 ?? (s as SymbolList)?.Symbols.First().MemberName();
         }
+
+        internal static bool IsConstant(this Symbol s) => (s as Constant)?.Type.IsUsualOrObject() == false;
     }
 }

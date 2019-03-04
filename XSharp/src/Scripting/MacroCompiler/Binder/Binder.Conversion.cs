@@ -110,6 +110,9 @@ namespace XSharp.MacroCompiler
 
             var conversion = ConversionEasyOut.ClassifyConversion(expr.Datatype, type);
 
+            if (expr.Symbol.IsConstant() || expr.IsConstant)
+                options |= BindOptions.Explicit;
+
             if (conversion != ConversionKind.NoConversion)
             {
                 var conv = ConversionSymbol.Create(conversion);

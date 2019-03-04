@@ -1008,7 +1008,7 @@ namespace Microsoft.VisualStudio.Project
         {
             VsDebugTargetInfo info = new VsDebugTargetInfo();
             info.cbSize = (uint)Marshal.SizeOf(info);
-            info.dlo = Microsoft.VisualStudio.Shell.Interop.DEBUG_LAUNCH_OPERATION.DLO_CreateProcess;
+            info.dlo = DEBUG_LAUNCH_OPERATION.DLO_CreateProcess;
 
             // On first call, reset the cache, following calls will use the cached values
             string property = GetConfigurationProperty("StartAction", true);

@@ -320,7 +320,7 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE METHOD RefreshStrangerProjectDLLOutputFiles() AS VOID
             // Check if any DLL has changed
             IF SELF:_StrangerProjects:Count > 0 .AND. ! AssemblyInfo.DisableForeignProjectReferences
-                WriteOutputMessage("--> RefreshStrangerProjectDLLOutputFiles() "+SELF:_StrangerProjects:Count())
+                WriteOutputMessage("--> RefreshStrangerProjectDLLOutputFiles() "+SELF:_StrangerProjects:Count():ToString())
                 FOREACH p AS EnvDte.Project IN SELF:_StrangerProjects
                     VAR sProjectURL := p:FullName
                     VAR mustAdd     := FALSE
@@ -349,7 +349,7 @@ BEGIN NAMESPACE XSharpModel
             LOCAL p AS Project
             LOCAL outputFile AS STRING
             IF SELF:_unprocessedStrangerProjectReferences:Count > 0 .AND. ! AssemblyInfo.DisableForeignProjectReferences
-                WriteOutputMessage("ResolveUnprocessedStrangerReferences()" +_unprocessedStrangerProjectReferences:Count)
+                WriteOutputMessage("ResolveUnprocessedStrangerReferences()" +_unprocessedStrangerProjectReferences:Count:ToString())
                 existing := List<STRING>{}
                 FOREACH sProject AS STRING IN SELF:_unprocessedStrangerProjectReferences
                     p := SELF:ProjectNode:FindProject(sProject)

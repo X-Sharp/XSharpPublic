@@ -4,11 +4,7 @@
 // See License.txt in the project root for license information.
 //
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Globalization;
 
 namespace XSharp.Project
@@ -78,7 +74,7 @@ namespace XSharp.Project
             return true;
         }
 
-        public override System.ComponentModel.TypeConverter.StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
+        public override StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
         {
             return new StandardValuesCollection(new RunPostBuildEvent[] { RunPostBuildEvent.Always, RunPostBuildEvent.OnBuildSuccess, RunPostBuildEvent.OnOutputUpdated });
         }
@@ -92,7 +88,7 @@ namespace XSharp.Project
         VO,
         Vulcan,
         Harbour,
-        //FoxPro,
+        FoxPro,
         //dBase,
         XPP,
     }
@@ -128,6 +124,9 @@ namespace XSharp.Project
                         return Dialect.Vulcan;
                     case "harbour":
                         return Dialect.Harbour;
+                    case "foxpro":
+                    case "fox":
+                        return Dialect.FoxPro;
                     case "xpp":
                     case "xbase++":
                         return Dialect.XPP;
@@ -162,9 +161,9 @@ namespace XSharp.Project
                         case Dialect.Harbour:
                             result = "Harbour";
                             break;
-                        //case Dialect.FoxPro:
-                        //    result = "FoxPro";
-                        //    break;
+                        case Dialect.FoxPro:
+                            result = "FoxPro";
+                            break;
                         //case Dialect.dBase:
                         //    result = "dBase";
                         //    break;
@@ -192,10 +191,9 @@ namespace XSharp.Project
             return true;
         }
 
-        public override System.ComponentModel.TypeConverter.StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
+        public override StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
         {
-            return new StandardValuesCollection(new Dialect[] { Dialect.Core, Dialect.VO, Dialect.Vulcan, Dialect.Harbour,Dialect.XPP});
-            // Dialect.FoxPro, Dialect.dBase });
+            return new StandardValuesCollection(new Dialect[] { Dialect.Core, Dialect.VO, Dialect.Vulcan, Dialect.Harbour,Dialect.XPP, Dialect.FoxPro});
         }
     }
 
@@ -268,7 +266,7 @@ namespace XSharp.Project
             return true;
         }
 
-        public override System.ComponentModel.TypeConverter.StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
+        public override StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
         {
             return new StandardValuesCollection(new Platform[] { Platform.AnyCPU, Platform.x86, Platform.x64, Platform.Arm, Platform.Itanium });
         }
@@ -338,7 +336,7 @@ namespace XSharp.Project
             return true;
         }
 
-        public override System.ComponentModel.TypeConverter.StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
+        public override StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
         {
             return new StandardValuesCollection(new DebugType[] { DebugType.none, DebugType.full, DebugType.pdbonly});
         }

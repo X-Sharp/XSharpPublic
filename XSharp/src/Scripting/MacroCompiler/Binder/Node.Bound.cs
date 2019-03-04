@@ -648,6 +648,7 @@ namespace XSharp.MacroCompiler.Syntax
             Right.RequireGetAccess();
             b.Convert(ref Left, Compilation.Get(NativeType.String));
             b.Convert(ref Right, Compilation.Get(NativeType.String));
+            Symbol = Compilation.Get(WellKnownMembers.XSharp_Core_Functions_Instr);
             Datatype = Compilation.Get(NativeType.Boolean);
             return null;
         }

@@ -197,9 +197,15 @@ begin namespace MacroCompilerTest
         //EvalMacro(mc, e"{|a| USUAL(-a) }", 1)
         //EvalMacro(mc, e"{|| testclass{}:NString((byte)1) }", Args())
         //EvalMacro(mc, e"{|a,b| b := testclass{123}, b:ToString() }")
-        EvalMacro(mc, e"0.00001")
+        //EvalMacro(mc, e"0.00001")
         //EvalMacro(mc, "{|foo| bar := 10}")
         //EvalMacro(mc, "{|foo| bar := 10,foo}")
+        EvalMacro(mc, e"right('abcdef',3)")
+        EvalMacro(mc, e"left('abcdef',3)")
+//        EvalMacro(mc, e"odta:Origin := point{1,0}")
+//        EvalMacro(mc, e"oWindow:Background:= Brush{Color{ 200, 200, 220},0}}")
+//        EvalMacro(mc, e"l := true, l := l .or. oserver:fieldget(#FUERMITARB)!= owindow:getproperty(#oldFUERMITARB, '-')")
+//        EvalMacro(mc, e"l := oserver:fieldget(#FUERMITARB)!= owindow:getproperty(#oldFUERMITARB, '-')")
         wait
 
         RunTests(mc)
@@ -532,6 +538,10 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"0xffff", Args(), 0xFFFF, typeof(int))
         TestMacro(mc, "1+1 ", Args(), 2, typeof(int))
         TestMacro(mc, e"{|a|Len(a) == 4}", Args("test"), true, typeof(logic))
+        TestMacro(mc, e"'a' $ 'b'", Args(), false, typeof(logic))
+        TestMacro(mc, e"'a' $ 'a'", Args(), true, typeof(logic))
+        TestMacro(mc, e"iif('a' $ 'a' , TRUE, FALSE)", Args(), true, typeof(logic))
+        TestMacro(mc, e"iif('a' $ 'a' , 1, 2)", Args(), 1, typeof(int))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")

@@ -283,6 +283,16 @@ namespace XSharp.MacroCompiler
                     }
                 }
             }
+            else if (type.NativeType == NativeType.Usual && expr.Datatype.IsReferenceType)
+            {
+                var inner = Conversion(expr, Compilation.Get(NativeType.Object), options | BindOptions.Explicit);
+                if (inner.Exists)
+                {
+                    var outer = Conversion(TypeConversion.Bound(expr, Compilation.Get(NativeType.Object), inner), type, options);
+                    if (outer.Exists)
+                        return ConversionSymbol.Create(outer, inner);
+                }
+            }
             return null;
         }
 

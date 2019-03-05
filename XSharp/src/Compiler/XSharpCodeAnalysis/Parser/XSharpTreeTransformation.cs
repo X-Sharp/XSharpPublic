@@ -4446,8 +4446,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitVodefine([NotNull] XP.VodefineContext context)
         {
             var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
-            variables.Add(GenerateVariable(context.Id.Get<SyntaxToken>(),
-                context.Expr.Get<ExpressionSyntax>()));
+            var expr = context.Expr.Get<ExpressionSyntax>();
+            variables.Add(GenerateVariable(context.Id.Get<SyntaxToken>(), MakeChecked(expr,false)));
             var isConst = false;
             // always process the expression to determine if it is a const
             var type = GetExpressionType(context.Expr, ref isConst);

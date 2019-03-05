@@ -56556,7 +56556,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C559 - No compiler error with /vo15- and untyped parameters
 
-ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
 ; ************** APPLICATION C560 - CreateInstance() cannot "see" classes with namespaces *************
 Application = C560 - CreateInstance() cannot "see" classes with namespaces
 IDEVersion = 1.06
@@ -56596,8 +56596,9 @@ FileGUID = ADC2A577-4C58-4CC0-89EC-4BA9ABBAFF9C
 FileType = Code
 [C560 - CreateInstance() cannot "see" classes with namespaces References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.0.0.7
-ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VO.dll,1,1
 [C560 - CreateInstance() cannot "see" classes with namespaces Resources]
 [C560 - CreateInstance() cannot "see" classes with namespaces Native Resources]
 [C560 - CreateInstance() cannot "see" classes with namespaces License files]
@@ -58554,7 +58555,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C576 - Problem with STATIC classes and /vo16+
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C577 - Failed to emit module error with DEFINEs *************
 Application = C577 - Failed to emit module error with DEFINEs
 IDEVersion = 1.06
@@ -67427,7 +67428,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C663 - Some problems with DIM arrays
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C664 - Compiler crash with missing argument in #ifdef *************
 Application = C664 - Compiler crash with missing argument in #ifdef
 IDEVersion = 1.06
@@ -67525,7 +67526,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C664 - Compiler crash with missing argument in #ifdef
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C665 - Compiler crash with incorrect method call *************
 Application = C665 - Compiler crash with incorrect method call
 IDEVersion = 1.06

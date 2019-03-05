@@ -58,7 +58,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		RETURN aMethods:ToArray()
 		
 	STATIC METHOD FindClass(cName AS STRING) AS System.Type 
-	RETURN FindClass(cName, TRUE)
+	    RETURN FindClass(cName, TRUE)
 	STATIC METHOD FindClass(cName AS STRING, lOurAssembliesOnly AS LOGIC) AS System.Type 
 		// TOdo Optimize
 		LOCAL ret := NULL AS System.Type
@@ -126,7 +126,25 @@ INTERNAL STATIC CLASS OOPHelpers
              	EXIT
              ENDIF
 		NEXT
-		
+        IF ret == NULL
+            // try to find classes in a namespace
+            FOREACH asm AS Assembly IN aAssemblies
+                VAR ins := TYPEOF( ClassLibraryAttribute )
+			    IF asm:IsDefined(  ins, FALSE )
+                    var types := asm:GetTypes()
+                    FOREACH type as System.Type in types
+                        IF String.Compare(type:Name, cName, StringComparison.OrdinalIgnoreCase) == 0
+                            ret := type
+                            EXIT
+                        ENDIF
+                    NEXT
+                    IF ret != NULL
+                        EXIT
+                    ENDIF
+                ENDIF
+            NEXT
+        ENDIF
+
 		IF ret != NULL
 			IF lOurAssembliesOnly
 				IF .NOT. cacheClassesOurAssemblies:ContainsKey(cName)

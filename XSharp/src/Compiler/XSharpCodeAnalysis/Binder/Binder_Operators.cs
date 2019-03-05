@@ -420,8 +420,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             TypeSymbol leftType = left.Type;
             TypeSymbol rightType = right.Type;
-            var leftString = leftType?.SpecialType == SpecialType.System_String;
-            var rightString = rightType?.SpecialType == SpecialType.System_String;
+            if (leftType == null || rightType == null)
+            {
+                // this is most likely an error that will be reported later by Roslyn
+                return VOOperatorType.None;
+            }
+            var leftString = leftType.SpecialType == SpecialType.System_String;
+            var rightString = rightType.SpecialType == SpecialType.System_String;
 
             if (Compilation.Options.HasRuntime && xnode != null)
             {

@@ -1448,7 +1448,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot use a method group as an argument to a dynamically dispatched operation. Did you intend to invoke the method?.
+        ///   Looks up a localized string similar to Cannot use a method as an argument to a dynamically dispatched operation. Did you intend to invoke the method?.
         /// </summary>
         internal static string ERR_BadDynamicMethodArgMemgrp {
             get {
@@ -6335,7 +6335,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The first operand of an &apos;is&apos; or &apos;as&apos; operator may not be a lambda expression, anonymous method, or method group..
+        ///   Looks up a localized string similar to The first operand of an &apos;is&apos; or &apos;as&apos; operator may not be a lambda expression, anonymous method, or method..
         /// </summary>
         internal static string ERR_LambdaInIsAs {
             get {
@@ -6587,7 +6587,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An expression tree lambda may not contain a method group.
+        ///   Looks up a localized string similar to An expression tree lambda may not contain a method.
         /// </summary>
         internal static string ERR_MemGroupInExpressionTree {
             get {
@@ -6641,7 +6641,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot convert method group &apos;{0}&apos; to non-delegate type &apos;{1}&apos;. Did you intend to invoke the method?.
+        ///   Looks up a localized string similar to Cannot convert method &apos;{0}&apos; to non-delegate type &apos;{1}&apos;. Did you intend to invoke the method?.
         /// </summary>
         internal static string ERR_MethGrpToNonDel {
             get {
@@ -6992,7 +6992,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Extension method groups are not allowed as an argument to &apos;nameof&apos;..
+        ///   Looks up a localized string similar to Extension methods are not allowed as an argument to &apos;nameof&apos;..
         /// </summary>
         internal static string ERR_NameofExtensionMethod {
             get {
@@ -7001,7 +7001,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type parameters are not allowed on a method group as an argument to &apos;nameof&apos;..
+        ///   Looks up a localized string similar to Type parameters are not allowed on a method as an argument to &apos;nameof&apos;..
         /// </summary>
         internal static string ERR_NameofMethodGroupWithTypeParameters {
             get {
@@ -11574,7 +11574,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to method group.
+        ///   Looks up a localized string similar to method.
         /// </summary>
         internal static string IDS_MethodGroup {
             get {

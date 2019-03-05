@@ -387,6 +387,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         CompileNamedType(symbol);
                     }
+
                     catch (Exception e) when (FatalError.ReportUnlessCanceled(e))
                     {
                         throw ExceptionUtilities.Unreachable;
@@ -1215,6 +1216,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     closureDebugInfoBuilder.Free();
                 }
             }
+#if XSHARP
+            catch (Exception e)
+            {
+                var info = new CSharp.CSDiagnosticInfo(CSharp.ErrorCode.ERR_Internal, e.Message, e.StackTrace);
+                _diagnostics.Add(Diagnostic.Create(info));
+            }
+#endif
             finally
             {
                 diagsForCurrentMethod.Free();

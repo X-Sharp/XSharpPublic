@@ -746,7 +746,7 @@ namespace Microsoft.CodeAnalysis
 
                 if (moduleBeingBuilt != null)
                 {
-                    bool success;
+                    bool success = false;
 
                     try
                     {
@@ -840,6 +840,13 @@ namespace Microsoft.CodeAnalysis
                             }
                         }
                     }
+#if XSHARP
+                    catch (Exception e)
+                    {
+                        var info = new CSharp.CSDiagnosticInfo(CSharp.ErrorCode.ERR_Internal,e.Message, e.StackTrace);
+                        diagnostics.Add(Diagnostic.Create(info));
+                    }
+#endif
                     finally
                     {
                         moduleBeingBuilt.CompilationFinished();

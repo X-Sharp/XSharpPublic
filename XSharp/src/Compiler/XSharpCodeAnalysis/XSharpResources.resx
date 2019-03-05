@@ -187,7 +187,7 @@
     <value>switch on boolean type</value>
   </data>
   <data name="IDS_MethodGroup" xml:space="preserve">
-    <value>method group</value>
+    <value>method</value>
   </data>
   <data name="IDS_AnonMethod" xml:space="preserve">
     <value>anonymous method</value>
@@ -1264,7 +1264,7 @@
     <value>The type name '{0}' does not exist in the type '{1}'</value>
   </data>
   <data name="ERR_MethGrpToNonDel" xml:space="preserve">
-    <value>Cannot convert method group '{0}' to non-delegate type '{1}'. Did you intend to invoke the method?</value>
+    <value>Cannot convert method '{0}' to non-delegate type '{1}'. Did you intend to invoke the method?</value>
   </data>
   <data name="ERR_BadExternAlias" xml:space="preserve">
     <value>The extern alias '{0}' was not specified in a /reference option</value>
@@ -2205,7 +2205,7 @@ If such a class is used as a base class and if the deriving class defines a dest
     <value>Cannot use anonymous type in a constant expression</value>
   </data>
   <data name="ERR_LambdaInIsAs" xml:space="preserve">
-    <value>The first operand of an 'is' or 'as' operator may not be a lambda expression, anonymous method, or method group.</value>
+    <value>The first operand of an 'is' or 'as' operator may not be a lambda expression, anonymous method, or method.</value>
   </data>
   <data name="ERR_TypelessTupleInAs" xml:space="preserve">
     <value>The first operand of an 'as' operator may not be a tuple literal without a natural type.</value>
@@ -3287,7 +3287,7 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>An expression tree lambda may not contain a method with variable arguments</value>
   </data>
   <data name="ERR_MemGroupInExpressionTree" xml:space="preserve">
-    <value>An expression tree lambda may not contain a method group</value>
+    <value>An expression tree lambda may not contain a method</value>
   </data>
   <data name="ERR_InitializerAddHasParamModifiers" xml:space="preserve">
     <value>The best overloaded method match '{0}' for the collection initializer element cannot be used. Collection initializer 'Add' methods cannot have ref or out parameters.</value>
@@ -4038,7 +4038,7 @@ You should consider suppressing the warning only if you're sure that you don't w
     <value>Cannot use a lambda expression as an argument to a dynamically dispatched operation without first casting it to a delegate or expression tree type.</value>
   </data>
   <data name="ERR_BadDynamicMethodArgMemgrp" xml:space="preserve">
-    <value>Cannot use a method group as an argument to a dynamically dispatched operation. Did you intend to invoke the method?</value>
+    <value>Cannot use a method as an argument to a dynamically dispatched operation. Did you intend to invoke the method?</value>
   </data>
   <data name="ERR_NoDynamicPhantomOnBase" xml:space="preserve">
     <value>The call to method '{0}' needs to be dynamically dispatched, but cannot be because it is part of a base access expression. Consider casting the dynamic arguments or eliminating the base access.</value>
@@ -4772,7 +4772,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>An alias-qualified name is not an expression.</value>
   </data>
   <data name="ERR_NameofMethodGroupWithTypeParameters" xml:space="preserve">
-    <value>Type parameters are not allowed on a method group as an argument to 'nameof'.</value>
+    <value>Type parameters are not allowed on a method as an argument to 'nameof'.</value>
   </data>
   <data name="NoNoneSearchCriteria" xml:space="preserve">
     <value>SearchCriteria is expected.</value>
@@ -4817,7 +4817,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Expression or declaration statement expected.</value>
   </data>
   <data name="ERR_NameofExtensionMethod" xml:space="preserve">
-    <value>Extension method groups are not allowed as an argument to 'nameof'.</value>
+    <value>Extension methods are not allowed as an argument to 'nameof'.</value>
   </data>
   <data name="WRN_AlignmentMagnitude" xml:space="preserve">
     <value>Alignment value {0} has a magnitude greater than {1} and may result in a large formatted string.</value>

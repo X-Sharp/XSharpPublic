@@ -420,13 +420,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             TypeSymbol leftType = left.Type;
             TypeSymbol rightType = right.Type;
-            if (leftType == null || rightType == null)
-            {
-                // this is most likely an error that will be reported later by Roslyn
-                return VOOperatorType.None;
-            }
-            var leftString = leftType.SpecialType == SpecialType.System_String;
-            var rightString = rightType.SpecialType == SpecialType.System_String;
+            var leftString = leftType?.SpecialType == SpecialType.System_String;
+            var rightString = rightType?.SpecialType == SpecialType.System_String;
 
             if (Compilation.Options.HasRuntime && xnode != null)
             {
@@ -602,17 +597,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                     case SyntaxKind.DivideExpression:
                     case SyntaxKind.MultiplyAssignmentExpression:
                     case SyntaxKind.MultiplyExpression:
-                        if (leftType != rightType && leftType.IsIntegralType() && rightType.IsIntegralType())
-                        {
-                           if (leftType.SpecialType.SizeInBytes() < 4)
-                           {
-                                // when adding a constant to a word or short
-                                // cast the constant to the LHS
-                                if (rightType.SpecialType.SizeInBytes() > leftType.SpecialType.SizeInBytes())
-                                {
-                                    if (right.ConstantValue != null)
+                        if (leftType != null && rightType != null)
+                        { 
+                            if (leftType != rightType && leftType.IsIntegralType() && rightType.IsIntegralType())
+                            {
+                               if (leftType.SpecialType.SizeInBytes() < 4)
+                               {
+                                    // when adding a constant to a word or short
+                                    // cast the constant to the LHS
+                                    if (rightType.SpecialType.SizeInBytes() > leftType.SpecialType.SizeInBytes())
                                     {
-                                        right = new BoundConversion(right.Syntax, right, Conversion.ImplicitNumeric, false, false, right.ConstantValue, leftType) { WasCompilerGenerated = true };
+                                        if (right.ConstantValue != null)
+                                        {
+                                            right = new BoundConversion(right.Syntax, right, Conversion.ImplicitNumeric, false, false, right.ConstantValue, leftType) { WasCompilerGenerated = true };
+                                        }
                                     }
                                 }
                             }

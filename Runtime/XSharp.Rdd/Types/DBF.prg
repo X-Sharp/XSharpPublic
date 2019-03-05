@@ -821,7 +821,7 @@ BEGIN NAMESPACE XSharp.RDD
                     SELF:_Header:Version := IIF(SELF:_HasMemo, DBFVersion.FoxBaseDBase3WithMemo , DBFVersion.FoxBaseDBase3NoMemo )
                 ENDIF
 				// This had been initialized by AddFields()
-				SELF:_Header:RecordLen := (SHORT)SELF:_RecordLength
+				SELF:_Header:RecordLen := (WORD) SELF:_RecordLength
 				// This will fill the Date and RecCount
 				isOK := SELF:_writeHeader()
 				IF ( isOK )
@@ -865,10 +865,20 @@ BEGIN NAMESPACE XSharp.RDD
 			ENDIF
 			FOR VAR i := nStart TO fieldCount - ( 1 - nStart )
 				//
-				currentField:Name := SELF:_Fields[ i ]:Name
-				currentField:Type := SELF:_Fields[ i ]:FieldType
-				currentField:Len := (BYTE)SELF:_Fields[ i ]:Length
-				currentField:Dec := (BYTE)SELF:_Fields[ i ]:Decimals
+                var fld := SELF:_Fields[ i ]
+				currentField:Name := fld:Name
+				currentField:Type := fld:FieldType
+                if fld:FieldType != DbFieldType.Character
+				    currentField:Len := (byte) fld:Length
+				    currentField:Dec := (byte) fld:Decimals
+                else
+                    currentField:Len := (byte) (fld:Length % 256)
+                    if fld:Length > Byte.MaxValue
+                        currentField:Dec := (byte) (fld:Length / 256)
+                    else
+                        currentField:Dec := 0
+                    endif
+                endif
 				//
                 Array.Copy(currentField:Buffer, 0, fieldsBuffer, i*DbfField.SIZE, DbfField.SIZE )
 			NEXT
@@ -992,6 +1002,10 @@ BEGIN NAMESPACE XSharp.RDD
                     Array.Copy(fieldsBuffer, i*DbfField.SIZE, currentField:Buffer, 0, DbfField.SIZE )
 					LOCAL info AS RddFieldInfo
 					info := RddFieldInfo{ currentField:Name, currentField:Type, currentField:Len, currentField:Dec }
+                    if info:FieldType == DbFieldType.Character .and. info:Decimals > 0
+                        info:Length    += info:Decimals * 256
+                        info:Decimals := 0
+                    ENDIF
 					//SELF:_Fields[ i ] := info
 					// DON'T FORGET TO FILL THE _fieldNames DICTIONNARY !!!!
 					//SELF:_fieldNames:Add(info:Name:Trim(), i)
@@ -1003,7 +1017,7 @@ BEGIN NAMESPACE XSharp.RDD
 					ENDIF
 				NEXT
 				// Allocate the Buffer to read Records
-				SELF:_RecordLength := (WORD)SELF:_Header:RecordLen
+				SELF:_RecordLength := SELF:_Header:RecordLen
                 SELF:_AllocateBuffers()
                 
 			ENDIF
@@ -2396,9 +2410,9 @@ BEGIN NAMESPACE XSharp.RDD
 			SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_DATAOFFSET, SIZEOF(SHORT)), isHot := TRUE
 					
 			// Length of one data record, including deleted flag
-			PROPERTY RecordLen	AS SHORT		;
-			GET BitConverter.ToInt16(Buffer, OFFSET_RECSIZE);
-			SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECSIZE, SIZEOF(SHORT)), isHot := TRUE
+			PROPERTY RecordLen	AS WORD		;
+			GET BitConverter.ToUInt16(Buffer, OFFSET_RECSIZE);
+			SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECSIZE, SIZEOF(WORD)), isHot := TRUE
 
             // Reserved
 			PROPERTY Reserved1	AS SHORT		;

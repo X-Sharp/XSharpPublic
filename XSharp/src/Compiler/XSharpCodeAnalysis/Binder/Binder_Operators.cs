@@ -598,13 +598,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                     case SyntaxKind.SubtractExpression:
                     case SyntaxKind.AddAssignmentExpression:
                     case SyntaxKind.SubtractAssignmentExpression:
+                    case SyntaxKind.DivideAssignmentExpression:
+                    case SyntaxKind.DivideExpression:
+                    case SyntaxKind.MultiplyAssignmentExpression:
+                    case SyntaxKind.MultiplyExpression:
                         if (leftType != rightType && leftType.IsIntegralType() && rightType.IsIntegralType())
                         {
-                            if (leftType.SpecialType.SizeInBytes() == 4)
-                            {
-                                if (rightType.SpecialType.SizeInBytes() < 4)
+                           if (leftType.SpecialType.SizeInBytes() < 4)
+                           {
+                                // when adding a constant to a word or short
+                                // cast the constant to the LHS
+                                if (rightType.SpecialType.SizeInBytes() > leftType.SpecialType.SizeInBytes())
                                 {
-                                    right = new BoundConversion(right.Syntax, right, Conversion.ImplicitNumeric, false, false, right.ConstantValue, leftType) { WasCompilerGenerated = true };
+                                    if (right.ConstantValue != null)
+                                    {
+                                        right = new BoundConversion(right.Syntax, right, Conversion.ImplicitNumeric, false, false, right.ConstantValue, leftType) { WasCompilerGenerated = true };
+                                    }
                                 }
                             }
                         }

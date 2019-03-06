@@ -143,8 +143,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_Header:Version    := 0
             SELF:_Header:KeySize    := _keySize
             SELF:_Header:KeyExprPos := 0
-            SELF:_Header:KeyExprLen := (WORD)(_KeyExpr:Length + 1)
-            SELF:_Header:ForExprPos := (WORD) (SELF:_Header:KeyExprLen )
+            SELF:_Header:KeyExprLen := (WORD) _KeyExpr:Length + 1
+            SELF:_Header:ForExprPos := SELF:_Header:KeyExprLen 
             SELF:_Header:KeyExpression := _KeyExpr
             VAR options := CdxOptions.Compact + CdxOptions.Tag
             IF SELF:_Unique
@@ -236,7 +236,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF ordCondInfo:EvalBlock != NULL
                 hasEvalBlock := TRUE
             ENDIF
-            IF lUseOrder .AND. leadingOrder:_topStack != 0
+            IF lUseOrder .AND. !leadingOrder:Stack:Empty
                 result := leadingOrder:_GoToRecno(SELF:_RecNo)
                 IF !result
                     RETURN result
@@ -384,7 +384,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             lRecCount := SELF:_oRdd:RecCount
             // create sorthelper
             SELF:_initSort(lRecCount)
-            SELF:_sorter:StartWrite()
             IF ordCondInfo:Active
                 RETURN SELF:_CondCreate(ordCondInfo)
             ENDIF
@@ -409,7 +408,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
     END CLASS
     INTERNAL CLASS CdxSortHelper INHERIT RddSortHelper
-        INTERNAL PROPERTY CurrentLeaf    AS CdxLeafPage AUTO
         INTERNAL PROPERTY SourceIndex    AS INT AUTO
         INTERNAL PROPERTY Ascii          AS LOGIC AUTO
         PRIVATE _bag                     AS CdxOrderBag
@@ -418,39 +416,22 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SUPER(rdd, sortInfo, len)
             _tag := tag
             _bag := tag:OrderBag
-            CurrentLeaf := NULL
 
         INTERNAL METHOD AddRecord(nRecno AS LONG, data AS BYTE[]) AS LOGIC
-            VAR oLeaf    := CurrentLeaf
             // place item on current leaf node.
-            // When Leafnode is full then allocate a new leaf node
-            // and add this leaf to the parent
-            _tag:_newValue:Recno := nRecno
-            _tag:_newValue:Key   := data
-            VAR result := oLeaf:Add(nRecno, data)
-            IF result != CdxResult.OK
-                IF result == CdxResult.SplitLeaf
-                    result := CdxResult.AddLeaf
-                ENDIF
-                result := _tag.DoAction(result)
-                oLeaf  := CurrentLeaf := _tag:CurrentLeaf
-                result := oLeaf:Add(nRecno, data)
-                // this may be another CdxResult.ExpandRecnos for a new page
-                IF result != CdxResult.Ok
-                    result := _tag.DoAction(result)
-                    result := oLeaf:Add(nRecno, data)
-                ENDIF
-                IF result != CdxResult.OK
-                    Error("CdxSortHelper.AddRecord","Could not add record to leaf")
-                ENDIF
+            // the code inside Doaction takes care of adding extra leaf pages etc.
+            var action := CdxAction.AddKey(nRecno, data)
+            action := _tag:DoAction(action)
+            IF action:Type != CdxActionType.OK
+                Error("CdxSortHelper.AddRecord","Could not add record to leaf")
+                RETURN FALSE
             ENDIF
-            _tag:CurrentStack:Pos++
             RETURN TRUE
 
         INTERNAL METHOD StartWrite() AS LOGIC
             VAR page := SELF:_tag:NewLeafPage()
             SELF:_tag:PushPage(page)
-            CurrentLeaf := page
+            SELF:_tag:SetRoot(page)
             RETURN TRUE
 
         INTERNAL METHOD EndWrite() AS LOGIC
@@ -464,52 +445,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             //   and based on that we can determine the # of levels we need.
             //   when there was only one leaf page then we don't create a branch, otherwise
             //   we create as many branches as necessary.
-            LOCAL oLeaf    AS CdxLeafPage
-            LOCAL oParent   := NULL AS CdxBranchPage
-            oLeaf           := CurrentLeaf
-            // Write the last key in leaf and its parents all the way up into the tree
-            oParent  := _tag:GetParent(oLeaf)
-            VAR node := oLeaf:LastNode
-            DO WHILE oParent != NULL
-                VAR result := oParent:Add(node)
-                // It can happen and will happen that the last key does not fit on the parent
-                // when that happens we will have to create a new parent page
-                IF result != CdxResult.OK
-                    _tag:DoAction(result)
-                ENDIF
-                /*
-                SWITCH result
-                CASE CdxResult.Ok
-                    NOP
-                CASE CdxResult.Split
-                    oParent:Write()
-                    oParent := SELF:NewBranchPage(oLeaf:LastNode, oParent)
-                END SWITCH
-                */
-                node    := oParent:LastNode
-                oParent := _tag:GetParent(oParent)
-            ENDDO
-            VAR rootPageNo := _tag:CurrentStack:Page
-            DO WHILE _tag:CurrentStack:Page != 0
-                rootPageNo := _tag:CurrentStack:Page
-                _tag:Poppage()
-            ENDDO 
-            IF rootPageNo != 0
-                VAR root := _tag:GetPage(rootPageNo)
-                IF root != NULL
-                    SetRoot(root)
-                ENDIF
+            LOCAL oLeaf  AS CdxLeafPage
+            oLeaf       := _tag:Stack:Top:Page
+            var action  := CdxAction.ChangeParent(oLeaf)
+            action      := _tag.Doaction(action)
+            VAR root := _tag:Stack:Root?:Page
+            _tag:Stack:Clear()
+            IF root != NULL
+                _tag:SetRoot(root)
             ENDIF
             SELF:Clear()
             RETURN TRUE
 
 
-        PRIVATE METHOD SetRoot(oPage AS CdxTreePage) AS VOID
-            _tag:Header:RootPage := oPage:PageNo
-            _tag:Header:Write()
-            oPage:SetRoot()
-            oPage:Write()
-            RETURN
 
         PRIVATE METHOD Error(strFunction AS STRING, strMessage AS STRING) AS VOID
             SELF:_tag:RDD:_dbfError(ERDD.CREATE_ORDER, GenCode.EG_CORRUPTION, strFunction, strMessage)

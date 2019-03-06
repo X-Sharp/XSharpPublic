@@ -24,7 +24,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL METHOD ReadTags() AS List<CdxTag>
             _tags := List<CdxTag>{}
-            Debug.Assert (SELF:PageType:HasFlag(CdxPageType.TagList))
+            Debug.Assert (SELF:PageType:HasFlag(CdxPageType.Leaf) .and. SELF:PageType:HasFlag(CdxPageType.Root))
             FOR VAR nI := 0 TO SELF:NumKeys-1
                 LOCAL nRecno    := SELF:GetRecno(nI) AS Int32
                 LOCAL bName     := SELF:GetKey(nI)  AS BYTE[]
@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL VIRTUAL METHOD Initialize(keyLength AS WORD) AS VOID
             SUPER:Initialize(keyLength)
             _tags := List<CdxTag>{}
-            SELF:PageType := CdxPageType.TagList
+            SELF:PageType := CdxPageType.Leaf + CdxPageType.Root
 
         METHOD Remove(oTag AS CdxTag) AS LOGIC
             LOCAL found := FALSE AS LOGIC
@@ -68,9 +68,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 System.Array.Sort(aTags,  { x,y => IIF (x:OrderName < y:Ordername , -1, 1)})
             ENDIF
             SELF:Initialize(_keyLen)
-            VAR bytes := BYTE[]{ keyLength}
             FOREACH VAR tag IN aTags
-                memset(bytes, 0, keyLength,32)
+                VAR bytes := BYTE[]{ keyLength}
                 VAR name := tag:OrderName
                 _SetString(bytes, 0, Math.Min(name:Length, keyLength), name)
                 SELF:Add(tag:Header:PageNo, bytes)

@@ -52,7 +52,7 @@
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>c:\XSharp\DevRt\Runtime\XSharp.Rdd.Tests\tests\XSharp\</OutputPath>
+    <OutputPath>C:\Test\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -85,7 +85,7 @@
     <AssemblyOriginatorKeyFile />
     <CommandLineOption />
     <PPO>false</PPO>
-    <Prefer32Bit>False</Prefer32Bit>
+    <Prefer32Bit>True</Prefer32Bit>
     <DebuggerCommand>$(TargetPath)</DebuggerCommand>
     <DebuggerCommandArguments />
     <DebuggerWorkingDirectory />

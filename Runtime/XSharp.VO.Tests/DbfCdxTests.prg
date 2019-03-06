@@ -1238,7 +1238,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			RDDSetDefault("DBFCDX")
 
 			aValues := { 44 , 12, 34 , 21 }                                
-			cDBF := GetTempFileName("testcdx")
+			cDBF := GetTempFileName("testcdx8")
 			cCdx := cDbf + ".cdx"
 			FErase(cCdx)
 			IF System.IO.File.Exists(cCdx)
@@ -1280,7 +1280,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			Assert.Equal(4, (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, ok
 			Assert.Equal(1, (INT) DBOrderInfo( DBOI_NUMBER ) )  // still  -1 , but should show  1
-			Assert.Equal("TESTCDX", (STRING) DBOrderInfo( DBOI_NAME ) )  // ok , "TESTDBF"
+			Assert.Equal("TESTCDX8", (STRING) DBOrderInfo( DBOI_NAME ) )  // ok , "TESTDBF"
 			DBCloseArea ()
 		RETURN
 

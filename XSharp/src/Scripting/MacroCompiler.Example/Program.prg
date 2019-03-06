@@ -570,6 +570,8 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"ctest{ctest{1,2}}", Args(), ctest{0,0}, typeof(ctest))
         TestMacro(mc, e"Foo{Foo{}}", Args(), Foo{}, typeof(Foo))
         TestMacro(mc, e"{|o|l := true, l := l .or. (o:fieldget(#F1)!= o:propget(#F2, '-') .or. o:fieldget(#F1)!= o:propget(#F3, '-') .or. o:fieldget(#F1)!= o:propget(#F4, '-'))}", Args(ctest{1,2}), true, typeof(logic))
+        TestMacro(mc, "foo", Args(), null, null)
+        TestMacro(mc, "foo := 1234, foo", Args(), 1234, typeof(int))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")

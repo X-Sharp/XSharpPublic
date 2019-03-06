@@ -14,6 +14,15 @@ namespace XSharp.MacroCompiler
             if ( b != null ) node = (T)b;
         }
 
+        internal void Bind<T>(ref T node, BindAffinity affinity) where T : Syntax.Expr
+        {
+            if (node != null)
+            {
+                node.Affinity = affinity;
+                Bind(ref node);
+            }
+        }
+
         internal void Bind<T>(IList<T> nodes) where T: Syntax.Node
         {
             if (nodes != null)

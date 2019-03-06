@@ -120,11 +120,18 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             Symbol = b.Lookup(Name);
-            if (Symbol.IsMethodOrMethodGroup() && this.Affinity != BindAffinity.Invoke)
+            if (Affinity != BindAffinity.Invoke && Affinity != BindAffinity.Type)
             {
-                // IdExpr can't be a method
-                // TODO (nvk): If delegates are supprted this needs to be revised!
-                Symbol = null;
+                if (Symbol.IsMethodOrMethodGroup())
+                {
+                    // IdExpr can't be a method
+                    // TODO (nvk): If delegates are supprted this needs to be revised!
+                    Symbol = null;
+                }
+                else if (Symbol is TypeSymbol)
+                {
+                    Symbol = null;
+                }
             }
             if (Symbol == null)
             {
@@ -185,7 +192,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            b.Bind(ref Expr);
+            b.Bind(ref Expr, BindAffinity.Type);
             Symbol = b.Lookup(Expr.Symbol, Member.LookupName) ?? ThrowError(Binder.LookupError(Expr, this));
             Datatype = Symbol.Type();
             return null;
@@ -195,8 +202,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            Left.Affinity = BindAffinity.Assign;
-            b.Bind(ref Left);
+            b.Bind(ref Left, BindAffinity.Assign);
             b.Bind(ref Right);
             Left.RequireSetAccess();
             Right.RequireGetAccess();
@@ -210,8 +216,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            Left.Affinity = BindAffinity.Assign;
-            b.Bind(ref Left);
+            b.Bind(ref Left, BindAffinity.Assign);
             b.Bind(ref Right);
             Left.RequireGetSetAccess();
             Right.RequireGetAccess();
@@ -284,8 +289,7 @@ namespace XSharp.MacroCompiler.Syntax
         Expr Left;
         internal override Node Bind(Binder b)
         {
-            Expr.Affinity = BindAffinity.Assign;
-            b.Bind(ref Expr);
+            b.Bind(ref Expr, BindAffinity.Assign);
             Expr.RequireGetSetAccess();
             Left = Expr.Cloned(b);
             Expr = Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind), b.Options.Binding);
@@ -301,8 +305,7 @@ namespace XSharp.MacroCompiler.Syntax
         Expr Value;
         internal override Node Bind(Binder b)
         {
-            Expr.Affinity = BindAffinity.Assign;
-            b.Bind(ref Expr);
+            b.Bind(ref Expr, BindAffinity.Assign);
             Expr.RequireGetSetAccess();
             Left = Expr.Cloned(b);
             Value = b.Cache(ref Expr);
@@ -365,7 +368,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            b.Bind(ref Type);
+            b.Bind(ref Type, BindAffinity.Type);
             Type.RequireType();
             Symbol = Type.Symbol as TypeSymbol;
             Datatype = Compilation.Get(NativeType.UInt32);
@@ -377,7 +380,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            b.Bind(ref Type);
+            b.Bind(ref Type, BindAffinity.Type);
             Type.RequireType();
             Symbol = Type.Symbol as TypeSymbol;
             Datatype = Symbol as TypeSymbol;
@@ -390,7 +393,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr);
-            b.Bind(ref Type);
+            b.Bind(ref Type, BindAffinity.Type);
             Type.RequireType();
             Datatype = Type.Symbol as TypeSymbol;
             Symbol = b.ExplicitConversion(Expr, Datatype);
@@ -409,7 +412,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr);
-            b.Bind(ref Type);
+            b.Bind(ref Type, BindAffinity.Type);
             Expr.RequireGetAccess();
             Type.RequireType();
             Symbol = Type.Symbol as TypeSymbol;
@@ -432,7 +435,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr);
-            b.Bind(ref Type);
+            b.Bind(ref Type, BindAffinity.Type);
             Expr.RequireGetAccess();
             Type.RequireType();
             Symbol = Type.Symbol as TypeSymbol;
@@ -445,8 +448,7 @@ namespace XSharp.MacroCompiler.Syntax
         protected Expr Self = null;
         internal override Node Bind(Binder b)
         {
-            Expr.Affinity = BindAffinity.Invoke;
-            b.Bind(ref Expr);
+            b.Bind(ref Expr, BindAffinity.Invoke);
             b.Bind(ref Args);
             Symbol = b.BindMethodCall(Expr, Expr.Symbol, Args, out Self);
             Datatype = Symbol.Type();
@@ -472,7 +474,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            b.Bind(ref Expr);
+            b.Bind(ref Expr, BindAffinity.Type);
             Expr.RequireType();
             b.Bind(ref Args);
             Symbol = b.BindCtorCall(Expr, Expr.Symbol, Args);
@@ -562,7 +564,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             if (ElemType != null)
             {
-                b.Bind(ref ElemType);
+                b.Bind(ref ElemType, BindAffinity.Type);
                 ElemType.RequireType();
             }
             b.Bind(ref Values);

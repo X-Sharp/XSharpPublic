@@ -80,8 +80,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _oRdd   AS DbfCdx
         PRIVATE _Header AS CdxTagHeader
 
-        PRIVATE _stack          AS RddStack[]
-        PRIVATE _topStack       AS LONG
+        PRIVATE _stack          AS CdxPageStack
         PRIVATE _compareFunc    AS CompareFunc
         PRIVATE _currentNode    AS CdxNode
 
@@ -92,17 +91,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 #endregion
 
-    STATIC possibleActions AS CdxResult[]
-    STATIC CONSTRUCTOR()
-        VAR values := Enum.GetValues(typeof(CdxResult))
-        VAR list   := List<CdxResult>{}
-        FOREACH VAR val IN values
-            IF (INT) val != 0
-                list:Add((CdxResult) val)
-            ENDIF
-        NEXT
-        possibleActions := list:ToArray()
-        RETURN
 
 
 #region Properties
@@ -129,9 +117,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Signature      	AS BYTE AUTO
         INTERNAL PROPERTY Options        	AS CdxOptions AUTO
         INTERNAL PROPERTY LockOffSet     	AS LONG AUTO
-        INTERNAL PROPERTY CurrentStack      AS RddStack GET  SELF:_stack[SELF:_topStack]
+        INTERNAL PROPERTY CurrentStack      AS CdxStackEntry GET  SELF:_stack:Top
         INTERNAL PROPERTY RootPage          AS LONG AUTO
         INTERNAL PROPERTY MaxKeysPerPage    AS WORD GET _maxKeysPerPage
+        INTERNAL PROPERTY Stack             as CdxPageStack get _stack
 
         // Scopes
         INTERNAL PROPERTY TopScope          AS OBJECT GET _topScope SET _topScope := VALUE
@@ -142,16 +131,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
         PRIVATE METHOD _InitFields(oBag AS CdxOrderBag) AS VOID
-            LOCAL i AS LONG
             SELF:_bag           := oBag
             SELF:_oRDD          := oBag:_oRDD
-            SELF:_stack         := RddStack[]{ STACK_DEPTH }
+            SELF:_stack         := CdxPageStack{SELF}
             SELF:_Encoding      := _oRDD:_Encoding
-            SELF:_Ansi          := _oRDD:_Ansi
-            //Init
-            FOR i := 0 TO STACK_DEPTH - 1 
-                SELF:_stack[i] := RddStack{}
-            NEXT
+  
             SELF:_SingleField   := -1
             SELF:_currentValue := CdxKeyData{MAX_KEY_LEN}
             SELF:_newValue     := CdxKeyData{MAX_KEY_LEN}
@@ -233,7 +217,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_SourceIndex := 0
             LOCAL isOk AS LOGIC
             IF SELF:_SingleField >= 0
-                SELF:_SourceIndex   := (WORD) SELF:_oRdd:_fields[_SingleField]:OffSet
+                SELF:_SourceIndex   := SELF:_oRdd:_fields[_SingleField]:OffSet
                 VAR fType           := SELF:_oRdd:_fields[_SingleField]:FieldType
                 SWITCH fType
                 CASE DbFieldType.Number
@@ -244,7 +228,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:_keySize   := 8
                     SELF:getKeyValue := _getDateFieldValue
                 OTHERWISE
-                    SELF:_keySize   := (WORD) SELF:_oRdd:_fields[_SingleField]:Length
+                    SELF:_keySize   :=  (WORD) SELF:_oRdd:_fields[_SingleField]:Length
                     SELF:getKeyValue := _getFieldValue
                 END SWITCH
                 isOk := TRUE
@@ -528,22 +512,23 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                      records := 0
                     IF SELF:GoTop()
                         VAR topStack := SELF:CurrentStack
-                        VAR pageNo   := topStack:Page
+                        VAR page     := topStack:Page
                         DO WHILE TRUE
-                            VAR page   := (CdxTreePage) SELF:_bag:GetPage(pageNo,SELF:KeyLength,SELF)
                             IF page == NULL
                                 EXIT
                             ENDIF
                             records += page:NumKeys
                             IF SELF:_Descending
                                 IF page:HasLeft
-                                    pageNo := page:LeftPtr
+                                    var pageNo := page:LeftPtr
+                                    page := SELF:GetPage(pageNo)
                                 ELSE
                                     EXIT
                                 ENDIF
                             ELSE
                                 IF page:HasRight
-                                    pageNo := page:RightPtr
+                                    var pageNo := page:RightPtr
+                                    page := SELF:GetPage(pageNo)
                                 ELSE
                                     EXIT
                                 ENDIF
@@ -573,7 +558,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF recno == 0
                 recno := SELF:_Recno
             ENDIF
-            IF SELF:_topStack == 0
+            IF SELF:Stack:Empty
                 SELF:_GoToRecno(recno)
             ENDIF
             IF SELF:HasTopScope .OR. SELF:HasBottomScope
@@ -628,103 +613,33 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN recno
             
-        INTERNAL METHOD PopPage() AS RddStack
-            IF SELF:_topStack != 0
-                SELF:CurrentStack:Clear()
-                SELF:_topStack--
-            ENDIF
-            RETURN SELF:CurrentStack
+        INTERNAL METHOD PopPage() AS CdxStackEntry
+            SELF:_Stack:Pop()
+            RETURN SELF:_Stack:Top
 
         INTERNAL METHOD PushPage(oPage AS CdxTreePage) AS VOID
-            SELF:PushPage(oPage:PageNo, 0, oPage:NumKeys)
+            SELF:_Stack:Push(oPage, 0)
             RETURN
 
-        INTERNAL PROPERTY CurrentLeaf AS CdxLeafPage GET CurrentTop ASTYPE  CdxLeafPage
+        INTERNAL PROPERTY CurrentLeaf AS CdxLeafPage GET SELF:_Stack:Top:Page ASTYPE  CdxLeafPage
 
-        INTERNAL PROPERTY CurrentTop  AS CdxTreePage
-            GET
-                LOCAL nPage AS LONG
-                IF _topStack > 0
-                    nPage := SELF:CurrentStack:Page
-                    RETURN SELF:GetPage(nPage) ASTYPE CdxTreePage
-                ENDIF
-                RETURN NULL
-            END GET
-        END PROPERTY
+        INTERNAL PROPERTY CurrentTop  AS CdxTreePage GET SELF:_Stack:Top:Page 
+
         INTERNAL METHOD InsertOnStack(oPage AS CdxTreePage, oBefore AS CdxTreePage) AS LOGIC
-            LOCAL pos := -1 AS INT
-            FOR VAR i := 1 TO SELF:_Stack:Length-1
-                IF SELF:_Stack[i]:Page == oBefore:PageNo
-                    pos := i
-                    EXIT
-                ENDIF
-            NEXT
-            IF pos == -1
-                // throw an exception ?
-                RETURN FALSE
-            ENDIF
-            FOR VAR i := SELF:_Stack:Length-1 DOWNTO Pos
-                SELF:_Stack[i] := SELF:_Stack[i-1]
-            NEXT
-            VAR oStack := RddStack{}
-            SELF:_Stack[pos] := oStack
-            oStack:Page := oPage:PageNo
-            oStack:Pos  := 0
-            oStack:Count := oPage:NumKeys
-            SELF:_TopStack ++
+            SELF:_stack:Insertbefore(oBefore, oPage)
             RETURN TRUE
 
-        INTERNAL METHOD SetPage(oPage AS CdxTreePage, nPos AS WORD) AS VOID
-            VAR topStack    := SELF:CurrentStack
-            topStack:Page   := oPage:PageNo
-            topStack:Pos    := nPos
-            topStack:Count  := oPage:NumKeys
+        PRIVATE METHOD AdjustStack(originalPage as CdxTreePage, oPage AS CdxTreePage, nPos AS WORD) AS VOID
+            SELF:_stack:Replace(originalPage, oPage, nPos)
             RETURN
 
 
-        INTERNAL METHOD PushPage(nPage AS LONG, nPos AS WORD, nCount AS WORD) AS VOID
-            SELF:_topStack++
-            VAR topStack    := SELF:CurrentStack
-            topStack:Page   := nPage
-            topStack:Pos    := nPos
-            topStack:Count  := nCount
+        INTERNAL METHOD PushPage(oPage as CdxTreePage , nPos AS WORD) AS VOID
+            SELF:_Stack:Push(oPage, nPos)
             RETURN 
 
-        PRIVATE METHOD FindLevel(child AS CdxTreePage) AS LONG
-            IF child != NULL
-                VAR pageNo := child:PageNo
-                FOR VAR nLevel := _topStack DOWNTO 1 STEP 1
-                    IF SELF:_stack[nLevel]:Page == pageNo
-                        RETURN nLevel
-                    ENDIF
-                NEXT
-            ENDIF
-            RETURN -1
-
-        INTERNAL METHOD GetParent(child AS CdxTreePage) AS CdxBranchPage
-            VAR nLevel := SELF:FindLevel(child)
-            IF nLevel > 1
-                VAR nParent := SELF:_stack[nLevel-1]:Page
-                RETURN SELF:GetPage(nParent) ASTYPE CdxBranchPage
-            ENDIF
-            RETURN NULL
-
-        INTERNAL METHOD SetParent(child AS CdxTreePage, parent AS CdxTreePage, nPos AS WORD) AS LOGIC
-            VAR nLevel := FindLevel(child)
-            IF nLevel > 1
-                VAR stack := SELF:_stack[nLevel-1]
-                stack:Page   := parent:PageNo
-                stack:Count  := parent:NumKeys
-                stack:Pos    := nPos
-            ENDIF
-            RETURN FALSE
-
-
         INTERNAL METHOD ClearStack() AS VOID
-            FOREACH entry AS RddStack IN SELF:_stack 
-                entry:Clear()
-            NEXT
-            SELF:_topStack := 0
+            SELF:_stack:Clear()
             RETURN
             
         INTERNAL METHOD _dump() AS VOID
@@ -774,7 +689,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     VAR oPage := SELF:GetPage(nPage) ASTYPE CdxTreePage
                     IF oPage != NULL
                         nPage := oPage:NextFree
-                        sbFree:AppendLine("Next free: "+ nPage:ToString("X8"))
+                        sbFree:AppendLine("Next free : "+ nPage:ToString("X8"))
                     ELSE
                         EXIT
                     ENDIF

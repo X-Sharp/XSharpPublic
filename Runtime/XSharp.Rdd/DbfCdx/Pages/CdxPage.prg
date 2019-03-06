@@ -22,11 +22,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	    PROTECTED _bag      AS CDXOrderBag
         PROTECTED _tag      AS CDXTag
         PROTECTED _nPage    AS Int32
-		PROTECTED _buffer   AS BYTE[]
+		PRIVATE   _buffer   AS BYTE[]
 		PROTECTED _hot      AS LOGIC        // Hot ?  => Page has changed ?
         PROTECTED _dumped   AS LOGIC
-        INTERNAL VIRTUAL PROPERTY PageType AS CdxPageType GET CdxPageType.None SET
-        
+        INTERNAL VIRTUAL PROPERTY PageType AS CdxPageType GET CdxPageType.Undefined SET
+
+
         INTERNAL PROPERTY Dumped AS LOGIC GET _dumped SET _dumped := VALUE
         INTERNAL PROPERTY IsHot  AS LOGIC GET _hot SET _hot := VALUE
         INTERNAL PROPERTY Tag    AS CDXTag GET _tag SET _tag := VALUE
@@ -45,8 +46,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSE
     			SELF:_buffer := buffer
             ENDIF
-		RETURN
+		    RETURN
         #region Read/Write
+
+        PROTECTED METHOD SetBuffer(buffer as Byte[]) AS VOID
+            _buffer := buffer
+
 			
 		PROTECTED INTERNAL VIRTUAL METHOD Write() AS LOGIC
 			VAR lOk :=  _Bag:Write(SELF)
@@ -59,7 +64,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN lOk
 
         INTERNAL METHOD Clear() AS VOID
-            MemSet(Buffer, 0, Buffer:Length, 0)
+            _buffer := Byte[]{_buffer:Length}
             RETURN
 
         INTERNAL METHOD SetEmptyRoot() AS VOID
@@ -155,7 +160,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 nValue:b1 := buffer[nOffSet+3]
                 RETURN nValue:LongValue
 			
-
 				
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _SetLong(nOffSet AS INT, liValue AS Int32) AS VOID
@@ -190,7 +194,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             PROTECTED INTERNAL STATIC METHOD _GetBytes(buffer AS BYTE[], nOffSet AS INT, count AS INT) AS BYTE[]
                 LOCAL result AS BYTE[]
                 result := BYTE[]{count}
-			    MemCopy(buffer, nOffSet, result, 0, count)
+			    System.Array.Copy(buffer, nOffSet, result, 0, count)
                 RETURN result
 
 
@@ -202,70 +206,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 				
             #endregion
 
-        #region MemSet and MemCopy
-        PRIVATE INITONLY STATIC _memSetter AS  Action<IntPtr, BYTE, INT>		
-        PRIVATE INITONLY STATIC _memCopier AS  Action<IntPtr, IntPtr, INT>
-        
-        STATIC CONSTRUCTOR()
-            VAR atts := MethodAttributes.Public | MethodAttributes.Static
-            VAR dm := DynamicMethod{"Memset", atts, CallingConventions.Standard, NULL,  <System.Type> { TYPEOF(IntPtr), TYPEOF(BYTE), TYPEOF(INT) }, TYPEOF(CdxPage), TRUE}
-            VAR generator	  := dm:GetILGenerator()
-            generator:Emit(OpCodes.Ldarg_0)
-            generator:Emit(OpCodes.Ldarg_1)
-            generator:Emit(OpCodes.Ldarg_2)
-            generator:Emit(OpCodes.Initblk)
-            generator:Emit(OpCodes.Ret)
-            _memSetter := (Action<IntPtr, BYTE, INT>) dm:CreateDelegate(TYPEOF(Action<IntPtr, BYTE, INT>))
-            dm := DynamicMethod{"Memcopy", atts, CallingConventions.Standard, NULL,  <System.Type> { TYPEOF(IntPtr), TYPEOF(IntPtr), TYPEOF(INT) }, TYPEOF(CdxPage), TRUE}
-        
-            generator := dm:GetILGenerator()
-            generator:Emit(OpCodes.Ldarg_0)
-            generator:Emit(OpCodes.Ldarg_1)
-            generator:Emit(OpCodes.Ldarg_2)
-            generator:Emit(OpCodes.Cpblk)
-            generator:Emit(OpCodes.Ret)
-            _memCopier := (Action<IntPtr, IntPtr, INT>) dm:CreateDelegate(TYPEOF(Action<IntPtr, IntPtr, INT>))
 
-
-        STATIC METHOD MemSet(bytes AS BYTE[], start AS INT, length AS INT, VALUE AS BYTE) AS VOID
-            LOCAL h := GcHandle{} AS GcHandle
-            LOCAL p AS IntPtr
-            p := IntPtr.Zero
-            
-            TRY
-                h := GCHandle.Alloc(bytes, GCHandleType.Pinned)
-                p := h:AddrOfPinnedObject() + start
-                _memSetter(p, VALUE, length)
-            FINALLY
-                IF h:IsAllocated
-                    h:Free()
-                ENDIF
-            END TRY
-
-        STATIC METHOD MemCopy(source AS BYTE[], target AS BYTE[], length AS INT) AS VOID
-            MemCopy(source, 0, target, 0, length)
-
-        STATIC METHOD MemCopy(source AS BYTE[], sourceoffset AS INT, target AS BYTE[], targetoffset AS INT, length AS INT) AS VOID
-            LOCAL hSrc := GcHandle{} AS GcHandle
-            LOCAL pSrc AS IntPtr
-            LOCAL hTrg := GcHandle{} AS GcHandle
-            LOCAL pTrg AS IntPtr
-            pSrc := pTrg := IntPtr.Zero
-            TRY
-                hSrc := GCHandle.Alloc(source, GCHandleType.Pinned)
-                pSrc := hSrc:AddrOfPinnedObject() + sourceoffset
-                hTrg := GCHandle.Alloc(target, GCHandleType.Pinned)
-                pTrg := hTrg:AddrOfPinnedObject() + targetoffset
-                _memCopier(pTrg, pSrc, length)
-            FINALLY
-                IF hSrc:IsAllocated
-                    hSrc:Free()
-                ENDIF
-                IF hTrg:IsAllocated
-                    hTrg:Free()
-                ENDIF
-            END TRY
-        #endregion
+        STATIC METHOD MemSet(bytes AS BYTE[], start AS INT, length AS INT, bValue AS BYTE) AS VOID
+            var finish := start+length-1
+            FOR var i := start to finish
+                bytes[i] := bValue
+            next
 
 		INTERNAL CONST CDXPAGE_SIZE        := 512 AS WORD
 

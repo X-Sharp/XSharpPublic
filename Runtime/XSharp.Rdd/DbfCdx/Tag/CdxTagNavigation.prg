@@ -153,7 +153,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         nToSkip := 0
                     ENDIF
                 ELSE
-                    IF SELF:_topStack == 0
+                    IF SELF:Stack:Empty
                         SELF:_GoToRecno( SELF:_Recno)
                     ENDIF
                 ENDIF
@@ -207,11 +207,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL page  AS CdxTreePage
             LOCAL node  AS CdxPageNode
             // No page loaded ?
-            IF SELF:_topStack == 0
+            IF SELF:Stack:Empty
                 RETURN 0
             ENDIF
             VAR topStack := SELF:CurrentStack
-            page := SELF:_Bag:GetPage(topStack:Page, SELF:KeyLength,SELF)
+            page    := topStack:Page
             node    := page[topStack:Pos]
 
             IF moveDirection == SkipDirection.Forward
@@ -221,14 +221,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN SELF:_locate(NULL, 0, SearchMode.Top, node:ChildPageNo)
                 ENDIF
                 // Once we are at the bottom level then we simply skip forward using the Right Pointers
-                IF topStack:Pos == topStack:Count
+                IF topStack:Pos == topStack:Page:Numkeys
                     IF page:HasRight
                         VAR rightPtr := page:RightPtr
-                        page := SELF:_Bag:GetPage(rightPtr, SELF:KeyLength,SELF)
-                        topStack:Page  := rightPtr
-                        topStack:Pos   := 0
-                        topStack:Count := page:NumKeys
-                        node    := page[topStack:Pos]
+                        var newpage := SELF:GetPage(rightPtr)
+                        SELF:Stack:Replace(page, newpage, 0)
+                        node    := newpage[0]
                         SELF:_saveCurrentRecord(node)
                         RETURN node:Recno
                     ELSE
@@ -249,10 +247,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF topStack:Pos == 0
                 IF page:HasLeft
                     VAR leftPtr := page:LeftPtr
-                    page := SELF:_Bag:GetPage(leftPtr, SELF:KeyLength,SELF)
-                    topStack:Page  := leftPtr
-                    topStack:Pos   := page:NumKeys // will be decremented below
-                    topStack:Count := page:NumKeys
+                    var newpage   := SELF:GetPage(leftPtr)
+                    SELF:Stack:Replace(page, newpage, newpage:NumKeys)
                 ELSE
                     // At the end of the leaf list
                     SELF:ClearStack()
@@ -269,11 +265,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _findItemPos(record REF LONG , nodePage AS LOGIC ) AS LOGIC
             LOCAL page  AS CdxTreePage
             LOCAL node  AS CdxPageNode
-            IF SELF:_topStack == 0
+            IF SELF:Stack:Empty
                 RETURN FALSE
             ENDIF
-            VAR topStack := SELF:CurrentStack
-            page := SELF:_bag:GetPage(topStack:Page,SELF:KeyLength,SELF)
+            VAR topStack := SELF:Stack:Top
+            page := topStack:Page
             node := page[topStack:Pos]
             IF nodePage
                 topStack:Pos--
@@ -287,7 +283,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN TRUE
             ENDIF
             IF topStack:Pos == 0
-                DO WHILE SELF:_topStack != 0 .AND. topStack:Pos == 0
+                DO WHILE ! SELF:Stack:Empty .AND. topStack:Pos == 0
                     topStack := SELF:PopPage()
                 ENDDO
                 RETURN SELF:_findItemPos(REF record, TRUE)
@@ -492,7 +488,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         SELF:_oRdd:_dbfError( SubCodes.ERDD_RECNO_MISSING, GenCode.EG_CORRUPTION,SELF:fileName)
                         result := FALSE
                     ENDIF
-                    SELF:_topStack := 0
+                    SELF:Stack:Clear()
                 ENDIF
             ENDIF
             RETURN result
@@ -517,10 +513,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL node      AS CdxPageNode
             LOCAL minPos    AS WORD
             LOCAL maxPos    AS WORD
+            LOCAL atEOF     AS LOGIC
             // find a key starting at the pageOffSet passed 
             foundPos := 0
+            atEOF    := FALSE
             //Load the page at pageOffset
-            page := SELF:_Bag:GetPage(pageOffset, SELF:_keySize, SELF)
+            page := SELF:GetPage(pageOffset)
             IF page == NULL
                 SELF:ClearStack()
                 RETURN 0
@@ -536,10 +534,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 minPos := 0
                 maxPos := nodeCount
                 DO WHILE minPos < maxPos
-                    foundPos := (WORD) ((minPos + maxPos) / 2)
+                    foundPos := (minPos + maxPos) / 2
                     node:Pos := foundPos
                     IF SELF:_compareFunc(node:KeyBytes, keyBuffer, bufferLen) <= 0
-                        minPos := (WORD) (foundPos + 1)
+                        minPos := foundPos + 1
                     ELSE
                         maxPos := foundPos
                     ENDIF
@@ -551,14 +549,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 maxPos := nodeCount
                 VAR found := FALSE 
                 DO WHILE minPos < maxPos
-                    foundPos := (WORD) ((minPos + maxPos) / 2)
+                    foundPos := (minPos + maxPos) / 2
                     node:Pos := foundPos
                     VAR cmp := SELF:_compareFunc(node:KeyBytes, keyBuffer, bufferLen)
                     IF cmp >= 0
                         found := TRUE
                     ENDIF
                         IF cmp  < 0
-                        minPos := (WORD) (foundPos + 1)
+                        minPos := foundPos + 1
                     ELSE
                         maxPos := foundPos
                     ENDIF
@@ -566,10 +564,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         // all keys are smaller than what we are looking for
                         IF page:HasRight
                             pageOffset  := page:RightPtr
-                            page        :=  SELF:_Bag:GetPage(pageOffset, SELF:_keySize,SELF)
+                            page        := SELF:GetPage(pageOffset)
                             nodeCount   := page:NumKeys
                             minPos := 0
                             maxPos := nodeCount
+                        ELSE
+                            // the key we are looking for is at EOF of the file
+                            atEOF := TRUE
                         ENDIF
                     ENDIF
                     
@@ -581,7 +582,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                     
             CASE SearchMode.Bottom
-                foundPos := (WORD) (nodeCount-1)
+                foundPos := nodeCount-1
                 node:Pos := foundPos
             CASE SearchMode.Top
                 foundPos := 0
@@ -589,9 +590,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END SWITCH
             // Add info in the stack
 
-            SELF:PushPage(pageOffSet, foundPos, nodeCount)
-            
-            IF page IS CdxBranchPage .AND. node:ChildPageNo != 0
+            IF atEOF
+                SELF:_locateKey(NULL, 0, SearchMode.Bottom)
+                RETURN 0
+            ENDIF
+
+            SELF:PushPage(page, foundPos)
+            IF page IS CdxBranchPage
                 RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, node:ChildPageNo)
             ENDIF
             
@@ -612,11 +617,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN 0
                 END SWITCH
             ELSEIF searchMode == SearchMode.LeftFound
-                DO WHILE SELF:_topStack != 0 .AND. topStack:Pos == topStack:Count
+                DO WHILE ! SELF:Stack:Empty .AND. topStack:Pos == topStack:Page:NumKeys
                     topStack := SELF:PopPage()
                 ENDDO
-                IF SELF:_topStack != 0
-                    page := SELF:_Bag:GetPage(topStack:Page, SELF:_keySize,SELF)
+                IF ! SELF:Stack:Empty
+                    page := SELF:Stack:Top:Page
                     IF page == NULL
                         SELF:ClearStack()
                         RETURN 0

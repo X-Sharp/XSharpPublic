@@ -59,7 +59,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE CONST CDXBRANCH_BYTESFREE           := 500  AS WORD
         #endregion
         
-        INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS Int32)
+        INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS Word)
             SUPER(bag, nPage, buffer)
             SELF:_keyLen  := nKeyLen
             SELF:_maxKeys := MaxKeysPerPage(nKeyLen)
@@ -112,8 +112,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _SetLongLE(nStart+_keyLen+4, nPage)
             RETURN
             
-        INTERNAL STATIC METHOD MaxKeysPerPage(nKeyLen AS INT) AS WORD
-            RETURN  (WORD) (CDXBRANCH_BYTESFREE / (nKeyLen + 8))
+        INTERNAL STATIC METHOD MaxKeysPerPage(nKeyLen AS WORD) AS WORD
+            RETURN  CDXBRANCH_BYTESFREE / (nKeyLen + 8)
             
             
         #region Properties
@@ -135,22 +135,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY MaxKeys AS LONG GET _maxKeys
         
         
-        INTERNAL METHOD Add(node AS CdxPageNode) AS CdxResult
+        INTERNAL METHOD Add(node AS CdxPageNode) AS CdxAction
             IF SELF:NumKeys >= SELF:MaxKeys
-                SELF:Tag:SetChildToProcess(SELF:PageNo)
-                RETURN CdxResult.SplitParent
+                RETURN CdxAction.SplitBranch(SELF, node:Page:PageNo, node:Recno, node:KeyBytes)
             ENDIF
             LOCAL nPos := SELF:NumKeys AS WORD
             SELF:NumKeys++
             // node contains recno & keydata
             // node:Page has value for ChildPageNo
             SELF:_setNode(nPos, node)
-            RETURN CdxResult.Ok
+            RETURN CdxAction.Ok
 
-         INTERNAL METHOD Add(recno AS LONG, childPage AS LONG, key AS BYTE[]) AS CdxResult
+         INTERNAL METHOD Add(recno AS LONG, childPage AS LONG, key AS BYTE[]) AS CdxAction
             IF SELF:NumKeys >= SELF:MaxKeys
-               SELF:Tag:SetChildToProcess(SELF:PageNo)
-                RETURN CdxResult.SplitParent
+                RETURN CdxAction.SplitBranch(SELF, childPage, recno, key)
             ENDIF
             LOCAL nPos := SELF:NumKeys AS WORD
             SELF:NumKeys++
@@ -160,94 +158,99 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:SetRecno(nPos, recno)
             SELF:SetChildPage(nPos, childPage)
             SELF:SetKey(nPos, key)
-            RETURN CdxResult.Ok
+            RETURN CdxAction.Ok
             
-        INTERNAL METHOD Insert(nPos AS LONG, node AS CdxPageNode) AS CdxResult
+        INTERNAL METHOD Insert(nPos AS LONG, node AS CdxPageNode) AS CdxAction
             LOCAL nMax := SELF:NumKeys AS WORD
             // we allow to write at the position nMax
             IF nPos >= SELF:MaxKeys -1
-                SELF:Tag:SetChildToProcess(SELF:PageNo)
-                RETURN CdxResult.SplitParent
+                RETURN CdxAction.SplitBranch(SELF, node:ChildPageNo, node:Recno, node:KeyBytes)
             ENDIF
             IF nPos == nMax                 // Insert at end of list
                 SELF:NumKeys += 1
                 SELF:_setNode(nMax, node)
-                RETURN CdxResult.Ok
+                RETURN CdxAction.Ok
             ENDIF
             IF nPos < 0 .OR. nPos > nMax
-                RETURN CdxResult.OutOfBounds
+                RETURN CdxAction.OutOfBounds(SELF)
             ENDIF
             // copy nodes up
             // TODO Use MemCopy or ArrayCopy in stead for better performance
             SELF:NumKeys += 1
             FOR VAR nI := nMax-1 DOWNTO nPos
                 SELF:_copyNode(nI, nI+1)
+                if nI == 0
+                    exit
+                endif
             NEXT
             // and insert at the right spot
             _setNode(nPos, node)
             
-            RETURN CdxResult.Ok
+            RETURN CdxAction.Ok
             
-        INTERNAL METHOD Delete(nPos AS LONG) AS CdxResult
+        INTERNAL METHOD Delete(nPos AS LONG) AS CdxAction
             LOCAL nMax := SELF:NumKeys AS WORD
-            LOCAL result AS CdxResult
+            LOCAL result AS CdxAction
             IF nMax == 0 
-                RETURN CdxResult.Delete
+                RETURN CdxAction.Delete(SELF)
             ENDIF
             IF nPos < 0 .OR. nPos > nMax-1
-                RETURN CdxResult.OutOfBounds
+                RETURN CdxAction.OutOfBounds(SELF)
             ENDIF
             // node contains recno & keydata
             // node:Page has value for ChildPageNo
             // TODO Use MemCopy or ArrayCopy in stead for better performance
-            FOR VAR nI := nPos TO nMax-2
-                SELF:_copyNode(nI+1, nI)
-            NEXT
+            if nMax > 1
+                FOR VAR nI := nPos TO nMax-2
+                    SELF:_copyNode(nI+1, nI)
+                NEXT
+            ENDIF
             SELF:NumKeys -= 1
             IF SELF:NumKeys == 0
-                SELF:Tag:SetChildToProcess(SELF:PageNo)
-                result := CdxResult.Delete
+                //SELF:Tag:SetChildToProcess(SELF:PageNo)
+                result := CdxAction.Delete(SELF)
             ELSEIF nPos == SELF:NumKeys
-               SELF:Tag:SetChildToProcess(SELF:PageNo)
-                result := CdxResult.ChangeParent
+               //SELF:Tag:SetChildToProcess(SELF:PageNo)
+                result := CdxAction.ChangeParent(SELF)
             ELSE
-                result := CdxResult.OK
+                result := CdxAction.OK
             ENDIF
             RETURN result
 
 
             
-        INTERNAL METHOD Replace(nPos AS LONG, node AS CdxPageNode) AS CdxResult
+        INTERNAL METHOD Replace(nPos AS LONG, node AS CdxPageNode) AS CdxAction
             LOCAL nMax := SELF:NumKeys AS WORD
             IF nPos < 0 .OR. nPos >= nMax
-                RETURN CdxResult.OutOfBounds
+                RETURN CdxAction.OutOfBounds(SELF)
             ENDIF
             RETURN _setNode(nPos, node)
             
         // Helper methods, these do not verify the bounds
-        PRIVATE METHOD _copyNode(nSrc AS LONG, nTrg AS LONG) AS CdxResult
+        PRIVATE METHOD _copyNode(nSrc AS LONG, nTrg AS LONG) AS CdxAction
             IF nSrc != nTrg
                 SELF:SetRecno(nTrg, SELF:GetRecno(nSrc))
                 SELF:SetChildPage(nTrg, SELF:GetChildPage(nSrc))
                 SELF:SetKey(nTrg, SELF:GetKey(nSrc))
             ENDIF
-            RETURN CdxResult.Ok
+            RETURN CdxAction.Ok
             
-        PRIVATE METHOD _setNode(nPos AS LONG, node AS CdxPageNode) AS CdxResult
+        PRIVATE METHOD _setNode(nPos AS LONG, node AS CdxPageNode) AS CdxAction
             // Todo: Combine the 3 operations so we do not have to calculate the offset 3 times
             SELF:SetRecno(nPos, node:Recno)
             SELF:SetChildPage(nPos, node:Page:PageNo)
             SELF:SetKey(nPos, node:KeyBytes)
-            RETURN CdxResult.Ok 
+            RETURN CdxAction.Ok
             
         INTERNAL METHOD Dump AS STRING
             LOCAL Sb AS stringBuilder
+            LOCAL i as WORD
             sb := stringBuilder{}
             VAR item := SELF[0]
             sb:AppendLine("--------------------------")
             sb:AppendLine(String.Format("{0} Page {1:X6}, # of keys: {2}", SELF:PageType, SELF:PageNo, SELF:NumKeys))
             sb:AppendLine(String.Format("Left page reference {0:X6}", SELF:LeftPtr))
-            FOR VAR i := 0 TO SELF:NumKeys-1
+            FOR i := 0 TO SELF:NumKeys-1
                 item:Pos := i
                 sb:AppendLine(String.Format("Item {0,2}, Page {1:X6}, Record {2,5} : {3} ", i, item:ChildPageNo, item:Recno, item:KeyText))
             NEXT

@@ -55,7 +55,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , cTagName AS STRING)
             SUPER(bag)
             SELF:_nPage := nPage
-            SELF:_buffer := bag:AllocBuffer(2)
+            SELF:SetBuffer(bag:AllocBuffer(2))
             SELF:TagName    := cTagName
 #region Read/Write            
 
@@ -63,12 +63,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL oSb AS stringBuilder
             osb := stringBuilder{}
             oSb:AppendLine(sIntro)
-            oSb:AppendLine("Tag  : "+SELF:TagName)
-            oSb:AppendLine("Key  : "+SELF:KeyExpression)
-            oSb:AppendLine("For  : "+SELF:ForExpression)
-            oSb:AppendLine("Page : "+SELF:PageNo:ToString("X"))
-            oSb:AppendLine("Root : "+SELF:RootPage:ToString("X"))
-            oSb:AppendLine("Sig  : "+SELF:Signature:ToString())
+            oSb:AppendLine("Tag       : "+SELF:TagName)
+            oSb:AppendLine("Page      : 0x"+SELF:PageNo:ToString("X"))
+            oSb:AppendLine("Key       : "+SELF:KeyExpression)
+            oSb:AppendLine("For       : "+SELF:ForExpression)
+            oSb:AppendLine("Root      : 0x"+SELF:RootPage:ToString("X"))
+            oSb:AppendLine("Free      : "+SELF:FreeList:ToString())
+            oSb:AppendLine("Version   : "+SELF:Version:ToString())
+            oSb:AppendLine("KeyLen    : "+SELF:KeySize:ToString())
+            oSb:AppendLine("Options   : "+SELF:Options:ToString())
+            oSb:AppendLine("Sig       : "+SELF:Signature:ToString())
+            oSb:AppendLine("HeaderLen : "+SELF:HeaderLen:ToString())
+            oSb:AppendLine("PageLen   : "+SELF:PageLen:ToString())
+            oSb:AppendLine("Collation : "+SELF:Collation:ToString())
+            oSb:AppendLine("Descending: "+SELF:Descending:ToString())
             RETURN oSb:ToString()
 
 #endregion
@@ -98,6 +106,21 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 			GET _GetByte(CDXTAGHEADER_SIG) ;
             SET _SetByte(CDXTAGHEADER_SIG, VALUE)
 
+
+        PROTECTED INTERNAL PROPERTY HeaderLen		AS WORD			;
+			GET _GetWord(CDXTAGHEADER_HEADERLEN);
+			SET _SetWord(CDXTAGHEADER_HEADERLEN, VALUE), isHot := TRUE
+
+
+        PROTECTED INTERNAL PROPERTY PageLen		AS WORD			;
+			GET _GetWord(CDXTAGHEADER_PAGELEN);
+			SET _SetWord(CDXTAGHEADER_PAGELEN, VALUE), isHot := TRUE
+
+        PROTECTED INTERNAL PROPERTY Collation	AS LONG			;
+			GET _GetLong(CDXTAGHEADER_COLLATION);
+			SET _SetLong(CDXTAGHEADER_COLLATION, VALUE), isHot := TRUE
+
+
 	    PROTECTED INTERNAL PROPERTY KeyExprPos		AS WORD			;
 			GET _GetWord(CDXTAGHEADER_KEYEXPRPOS);
 			SET _SetWord(CDXTAGHEADER_KEYEXPRPOS, VALUE), isHot := TRUE
@@ -120,12 +143,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 			SET _SetWord( CDXTAGHEADER_DESCENDING, (WORD) IIF(VALUE,1,0) ), isHot := TRUE
 
         PROTECTED INTERNAL PROPERTY KeyExpression AS STRING ;
-            GET _GetString(_buffer, KeyExprPos+CDXPAGE_SIZE, KeyExprLen-1) ;
-            SET _SetString(_Buffer, KeyExprPos+CDXPAGE_SIZE, KeyExprLen, VALUE) , isHot := TRUE
+            GET _GetString(Buffer, KeyExprPos+CDXPAGE_SIZE, KeyExprLen-1) ;
+            SET _SetString(Buffer, KeyExprPos+CDXPAGE_SIZE, KeyExprLen, VALUE) , isHot := TRUE
 
         PROTECTED INTERNAL PROPERTY ForExpression AS STRING ;
-            GET _GetString(_buffer, ForExprPos+CDXPAGE_SIZE, ForExprLen-1) ;
-            SET _SetString(_buffer, ForExprPos+CDXPAGE_SIZE, ForExprLen, VALUE) , isHot := TRUE
+            GET _GetString(Buffer, ForExprPos+CDXPAGE_SIZE, ForExprLen-1) ;
+            SET _SetString(Buffer, ForExprPos+CDXPAGE_SIZE, ForExprLen, VALUE) , isHot := TRUE
 
 #endregion
 #region constants

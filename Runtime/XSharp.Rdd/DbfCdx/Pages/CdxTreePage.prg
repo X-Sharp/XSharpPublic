@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROPERTY HasRight   AS LOGIC GET RightPtr   != 0 .AND. RightPtr != -1
 
         // Retrieve an index node in the current Page, at the specified position
-        INTERNAL VIRTUAL PROPERTY SELF[ index AS LONG ] AS CdxPageNode
+        INTERNAL VIRTUAL PROPERTY SELF[ index AS WORD ] AS CdxPageNode
             GET
                 RETURN CdxPageNode{ IIF(SELF:Tag != NULL, SELF:Tag:KeyLength,0), SELF, index }
             END GET
@@ -57,7 +57,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         ABSTRACT PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
 
         PROTECTED INTERNAL VIRTUAL METHOD Write() AS LOGIC
-            
+            IF SELF:LeftPtr == 0
+                SELF:LeftPtr := -1
+            ENDIF
+            IF SELF:RightPtr == 0
+                SELF:RightPtr := -1
+            ENDIF            
            IF SELF:PageNo != -1
                 Debug.Assert(SELF:PageNo != SELF:RightPtr)
                 Debug.Assert(SELF:PageNo != SELF:LeftPtr)

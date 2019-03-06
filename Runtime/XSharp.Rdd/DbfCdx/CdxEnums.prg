@@ -25,28 +25,27 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 			
 	END ENUM
 
+    [Flags];
     INTERNAL ENUM CdxPageType AS WORD
         MEMBER Branch  := 0
         MEMBER Root    := 1
         MEMBER Leaf    := 2
-        MEMBER TagList := 3
-        MEMBER None    := 4
-        MEMBER Unused  := 0xFF
+        MEMBER Undefined := 0xFFFF
     END ENUM
 
-    [Flags];
-    INTERNAL ENUM CdxResult
-        MEMBER Ok              := 0
-        MEMBER SplitLeaf       := 1 << 0
-        MEMBER AddLeaf         := 1 << 1
-        MEMBER Delete          := 1 << 2
-        MEMBER InsertParent    := 1 << 3
-        MEMBER ChangeParent    := 1 << 4
-        MEMBER SplitParent     := 1 << 5
-        MEMBER DeleteFromParent:= 1 << 6
-        MEMBER ExpandRecnos    := 1 << 7
-        MEMBER OutofBounds     := 1 << 8
-        MEMBER ClearStack      := 1 << 9
+    INTERNAL ENUM CdxActionType
+        MEMBER Ok              
+        MEMBER AddKey
+        MEMBER DeleteKey
+        MEMBER InsertKey
+        MEMBER AddLeaf         
+        MEMBER Delete          
+        MEMBER InsertParent    
+        MEMBER ChangeParent    
+        MEMBER SplitBranch     
+        MEMBER DeleteFromParent
+        MEMBER ExpandRecnos
+        MEMBER OutOfBounds
     END ENUM
 	
 END NAMESPACE 

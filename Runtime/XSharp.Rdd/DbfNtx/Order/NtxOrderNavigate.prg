@@ -531,9 +531,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     minPos := 0
                     maxPos := nodeCount
                     DO WHILE minPos < maxPos
-                        node:Pos := foundPos := (WORD) ( (minPos + maxPos) / 2)
+                        node:Pos := foundPos :=  (minPos + maxPos) / 2
                         IF SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) >= 0
-                            minPos := (WORD)(foundPos + 1)
+                            minPos := foundPos + 1
                         ELSE
                             maxPos := foundPos
                         ENDIF
@@ -545,7 +545,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     DO WHILE minPos < maxPos
                         node:Pos := foundPos := (WORD) ((minPos + maxPos) / 2)
                         IF SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) <= 0
-                            minPos := (WORD) (foundPos + 1)
+                            minPos := foundPos + 1
                         ELSE
                             maxPos := foundPos
                         ENDIF
@@ -557,17 +557,17 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     minPos := 0
                     maxPos := nodeCount
                     DO WHILE minPos < maxPos
-                        foundPos := (WORD) ((minPos + maxPos) / 2)
+                        foundPos := (minPos + maxPos) / 2
                         node:Pos := foundPos
                         IF SELF:_Descending
                             IF SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) > 0
-                                minPos := (WORD) (foundPos + 1)
+                                minPos := foundPos + 1
                             ELSE
                                 maxPos := foundPos
                             ENDIF
                         ELSE
                             IF SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) < 0
-                                minPos := (WORD) (foundPos + 1)
+                                minPos := foundPos + 1
                             ELSE
                                 maxPos := foundPos
                             ENDIF

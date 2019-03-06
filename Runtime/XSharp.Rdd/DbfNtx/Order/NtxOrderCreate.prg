@@ -72,11 +72,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             
             // 8 Bytes : PrevPage (4 bytes) + Recno (4 bytes)
-            SELF:_entrySize := SELF:_keySize + (WORD) 8
+            SELF:_entrySize := SELF:_keySize +  8
             
-            num := (WORD)(  ( BUFF_SIZE - 4) / (SELF:_keySize + 10))
-            SELF:_halfPage := (WORD) ((num - 1) / 2)
-            SELF:_MaxEntry := (WORD) (SELF:_halfPage * 2)
+            num := (  ( BUFF_SIZE - 4) / (SELF:_keySize + 10))
+            SELF:_halfPage :=  (num - 1) / 2
+            SELF:_MaxEntry := SELF:_halfPage * 2
             SELF:_firstPageOffset := BUFF_SIZE
             SELF:_fileSize := 0
             SELF:_nextUnusedPageOffset := 0

@@ -1271,7 +1271,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				DBSkip(1)
 			ENDDO
 
-			Assert.True( DBClearIndex( cCdx) )
+			Assert.True( DBClearIndex(, cCdx) )
 
 			DBGoTop()
 			Assert.Equal(1, (INT)RecNo())
@@ -1394,15 +1394,15 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBCreateIndex(cDbf + ".cdx", "FIELDN" )
 			Assert.Equal(3, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 14 (), should be 3 (FLOAT)
 			DBCloseArea()
-			
+			FErase(cDbf + ".cdx")
 			DBUseArea(,"DBFCDX",cDBF,,FALSE)
 			DBCreateIndex(cDbf + ".cdx", "FIELDS" )
 			Assert.Equal(7, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 18 (PTR), should be 7 (STRING)
-			
+			FErase(cDbf + ".cdx")
 			DBUseArea(,"DBFCDX",cDBF,,FALSE)
 			DBCreateIndex(cDbf + ".cdx", "FIELDD" )
 			Assert.Equal(2, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 16, should be 2 (DATE)
-			
+			FErase(cDbf + ".cdx")
 			DBUseArea(,"DBFCDX",cDBF,,FALSE)
 			DBCreateIndex(cDbf + ".cdx", "FIELDL" )
 			Assert.Equal(8, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 3 (FLOAT), should be 8

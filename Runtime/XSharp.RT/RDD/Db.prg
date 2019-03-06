@@ -612,7 +612,10 @@ FUNCTION DbSetSelect(nSelect) AS DWORD CLIPPER
     /// <returns>
     /// </returns>
 FUNCTION DbSymSelect(sAlias)  AS DWORD CLIPPER
-    DEFAULT( REF  sAlias, Alias0Sym())
+    IF IsNil(sAlias)
+        sAlias := Alias0Sym()
+    ENDIF
+    EnForceType(sAlias, SYMBOL)
     RETURN (DWORD) VoDb.SymSelect(sAlias)
     
     

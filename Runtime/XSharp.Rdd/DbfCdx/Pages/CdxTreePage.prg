@@ -23,13 +23,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 	    PROTECTED INTERNAL CONSTRUCTOR( oBag AS CdxOrderBag, nPage AS Int32, buffer AS BYTE[] )
             SUPER(oBag, nPage, buffer)
+            SELF:_getValues()
             RETURN
 
- 
+        PRIVATE _pageType as CdxPageType
+        PRIVATE METHOD _getValues() as VOID
+            _pageType := (CdxPageType) _GetWord(CDXPAGE_TYPE)
+
         #region Properties
         INTERNAL OVERRIDE PROPERTY PageType AS CdxPageType ;
-          GET (CdxPageType) _GetWord(CDXPAGE_TYPE) ;
-          SET _SetWord(CDXPAGE_TYPE, VALUE), isHot := TRUE
+          GET _pageType ;
+          SET _SetWord(CDXPAGE_TYPE, VALUE), isHot := TRUE, _pageType := Value
 
         // FoxPro stores empty pointers as -1, FoxBASE as 0
         PROPERTY HasLeft    AS LOGIC GET LeftPtr    != 0 .AND. LeftPtr  != -1
@@ -46,7 +50,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         ABSTRACT INTERNAL PROPERTY RightPtr		AS Int32 GET SET    // FoxPro stores empty pointers as -1, FoxBASE as 0
         ABSTRACT PUBLIC   PROPERTY NumKeys      AS WORD  GET
         ABSTRACT INTERNAL PROPERTY LastNode     AS CdxPageNode GET
-        INTERNAL PROPERTY NextFree AS Int32 GET LeftPtr SET LeftPtr := Value
+        INTERNAL PROPERTY NextFree              AS LONG GET LeftPtr SET LeftPtr := Value // alias for LeftPtr
 
   
         #endregion
@@ -55,6 +59,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         ABSTRACT PUBLIC METHOD GetRecno(nPos AS Int32) AS Int32
         ABSTRACT PUBLIC METHOD GetChildPage(nPos AS Int32) AS Int32
         ABSTRACT PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
+
+
+         PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
+            LOCAL lOk as LOGIC
+            lOk := SUPER:Read()
+            IF lOk
+                SELF:_getValues()
+            ENDIF
+            RETURN lOk
 
         PROTECTED INTERNAL VIRTUAL METHOD Write() AS LOGIC
             IF SELF:LeftPtr == 0

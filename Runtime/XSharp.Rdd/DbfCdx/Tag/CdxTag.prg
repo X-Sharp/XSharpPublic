@@ -53,7 +53,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _Descending AS LOGIC
         PRIVATE _Unique AS LOGIC
         PRIVATE _Custom AS LOGIC
-        //INTERNAL _Partial AS LOGIC
         PRIVATE _SingleField AS LONG            // 0 based FieldIndex
         PRIVATE _SourceIndex AS LONG
         PRIVATE _KeyCodeBlock AS ICodeblock
@@ -94,7 +93,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
 #region Properties
-        INTERNAL PROPERTY Expression AS STRING GET _KeyExpr
+        INTERNAL PROPERTY Expression        AS STRING GET _KeyExpr
+        INTERNAL PROPERTY Encoding          AS Encoding GET _Encoding
         INTERNAL PROPERTY RDD               AS Dbfcdx GET _oRDD
         INTERNAL PROPERTY Condition         AS STRING GET _ForExpr
         INTERNAL PROPERTY OrderName         AS STRING GET _orderName
@@ -345,34 +345,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PUBLIC METHOD SetOffLine() AS VOID
             SELF:ClearStack()
 
-        PRIVATE METHOD _PutHeader() AS LOGIC
-	    /*
-            LOCAL ntxSignature AS NtxHeaderFlags
-            
-            ntxSignature := NtxHeaderFlags.Default
-            IF SELF:_Conditional .OR. SELF:_Descending
-                ntxSignature |= NtxHeaderFlags.Conditional
-            ENDIF
-            IF SELF:Custom
-                ntxSignature |= NtxHeaderFlags.Partial
-            ENDIF
-            IF SELF:_HPLocking
-                ntxSignature |= NtxHeaderFlags.HpLock
-            ENDIF
-            IF  _LockOffSet == LOCKOFFSET_NEW
-                ntxSignature |= NtxHeaderFlags.NewLock
-            ENDIF
-            SELF:_Header:Signature              := ntxSignature
-            SELF:_Header:Version        := SELF:_Version
-            SELF:_Header:FirstPageOffset        := SELF:_rootPage
-            SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
-            System.Diagnostics.Debug.WriteLine(SELF:_Header:Dump("After Update"))
-            
-            RETURN SELF:_Header:Write()
-	    */
-	    RETURN TRUE
-            
-            // Save informations about the "current" Item	
         PRIVATE METHOD _saveCurrentRecord( node AS CdxNode) AS VOID
             IF SELF:_currentValue:Recno != node:Recno
                 SELF:_currentValue:Recno := node:Recno

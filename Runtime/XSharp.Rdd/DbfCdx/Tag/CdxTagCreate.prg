@@ -377,13 +377,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
             // IRddSortWriter Interface, used by RddSortHelper
         PUBLIC METHOD WriteSorted(si AS DbSortInfo , record AS SortRecord) AS LOGIC
-            RETURN _sorter:AddRecord(record:Recno, record:Data)
+            RETURN _sorter:AddRecord(record:Recno, record:Data, record:Duplicate)
             
         INTERNAL METHOD _CreateUnique(ordCondInfo AS DbOrderCondInfo ) AS LOGIC
             LOCAL LRecCount AS LONG
             lRecCount := SELF:_oRdd:RecCount
             // create sorthelper
             SELF:_initSort(lRecCount)
+            SELF:_sorter:Unique := TRUE
             IF ordCondInfo:Active
                 RETURN SELF:_CondCreate(ordCondInfo)
             ENDIF
@@ -410,6 +411,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     INTERNAL CLASS CdxSortHelper INHERIT RddSortHelper
         INTERNAL PROPERTY SourceIndex    AS INT AUTO
         INTERNAL PROPERTY Ascii          AS LOGIC AUTO
+        INTERNAL PROPERTY Unique         AS LOGIC AUTO
         PRIVATE _bag                     AS CdxOrderBag
         PRIVATE _tag                     AS CdxTag
         INTERNAL CONSTRUCTOR( rdd AS DBF, sortInfo   AS DbSortInfo , len AS LONG, tag AS CdxTag )
@@ -417,9 +419,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _tag := tag
             _bag := tag:OrderBag
 
-        INTERNAL METHOD AddRecord(nRecno AS LONG, data AS BYTE[]) AS LOGIC
+        INTERNAL METHOD AddRecord(nRecno AS LONG, data AS BYTE[], duplicate as LOGIC) AS LOGIC
             // place item on current leaf node.
             // the code inside Doaction takes care of adding extra leaf pages etc.
+            IF SELF:Unique .AND. duplicate
+                // Do not write
+                RETURN TRUE
+            ENDIF
             var action := CdxAction.AddKey(nRecno, data)
             action := _tag:DoAction(action)
             IF action:Type != CdxActionType.OK

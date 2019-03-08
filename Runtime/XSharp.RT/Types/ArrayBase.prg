@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -22,18 +22,18 @@ BEGIN NAMESPACE XSharp
 			_internalList := List<T>{}
 			RETURN
 
-			/// <summary>Create an array with a certain number of elements. Each element will be filled with a default value.</summary>
+		/// <summary>Create an array with a certain number of elements. Each element will be filled with a default value.</summary>
 		CONSTRUCTOR(capacity AS DWORD)
 			_internalList := List<T>{ (INT) capacity}
 			_internalList:AddRange(Enumerable.Repeat(DEFAULT(T),(INT) capacity))
 			RETURN
 
-			/// <summary>Create an array and fill it with elements from an existing collection.</summary>
+		/// <summary>Create an array and fill it with elements from an existing collection.</summary>
 		CONSTRUCTOR( collection AS IEnumerable<T>)
 			_internalList := List<T>{collection}
 			RETURN
 
-			/// <summary>Create an array and fill it with elements from an existing .Net array of objects. Note that the objects must be of the right type.</summary>
+		/// <summary>Create an array and fill it with elements from an existing .Net array of objects. Note that the objects must be of the right type.</summary>
 		CONSTRUCTOR( elements AS OBJECT[] )
 			SELF()
 			IF elements == NULL
@@ -50,7 +50,7 @@ BEGIN NAMESPACE XSharp
 			NEXT
 			RETURN
 
-			/// <summary>Create an array and fill it with elements from an existing .Net array.</summary>
+		/// <summary>Create an array and fill it with elements from an existing .Net array.</summary>
 		CONSTRUCTOR( elements AS T[] )
 			_internalList := List<T>{elements}
 			RETURN
@@ -96,18 +96,21 @@ BEGIN NAMESPACE XSharp
 
 
 		#region Indexers and TO GET / SET Elements.
-		///
-		/// <summary>Access the array element using ZERO based array index</summary>
-		///
-		PUBLIC METHOD __GetElement(index AS INT) AS T
+	    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />  
+		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" />
+        /// <returns>The element stored at the specified location in the array.</returns>
+        PUBLIC METHOD __GetElement(index AS INT) AS T
 			RETURN SELF:_internalList[ index ]
 
-			/// <summary>Set array elements with a ZERO based array index</summary>
-		PUBLIC METHOD __SetElement(u AS T,index AS INT) AS T
+	    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />  
+		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" />
+        /// <param name='e'>New element to store in the array at the position specified</param>
+        /// <returns>The new element</returns>
+		PUBLIC METHOD __SetElement(e AS T,index AS INT) AS T
 			IF SELF:CheckLock()
-				_internalList[index]:=u
+				_internalList[index]:=e
 			ENDIF
-			RETURN u
+			RETURN e
 
 		PRIVATE METHOD __GetProperty(sName AS STRING) AS PropertyInfo
 			LOCAL type AS System.Type
@@ -149,26 +152,29 @@ BEGIN NAMESPACE XSharp
             NEXT
 			RETURN NULL
 
-		// Note: Zero based , compiler handles subtraction
-		/// <summary>Get/Set array elements with a ZERO based array index</summary>
-		/// <param name="index">0 based offset in the location. Please note that the compiler automatically subtracts one from the index unless the /az compiler option is used.</param>
+		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /> 
 		/// <returns>The element stored at the indicated location in the collection.</returns>
-		PUBLIC PROPERTY SELF[i AS INT] AS T
+		PUBLIC PROPERTY SELF[index AS INT] AS T
 			GET
-				IF  i > _internalList:Count-1
+				IF  index > _internalList:Count-1
 					THROW ArgumentOutOfRangeException{}
 				ENDIF
-				RETURN _internalList[i ]
+				RETURN _internalList[index ]
 			END GET
 			SET
 				IF SELF:CheckLock()
-					IF i > _internalList:Count-1
+					IF index > _internalList:Count-1
 						THROW ArgumentOutOfRangeException{}
 					ENDIF
-					_internalList[i] := VALUE
+					_internalList[index] := VALUE
 				ENDIF
 			END SET
 		END PROPERTY
+
+        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" />
+        /// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
 
 		PUBLIC PROPERTY SELF[index AS INT, index2 AS INT] AS USUAL
 			GET
@@ -210,13 +216,11 @@ BEGIN NAMESPACE XSharp
 			END SET
 		END PROPERTY
 
-
-		// Note: Zero based, compiler handles subtraction
-		/// <summary>Get/Set array elements with a ZERO based array index</summary>
-		/// <param name="index">0 based offset in the location. Please note that the compiler automatically subtracts one from the index unless the /az compiler option is used.</param>
-		/// <param name="sPropertyName">Name of the property from the element stored in the location index</param>
-		/// <returns>The value of the property of the element stored at the indicated location in the collection.</returns>
-		PUBLIC PROPERTY SELF[index AS INT, sPropertyName AS STRING] AS USUAL
+		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" />
+        /// <include file="RTComments.xml" path="Comments/NameBasedIndexParam/*" /> 
+		/// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
+		PUBLIC PROPERTY SELF[index AS INT, name AS STRING] AS USUAL
 			GET
 				LOCAL oElement AS T
 				IF  index > _internalList:Count-1
@@ -225,14 +229,14 @@ BEGIN NAMESPACE XSharp
 				oElement := _internalList[index ]
                 IF oElement IS IIndexedProperties
                     VAR oIndex := (IIndexedProperties) oElement
-                    RETURN oIndex[sPropertyName]
+                    RETURN oIndex[name]
                 ENDIF
 				LOCAL oProp    AS PropertyInfo
                 oProp    := __GetIndexer(FALSE)
                 IF oProp != NULL
-                    RETURN oProp:GetValue(oElement, <OBJECT>{sPropertyName})
+                    RETURN oProp:GetValue(oElement, <OBJECT>{name})
                 ENDIF
-				oProp	 := __GetProperty( sPropertyName)
+				oProp	 := __GetProperty( name)
 				RETURN oProp:GetValue(oElement, NULL)
 			END GET
 			SET
@@ -244,20 +248,19 @@ BEGIN NAMESPACE XSharp
 				    oElement := _internalList[index ]
                     IF oElement IS IIndexedProperties
                         VAR oIndex := (IIndexedProperties) oElement
-                        oIndex[sPropertyName] := VALUE
+                        oIndex[name] := VALUE
                     ENDIF
 					LOCAL oProp    AS PropertyInfo
                     oProp    := __GetIndexer(FALSE)
                     IF oProp != NULL
-                        oProp:SetValue(oElement, OOPHelpers.VOConvert(VALUE, oProp:PropertyType), <OBJECT>{sPropertyName} )
+                        oProp:SetValue(oElement, OOPHelpers.VOConvert(VALUE, oProp:PropertyType), <OBJECT>{name} )
                         RETURN
                     ENDIF
-					oProp	 := __GetProperty( sPropertyName)
+					oProp	 := __GetProperty( name)
 					oProp:SetValue(oElement, NULL, VALUE)
 				ENDIF
 			END SET
 		END PROPERTY
-
 
 		#endregion
 
@@ -362,6 +365,7 @@ BEGIN NAMESPACE XSharp
 			RETURN wasLocked
 			/// <summary>Is the array locked?</summary>
 		PROPERTY Locked AS LOGIC GET _islocked
+
 		INTERNAL METHOD CheckLock AS LOGIC
 			IF SELF:_islocked
 				THROW Error{Gencode.EG_Protection}
@@ -409,7 +413,6 @@ BEGIN NAMESPACE XSharp
 				aResult:Add( o)
 			NEXT
 			RETURN aResult:ToArray()
-
 
     #endregion
 

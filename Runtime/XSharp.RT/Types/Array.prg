@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -14,6 +14,8 @@ BEGIN NAMESPACE XSharp
     /// <summary>Internal type that implements the VO Compatible ARRAY type.<br/>
     /// This type has methods and properties that normally are never directly called from user code.
     /// </summary>
+    /// <seealso cref='T:XSharp.IIndexer' />
+    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" /> 
     [DebuggerDisplay("{DebuggerString(),nq}", Type := "ARRAY")] ;
     [DebuggerTypeProxy(TYPEOF(ArrayDebugView))];
     PUBLIC SEALED CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer
@@ -127,8 +129,10 @@ BEGIN NAMESPACE XSharp
         INTERNAL METHOD CloneShallow() AS ARRAY
             RETURN (ARRAY) SUPER:Clone()
 
-            /// Note: Zero based, compiler handles subtraction
-            /// <summary>Get/Set array elements with ZERO based array indexes.</summary>
+        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" />
+        /// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
+
         PUBLIC PROPERTY SELF[index PARAMS INT[]] AS USUAL
             GET
                 RETURN __GetElement(index)
@@ -141,9 +145,9 @@ BEGIN NAMESPACE XSharp
         NEW INTERNAL METHOD Swap(position AS INT, element AS USUAL) AS USUAL
             RETURN SUPER:Swap(position, element)
 
-            ///
-            /// <summary>Access the array element using ZERO based array indexes</summary>
-            ///
+        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
+        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" />
+        /// <returns>The element stored at the specified location in the array.</returns>
         PUBLIC METHOD __GetElement(index PARAMS INT[]) AS USUAL
             LOCAL length := index:Length AS INT
             LOCAL currentArray AS ARRAY
@@ -190,9 +194,10 @@ BEGIN NAMESPACE XSharp
             RETURN sb:ToString()
 
 
-            ///
-            /// <summary>Assign the array element using ZERO based array indexes</summary>
-            ///
+        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
+        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" />
+        /// <param name='u'>New element to store in the array at the position specified</param>
+        /// <returns>The new element</returns>
         PUBLIC METHOD __SetElement(u AS USUAL, index PARAMS INT[] ) AS USUAL
             // indices are 0 based
             IF SELF:CheckLock()
@@ -227,6 +232,7 @@ BEGIN NAMESPACE XSharp
                 ENDIF
             NEXT
             RETURN aResult:ToArray()
+
         /// <exclude/>
         STATIC OPERATOR IMPLICIT ( a AS OBJECT[]) AS __Array
             RETURN __Array{a}

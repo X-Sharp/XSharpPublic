@@ -64,29 +64,47 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     /// Manipulating the page is implemented in the CdxTag class
 	/// </summary>
 	INTERNAL CLASS CdxLeafPage INHERIT CdxTreePage
+#region Fields
+        // Private fields that map the various fixed values in a page
+        // The values are cached here so they won't have to be decoded from the page everytime they are used
+        PRIVATE _numKeys        AS WORD
+        PRIVATE _leftPtr        AS LONG
+        PRIVATE _rightPtr       AS LONG
+        PRIVATE _freeSpace      AS WORD
+        PRIVATE _recnoMask      AS LONG
+        PRIVATE _duplicateMask  AS BYTE
+        PRIVATE _trailingMask   AS BYTE
+        PRIVATE _recordBits     AS BYTE
+        PRIVATE _dupBits        AS BYTE
+        PRIVATE _trailBits      AS BYTE
+        PRIVATE _dataBytes      AS BYTE
 
+        // Other fields 
+		PRIVATE _keyLen    AS WORD
+        PRIVATE _lenShift  AS INT
+        PRIVATE _leaves    AS List<CdxLeaf>
+        PRIVATE _prevData  AS BYTE[]
+        PRIVATE _bTrail    AS BYTE
+
+
+#endregion
 #region constants				
-		PRIVATE CONST CDXLEAF_NUMKEYS		:= 2	AS WORD // 2 WORD
-		PRIVATE CONST CDXLEAF_LEFTPTR		:= 4	AS WORD // 4 LONGINT
-		PRIVATE CONST CDXLEAF_RIGHTPTR 	    := 8	AS WORD // 4 LONGINT
-		PRIVATE CONST CDXLEAF_FREESPACE	    := 12	AS WORD // 2 WORD		: Free space in this key
-		PRIVATE CONST CDXLEAF_RECNOMASK	    := 14	AS WORD // 4 LONGINT	: Bit mask for record number
-		PRIVATE CONST CDXLEAF_DUPMASK		:= 18	AS WORD // 1 Bit mask for duplicate byte count
-		PRIVATE CONST CDXLEAF_TRAILMASK     := 19	AS WORD // 1 Bit mask for trailing byte count
-		PRIVATE CONST CDXLEAF_RECNUMBITS	:= 20	AS WORD // 1 Number of bits used for record number
-		PRIVATE CONST CDXLEAF_DUPCOUNTBITS  := 21	AS WORD // 1 Number of bits used for duplicate count
-		PRIVATE CONST CDXLEAF_TRAILINGBITS  := 22	AS WORD // 1 Number of bits used for trailing count
-		PRIVATE CONST CDXLEAF_DATABYTES	    := 23	AS WORD // 1 Bytes needed for recno+dups+trailing (sum of 20,21 & 22)
-        PRIVATE CONST CDXLEAF_MASKLEN       := 10   AS WORD // length of the info that gets copied to new brother pages (recnomask .. DataBytes)
-        PRIVATE CONST CDXLEAF_HEADERLEN     := 24   AS WORD // length of the page header
-        PRIVATE CONST CDXLEAF_BYTESFREE     := 488  AS WORD // 512 - 24
+		PRIVATE CONST CDXLEAF_OFFSET_NUMKEYS		:= 2	AS WORD // 2 WORD
+		PRIVATE CONST CDXLEAF_OFFSET_LEFTPTR		:= 4	AS WORD // 4 LONGINT
+		PRIVATE CONST CDXLEAF_OFFSET_RIGHTPTR 	    := 8	AS WORD // 4 LONGINT
+		PRIVATE CONST CDXLEAF_OFFSET_FREESPACE	    := 12	AS WORD // 2 WORD		: Free space in this key
+		PRIVATE CONST CDXLEAF_OFFSET_RECNOMASK	    := 14	AS WORD // 4 LONGINT	: Bit mask for record number
+		PRIVATE CONST CDXLEAF_OFFSET_DUPMASK		:= 18	AS WORD // 1 Bit mask for duplicate byte count
+		PRIVATE CONST CDXLEAF_OFFSET_TRAILMASK      := 19	AS WORD // 1 Bit mask for trailing byte count
+		PRIVATE CONST CDXLEAF_OFFSET_RECNUMBITS	    := 20	AS WORD // 1 Number of bits used for record number
+		PRIVATE CONST CDXLEAF_OFFSET_DUPCOUNTBITS   := 21	AS WORD // 1 Number of bits used for duplicate count
+		PRIVATE CONST CDXLEAF_OFFSET_TRAILINGBITS   := 22	AS WORD // 1 Number of bits used for trailing count
+		PRIVATE CONST CDXLEAF_OFFSET_DATABYTES	    := 23	AS WORD // 1 Bytes needed for recno+dups+trailing (sum of 20,21 & 22)
+        PRIVATE CONST CDXLEAF_HEADERLEN             := 24   AS WORD // length of the page header
+        PRIVATE CONST CDXLEAF_BYTESFREE             := 488  AS WORD // # of bytes 512 - 24
 #endregion
 
-		PROTECTED _keyLen    AS WORD
-        PROTECTED _lenShift  AS INT
-        PROTECTED _leaves    AS List<CdxLeaf>
-        PROTECTED _prevData  AS BYTE[]
-        PROTECTED _bTrail    AS BYTE
+
         INTERNAL CONSTRUCTOR( bag AS CdxOrderBag, page AS CdxPage)
             SELF(bag, page:PageNo, page:Buffer, (WORD) IIF(page:Tag != NULL, page:Tag:KeyLength,0))
 
@@ -96,10 +114,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _leaves     := NULL
             _prevData   := BYTE[]{nKeyLen}
             _bTrail     := 0
+            SELF:_getValues()
 
             RETURN
         INTERNAL METHOD InitBlank(oTag AS CdxTag) AS VOID
-            SELF:Tag := oTag
+            SELF:Tag    := oTag
             SELF:Initialize(_keyLen)
             IF Tag != NULL
                 _bTrail := (BYTE) (IIF(Tag:KeyType == __UsualType.String, 32, 0) )
@@ -108,7 +127,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
 
         INTERNAL VIRTUAL METHOD Initialize(keyLength AS WORD) AS VOID
-            SELF:PageType   := CdxPageType.Leaf
+            SELF:PageType       := CdxPageType.Leaf
             SELF:_ClearRecordsAndKeys()
             _keyLen             := keyLength
             VAR bits            := CdxHelpers.GetBits(keyLength)
@@ -117,31 +136,32 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:RecordBits     := (SELF:DataBytes << 3) - (bits << 1)
             SELF:DuplicateBits  := SELF:TrailingBits  := bits
             SELF:TrailingMask   := SELF:DuplicateMask := (BYTE) (( 1 << bits  ) - 1)
-            SELF:RecnoMask      := (DWORD) (1 << SELF:RecordBits) -1
+            SELF:RecnoMask      := (1 << SELF:RecordBits) -1
             SELF:_lenShift      := (keyLength << 8 ) | (8 - SELF:DuplicateBits)
             IF SELF:Tag != NULL
                 VAR numRecs     := SELF:Tag:RDD:RecCount
                 DO WHILE _AND(numRecs , SELF:RecnoMask) != numRecs
                     SELF:DataBytes  += 1
                     SELF:RecordBits += 8
-                    SELF:RecnoMask  := (DWORD) (1 << SELF:RecordBits) -1
+                    SELF:RecnoMask  := (1 << SELF:RecordBits) -1
                 ENDDO
             ENDIF
 
             RETURN
 
-
         PRIVATE METHOD _ClearRecordsAndKeys() AS VOID
             SELF:Freespace  := CDXLEAF_BYTESFREE
             SELF:NumKeys    := 0
             SELF:_leaves    := NULL
-            //MemSet(SELF:Buffer, CDXLEAF_HEADERLEN, CDXLEAF_BYTESFREE, 0)
             RETURN
 
         PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
 			VAR Ok := SUPER:Read()
             Debug.Assert (SELF:PageType:HasFlag(CdxPageType.Leaf))
-            RETURN ok
+            IF Ok
+                SELF:_getValues()
+            ENDIF
+            RETURN Ok
 
         INTERNAL PROPERTY ValidLeaves AS LOGIC GET _leaves != NULL .AND. _leaves:Count == SELF:NumKeys
 #region ICdxKeyValue
@@ -223,53 +243,54 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN TRUE
 
- 
+        PRIVATE METHOD _getValues as VOID
+            _numKeys        := _GetWord(CDXLEAF_OFFSET_NUMKEYS)
+            _leftPtr        := _GetLong(CDXLEAF_OFFSET_LEFTPTR)
+            _rightPtr       := _GetLong(CDXLEAF_OFFSET_RIGHTPTR)
+            _freeSpace      := _GetWord(CDXLEAF_OFFSET_FREESPACE)
+            _recnoMask      := _GetLong(CDXLEAF_OFFSET_RECNOMASK)
+            _duplicateMask  := Buffer[CDXLEAF_OFFSET_DUPMASK]
+            _trailingMask   := Buffer[CDXLEAF_OFFSET_TRAILMASK]
+            _recordBits     := Buffer[CDXLEAF_OFFSET_RECNUMBITS]
+            _dupBits        := Buffer[CDXLEAF_OFFSET_DUPCOUNTBITS]
+            _trailBits      := Buffer[CDXLEAF_OFFSET_TRAILINGBITS]
+            _dataBytes      := Buffer[CDXLEAF_OFFSET_DATABYTES]
 
-#region Properties that map to the buffer 
+#region Properties
+        // We read the values from our cache but write back to the cache and the buffer at the same time
+        // The _Set.. methods set the IsHot flag of the page automatically
+		PUBLIC PROPERTY NumKeys  AS WORD	GET _numKeys;
+			SET _SetWord(CDXLEAF_OFFSET_NUMKEYS, VALUE), _numKeys := Value
 
-		PUBLIC PROPERTY NumKeys  AS WORD	;
-			GET _GetWord(CDXLEAF_NUMKEYS);
-			SET _SetWord(CDXLEAF_NUMKEYS, VALUE), isHot := TRUE
+		INTERNAL PROPERTY LeftPtr AS Int32  GET _leftPtr;
+			SET _SetLong(CDXLEAF_OFFSET_LEFTPTR, VALUE), _leftPtr:= Value
 
-		INTERNAL PROPERTY LeftPtr		AS Int32			;
-			GET _GetLong(CDXLEAF_LEFTPTR);
-			SET _SetLong(CDXLEAF_LEFTPTR, VALUE), isHot := TRUE
+		INTERNAL PROPERTY RightPtr AS Int32	GET _rightPtr;
+			SET _SetLong(CDXLEAF_OFFSET_RIGHTPTR, VALUE), _rightPtr := Value
+			
+		INTERNAL PROPERTY Freespace AS WORD GET _freeSpace ;
+			SET _SetWord(CDXLEAF_OFFSET_FREESPACE, VALUE),  _freeSpace := Value
+			
+		INTERNAL PROPERTY RecnoMask AS LONG GET _recnoMask;
+			SET _SetLong(CDXLEAF_OFFSET_RECNOMASK, VALUE),  _recnoMask := Value
+			
+		INTERNAL PROPERTY DuplicateMask	AS BYTE	GET _duplicateMask;
+			SET _buffer[CDXLEAF_OFFSET_DUPMASK]      := _duplicateMask := value, _hot := TRUE
 
-		INTERNAL PROPERTY RightPtr		AS Int32			;
-			GET _GetLong(CDXLEAF_RIGHTPTR);
-			SET _SetLong(CDXLEAF_RIGHTPTR, VALUE), isHot := TRUE
+		INTERNAL PROPERTY TrailingMask AS BYTE	GET _trailingMask ;
+			SET _buffer[CDXLEAF_OFFSET_TRAILMASK]    := _trailingMask := Value, _hot := TRUE
 			
-		PROTECTED INTERNAL PROPERTY Freespace		AS WORD			;
-			GET _GetWord(CDXLEAF_FREESPACE);
-			SET _SetWord(CDXLEAF_FREESPACE, VALUE), isHot := TRUE
+		INTERNAL PROPERTY RecordBits AS BYTE GET _recordBits;
+			SET _buffer[CDXLEAF_OFFSET_RECNUMBITS]   := _recordBits := Value, _hot := TRUE
 			
-		PROTECTED INTERNAL PROPERTY RecnoMask 	AS DWORD			;
-			GET _GetDWord(CDXLEAF_RECNOMASK);
-			SET _SetDWord(CDXLEAF_RECNOMASK, VALUE), isHot := TRUE
+		INTERNAL PROPERTY DuplicateBits AS BYTE	GET _dupBits;
+			SET _buffer[CDXLEAF_OFFSET_DUPCOUNTBITS] := _dupBits := Value, _hot := TRUE
 			
-		PROTECTED INTERNAL PROPERTY DuplicateMask	AS BYTE			;
-			GET Buffer[CDXLEAF_DUPMASK];
-			SET Buffer[CDXLEAF_DUPMASK] := VALUE, isHot := TRUE
-
-		PROTECTED INTERNAL PROPERTY TrailingMask	AS BYTE			;
-			GET Buffer[CDXLEAF_TRAILMASK];
-			SET Buffer[CDXLEAF_TRAILMASK] := VALUE, isHot := TRUE
+		INTERNAL PROPERTY TrailingBits  AS BYTE	GET _trailBits;
+			SET _buffer[CDXLEAF_OFFSET_TRAILINGBITS] := _trailBits := Value, _hot := TRUE
 			
-		PROTECTED INTERNAL PROPERTY RecordBits	AS BYTE			;
-			GET Buffer[CDXLEAF_RECNUMBITS];
-			SET Buffer[CDXLEAF_RECNUMBITS] := VALUE, isHot := TRUE
-			
-		PROTECTED INTERNAL PROPERTY DuplicateBits	AS BYTE			;
-			GET Buffer[CDXLEAF_DUPCOUNTBITS];
-			SET Buffer[CDXLEAF_DUPCOUNTBITS] := VALUE, isHot := TRUE
-			
-		PROTECTED INTERNAL PROPERTY TrailingBits	AS BYTE			;
-			GET Buffer[CDXLEAF_TRAILINGBITS];
-			SET Buffer[CDXLEAF_TRAILINGBITS] := VALUE, isHot := TRUE
-			
-		PROTECTED INTERNAL PROPERTY DataBytes	AS BYTE			;
-			GET Buffer[CDXLEAF_DATABYTES];
-			SET Buffer[CDXLEAF_DATABYTES] := VALUE, isHot := TRUE
+		INTERNAL PROPERTY DataBytes	AS BYTE	GET _dataBytes;
+			SET _buffer[CDXLEAF_OFFSET_DATABYTES] := _dataBytes := Value, _hot := TRUE
 #endregion			
 
 #region Other properties
@@ -321,7 +342,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             SELF:DataBytes  += 1
             SELF:RecordBits += 8
-            SELF:RecnoMask  := (DWORD) (1 << SELF:RecordBits) -1
+            SELF:RecnoMask  := (1 << SELF:RecordBits) -1
             SELF:_ClearRecordsAndKeys()
             FOR VAR i := 0 TO nCount-1
                 SELF:Add(aRecNos[i], aKeys[i])
@@ -475,8 +496,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
        PRIVATE METHOD _placeRecno(nIndex AS INT, recno AS LONG, dupLen AS WORD) AS VOID
             LOCAL nOffset AS LONG
             LOCAL nValue := LongStruct{} AS LongStruct
-            nOffSet     := CDXLEAF_HEADERLEN + nIndex * SELF:DataBytes
-            nValue:LongValue := recno
+            nOffSet           := CDXLEAF_HEADERLEN + nIndex * SELF:DataBytes
+            nValue:LongValue  := recno
 	        buffer[nOffSet]   :=  nValue:b1
             buffer[nOffSet+1] :=  nValue:b2  
             buffer[nOffSet+2] :=  nValue:b3

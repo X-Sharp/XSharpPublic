@@ -22,7 +22,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	    PROTECTED _bag      AS CDXOrderBag
         PROTECTED _tag      AS CDXTag
         PROTECTED _nPage    AS Int32
-		PRIVATE   _buffer   AS BYTE[]
+		PROTECTED _buffer   AS BYTE[]
 		PROTECTED _hot      AS LOGIC        // Hot ?  => Page has changed ?
         PROTECTED _dumped   AS LOGIC
         INTERNAL VIRTUAL PROPERTY PageType AS CdxPageType GET CdxPageType.Undefined SET
@@ -31,8 +31,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Dumped AS LOGIC GET _dumped SET _dumped := VALUE
         INTERNAL PROPERTY IsHot  AS LOGIC GET _hot SET _hot := VALUE
         INTERNAL PROPERTY Tag    AS CDXTag GET _tag SET _tag := VALUE
-        PROPERTY Buffer AS BYTE[] GET _buffer
-        PROPERTY PageNo AS Int32 GET _nPage SET _nPage := VALUE
+        INTERNAL PROPERTY Buffer AS BYTE[] GET _buffer
+        INTERNAL PROPERTY PageNo AS Int32 GET _nPage SET _nPage := VALUE
 
         PROTECTED INTERNAL CONSTRUCTOR( bag AS CdxOrderBag )
 			SELF:_bag    := bag
@@ -85,7 +85,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _SetByte(nOffSet AS INT, bValue AS BYTE) AS VOID
 				Buffer[ nOffset] := bValue
-                isHot := TRUE
+                _hot := TRUE
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _GetWord(nOffSet AS INT) AS WORD
@@ -100,7 +100,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 nValue:wordValue := wValue
 	            buffer[nOffSet]   := nValue:b1
                 buffer[nOffSet+1] := nValue:b2
-				isHot := TRUE
+				_hot := TRUE
                 RETURN 
 
 				
@@ -130,7 +130,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 buffer[nOffSet+1] :=  nValue:b2  
                 buffer[nOffSet+2] :=  nValue:b3  
                 buffer[nOffSet+3] :=  nValue:b4  
-				isHot := TRUE
+				_hot := TRUE
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _SetDWordLE(nOffSet AS INT, dwValue AS DWORD) AS VOID
@@ -140,7 +140,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 buffer[nOffSet+1] :=  nValue:b3  
                 buffer[nOffSet+2] :=  nValue:b2  
                 buffer[nOffSet+3] :=  nValue:b1  
-				isHot := TRUE
+				_hot := TRUE
                 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _GetLong(nOffSet AS INT) AS Int32
@@ -169,7 +169,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 buffer[nOffSet+1] :=  nValue:b2  
                 buffer[nOffSet+2] :=  nValue:b3  
                 buffer[nOffSet+3] :=  nValue:b4  
-				isHot := TRUE
+				_hot := TRUE
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _SetLongLE(nOffSet AS INT, liValue AS Int32) AS VOID
@@ -179,31 +179,33 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 buffer[nOffSet+1] :=  nValue:b3  
                 buffer[nOffSet+2] :=  nValue:b2  
                 buffer[nOffSet+3] :=  nValue:b1  
-				isHot := TRUE
+				_hot := TRUE
 
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
-			PROTECTED INTERNAL STATIC METHOD _GetString(buffer AS BYTE[], nOffSet AS INT, count AS INT) AS STRING
-				LOCAL str := System.Text.Encoding.ASCII:GetString( buffer,nOffSet, count ) AS STRING
-				IF ( str == NULL )
+			INTERNAL METHOD _GetString( nOffSet AS INT, count AS INT) AS STRING
+				LOCAL str := _bag:Encoding:GetString( _buffer,nOffSet, count ) AS STRING
+				IF str == NULL 
 					str := String.Empty
+                ELSEIF str:EndsWith(e"\0")
+                    str := str:TrimEnd(<CHAR>{'\0'})
 				ENDIF
 				RETURN str
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
-            PROTECTED INTERNAL STATIC METHOD _GetBytes(buffer AS BYTE[], nOffSet AS INT, count AS INT) AS BYTE[]
+            INTERNAL METHOD _GetBytes( nOffSet AS INT, count AS INT) AS BYTE[]
                 LOCAL result AS BYTE[]
                 result := BYTE[]{count}
-			    System.Array.Copy(buffer, nOffSet, result, 0, count)
+			    System.Array.Copy(_buffer, nOffSet, result, 0, count)
                 RETURN result
 
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
-			PROTECTED INTERNAL STATIC METHOD _SetString(buffer AS BYTE[], nOffSet AS INT, nSize AS INT, sValue AS STRING) AS VOID
+			INTERNAL  METHOD _SetString(nOffSet AS INT, nSize AS INT, sValue AS STRING) AS VOID
 				// Be sure to fill the Buffer with 0
-				MemSet( Buffer, nOffSet, nSize , 0)
-				System.Text.Encoding.ASCII:GetBytes( sValue, 0, Math.Min(nSize,sValue:Length), Buffer, nOffSet)
-				
+				MemSet( _buffer, nOffSet, nSize , 0)
+				_bag:Encoding:GetBytes( sValue, 0, Math.Min(nSize,sValue:Length), _buffer, nOffSet)
+				_hot := TRUE
             #endregion
 
 

@@ -67,11 +67,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF aTags:Length > 1
                 System.Array.Sort(aTags,  { x,y => IIF (x:OrderName < y:Ordername , -1, 1)})
             ENDIF
-            SELF:Initialize(_keyLen)
+            SELF:Initialize(KeyLength)
             FOREACH VAR tag IN aTags
                 VAR bytes := BYTE[]{ keyLength}
                 VAR name := tag:OrderName
-                _SetString(bytes, 0, Math.Min(name:Length, keyLength), name)
+				// Be sure to fill the Buffer with 0
+				MemSet( bytes, 0, keyLength, 0)
+				System.Text.Encoding.ASCII:GetBytes( name, 0, Math.Min(keyLength,name:Length), bytes, 0)
+				_hot := TRUE
+
                 SELF:Add(tag:Header:PageNo, bytes)
             NEXT
             SELF:Write()

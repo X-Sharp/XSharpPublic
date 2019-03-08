@@ -20,6 +20,7 @@ BEGIN NAMESPACE XSharp.RDD
 	PUBLIC CLASS SortRecord
 		PRIVATE _data AS BYTE[]
 		PRIVATE _Recno AS LONG
+        INTERNAL PROPERTY Duplicate AS LOGIC AUTO
 		
 		INTERNAL PROPERTY Data AS BYTE[] GET _data
 		
@@ -28,6 +29,7 @@ BEGIN NAMESPACE XSharp.RDD
 		INTERNAL CONSTRUCTOR(data AS BYTE[] , lRecno AS LONG )
 			SELF:_data  := (BYTE[])data:Clone()
 			SELF:_Recno := lRecno
+            SELF:Duplicate := FALSE
 			
 	END CLASS
     INTERNAL ENUM SearchMode

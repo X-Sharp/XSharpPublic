@@ -46,6 +46,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Tags AS IList<CdxTag> GET _tagList:Tags
         INTERNAL PROPERTY Structural AS LOGIC AUTO
         INTERNAL PROPERTY Root      AS CdxFileHeader GET _root
+        INTERNAL PROPERTY Encoding as System.Text.Encoding GET _oRDD:_Encoding
         INTERNAL CONSTRUCTOR(oRDD AS DBFCDX )
             SUPER( oRdd )
             SELF:_oRdd     := oRDD
@@ -305,16 +306,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 nPage := SELF:_root:FreeList
                 VAR oPage := SELF:_PageList:GetPage(nPage, 0, NULL)
                 IF oPage IS CdxTreePage tpage
-                    nNext := tpage:LeftPtr
+                    nNext := tpage:NextFree
                     IF nNext == -1
-                        nNext          := 0
+                        nNext := 0
                     ENDIF
                     SELF:_root:FreeList := nNext
+                    SELF:_root:Write()
                 ENDIF
                 SELF:_PageList:Delete(nPage)
-                RETURN nPage
+            ELSE
+                nPage :=  FSeek3( SELF:_hFile, 0, SeekOrigin.End )
             ENDIF
-            RETURN FSeek3( SELF:_hFile, 0, SeekOrigin.End )
+            RETURN nPage
 
          METHOD FreePage(oPage AS CdxTreePage) AS LOGIC
             oPage:Clear()

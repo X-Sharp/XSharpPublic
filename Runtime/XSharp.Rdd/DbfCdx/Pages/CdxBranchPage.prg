@@ -51,6 +51,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     INTERNAL CLASS CdxBranchPage INHERIT CdxTreePage 
         PROTECTED _keyLen    AS Int32
         PROTECTED _maxKeys   AS Int32
+        PRIVATE   _numKeys   as WORD
+        PRIVATE   _leftPtr   as LONG
+        PRIVATE   _rightPtr  as LONG
+       
        #region Constants
         PRIVATE CONST CDXBRANCH_OFFSET_NUMKEYS		:= 2	AS WORD 
         PRIVATE CONST CDXBRANCH_OFFSET_LEFTPTR		:= 4	AS WORD 
@@ -63,21 +67,35 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SUPER(bag, nPage, buffer)
             SELF:_keyLen  := nKeyLen
             SELF:_maxKeys := MaxKeysPerPage(nKeyLen)
+            SELF:_getValues()
+
+        PRIVATE METHOD _getValues() as VOID
+            _numKeys  := _GetWord(CDXBRANCH_OFFSET_NUMKEYS)
+            _leftPtr  := _GetLong(CDXBRANCH_OFFSET_LEFTPTR)
+            _rightPtr := _GetLong(CDXBRANCH_OFFSET_RIGHTPTR)
+
             
             //? "Branch Page", SELF:PageNo:ToString("X"), SELF:NumKeys, "Startswith ", GetRecno(0), _bag:_oRDD:_Encoding:GetString(GetKey(0),0,_keyLen)
-           INTERNAL VIRTUAL METHOD InitBlank(oTag AS CdxTag) AS VOID
+        INTERNAL VIRTUAL METHOD InitBlank(oTag AS CdxTag) AS VOID
             SELF:PageType   := CdxPageType.Branch
             SELF:NumKeys    := 0
             SELF:LeftPtr    := SELF:RightPtr   := -1
-            SELF:Tag := oTag
+            SELF:Tag        := oTag
             RETURN
 
+        PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
+            LOCAL lOk as LOGIC
+            lOk := SUPER:Read()
+            IF lOk
+                SELF:_getValues()
+            ENDIF
+            RETURN lOk
             
         PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
             LOCAL nStart AS INT
             Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_HEADERLEN + nPos * (_keyLen + 8)
-            RETURN _GetBytes(SELF:Buffer, nStart, _keyLen)
+            RETURN _GetBytes( nStart, _keyLen)
             
         PUBLIC METHOD GetRecno(nPos AS Int32) AS Int32
             LOCAL nStart AS INT
@@ -89,7 +107,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL nStart AS INT
             Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_HEADERLEN + nPos * (_keyLen + 8)
-            Array.Copy(key, 0, SELF:Buffer, nStart, _keyLen)
+            Array.Copy(key, 0, _buffer, nStart, _keyLen)
             
             
         PUBLIC METHOD SetRecno(nPos AS Int32, nRecord AS Int32) AS VOID
@@ -117,23 +135,23 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
             
         #region Properties
+        // We read the values from our cache but write back to the cache and the buffer at the same time
+        // The _Set.. methods set the isHot flag of the page automatically
             
-        PUBLIC PROPERTY NumKeys AS WORD ;
-        GET _GetWord(CDXBRANCH_OFFSET_NUMKEYS) ;
-        SET _SetWord(CDXBRANCH_OFFSET_NUMKEYS, VALUE), isHot := TRUE
+        PUBLIC PROPERTY NumKeys AS WORD     GET _numkeys ;
+            SET _SetWord(CDXBRANCH_OFFSET_NUMKEYS, VALUE),  _numKeys := Value
             
-        INTERNAL PROPERTY LeftPtr AS Int32 ;
-        GET _GetLong(CDXBRANCH_OFFSET_LEFTPTR) ;
-        SET _SetLong(CDXBRANCH_OFFSET_LEFTPTR, VALUE), isHot := TRUE
+        INTERNAL PROPERTY LeftPtr AS Int32  GET _leftPtr ;
+            SET _SetLong(CDXBRANCH_OFFSET_LEFTPTR, VALUE),  _leftPtr := Value
             
-        INTERNAL PROPERTY RightPtr AS Int32 ;
-        GET _GetLong(CDXBRANCH_OFFSET_RIGHTPTR) ; 
-        SET _SetLong(CDXBRANCH_OFFSET_RIGHTPTR, VALUE), isHot := TRUE
-        #endregion                
-         INTERNAL PROPERTY LastNode AS CdxPageNode GET SELF[SELF:NumKeys-1]
+        INTERNAL PROPERTY RightPtr AS Int32 GET _rightPtr ; 
+            SET _SetLong(CDXBRANCH_OFFSET_RIGHTPTR, VALUE),  _rightPtr := Value
+
+        INTERNAL PROPERTY LastNode AS CdxPageNode GET SELF[SELF:NumKeys-1]
         
         INTERNAL PROPERTY MaxKeys AS LONG GET _maxKeys
         
+        #endregion                
         
         INTERNAL METHOD Add(node AS CdxPageNode) AS CdxAction
             IF SELF:NumKeys >= SELF:MaxKeys

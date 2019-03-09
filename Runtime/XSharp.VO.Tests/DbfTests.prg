@@ -1516,6 +1516,72 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 
+		// TECH-Z7BO7GN926, Cannot clear order scope
+		[Fact, Trait("Category", "DBF")];
+		METHOD OrderScopeClear_test() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL aValues AS ARRAY 
+			LOCAL i AS DWORD
+			
+			cDBF := "c:\test\tmp1"
+		
+			RDDSetDefault("DBFNTX")
+		
+//			test also with those
+//			aValues := { "vaa" , "abba", "acb" , "aaab"  , "adab"  , "baac"  , "aeab"  , "baaAaa" }
+			aValues := { "vvv" , "abb", "acb" , "aaa"  , "bbb" }
+			DBCreate( cDBF , {{"LAST" , "C" ,10 , 0 } })
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut(1,aValues [i])  
+			NEXT
+			DBCloseArea()
+		
+			DBUseArea(,"DBFNTX",cDBF,,TRUE) 
+			Assert.Equal(0 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			DBCreateIndex(cDbf, "Upper(LAST)" ) 
+			Assert.Equal(5 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			// ? "Setting scope"
+			LOCAL u AS USUAL
+			u := "A"
+			VODBOrderInfo( DBOI_SCOPETOP, "", NIL, REF u )
+			VODBOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF u )
+		
+			DBGoTop()
+			Assert.Equal(4 , (INT)RecNo())
+			DBGoBottom()
+			Assert.Equal(3 , (INT)RecNo())
+		
+			DBGoTop() 
+		
+			Assert.Equal(3 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			DO WHILE ! EOF()
+				DBSkip(1)
+			ENDDO 
+			Assert.Equal(3 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+		
+		
+		
+			u := NIL
+			VODBOrderInfo( DBOI_SCOPETOPCLEAR, "", NIL, REF u )
+			VODBOrderInfo( DBOI_SCOPEBOTTOMCLEAR, "", NIL, REF u )
+			DBGoTop() 
+		
+			Assert.Equal(5 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			
+			LOCAL nCount := 0 AS INT
+			DO WHILE ! EOF()
+				nCount ++
+				? FieldGet(1)
+				DBSkip(1)
+			ENDDO 
+			Assert.Equal(5 , nCount)
+		
+			DBCloseArea()
+		RETURN
+
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
 		RETURN GetTempFileName("testdbf")

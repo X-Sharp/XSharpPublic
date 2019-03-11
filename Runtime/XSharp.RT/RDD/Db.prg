@@ -26,15 +26,8 @@ FUNCTION Select(xValue) AS USUAL CLIPPER
 FUNCTION _SelectString(cValue AS STRING) AS DWORD
     LOCAL nSelect := 0 AS DWORD
     cValue := AllTrim(cValue)
-    IF SLen(cValue) = 1
-        VAR nAsc := (WORD) UPPER(cValue)[0]
-        IF nAsc > 64 .AND. nAsc <= 90    // A .. Z , M = memvar
-            IF nAsc != 77  // 'M' 
-                nSelect :=  (DWORD) (nAsc - 64)
-            ELSE
-                nSelect := 0
-            ENDIF
-        ENDIF
+    IF SLen(cValue) = 1 .and. cValue == "M"
+         return 0
     ENDIF
         
     IF nSelect > 0 .OR. "0" == cValue

@@ -17,7 +17,7 @@ USING System.Runtime.ConstrainedExecution
 USING System.Text
 
 #region Defines
-	DEFINE F_ERROR :=  -1 // Error value (all functions)
+	DEFINE F_ERROR :=  IntPtr{-1} // Error value (all functions)
 	
 	// FERROR() returns, which are not reflected as DOSERROR()
 	DEFINE FERROR_FULL    := 256   // disk full

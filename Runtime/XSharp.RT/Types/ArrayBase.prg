@@ -84,12 +84,12 @@ BEGIN NAMESPACE XSharp
 			aResult := (__ArrayBase<T>) Activator.CreateInstance(SELF:GetType(), NULL)
 			aResult:Resize( _internalList:Count )
 		    // warning, nCount-1 below will become MAXDWORD for nCount == 0
-			IF nCount != 0
+			IF nCount == 0
 				RETURN aResult
-			    FOR VAR I := 0 TO nCount-1
-				    aResult:_internalList[i] := _internalList[i]
-			    NEXT
             ENDIF
+			FOR VAR I := 0 TO nCount-1
+				aResult:_internalList[i] := _internalList[i]
+			NEXT
 			RETURN aResult
 
 			#endregion

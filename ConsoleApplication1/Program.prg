@@ -8,7 +8,8 @@ FUNCTION Start() AS VOID
     TRY
         //WaTest()
         //bigDbf()
-        testReplace()
+        //testReplace()
+        testClearOrderScope()
         //testReplaceTag()
         //TestCdxCreateConditional()
         //TestCloseArea()
@@ -137,6 +138,51 @@ DbAppend()
 DBCloseAll()
 RETURN
 
+Function TestClearOrderScope as void
+    LOCAL cDbf AS STRING
+    LOCAL aValues AS ARRAY
+    LOCAL i AS DWORD
+    
+    cDBF := "c:\test\tmp1"
+
+    RDDSetDefault("DBFNTX")
+
+    aValues := { "vvv" , "abb", "acb" , "aaa"  , "bbb" }
+    DBCreate( cDBF , {{"LAST" , "C" ,10 , 0 } })
+    DBUseArea(,"DBFNTX",cDBF,,FALSE)
+    FOR i := 1 UPTO ALen ( aValues )
+        DBAppend()
+        FieldPut(1,aValues [i])
+    NEXT
+    DBCloseArea()
+
+    DBUseArea(,"DBFNTX",cDBF,,TRUE)
+    DBCreateIndex(cDbf, "Upper(LAST)" )
+    ? DBOrderInfo( DBOI_KEYCOUNT ) // 5 ok
+
+    LOCAL u AS USUAL
+    u := "A"
+    ? VODBOrderInfo( DBOI_SCOPETOP, "", NIL, REF u )
+    ? VODBOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF u )
+    ? DBOrderInfo( DBOI_KEYCOUNT ) // 3 ok
+
+    
+    // clear scope
+    u := NIL // it is called in the SDK this way
+    ? VODBOrderInfo( DBOI_SCOPETOPCLEAR, "", NIL, REF u )
+    ? VODBOrderInfo( DBOI_SCOPEBOTTOMCLEAR, "", NIL, REF u )
+    ? DBOrderInfo( DBOI_KEYCOUNT ) // 3 again, should be 5
+    ?
+    DBGoTop()
+    // not all records are shown
+    DO WHILE ! EOF()
+        ? FieldGet(1)
+        DBSkip(1)
+    ENDDO
+
+    DBCloseArea()
+RETURN 
+
 FUNCTION TestReplace() AS VOID
 LOCAL cDBF AS STRING
 local f as float
@@ -154,7 +200,7 @@ FOR VAR i := 1 TO nMax
 NEXT
 DBSETORDERCONDITION("FIELDL",{||_FIELD->FIELDL})
 f := Seconds()
-DbCreateIndex(cDbf, "FIELDC")
+DbCreateIndex(cDbf, "FIELDC",,FALSE)
 ? Seconds() - f
 ? DbOrderInfo(DBOI_KEYCOUNT)
 f := Seconds()

@@ -82,14 +82,14 @@ BEGIN NAMESPACE XSharp
 			LOCAL nCount AS DWORD
 			nCount := (DWORD) _internalList:Count
 			aResult := (__ArrayBase<T>) Activator.CreateInstance(SELF:GetType(), NULL)
-			ASize(aResult, nCount)
-			IF nCount == 0
-				// warning, nCount-1 below will become MAXDWORD for nCount == 0
+			aResult:Resize( _internalList:Count )
+		    // warning, nCount-1 below will become MAXDWORD for nCount == 0
+			IF nCount != 0
 				RETURN aResult
-			END IF
-			FOR VAR I := 0 TO nCount-1
-				aResult:_internalList[i] := _internalList[i]
-			NEXT
+			    FOR VAR I := 0 TO nCount-1
+				    aResult:_internalList[i] := _internalList[i]
+			    NEXT
+            ENDIF
 			RETURN aResult
 
 			#endregion

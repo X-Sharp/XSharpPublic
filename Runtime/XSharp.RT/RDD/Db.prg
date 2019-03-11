@@ -16,7 +16,13 @@ USING System.Collections.Generic
 /// <param name="xValue">A value that identifies the work area.  This can be the number of the work area or its alias, specified either as a symbol or a string.  If <uWorkArea> is not specified, the current work area number is returned.  Therefore, Select() is the same as DBGetSelect().</param>
 /// <returns>A number from 0 to 4096.  0 is returned if <uWorkArea> does not identify a valid work area or does not correspond to a valid alias.</returns>
 FUNCTION Select(xValue) AS USUAL CLIPPER
-    RETURN  _Select(xValue)
+    LOCAL sSelect   AS DWORD
+	LOCAL sCurrent  AS DWORD
+	sCurrent := VODBGetSelect()
+	sSelect := _SELECT(xValue)
+	VODBSetSelect(INT(sCurrent))
+	RETURN sSelect
+
 
 
 /// <summary>Determine the number of a work area.</summary>
@@ -26,8 +32,12 @@ FUNCTION Select(xValue) AS USUAL CLIPPER
 FUNCTION _SelectString(cValue AS STRING) AS DWORD
     LOCAL nSelect := 0 AS DWORD
     cValue := AllTrim(cValue)
-    IF SLen(cValue) = 1 .and. cValue == "M"
-         return 0
+    IF SLen(cValue) = 1
+        nSelect := Val(cValue)
+		VAR nAsc := Asc( Upper(cValue) )
+		IF nAsc > 64 .AND. nAsc < 75
+			nSelect := nAsc - 64
+		ENDIF
     ENDIF
         
     IF nSelect > 0 .OR. "0" == cValue

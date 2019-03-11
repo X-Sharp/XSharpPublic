@@ -613,7 +613,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                         }
                                     }
                                 }
-                               else if (xnode.Parent is XSharpParser.VodefineContext)
+                               else if (xnode != null  && xnode.Parent is XSharpParser.VodefineContext)
                                {
                                     // convert RHS to type of LHS inside a VODefine
                                     right = new BoundConversion(right.Syntax, right, Conversion.ImplicitNumeric, false, false, right.ConstantValue, leftType) { WasCompilerGenerated = true };

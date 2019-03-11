@@ -169,7 +169,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 bool numericParams = false;
                 bool mustcast = false;
                 HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-                if (cf == usualType || cf.ConstructedFrom == arrayBaseType)
+                if (cf == usualType
+                    || cf.ConstructedFrom == arrayBaseType
+                    || cf.ImplementsInterface(indexedPropsType, ref useSiteDiagnostics)
+                    || cf.ImplementsInterface(indexerType, ref useSiteDiagnostics))
                 {
                     // Index operator on USUAL then we convert the usual to an array or indexer first
 
@@ -189,7 +192,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             numericParams = false;
                             mustcast = true;
                         }
-                        else if ( cf.ImplementsInterface(indexedPropsType, ref useSiteDiagnostics))
+                        else if ( cf.ImplementsInterface(indexerType, ref useSiteDiagnostics))
                         {
                             cf = indexerType;
                             numericParams = true;

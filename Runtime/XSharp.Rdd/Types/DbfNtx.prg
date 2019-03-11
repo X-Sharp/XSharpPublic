@@ -211,10 +211,14 @@ BEGIN NAMESPACE XSharp.RDD
 				ENDIF
 			CASE DBOI_SCOPETOPCLEAR
 			CASE DBOI_SCOPEBOTTOMCLEAR
+				IF workOrder != NULL
+					workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
+				ENDIF
+                info:Result := NULL
 			CASE DBOI_SCOPETOP
             CASE DBOI_SCOPEBOTTOM
 				IF workOrder != NULL
-					IF info:Result != NULL
+					IF info:Result != NULL 
 						workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
 					ENDIF
                     IF nOrdinal == DBOI_SCOPETOP

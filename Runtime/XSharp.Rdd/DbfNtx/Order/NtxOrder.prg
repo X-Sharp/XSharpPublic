@@ -46,9 +46,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _KeyExpr AS STRING
         PRIVATE _ForExpr AS STRING
         
-        PRIVATE _currentRecno AS LONG
-        PRIVATE _currentKeyBuffer AS BYTE[]
-        PRIVATE _newKeyBuffer AS BYTE[]
+        PRIVATE _currentvalue AS RddKeyData
+        INTERNAL _newvalue     AS RddKeyData
         PRIVATE _newKeyLen AS LONG
         PRIVATE _indexVersion AS WORD
         PRIVATE _nextUnusedPageOffset AS LONG
@@ -100,7 +99,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL PROPERTY Condition AS STRING GET _ForExpr
         INTERNAL PROPERTY CurrentStack       AS RddStack GET  SELF:_stack[SELF:_TopStack]
         INTERNAL PROPERTY OrderName AS STRING GET _orderName
-	    INTERNAL PROPERTY Shared    AS LOGIC GET _Shared
+	INTERNAL PROPERTY Shared    AS LOGIC GET _Shared
         INTERNAL PROPERTY _Recno AS LONG GET _oRdd:Recno
         INTERNAL PROPERTY HasTopScope AS LOGIC GET _topScope != NULL
         INTERNAL PROPERTY HasBottomScope AS LOGIC GET _bottomScope != NULL
@@ -150,8 +149,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             LOCAL i AS LONG
             
-            SELF:_currentKeyBuffer := BYTE[]{ MAX_KEY_LEN+1 }
-            SELF:_newKeyBuffer  := BYTE[]{ MAX_KEY_LEN+1 }
+            SELF:_currentvalue  := RddKeyData{MAX_KEY_LEN}
+            SELF:_newvalue      := RddKeyData{MAX_KEY_LEN}
             SELF:_fileName      := NULL
             SELF:_hFile         := IntPtr.Zero
             SELF:_oRdd          := oRDD
@@ -250,10 +249,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:Flush()
                 SELF:Close()
             ENDIF
+            SELF:AllocateBuffers()
             RETURN isOk
-            
-        DESTRUCTOR()
-            Close()
+
+        INTERNAL METHOD AllocateBuffers() AS VOID
+            SELF:_newValue          := RddKeyData{_keySize}
+            SELF:_currentValue      := RddKeyData{_keySize}
+            SELF:_topScopeBuffer    := BYTE[]{ SELF:_keySize }
+            SELF:_bottomScopeBuffer := BYTE[]{ SELF:_keySize }
+            RETURN
             
 
         PRIVATE METHOD EvaluateExpressions() AS LOGIC
@@ -262,19 +266,19 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             evalOk := TRUE
             TRY
                 SELF:_KeyCodeBlock := SELF:_oRdd:Compile(SELF:_KeyExpr)
-            CATCH
-                SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
+            CATCH ex AS Exception
+                SELF:_oRdd:_dbfError( ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
                 RETURN FALSE
             END TRY
 
             TRY
                 oKey := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
-            CATCH
+            CATCH ex AS Exception
+                SELF:_oRdd:_dbfError( ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBFNTX.Compile")
                 evalOk := FALSE
                 oKey := NULL
             END TRY
             IF !evalOk
-                SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBFNTX.Compile")
                 RETURN FALSE
             ENDIF
             SELF:_KeyExprType := SELF:_oRdd:_getUsualType(oKey)
@@ -375,6 +379,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             RETURN TRUE
 
+        INTERNAL METHOD GoHot() AS LOGIC
+            // Is called to save the current for value and key value
+            RETURN _saveCurrentKey(SELF:_oRdd:RecNo, SELF:_currentValue)
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)];
         INTERNAL METHOD __Compare( aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
             IF aRHS == NULL
@@ -412,9 +420,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN SELF:_Header:Write()
             
             // Save informations about the "current" Item	
+	    
         PRIVATE METHOD _saveCurrentRecord( node AS NtxNode ) AS VOID
-            SELF:_currentRecno := node:Recno
-            Array.Copy(node:KeyBytes, SELF:_currentKeyBuffer, SELF:_keySize)
+             IF SELF:_currentValue:Recno != node:Recno
+                SELF:_currentValue:Recno := node:Recno
+                Array.Copy(node:KeyBytes, SELF:_currentValue:Key, _keySize)
+             ENDIF
             
             
         PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG , nDec AS LONG , buffer AS BYTE[] ) AS LOGIC    
@@ -525,7 +536,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN
             
             
-        PUBLIC METHOD SetOrderScope(itmScope AS OBJECT , uiScope AS DBOrder_Info ) AS LOGIC
+        METHOD SetOrderScope(itmScope AS OBJECT , uiScope AS DBOrder_Info ) AS LOGIC
             LOCAL uiRealLen AS LONG
             LOCAL result AS LOGIC
             
@@ -536,22 +547,19 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_topScope      := NULL
                 SELF:_topScopeBuffer := NULL
                 SELF:_topScopeSize   := 0
-
             CASE DBOrder_Info.DBOI_SCOPEBOTTOMCLEAR
-                SELF:_bottomScope       := itmScope
+                SELF:_bottomScope       := NULL
                 SELF:_bottomScopeBuffer := NULL
                 SELF:_bottomScopeSize   := 0
             CASE DBOrder_Info.DBOI_SCOPETOP
                 SELF:_topScope      := itmScope
                 IF itmScope != NULL
-                    SELF:_topScopeBuffer := BYTE[]{ SELF:_keySize+1 }
                     SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_topScopeBuffer,  REF uiRealLen)
                     SELF:_topScopeSize := uiRealLen
                 ENDIF
             CASE DBOrder_Info.DBOI_SCOPEBOTTOM
                 SELF:_bottomScope    := itmScope
                 IF itmScope != NULL
-                    SELF:_bottomScopeBuffer := BYTE[]{ SELF:_keySize+1 }
                     SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_bottomScopeBuffer,  REF uiRealLen)
                     SELF:_bottomScopeSize := uiRealLen
                 ENDIF
@@ -789,7 +797,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 VAR oKeyValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
                 LOCAL uiRealLen := 0 AS LONG
                 result := SELF:_ToString(oKeyValue, SELF:_keySize, SELF:_keyDecimals, byteArray, REF uiRealLen)
-            CATCH
+            CATCH Ex AS Exception
+                SELF:_oRdd:_dbfError(ex, SubCodes.EDB_EXPRESSION,GenCode.EG_SYNTAX,  "DBFNTX._GetExpressionValue") 
                 result := FALSE
             END TRY
             RETURN result

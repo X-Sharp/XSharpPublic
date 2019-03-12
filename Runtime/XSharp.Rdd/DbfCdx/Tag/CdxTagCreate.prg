@@ -311,13 +311,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN isOk
             
         INTERNAL METHOD _InitSort(lRecCount AS LONG) AS LOGIC
-            LOCAL sortInfo AS DbSortInfo
             LOCAL fType  := 0 AS DbFieldType
+            LOCAL sortInfo AS DbSortInfo
             sortInfo := DbSortInfo{0,1}     // 0 trans items, 1 sort item
             SELF:_sorter := CdxSortHelper{SELF:_oRDD, sortInfo, lRecCount, SELF}
             IF SELF:_SingleField != -1
                 fType := SELF:_oRdd:_Fields[SELF:_SingleField]:fieldType
-                // 'C', 'N', 'D'
+                // 'C', 'N', 'D', 'L'
                 SWITCH fType
                 CASE DbFieldType.Character
                 CASE DbFieldType.Number
@@ -328,6 +328,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     fType := 0
                     SELF:_sorter:SourceIndex := -1
                 END SWITCH
+	        ELSE
+	    	    SELF:_sorter:sourceIndex := -1
             ENDIF
             sortInfo:Items[0]:Length := SELF:_keySize
             IF SELF:_KeyExprType == __UsualType.String .OR. SELF:_KeyExprType == __UsualType.LOGIC

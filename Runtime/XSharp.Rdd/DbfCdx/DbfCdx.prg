@@ -216,6 +216,12 @@ BEGIN NAMESPACE XSharp.RDD
                 ELSE
                     info:Result := NULL
                 ENDIF
+            CASE DBOI_SCOPETOPCLEAR
+            CASE DBOI_SCOPEBOTTOMCLEAR
+            	IF workOrder != NULL
+                	workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
+                ENDIF
+                    info:Result := NULL
             CASE DBOI_SCOPETOP
             CASE DBOI_SCOPEBOTTOM
                 IF workOrder != NULL
@@ -226,22 +232,6 @@ BEGIN NAMESPACE XSharp.RDD
 					    info:Result := workOrder:TopScope
                     ELSEIF nOrdinal == DBOI_SCOPEBOTTOM
                         info:Result := workOrder:BottomScope
-                    ENDIF
-                ELSE
-                    info:Result := NULL
-                ENDIF
-            CASE DBOI_SCOPETOPCLEAR
-            CASE DBOI_SCOPEBOTTOMCLEAR
-                IF workOrder != NULL
-                    IF info:Result != NULL
-                        workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
-                    ENDIF
-                    IF nOrdinal == DBOI_SCOPETOP
-                        info:Result := workOrder:TopScope
-                    ELSEIF nOrdinal == DBOI_SCOPEBOTTOM
-                        info:Result := workOrder:BottomScope
-                    ELSE
-                        info:Result := NULL
                     ENDIF
                 ELSE
                     info:Result := NULL
@@ -287,7 +277,6 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN SUPER:Close()
             END LOCK
 
-            
         PUBLIC OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
             

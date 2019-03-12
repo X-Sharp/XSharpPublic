@@ -56,5 +56,24 @@ BEGIN NAMESPACE XSharp.RDD
             
     END CLASS
 
+    INTERNAL CLASS RddKeyData
+        EXPORT Recno   AS LONG
+        EXPORT Key     AS BYTE[]
+        EXPORT ForCond AS LOGIC
+        INTERNAL CONSTRUCTOR (nKeyLen AS LONG)
+            SELF:ForCond := TRUE
+            SELF:Recno   := -1
+            SELF:Key     := BYTE[]{nKeyLen}
+            RETURN
+
+        INTERNAL METHOD CopyTo(oOther AS RddKeyData) AS VOID
+            oOther:ForCond := SELF:ForCond
+            oOther:Recno   := SELF:Recno
+            IF oOther:Key:Length != SELF:Key:Length
+                oOther:Key  := (BYTE[]) SELF:Key:Clone()
+            ELSE
+                Array.Copy(SELF:Key, oOther:Key, SELF:Key:Length)
+            ENDIF
+    END CLASS
 
 END NAMESPACE

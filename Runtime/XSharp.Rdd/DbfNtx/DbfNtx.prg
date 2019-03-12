@@ -107,6 +107,8 @@ BEGIN NAMESPACE XSharp.RDD
 				IF workOrder != NULL
 					info:Result := 0
 					isOk := workOrder:_CountRecords(REF result)
+                		ELSE
+                    			isOk := TRUE
 				ENDIF
 				IF isOk
 					info:Result := result
@@ -268,12 +270,12 @@ BEGIN NAMESPACE XSharp.RDD
 		
 		PUBLIC OVERRIDE METHOD Close() AS LOGIC
 			LOCAL orderInfo AS DbOrderInfo
-
+		        BEGIN LOCK SELF
 			orderInfo := DbOrderInfo{}
 			orderInfo:AllTags := TRUE
 			SELF:OrderListDelete(orderInfo)
 			RETURN SUPER:Close()
-			
+            		END LOCK
 			
 		PUBLIC OVERRIDE METHOD Create( openInfo AS DBOPENINFO ) AS LOGIC
 			LOCAL isOk AS LOGIC

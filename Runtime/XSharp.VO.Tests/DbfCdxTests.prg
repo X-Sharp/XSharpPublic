@@ -1688,6 +1688,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				DBCreateIndex( cCdx, "FIELDN" )
 				DBCreateOrder("FIELDN2", cCdx, "-FIELDN" )
 				DBCreateOrder("FIELDD", cCdx, "FIELDD" )
+                DBSetOrder(1)
 			ELSE
 				DBUseArea(,"DBFCDX",cDBF,,FALSE)
 				DBCreateIndex( cCdx, "FIELDN" )
@@ -1701,7 +1702,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			LOCAL nCount := 0 AS INT
 
-//			DBSetOrder(1) // should not be needed
 			DBGoTop()
 			DO WHILE .NOT. EOF()
 				nCount ++

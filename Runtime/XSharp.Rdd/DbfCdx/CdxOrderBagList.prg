@@ -33,7 +33,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     oBag := CdxOrderBag{_oRdd}
                     oBag:Structural := lStructural
                     _bags:Add(oBag)
-                    RETURN oBag:Open(info)
+                    local lOk as LOGIC
+                    lOk := oBag:Open(info)
+                    if lOk
+                        SELF:CurrentOrder := oBag:Tags[0]
+                    ENDIF
                 ENDIF
                 RETURN TRUE
             ENDIF

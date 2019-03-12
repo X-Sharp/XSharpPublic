@@ -84,7 +84,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _lenShift  AS INT
         PRIVATE _leaves    AS List<CdxLeaf>
         PRIVATE _prevData  AS BYTE[]
-        PRIVATE _bTrail    AS BYTE
+        PROTECTED _bTrail    AS BYTE
 
 
 #endregion

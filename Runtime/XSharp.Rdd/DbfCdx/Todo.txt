@@ -1,11 +1,8 @@
 ﻿- Create and update Unique indexes
 - Shared use and locking
 - More testing
-- Reindex
 - Check all DBOI_constants
-- Set Production index flag in DBF
 - Check how VO resolvs path locations for CDX files
-- Optimization, cache fields such as NumKeys, LeftPtr and RightPtr in Pages, Add Scatter and Gather logic
 - Check Custom indexes
 - Rushmore 
 - Add index pages to free list when tag is deleted (VO and Vulcan don't do that)

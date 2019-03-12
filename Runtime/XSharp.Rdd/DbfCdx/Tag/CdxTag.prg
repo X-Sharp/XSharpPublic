@@ -44,6 +44,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _KeyExprType AS LONG
         PRIVATE _keySize AS WORD
         PRIVATE _rootPage AS LONG
+        PRIVATE _ordCondInfo as DbOrderCondInfo
         //INTERNAL _tagNumber AS INT
         INTERNAL _orderName AS STRING
         INTERNAL _Ansi AS LOGIC

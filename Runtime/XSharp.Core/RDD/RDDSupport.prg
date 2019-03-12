@@ -206,6 +206,8 @@ CLASS DbOrderCondInfo
             ENDIF
         ENDIF
 
+    METHOD Clone() as DbOrderCondInfo
+        return (DbOrderCondInfo) SELF:MemberwiseClone()
 
 END CLASS
 
@@ -231,6 +233,10 @@ CLASS DbOrderCreateInfo
         IF SELF:OrdCondInfo != NULL
             SELF:OrdCondInfo:Compile(oRDD)
         ENDIF
+
+   METHOD Clone() as DbOrderCreateInfo
+        return (DbOrderCreateInfo) SELF:MemberwiseClone()
+
 END CLASS
 
 /// <summary>Helper class to store information needed to open/address an order.</summary> 
@@ -244,7 +250,10 @@ CLASS DbOrderInfo
 	/// <summary>The index file name.</summary>
 	PUBLIC BagName		AS STRING
 	/// <summary>Return value for some order operations.</summary>
-	PUBLIC Result		AS OBJECT 	
+	PUBLIC Result		AS OBJECT
+
+    METHOD Clone() as DbOrderInfo
+        return (DbOrderInfo) SELF:MemberwiseClone()
 END CLASS
 
 /// <summary>Helper class to store a list of relational information.</summary> 
@@ -262,6 +271,9 @@ CLASS DbRelInfo
         IF SELF:Block == NULL .AND. SELF:Parent != NULL .AND. ! String.IsNullOrWhiteSpace(SELF:Key)
             SELF:Block := SELF:Parent:Compile(SELF:Key)
         ENDIF
+
+    METHOD Clone() as DbRelInfo
+        return (DbRelInfo) SELF:MemberwiseClone()
     
 END CLASS
 
@@ -309,20 +321,8 @@ CLASS DbScopeInfo
 
 	///<summary>Clone the scopeinfo object.</summary>
 	METHOD Clone AS DbScopeInfo
-		LOCAL oClone AS DbScopeInfo
-		oClone := DbScopeInfo{}
-		oClone:IgnoreDuplicates     := SELF:IgnoreDuplicates 
-		oClone:IgnoreFilter	        := SELF:IgnoreFilter	 
-		oClone:IncludeDeleted       := SELF:IncludeDeleted
-		oClone:ForBlock		        := SELF:ForBlock		
-		oClone:ForExpression        := SELF:ForExpression
-		oClone:Last			        := SELF:Last			
-		oClone:NextCount	        := SELF:NextCount	
-		oClone:RecId		        := SELF:RecId		
-		oClone:Rest			        := SELF:Rest			 
-		oClone:WhileBlock		    := SELF:WhileBlock		
-		oClone:WhileExpression      := SELF:WhileExpression  
-		RETURN oClone
+		RETURN (DbScopeInfo) SELF:MemberwiseClone()
+
 	METHOD Compile(oRDD AS IRDD) AS VOID
         IF SELF:WhileBlock == NULL .AND. ! String.IsNullOrWhiteSpace(SELF:WhileExpression)
             SELF:WhileBlock := oRDD:Compile(SELF:WhileExpression)
@@ -436,12 +436,13 @@ CLASS RddFieldInfo
 
     /// <summary>Clone a RddFieldInfo object.</summary>        
 	METHOD Clone() AS RddFieldInfo
-        VAR info := RddFieldInfo{SELF:Name, SELF:FieldType, SELF:Length, SELF:Decimals}
-        info:Alias := SELF:Alias
+        VAR info := (RddFieldInfo) SELF:MemberwiseClone()
         RETURN info
+
     /// <summary>Check if two fields match in type, length and decimals.</summary>        
     METHOD SameType(oFld AS RDDFieldInfo) AS LOGIC
         RETURN SELF:FieldType == oFld:FieldType .AND. SELF:Length == oFld:Length .AND. SELF:Decimals == oFld:Decimals
+
     PROPERTY Offset AS LONG
 		GET
 			RETURN SELF:iOffset

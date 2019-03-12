@@ -92,7 +92,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         METHOD Destroy(oParam AS CdxTag) AS LOGIC
             LOCAL found := FALSE AS LOGIC
-            VAR aTags := SELF:Tags:ToArray()
+            VAR aTags   := SELF:Tags:ToArray()
             FOREACH tag AS CdxTag IN aTags
                 IF String.Compare(tag:OrderName, oParam:OrderName, StringComparison.OrdinalIgnoreCase) == 0
                     oParam := tag
@@ -123,8 +123,33 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
             THROW NotImplementedException{}
             /// <inheritdoc />
+
+
         METHOD OrderListRebuild( ) AS LOGIC
-            THROW NotImplementedException{}
+            LOCAL aTags as CdxTag[]
+            local cBagName as STRING
+            LOCAL lOk as LOGIC
+            aTags := SELF:_tagList:Tags:ToArray()
+            cBagName := SELF:FullPath
+            lOk := TRUE
+            lOk := SELF:Close()
+            if lOk
+                FErase(cBagName)
+                lOk := SELF:CreateBag(cBagName)
+            ENDIF
+            IF lOk
+                FOREACH oTag as CdxTag in aTags
+                    lOk := oTag:Rebuild()
+                    IF ! lOk
+                        EXIT
+                    ENDIF
+                    SELF:AddTag(oTag)
+                NEXT
+            ENDIF
+            SELF:GoCold()
+            RETURN lOk
+
+
             /// <inheritdoc />
         METHOD Seek(info AS DbSeekInfo) AS LOGIC		
             THROW NotImplementedException{}

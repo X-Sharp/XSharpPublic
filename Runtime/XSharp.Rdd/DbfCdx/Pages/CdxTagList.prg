@@ -29,6 +29,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 LOCAL nRecno    := SELF:GetRecno(nI) AS Int32
                 LOCAL bName     := SELF:GetKey(nI)  AS BYTE[]
                 LOCAL cName     := System.Text.Encoding.ASCII:GetString( bName, 0, bName:Length) AS STRING
+                cName           := cName:TrimEnd(<CHAR>{'\0'})
                 VAR tag         := CdxTag{_bag,  nRecno, cName:Trim()}
                 _tags:Add(tag)
             NEXT
@@ -80,6 +81,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             SELF:Write()
             _tags:Clear()
+            // sort by pageno.
+            System.Array.Sort(aTags,  { x,y => x:Page - y:Page})
             _tags:AddRange(aTags)
             RETURN TRUE
 

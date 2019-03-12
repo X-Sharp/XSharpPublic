@@ -302,6 +302,9 @@ BEGIN NAMESPACE XSharp.RDD
                         LOCAL orderinfo := DbOrderInfo{} AS DbOrderInfo
                         orderInfo:BagName := cCdxFileName
                         SELF:_indexList:Add(orderInfo, TRUE)
+                        SELF:Header:HasTags |= DbfTableFlags.HasStructuralCDX
+                    ELSE
+                        SELF:Header:HasTags &= _NOT(DbfTableFlags.HasStructuralCDX)
                     ENDIF
                 ENDIF
             ENDIF

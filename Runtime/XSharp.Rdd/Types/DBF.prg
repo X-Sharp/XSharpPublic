@@ -60,6 +60,7 @@ BEGIN NAMESPACE XSharp.RDD
 
         STATIC PROTECT _Extension := ".DBF" AS STRING
         INTERNAL PROPERTY FullPath AS STRING GET _FileName
+        INTERNAL PROPERTY Header as DbfHeader GET _Header
 		INTERNAL _Ansi          AS LOGIC
 		//
 		INTERNAL _Encoding      AS Encoding
@@ -2344,7 +2345,7 @@ BEGIN NAMESPACE XSharp.RDD
 		
 			
 		/// <summary>DBF Header.</summary>
-		STRUCTURE DbfHeader
+		CLASS DbfHeader
 			// Fixed Buffer of 32 bytes
 				// Matches the DBF layout
 				// Read/Write to/from the Stream with the Buffer
@@ -2513,7 +2514,7 @@ BEGIN NAMESPACE XSharp.RDD
 						
 						
 						
-			END STRUCTURE
+			END CLASS
 			/// <summary>DBF Field.</summary>
 			STRUCTURE DbfField
 				PRIVATE CONST OFFSET_NAME		   := 0    AS BYTE
@@ -2626,7 +2627,7 @@ BEGIN NAMESPACE XSharp.RDD
 				PROPERTY HasTag		 AS BYTE;
 				GET Buffer[OFFSET_HasTag]  ;
 				SET Buffer[OFFSET_HasTag] :=  VALUE
-			END STRUCTURE
+			END STRUCT
 			
 			
 			/// <summary>DBase 7 Field.</summary>

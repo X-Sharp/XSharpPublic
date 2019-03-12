@@ -38,6 +38,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     if lOk
                         SELF:CurrentOrder := oBag:Tags[0]
                     ENDIF
+                    IF lStructural
+                        SELF:_oRDD:Header:HasTags |= DbfTableFlags.HasStructuralCDX
+                    ENDIF
                 ENDIF
                 RETURN TRUE
             ENDIF

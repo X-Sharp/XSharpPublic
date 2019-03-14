@@ -413,7 +413,38 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 //            ENDIF
             RETURN result
         */
-            
+
+        INTERNAL METHOD AddKey(recordNo as LONG) AS LOGIC
+            IF ! SELF:_Custom
+                RETURN FALSE
+            ENDIF
+            SELF:_saveCurrentKey(recordNo, SELF:_newvalue)
+            var nRec := SELF:_locate(SELF:_newValue:Key, SELF:_keySize, SearchMode.Right, SELF:_rootPage)
+            var page := SELF:Stack:Top:Page
+            var pos  := SELF:Stack:Top:Pos
+            SELF:DoAction(CdxAction.InsertKey(page, pos, SELF:_newValue:Recno, SELF:_newValue:Key))
+            return TRUE
+
+        INTERNAL METHOD SetCustom() as LOGIC
+            local lOld := SELF:_Custom as LOGIC
+            SELF:Header:Options |= CdxOptions.Custom
+            SELF:_Custom := TRUE
+            RETURN lOld
+
+        INTERNAL METHOD DeleteKey(recordNo as LONG) AS LOGIC
+            IF ! SELF:_Custom
+                RETURN FALSE
+            ENDIF
+            SELF:_saveCurrentKey(recordNo, SELF:_currentValue)
+            VAR recno := SELF:_goRecord(SELF:_currentValue:Key, SELF:_keySize, recordNo)
+            if recno == recordNo
+                var page := SELF:Stack:Top:Page
+                var pos  := SELF:Stack:Top:Pos
+                SELF:DoAction(CdxAction.DeleteKey(page, pos))
+                return TRUE
+            endif
+            return FALSE
+
         PRIVATE METHOD _keyUpdate(recordNo AS LONG , lNewRecord AS LOGIC ) AS LOGIC
             IF SELF:Shared
                 SELF:XLock()
@@ -437,7 +468,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 if _currentValue:ForCond
                     VAR recno := SELF:_goRecord(SELF:_currentValue:Key, SELF:_keySize, recordNo)
                     IF ! SELF:Stack:Empty  .OR. recno  != 0
-                        IF changed .AND. _currentValue:ForCond
+                        IF changed .AND. _currentValue:ForCond .and. recno == recordNo
                             var page := SELF:Stack:Top:Page
                             var pos  := SELF:Stack:Top:Pos
                             SELF:DoAction(CdxAction.DeleteKey(page, pos))
@@ -456,7 +487,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     // Todo
                     IF SELF:_locate(SELF:_newValue:Key, SELF:_keySize, SearchMode.Left, SELF:_rootPage) == 0
                         var page := SELF:Stack:Top:Page
-                        var pos  := SELF:Stack:Top:Pos
+                        var pos  := SELF:Stack:Top:Pos+1
                         SELF:DoAction(CdxAction.InsertKey(page, pos, SELF:_newValue:Recno, SELF:_newValue:Key))
                     ELSE
                         SELF:ClearStack()

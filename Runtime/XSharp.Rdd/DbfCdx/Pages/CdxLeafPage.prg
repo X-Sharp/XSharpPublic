@@ -84,7 +84,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _lenShift  AS INT
         PRIVATE _leaves    AS List<CdxLeaf>
         PRIVATE _prevData  AS BYTE[]
-        PRIVATE _bTrail    AS BYTE
+        PROTECTED _bTrail    AS BYTE
 
 
 #endregion
@@ -392,7 +392,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             // Todo: optimize. We are now expanding the leaves which could be overkill.
             _ExpandLeaves(FALSE)
-            IF nPos < 0 .OR. nPos > _Leaves:Count
+            IF nPos < 0 // .OR. nPos > _Leaves:Count
                 RETURN CdxAction.OutofBounds(SELF)
             ENDIF
             IF nPos >= _Leaves:Count

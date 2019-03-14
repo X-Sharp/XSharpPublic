@@ -281,4 +281,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN CdxAction{CdxActionType.OutOfBounds}{Page := oPage}
             
     END STRUCTURE
+
+ 
+
 END NAMESPACE

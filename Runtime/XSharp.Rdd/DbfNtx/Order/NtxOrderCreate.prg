@@ -31,7 +31,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             ordCondInfo := SELF:_oRdd:_OrderCondInfo
             IF string.IsNullOrEmpty(createInfo:BagName)
-                SELF:_oRDD:_dbfError( GenCode.EG_ARG, SubCodes.EDB_CREATEINDEX)
+                SELF:_oRDD:_dbfError(  SubCodes.EDB_CREATEINDEX, GenCode.EG_ARG,"OrdCreate", "Missing Orderbag Name")
                 RETURN FALSE
             ENDIF
             isOk := SELF:_oRdd:GoCold()
@@ -67,8 +67,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 RETURN FALSE
             ENDIF
             IF SELF:_keySize > 0
-                SELF:_currentKeyBuffer := BYTE[]{_Keysize+1}
-                SELF:_newKeyBuffer   := BYTE[]{_Keysize+1}
+                SELF:_currentvalue   := RddKeyData{_KeySize}
+                SELF:_newvalue       := RddKeyData{_KeySize}
             ENDIF
             
             // 8 Bytes : PrevPage (4 bytes) + Recno (4 bytes)
@@ -123,42 +123,19 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             SELF:_PageList := NtxPageList{SELF}
             
-            SELF:_Header := NtxHeader{ SELF:_hFile }
-            SELF:_Header:Signature              := NtxHeaderFlags.Default
-            SELF:_Header:IndexingVersion        := SELF:_indexVersion
-            SELF:_Header:FirstPageOffset        := SELF:_firstPageOffset
-            SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
-            SELF:_Header:EntrySize              := SELF:_entrySize
-            SELF:_Header:KeySize                := SELF:_keySize
-            SELF:_Header:KeyDecimals            := SELF:_keyDecimals
-            SELF:_Header:MaxItem                := SELF:_MaxEntry
-            SELF:_Header:HalfPage               := SELF:_halfPage
-            SELF:_Header:Unique                 := SELF:_Unique
-            SELF:_Header:Descending             := SELF:_Descending
-            SELF:_Header:KeyExpression          := SELF:_KeyExpr
-            SELF:_Header:ForExpression          := SELF:_ForExpr
-            SELF:_Header:OrdName                := SELF:_orderName
             SELF:_midItem                       := NtxNode{SELF:_keySize}
             SELF:_oneItem                       := NtxNode{SELF:_keySize}
-            IF SELF:_Conditional .OR. SELF:_Descending .OR. ordCondInfo:Scoped
-                SELF:_Header:Signature |= NtxHeaderFlags.Conditional
-            ENDIF
-            IF SELF:_Partial
-                SELF:_Header:Signature |= NtxHeaderFlags.Partial
-            ENDIF
             SELF:_maxLockTries  := 99 //(LONG)XSharp.RuntimeState.LockTries
             SELF:_tagNumber     := 1
             IF  XSharp.RuntimeState.NewIndexLock 
-                SELF:_Header:Signature |= NtxHeaderFlags.NewLock
                 SELF:_lockOffset := LOCKOFFSET_NEW
             ELSE
                 SELF:_lockOffset := LOCKOFFSET_OLD
             ENDIF
             IF  XSharp.RuntimeState.HPLocking
                 SELF:_HPLocking := TRUE
-                SELF:_Header:Signature |= NtxHeaderFlags.Partial
             ENDIF
-            IF !SELF:_Header:Write()
+            IF !SELF:_HeaderCreate(ordCondInfo:Scoped)
                 SELF:Close()
                 SELF:_oRdd:_dbfError(SubCodes.ERDD_WRITE,GenCode.EG_CREATE,  createInfo:BagName)
                 RETURN FALSE
@@ -178,6 +155,36 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
 
             
+        PRIVATE METHOD _HeaderCreate(lScoped as LOGIC) AS LOGIC
+            SELF:_Header := NtxHeader{ SELF:_hFile }
+            SELF:_Header:Signature              := NtxHeaderFlags.Default
+            SELF:_Header:IndexingVersion        := SELF:_indexVersion
+            SELF:_Header:FirstPageOffset        := SELF:_firstPageOffset
+            SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
+            SELF:_Header:EntrySize              := SELF:_entrySize
+            SELF:_Header:KeySize                := SELF:_keySize
+            SELF:_Header:KeyDecimals            := SELF:_keyDecimals
+            SELF:_Header:MaxItem                := SELF:_MaxEntry
+            SELF:_Header:HalfPage               := SELF:_halfPage
+            SELF:_Header:Unique                 := SELF:_Unique
+            SELF:_Header:Descending             := SELF:_Descending
+            SELF:_Header:KeyExpression          := SELF:_KeyExpr
+            SELF:_Header:ForExpression          := SELF:_ForExpr
+            SELF:_Header:OrdName                := SELF:_orderName
+            IF SELF:_Conditional .OR. SELF:_Descending .OR. lScoped
+                SELF:_Header:Signature |= NtxHeaderFlags.Conditional
+            ENDIF
+            IF SELF:_Partial
+                SELF:_Header:Signature |= NtxHeaderFlags.Partial
+            ENDIF
+            IF  XSharp.RuntimeState.NewIndexLock 
+                SELF:_Header:Signature |= NtxHeaderFlags.NewLock
+            ENDIF
+            IF  XSharp.RuntimeState.HPLocking
+                SELF:_Header:Signature |= NtxHeaderFlags.Partial
+            ENDIF
+	    RETURN SELF:_Header:Write()
+	    
             
         INTERNAL METHOD _determineSize(toConvert AS OBJECT ) AS LOGIC
             LOCAL expr AS STRING
@@ -222,7 +229,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             
         PRIVATE METHOD _CondCreate(ordCondInfo AS DBORDERCONDINFO ) AS LOGIC
-            LOCAL isOk          := TRUE AS LOGIC
             LOCAL leadingOrder  := NULL AS NtxOrder
             LOCAL lUseOrder     := FALSE AS LOGIC
             LOCAL hasWhile      := FALSE AS LOGIC
@@ -234,13 +240,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL nextRecord    := 0 AS LONG
             LOCAL start         := 0 AS LONG
             LOCAL result        := FALSE AS LOGIC
+            LOCAL includeRecord := TRUE AS LOGIC
             
             start := ordCondInfo:StartRecNo
             IF ordCondInfo:Scoped
                 IF ordCondInfo:StartRecNo > 0
                     record := ordCondInfo:StartRecNo
                 ENDIF
-                IF SELF:_oRdd:_indexList:Focus != 0
+                IF SELF:_oRdd:_indexList:CurrentOrder != NULL
                     leadingOrder := SELF:_oRdd:_indexList:CurrentOrder
                     lUseOrder    := leadingOrder != NULL
                 ENDIF
@@ -283,31 +290,21 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             DO WHILE TRUE
                 IF hasWhile
-                    isOk := TRUE
-                    TRY
-                        isOk := (LOGIC) SELF:_oRdd:EvalBlock(ordCondInfo:WhileBlock)
-                    CATCH
-                        SELF:_oRdd:_dbfError(SubCodes.ERDD_KEY_EVAL, GenCode.EG_DATATYPE, SELF:fileName)
-                        isOk := FALSE
-                    END TRY
-                    IF ! isOk
+                    IF ! SELF:_EvalBlock(ordCondInfo:WhileBlock, TRUE)
                         EXIT
                     ENDIF
-                    
+	    	ENDIF
+                IF SELF:_Conditional
+                    includeRecord := SELF:_EvalBlock(ordCondInfo:ForBlock, TRUE)
                 ENDIF
-                IF !SELF:_keyUpdate( SELF:_RecNo, TRUE)
-                    EXIT
-                ENDIF
+                IF includeRecord
+                   IF !SELF:_keyUpdate( SELF:_RecNo, TRUE)
+                       EXIT
+	            ENDIF
+		ENDIF
                 IF hasEvalBlock
                     IF count >= ordCondInfo:StepSize
-                        isOk := TRUE
-                        TRY
-                            isOk := (LOGIC) SELF:_oRdd:EvalBlock(ordCondInfo:EvalBlock)
-                        CATCH
-                            SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_EVAL,GenCode.EG_DATATYPE, SELF:fileName)
-                            isOk := FALSE
-                        END TRY
-                        IF ! isOk
+                        IF ! SELF:_EvalBlock(ordCondInfo:EvalBlock,FALSE)
                             EXIT
                         ENDIF
                         count := 1
@@ -329,7 +326,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     EXIT
                 ENDIF
             ENDDO
-
+            // evaluate the block once more at eof
+            IF hasEvalBlock
+                SELF:_EvalBlock(ordCondInfo:EvalBlock,FALSE)
+            ENDIF
             SELF:_oRdd:__Goto(start)
             SELF:ClearStack()
             SELF:Flush()
@@ -345,8 +345,29 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:ClearStack()
             RETURN TRUE
             
+        PRIVATE METHOD _EvalBlock(oBlock AS ICodeBlock, lMustBeLogic AS LOGIC) AS LOGIC
+            LOCAL isOk  := FALSE AS LOGIC
+            LOCAL error := FALSE AS LOGIC
+            TRY
+                VAR res := SELF:_oRdd:EvalBlock(oBlock)
+                IF res IS LOGIC 
+                    isOk := (LOGIC) res
+                ELSEIF lMustBeLogic
+                    error := TRUE
+                ELSE
+                    isOk := TRUE
+                ENDIF
+            CATCH 
+                error := TRUE
+                isOk := FALSE
+            END TRY
+            IF error
+                SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_EVAL,GenCode.EG_DATATYPE, SELF:fileName)
+            ENDIF
+            RETURN isOk
+	    
         INTERNAL METHOD _CreateIndex() AS LOGIC
-            LOCAL fType AS DbFieldType
+            LOCAL fType := 0 AS DbFieldType
             LOCAL sourceIndex := 0 AS LONG
             LOCAL evalCount AS LONG
             LOCAL lRecCount AS LONG
@@ -371,20 +392,23 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_levelsCount := 1
             IF SELF:_SingleField != -1
                 fType := SELF:_oRdd:_Fields[SELF:_SingleField]:fieldType
-            ENDIF
-            // 'C', 'N', 'D'
+            // 'C', 'N', 'D', 'L'
             SWITCH fType
             CASE DbFieldType.Character
             CASE DbFieldType.Number
             CASE DbFieldType.Date
+            CASE DbFieldType.Logic
                 sourceIndex := SELF:_oRdd:_Fields[SELF:_SingleField]:OffSet
             OTHERWISE
                 fType := 0
             END SWITCH
+	    ELSE
+	    	sourceIndex := -1
+            ENDIF
             
             sorting := RddSortHelper{SELF:_oRDD, sortInfo, lRecCount}
             sortInfo:Items[0]:Length := SELF:_keySize
-            IF SELF:_KeyExprType == __UsualType.String
+            IF SELF:_KeyExprType == __UsualType.String .OR. SELF:_KeyExprType == __UsualType.LOGIC
                 lAscii := FALSE
                 sortInfo:Items[0]:Flags := DbSortFlags.Default
             ELSE
@@ -408,11 +432,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 sorting:Add(toSort)
                 IF hasBlock
                     IF evalCount >= SELF:_oRdd:_OrderCondInfo:StepSize
-                        TRY
-                            SELF:_oRdd:EvalBlock(SELF:_oRdd:_OrderCondInfo:EvalBlock)
-                        CATCH
-                            result := FALSE
-                        END TRY
+                        IF ! SELF:_EvalBlock(SELF:_oRdd:_OrderCondInfo:EvalBlock, FALSE)
+                            EXIT
+                        ENDIF
                         evalCount := 1
                     ELSE
                         evalCount++
@@ -580,7 +602,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_nextUnusedPageOffset := 0
             SELF:_Hot := TRUE
             SELF:ClearStack()
-            SELF:_currentRecno := 0
+            SELF:_currentvalue:Recno := 0
             FChSize( SELF:_hFile, BUFF_SIZE )
             SELF:_fileSize := BUFF_SIZE
             SELF:Flush()

@@ -392,7 +392,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             // Todo: optimize. We are now expanding the leaves which could be overkill.
             _ExpandLeaves(FALSE)
-            IF nPos < 0 .OR. nPos > _Leaves:Count
+            IF nPos < 0 // .OR. nPos > _Leaves:Count
                 RETURN CdxAction.OutofBounds(SELF)
             ENDIF
             IF nPos >= _Leaves:Count

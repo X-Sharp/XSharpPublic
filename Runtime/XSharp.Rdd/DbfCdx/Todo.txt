@@ -1,9 +1,7 @@
-﻿- Create and update Unique indexes
-- Shared use and locking
+﻿- Shared use and locking
 - More testing
 - Check all DBOI_constants
 - Check how VO resolvs path locations for CDX files
-- Check Custom indexes
 - Rushmore 
 - Add index pages to free list when tag is deleted (VO and Vulcan don't do that)
 - 

@@ -6,10 +6,15 @@ USING XSharp.RDD
 FUNCTION Start() AS VOID
     LOCAL cb AS CODEBLOCK
     TRY
+        TestLb()
+        // TestCopyStruct()
+        //TestDbf()
         //WaTest()
         //bigDbf()
         //testReplace()
-        testClearOrderScope()
+        //testRebuild()
+        //testUnique()
+        //testClearOrderScope()
         //testReplaceTag()
         //TestCdxCreateConditional()
         //TestCloseArea()
@@ -47,6 +52,139 @@ DEFINE LANG_GERMAN := 0x07
 DEFINE SUBLANG_GERMAN := 0x01 // German
 DEFINE SORT_DEFAULT := 0x0 // sorting default
 DEFINE SORT_GERMAN_PHONE_BOOK := 0x1 // German Phone Book order
+
+	FUNCTION testLb() AS VOID STRICT
+        LOCAL x AS TestLbClass
+        LOCAL o AS OBJECT
+        o := CreateInstance("TestLbClass2")
+        x := TestLbClass{}
+        o := x
+        TRY
+            o:ThisPropertyDoesNotExist := Today()
+            CATCH Ex AS Error
+            LOCAL y AS Error
+            y := Ex
+            ? y:ToString()
+        END TRY
+        
+    RETURN      
+
+
+    CLASS TestLbClass 
+        
+        PUBLIC CONSTRUCTOR() 
+        
+        RETURN 
+        
+                 
+        
+    END CLASS 
+
+function TestCopyStruct() AS VOID
+LOCAL cDBF, cPfad, cCopyStructTo AS STRING
+LOCAL aFields AS ARRAY
+
+aFields := { { "LAST" , "C" , 512 , 0 },;
+           { "AGE" , "N" , 3 , 0 } ,;
+           { "SALARY" , "N" , 10 , 2 },;
+           { "HIREDATE" , "D" , 8 , 0 },;
+           { "MARRIED" , "L" , 1 , 0 }}
+
+cPfad := ""
+cDBF := cPfad + "Foo"
+cCopyStructTo := "D:\test\foonew"
+
+? DBCreate( cDBF , AFields)
+? DBUseArea(,"DBFNTX",cDBF )
+
+// "The name 'DBCopyStruct' does not exist in the current context"
+// ? DBCopyStruct( cCopyStructTo )
+
+? DBCopyStruct(cCopyStructTo, { "last" , "age" , "married" } )   // ok
+DBCloseAll()
+RETURN 
+
+function TestDbf() as void
+LOCAL cDBF, cPfad AS STRING
+LOCAL aFields AS ARRAY
+
+// DBF() throws an EG_NOTABLE error, but should return "" if no table is
+// opened in the current workarea
+
+? DBF() // exception
+
+aFields := { { "LAST" , "C" , 10 , 0 }}
+cPfad := ""
+cDBF := cPfad + "Foo"
+            // -----------------
+? DBCreate( cDBF , AFields)
+? DBUseArea(,"DBFNTX",cDBF , "FOOALIAS")
+
+? DBF() // Returns the fullpath instead of the alias name
+
+DBCloseAll()
+
+? DBF() // should return empty string
+RETURN 
+
+
+function TestUnique() as void
+local cDbf as STRING
+local aFields as ARRAY
+local nMax := 1000 as long
+local nCnt as long
+cDBF := "Foo"
+aFields := {{ "NAME" , "C" , 10 , 0 }}
+DBCreate( cDBF , aFields,"DBFCDX")
+DBCloseAll()
+DBUseArea( TRUE ,"DBFCDX",cDBF,"Foo",FALSE)
+FOR var i := 1 to nMax
+    DbAppend()
+    FieldPut(1, str(i,10,0))
+NEXT
+DbCreateIndex("Foo","Name",,TRUE)
+DbGoTop()
+DO WHILE ! EOF()
+    ? Recno(), FieldGet(1)
+    DbSkip(1)
+ENDDO
+wait
+FOR var i := 1 to nMax
+    DbGoto(i)
+    FieldPut(1, "AAAAAAAAAA")
+NEXT
+DbGoTop()
+nCnt := 0
+DO WHILE ! EOF()
+    ? Recno(), FieldGet(1)
+    DbSkip(1)
+    nCnt++
+ENDDO
+? nCnt, "records"
+Wait
+FOR var i := 1 to nMax
+    DbGoto(i)
+    FieldPut(1, str(i,10,0))
+NEXT
+DbGoTop()
+nCnt := 0
+DO WHILE ! EOF()
+    ? Recno(), FieldGet(1)
+    DbSkip(1)
+    nCnt++
+ENDDO
+? nCnt, "records"
+
+DbCloseAll()
+return
+function testRebuild() as void
+LOCAL cDbf AS STRING
+cDbf := "c:\test\TEST10K"
+? DBUseArea(,"DBFCDX",cDbf)
+? DbReindex()
+RETURN 
+
+
 
 function WaTest() as void
 LOCAL cDBF AS STRING

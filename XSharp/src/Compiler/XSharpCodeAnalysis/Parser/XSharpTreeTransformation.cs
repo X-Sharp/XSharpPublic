@@ -4160,11 +4160,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.Member.end);
             context.Put(context.Member.Get<MemberDeclarationSyntax>());
         }
-        public override void ExitClsfunction([NotNull] XP.ClsfunctionContext context)
-        {
-            context.Put(context.Member.Get<MemberDeclarationSyntax>());
-        }
-
         public override void ExitClsmethod([NotNull] XP.ClsmethodContext context)
         {
             context.SetSequencePoint(context.Member.end);
@@ -4182,10 +4177,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(context.Member.Get<MemberDeclarationSyntax>());
         }
 
-        public override void ExitClsprocedure([NotNull] XP.ClsprocedureContext context)
-        {
-            context.Put(context.Member.Get<MemberDeclarationSyntax>());
-        }
         public override void ExitClsproperty([NotNull] XP.ClspropertyContext context)
         {
             context.SetSequencePoint(context.Member.end);

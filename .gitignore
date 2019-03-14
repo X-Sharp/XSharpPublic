@@ -239,3 +239,7 @@ Tests/Applications/C493/Resources/NativeResources.res
 /XSharp/src/Compiler/XSharpCodeAnalysis/Generated/XSharpLexer.tokens
 /XSharp/src/Compiler/XSharpCodeAnalysis/Generated/XSharpListener.cs
 /XSharp/src/Compiler/XSharpCodeAnalysis/Generated/XSharpParser.cs
+/Tests/XSharp.XPP.dll
+/Tests/XSharp.VO.dll
+/Tests/XSharp.RT.dll
+/Tests/XSharp.Core.dll

@@ -61,14 +61,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case XSharpDialect.VO:
                 case XSharpDialect.Harbour:
 				case XSharpDialect.XPP:
+                case XSharpDialect.FoxPro:
                     return true;
+                case XSharpDialect.Core:
+                case XSharpDialect.Vulcan:
                 default:
                     return false;
             }
-        }
-        public static bool AllowFunctionsInsideClass(this XSharpDialect dialect)
-        {
-            return false;
         }
         public static bool AllowFourLetterAbbreviations(this XSharpDialect dialect)
         {
@@ -76,6 +75,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case XSharpDialect.VO:
                 case XSharpDialect.Harbour:
+                case XSharpDialect.FoxPro:
                     return true;
                 case XSharpDialect.XPP:
                 default:
@@ -90,7 +90,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case XSharpDialect.VO:
                 case XSharpDialect.Harbour:
 				case XSharpDialect.XPP:
+                case XSharpDialect.FoxPro:
                     return true;
+                case XSharpDialect.Core:
+                case XSharpDialect.Vulcan:
                 default:
                     return false;
             }
@@ -102,7 +105,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case XSharpDialect.VO:
                 case XSharpDialect.Harbour:
 				case XSharpDialect.XPP:
+                case XSharpDialect.FoxPro:
                     return true;
+                case XSharpDialect.Core:
+                case XSharpDialect.Vulcan:
                 default:
                     return false;
             }

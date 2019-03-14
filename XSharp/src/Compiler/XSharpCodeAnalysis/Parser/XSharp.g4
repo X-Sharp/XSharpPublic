@@ -74,7 +74,7 @@ eos                 : EOS+
                     ;
 
 function            : (Attributes=attributes)? (Modifiers=funcprocModifiers)?   
-                      (FUNCTION|FUNC) Id=identifier                             
+                      FUNCTION Id=identifier                             
                       TypeParameters=typeparameters?                            
                       (ParamList=parameterList)?                                
                       (AS Type=datatype)?                                       
@@ -87,7 +87,7 @@ function            : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
                     ;
 
 procedure           : (Attributes=attributes)? (Modifiers=funcprocModifiers)?   
-                      (PROCEDURE|PROC) Id=identifier                            
+                      PROCEDURE Id=identifier                            
                       TypeParameters=typeparameters?                            
                       (ParamList=parameterList)?                                
                       (AS VOID)?                                                // As Void is allowed but ignored
@@ -120,8 +120,8 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
 vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? // Optional
                       DLL
                       (
-                        T=(FUNCTION|FUNC)   Id=identifier ParamList=parameterList (AS Type=datatype)? |
-                        T=(PROCEDURE|PROC)  Id=identifier ParamList=parameterList
+                        T=FUNCTION  Id=identifier ParamList=parameterList (AS Type=datatype)? |
+                        T=PROCEDURE Id=identifier ParamList=parameterList
                       )
                       (CallingConvention=dllcallconv)? COLON
                       Dll=identifierString (DOT Extension=identifierString)?
@@ -397,8 +397,6 @@ classmember         : Member=method                                 #clsmethod
                     | Member=enum_                                  #nestedEnum
                     | Member=event_                                 #nestedEvent
                     | Member=interface_                             #nestedInterface
-                    | {AllowFunctionInsideClass}? Member=function                   #clsfunction      // Equivalent to static method
-                    | {AllowFunctionInsideClass}? Member=procedure                  #clsprocedure     // Equivalent to static method
                     ;
 
 constructor         :  (Attributes=attributes)? (Modifiers=constructorModifiers)?
@@ -1040,7 +1038,7 @@ keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASTYPE | AS
                     | DEFINE| DELEGATE | ENUM | GLOBAL | INHERIT | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT   
                     // The following 'old' keywords are never used 'alone' and are harmless as identifiers
                     | ALIGN | CALLBACK | CLIPPER  | DECLARE | DIM | DOWNTO | DLLEXPORT | EVENT 
-                    | FASTCALL | FUNC | IN | INSTANCE | PASCAL | PROC | SEQUENCE 
+                    | FASTCALL | IN | INSTANCE | PASCAL |  SEQUENCE 
                     | STEP | STRICT | TO | THISCALL | UNION | UNTIL | UPTO | USING | WINCALL 
                     )
                     ;

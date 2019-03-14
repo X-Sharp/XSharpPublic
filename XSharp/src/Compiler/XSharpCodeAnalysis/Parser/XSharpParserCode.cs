@@ -34,7 +34,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
     {
         public CSharpParseOptions Options { get; set; }
         public XSharpDialect Dialect => Options.Dialect;
-        public bool AllowFunctionInsideClass => Dialect.AllowFunctionsInsideClass();
         public bool AllowNamedArgs => Options.AllowNamedArguments;
         public bool AllowXBaseVariables => Dialect.AllowXBaseVariables();
         public bool IsScript => Options.Kind == SourceCodeKind.Script;

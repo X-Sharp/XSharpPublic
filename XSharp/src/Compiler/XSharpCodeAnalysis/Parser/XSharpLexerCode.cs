@@ -112,7 +112,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         static IDictionary<string, int> voKwIds = null;
         static IDictionary<string, int> xppKwIds = null;
         static IDictionary<string, int> xsKwIds = null;
-        private IDictionary<string, int> _kwIds;
         static IDictionary<string, int> _symPPIds;
 
 
@@ -1109,9 +1108,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
                         case METHOD:
                         case PROCEDURE:
-                        case PROC:
                         case FUNCTION:
-                        case FUNC:
                         case INTERFACE:
                         case STRUCTURE:
                         case VOSTRUCT:
@@ -1417,8 +1414,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 // These are predefined abbreviations of some keywords that are also valid in Vulcan
                 if (!IsMacroLexer)
                 {
-                    voKeywords.Add("PROC", PROC);
-                    voKeywords.Add("FUNC", FUNC);
+                    voKeywords.Add("PROC", PROCEDURE);
+                    voKeywords.Add("FUNC", FUNCTION);
                     voKeywords.Add("PROTECT", PROTECTED);
                 }
                 voKeywords.Add("SHORT", SHORTINT);
@@ -1711,32 +1708,30 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             get
             {
-                if (_kwIds == null)
+                IDictionary<string, int> ids;
+                lock (kwlock)
                 {
+                    if (!AllowFourLetterAbbreviations)
+                        ids = xsKwIds;
+                    else if (Dialect == XSharpDialect.XPP)
+                        ids = xppKwIds;
+                    else
+                        ids = voKwIds;
+                }
+                if (ids == null)
+                {
+                    ids = _getIds(AllowFourLetterAbbreviations);
                     lock (kwlock)
                     {
                         if (!AllowFourLetterAbbreviations)
-                            _kwIds = xsKwIds;
+                            xsKwIds = ids;
                         else if (Dialect == XSharpDialect.XPP)
-                            _kwIds = xppKwIds;
+                            xppKwIds = ids;
                         else
-                            _kwIds = voKwIds;
-                    }
-                    if (_kwIds == null)
-                    {
-                        _kwIds = _getIds(AllowFourLetterAbbreviations);
-                        lock (kwlock)
-                        {
-                            if (!AllowFourLetterAbbreviations)
-                                xsKwIds = _kwIds;
-                            else if (Dialect == XSharpDialect.XPP)
-                                xppKwIds = _kwIds;
-                            else
-                                voKwIds = _kwIds;
-                        }
+                            voKwIds = ids;
                     }
                 }
-                return _kwIds;
+                return ids;
             }
         }
 

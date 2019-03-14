@@ -249,7 +249,9 @@ INTERNAL STATIC CLASS OOPHelpers
         endif
         local cClass as STRING
         cClass := overloads[1]:DeclaringType:Name
-        THROW Error.VOError( EG_AMBIGUOUSMETHOD, cFunction, "MethodName", 1, <OBJECT>{cClass+":"+overloads[1]:Name})
+        var oError := Error.VOError( EG_AMBIGUOUSMETHOD, cFunction, "MethodName", 1, <OBJECT>{cClass+":"+overloads[1]:Name})
+        oError:Description := oError:Message+" ' "+cFunction+"'"
+        throw oError
         
 
     STATIC METHOD MatchParameters<T>( methodinfo as T, args as USUAL[]) AS OBJECT[] where T is MethodBase
@@ -508,7 +510,9 @@ INTERNAL STATIC CLASS OOPHelpers
 		IF sendHelper(oObject, "NoIVarGet", <USUAL>{String2Symbol(cIVar)}, OUT result)
 			RETURN result
 		END IF
-		THROW Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{cIVar} )
+		var oError := Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{oObject, cIVar} )
+        oError:Description := oError:Message+" '"+cIVar+"'"
+        throw oError
 		
 	STATIC METHOD IVarPut(oObject AS OBJECT, cIVar AS STRING, oValue AS OBJECT, lSelf AS LOGIC)  AS VOID
 		LOCAL t AS Type
@@ -531,8 +535,10 @@ INTERNAL STATIC CLASS OOPHelpers
 		IF sendHelper(oObject, "NoIVarPut", <USUAL>{String2Symbol(cIVar), oValue}, OUT dummy)
 			RETURN
 		END IF
-		THROW Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{cIVar})
-		
+		var oError :=  Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{oObject, cIVar, oValue, lSelf})
+		oError:Description := oError:Message+" '"+cIVar+"'"
+        throw oError
+
 	STATIC METHOD SendHelper(oObject AS OBJECT, cMethod AS STRING, uArgs AS USUAL[], result OUT USUAL) AS LOGIC
 		LOCAL t := oObject?:GetType() AS Type
 		result := NIL
@@ -608,7 +614,10 @@ INTERNAL STATIC CLASS OOPHelpers
 			noMethodArgs[__ARRAYBASE__] := cMethod
 			Array.Copy( args, 0, noMethodArgs, 1, args:Length )
 			IF ! SendHelper(oObject, "NoMethod" , noMethodArgs, OUT result)
-				THROW Error.VOError( EG_NOMETHOD, __ENTITY__, NAMEOF(cMethod), 2, <OBJECT>{cMethod} )
+                var oerror := Error.VOError( EG_NOMETHOD, __ENTITY__, nameof(cMethod), 2, <OBJECT>{oObject, cMethod, args} )
+                oError:Description  := oError:Message + " '"+cMethod+"'"
+                THROW oError
+
 			ENDIF
 		ENDIF
 		RETURN result
@@ -711,7 +720,9 @@ FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
 	ENDIF    	
 	VAR t := OOPHelpers.FindClass((STRING) cClassName)
 	IF t == NULL
-		 THROW Error.VOError( EG_NOCLASS, __FUNCTION__, NAMEOF(cClassName), 1,  <OBJECT>{cClassName}  )
+		 var oError := Error.VOError( EG_NOCLASS, __FUNCTION__, NAMEOF(cClassName), 1,  <OBJECT>{cClassName}  )
+         oError:Description := oError:Message+" '"+cClassName+"'"
+         throw oError
 	ENDIF
 	VAR constructors := t:getConstructors()
     VAR nPCount := PCount() 
@@ -726,7 +737,9 @@ FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
 		LOCAL oArgs := OOPHelpers.MatchParameters(ctor, args) as OBJECT[]
 		oRet := ctor:Invoke( oArgs )
 	CATCH
-		THROW Error.VOError( EG_NOMETHOD, __FUNCTION__, "Constructor", 0 , NULL)
+		var oError := Error.VOError( EG_NOMETHOD, __FUNCTION__, "Constructor", 0 , NULL)
+        oError:Description := oError:Message+" 'CONSTRUCTOR'"
+        THROW oError
 	END TRY
 	RETURN oRet
 	

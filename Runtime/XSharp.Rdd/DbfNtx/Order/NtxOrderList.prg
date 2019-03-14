@@ -284,7 +284,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             isOk := TRUE
             FOR i := 0 TO SELF:_Orders:Count-1
                 ntxIndex := SELF:_Orders[i]
-                isOk := ntxIndex:_saveCurrentKey(SELF:_oRdd:RecNo)
+                isOk := ntxIndex:GoHot()
                 IF (!isOk)
                     EXIT
                 ENDIF

@@ -297,14 +297,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _getScopePos() AS LONG
             LOCAL first AS LONG
             LOCAL last AS LONG
-            VAR currentKeyBuffer := SELF:_currentNode:KeyBytes
             IF SELF:HasTopScope
-                IF SELF:_compareFunc(currentKeyBuffer, SELF:_topScopeBuffer, SELF:_topScopeSize) < 0
+                IF SELF:_compareFunc(SELF:_currentValue:Key, SELF:_topScopeBuffer, SELF:_topScopeSize) < 0
                     RETURN 0
                 ENDIF
             ENDIF
             IF SELF:HasBottomScope
-                IF SELF:_compareFunc(currentKeyBuffer, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize) > 0
+                IF SELF:_compareFunc(SELF:_currentValue:Key, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize) > 0
                     RETURN 0
                 ENDIF
             ENDIF
@@ -322,8 +321,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN first - last + 1
             
             
-        INTERNAL METHOD _saveCurrentKey(rcno AS LONG, oData AS CdxKeyData) AS LOGIC
+        INTERNAL METHOD _saveCurrentKey(rcno AS LONG, oData AS RddKeyData) AS LOGIC
             LOCAL isOk AS LOGIC
+
             isOk := TRUE
             IF rcno != oData:Recno .OR. SELF:Shared
                 oData:Recno := rcno
@@ -356,8 +356,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN 0
                 ENDIF
                 IF SELF:HasBottomScope
-                    VAR currentKeyBuffer := SELF:_currentNode:KeyBytes
-                    IF SELF:_compareFunc(currentKeyBuffer, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize) > 0
+                    IF SELF:_compareFunc(SELF:_currentvalue:Key, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize) > 0
                         SELF:_oRdd:_Eof := TRUE
                         RETURN result
                     ENDIF
@@ -378,8 +377,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         lNumKeys--
                         IF SkipDirection == SkipDirection.Backward
                             IF SELF:HasTopScope
-                                VAR currentKeyBuffer := SELF:_currentNode:KeyBytes
-                                IF SELF:_compareFunc(currentKeyBuffer, SELF:_topScopeBuffer, SELF:_topScopeSize) < 0
+                                IF SELF:_compareFunc(SELF:_currentvalue:Key, SELF:_topScopeBuffer, SELF:_topScopeSize) < 0
                                     recno := SELF:_getNextKey(SkipDirection.Forward)
                                     SELF:_oRdd:_Bof := TRUE
                                     EXIT
@@ -392,8 +390,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                     RETURN result
                                 ENDIF
                                 SELF:_oRdd:_Bof := FALSE
-                                VAR currentKeyBuffer := SELF:_currentNode:KeyBytes
-                                IF SELF:_compareFunc(currentKeyBuffer, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize) > 0
+                                IF SELF:_compareFunc(SELF:_currentvalue:Key, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize) > 0
                                     SELF:_oRdd:_Eof := TRUE
                                     RETURN result
                                 ENDIF
@@ -456,8 +453,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF SELF:HasBottomScope
                     itmBottomScope := SELF:_bottomScope
                     SELF:_ToString(itmBottomScope, SELF:_keySize, SELF:_newValue:Key)
-                    VAR currentKeyBuffer := _currentNode:KeyBytes
-                    IF SELF:_compareFunc(SELF:_newValue:Key, currentKeyBuffer, SELF:_keySize) >= 0
+                    IF SELF:_compareFunc(SELF:_newValue:Key, SELF:_currentValue:Key, SELF:_keySize) >= 0
                         isOk := TRUE
                     ENDIF
                 ELSE
@@ -696,7 +692,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     LOCAL found AS LOGIC
                     IF SELF:_oRdd:_isValid
                         // Get Current Key
-                        VAR currentKeyBuffer := _currentNode:KeyBytes
+                        VAR currentKeyBuffer := SELF:_currentvalue:Key
                         IF SELF:Descending
                              seekInfo:Last := !seekInfo:Last
                         ENDIF
@@ -738,7 +734,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                         IF recno == 0
                                             EXIT
                                         ENDIF
-                                        currentKeyBuffer := _currentNode:KeyBytes
+                                        currentKeyBuffer := SELF:_currentvalue:Key
                                         strCmp := SELF:_compareFunc(SELF:_newValue:Key, currentKeyBuffer, len)
                                         IF strCmp != 0
                                             recno := SELF:_nextKey(-1)

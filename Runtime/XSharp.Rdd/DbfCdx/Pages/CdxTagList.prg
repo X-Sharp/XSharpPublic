@@ -40,9 +40,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROPERTY Tags AS IList<cdxTag> GET _tags
 
         INTERNAL VIRTUAL METHOD Initialize(keyLength AS WORD) AS VOID
+            
             SUPER:Initialize(keyLength)
             _tags := List<CdxTag>{}
             SELF:PageType := CdxPageType.Leaf + CdxPageType.Root
+            _bTrail := 0
 
         METHOD Remove(oTag AS CdxTag) AS LOGIC
             LOCAL found := FALSE AS LOGIC
@@ -68,7 +70,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF aTags:Length > 1
                 System.Array.Sort(aTags,  { x,y => IIF (x:OrderName < y:Ordername , -1, 1)})
             ENDIF
+            var dbytes := SELF:DataBytes  
+            var rbits  := SELF:RecordBits 
+            var mask   := SELF:RecnoMask  
             SELF:Initialize(KeyLength)
+            SELF:DataBytes  := dbytes 
+            SELF:RecordBits := rbits  
+            SELF:RecnoMask  := mask   
             FOREACH VAR tag IN aTags
                 VAR bytes := BYTE[]{ keyLength}
                 VAR name := tag:OrderName
@@ -77,7 +85,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 				System.Text.Encoding.ASCII:GetBytes( name, 0, Math.Min(keyLength,name:Length), bytes, 0)
 				_hot := TRUE
 
-                SELF:Add(tag:Header:PageNo, bytes)
+                LOCAL action := SELF:Add(tag:Header:PageNo, bytes) as CdxAction
+                if action:Type == CdxActionType.ExpandRecnos
+                    SELF:ExpandRecnos()
+                    action := SELF:Add(tag:Header:PageNo, bytes)
+                ENDIF
             NEXT
             SELF:Write()
             _tags:Clear()

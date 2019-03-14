@@ -66,14 +66,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     RETURN TRUE
                 ENDIF
 
-                IF SELF:getKeyValue(SELF:_SourceIndex, SELF:_newKeyBuffer)
+                IF SELF:getKeyValue(SELF:_SourceIndex, SELF:_newValue:Key)
                     LOCAL changed := FALSE AS LOGIC
                     IF !lNewRecord
-                        changed := SELF:__Compare(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, SELF:_keySize) != 0
+                        changed := SELF:__Compare(SELF:_newValue:Key, SELF:_currentvalue:Key, SELF:_keySize) != 0
                         IF changed
                             SELF:_TopStack := 0
                         ENDIF
-                        num := SELF:_goRecord(SELF:_currentKeyBuffer, SELF:_keySize, recordNo)
+                        num := SELF:_goRecord(SELF:_currentValue:Key, SELF:_keySize, recordNo)
                         IF (SELF:_TopStack != 0 .AND. !SELF:_Conditional) .OR. num != 0
                             IF changed .OR. !condFor
                                 SELF:_deleteKey()
@@ -85,7 +85,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         ENDIF
                     ENDIF
                     IF (lNewRecord .OR. changed) .AND. condFor
-                        SELF:_midItem:KeyBytes := SELF:_newKeyBuffer
+                        SELF:_midItem:KeyBytes := SELF:_newValue:Key
                         SELF:_midItem:PageNo := 0
                         SELF:_midItem:Recno := recordNo
                         SELF:_TopStack := 0
@@ -102,8 +102,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         SELF:_TopStack := 0
                         SELF:_Hot := TRUE
                     ENDIF
-                    Array.Copy(SELF:_newKeyBuffer, SELF:_currentKeyBuffer, SELF:_keySize + 1)
-                    SELF:_currentRecno := recordNo
+                    SELF:_newvalue:CopyTo(SELF:_currentvalue)
+                    SELF:_currentvalue:Recno := recordNo
                     errorLevel := 0
                 ENDIF
                 EXIT

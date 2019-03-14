@@ -35,8 +35,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     _bags:Add(oBag)
                     local lOk as LOGIC
                     lOk := oBag:Open(info)
-                    if lOk
+                    if lOk .and. XSharp.RuntimeState.AutoOrder
                         SELF:CurrentOrder := oBag:Tags[0]
+                    ENDIF
+                    IF lStructural
+                        SELF:_oRDD:Header:HasTags |= DbfTableFlags.HasStructuralCDX
                     ENDIF
                 ENDIF
                 RETURN TRUE
@@ -196,8 +199,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN lOk
             
         METHOD Rebuild() AS LOGIC
-            // Todo
-            RETURN FALSE
+            LOCAL lOk as LOGIC
+            lOk := TRUE
+            FOREACH oBag AS CdxOrderBag IN _bags
+                IF ! oBag:OrderListRebuild()
+                    lOk := FALSE
+                ENDIF
+            NEXT
+            SELF:GoCold()
+            RETURN lOk
             
         METHOD Focus(orderinfo AS DbOrderInfo) AS LOGIC
             VAR oOrder := FindOrder(orderinfo)

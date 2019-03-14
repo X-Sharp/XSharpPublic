@@ -18,33 +18,12 @@ USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD.CDX
 
     DELEGATE CompareFunc(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
-    INTERNAL CLASS CdxKeyData
-        EXPORT Recno   AS LONG
-        EXPORT Key     AS BYTE[]
-        EXPORT ForCond AS LOGIC
-        INTERNAL CONSTRUCTOR (nKeyLen AS LONG)
-            SELF:ForCond := TRUE
-            SELF:Recno   := -1
-            SELF:Key     := BYTE[]{nKeyLen}
-            RETURN
-
-        INTERNAL METHOD CopyTo(oOther AS CdxKeyData) AS VOID
-            oOther:ForCond := SELF:ForCond
-            oOther:Recno   := SELF:Recno
-            IF oOther:Key:Length != SELF:Key:Length
-                oOther:Key  := (BYTE[]) SELF:Key:Clone()
-            ELSE
-                Array.Copy(SELF:Key, oOther:Key, SELF:Key:Length)
-            ENDIF
-    END CLASS
 
 
     [DebuggerDisplay("Tag: {OrderName}, Key: {Expression}, For: {Condition}")];
     INTERNAL PARTIAL CLASS CdxTag
         #region constants
         PRIVATE CONST MAX_KEY_LEN       := 240  AS WORD
-        PRIVATE CONST NTX_COUNT         := 16    AS WORD
-        PRIVATE CONST STACK_DEPTH       := 20 AS LONG
         #endregion
         #region fields
         PRIVATE _Encoding AS Encoding
@@ -59,12 +38,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _ForCodeBlock AS ICodeblock
         PRIVATE _KeyExpr AS STRING
         PRIVATE _ForExpr AS STRING
-        PRIVATE _currentvalue AS CdxKeyData
-        INTERNAL _newvalue     AS CdxKeyData 
+        PRIVATE _currentvalue AS RddKeyData
+        INTERNAL _newvalue     AS RddKeyData
         PRIVATE _newKeyLen AS LONG
         PRIVATE _KeyExprType AS LONG
         PRIVATE _keySize AS WORD
         PRIVATE _rootPage AS LONG
+        PRIVATE _ordCondInfo as DbOrderCondInfo
         //INTERNAL _tagNumber AS INT
         INTERNAL _orderName AS STRING
         INTERNAL _Ansi AS LOGIC
@@ -81,7 +61,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PRIVATE _stack          AS CdxPageStack
         PRIVATE _compareFunc    AS CompareFunc
-        PRIVATE _currentNode    AS CdxNode
 
         PRIVATE _bag            AS CdxOrderBag
         PRIVATE getKeyValue     AS ValueBlock       // Delegate to calculate the key
@@ -137,8 +116,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_Encoding      := _oRDD:_Encoding
   
             SELF:_SingleField   := -1
-            SELF:_currentValue := CdxKeyData{MAX_KEY_LEN}
-            SELF:_newValue     := CdxKeyData{MAX_KEY_LEN}
+            SELF:_currentValue := RddKeyData{MAX_KEY_LEN}
+            SELF:_newValue     := RddKeyData{MAX_KEY_LEN}
 
 
         // Constructor for Creation of tags
@@ -178,8 +157,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
 
         INTERNAL METHOD AllocateBuffers() AS VOID
-            SELF:_newValue          := CdxKeyData{_keySize}
-            SELF:_currentValue      := CdxKeyData{_keySize}
+            SELF:_newValue          := RddKeyData{_keySize}
+            SELF:_currentValue      := RddKeyData{_keySize}
             SELF:_topScopeBuffer := BYTE[]{ SELF:_keySize }
             SELF:_bottomScopeBuffer := BYTE[]{ SELF:_keySize }
             RETURN
@@ -191,14 +170,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             TRY
                 SELF:_KeyCodeBlock := SELF:_oRdd:Compile(SELF:_KeyExpr)
             CATCH ex AS Exception
-                SELF:_oRdd:_dbfError( ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
+                SELF:_oRdd:_dbfError( ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFCDX.Compile")
                 RETURN FALSE
             END TRY
 
             TRY
                 oKey := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
             CATCH ex AS Exception
-                SELF:_oRdd:_dbfError( ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBFNTX.Compile")
+                SELF:_oRdd:_dbfError( ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBFCDX.Compile")
                 evalOk := FALSE
                 oKey := NULL
             END TRY
@@ -350,7 +329,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_currentValue:Recno := node:Recno
                 Array.Copy(node:KeyBytes, SELF:_currentValue:Key, _keySize)
             ENDIF
-            SELF:_currentNode := node
 
         PRIVATE STATIC METHOD _toJulian(dt AS DateTime) AS LONG
             VAR baseDate  := DateTime{1901, 1, 1 }
@@ -701,12 +679,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN FALSE
         
         PRIVATE METHOD _getFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
+            SELF:_oRDD:Validate()
             Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
             RETURN TRUE
             
         PRIVATE METHOD _getExpressionValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             LOCAL result := TRUE AS LOGIC
             TRY
+                SELF:_oRDD:Validate()
                 VAR oKeyValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
                 LOCAL uiRealLen := 0 AS LONG
                 result := SELF:_ToString(oKeyValue, SELF:_keySize,  byteArray,  REF uiRealLen)

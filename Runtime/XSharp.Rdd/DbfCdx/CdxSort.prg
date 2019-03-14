@@ -53,8 +53,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     diff := -1
                 ELSE
                     diff := 1
+                    y:Duplicate := TRUE
                 ENDIF
             ENDIF
+            
             RETURN diff
             
             
@@ -91,6 +93,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     diff := -1
                 ELSE
                     diff := 1
+                    y:Duplicate := TRUE
                 ENDIF
             ENDIF
             RETURN diff

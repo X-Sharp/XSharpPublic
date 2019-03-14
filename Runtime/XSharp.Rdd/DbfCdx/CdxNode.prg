@@ -8,6 +8,7 @@
 USING System
 USING System.Collections.Generic
 USING System.Text
+USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp.RDD.CDX
 
@@ -19,14 +20,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     /// long recno       - record number for this key value (in the dbf file)
     /// char key_value[key_size]
     /// </summary>
+    [DebuggerDisplay("Rec {Recno} Page {ChildPageNo} Key {KeyText}")];
     INTERNAL CLASS CdxNode
         PROTECTED _keyLength      AS LONG
         PROTECTED _bytesKey       AS BYTE[]
         PROTECTED _childPage      AS LONG
         PROTECTED _recNo          AS LONG
-        PROTECTED _pos            AS LONG				// Index of the Item in the page array of Offsets
+        PROTECTED _pos            AS WORD				// Index of the Item in the page array of Offsets
 		// Retrieve the Key as String
-        INTERNAL PROPERTY Pos       AS LONG     GET _pos SET _pos := VALUE
+        INTERNAL PROPERTY Pos       AS WORD     GET _pos SET _pos := VALUE
         
 		// Get/Set the Key info as Bytes, copied from/to the Page it belongs to
         INTERNAL VIRTUAL PROPERTY KeyBytes AS BYTE[]
@@ -47,7 +49,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL VIRTUAL PROPERTY Recno AS LONG GET _recNo SET _recNo := VALUE
 
-        INTERNAL CONSTRUCTOR( keylen AS LONG , pos AS INT )
+        INTERNAL CONSTRUCTOR( keylen AS LONG , pos AS WORD )
             SELF:_keyLength := keylen
             SELF:_pos       := pos
             SELF:Clear()
@@ -64,7 +66,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PRIVATE  PROPERTY HasPage   AS LOGIC    GET _Page != NULL
 
-        INTERNAL CONSTRUCTOR( keylen AS LONG , page AS CdxTreePage, pos AS INT )
+        INTERNAL CONSTRUCTOR( keylen AS LONG , page AS CdxTreePage, pos AS WORD )
             SUPER( keylen , pos)
             _Page := page
             _Pos  := pos
@@ -99,7 +101,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     END CLASS
 
     INTERNAL CLASS CdxLeafPageNode INHERIT CdxPageNode
-        INTERNAL CONSTRUCTOR( keylen AS LONG , page AS CdxTreePage, pos AS INT)
+        INTERNAL CONSTRUCTOR( keylen AS LONG , page AS CdxTreePage, pos AS WORD)
             SUPER( keylen, page  , pos)
         INTERNAL OVERRIDE PROPERTY ChildPageNo AS LONG GET 0 SET 
 

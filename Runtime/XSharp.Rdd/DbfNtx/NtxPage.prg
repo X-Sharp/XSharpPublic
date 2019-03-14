@@ -169,7 +169,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
        INTERNAL METHOD InitRefs(uiMaxEntry AS WORD , uiEntrySize AS WORD ) AS VOID
             LOCAL offSet AS WORD
             SELF:Write( )
-            offSet := (WORD) ((uiMaxEntry + 2) * 2)
+            offSet := (uiMaxEntry + 2) * 2
             FOR VAR i := 0 TO uiMaxEntry
                 SELF:SetRef(i, offset)
                 offset += uiEntrySize

@@ -1,4 +1,4 @@
-﻿USING System
+USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
@@ -116,10 +116,10 @@ BEGIN NAMESPACE XSharp.RDD.App
 			FOR VAR i := 1 TO myDBF:FIELDCount
 				VAR f1 := fields[i]
 				VAR f2 := myDBF:FieldName( i )
-				Console.WriteLine( i + " : " + f1 + " == " + f2 )
+				Console.WriteLine( i:ToString() + " : " + f1:ToString()  + " == " + f2:ToString()  )
 			NEXT
 			//
-			Console.WriteLine( "RecCount : " + myDBF:RecCount )
+			Console.WriteLine( "RecCount : " + myDBF:RecCount:ToString() )
 			//
 			myDBF:Close()
 			
@@ -147,7 +147,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 					// 
 					LOCAL oData AS OBJECT
 					oData := myDBF:GetValue( i )
-					Console.WriteLine( myDBF:FieldInfo( i, DBS_NAME, NIL ) + " == " + oData:ToString() )
+					Console.WriteLine( myDBF:FieldInfo( i, DBS_NAME, NIL ):ToString()  + " == " + oData:ToString() )
 				NEXT
 				//
 				myDBF:Close()

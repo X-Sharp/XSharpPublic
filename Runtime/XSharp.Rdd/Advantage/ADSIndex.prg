@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -275,7 +275,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
       SELF:oRDD:ADSERROR(ERDD_UNSUPPORTED, EG_UNKNOWN, "OrderInfo")
     END SWITCH
   CASE DBOI_KEYVAL
-      len  := (WORD) (SELF:oRDD:_MaxKeySize + 1)
+      len   := SELF:oRDD:_MaxKeySize + 1
       chars := CHAR[]{len}
       
       SELF:_CheckError(ACE.AdsExtractKey(hIndex, chars, REF len))
@@ -304,7 +304,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         SELF:_CheckError(ACE.AdsGetAllIndexes(SELF:Table, indices, REF numindices))
         VAR count := 0L
         FOR i := 0 TO numindices -1 
-          len := (WORD)chars:Length
+          len := (WORD) chars:Length
           SELF:_CheckError(ACE.AdsGetIndexFilename(indices[i], ACE.ADS_BASENAMEANDEXT, chars, REF len))
           IF string.Compare(STRING{chars, 0, len}, fileName, TRUE) == 0
             count++
@@ -329,15 +329,15 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         info:Result := (DWORD) (r8Pos  * (REAL8) dwCount)
       ENDIF
       
-  CASE DBOI_SCOPETOP
+    CASE DBOI_SCOPETOP
     CASE DBOI_SCOPEBOTTOM
         LOCAL wScopeOption AS WORD
-        wScopeOption  := (WORD) IIF(nOrdinal != DBOI_SCOPEBOTTOM , 1 , 2)
+        wScopeOption  := IIF(nOrdinal != DBOI_SCOPEBOTTOM , 1 , 2)
         IF (info:Result != NULL)
           RETURN SELF:oRDD:_SetScope(hIndex, wScopeOption, info:Result)
         ENDIF
-        len := (WORD) (SELF:oRDD:_MaxKeySize +1)
-        chars := CHAR[]{ SELF:oRDD:_MaxKeySize +1}
+        len     := SELF:oRDD:_MaxKeySize +1
+        chars   := CHAR[]{ SELF:oRDD:_MaxKeySize +1}
         result := ACE.AdsGetScope(hIndex, wScopeOption, chars, REF len)
         IF result != ACE.AE_NO_SCOPE .AND. result != 0
           SELF:_CheckError(result)
@@ -347,7 +347,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
     CASE DBOI_SCOPETOPCLEAR
     CASE DBOI_SCOPEBOTTOMCLEAR
         LOCAL wScopeOption AS WORD
-        wScopeOption  := (WORD) (IIF(nOrdinal != DBOI_SCOPEBOTTOMCLEAR , 1 , 2))
+        wScopeOption  := IIF(nOrdinal != DBOI_SCOPEBOTTOMCLEAR , 1 , 2)
         info:Result := NULL
         RETURN SELF:oRDD:_SetScope(hIndex, wScopeOption, info:Result)
         
@@ -401,7 +401,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         IF result != ACE.AE_INDEX_ALREADY_OPEN 
             SELF:_CheckError(result)
             IF SELF:Index == IntPtr.Zero .AND. wLength > 0
-                wCurrent := (WORD)(numIndexes +1)
+                wCurrent := numIndexes +1
                 LOCAL hIndex AS IntPtr
                 SELF:_CheckError(ACE.AdsGetIndexHandleByOrder(SELF:Table, wCurrent, OUT hIndex))
                 SELF:Index := hIndex

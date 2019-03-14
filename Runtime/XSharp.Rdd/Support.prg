@@ -20,6 +20,7 @@ BEGIN NAMESPACE XSharp.RDD
 	PUBLIC CLASS SortRecord
 		PRIVATE _data AS BYTE[]
 		PRIVATE _Recno AS LONG
+        INTERNAL PROPERTY Duplicate AS LOGIC AUTO
 		
 		INTERNAL PROPERTY Data AS BYTE[] GET _data
 		
@@ -28,6 +29,7 @@ BEGIN NAMESPACE XSharp.RDD
 		INTERNAL CONSTRUCTOR(data AS BYTE[] , lRecno AS LONG )
 			SELF:_data  := (BYTE[])data:Clone()
 			SELF:_Recno := lRecno
+            SELF:Duplicate := FALSE
 			
 	END CLASS
     INTERNAL ENUM SearchMode
@@ -54,5 +56,24 @@ BEGIN NAMESPACE XSharp.RDD
             
     END CLASS
 
+    INTERNAL CLASS RddKeyData
+        EXPORT Recno   AS LONG
+        EXPORT Key     AS BYTE[]
+        EXPORT ForCond AS LOGIC
+        INTERNAL CONSTRUCTOR (nKeyLen AS LONG)
+            SELF:ForCond := TRUE
+            SELF:Recno   := -1
+            SELF:Key     := BYTE[]{nKeyLen}
+            RETURN
+
+        INTERNAL METHOD CopyTo(oOther AS RddKeyData) AS VOID
+            oOther:ForCond := SELF:ForCond
+            oOther:Recno   := SELF:Recno
+            IF oOther:Key:Length != SELF:Key:Length
+                oOther:Key  := (BYTE[]) SELF:Key:Clone()
+            ELSE
+                Array.Copy(SELF:Key, oOther:Key, SELF:Key:Length)
+            ENDIF
+    END CLASS
 
 END NAMESPACE

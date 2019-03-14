@@ -1238,7 +1238,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			RDDSetDefault("DBFCDX")
 
 			aValues := { 44 , 12, 34 , 21 }                                
-			cDBF := GetTempFileName("testcdx")
+			cDBF := GetTempFileName("testcdx8")
 			cCdx := cDbf + ".cdx"
 			FErase(cCdx)
 			IF System.IO.File.Exists(cCdx)
@@ -1271,7 +1271,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				DBSkip(1)
 			ENDDO
 
-			Assert.True( DBClearIndex( cCdx) )
+			Assert.True( DBClearIndex(, cCdx) )
 
 			DBGoTop()
 			Assert.Equal(1, (INT)RecNo())
@@ -1280,7 +1280,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			Assert.Equal(4, (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, ok
 			Assert.Equal(1, (INT) DBOrderInfo( DBOI_NUMBER ) )  // still  -1 , but should show  1
-			Assert.Equal("TESTCDX", (STRING) DBOrderInfo( DBOI_NAME ) )  // ok , "TESTDBF"
+			Assert.Equal("TESTCDX8", (STRING) DBOrderInfo( DBOI_NAME ) )  // ok , "TESTDBF"
 			DBCloseArea ()
 		RETURN
 
@@ -1394,15 +1394,15 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBCreateIndex(cDbf + ".cdx", "FIELDN" )
 			Assert.Equal(3, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 14 (), should be 3 (FLOAT)
 			DBCloseArea()
-			
+			FErase(cDbf + ".cdx")
 			DBUseArea(,"DBFCDX",cDBF,,FALSE)
 			DBCreateIndex(cDbf + ".cdx", "FIELDS" )
 			Assert.Equal(7, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 18 (PTR), should be 7 (STRING)
-			
+			FErase(cDbf + ".cdx")
 			DBUseArea(,"DBFCDX",cDBF,,FALSE)
 			DBCreateIndex(cDbf + ".cdx", "FIELDD" )
 			Assert.Equal(2, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 16, should be 2 (DATE)
-			
+			FErase(cDbf + ".cdx")
 			DBUseArea(,"DBFCDX",cDBF,,FALSE)
 			DBCreateIndex(cDbf + ".cdx", "FIELDL" )
 			Assert.Equal(8, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 3 (FLOAT), should be 8
@@ -1688,6 +1688,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				DBCreateIndex( cCdx, "FIELDN" )
 				DBCreateOrder("FIELDN2", cCdx, "-FIELDN" )
 				DBCreateOrder("FIELDD", cCdx, "FIELDD" )
+                DBSetOrder(1)
 			ELSE
 				DBUseArea(,"DBFCDX",cDBF,,FALSE)
 				DBCreateIndex( cCdx, "FIELDN" )
@@ -1701,7 +1702,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			LOCAL nCount := 0 AS INT
 
-//			DBSetOrder(1) // should not be needed
 			DBGoTop()
 			DO WHILE .NOT. EOF()
 				nCount ++

@@ -507,9 +507,9 @@ CLASS XSharp.CoreDb
         RETURN ret
         })
         STATIC METHOD Dbf AS STRING
-            LOCAL oRDD := CoreDb.CWA("DBF") AS IRDD
+            LOCAL oRDD := CoreDb.CWA("DBF", FALSE) AS IRDD
             IF oRDD != NULL
-                RETURN (STRING) oRDD:Info(DBI_FULLPATH, NULL)
+                RETURN oRDD:Alias
             ENDIF                            
             RETURN String.Empty
             
@@ -1581,10 +1581,12 @@ CLASS XSharp.CoreDb
         RETURN CoreDb.Do ({ =>
         IF siNew == -1
             siNew := (INT) RuntimeState.Workareas:FindEmptyArea(FALSE)
-        ELSEIF siNEw == 0
+        ELSEIF siNEw <= 0
             siNew := (INT) RuntimeState.Workareas:FindEmptyArea(TRUE)
         ENDIF
-        IF siNew == 0 || siNew > Workareas.MaxWorkAreas
+        IF siNew > Workareas.MaxWorkAreas
+            siNew := 0
+        ELSEIF siNew == 0 
             RddError.PostArgumentError( __FUNCTION__, EDB_SELECT, nameof(siNew), 1, <OBJECT>{siNew})
         ELSE      
             RuntimeState.CurrentWorkarea := (DWORD) siNew   

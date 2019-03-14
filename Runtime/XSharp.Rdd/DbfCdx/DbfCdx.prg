@@ -236,6 +236,32 @@ BEGIN NAMESPACE XSharp.RDD
                 ELSE
                     info:Result := NULL
                 ENDIF
+            CASE DBOI_KEYADD
+                if workOrder != NULL
+                    info:Result := workOrder:AddKey(SELF:Recno)
+                else
+                    info:Result := FALSE
+                endif
+            CASE DBOI_KEYDELETE
+                if workOrder != NULL
+                    info:Result := workOrder:DeleteKey(SELF:Recno)
+                else
+                    info:Result := FALSE
+                endif
+            CASE DBOI_CUSTOM
+                if workOrder != NULL
+                    local lOld as LOGIC
+                    lOld := workOrder:Custom
+                    if info:Result is LOGIC custom
+                        if custom
+                            workOrder:SetCustom()
+                        ENDIF
+                    ENDIF
+                    info:Result := lOld
+                else
+                    info:Result := FALSE
+                endif
+ 
             CASE DBOI_USER + 42
                 // Dump Cdx to Txt file
                 IF workOrder != NULL

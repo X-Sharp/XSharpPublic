@@ -22,7 +22,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
 
 
-    public partial class XSharpLexer 
+    public partial class XSharpLexer
     {
         #region Static Helper Methods
         // Several Help methods that can be used for colorizing in an editor
@@ -108,11 +108,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         int _tokenType;
         int _tokenChannel;
 
-        static Object kwlock = new Object();
-        static IDictionary<string, int> voKwIds = null;
-        static IDictionary<string, int> xppKwIds = null;
-        static IDictionary<string, int> xsKwIds = null;
+        static object kwlock = new object();
+        static IDictionary<string, int>[] _kwids;       // for each dialect its own _kwids
         static IDictionary<string, int> _symPPIds;
+        static XSharpLexer()
+        {
+            _kwids = new IDictionary<string, int>[(int)XSharpDialect.Last];
+            for (int i= 0; i < (int) XSharpDialect.Last; i++)
+            {
+                _kwids[i] = null;
+            }
+        }
 
 
         #endregion
@@ -1219,7 +1225,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
-        private IDictionary<string, int> _getIds(bool lFour)
+        private IDictionary<string, int> _getIds(XSharpDialect dialect)
         {
             var ids = new Dictionary<string, int>(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
 
@@ -1409,7 +1415,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
                 };
             }
-            if (!lFour )
+            if (!dialect.AllowFourLetterAbbreviations() )
             {
                 // These are predefined abbreviations of some keywords that are also valid in Vulcan
                 if (!IsMacroLexer)
@@ -1426,7 +1432,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 var token = voKeywords[text];
                 ids.Add(text, token);
-                if (lFour )
+                if (dialect.AllowFourLetterAbbreviations())
                 {
                     var s = text;
                     while (s.Length > 4)
@@ -1438,7 +1444,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
             }
 
-            if (Dialect == XSharpDialect.XPP)
+            if (dialect == XSharpDialect.XPP)
             {
                 // XBase++ Keywords
                 var xppKeywords = new Dictionary<string, int>
@@ -1495,7 +1501,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
            }
 
-            if (AllowFourLetterAbbreviations)
+            if (dialect == XSharpDialect.VO || dialect == XSharpDialect.Vulcan)
             {
                 ids.Add("ANY", USUAL);
             }
@@ -1656,7 +1662,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "__DIALECT_HARBOUR__", MACRO},
                     { "__DIALECT_XBASEPP__", MACRO},
                     { "__ENTITY__", MACRO},
-                    { "__FILE__", MACRO},
+                    { "__FILE__", MACRO}, 
                     { "__FUNCTION__", MACRO},
                     { "__FUNCTIONS__", MACRO},
                     { "__LINE__", MACRO},
@@ -1711,24 +1717,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 IDictionary<string, int> ids;
                 lock (kwlock)
                 {
-                    if (!AllowFourLetterAbbreviations)
-                        ids = xsKwIds;
-                    else if (Dialect == XSharpDialect.XPP)
-                        ids = xppKwIds;
-                    else
-                        ids = voKwIds;
+                    ids = _kwids[(int)Dialect];
                 }
                 if (ids == null)
                 {
-                    ids = _getIds(AllowFourLetterAbbreviations);
+                    ids = _getIds(Dialect);
                     lock (kwlock)
                     {
-                        if (!AllowFourLetterAbbreviations)
-                            xsKwIds = ids;
-                        else if (Dialect == XSharpDialect.XPP)
-                            xppKwIds = ids;
-                        else
-                            voKwIds = ids;
+                        _kwids[(int)Dialect] = ids;
                     }
                 }
                 return ids;

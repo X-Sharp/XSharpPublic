@@ -25,6 +25,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         FoxPro = 4,
         XPP = 5,
         dBase = 6,
+        Last = 6
     }
     public static class DialectExtensions
     {

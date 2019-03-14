@@ -157,8 +157,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                     tree = parser.script();
             }
-            else if (_options.Dialect == XSharpDialect.XPP)
-                tree = parser.xppsource();
             else
                 tree = parser.source();
             return tree;

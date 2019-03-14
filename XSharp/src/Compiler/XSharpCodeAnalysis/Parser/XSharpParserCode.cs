@@ -17,7 +17,7 @@ using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 
 using Microsoft.CodeAnalysis.CSharp;
 using System.Linq;
-using System.Collections.Generic;
+using System.Collections.Generic; 
 using System;
 using Antlr4.Runtime.Tree;
 using Antlr4.Runtime;
@@ -37,6 +37,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool AllowNamedArgs => Options.AllowNamedArguments;
         public bool AllowXBaseVariables => Dialect.AllowXBaseVariables();
         public bool IsScript => Options.Kind == SourceCodeKind.Script;
+        public bool IsXPP => Options.Dialect == XSharpDialect.XPP;
         
         void missingToken(string token)
         {

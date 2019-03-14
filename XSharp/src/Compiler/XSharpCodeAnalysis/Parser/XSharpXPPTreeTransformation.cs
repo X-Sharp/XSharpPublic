@@ -656,18 +656,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Source, Namespace and Entity
         // these methods call the worker methods in TreeTransform. They are only
         // here because their names and parameters are generated differently
-        public override void ExitXppentity([NotNull] XP.XppentityContext context)
+        public override void ExitEntity([NotNull] XP.EntityContext context)
         {
-            // classes are handled separately because we need to add the external methods to their members
             if (context.GetChild(0) is XP.XppclassContext )
             {
+                // classes are handled separately because we need to add the external methods to their members
+                // so suppress call to base implementation. We will bind them later from ExitSource by calling bindClasses
                 return;
             }
-            _exitEntity(context);
-        }
-        public override void EnterXppsource([NotNull] XP.XppsourceContext context)
-        {
-            _enterSource();
+            base.ExitEntity(context);
         }
 
         private PropertyDeclarationSyntax XppCreateProperty (XppDeclaredMethodInfo propDecl)
@@ -746,7 +743,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         private void bindClasses()
         {
-            // note that this runs AFTER the entities have been walked and is called from ExitXppSource
+            // note that this runs AFTER the entities have been walked and is called from ExitSource
             var classes = new List<XSharpParserRuleContext>();
             foreach (var current in _classes)
             {
@@ -812,8 +809,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     classdecl.ConstraintClauses, classdecl.OpenBraceToken, members, classdecl.CloseBraceToken, classdecl.SemicolonToken);
                 _pool.Free(members);
                 xnode.Put(classdecl);
-                // by binding the classdecl to the XppentityContext it will be generated later
-                var ent = xnode.Parent as XP.XppentityContext;
+                // by binding the classdecl to the EntityContext it will be generated later
+                var ent = xnode.Parent as XP.EntityContext;
                 ent.Put(classdecl);
                    
                 // check to see if this is a static class. In that case we must add it to the static global members
@@ -824,8 +821,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return ;
         }
-        public override void ExitXppsource([NotNull] XP.XppsourceContext context)
+        public override void ExitSource([NotNull] XP.SourceContext context)
         {
+            // Bind our XPP Classes first and then call _exitSource with the entities that are not a XppMethodContext
             bindClasses();
             var entities = new List<XSharpParserRuleContext>();
             // do not add the methods. These should be linked to a class
@@ -833,8 +831,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _exitSource(context, entities);
         }
 
-        public override void ExitXppnamespace([NotNull] XP.XppnamespaceContext context)
+        public override void ExitNamespace_([NotNull] XP.Namespace_Context context)
         {
+            // we do not call base.ExitNamespace
             var entities = new List<XSharpParserRuleContext>();
             // do not add the methods. These should be linked to a class
             entities.AddRange(context._Entities.Where(e => !(e.GetChild(0) is XP.XppmethodContext)));

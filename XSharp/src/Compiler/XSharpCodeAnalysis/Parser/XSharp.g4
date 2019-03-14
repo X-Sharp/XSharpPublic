@@ -48,25 +48,30 @@ source              : eos? (Entities+=entity )*
                     ;
 
 entity              : namespace_
+                    // types
                     | class_
+                    | {IsXPP}? xppclass         // XPP Class definition
                     | structure_
                     | interface_
                     | delegate_
                     | event_
                     | enum_
+                    | globalAttributes          // Assembly attributes, Module attributes etc.
+                    | vostruct                  // Compatibility (unsafe) structure
+                    | vounion                   // Compatibility (unsafe) structure with members aligned at FieldOffSet 0
+                    // members of the functions class
                     | function                  // This will become part of the 'Globals' class
                     | procedure                 // This will become part of the 'Globals' class
-                    | method                    // Method xxx Class xxx syntax
-                    | constructor               // Constructor Class xxx syntax
-                    | destructor                // Destructor Class xxx syntax
-                    | globalAttributes          // Assembly attributes, Module attributes etc.
                     | using_                    // Using Namespace
                     | vodefine                  // This will become part of the 'Globals' class
                     | voglobal                  // This will become part of the 'Globals' class
                     | vodll                     // External method of the Globals class
-                    | vostruct                  // Compatibility (unsafe) structure
-                    | vounion                   // Compatibility (unsafe) structure with members aligned at FieldOffSet 0
-                    | {AllowXBaseVariables}? filewidememvar      // memvar declared at file level         
+                    // methods outside of class .. endclass
+                    | {!IsXPP}? method          // Method xxx Class xxx syntax
+                    | constructor               // Constructor Class xxx syntax
+                    | destructor                // Destructor Class xxx syntax
+                    | {IsXPP}? xppmethod        // XPP method, will be linked to XPP Class
+                    | {AllowXBaseVariables}? filewidememvar      // memvar declared at file level
                     ;
 
 
@@ -1048,35 +1053,7 @@ keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASTYPE | AS
 keywordxpp         : Token=(ENDCLASS| FREEZE| FINAL| SHARING| SHARED| INLINE| SYNC| ASSIGNMENT| EXPORTED| READONLY| NOSAVE| INTRODUCE)
                    ;
 
-xppsource           : eos? (Entities+=xppentity )*
-                      EOF
-                    ;
 
-xppnamespace        : BEGIN NAMESPACE Name=name e=eos
-                      (Entities+=xppentity)*
-                      END NAMESPACE Ignored=name?  eos
-                    ;
-					
-xppentity           : xppnamespace
-                    | xppclass
-                    | class_                    // also allow the 'normal' class
-                    | structure_
-                    | interface_
-                    | delegate_
-                    | event_
-                    | enum_
-                    | function                  // This will become part of the 'Globals' class
-                    | procedure                 // This will become part of the 'Globals' class
-                    | xppmethod                 // Method xxx Class xxx syntax
-                    | globalAttributes          // Assembly attributes, Module attributes etc.
-                    | using_                    // Using Namespace
-                    | vodefine                  // This will become part of the 'Globals' class
-                    | voglobal                  // This will become part of the 'Globals' class
-                    | vodll                     // External method of the Globals class
-                    | vostruct                  // Compatibility (unsafe) structure
-                    | vounion                   // Compatibility (unsafe) structure with members aligned at FieldOffSet 0
-                    | filewidememvar            // global memvar outside of code 
-                    ;
 
 xppclass           :  (Attributes=attributes)?                                // NEW Optional Attributes
                       (Modifiers=xppclassModifiers)?                          // [STATIC|FREEZE|FINAL] 

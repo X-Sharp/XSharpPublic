@@ -14,18 +14,14 @@ namespace XSharp.Project
     public static class XSharpConstants
     {
 
-        public const string FileExtension1 = ".prg";
-        public const string FileExtension2 = ".xs";
-        public const string PpoExtension = ".ppo";
-        public const string HeaderExtension1 = ".vh";
-        public const string HeaderExtension2 = ".xh";
+
         public const string LanguageName = "XSharp";
         internal const string LanguageServiceName = "XSharp Language Service";
         internal const string EditorName = "XSharp Source Code Editor";
         internal const string ProjectSystemName = "XSharp Project System";
 
         internal const string ProjectExtension = "xsproj";
-        internal const string ProjectExtensions = "xsproj;xsprj";
+        internal const string ProjectExtensions = "xsproj;xsprj";   // the first version of X# has .xsprj (without o) as extension
         internal const string ProjectFileMask = LanguageName + " Project Files (*." + ProjectExtension + ");*." + ProjectExtension;
 
         public const string EditorFactoryGuidString = GuidStrings.EditorFactoryGuidString;

@@ -46,6 +46,7 @@ namespace XSharp.Project
                 case ".vh":
                 case ".xs":
                 case ".xh":
+                case ".ch":
                     // No idea why but testwindow needs this. Other windows not ! In fact specifying this for other windows
                     // has the opposite effect that files will NOT be opened correctly
                     if (Environment.StackTrace.Contains("VisualStudio.TestWindow"))

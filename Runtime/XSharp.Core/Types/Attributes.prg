@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -85,7 +85,7 @@ BEGIN NAMESPACE XSharp.Internal
 		PRIVATE INITONLY _value AS OBJECT
 		PRIVATE INITONLY _flag  AS INT
 		/// <summary>Value of the default parameter</summary>
-		PROPERTY VALUE AS OBJECT GET _value
+		PROPERTY @@Value AS OBJECT GET _value
         /// <summary>Flag indicating the type of the default parameter</summary>
         /// <remarks>
 	    /// 0 = Regular .Net default value 

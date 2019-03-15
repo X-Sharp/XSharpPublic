@@ -1005,7 +1005,7 @@ CLASS ApplicationDescriptor
                         cRcSource     := aContents[1]
                         
                         IF xPorter.Options:CopyResourcesToProjectFolder
-                            cRcSource := SELF:AdjustResource(cRcSource,cFolder)
+                            cRcSource := SELF:AdjustResource(cRcSource,cFolder,TRUE)
                             aContents[1] := cRcSource 
                         ENDIF
 						File.WriteAllLines(cFolder + "\" + cResFileName , aContents , System.Text.Encoding.Default)
@@ -1034,7 +1034,7 @@ CLASS ApplicationDescriptor
                             LOCAL aResult   := List<STRING>{} AS List<STRING>
                             FOREACH cLine AS STRING IN oXideResources:GetContents():ToArray()
                                 IF xPorter.Options:CopyResourcesToProjectFolder
-                                    VAR cNewLine := SELF:AdjustResource(cLine, cFolder)
+                                    VAR cNewLine := SELF:AdjustResource(cLine, cFolder , FALSE)
                                     aResult:Add(cNewLine)
                                 ELSE
                                     aResult:Add(cLine)
@@ -1066,7 +1066,7 @@ CLASS ApplicationDescriptor
 		SELF:CreateAppFile(cFolder , FALSE)
 	RETURN
 
-    METHOD AdjustResource(cLine AS STRING,cFolder AS STRING) AS STRING
+    METHOD AdjustResource(cLine AS STRING,cFolder AS STRING,lAddToOtherFiles AS LOGIC) AS STRING
         LOCAL aElements AS STRING[]
         LOCAL lHasFile  AS LOGIC
         LOCAL cResourcesFolder := cFolder+"\Resources" AS STRING
@@ -1104,7 +1104,9 @@ CLASS ApplicationDescriptor
                     ENDIF
                     // change to relative path
                     cDestName := cDestName:Replace(cFolder+"\", "")
-                    SELF:_aOtherFiles:Add(cDestName)
+                    IF lAddToOtherFiles
+	                    SELF:_aOtherFiles:Add(cDestName)
+                    END IF
                     cLine  := cLine :Replace(cFileName, cDestName)
                 ENDIF
             ENDIF
@@ -1187,13 +1189,14 @@ CLASS ApplicationDescriptor
 								ENDIF
 							NEXT
 						END IF
-                        FOREACH VAR cLine IN SELF:_aOtherFiles
-                            oOutPut:WriteLine(String.Format(e"<None Include=\"{0}\" />", cLine:Trim()))
-                        NEXT
                     END IF
 					
-					
 				NEXT
+
+	            FOREACH VAR cLine IN SELF:_aOtherFiles
+	                oOutPut:WriteLine(String.Format(e"<None Include=\"{0}\" />", cLine:Trim()))
+	            NEXT
+
 			CASE cTemplate == "%references%"
 				FOREACH oRef AS ApplicationDescriptor IN SELF:_aReferences
 					IF lXide

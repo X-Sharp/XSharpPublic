@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System;
@@ -63,7 +63,7 @@ namespace XSharp.Project
         //
         public override object GetIconHandle(bool open)
         {
-            if (FileName.EndsWith( XSharpConstants.FileExtension1, StringComparison.InvariantCultureIgnoreCase))
+            if (FileName.EndsWith( ".prg", StringComparison.InvariantCultureIgnoreCase))
                 return PackageUtilities.GetIntPointerFromImage(
                     XSharpProjectNode.ImageList.Images[(int)XSharpImageListIndex.Source]);
 
@@ -71,7 +71,7 @@ namespace XSharp.Project
         }
 
         /// <summary>
-        /// Disable certain commands for dependent file nodes 
+        /// Disable certain commands for dependent file nodes
         /// </summary>
         protected override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
         {

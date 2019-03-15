@@ -281,8 +281,8 @@ namespace XSharp.Project
             ns = getPrjLogic(nameof(NS), false);
 
             nostandarddefs = getPrjLogic(nameof(NoStandardDefs), false);
-            includepaths = getPrjString(nameof(IncludePaths), "");
-            standarddefs = getPrjString(nameof(StandardDefs), "");
+            includepaths = getPrjString(nameof(IncludePaths), "",true);
+            standarddefs = getPrjString(nameof(StandardDefs), "",true);
 
             BindNamedArgs();
             ReadMemvars();

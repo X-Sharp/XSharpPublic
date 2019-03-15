@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -50,7 +50,7 @@ namespace XSharp.Project
             UpdateWindowColors(this, defaultBackground, defaultForeground);
         }
         /// <summary>
-        /// Adjust the  color values. Adjusts the text color and text 
+        /// Adjust the  color values. Adjusts the text color and text
         /// area background color
         /// </summary>
         /// <param name="clrBackground">The desired color for the background of the text area</param>
@@ -58,7 +58,10 @@ namespace XSharp.Project
         static void UpdateWindowColors(Control control, Color clrBackground, Color clrForeground)
         {
             // Update the window background
-            control.BackColor = clrBackground;
+            if (control is TextBox)
+                control.BackColor = Color.White;
+            else
+                control.BackColor = clrBackground;
             control.ForeColor = clrForeground;
 
             // Also update the label

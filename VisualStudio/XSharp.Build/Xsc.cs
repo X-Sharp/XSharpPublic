@@ -491,7 +491,7 @@ namespace XSharp.Build
         protected override string GetResponseFileSwitch(string responseFilePath)
         {
             string newfile = Path.Combine(Path.GetDirectoryName(responseFilePath) , "LastXSharpResponseFile.Rsp");
-            System.IO.File.Copy(responseFilePath, newfile, true);
+            Utilities.CopyFileSafe(responseFilePath, newfile);
             return base.GetResponseFileSwitch(responseFilePath);
         }
 

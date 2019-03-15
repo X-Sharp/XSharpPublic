@@ -336,14 +336,17 @@ namespace Microsoft.VisualStudio.Project
             {
                 // Make a backup first
                 string original = buildProject.FullPath;
-                StreamWriter backup = new StreamWriter( original + ".backup" );
-                buildProject.Save(backup);
-                backup.Close();
+                string backupName = Path.ChangeExtension(original,".backup");
+                if (Utilities.DeleteFileSafe(backupName))
+                {
+                    File.Copy(original, backupName);
+                }
                 foreach (ReferenceNode node in duplicatedNode)
                 {
                     //this.RemoveChild( node );
                     node.Remove(false);
                 }
+                buildProject.Save(original);
             }
             var references = MSBuildProjectInstance.GetItems(buildResult.ProjectInstance, ProjectFileConstants.ReferencePath);
             foreach (var reference in references)

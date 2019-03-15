@@ -38,9 +38,9 @@ CLASS AssemblyInfo
 			// Clear temp files from previous run
 			FailedAssemblies := Dictionary<STRING, INT>{StringComparer.OrdinalIgnoreCase}
 			VAR cFolder := Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-			cFolder := System.IO.Path.Combine(cFolder, "XSharp\Temp")
-			IF ! System.IO.Directory.Exists(cFolder)
-				System.IO.Directory.CreateDirectory(cFolder)
+			cFolder := Path.Combine(cFolder, "XSharp\Temp")
+			IF ! Directory.Exists(cFolder)
+				Directory.CreateDirectory(cFolder)
 			ENDIF
 			WorkFolder := cFolder
 			LOCAL oDir := DirectoryInfo{cFolder} AS DirectoryInfo
@@ -94,11 +94,11 @@ CLASS AssemblyInfo
 
 		PRIVATE METHOD CurrentDomain_AssemblyResolve(sender AS OBJECT, args AS System.ResolveEventArgs) AS Assembly
 			VAR folders := List<STRING>{}	// list of folders that we have tried
-			VAR folderPath := System.IO.Path.GetDirectoryName(SELF:FileName)
+			VAR folderPath := Path.GetDirectoryName(SELF:FileName)
 			VAR name := AssemblyName{args:Name}:Name + ".dll"
-			VAR assemblyPath := System.IO.Path.Combine(folderPath, name)
+			VAR assemblyPath := Path.Combine(folderPath, name)
 			WriteOutputMessage("--> CurrentDomain_AssemblyResolve : "+assemblyPath)
-			IF System.IO.File.Exists(assemblyPath)
+			IF File.Exists(assemblyPath)
 				VAR assembly := AssemblyInfo.LoadAssemblyFromFile(assemblyPath)
 				IF assembly != NULL
 					RETURN assembly
@@ -106,10 +106,10 @@ CLASS AssemblyInfo
 			ENDIF
 			folders:Add(folderPath)
 			FOREACH path AS STRING IN SystemTypeController.AssemblyFileNames
-				folderPath := System.IO.Path.GetDirectoryName(path)
+				folderPath := Path.GetDirectoryName(path)
 				IF ! folders:Contains(folderPath)
-					assemblyPath := System.IO.Path.Combine(folderPath, name)
-					IF System.IO.File.Exists(assemblyPath)
+					assemblyPath := Path.Combine(folderPath, name)
+					IF File.Exists(assemblyPath)
 						VAR asm := AssemblyInfo.LoadAssemblyFromFile(assemblyPath)
 						IF asm != NULL
 							RETURN asm
@@ -176,13 +176,13 @@ CLASS AssemblyInfo
 		STATIC METHOD FindPdbName(fileName AS STRING) AS STRING
 			WriteOutputMessage("--> FindPDBName : "+fileName)
 			TRY
-				IF System.IO.File.Exists(fileName)
-					VAR pdb			:= System.IO.Path.ChangeExtension(fileName,".pdb")
-					IF System.IO.File.Exists(pdb)
+				IF File.Exists(fileName)
+					VAR pdb			:= Path.ChangeExtension(fileName,".pdb")
+					IF File.Exists(pdb)
 						RETURN pdb
 					ENDIF
 					// ok when it is not in the DLL folder but referenced in the DLL then extract this information
-					VAR text        := System.IO.File.ReadAllText(fileName)
+					VAR text        := File.ReadAllText(fileName)
 					VAR pdbIndex	:= text:IndexOf(".pdb", StringComparison.InvariantCultureIgnoreCase)
 					IF pdbIndex > 0
 						VAR lastTerminatorIndex := text:Substring(0, pdbIndex).LastIndexOf('\0')
@@ -208,30 +208,32 @@ CLASS AssemblyInfo
 						RETURN NULL
 					ENDIF
 				ENDIF
-				IF System.IO.File.Exists(fileName)
+				IF File.Exists(fileName)
 					LOCAL cPDB		AS STRING
 					LOCAL cPdbCopy	AS STRING
 					LOCAL PdbRenamed   := FALSE AS LOGIC
 					TRY
-						VAR temp		:=  System.IO.Path.Combine(WorkFolder, System.IO.Path.GetFileName(fileName))
-						System.IO.File.Copy(fileName, temp,TRUE)
-						VAR rawAssembly := System.IO.File.ReadAllBytes(temp)
+						VAR temp		:=  Path.Combine(WorkFolder, Path.GetFileName(fileName))
+						File.Copy(fileName, temp,TRUE)
+						VAR rawAssembly := File.ReadAllBytes(temp)
 						cPdb		:= FindPdbName(temp)
-						System.IO.File.Delete(temp)
-						cPdbCopy := System.IO.Path.ChangeExtension(temp, ".p$$")
-						IF !String.IsNullOrEmpty(cPdb) .AND. System.IO.File.Exists(cPdb)
+                        File.SetAttributes(temp, FileAttributes.Normal)
+						File.Delete(temp)
+						cPdbCopy := Path.ChangeExtension(temp, ".p$$")
+						IF !String.IsNullOrEmpty(cPdb) .AND. File.Exists(cPdb)
 							PdbRenamed := TRUE
-							IF System.IO.File.Exists(cPdbCopy)
-								System.IO.File.Delete(cPdbCopy)
+							IF File.Exists(cPdbCopy)
+                                File.SetAttributes(cPdbCopy, FileAttributes.Normal)
+								File.Delete(cPdbCopy)
 							ENDIF
-							System.IO.File.Move(cPdb, cPdbCopy)
+							File.Move(cPdb, cPdbCopy)
 						ENDIF
 						result := Assembly.Load(rawAssembly)
 						IF FailedAssemblies:ContainsKey(fileName)
 							FailedAssemblies:Remove(fileName)
 						ENDIF
 						RETURN result
-					CATCH exception AS System.IO.FileLoadException
+					CATCH exception AS FileLoadException
 						// files with unmanaged code produce the exception:
 						// Attempt to load an unverifiable executable with fixups (IAT with more than 2 sections or a TLS section.) (Exception from HRESULT: 0x80131019)
 						XSolution.WriteException(exception)
@@ -239,21 +241,21 @@ CLASS AssemblyInfo
 						// Other exception
 						XSolution.WriteException(exception)
 					FINALLY
-						IF PdbRenamed .AND. System.IO.File.Exists(cPdbCopy)
-							System.IO.File.Move(cPdbCopy, cPdb)
+						IF PdbRenamed .AND. File.Exists(cPdbCopy)
+							File.Move(cPdbCopy, cPdb)
 						ENDIF
 					END TRY
 					TRY
 						// Generate a random name and copy the DLL to prevent locking the original file
 						VAR temp := filename
 						DO WHILE File.Exists(temp)
-							temp := System.IO.Path.Combine(WorkFolder, System.IO.Path.GetRandomFileName())
+							temp := Path.Combine(WorkFolder, Path.GetRandomFileName())
 						ENDDO
 						// Need to rename the PDB again. Was undone in the Finally above
-						IF PdbRenamed .AND. System.IO.File.Exists(cPdb)
-							System.IO.File.Move(cPdb, cPdbCopy)
+						IF PdbRenamed .AND. File.Exists(cPdb)
+							File.Move(cPdb, cPdbCopy)
 						ENDIF
-						System.IO.File.Copy(filename, temp,TRUE)
+						File.Copy(filename, temp,TRUE)
 						File.SetAttributes(temp, FileAttributes.Normal | FileAttributes.Temporary )
 						result := Assembly.LoadFrom(temp)
 						IF FailedAssemblies:ContainsKey(fileName)
@@ -263,9 +265,9 @@ CLASS AssemblyInfo
 					CATCH e AS Exception
 						XSolution.WriteException(e)
 					FINALLY
-						IF PdbRenamed .AND. System.IO.File.Exists(cPdbCopy)
+						IF PdbRenamed .AND. File.Exists(cPdbCopy)
 							TRY
-								System.IO.File.Move(cPdbCopy, cPdb)
+								File.Move(cPdbCopy, cPdb)
 							CATCH e AS Exception
 								XSolution.WriteException(e)
 							END TRY
@@ -299,13 +301,13 @@ CLASS AssemblyInfo
 			    ENDIF
             ENDIF
 
-        PRIVATE METHOD GetPropertySafe(type as System.Type, obj as Object, PropName as STRING) as STRING
-            FOREACH var prop in type:GetProperties()
-                if String.Compare(prop:Name, PropName, StringComparison.OrdinalIgnoreCase) == 0
-                    return prop:GetValue(obj, NULL):ToString()
-                endif
+        PRIVATE METHOD GetPropertySafe(type AS System.Type, obj AS OBJECT, PropName AS STRING) AS STRING
+            FOREACH VAR prop IN type:GetProperties()
+                IF String.Compare(prop:Name, PropName, StringComparison.OrdinalIgnoreCase) == 0
+                    RETURN prop:GetValue(obj, NULL):ToString()
+                ENDIF
             NEXT
-            return ""
+            RETURN ""
 
 		INTERNAL METHOD UpdateAssembly() AS VOID
 			LOCAL aTypes AS Dictionary<STRING, System.Type>
@@ -339,7 +341,7 @@ CLASS AssemblyInfo
 						LOCAL found := 0 AS INT
 						FOREACH VAR custattr IN customAttributes
 							//
-							LOCAL type := custattr:GetType() as System.Type
+							LOCAL type := custattr:GetType() AS System.Type
 							SWITCH custattr:ToString():ToLower()
 								CASE "vulcan.internal.vulcanclasslibraryattribute"
                                 CASE "xsharp.internal.classlibraryattribute"
@@ -477,15 +479,15 @@ CLASS AssemblyInfo
 				IF String.IsNullOrEmpty(SELF:fileName)
 					RETURN "(Empty)"
 				ENDIF
-				RETURN System.IO.Path.GetFileName(SELF:fileName)
+				RETURN Path.GetFileName(SELF:fileName)
 			END GET
 		END PROPERTY
 
-        INTERNAL STATIC METHOD _SafeExists(cFileName as STRING) AS LOGIC
-            local lExists := FALSE as LOGIC
+        INTERNAL STATIC METHOD _SafeExists(cFileName AS STRING) AS LOGIC
+            LOCAL lExists := FALSE AS LOGIC
             TRY
                 IF !String.IsNullOrEmpty(cFileName)
-                    IF System.IO.File.Exists(cFileName)
+                    IF File.Exists(cFileName)
                         lExists := TRUE
                     ENDIF
                 ENDIF
@@ -501,7 +503,7 @@ CLASS AssemblyInfo
 		PROPERTY HasProjects        AS LOGIC GET SELF:_projects:Count > 0
 		PROPERTY ImplicitNamespaces AS IList<STRING> GET SELF:_implicitNamespaces
 		PROPERTY IsModifiedOnDisk   AS LOGIC GET SELF:LastWriteTime != SELF:Modified
-        PROPERTY LastWriteTime      AS DateTime GET IIF(Self:Exists, System.IO.File.GetLastWriteTime(SELF:FileName), DateTime.MinValue)
+        PROPERTY LastWriteTime      AS DateTime GET IIF(SELF:Exists, File.GetLastWriteTime(SELF:FileName), DateTime.MinValue)
 		PROPERTY Modified           AS DateTime GET IIF(SELF:Exists, SELF:_Modified, DateTime.MinValue) SET SELF:_Modified := VALUE
 		PROPERTY Namespaces         AS IList<STRING> GET SELF:_nameSpaceTexts
 		PROPERTY RuntimeVersion     AS STRING

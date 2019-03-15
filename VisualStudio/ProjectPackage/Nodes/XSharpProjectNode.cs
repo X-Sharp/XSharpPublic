@@ -2156,9 +2156,16 @@ namespace XSharp.Project
             {
                 changed = addReferences() || changed;
             }
-            if (changed)
+            if (changed )
             {
-                File.Copy(filename, filename + ".backup", true);
+                if (Path.GetExtension(filename).ToLower() != ".backup")
+                {
+                    var backupName = Path.ChangeExtension(filename, ".backup");
+                    if (Utilities.DeleteFileSafe(backupName))
+                    {
+                        File.Copy(filename, backupName, true);
+                    }
+                }
                 BuildProject.Xml.Save(filename);
                 BuildProject.ReevaluateIfNecessary();
                 //this.Reload();

@@ -42,7 +42,7 @@ BEGIN NAMESPACE XSharpModel
 
 		CONSTRUCTOR(file AS XFile)
 			SUPER()
-            if (file != null)
+            IF (file != NULL)
 			    LOCAL sourcePath AS STRING
 			    SELF:_gate := OBJECT{}
 			    SELF:_file := file
@@ -50,7 +50,7 @@ BEGIN NAMESPACE XSharpModel
 			    SELF:StartPosition := 0
 			    //
 			    sourcePath := SELF:_file:SourcePath
-            endif
+            ENDIF
 
 
 		METHOD BuildModel(oInfo AS ParseResult) AS VOID
@@ -104,7 +104,7 @@ BEGIN NAMESPACE XSharpModel
 			//return self:Parse(lines, lIncludeLocals)
 
 		METHOD Parse(lines AS IList<STRING> , lIncludeLocals AS LOGIC) AS ParseResult
-			WriteOutputMessage("-->> Parse() "+_file:FullPath+"(# lines " +lines:Count+" locals "+lIncludeLocals+" )")
+			WriteOutputMessage("-->> Parse() "+_file:FullPath+"(# lines " +lines:Count:ToString()+" locals "+lIncludeLocals+" )")
 
 			VAR oParser := XSharpModel.Parser{}
 			oParser:StartPosition := SELF:StartPosition

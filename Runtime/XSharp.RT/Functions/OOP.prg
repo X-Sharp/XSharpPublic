@@ -319,21 +319,29 @@ INTERNAL STATIC CLASS OOPHelpers
 	                	// If a call is made with: LateBoundCall(1,,3)
 	                	// then the second argument does not get converted to the default value of the 
 	                	// second param. But this scenario does not work in VO or vulcan either
-                		DO CASE
-                		CASE oDefAttrib:Flag == 1 // NIL
+                		SWITCH oDefAttrib:Flag 
+                		CASE 1 // NIL
                 			NOP // it is already NIL
-                		CASE oDefAttrib:Flag == 2 // DATE
+                		CASE 2 // DATE, stored in Ticks
 	                		oArgs[nArg] := DATE{ (INT64)oDefAttrib:Value }
-                		CASE oDefAttrib:Flag == 3 // SYMBOL
+                		CASE 3 // SYMBOL
 	                		oArgs[nArg] := String2Symbol( (STRING)oDefAttrib:Value )
-                		CASE oDefAttrib:Flag == 4 // PSZ
-	                		oArgs[nArg] := String2Psz( (STRING)oDefAttrib:Value )
-                		CASE oDefAttrib:Flag == 5 // IntPtr
-                			#warning How to convert PTRs in default params?
-	                		NOP
+                		CASE 4 // NULL_PSZ
+                            IF oDefAttrib:Value IS String
+                                // Note: Do not use String2Psz() because that PSZ will be freed when this method finishes !
+                                oArgs[nArg]:= Psz{ (String) oDefAttrib:Value}
+                            ELSE
+	                		    oArgs[nArg] := Psz{IntPtr.Zero}
+                            ENDIF
+                		CASE  5 // NULL_PTR
+                            IF oDefAttrib:Value IS Int32
+                                oArgs[nArg]:= IntPtr{ (Int32) oDefAttrib:Value}
+                            ELSE
+                			    oArgs[nArg]:= IntPtr.Zero
+                            ENDIF
                 		OTHERWISE
 	                		oArgs[nArg] := oDefAttrib:Value
-                		END CASE
+                		END SWITCH
                 	END IF
                 ENDIF
             NEXT

@@ -10,7 +10,7 @@
     <AssemblyName>XSharp.Scripting</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TargetFramework>netstandard1.3</TargetFramework>
-    <DefineConstants>$(DefineConstants);SCRIPTING</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SCRIPTING;XSHARP</DefineConstants>
     <!--Use the C# compiler created in this solution-->
 
     <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>

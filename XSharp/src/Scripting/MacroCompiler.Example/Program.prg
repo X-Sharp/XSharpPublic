@@ -224,10 +224,10 @@ begin namespace MacroCompilerTest
         //EvalMacro(mc, e"{|a| USUAL(-a) }", 1)
         //EvalMacro(mc, e"{|| testclass{}:NString((byte)1) }", Args())
         //EvalMacro(mc, e"{|a,b| b := testclass{123}, b:ToString() }")
-        EvalMacro(mc, e"0.00001")
+        //EvalMacro(mc, e"0.00001")
         //EvalMacro(mc, "{|foo| bar := 10}")
         //EvalMacro(mc, "{|foo| bar := 10,foo}")
-        wait
+        //wait
 
         RunTests(mc)
         wait

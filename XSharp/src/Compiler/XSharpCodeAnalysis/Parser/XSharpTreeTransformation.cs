@@ -5583,7 +5583,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 : (initExpr == null) ? null : _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), initExpr));
             vardecl.XVoIsDim = isDim;
             var name = context.Id.GetText();
-            if (CurrentEntity.Data.GetField(name) != null)
+            if (CurrentEntity?.Data.GetField(name) != null)
             {
                 vardecl = vardecl.WithAdditionalDiagnostics( new SyntaxDiagnosticInfo(ErrorCode.ERR_MemvarFieldWithSameName, name));
             }
@@ -5640,7 +5640,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint();
             var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
             var name = context.Id.GetText();
-            if (CurrentEntity.Data.GetField(name) != null)
+            if (CurrentEntity?.Data.GetField(name) != null)
             {
                 context.AddError(new ParseErrorData(ErrorCode.ERR_MemvarFieldWithSameName, name));
             }
@@ -6151,7 +6151,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private List<StatementSyntax> CheckForLocalDimArrays(List<StatementSyntax> statements)
         {
-            if (!CurrentEntity.Data.HasAddressOf)
+            if (!CurrentEntity?.Data.HasAddressOf == true)
                 return statements;
 
             foreach (var stmt in statements.ToList())
@@ -6726,7 +6726,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // in VO ~is XOR for binary expressions and bitwise negation (ones complement) for unary expressions
             // in C# ^is XOR and ~is Bitwise negation (ones complement)
             // SyntaxPrefixOp() takes care of the Unary operators
-            if (context.Op.Type == XP.ADDROF)
+            if (CurrentEntity != null && context.Op.Type == XP.ADDROF)
             {
                 CurrentEntity.Data.HasAddressOf = true;
             }

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -359,10 +359,10 @@ DEFINE DB_DBFLOCK_CLIPPER2     := 6   /* extended Cl*pper locking scheme NTXLOCK
 
 
 // File Extensions
-DEFINE DBT_MEMOEXT             := ".dbt" 
-DEFINE FPT_MEMOEXT             := ".fpt" 
-DEFINE SMT_MEMOEXT             := ".smt" 
-DEFINE DBV_MEMOEXT             := ".dbv" 
+DEFINE DBT_MEMOEXT             := ".DBT" 
+DEFINE FPT_MEMOEXT             := ".FPT" 
+DEFINE SMT_MEMOEXT             := ".SMT" 
+DEFINE DBV_MEMOEXT             := ".DBV" 
 
 // Blocks
 DEFINE DBT_DEFBLOCKSIZE        := 512

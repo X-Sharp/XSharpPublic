@@ -289,7 +289,7 @@ BEGIN NAMESPACE XSharp
 
         /// No checks for typeflag. These private properties should always be accessed after checking the correct type
         PRIVATE PROPERTY _arrayValue    AS ARRAY			GET (ARRAY) _refData
-        PRIVATE PROPERTY _codeblockValue AS CODEBLOCK		GET (CODEBLOCK) _refData
+        PRIVATE PROPERTY _codeblockValue AS ICodeBlock		GET (ICodeBlock) _refData
         PRIVATE PROPERTY _dateValue		AS DATE				GET _valueData:d
         PRIVATE PROPERTY _dateTimeValue AS DateTime			GET _valueData:dt
         PRIVATE PROPERTY _decimalValue	AS System.Decimal	GET (System.Decimal) _refData
@@ -460,11 +460,11 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.Float
                     SWITCH rhs:_usualType
-                    CASE __UsualType.Date		; RETURN _r8Value:CompareTo( (REAL8) (INT) rhs:_dateValue)
-                    CASE __UsualType.Decimal	; RETURN _r8Value:CompareTo( (REAL8) rhs:_decimalValue)
-                    CASE __UsualType.Long		; RETURN _r8Value:CompareTo( (REAL8) rhs:_intValue)
-                    CASE __UsualType.Int64		; RETURN _r8Value:CompareTo( (REAL8) rhs:_i64Value)
-                    OTHERWISE
+                    CASE __UsualType.Date		; RETURN FLOAT{_r8Value}:CompareTo( FLOAT{(REAL8) (INT) rhs:_dateValue})
+                    CASE __UsualType.Decimal	; RETURN FLOAT{_r8Value}:CompareTo( FLOAT{(REAL8) rhs:_decimalValue})
+                    CASE __UsualType.Long		; RETURN FLOAT{_r8Value}:CompareTo( FLOAT{(REAL8) rhs:_intValue})
+                    CASE __UsualType.Int64		; RETURN FLOAT{_r8Value}:CompareTo( FLOAT{(REAL8) rhs:_i64Value})
+                    OTHERWISE                           
                         NOP	// uses comparison by type
                     END SWITCH
 
@@ -543,10 +543,10 @@ BEGIN NAMESPACE XSharp
 
             CASE __UsualType.Float
                 SWITCH rhs:_usualType
-                CASE __UsualType.Long		; RETURN lhs:_r8Value > rhs:_intValue
-                CASE __UsualType.Int64		; RETURN lhs:_r8Value > rhs:_i64Value
-                CASE __UsualType.Float		; RETURN lhs:_r8Value > rhs:_r8Value
-                CASE __UsualType.Decimal	; RETURN lhs:_r8Value > (REAL8) rhs:_decimalValue
+                CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value } > FLOAT{rhs:_intValue}
+                CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value } > FLOAT{rhs:_i64Value}
+                CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value } > FLOAT{rhs:_r8Value}
+                CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value } > FLOAT{(REAL8) rhs:_decimalValue}
                 OTHERWISE
                     THROW BinaryError(">", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
                 END SWITCH
@@ -616,10 +616,10 @@ BEGIN NAMESPACE XSharp
                 END SWITCH
             CASE __UsualType.Float
                 SWITCH rhs:_usualType
-                CASE __UsualType.Long		; RETURN lhs:_r8Value >= rhs:_intValue
-                CASE __UsualType.Int64		; RETURN lhs:_r8Value >= rhs:_i64Value
-                CASE __UsualType.Float		; RETURN lhs:_r8Value >= rhs:_r8Value
-                CASE __UsualType.Decimal	; RETURN lhs:_r8Value >= (REAL8) rhs:_decimalValue
+                CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value} >= FLOAT{ rhs:_intValue}
+                CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value} >= FLOAT{ rhs:_i64Value}
+                CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value} >= FLOAT{ rhs:_r8Value}
+                CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value} >= FLOAT{ (REAL8) rhs:_decimalValue}
                 OTHERWISE
                     THROW BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
                 END SWITCH
@@ -689,10 +689,10 @@ BEGIN NAMESPACE XSharp
                 END SWITCH
             CASE __UsualType.Float
                 SWITCH rhs:_usualType
-                CASE __UsualType.Long		; RETURN lhs:_r8Value < rhs:_intValue
-                CASE __UsualType.Int64		; RETURN lhs:_r8Value < rhs:_i64Value
-                CASE __UsualType.Float		; RETURN lhs:_r8Value < rhs:_r8Value
-                CASE __UsualType.Decimal	; RETURN lhs:_r8Value < (REAL8) rhs:_decimalValue
+                CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value} < FLOAT{rhs:_intValue              }
+                CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value} < FLOAT{rhs:_i64Value              }
+                CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value} < FLOAT{rhs:_r8Value               }
+                CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value} < FLOAT{(REAL8) rhs:_decimalValue  }
                 OTHERWISE
                     THROW BinaryError("<", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
                 END SWITCH
@@ -762,10 +762,10 @@ BEGIN NAMESPACE XSharp
                 END SWITCH
             CASE __UsualType.Float
                 SWITCH rhs:_usualType
-                CASE __UsualType.Long		; RETURN lhs:_r8Value <= rhs:_intValue
-                CASE __UsualType.Int64		; RETURN lhs:_r8Value <= rhs:_i64Value
-                CASE __UsualType.Float		; RETURN lhs:_r8Value <= rhs:_r8Value
-                CASE __UsualType.Decimal	; RETURN lhs:_r8Value <= (REAL8) rhs:_decimalValue
+                CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value} <= FLOAT{rhs:_intValue             } 
+                CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value} <= FLOAT{rhs:_i64Value             } 
+                CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value} <= FLOAT{rhs:_r8Value              } 
+                CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value} <= FLOAT{(REAL8) rhs:_decimalValue } 
                 OTHERWISE
                     THROW BinaryError("<=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
                 END SWITCH
@@ -883,7 +883,7 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                         CASE __UsualType.Long		; RETURN _i64Value == (INT64) rhs:_intValue
                         CASE __UsualType.Int64		; RETURN _i64Value == rhs:_i64Value
-                    CASE __UsualType.Float		; RETURN  (REAL8) _i64Value == rhs:_r8Value
+                        CASE __UsualType.Float		; RETURN  FLOAT{(REAL8) _i64Value} == FLOAT{rhs:_r8Value}
                         CASE __UsualType.Decimal	; RETURN _i64Value == rhs:_decimalValue
                         CASE __UsualType.Logic		; RETURN rhs:_logicValue == (SELF:_i64Value <> 0)
                         OTHERWISE
@@ -892,10 +892,10 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.Float
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN SELF:_r8Value == (REAL8) rhs:_intValue
-                        CASE __UsualType.Int64		; RETURN SELF:_r8Value == (REAL8) rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN SELF:_r8Value ==  rhs:_r8Value
-                        CASE __UsualType.Decimal	; RETURN SELF:_r8Value ==  (REAL8) rhs:_decimalValue
+                        CASE __UsualType.Long		; RETURN FLOAT{_r8Value} == FLOAT{(REAL8) rhs:_intValue}
+                        CASE __UsualType.Int64		; RETURN FLOAT{_r8Value} == FLOAT{(REAL8) rhs:_i64Value}
+                        CASE __UsualType.Float		; RETURN FLOAT{_r8Value} == FLOAT{ rhs:_r8Value}
+                        CASE __UsualType.Decimal	; RETURN FLOAT{_r8Value} == FLOAT{ (REAL8) rhs:_decimalValue}
                         OTHERWISE
                             NOP // error below
                     END SWITCH
@@ -1456,7 +1456,7 @@ BEGIN NAMESPACE XSharp
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS CODEBLOCK
             SWITCH u:_usualType
-                CASE __UsualType.Codeblock ; RETURN u:_codeblockValue
+                CASE __UsualType.Codeblock ; RETURN (CODEBLOCK) u:_codeblockValue
                 CASE __UsualType.Void      ; RETURN NULL_CODEBLOCK
                 CASE __UsualType.Object    
                     IF u:_refData == NULL
@@ -1529,8 +1529,12 @@ BEGIN NAMESPACE XSharp
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS STRING
-            RETURN u:ToString()
-
+            SWITCH u:_usualType
+            CASE __UsualType.String	; RETURN u:ToString()
+            CASE __UsualType.Symbol	; RETURN u:ToString()
+            OTHERWISE
+                THROW ConversionError(STRING, TYPEOF(STRING), u)
+            END SWITCH
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS SYMBOL
@@ -1840,12 +1844,12 @@ BEGIN NAMESPACE XSharp
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS FLOAT
             TRY
                 SWITCH u:_usualType
-                CASE __UsualType.Long	; RETURN FLOAT{(REAL8) u:_intValue}
-                CASE __UsualType.Int64	; RETURN FLOAT{(REAL8) u:_i64Value}
+                CASE __UsualType.Long	; RETURN FLOAT{(REAL8) u:_intValue,0}
+                CASE __UsualType.Int64	; RETURN FLOAT{(REAL8) u:_i64Value,0}
                 CASE __UsualType.Float	; RETURN u:_floatValue
-                CASE __UsualType.Decimal; RETURN FLOAT{(REAL8) u:_decimalValue}
-                CASE __UsualType.Logic	; RETURN FLOAT{IIF(u:_logicValue, 1, 0)}
-                CASE __UsualType.Void	; RETURN FLOAT{0}
+                CASE __UsualType.Decimal; RETURN FLOAT{(REAL8) u:_decimalValue, -1}
+                CASE __UsualType.Logic	; RETURN FLOAT{IIF(u:_logicValue, 1, 0),0}
+                CASE __UsualType.Void	; RETURN FLOAT{0,0}
                 OTHERWISE
                     THROW ConversionError(FLOAT, TYPEOF(FLOAT), u)
                 END SWITCH
@@ -2229,17 +2233,30 @@ BEGIN NAMESPACE XSharp
             GET
               IF SELF:IsArray
                  RETURN  SELF:_arrayValue:__GetElement(index)
-              ELSEIF index:Length == 1
-                  RETURN SELF[index[1]]
+              ELSEIF SELF:IsObject .AND. _refData IS IIndexedProperties
+                  VAR props := (IIndexedProperties) _refData
+                  IF index:Length == 1
+                      LOCAL pos AS LONG
+                      pos := index[1]
+                      RETURN props[pos]
+                  ENDIF
               ENDIF
-              RETURN NIL  
+              THROW ConversionError(ARRAY , typeof(ARRAY), SELF)
             END GET
             SET
               IF SELF:IsArray
                  SELF:_arrayValue:__SetElement(VALUE, index)
-              ELSEIF index:Length == 1
-                  SELF[index[1]] := VALUE
+                 RETURN
+              ELSEIF SELF:IsObject .AND. _refData IS IIndexedProperties
+                  VAR props := (IIndexedProperties) _refData
+                  IF index:Length == 1
+                      LOCAL pos AS LONG
+                      pos := index[1]
+                      props[pos] := VALUE
+                   ENDIF
+                   RETURN
               ENDIF
+              THROW ConversionError(ARRAY , typeof(ARRAY), SELF)
             END SET
         END PROPERTY
         #endregion
@@ -2247,6 +2264,10 @@ BEGIN NAMESPACE XSharp
         #region IIndexedProperties
         PROPERTY SELF[index AS INT   ] AS USUAL
             GET
+                IF SELF:IsArray
+                    VAR a := SELF:_arrayValue
+                    RETURN a:__GetElement(index)
+                ENDIF
                 VAR indexer := _refData ASTYPE IIndexedProperties
                 IF indexer == NULL
                     THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
@@ -2254,6 +2275,11 @@ BEGIN NAMESPACE XSharp
                 RETURN indexer[index]                    
             END GET
             SET
+                IF SELF:IsArray
+                    VAR a := SELF:_arrayValue 
+                    a:__SetElement(index,VALUE)
+                    RETURN
+                ENDIF
                 VAR indexer := _refData ASTYPE IIndexedProperties
                 IF indexer == NULL
                     THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
@@ -2261,6 +2287,7 @@ BEGIN NAMESPACE XSharp
                 indexer[index] := VALUE
             END SET
         END PROPERTY
+
         PROPERTY SELF[name  AS STRING] AS USUAL 
             GET
                 VAR indexer := _refData ASTYPE IIndexedProperties

@@ -8,7 +8,7 @@ USING System.Collections.Generic
 USING System.Threading
 USING XSharp.RDD
 USING XSharp.RDD.Enums
-
+USING System.Runtime.CompilerServices
 /// <summary>
 /// Container Class that holds the XSharp Runtime state
 /// </summary>
@@ -103,6 +103,7 @@ CLASS XSharp.RuntimeState
 	/// <param name="nSetting">Setting number to retrieve. Must be defined in the SET enum.</param>
 	/// <typeparam name="T">The return type expected for this setting.</typeparam>
 	/// <returns>The current value, or a default value of type T.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)];
 	PUBLIC STATIC METHOD GetValue<T> (nSetting AS INT) AS T
 		RETURN currentState:Value:_GetThreadValue<T>(nSetting);
 
@@ -111,22 +112,25 @@ CLASS XSharp.RuntimeState
 	/// <param name="oValue">The new value for the setting.</param>
 	/// <typeparam name="T">The return type expected for this setting.</typeparam>
 	/// <returns>The previous value, or a default value of type T when the setting was not yetr defined.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)];
 	PUBLIC STATIC METHOD SetValue<T> (nSetting AS INT, oValue AS T) AS T
 		RETURN currentState:Value:_SetThreadValue<T>(nSetting, oValue)
-
+    [MethodImpl(MethodImplOptions.AggressiveInlining)];
 	PRIVATE METHOD _GetThreadValue<T> (nSetting AS INT) AS T
 		BEGIN LOCK oSettings
-			IF oSettings.ContainsKey(nSetting)
-				RETURN (T) oSettings[nSetting]
+            LOCAL result AS OBJECT
+            IF oSettings:TryGetValue(nSetting, OUT result)
+				RETURN (T) result
 			ENDIF
 		END LOCK
 		RETURN DEFAULT(T)
-
+    [MethodImpl(MethodImplOptions.AggressiveInlining)];
 	PRIVATE METHOD _SetThreadValue<T>(nSetting AS INT, oValue AS T) AS T
 		LOCAL result AS T
 		BEGIN LOCK oSettings
-			IF oSettings.ContainsKey(nSetting)
-				result := (T) oSettings[nSetting]
+            LOCAL oResult AS OBJECT
+			IF oSettings:TryGetValue(nSetting, OUT oResult)
+				result := (T) oResult
 			ELSE
 				result := DEFAULT(T)
 			ENDIF

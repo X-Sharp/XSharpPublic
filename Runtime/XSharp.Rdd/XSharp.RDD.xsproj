@@ -120,36 +120,51 @@
     <Compile Include="Advantage\AxDBFVFP.prg" />
     <Compile Include="Advantage\AXSqlRDD.prg" />
     <Compile Include="Advantage\Functions.prg" />
+    <Compile Include="DbfCdx\CdxNode.prg" />
+    <Compile Include="DbfCdx\CdxPageList.prg" />
+    <Compile Include="DbfCdx\CdxSort.prg" />
+    <Compile Include="DbfCdx\CdxHelpers.prg" />
+    <Compile Include="DbfCdx\DbfCdx.prg" />
+    <Compile Include="DbfCdx\Pages\CdxTagList.prg" />
+    <Compile Include="DbfCdx\Tag\CdxTag.prg" />
+    <Compile Include="DbfCdx\Tag\CdxTagCreate.prg" />
+    <Compile Include="DbfCdx\Tag\CdxTagLock.prg" />
+    <Compile Include="DbfCdx\Tag\CdxTagNavigation.prg" />
+    <Compile Include="DbfCdx\Tag\CdxTagUpdate.prg" />
+    <Compile Include="DbfNtx\DbfNtx.prg" />
+    <Compile Include="DbfNtx\Order\NtxOrderIO.prg" />
+    <Compile Include="DbfNtx\Order\NtxOrder.prg" />
+    <Compile Include="DbfNtx\Order\NtxOrderCreate.prg" />
+    <Compile Include="DbfNtx\Order\NtxOrderList.prg" />
+    <Compile Include="DbfNtx\Order\NtxOrderLock.prg" />
+    <Compile Include="DbfNtx\Order\NtxOrderNavigate.prg" />
+    <Compile Include="DbfNtx\Order\NtxOrderUpdate.prg" />
+    <Compile Include="Support.prg" />
+    <Compile Include="DbfCdx\CdxEnums.prg" />
+    <Compile Include="DbfCdx\CdxOrderBag.prg" />
+    <Compile Include="DbfCdx\CdxOrderBagList.prg" />
+    <Compile Include="DbfCdx\Pages\CdxBranchPage.prg" />
+    <Compile Include="DbfCdx\Pages\CdxFileHeader.prg" />
+    <Compile Include="DbfCdx\Pages\CdxLeafPage.prg" />
+    <Compile Include="DbfCdx\Pages\CdxPage.prg" />
+    <Compile Include="DbfCdx\Pages\CdxTagHeader.prg" />
+    <Compile Include="DbfCdx\Pages\CdxTreePage.prg" />
+    <Compile Include="DbfCdx\Pages\CdxUnusedPage.prg" />
+    <Compile Include="DbfNtx\NtxHeader.prg" />
+    <Compile Include="DbfNtx\NtxLevel.prg" />
+    <Compile Include="DbfNtx\NtxNode.prg" />
+    <Compile Include="DbfNtx\NtxPage.prg" />
+    <Compile Include="DbfNtx\NtxPageList.prg" />
+    <Compile Include="DbfNtx\NtxSort.prg" />
+    <Compile Include="SortHelper.prg" />
     <Compile Include="SubCodes.prg" />
     <Compile Include="Types\DBF.prg" />
     <Compile Include="Types\DbfBlob.prg" />
-    <Compile Include="Types\DbfCdx.prg" />
-    <Compile Include="Types\DbfCdx\CdxEnums.prg" />
-    <Compile Include="Types\DbfCdx\CdxInterfaces.prg" />
-    <Compile Include="Types\DbfCdx\CdxLeafPage.prg" />
-    <Compile Include="Types\DbfCdx\CdxTagHeader.prg" />
-    <Compile Include="Types\DbfCdx\CdxTag.prg" />
-    <Compile Include="Types\DbfCdx\CdxOrderBag.prg" />
-    <Compile Include="Types\DbfCdx\CdxBranchePage.prg" />
-    <Compile Include="Types\DbfCdx\CdxPage.prg" />
-    <Compile Include="Types\DbfCdx\CdxOrderBagList.prg" />
-    <Compile Include="Types\DbfCdx\CdxTagList.prg" />
-    <Compile Include="Types\DbfCdx\CdxFileHeader.prg" />
-    <Compile Include="Types\DbfCdx\CdxTreePage.prg" />
     <Compile Include="Types\DbfDbt.prg" />
     <Compile Include="Types\DbfFpt.prg" />
     <Compile Include="Types\DbfMemo.prg" />
+    <Compile Include="Types\Dbf_NotImplemented.prg" />
     <Compile Include="Types\DbfNsx.prg" />
-    <Compile Include="Types\DbfNtx.prg" />
-    <Compile Include="Types\DbfNtx\NtxHeader.prg" />
-    <Compile Include="Types\DbfNtx\NtxNode.prg" />
-    <Compile Include="Types\DbfNtx\NtxLevel.prg" />
-    <Compile Include="Types\DbfNtx\NtxOrder.prg" />
-    <Compile Include="Types\DbfNtx\NtxOrderList.prg" />
-    <Compile Include="Types\DbfNtx\NtxPage.prg" />
-    <Compile Include="Types\DbfNtx\NtxPageList.prg" />
-    <Compile Include="Types\DbfNtx\NtxSort.prg" />
-    <Compile Include="Types\DbfNtx\SortHelper.prg" />
     <Compile Include="Types\DbfSmt.prg" />
     <Compile Include="Types\DbMemo.prg" />
     <Compile Include="Types\DELIM.prg" />
@@ -162,10 +177,13 @@
   <ItemGroup>
     <Folder Include="ACE\" />
     <Folder Include="Advantage\" />
+    <Folder Include="DbfCdx\" />
+    <Folder Include="DbfCdx\Tag" />
+    <Folder Include="DbfCdx\Pages\" />
+    <Folder Include="DbfNtx\" />
+    <Folder Include="DbfNtx\Order" />
     <Folder Include="Types" />
     <Folder Include="Properties\" />
-    <Folder Include="Types\DbfNtx\" />
-    <Folder Include="Types\DbfCdx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\commonAssemblyInfo.prg">
@@ -184,8 +202,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Types\DbfCdx\CdxReadme.txt" />
-    <None Include="Types\DbfNtx\NtxFormat.txt" />
+    <None Include="DbfCdx\CdxReadme.txt" />
+    <None Include="DbfCdx\Todo.txt" />
+    <None Include="DbfNtx\NtxFormat.txt" />
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

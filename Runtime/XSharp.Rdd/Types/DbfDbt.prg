@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharp.RDD
             SUPER()
             SELF:_oMemo := _oDbtMemo := DBTMemo{SELF}
             
-        VIRTUAL PROPERTY SysName AS STRING GET TYPEOF(DbfDbt):ToString()
+        VIRTUAL PROPERTY SysName AS STRING GET "DBFDBT"
                 
         // Return the memo content as STRING
         METHOD GetValue(nFldPos AS LONG) AS OBJECT
@@ -43,14 +43,14 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL oResult AS OBJECT
             SWITCH nOrdinal
             CASE DbInfo.DBI_MEMOHANDLE
-                IF ( SELF:_oDbtMemo != NULL )
+                IF ( SELF:_oDbtMemo != NULL .AND. SELF:_oDBtMemo:_Open)
                     oResult := SELF:_oDbtMemo:_hFile
                 ELSE
                     oResult := IntPtr.Zero
                 ENDIF
                     
             CASE DbInfo.DBI_MEMOEXT
-                IF ( SELF:_oDbtMemo != NULL )
+                IF ( SELF:_oDbtMemo != NULL .AND. SELF:_oDBtMemo:_Open)
                     oResult := System.IO.Path.GetExtension(SELF:_oDbtMemo:_FileName)
                 ELSE
                     oResult := DbtMemo.DefExt
@@ -67,8 +67,9 @@ BEGIN NAMESPACE XSharp.RDD
                        LOCAL fldPos AS LONG
                        fldPos := Convert.ToInt32(oNewValue)
                        oResult := SELF:GetValue(fldPos)
-                    CATCH
+                    CATCH ex AS exception
                         oResult := ""   
+                        SELF:_dbfError(ex, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, "DBFDBT.Info")
                     END TRY
                 ENDIF
 			CASE DbInfo.DBI_MEMOTYPE
@@ -92,6 +93,7 @@ BEGIN NAMESPACE XSharp.RDD
     INTERNAL CLASS DBTMemo INHERIT BaseMemo IMPLEMENTS IMemo
         INTERNAL _hFile	    AS IntPtr
         INTERNAL _FileName  AS STRING
+        INTERNAL _Open      AS LOGIC
         PROTECT _Shared     AS LOGIC
         PROTECT _ReadOnly   AS LOGIC
         PROTECT _oRDD       AS DBF
@@ -99,7 +101,7 @@ BEGIN NAMESPACE XSharp.RDD
         STATIC PRIVATE _defExt    := DBT_MEMOEXT AS STRING
         PROTECT _lockScheme AS DbfLocking
         
-        
+        PROPERTY Shared AS LOGIC GET _Shared
         STATIC PROPERTY DefExt AS STRING
             GET
                 RETURN _defExt
@@ -127,7 +129,7 @@ BEGIN NAMESPACE XSharp.RDD
         CONSTRUCTOR (oRDD AS DBF)
             SUPER(oRDD)
             SELF:_oRdd := oRDD
-            SELF:_hFile := F_ERROR
+            SELF:_hFile := IntPtr.Zero
             SELF:_Shared := SELF:_oRDD:_Shared
             SELF:_ReadOnly := SELF:_oRdd:_ReadOnly
             SELF:_Encoding := SELF:_oRdd:_Encoding
@@ -137,7 +139,8 @@ BEGIN NAMESPACE XSharp.RDD
             
         VIRTUAL PROTECTED METHOD _initContext() AS VOID
             SELF:_blockSize := DBT_DEFBLOCKSIZE
-            SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )            
+            SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )
+            SELF:_Open  := TRUE
             
             
             /// <inheritdoc />
@@ -271,7 +274,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDIF
             IF newBlock
-                IF ( SELF:_Shared )
+                IF SELF:Shared 
                     locked := SELF:_tryLock( (UINT64)SELF:_lockScheme:Offset, 1, (LONG)XSharp.RuntimeState.LockTries )
                 ENDIF
                 // Go to the end of end, where we will add the new data
@@ -333,10 +336,14 @@ BEGIN NAMESPACE XSharp.RDD
                 //
                 TRY
                     isOk := FClose( SELF:_hFile )
-                CATCH
+
+                CATCH ex AS Exception
                     isOk := FALSE
+                    SELF:_oRDD:_dbfError(ex, SubCodes.ERDD_CLOSE_MEMO, GenCode.EG_CLOSE, "DBFDBT.CloseMemFile")
+
                 END TRY
                 SELF:_hFile := F_ERROR
+                SELF:_Open  := FALSE
             ENDIF
             RETURN isOk
             
@@ -432,8 +439,9 @@ BEGIN NAMESPACE XSharp.RDD
             REPEAT
                 TRY
                     locked := FFLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
-                CATCH
+                CATCH ex AS Exception
                     locked := FALSE
+                    SELF:_oRDD:_dbfError(ex, SubCodes.ERDD_INIT_LOCK, GenCode.EG_LOCK_ERROR, "DBFDBT._tryLock")
                 END TRY
                 IF ( !locked )
                     nTries --
@@ -450,8 +458,10 @@ BEGIN NAMESPACE XSharp.RDD
             //
             TRY
                 unlocked := FFUnLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
-            CATCH
+            CATCH ex AS Exception
                 unlocked := FALSE
+                SELF:_oRDD:_dbfError(ex, SubCodes.ERDD_UNLOCKED, GenCode.EG_UNLOCKED, "DBFDBT._unlock")
+
             END TRY
             RETURN unlocked
             

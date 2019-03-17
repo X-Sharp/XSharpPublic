@@ -132,10 +132,10 @@ namespace XSharp.Project
         }
 
 
-        internal string getPrjString(String Name, string defaultValue = "")
+        internal string getPrjString(String Name, string defaultValue = "", bool unevaluated = false)
         {
             string property;
-            string value = this.ProjectMgr.GetProjectProperty(Name, true);
+            string value = this.ProjectMgr.GetProjectProperty(Name, true, unevaluated);
             if (!String.IsNullOrEmpty(value))
                 property = value;
             else

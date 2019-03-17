@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -152,8 +152,8 @@ FUNCTION OrdSkipUnique(uCount) AS USUAL CLIPPER
 	
 /// <summary>Return the status of the unique flag for a given order.</summary>	
 FUNCTION OrdIsUnique   (xOrder, cOrderBag) AS USUAL CLIPPER
-    LOCAL result := NIL as USUAL
-	RETURN VoDb.OrderInfo(DBOI_UNIQUE, cOrderBag, xOrder,ref result)
+    LOCAL result := NIL AS USUAL
+	RETURN VoDb.OrderInfo(DBOI_UNIQUE, cOrderBag, xOrder,REF result)
 
 	
 /// <summary>
@@ -184,13 +184,17 @@ FUNCTION OrdCondSet(cFor, uCobFor, lAll, uCobWhile, uCobEval, nStep, nStart,    
 	LOCAL dbOrdCondInfo     AS DbOrderCondInfo
 	
 	dbOrdCondInfo := DbOrderCondInfo{}
-	IF !IsNil(cFor)
-        dbOrdCondInfo:ForExpression := cFor
-	ENDIF
+
 	
     dbOrdCondInfo:ForBlock := VoDb.ValidBlock(uCobFor)
     dbOrdCondInfo:WhileBlock := VoDb.ValidBlock(uCobWhile)
 	dbOrdCondInfo:EvalBlock := VoDb.ValidBlock(uCobEval)
+	IF !IsNil(cFor)
+        dbOrdCondInfo:ForExpression := cFor
+        IF dbOrdCondInfo:ForBlock == NULL
+            dbOrdCondInfo:ForBlock := MCompile(dbOrdCondInfo:ForExpression)
+        ENDIF
+	ENDIF
 	IF IsNumeric(nStep)
 		dbOrdCondInfo:StepSize := nStep
 	ENDIF
@@ -338,22 +342,22 @@ FUNCTION OrdKeyGoto    (nKeyNo) AS LOGIC CLIPPER
 	
 /// <summary>Return the number of keys in an order.</summary>	
 FUNCTION OrdKeyCount(xOrder, cOrdBag) AS USUAL CLIPPER
-    LOCAL result := NIL as USUAL
-    VoDb.OrderInfo(DBOI_KEYCOUNT, cOrdBag, xOrder, ref result)
-    return result
+    LOCAL result := NIL AS USUAL
+    VoDb.OrderInfo(DBOI_KEYCOUNT, cOrdBag, xOrder, REF result)
+    RETURN result
 	
 
 /// <summary>Get the logical record number of the current record.</summary>
 FUNCTION OrdKeyNo(xOrder, cOrdBag) 	AS USUAL CLIPPER
-    LOCAL result := NIL as USUAL
-    VoDb.OrderInfo(DBOI_POSITION, cOrdBag, xOrder, ref result)
-    return result
+    LOCAL result := NIL AS USUAL
+    VoDb.OrderInfo(DBOI_POSITION, cOrdBag, xOrder, REF result)
+    RETURN result
 	
 /// <summary>Get the key value of the current record from the controlling order.</summary>	
 FUNCTION OrdKeyVal() AS USUAL STRICT
-    LOCAL result := NIL as USUAL
-    VoDb.OrderInfo(DBOI_KEYVAL, NIL, NIL, ref result)
-    return result
+    LOCAL result := NIL AS USUAL
+    VoDb.OrderInfo(DBOI_KEYVAL, NIL, NIL, REF result)
+    RETURN result
 	
 	
 	
@@ -422,7 +426,7 @@ FUNCTION OrdName(uOrder, cOrdBag) AS USUAL CLIPPER
 	IF IsNil(cOrdBag)
 		cOrdBag := ""
 	ENDIF
-	LOCAL result := NIL as USUAL
+	LOCAL result := NIL AS USUAL
     VoDb.OrderInfo(DBOI_NAME, cOrdBag, uOrder, REF result)
 	RETURN result
 	
@@ -436,8 +440,8 @@ FUNCTION OrdNumber(uOrder, cOrdBag) AS USUAL CLIPPER
 	IF IsNil(cOrdBag)
 		cOrdBag := ""
 	ENDIF
-	LOCAL result := NIL as USUAL
-    VoDb.OrderInfo(DBOI_NUMBER, cOrdBag, uOrder,ref result)
+	LOCAL result := NIL AS USUAL
+    VoDb.OrderInfo(DBOI_NUMBER, cOrdBag, uOrder,REF result)
 	RETURN result
 	
 	

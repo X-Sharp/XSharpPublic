@@ -263,6 +263,7 @@ FUNCTION EnforceType(u REF USUAL, dwType AS DWORD) AS VOID
 	IF u:IsNil
 		u := EmptyUsual(dwType)
 	ELSEIF UsualType(u) != dwType
-		THROW Error.DataTypeError(__ENTITY__, u, 1, u, dwType)
+        var cMessage := "Expected type: " + ((__UsualType) dwType):ToString()+" actual type "+ ((__UsualType) UsualType(u)):ToString()
+		THROW Error.DataTypeError(ProcName(1), u, 1, u, cMessage)
 	ENDIF
 	RETURN  

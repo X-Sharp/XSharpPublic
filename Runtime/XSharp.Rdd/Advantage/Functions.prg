@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -141,13 +141,13 @@ FUNCTION AX_SetServerType( lUseRemoteServer AS LOGIC, lUseInternetServer AS LOGI
 
     usServerTypes := 0
     IF( lUseRemoteServer )
-      usServerTypes := (WORD) _OR( usServerTypes, ACE.ADS_REMOTE_SERVER )
+      usServerTypes :=  _OR( usServerTypes, ACE.ADS_REMOTE_SERVER )
     ENDIF
     IF( lUseInternetServer )
-      usServerTypes := (WORD) _OR( usServerTypes, ACE.ADS_AIS_SERVER )
+      usServerTypes :=  _OR( usServerTypes, ACE.ADS_AIS_SERVER )
     ENDIF
     IF( lUseLocalServer )
-      usServerTypes := (WORD) _OR( usServerTypes, ACE.ADS_LOCAL_SERVER )
+      usServerTypes :=  _OR( usServerTypes, ACE.ADS_LOCAL_SERVER )
     ENDIF
 
     ulRetCode := ACE.AdsSetServerType( usServerTypes )

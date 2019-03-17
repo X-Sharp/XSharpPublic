@@ -1,4 +1,4 @@
-ï»¿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -16,7 +16,13 @@ USING System.Collections.Generic
 /// <param name="xValue">A value that identifies the work area.  This can be the number of the work area or its alias, specified either as a symbol or a string.  If <uWorkArea> is not specified, the current work area number is returned.  Therefore, Select() is the same as DBGetSelect().</param>
 /// <returns>A number from 0 to 4096.  0 is returned if <uWorkArea> does not identify a valid work area or does not correspond to a valid alias.</returns>
 FUNCTION Select(xValue) AS USUAL CLIPPER
-    RETURN  _Select(xValue)
+    LOCAL sSelect   AS DWORD
+	LOCAL sCurrent  AS DWORD
+	sCurrent := VODBGetSelect()
+	sSelect := _SELECT(xValue)
+	VODBSetSelect(INT(sCurrent))
+	RETURN sSelect
+
 
 
 /// <summary>Determine the number of a work area.</summary>
@@ -27,14 +33,11 @@ FUNCTION _SelectString(cValue AS STRING) AS DWORD
     LOCAL nSelect := 0 AS DWORD
     cValue := AllTrim(cValue)
     IF SLen(cValue) = 1
-        VAR nAsc := (WORD) UPPER(cValue)[0]
-        IF nAsc > 64 .AND. nAsc <= 90    // A .. Z , M = memvar
-            IF nAsc != 77  // 'M' 
-                nSelect :=  (DWORD) (nAsc - 64)
-            ELSE
-                nSelect := 0
-            ENDIF
-        ENDIF
+        nSelect := Val(cValue)
+		VAR nAsc := Asc( Upper(cValue) )
+		IF nAsc > 64 .AND. nAsc < 75
+			nSelect := nAsc - 64
+		ENDIF
     ENDIF
         
     IF nSelect > 0 .OR. "0" == cValue
@@ -612,7 +615,10 @@ FUNCTION DbSetSelect(nSelect) AS DWORD CLIPPER
     /// <returns>
     /// </returns>
 FUNCTION DbSymSelect(sAlias)  AS DWORD CLIPPER
-    DEFAULT( REF  sAlias, Alias0Sym())
+    IF IsNil(sAlias)
+        sAlias := Alias0Sym()
+    ENDIF
+    EnForceType(sAlias, SYMBOL)
     RETURN (DWORD) VoDb.SymSelect(sAlias)
     
     
@@ -643,10 +649,7 @@ FUNCTION DbSetDriver(cDriver) AS STRING CLIPPER
     
     
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
+/// <inheritdoc cref="M:XSharp.RT.Functions.VoDbSetFilter(XSharp.__Usual,System.String)" />
 FUNCTION DbSetFilter(cbFilter, cFilter) AS LOGIC CLIPPER
     IF IsNil(cFilter)
         cFilter := "UNKNOWN"
@@ -1022,7 +1025,7 @@ FUNCTION AFields(aNames, aTypes, aLens, aDecs)  AS DWORD CLIPPER
     
     
 /// <exclude/>
-FUNCTION __DbCopyStruct(cFile AS STRING, aFields AS ARRAY) AS LOGIC STRICT
+FUNCTION DbCopyStruct(cFile AS STRING, aFields AS ARRAY) AS LOGIC STRICT
 
     RETURN DBCREATE(cFile, VoDb.FieldList(DbStruct(), aFields, NULL_ARRAY) )
     
@@ -1131,7 +1134,7 @@ FUNCTION IndexHPLock(lSet AS USUAL) AS LOGIC
     RETURN lOld
     
     /// <summary>
-    /// Return and optionally change the setting that determines whether to use the new locking offset of -1Â (0xFFFFFFFF) for .NTX files.
+    /// Return and optionally change the setting that determines whether to use the new locking offset of -1 (0xFFFFFFFF) for .NTX files.
     /// </summary>
     /// <param name="lSet"></param>
     /// <returns>
@@ -1147,7 +1150,7 @@ FUNCTION NewIndexLock(lSet AS USUAL) AS LOGIC
     
     
     /// <summary>
-    /// Return the setting that determines whether to use the new locking offset of -1Â (0xFFFFFFFF) for .NTX files.
+    /// Return the setting that determines whether to use the new locking offset of -1 (0xFFFFFFFF) for .NTX files.
     /// </summary>
     /// <returns>
     /// </returns>

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -13,7 +13,7 @@ CLASS DBFSMT INHERIT DBF
 	SUPER()
 	SELF:_oMemo := SMTMemo{SELF}
 
-VIRTUAL PROPERTY SysName AS STRING GET typeof(DbfSmt):ToString()
+VIRTUAL PROPERTY SysName AS STRING GET "DBFSMT"
 
 /// <summary>SMT Memo class. Implements the SMT support.</summary>
 CLASS SMTMemo INHERIT BaseMemo  IMPLEMENTS IMemo

@@ -431,6 +431,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD Shared_Ntx() AS VOID
 			LOCAL cDbf AS STRING
 			LOCAL cNtx AS STRING
+			
+			RDDSetDefault("DBFNTX")
+
 			cDbf := GetTempFileName()
 			cNtx := cDbf + ".ntx"
 			
@@ -486,6 +489,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cDbf AS STRING
 			LOCAL cNtx AS STRING
 			LOCAL aResult AS ARRAY
+
+			RDDSetDefault("DBFNTX")
 			
 			cDbf := GetTempFileName()
 			cNtx := cDbf + ".ntx"
@@ -570,6 +575,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD Ntx_Issues2() AS VOID
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName()
+
+			RDDSetDefault("DBFNTX")
+
 			DBCreate(cFileName, {{"FLD1","C",10,0},{"FLD2","N",10,0}})
 			DBUseArea( , , cFileName , , FALSE)
 			FOR LOCAL n := 1 AS INT UPTO 10
@@ -648,6 +656,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal( 3 , (INT) a[2] )
 
 			DBCloseArea()
+			
+			SetExclusive ( TRUE ) // restore
 		RETURN
 
 		// TECH-XQES14W9J0 , Aliasxxx() funcs throw exceptions
@@ -664,6 +674,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBCreate_test() AS VOID
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName()
+
+			RDDSetDefault("DBFNTX")
 			
 			DBCreate(cFileName, {{"FLD1","C",10,0}})
 			DBUseArea(,,cFileName,,FALSE)
@@ -684,11 +696,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBError_test() AS VOID
 			LOCAL cDbf AS STRING
-			LOCAL cNtx AS STRING
-			LOCAL aResult AS ARRAY
 			
 			cDbf := GetTempFileName()
-			cNtx := cDbf + ".ntx"
 			
 			DBCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 }})
 			DBUseArea(,,cDbf,,TRUE)
@@ -714,6 +723,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cDbf AS STRING
 			LOCAL cNtx AS STRING
 			
+			RDDSetDefault("DBFNTX")
+
 			cDbf := GetTempFileName()
 			cNtx := cDbf + ".ntx"
 			
@@ -752,7 +763,826 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 
+		// TECH-546935N337, DBOrderInfo(DBOI_SETCODEBLOCK) causes an invalid cast exception, but only if a index is opened
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBOrderInfo_DBOI_SETCODEBLOCK() AS VOID
+			LOCAL cDBF, cNTX AS STRING
+			
+			RDDSetDefault("DBFNTX")
+
+			cDBF := GetTempFileName("test")
+			cNTX := cDBF + ".ntx"
+			
+			DBCreate( cDBF , {{"ID" , "C" , 5 , 0 }})
+			DBUseArea(,,cDBF)
+			
+			DBAppend()
+			FieldPut(1, "one")
+			
+			DBCreateIndex(cNTX , "Upper (ID)")
+			DBCloseArea()
+			
+			DBUseArea(,,cDBF)
+			DBSetIndex(cNTX)
+			
+			? "DBOI_SETCODEBLOCK" , DBOrderInfo( DBOI_SETCODEBLOCK )
+			
+			DBCloseArea()		
+		RETURN
+
+		
+		// TECH-3NY78C93EK, OrdScope() not working
+		[Fact, Trait("Category", "DBF")];
+		METHOD OrdScope_test() AS VOID
+			LOCAL cDbf AS STRING
+			cDbf := GetTempFileName()
+			DBCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
+			DBUseArea(,"DBFNTX",cDbf)
+			FOR LOCAL n := 1 AS INT UPTO 20
+				DBAppend()
+				FieldPut(1,n)
+			NEXT
+			DBCreateIndex(cDbf , "NFIELD")
+			DBCloseArea()
+			
+			DBUseArea(,"DBFNTX",cDbf) // 20 records
+			DBSetIndex ( cDbf )
+			Assert.Equal( (INT) DBOrderInfo( DBOI_KEYCOUNT ) , 20)
+			Assert.Equal( (INT) OrdScope(TOPSCOPE, 5) , 5) // NULL
+			Assert.Equal( (INT) OrdScope(BOTTOMSCOPE, 10) , 10) // NULL
+			DBGoTop()
+			
+			Assert.Equal( (INT) DBOrderInfo( DBOI_KEYCOUNT ) , 6) // still 20 - but must be 6
+			LOCAL nCount := 0 AS INT
+			DO WHILE ! EOF() // all 20 records are listed
+				? FieldGet ( 1 )
+				DBSkip ( 1 )
+				nCount ++
+			ENDDO
+			Assert.Equal( 6 , nCount)
+			Assert.Equal( 5 , (INT) DBOrderInfo( DBOI_SCOPETOP ) ) // {(0x0000)0x00000000} CLASS
+			Assert.Equal( 10 , (INT) DBOrderInfo( DBOI_SCOPEBOTTOM ) ) // {(0x0000)0x00000000} CLASS
+			DBCloseArea()
+		RETURN
+		
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD OrdScope_test_with_Ordinal_Collation() AS VOID
+			LOCAL cDbf AS STRING
+			cDbf := GetTempFileName()
+			
+			LOCAL uCollation AS USUAL
+			uCollation := SetCollation(#ORDINAL)
+			
+			DBCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
+			DBUseArea(,"DBFNTX",cDbf)
+			FOR LOCAL n := 1 AS INT UPTO 20
+				DBAppend()
+				FieldPut(1,n)
+			NEXT
+			DBCreateIndex(cDbf , "NFIELD")
+			DBCloseArea()
+			
+			DBUseArea(,"DBFNTX",cDbf)
+			DBSetIndex ( cDbf )
+			Assert.Equal( (INT) DBOrderInfo( DBOI_KEYCOUNT ) , 20)
+			Assert.Equal( (INT) UsualType( DBOrderInfo( DBOI_KEYCOUNT )  ) , 1) // first time returns 6
+			Assert.Equal( (INT) UsualType( DBOrderInfo( DBOI_KEYCOUNT )  ) , 1) // second time it returns 1 correctly
+			DBCloseArea()
+			
+			SetCollation(uCollation)
+		RETURN
+		
+		
+		// TECH-9TW65Q3XQE, NTX corruption with updating multiple fields and shared mode
+		[Fact, Trait("Category", "DBF")];
+		METHOD NTX_test() AS VOID
+			LOCAL aValues AS ARRAY
+			LOCAL i AS DWORD
+			LOCAL cDBF, cNTX AS STRING
+
+			RDDSetDefault("DBFNTX")
+			
+			aValues := { "ssss" , "hhhh", "wwww" , "aaaa" }
+			cDBF := GetTempFileName()
+			cNTX := cDbf
+			DBCreate( cDBF , {{"LAST" , "C" , 20 , 0 } , ;
+								{"TEXT1" , "C" , 10 , 0 } , ;
+								{"NUM1" , "N" , 10 , 2 }})
+			
+			DBUseArea(,,cDBF,,FALSE)
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut(1,aValues [i])
+			NEXT
+			DBCreateIndex(cNTX, "Upper ( Last)")
+			DBCloseArea()
+			
+			DBUseArea(,,cDBF,,TRUE) // open shared !
+			DBSetIndex(cNTX)
+			DBGoTop()
+			? "current (indexed) order"
+			DO WHILE ! EOF()
+				? FieldGet ( 1 )
+				DBSkip ( 1 )
+			ENDDO
+			DBGoTop()
+			// "now replace the index field #LAST content 'aaaa' with 'pppp'"
+			// "and also update another field"
+			Assert.True( DBRLock ( RecNo() )  )
+			// "Replacing", AllTrim(FieldGet(1)), "with 'pppp'"
+			FieldPut ( 1 , "pppp" ) // Note: This is the index field
+				
+//	 this is what causes the problem, updating a second field
+//	 if this fieldput is put above the first one, then sample works correctly
+//	 either one of the fieldputs below cause the problem to surface
+			FieldPut ( 2 , "Eins" )
+			FieldPut ( 3 , 123.45 )
+			
+			DBCommit()
+			
+			DBRUnlock ( RecNo() )
+			
+			Assert.False( DBSeek( "AAAA" ) ) // must show .F.
+			Assert.True( DBSeek ("PPPP" ) ) // must show .T.
+			// "Record order now:"
+			// "(should be hhhh, pppp, ssss , wwww)"
+			DBGoTop()
+			LOCAL nCount := 0 AS INT
+			DO WHILE ! EOF()
+				? AllTrim(FieldGet(1)) , FieldGet(3) , AllTrim(FieldGet(2))
+				nCount ++
+				DO CASE
+				CASE nCount == 1
+					Assert.Equal( "hhhh", AllTrim(FieldGet(1)) )
+				CASE nCount == 2
+					Assert.Equal( "pppp", AllTrim(FieldGet(1)) )
+				CASE nCount == 3
+					Assert.Equal( "ssss", AllTrim(FieldGet(1)) )
+				CASE nCount == 4
+					Assert.Equal( "wwww", AllTrim(FieldGet(1)) )
+				END CASE
+				DBSkip ( 1 )
+			ENDDO
+			DBCloseArea()
+		RETURN
 	
+	
+		// TECH-4JX6H10741, DBOrderInfo( DBOI_KEYCOUNT ) returns NIL when record pointer is at EoF
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBOrderInfo_DBOI_KEYCOUNT() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL aValues AS ARRAY 
+			LOCAL i AS DWORD
+			
+			cDBF := GetTempFileName()
+			aValues := { 44 , 12, 34 , 21 }                                 
+			DBCreate( cDBF , {{"AGE" , "N" , 3 , 0 } })
+			DBUseArea(,"DBFNTX",cDBF,,FALSE) 
+			Assert.Equal(0 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 0,  ok
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut(1,aValues [i])  
+			NEXT 
+			Assert.Equal(0 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 0,  ok
+			DBCreateIndex(cDbf, "age" ) 
+			Assert.Equal(4 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
+			DBGoTop() 
+			Assert.Equal(4 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
+			DO WHILE ! EOF()
+//			? FieldGet ( 1 ) 
+				DBSkip(1)
+			ENDDO 
+			Assert.Equal(4 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // NIL, should be 4
+			DBSkip(-1)
+			Assert.Equal(4 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
+			DBCloseArea ()
+		RETURN
+
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD SetDeleted_FALSE() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL aValues AS ARRAY 
+			LOCAL i AS DWORD
+			
+			cDBF := GetTempFileName()
+		
+			SetDeleted(FALSE)
+			
+//			test also with those
+//			aValues := { "vaa" , "abba", "acb" , "aaab"  , "adab"  , "baac"  , "aeab"  , "baaAaa" }
+			aValues := { "vvv" , "abb", "acb" , "aaa"  , "bbb" }
+			DBCreate( cDBF , {{"LAST" , "C" ,10 , 0 } })
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut(1,aValues [i])  
+			NEXT
+			DBCloseArea()
+		
+			DBUseArea(,"DBFNTX",cDBF,,TRUE) 
+			Assert.Equal(0 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			DBCreateIndex(cDbf, "Upper(LAST)" ) 
+			Assert.Equal(5 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			// ? "Setting scope"
+			LOCAL u AS USUAL
+			u := "A"
+			VODBOrderInfo( DBOI_SCOPETOP, "", NIL, REF u )
+			VODBOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF u )
+		
+			DBGoTop()
+			Assert.Equal(4 , (INT)RecNo())
+			DBGoBottom()
+			Assert.Equal(3 , (INT)RecNo())
+		
+			DBGoTop() 
+		
+			Assert.Equal(3 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			DO WHILE ! EOF()
+				DBSkip(1)
+			ENDDO 
+			Assert.Equal(3 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			DBCloseArea()
+
+			SetDeleted(FALSE)
+		RETURN
+
+
+		// TECH-W0KKQ1I50C, Problems with SetDeleted(TRUE)
+		[Fact, Trait("Category", "DBF")];
+		METHOD SetDeleted_TRUE() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL aValues AS ARRAY 
+			LOCAL i AS DWORD
+			
+			cDBF := GetTempFileName()
+		
+			SetDeleted(TRUE)
+			
+//			test also with those
+//			aValues := { "vaa" , "abba", "acb" , "aaab"  , "adab"  , "baac"  , "aeab"  , "baaAaa" }
+			aValues := { "vvv" , "abb", "acb" , "aaa"  , "bbb" }
+			DBCreate( cDBF , {{"LAST" , "C" ,10 , 0 } })
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut(1,aValues [i])  
+			NEXT 
+		
+			DBUseArea(,"DBFNTX",cDBF,,TRUE) 
+			Assert.Equal(0 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			DBCreateIndex(cDbf, "Upper(LAST)" ) 
+			Assert.Equal(5 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			// ? "Setting scope"
+			LOCAL u AS USUAL
+			u := "A"
+			VODBOrderInfo( DBOI_SCOPETOP, "", NIL, REF u )
+			VODBOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF u )
+		
+			DBGoTop()
+			Assert.Equal(4 , (INT)RecNo())
+			DBGoBottom()
+			Assert.Equal(3 , (INT)RecNo())
+		
+			DBGoTop() 
+		
+			Assert.Equal(3 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			DO WHILE ! EOF()
+				DBSkip(1)
+			ENDDO 
+			Assert.Equal(3 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			DBCloseArea()
+
+			SetDeleted(FALSE)
+		RETURN
+
+
+		// TECH-DD1J2Z3UVI, DBOrderInfo( DBOI_NUMBER ) incorrect results
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBOrderInfo_DBOI_NUMBER() AS VOID
+			LOCAL aValues AS ARRAY
+			LOCAL i AS DWORD
+			LOCAL cDBF AS STRING
+			LOCAL cNTX AS STRING
+			aValues := { 44 , 12, 34 , 21 }                                
+			cDBF := GetTempFileName("testdbf")
+			cNTX := cDbf + ".ntx"
+			IF System.IO.File.Exists(cNtx)
+				System.IO.file.Delete(cNtx)
+			END IF
+			DBCreate( cDBF , {{"AGE" , "N" , 3 , 0 } })                                        
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			Assert.Equal(0, (INT)DBOrderInfo( DBOI_KEYCOUNT ) )   //  0  ok
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut(1,aValues [i]) 
+			NEXT
+			Assert.Equal(0, (INT)DBOrderInfo( DBOI_KEYCOUNT ) ) //  0 ,ok
+			Assert.Equal(0, (INT)DBOrderInfo( DBOI_NUMBER ) )  //  -1,  but should show 0
+
+			DBCreateIndex( cNTX, "age" )
+			DBGoTop()
+			DO WHILE ! EOF()
+//				? FieldGet ( 1 )
+				DBSkip(1)
+			ENDDO
+
+			Assert.True( DBClearIndex( cNTX) )
+			
+			DBGoTop()
+			Assert.Equal(1, (INT)RecNo())
+			
+			Assert.True( DBSetIndex ( cNTX ) )
+
+			Assert.Equal(4, (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, ok
+			Assert.Equal(1, (INT) DBOrderInfo( DBOI_NUMBER ) )  // still  -1 , but should show  1
+			Assert.Equal("TESTDBF", (STRING) DBOrderInfo( DBOI_NAME ) )  // ok , "TESTDBF"
+			DBCloseArea ()
+		RETURN
+
+
+		// TECH-RGU0U0636C, DBSetOrderCondition() results to NotImplementedException
+		[Fact, Trait("Category", "DBF")];
+			METHOD DBSetOrderCondition_test() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL aValues AS ARRAY
+			LOCAL i AS DWORD
+			
+			cDBF := GetTempFileName()
+			aValues := { 1,4,2,3 }
+			DBCreate( cDBF , {{"NUM" , "N" ,5 , 0 } })
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut(1,aValues [i])
+			NEXT
+			DBGoTop()
+			
+			// DESCENDING = TRUE
+			Assert.True( DBSetOrderCondition(,,,,,,,,,,TRUE) )
+			Assert.True( DBCreateIndex(cDbf, "NUM" ) )
+			
+			DBGoTop()
+			aValues := { 4,3,2,1 }
+			LOCAL nCount := 0 AS INT
+			DO WHILE .NOT. EoF()
+				nCount ++
+				Assert.Equal((INT)aValues[nCount] , (INT)FieldGet(1))
+				DBSkip()
+			END DO
+			
+			DBCloseArea()
+		RETURN
+
+
+		// TECH-P956TFHW74, Cannot use fields in macro exceptions when they are named after a function
+		[Fact, Trait("Category", "DBF")];
+		METHOD Fields_Named_After_Funcs() AS VOID
+			LOCAL cDbf AS STRING
+			cDBF := GetTempFileName()
+			
+			DBCloseAll() // worakaroudn for previous test crashing
+			
+			DBCreate( cDBF , {{"LEFT" , "N" ,5 , 0 } , {"STR" , "C" ,5 , 0 } })
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			DBAppend()
+			FieldPut(1,1)
+			FieldPut(2,"A")
+			DBAppend()
+			FieldPut(1,11)
+			FieldPut(2,"B")
+			DBGoTop()
+			Assert.True( DBCreateIndex(cDbf, "STR" ) )
+			Assert.True( DBSetFilter(&("{||LEFT<10}")) )
+			DBGoTop()
+			DBSkip()
+			Assert.True( EOF() )
+			DBCloseArea()
+		RETURN
+
+
+		// TECH-R933ZKYT9Q, Problem creating index on dbf with "uninitialized" fields
+		[Fact, Trait("Category", "DBF")];
+		METHOD Uninitialized_fields() AS VOID
+			LOCAL cDbf AS STRING
+			DBCloseAll() // worakaroudn for previous test crashing
+			
+			cDBF := GetTempFileName()
+			DBCreate( cDBF , {{"FIELDN" , "N" ,5 , 0 } })
+			DBUseArea(,"DBFNTX",cDBF)
+			DBAppend()
+			FieldPut(1,1)
+			DBAppend() // no field assigned
+			DBCloseArea()
+			
+			DBUseArea(,"DBFNTX",cDBF)
+			Assert.True( DBCreateIndex(cDbf, "FIELDN" ) )
+			DBCloseArea()
+		RETURN
+
+
+		// TECH-T365UMTY4V, Incorrect values returned by DBOrderInfo( DBOI_KEYTYPE )
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBOrderInfo_DBOI_KEYTYPE() AS VOID
+			LOCAL cDbf AS STRING
+			DBCloseAll()
+			
+			cDBF := GetTempFileName("testnewer")
+			DBCreate( cDBF , {{"FIELDN" , "N" ,5 , 0 } , ;
+			{"FIELDS" , "C" ,15 , 0 } , ;
+			{"FIELDL" , "L" ,1 , 0 } , ;
+			{"FIELDD" , "D" ,8 , 0 } })
+			DBUseArea(,"DBFNTX",cDBF)
+			DBAppend()
+			FieldPut(1,1)
+			DBCloseArea()
+			
+			DBUseArea(,"DBFNTX",cDBF)
+			DBCreateIndex(cDbf, "FIELDN" )
+			Assert.Equal(3, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 14 (), should be 3 (FLOAT)
+			DBCloseArea()
+			
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			DBCreateIndex(cDbf, "FIELDS" )
+			Assert.Equal(7, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 18 (PTR), should be 7 (STRING)
+			
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			DBCreateIndex(cDbf, "FIELDD" )
+			Assert.Equal(2, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 16, should be 2 (DATE)
+			
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			DBCreateIndex(cDbf, "FIELDL" )
+			Assert.Equal(8, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 3 (FLOAT), should be 8
+			
+			DBCloseArea()
+		RETURN
+
+
+		// TECH-YV2072YP4B, DBSetOrderCondition() not respecting FOR condition
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBSetOrderCondition_with_FOR() AS VOID
+			LOCAL cDbf AS STRING
+			DBCloseAll()
+			
+			cDBF := GetTempFileName("testnewer")
+			DBCreate( cDBF , {{"FIELDN" , "N" ,5 , 0 } })
+			DBUseArea(,"DBFNTX",cDBF) 
+			DBAppend()
+			FieldPut(1,1)
+			DBAppend()
+			FieldPut(1,4)
+			DBAppend()
+			FieldPut(1,2)
+			DBAppend()
+			FieldPut(1,3)
+			DBCloseArea()
+		
+			DBUseArea(,"DBFNTX",cDBF) 
+			
+			// Should show only 4,3, but it shows all records 4,3,2,1
+			DBSetOrderCondition( "FIELDN>2",{||_FIELD->FIELDN>2},,,,,,,,, TRUE)
+			DBCreateIndex(cDbf, "FIELDN" )
+			DBGoTop()
+			LOCAL nCount := 0 AS INT
+			DO WHILE .NOT. EoF()
+				nCount ++
+				IF nCount == 1
+					Assert.Equal(4 ,(INT)FieldGet(1))
+				ELSEIF nCount == 1
+					Assert.Equal(3 ,(INT)FieldGet(1))
+				END IF
+				DBSkip()
+			END DO
+		    
+			Assert.Equal(2 ,nCount)
+			
+			// Should both show true, but both return false
+			Assert.True( DBOrderInfo( DBOI_ISCOND ) )
+			Assert.True( DBOrderInfo( DBOI_ISDESC ) )
+			
+			DBCloseArea()
+		RETURN
+
+
+		// TECH-3KG4A5V124, DBSetFound() always sets the Found flag to TRUE, no matter the value passed
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBSetFound_test() AS VOID
+			LOCAL aDbf AS ARRAY
+			LOCAL cDbf AS STRING
+			DBCloseAll()
+			
+			cDBF := GetTempFileName()
+			aDbf := {{ "AGE" , "N" , 2 , 0 }}
+			DBCreate( cDBF , aDbf)
+			
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			DBAppend()
+			
+			Assert.False( Found() )// FALSE, ok
+			Assert.True( DBSetFound( FALSE ) )
+			Assert.False( Found() ) // TRUE! wrong
+			Assert.True( DBSetFound( TRUE ) )
+			Assert.True( Found() ) // TRUE correct
+			DBCloseArea()
+		RETURN
+
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBSetFound_test2() AS VOID
+			LOCAL aDbf AS ARRAY
+			LOCAL cDbf AS STRING
+			DBCloseAll()
+			
+			cDBF := GetTempFileName()
+			aDbf := {{ "AGE" , "N" , 2 , 0 }}
+			DBCreate( cDBF , aDbf)
+			
+		    DBCreate( cDBF , aDbf)
+		    DBUseArea(,"DBFNTX",cDBF,,FALSE)
+		   
+		    DBAppend()
+		   
+		    DBCloseArea()
+		   
+		    DBUseArea( TRUE ,"DBFNTX",cDBF,"AREA1" ,TRUE )
+		    DBUseArea( TRUE ,"DBFNTX",cDBF,"AREA2" ,TRUE )
+		    
+		    Assert.True( DBSelectArea ( "AREA1" ) )
+		    Assert.Equal("AREA1", Alias() )
+		    Assert.False( Found() )
+		    Assert.True( DBSetFound ( TRUE ) )
+		    Assert.True( Found() )
+		   
+		    Assert.True( DBSelectArea ( "AREA2" ) )
+		    Assert.Equal( "AREA2" , Alias() )
+		    Assert.False( Found() )
+		    Assert.True( DBSetFound  ( FALSE ) )
+		    Assert.False( Found() )
+
+		    Assert.True( DBCloseArea() )
+		    Assert.True( DBSelectArea ( "AREA1" ) )
+		    Assert.True( DBCloseArea() )
+		RETURN
+
+
+		// TECH-56GA29Y57C, Found() does not return correct results for the active workarea
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBSetFound_test3() AS VOID
+			LOCAL aDbf AS ARRAY
+			LOCAL cDbf AS STRING
+			DBCloseAll()
+			
+			cDBF := GetTempFileName()
+		    aDbf := {{ "AGE" , "N" , 2 , 0 }}
+		    DBCreate( cDBF , aDbf)
+		    DBUseArea(,"DBFNTX",cDBF,,FALSE)
+		   
+		    DBAppend()
+		    FieldPut(1,1)
+		    DBCloseArea()
+		   
+		    DBUseArea( TRUE ,"DBFNTX",cDBF,"AREA1" ,TRUE )
+		    DBUseArea( TRUE ,"DBFNTX",cDBF,"AREA2" ,TRUE )
+		    
+		    DBSelectArea ( "AREA1" )  
+		    Assert.True( DBLocate({||_FIELD->AGE == 1}) )
+		    Assert.True( Found() )
+		   
+		    DBSelectArea ( "AREA2" )   
+		    Assert.False( Found() )
+		
+		    DBCloseAll()
+		RETURN
+
+
+		// TECH-5YKDFJWM4N, FLock() runtime exception when some records are already locked
+		[Fact, Trait("Category", "DBF")];
+		METHOD FLock_test() AS VOID
+			LOCAL aDbf AS ARRAY
+			LOCAL cDbf AS STRING
+			DBCloseAll()
+			
+			cDBF := GetTempFileName()
+		    aDbf := {{ "AGE" , "N" , 2 , 0 }}
+			DBCreate( cDBF , aDbf)
+
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			DBAppend()
+			DBAppend()
+			DBAppend()
+			DBCloseArea()
+			
+			Assert.True( DBUseArea( TRUE ,"DBFNTX",cDBF,"AREA1" ,TRUE ) )// open shared
+			DBGoTop()
+			Assert.True( DBRLock ( RecNo() ) ) // lock first record
+			Assert.Equal( 1 , (INT) ALen ( DBRLockList() ) )
+			
+			Assert.True( DBUseArea( TRUE ,"DBFNTX",cDBF,"AREA2" ,TRUE ) ) // open shared
+			DBGoBottom()
+			Assert.True( DBRLock ( RecNo() ) ) // lock last record
+			Assert.Equal( 1 , (INT) ALen ( DBRLockList() ) )
+			
+			Assert.False( FLock() )
+			// what's the correct return value here??
+			// Assert.Equal( 0 , (INT) ALen ( DBRLockList() ) )
+			DBCloseAll()
+		RETURN
+
+
+		// TECH-429V6Q2959, IndexExt() problems
+		[Fact, Trait("Category", "DBF")];
+		METHOD IndexExt_test() AS VOID
+			LOCAL aDbf AS ARRAY
+			LOCAL cDBF AS STRING
+			LOCAL aValues AS ARRAY
+			LOCAL i AS DWORD       
+			DBCloseAll()
+			
+			cDBF := GetTempFileName()
+
+			RDDSetDefault("DBFNTX")
+			Assert.True( IndexKey() == "")
+			Assert.True( IndexOrd() == 0)
+			Assert.True( IndexCount() == 0)
+			Assert.True( Upper(IndexExt()) ==  ".NTX")
+			Assert.True( DBOrderInfo(DBOI_INDEXEXT) == NIL )
+			
+			aValues := { 44 , 12, 34 , 21 }
+			aDbf := {{ "AGE" , "N" , 2 , 0 }}
+			
+			DBCreate( cDBF , aDbf)
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)                    
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut(1,aValues [i])
+			NEXT    
+			DBCreateIndex( cDbf, "age" )
+			
+			Assert.True( IndexKey() == "age")
+			Assert.True( IndexOrd() == 1 )
+			Assert.True( IndexCount() == 1 )
+			Assert.True( Upper(IndexExt()) == ".NTX")
+			Assert.True( DBOrderInfo(DBOI_INDEXEXT) == ".NTX")
+			
+			DBCloseArea()
+		RETURN
+
+
+		// TECH-TFF4K29132, VO-incompatible results with workarea numbering
+		[Fact, Trait("Category", "DBF")];
+		METHOD WorkareaNums_2() AS VOID
+			LOCAL cDBF AS STRING
+			LOCAL aFields AS ARRAY 
+			DBCloseAll()
+			
+			cDBF := GetTempFileName()
+
+			RDDSetDefault("DBFNTX")
+
+		  	aFields := {{ "LAST"  , "C" ,  10 , 0 }  }
+		    		 
+			DBCreate( cDbf , aFields , "DBFNTX" ) 
+			DBUseArea( TRUE ,"DBFNTX",cDbf, "FOO1", TRUE) 		
+			Assert.Equal(1 , (INT) DBGetSelect() ) // 1  ok
+			
+			DBUseArea( TRUE ,"DBFNTX",cDbf, "FOO2", TRUE) 		
+			Assert.Equal(2 , (INT) DBGetSelect() )
+		
+			DBUseArea( TRUE ,"DBFNTX",cDbf, "FOO3", TRUE) 		
+			Assert.Equal(3 , (INT) DBGetSelect() ) // 3  ok
+			
+			DBUseArea( TRUE ,"DBFNTX",cDbf, "FOO4", TRUE) 		
+			Assert.Equal(4 , (INT) DBGetSelect() )
+			
+			Assert.Equal(3 , (INT) DBSetSelect ( 3 ) ) // 3 ok
+
+			DBCloseAll() 
+			Assert.Equal(1 , (INT) DBGetSelect() ) // Shows  3 instead of 1
+			Assert.Equal(1 , (INT) select() )      // Shows  3 instead of 1
+			
+			DBUseArea( ,"DBFNTX",cDbf, "FOO1", TRUE) 		
+			Assert.Equal(1 , (INT) DBGetSelect() ) // shows 3 instead of 1
+			
+			DBUseArea( TRUE ,"DBFNTX",cDbf, "FOO2", TRUE) 	
+			Assert.Equal(2 , (INT) DBGetSelect() ) // shows 1 instead of 2 !
+			
+			DBCloseAll()
+		RETURN
+
+
+		// TECH-02UU54BZ37, Problem with DBApp() function
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBApp_test() AS VOID
+			LOCAL cDBF AS STRING
+			LOCAL cDBFto AS STRING
+			LOCAL aFields AS ARRAY 
+			LOCAL aValues AS ARRAY
+			LOCAL i AS DWORD       
+			DBCloseAll()
+			
+			cDBF := GetTempFileName("dbftestfrom")
+			cDBFto := GetTempFileName("dbftestto")
+
+			RDDSetDefault("DBFNTX")
+
+			aFields := {{ "GRUPPE" , "C" , 30 , 0 } ,;
+			{ "ID" , "C" , 5 , 0 } }
+			
+			aValues := { { "Grp1" , "00001" } ,;
+			{ "Grp2" , "00002" } }
+			
+			DBCreate( cDbf , aFields , "DBFNTX" )
+			DBUseArea(,"DBFNTX",cDbf,,FALSE)
+			
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut ( 1 , aValues [ i , 1 ] )
+				FieldPut ( 2 , aValues [ i , 2 ] )
+			NEXT
+
+//			 --------- create To.dbf ----------
+//			 error happens also without that
+			AAdd ( aFields , { "ID2", "N" , 5 , 0 } )
+			
+			
+			
+			DBCreate( cDbfTo , aFields , "DBFNTX" )
+			DBCloseAll()
+
+			DBUseArea(,"DBFNTX",cDbfTo,,FALSE)
+			Assert.True( DBApp ( cDbf ) )// ------- IndexOutofRangeException
+			DBCloseAll()
+		RETURN
+
+
+		// TECH-Z7BO7GN926, Cannot clear order scope
+		[Fact, Trait("Category", "DBF")];
+		METHOD OrderScopeClear_test() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL aValues AS ARRAY 
+			LOCAL i AS DWORD
+			
+			cDBF := "c:\test\tmp1"
+		
+			RDDSetDefault("DBFNTX")
+		
+//			test also with those
+//			aValues := { "vaa" , "abba", "acb" , "aaab"  , "adab"  , "baac"  , "aeab"  , "baaAaa" }
+			aValues := { "vvv" , "abb", "acb" , "aaa"  , "bbb" }
+			DBCreate( cDBF , {{"LAST" , "C" ,10 , 0 } })
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut(1,aValues [i])  
+			NEXT
+			DBCloseArea()
+		
+			DBUseArea(,"DBFNTX",cDBF,,TRUE) 
+			Assert.Equal(0 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			DBCreateIndex(cDbf, "Upper(LAST)" ) 
+			Assert.Equal(5 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			// ? "Setting scope"
+			LOCAL u AS USUAL
+			u := "A"
+			VODBOrderInfo( DBOI_SCOPETOP, "", NIL, REF u )
+			VODBOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF u )
+		
+			DBGoTop()
+			Assert.Equal(4 , (INT)RecNo())
+			DBGoBottom()
+			Assert.Equal(3 , (INT)RecNo())
+		
+			DBGoTop() 
+		
+			Assert.Equal(3 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			DO WHILE ! EOF()
+				DBSkip(1)
+			ENDDO 
+			Assert.Equal(3 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+		
+		
+		
+			u := NIL
+			VODBOrderInfo( DBOI_SCOPETOPCLEAR, "", NIL, REF u )
+			VODBOrderInfo( DBOI_SCOPEBOTTOMCLEAR, "", NIL, REF u )
+			DBGoTop() 
+		
+			Assert.Equal(5 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			
+			LOCAL nCount := 0 AS INT
+			DO WHILE ! EOF()
+				nCount ++
+				? FieldGet(1)
+				DBSkip(1)
+			ENDDO 
+			Assert.Equal(5 , nCount)
+		
+			DBCloseArea()
+		RETURN
+
+
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
 		RETURN GetTempFileName("testdbf")
 		STATIC PRIVATE METHOD GetTempFileName(cFileName AS STRING) AS STRING

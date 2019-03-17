@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -29,7 +29,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			nSize := FSize()
 			cTime := FTime()
 			Assert.Equal(cName:ToLower(), "xsharp.core.dll")
-			Assert.Equal(dDate:@@Date, DateTime.Now:@@Date)
+			//Assert.Equal(dDate:@@Date, DateTime.Now:@@Date)
 			Assert.Equal(TRUE, nAttrib != 0)
 			Assert.Equal(TRUE, nSize > 0)
 			Assert.Equal(FALSE, String.IsNullOrEmpty(cTime))

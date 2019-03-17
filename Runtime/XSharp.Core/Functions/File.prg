@@ -17,7 +17,7 @@ USING System.Runtime.ConstrainedExecution
 USING System.Text
 
 #region Defines
-	DEFINE F_ERROR :=  -1 // Error value (all functions)
+	DEFINE F_ERROR :=  IntPtr{-1} // Error value (all functions)
 	
 	// FERROR() returns, which are not reflected as DOSERROR()
 	DEFINE FERROR_FULL    := 256   // disk full
@@ -114,12 +114,14 @@ BEGIN NAMESPACE XSharp.IO
 			ENDIF
 			// Create
 			fileMode := FileMode.Open
-			IF (DWORD)_AND(dwMode,FO_CREATE) == FO_CREATE
+			FileShare  := FileShare.readWrite
+			IF _AND(dwMode,FO_CREATE) == FO_CREATE
 				fileMode	:= FileMode.Create
 				fileAccess	:= FileAccess.readWrite
+                fileShare   := FileShare.None
+                RETURN
 			ENDIF
 			
-			FileShare  := FileShare.readWrite
 			LOCAL dwTempMode AS DWORD
 			dwTempMode := (DWORD)_OR(OF_SHARE_DENY_WRITE, OF_SHARE_DENY_READ, OF_SHARE_DENY_NONE)
 			dwTempMode := (DWORD)_AND(dwMode,dwTempMode)
@@ -172,10 +174,11 @@ BEGIN NAMESPACE XSharp.IO
 			random := Random{}
 		
 		STATIC INTERNAL METHOD findStream(pStream AS IntPtr) AS FileStream
-			IF streams:ContainsKey(pStream)
-				RETURN streams[pStream]:Stream
-			ENDIF
-			RETURN NULL_OBJECT 
+            LOCAL element := NULL AS FileCacheElement
+            IF streams:TryGetValue(pStream, OUT element)
+                RETURN element:stream
+            ENDIF
+			RETURN NULL
 		
 		STATIC PRIVATE METHOD hasStream(pStream AS Intptr) AS LOGIC
 			RETURN streams:ContainsKey(pStream)
@@ -188,6 +191,7 @@ BEGIN NAMESPACE XSharp.IO
 			RETURN FALSE
 		
 		STATIC PRIVATE METHOD removeStream(pStream AS Intptr) AS LOGIC
+
 			IF streams:ContainsKey(pStream)
 				streams:Remove(pStream)
 				RETURN TRUE
@@ -551,7 +555,7 @@ FUNCTION FFLock(pFile AS IntPtr,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
 /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 /// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FFlush(pFile AS IntPtr) AS LOGIC
-	RETURN XSharp.IO.File.flush(pFile, FALSE)
+	RETURN XSharp.IO.File.flush(pFile, TRUE)
 
 
 /// <summary>
@@ -868,7 +872,7 @@ FUNCTION FCreate2(cFile AS STRING,kAttributes AS DWORD) AS IntPtr
 /// <inheritdoc cref="M:XSharp.Core.Functions.FCreate2(System.String,System.UInt32)" /> 
 /// <remarks>This creates the file with a FC_NORMAL attribute </remarks>
 FUNCTION FCreate(cFile AS STRING ) AS IntPtr
-	RETURN FCreate2(cFile, FC_NORMAL)
+	RETURN FCreate2(cFile, _OR(FC_NORMAL, FO_EXCLUSIVE))
 
 /// <inheritdoc cref="M:XSharp.Core.Functions.FCreate2(System.String,System.UInt32)" />
 FUNCTION FCreate(cFile AS STRING ,kAttributes AS DWORD) AS IntPtr
@@ -1119,6 +1123,6 @@ FUNCTION FGetBuffer(hFile AS IntPtr, nSize AS INT) AS BYTE[]
 /// If you want to close the stream, please use the FClose() function </note>
 /// </remarks>
 /// <seealso cref="M:XSharp.Core.Functions.FClose(System.IntPtr)" />
-FUNCTION FGetStream(pFile as IntPtr) AS FileStream
+FUNCTION FGetStream(pFile AS IntPtr) AS FileStream
     RETURN XSharp.IO.File.FindStream(pFile)
 

@@ -30,6 +30,7 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE _unprocessedAssemblyReferences			AS ConcurrentDictionary<STRING, STRING>
         PRIVATE _unprocessedProjectReferences			AS List<STRING>
         PRIVATE _unprocessedStrangerProjectReferences	AS List<STRING>
+        PRIVATE _failedStrangerProjectReferences        AS List<STRING>
         PRIVATE _mergedTypes							AS ConcurrentDictionary<STRING, XType>
         PUBLIC  FileWalkComplete						AS XProject.OnFileWalkComplete
         PRIVATE _OtherFilesDict							AS ConcurrentDictionary<STRING, XFile>
@@ -44,6 +45,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:_unprocessedAssemblyReferences := ConcurrentDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
             SELF:_unprocessedProjectReferences := List<STRING>{}
             SELF:_unprocessedStrangerProjectReferences := List<STRING>{}
+            SELF:_failedStrangerProjectReferences := List<STRING>{}
             SELF:_projectOutputDLLs := ConcurrentDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
             SELF:_mergedTypes   := ConcurrentDictionary<STRING, XType>{StringComparer.OrdinalIgnoreCase}
             SELF:_ReferencedProjects := List<XProject>{}
@@ -302,6 +304,11 @@ BEGIN NAMESPACE XSharpModel
                 SELF:_unprocessedStrangerProjectReferences:Remove(url)
                 RETURN TRUE
             ENDIF
+            IF SELF:_failedStrangerProjectReferences:Contains(url)
+                SELF:_failedStrangerProjectReferences:Remove(url)
+                RETURN TRUE
+            ENDIF
+
             SELF:RemoveProjectOutput(url)
             prj := SELF:ProjectNode:FindProject(url)
             IF prj != NULL .AND. SELF:_StrangerProjects:Contains(prj)
@@ -313,7 +320,7 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE METHOD RefreshStrangerProjectDLLOutputFiles() AS VOID
             // Check if any DLL has changed
             IF SELF:_StrangerProjects:Count > 0 .AND. ! AssemblyInfo.DisableForeignProjectReferences
-                WriteOutputMessage("--> RefreshStrangerProjectDLLOutputFiles() "+SELF:_StrangerProjects:Count())
+                WriteOutputMessage("--> RefreshStrangerProjectDLLOutputFiles() "+SELF:_StrangerProjects:Count():ToString())
                 FOREACH p AS EnvDte.Project IN SELF:_StrangerProjects
                     VAR sProjectURL := p:FullName
                     VAR mustAdd     := FALSE
@@ -331,7 +338,7 @@ BEGIN NAMESPACE XSharpModel
                         mustAdd := TRUE
                     ENDIF
                     IF mustAdd
-                        SELF:_unprocessedStrangerProjectReferences:Add(sProjectURL)
+                        SELF:AddStrangerProjectReference(sProjectURL)
                     ENDIF
                 NEXT
                 WriteOutputMessage("<-- RefreshStrangerProjectDLLOutputFiles()")
@@ -342,7 +349,7 @@ BEGIN NAMESPACE XSharpModel
             LOCAL p AS Project
             LOCAL outputFile AS STRING
             IF SELF:_unprocessedStrangerProjectReferences:Count > 0 .AND. ! AssemblyInfo.DisableForeignProjectReferences
-                WriteOutputMessage("ResolveUnprocessedStrangerReferences()" +_unprocessedStrangerProjectReferences:Count)
+                WriteOutputMessage("ResolveUnprocessedStrangerReferences()" +_unprocessedStrangerProjectReferences:Count:ToString())
                 existing := List<STRING>{}
                 FOREACH sProject AS STRING IN SELF:_unprocessedStrangerProjectReferences
                     p := SELF:ProjectNode:FindProject(sProject)
@@ -350,13 +357,20 @@ BEGIN NAMESPACE XSharpModel
                         SELF:_StrangerProjects:Add(p)
                         outputFile := SELF:GetStrangerOutputDLL(sProject, p)
                         IF !String.IsNullOrEmpty(outputFile)
-                            existing:Add(sProject)
                             SELF:AddProjectOutput(sProject, outputFile)
+                        ELSE
+                            IF ! SELF:_failedStrangerProjectReferences:Contains(sProject)
+                                SELF:_failedStrangerProjectReferences:Add(sProject)
+                            ENDIF
                         ENDIF
+			// Always remove the project, to prevent endless retries
+                        existing:Add(sProject)
                     ENDIF
                 NEXT
                 FOREACH sProject AS STRING IN existing
-                    SELF:_unprocessedStrangerProjectReferences:Remove(sProject)
+                    IF SELF:_unprocessedStrangerProjectReferences:Contains(sProject)
+                        SELF:_unprocessedStrangerProjectReferences:Remove(sProject)
+                    ENDIF
                 NEXT
                 SELF:_clearTypeCache()
             ENDIF

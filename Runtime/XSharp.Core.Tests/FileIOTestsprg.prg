@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -22,7 +22,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			sFile	 := "FileIo.txt"
 			sToWrite := "This is a line of text"
 			hFile := FCreate2(sFile,FC_NORMAL)
-			assert.NotEqual(hFile:ToInt32(), F_ERROR)
+			assert.NotEqual(hFile, F_ERROR)
 			FWriteLine(hFile, sToWrite)
 			FWriteLine(hFile, sToWrite)
 			FWriteLine(hFile, sToWrite)

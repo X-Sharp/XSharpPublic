@@ -93,11 +93,12 @@ namespace XSharp.Project
         @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
 
     [ProvideService(typeof(XSharpLanguageService), ServiceName = LanguageServiceName)]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), FileExtension1)]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), FileExtension2)]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), PpoExtension)]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), HeaderExtension1)]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), HeaderExtension2)]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".prg")]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xs")]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".ppo")]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".vh")]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xh")]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".ch")]
     [ProvideLanguageService(typeof(XSharpLanguageService),
                          LanguageName,
                          1,                            // resource ID of localized language name
@@ -162,11 +163,12 @@ namespace XSharp.Project
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Class", 500)]
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Form", 500)]
     // 109 in the next lines is the resource id of the editor (XSharp Source Code Editor)
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), FileExtension1, 0x42, DefaultName = EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), FileExtension2, 0x42, DefaultName = EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), PpoExtension, 0x42, DefaultName = EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), HeaderExtension1, 0x42, DefaultName = EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), HeaderExtension2, 0x42, DefaultName = EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".prg", 0x42, DefaultName = EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xs", 0x42, DefaultName = EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ppo", 0x42, DefaultName = EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".vh", 0x42, DefaultName = EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xh", 0x42, DefaultName = EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ch", 0x42, DefaultName = EditorName, NameResourceID = 109)]
     [ProvideEditorExtension(typeof(XSharpEditorFactory), ".rc", 0x42, DefaultName = EditorName, NameResourceID = 109)]
     // This tells VS that we support Code and Designer view
     // The guids are VS specific and should not be changed

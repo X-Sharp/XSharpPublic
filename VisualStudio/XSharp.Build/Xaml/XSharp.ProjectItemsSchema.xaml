@@ -34,6 +34,7 @@
     <FileExtension Name=".xs"  ContentType="XSharpFile"/>
     <FileExtension Name=".vh"  ContentType="XSharpHeader"/>
     <FileExtension Name=".xh"  ContentType="XSharpHeader"/>
+    <FileExtension Name=".ch"  ContentType="XSharpHeader"/>
     <FileExtension Name=".rc"  ContentType="NativeResource"/>
     <FileExtension Name=".vnfrm"  ContentType="VOBinary"/>
     <FileExtension Name=".vndbs"  ContentType="VOBinary"/>

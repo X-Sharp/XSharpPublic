@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -171,7 +171,7 @@ METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	PROPERTY RecNo		AS LONG 	GET   0
 //	PROPERTY Shared		AS LOGIC GET
 /// <inheritdoc />
-VIRTUAL PROPERTY SysName AS STRING GET typeof(SDF):ToString()
+VIRTUAL PROPERTY SysName AS STRING GET "SDF"
 //	
 	// Error Handling
 //	PROPERTY LastGenCode	AS LONG GET

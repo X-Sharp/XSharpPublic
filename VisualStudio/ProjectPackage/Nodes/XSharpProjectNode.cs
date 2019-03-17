@@ -306,11 +306,11 @@ namespace XSharp.Project
             }
             return this.options;
         }
-        public override string GetProjectProperty(string propertyName, bool resetCache)
+        public override string GetProjectProperty(string propertyName, bool resetCache, bool unevaluated = false)
         {
             if (BuildProject != null)
             {
-                return base.GetProjectProperty(propertyName, resetCache);
+                return base.GetProjectProperty(propertyName, resetCache, unevaluated);
             }
             return null;
         }

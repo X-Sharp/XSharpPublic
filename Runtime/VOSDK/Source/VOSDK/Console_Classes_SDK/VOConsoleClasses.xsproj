@@ -16,6 +16,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+  </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
     <Compile Include="AssemblyInfo.prg" />
@@ -62,23 +64,5 @@
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
-    <Optimize>false</Optimize>
-    <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>165,9032,170,618,9068,108,1591,649,9015</DisabledWarnings>
-    <WarningLevel>4</WarningLevel>
-    <SignAssembly>true</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <DocumentationFile>VOConsoleClasses.Xml</DocumentationFile>
-    <AssemblyOriginatorKeyFile>c:\xsharp\devrt\runtime\vosdk\source\sharedbinaries\vulcanstrongnamekey.snk</AssemblyOriginatorKeyFile>
-    <CommandLineOption>/noclipcall</CommandLineOption>
-    <PPO>false</PPO>
-    <DefineConstants>DEBUG;TRACE;__XRUNTIME__;__VULCAN__</DefineConstants>
-    <PlatformTarget>x86</PlatformTarget>
-    <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
 </Project>

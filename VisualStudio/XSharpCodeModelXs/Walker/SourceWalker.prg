@@ -42,7 +42,7 @@ BEGIN NAMESPACE XSharpModel
 
 		CONSTRUCTOR(file AS XFile)
 			SUPER()
-            if (file != null)
+            IF (file != NULL)
 			    LOCAL sourcePath AS STRING
 			    SELF:_gate := OBJECT{}
 			    SELF:_file := file
@@ -50,7 +50,7 @@ BEGIN NAMESPACE XSharpModel
 			    SELF:StartPosition := 0
 			    //
 			    sourcePath := SELF:_file:SourcePath
-            endif
+            ENDIF
 
 
 		METHOD BuildModel(oInfo AS ParseResult) AS VOID

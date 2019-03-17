@@ -42,7 +42,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <VsixType>v3</VsixType>
-	<DeployExtension Condition=" '$(Configuration)' == 'Release' " >false</DeployExtension>
+    <DeployExtension Condition=" '$(Configuration)' == 'Release' ">false</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <StartAction>Program</StartAction>
@@ -234,6 +234,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="VSLangProj2, Version=7.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
@@ -274,6 +275,7 @@
     <Compile Include="Editors\XSharpCompletionSource_Partial.cs" />
     <Compile Include="Editors\XSharpErrorColorizer.cs" />
     <Compile Include="Editors\XSharpQuickInfo.cs" />
+    <Compile Include="Editors\XMLDoc\XSharpXMLDoc.cs" />
     <Compile Include="ErrorList\ErrorListManager.cs" />
     <Compile Include="LanguageService\ExpansionFunctions.cs" />
     <Compile Include="LanguageService\XSharpViewFilter.cs" />

@@ -15,6 +15,10 @@ using LanguageService.SyntaxTree;
 using System.Reflection;
 using System.Diagnostics;
 using XSharpColorizer;
+using System.Windows.Documents;
+using System.Windows.Media;
+using XSharpModel;
+using System.Windows.Controls;
 
 namespace XSharp.Project
 {
@@ -31,7 +35,7 @@ namespace XSharp.Project
             _file = _subjectBuffer.GetFile();
         }
         private int lastTriggerPoint = -1;
-        private string lastHelp = "";
+        private Inline[] lastHelp = null;
         private ITrackingSpan lastSpan = null;
         private int lastVersion = -1;
         static void WriteOutputMessage(string message)
@@ -54,21 +58,23 @@ namespace XSharp.Project
 
                     // Map the trigger point down to our buffer.
                     SnapshotPoint? subjectTriggerPoint = session.GetTriggerPoint(_subjectBuffer.CurrentSnapshot);
-                    if (!subjectTriggerPoint.HasValue )
+                    if (!subjectTriggerPoint.HasValue)
                     {
                         return;
                     }
                     ITextSnapshot currentSnapshot = subjectTriggerPoint.Value.Snapshot;
                     WriteOutputMessage($"Triggerpoint: {subjectTriggerPoint.Value.Position}");
 
-                    if ( (subjectTriggerPoint.Value.Position == lastTriggerPoint) && ( lastVersion == currentSnapshot.Version.VersionNumber ) )
+                    if ((subjectTriggerPoint.Value.Position == lastTriggerPoint) && (lastVersion == currentSnapshot.Version.VersionNumber))
                     {
-                        if (!string.IsNullOrEmpty(lastHelp))
+                        if (lastHelp != null)
                         {
-                            qiContent.Add(lastHelp);
+                            var description = new TextBlock();
+                            description.Inlines.AddRange(lastHelp);
+                            qiContent.Add(description);
                             WriteOutputMessage($"Return last help content: {lastHelp}");
                         }
-                        if (lastSpan != null   )
+                        if (lastSpan != null)
                         {
                             applicableToSpan = lastSpan;
                         }
@@ -102,7 +108,7 @@ namespace XSharp.Project
                     XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(lineNumber, _file);
                     XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, _file);
                     // adjust caretpos, for other completions we need to stop before the caret. Now we include the caret
-                    List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos+1, lineNumber, tokens.TokenStream, out stopToken, true, _file, false);
+                    List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos + 1, lineNumber, tokens.TokenStream, out stopToken, true, _file, false);
                     // Check if we can get the member where we are
                     //if (tokenList.Count > 1)
                     //{
@@ -133,57 +139,80 @@ namespace XSharp.Project
                             {
                                 if (gotoElement.XSharpElement.Parent != null)
                                 {
-                                    qiContent.Add(gotoElement.XSharpElement.Parent.Description);
+                                    var description = new TextBlock();
+                                    description.Inlines.Add(new Run(gotoElement.XSharpElement.Parent.Description));
+
+                                    qiContent.Add(description);
                                 }
                             }
                             else
-                                qiContent.Add(gotoElement.XSharpElement.Description);
+                            {
+                                var description = new TextBlock();
+                                description.Inlines.Add(new Run(gotoElement.XSharpElement.Description));
+                                qiContent.Add(description);
+                            }
+
                         }
                         else if (gotoElement.SystemElement is TypeInfo)
                         {
-                            XSharpLanguage.TypeAnalysis analysis = new XSharpLanguage.TypeAnalysis((TypeInfo)gotoElement.SystemElement);
-                            qiContent.Add(analysis.Description);
+                            QuickInfoTypeAnalysis analysis = new QuickInfoTypeAnalysis((TypeInfo)gotoElement.SystemElement);
+                            var description = new TextBlock();
+                            description.Inlines.AddRange(analysis.WPFDescription);
+                            qiContent.Add(description);
                         }
                         else
                         {
                             // This works with System.MemberInfo AND
-                            XSharpLanguage.MemberAnalysis analysis = null;
+                            QuickInfoMemberAnalysis analysis = null;
                             if (gotoElement.SystemElement is MemberInfo)
                             {
-                                analysis = new XSharpLanguage.MemberAnalysis(gotoElement.SystemElement);
+                                string xmldoc = XSharpXMLDocMember.GetDocSummary(gotoElement.SystemElement, member.File.Project);
+
+                                analysis = new QuickInfoMemberAnalysis(gotoElement.SystemElement);
                                 if (analysis.IsInitialized)
                                 {
                                     if ((analysis.Kind == XSharpModel.Kind.Constructor) && (cType != null) && (cType.SType != null))
                                     {
-                                        XSharpLanguage.TypeAnalysis typeAnalysis;
-                                        typeAnalysis = new XSharpLanguage.TypeAnalysis(cType.SType.GetTypeInfo());
+                                        QuickInfoTypeAnalysis typeAnalysis;
+                                        typeAnalysis = new QuickInfoTypeAnalysis(cType.SType.GetTypeInfo());
                                         if (typeAnalysis.IsInitialized)
                                         {
-                                            qiContent.Add(typeAnalysis.Description);
+                                            var description = new TextBlock();
+                                            description.Inlines.AddRange(typeAnalysis.WPFDescription);
+                                            qiContent.Add(description);
                                         }
                                     }
                                     else
                                     {
-                                        qiContent.Add(analysis.Description);
+                                        var description = new TextBlock();
+                                        description.Inlines.AddRange(analysis.WPFDescription);
+                                        qiContent.Add(description);
                                     }
+                                    if (xmldoc != null)
+                                        qiContent.Add(xmldoc);
                                 }
                             }
 
                         }
                         if (qiContent.Count > 0)
                         {
-                            lastHelp = (string)qiContent[0];
-                            lastSpan = applicableToSpan;
-                            lastVersion = currentSnapshot.Version.VersionNumber;
-                            WriteOutputMessage($"Found new help content: {lastHelp}");
-
+                            TextBlock description;
+                            description = qiContent[0] as TextBlock;
+                            if (description != null)
+                            {
+                                lastHelp = new Inline[description.Inlines.Count];
+                                description.Inlines.CopyTo(lastHelp, 0);
+                                lastSpan = applicableToSpan;
+                                lastVersion = currentSnapshot.Version.VersionNumber;
+                                WriteOutputMessage($"Found new help content: {lastHelp}");
+                            }
                         }
                         return;
                     }
                 }
                 catch (Exception ex)
                 {
-                    XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpQuickInfo.AugmentQuickInfoSession failed : " );
+                    XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpQuickInfo.AugmentQuickInfoSession failed : ");
                     XSharpProjectPackage.Instance.DisplayException(ex);
                 }
                 finally
@@ -267,7 +296,7 @@ namespace XSharp.Project
                     }
                     catch (Exception ex)
                     {
-                        XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpQuickInfo.OnTextViewMouseHover failed" );
+                        XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpQuickInfo.OnTextViewMouseHover failed");
                         XSharpProjectPackage.Instance.DisplayException(ex);
                     }
                 }
@@ -307,6 +336,144 @@ namespace XSharp.Project
             public IIntellisenseController TryCreateIntellisenseController(ITextView textView, IList<ITextBuffer> subjectBuffers)
             {
                 return new XSharpQuickInfoController(textView, subjectBuffers, this);
+            }
+        }
+
+        internal class QuickInfoTypeAnalysis : XSharpLanguage.TypeAnalysis
+        {
+            internal QuickInfoTypeAnalysis(TypeInfo typeInfo) : base(typeInfo)
+            { }
+
+            public List<Inline> WPFDescription
+            {
+                get
+                {
+                    List<Inline> content = new List<Inline>();
+
+                    Run temp;
+                    if (this.Modifiers != XSharpModel.Modifiers.None)
+                    {
+                        temp = new Run(this.Modifiers.ToString() + " ");
+                        temp.Foreground = Brushes.Blue;
+                        content.Add(temp);
+                    }
+                    temp = new Run(this.Visibility.ToString() + " ");
+                    temp.Foreground = Brushes.Blue;
+                    content.Add(temp);
+                    //
+                    if (this.Kind != XSharpModel.Kind.Field)
+                    {
+                        temp = new Run(this.Kind.ToString() + " ");
+                        temp.Foreground = Brushes.Blue;
+                        content.Add(temp);
+                    }
+                    //
+                    temp = new Run(this.Prototype);
+                    content.Add(temp);
+                    //
+                    return content;
+                }
+
+            }
+        }
+
+        internal class QuickInfoMemberAnalysis : XSharpLanguage.MemberAnalysis
+        {
+            internal QuickInfoMemberAnalysis(MemberInfo member) : base(member)
+            { }
+
+            public List<Inline> WPFDescription
+            {
+                get
+                {
+                    List<Inline> content = new List<Inline>();
+
+                    Run temp;
+                    if (this.Modifiers != XSharpModel.Modifiers.None)
+                    {
+                        temp = new Run(this.Modifiers.ToString() + " ");
+                        temp.Foreground = Brushes.Blue;
+                        content.Add(temp);
+                    }
+                    temp = new Run(this.Visibility.ToString() + " ");
+                    temp.Foreground = Brushes.Blue;
+                    content.Add(temp);
+                    //
+                    if ((this.Kind != XSharpModel.Kind.Field) && (this.Kind != XSharpModel.Kind.Constructor))
+                    {
+                        if (this.Kind == XSharpModel.Kind.VODefine)
+                        {
+                            temp = new Run("Define" + " ");
+                        }
+                        else if (this.Kind == XSharpModel.Kind.VOGlobal)
+                        {
+                            temp = new Run("Global" + " ");
+                        }
+                        else
+                        {
+                            temp = new Run(this.Kind.ToString() + " ");
+                        }
+                        temp.Foreground = Brushes.Blue;
+                        content.Add(temp);
+                    }
+                    //
+                    content.AddRange(this.WPFPrototype);
+                    //
+                    return content;
+                }
+
+            }
+
+            public List<Inline> WPFPrototype
+            {
+                get
+                {
+                    List<Inline> content = new List<Inline>();
+                    Run temp;
+                    List<Inline> vars = new List<Inline>();
+                    if (this.Kind.HasParameters())
+                    {
+                        temp = new Run(this.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
+                        temp.Foreground = Brushes.Blue;
+                        vars.Add(temp);
+
+                        foreach (var var in this.Parameters)
+                        {
+                            if (vars.Count > 1)
+                            {
+                                temp = new Run(", ");
+                                vars.Add(temp);
+                            }
+                            temp = new Run(var.Name + " ");
+                            vars.Add(temp);
+                            temp = new Run(var.Direction + " ");
+                            temp.Foreground = Brushes.Blue;
+                            vars.Add(temp);
+                            temp = new Run(var.TypeName);
+                            temp.Foreground = Brushes.Blue;
+                            vars.Add(temp);
+                        }
+                        temp = new Run(this.Kind == XSharpModel.Kind.Constructor ? "}" : ")");
+                        temp.Foreground = Brushes.Blue;
+                        vars.Add(temp);
+                    }
+                    //
+                    temp = new Run(this.Name);
+                    content.Add(temp);
+                    content.AddRange(vars);
+                    //
+                    if (this.Kind.HasReturnType())
+                    {
+                        temp = new Run(" AS ");
+                        temp.Foreground = Brushes.Blue;
+                        content.Add(temp);
+                        temp = new Run(this.TypeName);
+                        temp.Foreground = Brushes.Blue;
+                        content.Add(temp);
+                    }
+                    //
+                    return content;
+                }
             }
         }
 

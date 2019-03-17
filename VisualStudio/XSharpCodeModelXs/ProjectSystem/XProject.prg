@@ -107,9 +107,9 @@ BEGIN NAMESPACE XSharpModel
                     ENDIF
                 NEXT
 
-            PRIVATE METHOD LoadReference(cDLL as STRING) as VOID
+            PRIVATE METHOD LoadReference(cDLL AS STRING) AS VOID
                 SELF:ProjectNode:SetStatusBarText(String.Format("Loading referenced types for project '{0}' from '{1}'", SELF:Name, System.IO.Path.GetFileName(cDLL)))
-                var assemblyInfo := SystemTypeController.LoadAssembly(cDLL)
+                VAR assemblyInfo := SystemTypeController.LoadAssembly(cDLL)
                 SELF:_AssemblyReferences:Add(assemblyInfo)
                 assemblyInfo:AddProject(SELF)
                 RETURN

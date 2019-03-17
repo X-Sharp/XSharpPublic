@@ -1073,9 +1073,9 @@ namespace XSharpLanguage
             return retValue;
         }
     }
-    internal class MemberAnalysis
+    public class MemberAnalysis
     {
-        class ParamInfo
+        public class ParamInfo
         {
             public String Name;
             public String TypeName;
@@ -1697,7 +1697,7 @@ namespace XSharpLanguage
             }
         }
 
-        private List<ParamInfo> Parameters
+        public List<ParamInfo> Parameters
         {
             get
             {
@@ -1727,7 +1727,7 @@ namespace XSharpLanguage
     /// <summary>
     /// Process a TypeInfo in order to provide usable informations (TypeName, Glyph, ... )
     /// </summary>
-    internal class TypeAnalysis
+    public class TypeAnalysis
     {
         private String _name;
         private Modifiers _modifiers;

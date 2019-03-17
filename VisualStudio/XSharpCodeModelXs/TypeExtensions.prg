@@ -49,7 +49,7 @@ BEGIN NAMESPACE XSharpModel
             lookupTable:Add("XSharp.__WinBool", "LOGIC")
             lookupTable := lookupTable:ToImmutableDictionary<STRING, STRING>(StringComparer.OrdinalIgnoreCase)
 
-        STATIC METHOD GetSystemTypeName( SELF typename AS STRING, lXSharpNames as LOGIC) AS STRING
+        STATIC METHOD GetSystemTypeName( SELF typename AS STRING, lXSharpNames AS LOGIC) AS STRING
             //
 			// Todo: Rename to XSharp type names
 			//
@@ -62,7 +62,7 @@ BEGIN NAMESPACE XSharpModel
                     CASE "float"
                         RETURN "XSharp.__Float"
                     CASE "psz"
-                        RETURN "VulcanXSharp.__Psz"
+                        RETURN "XSharp.__Psz"
                     CASE "symbol"
                         RETURN "XSharp.__Symbol"
                     CASE "usual"

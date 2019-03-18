@@ -48,6 +48,7 @@
     <DisabledWarnings>1591</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <XSharpProjectversion>2.0.0.9</XSharpProjectversion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <Optimize>false</Optimize>
@@ -65,8 +66,6 @@
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <DisabledWarnings>1591</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
-    <NoStandardDefs>true</NoStandardDefs>
-    <IncludePaths>$(SolutionDir)\Common</IncludePaths>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>True</Prefer32Bit>
   </PropertyGroup>
@@ -86,8 +85,6 @@
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <DisabledWarnings>1591</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
-    <NoStandardDefs>true</NoStandardDefs>
-    <IncludePaths>$(SolutionDir)\Common</IncludePaths>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>True</Prefer32Bit>
   </PropertyGroup>

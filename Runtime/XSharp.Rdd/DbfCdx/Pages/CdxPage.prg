@@ -49,7 +49,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		    RETURN
         #region Read/Write
 
-        PROTECTED METHOD SetBuffer(buffer as Byte[]) AS VOID
+        PROTECTED METHOD SetBuffer(buffer AS BYTE[]) AS VOID
             _buffer := buffer
 
 			
@@ -64,7 +64,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN lOk
 
         INTERNAL METHOD Clear() AS VOID
-            _buffer := Byte[]{_buffer:Length}
+            _buffer := BYTE[]{_buffer:Length}
             RETURN
 
         INTERNAL METHOD SetEmptyRoot() AS VOID
@@ -210,10 +210,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
         STATIC METHOD MemSet(bytes AS BYTE[], start AS INT, length AS INT, bValue AS BYTE) AS VOID
-            var finish := start+length-1
-            FOR var i := start to finish
+            VAR finish := start+length-1
+            FOR VAR i := start TO finish
                 bytes[i] := bValue
-            next
+            NEXT
 
 		INTERNAL CONST CDXPAGE_SIZE        := 512 AS WORD
 

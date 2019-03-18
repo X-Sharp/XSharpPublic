@@ -6,7 +6,45 @@
     <header>
       <para styleclass="Heading1">XSharp.RDD</para>
     </header>
-    <para styleclass="Normal">This will contain the various RDDs implemented for X#.</para>
-    <para styleclass="Normal"><text style="font-weight:bold; font-style:italic;">The DBFCDX RDD is not included yet</text></para>
+    <para styleclass="Normal">This DLL contains the various RDDs that come with X#:</para>
+    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">DBFNTX (including DBT memos)</li>
+      <li styleclass="Normal">DBFCDX (Including FPT memos)</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">You can also uses &quot;limited&quot; RDDs with do not have all the functionality:</para>
+    <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">CAVODBF or DBF: Just DBF Files</li>
+      <li styleclass="Normal">DBFDBT: DBF files with DBT memos, no index support</li>
+      <li styleclass="Normal">DBFFPT: &#160;DBF files with FPT memos, no index support</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The Advantage RDDs (require advantage DLLs)</para>
+    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">ADSADT</li>
+      <li styleclass="Normal">AXDBFCDX</li>
+      <li styleclass="Normal">AXDBFNTX</li>
+      <li styleclass="Normal">AXDBFVFP</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Advantage.ADSADT</li>
+      <li styleclass="Normal">Advantage.AXSQLCDX</li>
+      <li styleclass="Normal">Advantage.AXSQLNTX</li>
+      <li styleclass="Normal">Advantage.AXSQLVFP</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text style="font-weight:bold; font-style:italic;">In one of the coming releases we will add support for:</text></para>
+    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">DBFVFP = DBFCDX with support for additional Visual FoxPro datatypes.</li>
+      <li styleclass="Normal">DBFMEMO = DBF + NTX + DBV</li>
+      <li styleclass="Normal">DBFBLOB = DBF without associated DBF file</li>
+      <li styleclass="Normal">DELIM</li>
+      <li styleclass="Normal">SDF</li>
+    </list>
+    <para styleclass="Normal"><br/>and may be, if there is enough interest:</para>
+    <para styleclass="Normal"><text style="font-style:italic;">DBFNSX = DBF + SMT + NSX</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

@@ -225,7 +225,7 @@ BEGIN NAMESPACE XSharp.RDD
             CASE DBOI_SCOPETOP
             CASE DBOI_SCOPEBOTTOM
                 IF workOrder != NULL
-                    IF info:Result != null
+                    IF info:Result != NULL
                         workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
                     ENDIF
                     IF nOrdinal == DBOI_SCOPETOP
@@ -237,30 +237,30 @@ BEGIN NAMESPACE XSharp.RDD
                     info:Result := NULL
                 ENDIF
             CASE DBOI_KEYADD
-                if workOrder != NULL
+                IF workOrder != NULL
                     info:Result := workOrder:AddKey(SELF:Recno)
-                else
+                ELSE
                     info:Result := FALSE
-                endif
+                ENDIF
             CASE DBOI_KEYDELETE
-                if workOrder != NULL
+                IF workOrder != NULL
                     info:Result := workOrder:DeleteKey(SELF:Recno)
-                else
+                ELSE
                     info:Result := FALSE
-                endif
+                ENDIF
             CASE DBOI_CUSTOM
-                if workOrder != NULL
-                    local lOld as LOGIC
+                IF workOrder != NULL
+                    LOCAL lOld AS LOGIC
                     lOld := workOrder:Custom
-                    if info:Result is LOGIC custom
-                        if custom
+                    IF info:Result IS LOGIC custom
+                        IF custom
                             workOrder:SetCustom()
                         ENDIF
                     ENDIF
                     info:Result := lOld
-                else
+                ELSE
                     info:Result := FALSE
-                endif
+                ENDIF
  
             CASE DBOI_USER + 42
                 // Dump Cdx to Txt file

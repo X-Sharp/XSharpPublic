@@ -30,6 +30,7 @@ namespace XSharp.CodeDom
             XType = type;
             Type = null;
             _typeName = type.FullName;
+            BaseType = type.FullName;
         }
 
         internal XCodeTypeReference(System.Type type) : base(type)

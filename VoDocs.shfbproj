@@ -36,7 +36,7 @@
       <DocumentationSource sourceFile="Docs\VOSystemClasses_manual.xml" />
     </DocumentationSources>
     <HelpTitle>X# Visual Objects SDK Documentation</HelpTitle>
-    <HelpFileVersion>2.0.0.9</HelpFileVersion>
+    <HelpFileVersion>2.0.1.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>

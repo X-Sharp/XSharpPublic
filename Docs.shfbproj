@@ -32,7 +32,7 @@
       <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.RT\XSharp.RT.dll" />
     </DocumentationSources>
     <HelpTitle>X# Runtime Reference</HelpTitle>
-    <HelpFileVersion>2.0.0.9</HelpFileVersion>
+    <HelpFileVersion>2.0.1.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>

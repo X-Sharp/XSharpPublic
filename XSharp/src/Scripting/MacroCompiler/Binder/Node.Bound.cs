@@ -132,6 +132,10 @@ namespace XSharp.MacroCompiler.Syntax
                 {
                     Symbol = null;
                 }
+                else if (Symbol is NamespaceSymbol)
+                {
+                    Symbol = null;
+                }
             }
             if (Symbol == null)
             {

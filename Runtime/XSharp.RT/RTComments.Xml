@@ -61,18 +61,18 @@
     </remarks>
   </ZeroBasedIndex>
   <ZeroBasedIndexParam>
-    <param name="index">
+    <span>
       This indexer is <em>ZERO</em> based, however in your PRG code you can use <em>ONE</em> based array indices.
       The compiler will recognize that this property is part of a type that implements a special interface
       and will subtract one from the indexes, unless the /az compiler option is enabled.
-    </param>
+    </span>
   </ZeroBasedIndexParam>
   <NameBasedIndexParam>
-    <param name="index">
-      Name of the property from the element stored in the location index. If the element implements IIndexedProperties, 
+    <span>
+      Name of the property from the element stored in the location index. If the element implements IIndexedProperties,
       then the indexer with a string parameter on this element will be called. Otherwise the runtime will use reflection to find
       the field or property on the element and return its value
-    </param>
+    </span>
   </NameBasedIndexParam>
   <ZeroBasedIndexProperty>
     <summary>

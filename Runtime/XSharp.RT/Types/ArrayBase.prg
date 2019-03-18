@@ -97,13 +97,13 @@ BEGIN NAMESPACE XSharp
 
 		#region Indexers and TO GET / SET Elements.
 	    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />  
-		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" />
+		/// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <returns>The element stored at the specified location in the array.</returns>
         PUBLIC METHOD __GetElement(index AS INT) AS T
 			RETURN SELF:_internalList[ index ]
 
 	    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />  
-		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" />
+		/// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <param name='e'>New element to store in the array at the position specified</param>
         /// <returns>The new element</returns>
 		PUBLIC METHOD __SetElement(e AS T,index AS INT) AS T
@@ -153,7 +153,7 @@ BEGIN NAMESPACE XSharp
 			RETURN NULL
 
 		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
-		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /> 
+		/// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
 		/// <returns>The element stored at the indicated location in the collection.</returns>
 		PUBLIC PROPERTY SELF[index AS INT] AS T
 			GET
@@ -173,9 +173,9 @@ BEGIN NAMESPACE XSharp
 		END PROPERTY
 
         /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
-        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" />
+        /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
+        /// <param name="index2"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
-
 		PUBLIC PROPERTY SELF[index AS INT, index2 AS INT] AS USUAL
 			GET
 				LOCAL oElement AS T
@@ -215,10 +215,10 @@ BEGIN NAMESPACE XSharp
 				ENDIF
 			END SET
 		END PROPERTY
-
+         
 		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
-		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" />
-        /// <include file="RTComments.xml" path="Comments/NameBasedIndexParam/*" /> 
+		/// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
+        /// <param name="name"><include file="RTComments.xml" path="Comments/NameBasedIndexParam/*" /></param>
 		/// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
 		PUBLIC PROPERTY SELF[index AS INT, name AS STRING] AS USUAL
 			GET
@@ -327,12 +327,12 @@ BEGIN NAMESPACE XSharp
 			RETURN string.Format("[{0}]",_internalList:Count)
 
 		INTERNAL METHOD Sort(startIndex AS INT, count AS INT, comparer AS IComparer<T>) AS VOID
-            if startIndex <= 0
+            IF startIndex <= 0
                 startIndex := 1
-            endif
-            if count < 0
+            ENDIF
+            IF count < 0
                 count := _internalList:Count - startIndex + __ARRAYBASE__
-            endif
+            ENDIF
 			_internalList:Sort(startIndex-__ARRAYBASE__ ,count,comparer)
 			RETURN
 

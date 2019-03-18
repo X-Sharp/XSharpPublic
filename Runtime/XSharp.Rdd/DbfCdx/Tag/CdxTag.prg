@@ -395,11 +395,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SWITCH uiScope
             CASE DBOrder_Info.DBOI_SCOPETOPCLEAR
                 SELF:_topScope       := NULL
-                SELF:_topScopeBuffer := NULL
+                
                 SELF:_topScopeSize   := 0
             CASE DBOrder_Info.DBOI_SCOPEBOTTOMCLEAR
                 SELF:_bottomScope       := NULL
-                SELF:_bottomScopeBuffer := NULL
+                
                 SELF:_bottomScopeSize   := 0
             CASE DBOrder_Info.DBOI_SCOPETOP
                 SELF:_topScope      := itmScope

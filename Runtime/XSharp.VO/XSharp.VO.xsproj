@@ -124,6 +124,7 @@
     <Compile Include="Functions\International2.prg" />
     <Compile Include="Functions\Obsolete.prg" />
     <Compile Include="Functions\Registry.prg" />
+    <Compile Include="Functions\String.prg" />
     <Compile Include="Functions\unsafe.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="Types\ErrorDialog.prg" />

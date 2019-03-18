@@ -286,26 +286,34 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
 
    RETURN sbRet:ToString()
 
+/// <inheritdoc cref="M:XSharp.RT.Functions.SubStr(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)" />
 /// <seealso cref='M:XSharp.RT.Functions.SubStr(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' />
-FUNCTION SubS(c ,iStart ,wLen ) AS STRING CLIPPER
-	RETURN SubStr(c, iStart, wLen)
-
-
-/// <param name="uStart">The starting position from which the substring should be extracted.</param>
-/// <param name="uLen">The length of the substring to beextracted</param>
 /// <seealso cref='M:XSharp.Core.Functions.SubStr3(System.String,System.UInt32,System.UInt32)' />
-FUNCTION SubStr(c ,uStart ,uLen ) AS STRING CLIPPER
-	IF ! c:IsString
-		THROW Error.ArgumentError(__FUNCTION__, NAMEOF(c), 1, <OBJECT>{c})
+FUNCTION SubS(cTarget ,nStart ,nCount ) AS STRING CLIPPER
+	RETURN SubStr(cTarget, nStart, nCount)
+
+/// <summary>
+/// Extract a substring from a string using untyped arguments
+/// </summary>
+/// <param name="cTarget">The string to be extracted from.</param>
+/// <param name="nStart">The starting position from which the substring should be extracted.</param>
+/// <param name="nCount">The number of characters to extract.  If omitted, the substring begins at
+/// <paramref name="nStart"/> and continues to the end of the string.  If <paramref name="nCount"/> is greater
+/// than the number of characters from <paramref name="nStart"/> to the end of <paramref name="cTarget"/>, the extra is ignored.</param>
+/// <seealso cref='M:XSharp.Core.Functions.SubStr3(System.String,System.UInt32,System.UInt32)' />
+/// <seealso cref='M:XSharp.RT.Functions.SubS(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' />
+FUNCTION SubStr(cTarget ,nStart ,nCount ) AS STRING CLIPPER
+	IF ! cTarget:IsString
+		THROW Error.ArgumentError(__FUNCTION__, NAMEOF(cTarget), 1, <OBJECT>{cTarget})
 	ENDIF
-	IF uStart:IsNil
-		uStart := 1
-	ELSEIF ! uStart:IsNumeric
-		THROW Error.ArgumentError(__FUNCTION__, NAMEOF(uStart), 2, <OBJECT>{uStart})
+	IF nStart:IsNil
+		nStart := 1
+	ELSEIF ! nStart:IsNumeric
+		THROW Error.ArgumentError(__FUNCTION__, NAMEOF(nStart), 2, <OBJECT>{nStart})
 	ENDIF
-	VAR start := (INT) uStart 
-	VAR strValue := (STRING) c 
-	IF uLen:isNil
+	VAR start := (INT) nStart 
+	VAR strValue := (STRING) cTarget 
+	IF nCount:isNil
 		LOCAL nLen AS INT
 		nLen := strValue:Length
 		IF start < 0
@@ -319,10 +327,10 @@ FUNCTION SubStr(c ,uStart ,uLen ) AS STRING CLIPPER
 			nLen := strValue:Length - start + 1
 		ENDIF
 		RETURN __SubStr(strValue, start, nLen )
-	ELSEIF uLen:IsNumeric
-		RETURN __SubStr(strValue, start, (INT) uLen)
+	ELSEIF nCount:IsNumeric
+		RETURN __SubStr(strValue, start, (INT) nCount)
 	ELSE
-		THROW Error.ArgumentError(__FUNCTION__, NAMEOF(uLen), 3, <OBJECT>{uLen})
+		THROW Error.ArgumentError(__FUNCTION__, NAMEOF(nCount), 3, <OBJECT>{nCount})
 	ENDIF
 
 FUNCTION EmptyString (s AS STRING) AS LOGIC
@@ -340,3 +348,7 @@ FUNCTION EmptyString (s AS STRING) AS LOGIC
 		NEXT
 	ENDIF
 	RETURN TRUE
+
+
+
+

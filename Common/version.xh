@@ -3,7 +3,7 @@
 [assembly: AssemblyFileVersionAttribute( FILEVERSION_NUMBER_STR )]
 [assembly: AssemblyInformationalVersionAttribute( VERSION_NUMBER_STR )]
 [assembly: AssemblyCopyrightAttribute( COPYRIGHT_STR)]
-[assembly: AssemblyTrademarkAttribute( "")]
+[assembly: AssemblyTrademarkAttribute( "XSharp is a registered Trademark of XSharp BV")]
 [assembly: AssemblyConfigurationAttribute( ASSEMBLY_CONFIGURATION)]
 [assembly: AssemblyCompanyAttribute( COMPANY_NAME )]
 [assembly: AssemblyProductAttribute( PRODUCT_NAME )] 

@@ -10,7 +10,8 @@
 //
 // Caution: do not modify this file. It will be overwritten during product updates
 //
-
+#ifndef XSHARPDEFS_XH
+#define XSHARPDEFS_XH
 #define CRLF e"\r\n"
 
 // The following UDCs require the xBase Runtime
@@ -25,6 +26,7 @@
           [; IF <vn> == NIL ; <vn> := <xn> ; END ]
 
 #xcommand STORE <value> TO <var1> [, <varN> ]   => ;
-                <var1> := [ <varN> := ] <value>
-#endif
+				<var1> := [ <varN> := ] <value>
 
+#endif		 
+#endif

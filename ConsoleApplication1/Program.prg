@@ -6,7 +6,8 @@ USING XSharp.RDD
 FUNCTION Start() AS VOID
     LOCAL cb AS CODEBLOCK
     TRY
-        TestLb()
+        testCrypt()
+        //TestLb()
         // TestCopyStruct()
         //TestDbf()
         //WaTest()
@@ -52,7 +53,17 @@ DEFINE LANG_GERMAN := 0x07
 DEFINE SUBLANG_GERMAN := 0x01 // German
 DEFINE SORT_DEFAULT := 0x0 // sorting default
 DEFINE SORT_GERMAN_PHONE_BOOK := 0x1 // German Phone Book order
-
+    FUNCTION TestCrypt() AS VOID
+        LOCAL cRes AS STRING
+	    LOCAL pRes AS BYTE PTR 
+	    ? cRes := Crypt("abc", "def")
+	    pRes := StringAlloc(cRes)
+	    ? pRes[1], pRes[2], pRes[3]
+	    MemFree(pRes)
+        cRes := Crypt(cRes, "def")
+        ? cRes
+	    WAIT
+        RETURN
 	FUNCTION testLb() AS VOID STRICT
         LOCAL x AS TestLbClass
         LOCAL o AS OBJECT
@@ -80,7 +91,7 @@ DEFINE SORT_GERMAN_PHONE_BOOK := 0x1 // German Phone Book order
         
     END CLASS 
 
-function TestCopyStruct() AS VOID
+FUNCTION TestCopyStruct() AS VOID
 LOCAL cDBF, cPfad, cCopyStructTo AS STRING
 LOCAL aFields AS ARRAY
 
@@ -104,7 +115,7 @@ cCopyStructTo := "D:\test\foonew"
 DBCloseAll()
 RETURN 
 
-function TestDbf() as void
+FUNCTION TestDbf() AS VOID
 LOCAL cDBF, cPfad AS STRING
 LOCAL aFields AS ARRAY
 
@@ -128,17 +139,17 @@ DBCloseAll()
 RETURN 
 
 
-function TestUnique() as void
-local cDbf as STRING
-local aFields as ARRAY
-local nMax := 1000 as long
-local nCnt as long
+FUNCTION TestUnique() AS VOID
+LOCAL cDbf AS STRING
+LOCAL aFields AS ARRAY
+LOCAL nMax := 1000 AS LONG
+LOCAL nCnt AS LONG
 cDBF := "Foo"
 aFields := {{ "NAME" , "C" , 10 , 0 }}
 DBCreate( cDBF , aFields,"DBFCDX")
 DBCloseAll()
 DBUseArea( TRUE ,"DBFCDX",cDBF,"Foo",FALSE)
-FOR var i := 1 to nMax
+FOR VAR i := 1 TO nMax
     DbAppend()
     FieldPut(1, str(i,10,0))
 NEXT
@@ -148,8 +159,8 @@ DO WHILE ! EOF()
     ? Recno(), FieldGet(1)
     DbSkip(1)
 ENDDO
-wait
-FOR var i := 1 to nMax
+WAIT
+FOR VAR i := 1 TO nMax
     DbGoto(i)
     FieldPut(1, "AAAAAAAAAA")
 NEXT
@@ -161,8 +172,8 @@ DO WHILE ! EOF()
     nCnt++
 ENDDO
 ? nCnt, "records"
-Wait
-FOR var i := 1 to nMax
+WAIT
+FOR VAR i := 1 TO nMax
     DbGoto(i)
     FieldPut(1, str(i,10,0))
 NEXT
@@ -176,8 +187,8 @@ ENDDO
 ? nCnt, "records"
 
 DbCloseAll()
-return
-function testRebuild() as void
+RETURN
+FUNCTION testRebuild() AS VOID
 LOCAL cDbf AS STRING
 cDbf := "c:\test\TEST10K"
 ? DBUseArea(,"DBFCDX",cDbf)
@@ -186,7 +197,7 @@ RETURN
 
 
 
-function WaTest() as void
+FUNCTION WaTest() AS VOID
 LOCAL cDBF AS STRING
 LOCAL aFields AS ARRAY
 LOCAL dwStartWA, dwMaxWA AS DWORD
@@ -244,7 +255,7 @@ DBSetSelect ( dwStartWA )
 DBCloseAll()
 RETURN
 
-Function BigDbf as void
+FUNCTION BigDbf AS VOID
 LOCAL aFields AS ARRAY
 LOCAL cDBF, cPath AS STRING
 
@@ -276,7 +287,7 @@ DbAppend()
 DBCloseAll()
 RETURN
 
-Function TestClearOrderScope as void
+FUNCTION TestClearOrderScope AS VOID
     LOCAL cDbf AS STRING
     LOCAL aValues AS ARRAY
     LOCAL i AS DWORD
@@ -323,8 +334,8 @@ RETURN
 
 FUNCTION TestReplace() AS VOID
 LOCAL cDBF AS STRING
-local f as float
-local nMax := 50000 as Long
+LOCAL f AS FLOAT
+LOCAL nMax := 50000 AS LONG
 cDBF := "c:\test\TestRepl"
 FErase(cDbf+".dbf")
 FErase(cDbf+".cdx")

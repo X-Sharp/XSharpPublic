@@ -150,7 +150,7 @@ INTERNAL STATIC CLASS ConversionHelpers
 		IF result:Length > nLen
 			LOCAL nSepIndex AS INT
 			nSepIndex := result:IndexOf(usCulture:NumberFormat:NumberDecimalSeparator)
-			IF nSepIndex != -1 .and. nSepIndex <= nLen
+			IF nSepIndex != -1 .AND. nSepIndex <= nLen
 				result := result:Substring(0, nLen)
 			ELSE
 				result := Replicate("*", (DWORD) nLen)
@@ -179,7 +179,7 @@ INTERNAL STATIC CLASS ConversionHelpers
 		RETURN cString
 
 	STATIC METHOD GetSignificantWholeDigits(r AS REAL8) AS INT
-		LOCAL nRet := iif(r < 0.0 , 1 , 0) AS INT
+		LOCAL nRet := IIF(r < 0.0 , 1 , 0) AS INT
 		r := Math.Floor(Math.Abs(r))
 		DO WHILE r > 0.0
 			nRet ++
@@ -843,7 +843,7 @@ RETURN result
 /// <returns>
 /// </returns>
 FUNCTION Val(cNumber AS STRING) AS USUAL
-	RETURN _Val(cNumber)
+	RETURN _Val(AllTrim(cNumber))
 
 
 /// <summary>

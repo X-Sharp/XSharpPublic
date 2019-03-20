@@ -61907,7 +61907,7 @@ VO13=0
 VO14=0
 VO16=0
 LateBound=0
-Unsafe=1
+Unsafe=0
 IgnoreStdDefs=0
 Ovf=0
 FOvf=0
@@ -64674,6 +64674,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.VO,1,0,2.0.0.7
 ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.0.9
 [C636 - SplitPath() with /vo7- : failed to emit module Resources]
 [C636 - SplitPath() with /vo7- : failed to emit module Native Resources]
 [C636 - SplitPath() with /vo7- : failed to emit module License files]
@@ -65035,7 +65036,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C639 - Integer divisions with /vo12 option
 
-ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION C640 - Failed to emit module error when /unsafe is missing *************
 Application = C640 - Failed to emit module error when /unsafe is missing
 IDEVersion = 1.06

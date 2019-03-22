@@ -153,8 +153,8 @@ FUNCTION OrdSkipUnique(uCount) AS USUAL CLIPPER
 /// <summary>Return the status of the unique flag for a given order.</summary>	
 FUNCTION OrdIsUnique   (xOrder, cOrderBag) AS USUAL CLIPPER
     LOCAL result := NIL AS USUAL
-	RETURN VoDb.OrderInfo(DBOI_UNIQUE, cOrderBag, xOrder,REF result)
-
+	VoDb.OrderInfo(DBOI_UNIQUE, cOrderBag, xOrder,REF result)
+    RETURN result
 	
 /// <summary>
 /// </summary>

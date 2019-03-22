@@ -1532,6 +1532,7 @@ BEGIN NAMESPACE XSharp
             SWITCH u:_usualType
             CASE __UsualType.String	; RETURN u:ToString()
             CASE __UsualType.Symbol	; RETURN u:ToString()
+            CASE __UsualType.Void   ; RETURN ""
             OTHERWISE
                 THROW ConversionError(STRING, TYPEOF(STRING), u)
             END SWITCH

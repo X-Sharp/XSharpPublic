@@ -1529,6 +1529,9 @@ BEGIN NAMESPACE XSharp
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS STRING
+        	IF u:IsNil
+        		RETURN "" // VO...
+        	END IF
             SWITCH u:_usualType
             CASE __UsualType.String	; RETURN u:ToString()
             CASE __UsualType.Symbol	; RETURN u:ToString()

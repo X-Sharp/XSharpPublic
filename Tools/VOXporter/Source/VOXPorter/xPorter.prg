@@ -1094,10 +1094,10 @@ CLASS ApplicationDescriptor
                 LOCAL nPos      := cLine:IndexOf(aElements[2]) + aElements[2]:Length AS INT
                 LOCAL cFileName := cLine:SubString(nPos) AS STRING
                 cFileName := cFileName:Trim()
-                IF cFileName:StartsWith(e"\"") .and. cFileName:EndsWith(e"\"")
+                IF cFileName:StartsWith(e"\"") .and. cFileName:EndsWith(e"\"") .and. cFileName:Length > 2
                     cFileName := cFileName:Substring(1, cFileName:Length-2)
                 ENDIF
-                IF System.IO.File.Exists(cFileName)
+                IF SafeFileExists(cFileName)
                     VAR cDestName := System.IO.Path.Combine(cResourcesFolder, System.IO.Path.GetFileName(cFileName))
                     IF ! System.IO.File.Exists(cDestName)
                         System.IO.File.Copy(cFileName, cDestName)

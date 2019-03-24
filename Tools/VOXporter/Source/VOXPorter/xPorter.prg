@@ -8,6 +8,13 @@ USING System.Drawing
 USING System.Linq
 USING Xide
 
+GLOBAL gaNewKeywordsInXSharp := <STRING>{;
+	"EVENT","NULL","INT64","STRUCTURE","ENUM","DELEGATE","USING","PARTIAL","INTERFACE",;
+	"CONSTRUCTOR","DESTRUCTOR","RECOVER","FINALLY","TRY","CATCH","THROW","SEALED","ABSTRACT","PUBLIC",;
+	"INTERNAL","CONST","INITONLY","VIRTUAL","NEW","OPERATOR","EXPLICIT","IMPLICIT","PROPERTY",;
+	"SET","GET","VALUE","AUTO","IN","OUT","IMPLIED","SCOPE";
+	} AS STRING[]
+
 GLOBAL DefaultOutputFolder := "" AS STRING
 GLOBAL DefaultSourceFolder := "" AS STRING
 GLOBAL SDKDefines_FileName := "" AS STRING
@@ -1963,7 +1970,7 @@ CLASS EntityDescriptor
 				DO CASE
 				CASE cWordUpper:StartsWith("STRU") .and. oWord:eSubStatus == WordSubStatus.TextReserved
 					cWord := "VOSTRUCT"
-				CASE cWordUpper == "THROW" .and. (oPrevWord == NULL .or. .not. oPrevWord:cWord:StartsWith("@"))
+				CASE gaNewKeywordsInXSharp:Contains(cWordUpper) .and. (oPrevWord == NULL .or. .not. oPrevWord:cWord:StartsWith("@"))
 					cWord := "@@" + cWord
 				CASE cWordUpper == "_NC" .or. cWordUpper == "_CO"
 					cWord := ""

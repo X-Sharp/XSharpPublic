@@ -60,7 +60,7 @@ BEGIN NAMESPACE XSharp.RDD
 
         STATIC PROTECT _Extension := ".DBF" AS STRING
         INTERNAL PROPERTY FullPath AS STRING GET _FileName
-        INTERNAL PROPERTY Header as DbfHeader GET _Header
+        INTERNAL PROPERTY Header AS DbfHeader GET _Header
 		INTERNAL _Ansi          AS LOGIC
 		//
 		INTERNAL _Encoding      AS Encoding
@@ -586,7 +586,8 @@ BEGIN NAMESPACE XSharp.RDD
                         ENDIF
 					ENDIF
 				ELSE
-					SELF:_DbfError( ERDD.READ, XSharp.Gencode.EG_READ )
+                    // VO does not report an error when deleting on an invalid record
+					isOk := TRUE // SELF:_DbfError( ERDD.READ, XSharp.Gencode.EG_READ )
 				ENDIF
 			END LOCK
 			RETURN isOk
@@ -866,20 +867,20 @@ BEGIN NAMESPACE XSharp.RDD
 			ENDIF
 			FOR VAR i := nStart TO fieldCount - ( 1 - nStart )
 				//
-                var fld := SELF:_Fields[ i ]
+                VAR fld := SELF:_Fields[ i ]
 				currentField:Name := fld:Name
 				currentField:Type := fld:FieldType
-                if fld:FieldType != DbFieldType.Character
-				    currentField:Len := (byte) fld:Length
-				    currentField:Dec := (byte) fld:Decimals
-                else
-                    currentField:Len := (byte) (fld:Length % 256)
-                    if fld:Length > Byte.MaxValue
-                        currentField:Dec := (byte) (fld:Length / 256)
-                    else
+                IF fld:FieldType != DbFieldType.Character
+				    currentField:Len := (BYTE) fld:Length
+				    currentField:Dec := (BYTE) fld:Decimals
+                ELSE
+                    currentField:Len := (BYTE) (fld:Length % 256)
+                    IF fld:Length > Byte.MaxValue
+                        currentField:Dec := (BYTE) (fld:Length / 256)
+                    ELSE
                         currentField:Dec := 0
-                    endif
-                endif
+                    ENDIF
+                ENDIF
 				//
                 Array.Copy(currentField:Buffer, 0, fieldsBuffer, i*DbfField.SIZE, DbfField.SIZE )
 			NEXT
@@ -1003,7 +1004,7 @@ BEGIN NAMESPACE XSharp.RDD
                     Array.Copy(fieldsBuffer, i*DbfField.SIZE, currentField:Buffer, 0, DbfField.SIZE )
 					LOCAL info AS RddFieldInfo
 					info := RddFieldInfo{ currentField:Name, currentField:Type, currentField:Len, currentField:Dec }
-                    if info:FieldType == DbFieldType.Character .and. info:Decimals > 0
+                    IF info:FieldType == DbFieldType.Character .AND. info:Decimals > 0
                         info:Length    += info:Decimals * 256
                         info:Decimals := 0
                     ENDIF

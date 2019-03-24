@@ -44,9 +44,10 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFFPT RDD. For DBF/FPT. No index support at this level</summary>
     CLASS DBFFPT INHERIT DBF 
-        CONSTRUCTOR
+        PRIVATE _oFptMemo AS FptMemo
+        CONSTRUCTOR   
             SUPER()
-            SELF:_oMemo := FptMemo{SELF}
+            SELF:_oMemo := _oFptMemo := FptMemo{SELF}
             /// <inheritdoc />	
         VIRTUAL PROPERTY SysName AS STRING GET "DBFFPT"
         
@@ -83,6 +84,48 @@ BEGIN NAMESPACE XSharp.RDD
             // At DbfFpt Level, TRUE for DbFieldType.Memo, DbFieldType.Picture, DbFieldType.Object
         INTERNAL VIRTUAL METHOD _isMemoFieldType( fieldType AS DbFieldType ) AS LOGIC
             RETURN ( ( fieldType == DbFieldType.Memo ) .OR. ( fieldType == DbFieldType.Picture ) .OR. ( fieldType == DbFieldType.Ole ) )
+        /// <inheritdoc />
+        VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
+            LOCAL oResult AS OBJECT
+            SWITCH nOrdinal
+            CASE DbInfo.DBI_MEMOHANDLE
+                IF ( SELF:_oFptMemo != NULL .AND. SELF:_oFptMemo:_Open)
+                    oResult := SELF:_oFptMemo:_hFile
+                ELSE
+                    oResult := IntPtr.Zero
+                ENDIF
+                    
+            CASE DbInfo.DBI_MEMOEXT
+                IF ( SELF:_oFptMemo != NULL .AND. SELF:_oFptMemo:_Open)
+                    oResult := System.IO.Path.GetExtension(SELF:_oFptMemo:_FileName)
+                ELSE
+                    oResult := FptMemo.DefExt
+                ENDIF
+                IF oNewValue IS STRING
+                    FptMemo.DefExt := (STRING) oNewValue
+                ENDIF
+            CASE DbInfo.DBI_MEMOBLOCKSIZE
+                oResult := SELF:_oFptMemo:BlockSize
+            CASE DBInfo.DBI_MEMOFIELD
+                oResult := ""
+                IF oNewValue != NULL
+                    TRY
+                       LOCAL fldPos AS LONG
+                       fldPos := Convert.ToInt32(oNewValue)
+                       oResult := SELF:GetValue(fldPos)
+                    CATCH ex AS exception
+                        oResult := ""   
+                        SELF:_dbfError(ex, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, "DBFDBT.Info")
+                    END TRY
+                ENDIF
+	    CASE DbInfo.DBI_MEMOTYPE
+                oResult := DB_MEMO_FPT
+            CASE DbInfo.DBI_MEMOVERSION
+                oResult := DB_MEMOVER_STD
+            OTHERWISE
+                oResult := SUPER:Info(nOrdinal, oNewValue)
+            END SWITCH
+            RETURN oResult
             
             
             END CLASS

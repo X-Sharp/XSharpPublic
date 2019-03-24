@@ -507,7 +507,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:Shared
                 SELF:_Header:Version++
                 SELF:_Header:Write()
-                SELF:GoCold()
                 SELF:UnLock()
             ENDIF
             RETURN TRUE

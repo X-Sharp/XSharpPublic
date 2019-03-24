@@ -31,7 +31,7 @@ FUNCTION DbSeek(xValue, lSoft, lLast) AS LOGIC CLIPPER
 	DEFAULT(REF lSoft, SetSoftSeek())
 	
 	dbsci := DbScopeInfo{}
-	IF IsNil(lLast)
+	IF lLast:IsNil
 		lLast := FALSE
 	ENDIF
 	VoDb.SetScope( dbsci)
@@ -67,7 +67,7 @@ FUNCTION DbSetOrderCondition(  cFor, uCobFor, lAll, uCobWhile, uCobEval, nStep, 
 /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION DbSetIndex(cIndex, uOrder) AS LOGIC CLIPPER
 	// Don't call VoDb because of error handling
-	IF IsNil(cIndex)
+	IF cIndex:IsNil
 		RETURN OrdListClear()
 	ENDIF
 	RETURN OrdListAdd(cIndex, uOrder)
@@ -107,13 +107,10 @@ FUNCTION IndexExt       () AS STRING STRICT
 /// <param name='nPosition'>The position of the order in the order list of the work area.  A value of 0 specifies the controlling order, without regard to its actual position in the list.</param>
 FUNCTION IndexKey(nPosition) AS STRING CLIPPER
 	LOCAL uRetVal   AS USUAL
-	IF IsNil(nPosition)
+	IF nPosition:IsNil
 		nPosition := 0
 	ENDIF
 	uRetVal := DbOrderInfo(DBOI_EXPRESSION, "", nPosition)
-	IF IsNil(uRetVal)
-		uRetVal := ""
-	ENDIF
 	RETURN uRetVal
 	
 	
@@ -141,7 +138,7 @@ FUNCTION OrdScope(nScope, xVal) AS USUAL CLIPPER
 	LOCAL n     AS DWORD
 	nScope := VoDb.OrdScopeNum(nScope)
 	n := DBOI_SCOPETOP
-	IF PCount() > 1 .AND. IsNil(xVal)
+	IF PCount() > 1 .AND. xVal:IsNil
 		n := DBOI_SCOPETOPCLEAR
 	ENDIF
 	RETURN DbOrderInfo(n + nScope,,,xVal)
@@ -189,43 +186,43 @@ FUNCTION OrdCondSet(cFor, uCobFor, lAll, uCobWhile, uCobEval, nStep, nStart,    
     dbOrdCondInfo:ForBlock := VoDb.ValidBlock(uCobFor)
     dbOrdCondInfo:WhileBlock := VoDb.ValidBlock(uCobWhile)
 	dbOrdCondInfo:EvalBlock := VoDb.ValidBlock(uCobEval)
-	IF !IsNil(cFor)
+	IF !cFor:IsNil
         dbOrdCondInfo:ForExpression := cFor
         IF dbOrdCondInfo:ForBlock == NULL
             dbOrdCondInfo:ForBlock := MCompile(dbOrdCondInfo:ForExpression)
         ENDIF
 	ENDIF
-	IF IsNumeric(nStep)
+	IF nStep:IsNumeric
 		dbOrdCondInfo:StepSize := nStep
 	ENDIF
-	IF IsNumeric(nStart)
+	IF nStart:IsNumeric
 		dbOrdCondInfo:StartRecNo := nStart
 	ENDIF
-	IF IsNumeric(nNext)
+	IF nNext:IsNumeric
 		dbOrdCondInfo:NextCount := nNext
 	ENDIF
-	IF IsNumeric(nRecno)
+	IF nRecno:IsNumeric
 		dbOrdCondInfo:RecNo := nRecno
 	ENDIF
-	IF IsLogic(lRest)
+	IF lRest:IsLogic
 		dbOrdCondInfo:Rest := lRest
 	ENDIF
-	IF IsLogic(lDescending)
+	IF lDescending:IsLogic
 		dbOrdCondInfo:Descending := lDescending
 	ENDIF
-	IF IsLogic(lAll)
+	IF lAll:IsLogic
 		dbOrdCondInfo:All := lAll
 	ENDIF
-	IF IsLogic(lAdditive)
+	IF lAdditive:IsLogic
 		dbOrdCondInfo:Additive := lAdditive
 	ENDIF
-	IF IsLogic(lCustom)
+	IF lCustom:IsLogic
 		dbOrdCondInfo:Custom := lCustom
 	ENDIF
-	IF IsLogic(lCurrent)
+	IF lCurrent:IsLogic
 		dbOrdCondInfo:UseCurrent := lCurrent
 	ENDIF
-	IF !IsNil(lNoOptimize)
+	IF !lNoOptimize:IsNil
 		dbOrdCondInfo:NoOptimize := lNoOptimize
 	ENDIF
 	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.OrdCondSet( dbOrdCondInfo ))
@@ -236,12 +233,12 @@ FUNCTION OrdCondSet(cFor, uCobFor, lAll, uCobWhile, uCobEval, nStep, nStart,    
 /// </summary>
 /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION OrdCreate(cName, cOrder, cExpr, cobExpr, lUnique) AS LOGIC CLIPPER
-	IF IsNil(lUnique)
+	IF lUnique:IsNil
 		lUnique := SetUnique()
 	ENDIF
 	
-	IF IsNil(cName)
-		IF IsNil(cOrder)
+	IF cName:IsNil
+		IF cOrder:IsNil
             RddError.PostArgumentError("OrdCreate", EDB_CREATEINDEX, nameof(cName), 1, {cName})
 			DoError("OrdCreate")
 		ELSE
@@ -249,14 +246,14 @@ FUNCTION OrdCreate(cName, cOrder, cExpr, cobExpr, lUnique) AS LOGIC CLIPPER
 		ENDIF
 	ENDIF
 	
-	IF IsNil(cExpr)
+	IF cExpr:IsNil
 		cExpr := ""
-		IF IsNil(cobExpr)
+		IF cobExpr:IsNil
             RddError.PostArgumentError("OrdCreate", EDB_EXPRESSION, nameof(cExpr), 3, {cExpr})
   			DoError("OrdCreate")
 		ENDIF
 	ELSE
-		IF IsNil(cobExpr)
+		IF cobExpr:IsNil
 			cobExpr := &( "{||" + cExpr + "}" )
 		ENDIF
 	ENDIF
@@ -269,7 +266,7 @@ FUNCTION OrdCreate(cName, cOrder, cExpr, cobExpr, lUnique) AS LOGIC CLIPPER
 /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION OrdDescend(xOrder, cOrdBag, lDescend) AS LOGIC CLIPPER
 	
-	IF !IsLogic( lDescend )
+	IF ! lDescend:IsLogic
 		lDescend := NIL
 	ENDIF
 	
@@ -279,10 +276,7 @@ FUNCTION OrdDescend(xOrder, cOrdBag, lDescend) AS LOGIC CLIPPER
 /// </summary>
 /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION OrdDestroy(uOrder, cOrdBag) AS LOGIC CLIPPER
-	IF IsNil(cOrdBag)
-		cOrdBag := ""
-	ENDIF
-	IF !IsString(uOrder)
+	IF !uOrder:IsString
         RddError.PostArgumentError(__FUNCTION__, EDB_ORDDESTROY, nameof(uOrder), 1, {uOrder})
         RETURN FALSE
     ENDIF
@@ -294,10 +288,7 @@ FUNCTION OrdDestroy(uOrder, cOrdBag) AS LOGIC CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION OrdFor(uOrder, cOrdBag, cFor) AS LOGIC CLIPPER
-	IF IsNil(cOrdBag)
-		cOrdBag := ""
-	ENDIF
-	IF !IsString(cFor)
+	IF !cFor:IsString
 		cFor := NIL
 	ENDIF
 	RETURN VoDb.OrderInfo(DBOI_CONDITION, cOrdBag, uOrder, cFor)
@@ -310,9 +301,6 @@ FUNCTION OrdFor(uOrder, cOrdBag, cFor) AS LOGIC CLIPPER
 /// </returns>
 FUNCTION OrdKey(uOrder, cOrdBag) AS USUAL CLIPPER
 	LOCAL xKey  := NIL    AS USUAL
-	IF IsNil(cOrdBag)
-		cOrdBag := ""
-	ENDIF
 	IF !VODBOrderInfo(DBOI_EXPRESSION, cOrdBag, uOrder, REF xKey)
 		xKey := ""
 	ENDIF
@@ -330,7 +318,7 @@ FUNCTION OrdKeyDel(xOrder, cOrdBag, xVal) AS USUAL CLIPPER
 /// <summary>Move to a record specified by its logical record number in the controlling order.</summary>	
 FUNCTION OrdKeyGoto    (nKeyNo) AS LOGIC CLIPPER
 	LOCAL lRetCode  AS LOGIC
-	IF IsNumeric(nKeyNo)
+	IF nKeyNo:IsNumeric
 		DbGotop()
 		DBSKIP(nKeyno - 1)
 		lRetCode := TRUE
@@ -373,10 +361,7 @@ FUNCTION OrdListAdd(cOrdBag, uOrder) AS LOGIC CLIPPER
 /// </summary>
 /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION OrdListClear(cOrdBag, uOrder)  AS LOGIC CLIPPER
-	IF IsNil(cOrdBag)
-		cOrdBag := ""
-    ENDIF
-    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.OrdListClear(cOrdBag, uOrder))
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.OrdListClear(cOrdBag, uOrder))
 	
 	
 /// <exclude />
@@ -423,9 +408,6 @@ FUNCTION OrdListRebuild ()  AS LOGIC STRICT
 /// <returns>
 /// </returns>
 FUNCTION OrdName(uOrder, cOrdBag) AS USUAL CLIPPER
-	IF IsNil(cOrdBag)
-		cOrdBag := ""
-	ENDIF
 	LOCAL result := NIL AS USUAL
     VoDb.OrderInfo(DBOI_NAME, cOrdBag, uOrder, REF result)
 	RETURN result
@@ -437,9 +419,6 @@ FUNCTION OrdName(uOrder, cOrdBag) AS USUAL CLIPPER
 /// </returns>
 FUNCTION OrdNumber(uOrder, cOrdBag) AS USUAL CLIPPER
 	
-	IF IsNil(cOrdBag)
-		cOrdBag := ""
-	ENDIF
 	LOCAL result := NIL AS USUAL
     VoDb.OrderInfo(DBOI_NUMBER, cOrdBag, uOrder,REF result)
 	RETURN result

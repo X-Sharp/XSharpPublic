@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -61,7 +61,7 @@ FUNCTION ErrorBlock(cobError AS CODEBLOCK) AS USUAL
 
 /// <exclude />
 FUNCTION VO_Sprintf( format AS USUAL,  args PARAMS OBJECT[] ) AS STRING
-    IF IsString(format)
+    IF format:IsString
 	    RETURN _VO_Sprintf( (STRING) format, args)
     ENDIF
     RETURN _VO_Sprintf( (DWORD) format, args)

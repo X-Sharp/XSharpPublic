@@ -22,33 +22,33 @@ FUNCTION Empty(uVal AS USUAL) AS LOGIC
 /// <param name="dwType"></param>
 /// <returns>
 /// </returns>
-FUNCTION EmptyUsual(dwType AS DWORD) AS __Usual
+FUNCTION EmptyUsual(dwType AS DWORD) AS USUAL
 	LOCAL result AS USUAL
 	SWITCH dwType
 	CASE ARRAY
-		result := __Usual{NULL_ARRAY}
+		result := USUAL{NULL_ARRAY}
 	CASE BYTE; CASE WORD; CASE DWORD; CASE SHORTINT;  CASE LONG; CASE INT64
-		result := __Usual{0}
+		result := USUAL{0}
 	CASE FLOAT; CASE REAL4; CASE REAL8; CASE (DWORD) __UsualType.Decimal
-		result := __Usual{0.0}
+		result := USUAL{0.0}
 	CASE STRING
-		result := __Usual{NULL_STRING}
+		result := USUAL{NULL_STRING}
 	CASE DATE
-		result := __Usual{(DATE) 0}
+		result := USUAL{(DATE) 0}
 	CASE (DWORD) __UsualType.DateTime
-		result := __Usual{DateTime.MinValue}
+		result := USUAL{DateTime.MinValue}
 	CASE LOGIC
-		result := __Usual{FALSE}
+		result := USUAL{FALSE}
 	CASE PTR
-		result := __Usual{NULL_PTR}
+		result := USUAL{NULL_PTR}
 	CASE PSZ
-		result := __Usual{NULL_PSZ}
+		result := USUAL{NULL_PSZ}
 	CASE SYMBOL
-		result := __Usual{NULL_SYMBOL}
+		result := USUAL{NULL_SYMBOL}
 	CASE USUAL
 		result := NIL
 	CASE CODEBLOCK
-		result := __Usual{NULL_CODEBLOCK}
+		result := USUAL{NULL_CODEBLOCK}
 	OTHERWISE
 		THROW Error.ArgumentError(__ENTITY__, NAMEOF(dwType) , "Unknown type parameter")
 	END SWITCH
@@ -59,7 +59,7 @@ FUNCTION EmptyUsual(dwType AS DWORD) AS __Usual
 /// </summary>
 /// <param name="uVal"></param>
 /// <returns>TRUE if the value is an ARRAY data type; otherwise, FALSE. </returns>
-FUNCTION IsArray(uVal AS __Usual) AS LOGIC
+FUNCTION IsArray(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsArray
 
 /// <summary>
@@ -263,7 +263,7 @@ FUNCTION EnforceType(u REF USUAL, dwType AS DWORD) AS VOID
 	IF u:IsNil
 		u := EmptyUsual(dwType)
 	ELSEIF UsualType(u) != dwType
-        var cMessage := "Expected type: " + ((__UsualType) dwType):ToString()+" actual type "+ ((__UsualType) UsualType(u)):ToString()
+        VAR cMessage := "Expected type: " + ((__UsualType) dwType):ToString()+" actual type "+ ((__UsualType) UsualType(u)):ToString()
 		THROW Error.DataTypeError(ProcName(1), u, 1, u, cMessage)
 	ENDIF
 	RETURN  

@@ -23,12 +23,12 @@ FUNCTION SEval(cSource ,block ,nStart ,nCount ) AS STRING CLIPPER
 	ENDIF
 	IF nStart == NIL
 		nStart := 1
-	ELSEIF ! IsNumeric(nStart)
+	ELSEIF ! nStart:IsNumeric
 		THROW Error.ArgumentError( __FUNCTION__, NAMEOF(nStart), 3, <OBJECT>{ nStart} )
 	ENDIF
 	IF nCount == NIL
 		nCount := SLen(cSource) - nStart + 1
-	ELSEIF ! IsNumeric(nCount)
+	ELSEIF ! nCount:IsNumeric
 		THROW Error.ArgumentError( __FUNCTION__, NAMEOF(nCount), 4, <OBJECT>{ nCount} )
 	ENDIF
 	RETURN SEvalWorker(cSource, block, nStart, nCount)

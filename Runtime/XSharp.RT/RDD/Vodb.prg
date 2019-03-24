@@ -151,7 +151,7 @@ STATIC METHOD Select(nNew AS DWORD,riOld REF USUAL) AS LOGIC
     INTERNAL STATIC METHOD AllocFieldNames(aStru AS ARRAY) AS _FieldNames
         VAR aNames := List<STRING>{}
         FOREACH aField AS USUAL IN aStru
-            IF IsArray(aField)
+            IF aField:IsArray
                 aNames:Add(Upper(aField[DBS_NAME]))
             ELSE
                 aNames:Add(upper(aField))
@@ -236,9 +236,9 @@ STATIC METHOD Select(nNew AS DWORD,riOld REF USUAL) AS LOGIC
         LOCAL   lFPT  := FALSE AS LOGIC
         LOCAL   lDbf    AS LOGIC
         
-        IF IsArray(xDriver)
+        IF xDriver:IsArray
             nType := ARRAY
-        ELSEIF IsString(xDriver)
+        ELSEIF xDriver:IsString
             IF SLen(xDriver) = 0
                 xDriver := RDDSetDefault()
             ENDIF
@@ -308,7 +308,7 @@ STATIC METHOD Select(nNew AS DWORD,riOld REF USUAL) AS LOGIC
         RETURN oList:ToArray()
         
     INTERNAL STATIC METHOD OrdScopeNum(nScope)  AS INT CLIPPER
-        IF !IsNumeric( nScope )
+        IF !nScope:IsNumeric
             nScope := 0
         ENDIF
         nScope := INT(nScope)

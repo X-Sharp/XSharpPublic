@@ -211,7 +211,7 @@ INTERNAL STATIC CLASS OOPHelpers
         NEXT
         RETURN 0
 
-    STATIC METHOD FindBestOverLoad<T>(overloads AS T[], cFunction AS STRING, uArgs AS USUAL[]) AS T where T IS MethodBase
+    STATIC METHOD FindBestOverLoad<T>(overloads AS T[], cFunction AS STRING, uArgs AS USUAL[]) AS T WHERE T IS MethodBase
         IF overloads:Length == 0
             RETURN NULL
         ELSEIF overloads:Length = 1
@@ -254,12 +254,12 @@ INTERNAL STATIC CLASS OOPHelpers
         THROW oError
         
 
-    STATIC METHOD MatchParameters<T>( methodinfo AS T, args AS USUAL[]) AS OBJECT[] where T IS MethodBase
+    STATIC METHOD MatchParameters<T>( methodinfo AS T, args AS USUAL[]) AS OBJECT[] WHERE T IS MethodBase
         // args contains the list of arguments. The methodname has already been deleted when appropriated
 		LOCAL oArgs AS OBJECT[]
         LOCAL lClipper := FALSE AS LOGIC
         VAR aPars := methodInfo:GetParameters()
-        IF aPars:Length == 1 .and. methodinfo:IsDefined(TYPEOF(ClipperCallingconventionAttribute),FALSE)
+        IF aPars:Length == 1 .AND. methodinfo:IsDefined(TYPEOF(ClipperCallingconventionAttribute),FALSE)
             lClipper := TRUE
         ENDIF
         DO CASE
@@ -327,11 +327,11 @@ INTERNAL STATIC CLASS OOPHelpers
                 		CASE 3 // SYMBOL
 	                		oArgs[nArg] := String2Symbol( (STRING)oDefAttrib:Value )
                 		CASE 4 // NULL_PSZ
-                            IF oDefAttrib:Value IS String
+                            IF oDefAttrib:Value IS STRING
                                 // Note: Do not use String2Psz() because that PSZ will be freed when this method finishes !
-                                oArgs[nArg]:= Psz{ (String) oDefAttrib:Value}
+                                oArgs[nArg]:= PSZ{ (STRING) oDefAttrib:Value}
                             ELSE
-	                		    oArgs[nArg] := Psz{IntPtr.Zero}
+	                		    oArgs[nArg] := PSZ{IntPtr.Zero}
                             ENDIF
                 		CASE  5 // NULL_PTR
                             IF oDefAttrib:Value IS Int32
@@ -622,9 +622,9 @@ INTERNAL STATIC CLASS OOPHelpers
 			IF toType == TYPEOF(USUAL)
 				// box the usual
                 RETURN __CASTCLASS(OBJECT, uValue)
-            ELSEIF IsArray(uValue) .AND. totype == typeof(ARRAY)
+            ELSEIF uValue:IsArray .AND. totype == typeof(ARRAY)
                 RETURN (ARRAY) uValue
-            ELSEIF IsObject(uValue) .OR. isCodeBlock(uValue)
+            ELSEIF uValue:IsObject .OR. uValue:IsCodeBlock
                 RETURN (OBJECT) uValue
             ENDIF
       		

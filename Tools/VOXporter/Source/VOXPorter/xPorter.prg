@@ -165,7 +165,7 @@ CLASS WarningDialog INHERIT Form
 		oRtf:Rtf := cRtfText
 		
 		SELF:oTimer := Timer{}
-		SELF:oTimer:Interval := 5000
+		SELF:oTimer:Interval := 1000
 		SELF:oTimer:Tick += SELF:Timer_tick
 		SELF:oTimer:Start()
 	RETURN
@@ -179,7 +179,7 @@ CLASS WarningDialog INHERIT Form
 			e:Cancel := TRUE
 			SELF:oTimer:Stop()
 			MessageBox.Show("Please read this important information!" , ToolName , MEssageBoxButtons.OK , MessageBoxIcon.Exclamation)
-			SELF:oTimer:Interval := 1500
+			SELF:oTimer:Interval := 500
 			SELF:oTimer:Start()
 		ENDIF
 	RETURN

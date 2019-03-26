@@ -2293,7 +2293,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (!isFixedStatementAddressOfExpression)
                         {
                             Error(diagnostics, ErrorCode.WRN_AddrOfMovable, node);
-                            hasErrors = true;
+                            hasErrors = false;
                         }
 #else
                         Error(diagnostics, isFixedStatementAddressOfExpression ? ErrorCode.ERR_FixedNotNeeded : ErrorCode.ERR_FixedNeeded, node);

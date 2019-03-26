@@ -53,6 +53,8 @@ namespace XSharp.Project.OptionsPages
             chkIncludeFields.Checked = optionsPage.IncludeFieldsInNavigationBars;
             chkSortNavBar.Checked = optionsPage.SortNavigationBars;
             chkShowMembersOfCurrentType.Checked = optionsPage.ShowMembersOfCurrentTypeOnly;
+            commitChars.Text = optionsPage.CommitChars;
+            chkAutoPairs.Checked = optionsPage.AutoPairs;
             _loading = false;
 
         }
@@ -125,9 +127,9 @@ namespace XSharp.Project.OptionsPages
 
         private void Control_CheckedChanged(object sender, EventArgs e)
         {
-            if (! _loading )
+            if (!_loading)
             {
-              }
+            }
 
         }
 
@@ -152,7 +154,7 @@ namespace XSharp.Project.OptionsPages
             form.chkDisableAssemblyReferences.Checked = optionsPage.DisableAssemblyReferences;
             form.chkDisableForeignProjectReferences.Checked = optionsPage.DisableForeignProjectReferences;
             form.chkDisableXSharpProjectReferences.Checked = optionsPage.DisableXSharpProjectReferences;
-            form.chkEnableOutputPane.Checked = optionsPage.EnableOutputPane ;
+            form.chkEnableOutputPane.Checked = optionsPage.EnableOutputPane;
             form.ShowDialog();
             if (form.DialogResult == DialogResult.OK)
             {
@@ -169,10 +171,10 @@ namespace XSharp.Project.OptionsPages
                 optionsPage.DisableSyntaxColorization = form.chkDisableSyntaxColorization.Checked;
                 optionsPage.DisableCaseSynchronization = form.chkDisableCaseSynchronization.Checked;
                 optionsPage.DisableCodeCompletion = form.chkDisableCodeCompletion.Checked;
-                optionsPage.DisableGotoDefinition = form.chkDisableGotoDefinition.Checked ;
+                optionsPage.DisableGotoDefinition = form.chkDisableGotoDefinition.Checked;
                 optionsPage.DisableAssemblyReferences = form.chkDisableAssemblyReferences.Checked;
-                optionsPage.DisableForeignProjectReferences = form.chkDisableForeignProjectReferences.Checked  ;
-                optionsPage.DisableXSharpProjectReferences = form.chkDisableXSharpProjectReferences.Checked ;
+                optionsPage.DisableForeignProjectReferences = form.chkDisableForeignProjectReferences.Checked;
+                optionsPage.DisableXSharpProjectReferences = form.chkDisableXSharpProjectReferences.Checked;
                 optionsPage.EnableOutputPane = form.chkEnableOutputPane.Checked;
             }
 
@@ -181,6 +183,16 @@ namespace XSharp.Project.OptionsPages
         private void chkShowMembersOfCurrentType_CheckedChanged(object sender, EventArgs e)
         {
             optionsPage.ShowMembersOfCurrentTypeOnly = chkShowMembersOfCurrentType.Checked;
+        }
+
+        private void commitChars_TextChanged(object sender, EventArgs e)
+        {
+            optionsPage.CommitChars = commitChars.Text;
+        }
+
+        private void chkAutoPairs_CheckedChanged(object sender, EventArgs e)
+        {
+            optionsPage.AutoPairs = chkAutoPairs.Checked;
         }
     }
 }

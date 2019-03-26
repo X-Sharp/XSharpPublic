@@ -747,7 +747,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal CSharpSyntaxNode NotInDialect(CSharpSyntaxNode node, string feature, string additional = "")
         {
             return node.WithAdditionalDiagnostics(
-                new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, feature, _options.Dialect.ToString(), additional));
+                new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, feature, _options.Dialect.ToString()+" "+additional));
         }
 
         internal string UniqueNameSuffix

@@ -5613,7 +5613,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>XPP: Class {0} has not been declared.</value>
   </data>
   <data name="ERR_FeatureNotAvailableInDialect" xml:space="preserve">
-    <value>Feature '{0}' is not available in the selected dialect {1} {2}</value>
+    <value>Feature '{0}' is not available in the selected dialect {1}</value>
   </data>
   <data name="WRN_ImplicitCast" xml:space="preserve">
     <value>The compiler generated an implicit cast to a smaller type from type '{0}' to '{1}'.</value>

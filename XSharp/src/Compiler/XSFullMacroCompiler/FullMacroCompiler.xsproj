@@ -21,7 +21,7 @@
     <OutputPath>$(Binariesdir)</OutputPath>
     <StartupObject />
     <ApplicationIcon />
-    <XSharpProjectversion>2.0.0.9</XSharpProjectversion>
+    <XSharpProjectversion>2.0.1.0</XSharpProjectversion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

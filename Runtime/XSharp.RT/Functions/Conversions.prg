@@ -150,7 +150,7 @@ INTERNAL STATIC CLASS ConversionHelpers
 		IF result:Length > nLen
 			LOCAL nSepIndex AS INT
 			nSepIndex := result:IndexOf(usCulture:NumberFormat:NumberDecimalSeparator)
-			IF nSepIndex != -1 .and. nSepIndex <= nLen
+			IF nSepIndex != -1 .AND. nSepIndex <= nLen
 				result := result:Substring(0, nLen)
 			ELSE
 				result := Replicate("*", (DWORD) nLen)
@@ -179,7 +179,7 @@ INTERNAL STATIC CLASS ConversionHelpers
 		RETURN cString
 
 	STATIC METHOD GetSignificantWholeDigits(r AS REAL8) AS INT
-		LOCAL nRet := iif(r < 0.0 , 1 , 0) AS INT
+		LOCAL nRet := IIF(r < 0.0 , 1 , 0) AS INT
 		r := Math.Floor(Math.Abs(r))
 		DO WHILE r > 0.0
 			nRet ++
@@ -198,9 +198,9 @@ END CLASS
 	/// </returns>
 FUNCTION AsHexString(uValue AS USUAL) AS STRING
 	LOCAL result AS STRING
-	IF IsString(uValue)
+	IF uValue:IsString
 		result := c2Hex( (STRING) uValue)
-	ELSEIF IsNumeric(uValue)
+	ELSEIF uValue:IsNumeric
 		result := String.Format("{0:X8}", (INT64) uValue)
 	ELSE
 		result := ""
@@ -495,7 +495,7 @@ FUNCTION Str(n ,uLen ,uDec ) AS STRING CLIPPER
 	LOCAL nLen AS DWORD
     LOCAL nDec AS DWORD
     LOCAL lTrimSpaces := FALSE AS LOGIC
-	IF IsNumeric(uLen)
+	IF uLen:IsNumeric
         IF uLen < 0
 	        nLen := System.UInt32.MaxValue
 	        lTrimSpaces := TRUE
@@ -505,7 +505,7 @@ FUNCTION Str(n ,uLen ,uDec ) AS STRING CLIPPER
 	ELSE
 		nLen := System.UInt32.MaxValue
     ENDIF
-    IF ! IsNumeric(uDec)
+    IF ! uDec:IsNumeric
         nDec := UInt32.MaxValue
     ELSE
         IF uDec < 0
@@ -843,7 +843,7 @@ RETURN result
 /// <returns>
 /// </returns>
 FUNCTION Val(cNumber AS STRING) AS USUAL
-	RETURN _Val(cNumber)
+	RETURN _Val(AllTrim(cNumber))
 
 
 /// <summary>

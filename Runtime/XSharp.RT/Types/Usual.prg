@@ -1529,9 +1529,12 @@ BEGIN NAMESPACE XSharp
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS STRING
-            SWITCH u:_usualType
-            CASE __UsualType.String	; RETURN u:ToString()
-            CASE __UsualType.Symbol	; RETURN u:ToString()
+           SWITCH u:_usualType
+            CASE __UsualType.String	
+            CASE __UsualType.Symbol
+                RETURN u:ToString()
+            CASE __UsualType.Void
+                RETURN ""
             OTHERWISE
                 THROW ConversionError(STRING, TYPEOF(STRING), u)
             END SWITCH

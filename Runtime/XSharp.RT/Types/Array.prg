@@ -42,7 +42,7 @@ BEGIN NAMESPACE XSharp
         CONSTRUCTOR( elements AS OBJECT[] )
             SELF()
             IF elements == NULL
-                return // empty array
+                RETURN // empty array
             ENDIF
             FOREACH element AS OBJECT IN elements
                 IF element == NULL
@@ -130,9 +130,8 @@ BEGIN NAMESPACE XSharp
             RETURN (ARRAY) SUPER:Clone()
 
         /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
-        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" />
+        /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
-
         PUBLIC PROPERTY SELF[index PARAMS INT[]] AS USUAL
             GET
                 RETURN __GetElement(index)
@@ -146,7 +145,7 @@ BEGIN NAMESPACE XSharp
             RETURN SUPER:Swap(position, element)
 
         /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
-        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" />
+        /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <returns>The element stored at the specified location in the array.</returns>
         PUBLIC METHOD __GetElement(index PARAMS INT[]) AS USUAL
             LOCAL length := index:Length AS INT
@@ -158,7 +157,7 @@ BEGIN NAMESPACE XSharp
                 IF u:IsNil
                     RETURN u
                 ENDIF
-                IF (OBJECT) u IS IIndexedProperties .and. i == length-1
+                IF (OBJECT) u IS IIndexedProperties .AND. i == length-1
                     LOCAL o := (IIndexedProperties) (OBJECT) u AS IIndexedProperties
                     RETURN o[index[length]]
                 ENDIF
@@ -195,7 +194,7 @@ BEGIN NAMESPACE XSharp
 
 
         /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
-        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" />
+        /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <param name='u'>New element to store in the array at the position specified</param>
         /// <returns>The new element</returns>
         PUBLIC METHOD __SetElement(u AS USUAL, index PARAMS INT[] ) AS USUAL
@@ -205,7 +204,7 @@ BEGIN NAMESPACE XSharp
                 LOCAL currentArray := SELF AS ARRAY
                 FOR VAR i := 1 UPTO length-1
                     LOCAL uArray := currentArray:_internalList[index[i]] AS USUAL
-                    IF (OBJECT) u IS IIndexedProperties .and. i == length-1
+                    IF (OBJECT) u IS IIndexedProperties .AND. i == length-1
                         LOCAL o := (IIndexedProperties) (OBJECT) u AS IIndexedProperties
                         o[index[length]] := u
                         RETURN u

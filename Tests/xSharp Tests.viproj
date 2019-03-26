@@ -58322,7 +58322,7 @@ VO14=0
 VO16=0
 LateBound=0
 Unsafe=0
-IgnoreStdDefs=0
+IgnoreStdDefs=1
 Ovf=0
 FOvf=0
 ResponseOnly=0
@@ -64674,7 +64674,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.VO,1,0,2.0.0.7
 ReferenceGAC = XSharp.Core,1,0,2.0.0.7
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.0.9
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.1.0
 [C636 - SplitPath() with /vo7- : failed to emit module Resources]
 [C636 - SplitPath() with /vo7- : failed to emit module Native Resources]
 [C636 - SplitPath() with /vo7- : failed to emit module License files]
@@ -65036,7 +65036,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C639 - Integer divisions with /vo12 option
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C640 - Failed to emit module error when /unsafe is missing *************
 Application = C640 - Failed to emit module error when /unsafe is missing
 IDEVersion = 1.06
@@ -67826,7 +67826,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C667 - XPP Test App
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C668 - Incorrect result comparing SHORTINT value with /vo4+ enabled *************
 Application = C668 - Incorrect result comparing SHORTINT value with /vo4+ enabled
 IDEVersion = 1.06
@@ -67866,9 +67866,9 @@ FileGUID = BE92DF3E-0EEC-41C3-92DE-23B3F60EA1A0
 FileType = Code
 [C668 - Incorrect result comparing SHORTINT value with /vo4+ enabled References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.9
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.0.9
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.9
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.1.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.1.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.1.0
 [C668 - Incorrect result comparing SHORTINT value with /vo4+ enabled Resources]
 [C668 - Incorrect result comparing SHORTINT value with /vo4+ enabled Native Resources]
 [C668 - Incorrect result comparing SHORTINT value with /vo4+ enabled License files]
@@ -67927,7 +67927,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C668 - Incorrect result comparing SHORTINT value with /vo4+ enabled
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C669 - Problem using ChartAreaCollection indexer *************
 Application = C669 - Problem using ChartAreaCollection indexer
 IDEVersion = 1.06

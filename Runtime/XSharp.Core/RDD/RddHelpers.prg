@@ -37,10 +37,10 @@ BEGIN NAMESPACE XSharp.RDD
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFNTX",  "XSharp.RDD.DBFNTX"})       // DBF + DBT + NTX
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFFPT",  "XSharp.RDD.DBFFPT"})       // DBF + FPT
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFCDX",  "XSharp.RDD.DBFCDX"})       // DBF + FPT + CDX
-            RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFMEMO", "XSharp.RDD.DBFMEMO"})      // DBF + NTX + DBV
-            RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFBLOB", "XSharp.RDD.DBFBLOB"})      // DBV only
-            RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFSMT",  "XSharp.RDD.DBFSMT"})       // DBF + SMT
-            RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFNSX",  "XSharp.RDD.DBFNSX"})       // DBF + SMT + NSX
+            //RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFMEMO", "XSharp.RDD.DBFMEMO"})      // DBF + NTX + DBV
+            //RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFBLOB", "XSharp.RDD.DBFBLOB"})      // DBV only
+            //RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFSMT",  "XSharp.RDD.DBFSMT"})       // DBF + SMT
+            //RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFNSX",  "XSharp.RDD.DBFNSX"})       // DBF + SMT + NSX
             
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "ADSADT",    "XSharp.ADS.ADSADT"})       // ADSADT
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "AXDBFCDX",  "XSharp.ADS.AXDBFCDX"})       // ADS DBFCDX
@@ -55,9 +55,6 @@ BEGIN NAMESPACE XSharp.RDD
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "Advantage.AXDBFNTX",  "XSharp.ADS.AXDBFNTX"})       // ADS DBFNTX
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "Advantage.AXDBFVFP",  "XSharp.ADS.AXDBFVFP"})       // ADS AXDBFVFP
             
-            RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "Advantage.AXSQLCDX",  "XSharp.ADS.AXSQLCDX"})       // ADS DBFCDX
-            RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "Advantage.AXSQLNTX",  "XSharp.ADS.AXSQLNTX"})       // ADS DBFNTX
-            RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "Advantage.AXSQLVFP",  "XSharp.ADS.AXSQLVFP"})       // ADS AXDBFVFP
             
             RETURN
             

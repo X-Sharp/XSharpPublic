@@ -11,7 +11,7 @@ BEGIN NAMESPACE XSharp
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" />
     INTERFACE IIndexedProperties
     	/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
-        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" />
+        /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         PROPERTY SELF[index AS INT   ] AS USUAL GET SET
         /// <param name="name">Name which will be used to lookup a property</param>
         PROPERTY SELF[name  AS STRING] AS USUAL GET SET
@@ -23,7 +23,7 @@ BEGIN NAMESPACE XSharp
     /// <seealso cref='T:XSharp.__Array' />
     INTERFACE IIndexer
   		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
-        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" />        
+        /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         PUBLIC PROPERTY SELF[index PARAMS INT[]] AS USUAL GET SET
     END INTERFACE
 
@@ -35,9 +35,9 @@ BEGIN NAMESPACE XSharp
     /// <seealso cref='T:XSharp.__ArrayBase' />
     INTERFACE INamedIndexer
   		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
-        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" />
-        /// <include file="RTComments.xml" path="Comments/NameBasedIndexParam/*" /> 
-        PUBLIC PROPERTY SELF[index AS INT, name as STRING] AS USUAL GET SET
+        /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
+        /// <param name="name"><include file="RTComments.xml" path="Comments/NameBasedIndexParam/*" /></param> 
+        PUBLIC PROPERTY SELF[index AS INT, name AS STRING] AS USUAL GET SET
     END INTERFACE
 
 

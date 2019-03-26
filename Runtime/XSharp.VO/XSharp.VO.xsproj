@@ -46,7 +46,7 @@
     <VO16>false</VO16>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <AssemblyOriginatorKeyFile>$(SOlutionDir)Common\xsharp.snk</AssemblyOriginatorKeyFile>
-    <XSharpProjectversion>2.0.0.9</XSharpProjectversion>
+    <XSharpProjectversion>2.0.1.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
   </PropertyGroup>
@@ -124,6 +124,7 @@
     <Compile Include="Functions\International2.prg" />
     <Compile Include="Functions\Obsolete.prg" />
     <Compile Include="Functions\Registry.prg" />
+    <Compile Include="Functions\String.prg" />
     <Compile Include="Functions\unsafe.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="Types\ErrorDialog.prg" />

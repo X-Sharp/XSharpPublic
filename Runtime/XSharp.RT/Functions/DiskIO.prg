@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -17,7 +17,7 @@ USING System.IO
 /// <returns>
 /// </returns>
 FUNCTION ADir(cPath ,aFNAME ,aFSIZE ,aFDATE ,aFTIME ,aFATTR ) AS DWORD CLIPPER
-	IF ! IsString(cPath)
+	IF ! cPath:IsString
 		THROW Error.ArgumentError(__FUNCTION__, NAMEOF(cPath), 2,<OBJECT>{cPath})
 	ENDIF
 	LOCAL aFiles	AS ARRAY
@@ -28,23 +28,23 @@ FUNCTION ADir(cPath ,aFNAME ,aFSIZE ,aFDATE ,aFTIME ,aFATTR ) AS DWORD CLIPPER
 	LOCAL aTimes    := NULL_ARRAY AS ARRAY
 	LOCAL aAttribs  := NULL_ARRAY AS ARRAY
 	aFiles := Directory(cPath,FA_NORMAL)
-	IF IsArray(aFName)
+	IF aFName:IsArray
 		aNames  := aFName
 		lHasArg := TRUE
 	ENDIF
-	IF IsArray(aFSize)
+	IF aFSize:IsArray
 		aSizes  := aFSize
 		lHasArg := TRUE
 	ENDIF
-	IF IsArray(aFDate)
+	IF aFDate:IsArray
 		aDates  := aFDate
 		lHasArg := TRUE
 	ENDIF
-	IF IsArray(aFTIME)
+	IF aFTIME:IsArray
 		aTimes  := aFTIME
 		lHasArg := TRUE
 	ENDIF
-	IF IsArray(aFAttr)
+	IF aFAttr:IsArray
 		aAttribs  := aFAttr
 		lHasArg := TRUE
 	ENDIF
@@ -86,11 +86,11 @@ FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
 	LOCAL aReturn	AS ARRAY
 	LOCAL cPath		AS STRING
 	LOCAL cFileMask AS STRING
-	IF IsNil(xAttr)
+	IF xAttr:IsNil
 		nAttr := 0
-	ELSEIF IsNumeric(xAttr)
+	ELSEIF xAttr:IsNumeric
 		nAttr := (DWORD) xAttr
-	ELSEIF IsString(xAttr)
+	ELSEIF xAttr:IsString
 		nAttr := String2FAttr((STRING) xAttr)
 	ELSE
 		THROW Error.ArgumentError(__FUNCTION__, NAMEOF(xAttr), 2,<OBJECT>{xAttr})

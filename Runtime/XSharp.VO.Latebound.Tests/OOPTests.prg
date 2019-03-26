@@ -253,6 +253,26 @@ BEGIN NAMESPACE XSharp.VO.Tests
         	? pIntPtr
         	Assert.NotEqual((INT)pIntPtr , 0)
         	Assert.NotEqual((INT)pPtr , 0)
+
+        [Fact, Trait("Category", "OOP")];
+        METHOD DefaultParameters() AS VOID
+        	LOCAL o AS USUAL
+        	o := AnotherClass{}
+        	
+        	Assert.Equal(60 , (INT)o:DefaultParams1(10,20,30))
+        	Assert.Equal(15 , (INT)o:DefaultParams1(10))
+//        	Assert.Equal(32 , (INT)o:DefaultParams1(10,,20)) // doesn't work in VO either
+        	Assert.Equal(113 , (INT)o:DefaultParams1(10,100))
+
+        	Assert.Equal("TESTFALSE" , (STRING)o:DefaultParams2("TEST",FALSE))
+        	Assert.Equal("TESTTRUE" , (STRING)o:DefaultParams2("TEST",TRUE))
+        	Assert.Equal("TESTTRUE" , (STRING)o:DefaultParams2("TEST"))
+        	Assert.Equal("abcTRUE" , (STRING)o:DefaultParams2())
+
+        	Assert.Equal(2000.10.20 , (DATE)o:DefaultParams3(2000.10.20))
+        	Assert.Equal(2018.10.20 , (DATE)o:DefaultParams3())
+
+        	Assert.Equal(#MYSYMBOL , (SYMBOL)o:DefaultParams4())
     
         CLASS AzControl
        
@@ -304,6 +324,16 @@ CLASS AnotherClass
 	RETURN "2" + n:ToString()
 	METHOD TestOther2C(n)
 	RETURN "2" + ((INT)n):ToString()
+	
+	METHOD DefaultParams1(n1 AS INT, n2 := 2 AS INT, n3 := 3 AS INT) AS INT
+	RETURN n1 + n2 + n3
+	METHOD DefaultParams2(cValue := "abc" AS STRING, lValue := TRUE AS LOGIC) AS STRING
+	RETURN cValue + lValue:ToString():ToUpper()
+	METHOD DefaultParams3(dValue := 2018.10.20 AS DATE) AS DATE
+	RETURN dValue
+	METHOD DefaultParams4(sValue := #MYSYMBOL AS SYMBOL) AS SYMBOL
+	RETURN sValue
+	
 END CLASS
 
 CLASS GeneralLBTestClass

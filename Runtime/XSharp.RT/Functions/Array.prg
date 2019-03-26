@@ -27,7 +27,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 		LOCAL nLen  AS LONG
 		nLen := (INT) aTarget:Length
 		FOR nItem := nStart TO nLen
-			LOCAL oElement := aTarget[ nItem] as T
+			LOCAL oElement := aTarget[ nItem] AS T
 			IF bAction(oElement)
 				RETURN  (DWORD) nItem
 			ENDIF
@@ -126,7 +126,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 			iSave := x
 			IF lIsCodeBlock      
 				iCBRet := Eval( cb, a[x] )
-				IF ! IsNumeric( iCBRet )
+				IF ! iCBRet:IsNumeric
 					THROW Error.DataTypeError(cFuncName, "Return value of Codeblock", 0)
 				ELSE
 					iComp := iCBRet
@@ -146,7 +146,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 				
 					IF lIsCodeBlock      
 						iCBRet := Eval( cb, a[x] )
-						IF ! IsNumeric( iCBRet )
+						IF ! iCBRet:IsNumeric
 							THROW Error.DataTypeError(cFuncName, "Return value of Codeblock", 0)
 						ELSE
 							iComp := iCBRet
@@ -232,17 +232,17 @@ INTERNAL STATIC CLASS ArrayHelpers
 		ENDIF
 		DEFAULT( REF iStart, 1)
 		DEFAULT( REF iCount, ALen(aArray))
-		IF ! IsNumeric(iStart)
+		IF ! iStart:IsNumeric
 			THROW Error.ArgumentError( cFuncName, NAMEOF(iStart), 3 , <OBJECT>{iStart})
 		ENDIF
-		IF ! IsNumeric(iCount)
+		IF ! iCount:IsNumeric
 			THROW Error.ArgumentError( cFuncName, NAMEOF(iCount), 4 , <OBJECT>{iCount})
 		ENDIF
 		RETURN
 
 	STATIC METHOD ValidateArrayParams(aTarget REF USUAL, nStart REF USUAL,nCount REF USUAL, nSize OUT DWORD) AS LOGIC
 		nSize := 0
-		IF IsArray( aTarget )
+		IF aTarget:IsArray
 			nSize := ALen( (ARRAY) aTarget )
 			IF nSize == 0
 				RETURN FALSE
@@ -250,10 +250,10 @@ INTERNAL STATIC CLASS ArrayHelpers
 		ELSE
 			RETURN FALSE
 		ENDIF
-		IF ! IsNumeric( nCount )
+		IF ! nCount:IsNumeric
 			nCount := nSize
 		ENDIF
-		IF ! IsNumeric( nStart )
+		IF ! nStart:IsNumeric
 			IF nCount < 0
 				nStart := nSize
 			ELSE
@@ -806,13 +806,13 @@ FUNCTION ACopy(uSource ,uTarget ,nStart ,nCount ,nStartDest ) AS ARRAY CLIPPER
 	LOCAL sourceLen  AS DWORD
 	LOCAL start AS DWORD
 	LOCAL count AS DWORD
-	IF IsArray( uSource )
+	IF uSource:IsArray
        aSource := uSource
     ELSE
       THROW Error.ArgumentError( __ENTITY__, NAMEOF(uSource), 1, <OBJECT>{ uSource } )
     ENDIF
    
-     IF IsArray( uTarget )
+     IF uTarget:IsArray
         aTarget := uTarget
      ELSE
         THROW Error.ArgumentError( __ENTITY__, NAMEOF(uTarget), 2, <OBJECT>{ uTarget } )
@@ -820,7 +820,7 @@ FUNCTION ACopy(uSource ,uTarget ,nStart ,nCount ,nStartDest ) AS ARRAY CLIPPER
 	 start := 1
 	 sourceLen  := ALen(aSource)
 	 IF pCount() > 2
-		IF IsNumeric(nStart)
+		IF nStart:IsNumeric
 			start := nStart
 		ELSE
 			THROW Error.ArgumentError( __ENTITY__, NAMEOF(nStart), 3, <OBJECT>{ nStart } )
@@ -832,7 +832,7 @@ FUNCTION ACopy(uSource ,uTarget ,nStart ,nCount ,nStartDest ) AS ARRAY CLIPPER
 		ENDIF
 	 ENDIF
 	 IF pCount() > 3
-		IF IsNumeric(nCount)
+		IF nCount:IsNumeric
 			count := nCount
 		ELSE
 			THROW Error.ArgumentError( __ENTITY__, NAMEOF(nCount), 4, <OBJECT>{ nCount } )
@@ -846,7 +846,7 @@ FUNCTION ACopy(uSource ,uTarget ,nStart ,nCount ,nStartDest ) AS ARRAY CLIPPER
 	 LOCAL offSet		:= 1 AS DWORD
 	 LOCAL targetLen	:= ALen(aTarget) AS DWORD
 	 IF pCount() > 4
-		IF IsNumeric(nStartDest)
+		IF nStartDest:IsNumeric
 			offSet := nStartDest
 			offSet := Math.Min( offSet, targetLen )
             offSet := Math.Max( 1, offSet )

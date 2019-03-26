@@ -1,6 +1,6 @@
 [General]
 PROJECT = VOXPorter
-IDEVersion = 1.13
+IDEVersion = 1.15a
 OutputFolder = %ProjectPath%\Bin\
 Description = 
 GUID = 999EE65E-7F83-4206-B828-05032A856631
@@ -9,6 +9,7 @@ PrgEncoding = Default
 SupportCF = 0
 NoAppFileCreate = 0
 CopyAssembliesToFolder = 
+DebugExecutable = 
 
 [ProjectExportOptions]
 ExportResources = 0
@@ -33,7 +34,7 @@ DefaultPropertiesGuid = DC6FD78A-F117-431E-8C2D-F6667142861F
 
 ; ************** APPLICATION VOXPorter *************
 Application = VOXPorter
-IDEVersion = 1.13
+IDEVersion = 1.15a
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -89,6 +90,7 @@ ReferenceBrowse = %ProjectPath%\Dll\SDK_Defines.dll,1,1
 ReferenceBrowse = %ProjectPath%\Dll\XICOMMON.dll,1,1
 ReferenceBrowse = %ProjectPath%\Dll\XIRES.dll,1,1
 ReferenceBrowse = %ProjectPath%\Dll\XIDED.dll,1,1
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 [VOXPorter Resources]
 ResourceFile = Designers , %AppPath%\Resources\Designers.resources
 ResourceFileGuid = 369B3304-1BF5-4D80-AA97-2B60C561DEDF
@@ -159,7 +161,7 @@ ENDApplication = VOXPorter
 
 ; ************** APPLICATION Fab_VO_Entities *************
 Application = Fab_VO_Entities
-IDEVersion = 1.13
+IDEVersion = 1.15a
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 

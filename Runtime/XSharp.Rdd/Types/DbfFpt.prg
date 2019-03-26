@@ -7,12 +7,47 @@
 USING System.Text
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
+USING XSharp.RDD.CDX
+
+
+INTERNAL FUNCTION ShortToFox(siValue AS SHORT, buffer AS BYTE[], nOffSet AS LONG) AS VOID
+        LOCAL nValue := WordStruct{} AS WordStruct
+        nValue:shortValue := siValue
+	    buffer[nOffSet+1]   := nValue:b1
+        buffer[nOffSet+0]   := nValue:b2
+
+INTERNAL FUNCTION FoxToShort(buffer AS BYTE[], nOffSet AS LONG) AS SHORT
+        LOCAL nValue := WordStruct{} AS WordStruct
+	    nValue:b1 := buffer[nOffSet+1]   
+        nValue:b2 := buffer[nOffSet+0]
+        RETURN nValue:shortValue
+             
+
+INTERNAL FUNCTION FoxToLong(buffer AS BYTE[], nOffSet AS LONG) AS LONG
+        LOCAL nValue := LongStruct{} AS LongStruct
+	    nValue:b4 := buffer[nOffSet+0]
+        nValue:b3 := buffer[nOffSet+1]
+        nValue:b2 := buffer[nOffSet+2]
+        nValue:b1 := buffer[nOffSet+3]
+        RETURN nValue:longValue
+
+INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) AS LONG
+        LOCAL nValue := LongStruct{} AS LongStruct
+        nValue:LongValue := liValue
+        buffer[nOffSet+0] := nValue:b4
+        buffer[nOffSet+1] := nValue:b3
+        buffer[nOffSet+2] := nValue:b2
+        buffer[nOffSet+3] := nValue:b1
+        RETURN liValue
+
+
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFFPT RDD. For DBF/FPT. No index support at this level</summary>
     CLASS DBFFPT INHERIT DBF 
-        CONSTRUCTOR
+        PRIVATE _oFptMemo AS FptMemo
+        CONSTRUCTOR   
             SUPER()
-            SELF:_oMemo := FptMemo{SELF}
+            SELF:_oMemo := _oFptMemo := FptMemo{SELF}
             /// <inheritdoc />	
         VIRTUAL PROPERTY SysName AS STRING GET "DBFFPT"
         
@@ -23,27 +58,74 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:_isMemoField( nFldPos )
                 // At this level, the return value is the raw Data, in BYTE[]
                 rawData := (BYTE[])SUPER:GetValue(nFldPos)
-                // So, extract the "real" Data
-                buffer := BYTE[]{ rawData:Length - 8}
-                Array.Copy(rawData,8, buffer, 0, buffer:Length)
-                // Get the Underlying type from the MemoBlock
-                // 0 : Picture (on MacOS); 1: Memo; 2 : Object
-                nType := BitConverter.ToInt32( rawData, 0)
-                IF SELF:_isMemoField( nFldPos ) .AND. ( nType == 1 )
-                    LOCAL encoding AS Encoding //ASCIIEncoding
-                    LOCAL str AS STRING
-                    encoding := SELF:_Encoding //ASCIIEncoding{}
-                    str :=  encoding:GetString(buffer)
-                    // Convert to String and return
-                    RETURN str
+                IF rawData != NULL
+                    // So, extract the "real" Data
+                    buffer := BYTE[]{ rawData:Length - 8}
+                    Array.Copy(rawData,8, buffer, 0, buffer:Length)
+                    // Get the Underlying type from the MemoBlock
+                    // 0 : Picture (on MacOS); 1: Memo; 2 : Object
+                    nType := FoxToLong( rawData, 0)
+                    IF SELF:_isMemoField( nFldPos ) .AND. ( nType == 1 )
+                        LOCAL encoding AS Encoding //ASCIIEncoding
+                        LOCAL str AS STRING
+                        encoding := SELF:_Encoding //ASCIIEncoding{}
+                        str :=  encoding:GetString(buffer)
+                        // Convert to String and return
+                        RETURN str
+                    ENDIF
+                    RETURN buffer
+                ELSE
+                    RETURN String.Empty
                 ENDIF
-                RETURN buffer
             ENDIF
             RETURN SUPER:GetValue(nFldPos)
+
             // Indicate if a Field is a Memo; Called by GetValue() in Parent Class
             // At DbfFpt Level, TRUE for DbFieldType.Memo, DbFieldType.Picture, DbFieldType.Object
         INTERNAL VIRTUAL METHOD _isMemoFieldType( fieldType AS DbFieldType ) AS LOGIC
             RETURN ( ( fieldType == DbFieldType.Memo ) .OR. ( fieldType == DbFieldType.Picture ) .OR. ( fieldType == DbFieldType.Ole ) )
+        /// <inheritdoc />
+        VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
+            LOCAL oResult AS OBJECT
+            SWITCH nOrdinal
+            CASE DbInfo.DBI_MEMOHANDLE
+                IF ( SELF:_oFptMemo != NULL .AND. SELF:_oFptMemo:_Open)
+                    oResult := SELF:_oFptMemo:_hFile
+                ELSE
+                    oResult := IntPtr.Zero
+                ENDIF
+                    
+            CASE DbInfo.DBI_MEMOEXT
+                IF ( SELF:_oFptMemo != NULL .AND. SELF:_oFptMemo:_Open)
+                    oResult := System.IO.Path.GetExtension(SELF:_oFptMemo:_FileName)
+                ELSE
+                    oResult := FptMemo.DefExt
+                ENDIF
+                IF oNewValue IS STRING
+                    FptMemo.DefExt := (STRING) oNewValue
+                ENDIF
+            CASE DbInfo.DBI_MEMOBLOCKSIZE
+                oResult := SELF:_oFptMemo:BlockSize
+            CASE DBInfo.DBI_MEMOFIELD
+                oResult := ""
+                IF oNewValue != NULL
+                    TRY
+                       LOCAL fldPos AS LONG
+                       fldPos := Convert.ToInt32(oNewValue)
+                       oResult := SELF:GetValue(fldPos)
+                    CATCH ex AS exception
+                        oResult := ""   
+                        SELF:_dbfError(ex, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, "DBFDBT.Info")
+                    END TRY
+                ENDIF
+	    CASE DbInfo.DBI_MEMOTYPE
+                oResult := DB_MEMO_FPT
+            CASE DbInfo.DBI_MEMOVERSION
+                oResult := DB_MEMOVER_STD
+            OTHERWISE
+                oResult := SUPER:Info(nOrdinal, oNewValue)
+            END SWITCH
+            RETURN oResult
             
             
             END CLASS
@@ -52,6 +134,7 @@ BEGIN NAMESPACE XSharp.RDD
     /// <summary>FPT Memo class. Implements the FTP support.</summary>
     INTERNAL CLASS FptMemo INHERIT DBTMemo 
 
+              
         STATIC CONSTRUCTOR
             DefExt := FPT_MEMOEXT
 
@@ -80,7 +163,7 @@ BEGIN NAMESPACE XSharp.RDD
             // This will ALSO include the 8 Bytes of FPT
             // The first 4 Bytes contains the tpye of Memo Data
             // The next 4 Bytes contains the length of Memo data, including the first 8 bytes            
-            RETURN SELF:GetValue( nFldPos )
+            RETURN SUPER:GetValue( nFldPos )
             
             /// <inheritdoc />
         METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
@@ -108,18 +191,16 @@ BEGIN NAMESPACE XSharp.RDD
                 LOCAL isOk := ( SELF:_hFile != F_ERROR ) AS LOGIC
                 IF isOk
                     //
-                    LOCAL memoType AS BYTE[]
-                    LOCAL memoLen  AS BYTE[]
-                    memoType := BYTE[]{4}
-                    memoLen := BYTE[]{4}                    
+                    LOCAL blockInfo AS BYTE[]
+                    blockInfo := BYTE[]{8}
                     // Where do we start ?
                     LOCAL iOffset := blockNbr * SELF:_blockSize AS LONG
                     // Go to the blockNbr position
                     FSeek3( SELF:_hFile, iOffset, FS_SET )
                     // 
-                    FRead3( SELF:_hFile, memoType, 4 )
-                    FRead3( SELF:_hFile, memoLen, 4 )
-                    blockLen := BitConverter.ToInt32( memoLen, 0)
+                    FRead3( SELF:_hFile, blockInfo, (DWORD) blockInfo:Length )
+                    VAR memoType := FoxToLong(blockInfo, 0)
+                    blockLen     := FoxToLong(blockInfo,4)
                     // The raw length include the 8 Bytes included in the Memo Block
                 ENDIF
             ENDIF
@@ -164,7 +245,7 @@ BEGIN NAMESPACE XSharp.RDD
             // Put the Data
             Array.Copy(rawData,0, memoBlock, 8, rawData:Length)
             // now, put the length
-            Array.Copy(BitConverter.GetBytes(memoBlock:Length),0, memoBlock, 4, SIZEOF(LONG))
+            LongToFox(memoBlock:Length, memoBlock,4)
             // And finally, put the Data Type
             // 0 : Picture (on MacOS); 1: Memo; 2 : Object
             LOCAL nType := 2 AS LONG
@@ -173,7 +254,7 @@ BEGIN NAMESPACE XSharp.RDD
             ELSEIF ( SELF:_oRdd:_FieldType( nFldPos ) == DbFieldType.Picture )
                 nType := 0
             ENDIF
-            Array.Copy(BitConverter.GetBytes( nType ),0, memoBlock, 0, SIZEOF(LONG))
+            LongToFox(nType, memoBlock,0)
             // Ok, we now have a FPT Memoblock, save
             RETURN SUPER:PutValue( nFldPos, memoBlock )
             
@@ -206,7 +287,7 @@ BEGIN NAMESPACE XSharp.RDD
                     LOCAL savedPos := FSeek3(SELF:_hFile, 0, FS_RELATIVE ) AS LONG
                     FSeek3( SELF:_hFile, 6, FS_SET )
                     IF ( FRead3( SELF:_hFile, _sizeOfBlock, 2 ) == 2 )
-                        nSize := BitConverter.ToInt16( _sizeOfBlock, 0)
+                        nSize := FoxToShort(_sizeOfBlock,0)
                     ENDIF
                     FSeek3(SELF:_hFile, savedPos, FS_SET )
                     SELF:_blockSize := nSize
@@ -220,7 +301,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF isOk
                     LOCAL _sizeOfBlock AS BYTE[]
                     _sizeOfBlock := BYTE[]{2}
-                    Array.Copy(BitConverter.GetBytes(VALUE),0, _sizeOfBlock, 0, SIZEOF(SHORT))
+                    ShortToFox( VALUE, _sizeOfBlock,0)
                     LOCAL savedPos := FSeek3(SELF:_hFile, 0, FS_RELATIVE ) AS LONG
                     FSeek3( SELF:_hFile, 6, FS_SET )
                     FWrite3( SELF:_hFile, _sizeOfBlock, 2 )

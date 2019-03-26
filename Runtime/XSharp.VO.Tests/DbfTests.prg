@@ -1523,7 +1523,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aValues AS ARRAY 
 			LOCAL i AS DWORD
 			
-			cDBF := "c:\test\tmp1"
+			cDBF := GetTempFileName()
 		
 			RDDSetDefault("DBFNTX")
 		
@@ -1573,12 +1573,121 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL nCount := 0 AS INT
 			DO WHILE ! EOF()
 				nCount ++
-				? FieldGet(1)
+//				? FieldGet(1)
 				DBSkip(1)
 			ENDDO 
 			Assert.Equal(5 , nCount)
 		
 			DBCloseArea()
+		RETURN
+
+
+		// TECH-8H9WL71978, OrdIsUnique() always returns TRUE
+		[Fact, Trait("Category", "DBF")];
+		METHOD OrdIsUnique_test() AS VOID
+			LOCAL cDBF, cIndex AS STRING
+			LOCAL lUnique AS LOGIC
+			
+			RDDSetDefault ( "DBFCDX" )
+			lUnique := SetUnique()
+			
+			cDBF := GetTempFileName()
+			cIndex := cDbf
+			CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 }} , { "a" , "d" , "f", "c" })
+
+			OrdCondSet()
+			OrdCreate(cIndex, "ORDER1", "upper(LAST)", { || Upper ( _Field-> LAST) } )
+			DBSetOrder ( 1 )
+			Assert.Equal( "ORDER1", OrdName() )
+			Assert.False( OrdIsUnique() ) // always returns true !
+			Assert.False( DBOrderInfo(DBOI_UNIQUE ) ) // ok
+			Assert.False( DBOrderInfo(DBOI_ISDESC ) )
+			
+			OrdCondSet()
+//			Create a descend and unique order
+			OrdCondSet(,,,,,,,,,,TRUE)
+			SetUnique ( TRUE )
+			OrdCreate(cIndex, "ORDER2", "upper(LAST)", { || Upper ( _Field-> LAST) } )
+			
+			DBSetOrder ( 2 )
+			Assert.Equal( "ORDER2", OrdName() )
+			Assert.True( OrdIsUnique() ) // always returns true !
+			Assert.True( DBOrderInfo(DBOI_UNIQUE ) )
+			Assert.True( DBOrderInfo(DBOI_ISDESC ) )
+			DBCloseAll()
+			SetUnique ( lUnique )
+		RETURN
+
+
+		// TECH-3257Q835A2, Dbf() function incompatibilities
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBF_func_test() AS VOID
+			LOCAL cDBF AS STRING
+//			DBF() throws an EG_NOTABLE error, but should return "" if no table is
+//			opened in the current workarea
+			Assert.Equal( "", DBF() ) // exception
+			cDBF := GetTempFileName()
+			? DBCreate( cDBF , { { "LAST" , "C" , 10 , 0 }})
+			? DBUseArea(,"DBFNTX",cDBF , "FOOALIAS")
+			Assert.Equal( "FOOALIAS", DBF() ) // Returns the fullpath instead of the alias name
+			DBCloseAll()
+			Assert.Equal( "", DBF() )// should return empty string
+		RETURN
+
+
+		// TECH-GT2ZK9PUK9, Inconsistent behavior of RDDName()
+		[Fact, Trait("Category", "DBF")];
+		METHOD RDDName_test() AS VOID
+			LOCAL cDbf AS STRING
+			RDDSetDefault("DBFNTX")
+			Assert.Equal("DBFNTX", RDDName())
+			cDBF := GetTempFileName()
+			DBCreate( cDBF , {{"AAA","N",10,0}})
+			DBUseArea(,"DBFNTX",cDBF,,FALSE)
+			Assert.Equal("DBFNTX", RDDName())
+			DBCloseArea()
+
+			RDDSetDefault("DBFCDX")
+			Assert.Equal("DBFCDX", RDDName())
+			cDBF := GetTempFileName()
+			FErase(cDbf + ".cdx")
+			DBCreate( cDBF , {{"AAA","N",10,0}})
+			DBUseArea(,"DBFCDX",cDBF,,FALSE)
+			Assert.Equal("DBFCDX", RDDName())
+			DBCloseArea()
+		RETURN
+
+
+		// TECH-2NVB6A63V4, DBMemoExt() shows ".DBT" only if a DBF is opened
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBMemoExt_test() AS VOID
+			LOCAL cDBF AS STRING
+			LOCAL aFields AS ARRAY
+			
+			RDDSetDefault ( "DBFNTX" )
+			Assert.Equal(".DBT" , DBMemoExt() ) // NULL_STRING instead of ".DBT"
+			
+			cDBF := GetTempFileName()
+			DBCreate( cDBF , {{ "AGE" , "N" , 2 , 0 }})
+			DBCloseAll()
+			
+			DBUseArea( TRUE ,"DBFNTX",cDBF,"FOO1",TRUE)
+			Assert.Equal(".DBT" , DBMemoext() ) // ".DBT" ok
+			DBCloseAll()
+			Assert.Equal(".DBT" , DBMemoext() ) // NULL_STRING again instead of ".DBT"
+
+
+			RDDSetDefault ( "DBFCDX" )
+			Assert.Equal(".FPT" , DBMemoExt() )
+			
+			FErase(cDbf + ".cdx")
+			DBCreate( cDBF , {{ "AGE" , "N" , 2 , 0 }})
+			DBCloseAll()
+			
+			DBUseArea( TRUE ,"DBFCDX",cDBF)
+			Assert.Equal(".FPT" , DBMemoext() )
+			DBCloseAll()
+			Assert.Equal(".FPT" , DBMemoext() )
 		RETURN
 
 
@@ -1588,6 +1697,17 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		STATIC PRIVATE METHOD GetTempFileName(cFileName AS STRING) AS STRING
 			// we may want to put them to a specific folder etc
 		RETURN cFileName
+		STATIC PRIVATE METHOD CreateDatabase(cFileName AS STRING, aFields AS ARRAY) AS VOID
+			CreateDatabase(cFileName, aFields , {})
+		STATIC PRIVATE METHOD CreateDatabase(cFileName AS STRING, aFields AS ARRAY, aValues AS ARRAY) AS VOID
+			FErase ( cFileName + IndexExt() )
+			DBCreate( cFileName , aFields)
+			DBUseArea(,,cFileName)
+			FOR LOCAL i := 1 AS DWORD UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut (1 , aValues[i])
+			NEXT
+		RETURN
 			
 	END CLASS
 END NAMESPACE

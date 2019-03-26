@@ -390,29 +390,8 @@ FUNCTION ChrW(c AS DWORD) AS STRING
    ENDIF
    RETURN Convert.ToChar( (INT) ( c & 0xFFFF ) ):ToString()
 
-/// <summary>This function is not implemented yet</summary>
-// <summary>
-// Encrypt or decrypt a string.
-// </summary>
-/// <param name="cSource"></param>
-/// <param name="cKey"></param>
-/// <returns>
-/// </returns>
-FUNCTION Crypt(cSource AS STRING,cKey AS STRING) AS STRING
-	THROW NotImplementedException{}
-	RETURN String.Empty   
 
-/// <summary>This function is not implemented yet</summary>
-// <summary>
-// Encrypt or decrypt a string, changing the contents of the original string as well as returning the encrypted string.
-// </summary>
-/// <param name="cSource"></param>
-/// <param name="cKey"></param>
-/// <returns>
-/// </returns>
-FUNCTION CryptA(cSource AS STRING,cKey AS STRING) AS STRING
-	THROW NotImplementedException{}
-	RETURN String.Empty   
+
 
 /// <summary>
 /// Decode a file from an e-mail transfer.

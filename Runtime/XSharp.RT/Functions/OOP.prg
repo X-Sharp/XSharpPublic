@@ -131,8 +131,8 @@ INTERNAL STATIC CLASS OOPHelpers
             FOREACH asm AS Assembly IN aAssemblies
                 VAR ins := TYPEOF( ClassLibraryAttribute )
 			    IF asm:IsDefined(  ins, FALSE )
-                    var types := asm:GetTypes()
-                    FOREACH type as System.Type in types
+                    VAR types := asm:GetTypes()
+                    FOREACH type AS System.Type IN types
                         IF String.Compare(type:Name, cName, StringComparison.OrdinalIgnoreCase) == 0
                             ret := type
                             EXIT
@@ -175,91 +175,91 @@ INTERNAL STATIC CLASS OOPHelpers
 		RETURN oMI
 
 
-    STATIC METHOD CompareMethods(m1 as MethodBase, m2 as MethodBase, uArgs as USUAL[]) as LONG
-        var p1 := m1:GetParameters()
-        var p2 := m2:GetParameters()
+    STATIC METHOD CompareMethods(m1 AS MethodBase, m2 AS MethodBase, uArgs AS USUAL[]) AS LONG
+        VAR p1 := m1:GetParameters()
+        VAR p2 := m2:GetParameters()
 
-        if p1:Length != p2:Length
-            if p1:Length == uArgs:Length
-                return 1
-            elseif p2:Length == uArgs:Length
-                return 2
-            endif
-        endif
+        IF p1:Length != p2:Length
+            IF p1:Length == uArgs:Length
+                RETURN 1
+            ELSEIF p2:Length == uArgs:Length
+                RETURN 2
+            ENDIF
+        ENDIF
         // when we get here then the parameter counts are the same
-        FOR VAR nPar := 1 to p1:Length
-            if nPar > uArgs:Length
-                exit
-            endif
-            var par1 := p1[nPar]
-            var par2 := p2[nPar]
-            var arg  := uArgs[nPar]
-            if par1:ParameterType != par2:ParameterType
-                if par1:ParameterType:IsAssignableFrom(arg:SystemType)
-                    return 1
-                endif
-                if par2:ParameterType:IsAssignableFrom(arg:SystemType)
-                    return 2
-                endif
-                if par1:ParameterType = typeof(USUAL)
-                    return 1
-                endif
-                if par2:ParameterType = typeof(USUAL)
-                    return 2
-                endif
-            endif
+        FOR VAR nPar := 1 TO p1:Length
+            IF nPar > uArgs:Length
+                EXIT
+            ENDIF
+            VAR par1 := p1[nPar]
+            VAR par2 := p2[nPar]
+            VAR arg  := uArgs[nPar]
+            IF par1:ParameterType != par2:ParameterType
+                IF par1:ParameterType:IsAssignableFrom(arg:SystemType)
+                    RETURN 1
+                ENDIF
+                IF par2:ParameterType:IsAssignableFrom(arg:SystemType)
+                    RETURN 2
+                ENDIF
+                IF par1:ParameterType = typeof(USUAL)
+                    RETURN 1
+                ENDIF
+                IF par2:ParameterType = typeof(USUAL)
+                    RETURN 2
+                ENDIF
+            ENDIF
         NEXT
-        return 0
+        RETURN 0
 
-    STATIC METHOD FindBestOverLoad<T>(overloads as T[], cFunction as STRING, uArgs AS USUAL[]) as T where T is MethodBase
-        if overloads:Length == 0
-            return null
-        elseif overloads:Length = 1
-            return overloads[1]
-        endif
+    STATIC METHOD FindBestOverLoad<T>(overloads AS T[], cFunction AS STRING, uArgs AS USUAL[]) AS T WHERE T IS MethodBase
+        IF overloads:Length == 0
+            RETURN NULL
+        ELSEIF overloads:Length = 1
+            RETURN overloads[1]
+        ENDIF
         // More than one
-        var found := List<T>{}
+        VAR found := List<T>{}
         // first look for methods with the same ! of parametes
-        foreach var m in overloads
-            if m:GetParameters():Length == uArgs:Length
+        FOREACH VAR m IN overloads
+            IF m:GetParameters():Length == uArgs:Length
                 found:Add(m)
-            endif
-        next
-        if found:Count == 1
-            return found[0] // collection, so 0 based !
-        endif
+            ENDIF
+        NEXT
+        IF found:Count == 1
+            RETURN found[0] // collection, so 0 based !
+        ENDIF
         // then look for methods with
         found:Clear()
-        for var nMethod := 1 to overloads:Length -1
-            var m1     := overloads[nMethod]
-            var m2     := overloads[nMethod+1]
-            var result := compareMethods(m1, m2, uArgs)
-            if result == 1
-                if ! found:Contains(m1)
+        FOR VAR nMethod := 1 TO overloads:Length -1
+            VAR m1     := overloads[nMethod]
+            VAR m2     := overloads[nMethod+1]
+            VAR result := compareMethods(m1, m2, uArgs)
+            IF result == 1
+                IF ! found:Contains(m1)
                     found:Add(m1)
-                endif
-            elseif result == 2
-                if ! found:Contains(m2)
+                ENDIF
+            ELSEIF result == 2
+                IF ! found:Contains(m2)
                     found:Add(m2)
-                endif
-            endif
-        next
-        if found:Count == 1
-            return found[0] // collection, so 0 based !
-        endif
-        local cClass as STRING
+                ENDIF
+            ENDIF
+        NEXT
+        IF found:Count == 1
+            RETURN found[0] // collection, so 0 based !
+        ENDIF
+        LOCAL cClass AS STRING
         cClass := overloads[1]:DeclaringType:Name
-        var oError := Error.VOError( EG_AMBIGUOUSMETHOD, cFunction, "MethodName", 1, <OBJECT>{cClass+":"+overloads[1]:Name})
+        VAR oError := Error.VOError( EG_AMBIGUOUSMETHOD, cFunction, "MethodName", 1, <OBJECT>{cClass+":"+overloads[1]:Name})
         oError:Description := oError:Message+" ' "+cFunction+"'"
-        throw oError
+        THROW oError
         
 
-    STATIC METHOD MatchParameters<T>( methodinfo as T, args as USUAL[]) AS OBJECT[] where T is MethodBase
+    STATIC METHOD MatchParameters<T>( methodinfo AS T, args AS USUAL[]) AS OBJECT[] WHERE T IS MethodBase
         // args contains the list of arguments. The methodname has already been deleted when appropriated
 		LOCAL oArgs AS OBJECT[]
         LOCAL lClipper := FALSE AS LOGIC
         VAR aPars := methodInfo:GetParameters()
-        if aPars:Length == 1 .and. methodinfo:IsDefined(TYPEOF(ClipperCallingconventionAttribute),FALSE)
+        IF aPars:Length == 1 .AND. methodinfo:IsDefined(TYPEOF(ClipperCallingconventionAttribute),FALSE)
             lClipper := TRUE
         ENDIF
         DO CASE
@@ -306,15 +306,47 @@ INTERNAL STATIC CLASS OOPHelpers
                 ENDIF
 			NEXT 
             // set default parameters for missing parameters
-            for VAR nArg := nMax+1 to aPars:Length
-                local oPar as ParameterInfo
+            FOR VAR nArg := nMax+1 TO aPars:Length
+                LOCAL oPar AS ParameterInfo
                 oPar        := aPars[nArg]
                 IF oPar:HasDefaultValue
                     oArgs[nArg] := oPar:DefaultValue
+                ELSE
+                	LOCAL oDefAttrib AS DefaultParameterValueAttribute
+                	oDefAttrib := (DefaultParameterValueAttribute) oPar:GetCustomAttribute(TypeOf(DefaultParameterValueAttribute))
+                	IF oDefAttrib != NULL
+	                	// That only covers default params at the end of the argument list
+	                	// If a call is made with: LateBoundCall(1,,3)
+	                	// then the second argument does not get converted to the default value of the 
+	                	// second param. But this scenario does not work in VO or vulcan either
+                		SWITCH oDefAttrib:Flag 
+                		CASE 1 // NIL
+                			NOP // it is already NIL
+                		CASE 2 // DATE, stored in Ticks
+	                		oArgs[nArg] := DATE{ (INT64)oDefAttrib:Value }
+                		CASE 3 // SYMBOL
+	                		oArgs[nArg] := String2Symbol( (STRING)oDefAttrib:Value )
+                		CASE 4 // NULL_PSZ
+                            IF oDefAttrib:Value IS STRING
+                                // Note: Do not use String2Psz() because that PSZ will be freed when this method finishes !
+                                oArgs[nArg]:= PSZ{ (STRING) oDefAttrib:Value}
+                            ELSE
+	                		    oArgs[nArg] := PSZ{IntPtr.Zero}
+                            ENDIF
+                		CASE  5 // NULL_PTR
+                            IF oDefAttrib:Value IS Int32
+                                oArgs[nArg]:= IntPtr{ (Int32) oDefAttrib:Value}
+                            ELSE
+                			    oArgs[nArg]:= IntPtr.Zero
+                            ENDIF
+                		OTHERWISE
+	                		oArgs[nArg] := oDefAttrib:Value
+                		END SWITCH
+                	END IF
                 ENDIF
-            next
+            NEXT
 		ENDCASE
-        return oArgs
+        RETURN oArgs
 
 	STATIC METHOD IsMethod( t AS System.Type, cName AS STRING ) AS LOGIC
 		RETURN FindMethod(t, cName, TRUE) != NULL
@@ -510,9 +542,9 @@ INTERNAL STATIC CLASS OOPHelpers
 		IF sendHelper(oObject, "NoIVarGet", <USUAL>{String2Symbol(cIVar)}, OUT result)
 			RETURN result
 		END IF
-		var oError := Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{oObject, cIVar} )
+		VAR oError := Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{oObject, cIVar} )
         oError:Description := oError:Message+" '"+cIVar+"'"
-        throw oError
+        THROW oError
 		
 	STATIC METHOD IVarPut(oObject AS OBJECT, cIVar AS STRING, oValue AS OBJECT, lSelf AS LOGIC)  AS VOID
 		LOCAL t AS Type
@@ -535,9 +567,9 @@ INTERNAL STATIC CLASS OOPHelpers
 		IF sendHelper(oObject, "NoIVarPut", <USUAL>{String2Symbol(cIVar), oValue}, OUT dummy)
 			RETURN
 		END IF
-		var oError :=  Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{oObject, cIVar, oValue, lSelf})
+		VAR oError :=  Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{oObject, cIVar, oValue, lSelf})
 		oError:Description := oError:Message+" '"+cIVar+"'"
-        throw oError
+        THROW oError
 
 	STATIC METHOD SendHelper(oObject AS OBJECT, cMethod AS STRING, uArgs AS USUAL[], result OUT USUAL) AS LOGIC
 		LOCAL t := oObject?:GetType() AS Type
@@ -548,19 +580,19 @@ INTERNAL STATIC CLASS OOPHelpers
 		LOCAL mi AS MethodInfo
         TRY
 		    mi := t:GetMethod(cMethod,BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase )
-        CATCH  as AmbiguousMatchException
-            try
-                var list := List<MethodInfo>{}
-                foreach var minfo in t:GetMethods(BindingFlags.Instance | BindingFlags.Public)
-                    if String.Compare(minfo:Name, cMethod, StringComparison.OrdinalIgnoreCase) == 0
+        CATCH  AS AmbiguousMatchException
+            TRY
+                VAR list := List<MethodInfo>{}
+                FOREACH VAR minfo IN t:GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                    IF String.Compare(minfo:Name, cMethod, StringComparison.OrdinalIgnoreCase) == 0
                         list:Add(minfo)
-                    endif
-                next
-                var mis := list:ToArray()
+                    ENDIF
+                NEXT
+                VAR mis := list:ToArray()
                 mi := FindBestOverload(mis, "SendHelper",uArgs)
-            catch as Exception
-                mi := null
-            end try
+            CATCH AS Exception
+                mi := NULL
+            END TRY
         END TRY
 		IF mi == NULL
 			// No Error Here. THat is done in the calling code
@@ -590,9 +622,9 @@ INTERNAL STATIC CLASS OOPHelpers
 			IF toType == TYPEOF(USUAL)
 				// box the usual
                 RETURN __CASTCLASS(OBJECT, uValue)
-            ELSEIF IsArray(uValue) .AND. totype == typeof(ARRAY)
+            ELSEIF uValue:IsArray .AND. totype == typeof(ARRAY)
                 RETURN (ARRAY) uValue
-            ELSEIF IsObject(uValue) .OR. isCodeBlock(uValue)
+            ELSEIF uValue:IsObject .OR. uValue:IsCodeBlock
                 RETURN (OBJECT) uValue
             ENDIF
       		
@@ -614,7 +646,7 @@ INTERNAL STATIC CLASS OOPHelpers
 			noMethodArgs[__ARRAYBASE__] := cMethod
 			Array.Copy( args, 0, noMethodArgs, 1, args:Length )
 			IF ! SendHelper(oObject, "NoMethod" , noMethodArgs, OUT result)
-                var oerror := Error.VOError( EG_NOMETHOD, __ENTITY__, nameof(cMethod), 2, <OBJECT>{oObject, cMethod, args} )
+                VAR oerror := Error.VOError( EG_NOMETHOD, __ENTITY__, nameof(cMethod), 2, <OBJECT>{oObject, cMethod, args} )
                 oError:Description  := oError:Message + " '"+cMethod+"'"
                 THROW oError
 
@@ -720,9 +752,9 @@ FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
 	ENDIF    	
 	VAR t := OOPHelpers.FindClass((STRING) cClassName)
 	IF t == NULL
-		 var oError := Error.VOError( EG_NOCLASS, __FUNCTION__, NAMEOF(cClassName), 1,  <OBJECT>{cClassName}  )
+		 VAR oError := Error.VOError( EG_NOCLASS, __FUNCTION__, NAMEOF(cClassName), 1,  <OBJECT>{cClassName}  )
          oError:Description := oError:Message+" '"+cClassName+"'"
-         throw oError
+         THROW oError
 	ENDIF
 	VAR constructors := t:getConstructors()
     VAR nPCount := PCount() 
@@ -730,14 +762,14 @@ FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
 	FOR VAR nArg := 2 TO nPCount
 		args[nArg-1] := _GetFParam(nArg)
 	NEXT 
-    LOCAL ctor := OOPHelpers.FindBestOverLoad(constructors, __FUNCTION__ ,args) as ConstructorInfo
+    LOCAL ctor := OOPHelpers.FindBestOverLoad(constructors, __FUNCTION__ ,args) AS ConstructorInfo
 	
 	LOCAL oRet AS OBJECT  
 	TRY
-		LOCAL oArgs := OOPHelpers.MatchParameters(ctor, args) as OBJECT[]
+		LOCAL oArgs := OOPHelpers.MatchParameters(ctor, args) AS OBJECT[]
 		oRet := ctor:Invoke( oArgs )
 	CATCH
-		var oError := Error.VOError( EG_NOMETHOD, __FUNCTION__, "Constructor", 0 , NULL)
+		VAR oError := Error.VOError( EG_NOMETHOD, __FUNCTION__, "Constructor", 0 , NULL)
         oError:Description := oError:Message+" 'CONSTRUCTOR'"
         THROW oError
 	END TRY

@@ -151,9 +151,9 @@ FUNCTION _MxRelease (var1, var2, var3, var4, varn) AS VOID CLIPPER
 	nCount := PCount()
 	FOR VAR i := 1 TO nCount
 		name := _GetFParam(i)
-		IF IsString(name)
+		IF name:IsString
 			MemVarRelease(name)
-		ELSEIF IsSymbol(name)			
+		ELSEIF name:IsSymbol			
 			MemVarRelease(name)
 		ELSE  
 			// throw argument error

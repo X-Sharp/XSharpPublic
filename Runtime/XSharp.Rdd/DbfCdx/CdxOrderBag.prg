@@ -46,7 +46,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Tags AS IList<CdxTag> GET _tagList:Tags
         INTERNAL PROPERTY Structural AS LOGIC AUTO
         INTERNAL PROPERTY Root      AS CdxFileHeader GET _root
-        INTERNAL PROPERTY Encoding as System.Text.Encoding GET _oRDD:_Encoding
+        INTERNAL PROPERTY Encoding AS System.Text.Encoding GET _oRDD:_Encoding
         INTERNAL CONSTRUCTOR(oRDD AS DBFCDX )
             SUPER( oRdd )
             SELF:_oRdd     := oRDD
@@ -126,19 +126,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
         METHOD OrderListRebuild( ) AS LOGIC
-            LOCAL aTags as CdxTag[]
-            local cBagName as STRING
-            LOCAL lOk as LOGIC
+            LOCAL aTags AS CdxTag[]
+            LOCAL cBagName AS STRING
+            LOCAL lOk AS LOGIC
             aTags := SELF:_tagList:Tags:ToArray()
             cBagName := SELF:FullPath
             lOk := TRUE
             lOk := SELF:Close()
-            if lOk
+            IF lOk
                 FErase(cBagName)
                 lOk := SELF:CreateBag(cBagName)
             ENDIF
             IF lOk
-                FOREACH oTag as CdxTag in aTags
+                FOREACH oTag AS CdxTag IN aTags
                     lOk := oTag:Rebuild()
                     IF ! lOk
                         EXIT

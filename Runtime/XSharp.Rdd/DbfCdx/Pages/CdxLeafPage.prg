@@ -243,7 +243,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN TRUE
 
-        PRIVATE METHOD _getValues as VOID
+        PRIVATE METHOD _getValues AS VOID
             _numKeys        := _GetWord(CDXLEAF_OFFSET_NUMKEYS)
             _leftPtr        := _GetLong(CDXLEAF_OFFSET_LEFTPTR)
             _rightPtr       := _GetLong(CDXLEAF_OFFSET_RIGHTPTR)
@@ -260,37 +260,37 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         // We read the values from our cache but write back to the cache and the buffer at the same time
         // The _Set.. methods set the IsHot flag of the page automatically
 		PUBLIC PROPERTY NumKeys  AS WORD	GET _numKeys;
-			SET _SetWord(CDXLEAF_OFFSET_NUMKEYS, VALUE), _numKeys := Value
+			SET _SetWord(CDXLEAF_OFFSET_NUMKEYS, VALUE), _numKeys := VALUE
 
 		INTERNAL PROPERTY LeftPtr AS Int32  GET _leftPtr;
-			SET _SetLong(CDXLEAF_OFFSET_LEFTPTR, VALUE), _leftPtr:= Value
+			SET _SetLong(CDXLEAF_OFFSET_LEFTPTR, VALUE), _leftPtr:= VALUE
 
 		INTERNAL PROPERTY RightPtr AS Int32	GET _rightPtr;
-			SET _SetLong(CDXLEAF_OFFSET_RIGHTPTR, VALUE), _rightPtr := Value
+			SET _SetLong(CDXLEAF_OFFSET_RIGHTPTR, VALUE), _rightPtr := VALUE
 			
 		INTERNAL PROPERTY Freespace AS WORD GET _freeSpace ;
-			SET _SetWord(CDXLEAF_OFFSET_FREESPACE, VALUE),  _freeSpace := Value
+			SET _SetWord(CDXLEAF_OFFSET_FREESPACE, VALUE),  _freeSpace := VALUE
 			
 		INTERNAL PROPERTY RecnoMask AS LONG GET _recnoMask;
-			SET _SetLong(CDXLEAF_OFFSET_RECNOMASK, VALUE),  _recnoMask := Value
+			SET _SetLong(CDXLEAF_OFFSET_RECNOMASK, VALUE),  _recnoMask := VALUE
 			
 		INTERNAL PROPERTY DuplicateMask	AS BYTE	GET _duplicateMask;
-			SET _buffer[CDXLEAF_OFFSET_DUPMASK]      := _duplicateMask := value, _hot := TRUE
+			SET _buffer[CDXLEAF_OFFSET_DUPMASK]      := _duplicateMask := VALUE, _hot := TRUE
 
 		INTERNAL PROPERTY TrailingMask AS BYTE	GET _trailingMask ;
-			SET _buffer[CDXLEAF_OFFSET_TRAILMASK]    := _trailingMask := Value, _hot := TRUE
+			SET _buffer[CDXLEAF_OFFSET_TRAILMASK]    := _trailingMask := VALUE, _hot := TRUE
 			
 		INTERNAL PROPERTY RecordBits AS BYTE GET _recordBits;
-			SET _buffer[CDXLEAF_OFFSET_RECNUMBITS]   := _recordBits := Value, _hot := TRUE
+			SET _buffer[CDXLEAF_OFFSET_RECNUMBITS]   := _recordBits := VALUE, _hot := TRUE
 			
 		INTERNAL PROPERTY DuplicateBits AS BYTE	GET _dupBits;
-			SET _buffer[CDXLEAF_OFFSET_DUPCOUNTBITS] := _dupBits := Value, _hot := TRUE
+			SET _buffer[CDXLEAF_OFFSET_DUPCOUNTBITS] := _dupBits := VALUE, _hot := TRUE
 			
 		INTERNAL PROPERTY TrailingBits  AS BYTE	GET _trailBits;
-			SET _buffer[CDXLEAF_OFFSET_TRAILINGBITS] := _trailBits := Value, _hot := TRUE
+			SET _buffer[CDXLEAF_OFFSET_TRAILINGBITS] := _trailBits := VALUE, _hot := TRUE
 			
 		INTERNAL PROPERTY DataBytes	AS BYTE	GET _dataBytes;
-			SET _buffer[CDXLEAF_OFFSET_DATABYTES] := _dataBytes := Value, _hot := TRUE
+			SET _buffer[CDXLEAF_OFFSET_DATABYTES] := _dataBytes := VALUE, _hot := TRUE
 #endregion			
 
 #region Other properties
@@ -381,7 +381,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN CdxAction.Ok
 
 
-        INTERNAL METHOD Insert(nPos AS LONG, recno as LONG, key as BYTE[]) AS CdxAction
+        INTERNAL METHOD Insert(nPos AS LONG, recno AS LONG, key AS BYTE[]) AS CdxAction
 
             // A quick calculation if we have enough room, ignoring the duplicate count
             LOCAL nTrailCount AS LONG
@@ -405,8 +405,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 result := CdxAction.ChangeParent(SELF)
             ENDIF
             SELF:NumKeys += 1
-            var compResult := SELF:Compress()
-            if CompResult:Type != CdxActionType.Ok
+            VAR compResult := SELF:Compress()
+            IF CompResult:Type != CdxActionType.Ok
                 RETURN CompResult
             ENDIF
             RETURN result
@@ -465,7 +465,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
  
        PRIVATE METHOD _getTrailCount(data AS BYTE[]) AS BYTE
            LOCAL iLastTrail AS LONG
-           LOCAL bTrail := _bTrail as BYTE
+           LOCAL bTrail := _bTrail AS BYTE
            iLastTrail  := 0
            FOR VAR i := data:Length -1 DOWNTO 0 
                 IF data[i] != bTrail
@@ -512,7 +512,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
        INTERNAL METHOD Dump AS STRING
             LOCAL Sb AS stringBuilder
-            LOCAL i as WORD
+            LOCAL i AS WORD
             sb := stringBuilder{}
             VAR item := SELF[0]
             sb:AppendLine("--------------------------")

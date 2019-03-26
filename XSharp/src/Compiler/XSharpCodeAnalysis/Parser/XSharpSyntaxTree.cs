@@ -153,7 +153,10 @@ namespace Microsoft.CodeAnalysis
             get
             {
                 var node = XNode as XSharpParserRuleContext;
-                return node is XSharpParser.VoCastExpressionContext;
+                if (node is XSharpParser.PrimaryExpressionContext prim)
+                    return prim.Expr is XSharpParser.VoCastExpressionContext;
+                else
+                    return node is XSharpParser.VoCastExpressionContext;
             }
         }
         internal bool XIsMissingArgument

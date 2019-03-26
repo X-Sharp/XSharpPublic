@@ -8,8 +8,6 @@ FUNCTION Start() AS VOID
 	c := "adf"
 	l := c < 1
 	l := c > TRUE
-	l := c > 2010.10.10
-	l := l > 2010.10.10
 	l := l > "A"
 	l := c < 'A'
 	l := c >= 1

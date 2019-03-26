@@ -574,7 +574,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     case SyntaxKind.GreaterThanOrEqualExpression:
                     case SyntaxKind.LessThanExpression:
                     case SyntaxKind.LessThanOrEqualExpression:
-                        if (leftString || rightString)
+                        if (leftString && rightString)
                         {
                             // Make to String.Compare or __StringCompare. Decide later
                             opType = VOOperatorType.CompareString;

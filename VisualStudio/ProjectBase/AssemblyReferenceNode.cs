@@ -32,6 +32,9 @@ namespace Microsoft.VisualStudio.Project
         private System.Reflection.AssemblyName assemblyName;
         private AssemblyName resolvedAssemblyName;
         private string assemblyPath = string.Empty;
+        private HashSet<string> resolvedProperties; // the names of the properties that MsBuild has resolved
+        private ProjectItemInstance prjitem; // the project item that contains the properties from resolvedProperties
+
         /// <summary>
         /// Defines the listener that would listen on file changes on the nested project node.
         /// </summary>
@@ -457,6 +460,57 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         internal virtual void ResolveAssemblyReference()
 		{
+            if (this.ProjectMgr == null || this.ProjectMgr.IsClosed)
+            {
+                return;
+            }
+
+            var instance = this.ProjectMgr.ProjectInstance;
+            // must call MsBuild again
+            var group = MSBuildProjectInstance.GetItems(instance, ProjectFileConstants.ReferencePath).ToArray();
+            // RvdH Only call ResolveAsemblyReferences when we cannot find any items
+            if (group == null || group.Length == 0)
+            {
+                BuildInstance(this.ProjectMgr, instance, MsBuildTarget.ResolveAssemblyReferences);
+                group = MSBuildProjectInstance.GetItems(instance, ProjectFileConstants.ReferencePath).ToArray();
+
+            }
+            if (group != null)
+            {
+                foreach (var item in group)
+                {
+                    string fullPath = item.GetMetadataValue("fullpath");
+                    AssemblyName name = AssemblyName.GetAssemblyName(fullPath);
+
+                    // Try with full assembly name and then with weak assembly name.
+                    if (String.Compare(name.FullName, this.assemblyName.FullName, StringComparison.OrdinalIgnoreCase) == 0 ||
+                        String.Compare(name.Name, this.assemblyName.Name, StringComparison.OrdinalIgnoreCase) == 0)
+                    {
+                        if (!NativeMethods.IsSamePath(fullPath, this.assemblyPath))
+                        {
+                            // set the full path now.
+                            this.assemblyPath = fullPath;
+
+                            // We have a new item to listen too, since the assembly reference is resolved from a different place.
+                            this.fileChangeListener.ObserveItem(this.assemblyPath);
+                        }
+                        this.resolvedAssemblyName = name;
+                        // No hint path is needed since the assembly path will always be resolved.
+
+                        // cache the propertynames and the item.
+                        resolvedProperties = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                        foreach (var str in item.MetadataNames)
+                        {
+                            resolvedProperties.Add(str);
+                        }
+                        prjitem = item;
+                        return;
+                    }
+                }
+                // when we get here then the assembly was not resolved by MsBuild. Maybe the reference was not persisted yet ?
+                return;
+            }
+
 
         }
 

@@ -17,9 +17,13 @@ CLASS XideUnitTest
 	
 	STATIC METHOD AddTestsFromAssembly(oAssembly AS Assembly) AS VOID
 		FOREACH oType AS Type IN oAssembly:GetTypes()
+			IF oType:Name:StartsWith("DbfCdx")
+//				LOOP
+			END IF
 			FOREACH oMethod AS MethodInfo IN oType:GetMethods(BindingFlags.Instance + BindingFlags.Public + BindingFlags.DeclaredOnly)
 				IF oMethod:GetCustomAttribute(TypeOf(TestAttribute)) != NULL .or. ;
 						oMethod:GetCustomAttribute(TypeOf(FactAttribute)) != NULL
+						
 					
 					LOCAL oTest AS TestInfo
 					oTest := TestInfo{}
@@ -194,6 +198,12 @@ CLASS Xide.Unit.Assert
 
 	// XUnit
 	STATIC METHOD Equal(o1 AS OBJECT, o2 AS OBJECT) AS VOID
+		IF o2 != NULL .and. o2:GetType() == TypeOf(STRING) .and. o1:GetType() == TypeOf(SYMBOL)
+			o2 := String2Symbol((STRING)o2)
+		END IF
+		IF o2 != NULL .and. o2:GetType() == TypeOf(Decimal) .and. o1:GetType() == TypeOf(INT)
+			o1 := Decimal{(INT)o1}
+		END IF
 		IF (o1 == NULL .and. o2 == NULL) .or. (o1 != NULL .and. (o1:Equals(o2) .or. o1:ToString() == o2:ToString() ) )
 			Passed ++
 			XideUnitTest.TestRun(TRUE , "" , "" , 0)
@@ -205,6 +215,16 @@ CLASS Xide.Unit.Assert
 	RETURN
 	STATIC METHOD NotEqual(o1 AS OBJECT, o2 AS OBJECT) AS VOID
 		IF (o1 == NULL .and. o2 != NULL) .or. (o1 != NULL .and. .not. o1:Equals(o2))
+			Passed ++
+			XideUnitTest.TestRun(TRUE , "" , "" , 0)
+		ELSE
+			Failed ++
+			? "failed in ", __ENTITY__
+			XideUnitTest.TestRun(FALSE , "NotEqual() returned: " + o1:ToString() + " , " + o2:ToString() , ProcFile(1) , ProcLine(1))
+		END IF
+	RETURN
+	STATIC METHOD NotEqual(o1 AS IntPtr, o2 AS IntPtr) AS VOID
+		IF .not. o1:Equals(o2)
 			Passed ++
 			XideUnitTest.TestRun(TRUE , "" , "" , 0)
 		ELSE
@@ -297,4 +317,5 @@ CLASS IgnoreAttribute INHERIT System.Attribute
 	CONSTRUCTOR(s AS STRING)
 	RETURN
 END CLASS
+
 

@@ -90,7 +90,7 @@ PARTIAL CLASS UnitForm INHERIT System.Windows.Forms.Form
 			ELSE
 				oItem:ForeColor := Color.Red
 				oItem:SubItems[1]:Text := "FAILED!"
-				oItem:SubItems[2]:Text := oTest:CountFailedSubTests() + "/" + oTest:SubTests:Count:ToString()
+				oItem:SubItems[2]:Text := oTest:CountFailedSubTests():ToString() + "/" + oTest:SubTests:Count:ToString()
 			END IF
 		END IF
 		

@@ -275,6 +275,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         	Assert.Equal(#MYSYMBOL , (SYMBOL)o:DefaultParams4())
 
 
+		// TECH-6YD882O372, Runtime exception with inexact equals operator and NIL values
 		[Fact, Trait("Category", "StringUsual")];
 		METHOD StringNil_InExactEquals() AS VOID
 			LOCAL u := NIL AS USUAL
@@ -292,6 +293,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.False( u:NilAccess = "A" )
 		RETURN
 
+		// TECH-CLZ71NH0C3, Runtime exception with return value of NoIVarGet()
         [Fact, Trait("Category", "OOP")];
         METHOD NilComparisons() AS VOID
 			LOCAL n := 0 AS INT

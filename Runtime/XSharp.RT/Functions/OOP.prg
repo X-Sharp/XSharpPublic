@@ -1179,7 +1179,7 @@ FUNCTION __InternalSend( oObject AS USUAL, cMethod AS STRING, args PARAMS USUAL[
 	RETURN OopHelpers.DoSend(oObject, cMethod, args)
 
 
-INTERNAL FUNCTION __ArrayToUsualArray (args AS ARRAY) AS USUAL[]
+FUNCTION __ArrayToUsualArray (args AS ARRAY) AS USUAL[]
 	LOCAL elements AS INT
 	LOCAL uargs    AS USUAL[]
 	LOCAL x        AS DWORD
@@ -1193,7 +1193,7 @@ INTERNAL FUNCTION __ArrayToUsualArray (args AS ARRAY) AS USUAL[]
 	RETURN uargs
 
 /// <summary>Helper function to convert ARRAY to OBJECT[]</summary>		
-INTERNAL FUNCTION __ArrayToObjectArray (args AS ARRAY) AS OBJECT[]
+FUNCTION __ArrayToObjectArray (args AS ARRAY) AS OBJECT[]
 	LOCAL elements AS INT
 	LOCAL oArgs    AS OBJECT[]
 	LOCAL x        AS DWORD
@@ -1207,7 +1207,7 @@ INTERNAL FUNCTION __ArrayToObjectArray (args AS ARRAY) AS OBJECT[]
 	RETURN oArgs
 
 /// <summary>Helper function to convert USUAL[] to OBJECT[]</summary>			
-INTERNAL FUNCTION __UsualArrayToObjectArray (args AS USUAL[]) AS OBJECT[]
+FUNCTION __UsualArrayToObjectArray (args AS USUAL[]) AS OBJECT[]
 	LOCAL elements AS INT
 	LOCAL oArgs    AS OBJECT[]
 	LOCAL x        AS DWORD
@@ -1221,7 +1221,7 @@ INTERNAL FUNCTION __UsualArrayToObjectArray (args AS USUAL[]) AS OBJECT[]
 	RETURN oArgs
 
 /// <summary>Helper function to convert OBJECT[] to USUAL[]</summary>		
-INTERNAL FUNCTION __ObjectArrayToUsualArray (args AS OBJECT[]) AS USUAL[]
+FUNCTION __ObjectArrayToUsualArray (args AS OBJECT[]) AS USUAL[]
 	LOCAL elements AS INT
 	LOCAL uArgs    AS USUAL[]
 	LOCAL x        AS DWORD

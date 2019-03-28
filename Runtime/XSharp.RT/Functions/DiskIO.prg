@@ -168,8 +168,7 @@ FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
 	RETURN aReturn
 
 INTERNAL FUNCTION _DirectoryAddFileInfo(aReturn AS ARRAY, oFile AS FileInfo, nAttr AS DWORD) AS VOID
-	VAR d := (DATE)  oFile:LastWriteTime
-	VAR cTime := ConTime(oFile:LastWriteTime)      
+    
 	VAR cAttribute := ""
 			
 	VAR lOk := TRUE
@@ -188,17 +187,24 @@ INTERNAL FUNCTION _DirectoryAddFileInfo(aReturn AS ARRAY, oFile AS FileInfo, nAt
 		cAttribute += "A"
 	ENDIF
 	IF lOk
-		IF oFile:Length < Int32.MaxValue
-			AAdd(aReturn,{oFile:Name, (LONG) oFile:Length, d, cTime, cAttribute})
-		ELSE
-			AAdd(aReturn,{oFile:Name, (INT64) oFile:Length, d, cTime, cAttribute})
-		ENDIF
+        VAR aFile := ArrayNew(F_LEN)
+        aFile[F_NAME] := oFile:Name
+        aFile[F_SIZE] := IIF(oFile:Length < Int32.MaxValue, (LONG) oFile:Length, (INT64) oFile:Length)
+        aFile[F_DATE] := (DATE)  oFile:LastWriteTime
+        aFile[F_TIME] := ConTime(oFile:LastWriteTime)
+        aFile[F_ATTR] := cAttribute
+        aFile[F_EA_SIZE] := oFile:Attributes
+        aFile[F_CREATION_DATE] := (DATE)  oFile:CreationTime
+        aFile[F_CREATION_TIME] := ConTime(oFile:CreationTime)
+        aFile[F_ACCESS_DATE] := (DATE)  oFile:LastAccessTime
+        aFile[F_ACCESS_TIME] := ConTime(oFile:LastAccessTime)
+        aadd(aReturn, aFile)
 	ENDIF
 	RETURN
 	
 INTERNAL FUNCTION _DirectoryAddDirectoryInfo( aReturn AS ARRAY, cDirectory AS STRING, nAttr AS DWORD, cName AS STRING ) AS VOID
 	TRY
-		VAR oDir := System.IO.DirectoryInfo{ cDirectory }
+		LOCAL oDir := System.IO.DirectoryInfo{ cDirectory } AS DirectoryInfo
 		IF oDir:Exists
 			VAR cAttribute := ""
 			VAR lAdd       := TRUE
@@ -219,10 +225,18 @@ INTERNAL FUNCTION _DirectoryAddDirectoryInfo( aReturn AS ARRAY, cDirectory AS ST
 		
 			IF lAdd
 				cAttribute += "D"
-				VAR dDate	:= (DATE)	oDir:LastWriteTime
-				VAR cTime	:= ConTime( oDir:LastWriteTime )
-			
-				AAdd( aReturn, { IIF( cName != NULL, cName, oDir:Name ), 0, dDate, cTime, cAttribute } )
+                VAR aFile := ArrayNew(F_LEN)
+                aFile[F_NAME] := oDir:Name
+                aFile[F_SIZE] := 0 
+                aFile[F_DATE] := (DATE)  oDir:LastWriteTime
+                aFile[F_TIME] := ConTime(oDir:LastWriteTime)
+                aFile[F_ATTR] := cAttribute
+                aFile[F_EA_SIZE] := oDir:Attributes
+                aFile[F_CREATION_DATE] := (DATE)  oDir:CreationTime
+                aFile[F_CREATION_TIME] := ConTime(oDir:CreationTime)
+                aFile[F_ACCESS_DATE] := (DATE)  oDir:LastAccessTime
+                aFile[F_ACCESS_TIME] := ConTime(oDir:LastAccessTime)
+                aadd(aReturn, aFile)
 			ENDIF
 		ENDIF
 	CATCH 

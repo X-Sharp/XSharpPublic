@@ -59,6 +59,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		
 	STATIC METHOD FindClass(cName AS STRING) AS System.Type 
 	    RETURN FindClass(cName, TRUE)
+
 	STATIC METHOD FindClass(cName AS STRING, lOurAssembliesOnly AS LOGIC) AS System.Type 
 		// TOdo Optimize
 		LOCAL ret := NULL AS System.Type
@@ -522,7 +523,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		RETURN FALSE
 		
 		
-	STATIC METHOD IVarGet(oObject AS OBJECT, cIVar AS STRING, lSelf AS LOGIC) AS OBJECT
+	STATIC METHOD IVarGet(oObject AS OBJECT, cIVar AS STRING, lSelf AS LOGIC) AS USUAL
 		LOCAL t AS Type
 		t := oObject:GetType()
 		//Todo: optimization
@@ -535,7 +536,7 @@ INTERNAL STATIC CLASS OOPHelpers
             IF propInfo:GetIndexParameters():Length == 0
 			    RETURN propInfo:GetValue(oObject, NULL)
             ELSE
-                RETURN NULL
+                RETURN NIL
             ENDIF
 		ENDIF
 		LOCAL result AS USUAL
@@ -601,7 +602,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		RETURN sendHelper(oObject, mi, uArgs, OUT result)
 		
 	STATIC METHOD SendHelper(oObject AS OBJECT, mi AS MethodInfo , uArgs AS USUAL[], result OUT USUAL) AS LOGIC
-        result := NULL
+        result := NIL 
 		IF mi != NULL   
             VAR oArgs := MatchParameters(mi, uArgs) 
 			IF mi:ReturnType == typeof(USUAL)

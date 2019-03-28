@@ -573,6 +573,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 
                 var local = variable as LocalSymbol;
+#if XSHARP
+                if ((object)local != null && local.IsXsCompilerGenerated() )
+                {
+                    _usedVariables.Add(local);
+                }
+#else
+
                 if ((object)local != null && read && WriteConsideredUse(local.Type, value))
                 {
                     // A local variable that is written to is considered to also be read,
@@ -601,7 +608,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     _usedVariables.Add(local);
                 }
-
+#endif
                 CheckCaptured(variable);
             }
         }
@@ -649,16 +656,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case BoundKind.TupleLiteral:
                 case BoundKind.ConvertedTupleLiteral:
                     return false;
-#if XSHARP
-                case BoundKind.FieldAccess:
-                    return false;
-                case BoundKind.PropertyAccess:
-                    return false;
-                case BoundKind.Local:
-                    return false;
-#endif
                 default:
+#if XSHARP
+                    return false;
+#else
                     return true;
+#endif
             }
         }
 

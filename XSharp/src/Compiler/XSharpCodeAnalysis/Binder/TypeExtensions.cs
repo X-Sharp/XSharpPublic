@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using Microsoft.CodeAnalysis.CSharp.Symbols;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -209,6 +210,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     return true;
                 }
+            }
+            if (symbol is SourceLocalSymbol local)
+            {
+                var syntax = local.GetDeclaratorSyntax();
+                var vardecl = syntax.Parent as VariableDeclarationSyntax;
+                if (vardecl != null && vardecl.XGenerated)
+                    return true;
             }
             return false;
         }

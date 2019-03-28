@@ -579,7 +579,10 @@ namespace XSharp.Project
                             break;
                         case VSConstants.VSStd2KCmdID.COMPLETEWORD:
                             break;
-
+                        case VSConstants.VSStd2KCmdID.LEFT:
+                        case VSConstants.VSStd2KCmdID.RIGHT:
+                            MoveSignature();
+                            break;
                     }
                 }
             }
@@ -1024,6 +1027,20 @@ namespace XSharp.Project
         {
             _signatureSession.Dismissed -= OnSignatureSessionDismiss;
             _signatureSession = null;
+        }
+
+        bool MoveSignature()
+        {
+            if (_signatureSession == null)
+                return false;
+
+            int start = (int)_signatureSession.Properties["Start"];
+            int pos = this.TextView.Caret.Position.BufferPosition.Position;
+
+            ((XSharpSignature)_signatureSession.SelectedSignature).ComputeCurrentParameter( pos - start - 1 );
+
+
+            return true;
         }
 
 

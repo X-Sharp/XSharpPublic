@@ -107,6 +107,44 @@ namespace XSharp.Project
             }
         }
 
+        internal void ComputeCurrentParameter(int atPosition)
+        {
+            if (Parameters.Count == 0)
+            {
+                this.CurrentParameter = null;
+                return;
+            }
+
+            //the number of commas in the string is the index of the current parameter
+            string sigText = ApplicableToSpan.GetText(m_subjectBuffer.CurrentSnapshot);
+
+            int currentIndex = 0;
+            int commaCount = 0;
+            int maxPos = Math.Min(atPosition, sigText.Length);
+            //if (comma)
+            //    commaCount += 1;
+            while (currentIndex < maxPos)
+            {
+                int commaIndex = sigText.IndexOf(',', currentIndex);
+                if ((commaIndex == -1) || (commaIndex>maxPos))
+                {
+                    break;
+                }
+                commaCount++;
+                currentIndex = commaIndex + 1;
+            }
+
+            if (commaCount < Parameters.Count)
+            {
+                this.CurrentParameter = Parameters[commaCount];
+            }
+            else
+            {
+                //too many commas, so use the last parameter as the current one.
+                //this.CurrentParameter = Parameters[Parameters.Count - 1];
+            }
+        }
+
         internal void OnSubjectBufferChanged(object sender, TextContentChangedEventArgs e)
         {
             this.ComputeCurrentParameter(false);

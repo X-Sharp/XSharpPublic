@@ -247,7 +247,7 @@ METHOD AppendTab(symTabName, cCaption, xPage, nImage)
 	LOCAL hFirst, hBefore AS PTR
 
 	//RvdH 070503         
-   Default(@nImage, 0)
+   DEFAULT(@nImage, 0)
 
 
 	// Fill out the tab structure with the arguments passed in
@@ -460,7 +460,6 @@ METHOD GetCaption(symTabName)
 	LOCAL strucTabItem IS _winTC_Item
 	LOCAL i AS INT
 	LOCAL pszCaption AS PSZ
-	LOCAL lRet AS LOGIC
 	LOCAL cReturn AS STRING
 
 	i := SELF:__GetIndexFromSymbol(symTabName)
@@ -470,7 +469,7 @@ METHOD GetCaption(symTabName)
 		strucTabItem:mask := TCIF_TEXT
 		strucTabItem:cchTextMax := 128
 		strucTabItem:pszText := pszCaption
-		lRet := TabCtrl_GetItem(SELF:Handle(), i, @strucTabItem)
+		TabCtrl_GetItem(SELF:Handle(), i, @strucTabItem)
 		cReturn := Psz2String( pszCaption )
 
 		MemFree(PTR(_CAST, pszCaption))

@@ -114,13 +114,13 @@ METHOD ChangeFont(New_Font, lRescale)
 	LOCAL wYChars AS DWORD
 //	LOCAL Xbase AS DWORD
 //	LOCAL Ybase AS DWORD
-	LOCAL oDlgPoint AS Point
+	//LOCAL oDlgPoint AS Point
 	LOCAL DlgRect IS _winRect
 	LOCAL strucPoint IS _winPoint
 	LOCAL TextMetric IS _winTextMetric
 	LOCAL dialogInfo AS __WCDialog_VARS
 	LOCAL oDlgDimesion AS Dimension
-	LOCAL X0 AS INT
+	//LOCAL X0 AS INT
 	LOCAL Y0 AS INT
 	//RvdH 090610 Make sure hWnd is valid or else all windows on the desktop will be changed by this...
 	//            This happens for example if you do a ChangeFont after a call to Show() for a modal dialog..
@@ -210,7 +210,7 @@ METHOD ChangeFont(New_Font, lRescale)
 	ClientToScreen(hwnd, @strucPoint)
 	p0:X := strucPoint:X
 	p0:Y := strucPoint:Y
-	X0 := p1:X
+	//X0 := p1:X
 	Y0 := P0:y
 	
 	// adjust width/height (client co-ordinates )
@@ -239,7 +239,7 @@ METHOD ChangeFont(New_Font, lRescale)
 	p3:Y := strucPoint:Y
 	
 	y0:= (Y0 - Abs(p3:Y - p2:Y))
-	oDlgPoint := Point{X0, Y0+10}
+	//oDlgPoint := Point{X0, Y0+10}
 	oDlgDimesion := Dimension{Abs(p3:X-p2:X), Abs(p3:Y-p2:Y)}
 	// WCMoveWindow(self, self:Origin /*oDlgPoint*/, oDlgDimesion, true)
 	WCMoveWindow(SELF, SELF:Origin, oDlgDimesion, TRUE)
@@ -334,7 +334,7 @@ METHOD EditFocusChange(oEditFocusChangeEvent)
 	
 
 METHOD EndDialog(iResult) 
-	Default(@iResult, 0)
+	DEFAULT(@iResult, 0)
 	SendMessage(SELF:handle(), WM_CLOSE, 0, 0)
 	//SELF:Destroy()
 	nResult := iResult
@@ -404,7 +404,7 @@ CONSTRUCTOR(oOwner, xResourceID, lModal)
 		oResourceID := xResourceID
 	ENDIF
 	
-	Default(@lModal, TRUE)
+	DEFAULT(@lModal, TRUE)
    bModal := lModal
 	
 	IF !IsNil(oParent)
@@ -571,7 +571,7 @@ METHOD ShowModal(lActive)
 	LOCAL oDlg AS OBJECT
 	LOCAL rc IS _winRECT
 	
-	Default(@lActive, TRUE)
+	DEFAULT(@lActive, TRUE)
 	
 	//hHandle := GetFocus()
 	hHandle := GetActiveWindow()

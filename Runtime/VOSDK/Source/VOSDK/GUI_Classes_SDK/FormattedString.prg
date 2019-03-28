@@ -211,7 +211,7 @@ ACCESS EmptyValue AS STRING STRICT
 
 CONSTRUCTOR(Owner, PicString, Type, OverWrite, DefTempl, ScrMode) 
 
-	Default(@Type, "C")
+	DEFAULT(@Type, "C")
 
 	oEditOwner := Owner
 	cType := Type // !!! order dependancy: ASSIGN Picture needs type to be set !!!
@@ -323,7 +323,7 @@ METHOD IsValidChar(cChar AS STRING, iPos AS INT, lIgnoreBlank AS LOGIC) AS LOGIC
 // This implementation avoids unnecesary String -> PSZ conversions that would happen using the VO implementation
 METHOD MatchesTemplChar( cTest AS STRING, _cTemplChar AS STRING, lIgnoreBlank AS LOGIC ) AS LOGIC
 	LOCAL lIsNumeric := ( cType != "N" ) AS LOGIC
-	LOCAL cTemplChar AS Char
+	LOCAL cTemplChar AS CHAR
 
 	IF ! IsEditTemplChar( _cTemplChar ) .AND. lIsNumeric
 		RETURN FALSE
@@ -662,7 +662,7 @@ METHOD PutChar(cChar AS STRING, iPos AS INT) AS VOID STRICT
    // VO version modifies existing string, this is illegal in .NET
    IF iPos <= sValue:Length && ! String.IsNullOrEmpty( cChar )
       LOCAL sb := System.Text.StringBuilder{ sValue } AS System.Text.StringBuilder
-      LOCAL ch := cChar[0] AS Char
+      LOCAL ch := cChar[0] AS CHAR
       IF FuncFlags:lConvUpper
          ch := Char.ToUpper( ch )
       ENDIF

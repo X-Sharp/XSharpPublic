@@ -45,6 +45,7 @@ namespace XSharp.Project
         XFile _file;
         ISignatureHelpBroker _signatureBroker;
         ISignatureHelpSession _signatureSession;
+        Stack<ISignatureHelpSession> _signatureStack;
 
         ITextStructureNavigator m_navigator;
         IBufferTagAggregatorFactoryService _aggregator;
@@ -146,6 +147,7 @@ namespace XSharp.Project
 
             _completionSession = null;
             _signatureSession = null;
+            _signatureStack = new Stack<ISignatureHelpSession>();
 
             TextView = textView;
             _completionBroker = completionBroker;
@@ -417,6 +419,7 @@ namespace XSharp.Project
         }
 
         bool completionWasSelected = false;
+        CompletionSelectionStatus completionWas;
 
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
@@ -488,7 +491,15 @@ namespace XSharp.Project
                 if (_completionSession != null)
                 {
                     if (_completionSession.SelectedCompletionSet != null)
+                    {
                         completionWasSelected = _completionSession.SelectedCompletionSet.SelectionStatus.IsSelected;
+                        if (completionWasSelected)
+                        {
+                            completionWas = _completionSession.SelectedCompletionSet.SelectionStatus;
+                        }
+                        else
+                            completionWas = null;
+                    }
                 }
                 hresult = Next.Exec(pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
             }
@@ -541,7 +552,7 @@ namespace XSharp.Project
                                         CancelSignatureSession();
                                         break;
                                     case ',':
-                                        //StartSignatureSession(true);
+                                        StartSignatureSession(true);
                                         break;
                                     default:
                                         if (_optionsPage.ShowAfterChar)
@@ -726,6 +737,11 @@ namespace XSharp.Project
                 {
                     bool moveBack = false;
                     ITextCaret caret = null;
+                    if (completionWas != null)
+                    {
+                        _completionSession.SelectedCompletionSet.SelectionStatus = completionWas;
+                    }
+                    //
                     if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion != null)
                     {
                         // Push the completion char into the InsertionText if needed

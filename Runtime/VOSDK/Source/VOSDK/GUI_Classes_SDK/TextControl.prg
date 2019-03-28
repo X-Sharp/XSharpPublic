@@ -278,7 +278,7 @@ METHOD Destroy()
 
 METHOD EnableAutoComplete(dwFlags) 
 	//PP-030902
-	Default(@dwFlags,SHACF_DEFAULT)
+	DEFAULT(@dwFlags,SHACF_DEFAULT)
 	RETURN ShellAutoComplete(SELF:handle(),dwFlags)
 
 METHOD Font(oNewFont, lRescal)  // hong. 01/22/96
@@ -365,7 +365,7 @@ ACCESS Length
 
 METHOD RemoveEditBalloonTip(hControl) 
 	//PP-030902
-	Default(@hControl,SELF:handle())
+	DEFAULT(@hControl,SELF:handle())
 	SendMessage(hControl,EM_HIDEBALLOONTIP,0,0)
 	RETURN SELF
 
@@ -375,7 +375,7 @@ METHOD SetCueBanner(cText,hControl)
 	LOCAL pMsg AS PTR
 	LOCAL lReturn AS LOGIC
 
-	Default(@hControl,SELF:handle())
+	DEFAULT(@hControl,SELF:handle())
 	pMsg := String2W(cText)
 
 	lReturn := LOGIC(_CAST,SendMessage(hControl,EM_SETCUEBANNER,0,LONGINT(_CAST,pMsg)))
@@ -389,7 +389,7 @@ METHOD ShowEditBalloonTip(cTitle,cText,dwIcon,hControl)
 	// Requires XP or greater
 	LOCAL pMsg IS _WINEDITBALLOONTIP
 
-	Default(@hControl,SELF:handle())
+	DEFAULT(@hControl,SELF:handle())
 	pMsg:cbStruct := _SIZEOF(_WINEDITBALLOONTIP)
 	pMsg:pszTitle := String2W(cTitle)
 	pMsg:pszText := String2W(cText)
@@ -486,7 +486,7 @@ VOSTRUCT _WINEDITBALLOONTIP
 
 
 #region defines
-DEFINE ECM_FIRST := 0x1500      // Edit control messages
+//DEFINE ECM_FIRST := 0x1500      // Edit control messages
 DEFINE EM_SETCUEBANNER := (ECM_FIRST + 1)
 DEFINE EM_GETCUEBANNER := (ECM_FIRST + 2)
 DEFINE EM_SHOWBALLOONTIP := (ECM_FIRST + 3)

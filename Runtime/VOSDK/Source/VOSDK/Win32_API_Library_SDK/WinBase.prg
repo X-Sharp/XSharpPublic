@@ -381,7 +381,7 @@ _DLL FUNC InterlockedIncrement(lpAddend AS LONG PTR) AS LONG PASCAL:KERNEL32.Int
 _DLL FUNC InterlockedDecrement(lpAddend AS LONG PTR) AS LONG PASCAL:KERNEL32.InterlockedDecrement
 
 
-_DLL FUNC InterlockedExchange(Target AS LONG PTR, Value AS LONG) AS LONG PASCAL:KERNEL32.InterlockedExchange
+_DLL FUNC InterlockedExchange(Target AS LONG PTR, VALUE AS LONG) AS LONG PASCAL:KERNEL32.InterlockedExchange
 
 
 _DLL FUNCTION InterlockedCompareExchange(lpDestenation AS LONG PTR,liExchange AS LONGINT,liComperand AS LONGINT) AS LONG PASCAL:KERNEL32.InterlockedCompareExchange
@@ -2385,10 +2385,10 @@ DEFINE FILE_FLAG_POSIX_SEMANTICS            := 0x01000000
 DEFINE FILE_FLAG_OPEN_REPARSE_POINT    := 0x00200000
 DEFINE FILE_FLAG_OPEN_NO_RECALL        := 0x00100000
 DEFINE FILE_FLAG_FIRST_PIPE_INSTANCE   := 0x00080000
-DEFINE CREATE_NEW               := 1
-DEFINE CREATE_ALWAYS            := 2
-DEFINE OPEN_EXISTING            := 3
-DEFINE OPEN_ALWAYS              := 4
+//DEFINE CREATE_NEW               := 1
+//DEFINE CREATE_ALWAYS            := 2
+//DEFINE OPEN_EXISTING            := 3
+//DEFINE OPEN_ALWAYS              := 4
 DEFINE TRUNCATE_EXISTING    := 5
 //
 // Define possible return codes from the CopyFileEx callback routine
@@ -2709,11 +2709,11 @@ DEFINE FILE_MAP_ALL_ACCESS  := SECTION_ALL_ACCESS
 DEFINE OF_READ                                                                      := 0x00000000
 DEFINE OF_WRITE                                                                 := 0x00000001
 DEFINE OF_READWRITE                                         := 0x00000002
-DEFINE OF_SHARE_COMPAT                         := 0x00000000
-DEFINE OF_SHARE_EXCLUSIVE           := 0x00000010
-DEFINE OF_SHARE_DENY_WRITE     := 0x00000020
-DEFINE OF_SHARE_DENY_READ          := 0x00000030
-DEFINE OF_SHARE_DENY_NONE       := 0x00000040
+//DEFINE OF_SHARE_COMPAT                         := 0x00000000 
+//DEFINE OF_SHARE_EXCLUSIVE           := 0x00000010
+//DEFINE OF_SHARE_DENY_WRITE     := 0x00000020
+//DEFINE OF_SHARE_DENY_READ          := 0x00000030
+//DEFINE OF_SHARE_DENY_NONE       := 0x00000040
 DEFINE OF_PARSE                                                                     := 0x00000100
 DEFINE OF_DELETE                                                                := 0x00000200
 DEFINE OF_VERIFY                                                                   := 0x00000400

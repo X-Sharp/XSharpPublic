@@ -145,8 +145,8 @@ METHOD AddGroup(iGroupId,cGroupName,dwAlign)
 	LOCAL pLVGroup IS _WinLVGroup
 	LOCAL i AS INT
 
-	Default(@dwAlign,LVGA_HEADER_LEFT)
-	Default(@iGroupId,-1)
+	DEFAULT(@dwAlign,LVGA_HEADER_LEFT)
+	DEFAULT(@iGroupId,-1)
 
 	pLVGroup:cbSize := _SIZEOF(_winLVGroup)
 	pLVGroup:mask := _OR(LVGF_HEADER,LVGF_GROUPID,LVGF_ALIGN)
@@ -418,7 +418,7 @@ METHOD EditItemLabel(nItem)
 METHOD EnableDragDrop(lEnable) 
 	
 
-	Default(@lEnable, TRUE)
+	DEFAULT(@lEnable, TRUE)
 
 	lDragDropEnabled := lEnable
 
@@ -427,7 +427,7 @@ METHOD EnableDragDrop(lEnable)
 METHOD EnableGroupView(lSetting) 
 	//PP-030909
 	// Listview groups require XP visual styles
-	Default(@lSetting,TRUE)
+	DEFAULT(@lSetting,TRUE)
 	// LVM_ENABLEGROUPVIEW: 0=already enabled/disabled, 1=state changed, -1=failed
 	RETURN SendMessage(SELF:handle(),LVM_ENABLEGROUPVIEW,DWORD(_CAST,lSetting),0) >= 0
 
@@ -647,7 +647,7 @@ METHOD GetItemSpacing(symView)
 
 	
 
-	Default(@symView, #IconView)
+	DEFAULT(@symView, #IconView)
 
 	// this only works for IconView and SmallIconView
 	IF symView == #IconView
@@ -666,10 +666,10 @@ METHOD GetNextItem(kRelationship, lDisabled, lDropTarget, lFocused, lSelected, n
 	
 
 	// handle default values
-	Default(@lDisabled, FALSE)
-	Default(@lDropTarget, FALSE)
-	Default(@lFocused, FALSE)
-	Default(@lSelected, FALSE)
+	DEFAULT(@lDisabled, FALSE)
+	DEFAULT(@lDropTarget, FALSE)
+	DEFAULT(@lFocused, FALSE)
+	DEFAULT(@lSelected, FALSE)
 
 	// create state argument
 	IF lDisabled
@@ -764,7 +764,7 @@ METHOD InsertColumn(oListViewColumn, nInsertAfter)
 
 	
 
-	Default(@nInsertAfter, SELF:ColumnCount)
+	DEFAULT(@nInsertAfter, SELF:ColumnCount)
 
 	strucListColumn:mask := _OR(LVCF_FMT, LVCF_WIDTH, LVCF_TEXT, LVCF_SUBITEM)
 	strucListColumn:fmt := oListViewColumn:Alignment
@@ -817,7 +817,7 @@ METHOD InsertItem(oListViewItem, nInsertAfter)
 	oLVItem := oListViewItem
 
 	// by default, insert the item at the end
-	Default(@nInsertAfter, SELF:ItemCount)
+	DEFAULT(@nInsertAfter, SELF:ItemCount)
 
 	// set the image index
 	IF oLVItem:ImageIndex != 0
@@ -951,7 +951,7 @@ METHOD Seek(uValue, kSeekType, nStart, lWrap, lPartial)
 	// find the item closest to the given point
 	IF IsInstanceOfUsual(uValue, #Point)
 		// kSeekType is a usual
-		Default(@kSeekType, LV_SEEKDOWN)
+		DEFAULT(@kSeekType, LV_SEEKDOWN)
 
 		IF kSeekType == LV_SEEKUP
 			strucFindInfo:vkDirection := VK_UP
@@ -973,13 +973,13 @@ METHOD Seek(uValue, kSeekType, nStart, lWrap, lPartial)
 		strucFindInfo:flags := LVFI_STRING
 
 		// set wrap-around (off by default)
-		Default(@lWrap, FALSE)
+		DEFAULT(@lWrap, FALSE)
 		IF lWrap
 			strucFindInfo:flags := _OR(strucFindInfo:flags, LVFI_WRAP)
 		ENDIF
 
 		// set exact search (on by default)
-		Default(@lPartial, FALSE)
+		DEFAULT(@lPartial, FALSE)
 		IF lPartial
 			strucFindInfo:flags := _OR(strucFindInfo:flags, LVFI_PARTIAL)
 		ENDIF
@@ -996,7 +996,7 @@ METHOD Seek(uValue, kSeekType, nStart, lWrap, lPartial)
 		strucFindInfo:flags := LVFI_PARAM
 
 		// set wrap-around (off by default)
-		Default(@lWrap, FALSE)
+		DEFAULT(@lWrap, FALSE)
 		IF lWrap
 			strucFindInfo:flags := _OR(strucFindInfo:flags, LVFI_WRAP)
 		ENDIF
@@ -1027,7 +1027,7 @@ ACCESS SelectedCount
 METHOD SelectItem(nItem, lSelect) 
 	LOCAL oLVI AS ListViewItem
 
-	Default(@lSelect, TRUE)
+	DEFAULT(@lSelect, TRUE)
 	oLVI := SELF:GetNextItem(LV_GNIBYITEM,,,,,nItem-1)
 	IF (oLVI == NULL_OBJECT)
 		RETURN FALSE
@@ -1064,19 +1064,19 @@ METHOD SetBackgroundImage(uImage,dwFlags,xOffSet,yOffSet)
 	DO CASE
 	CASE IsObject(uImage)
 		hImage := uImage:handle()
-		Default(@dwFlags,_OR(LVBKIF_SOURCE_HBITMAP,LVBKIF_STYLE_TILE))
+		DEFAULT(@dwFlags,_OR(LVBKIF_SOURCE_HBITMAP,LVBKIF_STYLE_TILE))
 	CASE IsPtr(uImage)
 		hImage := uImage
-		Default(@dwFlags,_OR(LVBKIF_SOURCE_HBITMAP,LVBKIF_STYLE_TILE))
+		DEFAULT(@dwFlags,_OR(LVBKIF_SOURCE_HBITMAP,LVBKIF_STYLE_TILE))
 	CASE IsString(uImage)
 		cURL := uImage
-		Default(@dwFlags,_OR(LVBKIF_SOURCE_URL,LVBKIF_STYLE_TILE))
+		DEFAULT(@dwFlags,_OR(LVBKIF_SOURCE_URL,LVBKIF_STYLE_TILE))
 	CASE IsNil(uImage)
-		Default(@dwFlags,LVBKIF_SOURCE_NONE)
+		DEFAULT(@dwFlags,LVBKIF_SOURCE_NONE)
 	ENDCASE
 
-	Default(@xOffSet,0)
-	Default(@yOffSet,0)
+	DEFAULT(@xOffSet,0)
+	DEFAULT(@yOffSet,0)
 
 	pLVBKI:ulFlags := dwFlags
 				// _or(LVBKIF_TYPE_WATERMARK,LVBKIF_STYLE_NORMAL,LVBKIF_SOURCE_NONE)
@@ -1103,10 +1103,10 @@ METHOD SetColumnFormat(nCol,dwFlag,nImage)
 
 	// HDF_CENTER/HDF_LEFT/HDF_RIGHT, HDF_BITMAP/HDF_BITMAP_ON_RIGHT, HDF_SORTDOWN/HDF_SORTUP
 	// HDF_SORTDOWN/HDF_SORTUP require XP visual styles
-	Default(@dwFlag,0)
+	DEFAULT(@dwFlag,0)
 
 	// image list index
-	Default(@nImage,0)
+	DEFAULT(@nImage,0)
 
 	pHeader := PTR(_CAST,SendMessage(SELF:handle(), LVM_GETHEADER, 0,0))
 	pItem:mask := _OR(HDI_IMAGE,HDI_FORMAT)
@@ -1144,7 +1144,7 @@ METHOD SetGroupName(iGroupId,cGroupName,dwAlign)
 	LOCAL pLVGroup IS _WinLVGroup
 	LOCAL i AS INT
 
-	Default(@dwAlign,LVGA_HEADER_LEFT)
+	DEFAULT(@dwAlign,LVGA_HEADER_LEFT)
 
 	pLVGroup:cbSize := _SIZEOF(_winLVGroup)
 	pLVGroup:mask := _OR(LVGF_HEADER,LVGF_ALIGN)
@@ -1184,14 +1184,14 @@ METHOD SetItemAttributes(oListViewItem)
 	LOCAL oLVItem AS ListViewItem
 	//LOCAL cText AS STRING
 	//LOCAL uVal AS USUAL
-   LOCAL hHandle AS PTR
+   //LOCAL hHandle AS PTR
    //LOCAL liSubImage AS LONG
 
 	
 
 	oLVItem := oListViewItem
 
-	hHandle := SELF:Handle()
+	//hHandle := SELF:Handle()
 
 	// convert from 1-base to 0-base
 	nIndex := oLVItem:ItemIndex - 1L

@@ -652,7 +652,7 @@ METHOD Seek( uSearchExpr, lSoftSeek, lLast )
 
 	lErrorFlag := FALSE
 	nTries := SELF:nReTries
-    Default(@lLast, FALSE)
+    DEFAULT(@lLast, FALSE)
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
@@ -917,7 +917,7 @@ METHOD SetOrder( uOrder, cIndexFileName )
 		ELSEIF IsNil(cIndexFileName)
 			cIndexFileName:=""
 		ENDIF
-		IF ! (lRetCode := VODBOrdSetFocus(cIndexFileName,uOrder,@pszStuff))
+		IF ! (lRetCode := VODBOrdSetFocus(cIndexFileName,uOrder, REF pszStuff))
 			BREAK ErrorBuild(_VODBErrInfoPtr())
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )

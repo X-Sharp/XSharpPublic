@@ -28,26 +28,25 @@ CONSTRUCTOR( lNew )
 
 METHOD Clear( ) 
 	LOCAL coordScreen := 0 AS DWORD
-	LOCAL lSuccess AS LOGIC
 	LOCAL cCharsWritten	 AS DWORD
 	LOCAL csbi IS _winCONSOLE_SCREEN_BUFFER_INFO
 	LOCAL dwConSize AS DWORD
 
 	/* get the number of character cells in the current buffer */
-	lSuccess  := GetConsoleScreenBufferInfo( hConOut, @csbi )
+	GetConsoleScreenBufferInfo( hConOut, @csbi )
 	dwConSize := (DWORD) (csbi:dwSize:X * csbi:dwSize:Y)
 
 	/* fill the entire screen with blanks */
-	lSuccess  := FillConsoleOutputCharacter( hConOut, 32, dwConSize, coordScreen, @cCharsWritten )
+	FillConsoleOutputCharacter( hConOut, 32, dwConSize, coordScreen, @cCharsWritten )
 
 	/* get the current text attribute */
-	lSuccess  := GetConsoleScreenBufferInfo( hConOut, @csbi )
+	GetConsoleScreenBufferInfo( hConOut, @csbi )
 
 	/* now set the buffer's attributes accordingly */
-	lSuccess  := FillConsoleOutputAttribute( hConOut, csbi:wAttributes, dwConSize, coordScreen, @cCharsWritten )
+	FillConsoleOutputAttribute( hConOut, csbi:wAttributes, dwConSize, coordScreen, @cCharsWritten )
 
 	/* put the cursor at (0, 0) */
-	lSuccess  := SetConsoleCursorPosition( hConOut, coordScreen )
+	SetConsoleCursorPosition( hConOut, coordScreen )
 
 	RETURN SELF
 
@@ -60,10 +59,9 @@ ACCESS CursorPos
 
 ASSIGN CursorPos( oNewPos ) 
 	LOCAL dwPos AS DWORD
-	LOCAL lSuccess AS LOGIC
-
+	
 	dwPos := _OR( ( DWORD( _CAST, oNewPos:Y ) << 16 ), DWORD( _CAST, oNewPos:X ) )
-	lSuccess := SetConsoleCursorPosition( hConOut, dwPos )
+	SetConsoleCursorPosition( hConOut, dwPos )
 
 	RETURN 
 
@@ -129,11 +127,10 @@ ASSIGN Size( oNewSize )
 	LOCAL sbi 				IS _winCONSOLE_SCREEN_BUFFER_INFO
 	LOCAL coordX 			AS DWORD
 	LOCAL coordY 			AS DWORD
-	LOCAL lSuccess 		AS LOGIC
 	LOCAL srWindowRect 	IS _winSMALL_RECT
 	LOCAL dwCoordScreen AS DWORD
 
-	lSuccess := GetConsoleScreenBufferInfo( hConOut, @sbi )
+	GetConsoleScreenBufferInfo( hConOut, @sbi )
 
 	// get the largest size we can size the console window to
 	dwCoordScreen := GetLargestConsoleWindowSize( hConOut )
@@ -151,15 +148,15 @@ ASSIGN Size( oNewSize )
 	// if the current buffer is larger than what we want, resize the
 	// console window first, then the buffer
 	IF ( sbi:dwSize:X * sbi:dwSize:Y >  oNewSize:X * oNewSize:Y )
-		lSuccess := SetConsoleWindowInfo( hConOut, TRUE, @srWindowRect )
-		lSuccess := SetConsoleScreenBufferSize( hConOut, dwCoordScreen )   
+		SetConsoleWindowInfo( hConOut, TRUE, @srWindowRect )
+		SetConsoleScreenBufferSize( hConOut, dwCoordScreen )   
 		
 	ELSEIF ( sbi:dwSize:X * sbi:dwSize:Y <  oNewSize:X * oNewSize:Y )
 		// if the current buffer is smaller than what we want, resize the
 		// buffer first, then the console window
 
-		lSuccess := SetConsoleScreenBufferSize( hConOut, dwCoordScreen )
-		lSuccess := SetConsoleWindowInfo( hConOut, TRUE, @srWindowRect )
+		SetConsoleScreenBufferSize( hConOut, dwCoordScreen )
+		SetConsoleWindowInfo( hConOut, TRUE, @srWindowRect )
 	ENDIF
 
 	RETURN 

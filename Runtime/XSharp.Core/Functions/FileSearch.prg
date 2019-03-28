@@ -48,7 +48,7 @@ INTERNAL STATIC CLASS XSharp.FileSearch
     
                 LOCAL files := oDirInfo:GetFiles(cMask) AS FileInfo[]
                 VAR selectedFiles := FROM FileInfo IN files WHERE ( FileInfo:Attributes & (FileAttributes) (attributes + FA_NORMAL)) != 0 SELECT FileInfo
-                FOREACH file AS FileInfo IN files
+                FOREACH file AS FileInfo IN selectedFiles
                     foundEntries:Add(file)
                 NEXT
     

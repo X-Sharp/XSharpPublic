@@ -2711,12 +2711,10 @@ BEGIN NAMESPACE XSharp.RDD
 	INTERNAL CLASS DBFSortCompare IMPLEMENTS IComparer<SortRecord>
 	
 		PRIVATE _sortInfo AS DBSORTINFO
-		PRIVATE _oRdd AS DBF
         PRIVATE _dataX AS BYTE[]
         PRIVATE _dataY AS BYTE[]
 		
 		INTERNAL CONSTRUCTOR( rdd AS DBF, info AS DBSORTINFO )
-			SELF:_oRdd      := rdd
 			SELF:_sortInfo  := info
             LOCAL max       := 0 AS INT
             FOREACH VAR item IN info:Items

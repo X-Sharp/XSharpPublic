@@ -32,7 +32,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         #endregion
         #region fields
         PRIVATE _hFile AS IntPtr
-        PRIVATE _Encoding AS Encoding
         PRIVATE _Shared AS LOGIC
         PRIVATE _Hot AS LOGIC
         PRIVATE _Unique AS LOGIC
@@ -156,7 +155,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_oRdd          := oRDD
             SELF:_Header        := NULL 
             SELF:_stack         := RddStack[]{ STACK_DEPTH }
-            SELF:_Encoding      := oRDD:_Encoding
             SELF:_tagNumber     := 1
             SELF:_maxLockTries  := 1
             //Init

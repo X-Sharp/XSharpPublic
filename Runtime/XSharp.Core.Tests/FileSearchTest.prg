@@ -17,14 +17,14 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		METHOD FileTest() AS VOID
 			LOCAL lOk AS LOGIC
 			LOCAL cName AS STRING
-			LOCAL dDate AS DateTime
+			//LOCAL dDate AS DateTime
 			LOCAL nAttrib, nSize AS DWORD
 			LOCAL cTime AS STRING
 			ASsert.Equal(1L, (INT) FFCount("XSharp.Core.dll", 0))
 			lOk := FFirst("XSharp.Core.dll", 0)
 			Assert.Equal(lOk, TRUE)
 			cName := FName()
-			dDate := FDate()
+			//dDate := FDate()
 			nAttrib := FAttrib()
 			nSize := FSize()
 			cTime := FTime()

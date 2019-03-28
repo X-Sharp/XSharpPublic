@@ -139,8 +139,11 @@ namespace XSharp.MacroCompiler
 
                     /*if (!t.IsNested && t.Name.Equals(XSharpSpecialNames.FunctionsClass, StringComparison.OrdinalIgnoreCase))
                     {
-                        usedSymbols.Add(ts);
-                        usings.Add(ts);
+                        if (ts != null && !usedSymbols.Contains(ts))
+                        {
+                            usedSymbols.Add(ts);
+                            usings.Add(ts);
+                        }
                     }*/
                 }
                 }
@@ -315,13 +318,31 @@ namespace XSharp.MacroCompiler
                 if (v != null)
                     return v;
             }
-            foreach (var u in Usings)
             {
-                Symbol v = u.Lookup(name);
-                if (v != null)
-                    return v;
+                Symbol v = null;
+                foreach (var u in Usings)
+                {
+                    Symbol t = u.Lookup(name);
+                    if (t != null)
+                    {
+                        if (v != null)
+                        {
+                            if (!(v is SymbolList))
+                                v = new SymbolList(v);
+                            if (!(t is SymbolList))
+                                (v as SymbolList).Add(t);
+                            else
+                            {
+                                foreach (var ts in (t as SymbolList).Symbols)
+                                    (v as SymbolList).Add(ts);
+                            }
+                        }
+                        else
+                            v = t;
+                    }
+                }
+                return v;
             }
-            return null;
         }
 
         internal static Symbol ResolveSuffix(string fullname, Symbol type)

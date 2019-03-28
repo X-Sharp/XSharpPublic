@@ -15,10 +15,33 @@ namespace XSharp.MacroCompiler
         {
             if (ovRes?.Valid != true)
             {
+                var self = (expr as MemberAccessExpr)?.Expr;
+                bool isStatic = self == null;
                 if (symbol is SymbolList)
-                    return expr.Error(ErrorCode.NoSuitableOverload, symbol.MemberName());
+                {
+                    bool hasMethod = (symbol as SymbolList).SymbolTypes.HasFlag(MemberTypes.Method) || (symbol as SymbolList).SymbolTypes.HasFlag(MemberTypes.Constructor);
+                    bool validStatic = false;
+                    foreach (var s in (symbol as SymbolList).Symbols)
+                    {
+                        if ((s as MethodSymbol)?.Method.IsStatic == isStatic || symbol is ConstructorSymbol)
+                            validStatic = true;
+                    }
+                    if (validStatic)
+                        return expr.Error(ErrorCode.NoSuitableOverload, symbol.MemberName());
+                    else if (isStatic)
+                        return expr.Error(ErrorCode.NoStaticOverload, symbol.MemberName());
+                    else
+                        return expr.Error(ErrorCode.NoInstanceOverload, symbol.MemberName());
+                }
                 else if (symbol is MethodSymbol)
-                    return expr.Error(ErrorCode.ArgumentsNotMatch, symbol.MemberName());
+                {
+                    if ((symbol as MethodSymbol)?.Method.IsStatic == isStatic || symbol is ConstructorSymbol)
+                        return expr.Error(ErrorCode.ArgumentsNotMatch, symbol.MemberName());
+                    else if (isStatic)
+                        return expr.Error(ErrorCode.NoStaticMethod, symbol.MemberName());
+                    else
+                        return expr.Error(ErrorCode.NoInstanceMethod, symbol.MemberName());
+                }
                 else if (symbol is MemberSymbol)
                     return expr.Error(ErrorCode.MemberNotMethod, symbol.MemberName());
                 else if (expr.Symbol != null)

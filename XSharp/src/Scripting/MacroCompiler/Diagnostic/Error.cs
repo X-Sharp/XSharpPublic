@@ -43,6 +43,10 @@ namespace XSharp.MacroCompiler
         NotAMethod = 223,
         NotFound = 224,
         NoAccessMode = 225,
+        NoStaticMethod = 226,
+        NoInstanceMethod = 227,
+        NoStaticOverload = 228,
+        NoInstanceOverload = 229,
     }
 
     internal class ErrorString
@@ -82,7 +86,11 @@ namespace XSharp.MacroCompiler
             { ErrorCode.NotAnExpression, "{0} is not a valid expression term" },
             { ErrorCode.NotAMethod, "{0} is not a method" },
             { ErrorCode.NotFound, "{0} not found" },
-            { ErrorCode.NoAccessMode, "{0} does not provide {1} access" }
+            { ErrorCode.NoAccessMode, "{0} does not provide {1} access" },
+            { ErrorCode.NoStaticMethod, "Method or function {0} is not static" },
+            { ErrorCode.NoInstanceMethod, "Method or function {0} is not instance" },
+            { ErrorCode.NoStaticOverload, "Method or function {0} has no static overload" },
+            { ErrorCode.NoInstanceOverload, "Method or function {0} is no instance overload" },
         };
 
         static internal string Get(ErrorCode e) { return _errorStrings[e]; }

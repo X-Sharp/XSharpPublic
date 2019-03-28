@@ -572,6 +572,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|o|l := true, l := l .or. (o:fieldget(#F1)!= o:propget(#F2, '-') .or. o:fieldget(#F1)!= o:propget(#F3, '-') .or. o:fieldget(#F1)!= o:propget(#F4, '-'))}", Args(ctest{1,2}), TRUE, typeof(LOGIC))
         TestMacro(mc, "foo", Args(), NULL, NULL)
         TestMacro(mc, "foo := 1234, foo", Args(), 1234, typeof(INT))
+        TestMacro(mc, "ToString()", Args(), null, null, ErrorCode.NoStaticOverload)
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")

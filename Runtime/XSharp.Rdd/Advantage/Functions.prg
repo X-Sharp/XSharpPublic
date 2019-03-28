@@ -170,26 +170,29 @@ FUNCTION AX_Transaction( iAction AS INT) AS LOGIC // Transaction call
     //   AX_ISACTIVE_TRANSACTION
     //
     usInTrans := 0
-
-    DO CASE
-    CASE iAction = ACE.AX_BEGIN_TRANSACTION
+    
+    SWITCH iAction
+    CASE ACE.AX_BEGIN_TRANSACTION
        ulRetVal := ACE.AdsBeginTransaction( 0 )
-    CASE iAction = ACE.AX_COMMIT_TRANSACTION
+    CASE ACE.AX_COMMIT_TRANSACTION
        ulRetVal := ACE.AdsCommitTransaction( 0 )
-    CASE iAction = ACE.AX_ROLLBACK_TRANSACTION
+    CASE ACE.AX_ROLLBACK_TRANSACTION
        ulRetVal := ACE.AdsRollbackTransaction( 0 )
-    CASE iAction = ACE.AX_ISACTIVE_TRANSACTION
+    CASE ACE.AX_ISACTIVE_TRANSACTION
        ulRetVal := ACE.AdsInTransaction( 0, REF usInTrans )
-    ENDCASE
+       RETURN ( ulRetVal == 0 .AND. usInTrans != 0 )
+    OTHERWISE
+        ulRetVal := 1
+    END SWITCH
 
-    RETURN ( usInTrans != 0 )
+    RETURN  ulRetVal == 0 
 
 
 FUNCTION AX_Transaction( ) AS LOGIC // Transaction call
     LOCAL usInTrans := 0 AS WORD
     LOCAL ulRetVal AS DWORD
     ulRetVal := ACE.AdsInTransaction( 0, REF usInTrans )
-    RETURN ( usInTrans != 0 )
+    RETURN ( ulRetVal == 0 .AND. usInTrans != 0 )
 
 
 /// <summary>return .T. if the current workarea is using Advantage Server or AIS Server and
@@ -203,8 +206,12 @@ FUNCTION AX_UsingClientServer( ) AS LOGIC
     IF CoreDb.Info(DBI_FULLPATH , REF oFileName)
         strFileName := (STRING) oFileName
         ulRetCode := ACE.AdsFindConnection(  strFileName , OUT ConnectionHandle )
-        ulRetCode := ACE.AdsGetConnectionType( ConnectionHandle, OUT usServerType )
-        RETURN ( usServerType == ACE.ADS_REMOTE_SERVER ) .OR. ( usServerType == ACE.ADS_AIS_SERVER )
+        IF (ulRetCode == 0)
+            ulRetCode := ACE.AdsGetConnectionType( ConnectionHandle, OUT usServerType )
+        ENDIF
+        IF (ulRetCode == 0)
+            RETURN ( usServerType == ACE.ADS_REMOTE_SERVER ) .OR. ( usServerType == ACE.ADS_AIS_SERVER )
+        ENDIF
     ENDIF
     RETURN FALSE
     

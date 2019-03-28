@@ -1,4 +1,4 @@
-Ôªø//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -36,8 +36,8 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	METHOD AscWTest() AS VOID
 		LOCAL VALUE := " 123" AS STRING
 		Assert.Equal((DWORD)32,AscW(VALUE))
-		Assert.Equal((DWORD)955,AscW("Œª"))
-		Assert.Equal((DWORD)936,AscW("Œ®"))  
+		Assert.Equal((DWORD)955,AscW("?"))
+		Assert.Equal((DWORD)936,AscW("?"))  
 		Assert.Equal((DWORD)32,AscW(" "))
 		Assert.Equal((DWORD)512,AscW(((CHAR) 512):ToString()))
 		Assert.Equal((DWORD)0,AscW(NULL))
@@ -51,9 +51,9 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		LOCAL nOld AS LONG
 		nOld := RuntimeState.WinCodePage 
 		RuntimeState.WinCodePage := 1253 // Greek
-		Assert.Equal((DWORD)235,Asc("Œª"))
+		Assert.Equal((DWORD)235,Asc("?"))
 		RuntimeState.WinCodePage  := 1252 // Western Europea
-		Assert.Equal((DWORD)63,Asc("Œª"))	// ? because not defined for the codepage
+		Assert.Equal((DWORD)63,Asc("?"))	// ? because not defined for the codepage
 		RuntimeState.WinCodePage  := nOld
 		Assert.Equal((DWORD)0,Asc(NULL))
 	RETURN
@@ -285,14 +285,14 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	METHOD SLenTest() AS VOID
 		LOCAL s:="Hello World" AS STRING
 		VAR l := SLen(s)
-		Assert.Equal((DWORD)11,SLen(s))
+		Assert.Equal((DWORD)11,l)
 	RETURN
 
 	[Fact, Trait("Category", "String")];
 	METHOD SLenExceptionTest() AS VOID
 		LOCAL s AS STRING
 		s:=string.Empty
-		//XUnit.Assert.Throws<InvalidOperationException>( () => SLen(s))
+		XUnit.Assert.Throws<InvalidOperationException>( {  => SLen(s)} )
 	RETURN
 
 	[Fact, Trait("Category", "String")];
@@ -397,10 +397,10 @@ BEGIN NAMESPACE XSharp.Core.Tests
         XSharp.RuntimeState.WinCodePage := 1252
         LOCAL cSource AS STRING
         LOCAL cTarget AS STRING
-        cSource := "√Ñ√ã√è√ñ√ú√§√´√Ø√∂√º"
+        cSource := "ƒÀœ÷‹‰ÎÔˆ¸"
         cTarget := e"\u017d\u0045\u0049\u2122\u0161\u201e\u2030\u2039\u201d\u0081"
         Assert.Equal(cTarget, Ansi2Oem(cSource))
-        cSource := "√ÑEI√ñ√ú√§√´√Ø√∂√º"     // there are no E and I with umlaut in codepage 437
+        cSource := "ƒEI÷‹‰ÎÔˆ¸"     // there are no E and I with umlaut in codepage 437
         Assert.Equal(cSource, Oem2Ansi(cTarget))
     Assert.Equal(cSource, Oem2Ansi(Ansi2Oem(cSource)))
 END CLASS

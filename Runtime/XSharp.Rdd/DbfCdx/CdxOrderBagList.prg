@@ -33,9 +33,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     oBag := CdxOrderBag{_oRdd}
                     oBag:Structural := lStructural
                     _bags:Add(oBag)
-                    local lOk as LOGIC
+                    LOCAL lOk AS LOGIC
                     lOk := oBag:Open(info)
-                    if lOk .and. XSharp.RuntimeState.AutoOrder
+                    IF lOk .AND. XSharp.RuntimeState.AutoOrder
                         SELF:CurrentOrder := oBag:Tags[0]
                     ENDIF
                     IF lStructural
@@ -140,7 +140,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
 
             ENDIF
-            RETURN TRUE
+            RETURN lOk
             
         METHOD Destroy(orderInfo AS DbOrderInfo) AS LOGIC
             LOCAL oTag AS CdxTag
@@ -199,7 +199,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN lOk
             
         METHOD Rebuild() AS LOGIC
-            LOCAL lOk as LOGIC
+            LOCAL lOk AS LOGIC
             lOk := TRUE
             FOREACH oBag AS CdxOrderBag IN _bags
                 IF ! oBag:OrderListRebuild()

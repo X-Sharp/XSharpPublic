@@ -20,7 +20,6 @@ BEGIN NAMESPACE XSharp.RDD
             
     INTERNAL CLASS RddSortHelper
         PRIVATE _sortInfo   AS DbSortInfo
-        PRIVATE _recCount   AS LONG
         PRIVATE _dataBuffer AS List<SortRecord>
         PRIVATE _currentPos AS LONG
         PRIVATE _Length     AS LONG
@@ -31,7 +30,6 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL CONSTRUCTOR( rdd AS DBF, sortInfo AS DbSortInfo , len AS LONG )
             SELF:_oRDD      := rdd
             SELF:_sortInfo := sortInfo
-            SELF:_recCount := len
             SELF:_dataBuffer := List<SortRecord>{len}
             SELF:_currentPos := 0
             SELF:_Length    := len
@@ -73,7 +71,6 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL METHOD Clear() AS VOID
             SELF:_dataBuffer := NULL
             SELF:_sortInfo := NULL
-            SELF:_recCount := 0
             SELF:_currentPos := (SELF:_Length := 0)
             
             

@@ -61,21 +61,9 @@ DEFINE TICK_FREQUENCY   :=    18.20647  // ticks per second
 //
 
 DEFINE ASC_BELL   :=     7    // Bell
-DEFINE ASC_BS     :=     8    // BackSpace
 DEFINE ASC_TAB    :=     9    // Tab
-DEFINE ASC_LF     :=    10    // LineFeed
-DEFINE ASC_FF     :=    12    // FormFeed
-DEFINE ASC_CR     :=    13    // CarriageReturn
 DEFINE ASC_SOFT_CR :=   141      // softCarriageReturn
 DEFINE ASC_EOF    :=    26    // EndOfFile
-DEFINE ASC_ESC    :=    27    // Escape
-DEFINE ASC_BLANK  :=    32
-DEFINE ASC_0      :=    48
-DEFINE ASC_1      :=    49
-DEFINE ASC_9      :=    57
-DEFINE ASC_A      :=    65
-DEFINE ASC_Z      :=    90
 #ifndef CRLF
 DEFINE	 CRLF       := e"\r\n"
 #endif
-//DEFINE INI_GROUP_RUNTIME :=   "CA-Visual Objects"

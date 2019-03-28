@@ -434,7 +434,7 @@ BEGIN NAMESPACE XSharp.RDD
             isOk := TRUE
             BEGIN LOCK SELF
                 isOk := SUPER:Flush()
-                RETURN SELF:_indexList:Flush()
+                RETURN SELF:_indexList:Flush() .AND. isOk
             END LOCK
             
         #ENDREGION

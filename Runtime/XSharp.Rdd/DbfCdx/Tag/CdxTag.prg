@@ -44,7 +44,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _KeyExprType AS LONG
         PRIVATE _keySize AS WORD
         PRIVATE _rootPage AS LONG
-        PRIVATE _ordCondInfo as DbOrderCondInfo
+        PRIVATE _ordCondInfo AS DbOrderCondInfo
         //INTERNAL _tagNumber AS INT
         INTERNAL _orderName AS STRING
         INTERNAL _Ansi AS LOGIC
@@ -99,7 +99,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY CurrentStack      AS CdxStackEntry GET  SELF:_stack:Top
         INTERNAL PROPERTY RootPage          AS LONG AUTO
         INTERNAL PROPERTY MaxKeysPerPage    AS WORD GET _maxKeysPerPage
-        INTERNAL PROPERTY Stack             as CdxPageStack get _stack
+        INTERNAL PROPERTY Stack             AS CdxPageStack GET _stack
 
         // Scopes
         INTERNAL PROPERTY TopScope          AS OBJECT GET _topScope SET _topScope := VALUE
@@ -345,7 +345,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL typeCde AS TypeCode
             text := NULL
             IF (toConvert ASTYPE IFloat) != NULL // Float Value ?
-                VAR valueFloat := (IFloat)toConvert
                 typeCde   := TypeCode.Double
             ELSEIF (toConvert ASTYPE IDate) != NULL // Date Value
                 VAR valueDate := (IDate)toConvert
@@ -470,14 +469,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             records += page:NumKeys
                             IF SELF:_Descending
                                 IF page:HasLeft
-                                    var pageNo := page:LeftPtr
+                                    VAR pageNo := page:LeftPtr
                                     page := SELF:GetPage(pageNo)
                                 ELSE
                                     EXIT
                                 ENDIF
                             ELSE
                                 IF page:HasRight
-                                    var pageNo := page:RightPtr
+                                    VAR pageNo := page:RightPtr
                                     page := SELF:GetPage(pageNo)
                                 ELSE
                                     EXIT
@@ -579,12 +578,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_stack:Insertbefore(oBefore, oPage)
             RETURN TRUE
 
-        PRIVATE METHOD AdjustStack(originalPage as CdxTreePage, oPage AS CdxTreePage, nPos AS WORD) AS VOID
+        PRIVATE METHOD AdjustStack(originalPage AS CdxTreePage, oPage AS CdxTreePage, nPos AS WORD) AS VOID
             SELF:_stack:Replace(originalPage, oPage, nPos)
             RETURN
 
 
-        INTERNAL METHOD PushPage(oPage as CdxTreePage , nPos AS WORD) AS VOID
+        INTERNAL METHOD PushPage(oPage AS CdxTreePage , nPos AS WORD) AS VOID
             SELF:_Stack:Push(oPage, nPos)
             RETURN 
 

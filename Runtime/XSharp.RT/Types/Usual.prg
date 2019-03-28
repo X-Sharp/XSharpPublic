@@ -2321,6 +2321,8 @@ BEGIN NAMESPACE XSharp
         STATIC METHOD __InexactEquals( lhs AS __Usual, rhs AS STRING ) AS LOGIC
             IF lhs:IsString
                 RETURN __StringEquals( lhs:_stringValue, rhs)
+            ELSEIF lhs:IsNil
+            	RETURN FALSE
             ELSE
                 THROW BinaryError("=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
             ENDIF

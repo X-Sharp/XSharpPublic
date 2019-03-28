@@ -273,6 +273,62 @@ BEGIN NAMESPACE XSharp.VO.Tests
         	Assert.Equal(2018.10.20 , (DATE)o:DefaultParams3())
 
         	Assert.Equal(#MYSYMBOL , (SYMBOL)o:DefaultParams4())
+
+
+		// TECH-6YD882O372, Runtime exception with inexact equals operator and NIL values
+		[Fact, Trait("Category", "StringUsual")];
+		METHOD StringNil_InExactEquals() AS VOID
+			LOCAL u := NIL AS USUAL
+			LOCAL c := "abc" AS STRING
+			Assert.False( c == u ) // FALSE, ok
+			Assert.False( c = u  ) // FALSE, ok
+			Assert.False( u == c ) // FALSE, ok
+			Assert.False( u = c  ) // exception
+			Assert.False( u = "aaa"  ) // exception
+			
+			// exceptions also:
+			u := NilTestClass{}
+			Assert.False( u:NilMethod() = "A" )
+			Assert.False( u:NilMethodUntyped() = "A" )
+			Assert.False( u:NilAccess = "A" )
+		RETURN
+
+		// TECH-CLZ71NH0C3, Runtime exception with return value of NoIVarGet()
+        [Fact, Trait("Category", "OOP")];
+        METHOD NilComparisons() AS VOID
+			LOCAL n := 0 AS INT
+			LOCAL c := "abc" AS STRING
+			LOCAL uNil := NIL AS USUAL
+			Assert.False( n == NIL  )
+			Assert.False( n == uNil )
+			Assert.False( NIL == n  )
+			Assert.False( uNil == n )
+			
+			Assert.False( uNil == c )
+			Assert.False( c == NIL  )
+			Assert.False( c == uNil )
+			
+			LOCAL o AS USUAL
+			o := NilTestClass{}
+			Assert.False( o:NilMethod() == 1        )
+			Assert.False( o:NilMethodUntyped() == 1 )
+			Assert.False( o:NilMethodUntyped() == c )
+		
+			Assert.False( o:NilAccess == 1  )
+			Assert.False( o:NilAccess == "" )
+		
+			Assert.False( o:DoesNotExistAccess == 1   )
+			Assert.False( o:DoesNotExistMethod() == 1 )
+		
+			Assert.False( o:DoesNotExistMethodNil() == 1     )
+			Assert.False( o:DoesNotExistMethodNil() == "abc" )
+		
+			Assert.False( o:DoesNotExistAccessNil == 1     ) // exception here "Value does not fall within the expected range."
+			Assert.False( o:DoesNotExistAccessNil == "abc" ) // exception
+			Assert.False( o:DoesNotExistAccessNil == n     ) // exception
+		
+			Assert.True( o:DoesNotExistAccessNil == NIL   ) // OK, TRUE
+		RETURN
     
         CLASS AzControl
        
@@ -378,3 +434,27 @@ CLASS TestStrong
     CONSTRUCTOR(otest AS OBJECT)
         SELF:Param := oTest
 END CLASS
+
+
+CLASS NilTestClass
+	METHOD NilMethod() AS USUAL
+	RETURN NIL
+	METHOD NilMethodUntyped()
+	RETURN NIL
+	ACCESS NilAccess
+	RETURN NIL
+
+	METHOD NoMethod(c)
+		? c
+		IF AsString(c) == "DOESNOTEXISTMETHOD"
+			RETURN 2
+		END IF
+	RETURN NIL
+	METHOD NoIVarGet(c)
+		? c
+		IF AsString(c) == "DOESNOTEXISTACCESS"
+			RETURN 2
+		END IF
+	RETURN NIL
+END CLASS
+

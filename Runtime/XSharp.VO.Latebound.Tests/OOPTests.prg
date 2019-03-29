@@ -334,8 +334,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		// TECH-R2TJNB9TZ7, Problem with late bound assign of DateTime to DATE iVar
 		[Fact, Trait("Category", "Date")];
 		METHOD Date_to_DateTime_and_back() AS VOID
-			LOCAL dDate AS DATE
-			LOCAL dDateTime AS DATE
 
 			LOCAL o := DateClass{} AS DateClass
 
@@ -350,6 +348,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			o:AssignDateTime := ConDate(2020,12,2)
 			Assert.Equal(o:FieldDateTime , DateTime{2020,12,2})
 			Assert.Equal(o:AccessDateTime , DateTime{2020,12,2})
+			
+			o:Date_DateTime_Method(DateTime{2010,1,1} , 2012.02.02)
+			Assert.Equal(o:FieldDate , 2010.01.01)
+			Assert.Equal(o:FieldDateTime , DateTime{2012,02,02})
 
 
 			LOCAL u := DateClass{} AS USUAL
@@ -365,6 +367,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			u:AssignDateTime := ConDate(2020,12,2)
 			Assert.Equal((DateTime)u:FieldDateTime , DateTime{2020,12,2})
 			Assert.Equal((DateTime)u:AccessDateTime , DateTime{2020,12,2})
+
+			u:Date_DateTime_Method(DateTime{2010,1,1} , 2012.02.02)
+			Assert.Equal(u:FieldDate , 2010.01.01)
+			Assert.Equal(u:FieldDateTime , DateTime{2012,02,02})
 		RETURN
 
 		CLASS DateClass

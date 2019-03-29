@@ -77,7 +77,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY FileName 	        AS STRING GET _bag:FullPath
         INTERNAL PROPERTY OrderBag          AS CdxOrderBag GET SELF:_bag
         INTERNAL PROPERTY Page              AS Int32 AUTO
-        INTERNAL PROPERTY Descending        AS LOGIC GET _Descending
+        INTERNAL PROPERTY Descending        AS LOGIC GET _Descending SET _Descending := value
         INTERNAL PROPERTY IsConditional     AS LOGIC GET Options:HasFlag(CdxOptions.HasFor)
         INTERNAL PROPERTY IsHot             AS LOGIC GET _Hot
         INTERNAL PROPERTY Header            AS CdxTagHeader GET _Header

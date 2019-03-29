@@ -524,9 +524,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD Cdx_Issues() AS VOID
-			#warning Disabled sample, updates index fields
-//			Cdx_Issues_Helper(TRUE)
-//			Cdx_Issues_Helper(FALSE)
+			Cdx_Issues_Helper(TRUE)
+			Cdx_Issues_Helper(FALSE)
 		RETURN
 		PRIVATE METHOD Cdx_Issues_Helper(lUseIndexFormVO AS LOGIC) AS VOID
 			LOCAL cDbf AS STRING
@@ -979,8 +978,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD CDX_test() AS VOID
-			#warning Disabled sample, updates index fields
-/*			LOCAL aValues AS ARRAY
+			LOCAL aValues AS ARRAY
 			LOCAL i AS DWORD
 			LOCAL cDBF, cCDX AS STRING
 			
@@ -1048,7 +1046,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				END CASE
 				DBSkip ( 1 )
 			ENDDO
-			DBCloseArea()*/
+			DBCloseArea()
 		RETURN
 	
 	

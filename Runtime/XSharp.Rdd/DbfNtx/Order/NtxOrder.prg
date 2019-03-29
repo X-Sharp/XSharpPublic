@@ -67,12 +67,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _orderName AS STRING
         PRIVATE _fileName AS STRING
         PRIVATE _fullPath AS STRING
-        PRIVATE _topScopeBuffer AS BYTE[]
-        PRIVATE _bottomScopeBuffer AS BYTE[]
-        PRIVATE _topScope AS OBJECT
-        PRIVATE _bottomScope AS OBJECT
-        PRIVATE _topScopeSize AS LONG
-        PRIVATE _bottomScopeSize AS LONG
+        PRIVATE DIM _Scopes[2] AS ScopeInfo
         PRIVATE _oRdd AS DBFNTX
         PRIVATE _Header AS NtxHeader
         PRIVATE _oneItem AS NtxNode
@@ -98,12 +93,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL PROPERTY Condition AS STRING GET _ForExpr
         INTERNAL PROPERTY CurrentStack       AS RddStack GET  SELF:_stack[SELF:_TopStack]
         INTERNAL PROPERTY OrderName AS STRING GET _orderName
-	INTERNAL PROPERTY Shared    AS LOGIC GET _Shared
+	    INTERNAL PROPERTY Shared    AS LOGIC GET _Shared
         INTERNAL PROPERTY _Recno AS LONG GET _oRdd:Recno
-        INTERNAL PROPERTY HasTopScope AS LOGIC GET _topScope != NULL
-        INTERNAL PROPERTY HasBottomScope AS LOGIC GET _bottomScope != NULL
-        INTERNAL PROPERTY TopScope AS OBJECT GET _topScope
-        INTERNAL PROPERTY BottomScope AS OBJECT GET _bottomScope
+        INTERNAL PROPERTY HasTopScope AS LOGIC GET _Scopes[TOPSCOPE]:IsSet
+        INTERNAL PROPERTY HasBottomScope AS LOGIC GET _Scopes[BOTTOMSCOPE]:IsSet
+        INTERNAL PROPERTY HasScope AS LOGIC GET _Scopes[TOPSCOPE]:IsSet .OR. _Scopes[BOTTOMSCOPE]:IsSet
+        INTERNAL PROPERTY TopScope AS OBJECT GET _Scopes[TOPSCOPE]:Value
+        INTERNAL PROPERTY BottomScope AS OBJECT GET _Scopes[BOTTOMSCOPE]:VALUE
+
         INTERNAL PROPERTY FullPath AS STRING GET _fullPath
         INTERNAL PROPERTY HPLocking AS LOGIC GET _HpLocking
         INTERNAL PROPERTY Unique AS LOGIC GET _Unique
@@ -253,8 +250,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL METHOD AllocateBuffers() AS VOID
             SELF:_newValue          := RddKeyData{_keySize}
             SELF:_currentValue      := RddKeyData{_keySize}
-            SELF:_topScopeBuffer    := BYTE[]{ SELF:_keySize }
-            SELF:_bottomScopeBuffer := BYTE[]{ SELF:_keySize }
+            SELF:_Scopes[0]:SetBuffer(_keySize)
+            SELF:_Scopes[1]:SetBuffer(_keySize)
             RETURN
             
 
@@ -542,24 +539,22 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             result := TRUE
             SWITCH uiScope
             CASE DBOrder_Info.DBOI_SCOPETOPCLEAR
-                SELF:_topScope      := NULL
-                SELF:_topScopeBuffer := NULL
-                SELF:_topScopeSize   := 0
+                SELF:_Scopes[TOPSCOPE]:Clear()
             CASE DBOrder_Info.DBOI_SCOPEBOTTOMCLEAR
-                SELF:_bottomScope       := NULL
-                SELF:_bottomScopeBuffer := NULL
-                SELF:_bottomScopeSize   := 0
+                SELF:_Scopes[BOTTOMSCOPE]:Clear()
             CASE DBOrder_Info.DBOI_SCOPETOP
-                SELF:_topScope      := itmScope
+                SELF:_Scopes[TOPSCOPE]:Value := itmScope
                 IF itmScope != NULL
-                    SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_topScopeBuffer,  REF uiRealLen)
-                    SELF:_topScopeSize := uiRealLen
+                    SELF:_Scopes[TOPSCOPE]:SetBuffer(SELF:_keySize )
+                    SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_Scopes[TOPSCOPE]:Buffer,  REF uiRealLen)
+                    SELF:_Scopes[TOPSCOPE]:Size := uiRealLen
                 ENDIF
             CASE DBOrder_Info.DBOI_SCOPEBOTTOM
-                SELF:_bottomScope    := itmScope
+                SELF:_Scopes[BOTTOMSCOPE]:Value := itmScope
                 IF itmScope != NULL
-                    SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_bottomScopeBuffer,  REF uiRealLen)
-                    SELF:_bottomScopeSize := uiRealLen
+                    SELF:_Scopes[BOTTOMSCOPE]:SetBuffer(SELF:_keySize )
+                    SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_Scopes[BOTTOMSCOPE]:Buffer,  REF uiRealLen)
+                    SELF:_Scopes[BOTTOMSCOPE]:Size := uiRealLen
                 ENDIF
             OTHERWISE
                 result := FALSE
@@ -584,7 +579,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     RETURN FALSE
                 ENDIF
             ENDIF
-            IF SELF:HasTopScope .OR. SELF:HasBottomScope
+            IF SELF:HasScope
                 SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPEBOTTOM)
                 records := SELF:_getScopePos()
             ELSE
@@ -642,7 +637,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF SELF:_TopStack == 0
                 SELF:_GoToRecno(recno)
             ENDIF
-            IF SELF:HasTopScope .OR. SELF:HasBottomScope
+            IF SELF:HasScope
                 record := SELF:_getScopePos()
             ELSE
                 IF XSharp.RuntimeState.Deleted .OR. SELF:_oRdd:_FilterInfo:Active

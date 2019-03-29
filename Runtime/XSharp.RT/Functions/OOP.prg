@@ -623,6 +623,8 @@ INTERNAL STATIC CLASS OOPHelpers
 			IF toType == TYPEOF(USUAL)
 				// box the usual
                 RETURN __CASTCLASS(OBJECT, uValue)
+            ELSEIF totype == typeof(DATE) .AND. uValue:IsDateTime
+                RETURN (DATE)(DateTime) uValue
             ELSEIF uValue:IsArray .AND. totype == typeof(ARRAY)
                 RETURN (ARRAY) uValue
             ELSEIF uValue:IsObject .OR. uValue:IsCodeBlock

@@ -134,8 +134,7 @@ FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
 	TRY
 		files := System.IO.Directory.GetFiles( cPath, cFileMask )
 		IF files != NULL
-			FOR VAR i := 1 UPTO files:Length
-				VAR cFile := files[i]
+			FOREACH cFile AS STRING IN files
 				VAR oFile := System.IO.FileInfo{cFile}
 				_DirectoryAddFileInfo(aReturn, oFile, nAttr)			
 			NEXT
@@ -167,11 +166,11 @@ FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
 	ENDIF
 	RETURN aReturn
 
-INTERNAL FUNCTION _DirectoryAddFileInfo(aReturn AS ARRAY, oFile AS FileInfo, nAttr AS DWORD) AS VOID
+INTERNAL FUNCTION _DirectoryAddFileInfo(aReturn AS ARRAY, oFile AS System.IO.FileInfo, nAttr AS DWORD) AS VOID
     
-	VAR cAttribute := ""
+	LOCAL cAttribute := "" AS STRING
 			
-	VAR lOk := TRUE
+	LOCAL lOk := TRUE AS LOGIC
 	IF oFile:Attributes:HasFlag(System.IO.FileAttributes.ReadOnly) 
 		cAttribute += "R"
 	ENDIF
@@ -189,7 +188,10 @@ INTERNAL FUNCTION _DirectoryAddFileInfo(aReturn AS ARRAY, oFile AS FileInfo, nAt
 	IF lOk
         VAR aFile := ArrayNew(F_LEN)
         aFile[F_NAME] := oFile:Name
-        aFile[F_SIZE] := IIF(oFile:Length < Int32.MaxValue, (LONG) oFile:Length, (INT64) oFile:Length)
+        aFile[F_SIZE] := oFile:Length
+        IF oFile:Length < 0x7FFFFFFFL
+            aFile[F_SIZE] := (Int32) oFile:Length
+        ENDIF
         aFile[F_DATE] := (DATE)  oFile:LastWriteTime
         aFile[F_TIME] := ConTime(oFile:LastWriteTime)
         aFile[F_ATTR] := cAttribute

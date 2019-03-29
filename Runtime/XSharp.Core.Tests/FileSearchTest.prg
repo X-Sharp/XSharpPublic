@@ -39,6 +39,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			Assert.Equal(TRUE, String.IsNullOrEmpty(cName))
 			ASsert.Equal(TRUE, FFCount("XSharp.*.dll", 0) > 3)
 
+
 		RETURN
 		[Fact, Trait("Category", "File Search")]; 
 		METHOD File2Test() AS VOID

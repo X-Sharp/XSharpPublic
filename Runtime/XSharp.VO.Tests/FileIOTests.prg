@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -31,7 +31,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			FClose(hFile)
 			cText := MemoRead(cFile)
 			Assert.Equal(e"line1\r\nline2\r\n", cText)
+            VAR aFiles := Directory("test.txt")
+            Assert.Equal(1, (INT) Alen(aFiles))
 			FErase(cFile)
+            aFiles := Directory("test.txt")
+            Assert.Equal(0, (INT) Alen(aFiles))
 		RETURN
 
 	END CLASS

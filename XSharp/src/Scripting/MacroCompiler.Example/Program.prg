@@ -573,6 +573,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, "foo", Args(), NULL, NULL)
         TestMacro(mc, "foo := 1234, foo", Args(), 1234, typeof(INT))
         TestMacro(mc, "ToString()", Args(), null, null, ErrorCode.NoStaticOverload)
+        TestMacro(mc, e"{|| !\"T\"$\"Test\"} ", Args(), false, typeof(logic))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")

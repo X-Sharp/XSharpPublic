@@ -1151,8 +1151,8 @@ namespace XSharp.MacroCompiler
             Opers[(int)TokenType.AMP] = new Oper(AssocType.BinaryLeft, TokenType.AMP, 14);
             Opers[(int)TokenType.TILDE] = new Oper(AssocType.BinaryLeft, TokenType.TILDE, 15);
             Opers[(int)TokenType.PIPE] = new Oper(AssocType.BinaryLeft, TokenType.PIPE, 16);
-            PrefixOpers[(int)TokenType.NOT] = new Oper(AssocType.Prefix, TokenType.NOT, 6);
-            PrefixOpers[(int)TokenType.LOGIC_NOT] = new Oper(AssocType.Prefix, TokenType.LOGIC_NOT, 6);
+            PrefixOpers[(int)TokenType.NOT] = new Oper(AssocType.Prefix, TokenType.NOT, 17);
+            PrefixOpers[(int)TokenType.LOGIC_NOT] = new Oper(AssocType.Prefix, TokenType.LOGIC_NOT, 17);
             Opers[(int)TokenType.AND] = new Oper(AssocType.BinaryLogic, TokenType.AND, 18);
             Opers[(int)TokenType.LOGIC_AND] = new Oper(AssocType.BinaryLogic, TokenType.LOGIC_AND, 18);
             Opers[(int)TokenType.LOGIC_XOR] = new Oper(AssocType.BinaryLeft, TokenType.LOGIC_XOR, 19);

@@ -329,6 +329,60 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		
 			Assert.True( o:DoesNotExistAccessNil == NIL   ) // OK, TRUE
 		RETURN
+
+
+		// TECH-R2TJNB9TZ7, Problem with late bound assign of DateTime to DATE iVar
+		[Fact, Trait("Category", "Date")];
+		METHOD Date_to_DateTime_and_back() AS VOID
+			LOCAL dDate AS DATE
+			LOCAL dDateTime AS DATE
+
+			LOCAL o := DateClass{} AS DateClass
+
+			o:FieldDate := DateTime{2000,12,1}
+			Assert.Equal(o:FieldDate , ConDate(2000,12,1))
+			o:AssignDate := DateTime{2000,12,2}
+			Assert.Equal(o:FieldDate , ConDate(2000,12,2))
+			Assert.Equal(o:AccessDate , ConDate(2000,12,2))
+
+			o:FieldDateTime := ConDate(2020,12,1)
+			Assert.Equal(o:FieldDateTime , DateTime{2020,12,1})
+			o:AssignDateTime := ConDate(2020,12,2)
+			Assert.Equal(o:FieldDateTime , DateTime{2020,12,2})
+			Assert.Equal(o:AccessDateTime , DateTime{2020,12,2})
+
+
+			LOCAL u := DateClass{} AS USUAL
+
+			u:FieldDate := DateTime{2000,12,1}
+			Assert.Equal((DATE)u:FieldDate , ConDate(2000,12,1))
+			u:AssignDate := DateTime{2000,12,2}
+			Assert.Equal((DATE)u:FieldDate , ConDate(2000,12,2))
+			Assert.Equal((DATE)u:AccessDate , ConDate(2000,12,2))
+
+			u:FieldDateTime := ConDate(2020,12,1)
+			Assert.Equal((DateTime)u:FieldDateTime , DateTime{2020,12,1})
+			u:AssignDateTime := ConDate(2020,12,2)
+			Assert.Equal((DateTime)u:FieldDateTime , DateTime{2020,12,2})
+			Assert.Equal((DateTime)u:AccessDateTime , DateTime{2020,12,2})
+		RETURN
+
+		CLASS DateClass
+			EXPORT FieldDate := Today() AS DATE
+			EXPORT FieldDateTime := DateTime.Now AS DateTime
+			ASSIGN AssignDate(val AS DATE)
+				SELF:FieldDate := val
+			ASSIGN AssignDateTime(val AS DateTime)
+				SELF:FieldDateTime := val
+			ACCESS AccessDate AS DATE
+				RETURN SELF:FieldDate
+			ACCESS AccessDateTime AS DateTime
+				RETURN SELF:FieldDateTime
+			METHOD Date_DateTime_Method(d AS DATE, dt AS DateTime) AS VOID
+				SELF:FieldDate := d
+				SELF:FieldDateTime := dt
+			RETURN
+		END CLASS
     
         CLASS AzControl
        

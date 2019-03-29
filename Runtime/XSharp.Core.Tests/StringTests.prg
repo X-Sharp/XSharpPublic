@@ -36,8 +36,8 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	METHOD AscWTest() AS VOID
 		LOCAL VALUE := " 123" AS STRING
 		Assert.Equal((DWORD)32,AscW(VALUE))
-		Assert.Equal((DWORD)955,AscW("?"))
-		Assert.Equal((DWORD)936,AscW("?"))  
+		Assert.Equal((DWORD)955,AscW(e"\x03bb")) // Lower Lambda
+		Assert.Equal((DWORD)936,AscW(e"\x03a8")) // Psi
 		Assert.Equal((DWORD)32,AscW(" "))
 		Assert.Equal((DWORD)512,AscW(((CHAR) 512):ToString()))
 		Assert.Equal((DWORD)0,AscW(NULL))
@@ -51,9 +51,9 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		LOCAL nOld AS LONG
 		nOld := RuntimeState.WinCodePage 
 		RuntimeState.WinCodePage := 1253 // Greek
-		Assert.Equal((DWORD)235,Asc("?"))
+		Assert.Equal((DWORD)235,Asc(e"\x03bb")) // Lower Lambda
 		RuntimeState.WinCodePage  := 1252 // Western Europea
-		Assert.Equal((DWORD)63,Asc("?"))	// ? because not defined for the codepage
+		Assert.Equal((DWORD)63,Asc(e"\x03bb"))	// ? because not defined for the codepage
 		RuntimeState.WinCodePage  := nOld
 		Assert.Equal((DWORD)0,Asc(NULL))
 	RETURN
@@ -288,13 +288,14 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		Assert.Equal((DWORD)11,l)
 	RETURN
 
+    /*
 	[Fact, Trait("Category", "String")];
 	METHOD SLenExceptionTest() AS VOID
 		LOCAL s AS STRING
-		s:=string.Empty
+		s:=null
 		XUnit.Assert.Throws<InvalidOperationException>( {  => SLen(s)} )
 	RETURN
-
+    */
 	[Fact, Trait("Category", "String")];
 	METHOD StuffTest() AS VOID
 		LOCAL s:="Hello World" AS STRING

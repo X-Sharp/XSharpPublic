@@ -460,7 +460,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF !lNewRecord
                 // find and delete existing key
                 IF ! changed
-                    changed := SELF:_compareFunc(SELF:_newValue:Key, SELF:_currentValue:Key, SELF:_keySize) != 0
+                    changed := SELF:__Compare(SELF:_newValue:Key, SELF:_currentValue:Key, SELF:_keySize) != 0
                 ENDIF
                 IF changed
                     SELF:Stack:Clear()

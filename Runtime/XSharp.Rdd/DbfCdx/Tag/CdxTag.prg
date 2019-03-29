@@ -49,18 +49,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _orderName AS STRING
         INTERNAL _Ansi AS LOGIC
         // Scopes
-        PRIVATE _topScopeBuffer AS BYTE[]
-        PRIVATE _bottomScopeBuffer AS BYTE[]
-        PRIVATE _topScope AS OBJECT
-        PRIVATE _bottomScope AS OBJECT
-        PRIVATE _topScopeSize AS LONG
-        PRIVATE _bottomScopeSize AS LONG
+        PRIVATE DIM _Scopes[2] AS ScopeInfo
         // siblings
         PRIVATE _oRdd   AS DbfCdx
         PRIVATE _Header AS CdxTagHeader
 
         PRIVATE _stack          AS CdxPageStack
-        PRIVATE _compareFunc    AS CompareFunc
+        PRIVATE __Compare       AS CompareFunc
 
         PRIVATE _bag            AS CdxOrderBag
         PRIVATE getKeyValue     AS ValueBlock       // Delegate to calculate the key
@@ -102,10 +97,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Stack             AS CdxPageStack GET _stack
 
         // Scopes
-        INTERNAL PROPERTY TopScope          AS OBJECT GET _topScope SET _topScope := VALUE
-        INTERNAL PROPERTY BottomScope       AS OBJECT GET _bottomScope SET _bottomScope := VALUE
-        INTERNAL PROPERTY HasTopScope       AS LOGIC GET _topScope != NULL
-        INTERNAL PROPERTY HasBottomScope    AS LOGIC GET _bottomScope != NULL
+        INTERNAL PROPERTY HasTopScope AS LOGIC GET _Scopes[IIF(DESCENDING,BOTTOMSCOPE, TOPSCOPE)]:IsSet
+        INTERNAL PROPERTY TopScope AS OBJECT GET _Scopes[IIF(DESCENDING,BOTTOMSCOPE, TOPSCOPE)]:Value
+        INTERNAL PROPERTY HasBottomScope AS LOGIC GET _Scopes[IIF(DESCENDING,TOPSCOPE, BOTTOMSCOPE)]:IsSet
+        INTERNAL PROPERTY BottomScope AS OBJECT GET _Scopes[IIF(DESCENDING,TOPSCOPE, BOTTOMSCOPE)]:VALUE
+        INTERNAL PROPERTY HasScope AS LOGIC GET _Scopes[0]:IsSet .OR. _Scopes[1]:IsSet
+        PRIVATE PROPERTY TopScopeNo AS LONG GET IIF(SELF:Descending, BOTTOMSCOPE, TOPSCOPE)
+        PRIVATE PROPERTY BottomScopeNo AS LONG GET IIF(SELF:Descending, TOPSCOPE, BOTTOMSCOPE)
+
 #endregion
 
 
@@ -159,8 +158,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD AllocateBuffers() AS VOID
             SELF:_newValue          := RddKeyData{_keySize}
             SELF:_currentValue      := RddKeyData{_keySize}
-            SELF:_topScopeBuffer := BYTE[]{ SELF:_keySize }
-            SELF:_bottomScopeBuffer := BYTE[]{ SELF:_keySize }
+            SELF:_Scopes[0]:SetBuffer(_keySize)
+            SELF:_Scopes[1]:SetBuffer(_keySize)
             RETURN
      
         INTERNAL METHOD EvaluateExpressions() AS LOGIC
@@ -186,9 +185,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             SELF:_KeyExprType := SELF:_oRdd:_getUsualType(oKey)
             IF SELF:_KeyExprType == __UsualType.String
-                SELF:_compareFunc := _compareText
+                SELF:__Compare := _compareText
             ELSE
-                SELF:_compareFunc := _compareBin
+                SELF:__Compare := _compareBin
             ENDIF
 
             // If the Key Expression contains only a Field Name
@@ -393,24 +392,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             result := TRUE
             SWITCH uiScope
             CASE DBOrder_Info.DBOI_SCOPETOPCLEAR
-                SELF:_topScope       := NULL
-                
-                SELF:_topScopeSize   := 0
+                SELF:_Scopes[SELF:TopScopeNo]:Clear()
             CASE DBOrder_Info.DBOI_SCOPEBOTTOMCLEAR
-                SELF:_bottomScope       := NULL
-                
-                SELF:_bottomScopeSize   := 0
+                SELF:_Scopes[SELF:BottomScopeNo]:Clear()
             CASE DBOrder_Info.DBOI_SCOPETOP
-                SELF:_topScope      := itmScope
+                SELF:_Scopes[SELF:TopScopeNo]:Value := itmScope
                 IF itmScope != NULL
-                    SELF:_ToString(itmScope, SELF:_keySize,  SELF:_topScopeBuffer, REF uiRealLen)
-                    SELF:_topScopeSize := uiRealLen
+                    SELF:_ToString(itmScope, SELF:_keySize,  SELF:_Scopes[SELF:TopScopeNo]:Buffer, REF uiRealLen)
+                    SELF:_Scopes[SELF:TopScopeNo]:Size := uiRealLen
                 ENDIF
             CASE DBOrder_Info.DBOI_SCOPEBOTTOM
-                SELF:_bottomScope    := itmScope
+                SELF:_Scopes[SELF:BottomScopeNo]:Value   := itmScope
                 IF itmScope != NULL
-                    SELF:_ToString(itmScope, SELF:_keySize, SELF:_bottomScopeBuffer, REF uiRealLen)
-                    SELF:_bottomScopeSize := uiRealLen
+                    SELF:_ToString(itmScope, SELF:_keySize, SELF:_Scopes[SELF:BottomScopeNo]:Buffer, REF uiRealLen)
+                    SELF:_Scopes[SELF:BottomScopeNo]:Size := uiRealLen
                 ENDIF
             OTHERWISE
                 result := FALSE
@@ -434,7 +429,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN FALSE
                 ENDIF
             ENDIF
-            IF SELF:HasTopScope .OR. SELF:HasBottomScope
+            IF SELF:HasScope
                 SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPEBOTTOM)
                 records := SELF:_getScopePos()
             ELSE
@@ -510,7 +505,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:Stack:Empty
                 SELF:_GoToRecno(recno)
             ENDIF
-            IF SELF:HasTopScope .OR. SELF:HasBottomScope
+            IF SELF:HasScope
                 record := SELF:_getScopePos()
             ELSE
                 IF XSharp.RuntimeState.Deleted .OR. SELF:_oRdd:_FilterInfo:Active

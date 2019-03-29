@@ -246,7 +246,38 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN info:Result
             
             #endregion
-            
+        #region relations
+        METHOD ForceRel() AS LOGIC
+         	LOCAL isOk    := TRUE AS LOGIC
+			IF SELF:_RelInfoPending != NULL
+				// Save the current context
+				LOCAL currentRelation := SELF:_RelInfoPending AS DbRelInfo
+				SELF:_RelInfoPending := NULL
+                VAR oParent := (DBF) currentRelation:Parent 
+                IF oParent:_EOF
+				    //
+				    isOk := SELF:Goto( 0 )
+                ELSE
+ 				    isOk := SELF:RelEval( currentRelation )
+
+				    IF isOk .AND. !((DBF)currentRelation:Parent):_Eof
+					    TRY
+                            LOCAL seekInfo AS DBSEEKINFO
+                            seekInfo := DbSeekInfo{}
+                            seekInfo:Value := SELF:_EvalResult
+                            seekInfo:SoftSeek := FALSE
+                            isOk := SELF:Seek(seekInfo)
+                            
+					    CATCH ex AS InvalidCastException
+                            SELF:_dbfError(ex, SubCodes.ERDD_DATATYPE,GenCode.EG_DATATYPE,  "DBFNTX.ForceRel") 
+
+					    END TRY
+				    ENDIF
+                ENDIF
+			ENDIF
+   
+        RETURN isOk
+        #endregion
         #region Pack, Zap
         METHOD Pack() AS LOGIC
             LOCAL isOk AS LOGIC

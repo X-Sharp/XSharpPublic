@@ -150,8 +150,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF oTag != NULL
                 VAR bag := oTag:OrderBag
                 RETURN bag:Destroy(oTag)
+            ELSE
+                SELF:_oRdd:_dbfError( SubCodes.EDB_ORDDESTROY,GenCode.EG_ARG,   "CdxOrderBagList.Destroy", "Order "+orderInfo:Order:ToString()+" does not exist")
             ENDIF
-            RETURN TRUE
+            RETURN FALSE
             
         PROPERTY IsHot AS LOGIC
             GET

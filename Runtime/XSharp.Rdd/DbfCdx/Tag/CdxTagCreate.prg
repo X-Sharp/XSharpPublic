@@ -103,7 +103,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_oRdd:_dbfError(GenCode.EG_CREATE,  SubCodes.ERDD_WRITE,"OrdCreate", "Could not write Header ")
                 RETURN FALSE
             ENDIF
-            IF !SELF:Unique .AND. !SELF:_Conditional .AND. !_ordCondInfo:Scoped
+            IF !SELF:Unique .AND. !SELF:_Conditional .AND. !_ordCondInfo:Scoped .AND. ! _ordCondInfo:Custom
                 isOk := SELF:_CreateNormalIndex()
             ELSE
                 isOk := SELF:_CreateUnique(_ordCondInfo )
@@ -405,12 +405,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             SELF:_oRdd:GoTo(1)
             IF SELF:_oRdd:_isValid
-                REPEAT
-                    SELF:_oRdd:GoTo(SELF:_RecNo + 1)
-                    IF ! SELF:_sortGetRecord()
-                        EXIT
-                    ENDIF
-                UNTIL ! SELF:_oRdd:_isValid
+                IF ! _ordCondInfo:Custom
+                    REPEAT
+                        SELF:_oRdd:GoTo(SELF:_RecNo + 1)
+                        IF ! SELF:_sortGetRecord()
+                            EXIT
+                        ENDIF
+                    UNTIL ! SELF:_oRdd:_isValid
+                ENDIF
             ENDIF
             SELF:ClearStack()
             SELF:Flush()

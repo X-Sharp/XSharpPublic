@@ -89,6 +89,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PUBLIC METHOD Seek(seekInfo AS DBSEEKINFO ) AS LOGIC
             LOCAL uiRealLen AS LONG
             LOCAL byteArray AS BYTE[]
+            LOCAL nLen      AS LONG
             uiRealLen := 0
             byteArray := BYTE[]{ _keySize }
             // Convert the seeked key to a byte Array
@@ -97,7 +98,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FALSE
             ENDIF
             IF SELF:HasTopScope
-                IF SELF:_compareFunc(byteArray, SELF:_topScopeBuffer, SELF:_keySize) < 0
+                nLen := Math.Min(SELF:_topScopeSize, uiRealLen)
+                IF SELF:_compareFunc(byteArray, SELF:_topScopeBuffer, nLen) < 0
                     IF seekInfo:SoftSeek
                         RETURN SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
                     ENDIF
@@ -105,7 +107,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             ENDIF
             IF SELF:HasBottomScope
-                IF SELF:_compareFunc(byteArray, SELF:_bottomScopeBuffer, SELF:_keySize) > 0
+                nLen := Math.Min(SELF:_bottomScopeSize, uiRealLen)
+                IF SELF:_compareFunc(byteArray, SELF:_bottomScopeBuffer, nLen) > 0
                     RETURN SELF:_oRdd:__Goto(0)
                 ENDIF
             ENDIF
@@ -318,7 +321,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     NOP
                 ENDDO
             ENDIF
-            RETURN first - last + 1
+            RETURN last - first + 1
             
             
         INTERNAL METHOD _saveCurrentKey(rcno AS LONG, oData AS RddKeyData) AS LOGIC

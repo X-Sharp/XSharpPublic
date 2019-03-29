@@ -369,8 +369,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal((DateTime)u:AccessDateTime , DateTime{2020,12,2})
 
 			u:Date_DateTime_Method(DateTime{2010,1,1} , 2012.02.02)
-			Assert.Equal(u:FieldDate , 2010.01.01)
-			Assert.Equal(u:FieldDateTime , DateTime{2012,02,02})
+			Assert.Equal((DATE) u:FieldDate , 2010.01.01)
+			Assert.Equal((DateTime) u:FieldDateTime , DateTime{2012,02,02})
 		RETURN
 
 		CLASS DateClass

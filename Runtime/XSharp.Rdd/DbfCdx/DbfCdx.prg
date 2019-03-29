@@ -166,12 +166,11 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             CASE DBOI_ISDESC
                     IF workOrder != NULL
-                        LOCAL oNewValue AS OBJECT
-                        oNewValue := info:Result
-                        info:Result := workOrder:Descending
-                        IF oNewValue IS LOGIC
-                            workOrder:Descending := (LOGIC) oNewValue
+                        VAR oldValue  := workOrder:Descending
+                        IF info:Result IS LOGIC descend
+                            workOrder:Descending := descend
                         ENDIF
+			info:Result := oldValue
                     ELSE
                         info:Result := FALSE
                 ENDIF
@@ -338,6 +337,7 @@ BEGIN NAMESPACE XSharp.RDD
         PUBLIC OVERRIDE METHOD Close() AS LOGIC
             LOCAL orderInfo AS DbOrderInfo
             BEGIN LOCK SELF
+                SELF:GoCold()
                 orderInfo := DbOrderInfo{}
                 orderInfo:AllTags := TRUE
                 SELF:_CloseAllIndexes(orderInfo, TRUE)
@@ -450,7 +450,10 @@ BEGIN NAMESPACE XSharp.RDD
                 IF !SELF:IsHot 
                     RETURN isOk
                 ENDIF
-                isOk := SELF:_indexList:GoCold()
+                isOk := SUPER:GoCold()
+                SELF:IsHot := TRUE
+                isOk := SELF:_indexList:GoCold() .AND. isOk
+                SELF:IsHot := FALSE
                 IF !isOk
                     RETURN isOk
                 ENDIF

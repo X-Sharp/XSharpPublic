@@ -1730,7 +1730,7 @@ BEGIN NAMESPACE XSharp.RDD
 			ENDIF
 			RETURN ret
 			
-		PROPERTY IsHot AS LOGIC GET SELF:_Hot
+		PROPERTY IsHot AS LOGIC GET SELF:_Hot SET SELF:_Hot := VALUE
 		PROPERTY IsNewRecord AS LOGIC GET SELF:_NewRecord
 		
 		/// <inheritdoc />

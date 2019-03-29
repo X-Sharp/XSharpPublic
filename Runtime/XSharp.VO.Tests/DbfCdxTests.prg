@@ -573,7 +573,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBSkip()
 			FieldPut(1,"HHH")
 			aResult := GetRecords()
-//			should be ABC, GHI, HHH, K
+//			should be ABC, GHI, HHH, K, because the record has been moved in the index
 			Assert.True( aResult[1] == "ABC")
 			Assert.True( aResult[2] == "GHI")
 			Assert.True( aResult[3] == "HHH")

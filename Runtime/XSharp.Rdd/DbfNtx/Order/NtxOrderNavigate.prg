@@ -298,12 +298,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             first := 1
             last := 1
-            DO WHILE SELF:_findItemPos(REF first, FALSE)
+            DO WHILE SELF:_findItemPos(REF last, FALSE)
                 NOP
             ENDDO
             IF SELF:HasTopScope
                 SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
-                DO WHILE SELF:_findItemPos(REF last, FALSE)
+                DO WHILE SELF:_findItemPos(REF first, FALSE)
                     NOP
                 ENDDO
             ENDIF

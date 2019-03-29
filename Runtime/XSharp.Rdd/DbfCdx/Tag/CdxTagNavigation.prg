@@ -314,12 +314,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             first := 1
             last := 1
-            DO WHILE SELF:_findItemPos(REF first, FALSE)
+            DO WHILE SELF:_findItemPos(REF last, FALSE)
                 NOP
             ENDDO
             IF SELF:HasTopScope
                 SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
-                DO WHILE SELF:_findItemPos(REF last, FALSE)
+                DO WHILE SELF:_findItemPos(REF first, FALSE)
                     NOP
                 ENDDO
             ENDIF
@@ -330,12 +330,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL isOk AS LOGIC
 
             isOk := TRUE
-            IF rcno != oData:Recno .OR. SELF:Shared
-                oData:Recno := rcno
-                isOk := SELF:getKeyValue(SELF:_SourceIndex, oData:Key)
-                IF SELF:_Conditional
-                    oData:ForCond := SELF:_EvalBlock(SELF:_ForCodeBlock, TRUE)
-                ENDIF
+            oData:Recno := rcno
+            isOk := SELF:getKeyValue(SELF:_SourceIndex, oData:Key)
+            IF SELF:_Conditional
+                oData:ForCond := SELF:_EvalBlock(SELF:_ForCodeBlock, TRUE)
             ENDIF
             IF !isOk
                 SELF:_oRdd:_dbfError(SubCodes.ERDD_KEY_EVAL, GenCode.EG_DATATYPE, SELF:fileName)

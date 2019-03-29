@@ -166,7 +166,12 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             CASE DBOI_ISDESC
                     IF workOrder != NULL
+                        LOCAL oNewValue AS OBJECT
+                        oNewValue := info:Result
                         info:Result := workOrder:Descending
+                        IF oNewValue IS LOGIC
+                            workOrder:Descending := (LOGIC) oNewValue
+                        ENDIF
                     ELSE
                         info:Result := FALSE
                 ENDIF

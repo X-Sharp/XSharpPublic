@@ -29,8 +29,8 @@ BEGIN NAMESPACE XSharp.RDD
                 
             VIRTUAL METHOD OrderDestroy(orderInfo AS DbOrderInfo ) AS LOGIC
                 RETURN SELF:_indexList:Destroy(orderInfo)
-
-		    METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
+                
+            METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
                 RETURN SUPER:OrderCondition(info)
                 
             VIRTUAL METHOD OrderListAdd( orderInfo AS DbOrderInfo) AS LOGIC
@@ -40,10 +40,11 @@ BEGIN NAMESPACE XSharp.RDD
                     fullPath := orderInfo:BagName
                     IF File(fullPath)
                         fullPath := FPathName()
-                    ELSEIF ! String.IsNullOrEmpty(Path.GetExtension(fullPath)) 
+                    ELSEIF String.IsNullOrEmpty(Path.GetExtension(fullPath)) 
                         fullPath := Path.ChangeExtension(fullPath, CdxOrderbag.CDX_EXTENSION)
                         IF File(fullPath)
                             fullPath := FPathName()
+                            orderInfo:BagName := fullPath
                         ENDIF
                     ENDIF
                     IF String.IsNullOrEmpty(System.IO.Path.GetDirectoryName(fullPath))
@@ -58,24 +59,23 @@ BEGIN NAMESPACE XSharp.RDD
                         lOk := TRUE
                     ENDIF
                     IF lOk
-                         orderInfo:Order := 1
-                         lOk := SELF:OrderListFocus(orderInfo)
+                        orderInfo:Order := 1
+                        lOk := SELF:OrderListFocus(orderInfo)
                     ENDIF
                     RETURN lOk
                 END LOCK
-
-
+                
+                
             METHOD _CloseAllIndexes(orderInfo AS DbOrderInfo, lCloseStructural AS LOGIC) AS LOGIC
-                    SELF:GoCold()
-                    RETURN SELF:_indexList:Delete(orderInfo, lCloseStructural)
-
+                SELF:GoCold()
+                RETURN SELF:_indexList:Delete(orderInfo, lCloseStructural)
+                
             VIRTUAL METHOD OrderListDelete(orderInfo AS DbOrderInfo) AS LOGIC
                 BEGIN LOCK SELF
                     RETURN SELF:_CloseAllIndexes(orderInfo, FALSE)
                 END LOCK
                 
             VIRTUAL METHOD OrderListFocus(orderInfo AS DbOrderInfo) AS LOGIC
-            
                 BEGIN LOCK SELF
                     SELF:GoCold()
                     RETURN SELF:_indexList:Focus(orderInfo)
@@ -83,6 +83,12 @@ BEGIN NAMESPACE XSharp.RDD
                 
             VIRTUAL METHOD OrderListRebuild() AS LOGIC
                 BEGIN LOCK SELF
+                    IF SELF:Shared 
+                        // Error !! Cannot be written !
+                        SELF:_DbfError( ERDD.SHARED, XSharp.Gencode.EG_SHARED )
+                        RETURN FALSE
+                    ENDIF
+                    
                     SELF:GoCold()
                     RETURN SELF:_indexList:Rebuild()
                 END LOCK
@@ -101,172 +107,176 @@ BEGIN NAMESPACE XSharp.RDD
                 
                 BEGIN SWITCH nOrdinal
             CASE DBOI_CONDITION
-                IF workOrder != NULL
-                    info:Result := workOrder:Condition
+                    IF workOrder != NULL
+                        info:Result := workOrder:Condition
                 ENDIF
             CASE DBOI_EXPRESSION
-                IF workOrder != NULL
-			        info:Result := workOrder:Expression
-        	    ENDIF
+                    IF workOrder != NULL
+                        info:Result := workOrder:Expression
+                ENDIF
             CASE DBOI_ORDERCOUNT
                 info:Result := SELF:_indexList:Count
             CASE DBOI_POSITION
-                IF workOrder == NULL
-                    info:Result := SELF:RecNo
-                ELSE
-                    isOk := workOrder:_getRecPos( REF result)
-                    IF isOk
-                        info:Result := result
-                    ENDIF
+                    IF workOrder == NULL
+                        info:Result := SELF:RecNo
+                    ELSE
+                        isOk := workOrder:_getRecPos( REF result)
+                        IF isOk
+                            info:Result := result
+                        ENDIF
                 ENDIF
             CASE DBOI_KEYCOUNT
-                result := 0
-                IF workOrder != NULL
-                    info:Result := 0
-                    isOk := workOrder:_CountRecords(REF result)
-                ELSE
-                    isOk := TRUE
-                ENDIF
-                IF isOk
-                    info:Result := result
+                    result := 0
+                    IF workOrder != NULL
+                        info:Result := 0
+                        isOk := workOrder:_CountRecords(REF result)
+                    ELSE
+                        isOk := TRUE
+                    ENDIF
+                    IF isOk
+                        info:Result := result
                 ENDIF
             CASE DBOI_NUMBER
                 info:Result := SELF:_indexList:OrderPos(workOrder)
             CASE DBOI_BAGEXT
-                // according to the docs this should always return the default extension and not the actual extension
+                    // according to the docs this should always return the default extension and not the actual extension
                 info:Result := CdxOrderBag.CDX_EXTENSION
             CASE DBOI_FULLPATH
-                IF workOrder != NULL
-                    info:Result := workOrder:OrderBag:FullPath
-                ELSE
-                    info:Result := ""
+                    IF workOrder != NULL
+                        info:Result := workOrder:OrderBag:FullPath
+                    ELSE
+                        info:Result := ""
                 ENDIF
             CASE DBOI_BAGNAME
-                IF workOrder != NULL
-                    info:Result := workOrder:FileName
-                ELSE
-                    info:Result := ""
+                    IF workOrder != NULL
+                        info:Result := workOrder:FileName
+                    ELSE
+                        info:Result := ""
                 ENDIF
             CASE DBOI_NAME
-                IF workOrder != NULL
-                    info:Result := workOrder:_orderName
-                ELSE
-                    info:Result := ""
+                    IF workOrder != NULL
+                        info:Result := workOrder:_orderName
+                    ELSE
+                        info:Result := ""
                 ENDIF
             CASE DBOI_FILEHANDLE
-                IF workOrder != NULL
-                    info:Result := workOrder:OrderBag:Handle
-                ELSE
-                    info:Result := IntPtr.Zero
+                    IF workOrder != NULL
+                        info:Result := workOrder:OrderBag:Handle
+                    ELSE
+                        info:Result := IntPtr.Zero
                 ENDIF
             CASE DBOI_ISDESC
-                IF workOrder != NULL
-                    info:Result := workOrder:Descending
-                ELSE
-                    info:Result := FALSE
+                    IF workOrder != NULL
+                        VAR oldValue  := workOrder:Descending
+                        IF info:Result IS LOGIC descend
+                            workOrder:Descending := descend
+                        ENDIF
+			info:Result := oldValue
+                    ELSE
+                        info:Result := FALSE
                 ENDIF
             CASE DBOI_ISCOND
-                IF workOrder != NULL
-				    info:Result := workOrder:Conditional
-                ELSE
-                    info:Result := FALSE
+                    IF workOrder != NULL
+                        info:Result := workOrder:Conditional
+                    ELSE
+                        info:Result := FALSE
                 ENDIF
             CASE DBOI_KEYTYPE
-                IF workOrder != NULL
-                    info:Result := workOrder:KeyType
-                ELSE
-                    info:Result := 0
+                    IF workOrder != NULL
+                        info:Result := workOrder:KeyType
+                    ELSE
+                        info:Result := 0
                 ENDIF
             CASE DBOI_KEYSIZE
-                IF workOrder != NULL
-                    info:Result := workOrder:KeyLength
-                ELSE
-                    info:Result := 0
+                    IF workOrder != NULL
+                        info:Result := workOrder:KeyLength
+                    ELSE
+                        info:Result := 0
                 ENDIF
             CASE DBOI_KEYDEC
-			    info:Result := 0
+                info:Result := 0
             CASE DBOI_UNIQUE
-                IF workOrder != NULL
-                    info:Result := workOrder:Unique
-                ELSE
-                    info:Result := FALSE
+                    IF workOrder != NULL
+                        info:Result := workOrder:Unique
+                    ELSE
+                        info:Result := FALSE
                 ENDIF
             CASE DBOI_LOCKOFFSET
-                IF workOrder != NULL
-                    info:Result := workOrder:OrderBag:_lockOffset
-                ELSE
-                    info:Result := 0
+                    IF workOrder != NULL
+                        info:Result := workOrder:OrderBag:_lockOffset
+                    ELSE
+                        info:Result := 0
                 ENDIF
             CASE DBOI_SETCODEBLOCK
-                IF workOrder != NULL
-					info:Result := workOrder:KeyCodeBlock
-				ENDIF
+                    IF workOrder != NULL
+                        info:Result := workOrder:KeyCodeBlock
+                ENDIF
             CASE DBOI_KEYVAL
-                IF workOrder != NULL
-                    isOk := TRUE
-                    TRY
-					    info:Result := SELF:EvalBlock(workOrder:KeyCodeBlock)
-                    CATCH ex AS Exception
-                        isOk := FALSE
-                        SELF:_dbfError(ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBFCDX.OrderInfo")
-                    END TRY
-                    IF !isOk
+                    IF workOrder != NULL
+                        isOk := TRUE
+                        TRY
+                            info:Result := SELF:EvalBlock(workOrder:KeyCodeBlock)
+                        CATCH ex AS Exception
+                            isOk := FALSE
+                            SELF:_dbfError(ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBFCDX.OrderInfo")
+                        END TRY
+                        IF !isOk
+                            info:Result := NULL
+                        ENDIF
+                    ELSE
                         info:Result := NULL
-                    ENDIF
-                ELSE
-                    info:Result := NULL
                 ENDIF
             CASE DBOI_SCOPETOPCLEAR
             CASE DBOI_SCOPEBOTTOMCLEAR
-            	IF workOrder != NULL
-                	workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
-                ENDIF
-                    info:Result := NULL
-            CASE DBOI_SCOPETOP
-            CASE DBOI_SCOPEBOTTOM
-                IF workOrder != NULL
-                    IF info:Result != NULL
+                    IF workOrder != NULL
                         workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
                     ENDIF
-                    IF nOrdinal == DBOI_SCOPETOP
-					    info:Result := workOrder:TopScope
-                    ELSEIF nOrdinal == DBOI_SCOPEBOTTOM
-                        info:Result := workOrder:BottomScope
-                    ENDIF
-                ELSE
-                    info:Result := NULL
+                info:Result := NULL
+        CASE DBOI_SCOPETOP
+            CASE DBOI_SCOPEBOTTOM
+                    IF workOrder != NULL
+                        IF info:Result != NULL
+                            workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
+                        ENDIF
+                        IF nOrdinal == DBOI_SCOPETOP
+                            info:Result := workOrder:TopScope
+                        ELSEIF nOrdinal == DBOI_SCOPEBOTTOM
+                            info:Result := workOrder:BottomScope
+                        ENDIF
+                    ELSE
+                        info:Result := NULL
                 ENDIF
             CASE DBOI_KEYADD
-                IF workOrder != NULL
-                    info:Result := workOrder:AddKey(SELF:Recno)
-                ELSE
-                    info:Result := FALSE
+                    IF workOrder != NULL
+                        info:Result := workOrder:AddKey(SELF:Recno)
+                    ELSE
+                        info:Result := FALSE
                 ENDIF
             CASE DBOI_KEYDELETE
-                IF workOrder != NULL
-                    info:Result := workOrder:DeleteKey(SELF:Recno)
-                ELSE
-                    info:Result := FALSE
+                    IF workOrder != NULL
+                        info:Result := workOrder:DeleteKey(SELF:Recno)
+                    ELSE
+                        info:Result := FALSE
                 ENDIF
             CASE DBOI_CUSTOM
-                IF workOrder != NULL
-                    LOCAL lOld AS LOGIC
-                    lOld := workOrder:Custom
-                    IF info:Result IS LOGIC custom
-                        IF custom
-                            workOrder:SetCustom()
+                    IF workOrder != NULL
+                        LOCAL lOld AS LOGIC
+                        lOld := workOrder:Custom
+                        IF info:Result IS LOGIC custom
+                            IF custom
+                                workOrder:SetCustom()
+                            ENDIF
                         ENDIF
+                        info:Result := lOld
+                    ELSE
+                        info:Result := FALSE
                     ENDIF
-                    info:Result := lOld
-                ELSE
-                    info:Result := FALSE
-                ENDIF
- 
+                    
             CASE DBOI_USER + 42
-                // Dump Cdx to Txt file
-                IF workOrder != NULL
-                    workOrder:_dump()
-                ENDIF
+                    // Dump Cdx to Txt file
+                    IF workOrder != NULL
+                        workOrder:_dump()
+                    ENDIF
                     
             OTHERWISE
                 SUPER:OrderInfo(nOrdinal, info)
@@ -274,7 +284,38 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN info:Result
             
             #endregion
+        #region relations
+        METHOD ForceRel() AS LOGIC
+         	LOCAL isOk    := TRUE AS LOGIC
+			IF SELF:_RelInfoPending != NULL
+				// Save the current context
+				LOCAL currentRelation := SELF:_RelInfoPending AS DbRelInfo
+				SELF:_RelInfoPending := NULL
+                VAR oParent := (DBF) currentRelation:Parent 
+                IF oParent:_EOF
+				    //
+				    isOk := SELF:Goto( 0 )
+                ELSE
+ 				    isOk := SELF:RelEval( currentRelation )
 
+				    IF isOk .AND. !((DBF)currentRelation:Parent):_Eof
+					    TRY
+                            LOCAL seekInfo AS DBSEEKINFO
+                            seekInfo := DbSeekInfo{}
+                            seekInfo:Value := SELF:_EvalResult
+                            seekInfo:SoftSeek := FALSE
+                            isOk := SELF:Seek(seekInfo)
+                            
+					    CATCH ex AS InvalidCastException
+                            SELF:_dbfError(ex, SubCodes.ERDD_DATATYPE,GenCode.EG_DATATYPE,  "DBFNTX.ForceRel") 
+
+					    END TRY
+				    ENDIF
+                ENDIF
+			ENDIF
+   
+        RETURN isOk
+        #endregion
         #region Pack, Zap
         METHOD Pack() AS LOGIC
             LOCAL isOk AS LOGIC
@@ -297,12 +338,13 @@ BEGIN NAMESPACE XSharp.RDD
         PUBLIC OVERRIDE METHOD Close() AS LOGIC
             LOCAL orderInfo AS DbOrderInfo
             BEGIN LOCK SELF
+                SELF:GoCold()
                 orderInfo := DbOrderInfo{}
                 orderInfo:AllTags := TRUE
                 SELF:_CloseAllIndexes(orderInfo, TRUE)
                 RETURN SUPER:Close()
             END LOCK
-
+            
         PUBLIC OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
             
@@ -321,7 +363,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL lOk AS LOGIC
             lOk := SUPER:Open(info)
             IF lOk
-                
+                // Open strucural index
                 IF RuntimeState.AutoOpen
                     VAR cCdxFileName := System.IO.Path.ChangeExtension(info:FileName, ".CDX")
                     IF System.IO.File.Exists(cCdxFileName)
@@ -409,7 +451,10 @@ BEGIN NAMESPACE XSharp.RDD
                 IF !SELF:IsHot 
                     RETURN isOk
                 ENDIF
-                isOk := SELF:_indexList:GoCold()
+                isOk := SUPER:GoCold()
+                SELF:IsHot := TRUE
+                isOk := SELF:_indexList:GoCold() .AND. isOk
+                SELF:IsHot := FALSE
                 IF !isOk
                     RETURN isOk
                 ENDIF
@@ -434,7 +479,7 @@ BEGIN NAMESPACE XSharp.RDD
             isOk := TRUE
             BEGIN LOCK SELF
                 isOk := SUPER:Flush()
-                RETURN SELF:_indexList:Flush()
+                RETURN SELF:_indexList:Flush() .AND. isOk
             END LOCK
             
         #ENDREGION

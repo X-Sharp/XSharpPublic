@@ -1644,7 +1644,6 @@ ACCESS Position AS LONGINT STRICT
 	LOCAL nBlock, nUnit, nSBType, nPage AS LONG
 	LOCAL nMin, nMax AS LONG
 	LOCAL dwType AS DWORD
-	LOCAL fOk AS LOGIC
 	LOCAL lSlider AS LOGIC
 
 	oSB := SELF:ScrollBar
@@ -1660,7 +1659,7 @@ ACCESS Position AS LONGINT STRICT
 		nSBType := oSB:__Type
 		IF hHandle != NULL_PTR
 			strucScrollInfo:fMask  := SIF_ALL //_OR(SIF_PAGE, SIF_POS, SIF_TRACKPOS)
-			fOk     := GetScrollInfo(hHandle, nSBType, @strucScrollInfo )
+			GetScrollInfo(hHandle, nSBType, @strucScrollInfo )
 	      nPage   := INT(_CAST, strucScrollInfo:nPage)
 		ENDIF               
 		nMin   := oRange:Min
@@ -1680,7 +1679,7 @@ ACCESS Position AS LONGINT STRICT
 			ENDIF
 		ENDIF
 		strucScrollInfo:fMask := SIF_ALL // _OR(SIF_RANGE, SIF_PAGE, SIF_POS, SIF_TRACKPOS)
-		fOk     := GetScrollInfo(hHandle, nSBType, @strucScrollInfo )
+		GetScrollInfo(hHandle, nSBType, @strucScrollInfo )
 		nMin    := strucScrollInfo:nMin 
 		nMax    := strucScrollInfo:nMax 
 	ENDIF

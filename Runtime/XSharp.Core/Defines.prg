@@ -8,30 +8,41 @@
 //
 // subscripts for Directory() array
 //
-/// <summary>Position in DbStruct and DbCreate sub-array for fileName (as a string).</summary>
-/// <seealso cref="M:XSharp.RT.Functions.DbStruct">DbStruct function</seealso>
-/// <seealso cref="M:XSharp.RT.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">DbCreate Function</seealso>
+/// <summary>Position in Directory() sub-array for fileName (as a string).</summary>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
 DEFINE F_NAME  := 1
-/// <summary>Position in DbStruct and DbCreate sub-array for filesize(as a numeric).</summary>
-/// <seealso cref="M:XSharp.RT.Functions.DbStruct">DbStruct function</seealso>
-/// <seealso cref="M:XSharp.RT.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">DbCreate Function</seealso>
+/// <summary>Position in Directory() sub-array for filesize(as a numeric).</summary>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
 DEFINE F_SIZE  := 2
-/// <summary>Position in DbStruct and DbCreate sub-array for file date(as a date).</summary>
-/// <seealso cref="M:XSharp.RT.Functions.DbStruct">DbStruct function</seealso>
-/// <seealso cref="M:XSharp.RT.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">DbCreate Function</seealso>
+/// <summary>Position in Directory() sub-array for last file write date(as a date).</summary>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
 DEFINE F_DATE  := 3
-/// <summary>Position in DbStruct and DbCreate sub-array for file time(as a string).</summary>
-/// <seealso cref="M:XSharp.RT.Functions.DbStruct">DbStruct function</seealso>
-/// <seealso cref="M:XSharp.RT.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">DbCreate Function</seealso>
+/// <summary>Position in Directory() sub-array for last file write time(as a string).</summary>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
 DEFINE F_TIME  := 4
-/// <summary>Position in DbStruct and DbCreate sub-array for file attributes(as a string).</summary>
-/// <seealso cref="M:XSharp.RT.Functions.DbStruct">DbStruct function</seealso>
-/// <seealso cref="M:XSharp.RT.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">DbCreate Function</seealso>
+/// <summary>Position in Directory() sub-array for file attributes(as a number).</summary>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
 DEFINE F_ATTR  := 5
-/// <summary>Length of DbStruct and DbCreate sub-array.</summary>
-/// <seealso cref="M:XSharp.RT.Functions.DbStruct">DbStruct function</seealso>
-/// <seealso cref="M:XSharp.RT.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">DbCreate Function</seealso>
-DEFINE F_LEN   := 5   // length of array
+/// <summary>Position in Directory() sub-array for Size of extended attributes(as a string).</summary>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
+DEFINE F_EA_SIZE := 6
+/// <summary>Position in Directory() sub-array for creation date(as a date).</summary>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
+DEFINE F_CREATION_DATE := 7
+/// <summary>Position in Directory() sub-array for creation time(as a string).</summary>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
+DEFINE F_CREATION_TIME := 8
+/// <summary>Position in Directory() sub-array for last access date(as a date).</summary>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
+DEFINE F_ACCESS_DATE := 9
+/// <summary>Position in Directory() sub-array for last access time(as a string).</summary>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
+DEFINE F_ACCESS_TIME := 10
+/// <summary>Length of Directory() sub-array.</summary>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
+DEFINE F_LEN   := 10   // length of
+
+
 
 
 //
@@ -61,21 +72,9 @@ DEFINE TICK_FREQUENCY   :=    18.20647  // ticks per second
 //
 
 DEFINE ASC_BELL   :=     7    // Bell
-DEFINE ASC_BS     :=     8    // BackSpace
 DEFINE ASC_TAB    :=     9    // Tab
-DEFINE ASC_LF     :=    10    // LineFeed
-DEFINE ASC_FF     :=    12    // FormFeed
-DEFINE ASC_CR     :=    13    // CarriageReturn
 DEFINE ASC_SOFT_CR :=   141      // softCarriageReturn
 DEFINE ASC_EOF    :=    26    // EndOfFile
-DEFINE ASC_ESC    :=    27    // Escape
-DEFINE ASC_BLANK  :=    32
-DEFINE ASC_0      :=    48
-DEFINE ASC_1      :=    49
-DEFINE ASC_9      :=    57
-DEFINE ASC_A      :=    65
-DEFINE ASC_Z      :=    90
 #ifndef CRLF
 DEFINE	 CRLF       := e"\r\n"
 #endif
-//DEFINE INI_GROUP_RUNTIME :=   "CA-Visual Objects"

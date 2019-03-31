@@ -180,8 +180,8 @@ METHOD MCISendMessage(dwMsg, wParam, lParam)
 		RETURN 0L
 	ENDIF
 
-	Default(@wParam, 0)
-	Default(@lParam, 0)
+	DEFAULT(@wParam, 0)
+	DEFAULT(@lParam, 0)
 
 	uMsg := dwMsg
 	wPar := wParam
@@ -202,13 +202,10 @@ ASSIGN MinorType(sNewType)
 	RETURN (sMinorType := Lower(sNewType))
 
 ASSIGN Size(oNewDim) 
-	LOCAL uRet AS USUAL
-
-	uRet := SUPER:Size := oNewDim
-
+	SUPER:Size := oNewDim
 	SELF:__ResizeMCIWnd()
-
 	RETURN 
+
 END CLASS
 
 FUNCTION __LoadMSVFWDll()

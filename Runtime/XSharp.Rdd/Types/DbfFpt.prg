@@ -199,7 +199,6 @@ BEGIN NAMESPACE XSharp.RDD
                     FSeek3( SELF:_hFile, iOffset, FS_SET )
                     // 
                     FRead3( SELF:_hFile, blockInfo, (DWORD) blockInfo:Length )
-                    VAR memoType := FoxToLong(blockInfo, 0)
                     blockLen     := FoxToLong(blockInfo,4)
                     // The raw length include the 8 Bytes included in the Memo Block
                 ENDIF

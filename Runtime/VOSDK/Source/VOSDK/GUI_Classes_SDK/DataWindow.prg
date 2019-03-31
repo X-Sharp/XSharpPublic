@@ -1947,7 +1947,7 @@ CONSTRUCTOR(oOwner, oSource, nResourceID, nDialogStyle)
 	LOCAL oResID AS ResourceID
 	LOCAL oObject AS OBJECT
 	
-	Default(@oOwner, GetAppObject())
+	DEFAULT(@oOwner, GetAppObject())
 	//SE-070906
 	IF IsLong(nDialogStyle)
 	   dwDialogStyle := nDialogStyle
@@ -1968,7 +1968,7 @@ CONSTRUCTOR(oOwner, oSource, nResourceID, nDialogStyle)
 			SUPER(oOwner, TRUE)
 		ELSEIF IsInstanceOf(oObject, #DataWindow) // .or. IsInstanceOf(oObject, #ToolBar)
 			// Create sub form if wr're a regular DataWindow
-			Default(@nResourceID, 0)
+			DEFAULT(@nResourceID, 0)
 			lSubForm := (dwDialogStyle = 0)
 			SUPER(oOwner, FALSE, FALSE)
 		ELSEIF IsInstanceOf(oObject, #ChildAppWindow)
@@ -2911,9 +2911,9 @@ METHOD VerticalSpin(oSpinEvent)
 
 METHOD ViewAs(symViewType) 
 	LOCAL oTextBox AS TextBox
+#ifdef USE_OLEOBJECT	
 	LOCAL iLen AS INT
 	LOCAL aObjects AS ARRAY
-#ifdef USE_OLEOBJECT	
 	LOCAL oOleObj AS OleObject
 #endif	
     LOCAL oControl AS Control
@@ -2956,9 +2956,9 @@ METHOD ViewAs(symViewType)
 		// flush changes to form so they are reflected in browser
 		TRY
 			sCurrentView := #ViewSwitch
+#ifdef USE_OLEOBJECT
 			aObjects := SELF:__GetMyOleObjects()
 			iLen 		:= LONGINT(ALen(aObjects))
-#ifdef USE_OLEOBJECT
 			LOCAL i AS INT
 			FOR i:=1 TO iLen
 				oOleObj := aObjects[i]

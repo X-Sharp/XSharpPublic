@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -9,7 +9,7 @@ USING System.Globalization
 /// <summary>
 /// Convert a string containing a 32-bit binary Date to a Date data type.
 /// </summary>
-/// <param name="cString">A 32-bit binary date represented as a string — least significant byte first.  Only the first 4 bytes are used by the function; all others are ignored. </param>
+/// <param name="cString">A 32-bit binary date represented as a string ? least significant byte first.  Only the first 4 bytes are used by the function; all others are ignored. </param>
 /// <returns>A date value that corresponds to the date specified in cString.  If cString is not a valid binary date, Bin2Date() returns a NULL_DATE.
 /// </returns>
 FUNCTION Bin2Date(cString AS STRING) AS DATE
@@ -152,8 +152,10 @@ FUNCTION DToS(dDate AS DATE) AS STRING
 FUNCTION JCDOW(d AS DATE) AS STRING
 	LOCAL dt := d AS DateTime
 	LOCAL cal := JapaneseCalendar{} AS JapaneseCalendar
+    LOCAL dow := cal:GetDayOfWeek(dt) AS DayOfWeek
 	LOCAL culture := System.Globalization.CultureInfo.GetCultureInfo("ja-JP") AS CultureInfo
-	RETURN culture:DateTimeFormat:GetDayName(dt:DayOfWeek)
+	RETURN culture:DateTimeFormat:GetDayName(dow)
+    
 
 /// <summary>
 /// </summary>

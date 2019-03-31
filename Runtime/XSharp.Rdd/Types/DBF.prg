@@ -168,7 +168,10 @@ BEGIN NAMESPACE XSharp.RDD
 			END LOCK
 			RETURN result
 			
-			
+        /// <inheritdoc />
+        METHOD SetFilter(info AS DbFilterInfo) AS LOGIC
+            SELF:ForceRel()
+            RETURN SUPER:SetFilter(info)			
 			
 			/// <inheritdoc />
 		METHOD Skip(nToSkip AS INT) AS LOGIC
@@ -299,7 +302,7 @@ BEGIN NAMESPACE XSharp.RDD
 			// LockMethod.Multiple  : Loc the indicated record
 		METHOD Lock( lockInfo REF DbLockInfo ) AS LOGIC
 			LOCAL isOk AS LOGIC
-			//
+			SELF:ForceRel()
 			BEGIN LOCK SELF
 				IF ( lockInfo:@@METHOD == DbLockInfo.LockMethod.Exclusive ) .OR. ;
 				( lockInfo:@@METHOD == DbLockInfo.LockMethod.Multiple )
@@ -556,7 +559,7 @@ BEGIN NAMESPACE XSharp.RDD
 			// Un Delete the curretn Record
 		METHOD Recall() AS LOGIC
 			LOCAL isOk AS LOGIC
-			//
+			SELF:ForceRel()
 			isOk := SELF:_readRecord()
 			IF isOk
 				SELF:_RecordBuffer[ 0 ] := (BYTE)' '
@@ -573,7 +576,7 @@ BEGIN NAMESPACE XSharp.RDD
 			// Mark the current record as DELETED
 		METHOD Delete() AS LOGIC
 			LOCAL isOk AS LOGIC
-			//
+			SELF:ForceRel()
 			BEGIN LOCK SELF
 				isOk := SELF:_readRecord()
 				IF isOk
@@ -595,6 +598,7 @@ BEGIN NAMESPACE XSharp.RDD
 			// Retrieve the raw content of a record
 		METHOD GetRec() AS BYTE[]
 			LOCAL records := NULL AS BYTE[]
+            SELF:ForceRel()
 			// Read Record to Buffer
 			BEGIN LOCK SELF
 				IF SELF:_readRecord()
@@ -1067,6 +1071,7 @@ BEGIN NAMESPACE XSharp.RDD
 		METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
 			SELF:_HasMemo := FALSE
 			RETURN SUPER:SetFieldExtent(fieldCount)
+
 			
 			// Add a Field to the _Fields List. Fields are added in the order of method call
 			/// <inheritdoc />
@@ -1584,6 +1589,7 @@ BEGIN NAMESPACE XSharp.RDD
 		INTERNAL METHOD _getMemoBlockNumber( nFldPos AS LONG ) AS LONG
 			LOCAL blockNbr := 0 AS LONG
 			//
+            SELF:ForceRel()
 			IF SELF:_isMemoField( nFldPos )
 				//
 				IF SELF:_readRecord()
@@ -1614,6 +1620,7 @@ BEGIN NAMESPACE XSharp.RDD
 		METHOD GetValue(nFldPos AS LONG) AS OBJECT
 			LOCAL ret := NULL AS OBJECT
 			LOCAL nArrPos := nFldPos AS LONG
+            SELF:ForceRel()
 			IF __ARRAYBASE__ == 0
 				nArrPos -= 1
 			ENDIF
@@ -1644,17 +1651,19 @@ BEGIN NAMESPACE XSharp.RDD
 			
 		/// <inheritdoc />
 		METHOD GetValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
+            SELF:ForceRel()
 			IF _oMemo != NULL
 				RETURN _oMemo:GetValueFile(nFldPos, fileName)
-				ELSE
+			ELSE
 				RETURN SUPER:GetValueFile(nFldPos, fileName)
 			ENDIF
 			
 		/// <inheritdoc />
 		METHOD GetValueLength(nFldPos AS LONG) AS LONG
+            SELF:ForceRel()
 			IF _oMemo != NULL
 				RETURN _oMemo:GetValueLength(nFldPos)
-				ELSE
+			ELSE
 				RETURN SUPER:GetValueLength(nFldPos)
 			ENDIF
 			
@@ -1721,12 +1730,13 @@ BEGIN NAMESPACE XSharp.RDD
 			ENDIF
 			RETURN ret
 			
-		PROPERTY IsHot AS LOGIC GET SELF:_Hot
+		PROPERTY IsHot AS LOGIC GET SELF:_Hot SET SELF:_Hot := VALUE
 		PROPERTY IsNewRecord AS LOGIC GET SELF:_NewRecord
 		
 		/// <inheritdoc />
 		METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
 			LOCAL nArrPos := nFldPos AS LONG
+            SELF:ForceRel()
 			IF __ARRAYBASE__ == 0
 				nArrPos -= 1
 			ENDIF
@@ -2096,7 +2106,9 @@ BEGIN NAMESPACE XSharp.RDD
             ELSE
                 nNewRec := SELF:Recno
 			ENDIF
+            
             // Some operations require the new record te be selected
+            SELF:ForceRel()
           IF nNewRec != 0
               SWITCH nOrdinal
                 CASE DBRI_DELETED
@@ -2273,7 +2285,6 @@ BEGIN NAMESPACE XSharp.RDD
 		PROPERTY Deleted 	AS LOGIC 
 			GET
 				SELF:ForceRel()
-				// Update ?
 				SELF:_readRecord()
 				RETURN SELF:_Deleted
 			END GET
@@ -2711,12 +2722,10 @@ BEGIN NAMESPACE XSharp.RDD
 	INTERNAL CLASS DBFSortCompare IMPLEMENTS IComparer<SortRecord>
 	
 		PRIVATE _sortInfo AS DBSORTINFO
-		PRIVATE _oRdd AS DBF
         PRIVATE _dataX AS BYTE[]
         PRIVATE _dataY AS BYTE[]
 		
 		INTERNAL CONSTRUCTOR( rdd AS DBF, info AS DBSORTINFO )
-			SELF:_oRdd      := rdd
 			SELF:_sortInfo  := info
             LOCAL max       := 0 AS INT
             FOREACH VAR item IN info:Items

@@ -38,6 +38,9 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             ENDIF
             buffer  := SELF:_bag:AllocBuffer()
             isOk    := SELF:_bag:Read(nPage, buffer)
+            IF ! isOk
+                RETURN NULL
+            endif
 			//
             // Inspect first 2 byte and determine the page
             LOCAL nType AS SHORT

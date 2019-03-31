@@ -297,7 +297,7 @@ METHOD __Unlink(oDataServer := NIL AS USUAL) AS Control STRICT
 	ENDIF
 	
 	//PP-030909 Bug BF 021206. See datawin:__unlink()
-	Default(@oDataServer,oServer)
+	DEFAULT(@oDataServer,oServer)
 	
 	// Do actual unlinking
 	IF IsNil(oDataServer)
@@ -398,7 +398,6 @@ ACCESS Background
 	RETURN oControlBackground
 
 ASSIGN Background(oNewBrush) 
-	LOCAL oOld AS Brush
 	
 	IF !IsNil(oNewBrush)
 		IF !IsInstanceOfUsual(oNewBrush,#Brush)
@@ -406,7 +405,6 @@ ASSIGN Background(oNewBrush)
 		ENDIF
 	ENDIF
 	
-	oOld := oControlBackground
 	oControlBackground := oNewBrush
 	
 	//2.5c otherwise Desktop invalidation!

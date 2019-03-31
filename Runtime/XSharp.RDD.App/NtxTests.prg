@@ -1,4 +1,4 @@
-﻿// NtxTests.prg
+// NtxTests.prg
 // Created by    : fabri
 // Creation Date : 10/19/2018 12:01:38 PM
 // Created for   : 
@@ -25,7 +25,7 @@ CLASS NtxTests
 			LOCAL myDBF AS DbfNtx
 			myDBF := DbfNtx{}
 			
-			VAR success := myDBF:Open( dbInfo ) 
+			myDBF:Open( dbInfo ) 
 			// WE HAVE TO SET THE WORKAREA INFO !!!!
 			LOCAL area  := 0    AS DWORD
 			area  := RuntimeState.Workareas:FindEmptyArea(TRUE)
@@ -49,7 +49,7 @@ CLASS NtxTests
 			myDBF:Skip( 0 )
 			oData2 := myDBF:GetValue( 1 )
 			//
-			//Assert.Equal( oData1, oData2 )
+			Assert.Equals( oData1, oData2 )
 			//
 			RuntimeState.Workareas:CloseArea( area )
 

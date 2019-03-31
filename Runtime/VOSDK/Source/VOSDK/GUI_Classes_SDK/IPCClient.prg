@@ -17,7 +17,7 @@ CLASS IpcClient INHERIT EventContext
 	//PP-030828 Strong typing
 	
 
-	oIpcDataUpdateEvent := IpcDataUpdateEvent{NULL_Ptr,0,NULL_Ptr, hTopicHstr, hItemHstr, hData, 0, 0, SELF}
+	oIpcDataUpdateEvent := IpcDataUpdateEvent{NULL_PTR,0,NULL_PTR, hTopicHstr, hItemHstr, hData, 0, 0, SELF}
 	SELF:DataUpdate(oIpcDataUpdateEvent)
 	RETURN
 
@@ -101,8 +101,8 @@ METHOD Destroy()
 	IF !InCollect()
 		dwIdInst := 0
 		hServHstr := 0
-		oIpcDataUpdateEvent := NULL_Object
-		oIpcClientErrorEvent := NULL_Object
+		oIpcDataUpdateEvent := NULL_OBJECT
+		oIpcClientErrorEvent := NULL_OBJECT
 		UnregisterAxit(SELF)
 	ENDIF
 	SUPER:Destroy()
@@ -200,8 +200,7 @@ METHOD RequestData(oIpcTopic, continuous)
 	LOCAL cTopicName AS STRING
 	LOCAL cItemName AS STRING
 	LOCAL hData AS PTR
-	LOCAL dwErrorCode AS DWORD
-
+    LOCAL dwErrorCode AS DWORD
 	
 
 	cTopicName := oIpcTopic:cTopicName
@@ -224,7 +223,7 @@ METHOD RequestData(oIpcTopic, continuous)
 			ENDIF
 
 			IF continuous
-				hData := DdeClientTransaction(NULL_PTR, 0,hConv, hItemHstr, CF_TEXT, DWORD(_CAST,_or(XTYP_ADVSTART, XTYPF_ACKREQ)), MAX_WAIT, NULL_PTR)
+				hData := DdeClientTransaction(NULL_PTR, 0,hConv, hItemHstr, CF_TEXT, DWORD(_CAST,_OR(XTYP_ADVSTART, XTYPF_ACKREQ)), MAX_WAIT, NULL_PTR)
 				IF (hData = NULL_PTR)
 					dwErrorCode := DdeGetLastError(dwIdInst)
 					oIpcClientErrorEvent := IpcClientErrorEvent{IPCITEMNOTFOUND} // Item not found

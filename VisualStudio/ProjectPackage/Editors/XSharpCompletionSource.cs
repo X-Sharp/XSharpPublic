@@ -2866,7 +2866,7 @@ namespace XSharpLanguage
                     if (currentPos == 0)
                     {
                         var globType = SearchFunctionIn(currentMember.File, currentToken, out foundElement);
-                        if (foundElement != null)
+                        if ((foundElement != null) && ( foundElement.IsInitialized))
                         {
                             return globType;
                         }
@@ -2875,18 +2875,20 @@ namespace XSharpLanguage
                     {
                         // Now, search for a Method
                         cTemp = SearchMethodTypeIn(cType, currentToken, visibility, false, out foundElement);
-                        if (foundElement == null)
+                        if ((foundElement != null) && (foundElement.IsInitialized))
+                        {
+                            cType = cTemp;
+                        }
+                        else
                         {
                             cType = new CompletionType();
                         }
-                        else
-                            cType = cTemp;
                     }
                     if (cType.IsEmpty())
                     {
                         // check to see if this is a method from the Object Type, such as ToString().
                         cTemp = SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, visibility, false, out foundElement);
-                        if (foundElement != null)
+                        if ((foundElement != null) && (foundElement.IsInitialized))
                         {
                             cType = cTemp;
                         }
@@ -2915,7 +2917,7 @@ namespace XSharpLanguage
                     {
                         // Search in Parameters, Locals, Field and Properties
                         foundElement = FindIdentifier(currentMember, currentToken, ref cType, visibility, currentNS, snapshot, currentLine);
-                        if (foundElement != null)
+                        if ((foundElement != null) && (foundElement.IsInitialized))
                         {
                             cType = foundElement.ReturnType;
                         }
@@ -2933,7 +2935,7 @@ namespace XSharpLanguage
                         cType = SearchType(file, currentToken, out foundElement, currentNS);
                     }
                     // We have it
-                    if (foundElement != null)
+                    if ((foundElement != null) && (foundElement.IsInitialized))
                     {
                         // and we are in an Array, so we need the "other" type
                         if (inArray)

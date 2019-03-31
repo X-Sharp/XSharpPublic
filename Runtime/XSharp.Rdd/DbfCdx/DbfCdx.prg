@@ -40,10 +40,11 @@ BEGIN NAMESPACE XSharp.RDD
                     fullPath := orderInfo:BagName
                     IF File(fullPath)
                         fullPath := FPathName()
-                    ELSEIF ! String.IsNullOrEmpty(Path.GetExtension(fullPath)) 
+                    ELSEIF String.IsNullOrEmpty(Path.GetExtension(fullPath)) 
                         fullPath := Path.ChangeExtension(fullPath, CdxOrderbag.CDX_EXTENSION)
                         IF File(fullPath)
                             fullPath := FPathName()
+                            orderInfo:BagName := fullPath
                         ENDIF
                     ENDIF
                     IF String.IsNullOrEmpty(System.IO.Path.GetDirectoryName(fullPath))

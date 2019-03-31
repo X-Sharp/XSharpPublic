@@ -23,7 +23,6 @@ METHOD Draw()
 	LOCAL oBMSize AS Dimension
 	LOCAL oOrg AS Point
 	LOCAL oSize AS Dimension
-	LOCAL bRes AS LOGIC
 	LOCAL hTmpDC AS PTR
 	
 	
@@ -67,7 +66,7 @@ METHOD Draw()
 		oOrg := SELF:Origin
 		oSize := SELF:Size
 		
-		bRes := StretchBlt(SELF:Handle(), oOrg:X, oOrg:Y + oSize:Height -1, oSize:Width, -(oSize:Height), hMemDC,;
+		StretchBlt(SELF:Handle(), oOrg:X, oOrg:Y + oSize:Height -1, oSize:Width, -(oSize:Height), hMemDC,;
 			0,	0, oBMSize:Width,	oBMSize:Height,	dwRop)
 		// Debug !!
 		// bRes := StretchBlt(self:Handle(), 0, 0, 500000, 500000, hMemDC,;

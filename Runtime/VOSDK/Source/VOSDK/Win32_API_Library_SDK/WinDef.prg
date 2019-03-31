@@ -29,7 +29,7 @@ VOSTRUCT _winPOINTS
 	MEMBER x AS SHORTINT
 	MEMBER y AS SHORTINT
 FUNCTION Get_Device_lParam(lParam AS DWORD) AS WORD
-	RETURN  _and(HiWord(lParam),FAPPCOMMAND_MASK)
+	RETURN  _AND(HiWord(lParam),FAPPCOMMAND_MASK)
 
 FUNCTION Get_MouseOrKey_lParam(lParam AS DWORD) AS WORD
 	RETURN Get_Device_lParam(lParam)
@@ -41,13 +41,13 @@ FUNCTION Get_KeyState_lParam(lParam AS DWORD) AS WORD
 	RETURN Get_Flags_lParam(lParam)
 
 FUNCTION Get_AppCommand_lParam(lParam AS DWORD) AS DWORD
-	RETURN _and(HiWord(lParam),_not(FAPPCOMMAND_MASK))
+	RETURN _AND(HiWord(lParam),_NOT(FAPPCOMMAND_MASK))
 
 
 
 #region defines
 #ifndef __XRUNTIME__
-DEFINE MAX_PATH          := 260
+//DEFINE MAX_PATH          := 260
 #endif
 DEFINE HFILE_ERROR := -1
 #endregion

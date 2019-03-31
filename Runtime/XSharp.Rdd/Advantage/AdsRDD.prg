@@ -359,7 +359,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     ENDIF
     SELF:_Encoding := Encoding.GetEncoding(IIF (charset == ACE.ADS_ANSI, RuntimeState.WinCodePage,RuntimeState.DosCodePage))
     LOCAL blockSize AS WORD
-    IF ACE.AdsGetMemoBlockSize(SELF:_Table, OUT blockSize) == 0
+    IF ACE.AdsGetMemoBlockSize(SELF:_Table, OUT blockSize) == 0 .AND. BlockSize > 0
       _HasMemo := TRUE
     ELSE
       _HasMemo := FALSE
@@ -874,14 +874,15 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
                 VAR cDate := STRING{chars, 0, 8}
                 IF String.IsNullOrWhiteSpace(cDate)
                     RETURN DbDate{0,0,0}
+                ELSE
+                    VAR dt := DateTime.ParseExact(cDate, "yyyyMMdd",NULL)
+                    RETURN DbDate{dt:Year, dt:Month, dt:Day}
                 ENDIF
-                VAR dt := DateTime.ParseExact(cDate, "yyyyMMdd",NULL)
-                RETURN DbDate{dt:Year, dt:Month, dt:Day}
             ENDIF
         CATCH
-            RETURN DbDate{0,0,0}
+            
         END TRY
-      
+        RETURN DbDate{0,0,0}
     OTHERWISE
       SELF:ADSERROR(ERDD_DATATYPE, EG_DATATYPE)
     END SWITCH

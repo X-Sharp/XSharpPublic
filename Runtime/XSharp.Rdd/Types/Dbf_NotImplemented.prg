@@ -88,9 +88,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN SUPER:SkipScope(nToSkip)            
             
             
-         /// <inheritdoc />
-        METHOD SetFilter(info AS DbFilterInfo) AS LOGIC
-            RETURN SUPER:SetFilter(info)
+        
          /// <inheritdoc />
         METHOD SetScope(info AS DbScopeInfo) AS LOGIC
             RETURN SUPER:SetScope(info)

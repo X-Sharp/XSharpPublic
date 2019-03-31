@@ -49,13 +49,13 @@ METHOD NoIVarGet( symFieldName )
 	#ENDIF
 	RETURN SELF:GetData( symFieldName )
 
-METHOD NoIVarPut( symFieldName,value ) 
+METHOD NoIVarPut( symFieldName,VALUE ) 
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:NoIVarPut( "+AsString( symFieldName )+" )" )
 	#ENDIF
 
-	RETURN SELF:FIELDPUT( symFieldName, value )
+	RETURN SELF:FIELDPUT( symFieldName, VALUE )
 
 
 
@@ -638,7 +638,7 @@ METHOD UpdateVal()
 	LOCAL cUpdate       AS STRING
 	LOCAL oUpdate       AS SQLStatement
 	LOCAL lRet          AS LOGIC
-	LOCAL nRecno        AS LONGINT
+	//LOCAL nRecno        AS LONGINT
 //	LOCAL nCount   := 0 AS INT
 	//RvdH 050413 Centralized building the Update Statement
 	cUpdate := SELF:__BuildUpdateStmt()
@@ -656,7 +656,7 @@ METHOD UpdateVal()
 
 	SELF:__PrepareStmtOptions( oUpdate )
 	oUpdate:SQLString := SELF:PreExecute( oUpdate:SQLString )
-	nRecno := SELF:Recno
+	//nRecno := SELF:Recno
 	lRet := oUpdate:Execute()
 
 	IF !lRet

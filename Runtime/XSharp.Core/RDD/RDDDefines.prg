@@ -27,6 +27,7 @@ DEFINE DBS_TYPE					:= DbFieldInfo.DBS_TYPE
 DEFINE DBS_LEN					:= DbFieldInfo.DBS_LEN	
 DEFINE DBS_DEC					:= DbFieldInfo.DBS_DEC	
 DEFINE DBS_ALIAS				:= DbFieldInfo.DBS_ALIAS
+DEFINE DBS_ALEN                 := 4  // XBase++ has this define
 
 DEFINE DBS_ISNULL               := DbFieldInfo.DBS_ISNULL  
 DEFINE DBS_COUNTER              := DbFieldInfo.DBS_COUNTER 

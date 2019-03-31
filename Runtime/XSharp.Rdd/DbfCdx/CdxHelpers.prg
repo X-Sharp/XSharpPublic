@@ -139,12 +139,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     [DebuggerDisplay("Stack: {Count}")];
     INTERNAL SEALED CLASS CdxPageStack
-       
-
         PRIVATE _pages AS List<CdxStackEntry>
-        PRIVATE _tag   AS CdxTag
         CONSTRUCTOR(tag AS CdxTag)
-            _tag := tag
             _pages := List<CdxStackEntry>{20}
 
         PROPERTY Count AS LONG GET _pages:Count

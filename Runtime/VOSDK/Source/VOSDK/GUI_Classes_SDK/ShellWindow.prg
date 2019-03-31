@@ -588,14 +588,8 @@ METHOD Resize(oResizeEvent)
 	
 
 ASSIGN StatusBar(oNewBar) 
-	LOCAL uRet AS USUAL
-	
-	
-	
-	uRet := (SUPER:StatusBar := oNewBar)
-	
+    SUPER:StatusBar := oNewBar
 	SELF:__AdjustClient()
-	
 	RETURN 
 	
 

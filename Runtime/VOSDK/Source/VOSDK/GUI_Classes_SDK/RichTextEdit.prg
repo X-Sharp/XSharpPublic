@@ -25,7 +25,7 @@ ASSIGN __Value(uNewVal AS USUAL)  STRICT
 	LOCAL sVal AS STRING
 	LOCAL dwType AS DWORD
 
-	Default(@uNewVal, NULL_STRING)
+	DEFAULT(@uNewVal, NULL_STRING)
 	IF !IsString(uNewVal)
 		RETURN NULL_STRING
 	ENDIF
@@ -110,7 +110,7 @@ METHOD CanPaste(dwClipboardFormat)
 	// using the wParam to specify the format. If 0 is specified, it
 	// tries any format currently on the clipboard.
 
-	Default(@dwClipboardFormat, 0)
+	DEFAULT(@dwClipboardFormat, 0)
 	dwFormat := dwClipboardFormat
 
 	RETURN LOGIC(_CAST, SendMessage(SELF:Handle(), EM_CANPASTE, dwFormat, 0))
@@ -281,7 +281,7 @@ METHOD GetWordBreak(nCharPos, kWordBreakType)
 METHOD HideSelection(lTemporary) 
 	
 
-	Default(@lTemporary, TRUE)
+	DEFAULT(@lTemporary, TRUE)
 
 	SendMessage(SELF:Handle(), EM_HIDESELECTION, DWORD(_CAST, TRUE), LONGINT(_CAST, lTemporary))
 
@@ -332,7 +332,7 @@ METHOD LoadFromFile(cFileName, dwFormat)
 	LOCAL dwFmt AS DWORD
 
 	IF PCount() > 1     // dcaton was ArgCount() but ArgCount doesn't make any sense
-		Default(@dwFormat, SF_RTF) // tk new
+		DEFAULT(@dwFormat, SF_RTF) // tk new
 		dwFmt := dwFormat
 	ELSE
 		dwFmt := SF_RTF
@@ -594,9 +594,6 @@ ACCESS @@Protected
 
 ASSIGN @@Protected(lEnable) 
 	LOCAL strucCharFormat IS _winCHARFORMAT
-	LOCAL l AS LONGINT
-
-	
 
 	strucCharFormat:cbSize := _SIZEOF(_winCHARFORMAT)
 	strucCharFormat:dwMask := CFM_PROTECTED
@@ -605,7 +602,7 @@ ASSIGN @@Protected(lEnable)
 	ELSE
 		strucCharFormat:dwEffects := _NOT(CFE_PROTECTED)
 	ENDIF
-	l := SendMessage(SELF:Handle(), EM_SETCHARFORMAT, _OR(SCF_SELECTION, SCF_WORD), LONGINT(_CAST, @strucCharFormat))
+	SendMessage(SELF:Handle(), EM_SETCHARFORMAT, _OR(SCF_SELECTION, SCF_WORD), LONGINT(_CAST, @strucCharFormat))
 
 	RETURN 
 
@@ -708,10 +705,10 @@ METHOD Seek(cText, oRange, lMatchCase, lWholeWord, lReturnRange, lSearchUp)
 
 	
 
-   Default(@lMatchCase,   FALSE)
-	Default(@lWholeWord,   FALSE)
-	Default(@lReturnRange, FALSE)
-	Default(@lSearchUp,    FALSE)
+   DEFAULT(@lMatchCase,   FALSE)
+	DEFAULT(@lWholeWord,   FALSE)
+	DEFAULT(@lReturnRange, FALSE)
+	DEFAULT(@lSearchUp,    FALSE)
 
 	IF lSearchUp
       dwFlags := 0
@@ -809,7 +806,7 @@ METHOD SetOption(kOption, symOperation)
 
 	
 
-	Default(@symOperation, #Add)
+	DEFAULT(@symOperation, #Add)
 
 	DO CASE
 	CASE symOperation == #Change
@@ -876,7 +873,7 @@ METHOD SetTabStops(aTabStops)
 METHOD ShowSelection(lTemporary) 
 	
 
-	Default(@lTemporary, TRUE)
+	DEFAULT(@lTemporary, TRUE)
 
 	SendMessage(SELF:Handle(), EM_HIDESELECTION, DWORD(_CAST, FALSE), LONGINT(_CAST, lTemporary))
 
@@ -923,14 +920,10 @@ ACCESS TextColor
 
 ASSIGN TextColor(oColor) 
 	LOCAL strucCharFormat IS _winCHARFORMAT
-	LOCAL l AS LONGINT
-
-	
-
 	strucCharFormat:cbSize := _SIZEOF(_winCHARFORMAT)
 	strucCharFormat:dwMask := CFM_COLOR
 	strucCharFormat:crTextColor := oColor:ColorRef
-	l := SendMessage(SELF:Handle(), EM_SETCHARFORMAT, _OR(SCF_SELECTION, SCF_WORD), LONGINT(_CAST, @strucCharFormat))
+	SendMessage(SELF:Handle(), EM_SETCHARFORMAT, _OR(SCF_SELECTION, SCF_WORD), LONGINT(_CAST, @strucCharFormat))
 
 	RETURN 
 

@@ -59,6 +59,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		
 	STATIC METHOD FindClass(cName AS STRING) AS System.Type 
 	    RETURN FindClass(cName, TRUE)
+
 	STATIC METHOD FindClass(cName AS STRING, lOurAssembliesOnly AS LOGIC) AS System.Type 
 		// TOdo Optimize
 		LOCAL ret := NULL AS System.Type
@@ -522,7 +523,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		RETURN FALSE
 		
 		
-	STATIC METHOD IVarGet(oObject AS OBJECT, cIVar AS STRING, lSelf AS LOGIC) AS OBJECT
+	STATIC METHOD IVarGet(oObject AS OBJECT, cIVar AS STRING, lSelf AS LOGIC) AS USUAL
 		LOCAL t AS Type
 		t := oObject:GetType()
 		//Todo: optimization
@@ -535,7 +536,7 @@ INTERNAL STATIC CLASS OOPHelpers
             IF propInfo:GetIndexParameters():Length == 0
 			    RETURN propInfo:GetValue(oObject, NULL)
             ELSE
-                RETURN NULL
+                RETURN NIL
             ENDIF
 		ENDIF
 		LOCAL result AS USUAL
@@ -601,7 +602,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		RETURN sendHelper(oObject, mi, uArgs, OUT result)
 		
 	STATIC METHOD SendHelper(oObject AS OBJECT, mi AS MethodInfo , uArgs AS USUAL[], result OUT USUAL) AS LOGIC
-        result := NULL
+        result := NIL 
 		IF mi != NULL   
             VAR oArgs := MatchParameters(mi, uArgs) 
 			IF mi:ReturnType == typeof(USUAL)
@@ -622,6 +623,8 @@ INTERNAL STATIC CLASS OOPHelpers
 			IF toType == TYPEOF(USUAL)
 				// box the usual
                 RETURN __CASTCLASS(OBJECT, uValue)
+            ELSEIF totype == typeof(DATE) .AND. uValue:IsDateTime
+                RETURN (DATE)(DateTime) uValue
             ELSEIF uValue:IsArray .AND. totype == typeof(ARRAY)
                 RETURN (ARRAY) uValue
             ELSEIF uValue:IsObject .OR. uValue:IsCodeBlock
@@ -1178,7 +1181,7 @@ FUNCTION __InternalSend( oObject AS USUAL, cMethod AS STRING, args PARAMS USUAL[
 	RETURN OopHelpers.DoSend(oObject, cMethod, args)
 
 
-INTERNAL FUNCTION __ArrayToUsualArray (args AS ARRAY) AS USUAL[]
+FUNCTION __ArrayToUsualArray (args AS ARRAY) AS USUAL[]
 	LOCAL elements AS INT
 	LOCAL uargs    AS USUAL[]
 	LOCAL x        AS DWORD
@@ -1192,7 +1195,7 @@ INTERNAL FUNCTION __ArrayToUsualArray (args AS ARRAY) AS USUAL[]
 	RETURN uargs
 
 /// <summary>Helper function to convert ARRAY to OBJECT[]</summary>		
-INTERNAL FUNCTION __ArrayToObjectArray (args AS ARRAY) AS OBJECT[]
+FUNCTION __ArrayToObjectArray (args AS ARRAY) AS OBJECT[]
 	LOCAL elements AS INT
 	LOCAL oArgs    AS OBJECT[]
 	LOCAL x        AS DWORD
@@ -1206,7 +1209,7 @@ INTERNAL FUNCTION __ArrayToObjectArray (args AS ARRAY) AS OBJECT[]
 	RETURN oArgs
 
 /// <summary>Helper function to convert USUAL[] to OBJECT[]</summary>			
-INTERNAL FUNCTION __UsualArrayToObjectArray (args AS USUAL[]) AS OBJECT[]
+FUNCTION __UsualArrayToObjectArray (args AS USUAL[]) AS OBJECT[]
 	LOCAL elements AS INT
 	LOCAL oArgs    AS OBJECT[]
 	LOCAL x        AS DWORD
@@ -1220,7 +1223,7 @@ INTERNAL FUNCTION __UsualArrayToObjectArray (args AS USUAL[]) AS OBJECT[]
 	RETURN oArgs
 
 /// <summary>Helper function to convert OBJECT[] to USUAL[]</summary>		
-INTERNAL FUNCTION __ObjectArrayToUsualArray (args AS OBJECT[]) AS USUAL[]
+FUNCTION __ObjectArrayToUsualArray (args AS OBJECT[]) AS USUAL[]
 	LOCAL elements AS INT
 	LOCAL uArgs    AS USUAL[]
 	LOCAL x        AS DWORD

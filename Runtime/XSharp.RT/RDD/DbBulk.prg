@@ -150,7 +150,6 @@ FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aH
 /// <summary>Import records from a delimited text file.</summary>
 FUNCTION DbAppDelim(cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRest,aStruct)AS LOGIC CLIPPER
 	
-	LOCAL siFrom        AS DWORD
 	LOCAL siTo          AS DWORD
 	LOCAL siPos         AS DWORD
 	LOCAL lRetCode      AS LOGIC
@@ -183,8 +182,6 @@ FUNCTION DbAppDelim(cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRes
 		
 		DbCreate(cFile, aStruct, "DELIM", .T., __UniqueAlias(cFile), cDelim, .T.)
 		
-		siFrom := VODBGetSelect()
-		
 		IF ( !lAnsi .AND. lDbfAnsi)
 			SetAnsi(.T.)
 		ENDIF
@@ -210,7 +207,6 @@ FUNCTION DbAppSdf(cFile, aFields, uCobFor,;
 	uCobWhile, nNext, nRec, ;
 	lRest , aStruct                  )      AS LOGIC CLIPPER
 	
-	LOCAL siFrom        AS DWORD
 	LOCAL siTo          AS DWORD
 	LOCAL siPos         AS DWORD
 	LOCAL lRetCode      AS LOGIC
@@ -241,8 +237,6 @@ FUNCTION DbAppSdf(cFile, aFields, uCobFor,;
 		lDbfAnsi := DbInfo(DBI_ISANSI)
 		
 		DbCreate(cFile, aStruct, "SDF", .T., __UniqueAlias(cFile), ,.T.)
-		
-		siFrom := VODBGetSelect()
 		
 		IF ( !lAnsi .AND. lDbfAnsi )
 			SetAnsi(.T.)

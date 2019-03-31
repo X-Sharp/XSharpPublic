@@ -419,7 +419,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FALSE
             ENDIF
             SELF:_saveCurrentKey(recordNo, SELF:_newvalue)
-            VAR nRec := SELF:_locate(SELF:_newValue:Key, SELF:_keySize, SearchMode.Right, SELF:_rootPage)
+            SELF:_locate(SELF:_newValue:Key, SELF:_keySize, SearchMode.Right, SELF:_rootPage)
             VAR page := SELF:Stack:Top:Page
             VAR pos  := SELF:Stack:Top:Pos
             SELF:DoAction(CdxAction.InsertKey(page, pos, SELF:_newValue:Recno, SELF:_newValue:Key))
@@ -460,7 +460,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF !lNewRecord
                 // find and delete existing key
                 IF ! changed
-                    changed := SELF:_compareFunc(SELF:_newValue:Key, SELF:_currentValue:Key, SELF:_keySize) != 0
+                    changed := SELF:__Compare(SELF:_newValue:Key, SELF:_currentValue:Key, SELF:_keySize) != 0
                 ENDIF
                 IF changed
                     SELF:Stack:Clear()

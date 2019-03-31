@@ -270,8 +270,8 @@ STATIC FUNCTION _SplitDate(cDate AS STRING) AS STRING[]
 	LOCAL aNums := STRING[]{3} AS STRING[]
 	LOCAL cCurrent := "" AS STRING
 	LOCAL nCurrent := __ARRAYBASE__ AS INT
-	FOREACH cChar AS Char IN cDate
-		IF cChar >= '0' .and. cChar <= '9'
+	FOREACH cChar AS CHAR IN cDate
+		IF cChar >= '0' .AND. cChar <= '9'
 			cCurrent += cChar:ToString()
 		ELSE
 			aNums[nCurrent] := cCurrent
@@ -374,7 +374,7 @@ FUNCTION _DToC(d AS DateTime) AS STRING
 	LOCAL cFormat := XSharp.RuntimeState.GetValue<STRING>(Set.DateFormatNet) AS STRING
 	IF d != DateTime.Minvalue
 		LOCAL dt := d AS Datetime
-		result := d:ToString(cFormat)
+		result := dt:ToString(cFormat)
 	ELSE
 		result := RuntimeState.NullDateString
 	ENDIF

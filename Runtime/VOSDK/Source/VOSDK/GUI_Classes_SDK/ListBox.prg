@@ -12,7 +12,7 @@ METHOD __AddItem(cItem AS STRING, uRetValue AS USUAL, dwPosition AS DWORD) AS VO
 	//PP-030828 Strong typing
 	LOCAL dwRetValLen, dwDispValLen AS DWORD
 
-	Default(@uRetValue, cItem)
+	DEFAULT(@uRetValue, cItem)
 
 	dwDispValLen := ALen(aDisplayValues)
 	dwRetValLen  := ALen(aRetValues)
@@ -85,7 +85,7 @@ METHOD __Update() AS Control STRICT
 	LOCAL cOldValue AS STRING
 	LOCAL dwIndex AS DWORD
 	LOCAL cTemp AS STRING
-	LOCAL liStyle AS LONGINT
+	//LOCAL liStyle AS LONGINT
 	
 	IF SELF:Modified
 		cOldValue := AsString(uValue)
@@ -98,7 +98,7 @@ METHOD __Update() AS Control STRICT
 		// combobox VO always selects one and never the other
 		// Now remains the question why you would fill your combobox with duplicate values ?
 		IF IsInstanceOf(SELF, #ComboBox)  
-			liStyle := GetWindowLong(SELF:hWnd, GWL_STYLE)
+			//liStyle := GetWindowLong(SELF:hWnd, GWL_STYLE)
 			dwIndex := SELF:CurrentItemNo
 			IF dwIndex > 0
 				cTemp	:= SELF:aDisplayValues[dwIndex]
@@ -201,7 +201,7 @@ ASSIGN Caption(cNewCaption)
 
 METHOD ChangeSelected(oRange, lEnabled) 
 	LOCAL lSet AS LOGIC
-	Default(@lEnabled, TRUE)
+	DEFAULT(@lEnabled, TRUE)
 
 	IF !IsInstanceOfUsual(oRange,#Range)
 		WCError{#ChangeSelected,#ListBox,__WCSTypeError,oRange,1}:@@Throw()
@@ -518,7 +518,7 @@ METHOD IsSelected(iIdx)
 		ELSE
 			dwNumSelected := SELF:SelectedCount
 			ptrSelected    := MemAlloc(dwNumSelected * _SIZEOF(LONGINT))
-			IF SendMessage(SELF:Handle(), LB_GETSELITEMS, dwNumSelected, LONGINT(_CAST,ptrSelected)) != LB_ERR
+			IF SendMessage(hHandle, LB_GETSELITEMS, dwNumSelected, LONGINT(_CAST,ptrSelected)) != LB_ERR
 				dwPos := 1        
 				iIdx	-= 1
 				FOR dwPos := 1 TO dwNumSelected
@@ -544,7 +544,7 @@ METHOD ListFiles(sStartDir, oFixedText, FileTypes)
 	LOCAL dwFileTypes AS DWORD
 	LOCAL w AS DWORD
 
-	Default(@sStartDir, "*.*")
+	DEFAULT(@sStartDir, "*.*")
 
 	pPath := StringAlloc(sStartDir)
 	pPath := MemRealloc(pPath, 261)
@@ -597,7 +597,7 @@ METHOD NextSelected()
 
 	IF SELF:ValidateControl() .AND. (dwNumSelected := SELF:SelectedCount) > wSelectNum
 		ptrSelected := MemAlloc(dwNumSelected * _SIZEOF(LONGINT))
-		IF SendMessage(SELF:Handle(), LB_GETSELITEMS, dwNumSelected, LONGINT(_CAST, ptrSelected)) != LB_ERR
+		IF SendMessage(hHandle, LB_GETSELITEMS, dwNumSelected, LONGINT(_CAST, ptrSelected)) != LB_ERR
 			wSelectNum 	:= wSelectNum + 1
 			iResult 		:= ptrSelected[wSelectNum]+1								
 		ENDIF

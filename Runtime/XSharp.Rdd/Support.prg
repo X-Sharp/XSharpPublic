@@ -11,6 +11,20 @@ USING XSharp.Rdd.Support
 USING System.Diagnostics
 BEGIN NAMESPACE XSharp.RDD
 
+    INTERNAL STRUCT ScopeInfo
+        INTERNAL Buffer AS BYTE[]
+        INTERNAL VALUE  AS OBJECT
+        INTERNAL Size   AS LONG
+        INTERNAL PROPERTY IsSet  AS LOGIC GET VALUE != NULL
+        INTERNAL METHOD Clear() AS VOID
+            VALUE := NULL
+            Size  := 0
+            RETURN
+        INTERNAL METHOD SetBuffer(nSIze AS LONG) AS VOID
+            SELF:Buffer := BYTE[]{ nSize }
+            RETURN
+    END STRUCT
+
     INTERNAL ENUM SkipDirection
         MEMBER Backward := -1
         MEMBER Forward := 1

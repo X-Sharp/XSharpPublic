@@ -1814,7 +1814,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		// TECH-545T6VKW27, Problems with OrdScope() and DBSeek()
 		[Fact, Trait("Category", "DBF")];
 		METHOD OrdScope_and_DBSeek_test() AS VOID
-			LOCAL cDBF,cPath AS STRING
+			LOCAL cDBF AS STRING
 			LOCAL aFields, aValues AS ARRAY
 			LOCAL i AS DWORD
 			
@@ -1890,6 +1890,73 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				Assert.Equal( 1 , (INT) OrdKeyCount(1) )
 				DBCloseArea()
 			NEXT
+		RETURN
+
+
+
+		// TECH-P7S0R7P25H, DBMemoExt() incorrectly returns ""
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBMemoExt_test2() AS VOID
+			LOCAL cDbf AS STRING
+
+			RDDSetDefault ( "DBFNTX" )
+			Assert.Equal(".DBT" , DBMemoExt() ) // ok ".DBT"
+			RDDSetDefault ( "DBFCDX" )
+			Assert.Equal(".FPT" , DBMemoExt() ) // "" instead of ".FPT"
+			
+			RDDSetDefault ( "DBFCDX" )
+			Assert.Equal(".FPT" , DBMemoExt ( "DBFCDX" ) ) // "" instead of ".FPT"
+			Assert.Equal(".DBT" , DBMemoExt ( "DBFNTX" ) ) // "" instead of ".DBT"
+
+			RDDSetDefault ( "DBFNTX" )
+			Assert.Equal(".FPT" , DBMemoExt ( "DBFCDX" ) ) // "" instead of ".FPT"
+			Assert.Equal(".DBT" , DBMemoExt ( "DBFNTX" ) ) // "" instead of ".DBT"
+			
+			cDbf := GetTempFileName()
+			DBCreate( cDBF ,  {{"VE" , "C" , 3 , 0 }})
+			
+			FErase(cDbf + ".cdx")
+
+			DBUseArea( TRUE,"DBFNTX",cDBF , "FOO1" , TRUE )
+			Assert.Equal(".DBT" , (STRING) DBInfo ( DBI_MEMOEXT ) ) // returns ".FPT" instead of ".DBT"
+
+			DBUseArea( TRUE,"DBFCDX",cDBF , "FOO2" , TRUE )
+			Assert.Equal(".FPT" , (STRING) DBInfo ( DBI_MEMOEXT ) ) // returns "" instead of ".FPT"
+			
+			DBCloseAll()
+		RETURN
+
+
+
+		// TECH-5OD246EMC4, VODBOrdListAdd() fails when index filename passed without extension
+		[Fact, Trait("Category", "DBF")];
+		METHOD VODBOrdListAdd_test() AS VOID
+			LOCAL cDBF, cIndex AS STRING
+			LOCAL aFields, aValues AS ARRAY
+			LOCAL i AS DWORD
+			
+			RDDSetDefault("DBFNTX")
+			aFields := { { "LAST" , "C" , 20 , 0 }}
+			aValues := { "b" , "c" , "d", "e" , "a" }
+			
+			cDBF := GetTempFileName()
+			cIndex := cDbf
+			FErase ( cIndex + IndexExt() )
+			
+			DBCreate( cDBF , AFields)
+			DBUseArea(,,cDBF)
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut ( 1 , aValues [ i ] )
+			NEXT
+			DBCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper (_Field->LAST) } )
+			DBCloseAll()
+			
+//			 When ".ntx" is added SetIndex() returns true
+//			 cIndex := cIndex + IndexExt()
+			DBUseArea(,,cDBF)
+			Assert.True( VODBOrdListAdd(cIndex , NIL) ) // Returns FALSE, error
+			DBCloseAll()
 		RETURN
 
 

@@ -18,407 +18,383 @@
     <para styleclass="Normal">Below is the text from the presentation from the session that Nikos did in Cologne during the XBase.Future 2017 conference.</para>
     <para styleclass="Normal">The examples from this session are stored during the installation of X# in the folder c:\Users\Public\Documents\XSharp\Scripting</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading1 Black">Why endorse scripting?</para>
-    <list id="24" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Heading1 Black" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading2">Why endorse scripting?</para>
+    <list id="4720" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Heading1 Black" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Heading1 Black"><text styleclass="Normal">Dynamic behavior at runtime </text></li>
-      <list id="24" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4720" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Extensibility and flexibility </li>
         <li styleclass="Normal">User-defined behavior </li>
       </list>
     </list>
-    <list id="24" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4720" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Platform independence </li>
-      <list id="24" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4720" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">System operations defined in a script </li>
       </list>
     </list>
-    <list id="24" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4720" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Behavior as data </li>
-      <list id="24" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4720" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Stored in files, database, cloud </li>
         <li styleclass="Normal">Updated at runtime </li>
       </list>
     </list>
-    <list id="24" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4720" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Rapid prototyping</li>
     </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1 Black">Scripting is...</para>
-    <list id="24" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading2">Scripting is...</para>
+    <list id="4720" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Expression evaluation </li>
     </list>
-    <list id="25" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <list id="25" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+    <list id="4721" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <list id="4721" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Built-in interpreter </li>
         <li styleclass="Normal">Self-contained functionality </li>
         <li styleclass="Normal">Simple expressions or full statements </li>
       </list>
     </list>
-    <list id="26" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4722" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Source file(s) without a project </li>
     </list>
-    <list id="27" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <list id="27" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+    <list id="4723" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <list id="4723" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Single file (multiple sources may be loaded by a single script) </li>
         <li styleclass="Normal">No need for a full IDE or SDK </li>
         <li styleclass="Normal">Dynamic compilation without an IDE </li>
         <li styleclass="Normal">Definition of complex structures, classes</li>
       </list>
     </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1 Black">X# as a scripting language</para>
-    <list id="28" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading2">X# as a scripting language</para>
+    <list id="4724" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Roslyn script engine </li>
-      <list id="28" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4724" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">C# scripting </li>
       </list>
     </list>
-    <list id="28" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4724" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Standalone expressions </li>
-      <list id="28" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4724" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">No START function </li>
         <li styleclass="Normal">Global statements, expressions </li>
         <li styleclass="Normal">Similar to the macro compiler (but not the same!) </li>
         <li styleclass="Normal">Host object maintains state</li>
       </list>
     </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1 Black">X# as a scripting language</para>
-    <list id="29" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading2">X# as a scripting language</para>
+    <list id="4725" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Complex declarations allowed </li>
-      <list id="29" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4725" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Types, functions can be declared </li>
         <li styleclass="Normal">No namespaces! </li>
       </list>
     </list>
-    <list id="29" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4725" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">External references </li>
-      <list id="29" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4725" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Loading assemblies </li>
         <li styleclass="Normal">No implicit access to host assembly </li>
         <li styleclass="Normal">No isolation (e.g. separate AppDomain)</li>
       </list>
     </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1 Black">The X-Sharp interpreter (xsi.exe)</para>
-    <list id="30" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading2">The X-Sharp interpreter (xsi.exe)</para>
+    <list id="4726" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Read-Eval-Print Loop (REPL) </li>
       <li styleclass="Normal">Console application </li>
       <li styleclass="Normal">Return values are printed to the console </li>
-      <list id="30" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4726" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">With pretty formatting! </li>
       </list>
     </list>
-    <list id="30" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4726" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Maintain context </li>
       <li styleclass="Normal">Declare LOCAL variables</li>
     </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1 Black">The X-Sharp interpreter (xsi.exe)</para>
-    <list id="31" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading2">The X-Sharp interpreter (xsi.exe)</para>
+    <list id="4727" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Can load assemblies, script files </li>
-      <list id="31" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4727" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">.PRGX extension </li>
         <li styleclass="Normal">#R directive </li>
         <li styleclass="Normal">#LOAD directive </li>
       </list>
     </list>
-    <list id="31" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4727" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Can runs scripts from command line </li>
-      <list id="31" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4727" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Xsi.exe &lt;script.prgx&gt; </li>
       </list>
     </list>
-    <list id="31" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4727" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Passes command-line arguments to scripts </li>
-      <list id="31" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4727" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Xsi.exe &lt;script.prgx&gt; &lt;arg&gt; ...</li>
       </list>
     </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1 Black">Alternative ways to run scripts</para>
-    <list id="32" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading2">Alternative ways to run scripts</para>
+    <list id="4728" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Setting xsi.exe as default app for .prgx </li>
-      <list id="32" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4728" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Also creates file association, but without args </li>
         <li styleclass="Normal">Edit file association in registry </li>
       </list>
     </list>
-    <list id="32" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4728" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Manually setting file association </li>
-      <list id="32" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4728" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">assoc, ftype </li>
       </list>
     </list>
-    <list id="32" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4728" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Invoking without the .prgx extension </li>
-      <list id="32" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4728" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">PATHEXT </li>
       </list>
     </list>
-    <list id="32" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4728" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Run without console? </li>
-      <list id="32" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4728" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Not possible with xsi.exe since it is a console application</li>
       </list>
     </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1 Black">Scripting internals: the submission</para>
-    <list id="33" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading2">Scripting internals: the submission</para>
+    <list id="4729" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Every script is compiled into a “submission” </li>
-      <list id="33" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4729" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Roslyn terminology </li>
       </list>
     </list>
-    <list id="33" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4729" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Every line given to the xsi prompt creates a new submission </li>
-      <list id="33" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4729" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Inherits previous submission </li>
         <li styleclass="Normal">Previously declared variables remain visible </li>
       </list>
     </list>
-    <list id="33" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4729" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Cannot be inspected directly </li>
-      <list id="33" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4729" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">“SELF” and “SUPER” are not accessible</li>
       </list>
     </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1 Black">Scripting internals: the global object</para>
-    <list id="34" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading2">Scripting internals: the global object</para>
+    <list id="4730" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Statements execute in the context of the global object </li>
       <li styleclass="Normal">Generated by xsi.exe </li>
-      <list id="34" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4730" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">InteractiveScriptGlobals class </li>
       </list>
     </list>
-    <list id="34" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4730" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Provides access to command-line arguments </li>
       <li styleclass="Normal">Print function with pretty-formatting options</li>
     </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1 Black">Scripting internals: script declarations</para>
-    <list id="35" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading2">Scripting internals: script declarations</para>
+    <list id="4731" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Are LOCALs declared in a script really local? </li>
-      <list id="35" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4731" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Not when they are declared outside of a method </li>
         <li styleclass="Normal">They become fields of the submission class </li>
       </list>
     </list>
-    <list id="35" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4731" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">What about FUNCTIONs and PROCEDUREs? </li>
-      <list id="35" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4731" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">They become methods of the submission class </li>
       </list>
     </list>
-    <list id="35" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4731" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Declared types? (CLASSes, STRUCTUREs, ENUMs) </li>
-      <list id="35" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4731" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">They become nested types in the submission class </li>
         <li styleclass="Normal">Not possible to have extension methods!</li>
       </list>
     </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1 Black">Application scripting: the first steps</para>
-    <list id="36" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading2">Application scripting: the first steps</para>
+    <list id="4732" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Add scripting capabilities to your application! </li>
       <li styleclass="Normal">Reference the script hosting and code analysis assemblies </li>
-      <list id="36" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4732" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">XSharp.CodeAnalysis.dll </li>
         <li styleclass="Normal">XSharp.Scripting.dll </li>
       </list>
     </list>
-    <list id="36" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4732" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Important namespaces </li>
-      <list id="36" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4732" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">LanguageService.CodeAnalysis.Scripting </li>
         <li styleclass="Normal">LanguageService.CodeAnalysis.Xsharp.Scripting </li>
       </list>
     </list>
-    <list id="36" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4732" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Run a script </li>
-      <list id="36" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4732" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">XSharpScript.RunAsync(&quot;? &apos;HELLO&apos;&quot;) </li>
         <li styleclass="Normal">CompilationErrorException is thrown if the source has errors</li>
       </list>
     </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1 Black">Problem: how to pass arguments to a script?</para>
-    <para styleclass="Normal"></para>
-    <list id="37" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading2">Problem: how to pass arguments to a script?</para>
+    <list id="4733" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Passing arguments: the globals object</li>
       <li styleclass="Normal">The script can access public members of the globals object </li>
-      <list id="37" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4733" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">The type of the globals object can be custom </li>
       </list>
     </list>
-    <list id="37" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4733" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">An instance of the globals object can be passed to RunAsync() </li>
-      <list id="37" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4733" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Public fields of the globals object can be used to pass arguments to the script </li>
         <li styleclass="Normal">The script will access them as variables</li>
       </list>
     </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1 Black">Problem: how to provide an API to the script?</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1 Black">Script API: the globals object</para>
-    <list id="38" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading1">Problem: how to provide an API to the script?</para>
+    <para styleclass="Heading2">Script API: the globals object</para>
+    <list id="4734" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Public members of the globals object are accessible by the script </li>
-      <list id="38" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4734" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Remember: the script is compiled and executed in a different assembly in-memory! </li>
       </list>
     </list>
-    <list id="38" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4734" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Not an elegant method to give access to types </li>
-      <list id="38" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4734" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">But excellent for a function-based API </li>
         <li styleclass="Normal">Self-contained, not prone to errors </li>
       </list>
     </list>
-    <list id="38" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4734" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">The script does not have direct access to all application types </li>
       <li styleclass="Normal" style="margin-left:13px;">Not a security measure! </li>
-      <list id="38" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4734" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal" style="margin-left:13px;">The script is run in the same AppDomain (in a dynamic assembly)</li>
       </list>
     </list>
-    <para styleclass="Heading1 Black" style="margin-left:13px;"></para>
-    <para styleclass="Heading1 Black">Script API: using a common assembly</para>
-    <list id="39" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading2">Script API: using a common assembly</para>
+    <list id="4735" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Scripts can reference assemblies </li>
-      <list id="39" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4735" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Through the #R directive </li>
         <li styleclass="Normal">Through the options passed to the RunAsync() call </li>
       </list>
     </list>
-    <list id="39" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4735" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Move functions and types that should be accessible by the script to a separate assembly </li>
-      <list id="39" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4735" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">The assembly can then be referenced by the script </li>
       </list>
     </list>
-    <list id="39" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4735" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Can be used in conjunction with the globals object</li>
     </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1 Black">Problem: how to get results back from a script?</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1 Black">Script result: return value</para>
-    <list id="40" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading1">Problem: how to get results back from a script?</para>
+    <para styleclass="Heading2">Script result: return value</para>
+    <list id="4736" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Scripts can return a value with a RETURN statement </li>
-      <list id="40" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4736" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">...or from a standalone expression! </li>
         <li styleclass="Normal">EvalAsync() returns that value </li>
         <li styleclass="Normal">RunAsync() returns a ScriptState object, from which the return value can also be fetched</li>
       </list>
     </list>
-    <para styleclass="Heading1 Black"></para>
-    <para styleclass="Heading1 Black">Script result: examine script state</para>
-    <list id="41" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading2">Script result: examine script state</para>
+    <list id="4737" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Variables declared by the script can be examined </li>
-      <list id="41" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4737" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">The ScriptState object returned by RunAsync() includes methods to examine the variables </li>
       </list>
     </list>
-    <list id="41" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4737" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">ScriptState.GetVariable(string name)</li>
     </list>
-    <para styleclass="Heading1 Black"></para>
-    <para styleclass="Heading1 Black">Advanced topics: handling errors</para>
-    <list id="42" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading2">Advanced topics: handling errors</para>
+    <list id="4738" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Compilation errors </li>
-      <list id="42" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4738" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">CompilationErrorException thrown </li>
         <li styleclass="Normal">Roslyn API provides access to compilation messages </li>
         <li styleclass="Normal">Create script object with XsharpScript.Create() </li>
         <li styleclass="Normal">Compile with script:Compile() </li>
       </list>
     </list>
-    <list id="42" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4738" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Returns list of diagnostic messages </li>
       <li styleclass="Normal">Runtime errors </li>
-      <list id="42" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4738" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Exception is thrown </li>
       </list>
     </list>
-    <list id="42" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4738" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">AggregateException because script is ran as a Task </li>
       <li styleclass="Normal" style="margin-left:13px;">e:InnerException property contains the real exception</li>
     </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1 Black">Advanced topics: strong-typed return value</para>
-    <list id="43" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading2">Advanced topics: strong-typed return value</para>
+    <list id="4739" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">By default a script returns OBJECT </li>
       <li styleclass="Normal">Custom return type can be specified </li>
-      <list id="43" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4739" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Create&lt;T&gt;() </li>
         <li styleclass="Normal">RunAsync&lt;T&gt;() </li>
         <li styleclass="Normal">EvaluateAsync&lt;T&gt;()</li>
       </list>
     </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1 Black">Advanced topics: performance tuning</para>
-    <list id="44" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading2">Advanced topics: performance tuning</para>
+    <list id="4740" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Pre-compile scripts </li>
-      <list id="44" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4740" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Script:Compile() </li>
         <li styleclass="Normal">Compiled scripts can be ran multiple times </li>
         <li styleclass="Normal">Similar to macros </li>
       </list>
     </list>
-    <list id="44" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4740" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Delegate can be created with script:CreateDelegate() </li>
       <li styleclass="Normal">Native image with ngen.exe </li>
-      <list id="44" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4740" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal" style="margin-left:13px;">Speed-up initial compilation </li>
         <li styleclass="Normal" style="margin-left:13px;">64-bit version of ngen must be used for 64-bit CLR!!! </li>
         <li styleclass="Normal" style="margin-left:13px;">Useful for command-line scripts (xsi.exe)</li>
       </list>
     </list>
-    <para styleclass="Normal" style="margin-left:13px;"></para>
-    <para styleclass="Heading1 Black">Advanced topics: functional scripts</para>
-    <list id="45" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading2">Advanced topics: functional scripts</para>
+    <list id="4741" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">A script cannot be used exactly like a function </li>
-      <list id="45" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4741" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Does not accept arguments </li>
       </list>
     </list>
-    <list id="45" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4741" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Instead, it needs a global object instance </li>
-      <list id="45" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4741" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Is run via a script hosting object </li>
       </list>
     </list>
-    <list id="45" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4741" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Additional overhead </li>
       <li styleclass="Normal">But scripts can evaluate to functions! </li>
-      <list id="45" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4741" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Lamda functions or delegates as return type</li>
       </list>
     </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1 Black">Advanced topics: accessing application</para>
-    <list id="46" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading2">Advanced topics: accessing application</para>
+    <list id="4742" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Provide a reference to current assembly inmemory </li>
-      <list id="46" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4742" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Assembly.GetExecutingAssembly() </li>
         <li styleclass="Normal">Does not work with CoreCLR </li>
       </list>
     </list>
-    <list id="46" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4742" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Entities declared in current assembly can be used </li>
-      <list id="46" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4742" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Functions &amp; procedures </li>
         <li styleclass="Normal">Types (classes, structures, etc.) </li>
         <li styleclass="Normal">Namespaces</li>
       </list>
     </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1 Black">Advanced topics: support for dynamics</para>
-    <list id="47" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Heading2">Advanced topics: support for dynamics</para>
+    <list id="4743" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Need to reference the proper assembly </li>
-      <list id="47" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="4743" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Microsoft.Csharp.dll</li>
       </list>
     </list>

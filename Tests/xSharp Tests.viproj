@@ -40491,7 +40491,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C404 - Problem with String2Psz() inside PROPERTY
 
-ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
 ; ************** APPLICATION C405 - No error on Psz2String(STRING) *************
 Application = C405 - No error on Psz2String(STRING)
 IDEVersion = 1.06
@@ -42793,7 +42793,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C424 - Cannot compare PTR to INT/DWORD
 
-ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
 ; ************** APPLICATION C425 - No error reported when implicitly converting from PTR to VOSTRUCT without /vo7 *************
 Application = C425 - No error reported when implicitly converting from PTR to VOSTRUCT without /vo7
 IDEVersion = 1.06
@@ -47812,7 +47812,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C474 - No compiler error with incorrect PROPERTY syntax
 
-ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION C475 - Runtime problems comparing SYMBOL/DATE to NULL/NULL_OBJECT *************
 Application = C475 - Runtime problems comparing SYMBOL/DATE to NULL/NULL_OBJECT
 IDEVersion = 1.06
@@ -61841,7 +61841,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C608 - Preprocessor harbour compatibility issue with different casing of identifiers
 
-ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C609 - Failed to emit module with @ on array element, without /unsafe *************
 Application = C609 - Failed to emit module with @ on array element, without /unsafe
 IDEVersion = 1.06
@@ -64632,7 +64632,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD
 
-ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C636 - SplitPath() with /vo7- : failed to emit module *************
 Application = C636 - SplitPath() with /vo7- : failed to emit module
 IDEVersion = 1.06

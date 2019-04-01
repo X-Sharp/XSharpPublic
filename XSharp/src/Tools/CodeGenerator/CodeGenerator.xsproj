@@ -19,10 +19,10 @@
     <OutputName>CodeGenerator</OutputName>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <XSharpProjectversion>2.0.0.8</XSharpProjectversion>
+    <XSharpProjectversion>2.0.1.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)src\Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
-	<OutputPath>$(Solutiondir)Binaries\$(Configuration)\</OutputPath>
+    <OutputPath>$(Solutiondir)Binaries\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

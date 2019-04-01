@@ -22,7 +22,7 @@
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <TargetFrameworkProfile />
-    <XSharpProjectversion>2.0.0.8</XSharpProjectversion>
+    <XSharpProjectversion>2.0.1.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)src\common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <OutputPath>$(Solutiondir)Binaries\$(Configuration)\</OutputPath>

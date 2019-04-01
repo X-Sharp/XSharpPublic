@@ -7,9 +7,9 @@
 
 
 #ifndef Compression
-;#define Compression     "lzma/ultra64"
+#define Compression     "lzma/ultra64"
 ; "lzma/ultra"
-#define Compression     "none" 
+;#define Compression     "none" 
 #endif
 #define FOX
 ;#undef FOX
@@ -21,7 +21,7 @@
 #define Version             "2.0.1.0"
 #define FileNameVersion     "2RC1"
 #define VIVersion           "2.0.1.0"
-#define TouchDate           "2019-03-19"
+#define TouchDate           "2019-04-01"
 #define TouchTime           "02:10:00"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
@@ -513,7 +513,7 @@ Components: vs2015 or vs2017; Source: "{#BinPFolder}Itemtemplates\R*.Zip";      
 
 Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*test*.zip";       DestDir: "{app}\Extension\Project\ProjectTemplates\Test";     Flags: recursesubdirs {#StdFlags}; 
 Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*unit*.zip";       DestDir: "{app}\Extension\Project\ProjectTemplates\Test";     Flags: recursesubdirs {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\C*.zip";           DestDir: "{app}\Extension\Project\ProjectTemplates\Windows";  Flags: recursesubdirs {#StdFlags}; 
+Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*class*.zip";      DestDir: "{app}\Extension\Project\ProjectTemplates\Windows";  Flags: recursesubdirs {#StdFlags}; 
 Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*Cons*.zip";       DestDir: "{app}\Extension\Project\ProjectTemplates\Windows";  Flags: recursesubdirs {#StdFlags}; 
 Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*App*.zip";        DestDir: "{app}\Extension\Project\ProjectTemplates\Windows";  Flags: recursesubdirs {#StdFlags}; 
 ; Snippets

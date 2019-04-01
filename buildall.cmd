@@ -7,9 +7,7 @@ cd \xsharp\dev\xsharp
 Echo kill running XSCompiler processes
 taskkill  /f /t /fi "IMAGENAME eq XSCompiler.exe"
 Echo Restore Nuget Packages for Compiler and Tools
-nuget restore compiler.sln -V q
-nuget restore macrocompiler.sln -V q
-nuget restore tools.sln -V q
+nuget restore master.sln -V q
 Echo Clean Compiler output folders
 call clean.cmd
 Echo Build Compiler and Tools - Release version

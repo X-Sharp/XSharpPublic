@@ -1,13 +1,50 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.539
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VODesigners", "src\Tools\VODesigners\VODesigners.xsproj", "{FAAC947E-0355-4F8D-ADB9-C57B1C9357D2}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VODesigners_tester", "src\Tools\VODesigners_tester\VODesigners_tester.xsproj", "{63D22C03-1D1A-4746-8E24-7BB1248696EE}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "CodeGenerator", "src\Tools\CodeGenerator\CodeGenerator.xsproj", "{B837AC3B-9C61-49E4-9F4F-C8AD1FAF21CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpVSParser", "src\Compiler\XSharpCodeAnalysis\XSharpVSParser.csproj", "{9F37697B-9FCA-4D91-B8E4-AA34880CFD88}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F791F731-54DA-40C4-A97A-98BCFF19CB28}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		src\Common\BuildNumber.h = src\Common\BuildNumber.h
+		src\Common\CommonAssemblyInfo.cs = src\Common\CommonAssemblyInfo.cs
+		src\Common\Constants.cs = src\Common\Constants.cs
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		src\Common\version.xh = src\Common\version.xh
+		src\Common\XSharpDefs.xh = src\Common\XSharpDefs.xh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildTargets", "BuildTargets", "{63B41138-B65F-4C85-97DC-9AB13F06F338}"
+	ProjectSection(SolutionItems) = preProject
+		build\Targets\AfterCommonTargets.targets = build\Targets\AfterCommonTargets.targets
+		build\Targets\BeforeCommonTargets.targets = build\Targets\BeforeCommonTargets.targets
+		build\Targets\DisableStandardFrameworkResolution.targets = build\Targets\DisableStandardFrameworkResolution.targets
+		build\Targets\DisableVsixManifestTargets.targets = build\Targets\DisableVsixManifestTargets.targets
+		build\Targets\FixedPackages.props = build\Targets\FixedPackages.props
+		build\Targets\GenerateAssemblyInfo.targets = build\Targets\GenerateAssemblyInfo.targets
+		build\Targets\GenerateCompilerExecutableBindingRedirects.targets = build\Targets\GenerateCompilerExecutableBindingRedirects.targets
+		build\Targets\GenerateInternalsVisibleTo.targets = build\Targets\GenerateInternalsVisibleTo.targets
+		build\Targets\Imports.targets = build\Targets\Imports.targets
+		build\Targets\Microsoft.Net.Compilers.props = build\Targets\Microsoft.Net.Compilers.props
+		build\Targets\Packages.props = build\Targets\Packages.props
+		build\Targets\README.md = build\Targets\README.md
+		build\Targets\Roslyn.Toolsets.Xunit.targets = build\Targets\Roslyn.Toolsets.Xunit.targets
+		build\Targets\Settings.props = build\Targets\Settings.props
+		build\Targets\SourcePackage.targets = build\Targets\SourcePackage.targets
+		build\Targets\Tools.props = build\Targets\Tools.props
+		build\Targets\Versions.props = build\Targets\Versions.props
+		build\Targets\VisualStudio.targets = build\Targets\VisualStudio.targets
+		build\Targets\Vsdconfig.targets = build\Targets\Vsdconfig.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,8 +64,15 @@ Global
 		{B837AC3B-9C61-49E4-9F4F-C8AD1FAF21CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B837AC3B-9C61-49E4-9F4F-C8AD1FAF21CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B837AC3B-9C61-49E4-9F4F-C8AD1FAF21CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F37697B-9FCA-4D91-B8E4-AA34880CFD88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F37697B-9FCA-4D91-B8E4-AA34880CFD88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F37697B-9FCA-4D91-B8E4-AA34880CFD88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F37697B-9FCA-4D91-B8E4-AA34880CFD88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ECF9FF50-91F5-470F-8D89-C7C436CA8633}
 	EndGlobalSection
 EndGlobal

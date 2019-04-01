@@ -12,6 +12,9 @@
     <CreateNewFolder>true</CreateNewFolder>
     <DefaultName>WpfApplication</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
+    <LanguageTag Value="X#" />
+    <PlatformTag Value="Windows" />
+    <ProjectTypeTag Value="Desktop" />
    </TemplateData>
    <TemplateContent>
       <Project File="WPFApplication.xsproj" ReplaceParameters="true">

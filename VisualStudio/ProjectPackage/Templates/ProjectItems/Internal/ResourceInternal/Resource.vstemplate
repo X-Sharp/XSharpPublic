@@ -5,7 +5,7 @@
     <Description>A hidden resource file </Description>
     <TemplateID>XSharp.Resource.Internal</TemplateID>
     <ProjectType>XSharp</ProjectType>
-    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <RequiredFrameworkVersion>.0</RequiredFrameworkVersion>
     <DefaultName>Resource.resx</DefaultName>
     <Hidden>true</Hidden>
   </TemplateData>

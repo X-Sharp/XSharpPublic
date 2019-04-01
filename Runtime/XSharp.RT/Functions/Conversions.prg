@@ -591,7 +591,7 @@ FUNCTION _Str(nValue ,uLen ,uDec ) AS STRING CLIPPER
                 nLen := 30
             ENDIF
             IF nDec < 0
-                nDec := SetDecimal()
+                nDec := (INT) SetDecimal()
             ENDIF
 			RETURN ConversionHelpers.FormatNumber((INT64) nValue, nLen,nDec)
 		ENDIF

@@ -602,8 +602,8 @@ METHOD Dispatch(oEvent)
 	SELF:EventReturnValue := 0L
 	msg := oEvt:uMsg
 	
-	DO CASE
-	CASE msg == WM_ERASEBKGND
+	SWITCH msg
+	CASE WM_ERASEBKGND
 		IF IsMethod(SELF, #PaintBackground)
 			IF Send(SELF, #PaintBackground, PTR(_CAST, oEvt:wParam))
 				SELF:EventReturnValue := 1L
@@ -611,21 +611,21 @@ METHOD Dispatch(oEvent)
 			ENDIF
 		ENDIF
 		
-	CASE msg == WM_PAINT
+	CASE WM_PAINT
 		//uRet := SELF:Expose(__ObjectCastClassPtr(oEvt, __pCExposeEvent))
 		uRet := SELF:Expose(ExposeEvent{oEvt})
 		
-	CASE msg == WM_DRAWITEM
+	CASE WM_DRAWITEM
 		//PP-031006 owner draw support, thanks to SEbert
 		//Used for owner drawn menus or controls
 		RETURN __Dispatch_DrawItem(oEvt, SELF)
 		
-	CASE msg == WM_MEASUREITEM
+	CASE WM_MEASUREITEM
 		//PP-031006 owner draw support
 		//Used for owner drawn menus or controls
 		RETURN __Dispatch_MeasureItem(oEvt, SELF)
 		
-	CASE msg == WM_MENUCHAR
+	CASE WM_MENUCHAR
 		//PP-031006 owner draw support
 		//Used for owner drawn menus or controls
 		RETURN __Dispatch_MenuChar(oEvt, SELF)
@@ -639,11 +639,11 @@ METHOD Dispatch(oEvent)
 		uRet := oFormSurface:EventReturnValue
 		ENDIF
 		*/
-	CASE msg == WM_WCHELP
+	CASE WM_WCHELP
 		//oParent:HelpRequest(__ObjectCastClassPtr(oEvt, __pCHelpRequestEvent))
 		oParent:HelpRequest(HelpRequestEvent{oEvt})
 		
-	CASE msg == WM_ACTIVATE
+	CASE WM_ACTIVATE
 		IF LoWord(oEvt:wParam) != 0
 			uRet := SELF:Activate(oEvt)
 		ELSE
@@ -651,14 +651,16 @@ METHOD Dispatch(oEvent)
 		ENDIF
 		
 		// WM_COMMAND trigged by (popup) menu
-	CASE (msg == WM_COMMAND) .AND. (HiWord(oEvt:wParam) == 0) .AND. (oEvt:lParam == 0L)
-		IF (oContextMenu != NULL_OBJECT)
-			oParent:__PreMenuCommand(MenuCommandEvent{oEvt}:__SetMenu(oContextMenu))
-			RETURN 1L
-		ENDIF
-		
+	CASE WM_COMMAND
+        IF (HiWord(oEvt:wParam) == 0) .AND. (oEvt:lParam == 0L)
+		    IF (oContextMenu != NULL_OBJECT)
+			    oParent:__PreMenuCommand(MenuCommandEvent{oEvt}:__SetMenu(oContextMenu))
+			    RETURN 1L
+		    ENDIF
+        ENDIF		
 		//PP-040421 Improved focus handling
-	CASE msg == WM_SETFOCUS .OR. msg == WM_KILLFOCUS
+	CASE WM_SETFOCUS
+    CASE WM_KILLFOCUS
 		//uRet := SELF:FocusChange(__ObjectCastClassPtr(oEvt, __pCFocusChangeEvent))
 		uRet := SELF:FocusChange(FocusChangeEvent{oEvt})
 		/*
@@ -679,51 +681,51 @@ METHOD Dispatch(oEvent)
 		ENDIF
 		SELF:FocusChange(__ObjectCastClassPtr(oEvt, __pCFocusChangeEvent))
 		*/
-	CASE msg == WM_HSCROLL
+	CASE WM_HSCROLL
 		//uRet := SELF:HorizontalScroll(__ObjectCastClassPtr(oEvt, __pCScrollEvent))
 		uRet := SELF:HorizontalScroll(ScrollEvent{oEvt})
 		
-	CASE msg == WM_KEYUP
+	CASE WM_KEYUP
 		//uRet := SELF:KeyUp(__ObjectCastClassPtr(oEvt, __pCKeyEvent))
 		uRet := SELF:KeyUp(KeyEvent{oEvt})
 		//PP-031221 WMoore SLE/Button issue - don't return 1L
 		// RETURN (SELF:EventReturnValue := 1L)
 		
-	CASE msg == WM_KEYDOWN
+	CASE WM_KEYDOWN
 		//uRet := SELF:KeyDown(__ObjectCastClassPtr(oEvt, __pCKeyEvent))
 		uRet := SELF:KeyDown(KeyEvent{oEvt})
 		
 		
-	CASE msg == WM_LBUTTONDBLCLK .OR.;
-			msg == WM_RBUTTONDBLCLK .OR.;
-			msg == WM_MBUTTONDBLCLK .OR. ;
-			msg == WM_XBUTTONDBLCLK
+	CASE WM_LBUTTONDBLCLK 
+    CASE WM_RBUTTONDBLCLK 
+    CASE WM_MBUTTONDBLCLK 
+    CASE WM_XBUTTONDBLCLK
 		//PP-030904 Xbutton
 		//uRet := SELF:MouseButtonDoubleClick(__ObjectCastClassPtr(oEvt, __pCMouseEvent))
 		uRet := SELF:MouseButtonDoubleClick(MouseEvent{oEvt})
 		
-	CASE msg == WM_LBUTTONDOWN .OR.;
-			msg == WM_RBUTTONDOWN .OR.;
-			msg == WM_MBUTTONDOWN .OR. ;
-			msg == WM_XBUTTONDOWN
+	CASE WM_LBUTTONDOWN 
+	CASE WM_RBUTTONDOWN 
+	CASE WM_MBUTTONDOWN 
+	CASE WM_XBUTTONDOWN
 		//PP-030904 Xbutton
 		//uRet := SELF:MouseButtonDown(__ObjectCastClassPtr(oEvt, __pCMouseEvent))
 		uRet := SELF:MouseButtonDown(MouseEvent{oEvt})
 		
-	CASE msg == WM_LBUTTONUP .OR.;
-			msg == WM_RBUTTONUP .OR.;
-			msg == WM_MBUTTONUP .OR. ;
-			msg == WM_XBUTTONUP
+	CASE WM_LBUTTONUP 
+	CASE WM_RBUTTONUP 
+	CASE WM_MBUTTONUP 
+	CASE WM_XBUTTONUP
 		//PP-030904 Xbutton
 		//uRet := SELF:MouseButtonUp(__ObjectCastClassPtr(oEvt, __pCMouseEvent))
 		uRet := SELF:MouseButtonUp(MouseEvent{oEvt})
 		
-	CASE msg == WM_VSCROLL
+	CASE WM_VSCROLL
 		//uRet := SELF:VerticalScroll(__ObjectCastClassPtr(oEvt, __pCScrollEvent))
 		uRet := SELF:VerticalScroll(ScrollEvent{oEvt})
 		
 		
-	CASE msg == WM_MOUSEMOVE
+	CASE WM_MOUSEMOVE
 		IF IsMethod(oFormSurface, #__ToolTipHandle) .AND. (oFormSurface:__ToolTipHandle() != NULL_PTR)
 			struMsg:hwnd := hwnd
 			struMsg:message := WM_MOUSEMOVE
@@ -742,15 +744,13 @@ METHOD Dispatch(oEvent)
 			uRet := SELF:MouseMove(MouseEvent{oEvt})
 		ENDIF
 		
-	CASE msg == WM_MOVE
-		//uRet := SELF:Move(__ObjectCastClassPtr(oEvt, __pCMoveEvent))
+	CASE WM_MOVE
 		uRet := SELF:Move(MoveEvent{oEvt})
 		
-	CASE msg == WM_SIZE
-		//uRet := SELF:Resize(__ObjectCastClassPtr(oEvt, __pCResizeEvent))
+	CASE WM_SIZE
 		uRet := SELF:Resize(ResizeEvent{oEvt})
 		
-	CASE (msg == WM_DROPFILES)
+	CASE WM_DROPFILES
 		IF IsMethod(oParent, #Drop)
 			oParent:Drop(DragEvent{oEvt, SELF})
 		ENDIF
@@ -759,13 +759,14 @@ METHOD Dispatch(oEvent)
 		ENDIF
 		RETURN 1L
 		
-	CASE (msg == WM_INITMENU) .OR. (msg == WM_INITMENUPOPUP)
+	CASE WM_INITMENU
+    CASE WM_INITMENUPOPUP
 		uRet := SendMessage(oParent:Handle(), msg, oEvt:wParam, oEvt:lParam)
 		//if IsMethod(oParent, #MenuInit)
 		//oParent:MenuInit(__ObjectCastClassPtr(oEvt, __pCMenuInitEvent))
 		//endif
 		
-	CASE msg == WM_MENUSELECT
+	CASE WM_MENUSELECT
 		uRet := SendMessage(oParent:Handle(), msg, oEvt:wParam, oEvt:lParam)
 		//if (oEvent:lParam != 0) .and. IsMethod(oParent, #MenuSelect)
 		//oParent:MenuSelect(__ObjectCastClassPtr(oEvt, __pCMenuSelectEvent))
@@ -782,17 +783,17 @@ METHOD Dispatch(oEvent)
 		// 		ENDIF
 		
 		//PP-040410 improved context menu support
-	CASE msg == WM_CONTEXTMENU
+	CASE WM_CONTEXTMENU
 		IF (oContextMenu != NULL_OBJECT)
 			oContextMenu:ShowAsPopup(SELF, oEvt:lParam)
 			RETURN (SELF:EventReturnValue := 1L)
 		ENDIF
 		
-	CASE msg == WM_THEMECHANGED //SE-060526
+	CASE WM_THEMECHANGED //SE-060526
 		VerifyThemeState()
 		InvalidateRect(hWnd, NULL_PTR, TRUE)
 		
-	ENDCASE
+	END SWITCH
 	
 	IF IsLong(uRet)
 		SELF:EventReturnValue := uRet

@@ -77,9 +77,8 @@ FUNCTION DbSetIndex(cIndex, uOrder) AS LOGIC CLIPPER
 /// <summary>Set the controlling order for a work area.</summary>
 /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION DbSetOrder(uOrder, cBagName) AS LOGIC CLIPPER
-	LOCAL cOrder  := "" AS STRING
 	DEFAULT( REF cBagName, "")
-	RETURN VoDb.OrdSetFocus(cBagName, uOrder, OUT cOrder)
+	RETURN VoDb.OrdSetFocus(cBagName, uOrder)
 	
 
 /// <summary>

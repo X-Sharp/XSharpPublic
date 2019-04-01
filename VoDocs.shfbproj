@@ -1527,9 +1527,12 @@ The Runtime will also respect these implicit namespaces, so CreateInstance(#DbSe
 			 evaluated correctly. -->
   <PropertyGroup>
     <PreBuildEvent>
-    </PreBuildEvent>
-    <PostBuildEvent>
-    </PostBuildEvent>
+
+</PreBuildEvent>
+    <PostBuildEvent>copy XsVOSDK.chm c:\XSharp\Dev\XSharp\Binaries\Help
+makecab XsVoSdk.mshc XsVoSdk.cab /V1
+copy XsVOSDK.mshc c:\XSharp\Dev\XSharp\Binaries\Help
+copy XsVOSDK.cab c:\XSharp\Dev\XSharp\Binaries\Help</PostBuildEvent>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>

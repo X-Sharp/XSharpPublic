@@ -23,7 +23,7 @@ METHOD Dispatch(oEvent)
 	LOCAL oEvt := oEvent AS @@Event	
 		
 
-	IF (oEvt:uMsg == WM_CHAR)	.and. (oEvt:wParam == 0x00000009)
+	IF (oEvt:uMsg == WM_CHAR)	.AND. (oEvt:wParam == 0x00000009)
 		Send(SELF:Owner, #__FocusTV)
 		RETURN (SELF:EventReturnValue := 1L)
 	ENDIF
@@ -42,7 +42,7 @@ CLASS __ExplorerTV INHERIT TreeView
 METHOD Dispatch(oEvent) 
 	LOCAL oEvt := oEvent AS @@Event	
 	
-	IF (oEvt:uMsg == WM_CHAR)	.and. (oEvt:wParam == 0x00000009)
+	IF (oEvt:uMsg == WM_CHAR)	.AND. (oEvt:wParam == 0x00000009)
 		Send(SELF:Owner, #__FocusLV)
 		RETURN (SELF:EventReturnValue := 1L)
 	ENDIF
@@ -96,11 +96,11 @@ CONSTRUCTOR(oOwner, lLabels, symTreeViewClassName, symListViewClassName)
 
 	
 
-	Default(@lLabels, TRUE) // by default, add labels
+	DEFAULT(@lLabels, TRUE) // by default, add labels
 
 	// by default, create view controls from base classes
-	Default(@symTreeViewClassName, #__ExplorerTV)
-	Default(@symListViewClassName, #__ExplorerLV)
+	DEFAULT(@symTreeViewClassName, #__ExplorerTV)
+	DEFAULT(@symListViewClassName, #__ExplorerLV)
 
 	SUPER(oOwner)
 
@@ -116,7 +116,7 @@ CONSTRUCTOR(oOwner, lLabels, symTreeViewClassName, symListViewClassName)
 		oLabelRight := FixedText{SELF, 1002, Point{}, Dimension{}, NULL_STRING}
 		oLabelRight:SetExStyle(WS_EX_STATICEDGE)
 		oTreeView := CreateInstance(symTreeViewClassName, SELF, 1003, Point{}, Dimension{}, TVS_SHOWSELALWAYS)
-		oListView := CreateInstance(symListViewClassName, SELF, 1004, Point{}, Dimension{}, _Or(LVS_SHOWSELALWAYS, LVS_AUTOARRANGE))
+		oListView := CreateInstance(symListViewClassName, SELF, 1004, Point{}, Dimension{}, _OR(LVS_SHOWSELALWAYS, LVS_AUTOARRANGE))
 
 		// associate the clients with the respective panes
 		SELF:SetPaneClient(oLabelLeft, 1)
@@ -138,7 +138,7 @@ CONSTRUCTOR(oOwner, lLabels, symTreeViewClassName, symListViewClassName)
 
 		// create the pane clients
 		oTreeView := CreateInstance(symTreeViewClassName, SELF, 1001, Point{}, Dimension{}, TVS_SHOWSELALWAYS)
-		oListView := CreateInstance(symListViewClassName, SELF, 1002, Point{}, Dimension{}, _Or(LVS_SHOWSELALWAYS, LVS_AUTOARRANGE))
+		oListView := CreateInstance(symListViewClassName, SELF, 1002, Point{}, Dimension{}, _OR(LVS_SHOWSELALWAYS, LVS_AUTOARRANGE))
 
 		// associate the clients with the respective panes
 		SELF:SetPaneClient(oTreeView, 1)

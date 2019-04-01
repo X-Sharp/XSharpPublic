@@ -178,7 +178,7 @@ METHOD CreateFromDBStorage(oOleDBStg)
 	RETURN SELF:lCreated
 
 METHOD CreateFromInsertDialog(lShowControls) 
-	Default(@lShowControls, FALSE)
+	DEFAULT(@lShowControls, FALSE)
 
 	RETURN (SELF:lCreated := _VOOLECreateFromIODialog(SELF:ObjHandle, lShowControls))
 

@@ -36,17 +36,17 @@ METHOD Dispatch(oEvent)
 	oEvt := oEvent
 	uMsg := oEvt:uMsg
 
-	DO CASE
-	CASE (uMsg == WM_DRAGSELECT)
+	SWITCH uMsg
+	CASE WM_DRAGSELECT
 		IF (oEvt:wParam == 0)
 			SELF:DragLeave(oEvt)
 		ENDIF
-	CASE (uMsg == WM_DROPFILES) //dropped files on app.
+	CASE WM_DROPFILES 
 		SELF:Drop(DragEvent{oEvt})
 		PCALL(gpfnDragFinish, PTR(_CAST, oEvt:wParam))
-	CASE (uMsg == WM_QUERYDROPOBJECT) //dragging files over app.
-		oParent:EventReturnvalue := IIf(SELF:DragOver(DragEvent{oEvt}), 0L, 1L)
-	ENDCASE
+	CASE WM_QUERYDROPOBJECT
+		oParent:EventReturnvalue := IIF(SELF:DragOver(DragEvent{oEvt}), 0L, 1L)
+	END SWITCH
 
 	RETURN NIL
 
@@ -97,7 +97,7 @@ CONSTRUCTOR(oOwner)
 	ELSEIF IsInstanceOf(oParent, #__FormDialogWindow)
 		oParent := IVarGet(oParent:Owner, #DataWindow) 
 	ENDIF
-	IF oParent = null_object
+	IF oParent = NULL_OBJECT
 		oParent := oOwner
 	ENDIF    
 

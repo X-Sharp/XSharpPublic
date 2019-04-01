@@ -35,7 +35,7 @@
     <VO12>false</VO12>
     <VO13>true</VO13>
     <VO14>false</VO14>
-    <VO15>false</VO15>
+    <VO15>true</VO15>
     <VO16>false</VO16>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <StartupObject />
@@ -46,6 +46,7 @@
     <Includepaths />
     <Nostandarddefs>false</Nostandarddefs>
     <NamedArgs />
+    <XPP1>false</XPP1>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

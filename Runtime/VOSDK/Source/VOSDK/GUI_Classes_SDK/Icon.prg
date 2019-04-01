@@ -32,8 +32,8 @@ CONSTRUCTOR(xResourceID, kLoadOption, iWidth, iHeight)
 		hIcon := xResourceID
 	ELSE
 		//PP-040425 Issue 12869 moved these initialisations from preceding
-		Default(@xResourceID, ICONSTANDARD)
-		Default(@kLoadOption, LR_DEFAULTCOLOR)
+		DEFAULT(@xResourceID, ICONSTANDARD)
+		DEFAULT(@kLoadOption, LR_DEFAULTCOLOR)
 		IF ! IsLong(iWidth)
 			iWidth := 0
 		ENDIF
@@ -41,7 +41,7 @@ CONSTRUCTOR(xResourceID, kLoadOption, iWidth, iHeight)
 			iHeight := 0
 		ENDIF
 
-		IF IsSymbol(xResourceID) .or. IsString(xResourceID)
+		IF IsSymbol(xResourceID) .OR. IsString(xResourceID)
 			xResourceID := ResourceID{xResourceID}
 		ELSEIF !IsInstanceOfUsual(xResourceID, #ResourceID)
 			WCError{#Init, #Icon, __WCSTypeError, xResourceID, 1}:@@Throw()
@@ -59,7 +59,7 @@ CONSTRUCTOR(xResourceID, kLoadOption, iWidth, iHeight)
 	ENDIF
 
    //SE-060525
-   IF hIcon != Null_Ptr
+   IF hIcon != NULL_PTR
    	RegisterAxit(SELF) // TODO: Conditional call to RegisterAxit() should be replaced with call to GC.SuppressFinalize() for opposite condition 
    ENDIF
 
@@ -86,18 +86,18 @@ END CLASS
 FUNCTION __WCConvertIcon(iconType AS INT) AS PTR STRICT
 	LOCAL retVal AS PTR
 
-	DO CASE
-	CASE iconType == IconAsterisk
+	SWITCH iconType
+	CASE IconAsterisk
 		retVal := IDI_ASTERISK
-	CASE iconType == IconExclamation
+	CASE IconExclamation
 		retVal := IDI_EXCLAMATION
-	CASE iconType == IconHand
+	CASE IconHand
 		retVal := IDI_HAND
-	CASE iconType == IconQuestionMark
+	CASE IconQuestionMark
 		retVal := IDI_QUESTION
 	OTHERWISE
 		retVal := IDI_APPLICATION
-	ENDCASE
+	END SWITCH
 
 	RETURN retVal
 

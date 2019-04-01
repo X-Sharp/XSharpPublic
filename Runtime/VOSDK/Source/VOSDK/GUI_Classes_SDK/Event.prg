@@ -1292,32 +1292,32 @@ CLASS MouseEvent INHERIT @@Event
 
 	
 
-	DO CASE
-	CASE uMsg == WM_LBUTTONDOWN .OR.;
-		uMsg == WM_LBUTTONUP .OR.;
-		uMsg == WM_LBUTTONDBLCLK
+	SWITCH uMsg
+	CASE WM_LBUTTONDOWN
+    CASE WM_LBUTTONUP
+    CASE WM_LBUTTONDBLCLK
 		retVal := ButtonLeft
-	CASE uMsg == WM_MBUTTONDOWN .OR.;
-		uMsg == WM_MBUTTONUP .OR.;
-		uMsg == WM_MBUTTONDBLCLK
+	CASE WM_MBUTTONDOWN
+    CASE WM_MBUTTONUP
+    CASE WM_MBUTTONDBLCLK
 		retVal := ButtonMiddle
-	CASE uMsg == WM_RBUTTONDOWN .OR.;
-		uMsg == WM_RBUTTONUP .OR.;
-		uMsg == WM_RBUTTONDBLCLK
+	CASE WM_RBUTTONDOWN
+    CASE WM_RBUTTONUP
+    CASE WM_RBUTTONDBLCLK
 		retVal := ButtonRight
-	CASE uMsg == WM_XBUTTONDOWN .OR.;
-		uMsg == WM_XBUTTONUP .OR.;
-		uMsg == WM_XBUTTONDBLCLK
+	CASE WM_XBUTTONDOWN
+    CASE WM_XBUTTONUP
+    CASE WM_XBUTTONDBLCLK
 		IF _AND(HiWord(wParam), XButton1) == XButton1
 			retVal := ButtonX1
 		ELSE
 			retVal := ButtonX2
 		ENDIF
-	CASE uMsg == WM_MOUSEMOVE
+	CASE WM_MOUSEMOVE
 		retVal := LONGINT(_CAST, _AND(wParam, 0x001FU))
 	OTHERWISE
 		retVal := 0
-	ENDCASE
+	END SWITCH
 
 	RETURN retVal
 
@@ -1341,14 +1341,16 @@ ACCESS IsLeftButton AS LOGIC STRICT
 
 	
 
-	DO CASE
-	CASE uMsg == WM_LBUTTONUP .OR. uMsg == WM_LBUTTONDOWN .OR. uMsg == WM_LBUTTONDBLCLK
+	SWITCH uMsg
+	CASE WM_LBUTTONUP
+    CASE WM_LBUTTONDOWN
+    CASE WM_LBUTTONDBLCLK
 		retVal := TRUE
-	CASE uMsg == WM_MOUSEMOVE
+	CASE WM_MOUSEMOVE
 		retVal := _AND(wParam, ButtonLeft) == ButtonLeft
 	OTHERWISE
 		retVal := FALSE
-	ENDCASE
+	END SWITCH
 
 	RETURN retVal
 
@@ -1357,30 +1359,32 @@ ACCESS IsMiddleButton AS LOGIC STRICT
 
 	
 
-	DO CASE
-	CASE uMsg == WM_MBUTTONUP .OR. uMsg == WM_MBUTTONDOWN .OR. uMsg == WM_MBUTTONDBLCLK
+	SWITCH uMsg
+	CASE WM_MBUTTONUP
+    CASE WM_MBUTTONDOWN
+    CASE WM_MBUTTONDBLCLK
 		retVal := TRUE
-	CASE uMsg == WM_MOUSEMOVE
+	CASE WM_MOUSEMOVE
 		retVal := _AND(wParam, ButtonMiddle) == ButtonMiddle
 	OTHERWISE
 		retVal := FALSE
-	ENDCASE
+	END SWITCH
 
 	RETURN retVal
 
 ACCESS IsRightButton AS LOGIC STRICT 
 	LOCAL retVal AS LOGIC
 
-	
-
-	DO CASE
-	CASE uMsg == WM_RBUTTONUP .OR. uMsg == WM_RBUTTONDOWN .OR. uMsg == WM_RBUTTONDBLCLK
+	SWITCH uMsg
+    CASE WM_RBUTTONUP 
+    CASE WM_RBUTTONDOWN
+    CASE WM_RBUTTONDBLCLK
 		retVal := TRUE
-	CASE uMsg == WM_MOUSEMOVE
+	CASE WM_MOUSEMOVE
 		retVal := _AND(wParam, ButtonRight) == ButtonRight
 	OTHERWISE
 		retVal := FALSE
-	ENDCASE
+	END SWITCH
 
 	RETURN retVal
 
@@ -1394,16 +1398,18 @@ ACCESS IsXButton1 AS LOGIC STRICT
 
 	
 
-	DO CASE
-	CASE uMsg == WM_XBUTTONUP .OR. uMsg == WM_XBUTTONDOWN .OR. uMsg == WM_XBUTTONDBLCLK
+	SWITCH uMsg
+    CASE WM_XBUTTONUP
+    CASE WM_XBUTTONDOWN
+    CASE WM_XBUTTONDBLCLK
 		IF _AND(HiWord(wParam), XButton1) == XButton1
 			retVal := TRUE
 		ENDIF
-	CASE uMsg == WM_MOUSEMOVE
+	CASE WM_MOUSEMOVE
 		retVal := _AND(wParam, ButtonX1) == ButtonX1
 	OTHERWISE
 		retVal := FALSE
-	ENDCASE
+	END SWITCH
 
 	RETURN retVal
 
@@ -1413,16 +1419,18 @@ ACCESS IsXButton2 AS LOGIC STRICT
 
 	
 
-	DO CASE
-	CASE uMsg == WM_XBUTTONUP .OR. uMsg == WM_XBUTTONDOWN .OR. uMsg == WM_XBUTTONDBLCLK
+	SWITCH uMsg
+    CASE WM_XBUTTONUP
+    CASE WM_XBUTTONDOWN
+    CASE WM_XBUTTONDBLCLK
 		IF _AND(HiWord(wParam), XButton2) == XButton2
 			retVal := TRUE
 		ENDIF
-	CASE uMsg == WM_MOUSEMOVE
+	CASE WM_MOUSEMOVE
 		retVal := _AND(wParam, ButtonX2) == ButtonX2
 	OTHERWISE
 		retVal := FALSE
-	ENDCASE
+	END SWITCH
 
 	RETURN retVal
 
@@ -1687,42 +1695,42 @@ ACCESS Position AS LONGINT STRICT
 	dwType := LoWord(wParam)
     //RvdH 081105 Sliders need to be handled differently
     IF lSlider
-    	DO CASE
-    	CASE (dwType == SB_ThumbTrack) .OR. (dwType == SB_ThumbPosition)
+    	SWITCH dwType
+    	CASE SB_ThumbTrack
+        CASE SB_ThumbPosition
     		liRetVal := SHORT(_CAST, HiWord(wParam))  // Note that the high word is signed !
-    	CASE (dwType == SB_LINEDOWN) // SB_LINERIGHT == SB_LINEDOWN
+    	CASE SB_LINEDOWN
     		IF (liRetVal + nUnit + nPage) > nMax
     			liRetVal := nMax 
     		ELSE
     			liRetVal += nUnit
     		ENDIF
-    	CASE (dwType == SB_LINEUP)  // SB_LINELEFT == SB_LINEUP
+    	CASE SB_LINEUP
     		IF (liRetVal - nUnit) < nMin
     			liRetVal := nMin
     		ELSE
     			liRetVal -= nUnit
     		ENDIF
-    	CASE (dwType == SB_PAGEDOWN)   // SB_PAGERIGHT == SB_PAGEDOWN
+    	CASE SB_PAGEDOWN
     		IF (liRetVal + nBlock + nPage) > nMax
     			liRetVal := nMax
     		ELSE
     			liRetVal += nBlock
     		ENDIF
-    	CASE (dwType == SB_PAGEUP)    // SB_PAGELEFT == SB_PAGEUP
+    	CASE SB_PAGEUP
     		IF (liRetVal - nBlock) < nMin
     			liRetVal := nMin
     		ELSE
     			liRetVal -= nBlock
     		ENDIF
-    	ENDCASE
+    	END SWITCH
     ELSE
-    	DO CASE
-    	//SE-070421
-    	CASE (dwType == SB_THUMBPOSITION) .OR. (dwType == SB_THUMBTRACK)
+    	SWITCH dwType
+    	
+    	CASE SB_THUMBPOSITION
+        CASE SB_THUMBTRACK
     		liRetVal := strucScrollInfo:nTrackPos //nPos
-    	//CASE (dwType == SB_ThumbTrack)
-    		//liRetVal := strucScrollInfo.nTrackPos
-    	CASE (dwType == SB_LINEDOWN)   // SB_LINERIGHT == SB_LINEDOWN
+    	CASE SB_LINEDOWN
     		IF strucScrollInfo:nPage > 1L
     		   nMax -= LONG(_CAST,strucScrollInfo:nPage) - 1L
     		ENDIF
@@ -1731,13 +1739,13 @@ ACCESS Position AS LONGINT STRICT
     		ELSE
     			liRetVal += nUnit
     		ENDIF
-    	CASE (dwType == SB_LINEUP)    // SB_LINELEFT == SB_LINEUP
+    	CASE SB_LINEUP
     		IF (liRetVal - nUnit) < nMin
     			liRetVal := nMin
     		ELSE
     			liRetVal -= nUnit
     		ENDIF
-    	CASE (dwType == SB_PAGEDOWN)   // SB_PAGERIGHT == SB_PAGEDOWN
+    	CASE SB_PAGEDOWN
     		IF strucScrollInfo:nPage > 1L
     		   nMax -= LONG(_CAST,strucScrollInfo:nPage) - 1L
     		ENDIF
@@ -1746,13 +1754,13 @@ ACCESS Position AS LONGINT STRICT
     		ELSE
     			liRetVal += nBlock
     		ENDIF
-    	CASE (dwType == SB_PAGEUP)    // SB_PAGELEFT == SB_PAGEUP
+    	CASE SB_PAGEUP
     		IF (liRetVal - nBlock) < nMin
     			liRetVal := nMin
     		ELSE
     			liRetVal -= nBlock
     		ENDIF
-    	ENDCASE
+    	END SWITCH
     ENDIF
 	RETURN liRetVal
 
@@ -1889,25 +1897,25 @@ ACCESS Position AS LONGINT STRICT
    wLow    := LoWord(wParam)
    wHigh   := HiWord(wParam)                              
 
-	DO CASE
-	CASE (wLow == SB_LINEDOWN)
+	SWITCH wLow
+	CASE SB_LINEDOWN
 		IF (liRetVal + wUnit) > oRange:Max
 			liRetVal := oRange:Max
 		ELSE
 			liRetVal += wUnit
 		ENDIF
 
-	CASE (wLow == SB_LINEUP)
+	CASE SB_LINEUP
 		IF (liRetVal - wUnit) < oRange:Min
 			liRetVal := oRange:Min
 		ELSE
 			liRetVal -= wUnit
 		ENDIF
-	CASE (wLow == SB_THUMBPOSITION)
+	CASE SB_THUMBPOSITION
 	    liRetVal := SHORT(_CAST,wHigh) // Note that the high word is signed !
-	CASE (wLow == SB_THUMBTRACK)
+	CASE SB_THUMBTRACK
 	    liRetVal := SHORT(_CAST,wHigh) // Note that the high word is signed !
-	ENDCASE
+	END SWITCH
 
 	RETURN LONGINT(liRetVal)
 
@@ -1931,16 +1939,16 @@ ACCESS SpinnerID AS LONGINT STRICT
 ACCESS Type AS LONGINT STRICT 
 	LOCAL wType AS WORD
 	wType := LoWord(wParam)
-	DO CASE
-	CASE (wType == SB_LINEDOWN)
+	SWITCH wType
+	CASE SB_LINEDOWN
 		RETURN UnitIncrement
-	CASE (wType == SB_LINEUP)
+	CASE SB_LINEUP
 		RETURN UnitDecrement
-	CASE (wType == SB_TOP)
+	CASE SB_TOP
 		RETURN ScrollToTopLeft
-	CASE (wType == SB_BOTTOM)
+	CASE SB_BOTTOM
 		RETURN ScrollToBottomRight
-	ENDCASE
+	END SWITCH
 
 	RETURN ScrollEnd
 

@@ -22,26 +22,26 @@ METHOD Dispatch(oEvent)
 		oEvt:oWindow := oParent
 	ENDIF
 
-	DO CASE
-	CASE (uMsg == WM_CREATE)
+	SWITCH uMsg
+	CASE WM_CREATE
 		hWnd := oEvt:hWnd
 		SELF:owner:__Imp := SELF
 		SELF:Owner:SetHandle(hWnd)
 		oParent:Dispatch(oEvt)
 
-	CASE (uMsg == WM_QUERYENDSESSION)
+	CASE WM_QUERYENDSESSION
 		oParent:EventReturnValue := oParent:QueryClose(oEvt)
 
 	OTHERWISE
-		IF ((uMsg == WM_MENUSELECT) .or. (uMsg == WM_COMMAND)) .and. ;
-			(IsInstanceOf(oParent, #__FORMFRAME) .and. (IVarGet(oParent, #DATAWINDOW) != NULL_OBJECT))
+		IF ((uMsg == WM_MENUSELECT) .OR. (uMsg == WM_COMMAND)) .AND. ;
+			(IsInstanceOf(oParent, #__FORMFRAME) .AND. (IVarGet(oParent, #DATAWINDOW) != NULL_OBJECT))
 			IVarGet(oParent, #datawindow):Dispatch(oEvt)
 			oParent:EventReturnValue := IVarGet(oParent, #datawindow):EventReturnValue
 		ELSE
 			oParent:Dispatch(oEvt)
 		ENDIF
 
-	ENDCASE
+	END SWITCH
 	RETURN oParent:EventReturnValue
 
 CONSTRUCTOR(oOwner, lClientEdge) 
@@ -52,33 +52,33 @@ CONSTRUCTOR(oOwner, lClientEdge)
 
 	
 
-	dwExStyle := IIf(lClientEdge, WS_EX_STATICEDGE, 0) //WS_EX_CONTROLPARENT)
+	dwExStyle := IIF(lClientEdge, WS_EX_STATICEDGE, 0) //WS_EX_CONTROLPARENT)
 
 	// needed (for now) since we end up in an infinite
 	// WM_GETDLGCODE loop otherwise
 	o := oOwner
-	WHILE (o != NULL_OBJECT) .and. !IsInstanceOf(o, #App) .and. !IsInstanceOf(o, #DataDialog)
+	WHILE (o != NULL_OBJECT) .AND. !IsInstanceOf(o, #App) .AND. !IsInstanceOf(o, #DataDialog)
 		o := o:Owner
 	END
 
 	IF IsInstanceOf(o, #DataDialog)
-		dwExStyle := _And(dwExStyle, DWORD(_CAST, _Not(WS_EX_CONTROLPARENT)))
+		dwExStyle := _AND(dwExStyle, DWORD(_CAST, _NOT(WS_EX_CONTROLPARENT)))
 	ENDIF
-	dwStyle := _Or(dwStyle, DWORD(_CAST, WS_CLIPCHILDREN), DWORD(_CAST, WS_CHILD))
+	dwStyle := _OR(dwStyle, DWORD(_CAST, WS_CLIPCHILDREN), DWORD(_CAST, WS_CHILD))
 
 	SUPER(oOwner)
 
 	oParentOwner := oParent:Owner
 
-	IF (IsInstanceOf(oParentOwner, #Window) .and. IsWindow(oParentOwner:Handle()))
+	IF (IsInstanceOf(oParentOwner, #Window) .AND. IsWindow(oParentOwner:Handle()))
 		hParent := oParentOwner:Handle()
 	ELSE
 		hParent := oOwner:Handle()
 	ENDIF
 
 	IF (hParent == NULL_PTR)
-		dwStyle := _And(dwStyle, DWORD(_CAST, _NOT(WS_CHILD)))
-		dwStyle := _Or(dwStyle, DWORD(_CAST, WS_OVERLAPPEDWINDOW), DWORD(_CAST, WS_THICKFRAME))
+		dwStyle := _AND(dwStyle, DWORD(_CAST, _NOT(WS_CHILD)))
+		dwStyle := _OR(dwStyle, DWORD(_CAST, WS_OVERLAPPEDWINDOW), DWORD(_CAST, WS_THICKFRAME))
 	ENDIF
 
 

@@ -254,19 +254,19 @@ ACCESS CurrentView
 	dwStyles := DWORD(_CAST, GetWindowLong(SELF:Handle(), GWL_STYLE))
 	dwView := _AND(dwStyles, LVS_TYPEMASK)
 
-	DO CASE
-	CASE dwView == LVS_ICON
+	SWITCH dwView
+	CASE LVS_ICON
 		RETURN #IconView
 
-	CASE dwView == LVS_SMALLICON
+	CASE LVS_SMALLICON
 		RETURN #SmallIconView
 
-	CASE dwView == LVS_LIST
+	CASE LVS_LIST
 		RETURN #ListView
 
-	CASE dwView == LVS_REPORT
+	CASE LVS_REPORT
 		RETURN #ReportView
-	END CASE
+	END SWITCH
 
 	RETURN NULL_SYMBOL
 

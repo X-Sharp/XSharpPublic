@@ -14,14 +14,14 @@ USING System.Threading
 // Class that holds the memvars for a certain level on the callstack
 [DebuggerDisplay("Level:{Depth}")];	
 INTERNAL CLASS XSharp.MemVarLevel                     
-	PROPERTY Variables AS Dictionary<STRING, MemVar> AUTO    
+	PROPERTY Variables AS Dictionary<STRING, MEMVAR> AUTO    
 	PROPERTY Depth AS INT AUTO GET PRIVATE SET
 	CONSTRUCTOR (nDepth AS INT)              
-		Variables   := Dictionary<STRING, MemVar>{StringComparer.OrdinalIgnoreCase}
+		Variables   := Dictionary<STRING, MEMVAR>{StringComparer.OrdinalIgnoreCase}
 		Depth       := nDepth
 		RETURN
 
-	METHOD Add(variable AS MemVar) AS VOID
+	METHOD Add(variable AS MEMVAR) AS VOID
 #ifdef DEBUG
 		variable:Level := SELF
 #endif
@@ -31,14 +31,14 @@ INTERNAL CLASS XSharp.MemVarLevel
 	METHOD ContainsKey(cName AS STRING) AS LOGIC
 		RETURN Variables:ContainsKey(cName) 
 		
-	METHOD TryGetValue(cName AS STRING, VALUE OUT MemVar) AS LOGIC
+	METHOD TryGetValue(cName AS STRING, VALUE OUT MEMVAR) AS LOGIC
 		RETURN Variables:TryGetValue(cName, OUT VALUE)
 	
-	PROPERTY SELF[Name AS STRING] AS MemVar
+	PROPERTY SELF[Name AS STRING] AS MEMVAR
 		GET                     
-			LOCAL memvar AS MemVar
-			IF Variables:TryGetValue(name, OUT memvar)
-				RETURN memvar
+			LOCAL memvar AS MEMVAR
+			IF Variables:TryGetValue(name, OUT MEMVAR)
+				RETURN MEMVAR
 			ENDIF
 			RETURN NULL
 		END GET
@@ -62,8 +62,8 @@ PUBLIC CLASS XSharp.MemVar
 
 
     INTERNAL CLASS MemVarThreadInfo
-        INTERNAL Levels as Stack <MemVarLevel>
-        INTERNAL Depth  as INT
+        INTERNAL Levels AS Stack <MemVarLevel>
+        INTERNAL Depth  AS INT
         CONSTRUCTOR()
             Levels := Stack <MemVarLevel>{32}
             Depth  := 0
@@ -76,9 +76,9 @@ PUBLIC CLASS XSharp.MemVar
 
     // Stack local privates with initializer and property to access the current stacks privates
     PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadInfo{} }}  AS ThreadLocal< MemVarThreadInfo >
-    PRIVATE STATIC PROPERTY Info       as MemVarThreadInfo          GET ThreadList:Value
+    PRIVATE STATIC PROPERTY Info       AS MemVarThreadInfo          GET ThreadList:Value
 	PRIVATE STATIC PROPERTY Privates   AS Stack <MemVarLevel>       GET Info:Levels
-    PRIVATE STATIC PROPERTY Depth      AS INT GET Info:Depth        SET Info:Depth := Value
+    PRIVATE STATIC PROPERTY Depth      AS INT GET Info:Depth        SET Info:Depth := VALUE
 	PRIVATE STATIC PROPERTY Current    AS MemVarLevel GET IIF (Privates:Count > 0, Privates:Peek(), NULL)
 
 	
@@ -128,9 +128,9 @@ PUBLIC CLASS XSharp.MemVar
 	/// <exclude />
 	STATIC METHOD GetHigherLevelPrivate(name AS STRING) AS XSharp.MemVar
 		FOREACH VAR previous IN privates    
-			LOCAL memvar AS MemVar
-			IF previous!= current .AND. previous:TryGetValue(name, OUT memvar)
-				RETURN memvar
+			LOCAL memvar AS MEMVAR
+			IF previous!= current .AND. previous:TryGetValue(name, OUT MEMVAR)
+				RETURN MEMVAR
 			ENDIF   
 		NEXT		
 		RETURN NULL	
@@ -138,33 +138,33 @@ PUBLIC CLASS XSharp.MemVar
     /// <exclude />
 	STATIC METHOD PrivatePut(name AS STRING, VALUE AS USUAL) AS LOGIC
 		CheckCurrent()      
-		LOCAL memvar AS MemVar
-		IF current:TryGetValue(name, OUT memvar)
+		LOCAL memvar AS MEMVAR
+		IF current:TryGetValue(name, OUT MEMVAR)
 			MEMVAR:Value := VALUE
 			RETURN TRUE			
 		ENDIF
         MEMVAR := GetHigherLevelPrivate(name)
-        IF memvar != NULL
+        IF MEMVAR != NULL
         	MEMVAR:Value := VALUE
         	RETURN TRUE
         ENDIF
 		RETURN FALSE	
 
 	/// <exclude />		                                    
-	STATIC METHOD PrivateFind(name AS STRING) AS MemVar
-		LOCAL memvar AS MemVar
-		IF current != NULL .AND. current:TryGetValue(name, OUT memvar)
-			RETURN memvar
+	STATIC METHOD PrivateFind(name AS STRING) AS MEMVAR
+		LOCAL memvar AS MEMVAR
+		IF current != NULL .AND. current:TryGetValue(name, OUT MEMVAR)
+			RETURN MEMVAR
 		ENDIF   
         RETURN GetHigherLevelPrivate(name)
 	/// <exclude />	
 	STATIC METHOD Release(name AS STRING) AS VOID
 		// assign nil to visible private. Does not really release the variable.		
 		VAR Memvar := PrivateFind(name)
-		IF memvar == NULL
+		IF MEMVAR == NULL
 			MEMVAR := PublicFind(name)
 		ENDIF
-		IF memvar != NULL
+		IF MEMVAR != NULL
 			MEMVAR:Value := NIL
 		ELSE
 			THROW Exception{"Variable "+name:ToString()+" does not exist"}
@@ -236,20 +236,20 @@ PUBLIC CLASS XSharp.MemVar
 		IF _priv    
 			CheckCurrent() 
 			IF !Current:ContainsKey(name)
-				Current:Add(MemVar{name,NIL})
+				Current:Add(MEMVAR{name,NIL})
 			ENDIF
 		ELSE
             BEGIN LOCK Publics
 			    IF !Publics:ContainsKey(name)  
-				    VAR memvar := MemVar{name,FALSE}        // publics are always initialized with FALSE
-				    Publics:Add(memvar )
+				    VAR memvar := MEMVAR{name,FALSE}        // publics are always initialized with FALSE
+				    Publics:Add(MEMVAR )
 			    ENDIF
             END LOCK
 		ENDIF  
     /// <exclude />
 
 	STATIC METHOD Get(name AS STRING) AS USUAL 
-		LOCAL oMemVar AS MemVar
+		LOCAL oMemVar AS MEMVAR
 		// privates take precedence over publics ?
 		oMemVar := PrivateFind(name)
 		IF oMemVar == NULL
@@ -262,7 +262,7 @@ PUBLIC CLASS XSharp.MemVar
     /// <exclude />
 
 	STATIC METHOD Put(name AS STRING, VALUE AS USUAL) AS USUAL
-		LOCAL oMemVar AS MemVar
+		LOCAL oMemVar AS MEMVAR
 		// assign to existing memvar first
 		// privates take precedence over publics ?
 		oMemVar := PrivateFind(name)
@@ -276,7 +276,7 @@ PUBLIC CLASS XSharp.MemVar
 		ELSE
 			// memvar does not exist, then add it at the current level
 			CheckCurrent()
-			Current:Add(MemVar{name,VALUE})
+			Current:Add(MEMVAR{name,VALUE})
 		ENDIF    
 		RETURN VALUE 
     /// <exclude />
@@ -296,8 +296,8 @@ PUBLIC CLASS XSharp.MemVar
 #region Publics	
     /// <exclude />
 
-	STATIC METHOD PublicFind(name AS STRING) AS MemVar
-		LOCAL oMemVar AS MemVar
+	STATIC METHOD PublicFind(name AS STRING) AS MEMVAR
+		LOCAL oMemVar AS MEMVAR
         BEGIN LOCK Publics
 		    IF Publics:TryGetValue(name, OUT oMemVar)
 			    RETURN oMemVar

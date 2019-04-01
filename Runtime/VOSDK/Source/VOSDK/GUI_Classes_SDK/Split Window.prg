@@ -31,17 +31,17 @@ METHOD ChangeBackground(oBrush, kWhere)
 
 	// change the particular color using the supplied brush,
 	// or the appropriate system color if the brush is null
-	DO CASE
-	CASE kWhere == SPLTCOLOR_WINDOW
+	SWITCH (INT) kWhere
+	CASE SPLTCOLOR_WINDOW
 		oBackgroundBrush := oBrush
 		IF oBackgroundBrush == NULL_OBJECT
 			dwNewColor := GetSysColor(COLOR_APPWORKSPACE)
 		ENDIF
 
-	CASE kWhere == SPLTCOLOR_BAR
+	CASE SPLTCOLOR_BAR
 		oBarBrush := oBrush
 		IF oBarBrush == NULL_OBJECT
-			IF _And(GetVersion(), 0x80000000) != 0
+			IF _AND(GetVersion(), 0x80000000) != 0
 				// Use Windows95 constants
 				dwNewColor := GetSysColor(COLOR_3DFACE)
 			ELSE
@@ -50,10 +50,10 @@ METHOD ChangeBackground(oBrush, kWhere)
 			ENDIF
 		ENDIF
 
-	CASE kWhere == SPLTCOLOR_BARFRAME
+	CASE SPLTCOLOR_BARFRAME
 		oBarFrameBrush := oBrush
 		IF oBarFrameBrush == NULL_OBJECT
-			IF _And(GetVersion(), 0x80000000) != 0
+			IF _AND(GetVersion(), 0x80000000) != 0
 				// Use Windows95 constants
 				dwNewColor := GetSysColor(COLOR_3DFACE)
 			ELSE
@@ -61,7 +61,7 @@ METHOD ChangeBackground(oBrush, kWhere)
 				dwNewColor := GetSysColor(COLOR_BTNFACE)
 			ENDIF
 		ENDIF
-	END CASE
+	END SWITCH
 
 	IF oBrush != NULL_OBJECT
 		dwNewColor := __WCGetBrushColor(oBrush)
@@ -111,7 +111,7 @@ METHOD Create()
 
 	// set the various visual elements of the control
 	IF hWnd != NULL_PTR
-		IF _And(GetVersion(), 0x80000000) != 0
+		IF _AND(GetVersion(), 0x80000000) != 0
 			// use Windows95 constants to set colors
 			PCALL(gpfnSpltColorSet, hWnd, SPLTCOLOR_3DHIGH, INT(_CAST, GetSysColor(COLOR_3DHILIGHT)))
 			PCALL(gpfnSpltColorSet, hWnd, SPLTCOLOR_3DSHADOW, INT(_CAST, GetSysColor(COLOR_3DSHADOW)))
@@ -141,7 +141,7 @@ METHOD Destroy()
 		liCount := oPanes:Width * oPanes:Height
 		FOR liPane := 1 TO liCount
 			oPane := SELF:GetPaneClient(liPane)
-			IF (oPane != NULL_OBJECT) .and. IsMethod(oPane, #Destroy)
+			IF (oPane != NULL_OBJECT) .AND. IsMethod(oPane, #Destroy)
 				Send(oPane, #Destroy)
 			ENDIF
 		NEXT  // liPane
@@ -166,11 +166,11 @@ METHOD Dispatch(oEvent)
 
 	IF (oEvt:Message == WM_CAPTURECHANGED)
 		oSize := SELF:GetPaneSize(1)
-		IF (oSize != NULL_OBJECT .and. oSize:Height <= 1)
+		IF (oSize != NULL_OBJECT .AND. oSize:Height <= 1)
 			oSize:Height := 2
 			lResize := TRUE
 		ENDIF
-		IF (oSize != NULL_OBJECT .and. oSize:Width <= 1)
+		IF (oSize != NULL_OBJECT .AND. oSize:Width <= 1)
 			oSize:Width := 2
 			lResize := TRUE
 		ENDIF
@@ -194,7 +194,7 @@ METHOD GetAllPaneClients(aChildren)
 		aPanes := {}
 	ENDIF
 
-   IF oPanes != Null_Object
+   IF oPanes != NULL_OBJECT
 	   liCount := oPanes:Width * oPanes:Height - 1l
 
 		FOR liPane := 0 UPTO liCount
@@ -215,7 +215,7 @@ METHOD GetPaneClient(nPane)
 	
 
 	// if nPane is a valid pane number, return the pane's client object
-	IF (nPane > 0) .and. ((oPanes != NULL_OBJECT) .and. nPane <= (oPanes:Width * oPanes:Height))
+	IF (nPane > 0) .AND. ((oPanes != NULL_OBJECT) .AND. nPane <= (oPanes:Width * oPanes:Height))
 		oRet :=__WCGetObjectByHandle(PCALL(gpfnSpltPaneAssocGet, SELF:Handle(), nPane - 1))
 		IF IsInstanceOf(oRet, #__WindApp)
 			oRet := IVarGet(oRet, #Owner)
@@ -230,7 +230,7 @@ METHOD GetPaneSize(nPane)
 	
 
 	// if nPane is a valid pane number, return the pane's dimension	object
-	IF (nPane > 0) .and. ((oPanes != NULL_OBJECT) .and. nPane <= (oPanes:Width * oPanes:Height))
+	IF (nPane > 0) .AND. ((oPanes != NULL_OBJECT) .AND. nPane <= (oPanes:Width * oPanes:Height))
 		IF PCALL(gpfnSpltPaneExtGet, SELF:Handle(), nPane - 1, @strucSize)
 			RETURN Dimension{strucSize:cx, strucSize:cy}
 		ENDIF
@@ -254,12 +254,12 @@ METHOD Hide(nPane)
 ACCESS HorizontalAlign 
 	
 
-	RETURN _And(SWS_HALIGN, PCALL(gpfnSpltStyleGet, SELF:Handle())) == 1
+	RETURN _AND(SWS_HALIGN, PCALL(gpfnSpltStyleGet, SELF:Handle())) == 1
 
 ACCESS HorizontalDrag 
 	
 
-	RETURN _And(SWS_NOHORZDRAG, PCALL(gpfnSpltStyleGet, SELF:Handle())) == 0
+	RETURN _AND(SWS_NOHORZDRAG, PCALL(gpfnSpltStyleGet, SELF:Handle())) == 0
 
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lHorizontalDrag, lVerticalDrag, kAlignment) 
 	LOCAL oWin AS Window
@@ -282,7 +282,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lHorizontalDrag, lVerticalDrag, kAl
 		oWin := Send(oWin, #GetDialogWindow)
 	ENDIF
 
-	SUPER(oWin, xID, oPoint, oDimension, CASPLIT_CLASS, _Or(WS_VISIBLE, WS_CHILD))
+	SUPER(oWin, xID, oPoint, oDimension, CASPLIT_CLASS, _OR(WS_VISIBLE, WS_CHILD))
 
 	// set drag and alignment attributes
 	IF !lHorizontalDrag
@@ -381,15 +381,15 @@ METHOD SetPaneClient(oWindow, nPane)
      //avoids the side effect, that after a call of SetPaneClient() a formerly been set
       //WS_CLIPCHILDREN style is reset.
 		dwStyles := DWORD(_CAST, GetWindowLong(oWindow:handle(), GWL_STYLE))
-		dwStyles := _And(dwStyles,_Not(WS_POPUP))
-		dwStyles := _Or(dwStyles,  WS_CHILD)
+		dwStyles := _AND(dwStyles,_NOT(WS_POPUP))
+		dwStyles := _OR(dwStyles,  WS_CHILD)
 		SetWindowLong(oWindow:handle(), GWL_STYLE, LONGINT(_CAST, dwStyles))
 
 	ENDIF
 
 
 	// store the client in the array, and connect it to the pane
-	IF IsInstanceOfUsual(oWindow, #Window) .or. IsInstanceOfUsual(oWindow, #Control)
+	IF IsInstanceOfUsual(oWindow, #Window) .OR. IsInstanceOfUsual(oWindow, #Control)
 		PCALL(gpfnSpltPaneAssocSet, SELF:Handle(), oWindow:Handle(), nPane - 1)
 	ELSEIF (oWindow == NULL_OBJECT)
 		PCALL(gpfnSpltPaneAssocSet, SELF:Handle(), NULL_PTR, nPane - 1)
@@ -403,7 +403,7 @@ METHOD SetPaneSize(oDimension, nPane)
 	
 
 	// if nPane is valid, return the size of the pane
-	IF nPane > 0 .and. nPane <= (oPanes:Width * oPanes:Height)
+	IF nPane > 0 .AND. nPane <= (oPanes:Width * oPanes:Height)
 		//SE-050910 S. Ebert
 		//Added the offset off 1 to the horizontal and vertical dimension.
 		//Without this offset, the result of __SplitView:GetPaneSize() is decremented by one in
@@ -466,12 +466,12 @@ METHOD SuspendUpdate()
 ACCESS VerticalAlign 
 	
 
-	RETURN _And(SWS_VALIGN, PCALL(gpfnSpltStyleGet, SELF:Handle())) == 1
+	RETURN _AND(SWS_VALIGN, PCALL(gpfnSpltStyleGet, SELF:Handle())) == 1
 
 ACCESS VerticalDrag 
 	
 
-	RETURN _And(SWS_NOVERTDRAG, PCALL(gpfnSpltStyleGet, SELF:Handle())) == 0
+	RETURN _AND(SWS_NOVERTDRAG, PCALL(gpfnSpltStyleGet, SELF:Handle())) == 0
 
 END CLASS
 
@@ -596,11 +596,11 @@ METHOD Dispatch(oEvent)
 	LOCAL oEvt := oEvent AS @@Event
 	LOCAL oPane AS OBJECT
 
-	IF (oEvt:uMsg == WM_NCACTIVATE) .and. LOGIC(_CAST, oEvt:wParam)
+	IF (oEvt:uMsg == WM_NCACTIVATE) .AND. LOGIC(_CAST, oEvt:wParam)
 		InvalidateRect(hwnd, NULL_PTR, TRUE)
-	ELSEIF (oEvt:uMsg == WM_SETFOCUS) .and. !lInDestroy .and. (oSplitView != NULL_OBJECT)
+	ELSEIF (oEvt:uMsg == WM_SETFOCUS) .AND. !lInDestroy .AND. (oSplitView != NULL_OBJECT)
 		oPane := oSplitView:GetPaneClient(1)
-		IF (oPane != NULL_OBJECT) .and. IsWindow(oPane:Handle()) .and. !IsInstanceOf(oPane, #DialogWindow)
+		IF (oPane != NULL_OBJECT) .AND. IsWindow(oPane:Handle()) .AND. !IsInstanceOf(oPane, #DialogWindow)
 			SetFocus(Send(oPane, #Handle))
 		ENDIF
 	ENDIF
@@ -702,9 +702,9 @@ CONSTRUCTOR(oOwner, lHorizontalDrag, lVerticalDrag, kAlignment)
 
 	// set up drag and alignment options
 
-	Default(@lHorizontalDrag, FALSE)
-	Default(@lVerticalDrag, TRUE)
-	Default(@kAlignment, SPLIT_VERTALIGN )
+	DEFAULT(@lHorizontalDrag, FALSE)
+	DEFAULT(@lVerticalDrag, TRUE)
+	DEFAULT(@kAlignment, SPLIT_VERTALIGN )
 
 	oSplitView := __SplitView{SELF, 1000, oPoint, oDimension, lHorizontalDrag, lVerticalDrag, kAlignment}
 	oSplitView:Show()

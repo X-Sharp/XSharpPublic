@@ -278,7 +278,7 @@ METHOD __RecordChange(lDoSelect := NIL AS USUAL) AS VOID STRICT
 	//PP-030828 Strong typing
 	LOCAL iItem AS INT
 
-	Default(@lDoSelect, TRUE)
+	DEFAULT(@lDoSelect, TRUE)
 
 	IF lDoSelect
 		iItem := SELF:__GetServerPos() - 1
@@ -314,7 +314,7 @@ METHOD __SetServerPos(nOrderPos AS INT, lSuspendNotify := NIL AS USUAL) AS INT S
 		RETURN 0
 	ENDIF
 
-	Default(@lSuspendNotify, FALSE)
+	DEFAULT(@lSuspendNotify, FALSE)
 	IF (lSuspendNotify)
 		oDLVServer:SuspendNotification()
 	ENDIF
@@ -419,30 +419,30 @@ METHOD Notify(kNotification, uDescription)
 		ENDIF
 	ENDIF
 
-	DO CASE
-	CASE kNotification == NOTIFYCOMPLETION
+	SWITCH (INT) kNotification
+	CASE NOTIFYCOMPLETION
 		// self:__NotifyChanges(GBNFY_COMPLETION)
 		// nOldRecordNum := oDataServer:Recno
-	CASE kNotification == NOTIFYINTENTTOMOVE
+	CASE NOTIFYINTENTTOMOVE
 		// return self:__NotifyChanges(GBNFY_INTENTTOMOVE)
 		//self:__refreshdata()
 		RETURN TRUE
-	CASE kNotification == NOTIFYFILECHANGE
+	CASE NOTIFYFILECHANGE
 		SELF:Refresh()
 		// ASend(aColumn, #__Scatter)
 		// self:__NotifyChanges(GBNFY_FILECHANGE)
 		// ASend(aColumn, #__Scatter)
 		// nOldRecordNum := oDataServer:Recno
-	CASE kNotification == NOTIFYFIELDCHANGE
+	CASE NOTIFYFIELDCHANGE
 		SELF:__RefreshData()
 		// self:__RefreshField(uDescription)
 		// self:__NotifyChanges(GBNFY_FIELDCHANGE)
-	CASE kNotification == NOTIFYCLOSE
+	CASE NOTIFYCLOSE
 		SELF:__Unlink()
 
-	CASE (kNotification == NOTIFYRECORDCHANGE) .OR.;
-		(kNotification == NOTIFYGOBOTTOM) .OR. ;
-		(kNotification == NOTIFYGOTOP)
+	CASE NOTIFYRECORDCHANGE
+    CASE NOTIFYGOBOTTOM
+    CASE NOTIFYGOTOP
 		// ASend(aColumn, #__Scatter)
 
 		// if nOldRecordNum != oDataServer:Recno
@@ -454,13 +454,14 @@ METHOD Notify(kNotification, uDescription)
 		// nOldRecordNum := oDataServer:Recno
 		SELF:__RecordChange()
 
-	CASE (kNotification == NOTIFYDELETE) .OR. (kNotification == NOTIFYAPPEND)
+	CASE NOTIFYDELETE
+    CASE NOTIFYAPPEND
 		SELF:Refresh()
 		// ASend(aColumn, #__Scatter)
 		// self:__NotifyChanges(GBNFY_DODELETE)
 		// ASend(aColumn, #__Scatter)
 		// nOldRecordNum := oDataServer:Recno
-	END CASE
+	END SWITCH
 
 	RETURN NIL
 

@@ -55,6 +55,7 @@ INTERNAL STATIC CLASS TransFormHelpers
         LOCAL cString			AS STRING
         wValueLen := cValue:Length
         lRInsert	:= SplitPict(cSayPicture, OUT cPic, OUT cFunc)
+        cSayPicture := cFunc // get rid of warning
         cSayPicture := cPic
         wPictureLen 	:= cSayPicture:Length
         IF lRInsert

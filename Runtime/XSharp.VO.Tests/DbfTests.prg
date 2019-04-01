@@ -1662,7 +1662,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBMemoExt_test() AS VOID
 			LOCAL cDBF AS STRING
-			LOCAL aFields AS ARRAY
 			
 			RDDSetDefault ( "DBFNTX" )
 			Assert.Equal(".DBT" , DBMemoExt() ) // NULL_STRING instead of ".DBT"

@@ -7,7 +7,7 @@ CLASS Brush INHERIT VObject
 	LOCAL sPoint	IS _winPoint	
 	LOCAL hParent AS PTR
 
-	IF _hParent == Null_Ptr
+	IF _hParent == NULL_PTR
 		//PP-040416 Issue 12706
 		//for compatibility with the VO 2.6 behaviour, if no _hParent is known
 		IF __WCGetControlByHandle(hClient) != NULL_OBJECT
@@ -32,10 +32,10 @@ CLASS Brush INHERIT VObject
 		sPoint:y := sRect:top
 		ScreenToClient(hParent, @sPoint)
 		SetStretchBltMode(_hDc, HALFTONE)
-		SetBrushOrgEx(_hDc, -sPoint:x, -sPoint:y, Null_Ptr)
+		SetBrushOrgEx(_hDc, -sPoint:x, -sPoint:y, NULL_PTR)
 	ELSE
 		UnrealizeObject(hBrush)
-		SetBrushOrgEx(_hDc, 0, 0, Null_Ptr)
+		SetBrushOrgEx(_hDc, 0, 0, NULL_PTR)
 	ENDIF
 	RETURN
 
@@ -50,7 +50,7 @@ METHOD CreateNew(xColor, kHatchStyle)
 	ENDIF
 
 	IF IsInstanceOfUsual(xColor, #Color)
-		Default(@kHatchStyle, HATCHSOLID)
+		DEFAULT(@kHatchStyle, HATCHSOLID)
 
 		IF IsNumeric(kHatchStyle)
 			IF (kHatchStyle == HATCHSOLID)
@@ -127,7 +127,7 @@ ASSIGN Parent (oWindow)
 		ENDIF
 		_hParent := oParent:Handle()
 	ELSE
-		_hParent := Null_Ptr
+		_hParent := NULL_PTR
 	ENDIF
    RETURN 
 
@@ -136,41 +136,41 @@ END CLASS
 FUNCTION __ConvertHatch(hatchStyle AS INT) AS INT STRICT
 	LOCAL retVal AS INT
 
-	DO CASE
-	CASE hatchStyle == HATCHDIAGONAL45
+	SWITCH hatchStyle
+	CASE HATCHDIAGONAL45
 		retVal := HS_BDIAGONAL
-	CASE hatchStyle == HATCHVERTICAL
+	CASE  HATCHVERTICAL
 		retVal := HS_VERTICAL
-	CASE hatchStyle == HATCHDIAGONAL135
+	CASE HATCHDIAGONAL135
 		retVal := HS_FDIAGONAL
-	CASE hatchStyle == HATCHHORIZONTAL
+	CASE HATCHHORIZONTAL
 		retVal := HS_HORIZONTAL
-	CASE hatchStyle == HATCHORTHOGONALCROSS
+	CASE HATCHORTHOGONALCROSS
 		retVal := HS_CROSS
 	OTHERWISE
 		retVal := HS_DIAGCROSS
-	ENDCASE
+	END SWITCH
 
 	RETURN retVal
 
 FUNCTION __ConvertBrush(brushType AS INT) AS INT STRICT
 	LOCAL retVal AS INT
 
-	DO CASE
-	CASE brushType == BRUSHBLACK
+	SWITCH brushType 
+	CASE BRUSHBLACK
 		retVal := BLACK_BRUSH
-	CASE brushType == BRUSHDARK
+	CASE BRUSHDARK
 		retVal := DKGRAY_BRUSH
-	CASE brushType == BRUSHMEDIUM
+	CASE BRUSHMEDIUM
 		retVal := GRAY_BRUSH
-	CASE brushType == BRUSHLIGHT
+	CASE BRUSHLIGHT
 		retVal := LTGRAY_BRUSH
-	CASE brushType == BRUSHHOLLOW
+	CASE BRUSHHOLLOW
 		retVal := HOLLOW_BRUSH
-	CASE brushType == BRUSHCLEAR
+	CASE BRUSHCLEAR
 		retVal := NULL_BRUSH
 	OTHERWISE
 		retVal := WHITE_BRUSH
-	ENDCASE
+	END SWITCH
 
 	RETURN retVal

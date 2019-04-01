@@ -332,7 +332,7 @@ METHOD MatchesTemplChar( cTest AS STRING, _cTemplChar AS STRING, lIgnoreBlank AS
 	IF ! String.IsNullOrEmpty( _cTemplChar )
 	   cTemplChar := _cTemplChar[0]
 	ENDIF
-#warning added "c" prefixes
+
 	// speed up this case
 	IF cTemplChar == c'X'
 		RETURN TRUE
@@ -342,25 +342,30 @@ METHOD MatchesTemplChar( cTest AS STRING, _cTemplChar AS STRING, lIgnoreBlank AS
 		RETURN TRUE
 	ENDIF
 
-	DO CASE
-	CASE cTemplChar == c'A'
+	SWITCH cTemplChar
+
+	CASE c'A'
 		RETURN IsAlpha( cTest )
-	CASE cTemplChar == c'N'
+	CASE c'N'
 		RETURN IsAlNum( cTest )
-	CASE cTemplChar == c'9' .OR. cTemplChar == c'.'
+	CASE c'9'
+    CASE c'.'
+        IF cType == "N"
+            RETURN TRUE
+        ENDIF
 		RETURN IsDigit( cTest ) .OR. ( cType == "N" .AND. At2( cTest, " +-" ) > 0 )
-	CASE cTemplChar == c'#'
+	CASE c'#'
 		RETURN IsDigit( cTest ) .OR. At2( cTest, " +-" ) > 0
-	CASE cTemplChar == c'!'
+	CASE c'!'
 		RETURN TRUE
-	CASE cTemplChar == c'Y'
+	CASE c'Y'
 		RETURN At2( cTest:ToUpper(), __CavoStr( RT_MSG_YNSTRING ) ) > 0
-	CASE cTemplChar == c'L'
+	CASE c'L'
 		cTest := cTest:ToUpper()
 		RETURN At2( cTest, __CavoStr( RT_MSG_YNSTRING ) ) > 0 .OR. cTest == __CavoStr( RT_MSG_SHORT_TRUE ) .OR. cTest == __CavoStr( RT_MSG_SHORT_FALSE )
-	CASE cTemplChar == c'.' .AND. cType == "N"
-		RETURN TRUE
-	ENDCASE
+	
+        
+	END SWITCH
 
 	RETURN FALSE
 
@@ -610,23 +615,25 @@ METHOD ProcessKeyEvent(oKeyEvt AS KeyEvent) AS LOGIC STRICT
 	iCurPos := oEditOwner:__CurPos
 	lRet := TRUE
 
-	IF (uMsg == WM_KEYDOWN)
+    SWITCH uMsg
+	CASE WM_KEYDOWN
 		dwKCode := oKeyEvt:KeyCode
-		DO CASE
-		CASE(dwKCode == KEYARROWLEFT)
+		SWITCH dwKCode
+		CASE KEYARROWLEFT
 			oEditOwner:__CurPos := SELF:PrevEditPos(-1)
-		CASE(dwKCode == KEYARROWRIGHT)
+		CASE KEYARROWRIGHT
 			oEditOwner:__CurPos := SELF:NextEditPos(-1)
-		CASE(dwKCode == KEYHOME)
+		CASE KEYHOME
 			oEditOwner:__CurPos := SELF:NextEditPos(1)
-		CASE(dwKCode == KEYEND)
+		CASE KEYEND
 			IF lEndKey
 				oEditOwner:__CurPos := SELF:PrevEditPos(iTemplLen) + 1
 			ELSE
 				oEditOwner:__CurPos := SELF:PrevEditPos(INT(_CAST, SLen(Trim(sValue)))) + 1
 			ENDIF
 			lEndKey := !lEndKey
-		CASE(dwKCode == KEYDELETE) .OR. (dwKCode == KEYBACKSPACE)
+		CASE KEYDELETE
+        CASE KEYBACKSPACE
 			sOldValue := SClone(sValue)
 			SendMessage(oEditOwner:Handle(), EM_GETSEL, DWORD(_CAST, @iStart), LONG(_CAST, @iEnd))
 			IF (dwKCode == KEYDELETE) .OR. (iStart != iEnd)
@@ -638,8 +645,8 @@ METHOD ProcessKeyEvent(oKeyEvt AS KeyEvent) AS LOGIC STRICT
 			ENDIF
 		OTHERWISE
 			lRet := FALSE
-		ENDCASE
-	ELSEIF (uMSG == WM_CHAR)
+		END SWITCH
+	CASE WM_CHAR
 		sOldValue := SClone(sValue)
 		IF (oKeyEvt:ASCIIChar == wDecSep) .AND. (cType == "N") .AND. (SELF:DecimalPos > 0)
 			oEditOwner:__CurPos := SELF:DecimalPos + 1
@@ -653,7 +660,7 @@ METHOD ProcessKeyEvent(oKeyEvt AS KeyEvent) AS LOGIC STRICT
 		ELSE
 			lRet := (oKeyEvt:KeyCode == KEYBACKSPACE)
 		ENDIF
-	ENDIF
+	END SWITCH
 
 	RETURN lRet
 

@@ -1140,6 +1140,28 @@ CLASS XSharp.CoreDb
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         RETURN oRDD:OrderListRebuild()
         })
+
+        /// <summary>
+        /// Set the controlling order for a work area.
+        /// </summary>
+        /// <param name="cBagName"></param>
+        /// <param name="oOrder"></param>
+        /// <param name="strPreviousOrder"></param>
+        /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+        /// <remarks>This function is like DbSetOrder() but strongly typed.
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// </remarks>
+    STATIC METHOD OrdSetFocus(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
+        TRY
+            LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
+            VAR info     := DbOrderInfo{}
+            info:BagName := cBagName
+            info:Order   := oOrder
+            RETURN oRDD:OrderListFocus(info)
+        CATCH e AS Exception
+            RuntimeState.LastRDDError := e
+        END TRY
+        RETURN FALSE
         
         /// <summary>
         /// Set the controlling order for a work area.

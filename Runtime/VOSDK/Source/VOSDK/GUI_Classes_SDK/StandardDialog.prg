@@ -954,25 +954,25 @@ METHOD Show()
 
 	IF bRet
 		iFam := _AND(sLogFont:lfPitchAndFamily, 0B11110000) // Different from CV code!
-		DO CASE
-		CASE iFam == FF_ROMAN
+		SWITCH iFam
+		CASE FF_ROMAN
 			iFamily := FONTFAMILY_ROMAN
 
-		CASE iFam == FF_SWISS
+		CASE FF_SWISS
 			iFamily := FONTFAMILY_SWISS
 
-		CASE iFam == FF_MODERN
+		CASE FF_MODERN
 			iFamily := FONTFAMILY_MODERN
 
-		CASE iFam == FF_SCRIPT
+		CASE FF_SCRIPT
 			iFamily := FONTFAMILY_SCRIPT
 
-		CASE iFam == FF_DECORATIVE
+		CASE FF_DECORATIVE
 			iFamily := FONTFAMILY_DECORAT
 
 		OTHERWISE
 			iFamily := FONTFAMILY_ANY
-		ENDCASE
+		END SWITCH
 	ENDIF
 
 	oDim := Dimension{sLogFont:lfWidth, sLogFont:lfHeight}
@@ -1013,37 +1013,37 @@ METHOD Show()
 		oFont:Strikethru := TRUE
 	ENDIF
 
-	DO CASE
-	CASE sLogFont:lfWeight == FW_THIN
+	SWITCH sLogFont:lfWeight
+	CASE FW_THIN
 		oFont:Light := TRUE
 
-	CASE sLogFont:lfWeight == FW_EXTRALIGHT
+	CASE FW_EXTRALIGHT
 		oFont:Light := TRUE
 
-	CASE sLogFont:lfWeight == FW_LIGHT
+	CASE FW_LIGHT
 		oFont:Light := TRUE
 
-	CASE sLogFont:lfWeight == FW_NORMAL
+	CASE FW_NORMAL
 		oFont:Normal := TRUE
 
-	CASE sLogFont:lfWeight == FW_MEDIUM
+	CASE FW_MEDIUM
 		oFont:Normal := TRUE
 
-	CASE sLogFont:lfWeight == FW_SEMIBOLD
+	CASE FW_SEMIBOLD
 		oFont:Normal := TRUE
 
-	CASE sLogFont:lfWeight == FW_BOLD
+	CASE FW_BOLD
 		oFont:Bold := TRUE
 
-	CASE sLogFont:lfWeight == FW_ULTRABOLD
+	CASE FW_ULTRABOLD
 		oFont:Bold := TRUE
 
-	CASE sLogFont:lfWeight == FW_HEAVY
+	CASE FW_HEAVY
 		oFont:Bold := TRUE
 
 	OTHERWISE
 		oFont:Normal := TRUE
-	ENDCASE
+	END SWITCH
 
 	RETURN bRet
 

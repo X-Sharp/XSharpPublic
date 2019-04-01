@@ -1777,6 +1777,95 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBCloseArea()
 		RETURN
 		
+
+		// TECH-5YYVPE1A8T, DBFCDX StackOverflow with Shared mode, DBSelete() and DBUnlock()
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBFCDX_StackOverflow() AS VOID
+			LOCAL cDBF AS STRING
+			
+			RDDSetDefault("DBFCDX")
+			SetExclusive( FALSE )
+			
+			cDBF := GetTempFileName()
+			FErase(cDBF)
+			FErase(cDBF + ".cdx")
+			
+			DbfTests.CreateDatabase(cDBF , { { "CFIELD" , "C" , 5 , 0 }} , { "AAA" , "CCC" , "BBB" } )
+			DBCreateIndex(cDbf , "CFIELD")
+			DBCloseAll()
+			
+			DBUseArea(,"DBFCDX",cDBF )
+			DBGoTop()
+			DBSkip()
+			
+			Assert.Equal( 3, (INT) RecNo() )
+			Assert.Equal( "BBB  ", FieldGet(1) )
+			
+			Assert.True( DBRLock()  )
+			Assert.True( DBDelete() )
+			Assert.True( DBUnlock() ) // StackOverflow here
+			
+			DBCloseAll()
+		RETURN
+
+
+		// TECH-545T6VKW27, Problems with OrdScope() and DBSeek()
+		[Fact, Trait("Category", "DBF")];
+		METHOD OrdScope_and_DBSeek_test() AS VOID
+			LOCAL cDBF,cPath AS STRING
+			LOCAL aFields, aValues AS ARRAY
+			LOCAL i AS DWORD
+			
+			RDDSetDefault("DBFCDX")
+			
+			cDbf := GetTempFileName()
+			FErase(cDbf + ".cdx")
+			
+			aValues := {"Gas" , "Abc", "Golden" , "Guru" , "Ddd" , "Aaa" , "Ggg"}
+			aFields := { {"CFIELD" , "C" , 10 , 0} }
+			
+			DBCreate(cDbf , aFields)
+			DBUseArea(,,cDBF , , FALSE)
+			DBCreateIndex(cDbf , "Upper(CFIELD)")
+			FOR i := 1 UPTO ALen(aValues)
+				DBAppend()
+				FieldPut(1, aValues[i])
+			NEXT
+			
+			DBGoTop()
+			Assert.Equal(7 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 7, correct
+			
+			// Setting order scope
+			OrdScope(TOPSCOPE, "G")
+			OrdScope(BOTTOMSCOPE, "G")
+			DBGoTop()
+			
+			// VO: -2 with NTX, 4 with CDX
+			Assert.Equal(4 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) )
+			
+			Assert.True( DBSeek("G")    ) // TRUE, correct
+			Assert.True( DBSeek("GOLD") ) // TRUE with NTX, FALSE with CDX. VO TRUE in both
+			
+			// Clearing order scope
+			OrdScope(TOPSCOPE, NIL)
+			OrdScope(BOTTOMSCOPE, NIL)
+			Assert.Equal( 7 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) )
+			Assert.True( DBSeek("G") )
+			Assert.True( DBSeek("GOLD") )
+			
+			// Setting order scope again
+			OrdScope(TOPSCOPE, "G")
+			OrdScope(BOTTOMSCOPE, "G")
+			DBGoTop()
+			// VO: -2 with NTX, 4 with CDX
+			Assert.Equal(4 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) )
+			
+			Assert.True( DBSeek("G")    ) // TRUE, correct
+			Assert.True( DBSeek("GOLD") ) // TRUE with NTX, FALSE with CDX. VO TRUE in both
+			
+			DBCloseArea()
+		RETURN
+
 		
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
 		RETURN GetTempFileName("testdbf")

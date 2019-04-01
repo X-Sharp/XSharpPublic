@@ -1690,17 +1690,223 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 
+		// TECH-YO5LTEFO82, DBSetRelation() problem
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBSetRelation_test() AS VOID
+			LOCAL cDBF1, cDBf2 AS STRING
+			LOCAL cINdex1, cINdex2 AS STRING
+			LOCAL cPfad AS STRING
+			LOCAL AFields, aValues AS ARRAY
+			LOCAL i AS DWORD
+			
+			cPfad := GetTempFileName()
+			cDBF1 := cPfad + "relation1"
+			cDBf2 := cPfad + "relation2"
+			FErase(cDBF1 + ".dbf")
+			FErase(cDBF2 + ".dbf")
+			
+			cINdex1 := cPfad + "relation1"
+			cINdex2 := cPfad + "relation2"
+			FErase(cINdex1 + ".ntx")
+			FErase(cINdex2 + ".ntx")
+//			 ------- create Parent DBF --------------
+			AFields := { { "ID" , "C" , 5 , 0 }}
+			
+			aValues := { "00002" , "00001" , "00003" }
+			
+			DBCreate( cDBF1 , AFields)
+			DBUseArea(,"DBFNTX",cDBF1 )
+			
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut ( 1 , aValues [ i ] )
+			NEXT
+			
+			DBCreateIndex( cINdex1, "ID" )
+			
+//			 ------- create Child DBF --------------
+			AFields := { { "ID" , "C" , 5 , 0 } , { "TEXT1" , "C" ,20 , 0 }}
+			aValues := { { "00002" , "Text1 00002" } , { "00001" , "Text2 00001" }, { "00001" , "Text1 00001"} ,;
+			{ "00001" , "Text3 00001" } , {"00003" , "Text1 00003" } , { "00002" , "Text2 00002"} ,;
+			{ "00003" , "Text3 00003" } , {"00002" , "Text3 00002" } , { "00001" , "Text4 00001"} ,;
+			{ "00003" , "Text2 00003" } , {"00003" , "Text4 00003" } }
+			
+			DBCreate( cDBf2 , AFields)
+			DBUseArea(,"DBFNTX",cDBf2 )
+			
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut ( 1 , aValues [ i , 1 ] )
+				FieldPut ( 2 , aValues [ i , 2 ] )
+			NEXT
+			
+			DBCreateIndex( cINdex2, "ID + TEXT1" )
+			
+			DBCloseAll()
+			
+//			 ------------------------
+//			 open Parent DBF
+			
+			DBUseArea(TRUE ,"DBFNTX",cDBF1 )
+			DBSetIndex( cINdex1 )
+			DBSetOrder ( 1 )
+			DBGoTop()
+			
+//			 open Child DBF
+			DBUseArea(TRUE,"DBFNTX",cDBf2 )
+			DBSetIndex( cINdex2 )
+			DBSetOrder ( 1 )
+			
+			DBSetSelect ( 1 )
+//			 set the relation to the common field ID
+			Assert.True( DBSetRelation(2, {|| _FIELD->ID } , "ID" ) )
+			
+			LOCAL nOuter, nInner AS INT
+			nOuter := 0
+			DO WHILE ! a->EOF()
+				nOuter ++
+				nInner := 0
+				DO WHILE a->FieldGet ( 1 ) == b->FieldGet ( 1 )
+					nInner ++
+//					excepion here. Removing it makes DO WHILE never end
+//					? a->FieldGet ( 1 ) , b->FieldGet ( 1 ) ,b->FieldGet ( 2 )
+					LOCAL c AS STRING
+					c := a->FieldGet( 1 ) + b->FieldGet ( 1 ) + b->FieldGet ( 2 )
+					Assert.Equal( String.Format("0000{0}0000{0}Text{1} 0000{0}         " , nOuter , nInner) , c )
+					
+					b->DBSkip(1)
+				ENDDO
+				a->DBSkip(1)
+			ENDDO
+			
+			DBCloseAll()
+		RETURN
+
+
+
+		// TECH-1694P45N94, DBDelete() runtime exception with no records
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBDelete_test() AS VOID
+			LOCAL cDBF AS STRING
+			
+			RDDSetDefault("DBFNTX")
+
+			cDBF := GetTempFileName()
+
+			CreateDatabase(cDbf , { { "ID" , "C" , 5 , 0 }})
+
+			DBUseArea(,"DBFNTX",cDBF )
+			DBCreateIndex(cDbf , "ID")
+			
+			DBGoTop()
+			Assert.Equal(1 , (INT) RecNo() )
+			Assert.Equal("     " , (STRING) FieldGet(1) )
+			
+			Assert.True( DBRLock() )
+			Assert.True( DBDelete())
+			Assert.True( DBUnlock())
+			
+			DBCloseArea()
+		RETURN
+
+
+
+		// TECH-545T6VKW27, Problems with OrdScope() and DBSeek()
+		[Fact, Trait("Category", "DBF")];
+		METHOD OrdScope_and_DBSeek_test() AS VOID
+			LOCAL cDBF,cPath AS STRING
+			LOCAL aFields, aValues AS ARRAY
+			LOCAL i AS DWORD
+			
+			RDDSetDefault("DBFNTX")
+			
+			cDbf := GetTempFileName()
+			FErase(cDbf + ".ntx")
+			
+			aValues := {"Gas" , "Abc", "Golden" , "Guru" , "Ddd" , "Aaa" , "Ggg"}
+			aFields := { {"CFIELD" , "C" , 10 , 0} }
+			
+			DBCreate(cDbf , aFields)
+			DBUseArea(,,cDBF , , FALSE)
+			DBCreateIndex(cDbf , "Upper(CFIELD)")
+			FOR i := 1 UPTO ALen(aValues)
+				DBAppend()
+				FieldPut(1, aValues[i])
+			NEXT
+			
+			DBGoTop()
+			Assert.Equal(7 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 7, correct
+			
+			// Setting order scope
+			OrdScope(TOPSCOPE, "G")
+			OrdScope(BOTTOMSCOPE, "G")
+			DBGoTop()
+			
+			// VO: -2 with NTX, 4 with CDX
+			Assert.Equal(-2 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) )
+			
+			Assert.True( DBSeek("G")    ) // TRUE, correct
+			Assert.True( DBSeek("GOLD") ) // TRUE with NTX, FALSE with CDX. VO TRUE in both
+			
+			// Clearing order scope
+			OrdScope(TOPSCOPE, NIL)
+			OrdScope(BOTTOMSCOPE, NIL)
+			Assert.Equal( 7 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) )
+			Assert.True( DBSeek("G") )
+			Assert.True( DBSeek("GOLD") )
+			
+			// Setting order scope again
+			OrdScope(TOPSCOPE, "G")
+			OrdScope(BOTTOMSCOPE, "G")
+			DBGoTop()
+			// VO: -2 with NTX, 4 with CDX
+			Assert.Equal(-2 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) )
+			
+			Assert.True( DBSeek("G")    ) // TRUE, correct
+			Assert.True( DBSeek("GOLD") ) // TRUE with NTX, FALSE with CDX. VO TRUE in both
+			
+			DBCloseArea()
+		RETURN
+
+
+
+		// TECH-OBS2512J5P, Runtime error with OrdKeyCount() and only one param passed
+		[Fact, Trait("Category", "DBF")];
+		METHOD OrdKeyCount_test() AS VOID
+			LOCAL cDBF AS STRING
+			cDbf := GetTempFileName()
+			FErase(cDbf + ".cdx")
+			FErase(cDbf + ".ntx")
+			
+			FOR LOCAL n := 1 AS INT UPTO 2
+				RDDSetDefault ( iif( n == 1 , "DBFNTX" , "DBFCDX" ) )
+				
+				DBCreate( cDBF , { { "LAST" , "C" , 20 , 0 }} )
+				DBUseArea(,,cDBF,,FALSE )
+				DBAppend()
+				FieldPut ( 1 , "test" )
+	
+				Assert.True( DBCreateIndex ( cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } ) )
+				Assert.Equal( 1 , (INT) OrdKeyCount(1) )
+				DBCloseArea()
+			NEXT
+		RETURN
+
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
 		RETURN GetTempFileName("testdbf")
 		STATIC PRIVATE METHOD GetTempFileName(cFileName AS STRING) AS STRING
 			// we may want to put them to a specific folder etc
 		RETURN cFileName
-		STATIC PRIVATE METHOD CreateDatabase(cFileName AS STRING, aFields AS ARRAY) AS VOID
+		STATIC INTERNAL METHOD CreateDatabase(cFileName AS STRING, aFields AS ARRAY) AS VOID
 			CreateDatabase(cFileName, aFields , {})
-		STATIC PRIVATE METHOD CreateDatabase(cFileName AS STRING, aFields AS ARRAY, aValues AS ARRAY) AS VOID
+		STATIC INTERNAL METHOD CreateDatabase(cFileName AS STRING, aFields AS ARRAY, aValues AS ARRAY) AS VOID
 			FErase ( cFileName + IndexExt() )
 			DBCreate( cFileName , aFields)
+			IF ALen(aValues) == 0
+				RETURN
+			END IF
 			DBUseArea(,,cFileName)
 			FOR LOCAL i := 1 AS DWORD UPTO ALen ( aValues )
 				DBAppend()

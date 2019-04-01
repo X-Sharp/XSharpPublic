@@ -1507,7 +1507,7 @@ CLASS ModuleDescriptor
 		LOCAL oCode AS OutputCode
 		LOCAL oClasses , oDefines , oTextblocks , oGlobals , oFuncs , oRest AS OutputCode
 		
-		STATIC oConvertFromCodePageToCodePage := NULL AS EntityDescriptor
+		//STATIC oConvertFromCodePageToCodePage := NULL AS EntityDescriptor
 		
 		oClasses := OutputCode{}
 		oDefines := OutputCode{}
@@ -2060,9 +2060,9 @@ CLASS EntityDescriptor
 		oCode := OutputCode{}
 		FOREACH oLine AS LineObject IN SELF:_aLines
 
-			LOCAL lHasWizDir := FALSE AS LOGIC
+			//LOCAL lHasWizDir := FALSE AS LOGIC
 			cLine := oLine:LineText
-			lHasWizDir := cLine:ToUpper():Contains("%APPWIZDIR%")
+			//lHasWizDir := cLine:ToUpper():Contains("%APPWIZDIR%")
 			cLine := cLine:Replace("%" , tag) // so that %something% is treated as one word
 
 			LOCAL aWords AS List<WordObject>

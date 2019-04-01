@@ -1871,10 +1871,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		// TECH-6010F6ZSY9, DBFCDX OrdDescend() not working
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBFCDX_OrdDescend_test() AS VOID
-			LOCAL cDBF, cIndex, cDriver AS STRING
+			LOCAL cDBF, cIndex AS STRING
 			LOCAL aFields, aValues AS ARRAY
 			LOCAL i AS DWORD
-			cDriver := RDDSetDefault ( "DBFCDX" )
+			
+			RDDSetDefault ( "DBFCDX" )
 			aFields := { { "LAST" , "C" , 20 , 0 }}
 			aValues := { "b" , "d" , "c", "e" , "a" }
 			cDBF := GetTempFileName()
@@ -1978,11 +1979,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		// TECH-679F75W648, Cannot create custom DBFCDX index
 		[Fact, Trait("Category", "DBF")];
 		METHOD Custom_DBFCDX_test() AS VOID
-			LOCAL cDBF, cIndex, cDriver AS STRING
+			LOCAL cDBF, cIndex AS STRING
 			LOCAL aFields, aValues AS ARRAY
 			LOCAL i AS DWORD
 			
-			cDriver := RDDSetDefault ( "DBFCDX" )
+			RDDSetDefault ( "DBFCDX" )
 			
 			aFields := { { "LAST" , "C" , 20 , 0 }}
 			
@@ -2047,8 +2048,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			END TRY
 			Assert.True( lException )
 			DBCloseAll()
-			
-			RDDSetDefault ( cDriver )
 		RETURN
 
 
@@ -2201,6 +2200,37 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBUseArea(,,cDBF)
 			Assert.True( VODBOrdListAdd(cIndex , NIL) ) // Returns FALSE, error
 			DBCloseAll()
+		RETURN
+
+
+		// TECH-0YI914Z4I2, Problem opening dbf with dbt via SetDefault()
+		[Fact, Trait("Category", "DBF")];
+		METHOD SetDefault_test() AS VOID
+			LOCAL cPath, cDbf AS STRING
+			LOCAL cDefault AS STRING
+			RDDSetDefault("DBFCDX")
+			
+			cPath := System.IO.Path.GetTempPath()
+			IF .not. cPath:EndsWith("\")
+				cPath += "\"
+			END IF
+			cDbf := "fpttest"
+			FErase(cPath + cDBF + ".dbf")
+			FErase(cPath + cDBF + ".ntx")
+			FErase(cPath + cDBF + ".cdx")
+			FErase(cPath + cDBF + ".dbt")
+			FErase(cPath + cDBF + ".fpt")
+			
+			cDefault := GetDefault()
+			SetDefault(cPath)
+			
+			Assert.True( DBCreate( cPath + cDbf , { { "ID" , "C" , 5 , 0 } , {"MEM" , "M" , 10 , 0}} ) )
+//			 System.IO.FileNotFoundException
+//			 Could not find file '<path_of_exe>\mydbf.DBT'.
+			Assert.True( DBUseArea(,,cDbf ) )
+			Assert.True( DBCloseArea()      )
+			
+			SetDefault(cDefault)
 		RETURN
 
 

@@ -1961,6 +1961,38 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 
 
+		// TECH-0YI914Z4I2, Problem opening dbf with dbt via SetDefault()
+		[Fact, Trait("Category", "DBF")];
+		METHOD SetDefault_test() AS VOID
+			LOCAL cPath, cDbf AS STRING
+			LOCAL cDefault AS STRING
+			RDDSetDefault("DBFNTX")
+			
+			cPath := System.IO.Path.GetTempPath()
+			IF .not. cPath:EndsWith("\")
+				cPath += "\"
+			END IF
+			cDbf := "dbttest"
+			FErase(cPath + cDBF + ".dbf")
+			FErase(cPath + cDBF + ".ntx")
+			FErase(cPath + cDBF + ".cdx")
+			FErase(cPath + cDBF + ".dbt")
+			FErase(cPath + cDBF + ".fpt")
+			
+			cDefault := GetDefault()
+			SetDefault(cPath)
+			
+			Assert.True( DBCreate( cPath + cDbf , { { "ID" , "C" , 5 , 0 } , {"MEM" , "M" , 10 , 0}} ) )
+//			 System.IO.FileNotFoundException
+//			 Could not find file '<path_of_exe>\mydbf.DBT'.
+			Assert.True( DBUseArea(,,cDbf ) )
+			Assert.True( DBCloseArea()      )
+			
+			SetDefault(cDefault)
+		RETURN
+
+
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
 		RETURN GetTempFileName("testdbf")
 		STATIC PRIVATE METHOD GetTempFileName(cFileName AS STRING) AS STRING

@@ -2,7 +2,7 @@
 <VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
   <TemplateData>
     <Name>Class Library</Name>
-    <Description>A project for creating a X# class library (.dll)</Description>
+    <Description>A project for creating a X# class library (.dll) for the Core dialect</Description>
     <Icon>ClassLibrary.png</Icon>
     <TemplateID>XSharp.ClassLibrary</TemplateID>
     <ProjectType>XSharp</ProjectType>
@@ -12,6 +12,12 @@
     <DefaultName>ClassLibrary</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <LanguageTag Value="X#" />
+    <PlatformTag Value="Windows" />
+    <PlatformTag Value="Linux" />
+    <PlatformTag Value="MacOS" />
+    <ProjectTypeTag Value="Library" />
+
   </TemplateData>
   <TemplateContent>
     <Project File="ClassLibrary.xsproj" ReplaceParameters="true">

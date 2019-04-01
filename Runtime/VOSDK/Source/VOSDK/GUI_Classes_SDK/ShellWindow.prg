@@ -192,16 +192,16 @@ METHOD Arrange(kArrangeStyle)
 		liStyle := kArrangeStyle
 	ENDIF
 	
-	DO CASE
-	CASE liStyle == ARRANGEASICONS
+	SWITCH liStyle
+	CASE ARRANGEASICONS
 		SendMessage(hWndClient,WM_MDIICONARRANGE, 0, 0)
-	CASE liStyle == ARRANGECASCADE
+	CASE ARRANGECASCADE
 		SendMessage(hWndClient,WM_MDICASCADE, MDITILE_SKIPDISABLED, 0)
-	CASE liStyle == ARRANGETILEVERTICAL
+	CASE ARRANGETILEVERTICAL
 		SendMessage(hWndClient,WM_MDITILE, MDITILE_SKIPDISABLED, 0)
-	CASE liStyle == ARRANGETILEHORIZONTAL
+	CASE ARRANGETILEHORIZONTAL
 		SendMessage(hWndClient,WM_MDITILE, _OR(MDITILE_SKIPDISABLED,MDITILE_HORIZONTAL), 0)
-	ENDCASE
+	END SWITCH
 	
 	RETURN SELF
 	
@@ -276,15 +276,15 @@ METHOD Dispatch(oEvent)
 	
 	uMsg := oEvt:uMsg
 	
-	DO CASE
-	CASE (uMsg == WM_MENUSELECT) .OR.;
-			(uMsg == WM_INITMENU) .OR.;
-			(uMsg == WM_INITMENUPOPUP)
+	SWITCH uMsg
+    CASE WM_MENUSELECT
+    CASE WM_INITMENU
+    CASE WM_INITMENUPOPUP
 		
 		hWndChild := PTR(_CAST, SendMessage(hWndClient, WM_MDIGetActive, 0, 0))
 		SendMessage(hWndChild, oEvt:uMsg, oEvt:wParam, oEvt:lParam)
 		
-	CASE uMsg == WM_COMMAND
+	CASE WM_COMMAND
 		// If the WM_COMMAND is not a help message (id < 0xFFFD)
 		// and not a WINDOW menu option (id >= MDI_FIRSTCHILDID)
 		// process it.
@@ -319,7 +319,7 @@ METHOD Dispatch(oEvent)
 			ENDIF
 		ENDIF
 		
-	CASE (uMsg == WM_CREATE)
+	CASE WM_CREATE
 		// If this is a top app window
 		// If not opened
 		// Tag it open
@@ -331,7 +331,7 @@ METHOD Dispatch(oEvent)
 			ENDIF
 		ENDIF
 		
-	CASE (uMsg == WM_SETCURSOR)
+	CASE WM_SETCURSOR
 		IF (oEvt:wParam) != (DWORD(_CAST, hwndClient))
 			lclient := FALSE
 		ELSE
@@ -346,14 +346,11 @@ METHOD Dispatch(oEvent)
 		ELSE
 			lHelpEnable := FALSE
 		ENDIF
-		#warning There was a typo there ("lHelpCursorOn" instead of "lHelpEnable"), right?
-//		SELF:__HandlePointer(oEvt, lHelpCursorOn, lclient)
 		SELF:__HandlePointer(oEvt, lHelpEnable, lclient)
 		RETURN SELF:EventReturnValue
 		
-	CASE (uMsg == WM_WCHELP)
+	CASE WM_WCHELP
 		SELF:__EnableHelpCursor(FALSE)
-		//SELF:HelpRequest(__ObjectCastClassPtr(oEvt, __pCHelpRequestEvent))
 		SELF:HelpRequest(HelpRequestEvent{oEvt})
 		RETURN SELF:EventReturnValue
 		
@@ -387,7 +384,8 @@ METHOD Dispatch(oEvent)
 		Default(e);
 			break;
 			*/
-	CASE (uMsg == WM_QUERYENDSESSION) .OR. (uMsg == WM_CLOSE)
+	CASE WM_QUERYENDSESSION
+    CASE WM_CLOSE
 		IF (GetWindow(hWndClient,GW_Child) != 0)
 #ifdef __VULCAN__
          LOCAL WCQueryCloseEnumFuncDelegate AS __WCQueryCloseEnumFuncDelegate
@@ -402,7 +400,7 @@ METHOD Dispatch(oEvent)
 			ENDIF
 		ENDIF
 		
-	CASE (uMsg == WM_SIZE)
+	CASE WM_SIZE
 		SUPER:Dispatch(oEvt)
 		IF SELF:__AdjustClient()
 			IF IsClass(#OleObject)
@@ -422,7 +420,7 @@ METHOD Dispatch(oEvent)
 		ENDIF
 		RETURN SELF:EventReturnValue
 		
-	CASE oEvt:uMsg == WM_CONTEXTMENU
+	CASE WM_CONTEXTMENU
 		//In a Shellwindow this message becomes created in the MDIClient Window
 		//and __WCGetWindowByHandle() returns a Null_Object in this case, so
 		//shell contextmenu is not shown.
@@ -430,7 +428,7 @@ METHOD Dispatch(oEvent)
 			oEvt:wPARAM := DWORD(_CAST, hWnd)
 		ENDIF
 		
-	ENDCASE
+	END SWITCH
 	
 	SUPER:Dispatch(oEvt)
 	

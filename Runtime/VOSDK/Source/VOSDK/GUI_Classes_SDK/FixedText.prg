@@ -35,7 +35,9 @@ METHOD Dispatch(oEvent)
 
 	IF SELF:lUseDrawText
 		uMsg := oEvt:uMsg
-		IF uMsg == WM_PAINT .OR. uMsg == WM_PRINTCLIENT
+        SWITCH uMsg
+        CASE WM_PAINT
+        CASE WM_PRINTCLIENT
 			IF uMsg == WM_PAINT
 				hDC     := BeginPaint(hwnd, @struPS)
 			ELSE
@@ -111,11 +113,12 @@ METHOD Dispatch(oEvent)
 			ENDIF
 			SELF:EventReturnValue := 0l
 			RETURN 1l
-		ELSEIF uMsg == WM_ERASEBKGND
+		CASE WM_ERASEBKGND
 			SELF:EventReturnValue := 0l
 			RETURN 1l
 			//PP-040418 Issue 12676
-		ELSEIF uMsg = WM_ENABLE .OR. uMsg = WM_SETTEXT
+		CASE WM_ENABLE
+        CASE WM_SETTEXT
 			hOwner := GetParent(hWnd)
 			GetWindowRect(hWnd, @sRect)
 #ifdef __VULCAN__	
@@ -124,7 +127,7 @@ METHOD Dispatch(oEvent)
 	      MapWindowPoints(NULL_PTR, hOwner, @sRect, 2)
 #endif
 			InvalidateRect(hOwner, @sRect, TRUE)
-		ENDIF
+		END SWITCH
 	ENDIF
 
 	RETURN SUPER:Dispatch(oEvt)
@@ -146,7 +149,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
 	//PP-040317. Issue 12806. Added DT_EXPANDTABS for default behaviour more like old fixed text
 	SELF:_dwDrawStyle := _OR(DT_WORDBREAK,DT_EXPANDTABS)
 
-	Default(@lDataAware, TRUE)
+	DEFAULT(@lDataAware, TRUE)
 	lResID:=IsInstanceOfUsual(xID,#ResourceID)
 	IF !lResID
 		cClass:="Static"
@@ -191,14 +194,14 @@ METHOD SetStandardStyle(kTextStyle)
 		WCError{#SetStandardStyle,#FixedText,__WCSTypeError,kTextStyle,1}:@@Throw()
 	ENDIF
 
-	DO CASE
-	CASE (kTextStyle == FT_LEFTALIGN)
+	SWITCH (INT) kTextStyle
+	CASE FT_LEFTALIGN
 		dwTempStyle := SS_LEFT
-	CASE (kTextStyle == FT_RIGHTALIGN)
+	CASE FT_RIGHTALIGN
 		dwTempStyle := SS_RIGHT
-	CASE (kTextStyle == FT_CENTERED)
+	CASE FT_CENTERED
 		dwTempStyle := SS_CENTER
-	ENDCASE
+	END SWITCH
 
 	hHandle := SELF:Handle()
 	IF (hHandle != 0) .AND. IsWindow(hHandle)

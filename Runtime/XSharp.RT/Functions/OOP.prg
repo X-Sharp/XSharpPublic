@@ -564,13 +564,18 @@ INTERNAL STATIC CLASS OOPHelpers
 			propInfo:SetValue(oObject,oValue , NULL)
 			RETURN
 		ENDIF
-		LOCAL dummy AS USUAL
-		IF sendHelper(oObject, "NoIVarPut", <USUAL>{String2Symbol(cIVar), oValue}, OUT dummy)
+		IF SendHelper(oObject, "NoIVarPut", <USUAL>{String2Symbol(cIVar), oValue})
 			RETURN
 		END IF
 		VAR oError :=  Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{oObject, cIVar, oValue, lSelf})
 		oError:Description := oError:Message+" '"+cIVar+"'"
         THROW oError
+
+    STATIC METHOD SendHelper(oObject AS OBJECT, cMethod AS STRING, uArgs AS USUAL[]) AS LOGIC
+        LOCAL result AS USUAL
+        LOCAL lOk := SendHelper(oObject, cMethod, uArgs, OUT result) AS LOGIC
+        oObject := result   // get rid of warning
+        RETURN lOk
 
 	STATIC METHOD SendHelper(oObject AS OBJECT, cMethod AS STRING, uArgs AS USUAL[], result OUT USUAL) AS LOGIC
 		LOCAL t := oObject?:GetType() AS Type

@@ -919,19 +919,19 @@ METHOD setmessage(cMessage, nMode)
 		RETURN NIL
 	ENDIF
 
-	DO CASE
-	CASE (nMode == MESSAGEMENU)
+	SWITCH (INT) nMode
+	CASE MESSAGEMENU
 		cLastMenuMessage := cMessage
-	CASE (nMode == MESSAGECONTROL)
+	CASE MESSAGECONTROL
 		cLastControlMessage := cMessage
-	CASE (nMode == MESSAGEERROR)
+	CASE MESSAGEERROR
 		cLastErrorMessage := cMessage
 		IF NULL_STRING != AllTrim(cMessage) .AND. SELF:ErrorMessageBeep
 			MessageBeep(0xFFFFFFFF)
 		ENDIF
-	CASE nMode == MESSAGEPERMANENT
+	CASE MESSAGEPERMANENT
 		cLastPermanentMessage := cMessage
-	END CASE
+	END SWITCH
 
 	IF !Empty(cMessage) .OR. (nMode == MESSAGEPERMANENT)
 		lValidMessage := TRUE

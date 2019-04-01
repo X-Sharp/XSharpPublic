@@ -1378,24 +1378,24 @@ METHOD __NotifyChanges(kNotify AS DWORD) AS USUAL STRICT
 			SELF:__EndEditField(0)
 		ENDIF
 
-		DO CASE
-		CASE kNotify == GBNFY_INTENTTOMOVE
+		SWITCH kNotify
+		CASE GBNFY_INTENTTOMOVE
 			RETURN SELF:Validate()
-		CASE kNotify == GBNFY_RECORDCHANGE
+		CASE GBNFY_RECORDCHANGE
 			SELF:__RecordChange()
-		CASE kNotify == GBNFY_DOGOTOP .OR.;
-			kNotify == GBNFY_DOGOEND
+		CASE GBNFY_DOGOTOP 
+		CASE GBNFY_DOGOEND
 			SELF:__RecordChange()
 			SELF:__RefreshBuffer()
-		CASE kNotify == GBNFY_FIELDCHANGE
+		CASE GBNFY_FIELDCHANGE
 			SELF:__FieldChange()
-		CASE kNotify == GBNFY_FILECHANGE
+		CASE GBNFY_FILECHANGE
 			SELF:__RefreshBuffer()
-		CASE kNotify == GBNFY_DONEWROW
+		CASE GBNFY_DONEWROW
 			SELF:__RefreshBuffer()
-		CASE kNotify == GBNFY_DODELETE
+		CASE GBNFY_DODELETE
 			SELF:__RecordDelete()
-		ENDCASE
+		END SWITCH
 	ELSE
 		IF kNotify == GBNFY_INTENTTOMOVE
 			RETURN TRUE
@@ -1831,22 +1831,22 @@ METHOD ChangeFont(oFont, kWhere)
 		ENDIF
 	ENDIF
 
-	DO CASE
-	CASE (kWhere == gblCaption)
+	SWITCH (INT) kWhere
+	CASE gblCaption
 		iCntLoc := CF_TITLE
 
-	CASE (kWhere == gblText)
+	CASE gblText
 		iCntLoc := CF_GENERAL
 		oFontText := oFont
 
-	CASE (kWhere == gblColCaption)
+	CASE gblColCaption
 		iCntLoc := CF_FLDTITLE
 
-	CASE (kWhere == gblButton) .OR.;
-		(kWhere == gblColButton) .OR.;
-		(kWhere == gblHiText)
+	CASE gblButton
+    CASE gblColButton
+    CASE gblHiText
 		iCntLoc := CF_GENERAL
-	ENDCASE
+	END SWITCH
 
 	hFont := oFont:Handle()
 	IF (hFont == NULL_PTR)
@@ -2112,22 +2112,22 @@ METHOD Dispatch(oEvent)
 		//Dispatcher for GBNotifyWindow
 		IF uMsg == WM_COMMAND
 			dwCode := HiWord(oEvt:wParam)
-			DO CASE
-			CASE dwCode == CN_QUERYFOCUS
+			SWITCH dwCode
+			CASE CN_QUERYFOCUS
 				SELF:__BuildBuffer()
 
-			CASE dwCode == CN_QUERYDELTA
+			CASE CN_QUERYDELTA
 				SELF:__DeltaBuildBuffer()
 
-			CASE dwCode == CN_NEWFOCUS .OR.;
-				dwCode == CN_NEWFOCUSREC
+			CASE CN_NEWFOCUS
+            CASE CN_NEWFOCUSREC
 				strucRC := PCALL(gpfnCntCNRecGet, hwnd, oEvt:lParam)
 				strucFI := PCALL(gpfnCntFocusFldGet, hwnd)
 				//		if self:Validate() .and. oDataServer:Notify(NotifyIntentToMove)
 				SELF:__NewFocusRecord(strucRC, strucFI)
 				//		endif
 
-			CASE dwCode == CN_TAB
+			CASE CN_TAB
 				IF !PCALL(gpfnCntCNShiftKeyGet, hwnd, lParam)
 					iMove := CFM_RIGHT
 				ENDIF
@@ -2152,14 +2152,15 @@ METHOD Dispatch(oEvent)
 					ENDIF
 				ENDIF
 
-			CASE (dwCode == CN_BEGFLDEDIT) .OR. (dwCode == CN_ROFLDDBLCLK)
+			CASE CN_BEGFLDEDIT
+            CASE CN_ROFLDDBLCLK
 				IF IsMethod(SELF, #CellDoubleClick)
 					Send(SELF, #CellDoubleClick)
 				ELSEIF !PCALL(gpfnCntIsFocusCellRO, hwnd)
 					SELF:__BeginEditField(PCALL(gpfnCntCNChildWndGet, hwnd, 0), 0)
 				ENDIF
 
-			CASE (dwCode == CN_CHARHIT)
+			CASE CN_CHARHIT
 				IF !PCALL(gpfnCntIsFocusCellRO, hwnd)
 					//lParam := oEvt:lParam
 					//ci := CntInfoGet(hwnd)
@@ -2168,116 +2169,116 @@ METHOD Dispatch(oEvent)
 					SELF:__BeginEditField(PCALL(gpfnCntCNChildWndGet, hwnd, lParam), dwLastChar)
 				ENDIF
 
-			CASE (dwCode == CN_ENTER)
+			CASE CN_ENTER
 				IF !PCALL(gpfnCntIsFocusCellRO, hwnd)
 					SELF:__BeginEditField(PCALL(gpfnCntCNChildWndGet, hwnd, lParam), 0)
 				ENDIF
 
-			CASE (dwCode == CN_ENDFLDEDIT)
+			CASE CN_ENDFLDEDIT
 				lParam:=oEvt:lParam
 				dwChar := PCALL(gpfnCntCNCharGet, hwnd, lParam)
 				SELF:__EndEditField(dwChar)
 
-				DO CASE
-				CASE dwChar == KeyTab
+				SWITCH dwChar
+				CASE KeyTab
 					IF !PCALL(gpfnCntCNShiftKeyGet, hwnd, lParam)
 						iMove := CFM_RIGHT
 					ENDIF
 					PCALL(gpfnCntFocusMove, hWnd, iMove)
 
-				CASE dwChar == KeyArrowUp
+				CASE KeyArrowUp
 					//	if self:Validate() .and. oDataServer:Notify(NotifyIntentToMove)
 					PCALL(gpfnCntFocusMove, hwnd, CFM_UP)
 					//		endif
 
-				CASE dwChar == KeyArrowDown
+				CASE KeyArrowDown
 					//if self:Validate() .and. oDataServer:Notify(NotifyIntentToMove)
 					PCALL(gpfnCntFocusMove, hwnd, CFM_DOWN)
 					//endif
 
-				CASE dwChar == KeyArrowLeft
+				CASE KeyArrowLeft
 					PCALL(gpfnCntFocusMove, hwnd, CFM_LEFT)
 
-				CASE dwChar == KeyArrowRight
+				CASE KeyArrowRight
 					PCALL(gpfnCntFocusMove, hwnd, CFM_RIGHT)
 
-				CASE dwChar == KeyPageUp
+				CASE KeyPageUp
 					IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
 						PCALL(gpfnCntFocusMove, hwnd, CFM_PAGEUP)
 					ENDIF
 
-				CASE dwChar == KeyPageDown
+				CASE KeyPageDown
 					IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
 						PCALL(gpfnCntFocusMove, hwnd, CFM_PAGEDOWN)
 					ENDIF
-				ENDCASE
+				END SWITCH
 
-			CASE (dwCode == CN_FLDSIZED)
+			CASE CN_FLDSIZED
 				oDC := SELF:__GetColumn(PCALL(gpfnCntCNFldGet, hwnd, lParam))
 				IF oDC!=NULL_OBJECT
 					SELF:ColumnReSize(oDC)
 				ENDIF
 
-			CASE (dwCode == CN_FLDMOVED)
+			CASE CN_FLDMOVED
 				oDC := SELF:__GetColumn(PCALL(gpfnCntCNFldGet, hwnd, lParam))
 				IF oDC!=NULL_OBJECT
 					SELF:ColumnMoved(oDC)
 				ENDIF
 
-			CASE dwCode == CN_LK_HOME
+			CASE CN_LK_HOME
 				PCALL(gpfnCntFocusSet, hwnd, PCALL(gpfnCntFocusRecGet, hwnd), NULL_PTR)
 
-			CASE dwCode == CN_LK_END
+			CASE CN_LK_END
 				PCALL(gpfnCntFocusSet, hwnd, PCALL(gpfnCntFocusRecGet, hwnd), PCALL(gpfnCntFldTailGet, hwnd))
 
-			CASE dwCode == CN_LK_PAGEUP
+			CASE CN_LK_PAGEUP
 				IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
 					PCALL(gpfnCntFocusRecUnlck, hwnd)
 					PCALL(gpfnCntFocusMove, hwnd, CFM_PAGEUP)
 				ENDIF
-			CASE dwCode == CN_LK_PAGEDOWN
+			CASE CN_LK_PAGEDOWN
 				IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
 					PCALL(gpfnCntFocusRecUnlck, hwnd)
 					PCALL(gpfnCntFocusMove, hwnd, CFM_PAGEDOWN)
 				ENDIF
-			CASE dwCode == CN_LK_ARROW_UP
+			CASE CN_LK_ARROW_UP
 				IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
 					PCALL(gpfnCntFocusRecUnlck, hwnd)
 					PCALL(gpfnCntFocusMove, hwnd, CFM_UP)
 				ENDIF
 
-			CASE dwCode == CN_LK_ARROW_DOWN
+			CASE CN_LK_ARROW_DOWN
 				IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
 					PCALL(gpfnCntFocusRecUnlck, hwnd)
 					PCALL(gpfnCntFocusMove, hwnd, CFM_DOWN)
 				ENDIF
 
-			CASE dwCode == CN_LK_ARROW_LEFT
+			CASE CN_LK_ARROW_LEFT
 				PCALL(gpfnCntFocusRecUnlck, hwnd)
 				PCALL(gpfnCntFocusMove, hwnd, CFM_LEFT)
 
-			CASE dwCode == CN_LK_ARROW_RIGHT
+			CASE CN_LK_ARROW_RIGHT
 				PCALL(gpfnCntFocusRecUnlck, hwnd)
 				PCALL(gpfnCntFocusMove, hwnd, CFM_RIGHT)
 
-			CASE dwCode == CN_LK_VS_TOP .OR.;
-				dwCode == CN_LK_VS_BOTTOM .OR.;
-				dwCode == CN_LK_VS_PAGEUP .OR.;
-				dwCode == CN_LK_VS_PAGEDOWN .OR.;
-				dwCode == CN_LK_VS_LINEUP .OR.;
-				dwCode == CN_LK_VS_LINEDOWN .OR.;
-				dwCode == CN_LK_VS_THUMBPOS
+			CASE CN_LK_VS_TOP
+            CASE CN_LK_VS_BOTTOM
+            CASE CN_LK_VS_PAGEUP
+            CASE CN_LK_VS_PAGEDOWN
+            CASE CN_LK_VS_LINEUP
+            CASE CN_LK_VS_LINEDOWN
+            CASE CN_LK_VS_THUMBPOS
 				PCALL(gpfnCntScrollRecAreaEx, hwnd, PCALL(gpfnCntCNIncExGet, hwnd, lParam))
 
-			CASE dwCode == CN_LK_HS_PAGEUP .OR.;
-				dwCode == CN_LK_HS_PAGEDOWN .OR.;
-				dwCode == CN_LK_HS_LINEUP .OR.;
-				dwCode == CN_LK_HS_LINEDOWN .OR.;
-				dwCode == CN_LK_HS_THUMBPOS
+			CASE CN_LK_HS_PAGEUP 
+			CASE CN_LK_HS_PAGEDOWN 
+			CASE CN_LK_HS_LINEUP 
+			CASE CN_LK_HS_LINEDOWN 
+			CASE CN_LK_HS_THUMBPOS
 				PCALL(gpfnCntScrollFldArea, hwnd, PCALL(gpfnCntCNIncExGet, hwnd, lParam))
 
-			CASE dwCode == CN_LK_NEWFOCUS .OR.;
-				dwCode == CN_LK_NEWFOCUSREC
+			CASE CN_LK_NEWFOCUS
+            CASE CN_LK_NEWFOCUSREC
 				strucRC := PCALL(gpfnCntCNRecGet, hwnd, lParam)
 				strucFI := PCALL(gpfnCntCNFldGet, hwnd, lParam)
 				IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
@@ -2285,14 +2286,14 @@ METHOD Dispatch(oEvent)
 					SELF:__NewFocusRecord(strucRC, strucFI)
 				ENDIF
 
-			CASE dwCode == CN_LK_NEWFOCUSFLD
+			CASE CN_LK_NEWFOCUSFLD
 				SELF:__EndEditField(0)
 				PCALL(gpfnCntFocusSet, hwnd, PCALL(gpfnCntCNRecGet, hwnd, lParam), PCALL(gpfnCntCNFldGet, hwnd, lParam))
 
-			CASE dwCode == CN_NEWFOCUSFLD
+			CASE CN_NEWFOCUSFLD
 				SELF:__NewFocusField(PCALL(gpfnCntCNFldGet, hwnd, lParam))
 
-			ENDCASE
+			END SWITCH
 		ELSE
 			SELF:Default(oEvt)
 		ENDIF
@@ -2330,24 +2331,25 @@ METHOD EnableBorder(kBorderType)
 		ENDIF
 	ENDIF
 
-	DO CASE
-	CASE (kBorderType == BTSIZINGBORDER)
+	SWITCH (INT) kBorderType
+
+	CASE BTSIZINGBORDER
 		PCALL(gpfnCntStyleSet, hwnd, WS_THICKFRAME)
-	CASE (kBorderType == BTNONSIZINGBORDER)
+	CASE BTNONSIZINGBORDER
 		PCALL(gpfnCntStyleClear, hwnd, WS_THICKFRAME)
 		PCALL(gpfnCntStyleSet, hwnd, WS_BORDER)
-	CASE (kBorderType == BTNOBORDER)
+	CASE BTNOBORDER
 		PCALL(gpfnCntStyleClear, hwnd, _OR(WS_THICKFRAME,WS_BORDER))
 	OTHERWISE
 		PCALL(gpfnCntStyleSet, hwnd, WS_THICKFRAME)
-	ENDCASE
+	END SWITCH
 
 	RETURN NIL
 
 METHOD EnableColumnMove(lAllowMove) 
 	
 
-	Default(@lAllowMove, TRUE)
+	DEFAULT(@lAllowMove, TRUE)
 
 	IF !IsNil(lAllowMove)
 		IF !IsLogic(lAllowMove)
@@ -2366,7 +2368,7 @@ METHOD EnableColumnMove(lAllowMove)
 METHOD EnableColumnReSize(lAllowResize) 
 	
 
-	Default(@lAllowResize, TRUE)
+	DEFAULT(@lAllowResize, TRUE)
 
 	IF !IsNil(lAllowResize)
 		IF !IsLogic(lAllowResize)
@@ -2575,7 +2577,6 @@ RETURN SELF:oBackgroundHiText
 
 
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
-	LOCAL p AS SelfPtr
 	LOCAL oBB AS BoundingBox
 	LOCAL oWin AS Window
 	LOCAL hChild AS PTR
@@ -2589,7 +2590,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 	oWin := oOwner
 
 	// Automatically generate id if none is supplied
-	Default(@xID, 1000)
+	DEFAULT(@xID, 1000)
 
 	IF (IsInstanceOfUsual(oOwner, #DataWindow))
 		oBB := oOwner:CanvasArea
@@ -2630,7 +2631,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 
 	IF __WCRegisterGBNotifyWindow(_GetInst())
 		//Create ptr to pass for WM_Create and to be used for message processing
-		p := ptrSelf := __WCSelfPtrAlloc(SELF)
+		ptrSelf := __WCSelfPtrAlloc(SELF)
         hNotifyWindow := CreateWindowEx(0, String2Psz(__WCGBNotifyWindowClass), NULL_PSZ, 0,;
 			CW_USEDEFAULT, 0, CW_USEDEFAULT, 0,;
 			0, 0, _GetInst(), ptrSelf)
@@ -2939,7 +2940,7 @@ METHOD SetColumnFocus(oColumn)
 METHOD SetPointer(oPointer, kWhere) 
 	LOCAL iLoc AS DWORD
 
-	Default(@oPointer, Pointer{PointerArrow})
+	DEFAULT(@oPointer, Pointer{PointerArrow})
 
 	IF !IsInstanceOfUsual(oPointer,#Pointer)
 		WCError{#SetPointer,#Pointer,__WCSTypeError,oPointer,1}:@@Throw()
@@ -2984,14 +2985,14 @@ METHOD SetStandardStyle(kStyle)
 		kStyle:=gbsControl3d
 	ENDIF
 
-	DO CASE
-	CASE (kStyle == GBSREADONLY)
+	SWITCH (INT) kStyle
+	CASE GBSREADONLY
 		PCALL(gpfnCntStyleSet, hwnd, CTS_READONLY)
 
-	CASE (kStyle == GBSEDIT)
+	CASE GBSEDIT
 		PCALL(gpfnCntStyleClear, hwnd, CTS_READONLY)
 
-	CASE (kStyle == GBSCONTROL3D)
+	CASE GBSCONTROL3D
 		PCALL(gpfnCntAttribSet, hwnd, CA_TITLE3D)
 		PCALL(gpfnCntAttribSet, hwnd, CA_FLDTTL3D)
 		lUse3dLook := TRUE
@@ -3008,7 +3009,7 @@ METHOD SetStandardStyle(kStyle)
 			PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_FLDTTLBKGD, GetSysColor(COLOR_BTNFACE))
 		ENDIF
 
-	CASE (kStyle == GBSCONTROL2D)
+	CASE GBSCONTROL2D
 		PCALL(gpfnCntAttribClear, hwnd, CA_TITLE3D)
 		PCALL(gpfnCntAttribClear, hwnd, CA_FLDTTL3D)
 		lUse3dLook := FALSE
@@ -3024,7 +3025,7 @@ METHOD SetStandardStyle(kStyle)
 		IF oBackgroundColCaption == NULL_OBJECT
 			PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_FLDTTLBKGD, GetSysColor(COLOR_ACTIVECAPTION))
 		ENDIF
-	ENDCASE
+	END SWITCH
 
 	SELF:RestoreUpdate()
 
@@ -3802,7 +3803,7 @@ METHOD EnableCellDraw(symMethodName)
 METHOD EnableColumnMove(lAllowMove) 
 	
 
-	Default(@lAllowMove, TRUE)
+	DEFAULT(@lAllowMove, TRUE)
 	IF !IsLogic(lAllowMove)
 		WCError{#EnableColumnMove,#DataColumn,__WCSTypeError,lAllowMove,1}:@@Throw()
 	ENDIF
@@ -3820,7 +3821,7 @@ METHOD EnableColumnMove(lAllowMove)
 METHOD EnableColumnReSize(lAllowResize) 
 	
 
-	Default(@lAllowResize, TRUE)
+	DEFAULT(@lAllowResize, TRUE)
 
 	IF !IsLogic(lAllowResize)
 		WCError{#EnableColumnReSize,#DataColumn,__WCSTypeError,lAllowResize,1}:@@Throw()
@@ -4154,14 +4155,14 @@ METHOD SetCaption(cText, kAlignment)
 		kAlignment:=gbaAlignCenter
 	ENDIF
 
-	DO CASE
-	CASE (kAlignment == GBAALIGNCENTER)
+	SWITCH (INT) kAlignment
+	CASE GBAALIGNCENTER
 		iAlign := CA_TA_HCENTER
-	CASE (kAlignment == GBAALIGNLEFT)
+	CASE GBAALIGNLEFT
 		iAlign := CA_TA_LEFT
-	CASE (kAlignment == GBAALIGNRIGHT)
+	CASE GBAALIGNRIGHT
 		iAlign := CA_TA_RIGHT
-	ENDCASE
+	END SWITCH
 
 	// calculate width based on caption
 	IF (NULL_STRING != cText)

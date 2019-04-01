@@ -184,7 +184,7 @@ METHOD __CreateDefinerWindow(cReportName, iWindowType, cSQLStatement, iReportSty
 	
 	hWrmHandle := rWrmDefInit:hWrmHandle
 	
-	AAdd(aOpenNames, {char1, hWrmHandle, .f. }) // last element is if a previewer is open
+	AAdd(aOpenNames, {char1, hWrmHandle, .F. }) // last element is if a previewer is open
 	nOpenIndex := INT(ALen(aOpenNames))   // Don't just increment. Index can be reset by SetFocus
     oOwner:@@StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_COMMANDERROR2),servername, "FILE.OPEN", "" ))
 	
@@ -263,7 +263,7 @@ METHOD __ExecuteNow (oDDEMC)
 		ReportQueueIsBusy := oDDEMC:isModal
         oOwner:@@StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_COMMANDERROR2),servername, oDDEMC:cCmd, endOfMsg )) //419@0001 MS 12/07/94
 		IF (SELF:sPreviewTitle == "")
-			IF (aOpenNames[nOpenIndex, 3] = .t. )
+			IF (aOpenNames[nOpenIndex, 3] = .T. )
 				sItem := "CA - Report Viewer : [" + SELF:ActiveFile + "]"
 				WrmExecute(hWpHandle, String2Psz(sItem), String2Psz(oDDEMC:cCmd))
 			ELSE
@@ -272,7 +272,7 @@ METHOD __ExecuteNow (oDDEMC)
 			ENDIF
 		ELSE
 			// MALRO02 4/10/97 added
-			IF (aOpenNames[nOpenIndex, 3] == .f. )
+			IF (aOpenNames[nOpenIndex, 3] == .F. )
 				sItem := "CA - Report Writer : [" + SELF:ActiveFile + "]"
 				WrmExecute(hWpHandle, String2Psz(sItem), String2Psz(oDDEMC:cCmd))
 			ELSE
@@ -572,7 +572,7 @@ METHOD DataUpdate(oEvent)
 
             // Indicate that the preview window is closed.
             IF nOpenIndex > 0
-               aOpenNames[nOpenIndex, 3] := .f.
+               aOpenNames[nOpenIndex, 3] := .F.
             ENDIF
 
         ELSEIF newdata == "Report.Opened"
@@ -630,7 +630,7 @@ METHOD DataUpdate(oEvent)
 		WrmCreateViewerWindow( hWpHandle, @rWrmVwInit )
 		
 		// indicate that a preview window is open
-		aOpenNames[nOpenIndex, 3] := .t. 
+		aOpenNames[nOpenIndex, 3] := .T. 
 		
 		RETURN SELF
 	ENDIF
@@ -812,7 +812,7 @@ METHOD Preview(aParams, cPreviewTitle, iMC)
 METHOD Print(aParams, oRange, nCopies) 
 	LOCAL i AS INT
 	
-	Default(@nCopies, 1)
+	DEFAULT(@nCopies, 1)
 	
 	FOR i:= 1 TO nCopies
 		// send any Report Params across DDE before PRINT command

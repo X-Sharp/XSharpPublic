@@ -8,7 +8,7 @@ METHOD Confine(oRect)
 
 	
 
-	IF oRect:Left!=0 .or. oRect:Right!=0 .or. oRect:Top!=0 .or. oRect:Bottom!=0
+	IF oRect:Left!=0 .OR. oRect:Right!=0 .OR. oRect:Top!=0 .OR. oRect:Bottom!=0
 		oOrigin := __WCConvertPoint(NULL_OBJECT, oRect:Origin)
 		oExtent := oRect:Extent
 
@@ -44,9 +44,9 @@ CONSTRUCTOR(xResourceID)
 	
 	SUPER()
 
-	Default(@xResourceID, POINTERARROW)
+	DEFAULT(@xResourceID, POINTERARROW)
 
-	IF IsNumeric(xResourceID) .or. IsSymbol(xResourceID) .or. IsString(xResourceID)
+	IF IsNumeric(xResourceID) .OR. IsSymbol(xResourceID) .OR. IsString(xResourceID)
 		hPointer := LoadCursor(0, __WCConvertPointer(xResourceID))
 	ELSEIF IsInstanceOfUsual(xResourceID, #ResourceID)
 		hInst := xResourceID:Handle()
@@ -88,24 +88,24 @@ FUNCTION __WCConvertPointer(pointerType AS INT) AS PSZ
 	LOCAL retVal AS PTR
 
 
-	DO CASE
-	CASE pointerType == PointerCrossHairs
+	SWITCH pointerType
+	CASE PointerCrossHairs
 		retVal := IDC_CROSS
-	CASE pointerType == PointerIBeam
+	CASE PointerIBeam
 		retVal := IDC_IBEAM
-	CASE pointerType == PointerIcon
+	CASE PointerIcon
 		retVal := IDC_ICON
-	CASE pointerType == PointerFourArrow
+	CASE PointerFourArrow
 		retVal := IDC_SIZEALL
-	CASE pointerType == PointerUpArrow
+	CASE PointerUpArrow
 		retVal := IDC_UPARROW
-	CASE pointerType == PointerHourGlass
+	CASE PointerHourGlass
 		retVal := IDC_WAIT
-	CASE pointerType == PointerAppStarting
+	CASE PointerAppStarting
 		retVal := IDC_APPSTARTING
 	OTHERWISE
 		retVal := IDC_ARROW
-	ENDCASE
+	END SWITCH
 
 	RETURN PSZ(_CAST,retVal)
 

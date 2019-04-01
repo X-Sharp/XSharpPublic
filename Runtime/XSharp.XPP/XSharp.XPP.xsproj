@@ -97,10 +97,7 @@
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
-    <Reference Include="System">
-      <Name>System</Name>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
+    <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -120,6 +117,8 @@
       <Link>constants.prg</Link>
     </Compile>
     <Compile Include="Abstract.prg" />
+    <Compile Include="Aliases.prg" />
+    <Compile Include="Defines.prg" />
     <Compile Include="Functions.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
@@ -139,6 +138,9 @@
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
       <Private>True</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="WhatToDoWith.txt" />
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

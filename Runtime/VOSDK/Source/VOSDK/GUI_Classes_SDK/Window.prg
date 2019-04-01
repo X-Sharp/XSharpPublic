@@ -349,28 +349,28 @@ METHOD __AlignControls() AS Window STRICT
 #endif				
 				iCtlWidth  := sRect:right  - sRect:left
 				iCtlHeight := sRect:bottom - sRect:top
-				DO CASE
-             CASE (dwType == OA_TOP)
+			SWITCH dwType
+             CASE OA_TOP
                  SetWindowPos(hCtl, NULL_PTR, sRect:left, 0, iCtlWidth, iCtlHeight, uFlags)
-             CASE (dwType == OA_LEFT)
+             CASE OA_LEFT
                  SetWindowPos(hCtl, NULL_PTR, 0, sRect:top, iCtlWidth, iCtlHeight, uFlags)
-             CASE (dwType == OA_BOTTOM)
+             CASE OA_BOTTOM
                  SetWindowPos(hCtl, NULL_PTR, sRect:left, iHeight-iCtlHeight, iCtlWidth, iCtlHeight, uFlags)
-             CASE (dwType == OA_RIGHT)
+             CASE OA_RIGHT
                  SetWindowPos(hCtl, NULL_PTR, iWidth-iCtlWidth, sRect:top, iCtlWidth, iCtlHeight, uFlags)
-             CASE (dwType == OA_TOP_AUTOSIZE)
+             CASE OA_TOP_AUTOSIZE
                  SetWindowPos(hCtl, NULL_PTR, 0, 0, iWidth, iCtlHeight, uFlags)
-             CASE (dwType == OA_LEFT_AUTOSIZE)
+             CASE OA_LEFT_AUTOSIZE
                  SetWindowPos(hCtl, NULL_PTR, 0, 0, iCtlWidth, iHeight, uFlags)
-             CASE (dwType == OA_BOTTOM_AUTOSIZE)
+             CASE OA_BOTTOM_AUTOSIZE
                  SetWindowPos(hCtl, NULL_PTR, 0, iHeight-iCtlHeight, iWidth, iCtlHeight, uFlags)
-             CASE (dwType == OA_RIGHT_AUTOSIZE)
+             CASE OA_RIGHT_AUTOSIZE
                  SetWindowPos(hCtl, NULL_PTR, iWidth-iCtlWidth, 0, iCtlWidth, iHeight, uFlags)
-             CASE (dwType == OA_CENTER)
+             CASE OA_CENTER
                  SetWindowPos(hCtl, NULL_PTR, (iWidth / 2)- (iCtlWidth / 2), (iHeight / 2)- (iCtlHeight / 2), 0, 0, _OR(uFlags, SWP_NOSIZE))
-             CASE (dwType == OA_FULL_SIZE)
+             CASE OA_FULL_SIZE
                  SetWindowPos(hCtl, NULL_PTR, 0, 0, iWidth, iHeight, uFlags)
-             ENDCASE
+             END SWITCH
 			ENDIF
 		ENDIF
 		++dwI
@@ -1559,7 +1559,7 @@ METHOD ControlNotify(oControlNotifyEvent)
 		oTargetWnd := SELF
 	ENDIF
 	
-	DO CASE
+	SWITCH nCode
 		//PP-031115 ACN_START/ACN_STOP need to be processed as WM_COMMAND
 		//	CASE nCode == ACN_START
 		//		Send(oTargetWnd, #AnimationStart, oEvt)
@@ -1571,69 +1571,73 @@ METHOD ControlNotify(oControlNotifyEvent)
 		// case nCode == EN_DROPFILES
 		// Send(oTargetWnd, #RichEditDropFiles, RichEditDropEvent{oEvt})
 		
-	CASE nCode = NM_CUSTOMDRAW
+	CASE NM_CUSTOMDRAW
 		//PP-030319 Call control's CustomDraw method to handle notification. Thanks to S Ebert
 		IF oControl != NULL_OBJECT .AND. IsMethod(oControl, #CustomDraw)
 			oTargetWnd:EventReturnValue := Send(oControl, #CustomDraw, lParam)
 		ENDIF
 		
-	CASE nCode == LVN_ODCACHEHINT
+	CASE LVN_ODCACHEHINT
 		//PP-031115
 		IF IsMethod(oControl,  #__CacheHint)
 			Send(oControl, #__CacheHint, oEvt)
 		ENDIF
 		
 		//SE-060519
-	CASE nCode = LVN_GETDISPINFO  .OR. nCode = TVN_GETDISPINFO .OR.;
-			nCode = CBEN_GETDISPINFO .OR. nCode = TBN_GETDISPINFO .OR. nCode = HDN_GETDISPINFOA
+	CASE LVN_GETDISPINFO
+    CASE TVN_GETDISPINFO
+    CASE CBEN_GETDISPINFO
+    CASE TBN_GETDISPINFO
+    CASE HDN_GETDISPINFOA
 		IF (oControl != NULL_OBJECT)
 			oControl:__GetDispInfo(oEvt)
 		ENDIF
 		
-	CASE nCode == EN_PROTECTED      
+	CASE EN_PROTECTED      
 		oTargetWnd:RichEditProtected(RichEditProtectEvent{oEvt})
 
-	CASE nCode == EN_SELCHANGE
+	CASE EN_SELCHANGE
 		oTargetWnd:RichEditSelectionChange(RichEditSelectionEvent{oEvt})
 		
-	CASE nCode == EN_STOPNOUNDO
+	CASE EN_STOPNOUNDO
 		oTargetWnd:RichEditUndoLost(oEvt)
 		
-	CASE nCode == LVN_BEGINDRAG .OR. nCode == LVN_BEGINRDRAG
+	CASE LVN_BEGINDRAG
+    CASE LVN_BEGINRDRAG
 		IF IVarGet(oControl, #DragDropEnabled)
 			oTargetWnd:ListViewItemDrag(ListViewDragEvent{oEvt})
 		ENDIF
 		
-	CASE nCode == LVN_BEGINLABELEDIT .OR. nCode == LVN_ENDLABELEDIT
+	CASE LVN_BEGINLABELEDIT
+    CASE LVN_ENDLABELEDIT
 		oTargetWnd:ListViewItemEdit(ListViewEditEvent{oEvt})
 		
-	CASE nCode == LVN_COLUMNCLICK
+	CASE LVN_COLUMNCLICK
 		oTargetWnd:ListViewColumnClick(ListViewColumnClickEvent{oEvt})
 		
-	CASE nCode == LVN_DELETEITEM
+	CASE LVN_DELETEITEM
 		oTargetWnd:ListViewItemDelete(ListViewDeleteEvent{oEvt})
 		
-	CASE nCode == LVN_KEYDOWN
+	CASE LVN_KEYDOWN
 		oTargetWnd:ListViewKeyDown(ListViewKeyEvent{oEvt})
 		
-	CASE nCode == LVN_ITEMCHANGING
+	CASE LVN_ITEMCHANGING
 		oTargetWnd:ListViewItemChanging(ListViewItemEvent{oEvt})
 		
-	CASE nCode == LVN_ITEMCHANGED
+	CASE LVN_ITEMCHANGED
 		//PP-031115
 		IF IsInstanceOfUsual(oControl, #DataListView)
 			Send(oControl, #__ItemChanged, oEvt)
 		ENDIF
 		Send(oTargetWnd, #ListViewItemChanged, ListViewItemEvent{oEvt})
 		
-	CASE nCode == LVN_ODFINDITEM
-		//PP-030319 Corrected setting of return value. Fixes problem finding item in DLV on DW. Thanks to S Ebert
-		//PP-031115
+	CASE LVN_ODFINDITEM
 		IF IsMethod(oControl,  #__FindItem)
 			oTargetWnd:EventReturnValue := Send(oControl, #__FindItem, oEvt)
 		ENDIF
 		
-	CASE nCode == NM_CLICK .OR. nCode == NM_RCLICK
+	CASE NM_CLICK
+    CASE NM_RCLICK
 		IF IsInstanceOf(oControl, #TreeView)
 			Send(oTargetWnd, #TreeViewMouseButtonDown, TreeViewMouseEvent{oEvt})
 		ELSEIF IsInstanceOf(oControl, #ListView)
@@ -1642,76 +1646,81 @@ METHOD ControlNotify(oControlNotifyEvent)
 			Send(oTargetWnd, #SysLinkSelect, SysLinkSelectEvent{oEvt})
 		ENDIF
 		
-	CASE nCode == NM_DBLCLK .OR. nCode == NM_RDBLCLK
+	CASE NM_DBLCLK
+    CASE NM_RDBLCLK
 		IF IsInstanceOf(oControl, #TreeView)
 			oTargetWnd:TreeViewMouseButtonDoubleClick(TreeViewMouseEvent{oEvt})
 		ELSEIF IsInstanceOf(oControl, #ListView)
 			oTargetWnd:ListViewMouseButtonDoubleClick(ListViewMouseEvent{oEvt})
 		ENDIF
 		
-	CASE nCode == TCN_SELCHANGE
+	CASE TCN_SELCHANGE
 		IF IsInstanceOf(oControl, #TabControl)
 			// !!! was in wrong order in 730 !!!
 			Send(oControl, #__FocusPage, TabCtrl_GetCurSel(oControl:Handle()))
 			oTargetWnd:TabSelect(oEvt)
 		ENDIF
 		
-	CASE nCode == TCN_SELCHANGING
+	CASE TCN_SELCHANGING
 		oTargetWnd:TabSelectionChanging(oEvt)
 		
-	CASE nCode == TCN_KEYDOWN
+	CASE TCN_KEYDOWN
 		oTargetWnd:TabKeyDown(oEvt)
 		
-	CASE nCode == TTN_NEEDTEXT // is identical to TTN_GETDISPINFO
+	CASE TTN_NEEDTEXT // is identical to TTN_GETDISPINFO
 		//PP-030909 Move this CASE to a separate method
 		SELF:__ProcessToolTip(oEvt)
 		
-	CASE nCode == TVN_BEGINDRAG .OR. nCode == TVN_BEGINRDRAG
+	CASE TVN_BEGINDRAG
+    CASE TVN_BEGINRDRAG
 		IF IVarGet(oControl, #DragDropEnabled)
 			oTargetWnd:TreeViewItemDrag(TreeViewDragEvent{oEvt})
 		ENDIF
 		
-	CASE nCode == TVN_BEGINLABELEDIT .OR. nCode == TVN_ENDLABELEDIT
+	CASE TVN_BEGINLABELEDIT
+    CASE TVN_ENDLABELEDIT
 		oTargetWnd:TreeViewItemEdit(TreeViewEditEvent{oEvt})
 		
-	CASE nCode == TVN_DELETEITEM
+	CASE TVN_DELETEITEM
 		oTargetWnd:TreeViewItemDelete( TreeViewDeleteEvent{oEvt})
 		
-	CASE nCode == TVN_ITEMEXPANDED
+	CASE TVN_ITEMEXPANDED
 		oTargetWnd:TreeViewItemExpanded( TreeViewExpandedEvent{oEvt})
 		
-	CASE nCode == TVN_ITEMEXPANDING
+	CASE TVN_ITEMEXPANDING
 		oTargetWnd:TreeViewItemExpanding( TreeViewExpandingEvent{oEvt})
 		
-	CASE nCode == TVN_KEYDOWN
+	CASE TVN_KEYDOWN
 		oTargetWnd:TreeViewKeyDown( TreeViewKeyEvent{oEvt})
 		
-	CASE nCode == TVN_SELCHANGEDA
+	CASE TVN_SELCHANGEDA
 		oTargetWnd:TreeViewSelectionChanged( TreeViewSelectionEvent{oEvt})
 		
-	CASE nCode == TVN_SELCHANGINGA
+	CASE TVN_SELCHANGINGA
 		oTargetWnd:TreeViewSelectionChanging( TreeViewSelectionEvent{oEvt})
 		
-	CASE (nCode == MCN_SELECT) .OR. (nCode == MCN_SELCHANGE)
+	CASE MCN_SELECT
+    CASE MCN_SELCHANGE
 		oTargetWnd:MonthCalSelectionChanged( MonthCalSelectionEvent{oEvt})
 		
-	CASE (nCode == DTN_DATETIMECHANGE)
+	CASE DTN_DATETIMECHANGE
 		oTargetWnd:DateTimeSelectionChanged( DateTimeSelectionEvent{oEvt})
 		
-	CASE (nCode == RBN_HEIGHTCHANGE)
+	CASE RBN_HEIGHTCHANGE
 		oTargetWnd:ToolBarHeightChanged( oEvt)
 		
-		//SE-060519
-	CASE nCode >= CBEN_LAST .AND. nCode <= CBEN_FIRST
-		oTargetWnd:ComboBoxExNotify( oEvt)
 		
 	OTHERWISE
-		//PP-040504 Forwards control's parent notify messages back to the control. Thanks to S Ebert
-		IF oControl != NULL_OBJECT .AND. IsMethod(oControl, #ParentNotify)
-			oTargetWnd:EventReturnValue := Send(oControl, #ParentNotify, nCode, lParam)
-		ENDIF
-		
-	END CASE
+    	IF nCode >= CBEN_LAST .AND. nCode <= CBEN_FIRST
+		    oTargetWnd:ComboBoxExNotify( oEvt)
+        ELSE
+
+		    //PP-040504 Forwards control's parent notify messages back to the control. Thanks to S Ebert
+		    IF oControl != NULL_OBJECT .AND. IsMethod(oControl, #ParentNotify)
+			    oTargetWnd:EventReturnValue := Send(oControl, #ParentNotify, nCode, lParam)
+		    ENDIF
+        ENDIF		
+	END SWITCH
 	
 	IF (oTargetWnd != SELF)
 		SELF:EventReturnValue := oTargetWnd:EventReturnValue

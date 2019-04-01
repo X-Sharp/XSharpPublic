@@ -48,8 +48,8 @@ METHOD Dispatch(oEvent)
 		oEvt:oWindow := oParent
 	ENDIF
 
-	DO CASE
-	CASE (uMsg == WM_MDIACTIVATE)
+	SWITCH uMsg
+	CASE WM_MDIACTIVATE
 		IF PTR(_CAST, oEvt:lParam) == hWnd // if activate
 			IF hWnd == PTR(_CAST, SendMessage(oShellWin:Handle(4), WM_MDIGETACTIVE, 0, 0))
 				oShellWin:__UseChildMenu(oParent:menu)
@@ -65,7 +65,7 @@ METHOD Dispatch(oEvent)
 			RETURN oParent:EventReturnValue
 		ENDIF
 
-	CASE (uMsg == WM_SIZE)
+	CASE WM_SIZE
 		IF (oStatusBar != NULL_OBJECT)
 			SendMessage(oStatusBar:Handle(), oEvt:uMsg, oEvt:wParam, oEvt:lParam)
 			oStatusBar:__BuildItems()
@@ -74,11 +74,11 @@ METHOD Dispatch(oEvent)
 		oParent:Resize(ResizeEvent{oEvt})
 		RETURN oParent:EventReturnValue
 
-	CASE (uMsg == WM_QUERYENDSESSION)
+	CASE WM_QUERYENDSESSION
 		oParent:EventReturnValue := oParent:QueryClose(oEvt)
 		RETURN oParent:EventReturnValue
 
-	CASE (uMsg == WM_CREATE)
+	CASE WM_CREATE
 		hWnd := oEvt:hWnd
 		SELF:Owner:__Imp := SELF
 		SELF:Owner:SetHandle(hWnd)
@@ -88,7 +88,7 @@ METHOD Dispatch(oEvent)
 	OTHERWISE
 		oParent:Dispatch(oEvt)
 		RETURN oParent:EventReturnValue
-	ENDCASE
+	END SWITCH
 
 	SELF:Default(oEvt)
 	RETURN oParent:EventReturnValue

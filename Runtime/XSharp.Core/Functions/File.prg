@@ -126,23 +126,23 @@ BEGIN NAMESPACE XSharp.IO
 			dwTempMode := (DWORD)_OR(OF_SHARE_DENY_WRITE, OF_SHARE_DENY_READ, OF_SHARE_DENY_NONE)
 			dwTempMode := (DWORD)_AND(dwMode,dwTempMode)
 			
-			DO CASE
-				CASE dwTempMode == FO_DENYNONE
+			SWITCH dwTempMode 
+				CASE FO_DENYNONE
 					FileShare  := FileShare.readWrite
 				
-				CASE dwTempMode == FO_DENYWRITE
+				CASE FO_DENYWRITE
 					FileShare  := FileShare.read
 				
-				CASE dwTempMode == FO_DENYREAD
+				CASE FO_DENYREAD
 					FileShare  := FileShare.write
 				
-				CASE dwTempMode == FO_EXCLUSIVE
+				CASE FO_EXCLUSIVE
 					FileShare  := FileShare.None
 				
-				CASE dwTempMode == FO_COMPAT
+				CASE FO_COMPAT
 					FileShare  := FileShare.readWrite
 				
-			ENDCASE
+			END SWITCH
 			RETURN
 		
 		

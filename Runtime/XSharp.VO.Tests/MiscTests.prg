@@ -71,7 +71,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			MemFree(pszDir)
 			MemFree(pszFile)
 			MemFree(pszExt)
-		
+
+            Assert.Equal("C:" , cDrive)
 			Assert.Equal("\testfolder\" , cDir)
 			Assert.Equal("\testfolder\" , cDir)
 			Assert.Equal("testfile" , cFile)

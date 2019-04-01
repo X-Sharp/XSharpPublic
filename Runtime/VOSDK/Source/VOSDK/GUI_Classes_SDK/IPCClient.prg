@@ -8,6 +8,7 @@ CLASS IpcClient INHERIT EventContext
 	PROTECT hConv AS PTR
 	PROTECT oIpcDataUpdateEvent AS IpcDataUpdateEvent
 	PROTECT oIpcClientErrorEvent AS IpcClientErrorEvent
+    PROTECT dwLastError AS DWORD
 
 	#ifdef __VULCAN__
 	   HIDDEN cbDelegate AS DDECallbackDelegate
@@ -236,7 +237,7 @@ METHOD RequestData(oIpcTopic, continuous)
 		oIpcClientErrorEvent := IpcClientErrorEvent{IPCSERVERNOTFOUND}
 		SELF:ClientError(oIpcClientErrorEvent)
 	ENDIF
-
+    dwLastError := dwErrorCode
 	RETURN SELF
 
 END CLASS

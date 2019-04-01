@@ -776,8 +776,6 @@ ACCESS TabCaption (symTabName)
 	RETURN SELF:GetCaption(symTabName)
 	
 
-#warning changed indexed assign TabCaption
-//ASSIGN TabCaption (symTabName,cCaption)
 ASSIGN TabCaption (cCaption,symTabName) 
 	SELF:SetCaption(symTabName, cCaption)
 	RETURN 

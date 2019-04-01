@@ -20,13 +20,13 @@ CLASS TopAppWindow INHERIT AppWindow
 	oTB := SELF:ToolBar
 	oSB := SELF:StatusBar
 
-	DO WHILE hChild != Null_Ptr
+	DO WHILE hChild != NULL_PTR
 		oChild :=__WCGetObjectByHandle(hChild)
 		//IF oChild != NULL_OBJECT
 			//EXIT
 		//ENDIF
 		//oChild := __WCGetControlByHandle(hChild)
-		IF oChild = NULL_OBJECT .or. (oChild != oTB .and. oChild != oSB)
+		IF oChild = NULL_OBJECT .OR. (oChild != oTB .AND. oChild != oSB)
 			EXIT
 		ENDIF
 		hchild := GetWindow(hchild, GW_HWNDNEXT)
@@ -62,7 +62,7 @@ CONSTRUCTOR(oOwner)
 
 	IF __WCRegisterTopAppWindow(_GetInst())
 		hWnd := CreateWindowEx(0, String2Psz( __WCTopAppWindowClass), String2Psz(" "),;
-			_Or(_Or(WS_CLIPCHILDREN, WS_OVERLAPPED),WS_THICKFRAME),;
+			_OR(_OR(WS_CLIPCHILDREN, WS_OVERLAPPED),WS_THICKFRAME),;
 			CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,;
 			0, 0, _GetInst(), ptrSelfPtr)
 	ENDIF

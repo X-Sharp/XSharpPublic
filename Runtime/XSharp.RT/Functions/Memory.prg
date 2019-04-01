@@ -480,7 +480,7 @@ FUNCTION MemMove( pDestination AS IntPtr, pSource AS IntPtr, nSize AS DWORD ) AS
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(pSource), 2)
 	ENDIF
     IF nSize > 0
-	    IF (pDestination:ToInt32() <= pSource:ToInt32() || pDestination:ToInt32() >= (pSource:ToInt32() + (int) nSize))
+	    IF (pDestination:ToInt32() <= pSource:ToInt32() || pDestination:ToInt32() >= (pSource:ToInt32() + (INT) nSize))
 		    // copy from source to dest from lower to higher bound
 		    FixedMemory.Copy(pDestination, pSource, (INT) nSize)
 	    ELSE

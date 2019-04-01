@@ -42,14 +42,10 @@ METHOD __SetupDataControl(oDC AS Control) AS DialogWindow STRICT
 METHOD __SubClassForDragList() AS PTR STRICT 
 	//PP-030828 Strong typing
 	IF (__lpfnOldDlgProc == NULL_PTR)
-		#warning There were multiple typos here
-//#ifdef __VULCAN_
 #ifdef __VULCAN__
       IF WCDragListDialogProcDelegate == NULL
-//         WCDragListDialogProcDelegate = __WCDragListDialogProcDelegate{ NULL, @__WCDragListDialogProc() }
          WCDragListDialogProcDelegate := __WCDragListDialogProcDelegate{ NULL, @__WCDragListDialogProc() }
       ENDIF   
-//		__lpfnOldDlgProc := PTR(_CAST, SetWindowLong(hWnd, GWL_WNDPROC, System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) WCDragListProcDelegate ) ) )
 		__lpfnOldDlgProc := PTR(_CAST, SetWindowLong(hWnd, GWL_WNDPROC, System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) WCDragListDialogProcDelegate ) ) )
 #else
 		__lpfnOldDlgProc := PTR(_CAST, SetWindowLong(hWnd, GWL_WNDPROC, LONGINT(_CAST, @__WCDragListDialogProc())))

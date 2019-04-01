@@ -93,7 +93,7 @@ METHOD ConvPntToDim(nPntSize, hDCConv)
 	LOCAL hDC AS PTR
 	LOCAL wDim AS Dimension
 
-	Default(@hDCConv, NULL_PTR)
+	DEFAULT(@hDCConv, NULL_PTR)
 	IF (hDCConv == NULL_PTR) .AND. ((hDC := GetDC(NULL_PTR)) != NULL_PTR)
 		wDim := Dimension{0, -(MulDiv(nPntSize, GetDeviceCaps(hDC, LOGPIXELSY), 72))}
 		ReleaseDC(NULL_PTR, hDC)
@@ -110,8 +110,8 @@ METHOD Create(lPrinter, hdc)
 	LOCAL i, len AS INT
 	LOCAL oDim AS Dimension
 
-	Default(@lPrinter, FALSE)
-	Default(@hdc, NULL_PTR)
+	DEFAULT(@lPrinter, FALSE)
+	DEFAULT(@hdc, NULL_PTR)
 
 	IF (hFont != NULL_PTR) .AND. bFontChanged
 		DeleteObject(hFont)
@@ -241,7 +241,7 @@ CONSTRUCTOR(kFont, oDimension, sTypeFace)
 			lfWidth := oDimension:Width
 		ENDIF
 
-		Default(@kFont, FONTANY)
+		DEFAULT(@kFont, FONTANY)
 
 		IF !IsNil(sTypeFace)
 			sFaceName := sTypeFace
@@ -396,7 +396,7 @@ METHOD SizeText(cString )
    LOCAL hDC AS PTR
 
 	   // DHer: 18/12/2008
-	   Default(@cString," ")
+	   DEFAULT(@cString," ")
 	   hDC := CreateDC(Cast2Psz("DISPLAY"),NULL_PSZ,NULL_PSZ,NULL_PTR)
 	   SetRect(@oWinRect,0,0,0,0)
 	   SelectObject(hDC,SELF:Handle())
@@ -446,20 +446,20 @@ STATIC FUNCTION __GetStdFontPointSize(kStandardFont AS INT) AS INT STRICT
 STATIC FUNCTION __WCConvertFont(family AS WORD) AS WORD STRICT
 	LOCAL retVal AS WORD
 
-	DO CASE
-	CASE family == FontDecorative
+	SWITCH family
+	CASE FontDecorative
 		retVal := FF_DECORATIVE
-	CASE family == FontModern
+	CASE FontModern
 		retVal := FF_MODERN
-	CASE family == FontRoman
+	CASE FontRoman
 		retVal := FF_ROMAN
-	CASE family == FontScript
+	CASE FontScript
 		retVal := FF_SCRIPT
-	CASE family == FontSwiss
+	CASE FontSwiss
 		retVal := FF_SWISS
 	OTHERWISE
 		retVal := FF_DONTCARE
-	ENDCASE
+	END SWITCH
 
 	RETURN retVal
 

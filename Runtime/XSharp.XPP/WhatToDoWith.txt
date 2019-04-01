@@ -1,0 +1,16 @@
+﻿What do do with
+- Set Lexical for string comparisons
+- OS() function with numeric params
+- SET COLLATION with country names ?
+- SET NULLVALUE ON/OFF
+- SET SMARTFILTER ON/OFF
+- SET RUSHMORE ON/OFF
+- SET OPTIMIZE ON/OFF
+- TEXT Command
+- DbCargo()
+- DbDescend() and DbSetDescend() 
+- DbRelease(), DbRequest(), DbJob() to share workarea between threads
+- DbClientList(), DbRegisterClient() & DbDeregisterClient() to register a client with a workarea
+- DbResetNotifications(), DbResumeNotifications()
+- DbPosition() returns recno as percentage between 0 and 100
+- DbCreateExtStruct()

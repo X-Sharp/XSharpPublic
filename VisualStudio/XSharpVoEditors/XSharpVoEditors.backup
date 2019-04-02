@@ -3,13 +3,13 @@
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <ProjectGuid>EED6843B-B727-4F08-AA32-CA0F48FDDE3F</ProjectGuid>
+    <ProjectGuid>7619db88-6286-4ef1-8273-2a08cc8ac70e</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XSharpCodeModel</RootNamespace>
-    <AssemblyName>XSharpModel</AssemblyName>
+    <RootNamespace>XSharp.VOEditors</RootNamespace>
+    <AssemblyName>XSharpVoEditors</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <Name>XSharpModelXs</Name>
+    <Name>XSharp.VoEditors</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
@@ -40,8 +40,7 @@
     <VO13>false</VO13>
     <VO14>false</VO14>
     <VO15>false</VO15>
-    <VO16>false</VO16>
-    <XSharpProjectversion>2.0.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.0.0.9</XSharpProjectversion>
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
   </PropertyGroup>
@@ -51,15 +50,16 @@
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <Optimize>false</Optimize>
     <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings>165,219,1030,9047</DisabledWarnings>
+    <DisabledWarnings>
+    </DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
-    <DefineConstants>DEBUG</DefineConstants>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <PlatformTarget>x86</PlatformTarget>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
@@ -68,53 +68,21 @@
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <Optimize>true</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>162,1030,165,219</DisabledWarnings>
+    <DisabledWarnings>162</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
-    <DefineConstants>
-    </DefineConstants>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DefineConstants>TRACE</DefineConstants>
+    <PlatformTarget>x86</PlatformTarget>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
-    <Reference Include="EnvDTE">
-      <Name>EnvDTE</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>EnvDTE.dll</AssemblyName>
-      <HintPath>..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\EnvDTE.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Microsoft.CSharp">
-      <Name>Microsoft.CSharp</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>Microsoft.CSharp.dll</AssemblyName>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Language.Intellisense">
-      <Name>Microsoft.VisualStudio.Language.Intellisense</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>Microsoft.VisualStudio.Language.Intellisense.dll</AssemblyName>
-      <Private>True</Private>
-      <HintPath>..\..\..\..\Program Files (x86)\Microsoft Visual Studio 14.0\VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0\Microsoft.VisualStudio.Language.Intellisense.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.14.0">
-      <Name>Microsoft.VisualStudio.Shell.14.0</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>Microsoft.VisualStudio.Shell.14.0.dll</AssemblyName>
-      <Private>True</Private>
-      <HintPath>..\..\..\..\Program Files (x86)\Microsoft Visual Studio 14.0\VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0\Microsoft.VisualStudio.Shell.14.0.dll</HintPath>
-    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Collections.Immutable.1.5.0\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Name>System.Drawing</Name>
       <AssemblyName>System.Drawing.dll</AssemblyName>
@@ -126,57 +94,51 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System.Xml" />
-    <Reference Include="VsLangProj">
-      <Name>VsLangProj</Name>
+    <Reference Include="XSharp.CodeGenerator, Version=1.0.2.0, Culture=neutral, PublicKeyToken=31c59c566fa38f21">
+      <Name>XSharp.CodeGenerator</Name>
+      <AssemblyName>XSharp.CodeGenerator.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>VsLangProj.dll</AssemblyName>
-      <HintPath>..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\VsLangProj.dll</HintPath>
       <Private>True</Private>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\External\Debug\XSharp.CodeGenerator.dll</HintPath>
     </Reference>
-    <Reference Include="XSharp.VSParser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.VSParser</Name>
-      <AssemblyName>XSharp.VSParser.dll</AssemblyName>
+    <Reference Include="XSharp.VODesigners, Version=1.2.1.0, Culture=neutral, PublicKeyToken=31c59c566fa38f21">
+      <Name>XSharp.VODesigners</Name>
+      <AssemblyName>XSharp.VODesigners.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\External\Debug\XSharp.VSParser.dll</HintPath>
+      <HintPath>..\..\External\Debug\XSharp.VODesigners.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CompletionType.prg" />
-    <Compile Include="ExtensionMethods.prg" />
+    <Compile Include="Actions.prg" />
+    <Compile Include="DesignWindowItem.prg" />
+    <Compile Include="Functions.prg" />
+    <Compile Include="XSharp_DED.prg" />
+    <Compile Include="XSharp_MED.prg" />
+    <Compile Include="XSharp_FED.prg" />
     <Compile Include="Interfaces.prg" />
-    <Compile Include="MetaData\AssemblyInfo.prg" />
-    <Compile Include="MetaData\SystemTypeController.prg" />
-    <Compile Include="Model\Enums.prg" />
-    <Compile Include="Model\XElement.prg" />
-    <Compile Include="Model\XType.prg" />
-    <Compile Include="Model\XTypeMember.prg" />
-    <Compile Include="Model\XVariable.prg" />
-    <Compile Include="ProjectSystem\OrphanedFilesProject.prg" />
-    <Compile Include="ProjectSystem\XFile.prg" />
-    <Compile Include="ProjectSystem\XProject.prg" />
-    <Compile Include="ProjectSystem\XSolution.prg" />
     <Compile Include="Properties\AssembyInfo.prg" />
-    <Compile Include="TextInterval.prg" />
-    <Compile Include="TextRange.prg" />
-    <Compile Include="TypeExtensions.prg" />
-    <Compile Include="Walker\ModelWalker.prg" />
-    <Compile Include="Walker\Parser.prg" />
-    <Compile Include="Walker\ParseResult.prg" />
-    <Compile Include="Walker\SourceWalker.prg" />
-    <Compile Include="XError.prg" />
-    <Compile Include="XFileTypeHelpers.prg" />
+    <Compile Include="XSharp_WedControl.prg" />
+    <Compile Include="XSharp_EditorStream.prg" />
+    <Compile Include="XSharp_WED.prg" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Model\" />
-    <Folder Include="MetaData" />
-    <Folder Include="ProjectSystem\" />
-    <Folder Include="Walker" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
+      <Name>XSharpModelXs</Name>
+      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Common\BuildNumber.h">
+      <Link>BuildNumber.h</Link>
+    </None>
+    <None Include="..\..\Common\version.xh">
+      <Link>version.xh</Link>
+    </None>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

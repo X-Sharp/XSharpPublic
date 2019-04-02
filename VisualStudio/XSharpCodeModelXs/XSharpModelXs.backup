@@ -41,7 +41,7 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.0.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.0.0.9</XSharpProjectversion>
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
   </PropertyGroup>
@@ -98,15 +98,15 @@
       <Name>Microsoft.VisualStudio.Language.Intellisense</Name>
       <SpecificVersion>False</SpecificVersion>
       <AssemblyName>Microsoft.VisualStudio.Language.Intellisense.dll</AssemblyName>
-      <Private>True</Private>
       <HintPath>..\..\..\..\Program Files (x86)\Microsoft Visual Studio 14.0\VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0\Microsoft.VisualStudio.Language.Intellisense.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.14.0">
       <Name>Microsoft.VisualStudio.Shell.14.0</Name>
       <SpecificVersion>False</SpecificVersion>
       <AssemblyName>Microsoft.VisualStudio.Shell.14.0.dll</AssemblyName>
-      <Private>True</Private>
       <HintPath>..\..\..\..\Program Files (x86)\Microsoft Visual Studio 14.0\VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0\Microsoft.VisualStudio.Shell.14.0.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />

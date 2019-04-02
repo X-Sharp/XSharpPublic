@@ -88,6 +88,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PUBLIC METHOD Seek(seekInfo AS DBSEEKINFO ) AS LOGIC
             LOCAL uiRealLen AS LONG
             LOCAL byteArray AS BYTE[]
+            LOCAL nLen      AS LONG
             uiRealLen := 0
             byteArray := BYTE[]{ _keySize }
             // Convert the seeked key to a byte Array
@@ -96,7 +97,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 RETURN FALSE
             ENDIF
             IF SELF:HasTopScope
-                IF SELF:__Compare(byteArray, SELF:_topScopeBuffer, SELF:_keySize) < 0
+                nLen := Math.Min(SELF:_Scopes[TOPSCOPE]:Size , uiRealLen)
+                IF SELF:__Compare(byteArray, SELF:_Scopes[TOPSCOPE]:Buffer, nLen) < 0
                     IF seekInfo:SoftSeek
                         RETURN SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
                     ENDIF
@@ -104,14 +106,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             ENDIF
             IF SELF:HasBottomScope
-                IF SELF:__Compare(byteArray, SELF:_bottomScopeBuffer, SELF:_keySize) > 0
+                nLen := Math.Min(SELF:_Scopes[BOTTOMSCOPE]:Size , uiRealLen)
+                IF SELF:__Compare(byteArray, SELF:_Scopes[BOTTOMSCOPE]:Buffer, nLen) > 0
                     RETURN SELF:_oRdd:__Goto(0)
                 ENDIF
             ENDIF
             RETURN SELF:_Seek(seekInfo, byteArray)
-            
-            
-            
             
             
         PUBLIC METHOD SkipRaw(nToSkip AS LONG ) AS LOGIC
@@ -158,7 +158,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
                 
                 IF orgToSkip != 0
-                    IF SELF:HasTopScope .OR. SELF:HasBottomScope
+                    IF SELF:HasScope
                         isBof := SELF:_oRdd:_Bof
                         isEof := SELF:_oRdd:_Eof
                         recno := SELF:_ScopeSkip(nToSkip)
@@ -181,7 +181,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     ENDIF
                 ENDIF
                 result := SELF:_oRdd:__Goto(recno)
-                IF !SELF:HasTopScope .AND. !SELF:HasBottomScope
+                IF !SELF:HasScope
                     RETURN result
                 ENDIF
                 IF changedBof
@@ -196,7 +196,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_oRdd:_dbfError(ex, SubCodes.EDB_SKIP,GenCode.EG_CORRUPTION,  "NtxOrder.SkipRaw") 
             FINALLY
                 IF locked
-                    result := SELF:_unLockForRead()
+                    result := SELF:_unLockForRead() .AND. result
                 ENDIF
             END TRY
             RETURN result
@@ -287,27 +287,27 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL first AS LONG
             LOCAL last AS LONG
             IF SELF:HasTopScope
-                IF SELF:__Compare(SELF:_currentValue:Key, SELF:_topScopeBuffer, SELF:_topScopeSize) < 0
+                IF SELF:__Compare(SELF:_currentValue:Key, SELF:_Scopes[TOPSCOPE]:Buffer, SELF:_Scopes[TOPSCOPE]:Size) < 0
                     RETURN 0
                 ENDIF
             ENDIF
             IF SELF:HasBottomScope
-                IF SELF:__Compare(SELF:_currentValue:Key, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize) > 0
+                IF SELF:__Compare(SELF:_currentValue:Key, SELF:_Scopes[BOTTOMSCOPE]:Buffer, SELF:_Scopes[BOTTOMSCOPE]:Size) > 0
                     RETURN 0
                 ENDIF
             ENDIF
             first := 1
             last := 1
-            DO WHILE SELF:_findItemPos(REF first, FALSE)
+            DO WHILE SELF:_findItemPos(REF last, FALSE)
                 NOP
             ENDDO
             IF SELF:HasTopScope
                 SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
-                DO WHILE SELF:_findItemPos(REF last, FALSE)
+                DO WHILE SELF:_findItemPos(REF first, FALSE)
                     NOP
                 ENDDO
             ENDIF
-            RETURN first - last + 1
+            RETURN last - first + 1
             
             
         INTERNAL METHOD _saveCurrentKey(rcno AS LONG, oData AS RddKeyData) AS LOGIC
@@ -332,7 +332,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL result AS LONG
             LOCAL recno AS LONG
             LOCAL SkipDirection AS SkipDirection
-            
+	    
             VAR RT_Deleted := XSharp.RuntimeState.Deleted
             result := SELF:_RecNo
             IF lNumKeys == 1
@@ -344,8 +344,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     SELF:_oRdd:_Eof := TRUE
                     RETURN 0
                 ENDIF
-                IF SELF:HasBottomScope
-                    IF SELF:__Compare(SELF:_currentvalue:Key, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize) > 0
+                IF SELF:_Scopes[BOTTOMSCOPE]:IsSet
+                    VAR nRes := SELF:__Compare(SELF:_currentvalue:Key, SELF:_Scopes[BOTTOMSCOPE]:Buffer, SELF:_Scopes[BOTTOMSCOPE]:Size)
+                    VAR lEOF := IIF(SELF:Descending, nRes < 0, nRes > 0)
+                    IF lEOF
                         SELF:_oRdd:_Eof := TRUE
                         RETURN result
                     ENDIF
@@ -366,9 +368,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         lNumKeys--
                         IF SkipDirection == SkipDirection.Backward
                             IF SELF:HasTopScope
-                                IF SELF:__Compare(SELF:_currentvalue:Key, SELF:_topScopeBuffer, SELF:_topScopeSize) < 0
-                                    recno := SELF:_getNextKey(FALSE, SkipDirection.Forward)
-                                    SELF:_oRdd:_Bof := TRUE
+                                VAR nRes := SELF:__Compare(SELF:_currentvalue:Key, SELF:_Scopes[TOPSCOPE]:Buffer, SELF:_Scopes[TOPSCOPE]:Size)
+                                VAR lBOF := IIF(SELF:Descending, nRes > 0, nRes < 0)
+                                IF lBOF
+	                    	        recno := SELF:_getNextKey(FALSE, SkipDirection.Forward)
+	                                SELF:_oRdd:_Bof := TRUE
                                     EXIT
                                 ENDIF
                             ENDIF
@@ -379,8 +383,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                                     RETURN result
                                 ENDIF
                                 SELF:_oRdd:_Bof := FALSE
-                                
-                                IF SELF:__Compare(SELF:_currentvalue:Key, SELF:_bottomScopeBuffer, SELF:_bottomScopeSize) > 0
+                                VAR nRes := SELF:__Compare(SELF:_currentvalue:Key, SELF:_Scopes[BOTTOMSCOPE]:Buffer, SELF:_Scopes[BOTTOMSCOPE]:Size)
+                                VAR lEOF := IIF(SELF:Descending, nRes < 0, nRes > 0)
+                                IF lEOF
                                     SELF:_oRdd:_Eof := TRUE
                                     RETURN result
                                 ENDIF
@@ -404,7 +409,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             result := TRUE
             seekInfo := DbSeekInfo{}
             IF uiScope == DBOrder_Info.DBOI_SCOPETOP
-                obj := SELF:_topScope
+                obj := SELF:_Scopes[TOPSCOPE]:Value
                 IF obj == NULL
                     result := SELF:GoTop()
                     mustSeek := FALSE
@@ -413,7 +418,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     mustSeek := TRUE
                 ENDIF
             ELSE
-                obj := SELF:_bottomScope
+                obj := SELF:_Scopes[BOTTOMSCOPE]:VALUE
                 IF obj == NULL
                     result := SELF:GoBottom()
                     mustSeek := FALSE
@@ -426,7 +431,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 seekInfo:Value      := obj
                 seekInfo:SoftSeek   := TRUE
                 result := SELF:_Seek(seekInfo, obj)
-                SELF:_oRdd:_Found := SELF:_isInScope()
+                SELF:_oRdd:_Found := SELF:_isBeforeBottomScope()
                 IF !SELF:_oRdd:_Found
                     SELF:_oRdd:GoTo(0)
                 ENDIF
@@ -434,14 +439,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN result
             
             
-        PRIVATE METHOD _isInScope() AS LOGIC
+        PRIVATE METHOD _isBeforeBottomScope() AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL itmBottomScope AS OBJECT
             
             isOk := SELF:_oRdd:_Found
             IF !isOk .AND. SELF:_RecNo != 0
                 IF SELF:HasBottomScope
-                    itmBottomScope := SELF:_bottomScope
+                    itmBottomScope := SELF:_Scopes[BottomScope]:Value
                     SELF:_ToString(itmBottomScope, SELF:_keySize, SELF:_keyDecimals, SELF:_newValue:Key)
                     IF SELF:__Compare(SELF:_newValue:Key, SELF:_currentValue:Key, SELF:_keySize) >= 0
                         isOk := TRUE
@@ -474,14 +479,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         SELF:_oRdd:_dbfError( SubCodes.ERDD_RECNO_MISSING, GenCode.EG_CORRUPTION,SELF:fileName)
                         result := FALSE
                     ENDIF
-                    SELF:_TopStack := 0
+                    SELF:ClearStack()
                 ENDIF
             ENDIF
             RETURN result
             
         PRIVATE METHOD _locateKey( keyBuffer AS BYTE[] , bufferLen AS LONG , searchMode AS SearchMode ) AS LONG
             // Find Key starting at the top of the index
-            SELF:_TopStack := 0
+            SELF:ClearStack()
             IF bufferLen > SELF:_keySize
                 bufferLen := SELF:_keySize
             ELSE
@@ -494,7 +499,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
         PRIVATE METHOD _locate(keyBuffer AS BYTE[] , bufferLen AS LONG , searchMode AS SearchMode , pageOffset AS LONG ) AS LONG
             LOCAL foundPos  AS WORD
-            LOCAL page   AS NtxPage
+            LOCAL page      AS NtxPage
             LOCAL nodeCount AS WORD
             LOCAL node      AS NtxPageNode
             LOCAL minPos    AS WORD
@@ -786,7 +791,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         found := FALSE
                     ENDIF
                     IF !SELF:_oRdd:_isValid
-                        SELF:_TopStack := 0
+                        SELF:ClearStack()
                     ENDIF
                     SELF:_oRdd:_Bof := (SELF:_oRdd:RecCount == 0)
                     SELF:_oRdd:_Found := found

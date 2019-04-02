@@ -20,8 +20,9 @@ CLASS WorkAreas
 	PRIVATE iCurrentWorkarea AS DWORD
     PRIVATE workAreaStack AS Stack<DWORD>
 
-    INTERNAL METHOD PushCurrentWorkarea(dwCurrent AS DWORD) AS VOID
-        workAreaStack:Push(dwCurrent)
+    INTERNAL METHOD PushCurrentWorkarea(dwNew AS DWORD) AS VOID
+        workAreaStack:Push(iCurrentWorkarea)
+        iCurrentWorkarea := dwNew
         
     INTERNAL METHOD PopCurrentWorkarea() AS DWORD
         IF workAreaStack:Count > 0

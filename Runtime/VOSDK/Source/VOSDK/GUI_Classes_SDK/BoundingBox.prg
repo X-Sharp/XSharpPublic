@@ -16,12 +16,11 @@ ACCESS Bottom
 	
 
 ASSIGN Bottom(iCoord) 
-	LOCAL retVal AS INT
 	
 	IF WCGetCoordinateSystem() == WCCartesianCoordinates
-		retVal := _Origin:Y := iCoord
+		_Origin:Y := iCoord
 	ELSE
-		retVal := _Extent:Y := iCoord
+		_Extent:Y := iCoord
 	ENDIF
 	
 	RETURN 
@@ -140,11 +139,10 @@ ACCESS Top
 	
 
 ASSIGN Top(iCoord) 
-	LOCAL retVal AS INT
 	IF WCGetCoordinateSystem() == WCCartesianCoordinates
-		retVal := _Extent:Y := iCoord
+		_Extent:Y := iCoord
 	ELSE
-		retVal := _Origin:Y := iCoord
+		_Origin:Y := iCoord
 	ENDIF
 	
 	RETURN 

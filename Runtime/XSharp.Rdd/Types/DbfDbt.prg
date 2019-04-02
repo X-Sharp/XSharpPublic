@@ -61,6 +61,7 @@ BEGIN NAMESPACE XSharp.RDD
             CASE DbInfo.DBI_MEMOBLOCKSIZE
                 oResult := SELF:_oDbtMemo:BlockSize
             CASE DBInfo.DBI_MEMOFIELD
+                SELF:ForceRel()
                 oResult := ""
                 IF oNewValue != NULL
                     TRY

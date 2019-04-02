@@ -12,6 +12,12 @@
     <CreateNewFolder>true</CreateNewFolder>
     <DefaultName>ConsoleApplication</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
+    <LanguageTag Value="X#" />
+    <PlatformTag Value="Windows" />
+    <PlatformTag Value="Linux" />
+    <PlatformTag Value="MacOS" />
+    <ProjectTypeTag Value="Console" />
+
   </TemplateData>
   <TemplateContent>
     <Project File="ConsoleApplication.xsproj" ReplaceParameters="true">

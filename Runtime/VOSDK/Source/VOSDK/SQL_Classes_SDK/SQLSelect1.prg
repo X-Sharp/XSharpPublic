@@ -1171,7 +1171,7 @@ METHOD __PutLongData( cValue AS STRING, nODBCType AS SHORTINT, nIndex AS DWORD, 
 	//
 	LOCAL nRetCode      AS INT
 	LOCAL oUpdate       AS SQLStatement
-	LOCAL oCol          AS SQLColumn
+	//LOCAL oCol          AS SQLColumn
 //	LOCAL nPrecision    AS LONGINT
 //	LOCAL nScale        AS INT
 	LOCAL nLength       AS DWORD
@@ -1196,7 +1196,7 @@ METHOD __PutLongData( cValue AS STRING, nODBCType AS SHORTINT, nIndex AS DWORD, 
 		RETURN NULL_STRING
 	ENDIF
 	
-	oCol 			:= SELF:aSQLColumns[nIndex]
+	//oCol 			:= SELF:aSQLColumns[nIndex]
 //	nPrecision 	:= oCol:Length
 	nLength    	:= SLen( cValue )
 	

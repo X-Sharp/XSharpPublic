@@ -481,6 +481,16 @@
     <ZipProject Include="Templates\Projects\VOConsole\VOConsole.vstemplate" />
     <ZipProject Include="Templates\Projects\VOConsole\VOConsole.xsproj" />
     <ZipProject Include="Templates\Projects\VOConsole\Program.prg" />
+    <ZipProject Include="Templates\Projects\VOClassLibrary\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\VOClassLibrary\Class1.prg" />
+    <ZipProject Include="Templates\Projects\VOClassLibrary\VOClassLibrary.png" />
+    <ZipProject Include="Templates\Projects\VOClassLibrary\VOClassLibrary.vstemplate" />
+    <ZipProject Include="Templates\Projects\VOClassLibrary\VOClassLibrary.xsproj" />
+    <ZipProject Include="Templates\Projects\XPPClassLibrary\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\XPPClassLibrary\Class1.prg" />
+    <ZipProject Include="Templates\Projects\XPPClassLibrary\XPPClassLibrary.png" />
+    <ZipProject Include="Templates\Projects\XPPClassLibrary\XPPClassLibrary.vstemplate" />
+    <ZipProject Include="Templates\Projects\XPPClassLibrary\XPPClassLibrary.xsproj" />
     <Content Include="XSharp.png" />
     <VSCTCompile Include="XSharpProjectPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>

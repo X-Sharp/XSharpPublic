@@ -156,14 +156,13 @@ ACCESS CanvasArea
 	RETURN BoundingBox{Point{0, 0}, Dimension{iWidth, iHeight}}
 
 METHOD Destroy() 
-	LOCAL i AS INT
 	
 
 	IF (hDC != NULL_PTR)
 		IF	lprValid
 			IF (lDocStarted)
-				i := EndPage(hDC)
-				i := EndDoc(hDC)
+				EndPage(hDC)
+				EndDoc(hDC)
 			ENDIF
 			__WCDelPrinterFromArray(hDC)
 		ENDIF

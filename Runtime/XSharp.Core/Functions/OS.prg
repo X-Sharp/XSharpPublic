@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -80,7 +80,7 @@ FUNCTION SetEnv(cVar AS STRING,cValue AS STRING,lAppend AS LOGIC) AS LOGIC
 		ENDIF
 		System.Environment.SetEnvironmentVariable(cVar, cValue)
 		result := System.Environment.GetEnvironmentVariable(cVar) == cValue
-	CATCH e as Exception
+	CATCH e AS Exception
 		XSharp.IO.File.setErrorState(e)
 		result := FALSE
 	END TRY
@@ -328,7 +328,7 @@ FUNCTION DirChange(cDir AS STRING) AS INT
 		ELSE
 			result := 3 // Path not found
 		ENDIF
-	CATCH e as Exception
+	CATCH e AS Exception
 		XSharp.IO.File.setErrorState(e)
         result := (INT) XSharp.IO.File.errorCode
 	END TRY
@@ -350,7 +350,7 @@ FUNCTION DirMake(cDir AS STRING) AS INT
 		ELSE
 			result := 183 // ERROR_ALREADY_EXISTS 
 		ENDIF
-	CATCH e as Exception
+	CATCH e AS Exception
 		XSharp.IO.File.setErrorState(e)
         result := (INT) XSharp.IO.File.errorCode
 	END TRY
@@ -372,7 +372,7 @@ FUNCTION DirRemove(cDir AS STRING) AS INT
 		ELSE
 			result := 2 // Cannot find file 
 		ENDIF
-	CATCH e as Exception
+	CATCH e AS Exception
 		XSharp.IO.File.setErrorState(e)
         result := (INT) XSharp.IO.File.errorCode
 	END TRY

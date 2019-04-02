@@ -44,14 +44,11 @@ METHOD Clear()
 	RETURN SELF
 
 METHOD Copy() 
-	LOCAL dwTemp AS DWORD
 	LOCAL hHandle AS PTR
-
-	
 
 	IF SELF:ValidateControl()
 		hHandle := SELF:Handle()
-		dwTemp := DWORD(SendMessage(hHandle, EM_GETSEL, 0, 0))
+		SendMessage(hHandle, EM_GETSEL, 0, 0)
 		SendMessage(hHandle, WM_COPY, 0, 0)
 	ENDIF
 

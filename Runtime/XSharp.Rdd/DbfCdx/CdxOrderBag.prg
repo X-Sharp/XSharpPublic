@@ -191,8 +191,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _pageList:Add(_root)
             SELF:Write(_root)
             // taglist page
-            VAR page := SELF:GetPage(_root:RootPage, _root:KeySize, NULL)
-            _tagList := CdxTagList{SELF,  page, _root:KeySize}
+            VAR buffer := SELF:AllocBuffer()
+            _tagList := CdxTagList{SELF,  _root:RootPage, buffer, _root:KeySize}
             _taglist:InitBlank(NULL)
             SELF:Write(_tagList)
             // we now have a 

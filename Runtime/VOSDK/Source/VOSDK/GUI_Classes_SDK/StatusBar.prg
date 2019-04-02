@@ -257,7 +257,7 @@ METHOD __GetText(symItemName := NIL AS USUAL) AS STRING STRICT
 	
 
 	// Lookup message area index by default
-	Default(@symItemName, #MessageArea)
+	DEFAULT(@symItemName, #MessageArea)
 
 	dwIndex := SELF:__GetItemFromSymbol(symItemName)
 	IF (dwIndex != 0)
@@ -271,7 +271,7 @@ METHOD __GetText(symItemName := NIL AS USUAL) AS STRING STRICT
 METHOD __InitItems() AS StatusBar STRICT 
 	//PP-030828 Strong typing
 	LOCAL nVBorder AS INT
-	LOCAL nHBorder AS INT
+	//LOCAL nHBorder AS INT
 	LOCAL nSBorder AS INT
 	LOCAL dwCount AS DWORD
 	LOCAL dwItemCount AS DWORD
@@ -281,7 +281,7 @@ METHOD __InitItems() AS StatusBar STRICT
 	
 
 	// Get border information for use in calculations
-	nHBorder := SELF:HorizontalBorder
+	//nHBorder := SELF:HorizontalBorder
 	nVBorder := SELF:VerticalBorder
 	nSBorder := SELF:ItemBorder
 
@@ -695,7 +695,7 @@ METHOD GetItemBoundingBox(symItemName)
 
 	
 
-	Default(@symItemName, #MessageArea)
+	DEFAULT(@symItemName, #MessageArea)
 
 	// 2.0a-1, changed from #symItemName
 	dwIndex := SELF:__GetItemFromSymbol(symItemName)
@@ -715,7 +715,7 @@ METHOD GetTipText(symItemName)
 
 	
 
-	Default(@symItemName, #MessageArea)
+	DEFAULT(@symItemName, #MessageArea)
 
 	IF IsLong(symItemName)
 		symName := SELF:__GetSymbolFromItem(symItemName+1)
@@ -785,7 +785,7 @@ ACCESS InsertMode
 ASSIGN InsertMode(lEnable) 
 	
 
-	Default(@lEnable, TRUE)
+	DEFAULT(@lEnable, TRUE)
 
 	SELF:__SetKeyState(VK_INSERT, lEnable)
 
@@ -875,7 +875,7 @@ METHOD RefreshMemoryDisplay(kMemoryType)
 
 #ifndef __VULCAN__  // Memory() not supported in Vulcan
 	// Default to SYSTEM_FREE (GetFreeSpace())
-	Default(@kMemoryType, MEMORY_SYSTEM_FREE)
+	DEFAULT(@kMemoryType, MEMORY_SYSTEM_FREE)
 
 	SELF:SetText(AllTrim(AsString(Memory(kMemoryType))) + " K", #MemoryArea)
 #endif
@@ -886,7 +886,7 @@ METHOD SetIcon(oIcon, symItemName)
 	LOCAL oStatusBarItem AS StatusBarItem
 	LOCAL dwIndex        AS DWORD
 
-	Default(@symItemName, #MessageArea)
+	DEFAULT(@symItemName, #MessageArea)
 
 	dwIndex := SELF:__GetItemFromSymbol(symItemName)
 	IF dwIndex != 0 .AND. SELF:ValidateControl()
@@ -985,7 +985,7 @@ METHOD SetText(cText, symItemName)
 	
 
 	// Lookup message area index by default
-	Default(@symItemName, #MessageArea)
+	DEFAULT(@symItemName, #MessageArea)
 
 	dwIndex := SELF:__GetItemFromSymbol(symItemName)
 	IF (dwIndex != 0) .AND. SELF:ValidateControl()
@@ -1007,7 +1007,7 @@ METHOD SetTipText(cTipText, symItemName)
 
 	
 
-	Default(@symItemName, #MessageArea)
+	DEFAULT(@symItemName, #MessageArea)
 
 	symName := symItemName
 
@@ -1033,7 +1033,7 @@ METHOD SetValue(uValue, symItemName)
 	
 
 	// Lookup message area index by default
-	Default(@symItemName, #MessageArea)
+	DEFAULT(@symItemName, #MessageArea)
 
 	dwIndex := SELF:__GetItemFromSymbol(symItemName)
 	IF (dwIndex != 0) .AND. SELF:ValidateControl()

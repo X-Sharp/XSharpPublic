@@ -413,12 +413,12 @@ BEGIN NAMESPACE XSharp
 		#region ADD and Subtract Methods
 			/// <exclude />
 			METHOD Add(days AS USUAL) AS DATE
-				IF days:IsLong
-					RETURN SELF:Add( (LONG) days)
-				ELSEIF days:IsFloat
+				IF days:IsInteger
+					RETURN SELF:Add( (INT64) days)
+				ELSEIF days:IsNumeric
 					 RETURN SELF:Add( (REAL8) days)
 				ELSE
-					THROW Error.ArgumentError(__ENTITY__,NAMEOF(days), "Incompatible argument for Date:Add()")
+					THROW Error.ArgumentError(__ENTITY__,NAMEOF(days),1, "Incompatible argument for Date:Add()",{days})
 				ENDIF
 			/// <exclude />
             [MethodImpl(MethodImplOptions.AggressiveInlining)];
@@ -464,12 +464,12 @@ BEGIN NAMESPACE XSharp
 			/// <exclude />
             [MethodImpl(MethodImplOptions.AggressiveInlining)];
 			METHOD Subtract(days AS USUAL) AS DATE
-				IF days:IsLong
-					RETURN SELF:Add( -(LONG) days)
-				ELSEIF days:IsFloat
+				IF days:IsInteger
+					RETURN SELF:Add( -(INT64) days)
+				ELSEIF days:IsNumeric
 					 RETURN SELF:Add( -(REAL8) days)
 				ELSE
-					THROW Error.ArgumentError(__ENTITY__,NAMEOF(days), "Incompatible argument for Date:Subtract()")
+					THROW Error.ArgumentError(__ENTITY__,NAMEOF(days), 1, "Incompatible argument for Date:Subtract()", {days})
 				ENDIF
 
 			/// <exclude />

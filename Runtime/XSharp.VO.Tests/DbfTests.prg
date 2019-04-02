@@ -1459,7 +1459,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			DBCloseAll() 
 			Assert.Equal(1 , (INT) DBGetSelect() ) // Shows  3 instead of 1
-			Assert.Equal(1 , (INT) select() )      // Shows  3 instead of 1
+			Assert.Equal(1 , (INT) SELECT() )      // Shows  3 instead of 1
 			
 			DBUseArea( ,"DBFNTX",cDbf, "FOO1", TRUE) 		
 			Assert.Equal(1 , (INT) DBGetSelect() ) // shows 3 instead of 1
@@ -1596,7 +1596,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 }} , { "a" , "d" , "f", "c" })
 
 			OrdCondSet()
-			OrdCreate(cIndex, "ORDER1", "upper(LAST)", { || Upper ( _Field-> LAST) } )
+			OrdCreate(cIndex, "ORDER1", "upper(LAST)", { || Upper ( _FIELD-> LAST) } )
 			DBSetOrder ( 1 )
 			Assert.Equal( "ORDER1", OrdName() )
 			Assert.False( OrdIsUnique() ) // always returns true !
@@ -1607,7 +1607,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 //			Create a descend and unique order
 			OrdCondSet(,,,,,,,,,,TRUE)
 			SetUnique ( TRUE )
-			OrdCreate(cIndex, "ORDER2", "upper(LAST)", { || Upper ( _Field-> LAST) } )
+			OrdCreate(cIndex, "ORDER2", "upper(LAST)", { || Upper ( _FIELD-> LAST) } )
 			
 			DBSetOrder ( 2 )
 			Assert.Equal( "ORDER2", OrdName() )

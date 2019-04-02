@@ -1,4 +1,4 @@
-ï»¿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -79,8 +79,8 @@ STATIC CLASS XSharp.StringHelpers
             result -= 2
         ELSE
             // what to do ?
-            VAR error := System.Runtime.InteropServices.Marshal.GetLastWin32Error()
-            NOP
+            result := System.Runtime.InteropServices.Marshal.GetLastWin32Error()
+            result := 0
         ENDIF
         RETURN result
 		
@@ -128,9 +128,9 @@ STATIC CLASS XSharp.StringHelpers
 					ELSE
 						// equal, so continue with the next chars
 						// this normally only happens when 2 characters are mapped to the same weight
-						// that could for example happen when Ã¼ and u have the same weight
+						// that could for example happen when ü and u have the same weight
 						// I am not sure if this ever happens. If would creating an index unreliable
-						// most likely the Ã¼ will be sorted between u and v. 
+						// most likely the ü will be sorted between u and v. 
 					ENDIF
 				ENDIF
 			NEXT

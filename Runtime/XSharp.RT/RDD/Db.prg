@@ -379,12 +379,8 @@ FUNCTION DbDelete () AS LOGIC STRICT
     /// <summary>Remove an order from an open index file.</summary>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION DbDeleteOrder(uOrder, cOrdBag) AS LOGIC CLIPPER
-    LOCAL lRet   AS LOGIC
-    
-    lRet := TRUE
-    
     IF uOrder:IsNumeric
-        lRet := VoDb.OrderInfo(DBOI_NAME,"",uOrder, REF uOrder)
+        VoDb.OrderInfo(DBOI_NAME,"",uOrder, REF uOrder)
     ENDIF
     
     RETURN OrdDestroy(uOrder, cOrdBag)
@@ -808,7 +804,7 @@ FUNCTION LUpdate()  AS DATE STRICT
     /// <returns>
     /// </returns>
     
-FUNCTION RddCount(nType) AS DWORD CLIPPER
+FUNCTION RddCount() AS DWORD CLIPPER
     RETURN VoDb.RddCount()
     
     
@@ -826,7 +822,7 @@ FUNCTION RddInfo(nOrdinal, xNewVal) AS USUAL CLIPPER
     /// </summary>
     /// <returns>
     /// </returns>
-FUNCTION RddList (nType) AS ARRAY CLIPPER
+FUNCTION RddList () AS ARRAY CLIPPER
     LOCAL aRddList := {}    AS ARRAY
     IF VoDb.RddCount() > 0
         VAR aNames := VoDb.RddList()

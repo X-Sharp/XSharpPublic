@@ -27,7 +27,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             isOk := SELF:_oRdd:GoCold()
             IF !_ordCondInfo:Scoped
-                LOCAL orderInfo as DbOrderInfo
+                LOCAL orderInfo AS DbOrderInfo
                 orderInfo := DbOrderInfo{}
                 SELF:_oRdd:OrderListFocus(orderInfo)
             ENDIF
@@ -96,14 +96,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN SELF:Build()
 
         INTERNAL METHOD Build() AS LOGIC
-            LOCAL isOk as LOGIC
+            LOCAL isOk AS LOGIC
             LOCAL ic AS CdxSortCompare
             IF ! SELF:_HeaderCreate()
                 SELF:Close()
                 SELF:_oRdd:_dbfError(GenCode.EG_CREATE,  SubCodes.ERDD_WRITE,"OrdCreate", "Could not write Header ")
                 RETURN FALSE
             ENDIF
-            IF !SELF:Unique .AND. !SELF:_Conditional .AND. !_ordCondInfo:Scoped
+            IF !SELF:Unique .AND. !SELF:_Conditional .AND. !_ordCondInfo:Scoped .AND. ! _ordCondInfo:Custom
                 isOk := SELF:_CreateNormalIndex()
             ELSE
                 isOk := SELF:_CreateUnique(_ordCondInfo )
@@ -405,12 +405,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             SELF:_oRdd:GoTo(1)
             IF SELF:_oRdd:_isValid
-                REPEAT
-                    SELF:_oRdd:GoTo(SELF:_RecNo + 1)
-                    IF ! SELF:_sortGetRecord()
-                        EXIT
-                    ENDIF
-                UNTIL ! SELF:_oRdd:_isValid
+                IF ! _ordCondInfo:Custom
+                    REPEAT
+                        SELF:_oRdd:GoTo(SELF:_RecNo + 1)
+                        IF ! SELF:_sortGetRecord()
+                            EXIT
+                        ENDIF
+                    UNTIL ! SELF:_oRdd:_isValid
+                ENDIF
             ENDIF
             SELF:ClearStack()
             SELF:Flush()
@@ -427,21 +429,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY SourceIndex    AS INT AUTO
         INTERNAL PROPERTY Ascii          AS LOGIC AUTO
         INTERNAL PROPERTY Unique         AS LOGIC AUTO
-        PRIVATE _bag                     AS CdxOrderBag
         PRIVATE _tag                     AS CdxTag
         INTERNAL CONSTRUCTOR( rdd AS DBF, sortInfo   AS DbSortInfo , len AS LONG, tag AS CdxTag )
             SUPER(rdd, sortInfo, len)
             _tag := tag
-            _bag := tag:OrderBag
 
-        INTERNAL METHOD AddRecord(nRecno AS LONG, data AS BYTE[], duplicate as LOGIC) AS LOGIC
+        INTERNAL METHOD AddRecord(nRecno AS LONG, data AS BYTE[], duplicate AS LOGIC) AS LOGIC
             // place item on current leaf node.
             // the code inside Doaction takes care of adding extra leaf pages etc.
             IF SELF:Unique .AND. duplicate
                 // Do not write
                 RETURN TRUE
             ENDIF
-            var action := CdxAction.AddKey(nRecno, data)
+            VAR action := CdxAction.AddKey(nRecno, data)
             action := _tag:DoAction(action)
             IF action:Type != CdxActionType.OK
                 Error("CdxSortHelper.AddRecord","Could not add record to leaf")
@@ -468,7 +468,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             //   we create as many branches as necessary.
             LOCAL oLeaf  AS CdxLeafPage
             oLeaf       := _tag:Stack:Top:Page
-            var action  := CdxAction.ChangeParent(oLeaf)
+            VAR action  := CdxAction.ChangeParent(oLeaf)
             action      := _tag.Doaction(action)
             VAR root := _tag:Stack:Root?:Page
             _tag:Stack:Clear()

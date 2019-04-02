@@ -524,9 +524,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD Cdx_Issues() AS VOID
-			#warning Disabled sample, updates index fields
-//			Cdx_Issues_Helper(TRUE)
-//			Cdx_Issues_Helper(FALSE)
+			Cdx_Issues_Helper(TRUE)
+			Cdx_Issues_Helper(FALSE)
 		RETURN
 		PRIVATE METHOD Cdx_Issues_Helper(lUseIndexFormVO AS LOGIC) AS VOID
 			LOCAL cDbf AS STRING
@@ -574,7 +573,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBSkip()
 			FieldPut(1,"HHH")
 			aResult := GetRecords()
-//			should be ABC, GHI, HHH, K
+//			should be ABC, GHI, HHH, K, because the record has been moved in the index
 			Assert.True( aResult[1] == "ABC")
 			Assert.True( aResult[2] == "GHI")
 			Assert.True( aResult[3] == "HHH")
@@ -979,8 +978,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD CDX_test() AS VOID
-			#warning Disabled sample, updates index fields
-/*			LOCAL aValues AS ARRAY
+			LOCAL aValues AS ARRAY
 			LOCAL i AS DWORD
 			LOCAL cDBF, cCDX AS STRING
 			
@@ -1048,7 +1046,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				END CASE
 				DBSkip ( 1 )
 			ENDDO
-			DBCloseArea()*/
+			DBCloseArea()
 		RETURN
 	
 	

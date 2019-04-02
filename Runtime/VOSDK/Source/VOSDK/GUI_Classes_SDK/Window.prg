@@ -85,7 +85,7 @@ PARTIAL CLASS Window INHERIT @@EventContext
     LOCAL lDelete      AS LOGIC
     LOCAL lOldAlign    AS LOGIC
 
-    Default(@iType, OA_TOP) 
+    DEFAULT(@iType, OA_TOP) 
     
     lOldAlign := ! IsPtr(iType) .AND. iType <= OA_FULL_SIZE
     
@@ -144,7 +144,7 @@ METHOD __AddTool(oControl AS Control, oParent AS USUAL) AS LOGIC STRICT
 	
 	
 	
-	Default(@oParent, SELF)
+	DEFAULT(@oParent, SELF)
 	SELF:EnableToolTips(TRUE)
 	
 	MemClear(@ti, _SIZEOF(_winTOOLINFO))
@@ -1276,9 +1276,9 @@ METHOD __UpdateTrayIcon(dwNIM,oTrayIcon,dwID,sToolTip)
 		RETURN FALSE
 	ENDIF
 	
-	Default(@dwID, 1)
-	Default(@sToolTip,"")
-	Default(@oTrayIcon,NULL_OBJECT)
+	DEFAULT(@dwID, 1)
+	DEFAULT(@sToolTip,"")
+	DEFAULT(@oTrayIcon,NULL_OBJECT)
 	
 	IF ! GetShellMajorVersion() >= 5
 		sToolTip := StrTran(sToolTip,CRLF," ") // Line breaks not supported on older Shell
@@ -1809,7 +1809,7 @@ METHOD DeleteTrayIcon(dwID)
 		RETURN FALSE
 	ENDIF
 	
-	Default(@dwID, 1)
+	DEFAULT(@dwID, 1)
 	
 	//PP-030902
 	NID:cbSize := SizeOfNotifyIconData()
@@ -2119,7 +2119,7 @@ METHOD EnableThemeDialogTexture(dwStyle)
 METHOD EnableToolTips(lEnable) 
 	
 	
-	Default(@lEnable, TRUE)
+	DEFAULT(@lEnable, TRUE)
 	
 	IF lEnable .AND. (hwndToolTip == NULL_PTR)
 		
@@ -3216,7 +3216,7 @@ METHOD SetAlignStartSize(oSize)
 
 METHOD SetBackgroundBrush(dwNew) 
 	//PP-030910
-	Default(@dwNew,COLOR_3DSHADOW)
+	DEFAULT(@dwNew,COLOR_3DSHADOW)
 	
 	SetClassLong(SELF:handle(), GCL_HBRBACKGROUND, dwNew)
 	RETURN SELF
@@ -3224,7 +3224,7 @@ METHOD SetBackgroundBrush(dwNew)
 
 METHOD SetExStyle(dwSetStyle, lEnable) 
 	//PP-031129 New method to set window extended styles
-	Default(@lEnable, TRUE)
+	DEFAULT(@lEnable, TRUE)
 	
 	IF (hWnd != NULL_PTR)
 		dwStyle := DWORD(_CAST, GetWindowLong(hWnd, GWL_EXSTYLE))
@@ -3256,7 +3256,7 @@ METHOD SetHandle(hNewWnd)
 METHOD SetStyle(dwSetStyle, lEnable) 
 	
 	
-	Default(@lEnable, TRUE)
+	DEFAULT(@lEnable, TRUE)
 	
 	IF (hWnd != NULL_PTR)
 		dwStyle := DWORD(_CAST, GetWindowLong(hWnd, GWL_STYLE))
@@ -3284,7 +3284,7 @@ METHOD Show(kShowState)
 	
 	
 	
-	Default(@kShowState, SHOWNORMAL)
+	DEFAULT(@kShowState, SHOWNORMAL)
 	
 	IF (NULL_STRING != cCaption)
 		pszCaption := StringAlloc(cCaption)
@@ -3336,12 +3336,12 @@ METHOD ShowBalloonTrayTip(oTrayIcon,dwID,sHeading,sToolTip,dwTimeOut,dwInfo)
 		RETURN FALSE
 	ENDIF
 	
-	Default(@dwID,1)
-	Default(@sHeading,"")
-	Default(@sToolTip,"")
-	Default(@dwInfo,NIIF_NONE)
-	Default(@oTrayIcon,NULL_OBJECT)
-	Default(@dwTimeOut,10000)
+	DEFAULT(@dwID,1)
+	DEFAULT(@sHeading,"")
+	DEFAULT(@sToolTip,"")
+	DEFAULT(@dwInfo,NIIF_NONE)
+	DEFAULT(@oTrayIcon,NULL_OBJECT)
+	DEFAULT(@dwTimeOut,10000)
 	
 	uReturn := FALSE
 	
@@ -3433,7 +3433,6 @@ METHOD @@StatusMessage(oHL, ntype)
 
 METHOD SysLinkSelect(oSysLinkSelectEvent) 
 	LOCAL li IS _winLITEM
-	LOCAL i AS INT
 	LOCAL oEvt := oSysLinkSelectEvent AS SysLinkSelectEvent
 	
 	IF SLen(oEvt:URL) > 0
@@ -3443,7 +3442,7 @@ METHOD SysLinkSelect(oSysLinkSelectEvent)
 		li:iLink := oEvt:LinkIndex
 		li:stateMask := LIS_VISITED
 		li:state := LIS_VISITED
-		i:=SendMessage(oEvt:Control:Handle(), LM_SETITEM, 0, LONGINT(_CAST, @li))
+		SendMessage(oEvt:Control:Handle(), LM_SETITEM, 0, LONGINT(_CAST, @li))
 	ENDIF
 	RETURN SELF:Default(oEvt)
 	

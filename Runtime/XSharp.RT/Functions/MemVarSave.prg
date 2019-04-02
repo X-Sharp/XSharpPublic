@@ -457,9 +457,9 @@ INTERNAL CLASS MemReader
         
         wType  := SELF:ReadByte()
         
-        IF wType<ASC_A //401@TR001
+        IF wType< 65 // ASC_A //401@TR001
             ReadVOFile(wType)
-            ELSE
+        ELSE
             ReadClipperFile(wType)
         ENDIF
         

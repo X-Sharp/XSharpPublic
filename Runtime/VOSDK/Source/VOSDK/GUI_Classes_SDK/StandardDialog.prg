@@ -536,7 +536,7 @@ METHOD SetFilter(uFilter, uFilterDesc, nIndex)
 METHOD SetStyle(kStyle, lOnOff) 
 	
 
-	Default(@lOnOff, TRUE)
+	DEFAULT(@lOnOff, TRUE)
 
 	IF (lOnOff)
 		Flags := _OR(Flags, DWORD(kStyle))
@@ -549,7 +549,7 @@ METHOD SetStyle(kStyle, lOnOff)
 METHOD SetStyleEx(kStyle, lOnOff) 
 	
 
-	Default(@lOnOff, TRUE)
+	DEFAULT(@lOnOff, TRUE)
 
 	IF (lOnOff)
 		FlagsEx := _OR(Flags, DWORD(kStyle))
@@ -563,7 +563,6 @@ METHOD Show()
 	LOCAL lRet := TRUE AS LOGIC
 	LOCAL sOFN AS _winOPENFILENAME
 	LOCAL pszRes AS PSZ
-	LOCAL dwErr AS DWORD
 	LOCAL cPathName AS STRING
 	LOCAL cDirName AS STRING
 	LOCAL pb AS BYTE PTR
@@ -667,7 +666,7 @@ METHOD Show()
 		IF PCALL(gpfnGetSaveFileName, sOFN) .AND. PCALL(gpfnCommDlgExtendedError) = 0
 			Result := Psz2String(sOFN:lpstrFile)
 		ELSE
-			dwErr := PCALL(gpfnCommDlgExtendedError)
+			PCALL(gpfnCommDlgExtendedError)
 			Result := NULL_STRING
 			lRet := FALSE
 		ENDIF
@@ -716,9 +715,9 @@ ACCESS FolderName
 
 CONSTRUCTOR(oOwner, sCaption, sStartFolder, kType) 
    SUPER()
-	Default(@kType, BIF_RETURNONLYFSDIRS)
-	Default(@sCaption, "Browser Folder")
-	Default(@sStartFolder, "")
+	DEFAULT(@kType, BIF_RETURNONLYFSDIRS)
+	DEFAULT(@sCaption, "Browser Folder")
+	DEFAULT(@sStartFolder, "")
 
 	__LoadShellDll()
 
@@ -808,7 +807,7 @@ CLASS StandardFontDialog INHERIT StandardDialog
 METHOD EnableANSI(bOnOff) 
 	
 
-	Default(@bOnOff, TRUE)
+	DEFAULT(@bOnOff, TRUE)
 	IF bOnOff
 		// lANSIFlag := CF_ANSIONLY // obsolete (see Win32 SDK Help file)
 		lANSIFlag := CF_SCRIPTSONLY		// tk new
@@ -820,7 +819,7 @@ METHOD EnableANSI(bOnOff)
 METHOD EnableEffects(bOnOff) 
 	
 
-	Default(@bOnOff, TRUE)
+	DEFAULT(@bOnOff, TRUE)
 	IF bOnOff
 		lEffectFlag := CF_EFFECTS
 	ELSE
@@ -831,7 +830,7 @@ METHOD EnableEffects(bOnOff)
 
 METHOD EnableFixedPitch(bOnOff) 
 
-	Default(@bOnOff, TRUE)
+	DEFAULT(@bOnOff, TRUE)
 	IF bOnOff
 		lFixPitchFlag := CF_FIXEDPITCHONLY
 	ELSE
@@ -842,7 +841,7 @@ METHOD EnableFixedPitch(bOnOff)
 METHOD EnableTrueType(bOnOff) 
 	
 
-	Default(@bOnOff, TRUE)
+	DEFAULT(@bOnOff, TRUE)
 	IF bOnOff
 		lTTYFlag := CF_TTONLY
 	ELSE

@@ -92,15 +92,15 @@ CONSTRUCTOR(wT, wF, hC, h1, h2, hD, dwD1, dwD2, oIpc)
 				IF (hsz2 != 0)
 					oIPCObject:=__WCGetServerFromHsz(hsz2)
 				ENDIF
-			CASE dwType==XTYP_ADVREQ .or.;
-				dwType==XTYP_REQUEST .or.;
-				dwType==XTYP_ADVSTART .or.;
-				dwType==XTYP_EXECUTE .or.;
-				dwType==XTYP_POKE .or.;
+			CASE dwType==XTYP_ADVREQ .OR.;
+				dwType==XTYP_REQUEST .OR.;
+				dwType==XTYP_ADVSTART .OR.;
+				dwType==XTYP_EXECUTE .OR.;
+				dwType==XTYP_POKE .OR.;
 				dwType==XTYP_ADVSTOP
 				oIPCObject:= __WCGetIpcObjectFromConv(hConv)
-			CASE dwType==XTYP_ADVDATA .or.;
-				dwType==XTYP_XACT_COMPLETE .or.;
+			CASE dwType==XTYP_ADVDATA .OR.;
+				dwType==XTYP_XACT_COMPLETE .OR.;
 				dwType==XTYP_DISCONNECT
 				oIPCObject:=__WCGetIpcObjectFromConv(hConv)
 			ENDCASE
@@ -264,7 +264,7 @@ FUNCTION __WCGetHConvFromConv(oIpc AS OBJECT) AS PTR
 	   ENDIF
 	NEXT  // dwI
 
-	RETURN Null_Ptr
+	RETURN NULL_PTR
 
 
 FUNCTION __WCGetHszFromHsz(oIpc AS OBJECT) AS PTR
@@ -279,7 +279,7 @@ FUNCTION __WCGetHszFromHsz(oIpc AS OBJECT) AS PTR
 	   ENDIF
 	NEXT  // dwI
 
-	RETURN Null_Ptr
+	RETURN NULL_PTR
 
 FUNCTION __WCGetIpcObjectFromConv(hConv AS PTR) AS OBJECT
    //SE-060526
@@ -293,7 +293,7 @@ FUNCTION __WCGetIpcObjectFromConv(hConv AS PTR) AS OBJECT
 	   ENDIF
 	NEXT  // dwI
 
-	RETURN Null_OBJECT
+	RETURN NULL_OBJECT
 
 FUNCTION __WCGetServerFromHsz(dwHsz AS PTR) AS OBJECT
    //SE-060526
@@ -307,5 +307,5 @@ FUNCTION __WCGetServerFromHsz(dwHsz AS PTR) AS OBJECT
 	   ENDIF
 	NEXT  // dwI
 
-	RETURN Null_OBJECT
+	RETURN NULL_OBJECT
 

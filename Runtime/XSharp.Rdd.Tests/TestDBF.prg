@@ -56,7 +56,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("Dbf", "Fields")];
 		METHOD CheckFields() AS VOID
 			VAR fields := <STRING>{ "CUSTNUM", "FIRSTNAME", "LASTNAME","ADDRESS","CITY","STATE","ZIP", "PHONE", "FAX" }
-			VAR types :=  <STRING>{ "N", "C", "C","C","C","C","C", "C", "C" }
+			//VAR types :=  <STRING>{ "N", "C", "C","C","C","C","C", "C", "C" }
 			// CUSTNUM,N,5,0	FIRSTNAME,C,10	LASTNAME,C,10	ADDRESS,C,25	CITY,C,15	STATE,C,2	ZIP,C,5	PHONE,C,13	FAX,C,13
 			VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
 			//
@@ -259,7 +259,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD CheckAddFields() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,10,0;BIRTHDAY,D,8,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
-			VAR dbInfo := DbOpenInfo{ "XSharpTestA.DBF", "XSharpTest", 1, FALSE, FALSE }
+			//VAR dbInfo := DbOpenInfo{ "XSharpTestA.DBF", "XSharpTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
 			// Let's say Three Fields
@@ -293,7 +293,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD CheckCreateFields() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,10,0;BIRTHDAY,D,8,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
-			VAR dbInfo := DbOpenInfo{ "XSharpTestB.DBF", "XSharpTest", 1, FALSE, FALSE }
+			//VAR dbInfo := DbOpenInfo{ "XSharpTestB.DBF", "XSharpTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
 			LOCAL fieldInfo AS STRING[]
@@ -402,7 +402,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				Assert.Equal( elt[__ARRAYBASE__+1], tmp:Trim() )
 				Assert.Equal( String.Compare(elt[__ARRAYBASE__+2],"T",TRUE)==0, myDBF:GetValue(3) )
 				LOCAL o AS OBJECT
-				LOCAL dt AS DateTime
+				LOCAL dt := DateTime.MinValue AS DateTime
 				o := myDBF:GetValue(4)
 				IF ( o IS DbDate )
                     VAR db := (DbDate) o 
@@ -471,7 +471,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL myDBF := DBF{} AS DBF
 			IF myDBF:Open( dbInfo ) 
 				//
-				LOCAL nbrBefore := myDBF:RecCount AS LONG
+				//LOCAL nbrBefore := myDBF:RecCount AS LONG
 				//
 				myDBF:Zap( )
 				//
@@ -491,7 +491,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL myDBF := DBF{} AS DBF
 			IF myDBF:Open( dbInfo ) 
 				//
-				LOCAL nbrBefore := myDBF:RecCount AS LONG
+				//LOCAL nbrBefore := myDBF:RecCount AS LONG
 				//
 				myDBF:Zap( )
 				//
@@ -617,7 +617,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				Assert.Equal( elt[__ARRAYBASE__+1], tmp:Trim() )
 				Assert.Equal( String.Compare(elt[__ARRAYBASE__+2],"T",TRUE)==0, myDBF:GetValue(3) )
 				LOCAL o AS OBJECT
-				LOCAL dt AS DateTime
+				LOCAL dt := DateTime.MinValue AS DateTime
 				o := myDBF:GetValue(4)
 				IF ( o IS DBDate )
                     VAR db := (DbDate) o

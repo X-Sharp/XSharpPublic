@@ -22,7 +22,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 	PUBLIC CLASS TestDbfNtx
 
         METHOD InitTest() AS VOID
-            LOCAL d := __Date{0,0,0} AS __Date
+            //LOCAL d := __Date{0,0,0} AS __Date
             SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))
             RETURN
 	

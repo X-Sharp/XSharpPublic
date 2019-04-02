@@ -166,13 +166,17 @@ namespace XSharp.MacroCompiler
                 var conv = ovRes.Conversions[i];
                 if (conv.Kind != ConversionKind.Identity)
                     Convert(ref args.Args[i].Expr, FindType(parameters[i].ParameterType), conv);
+                if (conv is ConversionSymbolToConstant)
+                    Convert(ref args.Args[i].Expr, FindType(parameters[i].ParameterType), BindOptions.Default);
             }
             if (ovRes.MissingArgs > 0)
             {
                 for (int i = ovRes.FixedArgs; i < ovRes.FixedArgs + ovRes.MissingArgs; i++)
                 {
                     var conv = ovRes.Conversions[i];
-                    args.Args.Add(new Arg(LiteralExpr.Bound(((ConversionSymbolToConstant)conv).Constant)));
+                    var a = new Arg(LiteralExpr.Bound(((ConversionSymbolToConstant)conv).Constant));
+                    Convert(ref a.Expr, FindType(parameters[i].ParameterType), BindOptions.Default);
+                    args.Args.Add(a);
                 }
             }
             else if (ovRes.Parameters.HasParamArray)

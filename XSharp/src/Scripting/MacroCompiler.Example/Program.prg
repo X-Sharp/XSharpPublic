@@ -210,6 +210,12 @@ CLASS Foo
         RETURN !(o1 == o2)
 END CLASS
 
+function testDef(cFormularName AS STRING, uDataSource := NIL AS USUAL, ;
+uVorlage := "" AS USUAL, cOeffnenModus := "F9" AS USUAL, uParameter := NIL AS USUAL, ;
+oDataContext := NULL AS OBJECT, cWinMode := NULL AS USUAL, oProtype := NULL AS OBJECT, ;
+oDBVorlage := NULL AS OBJECT ) AS USUAL STRICT
+    return "testDef"
+
 BEGIN NAMESPACE MacroCompilerTest
 
 	FUNCTION Start() AS VOID
@@ -574,6 +580,8 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, "foo := 1234, foo", Args(), 1234, typeof(INT))
         TestMacro(mc, "ToString()", Args(), null, null, ErrorCode.NoStaticOverload)
         TestMacro(mc, e"{|| !\"T\"$\"Test\"} ", Args(), false, typeof(logic))
+        TestMacro(mc, e"testDef( \"MDOKU\" )", Args(), "testDef", typeof(string))
+        TestMacro(mc, e"testDef( \"MDOKU\",,,,,,,,NULL )", Args(), "testDef", typeof(string))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")

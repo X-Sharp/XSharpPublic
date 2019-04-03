@@ -167,7 +167,7 @@ using_              : USING (Static=STATIC)? (Alias=identifierName ASSIGN_OP)? N
                     // [STATIC] GLOBAL [CONST] Identifier [:= Expression] [, Identifier2 [:= Expression2] ] [AS Type]
                     // STATIC          [CONST] Identifier [:= Expression] [, Identifier2 [:= Expression2] ] [AS Type]
 voglobal            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Const=CONST)? Vars=classVarList end=eos 
-                    | (Attributes=attributes)? STATIC (Const=CONST)? Vars=classVarList end=eos 
+                    | (Attributes=attributes)? Modifiers=funcprocModifiers (Const=CONST)? Vars=classVarList end=eos 
                     ;
 
 
@@ -687,7 +687,7 @@ expression          : Expr=expression Op=(DOT | COLON) Name=simpleName          
                     | Expr=expression Op=(INC | DEC)                            #postfixExpression      // expr ++/--
                     | Op=AWAIT Expr=expression                                  #awaitExpression        // AWAIT expr
                     | Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC) Expr=expression #prefixExpression   // +/-/~/&/++/-- expr
-                    | Expr=expression Op=IS Type=datatype  (Id=identifier)?     #typeCheckExpression    // expr IS typeORid [identifier] 
+                    | Expr=expression Op=IS Type=datatype (VAR Id=identifier)?  #typeCheckExpression    // expr IS typeORid [VAR identifier] 
                     | Expr=expression Op=ASTYPE Type=datatype                   #typeCheckExpression    // expr AS TYPE typeORid
                     | Left=expression Op=EXP Right=expression                   #binaryExpression       // expr ^ expr
                     | Left=expression Op=(MULT | DIV | MOD) Right=expression    #binaryExpression       // expr * expr

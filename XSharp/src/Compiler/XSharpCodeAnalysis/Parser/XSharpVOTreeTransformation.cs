@@ -3867,13 +3867,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                                                                                // Expression can of course be a parenExpression. And can also be LHS of an assigment !
 
             */
-            var alias = context.Alias.Get<ExpressionSyntax>();
-            var expr = GenerateAliasedExpression(
-                        context,
-                        alias,     // workarea
-                        context.Expr.Get<ExpressionSyntax>() // expression
-                    );
-            context.Put(expr);
+            // when alias = null then we can simply call FieldGet with the contents of expr
+
+            ExpressionSyntax expr = context.Expr.Get<ExpressionSyntax>();
+            if (context.Alias == null)
+            {
+                var method = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.FieldGet : VulcanQualifiedFunctionNames.FieldGet;
+                var args = MakeArgumentList(MakeArgument(expr));
+                expr = GenerateMethodCall(method, args, true);
+                context.Put(expr);
+            }
+            else
+            {
+                var alias = context.Alias.Get<ExpressionSyntax>();
+                var aexpr = GenerateAliasedExpression(
+                            context,
+                            alias,     // workarea
+                            expr // expression
+                        );
+                context.Put(aexpr);
+            }
+            
 
         }
         public override void ExitAliasedExpr([NotNull] XP.AliasedExprContext context)

@@ -120,26 +120,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             get
             {
-                bool sync = false;
-                if (IsProperty)
+                IList<IToken> tokens = null;
+                if (Declaration is XP.XpppropertyContext decl)
                 {
-                    var decl = Declaration as XP.XpppropertyContext;
-                    if (decl.Modifiers != null)
-                        sync = decl.Modifiers._Tokens.Any(x => x.Type == XP.SYNC);
+                    tokens = decl.Modifiers?._Tokens;
                 }
-                else if (Inline)
+                else if (Declaration is XP.XppinlineMethodContext decl1)
                 {
-                    var decl = Declaration as XP.XppinlineMethodContext;
-                    if (decl.Modifiers != null)
-                        sync = decl.Modifiers._Tokens.Any(x => x.Type == XP.SYNC);
+                    tokens = decl1.Modifiers?._Tokens;
                 }
-                else
+                else if  (Declaration is XP.XppdeclareMethodContext decl2)
                 {
-                    var decl = Declaration as XP.XppdeclareMethodContext;
-                    if (decl.Modifiers != null)
-                        sync = decl.Modifiers._Tokens.Any(x => x.Type == XP.SYNC);
+                    tokens = decl2.Modifiers?._Tokens;
                 }
-                return sync;
+                else if (Declaration is XP.XppclassvarsContext decl3)
+                {
+                    tokens = decl3.Modifiers?._Tokens;
+                }
+                else if (Declaration is XP.XppinlineMethodContext decl4)
+                {
+                    tokens = decl4.Modifiers?._Tokens;
+                }
+                return tokens != null && tokens.Any(x => x.Type == XP.SYNC);
             }
         }
     }

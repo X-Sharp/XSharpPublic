@@ -63,7 +63,8 @@ namespace XSharp.Project
             return new String[]{
                 "DO","FOR","FOREACH","WHILE","IF",
                 "BEGIN","TRY","REPEAT","SWITCH",
-                "INTERFACE","ENUM","CLASS","STRUCTURE","VOSTRUCT"};
+                "INTERFACE","ENUM","CLASS","STRUCTURE","VOSTRUCT",
+                "#IFDEF" };
         }
 
         private static String[][] getSpecialOutdentKeywords()
@@ -79,7 +80,8 @@ namespace XSharp.Project
                 new String[]{ "NEXT", "FOR,FOREACH" },
                 new String[]{ "UNTIL", "REPEAT" },
                 new String[]{ "END", "BEGIN,DO,IF,TRY,WHILE,GET,SET,PROPERTY,EVENT,ADD,REMOVE,SWITCH,CLASS,STRUCTURE,INTERFACE,ENUM" },
-                new String[]{ "ENDDO", "DO,WHILE" }
+                new String[]{ "ENDDO", "DO,WHILE" },
+                 new String[]{ "#ENDIF","#IFDEF" }
             };
         }
 
@@ -116,7 +118,8 @@ namespace XSharp.Project
                 new String[]{ "ELSEIF", "IF" },
                 new String[]{ "FINALLY", "TRY" },
                 new String[]{ "CATCH", "TRY" },
-                new String[]{ "RECOVER", "BEGIN" }
+                new String[]{ "RECOVER", "BEGIN" },
+                new String[]{ "#ELSE","#IFDEF" }
             };
         }
 

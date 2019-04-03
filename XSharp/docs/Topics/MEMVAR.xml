@@ -10,7 +10,6 @@
       <para styleclass="Heading1">MEMVAR</para>
     </header>
     <para styleclass="NotesBox">The MEMVAR statement is NOT available in the Core and Vulcan dialects and will only be enabled if the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">-memvar</link> commandline option is specified.</para>
-    <para styleclass="Body Text"></para>
     <para styleclass="Heading2">Purpose</para>
     <para styleclass="Body Text">Declare one or more memory variable names to be used by the current routine.</para>
     <para styleclass="Heading2">Syntax</para>

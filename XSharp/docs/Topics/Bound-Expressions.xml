@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Bound Expressions</title>
   <body>
     <header>
@@ -17,13 +17,13 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Syntax</text></para>
         </td>
-        <td style="vertical-align:middle;">
+        <td style="vertical-align:middle; width:60px;">
           <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">VO</text></para>
         </td>
-        <td style="vertical-align:middle;">
+        <td style="vertical-align:middle; width:60px;">
           <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">VN</text></para>
         </td>
-        <td style="vertical-align:middle;">
+        <td style="vertical-align:middle; width:60px;">
           <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">X#</text></para>
         </td>
       </thead>

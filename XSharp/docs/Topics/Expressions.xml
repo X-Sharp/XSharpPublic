@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>X# Expressions</title>
   <body>
     <header>
@@ -18,7 +18,7 @@
           <para styleclass="Normal"><text style="font-weight:bold;">Expression type</text></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Syntax</text></para>
+          <para styleclass="Body Text">Syntax</para>
         </td>
         <td style="vertical-align:middle; width:60px;">
           <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">VO</text></para>
@@ -35,7 +35,7 @@
           <para styleclass="Normal">Member Access</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression (DOT|COLON) identifier</text></para>
+          <para styleclass="Body Text">expression (DOT|COLON) identifier</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -52,7 +52,7 @@
           <para styleclass="Normal">Method Call</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression LPAREN argumentlist? RPAREN</text></para>
+          <para styleclass="Body Text">expression LPAREN argumentlist? RPAREN</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -69,7 +69,7 @@
           <para styleclass="Normal">Arrayelement Access</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression LBRKT argumentlist RBRKT</text></para>
+          <para styleclass="Body Text">expression LBRKT argumentlist RBRKT</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -86,7 +86,7 @@
           <para styleclass="Normal">Conditional Access</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression ? </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Bound-Expressions" style="font-weight:normal; font-style:normal; color:#000000;">boundexpression</link></para>
+          <para styleclass="Body Text">expression ? <link displaytype="text" defaultstyle="true" type="topiclink" href="Bound-Expressions">boundexpression</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -103,7 +103,7 @@
           <para styleclass="Normal">Typecast</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">LPAREN datatype RPAREN</text></para>
+          <para styleclass="Body Text">LPAREN datatype RPAREN</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -120,7 +120,7 @@
           <para styleclass="Normal">Postfix </para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression (++ | --)</text></para>
+          <para styleclass="Body Text">expression (++ | --)</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -137,7 +137,7 @@
           <para styleclass="Normal">Await</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">AWAIT expression</text></para>
+          <para styleclass="Body Text">AWAIT expression</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -154,7 +154,7 @@
           <para styleclass="Normal">Prefix</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">(+|-|~|@|++|--) expression</text></para>
+          <para styleclass="Body Text">(+|-|~|@|++|--) expression</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -171,7 +171,7 @@
           <para styleclass="Normal">Typecheck</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression IS datatype</text></para>
+          <para styleclass="Body Text">expression IS datatype</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -188,7 +188,7 @@
           <para styleclass="Normal">As Typecheck</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expresion ASTYPE datatype</text></para>
+          <para styleclass="Body Text">expresion ASTYPE datatype</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -205,7 +205,7 @@
           <para styleclass="Normal">Powerof</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression (^|**) expression</text></para>
+          <para styleclass="Body Text">expression (^|**) expression</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -222,7 +222,7 @@
           <para styleclass="Normal">MulDiv</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression (*|/|%) expression</text></para>
+          <para styleclass="Body Text">expression (*|/|%) expression</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -239,7 +239,7 @@
           <para styleclass="Normal">PlusMinus</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression (+|-) expression</text></para>
+          <para styleclass="Body Text">expression (+|-) expression</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -256,7 +256,7 @@
           <para styleclass="Normal">LShift</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression &lt;&lt; expression</text></para>
+          <para styleclass="Body Text">expression &lt;&lt; expression</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -273,7 +273,7 @@
           <para styleclass="Normal">RShift</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression &gt;&gt; expression</text></para>
+          <para styleclass="Body Text">expression &gt;&gt; expression</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -290,7 +290,7 @@
           <para styleclass="Normal">Comparison</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression OPERATOR expression, </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">where OPERATOR is </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&lt;,&lt;=, &gt;, &gt;=, =, ==, $, !=, &lt;&gt;, #</text></para>
+          <para styleclass="Body Text">expression OPERATOR expression, <br/>where OPERATOR is <br/>&lt;,&lt;=, &gt;, &gt;=, =, ==, $, !=, &lt;&gt;, #</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -307,7 +307,7 @@
           <para styleclass="Normal">Bitwise And</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression &amp; expression</text></para>
+          <para styleclass="Body Text">expression &amp; expression</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -324,7 +324,7 @@
           <para styleclass="Normal">Bitwise XOR</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression ~ expression</text></para>
+          <para styleclass="Body Text">expression ~ expression</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -341,7 +341,7 @@
           <para styleclass="Normal">Bitwise OR</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression | expression</text></para>
+          <para styleclass="Body Text">expression | expression</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -358,7 +358,7 @@
           <para styleclass="Normal">Not Expression</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">(.NOT. | !) expression</text></para>
+          <para styleclass="Body Text">(.NOT. | !) expression</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -375,7 +375,7 @@
           <para styleclass="Normal">Logical AND expression</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression (.AND.|&amp;&amp;) expression</text></para>
+          <para styleclass="Body Text">expression (.AND.|&amp;&amp;) expression</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -392,7 +392,7 @@
           <para styleclass="Normal">Logical OR expression</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression (.OR. | ||) expression</text></para>
+          <para styleclass="Body Text">expression (.OR. | ||) expression</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -409,7 +409,7 @@
           <para styleclass="Normal">Default expression</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression DEFAULT expression</text></para>
+          <para styleclass="Body Text">expression DEFAULT expression</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -426,7 +426,7 @@
           <para styleclass="Normal">Assignment expression</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression ASSIGN_OP expression</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">where ASSIGN_OP is</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">:=, +=, -=, *=, ^=, /=, %=, &amp;=, |=, &lt;&lt;=, &gt;&gt;=, ~=</text></para>
+          <para styleclass="Body Text">expression ASSIGN_OP expression<br/>where ASSIGN_OP is<br/>:=, +=, -=, *=, ^=, /=, %=, &amp;=, |=, &lt;&lt;=, &gt;&gt;=, ~=</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>

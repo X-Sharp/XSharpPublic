@@ -437,7 +437,6 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading3">Note</para>
     <para styleclass="Normal">The CLR2 and CLR4 version is determined by the X# compiler by looking at the version of either system.dll or mscorlib.dll</para>
     <para styleclass="Normal"></para>

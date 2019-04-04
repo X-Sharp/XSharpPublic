@@ -739,11 +739,7 @@ FUNCTION DbUseArea (lNew, xDriver, cName, cAlias, lShare, lReadOnly, aStru, cDel
 FUNCTION FieldPut (wPos AS USUAL, xValue  AS USUAL) AS USUAL 
 
     LOCAL xRetVal := NIL AS USUAL
-    LOCAL lResult := VoDb.FieldPut(wPos, xValue) AS LOGIC
-    IF ! lResult
-        System.Diagnostics.Debugger.Break()
-    ENDIF
-    IF _DbThrowErrorOnFailure(__FUNCTION__, lResult )
+    IF _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldPut(wPos, xValue) )
         xRetVal := xValue
     ENDIF
     RETURN xRetVal

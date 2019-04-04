@@ -1433,12 +1433,17 @@ BEGIN NAMESPACE XSharp.RDD
                 OTHERWISE
                 	str := Convert.ToString( oValue, _numformat )
                 END SWITCH
+                LOCAL lDataWidthError := FALSE AS LOGIC
 				IF ( str:Length > length )
 					str := STRING{'*', length}
+                    lDataWidthError := TRUE
 				ELSE
 					str := str:PadLeft(length)
 				ENDIF
    				encoding:GetBytes( str, 0, length, buffer, offset )
+                IF lDataWidthError
+                    SELF:_dbfError(ERDD_DATAWIDTH, EG_DATAWIDTH)
+                ENDIF
 				isOk := TRUE
 				
 			CASE __UsualType.Logic
@@ -1488,6 +1493,7 @@ BEGIN NAMESPACE XSharp.RDD
 					isOk := TRUE
 				ELSE
 					// Type Error !
+                    SELF:_dbfError(ERDD_DATATYPE, EG_DATATYPE)
 					isOk := FALSE
 				ENDIF
 			END SWITCH

@@ -281,7 +281,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // When the page is split then the topreference will be updated
             // and at the end of the indexing the top reference for the last page will be written.
             VAR page := SELF:Stack:Top:Page ASTYPE CdxLeafPage
-            IF page IS CdxLeafPage leaf
+            IF page IS CdxLeafPage
+                VAR leaf := (CdxLeafPage) page
                 action := leaf:Add(action:Recno, action:Key)
                 IF action:Type == CdxActionType.OK
                     SELF:Stack:Top:Pos++
@@ -292,14 +293,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN action
 
         INTERNAL METHOD DeleteKey(action AS CdxAction) AS CdxAction
-            IF action:Page IS CdxLeafPage leaf
+            IF action:Page IS CdxLeafPage
+                VAR leaf := (CdxLeafPage) action:Page
                 RETURN leaf:Delete(action:Pos)
             ENDIF
             _UpdateError(NULL,"CdxTag.DeleteKey","Page is not a Leaf page")
             RETURN CdxAction.OK
 
         INTERNAL METHOD InsertKey(action AS CdxAction) AS CdxAction
-            IF action:Page IS CdxLeafPage leaf
+            IF action:Page IS CdxLeafPage
+                VAR leaf := (CdxLeafPage) action:Page
                 RETURN leaf:Insert(action:Pos, action:Recno, action:Key)
             ENDIF
             _UpdateError(NULL,"CdxTag.AddKey","Page is not a Leaf page")
@@ -513,15 +516,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
         PRIVATE METHOD _getLeaf AS CdxLeafPage
             VAR page    := SELF:CurrentStack:Page
-            IF page IS CdxLeafPage leaf
-                RETURN leaf
+            IF page IS CdxLeafPage
+                RETURN (CdxLeafPage) page
             ENDIF
             IF page:NumKeys > 0
                 VAR pageNo  := page:LastNode:ChildPageNo
                 page    := SELF:OrderBag:GetPage(pageNo, _keySize, SELF)
-                IF page IS CdxLeafPage leaf
+                IF page IS CdxLeafPage 
                     SELF:PushPage(page, 0)
-                    RETURN leaf
+                    RETURN (CdxLeafPage) page
                 ENDIF
             ENDIF
             RETURN NULL

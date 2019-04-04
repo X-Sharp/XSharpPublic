@@ -323,7 +323,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     NOP
                 ENDDO
             ENDIF
-            RETURN last - first + 1
+            IF last > first
+                RETURN last - first + 1
+            ENDIF
+            RETURN first - last + 1
             
             
         INTERNAL METHOD _saveCurrentKey(rcno AS LONG, oData AS RddKeyData) AS LOGIC

@@ -921,6 +921,7 @@ BEGIN NAMESPACE XSharp.RDD
 			IF (Path.GetDirectoryName(SELF:_FileName):Length == 0)
                 IF File(SELF:_FileName)
 				    SELF:_FileName := FPathName()
+                    SELF:_OpenInfo:FileName := SELF:_FileName
                 ENDIF
 			ENDIF
 			SELF:_Alias := SELF:_OpenInfo:Alias
@@ -1306,11 +1307,18 @@ BEGIN NAMESPACE XSharp.RDD
 					IF (! String.IsNullOrWhiteSpace(str))
 						//
 
-						IF ( ( fieldType == DbFieldType.Number ) .AND. (nDec == 0 ) ) .OR. ( fieldType == DbFieldType.Integer ) 
-							r8 := System.Convert.ToInt32(str)
+						IF ( ( fieldType == DbFieldType.Number ) .AND. (nDec == 0 ) ) .OR. ( fieldType == DbFieldType.Integer )
+                            LOCAL temp AS LONG
+                            IF Int32.TryParse(str, OUT temp)
+                                r8 := temp
+                            ELSE
+							    r8 := 0
+                            ENDIF
 						ELSE
                             _numformat:NumberDecimalDigits := nDec
-							r8 := System.Convert.ToDouble(str, _numFormat)
+                            IF ! System.Double.TryParse(str, NumberStyles.AllowDecimalPoint, _numformat, OUT r8)
+							    r8 := 0
+                            ENDIF
 						ENDIF
 					ENDIF
 					data := DbFloat{r8, length, nDec} 

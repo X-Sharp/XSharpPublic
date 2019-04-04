@@ -330,7 +330,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:_root:FreeList != 0
                 nPage := SELF:_root:FreeList
                 VAR oPage := SELF:_PageList:GetPage(nPage, 0, NULL)
-                IF oPage IS CdxTreePage tpage
+                IF oPage IS CdxTreePage
+                    VAR tpage := (CdxTreePage) oPage
                     nNext := tpage:NextFree
                     IF nNext == -1
                         nNext := 0

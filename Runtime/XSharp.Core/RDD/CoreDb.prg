@@ -947,11 +947,16 @@ CLASS XSharp.CoreDb
         
     STATIC METHOD MemoExt(cDriver AS STRING) AS STRING
         RETURN CoreDb.Do ({ =>
-        LOCAL oRDD := CoreDb.CWA(__FUNCTION__, FALSE) AS IRDD
+        LOCAL oRDD := NULL AS IRDD
+        IF String.IsNullOrEmpty(cDriver)
+            oRDD := CoreDb.CWA(__FUNCTION__, FALSE) 
+            IF oRDD == NULL
+                cDriver := RuntimeState.DefaultRDD
+            ENDIF
+        ENDIF
         IF oRDD == NULL
-            // Get an RDD object
             LOCAL oRegRDD AS RegisteredRDD
-            oRegRDD:= RegisteredRDD.Find(RuntimeState.DefaultRDD)
+            oRegRDD:= RegisteredRDD.Find(cDriver)
             oRegRdd:Load()
             oRDD := CoreDb.CreateRDDInstance( oRegRdd:RddType, "XXTEMPXX" )
         ENDIF

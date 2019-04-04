@@ -2394,6 +2394,7 @@ namespace XSharpLanguage
                     case XSharpLexer.LBRKT:
                     case XSharpLexer.SL_COMMENT:
                     case XSharpLexer.ML_COMMENT:
+                    case XSharpLexer.DOC_COMMENT:
                         //case XSharpLexer.VAR:
                         //case XSharpLexer.IMPLIED:
                         // Stop here

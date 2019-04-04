@@ -234,7 +234,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DBCloseArea()
 			
 			DBUseArea( , , cFileName)
-			FieldPut(1 , 46.11) // ! a float isn/t stored !
+			FieldPut(1 , FLOAT{46.11}) // ! a float isn/t stored !
 			DBCommit()
 			Assert.Equal(46.11 , (FLOAT) FieldGet(1)) // runtime exception
 			DBCloseArea()
@@ -693,7 +693,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			FErase(cFileName + ".cdx")
 
 			RDDSetDefault("DBFCDX")
-
+            TRY
 			SetExclusive ( FALSE )
 			DBCreate ( cFileName , { {"id", "C", 5, 0} })
 		
@@ -723,9 +723,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal( 1 , (INT) a[1] )
 			Assert.Equal( 3 , (INT) a[2] )
 
+            FINALLY
 			DBCloseArea()
 			
 			SetExclusive ( TRUE ) // restore
+            END TRY
 		RETURN
 
 		[Fact, Trait("Category", "DBF")];
@@ -1783,6 +1785,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBFCDX_StackOverflow() AS VOID
 			LOCAL cDBF AS STRING
 			
+            TRY
 			RDDSetDefault("DBFCDX")
 			SetExclusive( FALSE )
 			
@@ -1805,7 +1808,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True( DBDelete() )
 			Assert.True( DBUnlock() ) // StackOverflow here
 			
+            FINALLY
 			DBCloseAll()
+            SetExclusive ( TRUE )
+            END TRY
 		RETURN
 
 
@@ -1890,7 +1896,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				FieldPut ( 1 , aValues [ i ] )
 			NEXT
 			
-			DBCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper(_Field->LAST) } )
+			DBCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper(_FIELD->LAST) } )
 			DBSetOrder ( 1 )
 			
 			Assert.False( DBOrderInfo(DBOI_ISDESC) ) // false, correct
@@ -1904,7 +1910,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DO WHILE ! EOF()
 //				5,1,3,2,4 correct
 				nIndex ++
-				Assert.Equal(aResult[nIndex] , (INT) RecNo() )
+				Assert.Equal((INT) aResult[nIndex] , (INT) RecNo() )
 				DBSkip(1)
 			ENDDO
 			
@@ -1918,7 +1924,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DO WHILE ! EOF()
 //				5,1,3,2,4 again, wrong, should be 4,2,3,1,5
 				nIndex ++
-				Assert.Equal(aResult[nIndex] , (INT) RecNo() )
+				Assert.Equal((INT) aResult[nIndex] , (INT) RecNo() )
 				DBSkip(1)
 			ENDDO
 
@@ -1953,7 +1959,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			NEXT
 			
 			Assert.True( OrdCondSet() )
-			Assert.True( OrdCreate(cIndex, "ORDER1", "upper(LAST)", { || Upper ( _Field-> LAST) } ) )
+			Assert.True( OrdCreate(cIndex, "ORDER1", "upper(LAST)", { || Upper ( _FIELD-> LAST) } ) )
 			DBSetOrder ( 1 )
 			Assert.Equal( "ORDER1" , OrdName() ) // "ORDER1"
 			Assert.False( OrdIsUnique() ) // always returns true !
@@ -1964,7 +1970,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 //			 create a descend and unique order
 			Assert.True( OrdCondSet(,,,,,,,,,,TRUE) )
 			SetUnique ( TRUE )
-			OrdCreate(cIndex, "ORDER2", "upper(LAST)", { || Upper ( _Field-> LAST) } )
+			OrdCreate(cIndex, "ORDER2", "upper(LAST)", { || Upper ( _FIELD-> LAST) } )
 			
 			DBSetOrder ( 2 )
 			Assert.Equal( "ORDER2" , OrdName() ) // "ORDER2"
@@ -2008,7 +2014,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 //					 second order should be a custom order.
 					DBSetOrderCondition(,,,,,,,,,,,,, TRUE)
 				ENDIF
-				DBCreateOrder ( "ORDER"+ NTrim(i) , cIndex , "upper(LAST)" , { ||Upper ( _Field->LAST) } )
+				DBCreateOrder ( "ORDER"+ NTrim(i) , cIndex , "upper(LAST)" , { ||Upper ( _FIELD->LAST) } )
 //				? OrdCreate(cIndex, "ORDER"+NTrim(i), "upper(LAST)", { || Upper ( _Field->LAST) } ) // ok
 			NEXT
 
@@ -2192,7 +2198,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				DBAppend()
 				FieldPut ( 1 , aValues [ i ] )
 			NEXT
-			DBCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper (_Field->LAST) } )
+			DBCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper (_FIELD->LAST) } )
 			DBCloseAll()
 			
 //			 When ".cdx" is added SetIndex() returns true
@@ -2211,7 +2217,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			RDDSetDefault("DBFCDX")
 			
 			cPath := System.IO.Path.GetTempPath()
-			IF .not. cPath:EndsWith("\")
+			IF .NOT. cPath:EndsWith("\")
 				cPath += "\"
 			END IF
 			cDbf := "fpttest"

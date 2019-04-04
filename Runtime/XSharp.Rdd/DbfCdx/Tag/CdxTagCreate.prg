@@ -75,7 +75,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_Ansi := SELF:_oRdd:_Ansi
             SELF:_Conditional := FALSE
             SELF:_Descending := FALSE
-            SELF:_Custom := _ordCondInfo :Scoped
+            SELF:_Custom := _ordCondInfo:Custom
             IF _ordCondInfo :Active
                 SELF:_Descending := _ordCondInfo :Descending
                 IF hasForCond .AND. !string.IsNullOrEmpty(_ordCondInfo :ForExpression)

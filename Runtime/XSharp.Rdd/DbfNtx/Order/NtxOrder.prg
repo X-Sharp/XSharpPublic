@@ -441,7 +441,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             text := NULL
             chkDigits := FALSE
             // Float Value ?
-            IF toConvert IS  IFloat valueFloat
+            IF toConvert IS  IFloat
+                VAR valueFloat := (IFloat) toConvert
                 toConvert := valueFloat:Value
                 formatInfo:NumberDecimalDigits := valueFloat:Decimals
                 text := valueFloat:Value:ToString("F", formatInfo)
@@ -508,6 +509,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             FOR i := 0 TO length -1
                 IF buffer[i] ==  32
                     buffer[i] := (BYTE)'0'
+                ELSEIF buffer[i] == 42 // *
+                    // invalid buffer
+                    // clear buffer and set it to 0
+                    FOR VAR j := 0 TO length -1
+                        buffer[j] := (BYTE)'0'
+                    NEXT
+                    last := length -1
+                    EXIT
                 ELSE
                     last := i
                     EXIT

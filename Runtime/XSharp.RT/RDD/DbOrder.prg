@@ -264,12 +264,13 @@ FUNCTION OrdCreate(cName, cOrder, cExpr, cobExpr, lUnique) AS LOGIC CLIPPER
 /// </summary>
 /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION OrdDescend(xOrder, cOrdBag, lDescend) AS LOGIC CLIPPER
-	
+	LOCAL oResult AS OBJECT	
 	IF ! lDescend:IsLogic
 		lDescend := NIL
 	ENDIF
-	
-	RETURN VoDb.OrderInfo(DBOI_ISDESC, cOrdBag, xOrder, lDescend)
+    oResult := lDescend
+    VoDb.OrderInfo(DBOI_ISDESC, cOrdBag, xOrder, REF oResult)
+    RETURN (LOGIC) oResult
 	
 /// <summary>
 /// </summary>

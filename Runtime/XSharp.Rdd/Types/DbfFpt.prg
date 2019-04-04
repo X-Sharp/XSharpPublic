@@ -50,7 +50,10 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_oMemo := _oFptMemo := FptMemo{SELF}
             /// <inheritdoc />	
         VIRTUAL PROPERTY SysName AS STRING GET "DBFFPT"
-        
+
+
+
+
         METHOD GetValue(nFldPos AS LONG) AS OBJECT
             LOCAL rawData AS BYTE[]
             LOCAL buffer AS BYTE[]
@@ -133,10 +136,19 @@ BEGIN NAMESPACE XSharp.RDD
             
     /// <summary>FPT Memo class. Implements the FTP support.</summary>
     INTERNAL CLASS FptMemo INHERIT DBTMemo 
-
+        STATIC PRIVATE _defFptExt    := DBT_MEMOEXT AS STRING
               
         STATIC CONSTRUCTOR
-            DefExt := FPT_MEMOEXT
+            _defFptExt := FPT_MEMOEXT
+
+        NEW STATIC PROPERTY DefExt AS STRING
+            GET
+                RETURN _defFptExt    
+            END GET
+            SET
+                _defFptExt := VALUE
+            END SET
+        END PROPERTY
 
         CONSTRUCTOR (oRDD AS DBF)
             SUPER(oRDD)

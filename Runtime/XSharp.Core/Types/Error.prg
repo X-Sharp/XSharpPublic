@@ -200,7 +200,7 @@ BEGIN NAMESPACE XSharp
       sb:AppendLine("SubSystem       : " + SELF:SubSystem )
       sb:AppendLine("GenCode         : " + nGenCode:ToString()  )
       sb:AppendLine("GenCodeText     : " + SELF:GenCodeText  )
-      if SELF:SubCode != 0
+      IF SELF:SubCode != 0
         sb:AppendLine("SubCode         : " + SELF:SubCode:ToString() )
         sb:AppendLine("SubCodeText     : " + SELF:SubCodeText)
       ENDIF

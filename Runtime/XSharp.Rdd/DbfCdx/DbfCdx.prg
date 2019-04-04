@@ -166,14 +166,15 @@ BEGIN NAMESPACE XSharp.RDD
                         info:Result := IntPtr.Zero
                 ENDIF
             CASE DBOI_ISDESC
-                    IF workOrder != NULL
-                        VAR oldValue  := workOrder:Descending
-                        IF info:Result IS LOGIC descend
-                            workOrder:Descending := descend
-                        ENDIF
-			info:Result := oldValue
-                    ELSE
-                        info:Result := FALSE
+                IF workOrder != NULL
+                    VAR oldValue  := workOrder:Descending
+                    IF info:Result IS LOGIC
+                        VAR descend := (LOGIC) info:Result
+                        workOrder:Descending := descend
+                    ENDIF
+			        info:Result := oldValue
+                ELSE
+                    info:Result := FALSE
                 ENDIF
             CASE DBOI_ISCOND
                     IF workOrder != NULL
@@ -182,24 +183,24 @@ BEGIN NAMESPACE XSharp.RDD
                         info:Result := FALSE
                 ENDIF
             CASE DBOI_KEYTYPE
-                    IF workOrder != NULL
-                        info:Result := workOrder:KeyType
-                    ELSE
-                        info:Result := 0
+                IF workOrder != NULL
+                    info:Result := workOrder:KeyType
+                ELSE
+                    info:Result := 0
                 ENDIF
             CASE DBOI_KEYSIZE
-                    IF workOrder != NULL
-                        info:Result := workOrder:KeyLength
-                    ELSE
-                        info:Result := 0
+                IF workOrder != NULL
+                    info:Result := workOrder:KeyLength
+                ELSE
+                    info:Result := 0
                 ENDIF
             CASE DBOI_KEYDEC
                 info:Result := 0
             CASE DBOI_UNIQUE
-                    IF workOrder != NULL
-                        info:Result := workOrder:Unique
-                    ELSE
-                        info:Result := FALSE
+                IF workOrder != NULL
+                    info:Result := workOrder:Unique
+                ELSE
+                    info:Result := FALSE
                 ENDIF
             CASE DBOI_LOCKOFFSET
                     IF workOrder != NULL
@@ -262,7 +263,8 @@ BEGIN NAMESPACE XSharp.RDD
                     IF workOrder != NULL
                         LOCAL lOld AS LOGIC
                         lOld := workOrder:Custom
-                        IF info:Result IS LOGIC custom
+                        IF info:Result IS LOGIC
+                            VAR custom := (LOGIC) info:Result
                             IF custom
                                 workOrder:SetCustom()
                             ENDIF
@@ -451,10 +453,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF !SELF:IsHot 
                     RETURN isOk
                 ENDIF
-                isOk := SUPER:GoCold()
-                SELF:IsHot := TRUE
-                isOk := SELF:_indexList:GoCold() .AND. isOk
-                SELF:IsHot := FALSE
+                isOk := SELF:_indexList:GoCold() 
                 IF !isOk
                     RETURN isOk
                 ENDIF

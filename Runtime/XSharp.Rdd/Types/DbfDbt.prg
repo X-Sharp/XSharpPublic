@@ -99,16 +99,16 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _ReadOnly   AS LOGIC
         PROTECT _oRDD       AS DBF
         PROTECT _blockSize  AS SHORT
-        STATIC PRIVATE _defExt    := DBT_MEMOEXT AS STRING
+        STATIC PRIVATE _defDbtExt    := DBT_MEMOEXT AS STRING
         PROTECT _lockScheme AS DbfLocking
         
         PROPERTY Shared AS LOGIC GET _Shared
         STATIC PROPERTY DefExt AS STRING
             GET
-                RETURN _defExt
+                RETURN _defDbtExt    
             END GET
             SET
-                _defExt := VALUE
+                _defDbtExt := VALUE
             END SET
         END PROPERTY
         

@@ -2238,7 +2238,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (expr == null && _options.VOAllowMissingReturns && !ent.Data.MustBeVoid)
                 {
                     errcode = ErrorCode.WRN_MissingReturnValue;
-                    if (ent is XP.MethodContext || ent is XP.FunctionContext || ent is XP.PropertyAccessorContext)
+                    if (ent is XP.MethodContext || ent is XP.FunctionContext || ent is XP.PropertyAccessorContext
+                        || ent is XP.XppmethodContext || ent is XP.XppinlineMethodContext
+                        || ent is XP.XpppropertyContext)
                     {
                         TypeSyntax dataType;
                         if (ent.Data.HasMissingReturnType)
@@ -2247,12 +2249,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         else
                         {
-                            if (ent is XP.MethodContext)
-                                dataType = ((XP.MethodContext)ent).Type.Get<TypeSyntax>();
-                            else if (ent is XP.FunctionContext)
-                                dataType = ((XP.FunctionContext)ent).Type.Get<TypeSyntax>();
-                            else if (ent is XP.PropertyAccessorContext)
-                                dataType = ((XP.PropertyContext)ent.Parent).Type.Get<TypeSyntax>();
+                            if (ent is XP.MethodContext meth)
+                                dataType = meth.Type.Get<TypeSyntax>();
+                            else if (ent is XP.FunctionContext func)
+                                dataType = func.Type.Get<TypeSyntax>();
+                            else if (ent is XP.PropertyAccessorContext propac)
+                                dataType = ((XP.PropertyContext)propac.Parent).Type.Get<TypeSyntax>();
+                            else if (ent is XP.XppmethodContext xppmeth)
+                                dataType = xppmeth.Type.Get<TypeSyntax>();
+                            else if (ent is XP.XppinlineMethodContext xppinline)
+                                dataType = xppinline.Type.Get<TypeSyntax>();
+                            else if (ent is XP.XpppropertyContext xppprop)
+                                dataType = xppprop.Type.Get<TypeSyntax>();
                             else
                                 dataType = _getMissingType();
                         }
@@ -2814,10 +2822,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             new SyntaxDiagnosticInfo(ErrorCode.ERR_PCallNativeGenericType, ins.Identifier.Text));
                         context.Put(expr);
                         return;
-                    case "SLEN":
-                        if (GenerateSLen(context))
-                            return;
-                        break;
                     case "STRING2PSZ":
                     case "CAST2PSZ":
                         if (GenerateString2Psz(context, name))
@@ -2906,33 +2910,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.ExitMethodCall(context);
             return;
         }
-        private bool GenerateSLen(XP.MethodCallContext context)
-        {
-            // Pseudo function SLen
-            ArgumentListSyntax argList;
-            ExpressionSyntax expr;
-            if (context.ArgList != null)
-            {
-                argList = context.ArgList.Get<ArgumentListSyntax>();
-            }
-            else
-            {
-                return false;
-            }
-
-            expr = MakeCastTo(_stringType, argList.Arguments[0].Expression);
-            expr = _syntaxFactory.ConditionalAccessExpression(expr,
-                                    SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
-                                    _syntaxFactory.MemberBindingExpression(
-                                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                                        GenerateSimpleName("Length")
-                                        ));
-            expr = MakeSimpleMemberAccess(expr, GenerateSimpleName("Value"));
-            expr = MakeCastTo(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword)), expr);
-
-            context.Put(expr);
-            return true;
-        }
+       
         #endregion
 
         #region Entities and Clipper CC and PSZ support

@@ -6955,6 +6955,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (GenerateAltD(context))
                         return;
                     break;
+                case "SLEN":
+                    if (GenerateSLen(context))
+                        return;
+                    break;
+
                 case "_GETINST":
                     if (GenerateGetInst(context))
                         return;
@@ -6983,7 +6988,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.InvocationExpression(expr, argList));
 
         }
-
+        private bool GenerateSLen(XP.MethodCallContext context)
+        {
+            // Pseudo function SLen
+            ArgumentListSyntax argList;
+            ExpressionSyntax expr;
+            if (context.ArgList != null)
+            {
+                argList = context.ArgList.Get<ArgumentListSyntax>();
+            }
+            else
+            {
+                return false;
+            }
+            if (argList.Arguments.Count != 1)
+                return false;
+            expr = argList.Arguments[0].Expression;
+            expr = MakeCastTo(_stringType, expr);
+            var cond = _syntaxFactory.BinaryExpression(SyntaxKind.EqualsExpression,
+                        expr,
+                        SyntaxFactory.MakeToken(SyntaxKind.EqualsEqualsToken),
+                        GenerateLiteralNull());
+            var left = GenerateLiteral(0);
+            var right = MakeSimpleMemberAccess(expr, GenerateSimpleName("Length"));
+            expr = MakeConditional(cond, left, right);
+            expr = MakeCastTo(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword)), expr);
+            context.Put(expr);
+            return true;
+        }
         public override void ExitCtorCall([NotNull] XP.CtorCallContext context)
         {
             if (!(context.Type is XP.ArrayDatatypeContext))

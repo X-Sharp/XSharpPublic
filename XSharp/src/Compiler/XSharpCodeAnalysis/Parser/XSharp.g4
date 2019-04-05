@@ -746,27 +746,37 @@ primary             : Key=SELF                                                  
                     | Expr=iif                                                  #iifExpression			// iif( expr, expr, expr )
                     | Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression
                       (COMMA Exprs+=expression)* RPAREN                         #intrinsicExpression	// _Or(expr, expr, expr)
-                    | FIELD ALIAS (Alias=identifier ALIAS)? Field=identifier    #aliasedField		      // _FIELD->CUSTOMER->NAME is equal to CUSTOMER->NAME
-                    | FIELD ALIAS (Alias=identifier ALIAS)? AMP Expr=expression #aliasedFieldLate     // _FIELD->CUSTOMER->&expression expression must evaluate to a string. 
-                                                                                                      // Expression can of course be a parenExpression. And can also be LHS of an assigment !
-                    | MEMVAR ALIAS VarName=identifier                           #aliasedMemvar        // MEMVAR->Name
-                    | {InputStream.La(4) != LPAREN}?                            // this makes sure that CUSTOMER->NAME() is not matched
-                          Alias=identifier ALIAS Field=identifier               #aliasedField		      // CUSTOMER->NAME
-                    | Id=identifier ALIAS Expr=expression                       #aliasedExpr          // id -> expr       // when id = 'M' then redirect to aliasedMemvar
-                    | LPAREN Alias=expression RPAREN ALIAS Expr=expression      #aliasedExpr          // (expr) -> expr   // when expression = 'M' then redirect to aliasedMemvar
+                    | Expr=aliasExpression                                      #aliasedExpression    // Handles all expressions with the ALIAS operator
                     | AMP LPAREN Expr=expression RPAREN                         #macro					      // &(expr)          // parens are needed because otherwise &(string) == Foo will match everything until Foo
                     | AMP Name=identifierName                                   #macroName			      // &name            // macro with a variable name
-                    | LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN  #parenExpression		  // ( expr,expr,expr )
+                    | LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN #parenExpression		// ( expr[,expr,..] )
                     | Key=ARGLIST                                               #argListExpression		// __ARGLIST
                     ;
 
-boundExpression		: Expr=boundExpression Op=(DOT | COLON) Name=simpleName               #boundAccessMember	// member access The ? is new
+boundExpression		  : Expr=boundExpression Op=(DOT | COLON) Name=simpleName             #boundAccessMember	// member access The ? is new
                     | Expr=boundExpression LPAREN                       RPAREN          #boundMethodCall	// method call, no params
                     | Expr=boundExpression LPAREN ArgList=argumentList RPAREN           #boundMethodCall	// method call, with params
                     | Expr=boundExpression LBRKT ArgList=bracketedArgumentList RBRKT    #boundArrayAccess	// Array element access
                     | <assoc=right> Left=boundExpression Op=QMARK Right=boundExpression #boundCondAccessExpr	// expr ? expr
                     | Op=(DOT | COLON) Name=simpleName                                  #bindMemberAccess
                     | LBRKT ArgList=bracketedArgumentList RBRKT                         #bindArrayAccess
+                    ;
+
+aliasExpression     : MEMVAR ALIAS VarName=identifier                           #aliasedMemvar        // MEMVAR->Name
+                    | FIELD ALIAS (Alias=identifier ALIAS)? Field=identifier    #aliasedField		      // _FIELD->CUSTOMER->NAME
+                    | {InputStream.La(4) != LPAREN}?                            // this makes sure that CUSTOMER->NAME() is not matched, this is matched by aliasedExpr later
+                      Alias=identifier ALIAS Field=identifier                   #aliasedField		      // CUSTOMER->NAME
+                    // The next rule makes sure that single fields are processed before expressions.
+                    // otherwise the following would not parse properly.
+                    // DbSeek((nArea)->Field1 + (nArea)->Field2)
+                    // The seek expression would be seen as  "(nArea)->(Field1+(nArea)->Field2)"
+                    | {InputStream.La(6) != LPAREN}?
+                      LPAREN Area=identifier RPAREN ALIAS Field=identifier      #aliasedField		      // (nCust)->NAME  
+                    | Alias=identifier              ALIAS AMP Field=identifier  #aliasedFieldLate	    // CUSTOMER->&fldName
+                    | FIELD ALIAS (Alias=identifier ALIAS)? AMP Field=identifier #aliasedFieldLate	  // _FIELD->CUSTOMER->&fldName or _FIELD->&fldName
+                    | LPAREN Area=identifier RPAREN ALIAS AMP Field=identifier  #aliasedFieldLate	  // (nCust)->&fldName 
+                    | Id=identifier                  ALIAS Expr=expression      #aliasedExpr          // id -> expr       
+                    | LPAREN Alias=expression RPAREN ALIAS Expr=expression      #aliasedExpr          // (expr) -> expr   
                     ;
 
 // Initializers

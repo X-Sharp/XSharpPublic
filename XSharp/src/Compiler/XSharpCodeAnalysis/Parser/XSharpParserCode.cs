@@ -599,6 +599,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public ParameterListContext Parameters => this.ParamList;
 
         }
+        public partial class AliasedExprContext
+        {
+            public bool Hasbeenhandled;
+        }
         public partial class XpppropertyContext : IEntityContext
         {
             EntityData data = new EntityData();
@@ -850,21 +854,20 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         internal static bool IsRealCodeBlock([NotNull] this IXParseTree context )
         {
 
-            if (context is XSharpParser.ArrayElementContext)
-                return ((XSharpParser.ArrayElementContext)context).Expr.IsRealCodeBlock();
-            if (context is XSharpParser.PrimaryExpressionContext)
-                return ((XSharpParser.PrimaryExpressionContext)context).Expr.IsRealCodeBlock();
-            if (context is XSharpParser.CodeblockExpressionContext)
-                return ((XSharpParser.CodeblockExpressionContext)context).CbExpr.IsRealCodeBlock();
-            if (context is XSharpParser.AliasedExprContext)
-                return true;
-            if (context is XSharpParser.AliasedFieldContext)
-                return true;
+            if (context is XSharpParser.ArrayElementContext aelc)
+                return aelc.Expr.IsRealCodeBlock();
+            if (context is XSharpParser.PrimaryExpressionContext pec)
+                return pec.Expr.IsRealCodeBlock();
+            if (context is XSharpParser.CodeblockExpressionContext cec)
+                return cec.CbExpr.IsRealCodeBlock();
+            //if (context is XSharpParser.AliasedExprContext)
+            //    return true;
+            //if (context is XSharpParser.AliasedFieldContext)
+            //    return true;
             if (context is XSharpParser.CodeblockCodeContext)
                 return ((IXParseTree) context.Parent).IsRealCodeBlock();
-            if (context is XSharpParser.CodeblockContext)
+            if (context is XSharpParser.CodeblockContext cbc)
             {
-                var cbc = context as XSharpParser.CodeblockContext;
                 if (cbc.lambda != null)
                     return false;
                 // when no => operator and no explicit parameters

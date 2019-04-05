@@ -179,6 +179,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string FieldGetWa = "global::XSharp.RT.Functions.__FieldGetWa";
         internal const string FieldSet = "global::XSharp.RT.Functions.__FieldSet";
         internal const string FieldSetWa = "global::XSharp.RT.Functions.__FieldSetWa";
+        internal const string AreaEval = "global::XSharp.RT.Functions.__AreaEval";
         internal const string MemVarGet = "global::XSharp.RT.Functions.__MemVarGet";
         internal const string MemVarPut = "global::XSharp.RT.Functions.__MemVarPut";
         internal const string MemVarInit = "global::XSharp.RT.Functions.__MemVarInit";

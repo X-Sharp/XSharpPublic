@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software
 Distributed under the License is distributed on an "as is" basis,
 without warranties or conditions of any kind, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License.
+limitations under the License. 
 */
 // Uncomment this define to dump the AST to the debug console.
 //#define DUMP_TREE
@@ -1198,7 +1198,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             }
         }
-
+        protected IdentifierNameSyntax GenerateIdentifier(XSharpParserRuleContext context)
+        {
+            return _syntaxFactory.IdentifierName(context.Get<SyntaxToken>());
+        }
         protected VariableDeclaratorSyntax GenerateBuffer(SyntaxToken nameToken, BracketedArgumentListSyntax dims)
         {
             return _syntaxFactory.VariableDeclarator(nameToken, dims, null);
@@ -8404,6 +8407,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return (ExpressionSyntax)NotInDialect(GenerateLiteral("alias"), "ALIAS(->) operator");
         }
+        public override void ExitAliasedExpression([NotNull] XP.AliasedExpressionContext context)
+        {
+            context.Put(context.Expr.Get<ExpressionSyntax>());
+        }
         public override void ExitAliasedExpr([NotNull] XP.AliasedExprContext context)
         {
             context.Put(NoAlias());
@@ -8420,6 +8427,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
+        public override void ExitAliasedFieldLate([NotNull] XP.AliasedFieldLateContext context)
+        {
+            context.Put(NoAlias());
+            return;
+        }
         #endregion
         public override void ExitMacro([NotNull] XP.MacroContext context)
         {

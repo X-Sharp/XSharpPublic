@@ -18,6 +18,7 @@ using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Roslyn.Utilities;
 using System.Collections.Immutable;
+using Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -46,7 +47,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 Debug.Assert(destination == Compilation.CodeBlockType()|| conv.Exists);
             }
-            if (!syntax.XIsCodeBlock && !Compilation.Options.MacroScript)
+            if (!syntax.XIsCodeBlock && !Compilation.Options.MacroScript && !syntax.XNode.IsAliasExpression())
             {
                 Error(diagnostics, ErrorCode.ERR_CodeblockWithLambdaSyntax, syntax);
             }

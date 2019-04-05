@@ -1632,6 +1632,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return expr.IsLiteral();
         }
-
+        public static bool IsIdentifier(this ParserRuleContext context)
+        {
+            return context.Start == context.Stop && context.Start.Type == XSharpParser.ID;
+        }
+        public static bool IsAliasExpression(this IXParseTree context)
+        {
+            if (context is XSharpParser.PrimaryExpressionContext)
+            {
+                return context.GetChild(0) is XSharpParser.AliasedExpressionContext;
+            }
+            return false;
+        }
+        public static bool IsBinaryExpression(this IXParseTree context)
+        {
+            if (context is XSharpParser.PrimaryExpressionContext)
+            {
+                return context.GetChild(0) is XSharpParser.BinaryExpressionContext;
+            }
+            return false;
+        }
     }
 }

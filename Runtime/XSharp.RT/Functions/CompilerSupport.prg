@@ -95,16 +95,16 @@ FUNCTION __FieldGet( fieldName AS STRING ) AS USUAL
     
     // CUSTOMER->NAME
 /// <exclude/>
-FUNCTION __FieldGetWa( alias AS STRING, fieldName AS STRING ) AS USUAL
+FUNCTION __FieldGetWa( area AS USUAL, fieldName AS STRING ) AS USUAL
     // XBase defines that 'M' in 'M->Name' means a Memvar
-    IF String.IsNullOrEmpty(alias)
+    IF area:IsNil
         RETURN __FieldGet(fieldName)
     ENDIF
-    IF alias:ToUpper() == "M"
+    IF area:IsString .and. ((string) area):ToUpper() == "M"
         RETURN __MemVarGet(fieldName)
     ENDIF
     LOCAL ret AS USUAL
-    LOCAL newArea := _SelectString( alias ) AS DWORD
+    LOCAL newArea := _Select( area ) AS DWORD
     LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
     IF newArea > 0
         RuntimeState.CurrentWorkarea := newArea
@@ -114,10 +114,10 @@ FUNCTION __FieldGetWa( alias AS STRING, fieldName AS STRING ) AS USUAL
             RuntimeState.CurrentWorkarea := curArea
         END TRY   
     ELSE
-        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(alias), 1, alias  )
+        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(area), 1, area  )
     ENDIF
     RETURN ret
-    
+
     // _FIELD->Name := "Foo"
 /// <exclude/>
 FUNCTION __FieldSet( fieldName AS STRING, oValue AS USUAL ) AS USUAL
@@ -132,15 +132,16 @@ FUNCTION __FieldSet( fieldName AS STRING, oValue AS USUAL ) AS USUAL
     
     
     // CUSTOMER->Name := "Foo"
+    // (nArea)->Name := "Foo"
 /// <exclude/>
-FUNCTION __FieldSetWa( alias AS STRING, fieldName AS STRING, uValue AS USUAL ) AS USUAL
-    IF String.IsNullOrEmpty(alias)
-        RETURN __FieldSet(fieldName, uValue)
+FUNCTION __FieldSetWa( area AS usual, fieldName AS STRING, uValue AS USUAL ) AS USUAL
+    IF area:IsNil
+        RETURN __FieldGet(fieldName)
     ENDIF
-    IF alias:ToUpper() == "M"
-        RETURN __MemVarPut(fieldName, uValue)
+    IF area:IsString .and. ((string) area):ToUpper() == "M"
+        RETURN __MemVarGet(fieldName)
     ENDIF
-    LOCAL newArea := _SelectString( alias ) AS DWORD
+    LOCAL newArea := _Select( area ) AS DWORD
     LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
     IF newArea > 0
         RuntimeState.CurrentWorkarea := newArea
@@ -151,10 +152,27 @@ FUNCTION __FieldSetWa( alias AS STRING, fieldName AS STRING, uValue AS USUAL ) A
             RuntimeState.CurrentWorkarea := curArea
         END TRY   
     ELSE
-        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(alias),1, alias  )
+        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(area),1, area  )
     ENDIF
     // Note: must return the same value passed in, to allow chained assignment expressions
     RETURN uValue
+
+FUNCTION __AreaEval<T>(area as usual, action as @@Func<T>) as T
+    LOCAL newArea := _Select( area ) AS DWORD
+    LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
+    LOCAL result  := default(T) as T
+    IF newArea > 0
+        RuntimeState.CurrentWorkarea := newArea
+        
+        TRY
+            result := action()
+        FINALLY
+            RuntimeState.CurrentWorkarea := curArea
+        END TRY   
+    ELSE
+        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(area),1, area  )
+    ENDIF
+    return result
     
     
     // MEMVAR myName

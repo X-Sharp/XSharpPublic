@@ -91,6 +91,7 @@ FUNCTION __FieldGetWaNum( workarea AS DWORD, fieldpos AS DWORD ) AS USUAL
     END TRY   
     RETURN ret
     
+
     
 /// <exclude/>
 FUNCTION __FieldSetNum( fieldpos AS DWORD, uValue AS USUAL ) AS USUAL
@@ -108,7 +109,7 @@ FUNCTION __FieldSetWaNum( nArea AS DWORD, fieldpos AS DWORD, uValue AS USUAL ) A
     END TRY   
     RETURN uValue
     
-    
+
     
     
     /// <summary>

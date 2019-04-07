@@ -2240,6 +2240,63 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 
+		// TECH-ZW8D1S87CH, Problem updating cdx
+	[Fact, Trait("Category", "DBF")];
+		METHOD CdxUpdating() AS VOID
+		LOCAL cDBF AS STRING
+		LOCAL aFields, aValues AS ARRAY 
+		LOCAL cPrev AS STRING
+		LOCAL nCount AS INT
+		LOCAL i AS DWORD
+		
+		RDDSetDefault ( "DBFCDX" )
+		
+		aFields := { { "NUM" , "N" , 8 , 0 },{ "LAST" , "C" , 100 , 0 }} 
+		aValues := { "b" , "c" , "d", "e" , "a" , "r" , "t" , "g" , "m" , "n" , "t" , "b" , "h" , "f" , "y", "r", "t", "y", "z", "v", "e", "r", "b", "z", "b", "m", "w", "e" }
+		
+		cDBF := GetTempFileName()
+		? "Ferase" , FErase ( cDbf + IndexExt() )       
+		
+		DBCreate( cDBF , AFields)
+		DBUseArea(,,cDBF )
+		FOR i := 1 UPTO ALen ( aValues )
+			DBAppend()
+			FieldPut ( 1 , i )                                      
+			FieldPut ( 2 , Replicate( aValues [ i ] , 50) )
+		NEXT
+		DBCreateIndex ( cDBF , "NUM" , {||_FIELD->NUM})
+		DBCreateOrder ( "LAST" , cDBF , "LAST" , {||_FIELD->LAST})
+		DBCloseAll()
+		
+		
+		DBUseArea(,,cDBF )
+		DBSetOrder(2)
+		DBGoBottom()
+		
+		FieldPut(2, "a")
+		DBSkip(-5)
+		FieldPut(2, "d")
+		DBSkip(5)
+		FieldPut(2, "z")
+		
+		
+		cPrev := NULL
+		nCount := 0
+		DBGoTop()
+		DO WHILE .not. EoF()
+			nCount ++
+			IF cPrev != NULL
+				Assert.True( cPrev <= FieldGet(2) )
+			END IF
+			cPrev := FieldGet(2)
+			DBSkip()
+		END DO
+		Assert.Equal( nCount, (INT) ALen(aValues) )
+
+		DBCloseArea()
+	RETURN
+	
+	
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
 		RETURN GetTempFileName("testdbf")
 		STATIC PRIVATE METHOD GetTempFileName(cFileName AS STRING) AS STRING

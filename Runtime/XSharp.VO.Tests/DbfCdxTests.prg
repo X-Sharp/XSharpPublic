@@ -2241,62 +2241,118 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 
 		// TECH-ZW8D1S87CH, Problem updating cdx
-	[Fact, Trait("Category", "DBF")];
+		[Fact, Trait("Category", "DBF")];
 		METHOD CdxUpdating() AS VOID
-		LOCAL cDBF AS STRING
-		LOCAL aFields, aValues AS ARRAY 
-		LOCAL cPrev AS STRING
-		LOCAL nCount AS INT
-		LOCAL i AS DWORD
+			LOCAL cDBF AS STRING
+			LOCAL aFields, aValues AS ARRAY 
+			LOCAL cPrev AS STRING
+			LOCAL nCount AS INT
+			LOCAL i AS DWORD
+			
+			RDDSetDefault ( "DBFCDX" )
+			
+			aFields := { { "NUM" , "N" , 8 , 0 },{ "LAST" , "C" , 100 , 0 }} 
+			aValues := { "b" , "c" , "d", "e" , "a" , "r" , "t" , "g" , "m" , "n" , "t" , "b" , "h" , "f" , "y", "r", "t", "y", "z", "v", "e", "r", "b", "z", "b", "m", "w", "e" }
+			
+			cDBF := GetTempFileName()
+			FErase ( cDbf + IndexExt() )       
+			
+			DBCreate( cDBF , AFields)
+			DBUseArea(,,cDBF )
+			FOR i := 1 UPTO ALen ( aValues )
+				DBAppend()
+				FieldPut ( 1 , i )                                      
+				FieldPut ( 2 , Replicate( aValues [ i ] , 50) )
+			NEXT
+			DBCreateIndex ( cDBF , "NUM" , {||_FIELD->NUM})
+			DBCreateOrder ( "LAST" , cDBF , "LAST" , {||_FIELD->LAST})
+			DBCloseAll()
+			
+			
+			DBUseArea(,,cDBF )
+			DBSetOrder(2)
+			DBGoBottom()
+			
+			FieldPut(2, "a")
+			DBSkip(-5)
+			FieldPut(2, "d")
+			DBSkip(5)
+			FieldPut(2, "z")
+			
+			
+			cPrev := NULL
+			nCount := 0
+			DBGoTop()
+			DO WHILE .not. EoF()
+				nCount ++
+				IF cPrev != NULL
+					Assert.True( cPrev <= FieldGet(2) )
+				END IF
+				cPrev := FieldGet(2)
+				DBSkip()
+			END DO
+			Assert.Equal( nCount, (INT) ALen(aValues) )
+	
+			DBCloseArea()
+		RETURN
 		
-		RDDSetDefault ( "DBFCDX" )
-		
-		aFields := { { "NUM" , "N" , 8 , 0 },{ "LAST" , "C" , 100 , 0 }} 
-		aValues := { "b" , "c" , "d", "e" , "a" , "r" , "t" , "g" , "m" , "n" , "t" , "b" , "h" , "f" , "y", "r", "t", "y", "z", "v", "e", "r", "b", "z", "b", "m", "w", "e" }
-		
-		cDBF := GetTempFileName()
-		? "Ferase" , FErase ( cDbf + IndexExt() )       
-		
-		DBCreate( cDBF , AFields)
-		DBUseArea(,,cDBF )
-		FOR i := 1 UPTO ALen ( aValues )
-			DBAppend()
-			FieldPut ( 1 , i )                                      
-			FieldPut ( 2 , Replicate( aValues [ i ] , 50) )
-		NEXT
-		DBCreateIndex ( cDBF , "NUM" , {||_FIELD->NUM})
-		DBCreateOrder ( "LAST" , cDBF , "LAST" , {||_FIELD->LAST})
-		DBCloseAll()
-		
-		
-		DBUseArea(,,cDBF )
-		DBSetOrder(2)
-		DBGoBottom()
-		
-		FieldPut(2, "a")
-		DBSkip(-5)
-		FieldPut(2, "d")
-		DBSkip(5)
-		FieldPut(2, "z")
-		
-		
-		cPrev := NULL
-		nCount := 0
-		DBGoTop()
-		DO WHILE .not. EoF()
-			nCount ++
-			IF cPrev != NULL
-				Assert.True( cPrev <= FieldGet(2) )
-			END IF
-			cPrev := FieldGet(2)
-			DBSkip()
-		END DO
-		Assert.Equal( nCount, (INT) ALen(aValues) )
+	
+		// TECH-78PAZ508AE, Problems with creating/opening DBFCDX memo files
+		[Fact, Trait("Category", "DBF")];
+		METHOD MemoCreateAndOpen() AS VOID
+			LOCAL aFields AS ARRAY
+			LOCAL cDBF AS STRING
+			
+			RDDSetDefault("DBFCDX")
+			cDBF := System.IO.Path.GetTempPath() + "cdxtest"
 
-		DBCloseArea()
-	RETURN
-	
-	
+			aFields := { { "LAST" , "C" , 20 , 0 } , { "COMMENTS" , "M" , 10 , 0 }}
+			FErase(cDBF + ".cdx")
+			FErase(cDBF + ".dbt")
+			FErase(cDBF + ".fpt")
+			
+			DBCreate( cDBF , AFields)
+//			DBCreate( cDBF , AFields , "DBFCDX") // same
+			
+			Assert.False( (LOGIC) File(cDBF + ".dbt") )
+			Assert.True( (LOGIC) File(cDBF + ".fpt") )
+			
+			IF File(cDBF + ".dbt")
+				FRename(cDBF + ".dbt",cDBF + ".fpt")
+			END IF
+
+			TRY
+				DBUseArea(,,cDBF)
+			FINALLY
+				DBCloseAll()
+			END TRY
+
+
+			RDDSetDefault("DBFNTX")
+			cDBF := System.IO.Path.GetTempPath() + "ntxtest"
+
+			aFields := { { "LAST" , "C" , 20 , 0 } , { "COMMENTS" , "M" , 10 , 0 }}
+			FErase(cDBF + ".dbt")
+			FErase(cDBF + ".fpt")
+			
+			DBCreate( cDBF , aFields)
+			
+			Assert.True( (LOGIC) File(cDBF + ".dbt") )
+			Assert.False( (LOGIC) File(cDBF + ".fpt") )
+			
+			IF File(cDBF + ".fpt")
+				FRename(cDBF + ".fpt",cDBF + ".dbt")
+			END IF
+
+			TRY
+				DBUseArea(,,cDBF)
+			FINALLY
+				DBCloseAll()
+			END TRY
+		RETURN		
+
+
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
 		RETURN GetTempFileName("testdbf")
 		STATIC PRIVATE METHOD GetTempFileName(cFileName AS STRING) AS STRING

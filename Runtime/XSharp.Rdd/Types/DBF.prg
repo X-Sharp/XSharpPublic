@@ -998,6 +998,15 @@ BEGIN NAMESPACE XSharp.RDD
 				currentField:Initialize()
 				// Now, process
 				//SELF:_Fields := DbfRddFieldInfo[]{ fieldCount }
+                // count # of fields. When we see a 0x0D then the header has blank space for non fields
+                fieldCount := 0
+                for var i := 0 to fieldDefSize step DbfField.Size
+                    if fieldsBuffer[i] == 0x0D // last field
+                        exit
+                    endif
+                    fieldCount++
+                next
+
 				SELF:SetFieldExtent( fieldCount )
 				LOCAL nStart AS INT
 				nStart := 1
@@ -1118,7 +1127,11 @@ BEGIN NAMESPACE XSharp.RDD
 						SELF:_dbfError( ERDD.CREATE_FILE, XSharp.Gencode.EG_ARG )
 					ENDIF
 				CASE DbFieldType.Memo
-					IF ( info:Length != 10 ) .OR. ( info:Decimals != 0 )
+					IF ( info:Length != 10 .and. info:Length != 4) .OR. ( info:Decimals != 0 )
+						SELF:_dbfError( ERDD.CREATE_FILE, XSharp.Gencode.EG_ARG )
+					ENDIF
+                CASE DbFieldType.Integer
+					IF ( info:Length != 4) .OR. ( info:Decimals != 0 )
 						SELF:_dbfError( ERDD.CREATE_FILE, XSharp.Gencode.EG_ARG )
 					ENDIF
 				OTHERWISE
@@ -1298,9 +1311,7 @@ BEGIN NAMESPACE XSharp.RDD
 			SWITCH fieldType
 				CASE DbFieldType.Float
 				CASE DbFieldType.Number
-				CASE DbFieldType.Double
 				CASE DbFieldType.Currency
-				CASE DbFieldType.Integer
 					LOCAL r8 AS REAL8
 					// Default value is 0
 					r8 := 0.0
@@ -1373,6 +1384,15 @@ BEGIN NAMESPACE XSharp.RDD
 						//                        //
 						//                        data := System.DateTime.MinValue
 					//                    ENDIF
+                CASE DbFieldType.Integer
+                CASE DbFieldType.AutoIncrement
+                CASE DbFieldType.Integer4
+                    data := BuffToLong(buffer, offSet)
+                CASE DbFieldType.Integer2
+                    data := BuffToShort(buffer, offSet)
+                CASE DbFieldType.Double
+                CASE DbFieldType.Double8
+                    data := BitConverter.ToDouble(buffer, offset)
 				OTHERWISE
 					// Unknown, bring back the buffer
 					data := buffer
@@ -1598,19 +1618,23 @@ BEGIN NAMESPACE XSharp.RDD
 					IF __ARRAYBASE__ == 0
 						nArrPos -= 1
 					ENDIF
-					LOCAL encoding AS Encoding //ASCIIEncoding
-					// Read actual Data
-					encoding := SELF:_Encoding //ASCIIEncoding{}
-					VAR str :=  encoding:GetString( SELF:_RecordBuffer, SELF:_Fields[nArrPos]:OffSet, SELF:_Fields[nArrPos]:Length)
-					IF ( str == NULL )
-						str := String.Empty
-					ENDIF
-					str := str:Trim()
-					IF String.IsNullOrEmpty(str)
-						blockNbr := 0
-					ELSE
-						blockNbr := System.Convert.ToInt32(str)
-					ENDIF
+                    if SELF:_Fields[nArrPos]:Length == 10
+					    LOCAL encoding AS Encoding //ASCIIEncoding
+					    // Read actual Data
+					    encoding := SELF:_Encoding //ASCIIEncoding{}
+					    VAR str :=  encoding:GetString( SELF:_RecordBuffer, SELF:_Fields[nArrPos]:OffSet, SELF:_Fields[nArrPos]:Length)
+					    IF ( str == NULL )
+						    str := String.Empty
+					    ENDIF
+					    str := str:Trim()
+					    IF String.IsNullOrEmpty(str)
+						    blockNbr := 0
+					    ELSE
+						    blockNbr := System.Convert.ToInt32(str)
+					    ENDIF
+                    ELSE
+                        blockNbr := BuffToLong(SELF:_RecordBuffer, SELF:_Fields[nArrPos]:OffSet)
+                    ENDIF
 					//
 				ENDIF
 			ENDIF
@@ -1752,7 +1776,11 @@ BEGIN NAMESPACE XSharp.RDD
 				    IF _oMemo != NULL
 					    IF _oMemo:PutValue(nFldPos, oValue)
 						    // Update the Field Info with the new MemoBlock Position
-						    SELF:_convertFieldToData( SELF:_oMemo:LastWrittenBlockNumber, SELF:_RecordBuffer, offSet,  length, DbFieldType.Integer, 0 )
+                            if length == 10
+						        SELF:_convertFieldToData( SELF:_oMemo:LastWrittenBlockNumber, SELF:_RecordBuffer, offSet,  length, DbFieldType.Integer, 0 )
+                            else // 4
+                                LongToBuff((LONG) oValue,SELF:_RecordBuffer, offSet)
+                            endif
 					    ENDIF
 				    ELSE
 					    RETURN SUPER:PutValue(nFldPos, oValue)

@@ -58,7 +58,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
             THROW NotImplementedException{}
 
-
+        internal static method GetIndexExtFromDbfExt(cDbfName as STRING) AS STRING
+            switch System.IO.Path.GetExtension(cDbfName:ToLower())
+            case ".vcx"         // Control Library
+            case ".scx"         // Screen
+            case ".pjx"         // Project
+            case ".mnx"         // Menu
+            case ".frx"         // Report
+                return ""
+            case ".dbc"         // database container
+                return ".dcx"
+            end switch
+            return CDX_EXTENSION
             /// <inheritdoc />
         METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
             LOCAL cTag AS STRING
@@ -168,12 +179,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL cDbf      AS STRING
             cFullName := cBagName
             cDbf      := SELF:_oRDD:_FileName
+            var cExt  := GetIndexExtFromDbfExt(cDBF)
             IF String.IsNullOrEmpty(cFullName)
-                cFullName := Path.ChangeExtension(cDBF, CDX_EXTENSION)
+                cFullName := Path.ChangeExtension(cDBF, cExt)
             ELSEIF String.IsNullOrEmpty(Path.GetExtension(cFullName))
-                cFullName := Path.ChangeExtension(cFullname, CDX_EXTENSION)
+                cFullName := Path.ChangeExtension(cFullname, cExt)
             ELSEIF String.Compare(cDbf, cFullName, StringComparison.OrdinalIgnoreCase) == 0
-                 cFullName := Path.ChangeExtension(cFullname, CDX_EXTENSION)
+                 cFullName := Path.ChangeExtension(cFullname, cExt)
             ENDIF
             cPath := Path.GetDirectoryName(cFullName)
             IF String.IsNullOrEmpty(cPath)
@@ -236,7 +248,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             cFullName := cFileName := info:BagName
             IF String.IsNullOrEmpty(Path.GetExtension(cFullName))
-                cFullName := Path.ChangeExtension(cFullname, CDX_EXTENSION)
+                var cExt  := GetIndexExtFromDbfExt(cFullName)
+                cFullName := Path.ChangeExtension(cFullname, cExt)
             ENDIF
             cPath := Path.GetDirectoryName(cFullName)
             IF String.IsNullOrEmpty(cPath)

@@ -53,7 +53,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF ( SELF:_oDbtMemo != NULL .AND. SELF:_oDBtMemo:_Open)
                     oResult := System.IO.Path.GetExtension(SELF:_oDbtMemo:_FileName)
                 ELSE
-                    oResult := DbtMemo.DefExt
+                    oResult := DBT_MEMOEXT
                 ENDIF
                 IF oNewValue IS STRING
                     DbtMemo.DefExt := (STRING) oNewValue
@@ -99,18 +99,11 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _ReadOnly   AS LOGIC
         PROTECT _oRDD       AS DBF
         PROTECT _blockSize  AS SHORT
-        STATIC PRIVATE _defDbtExt    := DBT_MEMOEXT AS STRING
         PROTECT _lockScheme AS DbfLocking
-        
         PROPERTY Shared AS LOGIC GET _Shared
-        STATIC PROPERTY DefExt AS STRING
-            GET
-                RETURN _defDbtExt    
-            END GET
-            SET
-                _defDbtExt := VALUE
-            END SET
-        END PROPERTY
+        STATIC PROPERTY DefExt as STRING AUTO
+        STATIC CONSTRUCTOR
+            DefExt := DBT_MEMOEXT
         
         VIRTUAL PROPERTY BlockSize 	 AS SHORT
             GET 

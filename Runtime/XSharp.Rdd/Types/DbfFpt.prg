@@ -135,28 +135,47 @@ BEGIN NAMESPACE XSharp.RDD
             
             
     /// <summary>FPT Memo class. Implements the FTP support.</summary>
-    INTERNAL CLASS FptMemo INHERIT DBTMemo 
-        STATIC PRIVATE _defFptExt    := DBT_MEMOEXT AS STRING
-              
+    INTERNAL CLASS FPTMemo INHERIT BaseMemo IMPLEMENTS IMemo
+        INTERNAL _hFile	    AS IntPtr
+        INTERNAL _FileName  AS STRING
+        INTERNAL _Open      AS LOGIC
+        PROTECT _Shared     AS LOGIC
+        PROTECT _ReadOnly   AS LOGIC
+        PROTECT _oRDD       AS DBF
+        PROTECT _blockSize  AS SHORT
+        PROTECT _lockScheme AS DbfLocking
+        PROPERTY Shared AS LOGIC GET _Shared
+        STATIC PROPERTY DefExt as STRING AUTO
         STATIC CONSTRUCTOR
-            _defFptExt := FPT_MEMOEXT
+            DefExt := FPT_MEMOEXT
 
-        NEW STATIC PROPERTY DefExt AS STRING
-            GET
-                RETURN _defFptExt    
-            END GET
-            SET
-                _defFptExt := VALUE
-            END SET
-        END PROPERTY
+        private method GetMemoExtFromDbfExt(cDbfName as STRING) AS STRING
+            switch System.IO.Path.GetExtension(cDbfName:ToLower())
+            case ".vcx"         // Control Library
+                return ".VCT"
+            case ".scx"         // Screen
+                return ".SCT"
+            case ".pjx"         // Project
+                return ".PJT"
+            case ".frx"         // Report
+                return ".FRT"
+            case ".mnx"         // Menu
+                return ".MNT"
+            case ".dbc"         // database container
+                return ".dct"
+            end switch
+            return DefExt
+               
 
         CONSTRUCTOR (oRDD AS DBF)
             SUPER(oRDD)
-            //
+            SELF:_oRdd := oRDD
+            SELF:_hFile := IntPtr.Zero
+            SELF:_Shared := SELF:_oRDD:_Shared
+            SELF:_ReadOnly := SELF:_oRdd:_ReadOnly
+            SELF:_Encoding := SELF:_oRdd:_Encoding
             
             
-            // Called from CreateMemFile : The Header has been filled with 0, so the BlockSize is 0
-            // Called from OpenMemFile : The Header contains the Size of Block to use
         VIRTUAL PROTECTED METHOD _initContext() AS VOID
             SELF:_lockScheme:Initialize( DbfLockingModel.FoxPro )
             IF ( SELF:BlockSize == 0 )
@@ -167,15 +186,39 @@ BEGIN NAMESPACE XSharp.RDD
             
             /// <inheritdoc />
         METHOD Flush() 			AS LOGIC		
-            RETURN SUPER:Flush()
+            LOCAL isOk AS LOGIC
+            isOk := ( SELF:_hFile != F_ERROR )
+            IF isOk
+                isOk := FFlush( SELF:_hFile )
+            ENDIF
+            RETURN isOk
             
             /// <inheritdoc />
         METHOD GetValue(nFldPos AS INT) AS OBJECT
+            LOCAL blockNbr AS LONG
+            LOCAL blockLen := 0 AS LONG
+            LOCAL memoBlock := NULL AS BYTE[]
+            //
+            blockNbr := SELF:_oRDD:_getMemoBlockNumber( nFldPos )
+            IF ( blockNbr > 0 )
+                // Get the raw Length of the Memo
+                blockLen := SELF:_getValueLength( nFldPos )
+                IF blockLen > 0 
+                    memoBlock := BYTE[]{ blockLen }
+                    // Where do we start ?
+                    LOCAL iOffset := blockNbr * SELF:BlockSize AS LONG
+                    //
+                    FSeek3( SELF:_hFile, iOffset, FS_SET )
+                    // Max 512 Blocks
+                    LOCAL isOk AS LOGIC
+                    isOk := ( FRead3( SELF:_hFile, memoBlock, (DWORD)blockLen ) == blockLen )
+                    IF ( !isOk )
+                        memoBlock := NULL
+                    ENDIF
+                ENDIF
+            ENDIF
             // At this level, the return value is the raw Data, in BYTE[]
-            // This will ALSO include the 8 Bytes of FPT
-            // The first 4 Bytes contains the tpye of Memo Data
-            // The next 4 Bytes contains the length of Memo data, including the first 8 bytes            
-            RETURN SUPER:GetValue( nFldPos )
+            RETURN memoBlock
             
             /// <inheritdoc />
         METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
@@ -239,8 +282,8 @@ BEGIN NAMESPACE XSharp.RDD
                 str := STRING{ (CHAR)oValue, 1 }
             ELSEIF ( objTypeCode == TypeCode.String )
                 str := oValue ASTYPE STRING
-			ELSE
-				str := NULL
+	    ELSE
+		str := NULL
             ENDIF
             // Not a Char, Not a String
             IF ( str == NULL )
@@ -275,16 +318,71 @@ BEGIN NAMESPACE XSharp.RDD
             
             /// <inheritdoc />
         VIRTUAL METHOD CloseMemFile( ) AS LOGIC
-            RETURN SUPER:CloseMemFile()
+            LOCAL isOk := FALSE AS LOGIC
+            IF ( SELF:_hFile != F_ERROR )
+                //
+                TRY
+                    isOk := FClose( SELF:_hFile )
+
+                CATCH ex AS Exception
+                    isOk := FALSE
+                    SELF:_oRDD:_dbfError(ex, SubCodes.ERDD_CLOSE_MEMO, GenCode.EG_CLOSE, "DBFDBT.CloseMemFile")
+
+                END TRY
+                SELF:_hFile := F_ERROR
+                SELF:_Open  := FALSE
+            ENDIF
+            RETURN isOk
             
             /// <inheritdoc />
         VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
-            RETURN SUPER:CreateMemFile( info )
+            LOCAL isOk AS LOGIC
+            SELF:_FileName  := info:FileName
+            var cExt        := GetMemoExtFromDbfExt(SELF:_FileName)
+            SELF:_FileName  := System.IO.Path.ChangeExtension( SELF:_FileName, cExt )
+            SELF:_Shared    := info:Shared
+            SELF:_ReadOnly  := info:ReadOnly
+            //
+            SELF:_hFile     := FCreate( SELF:_FileName) 
+            isOk := ( SELF:_hFile != F_ERROR )
+            IF isOk
+                // Per default, Header Block Size if 512
+                LOCAL memoHeader AS BYTE[]
+                LOCAL nextBlock AS LONG
+                //
+                memoHeader := BYTE[]{ DBTMemo.HeaderSize }
+                nextBlock := 1
+                Array.Copy(BitConverter.GetBytes(nextBlock),0, memoHeader, 0, SIZEOF(LONG))
+                //
+                FWrite3( SELF:_hFile, memoHeader, DBTMemo.HeaderSize )
+                //
+                SELF:_initContext()
+            ELSE
+                SELF:_oRDD:_DbfError( ERDD.CREATE_MEMO, XSharp.Gencode.EG_CREATE )
+            ENDIF
+            //
+            RETURN isOk
             
             /// <inheritdoc />
         VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
-            RETURN SUPER:OpenMemFile( info )
-            
+            LOCAL isOk AS LOGIC
+            SELF:_FileName  := info:FileName
+            var cExt        := GetMemoExtFromDbfExt(SELF:_FileName)
+            SELF:_FileName  := System.IO.Path.ChangeExtension( SELF:_FileName, cExt )
+            SELF:_Shared    := info:Shared
+            SELF:_ReadOnly  := info:ReadOnly
+            //
+            SELF:_hFile     := Fopen(SELF:_FileName, info:FileMode)
+            isOk := ( SELF:_hFile != F_ERROR )
+            IF isOk
+                // Per default, Block Size if 512
+                SELF:_initContext()
+            ELSE
+                SELF:_oRDD:_DbfError( ERDD.OPEN_MEMO, XSharp.Gencode.EG_OPEN )
+                isOk := FALSE
+            ENDIF
+            //
+            RETURN isOk
             
         VIRTUAL PROPERTY BlockSize 	 AS SHORT
             GET 
@@ -323,8 +421,43 @@ BEGIN NAMESPACE XSharp.RDD
             
         END PROPERTY
         
-        
-        
+        // Place a lock : <nOffset> indicate where the lock should be; <nLong> indicate the number bytes to lock
+        // If it fails, the operation is tried <nTries> times, waiting 1ms between each operation.
+        // Return the result of the operation
+        PROTECTED METHOD _tryLock( nOffset AS UINT64, nLong AS LONG, nTries AS LONG  ) AS LOGIC
+            LOCAL locked AS LOGIC
+            //
+            REPEAT
+                TRY
+                    locked := FFLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
+                CATCH ex AS Exception
+                    locked := FALSE
+                    SELF:_oRDD:_dbfError(ex, SubCodes.ERDD_INIT_LOCK, GenCode.EG_LOCK_ERROR, "DBFDBT._tryLock")
+                END TRY
+                IF ( !locked )
+                    nTries --
+                    IF ( nTries > 0 )
+                        System.Threading.Thread.Sleep( 1 )
+                    ENDIF
+                ENDIF
+            UNTIL ( locked .OR. (nTries==0) )
+            //
+            RETURN locked
+            
+        PROTECTED METHOD _unlock( nOffset AS UINT64, nLong AS LONG ) AS LOGIC
+            LOCAL unlocked AS LOGIC
+            //
+            TRY
+                unlocked := FFUnLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
+            CATCH ex AS Exception
+                unlocked := FALSE
+                SELF:_oRDD:_dbfError(ex, SubCodes.ERDD_UNLOCKED, GenCode.EG_UNLOCKED, "DBFDBT._unlock")
+
+            END TRY
+            RETURN unlocked
+            
+        VIRTUAL METHOD Zap() AS LOGIC
+            THROW NotImplementedException{}
     END CLASS    
     
     

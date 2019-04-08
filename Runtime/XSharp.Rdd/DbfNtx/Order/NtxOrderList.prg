@@ -156,7 +156,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
                 SELF:_focusNtx := 0
                 SELF:_currentOrder := NULL
-                SELF:_focusNtx := SELF:FindOrder(oi:Order)
+                SELF:_focusNtx := SELF:FindOrder(oi)
                 isOk := FALSE
                 IF (SELF:_focusNtx >= 0)
                     isOk := SELF:_oRdd:GoCold()
@@ -217,30 +217,30 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
                 RETURN isOk
                 
-            INTERNAL METHOD FindOrder(uOrder AS OBJECT ) AS LONG
+            INTERNAL METHOD FindOrder(info AS DbOrderInfo ) AS LONG
                 LOCAL result AS LONG
                 LOCAL num AS LONG
                 //
                 result := -1
-                IF uOrder == NULL
+                IF info == NULL .or. info:Order == null
                     RETURN SELF:_focusNtx
                 ENDIF
                 //
-                BEGIN SWITCH Type.GetTypeCode(uOrder:GetType())
+                BEGIN SWITCH Type.GetTypeCode(info:Order:GetType())
                 CASE TypeCode.String
-                    result := SELF:__GetNamePos((STRING)uOrder)
+                    result := SELF:__GetNamePos((STRING)info:Order)
                 CASE TypeCode.Int16
                 CASE TypeCode.Int32
                 CASE TypeCode.Int64
                 CASE TypeCode.Single
                 CASE TypeCode.Double
-                    num := (LONG)uOrder
+                    num := info:Order
                     IF ((num >= 0) .AND. (num <= SELF:_Orders:Count))
                         result := num
-                ENDIF
-            OTHERWISE
-                result := -1
-            END SWITCH
+                    ENDIF
+                OTHERWISE
+                    result := -1
+                END SWITCH
             RETURN result
             
             

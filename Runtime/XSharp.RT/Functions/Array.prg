@@ -1148,84 +1148,45 @@ FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cb AS Action<T>,iStart AS DWORD,iCou
 
 
 
-/// <summary>
-/// Execute a code block for each element in an Array.
-/// </summary>
-/// <param name="aArray"></param>
-/// <param name="cb"></param>
-/// <returns>
-/// </returns>
-FUNCTION AEval(aArray AS ARRAY,cb AS ICodeblock ) AS USUAL 
-	LOCAL iStart AS USUAL
-	LOCAL iCount AS USUAL
-	iStart := NIL
-	iCount := NIL
-	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF iStart, REF iCount, "AEval")
-	RETURN ArrayHelpers.AEval( aArray, cb, iStart, iCount, FALSE, FALSE )
-
-/// <summary>
-/// Execute a code block for each element in an Array.
-/// </summary>
-/// <param name="aArray"></param>
-/// <param name="cb"></param>
-/// <param name="iStart"></param>
-/// <returns>
-/// </returns>
-FUNCTION AEval(aArray AS ARRAY,cb AS ICodeblock ,iStart AS INT ) AS USUAL 
-	LOCAL uCount AS USUAL
-	LOCAL uStart AS USUAL
-	uCount := NIL
-	uStart  := iStart
+/// <inheritdoc cref='M:XSharp.RT.Functions.AEval(XSharp.__Array,XSharp.ICodeblock,XSharp.__Usual,XSharp.__Usual)'/>
+FUNCTION AEval(aArray AS ARRAY,cb AS ICodeblock ) AS ARRAY 
+	LOCAL uCount    := NIL AS USUAL
+	LOCAL uStart	:= NIL AS USUAL
 	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEval")
 	RETURN ArrayHelpers.AEval( aArray, cb, uStart, uCount, FALSE, FALSE )
 
+/// <inheritdoc cref='M:XSharp.RT.Functions.AEval(XSharp.__Array,XSharp.ICodeblock,XSharp.__Usual,XSharp.__Usual)'/>
+FUNCTION AEval(aArray AS ARRAY,cb AS ICodeblock ,uStart AS USUAL ) AS ARRAY 
+	LOCAL uCount    := NIL AS USUAL
+	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEval")
+	RETURN ArrayHelpers.AEval( aArray, cb, uStart, uCount, FALSE, FALSE )
+
+
 /// <summary>
 /// Execute a code block for each element in an Array.
 /// </summary>
 /// <param name="aArray"></param>
 /// <param name="cb"></param>
-/// <param name="iStart"></param>
-/// <param name="iCount"></param>
+/// <param name="uStart"></param>
+/// <param name="uCount"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEval(aArray AS ARRAY,cb AS ICodeblock ,iStart AS INT ,iCount AS INT) AS USUAL 
-	LOCAL uCount AS USUAL
-	LOCAL uStart	 AS USUAL
-	uCount := iCount
-	uStart  := iStart
+FUNCTION AEval(aArray AS ARRAY,cb AS ICodeblock ,uStart AS USUAL ,uCount AS USUAL) AS ARRAY 
 	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEval")
 	RETURN ArrayHelpers.AEval( aArray, cb, uStart, uCount , FALSE, FALSE )
 
 
-/// <summary>
-/// Execute a code block for each element in an Array and assign the return value to each element in the Array.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="cb"></param>
-/// <returns>
-/// </returns>
+/// <inheritdoc cref='M:XSharp.RT.Functions.AEvalA(XSharp.__Array,XSharp.ICodeblock,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeblock) AS ARRAY
-	LOCAL uCount AS USUAL
-	LOCAL uStart	 AS USUAL
-	uCount := NIL
-	uStart  := NIL
+	LOCAL uCount    := NIL AS USUAL
+	LOCAL uStart	:= NIL AS USUAL
 	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEvalA")
 	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , TRUE, FALSE )
 	
 
-/// <summary>
-/// Execute a code block for each element in an Array and assign the return value to each element in the Array.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="cb"></param>
-/// <param name="iStart"></param>
-/// <returns>
-/// </returns>
-FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeblock, iStart AS INT ) AS ARRAY
-	LOCAL uCount AS USUAL
-	LOCAL uStart	 AS USUAL
-	uCount := NIL
-	uStart  := iStart
+/// <inheritdoc cref='M:XSharp.RT.Functions.AEvalA(XSharp.__Array,XSharp.ICodeblock,XSharp.__Usual,XSharp.__Usual)'/>
+FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeblock, uStart AS USUAL ) AS ARRAY
+	LOCAL uCount    := NIL AS USUAL
 	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEvalA")
 	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , TRUE, FALSE )
 	
@@ -1238,11 +1199,7 @@ FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeblock, iStart AS INT ) AS ARRAY
 /// <param name="iCount"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeblock, iStart  AS INT ,iCount AS INT) AS ARRAY
-	LOCAL uCount AS USUAL
-	LOCAL uStart	 AS USUAL
-	uCount := iCount
-	uStart  := iStart
+FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeblock, uStart  AS USUAL ,uCount AS USUAL) AS ARRAY
 	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEvalA")
 	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , TRUE, FALSE )
 
@@ -1290,57 +1247,34 @@ FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cb AS @@Func<T,T>,iStart AS DWORD,i
 	RETURN aArray
 
 	
+
+
 /// <summary>
 /// Execute a code block for each element in an Array and assign the return value to each element in the Array.
 /// </summary>
 /// <param name="aArray"></param>
 /// <param name="cb"></param>
-/// <param name="iStart"></param>
-/// <param name="iCount"></param>
+/// <param name="uStart"></param>
+/// <param name="uCount"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEvalOld(aArray AS ARRAY ,cb AS ICodeblock, iStart  AS INT ,iCount AS INT) AS ARRAY
-	LOCAL uCount	AS USUAL
-	LOCAL uStart	 AS USUAL
-	uCount := iCount
-	uStart  := iStart
+FUNCTION AEvalOld(aArray AS ARRAY ,cb AS ICodeblock,uStart  AS USUAL ,uCount AS USUAL) AS ARRAY
 	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEvalOld")
 	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , FALSE, TRUE)
 
 
-/// <summary>
-/// Execute a code block for each element in an Array and assign the return value to each element in the Array.
-/// </summary>
-/// <param name="aArray"></param>
-/// <param name="cb"></param>
-/// <param name="iStart"></param>
-/// <param name="iCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION AEvalOld(aArray AS ARRAY ,cb AS ICodeblock, iStart AS INT ) AS ARRAY
-	LOCAL uCount	AS USUAL
-	LOCAL uStart	 AS USUAL
-	uCount := NIL
-	uStart  := iStart
-	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEvalOld")
-	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , FALSE, TRUE) 
+/// <inheritdoc cref='M:XSharp.RT.Functions.AEvalOld(XSharp.__Array,XSharp.ICodeblock,XSharp.__Usual,XSharp.__Usual)'/>
+FUNCTION AEvalOld(aArray AS ARRAY ,cb AS ICodeblock,uStart  AS USUAL ) AS ARRAY
+	LOCAL uCount	 := NIL AS USUAL
+    ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEvalOld")
+	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , FALSE, TRUE)
 
-
-/// <summary>
-/// Execute a code block for each element in an Array and assign the return value to each element in the Array.
-/// </summary>
-/// <param name="aArray"></param>
-/// <param name="cb"></param>
-/// <param name="iStart"></param>
-/// <param name="iCount"></param>
-/// <returns>
-/// </returns>
+/// <inheritdoc cref='M:XSharp.RT.Functions.AEvalOld(XSharp.__Array,XSharp.ICodeblock,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AEvalOld(aArray AS ARRAY ,cb AS ICodeblock) AS ARRAY
-	LOCAL uCount	AS USUAL
-	LOCAL uStart	 AS USUAL
-	uCount := NIL
-	uStart := NIL
+	LOCAL uStart	 := NIL AS USUAL
+	LOCAL uCount	 := NIL AS USUAL
 	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEvalOld")
 	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , FALSE, TRUE)
+
 
 

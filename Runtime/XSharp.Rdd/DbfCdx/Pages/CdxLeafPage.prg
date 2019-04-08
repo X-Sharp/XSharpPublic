@@ -126,6 +126,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 _bTrail := 32
             ENDIF
 
+        protected virtual method _setTag(newTag as CdxTag) as void
+            _tag := newTag
+            if newTag != null
+                _bTrail := (BYTE) (IIF(_tag:KeyType == __UsualType.String, 32, 0) )
+            endif
+
         INTERNAL VIRTUAL METHOD Initialize(keyLength AS WORD) AS VOID
             SELF:PageType       := CdxPageType.Leaf
             SELF:_ClearRecordsAndKeys()
@@ -426,8 +432,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF SELF:NumKeys = 0
                     RETURN CdxAction.Delete(SELF)
                 ENDIF
-                result :=  SELF:Compress()
-                RETURN result
+                local result2 :=  SELF:Compress() as CdxAction
+                if result2.Type == CdxActionType.Ok
+                    RETURN result
+                else
+                    return result2
+                endif
             ENDIF
             RETURN CdxAction.OutofBounds(SELF)
 

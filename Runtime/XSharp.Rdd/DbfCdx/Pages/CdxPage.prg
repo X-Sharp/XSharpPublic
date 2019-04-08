@@ -30,9 +30,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL PROPERTY Dumped AS LOGIC GET _dumped SET _dumped := VALUE
         INTERNAL PROPERTY IsHot  AS LOGIC GET _hot SET _hot := VALUE
-        INTERNAL PROPERTY Tag    AS CDXTag GET _tag SET _tag := VALUE
+        INTERNAL PROPERTY Tag    AS CDXTag GET _tag SET _setTag(VALUE)
         INTERNAL PROPERTY Buffer AS BYTE[] GET _buffer
         INTERNAL PROPERTY PageNo AS Int32 GET _nPage SET _nPage := VALUE
+
+
+        protected virtual method _setTag(newTag as CdxTag) as void
+            _tag := newTag
 
         PROTECTED INTERNAL CONSTRUCTOR( bag AS CdxOrderBag )
 			SELF:_bag    := bag

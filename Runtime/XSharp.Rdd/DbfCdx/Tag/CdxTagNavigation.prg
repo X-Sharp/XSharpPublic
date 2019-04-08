@@ -568,6 +568,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                 ENDDO
                 foundPos := minPos
+                node:Pos := foundPos
             CASE SearchMode.Left
             CASE SearchMode.LeftFound
                 minPos := 0

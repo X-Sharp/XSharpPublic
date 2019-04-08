@@ -487,7 +487,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 // new record or changed record, so insert the new key in the tree
                 SELF:ClearStack()
                 IF SELF:Unique
-                    // Todo
                     IF SELF:_locate(SELF:_newValue:Key, SELF:_keySize, SearchMode.Left, SELF:_rootPage) == 0
                         VAR page := SELF:Stack:Top:Page
                         VAR pos  := SELF:Stack:Top:Pos+1

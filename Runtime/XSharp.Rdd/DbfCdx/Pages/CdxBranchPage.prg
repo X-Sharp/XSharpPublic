@@ -162,6 +162,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // node contains recno & keydata
             // node:Page has value for ChildPageNo
             SELF:_setNode(nPos, node)
+            SELF:Write()
             RETURN CdxAction.Ok
 
          INTERNAL METHOD Add(recno AS LONG, childPage AS LONG, key AS BYTE[]) AS CdxAction
@@ -176,6 +177,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:SetRecno(nPos, recno)
             SELF:SetChildPage(nPos, childPage)
             SELF:SetKey(nPos, key)
+            SELF:Write()
             RETURN CdxAction.Ok
             
         INTERNAL METHOD Insert(nPos AS LONG, node AS CdxPageNode) AS CdxAction
@@ -203,7 +205,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             // and insert at the right spot
             _setNode(nPos, node)
-            
+            SELF:Write()
             RETURN CdxAction.Ok
             
         INTERNAL METHOD Delete(nPos AS LONG) AS CdxAction
@@ -233,6 +235,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSE
                 result := CdxAction.OK
             ENDIF
+            SELF:Write()
             RETURN result
 
 
@@ -242,7 +245,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF nPos < 0 .OR. nPos >= nMax
                 RETURN CdxAction.OutOfBounds(SELF)
             ENDIF
-            RETURN _setNode(nPos, node)
+            var result := _setNode(nPos, node)
+            SELF:Write()
+            RETURN result
+
             
         // Helper methods, these do not verify the bounds
         PRIVATE METHOD _copyNode(nSrc AS LONG, nTrg AS LONG) AS CdxAction

@@ -254,6 +254,7 @@ CLASS DbOrderInfo
 
     METHOD Clone() as DbOrderInfo
         return (DbOrderInfo) SELF:MemberwiseClone()
+    PROPERTY IsEmpty as LOGIC GET Order == null .and. String.IsNullOrEmpty(BagName)
 END CLASS
 
 /// <summary>Helper class to store a list of relational information.</summary> 

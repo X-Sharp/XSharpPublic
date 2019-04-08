@@ -79,8 +79,12 @@ BEGIN NAMESPACE XSharp.RDD
                 result := 0
                 workOrder := NULL
                 orderPos := SELF:_indexList:FindOrder(info)
-                IF orderPos <= 0 
-                    workOrder := SELF:CurrentOrder
+                IF orderPos <= 0
+                    IF info:IsEmpty
+                        workOrder := SELF:CurrentOrder
+                    ELSE
+                        workOrder := NULL
+                    ENDIF
                 ELSE
                     workOrder := SELF:_indexList[orderPos - 1]
                 ENDIF
@@ -131,7 +135,7 @@ BEGIN NAMESPACE XSharp.RDD
             CASE DBOI_BAGNAME
                 //CASE DBOI_INDEXNAME // alias
                 IF workOrder != NULL
-                    info:Result := workOrder:FileName
+                    info:Result := System.IO.Path.GetFileName(workOrder:FullPath)
                 ELSE
                     info:Result := ""
                 ENDIF

@@ -1305,21 +1305,7 @@ BEGIN NAMESPACE XSharp.RDD
 					// Default value is 0
 					r8 := 0.0
 					IF (! String.IsNullOrWhiteSpace(str))
-						//
-
-						IF ( ( fieldType == DbFieldType.Number ) .AND. (nDec == 0 ) ) .OR. ( fieldType == DbFieldType.Integer )
-                            LOCAL temp AS LONG
-                            IF Int32.TryParse(str, OUT temp)
-                                r8 := temp
-                            ELSE
-							    r8 := 0
-                            ENDIF
-						ELSE
-                            _numformat:NumberDecimalDigits := nDec
-                            IF ! System.Double.TryParse(str, NumberStyles.AllowDecimalPoint, _numformat, OUT r8)
-							    r8 := 0
-                            ENDIF
-						ENDIF
+                        r8 := Convert.ToDouble(_Val(str))
 					ENDIF
 					data := DbFloat{r8, length, nDec} 
 				CASE DbFieldType.Character

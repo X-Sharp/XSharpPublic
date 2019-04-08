@@ -10,38 +10,68 @@ USING XSharp.RDD.Support
 USING XSharp.RDD.CDX
 
 
+INTERNAL FUNCTION ShortToBuff(siValue AS SHORT, buffer AS BYTE[], nOffSet AS LONG) AS VOID
+    LOCAL nValue := WordStruct{} AS WordStruct
+    nValue:shortValue := siValue
+    buffer[nOffSet+0]   := nValue:b1
+    buffer[nOffSet+1]   := nValue:b2
+    
+INTERNAL FUNCTION BuffToShort(buffer AS BYTE[], nOffSet AS LONG) AS SHORT
+    LOCAL nValue := WordStruct{} AS WordStruct
+    nValue:b1 := buffer[nOffSet+0]   
+    nValue:b2 := buffer[nOffSet+1]
+    RETURN nValue:shortValue
+    
 INTERNAL FUNCTION ShortToFox(siValue AS SHORT, buffer AS BYTE[], nOffSet AS LONG) AS VOID
-        LOCAL nValue := WordStruct{} AS WordStruct
-        nValue:shortValue := siValue
-	    buffer[nOffSet+1]   := nValue:b1
-        buffer[nOffSet+0]   := nValue:b2
-
+    LOCAL nValue := WordStruct{} AS WordStruct
+    nValue:shortValue := siValue
+    buffer[nOffSet+1]   := nValue:b1
+    buffer[nOffSet+0]   := nValue:b2
+    
 INTERNAL FUNCTION FoxToShort(buffer AS BYTE[], nOffSet AS LONG) AS SHORT
-        LOCAL nValue := WordStruct{} AS WordStruct
-	    nValue:b1 := buffer[nOffSet+1]   
-        nValue:b2 := buffer[nOffSet+0]
-        RETURN nValue:shortValue
-             
-
+    LOCAL nValue := WordStruct{} AS WordStruct
+    nValue:b1 := buffer[nOffSet+1]   
+    nValue:b2 := buffer[nOffSet+0]
+    RETURN nValue:shortValue
+    
+    
+INTERNAL FUNCTION BuffToLong(buffer AS BYTE[], nOffSet AS LONG) AS LONG
+    LOCAL nValue := LongStruct{} AS LongStruct
+    nValue:b1 := buffer[nOffSet+0]
+    nValue:b2 := buffer[nOffSet+1]
+    nValue:b3 := buffer[nOffSet+2]
+    nValue:b4 := buffer[nOffSet+3]
+    RETURN nValue:longValue
+    
+INTERNAL FUNCTION LongToBuff(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) AS LONG
+    LOCAL nValue := LongStruct{} AS LongStruct
+    nValue:LongValue := liValue
+    buffer[nOffSet+0] := nValue:b1
+    buffer[nOffSet+1] := nValue:b2
+    buffer[nOffSet+2] := nValue:b3
+    buffer[nOffSet+3] := nValue:b4
+    RETURN liValue
+    
+    
 INTERNAL FUNCTION FoxToLong(buffer AS BYTE[], nOffSet AS LONG) AS LONG
-        LOCAL nValue := LongStruct{} AS LongStruct
-	    nValue:b4 := buffer[nOffSet+0]
-        nValue:b3 := buffer[nOffSet+1]
-        nValue:b2 := buffer[nOffSet+2]
-        nValue:b1 := buffer[nOffSet+3]
-        RETURN nValue:longValue
-
+    LOCAL nValue := LongStruct{} AS LongStruct
+    nValue:b4 := buffer[nOffSet+0]
+    nValue:b3 := buffer[nOffSet+1]
+    nValue:b2 := buffer[nOffSet+2]
+    nValue:b1 := buffer[nOffSet+3]
+    RETURN nValue:longValue
+    
 INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) AS LONG
-        LOCAL nValue := LongStruct{} AS LongStruct
-        nValue:LongValue := liValue
-        buffer[nOffSet+0] := nValue:b4
-        buffer[nOffSet+1] := nValue:b3
-        buffer[nOffSet+2] := nValue:b2
-        buffer[nOffSet+3] := nValue:b1
-        RETURN liValue
-
-
-BEGIN NAMESPACE XSharp.RDD
+    LOCAL nValue := LongStruct{} AS LongStruct
+    nValue:LongValue := liValue
+    buffer[nOffSet+0] := nValue:b4
+    buffer[nOffSet+1] := nValue:b3
+    buffer[nOffSet+2] := nValue:b2
+    buffer[nOffSet+3] := nValue:b1
+    RETURN liValue
+    
+    
+    BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFFPT RDD. For DBF/FPT. No index support at this level</summary>
     CLASS DBFFPT INHERIT DBF 
         PRIVATE _oFptMemo AS FptMemo
@@ -50,10 +80,10 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_oMemo := _oFptMemo := FptMemo{SELF}
             /// <inheritdoc />	
         VIRTUAL PROPERTY SysName AS STRING GET "DBFFPT"
-
-
-
-
+        
+        
+        
+        
         METHOD GetValue(nFldPos AS LONG) AS OBJECT
             LOCAL rawData AS BYTE[]
             LOCAL buffer AS BYTE[]
@@ -82,46 +112,46 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDIF
             RETURN SUPER:GetValue(nFldPos)
-
+            
             // Indicate if a Field is a Memo; Called by GetValue() in Parent Class
             // At DbfFpt Level, TRUE for DbFieldType.Memo, DbFieldType.Picture, DbFieldType.Object
         INTERNAL VIRTUAL METHOD _isMemoFieldType( fieldType AS DbFieldType ) AS LOGIC
             RETURN ( ( fieldType == DbFieldType.Memo ) .OR. ( fieldType == DbFieldType.Picture ) .OR. ( fieldType == DbFieldType.Ole ) )
-        /// <inheritdoc />
+            /// <inheritdoc />
         VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
             LOCAL oResult AS OBJECT
             SWITCH nOrdinal
             CASE DbInfo.DBI_MEMOHANDLE
-                IF ( SELF:_oFptMemo != NULL .AND. SELF:_oFptMemo:_Open)
-                    oResult := SELF:_oFptMemo:_hFile
-                ELSE
-                    oResult := IntPtr.Zero
-                ENDIF
+                    IF ( SELF:_oFptMemo != NULL .AND. SELF:_oFptMemo:_Open)
+                        oResult := SELF:_oFptMemo:_hFile
+                    ELSE
+                        oResult := IntPtr.Zero
+                    ENDIF
                     
             CASE DbInfo.DBI_MEMOEXT
-                IF ( SELF:_oFptMemo != NULL .AND. SELF:_oFptMemo:_Open)
-                    oResult := System.IO.Path.GetExtension(SELF:_oFptMemo:_FileName)
-                ELSE
-                    oResult := FptMemo.DefExt
-                ENDIF
-                IF oNewValue IS STRING
-                    FptMemo.DefExt := (STRING) oNewValue
+                    IF ( SELF:_oFptMemo != NULL .AND. SELF:_oFptMemo:_Open)
+                        oResult := System.IO.Path.GetExtension(SELF:_oFptMemo:_FileName)
+                    ELSE
+                        oResult := FptMemo.DefExt
+                    ENDIF
+                    IF oNewValue IS STRING
+                        FptMemo.DefExt := (STRING) oNewValue
                 ENDIF
             CASE DbInfo.DBI_MEMOBLOCKSIZE
                 oResult := SELF:_oFptMemo:BlockSize
             CASE DBInfo.DBI_MEMOFIELD
-                oResult := ""
-                IF oNewValue != NULL
-                    TRY
-                       LOCAL fldPos AS LONG
-                       fldPos := Convert.ToInt32(oNewValue)
-                       oResult := SELF:GetValue(fldPos)
-                    CATCH ex AS exception
-                        oResult := ""   
-                        SELF:_dbfError(ex, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, "DBFDBT.Info")
-                    END TRY
+                    oResult := ""
+                    IF oNewValue != NULL
+                        TRY
+                            LOCAL fldPos AS LONG
+                            fldPos := Convert.ToInt32(oNewValue)
+                            oResult := SELF:GetValue(fldPos)
+                        CATCH ex AS exception
+                            oResult := ""   
+                            SELF:_dbfError(ex, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, "DBFDBT.Info")
+                        END TRY
                 ENDIF
-	    CASE DbInfo.DBI_MEMOTYPE
+            CASE DbInfo.DBI_MEMOTYPE
                 oResult := DB_MEMO_FPT
             CASE DbInfo.DBI_MEMOVERSION
                 oResult := DB_MEMOVER_STD
@@ -148,7 +178,7 @@ BEGIN NAMESPACE XSharp.RDD
         STATIC PROPERTY DefExt as STRING AUTO
         STATIC CONSTRUCTOR
             DefExt := FPT_MEMOEXT
-
+            
         private method GetMemoExtFromDbfExt(cDbfName as STRING) AS STRING
             switch System.IO.Path.GetExtension(cDbfName:ToLower())
             case ".vcx"         // Control Library
@@ -165,8 +195,8 @@ BEGIN NAMESPACE XSharp.RDD
                 return ".dct"
             end switch
             return DefExt
-               
-
+            
+            
         CONSTRUCTOR (oRDD AS DBF)
             SUPER(oRDD)
             SELF:_oRdd := oRDD
@@ -254,7 +284,7 @@ BEGIN NAMESPACE XSharp.RDD
                     FSeek3( SELF:_hFile, iOffset, FS_SET )
                     // 
                     FRead3( SELF:_hFile, blockInfo, (DWORD) blockInfo:Length )
-                    blockLen     := FoxToLong(blockInfo,4)
+                    blockLen     := FoxToLong(blockInfo,4) +8
                     // The raw length include the 8 Bytes included in the Memo Block
                 ENDIF
             ENDIF
@@ -282,8 +312,8 @@ BEGIN NAMESPACE XSharp.RDD
                 str := STRING{ (CHAR)oValue, 1 }
             ELSEIF ( objTypeCode == TypeCode.String )
                 str := oValue ASTYPE STRING
-	    ELSE
-		str := NULL
+            ELSE
+                str := NULL
             ENDIF
             // Not a Char, Not a String
             IF ( str == NULL )
@@ -323,11 +353,11 @@ BEGIN NAMESPACE XSharp.RDD
                 //
                 TRY
                     isOk := FClose( SELF:_hFile )
-
+                    
                 CATCH ex AS Exception
                     isOk := FALSE
                     SELF:_oRDD:_dbfError(ex, SubCodes.ERDD_CLOSE_MEMO, GenCode.EG_CLOSE, "DBFDBT.CloseMemFile")
-
+                    
                 END TRY
                 SELF:_hFile := F_ERROR
                 SELF:_Open  := FALSE
@@ -452,7 +482,7 @@ BEGIN NAMESPACE XSharp.RDD
             CATCH ex AS Exception
                 unlocked := FALSE
                 SELF:_oRDD:_dbfError(ex, SubCodes.ERDD_UNLOCKED, GenCode.EG_UNLOCKED, "DBFDBT._unlock")
-
+                
             END TRY
             RETURN unlocked
             
@@ -461,4 +491,4 @@ BEGIN NAMESPACE XSharp.RDD
     END CLASS    
     
     
-END NAMESPACE
+    END NAMESPACE

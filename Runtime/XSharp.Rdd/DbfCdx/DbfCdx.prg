@@ -367,14 +367,17 @@ BEGIN NAMESPACE XSharp.RDD
             IF lOk
                 // Open strucural index
                 IF RuntimeState.AutoOpen
-                    VAR cCdxFileName := System.IO.Path.ChangeExtension(info:FileName, ".CDX")
-                    IF System.IO.File.Exists(cCdxFileName)
-                        LOCAL orderinfo := DbOrderInfo{} AS DbOrderInfo
-                        orderInfo:BagName := cCdxFileName
-                        SELF:_indexList:Add(orderInfo, TRUE)
-                        SELF:Header:HasTags |= DbfTableFlags.HasStructuralCDX
-                    ELSE
-                        SELF:Header:HasTags &= _NOT(DbfTableFlags.HasStructuralCDX)
+                   var cExt  := CdxOrderBag.GetIndexExtFromDbfExt(info:FileName)
+                   if ! String.IsNullOrEmpty(cExt)
+                        VAR cCdxFileName := System.IO.Path.ChangeExtension(info:FileName, cExt)
+                        IF System.IO.File.Exists(cCdxFileName)
+                            LOCAL orderinfo := DbOrderInfo{} AS DbOrderInfo
+                            orderInfo:BagName := cCdxFileName
+                            SELF:_indexList:Add(orderInfo, TRUE)
+                            SELF:Header:HasTags |= DbfTableFlags.HasStructuralCDX
+                        ELSE
+                            SELF:Header:HasTags &= _NOT(DbfTableFlags.HasStructuralCDX)
+                        ENDIF
                     ENDIF
                 ENDIF
             ENDIF

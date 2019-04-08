@@ -8,7 +8,6 @@
 USING System
 USING System.Collections.Generic
 USING System.Text
-USING XSharp
 USING XSharp.RDD
 USING XSharp.RDD.Support
 USING System.IO

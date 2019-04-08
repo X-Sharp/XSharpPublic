@@ -1188,48 +1188,57 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var level = 0;
                     var done = false;
                     var consumed = 0;
-                    while (iSource < tokens.Count && !done)
+                    var iend = -1;
+                    if ( matchAmpersandToken(tokens, iStart, ref iend))
                     {
-                        switch (tokens[iSource].Type)
-                        {
-                            case XSharpLexer.LPAREN:
-                            case XSharpLexer.LBRKT:
-                            case XSharpLexer.LCURLY:
-                                level++;
-                                break;
-                            case XSharpLexer.RPAREN:
-                            case XSharpLexer.RBRKT:
-                            case XSharpLexer.RCURLY:
-                                level--;
-                                break;
-                            default:
-                                //
-                                // we consume one token between optional params or curly braces
-                                // but we also allow ID DOT ID (OUTPUT.TXT)
-                                // So second ID is only accepted after DOT
-                                if (level == 0 && consumed > 0)
-                                {
-                                    var type = tokens[iSource].Type;
-
-                                    if (type == XSharpLexer.ID || XSharpLexer.IsKeyword(type))
-                                    {
-                                        done = lastType != XSharpLexer.DOT;
-                                    }
-                                    else if (type != XSharpLexer.DOT)
-                                    {
-                                        done = true;
-                                    }
-                                }
-                                break;
-                        }
-                        lastType = tokens[iSource].Type;
-                        consumed += 1;
-                        if (!done )
-                            iSource++;
+                        matchInfo[mToken.Index].SetPos(iStart, iend);
+                        iSource = iend + 1;
                     }
-                    // we have either reached the end of the line or aborted because of a token that
-                    // is not part of the match, so therefore iSource points to the token AFTER the last match
-                    matchInfo[mToken.Index].SetPos(iStart, iSource-1);
+                    else
+                    {
+                        while (iSource < tokens.Count && !done)
+                        {
+                            switch (tokens[iSource].Type)
+                            {
+                                case XSharpLexer.LPAREN:
+                                case XSharpLexer.LBRKT:
+                                case XSharpLexer.LCURLY:
+                                    level++;
+                                    break;
+                                case XSharpLexer.RPAREN:
+                                case XSharpLexer.RBRKT:
+                                case XSharpLexer.RCURLY:
+                                    level--;
+                                    break;
+                                default:
+                                    //
+                                    // we consume one token between optional params or curly braces
+                                    // but we also allow ID DOT ID (OUTPUT.TXT)
+                                    // So second ID is only accepted after DOT
+                                    if (level == 0 && consumed > 0)
+                                    {
+                                        var type = tokens[iSource].Type;
+
+                                        if (type == XSharpLexer.ID || XSharpLexer.IsKeyword(type))
+                                        {
+                                            done = lastType != XSharpLexer.DOT;
+                                        }
+                                        else if (type != XSharpLexer.DOT)
+                                        {
+                                            done = true;
+                                        }
+                                    }
+                                    break;
+                            }
+                            lastType = tokens[iSource].Type;
+                            consumed += 1;
+                            if (!done)
+                                iSource++;
+                        }
+                        // we have either reached the end of the line or aborted because of a token that
+                        // is not part of the match, so therefore iSource points to the token AFTER the last match
+                        matchInfo[mToken.Index].SetPos(iStart, iSource - 1);
+                    }
                     iRule += 1;
                     found = true;
                     break;
@@ -1595,6 +1604,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
+
+        bool matchAmpersandToken(IList<XSharpToken> tokens, int start, ref int end)
+        {
+            end= -1;
+            if (tokens.Count >= start+1 && tokens[start].Type == XSharpLexer.AMP )
+            {
+                var iend = matchExpression(start + 1, tokens, null);
+                if (iend != start+1)
+                {
+                    end = iend-1;
+                    return true;
+                }
+            
+            }
+            return false;
+        }
         void stringifySingleResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange range, IList<XSharpToken> result)
         {
             XSharpToken newToken;
@@ -1702,25 +1727,39 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         else
                         {
-                            bool addDelimiters = true;
-                            if (tokens[start].Type == XSharpLexer.LPAREN &&
-                                tokens[end].Type == XSharpLexer.RPAREN)
-                                addDelimiters = false;
-                            var sb = new System.Text.StringBuilder();
-                            if (addDelimiters)
-                                sb.Append('"');
-                            for (int i = start; i <= end; i++)
+                            if (tokens[start].Type == XSharpLexer.AMP )
                             {
-                                var token = tokens[i];
-                                sb.Append(token.Text);
+                                // do not include the &
+                                for (int i = start+1; i <= end; i++)
+                                {
+                                    result.Add(tokens[i]);
+                                }
                             }
-                            if (addDelimiters)
-                                sb.Append('"');
-                            newToken = new XSharpToken(tokens[start], XSharpLexer.STRING_CONST, sb.ToString())
+                            else if (tokens[start].Type == XSharpLexer.LPAREN &&
+                                tokens[end].Type == XSharpLexer.RPAREN)
                             {
-                                Channel = XSharpLexer.DefaultTokenChannel
-                            };
-                            result.Add(newToken);
+                                // do not include ( and )
+                                for (int i = start + 1; i < end; i++)
+                                {
+                                    result.Add(tokens[i]);
+                                }
+                            }
+                            else
+                            {
+                                var sb = new System.Text.StringBuilder();
+                                sb.Append('"');
+                                for (int i = start; i <= end; i++)
+                                {
+                                    var token = tokens[i];
+                                    sb.Append(token.Text);
+                                }
+                                sb.Append('"');
+                                newToken = new XSharpToken(tokens[start], XSharpLexer.STRING_CONST, sb.ToString())
+                                {
+                                    Channel = XSharpLexer.DefaultTokenChannel
+                                };
+                                result.Add(newToken);
+                            }
                         }
                     }
                     break;

@@ -814,26 +814,11 @@ FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 /// <summary>
 /// </summary>
 /// <param name="c"></param>
-/// <param name="dwRadix"></param>
 /// <returns>
 /// </returns>
-FUNCTION StrToFloat(c AS STRING,dwRadix AS DWORD) AS FLOAT
-	VAR wSep   := SetDecimalSep()
-	LOCAL result AS FLOAT
-	IF wSep != 46 // .
-		c := c:Replace((CHAR) wSep, c'.')
-	ENDIF
-	TRY
-		LOCAL r8 AS System.Double
-		IF System.Double.TryParse(c, OUT r8)
-			result := r8
-		ELSE
-			result := 0
-		ENDIF
-	CATCH
-		result := 0
-	END TRY
-RETURN result
+FUNCTION StrToFloat(c AS STRING) AS FLOAT
+    return (FLOAT) Val(c)
+
 
 
 

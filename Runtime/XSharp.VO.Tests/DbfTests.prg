@@ -1422,7 +1422,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			NEXT    
 			DBCreateIndex( cDbf, "age" )
 			
-			Assert.True( IndexKey() == "age")
+			Assert.Equal( "age" , (STRING) IndexKey() )
 			Assert.True( IndexOrd() == 1 )
 			Assert.True( IndexCount() == 1 )
 			Assert.True( Upper(IndexExt()) == ".NTX")

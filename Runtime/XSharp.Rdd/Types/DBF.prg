@@ -1000,12 +1000,12 @@ BEGIN NAMESPACE XSharp.RDD
 				//SELF:_Fields := DbfRddFieldInfo[]{ fieldCount }
                 // count # of fields. When we see a 0x0D then the header has blank space for non fields
                 fieldCount := 0
-                for var i := 0 to fieldDefSize step DbfField.Size
-                    if fieldsBuffer[i] == 0x0D // last field
-                        exit
-                    endif
+                FOR VAR i := 0 UPTO fieldDefSize - 1 STEP DbfField.Size
+                    IF fieldsBuffer[i] == 0x0D // last field
+                        EXIT
+                    ENDIF
                     fieldCount++
-                next
+                NEXT
 
 				SELF:SetFieldExtent( fieldCount )
 				LOCAL nStart AS INT
@@ -1618,7 +1618,7 @@ BEGIN NAMESPACE XSharp.RDD
 					IF __ARRAYBASE__ == 0
 						nArrPos -= 1
 					ENDIF
-                    if SELF:_Fields[nArrPos]:Length == 10
+                    IF SELF:_Fields[nArrPos]:Length == 10
 					    LOCAL encoding AS Encoding //ASCIIEncoding
 					    // Read actual Data
 					    encoding := SELF:_Encoding //ASCIIEncoding{}
@@ -1776,11 +1776,11 @@ BEGIN NAMESPACE XSharp.RDD
 				    IF _oMemo != NULL
 					    IF _oMemo:PutValue(nFldPos, oValue)
 						    // Update the Field Info with the new MemoBlock Position
-                            if length == 10
+                            IF length == 10
 						        SELF:_convertFieldToData( SELF:_oMemo:LastWrittenBlockNumber, SELF:_RecordBuffer, offSet,  length, DbFieldType.Integer, 0 )
-                            else // 4
+                            ELSE // 4
                                 LongToBuff((LONG) oValue,SELF:_RecordBuffer, offSet)
-                            endif
+                            ENDIF
 					    ENDIF
 				    ELSE
 					    RETURN SUPER:PutValue(nFldPos, oValue)

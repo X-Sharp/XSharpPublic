@@ -19,25 +19,6 @@ FUNCTION Between(val AS USUAL,min AS USUAL,max AS USUAL) AS LOGIC
 	RETURN val >=min .AND.  val<=max
 
 
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /// <summary>
@@ -204,3 +185,48 @@ FUNCTION SysObject(o AS USUAL) AS OBJECT
 FUNCTION Tone(dwFreq AS DWORD,dwDur AS DWORD) AS USUAL
 	Console.Beep( (INT)dwFreq, (INT)dwDur * 1000 / 18 )
 RETURN	 NIL   
+
+
+/// <summary>
+/// Changes and/or reads a system setting. 
+/// </summary>
+/// <param name="nDefine">Is a positive integer identifying a system setting or system variable.
+/// This should match the values from the Set enumerated type.</param>
+/// <param name="newValue">The optional expression can specify a new value for a system setting.
+/// The data type is dependent on the system setting designated by <paramref name="nDefine" />.</param>
+/// <returns>When Set() is called without the argument <paramref name="newValue" /> ,
+/// the function returns the current system setting designated by <paramref name="nDefine" /> .
+/// If <paramref name="newValue" /> is specified, the corresponding system setting is set to <paramref name="newValue" />
+/// and the value of the old setting is returned. 
+/// </returns>
+/// <seealso cref="T:XSharp.SET" />
+/// <remarks>If you are coming from XHarbour or Xbase++ please don't use set.ch for the value of <paramref name="nDefine" />
+/// because there are some differences between the values in this header file and the values used inside X#. </remarks>
+FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
+    LOCAL state as XSharp.RuntimeState
+    local old as Object
+    LOCAL nSetting as LONG
+    IF ! IsNumeric(nDefine)
+        return NIL
+    endif
+    nSetting := nDefine
+    state := XSharp.RuntimeState.GetInstance()
+    if state:Settings:ContainsKey(nSetting)
+        old := state:Settings[nSetting]
+    endif
+    if PCount() > 1
+        local oValue := newValue as OBJECT
+        if old != NULL_OBJECT
+            TRY
+                oValue := System.Convert.ChangeType( oValue, old:GetType())
+                state:Settings[nSetting] := oValue
+            CATCH
+                NOP // can't convert, so ignore assignment
+            END TRY
+        endif
+    endif
+    return old
+            
+    
+
+

@@ -30,7 +30,8 @@ CLASS XSharp.RuntimeState
 	PUBLIC STATIC METHOD GetInstance() AS RuntimeState
 		RETURN currentState:Value
 
-	PRIVATE oSettings AS Dictionary<INT, OBJECT> 
+	PRIVATE oSettings AS Dictionary<INT, OBJECT>
+    PUBLIC PROPERTY Settings as Dictionary<INT, OBJECT> GET oSettings
 
 	PRIVATE CONSTRUCTOR(initialize AS LOGIC)       
 		VAR oThread := Thread.CurrentThread
@@ -48,6 +49,7 @@ CLASS XSharp.RuntimeState
 			SELF:_SetThreadValue(Set.AutoOpen , TRUE)
 			SELF:_SetThreadValue(Set.AutoOrder , TRUE)
 			SELF:_SetThreadValue(Set.Optimize , TRUE)
+            SELF:_SetThreadValue(Set.Deleted , FALSE)
 			SELF:_SetThreadValue(Set.AutoShare, AutoShareMode.Auto)
 			SELF:_SetThreadValue(Set.LOCKTRIES , 1U)
 			SELF:_SetThreadValue(Set.MemoBlockSize , 32U)

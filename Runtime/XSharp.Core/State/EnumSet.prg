@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -6,7 +6,7 @@
 USING XSharp
 BEGIN NAMESPACE XSharp
 	/// <summary>Values that match the Visual Objects SET_* defines </summary>
-	ENUM SET
+	ENUM Set
 		MEMBER EXACT       := 1			// LOGIC
 		MEMBER FIXED	   := 2			// LOGIC
 		MEMBER DECIMALS    := 3			// INT
@@ -85,6 +85,7 @@ BEGIN NAMESPACE XSharp
 		MEMBER ErrorBlock   := 82  // Codeblock
         MEMBER OPTIONVO13	:= 83	// Logic
         MEMBER LastRddError := 84   // Exception object
+        // 85 - 97 unused
 		MEMBER DICT        := 98	// LOGIC
 		MEMBER INTL        := 99	// LOGIC
 

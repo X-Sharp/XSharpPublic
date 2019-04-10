@@ -628,7 +628,8 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 b.Bind(ref Alias);
                 Alias.RequireGetAccess();
-                b.Convert(ref Alias, Compilation.Get(NativeType.String));
+                var m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldGetWa) as MethodSymbol;
+                b.Convert(ref Alias, Binder.FindType(m.Parameters.Parameters[0].ParameterType));
             }
             b.Bind(ref Field);
             Field.RequireGetAccess();

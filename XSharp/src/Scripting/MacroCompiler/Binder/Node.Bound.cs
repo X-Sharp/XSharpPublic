@@ -645,6 +645,24 @@ namespace XSharp.MacroCompiler.Syntax
         internal override void RequireSetAccess() => RequireValue();
         internal override void RequireGetSetAccess() => RequireValue();
     }
+    internal partial class AliasWaExpr : AliasExpr
+    {
+        internal override Node Bind(Binder b)
+        {
+            if (Alias != null)
+            {
+                b.Bind(ref Alias);
+                Alias.RequireGetAccess();
+                b.Convert(ref Alias, Compilation.Get(NativeType.Usual));
+            }
+            b.Bind(ref Field);
+            Datatype = Field.Datatype;
+            return null;
+        }
+        internal override void RequireGetAccess() => Field.RequireGetAccess();
+        internal override void RequireSetAccess() => Field.RequireSetAccess();
+        internal override void RequireGetSetAccess() => Field.RequireGetSetAccess();
+    }
     internal partial class SubstrExpr : BinaryExpr
     {
         internal override Node Bind(Binder b)

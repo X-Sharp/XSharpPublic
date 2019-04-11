@@ -156,23 +156,33 @@ GLOBAL tsi := teststruct{1} AS teststruct
 
 GLOBAL tci := testclass{1} AS testclass
 
+global wag := "" as string
+
 FUNCTION MyVarGet(name AS STRING) AS USUAL
-    RETURN "VarGet(" + name + ")"
+    RETURN wag + "VarGet(" + name + ")"
 
 FUNCTION MyVarPut(name AS STRING, VALUE AS USUAL) AS USUAL
-    RETURN "VarPut(" + name +"):" + (STRING)VALUE
+    RETURN wag + "VarPut(" + name +"):" + (STRING)VALUE
 
 FUNCTION MyFieldGet(name AS STRING) AS USUAL
-    RETURN "FieldGet(" + name + ")"
+    RETURN wag + "FieldGet(" + name + ")"
 
 FUNCTION MyFieldSet(name AS STRING, VALUE AS USUAL) AS USUAL
-    RETURN "FieldSet(" + name +"):" + (STRING)VALUE
+    RETURN wag + "FieldSet(" + name +"):" + (STRING)VALUE
 
 FUNCTION MyFieldGetWa(wa AS STRING, name AS STRING) AS USUAL
     RETURN "FieldGet(" + wa + "," + name + ")"
 
 FUNCTION MyFieldSetWa(wa AS STRING, name AS STRING, VALUE AS USUAL) AS USUAL
     RETURN "FieldSet(" + wa + "," + name +"):" + (STRING)VALUE
+
+FUNCTION MyPushWa(wa as usual) as void
+    wag := wa + "->"
+    return
+
+FUNCTION MyPopWa() as void
+    wag := ""
+    return
 
 FUNCTION DoTest(n AS INT, l AS LOGIC, o AS System.Collections.ArrayList) AS INT
     RETURN n * 5
@@ -588,6 +598,8 @@ BEGIN NAMESPACE MacroCompilerTest
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSet, "MyFieldSet")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGetWa, "MyFieldGetWa")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSetWa, "MyFieldSetWa")
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___pushWorkarea, "MyPushWa")
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___popWorkarea, "MyPopWa")
         TestMacro(mc, "U", Args(), "FieldGet(U)", typeof(STRING))
         TestMacro(mc, e"{|| NIKOS}", Args(), "FieldGet(NIKOS)", typeof(STRING))
         TestMacro(mc, e"{|| NIKOS := \"123\"}", Args(), "FieldSet(NIKOS):123", typeof(STRING))
@@ -597,6 +609,8 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| _FIELD->NIKOS := \"123\"}", Args(), "FieldSet(NIKOS):123", typeof(STRING))
         TestMacro(mc, e"{|| _FIELD->BASE->NIKOS := \"123\"}", Args(), "FieldSet(BASE,NIKOS):123", typeof(STRING))
         TestMacro(mc, e"{|| BASE->NIKOS := \"123\"}", Args(), "FieldSet(BASE,NIKOS):123", typeof(STRING))
+        TestMacro(mc, e"{|| (\"BASE\")->NIKOS}", Args(), "BASE->FieldGet(NIKOS)", typeof(STRING))
+        TestMacro(mc, e"{|| (\"BASE\")->NIKOS := \"123\"}", Args(), "BASE->FieldSet(NIKOS):123", typeof(STRING))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarGet, "MyVarGet")

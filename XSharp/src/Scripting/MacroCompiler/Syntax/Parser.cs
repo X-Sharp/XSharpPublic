@@ -1086,7 +1086,7 @@ namespace XSharp.MacroCompiler
             Expr _combine_postfix_is(Parser p, Expr l, Node o, Expr r) => new IsExpr(l, (TypeExpr)o, o.Token);
             Expr _combine_postfix_as_type(Parser p, Expr l, Node o, Expr r) => new AsTypeExpr(l, (TypeExpr)o, o.Token);
             Expr _combine_prefix_cast(Parser p, Expr l, Node o, Expr r) => new TypeCast((TypeExpr)o, r);
-            Expr _combine_binary_alias(Parser p, Expr l, Node o, Expr r) => new AliasExpr(l, r, o.Token);
+            Expr _combine_binary_alias(Parser p, Expr l, Node o, Expr r) => new AliasWaExpr(l, r, o.Token);
             Expr _combine_binary_substr(Parser p, Expr l, Node o, Expr r) => new SubstrExpr(l, o.Token, r);
             Expr _combine_postfix_dot(Parser p, Expr l, Node o, Expr r) => new QualifiedNameExpr(p.Require((l as TypeExpr), l.Token, ErrorCode.Expected, "type"), (NameExpr)o);
             Expr _combine_postfix_colon(Parser p, Expr l, Node o, Expr r) => new MemberAccessExpr(l, (NameExpr)o);

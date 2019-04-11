@@ -226,6 +226,10 @@ namespace XSharp.MacroCompiler.Syntax
         internal AliasExpr(Expr alias, Expr field, Token o) : base(o) { Alias = alias; Field = field; }
         public override string ToString() { return "(" + Alias.ToString() + "->" + Field.ToString() + ")"; }
     }
+    internal partial class AliasWaExpr : AliasExpr
+    {
+        internal AliasWaExpr(Expr alias, Expr field, Token o) : base(alias, field, o) { }
+    }
     internal partial class SubstrExpr : BinaryExpr
     {
         internal SubstrExpr(Expr l, Token o, Expr r) : base(l,o,r) { }

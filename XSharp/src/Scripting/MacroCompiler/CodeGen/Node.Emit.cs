@@ -426,7 +426,7 @@ namespace XSharp.MacroCompiler.Syntax
         }
         internal override void EmitSet(ILGenerator ilg, bool preserve)
         {
-            var v = ilg.DeclareLocal(Datatype.Type);
+            var v = ilg.DeclareLocal(Compilation.Get(NativeType.Usual).Type);
             ilg.Emit(OpCodes.Stloc, v.LocalIndex);
             if (Alias != null) Alias.Emit(ilg);
             Field.Emit(ilg);
@@ -435,6 +435,42 @@ namespace XSharp.MacroCompiler.Syntax
             ilg.Emit(OpCodes.Call, m.Method);
             if (!preserve)
                 ilg.Emit(OpCodes.Pop);
+        }
+    }
+    internal partial class AliasWaExpr : AliasExpr
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            var push = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___pushWorkarea) as MethodSymbol;
+            var pop = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___popWorkarea) as MethodSymbol;
+            var temp = preserve ? ilg.DeclareLocal(Datatype.Type) : null;
+            Alias.Emit(ilg);
+            ilg.Emit(OpCodes.Call, push.Method);
+            ilg.BeginExceptionBlock();
+            Field.Emit(ilg, preserve);
+            if (preserve) ilg.Emit(OpCodes.Stloc, temp.LocalIndex);
+            ilg.BeginFinallyBlock();
+            ilg.Emit(OpCodes.Call, pop.Method);
+            ilg.EndExceptionBlock();
+            if (preserve) ilg.Emit(OpCodes.Ldloc, temp.LocalIndex);
+        }
+        internal override void EmitSet(ILGenerator ilg, bool preserve)
+        {
+            var push = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___pushWorkarea) as MethodSymbol;
+            var pop = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___popWorkarea) as MethodSymbol;
+            var temp = preserve ? ilg.DeclareLocal(Datatype.Type) : null;
+            var v = ilg.DeclareLocal(Compilation.Get(NativeType.Usual).Type);
+            ilg.Emit(OpCodes.Stloc, v.LocalIndex);
+            Alias.Emit(ilg);
+            ilg.Emit(OpCodes.Call, push.Method);
+            ilg.BeginExceptionBlock();
+            ilg.Emit(OpCodes.Ldloc, v.LocalIndex);
+            Field.EmitSet(ilg, preserve);
+            if (preserve) ilg.Emit(OpCodes.Stloc, temp.LocalIndex);
+            ilg.BeginFinallyBlock();
+            ilg.Emit(OpCodes.Call, pop.Method);
+            ilg.EndExceptionBlock();
+            if (preserve) ilg.Emit(OpCodes.Ldloc, temp.LocalIndex);
         }
     }
     internal partial class SubstrExpr : BinaryExpr

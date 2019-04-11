@@ -41,6 +41,8 @@ namespace XSharp.MacroCompiler
         XSharp_RT_Functions___StringCompare,
         XSharp_RT_Functions___StringEquals,
         XSharp_RT_Functions___StringNotEquals,
+        XSharp_RT_Functions___pushWorkarea,
+        XSharp_RT_Functions___popWorkarea,
         XSharp_Core_Functions_Chr,
     }
 
@@ -77,6 +79,8 @@ namespace XSharp.MacroCompiler
             XSharpQualifiedFunctionNames.StringCompare+"|"+VulcanQualifiedFunctionNames.StringCompare,
             XSharpQualifiedFunctionNames.StringEquals+"|"+VulcanQualifiedFunctionNames.StringEquals,
             XSharpQualifiedFunctionNames.StringNotEquals+"|"+VulcanQualifiedFunctionNames.StringNotEquals,
+            XSharpQualifiedFunctionNames.PushWorkarea+"|"+VulcanQualifiedFunctionNames.PushWorkarea,
+            XSharpQualifiedFunctionNames.PopWorkarea+"|"+VulcanQualifiedFunctionNames.PopWorkarea,
             XSharpQualifiedFunctionNames.Chr+"|"+VulcanQualifiedFunctionNames.Chr,
         };
 

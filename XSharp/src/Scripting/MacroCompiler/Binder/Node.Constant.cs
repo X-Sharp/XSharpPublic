@@ -132,6 +132,9 @@ namespace XSharp.MacroCompiler.Syntax
     internal partial class AliasExpr : Expr
     {
     }
+    internal partial class AliasWaExpr : AliasExpr
+    {
+    }
     internal partial class SubstrExpr : BinaryExpr
     {
     }

@@ -7957,7 +7957,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.SetSequencePoint(context.ExprList._Exprs[0].Stop);
             }
-            context.Put(block);
+            //context.Put(block);
+            context.CsNode = block;
         }
 
         public override void ExitCodeblock([NotNull] XP.CodeblockContext context)

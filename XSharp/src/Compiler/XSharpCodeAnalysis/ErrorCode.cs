@@ -1706,6 +1706,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_EmptyCase = 9076,
         Err_TypeParametersAccessAssign = 9077,
         Err_StringConcat = 9078,
+        ERR_CannotTakeAddressOfAliasedExpression = 9079,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

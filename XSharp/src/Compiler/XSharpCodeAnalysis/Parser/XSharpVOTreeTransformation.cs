@@ -3950,6 +3950,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             expr);
                     var args = MakeArgumentList(MakeArgument(wa), MakeArgument(expr));
                     var mcall = GenerateMethodCall(XSharpQualifiedFunctionNames.AreaEval, args);
+                    context.Put(mcall);
                     return mcall;
                 }
                 // Vulcan does not have __AreaEval()
@@ -3993,7 +3994,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitAliasedExpression([NotNull] XP.AliasedExpressionContext context)
         {
-            context.CsNode = context.Expr.CsNode;
+            context.Put(context.Expr.Get<CSharpSyntaxNode>());
         }
 
         public override void ExitAliasedField([NotNull] XP.AliasedFieldContext context)
@@ -4028,13 +4029,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitAliasedFieldLate([NotNull] XP.AliasedFieldLateContext context)
         {
             /*
-                    | Alias=identifier              ALIAS AMP Field=identifier  #aliasedFieldLate	    // CUSTOMER->&fldName
-                    | FIELD ALIAS (Alias=identifier ALIAS)? AMP Field=identifier #aliasedFieldLate	  // _FIELD->CUSTOMER->&fldName or _FIELD->&fldName
-                    | LPAREN Area=identifier RPAREN ALIAS AMP Field=identifier  #aliasedFieldLate	    // (nCust)->&fldName 
+                    | Alias=identifier              ALIAS AMP Field=expression  #aliasedFieldLate	    // CUSTOMER->&fldName
+                    | FIELD ALIAS (Alias=identifier ALIAS)? AMP Field=expression #aliasedFieldLate	  // _FIELD->CUSTOMER->&fldName or _FIELD->&fldName
+                    | LPAREN Area=identifier RPAREN ALIAS AMP Field=expression  #aliasedFieldLate	    // (nCust)->&fldName 
 
             */
 
-            var fieldName = GenerateIdentifier(context.Field);
+            var fieldName = context.Field.Get<ExpressionSyntax>();
             if (context.Area != null)
             {
                 context.Put(GenerateFieldGetWa(GenerateIdentifier(context.Area), fieldName));
@@ -4087,6 +4088,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 alias,     // workarea
                                 fldGet // expression
                                 );
+                    
                     context.Put(aexpr);
                 }
                 return;
@@ -4117,6 +4119,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             alias,     // workarea
                             context.Expr.Get<ExpressionSyntax>() // expression
                         );
+                
                 context.Put(expr);
             }
         }

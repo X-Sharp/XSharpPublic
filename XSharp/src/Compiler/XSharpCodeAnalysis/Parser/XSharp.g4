@@ -772,9 +772,9 @@ aliasExpression     : MEMVAR ALIAS VarName=identifier                           
                     // The seek expression would be seen as  "(nArea)->(Field1+(nArea)->Field2)"
                     | {InputStream.La(6) != LPAREN}?
                       LPAREN Area=identifier RPAREN ALIAS Field=identifier      #aliasedField		      // (nCust)->NAME  
-                    | Alias=identifier              ALIAS AMP Field=identifier  #aliasedFieldLate	    // CUSTOMER->&fldName
-                    | FIELD ALIAS (Alias=identifier ALIAS)? AMP Field=identifier #aliasedFieldLate	  // _FIELD->CUSTOMER->&fldName or _FIELD->&fldName
-                    | LPAREN Area=identifier RPAREN ALIAS AMP Field=identifier  #aliasedFieldLate	  // (nCust)->&fldName 
+                    | Alias=identifier              ALIAS AMP Field=expression  #aliasedFieldLate	    // CUSTOMER->&fldName
+                    | FIELD ALIAS (Alias=identifier ALIAS)? AMP Field=expression #aliasedFieldLate	  // _FIELD->CUSTOMER->&fldName or _FIELD->&fldName
+                    | LPAREN Area=identifier RPAREN ALIAS AMP Field=expression  #aliasedFieldLate	  // (nCust)->&fldName 
                     | Id=identifier                  ALIAS Expr=expression      #aliasedExpr          // id -> expr       
                     | LPAREN Alias=expression RPAREN ALIAS Expr=expression      #aliasedExpr          // (expr) -> expr   
                     ;

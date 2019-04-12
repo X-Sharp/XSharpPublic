@@ -860,10 +860,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return pec.Expr.IsRealCodeBlock();
             if (context is XSharpParser.CodeblockExpressionContext cec)
                 return cec.CbExpr.IsRealCodeBlock();
-            //if (context is XSharpParser.AliasedExprContext)
-            //    return true;
-            //if (context is XSharpParser.AliasedFieldContext)
-            //    return true;
+            if (context is XSharpParser.AliasedExpressionContext)
+                return false;
             if (context is XSharpParser.CodeblockCodeContext)
                 return ((IXParseTree) context.Parent).IsRealCodeBlock();
             if (context is XSharpParser.CodeblockContext cbc)

@@ -5645,5 +5645,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="Err_StringConcat" xml:space="preserve">
     <value>All elements of a string concatenation must be of type 'string'. Element {0} is of type '{1}' </value>
   </data>
-  
+  <data name="ERR_CannotTakeAddressOfAliasedExpression" xml:space="preserve">
+    <value>Cannot take the address of an aliased expression.</value>
+  </data>
 </root>

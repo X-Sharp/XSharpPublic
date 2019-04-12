@@ -781,7 +781,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             // we simply return the direct reference to the field without the AddressOf operator
             if (node.Operand is InvocationExpressionSyntax)
             {
-                Error(diagnostics, ErrorCode.ERR_CannotTakeAddressOfFunctionOrMethod, node.Operand);
+                bool lAliasedExpression = false;
+                if (node.Operand.XNode is XSharpParser.PrimaryExpressionContext pec)
+                {
+                    if (pec.Expr is XSharpParser.AliasedExpressionContext)
+                        lAliasedExpression = true;
+                }
+                if (lAliasedExpression)
+                    Error(diagnostics, ErrorCode.ERR_CannotTakeAddressOfAliasedExpression, node.Operand);
+                else
+                    Error(diagnostics, ErrorCode.ERR_CannotTakeAddressOfFunctionOrMethod, node.Operand);
+                return BadExpression(node);
             }
 
             var expr = this.BindExpression(node.Operand, diagnostics: diagnostics, invoked: false, indexed: false);

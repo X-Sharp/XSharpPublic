@@ -2492,6 +2492,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot take the address of an aliased expression..
+        /// </summary>
+        internal static string ERR_CannotTakeAddressOfAliasedExpression {
+            get {
+                return ResourceManager.GetString("ERR_CannotTakeAddressOfAliasedExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to In .Net you cannot take the address of a method or a function. For callback functions you need to use a delegate instead..
         /// </summary>
         internal static string ERR_CannotTakeAddressOfFunctionOrMethod {

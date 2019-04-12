@@ -2350,6 +2350,11 @@ namespace XSharpLanguage
             while (triggerToken != null)
             {
                 token = triggerToken.Text;
+                if (triggerToken.Channel != XSharpLexer.DefaultTokenChannel)
+                {
+                    triggerToken = GetPreviousToken(tokens, triggerToken);
+                    continue;
+                }
                 switch (triggerToken.Type)
                 {
                     // For ) ] }, we will search the counter part, and remove all stuff in between
@@ -3907,7 +3912,7 @@ namespace XSharpLanguage
                 do
                 {
                     if (prev.OriginalTokenIndex == 0)
-                        break;
+                        return null;
                     prev = (XSharpToken)tokens.Get(prev.OriginalTokenIndex - 1);
                     if (prev.Line != Line)
                     {

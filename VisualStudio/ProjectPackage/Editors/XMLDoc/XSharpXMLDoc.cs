@@ -28,6 +28,11 @@ namespace XSharp.Project
     {
         public static FileInfo GetXmlDocFile(Assembly assembly, XProject project)
         {
+            if (String.IsNullOrEmpty(assembly.Location))
+            {
+                // Maybe we should have a default directory to look at, or a list of directories ??
+                return null;
+            }
             string assemblyDirPath = Path.GetDirectoryName(assembly.Location);
             string fileName = Path.GetFileNameWithoutExtension(assembly.Location) + ".xml";
             // First try at the same location as the Assembly

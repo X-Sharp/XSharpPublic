@@ -1515,6 +1515,11 @@ namespace XSharpLanguage
                 }
                 modVis += this.Visibility.ToString() + " ";
                 //
+                if ( this.IsStatic )
+                {
+                    modVis += "STATIC" + " ";
+                }
+                //
                 String desc = modVis;
                 //
                 if ((this.Kind != Kind.Field) && (this.Kind != Kind.Constructor))
@@ -1876,6 +1881,11 @@ namespace XSharpLanguage
                     modVis += this.Modifiers.ToString() + " ";
                 }
                 modVis += this.Visibility.ToString() + " ";
+                //
+                if (this.IsStatic)
+                {
+                    modVis += "STATIC" + " ";
+                }
                 //
                 String desc = modVis;
                 //
@@ -2399,6 +2409,7 @@ namespace XSharpLanguage
                     case XSharpLexer.LBRKT:
                     case XSharpLexer.SL_COMMENT:
                     case XSharpLexer.ML_COMMENT:
+                    case XSharpLexer.DOC_COMMENT:
                         //case XSharpLexer.VAR:
                         //case XSharpLexer.IMPLIED:
                         // Stop here
@@ -2868,7 +2879,8 @@ namespace XSharpLanguage
                         SearchConstructorIn(cType.ParentType, visibility, out foundElement);
                     }
                     // The first token in the list can be a Function or a Procedure
-                    if (currentPos == 0)
+                    // Except if we already have a Type
+                    if ((currentPos == 0) && (startOfExpression))
                     {
                         var globType = SearchFunctionIn(currentMember.File, currentToken, out foundElement);
                         if ((foundElement != null) && ( foundElement.IsInitialized))

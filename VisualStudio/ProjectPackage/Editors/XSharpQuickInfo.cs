@@ -361,6 +361,13 @@ namespace XSharp.Project
                     temp.Foreground = Brushes.Blue;
                     content.Add(temp);
                     //
+                    if ( this.IsStatic )
+                    {
+                        temp = new Run( "STATIC" + " ");
+                        temp.Foreground = Brushes.Blue;
+                        content.Add(temp);
+                    }
+                    //
                     if (this.Kind != XSharpModel.Kind.Field)
                     {
                         temp = new Run(this.Kind.ToString() + " ");
@@ -398,6 +405,13 @@ namespace XSharp.Project
                     temp = new Run(this.Visibility.ToString() + " ");
                     temp.Foreground = Brushes.Blue;
                     content.Add(temp);
+                    //
+                    if (this.IsStatic)
+                    {
+                        temp = new Run("STATIC" + " ");
+                        temp.Foreground = Brushes.Blue;
+                        content.Add(temp);
+                    }
                     //
                     if ((this.Kind != XSharpModel.Kind.Field) && (this.Kind != XSharpModel.Kind.Constructor))
                     {

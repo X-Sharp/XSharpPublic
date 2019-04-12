@@ -4217,12 +4217,20 @@ namespace Microsoft.VisualStudio.Project
             // Ok... Let's do it !
             foreach (var item in prjItems)
             {
-                HierarchyNode node = AddIndependentFileNode(item);
-                // Populate the type as property
-                string subType = item.GetMetadataValue(ProjectFileConstants.SubType);
-                if (!String.IsNullOrEmpty(subType))
+                try
                 {
-                    node.SetProperty((int)__VSHPROPID.VSHPROPID_ItemSubType, subType);
+                    HierarchyNode node = AddIndependentFileNode(item);
+                    // Populate the type as property
+                    string subType = item.GetMetadataValue(ProjectFileConstants.SubType);
+                    if (!String.IsNullOrEmpty(subType))
+                    {
+                        node.SetProperty((int)__VSHPROPID.VSHPROPID_ItemSubType, subType);
+                    }
+                }
+                catch ( Exception ex )
+                {
+                    if (System.Diagnostics.Debugger.IsAttached)
+                        Debug.WriteLine(ex.ToString());
                 }
             }
 #endif

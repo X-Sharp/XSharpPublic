@@ -591,12 +591,12 @@ namespace XSharpColorizer
                     switch (token.Type)
                     {
                         case XSharpLexer.PP_REGION:
-                        case XSharpLexer.PP_IFDEF:
-                        case XSharpLexer.PP_IFNDEF:
+                        //case XSharpLexer.PP_IFDEF:
+                        //case XSharpLexer.PP_IFNDEF:
                             regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
                             break;
                         case XSharpLexer.PP_ENDREGION:
-                        case XSharpLexer.PP_ENDIF:
+                        //case XSharpLexer.PP_ENDIF:
                             regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStop));
                             break;
                         default:

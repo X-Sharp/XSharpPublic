@@ -418,17 +418,25 @@ namespace Microsoft.VisualStudio.Project
         protected virtual ReferenceNode CreateReferenceNode(string referenceType, ProjectElement element)
         {
             ReferenceNode node = null;
-            if(referenceType == ProjectFileConstants.COMReference)
+            try
             {
-                node = this.CreateComReferenceNode(element);
+                if (referenceType == ProjectFileConstants.COMReference)
+                {
+                    node = this.CreateComReferenceNode(element);
+                }
+                else if (referenceType == ProjectFileConstants.Reference)
+                {
+                    node = this.CreateAssemblyReferenceNode(element);
+                }
+                else if (referenceType == ProjectFileConstants.ProjectReference)
+                {
+                    node = this.CreateProjectReferenceNode(element);
+                }
             }
-            else if(referenceType == ProjectFileConstants.Reference)
+            catch (Exception ex)
             {
-                node = this.CreateAssemblyReferenceNode(element);
-            }
-            else if(referenceType == ProjectFileConstants.ProjectReference)
-            {
-                node = this.CreateProjectReferenceNode(element);
+                if (System.Diagnostics.Debugger.IsAttached)
+                    Debug.WriteLine(ex.ToString());
             }
 
             return node;

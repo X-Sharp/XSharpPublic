@@ -88,7 +88,7 @@ FUNCTION Max(u1 AS USUAL,u2 AS USUAL) AS USUAL
 	ELSEIF u1:IsDateTime .AND. u2:IsDateTime
 		RETURN IIF ((DateTime) u1 > (DateTime) u2, u1, u2)
 
-	ELSEIF (u1:IsDateTime .or. u1:IsDate) .AND. (u2:IsDateTime .or. u2:IsDate)
+	ELSEIF (u1:IsDateTime .OR. u1:IsDate) .AND. (u2:IsDateTime .OR. u2:IsDate)
 		RETURN IIF ((DateTime) u1 > (DateTime) u2, u1, u2)
 
 	ELSEIF u1:IsString .AND. u2:IsString
@@ -203,29 +203,29 @@ RETURN	 NIL
 /// <remarks>If you are coming from XHarbour or Xbase++ please don't use set.ch for the value of <paramref name="nDefine" />
 /// because there are some differences between the values in this header file and the values used inside X#. </remarks>
 FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
-    LOCAL state as XSharp.RuntimeState
-    local old as Object
-    LOCAL nSetting as LONG
+    LOCAL state AS XSharp.RuntimeState
+    LOCAL old  := NULL AS OBJECT
+    LOCAL nSetting AS LONG
     IF ! IsNumeric(nDefine)
-        return NIL
-    endif
+        RETURN NIL
+    ENDIF
     nSetting := nDefine
     state := XSharp.RuntimeState.GetInstance()
-    if state:Settings:ContainsKey(nSetting)
+    IF state:Settings:ContainsKey(nSetting)
         old := state:Settings[nSetting]
-    endif
-    if PCount() > 1
-        local oValue := newValue as OBJECT
-        if old != NULL_OBJECT
+    ENDIF
+    IF PCount() > 1
+        LOCAL oValue := newValue AS OBJECT
+        IF old != NULL_OBJECT
             TRY
                 oValue := System.Convert.ChangeType( oValue, old:GetType())
                 state:Settings[nSetting] := oValue
             CATCH
                 NOP // can't convert, so ignore assignment
             END TRY
-        endif
-    endif
-    return old
+        ENDIF
+    ENDIF
+    RETURN old
             
     
 

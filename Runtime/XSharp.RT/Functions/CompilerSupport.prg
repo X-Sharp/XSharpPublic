@@ -100,7 +100,7 @@ FUNCTION __FieldGetWa( area AS USUAL, fieldName AS STRING ) AS USUAL
     IF area:IsNil
         RETURN __FieldGet(fieldName)
     ENDIF
-    IF area:IsString .and. ((string) area):ToUpper() == "M"
+    IF area:IsString .AND. ((STRING) area):ToUpper() == "M"
         RETURN __MemVarGet(fieldName)
     ENDIF
     LOCAL ret AS USUAL
@@ -134,11 +134,11 @@ FUNCTION __FieldSet( fieldName AS STRING, oValue AS USUAL ) AS USUAL
     // CUSTOMER->Name := "Foo"
     // (nArea)->Name := "Foo"
 /// <exclude/>
-FUNCTION __FieldSetWa( area AS usual, fieldName AS STRING, uValue AS USUAL ) AS USUAL
+FUNCTION __FieldSetWa( area AS USUAL, fieldName AS STRING, uValue AS USUAL ) AS USUAL
     IF area:IsNil
         RETURN __FieldGet(fieldName)
     ENDIF
-    IF area:IsString .and. ((string) area):ToUpper() == "M"
+    IF area:IsString .AND. ((STRING) area):ToUpper() == "M"
         RETURN __MemVarGet(fieldName)
     ENDIF
     LOCAL newArea := _Select( area ) AS DWORD
@@ -157,10 +157,10 @@ FUNCTION __FieldSetWa( area AS usual, fieldName AS STRING, uValue AS USUAL ) AS 
     // Note: must return the same value passed in, to allow chained assignment expressions
     RETURN uValue
 
-FUNCTION __AreaEval<T>(area as usual, action as @@Func<T>) as T
+FUNCTION __AreaEval<T>(area AS USUAL, action AS @@Func<T>) AS USUAL
     LOCAL newArea := _Select( area ) AS DWORD
     LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
-    LOCAL result  := default(T) as T
+    LOCAL result  := DEFAULT(T) AS T
     IF newArea > 0
         RuntimeState.CurrentWorkarea := newArea
         
@@ -172,8 +172,24 @@ FUNCTION __AreaEval<T>(area as usual, action as @@Func<T>) as T
     ELSE
         THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(area),1, area  )
     ENDIF
-    return result
+    RETURN result
     
+FUNCTION __AreaEval(area AS USUAL, action AS System.Action) AS LOGIC
+    LOCAL newArea := _Select( area ) AS DWORD
+    LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
+    LOCAL result  := FALSE AS LOGIC
+    IF newArea > 0
+        RuntimeState.CurrentWorkarea := newArea
+        TRY
+            action()
+            result := TRUE
+        FINALLY
+            RuntimeState.CurrentWorkarea := curArea
+        END TRY   
+    ELSE
+        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(area),1, area  )
+    ENDIF
+    RETURN result
     
     // MEMVAR myName
     // ? MyName

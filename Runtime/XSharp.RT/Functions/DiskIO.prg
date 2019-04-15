@@ -126,7 +126,7 @@ FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
 	cFileMask := Path.GetFileName( cFileSpec )
 	
 	IF _AND( nAttr,FA_DIRECTORY ) == FA_DIRECTORY
-		_DirectoryAddDirectoryInfo( aReturn, cFileSpec, nAttr , NULL)
+		DirectoryHelper.AddDirectoryInfo( aReturn, cFileSpec, nAttr , NULL)
 	ENDIF
 	
 	// File Info
@@ -136,7 +136,7 @@ FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
 		IF files != NULL
 			FOREACH cFile AS STRING IN files
 				VAR oFile := System.IO.FileInfo{cFile}
-				_DirectoryAddFileInfo(aReturn, oFile, nAttr)			
+				DirectoryHelper.AddFileInfo(aReturn, oFile, nAttr)			
 			NEXT
 		ENDIF
 	CATCH
@@ -145,16 +145,17 @@ FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
 	
 	// Directory info
 	IF _AND( nAttr, FA_DIRECTORY) == FA_DIRECTORY .AND. ( cFileSpec:Contains( "*" ) || cFileSpec:Contains( "?" ) )
-	
-		IF Path.GetDirectoryName( cFileSpec ) != Path.GetPathRoot( cFileSpec ) .AND. ( Path.GetFileName( cFileSpec ) == "*.*" || Path.GetFileName( cFileSpec ) == "*" )
-			_DirectoryAddDirectoryInfo( aReturn, Path.GetDirectoryName( cFileSpec ), nAttr, "." )
-			_DirectoryAddDirectoryInfo( aReturn, Path.GetDirectoryName( cFileSpec ), nAttr, ".." )
+	    cPath := Path.GetDirectoryName( cFileSpec )
+        VAR cName := Path.GetFileName( cFileSpec )
+		IF cPath != Path.GetPathRoot( cFileSpec ) .AND. ( cName == "*.*" || cName == "*" )
+			DirectoryHelper.AddDirectoryInfo( aReturn, cPath, nAttr, "." )
+			DirectoryHelper.AddDirectoryInfo( aReturn, cPath, nAttr, ".." )
 		ENDIF         
 		
 		TRY 
-			files := System.IO.Directory.GetDirectories( Path.GetDirectoryName( cFileSpec ), Path.GetFileName( cFileSpec ) )
+			files := System.IO.Directory.GetDirectories( cPath, cName )
 			FOR VAR i := 1 UPTO files:Length
-				_DirectoryAddDirectoryInfo( aReturn, files[i], nAttr, NULL )
+				DirectoryHelper.AddDirectoryInfo( aReturn, files[i], nAttr, NULL )
 			NEXT
 		CATCH
 			NOP
@@ -166,78 +167,27 @@ FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
 	ENDIF
 	RETURN aReturn
 
-INTERNAL FUNCTION _DirectoryAddFileInfo(aReturn AS ARRAY, oFile AS System.IO.FileInfo, nAttr AS DWORD) AS VOID
+INTERNAL STATIC CLASS DirectoryHelper
+
+INTERNAL STATIC METHOD AddFileInfo(aReturn AS ARRAY, oFile AS System.IO.FileInfo, nAttr AS DWORD) AS VOID
     
-	LOCAL cAttribute := "" AS STRING
-			
-	LOCAL lOk := TRUE AS LOGIC
-	IF oFile:Attributes:HasFlag(System.IO.FileAttributes.ReadOnly) 
-		cAttribute += "R"
-	ENDIF
-	IF oFile:Attributes:HasFlag(System.IO.FileAttributes.Hidden) 
-		lOk := lOk .AND. _AND(nAttr,FC_HIDDEN) == FC_HIDDEN
-		cAttribute += "H"
-	ENDIF
-	IF oFile:Attributes:HasFlag(System.IO.FileAttributes.System) 
-		lOk := lOk .AND. _AND(nAttr,FC_SYSTEM) == FC_SYSTEM
-		cAttribute += "S"
-	ENDIF
-	IF oFile:Attributes:HasFlag(System.IO.FileAttributes.Archive) 
-		cAttribute += "A"
-	ENDIF
-	IF lOk
-        VAR aFile := ArrayNew(F_LEN)
-        aFile[F_NAME] := oFile:Name
-        aFile[F_SIZE] := oFile:Length
-        IF oFile:Length < 0x7FFFFFFFL
-            aFile[F_SIZE] := (Int32) oFile:Length
-        ENDIF
-        aFile[F_DATE] := (DATE)  oFile:LastWriteTime
-        aFile[F_TIME] := ConTime(oFile:LastWriteTime)
-        aFile[F_ATTR] := cAttribute
-        aFile[F_EA_SIZE] := oFile:Attributes
-        aFile[F_CREATION_DATE] := (DATE)  oFile:CreationTime
-        aFile[F_CREATION_TIME] := ConTime(oFile:CreationTime)
-        aFile[F_ACCESS_DATE] := (DATE)  oFile:LastAccessTime
-        aFile[F_ACCESS_TIME] := ConTime(oFile:LastAccessTime)
+	LOCAL lAdd := TRUE AS LOGIC
+    VAR cAttribute := DecodeAttributes(oFile:Attributes, nAttr, REF lAdd)
+	IF lAdd
+        VAR aFile := DirectoryHelper.FileSystemInfo2Array(oFile, cAttribute)
         aadd(aReturn, aFile)
 	ENDIF
 	RETURN
 	
-INTERNAL FUNCTION _DirectoryAddDirectoryInfo( aReturn AS ARRAY, cDirectory AS STRING, nAttr AS DWORD, cName AS STRING ) AS VOID
+INTERNAL STATIC METHOD AddDirectoryInfo( aReturn AS ARRAY, cDirectory AS STRING, nAttr AS DWORD, cName AS STRING ) AS VOID
 	TRY
 		LOCAL oDir := System.IO.DirectoryInfo{ cDirectory } AS DirectoryInfo
 		IF oDir:Exists
-			VAR cAttribute := ""
-			VAR lAdd       := TRUE
-		
-			IF oDir:Attributes:HasFlag( System.IO.FileAttributes.ReadOnly ) 
-				cAttribute += "R"
-			ENDIF
-		
-			IF oDir:Attributes:HasFlag( System.IO.FileAttributes.Hidden ) 
-				cAttribute += "H"
-				lAdd := lAdd .AND. _AND( nAttr,FC_HIDDEN ) == FC_HIDDEN
-			ENDIF
-		
-			IF oDir:Attributes:HasFlag( System.IO.FileAttributes.System ) 
-				cAttribute += "S"
-				lAdd := lAdd .AND. _AND( nAttr,FC_SYSTEM ) == FC_SYSTEM
-			ENDIF
-		
+			LOCAL lAdd      := TRUE AS LOGIC
+			VAR cAttribute  := DecodeAttributes(oDir:Attributes, nAttr, REF lAdd)
 			IF lAdd
 				cAttribute += "D"
-                VAR aFile := ArrayNew(F_LEN)
-                aFile[F_NAME] := oDir:Name
-                aFile[F_SIZE] := 0 
-                aFile[F_DATE] := (DATE)  oDir:LastWriteTime
-                aFile[F_TIME] := ConTime(oDir:LastWriteTime)
-                aFile[F_ATTR] := cAttribute
-                aFile[F_EA_SIZE] := oDir:Attributes
-                aFile[F_CREATION_DATE] := (DATE)  oDir:CreationTime
-                aFile[F_CREATION_TIME] := ConTime(oDir:CreationTime)
-                aFile[F_ACCESS_DATE] := (DATE)  oDir:LastAccessTime
-                aFile[F_ACCESS_TIME] := ConTime(oDir:LastAccessTime)
+                VAR aFile := DirectoryHelper.FileSystemInfo2Array(oDir, cAttribute)
                 aadd(aReturn, aFile)
 			ENDIF
 		ENDIF
@@ -247,7 +197,44 @@ INTERNAL FUNCTION _DirectoryAddDirectoryInfo( aReturn AS ARRAY, cDirectory AS ST
 
 	RETURN  
 
+INTERNAL STATIC METHOD FileSystemInfo2Array(info AS FileSystemInfo, cAttribute AS STRING) AS ARRAY
+    VAR aFile := ArrayNew(F_LEN)
+    aFile[F_NAME] := info:Name
+    IF info IS FileInfo
+        VAR oFile := (System.IO.FileInfo) info
+        aFile[F_SIZE] := oFile:Length
+        IF oFile:Length < 0x7FFFFFFFL
+            aFile[F_SIZE] := (Int32) oFile:Length
+        ENDIF
+    ELSE
+        aFile[F_SIZE] := 0
+    ENDIF
+    aFile[F_DATE] := (DATE)  info:LastWriteTime
+    aFile[F_TIME] := ConTime(info:LastWriteTime)
+    aFile[F_ATTR] := cAttribute
+    aFile[F_EA_SIZE] := info:Attributes
+    aFile[F_CREATION_DATE] := (DATE)  info:CreationTime
+    aFile[F_CREATION_TIME] := ConTime(info:CreationTime)
+    aFile[F_ACCESS_DATE] := (DATE)  info:LastAccessTime
+    aFile[F_ACCESS_TIME] := ConTime(info:LastAccessTime)
+RETURN aFile
 
-
-
-
+INTERNAL STATIC METHOD DecodeAttributes(attributes AS System.IO.FileAttributes, nAttr AS DWORD, lOk REF LOGIC) AS STRING
+    VAR cAttribute := ""
+    lOk := TRUE
+	IF attributes:HasFlag(System.IO.FileAttributes.ReadOnly) 
+		cAttribute += "R"
+	ENDIF
+	IF attributes:HasFlag(System.IO.FileAttributes.Hidden) 
+		lOk := lOk .AND. _AND(nAttr,FC_HIDDEN) == FC_HIDDEN
+		cAttribute += "H"
+	ENDIF
+	IF attributes:HasFlag(System.IO.FileAttributes.System) 
+		lOk := lOk .AND. _AND(nAttr,FC_SYSTEM) == FC_SYSTEM
+		cAttribute += "S"
+	ENDIF
+	IF attributes:HasFlag(System.IO.FileAttributes.Archive) 
+		cAttribute += "A"
+	ENDIF
+    RETURN cAttribute
+END CLASS

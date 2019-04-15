@@ -648,9 +648,6 @@ FUNCTION FReadStr(pFile AS IntPtr,iCount AS DWORD) AS STRING
 	XSharp.IO.File.read(pFile, OUT cResult, (INT) iCount, XSharp.RuntimeState.Ansi)
 	RETURN cResult
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FReadText(System.IntPtr,System.String@,System.UInt32)" />
-FUNCTION FRead(pFile AS IntPtr,strValue REF STRING,dwCount AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.read(pFile, OUT strValue, (INT) dwCount, XSharp.RuntimeState.Ansi)
 
 /// <summary>
 /// Read characters from a file into a buffer variable that is passed by reference.
@@ -661,6 +658,11 @@ FUNCTION FRead(pFile AS IntPtr,strValue REF STRING,dwCount AS DWORD) AS DWORD
 /// <inheritdoc cref="M:XSharp.Core.Functions.FRead3(System.IntPtr,System.Byte[],System.UInt32)" />
 /// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FReadText(pFile AS IntPtr,strValue REF STRING,dwCount AS DWORD) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.read(pFile, OUT strValue, (INT) dwCount, XSharp.RuntimeState.Ansi)
+
+
+/// <inheritdoc cref="M:XSharp.Core.Functions.FReadText(System.IntPtr,System.String@,System.UInt32)" />
+FUNCTION FRead(pFile AS IntPtr,strValue REF STRING,dwCount AS DWORD) AS DWORD
 	RETURN (DWORD) XSharp.IO.File.read(pFile, OUT strValue, (INT) dwCount, XSharp.RuntimeState.Ansi)
 
 

@@ -53,7 +53,7 @@ FUNCTION ConDate(dwY AS DWORD,dwM AS DWORD,dwDay AS DWORD) AS DATE
 /// Convert a Date string to date format.
 /// </summary>
 /// <param name="cDate">A string of numbers representing the month, day, and year, separated by any character other than a number.  The month, day, and year digits must be in the format set by SetDateFormat() or SetDateCountry().  If the century digits are not specified, the century is determined by the rules of SetEpoch().</param>
-/// <returns>The date value that corresponds to the numbers specified in cDate.  If cDate is not a valid date, CToD() returns a NULL_DATE.
+/// <returns>The date value that corresponds to the numbers specified in <paramref name="cDate"/>.  If <paramref name="cDate"/> is not a valid date, CToD() returns a NULL_DATE.
 /// </returns>
 FUNCTION CToD(cDate AS STRING) AS DATE
 	RETURN CToD(cDate, XSharp.RuntimeState.DateFormat)
@@ -63,8 +63,7 @@ FUNCTION CToD(cDate AS STRING) AS DATE
 /// </summary>
 /// <param name="cDate">A string of numbers representing the month, day, and year, separated by any character other than a number.  The month, day, and year digits must be in the format set by SetDateFormat() or SetDateCountry().  If the century digits are not specified, the century is determined by the rules of SetEpoch().</param>
 /// <param name="cDateFormat">A string representating the date format to use when converting the string to a date. Should consist of D, M and Y characters and separators.</param>
-/// <returns>The date value that corresponds to the numbers specified in cDate.  If cDate is not a valid date, CToD() returns a NULL_DATE.
-/// </returns>
+/// <returns><inheritdoc cref='M:XSharp.RT.Functions.CToD(System.String)'/></returns>
 FUNCTION CToD(cDate AS STRING, cDateFormat AS STRING) AS DATE
     RETURN _CToD(cDate, cDateFormat)
 
@@ -76,8 +75,7 @@ FUNCTION CToD(cDate AS STRING, cDateFormat AS STRING) AS DATE
 /// The year, month, and day can be separated by any character other than a number. 
 /// cDate is always interpreted as an ANSI string and is not dependent on SetDateFormat() or SetDateCountry().  
 /// If the century digits are not specified, the century is determined by the rules of SetEpoch().</param>
-/// <returns>The date value that corresponds to the numbers specified in <paramref name="cDate"/>.  If cDate is not a valid ANSI date, CToDAnsi() returns a NULL_DATE.
-/// </returns>
+/// <returns><inheritdoc cref='M:XSharp.RT.Functions.CToD(System.String)'/></returns>
 FUNCTION CToDAnsi(cDate AS STRING) AS DATE
 	RETURN CToD(Left(cDate,10), "YYYY.MM.DD")
 
@@ -182,9 +180,7 @@ FUNCTION JCYEAR(d AS DATE) AS STRING
 /// Extract the number of the month from a DATE.
 /// </summary>
 /// <param name="d">The Date to extract the month from.</param>
-/// <returns>
-/// The month of the given Date.
-/// </returns>
+/// <returns>The month of the given Date.</returns>
 FUNCTION Month(d AS DATE) AS DWORD
 	LOCAL month := 0  AS DWORD
 	IF !d:IsEmpty
@@ -199,8 +195,7 @@ FUNCTION Month(d AS DATE) AS DWORD
 /// Convert an ANSI Date string to Date format.
 /// </summary>
 /// <param name="cDate"></param>
-/// <returns>
-/// </returns>
+/// <returns><inheritdoc cref='M:XSharp.RT.Functions.CToD(System.String)'/></returns>
 FUNCTION SToD(cDate AS STRING) AS DATE
 	LOCAL convertedDate AS DATE
 	TRY

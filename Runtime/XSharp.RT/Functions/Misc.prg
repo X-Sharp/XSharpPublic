@@ -199,7 +199,7 @@ RETURN	 NIL
 /// If <paramref name="newValue" /> is specified, the corresponding system setting is set to <paramref name="newValue" />
 /// and the value of the old setting is returned. 
 /// </returns>
-/// <seealso cref="T:XSharp.SET" />
+/// <seealso cref="T:XSharp.Set" />
 /// <remarks>If you are coming from XHarbour or Xbase++ please don't use set.ch for the value of <paramref name="nDefine" />
 /// because there are some differences between the values in this header file and the values used inside X#. </remarks>
 FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER

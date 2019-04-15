@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <members>
+    <member name="T:VOSQLClasses.Functions">
+      <summary>
+        This compiler generated class contains all the functions, globals and defines that are defined in the VOSQLClasses assembly.
+      </summary>
+    </member>
+    <member name="T:VOGUIClasses.Functions">
+      <summary>
+        This compiler generated class contains all the functions, globals and defines that are defined in the VOGUIClasses assembly.
+      </summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.ApplicationExec(XSharp.__Usual)">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.CAPaintIsLoaded">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.CAPaintLastError">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.CAPaintLastErrorMsg">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.CAPaintShowErrors(System.Boolean)">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.CloseThemeData(System.Void*)">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.DIBCreateFromFile(XSharp.__Psz)">
+      <summary>Create a device independent bitmap (DIB) from an image file.</summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.DIBCreateFromPTR(System.Byte*,System.Int32)">
+      <summary>Convert an image file to a device independent bitmap (DIB).</summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.DIBDelete(System.Void*)">
+      <summary>Destroy a DIB created either by DIBCreateFromFile() or DIBCreateFromPtr().</summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.DIBGetInfo(System.Void*)">
+      <summary>Retrieve a pointer to the BITMAPINFO structure of a DIB.</summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.DIBSaveAs(System.Void*,XSharp.__Psz)">
+      <summary>Save the DIB to a file.</summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.DIBShow(System.Void*,System.Void*)">
+      <summary>Display the DIB within the specified window.</summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.DIBStretch(System.Void*,System.Void*,System.UInt32,System.UInt32,System.Double)">
+      <summary>Display the DIB within the specified window.</summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.DragObject(System.Void*,System.Void*,System.UInt32,System.UInt32,System.Void*)">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.DrawThemeBackground(System.Void*,System.Void*,System.Int32,System.Int32,System.Void*,System.Void*)">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.DrawThemeEdge(System.Void*,System.Void*,System.Int32,System.Int32,System.Void*,System.UInt32,System.UInt32,System.Void*)">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.DrawThemeParentBackground(System.Void*,System.Void*,System.Void*)">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.Enable3dControls">
+      <summary>Determines whether controls on windows created with the GUI classes are displayed using a sculpted, three-dimensional look.</summary>
+      <remarks>Note - This function has no purpose in 32 bit programs. It is included for backward compatibility with 16 bit applications only.</remarks>
+    </member>
+    <member name="M:VOGUIClasses.Functions.EnableAppVisualTheme(System.Boolean)">
+      <summary>Enable or disable the applications support for visual themes.</summary>
+      <remarks>Note - For Windows XP and later only.</remarks>
+    </member>
+    <member name="M:VOGUIClasses.Functions.EnableThemeDialogTexture(XSharp.__Usual,System.UInt32)">
+      <summary></summary>
+    </member>
+
+    <member name="M:VOGUIClasses.Functions.GetAppObject">
+      <summary>Return the global App object for this application.</summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.GetFocusedObject">
+      <summary>Return the object corresponding to the control or window that currently has input focus.</summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.GetFrameWidth(System.Void*)">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.GetObjectByHandle(System.Void*)">
+      <summary>Return the object associated with a given window handle.</summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.GetThemeAppProperties">
+      <summary>Retrieves the property flags that control how visual styles are applied in the current application</summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.GetThemeColor(System.Void*,System.Int32,System.Int32,System.Int32,System.Void*)">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.GetWindowTheme(System.Void*)">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.IsAltPressed">
+      <summary>Get the current state of the Alt key.</summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.IsAppThemed">
+      <summary>Return the theme setting for the current application.</summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.IsControlPressed">
+      <summary>Get the current state of the Ctrl key.</summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.IsCtl3dEnabled">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.IsShiftPressed">
+      <summary>Get the current state of the Shift key.</summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.IsThemeEnabled">
+      <summary>Determine if visual theme support is enabled.</summary>
+      <remarks>NOTE: For Windows XP or later only.</remarks>
+    </member>
+    <member name="M:VOGUIClasses.Functions.IsThemeSupported">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.OpenThemeData(System.Void*,System.String)">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.SetAccelerator(System.Void*,System.Void*)">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.SetClassStyle(System.Void*,System.UInt32,System.Boolean)">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.SetThemeAppProperties(System.UInt32)">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.SetWindowTheme(System.Void*,System.String,System.String)">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.ShellOpen(VO.Window,System.String)">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.UseColonInAutoLayoutCaptions(System.Boolean)">
+      <summary></summary>
+    </member>
+    <member name="M:VOGUIClasses.Functions.VerifyThemeState">
+      <summary>Verifies the current theme state and sets the ThemeEnabled flag.</summary>
+      <returns>The function returns the current value of the ThemeEnabled flag like the function IsThemeEnabled().</returns>
+    </member>
+
+    <member name="T:VORDDClasses.Functions">
+      <summary>
+        This compiler generated class contains all the functions, globals and defines that are defined in the VORDDClasses assembly.
+      </summary>
+      
+    </member>
+    <member name="M:VORDDClasses.Functions.DBFDebug(System.String,System.String,System.String,System.String)">
+      <summary></summary>
+    </member>
+    <member name="M:VORDDClasses.Functions.DbGetDefaultLockMode">
+      <summary></summary>
+    </member>
+    <member name="M:VORDDClasses.Functions.DbSetDefaultLockMode(System.UInt32)">
+      <summary></summary>
+    </member>
+    <member name="M:VORDDClasses.Functions.DbSetRestoreWorkarea(XSharp.__Usual)">
+      <summary></summary>
+    </member>
+    <member name="T:VOSystemClasses.Functions">
+      <summary>
+        This compiler generated class contains all the functions, globals and defines that are defined in the VOSystemClasses assembly.
+      </summary>
+      <summary></summary>
+    </member>
+    <member name="T:VOInternetClasses.Functions">
+      <summary>
+        This compiler generated class contains all the functions, globals and defines that are defined in the VOInternetClasses assembly.
+      </summary>
+      <summary></summary>
+    </member>
+  </members>
+</doc>

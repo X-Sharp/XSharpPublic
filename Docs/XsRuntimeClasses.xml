@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <members>
+  <member name="T:XSharp.Core.Functions">
+  <summary>
+  This compiler generated class contains all the functions, globals and defines that are defined in the XSharp.Core assembly.
+  </summary>
+  </member>
+  <member name="T:XSharp.RT.Functions">
+  <summary>
+  This compiler generated class contains all the functions, globals and defines that are defined in the XSharp.RT assembly.
+  </summary>
+  </member>
+  <member name="T:XSharp.VO.Functions">
+  <summary>
+  This compiler generated class contains all the functions, globals and defines that are defined in the XSharp.VO assembly.
+  </summary>
+  </member>
+  <member name="T:XSharp.XPP.Functions">
+  <summary>
+  This compiler generated class contains all the functions, globals and defines that are defined in the XSharp.XPP assembly.
+  </summary>
+  </member>
+  </members>
+</doc>

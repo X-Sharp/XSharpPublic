@@ -72,16 +72,9 @@ FUNCTION  __StringNotEquals(strLHS AS STRING, strRHS AS STRING) AS LOGIC
         notEquals := TRUE
     ENDIF
     RETURN notEquals
-    
-    /// <summary>
-    /// Remove leading and trailing spaces from a string.
-    /// </summary>
-    /// <param name="c">The string to be trimmed.</param>
-    /// <returns>
-    /// The original string without leading and trailing spaces
-    /// </returns>
-    // _FIELD->Name
 
+    // _FIELD->Name
+    /// <exclude />
 FUNCTION __FieldGet( fieldName AS STRING ) AS USUAL
     LOCAL fieldpos := FieldPos( fieldName ) AS DWORD
     LOCAL ret := NULL AS OBJECT
@@ -157,6 +150,8 @@ FUNCTION __FieldSetWa( area AS USUAL, fieldName AS STRING, uValue AS USUAL ) AS 
     // Note: must return the same value passed in, to allow chained assignment expressions
     RETURN uValue
 
+    // (area)->(Expression)    
+    /// <exclude />
 FUNCTION __AreaEval<T>(area AS USUAL, action AS @@Func<T>) AS USUAL
     LOCAL newArea := _Select( area ) AS DWORD
     LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
@@ -173,7 +168,10 @@ FUNCTION __AreaEval<T>(area AS USUAL, action AS @@Func<T>) AS USUAL
         THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(area),1, area  )
     ENDIF
     RETURN result
-    
+
+
+    // (area)->(VoidExpression)    
+    /// <exclude />
 FUNCTION __AreaEval(area AS USUAL, action AS System.Action) AS LOGIC
     LOCAL newArea := _Select( area ) AS DWORD
     LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
@@ -222,8 +220,9 @@ FUNCTION __VarPut(cName AS STRING, uValue AS USUAL) AS USUAL
     
     
     // ALIAS->(DoSomething())
-    // is translated to
+    // is sometimes translated to
     // __pushWorkarea( alias ) ; DoSomething() ; __popWorkArea()
+    // can also be come __AreaEval(..)
     
 /// <exclude/>
 FUNCTION __pushWorkarea( alias AS USUAL ) AS VOID

@@ -6,7 +6,14 @@ USING XSharp.RDD
 FUNCTION Start() AS VOID
     LOCAL cb AS CODEBLOCK
     TRY
-        testIndexNoExtension()
+        TestIndexUpdates()
+        //testVFPFiles()
+        //testOrdNameInvalid()
+        //aevalNil()
+        //testFptMemo()
+        //testUpdateCdx()
+        //testOverFlow()
+        //testIndexNoExtension()
         //testRelation()
         //testCustomIndex()
         //testOrdDescend()
@@ -63,6 +70,263 @@ FUNCTION Start() AS VOID
     END TRY
     WAIT
     RETURN
+
+DEFINE records := 500 // with 20 it's ok, but not with 21
+DEFINE changes := 250
+FUNCTION TestIndexUpdates() 
+    LOCAL aFields AS ARRAY
+    LOCAL cDBF AS STRING
+    LOCAL n AS DWORD
+    LOCAL c AS STRING
+    RddSetDefault("DBFCDX")
+    cDBF := "C:\test\cdxtest"
+    aFields := { { "LAST" , "C" , 40 , 0 } , { "FIRST" , "C" , 50 , 0 }}
+    FErase(cDBF + ".cdx")
+    
+    DBCREATE( cDBF , AFields)
+    
+    DBUSEAREA(,,cDBF)
+    DBCREATEINDEX(cDBF , "LAST" , {||_FIELD->LAST})
+    FOR n := 1 UPTO records
+        c := CHR( 65 + ((n * 41) % 26) )
+        c := Replicate(c , 1 + ((n * 31) % 35) )
+        DBAPPEND()
+        FIELDPUT(1, c)
+    NEXT
+    DbCommit()
+    DbOrderInfo(DBOI_USER+42)
+    CheckOrder()   
+
+    FOR  n := 1 UPTO changes
+        VAR nRec := 1 + (n * 13) % (records - 1)
+        DbGoto(nRec)
+        c := CHR( 65 + ((n * 21) % 26) )
+        c := Replicate(c , 1 + ((n * 23) % 35) )
+        FIELDPUT(1, c)
+    NEXT
+    
+    CheckOrder()
+    DbOrderInfo(DBOI_USER+42)
+    DBCLOSEALL()   
+    WAIT
+RETURN  NIL
+
+PROCEDURE CheckOrder()
+    LOCAL nCount := 0 AS INT
+    LOCAL cPrev := NULL_STRING AS STRING
+    DbGotop()
+    DO WHILE .NOT. EOF()
+        nCount ++
+        IF cPrev != NULL_STRING
+            IF cPrev > FIELDGET(1)
+                ? "Wrong order at recno", RECNO(), cPrev, FieldGet(1)
+            END IF
+        END IF
+        cPrev := FIELDGET(1)
+        DBSKIP(1)
+    END DO
+    
+    IF nCount != records
+        ? "Wrong record count", nCount
+    END IF
+    
+RETURN 
+
+FUNCTION TestVFPFiles() AS VOID
+LOCAL cDbf AS STRING
+LOCAL aStruct AS ARRAY
+RddSetDefault("DBFCDX")
+//RddInfo(SET.AUTOOPEN, FALSE)
+cDbf := "c:\test\bldquery.vcx"
+cDbf := "c:\test\solution.scx"
+cDbf := "c:\test\ADMKERTO.DBC"
+DbUseArea(,,cDbf)
+aStruct := DbStruct()
+DbSetOrder(1)
+
+DbSetFilter(,"ObjectType='Table'")
+DbGoTop()
+DO WHILE ! eof()
+    ? recno()
+    FOREACH aField AS ARRAY IN aStruct
+        ?? /*aField[1], ":", */IIF(aField[1] != "OBJCODE", Trim(AsString(FieldGetSym(aField[1]))), "<binary>"),""
+    NEXT
+    ?
+    DbSkip(1)
+ENDDO
+RETURN
+
+
+
+FUNCTION TestOrdNameInvalid() AS VOID
+LOCAL cDBF, cDriver AS STRING
+LOCAL aFields, aValues AS ARRAY
+LOCAL i AS DWORD
+
+RDDSetDefault ( "DBFNTX" )
+
+aFields := { { "LAST" , "C" , 20 , 0 }}
+aValues := { "b" , "c" , "d", "e" , "a" }
+
+cDBF := "C:\test\mydbf"
+
+? "Ferase" , FErase ( cDBF + IndexExt() )
+// -----------------
+? DBCreate( cDBF , AFields)
+? DBUseArea(,,cDBF )
+
+FOR i := 1 UPTO ALen ( aValues )
+DBAppend()
+FieldPut ( 1 , aValues [ i ] )
+NEXT
+
+FOR i := 1 UPTO 3
+? DBCreateOrder ( "ORDER" +NTrim ( i ) , cDBF+NTrim ( i ) , "upper(LAST)" , { ||Upper ( _FIELD->LAST) } )
+NEXT
+DbClearIndex()
+OrdListAdd(cDBF+"1")
+OrdListAdd(cDBF+"2")
+OrdListAdd(cDBF+"3")
+?
+DBSetOrder ( 2 )
+? OrdBagName ( 1 ) // ok
+? OrdBagName ( 2 ) // ok
+? OrdBagName ( 3 ) // ok
+? OrdBagName ( "order1" ) // ok
+? OrdBagName ( 4 ) // order doesn/t exist, must return ""
+? OrdBagName ( "order4" ) // order doesn/t exist, must return ""
+?
+? OrdNumber ( "order4") // order doesn/t exist, must return 0 instead of 2
+? OrdNumber ( 4 ) // order doesn/t exist, must return 0 instead of 2
+? OrdNumber() // ok , current order is 2
+?
+? OrdName() // ok, "ORDER2" is the current order
+? OrdName(3) // ok, "ORDER3"
+? OrdName("ORDER3") // ok, "ORDER3"
+? OrdName(4) // order doesn/t exist, must return ""
+? OrdName("ORDER4") // order doesn/t exist, must return ""
+
+DBCloseAll()
+RETURN
+
+FUNCTION AevalNil() AS VOID
+LOCAL aArr AS ARRAY
+
+aArr := {1,2,3}
+AEval(aArr, {|x| Console.WriteLine((INT)x)},NIL,NIL) 
+RETURN
+
+FUNCTION testFptMemo() AS VOID
+LOCAL aFields AS ARRAY
+LOCAL cDBF AS STRING
+
+RDDSetDefault("DBFCDX")
+cDBF := "c:\test\mytest"
+aFields := { { "LAST" , "C" , 20 , 0 } , ;
+{ "COMMENTS" , "M" , 10 , 0 }}
+FErase(cDBF + ".dbt")
+FErase(cDBF + ".fpt")
+
+? DBCreate( cDBF , AFields) // generates .dbt file
+// ? DBCreate( cDBF , AFields , "DBFCDX") // same
+
+? File(cDBF + ".dbt")
+? File(cDBF + ".fpt")
+
+IF File(cDBF + ".dbt")
+    FRename(cDBF + ".dbt",cDBF + ".fpt")
+END IF
+? DBUseArea(,,cDBF) // fails because it searchs for a .dbt file
+DBCloseAll()
+RETURN 
+
+FUNCTION testUpdateCdx AS VOID
+	LOCAL cDBF AS STRING
+	LOCAL aFields, aValues AS ARRAY 
+	LOCAL cPrev AS STRING
+	LOCAL nCount AS INT
+	LOCAL i AS DWORD
+	
+	RDDSetDefault ( "DBFCDX" )
+	
+	aFields := { { "NUM" , "N" , 8 , 0 },{ "LAST" , "C" , 100 , 0 }} 
+	aValues := { "b" , "c" , "d", "e" , "a" , "r" , "t" , "g" , "m" , "n" , "t" , "b" , "h" , "f" , "y", "r", "t", "y", "z", "v", "e", "r", "b", "z", "b", "m", "w", "e" }
+	
+	cDBF := "C:\test\mycdx"
+	? "Ferase" , FErase ( cDbf + IndexExt() )       
+
+	DBCreate( cDBF , AFields)
+	DBUseArea(,,cDBF )
+	FOR i := 1 UPTO ALen ( aValues )
+		DBAppend()
+		FieldPut ( 1 , i )                                      
+		FieldPut ( 2 , Replicate( aValues [ i ] , 50) )
+	NEXT
+	DBCreateIndex ( cDBF , "NUM" , {||_FIELD->NUM})
+	DBCreateOrder ( "LAST" , cDBF , "LAST" , {||_FIELD->LAST})
+	DBCloseAll()
+	
+
+	DBUseArea(,,cDBF )
+	DBSetOrder(2)
+	DBGoBottom()
+	
+	FieldPut(2, "a")
+	DBSkip(-5)
+	FieldPut(2, "d")
+	DBSkip(5)
+	FieldPut(2, "z")
+	
+
+	cPrev := NULL
+	nCount := 0
+	DBGoTop()
+	DO WHILE .NOT. EoF()
+		nCount ++
+		? AllTrim(FieldGet(2))
+		IF cPrev != NULL
+			IF .NOT. (cPrev <= FieldGet(2))
+				? " *** incorrect order ***"
+			ENDIF
+		END IF
+		cPrev := FieldGet(2)
+		DBSkip()
+	END DO
+	? ALen(aValues), nCount
+	?
+	? "no order"
+	DBSetOrder(0)
+	DBGoTop()
+	DO WHILE .NOT. EoF()
+		? AllTrim(FieldGet(2))
+		DBSkip()
+	END DO
+
+	DBCloseArea()
+RETURN
+
+FUNCTION testOverflow() AS VOID
+LOCAL cDBF AS STRING
+
+cDBF := "c:\test\test"
+FErase(cDBF + ".ntx")
+FErase(cDBF + ".cdx")
+
+RDDSetDefault("DBFNTX")
+
+DBCreate( cDBF , {{ "AGE" , "N" , 4 , 1 }})
+DBUseArea(,,cDBF, ,FALSE)
+DBAppend()
+FieldPut(1,12345)
+
+? FieldGet(1) // exception
+
+DBCreateIndex( cDbf, "age" ) // exception
+
+DBCloseArea()
+RETURN
+
+
 FUNCTION TestIndexNoExtension AS VOID
 LOCAL cDBF, cPfad, cIndex AS STRING
 LOCAL aFields, aValues AS ARRAY
@@ -349,8 +613,8 @@ LOCAL cDBF AS STRING
 LOCAL aFields, aValues AS ARRAY
 LOCAL i AS DWORD
 
-RDDSetDefault("DBFNTX")
-//RDDSetDefault("DBFCDX")
+//RDDSetDefault("DBFNTX")
+RDDSetDefault("DBFCDX")
 
 cDbf := "C:\test\mycdx"
 FErase(cDbf + ".ntx")

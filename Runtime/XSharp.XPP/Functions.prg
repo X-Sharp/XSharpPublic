@@ -124,7 +124,7 @@ CLASS XSharp.XPP.ClassObject
         LOCAL oRes AS OBJECT
         LOCAL oParams AS OBJECT[]
         IF aParams:Length > 0
-            oParams := __UsualArrayToObjectArray(aParams)
+            oParams := _UsualArrayToObjectArray(aParams)
         ELSE
             oParams := OBJECT[]{ 0 }
         ENDIF

@@ -6,6 +6,19 @@
     <header>
       <para styleclass="Heading1">XSharp.VO</para>
     </header>
-    <para styleclass="Normal">This DLL adds some specific types and functions that are unique to the VO and Vulcan dialect</para>
+    <para styleclass="Normal">This DLL adds some specific types and functions that are unique to the VO and Vulcan dialect. Functions such as <br/>QueryRtRegInt() </para>
+    <para styleclass="Normal">QueryRtRegString()</para>
+    <para styleclass="Normal">MB..()</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Also many obsolete functions from VO are in this DLL.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This DLL also contains the classes</para>
+    <para styleclass="Normal">ErrorDialog</para>
+    <para styleclass="Normal">NameArg</para>
+    <para styleclass="Normal">OleAutoObject</para>
+    <para styleclass="Normal">OleAutoObjectFromFile</para>
+    <para styleclass="Normal">OleDateTime</para>
+    <para styleclass="Normal">VObject</para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

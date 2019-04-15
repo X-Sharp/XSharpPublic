@@ -8,7 +8,7 @@
     </header>
     <para styleclass="Body Text">The X# compiler can run in different dialects. The table below shows the differences between these dialects.<br/>You can use the /dialect compiler option to select the dialect that you want to use. The Core dialect is default.</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="40" colcount="5" style="width:auto; border-width:1px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="40" colcount="6" style="width:auto; border-width:1px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
       <thead style="vertical-align:top">
         <td style="width:40%;">
           <para styleclass="Normal"><text style="font-weight:bold;">Feature</text></para>
@@ -24,6 +24,10 @@
         </td>
         <td style="width:15%;">
           <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Xbase++</text><br/><text style="font-weight:bold;">1,2</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">FoxPro</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">not implemented yet</text></para>
         </td>
       </thead>
       <tr style="vertical-align:top">
@@ -43,6 +47,8 @@
         <td>
           <para styleclass="Normal">Follow the conventions of Xbase++</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -59,6 +65,8 @@
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -77,6 +85,8 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -93,6 +103,8 @@
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -111,6 +123,8 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -127,6 +141,8 @@
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -145,6 +161,8 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -161,6 +179,8 @@
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -179,6 +199,8 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -195,6 +217,8 @@
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -213,6 +237,8 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -229,6 +255,8 @@
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -247,6 +275,8 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -263,6 +293,8 @@
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -281,6 +313,8 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -297,6 +331,8 @@
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -315,6 +351,8 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -331,6 +369,8 @@
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -349,6 +389,8 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -365,6 +407,8 @@
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -383,6 +427,8 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -399,6 +445,8 @@
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -417,6 +465,8 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -434,6 +484,8 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -448,6 +500,8 @@
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -466,6 +520,8 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -482,6 +538,8 @@
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -500,6 +558,8 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -514,6 +574,8 @@
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -532,6 +594,8 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -548,6 +612,8 @@
         </td>
         <td>
           <para styleclass="Normal">Yes 5</para>
+        </td>
+        <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -566,6 +632,8 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -582,6 +650,8 @@
         </td>
         <td>
           <para styleclass="Normal">Yes 6</para>
+        </td>
+        <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -600,6 +670,8 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -617,12 +689,16 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
           <para styleclass="Normal"><text style="font-weight:bold;">Other information</text></para>
         </td>
         <td style="width:71px;">
+        </td>
+        <td>
         </td>
         <td>
         </td>
@@ -641,6 +717,8 @@
         <td colspan="3">
           <para styleclass="Normal">&lt;AssemblyName&gt;.Functions (DLLs) <br/>&lt;AssemblyName&gt;.Exe.Functions (EXEs)<br/>&lt;AssemblyName&gt;.Exe.$&lt;ModuleName&gt;$.Functions <br/>for static functions and globals</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -658,6 +736,8 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -674,6 +754,8 @@
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
         </td>
       </tr>
     </table></para>

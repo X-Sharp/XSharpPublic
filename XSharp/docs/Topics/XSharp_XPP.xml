@@ -6,6 +6,14 @@
     <header>
       <para styleclass="Heading1">XSharp.XPP</para>
     </header>
-    <para styleclass="Normal">This DLL adds some specific types and functions that are unique to the Xbase++ dialect</para>
+    <para styleclass="Normal">This DLL adds some specific types and functions that are unique to the Xbase++ dialect and also many of the Xbase++ defines.</para>
+    <para styleclass="Normal">Functions such as</para>
+    <para styleclass="Normal">ClassCreate</para>
+    <para styleclass="Normal">ClassDestroy()</para>
+    <para styleclass="Normal">ClassObject()</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Also some Xbase++ specific types such as </para>
+    <para styleclass="Normal">Abstract</para>
+    <para styleclass="Normal">ClassObject</para>
   </body>
 </topic>

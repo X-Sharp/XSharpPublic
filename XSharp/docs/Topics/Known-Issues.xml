@@ -13,7 +13,7 @@
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Some VO <link displaytype="text" defaultstyle="true" type="topiclink" href="X-Compiler-Options-By-Category">compatibility compiler options</link> are not implemented yet. The command line options are recognized but nothing is done with them<br/>/cs: Case Sensitivity (the compiler is now always Case Insensitive)<br/>/vo 11: VO Compatible Numeric conversions</li>
       <li styleclass="List">The compiler pragmas (#pragma warnings and #pragma options) do not work. They are ignored by the compiler.</li>
-      <li styleclass="List">Parser errors need improvements<br/>Erroneous code may generate compiler runtime errors</li>
+      <li styleclass="List">Some parser errors need improvements</li>
       <li styleclass="List">Compiler errors may be cryptic every now and then</li>
       <li styleclass="List">The compiler is case insensitive. There may be a problem with case insensitive matching of interface member names. The case insensitivity cannot be switched off for now. <br/>We have also seen problems for classes where different member names are defined with a name that is only different in case. </li>
       <li styleclass="List">Sometimes you may see a &quot;Include file not found&quot; error, where the file DOES exist. This seems to be a side effect of the codepage that was used to save the include files. <br/>When you save the file as UTF8 (File Advanced Save Options in Visual Studio) then this problem almost always disappears.</li>
@@ -29,6 +29,7 @@
     <para styleclass="Heading2">Runtime</para>
     <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List"><text styleclass="Normal">Some runtime functions are not supported yet. </text></li>
+      <li styleclass="List"><text styleclass="Normal">The DBFCDX RDD is not available yet</text></li>
     </list>
   </body>
 </topic>

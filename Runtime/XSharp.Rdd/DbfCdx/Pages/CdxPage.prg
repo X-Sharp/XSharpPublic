@@ -35,7 +35,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY PageNo AS Int32 GET _nPage SET _nPage := VALUE
 
 
-        protected virtual method _setTag(newTag as CdxTag) as void
+        PROTECTED VIRTUAL METHOD _setTag(newTag AS CdxTag) AS VOID
             _tag := newTag
 
         PROTECTED INTERNAL CONSTRUCTOR( bag AS CdxOrderBag )
@@ -73,8 +73,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL METHOD SetEmptyRoot() AS VOID
             SELF:Clear()
-            SELF:PageType  := CdxPageType.Leaf
-            VAR oLeaf := CdxLeafPage{SELF:_bag,SELF}
+            SELF:PageType   := CdxPageType.Leaf
+            VAR oLeaf       := CdxLeafPage{SELF:_bag,SELF}
             oLeaf:InitBlank(SELF:_tag)
             SELF:PageType  := CdxPageType.Leaf | CdxPageType.Root
             SELF:Write()
@@ -97,11 +97,27 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	            nValue:b1 := buffer[nOffSet]
                 nValue:b2 := buffer[nOffSet+1]
                 RETURN nValue:wordValue
+
+           [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			PROTECTED INTERNAL METHOD _GetShort(nOffSet AS INT) AS SHORT
+                LOCAL nValue := WordStruct{} AS WordStruct
+	            nValue:b1 := buffer[nOffSet]
+                nValue:b2 := buffer[nOffSet+1]
+                RETURN nValue:ShortValue
 				
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _SetWord(nOffSet AS INT, wValue AS WORD) AS VOID
                 LOCAL nValue := WordStruct{} AS WordStruct
                 nValue:wordValue := wValue
+	            buffer[nOffSet]   := nValue:b1
+                buffer[nOffSet+1] := nValue:b2
+				_hot := TRUE
+                RETURN 
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			PROTECTED INTERNAL METHOD _SetShort(nOffSet AS INT, siValue AS SHORT) AS VOID
+                LOCAL nValue := WordStruct{} AS WordStruct
+                nValue:shortValue := siValue
 	            buffer[nOffSet]   := nValue:b1
                 buffer[nOffSet+1] := nValue:b2
 				_hot := TRUE
@@ -224,6 +240,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL VIRTUAL METHOD Dump AS STRING
             RETURN String.Empty
 
+ 
        
 	END CLASS
 

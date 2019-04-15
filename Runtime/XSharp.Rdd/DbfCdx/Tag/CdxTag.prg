@@ -55,7 +55,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _Header AS CdxTagHeader
 
         PRIVATE _stack          AS CdxPageStack
-        PRIVATE __Compare       AS CompareFunc
+        INTERNAL __Compare       AS CompareFunc
 
         PRIVATE _bag            AS CdxOrderBag
         PRIVATE getKeyValue     AS ValueBlock       // Delegate to calculate the key
@@ -77,7 +77,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY FileName 	        AS STRING GET _bag:FullPath
         INTERNAL PROPERTY OrderBag          AS CdxOrderBag GET SELF:_bag
         INTERNAL PROPERTY Page              AS Int32 AUTO
-        INTERNAL PROPERTY Descending        AS LOGIC GET _Descending SET _Descending := value
+        INTERNAL PROPERTY Descending        AS LOGIC GET _Descending SET _Descending := VALUE
         INTERNAL PROPERTY IsConditional     AS LOGIC GET Options:HasFlag(CdxOptions.HasFor)
         INTERNAL PROPERTY IsHot             AS LOGIC GET _Hot
         INTERNAL PROPERTY Header            AS CdxTagHeader GET _Header
@@ -569,11 +569,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL PROPERTY CurrentTop  AS CdxTreePage GET SELF:_Stack:Top:Page 
 
-        INTERNAL METHOD InsertOnStack(oPage AS CdxTreePage, oBefore AS CdxTreePage) AS LOGIC
-            SELF:_stack:Insertbefore(oBefore, oPage)
+        INTERNAL METHOD InsertOnTop(oPage AS CdxTreePage) AS LOGIC
+            SELF:_stack:InsertOnTop(oPage)
             RETURN TRUE
 
-        PRIVATE METHOD AdjustStack(originalPage AS CdxTreePage, oPage AS CdxTreePage, nPos AS WORD) AS VOID
+        INTERNAL METHOD AdjustStack(originalPage AS CdxTreePage, oPage AS CdxTreePage, nPos AS WORD) AS VOID
             SELF:_stack:Replace(originalPage, oPage, nPos)
             RETURN
 

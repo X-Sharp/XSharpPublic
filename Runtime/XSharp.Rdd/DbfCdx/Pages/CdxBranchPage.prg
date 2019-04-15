@@ -51,9 +51,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     INTERNAL CLASS CdxBranchPage INHERIT CdxTreePage 
         PROTECTED _keyLen    AS Int32
         PROTECTED _maxKeys   AS Int32
-        PRIVATE   _numKeys   as WORD
-        PRIVATE   _leftPtr   as LONG
-        PRIVATE   _rightPtr  as LONG
+        PRIVATE   _numKeys   AS WORD
+        PRIVATE   _leftPtr   AS LONG
+        PRIVATE   _rightPtr  AS LONG
        
        #region Constants
         PRIVATE CONST CDXBRANCH_OFFSET_NUMKEYS		:= 2	AS WORD 
@@ -63,13 +63,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE CONST CDXBRANCH_BYTESFREE           := 500  AS WORD
         #endregion
         
-        INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS Word)
+        INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS WORD)
             SUPER(bag, nPage, buffer)
             SELF:_keyLen  := nKeyLen
             SELF:_maxKeys := MaxKeysPerPage(nKeyLen)
             SELF:_getValues()
 
-        PRIVATE METHOD _getValues() as VOID
+        PRIVATE METHOD _getValues() AS VOID
             _numKeys  := _GetWord(CDXBRANCH_OFFSET_NUMKEYS)
             _leftPtr  := _GetLong(CDXBRANCH_OFFSET_LEFTPTR)
             _rightPtr := _GetLong(CDXBRANCH_OFFSET_RIGHTPTR)
@@ -84,7 +84,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN
 
         PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
-            LOCAL lOk as LOGIC
+            LOCAL lOk AS LOGIC
             lOk := SUPER:Read()
             IF lOk
                 SELF:_getValues()
@@ -139,23 +139,33 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         // The _Set.. methods set the isHot flag of the page automatically
             
         PUBLIC PROPERTY NumKeys AS WORD     GET _numkeys ;
-            SET _SetWord(CDXBRANCH_OFFSET_NUMKEYS, VALUE),  _numKeys := Value
+            SET _SetWord(CDXBRANCH_OFFSET_NUMKEYS, VALUE),  _numKeys := VALUE
             
         INTERNAL PROPERTY LeftPtr AS Int32  GET _leftPtr ;
-            SET _SetLong(CDXBRANCH_OFFSET_LEFTPTR, VALUE),  _leftPtr := Value
+            SET _SetLong(CDXBRANCH_OFFSET_LEFTPTR, VALUE),  _leftPtr := VALUE
             
         INTERNAL PROPERTY RightPtr AS Int32 GET _rightPtr ; 
-            SET _SetLong(CDXBRANCH_OFFSET_RIGHTPTR, VALUE),  _rightPtr := Value
+            SET _SetLong(CDXBRANCH_OFFSET_RIGHTPTR, VALUE),  _rightPtr := VALUE
 
-        INTERNAL PROPERTY LastNode AS CdxPageNode GET SELF[SELF:NumKeys-1]
+        INTERNAL PROPERTY LastNode AS CdxPageNode GET IIF(SELF:NumKeys == 0, NULL, SELF[SELF:NumKeys-1])
         
         INTERNAL PROPERTY MaxKeys AS LONG GET _maxKeys
         
         #endregion                
-        
+
+        INTERNAL METHOD FindKey(keyToFind AS BYTE[]) AS LONG
+            FOR VAR i := 0 TO NumKeys-1
+                VAR currentKey := GetKey(i)
+                VAR nDiff := SELF:Tag:__Compare(currentKey, keyToFind, keyToFind:Length)
+                IF nDiff > 0
+                    RETURN i
+                ENDIF
+            NEXT
+            RETURN -1
+
         INTERNAL METHOD Add(node AS CdxPageNode) AS CdxAction
             IF SELF:NumKeys >= SELF:MaxKeys
-                RETURN CdxAction.SplitBranch(SELF, node:Page:PageNo, node:Recno, node:KeyBytes)
+                RETURN CdxAction.AddBranch(SELF, node:Page:PageNo, node:Recno, node:KeyBytes)
             ENDIF
             LOCAL nPos := SELF:NumKeys AS WORD
             SELF:NumKeys++
@@ -167,7 +177,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
          INTERNAL METHOD Add(recno AS LONG, childPage AS LONG, key AS BYTE[]) AS CdxAction
             IF SELF:NumKeys >= SELF:MaxKeys
-                RETURN CdxAction.SplitBranch(SELF, childPage, recno, key)
+                RETURN CdxAction.AddBranch(SELF, childPage, recno, key)
             ENDIF
             LOCAL nPos := SELF:NumKeys AS WORD
             SELF:NumKeys++
@@ -183,8 +193,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD Insert(nPos AS LONG, node AS CdxPageNode) AS CdxAction
             LOCAL nMax := SELF:NumKeys AS WORD
             // we allow to write at the position nMax
-            IF nPos >= SELF:MaxKeys -1
-                RETURN CdxAction.SplitBranch(SELF, node:ChildPageNo, node:Recno, node:KeyBytes)
+            IF SELF:NumKeys == SELF:MaxKeys
+                RETURN CdxAction.SplitBranch(SELF, node:Page:PageNo, node:Recno, node:KeyBytes, nPos)
             ENDIF
             IF nPos == nMax                 // Insert at end of list
                 SELF:NumKeys += 1
@@ -199,9 +209,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:NumKeys += 1
             FOR VAR nI := nMax-1 DOWNTO nPos
                 SELF:_copyNode(nI, nI+1)
-                if nI == 0
-                    exit
-                endif
+                IF nI == 0
+                    EXIT
+                ENDIF
             NEXT
             // and insert at the right spot
             _setNode(nPos, node)
@@ -220,7 +230,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // node contains recno & keydata
             // node:Page has value for ChildPageNo
             // TODO Use MemCopy or ArrayCopy in stead for better performance
-            if nMax > 1
+            IF nMax > 1
                 FOR VAR nI := nPos TO nMax-2
                     SELF:_copyNode(nI+1, nI)
                 NEXT
@@ -239,13 +249,32 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN result
 
 
+ 
+        INTERNAL METHOD Split(oTarget AS CdxBranchPage, action AS CdxAction) AS CdxAction
+            LOCAL branches  := SELF:Branches AS List<CdxBranch>
+            branches:Insert(action:Pos, CdxBranch{action:Recno, action:ChildPage, action:Key})
+            SELF:NumKeys := 0
+            LOCAL half := branches:Count / 2 AS LONG
+            FOR VAR i := 0 TO half
+                VAR node := branches[i]
+                SELF:Add(node:Recno, node:ChildPage, node:Key)
+            NEXT
+            FOR VAR I := half+1 TO branches:Count-1
+                VAR node := branches[i]
+                oTarget:Add(node:Recno, node:ChildPage, node:Key)
+            NEXT
+            RETURN CdxAction.Ok
+
+
+
+
             
         INTERNAL METHOD Replace(nPos AS LONG, node AS CdxPageNode) AS CdxAction
             LOCAL nMax := SELF:NumKeys AS WORD
             IF nPos < 0 .OR. nPos >= nMax
                 RETURN CdxAction.OutOfBounds(SELF)
             ENDIF
-            var result := _setNode(nPos, node)
+            VAR result := _setNode(nPos, node)
             SELF:Write()
             RETURN result
 
@@ -268,7 +297,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
         INTERNAL METHOD Dump AS STRING
             LOCAL Sb AS stringBuilder
-            LOCAL i as WORD
+            LOCAL i AS WORD
             sb := stringBuilder{}
             VAR item := SELF[0]
             sb:AppendLine("--------------------------")

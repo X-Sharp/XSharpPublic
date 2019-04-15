@@ -21,7 +21,7 @@
 #define Version             "2.0.1.0"
 #define FileNameVersion     "2RC1"
 #define VIVersion           "2.0.1.0"
-#define TouchDate           "2019-04-01"
+#define TouchDate           "2019-04-15"
 #define TouchTime           "02:10:00"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
@@ -87,8 +87,8 @@
 #define XIDEFolder          DevFolder + "\Xide\"
 
 #define SnippetsSource      DevPublicFolder + "\VisualStudio\ProjectPackage\Snippets\"
-#define XIDESetup           "XIDE_Set_up_1.16.exe"
-#define XIDEVersion         "1.16"
+#define XIDESetup           "XIDE_Set_up_1.17.exe"
+#define XIDEVersion         "1.17"
 #define StdFlags            "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
 #define GACInstall          "gacinstall uninsnosharedfileprompt uninsrestartdelete"
 #define GACShared           "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"

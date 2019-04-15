@@ -40,7 +40,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END SET
         END PROPERTY
 
-        INTERNAL PROPERTY KeyText AS STRING GET KeyBytes:ToAscii(TRUE)
+        INTERNAL PROPERTY KeyText AS STRING GET KeyBytes:ToAscii(FALSE)
 
 		// Retrieve/set the PageNo/PageOffset of the Item
 		// It is on top of the Item's bytes

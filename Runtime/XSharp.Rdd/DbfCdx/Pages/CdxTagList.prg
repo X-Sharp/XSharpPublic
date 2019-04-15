@@ -43,7 +43,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROPERTY Tags AS IList<cdxTag> GET _tags
 
         INTERNAL VIRTUAL METHOD Initialize(keyLength AS WORD) AS VOID
-            
             SUPER:Initialize(keyLength)
             _tags := List<CdxTag>{}
             SELF:PageType := CdxPageType.Leaf + CdxPageType.Root

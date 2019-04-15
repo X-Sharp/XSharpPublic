@@ -652,8 +652,8 @@ FUNCTION FReadStr(pFile AS IntPtr,iCount AS DWORD) AS STRING
 /// <summary>
 /// Read characters from a file into a buffer variable that is passed by reference.
 /// </summary>
-/// <param name="strValue"></param>
-/// <returns>The number of bytes successfully read.  A return value less than the number specified 0 indicates
+/// <param name="strValue">Reference to a variable that reseives the text read from the file.</param>
+/// <returns>The number of bytes successfully read.  A return value less than the number specified in <param ref name="dwCount" /> indicates
 /// end-of-file or some other read error.  FError() can be used to determine the specific error.</returns>
 /// <inheritdoc cref="M:XSharp.Core.Functions.FRead3(System.IntPtr,System.Byte[],System.UInt32)" />
 /// <include file="CoreComments.xml" path="Comments/File/*" />

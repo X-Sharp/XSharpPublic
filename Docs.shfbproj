@@ -21,16 +21,16 @@
     <Language>en-US</Language>
     <DocumentationSources>
       <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.Core\XSharp.Core.XML" />
-      <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.Core\XSharp.Core.dll" />
-      <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.VO\XSharp.VO.XML" />
-      <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.VO\XSharp.VO.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.dll" />
-      <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.XPP\XSharp.XPP.XML" />
-      <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.XPP\XSharp.XPP.dll" />
-      <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.RT\XSharp.RT.XML" />
-      <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.RT\XSharp.RT.dll" />
-    </DocumentationSources>
+<DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.Core\XSharp.Core.dll" />
+<DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.VO\XSharp.VO.XML" />
+<DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.VO\XSharp.VO.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.dll" />
+<DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.XPP\XSharp.XPP.XML" />
+<DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.XPP\XSharp.XPP.dll" />
+<DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.RT\XSharp.RT.XML" />
+<DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.RT\XSharp.RT.dll" />
+<DocumentationSource sourceFile="Docs\XsRuntimeClasses.xml" /></DocumentationSources>
     <HelpTitle>X# Runtime Reference</HelpTitle>
     <HelpFileVersion>2.0.1.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
@@ -556,7 +556,8 @@
     </FooterText>
     <SourceCodeBasePath>c:\XSharp\DevRt\</SourceCodeBasePath>
     <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>
-    <PlugInConfigurations />
+    <PlugInConfigurations>
+    </PlugInConfigurations>
     <RootNamespaceTitle>X# Runtime Reference</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.info/licensing/xsharp-open-software-license</CopyrightHref>
     <CopyrightText>Copyright &amp;#169%3b 2015-2019 XSharp BV, All rights reserved</CopyrightText>

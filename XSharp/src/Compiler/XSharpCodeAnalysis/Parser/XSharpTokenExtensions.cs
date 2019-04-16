@@ -1642,6 +1642,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 return context.GetChild(0) is XSharpParser.AliasedExpressionContext;
             }
+            else if (context is XSharpParser.ArrayElementContext aec)
+            {
+                return aec.Expr.IsAliasExpression();
+            }
             return false;
         }
         public static bool IsBinaryExpression(this IXParseTree context)

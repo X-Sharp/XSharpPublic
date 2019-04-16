@@ -1068,6 +1068,20 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return ID;
                     }
                     break;
+                case IMPLIED:
+                    // after the following tokens it is always IMPLIED
+                    switch (lastToken)
+                    {
+                        case EOS:
+                        case SEMI:
+                        case LOCAL:
+                        case STATIC:
+                        case FOR:
+                        case FOREACH:
+                        case USING:
+                            return IMPLIED;
+                    }
+                    return ID;
                 case NAMESPACE:
                 case SCOPE:
                 case LOCK:

@@ -3995,6 +3995,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitAliasedExpression([NotNull] XP.AliasedExpressionContext context)
         {
             context.Put(context.Expr.Get<CSharpSyntaxNode>());
+            context.XSharpRuntime = _options.XSharpRuntime;
         }
 
         public override void ExitAliasedField([NotNull] XP.AliasedFieldContext context)

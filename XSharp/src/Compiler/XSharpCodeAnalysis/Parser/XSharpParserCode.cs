@@ -603,6 +603,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             public bool Hasbeenhandled;
         }
+        public partial class AliasedExpressionContext
+        {
+            public bool XSharpRuntime;
+        }
         public partial class XpppropertyContext : IEntityContext
         {
             EntityData data = new EntityData();
@@ -851,7 +855,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 || (parent is XSharpParser.Structure_Context);
         }
 
-        internal static bool IsRealCodeBlock([NotNull] this IXParseTree context )
+        internal static bool IsRealCodeBlock([NotNull] this IXParseTree context)
         {
 
             if (context is XSharpParser.ArrayElementContext aelc)
@@ -860,8 +864,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return pec.Expr.IsRealCodeBlock();
             if (context is XSharpParser.CodeblockExpressionContext cec)
                 return cec.CbExpr.IsRealCodeBlock();
-            if (context is XSharpParser.AliasedExpressionContext)
-                return false;
+            if (context is XSharpParser.AliasedExpressionContext aexc)
+            {
+                if (aexc.XSharpRuntime)
+                { 
+                    return false;
+                }
+            }
             if (context is XSharpParser.CodeblockCodeContext)
                 return ((IXParseTree) context.Parent).IsRealCodeBlock();
             if (context is XSharpParser.CodeblockContext cbc)

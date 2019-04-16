@@ -1343,33 +1343,35 @@ namespace XSharp.Project
 
         #region IXSharpProject Interface
         protected IVsStatusbar statusBar;
-        protected bool lTriedToGetStatusBar = false;
-        public void SetStatusBarText(string msg)
+
+        private void getStatusBar()
         {
             if (statusBar == null && !lTriedToGetStatusBar)
             {
                 statusBar = Site.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
                 lTriedToGetStatusBar = true;
             }
+        }
 
+        protected bool lTriedToGetStatusBar = false;
+        public void SetStatusBarText(string msg)
+        {
+            getStatusBar();
             if (statusBar != null)
             {
-                statusBar.SetText(msg);
+                UIThread.DoOnUIThread( () => statusBar.SetText(msg));
             }
+
+
         }
         public void SetStatusBarAnimation(bool onoff, short idAnimation)
         {
             try
             {
-                if (statusBar == null && !lTriedToGetStatusBar)
-                {
-                    statusBar = Site.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
-                    lTriedToGetStatusBar = true;
-                }
-
+                getStatusBar();
                 if (statusBar != null)
                 {
-                    statusBar.Animation(onoff ? 1 : 0, idAnimation);
+                    UIThread.DoOnUIThread( () => statusBar.Animation(onoff ? 1 : 0, idAnimation));
                 }
             }
             catch //(Exception e)

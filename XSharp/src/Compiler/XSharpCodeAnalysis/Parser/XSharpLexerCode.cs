@@ -1068,16 +1068,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return ID;
                     }
                     break;
-                case IMPLIED:
-                case VAR:
-                    if (lastToken != EOS && lastToken != NL && lastToken != SEMI && lastToken != LOCAL && lastToken != STATIC
-                        && lastToken != FOR && lastToken != FOREACH && lastToken != USING)
-                    {
-                        // in XPP VAR is used in the class definition as well.
-                        if (Dialect != XSharpDialect.XPP)
-                            return ID;
-                    }
-                    break;
                 case NAMESPACE:
                 case SCOPE:
                 case LOCK:

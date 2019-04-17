@@ -12,8 +12,10 @@ FUNCTION Start( ) AS VOID
 	xAssert(o:aDim[2] == "")
 	xAssert(o:aDim[3] == "")
   
-	// note that this does not report a compiler error, although in VO it does. The array length is known at compile time
-	? o:aDim[4]
+	#warning note that this does not report a compiler error, although in VO it does. The array length is known at compile time
+	IF FALSE
+		? o:aDim[4]
+	END IF
 RETURN
 
 PROC xAssert(l AS LOGIC)

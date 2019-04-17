@@ -7,7 +7,18 @@ FUNCTION Start( ) AS VOID
     DBUseArea(,,"test")
 	nArea := Select()
 	? nArea
+	xAssertTrue(nArea == 1)
     ? (nArea)->(EOF())
+	xAssertTrue( (nArea)->(EOF()) )
     a := {(nArea)->(EOF())}
     ? a[1]
+	xAssertTrue( a[1] )
 RETURN
+
+PROC xAssertTrue(l AS LOGIC)
+IF l
+	? "Assertion passed"
+ELSE
+	THROW Exception{"Incorrect result"}
+END IF
+

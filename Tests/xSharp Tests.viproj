@@ -66631,7 +66631,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C655 - Incorrect line/col error number for missing type in INHERIT and IMPLEMENTS clause
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C656 - Compiler error with DIM STRING and /vo2+ *************
 Application = C656 - Compiler error with DIM STRING and /vo2+
 IDEVersion = 1.06
@@ -68027,7 +68027,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C669 - Problem using ChartAreaCollection indexer
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C670 - Failed to emit assembly instead of error message with invalid comparison between var and literal *************
 Application = C670 - Failed to emit assembly instead of error message with invalid comparison between var and literal
 IDEVersion = 1.06
@@ -68125,7 +68125,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C670 - Failed to emit assembly instead of error message with invalid comparison between var and literal
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C671 - VAR and LOCAL IMPLIED sample *************
 Application = C671 - VAR and LOCAL IMPLIED sample
 IDEVersion = 1.06
@@ -68223,7 +68223,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C671 - VAR and LOCAL IMPLIED sample
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C672 - Problem with ARRAY and workarea syntax with the vulcan runtime *************
 Application = C672 - Problem with ARRAY and workarea syntax with the vulcan runtime
 IDEVersion = 1.06

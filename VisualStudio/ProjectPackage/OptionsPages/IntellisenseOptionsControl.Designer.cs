@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.Label label1;
             this.chkCompletionListtabs = new System.Windows.Forms.CheckBox();
             this.grpCompletionListTabs = new System.Windows.Forms.GroupBox();
             this.chkKeywordsInAll = new System.Windows.Forms.CheckBox();
@@ -47,6 +48,9 @@
             this.chkSortNavBar = new System.Windows.Forms.CheckBox();
             this.chkIncludeFields = new System.Windows.Forms.CheckBox();
             this.btnShowMeTheMagic = new System.Windows.Forms.Button();
+            this.commitChars = new System.Windows.Forms.TextBox();
+            this.chkAutoPairs = new System.Windows.Forms.CheckBox();
+            label1 = new System.Windows.Forms.Label();
             this.grpCompletionListTabs.SuspendLayout();
             this.grpCase.SuspendLayout();
             this.grpKeywordCase.SuspendLayout();
@@ -57,7 +61,7 @@
             // 
             this.chkCompletionListtabs.AutoSize = true;
             this.chkCompletionListtabs.Location = new System.Drawing.Point(17, 22);
-            this.chkCompletionListtabs.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkCompletionListtabs.Margin = new System.Windows.Forms.Padding(4);
             this.chkCompletionListtabs.Name = "chkCompletionListtabs";
             this.chkCompletionListtabs.Size = new System.Drawing.Size(382, 21);
             this.chkCompletionListtabs.TabIndex = 0;
@@ -67,15 +71,18 @@
             // 
             // grpCompletionListTabs
             // 
+            this.grpCompletionListTabs.Controls.Add(this.chkAutoPairs);
+            this.grpCompletionListTabs.Controls.Add(this.commitChars);
+            this.grpCompletionListTabs.Controls.Add(label1);
             this.grpCompletionListTabs.Controls.Add(this.chkKeywordsInAll);
             this.grpCompletionListTabs.Controls.Add(this.chkShowAfterChar);
             this.grpCompletionListTabs.Controls.Add(this.chkDotAsUniversalSelector);
             this.grpCompletionListTabs.Controls.Add(this.chkCompletionListtabs);
             this.grpCompletionListTabs.Location = new System.Drawing.Point(16, 7);
-            this.grpCompletionListTabs.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpCompletionListTabs.Margin = new System.Windows.Forms.Padding(4);
             this.grpCompletionListTabs.Name = "grpCompletionListTabs";
-            this.grpCompletionListTabs.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.grpCompletionListTabs.Size = new System.Drawing.Size(497, 127);
+            this.grpCompletionListTabs.Padding = new System.Windows.Forms.Padding(4);
+            this.grpCompletionListTabs.Size = new System.Drawing.Size(497, 199);
             this.grpCompletionListTabs.TabIndex = 0;
             this.grpCompletionListTabs.TabStop = false;
             this.grpCompletionListTabs.Text = "Completion Lists";
@@ -84,7 +91,7 @@
             // 
             this.chkKeywordsInAll.AutoSize = true;
             this.chkKeywordsInAll.Location = new System.Drawing.Point(17, 48);
-            this.chkKeywordsInAll.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkKeywordsInAll.Margin = new System.Windows.Forms.Padding(4);
             this.chkKeywordsInAll.Name = "chkKeywordsInAll";
             this.chkKeywordsInAll.Size = new System.Drawing.Size(219, 21);
             this.chkKeywordsInAll.TabIndex = 3;
@@ -96,7 +103,7 @@
             // 
             this.chkShowAfterChar.AutoSize = true;
             this.chkShowAfterChar.Location = new System.Drawing.Point(17, 98);
-            this.chkShowAfterChar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkShowAfterChar.Margin = new System.Windows.Forms.Padding(4);
             this.chkShowAfterChar.Name = "chkShowAfterChar";
             this.chkShowAfterChar.Size = new System.Drawing.Size(321, 21);
             this.chkShowAfterChar.TabIndex = 2;
@@ -108,7 +115,7 @@
             // 
             this.chkDotAsUniversalSelector.AutoSize = true;
             this.chkDotAsUniversalSelector.Location = new System.Drawing.Point(17, 73);
-            this.chkDotAsUniversalSelector.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkDotAsUniversalSelector.Margin = new System.Windows.Forms.Padding(4);
             this.chkDotAsUniversalSelector.Name = "chkDotAsUniversalSelector";
             this.chkDotAsUniversalSelector.Size = new System.Drawing.Size(323, 21);
             this.chkDotAsUniversalSelector.TabIndex = 1;
@@ -122,10 +129,10 @@
             this.grpCase.Controls.Add(this.chkAlignDoCase);
             this.grpCase.Controls.Add(this.grpKeywordCase);
             this.grpCase.Controls.Add(this.chkIdentifierCase);
-            this.grpCase.Location = new System.Drawing.Point(16, 142);
-            this.grpCase.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpCase.Location = new System.Drawing.Point(16, 212);
+            this.grpCase.Margin = new System.Windows.Forms.Padding(4);
             this.grpCase.Name = "grpCase";
-            this.grpCase.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpCase.Padding = new System.Windows.Forms.Padding(4);
             this.grpCase.Size = new System.Drawing.Size(497, 159);
             this.grpCase.TabIndex = 1;
             this.grpCase.TabStop = false;
@@ -135,7 +142,7 @@
             // 
             this.chkAlignMethod.AutoSize = true;
             this.chkAlignMethod.Location = new System.Drawing.Point(17, 123);
-            this.chkAlignMethod.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkAlignMethod.Margin = new System.Windows.Forms.Padding(4);
             this.chkAlignMethod.Name = "chkAlignMethod";
             this.chkAlignMethod.Size = new System.Drawing.Size(409, 21);
             this.chkAlignMethod.TabIndex = 4;
@@ -147,7 +154,7 @@
             // 
             this.chkAlignDoCase.AutoSize = true;
             this.chkAlignDoCase.Location = new System.Drawing.Point(17, 96);
-            this.chkAlignDoCase.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkAlignDoCase.Margin = new System.Windows.Forms.Padding(4);
             this.chkAlignDoCase.Name = "chkAlignDoCase";
             this.chkAlignDoCase.Size = new System.Drawing.Size(313, 21);
             this.chkAlignDoCase.TabIndex = 3;
@@ -162,9 +169,9 @@
             this.grpKeywordCase.Controls.Add(this.rbUpper);
             this.grpKeywordCase.Controls.Add(this.rbLower);
             this.grpKeywordCase.Location = new System.Drawing.Point(9, 20);
-            this.grpKeywordCase.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpKeywordCase.Margin = new System.Windows.Forms.Padding(4);
             this.grpKeywordCase.Name = "grpKeywordCase";
-            this.grpKeywordCase.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpKeywordCase.Padding = new System.Windows.Forms.Padding(4);
             this.grpKeywordCase.Size = new System.Drawing.Size(316, 44);
             this.grpKeywordCase.TabIndex = 1;
             this.grpKeywordCase.TabStop = false;
@@ -174,7 +181,7 @@
             // 
             this.rbTitle.AutoSize = true;
             this.rbTitle.Location = new System.Drawing.Point(244, 18);
-            this.rbTitle.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rbTitle.Margin = new System.Windows.Forms.Padding(4);
             this.rbTitle.Name = "rbTitle";
             this.rbTitle.Size = new System.Drawing.Size(56, 21);
             this.rbTitle.TabIndex = 3;
@@ -187,7 +194,7 @@
             // 
             this.rbNone.AutoSize = true;
             this.rbNone.Location = new System.Drawing.Point(8, 18);
-            this.rbNone.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rbNone.Margin = new System.Windows.Forms.Padding(4);
             this.rbNone.Name = "rbNone";
             this.rbNone.Size = new System.Drawing.Size(63, 21);
             this.rbNone.TabIndex = 0;
@@ -200,7 +207,7 @@
             // 
             this.rbUpper.AutoSize = true;
             this.rbUpper.Location = new System.Drawing.Point(79, 18);
-            this.rbUpper.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rbUpper.Margin = new System.Windows.Forms.Padding(4);
             this.rbUpper.Name = "rbUpper";
             this.rbUpper.Size = new System.Drawing.Size(76, 21);
             this.rbUpper.TabIndex = 1;
@@ -213,7 +220,7 @@
             // 
             this.rbLower.AutoSize = true;
             this.rbLower.Location = new System.Drawing.Point(169, 18);
-            this.rbLower.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rbLower.Margin = new System.Windows.Forms.Padding(4);
             this.rbLower.Name = "rbLower";
             this.rbLower.Size = new System.Drawing.Size(62, 21);
             this.rbLower.TabIndex = 2;
@@ -227,7 +234,7 @@
             this.chkIdentifierCase.AutoSize = true;
             this.chkIdentifierCase.Enabled = false;
             this.chkIdentifierCase.Location = new System.Drawing.Point(17, 70);
-            this.chkIdentifierCase.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkIdentifierCase.Margin = new System.Windows.Forms.Padding(4);
             this.chkIdentifierCase.Name = "chkIdentifierCase";
             this.chkIdentifierCase.Size = new System.Drawing.Size(225, 21);
             this.chkIdentifierCase.TabIndex = 2;
@@ -240,10 +247,10 @@
             this.grpNavigationBars.Controls.Add(this.chkShowMembersOfCurrentType);
             this.grpNavigationBars.Controls.Add(this.chkSortNavBar);
             this.grpNavigationBars.Controls.Add(this.chkIncludeFields);
-            this.grpNavigationBars.Location = new System.Drawing.Point(16, 302);
-            this.grpNavigationBars.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpNavigationBars.Location = new System.Drawing.Point(16, 372);
+            this.grpNavigationBars.Margin = new System.Windows.Forms.Padding(4);
             this.grpNavigationBars.Name = "grpNavigationBars";
-            this.grpNavigationBars.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpNavigationBars.Padding = new System.Windows.Forms.Padding(4);
             this.grpNavigationBars.Size = new System.Drawing.Size(497, 100);
             this.grpNavigationBars.TabIndex = 2;
             this.grpNavigationBars.TabStop = false;
@@ -253,7 +260,7 @@
             // 
             this.chkShowMembersOfCurrentType.AutoSize = true;
             this.chkShowMembersOfCurrentType.Location = new System.Drawing.Point(17, 71);
-            this.chkShowMembersOfCurrentType.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkShowMembersOfCurrentType.Margin = new System.Windows.Forms.Padding(4);
             this.chkShowMembersOfCurrentType.Name = "chkShowMembersOfCurrentType";
             this.chkShowMembersOfCurrentType.Size = new System.Drawing.Size(444, 21);
             this.chkShowMembersOfCurrentType.TabIndex = 2;
@@ -265,7 +272,7 @@
             // 
             this.chkSortNavBar.AutoSize = true;
             this.chkSortNavBar.Location = new System.Drawing.Point(17, 47);
-            this.chkSortNavBar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkSortNavBar.Margin = new System.Windows.Forms.Padding(4);
             this.chkSortNavBar.Name = "chkSortNavBar";
             this.chkSortNavBar.Size = new System.Drawing.Size(151, 21);
             this.chkSortNavBar.TabIndex = 1;
@@ -277,7 +284,7 @@
             // 
             this.chkIncludeFields.AutoSize = true;
             this.chkIncludeFields.Location = new System.Drawing.Point(17, 21);
-            this.chkIncludeFields.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkIncludeFields.Margin = new System.Windows.Forms.Padding(4);
             this.chkIncludeFields.Name = "chkIncludeFields";
             this.chkIncludeFields.Size = new System.Drawing.Size(303, 21);
             this.chkIncludeFields.TabIndex = 0;
@@ -287,14 +294,46 @@
             // 
             // btnShowMeTheMagic
             // 
-            this.btnShowMeTheMagic.Location = new System.Drawing.Point(361, 423);
-            this.btnShowMeTheMagic.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnShowMeTheMagic.Location = new System.Drawing.Point(361, 493);
+            this.btnShowMeTheMagic.Margin = new System.Windows.Forms.Padding(4);
             this.btnShowMeTheMagic.Name = "btnShowMeTheMagic";
             this.btnShowMeTheMagic.Size = new System.Drawing.Size(152, 28);
             this.btnShowMeTheMagic.TabIndex = 3;
             this.btnShowMeTheMagic.Text = "Open Sesame";
             this.btnShowMeTheMagic.UseVisualStyleBackColor = true;
             this.btnShowMeTheMagic.Click += new System.EventHandler(this.btnShowMeTheMagic_Click);
+            // 
+            // commitChars
+            // 
+            this.commitChars.Location = new System.Drawing.Point(18, 142);
+            this.commitChars.Margin = new System.Windows.Forms.Padding(4);
+            this.commitChars.Name = "commitChars";
+            this.commitChars.Size = new System.Drawing.Size(380, 22);
+            this.commitChars.TabIndex = 7;
+            this.commitChars.Text = "{}[]().,:;+-*/%&|^!~=<>?@#\'\"\\";
+            this.commitChars.TextChanged += new System.EventHandler(this.commitChars_TextChanged);
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(14, 122);
+            label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(288, 17);
+            label1.TabIndex = 6;
+            label1.Text = "Committed by typing the following characters";
+            // 
+            // chkAutoPairs
+            // 
+            this.chkAutoPairs.AutoSize = true;
+            this.chkAutoPairs.Location = new System.Drawing.Point(17, 172);
+            this.chkAutoPairs.Margin = new System.Windows.Forms.Padding(4);
+            this.chkAutoPairs.Name = "chkAutoPairs";
+            this.chkAutoPairs.Size = new System.Drawing.Size(293, 21);
+            this.chkAutoPairs.TabIndex = 8;
+            this.chkAutoPairs.Text = "Auto Insert right parenthesis/bracket/curly";
+            this.chkAutoPairs.UseVisualStyleBackColor = true;
+            this.chkAutoPairs.CheckedChanged += new System.EventHandler(this.chkAutoPairs_CheckedChanged);
             // 
             // IntellisenseOptionsControl
             // 
@@ -304,9 +343,9 @@
             this.Controls.Add(this.grpNavigationBars);
             this.Controls.Add(this.grpCase);
             this.Controls.Add(this.grpCompletionListTabs);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "IntellisenseOptionsControl";
-            this.Size = new System.Drawing.Size(529, 469);
+            this.Size = new System.Drawing.Size(529, 533);
             this.grpCompletionListTabs.ResumeLayout(false);
             this.grpCompletionListTabs.PerformLayout();
             this.grpCase.ResumeLayout(false);
@@ -339,5 +378,7 @@
         private System.Windows.Forms.CheckBox chkKeywordsInAll;
         private System.Windows.Forms.Button btnShowMeTheMagic;
         private System.Windows.Forms.CheckBox chkShowMembersOfCurrentType;
+        internal System.Windows.Forms.TextBox commitChars;
+        private System.Windows.Forms.CheckBox chkAutoPairs;
     }
 }

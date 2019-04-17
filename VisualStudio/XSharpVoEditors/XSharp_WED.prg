@@ -83,12 +83,12 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 			cBaseDir	:= oBaseDir:FullName
 			cBaseName	:= oFileInfo:Name
 
-			IF cBaseName:ToLower():Endswith(".vnfrm") .or. cBaseName:ToLower():Endswith(".xsfrm")
+			IF cBaseName:ToLower():Endswith(".vnfrm") .OR. cBaseName:ToLower():Endswith(".xsfrm")
 				cBaseName	:= System.IO.Path.GetFileNameWithoutExtension(cBaseName)
 			ENDIF
 			cRCFileName		:= cBaseDir + "\Resources\" + cBaseName + ".rc"
 			cAlternative	:= cBaseDir + "\" + cBaseName + ".rc"
-			IF !File.Exists(cRCFileName) .and. File.Exists(cAlternative)
+			IF !File.Exists(cRCFileName) .AND. File.Exists(cAlternative)
 				cRCFileName := cAlternative
 				lRcInSameFolder := TRUE
 			ENDIF
@@ -133,12 +133,12 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 					IF File.Exists(cHeaderFile) // else old transporter version
 						oVhStream:Load(cHeaderFile)
 					ENDIF
-					lSuccess := oRCStream:IsValid .and. oPrgStream:IsValid
+					lSuccess := oRCStream:IsValid .AND. oPrgStream:IsValid
 				ELSE
 					lSuccess := TRUE
 				END IF
 			END IF
-			IF lSuccess .and. !lError
+			IF lSuccess .AND. !lError
 				lSuccess := FALSE
 				oVNFrmStream := File.Open(cVNFrmFileName , FileMode.Create , FileAccess.Write , FileShare.None)
 				lSuccess := TRUE
@@ -190,15 +190,15 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		oRc := XSharp_EditorStream{}
 
 		oVNFrm := NULL; cVhName := NULL; lRcInSameFolder := FALSE // Grrr
-		IF .not. SELF:GetSaveFileStreams(cVNFrmFileName , REF oVNFrm , oRC , oPrg , oVh , REF cVhName , lBinaryOnly , REF lRcInSameFolder)
+		IF .NOT. SELF:GetSaveFileStreams(cVNFrmFileName , REF oVNFrm , oRC , oPrg , oVh , REF cVhName , lBinaryOnly , REF lRcInSameFolder)
 			RETURN FALSE
 		ENDIF
 
-		lOldTransporter := .not. oVh:IsValid
+		lOldTransporter := .NOT. oVh:IsValid
 
 		SELF:SaveToXml(oVNFrm)
 
-		IF .not. lBinaryOnly
+		IF .NOT. lBinaryOnly
 			LOCAL oCode AS CodeContents
 			oCode := SELF:GetCodeContents()
 
@@ -268,7 +268,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		aEntity := List<STRING>{}
 
 		oProp := SELF:oWindowDesign:GetPropertyByMember("NoAcc")
-		lAccessAssign := oProp != NULL .and. oProp:TextValue:Trim() == "" .and. oProp:cPage != "_Hidden"
+		lAccessAssign := oProp != NULL .AND. oProp:TextValue:Trim() == "" .AND. oProp:cPage != "_Hidden"
 		FOREACH cName AS STRING IN oCode:aAccessAssign
 
 			IF lAccessAssign
@@ -343,9 +343,9 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		END IF
 		// Find Method for this class
 	    VAR rootNs := oFile:Project:ProjectNode:RootNameSpace
-		oType := oProject:Lookup(cClass,true)
+		oType := oProject:Lookup(cClass,TRUE)
 		IF oType == NULL_OBJECT
-			oType := oProject:Lookup(rootNs+"."+cClass,true)
+			oType := oProject:Lookup(rootNs+"."+cClass,TRUE)
 		ENDIF
 		IF cName:ToUpper() == "CLASSDECLARATION"
 	        IF (oType != NULL_OBJECT)
@@ -364,11 +364,11 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		lOpen := FALSE
 		VAR source := oProject:ProjectNode:DocumentGetText(oFile:FullPath, REF lOpen)
 
-		IF .not. lOpen
+		IF .NOT. lOpen
 			oProject:ProjectNode:OpenElement(oFile:FullPath, 1,1)
 		END IF
 		source := oProject:ProjectNode:DocumentGetText(oFile:FullPath, REF lOpen)
-		IF .not. lOpen
+		IF .NOT. lOpen .OR. source == NULL
 			RETURN
 		END IF
 

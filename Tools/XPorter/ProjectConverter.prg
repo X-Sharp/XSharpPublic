@@ -191,7 +191,7 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 		CASE "reference"
 			// Add RT assemblies after 1st reference
             VAR cAttribute := oElement:GetAttribute("Include")
-            IF cAttribute != NULL .and. SELF:lUseXsRuntime
+            IF cAttribute != NULL .AND. SELF:lUseXsRuntime
                 SWITCH cAttribute:Tolower()
                 CASE "vulcanvowin32apilibrary"
                 CASE "vulcanvosystemclasses"
@@ -224,9 +224,9 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
                 ENDIF
                 SELF:AddReference(oElement, cRT1)
                 SELF:AddReference(oElement, cRT2)
-                if !String.IsNullOrEmpty(cRT3)
+                IF !String.IsNullOrEmpty(cRT3)
                     SELF:AddReference(oElement, cRT3)
-                endif
+                ENDIF
 				SELF:lRuntimeAdded := TRUE
 			ENDIF
 		OTHERWISE

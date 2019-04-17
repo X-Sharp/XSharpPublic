@@ -1073,9 +1073,9 @@ namespace XSharpLanguage
             return retValue;
         }
     }
-    internal class MemberAnalysis
+    public class MemberAnalysis
     {
-        class ParamInfo
+        public class ParamInfo
         {
             public String Name;
             public String TypeName;
@@ -1515,6 +1515,11 @@ namespace XSharpLanguage
                 }
                 modVis += this.Visibility.ToString() + " ";
                 //
+                if ( this.IsStatic )
+                {
+                    modVis += "STATIC" + " ";
+                }
+                //
                 String desc = modVis;
                 //
                 if ((this.Kind != Kind.Field) && (this.Kind != Kind.Constructor))
@@ -1697,7 +1702,7 @@ namespace XSharpLanguage
             }
         }
 
-        private List<ParamInfo> Parameters
+        public List<ParamInfo> Parameters
         {
             get
             {
@@ -1727,7 +1732,7 @@ namespace XSharpLanguage
     /// <summary>
     /// Process a TypeInfo in order to provide usable informations (TypeName, Glyph, ... )
     /// </summary>
-    internal class TypeAnalysis
+    public class TypeAnalysis
     {
         private String _name;
         private Modifiers _modifiers;
@@ -1876,6 +1881,11 @@ namespace XSharpLanguage
                     modVis += this.Modifiers.ToString() + " ";
                 }
                 modVis += this.Visibility.ToString() + " ";
+                //
+                if (this.IsStatic)
+                {
+                    modVis += "STATIC" + " ";
+                }
                 //
                 String desc = modVis;
                 //
@@ -2350,6 +2360,11 @@ namespace XSharpLanguage
             while (triggerToken != null)
             {
                 token = triggerToken.Text;
+                if (triggerToken.Channel != XSharpLexer.DefaultTokenChannel)
+                {
+                    triggerToken = GetPreviousToken(tokens, triggerToken);
+                    continue;
+                }
                 switch (triggerToken.Type)
                 {
                     // For ) ] }, we will search the counter part, and remove all stuff in between
@@ -2394,6 +2409,7 @@ namespace XSharpLanguage
                     case XSharpLexer.LBRKT:
                     case XSharpLexer.SL_COMMENT:
                     case XSharpLexer.ML_COMMENT:
+                    case XSharpLexer.DOC_COMMENT:
                         //case XSharpLexer.VAR:
                         //case XSharpLexer.IMPLIED:
                         // Stop here
@@ -2863,10 +2879,11 @@ namespace XSharpLanguage
                         SearchConstructorIn(cType.ParentType, visibility, out foundElement);
                     }
                     // The first token in the list can be a Function or a Procedure
-                    if (currentPos == 0)
+                    // Except if we already have a Type
+                    if ((currentPos == 0) && (startOfExpression))
                     {
                         var globType = SearchFunctionIn(currentMember.File, currentToken, out foundElement);
-                        if (foundElement != null)
+                        if ((foundElement != null) && ( foundElement.IsInitialized))
                         {
                             return globType;
                         }
@@ -2875,18 +2892,20 @@ namespace XSharpLanguage
                     {
                         // Now, search for a Method
                         cTemp = SearchMethodTypeIn(cType, currentToken, visibility, false, out foundElement);
-                        if (foundElement == null)
+                        if ((foundElement != null) && (foundElement.IsInitialized))
+                        {
+                            cType = cTemp;
+                        }
+                        else
                         {
                             cType = new CompletionType();
                         }
-                        else
-                            cType = cTemp;
                     }
                     if (cType.IsEmpty())
                     {
                         // check to see if this is a method from the Object Type, such as ToString().
                         cTemp = SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, visibility, false, out foundElement);
-                        if (foundElement != null)
+                        if ((foundElement != null) && (foundElement.IsInitialized))
                         {
                             cType = cTemp;
                         }
@@ -2915,7 +2934,7 @@ namespace XSharpLanguage
                     {
                         // Search in Parameters, Locals, Field and Properties
                         foundElement = FindIdentifier(currentMember, currentToken, ref cType, visibility, currentNS, snapshot, currentLine);
-                        if (foundElement != null)
+                        if ((foundElement != null) && (foundElement.IsInitialized))
                         {
                             cType = foundElement.ReturnType;
                         }
@@ -2933,7 +2952,7 @@ namespace XSharpLanguage
                         cType = SearchType(file, currentToken, out foundElement, currentNS);
                     }
                     // We have it
-                    if (foundElement != null)
+                    if ((foundElement != null) && (foundElement.IsInitialized))
                     {
                         // and we are in an Array, so we need the "other" type
                         if (inArray)
@@ -3905,7 +3924,7 @@ namespace XSharpLanguage
                 do
                 {
                     if (prev.OriginalTokenIndex == 0)
-                        break;
+                        return null;
                     prev = (XSharpToken)tokens.Get(prev.OriginalTokenIndex - 1);
                     if (prev.Line != Line)
                     {

@@ -45,6 +45,7 @@ namespace XSharp.Project
         XFile _file;
         ISignatureHelpBroker _signatureBroker;
         ISignatureHelpSession _signatureSession;
+        Stack<ISignatureHelpSession> _signatureStack;
 
         ITextStructureNavigator m_navigator;
         IBufferTagAggregatorFactoryService _aggregator;
@@ -146,6 +147,7 @@ namespace XSharp.Project
 
             _completionSession = null;
             _signatureSession = null;
+            _signatureStack = new Stack<ISignatureHelpSession>();
 
             TextView = textView;
             _completionBroker = completionBroker;
@@ -298,7 +300,7 @@ namespace XSharp.Project
         {
             if (XSharpProjectPackage.Instance.DebuggerIsRunning)
                 return;
-            XSharpProjectPackage.Instance.DisplayOutPutMessage($"CommandFilter.formatLineCase({line.LineNumber+1})");
+            XSharpProjectPackage.Instance.DisplayOutPutMessage($"CommandFilter.formatLineCase({line.LineNumber + 1})");
             // get classification of the line.
             // when the line is part of a multi line comment then do nothing
             // to detect that we take the start of the line and check if it is in
@@ -308,10 +310,10 @@ namespace XSharp.Project
                 return;
             var ss = new SnapshotSpan(line.Snapshot, lineStart, 1);
             var spans = _classifier.GetClassificationSpans(ss);
-            if (spans.Count > 0 )
+            if (spans.Count > 0)
             {
                 var type = spans[0].ClassificationType;
-                if (type.Classification =="comment")
+                if (type.Classification == "comment")
                 {
                     return;
                 }
@@ -326,7 +328,7 @@ namespace XSharp.Project
                     // now we wait until the user has typed an extra character. That will trigger another session.
                     // (in this case the C, but it could also be a ' ' or tab and then it would match the STRING keyword)
                     int caretPos = this.TextView.Caret.Position.BufferPosition.Position;
-                    if (lineStart + token.StopIndex < caretPos -1)
+                    if (lineStart + token.StopIndex < caretPos - 1)
                     {
                         formatToken(editSession, lineStart, token);
                     }
@@ -416,6 +418,9 @@ namespace XSharp.Project
             return (char)(ushort)Marshal.GetObjectForNativeVariant(pvaIn);
         }
 
+        bool completionWasSelected = false;
+        CompletionSelectionStatus completionWas;
+
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
             bool handled = false;
@@ -482,7 +487,22 @@ namespace XSharp.Project
 
             // Let others do their thing
             if (!handled)
+            {
+                if (_completionSession != null)
+                {
+                    if (_completionSession.SelectedCompletionSet != null)
+                    {
+                        completionWasSelected = _completionSession.SelectedCompletionSet.SelectionStatus.IsSelected;
+                        if (completionWasSelected)
+                        {
+                            completionWas = _completionSession.SelectedCompletionSet.SelectionStatus;
+                        }
+                        else
+                            completionWas = null;
+                    }
+                }
                 hresult = Next.Exec(pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+            }
 
             if (ErrorHandler.Succeeded(hresult))
             {
@@ -499,7 +519,14 @@ namespace XSharp.Project
                                     FilterCompletionSession(ch);
                                 else
                                 {
-                                    CancelCompletionSession();
+                                    if (completionWasSelected && ( _optionsPage.CommitChars.Contains( ch ) ))
+                                    {
+                                        CompleteCompletionSession(true, ch);
+                                    }
+                                    else
+                                    {
+                                        CancelCompletionSession();
+                                    }
                                     if ((ch == ':') || (ch == '.'))
                                     {
                                         StartCompletionSession(nCmdID, ch);
@@ -525,7 +552,7 @@ namespace XSharp.Project
                                         CancelSignatureSession();
                                         break;
                                     case ',':
-                                        //StartSignatureSession(true);
+                                        StartSignatureSession(true);
                                         break;
                                     default:
                                         if (_optionsPage.ShowAfterChar)
@@ -552,7 +579,10 @@ namespace XSharp.Project
                             break;
                         case VSConstants.VSStd2KCmdID.COMPLETEWORD:
                             break;
-
+                        case VSConstants.VSStd2KCmdID.LEFT:
+                        case VSConstants.VSStd2KCmdID.RIGHT:
+                            MoveSignature();
+                            break;
                     }
                 }
             }
@@ -602,9 +632,9 @@ namespace XSharp.Project
                 {
                     if (gotoElement.XSharpElement != null)
                     {
-                        if ( gotoElement.XSharpElement is XTypeMember )
+                        if (gotoElement.XSharpElement is XTypeMember)
                         {
-                            if ( ( (XTypeMember)gotoElement.XSharpElement).Namesake().Count > 1 )
+                            if (((XTypeMember)gotoElement.XSharpElement).Namesake().Count > 1)
                             {
                                 ObjectBrowserHelper.FindSymbols(gotoElement.XSharpElement.Name);
                                 return;
@@ -621,7 +651,7 @@ namespace XSharp.Project
                     }
                 }
                 //
-                if ( tokenList.Count > 1)
+                if (tokenList.Count > 1)
                 {
                     // try again with just the last element in the list
                     tokenList.RemoveRange(0, tokenList.Count - 1);
@@ -636,7 +666,7 @@ namespace XSharp.Project
             }
             catch (Exception ex)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("Goto failed: " );
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("Goto failed: ");
                 XSharpProjectPackage.Instance.DisplayException(ex);
             }
             finally
@@ -646,7 +676,7 @@ namespace XSharp.Project
         }
 
 
-        private void gotoObjectBrowser( MemberInfo mbrInfo )
+        private void gotoObjectBrowser(MemberInfo mbrInfo)
         {
             ObjectBrowserHelper.GotoMemberDefinition(mbrInfo.Name);
         }
@@ -691,7 +721,7 @@ namespace XSharp.Project
             return true;
         }
 
-        bool CompleteCompletionSession()
+        bool CompleteCompletionSession(bool force = false, char ch = ' ')
         {
             if (_completionSession == null)
             {
@@ -704,6 +734,50 @@ namespace XSharp.Project
                 {
                     XSharpProjectPackage.Instance.DisplayOutPutMessage(" --> Commit");
                     _completionSession.Commit();
+                    return true;
+                }
+                else if (force)
+                {
+                    bool moveBack = false;
+                    ITextCaret caret = null;
+                    if (completionWas != null)
+                    {
+                        _completionSession.SelectedCompletionSet.SelectionStatus = completionWas;
+                    }
+                    //
+                    if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion != null)
+                    {
+                        // Push the completion char into the InsertionText if needed
+                        if (!_completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText.EndsWith(ch.ToString()))
+                            _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText += ch;
+                        //
+                        if (_optionsPage.AutoPairs)
+                        {
+                            caret = _completionSession.TextView.Caret;
+                            if (ch == '(')
+                            {
+                                _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText += ')';
+                                moveBack = true;
+                            }
+                            else if (ch == '{')
+                            {
+                                _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText += '}';
+                                moveBack = true;
+                            }
+                            else if (ch == '[')
+                            {
+                                _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText += ']';
+                                moveBack = true;
+                            }
+                        }
+                    }
+                    XSharpProjectPackage.Instance.DisplayOutPutMessage(" --> Commit");
+                    _completionSession.Commit();
+                    if ( moveBack && (caret != null))
+                    {
+                        caret.MoveToPreviousCaretPosition();
+                        StartSignatureSession(false);
+                    }
                     return true;
                 }
             }
@@ -759,6 +833,7 @@ namespace XSharp.Project
 
             _completionSession.Dismissed += OnCompletionSessionDismiss;
             _completionSession.Committed += OnCompletionSessionCommitted;
+            _completionSession.SelectedCompletionSetChanged += _completionSession_SelectedCompletionSetChanged;
 
             _completionSession.Properties["Command"] = nCmdId;
             _completionSession.Properties["Char"] = typedChar;
@@ -775,6 +850,14 @@ namespace XSharp.Project
             return true;
         }
 
+        private void _completionSession_SelectedCompletionSetChanged(object sender, ValueChangedEventArgs<Microsoft.VisualStudio.Language.Intellisense.CompletionSet> e)
+        {
+            if (e.NewValue.SelectionStatus.IsSelected == false)
+            {
+                int x = 0;
+                x++;
+            }
+        }
 
         private void OnCompletionSessionCommitted(object sender, EventArgs e)
         {
@@ -809,6 +892,7 @@ namespace XSharp.Project
             //
             _completionSession.Dismissed -= OnCompletionSessionDismiss;
             _completionSession.Committed -= OnCompletionSessionCommitted;
+            _completionSession.SelectedCompletionSetChanged -= _completionSession_SelectedCompletionSetChanged;
             _completionSession = null;
         }
         #endregion
@@ -830,7 +914,7 @@ namespace XSharp.Project
             XSharpLanguage.CompletionElement gotoElement = null;
             if (cType != null && methodName != null)
             {
-                XSharpLanguage.XSharpTokenTools.SearchMethodTypeIn(cType, methodName, XSharpModel.Modifiers.Private, false, out gotoElement );
+                XSharpLanguage.XSharpTokenTools.SearchMethodTypeIn(cType, methodName, XSharpModel.Modifiers.Private, false, out gotoElement);
             }
             else
             {
@@ -922,7 +1006,7 @@ namespace XSharp.Project
                 }
                 catch (Exception e)
                 {
-                    XSharpProjectPackage.Instance.DisplayOutPutMessage("Start Signature session failed:" );
+                    XSharpProjectPackage.Instance.DisplayOutPutMessage("Start Signature session failed:");
                     XSharpProjectPackage.Instance.DisplayException(e);
                 }
             }
@@ -943,6 +1027,20 @@ namespace XSharp.Project
         {
             _signatureSession.Dismissed -= OnSignatureSessionDismiss;
             _signatureSession = null;
+        }
+
+        bool MoveSignature()
+        {
+            if (_signatureSession == null)
+                return false;
+
+            int start = (int)_signatureSession.Properties["Start"];
+            int pos = this.TextView.Caret.Position.BufferPosition.Position;
+
+            ((XSharpSignature)_signatureSession.SelectedSignature).ComputeCurrentParameter( pos - start - 1 );
+
+
+            return true;
         }
 
 
@@ -984,7 +1082,7 @@ namespace XSharp.Project
         /// <param name="line"></param>
         static public void FormatLineIndent(ITextView TextView, ITextEdit editSession, ITextSnapshotLine line, int desiredIndentation)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage($"CommandFilterHelper.FormatLineIndent({line.LineNumber+1})");
+            XSharpProjectPackage.Instance.DisplayOutPutMessage($"CommandFilterHelper.FormatLineIndent({line.LineNumber + 1})");
             int tabSize = TextView.Options.GetTabSize();
             int indentSize = TextView.Options.GetIndentSize();
             bool useSpaces = TextView.Options.IsConvertTabsToSpacesEnabled();
@@ -1039,8 +1137,8 @@ namespace XSharp.Project
     internal static class ObjectBrowserHelper
     {
         private static Guid GUID_VsSymbolScope_All = new Guid(0xa5a527ea, 0xcf0a, 0x4abf, 0xb5, 0x1, 0xea, 0xfe, 0x6b, 0x3b, 0xa5, 0xc6);
-        private static Guid GUID_VsSymbolScope_Solution = new Guid( 0xb1ba9461, 0xfc54, 0x45b3, 0xa4, 0x84, 0xcb, 0x6d, 0xd0, 0xb9, 0x5c, 0x94);
-        private static Guid GUID_VsSymbolScope_Frameworks = new Guid( 0x3168518c, 0xb7c9, 0x4e0c, 0xbd, 0x51, 0xe3, 0x32, 0x1c, 0xa7, 0xb4, 0xd8);
+        private static Guid GUID_VsSymbolScope_Solution = new Guid(0xb1ba9461, 0xfc54, 0x45b3, 0xa4, 0x84, 0xcb, 0x6d, 0xd0, 0xb9, 0x5c, 0x94);
+        private static Guid GUID_VsSymbolScope_Frameworks = new Guid(0x3168518c, 0xb7c9, 0x4e0c, 0xbd, 0x51, 0xe3, 0x32, 0x1c, 0xa7, 0xb4, 0xd8);
 
         /*
         DEFINE_GUID(GUID_VsSymbolScope_All, 0xa5a527ea, 0xcf0a, 0x4abf, 0xb5, 0x1, 0xea, 0xfe, 0x6b, 0x3b, 0xa5, 0xc6);
@@ -1064,7 +1162,7 @@ namespace XSharp.Project
             gotoDefinition(typeName, _LIB_LISTTYPE.LLT_CLASSES, searchOptions);
         }
 
-        public static void FindSymbols(string memberName )
+        public static void FindSymbols(string memberName)
         {
             ObjectBrowserHelper.canFindSymbols(memberName, (uint)_VSOBSEARCHOPTIONS.VSOBSO_LOOKINREFS);
         }

@@ -12,6 +12,9 @@
     <CreateNewFolder>true</CreateNewFolder>
     <DefaultName>ConsoleApplication</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
+    <LanguageTag Value="X#" />
+    <PlatformTag Value="Windows" />
+    <ProjectTypeTag Value="Console" />
   </TemplateData>
   <TemplateContent>
     <Project File="VOConsole.xsproj" ReplaceParameters="true">

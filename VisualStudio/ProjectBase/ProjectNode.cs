@@ -2528,12 +2528,13 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="propertyName">Name of the property to get</param>
         /// <param name="resetCache">True to avoid using the cache</param>
         /// <returns>null if property does not exist, otherwise value of the property</returns>
-        public virtual string GetProjectProperty(string propertyName, bool resetCache)
+        public virtual string GetProjectProperty(string propertyName, bool resetCache, bool unevaluated = false)
         {
             Microsoft.Build.Evaluation.ProjectProperty property = GetMsBuildProperty(propertyName, resetCache);
             if (property == null)
                 return null;
-
+            if (unevaluated)
+                return property.UnevaluatedValue;
             return property.EvaluatedValue;
         }
 
@@ -4216,12 +4217,20 @@ namespace Microsoft.VisualStudio.Project
             // Ok... Let's do it !
             foreach (var item in prjItems)
             {
-                HierarchyNode node = AddIndependentFileNode(item);
-                // Populate the type as property
-                string subType = item.GetMetadataValue(ProjectFileConstants.SubType);
-                if (!String.IsNullOrEmpty(subType))
+                try
                 {
-                    node.SetProperty((int)__VSHPROPID.VSHPROPID_ItemSubType, subType);
+                    HierarchyNode node = AddIndependentFileNode(item);
+                    // Populate the type as property
+                    string subType = item.GetMetadataValue(ProjectFileConstants.SubType);
+                    if (!String.IsNullOrEmpty(subType))
+                    {
+                        node.SetProperty((int)__VSHPROPID.VSHPROPID_ItemSubType, subType);
+                    }
+                }
+                catch ( Exception ex )
+                {
+                    if (System.Diagnostics.Debugger.IsAttached)
+                        Debug.WriteLine(ex.ToString());
                 }
             }
 #endif

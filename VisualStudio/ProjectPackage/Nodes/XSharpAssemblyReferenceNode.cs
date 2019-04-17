@@ -86,7 +86,7 @@ namespace XSharp.Project
             return "";
 
         }
-        internal override  void ResolveAssemblyReference()
+        internal override void ResolveAssemblyReference()
         {
             if (this.ProjectMgr == null || this.ProjectMgr.IsClosed)
             {
@@ -129,10 +129,16 @@ namespace XSharp.Project
                     }
                 }
                 // when we get here then the assembly was not resolved by MsBuild. Maybe the reference was not persisted yet ?
+                var xnode = ProjectMgr as XSharpProjectNode;
+                if (xnode != null && ! xnode.IsLoading)
+                {
+                    base.ResolveAssemblyReference();
+                }
+
                 return;
             }
 
-          }
+        }
 
 
         public override int ImageIndex

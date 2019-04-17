@@ -159,6 +159,8 @@ namespace XSharp.Project
         #endregion
 
         #region Properties
+
+        internal bool IsLoading => isLoading;
         /// <summary>
         /// Gets or sets the image list.
         /// </summary>
@@ -306,11 +308,11 @@ namespace XSharp.Project
             }
             return this.options;
         }
-        public override string GetProjectProperty(string propertyName, bool resetCache)
+        public override string GetProjectProperty(string propertyName, bool resetCache, bool unevaluated = false)
         {
             if (BuildProject != null)
             {
-                return base.GetProjectProperty(propertyName, resetCache);
+                return base.GetProjectProperty(propertyName, resetCache, unevaluated);
             }
             return null;
         }
@@ -959,8 +961,8 @@ namespace XSharp.Project
         public override void Load(string filename, string location, string name, uint flags, ref Guid iidProject, out int canceled)
         {
             // check for incomplete conditions
+            this.isLoading = true; // gets reset in OnAfterProjectOpen
             base.Load(filename, location, name, flags, ref iidProject, out canceled);
-            this.isLoading = true;
 
             // WAP ask the designer service for the CodeDomProvider corresponding to the project node.
             this.OleServiceProvider.AddService(typeof(SVSMDCodeDomProvider), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
@@ -1341,33 +1343,35 @@ namespace XSharp.Project
 
         #region IXSharpProject Interface
         protected IVsStatusbar statusBar;
-        protected bool lTriedToGetStatusBar = false;
-        public void SetStatusBarText(string msg)
+
+        private void getStatusBar()
         {
             if (statusBar == null && !lTriedToGetStatusBar)
             {
                 statusBar = Site.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
                 lTriedToGetStatusBar = true;
             }
+        }
 
+        protected bool lTriedToGetStatusBar = false;
+        public void SetStatusBarText(string msg)
+        {
+            getStatusBar();
             if (statusBar != null)
             {
-                statusBar.SetText(msg);
+                UIThread.DoOnUIThread( () => statusBar.SetText(msg));
             }
+
+
         }
         public void SetStatusBarAnimation(bool onoff, short idAnimation)
         {
             try
             {
-                if (statusBar == null && !lTriedToGetStatusBar)
-                {
-                    statusBar = Site.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
-                    lTriedToGetStatusBar = true;
-                }
-
+                getStatusBar();
                 if (statusBar != null)
                 {
-                    statusBar.Animation(onoff ? 1 : 0, idAnimation);
+                    UIThread.DoOnUIThread( () => statusBar.Animation(onoff ? 1 : 0, idAnimation));
                 }
             }
             catch //(Exception e)
@@ -1476,6 +1480,7 @@ namespace XSharp.Project
 
         protected override void Reload()
         {
+            this.isLoading = true; // gets reset in OnAfterProjectOpen
             base.Reload();
 
             if (ResetDependencies())

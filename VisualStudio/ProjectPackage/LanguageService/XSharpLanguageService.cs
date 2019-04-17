@@ -39,7 +39,7 @@ namespace XSharp.LanguageService
         }
         public override int GetFileExtensions(out string extensions)
         {
-            extensions = ".prg;.vh;.ppo;.xs;.xh;";
+            extensions = ".prg;.vh;.ppo;.xs;.xh;.ch;";
             return VSConstants.S_OK;
         }
         public int GetFormatFilterList(out string pbstrFilterList)
@@ -170,7 +170,7 @@ namespace XSharp.LanguageService
             return function;
         }
 
-    
+
         public int QueryInvalidEncoding(uint Format, out string pbstrMessage)
         {
             // may be called when the source is saved under a different codepage

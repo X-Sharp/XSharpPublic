@@ -12,6 +12,11 @@
     <DefaultName>XUnitTestClassLibrary</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <LanguageTag Value="X#" />
+    <PlatformTag Value="Windows" />
+    <PlatformTag Value="Linux" />
+    <PlatformTag Value="MacOS" />
+    <ProjectTypeTag Value="Test" />
   </TemplateData>
   <TemplateContent>
     <Project File="XUnitTestClassLibrary.xsproj" ReplaceParameters="true">

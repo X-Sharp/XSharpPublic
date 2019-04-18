@@ -55,6 +55,7 @@ namespace XSharp.Project.OptionsPages
             chkShowMembersOfCurrentType.Checked = optionsPage.ShowMembersOfCurrentTypeOnly;
             commitChars.Text = optionsPage.CommitChars;
             chkAutoPairs.Checked = optionsPage.AutoPairs;
+            multiFactor.Text = optionsPage.MultiFactor.ToString();
             _loading = false;
 
         }
@@ -193,6 +194,13 @@ namespace XSharp.Project.OptionsPages
         private void chkAutoPairs_CheckedChanged(object sender, EventArgs e)
         {
             optionsPage.AutoPairs = chkAutoPairs.Checked;
+        }
+
+        private void multiFactor_TextChanged(object sender, EventArgs e)
+        {
+            int factor = 0;
+            int.TryParse(multiFactor.Text, out factor);
+            optionsPage.MultiFactor = factor;
         }
     }
 }

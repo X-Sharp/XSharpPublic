@@ -29,8 +29,11 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.Label label1;
+            System.Windows.Forms.Label label2;
             this.chkCompletionListtabs = new System.Windows.Forms.CheckBox();
             this.grpCompletionListTabs = new System.Windows.Forms.GroupBox();
+            this.chkAutoPairs = new System.Windows.Forms.CheckBox();
+            this.commitChars = new System.Windows.Forms.TextBox();
             this.chkKeywordsInAll = new System.Windows.Forms.CheckBox();
             this.chkShowAfterChar = new System.Windows.Forms.CheckBox();
             this.chkDotAsUniversalSelector = new System.Windows.Forms.CheckBox();
@@ -48,14 +51,24 @@
             this.chkSortNavBar = new System.Windows.Forms.CheckBox();
             this.chkIncludeFields = new System.Windows.Forms.CheckBox();
             this.btnShowMeTheMagic = new System.Windows.Forms.Button();
-            this.commitChars = new System.Windows.Forms.TextBox();
-            this.chkAutoPairs = new System.Windows.Forms.CheckBox();
+            this.multiFactor = new System.Windows.Forms.TextBox();
             label1 = new System.Windows.Forms.Label();
+            label2 = new System.Windows.Forms.Label();
             this.grpCompletionListTabs.SuspendLayout();
             this.grpCase.SuspendLayout();
             this.grpKeywordCase.SuspendLayout();
             this.grpNavigationBars.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(14, 122);
+            label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(288, 17);
+            label1.TabIndex = 6;
+            label1.Text = "Committed by typing the following characters";
             // 
             // chkCompletionListtabs
             // 
@@ -86,6 +99,28 @@
             this.grpCompletionListTabs.TabIndex = 0;
             this.grpCompletionListTabs.TabStop = false;
             this.grpCompletionListTabs.Text = "Completion Lists";
+            // 
+            // chkAutoPairs
+            // 
+            this.chkAutoPairs.AutoSize = true;
+            this.chkAutoPairs.Location = new System.Drawing.Point(17, 172);
+            this.chkAutoPairs.Margin = new System.Windows.Forms.Padding(4);
+            this.chkAutoPairs.Name = "chkAutoPairs";
+            this.chkAutoPairs.Size = new System.Drawing.Size(293, 21);
+            this.chkAutoPairs.TabIndex = 8;
+            this.chkAutoPairs.Text = "Auto Insert right parenthesis/bracket/curly";
+            this.chkAutoPairs.UseVisualStyleBackColor = true;
+            this.chkAutoPairs.CheckedChanged += new System.EventHandler(this.chkAutoPairs_CheckedChanged);
+            // 
+            // commitChars
+            // 
+            this.commitChars.Location = new System.Drawing.Point(18, 142);
+            this.commitChars.Margin = new System.Windows.Forms.Padding(4);
+            this.commitChars.Name = "commitChars";
+            this.commitChars.Size = new System.Drawing.Size(380, 22);
+            this.commitChars.TabIndex = 7;
+            this.commitChars.Text = "{}[]().,:;+-*/%&|^!~=<>?@#\'\"\\";
+            this.commitChars.TextChanged += new System.EventHandler(this.commitChars_TextChanged);
             // 
             // chkKeywordsInAll
             // 
@@ -125,6 +160,8 @@
             // 
             // grpCase
             // 
+            this.grpCase.Controls.Add(this.multiFactor);
+            this.grpCase.Controls.Add(label2);
             this.grpCase.Controls.Add(this.chkAlignMethod);
             this.grpCase.Controls.Add(this.chkAlignDoCase);
             this.grpCase.Controls.Add(this.grpKeywordCase);
@@ -133,7 +170,7 @@
             this.grpCase.Margin = new System.Windows.Forms.Padding(4);
             this.grpCase.Name = "grpCase";
             this.grpCase.Padding = new System.Windows.Forms.Padding(4);
-            this.grpCase.Size = new System.Drawing.Size(497, 159);
+            this.grpCase.Size = new System.Drawing.Size(497, 174);
             this.grpCase.TabIndex = 1;
             this.grpCase.TabStop = false;
             this.grpCase.Text = "Document Formatting";
@@ -247,7 +284,7 @@
             this.grpNavigationBars.Controls.Add(this.chkShowMembersOfCurrentType);
             this.grpNavigationBars.Controls.Add(this.chkSortNavBar);
             this.grpNavigationBars.Controls.Add(this.chkIncludeFields);
-            this.grpNavigationBars.Location = new System.Drawing.Point(16, 372);
+            this.grpNavigationBars.Location = new System.Drawing.Point(16, 387);
             this.grpNavigationBars.Margin = new System.Windows.Forms.Padding(4);
             this.grpNavigationBars.Name = "grpNavigationBars";
             this.grpNavigationBars.Padding = new System.Windows.Forms.Padding(4);
@@ -294,7 +331,7 @@
             // 
             // btnShowMeTheMagic
             // 
-            this.btnShowMeTheMagic.Location = new System.Drawing.Point(361, 493);
+            this.btnShowMeTheMagic.Location = new System.Drawing.Point(361, 508);
             this.btnShowMeTheMagic.Margin = new System.Windows.Forms.Padding(4);
             this.btnShowMeTheMagic.Name = "btnShowMeTheMagic";
             this.btnShowMeTheMagic.Size = new System.Drawing.Size(152, 28);
@@ -303,37 +340,24 @@
             this.btnShowMeTheMagic.UseVisualStyleBackColor = true;
             this.btnShowMeTheMagic.Click += new System.EventHandler(this.btnShowMeTheMagic_Click);
             // 
-            // commitChars
+            // label2
             // 
-            this.commitChars.Location = new System.Drawing.Point(18, 142);
-            this.commitChars.Margin = new System.Windows.Forms.Padding(4);
-            this.commitChars.Name = "commitChars";
-            this.commitChars.Size = new System.Drawing.Size(380, 22);
-            this.commitChars.TabIndex = 7;
-            this.commitChars.Text = "{}[]().,:;+-*/%&|^!~=<>?@#\'\"\\";
-            this.commitChars.TextChanged += new System.EventHandler(this.commitChars_TextChanged);
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(14, 148);
+            label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(254, 17);
+            label2.TabIndex = 9;
+            label2.Text = "MultiLine Statement Indentation factor :";
             // 
-            // label1
+            // multiFactor
             // 
-            label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(14, 122);
-            label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(288, 17);
-            label1.TabIndex = 6;
-            label1.Text = "Committed by typing the following characters";
-            // 
-            // chkAutoPairs
-            // 
-            this.chkAutoPairs.AutoSize = true;
-            this.chkAutoPairs.Location = new System.Drawing.Point(17, 172);
-            this.chkAutoPairs.Margin = new System.Windows.Forms.Padding(4);
-            this.chkAutoPairs.Name = "chkAutoPairs";
-            this.chkAutoPairs.Size = new System.Drawing.Size(293, 21);
-            this.chkAutoPairs.TabIndex = 8;
-            this.chkAutoPairs.Text = "Auto Insert right parenthesis/bracket/curly";
-            this.chkAutoPairs.UseVisualStyleBackColor = true;
-            this.chkAutoPairs.CheckedChanged += new System.EventHandler(this.chkAutoPairs_CheckedChanged);
+            this.multiFactor.Location = new System.Drawing.Point(294, 145);
+            this.multiFactor.Name = "multiFactor";
+            this.multiFactor.Size = new System.Drawing.Size(35, 22);
+            this.multiFactor.TabIndex = 10;
+            this.multiFactor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.multiFactor.TextChanged += new System.EventHandler(this.multiFactor_TextChanged);
             // 
             // IntellisenseOptionsControl
             // 
@@ -345,7 +369,7 @@
             this.Controls.Add(this.grpCompletionListTabs);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "IntellisenseOptionsControl";
-            this.Size = new System.Drawing.Size(529, 533);
+            this.Size = new System.Drawing.Size(529, 546);
             this.grpCompletionListTabs.ResumeLayout(false);
             this.grpCompletionListTabs.PerformLayout();
             this.grpCase.ResumeLayout(false);
@@ -380,5 +404,6 @@
         private System.Windows.Forms.CheckBox chkShowMembersOfCurrentType;
         internal System.Windows.Forms.TextBox commitChars;
         private System.Windows.Forms.CheckBox chkAutoPairs;
+        private System.Windows.Forms.TextBox multiFactor;
     }
 }

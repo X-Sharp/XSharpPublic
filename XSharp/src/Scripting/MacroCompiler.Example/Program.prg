@@ -226,6 +226,11 @@ oDataContext := NULL AS OBJECT, cWinMode := NULL AS USUAL, oProtype := NULL AS O
 oDBVorlage := NULL AS OBJECT ) AS USUAL STRICT
     return "testDef"
 
+FUNC TestInt32(n AS INT) AS INT
+RETURN n
+FUNC TestDWord(n AS DWORD) AS DWORD
+RETURN n
+
 BEGIN NAMESPACE MacroCompilerTest
 
 	FUNCTION Start() AS VOID
@@ -592,6 +597,10 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| !\"T\"$\"Test\"} ", Args(), false, typeof(logic))
         TestMacro(mc, e"testDef( \"MDOKU\" )", Args(), "testDef", typeof(string))
         TestMacro(mc, e"testDef( \"MDOKU\",,,,,,,,NULL )", Args(), "testDef", typeof(string))
+        TestMacro(mc, 'e"abc" + e"def"', Args(), e"abc" + e"def", typeof(string))
+        TestMacro(mc, 'e"a\\bc" + e"def"', Args(), e"a\\bc" + e"def", typeof(string))
+        TestMacro(mc, 'e"a\"bc" + e"def"', Args(), e"a\"bc" + e"def", typeof(string))
+        TestMacro(mc, 'e"a\"bc" + e"d\\ef"', Args(), e"a\"bc" + e"d\\ef", typeof(string))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")

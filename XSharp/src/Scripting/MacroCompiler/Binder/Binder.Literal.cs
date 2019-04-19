@@ -22,7 +22,9 @@ namespace XSharp.MacroCompiler
                 case TokenType.CHAR_CONST:
                     return Constant.Create(Literals.CharValue(Value));
                 case TokenType.STRING_CONST:
+                    return Constant.Create(Literals.StringValue(Value));
                 case TokenType.ESCAPED_STRING_CONST:
+                    return Constant.Create(Literals.EscapedStringValue(Value));
                 case TokenType.INTERPOLATED_STRING_CONST:
                     return Constant.Create(Literals.StringValue(Value));
                 case TokenType.SYMBOL_CONST:

@@ -453,7 +453,7 @@ FUNCTION TruePath( cFile AS STRING ) AS STRING PASCAL
 
 /// <exclude/>	
 FUNCTION _ExecName() AS STRING
-    RETURN System.Reflection.Assembly.GetExecutingAssembly():Location
+    RETURN System.Reflection.Assembly.GetEntryAssembly():Location
 
 FUNCTION ExecName( lFull AS LOGIC ) AS STRING
     LOCAL   nPos        AS DWORD

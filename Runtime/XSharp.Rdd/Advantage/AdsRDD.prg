@@ -1108,7 +1108,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     
     
     /// <inheritdoc />
-    VIRTUAL METHOD Lock(lockInfo AS DBLOCKINFO) AS LOGIC
+    VIRTUAL METHOD Lock(lockInfo REF DBLOCKINFO) AS LOGIC
       LOCAL lRecno := 0 AS DWORD
       LOCAL result := 0 AS DWORD
       LOCAL handleType AS WORD
@@ -1231,7 +1231,9 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       
       /// <inheritdoc />
     VIRTUAL METHOD SetRel(relinfo AS DBRELINFO) AS LOGIC
-      IF relinfo:Child:Driver != SELF:_Driver
+      #warning Disabled test for driver names, because they did not match.
+      // Needs a better solution of course. SELF:_Driver currently returns the fullname of the class, while Driver property is not implemented yet
+      IF relinfo:Child:Driver != SELF:_Driver .and. FALSE
         SELF:ADSERROR(ERDD.UNSUPPORTED, XSharp.Gencode.EG_UNSUPPORTED, "SetRel", "Related workareas must be opened with the same driver.")
         RETURN FALSE
       ENDIF

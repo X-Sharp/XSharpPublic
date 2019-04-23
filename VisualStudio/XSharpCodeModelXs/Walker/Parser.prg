@@ -46,6 +46,8 @@ BEGIN NAMESPACE XSharpModel
 		PRIVATE oGlobalObject AS EntityObject
 		PRIVATE _nLength  AS INT
 		PRIVATE iClassOrStruct AS INT
+		PRIVATE stackNS AS Stack<NameSpaceObject>
+		PRIVATE listNS AS List<NameSpaceObject>
 
 		CONSTRUCTOR()
 			SELF:aEntities				:= List<EntityObject>{}
@@ -63,6 +65,8 @@ BEGIN NAMESPACE XSharpModel
 			SELF:iClassOrStruct             := 0
 
 			SELF:StartPosition				:= 0
+			SELF:stackNS				:= Stack<NameSpaceObject>{}
+			SELF:listNS					:= List<NameSpaceObject>{}
 
 
 		STATIC CONSTRUCTOR()
@@ -126,6 +130,7 @@ BEGIN NAMESPACE XSharpModel
 		PROPERTY SourceLength   AS INT					GET _nLength -2 // exclude last CRLF
 		PROPERTY LineCount      AS INT					GET aSourceLines:Count
 		PROPERTY StartPosition  AS INT					AUTO
+		PROPERTY NameSpaces		AS IList<NameSpaceObject> GET listNS
 
 		METHOD AddEntity(oInfo AS EntityObject, oLine AS LineObject) AS VOID
 			LOCAL oLast AS EntityObject
@@ -1113,6 +1118,14 @@ BEGIN NAMESPACE XSharpModel
 											eStep := ParseStep.None
 											aNameSpaces:Add(cWord)
 											cBaseNameSpace := GetNameSpace(aNameSpaces)
+											//
+											VAR oNS := NameSpaceObject{ }
+											oNS:Position := nEntityStartOffset + SELF:StartPosition + nEntityStartCol
+											oNS:StartLine := nEntityStartLine
+											oNS:Col		:= nEntityStartCol
+											oNS:OffSet	:= nEntityStartOffSet + oNS:Col
+											oNS:Name := cWord
+											SELF:stackNS:Push( oNS )
 											_SetLineType(oStatementLine, LineType.BeginNamespace)
 											oStatementLine:cArgument := cWord
 											state:lIgnore := TRUE
@@ -1213,6 +1226,15 @@ BEGIN NAMESPACE XSharpModel
 								cClassNameSpace := ""
 								cClassType := ""
 							ELSEIF cUpperWord == "NAMESPACE"
+								// Update the latest Namespace
+								IF ( SELF:stackNS:Count > 0 )
+									VAR oNS := SELF:stackNS:Pop()
+									//
+									oNS:Span := TextRange{oNS:StartLine, oNS:Col, nEntityStartLine, nEntityStartCol}
+									oNS:Interval := TextInterval{ oNS:Position, nEntityStartOffset + SELF:StartPosition + nEntityStartCol}
+									///
+									SELF:listNS:Add( oNS )
+								ENDIF
 								_SetLineType(oStatementLine, LineType.EndNamespace)
 								IF lAllowEntityParse
 									IF aNameSpaces:Count != 0
@@ -1368,6 +1390,7 @@ BEGIN NAMESPACE XSharpModel
 				//
 			ENDIF
 			// Finish and add types to aTypes
+			// ???? Never used ? PRIVATE, so no external access...???
 			aResult := List<EntityObject>{}
 			aResult:Add(SELF:oGlobalObject)
 			FOREACH oEnt AS EntityObject IN aEntities
@@ -1377,6 +1400,8 @@ BEGIN NAMESPACE XSharpModel
 					aResult:Add(oEnt)
 				ENDIF
 			NEXT
+
+			//
 			RETURN ParseResult{SELF}
 
 
@@ -1686,6 +1711,19 @@ BEGIN NAMESPACE XSharpModel
 			RETURN
 			END CLASS
 
+	CLASS NameSpaceObject
+		PROPERTY Name AS STRING AUTO
+		PROPERTY Position AS INT AUTO
+		PROPERTY StartLine AS INT AUTO
+		PROPERTY Col AS INT AUTO
+		PROPERTY Offset AS INT AUTO
+
+		PROPERTY Span AS TextRange AUTO
+		PROPERTY Interval AS TextInterval AUTO
+
+	END CLASS
+
+
 	[DebuggerDIsplay("{cName,nq} {cType,nq}")];
 	CLASS EntityParamsObject
 		PROPERTY cName AS STRING AUTO
@@ -1780,6 +1818,7 @@ BEGIN NAMESPACE XSharpModel
 		MEMBER _Resource
 		MEMBER _TextBlock
 		MEMBER _EnumMember
+		MEMBER _NameSpace
 	END ENUM
 
 

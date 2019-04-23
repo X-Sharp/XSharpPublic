@@ -23,6 +23,7 @@ namespace XSharp.MacroCompiler
     {
         AllowDynamic = 1,
         AllowInexactComparisons = 2,
+        AllowImplicitNarrowingConversions = 4,
 
         BoxUsual = 128,
         Explicit = 256,
@@ -31,7 +32,7 @@ namespace XSharp.MacroCompiler
         Cast = 2048,
 
         None = 0,
-        Default = AllowDynamic | AllowInexactComparisons
+        Default = AllowDynamic | AllowInexactComparisons | AllowImplicitNarrowingConversions
     }
 
     internal partial class Binder

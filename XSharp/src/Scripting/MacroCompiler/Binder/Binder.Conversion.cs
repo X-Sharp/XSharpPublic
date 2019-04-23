@@ -120,6 +120,8 @@ namespace XSharp.MacroCompiler
                     return conv;
                 if (conv.IsCast && options.HasFlag(BindOptions.Cast))
                     return conv;
+                if (conv.IsExplicit && conv.Kind == ConversionKind.ExplicitNumeric && options.HasFlag(BindOptions.AllowImplicitNarrowingConversions))
+                    return conv; // TODO nvk: this should raise a warning!
                 if (conv.Exists)
                     noConversion = ConversionKind.NoImplicitConversion;
             }

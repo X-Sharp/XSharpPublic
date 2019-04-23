@@ -601,6 +601,10 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, 'e"a\\bc" + e"def"', Args(), e"a\\bc" + e"def", typeof(string))
         TestMacro(mc, 'e"a\"bc" + e"def"', Args(), e"a\"bc" + e"def", typeof(string))
         TestMacro(mc, 'e"a\"bc" + e"d\\ef"', Args(), e"a\"bc" + e"d\\ef", typeof(string))
+        TestMacro(mc, "SubStr3('Test', 1 , SLen('abc') + 1)", Args(), "Test", typeof(string)) // should raise warning
+        TestMacro(mc, "SubStr3('Test', 1 , Len('abc') - 1)", Args(), "Te", typeof(string)) // should raise warning
+        TestMacro(mc, "TestInt32(TestDWord(1))", Args(), 1, typeof(int)) // should raise warning
+        TestMacro(mc, "TestDWord(TestInt32(1))", Args(), 1, typeof(dword)) // should raise warning
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")

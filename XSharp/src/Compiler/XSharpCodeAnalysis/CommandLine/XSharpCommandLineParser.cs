@@ -182,6 +182,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                             case "xsharp.xpp.dll":
                                 options.TargetDLL = XSharpTargetDLL.XPP;
                                 break;
+                            case "xsharp.vfp.dll":
+                                options.TargetDLL = XSharpTargetDLL.VFP;
+                                break;
                             default:
                                 options.TargetDLL = XSharpTargetDLL.Other;
                                 break;
@@ -408,6 +411,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "foxpro":
                 case "foxbase":
                 case "fox":
+                case "vfp":
                     dialect = XSharpDialect.FoxPro;
                     return true;
 
@@ -452,7 +456,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Ok;
                     isVo = true;
                 }
-                else if(options.TargetDLL == XSharpTargetDLL.VO || options.TargetDLL == XSharpTargetDLL.RDD || options.TargetDLL == XSharpTargetDLL.XPP || options.TargetDLL == XSharpTargetDLL.RT) {
+                else if(options.TargetDLL == XSharpTargetDLL.VO || options.TargetDLL == XSharpTargetDLL.RDD ||
+                    options.TargetDLL == XSharpTargetDLL.XPP || options.TargetDLL == XSharpTargetDLL.RT || options.TargetDLL == XSharpTargetDLL.VFP) {
                     // Ok
                     isVo = true;
                 }

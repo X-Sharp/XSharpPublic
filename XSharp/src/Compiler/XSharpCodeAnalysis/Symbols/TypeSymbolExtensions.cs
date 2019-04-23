@@ -177,6 +177,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 case XSharpAssemblyNames.XSharpXPP:
                     dictionary.TryAdd(_asm.Name, XSharpTargetDLL.XPP);
                     return true;
+                case XSharpAssemblyNames.XSharpVFP:
+                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VFP);
+                    return true;
                 case VulcanAssemblyNames.VulcanRT:
                     dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VulcanRT);
                     return true;

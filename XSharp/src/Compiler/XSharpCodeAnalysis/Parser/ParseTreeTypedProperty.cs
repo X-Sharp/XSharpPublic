@@ -12,7 +12,7 @@ Distributed under the License is distributed on an "as is" basis,
 without warranties or conditions of any kind, either express or implied.
 See the License for the specific language governing permissions and   
 limitations under the License.
-*/
+*/ 
 using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
@@ -35,7 +35,7 @@ namespace Antlr4.Runtime.Tree
 {
     internal class ParseTreeTypedProperty
     {
-        protected internal ConcurrentDictionary<IParseTree, object> annotations = new ConcurrentDictionary<IParseTree, object>();
+        protected internal ConcurrentDictionary<IParseTree, object> annotations = new ConcurrentDictionary<IParseTree, object>(); 
 
         public virtual T Get<T>(IParseTree node)
         {

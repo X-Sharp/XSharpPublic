@@ -1505,6 +1505,44 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
            }
 
+
+            if (dialect == XSharpDialect.FoxPro)
+            {
+                // Visual FoxPro Keywords
+                var vfpKeywords = new Dictionary<string, int>
+                {
+                    // normal keywords
+                };
+                var vfpKeyWordAbbrev = new Dictionary<string, int>
+                {
+                    {"ENDDEFINE",   ENDDEFINE },
+                    {"ENDFOR",   NEXT },
+                    {"ENDFUNC",   ENDFUNC },
+                    {"ENDPROC",   ENDPROC },
+                    {"ENDWITH",   ENDWITH },        // duplicated here because it may be abbreviated
+                    {"LPARAMETERS",   LPARAMETERS },
+                };
+                foreach (var kw in vfpKeywords)
+                {
+                    if (!ids.ContainsKey(kw.Key))
+                        ids.Add(kw.Key, kw.Value);
+                }
+                foreach (var kw in vfpKeyWordAbbrev)
+                {
+                    var name = kw.Key;
+                    while (true)
+                    {
+                        if (!ids.ContainsKey(name))
+                        {
+                            ids.Add(name, kw.Value);
+                        }
+                        if (name.Length == 4)
+                            break;
+                        name = name.Substring(0, name.Length - 1);
+                    }
+                }
+            }
+
             if (dialect == XSharpDialect.VO || dialect == XSharpDialect.Vulcan)
             {
                 ids.Add("ANY", USUAL);
@@ -1643,6 +1681,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "VOLATILE", VOLATILE},
                     { "WHERE", WHERE},
                     { "YIELD", YIELD},
+                    // From VFP: WITH .. [END WITH| ENDWITH]
+                    {"WITH",      WITH },
+                    {"ENDWITH",   ENDWITH },
 
 			        // Vulcan types
 			        { "INT64", INT64},

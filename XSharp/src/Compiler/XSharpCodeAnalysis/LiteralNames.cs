@@ -115,6 +115,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string XSharpRTFunctionsClass = "XSharp.RT.Functions";
         internal const string XSharpVOFunctionsClass = "XSharp.VO.Functions";
         internal const string XSharpXPPFunctionsClass = "XSharp.XPP.Functions";
+        internal const string XSharpVFPFunctionsClass = "XSharp.VFP.Functions";
         internal const string VODllFunctionsClass = ".Functions";
         internal const string ModuleName = "<Module>";
     }
@@ -216,6 +217,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string XSharpRT = "xsharp.rt";
         internal const string XSharpVO = "xsharp.vo";
         internal const string XSharpXPP = "xsharp.xpp";
+        internal const string XSharpVFP = "xsharp.vfp";
     }
 
     internal static class OurNameSpaces

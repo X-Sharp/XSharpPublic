@@ -211,6 +211,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpTargetDLL.XPP:
                     className = XSharpSpecialNames.XSharpXPPFunctionsClass;
                     break;
+                case XSharpTargetDLL.VFP:
+                    className = XSharpSpecialNames.XSharpVFPFunctionsClass;
+                    break;
                 default:
                     className = XSharpSpecialNames.FunctionsClass;
                     break;
@@ -3756,6 +3759,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var isAbstract = mods.Any((int)SyntaxKind.AbstractKeyword);
             var hasNoBody = isInInterface || isExtern || isAbstract;
             context.SetSequencePoint(context.end);
+            if (context.T2 != null)
+            {
+                if (context.T2.Token.Type != context.T.Token.Type)
+                {
+                    context.AddError(new ParseErrorData(context.T2, ErrorCode.ERR_UnexpectedToken,  context.T2.Token.Text));
+                }
+            }
             if (context.T.Token.Type != XP.METHOD)
             {
                 // no type parameters on access and assign

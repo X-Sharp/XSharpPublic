@@ -88,7 +88,8 @@ function            : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
                       (EXPORT LOCAL)?                                           // Optional (ignored)
                       (DLLEXPORT STRING_CONST)?                                 // Optional (ignored)
                       end=eos   
-                     StmtBlk=statementBlock
+                      StmtBlk=statementBlock
+                      ((END FUNCTION | ENDFUNC) Ignored=identifier? EOS )?
                     ;
 
 procedure           : (Attributes=attributes)? (Modifiers=funcprocModifiers)?   
@@ -103,6 +104,7 @@ procedure           : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
                       (DLLEXPORT STRING_CONST)?                                 // Optional (ignored)
                       end=eos                       
                       StmtBlk=statementBlock
+                      ((END PROCEDURE| ENDPROC) Ignored=identifier? EOS)?
                     ;
 
 callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CALLBACK | FASTCALL | THISCALL)
@@ -186,6 +188,7 @@ method              : (Attributes=attributes)? (Modifiers=memberModifiers)?
                       (DLLEXPORT STRING_CONST)?                             // The DLLEXPORT clause exists in VO but is ignored in X#
                       end=eos
                       StmtBlk=statementBlock
+                      (END T2=methodtype Ignored=identifier? EOS)?
                     ;
 
 methodtype          : Token=(METHOD | ACCESS | ASSIGN)
@@ -199,6 +202,7 @@ vodefine            : (Modifiers=funcprocModifiers)?
 vostruct            : (Modifiers=votypeModifiers)?
                       VOSTRUCT (Namespace=nameDot)? Id=identifier (ALIGN Alignment=INT_CONST)? e=eos
                       (Members+=vostructmember)+
+                      (END VOSTRUCT Ignored=identifier? EOS)?
                     ;
 
 vostructmember      : MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (As=(AS | IS) DataType=datatype)? eos
@@ -209,6 +213,7 @@ vostructmember      : MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT
 vounion             : (Modifiers=votypeModifiers)?
                       UNION (Namespace=nameDot)? Id=identifier e=eos
                       (Members+=vostructmember)+
+                      (END UNION Ignored=identifier? EOS)?
                     ;
 
 votypeModifiers     : ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE | STATIC ) )+
@@ -241,8 +246,7 @@ class_              : (Attributes=attributes)? (Modifiers=classModifiers)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)*             // Optional typeparameterconstraints for Generic Class
                       e=eos
                       (Members+=classmember)*
-                      END CLASS Ignored=identifier?
-                      eos
+                      END CLASS Ignored=identifier? EOS
                     ;
 
 classModifiers      : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL) )+
@@ -275,8 +279,7 @@ structure_          : (Attributes=attributes)? (Modifiers=structureModifiers)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos
                       (Members+=classmember)*
-                      END STRUCTURE Ignored=identifier?
-                      eos
+                      END STRUCTURE Ignored=identifier? EOS
                     ;
 
 structureModifiers  : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
@@ -299,8 +302,7 @@ delegateModifiers   : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | 
 enum_               : (Attributes=attributes)? (Modifiers=enumModifiers)?
                       ENUM (Namespace=nameDot)? Id=identifier ((AS|INHERIT) Type=datatype)? e=eos
                       (Members+=enummember)+
-                      END ENUM? Ignored=identifier?
-                      eos
+                      END ENUM? Ignored=identifier? EOS
                     ;
 
 enumModifiers       : ( Tokens+=(NEW | PUBLIC| EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN) )+
@@ -508,7 +510,8 @@ statement           : Decl=localdecl                        #declarationStmt
                         )
                       Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
                       (STEP Step=expression)? end=eos
-                      StmtBlk=statementBlock (e=NEXT Ignored=identifier? eos)?	#forStmt
+                      StmtBlk=statementBlock
+                      ((e = NEXT | e = END FOR)? Ignored=identifier? eos)?	      #forStmt
                     | IF IfStmt=ifElseBlock
                       ((e=END IF? | e=ENDIF)   Ignored=expression? eos)?			#ifStmt
                     | DO CASE end=eos
@@ -536,7 +539,8 @@ statement           : Decl=localdecl                        #declarationStmt
                     | FOREACH
                       (IMPLIED Id=identifier | Id=identifier AS Type=datatype| VAR Id=identifier)
                       IN Container=expression end=eos
-                      StmtBlk=statementBlock (e=NEXT Ignored=identifier? eos)?  #foreachStmt
+                      StmtBlk=statementBlock
+                      ((e = NEXT | e = END FOR)? Ignored=identifier? eos)?	    #foreachStmt
                     | Key=THROW Expr=expression? end=eos                        #jumpStmt
                     | TRY end=eos StmtBlk=statementBlock
                       (CATCH CatchBlock+=catchBlock?)*
@@ -648,7 +652,7 @@ fielddecl          : FIELD Fields+=identifierName (COMMA Fields+=identifierName)
 
 // Old Style xBase declarations
 
-xbasedecl           : T=(MEMVAR|PARAMETERS)      // MEMVAR  Foo, Bar or PARAMETERS Foo, Bar
+xbasedecl           : T=(MEMVAR|PARAMETERS|LPARAMETERS)      // MEMVAR  Foo, Bar or PARAMETERS Foo, Bar
                       Vars+=identifierName (COMMA Vars+=identifierName)*
                       end=eos
                     | T=(PRIVATE | PUBLIC)
@@ -1156,6 +1160,7 @@ xppmethod           : (Attributes=attributes)?                              // N
                       // no calling convention
                       end=eos
                       StmtBlk=statementBlock
+                      (END METHOD eos)?
                     ;
 
 xppinlineMethod     : (Attributes=attributes)?                               // NEW Optional Attributes
@@ -1169,6 +1174,7 @@ xppinlineMethod     : (Attributes=attributes)?                               // 
                       // no calling convention
                       end=eos
                       StmtBlk=statementBlock
+                      (END METHOD eos)?
                     ;
 
 xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+

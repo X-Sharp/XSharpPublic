@@ -1521,6 +1521,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"ENDPROC",   ENDPROC },
                     {"ENDWITH",   ENDWITH },        // duplicated here because it may be abbreviated
                     {"LPARAMETERS",   LPARAMETERS },
+                    // text end text
+                    {"TEXT",      TEXT },           // TEXT .. ENDTEXT is declared here because the Lexer needs to do some special magic
+                    {"ENDTEXT",   ENDTEXT },        // it could also be implemented as UDC but we need the lexer support
+                    {"ADDITIVE",  ADDITIVE } ,      // the various options are recognized in the parser and result in a special function call to
+                    {"FLAGS",     FLAGS} ,          // process the literal string before it gets assigned.
+                    {"PRETEXT",   PRETEXT},
+                    {"NOSHOW",    NOSHOW},
+                    {"TEXTMERGE", TEXTMERGE},
                 };
                 foreach (var kw in vfpKeywords)
                 {

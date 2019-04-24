@@ -153,16 +153,20 @@ namespace XSharp.Project
             _completionBroker = completionBroker;
             _signatureBroker = signatureBroker;
             _aggregator = aggregator;
-            _buffer = TextView.TextBuffer;
-            _buffer.ChangedLowPriority += Textbuffer_Changed;
-            _file = _buffer.GetFile();
             _parseoptions = _file.Project.ParseOptions;
             _linesToSync = new List<int>();
             var package = XSharpProjectPackage.Instance;
             _optionsPage = package.GetIntellisenseOptionsPage();
-            if (_buffer.CheckEditAccess())
+            //
+            _buffer = TextView.TextBuffer;
+            if (_buffer != null)
             {
-                formatCaseForWholeBuffer();
+                _buffer.ChangedLowPriority += Textbuffer_Changed;
+                _file = _buffer.GetFile();
+                if (_buffer.CheckEditAccess())
+                {
+                    formatCaseForWholeBuffer();
+                }
             }
         }
 

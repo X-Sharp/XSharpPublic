@@ -324,7 +324,10 @@ namespace XSharp.Project
                                 //
                                 if (lineContinue==1)
                                 {
-                                    indentSize = prevIndentSize + continueOffset;
+                                    if ( start != '[')
+                                    {
+                                        indentSize = prevIndentSize + continueOffset;
+                                    }
                                 }
                                 else if (lineContinue>1)
                                 {
@@ -334,7 +337,8 @@ namespace XSharp.Project
                                 {
                                     indentSize = getDesiredIndentationInDocument(snapLine, regions, out inComment);
                                 }
-                                if (!inComment && (end == ';'))
+                                // Not in comment, Multiple line but not Attribute
+                                if (!inComment && (end == ';') )
                                 {
                                     if (lineContinue==0)
                                     {

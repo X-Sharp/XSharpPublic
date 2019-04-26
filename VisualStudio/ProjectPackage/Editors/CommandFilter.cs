@@ -153,7 +153,6 @@ namespace XSharp.Project
             _completionBroker = completionBroker;
             _signatureBroker = signatureBroker;
             _aggregator = aggregator;
-            _parseoptions = _file.Project.ParseOptions;
             _linesToSync = new List<int>();
             var package = XSharpProjectPackage.Instance;
             _optionsPage = package.GetIntellisenseOptionsPage();
@@ -163,6 +162,7 @@ namespace XSharp.Project
             {
                 _buffer.ChangedLowPriority += Textbuffer_Changed;
                 _file = _buffer.GetFile();
+                _parseoptions = _file.Project.ParseOptions;
                 if (_buffer.CheckEditAccess())
                 {
                     formatCaseForWholeBuffer();

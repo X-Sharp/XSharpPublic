@@ -182,6 +182,10 @@ namespace XSharp.Project
         private void EnableDisableStandardDefs()
         {
             SetFieldReadOnly("StandardDefs", nostandarddefs);
+            if (nostandarddefs)
+            {
+                this.StandardDefs = "";
+            }
         }
 
         [Category(CatPreprocessor), DisplayName(StdDefCaption), Description(StdDefDescription)]
@@ -207,19 +211,24 @@ namespace XSharp.Project
 
         internal override void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
         {
-            if (!saving)
+            if (!saving )
             {
-
-                if (e.PropertyName.ToLower() == nameof(NamedArgs).ToLower())
+                try
                 {
-                    BindNamedArgs();
-                    Grid.Refresh();
+                    if (e.PropertyName.ToLower() == nameof(NamedArgs).ToLower())
+                    {
+                        BindNamedArgs();
+                        Grid.Refresh();
+                    }
+                    if (e.PropertyName.ToLower() == nameof(MemVar).ToLower() ||
+                        e.PropertyName.ToLower() == nameof(Undeclared).ToLower())
+                    {
+                        ReadMemvars();
+                        Grid.Refresh();
+                    }
                 }
-                if (e.PropertyName.ToLower() == nameof(MemVar).ToLower() ||
-                    e.PropertyName.ToLower() == nameof(Undeclared).ToLower())
+                catch (Exception)
                 {
-                    ReadMemvars();
-                    Grid.Refresh();
                 }
             }
         }

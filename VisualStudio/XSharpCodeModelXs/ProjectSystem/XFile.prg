@@ -199,6 +199,14 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 				SELF:Project:RemoveMergedType(oType:FullName)
 			NEXT
+			// Now add NameSpaces
+			FOREACH oNS AS NameSpaceObject IN oInfo:NameSpaces
+				oType := XType{ oNS:Name, Kind.Namespace, Modifiers.Public, Modifiers.Public, oNS:Span, oNS:Interval }
+				IF !aTypes:ContainsKey(oType:FullName)
+					aTypes:Add( oType:FullName, oType)
+				ENDIF
+			NEXT
+			//
 			FOREACH oLine AS LineObject IN oInfo:SpecialLines
 				IF oLine:eType == LineType.Using
 					LOCAL cName AS STRING

@@ -2536,6 +2536,11 @@ namespace XSharpLanguage
                         prevWasDot = true;
                     }
                 }
+                else if ( ( file.Project.ProjectNode.ParseOptions.Dialect == XSharpDialect.XPP ) && (token.CompareTo("::") == 0) )
+                {
+                    returnList.Add("SELF");
+                    returnList.Add(":");
+                }
                 else
                 {
                     if (prevWasDot)

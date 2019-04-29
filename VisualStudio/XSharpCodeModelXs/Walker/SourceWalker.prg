@@ -108,6 +108,9 @@ BEGIN NAMESPACE XSharpModel
 
 			VAR oParser := XSharpModel.Parser{}
 			oParser:StartPosition := SELF:StartPosition
+			IF ( SELF:_prjNode != NULL )
+				oParser:Dialect := SELF:_prjNode:ParseOptions:Dialect
+			ENDIF
 			VAR info := oParser:Parse(lines, lIncludeLocals)
 			BEGIN LOCK SELF
 				SELF:_info := info

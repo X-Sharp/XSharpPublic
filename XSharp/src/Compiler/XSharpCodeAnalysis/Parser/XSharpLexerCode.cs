@@ -1551,10 +1551,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
             }
 
-            if (dialect == XSharpDialect.VO || dialect == XSharpDialect.Vulcan)
-            {
-                ids.Add("ANY", USUAL);
-            }
+            //if (dialect == XSharpDialect.VO || dialect == XSharpDialect.Vulcan)
+            //{
+            //    ids.Add("ANY", USUAL);
+            //}
             Dictionary<string, int> keywords = null;
             if (IsMacroLexer)
             {

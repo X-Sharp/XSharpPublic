@@ -133,7 +133,7 @@ namespace Roslyn.Utilities
 
 namespace Microsoft.CodeAnalysis.Diagnostics
 {
-    
+
 }
 namespace Microsoft.CodeAnalysis.PooledObjects
 {
@@ -195,21 +195,37 @@ namespace Microsoft.CodeAnalysis.CSharp
         public IList<string> PreprocessorSymbols { get; set; } = new List<string>();
         public static CSharpParseOptions Default => new CSharpParseOptions();
 
-        public static CSharpParseOptions FromVsValues(IList<string> defines, string includefolders, IList<string> references, string dialect)
+        public static CSharpParseOptions FromVsValues( IList<string> options)
         {
             var parser = new CSharpCommandLineParser();
             var diags = new List<Diagnostic>();
             parser.ResetXSharpCommandlineOptions();
-            var name = "i";
-            parser.ParseXSharpArgument(ref name, ref includefolders,"", diags);
-            foreach (var reference in references)
+            var defines = new List<string>();
+            foreach (var opt in options)
             {
-                var ref2 = reference;
-                name = "ref";
-                parser.ParseXSharpArgument(ref name, ref ref2, "", diags);
+                string name, value;
+                var pos = opt.IndexOf(":");
+                if (pos > 0)
+                {
+
+                    name = opt.Substring(0, pos );
+                    value = opt.Substring(pos + 1);
+                }
+                else
+                {
+                    name = opt;
+                    value = "";
+                }
+                if (name== "d")
+                {
+                    var defs = value.Split(new char[] { ';' },StringSplitOptions.RemoveEmptyEntries);
+                    defines.AddRange(defs);
+                }
+                else
+                {
+                    parser.ParseXSharpArgument(ref name, ref value, "", diags);
+                }
             }
-            name = "dialect";
-            parser.ParseXSharpArgument(ref name , ref dialect, "", diags);
             var xopts = parser.XSharpSpecificCompilationOptions;
             var result = new CSharpParseOptions().WithXSharpSpecificOptions(xopts);
             result.PreprocessorSymbols = defines;
@@ -257,7 +273,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     public class ParseOptions
     {
-        
+
     }
 
     public class CommandLineArguments
@@ -275,14 +291,14 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     }
 
-    public class CompilationOptions 
+    public class CompilationOptions
     {
 
     }
 
     public class CommandLineParser
     {
-        
+
         internal void AddDiagnostic(IList<Diagnostic> diag, Microsoft.CodeAnalysis.CSharp.ErrorCode error, params object[]  parameters)
         {
 

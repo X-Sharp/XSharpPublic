@@ -35,11 +35,9 @@ BEGIN NAMESPACE XSharpModel
 	#endregion
         PRIVATE _parseOptions as XSharpParseOptions
 		CONSTRUCTOR()
-            var defines     := List<String>{}
-            var references  := List<String>{}
-            // todo ?
-            // Add references to our Assemblies (XSharp.Core, RT and more ) ?
-            _parseOptions   := XSharpParseOptions.FromVsValues(defines,"",references, "Core")
+            var options := List<String>{}
+             options.Add("dialect:Core")
+            _parseOptions   := XSharpParseOptions.FromVsValues(options)
 
 		VIRTUAL METHOD AddFileNode(strFileName AS STRING) AS VOID
 			RETURN

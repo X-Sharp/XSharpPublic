@@ -576,6 +576,10 @@ statement           : Decl=localdecl                        #declarationStmt
                       StmtBlk=statementBlock
                       (e=END FIXED? eos)?						#blockStmt
 
+                    | WITH Expr=expression end=eos
+                       (withLine)+
+                      (e=END WITH | e=ENDWITH) eos      #withBlock
+
                       // NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
                       // The first ExpressonStmt rule matches a single expression
                       // The second Rule matches a single expression with an extraneous RPAREN RCURLY or RBRKT
@@ -588,6 +592,10 @@ statement           : Decl=localdecl                        #declarationStmt
                       Exprs+=expression (COMMA Exprs+=expression)+  end=eos			#expressionStmt
 	                ;
 
+withLine            : Op=(DOT|COLON) Expr=expression AsOp=(ASSIGN_OP|EQ) expression end=eos            // assignment to field or property
+                    | Op=(DOT|COLON) Expr=expression l=LPAREN  r=RPAREN  end=eos                       // method call without arguments
+                    | Op=(DOT|COLON) Expr=expression l=LPAREN  ArgList=argumentList r=RPAREN  end=eos  // method call with arguments
+                    ;
 
 ifElseBlock         : Cond=expression end=eos StmtBlk=statementBlock
                       ( ELSEIF ElseIfBlock=ifElseBlock 
@@ -960,12 +968,14 @@ identifier          : Token=(ID  | KWID)
                     | VnToken=keywordvn
                     | XsToken=keywordxs
                     | XppToken=keywordxpp
+                    | FoxToken=keywordfox
                     ;
 
 identifierString    : Token=(ID | KWID | STRING_CONST)
                     | VnToken=keywordvn
                     | XsToken=keywordxs
                     | XppToken=keywordxpp
+                    | FoxToken=keywordfox
                     ;
 
 
@@ -1180,3 +1190,11 @@ xppinlineMethod     : (Attributes=attributes)?                               // 
 xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+
                     ;
 
+
+
+/// FoxPro Parser definities
+keywordfox          :Token=(ENDDEFINE| ENDFUNC| ENDPROC| LPARAMETERS| TEXT| ENDTEXT| ADDITIVE| FLAGS| PRETEXT| NOSHOW| TEXTMERGE)
+                    ;
+// class declaration
+// text ... endtext
+// 

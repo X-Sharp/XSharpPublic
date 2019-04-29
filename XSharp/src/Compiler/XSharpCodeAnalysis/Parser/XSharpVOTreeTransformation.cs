@@ -953,6 +953,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     CurrentEntity.Data.HasClipperCallingConvention = true;
                     CurrentEntity.Data.HasParametersStmt = true;
                 }
+                if (context.T.Type == XP.LPARAMETERS)
+                {
+                    // lparameters assume CC
+                    CurrentEntity.Data.HasClipperCallingConvention = true;
+                    CurrentEntity.Data.HasParametersStmt = true;
+                }
             }
         }
 
@@ -3282,15 +3288,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // make sure that existing attributes are not removed!
 
                     List<string> parameternames = new List<String>();
+                    bool localParameters = true;
                     if (context.Data.HasParametersStmt)
                     {
+                        localParameters = false;
                         foreach (var stmt in context.Statements._Stmts)
                         {
                             if (stmt is XP.XbasedeclStmtContext x)
                             {
                                 var xdecl = x.xbasedecl();
-                                if (xdecl.T.Type == XP.PARAMETERS)
+                                if (xdecl.T.Type == XP.PARAMETERS || xdecl.T.Type == XP.LPARAMETERS)
                                 {
+                                    localParameters = xdecl.T.Type == XP.LPARAMETERS;
                                     foreach (var n in xdecl._Vars)
                                     {
                                         parameternames.Add(n.GetText());

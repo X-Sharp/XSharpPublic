@@ -7575,6 +7575,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(GenerateLiteral(context.VnToken.Token.Text));
             else if (context.XppToken != null)
                 context.Put(GenerateLiteral(context.XppToken.Token.Text));
+            else if (context.FoxToken != null)
+                context.Put(GenerateLiteral(context.FoxToken.Token.Text));
         }
 
         public override void ExitIdentifier([NotNull] XP.IdentifierContext context)
@@ -7582,7 +7584,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(context.Token?.SyntaxIdentifier()
                 ?? context.XsToken?.Token.SyntaxIdentifier()
                 ?? context.VnToken?.Token.SyntaxIdentifier()
-                ?? context.XppToken?.Token.SyntaxIdentifier()); 
+                ?? context.XppToken?.Token.SyntaxIdentifier()
+                ?? context.FoxToken?.Token.SyntaxIdentifier());
         }
 
         public override void ExitKeyword([NotNull] XP.KeywordContext context)
@@ -7607,6 +7610,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // caught by the keyword/identifier rule
         }
 
+        public override void ExitKeywordfox([NotNull] XP.KeywordfoxContext context)
+        {
+            // caught by the keyword/identifier rule
+        }
         public override void ExitSimpleName([NotNull] XP.SimpleNameContext context)
         {
             if (context.GenericArgList == null)

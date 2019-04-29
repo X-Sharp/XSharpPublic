@@ -135,7 +135,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var firsttoken = tokens[0];
                 var key = firsttoken.Text;
-                while (true)
+                while (key != null)
                 {
                     if (_rules.ContainsKey(key))
                     {

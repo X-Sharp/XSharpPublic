@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharp.RDD
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFDBT",  "XSharp.RDD.DBFDBT"})       // DBF + DBT
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFNTX",  "XSharp.RDD.DBFNTX"})       // DBF + DBT + NTX
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFFPT",  "XSharp.RDD.DBFFPT"})       // DBF + FPT
-            //RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFCDX",  "XSharp.RDD.DBFCDX"})       // DBF + FPT + CDX
+            RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFCDX",  "XSharp.RDD.DBFCDX"})       // DBF + FPT + CDX
             //RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFMEMO", "XSharp.RDD.DBFMEMO"})      // DBF + NTX + DBV
             //RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFBLOB", "XSharp.RDD.DBFBLOB"})      // DBV only
             //RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFSMT",  "XSharp.RDD.DBFSMT"})       // DBF + SMT

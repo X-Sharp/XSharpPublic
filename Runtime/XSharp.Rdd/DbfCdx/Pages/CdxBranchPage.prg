@@ -167,23 +167,27 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:NumKeys >= SELF:MaxKeys
                 RETURN CdxAction.AddBranch(SELF, node:Page:PageNo, node:Recno, node:KeyBytes)
             ENDIF
-            LOCAL nPos := SELF:NumKeys AS WORD
-            SELF:NumKeys++
-            // node contains recno & keydata
-            // node:Page has value for ChildPageNo
-            SELF:_setNode(nPos, node)
-            SELF:Write()
-            RETURN CdxAction.Ok
+            RETURN SELF:Add(node:Recno, node:Page:PageNo, node:KeyBytes)
 
          INTERNAL METHOD Add(recno AS LONG, childPage AS LONG, key AS BYTE[]) AS CdxAction
             IF SELF:NumKeys >= SELF:MaxKeys
                 RETURN CdxAction.AddBranch(SELF, childPage, recno, key)
             ENDIF
-            LOCAL nPos := SELF:NumKeys AS WORD
+            // make sure that this key is larger than the last key
+            if self:NumKeys > 0
+                var lastKey := self:GetKey(SELF:NumKeys-1)
+                VAR nDiff := SELF:Tag:__Compare(lastKey, key, key:Length)
+                IF nDiff > 0
+                    // New key needs to be inserted and not added to the page
+                    var Pos := self:FindKey(key, recno)
+                    IF Pos > 0
+                        // insert before this key
+                        return SELF:Insert(pos, recno, childPage, key)
+                    endif
+                endif
+            ENDIF
+            var nPos := SELF:NumKeys
             SELF:NumKeys++
-            // node contains recno & keydata
-            // node:Page has value for ChildPageNo
-            // TODO Combine the 3 operations so we do not have to calculate the offset 3 times
             SELF:SetRecno(nPos, recno)
             SELF:SetChildPage(nPos, childPage)
             SELF:SetKey(nPos, key)
@@ -191,14 +195,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN CdxAction.Ok
             
         INTERNAL METHOD Insert(nPos AS LONG, node AS CdxPageNode) AS CdxAction
+            return SELF:Insert(nPos, node:Recno, node:Page:PageNo, node:KeyBytes)
+
+        INTERNAL METHOD Insert(nPos AS LONG, recno as LONG, childPageNo as LONG, key as byte[]) AS CdxAction
             LOCAL nMax := SELF:NumKeys AS WORD
             // we allow to write at the position nMax
             IF SELF:NumKeys == SELF:MaxKeys
-                RETURN CdxAction.SplitBranch(SELF, node:Page:PageNo, node:Recno, node:KeyBytes, nPos)
+                RETURN CdxAction.SplitBranch(SELF, ChildPageNo, recno, key, nPos)
             ENDIF
             IF nPos == nMax                 // Insert at end of list
                 SELF:NumKeys += 1
-                SELF:_setNode(nMax, node)
+                SELF:_setNode(nMax, recno, childPageNo, key)
                 RETURN CdxAction.Ok
             ENDIF
             IF nPos < 0 .OR. nPos > nMax
@@ -214,7 +221,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             NEXT
             // and insert at the right spot
-            _setNode(nPos, node)
+            _setNode(nPos, recno, childPageNo, key)
             SELF:Write()
             RETURN CdxAction.Ok
             
@@ -287,13 +294,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:SetKey(nTrg, SELF:GetKey(nSrc))
             ENDIF
             RETURN CdxAction.Ok
+
+        PRIVATE METHOD _setNode(nPos AS LONG, recno as LONG, ChildPageNo as LONG, key as Byte[]) AS CdxAction
+            // Todo: Combine the 3 operations so we do not have to calculate the offset 3 times
+            SELF:SetRecno(nPos, recno)
+            SELF:SetChildPage(nPos, childPageNo)
+            SELF:SetKey(nPos, key)
+            RETURN CdxAction.Ok
+
             
         PRIVATE METHOD _setNode(nPos AS LONG, node AS CdxPageNode) AS CdxAction
-            // Todo: Combine the 3 operations so we do not have to calculate the offset 3 times
-            SELF:SetRecno(nPos, node:Recno)
-            SELF:SetChildPage(nPos, node:Page:PageNo)
-            SELF:SetKey(nPos, node:KeyBytes)
-            RETURN CdxAction.Ok
+            return SELF:_setNode(npos, node:Recno, node:Page:PageNo, node:KeyBytes)
             
         INTERNAL METHOD Dump AS STRING
             LOCAL Sb AS stringBuilder
@@ -331,6 +342,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             NEXT
             RETURN -1
-            
+         INTERNAL override METHOD FindKey(key as byte[], recno as long) as long
+            for var nI := 0 to self:Numkeys -1
+                var pageKey := self:GetKey(nI)
+                var nDiff := SELF:Tag:__Compare(pageKey, key, key:Length)
+                IF nDiff > 0
+                    // insert before this key
+                    return nI
+                endif
+           next
+           return -1
     END CLASS
 END NAMESPACE 

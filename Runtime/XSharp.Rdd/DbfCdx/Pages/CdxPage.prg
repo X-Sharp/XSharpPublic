@@ -58,6 +58,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 			
 		PROTECTED INTERNAL VIRTUAL METHOD Write() AS LOGIC
+            IF ! Self:IsHot
+                return TRUE
+            ENDIF
 			VAR lOk :=  _Bag:Write(SELF)
             SELF:IsHot := FALSE
             RETURN lOk

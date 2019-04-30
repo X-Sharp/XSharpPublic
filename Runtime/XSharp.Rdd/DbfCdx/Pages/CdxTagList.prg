@@ -89,10 +89,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
                 LOCAL action := SELF:Add(tag:Header:PageNo, bytes) AS CdxAction
                 IF action:Type == CdxActionType.ExpandRecnos
-                    SELF:ExpandRecnos()
+                    SELF:Tag:DoAction(action)
                     action := SELF:Add(tag:Header:PageNo, bytes)
                 ENDIF
             NEXT
+            SELF:Compress()
             SELF:Write()
             _tags:Clear()
             // sort by pageno.

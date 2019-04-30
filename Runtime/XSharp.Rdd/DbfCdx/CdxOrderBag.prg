@@ -386,9 +386,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL isOk AS LOGIC
             IF oPage:PageNo == -1
                 oPage:PageNo := SELF:FindFreePage()
+                oPage:IsHot  := TRUE
             ENDIF
-            FSeek3( SELF:_hFile, oPage:PageNo, SeekOrigin.Begin )
-			isOk :=  FWrite3(SELF:_hFile, oPage:Buffer, (DWORD) oPage:Buffer:Length) == (DWORD) oPage:Buffer:Length
+            if oPage:IsHot
+                FSeek3( SELF:_hFile, oPage:PageNo, SeekOrigin.Begin )
+			    isOk :=  FWrite3(SELF:_hFile, oPage:Buffer, (DWORD) oPage:Buffer:Length) == (DWORD) oPage:Buffer:Length
+            ELSE
+                isOk := TRUE
+            ENDIF
             RETURN IsOk
 
 

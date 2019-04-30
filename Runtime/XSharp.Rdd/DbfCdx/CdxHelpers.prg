@@ -277,8 +277,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL STATIC METHOD DeleteFromParent(oPage AS CdxTreePage) AS CdxAction
             RETURN CdxAction{CdxActionType.DeleteFromParent}{Page := oPage}
 
-        INTERNAL STATIC METHOD ExpandRecnos(oPage AS CdxLeafPage) AS CdxAction
-            RETURN CdxAction{CdxActionType.ExpandRecnos}{Page := oPage}
+        INTERNAL STATIC METHOD ExpandRecnos(oPage AS CdxLeafPage, nRecno as LONG, bKey as BYTE[], nPos as INT) AS CdxAction
+            RETURN CdxAction{CdxActionType.ExpandRecnos}{Page := oPage, Recno := nRecno, Key := bKey, Pos := nPos}
 
         INTERNAL STATIC METHOD Balance(oPage AS CdxTreePage) AS CdxAction
             RETURN CdxAction{CdxActionType.Balance}{Page := oPage}

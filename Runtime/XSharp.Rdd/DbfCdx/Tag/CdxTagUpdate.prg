@@ -352,11 +352,29 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
      
         PRIVATE METHOD ExpandRecnos(action AS CdxAction) AS CdxAction
-            VAR oLeaf := SELF:CurrentLeaf
-            IF oLeaf == NULL
-                _UpdateError(NULL, "CdxTag.ExpandRecnos","Attempt to Expand recnos when top of stack is not a leaf")
-            ENDIF
-            VAR result := oLeaf:ExpandRecnos()
+            VAR oPageL   := SELF:CurrentLeaf
+            var leaves   := oPageL:GetLeaves()
+            VAR oPageR   := SELF:NewLeafPage()
+            var nHalf    := leaves:Count/2
+            local result as CdxAction
+            // new key that triggered expansion is inside action
+            result := oPageL:SetLeaves(leaves, 0, nHalf)
+            result := oPageR:SetLeaves(leaves, nHalf, leaves:Count - nHalf)
+            oPageL:AddRightSibling(oPageR)
+            result := SELF:DoAction(CdxAction.ChangeParent(oPageL))
+            result := SELF:DoAction(CdxAction.ChangeParent(oPageR))
+            var pos := action:Pos
+            if  pos != -1
+                //? "Expand for recno ", action:Recno, "position", pos, "half", nHalf
+                if pos < nHalf
+                    result := oPageL:Insert(pos, action:Recno, action:Key)
+                else
+                    result := oPageR:Insert(pos - nHalf, action:Recno, action:Key)
+                endif
+            else
+                result := oPageR:Add(action:Recno, action:Key)
+                result := SELF:DoAction(CdxAction.ChangeParent(oPageR))
+            endif
             RETURN result
             
 

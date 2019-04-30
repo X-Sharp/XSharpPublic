@@ -102,6 +102,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:RightPtr     := oSibling:PageNo
             ENDIF
             RETURN 
-
+        INTERNAL virtual METHOD FindKey(key as byte[], recno as Long) as long
+            return -1
 	END CLASS
 END NAMESPACE 

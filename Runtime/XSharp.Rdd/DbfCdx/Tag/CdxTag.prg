@@ -161,7 +161,42 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_Scopes[0]:SetBuffer(_keySize)
             SELF:_Scopes[1]:SetBuffer(_keySize)
             RETURN
-     
+
+
+        INTERNAL METHOD SetLeafProperties(page as CdxLeafPage) as VOID
+            VAR numRecs     := SELF:RDD:RecCount
+            page:ClearRecordsAndKeys()
+            page:KeyLength      := SELF:KeyLength
+            VAR bits            := CdxHelpers.GetBits(SELF:KeyLength)
+            DO CASE
+            CASE numRecs < 2^12
+                page:RecordBits     := 12
+            CASE numRecs < 2^16
+                page:RecordBits     := 16
+            CASE numRecs < 2^24
+                page:RecordBits     := 24
+            OTHERWISE
+                page:RecordBits     := 32
+            ENDCASE
+            var totalBits       := page:RecordBits + bits + bits
+            DO CASE
+            CASE totalBits    <= 24
+                page:DataBytes := 3
+            CASE totalBits    <= 32
+                page:DataBytes := 4
+            CASE totalBits    <= 40
+                page:DataBytes := 5
+            OTHERWISE
+                page:DataBytes := 6
+            ENDCASE
+            
+            page:DuplicateBits  := bits
+            page:TrailingBits   := bits
+            page:TrailingMask   := (BYTE) (( 1 << bits  ) - 1)
+            page:DuplicateMask  := (BYTE) (( 1 << bits  ) - 1)
+            page:RecnoMask      := (1 << page:RecordBits) -1
+            RETURN
+
         INTERNAL METHOD EvaluateExpressions() AS LOGIC
             LOCAL evalOk AS LOGIC
             LOCAL oKey AS OBJECT

@@ -12,6 +12,7 @@ USING System.Collections.Generic
 USING System.Linq
 USING System.Runtime.CompilerServices
 
+
 INTERNAL STATIC CLASS OOPHelpers
     STATIC INTERNAL EnableOptimizations AS LOGIC
     STATIC INTERNAL cacheClassesAll AS Dictionary<STRING,Type>
@@ -853,7 +854,16 @@ FUNCTION IsClassOf(cClassName AS STRING,cSuperClassName AS STRING) AS LOGIC
 	LOCAL tSuper := OOPHelpers.FindClass(cSuperClassName) AS Type
 	// IsClassOf() in VO returns TRUE when child and parent class is the same (and it exists)
 	RETURN tSub != NULL .AND. tSuper != NULL .AND. (tSub == tSuper .OR. tSub:IsSubclassOf(tSuper))
-	
+
+
+/// <summary>
+/// Find a class in the referenced assemblies
+/// </summary>
+/// <param name="cClassName">Classname to find</param>
+/// <returns>System.Type object or NULL </returns>
+
+FUNCTION FindClass(cClassname as STRING) AS System.Type
+	RETURN OOPHelpers.FindClass(cClassName) 
 	
 	
 /// <summary>

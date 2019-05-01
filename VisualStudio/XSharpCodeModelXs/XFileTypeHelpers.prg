@@ -20,6 +20,7 @@ BEGIN NAMESPACE XSharpModel
 					RETURN XFileType.PreprocessorOutput
 				CASE ".vh"
 				CASE ".xh"
+				CASE ".ch"
 					RETURN XFileType.Header
 				CASE ".xsfrm"
 				CASE ".vnfrm"

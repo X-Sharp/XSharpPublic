@@ -54,6 +54,13 @@ FUNCTION FReadText3(pFile AS IntPtr,pData AS IntPtr,dwCount AS DWORD) AS DWORD
 	RETURN dwResult
 
 
+/// <inheritdoc cref="M:XSharp.Core.Functions.FReadText(System.IntPtr,System.String@,System.UInt32)" />
+FUNCTION FRead(pFile AS IntPtr,strValue REF USUAL,dwCount AS DWORD) AS DWORD
+    LOCAL strTemp := "" AS STRING
+	VAR dwResult := XSharp.Core.Functions.FReadText(pFile, strTemp, dwCount)	
+    strValue := strTemp
+    RETURN dwResult
+
 /// <inheritdoc cref="M:XSharp.Core.Functions.FSeek3(System.IntPtr,System.Int32,System.UInt32)" />
 FUNCTION FSeek(hFile ,nOffset ,nOrigin ) AS LONG CLIPPER
 	IF nOrigin == NIL

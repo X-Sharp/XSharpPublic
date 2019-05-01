@@ -166,52 +166,58 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
 
 		INTERNAL METHOD SimpleTypeToSystemType(kw AS STRING) AS System.Type
+			LOCAL typeName AS STRING
+			LOCAL sType AS System.Type
 			//
 			IF (kw != NULL)
 				//
 				SWITCH kw:ToLowerInvariant()
 					CASE "object"
 					CASE "system.object"
-						RETURN TYPEOF(OBJECT)
+						typeName := "system.object"
 
 					CASE "string"
 					CASE "system.string"
-						RETURN TYPEOF(STRING)
+						typeName := "system.string"
 
 					CASE "dword"
 					CASE "uint32"
 					CASE "system.uint32"
-						RETURN TYPEOF(DWORD)
+						typeName := "system.uint32"
+					
 					CASE "int64"
 					CASE "system.int64"
-						RETURN TYPEOF(INT64)
-
+						typeName := "system.int64"
+					
 					CASE "int16"
 					CASE "shortint"
 					CASE "short"
 					CASE "system.int16"
-						RETURN TYPEOF(SHORT)
+						typeName := "system.uint32"
+
 					CASE "longint"
 					CASE "long"
 					CASE "int"
 					CASE "int32"
 					CASE "system.int32"
-						RETURN TYPEOF(LONG)
+						typeName := "system.int32"
+
 					CASE "void"
 					CASE "system.void"
-						RETURN TYPEOF(VOID)
+						typeName := "system.void"
+
 					CASE "byte"
 					CASE "system.byte"
-						RETURN TYPEOF(BYTE)
+						typeName := "system.byte"
 
 					CASE "word"
 					CASE "uint16"
 					CASE "system.uint16"
-						RETURN TYPEOF(WORD)
+						typeName := "system.uint16"
 
 					CASE "char"
 					CASE "system.char"
-						RETURN TYPEOF(CHAR)
+						typeName := "system.char"
 
 					CASE "real4"
 						RETURN TYPEOF(REAL4)
@@ -221,19 +227,29 @@ BEGIN NAMESPACE XSharpModel
 
 					CASE "uint64"
 					CASE "system.uint64"
-						RETURN TYPEOF(UINT64)
+						typeName := "system.uint64"
 
 					CASE "logic"
 					CASE "system.boolean"
-						RETURN TYPEOF(LOGIC)
+						typeName := "system.boolean"
 
 					CASE "sbyte"
 					CASE "system.sbyte"
-						RETURN TYPEOF(SByte)
+						typeName := "system.sbyte"
 
 				END SWITCH
+				IF ( String.IsNullOrEmpty( typeName ) )
+					RETURN NULL
+				ENDIF
+				//
+				IF SELF:_file != NULL
+					VAR options := SELF:_file:Project:ProjectNode:ParseOptions
+					typeName := typeName:GetSystemTypeName(options:XSharpRuntime)
+					sType := SELF:_file:Project:FindSystemType(typeName, List<STRING>{})
+				ENDIF
+				//
 			ENDIF
-			RETURN NULL
+			RETURN sType
 
 		// Properties
 		PROPERTY File AS XFile GET SELF:_file

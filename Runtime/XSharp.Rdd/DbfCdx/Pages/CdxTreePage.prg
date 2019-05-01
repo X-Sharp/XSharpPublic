@@ -26,14 +26,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_getValues()
             RETURN
 
-        PRIVATE _pageType as CdxPageType
-        PRIVATE METHOD _getValues() as VOID
+        PRIVATE _pageType AS CdxPageType
+        PRIVATE METHOD _getValues() AS VOID
             _pageType := (CdxPageType) _GetWord(CDXPAGE_TYPE)
 
         #region Properties
         INTERNAL OVERRIDE PROPERTY PageType AS CdxPageType ;
           GET _pageType ;
-          SET _SetWord(CDXPAGE_TYPE, VALUE), isHot := TRUE, _pageType := Value
+          SET _SetWord(CDXPAGE_TYPE, VALUE), isHot := TRUE, _pageType := VALUE
 
         // FoxPro stores empty pointers as -1, FoxBASE as 0
         PROPERTY HasLeft    AS LOGIC GET LeftPtr    != 0 .AND. LeftPtr  != -1
@@ -50,7 +50,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         ABSTRACT INTERNAL PROPERTY RightPtr		AS Int32 GET SET    // FoxPro stores empty pointers as -1, FoxBASE as 0
         ABSTRACT PUBLIC   PROPERTY NumKeys      AS WORD  GET
         ABSTRACT INTERNAL PROPERTY LastNode     AS CdxPageNode GET
-        INTERNAL PROPERTY NextFree              AS LONG GET LeftPtr SET LeftPtr := Value // alias for LeftPtr
+        INTERNAL PROPERTY NextFree              AS LONG GET LeftPtr SET LeftPtr := VALUE // alias for LeftPtr
 
   
         #endregion
@@ -62,7 +62,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
          PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
-            LOCAL lOk as LOGIC
+            LOCAL lOk AS LOGIC
             lOk := SUPER:Read()
             IF lOk
                 SELF:_getValues()
@@ -85,5 +85,24 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD SetRoot() AS VOID
             SELF:PageType |= CdxPageType.Root
             RETURN
+
+        METHOD ClearRoot() AS VOID
+            SELF:PageType := _AND(SELF:PageType, _NOT(CdxPageType.Root))
+            RETURN
+
+
+        PROPERTY IsRoot AS LOGIC GET SELF:PageType:HasFlag(CdxPageType.Root)
+
+
+       INTERNAL METHOD AddRightSibling(oSibling AS CdxTreePage) AS VOID
+            IF oSibling != NULL_OBJECT
+                oSibling:RightPtr := SELF:RightPtr
+                SELF:LeftPtr      := oSibling:LeftPtr
+                oSibling:LeftPtr  := SELF:PageNo
+                SELF:RightPtr     := oSibling:PageNo
+            ENDIF
+            RETURN 
+        INTERNAL virtual METHOD FindKey(key as byte[], recno as Long) as long
+            return -1
 	END CLASS
 END NAMESPACE 

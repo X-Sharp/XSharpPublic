@@ -236,10 +236,10 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 
 	METHOD ProcessExtraEntity(aLines AS List<STRING>, oGenerator AS CodeGenerator, cClass AS STRING, lAdd AS LOGIC) AS VOID
 		LOCAL oTempStream AS XSharp_EditorStream
-		LOCAL oTempGenerator AS CodeGenerator
+		//LOCAL oTempGenerator AS CodeGenerator
 		oTempStream := XSharp_EditorStream{}
 		oTempStream:Load(aLines)
-		oTempGenerator := CodeGenerator{oTempStream:Editor}
+		//oTempGenerator := CodeGenerator{oTempStream:Editor}
 		VAR oEntity := oTempStream:Editor:GetEntityObject(1)
 		IF oEntity != NULL
 			IF lAdd

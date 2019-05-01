@@ -196,42 +196,42 @@ BEGIN NAMESPACE XSharp
       LOCAL nGenCode AS GenCode
       nGenCode := (GenCode) SELF:GenCode
       sb := StringBuilder{}
-      sb:AppendLine("Description     : " + SELF:Description)
-      sb:AppendLine("SubSystem       : " + SELF:SubSystem )
-      sb:AppendLine("GenCode         : " + nGenCode:ToString()  )
-      sb:AppendLine("GenCodeText     : " + SELF:GenCodeText  )
+      sb:AppendLine( e"Description :\t" + SELF:Description)
+      sb:AppendLine( e"SubSystem :\t" 	+ SELF:SubSystem )
+      sb:AppendLine( e"GenCode :\t\t" 	+ nGenCode:ToString()  )
+      sb:AppendLine( e"GenCodeText :\t" + SELF:GenCodeText  )
       IF SELF:SubCode != 0
-        sb:AppendLine("SubCode         : " + SELF:SubCode:ToString() )
-        sb:AppendLine("SubCodeText     : " + SELF:SubCodeText)
+        sb:AppendLine( e"SubCode :\t\t" 	+ SELF:SubCode:ToString() )
+        sb:AppendLine( e"SubCodeText :\t"	+ SELF:SubCodeText)
       ENDIF
       IF SELF:OsCode != 0
-        sb:AppendLine("OsCode          : " + SELF:OsCode:ToString() )
-        sb:AppendLine("OsCodeText      : " + SELF:OsCodeText )
+        sb:AppendLine(e"OsCode :\t\t" 	+ SELF:OsCode:ToString() )
+        sb:AppendLine(e"OsCodeText :\t" + SELF:OsCodeText )
       ENDIF
-      sb:AppendLine("FuncSym         : " + SELF:FuncSym   )
+      sb:AppendLine(e"FuncSym :\t\t" 	+ SELF:FuncSym   )
       LOCAL sev := (Severity) SELF:Severity AS Severity
-      sb:AppendLine("Severity        : " + sev:ToString() )
-      sb:AppendLine("CanDefault      : " + SELF:CanDefault)
-      sb:AppendLine("CanRetry        : " + SELF:CanRetry )
-      sb:AppendLine("CanSubstitute   : " + SELF:CanSubstitute)
+      sb:AppendLine(e"Severity :\t\t" 	+ sev:ToString() )
+      sb:AppendLine(e"CanDefault :\t"	+ SELF:CanDefault)
+      sb:AppendLine(e"CanRetry :\t\t"	+ SELF:CanRetry )
+      sb:AppendLine(e"CanSubstitute :\t" + SELF:CanSubstitute)
       IF ! String.IsNullOrEmpty(SELF:Operation)
-        sb:AppendLine("Operation       : " + SELF:Operation)
+        sb:AppendLine(e"Operation :\t\t" + SELF:Operation)
       ENDIF
       IF ! String.IsNullOrEmpty(SELF:FileName)
-        sb:AppendLine("FileName        : " + SELF:FileName )
+        sb:AppendLine(e"FileName :\t\t"	+ SELF:FileName )
       ENDIF
       IF SELF:Tries != 0
-          sb:AppendLine("Tries           : " + SELF:Tries:ToString()    )
-      ENDIF
+          sb:AppendLine(e"Tries :\t\t" 	+ SELF:Tries:ToString()    )
+     ENDIF              
       IF SELF:ArgType != 0
-        sb:AppendLine("ArgType         : " + TypeString(SELF:ArgType    ) )
-      ENDIF
+        sb:AppendLine(e"ArgType :\t\t" 	+ TypeString(SELF:ArgType    ) )
+      ENDIF 
       IF SELF:ArgNum != 0
-        sb:AppendLine("ArgNum          : " + SELF:ArgNum:ToString()    )
+        sb:AppendLine(e"ArgNum :\t\t" 	+ SELF:ArgNum:ToString()    )
       ENDIF
       IF SELF:Arg != NULL
-        sb:AppendLine("Arg             : " + SELF:Arg)
-      ENDIF
+        sb:AppendLine(e"Arg :\t\t" 		+ SELF:Arg)
+      ENDIF 
       LOCAL cArgs AS STRING
       IF SELF:Args != NULL .AND. SELF:Args:Length > 0
             cArgs := "{"
@@ -248,13 +248,13 @@ BEGIN NAMESPACE XSharp
                 lFirst := FALSE
             NEXT
             cArgs += "}"
-            sb:AppendLine("Args            : " + cArgs)
-      ENDIF
+            sb:AppendLine(e"Args :\t\t" + cArgs)
+      ENDIF 
       IF SELF:ArgTypeReqType != NULL
-        sb:AppendLine("ArgTypeReq      : " + SELF:ArgTypeReqType:FullName)
-      END IF
+        sb:AppendLine(e"ArgTypeReq :\t" + SELF:ArgTypeReqType:FullName)
+      ENDIF
       IF ! String.IsNullOrEmpty(SELF:CallFuncSym)
-        sb:AppendLine("CallFuncSym     : " + SELF:CallFuncSym  )
+        sb:AppendLine(e"CallFuncSym :\t" + SELF:CallFuncSym  )
       ENDIF
       RETURN sb:ToString()
       

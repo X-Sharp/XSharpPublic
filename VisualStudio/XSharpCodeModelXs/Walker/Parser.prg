@@ -638,10 +638,11 @@ BEGIN NAMESPACE XSharpModel
 									_SetLineType(oStatementLine, LineType.RegionOut)
 								CASE "IFDEF"
 								CASE "IFNDEF"
+									_SetLineType(oStatementLine, LineType.TokenIn)
 								CASE "ELSE"
-									_SetLineType(oStatementLine, LineType.IfdefIn)
+									_SetLineType(oStatementLine, LineType.TokenInOut)
 								CASE "ENDIF"
-									_SetLineType(oStatementLine, LineType.IfdefOut)
+									_SetLineType(oStatementLine, LineType.TokenOut)
 								CASE "DEFINE"
 									_SetLineType(oStatementLine, LineType.Define)
 								CASE "INCLUDE"
@@ -1839,6 +1840,7 @@ BEGIN NAMESPACE XSharpModel
 		MEMBER @@Define
 		MEMBER @@Return
 		MEMBER IfdefIn
+		MEMBER IfDefInOut
 		MEMBER IfdefOut
 		MEMBER EndProperty
 		//	MEMBER BeginProperty

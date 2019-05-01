@@ -568,6 +568,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                 ENDDO
                 foundPos := minPos
+                IF page IS CdxBranchPage .AND. foundPos >= nodeCount
+                    foundPos := nodeCount-1
+                ENDIF
                 node:Pos := foundPos
             CASE SearchMode.Left
             CASE SearchMode.LeftFound
@@ -608,15 +611,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                     
             CASE SearchMode.Bottom
-                foundPos := nodeCount-1
-                node:Pos := foundPos
+                IF nodeCount > 0
+                    foundPos := nodeCount-1
+                    node:Pos := foundPos
+                ELSE
+                    foundPos := 0
+                    node:Pos := foundPos
+                ENDIF
             CASE SearchMode.Top
                 foundPos := 0
                 node:Pos := foundPos
             END SWITCH
             // Add info in the stack
 
-            IF atEOF
+            IF atEOF .AND. searchMode != SearchMode.Bottom
                 SELF:_locateKey(NULL, 0, SearchMode.Bottom)
                 RETURN 0
             ENDIF
@@ -626,7 +634,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, node:ChildPageNo)
             ENDIF
             
-            IF foundPos < nodeCount
+            IF foundPos < nodeCount .AND. foundPos >= 0
                 SWITCH searchMode
                 CASE SearchMode.LeftFound
                 CASE SearchMode.Bottom

@@ -38,11 +38,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         MEMBER AddKey
         MEMBER DeleteKey
         MEMBER InsertKey
-        MEMBER AddLeaf         
-        MEMBER Delete          
+        MEMBER AddLeaf
+        MEMBER SplitLeaf
+        MEMBER Delete
+        MEMBER Balance
         MEMBER InsertParent    
-        MEMBER ChangeParent    
-        MEMBER SplitBranch     
+        MEMBER ChangeParent
+        MEMBER AddBranch     
         MEMBER DeleteFromParent
         MEMBER ExpandRecnos
         MEMBER OutOfBounds

@@ -9,37 +9,37 @@
 // subscripts for Directory() array
 //
 /// <summary>Position in Directory() sub-array for fileName (as a string).</summary>
-/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String,XSharp.__Usual)">Directory Function</seealso>
 DEFINE F_NAME  := 1
 /// <summary>Position in Directory() sub-array for filesize(as a numeric).</summary>
-/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String,XSharp.__Usual)">Directory Function</seealso>
 DEFINE F_SIZE  := 2
 /// <summary>Position in Directory() sub-array for last file write date(as a date).</summary>
-/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String,XSharp.__Usual)">Directory Function</seealso>
 DEFINE F_DATE  := 3
 /// <summary>Position in Directory() sub-array for last file write time(as a string).</summary>
-/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String,XSharp.__Usual)">Directory Function</seealso>
 DEFINE F_TIME  := 4
 /// <summary>Position in Directory() sub-array for file attributes(as a number).</summary>
-/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String,XSharp.__Usual)">Directory Function</seealso>
 DEFINE F_ATTR  := 5
 /// <summary>Position in Directory() sub-array for Size of extended attributes(as a string).</summary>
-/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String,XSharp.__Usual)">Directory Function</seealso>
 DEFINE F_EA_SIZE := 6
 /// <summary>Position in Directory() sub-array for creation date(as a date).</summary>
-/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String,XSharp.__Usual)">Directory Function</seealso>
 DEFINE F_CREATION_DATE := 7
 /// <summary>Position in Directory() sub-array for creation time(as a string).</summary>
-/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String,XSharp.__Usual)">Directory Function</seealso>
 DEFINE F_CREATION_TIME := 8
 /// <summary>Position in Directory() sub-array for last access date(as a date).</summary>
-/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String,XSharp.__Usual)">Directory Function</seealso>
 DEFINE F_ACCESS_DATE := 9
 /// <summary>Position in Directory() sub-array for last access time(as a string).</summary>
-/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String,XSharp.__Usual)">Directory Function</seealso>
 DEFINE F_ACCESS_TIME := 10
 /// <summary>Length of Directory() sub-array.</summary>
-/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String, XSharp.__Usual)">Directory Function</seealso>
+/// <seealso cref="M:XSharp.RT.Functions.Directory(System.String,XSharp.__Usual)">Directory Function</seealso>
 DEFINE F_LEN   := 10   // length of
 
 

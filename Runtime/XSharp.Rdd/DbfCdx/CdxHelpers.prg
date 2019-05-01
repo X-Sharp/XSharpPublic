@@ -195,13 +195,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN FALSE
 
-        METHOD Insertbefore(originalPage AS CdxTreePage, newPage AS CdxTreePage) AS LOGIC
-            VAR index := SELF:FindPage(originalPage)
-            IF index >= 0
-                _pages:Insert(index,CdxStackEntry{}{Page := newPage, Pos := 0})
-                 RETURN TRUE
-            ENDIF
-            RETURN FALSE
+        METHOD InsertOnTop(newPage AS CdxTreePage) AS LOGIC
+            _pages:Insert(0,CdxStackEntry{}{Page := newPage, Pos := 0})
+             RETURN TRUE
         METHOD SetPos(oPage AS CdxTreePage, nPos AS WORD) AS LOGIC
             VAR index := SELF:FindPage(oPage)
             IF index >= 0
@@ -227,8 +223,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Page AS CdxTreePage   AUTO
         INTERNAL PROPERTY Pos   AS LONG AUTO
         INTERNAL PROPERTY Recno AS LONG AUTO
-        INTERNAL PROPERTY Key   AS BYTE[] AUTO
-        INTERNAL PROPERTY ChildPage AS LONG GET Pos SET Pos := VALUE
+        INTERNAL PROPERTY Key   AS BYTE[] AUTO 
+        INTERNAL PROPERTY ChildPage AS LONG AUTO 
         PRIVATE STATIC _Ok AS CdxAction
 
         STATIC CONSTRUCTOR
@@ -240,8 +236,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             Pos   := 0
             Recno := -1
             Key   := NULL
+            ChildPage := 0
+            
 
         STATIC PROPERTY Ok AS CdxAction GET _Ok
+
+        METHOD IsOk AS LOGIC
+            RETURN SELF:Type == CdxActionType.Ok
 
         INTERNAL STATIC METHOD AddKey( nRecno AS LONG, bKey AS BYTE[]) AS CdxAction
             RETURN CdxAction{CdxActionType.AddKey}{Recno := nRecno, Key := bKey}
@@ -250,7 +251,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN CdxAction{CdxActionType.DeleteKey}{Page := oPage, Pos := nPos}
 
         INTERNAL STATIC METHOD AddLeaf(oLeaf AS CdxtreePage, nRecno AS LONG, bKey AS BYTE[] ) AS CdxAction
-            RETURN CdxAction{CdxActionType.AddLeaf}{ Page := oLeaf, Recno := nRecno, Key := bKey}
+            RETURN CdxAction{CdxActionType.AddLeaf}{ Page := oLeaf, Recno := nRecno, Key := bKey, Pos := -1}
+
+        INTERNAL STATIC METHOD SplitLeaf(oLeaf AS CdxtreePage, nRecno AS LONG, bKey AS BYTE[], nPos AS LONG ) AS CdxAction
+            RETURN CdxAction{CdxActionType.AddLeaf}{ Page := oLeaf, Recno := nRecno, Key := bKey, Pos := nPos}
 
         INTERNAL STATIC METHOD InsertKey(oPage AS CdxtreePage, nPos AS LONG, nRecno AS LONG, bKey AS BYTE[]) AS CdxAction
             RETURN CdxAction{CdxActionType.InsertKey}{Page := oPage, Pos := nPos,Recno := nRecno, Key := bKey}
@@ -264,14 +268,21 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL STATIC METHOD ChangeParent(oPage AS CdxTreePage) AS CdxAction
             RETURN CdxAction{CdxActionType.ChangeParent}{Page := oPage}
 
-        INTERNAL STATIC METHOD SplitBranch(oPage AS CdxTreePage,  nChild AS LONG, nRecno AS LONG, bKey AS BYTE[]) AS CdxAction
-            RETURN CdxAction{CdxActionType.SplitBranch}{Page := oPage, ChildPage := nChild, Recno := nRecno, Key := bKey}
+        INTERNAL STATIC METHOD AddBranch(oPage AS CdxTreePage,  nChild AS LONG, nRecno AS LONG, bKey AS BYTE[]) AS CdxAction
+            RETURN CdxAction{CdxActionType.AddBranch}{Page := oPage, ChildPage := nChild, Recno := nRecno, Key := bKey, Pos := -1}
+
+        INTERNAL STATIC METHOD SplitBranch(oPage AS CdxTreePage,  nChild AS LONG, nRecno AS LONG, bKey AS BYTE[], nPos AS INT) AS CdxAction
+            RETURN CdxAction{CdxActionType.AddBranch}{Page := oPage, ChildPage := nChild, Recno := nRecno, Key := bKey, Pos := nPos}
 
         INTERNAL STATIC METHOD DeleteFromParent(oPage AS CdxTreePage) AS CdxAction
             RETURN CdxAction{CdxActionType.DeleteFromParent}{Page := oPage}
 
-        INTERNAL STATIC METHOD ExpandRecnos(oPage AS CdxLeafPage) AS CdxAction
-            RETURN CdxAction{CdxActionType.ExpandRecnos}{Page := oPage}
+        INTERNAL STATIC METHOD ExpandRecnos(oPage AS CdxLeafPage, nRecno as LONG, bKey as BYTE[], nPos as INT) AS CdxAction
+            RETURN CdxAction{CdxActionType.ExpandRecnos}{Page := oPage, Recno := nRecno, Key := bKey, Pos := nPos}
+
+        INTERNAL STATIC METHOD Balance(oPage AS CdxTreePage) AS CdxAction
+            RETURN CdxAction{CdxActionType.Balance}{Page := oPage}
+
 
         INTERNAL STATIC METHOD OutOfBounds(oPage AS CdxTreePage) AS CdxAction
             RETURN CdxAction{CdxActionType.OutOfBounds}{Page := oPage}

@@ -55,7 +55,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _Header AS CdxTagHeader
 
         PRIVATE _stack          AS CdxPageStack
-        PRIVATE __Compare       AS CompareFunc
+        INTERNAL __Compare       AS CompareFunc
 
         PRIVATE _bag            AS CdxOrderBag
         PRIVATE getKeyValue     AS ValueBlock       // Delegate to calculate the key
@@ -77,7 +77,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY FileName 	        AS STRING GET _bag:FullPath
         INTERNAL PROPERTY OrderBag          AS CdxOrderBag GET SELF:_bag
         INTERNAL PROPERTY Page              AS Int32 AUTO
-        INTERNAL PROPERTY Descending        AS LOGIC GET _Descending SET _Descending := value
+        INTERNAL PROPERTY Descending        AS LOGIC GET _Descending SET _Descending := VALUE
         INTERNAL PROPERTY IsConditional     AS LOGIC GET Options:HasFlag(CdxOptions.HasFor)
         INTERNAL PROPERTY IsHot             AS LOGIC GET _Hot
         INTERNAL PROPERTY Header            AS CdxTagHeader GET _Header
@@ -161,7 +161,42 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_Scopes[0]:SetBuffer(_keySize)
             SELF:_Scopes[1]:SetBuffer(_keySize)
             RETURN
-     
+
+
+        INTERNAL METHOD SetLeafProperties(page as CdxLeafPage) as VOID
+            VAR numRecs     := SELF:RDD:RecCount
+            page:ClearRecordsAndKeys()
+            page:KeyLength      := SELF:KeyLength
+            VAR bits            := CdxHelpers.GetBits(SELF:KeyLength)
+            DO CASE
+            CASE numRecs < 2^12
+                page:RecordBits     := 12
+            CASE numRecs < 2^16
+                page:RecordBits     := 16
+            CASE numRecs < 2^24
+                page:RecordBits     := 24
+            OTHERWISE
+                page:RecordBits     := 32
+            ENDCASE
+            var totalBits       := page:RecordBits + bits + bits
+            DO CASE
+            CASE totalBits    <= 24
+                page:DataBytes := 3
+            CASE totalBits    <= 32
+                page:DataBytes := 4
+            CASE totalBits    <= 40
+                page:DataBytes := 5
+            OTHERWISE
+                page:DataBytes := 6
+            ENDCASE
+            
+            page:DuplicateBits  := bits
+            page:TrailingBits   := bits
+            page:TrailingMask   := (BYTE) (( 1 << bits  ) - 1)
+            page:DuplicateMask  := (BYTE) (( 1 << bits  ) - 1)
+            page:RecnoMask      := (1 << page:RecordBits) -1
+            RETURN
+
         INTERNAL METHOD EvaluateExpressions() AS LOGIC
             LOCAL evalOk AS LOGIC
             LOCAL oKey AS OBJECT
@@ -569,11 +604,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL PROPERTY CurrentTop  AS CdxTreePage GET SELF:_Stack:Top:Page 
 
-        INTERNAL METHOD InsertOnStack(oPage AS CdxTreePage, oBefore AS CdxTreePage) AS LOGIC
-            SELF:_stack:Insertbefore(oBefore, oPage)
+        INTERNAL METHOD InsertOnTop(oPage AS CdxTreePage) AS LOGIC
+            SELF:_stack:InsertOnTop(oPage)
             RETURN TRUE
 
-        PRIVATE METHOD AdjustStack(originalPage AS CdxTreePage, oPage AS CdxTreePage, nPos AS WORD) AS VOID
+        INTERNAL METHOD AdjustStack(originalPage AS CdxTreePage, oPage AS CdxTreePage, nPos AS WORD) AS VOID
             SELF:_stack:Replace(originalPage, oPage, nPos)
             RETURN
 

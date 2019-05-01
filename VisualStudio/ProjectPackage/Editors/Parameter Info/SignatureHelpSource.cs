@@ -70,7 +70,7 @@ namespace XSharp.Project
             }
         }
 
-        internal void ComputeCurrentParameter(bool comma)
+        internal void ComputeCurrentParameter(int atPosition = -1 )
         {
             if (Parameters.Count == 0)
             {
@@ -80,15 +80,18 @@ namespace XSharp.Project
 
             //the number of commas in the string is the index of the current parameter
             string sigText = ApplicableToSpan.GetText(m_subjectBuffer.CurrentSnapshot);
+            if ( atPosition == -1 )
+                atPosition = sigText.Length;
 
             int currentIndex = 0;
             int commaCount = 0;
+            int maxPos = Math.Min(atPosition, sigText.Length);
             //if (comma)
             //    commaCount += 1;
-            while (currentIndex < sigText.Length)
+            while (currentIndex < maxPos)
             {
                 int commaIndex = sigText.IndexOf(',', currentIndex);
-                if (commaIndex == -1)
+                if ((commaIndex == -1) || (commaIndex>maxPos))
                 {
                     break;
                 }
@@ -109,7 +112,7 @@ namespace XSharp.Project
 
         internal void OnSubjectBufferChanged(object sender, TextContentChangedEventArgs e)
         {
-            this.ComputeCurrentParameter(false);
+            this.ComputeCurrentParameter();
         }
 
         #endregion
@@ -312,7 +315,7 @@ namespace XSharp.Project
 
             sig.Parameters = new ReadOnlyCollection<IParameter>(paramList);
             sig.ApplicableToSpan = span;
-            sig.ComputeCurrentParameter(comma);
+            sig.ComputeCurrentParameter();
             return sig;
         }
 

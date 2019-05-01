@@ -48,7 +48,7 @@ namespace XSharp.Project
         {
             return Path.Combine(Path.GetDirectoryName(_fileNode.GetMkDocument()),
                 Path.GetFileNameWithoutExtension(_fileNode.FileName) +
-                    ".Designer" + XSharpConstants.FileExtension1);
+                    ".Designer.prg");
         }
 
         private void NormalizeLineEndings(string fileName)

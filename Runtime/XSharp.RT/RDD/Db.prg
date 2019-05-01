@@ -60,8 +60,7 @@ FUNCTION _Select(xValue) AS USUAL CLIPPER
     xType := UsualType(xValue)
     SWITCH xType
     CASE SYMBOL
-        LOCAL symSelect := xValue AS SYMBOL
-        nSelect := (DWORD) VoDb.SymSelect(symSelect)
+        nSelect := (DWORD) VoDb.SymSelect((SYMBOL) xValue)
     CASE STRING
         nSelect := _SelectString(xValue)
     CASE LONG
@@ -138,26 +137,17 @@ FUNCTION FieldBlock(cFieldName AS STRING) AS CODEBLOCK
     /// </returns>
 FUNCTION FieldBlockSym(symFieldName AS SYMBOL) AS CODEBLOCK
     RETURN FieldBlock(symFieldName)   
-    
+
+   
     /// <summary>
     /// Return a set-get code block for a field, specified as a string, in a specified work area.
     /// </summary>
-    /// <param name="cFieldName"></param>
-    /// <param name="nArea"></param>
+    /// <param name="cFieldName">The name of the field.</param>
+    /// <param name="uArea">The work area number where the field resides. This can be a string, number or symbol</param>
     /// <returns>
     /// </returns>
-FUNCTION FieldWBlock(cFieldName AS STRING,nArea AS DWORD) AS CODEBLOCK
-    LOCAL oCB  := NULL AS CODEBLOCK
-    LOCAL nPos := 0    AS DWORD
-    IF ! String.IsNullOrEmpty(cFieldName)
-        nPos := FieldPos(cFieldName, nArea)
-        IF nPos != 0
-            //VAR cPars := nArea:ToSTring()+","+nPos:ToString()
-            // oCB := MCompile("{|x| iif( IsNil(x), __FieldGetWaNum("+cPars+"), __FieldSetWaNum("+cPars+", x)")
-            oCB := {|x| IIF( x:IsNil, __FieldGetWaNum(nArea, nPos), __FieldSetWaNum(nArea, nPos, x)) }
-        ENDIF
-    ENDIF
-    RETURN oCB
+FUNCTION FieldWBlock(cFieldName AS STRING,uArea AS USUAL) AS CODEBLOCK
+    RETURN {|x| IIF( x:IsNil, __FieldGetWa(uArea, cFieldName), __FieldSetWa(uArea, cFieldName, x)) }
     
     /// <summary>
     /// Return a set-get code block for a field, specified as a Symbol, in a specified work area.
@@ -1006,13 +996,36 @@ FUNCTION AFields(aNames, aTypes, aLens, aDecs)  AS DWORD CLIPPER
     RETURN siCount
     
     
-/// <exclude/>
-FUNCTION DbCopyStruct(cFile AS STRING, aFields AS ARRAY) AS LOGIC STRICT
+/// <summary>Create an empty database file with field definitions from another database file.</summary>
+/// <param name="cFile">The name of the target database file, including an optional drive, directory, and extension.</param>
+/// <param name="acStruct">A one-dimensional array of field names to copy to the new database file.  The default is all fields.</param>
+/// <returns>TRUE if successful; otherwise, FALSE.</returns>
+/// <remarks>
+/// If <paramref name="cFile"/> does not exist, it is created.  If it exists, this function attempts to open the file in
+/// exclusive mode and, if successful, the file is overwritten without warning or error.
+/// If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.
+/// DbCopyStruct() creates the specified file in ANSI or OEM character set format, based ON the SetAnsi() setting.
+/// (for more information, refer to the SetAnsi() function.)
+/// </remarks>
+/// <seealso cref='M:XSharp.Core.Functions.SetAnsi(System.Boolean)'>SetAnsi</seealso>
+/// <seealso cref='M:XSharp.RT.Functions.DbCopyXStruct(System.String)'>DbCopyXStruct</seealso>
+FUNCTION DbCopyStruct(cFile AS STRING, acStruct := NULL_ARRAY AS ARRAY) AS LOGIC STRICT
+    RETURN DBCREATE(cFile, VoDb.FieldList(DbStruct(), acStruct, NULL_ARRAY) )
 
-    RETURN DBCREATE(cFile, VoDb.FieldList(DbStruct(), aFields, NULL_ARRAY) )
-    
 
-/// <summary>Copy the field definitions in a workarea to a structure-extended file as data..</summary>    
+
+/// <summary>Copy the field definitions in a workarea to a structure-extended file as data..</summary>
+/// <param name="cFile">The name of the target database file, including an optional drive, directory, and extension.</param>
+/// <returns>TRUE if successful; otherwise, FALSE.</returns>
+/// <remarks>
+/// If <paramref name="cFile"/> does not exist, it is created.  If it exists, this function attempts to open the file in
+/// exclusive mode and, if successful, the file is overwritten without warning or error.
+/// If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.
+/// DbCopyXStruct() creates the specified file in ANSI or OEM character set format, based ON the SetAnsi() setting.
+/// (for more information, refer to the SetAnsi() function.)
+/// </remarks>
+/// <seealso cref='M:XSharp.Core.Functions.SetAnsi(System.Boolean)'>SetAnsi</seealso>
+/// <seealso cref='M:XSharp.RT.Functions.DbCopyStruct(System.String,XSharp.__Array)'>DbCopyStruct</seealso>
 FUNCTION DbCopyXStruct(cFile AS STRING) AS LOGIC STRICT
 
     LOCAL siSaveSel,n,i AS DWORD
@@ -1062,12 +1075,37 @@ FUNCTION DbCopyXStruct(cFile AS STRING) AS LOGIC STRICT
     
     RETURN (lRetCode)
     
-    /// <summary>
-    /// </summary>
-    /// <param name="uSelect"></param>
-    /// <param name="symField"></param>
-    /// <returns>
-    /// </returns>
+    /// <summary>Create an array containing the structure of a database file.</summary>
+    /// <returns>The structure of the database file in an array whose length is equal to the number of fields in the database file.  Each element of the array is a subarray containing information for one field.  The subarrays have the following format:
+    ///      <para></para>
+    ///        <list type="table">
+    ///          <listheader>
+    ///            <term>Constant</term>
+    ///            <description>Attribute</description>
+    ///          </listheader>
+    ///          <item>
+    ///            <term>DBS_NAME</term>
+    ///            <description>cName</description>
+    ///          </item>
+    ///          <item>
+    ///            <term>DBS_TYPE</term>
+    ///            <description>cType</description>
+    ///          </item>
+    ///          <item>
+    ///            <term>DBS_LEN</term>
+    ///            <description>nLength</description>
+    ///          </item>
+    ///          <item>
+    ///            <term>DBS_DEC</term>
+    ///            <description>nDecimals</description>
+    ///          </item>
+    ///          <item>
+    ///            <term>DBS_ALIAS</term>
+    ///            <description>cAlias</description>
+    ///          </item>
+    ///        </list>
+    ///        <para>If there is no database file in use in the work area, DBStruct() will generate a runtime error.</para>
+    ///  </returns>
 FUNCTION DbStruct() AS ARRAY PASCAL
 
     LOCAL aStruct   AS ARRAY

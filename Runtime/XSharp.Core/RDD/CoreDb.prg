@@ -50,10 +50,8 @@ CLASS XSharp.CoreDb
         ENDIF
         IF ret == NULL       
             LOCAL loadedAssemblies := AppDomain.CurrentDomain:GetAssemblies() AS Assembly[]
-            LOCAL x AS INT
-            
-            FOR x := 1 UPTO loadedAssemblies:Length
-                ret := loadedAssemblies[x]:GetType( cRDDName, FALSE, TRUE )
+            FOREACH VAR asm IN loadedAssemblies
+                ret := asm:GetType( cRDDName, FALSE, TRUE )
                 IF ret != NULL
                     EXIT
                 ENDIF   

@@ -12,6 +12,7 @@ USING System.Collections.Generic
 USING System.Linq
 USING System.Runtime.CompilerServices
 
+
 INTERNAL STATIC CLASS OOPHelpers
     STATIC INTERNAL EnableOptimizations AS LOGIC
     STATIC INTERNAL cacheClassesAll AS Dictionary<STRING,Type>
@@ -853,7 +854,16 @@ FUNCTION IsClassOf(cClassName AS STRING,cSuperClassName AS STRING) AS LOGIC
 	LOCAL tSuper := OOPHelpers.FindClass(cSuperClassName) AS Type
 	// IsClassOf() in VO returns TRUE when child and parent class is the same (and it exists)
 	RETURN tSub != NULL .AND. tSuper != NULL .AND. (tSub == tSuper .OR. tSub:IsSubclassOf(tSuper))
-	
+
+
+/// <summary>
+/// Find a class in the referenced assemblies
+/// </summary>
+/// <param name="cClassName">Classname to find</param>
+/// <returns>System.Type object or NULL </returns>
+
+FUNCTION FindClass(cClassname as STRING) AS System.Type
+	RETURN OOPHelpers.FindClass(cClassName) 
 	
 	
 /// <summary>
@@ -1181,12 +1191,12 @@ FUNCTION CSend(o AS OBJECT,symMethod AS STRING, args PARAMS USUAL[]) AS USUAL
 	// CLIPPER calling convention for compatiblity with VO.
 	// Note: Make The first parameter in __InternalSend() in the runtime must be a USUAL!
 	//       The compiler expects that
-/// <esclude />
+/// <exclude />
 FUNCTION __InternalSend( oObject AS USUAL, cMethod AS STRING, args PARAMS USUAL[] ) AS USUAL
 	RETURN OopHelpers.DoSend(oObject, cMethod, args)
 
-
-FUNCTION __ArrayToUsualArray (args AS ARRAY) AS USUAL[]
+/// <summary>Helper function to convert ARRAY to USUAL[]</summary>		
+FUNCTION _ArrayToUsualArray (args AS ARRAY) AS USUAL[]
 	LOCAL elements AS INT
 	LOCAL uargs    AS USUAL[]
 	LOCAL x        AS DWORD
@@ -1200,7 +1210,7 @@ FUNCTION __ArrayToUsualArray (args AS ARRAY) AS USUAL[]
 	RETURN uargs
 
 /// <summary>Helper function to convert ARRAY to OBJECT[]</summary>		
-FUNCTION __ArrayToObjectArray (args AS ARRAY) AS OBJECT[]
+FUNCTION _ArrayToObjectArray (args AS ARRAY) AS OBJECT[]
 	LOCAL elements AS INT
 	LOCAL oArgs    AS OBJECT[]
 	LOCAL x        AS DWORD
@@ -1214,7 +1224,7 @@ FUNCTION __ArrayToObjectArray (args AS ARRAY) AS OBJECT[]
 	RETURN oArgs
 
 /// <summary>Helper function to convert USUAL[] to OBJECT[]</summary>			
-FUNCTION __UsualArrayToObjectArray (args AS USUAL[]) AS OBJECT[]
+FUNCTION _UsualArrayToObjectArray (args AS USUAL[]) AS OBJECT[]
 	LOCAL elements AS INT
 	LOCAL oArgs    AS OBJECT[]
 	LOCAL x        AS DWORD
@@ -1228,7 +1238,7 @@ FUNCTION __UsualArrayToObjectArray (args AS USUAL[]) AS OBJECT[]
 	RETURN oArgs
 
 /// <summary>Helper function to convert OBJECT[] to USUAL[]</summary>		
-FUNCTION __ObjectArrayToUsualArray (args AS OBJECT[]) AS USUAL[]
+FUNCTION _ObjectArrayToUsualArray (args AS OBJECT[]) AS USUAL[]
 	LOCAL elements AS INT
 	LOCAL uArgs    AS USUAL[]
 	LOCAL x        AS DWORD
@@ -1245,7 +1255,7 @@ FUNCTION __ObjectArrayToUsualArray (args AS OBJECT[]) AS USUAL[]
 	// identical to CSend and __InternalSend but with a normal array of args
 FUNCTION _SendClassParams( oObject AS OBJECT, cmethod AS STRING, args AS ARRAY ) AS USUAL
 	LOCAL uArgs AS USUAL[]
-	uArgs := __ArrayToUsualArray(args)
+	uArgs := _ArrayToUsualArray(args)
 	RETURN OopHelpers.DoSend(oObject, cMethod, uArgs )
 	
 	
@@ -1313,7 +1323,7 @@ FUNCTION FParamCount(symFunction AS STRING) AS DWORD
 /// <returns>The return value of the function</returns>
 /// <remarks>Note that you can't call functions that are overloaded.</remarks>
 FUNCTION _CallClipFunc(symFunction AS STRING,aArgs AS ARRAY) AS USUAL
-	RETURN	_CallClipFunc(symFunction, __ArrayToUsualArray(aArgs))
+	RETURN	_CallClipFunc(symFunction, _ArrayToUsualArray(aArgs))
 
 /// <summary>Call a function by name</summary>
 /// <param name="symFunction">The name of the function to call.</param>

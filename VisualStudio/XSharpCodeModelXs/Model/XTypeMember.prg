@@ -79,6 +79,9 @@ BEGIN NAMESPACE XSharpModel
 					modVis := modVis + SUPER:ModifiersKeyword
 				ENDIF
 				VAR desc := modVis + VisibilityKeyword
+				IF ( SELF:IsStatic )
+					desc += "STATIC "
+				ENDIF 
 				IF (SUPER:Kind != Kind.Field)
 					desc := desc + SUPER:KindKeyword
 					IF (SUPER:Kind == Kind.VODefine)

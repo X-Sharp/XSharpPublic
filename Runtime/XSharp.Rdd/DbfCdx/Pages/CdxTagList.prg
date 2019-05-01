@@ -43,7 +43,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROPERTY Tags AS IList<cdxTag> GET _tags
 
         INTERNAL VIRTUAL METHOD Initialize(keyLength AS WORD) AS VOID
-            
             SUPER:Initialize(keyLength)
             _tags := List<CdxTag>{}
             SELF:PageType := CdxPageType.Leaf + CdxPageType.Root
@@ -90,10 +89,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
                 LOCAL action := SELF:Add(tag:Header:PageNo, bytes) AS CdxAction
                 IF action:Type == CdxActionType.ExpandRecnos
-                    SELF:ExpandRecnos()
+                    SELF:Tag:DoAction(action)
                     action := SELF:Add(tag:Header:PageNo, bytes)
                 ENDIF
             NEXT
+            SELF:Compress()
             SELF:Write()
             _tags:Clear()
             // sort by pageno.

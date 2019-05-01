@@ -14,6 +14,8 @@ namespace XSharp.Project.OptionsPages
     class IntellisenseOptionsPage : DialogPage
     {
         public bool CompletionListTabs { get; set; }
+        public String CommitChars { get; set; }
+        public bool AutoPairs { get; set; }
 
         public bool KeywordsInAll { get; set; }
 
@@ -60,6 +62,11 @@ namespace XSharp.Project.OptionsPages
         public override void LoadSettingsFromStorage()
         {
             base.LoadSettingsFromStorage();
+            //
+            if (String.IsNullOrEmpty( this.CommitChars))
+            {
+                this.CommitChars = "{}[]().,:;+-*/%&|^!~=<>?@#\'\"\\";
+            }
         }
         public override void SaveSettingsToStorage()
         {

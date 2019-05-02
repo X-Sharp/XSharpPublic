@@ -2329,9 +2329,11 @@ namespace XSharpLanguage
                 // should not happen.
                 //return tokenList;
             }
-            if (nextToken.Type != XSharpLexer.EOS)
+            // Not a CRLF ? Ok, should be the next one...except if the next one is CRLF !!
+            if ( nextToken.Type != XSharpLexer.EOS)
             {
-                nextToken = list[((XSharpToken)nextToken).OriginalTokenIndex + 1];
+                //if ( list[((XSharpToken)nextToken).OriginalTokenIndex + 1].Type != XSharpLexer.EOS )
+                    nextToken = list[((XSharpToken)nextToken).OriginalTokenIndex + 1];
             }
             if (stopToken == null)
             {
@@ -2400,7 +2402,7 @@ namespace XSharpLanguage
                     //case XSharpLexer.COMMA:
                     case XSharpLexer.USING:
                     case XSharpLexer.AS:
-                    case XSharpLexer.IS:
+                    case XSharpLexer.IS:                    
                     case XSharpLexer.REF:
                     case XSharpLexer.IMPLEMENTS:
                     case XSharpLexer.INHERIT:
@@ -2526,6 +2528,31 @@ namespace XSharpLanguage
                         }
                     }
                 }
+                else if ( ( file.Project.ProjectNode.ParseOptions.Dialect == XSharpDialect.XPP ) && (token.CompareTo("::") == 0) )
+                {
+                    returnList.Add("SELF");
+                    returnList.Add(":");
+                }
+                else if (file.Project.ProjectNode.ParseOptions.Dialect == XSharpDialect.FoxPro)
+                {
+                    string lowerToken = token.ToLower();
+                    switch (lowerToken)
+                    {
+                        case "this":
+                            returnList.Add("SELF");
+                            break;
+                        case ".":
+                            if (returnList.Count == 0)
+                            {
+                                returnList.Add("SELF");
+                            }
+                            returnList.Add(token);
+                            break;
+                        default:
+                            returnList.Add(token);
+                            break;
+                    }
+                }
                 else if ((token.CompareTo(".") == 0) && !dotAsSelector)
                 {
                     if (returnList.Count > 0)
@@ -2535,11 +2562,6 @@ namespace XSharpLanguage
                         returnList[returnList.Count - 1] = prevToken;
                         prevWasDot = true;
                     }
-                }
-                else if ( ( file.Project.ProjectNode.ParseOptions.Dialect == XSharpDialect.XPP ) && (token.CompareTo("::") == 0) )
-                {
-                    returnList.Add("SELF");
-                    returnList.Add(":");
                 }
                 else
                 {

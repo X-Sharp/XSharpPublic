@@ -286,6 +286,7 @@ BEGIN NAMESPACE XSharpModel
 			LOCAL nAfterColonEquals AS INT
 			LOCAL context AS ParseContext
 			LOCAL xppVisibility AS STRING
+			LOCAL lForEach AS LOGIC
 			
 			aSourceLines := aLineCollection
 			aLineFields := List<EntityObject>{}
@@ -358,6 +359,7 @@ BEGIN NAMESPACE XSharpModel
 					nEntityStartOffset := 0
 					nEntityStartCol := 0
 					oStatementLine := oLine
+					lForEach := FALSE
 				ENDIF
 				IF eLexer != LexerStep.BlockComment
 					eLexer := LexerStep.None
@@ -840,6 +842,7 @@ BEGIN NAMESPACE XSharpModel
 								
 								IF cUpperWord == "FOREACH"
 									_SetLineType(oStatementLine, LineType.TokenIn)
+									lForEach := TRUE
 								ELSEIF cUpperWord == "CATCH"
 									_SetLineType(oStatementLine, LineType.TokenInOut)
 								ENDIF
@@ -978,7 +981,7 @@ BEGIN NAMESPACE XSharpModel
 									state:lNameFound := TRUE // Dont't wait for a name, add it to the list now
 									oInfo:nStartLine := nEntityStartLine
 									oInfo:nCol		:= nEntityStartCol
-									oInfo:nOffSet	:= nEntityStartOffSet + oInfo:nCol
+									oInfo:nOffSet	:= nEntityStartOffSet //+ oInfo:nCol ==> Now the Entity starts at the beginning of line
 									oInfo:cName := IIF(oInfo:eType == EntityType._Constructor , ".ctor" , ".dtor")
 									oInfo:cShortClassName := cShortClassName
 									oInfo:cTypedClassName := cTypedClassName
@@ -1181,7 +1184,7 @@ BEGIN NAMESPACE XSharpModel
 											state:lNameFound := TRUE
 											oInfo:nStartLine := nEntityStartLine
 											oInfo:nCol	:= nEntityStartCol
-											oInfo:nOffSet := nEntityStartOffSet + oInfo:nCol
+											oInfo:nOffSet := nEntityStartOffSet //+ oInfo:nCol => Now, the Entyti starts at the beginning of line
 											oInfo:cName := cWord
 											IF oInfo:IsFuncProcGlobal
 												oInfo:cShortClassName := ""
@@ -1332,7 +1335,7 @@ BEGIN NAMESPACE XSharpModel
 								oInfo:eType := EntityType._Local
 								//
 								// only switch to implied local when the var name is followed by ':=' or '='
-								IF state:lImpliedLocal
+								IF state:lImpliedLocal .AND. !lForEach
 									LOCAL followedByAssign := FALSE AS LOGIC
 									LOCAL nNext := nChar AS INT
 									LOCAL cTemp := cChar AS CHAR

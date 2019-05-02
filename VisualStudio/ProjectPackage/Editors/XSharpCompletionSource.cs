@@ -716,8 +716,7 @@ namespace XSharpLanguage
             int dotPos = startWith.LastIndexOf('.');
             if (dotPos != -1)
                 startLen = dotPos + 1;
-            XType fakeNS = new XType("fake", Kind.Namespace, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty);
-            ImageSource icon = _provider.GlyphService.GetGlyph(fakeNS.GlyphGroup, fakeNS.GlyphItem);
+            ImageSource icon = _provider.GlyphService.GetGlyph(StandardGlyphGroup.GlyphGroupNamespace, StandardGlyphItem.GlyphItemPublic);
             foreach (String nameSpace in namespaces.Where(ns => nameStartsWith(ns, startWith)))
             {
                 String realNamespace = nameSpace;
@@ -2620,7 +2619,7 @@ namespace XSharpLanguage
                     name = name.Substring(0, pos);
                 }
                 XType nSpace = new XType(name, Kind.Namespace, Modifiers.None,
-                    Modifiers.Public, found.Range, found.Interval);
+                    Modifiers.Public, found.Range, found.Interval,file);
                 return nSpace;
             }
 #if TRACE
@@ -4272,7 +4271,7 @@ namespace XSharpLanguage
             //
             foreach (var keyword in lexer.KwIds)
             {
-                xTypes.Add(new XType(keyword.Key, Kind.Keyword, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty));
+                xTypes.Add(new XType(keyword.Key, Kind.Keyword, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty,null));
             }
             //
             _xTypes = xTypes.ToImmutableList();

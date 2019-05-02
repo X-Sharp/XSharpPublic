@@ -266,7 +266,7 @@ namespace Microsoft.VisualStudio.Project
                 this.grid = pb.CreatePropertyGrid();
             }
 
-            if(this.grid != null)
+            if (this.grid != null)
             {
                 this.active = true;
 
@@ -282,7 +282,30 @@ namespace Microsoft.VisualStudio.Project
                 NativeMethods.SetParent(new IntPtr(this.grid.Handle), this.panel.Handle);
                 UpdateObjects();
             }
+            RegisterProjectEvents();
         }
+        private bool isRegistered = false;
+        private void RegisterProjectEvents()
+        {
+            if (this.project != null && ! isRegistered)
+            {
+                this.project.OnProjectPropertyChanged += Project_OnProjectPropertyChanged;
+                isRegistered = true;
+            }
+        }
+        private void UnRegisterProjectEvents()
+        {
+            if (this.project != null)
+            {
+                this.project.OnProjectPropertyChanged -= Project_OnProjectPropertyChanged;
+            }
+            isRegistered = false;
+        }
+        internal virtual void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
+        {
+
+        }
+
 
         public virtual int Apply()
         {
@@ -301,6 +324,7 @@ namespace Microsoft.VisualStudio.Project
                 this.panel = null;
             }
             this.active = false;
+            UnRegisterProjectEvents();
         }
 
         public virtual void GetPageInfo(PROPPAGEINFO[] arrInfo)
@@ -364,12 +388,9 @@ namespace Microsoft.VisualStudio.Project
 
                         if(this.project == null || (this.project != (punk[0] as ProjectConfig).ProjectMgr))
                         {
-                            if (this.project != null)
-                            {
-                                this.project.OnProjectPropertyChanged -= Project_OnProjectPropertyChanged;
-                            }
+                            UnRegisterProjectEvents();
                             this.project = config.ProjectMgr;
-                            this.project.OnProjectPropertyChanged += Project_OnProjectPropertyChanged;
+                            RegisterProjectEvents();
                         }
 
                         configs.Add(config);
@@ -381,12 +402,9 @@ namespace Microsoft.VisualStudio.Project
                 {
                     if (this.project == null || (this.project != (punk[0] as NodeProperties).Node.ProjectMgr))
                     {
-                        if (this.project != null)
-                        {
-                            this.project.OnProjectPropertyChanged -= Project_OnProjectPropertyChanged;
-                        }
+                        UnRegisterProjectEvents();
                         this.project = (punk[0] as NodeProperties).Node.ProjectMgr;
-                        this.project.OnProjectPropertyChanged += Project_OnProjectPropertyChanged;
+                        RegisterProjectEvents();
                     }
 
                     Dictionary<string, ProjectConfig> configsMap = new Dictionary<string, ProjectConfig>();
@@ -435,10 +453,6 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
-        internal virtual void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
-        {
-
-        }
 
         public virtual void SetPageSite(IPropertyPageSite theSite)
         {
@@ -514,11 +528,6 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public void Dispose()
         {
-            if (this.project != null)
-            {
-                this.project.OnProjectPropertyChanged -= Project_OnProjectPropertyChanged;
-                this.project = null;
-            }
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }

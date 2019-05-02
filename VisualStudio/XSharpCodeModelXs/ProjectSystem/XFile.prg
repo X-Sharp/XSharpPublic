@@ -12,6 +12,8 @@ USING XSharpModel
 USING System.Collections.Immutable
 USING STATIC XSharpModel.XFileTypeHelpers
 BEGIN NAMESPACE XSharpModel
+    DELEGATE FindMemberComparer (oElement AS XELement, nValue AS LONG ) AS LONG
+
 	[DebuggerDisplay("{FullPath,nq}")];
 	CLASS XFile
 		// Fields
@@ -55,7 +57,6 @@ BEGIN NAMESPACE XSharpModel
 			///
 			///
 
-		DELEGATE FindMemberComparer (oElement AS XELement, nValue AS LONG ) AS LONG
 		METHOD FindMember(oDel AS FindMemberComparer, nValue AS LONG) AS XElement
 			LOCAL oResult := NULL_OBJECT AS XElement
 			LOCAL oLast AS XElement
@@ -150,7 +151,7 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 
 		METHOD SetTypes(types AS IDictionary<STRING, XType>, usings AS IList<STRING>, ;
-			staticusings AS IList<STRING>, aEntities AS IList<XElement>) AS VOID
+			staticUsings AS IList<STRING>, aEntities AS IList<XElement>) AS VOID
 			IF SELF:HasCode
 				WriteOutputMessage("-->> SetTypes() "+ SELF:SourcePath)
 				BEGIN LOCK SELF
@@ -168,7 +169,7 @@ BEGIN NAMESPACE XSharpModel
 						SELF:Project:AddType(type:Value)
 					NEXT
 					SELF:_usings:AddRange(usings)
-					SELF:_usingStatics:AddRange(staticusings)
+					SELF:_usingStatics:AddRange(staticUsings)
 					SELF:_entityList:Clear()
 					SELF:_entityList:AddRange(aEntities)
 				END LOCK
@@ -201,7 +202,7 @@ BEGIN NAMESPACE XSharpModel
 			NEXT
 			// Now add NameSpaces
 			FOREACH oNS AS NameSpaceObject IN oInfo:NameSpaces
-				oType := XType{ oNS:Name, Kind.Namespace, Modifiers.Public, Modifiers.Public, oNS:Span, oNS:Interval }
+				oType := XType{ oNS:Name, Kind.Namespace, Modifiers.Public, Modifiers.Public, oNS:Span, oNS:Interval ,SELF}
 				IF !aTypes:ContainsKey(oType:FullName)
 					aTypes:Add( oType:FullName, oType)
 				ENDIF

@@ -1830,6 +1830,8 @@ namespace XSharp.Project
             get
             {
                 var xoptions = GetProjectOptions(this.CurrentConfig.ConfigCanonicalName) as XSharpProjectOptions;
+                if (xoptions.ParseOptions == null)
+                    xoptions.BuildCommandLine();
                 return xoptions.ParseOptions;
             }
         }

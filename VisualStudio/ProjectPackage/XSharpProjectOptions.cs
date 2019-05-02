@@ -71,32 +71,34 @@ namespace XSharp.Project
             //List<String> args = new List<String>();
             //try
             //{
-            var dialect = _prjNode.GetProjectProperty("Dialect");
-            var references = new List<string>();
+            List<string> options = new List<string>();
+            options.Add("dialect:" + _prjNode.GetProjectProperty("Dialect"));
             var asmNodes = new List<XSharpAssemblyReferenceNode>();
             _prjNode.FindNodesOfType<XSharpAssemblyReferenceNode>(asmNodes);
             foreach (var asmNode in asmNodes)
             {
-                references.Add(asmNode.Url);
+                options.Add("r:" + asmNode.Url);
             }
             var prjNodes = new List<XSharpProjectReferenceNode>();
             _prjNode.FindNodesOfType<XSharpProjectReferenceNode>(prjNodes);
             foreach (var prjNode in prjNodes)
             {
-                references.Add(prjNode.ReferencedProjectOutputPath);
+                options.Add("r:"+prjNode.ReferencedProjectOutputPath);
             }
             var comNodes = new List<XSharpComReferenceNode>();
             _prjNode.FindNodesOfType<XSharpComReferenceNode>(comNodes);
             foreach (var comNode in comNodes)
             {
-                references.Add(comNode.Url);
+                options.Add("r:"+comNode.Url);
             }
 
-            var defines = new List<string>();
+            var defines = "";
+            var value = "";
             foreach (var d in DefinedPreprocessorSymbols)
             {
-                defines.Add(d);
+                defines = defines + d + ";";
             }
+            options.Add("d:" + defines);
             var include = _prjNode.GetProjectProperty("IncludePaths");
             if (!String.IsNullOrEmpty(include))
             {
@@ -106,78 +108,34 @@ namespace XSharp.Project
             {
                 include = _includedirs;
             }
-            ParseOptions = XSharpParseOptions.FromVsValues(defines, include, references, dialect);
-            /*
-            args.Add("/dialect:" + _prjNode.GetProjectProperty("Dialect"));
-            // Add pseudo references so the Vulcan/VO dialect will be allowed
-            args.Add("/errorendlocation");
-            args.Add("/r:vulcanrt.dll");
-            args.Add("/r:vulcanrtfuncs.dll");
-            if (String.Equals(ConfigCanonicalName.ConfigName, "DEBUG", StringComparison.OrdinalIgnoreCase))
-            {
-                args.Add("/debug:full");
-            }
-            var tmp = "";
+            options.Add("i:" + include);
 
-            foreach (var d in DefinedPreprocessorSymbols)
+            var flags = new string[] {"vo1", "vo2" , "vo3" , "vo4" , "vo5" , "vo6" , "vo7" , "vo8" , "vo9" , "vo10" , "vo11" , "vo12", "vo13", "vo14", "vo15","vo16",
+                "az","ins", "lb","memvar","namedargs","ppo","undeclared","unsafe","xpp1","xpp2"};
+            foreach (var flag in flags)
             {
-                tmp += ";" + d;
+                value = _prjNode.GetProjectProperty(flag);
+                if (value != null && value.ToLower() == "true")
+                    options.Add(flag + "+");
+                else
+                    options.Add(flag + "-");
             }
-            if (tmp.Length > 0)
+            value = _prjNode.GetProjectProperty("StandardDefs");
+            if (value != null && value.Trim().Length > 0)
             {
-                args.Add("/d:" + tmp.Substring(1));
+                options.Add("stddefs:" + value);
             }
-            tmp = _prjNode.GetProjectProperty("DisabledWarnings");
-            if (tmp?.Length > 0)
+            value = _prjNode.GetProjectProperty("NoStandardDefs");
+            if (value != null  && value.ToLower() == "true")
             {
-                tmp = tmp.Replace(",", ";");
-                args.Add("/warningaserror-:" + tmp);
-            }
-            args.Add("/warn:" + WarningLevel.ToString());
-            for (int i = 1; i < 16; i++)
-            {
-                var sw = "vo" + i.ToString();
-                tmp = _prjNode.GetProjectProperty(sw);
-                if (!String.IsNullOrEmpty(tmp))
-                {
-                    args.Add("/"+sw+  (tmp.ToLower() == "true" ? "+" : "-"));
-                }
-            }
-            var include = _prjNode.GetProjectProperty("IncludePaths");
-            if (!String.IsNullOrEmpty(include))
-            {
-                include = include + ";" + _includedirs;
+                options.Add("nostddefs+");
             }
             else
-                include = _includedirs;
-            args.Add("/i:" + include);
-            tmp = _prjNode.GetProjectProperty("NoStandardDefs");
-            if (!String.IsNullOrEmpty(tmp) && tmp.ToLower() == "true")
-                args.Add("/nostddefs");
+            {
+                options.Add("nostddefs-");
+            }
 
-            tmp = _prjNode.GetProjectProperty("INS");
-            if (!String.IsNullOrEmpty(tmp) && tmp.ToLower() == "true")
-                args.Add("/ins");
-
-            if (this.TreatWarningsAsErrors)
-                args.Add("/warnaserror");
-            */
-            //}
-            //finally
-            //{
-            //    if (args.Count > 0)
-            //    {
-            //        var cmdlineargs = xsCmdLineparser.Parse(args.ToArray(), null, null, null);
-            //        ParseOptions = cmdlineargs.ParseOptions;
-            //    }
-            //    else
-            //    {
-            //        var cmdlineargs = xsCmdLineparser.Parse(new string[0], null, null, null);
-            //        ParseOptions = cmdlineargs.ParseOptions;
-
-            //    }
-            //    //ParseOptions.ParseLevel = ParseLevel.Parse;
-            //}
+            ParseOptions = XSharpParseOptions.FromVsValues(options);
         }
 
     }

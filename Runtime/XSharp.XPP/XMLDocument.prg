@@ -24,7 +24,7 @@ BEGIN NAMESPACE XSharp.XPP
             Initialize()
             gate       := Object{}
 
-        STATIC METHOD Initialize()
+        STATIC METHOD Initialize() AS VOID
             aDocuments := List<XDocument>{}
             aErrors    := List<XError>{}
             nextHandle := 1

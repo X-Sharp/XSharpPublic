@@ -1,7 +1,9 @@
-FUNCTION IsMemberVar(oObject , cName , nAttributes) as LOGIC CLIPPER
-EnforceType(oObject, OBJECT)
+FUNCTION IsMemberVar(uObject , cName , nAttributes) as LOGIC CLIPPER
+LOCAL oObject as Object
+EnforceType(uObject, OBJECT)
 EnForceType(cname, STRING)
 EnforceType(REF nAttributes, LONG)
+oObject := uObject
 IF oObject IS XSharp.XPP.DataObject
     local DObject := oObject as DataObject
     return DObject:IsMemberVar(cName)

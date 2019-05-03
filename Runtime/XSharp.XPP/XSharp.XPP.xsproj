@@ -121,6 +121,7 @@
     <Compile Include="DataObject.prg" />
     <Compile Include="Defines.prg" />
     <Compile Include="Defines\AppEvent_CH.prg" />
+    <Compile Include="Defines\asxml_ch.prg" />
     <Compile Include="Defines\Class_CH.prg" />
     <Compile Include="Defines\Collat_ch.prg" />
     <Compile Include="Defines\dll_ch.prg" />
@@ -130,6 +131,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="RuntimeClasses.prg" />
+    <Compile Include="XMLDocument.prg" />
+    <Compile Include="XMLFunctions.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Defines" />

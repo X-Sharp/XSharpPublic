@@ -46,6 +46,22 @@ CLASS XSharp.XPP.ClassObject
         INTERNAL PROPERTY Methods    as MethodDescriptor[] AUTO
         INTERNAL PROPERTY Properties as MethodDescriptor[] AUTO
         INTERNAL PROPERTY HasInit    AS LOGIC AUTO
+        INTERNAL METHOD GetUniqueHashCode as INT
+            local nCode as INT
+            nCode := SELF:Name:GetHashCode() + self:SuperClass:GetHashCode()
+            BEGIN UNCHECKED
+                FOREACH var fld in Fields
+                    nCode += fld:Name:GetHashCode() + fld:Attributes:GetHashCode()
+                NEXT
+                FOREACH var meth in Methods
+                    nCode += meth:Name:GetHashCode() + meth:Attributes:GetHashCode()
+                NEXT
+                FOREACH var prop in Properties
+                    nCode += prop:Name:GetHashCode() + prop:Attributes:GetHashCode()
+                NEXT
+            END UNCHECKED
+            RETURN nCode
+
 
         INTERNAL METHOD GetPropertyGetBlock(cName as STRING) as CodeBlock
             foreach oMethod as MethodDescriptor in SELF:Properties
@@ -85,7 +101,7 @@ CLASS XSharp.XPP.ClassObject
     INTERNAL PROPERTY Descriptor as  ClassDescriptor GET _desc
     PROPERTY Type  as System.Type GET _type
     #endregion
-    INTERNAL CONSTRUCTOR(oType AS Type, cName AS STRING, oDesc  as ClassDescriptor)
+    PRIVATE CONSTRUCTOR(oType AS Type, cName AS STRING, oDesc  as ClassDescriptor)
         _type := oType
         _name := cName
         _desc := oDesc
@@ -105,11 +121,13 @@ CLASS XSharp.XPP.ClassObject
         RETURN oRes
 
     #region Class Helper methods
-    PRIVATE STATIC Classes   AS Dictionary<STRING, ClassObject>
-
+    PRIVATE STATIC Classes     AS Dictionary<STRING, ClassObject>
+    PRIVATE STATIC OldClasses  AS Dictionary<INT, ClassObject>
+    
     STATIC CONSTRUCTOR
         Classes    := Dictionary<STRING, ClassObject>{StringComparer.OrdinalIgnoreCase}
-
+        OldClasses := Dictionary<INT, ClassObject>{}
+	
     STATIC METHOD FindClass(cClassName AS STRING, lIncludeDeleted AS LOGIC) AS ClassObject
         IF Classes:ContainsKey(cClassName)
             RETURN Classes[cClassName]
@@ -120,6 +138,10 @@ CLASS XSharp.XPP.ClassObject
         LOCAL lOk := FALSE AS LOGIC
         IF Classes:ContainsKey(classObject:Name)
             lOk := TRUE
+            var nCode := classObject:Descriptor:GetUniqueHashCode()
+            if ! OldClasses:ContainsKey(nCode)
+                OldClasses:Add(nCode, classObject)
+            endif
             Classes:Remove(classObject:Name)
         ENDIF
         RETURN lOk
@@ -211,17 +233,24 @@ CLASS XSharp.XPP.ClassObject
         return eval(oBlock, uNewParams)
 
 
+    INTERNAL STATIC an := NULL as AssemblyName
+    INTERNAL STATIC ab := NULL as AssemblyBuilder
+    INTERNAL STATIC mb := NULL as ModuleBuilder
+    INTERNAL STATIC METHOD GetDynamicModule() as ModuleBuilder
+        if an == NULL .or. ab == NULL .or. mb == NULL
+            an  := AssemblyName{"XSharp.XPP.DynamicClasses"}
+            ab  := AppDomain.CurrentDomain:DefineDynamicAssembly(an, AssemblyBuilderAccess.Run)
+            mb  := ab:DefineDynamicModule("MainModule")
+        endif
+        return mb
+
 
     INTERNAL STATIC METHOD CreateType(oDesc as ClassDescriptor) AS TypeBuilder
-        local an as AssemblyName
-        local ab as AssemblyBuilder
-        local mb as ModuleBuilder
         LOCAL tb as TypeBuilder
         LOCAL ta as TypeAttributes
         local parent := NULL as System.Type
-        an  := AssemblyName{"DynamicClass_"+oDesc:Name}
-        ab  := AppDomain.CurrentDomain:DefineDynamicAssembly(an, AssemblyBuilderAccess.Run)
-        mb  := ab:DefineDynamicModule("MainModule")
+        local mb := NULL as ModuleBuilder
+        mb := GetDynamicModule()
         ta  := TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.BeforeFieldInit | TypeAttributes.AutoLayout
         if ! String.IsNullOrEmpty(oDesc:Superclass)
             parent := XSharp.RT.Functions.FindClass(oDesc:Superclass)
@@ -240,9 +269,35 @@ CLASS XSharp.XPP.ClassObject
         else
             parent := typeof(XSharp.XPP.Abstract)
         ENDIF
+
+        var ctor := typeof(DebuggerDisplayAttribute).GetConstructor(<Type> { typeof(string) })
+        var arguments   := <object>{ oDesc:Name }
+        var debuggerDisplay := CustomAttributeBuilder{ctor, arguments}
         
-        tb  := mb:DefineType(oDesc:Name,ta, parent)
+        local suffix := 0 as int
+        DO WHILE TRUE
+            var ns := iif(suffix == 0, "XppDynamic", "XppDynamic"+ suffix:ToString())
+            var name := ns+"."+oDesc:name
+            TRY
+                var existing := mb:FindTypes(FullNameTypeFilter, name)
+                if existing:Length > 0
+                    suffix += 1
+                    LOOP
+                endif
+                tb  := mb:DefineType(name,ta, parent)
+                EXIT
+            CATCH
+                // this should not happen since we are checking already
+                suffix += 1
+            END TRY
+        ENDDO
+        tb:SetCustomAttribute(debuggerDisplay)
+        
         return tb
+
+    /// Delegate to filter types in the DynamicAssembly
+    INTERNAL STATIC Method FullNameTypeFilter(t as type, oParam as object) AS LOGIC
+        return t:FullName == (String) oParam
 
     INTERNAL STATIC METHOD DecodeFieldAttributes(nAttrib as LONG) AS FieldAttributes
         local attribute as FieldAttributes
@@ -427,10 +482,21 @@ CLASS XSharp.XPP.ClassObject
     STATIC INTERNAL METHOD ImplementClass(oDesc as ClassDescriptor) AS ClassObject
         LOCAL cName as STRING
         LOCAL oResult as ClassObject
+
         cName := oDesc:Name
         IF ClassObject.Classes:ContainsKey(cName)
             THROW Error{"A Class definition for "+cName+" already exists with another structure"}
         ENDIF
+        // fetch the type from the old classes list when it exists
+        LOCAL nCode := oDesc:GetUniqueHashCode() as LONG
+        IF OldClasses:ContainsKey(nCode)
+            LOCAL oldClass := OldClasses[nCode] as ClassObject
+            if oldClass:Descriptor:Name == oDesc:Name
+                Classes:Add(cName, oldClass)
+                return oldClass
+            endif
+        endif
+
 
         LOCAL oTb as TypeBuilder
         oTb := CreateType(oDesc)
@@ -447,6 +513,7 @@ END CLASS
 
 /// <summary>Retrieves the class object of class. </summary>
 /// <param name="cClassName">The name of the class whose class object should be returned. <param>
+/// <returns>The function returns the class object of the class with the name <cClassName>. The return value is NULL_OBJECT when the class does not exist. </returns>
 FUNCTION ClassObject(cClassName AS STRING) AS ClassObject
     LOCAL oResult AS ClassObject
     oResult := ClassObject.FindClass(cClassName, FALSE)
@@ -456,6 +523,14 @@ FUNCTION ClassObject(cClassName AS STRING) AS ClassObject
 /// <summary>Remove the class object of class. </summary>
 /// <param name="uObject">The name of the class whose class object should be deleted, or the class object.<param>
 /// <returns>The return value is .T. (true) when the class object is removed from memory, otherwise it is .F. (false). </returns>
+/// <remarks>The function ClassDestroy() removes the class object of a dynamically created class from main memory.
+/// Dynamic classes are created during runtime by the ClassCreate() function. They are unknown at compile time.
+/// Therefore, they do not have a class function and are represented at runtime of a program only by a class object. <br/>
+/// When a program uses a dynamic class, the corresponding class object should be removed from main memory when the class
+/// is no longer needed. Otherwise, the class object remains in memory and can be retrieved by the ClassObject() function at any time.<br/>
+/// <b>Note</b>In X# classes are never really freed from memory. The .Net framework does not allow that. ClassDestroy() does remove the class
+/// from the list of active classes. If you recreate the same class later with the same structure then the class definition from the previous
+/// defintion is reused.</remarks>
 FUNCTION ClassDestroy(uObject) AS LOGIC CLIPPER
     local oObject as Object
     if IsObject(uObject)

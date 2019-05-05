@@ -35,7 +35,7 @@ BEGIN NAMESPACE XSharpModel
 		STATIC PROTECT aOperators AS CHAR[]
 		STATIC PROTECT aEndKeywords AS STRING[]
 		STATIC PROTECT aTypes AS STRING[]
-        STATIC PROTECT gate := Object{} as object
+        STATIC PROTECT gate := OBJECT{} AS OBJECT
 		// instance fields
 		PRIVATE aEntities AS List<EntityObject>
 		PRIVATE aLocals   AS List<EntityObject>

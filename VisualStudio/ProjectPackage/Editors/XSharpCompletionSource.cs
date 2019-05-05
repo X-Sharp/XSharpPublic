@@ -3122,13 +3122,13 @@ namespace XSharpLanguage
         static public CompletionElement FindIdentifier(XTypeMember member, string name, ref CompletionType cType,
             Modifiers visibility, string currentNS, ITextSnapshot snapshot, int currentLine)
         {
-            WriteOutputMessage($"--> FindIdentifier in {cType.FullName}, {name} ");
             XElement element;
             CompletionElement foundElement = null;
             if (cType.IsEmpty())
             {
                 cType = new CompletionType(member.Parent);
             }
+            WriteOutputMessage($"--> FindIdentifier in {cType.FullName}, {name} ");
             element = member.Parameters.Where(x => StringEquals(x.Name, name)).FirstOrDefault();
             if (element == null)
             {

@@ -106,6 +106,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string ExVarName = "Xs$Exception";
         internal const string ReturnName = "Xs$Return";
         internal const string ArrayName = "Xs$Array";
+        internal const string WithVarName = "Xs$WithVar";
         internal const string PrivatesLevel = "Xs$PrivatesLevel";
 
         internal const string FunctionsClass = "Functions";

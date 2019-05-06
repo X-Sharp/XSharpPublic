@@ -623,7 +623,9 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
                     if (unexpectedTemp != null)
                     {
                         // interestingly enough "ref dynamic" sometimes is passed via a clone
+#if !XSHARP
                         Debug.Assert(argument.Type.IsDynamic(), "passing args byref should not clone them into temps");
+#endif
                         AddExpressionTemp(unexpectedTemp);
                     }
 

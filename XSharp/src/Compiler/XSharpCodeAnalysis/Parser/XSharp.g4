@@ -51,6 +51,7 @@ entity              : namespace_
                     // types
                     | class_
                     | {IsXPP}? xppclass         // XPP Class definition
+                    /*| {IsFox}? foxclass         // FoxPro Class definition*/
                     | structure_
                     | interface_
                     | delegate_
@@ -89,7 +90,7 @@ function            : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
                       (DLLEXPORT STRING_CONST)?                                 // Optional (ignored)
                       end=eos   
                       StmtBlk=statementBlock
-                      ((END FUNCTION | ENDFUNC) Ignored=identifier? EOS )?
+                      (END FUNCTION  Ignored=identifier? EOS )?
                     ;
 
 procedure           : (Attributes=attributes)? (Modifiers=funcprocModifiers)?   
@@ -104,7 +105,7 @@ procedure           : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
                       (DLLEXPORT STRING_CONST)?                                 // Optional (ignored)
                       end=eos                       
                       StmtBlk=statementBlock
-                      ((END PROCEDURE| ENDPROC) Ignored=identifier? EOS)?
+                      (END PROCEDURE Ignored=identifier? EOS)?
                     ;
 
 callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CALLBACK | FASTCALL | THISCALL)
@@ -577,8 +578,8 @@ statement           : Decl=localdecl                        #declarationStmt
                       (e=END FIXED? eos)?						#blockStmt
 
                     | WITH Expr=expression end=eos
-                       (withLine)+
-                      (e=END WITH | e=ENDWITH) eos      #withBlock
+                       (Lines +=withLine)+
+                      e=END WITH eos      #withBlock
 
                       // NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
                       // The first ExpressonStmt rule matches a single expression
@@ -592,9 +593,9 @@ statement           : Decl=localdecl                        #declarationStmt
                       Exprs+=expression (COMMA Exprs+=expression)+  end=eos			#expressionStmt
 	                ;
 
-withLine            : Op=(DOT|COLON) Expr=expression AsOp=(ASSIGN_OP|EQ) expression end=eos            // assignment to field or property
-                    | Op=(DOT|COLON) Expr=expression l=LPAREN  r=RPAREN  end=eos                       // method call without arguments
-                    | Op=(DOT|COLON) Expr=expression l=LPAREN  ArgList=argumentList r=RPAREN  end=eos  // method call with arguments
+withLine            : Op=(DOT|COLON) Name=simpleName AsOp=(ASSIGN_OP|EQ) Expr=expression end=eos            // assignment to field or property
+                    | Op=(DOT|COLON) Name=simpleName L=LPAREN  R=RPAREN  end=eos                       // method call without arguments
+                    | Op=(DOT|COLON) Name=simpleName L=LPAREN  ArgList=argumentList R=RPAREN  end=eos  // method call with arguments
                     ;
 
 ifElseBlock         : Cond=expression end=eos StmtBlk=statementBlock
@@ -1193,8 +1194,67 @@ xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+
 
 
 /// FoxPro Parser definities
-keywordfox          :Token=(ENDDEFINE| ENDFUNC| ENDPROC| LPARAMETERS| TEXT| ENDTEXT| ADDITIVE| FLAGS| PRETEXT| NOSHOW| TEXTMERGE)
+keywordfox          :Token=(ENDDEFINE|  LPARAMETERS| TEXT| ENDTEXT| ADDITIVE| FLAGS| PRETEXT| NOSHOW| TEXTMERGE | OLEPUBLIC | EXCLUDE)
                     ;
 // class declaration
 // text ... endtext
-// 
+
+
+/*
+
+foxclass            : (Attributes=attributes)?
+                      DEFINE (Modifiers=classModifiers)?
+                      CLASS (Namespace=nameDot)? Id=identifier                          
+                      (INHERIT BaseType=datatype)?
+                      (OF Classlib=identifier) ?
+                      (OLEPUBLIC) ?
+                      e=eos
+                      (Members+=foxclassmember)*
+                      ENDDEFINE Ignored=identifier?   eos
+                    ;
+
+foxclassmember      : foxfielddef           #foxfield
+                    | foxfieldinitializer   #foxfieldinit
+                    | foxaddobjectclause    #foxaddobject
+                    | ffunction             #foxfunction
+                    | fprocedure            #foxprocedure
+                    | foximplementsclause   #foximplements
+                    // events, operators, properties, nested types ?
+                    ;
+
+foxfielddef         : (Modifiers=foxModifiers)?
+                      PropertyNames+= identifier (COMMA PropertyNames+=identifier)*
+                    ;
+
+
+foxfieldinitializer : Id=identifier Op=EQ Expr=expression
+                    ;
+
+foxModifiers       : ( Tokens+=(PROTECTED | HIDDEN) )+
+                   ;
+
+
+foximplementsclause : IMPLEMENTS Id=identifier (Excl=EXCLUDE)? IN Expr=expression
+                    ;
+
+foxaddobjectclause  : ADD OBJECT Id=identifier AS Type=datatype
+                      (WITH FieldsInits += foxfieldinitializer (COMMA FieldsInits += foxfieldinitializer) )?
+                    ;
+
+ffunction           : (Attributes=attributes)? (Modifiers=foxModifiers)?   
+                      FUNCTION Id=identifier                             
+                      (ParamList=parameterList)?                                
+                      (AS Type=datatype)?                                       
+                      end=eos   
+                      StmtBlk=statementBlock
+                      (END FUNCTION  Ignored=identifier? EOS )?
+                    ;
+
+fprocedure           : (Attributes=attributes)? (Modifiers=foxModifiers)?   
+                      PROCEDURE Id=identifier                             
+                      (ParamList=parameterList)?                                
+                      end=eos   
+                      StmtBlk=statementBlock
+                      (END PROCEDURE  Ignored=identifier? EOS )?
+                    ;
+*/

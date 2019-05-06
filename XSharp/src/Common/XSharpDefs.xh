@@ -28,5 +28,15 @@
 #xcommand STORE <value> TO <var1> [, <varN> ]   => ;
 				<var1> := [ <varN> := ] <value>
 
-#endif		 
+
+#endif	
+
+// Some special END keywords from FoxPro and Xbase++
+
+#xcommand ENDPROC => END PROCEDURE
+#xcommand ENDFUNC => END FUNCTION
+#xcommand ENDWITH => END WITH
+#xcommand ENDFOR  => NEXT
+
+
 #endif

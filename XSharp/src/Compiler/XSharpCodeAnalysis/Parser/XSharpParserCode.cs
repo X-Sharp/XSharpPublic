@@ -38,7 +38,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool AllowXBaseVariables => Dialect.AllowXBaseVariables();
         public bool IsScript => Options.Kind == SourceCodeKind.Script;
         public bool IsXPP => Options.Dialect == XSharpDialect.XPP;
-        
+        public bool IsFox => Options.Dialect == XSharpDialect.FoxPro;
+
         void missingToken(string token)
         {
             if (Interpreter.PredictionMode == Antlr4.Runtime.Atn.PredictionMode.Sll)
@@ -598,6 +599,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public StatementBlockContext Statements { get { return this.StmtBlk; } set { this.StmtBlk = value; } }
             public ParameterListContext Parameters => this.ParamList;
 
+        }
+
+        public partial class WithBlockContext
+        {
+            public string VarName;
         }
         public partial class AliasedExprContext
         {

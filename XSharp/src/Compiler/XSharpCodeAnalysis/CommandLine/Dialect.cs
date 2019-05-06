@@ -99,6 +99,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return false;
             }
         }
+
+        public static bool AllowDotAsSendOperator(this XSharpDialect dialect)
+        {
+            switch (dialect)
+            {
+                case XSharpDialect.FoxPro:
+                case XSharpDialect.Core:
+                    return true;
+                case XSharpDialect.VO:
+                case XSharpDialect.Harbour:
+                case XSharpDialect.XPP:
+                case XSharpDialect.Vulcan:
+                default:
+                    return false;
+            }
+        }
         public static bool AllowStringsWithSingleQuotes(this XSharpDialect dialect)
         {
             switch (dialect)

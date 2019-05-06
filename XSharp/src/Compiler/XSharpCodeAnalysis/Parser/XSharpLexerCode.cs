@@ -1450,12 +1450,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
             if (dialect == XSharpDialect.XPP)
             {
-                // XBase++ Keywords
+                // Xbase++ Keywords
                 var xppKeywords = new Dictionary<string, int>
                 {
                     // normal keywords
-                    {"ENDSEQUENCE", END },
-                    {"ENDFOR",   NEXT },
+                    // {"ENDSEQUENCE", END }, Xbase++ redefines ENDSEQUENCE to END in STD.CH
+                    //{"ENDFOR",   NEXT }, Xbase++ redefines ENDFOR to NEXT in STD.CH
                     // class keywords
                     {"ENDCLASS",ENDCLASS},
                     {"READONLY",READONLY },
@@ -1505,7 +1505,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
            }
 
-
+              
             if (dialect == XSharpDialect.FoxPro)
             {
                 // Visual FoxPro Keywords
@@ -1515,12 +1515,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 };
                 var vfpKeyWordAbbrev = new Dictionary<string, int>
                 {
-                    {"ENDDEFINE",   ENDDEFINE },
-                    {"ENDFOR",   NEXT },
-                    {"ENDFUNC",   ENDFUNC },
-                    {"ENDPROC",   ENDPROC },
-                    {"ENDWITH",   ENDWITH },        // duplicated here because it may be abbreviated
+                    {"ENDDEFINE", ENDDEFINE },
                     {"LPARAMETERS",   LPARAMETERS },
+                    {"EXCLUDE", EXCLUDE },
+                    {"OLEPUBLIC", OLEPUBLIC }, 
                     // text end text
                     {"TEXT",      TEXT },           // TEXT .. ENDTEXT is declared here because the Lexer needs to do some special magic
                     {"ENDTEXT",   ENDTEXT },        // it could also be implemented as UDC but we need the lexer support
@@ -1689,9 +1687,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "VOLATILE", VOLATILE},
                     { "WHERE", WHERE},
                     { "YIELD", YIELD},
-                    // From VFP: WITH .. [END WITH| ENDWITH]
+                    // From FoxPro: WITH .. [END WITH]
                     {"WITH",      WITH },
-                    {"ENDWITH",   ENDWITH },
 
 			        // Vulcan types
 			        { "INT64", INT64},

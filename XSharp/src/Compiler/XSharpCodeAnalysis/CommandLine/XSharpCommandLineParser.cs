@@ -356,6 +356,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case XSharpAssemblyNames.XSharpXPP:
                     options.RuntimeAssemblies |= RuntimeAssemblies.XSharpXPP;
                     break;
+                case XSharpAssemblyNames.XSharpVFP:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpVFP;
+                    break;
                 case "mscorlib":
                 case "system":
                     if (! options.ClrVersionWasSet )

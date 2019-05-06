@@ -30,7 +30,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         XSharpCore = 8,
         XSharpRT = 16,
         XSharpVO = 32,
-        XSharpXPP = 64
+        XSharpXPP = 64,
+        XSharpVFP = 128
     }
 
     [Flags]

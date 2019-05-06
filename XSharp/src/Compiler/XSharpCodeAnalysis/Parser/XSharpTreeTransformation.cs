@@ -5897,6 +5897,56 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
 
+        public override void EnterWithBlock([NotNull] XP.WithBlockContext context)
+        {
+            context.VarName = XSharpSpecialNames.WithVarName+ UniqueNameSuffix;
+        }
+
+        public override void ExitWithBlock([NotNull] XP.WithBlockContext context)
+        {
+            
+            var stmts = new List<StatementSyntax>();
+            var declstmt = GenerateLocalDecl(context.VarName, _impliedType, context.Expr.Get<ExpressionSyntax>());
+            stmts.Add(declstmt);
+            foreach (var stmt in context._Lines)
+            {
+                stmts.Add(stmt.Get<StatementSyntax>());
+            }
+            var block = MakeBlock(stmts);
+            context.Put(block);
+        }
+
+        public override void ExitWithLine([NotNull] XP.WithLineContext context)
+        {
+            // this can be either an assignment or a method call
+            string varName = ((XP.WithBlockContext)context.Parent).VarName;
+            var lhs = GenerateSimpleName(varName);
+            var rhs = context.Name.Get<SimpleNameSyntax>();
+            var expr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, lhs,
+                                                        SyntaxFactory.MakeToken(SyntaxKind.DotToken), rhs);
+            if (context.L != null && context.R != null)
+            {
+                // Method call because we have LPAREN and RPAREN
+                ArgumentListSyntax argList;
+                if (context.ArgList != null)
+                {
+                    argList = context.ArgList.Get<ArgumentListSyntax>();
+                }
+                else
+                {
+                    argList = EmptyArgumentList();
+                }
+                var stmt = GenerateExpressionStatement( _syntaxFactory.InvocationExpression(expr, argList));
+                context.Put(stmt);
+            }
+            else
+            {
+                // assignment statement
+                var stmt = GenerateExpressionStatement(MakeSimpleAssignment(expr, context.Expr.Get<ExpressionSyntax>()));
+                context.Put(stmt);
+            }
+        }
+
         #endregion
 
         #region Conditional Statements

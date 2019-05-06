@@ -261,6 +261,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     macroDefines.Add("__DIALECT_XBASEPP__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
                     macroDefines.Add("__XPP__", () => new XSharpToken(XSharpLexer.STRING_CONST, '"' + global::XSharp.Constants.Version + '"'));
                     break;
+                case XSharpDialect.FoxPro:
+                    macroDefines.Add("__DIALECT_FOXPRO__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
+                    break;
                 default:
                     break;
             }

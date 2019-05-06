@@ -1032,7 +1032,9 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       SELF:ADSError(ERDD_DATATYPE, EG_DataType, "PutValue")
     END SWITCH
     
-    RETURN FALSE
+//    RETURN FALSE
+      #warning Robert please review if that was the intended behavior
+    RETURN result == 0
     
     #endregion
     

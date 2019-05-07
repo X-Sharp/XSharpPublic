@@ -495,14 +495,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                             opType = VOOperatorType.None;
                             break;
                         }
-                        if (leftString || rightString)
+                        if (leftString && rightString )
                         {
-                            if (leftType?.SpecialType != SpecialType.System_Char && rightType?.SpecialType != SpecialType.System_Char)
-                            {
-                                // Convert to String.Compare or __StringCompare. Decide later
-                                opType = VOOperatorType.CompareString;
-                                break;
-                            }
+                            // Convert to String.Compare or __StringCompare. Decide later
+                            opType = VOOperatorType.CompareString;
+                            break;
                         }
                         if (leftPSZ || rightPSZ)
                         {

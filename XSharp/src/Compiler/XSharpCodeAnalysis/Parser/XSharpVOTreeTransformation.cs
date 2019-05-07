@@ -56,6 +56,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private bool voStructHasDim;
         private Dictionary<string, MemVarFieldInfo> _memvars = null;
 
+
         private Dictionary<string, FieldDeclarationSyntax> _literalSymbols;
         private Dictionary<string, Tuple<string, FieldDeclarationSyntax>> _literalPSZs;
         #endregion
@@ -211,13 +212,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region SyntaxTree
-        private SyntaxTree GenerateDefaultSyntaxTree(List<Tuple<int, String>> initprocs, bool isApp, bool hasPCall)
+        private SyntaxTree GenerateDefaultSyntaxTree(List<Tuple<int, String>> initprocs, bool isApp, bool hasPCall, List<MemVarFieldInfo> filewidepublics)
         {
 
             // Create Global Functions class with the Members to call the Init procedures
             // Vulcan only does this for DLLs. We do it for EXE too to make things more consistent
             // Methods $Init1() and $Exit() are always created.
-            var members = CreateInitMembers(initprocs, isApp, hasPCall);
+            var members = CreateInitMembers(initprocs, isApp, hasPCall, filewidepublics);
             var modulemembers = new List<MemberDeclarationSyntax>();
             if (isApp)
             {
@@ -268,6 +269,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             CSharpParseOptions options = (CSharpParseOptions)trees.First().Options;
             // Collect Init procedures in all trees
             var initprocs = new List<Tuple<int, string>>();
+            var filewidepublics = new List<MemVarFieldInfo>();
             bool hasPCall = false;
             foreach (var tree in trees)
             {
@@ -280,6 +282,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             initprocs.AddRange(unit.InitProcedures);
                         }
+                        if (unit.FileWidePublics != null)
+                        {
+                            filewidepublics.AddRange(unit.FileWidePublics);
+                        }
+
                         hasPCall = hasPCall || unit.HasPCall;
                     }
 
@@ -287,7 +294,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             var t = getTransform(options);
-            return t.GenerateDefaultSyntaxTree(initprocs, isApp, hasPCall);
+            return t.GenerateDefaultSyntaxTree(initprocs, isApp, hasPCall, filewidepublics);
         }
 
         public static string VOGlobalClassName(CSharpParseOptions options)
@@ -298,7 +305,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Special app methods
-        protected MethodDeclarationSyntax CreateInitFunction(IList<String> procnames, string functionName, bool isApp)
+        protected MethodDeclarationSyntax CreateInitFunction(IList<String> procnames, string functionName, bool isApp, List<MemVarFieldInfo> filewidepublics)
         {
             // create body for new Init procedure
             var stmts = _pool.Allocate<StatementSyntax>();
@@ -306,6 +313,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var invoke = GenerateMethodCall(name, true);
                 stmts.Add(GenerateExpressionStatement(invoke, true));
+            }
+            if (filewidepublics != null)
+            {
+                foreach (var memvar in filewidepublics)
+                {
+                    var name = memvar.Name;
+                    var exp = GenerateMemVarDecl(name, false);
+                    stmts.Add(GenerateExpressionStatement(exp));
+                    var context = memvar.Context as XSharpParser.XbasevarContext;
+                    if (context.Expression != null)
+                    {
+                        exp = GenerateMemVarPut(GenerateLiteral(name), context.Expression.Get<ExpressionSyntax>());
+                        stmts.Add(GenerateExpressionStatement(exp));
+                    }
+                    else
+                    {
+                        // Assign FALSE to PUBLIC variables or TRUE when the name is CLIPPER
+                        bool publicvalue = context.Id.GetText().ToUpper() == "CLIPPER";
+                        exp = GenerateMemVarPut(GenerateLiteral(name), GenerateLiteral(publicvalue));
+                        stmts.Add(GenerateExpressionStatement(exp));
+                    }
+                }
             }
             var mods = TokenList(isApp ? SyntaxKind.InternalKeyword : SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
             var pars = EmptyParameterList();
@@ -319,7 +348,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return m;
         }
 
-        private List<MemberDeclarationSyntax> CreateInitMembers(List<Tuple<int, String>> initprocs, bool isApp, bool hasPCall)
+        private List<MemberDeclarationSyntax> CreateInitMembers(List<Tuple<int, String>> initprocs, bool isApp, bool hasPCall, List<MemVarFieldInfo> filewidepublics)
         {
             var members = new List<MemberDeclarationSyntax>();
             var init1 = new List<string>();
@@ -347,16 +376,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             // Put Everything in separate methods $Init1 .. $Init3
             // Always generate $Init1
-            members.Add(CreateInitFunction(init1, XSharpSpecialNames.InitProc1, isApp));
+            members.Add(CreateInitFunction(init1, XSharpSpecialNames.InitProc1, isApp, null));
             if (init2.Count > 0)
             {
-                members.Add(CreateInitFunction(init2, XSharpSpecialNames.InitProc2, isApp));
+                members.Add(CreateInitFunction(init2, XSharpSpecialNames.InitProc2, isApp,null));
             }
-            if (init3.Count > 0)
+            if (init3.Count > 0 || filewidepublics.Count > 0)
             {
-                members.Add(CreateInitFunction(init3, XSharpSpecialNames.InitProc3, isApp));
+                members.Add(CreateInitFunction(init3, XSharpSpecialNames.InitProc3, isApp, filewidepublics));
             }
-            members.Add(CreateInitFunction(exit, XSharpSpecialNames.ExitProc, isApp));
+            members.Add(CreateInitFunction(exit, XSharpSpecialNames.ExitProc, isApp, null));
             if (hasPCall)
             {
                 members.Add(CreatePCallFunction());
@@ -926,7 +955,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else
                             { 
-                                CurrentEntity.Data.AddField(name, "M", false);
+                                CurrentEntity.Data.AddField(name, "M", false,memvar);
                             }
                         }
                     }
@@ -941,7 +970,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else
                             { 
-                                CurrentEntity.Data.AddField(name, "M", false);
+                                CurrentEntity.Data.AddField(name, "M", false, memvar);
                             }
                         }
 
@@ -966,10 +995,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (_options.SupportsMemvars)
             {
-                foreach (var memvar in context._Vars)
+                if (context.Token.Type == XP.PUBLIC)
                 {
-                    var mv = new MemVarFieldInfo(memvar.Id.GetText(), "M", false);
-                    _memvars.Add(mv.Name, mv);
+                    // PUBLIC
+                    foreach (var memvar in context._XVars)
+                    {
+                        var name = memvar.Id.GetText();
+                        var mv = new MemVarFieldInfo(memvar.Id.GetText(), "M", false, true);
+                        mv.Context = memvar;
+                        _memvars.Add(mv.Name, mv);
+                        GlobalEntities.FileWidePublics.Add(mv);
+                    }
+                }
+                else
+                {
+                    // MEMVAR
+                    foreach (var memvar in context._Vars)
+                    {
+                        var mv = new MemVarFieldInfo(memvar.Id.GetText(), "M", false );
+                        mv.Context = memvar;
+                        _memvars.Add(mv.Name, mv);
+                    }
                 }
             }
         }
@@ -1022,14 +1068,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         stmts2.Add(GenerateExpressionStatement(exp));
                         if (memvar.Expression != null)
                         {
-                            exp = GenerateMemVarPut(memvar.Id.Get<ExpressionSyntax>(), memvar.Expression.Get<ExpressionSyntax>());
+                            exp = GenerateMemVarPut(GenerateLiteral(name), memvar.Expression.Get<ExpressionSyntax>());
                             stmts2.Add(GenerateExpressionStatement(exp));
                         }
                         else if (!isprivate)
                         {
                             // Assign FALSE to PUBLIC variables or TRUE when the name is CLIPPER
-                            bool publicvalue = memvar.Id.GetText().ToUpper() == "CLIPPER";
-                            exp = GenerateMemVarPut(memvar.Id.Get<ExpressionSyntax>(), GenerateLiteral(publicvalue));
+                            bool publicvalue = name.ToUpper() == "CLIPPER";
+                            exp = GenerateMemVarPut(GenerateLiteral(name), GenerateLiteral(publicvalue));
                             stmts2.Add(GenerateExpressionStatement(exp));
                         }
                     }
@@ -3881,7 +3927,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     else
                     {
-                        CurrentEntity.Data.AddField(name, Alias, true);
+                        CurrentEntity.Data.AddField(name, Alias, true, field);
                     }
                 }
             }

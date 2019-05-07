@@ -97,6 +97,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public ITokenStream XTokens { get; internal set; } = default(ITokenStream);
         public ITokenStream XPPTokens { get; internal set; } = default(ITokenStream);
         public IList<Tuple<int, string>> InitProcedures { get; internal set; } = new List<Tuple<int, string>>();
+        public IList< MemVarFieldInfo> FileWidePublics { get; internal set; } = new List<MemVarFieldInfo>();
         public IList<FieldDeclarationSyntax> Globals { get; internal set; } = new List<FieldDeclarationSyntax>();
         public bool HasPCall
         {

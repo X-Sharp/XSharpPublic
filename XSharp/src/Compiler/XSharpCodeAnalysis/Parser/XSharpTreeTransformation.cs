@@ -45,6 +45,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             public SyntaxListBuilder<MemberDeclarationSyntax> Members;
             public SyntaxListBuilder<MemberDeclarationSyntax> GlobalClassMembers;
             public SyntaxListBuilder<MemberDeclarationSyntax> StaticGlobalClassMembers;
+            public List<MemVarFieldInfo> FileWidePublics;
             public object LastMember;
             public bool LastIsStatic;
             public List<Tuple<int, String>> InitProcedures;
@@ -63,6 +64,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Members = pool.Allocate<MemberDeclarationSyntax>();
                 InitProcedures = new List<Tuple<int, String>>();
                 Globals = new List<FieldDeclarationSyntax>();
+                FileWidePublics = new List<MemVarFieldInfo>();
                 _pool = pool;
                 HasPCall = false;
                 NeedsProcessing = false;
@@ -2576,16 +2578,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected void ProcessGlobalEntityContext(XP.IGlobalEntityContext entity)
         {
-            var modifiers = ((XP.IGlobalEntityContext)entity).FuncProcModifiers;
-            if (entity is XP.ProcedureContext)
+            var bStaticVisibility = false;
+            var modifiers = entity.FuncProcModifiers;
+            if (entity is XP.ProcedureContext proc)
             {
-                var proc = (XP.ProcedureContext)entity;
                 if (proc.InitExit != null)  // Init & Exit procedures are never static
                 {
                     modifiers = null;
                 }
             }
-            var bStaticVisibility = false;
+            else if (entity is XP.VoglobalContext glob)
+            {
+                if (glob.Static != null)
+                { 
+                    bStaticVisibility = true;
+                }
+            }
             if (modifiers != null)
                 bStaticVisibility = modifiers.IsStaticVisible;
 
@@ -4543,11 +4551,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var varType = context.Vars.DataType?.Get<TypeSyntax>() ?? _getMissingType();
             context.SetSequencePoint(context.end);
 
-            varType.XVoDecl = true;
+            varType.XVoDecl = true; 
             if (context.Vars?.As?.Type == XP.IS)
             {
                 varType.XVoIsDecl = true;
             }
+            SyntaxList<SyntaxToken> mods;
+            if (context.Static == null)
+            { 
+                mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword);
+            }
+            else
+            {
+                mods = TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword,SyntaxKind.InternalKeyword);
+            }
+
             foreach (var varCtx in context.Vars._Var)
             {
                 bool isDim = varCtx.Dim != null && varCtx.ArraySub != null;
@@ -4555,7 +4573,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     var global = _syntaxFactory.FieldDeclaration(
                         attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                        modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword),
+                        modifiers: mods,
                         declaration: _syntaxFactory.VariableDeclaration(
                             type: _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(varCtx.ArraySub._ArrayIndex.Count)),
                             variables: MakeSeparatedList(varCtx.Get<VariableDeclaratorSyntax>())),
@@ -4574,7 +4592,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var global = _syntaxFactory.FieldDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword),
+                    modifiers: mods,
                     declaration: _syntaxFactory.VariableDeclaration(
                         type: varType,
                         variables: varList),

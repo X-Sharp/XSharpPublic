@@ -169,8 +169,8 @@ using_              : USING (Static=STATIC)? (Alias=identifierName ASSIGN_OP)? N
 
                     // [STATIC] GLOBAL [CONST] Identifier [:= Expression] [, Identifier2 [:= Expression2] ] [AS Type]
                     // STATIC          [CONST] Identifier [:= Expression] [, Identifier2 [:= Expression2] ] [AS Type]
-voglobal            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Const=CONST)? Vars=classVarList end=eos 
-                    | (Attributes=attributes)? Modifiers=funcprocModifiers (Const=CONST)? Vars=classVarList end=eos 
+voglobal            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? Global=GLOBAL (Const=CONST)? Vars=classVarList end=eos 
+                    | (Attributes=attributes)? Static=STATIC (Const=CONST)? Vars=classVarList end=eos 
                     ;
 
 
@@ -492,8 +492,8 @@ globalAttributes    : LBRKT Target=globalAttributeTarget Attributes+=attribute (
 globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
                       ;
 
-filewidememvar      : MEMVAR Vars+=identifierName (COMMA Vars+=identifierName)*
-                      end=eos
+filewidememvar      : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierName)* end=eos
+                    | Token=PUBLIC XVars+=xbasevar (COMMA XVars+=xbasevar)*  end=eos
                     ;
 
 

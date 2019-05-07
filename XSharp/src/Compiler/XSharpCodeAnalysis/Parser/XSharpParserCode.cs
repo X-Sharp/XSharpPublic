@@ -256,13 +256,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 set { flags = setFlag(flags, EntityFlags.IsInitProcedure, value); }
             }
             private List<MemVarFieldInfo> Fields = null;
-            internal void AddField(string Name, string Alias, bool Field)
+            internal void AddField(string Name, string Alias, bool Field, XSharpParserRuleContext context)
             {
                 if (Fields == null)
                 { 
                     Fields = new List<MemVarFieldInfo>();
                 }
-                Fields.Add(new MemVarFieldInfo(Name, Alias, Field));
+                var info = new MemVarFieldInfo(Name, Alias, Field);
+                info.Context = context;
+                Fields.Add(info);
             }
             internal MemVarFieldInfo GetField(string Name)
             {
@@ -766,11 +768,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public string Name { get; private set; }
         public string Alias { get; private set; }
         public bool IsField { get; private set; }
-        internal MemVarFieldInfo(string name, string alias, bool field)
+        public bool IsFileWidePublic { get; private set; }
+        public XSharpParserRuleContext Context { get; set; }
+        internal MemVarFieldInfo(string name, string alias, bool field, bool filewidepublic = false)
         {
             Name = name;
             Alias = alias;
             IsField = field;
+            IsFileWidePublic = filewidepublic;
         }
     }
 

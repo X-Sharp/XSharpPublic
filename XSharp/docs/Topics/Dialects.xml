@@ -8,7 +8,7 @@
     </header>
     <para styleclass="Body Text">The X# compiler can run in different dialects. The table below shows the differences between these dialects.<br/>You can use the /dialect compiler option to select the dialect that you want to use. The Core dialect is default.</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="40" colcount="6" style="width:auto; border-width:1px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="39" colcount="6" style="width:auto; border-width:1px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
       <thead style="vertical-align:top">
         <td style="width:40%;">
           <para styleclass="Normal"><text style="font-weight:bold;">Feature</text></para>
@@ -23,11 +23,11 @@
           <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Harbour 1,2</text></para>
         </td>
         <td style="width:15%;">
-          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Xbase++</text><br/><text style="font-weight:bold;">1,2</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Xbase++</text><br/><text style="font-weight:bold;">14</text></para>
         </td>
         <td style="width:15%;">
           <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">FoxPro</text></para>
-          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">not implemented yet</text></para>
+          <para styleclass="Normal" style="text-align:center;"></para>
         </td>
       </thead>
       <tr style="vertical-align:top">
@@ -39,7 +39,7 @@
           <para styleclass="Body Text">No</para>
         </td>
         <td>
-          <para styleclass="Normal">VO: Yes, Vulcan: No (Vulcan) <text style="font-weight:bold;">11</text></para>
+          <para styleclass="Normal">VO: Yes, Vulcan: No (Vulcan) <text style="font-size:7pt; font-weight:bold; vertical-align:super;">11</text></para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
@@ -48,6 +48,7 @@
           <para styleclass="Normal">Follow the conventions of Xbase++</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -67,6 +68,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -86,6 +88,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -105,6 +108,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -124,6 +128,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -143,6 +148,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -162,6 +168,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -181,6 +188,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -200,6 +208,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -219,6 +228,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -238,6 +248,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -257,6 +268,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -276,25 +288,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">FUNCTION</text><text style="font-weight:normal;"> and </text><text style="font-weight:bold;">PROCEDURE </text><text style="font-weight:normal;"> inside class are compiled as Static Method of that class</text></para>
-        </td>
-        <td style="width:71px;">
           <para styleclass="Normal">Yes</para>
-        </td>
-        <td>
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td>
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td>
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -314,6 +308,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -321,18 +316,19 @@
           <para styleclass="Normal"><text style="font-weight:bold;">IIF</text>() expression and the <text style="font-weight:bold;">/vo10</text> compiler option</para>
         </td>
         <td style="width:71px;">
-          <para styleclass="Normal">Yes 7</para>
+          <para styleclass="Normal">Yes<text style="font-size:7pt; font-weight:bold; vertical-align:super;"> 7</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 7</para>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; font-weight:bold; vertical-align:super;"> 7</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
-        </td>
-        <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -352,6 +348,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -371,11 +368,12 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">MEMVAR, PUBLIC, PRIVATE, PARAMETERS</text> statement , including undeclared variables 14</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">MEMVAR, PUBLIC, PRIVATE, PARAMETERS</text> statement , including undeclared variables <text style="font-size:7pt; font-weight:bold; vertical-align:super;">14</text></para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">No</para>
@@ -390,6 +388,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -409,6 +408,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -428,6 +428,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -447,6 +448,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -466,6 +468,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -485,6 +488,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -502,6 +506,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -521,6 +526,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -540,6 +546,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -559,6 +566,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -576,6 +584,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -595,6 +604,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -614,6 +624,7 @@
           <para styleclass="Normal">Yes 5</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes 5</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -633,6 +644,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -652,6 +664,7 @@
           <para styleclass="Normal">Yes 6</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes 6</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -671,6 +684,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -690,6 +704,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -737,6 +752,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -756,6 +772,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
     </table></para>
@@ -767,7 +784,7 @@
       <li styleclass="List">Only supported inside functions and methods with Clipper Calling convention</li>
       <li styleclass="List">The Vulcan runtime does not have a SLen() function. The compiler translates this to accessing the Length property of the string</li>
       <li styleclass="List">This gets translated to <br/><tab />IF System.Diagnostics.Debugger.Attached<br/><tab /><tab />System.Diagnostics.Debugger.Break()<br/><tab />ENDIF</li>
-      <li styleclass="List">In the core dialect each of the expressions is casted to OBJECT. In the other dialects the expression is cast to USUAL when VulcanRTFuncs is included. Otherwise it is casted to OBJECT.</li>
+      <li styleclass="List">In the core dialect each of the expressions is cast to OBJECT. In the other dialects the expression is cast to USUAL.</li>
       <li styleclass="List">Untyped literal arrays in the VO/Vulcan dialect are translated to the VO Array type:<br/>{&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}<br/>Typed literal arrays are prefixed with &lt;Type&gt; like this:<br/>&lt;STRING&gt;{&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}<br/>This becomes a literal string array</li>
       <li styleclass="List">With the /vo2 compiler option NULL_STRING is compiled to an empty string. Otherwise to a NULL.</li>
       <li styleclass="List">The VOSTRUCT and UNION can be replaced with a standard .NET structure. For Union you need to use the [StructLayout(LayoutKind.Explicit)] attribute on the structure and the [FieldOffSet()] attribute on each field to explicitly define the location of the fields. </li>

@@ -50,7 +50,7 @@
       <para styleclass="Heading1">Compiler Macros</para>
     </header>
     <para styleclass="Normal">The following defines can be used in your code and will be replaced by the compiler with a literal value:</para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="35" colcount="3" style="width:auto;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="36" colcount="3" style="width:auto;">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal">Name</para>
@@ -148,6 +148,17 @@
         </td>
         <td>
           <para styleclass="Normal">Defined with TRUE when Core dialect is selected</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__DIALECT_FOXPRO__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Logical</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Defined with TRUE when FoxPro dialect is selected</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -361,7 +372,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">__VO1__ , __VO2__<br/>... __VO16__</para>
+          <para styleclass="Normal">__VO1__ , __VO2__ ... __VO16__</para>
         </td>
         <td>
           <para styleclass="Normal">Logical</para>

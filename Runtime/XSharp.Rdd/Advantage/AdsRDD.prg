@@ -1128,18 +1128,19 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       ENDIF
       IF lockInfo:@@Method == DBLockInfo.LockMethod.File
         result := ACE.AdsLockTable(SELF:_Table)
-        SELF:_CheckError(result)
-      ENDIF
-      SELF:_CheckError(ACE.AdsGetHandleType(SELF:_Table, OUT handleType))
-      IF lRecno == 0 .AND. handleType != ACE.ADS_CURSOR
-        SELF:_CheckError(ACE.AdsIsTableLocked(SELF:_Table, OUT isLocked))
-        IF isLocked == 0
-          result := ACE.AdsUnlockTable(SELF:_Table)
-          IF result != ACE.AE_TABLE_NOT_LOCKED  .AND. result != ACE.AE_TABLE_NOT_SHARED .AND. result != 0
-            SELF:_CheckError(result)
-            result  := ACE.AdsLockRecord(SELF:_Table, lRecno)
+//      SELF:_CheckError(result)
+      ELSE
+        SELF:_CheckError(ACE.AdsGetHandleType(SELF:_Table, OUT handleType))
+        IF lRecno == 0 .AND. handleType != ACE.ADS_CURSOR
+          SELF:_CheckError(ACE.AdsIsTableLocked(SELF:_Table, OUT isLocked))
+          IF isLocked == 0
+            result := ACE.AdsUnlockTable(SELF:_Table)
+            IF result != ACE.AE_TABLE_NOT_LOCKED  .AND. result != ACE.AE_TABLE_NOT_SHARED .AND. result != 0
+              SELF:_CheckError(result)
+            ENDIF
           ENDIF
         ENDIF
+        result  := ACE.AdsLockRecord(SELF:_Table, lRecno)
       ENDIF
       
       IF result != ACE.AE_TABLE_NOT_SHARED .AND. result != 0
@@ -1289,6 +1290,9 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       CASE DBRecordInfo.DBRI_LOCKED
           TRY
             dwRecno := Convert.ToUInt32(iRecID)
+/*          IF dwRecNo == 0
+            	dwRecNo := SELF:RecNo // looks like the dll func does this anyway
+            END IF*/
           CATCH
             SELF:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, "RecInfo")
             RETURN FALSE

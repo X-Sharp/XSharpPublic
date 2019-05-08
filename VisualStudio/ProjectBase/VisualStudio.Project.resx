@@ -604,6 +604,12 @@ Are you sure you want to change the Target Framework for this project?</value>
   <data name="SpecificVersionDescription" xml:space="preserve">
     <value>Indicates whether this reference is to a specific version of an assembly.</value>
   </data>
+  <data name="Aliases" xml:space="preserve">
+    <value>Aliases</value>
+  </data>
+  <data name="AliasesDescription" xml:space="preserve">
+    <value>A comma delimited list of aliases applied to this reference.</value>
+  </data>
   <data name="StrongName" xml:space="preserve">
     <value>Strong Name</value>
   </data>

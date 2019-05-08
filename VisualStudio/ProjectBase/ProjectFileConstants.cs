@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -127,7 +127,8 @@ namespace Microsoft.VisualStudio.Project
 		public const string AllProjectOutputGroups = "AllProjectOutputGroups";
 		public const string TargetPath = "TargetPath";
 		public const string TargetDir = "TargetDir";
-		public const string CurrentSolutionConfigurationContents = "CurrentSolutionConfigurationContents";
+        public const string Aliases = "Aliases";
+        public const string CurrentSolutionConfigurationContents = "CurrentSolutionConfigurationContents";
     }
 
     public static class ProjectFileAttributeValue

@@ -16,6 +16,8 @@ namespace XSharp.MacroCompiler
         AccessAndAssign,
         Invoke,
         Type,
+        Alias,
+        Member,
     }
 
     [Flags]

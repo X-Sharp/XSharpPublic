@@ -885,6 +885,7 @@ namespace XSharp.MacroCompiler
             PostfixIs,
             PostfixAsType,
             PrefixCast,
+            PrefixRuntimeId,
             BinaryAlias,
             BinarySubstr,
         }
@@ -990,6 +991,11 @@ namespace XSharp.MacroCompiler
                         Parse = _parse;
                         Combine = _combine_prefix_cast;
                         break;
+                    case AssocType.PrefixRuntimeId:
+                        this.assoc = AssocType.Prefix;
+                        Parse = _parse;
+                        Combine = _combine_prefix_runtime_id;
+                        break;
                     case AssocType.BinaryAlias:
                         this.assoc = AssocType.BinaryLeft;
                         Parse = _parse;
@@ -1086,6 +1092,7 @@ namespace XSharp.MacroCompiler
             Expr _combine_postfix_is(Parser p, Expr l, Node o, Expr r) => new IsExpr(l, (TypeExpr)o, o.Token);
             Expr _combine_postfix_as_type(Parser p, Expr l, Node o, Expr r) => new AsTypeExpr(l, (TypeExpr)o, o.Token);
             Expr _combine_prefix_cast(Parser p, Expr l, Node o, Expr r) => new TypeCast((TypeExpr)o, r);
+            Expr _combine_prefix_runtime_id(Parser p, Expr l, Node o, Expr r) => new RuntimeIdExpr(o.Token, r);
             Expr _combine_binary_alias(Parser p, Expr l, Node o, Expr r) => new AliasWaExpr(l, r, o.Token);
             Expr _combine_binary_substr(Parser p, Expr l, Node o, Expr r) => new SubstrExpr(l, o.Token, r);
             Expr _combine_postfix_dot(Parser p, Expr l, Node o, Expr r) => new QualifiedNameExpr(p.Require((l as TypeExpr), l.Token, ErrorCode.Expected, "type"), (NameExpr)o);
@@ -1128,6 +1135,7 @@ namespace XSharp.MacroCompiler
             PrefixOpers[(int)TokenType.MINUS] = new Oper(AssocType.Prefix, TokenType.MINUS, 6);
             PrefixOpers[(int)TokenType.TILDE] = new Oper(AssocType.Prefix, TokenType.TILDE, 6);
             PrefixOpers[(int)TokenType.ADDROF] = new Oper(AssocType.Prefix, TokenType.ADDROF, 6);
+            PrefixOpers[(int)TokenType.AMP] = new Oper(AssocType.PrefixRuntimeId, TokenType.AMP, 6);
             Opers[(int)TokenType.IS] = new Oper(AssocType.PostfixIs, TokenType.IS, 7);
             Opers[(int)TokenType.ASTYPE] = new Oper(AssocType.PostfixAsType, TokenType.AS, 7);
             Opers[(int)TokenType.ALIAS] = new Oper(AssocType.BinaryAlias, TokenType.ALIAS, 8);

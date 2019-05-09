@@ -641,6 +641,10 @@ namespace XSharp.MacroCompiler.Syntax
         {
             return new AliasExpr(null, LiteralExpr.Bound(Constant.Create(fieldName)), Token.None) { Datatype = Compilation.Get(NativeType.Usual) };
         }
+        internal static AliasExpr Bound(Expr field)
+        {
+            return new AliasExpr(null, field, Token.None) { Datatype = Compilation.Get(NativeType.Usual) };
+        }
         internal override void RequireGetAccess() => RequireValue();
         internal override void RequireSetAccess() => RequireValue();
         internal override void RequireGetSetAccess() => RequireValue();
@@ -655,6 +659,7 @@ namespace XSharp.MacroCompiler.Syntax
                 Alias.RequireGetAccess();
                 b.Convert(ref Alias, Compilation.Get(NativeType.Usual));
             }
+            Field.Affinity = BindAffinity.Alias;
             b.Bind(ref Field);
             Datatype = Field.Datatype;
             return null;
@@ -662,6 +667,28 @@ namespace XSharp.MacroCompiler.Syntax
         internal override void RequireGetAccess() => Field.RequireGetAccess();
         internal override void RequireSetAccess() => Field.RequireSetAccess();
         internal override void RequireGetSetAccess() => Field.RequireGetSetAccess();
+    }
+    internal partial class RuntimeIdExpr : Expr
+    {
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Expr);
+            Expr.RequireGetAccess();
+            b.Convert(ref Expr, Compilation.Get(NativeType.String));
+            Datatype = Compilation.Get(NativeType.Usual);
+            switch (Affinity)
+            {
+                case BindAffinity.Alias:
+                    return AliasExpr.Bound(Expr);
+                default:
+                    ThrowError(ErrorCode.InvalidRuntimeIdExpr);
+                    break;
+            }
+            return null;
+        }
+        internal override void RequireGetAccess() => RequireValue();
+        internal override void RequireSetAccess() => RequireValue();
+        internal override void RequireGetSetAccess() => RequireValue();
     }
     internal partial class SubstrExpr : BinaryExpr
     {

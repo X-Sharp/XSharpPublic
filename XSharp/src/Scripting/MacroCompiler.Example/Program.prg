@@ -162,19 +162,19 @@ FUNCTION MyVarGet(name AS STRING) AS USUAL
     RETURN wag + "VarGet(" + name + ")"
 
 FUNCTION MyVarPut(name AS STRING, VALUE AS USUAL) AS USUAL
-    RETURN wag + "VarPut(" + name +"):" + (STRING)VALUE
+    RETURN wag + "VarPut(" + name +"):" + VALUE:ToString()
 
 FUNCTION MyFieldGet(name AS STRING) AS USUAL
     RETURN wag + "FieldGet(" + name + ")"
 
 FUNCTION MyFieldSet(name AS STRING, VALUE AS USUAL) AS USUAL
-    RETURN wag + "FieldSet(" + name +"):" + (STRING)VALUE
+    RETURN wag + "FieldSet(" + name +"):" + VALUE:ToString()
 
 FUNCTION MyFieldGetWa(wa AS STRING, name AS STRING) AS USUAL
     RETURN "FieldGet(" + wa + "," + name + ")"
 
 FUNCTION MyFieldSetWa(wa AS STRING, name AS STRING, VALUE AS USUAL) AS USUAL
-    RETURN "FieldSet(" + wa + "," + name +"):" + (STRING)VALUE
+    RETURN "FieldSet(" + wa + "," + name +"):" + VALUE:ToString()
 
 FUNCTION MyPushWa(wa as usual) as void
     wag := wa + "->"
@@ -624,6 +624,10 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| BASE->NIKOS := \"123\"}", Args(), "FieldSet(BASE,NIKOS):123", typeof(STRING))
         TestMacro(mc, e"{|| (\"BASE\")->NIKOS}", Args(), "BASE->FieldGet(NIKOS)", typeof(STRING))
         TestMacro(mc, e"{|| (\"BASE\")->NIKOS := \"123\"}", Args(), "BASE->FieldSet(NIKOS):123", typeof(STRING))
+        TestMacro(mc, e"{|a,b| (a)->&b}", Args("DEVELOPER","ROBERT"), "DEVELOPER->FieldGet(ROBERT)", typeof(STRING))
+        TestMacro(mc, e"{|a,b| (a)->&b := 321}", Args("DEVELOPER","ROBERT"), "DEVELOPER->FieldSet(ROBERT):321", typeof(STRING))
+        TestMacro(mc, e"{|a,b| (a)->&b[1]}", Args("DEVELOPER",{"ROBERT"}), "DEVELOPER->FieldGet(ROBERT)", typeof(STRING))
+        TestMacro(mc, e"{|a,b| (a)->&b[1] := 123}", Args("DEVELOPER",{"ROBERT"}), "DEVELOPER->FieldSet(ROBERT):123", typeof(STRING))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarGet, "MyVarGet")

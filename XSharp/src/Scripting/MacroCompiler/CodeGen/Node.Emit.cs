@@ -473,6 +473,13 @@ namespace XSharp.MacroCompiler.Syntax
             if (preserve) ilg.Emit(OpCodes.Ldloc, temp.LocalIndex);
         }
     }
+    internal partial class RuntimeIdExpr : Expr
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Expr.Emit(ilg, preserve);
+        }
+    }
     internal partial class SubstrExpr : BinaryExpr
     {
         internal override void Emit(ILGenerator ilg, bool preserve)

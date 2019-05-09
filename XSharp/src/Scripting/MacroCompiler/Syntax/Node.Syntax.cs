@@ -230,6 +230,12 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal AliasWaExpr(Expr alias, Expr field, Token o) : base(alias, field, o) { }
     }
+    internal partial class RuntimeIdExpr : Expr
+    {
+        internal Expr Expr;
+        internal RuntimeIdExpr(Token o, Expr e) : base(o) { Expr = e; }
+        public override string ToString() { return "(&" + Expr.ToString() + ")"; }
+    }
     internal partial class SubstrExpr : BinaryExpr
     {
         internal SubstrExpr(Expr l, Token o, Expr r) : base(l,o,r) { }

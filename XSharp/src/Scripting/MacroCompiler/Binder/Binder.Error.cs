@@ -52,7 +52,7 @@ namespace XSharp.MacroCompiler
                     return expr.Error(ErrorCode.MemberNotFound, (expr as MemberAccessExpr).Member.Name);
             }
 
-            if (ovRes.Unique == false)
+            if (ovRes?.Unique == false)
                 return expr.Error(ErrorCode.AmbiguousCall);
 
             return expr.Error(ErrorCode.NotFound, "Expression");

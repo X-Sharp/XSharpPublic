@@ -191,6 +191,14 @@ namespace Microsoft.VisualStudio.Project.Automation
                 return asm.GetMsBuildProperty("imageruntime");
             }
         }
+        public override string Aliases
+        {
+            get
+            {
+                var asm = BaseReferenceNode as XSharp.Project.XSharpAssemblyReferenceNode;
+                return asm.GetMsBuildProperty("Aliases");
+            }
+        }
 
         #endregion
     }

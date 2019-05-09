@@ -55,7 +55,7 @@ namespace XSharp.CodeDom
 
         private static HashSet<string> _keywords = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-        internal static bool Contains(string value)
+        public static bool Contains(string value)
         {
             return  _keywords.Contains(value.ToUpper());
         }

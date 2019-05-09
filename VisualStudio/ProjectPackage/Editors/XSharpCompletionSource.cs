@@ -2791,8 +2791,11 @@ namespace XSharpLanguage
             while (currentPos < tokenList.Count)
             {
                 currentToken = tokenList[currentPos];
+                // Remove the @@ marker
+                if (currentToken.StartsWith("@@"))
+                    currentToken = currentToken.Substring(2);
+                //
                 var lastToken = currentToken;
-
                 //
                 int dotPos = currentToken.LastIndexOf(".");
                 if (dotPos > -1)

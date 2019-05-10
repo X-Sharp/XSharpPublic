@@ -62,4 +62,17 @@
       The handle of the file. <em>Please see the remark below about the compatibility of X# Runtime file handles and Win32 file handles.</em>
     </span>
   </FileHandle>
+  <Oem2AnsiFileIO>
+    <span>
+      <note type="tip">
+        Conversions between OEM en Ansi were relevant in an Ansi environment like Visual Objects.
+        In a Unicode environment this conversion is noto much a conversion between OEM and Ansi but a
+        conversion between either Unicode and Ansi or Unicode and OEM. <br/>
+        For these conversions the runtime uses the current values of the 
+        <see cref="P:XSharp.RuntimeState.WinCodePage">Windows Codepage</see>
+        and 
+        <see cref="P:XSharp.RuntimeState.DosCodePage">DOS Codepage</see>.
+      </note>
+    </span>
+  </Oem2AnsiFileIO>
 </Comments>

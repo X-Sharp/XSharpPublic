@@ -13,8 +13,11 @@ USING System.Collections.Generic
 
 
 /// <summary>Determine the number of a work area.</summary>
-/// <param name="xValue">A value that identifies the work area.  This can be the number of the work area or its alias, specified either as a symbol or a string.  If <uWorkArea> is not specified, the current work area number is returned.  Therefore, Select() is the same as DBGetSelect().</param>
-/// <returns>A number from 0 to 4096.  0 is returned if <uWorkArea> does not identify a valid work area or does not correspond to a valid alias.</returns>
+/// <param name="xValue">A value that identifies the work area.
+/// This can be the number of the work area or its alias, specified either as a symbol or a string.
+/// If xValue is not specified, the current work area number is returned.
+/// Therefore, Select() is the same as DBGetSelect().</param>
+/// <returns>A number from 0 to 4096.  0 is returned if xValue does not identify a valid work area or does not correspond to a valid alias.</returns>
 FUNCTION Select(xValue) AS USUAL CLIPPER
     LOCAL sSelect   AS DWORD
 	LOCAL sCurrent  AS DWORD

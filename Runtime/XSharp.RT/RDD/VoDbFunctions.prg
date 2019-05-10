@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -38,15 +38,15 @@ FUNCTION VoDbBof() AS LOGIC
     RETURN VoDb.Bof()
 
 // <inheritdoc cref="M:XSharp.CoreDb.BlobInfo(System.UInt32,System.UInt32,System.Object@)"  />
-// <remarks> <inheritdoc cref="M:XSharp.CoreDb.BlobInfo(System.UInt32,System.UInt32,System.Object@)"  />
-/// <br/> <note type="tip">The difference between VoDbBlobInfo and CoreDb.BlobInfo is that VoDbBlobInfo takes a USUAL parameter</note></remarks>
+/// <remarks> <inheritdoc cref="M:XSharp.CoreDb.BlobInfo(System.UInt32,System.UInt32,System.Object@)" /> 
+/// <br/> <note type="tip">The difference between VoDbBlobInfo and CoreDb.BlobInfo is that VoDbBlobInfo takes a USUAL parameter.</note></remarks>
 // <seealso cref="O:XSharp.CoreDb.BlobInfo"  />
 FUNCTION VoDbBlobInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF USUAL) AS LOGIC
     RETURN VoDb.BlobInfo(nOrdinal, nPos, REF ptrRet)
 
 /// <inheritdoc cref="M:XSharp.CoreDb.BlobInfo(System.UInt32,System.UInt32,System.Object)"  />
-/// <remarks> <inheritdoc cref="M:XSharp.CoreDb.BlobInfo(System.UInt32,System.UInt32,System.Object)"  />
-/// <br/> <note type="tip">The difference between VoDbBlobInfo and CoreDb.BlobInfo is that VoDbBlobInfo takes a USUAL parameter</note></remarks>
+/// <remarks> <inheritdoc cref="M:XSharp.CoreDb.BlobInfo(System.UInt32,System.UInt32,System.Object@)" /> 
+/// <br/> <note type="tip">The difference between VoDbBlobInfo and CoreDb.BlobInfo is that VoDbBlobInfo takes a USUAL parameter.</note></remarks>
 /// <seealso cref="O:XSharp.CoreDb.BlobInfo"  />
 FUNCTION VoDbBlobInfo(nOrdinal AS DWORD,nPos AS DWORD,uValue AS USUAL) AS LOGIC
     RETURN VoDb.BlobInfo(nOrdinal, nPos,  uValue)

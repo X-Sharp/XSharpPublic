@@ -8,12 +8,12 @@ using System.Reflection
 CLASS XSharp.XPP.Abstract 
     PRIVATE inSend := FALSE as LOGIC
     
-    /// <summary>Retrieves the name of the class an object belongs to.<summary>
+    /// <summary>Retrieves the name of the class an object belongs to.</summary>
     /// <returns>The method returns a character string representing the name of a class.</returns>
     METHOD ClassName() as STRING
         return self:GetType():Name
         
-        /// <summary>Retrieves the class object (System.Type) of a class.<summary>
+        /// <summary>Retrieves the class object (System.Type) of a class.</summary>
         /// <returns>The method returns the class object of a class.</returns>
         /// <remarks>The X# XPP implementation returns a System.Type object as class object.</remarks>
     METHOD ClassObject as OBJECT
@@ -95,7 +95,7 @@ CLASS XSharp.XPP.Abstract
     METHOD Notify(nEvent, nNotification) AS USUAL CLIPPER
         RETURN SELF
         
-        /// <summary>Checks if an object belongs to or is derived from a particular class.<summary>
+        /// <summary>Checks if an object belongs to or is derived from a particular class.</summary>
         /// <param name="uParent">A character string containing the name of the class an object belongs to or is derived from. Alternatively, the class object (System.Type) can be passed instead of the class name.</param>
         /// <returns>The method returns .T. (true) if the object executing the method belongs to or is derived from the specified class. </returns>
         /// <remarks>This method is used to check if an unknown object has features of a known class. This is especially useful for event driven programming or when classes are inherited from other classes.</remarks>
@@ -112,11 +112,13 @@ CLASS XSharp.XPP.Abstract
         ENDIF
         RETURN FALSE
         
-        /// <summary>Reflects the class definition of a class.<summary>
-        /// <returns>If <paramref name="nInfo" /> is omitted or set to CLASS_DESCR_ALL, an array with four elements is returned. They contain the information resulting from passing one of the following constants to this method.</returns>
-        /// <param name="nInfo">A constant from must be used for this parameter. It defaults to CLASS_DESCR_ALL and defines the type of information included in the return value. /param>
+        /// <summary>Reflects the class definition of a class.</summary>
+        /// <returns>If <paramref name="nInfo" /> is omitted or set to CLASS_DESCR_ALL, an array with four elements is returned.
+        /// They contain the information resulting from passing one of the following constants to this method.</returns>
+        /// <param name="nInfo">A constant from must be used for this parameter.
+        /// It defaults to CLASS_DESCR_ALL and defines the type of information included in the return value. </param>
         /// <remarks>The constants are included in XSharp.XPP.DLL and you do not need to include Class.CH anymore. <br/>
-        /// Allowed constants are:<br/>
+        /// Allowed constants are: <br/>
         /// - CLASS_DESCR_ALL<br/>
         /// - CLASS_DESCR_CLASSNAME<br/>
         /// - CLASS_DESCR_SUPERCLASSES<br/>

@@ -4,7 +4,6 @@
 #include "dbcmds.vh"
 USING XSharp.RDD
 FUNCTION Start() AS VOID
-    LOCAL cb AS CODEBLOCK
     TRY
         TestIndexUpdates()
         //testVFPFiles()
@@ -71,8 +70,8 @@ FUNCTION Start() AS VOID
     WAIT
     RETURN
 
-DEFINE records := 500 // with 20 it's ok, but not with 21
-DEFINE changes := 250
+DEFINE records := 20_000
+DEFINE changes := 2000
 FUNCTION TestIndexUpdates() 
     LOCAL aFields AS ARRAY
     LOCAL cDBF AS STRING
@@ -94,9 +93,13 @@ FUNCTION TestIndexUpdates()
         FIELDPUT(1, c)
     NEXT
     DbCommit()
+    ? "Commited"
     DbOrderInfo(DBOI_USER+42)
-    CheckOrder()   
-
+    ? "CheckOrder Start"
+    CheckOrder()
+    ? "CheckOrder Stop"
+    Wait
+    _Quit()
     FOR  n := 1 UPTO changes
         VAR nRec := 1 + (n * 13) % (records - 1)
         DbGoto(nRec)
@@ -104,7 +107,7 @@ FUNCTION TestIndexUpdates()
         c := Replicate(c , 1 + ((n * 23) % 35) )
         FIELDPUT(1, c)
     NEXT
-    
+    ? "CheckOrder 2"
     CheckOrder()
     DbOrderInfo(DBOI_USER+42)
     DBCLOSEALL()   
@@ -159,7 +162,7 @@ RETURN
 
 
 FUNCTION TestOrdNameInvalid() AS VOID
-LOCAL cDBF, cDriver AS STRING
+LOCAL cDBF AS STRING
 LOCAL aFields, aValues AS ARRAY
 LOCAL i AS DWORD
 
@@ -664,14 +667,14 @@ DBGoTop()
 DBCloseArea()
 RETURN
 FUNCTION TestRebuild() AS VOID
-LOCAL cDBF, cPfad, cIndex, cDriver AS STRING
+LOCAL cDBF, cPfad, cIndex  AS STRING
 LOCAL aFields, aValues AS ARRAY
 LOCAL i AS DWORD
 LOCAL lSHared AS LOGIC
 
 lSHared := TRUE
 
-cDriver := RddSetDefault ( "DBFCDX" )
+RddSetDefault ( "DBFCDX" )
 
 aFields := { { "LAST" , "C" , 20 , 0 }}
 aValues := { "b" , "d" , "c", "e" , "a" }
@@ -747,7 +750,8 @@ FUNCTION testOptValue() AS VOID STRICT
 
        
 
-        ? lTest := lEnableStyle
+        lTest := lEnableStyle
+        ? lTest
 
        
 
@@ -873,7 +877,7 @@ RETURN
 FUNCTION testDelete() AS VOID
 LOCAL cDBF,cPath AS STRING
 LOCAL AFields AS ARRAY
-LOCAL i AS DWORD
+//LOCAL i AS DWORD
 
 cPath := "C:\TEST\" // "c:\xide\projects\project1\bin\debug\"
 cDBF := cPath + "mydbf"
@@ -1731,7 +1735,7 @@ FUNCTION TestCdxForward() AS VOID
         VAR nCount := 0
         DO WHILE ! VoDbEof()
             nCount++
-            LOCAL u AS USUAL
+            LOCAL u := NIL AS USUAL
             VoDbFIeldGet(1, REF u)
             VoDbSkip(1)
         ENDDO

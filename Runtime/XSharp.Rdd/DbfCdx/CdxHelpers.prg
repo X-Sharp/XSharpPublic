@@ -94,6 +94,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         STATIC METHOD ToAscii (SELF bytes AS BYTE[], lHex AS LOGIC) AS STRING
             VAR sb := System.Text.StringBuilder{}
+            if bytes == NULL
+                RETURN ""
+            ENDIF
             IF lHex
                 FOREACH VAR b IN bytes
                     //IF b > 0
@@ -259,8 +262,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL STATIC METHOD InsertKey(oPage AS CdxtreePage, nPos AS LONG, nRecno AS LONG, bKey AS BYTE[]) AS CdxAction
             RETURN CdxAction{CdxActionType.InsertKey}{Page := oPage, Pos := nPos,Recno := nRecno, Key := bKey}
             
-        INTERNAL STATIC METHOD Delete(oPage AS CdxTreePage) AS CdxAction
-            RETURN CdxAction{CdxActionType.Delete}{Page := oPage}
+        INTERNAL STATIC METHOD DeletePage(oPage AS CdxTreePage) AS CdxAction
+            RETURN CdxAction{CdxActionType.DeletePage}{Page := oPage}
 
         INTERNAL STATIC METHOD InsertParent(oPage AS CdxTreePage) AS CdxAction
             RETURN CdxAction{CdxActionType.InsertParent}{Page := oPage}

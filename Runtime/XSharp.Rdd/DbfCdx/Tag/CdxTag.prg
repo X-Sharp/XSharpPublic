@@ -473,7 +473,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     oldRec := SELF:_Recno
                     records := 0
                     IF !SELF:_oRdd:_Eof
-                        recno := SELF:_locateKey(NULL, 0, SearchMode.Top)
+                        recno := SELF:_locateKey(NULL, 0, SearchMode.Top,0)
                         isOk := SELF:_oRdd:__Goto(recno)
                         IF isOk
                             isOk := SELF:_oRdd:SkipFilter(1)
@@ -548,7 +548,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     oldRec := SELF:_Recno
                     record := 0
                     IF !SELF:_oRdd:_Eof
-                        recno := SELF:_locateKey(NULL, 0, SearchMode.Top)
+                        recno := SELF:_locateKey(NULL, 0, SearchMode.Top,0)
                         IF SELF:_oRdd:__Goto(recno)
                             SELF:_oRdd:SkipFilter(1)
                         ENDIF

@@ -8,6 +8,7 @@
 USING System
 USING System.Collections.Generic
 USING System.Text
+USING System.Linq
 USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp.RDD.Cdx
@@ -133,7 +134,7 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             
         INTERNAL METHOD Flush( keepData AS LOGIC ) AS LOGIC
             LOCAL lOk := TRUE AS LOGIC
-            FOREACH VAR pair IN _pages
+            FOREACH VAR pair IN _pages:ToArray()
                 IF pair:Value:IsHot
                     IF ! pair:Value:Write()
                         lOk := FALSE

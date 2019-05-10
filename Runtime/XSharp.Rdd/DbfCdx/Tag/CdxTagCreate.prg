@@ -222,7 +222,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     // All overrules start record no
                     IF lUseOrder
                         // start from first record in index
-                        record := leadingOrder:_locateKey(NULL, 0, SearchMode.Top)
+                        record := leadingOrder:_locateKey(NULL, 0, SearchMode.Top,0)
                     ELSE
                         record := 1 // start from first record in file
                     ENDIF

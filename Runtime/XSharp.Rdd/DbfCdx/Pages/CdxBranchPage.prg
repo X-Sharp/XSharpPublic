@@ -19,18 +19,20 @@ USING System.IO
 USING System.Runtime.CompilerServices
 USING System.Diagnostics
 BEGIN NAMESPACE XSharp.RDD.CDX
-    [DebuggerDisplay("{Recno} {ChildPage} {KeyText}")];
-    INTERNAL STRUCTURE CdxBranch
+    [DebuggerDisplay("{DebuggerDisplay,nq}")];
+    INTERNAL CLASS CdxBranch
         INTERNAL Recno AS LONG
         INTERNAL ChildPage AS LONG
         INTERNAL Key   AS BYTE[]
         INTERNAL PROPERTY KeyText AS STRING GET SELF:Key:ToAscii()
+        INTERNAL PROPERTY DebuggerDisplay as STRING GET  String.Format("{0,6} {1,6:X} {2}",   Recno, ChildPage, KeyText)
+
         CONSTRUCTOR (nRecno AS LONG, nChild AS LONG, bKey AS BYTE[])
             SELF:Recno := nRecno
             SELF:ChildPage := nChild
             SELF:Key   := (BYTE[]) bKey:Clone()
             RETURN
-    END STRUCTURE
+    END CLASS
     /// <summary>
     /// CdxBranchePage. this class maps the Branch page from the file in memory
     /// Manipulating the page is implemented in the CdxTag class
@@ -108,7 +110,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_HEADERLEN + nPos * (_keyLen + 8)
             Array.Copy(key, 0, _buffer, nStart, _keyLen)
-            
+                 
             
         PUBLIC METHOD SetRecno(nPos AS Int32, nRecord AS Int32) AS VOID
             LOCAL nStart AS INT
@@ -119,7 +121,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
         METHOD GetChildPage(nPos AS Int32) AS Int32
             LOCAL nStart AS INT
-            Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_HEADERLEN + nPos * (_keyLen + 8)
             RETURN _GetLongLE(nStart+_keyLen+4)
             
@@ -153,25 +154,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         
         #endregion                
 
-        INTERNAL METHOD FindKey(keyToFind AS BYTE[]) AS LONG
-            FOR VAR i := 0 TO NumKeys-1
-                VAR currentKey := GetKey(i)
-                VAR nDiff := SELF:Tag:__Compare(currentKey, keyToFind, keyToFind:Length)
-                IF nDiff > 0
-                    RETURN i
-                ENDIF
-            NEXT
-            RETURN -1
 
         INTERNAL METHOD Add(node AS CdxPageNode) AS CdxAction
-            IF SELF:NumKeys >= SELF:MaxKeys
-                RETURN CdxAction.AddBranch(SELF, node:Page:PageNo, node:Recno, node:KeyBytes)
-            ENDIF
             RETURN SELF:Add(node:Recno, node:Page:PageNo, node:KeyBytes)
 
-         INTERNAL METHOD Add(recno AS LONG, childPage AS LONG, key AS BYTE[]) AS CdxAction
+         INTERNAL METHOD Add(recno AS LONG, childPageNo AS LONG, key AS BYTE[]) AS CdxAction
+            //SELF:Debug(recno, childPageNo:ToString("X6"))
             IF SELF:NumKeys >= SELF:MaxKeys
-                RETURN CdxAction.AddBranch(SELF, childPage, recno, key)
+                //Debug( "triggers addBranch ","Rec", recno, "Child", childPageNo:ToString("X8"))
+                RETURN CdxAction.AddBranch(SELF, childPageNo, recno, key)
+            ENDIF
+            IF SELF:IsDuplicate(recno, childPageNo, key)
+                return CdxAction.OK
             ENDIF
             // make sure that this key is larger than the last key
             if self:NumKeys > 0
@@ -179,17 +173,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR nDiff := SELF:Tag:__Compare(lastKey, key, key:Length)
                 IF nDiff > 0
                     // New key needs to be inserted and not added to the page
-                    var Pos := self:FindKey(key, recno)
+                    var Pos := self:FindKey(key, recno, key:Length)
                     IF Pos > 0
                         // insert before this key
-                        return SELF:Insert(pos, recno, childPage, key)
+                        return SELF:Insert(pos, recno, childPageNo, key)
                     endif
                 endif
             ENDIF
             var nPos := SELF:NumKeys
             SELF:NumKeys++
             SELF:SetRecno(nPos, recno)
-            SELF:SetChildPage(nPos, childPage)
+            SELF:SetChildPage(nPos, childPageNo)
             SELF:SetKey(nPos, key)
             SELF:Write()
             RETURN CdxAction.Ok
@@ -200,12 +194,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD Insert(nPos AS LONG, recno as LONG, childPageNo as LONG, key as byte[]) AS CdxAction
             LOCAL nMax := SELF:NumKeys AS WORD
             // we allow to write at the position nMax
-            IF SELF:NumKeys == SELF:MaxKeys
+            //SELF:Debug(nPos, recno, childPageNo:ToString("X6"))
+            IF SELF:IsDuplicate(recno, childPageNo, key)
+                return CdxAction.OK
+            ENDIF
+            IF SELF:NumKeys >= SELF:MaxKeys
+                //Debug( "triggers split ", "Pos", nPos, "Rec", recno, "Child", childPageNo:ToString("X8"))
                 RETURN CdxAction.SplitBranch(SELF, ChildPageNo, recno, key, nPos)
             ENDIF
             IF nPos == nMax                 // Insert at end of list
                 SELF:NumKeys += 1
                 SELF:_setNode(nMax, recno, childPageNo, key)
+                SELF:Validate()
                 RETURN CdxAction.Ok
             ENDIF
             IF nPos < 0 .OR. nPos > nMax
@@ -229,7 +229,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL nMax := SELF:NumKeys AS WORD
             LOCAL result AS CdxAction
             IF nMax == 0 
-                RETURN CdxAction.Delete(SELF)
+                RETURN CdxAction.DeletePage(SELF)
             ENDIF
             IF nPos < 0 .OR. nPos > nMax-1
                 RETURN CdxAction.OutOfBounds(SELF)
@@ -245,7 +245,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:NumKeys -= 1
             IF SELF:NumKeys == 0
                 //SELF:Tag:SetChildToProcess(SELF:PageNo)
-                result := CdxAction.Delete(SELF)
+                result := CdxAction.DeletePage(SELF)
             ELSEIF nPos == SELF:NumKeys
                //SELF:Tag:SetChildToProcess(SELF:PageNo)
                 result := CdxAction.ChangeParent(SELF)
@@ -259,7 +259,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
  
         INTERNAL METHOD Split(oTarget AS CdxBranchPage, action AS CdxAction) AS CdxAction
             LOCAL branches  := SELF:Branches AS List<CdxBranch>
-            branches:Insert(action:Pos, CdxBranch{action:Recno, action:ChildPage, action:Key})
+            var nPos := SELF:FindKey(action:Key,action:Recno, action:Key:Length)
+            if nPos >= SELF:NumKeys
+                branches:Add( CdxBranch{action:Recno, action:ChildPage, action:Key})
+            else
+                branches:Insert(nPos, CdxBranch{action:Recno, action:ChildPage, action:Key})
+            endif
             SELF:NumKeys := 0
             LOCAL half := branches:Count / 2 AS LONG
             FOR VAR i := 0 TO half
@@ -272,9 +277,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             RETURN CdxAction.Ok
 
-
-
-
             
         INTERNAL METHOD Replace(nPos AS LONG, node AS CdxPageNode) AS CdxAction
             LOCAL nMax := SELF:NumKeys AS WORD
@@ -282,6 +284,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN CdxAction.OutOfBounds(SELF)
             ENDIF
             VAR result := _setNode(nPos, node)
+            SELF:Validate()
             SELF:Write()
             RETURN result
 
@@ -297,6 +300,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PRIVATE METHOD _setNode(nPos AS LONG, recno as LONG, ChildPageNo as LONG, key as Byte[]) AS CdxAction
             // Todo: Combine the 3 operations so we do not have to calculate the offset 3 times
+            //SELF:Debug(nPos, recno, childPageNo:ToString("X6"))
             SELF:SetRecno(nPos, recno)
             SELF:SetChildPage(nPos, childPageNo)
             SELF:SetKey(nPos, key)
@@ -308,15 +312,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
         INTERNAL METHOD Dump AS STRING
             LOCAL Sb AS stringBuilder
-            LOCAL i AS WORD
+            LOCAL i := 0 AS WORD
             sb := stringBuilder{}
-            VAR item := SELF[0]
             sb:AppendLine("--------------------------")
             sb:AppendLine(String.Format("{0} Page {1:X6}, # of keys: {2}", SELF:PageType, SELF:PageNo, SELF:NumKeys))
             sb:AppendLine(String.Format("Left page reference {0:X6}", SELF:LeftPtr))
-            FOR i := 0 TO SELF:NumKeys-1
-                item:Pos := i
-                sb:AppendLine(String.Format("Item {0,2}, Page {1:X6}, Record {2,5} : {3} ", i, item:ChildPageNo, item:Recno, item:KeyText))
+            FOREACH branch as CdxBranch in SELF:Branches
+                sb:AppendLine(String.Format("Item {0,2}, Page {1:X6}, Record {2,5} : {3} ", i, branch:ChildPage, branch:Recno, branch:KeyText))
+                i++
             NEXT
             sb:AppendLine(String.Format("Right page reference {0:X6}", SELF:RightPtr))
             RETURN sb:ToString()
@@ -342,15 +345,59 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             NEXT
             RETURN -1
-         INTERNAL override METHOD FindKey(key as byte[], recno as long) as long
-            for var nI := 0 to self:Numkeys -1
-                var pageKey := self:GetKey(nI)
-                var nDiff := SELF:Tag:__Compare(pageKey, key, key:Length)
-                IF nDiff > 0
-                    // insert before this key
-                    return nI
-                endif
-           next
-           return -1
+
+         INTERNAL override METHOD FindKey(key as byte[], recno as long, keyLength as LONG) as WORD
+            // return page number of page where pageKey > key
+            // or page where pageKey == key and RecordNo > recno
+            LOCAL nI as WORD
+            IF SELF:NumKeys > 0
+                // Branchpage can't really be empty...
+                for nI := 0 to self:Numkeys -1
+                    var pageKey := self:GetKey(nI)
+                    var nDiff := SELF:Tag:__Compare(pageKey, key, keyLength)
+                    SWITCH nDiff
+                    CASE 0
+                        if SELF:GetRecno(nI) > recno
+                            return nI
+                        endif
+                    CASE 1
+                        // pageKey is larger
+                        return nI
+                    OTHERWISE
+                        // continue
+                        NOP
+                    end SWITCH
+               next
+            ENDIF
+           return SELF:NumKeys-1
+
+        METHOD Validate() AS VOID
+            local last := NULL as CdxBranch
+            FOREACH var Branch in SELF:Branches
+                if last != null
+                    var nDiff := SELF:Tag:__Compare(last:key, branch:key, last:key:Length)
+                    if nDiff > 0
+                        ? PageType, PageNo:ToString("X"), "Keys in wrong order", last:Key:ToAscii(), last:Recno, branch:Key:ToAscii(), branch:Recno
+                    endif
+                ENDIF
+                last := branch
+            NEXT
+            
+
+
+        METHOD IsDuplicate(nRecno as LONG, nChildPage as LONG, cKey as Byte[]) AS LOGIC
+            IF SELF:NumKeys > 0
+                FOR var i := 0 to SELF:NumKeys -1
+                    var nRec  := SELF:GetRecno(i)
+                    var nPage := SELF:GetChildPage(i)
+                    IF nRec == nRecno
+                        RETURN TRUE
+                    ENDIF
+                    IF nPage == nChildPage
+                        return TRUE
+                    ENDIF
+                NEXT
+            ENDIF
+            RETURN FALSE
     END CLASS
 END NAMESPACE 

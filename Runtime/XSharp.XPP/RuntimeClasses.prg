@@ -14,8 +14,7 @@ using XSharp.XPP
 using System.Diagnostics
 
 
-/// <summary>The worker class to help create classes at runtime.<summary>
-
+/// <summary>The worker class to help create classes at runtime.</summary>
 [DebuggerDisplay("RuntimeClass {Name}")];
 CLASS XSharp.XPP.ClassObject 
    #region Helper classes
@@ -512,8 +511,8 @@ END CLASS
 
 
 /// <summary>Retrieves the class object of class. </summary>
-/// <param name="cClassName">The name of the class whose class object should be returned. <param>
-/// <returns>The function returns the class object of the class with the name <cClassName>. The return value is NULL_OBJECT when the class does not exist. </returns>
+/// <param name="cClassName">The name of the class whose class object should be returned. </param>
+/// <returns>The function returns the class object of the class with the name &lt;cClassName&gt;. The return value is NULL_OBJECT when the class does not exist. </returns>
 FUNCTION ClassObject(cClassName AS STRING) AS ClassObject
     LOCAL oResult AS ClassObject
     oResult := ClassObject.FindClass(cClassName, FALSE)
@@ -521,7 +520,7 @@ FUNCTION ClassObject(cClassName AS STRING) AS ClassObject
 
 
 /// <summary>Remove the class object of class. </summary>
-/// <param name="uObject">The name of the class whose class object should be deleted, or the class object.<param>
+/// <param name="uObject">The name of the class whose class object should be deleted, or the class object.</param>
 /// <returns>The return value is .T. (true) when the class object is removed from memory, otherwise it is .F. (false). </returns>
 /// <remarks>The function ClassDestroy() removes the class object of a dynamically created class from main memory.
 /// Dynamic classes are created during runtime by the ClassCreate() function. They are unknown at compile time.

@@ -250,7 +250,7 @@ RETURN XDocument.FindChildTag(nTagHandle, cChildTagName, FALSE)
 
 /// <summary>Get parent of XML tag.</summary>
 /// <param name="nTagHandle">Numeric handle for the XML tag.</param>
-/// <returns>Returns the numeric handle of the parent tag or 0 if <nTagHandle> doesn't have a parent tag. </returns>
+/// <returns>Returns the numeric handle of the parent tag or 0 if &lt;nTagHandle&gt; doesn't have a parent tag. </returns>
 /// <remarks>This function is used to retrieve the parent tag of an XML tag. Every tag has only one parent, except the document root tag which has no parent tag. </remarks>
 FUNCTION XMLGetParent( nTagHandle as INT64) AS INT64
     RETURN XDocument.FindParent(nTagHandle)
@@ -260,8 +260,8 @@ FUNCTION XMLGetParent( nTagHandle as INT64) AS INT64
 /// <param name="aTagMember">If the function returns successfully, this parameter contains an array with all members of the tag.
 /// The parameter must be passed by reference. Single elements of the array can be accessed using constants listed below.</param>
 /// <returns>Returns .T. (true) if the tag is a valid tag and .F. (false) otherwise.</returns>
-/// <remarks>This function is used to retrieve all members of an XML tag node. The elements are the same as in Xbase++, and an extra 6th element has been added that contains the XmlNode object. </remarks>
-
+/// <remarks>This function is used to retrieve all members of an XML tag node.
+/// The elements are the same as in Xbase++, and an extra 6th element has been added that contains the XmlNode object. </remarks>
 FUNCTION XMLGetTag( nTagHandle AS INT64, aTagMember OUT USUAL ) AS LOGIC
     local aResult as ARRAY
     aResult := XDocument.FindTag(nTagHandle)

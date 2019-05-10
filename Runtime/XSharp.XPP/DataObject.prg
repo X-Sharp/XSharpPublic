@@ -21,10 +21,10 @@ CLASS XSharp.XPP.DataObject inherit XSharp.XPP.Abstract
     /// <summary>Handles assignment operations to and adds undefined instance variables.</summary>
     /// <param name="cName">The field name that gets assigned.</param>
     /// <param name="uValue">The value of an assignment.</param>
-    /// <remarks>
+    /// <remarks> 
     /// If a message is sent to a DataObject instance for which no corresponding instance variable exists,
-    /// the method NoIvarPut() is executed. The method receives the name of the instance variable in the <cMessage> parameter,
-    /// and the value to be assigned in the <xValue> parameter. NoIvarPut() first creates the instance variable and then assigns
+    /// the method NoIvarPut() is executed. The method receives the name of the instance variable in the &lt;cMessage&gt; parameter,
+    /// and the value to be assigned in the &lt;xValue&gt; parameter. NoIvarPut() first creates the instance variable and then assigns
     /// the value passed. Because it now exists, future access to the instance variable no longer causes NoIvarPut() to be executed.
     /// Instead, the operation is handled in the same way as for a static instance variable. The function IsMemberVar() can be used to
     /// test for the existence of an instance variable added via NoIvarPut(). In addition, the method :classDescribe() also reflects

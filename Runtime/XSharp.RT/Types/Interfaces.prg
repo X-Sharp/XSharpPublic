@@ -29,7 +29,7 @@ BEGIN NAMESPACE XSharp
 
     /// <summary>This interface is used to index a collection using a numeric and a string index and is implemented by the
     /// typed array class ('ARRAY OF'). If your elements inside the collection implement the IIndexProperties interface then
-    /// the lookup of the property inside array element will be resolved with a call to the named indexer on that object.<remarks>
+    /// the lookup of the property inside array element will be resolved with a call to the named indexer on that object.</summary>
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" />
     /// <seealso cref='T:XSharp.IIndexedProperties' />
     /// <seealso cref='T:XSharp.__ArrayBase' />

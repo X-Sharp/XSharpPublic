@@ -605,12 +605,13 @@ FUNCTION FPutS3(pFile AS IntPtr,c AS STRING, nCount AS DWORD) AS DWORD
 /// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FRead3(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD) AS DWORD
 	RETURN (DWORD) XSharp.IO.File.readBuff(pFile, pBuffer, (INT) dwCount)
-
+      
 /// <summary>
 /// Read characters from a file into an allocated buffer with optional OEM to Ansi conversion.
 /// </summary>
 /// <inheritdoc cref="M:XSharp.Core.Functions.FRead3(System.IntPtr,System.Byte[],System.UInt32)" />
 /// <param name="lAnsi">If FALSE an OEM to ANSI conversion is made. </param>
+/// <remarks><include file="CoreComments.xml" path="Comments/Oem2AnsiFileIO/*" /></remarks>
 FUNCTION FRead4(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD,lAnsi AS LOGIC) AS DWORD
 	RETURN (DWORD) XSharp.IO.File.readBuff(pFile, pBuffer, (INT) dwCount, lAnsi)
 
@@ -653,7 +654,7 @@ FUNCTION FReadStr(pFile AS IntPtr,iCount AS DWORD) AS STRING
 /// Read characters from a file into a buffer variable that is passed by reference.
 /// </summary>
 /// <param name="strValue">Reference to a variable that reseives the text read from the file.</param>
-/// <returns>The number of bytes successfully read.  A return value less than the number specified in <param ref name="dwCount" /> indicates
+/// <returns>The number of bytes successfully read.  A return value less than the number specified in <paramref name="dwCount" /> indicates
 /// end-of-file or some other read error.  FError() can be used to determine the specific error.</returns>
 /// <inheritdoc cref="M:XSharp.Core.Functions.FRead3(System.IntPtr,System.Byte[],System.UInt32)" />
 /// <include file="CoreComments.xml" path="Comments/File/*" />
@@ -752,6 +753,9 @@ FUNCTION FWrite( pFile AS IntPtr, c AS STRING ) AS DWORD
 FUNCTION FWrite( pFile AS IntPtr, c AS STRING, nCount AS DWORD ) AS DWORD
 	RETURN FWrite( pFile, c, nCount, TRUE)
 
+/// <inheritdoc cref="M:XSharp.Core.Functions.FWrite(System.IntPtr,System.String,System.UInt32)" />
+/// <param name="lAnsi">If FALSE an OEM to ANSI conversion is made. </param>
+/// <remarks><include file="CoreComments.xml" path="Comments/Oem2AnsiFileIO/*" /></remarks>
 FUNCTION FWrite( pFile AS IntPtr, c AS STRING, nCount AS DWORD, lAnsi AS LOGIC) AS DWORD
 	RETURN (DWORD) XSharp.IO.File.write(pFile, c, (INT) nCount, lAnsi)
 
@@ -767,7 +771,7 @@ FUNCTION FWrite3(pFile AS IntPtr,pBuffer AS BYTE[],nCount AS DWORD) AS DWORD
 /// </summary>
 /// <inheritdoc cref="M:XSharp.Core.Functions.FWrite3(System.IntPtr,System.Byte[],System.UInt32)" />
 /// <param name="lAnsi">If FALSE , an ANSI to OEM conversion is made.</param>
-/// <returns></returns>
+/// <remarks><include file="CoreComments.xml" path="Comments/Oem2AnsiFileIO/*" /></remarks>
 FUNCTION FWrite4(pFile AS IntPtr,pBuffer AS BYTE[],nCount AS DWORD,lAnsi AS LOGIC) AS DWORD
 	RETURN (DWORD) XSharp.IO.File.writeBuff(pFile,pBuffer , (INT) nCount ,lAnsi )
 

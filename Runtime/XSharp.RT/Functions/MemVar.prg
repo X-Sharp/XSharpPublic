@@ -175,7 +175,7 @@ FUNCTION _MRelease(cMask AS STRING, lMatch AS LOGIC)	AS VOID
 	// Case INsensitive comparison. Symbols are all in UPPER case
 	cMask := Upper(cMask)                                        
 	cName := _PrivateFirst()
-	DO WHILE cName != NULL_SYMBOL
+	DO WHILE cName != NULL
 		IF _Like(cMask, cName) == lMatch
 			MemVarPut(cName, NIL)
 		ENDIF

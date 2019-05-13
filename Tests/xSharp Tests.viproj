@@ -68323,7 +68323,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C672 - Problem with ARRAY and workarea syntax with the vulcan runtime
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C673 - Various issues with MEMVAR, PUBLIC etc *************
 Application = C673 - Various issues with MEMVAR, PUBLIC etc
 IDEVersion = 1.06
@@ -68424,7 +68424,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C673 - Various issues with MEMVAR, PUBLIC etc
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C674 - Failed to emit module with invalid string - int comparison in VO dialect *************
 Application = C674 - Failed to emit module with invalid string - int comparison in VO dialect
 IDEVersion = 1.06

@@ -156,6 +156,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected readonly TypeSyntax _impliedType;
         protected readonly TypeSyntax _stringType;
         protected readonly TypeSyntax _intType;
+        protected readonly TypeSyntax _dateTimeType;
 
 
         protected string _fileName;
@@ -245,6 +246,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _voidType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword));
             _stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
             _intType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
+            _dateTimeType = GenerateQualifiedName("System.DateTime");
             _impliedType = GenerateSimpleName(XSharpSpecialNames.ImpliedTypeName);
             _fileName = fileName;
             _entryPoint = "Start";
@@ -4998,15 +5000,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 parameters = UpdateVODLLParameters(parameters);
             }
-            var returntype = context.Type?.Get<TypeSyntax>() ?? _getMissingType();
+            TypeSyntax returntype = context.Type?.Get<TypeSyntax>() ?? _getMissingType(); 
             if (_options.Dialect != XSharpDialect.FoxPro)
             {
                 if (context.Type != null && context.Type.GetText().ToLower() != "void")
                 {
                     returntype = (TypeSyntax) NotInDialect(returntype, "Procedure with non VOID return type");
                 }
+                else
+                {
+                    returntype = _voidType;
+                }
             }
-
+            
             
             var modifiers = GetFuncProcModifiers(context.Modifiers, isextern, isInInterface);
             if (!isextern)
@@ -7814,50 +7820,167 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return result;
         }
 
+        protected int[] DecodeDateTimeConst(string dateliteral)
+        {
+            string[] args;
+            dateliteral = dateliteral.Trim();
+            if (dateliteral.StartsWith("{^") && dateliteral.EndsWith("}"))
+            {
+                // Foxpro date time format
+                dateliteral = dateliteral.Substring(2, dateliteral.Length - 3);
+                args = dateliteral.Split("- :".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                if (args.Length >= 6)
+                {
+                    if (int.TryParse(args[0], out int year) &&
+                        int.TryParse(args[1], out int month) &&
+                        int.TryParse(args[2], out int day) &&
+                        int.TryParse(args[3], out int hour) &&
+                        int.TryParse(args[4], out int mins) &&
+                        int.TryParse(args[5], out int secs)
+                        )
+                    {
+                        if (args.Length == 7)
+                        {
+                            bool pm = args[6].Trim().ToLower().StartsWith("p");
+                            if (pm && hour < 12)
+                                hour += 12;
+                        }
+                        return new int[] { year, month, day, hour, mins, secs };
+                    }
+                }
+            }
+            return null;
+        }
+
+        protected int[] DecodeDateConst(string dateliteral)
+        {
+            string[] args;
+            dateliteral = dateliteral.Trim();
+            if (dateliteral.StartsWith("{^") && dateliteral.EndsWith("}"))
+            {
+                // Foxpro date format
+                dateliteral = dateliteral.Substring(2, dateliteral.Length - 3);
+                args = dateliteral.Split('-');
+                if (args.Length == 3)
+                {
+                    if (int.TryParse(args[0], out int year) &&
+                        int.TryParse(args[1], out int month) &&
+                        int.TryParse(args[2], out int day))
+                    {
+                        return new int[] { year, month, day };
+                    }
+                }
+            }
+            args = dateliteral.Split('.');
+            if (args.Length == 3)
+            {
+                
+                if (int.TryParse(args[0], out int year) &&
+                    int.TryParse(args[1], out int month) &&
+                    int.TryParse(args[2], out int day))
+                {
+                    return new int[] { year, month, day };
+                }
+            }
+            return null;
+        }
+
+
         public override void ExitLiteralValue([NotNull] XP.LiteralValueContext context)
         {
-            string replacement = null;
-            if (context.Token.Type == XP.INTERPOLATED_STRING_CONST)
+            int[] elements;
+            switch (context.Token.Type)
             {
-                context.Put(CreateInterPolatedStringExpression(context));
+                case XP.INTERPOLATED_STRING_CONST:
+                    context.Put(CreateInterPolatedStringExpression(context));
+                    return;
+                case XP.DATE_CONST:
+                    elements = DecodeDateConst(context.Token.Text);
+                    if (elements != null && elements.Length == 3)
+                    {
+                        try
+                        {
+                            var dt = new DateTime(elements[0], elements[1], elements[2],0,0,0);
+                        }
+                        catch (Exception e)
+                        {
+                            var result = GenerateLiteral(0);
+                            result = result.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidLiteral, "DATE", context.Token.Text, e.Message));
+                            context.Put(result);
+                            return;
+                        }
+                        var arg0 = MakeArgument(GenerateLiteral(elements[0]));
+                        var arg1 = MakeArgument(GenerateLiteral(elements[1]));
+                        var arg2 = MakeArgument(GenerateLiteral(elements[2]));
+                        var expr = CreateObject(_dateTimeType, MakeArgumentList(arg0, arg1, arg2));
+                        context.Put(expr);
+                        return;
+                    }
+                    break;
+                case XP.DATETIME_CONST:
+                    elements = DecodeDateTimeConst(context.Token.Text);
+                    if (elements != null && elements.Length >= 6)
+                    {
+                        try
+                        { 
+                              var dt = new DateTime(elements[0], elements[1], elements[2], elements[3], elements[4], elements[5]);
+                        }
+                        catch (Exception e)
+                        {
+                            var result = GenerateLiteral(0);
+                            result = result.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidLiteral, "DateTime", context.Token.Text, e.Message));
+                            context.Put(result);
+                            return;
+                        }
+                        var arg0 = MakeArgument(GenerateLiteral(elements[0]));
+                        var arg1 = MakeArgument(GenerateLiteral(elements[1]));
+                        var arg2 = MakeArgument(GenerateLiteral(elements[2]));
+                        var arg3 = MakeArgument(GenerateLiteral(elements[3]));
+                        var arg4 = MakeArgument(GenerateLiteral(elements[4]));
+                        var arg5 = MakeArgument(GenerateLiteral(elements[5]));
+                        var expr = CreateObject(_dateTimeType, MakeArgumentList(arg0, arg1, arg2, arg3, arg4, arg5));
+                        context.Put(expr);
+                        return;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            string replacement = null;
+            if (context.Token.Type == XP.STRING_CONST && context.Token.Text.StartsWith("\"__"))
+            {
+                switch (context.Token.Text.ToLowerInvariant())
+                {
+                    case "\"__entity__\"":
+                        replacement = GetEntityName(false);
+                        break;
+                    case "\"__function__\"":
+                        replacement = GetEntityName(false,true);
+                        break;
+                    case "\"__sig__\"":
+                        replacement = GetEntityName(true);
+                        break;
+                    case "\"__functions__\"":
+                        replacement = GlobalClassName;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if (!String.IsNullOrEmpty(replacement))
+            {
+                context.Put(_syntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(),
+                    SyntaxToken.WithValue(SyntaxKind.StringLiteralToken, replacement, replacement)));
             }
             else
             {
-                if (context.Token.Type == XP.STRING_CONST && context.Token.Text.StartsWith("\"__"))
+                context.Put(GenerateLiteral(context.Token));
+                if (context.Token.Type == XP.INCOMPLETE_STRING_CONST)
                 {
-                    switch (context.Token.Text.ToLowerInvariant())
-                    {
-                        case "\"__entity__\"":
-                            replacement = GetEntityName(false);
-                            break;
-                        case "\"__function__\"":
-                            replacement = GetEntityName(false,true);
-                            break;
-                        case "\"__sig__\"":
-                            replacement = GetEntityName(true);
-                            break;
-                        case "\"__functions__\"":
-                            replacement = GlobalClassName;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
-                if (!String.IsNullOrEmpty(replacement))
-                {
-                    context.Put(_syntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(),
-                        SyntaxToken.WithValue(SyntaxKind.StringLiteralToken, replacement, replacement)));
-                }
-                else
-                {
-                    context.Put(GenerateLiteral(context.Token));
-                    if (context.Token.Type == XP.INCOMPLETE_STRING_CONST)
-                    {
-                        var litExpr = context.Get<LiteralExpressionSyntax>();
-                        var diag = new SyntaxDiagnosticInfo(ErrorCode.ERR_UnterminatedStringLit);
-                        context.Put(litExpr.WithAdditionalDiagnostics(diag));
-                    }
+                    var litExpr = context.Get<LiteralExpressionSyntax>();
+                    var diag = new SyntaxDiagnosticInfo(ErrorCode.ERR_UnterminatedStringLit);
+                    context.Put(litExpr.WithAdditionalDiagnostics(diag));
                 }
             }
         }

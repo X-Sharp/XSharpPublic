@@ -143,24 +143,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterFfunction([NotNull] XP.FfunctionContext context)
         {
-            
+
         }
         public override void ExitFfunction([NotNull] XP.FfunctionContext context)
         {
-            
+
         }
         public override void EnterFprocedure([NotNull] XP.FprocedureContext context)
         {
-            
+
         }
         public override void ExitFprocedure([NotNull] XP.FprocedureContext context)
         {
-            
+
         }
 
         public override void EnterFoxfieldinitializer([NotNull] XP.FoxfieldinitializerContext context)
         {
-            
+
         }
 
         public override void ExitFoxfieldinitializer([NotNull] XP.FoxfieldinitializerContext context)
@@ -170,14 +170,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterFoxaddobject([NotNull] XP.FoxaddobjectContext context)
         {
-            
+
         }
         public override void ExitFoxaddobject([NotNull] XP.FoxaddobjectContext context)
         {
 
-        } 
+        }
 
-        private void _AdjustToken (IToken token)
+        private void _AdjustToken(IToken token)
         {
             if (token.Type == XP.DOT)
             {
@@ -206,6 +206,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             _AdjustToken(context.Op);
             base.ExitBoundAccessMember(context);
+        }
+        public override void ExitWithLine([NotNull] XP.WithLineContext context)
+        {
+            _AdjustToken(context.Op);
+            base.ExitWithLine(context);
         }
     }
 }

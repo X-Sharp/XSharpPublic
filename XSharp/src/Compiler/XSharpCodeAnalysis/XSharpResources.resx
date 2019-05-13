@@ -5648,4 +5648,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_CannotTakeAddressOfAliasedExpression" xml:space="preserve">
     <value>Cannot take the address of an aliased expression.</value>
   </data>
+  <data name="ERR_InvalidLiteral" xml:space="preserve">
+    <value>Invalid {0} literal '{1}': {2}.</value>
+  </data>
+  
 </root>

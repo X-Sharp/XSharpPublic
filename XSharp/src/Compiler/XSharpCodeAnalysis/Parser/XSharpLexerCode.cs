@@ -141,6 +141,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         int La_2 { get { return InputStream.La(2); } }
         int La_3 { get { return InputStream.La(3); } }
         int La_4 { get { return InputStream.La(4); } }
+        int La_5 { get { return InputStream.La(5); } }
 
         void parseInit()
         {
@@ -172,6 +173,64 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             parseType(type);
             _textSb.Append((char)La_1);
             InputStream.Consume();
+        }
+        void parseFoxProDate()
+        {
+            // parse {^2019-01-04}
+            //       ....5....0...
+            parseType(DATE_CONST);      
+            parseOne();     // {
+            parseOne();     // ^
+            bool done = false;
+            while (! done)
+            {
+                var c = La_1;
+                switch (c)
+                {
+                    case '0':
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                        parseOne();
+                        break;
+                    case 'a':
+                    case 'A':
+                    case 'p':
+                    case 'P':
+                    case 'm':
+                    case 'M':
+                        parseType(DATETIME_CONST);
+                        parseOne();
+                        break;
+                    case '-':
+                        parseOne();
+                        break;
+                    case ' ':
+                        parseType(DATETIME_CONST);
+                        parseOne();
+                        break;
+                    case ':':
+                        parseOne();
+                        parseType(DATETIME_CONST);
+                        break;
+                    case '}':
+                        parseOne();
+                        done = true;
+                        break;
+                    default:
+                        done = true;
+                        break;
+                }
+                if (this._textSb.Length > 13 && _tokenType == DATE_CONST)
+                    done = true;
+            }
+            return;
         }
 
         void parseOne()
@@ -463,7 +522,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         parseOne(RPAREN);
                         break;
                     case '{':
-                        parseOne(LCURLY);
+                        if (La_2 == '^')
+                        {
+                            parseFoxProDate();
+                        }
+                        else
+                        { 
+                            parseOne(LCURLY);
+                        }
                         break;
                     case '}':
                         parseOne(RCURLY);
@@ -712,6 +778,23 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                 else if ((c1 == 'X' || c1 == 'x') && (c2 == 'O' || c2 == 'o') && (c3 == 'R' || c3 == 'r'))
                                 {
                                     parseOne(LOGIC_XOR);
+                                    parseOne();
+                                    parseOne();
+                                    parseOne();
+                                }
+                            }
+                            else if (La_5 == '.' && Dialect == XSharpDialect.FoxPro)
+                            {
+                                // map .NULL. => NULL
+                                // or should we do this in a UDC ?
+                                var c1 = La_1;
+                                var c2 = La_2;
+                                var c3 = La_3;
+                                var c4 = La_4;
+                                if ((c1 == 'N' || c1 == 'n') && (c2 == 'U' || c2 == 'u') && (c3 == 'L' || c3 == 'l' && (c4 == 'L' || c4 == 'l')))
+                                {
+                                    parseOne(NULL);
+                                    parseOne();
                                     parseOne();
                                     parseOne();
                                     parseOne();
@@ -1018,9 +1101,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         #region Keywords and Preprocessor Lookup
         private int fixPositionalKeyword(int keyword, int lastToken)
         {
-            // after the alias operator we treat everything as ID
-            if (lastToken == XSharpLexer.ALIAS)
-                return ID;
+            // after the following tokens we treat everything as ID
+            switch (lastToken)
+            {
+                case ALIAS:
+                case COLON:
+                case DOT:
+                    return ID;
+            }
             switch (keyword)
             {
                 // Some keywords are impossible to use as ID

@@ -2547,6 +2547,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XP.NULL_DATE:
                     case XP.DATE_CONST:
                         return _dateType;
+                    case XP.DATETIME_CONST:
+                        return _dateTimeType;
                     case XP.NULL_SYMBOL:
                     case XP.SYMBOL_CONST:
                         return _symbolType;
@@ -3710,21 +3712,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         
         #region Literals
 
-        private int[] DecodeDateConst(string dateliteral)
-        {
-            var args = dateliteral.Split('.');
-            if (args.Length == 3)
-            {
-                int year, month, day;
-                if (Int32.TryParse(args[0], out year) &&
-                    Int32.TryParse(args[1], out month) &&
-                    Int32.TryParse(args[2], out day))
-                {
-                    return new int[] { year, month, day };
-                }
-            }
-            return null;
-        }
+
+
 
         private ExpressionSyntax GenerateVOArrayInitializer([NotNull]XP.ArraysubContext arraysub)
         {
@@ -3829,7 +3818,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     expr = CreateObject(_symbolType, MakeArgumentList(arg0));
                     break;
                 case XP.DATE_CONST:
-                    int[] elements = DecodeDateConst(context.Token.Text);
+                    var elements = DecodeDateConst(context.Token.Text);
                     if (elements != null)
                     {
                         arg0 = MakeArgument(GenerateLiteral(elements[0]));
@@ -3838,7 +3827,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         expr = CreateObject(_dateType, MakeArgumentList(arg0, arg1, arg2));
                     }
                     break;
-                case XP.SYMBOL_CONST:
+                // handled in base class
+                // case XP.DATETIME_CONST:
+                 case XP.SYMBOL_CONST:
                     // call helper method that will create a symbol for the symboltable
                     expr = GenerateLiteralSymbol(context.Token.Text);
                     break;

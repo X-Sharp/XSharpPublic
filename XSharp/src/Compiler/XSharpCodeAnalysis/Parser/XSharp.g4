@@ -593,7 +593,7 @@ statement           : Decl=localdecl                        #declarationStmt
                       Exprs+=expression (COMMA Exprs+=expression)+  end=eos			#expressionStmt
 	                ;
 
-withLine            : Op=(DOT|COLON) Name=simpleName AsOp=(ASSIGN_OP|EQ) Expr=expression end=eos            // assignment to field or property
+withLine            : Op=(DOT|COLON) Name=simpleName AsOp=(ASSIGN_OP|EQ) Expr=expression end=eos       // assignment to field or property
                     | Op=(DOT|COLON) Name=simpleName L=LPAREN  R=RPAREN  end=eos                       // method call without arguments
                     | Op=(DOT|COLON) Name=simpleName L=LPAREN  ArgList=argumentList R=RPAREN  end=eos  // method call with arguments
                     ;
@@ -1029,6 +1029,7 @@ literalValue        : Token=
                     | INT_CONST
                     | INVALID_NUMBER
                     | DATE_CONST
+                    | DATETIME_CONST
                     | NIL
                     | NULL
                     | NULL_ARRAY

@@ -1719,6 +1719,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_XPPMethodNotImplemented = 9207,
         WRN_XPPMethodNotDeclared = 9208,
         ERR_XPPClassNotFound = 9209,
+        ERR_InvalidLiteral = 9210,
         ERR_Internal = 9999
         #endregion X#-only messages
     }

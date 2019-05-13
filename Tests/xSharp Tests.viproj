@@ -40491,7 +40491,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C404 - Problem with String2Psz() inside PROPERTY
 
-ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C405 - No error on Psz2String(STRING) *************
 Application = C405 - No error on Psz2String(STRING)
 IDEVersion = 1.06
@@ -64674,7 +64674,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.VO,1,0,2.0.0.7
 ReferenceGAC = XSharp.Core,1,0,2.0.0.7
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.1.0
+ReferenceGAC = XSharp.RT,1,0,2.0.1.0
 [C636 - SplitPath() with /vo7- : failed to emit module Resources]
 [C636 - SplitPath() with /vo7- : failed to emit module Native Resources]
 [C636 - SplitPath() with /vo7- : failed to emit module License files]
@@ -67866,9 +67866,9 @@ FileGUID = BE92DF3E-0EEC-41C3-92DE-23B3F60EA1A0
 FileType = Code
 [C668 - Incorrect result comparing SHORTINT value with /vo4+ enabled References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.1.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.1.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.1.0
+ReferenceGAC = XSharp.Core,1,0,2.0.1.0
+ReferenceGAC = XSharp.RT,1,0,2.0.1.0
+ReferenceGAC = XSharp.VO,1,0,2.0.1.0
 [C668 - Incorrect result comparing SHORTINT value with /vo4+ enabled Resources]
 [C668 - Incorrect result comparing SHORTINT value with /vo4+ enabled Native Resources]
 [C668 - Incorrect result comparing SHORTINT value with /vo4+ enabled License files]
@@ -68363,9 +68363,9 @@ FileGUID = 6AA1B1C4-3E98-4E46-9BBD-BAA43A24164A
 FileType = Code
 [C673 - Various issues with MEMVAR, PUBLIC etc References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.1.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.1.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.1.0
+ReferenceGAC = XSharp.Core,1,0,2.0.1.0
+ReferenceGAC = XSharp.RT,1,0,2.0.1.0
+ReferenceGAC = XSharp.VO,1,0,2.0.1.0
 [C673 - Various issues with MEMVAR, PUBLIC etc Resources]
 [C673 - Various issues with MEMVAR, PUBLIC etc Native Resources]
 [C673 - Various issues with MEMVAR, PUBLIC etc License files]
@@ -68464,9 +68464,9 @@ FileGUID = 465949D3-EB76-49FB-BBFE-C2FAB05CE429
 FileType = Code
 [C674 - Failed to emit module with invalid string - int comparison in VO dialect References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.1.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.1.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.1.0
+ReferenceGAC = XSharp.Core,1,0,2.0.1.0
+ReferenceGAC = XSharp.RT,1,0,2.0.1.0
+ReferenceGAC = XSharp.VO,1,0,2.0.1.0
 [C674 - Failed to emit module with invalid string - int comparison in VO dialect Resources]
 [C674 - Failed to emit module with invalid string - int comparison in VO dialect Native Resources]
 [C674 - Failed to emit module with invalid string - int comparison in VO dialect License files]

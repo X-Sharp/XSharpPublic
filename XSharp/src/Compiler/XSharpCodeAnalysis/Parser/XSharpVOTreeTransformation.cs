@@ -976,17 +976,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                     }
                 }
-                if (context.T.Type == XP.PARAMETERS)
+                if (context.T.Type == XP.PARAMETERS ||
+                    context.T.Type == XP.LPARAMETERS  )
                 {
-                    // parameters assume CC
+                    // parameters  and lparameters assume CC
                     CurrentEntity.Data.HasClipperCallingConvention = true;
-                    CurrentEntity.Data.HasParametersStmt = true;
-                }
-                if (context.T.Type == XP.LPARAMETERS)
-                {
-                    // lparameters assume CC
-                    CurrentEntity.Data.HasClipperCallingConvention = true;
-                    CurrentEntity.Data.HasParametersStmt = true;
+                    CurrentEntity.Data.HasParametersStmt = (context.T.Type == XP.PARAMETERS);
+                    CurrentEntity.Data.HasLParametersStmt = (context.T.Type == XP.LPARAMETERS);
                 }
             }
         }
@@ -1050,12 +1046,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     context.Put(MakeBlock(stmts));
                     _pool.Free(stmts);
-                    if (CurrentEntity.Params != null && CurrentEntity.Params._Params.Count > 0)
-                    {
-                        var node = context.Get<CSharpSyntaxNode>();
-                        node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParametersWithDeclaredParameters));
-                        context.Put(node);
-                    }
                     break;
                 case XP.PRIVATE:
                 case XP.PUBLIC:
@@ -1083,10 +1073,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _pool.Free(stmts2);
                     break;
                 case XP.MEMVAR:
-                default:
                     // handled in the Enter method
                     break;
-
+                case XP.LPARAMETERS:
+                    break;
+                default:
+                    break;
             }
             if (! _options.SupportsMemvars)
             {
@@ -2394,7 +2386,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // other types all return a default expression
                 // This includes USUAL, DATE, ARRAY, STRING, FLOAT etc
-                result = MakeDefault(returnType);
+                if (returnType == _usualType && _options.Dialect == XSharpDialect.FoxPro)
+                {
+                    result = GenerateLiteral(false);
+                }
+                else
+                {
+                    result = MakeDefault(returnType);
+                }
             }
             return result;
         }
@@ -2444,9 +2443,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (expr == null && _options.VOAllowMissingReturns && !ent.Data.MustBeVoid)
                 {
                     errcode = ErrorCode.WRN_MissingReturnValue;
-                    if (ent is XP.MethodContext || ent is XP.FunctionContext || ent is XP.PropertyAccessorContext
-                        || ent is XP.XppmethodContext || ent is XP.XppinlineMethodContext
-                        || ent is XP.XpppropertyContext)
+                    if (ent is XP.IEntityWithBodyContext ientbody)
                     {
                         TypeSyntax dataType;
                         if (ent.Data.HasMissingReturnType)
@@ -2455,18 +2452,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         else
                         {
-                            if (ent is XP.MethodContext meth)
-                                dataType = meth.Type.Get<TypeSyntax>();
-                            else if (ent is XP.FunctionContext func)
-                                dataType = func.Type.Get<TypeSyntax>();
-                            else if (ent is XP.PropertyAccessorContext propac)
-                                dataType = ((XP.PropertyContext)propac.Parent).Type.Get<TypeSyntax>();
-                            else if (ent is XP.XppmethodContext xppmeth)
-                                dataType = xppmeth.Type.Get<TypeSyntax>();
-                            else if (ent is XP.XppinlineMethodContext xppinline)
-                                dataType = xppinline.Type.Get<TypeSyntax>();
-                            else if (ent is XP.XpppropertyContext xppprop)
-                                dataType = xppprop.Type.Get<TypeSyntax>();
+                            if (ientbody.ReturnType != null)
+                                dataType = ientbody.ReturnType.Get<TypeSyntax>();
                             else
                                 dataType = _getMissingType();
                         }
@@ -3182,9 +3169,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         if (context is XP.ProcedureContext pc)
         {
             isEntryPoint = pc.Id.GetText().ToLower() == "start";
-            context.Data.MustBeVoid = true;
         }
-        else if (!context.Data.HasMissingReturnType)
+        if (!context.Data.HasMissingReturnType)
         {
             string rtype = returnType.GetText().ToLower();
             if (rtype == "void" || rtype == "system.void")
@@ -3282,6 +3268,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parameters = parameters.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypedParametersWithClipperCallingConvention));
                 return;
             }
+            var count = 0;
+            count += context.Data.HasFormalParameters ? 1 : 0;
+            count += context.Data.HasParametersStmt? 1 : 0;
+            count += context.Data.HasLParametersStmt ? 1 : 0;
+            if (count > 1)
+            {
+                body = body.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParametersWithDeclaredParameters));
+                return;
+            }
             if (_options.NoClipCall && body != null && ! (context is XP.PropertyAccessorContext))
             {
                 // Bring body back to a simple return call. We are not interested in the 'real thing'
@@ -3335,7 +3330,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                     List<string> parameternames = new List<String>();
                     bool localParameters = true;
-                    if (context.Data.HasParametersStmt)
+                    if (context.Data.HasParametersStmt || context.Data.HasLParametersStmt)
                     {
                         localParameters = false;
                         foreach (var stmt in context.Statements._Stmts)
@@ -3364,7 +3359,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             parameternames.Add(name);
                         }
                     }
-
+                    // we create clipper calling convention attributes for methods
+                    // we declared parameters, a parameters statement or a lparameters statement
                     var attrs = _pool.Allocate<AttributeListSyntax>();
                     attrs.AddRange(attributes); // Copy existing attributes
                     var names = new List<ExpressionSyntax>();
@@ -3390,23 +3386,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     stmts.Add(decl);
                     // Now Change argument to X$Args PARAMS USUAL[]
                     var newparameters = GetClipperParameters();
-                    if (parameters.Parameters.Count > 0)
+                    // do not generate locals for parameters declared with the PARAMETERS statement
+                    if (context.Data.HasFormalParameters || context.Data.HasLParametersStmt)
                     {
-
-                        for (int i = 0; i < parameters.Parameters.Count; i++)
+                        int i = 0;
+                        foreach (var name in parameternames)
                         {
-                            var parm = parameters.Parameters[i];
-                            string name = parm.Identifier.Text;
                             decl = GenerateLocalDecl(name, _usualType, GenerateGetClipperParam(GenerateLiteral(i + 1)));
                             decl.XGenerated = true;
                             var variable = decl.Declaration.Variables[0];
                             variable.XGenerated = true;
                             stmts.Add(decl);
+                            i++;
+                        }
+                       
+                    }
+                    // Copy error messages from the declared parameters (for example when default values are defined)
+                    if (context.Data.HasFormalParameters && parameters.Parameters.Count > 0)
+                    {
+                        for (int i = 0; i < parameters.Parameters.Count; i++)
+                        {
+                            var parm = parameters.Parameters[i];
                             var diag = parm.GetDiagnostics();
                             if (diag.Length > 0)
                                 newparameters = newparameters.WithAdditionalDiagnostics(diag);
-
                         }
+
                     }
                     parameters = newparameters;
                 }
@@ -3677,7 +3682,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void EnterProcedure([NotNull] XP.ProcedureContext context)
         {
             base.EnterProcedure(context);
-            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Convention, null);
+            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Convention, context.Type);
         }
 
         public override void EnterConstructor([NotNull] XP.ConstructorContext context)

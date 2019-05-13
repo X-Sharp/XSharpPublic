@@ -1113,6 +1113,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             else
                                 return ID;
 
+                        case DEFINE:
+                            if (Dialect == XSharpDialect.FoxPro && keyword == CLASS)   // FoxPro uses DEFINE CLASS
+                                return keyword;
+                            else
+                                return ID;
+
                         // After these keywords we expect an ID
                         // Some of these also have a possible SELF, DIM, CONST or STATIC clause but these have been excluded above
 
@@ -1126,7 +1132,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         case DELEGATE:
                         case PROPERTY:
                         case EVENT:
-                        case DEFINE:
                         case ENUM:
                         case MEMBER:
                         case DIM:
@@ -1512,13 +1517,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 var vfpKeywords = new Dictionary<string, int>
                 {
                     // normal keywords
+                    {"THIS", SELF},
                 };
                 var vfpKeyWordAbbrev = new Dictionary<string, int>
                 {
                     {"ENDDEFINE", ENDDEFINE },
                     {"LPARAMETERS",   LPARAMETERS },
                     {"EXCLUDE", EXCLUDE },
-                    {"OLEPUBLIC", OLEPUBLIC }, 
+                    {"OLEPUBLIC", OLEPUBLIC },
                     // text end text
                     {"TEXT",      TEXT },           // TEXT .. ENDTEXT is declared here because the Lexer needs to do some special magic
                     {"ENDTEXT",   ENDTEXT },        // it could also be implemented as UDC but we need the lexer support

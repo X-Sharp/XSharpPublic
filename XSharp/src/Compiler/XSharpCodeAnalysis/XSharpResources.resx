@@ -5628,7 +5628,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Variable '{0}' has not been declared. Assuming this is a FIELD or a MEMVAR.</value>
   </data>
   <data name="ERR_ParametersWithDeclaredParameters" xml:space="preserve">
-    <value>You cannot have both a PARAMETERS statement and declared parameters in the same entity.</value>
+    <value>An entity cannot have a combination of a PARAMETERS statement, a LPARAMETERS statement and/or formal parameters.</value>
   </data>
   <data name="ERR_MemvarFieldWithSameName" xml:space="preserve">
     <value>A MEMVAR or FIELD with the name '{0}' has already been defined.</value>

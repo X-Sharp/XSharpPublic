@@ -20,7 +20,7 @@ namespace LanguageService.CodeAnalysis {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class XSharpResources {
@@ -6488,7 +6488,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot use &apos;{0}&apos; for Main method because it is imported.
+        ///   Looks up a localized string similar to Cannot use &apos;{0}&apos; for Start method because it is imported.
         /// </summary>
         internal static string ERR_MainClassIsImport {
             get {
@@ -6497,7 +6497,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; specified for Main method must be a valid non-generic class or struct.
+        ///   Looks up a localized string similar to &apos;{0}&apos; specified for Start method must be a valid non-generic class or struct.
         /// </summary>
         internal static string ERR_MainClassNotClass {
             get {
@@ -6506,7 +6506,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not find &apos;{0}&apos; specified for Main method.
+        ///   Looks up a localized string similar to Could not find &apos;{0}&apos; specified for Start method.
         /// </summary>
         internal static string ERR_MainClassNotFound {
             get {
@@ -7307,7 +7307,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Program does not contain a static &apos;Main&apos; method suitable for an entry point.
+        ///   Looks up a localized string similar to Program does not contain a &apos;Start&apos; function suitable as an entry point.
         /// </summary>
         internal static string ERR_NoEntryPoint {
             get {
@@ -7379,7 +7379,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; does not have a suitable static Main method.
+        ///   Looks up a localized string similar to &apos;{0}&apos; does not have a suitable static Start method.
         /// </summary>
         internal static string ERR_NoMainInClass {
             get {
@@ -7964,7 +7964,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You cannot have both a PARAMETERS statement and declared parameters in the same entity..
+        ///   Looks up a localized string similar to An entity cannot have a combination of a PARAMETERS statement, a LPARAMETERS statement and/or formal parameters..
         /// </summary>
         internal static string ERR_ParametersWithDeclaredParameters {
             get {

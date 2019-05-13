@@ -625,6 +625,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| (\"BASE\")->NIKOS}", Args(), "BASE->FieldGet(NIKOS)", typeof(STRING))
         TestMacro(mc, e"{|| (\"BASE\")->NIKOS := \"123\"}", Args(), "BASE->FieldSet(NIKOS):123", typeof(STRING))
         TestMacro(mc, e"{|a,b| (a)->&b}", Args("DEVELOPER","ROBERT"), "DEVELOPER->FieldGet(ROBERT)", typeof(STRING))
+        TestMacro(mc, e"{|a,b| (a)->&(b+'')}", Args("DEVELOPER","ROBERT"), "DEVELOPER->FieldGet(ROBERT)", typeof(STRING))
         TestMacro(mc, e"{|a,b| (a)->&b := 321}", Args("DEVELOPER","ROBERT"), "DEVELOPER->FieldSet(ROBERT):321", typeof(STRING))
         TestMacro(mc, e"{|a,b| (a)->&b[1]}", Args("DEVELOPER",{"ROBERT"}), "DEVELOPER->FieldGet(ROBERT)", typeof(STRING))
         TestMacro(mc, e"{|a,b| (a)->&b[1] := 123}", Args("DEVELOPER",{"ROBERT"}), "DEVELOPER->FieldSet(ROBERT):123", typeof(STRING))

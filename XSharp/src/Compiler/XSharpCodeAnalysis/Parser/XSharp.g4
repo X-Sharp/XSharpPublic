@@ -51,7 +51,7 @@ entity              : namespace_
                     // types
                     | class_
                     | {IsXPP}? xppclass         // XPP Class definition
-                    /*| {IsFox}? foxclass         // FoxPro Class definition*/
+                    | {IsFox}? foxclass         // FoxPro Class definition*/
                     | structure_
                     | interface_
                     | delegate_
@@ -96,8 +96,8 @@ function            : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
 procedure           : (Attributes=attributes)? (Modifiers=funcprocModifiers)?   
                       PROCEDURE Id=identifier                            
                       TypeParameters=typeparameters?                            
-                      (ParamList=parameterList)?                                
-                      (AS VOID)?                                                // As Void is allowed but ignored
+                      (ParamList=parameterList)?
+                      (AS Type=datatype)?                                      // FoxPro allows all types, other dialects only VOID
                       (ConstraintsClauses+=typeparameterconstraintsclause)*     
                       (CallingConvention=callingconvention)?                    
                       InitExit=(INIT1|INIT2|INIT3|EXIT)?                        
@@ -401,7 +401,7 @@ classmember         : Member=method                                 #clsmethod
                     | Member=operator_                              #clsoperator
                     | Member=structure_                             #nestedStructure
                     | Member=class_                                 #nestedClass
-                    | Member=delegate_                               #nestedDelegate
+                    | Member=delegate_                              #nestedDelegate
                     | Member=enum_                                  #nestedEnum
                     | Member=event_                                 #nestedEvent
                     | Member=interface_                             #nestedInterface
@@ -1200,61 +1200,78 @@ keywordfox          :Token=(ENDDEFINE|  LPARAMETERS| TEXT| ENDTEXT| ADDITIVE| FL
 // text ... endtext
 
 
-/*
 
 foxclass            : (Attributes=attributes)?
                       DEFINE (Modifiers=classModifiers)?
-                      CLASS (Namespace=nameDot)? Id=identifier                          
-                      (INHERIT BaseType=datatype)?
+                      CLASS (Namespace=nameDot)? Id=identifier
+                      TypeParameters=typeparameters? 
+                      (AS BaseType=datatype)?
                       (OF Classlib=identifier) ?
+                      (ConstraintsClauses+=typeparameterconstraintsclause)*             // Optional typeparameterconstraints for Generic Class
                       (OLEPUBLIC) ?
                       e=eos
                       (Members+=foxclassmember)*
-                      ENDDEFINE Ignored=identifier?   eos
+                      (ENDDEFINE | END DEFINE) Ignored=identifier?   eos
                     ;
 
-foxclassmember      : foxfielddef           #foxfield
-                    | foxfieldinitializer   #foxfieldinit
-                    | foxaddobjectclause    #foxaddobject
-                    | ffunction             #foxfunction
-                    | fprocedure            #foxprocedure
-                    | foximplementsclause   #foximplements
-                    // events, operators, properties, nested types ?
+foxclassmember      : Member=classvars             #foxclsvars
+                    | Member=foxfieldinitializer   #foxclsvarinit
+                    | Member=foxaddobjectclause    #foxaddobject
+                    | Member=ffunction             #foxfmethod
+                    | Member=fprocedure            #foxpmethod
+                    | Member=foximplementsclause   #foximplements
                     ;
-
-foxfielddef         : (Modifiers=foxModifiers)?
-                      PropertyNames+= identifier (COMMA PropertyNames+=identifier)*
-                    ;
-
-
-foxfieldinitializer : Id=identifier Op=EQ Expr=expression
-                    ;
-
-foxModifiers       : ( Tokens+=(PROTECTED | HIDDEN) )+
-                   ;
+                    
+                    //| Member=event_                #foxevent
+                    //| Member=operator_             #foxoperator
+                    //| Member=property              #foxproperty
+                    //| Member=structure_            #foxnestedStructure
+                    //| Member=delegate_             #foxnestedDelegate
+                    //| Member=enum_                 #foxnestedEnum
+                    //| Member=event_                #foxnestedEvent
+                    //| Member=interface_            #foxnestedInterface
 
 
-foximplementsclause : IMPLEMENTS Id=identifier (Excl=EXCLUDE)? IN Expr=expression
-                    ;
-
-foxaddobjectclause  : ADD OBJECT Id=identifier AS Type=datatype
-                      (WITH FieldsInits += foxfieldinitializer (COMMA FieldsInits += foxfieldinitializer) )?
-                    ;
-
-ffunction           : (Attributes=attributes)? (Modifiers=foxModifiers)?   
+ffunction            : (Attributes=attributes)? (Modifiers=memberModifiers)?   
                       FUNCTION Id=identifier                             
+                      TypeParameters=typeparameters?                            
                       (ParamList=parameterList)?                                
                       (AS Type=datatype)?                                       
+                      (ConstraintsClauses+=typeparameterconstraintsclause)*     
+                      (CallingConvention=callingconvention)?                    
+                      (EXPORT LOCAL)?                                           // Optional (ignored)
+                      (DLLEXPORT STRING_CONST)?                                 // Optional (ignored)
                       end=eos   
                       StmtBlk=statementBlock
                       (END FUNCTION  Ignored=identifier? EOS )?
                     ;
 
-fprocedure           : (Attributes=attributes)? (Modifiers=foxModifiers)?   
-                      PROCEDURE Id=identifier                             
-                      (ParamList=parameterList)?                                
-                      end=eos   
+fprocedure           : (Attributes=attributes)? (Modifiers=memberModifiers)?   
+                      PROCEDURE Id=identifier                            
+                      TypeParameters=typeparameters?                            
+                      (ParamList=parameterList)?
+                      (AS Type=datatype)?                                        // As Void is allowed but ignored
+                      (ConstraintsClauses+=typeparameterconstraintsclause)*     
+                      (CallingConvention=callingconvention)?                    
+                      InitExit=(INIT1|INIT2|INIT3|EXIT)?                        
+                      (EXPORT LOCAL)?                                           // Optional (ignored)
+                      (DLLEXPORT STRING_CONST)?                                 // Optional (ignored)
+                      end=eos                       
                       StmtBlk=statementBlock
-                      (END PROCEDURE  Ignored=identifier? EOS )?
+                      (END PROCEDURE Ignored=identifier? EOS)?
                     ;
-*/
+
+
+foxfieldinitializer : Id=identifier Op=EQ Expr=expression eos
+                    ;
+
+
+foximplementsclause : IMPLEMENTS Id=identifier (Excl=EXCLUDE)? IN Expr=expression eos
+                    ;
+
+foxaddobjectclause  : ADD OBJECT (Prot=PROTECTED)? Id=identifier AS Type=datatype
+                      (WITH FieldsInits += foxfieldinitializer (COMMA FieldsInits += foxfieldinitializer) )?
+                      eos
+                    ;
+
+

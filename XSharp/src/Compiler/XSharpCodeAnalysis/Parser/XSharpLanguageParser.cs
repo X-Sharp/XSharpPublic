@@ -457,6 +457,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpDialect.Harbour:
                     treeTransform = new XSharpVOTreeTransformation(parser, options, pool, syntaxFactory, fileName);
                     break;
+                case XSharpDialect.FoxPro:
+                    treeTransform = new XSharpFoxTreeTransformation(parser, options, pool, syntaxFactory, fileName);
+                    break;
                 case XSharpDialect.XPP:
                 default:
                 treeTransform = new XSharpXPPTreeTransformation(parser, options, pool, syntaxFactory, fileName);

@@ -4945,7 +4945,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void EnterProcedure([NotNull] XP.ProcedureContext context)
         {
-            context.Data.MustBeVoid = true;
+            context.Data.MustBeVoid = _options.Dialect != XSharpDialect.FoxPro;
         }
         public override void ExitProcedure([NotNull] XP.ProcedureContext context)
         {
@@ -4998,7 +4998,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 parameters = UpdateVODLLParameters(parameters);
             }
-            var returntype = VoidType();
+            var returntype = context.Type?.Get<TypeSyntax>() ?? _getMissingType();
+            if (_options.Dialect != XSharpDialect.FoxPro)
+            {
+                if (context.Type != null && context.Type.GetText().ToLower() != "void")
+                {
+                    returntype = (TypeSyntax) NotInDialect(returntype, "Procedure with non VOID return type");
+                }
+            }
+
+            
             var modifiers = GetFuncProcModifiers(context.Modifiers, isextern, isInInterface);
             if (!isextern)
             {
@@ -5068,8 +5077,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterParameterList([NotNull] XP.ParameterListContext context)
         {
+            
             foreach (var par in context._Params)
             {
+                CurrentEntity.Data.HasFormalParameters = true;
                 if (par.Ellipsis != null)
                 {
                     if (par != context._Params.Last())
@@ -6764,7 +6775,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
         {
-            if (context.Op.Type == XP.COLONCOLON)
+            if (context.Op.Type == XP.COLONCOLON) 
             {
                 context.Put(MakeSimpleMemberAccess(
                     GenerateSelf(),
@@ -6778,7 +6789,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        #endregion
+        #endregion  
 
         #region Common Expressions
         public override void ExitExpressionList([NotNull] XP.ExpressionListContext context)

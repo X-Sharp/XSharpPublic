@@ -128,7 +128,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             UsesPSZ = 1 << 2,           // Member property
             MustBeUnsafe = 1 << 3,      // Member property
             HasTypedParameter = 1 << 4, // Member property
-            // 5
+            HasLParametersStmt = 1 << 5, // Member property
             HasParametersStmt = 1 << 6, // Member property
             MustBeVoid = 1 << 7,        // Member property
             IsInitAxit = 1 << 8,        // Member property
@@ -142,6 +142,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             IsInitProcedure = 1 << 15,  // Member property
             HasMemVars = 1 << 16,       // Member property
             HasYield = 1 << 17,         // Member property
+            HasFormalParameters = 1 << 18,  // Member property
         }
 
 
@@ -170,7 +171,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 get { return flags.HasFlag(EntityFlags.HasParametersStmt); }
                 set { flags = setFlag(flags, EntityFlags.HasParametersStmt, value); }
             }
-
+            public bool HasLParametersStmt
+            {
+                get { return flags.HasFlag(EntityFlags.HasLParametersStmt); }
+                set { flags = setFlag(flags, EntityFlags.HasLParametersStmt, value); }
+            }
+            public bool HasFormalParameters
+            {
+                get { return flags.HasFlag(EntityFlags.HasFormalParameters); }
+                set { flags = setFlag(flags, EntityFlags.HasFormalParameters, value); }
+            }
             public bool HasMissingReturnType
             {
                 get { return flags.HasFlag(EntityFlags.MissingReturnType); }
@@ -358,6 +368,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String Name => ParentName + Key.Text;
             public String ShortName => ParentName + Key.Text;
             public StatementBlockContext Statements => StmtBlk;
+            public bool HasReturnValue => false;
 
         }
 
@@ -466,7 +477,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + ShortName;
             public String ShortName => this.Id.GetText();
-
+            
         }
         public partial class Class_Context : IPartialPropertyContext, IEntityContext
         {
@@ -631,6 +642,46 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
             }
         }
+        public partial class FoxclassContext : IPartialPropertyContext, IEntityContext
+        {
+            EntityData data = new EntityData();
+            List<MethodContext> partialProperties = null;
+
+            public List<MethodContext> PartialProperties
+            {
+                get { return partialProperties; }
+                set { partialProperties = value; }
+            }
+            public EntityData Data => data;
+            public ParameterListContext Params => null;
+            public DatatypeContext ReturnType => null;
+            public String Name => ParentName + ShortName;
+            public String ShortName => Id.GetText();
+
+        }
+        public partial class FfunctionContext : IEntityWithBodyContext
+        {
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public ParameterListContext Params => this.ParamList;
+            public DatatypeContext ReturnType => this.Type;
+            public String Name => ParentName + ShortName;
+            public String ShortName => this.Id.GetText();
+            public StatementBlockContext Statements => StmtBlk;
+
+        }
+        public partial class FprocedureContext: IEntityWithBodyContext
+        {
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public ParameterListContext Params => this.ParamList;
+            public DatatypeContext ReturnType => this.Type;
+            public String Name => ParentName + ShortName;
+            public String ShortName => this.Id.GetText();
+            public StatementBlockContext Statements => StmtBlk;
+
+        }
+
 #endif
     }
 

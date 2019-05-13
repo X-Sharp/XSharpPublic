@@ -176,41 +176,5 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
 
         }
-
-        private void _AdjustToken(IToken token)
-        {
-            if (token.Type == XP.DOT)
-            {
-                var xtoken = token as XSharpToken;
-                xtoken.Type = XP.COLON;
-                xtoken.Text = ":";
-            }
-        }
-
-        public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
-        {
-            _AdjustToken(context.Op);
-            base.ExitAccessMember(context);
-        }
-        public override void ExitAccessMemberLate([NotNull] XP.AccessMemberLateContext context)
-        {
-            _AdjustToken(context.Op);
-            base.ExitAccessMemberLate(context);
-        }
-        public override void ExitAccessMemberLateName([NotNull] XP.AccessMemberLateNameContext context)
-        {
-            _AdjustToken(context.Op);
-            base.ExitAccessMemberLateName(context);
-        }
-        public override void ExitBoundAccessMember([NotNull] XP.BoundAccessMemberContext context)
-        {
-            _AdjustToken(context.Op);
-            base.ExitBoundAccessMember(context);
-        }
-        public override void ExitWithLine([NotNull] XP.WithLineContext context)
-        {
-            _AdjustToken(context.Op);
-            base.ExitWithLine(context);
-        }
     }
 }

@@ -5954,6 +5954,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitWithLine([NotNull] XP.WithLineContext context)
         {
             // this can be either an assignment or a method call
+            _AdjustSendOperator(context.Op);
             string varName = ((XP.WithBlockContext)context.Parent).VarName;
             var lhs = GenerateSimpleName(varName);
             var rhs = context.Name.Get<SimpleNameSyntax>();
@@ -6728,6 +6729,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Bound Expressions
         public override void ExitBoundAccessMember([NotNull] XP.BoundAccessMemberContext context)
         {
+            _AdjustSendOperator(context.Op);
             context.Put(MakeSimpleMemberAccess(
                 context.Expr.Get<ExpressionSyntax>(),
                 context.Name.Get<SimpleNameSyntax>()));
@@ -6766,6 +6768,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitBindMemberAccess([NotNull] XP.BindMemberAccessContext context)
         {
+            _AdjustSendOperator(context.Op);
             context.Put(_syntaxFactory.MemberBindingExpression(
                 SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                 context.Name.Get<SimpleNameSyntax>()));
@@ -6778,6 +6781,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ));
         }
 
+        protected void _AdjustSendOperator(IToken token)
+        {
+            if (token.Type == XP.DOT && _options.Dialect.AllowDotAsSendOperator())
+            {
+                var xtoken = token as XSharpToken;
+                xtoken.Type = XP.COLON;
+                xtoken.Text = ":";
+            }
+        }
 
         public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
         {
@@ -6789,6 +6801,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
+                _AdjustSendOperator(context.Op);
                 context.Put(MakeSimpleMemberAccess(
                     context.Expr.Get<ExpressionSyntax>(),
                     context.Name.Get<SimpleNameSyntax>()));

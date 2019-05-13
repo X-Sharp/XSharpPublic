@@ -981,8 +981,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     // parameters  and lparameters assume CC
                     CurrentEntity.Data.HasClipperCallingConvention = true;
-                    CurrentEntity.Data.HasParametersStmt = (context.T.Type == XP.PARAMETERS);
-                    CurrentEntity.Data.HasLParametersStmt = (context.T.Type == XP.LPARAMETERS);
+                    if (CurrentEntity.Data.HasParametersStmt || CurrentEntity.Data.HasLParametersStmt || CurrentEntity.Data.HasFormalParameters)
+                    {
+                        // trigger error message by setting both
+                        // that way 2 x PARAMETERS or 2x LPARAMETERS will also trigger an error
+                        CurrentEntity.Data.HasParametersStmt = true;
+                        CurrentEntity.Data.HasLParametersStmt = true;
+                    }
+                    else
+                    {
+                        CurrentEntity.Data.HasParametersStmt = (context.T.Type == XP.PARAMETERS);
+                        CurrentEntity.Data.HasLParametersStmt = (context.T.Type == XP.LPARAMETERS);
+                    }
                 }
             }
         }

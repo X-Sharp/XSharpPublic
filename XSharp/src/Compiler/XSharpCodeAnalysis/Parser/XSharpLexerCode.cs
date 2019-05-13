@@ -1626,6 +1626,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     if (!ids.ContainsKey(kw.Key))
                         ids.Add(kw.Key, kw.Value);
+                    else
+                        ids[kw.Key] = kw.Value;         // replace abbreviated 'thiscall' with 'this'
                 }
                 foreach (var kw in vfpKeyWordAbbrev)
                 {
@@ -1805,6 +1807,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "__DIALECT_VULCAN__", MACRO},
                     { "__DIALECT_HARBOUR__", MACRO},
                     { "__DIALECT_XBASEPP__", MACRO},
+                    { "__DIALECT_FOXPRO__", MACRO},
                     { "__ENTITY__", MACRO},
                     { "__FILE__", MACRO}, 
                     { "__FUNCTION__", MACRO},

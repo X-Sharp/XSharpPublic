@@ -7842,15 +7842,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // Foxpro date time format
                 dateliteral = dateliteral.Substring(2, dateliteral.Length - 3);
                 args = dateliteral.Split("- :".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                if (args.Length >= 6)
+                if (args.Length >= 4)
                 {
-                    if (int.TryParse(args[0], out int year) &&
-                        int.TryParse(args[1], out int month) &&
-                        int.TryParse(args[2], out int day) &&
-                        int.TryParse(args[3], out int hour) &&
-                        int.TryParse(args[4], out int mins) &&
-                        int.TryParse(args[5], out int secs)
-                        )
+                    int mins = 0;
+                    int secs = 0;
+                    var ok = false;
+                    int year=0, month=0, day=0, hour=0;
+                    ok = int.TryParse(args[0], out year) &&
+                        int.TryParse(args[1], out month) &&
+                        int.TryParse(args[2], out day) &&
+                        int.TryParse(args[3], out hour);
+
+                    if (ok && args.Length > 4)
+                    { 
+                        ok = int.TryParse(args[4], out mins);
+                    }
+                    if (ok && args.Length > 5)
+                    { 
+                        int.TryParse(args[5], out secs);
+                    }
+                    if (ok)
                     {
                         if (args.Length == 7)
                         {

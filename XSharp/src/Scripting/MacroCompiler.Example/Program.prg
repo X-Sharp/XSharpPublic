@@ -608,6 +608,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, "SubStr3('Test', 1 , Len('abc') - 1)", Args(), "Te", typeof(string)) // should raise warning
         TestMacro(mc, "TestInt32(TestDWord(1))", Args(), 1, typeof(int)) // should raise warning
         TestMacro(mc, "TestDWord(TestInt32(1))", Args(), 1, typeof(dword)) // should raise warning
+        TestMacro(mc, e"{|a| tci:&a := 1 }", Args("v1"), 1, typeof(INT))
         TestMacro(mc, e"{|a| tci:&a }", Args("v1"), 1, typeof(INT))
         TestMacro(mc, e"{|a| tci:&(a) }", Args("v1"), 1, typeof(INT))
         TestMacro(mc, e"{|a| tci:(&a) }", Args("v1"), 1, typeof(INT))

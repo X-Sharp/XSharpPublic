@@ -176,6 +176,13 @@ namespace XSharp.MacroCompiler
         internal DynamicSymbol(string name) : base(AccessMode.GetSet) { Name = name; }
         internal override Symbol Lookup(string name) { return null; }
     }
+    internal partial class DynamicExprSymbol : TypedSymbol
+    {
+        internal Syntax.Expr Name;
+        internal override TypeSymbol Type { get { return (Binder.LookupFullName(XSharpQualifiedFunctionNames.IVarGet) as MethodSymbol)?.Type ?? Compilation.Get(NativeType.Object); } }
+        internal DynamicExprSymbol(Syntax.Expr name) : base(AccessMode.GetSet) { Name = name; }
+        internal override Symbol Lookup(string name) { return null; }
+    }
     internal partial class ObjectInitializerSymbol : TypedSymbol
     {
         internal override TypeSymbol Type { get; }

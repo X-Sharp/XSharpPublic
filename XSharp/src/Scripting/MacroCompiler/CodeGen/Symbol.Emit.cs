@@ -75,6 +75,28 @@ namespace XSharp.MacroCompiler
             ilg.Emit(OpCodes.Pop);
         }
     }
+    internal partial class DynamicExprSymbol : TypedSymbol
+    {
+        internal override void EmitGet(ILGenerator ilg)
+        {
+            var m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions_IVarGet) as MethodSymbol;
+            Name.Emit(ilg);
+            ilg.Emit(OpCodes.Call, m.Method);
+        }
+        internal override void EmitSet(ILGenerator ilg)
+        {
+            var m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions_IVarPut) as MethodSymbol;
+            var lo = ilg.DeclareLocal(Compilation.Get(NativeType.Object).Type);
+            var lv = ilg.DeclareLocal(Type.Type);
+            ilg.Emit(OpCodes.Stloc, lo.LocalIndex);
+            ilg.Emit(OpCodes.Stloc, lv.LocalIndex);
+            ilg.Emit(OpCodes.Ldloc, lo.LocalIndex);
+            Name.Emit(ilg);
+            ilg.Emit(OpCodes.Ldloc, lv.LocalIndex);
+            ilg.Emit(OpCodes.Call, m.Method);
+            ilg.Emit(OpCodes.Pop);
+        }
+    }
     internal partial class ObjectInitializerSymbol : TypedSymbol
     {
         internal override void EmitGet(ILGenerator ilg)

@@ -164,25 +164,35 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Expr);
             Expr.RequireValue();
-            if (Affinity == BindAffinity.Invoke)
+            if (Member is NameExpr MemberName)
             {
-                Symbol = b.Lookup(Expr.Datatype, Member.LookupName);
-                if (Symbol == null)
+                if (Affinity == BindAffinity.Invoke)
                 {
-                    if (b.Options.Binding.HasFlag(BindOptions.AllowDynamic) && Expr.Datatype.IsUsualOrObject())
+                    Symbol = b.Lookup(Expr.Datatype, MemberName.LookupName);
+                    if (Symbol == null)
                     {
-                        b.Convert(ref Expr, Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object));
-                        Symbol = new DynamicSymbol(Member.LookupName);
+                        if (b.Options.Binding.HasFlag(BindOptions.AllowDynamic) && Expr.Datatype.IsUsualOrObject())
+                        {
+                            b.Convert(ref Expr, Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object));
+                            Symbol = new DynamicSymbol(MemberName.LookupName);
+                        }
+                        else
+                            ThrowError(Binder.LookupError(Expr, MemberName));
                     }
-                    else
-                        ThrowError(Binder.LookupError(Expr, Member));
+                }
+                else
+                {
+                    b.Convert(ref Expr, Compilation.Get(NativeType.Object));
+                    Symbol = new DynamicSymbol(MemberName.LookupName);
                 }
             }
-            else
+            else if (Member is RuntimeIdExpr)
             {
-                b.Convert(ref Expr, Compilation.Get(NativeType.Object));
-                Symbol = new DynamicSymbol(Member.LookupName);
+                b.Bind(ref Member, BindAffinity.Member);
+                Symbol = new DynamicExprSymbol(Member);
             }
+            else
+                ThrowError(ErrorCode.NameExpected);
             Datatype = Symbol.Type();
             return null;
         }
@@ -659,8 +669,7 @@ namespace XSharp.MacroCompiler.Syntax
                 Alias.RequireGetAccess();
                 b.Convert(ref Alias, Compilation.Get(NativeType.Usual));
             }
-            Field.Affinity = BindAffinity.Alias;
-            b.Bind(ref Field);
+            b.Bind(ref Field, BindAffinity.Alias);
             Datatype = Field.Datatype;
             return null;
         }
@@ -675,11 +684,12 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Expr);
             Expr.RequireGetAccess();
             b.Convert(ref Expr, Compilation.Get(NativeType.String));
-            Datatype = Compilation.Get(NativeType.Usual);
             switch (Affinity)
             {
                 case BindAffinity.Alias:
                     return AliasExpr.Bound(Expr);
+                case BindAffinity.Member:
+                    return Expr;
                 default:
                     ThrowError(ErrorCode.InvalidRuntimeIdExpr);
                     break;

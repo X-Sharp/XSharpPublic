@@ -231,6 +231,9 @@ RETURN n
 FUNC TestDWord(n AS DWORD) AS DWORD
 RETURN n
 
+func testRet(x as string) as string
+return x
+
 BEGIN NAMESPACE MacroCompilerTest
 
 	FUNCTION Start() AS VOID
@@ -605,6 +608,16 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, "SubStr3('Test', 1 , Len('abc') - 1)", Args(), "Te", typeof(string)) // should raise warning
         TestMacro(mc, "TestInt32(TestDWord(1))", Args(), 1, typeof(int)) // should raise warning
         TestMacro(mc, "TestDWord(TestInt32(1))", Args(), 1, typeof(dword)) // should raise warning
+        TestMacro(mc, e"{|a| tci:&a }", Args("v1"), 1, typeof(INT))
+        TestMacro(mc, e"{|a| tci:&(a) }", Args("v1"), 1, typeof(INT))
+        TestMacro(mc, e"{|a| tci:(&a) }", Args("v1"), 1, typeof(INT))
+        TestMacro(mc, e"{|a,b| a := \"abcdef\", a:(&b)() }", Args(8,"ToUpperInvariant"), "ABCDEF", typeof(STRING))
+        TestMacro(mc, e"{|a,b| a := \"abcdef\", (a:&b)() }", Args(8,"ToUpperInvariant"), "ABCDEF", typeof(STRING))
+        TestMacro(mc, e"{|a,b| a := \"abcdef\", a:&(b)() }", Args(8,"ToUpperInvariant"), NULL, NULL, ErrorCode.Expected)
+        TestMacro(mc, e"{|a,b| a := \"abcdef\", (a:&testRet(b))() }", Args(8,"ToUpperInvariant"), "ABCDEF", typeof(STRING))
+        TestMacro(mc, e"{|a,b| a := \"abcdef\", a:&testRet(b)() }", Args(8,"ToUpperInvariant"), NULL, NULL, ErrorCode.ArgumentsNotMatch)
+        TestMacro(mc, e"{|a,b| a := \"abcdef\", a:(&b[1])() }", Args(8,{"ToUpperInvariant"}), "ABCDEF", typeof(STRING))
+        TestMacro(mc, e"{|a,b| a := \"abcdef\", (a:&b[1])() }", Args(8,{"ToUpperInvariant"}), "ABCDEF", typeof(STRING))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")
@@ -629,6 +642,10 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a,b| (a)->&b := 321}", Args("DEVELOPER","ROBERT"), "DEVELOPER->FieldSet(ROBERT):321", typeof(STRING))
         TestMacro(mc, e"{|a,b| (a)->&b[1]}", Args("DEVELOPER",{"ROBERT"}), "DEVELOPER->FieldGet(ROBERT)", typeof(STRING))
         TestMacro(mc, e"{|a,b| (a)->&b[1] := 123}", Args("DEVELOPER",{"ROBERT"}), "DEVELOPER->FieldSet(ROBERT):123", typeof(STRING))
+        TestMacro(mc, e"{|a,b| (a)->&(b[1])}", Args("DEVELOPER",{"ROBERT"}), "DEVELOPER->FieldGet(ROBERT)", typeof(STRING))
+        TestMacro(mc, e"{|a,b| (a)->&(b[1]) := 123}", Args("DEVELOPER",{"ROBERT"}), "DEVELOPER->FieldSet(ROBERT):123", typeof(STRING))
+        TestMacro(mc, e"{|a,b,c| (a)->&(b+c)}", Args("DEVELOPER","ROB","ERT"), "DEVELOPER->FieldGet(ROBERT)", typeof(STRING))
+        TestMacro(mc, e"{|a,b,c| (a)->&(b+c) := 321}", Args("DEVELOPER","ROB","ERT"), "DEVELOPER->FieldSet(ROBERT):321", typeof(STRING))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarGet, "MyVarGet")

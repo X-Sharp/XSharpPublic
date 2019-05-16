@@ -48,8 +48,13 @@ namespace XSharp.MacroCompiler
                     return expr.Error(ErrorCode.NotAMethod, symbol);
                 else if (expr is QualifiedNameExpr)
                     return expr.Error(ErrorCode.MemberNotFound, (expr as QualifiedNameExpr).Name);
-                else if (expr is MemberAccessExpr)
-                    return expr.Error(ErrorCode.MemberNotFound, (expr as MemberAccessExpr).Member.Name);
+                else if (expr is MemberAccessExpr exprAccess)
+                {
+                    if (exprAccess.Member is NameExpr memberName)
+                        return expr.Error(ErrorCode.MemberNotFound, memberName.Name);
+                    else
+                        return expr.Error(ErrorCode.NameExpected);
+                }
             }
 
             if (ovRes?.Unique == false)

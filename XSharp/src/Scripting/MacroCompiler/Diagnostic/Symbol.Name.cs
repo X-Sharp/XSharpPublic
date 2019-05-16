@@ -53,6 +53,10 @@ namespace XSharp.MacroCompiler
     {
         internal override string FullName { get { return Name; } }
     }
+    internal partial class DynamicExprSymbol : TypedSymbol
+    {
+        internal override string FullName { get { return Name.ToString(); } }
+    }
     internal partial class ObjectInitializerSymbol : TypedSymbol
     {
         internal override string FullName { get { return Type.FullName + "{}"; } }

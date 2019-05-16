@@ -50,8 +50,8 @@ namespace XSharp.MacroCompiler.Syntax
     internal partial class MemberAccessExpr : Expr
     {
         internal Expr Expr;
-        internal NameExpr Member;
-        internal MemberAccessExpr(Expr e, NameExpr n) : base(n.Token) { Expr = e; Member = n; }
+        internal Expr Member;
+        internal MemberAccessExpr(Expr e, Expr n) : base(n.Token) { Expr = e; Member = n; }
         public override string ToString() { return "(" + Expr.ToString() + ':' + Member.ToString() + ")"; }
     }
     internal partial class QualifiedNameExpr : NameExpr

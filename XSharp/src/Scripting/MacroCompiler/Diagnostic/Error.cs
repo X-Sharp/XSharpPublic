@@ -48,6 +48,7 @@ namespace XSharp.MacroCompiler
         NoStaticOverload = 228,
         NoInstanceOverload = 229,
         InvalidRuntimeIdExpr = 230,
+        NameExpected = 231,
     }
 
     internal class ErrorString
@@ -93,6 +94,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.NoStaticOverload, "Method or function {0} has no static overload" },
             { ErrorCode.NoInstanceOverload, "Method or function {0} is no instance overload" },
             { ErrorCode.InvalidRuntimeIdExpr, "Invalid runtime identifier (&) expression" },
+            { ErrorCode.NameExpected, "Member name expected" },
         };
 
         static internal string Get(ErrorCode e) { return _errorStrings[e]; }

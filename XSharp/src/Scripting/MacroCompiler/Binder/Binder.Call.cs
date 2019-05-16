@@ -75,13 +75,27 @@ namespace XSharp.MacroCompiler
 
             if (options.HasFlag(BindOptions.AllowDynamic) && expr != null && ovRes?.Valid != true)
             {
-                if (symbol is DynamicSymbol)
+                if (symbol is DynamicExprSymbol symbolExpr)
                 {
                     expr = self;
                     self = null;
                     Convert(ref expr, Compilation.Get(NativeType.Usual), options);
                     var obj = new Arg(expr ?? LiteralExpr.Bound(Constant.Create(null)));
-                    var name = new Arg(LiteralExpr.Bound(Constant.Create((symbol as DynamicSymbol).Name)));
+                    var name = new Arg(symbolExpr.Name);
+                    var arguments = new Arg(LiteralArray.Bound(args.Args));
+                    args.Args.Clear();
+                    args.Args.Add(obj);
+                    args.Args.Add(name);
+                    args.Args.Add(arguments);
+                    return Compilation.Get(WellKnownMembers.XSharp_RT_Functions___InternalSend);
+                }
+                else if (symbol is DynamicSymbol symbolDynamic)
+                {
+                    expr = self;
+                    self = null;
+                    Convert(ref expr, Compilation.Get(NativeType.Usual), options);
+                    var obj = new Arg(expr ?? LiteralExpr.Bound(Constant.Create(null)));
+                    var name = new Arg(LiteralExpr.Bound(Constant.Create(symbolDynamic.Name)));
                     var arguments = new Arg(LiteralArray.Bound(args.Args));
                     args.Args.Clear();
                     args.Args.Add(obj);

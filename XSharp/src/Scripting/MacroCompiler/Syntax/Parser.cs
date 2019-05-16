@@ -888,6 +888,7 @@ namespace XSharp.MacroCompiler
             PrefixRuntimeId,
             BinaryAlias,
             BinarySubstr,
+            BinaryColon,
         }
 
         class Oper
@@ -932,6 +933,11 @@ namespace XSharp.MacroCompiler
                         this.assoc = AssocType.Postfix;
                         Parse = _parse_postfix_colon;
                         Combine = _combine_postfix_colon;
+                        break;
+                    case AssocType.BinaryColon:
+                        this.assoc = AssocType.BinaryLeft;
+                        Parse = _parse;
+                        Combine = _combine_binary_colon;
                         break;
                     case AssocType.PostfixCall:
                         this.assoc = AssocType.Postfix;
@@ -1097,6 +1103,7 @@ namespace XSharp.MacroCompiler
             Expr _combine_binary_substr(Parser p, Expr l, Node o, Expr r) => new SubstrExpr(l, o.Token, r);
             Expr _combine_postfix_dot(Parser p, Expr l, Node o, Expr r) => new QualifiedNameExpr(p.Require((l as TypeExpr), l.Token, ErrorCode.Expected, "type"), (NameExpr)o);
             Expr _combine_postfix_colon(Parser p, Expr l, Node o, Expr r) => new MemberAccessExpr(l, (NameExpr)o);
+            Expr _combine_binary_colon(Parser p, Expr l, Node o, Expr r) => new MemberAccessExpr(l, r);
             Expr _combine_postfix_call(Parser p, Expr l, Node o, Expr r) => new MethodCallExpr(l, (ArgList)o);
             Expr _combine_postfix_index(Parser p, Expr l, Node o, Expr r) => new ArrayAccessExpr(l, (ArgList)o);
 
@@ -1121,7 +1128,7 @@ namespace XSharp.MacroCompiler
             }
 
             Opers[(int)TokenType.DOT] = new Oper(AssocType.PostfixDot, TokenType.DOT, 1);
-            Opers[(int)TokenType.COLON] = new Oper(AssocType.PostfixColon, TokenType.COLON, 1);
+            Opers[(int)TokenType.COLON] = new Oper(AssocType.BinaryColon, TokenType.COLON, 1);
             Opers[(int)TokenType.LPAREN] = new Oper(AssocType.PostfixCall, TokenType.LPAREN, 2);
             Opers[(int)TokenType.LBRKT] = new Oper(AssocType.PostfixIndex, TokenType.LBRKT, 2);
             Opers[(int)TokenType.QMARK] = new Oper(AssocType.Postfix, TokenType.QMARK, 3);

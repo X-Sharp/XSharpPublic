@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -390,7 +390,7 @@ FUNCTION MemoRead(cFile AS STRING) AS STRING
 		ELSE
 			cResult := ""
 		ENDIF
-	CATCH e as Exception
+	CATCH e AS Exception
 		XSharp.IO.File.setErrorState(e)
 		cResult := ""
 	END TRY
@@ -416,7 +416,7 @@ FUNCTION MemoReadBinary(cFile AS STRING) AS BYTE[]
 		ELSE
 			bResult := BYTE[]{0}
 		ENDIF
-	CATCH e as Exception
+	CATCH e AS Exception
 		XSharp.IO.File.setErrorState(e)
 		bResult := BYTE[]{0}
 	END TRY
@@ -445,7 +445,7 @@ FUNCTION MemoWrit(cFile AS STRING,c AS STRING) AS LOGIC
         ENDIF
 		
 		lOk := TRUE
-	CATCH e as Exception
+	CATCH e AS Exception
 		XSharp.IO.File.setErrorState(e)
 		lOk := FALSE
 	END TRY
@@ -454,7 +454,7 @@ FUNCTION MemoWrit(cFile AS STRING,c AS STRING) AS LOGIC
 /// <inheritdoc cref="M:XSharp.Core.Functions.MemoWritBinary(System.String,System.Byte[])" />
 
 FUNCTION MemoWrit(cFile AS STRING,bData AS BYTE[]) AS LOGIC
-    return MemoWritBinary(cFile, bData)
+    RETURN MemoWritBinary(cFile, bData)
 
 /// <summary>
 /// Write binary data  o a disk file. Use this function for binary files instead of MemoWrit(). This day may be read with MemoReadBinary().
@@ -476,7 +476,7 @@ FUNCTION MemoWritBinary(cFile AS STRING,bData AS BYTE[]) AS LOGIC
         XSharp.IO.File.clearErrorState()
 		System.IO.File.WriteAllBytes(cFile, bData)
 		lOk := TRUE
-	CATCH e as Exception
+	CATCH e AS Exception
 		XSharp.IO.File.setErrorState(e)
 		lOk := FALSE
 	END TRY

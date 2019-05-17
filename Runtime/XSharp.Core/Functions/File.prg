@@ -25,22 +25,34 @@ USING System.Text
 	DEFINE FERROR_PARAM   := 258   // invalid parameter already detected before giving to DOS
 	
 	// FSEEK(), _llseek() modes
-	DEFINE FS_SET         := 0  // Seek from beginning of file
-	DEFINE FS_RELATIVE    := 1  // Seek from current file position
-	DEFINE FS_END         := 2  // Seek from end of file
+    /// <summary>FSeek() Seek Offset: Seek from beginning of file</summary>
+	DEFINE FS_SET         := 0  
+    /// <summary>FSeek() Seek Offset: Seek from current file position</summary>
+	DEFINE FS_RELATIVE    := 1  
+    /// <summary>FSeek() Seek Offset: Seek from end of file</summary>
+	DEFINE FS_END         := 2  
 	
 	// FOPEN() access modes
-	DEFINE FO_READ        := 0  // Open for reading (default)
-	DEFINE FO_WRITE       := 1  // Open for writing
-	DEFINE FO_READWRITE   := 2  // Open for reading or writing
+    /// <summary>FOpen() Open Mode: Open for reading (default)</summary>
+	DEFINE FO_READ        := 0  
+    /// <summary>FOpen() Open Mode: Open for writing</summary>
+	DEFINE FO_WRITE       := 1  
+    /// <summary>FOpen() Open Mode: Open for reading or writing</summary>
+	DEFINE FO_READWRITE   := 2  
 	
 	// FOPEN() sharing modes (combine with open mode using +)
-	DEFINE FO_COMPAT     := 0x00000000  // Compatibility mode (default)
-	DEFINE FO_EXCLUSIVE  := 0x00000010  // Exclusive
-	DEFINE FO_DENYWRITE  := 0x00000020  // Prevent other processes from writing
-	DEFINE FO_DENYREAD   := 0x00000030  // Prevent other processes from reading
-	DEFINE FO_DENYNONE   := 0x00000040  // (same as FO_SHARED)
-	DEFINE FO_SHARED     := 0x00000040  // Allow other processes to read or write
+    /// <summary>FOpen() Sharing Mode: Compatibility mode (default)</summary>
+	DEFINE FO_COMPAT     := 0x00000000  
+    /// <summary>FOpen() Sharing Mode: Exclusive</summary>
+	DEFINE FO_EXCLUSIVE  := 0x00000010  
+    /// <summary>FOpen() Sharing Mode: Prevent other processes from writing</summary>
+	DEFINE FO_DENYWRITE  := 0x00000020  
+    /// <summary>FOpen() Sharing Mode: Prevent other processes from reading</summary>
+	DEFINE FO_DENYREAD   := 0x00000030  
+    /// <summary>FOpen() Sharing Mode: (same as FO_SHARED)</summary>
+	DEFINE FO_DENYNONE   := 0x00000040  
+    /// <summary>FOpen() Sharing Mode:  Allow other processes to read or write</summary>
+	DEFINE FO_SHARED     := 0x00000040  //
 	
 	DEFINE OF_SHARE_COMPAT		:= 0x00000000
 	DEFINE OF_SHARE_EXCLUSIVE	:= 0x00000010
@@ -65,10 +77,15 @@ USING System.Text
 	DEFINE FXO_WILD      := 0x00010000  // Allow wildcards in file name
 	
 	// FCREATE() file attribute modes (always opens with OF_READWRITE)
-	DEFINE FC_NORMAL     := 0x00000000  // normal read/write file (default for create)
-	DEFINE FC_READONLY   := 0x00000001  // read-only file
-	DEFINE FC_HIDDEN     := 0x00000002  // hidden file
-	DEFINE FC_SYSTEM     := 0x00000004  // system file
+    /// <summary>FCreate() attribute mode: normal read/write file (default for create)</summary>
+	DEFINE FC_NORMAL     := 0x00000000  
+    /// <summary>FCreate() attribute mode: read-only file</summary>
+	DEFINE FC_READONLY   := 0x00000001  
+    /// <summary>FCreate() attribute mode: hidden file</summary>
+	DEFINE FC_HIDDEN     := 0x00000002  
+    /// <summary>FCreate() attribute mode: system file</summary>
+	DEFINE FC_SYSTEM     := 0x00000004  
+    /// <summary>FCreate() attribute mode: archived</summary>
 	DEFINE FC_ARCHIVED   := 0x00000020
 	
 	//

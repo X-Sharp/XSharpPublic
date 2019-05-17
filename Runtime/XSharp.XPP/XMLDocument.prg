@@ -16,13 +16,13 @@ BEGIN NAMESPACE XSharp.XPP
 
 	CLASS XDocument
 #region Static 
-        STATIC aDocuments as List<XDocument>
-        STATIC aErrors    as List<XError>
-        STATIC nextHandle as INT64
-        STATIC gate       as OBJECT
+        STATIC aDocuments AS List<XDocument>
+        STATIC aErrors    AS List<XError>
+        STATIC nextHandle AS INT64
+        STATIC gate       AS OBJECT
         STATIC CONSTRUCTOR()
             Initialize()
-            gate       := Object{}
+            gate       := OBJECT{}
 
         STATIC METHOD Initialize() AS VOID
             aDocuments := List<XDocument>{}
@@ -31,10 +31,10 @@ BEGIN NAMESPACE XSharp.XPP
             RETURN 
 
 
-        STATIC METHOD GetDocument (nHandle as INT64) AS XDocument
-            FOREACH var doc in aDocuments
+        STATIC METHOD GetDocument (nHandle AS INT64) AS XDocument
+            FOREACH VAR doc IN aDocuments
                 IF doc:DocHandle == nHandle
-                    return doc
+                    RETURN doc
                 ENDIF
             NEXT
             RETURN NULL
@@ -44,35 +44,35 @@ BEGIN NAMESPACE XSharp.XPP
                 RETURN nextHandle++
             END LOCK
 
-        STATIC METHOD FindError(nError as INT64) AS XError
-            return aErrors:Where( {x => x:ID == nError}):FirstOrDefault()
+        STATIC METHOD FindError(nError AS INT64) AS XError
+            RETURN aErrors:Where( {x => x:ID == nError}):FirstOrDefault()
 
         STATIC METHOD GetErrors() AS IEnumerable<XError>
-            return aErrors
+            RETURN aErrors
 
-        STATIC METHOD GetErrorsForDocument(nDocHandle as Int64) AS IEnumerable<XError>
-            return aErrors:Where ( { x=> x:DocHandle == nDocHandle })
+        STATIC METHOD GetErrorsForDocument(nDocHandle AS INT64) AS IEnumerable<XError>
+            RETURN aErrors:Where ( { x=> x:DocHandle == nDocHandle })
 
 
-       STATIC METHOD FindParent(nId as INT64) AS INT64
-            local oNode as XMLNode
-            local oDoc  as XDocument
-            oNode := FindNode(nID, out oDoc)
+       STATIC METHOD FindParent(nId AS INT64) AS INT64
+            LOCAL oNode AS XMLNode
+            LOCAL oDoc  AS XDocument
+            oNode := FindNode(nID, OUT oDoc)
             IF oNode != NULL
                 oNode := oNode:ParentNode
-                if oDoc:Nodes:ContainsKey(oNode)
-                    return oDoc:Nodes[oNode]
+                IF oDoc:Nodes:ContainsKey(oNode)
+                    RETURN oDoc:Nodes[oNode]
                 ENDIF
             ENDIF
             RETURN 0
                 
 
-        STATIC PRIVATE METHOD FindNode(nID AS INT64, oDocResult OUT XDocument) as XMLNode
-            local oFoundNode := NULL as XMLNode
+        STATIC PRIVATE METHOD FindNode(nID AS INT64, oDocResult OUT XDocument) AS XMLNode
+            LOCAL oFoundNode := NULL AS XMLNode
             oDocResult := NULL
             BEGIN LOCK Gate
-                FOREACH oDoc as XDocument in aDocuments
-                    if oDoc:NodeIds:ContainsKey(nID)
+                FOREACH oDoc AS XDocument IN aDocuments
+                    IF oDoc:NodeIds:ContainsKey(nID)
                         oFoundNode := oDoc:NodeIDs[nID]
                         oDocResult := oDoc
                         RETURN oFoundNode
@@ -83,67 +83,67 @@ BEGIN NAMESPACE XSharp.XPP
 
 
 
-        STATIC METHOD FindTag(nId as INT64) AS Array
-            local oNode as XMLNode
-            local oDoc  as XDocument
-            oNode := FindNode(nID, out oDoc)
+        STATIC METHOD FindTag(nId AS INT64) AS ARRAY
+            LOCAL oNode AS XMLNode
+            LOCAL oDoc  AS XDocument
+            oNode := FindNode(nID, OUT oDoc)
             IF oNode != NULL
                 RETURN AsXmlArray(oNode, oDoc)
             ENDIF
             RETURN NULL_ARRAY
 
-        STATIC METHOD FindChildTag(nId as INT64, cChildName AS STRING, lFirst as LOGIC) AS USUAL
-            local oNode as XMLNode
-            local oDoc  as XDocument
-            oNode := FindNode(nID, out oDoc)
+        STATIC METHOD FindChildTag(nId AS INT64, cChildName AS STRING, lFirst AS LOGIC) AS USUAL
+            LOCAL oNode AS XMLNode
+            LOCAL oDoc  AS XDocument
+            oNode := FindNode(nID, OUT oDoc)
             IF oNode != NULL
-                local aResult := {} as ARRAY
-                FOREACH oChild as XmlNode in oNode:ChildNodes
+                LOCAL aResult := {} AS ARRAY
+                FOREACH oChild AS XmlNode IN oNode:ChildNodes
                     IF String.Compare(oChild:Name, cChildName, TRUE) == 0
-                        if oDoc:Nodes:ContainsKey(oChild)
+                        IF oDoc:Nodes:ContainsKey(oChild)
                             IF lFirst
                                 RETURN oDoc:Nodes[oChild]
                             ELSE
                                 aadd(aResult, oDoc:Nodes[oChild])
                             ENDIF
-                        endif
+                        ENDIF
                     ENDIF
                 NEXT
                 IF alen(aResult) > 0
-                    return aResult
+                    RETURN aResult
                 ENDIF
             ENDIF
             RETURN NULL_ARRAY
 
 
-        STATIC METHOD AsXmlArray(oNode as XMLNode, oFoundDoc as XDocument) AS ARRAY
-            local aResult as ARRAY
-            local aChildren as ARRAY
-            local aAttributes AS ARRAY
+        STATIC METHOD AsXmlArray(oNode AS XMLNode, oFoundDoc AS XDocument) AS ARRAY
+            LOCAL aResult AS ARRAY
+            LOCAL aChildren AS ARRAY
+            LOCAL aAttributes AS ARRAY
             aChildren := {}
             IF oNode:HasChildNodes
-                FOREACH oChild as XmlNode in oNode:ChildNodes
-                    if oFoundDoc:Nodes:ContainsKey(oChild)
+                FOREACH oChild AS XmlNode IN oNode:ChildNodes
+                    IF oFoundDoc:Nodes:ContainsKey(oChild)
                         aadd(aChildren,oFoundDoc:Nodes[oChild])
-                    endif
+                    ENDIF
                 NEXT
             ENDIF
             aAttributes := {}
             IF oNode:Attributes != NULL
-                FOREACH oAttr as XmlAttribute in oNode:Attributes
+                FOREACH oAttr AS XmlAttribute IN oNode:Attributes
                     AADD(aAttributes , {oAttr:Name, oAttr:Value, oAttr})
                 NEXT
             ENDIF
             aResult := ArrayNew(XMLTAG_N_MEMBER)
             aResult [XMLTAG_NAME   ] := oNode:Name
             aResult [XMLTAG_CONTENT] := oNode:InnerXml
-            aResult [XMLTAG_CHILD  ] := iif(aLen(aChildren) == 0, NIL, aChildren)
+            aResult [XMLTAG_CHILD  ] := IIF(aLen(aChildren) == 0, NIL, aChildren)
             aResult [XMLTAG_ACTION ] := NIL
-            aResult [XMLTAG_ATTRIB ] := iif(aLen(aAttributes) == 0, NIL, aAttributes)
+            aResult [XMLTAG_ATTRIB ] := IIF(aLen(aAttributes) == 0, NIL, aAttributes)
             aResult [XMLTAG_OBJECT ] := oNode
             RETURN aResult
 
-        STATIC METHOD RegisterError(nError as USUAL) AS VOID
+        STATIC METHOD RegisterError(nError AS USUAL) AS VOID
             RETURN
 
         STATIC METHOD CloseAllDocuments() AS LOGIC
@@ -156,7 +156,7 @@ BEGIN NAMESPACE XSharp.XPP
             
 #endregion
         
-        PROPERTY DocHandle as INT64 AUTO
+        PROPERTY DocHandle AS INT64 AUTO
         PROPERTY Nodes     AS Dictionary<XmlNode, INT64> AUTO
         PROPERTY NodeIds   AS Dictionary<INT64, XmlNode> AUTO
         PROPERTY RootId    AS INT64 AUTO
@@ -172,30 +172,30 @@ BEGIN NAMESPACE XSharp.XPP
             LastError  := 0
             RETURN
 
-        PRIVATE METHOD AddError(e as Exception) AS INT64
-            LOCAL oError := XError{cFileName, XMLDOC_ERROR_PROCESS} as XError
+        PRIVATE METHOD AddError(e AS Exception) AS INT64
+            LOCAL oError := XError{cFileName, XMLDOC_ERROR_PROCESS} AS XError
             oError:Additional := e:Message
             oError:DocHandle := SELF:DocHandle
-            var id     := NewHandle()
+            VAR id     := NewHandle()
             aErrors:Add( oError)
             RETURN id
 
-        PRIVATE METHOD AddOpenError(e as XmlException) AS INT64
-            LOCAL oError := XError{cFileName, XMLDOC_ERROR_INVALID_XML} as XError
+        PRIVATE METHOD AddOpenError(e AS XmlException) AS INT64
+            LOCAL oError := XError{cFileName, XMLDOC_ERROR_INVALID_XML} AS XError
             oError:Line   := e:LineNumber
             oError:Column := e:LinePosition
             oError:Additional := e:Message
             oError:DocHandle := SELF:DocHandle
-            if e:Message:ToLower():Contains("does not match")
+            IF e:Message:ToLower():Contains("does not match")
                 oError:ID := XMLDOC_ERROR_ENDTAG_MISSING
-            endif
+            ENDIF
             aErrors:Add(oError)
             RETURN oError:Handle
 
 
 
 
-        PRIVATE METHOD AddOpenError(oError as XError) AS INT64
+        PRIVATE METHOD AddOpenError(oError AS XError) AS INT64
             aErrors:Add(oError)
             RETURN oError:Handle
 
@@ -204,7 +204,7 @@ BEGIN NAMESPACE XSharp.XPP
             LastError  := 0
 
         PRIVATE METHOD Read(oReader AS System.IO.TextReader) AS LOGIC 
-            LOCAL lOk := FALSE as LOGIC
+            LOCAL lOk := FALSE AS LOGIC
             TRY
                 oDoc := XMLDocument{}
                 oDoc:Load(oReader)
@@ -213,9 +213,9 @@ BEGIN NAMESPACE XSharp.XPP
                     aDocuments:Add(SELF)
                 END LOCK
                 lOk := TRUE
-            CATCH e as XmlException
+            CATCH e AS XmlException
                 LastError := AddOpenError(e)
-            CATCH e as Exception
+            CATCH e AS Exception
                 LastError := AddError(e)
                 BEGIN LOCK gate
                     IF aDocuments:Contains(SELF)
@@ -226,8 +226,8 @@ BEGIN NAMESPACE XSharp.XPP
             END TRY            
             RETURN lOk
 
-        METHOD OpenFile(cFile as STRING) AS LOGIC
-            LOCAL lOk := FALSE as LOGIC
+        METHOD OpenFile(cFile AS STRING) AS LOGIC
+            LOCAL lOk := FALSE AS LOGIC
             SELF:ClearError()
             SELF:cFileName := cFile
             IF String.IsNullOrEmpty(cFile)
@@ -239,22 +239,22 @@ BEGIN NAMESPACE XSharp.XPP
                 RETURN FALSE
             ENDIF
             TRY
-                BEGIN USING var oReader := System.IO.StreamReader{cFile,TRUE}
+                BEGIN USING VAR oReader := System.IO.StreamReader{cFile,TRUE}
                     lOk := SELF:Read(oReader)
                     oReader:Close()
                 END USING
                 SELF:Process()
-            CATCH e as Exception
+            CATCH e AS Exception
                 LastError := AddError(e)
                 lOk := FALSE
             END TRY
             RETURN lOk
         
         METHOD OpenText(cContents AS STRING) AS LOGIC
-            LOCAL lOk := FALSE as LOGIC
+            LOCAL lOk := FALSE AS LOGIC
             SELF:ClearError()
             TRY
-                BEGIN USING var oReader := System.IO.StringReader{cContents}
+                BEGIN USING VAR oReader := System.IO.StringReader{cContents}
                     lOk := SELF:Read(oReader)
                     oReader:Close()
                 END USING
@@ -265,7 +265,7 @@ BEGIN NAMESPACE XSharp.XPP
             RETURN lOk
 
         METHOD Close() AS LOGIC
-            LOCAL lOk := FALSE as LOGIC
+            LOCAL lOk := FALSE AS LOGIC
             IF aDocuments:Contains(SELF)
                 aDocuments:Remove(SELF)
                 lOk := TRUE
@@ -278,61 +278,78 @@ BEGIN NAMESPACE XSharp.XPP
                 SELF:NodeIds:Clear()
                 SELF:Nodes:Clear()
                 SELF:WalkNode(oDoc)
-                var root := oDoc:DocumentElement
+                VAR root := oDoc:DocumentElement
                 SELF:RootId := Nodes[root]
-            CATCH e as XmlException
+            CATCH e AS XmlException
                 LastError := AddOpenError(e)
-            CATCH e as Exception
+            CATCH e AS Exception
                 LastError := AddError(e)
             END TRY
             RETURN
 
         // loop through all the actions and process each node that matches the actions
         METHOD ProcessNodes() AS LOGIC
-            LOCAL lOk := FALSE as LOGIC
+            LOCAL lOk := FALSE AS LOGIC
             TRY
-                local root := oDoc:DocumentElement as XmlNode
-                foreach var action in actions
-                    var nodes := root:SelectNodes(action:name)
-                    if nodes:Count >0
-                        FOREACH node as Xmlnode in nodes
+                LOCAL root := oDoc:DocumentElement AS XmlNode
+                FOREACH VAR action IN actions
+                    VAR nodes := root:SelectNodes(action:name)
+                    IF nodes:Count >0
+                        FOREACH node AS Xmlnode IN nodes
                             lOk := SELF:PerformActions(node, action)
                             IF ! lOk
                                 RETURN FALSE
                             ENDIF
                         NEXT
                     ENDIF
-                next
+                NEXT
                 lOk := TRUE
-            CATCH e as XmlException
+            CATCH e AS XmlException
                 LastError := AddOpenError(e)
                 lOk := FALSE
-            CATCH e as Exception
+            CATCH e AS Exception
                 LastError := AddError(e)
                 lOk := FALSE
             END TRY
             RETURN lOk
 
+        // SelectNodes via cSelect
+        METHOD SelectNodes(cSelect AS STRING) AS ARRAY
+            LOCAL aResult AS ARRAY
+            TRY
+                LOCAL root := oDoc:DocumentElement AS XmlNode
+                VAR nodes := root:SelectNodes(cSelect)
+                aResult := {}
+                IF nodes:Count >0
+                    FOREACH node AS Xmlnode IN nodes
+                        aAdd(aResult, SELF:Nodes[node])
+                    NEXT
+                ENDIF
+            CATCH 
+                RETURN NULL_ARRAY
+            END TRY
+            RETURN aResult
 
-        METHOD PerformActions(oNode as XMLNode, oAction as XAction) AS LOGIC
-            local bBlock        as CodeBlock
-            local nTag          as INT64
-            local aAttributes   := NIL as USUAL
-            LOCAL nResult       as USUAL
-            LOCAL oWork         as XMLNode
-            LOCAL sb            as StringBuilder
+
+        METHOD PerformActions(oNode AS XMLNode, oAction AS XAction) AS LOGIC
+            LOCAL bBlock        AS CODEBLOCK
+            LOCAL nTag          AS INT64
+            LOCAL aAttributes   := NIL AS USUAL
+            LOCAL nResult       AS USUAL
+            LOCAL oWork         AS XMLNode
+            LOCAL sb            AS StringBuilder
             bBlock := oAction:Block
             nTag   := SELF:Nodes[oNode]
             sb     := StringBuilder{oNode:Name}
             oWork  := oNode:ParentNode
-            DO WHILE oWork != NULL .and. ! oWork IS XmlDocument
+            DO WHILE oWork != NULL .AND. ! oWork IS XmlDocument
                 sb:Insert(0,oWork:Name+"/")
                 oWork := oWork:ParentNode
             ENDDO
             sb:Insert(0, "/")
             IF oNode:Attributes != NULL
                 aAttributes := {}
-                FOREACH oAttr as XmlAttribute in oNode:Attributes
+                FOREACH oAttr AS XmlAttribute IN oNode:Attributes
                     AADD(aAttributes , {oAttr:Name, oAttr:Value})
                 NEXT
             ENDIF
@@ -349,7 +366,7 @@ BEGIN NAMESPACE XSharp.XPP
 
         // Wall all nodes and add them to the collections on the document class
         METHOD WalkNode(oNode AS XmlNode) AS VOID
-            LOCAL nID as INT64
+            LOCAL nID AS INT64
             IF !SELF:Nodes:ContainsKey(oNode)
                 nId := NewHandle()
                 Nodes:Add(oNode, nID)
@@ -364,31 +381,31 @@ BEGIN NAMESPACE XSharp.XPP
             SELF:Actions:Clear()
             RETURN
 
-        METHOD SetAction(cNode as STRING, bAction as CodeBlock) AS LONG
+        METHOD SetAction(cNode AS STRING, bAction AS CODEBLOCK) AS LONG
             SELF:Actions:Add(XAction{cNode, bAction})
-            local root := oDoc:DocumentElement as XmlNode
-            var nodes := root:SelectNodes(cNode)
-            return nodes:Count
+            LOCAL root := oDoc:DocumentElement AS XmlNode
+            VAR nodes := root:SelectNodes(cNode)
+            RETURN nodes:Count
 
 
 	END CLASS
 
     CLASS XError
-        PROPERTY FileName as STRING AUTO
+        PROPERTY FileName AS STRING AUTO
         PROPERTY Line     AS LONG AUTO
         PROPERTY Column   AS LONG AUTO
         PROPERTY Id       AS INT64 AUTO
-        PROPERTY Additional as USUAL AUTO
-        PROPERTY DocHandle as INT64 AUTO
-        PROPERTY Handle    as INT64 AUTO
-        CONSTRUCTOR(cFile as STRING, nId as INT64)
+        PROPERTY Additional AS USUAL AUTO
+        PROPERTY DocHandle AS INT64 AUTO
+        PROPERTY Handle    AS INT64 AUTO
+        CONSTRUCTOR(cFile AS STRING, nId AS INT64)
             SELF:FileName := cFile
             SELF:ID       := nID
             SELF:Additional := ""
             SELF:Handle := XDocument.NewHandle()
 
         METHOD ToArray() AS ARRAY
-            var aResult := ArrayNew(XML_ERROR_ADDINFO) 
+            VAR aResult := ArrayNew(XML_ERROR_ADDINFO) 
             aResult[XML_ERROR_ID]       := SELF:Id
             aResult[XML_ERROR_FILE]     := SELF:FileName
             aResult[XML_ERROR_LINE]     := SELF:Line
@@ -400,9 +417,9 @@ BEGIN NAMESPACE XSharp.XPP
 
     CLASS XAction
 
-        PROPERTY Name as STRING AUTO
-        PROPERTY Block as CodeBlock AUTO
-        CONSTRUCTOR(cName as STRING, oBlock as CodeBlock)
+        PROPERTY Name AS STRING AUTO
+        PROPERTY Block AS CODEBLOCK AUTO
+        CONSTRUCTOR(cName AS STRING, oBlock AS CODEBLOCK)
             Name := cName
             Block := oBlock
             RETURN

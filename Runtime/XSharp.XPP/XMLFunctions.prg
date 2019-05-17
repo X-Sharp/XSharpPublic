@@ -17,9 +17,9 @@ USING XSharp.XPP
 /// for the parser, or when the file cannot be opened, read or parsed. The handle returned by this function must be used in subsequent calls to other XMLDoc..() functions. </returns>
 /// <remarks>XMLDocOpenFile() opens a new XML document. It allocates system resources for the parser, opens and reads the file and parses it contents. 
 /// While parsing a document, a tree is build by the parsing engine. </remarks>
-FUNCTION XMLDocOpenFile( cFileName as STRING) as INT64
-    LOCAL nErrHandle as USUAL
-    var nResult := XMLDocOpenFile(cFileName, OUT nErrHandle)
+FUNCTION XMLDocOpenFile( cFileName AS STRING) AS INT64
+    LOCAL nErrHandle AS USUAL
+    VAR nResult := XMLDocOpenFile(cFileName, OUT nErrHandle)
     XDocument.RegisterError(nErrHandle)
     RETURN nResult
 
@@ -31,9 +31,9 @@ FUNCTION XMLDocOpenFile( cFileName as STRING) as INT64
 /// for the parser, or when the file cannot be opened, read or parsed. The handle returned by this function must be used in subsequent calls to other XMLDoc..() functions. </returns>
 /// <remarks>XMLDocOpenFile() opens a new XML document. It allocates system resources for the parser, opens and reads the file and parses it contents. 
 /// While parsing a document, a tree is build by the parsing engine. </remarks>
-FUNCTION XMLDocOpenFile( cFileName as STRING, nErrHandle OUT USUAL) as INT64
-    local oDoc as XDocument
-    LOCAL nResult as INT64
+FUNCTION XMLDocOpenFile( cFileName AS STRING, nErrHandle OUT USUAL) AS INT64
+    LOCAL oDoc AS XDocument
+    LOCAL nResult AS INT64
     nResult := 0
     
     oDoc := XDocument{}
@@ -54,9 +54,9 @@ FUNCTION XMLDocOpenFile( cFileName as STRING, nErrHandle OUT USUAL) as INT64
 /// <returns>The function returns the number of tags, or nodes, matching the string <paramref name="cNode" />.</returns>
 /// <remarks></remarks>
 
-FUNCTION XMLDocSetAction( nDocHandle AS INT64, cNode AS STRING, bCallback AS CODEBLOCK) as LONG
-    local oDoc      as XDocument
-    LOCAL nActions  as LONG
+FUNCTION XMLDocSetAction( nDocHandle AS INT64, cNode AS STRING, bCallback AS CODEBLOCK) AS LONG
+    LOCAL oDoc      AS XDocument
+    LOCAL nActions  AS LONG
     oDoc := XDocument.GetDocument(nDocHandle)
     IF oDoc != NULL_OBJECT
         nActions := oDoc:SetAction(cNode, bCallBack)
@@ -70,8 +70,8 @@ RETURN nActions
 /// <returns>Returns .T. (true) if the document handle is a valid and .F. (false) otherwise.</returns>
 /// <remarks>This function is used to release all action code blocks defined for all nodes of an XML document</remarks>
 FUNCTION XMLDocResetAction( nDocHandle AS INT64 ) AS LOGIC
-    local oDoc    as XDocument
-    LOCAL lOk     as LOGIC
+    LOCAL oDoc    AS XDocument
+    LOCAL lOk     AS LOGIC
     oDoc := XDocument.GetDocument(nDocHandle)
     IF oDoc != NULL_OBJECT
         oDoc:ClearActions()
@@ -85,9 +85,9 @@ RETURN lOk
 /// <param name="nDocHandle">Numeric handle for an XML document. </param>
 /// <returns>Returns .T. (true) if all action code blocks have been executed successfully or .F. (false) otherwise.</returns>
 /// <remarks>This function executes all action code blocks registered for an XML document using XMLDocSetAction().</remarks>
-FUNCTION XMLDocProcess(nDocHandle as INT64) AS LOGIC
-    local oDoc    as XDocument
-    LOCAL lOk     as LOGIC
+FUNCTION XMLDocProcess(nDocHandle AS INT64) AS LOGIC
+    LOCAL oDoc    AS XDocument
+    LOCAL lOk     AS LOGIC
     oDoc := XDocument.GetDocument(nDocHandle)
     IF oDoc != NULL_OBJECT
         lOk := oDoc:ProcessNodes()
@@ -101,8 +101,8 @@ RETURN lOk
 /// <returns>Returns .T. (true) if the document is successfully closed and .F. (false) otherwise.</returns>
 /// <remarks>Closes XML document and releases system resources.</remarks>
 FUNCTION XMLDocClose(nDocHandle AS INT64) AS LOGIC
-    local oDoc  as XDocument
-    LOCAL lOk := FALSE as LOGIC
+    LOCAL oDoc  AS XDocument
+    LOCAL lOk := FALSE AS LOGIC
     oDoc := XDocument.GetDocument(nDocHandle)
     IF oDoc != NULL_OBJECT
         lOk := oDoc:Close()
@@ -113,14 +113,14 @@ RETURN lOk
 /// <returns>Allways returns .T. (true).</returns>
 /// <remarks>Closes all XML documents, clears all errors and releases system resources.</remarks>
 FUNCTION XMLDocCloseAll() AS LOGIC
-    return XDocument.CloseAllDocuments()
+    RETURN XDocument.CloseAllDocuments()
 
 
 /// <summary>Clear all global XML Errors.</summary>
 /// <returns>Allways returns .T. (true).</returns>
 /// <remarks>Closes all XML errors that are not linked to a XML document.</remarks>
 FUNCTION XMLDocClearErrors() AS LOGIC
-    return XDocument.ClearAllErrors()
+    RETURN XDocument.ClearAllErrors()
 
 /// <summary>Get array of error descriptions. </summary>
 /// <param name="nDocHandle">Numeric handle of an XML document. Use this handle if a valid document handle was returned by an doc open function. </param>
@@ -130,25 +130,25 @@ FUNCTION XMLDocClearErrors() AS LOGIC
 
 FUNCTION XMLDocGetErrorList( nDocHandle := -1 AS INT64, nErrHandle := -1 AS INT64 ) AS ARRAY
 IF nDocHandle != -1
-    var errors := XDocument.GetErrorsForDocument(nDocHandle)
-    var aResult := {}
-    FOREACH var error in errors
+    VAR errors := XDocument.GetErrorsForDocument(nDocHandle)
+    VAR aResult := {}
+    FOREACH VAR error IN errors
         aadd(aResult, error:ToArray())
     NEXT
-    return aResult
+    RETURN aResult
 ELSEIF nErrHandle != -1
-    local oError as XError
+    LOCAL oError AS XError
     oError := XDocument.FindError(nErrHandle)
     IF oError != NULL
-        return { oError:ToArray() }
+        RETURN { oError:ToArray() }
     ENDIF
 ELSE
-    var errors := XDocument.GetErrors()
-    var aResult := {}
-    FOREACH var error in errors
+    VAR errors := XDocument.GetErrors()
+    VAR aResult := {}
+    FOREACH VAR error IN errors
         aadd(aResult, error:ToArray())
     NEXT
-    return aResult
+    RETURN aResult
 ENDIF
 RETURN NULL_ARRAY
 
@@ -162,7 +162,7 @@ RETURN NULL_ARRAY
 /// See function XMLGetTag() for more information about an XML tag. </remarks>
 
 FUNCTION XMLDocGetRootTag( nDocHandle AS INT64 ) AS INT64
-    local oDoc  as XDocument
+    LOCAL oDoc  AS XDocument
     LOCAL nTag  := 0 AS INT64
     oDoc := XDocument.GetDocument(nDocHandle)
     IF oDoc != NULL_OBJECT
@@ -178,9 +178,9 @@ RETURN nTag
 /// calls to other XMLDoc..() functions. <br/>
 /// If the function returns 0, more information can be obtained by calling XMLDocGetErrorList(, &lt;nErrHandle&gt;). </returns>
 /// <remarks>Invokes the XML parser engine which parsed the passed string and builds the internal tree structure. </remarks>
-FUNCTION XMLDocOpenString( cXMLString as STRING ,  nErrHandle OUT USUAL ) AS INT64
-    local oDoc as XDocument
-    LOCAL nResult as INT64
+FUNCTION XMLDocOpenString( cXMLString AS STRING ,  nErrHandle OUT USUAL ) AS INT64
+    LOCAL oDoc AS XDocument
+    LOCAL nResult AS INT64
     nResult := 0
     
     oDoc := XDocument{}
@@ -201,9 +201,9 @@ FUNCTION XMLDocOpenString( cXMLString as STRING ,  nErrHandle OUT USUAL ) AS INT
 /// calls to other XMLDoc..() functions. <br/>
 /// If the function returns 0, more information can be obtained by calling XMLDocGetErrorList(,<paramref name="nErrHandle" />). </returns>
 /// <remarks>Invokes the XML parser engine which parsed the passed string and builds the internal tree structure. </remarks>
-FUNCTION XMLDocOpenString( cXMLString as STRING  ) AS INT64
-    LOCAL nErrHandle as USUAL
-    var nResult := XMLDocOpenString(cXMLString, OUT nErrHandle)
+FUNCTION XMLDocOpenString( cXMLString AS STRING  ) AS INT64
+    LOCAL nErrHandle AS USUAL
+    VAR nResult := XMLDocOpenString(cXMLString, OUT nErrHandle)
     XDocument.RegisterError(nErrHandle)
     RETURN nResult
 
@@ -214,15 +214,15 @@ FUNCTION XMLDocOpenString( cXMLString as STRING  ) AS INT64
 /// <remarks>This function is used to obtain values of individual XML tag attributes by attribute name. </remarks>
 
 FUNCTION XMLGetAttribute( nTagHandle AS INT64, cAttributeName AS STRING ) AS STRING
-    local aTag := NIL as USUAL
-    LOCAL aAttributes as ARRAY
+    LOCAL aTag := NIL AS USUAL
+    LOCAL aAttributes AS ARRAY
     IF XMLGetTag(nTagHandle, REF aTag)
         IF IsArray(aTag)
-            IF Alen(aTag) >= XMLTAG_ATTRIB .and. IsArray(aTag[XMLTAG_ATTRIB])
+            IF Alen(aTag) >= XMLTAG_ATTRIB .AND. IsArray(aTag[XMLTAG_ATTRIB])
                 aAttributes := aTag[XMLTAG_ATTRIB]
-                FOREACH element as ARRAY in aAttributes
+                FOREACH element AS ARRAY IN aAttributes
                     IF String.Compare(element[TAGATTR_NAME], cAttributename, TRUE) == 0
-                        return element[TAGATTR_VALUE]
+                        RETURN element[TAGATTR_VALUE]
                     ENDIF
                 NEXT
             ENDIF
@@ -237,7 +237,7 @@ RETURN NULL_STRING
 /// <remarks>This function is used to retrieve the first child tag of an XML tag matching the name 
 /// specified with the second parameter. The XMLGetChildren() function can be used to obtain all child tags having a specific name. </remarks>
 
-FUNCTION XMLGetChild( nTagHandle as INT64, cChildTagName as STRING) AS INT64
+FUNCTION XMLGetChild( nTagHandle AS INT64, cChildTagName AS STRING) AS INT64
     RETURN XDocument.FindChildTag(nTagHandle, cChildTagName, TRUE)
   
 /// <summary>Get array of children of an XML tag. </summary>
@@ -245,14 +245,14 @@ FUNCTION XMLGetChild( nTagHandle as INT64, cChildTagName as STRING) AS INT64
 /// <param name="cChildTagName">The tag name of the child tags to search.</param>
 /// <returns>Returns an array of child handles matching the name specified as second parameter, or 0 if no child with the given name exists.</returns>
 /// <remarks>This function is used to retrieve all child tags having the tag name specified with the second parameter.</remarks>
-FUNCTION XMLGetChildren( nTagHandle as INT64, cChildTagName as STRING) AS INT64
+FUNCTION XMLGetChildren( nTagHandle AS INT64, cChildTagName AS STRING) AS INT64
 RETURN XDocument.FindChildTag(nTagHandle, cChildTagName, FALSE)
 
 /// <summary>Get parent of XML tag.</summary>
 /// <param name="nTagHandle">Numeric handle for the XML tag.</param>
 /// <returns>Returns the numeric handle of the parent tag or 0 if &lt;nTagHandle&gt; doesn't have a parent tag. </returns>
 /// <remarks>This function is used to retrieve the parent tag of an XML tag. Every tag has only one parent, except the document root tag which has no parent tag. </remarks>
-FUNCTION XMLGetParent( nTagHandle as INT64) AS INT64
+FUNCTION XMLGetParent( nTagHandle AS INT64) AS INT64
     RETURN XDocument.FindParent(nTagHandle)
 
 /// <summary>Get members of an XML tag node. </summary>
@@ -263,9 +263,9 @@ FUNCTION XMLGetParent( nTagHandle as INT64) AS INT64
 /// <remarks>This function is used to retrieve all members of an XML tag node.
 /// The elements are the same as in Xbase++, and an extra 6th element has been added that contains the XmlNode object. </remarks>
 FUNCTION XMLGetTag( nTagHandle AS INT64, aTagMember OUT USUAL ) AS LOGIC
-    local aResult as ARRAY
+    LOCAL aResult AS ARRAY
     aResult := XDocument.FindTag(nTagHandle)
-    if aResult != NULL_ARRAY
+    IF aResult != NULL_ARRAY
         aTagMember := aResult
     ELSE
         aTagMember := NULL_ARRAY
@@ -273,9 +273,27 @@ FUNCTION XMLGetTag( nTagHandle AS INT64, aTagMember OUT USUAL ) AS LOGIC
 
 RETURN aResult != NULL_ARRAY
     
+/// <summary>Select specific nodes via xpath. </summary>
+/// <param name="nDocHandle">Numeric handle for an XML document. </param>
+/// <param name="cSelect">XPath select statement. </param>
+/// <param name="aTagHandles">Output array </param>
+/// <returns>Returns .T. (true) nDocHandle is recognized or .F. (false) otherwise.</returns>
+
+FUNCTION XMLSelectNodes(nDocHandle AS INT64, cSelect AS STRING, aTagHandles OUT USUAL) AS LOGIC
+    LOCAL oDoc    AS XDocument
+    LOCAL lOk     AS LOGIC
+    oDoc := XDocument.GetDocument(nDocHandle)
+    IF oDoc != NULL_OBJECT
+        aTagHandles := oDoc:SelectNodes(cSelect)
+        lOk := TRUE
+    ELSE
+        aTagHandles := NULL_ARRAY           
+        lOk := FALSE
+    ENDIF
+    RETURN lOk
 
 
-FUNCTION XmlDocExplainErrorMessage(nId as LONG) AS STRING
+FUNCTION XmlDocExplainErrorMessage(nId AS LONG) AS STRING
 SWITCH nID
 
 CASE  XMLDOC_ERROR_NO_ERROR         ; RETURN "no error"

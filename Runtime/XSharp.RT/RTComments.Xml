@@ -84,5 +84,20 @@
       and will subtract one from the indexes, unless the /az compiler option is enabled.
     </remarks>
   </ZeroBasedIndexProperty>
-
+  <ScopeParams>
+    <list type="table">
+      <item>
+      <term>SCOPE_TOP</term>
+      <description>Specifies the top scope.</description>
+      </item>
+      <item>
+        <term>SCOPE_BOTTOM</term>
+        <description>Specifies the bottom scope.</description>
+      </item>
+      <item>
+        <term>SCOPE_BOTH</term>
+        <description>Specifies top and bottom scope.</description>
+      </item>
+    </list>
+  </ScopeParams>
 </Comments>

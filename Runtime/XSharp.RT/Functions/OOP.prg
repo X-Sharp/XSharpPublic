@@ -754,8 +754,11 @@ FUNCTION ClassName(o AS OBJECT) AS STRING
 FUNCTION ClassTree(o AS OBJECT) AS ARRAY
 	RETURN OOPHelpers.ClassTree(o?:GetType())
 	
-/// <summary>Create a new instance of a named class</summary>	
-FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
+/// <summary>Create a new instance of a named class</summary>
+/// <param name="cClassName">Specifies the class from which the new object is created.</param>
+/// <param name="_args">These optional parameters are passed to the constructor of the class </param>
+/// <returns>The object that was created</returns>
+FUNCTION CreateInstance(cClassName,_args) AS OBJECT CLIPPER
 	IF ! ( cClassName:IsSymbol || cClassName:IsString )
 		THROW Error.DataTypeError( __FUNCTION__, NAMEOF(cClassName), 1, cClassName)
 	ENDIF    	
@@ -862,7 +865,7 @@ FUNCTION IsClassOf(cClassName AS STRING,cSuperClassName AS STRING) AS LOGIC
 /// <param name="cClassName">Classname to find</param>
 /// <returns>System.Type object or NULL </returns>
 
-FUNCTION FindClass(cClassname as STRING) AS System.Type
+FUNCTION FindClass(cClassname AS STRING) AS System.Type
 	RETURN OOPHelpers.FindClass(cClassName) 
 	
 	

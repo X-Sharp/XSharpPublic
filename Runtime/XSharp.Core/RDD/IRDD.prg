@@ -119,7 +119,8 @@ INTERFACE XSharp.RDD.IRdd
 	/// <param name="nFldPos">1 based column number for which the value should be written.</param>
 	/// <param name="fileName">Name of the file that needs to be read from.</param>
 	METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
-	
+	/// <summary>Discard all changes to the current record and reread the buffer from disk. When the current buffer is in Append mode then the server will move to the bottom of the file.</summary>
+	METHOD Refresh() 							AS LOGIC
 	// Locking
 	/// <summary>Add a newly appended row to the list of locked rows.</summary>
 	/// <param name="uiMode">An enum value specifying the kind of lock to acquire.</param>
@@ -285,8 +286,6 @@ INTERFACE XSharp.RDD.IRdd
 	PROPERTY RecNo		AS LONG		GET   
 	/// <summary>Is the current workarea opened Shared?</summary>
 	PROPERTY Shared		AS LOGIC	GET
-	/// <summary>The Name of the current RDD</summary>
-	PROPERTY SysName	AS STRING	GET
 	
 END INTERFACE	
 

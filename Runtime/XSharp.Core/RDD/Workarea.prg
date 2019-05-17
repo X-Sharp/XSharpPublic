@@ -647,6 +647,11 @@ BEGIN NAMESPACE XSharp.RDD
 			/// <inheritdoc />
 		VIRTUAL METHOD Flush( ) AS LOGIC
 			THROW NotImplementedException{__ENTITY__}
+
+			/// <inheritdoc />
+		VIRTUAL METHOD Refresh( ) AS LOGIC
+			THROW NotImplementedException{__ENTITY__}
+
 			
 			/// <inheritdoc />
 		VIRTUAL METHOD GoCold( ) AS LOGIC
@@ -1061,7 +1066,7 @@ BEGIN NAMESPACE XSharp.RDD
 		VIRTUAL PROPERTY Deleted AS LOGIC GET FALSE
 		
 		/// <inheritdoc />
-		VIRTUAL PROPERTY Driver AS STRING GET "Workarea"
+		VIRTUAL PROPERTY Driver AS STRING GET "WORKAREA"
 		
 		/// <inheritdoc />
 		VIRTUAL PROPERTY EoF AS LOGIC GET _Eof
@@ -1090,8 +1095,6 @@ BEGIN NAMESPACE XSharp.RDD
 		/// <inheritdoc />
 		VIRTUAL PROPERTY Shared AS LOGIC GET FALSE
 		
-		/// <inheritdoc />
-		VIRTUAL PROPERTY SysName AS STRING GET "WORKAREA"
 		
 	END CLASS
 

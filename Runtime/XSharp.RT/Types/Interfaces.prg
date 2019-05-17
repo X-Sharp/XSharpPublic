@@ -32,7 +32,7 @@ BEGIN NAMESPACE XSharp
     /// the lookup of the property inside array element will be resolved with a call to the named indexer on that object.</summary>
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" />
     /// <seealso cref='T:XSharp.IIndexedProperties' />
-    /// <seealso cref='T:XSharp.__ArrayBase' />
+    /// <seealso cref='T:XSharp.__ArrayBase`1' />
     INTERFACE INamedIndexer
   		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
         /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>

@@ -47,6 +47,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         SELF:_oRdd:_dbfError(SubCodes.ERDD_NTXLIMIT, GenCode.EG_LIMIT,  filePath)
                         isOk := FALSE
                     ELSE
+
                         ntxIndex := NtxOrder{SELF:_oRdd, filePath}
                         SELF:_Orders:Add(ntxIndex)
                         isOk := ntxIndex:Open(oi)
@@ -222,7 +223,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 LOCAL num AS LONG
                 //
                 result := -1
-                IF info == NULL .or. info:Order == null
+                IF info == NULL .OR. info:Order == NULL
                     RETURN SELF:_focusNtx
                 ENDIF
                 //

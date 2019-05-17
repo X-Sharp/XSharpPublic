@@ -171,7 +171,7 @@ METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	PROPERTY RecNo		AS LONG 	GET   0
 //	PROPERTY Shared		AS LOGIC GET
 /// <inheritdoc />
-VIRTUAL PROPERTY SysName AS STRING GET "SDF"
+VIRTUAL PROPERTY Driver AS STRING GET "SDF"
 //	
 	// Error Handling
 //	PROPERTY LastGenCode	AS LONG GET

@@ -135,6 +135,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 IF String.IsNullOrEmpty(Path.GetExtension(_fullPath))
                     SELF:_fullPath := Path.ChangeExtension(_fullPath, NTX_EXTENSION)
                 ENDIF
+                IF File(_fullPath)
+                    _fullPath := FPathName()
+                ENDIF
             END SET
         END PROPERTY
         

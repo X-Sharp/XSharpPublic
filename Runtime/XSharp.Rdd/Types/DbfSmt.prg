@@ -13,7 +13,8 @@ CLASS DBFSMT INHERIT DBF
 	SUPER()
 	SELF:_oMemo := SMTMemo{SELF}
 
-VIRTUAL PROPERTY SysName AS STRING GET "DBFSMT"
+VIRTUAL PROPERTY Driver AS STRING GET "DBFSMT"
+
 
 /// <summary>SMT Memo class. Implements the SMT support.</summary>
 CLASS SMTMemo INHERIT BaseMemo  IMPLEMENTS IMemo

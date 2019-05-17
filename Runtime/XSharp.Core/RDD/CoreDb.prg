@@ -342,6 +342,17 @@ CLASS XSharp.CoreDb
             VAR uiNewArea := RuntimeState.Workareas:CurrentWorkAreaNO
             RETURN RuntimeState.Workareas:CloseArea(uiNewArea)
         })
+
+        /// <summary>
+        /// Discard all the changes to the current workares
+        /// </summary>
+        /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+    STATIC METHOD Refresh() AS LOGIC
+        RETURN CoreDb.Do ({ =>
+        LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
+        RETURN oRDD:Refresh()
+        })
+
         
         /// <summary>
         /// Flush pending updates in one work area.
@@ -1089,16 +1100,20 @@ CLASS XSharp.CoreDb
         /// </remarks>
     STATIC METHOD OrdListAdd(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
-        
-        LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
-        VAR info := DbOrderInfo{}
-        info:BagName := cBagName
-        IF oOrder == NULL
-            info:AllTags := TRUE
+        cBagName := cBagName?:Trim()
+        IF String.IsNullOrEmpty(cBagName)
+            RETURN FALSE
         ELSE
-            info:Order   := oOrder
+            LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
+            VAR info := DbOrderInfo{}
+            info:BagName := cBagName
+            IF oOrder == NULL
+                info:AllTags := TRUE
+            ELSE
+                info:Order   := oOrder
+            ENDIF
+            RETURN oRDD:OrderListAdd(info)
         ENDIF
-        RETURN oRDD:OrderListAdd(info)
         })
         
         /// <summary>
@@ -1120,6 +1135,7 @@ CLASS XSharp.CoreDb
             RETURN TRUE // not logical but compatible with VO
         ELSE
             VAR info := DbOrderInfo{}
+            cBagName := cBagName?:Trim()
             info:BagName := cBagName
             IF oOrder == NULL .AND. STRING.IsNullOrEmpty(cBagName)
                 info:AllTags := TRUE
@@ -1158,6 +1174,7 @@ CLASS XSharp.CoreDb
         TRY
             LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
             VAR info     := DbOrderInfo{}
+            cBagName := cBagName?:Trim()
             info:BagName := cBagName
             info:Order   := oOrder
             RETURN oRDD:OrderListFocus(info)
@@ -1181,6 +1198,7 @@ CLASS XSharp.CoreDb
         TRY
             LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
             VAR info     := DbOrderInfo{}
+            cBagName := cBagName?:Trim()
             info:BagName := cBagName
             info:Order   := oOrder
             strPreviousOrder := String.Empty
@@ -1267,7 +1285,7 @@ CLASS XSharp.CoreDb
             VAR oRDD := RuntimeState.Workareas.GetRDD(i)
             IF oRDD != NULL
                 LOCAL cName AS STRING
-                cName := oRDD:SysName
+                cName := oRDD:Driver
                 IF !aList:Contains(cName)
                     aList:Add(cname)
                 ENDIF
@@ -1287,7 +1305,7 @@ CLASS XSharp.CoreDb
     STATIC METHOD RddName() AS STRING
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
-        RETURN oRDD:SysName
+        RETURN oRDD:Driver
         })
         /// <summary>
         /// Return and optionally change the default RDD for the application.

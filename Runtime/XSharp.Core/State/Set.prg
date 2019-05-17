@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -234,7 +234,7 @@ FUNCTION SetDecimalSep() AS DWORD
 FUNCTION SetDecimalSep(wSep AS DWORD) AS DWORD
 	LOCAL oCulture AS System.Globalization.CultureInfo
 	oCulture := (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread:CurrentCulture:Clone()
-	oCulture:NumberFormat:NumberDecimalSeparator := ((Char)wSep):ToString()
+	oCulture:NumberFormat:NumberDecimalSeparator := ((CHAR)wSep):ToString()
 	System.Threading.Thread.CurrentThread:CurrentCulture := oCulture
 
 	SETSTATE DWORD Set.DecimalSep wSep
@@ -497,7 +497,7 @@ FUNCTION _SetDict() AS LOGIC
     GETSTATE LOGIC Set.DICT
 
 /// <exclude/>
-FUNCTION _SetDict(lNewSetting as LOGIC) AS LOGIC
+FUNCTION _SetDict(lNewSetting AS LOGIC) AS LOGIC
     SETSTATE LOGIC Set.DICT lNewSetting
 
 /// <summary>
@@ -602,7 +602,7 @@ FUNCTION SetThousandSep() AS DWORD
 FUNCTION SetThousandSep(wSep AS DWORD) AS DWORD
 	LOCAL oCulture AS System.Globalization.CultureInfo
 	oCulture := (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread:CurrentCulture:Clone()
-	oCulture:NumberFormat:NumberGroupSeparator := ((Char)wSep):ToString()
+	oCulture:NumberFormat:NumberGroupSeparator := ((CHAR)wSep):ToString()
 	System.Threading.Thread.CurrentThread:CurrentCulture := oCulture
 
 	SETSTATE DWORD Set.ThousandSep wSep

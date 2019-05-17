@@ -1,7 +1,5 @@
-DEFINE RT_MSG_DOSERR  := 0x4040
-DEFINE RT_MSG_ERR     := 0x4000
 DEFINE OLEAUTO_ERROR_FIRST:= 5300
-/// <exclude />
+/// <summary>List of error numbers that are used to lookup strings in the nation modules.</<summary>
 ENUM VOErrors
 #region EDB
 	MEMBER EDB       := 1000
@@ -1294,38 +1292,72 @@ ENUM VOErrors
 #endregion XS_RUNTIME
 	
 END ENUM
-
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_MONTH1     := VOErrors.RT_MSG_MONTH1    
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_MONTH2     := VOErrors.RT_MSG_MONTH2    
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_MONTH3     := VOErrors.RT_MSG_MONTH3    
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_MONTH4     := VOErrors.RT_MSG_MONTH4    
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_MONTH5     := VOErrors.RT_MSG_MONTH5    
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_MONTH6     := VOErrors.RT_MSG_MONTH6    
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_MONTH7     := VOErrors.RT_MSG_MONTH7    
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_MONTH8     := VOErrors.RT_MSG_MONTH8    
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_MONTH9     := VOErrors.RT_MSG_MONTH9    
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_MONTH10    := VOErrors.RT_MSG_MONTH10   
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_MONTH11    := VOErrors.RT_MSG_MONTH11   
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_MONTH12    := VOErrors.RT_MSG_MONTH12   
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_DAY1       := VOErrors.RT_MSG_DAY1      
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_DAY2       := VOErrors.RT_MSG_DAY2      
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_DAY3       := VOErrors.RT_MSG_DAY3      
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_DAY4       := VOErrors.RT_MSG_DAY4      
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_DAY5       := VOErrors.RT_MSG_DAY5      
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_DAY6       := VOErrors.RT_MSG_DAY6      
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_DAY7       := VOErrors.RT_MSG_DAY7      
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_INFOSTRING := VOErrors.RT_MSG_INFOSTRING
 
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_LITERAL     := VOErrors.RT_MSG_LITERAL   
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_SHORT_TRUE  := VOErrors.RT_MSG_SHORT_TRUE
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_SHORT_FALSE := VOErrors.RT_MSG_SHORT_FALSE
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_LONG_TRUE   := VOErrors.RT_MSG_LONG_TRUE 
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_LONG_FALSE  := VOErrors.RT_MSG_LONG_FALSE
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_SHORT_YES   := VOErrors.RT_MSG_SHORT_YES 
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_SHORT_NO    := VOErrors.RT_MSG_SHORT_NO  
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_LONG_YES    := VOErrors.RT_MSG_LONG_YES  
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_LONG_NO     := VOErrors.RT_MSG_LONG_NO   
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_CURRENCY    := VOErrors.RT_MSG_CURRENCY  
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
 DEFINE  RT_MSG_YNSTRING    := VOErrors.RT_MSG_YNSTRING  
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
+DEFINE RT_MSG_DOSERR  := 0x4040
+/// <include file="CoreComments.xml" path="Comments/NationMessage/*" />
+DEFINE RT_MSG_ERR     := 0x4000
 
 

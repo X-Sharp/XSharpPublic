@@ -31,7 +31,7 @@ CLASS XSharp.RuntimeState
 		RETURN currentState:Value
 
 	PRIVATE oSettings AS Dictionary<INT, OBJECT>
-    PUBLIC PROPERTY Settings as Dictionary<INT, OBJECT> GET oSettings
+    PUBLIC PROPERTY Settings AS Dictionary<INT, OBJECT> GET oSettings
 
 	PRIVATE CONSTRUCTOR(initialize AS LOGIC)       
 		VAR oThread := Thread.CurrentThread
@@ -492,11 +492,11 @@ CLASS XSharp.RuntimeState
 		SetValue(Set.DATEFORMAT, format)
 		SWITCH format
 			CASE "MM/DD/YY"
-			CASE "MM/DD/YYYY"
-				SetValue(Set.DATECOUNTRY, (DWORD) DateCountry.American)	
-			CASE "YY.MM.DD"
+			CASE "MM/DD/YYYY" 
+				SetValue(Set.DATECOUNTRY, (DWORD) DateCountry.American)	 
+			CASE "YY.MM.DD" 
 			CASE "YYYY.MM.DD"
-				SetValue(Set.DATECOUNTRY, (DWORD) DateCountry.Ansi)	
+				SetValue(Set.DATECOUNTRY, (DWORD) DateCountry.Ansi)	  
 			CASE "DD/MM/YY"
 			CASE "DD/MM/YYYY"
                 // What a laugh, the British & french have an identical format. 

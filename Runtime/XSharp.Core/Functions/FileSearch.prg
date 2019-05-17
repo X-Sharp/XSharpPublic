@@ -8,11 +8,14 @@ USING System.Collections.Generic
 USING System.IO
 USING System.Linq
 
+PUBLIC DELEGATE FileSearcher(cIn AS STRING) AS STRING
 INTERNAL STATIC CLASS XSharp.FileSearch
     STATIC PRIVATE foundEntries	:= List<OBJECT>{} AS List<OBJECT>
     STATIC PRIVATE enumerator   := NULL AS IEnumerator<OBJECT>
     STATIC PRIVATE currentItem	:= NULL AS OBJECT
     STATIC PRIVATE isAtEnd		:= TRUE AS LOGIC
+    STATIC Worker := FileSearchWorker AS FileSearcher
+
     CONST timeFormat := "HH:MM:ss" AS STRING
     
     INTERNAL STATIC METHOD FFCount( filespec AS STRING , attributes AS DWORD ) AS DWORD
@@ -215,7 +218,46 @@ FUNCTION FSize() AS DWORD
     /// </returns>
 FUNCTION FTime() AS STRING
     RETURN XSharp.FileSearch.FTime()
-    
+
+// Worker function with normal file search worker
+INTERNAL FUNCTION FileSearchWorker(cFile AS STRING) AS STRING
+    LOCAL lFirst AS LOGIC
+    IF System.IO.File.Exists(cFile)
+        RETURN Path.GetFullPath( cFile )
+    ENDIF
+    LOCAL aPaths AS STRING[]
+    aPaths := __GetSearchPaths()
+    lFirst := TRUE
+    FOREACH cPath AS STRING IN aPaths
+        VAR cTemp := System.IO.Path.Combine(cPath, cFile)
+        IF lFirst
+            // store the first path that we looked in even when the file is not found
+            // to be compatible with VO
+            XSharp.IO.File.LastFound := cTemp
+            lFirst := FALSE
+        ENDIF
+        IF System.IO.File.Exists(cTemp)
+            XSharp.IO.File.LastFound := cTemp
+            RETURN cTemp
+        ENDIF
+    NEXT
+    RETURN ""
+
+    /// <summary>
+    /// Register Worker function for File Search API.
+    /// </summary>
+    /// <param name="newWorker">Function that implements the worker. Must take STRING parameter and return a STRING</param>
+    /// <returns>
+    /// current Worker function
+    /// </returns>
+FUNCTION RegisterFileSearch(newWorker AS FileSearcher) AS FileSearcher
+    LOCAL oldWorker AS FileSearcher
+    oldWorker := XSharp.FileSearch.Worker
+    IF newWorker != NULL
+        XSharp.FileSearch.Worker := newWorker
+    ENDIF
+    RETURN oldWorker
+
     /// <summary>
     /// Determine if any file matches a given file specification.
     /// </summary>
@@ -224,38 +266,21 @@ FUNCTION FTime() AS STRING
     /// True if the file exists, otherwise false
     /// </returns>
 FUNCTION File(cFile AS STRING) AS LOGIC
-    LOCAL lFound AS LOGIC
     LOCAL lHasWildCards AS LOGIC
     LOCAL aPaths AS STRING[]
-    LOCAL cTemp AS STRING
     LOCAL lFirst AS LOGIC
+    cFile := cFile?:Trim()
     IF String.IsNullOrEmpty(cFile)
         RETURN FALSE
     ENDIF
     lHasWildCards := cFile:IndexOfAny( <CHAR>{ '*', '?' } ) > 0
     XSharp.IO.File.LastFound := ""
     IF ! lHasWildCards
-        lFound := System.IO.File.Exists(cFile)
-        IF lFound
-            XSharp.IO.File.LastFound := Path.GetFullPath( cFile )
+        VAR cFound := XSharp.FileSearch.Worker(cFile)
+        IF ! String.IsNullOrEmpty(cFound)
+            XSharp.IO.File.LastFound := cFound
             RETURN TRUE
         ENDIF
-        aPaths := __GetSearchPaths()
-        lFirst := TRUE
-        FOREACH cPath AS STRING IN aPaths
-            cTemp := System.IO.Path.Combine(cPath, cFile)
-            IF lFirst
-                // store the first path that we looked in even when the file is not found
-                // to be compatible with VO
-                XSharp.IO.File.LastFound := cTemp
-                lFirst := FALSE
-            ENDIF
-            lFound := System.IO.File.Exists(cTemp)
-            IF lFound
-                XSharp.IO.File.LastFound := cTemp
-                RETURN TRUE
-            ENDIF
-        NEXT
     ELSE
         // wildcard, so use Directory.GetFiles()
         LOCAL files     AS STRING[]

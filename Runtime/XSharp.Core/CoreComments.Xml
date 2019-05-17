@@ -75,4 +75,90 @@
       </note>
     </span>
   </Oem2AnsiFileIO>
+  <DbRecordInfo>
+    <summary>DbRecordInfo() define.</summary>
+    <seealso cref='M:XSharp.RT.Functions.DbRecordInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' >DbRecordInfo()</seealso>
+    <seealso cref='T:XSharp.RDD.Enums.DbRecordInfo'>DbRecordInfo Enum</seealso>
+  </DbRecordInfo>
+  <DBFieldInfo>
+     <summary>DbFieldInfo() define.</summary>
+     <seealso cref='M:XSharp.RT.Functions.DbFieldInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' >DbFieldInfo()</seealso>
+     <seealso cref='T:XSharp.RDD.Enums.DbFieldInfo'>DbFieldInfo Enum</seealso>
+
+  </DBFieldInfo>
+  <DbRecordInfo>
+  <summary>DbRecordInfo() define.</summary>
+   <seealso cref='M:XSharp.RT.FuDbRecordInfonctions.DbRecordInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' >DbRecordInfo()</seealso>
+   <seealso cref='T:XSharp.RDD.Enums.DbRecordInfo'>DbRecordInfo Enum</seealso>
+  </DbRecordInfo>
+  <DBInfo>
+    <summary>DBInfo() define.</summary>
+    <seealso cref='M:XSharp.RT.Functions.DBInfo(XSharp.__Usual,XSharp.__Usual' >DBInfo()</seealso>
+    <seealso cref='T:XSharp.RDD.Enums.DBInfo'>DBInfo Enum</seealso>
+  </DBInfo>
+  <DBOrderInfo>
+    <summary>DBOrderInfo() define.</summary>
+    <seealso cref='M:XSharp.RT.Functions.DBOrderInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual' >DBInfo()</seealso>
+    <seealso cref='T:XSharp.RDD.Enums.DbOrder_Info'>DBOrderInfo Enum</seealso>
+  </DBOrderInfo>
+  <BLOBInfo>
+    <summary>DBBlobInfo() define.</summary>
+    <seealso cref='M:XSharp.RT.Functions.DBBlobInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual' >DBBlobInfo()</seealso>
+    <seealso cref='T:XSharp.RDD.Enums.DBInfo'>DBOrderInfo Enum</seealso>
+  </BLOBInfo>
+  <BLOBImportExport>
+    <summary>BLOB Import/Export define.</summary>
+  </BLOBImportExport>
+  <OptLevel>
+    <summary>DBOI_OPTLEVEL define.</summary>
+  </OptLevel>
+  <IndexType>
+    <summary>DBOI_INDEXTYPE define.</summary>
+  </IndexType>
+  <LockScheme>
+    <summary>LockScheme define.</summary>
+  </LockScheme>
+  <BlockSize>
+    <summary>BlockSize define.</summary>
+  </BlockSize>
+  <RDDInfo>
+    <summary>RDDInfo() define.</summary>
+    <seealso cref='M:XSharp.RT.Functions.RDDInfo(XSharp.__Usual,XSharp.__Usual' >RDDInfo()</seealso>
+    <seealso cref='T:XSharp.RDD.Enums.RDDInfo'>DBOrderInfo Enum</seealso>
+  </RDDInfo>
+  <RDDError>
+    <summary>RDD Error Number.</summary>
+    <seealso cref='T:XSharp.Subcodes'>Subcodes Enum</seealso>
+    <seealso cref='P:XSharp.Error.SubCode'>Subcode field in Error object</seealso>
+  </RDDError>
+  <Directory>
+    <seealso cref="M:XSharp.RT.Functions.Directory(System.String,XSharp.__Usual)">Directory Function</seealso>
+    <remarks>
+      Compared to Clipper and Visual Objects the return value of Directory() has changed. 
+      Each subarray returned from Directory() now contains some extra  values, such as creation date and 
+      last access date. The normal Date and Time elements represent the last written date and time.
+    </remarks>
+  </Directory>
+  <Set>
+    <summary>Set() define</summary>
+    <seealso cref='T:XSharp.Set'>Set Enum</seealso>
+  </Set>
+  <Gencode>
+    <summary>Error Gencode define</summary>
+    <seealso cref='T:XSharp.Gencode'>Gencode Enum</seealso>
+
+  </Gencode>
+  <Severity>
+    <summary>Error Severity define</summary>
+    <seealso cref='T:XSharp.Severity'>Severity Enum</seealso>
+  </Severity>
+  <DateCountry>
+    <summary>DateFormat define</summary>
+    <seealso cref='T:XSharp.DateCountry'>DateCountry Enum</seealso>
+  </DateCountry>
+  <NationMessage>
+    <summary>Nation message define</summary>
+    <seealso cref='T:VOErrors'>VOErrors Enum</seealso>
+  </NationMessage>
+  
 </Comments>

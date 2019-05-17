@@ -116,6 +116,7 @@
     <Compile Include="..\..\Common\constants.prg">
       <Link>constants.prg</Link>
     </Compile>
+    <Compile Include="Functions.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>

@@ -184,35 +184,57 @@ FUNCTION _MRelease(cMask AS STRING, lMatch AS LOGIC)	AS VOID
 	RETURN   
 
 
-/// <exclude/>
+
+/// <summary>
+/// Enumerate private variables
+/// </summary>
 FUNCTION _PrivateFirst(lCurrentOnly := FALSE AS LOGIC) AS STRING 
 	RETURN XSharp.MemVar.PrivatesFirst(lCurrentOnly)
 
-/// <exclude/>
+
+/// <summary>
+/// Enumerate private variables
+/// </summary>
 FUNCTION _PrivateNext() AS STRING STRICT
 	RETURN XSharp.MemVar.PrivatesNext() 
 
-/// <exclude/>	
+
+/// <summary>
+/// Enumerate public variables
+/// </summary>
 FUNCTION _PublicFirst() AS STRING STRICT 
 	RETURN XSharp.MemVar.PublicsFirst()
 
-/// <exclude/>
+
+/// <summary>
+/// Enumerate public variables
+/// </summary>
 FUNCTION _PublicNext() AS STRING STRICT
 	RETURN XSharp.MemVar.PublicsNext()
 	
-/// <exclude/>
+/// <summary>
+/// Count private variables
+/// </summary>
+
 FUNCTION _PrivateCount(lCurrentOnly := FALSE AS LOGIC) AS INT      
 	RETURN XSharp.MemVar.PrivatesCount(lCurrentOnly)
 
-/// <exclude/>
+/// <summary>
+/// Count public variables
+/// </summary>
+
 FUNCTION _PublicCount() AS INT STRICT    
 	RETURN XSharp.MemVar.PublicsCount()
 
-/// <exclude/>	
+/// <summary>
+/// Enumerate private variables
+/// </summary>
 FUNCTION _PrivateEnum(lCurrentOnly := FALSE AS LOGIC) AS IEnumerator<STRING>
 	RETURN XSharp.MemVar.PrivatesEnum(lCurrentOnly)
 
-/// <exclude/>		
+/// <summary>
+/// Enumerate public variables
+/// </summary>
 FUNCTION _PublicEnum AS IEnumerator<STRING>
 	RETURN XSharp.MemVar.PublicsEnum()
 

@@ -37,8 +37,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF !locked
                         RETURN FALSE
                     ENDIF
-                    LOCAL recno as LONG
-                    if SELF:Descending
+                    LOCAL recno AS LONG
+                    IF SELF:Descending
                         recno := SELF:_locateFirst(SELF:_rootPage)
                     ELSE
                         recno := SELF:_locateLast(SELF:_rootPage)
@@ -75,8 +75,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF !locked
                         RETURN FALSE
                     ENDIF
-                    LOCAL recno as LONG
-                    if SELF:Descending
+                    LOCAL recno AS LONG
+                    IF SELF:Descending
                         recno := SELF:_locateLast(SELF:_rootPage)
                     ELSE
                         recno := SELF:_locateFirst(SELF:_rootPage)
@@ -234,7 +234,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 topStack:Pos++
                 node:Pos := topStack:Pos
                 IF node:Pos < page:NumKeys .AND. node:ChildPageNo != 0
-                    RETURN SELF:_locate(NULL, 0, SearchMode.Top, node:ChildPageNo)
+                    RETURN SELF:_locate(NULL, 0, SearchMode.Top, node:ChildPageNo,0)
                 ENDIF
                 // Once we are at the bottom level then we simply skip forward using the Right Pointers
                 IF topStack:Pos == page:Numkeys
@@ -529,7 +529,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN result
             
-        PRIVATE METHOD _locateKey( keyBuffer AS BYTE[] , bufferLen AS LONG , searchMode AS SearchMode,recNo as LONG ) AS LONG
+        PRIVATE METHOD _locateKey( keyBuffer AS BYTE[] , bufferLen AS LONG , searchMode AS SearchMode,recNo AS LONG ) AS LONG
             // Find Key starting at the top of the index
             SELF:ClearStack()
             IF bufferLen > SELF:_keySize
@@ -541,41 +541,41 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, SELF:_rootPage, recNo)
             
-        PRIVATE METHOD _locateFirst(pageOffSet as LONG) AS LONG
-            var page := SELF:GetPage(pageOffset)
+        PRIVATE METHOD _locateFirst(pageOffSet AS LONG) AS LONG
+            VAR page := SELF:GetPage(pageOffset)
             IF page == NULL
                 SELF:ClearStack()
                 RETURN 0
             ENDIF
             SELF:PushPage(page, 0)
-            IF page is CdxBranchPage VAR branchPage
-                local nChildPage as LONG
+            IF page IS CdxBranchPage VAR branchPage
+                LOCAL nChildPage AS LONG
                 nChildPage := branchPage:GetChildPage(0)
                 RETURN SELF:_locateFirst(nChildPage)
             ENDIF
-            var node := page[0]
+            VAR node := page[0]
             SELF:_saveCurrentRecord(node)
             RETURN node:Recno
                
             
-        PRIVATE METHOD _locateLast(pageOffSet as LONG) AS LONG
-            var page := SELF:GetPage(pageOffset)
+        PRIVATE METHOD _locateLast(pageOffSet AS LONG) AS LONG
+            VAR page := SELF:GetPage(pageOffset)
             IF page == NULL
                 SELF:ClearStack()
                 RETURN 0
             ENDIF
             SELF:PushPage(page, page:NumKeys-1)
-            IF page is CdxBranchPage VAR branchPage
-                local nChildPage as LONG
+            IF page IS CdxBranchPage VAR branchPage
+                LOCAL nChildPage AS LONG
                 nChildPage := branchPage:GetChildPage(page:NumKeys-1)
                 RETURN SELF:_locateFirst(nChildPage)
             ENDIF
-            var node := page[page:NumKeys-1]
+            VAR node := page[page:NumKeys-1]
             SELF:_saveCurrentRecord(node)
             RETURN node:Recno
 
 
-        PRIVATE METHOD _locate(keyBuffer AS BYTE[] , keyLength AS LONG , searchMode AS SearchMode , pageOffset AS LONG, recNo as Long) AS LONG
+        PRIVATE METHOD _locate(keyBuffer AS BYTE[] , keyLength AS LONG , searchMode AS SearchMode , pageOffset AS LONG, recNo AS LONG) AS LONG
             LOCAL foundPos  AS WORD
             LOCAL page      AS CdxTreePage
             LOCAL nodeCount AS WORD
@@ -677,7 +677,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
             SELF:PushPage(page, foundPos)
             IF page IS CdxBranchPage
-                RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, node:ChildPageNo)
+                RETURN SELF:_locate(keyBuffer, keyLength, searchMode, node:ChildPageNo,recNo)
             ENDIF
             
             IF foundPos < nodeCount .AND. foundPos >= 0

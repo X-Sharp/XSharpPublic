@@ -88,23 +88,23 @@
   </DBFieldInfo>
   <DbRecordInfo>
   <summary>DbRecordInfo() define.</summary>
-   <seealso cref='M:XSharp.RT.FuDbRecordInfonctions.DbRecordInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' >DbRecordInfo()</seealso>
+   <seealso cref='M:XSharp.RT.Functions.DbRecordInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' >DbRecordInfo()</seealso>
    <seealso cref='T:XSharp.RDD.Enums.DbRecordInfo'>DbRecordInfo Enum</seealso>
   </DbRecordInfo>
   <DBInfo>
     <summary>DBInfo() define.</summary>
-    <seealso cref='M:XSharp.RT.Functions.DBInfo(XSharp.__Usual,XSharp.__Usual' >DBInfo()</seealso>
-    <seealso cref='T:XSharp.RDD.Enums.DBInfo'>DBInfo Enum</seealso>
+    <seealso cref='M:XSharp.RT.Functions.DbInfo(XSharp.__Usual,XSharp.__Usual)' >DbInfo()</seealso>
+    <seealso cref='T:XSharp.RDD.Enums.DbInfo'>DbInfo Enum</seealso>
   </DBInfo>
   <DBOrderInfo>
     <summary>DBOrderInfo() define.</summary>
-    <seealso cref='M:XSharp.RT.Functions.DBOrderInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual' >DBInfo()</seealso>
+    <seealso cref='M:XSharp.RT.Functions.DbOrderInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' >DbOrderInfo()</seealso>
     <seealso cref='T:XSharp.RDD.Enums.DbOrder_Info'>DBOrderInfo Enum</seealso>
   </DBOrderInfo>
   <BLOBInfo>
     <summary>DBBlobInfo() define.</summary>
-    <seealso cref='M:XSharp.RT.Functions.DBBlobInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual' >DBBlobInfo()</seealso>
-    <seealso cref='T:XSharp.RDD.Enums.DBInfo'>DBOrderInfo Enum</seealso>
+    <seealso cref='M:XSharp.RT.Functions.DbBlobInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' >DbBlobInfo()</seealso>
+    <seealso cref='T:XSharp.RDD.Enums.DbInfo'>DbInfo Enum</seealso>
   </BLOBInfo>
   <BLOBImportExport>
     <summary>BLOB Import/Export define.</summary>
@@ -123,8 +123,8 @@
   </BlockSize>
   <RDDInfo>
     <summary>RDDInfo() define.</summary>
-    <seealso cref='M:XSharp.RT.Functions.RDDInfo(XSharp.__Usual,XSharp.__Usual' >RDDInfo()</seealso>
-    <seealso cref='T:XSharp.RDD.Enums.RDDInfo'>DBOrderInfo Enum</seealso>
+    <seealso cref='M:XSharp.RT.Functions.RddInfo(XSharp.__Usual,XSharp.__Usual)' >RddInfo()</seealso>
+    <seealso cref='T:XSharp.RDD.Enums.RddInfo'>RddInfo Enum</seealso>
   </RDDInfo>
   <RDDError>
     <summary>RDD Error Number.</summary>
@@ -142,6 +142,8 @@
   <Set>
     <summary>Set() define</summary>
     <seealso cref='T:XSharp.Set'>Set Enum</seealso>
+    <seealso cref='M:XSharp.RT.Functions.Set(XSharp.__Usual,XSharp.__Usual)' >Set() function</seealso>
+
   </Set>
   <Gencode>
     <summary>Error Gencode define</summary>
@@ -158,7 +160,7 @@
   </DateCountry>
   <NationMessage>
     <summary>Nation message define</summary>
-    <seealso cref='T:VOErrors'>VOErrors Enum</seealso>
+    <seealso cref='T:XSharp.VOErrors'>VOErrors Enum</seealso>
   </NationMessage>
   
 </Comments>

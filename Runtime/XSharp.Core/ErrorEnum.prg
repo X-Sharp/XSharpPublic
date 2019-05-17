@@ -1,6 +1,6 @@
 DEFINE OLEAUTO_ERROR_FIRST:= 5300
 /// <summary>List of error numbers that are used to lookup strings in the nation modules.</<summary>
-ENUM VOErrors
+ENUM XSharp.VOErrors
 #region EDB
 	MEMBER EDB       := 1000
 	MEMBER EDB_SEEK := ( EDB + 1 )

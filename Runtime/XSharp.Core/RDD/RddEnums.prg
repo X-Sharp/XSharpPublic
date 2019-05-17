@@ -76,7 +76,7 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER DBS_BLOB_DIRECT_LEN	:= 223
 		MEMBER DBS_STRUCT			:= 998
 		MEMBER DBS_PROPERTIES		:= 999
-		MEMBER DBS_USER				:= 1000
+		MEMBER DBS_USER				:= 1000 
 	END	 ENUM             
 	
 	/// <summary>This enum specifies the various values that the Info method for the IRDD interface accepts.
@@ -533,7 +533,7 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 	/// </note>
 	///</summary>
 
-	ENUM RDDInfo
+	ENUM RddInfo
 		MEMBER RDDI_ISDBF              :=   1   /* Does this RDD support DBFs? */
 		MEMBER RDDI_CANPUTREC          :=   2   /* Can this RDD Put Records? */
 		MEMBER RDDI_DELIMITER          :=   3   /* The field delimiter (as a string) */

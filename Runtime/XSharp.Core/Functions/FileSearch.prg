@@ -8,7 +8,7 @@ USING System.Collections.Generic
 USING System.IO
 USING System.Linq
 
-PUBLIC DELEGATE FileSearcher(cIn AS STRING) AS STRING
+PUBLIC DELEGATE XSharp.FileSearcher(cIn AS STRING) AS STRING
 INTERNAL STATIC CLASS XSharp.FileSearch
     STATIC PRIVATE foundEntries	:= List<OBJECT>{} AS List<OBJECT>
     STATIC PRIVATE enumerator   := NULL AS IEnumerator<OBJECT>

@@ -40,7 +40,7 @@ BEGIN NAMESPACE XSharpModel
                 ENDIF
                 VAR result := prefix + SELF:Prototype
                 IF (_isTyped)
-                    result += AsKeyWord + SELF:TypeName + IIF(SELF:IsArray,"[]","")
+                    result += ParamTypeDesc + SELF:TypeName + IIF(SELF:IsArray,"[]","")
                 ENDIF
                 RETURN result
             END GET

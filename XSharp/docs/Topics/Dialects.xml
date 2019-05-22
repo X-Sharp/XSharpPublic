@@ -8,7 +8,7 @@
     </header>
     <para styleclass="Body Text">The X# compiler can run in different dialects. The table below shows the differences between these dialects.<br/>You can use the /dialect compiler option to select the dialect that you want to use. The Core dialect is default.</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="39" colcount="6" style="width:auto; border-width:1px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="40" colcount="6" style="width:auto; border-width:1px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
       <thead style="vertical-align:top">
         <td style="width:40%;">
           <para styleclass="Normal"><text style="font-weight:bold;">Feature</text></para>
@@ -213,10 +213,30 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">DATE</text> type, including Date literals &amp; NULL_DATE</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">DATE</text> type, including NULL_DATE</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">No</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">DATE and DateTime literals</text></para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">Yes</para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>

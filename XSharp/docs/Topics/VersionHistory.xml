@@ -13,6 +13,10 @@
     <para styleclass="Heading2">Compiler</para>
     <list id="61" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">File wide PUBLIC declarations (for MEMVARs) were incorrectly parsed as GLOBALs. Therefore they were initialized with NIL and not with FALSE. They are now generated correctly as public Memvars. The creation of the memvars and the initialization is done in after the Init3 procedures in the assembly have run.</li>
+      <li styleclass="List">Instance variable initializers now can refer other fields and are allowed to use the SELF keyword. This is still not recommended. The order in which fields are initialized is the order in which they are found in the source code. So make sure the field initializers are defined in the right order in your code. </li>
+      <li styleclass="List">AUTO properties are now also initialized with an empty string when /vo2 is enabled.</li>
+      <li styleclass="List">The compiler was allowing you to define instance variables for Interfaces. They were ignored during code generation. Now an error message is produced with the compiler detects fields on interfaces.</li>
+      <li styleclass="List">When the compiler detects 2 ambiguous symbols with different types (for example a LOCAL and a CLASS with the same name) then the error message now clearly indicates the type for each of these symbols.</li>
       <li styleclass="List">Fixed an exception in the Preprocessor</li>
     </list>
     <list id="62" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -20,7 +24,12 @@
     </list>
     <list id="61" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">The ANY keyword (an alias for USUAL) is no longer supported.</li>
+      <li styleclass="List">Keywords that appear after a COLON (&quot;:&quot;) DOT (&quot;.&quot;) or ALIAS (-&gt;) operator are no longer parsed as keyword but as identifier. This should solve issues with parsing code that for example accesses the Date property of a DateTime class. </li>
       <li styleclass="Body Text"><text styleclass="List">We have added support for the </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">WITH</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> .. </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">WITH</text><text styleclass="List"> statement block:</text><br/><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> oPerson </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> Person</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">oPerson := Person{}</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">WITH</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> oPerson</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; :FirstName := &quot;John&quot;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; :LastName := &quot;Doe&quot;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; :Speak()</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">WITH</text><br/>You can also use the DOT (.) as prefix for the names. The only expressions allowed inside WITH .. ENDWITH are assignments and method calls (like you can see above)</li>
+      <li styleclass="List"><text styleclass="Body Text">Added support for the FoxPro LPARAMETERS statement. Please not that a function or procedure can only have a PARAMETERS keyword OR a LPARAMETERS keyword OR declared parameters (names between parentheses on the FUNCTION/PROCEDURE line)</text></li>
+      <li styleclass="List"><text styleclass="Body Text">Added support for the FoxPro THIS keyword and .NULL. keyword</text></li>
+      <li styleclass="List">We have added support for FoxPro Date Literals {^2019-06-21} and FoxPro DateTime Literals {^2019-06-21 23:59:59}.</li>
+      <li styleclass="List">Date literals and DateTime literals are now also supported in the Core dialect. Date Literals will be represented as DateTime values in the Core dialect</li>
       <li styleclass="List"><text styleclass="Body Text">We have added support for END keywords for all entity types that did not have one yet. The new end keywords are </text><text styleclass="Body Text" style="font-weight:bold;">optional</text><text styleclass="Body Text">. They are listed in the table below:</text><br/></li>
     </list>
     <para styleclass="List"><table styleclass="Default" rowcount="10" colcount="2" style="width:auto; page-break-inside:avoid;">
@@ -109,15 +118,17 @@
     <list id="62" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Fixed a problem with escaped literal strings</li>
       <li styleclass="List">Fixed a problem with implicit narrowing conversions</li>
+      <li styleclass="List">Fixed a problem with macro compiled alias operations &#160;(Customer)-&gt;&amp;fieldName</li>
     </list>
-    <para styleclass="List"></para>
     <para styleclass="Heading2">Runtime</para>
     <list id="62" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Fixed a problem in the Round() function.</li>
       <li styleclass="List">Fixed a problem in the ExecName() function.</li>
       <li styleclass="List">Added FoxPro runtime DLL.</li>
       <li styleclass="List">Added XML support functions in the Xbase++ dialect runtime</li>
-      <li styleclass="List">Added support for dynamic class creation in the Xbase++ dialect runtime</li>
+      <li styleclass="List">Added support for dynamic class creation in the Xbase++ dialect runtime.</li>
+      <li styleclass="List">Fixed a problem in the Push-Pop workarea code for aliased expressions.</li>
+      <li styleclass="List">converting a NULL to a symbol would cause an exception. This has been fixed.</li>
     </list>
     <para styleclass="Heading2">RDD system</para>
     <list id="62" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -138,7 +149,6 @@
       <li styleclass="List">VOXporter: fix for module names with invalid chars for filenames</li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="List"></para>
     <para styleclass="Heading1">Changes in 2.0.1.0 (Bandol RC 1)</para>
     <para styleclass="Heading2">Compiler</para>
     <list id="61" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">

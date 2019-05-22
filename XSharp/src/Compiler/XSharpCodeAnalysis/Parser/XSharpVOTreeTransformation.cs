@@ -1603,6 +1603,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
+        public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
+        {
+            if (context.Op.Type == XP.COLONCOLON)
+            {
+                context.Put(MakeSimpleMemberAccess(
+                    GenerateSelf(),
+                    context.Name.Get<SimpleNameSyntax>()));
+                return;
+
+            }
+            else if (context.Op.Type == XP.DOT)
+            {
+                if (context.Expr.Get<ExpressionSyntax>() is NameSyntax)
+                {
+                    context.Put(_syntaxFactory.QualifiedName(
+                        context.Expr.Get<NameSyntax>(),
+                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                        context.Name.Get<SimpleNameSyntax>()));
+                    return;
+                }
+            }
+            context.Put(MakeSimpleMemberAccess(
+                context.Expr.Get<ExpressionSyntax>(),
+                context.Name.Get<SimpleNameSyntax>()));
+        }
+
         public override void ExitPrefixExpression([NotNull] XP.PrefixExpressionContext context)
         {
             ExpressionSyntax expr = context.Expr.Get<ExpressionSyntax>();
@@ -4171,7 +4197,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // expression:&(expression)
             // needs to translate to either IVarGet() or IVarPut() when the parent is a assignment expression
-            _AdjustSendOperator(context.Op);
             var left = context.Left.Get<ExpressionSyntax>();
             var right = context.Right.Get<ExpressionSyntax>();
             var args = MakeArgumentList(MakeArgument(left), MakeArgument(right));
@@ -4190,7 +4215,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             | Left=expression Op=(DOT | COLON) AMP Name=identifierName  #accessMemberLateName
                 // aa:&Name  Expr must evaluate to a string which is the ivar name
             */
-            _AdjustSendOperator(context.Op);
             var left = context.Left.Get<ExpressionSyntax>();
             var right = context.Name.Get<IdentifierNameSyntax>();
             var args = MakeArgumentList(MakeArgument(left), MakeArgument(right));

@@ -40,6 +40,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
         }
 
+        public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
+        {
+            CoreAccessMember(context);
+        }
+
         public override void ExitFoxclsvars([NotNull] XP.FoxclsvarsContext context)
         {
             context.Put(context.Member.Get<MemberDeclarationSyntax>());

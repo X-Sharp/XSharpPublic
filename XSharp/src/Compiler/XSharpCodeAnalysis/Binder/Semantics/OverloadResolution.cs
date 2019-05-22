@@ -341,9 +341,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                             var info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous,
                                 new object[] {
                                         r1.Name,
+                                        r1.Kind.ToString(),
                                         new FormattedSymbol(r1, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                        new FormattedSymbol(r2, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                        r1.Kind.ToString()});
+                                        r2.Kind.ToString(),
+                                        new FormattedSymbol(r2, SymbolDisplayFormat.CSharpErrorMessageFormat)
+                                        });
                             useSiteDiagnostics = new HashSet<DiagnosticInfo>();
                             useSiteDiagnostics.Add(info);
                             return true;

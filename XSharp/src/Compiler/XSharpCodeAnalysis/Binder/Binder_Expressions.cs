@@ -605,7 +605,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // so we check here if we are called from a memberaccessexpression with a colon separator
             // so String.Compare will use different lookup options as SELF:ToString()
             var originalOptions = options;
-
+            var nsOrTypesFirst = false;
             // Here we add XSharp Specific options
             if (!bindMethod)
             {
@@ -635,18 +635,21 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (node.Parent is MemberAccessExpressionSyntax)
                 {
-                    // Check for Messagebax.Show() which is class member access
+                    // Check for Messagebox.Show() which is class member access
                     // versions window:ToString() which is instance member access
                     if (!node.IsInstanceMemberAccess(true))
-                    { 
-                        options = LookupOptions.NamespacesOrTypesOnly;
+                    {
+                        nsOrTypesFirst = true;
                     }
                 }
             }
-
             var name = node.Identifier.ValueText;
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-
+            var nsResult = LookupResult.GetInstance();
+            if (nsOrTypesFirst)
+            { 
+               this.LookupSymbolsWithFallback(nsResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: LookupOptions.NamespacesOrTypesOnly);
+            }
             if (lookupResult.IsClear)
             {
                 this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
@@ -679,7 +682,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                     this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
                 }
             }
-
+            if (!nsResult.IsClear)
+            {
+                foreach (var symbol in nsResult.Symbols)
+                {
+                    if (!lookupResult.Symbols.Contains(symbol))
+                    {
+                        lookupResult.Symbols.Add(symbol);
+                    }
+                }
+            }
             diagnostics.Add(node, useSiteDiagnostics);
 
             if (lookupResult.Kind != LookupResultKind.Empty)

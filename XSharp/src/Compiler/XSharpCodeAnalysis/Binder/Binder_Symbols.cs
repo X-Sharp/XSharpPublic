@@ -33,9 +33,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous, originalSymbols,
                     new object[] {
                                         where,
+                                        first.Kind.ToString(),
                                         new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                        new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                        first.Kind.ToString()});
+                                        second.Kind.ToString(),
+                                        new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat)
+                    });
                 diagnostics.Add(info, where.Location);
                 return first;
             }
@@ -44,9 +46,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous, originalSymbols,
                     new object[] {
                                         where,
+                                        first.Kind.ToString(),
                                         new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                        new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                        first.Kind.ToString()});
+                                        second.Kind.ToString(),
+                                        new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat)
+                                        });
                 diagnostics.Add(info, where.Location);
                 return second;
             }
@@ -58,9 +62,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous, originalSymbols,
                     new object[] {
                                     where,
+                                    first.Kind.ToString(),
                                     new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                    new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                    first.Kind.ToString()});
+                                    second.Kind.ToString(),
+                                    new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat)
+                                    });
                 diagnostics.Add(info, where.Location);
                 return first;
             }
@@ -69,9 +75,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous, originalSymbols,
                     new object[] {
                                         where,
+                                        first.Kind.ToString(),
                                         new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                        new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                        first.Kind.ToString()});
+                                        second.Kind.ToString(),
+                                        new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat)
+                                        });
                 diagnostics.Add(info, where.Location);
                 return first;
 

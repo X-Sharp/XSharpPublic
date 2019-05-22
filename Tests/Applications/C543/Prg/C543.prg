@@ -12,6 +12,7 @@ FUNCTION Start() AS VOID
 	LOCAL o AS TestClass
 	o := TestClass{}
 	xAssert(o:nHintLen == 3)
+	xAssert(o:nHintLen0 == 3)
 
 	xAssert(o:n == 1)
 	xAssert(o:m == 1)

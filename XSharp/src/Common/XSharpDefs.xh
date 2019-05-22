@@ -31,12 +31,13 @@
 
 #endif	
 
-// Some special END keywords from FoxPro and Xbase++
+#ifdef __DIALECT_XBASEPP__
+#include "XbasePPCmd.xh"
+#endif
 
-#xcommand ENDPROC => END PROCEDURE
-#xcommand ENDFUNC => END FUNCTION
-#xcommand ENDWITH => END WITH
-#xcommand ENDFOR  => NEXT
-
+#ifdef __DIALECT_FOXPRO__
+#include "FoxProCmd.xh"
+#endif
 
 #endif
+

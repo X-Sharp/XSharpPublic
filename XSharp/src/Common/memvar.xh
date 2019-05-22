@@ -1,0 +1,44 @@
+///////////////////////////////////////////////////////////////////////////
+// memvar.xh
+//
+// XSharp Memvar commands
+//
+// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+// Caution: do not modify this file. It will be overwritten during product updates
+//
+// IMPORTANT:  Functions beginning with an underscore
+//             character are reserved, version-dependent functions.
+//             These functions should not be called directly.
+
+
+***
+*  MEMVAR variables
+*
+#command CLEAR MEMORY                   => _MClear()
+#command RELEASE <vars,...>             => _MXRelease( <"vars"> )
+#command RELEASE ALL                    => _MRelease("*", TRUE)
+#command RELEASE ALL LIKE <skel>        => _MRelease( #<skel>, TRUE )
+#command RELEASE ALL EXCEPT <skel>      => _MRelease( #<skel>, FALSE )
+
+#command RESTORE [FROM <(file)>] [<add: ADDITIVE>]                      ;
+      => _MRestore( <(file)>, <.add.> )
+
+#command SAVE ALL LIKE <skel> TO <(file)>                               ;
+      => _MSave( <(file)>, <(skel)>, TRUE )
+
+#command SAVE TO <(file)> ALL LIKE <skel>                               ;
+      => _MSave( <(file)>, <(skel)>, TRUE )
+
+#command SAVE ALL EXCEPT <skel> TO <(file)>                             ;
+      => _MSave( <(file)>, <(skel)>, FALSE )
+
+#command SAVE TO <(file)> ALL EXCEPT <skel>                             ;
+      => _MSave( <(file)>, <(skel)>, FALSE )
+
+#command SAVE [TO <(file)>] [ALL]                                       ;
+      => _MSave( <(file)>, "*", TRUE )
+
+
+** EOF

@@ -25,7 +25,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">If you want to know in which Assembly a function or type is defined then your &quot;best friend&quot; is the documentation. We are using a tool to generate the documentation, so this is always correct. <br/>Some subsystems have functions XSharp.Core DLL and in XSharp.VO.DLL as well.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="9" colcount="4" style="head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="10" colcount="4" style="head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
       <thead style="vertical-align:top">
         <td style="width:251px;">
           <para styleclass="Normal"><text style="font-weight:bold;">Component</text></para>
@@ -93,6 +93,21 @@
           <para styleclass="Normal">X# XPP</para>
         </td>
         <td style="width:154px;">
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:251px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_VFP">XSharp.VFP.DLL</link></para>
+        </td>
+        <td style="width:618px;">
+          <para styleclass="Normal">This DLL adds features to the runtime that are needed for the FoxPro dialect.</para>
+        </td>
+        <td style="width:271px;">
+          <para styleclass="Normal">X# FoxPro</para>
+        </td>
+        <td style="width:154px;">
+          <para styleclass="Normal">4.6</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -120,6 +135,7 @@
           <para styleclass="Normal">X# Core</para>
         </td>
         <td style="width:154px;">
+          <para styleclass="Normal">4.6</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

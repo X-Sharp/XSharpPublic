@@ -11,6 +11,9 @@
     <para styleclass="Normal">ClassCreate</para>
     <para styleclass="Normal">ClassDestroy()</para>
     <para styleclass="Normal">ClassObject()</para>
+    <para styleclass="Normal">XMLDocOpenFile()</para>
+    <para styleclass="Normal">XMLDocSetAction()</para>
+    <para styleclass="Normal">etc.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Also some Xbase++ specific types such as </para>
     <para styleclass="Normal">Abstract</para>

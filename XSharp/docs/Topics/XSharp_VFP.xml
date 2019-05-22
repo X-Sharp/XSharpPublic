@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XSharp.VFP</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">XSharp.VFP</para>
+    </header>
+    <para styleclass="Normal">This DLL adds some specific types and functions that are unique to the FoxPro dialect </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Functions such as</para>
+    <para styleclass="Normal">CreateObject()</para>
+    <para styleclass="Normal">etc.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

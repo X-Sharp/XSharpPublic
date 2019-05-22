@@ -47812,7 +47812,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C474 - No compiler error with incorrect PROPERTY syntax
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
 ; ************** APPLICATION C475 - Runtime problems comparing SYMBOL/DATE to NULL/NULL_OBJECT *************
 Application = C475 - Runtime problems comparing SYMBOL/DATE to NULL/NULL_OBJECT
 IDEVersion = 1.06
@@ -47852,8 +47852,8 @@ FileGUID = 8F32584C-C4F0-4080-B411-E3A8EFA1E05D
 FileType = Code
 [C475 - Runtime problems comparing SYMBOL/DATE to NULL/NULL_OBJECT References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C475 - Runtime problems comparing SYMBOL/DATE to NULL/NULL_OBJECT Resources]
 [C475 - Runtime problems comparing SYMBOL/DATE to NULL/NULL_OBJECT Native Resources]
 [C475 - Runtime problems comparing SYMBOL/DATE to NULL/NULL_OBJECT License files]
@@ -54852,7 +54852,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C542 - StackOverflowException with FLOAT += USUAL
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30
 ; ************** APPLICATION C543 - Cannot initialize field using value from another initialized field *************
 Application = C543 - Cannot initialize field using value from another initialized field
 IDEVersion = 1.06
@@ -68525,7 +68525,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C674 - Failed to emit module with invalid string - int comparison in VO dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C675 - STRING AUTO properties not initialized with /vo2 *************
 Application = C675 - STRING AUTO properties not initialized with /vo2
 IDEVersion = 1.06

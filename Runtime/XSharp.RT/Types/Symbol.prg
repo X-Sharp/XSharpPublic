@@ -44,10 +44,14 @@ BEGIN NAMESPACE XSharp
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)];
         CONSTRUCTOR(sValue AS STRING,  upperCase AS LOGIC)
-            IF (upperCase)
-                sValue := sValue:ToUpperInvariant()
+            IF sValue != NULL
+                IF (upperCase)
+                    sValue := sValue:ToUpperInvariant()
+                ENDIF
+                _index := SymbolTable.Add(sValue)
+            ELSE
+                _index := 0
             ENDIF
-            _index := SymbolTable.Add(sValue)
             RETURN
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)];

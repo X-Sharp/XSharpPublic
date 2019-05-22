@@ -1019,8 +1019,8 @@
 			<xs:element name="html-code" type="html-code.class" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="src" type="xs:string" use="required"/>
-		<xs:attribute name="width" type="pixel.type" use="required"/>
-		<xs:attribute name="height" type="pixel.type" use="required"/>
+		<xs:attribute name="width" type="pixel.type"/>
+		<xs:attribute name="height" type="pixel.type"/>
 		<xs:attribute name="scale" type="percent.type"/>
 		<xs:attribute name="align">
 			<xs:simpleType>
@@ -1038,6 +1038,8 @@
 		<xs:attribute name="previewimage" type="xs:string"/>
 		<xs:attribute name="lightbox" type="xs:boolean"/>
 		<xs:attribute name="autostart" type="xs:boolean"/>
+		<xs:attribute name="playafter" type="xs:float"/>
+		<xs:attribute name="printcolumns" type="xs:integer"/>
 		<xs:attribute name="loop" type="xs:boolean"/>
 		<xs:attribute name="showcontrols" type="xs:boolean"/>
 		<xs:attribute name="playbutton" type="xs:boolean"/>

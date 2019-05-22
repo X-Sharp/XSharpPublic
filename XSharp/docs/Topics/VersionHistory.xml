@@ -15,7 +15,7 @@
       <li styleclass="List">File wide PUBLIC declarations (for MEMVARs) were incorrectly parsed as GLOBALs. Therefore they were initialized with NIL and not with FALSE. They are now generated correctly as public Memvars. The creation of the memvars and the initialization is done in after the Init3 procedures in the assembly have run.</li>
       <li styleclass="List">Instance variable initializers now can refer other fields and are allowed to use the SELF keyword. This is still not recommended. The order in which fields are initialized is the order in which they are found in the source code. So make sure the field initializers are defined in the right order in your code. </li>
       <li styleclass="List">AUTO properties are now also initialized with an empty string when /vo2 is enabled.</li>
-      <li styleclass="List">The compiler was allowing you to define instance variables for Interfaces. They were ignored during code generation. Now an error message is produced with the compiler detects fields on interfaces.</li>
+      <li styleclass="List">The compiler was allowing you to define instance variables for Interfaces. They were ignored during code generation. Now an error message is produced when the compiler detects fields on interfaces.</li>
       <li styleclass="List">When the compiler detects 2 ambiguous symbols with different types (for example a LOCAL and a CLASS with the same name) then the error message now clearly indicates the type for each of these symbols.</li>
       <li styleclass="List">Fixed an exception in the Preprocessor</li>
     </list>
@@ -30,7 +30,7 @@
       <li styleclass="List"><text styleclass="Body Text">Added support for the FoxPro THIS keyword and .NULL. keyword</text></li>
       <li styleclass="List">We have added support for FoxPro Date Literals {^2019-06-21} and FoxPro DateTime Literals {^2019-06-21 23:59:59}.</li>
       <li styleclass="List">Date literals and DateTime literals are now also supported in the Core dialect. Date Literals will be represented as DateTime values in the Core dialect</li>
-      <li styleclass="List"><text styleclass="Body Text">We have added support for END keywords for all entity types that did not have one yet. The new end keywords are </text><text styleclass="Body Text" style="font-weight:bold;">optional</text><text styleclass="Body Text">. They are listed in the table below:</text><br/></li>
+      <li styleclass="List"><text styleclass="Body Text">We have added support for END keywords for all entity types that did not have one yet. The new end keywords are </text><text styleclass="Body Text" style="font-weight:bold;">optional</text><text styleclass="Body Text">. They are listed in the table below. The FoxPro ENDPROC and ENDFUNC keywords will be mapped to END PROCEDURE and END FUNCTION with a UDC.</text><br/></li>
     </list>
     <para styleclass="List"><table styleclass="Default" rowcount="10" colcount="2" style="width:auto; page-break-inside:avoid;">
       <tr style="vertical-align:top">

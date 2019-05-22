@@ -48,12 +48,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             var containingType = memberOpt?.ContainingType;
             bool inTopLevelScriptMember = (object)containingType != null && containingType.IsScriptClass;
 
+#if !XSHARP
             // "this" is not allowed in field initializers (that are not script variable initializers):
             if (InFieldInitializer && !inTopLevelScriptMember)
             {
                 return false;
             }
-
+#endif
             // top-level script code only allows implicit "this" reference:
             return !inTopLevelScriptMember || !isExplicit;
         }
@@ -1683,6 +1684,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 bool hasErrors = false;
                 if (EnclosingNameofArgument != node)
                 {
+#if !XSHARP
                     if (InFieldInitializer && !currentType.IsScriptClass)
                     {
                         //can't access "this" in field initializers
@@ -1696,6 +1698,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         hasErrors = true;
                     }
                     else
+#endif
                     {
                         // not an instance member if the container is a type, like when binding default parameter values.
                         var containingMember = ContainingMember();

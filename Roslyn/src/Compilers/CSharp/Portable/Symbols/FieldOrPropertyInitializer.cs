@@ -28,11 +28,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public FieldOrPropertyInitializer(FieldSymbol fieldOpt, SyntaxNode syntax, int precedingInitializersLength)
         {
-#if XSHARP
-            Debug.Assert((syntax.IsKind(SyntaxKind.VariableDeclarator) || syntax.IsKind(SyntaxKind.EqualsValueClause)) && fieldOpt != null || syntax is StatementSyntax);
-#else
             Debug.Assert(syntax.IsKind(SyntaxKind.EqualsValueClause) && fieldOpt != null || syntax is StatementSyntax);
-#endif
 
             FieldOpt = fieldOpt;
             Syntax = syntax.GetReference();

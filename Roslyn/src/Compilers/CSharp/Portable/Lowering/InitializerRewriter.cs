@@ -94,8 +94,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             // a generated initial value for VO NULL_STRING initialization
             // should not overwrite a value set in a child class
             // not that we recommend that <g>
-            
-            if (fieldInit.WasCompilerGenerated && fieldInit.Field.Type.IsStringType() 
+            bool wasGenerated = fieldInit.WasCompilerGenerated;
+            if (! wasGenerated)
+            {
+                var xNode = initValue.Syntax as LiteralExpressionSyntax;
+                if (xNode != null && xNode.XGenerated)
+                { 
+                    wasGenerated = true;
+                }
+            }
+            if (wasGenerated && fieldInit.Field.Type.IsStringType() 
                 && fieldInit.Field.DeclaringCompilation.Options.VONullStrings &&
                 ! fieldInit.Field.IsStatic)
             {

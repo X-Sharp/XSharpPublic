@@ -3049,31 +3049,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                         AddInitializer(ref instanceInitializers, ref builder.InstanceSyntaxLength, fieldSymbol, variable.Initializer);
                                     }
                                 }
-#if XSHARP
-                                if (bodyBinder.Compilation.Options.VONullStrings && variable.Initializer == null && !this.IsStructType())
-                                {
-                                    bool isString = (fieldSyntax.Declaration.Type as PredefinedTypeSyntax)?.Keyword.IsKind(SyntaxKind.StringKeyword) ?? false;
-                                    if (!isString && fieldSyntax.Declaration.Type.ToString().IndexOf("string", StringComparison.OrdinalIgnoreCase) >= 0)
-                                    {
-                                        var typeBinder = this.GetBinder(fieldSyntax.Declaration.Type);
-                                        var ts = typeBinder.BindType(fieldSyntax.Declaration.Type, new DiagnosticBag());
-                                        isString = ts.SpecialType == SpecialType.System_String;
-                                    }
-                                    // Note that the initializer added here is of the wrong type. Roslyn expects a EqualsValueSyntax.
-                                    // We will handle that later when processing the initializers 
-                                    if (isString)
-                                    {
-                                        if (fieldSymbol.IsStatic)
-                                        {
-                                            AddInitializer(ref staticInitializers, ref builder.StaticSyntaxLength, fieldSymbol, variable);
-                                        }
-                                        else
-                                        {
-                                            AddInitializer(ref instanceInitializers, ref builder.InstanceSyntaxLength, fieldSymbol, variable);
-                                        }
-                                    }
-                                }
-#endif
                             }
                         }
                         break;

@@ -900,21 +900,33 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         internal static bool isInInterface([NotNull] this RuleContext context)
         {
             var parent = context.Parent;
-            return ((parent is XSharpParser.ClassmemberContext) && (parent.Parent is XSharpParser.Interface_Context))
-                || (parent is XSharpParser.Interface_Context);
+            if (parent == null)
+                return false;
+            if (parent is XSharpParser.ClassmemberContext)
+                return parent.Parent is XSharpParser.Interface_Context;
+            else
+                return parent.isInInterface();
         }
 
         internal static bool isInClass([NotNull] this RuleContext context)
         {
             var parent = context.Parent;
-            return ((parent is XSharpParser.ClassmemberContext) && (parent.Parent is XSharpParser.Class_Context))
-                || (parent is XSharpParser.Class_Context);
+            if (parent == null)
+                return false;
+            if (parent is XSharpParser.ClassmemberContext)
+                return parent.Parent is XSharpParser.Class_Context;
+            else
+                return parent.isInClass();
         }
         internal static bool isInStructure([NotNull] this RuleContext context)
         {
             var parent = context.Parent;
-            return ((parent is XSharpParser.ClassmemberContext) && (parent.Parent is XSharpParser.Structure_Context))
-                || (parent is XSharpParser.Structure_Context);
+            if (parent == null)
+                return false;
+            if (parent is XSharpParser.ClassmemberContext)
+                return parent.Parent is XSharpParser.Structure_Context;
+            else
+                return parent.isInStructure();
         }
 
         internal static bool IsRealCodeBlock([NotNull] this IXParseTree context)

@@ -5499,7 +5499,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Override of virtual method '{0}' has CLIPPER calling convention but overridden method in parent class is STRICT.</value>
   </data>
   <data name="WRN_VulcanAmbiguous" xml:space="preserve">
-    <value>{3} '{0}' is ambiguous. Could be '{1}' or '{2}'. Using the first one.</value>
+    <value>'{0}' is ambiguous. Could be  {1} '{2}' or {3} '{4}'. Using the first one.</value>
   </data>
   <data name="WRN_FunctionsTakePrecedenceOverMethods" xml:space="preserve">
     <value>{3} '{0}' is ambiguous. Could be '{1}' or '{2}'. Using the function because in X# functions take precedence over static methods. To call the method use the fully qualified name.</value>

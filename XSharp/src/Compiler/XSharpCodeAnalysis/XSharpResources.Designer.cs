@@ -20,7 +20,7 @@ namespace LanguageService.CodeAnalysis {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class XSharpResources {
@@ -6146,6 +6146,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid {0} literal &apos;{1}&apos;: {2}..
+        /// </summary>
+        internal static string ERR_InvalidLiteral {
+            get {
+                return ResourceManager.GetString("ERR_InvalidLiteral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid token &apos;{0}&apos; in class, struct, or interface member declaration.
         /// </summary>
         internal static string ERR_InvalidMemberDecl {
@@ -7964,7 +7973,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An entity cannot have a combination of a PARAMETERS statement, a LPARAMETERS statement and/or formal parameters..
+        ///   Looks up a localized string similar to An entity can only have a single declaration of parameters with a PARAMETERS statement, LPARAMETERS statement or formal parameters..
         /// </summary>
         internal static string ERR_ParametersWithDeclaredParameters {
             get {
@@ -15733,7 +15742,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {3} &apos;{0}&apos; is ambiguous. Could be &apos;{1}&apos; or &apos;{2}&apos;. Using the first one..
+        ///   Looks up a localized string similar to &apos;{0}&apos; is ambiguous. Could be  {1} &apos;{2}&apos; or {3} &apos;{4}&apos;. Using the first one..
         /// </summary>
         internal static string WRN_VulcanAmbiguous {
             get {

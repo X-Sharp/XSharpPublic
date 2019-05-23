@@ -67,9 +67,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		src\Common\BuildNumber.h = src\Common\BuildNumber.h
 		src\Common\CommonAssemblyInfo.cs = src\Common\CommonAssemblyInfo.cs
 		src\Common\Constants.cs = src\Common\Constants.cs
+		src\Common\dbcmd.xh = src\Common\dbcmd.xh
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
+		src\Common\FoxProCmd.xh = src\Common\FoxProCmd.xh
+		src\Common\memvar.xh = src\Common\memvar.xh
 		src\Common\version.xh = src\Common\version.xh
+		src\Common\XbasePPCmd.xh = src\Common\XbasePPCmd.xh
 		src\Common\XSharpDefs.xh = src\Common\XSharpDefs.xh
 	EndProjectSection
 EndProject

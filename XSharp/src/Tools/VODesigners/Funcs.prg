@@ -1,4 +1,4 @@
-#using System.Collections.Generic
+﻿#using System.Collections.Generic
 #using System.Windows.Forms
 #using System.Drawing
 #using System.Runtime.InteropServices
@@ -70,8 +70,8 @@ PUBLIC STATIC PARTIAL CLASS Funcs
    
       nStyle := Funcs.ApplyVOStyle(oDesign , "Border" , nStyle)
    
-      p:Style := _Or(p:Style , nStyle)
-      p:ExStyle := _Or(p:ExStyle , nExStyle)
+      p:Style := _OR(p:Style , nStyle)
+      p:ExStyle := _OR(p:ExStyle , nExStyle)
    RETURN
    
    INTERNAL STATIC METHOD ApplyVOStyle(oDesign AS DesignWindowItem , cProp AS STRING , nStyle AS INT) AS INT
@@ -80,18 +80,18 @@ PUBLIC STATIC PARTIAL CLASS Funcs
       IF oProp != NULL
          IF oProp:ValueLogic
 //				nStyle := _Or(nStyle , VODefines.GetValue(oProp:cEnumValues))
-            nStyle := _Or(nStyle , (INT)VODefines.GetDefineValue(oProp:aEnumValues[0]))
+            nStyle := _OR(nStyle , (INT)VODefines.GetDefineValue(oProp:aEnumValues[0]))
 /*			ELSE
-            nStyle := _And(nStyle , 0xFFFFFFF - VODefines.GetValue(oProp:aEnumValues[0]))*/
+            nStyle := _AND(nStyle , 0xFFFFFFF - VODefines.GetValue(oProp:aEnumValues[0]))*/
          ENDIF
       ENDIF
    RETURN nStyle
 
-   INTERNAL STATIC METHOD SplitString(cString AS STRING , cChar AS Char) AS List<STRING>
+   INTERNAL STATIC METHOD SplitString(cString AS STRING , cChar AS CHAR) AS List<STRING>
    LOCAL aList AS List<STRING>
    aList := List<STRING>{}
    RETURN Funcs.SplitString(aList , cString , cChar)
-   INTERNAL STATIC METHOD SplitString(aList AS List<STRING> , cString AS STRING , cChar AS Char) AS List<STRING>
+   INTERNAL STATIC METHOD SplitString(aList AS List<STRING> , cString AS STRING , cChar AS CHAR) AS List<STRING>
    LOCAL nAt AS INT
    DO WHILE cString:Length != 0
       nAt := cString:IndexOf(cChar)
@@ -122,27 +122,27 @@ PUBLIC STATIC PARTIAL CLASS Funcs
    RETURN TRUE
 
    INTERNAL STATIC METHOD MessageBox(cMessage AS STRING , cCaption AS STRING) AS VOID
-      MessageBox.Show(cMessage , cCaption , MessageBoxButtons.OK , MessageBoxIcon.Information)
+      System.Windows.Forms.MessageBox.Show(cMessage , cCaption , MessageBoxButtons.OK , MessageBoxIcon.Information)
    RETURN
    INTERNAL STATIC METHOD MessageBox(cMessage AS STRING) AS VOID
-      MessageBox.Show(cMessage , Resources.EditorName , MessageBoxButtons.OK , MessageBoxIcon.Information)
+      System.Windows.Forms.MessageBox.Show(cMessage , Resources.EditorName , MessageBoxButtons.OK , MessageBoxIcon.Information)
    RETURN
    INTERNAL STATIC METHOD WarningBox(cMessage AS STRING , cCaption AS STRING) AS VOID
-      MessageBox.Show(cMessage , cCaption , MessageBoxButtons.OK , MessageBoxIcon.Warning)
+      System.Windows.Forms.MessageBox.Show(cMessage , cCaption , MessageBoxButtons.OK , MessageBoxIcon.Warning)
    RETURN
    INTERNAL STATIC METHOD WarningBox(cMessage AS STRING) AS VOID
-      MessageBox.Show(cMessage , Resources.EditorName , MessageBoxButtons.OK , MessageBoxIcon.Warning)
+      System.Windows.Forms.MessageBox.Show(cMessage , Resources.EditorName , MessageBoxButtons.OK , MessageBoxIcon.Warning)
    RETURN
    INTERNAL STATIC METHOD ErrorBox(cMessage AS STRING , cCaption AS STRING) AS VOID
-      MessageBox.Show(cMessage , cCaption , MessageBoxButtons.OK , MessageBoxIcon.Error)
+      System.Windows.Forms.MessageBox.Show(cMessage , cCaption , MessageBoxButtons.OK , MessageBoxIcon.Error)
    RETURN
    INTERNAL STATIC METHOD ErrorBox(cMessage AS STRING) AS VOID
-      MessageBox.Show(cMessage , Resources.EditorName , MessageBoxButtons.OK , MessageBoxIcon.Error)
+      System.Windows.Forms.MessageBox.Show(cMessage , Resources.EditorName , MessageBoxButtons.OK , MessageBoxIcon.Error)
    RETURN
    INTERNAL STATIC METHOD QuestionBox(cMessage AS STRING , cCaption AS STRING) AS LOGIC
-   RETURN MessageBox.Show(cMessage , cCaption , MessageBoxButtons.YesNo , MessageBoxIcon.Question) == DialogResult.Yes
+   RETURN System.Windows.Forms.MessageBox.Show(cMessage , cCaption , MessageBoxButtons.YesNo , MessageBoxIcon.Question) == DialogResult.Yes
    INTERNAL STATIC METHOD QuestionBox(cMessage AS STRING) AS LOGIC
-   RETURN MessageBox.Show(cMessage , Resources.EditorName , MessageBoxButtons.YesNo , MessageBoxIcon.Question) == DialogResult.Yes
+   RETURN System.Windows.Forms.MessageBox.Show(cMessage , Resources.EditorName , MessageBoxButtons.YesNo , MessageBoxIcon.Question) == DialogResult.Yes
 
    INTERNAL STATIC METHOD PixelsToUnits(oRect AS Rectangle , oInfo AS UnitTranslateInfo) AS Rectangle
       oRect:X := (INT)((REAL8(oRect:X * oInfo:nBaseUnitX) / (REAL8)(oInfo:tmWidth * 2) + (REAL8)0.5))
@@ -187,20 +187,20 @@ PUBLIC STATIC PARTIAL CLASS Funcs
       LOCAL cIndex AS STRING
       LOCAL cTemp AS STRING
       LOCAL cRet AS STRING
-      LOCAL cDelim AS Char
+      LOCAL cDelim AS CHAR
       LOCAL n AS INT
       cTemp := cCaption:Trim()
-      IF lCode .and. lAddQuotesIfNoResource
+      IF lCode .AND. lAddQuotesIfNoResource
          cCaption := e"\"" + cCaption + e"\""
       ENDIF
-      IF cTemp:Length > 5 .and. cTemp[0] == '<' .and. cTemp[cTemp:Length - 1] == '>'
+      IF cTemp:Length > 5 .AND. cTemp[0] == '<' .AND. cTemp[cTemp:Length - 1] == '>'
          cTemp := cTemp:Substring(1 , cTemp:Length - 2):Trim()
       ELSE
          RETURN cCaption
       ENDIF
       cDelim := cTemp[0]
       cDefCaption := NULL
-      IF cDelim == (Char)34 .or. cDelim == (Char)39 .or. cDelim == '['
+      IF cDelim == (CHAR)34 .OR. cDelim == (CHAR)39 .OR. cDelim == '['
          IF cDelim == '['
             cDelim := ']'
          ENDIF
@@ -219,7 +219,7 @@ PUBLIC STATIC PARTIAL CLASS Funcs
             ENDIF
          END DO
       ENDIF
-      IF cDefCaption == NULL .or. cTemp:Length < 2
+      IF cDefCaption == NULL .OR. cTemp:Length < 2
          RETURN cCaption
       ENDIF
 
@@ -227,7 +227,7 @@ PUBLIC STATIC PARTIAL CLASS Funcs
       IF cTemp[0] == ','
          cIndex := cTemp:Substring(1):Trim()
       ENDIF
-      IF cIndex == NULL .or. cIndex:Length == 0
+      IF cIndex == NULL .OR. cIndex:Length == 0
          RETURN cCaption
       ENDIF
 /*		FOR n := 0 UPTO cIndex:Length - 1
@@ -310,7 +310,7 @@ PUBLIC STATIC PARTIAL CLASS Funcs
       cBuffer := cBuffer:Replace(CRLF , c0)
       cBuffer := cBuffer:Replace(CR , c0)
       cBuffer := cBuffer:Replace(LF , c0)
-      aLines := cBuffer:Split(<Char>{'\0'})
+      aLines := cBuffer:Split(<CHAR>{'\0'})
       aRet := List<STRING>{}
       FOR n := 1 UPTO aLines:Length
          aRet:Add(aLines[n])
@@ -320,14 +320,14 @@ PUBLIC STATIC PARTIAL CLASS Funcs
 END CLASS
 
 FUNCTION ChrW(n AS DWORD) AS STRING
-RETURN ((Char)n):ToString()
+RETURN ((CHAR)n):ToString()
 FUNCTION Left(c AS STRING , dLen AS DWORD) AS STRING
 	IF (DWORD)c:Length < dLen
 		RETURN c
 	END IF
 RETURN c:Substring(0 , (INT)dLen)
 FUNCTION CharPos(c AS STRING, dPos AS DWORD) AS STRING
-	IF dPos > (DWORD)c:Length .or. dPos == 0
+	IF dPos > (DWORD)c:Length .OR. dPos == 0
 		RETURN ""
 	END IF
 RETURN c:Substring((INT)dPos - 1 , 1)

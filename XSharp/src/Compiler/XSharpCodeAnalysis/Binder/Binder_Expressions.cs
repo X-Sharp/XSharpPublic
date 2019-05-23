@@ -682,7 +682,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
                 }
             }
-            if (!nsResult.IsClear)
+            if (!nsResult.IsClear && lookupResult.IsClear)
             {
                 foreach (var symbol in nsResult.Symbols)
                 {

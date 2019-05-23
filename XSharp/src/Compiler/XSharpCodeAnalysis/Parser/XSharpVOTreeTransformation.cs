@@ -1480,7 +1480,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Data.IsInitAxit)
             {
                 var idName = context.Id.GetText();
-                if (String.Equals(idName, "init", StringComparison.OrdinalIgnoreCase))
+                if (String.Equals(idName, XSharpIntrinsicNames.InitMethod, StringComparison.OrdinalIgnoreCase))
                 {
                     // Convert method to constructor
                     var mods = context.Modifiers?.GetList<SyntaxToken>() ?? MakeList<SyntaxToken>(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
@@ -1496,7 +1496,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     return;
                 }
-                else if (String.Equals(idName, "axit", StringComparison.OrdinalIgnoreCase))
+                else if (String.Equals(idName, XSharpIntrinsicNames.AxitMethod, StringComparison.OrdinalIgnoreCase))
                 {
                     // Convert method to destructor
                     var mods = context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>();
@@ -3001,26 +3001,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 name = ins.Identifier.Text.ToUpper();
                 switch (name)
                 {
-                    case "PCALL":
-                    case "CCALL":
+                    case XSharpIntrinsicNames.PCall:
+                    case XSharpIntrinsicNames.CCall:
                         if (GeneratePCall(context))
                             return;
                         break;
-                    case "PCALLNATIVE":
-                    case "CCALLNATIVE":
+                    case XSharpIntrinsicNames.PCallNative:
+                    case XSharpIntrinsicNames.CCallNative:
                         expr = GenerateLiteral(0).WithAdditionalDiagnostics(
                             new SyntaxDiagnosticInfo(ErrorCode.ERR_PCallNativeGenericType, ins.Identifier.Text));
                         context.Put(expr);
                         return;
-                    case "STRING2PSZ":
-                    case "CAST2PSZ":
+                    case XSharpIntrinsicNames.String2Psz:
+                    case XSharpIntrinsicNames.Cast2Psz:
                         if (GenerateString2Psz(context, name))
                             return;
                         break;
-                    case "PCOUNT":
-                    case "ARGCOUNT":
-                    case "_GETMPARAM":
-                    case "_GETFPARAM":
+                    case XSharpIntrinsicNames.PCount:
+                    case XSharpIntrinsicNames.ArgCount:
+                    case XSharpIntrinsicNames.ClipperArgs:
+                    case XSharpIntrinsicNames.GetMParam:
+                    case XSharpIntrinsicNames.GetFParam:
                         if (CurrentEntity != null && CurrentEntity.Data.HasClipperCallingConvention)
                         {
                             if (GenerateClipCallFunc(context, name))
@@ -3040,7 +3041,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 name = gns.Identifier.Text.ToUpper();
                 switch (name)
                 {
-                    case "PCALLNATIVE":
+                    case XSharpIntrinsicNames.PCallNative:
                         if (GeneratePCallNative(context))
                             return;
                         break;
@@ -3067,7 +3068,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var mac = expr as MemberAccessExpressionSyntax;
                 var mName = mac.Name as IdentifierNameSyntax;
                 string methodName = mName?.Identifier.Text;
-                if (string.Equals(methodName, "init", StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(methodName, XSharpIntrinsicNames.InitMethod, StringComparison.OrdinalIgnoreCase))
                 {
                     var mExpr = mac.Expression;
                     if (mExpr is ThisExpressionSyntax || mExpr is BaseExpressionSyntax)
@@ -3087,7 +3088,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                     }
                 }
-                else if (string.Equals(methodName, "axit", StringComparison.OrdinalIgnoreCase))
+                else if (string.Equals(methodName, XSharpIntrinsicNames.AxitMethod, StringComparison.OrdinalIgnoreCase))
                 {
                     var stmt = _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
                     stmt = stmt.WithAdditionalDiagnostics(
@@ -3575,7 +3576,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 argList = EmptyArgumentList();
             }
-            if (name == "ARGCOUNT")
+            if (name == XSharpIntrinsicNames.ClipperArgs)
+            {
+                context.Put(GenerateSimpleName(XSharpSpecialNames.ClipperArgs));
+                return true;
+            }
+            if (name == XSharpIntrinsicNames.ArgCount)
             {
                 // Number of declared arguments in the function/methods
                 if (CurrentEntity != null)
@@ -3600,7 +3606,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return true;
 
             }
-            if (name == "PCOUNT")
+            if (name == XSharpIntrinsicNames.PCount)
             {
                 if (_options.NoClipCall)
                 {
@@ -3660,8 +3666,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (_options.VoInitAxitMethods && !context.isInInterface())
                 {
                     var idName = context.Id.GetText();
-                    if (String.Equals(idName, "init", StringComparison.OrdinalIgnoreCase)
-                        || String.Equals(idName, "axit", StringComparison.OrdinalIgnoreCase))
+                    if (String.Equals(idName, XSharpIntrinsicNames.InitMethod, StringComparison.OrdinalIgnoreCase)
+                        || String.Equals(idName, XSharpIntrinsicNames.AxitMethod, StringComparison.OrdinalIgnoreCase))
                     {
                         context.Data.MustBeVoid = true;
                         context.Data.IsInitAxit = true;

@@ -74,6 +74,29 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string IsInstance = "global::XSharp.Internal.IsInstanceAttribute";
         internal const string XppAbstract = "global::XSharp.XPP.Abstract";
     }
+    internal static class XSharpIntrinsicNames
+    {
+        // Note that these must all be specified in UPPER case
+        internal const string PCount = "PCOUNT";
+        internal const string ArgCount = "ARGCOUNT";
+        internal const string ClipperArgs = "_ARGS";
+        internal const string GetMParam = "_GETMPARAM";
+        internal const string GetFParam = "_GETFPARAM";
+        internal const string PCallNative = "PCALLNATIVE";
+        internal const string CCallNative = "CCALLNATIVE";
+        internal const string PCall = "PCALL";
+        internal const string CCall = "CCALL";
+        internal const string String2Psz = "STRING2PSZ";
+        internal const string Cast2Psz = "CAST2PSZ";
+        internal const string GetInst = "_GETINST";
+        internal const string SLen = "SLEN";
+        internal const string AltD = "ALTD";
+        internal const string Chr = "CHR";
+        internal const string _Chr = "_CHR";
+        internal const string InitMethod = "INIT";
+        internal const string InitClassMethod = "INITCLASS";
+        internal const string AxitMethod = "AXIT";
+    }
     internal static class XSharpSpecialNames
     {
         internal const string ImpliedTypeName = "Xs$var";

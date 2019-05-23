@@ -7069,21 +7069,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             switch (name)
             {
-                case "ALTD":
+                case XSharpIntrinsicNames.AltD:
                     if (GenerateAltD(context))
                         return;
                     break;
-                case "SLEN":
+                case XSharpIntrinsicNames.SLen:
                     if (GenerateSLen(context))
                         return;
                     break;
 
-                case "_GETINST":
+                case XSharpIntrinsicNames.GetInst:
                     if (GenerateGetInst(context))
                         return;
                     break;
-                case "_CHR":
-                case "CHR":
+                case XSharpIntrinsicNames.Chr:
+                case XSharpIntrinsicNames._Chr:
                     if (GenerateChr(context))
                         return;
                     break;

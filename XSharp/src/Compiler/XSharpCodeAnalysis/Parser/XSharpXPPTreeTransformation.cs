@@ -432,12 +432,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.Data.MustBeVoid = false;
             var idName = context.ShortName;
-            if (String.Equals(idName, "init", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(idName, XSharpIntrinsicNames.InitMethod, StringComparison.OrdinalIgnoreCase))
             {
                 context.Data.MustBeVoid = true;
                 context.Data.IsInitAxit = true;     // normal constructor
             }
-            else if (String.Equals(idName, "initclass", StringComparison.OrdinalIgnoreCase))
+            else if (String.Equals(idName, XSharpIntrinsicNames.InitClassMethod, StringComparison.OrdinalIgnoreCase))
             {
                 context.Data.MustBeVoid = true;
                 context.Data.IsInitAxit = true;     // class constructor
@@ -541,7 +541,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private void implementConstructor([NotNull] XP.IXPPEntityContext context)
         {
             var idName = context.ShortName;
-            var classCtor = String.Compare(idName, "initclass", true) == 0;
+            var classCtor = String.Compare(idName, XSharpIntrinsicNames.InitClassMethod, true) == 0;
             // find method in the declarations and find the visibility
             var mods = decodeXppMemberModifiers(context.Info.Visibility, classCtor, classCtor ? null : context.Mods?._Tokens);
             if (mods.Any((int) SyntaxKind.StaticKeyword))

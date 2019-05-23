@@ -17,6 +17,7 @@ namespace XSharp.MacroCompiler
         Invoke,
         Type,
         Alias,
+        AliasField,
         Member,
     }
 

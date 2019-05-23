@@ -184,6 +184,9 @@ FUNCTION MyPopWa() as void
     wag := ""
     return
 
+FUNCTION MyDbDo(op AS STRING) AS USUAL
+    RETURN wag + "Do(" + op +")"
+
 FUNCTION DoTest(n AS INT, l AS LOGIC, o AS System.Collections.ArrayList) AS INT
     RETURN n * 5
 
@@ -647,6 +650,11 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a,b| (a)->&(b[1]) := 123}", Args("DEVELOPER",{"ROBERT"}), "DEVELOPER->FieldSet(ROBERT):123", typeof(STRING))
         TestMacro(mc, e"{|a,b,c| (a)->&(b+c)}", Args("DEVELOPER","ROB","ERT"), "DEVELOPER->FieldGet(ROBERT)", typeof(STRING))
         TestMacro(mc, e"{|a,b,c| (a)->&(b+c) := 321}", Args("DEVELOPER","ROB","ERT"), "DEVELOPER->FieldSet(ROBERT):321", typeof(STRING))
+        TestMacro(mc, e"{|a,b| (a)->(MyDbDo(b))}", Args("BASE","ARG"), "BASE->Do(ARG)", typeof(STRING))
+        ParseMacro(mc, e"{|a,b| BAse->(MyDbDo(b))}")
+        TestMacro(mc, e"{|a,b| BAse->(MyDbDo(b))}", Args("BASE","ARG"), "BAse->Do(ARG)", typeof(STRING))
+        TestMacro(mc, e"{|a,b| BASe->MyDbDo(b)}", Args("BASE","ARG"), "BASe->Do(ARG)", typeof(STRING))
+        TestMacro(mc, e"{|a,b| MyDbDo(b)}", Args("BASE","ARG"), "Do(ARG)", typeof(STRING))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarGet, "MyVarGet")

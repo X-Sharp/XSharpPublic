@@ -139,19 +139,26 @@ namespace XSharp.MacroCompiler.Syntax
             }
             if (Symbol == null)
             {
-                switch (b.Options.UndeclaredVariableResolution)
+                if (Affinity == BindAffinity.Alias)
                 {
-                    case VariableResolution.Error:
-                        throw Error(ErrorCode.IdentifierNotFound, Name);
-                    case VariableResolution.GenerateLocal:
-                        Symbol = b.AddVariable(Name, Compilation.Get(NativeType.Usual));
-                        break;
-                    case VariableResolution.TreatAsField:
-                        return AliasExpr.Bound(Name);
-                    case VariableResolution.TreatAsFieldOrMemvar:
-                        if (Affinity == BindAffinity.Assign)
-                            b.CreatesAutoVars = true;
-                        return AutoVarExpr.Bound(Name);
+                    return LiteralExpr.Bound(Constant.Create(Name));
+                }
+                else
+                {
+                    switch (b.Options.UndeclaredVariableResolution)
+                    {
+                        case VariableResolution.Error:
+                            throw Error(ErrorCode.IdentifierNotFound, Name);
+                        case VariableResolution.GenerateLocal:
+                            Symbol = b.AddVariable(Name, Compilation.Get(NativeType.Usual));
+                            break;
+                        case VariableResolution.TreatAsField:
+                            return AliasExpr.Bound(Name);
+                        case VariableResolution.TreatAsFieldOrMemvar:
+                            if (Affinity == BindAffinity.Assign)
+                                b.CreatesAutoVars = true;
+                            return AutoVarExpr.Bound(Name);
+                    }
                 }
             }
             Datatype = Symbol.Type();
@@ -665,11 +672,11 @@ namespace XSharp.MacroCompiler.Syntax
         {
             if (Alias != null)
             {
-                b.Bind(ref Alias);
+                b.Bind(ref Alias, BindAffinity.Alias);
                 Alias.RequireGetAccess();
                 b.Convert(ref Alias, Compilation.Get(NativeType.Usual));
             }
-            b.Bind(ref Field, BindAffinity.Alias);
+            b.Bind(ref Field, BindAffinity.AliasField);
             Datatype = Field.Datatype;
             return null;
         }
@@ -686,7 +693,7 @@ namespace XSharp.MacroCompiler.Syntax
             b.Convert(ref Expr, Compilation.Get(NativeType.String));
             switch (Affinity)
             {
-                case BindAffinity.Alias:
+                case BindAffinity.AliasField:
                     return AliasExpr.Bound(Expr);
                 case BindAffinity.Member:
                     return Expr;

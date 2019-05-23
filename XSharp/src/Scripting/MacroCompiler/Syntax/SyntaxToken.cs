@@ -24,7 +24,7 @@ namespace XSharp.MacroCompiler.Syntax
         // New (Vulcan) Keywords only full names
         //
         FIRST_KEYWORD,
-        ACCESS, ALIGN, AS, ASPEN, ASSIGN, BEGIN, BREAK, CALLBACK, CASE, CAST, CLASS, CLIPPER, DECLARE, DEFINE, DIM, DLL, DLLEXPORT, DO, DOWNTO, ELSE, ELSEIF, END, ENDCASE, ENDDO, ENDIF, EXIT, EXPORT, FASTCALL, FIELD, FIELD_,
+        ACCESS, ALIGN, AS, ASPEN, ASSIGN, BEGIN, BREAK, CALLBACK, CASE, CAST, CLASS, CLIPPER, DECLARE, DEFINE, DIM, DLL, DLLEXPORT, DO, DOWNTO, ELSE, ELSEIF, END, ENDCASE, ENDDO, ENDIF, EXIT, EXPORT, FASTCALL, FIELD,
         FOR, FUNC, FUNCTION, GLOBAL, HIDDEN, IF, IIF, INHERIT, INIT1, INIT2, INIT3, INSTANCE, IS, IN, LOCAL, LOOP, MEMBER, MEMVAR, METHOD, NAMEOF, NEXT, OTHERWISE, PARAMETERS, PASCAL,
         PRIVATE, PROC, PROCEDURE, PROTECTED, PUBLIC, RECOVER, RETURN, SELF, SEQUENCE, SIZEOF, STATIC, STEP, STRICT, SUPER, THISCALL, TO, TYPEOF, UNION,
         UPTO, USING, WHILE, WINCALL,
@@ -221,7 +221,7 @@ namespace XSharp.MacroCompiler.Syntax
                 {"EXPORT", TokenType.EXPORT},
                 {"FASTCALL", TokenType.FASTCALL},
                 {"FIELD", TokenType.FIELD},
-                {"_FIELD", TokenType.FIELD_},
+                {"_FIELD", TokenType.FIELD},
                 {"FOR", TokenType.FOR},
                 {"FUNCTION", TokenType.FUNCTION},
                 {"GLOBAL", TokenType.GLOBAL},
@@ -623,7 +623,7 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.DYNAMIC] = true;
             softKws[(int)TokenType.EQUALS] = true;
             softKws[(int)TokenType.EXTERN] = true;
-            softKws[(int)TokenType.FIELD_] = true;
+            softKws[(int)TokenType.FIELD] = true;
             softKws[(int)TokenType.FIXED] = true;
             softKws[(int)TokenType.FROM] = true;
             softKws[(int)TokenType.GROUP] = true;
@@ -668,7 +668,6 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.DLLEXPORT] = true;
             softKws[(int)TokenType.EVENT] = true;
             softKws[(int)TokenType.FASTCALL] = true;
-            softKws[(int)TokenType.FIELD] = true;
             softKws[(int)TokenType.FUNC] = true;
             softKws[(int)TokenType.IN] = true;
             softKws[(int)TokenType.INSTANCE] = true;

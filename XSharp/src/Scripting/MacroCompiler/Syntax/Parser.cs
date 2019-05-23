@@ -198,7 +198,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.LPAREN:
                 case TokenType.LCURLY:
                 case TokenType.IIF:
-                case TokenType.FIELD_:
+                case TokenType.FIELD:
                 case TokenType.ARGLIST:
                 case TokenType.VO_AND:
                 case TokenType.VO_OR:
@@ -321,7 +321,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.IF:
                 case TokenType.IIF:
                     return ParseIif();
-                case TokenType.FIELD_:
+                case TokenType.FIELD:
                     return ParseFieldAlias();
                 // TODO nvk: PTR LPAREN Type=datatype COMMA Expr=expression RPAREN		#voCastPtrExpression	// PTR( typeName, expr )
                 // TODO nvk: Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN							#intrinsicExpression	// _Or(expr, expr, expr)
@@ -783,9 +783,9 @@ namespace XSharp.MacroCompiler
         {
             if (La(2) == TokenType.ALIAS)
             {
-                if (Expect(TokenType.FIELD_))
+                if (Expect(TokenType.FIELD))
                     Require(Expect(TokenType.ALIAS), ErrorCode.Expected, "'->'");
-                else if (La(4) == TokenType.LPAREN)
+                if (La(3) == TokenType.LPAREN || La(3) == TokenType.AMP || La(4) == TokenType.LPAREN)
                     return null;
                 var alias = Require(ParseId(), ErrorCode.Expected, "name");
                 if (La() == TokenType.ALIAS)

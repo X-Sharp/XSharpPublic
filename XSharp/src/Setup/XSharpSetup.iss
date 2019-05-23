@@ -11,17 +11,17 @@
 ; "lzma/ultra"
 ;#define Compression     "none" 
 #endif
-;#define FOX
-#undef FOX
+#define FOX
+;#undef FOX
 ; define the next line to prevent cab building and have a fast test
 ;#define FAST
 
 ; version info and similar stuff.
   
-#define Version             "2.0.1.0"
-#define FileNameVersion     "2RC1"
-#define VIVersion           "2.0.1.0"
-#define TouchDate           "2019-04-16"
+#define Version             "2.0.1.1"
+#define FileNameVersion     "2RC1a"
+#define VIVersion           "2.0.1.1"
+#define TouchDate           "2019-05-23"
 #define TouchTime           "02:10:00"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"

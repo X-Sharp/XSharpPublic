@@ -1,10 +1,10 @@
 #include "BuildNumber.h"
-[assembly: AssemblyVersionAttribute( VERSION_NUMBER_STR )]
-[assembly: AssemblyFileVersionAttribute( FILEVERSION_NUMBER_STR )]
-[assembly: AssemblyInformationalVersionAttribute( VERSION_NUMBER_STR )]
-[assembly: AssemblyCopyrightAttribute( COPYRIGHT_STR)]
-[assembly: AssemblyTrademarkAttribute( "XSharp is a registered Trademark of XSharp BV")]
-[assembly: AssemblyConfigurationAttribute( ASSEMBLY_CONFIGURATION)]
-[assembly: AssemblyCompanyAttribute( COMPANY_NAME )]
-[assembly: AssemblyProductAttribute( PRODUCT_NAME )] 
+[ASSEMBLY: AssemblyVersionAttribute( VERSION_NUMBER_STR )]
+[ASSEMBLY: AssemblyFileVersionAttribute( FILEVERSION_NUMBER_STR )]
+[ASSEMBLY: AssemblyInformationalVersionAttribute( VERSION_NUMBER_STR )]
+[ASSEMBLY: AssemblyCopyrightAttribute( COPYRIGHT_STR)]
+[ASSEMBLY: AssemblyTrademarkAttribute( "XSharp is a registered Trademark of XSharp BV")]
+[ASSEMBLY: AssemblyConfigurationAttribute( ASSEMBLY_CONFIGURATION)]
+[ASSEMBLY: AssemblyCompanyAttribute( COMPANY_NAME )]
+[ASSEMBLY: AssemblyProductAttribute( PRODUCT_NAME )] 
 

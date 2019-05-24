@@ -850,6 +850,10 @@ CLASS ApplicationDescriptor
 	RETURN SELF:AddModule(cName , cCode:Split(<STRING>{e"\r\n" , e"\r" , e"\n"} , StringSplitOptions.None))
 	METHOD AddModule(cName AS STRING , aCode AS IEnumerable) AS ModuleDescriptor
 		LOCAL oModule AS ModuleDescriptor
+		cName := cName:TrimStart()
+		FOREACH c AS Char IN e"/?:&\*\"<>|#%"
+			cName := cName:Replace(c,'_')
+		NEXT
 		DO WHILE SELF:ContainsModuleName(cName)
 			cName := cName + "_" // happens when creating the SDK_Defines library, where modules from all libraries are added into a single one
 		END DO

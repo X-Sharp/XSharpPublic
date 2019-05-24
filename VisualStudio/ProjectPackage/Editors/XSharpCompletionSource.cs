@@ -716,8 +716,7 @@ namespace XSharpLanguage
             int dotPos = startWith.LastIndexOf('.');
             if (dotPos != -1)
                 startLen = dotPos + 1;
-            XType fakeNS = new XType("fake", Kind.Namespace, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty);
-            ImageSource icon = _provider.GlyphService.GetGlyph(fakeNS.GlyphGroup, fakeNS.GlyphItem);
+            ImageSource icon = _provider.GlyphService.GetGlyph(StandardGlyphGroup.GlyphGroupNamespace, StandardGlyphItem.GlyphItemPublic);
             foreach (String nameSpace in namespaces.Where(ns => nameStartsWith(ns, startWith)))
             {
                 String realNamespace = nameSpace;
@@ -2329,9 +2328,11 @@ namespace XSharpLanguage
                 // should not happen.
                 //return tokenList;
             }
-            if (nextToken.Type != XSharpLexer.EOS)
+            // Not a CRLF ? Ok, should be the next one...except if the next one is CRLF !!
+            if ( nextToken.Type != XSharpLexer.EOS)
             {
-                nextToken = list[((XSharpToken)nextToken).OriginalTokenIndex + 1];
+                //if ( list[((XSharpToken)nextToken).OriginalTokenIndex + 1].Type != XSharpLexer.EOS )
+                    nextToken = list[((XSharpToken)nextToken).OriginalTokenIndex + 1];
             }
             if (stopToken == null)
             {
@@ -2400,7 +2401,7 @@ namespace XSharpLanguage
                     //case XSharpLexer.COMMA:
                     case XSharpLexer.USING:
                     case XSharpLexer.AS:
-                    case XSharpLexer.IS:
+                    case XSharpLexer.IS:                    
                     case XSharpLexer.REF:
                     case XSharpLexer.IMPLEMENTS:
                     case XSharpLexer.INHERIT:
@@ -2526,6 +2527,31 @@ namespace XSharpLanguage
                         }
                     }
                 }
+                else if ( ( file.Project.ProjectNode.ParseOptions.Dialect == XSharpDialect.XPP ) && (token.CompareTo("::") == 0) )
+                {
+                    returnList.Add("SELF");
+                    returnList.Add(":");
+                }
+                else if (file.Project.ProjectNode.ParseOptions.Dialect == XSharpDialect.FoxPro)
+                {
+                    string lowerToken = token.ToLower();
+                    switch (lowerToken)
+                    {
+                        case "this":
+                            returnList.Add("SELF");
+                            break;
+                        case ".":
+                            if (returnList.Count == 0)
+                            {
+                                returnList.Add("SELF");
+                            }
+                            returnList.Add(token);
+                            break;
+                        default:
+                            returnList.Add(token);
+                            break;
+                    }
+                }
                 else if ((token.CompareTo(".") == 0) && !dotAsSelector)
                 {
                     if (returnList.Count > 0)
@@ -2593,7 +2619,7 @@ namespace XSharpLanguage
                     name = name.Substring(0, pos);
                 }
                 XType nSpace = new XType(name, Kind.Namespace, Modifiers.None,
-                    Modifiers.Public, found.Range, found.Interval);
+                    Modifiers.Public, found.Range, found.Interval,file);
                 return nSpace;
             }
 #if TRACE
@@ -2765,8 +2791,11 @@ namespace XSharpLanguage
             while (currentPos < tokenList.Count)
             {
                 currentToken = tokenList[currentPos];
+                // Remove the @@ marker
+                if (currentToken.StartsWith("@@"))
+                    currentToken = currentToken.Substring(2);
+                //
                 var lastToken = currentToken;
-
                 //
                 int dotPos = currentToken.LastIndexOf(".");
                 if (dotPos > -1)
@@ -3096,13 +3125,13 @@ namespace XSharpLanguage
         static public CompletionElement FindIdentifier(XTypeMember member, string name, ref CompletionType cType,
             Modifiers visibility, string currentNS, ITextSnapshot snapshot, int currentLine)
         {
-            WriteOutputMessage($"--> FindIdentifier in {cType.FullName}, {name} ");
             XElement element;
             CompletionElement foundElement = null;
             if (cType.IsEmpty())
             {
                 cType = new CompletionType(member.Parent);
             }
+            WriteOutputMessage($"--> FindIdentifier in {cType.FullName}, {name} ");
             element = member.Parameters.Where(x => StringEquals(x.Name, name)).FirstOrDefault();
             if (element == null)
             {
@@ -4245,7 +4274,7 @@ namespace XSharpLanguage
             //
             foreach (var keyword in lexer.KwIds)
             {
-                xTypes.Add(new XType(keyword.Key, Kind.Keyword, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty));
+                xTypes.Add(new XType(keyword.Key, Kind.Keyword, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty,null));
             }
             //
             _xTypes = xTypes.ToImmutableList();

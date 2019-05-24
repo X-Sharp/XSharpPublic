@@ -34,6 +34,8 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
             wBufLen := (WORD) message:Length
             IF ACE.AdsGetLastError(OUT lastError, message, REF wBufLen) == 0 .AND. lastError != 0 .AND. wBufLen > 0
                 strMessage := STRING{message, 0, wBufLen}
+            ELSE
+                strMessage := "Unknown Error"
             ENDIF
             oError   := AdsError{strMessage, gencode, lastError, oRDD:Driver , ES_ERROR, Procname(1), _bagName}
             RuntimeState.LastRDDError := oError

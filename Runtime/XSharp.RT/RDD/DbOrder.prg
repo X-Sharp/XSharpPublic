@@ -455,31 +455,10 @@ FUNCTION OrdSetFocus(uOrder, cOrdBag) AS USUAL CLIPPER
 	RETURN cOrder
 	
 
-
    /// <summary>Checks if a scope is set in a work area.</summary>
-    /// <param name="uScope">A constant that indicates which scope needs to be set.
-    /// <include file="RTComments.xml" path="Comments/ScopeParams/*"  /></param>
-    /// <returns>
-    /// The return value depends on the parameter that is passed in:<br/>
-    ///   <list type="table">
-    ///   <item>
-    ///   <term>no parameter</term>
-    ///   <description>Returns .T. (true) if a scope is defined, and .F. when no scope is defined.</description>
-    ///   </item>
-    ///   <item>
-    ///   <term>SCOPE_TOP</term>
-    ///   <description>Returns the top scope value, or NIL if no top scope is set.</description>
-    ///   </item>
-    ///   <item>
-    ///     <term>SCOPE_BOTTOM</term>
-    ///     <description>Returns the bottom scope value, or NIL if no bottom scope is set.</description>
-    ///   </item>
-    ///   <item>
-    ///     <term>SCOPE_BOTH</term>
-    ///     <description>Returns an array with 2 elements with the Top scope in element 1 and the Bottom scope in element 2. When a scope is not set then the value NIL is stored in the array</description>
-    ///   </item>
-    /// </list>
-    /// </returns>
+    /// <param name="uScope">An optional constant that indicates which scope needs to be set.<br/>
+    /// <include file="RTComments.xml" path="Comments/ScopeParams/*"  /> <br/></param>
+    /// <returns><include file="RTComments.xml" path="Comments/ScopeReturn/*"  /></returns>
 FUNCTION DbScope(uScope) AS USUAL CLIPPER
     LOCAL nScope AS LONG
     IF IsNil(uScope)
@@ -504,7 +483,7 @@ FUNCTION DbScope(uScope) AS USUAL CLIPPER
     RETURN uScope
     
     /// <summary>Sets scope values.</summary>
-    /// <param name="uScope">A constant that indicates which scope needs to be set.
+    /// <param name="nScope">A constant that indicates which scope needs to be set.<br/>
     /// <include file="RTComments.xml" path="Comments/ScopeParams/*"  /></param>
     /// <param name="uValue">The value that needs to be set.
     /// The type of the value must match the type of the index expression.</param>

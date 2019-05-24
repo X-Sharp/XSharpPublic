@@ -270,7 +270,7 @@ BEGIN NAMESPACE XSharp
     
     /// <exclude/>	
     STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, iArgnum  AS DWORD, aArgs PARAMS OBJECT[]) AS Error
-    VAR err			:= Error{Gencode.EG_ARG, name, ErrString( EG_ARG )}
+    VAR err			:= Error{XSharp.Gencode.EG_ARG, name, ErrString( EG_ARG )}
     err:FuncSym     := cFuncName
     err:Description := err:Message
     err:Argnum		:= iArgNum
@@ -280,7 +280,7 @@ BEGIN NAMESPACE XSharp
     
     /// <exclude/>	
     STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, description AS STRING, iArgnum AS DWORD) AS Error
-    VAR err			:= Error{Gencode.EG_ARG, name, description}
+    VAR err			:= Error{XSharp.Gencode.EG_ARG, name, description}
     err:FuncSym     := cFuncName
     err:Description := err:Message
     err:Argnum		:= iArgNum

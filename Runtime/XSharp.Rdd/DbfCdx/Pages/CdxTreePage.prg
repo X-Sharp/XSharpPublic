@@ -51,7 +51,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         ABSTRACT PUBLIC   PROPERTY NumKeys      AS WORD  GET
         ABSTRACT INTERNAL PROPERTY LastNode     AS CdxPageNode GET
         INTERNAL PROPERTY NextFree              AS LONG GET LeftPtr SET LeftPtr := VALUE // alias for LeftPtr
-        INTERNAL PROPERTY FirstPageOnLevel as CdxTreePage
+        INTERNAL PROPERTY FirstPageOnLevel AS CdxTreePage
             GET
                 VAR oPage := SELF
                 DO WHILE oPage:HasLeft
@@ -61,7 +61,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END GET
         END PROPERTY
 
-        INTERNAL PROPERTY CurrentLevel as IList<CdxTreePage>
+        INTERNAL PROPERTY CurrentLevel AS IList<CdxTreePage>
         GET
             VAR oList := List<CdxTreePage>{}
             VAR oPage := SELF:FirstPageOnLevel
@@ -75,30 +75,30 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         END PROPERTY
 
 #ifdef DEBUG
-        PRIVATE oPageLeft  as CdxTreePage
-        PRIVATE oPageRight as CdxTreePage
-        INTERNAL PROPERTY PageLeft as CdxTreePage
+        PRIVATE oPageLeft  AS CdxTreePage
+        PRIVATE oPageRight AS CdxTreePage
+        INTERNAL PROPERTY PageLeft AS CdxTreePage
             GET
                 IF HasLeft
-                    IF oPageLeft == NULL .or. oPageLeft:PageNo != LeftPtr
+                    IF oPageLeft == NULL .OR. oPageLeft:PageNo != LeftPtr
                         oPageLeft := SELF:Tag:GetPage(SELF:LeftPtr)
                     ENDIF
                 ELSE
                     oPageLeft := NULL
                 ENDIF
-                return oPageLeft
+                RETURN oPageLeft
             END GET
         END PROPERTY
-        INTERNAL PROPERTY PageRight as CdxTreePage
+        INTERNAL PROPERTY PageRight AS CdxTreePage
             GET
                 IF HasRIght
-                    IF oPageRight == NULL .or. oPageRight:PageNo != RightPtr
+                    IF oPageRight == NULL .OR. oPageRight:PageNo != RightPtr
                         oPageRight := SELF:Tag:GetPage(SELF:RightPtr)
                     ENDIF
                 ELSE
                     oPageRight := NULL
                 ENDIF
-                return oPageRight
+                RETURN oPageRight
             END GET
         END PROPERTY
 #endif
@@ -127,13 +127,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:RightPtr := -1
             ENDIF            
            IF SELF:PageNo != -1
-                Debug.Assert(SELF:PageNo != SELF:RightPtr)
-                Debug.Assert(SELF:PageNo != SELF:LeftPtr)
+                System.Diagnostics.Debug.Assert(SELF:PageNo != SELF:RightPtr)
+                System.Diagnostics.Debug.Assert(SELF:PageNo != SELF:LeftPtr)
             ENDIF
             SELF:Validate()
             RETURN SUPER:Write()
 
-        ABSTRACT METHOD Validate as Void
+        ABSTRACT METHOD Validate AS VOID
 
         METHOD SetRoot() AS VOID
             SELF:PageType |= CdxPageType.Root
@@ -148,27 +148,27 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
        INTERNAL METHOD AddRightSibling(oSibling AS CdxTreePage) AS VOID
-            Debug.Assert(oSibling != NULL_OBJECT)
+            System.Diagnostics.Debug.Assert(oSibling != NULL_OBJECT)
             IF oSibling != NULL_OBJECT
-                if self:HasRight
+                IF SELF:HasRight
                     //Debug(SELF:PageType, oSibling:PageNo:ToString("X8"),"between", SELF:PageNo:ToString("X8"),"and",SELF:RightPtr:ToString("X8"))
-                    var oOldRight := SELF:Tag:GetPage(SELF:RightPtr)
+                    VAR oOldRight := SELF:Tag:GetPage(SELF:RightPtr)
                     oOldRight:LeftPtr := oSibling:PageNo
-                else
+                ELSE
                     //Debug(SELF:PageType, oSibling:PageNo:ToString("X8"),"after  ", SELF:PageNo:ToString("X8"))
-                endif
+                ENDIF
                 
                 oSibling:RightPtr := SELF:RightPtr
                 SELF:RightPtr     := oSibling:PageNo
                 oSibling:LeftPtr  := SELF:PageNo
             ENDIF
             RETURN 
-        internal abstract METHOD FindKey(key as byte[], recno as Long, length as long) as WORD
+        INTERNAL ABSTRACT METHOD FindKey(key AS BYTE[], recno AS LONG, length AS LONG) AS WORD
 
         METHOD Debug(o PARAMS  OBJECT[] ) AS VOID
            LOCAL count := o:Length AS INT
            LOCAL x                 AS INT
-           local cProc             as string
+           LOCAL cProc             AS STRING
            
            cProc := Procname(1):ToLower():PadRight(30)
            Console.Write(cProc+" ")

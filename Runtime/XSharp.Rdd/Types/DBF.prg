@@ -2192,7 +2192,7 @@ VIRTUAL METHOD RecInfo(nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) 
 		nNewRec := SELF:Recno
 	ENDIF
 	
-            // Some operations require the new record te be selected
+   // Some operations require the new record te be selected
 	SELF:ForceRel()
 	IF nNewRec != 0
 		SWITCH nOrdinal
@@ -2238,8 +2238,10 @@ VIRTUAL METHOD RecInfo(nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) 
 	CASE DBRI_RAWDATA
                     // RawData returns a string with the record + memos
                     // RawMemos returns just the memos
+        // Todo
 		oResult := ""
 	CASE DBRI_ENCRYPTED
+        // Todo
 		oResult := FALSE
 	OTHERWISE
 		oResult := SUPER:Info(nOrdinal, oNewValue)

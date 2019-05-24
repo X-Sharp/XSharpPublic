@@ -36,17 +36,28 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 	/// </note>
 	///</summary>
 	ENUM DbRecordInfo
-		MEMBER DBRI_DELETED 	:= 1 
-		MEMBER DBRI_LOCKED 		:= 2 	
-		MEMBER DBRI_RECSIZE 	:= 3	
-		MEMBER DBRI_RECNO 		:= 4	
-		MEMBER DBRI_UPDATED 	:= 5	
+        /// <summary>Gets the deleted flag for the record.</summary>
+		MEMBER DBRI_DELETED 	:= 1
+        /// <summary>Gets the locked state for the record. You may specify a specific record.</summary>
+		MEMBER DBRI_LOCKED 		:= 2
+        /// <summary>Gets the record size. You may specify a specific record.</summary>
+		MEMBER DBRI_RECSIZE 	:= 3
+        /// <summary>Gets the record number.</summary>
+		MEMBER DBRI_RECNO 		:= 4
+        /// <summary>Gets/Sets a boolean indicating if the current record is updated.</summary>
+		MEMBER DBRI_UPDATED 	:= 5
+        /// <summary>Gets the buffer used by the RDD system for the record data. This is an array of bytes in X#.</summary>
 		MEMBER DBRI_BUFFPTR 	:= 6 
-		// harbour
-		MEMBER DBRI_ENCRYPTED	:= 7 
-		MEMBER DBRI_RAWMEMOS	:= 8 
-		MEMBER DBRI_RAWDATA		:= 9 
+		// harbour extensions
+        /// <summary>Harbour: Is the current record encrypted?</summary>
+		MEMBER DBRI_ENCRYPTED	:= 7
+        /// <summary>Harbour extension: Return all the memos in the current record as one string.</summary>
+		MEMBER DBRI_RAWMEMOS	:= 8
+        /// <summary>Harbour extension: Return the current record and all the memos in the current record as one string.</summary>
+		MEMBER DBRI_RAWDATA		:= 9
+        /// <summary>Harbour extension: Return the current record as one string.</summary>
 		MEMBER DBRI_RAWRECORD   := 10
+        /// <summary>Offset of user defined values.</summary>
 		MEMBER DBRI_USER 		:= 1000
 	END	 ENUM
 	
@@ -57,25 +68,48 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 	/// </note>
 
 	ENUM DbFieldInfo
+        /// <summary>Returns the name of the field.</summary>
 		MEMBER DBS_NAME				:= 1
+        /// <summary>Returns the data type of the field. This is a single character string such as 'C' or 'N'.</summary>
 		MEMBER DBS_TYPE				:= 2
+        /// <summary>Returns the length of the field.</summary>
 		MEMBER DBS_LEN				:= 3
+        /// <summary> Returns the number of decimal places for the field. </summary>
 		MEMBER DBS_DEC				:= 4
+        /// <summary>Returns and optionally changes an alternate name (or alias) by which a field can be referenced (by default, same as DBS_NAME).  </summary>
 		MEMBER DBS_ALIAS			:= 5
-		// harbour extensions
+        /// <summary>Harbour extension: Returns the flag that indicates if a field is Nullable.</summary>
 		MEMBER DBS_ISNULL			:= 11
+        /// <summary>Harbour extension: Returns the next available value for autoincrement fields.</summary>
 		MEMBER DBS_COUNTER			:= 12
+        /// <summary>Harbour extension: Returns the step value for autoincrement fields.</summary>
 		MEMBER DBS_STEP				:= 13
-		
+
+        /// <summary>Gets a BLOB value.</summary>
 		MEMBER DBS_BLOB_GET			:= 101
+        /// <summary>Unlike memo fields maintained in .DBT files, BLOB files allow you to store many different types of data in memo fields. This returns type type of the BLOB as a single character string.</summary>
 		MEMBER DBS_BLOB_TYPE		:= 102
+        /// <summary>Returns the length of the BLOB data in a memo field as an unsigned long integer.</summary>
 		MEMBER DBS_BLOB_LEN			:= 103
+        /// <summary></summary>
 		MEMBER DBS_BLOB_OFFSET		:= 104
+        /// <summary>Returns a numeric pointer to the BLOB data associated with a memo field.</summary>
 		MEMBER DBS_BLOB_POINTER		:= 198
+        /// <summary>Returns the type of data in a BLOB as an unsigned long integer, without referencing a particular memo field.
+        /// With this constant, you must specify the BLOB using a numeric pointer obtained from BLOBDirectPut(), BLOBDirectImport(),
+        /// or DBFieldInfo(DBS_BLOB_POINTER, &lt;nFieldPos&gt;).
+        ///</summary>
 		MEMBER DBS_BLOB_DIRECT_TYPE	:= 222
+        /// <summary>Returns the length of data in a BLOB as an unsigned long integer, without referencing a particular memo field.
+        /// With this constant, you must specify the BLOB using a numeric pointer obtained from BLOBDirectPut(), BLOBDirectImport(),
+        /// or DBFieldInfo(DBS_BLOB_POINTER, &lt;nFieldPos&gt;).
+        ///</summary>
 		MEMBER DBS_BLOB_DIRECT_LEN	:= 223
+        /// <summary></summary>
 		MEMBER DBS_STRUCT			:= 998
+        /// <summary>Returns the number of properties defined for a field.</summary>
 		MEMBER DBS_PROPERTIES		:= 999
+        /// <summary>Start of user defined FieldInfo values.</summary>
 		MEMBER DBS_USER				:= 1000 
 	END	 ENUM             
 	
@@ -177,55 +211,55 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER DBI_MEMOFIELD 		:= 104
 		/// <summary></summary> 
 		MEMBER DBI_VO_MACRO_SYNTAX 	:= 105
-		/// <summary></summary> 
+		/// <summary>Returns RDD Object.</summary> 
 		MEMBER DBI_RDD_OBJECT		:= 106
 		/// <summary></summary> 
 		// 107 - 127 missing
 		// Harbour extensions
 		/// <summary>Harbour extension: Locking scheme used by RDD</summary> 
-		MEMBER DBI_LOCKSCHEME          := 128 /* Locking scheme used by RDD */
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_ISREADONLY          := 129 /* Was the file opened readonly? */
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_ROLLBACK            := 130 /* Rollback changes made to current record */
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_PASSWORD            := 131 /* Workarea password */
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_ISENCRYPTED         := 132 /* The database is encrypted */
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_MEMOTYPE            := 133 /* Type of MEMO file: DBT, SMT, FPT */
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_SEPARATOR           := 134 /* The record separator (as a string) */
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_MEMOVERSION         := 135 /* sub version of memo file */
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_TABLETYPE           := 136 /* Type of table file */
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_SCOPEDRELATION      := 137 /* Is given relation scoped */
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_TRIGGER             := 138 /* Get/Set trigger function */
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_OPENINFO            := 139 /* DBOPENINFO structure pointer */
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_ENCRYPT             := 140 /* Encrypt table */
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_DECRYPT             := 141 /* Decrypt table */
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_MEMOPACK            := 142 /* Pack memo file */
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_DIRTYREAD           := 143 /* Get/Set index dirty read flag */
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_POSITIONED          := 144 /* Is cursor positioned to valid record */
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_ISTEMPORARY         := 145 /* Is the table a temporary one? */
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_LOCKTEST            := 146 /* record / file lock test */
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_CODEPAGE_HB         := 147 /* Codepage used also memberd by VO and Vulcan */ 
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_TRANSREC            := 148  /* Is it destination table of currently processed COPY TO or APPEND FROM operation? */ 
-		/// <summary>Harbour extension: </summary> 
-		MEMBER DBI_SETHEADER		   := 149	/* DBF header updating modes */ 
+		MEMBER DBI_LOCKSCHEME          := 128 
+		/// <summary>Harbour extension: Was the file opened readonly?</summary> 
+		MEMBER DBI_ISREADONLY          := 129 
+		/// <summary>Harbour extension: Rollback changes made to current record</summary> 
+		MEMBER DBI_ROLLBACK            := 130 
+		/// <summary>Harbour extension: orkarea password </summary> 
+		MEMBER DBI_PASSWORD            := 131 /* W*/
+		/// <summary>Harbour extension: The database is encrypted</summary> 
+		MEMBER DBI_ISENCRYPTED         := 132 
+		/// <summary>Harbour extension: Type of MEMO file: DBT, SMT, FPT</summary> 
+		MEMBER DBI_MEMOTYPE            := 133 
+		/// <summary>Harbour extension: The record separator (as a string)</summary> 
+		MEMBER DBI_SEPARATOR           := 134 
+		/// <summary>Harbour extension: sub version of memo file</summary> 
+		MEMBER DBI_MEMOVERSION         := 135 
+		/// <summary>Harbour extension: Type of table file</summary> 
+		MEMBER DBI_TABLETYPE           := 136 
+		/// <summary>Harbour extension: Is given relation scoped</summary> 
+		MEMBER DBI_SCOPEDRELATION      := 137 
+		/// <summary>Harbour extension: Get/Set trigger function</summary> 
+		MEMBER DBI_TRIGGER             := 138 
+		/// <summary>Harbour extension: DBOPENINFO structure pointer</summary> 
+		MEMBER DBI_OPENINFO            := 139 
+		/// <summary>Harbour extension: Encrypt table</summary> 
+		MEMBER DBI_ENCRYPT             := 140 
+		/// <summary>Harbour extension: Decrypt table</summary> 
+		MEMBER DBI_DECRYPT             := 141 
+		/// <summary>Harbour extension: Pack memo file </summary> 
+		MEMBER DBI_MEMOPACK            := 142 
+		/// <summary>Harbour extension: Get/Set index dirty read flag</summary> 
+		MEMBER DBI_DIRTYREAD           := 143 
+		/// <summary>Harbour extension: Is cursor positioned to valid record</summary> 
+		MEMBER DBI_POSITIONED          := 144 
+		/// <summary>Harbour extension: Is the table a temporary one?</summary> 
+		MEMBER DBI_ISTEMPORARY         := 145 
+		/// <summary>Harbour extension: record / file lock test</summary> 
+		MEMBER DBI_LOCKTEST            := 146 
+		/// <summary>Harbour extension: Codepage used also memberd by VO and Vulcan</summary> 
+		MEMBER DBI_CODEPAGE_HB         := 147 
+		/// <summary>Harbour extension: Is it destination table of currently processed COPY TO or APPEND FROM operation?</summary> 
+		MEMBER DBI_TRANSREC            := 148  
+		/// <summary>Harbour extension: DBF header updating modes</summary> 
+		MEMBER DBI_SETHEADER		   := 149	
 		/// <summary></summary> 
 		/* Harbour RECORD MAP (RM) support */
 		/// <summary>Harbour record map extension: has WA RDD record map support?</summary> 
@@ -356,52 +390,90 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 	/// These enums are also available as DEFINES and can therefore also be used without the "DbOrderInfo." prefix.
 	/// </note>
 	///</summary>
-
+    /// <seealso cref='M:XSharp.RT.Functions.DbOrderInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' >DbOrderInfo()</seealso>
+    /// <remarks>The types in the list of possible value are the types of the return value when you call DbOrderInfo() with this enum value.</ermarks>
 	ENUM DbOrder_Info
         // These number match the defines for Vulcan
         // there are some differences between the various dialects unfortunately
-
-		MEMBER DBOI_CONDITION 	:= 1     // String: The order's conditional expression     
-		MEMBER DBOI_EXPRESSION 	:= 2 	// String: The order's key expression             
-		MEMBER DBOI_POSITION 	:= 3  	// Number: The current key position in scope and filter  
-		MEMBER DBOI_KEYNO	 	:= 3	// Alias
-		MEMBER DBOI_RECNO 		:= 4  	// Number: The current key position disregarding filters 
-		MEMBER DBOI_NAME 		:= 5   	// String: The name of the order                      
-		MEMBER DBOI_NUMBER 		:= 6 	// Number: The numeric position in the list of orders
-		MEMBER DBOI_BAGNAME 	:= 7 	// String: The name of the file containing this order
-		MEMBER DBOI_INDEXNAME 	:= 7	// Alias
-		MEMBER DBOI_BAGEXT 		:= 8    // String: The extension of the file containing this order
-		MEMBER DBOI_INDEXEXT  	:= 8	// Alias
+        /// <summary>String: The order's conditional expression</summary>
+		MEMBER DBOI_CONDITION 	:= 1     
+        /// <summary>String: The order's key expression</summary>
+		MEMBER DBOI_EXPRESSION 	:= 2 	
+        /// <summary>Number: The current key position in scope and filter</summary>
+		MEMBER DBOI_POSITION 	:= 3  	
+        /// <summary>Alias for DBOI_POSITION</summary>
+		MEMBER DBOI_KEYNO	 	:= 3	
+        /// <summary>Number: The current key position disregarding filters</summary>
+		MEMBER DBOI_RECNO 		:= 4  	
+        /// <summary>String: The name of the order</summary>
+		MEMBER DBOI_NAME 		:= 5   	
+        /// <summary>Number: The numeric position in the list of orders</summary>
+		MEMBER DBOI_NUMBER 		:= 6 	
+        /// <summary>String: The name of the file containing this order</summary>
+		MEMBER DBOI_BAGNAME 	:= 7 	
+        /// <summary>Alias for DBOI_BAGNAME</summary>
+		MEMBER DBOI_INDEXNAME 	:= 7	
+        /// <summary>String: The extension of the file containing this order</summary>
+		MEMBER DBOI_BAGEXT 		:= 8    
+        /// <summary>Alias for DBOI_BAGEXT</summary>
+		MEMBER DBOI_INDEXEXT  	:= 8	
 		
 		// 14-19 missing
-		MEMBER DBOI_FULLPATH 	:= 20   	// String: The full path to the index file (Bag)
-		MEMBER DBOI_FILEHANDLE 	:= 21 	// IntPtr: The handle of the index
-		MEMBER DBOI_ISDESC 		:= 22 	// Logic : Is the order DESCENDing? 
-		MEMBER DBOI_ISCOND 		:= 23 	// Logic : Does the order have a FOR condition?
-		MEMBER DBOI_KEYTYPE 	:= 24 	// The type of the order's key  
-		MEMBER DBOI_KEYSIZE 	:= 25 	// Number: The length of the order's key
-		MEMBER DBOI_KEYCOUNT 	:= 26 	// Number: The count of keys in scope and filter
-		MEMBER DBOI_SETCODEBLOCK:= 27 	// Block : The codeblock that produces the key 
-		MEMBER DBOI_KEYDEC 		:= 28 	// Number: The # of decimals in a numeric key 
-		MEMBER DBOI_HPLOCKING 	:= 29 	// Logic : Using High Performance locking for this order?
+        /// <summary>String: The full path to the index file (Bag)</summary>
+		MEMBER DBOI_FULLPATH 	:= 20   
+        /// <summary>IntPtr: The handle of the index</summary>
+		MEMBER DBOI_FILEHANDLE 	:= 21 	
+        /// <summary>Logic : Is the order DESCENDing? </summary>
+		MEMBER DBOI_ISDESC 		:= 22 	
+        /// <summary>Logic : Does the order have a FOR condition?</summary>
+		MEMBER DBOI_ISCOND 		:= 23 	
+        /// <summary>The type of the order's key  (usualType value)</summary>
+		MEMBER DBOI_KEYTYPE 	:= 24 	
+        /// <summary>Number: The length of the order's key</summary>
+		MEMBER DBOI_KEYSIZE 	:= 25 	
+        /// <summary>Number: The count of keys in scope and filter</summary>
+		MEMBER DBOI_KEYCOUNT 	:= 26 	
+        /// <summary>Block : The codeblock that produces the key </summary>
+		MEMBER DBOI_SETCODEBLOCK:= 27 	
+        /// <summary>Number: The # of decimals in a numeric key </summary>
+		MEMBER DBOI_KEYDEC 		:= 28 	
+        /// <summary>Logic : Using High Performance locking for this order?</summary>
+		MEMBER DBOI_HPLOCKING 	:= 29 	
 		// 30-34 missing
-		MEMBER DBOI_LOCKOFFSET 	:= 35 	// Number: The offset used for logical locking 
-		MEMBER DBOI_KEYADD 		:= 36  	// Logic: Custom Index: Was Key added successfully? 
-		MEMBER DBOI_KEYDELETE 	:= 37 	// Logic: Custom Index: Was Key Deletion successful? 
-		MEMBER DBOI_KEYVAL 		:= 38 	// Object: The value of the current key 
-		MEMBER DBOI_SCOPETOP 	:= 39 	// Object: Get or Set the scope top    
-		MEMBER DBOI_SCOPEBOTTOM := 40 	// Object: Get or Set the scope bottom
-		MEMBER DBOI_SCOPETOPCLEAR := 41  	// None	 :
-		MEMBER DBOI_SCOPEBOTTOMCLEAR:= 42 // None :
-		MEMBER DBOI_UNIQUE 		:= 43 	// Logic : Does the order have the UNIQUE attribute?
-		MEMBER DBOI_ORDERCOUNT  := 44    // Number: The count of ORDERS contained in an index file or in total
-		MEMBER DBOI_CUSTOM 		:= 45 // Logic: Is this a Custom Index?  
-		MEMBER DBOI_SKIPUNIQUE 	:= 46 // Logic: Was a skip to adjacent unique Key successful?  
-		MEMBER DBOI_KEYGOTO 	:= 47	// 
-		MEMBER DBOI_KEYSINCLUDED:= 48  // Number: Number of keys in the index order
-		MEMBER DBOI_KEYNORAW 	:= 49  // Number: The key number disregarding filters
-		MEMBER DBOI_OPTLEVEL 	:= 50 // Number: Optimization level for current query
-		MEMBER DBOI_KEYCOUNTRAW := 51  // Number: The key count disregarding filter  
+        /// <summary>Number: The offset used for logical locking </summary>
+		MEMBER DBOI_LOCKOFFSET 	:= 35 	
+        /// <summary>Logic: Custom Index: Add key  </summary>
+		MEMBER DBOI_KEYADD 		:= 36  	
+        /// <summary>Logic: Custom Index: Delete key </summary>
+		MEMBER DBOI_KEYDELETE 	:= 37 	
+        /// <summary>Object: The value of the current key </summary>
+		MEMBER DBOI_KEYVAL 		:= 38 	
+        /// <summary>Object: Get or Set the scope top    </summary>
+		MEMBER DBOI_SCOPETOP 	:= 39 	
+        /// <summary>Object: Get or Set the scope bottom</summary>
+		MEMBER DBOI_SCOPEBOTTOM := 40 	
+        /// <summary>Void: Clear top scope</summary>
+		MEMBER DBOI_SCOPETOPCLEAR := 41  	
+        /// <summary>Void: Clear Bottom scope</summary>
+		MEMBER DBOI_SCOPEBOTTOMCLEAR:= 42 
+        /// <summary>Logic : Does the order have the UNIQUE attribute?</summary>
+		MEMBER DBOI_UNIQUE 		:= 43 	
+        /// <summary>Number: The count of ORDERS contained in an index file or in total</summary>
+		MEMBER DBOI_ORDERCOUNT  := 44    
+        /// <summary>Logic: Is this a Custom Index?  </summary>
+		MEMBER DBOI_CUSTOM 		:= 45 
+        /// <summary>Logic: Was a skip to adjacent unique Key successful?  </summary>
+		MEMBER DBOI_SKIPUNIQUE 	:= 46 
+        /// <summary></summary>
+		MEMBER DBOI_KEYGOTO 	:= 47	
+        /// <summary>Number: Number of keys in the index order</summary>
+		MEMBER DBOI_KEYSINCLUDED:= 48  
+        /// <summary>Number: The key number disregarding filters</summary>
+		MEMBER DBOI_KEYNORAW 	:= 49  
+        /// <summary>Number: Optimization level for current query</summary>
+		MEMBER DBOI_OPTLEVEL 	:= 50 
+        /// <summary>Number: The key count disregarding filter  </summary>
+		MEMBER DBOI_KEYCOUNTRAW := 51  
 
 		// 54-59
 		/* These shouldn't need an open table */
@@ -467,32 +539,56 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 	
 	/// <summary>This enum specifies the various field types that can appear in DBF files.</summary>
 	ENUM DbFieldType AS BYTE
-		MEMBER @@Unknown		:= 0	//                                  
-		MEMBER @@Character 		:= 67 	// 'C', uses len and dec
-		MEMBER @@Date	 		:= 68 	// 'D', 8 bytes
-		MEMBER @@Logic   		:= 76  	// 'L', 1 byte
-		MEMBER @@Memo    		:= 77  	// 'M', 4 or 10 bytes see Length
-		MEMBER @@Number    		:= 78  	// 'N', uses len and dec
-		MEMBER @@VOObject		:= 79  	// 'O', is anybody using this ?
+		MEMBER Unknown		:= 0	
+        /// <summary>'C', uses len and dec</summary>
+		MEMBER Character 		:= 67 	 
+        /// <summary>'D', 8 bytes</summary>
+		MEMBER Date	 		:= 68 	 
+        /// <summary>'L', 1 byte</summary>
+		MEMBER Logic   		:= 76  	 
+        /// <summary>'M', 4 or 10 bytes see Length</summary>
+		MEMBER Memo    		:= 77  	 
+        /// <summary>'N', uses len and dec</summary>
+		MEMBER Number    		:= 78  	 
+        /// <summary>'O', is anybody using this ?</summary>
+		MEMBER VOObject		:= 79  	
 		// Extended Non Clipper Types in numerical order
-		MEMBER @@AutoIncrement	:= 43	// '+' = AutoInc, 4 bytes
-		MEMBER @@Integer2		:= 50  	// '2'	2 byte int, autoInc
-		MEMBER @@Integer4		:= 52  	// '4'	4 byte int, autoInc
-		MEMBER @@Double8		:= 56	// '8'  Same as 'B'
-		MEMBER @@ModTime		:= 61	// '=' = ModTime, 8 bytes 
-		MEMBER @@TimeStamp		:= 64   // '@' = Timestamp 8 bytes
-		MEMBER @@Double			:= 66  	// 'B'	FOX Type, also '8'
-		MEMBER @@Float			:= 70  	// 'F'	FOX Type, uses len and dec
-		MEMBER @@Ole			:= 71	// 'G' = Ole 4 or 10 bytes
-		MEMBER @@Integer		:= 73  	// 'I'	FOX Type , autoInc
-		MEMBER @@Picture		:= 80  	// 'P'	FOX Type, 4 or 10 bytes
-		MEMBER @@VarLength		:= 81	// 'Q' = VarLenghth , between 1 and 255 
-		MEMBER @@DateTime		:= 84  	// 'T'	FOX Type can be 4 or 8 bytes
-		MEMBER @@Any		    := 86	// 'V' = Any
-		MEMBER @@Blob			:= 87	// 'W' = Blob 4 or 10 bytes
-		MEMBER @@Currency		:= 89  	// 'Y'	8 byte FOX Type
-		MEMBER @@CurrencyDouble	:= 90  	// 'Z'	8 byte Currency
-		MEMBER @@RowVer			:= 94	// '^' = RowVer, 8 bytes  
+        /// <summary>'+' = AutoInc, 4 bytes</summary>
+		MEMBER AutoIncrement	:= 43	 
+        /// <summary>'2'	2 byte int, autoInc</summary>
+		MEMBER Integer2		:= 50  	 
+        /// <summary>'4'	4 byte int, autoInc</summary>
+		MEMBER Integer4		:= 52  	 
+        /// <summary>'8'  Same as 'B'</summary>
+		MEMBER Double8		:= 56	 
+        /// <summary>'=' = ModTime, 8 bytes </summary>
+		MEMBER ModTime		:= 61	 
+        /// <summary>'@' = Timestamp 8 bytes</summary>
+		MEMBER TimeStamp		:= 64    
+        /// <summary>'B'	FOX Type, also '8'</summary>
+		MEMBER Double			:= 66  	 
+        /// <summary>'F'	FOX Type, uses len and dec</summary>
+		MEMBER Float			:= 70  	 
+        /// <summary>'G' = Ole 4 or 10 bytes</summary>
+		MEMBER Ole			:= 71	 
+        /// <summary>'I'	FOX Type , autoInc</summary>
+		MEMBER Integer		:= 73  	 
+        /// <summary>'P'	FOX Type, 4 or 10 bytes</summary>
+		MEMBER Picture		:= 80  	 
+        /// <summary>'Q' = VarLenghth , between 1 and 255 </summary>
+		MEMBER VarLength		:= 81	 
+        /// <summary>'T'	FOX Type can be 4 or 8 bytes</summary>
+		MEMBER DateTime		:= 84  	 
+        /// <summary>'V' = Any/summary>
+		MEMBER Any		    := 86	 
+        /// <summary>'W' = Blob 4 or 10 bytes</summary>
+		MEMBER Blob			:= 87	 
+        /// <summary> 'Y'	8 byte FOX Type</summary>
+		MEMBER Currency		:= 89  	
+        /// <summary>'Z'	8 byte Currency</summary>
+		MEMBER CurrencyDouble	:= 90  	 
+        /// <summary>'^' = RowVer, 8 bytes  </summary>
+		MEMBER RowVer			:= 94	 
 	END	 ENUM
 	
 	/// <summary>This enum specifies the various code pages that can appear in DBF files.</summary>
@@ -511,9 +607,11 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER CP_DBF_DOS_GREEK:=106
 		MEMBER CP_DBF_DOS_TURKISH:=107
 		MEMBER CP_DBF_DOS_CANADIAN:=108
-		MEMBER CP_DBF_WIN_CHINESE_1:=120        // (Hong Kong SAR, Taiwan) 
+        /// <summary>(Hong Kong SAR, Taiwan) </summary>
+		MEMBER CP_DBF_WIN_CHINESE_1:=120     
 		MEMBER CP_DBF_WIN_KOREAN:=121
-		MEMBER CP_DBF_WIN_CHINESE_2:=122        // Chinese (PRC, Singapore) 
+        /// <summary>Chinese (PRC, Singapore) </summary>
+		MEMBER CP_DBF_WIN_CHINESE_2:=122     
 		MEMBER CP_DBF_WIN_JAPANESE:=123
 		MEMBER CP_DBF_WIN_THAI:=124
 		MEMBER CP_DBF_WIN_HEBREW:=125
@@ -532,71 +630,124 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 	/// These enums are also available as DEFINES and can therefore also be used without the "RDDInfo." prefix.
 	/// </note>
 	///</summary>
-
+    /// <seealso cref='M:XSharp.RT.Functions.RddInfo(XSharp.__Usual,XSharp.__Usual)' >RddInfo()</seealso>
+    /// <remarks>Most of these ENUMs come from Harbour and have not been implemented yet. </remarks>
 	ENUM RddInfo
-		MEMBER RDDI_ISDBF              :=   1   /* Does this RDD support DBFs? */
-		MEMBER RDDI_CANPUTREC          :=   2   /* Can this RDD Put Records? */
-		MEMBER RDDI_DELIMITER          :=   3   /* The field delimiter (as a string) */
-		MEMBER RDDI_SEPARATOR          :=   4   /* The record separator (as a string) */
+        /// <summary>Does this RDD support DBFs?</summary>
+		MEMBER RDDI_ISDBF              :=   1   
+        /// <summary>Can this RDD Put Records?</summary>
+		MEMBER RDDI_CANPUTREC          :=   2   
+        /// <summary>The field delimiter (as a string)</summary>
+		MEMBER RDDI_DELIMITER          :=   3   
+        /// <summary>The record separator (as a string) </summary>
+		MEMBER RDDI_SEPARATOR          :=   4   
+		/// <summary>Default data file's file extension</summary>
+		MEMBER RDDI_TABLEEXT           :=   5   
+        /// <summary>Default memo file's file extension </summary>
+		MEMBER RDDI_MEMOEXT            :=   6   
+        /// <summary>Default multi tag index's file extension</summary>
+		MEMBER RDDI_ORDBAGEXT          :=   7   
+        /// <summary>default single tag index's file extension</summary>
+		MEMBER RDDI_ORDEREXT           :=   8   
+        /// <summary>default single tag index's file extension</summary>
+		MEMBER RDDI_ORDSTRUCTEXT       :=   9   
 		
-		MEMBER RDDI_TABLEEXT           :=   5   /* Default data file's file extension */
-		MEMBER RDDI_MEMOEXT            :=   6   /* Default memo file's file extension */
-		MEMBER RDDI_ORDBAGEXT          :=   7   /* Default multi tag index's file extension */
-		MEMBER RDDI_ORDEREXT           :=   8   /* default single tag index's file extension */
-		MEMBER RDDI_ORDSTRUCTEXT       :=   9   /* default single tag index's file extension */
-		
-		MEMBER RDDI_LOCAL              :=  10   /* Local file access? */
-		MEMBER RDDI_REMOTE             :=  11   /* Remote table access? */
-		MEMBER RDDI_CONNECTION         :=  12   /* Get/Set default connection */
-		MEMBER RDDI_TABLETYPE          :=  13   /* Type of table file */
-		MEMBER RDDI_MEMOTYPE           :=  14   /* Type of MEMO file DB_MEMO_*: DBT, SMT, FPT(FP,SIX3,FLEXIII) */
-		MEMBER RDDI_LARGEFILE          :=  15   /* Is large file size (>=4GB) supported */
-		MEMBER RDDI_LOCKSCHEME         :=  16   /* Locking scheme used by RDD */
-		MEMBER RDDI_RECORDMAP          :=  17   /* Does RDD support record map functionality? */
-		MEMBER RDDI_ENCRYPTION         :=  18   /* Does RDD support encryption */
-		MEMBER RDDI_TRIGGER            :=  19   /* Get/Set default trigger function */
-		MEMBER RDDI_AUTOLOCK           :=  20   /* automatic locking on update */
+        /// <summary>Local file access?</summary>
+		MEMBER RDDI_LOCAL              :=  10   
+        /// <summary>Remote table access? </summary>
+		MEMBER RDDI_REMOTE             :=  11   
+        /// <summary>Get/Set default connection</summary>
+		MEMBER RDDI_CONNECTION         :=  12   
+        /// <summary>Type of table file</summary>
+		MEMBER RDDI_TABLETYPE          :=  13   
+        /// <summary>Type of MEMO file DB_MEMO_*: DBT, SMT, FPT(FP,SIX3,FLEXIII) </summary>
+		MEMBER RDDI_MEMOTYPE           :=  14   
+        /// <summary>Is large file size (>=4GB) supported</summary>
+		MEMBER RDDI_LARGEFILE          :=  15   
+        /// <summary>Locking scheme used by RDD</summary>
+		MEMBER RDDI_LOCKSCHEME         :=  16   
+        /// <summary>Does RDD support record map functionality?</summary>
+		MEMBER RDDI_RECORDMAP          :=  17   
+        /// <summary>Does RDD support encryption</summary>
+		MEMBER RDDI_ENCRYPTION         :=  18   
+        /// <summary>Get/Set default trigger function</summary>
+		MEMBER RDDI_TRIGGER            :=  19   
+        /// <summary>automatic locking on update</summary>
+		MEMBER RDDI_AUTOLOCK           :=  20   
 		
 		/* index parameters */		   
-		MEMBER RDDI_STRUCTORD          :=  21   /* Are structural indexes supported */
-		MEMBER RDDI_STRICTREAD         :=  22   /* Flag for avoiding RDD hierarchy and using a bigger buffer when indexing */
-		MEMBER RDDI_STRICTSTRUCT       :=  23   /* Flag for strict structural order checking */
-		MEMBER RDDI_OPTIMIZE           :=  24   /* Flag for whether to use query optimization */
-		MEMBER RDDI_FORCEOPT           :=  25   /* Flag for forcing linear optimization */
-		MEMBER RDDI_AUTOOPEN           :=  26   /* Flag for automatically opening structural indexes */
-		MEMBER RDDI_AUTOORDER          :=  27   /* When a structural index is opened, the order to be set */
-		MEMBER RDDI_AUTOSHARE          :=  28   /* When a network is detected, open the index shared, otherwise open exclusively */
-		MEMBER RDDI_MULTITAG           :=  29   /* Does RDD support multi tag in index file */
-		MEMBER RDDI_SORTRECNO          :=  30   /* Is record number part of key in sorting */
-		MEMBER RDDI_MULTIKEY           :=  31   /* Does custom orders support repeated keys? */
+        /// <summary>Are structural indexes supported</summary>
+		MEMBER RDDI_STRUCTORD          :=  21   
+        /// <summary>Flag for avoiding RDD hierarchy and using a bigger buffer when indexing</summary>
+		MEMBER RDDI_STRICTREAD         :=  22   
+        /// <summary>Flag for strict structural order checking</summary>
+		MEMBER RDDI_STRICTSTRUCT       :=  23   
+        /// <summary>Flag for whether to use query optimization</summary>
+		MEMBER RDDI_OPTIMIZE           :=  24   
+        /// <summary>Flag for forcing linear optimization</summary>
+		MEMBER RDDI_FORCEOPT           :=  25   
+        /// <summary>Flag for automatically opening structural indexes</summary>
+		MEMBER RDDI_AUTOOPEN           :=  26   
+        /// <summary>When a structural index is opened, the order to be set</summary>
+		MEMBER RDDI_AUTOORDER          :=  27   
+        /// <summary>When a network is detected, open the index shared, otherwise open exclusively</summary>
+		MEMBER RDDI_AUTOSHARE          :=  28   
+        /// <summary>Does RDD support multi tag in index file</summary>
+		MEMBER RDDI_MULTITAG           :=  29   
+        /// <summary>Is record number part of key in sorting</summary>
+		MEMBER RDDI_SORTRECNO          :=  30   
+        /// <summary>Does custom orders support repeated keys?</summary>
+		MEMBER RDDI_MULTIKEY           :=  31   
 		
 		/* memo parameters */		   
-		MEMBER RDDI_MEMOBLOCKSIZE      :=  32   /* Memo File's block size */
-		MEMBER RDDI_MEMOVERSION        :=  33   /* sub version of memo file */
-		MEMBER RDDI_MEMOGCTYPE         :=  34   /* type of garbage collector used by GC */
-		MEMBER RDDI_MEMOREADLOCK       :=  35   /* use read lock in memo file access */
-		MEMBER RDDI_MEMOREUSE          :=  36   /* reuse free space on write */
-		MEMBER RDDI_BLOB_SUPPORT       :=  37   /* can support BLOB files directly */
+        /// <summary>Memo File's block size</summary>
+		MEMBER RDDI_MEMOBLOCKSIZE      :=  32   
+        /// <summary>sub version of memo file</summary>
+		MEMBER RDDI_MEMOVERSION        :=  33   
+        /// <summary>type of garbage collector used by GC</summary>
+		MEMBER RDDI_MEMOGCTYPE         :=  34   
+        /// <summary>use read lock in memo file access</summary>
+		MEMBER RDDI_MEMOREADLOCK       :=  35   
+        /// <summary>reuse free space on write</summary>
+		MEMBER RDDI_MEMOREUSE          :=  36   
+        /// <summary>can support BLOB files directly</summary>
+		MEMBER RDDI_BLOB_SUPPORT       :=  37   
 		
 		/* misc */					   
-		MEMBER RDDI_PENDINGTRIGGER     :=  40   /* set pending trigger for next open operation */
-		MEMBER RDDI_PENDINGPASSWORD    :=  41   /* set pending password for next open operation */
-		MEMBER RDDI_PASSWORD           :=  42   /* Get/Set default password */
-		MEMBER RDDI_LOCKRETRY          :=  43   /* Get/Set record and file lock timeout value */
-		MEMBER RDDI_DIRTYREAD          :=  44   /* Get/Set index dirty read flag */
-		MEMBER RDDI_INDEXPAGESIZE      :=  45   /* Get/Set default index page size */
-		MEMBER RDDI_DECIMALS           :=  46   /* Get/Set default number of decimal places for numeric fields if it's undefined */
-		MEMBER RDDI_SETHEADER          :=  47   /* DBF header updating modes */
+        /// <summary>set pending trigger for next open operation</summary>
+		MEMBER RDDI_PENDINGTRIGGER     :=  40   
+        /// <summary>set pending password for next open operation</summary>
+		MEMBER RDDI_PENDINGPASSWORD    :=  41   
+        /// <summary>Get/Set default password</summary>
+		MEMBER RDDI_PASSWORD           :=  42   
+        /// <summary>Get/Set record and file lock timeout value</summary>
+		MEMBER RDDI_LOCKRETRY          :=  43   
+        /// <summary>Get/Set index dirty read flag</summary>
+		MEMBER RDDI_DIRTYREAD          :=  44   
+        /// <summary>Get/Set default index page size</summary>
+		MEMBER RDDI_INDEXPAGESIZE      :=  45   
+        /// <summary>Get/Set default number of decimal places for numeric fields if it's undefined</summary>
+		MEMBER RDDI_DECIMALS           :=  46   
+        /// <summary>DBF header updating modes</summary>
+		MEMBER RDDI_SETHEADER          :=  47   
 		
 		/* SQL */					   
-		MEMBER RDDI_CONNECT            :=  61   /* connect to database */
-		MEMBER RDDI_DISCONNECT         :=  62   /* disconnect from database */
-		MEMBER RDDI_EXECUTE            :=  63   /* execute SQL statement */
-		MEMBER RDDI_ERROR              :=  64   /* error number */
-		MEMBER RDDI_ERRORNO            :=  65   /* error description */
-		MEMBER RDDI_INSERTID           :=  66   /* last auto insert ID */
-		MEMBER RDDI_AFFECTEDROWS       :=  67   /* number of affected rows after UPDATE */
-		MEMBER RDDI_QUERY              :=  68   /* last executed query */
+        /// <summary>connect to database</summary>
+		MEMBER RDDI_CONNECT            :=  61   
+        /// <summary>disconnect from database</summary>
+		MEMBER RDDI_DISCONNECT         :=  62   
+        /// <summary>execute SQL statement </summary>
+		MEMBER RDDI_EXECUTE            :=  63   
+        /// <summary>error number</summary>
+		MEMBER RDDI_ERROR              :=  64   
+        /// <summary>error description</summary>
+		MEMBER RDDI_ERRORNO            :=  65   
+        /// <summary>last auto insert ID</summary>
+		MEMBER RDDI_INSERTID           :=  66   
+        /// <summary>number of affected rows after UPDATE</summary>
+		MEMBER RDDI_AFFECTEDROWS       :=  67   
+        /// <summary>last executed query</summary>
+		MEMBER RDDI_QUERY              :=  68   
 		
 	END ENUM
 
@@ -624,7 +775,7 @@ BEGIN NAMESPACE XSharp.RDD.Enums
         /// <summary>Both this work area and the destination work area have identical row structures (i.e., all columns match).</summary>
         MEMBER SameStructure := 1
 	    /// <summary>The RDD has the ability to transfer an entire row.</summary>
-        MEMBER CanPutRec        := 2
+        MEMBER CanPutRec     := 2
     END ENUM
 
 

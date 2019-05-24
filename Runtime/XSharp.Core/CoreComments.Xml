@@ -3,15 +3,15 @@
   <Ansi2Oem>
     <span>
       <note type="warning">
-      The Ansi2Oem() and Oem2Ansi() family of functions are compatibility functions. Do not use them unless you really have to.
-      X# is a Unicode language and conversions from Unicode - Ansi - Oem - Unicode will take place
-      if you use these functions. <br/>
+        The Ansi2Oem() and Oem2Ansi() family of functions are compatibility functions. Do not use them unless you really have to.
+        X# is a Unicode language and conversions from Unicode - Ansi - Oem - Unicode will take place
+        if you use these functions. <br/>
         You should also realize that Ansi2Oem(Oem2Ansi(cSource)) will not always return cSource. Some characters may
         not be available in the OEM codepage and could be translated to other characters.
         For example: Windows codepage 1252 has Capital E Umlaut (Ë) on position 203.
         When translated to OEM codepage 437 this will become capital E without umlaut (69). Converting back to Ansi
         this will remain a E without umlaut.
-        </note>
+      </note>
     </span>
   </Ansi2Oem>
   <StringCompare>
@@ -33,7 +33,7 @@
           <td>1</td>
           <td>LHS follows RHS in the sort order.</td>
         </tr>
-        </table>
+      </table>
     </returns>
   </StringCompare>
   <File>
@@ -45,7 +45,7 @@
         streams in the runtime. <br/>
         That also means that you can't use file handles for functions such as FRead() and FWrite() that were not
         created in the X# runtime.<br/>
-        If you want to access the underlying FileStream, then you should call the 
+        If you want to access the underlying FileStream, then you should call the
         function <see cref="M:XSharp.Core.Functions.FGetStream(System.IntPtr)">FGetStream() </see>
       </note>
     </remarks>
@@ -68,44 +68,14 @@
         Conversions between OEM en Ansi were relevant in an Ansi environment like Visual Objects.
         In a Unicode environment this conversion is noto much a conversion between OEM and Ansi but a
         conversion between either Unicode and Ansi or Unicode and OEM. <br/>
-        For these conversions the runtime uses the current values of the 
+        For these conversions the runtime uses the current values of the
         <see cref="P:XSharp.RuntimeState.WinCodePage">Windows Codepage</see>
-        and 
+        and
         <see cref="P:XSharp.RuntimeState.DosCodePage">DOS Codepage</see>.
       </note>
     </span>
   </Oem2AnsiFileIO>
-  <DbRecordInfo>
-    <summary>DbRecordInfo() define.</summary>
-    <seealso cref='M:XSharp.RT.Functions.DbRecordInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' >DbRecordInfo()</seealso>
-    <seealso cref='T:XSharp.RDD.Enums.DbRecordInfo'>DbRecordInfo Enum</seealso>
-  </DbRecordInfo>
-  <DBFieldInfo>
-     <summary>DbFieldInfo() define.</summary>
-     <seealso cref='M:XSharp.RT.Functions.DbFieldInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' >DbFieldInfo()</seealso>
-     <seealso cref='T:XSharp.RDD.Enums.DbFieldInfo'>DbFieldInfo Enum</seealso>
 
-  </DBFieldInfo>
-  <DbRecordInfo>
-  <summary>DbRecordInfo() define.</summary>
-   <seealso cref='M:XSharp.RT.Functions.DbRecordInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' >DbRecordInfo()</seealso>
-   <seealso cref='T:XSharp.RDD.Enums.DbRecordInfo'>DbRecordInfo Enum</seealso>
-  </DbRecordInfo>
-  <DBInfo>
-    <summary>DBInfo() define.</summary>
-    <seealso cref='M:XSharp.RT.Functions.DbInfo(XSharp.__Usual,XSharp.__Usual)' >DbInfo()</seealso>
-    <seealso cref='T:XSharp.RDD.Enums.DbInfo'>DbInfo Enum</seealso>
-  </DBInfo>
-  <DBOrderInfo>
-    <summary>DBOrderInfo() define.</summary>
-    <seealso cref='M:XSharp.RT.Functions.DbOrderInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' >DbOrderInfo()</seealso>
-    <seealso cref='T:XSharp.RDD.Enums.DbOrder_Info'>DBOrderInfo Enum</seealso>
-  </DBOrderInfo>
-  <BLOBInfo>
-    <summary>DBBlobInfo() define.</summary>
-    <seealso cref='M:XSharp.RT.Functions.DbBlobInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' >DbBlobInfo()</seealso>
-    <seealso cref='T:XSharp.RDD.Enums.DbInfo'>DbInfo Enum</seealso>
-  </BLOBInfo>
   <BLOBImportExport>
     <summary>BLOB Import/Export define.</summary>
   </BLOBImportExport>
@@ -121,21 +91,17 @@
   <BlockSize>
     <summary>BlockSize define.</summary>
   </BlockSize>
-  <RDDInfo>
-    <summary>RDDInfo() define.</summary>
-    <seealso cref='M:XSharp.RT.Functions.RddInfo(XSharp.__Usual,XSharp.__Usual)' >RddInfo()</seealso>
-    <seealso cref='T:XSharp.RDD.Enums.RddInfo'>RddInfo Enum</seealso>
-  </RDDInfo>
   <RDDError>
     <summary>RDD Error Number.</summary>
     <seealso cref='T:XSharp.Subcodes'>Subcodes Enum</seealso>
     <seealso cref='P:XSharp.Error.SubCode'>Subcode field in Error object</seealso>
+    <remarks>This define has the same value as a member of the Subcodes enum. You can use either the define or the enum value in your code.</remarks>
   </RDDError>
   <Directory>
     <seealso cref="M:XSharp.RT.Functions.Directory(System.String,XSharp.__Usual)">Directory Function</seealso>
     <remarks>
-      Compared to Clipper and Visual Objects the return value of Directory() has changed. 
-      Each subarray returned from Directory() now contains some extra  values, such as creation date and 
+      Compared to Clipper and Visual Objects the return value of Directory() has changed.
+      Each subarray returned from Directory() now contains some extra  values, such as creation date and
       last access date. The normal Date and Time elements represent the last written date and time.
     </remarks>
   </Directory>
@@ -143,24 +109,86 @@
     <summary>Set() define</summary>
     <seealso cref='T:XSharp.Set'>Set Enum</seealso>
     <seealso cref='M:XSharp.RT.Functions.Set(XSharp.__Usual,XSharp.__Usual)' >Set() function</seealso>
-
+    <remarks>
+      This define has the same value as a member of the Set enum. You can use either the define or the enum value in your code.
+      If you are coming from XHarbour or Xbase++ please don't use SET.CH. The values in the Set enum may be different:
+      we have merged the SET defines from various dialects and there were some conflicting values.
+    </remarks>
   </Set>
-  <Gencode>
-    <summary>Error Gencode define</summary>
-    <seealso cref='T:XSharp.Gencode'>Gencode Enum</seealso>
-
-  </Gencode>
-  <Severity>
-    <summary>Error Severity define</summary>
-    <seealso cref='T:XSharp.Severity'>Severity Enum</seealso>
-  </Severity>
   <DateCountry>
     <summary>DateFormat define</summary>
     <seealso cref='T:XSharp.DateCountry'>DateCountry Enum</seealso>
+    <remarks>This define has the same value as a member of the DateCountry enum. You can use either the define or the enum value in your code.</remarks>
   </DateCountry>
   <NationMessage>
     <summary>Nation message define</summary>
     <seealso cref='T:XSharp.VOErrors'>VOErrors Enum</seealso>
+    <remarks>This define has the same value as a member of the VOErrors enum. You can use either the define or the enum value in your code.</remarks>
   </NationMessage>
-  
+  <TrueOrFalse>
+    <span>
+      TRUE when the operation succeeded or FALSE when the operation failed. <br/>
+      Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br/>
+      These exceptions are caught in the higher level code and registered in
+      the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+    </span>
+  </TrueOrFalse>
+  <ScopeInfo>
+    <summary>Scope value for DbScope() and DbSetScope().</summary>
+    <seealso cref='M:XSharp.RT.Functions.DbScope(XSharp.__Usual)' >DbScope()</seealso>
+    <seealso cref='M:XSharp.RT.Functions.DbSetScope(System.Int32,XSharp.__Usual)' >DbSetScope()</seealso>
+  </ScopeInfo>
+  <LastError>
+    <span>
+      <br/><br/>This function, however, does not call the error
+      handler and will therefore not produce a runtime error message or create an error object if it fails.<br/>
+      Therefore it is important to check the return value to determine if the function succeeded.<br/><br/>
+      The <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtimestate</see>
+      will contain needed information about any error that occurs.<br/>
+    </span>
+  </LastError>
+  <Collation>
+    <span>
+      The Core dialect always compares according to the Unicode rules.
+      The other dialects use the rules defined with SetCollation for string comparison. There are 4 possible values:
+      <list type="table">
+        <listheader>
+          <term>Parameter</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>Windows (the default)</term>
+          <description>
+            This uses the normal windows Ansi comparison mechanism that Visual Objects uses as well.
+            That means that the Unicode strings from .Net are converted to Ansi first and then compared with the Ansi comparison rules.
+
+            In most cases characters that are not available in the Ansi codepage are translated to a question mark '?' and are therefore all seen as equal. <br/>
+            If you want true unicode comparison you need the Unicode value for SetCollation.
+          </description>
+        </item>
+        <item>
+          <term>Clipper</term>
+          <description>
+            This uses string comparison tables that are the same as the character comparison tables in the Visual Objects
+            nation modules. Each character from the unicode string is converted to a character from the OEM codepage first using the
+            DosCodePage from the runtime state. the resulting OEM characters are then looked up in the 256 character weight tables that
+            are part of the runtime dll. You can switch to a different table by using SetNatDLL().
+          </description>
+        </item>
+        <item>
+          <term>Unicode</term>
+          <description>
+            This uses the normal Unicode String.Compare routines for string comparisons.
+          </description>
+        </item>
+        <item>
+          <term>Ordinal</term>
+          <description>
+            This uses the normal Ordinal String.Compare routines from DotNet. This is the fastest.
+          </description>
+        </item>
+      </list>
+
+    </span>
+  </Collation>
 </Comments>

@@ -6,9 +6,5 @@
 /// <seealso cref='M:XSharp.RT.Functions.CreateInstance(XSharp.__Usual,XSharp.__Usual)' >CreateInstance</seealso>
 
 FUNCTION CreateObject(cClassName, _args ) AS OBJECT CLIPPER
-    LOCAL args AS USUAL[]
-    args := USUAL[]{PCount()}
-    FOR nArg := 1 TO PCount()
-        args[nArg] := _GetFParam(nArg)
-    NEXT
-    RETURN CreateInstance(args)
+    // The pseudo function _ARGS() returns the Clipper arguments array
+    RETURN CreateInstance(_ARGS())

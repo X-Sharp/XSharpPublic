@@ -10,8 +10,8 @@ USING System.Collections.Generic
 USING System.Text
 USING System.Reflection
 USING System.Reflection.Emit
-using XSharp.XPP
-using System.Diagnostics
+USING XSharp.XPP
+USING System.Diagnostics
 
 
 /// <summary>The worker class to help create classes at runtime.</summary>
@@ -21,16 +21,16 @@ CLASS XSharp.XPP.ClassObject
     [DebuggerDisplay("FieldDescriptor {Name}")];
     INTERNAL CLASS FieldDescriptor
         INTERNAL PROPERTY Name       AS STRING AUTO
-        INTERNAL PROPERTY Type       as System.Type AUTO
-        INTERNAL PROPERTY Attributes as FieldAttributes AUTO
+        INTERNAL PROPERTY Type       AS System.Type AUTO
+        INTERNAL PROPERTY Attributes AS FieldAttributes AUTO
     END CLASS
 
     [DebuggerDisplay("MethodDescriptor {Name}")];
     INTERNAL CLASS MethodDescriptor
         INTERNAL PROPERTY Name       AS STRING AUTO
-        INTERNAL PROPERTY Type       as System.Type AUTO
-        INTERNAL PROPERTY Attributes as MethodAttributes AUTO
-        INTERNAL PROPERTY Block      AS CodeBlock AUTO
+        INTERNAL PROPERTY Type       AS System.Type AUTO
+        INTERNAL PROPERTY Attributes AS MethodAttributes AUTO
+        INTERNAL PROPERTY Block      AS CODEBLOCK AUTO
         INTERNAL PROPERTY Varname    AS STRING AUTO
         INTERNAL PROPERTY Getter     AS LOGIC AUTO
         INTERNAL PROPERTY Setter     AS LOGIC AUTO
@@ -38,56 +38,56 @@ CLASS XSharp.XPP.ClassObject
 
     [DebuggerDisplay("ClassDescriptor {Name}")];
     INTERNAL CLASS ClassDescriptor
-        INTERNAL PROPERTY Name       as STRING AUTO
-        INTERNAL PROPERTY SuperClass as STRING AUTO
-        INTERNAL PROPERTY Interfaces as STRING[] AUTO
-        INTERNAL PROPERTY Fields     as FieldDescriptor[] AUTO
-        INTERNAL PROPERTY Methods    as MethodDescriptor[] AUTO
-        INTERNAL PROPERTY Properties as MethodDescriptor[] AUTO
+        INTERNAL PROPERTY Name       AS STRING AUTO
+        INTERNAL PROPERTY SuperClass AS STRING AUTO
+        INTERNAL PROPERTY Interfaces AS STRING[] AUTO
+        INTERNAL PROPERTY Fields     AS FieldDescriptor[] AUTO
+        INTERNAL PROPERTY Methods    AS MethodDescriptor[] AUTO
+        INTERNAL PROPERTY Properties AS MethodDescriptor[] AUTO
         INTERNAL PROPERTY HasInit    AS LOGIC AUTO
-        INTERNAL METHOD GetUniqueHashCode as INT
-            local nCode as INT
-            nCode := SELF:Name:GetHashCode() + self:SuperClass:GetHashCode()
+        INTERNAL METHOD GetUniqueHashCode AS INT
+            LOCAL nCode AS INT
+            nCode := SELF:Name:GetHashCode() + SELF:SuperClass:GetHashCode()
             BEGIN UNCHECKED
-                FOREACH var fld in Fields
+                FOREACH VAR fld IN Fields
                     nCode += fld:Name:GetHashCode() + fld:Attributes:GetHashCode()
                 NEXT
-                FOREACH var meth in Methods
+                FOREACH VAR meth IN Methods
                     nCode += meth:Name:GetHashCode() + meth:Attributes:GetHashCode()
                 NEXT
-                FOREACH var prop in Properties
+                FOREACH VAR prop IN Properties
                     nCode += prop:Name:GetHashCode() + prop:Attributes:GetHashCode()
                 NEXT
             END UNCHECKED
             RETURN nCode
 
 
-        INTERNAL METHOD GetPropertyGetBlock(cName as STRING) as CodeBlock
-            foreach oMethod as MethodDescriptor in SELF:Properties
-                if string.Compare(oMethod:Name, cName, TRUE) == 0 .and. oMethod:Getter
-                    return oMethod:Block
-                endif
-            next
+        INTERNAL METHOD GetPropertyGetBlock(cName AS STRING) AS CODEBLOCK
+            FOREACH oMethod AS MethodDescriptor IN SELF:Properties
+                IF string.Compare(oMethod:Name, cName, TRUE) == 0 .AND. oMethod:Getter
+                    RETURN oMethod:Block
+                ENDIF
+            NEXT
             RETURN NULL_CODEBLOCK
 
-        INTERNAL METHOD GetPropertySetBlock(cName as STRING) as CodeBlock
-            foreach oMethod as MethodDescriptor in SELF:Properties
-                if string.Compare(oMethod:Name, cName, TRUE) == 0 .and. oMethod:Setter
-                    return oMethod:Block
-                endif
-            next
+        INTERNAL METHOD GetPropertySetBlock(cName AS STRING) AS CODEBLOCK
+            FOREACH oMethod AS MethodDescriptor IN SELF:Properties
+                IF string.Compare(oMethod:Name, cName, TRUE) == 0 .AND. oMethod:Setter
+                    RETURN oMethod:Block
+                ENDIF
+            NEXT
             RETURN NULL_CODEBLOCK
 
 
-        INTERNAL METHOD GetMethodBlock(cName as STRING) as CodeBlock
-            foreach oMethod as MethodDescriptor in SELF:Methods
-                if string.Compare(oMethod:Name, cName, TRUE) == 0
-                    return oMethod:Block
-                endif
-            next
+        INTERNAL METHOD GetMethodBlock(cName AS STRING) AS CODEBLOCK
+            FOREACH oMethod AS MethodDescriptor IN SELF:Methods
+                IF string.Compare(oMethod:Name, cName, TRUE) == 0
+                    RETURN oMethod:Block
+                ENDIF
+            NEXT
             RETURN NULL_CODEBLOCK
 
-        INTERNAL CONSTRUCTOR (cName as STRING)
+        INTERNAL CONSTRUCTOR (cName AS STRING)
             Name := cName
     
     END CLASS
@@ -97,25 +97,21 @@ CLASS XSharp.XPP.ClassObject
     PRIVATE _name AS STRING
     PRIVATE _desc AS ClassDescriptor
     PROPERTY Name AS STRING GET _name
-    INTERNAL PROPERTY Descriptor as  ClassDescriptor GET _desc
-    PROPERTY Type  as System.Type GET _type
+    INTERNAL PROPERTY Descriptor AS  ClassDescriptor GET _desc
+    PROPERTY Type  AS System.Type GET _type
     #endregion
-    PRIVATE CONSTRUCTOR(oType AS Type, cName AS STRING, oDesc  as ClassDescriptor)
+    PRIVATE CONSTRUCTOR(oType AS Type, cName AS STRING, oDesc  AS ClassDescriptor)
         _type := oType
         _name := cName
         _desc := oDesc
 
     METHOD New() AS OBJECT CLIPPER
         LOCAL oRes AS OBJECT
-        local uParams as USUAL[]
-        uParams := USUAL[]{ PCount()}
-        FOR vaR nI := 1 to PCount()
-            uParams[nI]  := _GetMParam(nI)
-        NEXT
         oRes := Activator.CreateInstance(_type)
-        if SELF:Descriptor:HasInit
-            local oBlock := SELF:Descriptor:GetMethodBlock("INIT") as codeblock
-            EValBlock(oBlock, oRes, uParams)
+        IF SELF:Descriptor:HasInit
+            LOCAL oBlock := SELF:Descriptor:GetMethodBlock("INIT") AS CODEBLOCK
+            // The pseudo function _ARGS() returns the Clipper arguments array
+            EvalBlock(oBlock, oRes, _ARGS())
         ENDIF
         RETURN oRes
 
@@ -137,152 +133,152 @@ CLASS XSharp.XPP.ClassObject
         LOCAL lOk := FALSE AS LOGIC
         IF Classes:ContainsKey(classObject:Name)
             lOk := TRUE
-            var nCode := classObject:Descriptor:GetUniqueHashCode()
-            if ! OldClasses:ContainsKey(nCode)
+            VAR nCode := classObject:Descriptor:GetUniqueHashCode()
+            IF ! OldClasses:ContainsKey(nCode)
                 OldClasses:Add(nCode, classObject)
-            endif
+            ENDIF
             Classes:Remove(classObject:Name)
         ENDIF
         RETURN lOk
 
-    STATIC METHOD GetClassObject(oObject as OBJECT) AS ClassObject
-        local oType as System.Type
-        if oObject == NULL
+    STATIC METHOD GetClassObject(oObject AS OBJECT) AS ClassObject
+        LOCAL oType AS System.Type
+        IF oObject == NULL
             RETURN NULL_OBJECT
         ENDIF
         oType := oObject:GetType()
-        FOREACH var element in Classes
-            if element:Value:Type == oType
-                return element:Value
-            endif
+        FOREACH VAR element IN Classes
+            IF element:Value:Type == oType
+                RETURN element:Value
+            ENDIF
         NEXT
         RETURN NULL_OBJECT
 
-    STATIC METHOD  IsInstanceofRuntimeClass(oObject as OBJECT) AS LOGIC
-        return GetClassObject(oObject) != NULL_OBJECT
+    STATIC METHOD  IsInstanceofRuntimeClass(oObject AS OBJECT) AS LOGIC
+        RETURN GetClassObject(oObject) != NULL_OBJECT
 
-    OVERRIDE METHOD HasIVar(cVar as STRING) AS LOGIC
-        local oClass as ClassObject
+    OVERRIDE METHOD HasIVar(cVar AS STRING) AS LOGIC
+        LOCAL oClass AS ClassObject
         oClass := GetClassObject(SELF)
         IF oClass != NULL
-            IF oClass:Descriptor:GetPropertyGetBlock(cVar) != NULL .or. ;
+            IF oClass:Descriptor:GetPropertyGetBlock(cVar) != NULL .OR. ;
                 oClass:Descriptor:GetPropertySetBlock(cVar) != NULL
                 RETURN TRUE
             ENDIF
         ENDIF
         RETURN IVarGetInfo(SELF, cVar) != 0
 
-    INTERNAL STATIC METHOD CallIVarGet(oObject as OBJECT, cName as STRING) AS USUAL
-        local oClass as ClassObject
+    INTERNAL STATIC METHOD CallIVarGet(oObject AS OBJECT, cName AS STRING) AS USUAL
+        LOCAL oClass AS ClassObject
         oClass := GetClassObject(oObject)
-        if oClass != NULL_OBJECT
+        IF oClass != NULL_OBJECT
             VAR oDesc := oClass:Descriptor
-            local oBlock as CodeBlock
+            LOCAL oBlock AS CODEBLOCK
             oBlock := oDesc:GetPropertyGetBlock(cName)
             IF oBlock != NULL_CODEBLOCK
-                return EvalBlock(oBlock, oObject, NULL)
-            endif
+                RETURN EvalBlock(oBlock, oObject, NULL)
+            ENDIF
         ENDIF
         VAR oerror := Error.VOError( EG_NOVAR, __ENTITY__, nameof(cName), 2, <OBJECT>{oObject, cName} )
         oError:Description  := oError:Message + " '"+cName+"'"
         THROW oError
 
-    INTERNAL STATIC METHOD CallIVarPut(oObject as OBJECT, cName as STRING, uValue as USUAL) AS USUAL
-        local oClass as ClassObject
+    INTERNAL STATIC METHOD CallIVarPut(oObject AS OBJECT, cName AS STRING, uValue AS USUAL) AS USUAL
+        LOCAL oClass AS ClassObject
         oClass := GetClassObject(oObject)
-        if oClass != NULL_OBJECT
+        IF oClass != NULL_OBJECT
             VAR oDesc := oClass:Descriptor
-            local oBlock as CodeBlock
+            LOCAL oBlock AS CODEBLOCK
             oBlock := oDesc:GetPropertySetBlock(cName)
             IF oBlock != NULL_CODEBLOCK
-                return EvalBlock(oBlock, oObject, uValue)
-            endif
+                RETURN EvalBlock(oBlock, oObject, uValue)
+            ENDIF
         ENDIF
         VAR oerror := Error.VOError( EG_NOVAR, __ENTITY__, nameof(cName), 2, <OBJECT>{oObject, cName, uValue} )
         oError:Description  := oError:Message + " '"+cName+"'"
         THROW oError
 
 
-    INTERNAL STATIC METHOD CallMethod(oObject as Object, cName as string, uParams as usual[]) AS USUAL
-        local oClass as ClassObject
+    INTERNAL STATIC METHOD CallMethod(oObject AS OBJECT, cName AS STRING, uParams AS USUAL[]) AS USUAL
+        LOCAL oClass AS ClassObject
         oClass := GetClassObject(oObject)
-        if oClass != NULL_OBJECT
+        IF oClass != NULL_OBJECT
             VAR oDesc := oClass:Descriptor
-            local oBlock as CodeBlock
+            LOCAL oBlock AS CODEBLOCK
             oBlock := oDesc:GetMethodBlock(cName)
             IF oBlock != NULL_CODEBLOCK
-                return EvalBlock(oBlock, oObject, uParams)
-            endif
+                RETURN EvalBlock(oBlock, oObject, uParams)
+            ENDIF
         ENDIF
         VAR oerror := Error.VOError( EG_NOMETHOD, __ENTITY__, nameof(cName), 2, <OBJECT>{oObject, cName, uParams} )
         oError:Description  := oError:Message + " '"+cName+"'"
         THROW oError
 
-    INTERNAL STATIC METHOD EvalBlock(oBlock as CodeBlock, oObject as OBJECT, uParams params USUAL[]) AS USUAL
-        local uNewParams as USUAL[]
-        if uParams != NULL
+    INTERNAL STATIC METHOD EvalBlock(oBlock AS CODEBLOCK, oObject AS OBJECT, uParams PARAMS USUAL[]) AS USUAL
+        LOCAL uNewParams AS USUAL[]
+        IF uParams != NULL
             uNewParams := USUAL[]{uParams:Length+1}
-        else
+        ELSE
             uNewParams := USUAL[]{1}
-        endif
+        ENDIF
         uNewParams[1] := oObject
-        if uParams != NULL .and. uParams:Length > 0
+        IF uParams != NULL .AND. uParams:Length > 0
             System.Array.Copy( uParams, 0, uNewParams, 1, uParams:Length )
-        endif
-        return eval(oBlock, uNewParams)
+        ENDIF
+        RETURN eval(oBlock, uNewParams)
 
 
-    INTERNAL STATIC an := NULL as AssemblyName
-    INTERNAL STATIC ab := NULL as AssemblyBuilder
-    INTERNAL STATIC mb := NULL as ModuleBuilder
-    INTERNAL STATIC METHOD GetDynamicModule() as ModuleBuilder
-        if an == NULL .or. ab == NULL .or. mb == NULL
+    INTERNAL STATIC an := NULL AS AssemblyName
+    INTERNAL STATIC ab := NULL AS AssemblyBuilder
+    INTERNAL STATIC mb := NULL AS ModuleBuilder
+    INTERNAL STATIC METHOD GetDynamicModule() AS ModuleBuilder
+        IF an == NULL .OR. ab == NULL .OR. mb == NULL
             an  := AssemblyName{"XSharp.XPP.DynamicClasses"}
             ab  := AppDomain.CurrentDomain:DefineDynamicAssembly(an, AssemblyBuilderAccess.Run)
             mb  := ab:DefineDynamicModule("MainModule")
-        endif
-        return mb
+        ENDIF
+        RETURN mb
 
 
-    INTERNAL STATIC METHOD CreateType(oDesc as ClassDescriptor) AS TypeBuilder
-        LOCAL tb as TypeBuilder
-        LOCAL ta as TypeAttributes
-        local parent := NULL as System.Type
-        local mb := NULL as ModuleBuilder
+    INTERNAL STATIC METHOD CreateType(oDesc AS ClassDescriptor) AS TypeBuilder
+        LOCAL tb AS TypeBuilder
+        LOCAL ta AS TypeAttributes
+        LOCAL parent := NULL AS System.Type
+        LOCAL mb := NULL AS ModuleBuilder
         mb := GetDynamicModule()
         ta  := TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.BeforeFieldInit | TypeAttributes.AutoLayout
-        if ! String.IsNullOrEmpty(oDesc:Superclass)
+        IF ! String.IsNullOrEmpty(oDesc:Superclass)
             parent := XSharp.RT.Functions.FindClass(oDesc:Superclass)
-            if parent == null_object
+            IF parent == NULL_OBJECT
                 VAR oError := Error.VOError( EG_NOCLASS, __FUNCTION__, "SuperClass", 1,  <OBJECT>{oDesc:Superclass}  )
                 oError:Description := oError:Message+" '"+oDesc:Superclass+"'"
                 THROW oError
-            else
-                if !typeof(XSharp.XPP.Abstract):IsAssignableFrom(parent)
+            ELSE
+                IF !typeof(XSharp.XPP.Abstract):IsAssignableFrom(parent)
                     VAR oError := Error.VOError( EG_NOCLASS, __FUNCTION__, "SuperClass", 1,  <OBJECT>{oDesc:Superclass}  )
                     oError:Description :=" Class '"+oDesc:Superclass+"' must inherit from XSharp.XPP.Abstract"
                     THROW oError
 
-                endif
-            endif
-        else
+                ENDIF
+            ENDIF
+        ELSE
             parent := typeof(XSharp.XPP.Abstract)
         ENDIF
 
-        var ctor := typeof(DebuggerDisplayAttribute).GetConstructor(<Type> { typeof(string) })
-        var arguments   := <object>{ oDesc:Name }
-        var debuggerDisplay := CustomAttributeBuilder{ctor, arguments}
+        VAR ctor := typeof(DebuggerDisplayAttribute).GetConstructor(<Type> { typeof(STRING) })
+        VAR arguments   := <OBJECT>{ oDesc:Name }
+        VAR debuggerDisplay := CustomAttributeBuilder{ctor, arguments}
         
-        local suffix := 0 as int
+        LOCAL suffix := 0 AS INT
         DO WHILE TRUE
-            var ns := iif(suffix == 0, "XppDynamic", "XppDynamic"+ suffix:ToString())
-            var name := ns+"."+oDesc:name
+            VAR ns := IIF(suffix == 0, "XppDynamic", "XppDynamic"+ suffix:ToString())
+            VAR name := ns+"."+oDesc:name
             TRY
-                var existing := mb:FindTypes(FullNameTypeFilter, name)
-                if existing:Length > 0
+                VAR existing := mb:FindTypes(FullNameTypeFilter, name)
+                IF existing:Length > 0
                     suffix += 1
                     LOOP
-                endif
+                ENDIF
                 tb  := mb:DefineType(name,ta, parent)
                 EXIT
             CATCH
@@ -292,14 +288,14 @@ CLASS XSharp.XPP.ClassObject
         ENDDO
         tb:SetCustomAttribute(debuggerDisplay)
         
-        return tb
+        RETURN tb
 
     /// Delegate to filter types in the DynamicAssembly
-    INTERNAL STATIC Method FullNameTypeFilter(t as type, oParam as object) AS LOGIC
-        return t:FullName == (String) oParam
+    INTERNAL STATIC METHOD FullNameTypeFilter(t AS type, oParam AS OBJECT) AS LOGIC
+        RETURN t:FullName == (STRING) oParam
 
-    INTERNAL STATIC METHOD DecodeFieldAttributes(nAttrib as LONG) AS FieldAttributes
-        local attribute as FieldAttributes
+    INTERNAL STATIC METHOD DecodeFieldAttributes(nAttrib AS LONG) AS FieldAttributes
+        LOCAL attribute AS FieldAttributes
         IF _AND(nAttrib, CLASS_EXPORTED ) == CLASS_EXPORTED 
             attribute := FieldAttributes.Public
         ELSEIF _AND(nAttrib, CLASS_PROTECTED) == CLASS_PROTECTED
@@ -332,8 +328,8 @@ CLASS XSharp.XPP.ClassObject
         */  
         RETURN attribute
 
-    INTERNAL STATIC METHOD DecodeMethodAttributes(nAttrib as LONG) AS MethodAttributes
-       local attribute as MethodAttributes
+    INTERNAL STATIC METHOD DecodeMethodAttributes(nAttrib AS LONG) AS MethodAttributes
+       LOCAL attribute AS MethodAttributes
         IF _AND(nAttrib, CLASS_EXPORTED ) == CLASS_EXPORTED 
             attribute := MethodAttributes.Public
         ELSEIF _AND(nAttrib, CLASS_PROTECTED) == CLASS_PROTECTED
@@ -359,27 +355,27 @@ CLASS XSharp.XPP.ClassObject
 
     // create the class by converting the parameters to a class descriptor
     INTERNAL STATIC METHOD CreateClassDescriptor(cClassName AS STRING, aSuperClasses:= NULL_ARRAY AS ARRAY, aMember:= NULL_ARRAY AS ARRAY, aMethod:= NULL_ARRAY AS ARRAY) AS ClassDescriptor
-        LOCAL aFields  := List<FieldDescriptor>{} as List<FieldDescriptor>
-        LOCAL aMethods := List<MethodDescriptor>{} as List<MethodDescriptor>
-        LOCAL aProperties := List<MethodDescriptor>{} as List<MethodDescriptor>
-        LOCAL oSuper    as Object
-        LOCAL oSuperType as System.Type
-        LOCAL aInterfaces := List<String>{} as List<String>
-        LOCAL cSuperClass := "" as STRING
+        LOCAL aFields  := List<FieldDescriptor>{} AS List<FieldDescriptor>
+        LOCAL aMethods := List<MethodDescriptor>{} AS List<MethodDescriptor>
+        LOCAL aProperties := List<MethodDescriptor>{} AS List<MethodDescriptor>
+        LOCAL oSuper    AS OBJECT
+        LOCAL oSuperType AS System.Type
+        LOCAL aInterfaces := List<STRING>{} AS List<STRING>
+        LOCAL cSuperClass := "" AS STRING
         IF String.IsNullOrEmpty(cClassName)
             THROW Error.ArgumentError("ClassCreate", nameof(cClassName),1, <OBJECT>{cClassName})
         ENDIF
         IF aSuperClasses != NULL_ARRAY
-            FOR var nI := 1 to alen(aSuperClasses)
-                local uElement as USUAL
+            FOR VAR nI := 1 TO alen(aSuperClasses)
+                LOCAL uElement AS USUAL
                 uElement := aSuperClasses[nI]
                 IF IsString(uElement)
-                    oSuper := XSharp.XPP.ClassObject.FindClass((String) uElement,FALSE)
-                    if oSuper == NULL
-                        oSuper := XSharp.RT.Functions.FindClass((String) uElement)
-                    endif
+                    oSuper := XSharp.XPP.ClassObject.FindClass((STRING) uElement,FALSE)
+                    IF oSuper == NULL
+                        oSuper := XSharp.RT.Functions.FindClass((STRING) uElement)
+                    ENDIF
                 ELSEIF IsSymbol(uElement)
-                    oSuper := XSharp.XPP.ClassObject.FindClass((Symbol) uElement,FALSE)
+                    oSuper := XSharp.XPP.ClassObject.FindClass((SYMBOL) uElement,FALSE)
                 ELSEIF IsObject(uElement)
                     oSuper := uElement
                 ELSE
@@ -390,12 +386,12 @@ CLASS XSharp.XPP.ClassObject
                     IF oSuper IS XSharp.XPP.ClassObject VAR rtClass
                         cSuperClass := rtClass:Name
                     ELSE
-                        if oSuper is System.Type
+                        IF oSuper IS System.Type
                             oSuperType := oSuper
-                        else
+                        ELSE
                             oSuperType := oSuper:GetType()
-                        endif
-                        if oSuperType:IsInterface
+                        ENDIF
+                        IF oSuperType:IsInterface
                             aInterFaces:Add(oSuperType:FullName)
                         ELSE
                             cSuperClass := oSuperType:FullName
@@ -406,13 +402,13 @@ CLASS XSharp.XPP.ClassObject
         ENDIF
         IF aMember != NULL_ARRAY
             // check to see if each member is a 2 dimensional array, where the sub array has 2 or more 
-            FOR var nI := 1 to alen(aMember)
-                local uElement := aMember[nI] as USUAL
-                LOCAL lError := FALSE as LOGIC
-                IF IsArray(uElement) .and. aLen(uElement) >= 2
-                    LOCAL aElement := uElement as ARRAY
-                    If IsString(aElement[1]) .and. IsNumeric(aElement[2])
-                        local oField as FieldDescriptor
+            FOR VAR nI := 1 TO alen(aMember)
+                LOCAL uElement := aMember[nI] AS USUAL
+                LOCAL lError := FALSE AS LOGIC
+                IF IsArray(uElement) .AND. aLen(uElement) >= 2
+                    LOCAL aElement := uElement AS ARRAY
+                    IF IsString(aElement[1]) .AND. IsNumeric(aElement[2])
+                        LOCAL oField AS FieldDescriptor
                         oField := FieldDescriptor{}
                         oField:Name  := aElement[1]
                         oField:Attributes := DecodeFieldAttributes(aElement[2])
@@ -429,16 +425,16 @@ CLASS XSharp.XPP.ClassObject
                 ENDIF
             NEXT
         ENDIF
-        local hasInit := FALSE as LOGIC
+        LOCAL hasInit := FALSE AS LOGIC
         IF aMethod != NULL_ARRAY
             // check to see if each method is a 2 dimensional array, where the sub array has 3 or 4 members
-            FOR var nI := 1 to alen(aMethod)
-                local uElement := aMethod[nI] as USUAL
-                LOCAL lError := FALSE as LOGIC
-                IF IsArray(uElement) .and. aLen(uElement) >= 3
-                    LOCAL aElement := uElement as ARRAY
-                    If IsString(aElement[1]) .and. IsNumeric(aElement[2]) .and. IsCodeBlock(aElement[3])
-                        local oMethod as MethodDescriptor
+            FOR VAR nI := 1 TO alen(aMethod)
+                LOCAL uElement := aMethod[nI] AS USUAL
+                LOCAL lError := FALSE AS LOGIC
+                IF IsArray(uElement) .AND. aLen(uElement) >= 3
+                    LOCAL aElement := uElement AS ARRAY
+                    IF IsString(aElement[1]) .AND. IsNumeric(aElement[2]) .AND. IsCodeBlock(aElement[3])
+                        LOCAL oMethod AS MethodDescriptor
                         oMethod := MethodDescriptor{}
                         oMethod:Name        := aElement[1]
                         oMethod:Attributes  := DecodeMethodAttributes(aElement[2])
@@ -446,15 +442,15 @@ CLASS XSharp.XPP.ClassObject
                         oMethod:Block       := aElement[3]
                         oMethod:Getter := _AND(aElement[2], METHOD_ACCESS) == METHOD_ACCESS
                         oMethod:Setter := _AND(aElement[2], METHOD_ASSIGN) == METHOD_ASSIGN 
-                        IF aLen(aElement) > 3 .and. IsString(aElement[4])
+                        IF aLen(aElement) > 3 .AND. IsString(aElement[4])
                             oMethod:VarName := aElement[4]
                         ENDIF
-                        IF oMethod:Getter .or. oMethod:Setter
+                        IF oMethod:Getter .OR. oMethod:Setter
                             aProperties:Add(oMethod)
                         ELSE
                             aMethods:Add(oMethod)
                         ENDIF
-                        if string.Compare(oMethod:Name, "INIT",TRUE) == 0
+                        IF string.Compare(oMethod:Name, "INIT",TRUE) == 0
                             hasInit := TRUE
                         ENDIF
                     ELSE
@@ -468,7 +464,7 @@ CLASS XSharp.XPP.ClassObject
                 ENDIF
             NEXT
         ENDIF
-        var oClassDesc := ClassDescriptor{cClassName}
+        VAR oClassDesc := ClassDescriptor{cClassName}
         oClassDesc:Fields     := aFields:ToArray()
         oClassDesc:Methods    := aMethods:ToArray()
         oClassDesc:Properties := aProperties:ToArray()
@@ -478,31 +474,31 @@ CLASS XSharp.XPP.ClassObject
         RETURN oClassDesc
 
     // Use the class descriptor to create the class
-    STATIC INTERNAL METHOD ImplementClass(oDesc as ClassDescriptor) AS ClassObject
-        LOCAL cName as STRING
-        LOCAL oResult as ClassObject
+    STATIC INTERNAL METHOD ImplementClass(oDesc AS ClassDescriptor) AS ClassObject
+        LOCAL cName AS STRING
+        LOCAL oResult AS ClassObject
 
         cName := oDesc:Name
         IF ClassObject.Classes:ContainsKey(cName)
             THROW Error{"A Class definition for "+cName+" already exists with another structure"}
         ENDIF
         // fetch the type from the old classes list when it exists
-        LOCAL nCode := oDesc:GetUniqueHashCode() as LONG
+        LOCAL nCode := oDesc:GetUniqueHashCode() AS LONG
         IF OldClasses:ContainsKey(nCode)
-            LOCAL oldClass := OldClasses[nCode] as ClassObject
-            if oldClass:Descriptor:Name == oDesc:Name
+            LOCAL oldClass := OldClasses[nCode] AS ClassObject
+            IF oldClass:Descriptor:Name == oDesc:Name
                 Classes:Add(cName, oldClass)
-                return oldClass
-            endif
-        endif
+                RETURN oldClass
+            ENDIF
+        ENDIF
 
 
-        LOCAL oTb as TypeBuilder
+        LOCAL oTb AS TypeBuilder
         oTb := CreateType(oDesc)
-        FOREACH VAR oFld in oDesc:Fields
+        FOREACH VAR oFld IN oDesc:Fields
             oTb:DefineField(oFld:Name, oFld:Type, oFld:Attributes)
         NEXT
-        var type := oTb:CreateType()
+        VAR type := oTb:CreateType()
         oResult := ClassObject{type, oDesc:Name, oDesc}
         Classes:Add(oDesc:Name, oResult)
         RETURN oResult
@@ -531,18 +527,18 @@ FUNCTION ClassObject(cClassName AS STRING) AS ClassObject
 /// from the list of active classes. If you recreate the same class later with the same structure then the class definition from the previous
 /// defintion is reused.</remarks>
 FUNCTION ClassDestroy(uObject) AS LOGIC CLIPPER
-    local oObject as Object
-    if IsObject(uObject)
+    LOCAL oObject AS OBJECT
+    IF IsObject(uObject)
         oObject := uObject
-        if oObject is ClassObject VAR rtClass
+        IF oObject IS ClassObject VAR rtClass
             RETURN ClassObject.DeleteClass(rtClass)
         ENDIF
-    elseif IsString(uObject)
-        oObject := ClassObject((String) uObject)
+    ELSEIF IsString(uObject)
+        oObject := ClassObject((STRING) uObject)
         IF oObject != NULL
             RETURN ClassDestroy(oObject)
         ENDIF
-    endif
+    ENDIF
     RETURN FALSE
 
 /// <summary>Create a class dynamically.</summary>
@@ -559,7 +555,7 @@ FUNCTION ClassCreate(cClassName , aSuperClasses , aMember , aMethod ) AS USUAL C
     // and types of method (METHOD_INSTANCE, METHOD_CLASS )
     // and assignment property (METHOD_ACCESS, METHOD_ASSIGN)
     // INIT method should be mapped to the constructor, with clipper calling convention
-    LOCAL oClass as XSharp.XPP.ClassObject.ClassDescriptor
+    LOCAL oClass AS XSharp.XPP.ClassObject.ClassDescriptor
     EnforceType(REF cClassName, STRING)
     EnForceType(REF aSuperClasses, ARRAY)
     EnForceType(REF aMember, ARRAY)

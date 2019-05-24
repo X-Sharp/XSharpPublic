@@ -1,19 +1,19 @@
-using System.Collections.Generic
+USING System.Collections.Generic
 
 
 
-CLASS XSharp.XPP.DataObject inherit XSharp.XPP.Abstract
-    PRIVATE _fields  as Dictionary<String, Usual>
-    PRIVATE _methods as Dictionary<String, Usual>
+CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract
+    PRIVATE _fields  AS Dictionary<STRING, USUAL>
+    PRIVATE _methods AS Dictionary<STRING, USUAL>
 
     CONSTRUCTOR()
         SUPER()
-        _fields  := Dictionary<String, Usual>{StringComparer.OrdinalIgnoreCase} 
-        _methods := Dictionary<String, Usual>{StringComparer.OrdinalIgnoreCase} 
+        _fields  := Dictionary<STRING, USUAL>{StringComparer.OrdinalIgnoreCase} 
+        _methods := Dictionary<STRING, USUAL>{StringComparer.OrdinalIgnoreCase} 
 
-    PUBLIC METHOD IsMemberVar(cName as STRING) AS LOGIC
+    PUBLIC METHOD IsMemberVar(cName AS STRING) AS LOGIC
         IF SELF:_fields:ContainsKey(cName)
-            return TRUE
+            RETURN TRUE
         ENDIF
         RETURN FALSE
         
@@ -46,16 +46,16 @@ CLASS XSharp.XPP.DataObject inherit XSharp.XPP.Abstract
     /// </remarks>
     OVERRIDE METHOD NoIvarGet(cName) AS USUAL CLIPPER
         IF SELF:_fields:ContainsKey(cName)
-            return SELF:_fields[cName]
+            RETURN SELF:_fields[cName]
         ENDIF
         RETURN NIL
 
     /// <summary>Creates a dependent shallow copy of this instance </summary>
     /// <returns>This method returns the new DataObject instance. </returns>
     VIRTUAL METHOD Copy() AS DataObject
-        local oNew as DataObject
+        LOCAL oNew AS DataObject
         oNew := DataObject{}
-        FOREACH var element in _fields
+        FOREACH VAR element IN _fields
             oNew:_fields:Add(element:Key, element:Value)
         NEXT
         RETURN oNew
@@ -66,10 +66,10 @@ CLASS XSharp.XPP.DataObject inherit XSharp.XPP.Abstract
     /// <returns>This method returns the DataObject (self).</returns>
 
     VIRTUAL METHOD Merge(oNewObject, cMessagePrefix) AS DataObject CLIPPER
-        LOCAL oObject := oNewObject as Object
+        LOCAL oObject := oNewObject AS OBJECT
         EnforceType(REF cMessagePrefix, STRING)
-        IF oObject is DataObject var oDataObject
-            FOREACH var element in oDataObject:_fields
+        IF oObject IS DataObject var oDataObject
+            FOREACH VAR element IN oDataObject:_fields
                 IF !SELF:_fields:ContainsKey(cMessagePrefix+element:Key)
                     SELF:_fields:Add(cMessagePrefix+element:Key, element:Value)
                 ENDIF
@@ -83,7 +83,7 @@ CLASS XSharp.XPP.DataObject inherit XSharp.XPP.Abstract
     /// <param name="uAction">A Function name or codeblock that must be executed when the method is called.</param>
     /// <returns>This method returns the DataObject (self).</returns>
     /// <remarks>Dynamic methods in X# are called from the NoMethod method inside the DataObject class.</remarks>
-    VIRTUAL METHOD DefineMethod(cName as STRING, uAction as USUAL) AS OBJECT
+    VIRTUAL METHOD DefineMethod(cName AS STRING, uAction AS USUAL) AS OBJECT
         SELF:_methods[cName] := uAction
         RETURN SELF
 
@@ -96,23 +96,22 @@ CLASS XSharp.XPP.DataObject inherit XSharp.XPP.Abstract
    /// Consequently, overriding noMethod() in a derived class is not required for adding methods to DataObject instances. 
    /// </remarks>
    OVERRIDE METHOD NoMethod(cName, uParams) AS USUAL CLIPPER
-        LOCAL aParams as USUAL[]
-        if self:_methods:ContainsKey(cName)
+        LOCAL aParams AS USUAL[]
+        IF SELF:_methods:ContainsKey(cName)
             aParams := USUAL[]{ PCOunt() }
-            FOR VAR nX := 2 to PCount()
-                aParams[nX] := _GetFParam(nX)
-            NEXT
+            // The pseudo function _ARGS() returns the Clipper arguments array
+            System.Array.Copy(_ARGS(), 1, aParams, 1, PCount()-1)
             aparams[1] := SELF
-            local action as usual
-            action := self:_methods[cName]
-            if IsString(action)
-                return _CallClipFunc(action, aParams)
-            elseif IsCodeBlock(action)
-                local oBlock := action as CodeBlock
-                return oBlock:Eval(aParams)
-            endif
-        endif
-        return NIL
+            LOCAL action AS USUAL
+            action := SELF:_methods[cName]
+            IF IsString(action)
+                RETURN _CallClipFunc(action, aParams)
+            ELSEIF IsCodeBlock(action)
+                LOCAL oBlock := action AS CODEBLOCK
+                RETURN oBlock:Eval(aParams)
+            ENDIF
+        ENDIF
+        RETURN NIL
 
 
 

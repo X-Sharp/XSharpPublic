@@ -217,122 +217,122 @@ BEGIN NAMESPACE XSharp
 END NAMESPACE
 
 #region Gencode Defines
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 
 DEFINE EG_UNKNOWN        := GenCode.EG_UNKNOWN
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_ARG            := GenCode.EG_ARG
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_BOUND          := GenCode.EG_BOUND
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_STROVERFLOW    := GenCode.EG_STROVERFLOW
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_NUMOVERFLOW    := GenCode.EG_NUMOVERFLOW
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_ZERODIV        := GenCode.EG_ZERODIV
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_NUMERR         := GenCode.EG_NUMERR
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_SYNTAX         := GenCode.EG_SYNTAX
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_COMPLEXITY     := GenCode.EG_COMPLEXITY
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_MEMOVERFLOW    := GenCode.EG_MEMOVERFLOW
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_SEQUENCE       := GenCode.EG_SEQUENCE
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_MEM            := GenCode.EG_MEM
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_NOFUNC         := GenCode.EG_NOFUNC
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_NOMETHOD       := GenCode.EG_NOMETHOD
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_NOVAR          := GenCode.EG_NOVAR
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_NOALIAS        := GenCode.EG_NOALIAS
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_NOVARMETHOD    := GenCode.EG_NOVARMETHOD
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_BADALIAS       := GenCode.EG_BADALIAS
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_DUPALIAS       := GenCode.EG_DUPALIAS
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_NULLVAR        := GenCode.EG_NULLVAR
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_CREATE         := GenCode.EG_CREATE
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_OPEN           := GenCode.EG_OPEN
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_CLOSE          := GenCode.EG_CLOSE
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_READ           := GenCode.EG_READ
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_WRITE          := GenCode.EG_WRITE
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_PRINT          := GenCode.EG_PRINT
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_NOATOM         := GenCode.EG_NOATOM
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_NOCLASS        := GenCode.EG_NOCLASS
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_WRONGCLASS     := GenCode.EG_WRONGCLASS
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_REFERENCE      := GenCode.EG_REFERENCE
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_UNSUPPORTED    := GenCode.EG_UNSUPPORTED
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_LIMIT          := GenCode.EG_LIMIT
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_CORRUPTION     := GenCode.EG_CORRUPTION
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_DATATYPE       := GenCode.EG_DATATYPE
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_DATAWIDTH      := GenCode.EG_DATAWIDTH
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_NOTABLE        := GenCode.EG_NOTABLE
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_NOORDER        := GenCode.EG_NOORDER
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_SHARED         := GenCode.EG_SHARED
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_UNLOCKED       := GenCode.EG_UNLOCKED
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_READONLY       := GenCode.EG_READONLY
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_APPENDLOCK     := GenCode.EG_APPENDLOCK
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_LOCK           := GenCode.EG_LOCK
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_LOCK_ERROR     := GenCode.EG_LOCK_ERROR
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_LOCK_TIMEOUT   := GenCode.EG_LOCK_TIMEOUT
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_STACK          := GenCode.EG_STACK
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_EVALSTACK      := GenCode.EG_EVALSTACK
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_ERRORBLOCK     := GenCode.EG_ERRORBLOCK
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_PROTECTION     := GenCode.EG_PROTECTION
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_BADPTR         := GenCode.EG_BADPTR
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_BADPAGEFAULT   := GenCode.EG_BADPAGEFAULT
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_ERRORBUILD     := GenCode.EG_ERRORBUILD
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_DYNPTR         := GenCode.EG_DYNPTR
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_INACCESSIBLETYPE	:= GenCode.EG_INACCESSIBLETYPE
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_AMBIGUOUSMETHOD	:= GenCode.EG_AMBIGUOUSMETHOD
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_SEND_MISSINGARG	:= GenCode.EG_SEND_MISSINGARG
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_SEND_TOOMANYARGS	:= GenCode.EG_SEND_TOOMANYARGS
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 DEFINE EG_EXCEPTION			:= GenCode.EG_EXCEPTION
-/// <include file="CoreComments.xml" path="Comments/Gencode/*" />
+/// <exclude />
 
 DEFINE EG_MAX            := GenCode.EG_MAX
 
@@ -341,13 +341,13 @@ DEFINE EG_MAX            := GenCode.EG_MAX
 
 
 #region Severity Defines
-/// <include file="CoreComments.xml" path="Comments/Severity/*" />
+/// <exclude />
 DEFINE ES_WHOCARES     := Severity.ES_WHOCARES
-/// <include file="CoreComments.xml" path="Comments/Severity/*" />
+/// <exclude />
 DEFINE ES_WARNING      := Severity.ES_WARNING
-/// <include file="CoreComments.xml" path="Comments/Severity/*" />
+/// <exclude />
 DEFINE ES_ERROR        := Severity.ES_ERROR
-/// <include file="CoreComments.xml" path="Comments/Severity/*" />
+/// <exclude />
 DEFINE ES_CATASTROPHIC := Severity.ES_CATASTROPHIC
 
 #endregion

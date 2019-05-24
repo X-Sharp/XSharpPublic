@@ -364,8 +364,8 @@ FUNCTION DbCreateOrder  (uOrder, cName, cExpr, cobExpr, lUnique) AS LOGIC CLIPPE
     RETURN OrdCreate(cName, uOrder, cExpr, cobExpr, lUnique)
     
     
-    /// <summary>Mark the current record for deletion.</summary>
-    /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+/// <inheritdoc cref="M:XSharp.RT.Functions.VoDbDelete" />
+/// <remarks />
 FUNCTION DbDelete () AS LOGIC STRICT
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Delete() )
     
@@ -393,21 +393,17 @@ FUNCTION DbEval(uBlock, uCobFor, uCobWhile, nNext, nRecno, lRest) AS LOGIC CLIPP
   
     
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
-FUNCTION DbFieldInfo(nOrdinal, nPos, xNewVal) AS USUAL CLIPPER
-    _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldInfo(nOrdinal, nPos, REF xNewVal))
+/// <inheritdoc cref="M:XSharp.RT.Functions.VoDbFieldInfo(System.UInt32,System.UInt32,XSharp.__Usual@)" />
+/// <remarks />
+FUNCTION DbFieldInfo(nOrdinal, nFldPos, xNewVal) AS USUAL CLIPPER
+    _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldInfo(nOrdinal, nFldPos, REF xNewVal))
     RETURN xNewVal
     
     
     
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
+/// <inheritdoc cref="M:XSharp.RT.Functions.VoDbGoto(XSharp.__Usual)" />
+/// <remarks />
 FUNCTION DbGoto(uRecId) AS LOGIC CLIPPER
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Goto(uRecId) )
     
@@ -421,10 +417,8 @@ FUNCTION DbInfo(nOrdinal, xNewVal) AS USUAL CLIPPER
     RETURN xNewVal
     
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
+/// <inheritdoc cref="M:XSharp.RT.Functions.VoDbLocate(XSharp.__Usual,XSharp.__Usual,System.Int32,XSharp.__Usual,System.Boolean)" />
+/// <remarks />
 FUNCTION DbLocate(uCobFor, uCobWhile, nNext, uRecId, lRest ) AS LOGIC CLIPPER
 
     LOCAL lRetCode  AS LOGIC
@@ -450,10 +444,8 @@ FUNCTION DbLocate(uCobFor, uCobWhile, nNext, uRecId, lRest ) AS LOGIC CLIPPER
     RETURN lRetCode
     
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
+/// <inheritdoc cref="M:XSharp.RT.Functions.VoDbOrderInfo(System.UInt32,System.String,XSharp.__Usual,XSharp.__Usual)" />
+/// <remarks />
 FUNCTION DbOrderInfo(nOrdinal,cBagName, uOrder, xNewVal) AS USUAL CLIPPER
     LOCAL lKeyVal  := FALSE  AS LOGIC
     
@@ -487,20 +479,21 @@ FUNCTION DbOrderInfo(nOrdinal,cBagName, uOrder, xNewVal) AS USUAL CLIPPER
     
     
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
+    /// <summary>Retrieve record state information for the current record or a specified record</summary>
+    /// <returns>State of the record</returns>
+    /// <param name="nOrdinal">This must match one of the values from the DbRecordInfo Enum</param>
+    /// <param name="uRecId">Some of the DbRecordInfo enum values require a record number</param>
+    /// <param name="xNewVal">Some of the DbRecordInfo enum values require a new value</param>
+ 
+    /// <seealso cref='T:XSharp.RDD.Enums.DbRecordInfo'>DbRecordInfo ENUM</seealso>
 FUNCTION DbRecordInfo(nOrdinal, uRecId, xNewVal) AS USUAL CLIPPER
     VoDb.RecordInfo(nOrdinal, uRecId, REF xNewVal)
     RETURN xNewVal
     
     
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
+/// <inheritdoc cref="M:XSharp.RT.Functions.VoDbRlock(XSharp.__Usual)" />
+/// <remarks />
 FUNCTION DbRLock(uRecord) AS USUAL CLIPPER
     RETURN VoDb.Rlock(uRecord)
     
@@ -580,10 +573,8 @@ FUNCTION DbSelectArea(xValue) AS LOGIC CLIPPER
     
     
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
+/// <inheritdoc cref="M:XSharp.RT.Functions.VoDbSetSelect(System.Int32)" />
+/// <remarks />
 FUNCTION DbSetSelect(nSelect) AS DWORD CLIPPER
 
     DEFAULT( REF  nSelect, 0)
@@ -593,10 +584,8 @@ FUNCTION DbSetSelect(nSelect) AS DWORD CLIPPER
     
     
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
+/// <inheritdoc cref="M:XSharp.RT.Functions.VoDbSymSelect(XSharp.__Symbol)" />
+/// <remarks />
 FUNCTION DbSymSelect(sAlias)  AS DWORD CLIPPER
     IF sAlias:IsNil
         sAlias := Alias0Sym()
@@ -608,10 +597,8 @@ FUNCTION DbSymSelect(sAlias)  AS DWORD CLIPPER
     
     
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
+/// <inheritdoc cref="M:XSharp.RT.Functions.VoDbRelation(System.UInt32,System.String@)" />
+/// <remarks />
 FUNCTION DbRelation(wPos)  AS STRING CLIPPER
     LOCAL cRelText  := "" AS STRING
     DEFAULT(  REF wPos, 1)
@@ -633,6 +620,7 @@ FUNCTION DbSetDriver(cDriver) AS STRING CLIPPER
     
     
 /// <inheritdoc cref="M:XSharp.RT.Functions.VoDbSetFilter(XSharp.__Usual,System.String)" />
+/// <remarks />
 FUNCTION DbSetFilter(cbFilter, cFilter) AS LOGIC CLIPPER
     IF cFilter:IsNil
         cFilter := "UNKNOWN"
@@ -642,20 +630,20 @@ FUNCTION DbSetFilter(cbFilter, cFilter) AS LOGIC CLIPPER
     
     
     *----------------------------------------------------------------------------
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
-FUNCTION DbSetRelation  (xAlias, uCobKey, cKey) AS LOGIC CLIPPER
+    /// <summary>Relate a specified work area to the current work area.</summary>
+    /// <param name="xAlias">The name or workarea number of the child work area.</param>
+    /// <param name="uCobKey">A code block that expresses the relational expression.</param>
+    /// <param name="cKey">An optional character value that expresses the relational expression in textual form.</param>
+    /// <param name="cName">An optional name for the relation. Defaults to ParentName + "_" + ChildName.</param>
+    /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+FUNCTION DbSetRelation  (xAlias, uCobKey, cKey, cName) AS LOGIC CLIPPER
 
     LOCAL nSelect   AS DWORD
     LOCAL cAlias    AS STRING
-    LOCAL xType     AS DWORD
     
+    DEFAULT(REF cName, "")
     
-    xType := UsualType(xAlias)
-    
-    IF xType = STRING
+    IF xAlias:IsString
         nSelect := Val(xAlias)
         
         IF nSelect = 0
@@ -668,31 +656,27 @@ FUNCTION DbSetRelation  (xAlias, uCobKey, cKey) AS LOGIC CLIPPER
         cAlias := ALIAS(xAlias)
     ENDIF
 
-    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.SetRelation(cAlias, uCobKey, cKey) )
+    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.SetRelation(cAlias, uCobKey, cKey, cName) )
    
 
     
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
+/// <inheritdoc cref="M:XSharp.RT.Functions.VoDbSkip(System.Int32)" />
+/// <remarks />
 FUNCTION DbSkip (nRecords) AS LOGIC CLIPPER
     IF nRecords:IsNil
         nRecords := 1
     ENDIF
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Skip(nRecords) )
     
-    
-    
-    
-    
-    
-    
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
+/// <inheritdoc cref="M:XSharp.RT.Functions.VoDbUseArea(System.Boolean,System.String,System.String,System.String,System.Boolean,System.Boolean)" />
+/// <param name="aStru">(Optional) An array containing field descriptions in the format returned by DBStruct().<note type="tip">This argument does not apply to DBF files.</note></param>
+/// <param name="cDelim">(Optional) The delimiter for fields within a delimited database file.<note type="tip">This argument does not apply to DBF files.</note></param>
+/// <param name="aHidden">(Optional) A one-dimensional array with the names of RDDs from which the main RDD inherits special functionality.</param>
+/// <remarks />
+/// <seealso cref="O:XSharp.RT.Functions.VoDbUseArea" />
+/// <seealso cref="O:XSharp.CoreDb.UseArea" />
+
 FUNCTION DbUseArea (lNew, xDriver, cName, cAlias, lShare, lReadOnly, aStru, cDelim,aHidden ) AS LOGIC CLIPPER
     LOCAL lRetCode        AS LOGIC
     LOCAL rddList         AS _RddList
@@ -726,26 +710,22 @@ FUNCTION DbUseArea (lNew, xDriver, cName, cAlias, lShare, lReadOnly, aStru, cDel
     RETURN lRetCode
     
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
-FUNCTION FieldPut (wPos AS USUAL, xValue  AS USUAL) AS USUAL 
+/// <inheritdoc cref="M:XSharp.RT.Functions.VoDbFieldPut(System.UInt32,XSharp.__Usual)" />
+/// <remarks />
+FUNCTION FieldPut (nPos AS USUAL, xValue  AS USUAL) AS USUAL 
 
     LOCAL xRetVal := NIL AS USUAL
-    IF _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldPut(wPos, xValue) )
+    IF _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldPut(nPos, xValue) )
         xRetVal := xValue
     ENDIF
     RETURN xRetVal
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
-FUNCTION FieldGet(wPos) AS USUAL CLIPPER
+/// <inheritdoc cref="M:XSharp.RT.Functions.VoDbFieldGet(System.UInt32,XSharp.__Usual@)" />
+/// <remarks />
+FUNCTION FieldGet(nPos) AS USUAL CLIPPER
     LOCAL xRetVal := NIL AS USUAL
-    DEFAULT( REF wPos, 1)
-    _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldGet(wPos, REF xRetVal))
+    DEFAULT( REF nPos, 1)
+    _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldGet(nPos, REF xRetVal))
     RETURN xRetVal
     
 FUNCTION FieldGetArea(workarea AS DWORD, symField AS SYMBOL) AS USUAL 
@@ -1259,3 +1239,4 @@ FUNCTION EmptyField( n AS DWORD ) AS LOGIC
         lRet := FALSE
     ENDIF
    RETURN lRet
+

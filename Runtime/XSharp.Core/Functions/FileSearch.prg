@@ -7,7 +7,7 @@
 USING System.Collections.Generic
 USING System.IO
 USING System.Linq
-
+/// <summary>This delegate is used when you want to implement your own function for the logic behind the File() function</summary>
 PUBLIC DELEGATE XSharp.FileSearcher(cIn AS STRING) AS STRING
 INTERNAL STATIC CLASS XSharp.FileSearch
     STATIC PRIVATE foundEntries	:= List<OBJECT>{} AS List<OBJECT>
@@ -246,10 +246,11 @@ INTERNAL FUNCTION FileSearchWorker(cFile AS STRING) AS STRING
     /// <summary>
     /// Register Worker function for File Search API.
     /// </summary>
-    /// <param name="newWorker">Function that implements the worker. Must take STRING parameter and return a STRING</param>
+    /// <param name="newWorker">Function that implements the worker. Must implement the FileSearcher delegate, so take STRING parameter and return a STRING</param>
     /// <returns>
     /// current Worker function
     /// </returns>
+    /// <seealso cref="T:XSharp.FileSearcher">FileSearcher Delegate </seealso>
 FUNCTION RegisterFileSearch(newWorker AS FileSearcher) AS FileSearcher
     LOCAL oldWorker AS FileSearcher
     oldWorker := XSharp.FileSearch.Worker

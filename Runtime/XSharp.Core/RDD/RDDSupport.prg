@@ -206,8 +206,8 @@ CLASS DbOrderCondInfo
             ENDIF
         ENDIF
 
-    METHOD Clone() as DbOrderCondInfo
-        return (DbOrderCondInfo) SELF:MemberwiseClone()
+    METHOD Clone() AS DbOrderCondInfo
+        RETURN (DbOrderCondInfo) SELF:MemberwiseClone()
 
 END CLASS
 
@@ -234,8 +234,8 @@ CLASS DbOrderCreateInfo
             SELF:OrdCondInfo:Compile(oRDD)
         ENDIF
 
-   METHOD Clone() as DbOrderCreateInfo
-        return (DbOrderCreateInfo) SELF:MemberwiseClone()
+   METHOD Clone() AS DbOrderCreateInfo
+        RETURN (DbOrderCreateInfo) SELF:MemberwiseClone()
 
 END CLASS
 
@@ -252,9 +252,9 @@ CLASS DbOrderInfo
 	/// <summary>Return value for some order operations.</summary>
 	PUBLIC Result		AS OBJECT
 
-    METHOD Clone() as DbOrderInfo
-        return (DbOrderInfo) SELF:MemberwiseClone()
-    PROPERTY IsEmpty as LOGIC GET Order == null .and. String.IsNullOrEmpty(BagName)
+    METHOD Clone() AS DbOrderInfo
+        RETURN (DbOrderInfo) SELF:MemberwiseClone()
+    PROPERTY IsEmpty AS LOGIC GET Order == NULL .AND. String.IsNullOrEmpty(BagName)
 END CLASS
 
 /// <summary>Helper class to store a list of relational information.</summary> 
@@ -268,13 +268,15 @@ CLASS DbRelInfo
 	/// <summary>A reference to the parent RDD for the relation.</summary>
 	PUBLIC Parent		AS IRDD
 
+    /// <summary>name of the relation. Defaults to the parent alias = '_' + child alias.</summary>
+	PUBLIC Name         AS STRING
     METHOD Compile() AS VOID
         IF SELF:Block == NULL .AND. SELF:Parent != NULL .AND. ! String.IsNullOrWhiteSpace(SELF:Key)
             SELF:Block := SELF:Parent:Compile(SELF:Key)
         ENDIF
 
-    METHOD Clone() as DbRelInfo
-        return (DbRelInfo) SELF:MemberwiseClone()
+    METHOD Clone() AS DbRelInfo
+        RETURN (DbRelInfo) SELF:MemberwiseClone()
     
 END CLASS
 

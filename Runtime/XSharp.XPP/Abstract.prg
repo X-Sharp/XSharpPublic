@@ -4,46 +4,45 @@
 // See License.txt in the project root for license information.
 //
 
-using System.Reflection
+USING System.Reflection
 CLASS XSharp.XPP.Abstract 
-    PRIVATE inSend := FALSE as LOGIC
+    PRIVATE inSend := FALSE AS LOGIC
     
     /// <summary>Retrieves the name of the class an object belongs to.</summary>
     /// <returns>The method returns a character string representing the name of a class.</returns>
-    METHOD ClassName() as STRING
-        return self:GetType():Name
+    METHOD ClassName() AS STRING
+        RETURN SELF:GetType():Name
         
         /// <summary>Retrieves the class object (System.Type) of a class.</summary>
         /// <returns>The method returns the class object of a class.</returns>
         /// <remarks>The X# XPP implementation returns a System.Type object as class object.</remarks>
-    METHOD ClassObject as OBJECT
-        return SELF:GetType()
+    METHOD ClassObject AS OBJECT
+        RETURN SELF:GetType()
         
-    METHOD Eval(uBlock) as USUAL CLIPPER
+    METHOD Eval(uBlock) AS USUAL CLIPPER
         IF pCount() > 0
-            LOCAL aParams as USUAL[]
-            LOCAL bBlock := uBlock as CodeBlock
+            LOCAL aParams AS USUAL[]
+            LOCAL bBlock := uBlock AS CODEBLOCK
             aParams := USUAL[]{ PCOunt()-1 }
-            FOR VAR nX := 2 to PCount()
-                aParams[nX-1] := _GetFParam(nX)
-            NEXT
+            // The pseudo function _ARGS() returns the Clipper arguments array
+            System.Array.Copy(_ARGS(),1, aParams, 0, PCount()-1)
             RETURN XSharp.RT.Functions.Eval(bBlock, aParams)
         ELSE
             THROW ArgumentException{"Missing Codeblock parameter", nameof(uBlock)}
         ENDIF
 
-    VIRTUAL METHOD HasIVar(cName as STRING) AS LOGIC
+    VIRTUAL METHOD HasIVar(cName AS STRING) AS LOGIC
         RETURN IvarGetInfo(SELF, cName) != 0
 
     VIRTUAL METHOD NoIvarGet(cName) AS USUAL CLIPPER
-        if XSharp.XPP.ClassObject.IsInstanceOfRuntimeClass(SELF)
-            return XSharp.XPP.ClassObject.CallIVarGet(SELF, cName)
+        IF XSharp.XPP.ClassObject.IsInstanceOfRuntimeClass(SELF)
+            RETURN XSharp.XPP.ClassObject.CallIVarGet(SELF, cName)
         ENDIF
         RETURN NIL
 
     VIRTUAL METHOD NoIvarPut(cName, uValue) AS USUAL CLIPPER
-        if XSharp.XPP.ClassObject.IsInstanceOfRuntimeClass(SELF)
-            return XSharp.XPP.ClassObject.CallIVarPut(SELF, cName, uValue)
+        IF XSharp.XPP.ClassObject.IsInstanceOfRuntimeClass(SELF)
+            RETURN XSharp.XPP.ClassObject.CallIVarPut(SELF, cName, uValue)
         ENDIF
         RETURN NIL
 
@@ -69,16 +68,15 @@ CLASS XSharp.XPP.Abstract
         /// Instead, program execution is directed to this method. The parameter <paramref name="cName" /> contains the name of the undefined method,
         /// followed by the parameters the callee has passed to the method call.</remarks>
     VIRTUAL METHOD NoMethod(cName, uParams) AS USUAL CLIPPER
-        LOCAL aParams as USUAL[]
+        LOCAL aParams AS USUAL[]
         IF ! SELF:inSend
             SELF:inSend := TRUE
             TRY
                 aParams := USUAL[]{ PCOunt()-1 }
-                FOR VAR nX := 2 to PCount()
-                    aParams[nX-1] := _GetFParam(nX)
-                NEXT
-                if XSharp.XPP.ClassObject.IsInstanceOfRuntimeClass(SELF)
-                    return XSharp.XPP.ClassObject.CallMethod(SELF, cName, aParams)
+                // The pseudo function _ARGS() returns the Clipper arguments array
+                System.Array.Copy(_ARGS(), 1, aParams, 0, PCount()-1)
+                IF XSharp.XPP.ClassObject.IsInstanceOfRuntimeClass(SELF)
+                    RETURN XSharp.XPP.ClassObject.CallMethod(SELF, cName, aParams)
                 ENDIF
                 RETURN __InternalSend(SELF, cName, aParams)
             FINALLY
@@ -100,14 +98,14 @@ CLASS XSharp.XPP.Abstract
         /// <returns>The method returns .T. (true) if the object executing the method belongs to or is derived from the specified class. </returns>
         /// <remarks>This method is used to check if an unknown object has features of a known class. This is especially useful for event driven programming or when classes are inherited from other classes.</remarks>
     METHOD IsDerivedFrom(uParent) AS LOGIC CLIPPER
-        local oType as System.Type
+        LOCAL oType AS System.Type
         IF IsString(uParent)
             oType := XSharp.RT.Functions.FindClass(uParent)
-            return oType:IsAssignableFrom(SELF:GetType())
+            RETURN oType:IsAssignableFrom(SELF:GetType())
         ELSEIF IsObject(uParent)
             IF ((OBJECT) uParent) IS System.Type 
                 otype := (OBJECT) uParent
-                return oType:IsAssignableFrom(SELF:GetType())
+                RETURN oType:IsAssignableFrom(SELF:GetType())
             ENDIF
         ENDIF
         RETURN FALSE
@@ -127,54 +125,54 @@ CLASS XSharp.XPP.Abstract
         /// - CLASS_DESCR_SUPERDETAILS : this is not supported in X#.<br/>
         /// </remarks>
     METHOD ClassDescribe(nInfo) AS ARRAY CLIPPER
-        local aResult as array
-        local otype   as System.Type
-        local aFields as array
-        local aMethods as array
+        LOCAL aResult AS ARRAY
+        LOCAL otype   AS System.Type
+        LOCAL aFields AS ARRAY
+        LOCAL aMethods AS ARRAY
         IF ! IsNumeric(nInfo)
             nInfo := CLASS_DESCR_ALL
         ENDIF
         aResult    := ArrayNew(4)
         otype := SELF:GetType()
         aResult[1] := oType:Name
-        if oType:BaseType != NULL
+        IF oType:BaseType != NULL
             aResult[2] := {oType:BaseType:Name}
-        else
+        ELSE
             aResult[2] := {}
         ENDIF
-        var aFieldInfo := oType:GetFields()
+        VAR aFieldInfo := oType:GetFields()
         aResult[3] := aFields := arrayNew(aFieldInfo:Length)
-        FOR var nFld := 1 to aFieldInfo:Length
-            local oFld as FieldInfo
+        FOR VAR nFld := 1 TO aFieldInfo:Length
+            LOCAL oFld AS FieldInfo
             oFld := aFieldInfo[nFld]
             aFields[nFld] := {oFld:Name, EnCodeFieldAttributes(oFld:Attributes), oFld:FieldType}
         NEXT
-        var aMethodInfo := oType:GetMethods()
+        VAR aMethodInfo := oType:GetMethods()
         aResult[4] := aMethods := arrayNew(aMethodInfo:Length)
-        FOR var nMethod := 1 to aFieldInfo:Length
-            local oMeth as MethodInfo
+        FOR VAR nMethod := 1 TO aFieldInfo:Length
+            LOCAL oMeth AS MethodInfo
             oMeth := aMethodInfo[nMethod]
             aMethods[nMethod] := {oMeth:Name, EnCodeMethodAttributes(oMeth:Attributes),NIL ,NIL,oMeth:ReturnType}
         NEXT
         SWITCH (LONG) nInfo
         CASE CLASS_DESCR_ALL
-            return aResult
+            RETURN aResult
         CASE CLASS_DESCR_CLASSNAME
-            return aResult[1]
+            RETURN aResult[1]
         CASE CLASS_DESCR_SUPERCLASSES
-            return aResult[2]
+            RETURN aResult[2]
         CASE CLASS_DESCR_MEMBERS
-            return aResult[3]
+            RETURN aResult[3]
         CASE CLASS_DESCR_METHODS
-            return aResult[4]
-        case CLASS_DESCR_SUPERDETAILS
-            return {}
-        end switch
-        return {}
+            RETURN aResult[4]
+        CASE CLASS_DESCR_SUPERDETAILS
+            RETURN {}
+        END SWITCH
+        RETURN {}
         
         
-    STATIC PRIVATE METHOD EncodeFieldAttributes(attr as FieldAttributes) as LONG
-        local result := 0 as LONG
+    STATIC PRIVATE METHOD EncodeFieldAttributes(attr AS FieldAttributes) AS LONG
+        LOCAL result := 0 AS LONG
         IF attr:HasFlag(FieldAttributes.Public)
             result += CLASS_EXPORTED
         ELSEIF attr:HasFlag(FieldAttributes.Family)
@@ -189,8 +187,8 @@ CLASS XSharp.XPP.Abstract
         ENDIF
         RETURN result
         
-    STATIC PRIVATE METHOD EnCodeMethodAttributes(attr as MethodAttributes) as LONG
-        local result := 0 as LONG
+    STATIC PRIVATE METHOD EnCodeMethodAttributes(attr AS MethodAttributes) AS LONG
+        LOCAL result := 0 AS LONG
         IF attr:HasFlag(MethodAttributes.Public)
             result += CLASS_EXPORTED
         ELSEIF attr:HasFlag(MethodAttributes.Family)

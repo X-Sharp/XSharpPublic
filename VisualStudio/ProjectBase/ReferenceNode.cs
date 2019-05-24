@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -95,7 +95,10 @@ namespace Microsoft.VisualStudio.Project
 
             set
             {
-                this.ItemNode.SetMetadata(ProjectFileConstants.EmbedInteropTypes, value.ToString());
+                if (value)
+                    this.ItemNode.SetMetadata(ProjectFileConstants.EmbedInteropTypes, value.ToString());
+                else
+                    this.ItemNode.SetMetadata(ProjectFileConstants.EmbedInteropTypes, null);
             }
         }
         #endregion
@@ -205,7 +208,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Links a reference node to the project and hierarchy.
         /// </summary>
-		public virtual /*void*/ ReferenceNode AddReference()  // 
+		public virtual /*void*/ ReferenceNode AddReference()  //
 		{
             ReferenceNode existingNode = null;  /// returns existing node or null if this node has been newly added
 
@@ -255,7 +258,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="errorHandler">A CannotAddReferenceErrorMessage delegate to show the error message.</param>
         /// <returns>true if the reference can be added.</returns>
-		protected virtual bool CanAddReference(out CannotAddReferenceErrorMessage errorHandler, out ReferenceNode existingNode )  
+		protected virtual bool CanAddReference(out CannotAddReferenceErrorMessage errorHandler, out ReferenceNode existingNode )
 		{
 			// When this method is called this reference has not yet been added to the hierarchy, only instantiated.
 			errorHandler = null;

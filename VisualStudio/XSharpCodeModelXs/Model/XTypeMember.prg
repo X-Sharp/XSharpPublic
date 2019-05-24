@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharpModel
 
 		#region constructors
 
-			PRIVATE  CONSTRUCTOR(name AS STRING, kind AS Kind, modifiers AS Modifiers, visibility AS Modifiers, span AS TextRange, position AS TextInterval, typeName AS STRING, isStatic AS LOGIC)
+			CONSTRUCTOR(name AS STRING, kind AS Kind, modifiers AS Modifiers, visibility AS Modifiers, span AS TextRange, position AS TextInterval, typeName AS STRING, isStatic AS LOGIC)
 				SUPER(name, kind, modifiers, visibility, span, position)
 				SELF:Parent := NULL
 				SELF:_parameters := List<XVariable>{}

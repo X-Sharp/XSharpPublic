@@ -26,7 +26,8 @@ CLASS WorkAreas
         
     INTERNAL METHOD PopCurrentWorkarea() AS DWORD
         IF workAreaStack:Count > 0
-            RETURN workAreaStack:Pop()
+        	iCurrentWorkarea := workAreaStack:Pop()
+            RETURN iCurrentWorkarea
         ENDIF
         RETURN 0
 

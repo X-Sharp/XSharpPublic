@@ -242,6 +242,15 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string XSharpVO = "xsharp.vo";
         internal const string XSharpXPP = "xsharp.xpp";
         internal const string XSharpVFP = "xsharp.vfp";
+        internal const string SdkDefines = "sdkdefines";
+        internal const string VoGui = "voguiclasses";
+        internal const string VoSystem = "vosystemclasses";
+        internal const string VoRdd = "vorddclasses";
+        internal const string VoSql = "vosqlclasses";
+        internal const string VoConsole = "voconsoleclasses";
+        internal const string VoWin32 = "vowin32apilibrary";
+        internal const string VoInet = "vointernetclasses";
+        internal const string VoReport = "voreportclasses";
     }
 
     internal static class OurNameSpaces

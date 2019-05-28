@@ -344,6 +344,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case VulcanAssemblyNames.VulcanRT:
                     options.RuntimeAssemblies |= RuntimeAssemblies.VulcanRT;
                     break;
+                case XSharpAssemblyNames.SdkDefines:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.SdkDefines;
+                    break;
                 case XSharpAssemblyNames.XSharpCore:
                     options.RuntimeAssemblies |= RuntimeAssemblies.XSharpCore;
                     break;
@@ -359,7 +362,31 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case XSharpAssemblyNames.XSharpVFP:
                     options.RuntimeAssemblies |= RuntimeAssemblies.XSharpVFP;
                     break;
-                case "mscorlib":
+                case XSharpAssemblyNames.VoSystem:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.VoSystem;
+                    break;
+                case XSharpAssemblyNames.VoGui:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.VoGui;
+                    break;
+                case XSharpAssemblyNames.VoRdd:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.VoRdd;
+                    break;
+                case XSharpAssemblyNames.VoSql:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.VoSql;
+                    break;
+                case XSharpAssemblyNames.VoInet:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.VoInet;
+                    break;
+                case XSharpAssemblyNames.VoConsole:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.VoConsole;
+                    break;
+                case XSharpAssemblyNames.VoReport:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.VoReport;
+                    break;
+                case XSharpAssemblyNames.VoWin32:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.VoWin32;
+                    break;
+               case "mscorlib":
                 case "system":
                     if (! options.ClrVersionWasSet )
                     {

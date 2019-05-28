@@ -683,7 +683,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             parseOne(UDCSEP);
                         break;
                     case '$':
-                        parseOne(SUBSTR);
+                        parseOne(SUBSTR); 
                         break;
                     case '!':
                         parseOne(NOT);

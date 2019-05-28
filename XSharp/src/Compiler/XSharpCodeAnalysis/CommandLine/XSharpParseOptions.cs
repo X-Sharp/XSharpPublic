@@ -22,16 +22,25 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
 
     [Flags]
-    public enum RuntimeAssemblies : byte
+    public enum RuntimeAssemblies : int
     {
-        None = 0,
-        VulcanRT = 1,
-        VulcanRTFuncs = 2,
-        XSharpCore = 8,
-        XSharpRT = 16,
-        XSharpVO = 32,
-        XSharpXPP = 64,
-        XSharpVFP = 128
+        None = 0 ,
+        VulcanRT = 0x01,
+        VulcanRTFuncs = 0x02,
+        XSharpCore = 0x04,
+        XSharpRT = 0x8,
+        XSharpVO = 0x10,
+        XSharpXPP = 0x20,
+        XSharpVFP = 0x40,
+        SdkDefines = 0x80,
+        VoSystem = 0x100,
+        VoGui = 0x200,
+        VoRdd = 0x400,
+        VoSql = 0x800,
+        VoInet = 0x1000,
+        VoConsole = 0x2000,
+        VoReport = 0x4000,
+        VoWin32 = 0x8000
     }
 
     [Flags]

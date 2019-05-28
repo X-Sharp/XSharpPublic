@@ -14874,6 +14874,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Include file &apos;{0}&apos; will be skipped because its values are included in assembly &apos;{1}&apos;..
+        /// </summary>
+        internal static string WRN_ObsoleteInclude {
+            get {
+                return ResourceManager.GetString("WRN_ObsoleteInclude", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Obsolete member &apos;{0}&apos; overrides non-obsolete member &apos;{1}&apos;.
         /// </summary>
         internal static string WRN_ObsoleteOverridingNonObsolete {

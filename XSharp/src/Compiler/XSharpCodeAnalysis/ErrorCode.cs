@@ -1707,6 +1707,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         Err_TypeParametersAccessAssign = 9077,
         Err_StringConcat = 9078,
         ERR_CannotTakeAddressOfAliasedExpression = 9079,
+        ERR_InvalidLiteral = 9080,
+        WRN_ObsoleteInclude = 9081,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,
@@ -1719,7 +1721,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_XPPMethodNotImplemented = 9207,
         WRN_XPPMethodNotDeclared = 9208,
         ERR_XPPClassNotFound = 9209,
-        ERR_InvalidLiteral = 9210,
+        
         ERR_Internal = 9999
         #endregion X#-only messages
     }

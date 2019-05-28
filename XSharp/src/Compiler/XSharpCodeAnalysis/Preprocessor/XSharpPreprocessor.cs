@@ -973,12 +973,76 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return ex;
         }
 #endif
+        private bool isObsoleteIncludeFile(string includeFileName)
+        {
+            string file = PathUtilities.GetFileName(includeFileName, true).ToLower();
+            bool obsolete = false;
+            string assemblyName ;
+            bool sdkdefs = _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.SdkDefines);
+            switch (file)
+            {
+                case "errorcodes.vh":
+                case "set.vh":
+                case "set.ch":
+                case "directry.ch":
+                case "vosystemlibrary.vh":
+                    obsolete = sdkdefs || _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
+                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.XSharpCore;
+                    break;
+                case "voguiclasses.vh":
+                    obsolete = sdkdefs || _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.VoGui);
+                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoGui;
+                    break;
+                case "vointernetclasses.vh":
+                    obsolete = sdkdefs || _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.VoInet);
+                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoInet;
+                    break;
+                case "vorddclasses.vh":
+                    obsolete = sdkdefs || _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.VoRdd);
+                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoRdd;
+                    break;
+                case "voreportclasses.vh":
+                    obsolete = sdkdefs || _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.VoReport);
+                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoReport;
+                    break;
+                case "vosqlclasses.vh":
+                    obsolete = sdkdefs || _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.VoSql);
+                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoSql;
+                    break;
+                case "vosystemclasses.vh":
+                    obsolete = sdkdefs || _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.VoSystem);
+                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoSystem;
+                    break;
+                case "vowin32apilibrary.vh":
+                    obsolete = sdkdefs || _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.VoWin32);
+                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoWin32;
+                    break;
+                case "class.ch":
+                    obsolete = _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpXPP);
+                    assemblyName = XSharpAssemblyNames.XSharpXPP;
+                    break;
+                default:
+                    obsolete = false;
+                    assemblyName = "";
+                   break;
+            }
+            if (obsolete)
+            {
+                addParseError(new ParseErrorData(ErrorCode.WRN_ObsoleteInclude, includeFileName, assemblyName+".dll"));
+            }
+            return obsolete;
+        }
+
         private bool ProcessIncludeFile(string includeFileName, XSharpToken fileNameToken)
         {
             string nfp = null;
             SourceText text = null;
             Exception fileReadException = null;
             PPIncludeFile includeFile = null;
+            if (isObsoleteIncludeFile(includeFileName))
+            {
+                return true;
+            }
             List<string> dirs = new List<string>() { PathUtilities.GetDirectoryName(_fileName) };
             foreach (var p in includeDirs)
             {

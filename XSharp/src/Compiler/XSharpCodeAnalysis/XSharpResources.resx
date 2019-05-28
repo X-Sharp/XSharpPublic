@@ -5651,5 +5651,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_InvalidLiteral" xml:space="preserve">
     <value>Invalid {0} literal '{1}': {2}.</value>
   </data>
+  <data name="WRN_ObsoleteInclude" xml:space="preserve">
+    <value>Include file '{0}' will be skipped because its values are included in assembly '{1}'.</value>
+  </data>
   
 </root>

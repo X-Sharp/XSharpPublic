@@ -3378,8 +3378,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             // check the accessor list. if none of the Gets/Sets have a body then generate a warning
             var emulateAuto = false;
-            if (context.Auto == null && !isInInterface && !mods.Any((int)SyntaxKind.AbstractKeyword))
+            if (context.Auto == null && context.Multi == null && !isInInterface && !mods.Any((int)SyntaxKind.AbstractKeyword))
             {
+                // single line property
                 var hasBody = false;
                 foreach (var accessor in accessorList.Accessors)
                 {

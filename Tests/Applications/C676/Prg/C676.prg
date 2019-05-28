@@ -7,8 +7,8 @@ CLASS TestClass
 	EXPORT n AS INT
 
 	// error XS8050: Only auto-implemented properties can have initializers.
-	PROPERTY TestProp1 AS STRING
-		SET
+	PROPERTY TestProp1 AS STRING   
+		SET       
 		END SET
 	END PROPERTY
 
@@ -28,5 +28,6 @@ CLASS TestClass
 	END PROPERTY
 	
 	PROPERTY TestProp4 AS STRING SET
+    PROPERTY TestProp5 AS STRING AUTO
 
 END CLASS

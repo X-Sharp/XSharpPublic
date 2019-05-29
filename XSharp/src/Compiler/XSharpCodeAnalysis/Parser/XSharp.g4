@@ -581,6 +581,10 @@ statement           : Decl=localdecl                        #declarationStmt
                        (Lines +=withLine)+
                       e=END WITH eos      #withBlock
 
+                    | {IsFox}? TEXT (TO Id=identifier (Add=ADDITIVE)? (Merge=TEXTMERGE)? (NoShow=NOSHOW)? (FLAGS Flags=expression)? (PRETEXT Pretext=expression)? )? end=EOS
+                       String=TEXT_STRING_CONST
+                       ENDTEXT e=eos                #textStmt
+
                       // NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
                       // The first ExpressonStmt rule matches a single expression
                       // The second Rule matches a single expression with an extraneous RPAREN RCURLY or RBRKT

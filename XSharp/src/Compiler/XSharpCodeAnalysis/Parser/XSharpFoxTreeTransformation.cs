@@ -45,6 +45,44 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             CoreAccessMember(context);
         }
 
+        public override void ExitTextStmt([NotNull] XP.TextStmtContext context)
+        {
+            if (context.Id != null)
+            {
+                ExpressionSyntax expr;
+                ExpressionSyntax value = GenerateLiteral(context.String.Text);
+                var arg1 = MakeArgument(value);
+                var arg2 = MakeArgument(GenerateLiteral(context.Merge != null));
+                var arg3 = MakeArgument(GenerateLiteral(context.NoShow != null));
+                var arg4 = MakeArgument(context.Flags != null ? context.Flags.Get<ExpressionSyntax>() : GenerateLiteral(0) );
+                var arg5 = MakeArgument(context.Pretext != null ? context.Pretext.Get<ExpressionSyntax>() : GenerateNIL() );
+                var args = MakeArgumentList(arg1, arg2, arg3, arg4, arg5);
+                value = GenerateMethodCall("__TextSupport", args);
+
+                if (context.Add != null)
+                {
+                    expr = _syntaxFactory.AssignmentExpression(
+                         SyntaxKind.AddAssignmentExpression,
+                        GenerateSimpleName(context.Id.GetText()),
+                        SyntaxFactory.MakeToken(SyntaxKind.PlusEqualsToken),
+                        value);
+                }
+                else
+                {
+                    expr = _syntaxFactory.AssignmentExpression(
+                         SyntaxKind.SimpleAssignmentExpression,
+                        GenerateSimpleName(context.Id.GetText()),
+                        SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                        value);
+                }
+                context.Put(GenerateExpressionStatement(expr));
+
+            }
+            else
+            {
+                context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            }
+        }
         public override void ExitFoxclsvars([NotNull] XP.FoxclsvarsContext context)
         {
             context.Put(context.Member.Get<MemberDeclarationSyntax>());

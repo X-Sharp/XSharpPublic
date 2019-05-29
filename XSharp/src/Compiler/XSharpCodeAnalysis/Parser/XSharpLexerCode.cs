@@ -97,6 +97,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         bool _inDottedIdentifier = false;
         bool _currentLineIsPreprocessorDefinition = false;
         bool _currentLineHasEos = true;
+        bool _nextLineTextMode = false;
+        bool _textMode = false;
         int _lastToken = NL;
         IList<ParseErrorData> _lexErrors = new List<ParseErrorData>();
 
@@ -142,6 +144,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         int La_3 { get { return InputStream.La(3); } }
         int La_4 { get { return InputStream.La(4); } }
         int La_5 { get { return InputStream.La(5); } }
+        int La_6 { get { return InputStream.La(6); } }
+        int La_7 { get { return InputStream.La(7); } }
 
         void parseInit()
         {
@@ -255,6 +259,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 Interpreter.Line += 1;
                 Interpreter.Column = 0;
                 _lineStartCharIndex = InputStream.Index;
+                if (_nextLineTextMode)
+                {
+                    // this happens in FoxPro dialect only, because only there the TEXT keyword is available
+                    _textMode = true;
+                    _nextLineTextMode = false;
+                }
                 return true;
             }
             return La_1 == TokenConstants.Eof;
@@ -507,11 +517,44 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
+        // this happens in FoxPro dialect only, because only there the TEXT keyword is available
+        private IToken parseTextEndText()
+        {
+            // contine to collect tokens until end of line
+            // until the line starts with ENDTEXT
+
+            while (La_1 != Eof)
+            {
+                if ((La_1 == 'e' || La_1 == 'E') && (La_2 == 'n' || La_2 == 'N') && (La_3 == 'd' || La_3 == 'D')
+                    && (La_4 == 't' || La_4 == 'T') && (La_5 == 'e' || La_5 == 'E') && (La_6 == 'x' || La_6 == 'X')
+                    && (La_7 == 't' || La_7 == 'T'))
+                {
+                    // end of text mode
+
+                    break;
+                }
+                parseToEol();
+                if (!tryParseNewLine())
+                    break;
+            }
+            parseType(TEXT_STRING_CONST);
+            _textMode = false;
+            Interpreter.Column += (InputStream.Index - _startCharIndex);
+            XSharpToken  t = TokenFactory.Create(this.SourcePair, _tokenType, _textSb.ToString(), _tokenChannel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as XSharpToken;
+            Emit(t);
+            return t;
+        }
         public override IToken NextToken()
         {
             XSharpToken t;
             {
                 parseInit();
+                // this happens in FoxPro dialect only, because only there the TEXT keyword is available
+                if (_textMode)
+                {
+                    return parseTextEndText();
+                }
+
                 if (La_1 == '\uFEFF') parseSkip();
                 switch (La_1)
                 {
@@ -949,6 +992,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             if (findKeyWord(t, _lastToken))
             {
                 type = t.Type;
+                // this happens in FoxPro dialect only, because only there the TEXT keyword is available
+                if (type == TEXT)
+                {
+                    _nextLineTextMode = true;
+                }
             }
             else if (type == REAL_CONST || type == INT_CONST || type == HEX_CONST || type == BIN_CONST)
             {
@@ -1606,7 +1654,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     // normal keywords
                     {"THIS", SELF},
-                };
+                }; 
                 var vfpKeyWordAbbrev = new Dictionary<string, int>
                 {
                     {"ENDDEFINE", ENDDEFINE },

@@ -142,3 +142,38 @@ FUNCTION SplitPath(pszPath AS PSZ,pszDrive AS PSZ,pszDir AS PSZ,pszName AS PSZ,p
     RETURN 
 
 
+/// <summary>
+/// Reset the date and time stamps of a File.
+/// </summary>
+/// <param name="cFileName">The name of the file to modify.</param>
+/// <param name="dDate">The new date to use for the date stamp.  If not specified, the default is Today().</param>
+/// <param name="cTime">The new time string to use for the time stamp.  If not specified, the default is Time().</param>
+/// <returns>TRUE if successful; otherwise FALSE.</returns>
+FUNCTION SetFDateTime(cFileName AS STRING, dDate AS DATE, cTime AS STRING) AS LOGIC
+	LOCAL lOK := TRUE AS LOGIC
+	LOCAL ts AS TimeSpan
+	LOCAL dt AS DateTime
+
+	TRY
+	
+		IF dDate == NULL_DATE
+			dDate := Today()
+		END IF
+		IF String.IsNullOrWhiteSpace( cTime )
+			ts := DateTime.Now:TimeOfDay
+		ELSE
+			ts := TimeSpan{ Val( SubStr3(cTime, 1, 2) ) , Val( SubStr3(cTime, 4, 2) ) , Val( SubStr3(cTime, 7, 2) ) }
+		END IF
+		
+		dt := DateTime{ dDate:Year, dDate:Month, dDate:Day, ts:Hours, ts:Minutes, ts:Seconds }
+		
+		System.IO.File.SetLastWriteTime(cFileName, dt)
+	
+	CATCH
+		
+		lOK := FALSE
+		
+	END TRY
+
+RETURN lOK
+

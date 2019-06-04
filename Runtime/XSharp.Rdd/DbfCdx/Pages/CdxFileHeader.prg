@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	INTERNAL CLASS CdxFileHeader INHERIT CdxTagHeader
 
     INTERNAL CONSTRUCTOR( bag AS CdxOrderBag )
-        SUPER(bag, 0, "__ROOT__")
+        SUPER(bag, 0, "__ROOT__",NULL)
         
 
         METHOD Initialize() AS VOID

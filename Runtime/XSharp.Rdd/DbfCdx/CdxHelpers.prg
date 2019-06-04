@@ -222,8 +222,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     [DebuggerDisplay("Action {Type}")];
     INTERNAL STRUCTURE CdxAction
-        INTERNAL PROPERTY Type AS CdxActionType AUTO
-        INTERNAL PROPERTY Page AS CdxTreePage   AUTO
+        INTERNAL PROPERTY Type  AS CdxActionType AUTO
+        INTERNAL PROPERTY Page  AS CdxTreePage   AUTO
+        INTERNAL PROPERTY Page2 AS CdxTreePage   AUTO
         INTERNAL PROPERTY Pos   AS LONG AUTO
         INTERNAL PROPERTY Recno AS LONG AUTO
         INTERNAL PROPERTY Key   AS BYTE[] AUTO 
@@ -236,10 +237,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE CONSTRUCTOR(ntype AS CdxActionType)
             Type  := nType
             Page  := NULL
+            Page2 := NULL
             Pos   := 0
             Recno := -1
             Key   := NULL
             ChildPage := 0
+
             
 
         STATIC PROPERTY Ok AS CdxAction GET _Ok
@@ -270,6 +273,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL STATIC METHOD ChangeParent(oPage AS CdxTreePage) AS CdxAction
             RETURN CdxAction{CdxActionType.ChangeParent}{Page := oPage}
+
+        INTERNAL STATIC METHOD ChangeParent(oPage1 AS CdxTreePage, oPage2 as CdxTreePage) AS CdxAction
+            RETURN CdxAction{CdxActionType.ChangeParent}{Page := oPage1, Page2 := oPage2}
 
         INTERNAL STATIC METHOD AddBranch(oPage AS CdxTreePage,  nChild AS LONG, nRecno AS LONG, bKey AS BYTE[]) AS CdxAction
             RETURN CdxAction{CdxActionType.AddBranch}{Page := oPage, ChildPage := nChild, Recno := nRecno, Key := bKey, Pos := -1}

@@ -146,8 +146,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN result
 
         PRIVATE METHOD _HeaderCreate() AS LOGIC
-            SELF:_Header            := CdxTagHeader{_bag, -1 ,_orderName}
-            SELF:_Header:Tag        := SELF
+            SELF:_Header            := CdxTagHeader{_bag, -1 ,_orderName, SELF}
             SELF:_Header:Descending := SELF:_Descending
             SELF:_Header:Version    := 0
             SELF:_Header:Signature  := 1

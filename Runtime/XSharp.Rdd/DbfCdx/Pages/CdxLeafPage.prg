@@ -5,20 +5,30 @@
 //
 /*
 LEAF Page
-- A Leaf page has type 2. The List of CDX tags is a special leaf page with type 3 (Root + Leaf)
+  From the FoxPro Docs, where this is called "Compact Index Exterior Node Record"
+  Byte offset   Description
+  ===============================
+  00 - 01       Node attributes (any of the following numeric values or their sums):
+                0 - index node
+                1 - root node
+                2 - leaf node
+  02 - 03       Number of keys present (0, 1 or many)
+  04 - 07       Pointer to the node directly to the left of current node (on same level; -1 if not present)
+  08 - 11       Pointer to the node directly to right of the current node (on same level; -1 if not present)
+  12 - 13       Available free space in node
+  14 - 17       Record number mask
+  18            Duplicate byte count mask
+  19            Trailing byte count mask
+  20            Number of bits used for record number
+  21            Number of bits used for duplicate count
+  22            Number of bits used for trail count
+  23            Number of bytes holding record number, duplicate count and trailing count
+  24 - 511      Index keys and information
+                Each entry consists of the record number, duplicate byte count and trailing byte count, all compacted.
+                The key text is placed at the logical end of the node, working backwards, allowing for previous key entries.   
+
+- The List of CDX tags is a special leaf page with type 3 (Root + Leaf)
 - It starts with a fixed block of 24 bytes:
-  BYTE     attr    [ 2 ];    node type 
-  BYTE     nKeys   [ 2 ];    number of keys 
-  BYTE     leftPtr [ 4 ];    offset of left node or -1 
-  BYTE     rightPtr[ 4 ];    offset of right node or -1
-  BYTE     freeSpc [ 2 ];    free space available in a page in bytes
-  BYTE     recMask [ 4 ];    record number mask 
-  BYTE     dupMask;          duplicate bytes count mask 
-  BYTE     trlMask;          trailing bytes count mask 
-  BYTE     recBits;          number of bits for record number 
-  BYTE     dupBits;          number of bits for duplicate count
-  BYTE     trlBits;          number of bits for trailing count 
-  BYTE     keyBytes;         total number of bytes for recno/dup/trail info 
   The remaining 488 bytes are used by the list of key descriptors (which starts immediately after this header) and the keys
   (which are stored from the end of the page forward)
   Each key descriptor consists of 3 numbers
@@ -37,6 +47,8 @@ LEAF Page
   Number   : IEEE double (8 bytes), swapped the order of bytes. When negative invert all bits, otherwise only highest order bit.
              This is complicated but allows to use memcmp to compare numeric values
   Character fields are assumed to have trailing ' ', numeric field have trailing '\0'
+
+
 
 */
 
@@ -194,6 +206,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PUBLIC METHOD GetChildPage(nPos AS Int32) AS Int32
             RETURN 0
 
+        PUBLIC METHOD GetChildren as IList<LONG>
+            RETURN List<LONG>{}
+
         PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             SELF:_ExpandLeaves(FALSE)
@@ -340,7 +355,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY LastNode AS CdxPageNode GET IIF(SELF:NumKeys == 0, NULL, SELF[SELF:NumKeys-1])
         INTERNAL PROPERTY Leaves    AS IList<CdxLeaf>
             GET
-                // Does not expand the leaves
+                _ExpandLeaves(FALSE)
                 RETURN SELF:_leaves
             END GET
         END PROPERTY
@@ -372,17 +387,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             VAR nBytesNeeded := SELF:_keyLen - nDupCount - nTrailCount  + SELF:DataBytes 
             IF SELF:Freespace < nBytesNeeded + nDupCount
-                Debug( "triggers SplitLeaf", "Rec", recno)
+                //Debug( "triggers SplitLeaf", "Rec", recno)
                 RETURN CdxAction.SplitLeaf(SELF, recno, key, _leaves:Count)
             ENDIF
             VAR leaf := CdxLeaf{recno, key,nDupCount, nTrailCount}
             _leaves:Add( leaf)
+#ifdef TESTCDX
             IF _leaves:Count > 1
                 ValidateLeaves(_leaves[_leaves:Count-2], leaf)
             ENDIF
+#endif
             SELF:NumKeys += 1
             SELF:Freespace -= nBytesNeeded
             //Debug("rec",recno, "keys", self:NumKeys, "free after", self:Freespace)
+            SELF:Write()
             RETURN CdxAction.Ok
 
 
@@ -395,6 +413,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 action := SELF:Add(key:Recno, key:Key)
             NEXT
             action := SELF:Compress()
+            SELF:Write()
             RETURN action
 
         INTERNAL METHOD Insert(nPos AS LONG, recno AS LONG, key AS BYTE[]) AS CdxAction
@@ -433,7 +452,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 nDupCount := SELF:_getDupCount(prevkey, key,  nTrailCount)
                 leaf := CdxLeaf{recno, Key, nDupCount, nTrailCount}
                 _Leaves:Add(leaf)
+#ifdef TESTCDX
                 ValidateLeaves(prevLeaf, leaf)
+#endif
                 SELF:Freespace -= (nBytesNeeded-nDupCount)
                 last := TRUE
             ELSEIF nPos == 0
@@ -449,7 +470,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 leaf := CdxLeaf{Recno, Key,nDupCount,nTrailCount}
 
                 _Leaves:Insert(nPos, leaf)
+#ifdef TESTCDX
                 validateLeaves(prevLeaf, leaf)
+#endif
                 adjustNext      := TRUE
             ENDIF
             IF adjustNext
@@ -461,7 +484,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:Freespace  += diff
                     nextLeaf:Dup    := nDupCount
                 ENDIF
-                validateLeaves(leaf, nextLeaf)
+#ifdef TESTCDX
+                validateLeaves(leaf, nextLeaf) 
+#endif
             ENDIF
             SELF:NumKeys := (WORD) _Leaves:Count
             //Debug("Pos",nPos, "Rec", recno, "keys", self:NumKeys, "free after", self:Freespace)
@@ -475,13 +500,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF CompResult:Type != CdxActionType.Ok
                 RETURN CompResult
             ENDIF
+            SELF:Write()
             RETURN result
 
+#ifdef TESTCDX
         INTERNAL METHOD ValidateChain() AS VOID
             LOCAL oPage AS CdxLeafPage
             LOCAL oLeft AS CdxLeaf
             LOCAL oRight AS CdxLeaf
-            IF SELF:NumKeys == 0
+            IF SELF:NumKeys == 0 
                 RETURN
             ENDIF
             IF SELF:HasLeft
@@ -503,6 +530,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL METHOD ValidateLeaves(oLeft AS CdxLeaf, oRight AS CdxLeaf) AS LOGIC
             LOCAL nDiff AS LONG
+            IF SELF:Tag == NULL
+                RETURN TRUE
+            ENDIF
             nDiff := SELF:Tag:__Compare(oLeft:Key, oRight:Key, oLeft:Key:Length)
             IF nDiff == -1
                 RETURN TRUE
@@ -513,8 +543,47 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN FALSE
 
         METHOD Validate() AS VOID
-            RETURN
+            SELF:_ExpandLeaves(FALSE)
+//            FOR var i := 0  to SELF:_leaves:Count-2
+//                var leaf1 := self:_leaves[i]
+//                var leaf2 := self:_leaves[i+1]
+//                IF ! ValidateLeaves(leaf1, leaf2)
+//                    SELF:Debug("Corruption detected: incorrect order of Keys", leaf1:Key:ToAscii(),leaf2:Key:ToAscii())
+//                ENDIF
+//            NEXT
+            IF SELF:NumKeys > 0
+                IF SELF:HasLeft
+                    var oLeft := SELF:_tag:GetPage(SELF:LeftPtr) astype CdxLeafPage
+                    if oLeft != NULL_OBJECT
+                        IF oLeft:Leaves:Count > 0
+                            var oLeftKey := oLeft:Leaves[oLeft:Leaves:Count-1]
+                            var oOurKey  := SELF:Leaves[0]
+                            IF ! ValidateLeaves(oLeftKey, oOurKey)
+                                SELF:Debug("Corruption detected: Last key on left page",oLeft:PageNo:ToString("X")," is not < our first key", oLeftKey:Key:ToAscii():Trim(),oOurKey:Key:ToAscii():Trim())
+                            ENDIF
+                        ENDIF
+                    ELSE
+                        SELF:Debug("Corruption detected: Could not read Left Page")
 
+                    ENDIF
+                ENDIF
+                IF SELF:HasRight
+                    var oRight := SELF:_tag:GetPage(SELF:RightPtr) astype CdxLeafPage
+                    if oRight != NULL_OBJECT
+                        IF  oRight:Leaves:Count > 0
+                            var oRightKey   := oRight:Leaves[0]
+                            var oOurKey     := SELF:Leaves[SELF:Leaves:Count-1]
+                            IF ! ValidateLeaves(oOurKey, oRightKey)
+                                SELF:Debug("Corruption detected: Last key on our page is not < first key on right page", oRight:PageNo:ToString("X"), oOurKey:Key:ToAscii():Trim(),oRightKey:Key:ToAscii():Trim())
+                            ENDIF
+                        ENDIF
+                    ELSE
+                        SELF:Debug("Corruption detected: Could not read Right Page")
+                    ENDIF
+                ENDIF
+            ENDIF
+
+#endif
         INTERNAL METHOD Split(oPageR AS CdxLeafPage, action AS CdxAction) AS CdxAction
             //Debug("New", oPageR:PageNo:ToString("X"))
             VAR leaves      := _leaves
@@ -528,19 +597,23 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     nDupCount := 0
                     leaf := CdxLeaf{action:Recno, action:Key, 0, nTrailCount}
                     leaves:Insert(0, leaf)
+#ifdef TESTCDX 
                     IF leaves:Count > 1
                         ValidateLeaves(leaf, leaves[1])
                     ENDIF
-                ELSEIF nPos > 0
+#endif
+                ELSEIF nPos > 0 .and. nPos < leaves:Count
                     VAR nextLeaf := leaves[nPos]
                     VAR nextKey := nextLeaf:Key
                     nDupCount := SELF:_getDupCount(nextKey, action:Key, nTrailCount)
                     leaf := CdxLeaf{action:Recno, action:Key, nDupCount, nTrailCount}
                     leaves:Insert(nPos, leaf)
+#ifdef TESTCDX
                     ValidateLeaves(leaf, nextLeaf)
                     IF nPos > 0
                         ValidateLeaves( leaves[nPos-1], leaf)
                     ENDIF
+#endif
                 ELSE
                     // append at the end
                     VAR prevLeaf := leaves[leaves:Count-1]
@@ -548,7 +621,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     nDupCount := SELF:_getDupCount(prevkey, action:Key, nTrailCount)
                     leaf := CdxLeaf{action:Recno, action:Key, nDupCount, nTrailCount}
                     leaves:Add(leaf)
+#ifdef TESTCDX
                     ValidateLeaves(prevLeaf, leaf)
+#endif
                     
                 ENDIF
                 
@@ -556,12 +631,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR half := leaves:Count /2
             //? "Writing to page 1", oPageR:PageNo:ToString("X")
             SELF:SetLeaves(leaves, 0, half)
-            SELF:Write()
             oPageR:SetLeaves(leaves, half, leaves:Count - half)
             //? "Writing to page 2", oPageR:PageNo:ToString("X")
+            SELF:Write()
             oPageR:Write()
             SELF:Tag:AdjustStack(SELF, oPageR, oPageR:NumKeys)
+#ifdef TESTCDX
+            SELF:Write()
             SELF:ValidateChain()
+#endif
             RETURN CdxAction.Ok
 
 
@@ -572,7 +650,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR result := CdxAction.Ok
                 IF nPos == SELF:NumKeys -1
                     //SELF:Tag:SetChildToProcess(SELF:PageNo)
-                    Debug(  "updates last key, triggers ChangeParent")
+                    //Debug(  "updates last key, triggers ChangeParent")
                     result := CdxAction.ChangeParent(SELF)
                 ENDIF
                 _Leaves:RemoveAt(nPos)
@@ -648,7 +726,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             SELF:NumKeys := (WORD) leaves:Count
             SELF:_leaves := leaves
+#ifdef TESTCDX
             SELF:ValidateChain()
+#endif
             RETURN CdxAction.Ok
 
  

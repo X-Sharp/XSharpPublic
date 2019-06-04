@@ -387,6 +387,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF oPage:PageNo == -1
                 oPage:PageNo := SELF:FindFreePage()
                 oPage:IsHot  := TRUE
+                SELF:_PageList:SetPage(oPage:PageNo, oPage)
             ENDIF
             IF oPage:IsHot
                 FSeek3( SELF:_hFile, oPage:PageNo, SeekOrigin.Begin )
@@ -401,7 +402,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD GetPage(nPage AS Int32, nKeyLen AS WORD,tag AS CdxTag) AS CdxPage
            VAR page := SELF:_PageList:GetPage(nPage, nKeyLen,tag)
            IF page != NULL
-                SELF:_PageList:Add(page)
+                SELF:SetPage( page)
            ENDIF
            RETURN page
   

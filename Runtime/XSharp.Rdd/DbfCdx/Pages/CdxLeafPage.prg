@@ -8,22 +8,22 @@ LEAF Page
   From the FoxPro Docs, where this is called "Compact Index Exterior Node Record"
   Byte offset   Description
   ===============================
-  00 ? 01       Node attributes (any of the following numeric values or their sums):
-                0 ? index node
-                1 ? root node
-                2 ? leaf node
-  02 ? 03       Number of keys present (0, 1 or many)
-  04 ? 07       Pointer to the node directly to the left of current node (on same level; -1 if not present)
-  08 ? 11       Pointer to the node directly to right of the current node (on same level; -1 if not present)
-  12 ? 13       Available free space in node
-  14 ? 17       Record number mask
+  00 - 01       Node attributes (any of the following numeric values or their sums):
+                0 - index node
+                1 - root node
+                2 - leaf node
+  02 - 03       Number of keys present (0, 1 or many)
+  04 - 07       Pointer to the node directly to the left of current node (on same level; -1 if not present)
+  08 - 11       Pointer to the node directly to right of the current node (on same level; -1 if not present)
+  12 - 13       Available free space in node
+  14 - 17       Record number mask
   18            Duplicate byte count mask
   19            Trailing byte count mask
   20            Number of bits used for record number
   21            Number of bits used for duplicate count
   22            Number of bits used for trail count
   23            Number of bytes holding record number, duplicate count and trailing count
-  24 ? 511      Index keys and information
+  24 - 511      Index keys and information
                 Each entry consists of the record number, duplicate byte count and trailing byte count, all compacted.
                 The key text is placed at the logical end of the node, working backwards, allowing for previous key entries.   
 

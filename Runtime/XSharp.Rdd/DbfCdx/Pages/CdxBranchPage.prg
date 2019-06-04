@@ -41,14 +41,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     From the FoxPro Docs, where this is called "Compact Index Interior Node Record"
     Byte offset  Description
     ========================
-    00 ? 01     Node attributes (any of the following numeric values or their sums):
-                a.   0 ? index node
-                b.   1 ? root node
-                c.   2 ? leaf node
-    02 ? 03     Number of keys present (0, 1 or many)
-    04 ? 07     Pointer to node directly to left of current node (on same level, -1 if not present)
-    08 ? 11     Pointer to node directly to right of current node (on same level; -1 if not present)
-    12 ? 511    Up to 500 characters containing the key value for the length of the key with a four-byte hexadecimal number
+    00 - 01     Node attributes (any of the following numeric values or their sums):
+                a.   0 - index node
+                b.   1 - root node
+                c.   2 - leaf node
+    02 - 03     Number of keys present (0, 1 or many)
+    04 - 07     Pointer to node directly to left of current node (on same level, -1 if not present)
+    08 - 11     Pointer to node directly to right of current node (on same level; -1 if not present)
+    12 - 511    Up to 500 characters containing the key value for the length of the key with a four-byte hexadecimal number
                 (stored in normal left-to-right format):
                 This node always contains the index key, record number and intra-index pointer.2
                 The key/four-byte hexadecimal number combinations will occur the number of times indicated in bytes 02 ? 03.

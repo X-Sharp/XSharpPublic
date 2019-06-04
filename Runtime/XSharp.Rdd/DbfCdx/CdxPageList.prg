@@ -22,12 +22,15 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
         PRIVATE _bag   AS CdxOrderBag
         PRIVATE _hDump AS IntPtr
         INTERNAL CONST CDXPAGE_SIZE        := 512 AS WORD
+        INTERNAL CONST CDXPAGE_MAXCOUNT    := 64 AS WORD
         
         INTERNAL METHOD _FindPage( offset AS LONG ) AS CdxPage
             LOCAL page AS Cdxpage
             SELF:_pages:TryGetValue(offSet, OUT page)
             RETURN page
 
+  
+  
        INTERNAL METHOD GetPage(nPage AS Int32, nKeyLen AS WORD, tag AS CdxTag) AS CdxPage
          	LOCAL isOk AS LOGIC
             LOCAL buffer AS BYTE[]
@@ -39,9 +42,11 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             ENDIF
             buffer  := SELF:_bag:AllocBuffer()
             isOk    := SELF:_bag:Read(nPage, buffer)
+
             IF ! isOk
                 RETURN NULL
             endif
+
 			//
             // Inspect first 2 byte and determine the page
             LOCAL nType AS SHORT
@@ -69,19 +74,6 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
         INTERNAL METHOD SetPage(nPage AS LONG, page AS CdxPage) AS VOID
             SELF:_pages[nPage] :=  page
 
-        PRIVATE METHOD _DumpPage(page AS CdxPage) AS VOID
-            IF _hDump != IntPtr.Zero .AND. ! page:Dumped
-                FWrite(_hDump, page:Dump())
-                page:Dumped := TRUE
-            ENDIF
-            IF page IS CdxBranchPage
-                VAR tPage := (CdxBranchPage) page
-                IF tpage:HasRight
-                   tpage := GetPage(tpage:RightPtr, tpage:Tag:KeyLength,tPage:Tag)
-                ENDIF
-            ENDIF
-            RETURN
-            
         INTERNAL CONSTRUCTOR( bag AS CdxOrderBag )
             SELF:_pages := Dictionary<LONG, CdxPage>{}
             SELF:_bag   := bag
@@ -158,6 +150,14 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
                 ENDIF
             ENDIF
             RETURN lOk
+
+        PRIVATE METHOD _DumpPage(page AS CdxPage) AS VOID
+            IF _hDump != IntPtr.Zero .AND. ! page:Dumped
+                FWrite(_hDump, page:Dump())
+                page:Dumped := TRUE
+            ENDIF
+            RETURN
+            
             
             
     END CLASS

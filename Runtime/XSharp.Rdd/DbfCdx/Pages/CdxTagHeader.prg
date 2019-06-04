@@ -52,12 +52,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         // so therefore allocate extra 2nd page
         INTERNAL PROPERTY TagName      AS STRING AUTO
 
-	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , cTagName AS STRING)
+	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , cTagName AS STRING, oTag as CdxTag)
             SUPER(bag)
             SELF:_nPage := nPage
             SELF:SetBuffer(bag:AllocBuffer(2))
             SELF:TagName    := cTagName
             SELF:_getValues()
+            SELF:_tag := oTag
 #region Read/Write            
 
          INTERNAL METHOD Dump(sIntro AS STRING) AS STRING

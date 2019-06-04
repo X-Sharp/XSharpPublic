@@ -109,7 +109,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         ABSTRACT PUBLIC METHOD GetRecno(nPos AS Int32) AS Int32
         ABSTRACT PUBLIC METHOD GetChildPage(nPos AS Int32) AS Int32
         ABSTRACT PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
-
+        ABSTRACT PUBLIC METHOD GetChildren as IList<LONG>
 
          PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
             LOCAL lOk AS LOGIC
@@ -130,11 +130,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 System.Diagnostics.Debug.Assert(SELF:PageNo != SELF:RightPtr)
                 System.Diagnostics.Debug.Assert(SELF:PageNo != SELF:LeftPtr)
             ENDIF
+#ifdef TESTCDX
             SELF:Validate()
+#endif
             RETURN SUPER:Write()
 
+#ifdef TESTCDX
         ABSTRACT METHOD Validate AS VOID
-
+#endif
         METHOD SetRoot() AS VOID
             SELF:PageType |= CdxPageType.Root
             RETURN
@@ -170,7 +173,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
            LOCAL x                 AS INT
            LOCAL cProc             AS STRING
            
-           cProc := Procname(1):ToLower():PadRight(30)
+           cProc := Procname(1):ToLower():PadRight(30) 
            Console.Write(cProc+" ")
            Console.Write(SELF:PageNo:ToString("X8"))
            Console.Write(" ")
@@ -181,7 +184,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
               ENDIF
            NEXT
            Console.WriteLine()
-           
+           AltD()
            RETURN
 	END CLASS
 END NAMESPACE 

@@ -613,11 +613,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                 ENDDO
                 foundPos := minPos
+ 
+		*/
+                foundPos := page:FindKey(keyBuffer, recNo, keyLength)
                 IF page IS CdxBranchPage .AND. foundPos >= nodeCount
                     foundPos := nodeCount-1
                 ENDIF
-		*/
-                foundPos := page:FindKey(keyBuffer, recNo, keyLength)
                 node:Pos := foundPos
             CASE SearchMode.Left
             CASE SearchMode.LeftFound
@@ -652,6 +653,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     
                 ENDDO
                 foundPos := minPos
+                IF foundPos >= nodeCount
+                    foundPos -= 1
+                endif
                 node:Pos := foundPos
                 IF searchMode == SearchMode.Left .AND. foundPos < nodeCount .AND. SELF:__Compare(node:KeyBytes, keyBuffer, keyLength) == 0
                     searchMode := SearchMode.LeftFound
@@ -676,7 +680,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
 
             SELF:PushPage(page, foundPos)
-            IF page IS CdxBranchPage
+            IF page IS CdxBranchPage VAR bPage
+#ifdef TESTCDX
+                //bPage:ValidateLevel()
+#endif
                 RETURN SELF:_locate(keyBuffer, keyLength, searchMode, node:ChildPageNo,recNo)
             ENDIF
             

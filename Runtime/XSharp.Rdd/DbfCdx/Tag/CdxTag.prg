@@ -60,8 +60,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _bag            AS CdxOrderBag
         PRIVATE getKeyValue     AS ValueBlock       // Delegate to calculate the key
 
-        PRIVATE _maxKeysPerPage AS WORD
-
 #endregion
 
 
@@ -93,17 +91,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY LockOffSet     	AS LONG AUTO
         INTERNAL PROPERTY CurrentStack      AS CdxStackEntry GET  SELF:_stack:Top
         INTERNAL PROPERTY RootPage          AS LONG AUTO
-        INTERNAL PROPERTY MaxKeysPerPage    AS WORD GET _maxKeysPerPage
         INTERNAL PROPERTY Stack             AS CdxPageStack GET _stack
 
         // Scopes
-        INTERNAL PROPERTY HasTopScope AS LOGIC GET _Scopes[IIF(DESCENDING,BOTTOMSCOPE, TOPSCOPE)]:IsSet
-        INTERNAL PROPERTY TopScope AS OBJECT GET _Scopes[IIF(DESCENDING,BOTTOMSCOPE, TOPSCOPE)]:Value
-        INTERNAL PROPERTY HasBottomScope AS LOGIC GET _Scopes[IIF(DESCENDING,TOPSCOPE, BOTTOMSCOPE)]:IsSet
-        INTERNAL PROPERTY BottomScope AS OBJECT GET _Scopes[IIF(DESCENDING,TOPSCOPE, BOTTOMSCOPE)]:VALUE
-        INTERNAL PROPERTY HasScope AS LOGIC GET _Scopes[0]:IsSet .OR. _Scopes[1]:IsSet
-        PRIVATE PROPERTY TopScopeNo AS LONG GET IIF(SELF:Descending, BOTTOMSCOPE, TOPSCOPE)
-        PRIVATE PROPERTY BottomScopeNo AS LONG GET IIF(SELF:Descending, TOPSCOPE, BOTTOMSCOPE)
+        INTERNAL PROPERTY HasTopScope       AS LOGIC    GET _Scopes[SELF:TopScopeNo]:IsSet
+        INTERNAL PROPERTY TopScope          AS OBJECT   GET _Scopes[SELF:TopScopeNo]:Value
+        INTERNAL PROPERTY HasBottomScope    AS LOGIC    GET _Scopes[SELF:BottomScopeNo]:IsSet
+        INTERNAL PROPERTY BottomScope       AS OBJECT   GET _Scopes[SELF:BottomScopeNo]:VALUE
+        INTERNAL PROPERTY HasScope          AS LOGIC    GET _Scopes[0]:IsSet .OR. _Scopes[1]:IsSet
+        PRIVATE  PROPERTY TopScopeNo        AS LONG     GET IIF(SELF:Descending, BOTTOMSCOPE, TOPSCOPE)
+        PRIVATE  PROPERTY BottomScopeNo     AS LONG     GET IIF(SELF:Descending, TOPSCOPE, BOTTOMSCOPE)
 
 #endregion
 
@@ -132,7 +129,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _InitFields(oBag)
             SELF:_orderName := cName
             SELF:Page := nPage
-            SELF:_Header := CdxTagHeader{oBag, nPage,SELF:OrderName}
+            SELF:_Header := CdxTagHeader{oBag, nPage,SELF:OrderName, SELF}
             SELF:_Bag:SetPage(SELF:_Header)
             SELF:Open()
 
@@ -254,7 +251,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FALSE
             ENDIF
             SELF:AllocateBuffers()
-            SELF:_maxKeysPerPage    := CdxBranchPage.MaxKeysPerPage(_keySize)
             SELF:_Conditional       := FALSE
             IF SELF:_ForExpr:Length > 0
                 TRY
@@ -331,7 +327,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN NULL
             ENDIF
             VAR page := SELF:_bag:GetPage(nPage, SELF:_KeySize, SELF)
-            page:Tag := SELF
             RETURN page ASTYPE CdxTreePage
 
         INTERNAL STATIC METHOD _compareText(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
@@ -636,7 +631,28 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_bag:_PageList:Flush(FALSE)
                 sBlock := SELF:_Header:Dump("Filedump for:"+sName)
                 FWrite(hDump, sBlock)
-                _oRdd:Gotop()
+                // Collect all pages
+                LOCAL aPages as List<LONG>
+                LOCAL oPage as CdxTreePage
+                LOCAL nLevel as LONG
+                oPage  := SELF:GetPage(SELF:_rootPage)
+                aPages := oPage:GetChildren()
+                nLevel := 1
+                ? "Level", nLevel, 1, "page"
+                DO WHILE aPages:Count > 0
+                    LOCAL aChildren AS List<LONG>
+                    nLevel += 1
+                    ? "Level", nLevel, aPages:Count, "pages"
+                    aChildren := List<LONG>{}
+                    FOREACH pageNo as LONG in aPages
+                        oPage := SELF:GetPage(pageNo)
+                        aChildren:AddRange(oPage:GetChildren())
+                    NEXT
+                    aPages := aChildren
+                ENDDO
+
+
+                _oRdd:GoTop()
                 sRecords:AppendLine("------------------------------")
                 sRecords:AppendLine("List of Records in Index order")
                 sRecords:AppendLine("------------------------------")
@@ -665,9 +681,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 // stop dumping pages because from now on we only dump the page numbers
                 SELF:_bag:_PageList:DumpHandle := IntPtr.Zero
                 DO WHILE nPage != 0 .AND. nPage != -1
-                    VAR oPage := SELF:GetPage(nPage) ASTYPE CdxTreePage
-                    IF oPage != NULL
-                        nPage := oPage:NextFree
+                    VAR oFree := SELF:GetPage(nPage) ASTYPE CdxTreePage
+                    IF oFree != NULL
+                        nPage := oFree:NextFree
                         sbFree:AppendLine("Next free : "+ nPage:ToString("X8"))
                     ELSE
                         EXIT

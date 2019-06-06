@@ -62,7 +62,7 @@ USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp.RDD.CDX
     [DebuggerDisplay("{DebuggerDisplay,nq}")];
-    INTERNAL CLASS CdxLeaf
+    INTERNAL SEALED CLASS CdxLeaf
         INTERNAL Recno  AS LONG
         INTERNAL Key    AS BYTE[]
         INTERNAL Trail  AS BYTE
@@ -181,7 +181,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             memset(SELF:Buffer,CDXLEAF_HEADERLEN,CDXLEAF_BYTESFREE,0)
             RETURN
 
-        PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
+        INTERNAL VIRTUAL METHOD Read() AS LOGIC
 			VAR Ok := SUPER:Read()
             System.Diagnostics.Debug.Assert (SELF:PageType:HasFlag(CdxPageType.Leaf))
             IF Ok
@@ -694,8 +694,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN CdxAction.Ok
             ENDIF
             VAR leaves  := SELF:_Leaves
-            LOCAL lastKey  := NULL AS BYTE[]
             SELF:InitBlank(SELF:Tag)
+            //LOCAL lastKey  := NULL AS BYTE[]
+
             LOCAL nKey   := 0 AS INT
             LOCAL nStart := CDXLEAF_HEADERLEN + SELF:Freespace AS WORD
             FOREACH Leaf AS CdxLeaf IN leaves
@@ -703,13 +704,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR nTrail := leaf:Trail
                 IF nKey == 0
                     nDup := 0
-                ELSE
-                    nDup     := SELF:_getDupCount(lastKey, leaf:Key, nTrail)
-                    IF nDup != leaf:Dup
-                        leaf:Dup := nDup
-                    ENDIF
+//                ELSE
+//                    nDup     := SELF:_getDupCount(lastKey, leaf:Key, nTrail)
+//                    IF nDup != leaf:Dup
+//                        leaf:Dup := nDup
+//                    ENDIF
                 ENDIF
-                lastKey  := Leaf:Key
+                //lastKey  := Leaf:Key
+
                 VAR nBytesToCopy := SELF:_keyLen - nDup - nTrail
                 IF SELF:Freespace < (SELF:DataBytes + nBytesToCopy)
                     VAR action := CdxAction.SplitLeaf(SELF, -1, NULL, 0)
@@ -744,51 +746,60 @@ BEGIN NAMESPACE XSharp.RDD.CDX
            NEXT
            RETURN (BYTE)  (data:Length - iLastTrail -1)
 
-        PRIVATE METHOD _getDupCount(prevdata AS BYTE[], data AS BYTE[], trailCount AS LONG) AS BYTE
+        PRIVATE UNSAFE METHOD _getDupCount(prevdata AS BYTE[], data AS BYTE[], trailCount AS LONG) AS BYTE
+           BEGIN UNCHECKED
            LOCAL last := data:Length - trailCount  AS LONG
            LOCAL dup AS LONG
-           FOR dup := 0 UPTO last -1 
-              IF data[dup] != prevdata[dup]
-                 EXIT
-              ENDIF
-           NEXT
+           BEGIN FIXED LOCAL pD := data AS BYTE PTR
+                BEGIN FIXED LOCAL pP := PrevData as BYTE PTR
+                    dup := 0
+                    DO WHILE dup < last
+                        if pD[dup] != pP[dup]
+                             EXIT
+                        ENDIF
+                        dup++
+                   ENDDO
+               END FIXED
+           END FIXED
            RETURN (BYTE) dup
+           END UNCHECKED
 
        PRIVATE METHOD _makeDupTrail(dupCount AS BYTE, trailCount AS BYTE) AS WORD
-            LOCAL w     := wordStruct{} AS wordStruct
-            LOCAL shift AS INT
-            shift := SELF:LenShift & 0xFF
-            w:b1 := (BYTE) dupCount << shift
-            w:b2 := trailCount
-            w:wordValue := w:wordValue << shift
-            RETURN w:WordValue
+            BEGIN UNCHECKED
+                LOCAL shift AS INT
+                shift := SELF:LenShift & 0xFF
+                wValue:b1 := (BYTE) dupCount << shift
+                wValue:b2 := trailCount
+                wValue:wordValue := wValue:wordValue << shift
+                RETURN wValue:WordValue
+            END UNCHECKED
 
 
        PRIVATE METHOD _getDupTrail(wData AS WORD, dupCount OUT BYTE, trailCount OUT BYTE) AS VOID
-            LOCAL w     := wordStruct{} AS wordStruct
             LOCAL shift AS INT
             shift := SELF:LenShift & 0xFF
-            w:wordValue := wData >> shift
-            trailCount := w:b2
-            dupCount   := w:b1 >> shift
+            wValue:wordValue := wData >> shift
+            trailCount := wValue:b2
+            dupCount   := wValue:b1 >> shift
             RETURN 
             
 
        PRIVATE METHOD _placeRecno(nIndex AS INT, recno AS LONG, dupLen AS WORD) AS VOID
-            LOCAL nOffset AS LONG
-            LOCAL nValue := LongStruct{} AS LongStruct
-            nOffSet           := CDXLEAF_HEADERLEN + nIndex * SELF:DataBytes
-            nValue:LongValue  := recno
-	        buffer[nOffSet]   :=  nValue:b1
-            buffer[nOffSet+1] :=  nValue:b2  
-            buffer[nOffSet+2] :=  nValue:b3
-            IF SELF:DataBytes > 3
-                buffer[nOffSet+3] :=  nValue:b4
-            ENDIF
-            nOffSet := nOffSet + SELF:DataBytes - 2
-            LOCAL wValue := _GetWord(nOffSet) AS WORD
-            wValue |= dupLen
-            _SetWord(nOffSet , wValue)
+            BEGIN UNCHECKED
+                LOCAL nOffset AS LONG
+                nOffSet           := CDXLEAF_HEADERLEN + nIndex * SELF:DataBytes
+                liValue:LongValue  := recno
+	            buffer[nOffSet]   :=  liValue:b1
+                buffer[nOffSet+1] :=  liValue:b2  
+                buffer[nOffSet+2] :=  liValue:b3
+                IF SELF:DataBytes > 3
+                    buffer[nOffSet+3] :=  liValue:b4
+                ENDIF
+                nOffSet := nOffSet + SELF:DataBytes - 2
+                LOCAL wValue := _GetWord(nOffSet) AS WORD
+                wValue |= dupLen
+                _SetWord(nOffSet , wValue)
+            END UNCHECKED
             RETURN
 
 

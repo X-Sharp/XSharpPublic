@@ -20,7 +20,7 @@ USING System.Runtime.CompilerServices
 USING System.Diagnostics
 BEGIN NAMESPACE XSharp.RDD.CDX
     [DebuggerDisplay("{DebuggerDisplay,nq}")];
-    INTERNAL CLASS CdxBranch
+    INTERNAL SEALED CLASS CdxBranch
         INTERNAL Recno AS LONG
         INTERNAL ChildPage AS LONG
         INTERNAL Key   AS BYTE[]
@@ -53,11 +53,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 This node always contains the index key, record number and intra-index pointer.2
                 The key/four-byte hexadecimal number combinations will occur the number of times indicated in bytes 02 ? 03.
     */
-    INTERNAL CLASS CdxBranchPage INHERIT CdxTreePage 
-        PROTECTED _keyLen    AS Int32
-        PROTECTED _dataLen   as Int32
-        protected _pageNoOffSet as Int32
-        PROTECTED _maxKeys   AS Int32
+    INTERNAL SEALED CLASS CdxBranchPage INHERIT CdxTreePage 
+        PRIVATE _keyLen    AS Int32
+        PRIVATE _dataLen   as Int32
+        PRIVATE _pageNoOffSet as Int32
+        PRIVATE _maxKeys   AS Int32
         PRIVATE   _numKeys   AS WORD
         PRIVATE   _leftPtr   AS LONG
         PRIVATE   _rightPtr  AS LONG
@@ -85,14 +85,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
             
             //? "Branch Page", SELF:PageNo:ToString("X"), SELF:NumKeys, "Startswith ", GetRecno(0), _bag:_oRDD:_Encoding:GetString(GetKey(0),0,_keyLen)
-        INTERNAL VIRTUAL METHOD InitBlank(oTag AS CdxTag) AS VOID
+        INTERNAL METHOD InitBlank(oTag AS CdxTag) AS VOID
             SELF:PageType   := CdxPageType.Branch
             SELF:NumKeys    := 0
             SELF:LeftPtr    := SELF:RightPtr   := -1
             SELF:Tag        := oTag
             RETURN
 
-        PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
+        INTERNAL METHOD Read() AS LOGIC
             LOCAL lOk AS LOGIC
             lOk := SUPER:Read()
             IF lOk

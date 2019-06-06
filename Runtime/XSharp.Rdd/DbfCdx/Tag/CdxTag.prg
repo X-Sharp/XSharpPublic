@@ -17,7 +17,7 @@ USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.RDD.CDX
 
-    DELEGATE CompareFunc(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
+    INTERNAL DELEGATE CompareFunc(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
 
 
     [DebuggerDisplay("Tag: {OrderName}, Key: {Expression}, For: {Condition}")];

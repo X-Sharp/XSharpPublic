@@ -37,9 +37,7 @@ BEGIN NAMESPACE XSharp.RDD
         METHOD Continue()		AS LOGIC
             RETURN SUPER:Continue()
             
-         /// <inheritdoc />
-        METHOD CreateFields(aFields AS RddFieldInfo[]) AS LOGIC
-            RETURN SUPER:CreateFields(aFields)
+
             
          /// <inheritdoc />
         METHOD DbEval(info AS DbEvalInfo) AS LOGIC

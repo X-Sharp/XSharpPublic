@@ -78,19 +78,7 @@ BEGIN NAMESPACE XSharp.RDD
         MEMBER CP_INI_MAC_EEUROPEAN     := 10029 // Macintosh EE
     END ENUM
     
-    /// <summary>DBF Field flags.</summary>                            
-    [Flags];
-    ENUM DBFFieldFlags AS BYTE
-        MEMBER None             := 0x00
-        MEMBER System           := 0x01
-        MEMBER Nullable         := 0x02
-        MEMBER Binary           := 0x04
-        MEMBER AutoIncrementing := 0x08
-        MEMBER Compressed       := 0x10
-        MEMBER Encrypted        := 0x20
-        MEMBER Unicode          := 0x40
-        
-    END ENUM
+
     
     /// <summary>DBF Locking model.</summary>                            
     ENUM DbfLockingModel
@@ -123,7 +111,8 @@ BEGIN NAMESPACE XSharp.RDD
         MEMBER Flagship := 0x13
         MEMBER Flagship248 := 0x23
         MEMBER VisualFoxPro:=0x30
-        MEMBER VisualFoxProWithAutoIncrement:=0x31
+        MEMBER VisualFoxProAutoIncrement:=0x31
+        MEMBER VisualFoxProVarChar :=0x32
         MEMBER Flagship248WithDBV := 0x33
         MEMBER dBase4SQLTableNoMemo:=0x43
         MEMBER dBase4SQLSystemNoMemo:=0x63

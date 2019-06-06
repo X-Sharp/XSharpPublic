@@ -37,6 +37,7 @@ BEGIN NAMESPACE XSharp.RDD
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFNTX",  "XSharp.RDD.DBFNTX"})       // DBF + DBT + NTX
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFFPT",  "XSharp.RDD.DBFFPT"})       // DBF + FPT
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFCDX",  "XSharp.RDD.DBFCDX"})       // DBF + FPT + CDX
+            RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFVFP",  "XSharp.RDD.DBFVFP"})       // DBF + FPT + CDX + VFP fields
             //RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFMEMO", "XSharp.RDD.DBFMEMO"})      // DBF + NTX + DBV
             //RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFBLOB", "XSharp.RDD.DBFBLOB"})      // DBV only
             //RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFSMT",  "XSharp.RDD.DBFSMT"})       // DBF + SMT

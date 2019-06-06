@@ -6,6 +6,8 @@
 USING XSharp
 USING XSharp.RDD.Enums
 
+DEFINE _NULLFLAGS := "_NULLFLAGS" 
+
 // RecInfo defines
 /// <exclude />
 DEFINE DBRI_DELETED 	:= DbRecordInfo.DBRI_DELETED 

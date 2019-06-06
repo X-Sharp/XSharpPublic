@@ -359,8 +359,9 @@ PUBLIC OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
                 //SELF:_Header:DbfCodePage := DbfCodePage.CP_DBF_WIN_ANSI
 		SELF:_Header:Version := sig
 	ENDIF
-RETURN isOk
+    RETURN isOk
 
+   
 METHOD Open(info AS DbOpenInfo) AS LOGIC
 	LOCAL lOk AS LOGIC
 	lOk := SUPER:Open(info)

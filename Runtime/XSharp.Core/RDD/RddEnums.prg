@@ -536,7 +536,22 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		
 		
 	END ENUM
-	
+
+    /// <summary>DBF Field flags.</summary>                            
+    [Flags];
+    ENUM DBFFieldFlags AS BYTE
+        MEMBER None             := 0x00
+        MEMBER System           := 0x01
+        MEMBER Nullable         := 0x02
+        MEMBER Binary           := 0x04
+        MEMBER AutoIncrement    := 0x08
+        // Harbour additions
+        MEMBER Compressed       := 0x10
+        MEMBER Encrypted        := 0x20
+        MEMBER Unicode          := 0x40
+        
+    END ENUM
+
 	/// <summary>This enum specifies the various field types that can appear in DBF files.</summary>
 	ENUM DbFieldType AS BYTE
 		MEMBER Unknown		:= 0	
@@ -552,7 +567,39 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER Number    		:= 78  	 
         /// <summary>'O', is anybody using this ?</summary>
 		MEMBER VOObject		:= 79  	
-		// Extended Non Clipper Types in numerical order
+		// FoxPro types in 'Name' order
+
+        /// <summary>'W' = Blob 4 or 10 bytes</summary>
+		MEMBER Blob			:= 87
+        //MEMBER Character 		:= 67 	 
+        /// <summary> 'Y'	8 byte FOX Type</summary>
+		MEMBER Currency		:= 89
+        // MEMBER Date	 		:= 68 	 
+        /// <summary>'B'	FOX Type, also '8'</summary>
+		MEMBER Double		:= 66  	 
+        /// <summary>'T'	FOX Type can be 4 or 8 bytes</summary>
+		MEMBER DateTime		:= 84  	 
+        /// <summary>'F'	FOX Type, uses len and dec</summary>
+		MEMBER Float		:= 70  	 
+        /// <summary>'G' = Ole 4 or 10 bytes</summary>
+		MEMBER General		:= 71	 
+        /// <summary>'I'	FOX Type , autoInc</summary>
+		MEMBER Integer		:= 73  	 
+        /// <summary>'P'	FOX Type, 4 or 10 bytes</summary>
+        // MEMBER Logic   		:= 76
+        // MEMBER Number    		:= 78  	 
+		MEMBER Picture		:= 80  	 
+        /// <summary>'Q' = VarBinary , between 1 and 255 </summary>
+		MEMBER VarBinary		:= 81	 
+        /// <summary>'V' = Any/summary>
+		MEMBER VarChar      := 86	 
+
+        /// <summary>'0' = Null Flags
+        MEMBER NullFlags        := 48
+
+
+        // other types for Harbour will be supported later
+        /*
         /// <summary>'+' = AutoInc, 4 bytes</summary>
 		MEMBER AutoIncrement	:= 43	 
         /// <summary>'2'	2 byte int, autoInc</summary>
@@ -565,30 +612,11 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER ModTime		:= 61	 
         /// <summary>'@' = Timestamp 8 bytes</summary>
 		MEMBER TimeStamp		:= 64    
-        /// <summary>'B'	FOX Type, also '8'</summary>
-		MEMBER Double			:= 66  	 
-        /// <summary>'F'	FOX Type, uses len and dec</summary>
-		MEMBER Float			:= 70  	 
-        /// <summary>'G' = Ole 4 or 10 bytes</summary>
-		MEMBER Ole			:= 71	 
-        /// <summary>'I'	FOX Type , autoInc</summary>
-		MEMBER Integer		:= 73  	 
-        /// <summary>'P'	FOX Type, 4 or 10 bytes</summary>
-		MEMBER Picture		:= 80  	 
-        /// <summary>'Q' = VarLenghth , between 1 and 255 </summary>
-		MEMBER VarLength		:= 81	 
-        /// <summary>'T'	FOX Type can be 4 or 8 bytes</summary>
-		MEMBER DateTime		:= 84  	 
-        /// <summary>'V' = Any/summary>
-		MEMBER Any		    := 86	 
-        /// <summary>'W' = Blob 4 or 10 bytes</summary>
-		MEMBER Blob			:= 87	 
-        /// <summary> 'Y'	8 byte FOX Type</summary>
-		MEMBER Currency		:= 89  	
         /// <summary>'Z'	8 byte Currency</summary>
 		MEMBER CurrencyDouble	:= 90  	 
         /// <summary>'^' = RowVer, 8 bytes  </summary>
-		MEMBER RowVer			:= 94	 
+		MEMBER RowVer			:= 94
+        */
 	END	 ENUM
 	
 	/// <summary>This enum specifies the various code pages that can appear in DBF files.</summary>

@@ -348,6 +348,9 @@ FUNCTION DbCreate (   cName,  aStruct, cRddName , lNew,  cAlias, cDelim, lJustOp
     ELSE
         THROW Error.DataTypeError( __FUNCTION__, nameof(cRddName ), 3, { cRddName  } )
     ENDIF
+    IF ! lRetCode .and. RuntimeState.LastRDDError != NULL
+        THROW RuntimeState.LastRDDError
+    ENDIF
     RETURN lRetCode
     
     

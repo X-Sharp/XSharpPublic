@@ -112,10 +112,6 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             ENDIF
             RETURN SUPER:GetValue(nFldPos)
             
-            // Indicate if a Field is a Memo; Called by GetValue() in Parent Class
-            // At DbfFpt Level, TRUE for DbFieldType.Memo, DbFieldType.Picture, DbFieldType.Object
-        INTERNAL VIRTUAL METHOD _isMemoFieldType( fieldType AS DbFieldType ) AS LOGIC
-            RETURN ( ( fieldType == DbFieldType.Memo ) .OR. ( fieldType == DbFieldType.Picture ) .OR. ( fieldType == DbFieldType.Ole ) )
             /// <inheritdoc />
         VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
             LOCAL oResult AS OBJECT
@@ -334,9 +330,10 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             // And finally, put the Data Type
             // 0 : Picture (on MacOS); 1: Memo; 2 : Object
             LOCAL nType := 2 AS LONG
-            IF ( SELF:_oRdd:_FieldType( nFldPos ) == DbFieldType.Memo )
+            var column := SELF:_oRdd:_GetColumn(nFldPos)
+            IF ( column:FieldType == DbFieldType.Memo )
                 nType := 1
-            ELSEIF ( SELF:_oRdd:_FieldType( nFldPos ) == DbFieldType.Picture )
+            ELSEIF ( column:FieldType == DbFieldType.Picture )
                 nType := 0
             ENDIF
             LongToFox(nType, memoBlock,0)

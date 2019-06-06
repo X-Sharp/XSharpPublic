@@ -195,7 +195,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		PRIVATE CONST CDXTAGHEADER_KEYEXPRLEN     := 0x1fe	AS WORD		// Length of key expression incl zero terminator
 #endregion			
 
-        PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
+        INTERNAL VIRTUAL METHOD Read() AS LOGIC
             LOCAL lOk as LOGIC
             lOk := SUPER:Read()
             IF lOk

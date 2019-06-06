@@ -88,7 +88,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     END STRUCTURE
 
-    STATIC CLASS CdxHelpers
+    INTERNAL STATIC CLASS CdxHelpers
         STATIC METHOD ToAscii (SELF bytes AS BYTE[]) AS STRING
             RETURN ToAscii(bytes, FALSE)
 

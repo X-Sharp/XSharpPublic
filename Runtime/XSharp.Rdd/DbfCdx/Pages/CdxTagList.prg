@@ -16,13 +16,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	/// <summary>
 	/// The CdxTagList class is a special CdxLeaf. Its NodeAttribute must be Root + Leaf = TagList
 	/// </summary>
-	INTERNAL CLASS CdxTagList INHERIT CdxLeafPage
-        PROTECTED _tags AS List<CdxTag>
+	INTERNAL SEALED CLASS CdxTagList INHERIT CdxLeafPage
+        PRIVATE _tags AS List<CdxTag>
 
         INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS WORD)
             SUPER(bag, nPage, buffer, nkeyLen)
 
-	    PROTECTED INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , page AS CdxPage, keyLen AS WORD)
+	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , page AS CdxPage, keyLen AS WORD)
             SUPER(bag  , page:PageNo, page:Buffer, keyLen)
 
         INTERNAL METHOD ReadTags() AS List<CdxTag>
@@ -42,13 +42,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PROPERTY Tags AS IList<cdxTag> GET _tags
 
-        INTERNAL VIRTUAL METHOD Initialize(keyLength AS WORD) AS VOID
+        INTERNAL METHOD Initialize(keyLength AS WORD) AS VOID
             SUPER:Initialize(keyLength)
             _tags := List<CdxTag>{}
             SELF:PageType := CdxPageType.Leaf + CdxPageType.Root
             _bTrail := 0
 
-        METHOD Remove(oTag AS CdxTag) AS LOGIC
+        INTERNAL METHOD Remove(oTag AS CdxTag) AS LOGIC
             LOCAL found := FALSE AS LOGIC
             IF _Tags:Contains(oTag)
                 _tags:Remove(oTag)

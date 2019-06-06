@@ -111,7 +111,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         ABSTRACT PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
         ABSTRACT PUBLIC METHOD GetChildren as IList<LONG>
 
-         PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
+         INTERNAL VIRTUAL METHOD Read() AS LOGIC
             LOCAL lOk AS LOGIC
             lOk := SUPER:Read()
             IF lOk

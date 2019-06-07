@@ -46,7 +46,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SUPER:Initialize(keyLength)
             _tags := List<CdxTag>{}
             SELF:PageType := CdxPageType.Leaf + CdxPageType.Root
-            _bTrail := 0
+            SELF:TrailByte := 0
 
         INTERNAL METHOD Remove(oTag AS CdxTag) AS LOGIC
             LOCAL found := FALSE AS LOGIC

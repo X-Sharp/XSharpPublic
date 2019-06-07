@@ -14,62 +14,69 @@ BEGIN NAMESPACE XSharp.RDD
     CLASS DbfColumn inherit RDDFieldInfo
         INTERNAL NullBit   := -1 as LONG
         INTERNAL LengthBit := -1 as LONG
-        Internal Nullable   as LOGIC
         INTERNAL RDD        as XSharp.RDD.DBF
-        STATIC METHOD Create(oField REF DbfField, oRDD as XSharp.RDD.DBF) AS DbfColumn
-            SWITCH oField:Type
+
+        STATIC METHOD Create(oInfo as RDDFieldInfo, oRDD as XSharp.RDD.DBF) AS DbfColumn
+            // Commented out types are Harbour specific
+            SWITCH oInfo:FieldType
             CASE DBFieldType.Character   // C
             CASE DbFieldType.Varchar     // 'V'
-            CASE DbFieldType.VarBinary      // 'Q'
-                RETURN DbfCharacterColumn{oField,oRDD}
+            CASE DbFieldType.VarBinary   // 'Q'
+                RETURN DbfCharacterColumn{oInfo,oRDD}
             CASE DBFieldType.Date        // D
-                RETURN DbfDateColumn{oField,oRDD}
+                RETURN DbfDateColumn{oInfo,oRDD}
             CASE DBFieldType.Number      // N
             CASE DbFieldType.Float          // 'F'
-                RETURN DbfNumericColumn{oField,oRDD}
+                RETURN DbfNumericColumn{oInfo,oRDD}
             CASE DBFieldType.Memo        // M
-                RETURN DbfMemoColumn{oField,oRDD}
+                RETURN DbfMemoColumn{oInfo,oRDD}
             CASE DBFieldType.Logic       // L
-                RETURN DbfLogicColumn{oField,oRDD}
+                RETURN DbfLogicColumn{oInfo,oRDD}
             CASE DBFieldType.Integer    // 'I' 
             //CASE DBFieldType.Integer2   // '2' 
             //CASE DBFieldType.Integer4   // '4'
-                IF oField:Flags:HasFLag(DbfFieldFlags.AutoIncrement)
-                    RETURN DbfAutoIncrementColumn{oField,oRDD}
+                IF oInfo:IsAutoIncrement
+                    RETURN DbfAutoIncrementColumn{oInfo,oRDD}
                 ENDIF
-                RETURN DbfIntegerColumn{oField,oRDD}
+                RETURN DbfIntegerColumn{oInfo,oRDD}
             //CASE DbFieldType.AutoIncrement
-            //   RETURN DbfAutoIncrementColumn{oField}
+            //   RETURN DbfAutoIncrementColumn{oInfo}
             CASE DbFieldType.Double         // 'B'
             //CASE DbFieldType.Double8        // '8'
-                RETURN DBFDoubleColumn{oField,oRDD}
+                RETURN DBFDoubleColumn{oInfo,oRDD}
             CASE DbFieldType.Currency		// 'Y'
             //CASE DbFieldType.CurrencyDouble	// 'Z'
-                RETURN DbfCurrencyColumn{oField,oRDD}
+                RETURN DbfCurrencyColumn{oInfo,oRDD}
             //CASE DbFieldType.TimeStamp      // '@'
             //CASE DbFieldType.ModTime        // '='
             //CASE DbFieldType.RowVer         // '^'
-            //    RETURN DbfTimeStampColumn{oField}
+            //    RETURN DbfTimeStampColumn{oInfo}
             CASE DbFieldType.DateTime      // 'T'
-                RETURN DbfDateTimeColumn{oField,oRDD}
+                RETURN DbfDateTimeColumn{oInfo,oRDD}
             CASE DbFieldType.Picture        // 'P'
             CASE DbFieldType.General        // 'G'
             CASE DbFieldType.Blob           // 'W'
-                RETURN DbfFoxMemoColumn{oField,oRDD}
+                RETURN DbfFoxMemoColumn{oInfo,oRDD}
             CASE DbFieldType.NullFlags
-                RETURN DbfNullColumn{oField,oRDD}
+                RETURN DbfNullColumn{oInfo,oRDD}
             CASE DbFieldType.VOObject       // 'O'
             CASE DbFieldType.Unknown        // 'O'
             OTHERWISE
-                RETURN DbfColumn{oField,oRDD}
+                RETURN DbfColumn{oInfo,oRDD}
             END SWITCH
 
-        PROTECTED CONSTRUCTOR(oField REF DbfField,oRDD as XSharp.RDD.DBF)
-            SUPER(oField:Name, oField:Type, oField:Len, oField:Dec)
-            SELF:Flags      := oField:Flags
-            SELF:Nullable   := oField:Flags:HasFlag(DbfFieldFlags.Nullable)
+
+        STATIC METHOD Create(oField REF DbfField, oRDD as XSharp.RDD.DBF) AS DbfColumn
+            LOCAL oInfo as RDDFieldInfo
+            oInfo        := RddFieldInfo{oField:Name, oField:Type, oField:Len, oField:Dec, oField:Offset, oField:Flags}
+            RETURN DbfColumn.Create(oInfo, oRDD)
+
+
+        PROTECTED CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
+            SUPER(oInfo)
             SELF:RDD        := oRDD
             RETURN
+
 
         VIRTUAL METHOD InitValue(buffer as BYTE[]) AS VOID
             RETURN
@@ -89,20 +96,20 @@ BEGIN NAMESPACE XSharp.RDD
 
 
         METHOD IsNull() as LOGIC
-            IF SELF:Nullable .and. SELF:RDD:_NullColumn != NULL
+            IF SELF:IsNullable .and. SELF:RDD:_NullColumn != NULL
                 RETURN SELF:RDD:_NullColumn:GetBit(SELF:NullBit)
             ENDIF
             RETURN FALSE
 
         PROTECTED METHOD SetNullValue() AS LOGIC 
-            IF SELF:Nullable .and. SELF:RDD:_NullColumn != NULL
+            IF SELF:IsNullable .and. SELF:RDD:_NullColumn != NULL
                 SELF:RDD:_NullColumn:SetBit(SELF:NullBit, TRUE)
                 RETURN TRUE
             ENDIF
             RETURN FALSE
 
         PROTECTED METHOD ClearNullValue() AS VOID
-            IF SELF:Nullable .and. SELF:RDD:_NullColumn != NULL
+            IF SELF:IsNullable .and. SELF:RDD:_NullColumn != NULL
                 SELF:RDD:_NullColumn:SetBit(SELF:NullBit, FALSE)
             ENDIF
             RETURN 
@@ -111,81 +118,57 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN String.Empty
 
 
-        PROTECTED METHOD GetAsReal8 (oValue as OBJECT, r8Value OUT Real8) AS LOGIC 
-            IF oValue IS IFloat
-                r8Value := (Real8) (((IFloat) oValue):Value)
-                RETURN TRUE
-            ELSEIF oValue IS LONG
-                r8Value :=  (Real8) ((LONG) oValue)
-                RETURN TRUE
-            ELSEIF oValue IS System.Decimal
-                r8Value := (Real8) ((System.Decimal) oValue)
-                RETURN TRUE
-            ELSEIF oValue IS Real8
-                r8Value :=  ((REAL8)  oValue)
-                RETURN TRUE
+        PROTECTED METHOD GetNumber<T>(oValue as OBJECT, oResult OUT T) AS LOGIC WHERE T IS NEW()
+            LOCAL tc as TypeCode
+            IF oValue != NULL
+                tc := Type.GetTypeCode(oValue:GetType())
+                SWITCH tc
+                CASE TypeCode.SByte
+                CASE TypeCode.Int16
+                CASE TypeCode.Int32
+                CASE TypeCode.Int64
+                CASE TypeCode.Byte
+                CASE TypeCode.UInt16
+                CASE TypeCode.UInt32
+                CASE TypeCode.UInt64
+                CASE TypeCode.Decimal
+                CASE TypeCode.Double
+                CASE TypeCode.Single
+                    oResult := (T) Convert.ChangeType(oValue, typeof(T) )
+                    RETURN TRUE
+                CASE TypeCode.Object
+                    oResult := (T) Convert.ChangeType((((IFloat) oValue):Value), typeof(T) )
+                    RETURN TRUE
+                END SWITCH
             ENDIF
-            r8Value :=  0.0
+            oResult :=  T{}
             RETURN FALSE
-
-      PROTECTED METHOD GetAsLong (oValue as OBJECT, liValue OUT Long) AS LOGIC 
-            IF oValue IS IFloat
-                liValue := (Long) (((IFloat) oValue):Value)
-                RETURN TRUE
-            ELSEIF oValue IS LONG
-                liValue :=   ((LONG) oValue)
-                RETURN TRUE
-            ELSEIF oValue IS System.Decimal
-                liValue := (Long) ((System.Decimal) oValue)
-                RETURN TRUE
-            ELSEIF oValue IS Real8
-                liValue := (Long)  ((REAL8)  oValue)
-                RETURN TRUE
-            ENDIF
-            liValue :=  0
-            RETURN FALSE
-
-      PROTECTED METHOD GetAsCurrency (oValue as OBJECT, curValue OUT System.Decimal) AS LOGIC 
-            IF oValue IS IFloat
-                curValue := (System.Decimal) (((IFloat) oValue):Value)
-                RETURN TRUE
-            ELSEIF oValue IS LONG
-                curValue :=  (System.Decimal) ((LONG) oValue)
-                RETURN TRUE
-            ELSEIF oValue IS System.Decimal
-                curValue :=  ((System.Decimal) oValue)
-                RETURN TRUE
-            ELSEIF oValue IS Real8
-                curValue := (System.Decimal)  ((REAL8)  oValue)
-                RETURN TRUE
-            ENDIF
-            curValue :=  0
-            RETURN FALSE
-
 
     END CLASS
 
+
     CLASS DbfCharacterColumn INHERIT DbfColumn
-        INTERNAL VariableLength as LOGIC
-        INTERNAL Binary         AS LOGIC
-        CONSTRUCTOR (oField REF DbfField, oRDD as XSharp.RDD.DBF )
-            SUPER(oField, oRDD)
-            SELF:Length   += SELF:Decimals * 256
-			SELF:Decimals := 0
-            SELF:Binary   := SELF:Flags:HasFlag(DbfFieldFlags.Binary)
-            SELF:VariableLength := oField:Type:IsVarLength()
+
+         CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
+            SUPER(oInfo, oRDD)
+            IF SELF:Decimals != 0
+                SELF:Length         += SELF:Decimals * 256
+			    SELF:Decimals       := 0
+            ENDIF
             RETURN
 
-       VIRTUAL METHOD InitValue(buffer as BYTE[]) AS VOID
-            IF VariableLength
+       OVERRIDE METHOD InitValue(buffer as BYTE[]) AS VOID
+            IF SELF:IsVarLength
                 buffer[SELF:OffSet + SELF:Length-1] := 0
             ENDIF
             RETURN
 
+       OVERRIDE METHOD EmptyValue() AS OBJECT
+           RETURN String{ ' ', SELF:length }
 
-       VIRTUAL METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
+       OVERRIDE METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
             LOCAL str as STRING
-            IF SELF:Nullable
+            IF SELF:IsNullable
                 IF oValue == NULL
                     RETURN SELF:SetNullValue()
                 ENDIF
@@ -196,18 +179,19 @@ BEGIN NAMESPACE XSharp.RDD
             ELSEIF oValue IS String
                 str := (STRING) oValue
             ELSE
+                SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
                 RETURN FALSE
             ENDIF
-            IF str:Length < SELF:length .and. ! SELF:VariableLength
+            IF str:Length < SELF:length .and. ! SELF:IsVarLength
                 str := str:PadRight(SELF:length,' ')
             ENDIF
-            IF SELF:Binary
+            IF SELF:IsBinary
                 local nLen := Math.Min(SELF:Length, str:Length) AS LONG
                 System.Text.Encoding.@@Default:GetBytes(str, 0, nLen, buffer, SELF:Offset)
             ELSE
                 SELF:RDD:_Encoding:GetBytes(str, 0, SELF:Length, buffer, SELF:Offset)
             ENDIF
-            IF SELF:VariableLength
+            IF SELF:IsVarLength
                 IF SELF:RDD:_NullColumn != NULL
                     if str:Length >= SELF:Length
                         // we used all the bytes, so set the varlength bit to 0
@@ -234,12 +218,12 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:IsNull()
                 RETURN NULL
             ENDIF
-            IF SELF:Binary
+            IF SELF:IsBinary
                 result := System.Text.Encoding.@@Default:GetString(buffer, SELF:OffSet, SELF:Length)
             ELSE
                 result := SUPER:_GetValue(buffer)
             ENDIF
-            IF VariableLength
+            IF IsVarLength
                 LOCAL len AS LONG
                 len := SELF:Length
                 IF SELF:RDD:_NullColumn != NULL
@@ -261,9 +245,11 @@ BEGIN NAMESPACE XSharp.RDD
 
 
     END CLASS
+
     CLASS DbfDateColumn INHERIT DbfColumn
-        CONSTRUCTOR (oField REF DbfField, oRDD as XSharp.RDD.DBF )
-            SUPER(oField,oRDD)
+
+        CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
+            SUPER(oInfo,oRDD)
             RETURN
 
         OVERRIDE METHOD GetValue(buffer as BYTE[]) AS OBJECT
@@ -285,12 +271,15 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN result
 
-        VIRTUAL METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
-            IF SELF:Nullable
+        OVERRIDE METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
+            IF SELF:IsNullable
                 IF oValue == NULL
                     RETURN SELF:SetNullValue()
                 ENDIF
                 SELF:ClearNullValue()
+            ENDIF
+            IF oValue IS System.DateTime VAR dt
+                oValue := DbDate{dt:Year, dt:Month, dt:Day}
             ENDIF
             IF oValue IS IDate
                 local dValue as IDate
@@ -305,10 +294,11 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:RDD:_Encoding:GetBytes( str, 0, SELF:length, buffer, SELF:Offset )
                 RETURN TRUE
             ENDIF
+            SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
             RETURN FALSE
 
 
-        VIRTUAL METHOD EmptyValue(oRDD as XSharp.RDD.DBF) AS OBJECT
+        OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN DbDate{0,0,0}
 
         OVERRIDE METHOD Validate() AS LOGIC
@@ -318,8 +308,9 @@ BEGIN NAMESPACE XSharp.RDD
     END CLASS
 
     CLASS DbfLogicColumn INHERIT DbfColumn
-        CONSTRUCTOR (oField REF DbfField, oRDD as XSharp.RDD.DBF )
-            SUPER(oField,oRDD)
+
+        CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
+            SUPER(oInfo,oRDD)
             RETURN
 
         OVERRIDE METHOD GetValue(buffer as BYTE[]) AS OBJECT
@@ -344,8 +335,8 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN result
 
-       VIRTUAL METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
-            IF SELF:Nullable
+       OVERRIDE METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
+            IF SELF:IsNullable
                 IF oValue == NULL
                     RETURN SELF:SetNullValue()
                 ENDIF
@@ -355,17 +346,20 @@ BEGIN NAMESPACE XSharp.RDD
                 buffer[SELF:Offset] := IIF( (LOGIC)oValue, (BYTE)'T', (BYTE)'F' )
                 RETURN TRUE
             ENDIF
+            SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
             RETURN FALSE
 
-        VIRTUAL METHOD EmptyValue(oRDD as XSharp.RDD.DBF) AS OBJECT
+       OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN FALSE
+
        OVERRIDE METHOD Validate() AS LOGIC
             RETURN SELF:Length == 1  .AND.  SELF:Decimals == 0 
     END CLASS
 
     CLASS DbfNumericColumn INHERIT DbfColumn
-        CONSTRUCTOR (oField REF DbfField, oRDD as XSharp.RDD.DBF )
-            SUPER(oField,oRDD)
+
+    CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
+            SUPER(oInfo,oRDD)
             RETURN
 
         OVERRIDE METHOD GetValue(buffer as BYTE[]) AS OBJECT
@@ -384,15 +378,16 @@ BEGIN NAMESPACE XSharp.RDD
             result := DbFloat{r8, SELF:Length, SELF:Decimals}
             RETURN result
 
-      VIRTUAL METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
+      OVERRIDE METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
             LOCAL r8Value as REAL8
-            IF SELF:Nullable
+            IF SELF:IsNullable
                 IF oValue == NULL
                     RETURN SELF:SetNullValue()
                 ENDIF
                 SELF:ClearNullValue()
             ENDIF
-            IF ! SELF:GetAsReal8(oValue, OUT r8Value)
+            IF ! SELF:GetNumber<REAL8>(oValue, OUT r8Value)
+                SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
                 RETURN FALSE
             ENDIF
             var numformat := SELF:RDD:_NumFormat
@@ -412,7 +407,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN TRUE
 
-        VIRTUAL METHOD EmptyValue(oRDD as XSharp.RDD.DBF) AS OBJECT
+        OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN DbFloat{0.0, SELF:Length, SELF:Decimals}
 
        OVERRIDE METHOD Validate() AS LOGIC
@@ -432,11 +427,11 @@ BEGIN NAMESPACE XSharp.RDD
     END CLASS
 
     CLASS DbfMemoColumn INHERIT DbfColumn
-        INTERNAL Binary         AS LOGIC
-        CONSTRUCTOR (oField REF DbfField, oRDD as XSharp.RDD.DBF )
-            SUPER(oField,oRDD)
-            SELF:Binary   := SELF:Flags:HasFlag(DbfFieldFlags.Binary)
+
+        CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
+            SUPER(oInfo,oRDD)
             RETURN
+
 
         OVERRIDE METHOD GetValue(buffer as BYTE[]) AS OBJECT
             local str as STRING
@@ -452,18 +447,18 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN result
 
-        VIRTUAL METHOD InitValue(buffer as BYTE[]) AS VOID
+        OVERRIDE METHOD InitValue(buffer as BYTE[]) AS VOID
             if SELF:Length == 4
                 var data := BitConverter.GetBytes((LONG) 0)
                 Array.Copy(data, 0, buffer, self:OffSet, self:Length)
             ENDIF
             RETURN
 
-        VIRTUAL METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
+        OVERRIDE METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
             // oValue is the memo block number
             RETURN FALSE
 
-        VIRTUAL METHOD EmptyValue(oRDD as XSharp.RDD.DBF) AS OBJECT
+        OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN 0
 
        OVERRIDE METHOD Validate() AS LOGIC
@@ -473,8 +468,9 @@ BEGIN NAMESPACE XSharp.RDD
     END CLASS
 
     CLASS DbfIntegerColumn INHERIT DbfColumn
-        CONSTRUCTOR (oField REF DbfField, oRDD as XSharp.RDD.DBF )
-            SUPER(oField,oRDD)
+
+        CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
+            SUPER(oInfo,oRDD)
             RETURN
 
         OVERRIDE METHOD GetValue(buffer as BYTE[]) AS OBJECT
@@ -491,7 +487,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN result
 
-        VIRTUAL METHOD InitValue(buffer as BYTE[]) AS VOID
+        OVERRIDE METHOD InitValue(buffer as BYTE[]) AS VOID
             if SELF:Length == 4
                 var data := BitConverter.GetBytes((LONG) 0)
                 Array.Copy(data, 0, buffer, self:OffSet, self:Length)
@@ -503,15 +499,16 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN
 
-        VIRTUAL METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
+        OVERRIDE METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
             LOCAL intValue as LONG
-            IF SELF:Nullable
+            IF SELF:IsNullable
                 IF oValue == NULL
                     RETURN SELF:SetNullValue()
                 ENDIF
                 SELF:ClearNullValue()
             ENDIF
-            IF ! SELF:GetAsLong(oValue, OUT intValue)
+            IF ! SELF:GetNumber<LONG>(oValue, OUT intValue)
+                SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
                 RETURN FALSE
             ENDIF
             IF SELF:Length == 4
@@ -524,7 +521,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN TRUE
 
 
-        VIRTUAL METHOD EmptyValue(oRDD as XSharp.RDD.DBF) AS OBJECT
+        OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN 0
 
        OVERRIDE METHOD Validate() AS LOGIC
@@ -535,16 +532,19 @@ BEGIN NAMESPACE XSharp.RDD
     CLASS DbfAutoIncrementColumn INHERIT DbfIntegerColumn
         INTERNAL IncrStep as LONG
         INTERNAL Counter  AS LONG
-        CONSTRUCTOR (oField REF DbfField, oRDD as XSharp.RDD.DBF )
-            SUPER(oField, oRDD)
-            SELF:IncrStep := oField:IncStep
-            SELF:Counter  := oField:Counter
+
+        CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
+            SUPER(oInfo,oRDD)
+            //SELF:IncrStep := oField:IncStep
+            //SELF:Counter  := oField:Counter
+
             RETURN
     END CLASS
 
     CLASS DbfDoubleColumn INHERIT DbfColumn
-        CONSTRUCTOR (oField REF DbfField, oRDD as XSharp.RDD.DBF )
-            SUPER(oField,oRDD)
+
+        CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
+            SUPER(oInfo,oRDD)
             RETURN
 
         OVERRIDE METHOD GetValue(buffer as BYTE[]) AS OBJECT
@@ -555,27 +555,28 @@ BEGIN NAMESPACE XSharp.RDD
             result := BitConverter.ToDouble(buffer, SELF:offset)
             RETURN DbFloat{result,-1,-1}
 
-        VIRTUAL METHOD InitValue(buffer as BYTE[]) AS VOID
+        OVERRIDE METHOD InitValue(buffer as BYTE[]) AS VOID
             var data := BitConverter.GetBytes((REAL8) 0)
             Array.Copy(data, 0, buffer, self:OffSet, self:Length)
             RETURN
 
-        VIRTUAL METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
+        OVERRIDE METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
             LOCAL r8Value as REAL8
-            IF SELF:Nullable
+            IF SELF:IsNullable
                 IF oValue == NULL
                     RETURN SELF:SetNullValue()
                 ENDIF
                 SELF:ClearNullValue()
             ENDIF
-            IF ! SELF:GetAsReal8(oValue, OUT r8Value)
+            IF ! SELF:GetNumber<REAL8>(oValue, OUT r8Value)
+                SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
                 RETURN FALSE
             ENDIF
             var data := BitConverter.GetBytes(r8Value)
             Array.Copy(data, 0, buffer, self:OffSet, self:Length)
             RETURN TRUE
 
-       VIRTUAL METHOD EmptyValue(oRDD as XSharp.RDD.DBF) AS OBJECT
+       OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN DbFLoat{0,-1,-1}
 
         OVERRIDE METHOD Validate() AS LOGIC
@@ -584,8 +585,9 @@ BEGIN NAMESPACE XSharp.RDD
 
  
     CLASS DbfCurrencyColumn INHERIT DbfColumn
-        CONSTRUCTOR (oField REF DbfField, oRDD as XSharp.RDD.DBF )
-            SUPER(oField,oRDD)
+
+        CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
+            SUPER(oInfo,oRDD)
             RETURN
 
         OVERRIDE METHOD GetValue(buffer as BYTE[]) AS OBJECT
@@ -599,16 +601,17 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN result
 
 
-        VIRTUAL METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
+        OVERRIDE METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
             LOCAL currValue as System.Decimal
             LOCAL i64Value as System.Int64
-            IF SELF:Nullable
+            IF SELF:IsNullable
                 IF oValue == NULL
                     RETURN SELF:SetNullValue()
                 ENDIF
                 SELF:ClearNullValue()
             ENDIF
-            IF ! SELF:GetAsCurrency(oValue, OUT currValue)
+            IF ! SELF:GetNumber<System.Decimal>(oValue, OUT currValue)
+                SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
                 RETURN FALSE
             ENDIF
             i64Value := currValue * (System.Decimal) (10^ self:Decimals)
@@ -617,7 +620,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN TRUE
 
 
-        VIRTUAL METHOD EmptyValue(oRDD as XSharp.RDD.DBF) AS OBJECT
+        OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN (Decimal) 0
             
         OVERRIDE METHOD Validate() AS LOGIC
@@ -625,17 +628,12 @@ BEGIN NAMESPACE XSharp.RDD
 
     END CLASS
 
-//    CLASS DbfTimeStampColumn INHERIT DbfColumn
-//        CONSTRUCTOR (oField REF DbfField)
-//            SUPER(oField)
-//            RETURN
-//
-//    END CLASS
-//
     CLASS DbfDateTimeColumn INHERIT DbfColumn
-        CONSTRUCTOR (oField REF DbfField, oRDD as XSharp.RDD.DBF )
-            SUPER(oField,oRDD)
+
+        CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
+            SUPER(oInfo,oRDD)
             RETURN
+
         INTERNAL METHOD _julianToDateTime(julian AS LONG) AS System.DateTime
             var jd := (Real8) julian
             var z  := Math.Floor(jd + 0.5)
@@ -708,10 +706,10 @@ BEGIN NAMESPACE XSharp.RDD
 		    endif
             return ijulian
             
-        VIRTUAL METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
+        OVERRIDE METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
             local dt as DateTime
             local empty as logic
-            IF SELF:Nullable
+            IF SELF:IsNullable
                 IF oValue == NULL
                     RETURN SELF:SetNullValue()
                 ENDIF
@@ -726,6 +724,7 @@ BEGIN NAMESPACE XSharp.RDD
                 dt := DateTime{oDate:Year, oDate:Month, oDate:Day}
                 empty := oDate:IsEmpty
             ELSE
+                SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
                 return FALSE
             ENDIF
             if empty
@@ -742,13 +741,13 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN TRUE
 
 
-        VIRTUAL METHOD InitValue(buffer as BYTE[]) AS VOID
+        OVERRIDE METHOD InitValue(buffer as BYTE[]) AS VOID
             var data := BitConverter.GetBytes((LONG) 0)
             Array.Copy(data, 0, buffer, self:OffSet, 4)
             Array.Copy(data, 0, buffer, self:OffSet+4, 4)
             RETURN
 
-        VIRTUAL METHOD EmptyValue(oRDD as XSharp.RDD.DBF) AS OBJECT
+        OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN DateTime.MinValue
 
         OVERRIDE METHOD Validate() AS LOGIC
@@ -757,8 +756,9 @@ BEGIN NAMESPACE XSharp.RDD
     END CLASS
 
     CLASS DbfFoxMemoColumn INHERIT DbfColumn
-        CONSTRUCTOR (oField REF DbfField, oRDD as XSharp.RDD.DBF )
-            SUPER(oField,oRDD)
+
+        CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
+            SUPER(oInfo,oRDD)
             RETURN
 
        OVERRIDE METHOD GetValue(buffer as BYTE[]) AS OBJECT
@@ -766,14 +766,14 @@ BEGIN NAMESPACE XSharp.RDD
             result := BuffToLong(buffer, SELF:OffSet)
             RETURN result
 
-        VIRTUAL METHOD InitValue(buffer as BYTE[]) AS VOID
+        OVERRIDE METHOD InitValue(buffer as BYTE[]) AS VOID
             var data := BitConverter.GetBytes((LONG) 0)
             Array.Copy(data, 0, buffer, self:OffSet, self:Length)
             RETURN
 
-        VIRTUAL METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
+        OVERRIDE METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
             // Todo oValue = the block number
-            IF SELF:Nullable
+            IF SELF:IsNullable
                 IF oValue == NULL
                     RETURN SELF:SetNullValue()
                 ENDIF
@@ -781,7 +781,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF 
             RETURN FALSE
 
-        VIRTUAL METHOD EmptyValue(oRDD as XSharp.RDD.DBF) AS OBJECT
+        OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN NULL
 
     END CLASS
@@ -789,13 +789,14 @@ BEGIN NAMESPACE XSharp.RDD
     CLASS DbfNullColumn INHERIT DbfColumn
         PRIVATE bitArray as System.Collections.BitArray
         PRIVATE data     as Byte[]
-        CONSTRUCTOR (oField REF DbfField, oRDD as XSharp.RDD.DBF )
-            SUPER(oField,oRDD)
+
+        CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
+            SUPER(oInfo,oRDD)
             data    := byte[]{SELF:Length}
             bitArray:= System.Collections.BitArray{data}
             RETURN
 
-       VIRTUAL METHOD InitValue(buffer as BYTE[]) AS VOID
+       OVERRIDE METHOD InitValue(buffer as BYTE[]) AS VOID
             self:bitArray:SetAll(FALSE)
             SELF:PutValue(0, buffer)
             RETURN
@@ -806,7 +807,7 @@ BEGIN NAMESPACE XSharp.RDD
             bitArray:= System.Collections.BitArray{data}
             RETURN NULL
 
-        VIRTUAL METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
+        OVERRIDE METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
             // Write the bits to the buffer, ignore oValue
             SELF:BitArray:CopyTo(data, 0)
             System.Array.Copy(data, 0, buffer, SELF:Offset, SELF:Length)

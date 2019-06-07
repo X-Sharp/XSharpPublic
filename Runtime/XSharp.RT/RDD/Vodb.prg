@@ -300,6 +300,7 @@ STATIC METHOD Select(nNew AS DWORD,riOld REF USUAL) AS LOGIC
             aList:Add(cName)
         NEXT
         RETURN _RddList{aList:ToArray()}
+
     INTERNAL STATIC METHOD ArrayToFieldInfo(aStruct AS ARRAY) AS RddFieldInfo[]
         VAR oList := List<RddFieldInfo>{}
         FOREACH aField AS USUAL IN aStruct

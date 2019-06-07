@@ -11,6 +11,7 @@ USING System.Linq
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD
+    /// <summary>Class for DBF Column reading / writing </summary>
     CLASS DbfColumn inherit RDDFieldInfo
         INTERNAL NullBit   := -1 as LONG
         INTERNAL LengthBit := -1 as LONG
@@ -29,6 +30,9 @@ BEGIN NAMESPACE XSharp.RDD
             CASE DbFieldType.Float          // 'F'
                 RETURN DbfNumericColumn{oInfo,oRDD}
             CASE DBFieldType.Memo        // M
+            CASE DbFieldType.Picture        // 'P'
+            CASE DbFieldType.General        // 'G'
+            CASE DbFieldType.Blob           // 'W'
                 RETURN DbfMemoColumn{oInfo,oRDD}
             CASE DBFieldType.Logic       // L
                 RETURN DbfLogicColumn{oInfo,oRDD}
@@ -53,10 +57,6 @@ BEGIN NAMESPACE XSharp.RDD
             //    RETURN DbfTimeStampColumn{oInfo}
             CASE DbFieldType.DateTime      // 'T'
                 RETURN DbfDateTimeColumn{oInfo,oRDD}
-            CASE DbFieldType.Picture        // 'P'
-            CASE DbFieldType.General        // 'G'
-            CASE DbFieldType.Blob           // 'W'
-                RETURN DbfFoxMemoColumn{oInfo,oRDD}
             CASE DbFieldType.NullFlags
                 RETURN DbfNullColumn{oInfo,oRDD}
             CASE DbFieldType.VOObject       // 'O'
@@ -81,7 +81,7 @@ BEGIN NAMESPACE XSharp.RDD
         VIRTUAL METHOD InitValue(buffer as BYTE[]) AS VOID
             RETURN
 
-        PROTECTED METHOD _GetValue(buffer as BYTE[]) AS STRING
+        PROTECTED METHOD _GetString(buffer as BYTE[]) AS STRING
             // The default implementation returns the part of the buffer as a string
             RETURN SELF:RDD:_Encoding:GetString(buffer, SELF:OffSet, SELF:Length)
 
@@ -89,7 +89,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:IsNull()
                 RETURN NULL
             ENDIF
-            RETURN SELF:_GetValue(buffer)
+            RETURN SELF:_GetString(buffer)
 
         VIRTUAL METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
             RETURN FALSE
@@ -144,9 +144,12 @@ BEGIN NAMESPACE XSharp.RDD
             oResult :=  T{}
             RETURN FALSE
 
+        PROTECTED METHOD _PutString(buffer as BYTE[], strValue as STRING) AS VOID
+            SELF:RDD:_Encoding:GetBytes(strValue, 0, SELF:Length, buffer, SELF:Offset)
+
     END CLASS
 
-
+    /// <summary>Class for reading / writing String Columns</summary>
     CLASS DbfCharacterColumn INHERIT DbfColumn
 
          CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
@@ -189,7 +192,7 @@ BEGIN NAMESPACE XSharp.RDD
                 local nLen := Math.Min(SELF:Length, str:Length) AS LONG
                 System.Text.Encoding.@@Default:GetBytes(str, 0, nLen, buffer, SELF:Offset)
             ELSE
-                SELF:RDD:_Encoding:GetBytes(str, 0, SELF:Length, buffer, SELF:Offset)
+                SELF:_PutString(buffer, str)
             ENDIF
             IF SELF:IsVarLength
                 IF SELF:RDD:_NullColumn != NULL
@@ -221,7 +224,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:IsBinary
                 result := System.Text.Encoding.@@Default:GetString(buffer, SELF:OffSet, SELF:Length)
             ELSE
-                result := SUPER:_GetValue(buffer)
+                result := SUPER:_GetString(buffer)
             ENDIF
             IF IsVarLength
                 LOCAL len AS LONG
@@ -245,7 +248,7 @@ BEGIN NAMESPACE XSharp.RDD
 
 
     END CLASS
-
+    /// <summary>Class for reading / writing Date Columns</summary>
     CLASS DbfDateColumn INHERIT DbfColumn
 
         CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
@@ -258,7 +261,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:IsNull()
                 RETURN NULL
             ENDIF
-            str :=  SUPER:_GetValue(buffer)
+            str :=  SUPER:_GetString(buffer)
             IF String.IsNullOrWhiteSpace(str)
                 result := DbDate{0,0,0}
             ELSEIF str:Length == 8
@@ -291,7 +294,7 @@ BEGIN NAMESPACE XSharp.RDD
                     VAR dt := DateTime{dValue:Year, dValue:Month, dValue:Day}
                     str := dt:ToString( "yyyyMMdd" )
                 ENDIF
-                SELF:RDD:_Encoding:GetBytes( str, 0, SELF:length, buffer, SELF:Offset )
+                SELF:_PutString(buffer, str)
                 RETURN TRUE
             ENDIF
             SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
@@ -307,6 +310,7 @@ BEGIN NAMESPACE XSharp.RDD
 
     END CLASS
 
+    /// <summary>Class for reading / writing Logic Columns</summary>
     CLASS DbfLogicColumn INHERIT DbfColumn
 
         CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
@@ -319,7 +323,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:IsNull()
                 RETURN NULL
             ENDIF
-            str := SUPER:_GetValue(buffer)
+            str := SUPER:_GetString(buffer)
             IF String.IsNullOrEmpty(str)
                 result := FALSE
             ELSE
@@ -356,6 +360,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN SELF:Length == 1  .AND.  SELF:Decimals == 0 
     END CLASS
 
+    /// <summary>Class for reading / writing Numeric Columns</summary>
     CLASS DbfNumericColumn INHERIT DbfColumn
 
     CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
@@ -368,7 +373,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:IsNull()
                 RETURN NULL
             ENDIF
-            str := SUPER:_GetValue(buffer)
+            str := SUPER:_GetString(buffer)
             local r8 as Real8
             IF !String.IsNullOrEmpty(str)
                 r8 := Convert.ToDouble(_val(str))
@@ -386,7 +391,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
                 SELF:ClearNullValue()
             ENDIF
-            IF ! SELF:GetNumber<REAL8>(oValue, OUT r8Value)
+            IF ! SELF:GetNumber(oValue, OUT r8Value)
                 SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
                 RETURN FALSE
             ENDIF
@@ -399,9 +404,9 @@ BEGIN NAMESPACE XSharp.RDD
                 str := STRING{'*', length}
                 lDataWidthError := TRUE
             ELSE
-                str := str:PadLeft(length)
+                str := str:PadLeft(length,' ')
             ENDIF
-            SELF:RDD:_Encoding:GetBytes( str, 0, length, buffer, offset )
+            SELF:_PutString(buffer, str)
             IF lDataWidthError
                 SELF:RDD:_dbfError(ERDD_DATAWIDTH, EG_DATAWIDTH)
             ENDIF
@@ -426,6 +431,7 @@ BEGIN NAMESPACE XSharp.RDD
 
     END CLASS
 
+    /// <summary>Class for reading / writing Memo Columns. This class returns and writes the block numbers.</summary>
     CLASS DbfMemoColumn INHERIT DbfColumn
 
         CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
@@ -434,14 +440,15 @@ BEGIN NAMESPACE XSharp.RDD
 
 
         OVERRIDE METHOD GetValue(buffer as BYTE[]) AS OBJECT
+            // Read the Memo Block Number
             local str as STRING
             local result as Long
             IF SELF:IsNull()
                 RETURN NULL
             ENDIF
             if SELF:Length == 10
-                str := SUPER:_GetValue(buffer)
-                result := _Val(str)
+                str     := SUPER:_GetString(buffer)
+                result  := _Val(str)
             ELSE
                 result := BuffToLong(buffer, SELF:OffSet)
             ENDIF
@@ -456,7 +463,20 @@ BEGIN NAMESPACE XSharp.RDD
 
         OVERRIDE METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
             // oValue is the memo block number
-            RETURN FALSE
+            LOCAL intValue as LONG
+            IF ! SELF:GetNumber(oValue, OUT intValue)
+                SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
+                RETURN FALSE
+            ENDIF
+            IF SELF:Length == 4
+                var data := BitConverter.GetBytes(intValue)
+                Array.Copy(data, 0, buffer, self:OffSet, self:Length)
+            ELSE
+                LOCAL strValue as STRING
+                strValue := intValue:ToString():PadLeft(10,' ')
+                SELF:_PutString(buffer, strValue)
+            ENDIF
+            RETURN TRUE
 
         OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN 0
@@ -467,6 +487,7 @@ BEGIN NAMESPACE XSharp.RDD
 
     END CLASS
 
+    /// <summary>Class for reading / writing Integer Columns. </summary>
     CLASS DbfIntegerColumn INHERIT DbfColumn
 
         CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
@@ -507,7 +528,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
                 SELF:ClearNullValue()
             ENDIF
-            IF ! SELF:GetNumber<LONG>(oValue, OUT intValue)
+            IF ! SELF:GetNumber(oValue, OUT intValue)
                 SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
                 RETURN FALSE
             ENDIF
@@ -529,9 +550,10 @@ BEGIN NAMESPACE XSharp.RDD
 
     END CLASS
 
+    /// <summary>Class for reading / writing AutoIncrement Columns. </summary>
     CLASS DbfAutoIncrementColumn INHERIT DbfIntegerColumn
-        INTERNAL IncrStep as LONG
-        INTERNAL Counter  AS LONG
+        //INTERNAL IncrStep as LONG
+        //INTERNAL Counter  AS LONG
 
         CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
             SUPER(oInfo,oRDD)
@@ -541,6 +563,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN
     END CLASS
 
+    /// <summary>Class for reading / writing Double Columns. </summary>
     CLASS DbfDoubleColumn INHERIT DbfColumn
 
         CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
@@ -568,7 +591,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
                 SELF:ClearNullValue()
             ENDIF
-            IF ! SELF:GetNumber<REAL8>(oValue, OUT r8Value)
+            IF ! SELF:GetNumber(oValue, OUT r8Value)
                 SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
                 RETURN FALSE
             ENDIF
@@ -583,7 +606,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN SELF:Length == 8
     END CLASS
 
- 
+    /// <summary>Class for reading / writing Currency Columns. </summary>
     CLASS DbfCurrencyColumn INHERIT DbfColumn
 
         CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
@@ -610,7 +633,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
                 SELF:ClearNullValue()
             ENDIF
-            IF ! SELF:GetNumber<System.Decimal>(oValue, OUT currValue)
+            IF ! SELF:GetNumber(oValue, OUT currValue)
                 SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
                 RETURN FALSE
             ENDIF
@@ -628,6 +651,7 @@ BEGIN NAMESPACE XSharp.RDD
 
     END CLASS
 
+    /// <summary>Class for reading / writing DateTime Columns. </summary>
     CLASS DbfDateTimeColumn INHERIT DbfColumn
 
         CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
@@ -754,38 +778,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN SELF:Length == 8  .AND.  SELF:Decimals == 0 
 
     END CLASS
-
-    CLASS DbfFoxMemoColumn INHERIT DbfColumn
-
-        CONSTRUCTOR(oInfo as RddFieldInfo,oRDD as XSharp.RDD.DBF)
-            SUPER(oInfo,oRDD)
-            RETURN
-
-       OVERRIDE METHOD GetValue(buffer as BYTE[]) AS OBJECT
-            local result as Long
-            result := BuffToLong(buffer, SELF:OffSet)
-            RETURN result
-
-        OVERRIDE METHOD InitValue(buffer as BYTE[]) AS VOID
-            var data := BitConverter.GetBytes((LONG) 0)
-            Array.Copy(data, 0, buffer, self:OffSet, self:Length)
-            RETURN
-
-        OVERRIDE METHOD PutValue(oValue as OBJECT, buffer as BYTE[]) AS LOGIC
-            // Todo oValue = the block number
-            IF SELF:IsNullable
-                IF oValue == NULL
-                    RETURN SELF:SetNullValue()
-                ENDIF
-                SELF:ClearNullValue()
-            ENDIF 
-            RETURN FALSE
-
-        OVERRIDE METHOD EmptyValue() AS OBJECT
-            RETURN NULL
-
-    END CLASS
-
+    /// <summary>Class for reading / writing the Special Column for NULL values. </summary>
     CLASS DbfNullColumn INHERIT DbfColumn
         PRIVATE bitArray as System.Collections.BitArray
         PRIVATE data     as Byte[]

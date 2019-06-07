@@ -1129,6 +1129,10 @@ METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
     /// <inheritdoc />
 METHOD AddField(info AS RddFieldInfo) AS LOGIC
     LOCAL isOk AS LOGIC
+    // convert RddFieldInfo to DBFColumn
+    IF ! (info is DbfColumn)
+        info := DbfColumn.Create(info, SELF)
+    ENDIF
     isok := SUPER:AddField( info )
     IF isOk  .AND. info:IsMemo
         SELF:_HasMemo := TRUE

@@ -36,6 +36,10 @@
     <XSharpProjectversion>2.0.1.1</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
+    <NamedArgs>true</NamedArgs>
+    <StandardDefs />
+    <MemVar>false</MemVar>
+    <Undeclared>false</Undeclared>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectGuid>e83c6c8c-773f-4b01-a597-3d38398a9362</ProjectGuid>

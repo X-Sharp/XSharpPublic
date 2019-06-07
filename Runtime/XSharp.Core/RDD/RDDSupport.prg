@@ -422,43 +422,53 @@ CLASS RddFieldInfo
 	PUBLIC Length 		AS LONG
 	PUBLIC Decimals 	AS LONG
 	PUBLIC Alias 		AS STRING
-    PUBLIC Flags        as DbfFieldFlags
-	PROTECTED iOffset   AS LONG
+    	PUBLIC Flags        as DbfFieldFlags
+	PUBLIC Offset       AS LONG
     
      /// <summary>Construct a RddFieldInfo object.</summary>
-	CONSTRUCTOR(sName AS STRING, sType AS STRING, nLength AS LONG, nDecimals AS LONG)
+	CONSTRUCTOR(sName AS STRING, sType AS STRING, nLength AS LONG, nDecimals AS LONG, nOffSet := -1 AS LONG)
 		Name 		:= sName
 		Length 		:= nLength
 		Decimals 	:= nDecimals
-        Flags       := DbfFieldFlags.None
+        	Flags       := DbfFieldFlags.None
 		IF !String.IsNullOrEmpty(sType)
 			FieldType := (DbFieldType) Char.ToUpper(sType[0])
+			IF sType:IndexOf("0",1) >= 0
+			    Flags |= DbfFieldFlags.Nullable
+			ENDIF
+			IF FieldType:IsBinary() .or. sType:IndexOf("B", 1) >= 0
+			    Flags |= DbfFieldFlags.Binary
+			ENDIF
 		ELSE
 			FieldType := DBFieldType.Unknown
 		ENDIF
-        IF sType:Length > 1 .and. sType[1] == '0'
-            Flags |= DbfFieldFlags.Nullable
-        ENDIF
-        IF FieldType:IsBinary()
-            Flags |= DbfFieldFlags.Binary
-        ENDIF
-        IF String.Compare(Name, _NULLFLAGS, TRUE) == 0
-            Flags |= DbfFieldFlags.System
-            Flags |= DbfFieldFlags.Binary
-        ENDIF
+		IF String.Compare(Name, _NULLFLAGS, TRUE) == 0
+		    Flags |= DbfFieldFlags.System
+		    Flags |= DbfFieldFlags.Binary
+		ENDIF
 		Alias       := sName
-		SELF:iOffset := -1
+		SELF:Offset := nOffSet
 		RETURN
     /// <summary>Construct a RddFieldInfo object.</summary>        
-	CONSTRUCTOR(sName AS STRING, nType AS DbFieldType, nLength AS LONG, nDecimals AS LONG)
-		Name 		:= sName                                
-		FieldType 	:= nType
-		Length 		:= nLength
-		Decimals 	:= nDecimals
-		Alias       := sName
-		SELF:iOffset := -1
+	CONSTRUCTOR(sName AS STRING, nType AS DbFieldType, nLength AS LONG, nDecimals AS LONG, nOffSet := -1 AS LONG, nFlags := DbfFieldFlags.None as DbfFieldFlags)
+		SELF:Name 		:= sName                                
+		SELF:FieldType 	:= nType
+		SELF:Length 	:= nLength
+		SELF:Decimals 	:= nDecimals
+		SELF:Alias      := sName
+		SELF:Offset     := nOffSet
+        	SELF:Flags      := nFLags
 		RETURN
 
+    CONSTRUCTOR(oInfo as RddFieldInfo)
+ 		SELF:Name 		:= oInfo:Name                                
+		SELF:FieldType 	:= oInfo:FieldType
+		SELF:Length 	:= oInfo:Length
+		SELF:Decimals 	:= oInfo:Decimals
+		SELF:Alias      := oInfo:Alias
+		SELF:Flags      := oInfo:Flags
+		SELF:OffSet     := oInfo:OffSet
+       
     /// <summary>Clone a RddFieldInfo object.</summary>        
 	METHOD Clone() AS RddFieldInfo
         VAR info := (RddFieldInfo) SELF:MemberwiseClone()
@@ -468,27 +478,21 @@ CLASS RddFieldInfo
     METHOD SameType(oFld AS RDDFieldInfo) AS LOGIC
         RETURN SELF:FieldType == oFld:FieldType .AND. SELF:Length == oFld:Length .AND. SELF:Decimals == oFld:Decimals
 
-    PROPERTY Offset AS LONG
-		GET
-			RETURN SELF:iOffset
-		END GET
-		INTERNAL SET
-			SELF:iOffset := VALUE
-		END SET
-	END PROPERTY
     VIRTUAL METHOD Validate() as LOGIC
         RETURN TRUE
 
     OVERRIDE METHOD ToString() AS STRING
-        RETURN "Field '"+SELF:Name+"' ('"+SELF:FieldTypeStr+"',"+Self:Length:ToString()+","+SELF:Decimals:ToString()+")"
+        RETURN SELF:Name+" ('"+SELF:FieldTypeStr+"',"+Self:Length:ToString()+","+SELF:Decimals:ToString()+")"
 
     PROPERTY FieldTypeStr AS STRING GET ((CHAR) SELF:FieldType):ToString()
     PROPERTY IsMemo      as LOGIC GET SELF:FieldType:IsMemo()
     PROPERTY IsBinary    as LOGIC GET SELF:FieldType:IsBinary()
     PROPERTY IsNullable  AS LOGIC GET SELF:Flags:HasFlag(DbfFieldFlags.Nullable)
+    PROPERTY IsAutoIncrement as LOGIC GET SELF:Flags:HasFLag(DbfFieldFlags.AutoIncrement)
     PROPERTY IsStandard  as LOGIC GET SELF:FieldType:IsStandard()
     PROPERTY IsVfp       AS LOGIC GET SELF:FieldType:IsVfp()
     PROPERTY IsVarLength AS LOGIC GET SELF:FieldType:IsVarLength()
+
 END CLASS
 
 

@@ -22,8 +22,10 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 	PUBLIC CLASS TestDbfNtx
 
         METHOD InitTest() AS VOID
-            //LOCAL d := __Date{0,0,0} AS __Date
+           // the next line ensures that we have included XSharp.RT as reference
+            LOCAL d := __Date{0,0,0} AS __Date
             SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))
+
             RETURN
 	
 		[Fact, Trait("DbfNtx", "Create")];

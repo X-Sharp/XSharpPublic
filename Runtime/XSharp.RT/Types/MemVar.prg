@@ -21,24 +21,25 @@ INTERNAL CLASS XSharp.MemVarLevel
 		Depth       := nDepth
 		RETURN
 
-	METHOD Add(variable AS MEMVAR) AS VOID
-#ifdef DEBUG
+	METHOD Add(variable AS XSharp.MemVar) AS VOID
 		variable:Level := SELF
-#endif
 		Variables:Add(variable:Name, variable)
 		RETURN
 		
 	METHOD ContainsKey(cName AS STRING) AS LOGIC
 		RETURN Variables:ContainsKey(cName) 
 		
-	METHOD TryGetValue(cName AS STRING, VALUE OUT MEMVAR) AS LOGIC
-		RETURN Variables:TryGetValue(cName, OUT VALUE)
+	METHOD TryGetValue(cName AS STRING, oMemVar OUT XSharp.MemVar) AS LOGIC
+		RETURN Variables:TryGetValue(cName, OUT oMemVar )
 	
-	PROPERTY SELF[Name AS STRING] AS MEMVAR
+	METHOD Remove(cName AS STRING) AS LOGIC
+		RETURN Variables:Remove(cName)
+
+	PROPERTY SELF[Name AS STRING] AS XSharp.MemVar
 		GET                     
-			LOCAL memvar AS MEMVAR
-			IF Variables:TryGetValue(name, OUT MEMVAR)
-				RETURN MEMVAR
+			LOCAL oMemVar AS XSharp.MemVar
+			IF Variables:TryGetValue(name, OUT oMemVar)
+				RETURN oMemVar
 			ENDIF
 			RETURN NULL
 		END GET
@@ -97,9 +98,7 @@ PUBLIC CLASS XSharp.MemVar
   	PUBLIC PROPERTY Name 	AS STRING AUTO
     /// <summary>Value of the memory variable. The default is NIL for PRIVATEs and FALSE for PUBLICs.</summary>
   	PUBLIC PROPERTY @@Value AS USUAL AUTO
-#ifdef DEBUG
   	INTERNAL Level	AS MemVarLevel
-#endif
 	CONSTRUCTOR (cName AS STRING, uValue AS USUAL)
 	  	SELF:Name := cName:ToUpper()
 	  	SELF:Value := uValue
@@ -116,8 +115,8 @@ PUBLIC CLASS XSharp.MemVar
 		IF Privates:Count() == 0 .OR. Privates:Peek():Depth < Depth
 			Privates:Push( MemVarLevel{ Depth })
 		ENDIF   
-		
-	/// <exclude />
+
+    
 	STATIC METHOD ReleasePrivates(nLevel AS INT) AS LOGIC
 		DO WHILE Privates:Count > 0 .AND. Privates:Peek():Depth >= nLevel
 			Privates:Pop()
@@ -125,47 +124,55 @@ PUBLIC CLASS XSharp.MemVar
 		Depth --
 		RETURN TRUE
 		
-	/// <exclude />
+	
 	STATIC METHOD GetHigherLevelPrivate(name AS STRING) AS XSharp.MemVar
 		FOREACH VAR previous IN privates    
-			LOCAL memvar AS MEMVAR
-			IF previous!= current .AND. previous:TryGetValue(name, OUT MEMVAR)
-				RETURN MEMVAR
+			LOCAL oMemVar AS XSharp.MemVar
+			IF previous!= current .AND. previous:TryGetValue(name, OUT oMemVar)
+				RETURN oMemVar
 			ENDIF   
 		NEXT		
 		RETURN NULL	
 
-    /// <exclude />
+    
 	STATIC METHOD PrivatePut(name AS STRING, VALUE AS USUAL) AS LOGIC
 		CheckCurrent()      
-		LOCAL memvar AS MEMVAR
-		IF current:TryGetValue(name, OUT MEMVAR)
-			MEMVAR:Value := VALUE
+		LOCAL oMemVar AS XSharp.MemVar
+		IF current:TryGetValue(name, OUT oMemVar)
+			oMemVar:Value := VALUE
 			RETURN TRUE			
 		ENDIF
-        MEMVAR := GetHigherLevelPrivate(name)
-        IF MEMVAR != NULL
-        	MEMVAR:Value := VALUE
+        oMemVar := GetHigherLevelPrivate(name)
+        IF oMemVar != NULL
+        	oMemVar:Value := VALUE
         	RETURN TRUE
         ENDIF
 		RETURN FALSE	
 
-	/// <exclude />		                                    
-	STATIC METHOD PrivateFind(name AS STRING) AS MEMVAR
-		LOCAL memvar AS MEMVAR
-		IF current != NULL .AND. current:TryGetValue(name, OUT MEMVAR)
-			RETURN MEMVAR
+	
+	STATIC METHOD PrivateFind(name AS STRING) AS XSharp.MemVar
+		LOCAL oMemVar AS XSharp.MemVar
+		IF current != NULL .AND. current:TryGetValue(name, OUT oMemVar)
+			RETURN oMemVar
 		ENDIF   
         RETURN GetHigherLevelPrivate(name)
-	/// <exclude />	
+
+	
 	STATIC METHOD Release(name AS STRING) AS VOID
-		// assign nil to visible private. Does not really release the variable.		
-		VAR Memvar := PrivateFind(name)
-		IF MEMVAR == NULL
-			MEMVAR := PublicFind(name)
+		// release variable
+		VAR oMemVar := PrivateFind(name)
+		IF oMemVar == NULL
+			oMemVar := PublicFind(name)
+            IF oMemVar != NULL
+                publics:Remove(oMemVar:Name)
+            ENDIF
+        ELSE
+            LOCAL level AS MemVarLevel
+            level := oMemVar:Level
+            level:Remove(oMemVar:Name)
 		ENDIF
-		IF MEMVAR != NULL
-			MEMVAR:Value := NIL
+		IF oMemVar != NULL
+			oMemVar:Value := NIL
 		ELSE
 			THROW Exception{"Variable "+name:ToString()+" does not exist"}
 		ENDIF
@@ -193,18 +200,18 @@ PUBLIC CLASS XSharp.MemVar
 		ENDIF
 	    RETURN _TempPrivates  
 	    
-    /// <exclude />
+    
 	STATIC METHOD PrivatesEnum(lCurrentOnly := FALSE AS LOGIC) AS IEnumerator<STRING>
 		RETURN _GetUniquePrivates(lCurrentOnly):GetEnumerator()
 
 
-    /// <exclude />
+    
  	STATIC METHOD PrivatesFirst(lCurrentOnly := FALSE AS LOGIC) AS STRING
 		_PrivatesEnum := PrivatesEnum(lCurrentOnly)
 		_PrivatesEnum:Reset()
 		RETURN PrivatesNext()
 
-    /// <exclude />
+    
 	STATIC METHOD PrivatesNext() AS STRING
 		IF _PrivatesEnum != NULL
 			IF _PrivatesEnum:MoveNext()
@@ -214,12 +221,12 @@ PUBLIC CLASS XSharp.MemVar
 		ENDIF                
 		RETURN NULL_STRING
 
-    /// <exclude />
+    
 	STATIC METHOD PrivatesCount(lCurrentOnly := FALSE AS LOGIC) AS INT   
 		RETURN _GetUniquePrivates(lCurrentOnly):Count
 		
 
-    /// <exclude />
+    
 	STATIC METHOD ReleaseAll() AS VOID
 		// Assign NIL to all currenly visible private variables
 		// Hidden privates are not affected
@@ -231,7 +238,7 @@ PUBLIC CLASS XSharp.MemVar
 #endregion   
 
 #region Generic - Public and Private
-    /// <exclude />
+    
 	STATIC METHOD Add(name AS STRING, _priv AS LOGIC) AS VOID
 		IF _priv    
 			CheckCurrent() 
@@ -246,10 +253,10 @@ PUBLIC CLASS XSharp.MemVar
 			    ENDIF
             END LOCK
 		ENDIF  
-    /// <exclude />
+    
 
 	STATIC METHOD Get(name AS STRING) AS USUAL 
-		LOCAL oMemVar AS MEMVAR
+		LOCAL oMemVar AS XSharp.MemVar
 		// privates take precedence over publics ?
 		oMemVar := PrivateFind(name)
 		IF oMemVar == NULL
@@ -259,10 +266,9 @@ PUBLIC CLASS XSharp.MemVar
 			RETURN oMemVar:Value
 		ENDIF            
 		THROW Error{"Undeclared variable :"+name:ToString()}
-    /// <exclude />
-
+    
 	STATIC METHOD Put(name AS STRING, VALUE AS USUAL) AS USUAL
-		LOCAL oMemVar AS MEMVAR
+		LOCAL oMemVar AS XSharp.MemVar
 		// assign to existing memvar first
 		// privates take precedence over publics ?
 		oMemVar := PrivateFind(name)
@@ -278,8 +284,9 @@ PUBLIC CLASS XSharp.MemVar
 			CheckCurrent()
 			Current:Add(MEMVAR{name,VALUE})
 		ENDIF    
-		RETURN VALUE 
-    /// <exclude />
+		RETURN VALUE
+
+    
 	STATIC METHOD ClearAll() AS VOID
 		// Remove all public and private variables   
 		// Does not clear the privates stack levels
@@ -290,14 +297,26 @@ PUBLIC CLASS XSharp.MemVar
 			level:Clear()
 		NEXT
 
+    STATIC METHOD Clear(name AS STRING) AS LOGIC
+	    // assign nil to visible private. Does not really release the variable.		
+		VAR oMemVar := PrivateFind(name)
+		IF oMemVar == NULL
+            oMemVar := PublicFind(name)
+		ENDIF
+        IF oMemVar != NULL
+			oMemVar:Value := NIL
+		ELSE
+			THROW Exception{"Variable "+name:ToString()+" does not exist"}
+		ENDIF
+		RETURN TRUE
 				
 #endregion	 
 
 #region Publics	
-    /// <exclude />
+    
 
-	STATIC METHOD PublicFind(name AS STRING) AS MEMVAR
-		LOCAL oMemVar AS MEMVAR
+	STATIC METHOD PublicFind(name AS STRING) AS XSharp.MemVar
+		LOCAL oMemVar AS XSharp.MemVar
         BEGIN LOCK Publics
 		    IF Publics:TryGetValue(name, OUT oMemVar)
 			    RETURN oMemVar
@@ -306,7 +325,7 @@ PUBLIC CLASS XSharp.MemVar
 		RETURN NULL
 		
 				
-    /// <exclude />
+    
 	STATIC METHOD PublicPut(name AS STRING, VALUE AS USUAL) AS LOGIC
 		VAR oMemVar := PublicFind(name)
 		IF oMemVar != NULL
@@ -317,20 +336,19 @@ PUBLIC CLASS XSharp.MemVar
 		ENDIF  
 		RETURN FALSE
 					
-    /// <exclude />
+    
 	STATIC METHOD PublicsEnum() AS IEnumerator<STRING>
         BEGIN LOCK Publics
 		    RETURN Publics:Keys:GetEnumerator()
         END LOCK
 
-    /// <exclude />
+    
 	STATIC METHOD PublicsFirst() AS STRING
 		_PublicsEnum := PublicsEnum()
 		_PublicsEnum:Reset()
 		RETURN PublicsNext()    
 		
-    /// <exclude />
-	STATIC METHOD PublicsNext() AS STRING
+    STATIC METHOD PublicsNext() AS STRING
 		IF _PublicsEnum != NULL
 			IF _PublicsEnum:MoveNext()
 				RETURN _PublicsEnum:Current
@@ -339,7 +357,7 @@ PUBLIC CLASS XSharp.MemVar
 		ENDIF                
 		RETURN NULL_STRING
 		
-    /// <exclude />
+    
 	STATIC METHOD PublicsCount() AS INT
         BEGIN LOCK Publics
 		    RETURN Publics:Count

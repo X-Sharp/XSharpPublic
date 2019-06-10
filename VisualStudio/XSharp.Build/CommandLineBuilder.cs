@@ -44,7 +44,7 @@ namespace XSharp.Build
             {
                 base.AppendSwitchIfNotNull(switchName, parameter);
                 if (fNewLine)
-                    this.AppendNewLine(); 
+                    this.AppendNewLine();
             }
         }
         public new void AppendSwitchIfNotNull(string switchName, ITaskItem parameter)
@@ -150,9 +150,13 @@ namespace XSharp.Build
         /// </summary>
         internal void AppendSwitchAliased(string switchName, string alias, string parameter)
         {
-            this.AppendSwitchUnquotedIfNotNull(switchName, alias + "=");
-            this.AppendTextWithQuoting(parameter);
-            this.AppendNewLine();
+            if (switchName != null)
+            {
+                base.AppendTextUnquoted(switchName);
+                base.AppendTextUnquoted(alias + "=");
+                base.AppendTextWithQuoting(parameter);
+                this.AppendNewLine();
+            }
         }
 
         /// <summary>
@@ -270,12 +274,12 @@ namespace XSharp.Build
                                 }
                             }
                         }
-                        this.AppendNewLine(); 
+                        this.AppendNewLine();
                     }
                 }
             }
 
-            
+
         }
     }
 

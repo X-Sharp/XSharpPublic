@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -265,7 +265,7 @@ FUNCTION Round(n AS USUAL,iDec AS INT) AS USUAL
             iDec := MAX_DECIMALS
         ENDIF
         
-        r8 := Math.Round( r8, iDec, MidpointRounding.AwayFromZero ) 
+        r8 := (REAL8) Math.Round( (System.Decimal) r8, iDec, MidpointRounding.AwayFromZero ) 
     ELSE   
         // Round before decimal point
         iDec := -iDec   

@@ -19,7 +19,7 @@
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <TargetFrameworkProfile />
     <NamedArgs />
-    <XSharpProjectversion>2.0.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.0.1.1</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs />
   </PropertyGroup>

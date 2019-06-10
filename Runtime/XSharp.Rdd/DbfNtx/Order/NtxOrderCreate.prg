@@ -48,6 +48,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 hasForCond := FALSE
             ENDIF
             SELF:_KeyExpr := createInfo:Expression
+            IF createInfo:Block != NULL
+                SELF:_KeyCodeBlock := createInfo:Block
+            ENDIF
             IF ordCondInfo != NULL .AND. ordCondInfo:ForExpression != NULL
                 SELF:_ForExpr := ordCondInfo:ForExpression
             ELSE

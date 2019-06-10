@@ -230,8 +230,8 @@ INTERNAL STATIC CLASS ArrayHelpers
 		IF cb == NULL
 			THROW Error.NullArgumentError( cFuncName, NAMEOF(cb),2)
 		ENDIF
-		DEFAULT( REF iStart, 1)
-		DEFAULT( REF iCount, ALen(aArray))
+		Default( REF iStart, 1)
+		Default( REF iCount, ALen(aArray))
 		IF ! iStart:IsNumeric
 			THROW Error.ArgumentError( cFuncName, NAMEOF(iStart), 3 , <OBJECT>{iStart})
 		ENDIF
@@ -250,25 +250,31 @@ INTERNAL STATIC CLASS ArrayHelpers
 		ELSE
 			RETURN FALSE
 		ENDIF
-		IF ! nCount:IsNumeric
-			nCount := nSize
-		ENDIF
-		IF ! nStart:IsNumeric
-			IF nCount < 0
-				nStart := nSize
-			ELSE
-				nStart := 1
-			ENDIF
-		ELSE
-			IF nStart > nSize
-				RETURN FALSE
-			ENDIF
-		ENDIF
 		
-		IF nCount < 0
-			nSize  := 1
-			nCount := -nCount
-		ENDIF
+		IF ! nCount:IsNumeric
+			IF ! nStart:IsNumeric
+				nStart := 1
+			END IF
+			nCount := ALen(aTarget) - nStart + 1
+		ELSE
+			IF nCount >= 0
+				IF ! nStart:IsNumeric
+					nStart := 1
+				ENDIF
+				IF nStart > nSize
+					RETURN FALSE
+				END IF
+			ELSE
+				IF ! nStart:IsNumeric
+					nStart := ALen(aTarget)
+				ENDIF
+				nSize := 1
+				nCount := - nCount
+				IF nStart < nSize
+					RETURN FALSE
+				END IF
+			END IF
+		END IF
 		RETURN TRUE
 
 	END CLASS
@@ -649,38 +655,34 @@ FUNCTION ArraySwap<T>(a AS __ArrayBase<T>,dwEl AS DWORD,u AS T) AS T  WHERE T IS
 /// <param name="nCount">The number fo elements the scan.</param>
 /// <returns>If uSearch is a code block then the functions returns the position of the first element for which the code block returns TRUE.  Otherwise it returns the position of the first matching element.  The function returns 0 if no match is found.</returns>
 FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart := NIL AS USUAL,nCount := NIL AS USUAL) AS DWORD
-    DEFAULT( REF nStart, 1 )
-    DEFAULT( REF nCount, Alen(aTarget) - nStart +1)
 	RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, nCount, SetExact()) 
 
 
 /// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart AS USUAL) AS DWORD 
-	RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, ALen(aTarget), SetExact()) 
+	RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, NIL, SetExact()) 
 
 
 /// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL) AS DWORD 
-	RETURN ArrayHelpers.Ascan( aTarget, uSearch, 1, ALen(aTarget), SetExact()) 
+	RETURN ArrayHelpers.Ascan( aTarget, uSearch, 1, NIL, SetExact()) 
 
 /// <summary>
 /// Scan an array until an exact match with a value is found or a code block returns TRUE.
 /// </summary>
 /// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart := NIL AS USUAL, nCount := NIL AS USUAL) AS DWORD
-    DEFAULT( REF nStart, 1 )
-    DEFAULT( REF nCount, Alen(aTarget) - nStart +1)
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, nCount, TRUE )
 
 
 /// <inheritdoc cref='M:XSharp.RT.Functions.AScanExact(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart AS USUAL) AS DWORD 
-	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, ALen(aTarget), TRUE )
+	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, NIL, TRUE )
 
 
 /// <inheritdoc cref='M:XSharp.RT.Functions.AScanExact(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL) AS DWORD 
-	RETURN ArrayHelpers.Ascan( aTarget, uSearch, 1, ALen(aTarget), TRUE )
+	RETURN ArrayHelpers.Ascan( aTarget, uSearch, 1, NIL, TRUE )
 
 	
 /// <summary>
@@ -991,7 +993,7 @@ FUNCTION AReplicate(x AS USUAL,nCount AS DWORD) AS ARRAY
 /// </returns>
 FUNCTION ASort(aArray AS ARRAY, startIndex := NIL AS USUAL,nCount := NIL AS USUAL,cbOrder := NIL AS USUAL) AS ARRAY 
 	LOCAL nLen AS DWORD
-	DEFAULT( REF startIndex, 1 )
+	Default( REF startIndex, 1 )
 	
 	nLen := ALen(aArray) 
 	IF nLen == 0 // Let it execute if nLen == 1, maybe the codeblock is important to be executed in this case for some (user) reason
@@ -999,7 +1001,7 @@ FUNCTION ASort(aArray AS ARRAY, startIndex := NIL AS USUAL,nCount := NIL AS USUA
 	END IF
 
 	EnforceNumeric( startIndex )
-	DEFAULT( REF nCount, nLen - startIndex + 1 )
+	Default( REF nCount, nLen - startIndex + 1 )
 	EnforceNumeric( nCount )
 	
 	// Note: ASort() in VO accepts arguments out of bounds and translates them this way:

@@ -393,7 +393,32 @@ namespace XSharp.Project
             }
             set
             {
-                this.SetProperty(ProjectFileConstants.SpecificVersion, value.ToString());
+                if (!value )
+                    this.SetProperty(ProjectFileConstants.SpecificVersion, null);
+                else
+                    this.SetProperty(ProjectFileConstants.SpecificVersion, value.ToString());
+            }
+        }
+
+
+        [SRCategoryAttribute(SR.Misc)]
+        [LocDisplayName(SR.Aliases)]
+        [SRDescriptionAttribute(SR.AliasesDescription)]
+        public string Aliases
+        {
+            get
+            {
+                string aliases = this.GetProperty(ProjectFileConstants.Aliases, "global");
+                if (String.IsNullOrEmpty(aliases))
+                    aliases = "global";
+                return aliases;
+            }
+            set
+            {
+                if (value == "global" || String.IsNullOrEmpty(value))
+                    this.SetProperty(ProjectFileConstants.Aliases, null);
+                else
+                    this.SetProperty(ProjectFileConstants.Aliases, value.ToString());
             }
         }
 

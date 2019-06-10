@@ -346,7 +346,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cDbf := GetTempFileName()
 			DBCreate(cDbf, {{"NFIELD","N",10,3}}, "DBFNTX", TRUE)
 			DBAppend()
-			FieldPut(1, "ABC")
+			FieldPut(1, 1.23)
 			
 			Assert.Equal("NFIELD",	DBFieldInfo( DBS_NAME , 1 ) ) // NullReferenceException
 			Assert.Equal("N",		DBFieldInfo( DBS_TYPE , 1 ) )

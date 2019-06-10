@@ -1,8 +1,7 @@
-DEFINE RT_MSG_DOSERR  := 0x4040
-DEFINE RT_MSG_ERR     := 0x4000
+/// <exclude />
 DEFINE OLEAUTO_ERROR_FIRST:= 5300
 /// <exclude />
-ENUM VOErrors
+ENUM XSharp.VOErrors
 #region EDB
 	MEMBER EDB       := 1000
 	MEMBER EDB_SEEK := ( EDB + 1 )
@@ -450,401 +449,782 @@ ENUM VOErrors
 #endregion TERMINAL	
 #region RT_MSG	
 	//RTMSG.H AND RTDEF.H IN VO
+    /// <summary>String ID for the month January</summary>
 	MEMBER RT_MSG_MONTH1      := 0x3000
+    /// <summary>String ID for the month February</summary>
 	MEMBER RT_MSG_MONTH2      := RT_MSG_MONTH1 +1
+    /// <summary>String ID for the month March</summary>
 	MEMBER RT_MSG_MONTH3      := RT_MSG_MONTH1 +2
+    /// <summary>String ID for the month April</summary>
 	MEMBER RT_MSG_MONTH4      := RT_MSG_MONTH1 +3
+    /// <summary>String ID for the month May</summary>
 	MEMBER RT_MSG_MONTH5      := RT_MSG_MONTH1 +4
+    /// <summary>String ID for the month June</summary>
 	MEMBER RT_MSG_MONTH6      := RT_MSG_MONTH1 +5
+    /// <summary>String ID for the month July</summary>
 	MEMBER RT_MSG_MONTH7      := RT_MSG_MONTH1 +6
+    /// <summary>String ID for the month August</summary>
 	MEMBER RT_MSG_MONTH8      := RT_MSG_MONTH1 +7
+    /// <summary>String ID for the month September</summary>
 	MEMBER RT_MSG_MONTH9      := RT_MSG_MONTH1 +8
+    /// <summary>String ID for the month October</summary>
 	MEMBER RT_MSG_MONTH10     := RT_MSG_MONTH1 +9
+    /// <summary>String ID for the month November</summary>
 	MEMBER RT_MSG_MONTH11     := RT_MSG_MONTH1 +10
+    /// <summary>String ID for the month December</summary>
 	MEMBER RT_MSG_MONTH12     := RT_MSG_MONTH1 +11
+    /// <summary>String ID for the day Sunday</summary>
 	MEMBER RT_MSG_DAY1        := RT_MSG_MONTH1 +12
+    /// <summary>String ID for the day Monday</summary>
 	MEMBER RT_MSG_DAY2        := RT_MSG_MONTH1 +13
+    /// <summary>String ID for the day Tuesday</summary>
 	MEMBER RT_MSG_DAY3        := RT_MSG_MONTH1 +14
+    /// <summary>String ID for the day Wednesday</summary>
 	MEMBER RT_MSG_DAY4        := RT_MSG_MONTH1 +15
+    /// <summary>String ID for the day Thursday</summary>
 	MEMBER RT_MSG_DAY5        := RT_MSG_MONTH1 +16
+    /// <summary>String ID for the day Friday</summary>
 	MEMBER RT_MSG_DAY6        := RT_MSG_MONTH1 +17
+    /// <summary>String ID for the day Saturday</summary>
 	MEMBER RT_MSG_DAY7        := RT_MSG_MONTH1 +18
+    /// <summary>String ID for the description of the Nation Table</summary>
 	MEMBER RT_MSG_INFOSTRING  := RT_MSG_MONTH1 +19
 	
 	MEMBER RT_MSG_LITERAL      := 0X2000
+    /// <summary>String ID for the short literal for TRUE</summary>
 	MEMBER RT_MSG_SHORT_TRUE   := RT_MSG_LITERAL + 1
+    /// <summary>String ID for the short literal for FALSE</summary>
 	MEMBER RT_MSG_SHORT_FALSE  := RT_MSG_LITERAL + 2
+    /// <summary>String ID for the long literal for TRUE</summary>
 	MEMBER RT_MSG_LONG_TRUE    := RT_MSG_LITERAL + 3
+    /// <summary>String ID for the long literal for FALSE</summary>
 	MEMBER RT_MSG_LONG_FALSE   := RT_MSG_LITERAL + 4
+    /// <summary>String ID for the short literal for YES</summary>
 	MEMBER RT_MSG_SHORT_YES    := RT_MSG_LITERAL + 5
+    /// <summary>String ID for the short literal for NO</summary>
 	MEMBER RT_MSG_SHORT_NO     := RT_MSG_LITERAL + 6
+    /// <summary>String ID for the long literal for YES</summary>
 	MEMBER RT_MSG_LONG_YES     := RT_MSG_LITERAL + 7
+    /// <summary>String ID for the long literal for NO</summary>
 	MEMBER RT_MSG_LONG_NO      := RT_MSG_LITERAL + 8
+    /// <summary>String ID for the long literal for currency</summary>
 	MEMBER RT_MSG_CURRENCY     := RT_MSG_LITERAL + 9
+    /// <summary>String ID for the literal for Yes/No</summary>
 	MEMBER RT_MSG_YNSTRING     := RT_MSG_LITERAL + 10
 	
 	// NOTE DUPLICATE VALUES WILL CAUSE PROBLEM WITH LOOKUP. THEREFORE RT_MSG_ERR IS A DEFINE
 	// MEMBER RT_MSG_ERR     := 0X4000
+	/// <summary>String ID for the first error message </summary>
 	MEMBER RT_MSG_ERR_0        := RT_MSG_ERR + 0 
+	/// <exclude />
 	MEMBER RT_MSG_ERR_1        := RT_MSG_ERR + 1 
+	/// <exclude />
 	MEMBER RT_MSG_ERR_2        := RT_MSG_ERR + 2 
+	/// <exclude />
 	MEMBER RT_MSG_ERR_3        := RT_MSG_ERR + 3 
+	/// <exclude />
 	MEMBER RT_MSG_ERR_4        := RT_MSG_ERR + 4 
+	/// <exclude />
 	MEMBER RT_MSG_ERR_5        := RT_MSG_ERR + 5 
+	/// <exclude />
 	MEMBER RT_MSG_ERR_6        := RT_MSG_ERR + 6 
+	/// <exclude />
 	MEMBER RT_MSG_ERR_7        := RT_MSG_ERR + 7 
+	/// <exclude />
 	MEMBER RT_MSG_ERR_8        := RT_MSG_ERR + 8 
+	/// <exclude />
 	MEMBER RT_MSG_ERR_9        := RT_MSG_ERR + 9 
+	/// <exclude />
 	MEMBER RT_MSG_ERR_10       := RT_MSG_ERR + 10
+	/// <exclude />
 	MEMBER RT_MSG_ERR_11       := RT_MSG_ERR + 11
+	/// <exclude />
 	MEMBER RT_MSG_ERR_12       := RT_MSG_ERR + 12
+	/// <exclude />
 	MEMBER RT_MSG_ERR_13       := RT_MSG_ERR + 13
+	/// <exclude />
 	MEMBER RT_MSG_ERR_14       := RT_MSG_ERR + 14
+	/// <exclude />
 	MEMBER RT_MSG_ERR_15       := RT_MSG_ERR + 15
+	/// <exclude />
 	MEMBER RT_MSG_ERR_16       := RT_MSG_ERR + 16
+	/// <exclude />
 	MEMBER RT_MSG_ERR_17       := RT_MSG_ERR + 17
+	/// <exclude />
 	MEMBER RT_MSG_ERR_18       := RT_MSG_ERR + 18
+	/// <exclude />
 	MEMBER RT_MSG_ERR_19       := RT_MSG_ERR + 19
+	/// <exclude />
 	MEMBER RT_MSG_ERR_20       := RT_MSG_ERR + 20
+	/// <exclude />
 	MEMBER RT_MSG_ERR_21       := RT_MSG_ERR + 21
+	/// <exclude />
 	MEMBER RT_MSG_ERR_22       := RT_MSG_ERR + 22
+	/// <exclude />
 	MEMBER RT_MSG_ERR_23       := RT_MSG_ERR + 23
+	/// <exclude />
 	MEMBER RT_MSG_ERR_24       := RT_MSG_ERR + 24
+	/// <exclude />
 	MEMBER RT_MSG_ERR_25       := RT_MSG_ERR + 25
+	/// <exclude />
 	MEMBER RT_MSG_ERR_26       := RT_MSG_ERR + 26
+	/// <exclude />
 	MEMBER RT_MSG_ERR_27       := RT_MSG_ERR + 27
+	/// <exclude />
 	MEMBER RT_MSG_ERR_28       := RT_MSG_ERR + 28
+	/// <exclude />
 	MEMBER RT_MSG_ERR_29       := RT_MSG_ERR + 29
+	/// <exclude />
 	MEMBER RT_MSG_ERR_30       := RT_MSG_ERR + 30
+	/// <exclude />
 	MEMBER RT_MSG_ERR_31       := RT_MSG_ERR + 31
+	/// <exclude />
 	MEMBER RT_MSG_ERR_32       := RT_MSG_ERR + 32
+	/// <exclude />
 	MEMBER RT_MSG_ERR_33       := RT_MSG_ERR + 33
+	/// <exclude />
 	MEMBER RT_MSG_ERR_34       := RT_MSG_ERR + 34
+	/// <exclude />
 	MEMBER RT_MSG_ERR_35       := RT_MSG_ERR + 35
+	/// <exclude />
 	MEMBER RT_MSG_ERR_36       := RT_MSG_ERR + 36
+	/// <exclude />
 	MEMBER RT_MSG_ERR_37       := RT_MSG_ERR + 37
+	/// <exclude />
 	MEMBER RT_MSG_ERR_38       := RT_MSG_ERR + 38
+	/// <exclude />
 	MEMBER RT_MSG_ERR_39       := RT_MSG_ERR + 39
+	/// <exclude />
 	MEMBER RT_MSG_ERR_40       := RT_MSG_ERR + 40
+	/// <exclude />
 	MEMBER RT_MSG_ERR_41       := RT_MSG_ERR + 41
+	/// <exclude />
 	MEMBER RT_MSG_ERR_42       := RT_MSG_ERR + 42
+	/// <exclude />
 	MEMBER RT_MSG_ERR_43       := RT_MSG_ERR + 43
+	/// <exclude />
 	MEMBER RT_MSG_ERR_44       := RT_MSG_ERR + 44
+	/// <exclude />
 	MEMBER RT_MSG_ERR_45       := RT_MSG_ERR + 45
+	/// <exclude />
 	MEMBER RT_MSG_ERR_46       := RT_MSG_ERR + 46
+	/// <exclude />
 	MEMBER RT_MSG_ERR_47       := RT_MSG_ERR + 47
+	/// <exclude />
 	MEMBER RT_MSG_ERR_48       := RT_MSG_ERR + 48
+	/// <exclude />
 	MEMBER RT_MSG_ERR_49       := RT_MSG_ERR + 49
+	/// <exclude />
 	MEMBER RT_MSG_ERR_50       := RT_MSG_ERR + 50
+	/// <exclude />
 	MEMBER RT_MSG_ERR_51       := RT_MSG_ERR + 51
+	/// <exclude />
 	MEMBER RT_MSG_ERR_52       := RT_MSG_ERR + 52
+	/// <exclude />
 	MEMBER RT_MSG_ERR_53       := RT_MSG_ERR + 53
+	/// <exclude />
 	MEMBER RT_MSG_ERR_54       := RT_MSG_ERR + 54
+	/// <exclude />
 	MEMBER RT_MSG_ERR_UNKNOWN  := RT_MSG_ERR + 55
+	/// <exclude />
 	MEMBER RT_MSG_CORRUPTION   := RT_MSG_ERR + 56
+	/// <exclude />
 	MEMBER RT_MSG_FATAL        := RT_MSG_ERR + 57
+	/// <exclude />
 	MEMBER RT_MSG_APPLI        := RT_MSG_ERR + 58
+	/// <exclude />
 	MEMBER RT_MSG_LINE         := RT_MSG_ERR + 59
+	/// <exclude />
 	MEMBER RT_MSG_FUNC         := RT_MSG_ERR + 60
+	/// <exclude />
 	MEMBER RT_MSG_RELEASE      := RT_MSG_ERR + 61 
 	
 	// NOTE DUPLICATE VALUES WILL CAUSE PROBLEM WITH LOOKUP. THEREFORE RT_MSG_DOSERR IS A DEFINE
 	//MEMBER RT_MSG_DOSERR  := 0X4040
-	
+	/// <summary>String ID for the first DOS error message </summary>
 	MEMBER RT_MSG_DOSERR_0     := RT_MSG_DOSERR + 0
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_1     := RT_MSG_DOSERR + 1
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_2     := RT_MSG_DOSERR + 2
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_3     := RT_MSG_DOSERR + 3
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_4     := RT_MSG_DOSERR + 4
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_5     := RT_MSG_DOSERR + 5
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_6     := RT_MSG_DOSERR + 6
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_7     := RT_MSG_DOSERR + 7
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_8     := RT_MSG_DOSERR + 8
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_9     := RT_MSG_DOSERR + 9
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_10    := RT_MSG_DOSERR + 10
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_11    := RT_MSG_DOSERR + 11
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_12    := RT_MSG_DOSERR + 12
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_13    := RT_MSG_DOSERR + 13
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_14    := RT_MSG_DOSERR + 14
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_15    := RT_MSG_DOSERR + 15
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_16    := RT_MSG_DOSERR + 16
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_17    := RT_MSG_DOSERR + 17
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_18    := RT_MSG_DOSERR + 18
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_19    := RT_MSG_DOSERR + 19
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_20    := RT_MSG_DOSERR + 20
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_21    := RT_MSG_DOSERR + 21
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_22    := RT_MSG_DOSERR + 22
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_23    := RT_MSG_DOSERR + 23
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_24    := RT_MSG_DOSERR + 24
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_25    := RT_MSG_DOSERR + 25
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_26    := RT_MSG_DOSERR + 26
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_27    := RT_MSG_DOSERR + 27
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_28    := RT_MSG_DOSERR + 28
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_29    := RT_MSG_DOSERR + 29
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_30    := RT_MSG_DOSERR + 30
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_31    := RT_MSG_DOSERR + 31
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_32    := RT_MSG_DOSERR + 32
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_33    := RT_MSG_DOSERR + 33
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_34    := RT_MSG_DOSERR + 34
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_35    := RT_MSG_DOSERR + 35
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_36    := RT_MSG_DOSERR + 36
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_37    := RT_MSG_DOSERR + 37
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_38    := RT_MSG_DOSERR + 38
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_39    := RT_MSG_DOSERR + 39
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_40    := RT_MSG_DOSERR + 40
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_41    := RT_MSG_DOSERR + 41
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_42    := RT_MSG_DOSERR + 42
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_43    := RT_MSG_DOSERR + 43
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_44    := RT_MSG_DOSERR + 44
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_45    := RT_MSG_DOSERR + 45
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_46    := RT_MSG_DOSERR + 46
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_47    := RT_MSG_DOSERR + 47
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_48    := RT_MSG_DOSERR + 48
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_49    := RT_MSG_DOSERR + 49
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_50    := RT_MSG_DOSERR + 50
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_51    := RT_MSG_DOSERR + 51
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_52    := RT_MSG_DOSERR + 52
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_53    := RT_MSG_DOSERR + 53
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_54    := RT_MSG_DOSERR + 54
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_55    := RT_MSG_DOSERR + 55
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_56    := RT_MSG_DOSERR + 56
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_57    := RT_MSG_DOSERR + 57
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_58    := RT_MSG_DOSERR + 58
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_59    := RT_MSG_DOSERR + 59
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_60    := RT_MSG_DOSERR + 60
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_61    := RT_MSG_DOSERR + 61
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_62    := RT_MSG_DOSERR + 62
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_63    := RT_MSG_DOSERR + 63
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_64    := RT_MSG_DOSERR + 64
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_65    := RT_MSG_DOSERR + 65
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_66    := RT_MSG_DOSERR + 66
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_67    := RT_MSG_DOSERR + 67
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_68    := RT_MSG_DOSERR + 68
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_69    := RT_MSG_DOSERR + 69
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_70    := RT_MSG_DOSERR + 70
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_71    := RT_MSG_DOSERR + 71
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_72    := RT_MSG_DOSERR + 72
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_73    := RT_MSG_DOSERR + 73
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_74    := RT_MSG_DOSERR + 74
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_75    := RT_MSG_DOSERR + 75
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_76    := RT_MSG_DOSERR + 76
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_77    := RT_MSG_DOSERR + 77
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_78    := RT_MSG_DOSERR + 78
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_79    := RT_MSG_DOSERR + 79
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_80    := RT_MSG_DOSERR + 80
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_81    := RT_MSG_DOSERR + 81
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_82    := RT_MSG_DOSERR + 82
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_83    := RT_MSG_DOSERR + 83
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_84    := RT_MSG_DOSERR + 84
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_85    := RT_MSG_DOSERR + 85
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_86    := RT_MSG_DOSERR + 86
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_87    := RT_MSG_DOSERR + 87
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_88    := RT_MSG_DOSERR + 88
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_89    := RT_MSG_DOSERR + 89
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_90    := RT_MSG_DOSERR + 90
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_91    := RT_MSG_DOSERR + 91
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_92    := RT_MSG_DOSERR + 92
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_93    := RT_MSG_DOSERR + 93
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_94    := RT_MSG_DOSERR + 94
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_95    := RT_MSG_DOSERR + 95
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_96    := RT_MSG_DOSERR + 96
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_97    := RT_MSG_DOSERR + 97
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_98    := RT_MSG_DOSERR + 98
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_99    := RT_MSG_DOSERR + 99
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_100   := RT_MSG_DOSERR + 100
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_101   := RT_MSG_DOSERR + 101
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_102   := RT_MSG_DOSERR + 102
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_103   := RT_MSG_DOSERR + 103
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_104   := RT_MSG_DOSERR + 104
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_105   := RT_MSG_DOSERR + 105
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_106   := RT_MSG_DOSERR + 106
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_107   := RT_MSG_DOSERR + 107
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_108   := RT_MSG_DOSERR + 108
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_109   := RT_MSG_DOSERR + 109
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_110   := RT_MSG_DOSERR + 110
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_111   := RT_MSG_DOSERR + 111
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_112   := RT_MSG_DOSERR + 112
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_113   := RT_MSG_DOSERR + 113
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_114   := RT_MSG_DOSERR + 114
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_115   := RT_MSG_DOSERR + 115
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_116   := RT_MSG_DOSERR + 116
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_117   := RT_MSG_DOSERR + 117
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_118   := RT_MSG_DOSERR + 118
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_119   := RT_MSG_DOSERR + 119
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_120   := RT_MSG_DOSERR + 120
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_121   := RT_MSG_DOSERR + 121
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_122   := RT_MSG_DOSERR + 122
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_123   := RT_MSG_DOSERR + 123
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_124   := RT_MSG_DOSERR + 124
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_125   := RT_MSG_DOSERR + 125
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_126   := RT_MSG_DOSERR + 126
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_127   := RT_MSG_DOSERR + 127
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_128   := RT_MSG_DOSERR + 128
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_129   := RT_MSG_DOSERR + 129
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_130   := RT_MSG_DOSERR + 130
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_131   := RT_MSG_DOSERR + 131
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_132   := RT_MSG_DOSERR + 132
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_133   := RT_MSG_DOSERR + 133
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_134   := RT_MSG_DOSERR + 134
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_135   := RT_MSG_DOSERR + 135
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_136   := RT_MSG_DOSERR + 136
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_137   := RT_MSG_DOSERR + 137
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_138   := RT_MSG_DOSERR + 138
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_139   := RT_MSG_DOSERR + 139
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_140   := RT_MSG_DOSERR + 140
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_141   := RT_MSG_DOSERR + 141
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_142   := RT_MSG_DOSERR + 142
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_143   := RT_MSG_DOSERR + 143
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_144   := RT_MSG_DOSERR + 144
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_145   := RT_MSG_DOSERR + 145
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_146   := RT_MSG_DOSERR + 146
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_147   := RT_MSG_DOSERR + 147
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_148   := RT_MSG_DOSERR + 148
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_149   := RT_MSG_DOSERR + 149
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_150   := RT_MSG_DOSERR + 150
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_151   := RT_MSG_DOSERR + 151
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_152   := RT_MSG_DOSERR + 152
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_153   := RT_MSG_DOSERR + 153
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_154   := RT_MSG_DOSERR + 154
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_155   := RT_MSG_DOSERR + 155
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_156   := RT_MSG_DOSERR + 156
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_157   := RT_MSG_DOSERR + 157
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_158   := RT_MSG_DOSERR + 158
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_159   := RT_MSG_DOSERR + 159
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_160   := RT_MSG_DOSERR + 160
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_161   := RT_MSG_DOSERR + 161
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_162   := RT_MSG_DOSERR + 162
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_163   := RT_MSG_DOSERR + 163
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_164   := RT_MSG_DOSERR + 164
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_165   := RT_MSG_DOSERR + 165
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_166   := RT_MSG_DOSERR + 166
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_167   := RT_MSG_DOSERR + 167
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_168   := RT_MSG_DOSERR + 168
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_169   := RT_MSG_DOSERR + 169
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_170   := RT_MSG_DOSERR + 170
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_171   := RT_MSG_DOSERR + 171
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_172   := RT_MSG_DOSERR + 172
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_173   := RT_MSG_DOSERR + 173
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_174   := RT_MSG_DOSERR + 174
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_175   := RT_MSG_DOSERR + 175
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_176   := RT_MSG_DOSERR + 176
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_177   := RT_MSG_DOSERR + 177
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_178   := RT_MSG_DOSERR + 178
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_179   := RT_MSG_DOSERR + 179
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_180   := RT_MSG_DOSERR + 180
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_181   := RT_MSG_DOSERR + 181
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_182   := RT_MSG_DOSERR + 182
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_183   := RT_MSG_DOSERR + 183
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_184   := RT_MSG_DOSERR + 184
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_185   := RT_MSG_DOSERR + 185
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_186   := RT_MSG_DOSERR + 186
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_187   := RT_MSG_DOSERR + 187
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_188   := RT_MSG_DOSERR + 188
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_189   := RT_MSG_DOSERR + 189
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_190   := RT_MSG_DOSERR + 190
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_191   := RT_MSG_DOSERR + 191
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_192   := RT_MSG_DOSERR + 192
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_193   := RT_MSG_DOSERR + 193
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_194   := RT_MSG_DOSERR + 194
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_195   := RT_MSG_DOSERR + 195
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_196   := RT_MSG_DOSERR + 196
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_197   := RT_MSG_DOSERR + 197
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_198   := RT_MSG_DOSERR + 198
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_199   := RT_MSG_DOSERR + 199
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_200   := RT_MSG_DOSERR + 200
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_201   := RT_MSG_DOSERR + 201
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_202   := RT_MSG_DOSERR + 202
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_203   := RT_MSG_DOSERR + 203
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_204   := RT_MSG_DOSERR + 204
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_205   := RT_MSG_DOSERR + 205
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_206   := RT_MSG_DOSERR + 206
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_207   := RT_MSG_DOSERR + 207
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_208   := RT_MSG_DOSERR + 208
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_209   := RT_MSG_DOSERR + 209
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_210   := RT_MSG_DOSERR + 210
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_211   := RT_MSG_DOSERR + 211
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_212   := RT_MSG_DOSERR + 212
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_213   := RT_MSG_DOSERR + 213
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_214   := RT_MSG_DOSERR + 214
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_215   := RT_MSG_DOSERR + 215
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_216   := RT_MSG_DOSERR + 216
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_217   := RT_MSG_DOSERR + 217
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_218   := RT_MSG_DOSERR + 218
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_219   := RT_MSG_DOSERR + 219
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_220   := RT_MSG_DOSERR + 220
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_221   := RT_MSG_DOSERR + 221
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_222   := RT_MSG_DOSERR + 222
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_223   := RT_MSG_DOSERR + 223
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_224   := RT_MSG_DOSERR + 224
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_225   := RT_MSG_DOSERR + 225
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_226   := RT_MSG_DOSERR + 226
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_227   := RT_MSG_DOSERR + 227
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_228   := RT_MSG_DOSERR + 228
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_229   := RT_MSG_DOSERR + 229
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_230   := RT_MSG_DOSERR + 230
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_231   := RT_MSG_DOSERR + 231
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_232   := RT_MSG_DOSERR + 232
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_233   := RT_MSG_DOSERR + 233
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_234   := RT_MSG_DOSERR + 234
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_235   := RT_MSG_DOSERR + 235
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_236   := RT_MSG_DOSERR + 236
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_237   := RT_MSG_DOSERR + 237
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_238   := RT_MSG_DOSERR + 238
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_239   := RT_MSG_DOSERR + 239
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_240   := RT_MSG_DOSERR + 240
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_241   := RT_MSG_DOSERR + 241
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_242   := RT_MSG_DOSERR + 242
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_243   := RT_MSG_DOSERR + 243
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_244   := RT_MSG_DOSERR + 244
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_245   := RT_MSG_DOSERR + 245
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_246   := RT_MSG_DOSERR + 246
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_247   := RT_MSG_DOSERR + 247
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_248   := RT_MSG_DOSERR + 248
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_249   := RT_MSG_DOSERR + 249
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_250   := RT_MSG_DOSERR + 250
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_251   := RT_MSG_DOSERR + 251
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_252   := RT_MSG_DOSERR + 252
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_253   := RT_MSG_DOSERR + 253
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_254   := RT_MSG_DOSERR + 254
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_255   := RT_MSG_DOSERR + 255
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_256   := RT_MSG_DOSERR + 256
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_257   := RT_MSG_DOSERR + 257
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_258   := RT_MSG_DOSERR + 258
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_FFFF  := RT_MSG_DOSERR + 259
+	/// <exclude />
 	MEMBER RT_MSG_DOSERR_UNKNOWN   := RT_MSG_DOSERR + 260
 	
+	/// <exclude />
 	MEMBER RT_MSG_ERR_INSTALLED    := RT_MSG_DOSERR + 512
+	/// <exclude />
 	MEMBER RT_MSG_ERR_GURU         := RT_MSG_DOSERR + 513
+	/// <exclude />
 	MEMBER RT_MSG_ERR_STACK        := RT_MSG_DOSERR + 514
+	/// <exclude />
 	MEMBER RT_MSG_ERR_PARAM        := RT_MSG_DOSERR + 515
+	/// <exclude />
 	MEMBER RT_MSG_ERR_NOCLIPPER    := RT_MSG_DOSERR + 516
+	/// <exclude />
 	MEMBER RT_MSG_ERR_ARGCOUNT     := RT_MSG_DOSERR + 517
 	
+	/// <exclude />
 	MEMBER RT_MSG_MAIL_ERR1        := RT_MSG_DOSERR + 518
+	/// <exclude />
 	MEMBER RT_MSG_MAIL_ERR2        := RT_MSG_DOSERR + 519
+	/// <exclude />
 	MEMBER RT_MSG_MAIL_ERR3        := RT_MSG_DOSERR + 520
-	
+	/// <exclude />
 	MEMBER RT_MSG_EXCEPTION        := RT_MSG_DOSERR + 900
 	
+	/// <exclude />
 	MEMBER RT_MSG_ACCESS_VIOLATION             := RT_MSG_EXCEPTION + 1
+	/// <exclude />
 	MEMBER RT_MSG_DATATYPE_MISALIGNMENT        := RT_MSG_EXCEPTION + 2
+	/// <exclude />
 	MEMBER RT_MSG_SINGLE_STEP                  := RT_MSG_EXCEPTION + 3
+	/// <exclude />
 	MEMBER RT_MSG_ARRAY_BOUNDS_EXCEEDED        := RT_MSG_EXCEPTION + 4
+	/// <exclude />
 	MEMBER RT_MSG_FLT_DENORMAL_OPERAND         := RT_MSG_EXCEPTION + 5
+	/// <exclude />
 	MEMBER RT_MSG_FLT_DIVIDE_BY_ZERO           := RT_MSG_EXCEPTION + 6
+	/// <exclude />
 	MEMBER RT_MSG_FLT_INEXACT_RESULT           := RT_MSG_EXCEPTION + 7
+	/// <exclude />
 	MEMBER RT_MSG_FLT_INVALID_OPERATION        := RT_MSG_EXCEPTION + 8
+	/// <exclude />
 	MEMBER RT_MSG_FLT_OVERFLOW                 := RT_MSG_EXCEPTION + 9
+	/// <exclude />
 	MEMBER RT_MSG_FLT_STACK_CHECK              := RT_MSG_EXCEPTION + 10
+	/// <exclude />
 	MEMBER RT_MSG_FLT_UNDERFLOW                := RT_MSG_EXCEPTION + 11
+	/// <exclude />
 	MEMBER RT_MSG_INT_DIVIDE_BY_ZERO           := RT_MSG_EXCEPTION + 12
+	/// <exclude />
 	MEMBER RT_MSG_INT_OVERFLOW                 := RT_MSG_EXCEPTION + 13
+	/// <exclude />
 	MEMBER RT_MSG_PRIV_INSTRUCTION             := RT_MSG_EXCEPTION + 14
+	/// <exclude />
 	MEMBER RT_MSG_IN_PAGE_ERROR                := RT_MSG_EXCEPTION + 15
+	/// <exclude />
 	MEMBER RT_MSG_ILLEGAL_INSTRUCTION          := RT_MSG_EXCEPTION + 16
+	/// <exclude />
 	MEMBER RT_MSG_NONCONTINUABLE_EXCEPTION     := RT_MSG_EXCEPTION + 17
+	/// <exclude />
 	MEMBER RT_MSG_STACK_OVERFLOW               := RT_MSG_EXCEPTION + 18
+	/// <exclude />
 	MEMBER RT_MSG_INVALID_DISPOSITION          := RT_MSG_EXCEPTION + 19
+	/// <exclude />
 	MEMBER RT_MSG_GUARD_PAGE                   := RT_MSG_EXCEPTION + 20
 
 #endregion RT_MSG
@@ -1294,38 +1674,72 @@ ENUM VOErrors
 #endregion XS_RUNTIME
 	
 END ENUM
-
+/// <exclude />
 DEFINE  RT_MSG_MONTH1     := VOErrors.RT_MSG_MONTH1    
+/// <exclude />
 DEFINE  RT_MSG_MONTH2     := VOErrors.RT_MSG_MONTH2    
+/// <exclude />
 DEFINE  RT_MSG_MONTH3     := VOErrors.RT_MSG_MONTH3    
+/// <exclude />
 DEFINE  RT_MSG_MONTH4     := VOErrors.RT_MSG_MONTH4    
+/// <exclude />
 DEFINE  RT_MSG_MONTH5     := VOErrors.RT_MSG_MONTH5    
+/// <exclude />
 DEFINE  RT_MSG_MONTH6     := VOErrors.RT_MSG_MONTH6    
+/// <exclude />
 DEFINE  RT_MSG_MONTH7     := VOErrors.RT_MSG_MONTH7    
+/// <exclude />
 DEFINE  RT_MSG_MONTH8     := VOErrors.RT_MSG_MONTH8    
+/// <exclude />
 DEFINE  RT_MSG_MONTH9     := VOErrors.RT_MSG_MONTH9    
+/// <exclude />
 DEFINE  RT_MSG_MONTH10    := VOErrors.RT_MSG_MONTH10   
+/// <exclude />
 DEFINE  RT_MSG_MONTH11    := VOErrors.RT_MSG_MONTH11   
+/// <exclude />
 DEFINE  RT_MSG_MONTH12    := VOErrors.RT_MSG_MONTH12   
+/// <exclude />
 DEFINE  RT_MSG_DAY1       := VOErrors.RT_MSG_DAY1      
+/// <exclude />
 DEFINE  RT_MSG_DAY2       := VOErrors.RT_MSG_DAY2      
+/// <exclude />
 DEFINE  RT_MSG_DAY3       := VOErrors.RT_MSG_DAY3      
+/// <exclude />
 DEFINE  RT_MSG_DAY4       := VOErrors.RT_MSG_DAY4      
+/// <exclude />
 DEFINE  RT_MSG_DAY5       := VOErrors.RT_MSG_DAY5      
+/// <exclude />
 DEFINE  RT_MSG_DAY6       := VOErrors.RT_MSG_DAY6      
+/// <exclude />
 DEFINE  RT_MSG_DAY7       := VOErrors.RT_MSG_DAY7      
+/// <exclude />
 DEFINE  RT_MSG_INFOSTRING := VOErrors.RT_MSG_INFOSTRING
 
+/// <exclude />
 DEFINE  RT_MSG_LITERAL     := VOErrors.RT_MSG_LITERAL   
+/// <exclude />
 DEFINE  RT_MSG_SHORT_TRUE  := VOErrors.RT_MSG_SHORT_TRUE
+/// <exclude />
 DEFINE  RT_MSG_SHORT_FALSE := VOErrors.RT_MSG_SHORT_FALSE
+/// <exclude />
 DEFINE  RT_MSG_LONG_TRUE   := VOErrors.RT_MSG_LONG_TRUE 
+/// <exclude />
 DEFINE  RT_MSG_LONG_FALSE  := VOErrors.RT_MSG_LONG_FALSE
+/// <exclude />
 DEFINE  RT_MSG_SHORT_YES   := VOErrors.RT_MSG_SHORT_YES 
+/// <exclude />
 DEFINE  RT_MSG_SHORT_NO    := VOErrors.RT_MSG_SHORT_NO  
+/// <exclude />
 DEFINE  RT_MSG_LONG_YES    := VOErrors.RT_MSG_LONG_YES  
+/// <exclude />
 DEFINE  RT_MSG_LONG_NO     := VOErrors.RT_MSG_LONG_NO   
+/// <exclude />
 DEFINE  RT_MSG_CURRENCY    := VOErrors.RT_MSG_CURRENCY  
+/// <exclude />
 DEFINE  RT_MSG_YNSTRING    := VOErrors.RT_MSG_YNSTRING  
+/// <exclude />
+DEFINE RT_MSG_DOSERR  := 0x4040
+/// <exclude />
+DEFINE RT_MSG_ERR     := 0x4000
 
 

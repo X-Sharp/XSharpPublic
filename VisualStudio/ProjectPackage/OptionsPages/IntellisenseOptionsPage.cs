@@ -28,6 +28,7 @@ namespace XSharp.Project.OptionsPages
         public bool IdentifierCase => false;
         public bool AlignDoCase { get; set; }
         public bool AlignMethod { get; set; }
+        public int MultiFactor { get; set; }
         public bool IncludeFieldsInNavigationBars { get; set; }
         public bool SortNavigationBars { get; set; }
         public bool ShowMembersOfCurrentTypeOnly { get; set; }

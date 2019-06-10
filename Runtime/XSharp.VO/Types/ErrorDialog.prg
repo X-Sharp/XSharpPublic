@@ -1,14 +1,14 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
 
-FUNCTION ErrorDialog( e AS Exception ) AS System.Windows.Forms.DialogResult
-   RETURN XSharp.ErrorDialog{ e }:ShowDialog()
+FUNCTION ErrorDialog( e AS Exception ) AS INT
+   RETURN (INT) XSharp.ErrorDialog{ e }:ShowDialog()
 
-FUNCTION ErrorDialog( txt AS STRING ) AS System.Windows.Forms.DialogResult
-   RETURN XSharp.ErrorDialog{ txt }:ShowDialog()
+FUNCTION ErrorDialog( txt AS STRING ) AS INT
+   RETURN (INT) XSharp.ErrorDialog{ txt }:ShowDialog()
 
 CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
 
@@ -45,7 +45,7 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
                     | System.Windows.Forms.AnchorStyles.Right)))
         SELF:ErrorText:BackColor := System.Drawing.SystemColors.Window
         SELF:ErrorText:CausesValidation := FALSE
-        SELF:ErrorText:Font := System.Drawing.Font{"Consolas", ((Single) 8)}
+        SELF:ErrorText:Font := System.Drawing.Font{"Courier New", ((Single) 8)}
         SELF:ErrorText:Location := System.Drawing.Point{13, 12}
         SELF:ErrorText:Multiline := TRUE
         SELF:ErrorText:Name := "ErrorText"
@@ -93,6 +93,6 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
 
     PRIVATE METHOD CopyButton_Click( sender AS OBJECT, e AS System.EventArgs ) AS VOID
        System.Windows.Forms.Clipboard.SetDataObject( ErrorText:Text, TRUE )
-        RETURN
+       RETURN
     
 END CLASS

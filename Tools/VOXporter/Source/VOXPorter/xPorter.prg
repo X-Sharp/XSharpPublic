@@ -9,7 +9,7 @@ USING System.Linq
 USING Xide
 
 GLOBAL gaNewKeywordsInXSharp := <STRING>{;
-	"EVENT","NULL","INT64","ENUM","DELEGATE","PARTIAL","INTERFACE",;
+	"EVENT","INT64","ENUM","DELEGATE","PARTIAL","INTERFACE",;
 	"CONSTRUCTOR","DESTRUCTOR","FINALLY","TRY","CATCH","THROW","SEALED","ABSTRACT","PUBLIC",;
 	"CONST","INITONLY","VIRTUAL","NEW","OPERATOR","EXPLICIT","IMPLICIT","PROPERTY",;
 	"SET","GET","VALUE","AUTO","OUT","IMPLIED";
@@ -235,6 +235,7 @@ STRUCTURE xPorterOptions
 	EXPORT SortEntitiesByName AS LOGIC 
 	EXPORT UseXSharpRuntime AS LOGIC
     EXPORT CopyResourcesToProjectFolder AS LOGIC
+    EXPORT ReplaceResourceDefinesWithValues AS LOGIC
 END STRUCTURE
 
 INTERFACE IProgressBar
@@ -849,6 +850,10 @@ CLASS ApplicationDescriptor
 	RETURN SELF:AddModule(cName , cCode:Split(<STRING>{e"\r\n" , e"\r" , e"\n"} , StringSplitOptions.None))
 	METHOD AddModule(cName AS STRING , aCode AS IEnumerable) AS ModuleDescriptor
 		LOCAL oModule AS ModuleDescriptor
+		cName := cName:TrimStart()
+		FOREACH c AS Char IN e"/?:&\*\"<>|#%"
+			cName := cName:Replace(c,'_')
+		NEXT
 		DO WHILE SELF:ContainsModuleName(cName)
 			cName := cName + "_" // happens when creating the SDK_Defines library, where modules from all libraries are added into a single one
 		END DO
@@ -2051,15 +2056,16 @@ CLASS EntityDescriptor
 
 	PROTECTED METHOD Generate_Resource() AS OutputCode
 		LOCAL oCode AS OutputCode
-		LOCAL cLine AS STRING
 		LOCAL lFirstLine := TRUE AS LOGIC
 		LOCAL lStringTableLine := FALSE AS LOGIC
+		LOCAL IMPLIED aDefines := Dictionary<STRING,STRING>{}
 		
 		LOCAL tag := "__T_A_G__" AS STRING
 
 		oCode := OutputCode{}
 		FOREACH oLine AS LineObject IN SELF:_aLines
 
+			LOCAL cLine AS STRING
 			//LOCAL lHasWizDir := FALSE AS LOGIC
 			cLine := oLine:LineText
 			//lHasWizDir := cLine:ToUpper():Contains("%APPWIZDIR%")
@@ -2115,7 +2121,16 @@ CLASS EntityDescriptor
 						// do not allow below to replace defines in part of filenames that are not surrounded by quotes
 						NOP
 					CASE SELF:_oModule:Application:HasDefine(cUpper)
-						cLine += SELF:TranslateDefineInResource(cUpper)
+						LOCAL cValue AS STRING
+						cValue := SELF:TranslateDefineInResource(cUpper)
+						IF xPorter.Options:ReplaceResourceDefinesWithValues
+							cLine += cValue
+						ELSE
+							cLine += cWord
+							IF .not. aDefines:ContainsKey(cUpper)
+								aDefines:Add(cUpper , String.Format("#define {0} {1}" , cWord , cValue))
+							END IF
+						END IF
 						cPrevWord := cWord
 						LOOP
 /*					CASE SELF:_oModule:HasDefine(cUpper)
@@ -2127,7 +2142,16 @@ CLASS EntityDescriptor
 						cPrevWord := cWord
 						LOOP*/
 					CASE xPorter.SDKDefines:ContainsKey(cUpper)
-						cLine += xPorter.SDKDefines[cUpper]:Replace(e"\"" , ""):Replace("'" , "")
+						LOCAL cValue AS STRING
+						cValue := xPorter.SDKDefines[cUpper]
+						IF xPorter.Options:ReplaceResourceDefinesWithValues .or. (cValue:Contains("'") .or. cValue:Contains('"'))
+							cLine += cValue:Replace(e"\"" , ""):Replace("'" , "")
+						ELSE
+							cLine += cWord
+							IF .not. aDefines:ContainsKey(cUpper)
+								aDefines:Add(cUpper , String.Format("#define {0} {1}" , cWord , cValue))
+							END IF
+						ENDIF
 						cPrevWord := cWord
 						LOOP
 					END CASE
@@ -2167,6 +2191,13 @@ Probably we need to do that also to every other string in every line in the reso
 			lFirstLine := FALSE
 
 		NEXT
+		
+		LOCAL nLine := 0 AS INT
+		FOREACH cLine AS STRING IN aDefines:Values
+			oCode:InsertLine(cLine , nLine)
+			nLine ++
+		NEXT
+		
 	RETURN oCode
 	
 	METHOD TranslateDefineInResource(cUpper AS STRING) AS STRING
@@ -2232,6 +2263,9 @@ CLASS OutputCode
 	RETURN
 	METHOD InsertLine(cLine AS STRING) AS VOID
 		SELF:_aLines:Insert(0 , cLine)
+	RETURN
+	METHOD InsertLine(cLine AS STRING , nAfter AS INT) AS VOID
+		SELF:_aLines:Insert(nAfter , cLine)
 	RETURN
 	METHOD Combine(oCode AS OutputCode) AS VOID
 		FOREACH cLine AS STRING IN oCode:Lines

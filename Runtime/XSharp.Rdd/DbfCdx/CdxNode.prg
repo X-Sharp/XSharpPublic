@@ -20,7 +20,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     /// long recno       - record number for this key value (in the dbf file)
     /// char key_value[key_size]
     /// </summary>
-    [DebuggerDisplay("Rec {Recno} Page {ChildPageNo} Key {KeyText}")];
+    [DebuggerDisplay("{DebuggerDisplay,nq}")];
     INTERNAL CLASS CdxNode
         PROTECTED _keyLength      AS LONG
         PROTECTED _bytesKey       AS BYTE[]
@@ -29,7 +29,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROTECTED _pos            AS WORD				// Index of the Item in the page array of Offsets
 		// Retrieve the Key as String
         INTERNAL PROPERTY Pos       AS WORD     GET _pos SET _pos := VALUE
-        
+        INTERNAL PROPERTY DebuggerDisplay AS STRING GET String.Format("Rec {0} Page {1:X} Key {2}", Recno, ChildPageNo, KeyText)
 		// Get/Set the Key info as Bytes, copied from/to the Page it belongs to
         INTERNAL VIRTUAL PROPERTY KeyBytes AS BYTE[]
             GET
@@ -79,14 +79,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
        INTERNAL OVERRIDE PROPERTY KeyBytes AS BYTE[]
             GET
-                RETURN SELF:_Page:GetKey(_pos)
+               if _pos >= 0 .and. _pos < SELF:_Page:NumKeys
+                 RETURN SELF:_Page:GetKey(_pos)
+                endif
+                return null
             END GET
         END PROPERTY
 
 
         INTERNAL OVERRIDE PROPERTY ChildPageNo AS LONG
             GET
-                RETURN SELF:_Page:GetChildPage(_pos)                
+                if _pos >= 0 .and. _pos < SELF:_Page:NumKeys
+                    RETURN SELF:_Page:GetChildPage(_pos)
+                endif
+                return -1
             END GET
         END PROPERTY
 
@@ -94,7 +100,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		// It is after the page_offset, which is a long, so 4 bytes after
         INTERNAL OVERRIDE PROPERTY Recno AS LONG
             GET
-                RETURN SELF:_Page:GetRecno(_pos)
+                if _pos >= 0 .and. _pos < SELF:_Page:NumKeys
+                    RETURN SELF:_Page:GetRecno(_pos)
+                ENDIF
+                return -1
             END GET
         END PROPERTY
 

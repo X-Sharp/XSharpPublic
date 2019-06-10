@@ -9,7 +9,7 @@
     <RootNamespace>ConsoleApplication1</RootNamespace>
     <AssemblyName>ConsoleApplication1</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <Name>ConsoleApplication1</Name>
+    <Name>RddTests</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>VO</Dialect>
@@ -42,7 +42,7 @@
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <TargetFrameworkProfile />
-    <XSharpProjectversion>2.0.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.0.1.1</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs>false</Nostandarddefs>
     <NamedArgs />

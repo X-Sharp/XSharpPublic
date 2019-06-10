@@ -33,9 +33,13 @@
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <TargetFrameworkProfile />
-    <XSharpProjectversion>2.0.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.0.1.1</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
+    <NamedArgs>true</NamedArgs>
+    <StandardDefs />
+    <MemVar>false</MemVar>
+    <Undeclared>false</Undeclared>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectGuid>e83c6c8c-773f-4b01-a597-3d38398a9362</ProjectGuid>
@@ -112,6 +116,7 @@
     <Compile Include="ACE\AceUnpublished32.prg" />
     <Compile Include="ACE\AceUnpublished64.prg" />
     <Compile Include="Advantage\AdsADT.prg" />
+    <Compile Include="Advantage\AdsError.prg" />
     <Compile Include="Advantage\ADSIndex.prg" />
     <Compile Include="Advantage\ADSMemo.prg" />
     <Compile Include="Advantage\AdsRDD.prg" />
@@ -139,6 +144,20 @@
     <Compile Include="DbfNtx\Order\NtxOrderLock.prg" />
     <Compile Include="DbfNtx\Order\NtxOrderNavigate.prg" />
     <Compile Include="DbfNtx\Order\NtxOrderUpdate.prg" />
+    <Compile Include="Dbf\DbfVfp.prg" />
+    <Compile Include="Dbf\DBF.prg" />
+    <Compile Include="Dbf\DbfBlob.prg" />
+    <Compile Include="Dbf\DbfDbt.prg" />
+    <Compile Include="Dbf\DbfColumn.prg" />
+    <Compile Include="Dbf\DbfFpt.prg" />
+    <Compile Include="Dbf\DbfMemo.prg" />
+    <Compile Include="Dbf\DbfNsx.prg" />
+    <Compile Include="Dbf\DbfSmt.prg" />
+    <Compile Include="Dbf\Dbf_NotImplemented.prg" />
+    <Compile Include="Dbf\DbMemo.prg" />
+    <Compile Include="Enums.prg" />
+    <Compile Include="Other\DELIM.prg" />
+    <Compile Include="Other\SDF.prg" />
     <Compile Include="Support.prg" />
     <Compile Include="DbfCdx\CdxEnums.prg" />
     <Compile Include="DbfCdx\CdxOrderBag.prg" />
@@ -158,21 +177,9 @@
     <Compile Include="DbfNtx\NtxSort.prg" />
     <Compile Include="SortHelper.prg" />
     <Compile Include="SubCodes.prg" />
-    <Compile Include="Types\DBF.prg" />
-    <Compile Include="Types\DbfBlob.prg" />
-    <Compile Include="Types\DbfDbt.prg" />
-    <Compile Include="Types\DbfFpt.prg" />
-    <Compile Include="Types\DbfMemo.prg" />
-    <Compile Include="Types\Dbf_NotImplemented.prg" />
-    <Compile Include="Types\DbfNsx.prg" />
-    <Compile Include="Types\DbfSmt.prg" />
-    <Compile Include="Types\DbMemo.prg" />
-    <Compile Include="Types\DELIM.prg" />
-    <Compile Include="Types\Enums.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Types\SDF.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ACE\" />
@@ -182,7 +189,8 @@
     <Folder Include="DbfCdx\Pages\" />
     <Folder Include="DbfNtx\" />
     <Folder Include="DbfNtx\Order" />
-    <Folder Include="Types" />
+    <Folder Include="Dbf\" />
+    <Folder Include="Other\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>

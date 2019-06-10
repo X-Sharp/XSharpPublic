@@ -135,6 +135,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 IF String.IsNullOrEmpty(Path.GetExtension(_fullPath))
                     SELF:_fullPath := Path.ChangeExtension(_fullPath, NTX_EXTENSION)
                 ENDIF
+                IF File(_fullPath)
+                    _fullPath := FPathName()
+                ENDIF
             END SET
         END PROPERTY
         
@@ -260,7 +263,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL oKey AS OBJECT
             evalOk := TRUE
             TRY
-                SELF:_KeyCodeBlock := SELF:_oRdd:Compile(SELF:_KeyExpr)
+                IF SELF:_KeyCodeBlock == NULL
+                    SELF:_KeyCodeBlock := SELF:_oRdd:Compile(SELF:_KeyExpr)
+                ENDIF
             CATCH ex AS Exception
                 SELF:_oRdd:_dbfError( ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
                 RETURN FALSE
@@ -305,7 +310,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_Conditional := FALSE
             IF SELF:_ForExpr:Length > 0
                 TRY
-                    SELF:_ForCodeBlock := SELF:_oRdd:Compile(SELF:_ForExpr)
+                    IF SELF:_ForCodeBlock == NULL
+                        SELF:_ForCodeBlock := SELF:_oRdd:Compile(SELF:_ForExpr)
+                    ENDIF
                 CATCH
                     SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
                     RETURN FALSE

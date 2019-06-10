@@ -31,6 +31,7 @@ STATIC CLASS XSharp.StringHelpers
 
     /// <exclude />
 	STATIC METHOD Changed (o AS OBJECT, e AS eventArgs) AS VOID
+        // This event gets called when the codepage has changed or the collation has changed
 		getvalues()
 
     /// <exclude />
@@ -92,6 +93,7 @@ STATIC CLASS XSharp.StringHelpers
 		// when we get here then reference equality is not TRUE. THat has been checked
 		// before this method is called.
 		nLen := Math.Min(strLHS:Length, strRHS:Length)
+        // Lock because we are using the same byte array for each comparison
 		BEGIN LOCK gate
 			IF nLen > bLHS:Length
 				bLHS := BYTE[]{nLen}
@@ -129,7 +131,7 @@ STATIC CLASS XSharp.StringHelpers
 						// equal, so continue with the next chars
 						// this normally only happens when 2 characters are mapped to the same weight
 						// that could for example happen when ü and u have the same weight
-						// I am not sure if this ever happens. If would creating an index unreliable
+						// I am not sure if this ever happens. If would make creating an index unreliable
 						// most likely the ü will be sorted between u and v. 
 					ENDIF
 				ENDIF

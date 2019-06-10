@@ -12,8 +12,11 @@ USING XSharp.Internal
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("XSharp.RDD")]
+[assembly: AssemblyTitle("XSharp.RDD")] 
 [assembly: AssemblyDescription("XSharp RDD DLL, holds all the standard RDDs as well as the Advantage RDDs")]
-[ASSEMBLY: ImplicitNamespace("XSharp")]
 
+// in the core dialect the next attributes are not included automatically
+[assembly: ImplicitNamespace("XSharp")]
+[assembly: CompilerVersionAttribute("X# "+__VERSION__ +" - dialect:"+__DIALECT__ )] 
+[assembly: ClassLibrary("XSharp.RDD.Functions","XSharp")]
 

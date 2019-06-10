@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -30,24 +30,24 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		    Assert.Equal( 1, Ftest( 1 ) )   
 		    Assert.Equal( 1, Ftest( 2 ) )   
 		    Assert.Equal( 2, Ftest( 1, 2 ) )   
-		    Assert.Equal( true, TestFunc( 1, "2" ) )   
-		    Assert.Equal( true, TestFunc( 1, "2", 3 ) )   
-			Assert.Equal( false, TestFunc() )   
+		    Assert.Equal( TRUE, TestFunc( 1, "2" ) )   
+		    Assert.Equal( TRUE, TestFunc( 1, "2", 3 ) )   
+			Assert.Equal( FALSE, TestFunc() )   
 
-      Assert.Equal( true, TestFunc4( 1 ) == 1 )
-      Assert.Equal( true, TestFunc4( "2" ) == "2" )
-      Assert.Equal( true, TestFunc4( 123.456 ) == 123.456 )
-      Assert.Equal( true, TestFunc4( 1957.12.20 ) == 1957.12.20 )
-      Assert.Equal( true, TestFunc4( TRUE ) == .T. )
-      Assert.Equal( true, TestFunc4( FALSE ) == .F. )
-      Assert.Equal( true, TestFunc5( , 1 ) == 1 )
-      Assert.Equal( true, TestFunc5( , "2" ) == "2" )
-      Assert.Equal( true, TestFunc5( , 123.456 ) == 123.456 )
-      Assert.Equal( true, TestFunc5( , 1957.12.20 ) == 1957.12.20 )
-      Assert.Equal( true, TestFunc5( , TRUE ) == .T. )
-      Assert.Equal( true, TestFunc5( , FALSE ) == .F. )
-      Assert.Equal( true, TestFunc5() == NIL )
-      Assert.Equal( true, TestFunc5( 1 ) == NIL )
+      Assert.Equal( TRUE, TestFunc4( 1 ) == 1 )
+      Assert.Equal( TRUE, TestFunc4( "2" ) == "2" )
+      Assert.Equal( TRUE, TestFunc4( 123.456 ) == 123.456 )
+      Assert.Equal( TRUE, TestFunc4( 1957.12.20 ) == 1957.12.20 )
+      Assert.Equal( TRUE, TestFunc4( TRUE ) == .T. )
+      Assert.Equal( TRUE, TestFunc4( FALSE ) == .F. )
+      Assert.Equal( TRUE, TestFunc5( , 1 ) == 1 )
+      Assert.Equal( TRUE, TestFunc5( , "2" ) == "2" )
+      Assert.Equal( TRUE, TestFunc5( , 123.456 ) == 123.456 )
+      Assert.Equal( TRUE, TestFunc5( , 1957.12.20 ) == 1957.12.20 )
+      Assert.Equal( TRUE, TestFunc5( , TRUE ) == .T. )
+      Assert.Equal( TRUE, TestFunc5( , FALSE ) == .F. )
+      Assert.Equal( TRUE, TestFunc5() == NIL )
+      Assert.Equal( TRUE, TestFunc5( 1 ) == NIL )
 
 		METHOD MTest( x, y, z ) AS INT CLIPPER
 			RETURN pcount()

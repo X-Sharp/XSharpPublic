@@ -12,6 +12,7 @@ USING System.Collections.Generic
 USING System.Linq
 USING System.Runtime.CompilerServices
 
+
 INTERNAL STATIC CLASS OOPHelpers
     STATIC INTERNAL EnableOptimizations AS LOGIC
     STATIC INTERNAL cacheClassesAll AS Dictionary<STRING,Type>
@@ -753,8 +754,11 @@ FUNCTION ClassName(o AS OBJECT) AS STRING
 FUNCTION ClassTree(o AS OBJECT) AS ARRAY
 	RETURN OOPHelpers.ClassTree(o?:GetType())
 	
-/// <summary>Create a new instance of a named class</summary>	
-FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
+/// <summary>Create a new instance of a named class</summary>
+/// <param name="cClassName">Specifies the class from which the new object is created.</param>
+/// <param name="_args">These optional parameters are passed to the constructor of the class </param>
+/// <returns>The object that was created</returns>
+FUNCTION CreateInstance(cClassName,_args) AS OBJECT CLIPPER
 	IF ! ( cClassName:IsSymbol || cClassName:IsString )
 		THROW Error.DataTypeError( __FUNCTION__, NAMEOF(cClassName), 1, cClassName)
 	ENDIF    	
@@ -853,7 +857,16 @@ FUNCTION IsClassOf(cClassName AS STRING,cSuperClassName AS STRING) AS LOGIC
 	LOCAL tSuper := OOPHelpers.FindClass(cSuperClassName) AS Type
 	// IsClassOf() in VO returns TRUE when child and parent class is the same (and it exists)
 	RETURN tSub != NULL .AND. tSuper != NULL .AND. (tSub == tSuper .OR. tSub:IsSubclassOf(tSuper))
-	
+
+
+/// <summary>
+/// Find a class in the referenced assemblies
+/// </summary>
+/// <param name="cClassName">Classname to find</param>
+/// <returns>System.Type object or NULL </returns>
+
+FUNCTION FindClass(cClassname AS STRING) AS System.Type
+	RETURN OOPHelpers.FindClass(cClassName) 
 	
 	
 /// <summary>

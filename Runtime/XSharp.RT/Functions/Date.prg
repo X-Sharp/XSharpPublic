@@ -47,7 +47,7 @@ FUNCTION ConDate(dwY AS DWORD,dwM AS DWORD,dwDay AS DWORD) AS DATE
     IF dwY == 0 .OR. dwM == 0 .OR. dwDay == 0
       RETURN NULL_DATE
     ENDIF
-    RETURN _ConDate(dwY, dwM, dwDay)
+    RETURN ConDateTime(dwY, dwM, dwDay)
 
 /// <summary>
 /// Convert a Date string to date format.
@@ -56,7 +56,7 @@ FUNCTION ConDate(dwY AS DWORD,dwM AS DWORD,dwDay AS DWORD) AS DATE
 /// <returns>The date value that corresponds to the numbers specified in <paramref name="cDate"/>.  If <paramref name="cDate"/> is not a valid date, CToD() returns a NULL_DATE.
 /// </returns>
 FUNCTION CToD(cDate AS STRING) AS DATE
-	RETURN CToD(cDate, XSharp.RuntimeState.DateFormat)
+	RETURN CToDt(cDate, XSharp.RuntimeState.DateFormat)
 
 /// <summary>
 /// Convert a Date string to date format using a specified Date Format string
@@ -65,7 +65,7 @@ FUNCTION CToD(cDate AS STRING) AS DATE
 /// <param name="cDateFormat">A string representating the date format to use when converting the string to a date. Should consist of D, M and Y characters and separators.</param>
 /// <returns><inheritdoc cref='M:XSharp.RT.Functions.CToD(System.String)'/></returns>
 FUNCTION CToD(cDate AS STRING, cDateFormat AS STRING) AS DATE
-    RETURN _CToD(cDate, cDateFormat)
+    RETURN CToDt(cDate, cDateFormat)
 
 
 /// <summary>
@@ -77,7 +77,7 @@ FUNCTION CToD(cDate AS STRING, cDateFormat AS STRING) AS DATE
 /// If the century digits are not specified, the century is determined by the rules of SetEpoch().</param>
 /// <returns><inheritdoc cref='M:XSharp.RT.Functions.CToD(System.String)'/></returns>
 FUNCTION CToDAnsi(cDate AS STRING) AS DATE
-	RETURN CToD(Left(cDate,10), "YYYY.MM.DD")
+	RETURN CToDt(Left(cDate,10), "YYYY.MM.DD")
 
 
 /// <summary>
@@ -130,7 +130,7 @@ FUNCTION DoW(d AS DATE) AS DWORD
 /// A string representation of the given Date, formatted in the current Date format.
 /// </returns>
 FUNCTION DToC(d AS DATE) AS STRING
-    RETURN _DToC(d)
+    RETURN DtToC(d)
 
 /// <summary>
 /// Convert a Date value to a string formatted as string in ANSI format
@@ -140,7 +140,7 @@ FUNCTION DToC(d AS DATE) AS STRING
 /// An 8-character string in the format yyyymmdd.  If dDate is a NULL_DATE, a string of eight spaces is returned.  The return value is not affected by the current date format.
 /// </returns>
 FUNCTION DToS(dDate AS DATE) AS STRING
-    RETURN _DToS(dDate)
+    RETURN DtToS(dDate)
 
 /// <summary>
 /// </summary>
@@ -197,28 +197,7 @@ FUNCTION Month(d AS DATE) AS DWORD
 /// <param name="cDate"></param>
 /// <returns><inheritdoc cref='M:XSharp.RT.Functions.CToD(System.String)'/></returns>
 FUNCTION SToD(cDate AS STRING) AS DATE
-	LOCAL convertedDate AS DATE
-	TRY
-		IF cDate:Length == 8 .AND. cDate[0] == c'0' .AND. cDate[1] == c'0'
-			// VO adjusts date strings like "00yyMMdd" to epoch-based year
-			LOCAL dwY AS DWORD
-			dwY := UInt32.Parse(cDate:Substring(0,4))
-			
-			// same code as in ConDate(), probably better adjust SToD() to use ConDate() directly
-			LOCAL lAfter AS LOGIC
-			lAfter := dwY > XSharp.RuntimeState.EpochYear
-			dwY += XSharp.RuntimeState.EpochCent
-			IF lAfter
-				dwY -= 100
-			ENDIF
-			
-			cDate := dwY:ToString():PadLeft(4 , c'0') + cDate:Substring(4)
-		END IF
-		convertedDate := (DATE)DateTime.ParseExact(cDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
-	CATCH
-		convertedDate := NULL_DATE
-	END TRY
-	RETURN	 convertedDate
+	RETURN SToDt(cDate)
 
 
 /// <summary>

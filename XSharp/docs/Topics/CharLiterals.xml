@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Char Literals</title>
   <keywords>
     <keyword>Char</keyword>
@@ -9,7 +9,8 @@
     <header>
       <para styleclass="Heading1">Char Literals</para>
     </header>
-    <para styleclass="Normal">There are different notations for a char literal depending on the dialect selected:</para>
+    <para styleclass="Normal">There are different notations for a char literal depending on the dialect selected.<br/>In the many dialects the single quotes are string delimiters and therefore the &apos;c&apos; prefix is needed for character literals. </para>
+    <para styleclass="Normal">Only in the Core and Vulcan dialects single quotes are always reserved for character literals</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="3" colcount="3">
       <tr style="vertical-align:top">
@@ -17,7 +18,7 @@
           <para styleclass="Normal"><text style="font-weight:bold;">Literal</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">VO &amp; Harbour</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">VO, XPP, FoxPro &amp; Harbour</text></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="font-weight:bold;">Vulcan &amp; Core</text></para>

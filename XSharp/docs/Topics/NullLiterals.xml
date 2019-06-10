@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Null Literals</title>
   <keywords>
     <keyword>NULL</keyword>
@@ -20,7 +20,7 @@
     <para styleclass="Body Text">X# uses the following NULL literals. They indicate the absense of a value.</para>
     <para styleclass="Body Text">Some of these literals require the runtime.</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"><table styleclass="Default" rowcount="10" colcount="3" style="width:auto;">
+    <para styleclass="Body Text"><table styleclass="Default" rowcount="11" colcount="3" style="width:auto;">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text style="font-weight:bold;">Value</text></para>
@@ -129,6 +129,17 @@
         </td>
         <td>
           <para styleclass="Normal">Y</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">.NULL.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">This FoxPro literal null is translated to a NULL reference</para>
+        </td>
+        <td>
+          <para styleclass="Normal">N</para>
         </td>
       </tr>
     </table></para>

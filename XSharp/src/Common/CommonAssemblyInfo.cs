@@ -29,4 +29,5 @@ using System.Reflection;
 [assembly: AssemblyCulture("")]
 
 [assembly: AssemblyVersion(XSharp.Constants.Version)]
-[assembly: AssemblyFileVersion(XSharp.Constants.Version)]
+[assembly: AssemblyFileVersion(XSharp.Constants.FileVersion)]
+[assembly: AssemblyInformationalVersion(XSharp.Constants.ProductVersion)]

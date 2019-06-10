@@ -1,2 +1,2 @@
 # XSharp/src/Common/
-Common sources and shared projects
+Common sources that are shared between projects, for example version numbers etc.

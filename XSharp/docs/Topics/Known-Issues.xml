@@ -29,7 +29,7 @@
     <para styleclass="Heading2">Runtime</para>
     <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List"><text styleclass="Normal">Some runtime functions are not supported yet. </text></li>
-      <li styleclass="List"><text styleclass="Normal">The DBFCDX RDD is not available yet</text></li>
     </list>
+    <para styleclass="List"></para>
   </body>
 </topic>

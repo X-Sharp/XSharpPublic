@@ -44,7 +44,7 @@
 #command USE <(db)>                                                     ;
              [VIA <rdd>]                                                ;
              [ALIAS <a>]                                                ;
-             [<NEW: NEW>]                                               ;
+             [<new: NEW>]                                               ;
              [<ex: EXCLUSIVE>]                                          ;
              [<sh: SHARED>]                                             ;
              [<ro: READONLY>]                                           ;
@@ -52,7 +52,7 @@
                                                                         ;
       => dbUseArea(                                                     ;
                     <.new.>, <rdd>, <(db)>, <(a)>,                      ;
-                    IF(<.sh.> .OR. <.ex.>, !<.ex.>, NIL), <.ro.>        ;
+                    if(<.sh.> .or. <.ex.>, !<.ex.>, NIL), <.ro.>        ;
                   )                                                     ;
                                                                         ;
       [; dbSetIndex( <(index1)> )]                                      ;
@@ -71,7 +71,7 @@
 #command INDEX ON <key> TO <(file)> [<u: UNIQUE>]                       ;
       => dbCreateIndex(                                                 ;
                         <(file)>, <"key">, <{key}>,                     ;
-                        IF( <.u.>, TRUE, NIL )                           ;
+                        IIF( <.u.>, TRUE, NIL )                           ;
                       )
 
 

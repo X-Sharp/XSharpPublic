@@ -2,13 +2,27 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Pseudo Functions</title>
+  <keywords>
+    <keyword>_ARGS</keyword>
+    <keyword>_GETFPARAM</keyword>
+    <keyword>_GetInst</keyword>
+    <keyword>_GETMPARAM</keyword>
+    <keyword>ALTD</keyword>
+    <keyword>ARGCOUNT</keyword>
+    <keyword>CCALL</keyword>
+    <keyword>CCallNative</keyword>
+    <keyword>PCALL</keyword>
+    <keyword>PCallNative</keyword>
+    <keyword>PCOUNT</keyword>
+    <keyword>SLen</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">Pseudo Functions</para>
     </header>
     <para styleclass="Normal">The following pseudo functions are supported by the X# compiler</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="9" colcount="2">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="11" colcount="2">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text style="font-weight:bold;">Function</text></para>
@@ -80,6 +94,22 @@
         <td>
           <para styleclass="Body Text">The methods are used to call an API function for an untyped PTR</para>
           <para styleclass="Body Text">The function expects a generic type parameter which indicates the return type and a first parameter of type PTR. Other parameters are allowed and must not point to managed memory.<br/>This is <text style="font-weight:bold;">not yet supported</text> in the current compiler version </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">_ARGS()</text></para>
+        </td>
+        <td>
+          <para styleclass="Body Text">This pseudo function returns is replaced by the compiler to a reference to the generated array of parameters for functions/methods with clipper calling convention</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">SLen()</text></para>
+        </td>
+        <td>
+          <para styleclass="Body Text">This function is translated by the compiler to a call of the Length property of the string, with a built-in check for NULL.</para>
         </td>
       </tr>
     </table></para>

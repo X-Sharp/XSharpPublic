@@ -20,11 +20,11 @@ namespace XSharp.MacroCompiler
                 return true;
             if (s is SymbolList)
             {
-                bool methods = true;
+                bool methods = false;
                 foreach(var m in (s as SymbolList).Symbols)
                 {
-                    if (!(m is MethodBaseSymbol))
-                        methods = false;
+                    if (m is MethodBaseSymbol)
+                        methods = true;
                 }
                 return methods;
             }

@@ -146,8 +146,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN result
 
         PRIVATE METHOD _HeaderCreate() AS LOGIC
-            SELF:_Header            := CdxTagHeader{_bag, -1 ,_orderName}
-            SELF:_Header:Tag        := SELF
+            SELF:_Header            := CdxTagHeader{_bag, -1 ,_orderName, SELF}
             SELF:_Header:Descending := SELF:_Descending
             SELF:_Header:Version    := 0
             SELF:_Header:Signature  := 1
@@ -222,7 +221,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     // All overrules start record no
                     IF lUseOrder
                         // start from first record in index
-                        record := leadingOrder:_locateKey(NULL, 0, SearchMode.Top)
+                        record := leadingOrder:_locateKey(NULL, 0, SearchMode.Top,0)
                     ELSE
                         record := 1 // start from first record in file
                     ENDIF

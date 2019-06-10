@@ -19,7 +19,7 @@
 //[assembly: AllowPartiallyTrustedCallersAttribute()]
 [assembly: AssemblyVersionAttribute( VERSION_NUMBER_STR )]
 [assembly: AssemblyFileVersionAttribute( FILEVERSION_NUMBER_STR )]
-[assembly: AssemblyInformationalVersionAttribute( VERSION_NUMBER_STR )]
+[assembly: AssemblyInformationalVersionAttribute( INFORMATIONAL_NUMBER_STR )]
 #ifdef __XSHARP_RT__
 [assembly: ImplicitNamespaceAttribute( VULCAN_VOSDK_NAMESPACE )]
 #else

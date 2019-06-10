@@ -14,6 +14,7 @@ VS_VERSION_INFO VERSIONINFO
  FILEOS 0x4L
  FILETYPE 0x1L
  FILESUBTYPE 0x0L
+    
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
@@ -26,7 +27,7 @@ BEGIN
             VALUE "LegalCopyright", COPYRIGHT_STR
             VALUE "OriginalFilename", "VOGUIClasses.dll"
             VALUE "ProductName", PRODUCT_NAME
-            VALUE "ProductVersion", VERSION_NUMBER_STR
+            VALUE "ProductVersion", FILEVERSION_NUMBER_STR
         END
     END
     BLOCK "VarFileInfo"

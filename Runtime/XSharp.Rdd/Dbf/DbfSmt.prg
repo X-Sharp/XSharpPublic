@@ -7,19 +7,37 @@
 USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD
 
-/// <summary>DBFFPT RDD. For DBF/NTX/DBV.</summary>
-CLASS DBFMEMO INHERIT DbfNtx
+/// <summary>DBFSMT RDD. For DBF/SMT. No index support at this level</summary>
+CLASS DBFSMT INHERIT DBF
+	CONSTRUCTOR
+	SUPER()
+	SELF:_oMemo := SMTMemo{SELF}
+
+VIRTUAL PROPERTY Driver AS STRING GET "DBFSMT"
+
+
+/// <summary>SMT Memo class. Implements the SMT support.</summary>
+CLASS SMTMemo INHERIT BaseMemo  IMPLEMENTS IMemo
+	PROTECT _oRDD AS DBF
+/// <inheritdoc />
+	CONSTRUCTOR (oRDD AS DBF)
+		SUPER(oRDD)
+		SELF:_oRdd := oRDD
 
 /// <inheritdoc />
-VIRTUAL METHOD GetValue(nFldPos AS INT) AS OBJECT
+METHOD Flush() 			AS LOGIC		
 	THROW NotImplementedException{}
 
 /// <inheritdoc />
-VIRTUAL METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
+METHOD GetValue(nFldPos AS INT) AS OBJECT
 	THROW NotImplementedException{}
 
 /// <inheritdoc />
-VIRTUAL METHOD GetValueLength(nFldPos AS INT) AS INT
+METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
+	THROW NotImplementedException{}
+
+/// <inheritdoc />
+METHOD GetValueLength(nFldPos AS INT) AS INT
 	THROW NotImplementedException{}
 
 /// <inheritdoc />
@@ -29,7 +47,6 @@ VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
 /// <inheritdoc />
 VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
 	THROW NotImplementedException{}
-
 /// <inheritdoc />
 VIRTUAL METHOD CloseMemFile( ) AS LOGIC
 	THROW NotImplementedException{}
@@ -39,11 +56,9 @@ VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
 	THROW NotImplementedException{}
 
 /// <inheritdoc />
-VIRTUAL METHOD OpenMemFile( info AS DbOpenInfo) AS LOGIC
+VIRTUAL METHOD OpenMemFile( ) AS LOGIC
 	THROW NotImplementedException{}
-
-/// <inheritdoc />
-VIRTUAL PROPERTY SysName AS STRING GET "DBFMEMO"
+END CLASS 
 
 END CLASS
 END NAMESPACE

@@ -7,30 +7,30 @@ BEGIN NAMESPACE XSharp
   /// <summary>XSharp Runtime base Error class</summary>
   CLASS Error INHERIT Exception
     /// <summary>A string representing the name of the subsystem generating the error.</summary>
-    PROPERTY SubSystem AS STRING AUTO  := "BASE"
+    VIRTUAL PROPERTY SubSystem AS STRING AUTO  := "BASE"
     /// <summary>An integer numeric value representing a Visual Objects generic error code.</summary>
     /// <Seealso cref="T:XSharp.Gencode"/>
-    PROPERTY Gencode AS DWORD AUTO    := EG_UNKNOWN
+    VIRTUAL PROPERTY Gencode AS DWORD AUTO    := EG_UNKNOWN
     /// <summary>An string containing the description of the Gencode.</summary>
-    PROPERTY GenCodeText AS STRING GET IIF (Gencode != 0, ErrString(Gencode), "Unknown GenCode")
+    VIRTUAL PROPERTY GenCodeText AS STRING GET IIF (Gencode != 0, ErrString(Gencode), "Unknown GenCode")
     /// <summary>An integer numeric value representing a subsystem-specific error code.</summary>
-    PROPERTY SubCode AS DWORD AUTO    := 0
+    VIRTUAL PROPERTY SubCode AS DWORD AUTO    := 0
     /// <summary>An string containing the description of the SubCode.</summary>
-    PROPERTY SubCodeText AS STRING GET IIF (SubCode != 0, __CavoStr(SubCode), "Unknown SubCode")
+    VIRTUAL PROPERTY SubCodeText AS STRING GET IIF (SubCode != 0, __CavoStr(SubCode), "Unknown SubCode")
     /// <summary>A string representing the name of the function or method in which the error occurred.</summary>
-    PROPERTY FuncSym AS STRING AUTO   := ""
+    VIRTUAL PROPERTY FuncSym AS STRING AUTO   := ""
     /// <summary>A string representing the name used to open the file associated with the error condition.</summary>
-    PROPERTY FileName AS STRING AUTO  := ""
+    VIRTUAL PROPERTY FileName AS STRING AUTO  := ""
     /// <summary>A constant indicating the severity of the error condition.</summary>
     /// <Seealso cref="T:XSharp.Severity"/>
-    PROPERTY Severity AS DWORD AUTO   := ES_ERROR
+    VIRTUAL PROPERTY Severity AS DWORD AUTO   := ES_ERROR
     /// <summary>A string that describes the error condition.</summary>
-    PROPERTY Description		AS STRING AUTO := ""
+    VIRTUAL PROPERTY Description		AS STRING AUTO := ""
     /// <summary>A string representing the argument supplied to an operator or function when an argument error occurs.</summary>
-    PROPERTY Arg				AS STRING AUTO := ""
+    VIRTUAL PROPERTY Arg				AS STRING AUTO := ""
     PRIVATE  _ArgType			AS DWORD 
     /// <summary>A numeric value representing the data type of the argument that raised the error.</summary>
-    PROPERTY ArgType			AS DWORD  
+    VIRTUAL PROPERTY ArgType			AS DWORD  
       GET 
         RETURN _ArgType 
       END GET
@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharp
     END PROPERTY
     PRIVATE  _ArgTypeType 		:= NULL AS System.Type 
     /// <summary>The system type representing the data type of the argument that raised the error.</summary>
-    PROPERTY ArgTypeType		AS System.Type 
+    VIRTUAL PROPERTY ArgTypeType		AS System.Type 
       GET 
         RETURN _ArgTypeType 
       END GET
@@ -53,7 +53,7 @@ BEGIN NAMESPACE XSharp
     
     PRIVATE _ArgTypeReq		AS DWORD 
     /// <summary>A numeric value representing the expected type of the argument that raised the error.</summary>
-    PROPERTY ArgTypeReq			AS DWORD 
+    VIRTUAL PROPERTY ArgTypeReq			AS DWORD 
       GET 
         RETURN _ArgTypeReq 
       END GET
@@ -64,7 +64,7 @@ BEGIN NAMESPACE XSharp
     END PROPERTY
     PRIVATE  _ArgTypeReqType := NULL	AS System.Type 
     /// <summary>The system type representing the expected type of the argument that raised the error.</summary>
-    PROPERTY ArgTypeReqType		AS System.Type 
+    VIRTUAL PROPERTY ArgTypeReqType		AS System.Type 
       GET 
         RETURN _ArgTypeReqType 
       END GET
@@ -74,40 +74,40 @@ BEGIN NAMESPACE XSharp
       END SET
     END PROPERTY
     /// <summary>A numeric value representing the type of the new result that the error handler substitutes for the operation that produced the error condition.</summary>
-    PROPERTY SubstituteType     AS DWORD AUTO 
+    VIRTUAL PROPERTY SubstituteType     AS DWORD AUTO 
     /// <summary>A numeric value representing the number of the argument supplied to an operator or function when an argument error occurs.</summary>
-    PROPERTY ArgNum				AS DWORD AUTO 
+    VIRTUAL PROPERTY ArgNum				AS DWORD AUTO 
     /// <summary>An object representing the SELF of the method in which the error occurred.</summary>
-    PROPERTY MethodSelf			AS OBJECT AUTO 
+    VIRTUAL PROPERTY MethodSelf			AS OBJECT AUTO 
     /// <summary>A symbol representing the calling function of the function in which the error occurred.</summary>
-    PROPERTY CallFuncSym		AS STRING AUTO 
+    VIRTUAL PROPERTY CallFuncSym		AS STRING AUTO 
     /// <summary>An array of the arguments supplied to an operator or function when an argument error occurs.</summary>
-    PROPERTY Args				AS OBJECT[] AUTO
+    VIRTUAL PROPERTY Args				AS OBJECT[] AUTO
     /// <summary>An integer numeric value representing the number of times the failed operation has been attempted.</summary>
-    PROPERTY Tries				AS INT AUTO := 0
+    VIRTUAL PROPERTY Tries				AS INT AUTO := 0
     /// <summary>A logical value indicating whether the subsystem can perform default error recovery for the error condition.</summary>
-    PROPERTY CanDefault         AS LOGIC AUTO 
+    VIRTUAL PROPERTY CanDefault         AS LOGIC AUTO 
     /// <summary>A logical value indicating whether the subsystem can retry the operation that caused the error condition.</summary>
-    PROPERTY CanRetry           AS LOGIC AUTO 
+    VIRTUAL PROPERTY CanRetry           AS LOGIC AUTO 
     /// <summary>A logical value indicating whether a new result can be substituted for the operation that produced the error condition.</summary>
-    PROPERTY CanSubstitute      AS LOGIC AUTO 
+    VIRTUAL PROPERTY CanSubstitute      AS LOGIC AUTO 
     /// <summary>A string that describes the operation being attempted when the error occurred.</summary> 
-    PROPERTY Operation          AS STRING AUTO := ""
+    VIRTUAL PROPERTY Operation          AS STRING AUTO := ""
     /// <summary>A value of 0 indicates that the error condition was not caused by an error from the operating system.  When Error:OsCode is set to a value other </summary>
-    PROPERTY OSCode				AS DWORD AUTO := 0
+    VIRTUAL PROPERTY OSCode				AS DWORD AUTO := 0
     /// <summary>Descripion of the OSCode</summary>
-    PROPERTY OSCodeText			AS STRING GET IIF(OSCode == 0, "", DosErrString(OSCode))
+    VIRTUAL PROPERTY OSCodeText			AS STRING GET IIF(OSCode == 0, "", DosErrString(OSCode))
     /// <summary>A numeric value representing the file handle supplied to a function when an file error occurs.</summary>
-    PROPERTY FileHandle         AS DWORD AUTO 
+    VIRTUAL PROPERTY FileHandle         AS DWORD AUTO 
     /// <summary>A numeric value representing a boundary condition for an operation (such as string overflow or array bound error).</summary>
-    PROPERTY MaxSize			AS DWORD AUTO
+    VIRTUAL PROPERTY MaxSize			AS DWORD AUTO
     /// <summary>A pointer to the function in which the error occurred.</summary>
     /// <remarks><em>Note</em> This property is for compatibility only. It is not being used in the X# runtime.</remarks>
-    PROPERTY FuncPtr            AS IntPtr AUTO := IntPtr.Zero
+    VIRTUAL PROPERTY FuncPtr            AS IntPtr AUTO := IntPtr.Zero
 
 
     /// <summary>A value of any data type unused by the Error system.  It is provided as a user-definable slot, allowing arbitrary information to be attached to an Error object and retrieved later</summary>
-    PROPERTY Cargo              AS OBJECT AUTO
+    VIRTUAL PROPERTY Cargo              AS OBJECT AUTO
 
 
     PRIVATE METHOD setDefaultValues() AS VOID
@@ -196,42 +196,42 @@ BEGIN NAMESPACE XSharp
       LOCAL nGenCode AS GenCode
       nGenCode := (GenCode) SELF:GenCode
       sb := StringBuilder{}
-      sb:AppendLine("Description     : " + SELF:Description)
-      sb:AppendLine("SubSystem       : " + SELF:SubSystem )
-      sb:AppendLine("GenCode         : " + nGenCode:ToString()  )
-      sb:AppendLine("GenCodeText     : " + SELF:GenCodeText  )
+      sb:AppendLine( e"Description :\t" + SELF:Description)
+      sb:AppendLine( e"SubSystem :\t" 	+ SELF:SubSystem )
+      sb:AppendLine( e"GenCode :\t" 	+ nGenCode:ToString()  )
+      sb:AppendLine( e"GenCodeText :\t" + SELF:GenCodeText  )
       IF SELF:SubCode != 0
-        sb:AppendLine("SubCode         : " + SELF:SubCode:ToString() )
-        sb:AppendLine("SubCodeText     : " + SELF:SubCodeText)
+        sb:AppendLine( e"SubCode :\t" 	+ SELF:SubCode:ToString() )
+        sb:AppendLine( e"SubCodeText :\t"	+ SELF:SubCodeText)
       ENDIF
       IF SELF:OsCode != 0
-        sb:AppendLine("OsCode          : " + SELF:OsCode:ToString() )
-        sb:AppendLine("OsCodeText      : " + SELF:OsCodeText )
+        sb:AppendLine(e"OsCode :\t" 	+ SELF:OsCode:ToString() )
+        sb:AppendLine(e"OsCodeText :\t" + SELF:OsCodeText )
       ENDIF
-      sb:AppendLine("FuncSym         : " + SELF:FuncSym   )
+      sb:AppendLine(e"FuncSym :\t" 	+ SELF:FuncSym   )
       LOCAL sev := (Severity) SELF:Severity AS Severity
-      sb:AppendLine("Severity        : " + sev:ToString() )
-      sb:AppendLine("CanDefault      : " + SELF:CanDefault)
-      sb:AppendLine("CanRetry        : " + SELF:CanRetry )
-      sb:AppendLine("CanSubstitute   : " + SELF:CanSubstitute)
+      sb:AppendLine(e"Severity :\t" 	+ sev:ToString() )
+      sb:AppendLine(e"CanDefault :\t"	+ SELF:CanDefault)
+      sb:AppendLine(e"CanRetry :\t"	+ SELF:CanRetry )
+      sb:AppendLine(e"CanSubstitute :\t" + SELF:CanSubstitute)
       IF ! String.IsNullOrEmpty(SELF:Operation)
-        sb:AppendLine("Operation       : " + SELF:Operation)
+        sb:AppendLine(e"Operation :\t" + SELF:Operation)
       ENDIF
       IF ! String.IsNullOrEmpty(SELF:FileName)
-        sb:AppendLine("FileName        : " + SELF:FileName )
+        sb:AppendLine(e"FileName :\t"	+ SELF:FileName )
       ENDIF
       IF SELF:Tries != 0
-          sb:AppendLine("Tries           : " + SELF:Tries:ToString()    )
-      ENDIF
+          sb:AppendLine(e"Tries :\t" 	+ SELF:Tries:ToString()    )
+     ENDIF              
       IF SELF:ArgType != 0
-        sb:AppendLine("ArgType         : " + TypeString(SELF:ArgType    ) )
-      ENDIF
+        sb:AppendLine(e"ArgType :\t" 	+ TypeString(SELF:ArgType    ) )
+      ENDIF 
       IF SELF:ArgNum != 0
-        sb:AppendLine("ArgNum          : " + SELF:ArgNum:ToString()    )
+        sb:AppendLine(e"ArgNum :\t" 	+ SELF:ArgNum:ToString()    )
       ENDIF
       IF SELF:Arg != NULL
-        sb:AppendLine("Arg             : " + SELF:Arg)
-      ENDIF
+        sb:AppendLine(e"Arg :\t" 		+ SELF:Arg)
+      ENDIF 
       LOCAL cArgs AS STRING
       IF SELF:Args != NULL .AND. SELF:Args:Length > 0
             cArgs := "{"
@@ -248,13 +248,13 @@ BEGIN NAMESPACE XSharp
                 lFirst := FALSE
             NEXT
             cArgs += "}"
-            sb:AppendLine("Args            : " + cArgs)
-      ENDIF
+            sb:AppendLine(e"Args :\t" + cArgs)
+      ENDIF 
       IF SELF:ArgTypeReqType != NULL
-        sb:AppendLine("ArgTypeReq      : " + SELF:ArgTypeReqType:FullName)
-      END IF
+        sb:AppendLine(e"ArgTypeReq :\t" + SELF:ArgTypeReqType:FullName)
+      ENDIF
       IF ! String.IsNullOrEmpty(SELF:CallFuncSym)
-        sb:AppendLine("CallFuncSym     : " + SELF:CallFuncSym  )
+        sb:AppendLine(e"CallFuncSym :\t" + SELF:CallFuncSym  )
       ENDIF
       RETURN sb:ToString()
       
@@ -270,7 +270,7 @@ BEGIN NAMESPACE XSharp
     
     /// <exclude/>	
     STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, iArgnum  AS DWORD, aArgs PARAMS OBJECT[]) AS Error
-    VAR err			:= Error{Gencode.EG_ARG, name, ErrString( EG_ARG )}
+    VAR err			:= Error{XSharp.Gencode.EG_ARG, name, ErrString( EG_ARG )}
     err:FuncSym     := cFuncName
     err:Description := err:Message
     err:Argnum		:= iArgNum
@@ -280,7 +280,7 @@ BEGIN NAMESPACE XSharp
     
     /// <exclude/>	
     STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, description AS STRING, iArgnum AS DWORD) AS Error
-    VAR err			:= Error{Gencode.EG_ARG, name, description}
+    VAR err			:= Error{XSharp.Gencode.EG_ARG, name, description}
     err:FuncSym     := cFuncName
     err:Description := err:Message
     err:Argnum		:= iArgNum

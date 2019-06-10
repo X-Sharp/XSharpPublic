@@ -8,7 +8,7 @@
     <Name>VOGUIClasses</Name>
     <OutputName>VOGUIClasses</OutputName>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <XSharpProjectversion>2.0.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.0.1.1</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
   </PropertyGroup>
@@ -177,19 +177,6 @@
     <Compile Include="XP Theme Support.prg" />
   </ItemGroup>
   <ItemGroup>
-    <NativeResource Include="Resources\CurHand.rc" />
-    <NativeResource Include="Resources\CursorHelp.rc" />
-    <NativeResource Include="Resources\DragMultip.rc" />
-    <NativeResource Include="Resources\DragSingle.rc" />
-    <NativeResource Include="Resources\GeneralHelp.rc" />
-    <NativeResource Include="Resources\HelpCursor.rc" />
-    <NativeResource Include="Resources\IDB_DEFTOOLBAR.rc" />
-    <NativeResource Include="Resources\IDD_DEFDLG.rc" />
-    <NativeResource Include="Resources\IDD_DEFDLG2.rc" />
-    <NativeResource Include="Resources\IDI_DEFICON.rc" />
-    <NativeResource Include="Resources\VersionResource.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\..\..\..\VoRedist\CaPaint.dll">
       <Link>CaPaint.dll</Link>
     </None>
@@ -240,6 +227,19 @@
       <AssemblyName>System.Windows.Forms.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <NativeResource Include="Resources\CurHand.rc" />
+    <NativeResource Include="Resources\CursorHelp.rc" />
+    <NativeResource Include="Resources\DragMultip.rc" />
+    <NativeResource Include="Resources\DragSingle.rc" />
+    <NativeResource Include="Resources\GeneralHelp.rc" />
+    <NativeResource Include="Resources\HelpCursor.rc" />
+    <NativeResource Include="Resources\IDB_DEFTOOLBAR.rc" />
+    <NativeResource Include="Resources\IDD_DEFDLG.rc" />
+    <NativeResource Include="Resources\IDD_DEFDLG2.rc" />
+    <NativeResource Include="Resources\IDI_DEFICON.rc" />
+    <NativeResource Include="Resources\VersionResource.rc" />
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

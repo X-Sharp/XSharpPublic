@@ -6,13 +6,15 @@
 #ifdef COMPLETED
 USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD
-/// <summary>SDF RDD. For reading and writing text files.</summary>
-CLASS SDF INHERIT Workarea  
+/// <summary>DELIM RDD. For reading and writing delimited files.</summary>
+CLASS DELIM INHERIT Workarea  
 	CONSTRUCTOR
-		SUPER()     
-		SELF:_hFile    := IntPtr.Zero
-		SELF:_TransRec := TRUE
-		SELF:_RecordLength := 0
+		SUPER()                     
+		SELF:_hFile         := IntPtr.Zero
+		SELF:_TransRec 		:= TRUE
+		SELF:_RecordLength 	:= 0
+		SELF:_Delimiter		:= e"\""
+		SELF:_Separator		:= ","    
 //	METHOD DbEval(info AS DbEvalInfo) AS LOGIC
 /// <inheritdoc />
 METHOD GoTop() AS LOGIC
@@ -52,25 +54,15 @@ METHOD Recall() AS LOGIC
 		
 	// Open and Close   
 /// <inheritdoc />
-METHOD Close() 			AS LOGIC      
-	IF SELF:_hFile   != IntPtr.Zero
-		SELF:GoCold()
-		IF !SELF:_ReadOnly // && hb_setGetEOF
-			FWrite(SELF:_hFile, " ", 1)
-			SELF:_Flush := TRUE
-		ENDIF                  
-		SELF:Flush()
-		FClose(SELF:_hFile)
-		SELF:_hFile := IntPtr.Zero
-	ENDIF
-	RETURN SUPER:Close()
+METHOD Close() 			AS LOGIC  
+	THROW NotImplementedException{}
 /// <inheritdoc />
 METHOD Create(info AS DbOpenInfo) AS LOGIC  
 	THROW NotImplementedException{}
 /// <inheritdoc />
 METHOD Open(info AS DbOpenInfo) AS LOGIC
 	THROW NotImplementedException{}		
-// Filtering and Scoping 
+	// Filtering and Scoping 
 //	METHOD ClearFilter() 	AS LOGIC
 //	METHOD ClearScope() 	AS LOGIC 
 //	METHOD Continue()		AS LOGIC     
@@ -85,20 +77,18 @@ METHOD Open(info AS DbOpenInfo) AS LOGIC
 /// <inheritdoc />
 METHOD GetValue(nFldPos AS INT) AS OBJECT
 	THROW NotImplementedException{}
-//  METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
+// METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
 
 //	METHOD GetValueLength(nFldPos AS INT) AS INT
 /// <inheritdoc />
 METHOD Flush() 			AS LOGIC
 	THROW NotImplementedException{}
-
 /// <inheritdoc />
 METHOD GoCold()			AS LOGIC
 	THROW NotImplementedException{}
 /// <inheritdoc />
 METHOD GoHot()			AS LOGIC   
 	THROW NotImplementedException{}
-
 /// <inheritdoc />
 METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
 	THROW NotImplementedException{}
@@ -118,7 +108,7 @@ METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
 //  METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
 //  METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC	
 //	METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC    	
-//	METHOD OrderInfo(nOrdinal AS DWORD) AS OBJECT
+//	METHOD OrderInfo(nOrdinal AS LONG) AS OBJECT
 //	METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
 //	METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
 //	METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
@@ -137,6 +127,7 @@ METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
 //	METHOD SyncChildren() AS LOGIC
 
 	// Trans	
+/// <inheritdoc />
 METHOD Trans(info AS DbTransInfo) 		AS LOGIC
 	THROW NotImplementedException{}
 //    METHOD TransRec(info AS DbTransInfo) 	AS LOGIC
@@ -156,22 +147,22 @@ METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	// Properties
 //	PROPERTY Alias 		AS STRING GET
 //	PROPERTY BoF 		AS LOGIC GET
-	/// <inheritdoc />
+/// <inheritdoc />
 	PROPERTY Deleted 	AS LOGIC GET 	FALSE
 //	PROPERTY EoF 		AS LOGIC GET
 //	PROPERTY Exclusive	AS LOGIC GET
 //	PROPERTY FieldCount AS LONG GET 
 //	PROPERTY FilterText	AS STRING GET 
 //	PROPERTY Found		AS LOGIC GET 
-	/// <inheritdoc />
+/// <inheritdoc />
 	PROPERTY RecCount	AS LONG GET		0 
-	/// <inheritdoc />
+/// <inheritdoc />
 	PROPERTY RecId		AS OBJECT GET   NULL
-	/// <inheritdoc />
+/// <inheritdoc />
 	PROPERTY RecNo		AS LONG 	GET   0
 //	PROPERTY Shared		AS LOGIC GET
 /// <inheritdoc />
-VIRTUAL PROPERTY SysName AS STRING GET "SDF"
+VIRTUAL PROPERTY Driver AS STRING GET "DELIM" 
 //	
 	// Error Handling
 //	PROPERTY LastGenCode	AS LONG GET

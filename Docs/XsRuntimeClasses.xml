@@ -21,5 +21,10 @@
   This compiler generated class contains all the functions, globals and defines that are defined in the XSharp.XPP assembly.
   </summary>
   </member>
+  <member name="T:XSharp.VFP.Functions">
+  <summary>
+  This compiler generated class contains all the functions, globals and defines that are defined in the XSharp.VFP assembly.
+  </summary>
+  </member>
   </members>
 </doc>

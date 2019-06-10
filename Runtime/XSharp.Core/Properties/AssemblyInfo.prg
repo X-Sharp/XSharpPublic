@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -15,6 +15,7 @@ using XSharp
 //
 [assembly: AssemblyTitle("XSharp.Core")]
 [assembly: AssemblyDescription("XSharp common runtime DLL (no XBase types")]
-[assembly: ClassLibrary(XSHARP_CORE_FUNCTIONS,"XSharp")]
+// in the core dialect the next attributes are not included automatically
+[assembly: ClassLibrary("XSharp.Core.Functions","XSharp")]
 [assembly: ImplicitNamespace("XSharp")]
-[assembly: CompilerVersionAttribute("X# "+__VERSION__ +" - dialect:Core" )] 
+[assembly: CompilerVersionAttribute("X# "+__VERSION__ +" - dialect:"+__DIALECT__ )] 

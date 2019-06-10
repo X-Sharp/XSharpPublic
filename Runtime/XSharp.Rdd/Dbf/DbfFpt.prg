@@ -79,8 +79,7 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             SUPER()
             SELF:_oMemo := _oFptMemo := FptMemo{SELF}
             /// <inheritdoc />	
-        VIRTUAL PROPERTY SysName AS STRING GET "DBFFPT"
-        
+        PROPERTY Driver AS STRING GET "DBFFPT"
         
         
         
@@ -113,10 +112,6 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             ENDIF
             RETURN SUPER:GetValue(nFldPos)
             
-            // Indicate if a Field is a Memo; Called by GetValue() in Parent Class
-            // At DbfFpt Level, TRUE for DbFieldType.Memo, DbFieldType.Picture, DbFieldType.Object
-        INTERNAL VIRTUAL METHOD _isMemoFieldType( fieldType AS DbFieldType ) AS LOGIC
-            RETURN ( ( fieldType == DbFieldType.Memo ) .OR. ( fieldType == DbFieldType.Picture ) .OR. ( fieldType == DbFieldType.Ole ) )
             /// <inheritdoc />
         VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
             LOCAL oResult AS OBJECT
@@ -175,26 +170,28 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
         PROTECT _blockSize  AS SHORT
         PROTECT _lockScheme AS DbfLocking
         PROPERTY Shared AS LOGIC GET _Shared
-        STATIC PROPERTY DefExt as STRING AUTO
+        STATIC PROPERTY DefExt AS STRING AUTO
+        PROTECTED PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR  .AND. SELF:_hFile != IntPtr.Zero      
+
         STATIC CONSTRUCTOR
             DefExt := FPT_MEMOEXT
             
-        private method GetMemoExtFromDbfExt(cDbfName as STRING) AS STRING
-            switch System.IO.Path.GetExtension(cDbfName:ToLower())
-            case ".vcx"         // Control Library
-                return ".VCT"
-            case ".scx"         // Screen
-                return ".SCT"
-            case ".pjx"         // Project
-                return ".PJT"
-            case ".frx"         // Report
-                return ".FRT"
-            case ".mnx"         // Menu
-                return ".MNT"
-            case ".dbc"         // database container
-                return ".dct"
-            end switch
-            return DefExt
+        PRIVATE METHOD GetMemoExtFromDbfExt(cDbfName AS STRING) AS STRING
+            SWITCH System.IO.Path.GetExtension(cDbfName:ToLower())
+            CASE ".vcx"         // Control Library
+                RETURN ".VCT"
+            CASE ".scx"         // Screen
+                RETURN ".SCT"
+            CASE ".pjx"         // Project
+                RETURN ".PJT"
+            CASE ".frx"         // Report
+                RETURN ".FRT"
+            CASE ".mnx"         // Menu
+                RETURN ".MNT"
+            CASE ".dbc"         // database container
+                RETURN ".dct"
+            END SWITCH
+            RETURN DefExt
             
             
         CONSTRUCTOR (oRDD AS DBF)
@@ -217,7 +214,7 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             /// <inheritdoc />
         METHOD Flush() 			AS LOGIC		
             LOCAL isOk AS LOGIC
-            isOk := ( SELF:_hFile != F_ERROR )
+            isOk := SELF:IsOpen
             IF isOk
                 isOk := FFlush( SELF:_hFile )
             ENDIF
@@ -301,7 +298,7 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             LOCAL rawData AS BYTE[]
             LOCAL memoBlock AS BYTE[]
             //
-            IF ( SELF:_hFile == F_ERROR )
+            IF !SELF:IsOpen
                 RETURN FALSE
             ENDIF
             //
@@ -333,9 +330,10 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             // And finally, put the Data Type
             // 0 : Picture (on MacOS); 1: Memo; 2 : Object
             LOCAL nType := 2 AS LONG
-            IF ( SELF:_oRdd:_FieldType( nFldPos ) == DbFieldType.Memo )
+            var column := SELF:_oRdd:_GetColumn(nFldPos)
+            IF ( column:FieldType == DbFieldType.Memo )
                 nType := 1
-            ELSEIF ( SELF:_oRdd:_FieldType( nFldPos ) == DbFieldType.Picture )
+            ELSEIF ( column:FieldType == DbFieldType.Picture )
                 nType := 0
             ENDIF
             LongToFox(nType, memoBlock,0)
@@ -349,7 +347,7 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             /// <inheritdoc />
         VIRTUAL METHOD CloseMemFile( ) AS LOGIC
             LOCAL isOk := FALSE AS LOGIC
-            IF ( SELF:_hFile != F_ERROR )
+            IF SELF:IsOpen
                 //
                 TRY
                     isOk := FClose( SELF:_hFile )
@@ -368,13 +366,13 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
         VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
             LOCAL isOk AS LOGIC
             SELF:_FileName  := info:FileName
-            var cExt        := GetMemoExtFromDbfExt(SELF:_FileName)
+            VAR cExt        := GetMemoExtFromDbfExt(SELF:_FileName)
             SELF:_FileName  := System.IO.Path.ChangeExtension( SELF:_FileName, cExt )
             SELF:_Shared    := info:Shared
             SELF:_ReadOnly  := info:ReadOnly
             //
             SELF:_hFile     := FCreate( SELF:_FileName) 
-            isOk := ( SELF:_hFile != F_ERROR )
+            isOk := SELF:IsOpen
             IF isOk
                 // Per default, Header Block Size if 512
                 LOCAL memoHeader AS BYTE[]
@@ -397,13 +395,13 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
         VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
             SELF:_FileName  := info:FileName
-            var cExt        := GetMemoExtFromDbfExt(SELF:_FileName)
+            VAR cExt        := GetMemoExtFromDbfExt(SELF:_FileName)
             SELF:_FileName  := System.IO.Path.ChangeExtension( SELF:_FileName, cExt )
             SELF:_Shared    := info:Shared
             SELF:_ReadOnly  := info:ReadOnly
             //
             SELF:_hFile     := Fopen(SELF:_FileName, info:FileMode)
-            isOk := ( SELF:_hFile != F_ERROR )
+            isOk := SELF:IsOpen
             IF isOk
                 // Per default, Block Size if 512
                 SELF:_initContext()
@@ -417,9 +415,7 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
         VIRTUAL PROPERTY BlockSize 	 AS SHORT
             GET 
                 LOCAL nSize := 0 AS SHORT
-                LOCAL isOk AS LOGIC
-                isOk := ( SELF:_hFile != F_ERROR )
-                IF isOk
+                 IF SELF:IsOpen
                     LOCAL _sizeOfBlock AS BYTE[]
                     // _sizeOfBlock is at the beginning of MemoFile, at posiion 6
                     _sizeOfBlock := BYTE[]{2}
@@ -435,9 +431,7 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             END GET
             
             SET 
-                LOCAL isOk AS LOGIC
-                isOk := ( SELF:_hFile != F_ERROR )
-                IF isOk
+                IF SELF:IsOpen
                     LOCAL _sizeOfBlock AS BYTE[]
                     _sizeOfBlock := BYTE[]{2}
                     ShortToFox( VALUE, _sizeOfBlock,0)
@@ -456,7 +450,9 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
         // Return the result of the operation
         PROTECTED METHOD _tryLock( nOffset AS UINT64, nLong AS LONG, nTries AS LONG  ) AS LOGIC
             LOCAL locked AS LOGIC
-            //
+            IF ! SELF:IsOpen
+                RETURN FALSE
+            ENDIF
             REPEAT
                 TRY
                     locked := FFLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
@@ -476,7 +472,10 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             
         PROTECTED METHOD _unlock( nOffset AS UINT64, nLong AS LONG ) AS LOGIC
             LOCAL unlocked AS LOGIC
-            //
+            IF ! SELF:IsOpen
+                RETURN FALSE
+            ENDIF
+
             TRY
                 unlocked := FFUnLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
             CATCH ex AS Exception

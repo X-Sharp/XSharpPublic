@@ -1,38 +1,44 @@
-****
-*  memvar.xh
-*  X# Memvar commands
-*
-*  IMPORTANT:  Functions beginning with an underscore
-*  character are reserved, version-dependent functions.
-*  These functions should not be called directly.
-*
+///////////////////////////////////////////////////////////////////////////
+// memvar.xh
+//
+// XSharp Memvar commands
+//
+// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+// Caution: do not modify this file. It will be overwritten during product updates
+//
+// IMPORTANT:  Functions beginning with an underscore
+//             character are reserved, version-dependent functions.
+//             These functions should not be called directly.
+
 
 ***
 *  MEMVAR variables
 *
-#command CLEAR MEMORY                   => __MClear()
-#command RELEASE <vars,...>             => __MXRelease( <"vars"> )
-#command RELEASE ALL                    => __MRelease("*", .t.)
-#command RELEASE ALL LIKE <skel>        => __MRelease( #<skel>, .t. )
-#command RELEASE ALL EXCEPT <skel>      => __MRelease( #<skel>, .f. )
+#command CLEAR MEMORY                   => _MClear()
+#command RELEASE <vars,...>             => _MXRelease( <"vars"> )
+#command RELEASE ALL                    => _MRelease("*", TRUE)
+#command RELEASE ALL LIKE <skel>        => _MRelease( #<skel>, TRUE )
+#command RELEASE ALL EXCEPT <skel>      => _MRelease( #<skel>, FALSE )
 
 #command RESTORE [FROM <(file)>] [<add: ADDITIVE>]                      ;
-      => __MRestore( <(file)>, <.add.> )
+      => _MRestore( <(file)>, <.add.> )
 
 #command SAVE ALL LIKE <skel> TO <(file)>                               ;
-      => __MSave( <(file)>, <(skel)>, .t. )
+      => _MSave( <(file)>, <(skel)>, TRUE )
 
 #command SAVE TO <(file)> ALL LIKE <skel>                               ;
-      => __MSave( <(file)>, <(skel)>, .t. )
+      => _MSave( <(file)>, <(skel)>, TRUE )
 
 #command SAVE ALL EXCEPT <skel> TO <(file)>                             ;
-      => __MSave( <(file)>, <(skel)>, .f. )
+      => _MSave( <(file)>, <(skel)>, FALSE )
 
 #command SAVE TO <(file)> ALL EXCEPT <skel>                             ;
-      => __MSave( <(file)>, <(skel)>, .f. )
+      => _MSave( <(file)>, <(skel)>, FALSE )
 
 #command SAVE [TO <(file)>] [ALL]                                       ;
-      => __MSave( <(file)>, "*", .t. )
+      => _MSave( <(file)>, "*", TRUE )
 
 
 ** EOF

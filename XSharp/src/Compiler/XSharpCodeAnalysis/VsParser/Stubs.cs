@@ -122,7 +122,13 @@ namespace Roslyn.Utilities
     internal static class PathUtilities
     {
         internal static string GetDirectoryName(string fileName) => System.IO.Path.GetDirectoryName(fileName);
-        internal static string GetFileName(string fileName) => System.IO.Path.GetFileName(fileName);
+        internal static string GetFileName(string fileName, bool includeExtension = true)
+        {
+            if (includeExtension)
+                return System.IO.Path.GetFileName(fileName);
+            else
+                return System.IO.Path.GetFileNameWithoutExtension(fileName);
+        }
     }
     internal static class FileNameUtilities
     {

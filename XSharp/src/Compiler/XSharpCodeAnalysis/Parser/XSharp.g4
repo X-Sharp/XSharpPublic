@@ -51,7 +51,7 @@ entity              : namespace_
                     // types
                     | class_
                     | {IsXPP}? xppclass         // XPP Class definition
-                    | {IsFox}? foxclass         // FoxPro Class definition*/
+                    //| {IsFox}? foxclass         // FoxPro Class definition*/
                     | structure_
                     | interface_
                     | delegate_

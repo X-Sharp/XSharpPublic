@@ -838,7 +838,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #region Expressions
 
-        private ExpressionSyntax GenerateNIL()
+        protected ExpressionSyntax GenerateNIL()
         {
             if (_options.NoClipCall)
                 return MakeDefault(_usualType);

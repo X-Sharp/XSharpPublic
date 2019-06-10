@@ -14,7 +14,7 @@ CLASS DBFNSX INHERIT DBFSMT
 		SELF:_oIndex := NsxIndex{SELF}
 		RETURN
 		
-	PROPERTY SysName AS STRING GET "DBFNSX"
+	PROPERTY Driver AS STRING GET "DBFNSX"
 
 /// <summary>DBFNSX worker class that implements the NSX support.</summary>
 CLASS NsxIndex INHERIT BaseIndex    

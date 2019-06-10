@@ -289,7 +289,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBFilter() AS VOID
 			LOCAL cDbf AS STRING
-			cDbf := GetTempFileName()
+			cDbf := __FUNCTION__
 			FErase(cDbf + ".cdx")
 
 			RDDSetDefault("DBFCDX")
@@ -362,12 +362,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBFieldInfo_test() AS VOID
 			LOCAL cDbf AS STRING
-			cDbf := GetTempFileName()
+			cDbf := __FUNCTION__
 			FErase(cDbf + ".cdx")
 			
 			DBCreate(cDbf, {{"NFIELD","N",10,3}}, "DBFCDX", TRUE)
 			DBAppend()
-			FieldPut(1, "ABC")
+			FieldPut(1, 1.23)
 			
 			Assert.Equal("NFIELD",	DBFieldInfo( DBS_NAME , 1 ) ) // NullReferenceException
 			Assert.Equal("N",		DBFieldInfo( DBS_TYPE , 1 ) )
@@ -381,7 +381,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBRecordInfo_test2() AS VOID
 			LOCAL cDbf AS STRING
-			cDbf := GetTempFileName()
+			cDbf := __FUNCTION__
 			FErase(cDbf + ".cdx")
 			
 			DBCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFCDX", TRUE)
@@ -408,7 +408,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBContinue_test() AS VOID
 			LOCAL cDbf AS STRING
-			cDbf := GetTempFileName()
+			cDbf := __FUNCTION__
 			FErase(cDbf + ".cdx")
 
 			RDDSetDefault("DBFCDX")
@@ -1620,7 +1620,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			DBCloseAll()
 			
-			cDBF := GetTempFileName()
+			cDBF := __FUNCTION__
 			FErase(cDbf + ".cdx")
 
 			RDDSetDefault("DBFCDX")
@@ -1997,7 +1997,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			"Osterreich" , "Gothe" , "Gotz" , "Gobel" ,;
 			"Otter" , "Anfang" , "Art" , "Arger" }
 			
-			cDBF := GetTempFileName()
+			cDBF := __FUNCTION__
 			cIndex := cDbf
 			FErase ( cIndex + IndexExt() )
 
@@ -2188,7 +2188,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			aFields := { { "LAST" , "C" , 20 , 0 }}
 			aValues := { "b" , "c" , "d", "e" , "a" }
 			
-			cDBF := GetTempFileName()
+			cDBF := __FUNCTION__
 			cIndex := cDbf
 			FErase ( cIndex + IndexExt() )
 			

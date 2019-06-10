@@ -1,4 +1,4 @@
-﻿PARTIAL CLASS SQLStatement
+PARTIAL CLASS SQLStatement
 	
 	HIDDEN  hStmt   			AS PTR
 	HIDDEN  cStatement      AS STRING
@@ -717,7 +717,7 @@ METHOD SetStatementOption( fOption, uValue, lUser )
 			AsString( fOption ) + "," + AsString( uValue ) + " )" )
 	#ENDIF
 	
-	Default( @lUser, TRUE )
+	DEFAULT( @lUser, TRUE )
 	
 	nExist := AScan( SELF:aUserOption, fOption )
 	

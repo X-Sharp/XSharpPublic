@@ -86,7 +86,7 @@ METHOD OpenResource(xID)
 	IF IsInstanceOfUsual(xID, #ResourceID)
 		pszResID	:= PSZ(_CAST, xID:ID)
 	ELSE
-		pszResID	:= PSZ(_CAST, xID)
+		pszResID	:= PTR(_CAST, xID)
 	ENDIF
 
 	lReturnValue := Animate_Open(SELF:Handle(), pszResID)

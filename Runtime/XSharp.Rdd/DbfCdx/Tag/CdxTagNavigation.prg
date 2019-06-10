@@ -37,7 +37,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF !locked
                         RETURN FALSE
                     ENDIF
-                    VAR recno := SELF:_locateKey(NULL, 0, IIF(SELF:Descending, SearchMode.Top, SearchMode.Bottom))
+                    LOCAL recno AS LONG
+                    IF SELF:Descending
+                        recno := SELF:_locateFirst(SELF:_rootPage)
+                    ELSE
+                        recno := SELF:_locateLast(SELF:_rootPage)
+                    ENDIF
+
                     result := SELF:_oRdd:__Goto(recno)
                     IF result
                         result := SELF:_oRdd:SkipFilter(-1)
@@ -69,7 +75,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF !locked
                         RETURN FALSE
                     ENDIF
-                    VAR recno := SELF:_locateKey(NULL, 0, IIF(SELF:Descending, SearchMode.Bottom, SearchMode.Top))
+                    LOCAL recno AS LONG
+                    IF SELF:Descending
+                        recno := SELF:_locateLast(SELF:_rootPage)
+                    ELSE
+                        recno := SELF:_locateFirst(SELF:_rootPage)
+                    ENDIF
                     result := SELF:_oRdd:__Goto(recno)
                     IF result
                         result := SELF:_oRdd:SkipFilter(1)
@@ -151,7 +162,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 IF !SELF:_oRdd:_isValid
                     IF nToSkip < 0
-                        recno := SELF:_locateKey(NULL, 0, SearchMode.Bottom)
+                        recno := SELF:_locateKey(NULL, 0, SearchMode.Bottom,0)
                         nToSkip++
                     ELSE
                         recno := 0
@@ -223,10 +234,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 topStack:Pos++
                 node:Pos := topStack:Pos
                 IF node:Pos < page:NumKeys .AND. node:ChildPageNo != 0
-                    RETURN SELF:_locate(NULL, 0, SearchMode.Top, node:ChildPageNo)
+                    RETURN SELF:_locate(NULL, 0, SearchMode.Top, node:ChildPageNo,0)
                 ENDIF
                 // Once we are at the bottom level then we simply skip forward using the Right Pointers
-                IF topStack:Pos == topStack:Page:Numkeys
+                IF topStack:Pos == page:Numkeys
                     IF page:HasRight
                         VAR rightPtr := page:RightPtr
                         VAR newpage := SELF:GetPage(rightPtr)
@@ -247,7 +258,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN node:Recno
             ENDIF
             IF node:ChildPageNo != 0
-                RETURN SELF:_locate(NULL, 0, SearchMode.Bottom, node:ChildPageNo)
+                RETURN SELF:_locate(NULL, 0, SearchMode.Bottom, node:ChildPageNo,0)
             ENDIF
             IF topStack:Pos == 0
                 IF page:HasLeft
@@ -282,7 +293,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN TRUE
             ENDIF
             IF node:ChildPageNo != 0
-                SELF:_locate(NULL, 0, SearchMode.Bottom, node:ChildPageNo)
+                SELF:_locate(NULL, 0, SearchMode.Bottom, node:ChildPageNo,0)
                 record += topStack:Pos 
                 topStack:Pos := 0
                 RETURN TRUE
@@ -495,7 +506,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _goRecord(keyBytes AS BYTE[], keyLen AS LONG, gotoRec AS LONG ) AS LONG
             LOCAL recno AS LONG
             // Search the first occurence from the start of the index
-            recno := SELF:_locateKey(keyBytes, keyLen, SearchMode.Left)
+            recno := SELF:_locateKey(keyBytes, keyLen, SearchMode.Left, gotoRec)
             // Now, move until we found the right Recno
             DO WHILE recno != 0 .AND. recno != gotoRec
                 recno := SELF:_getNextKey(SkipDirection.Forward)
@@ -518,7 +529,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN result
             
-        PRIVATE METHOD _locateKey( keyBuffer AS BYTE[] , bufferLen AS LONG , searchMode AS SearchMode ) AS LONG
+        PRIVATE METHOD _locateKey( keyBuffer AS BYTE[] , bufferLen AS LONG , searchMode AS SearchMode,recNo AS LONG ) AS LONG
             // Find Key starting at the top of the index
             SELF:ClearStack()
             IF bufferLen > SELF:_keySize
@@ -528,10 +539,43 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     bufferLen := SELF:_keySize
                 ENDIF
             ENDIF
-            RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, SELF:_rootPage)
+            RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, SELF:_rootPage, recNo)
             
+        PRIVATE METHOD _locateFirst(pageOffSet AS LONG) AS LONG
+            VAR page := SELF:GetPage(pageOffset)
+            IF page == NULL
+                SELF:ClearStack()
+                RETURN 0
+            ENDIF
+            SELF:PushPage(page, 0)
+            IF page IS CdxBranchPage VAR branchPage
+                LOCAL nChildPage AS LONG
+                nChildPage := branchPage:GetChildPage(0)
+                RETURN SELF:_locateFirst(nChildPage)
+            ENDIF
+            VAR node := page[0]
+            SELF:_saveCurrentRecord(node)
+            RETURN node:Recno
+               
             
-        PRIVATE METHOD _locate(keyBuffer AS BYTE[] , bufferLen AS LONG , searchMode AS SearchMode , pageOffset AS LONG ) AS LONG
+        PRIVATE METHOD _locateLast(pageOffSet AS LONG) AS LONG
+            VAR page := SELF:GetPage(pageOffset)
+            IF page == NULL
+                SELF:ClearStack()
+                RETURN 0
+            ENDIF
+            SELF:PushPage(page, page:NumKeys-1)
+            IF page IS CdxBranchPage VAR branchPage
+                LOCAL nChildPage AS LONG
+                nChildPage := branchPage:GetChildPage(page:NumKeys-1)
+                RETURN SELF:_locateFirst(nChildPage)
+            ENDIF
+            VAR node := page[page:NumKeys-1]
+            SELF:_saveCurrentRecord(node)
+            RETURN node:Recno
+
+
+        PRIVATE METHOD _locate(keyBuffer AS BYTE[] , keyLength AS LONG , searchMode AS SearchMode , pageOffset AS LONG, recNo AS LONG) AS LONG
             LOCAL foundPos  AS WORD
             LOCAL page      AS CdxTreePage
             LOCAL nodeCount AS WORD
@@ -556,6 +600,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
             SWITCH searchMode
             CASE SearchMode.Right
+		/*
                 minPos := 0
                 maxPos := nodeCount
                 DO WHILE minPos < maxPos
@@ -568,6 +613,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                 ENDDO
                 foundPos := minPos
+ 
+		*/
+                foundPos := page:FindKey(keyBuffer, recNo, keyLength)
                 IF page IS CdxBranchPage .AND. foundPos >= nodeCount
                     foundPos := nodeCount-1
                 ENDIF
@@ -580,7 +628,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 DO WHILE minPos < maxPos
                     foundPos := (minPos + maxPos) / 2
                     node:Pos := foundPos
-                    VAR cmp := SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen)
+                    VAR cmp := SELF:__Compare(node:KeyBytes, keyBuffer, keyLength)
                     IF cmp >= 0
                         found := TRUE
                     ENDIF
@@ -605,11 +653,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     
                 ENDDO
                 foundPos := minPos
+                IF foundPos >= nodeCount
+                    foundPos -= 1
+                endif
                 node:Pos := foundPos
-                IF searchMode == SearchMode.Left .AND. foundPos < nodeCount .AND. SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) == 0
+                IF searchMode == SearchMode.Left .AND. foundPos < nodeCount .AND. SELF:__Compare(node:KeyBytes, keyBuffer, keyLength) == 0
                     searchMode := SearchMode.LeftFound
                 ENDIF
-                    
             CASE SearchMode.Bottom
                 IF nodeCount > 0
                     foundPos := nodeCount-1
@@ -625,13 +675,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // Add info in the stack
 
             IF atEOF .AND. searchMode != SearchMode.Bottom
-                SELF:_locateKey(NULL, 0, SearchMode.Bottom)
+                SELF:_locateKey(NULL, 0, SearchMode.Bottom,0)
                 RETURN 0
             ENDIF
 
             SELF:PushPage(page, foundPos)
-            IF page IS CdxBranchPage
-                RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, node:ChildPageNo)
+            IF page IS CdxBranchPage VAR bPage
+#ifdef TESTCDX
+                //bPage:ValidateLevel()
+#endif
+                RETURN SELF:_locate(keyBuffer, keyLength, searchMode, node:ChildPageNo,recNo)
             ENDIF
             
             IF foundPos < nodeCount .AND. foundPos >= 0
@@ -642,7 +695,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:_saveCurrentRecord(node)
                     RETURN node:Recno
                 CASE SearchMode.Left
-                    IF SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) == 0
+                    IF SELF:__Compare(node:KeyBytes, keyBuffer, keyLength) == 0
                         SELF:_saveCurrentRecord(node)
                         RETURN node:Recno
                     ENDIF
@@ -674,6 +727,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 recno := SELF:_Recno
             ENDIF
             RETURN recno
+
         PRIVATE METHOD _Seek(seekInfo AS DBSEEKINFO , abNewKey AS BYTE[] ) AS LOGIC
             LOCAL recno AS LONG
             LOCAL result AS LOGIC
@@ -721,7 +775,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         len := SELF:_keySize
                         padLen := len
                     ENDIF
-                    recno := SELF:_locateKey(abNewKey, padLen, IIF(seekInfo:SoftSeek , SearchMode.LeftFound , SearchMode.Left))
+                    recno := SELF:_locateKey(abNewKey, padLen, IIF(seekInfo:SoftSeek , SearchMode.LeftFound , SearchMode.Left),0)
                     result := SELF:_oRdd:__Goto(recno)
                     IF deletedState .OR. SELF:_oRdd:_FilterInfo:Active
                         SELF:_oRdd:SkipFilter(1)

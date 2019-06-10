@@ -5,20 +5,30 @@
 //
 /*
 LEAF Page
-- A Leaf page has type 2. The List of CDX tags is a special leaf page with type 3 (Root + Leaf)
+  From the FoxPro Docs, where this is called "Compact Index Exterior Node Record"
+  Byte offset   Description
+  ===============================
+  00 - 01       Node attributes (any of the following numeric values or their sums):
+                0 - index node
+                1 - root node
+                2 - leaf node
+  02 - 03       Number of keys present (0, 1 or many)
+  04 - 07       Pointer to the node directly to the left of current node (on same level; -1 if not present)
+  08 - 11       Pointer to the node directly to right of the current node (on same level; -1 if not present)
+  12 - 13       Available free space in node
+  14 - 17       Record number mask
+  18            Duplicate byte count mask
+  19            Trailing byte count mask
+  20            Number of bits used for record number
+  21            Number of bits used for duplicate count
+  22            Number of bits used for trail count
+  23            Number of bytes holding record number, duplicate count and trailing count
+  24 - 511      Index keys and information
+                Each entry consists of the record number, duplicate byte count and trailing byte count, all compacted.
+                The key text is placed at the logical end of the node, working backwards, allowing for previous key entries.   
+
+- The List of CDX tags is a special leaf page with type 3 (Root + Leaf)
 - It starts with a fixed block of 24 bytes:
-  BYTE     attr    [ 2 ];    node type 
-  BYTE     nKeys   [ 2 ];    number of keys 
-  BYTE     leftPtr [ 4 ];    offset of left node or -1 
-  BYTE     rightPtr[ 4 ];    offset of right node or -1
-  BYTE     freeSpc [ 2 ];    free space available in a page in bytes
-  BYTE     recMask [ 4 ];    record number mask 
-  BYTE     dupMask;          duplicate bytes count mask 
-  BYTE     trlMask;          trailing bytes count mask 
-  BYTE     recBits;          number of bits for record number 
-  BYTE     dupBits;          number of bits for duplicate count
-  BYTE     trlBits;          number of bits for trailing count 
-  BYTE     keyBytes;         total number of bytes for recno/dup/trail info 
   The remaining 488 bytes are used by the list of key descriptors (which starts immediately after this header) and the keys
   (which are stored from the end of the page forward)
   Each key descriptor consists of 3 numbers
@@ -38,6 +48,8 @@ LEAF Page
              This is complicated but allows to use memcmp to compare numeric values
   Character fields are assumed to have trailing ' ', numeric field have trailing '\0'
 
+
+
 */
 
 USING System.Runtime.CompilerServices
@@ -49,16 +61,21 @@ USING System.IO
 USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp.RDD.CDX
-    [DebuggerDisplay("{Recno} {KeyText}")];
-    INTERNAL STRUCTURE CdxLeaf
-        INTERNAL Recno AS LONG
-        INTERNAL Key   AS BYTE[]
+    [DebuggerDisplay("{DebuggerDisplay,nq}")];
+    INTERNAL SEALED CLASS CdxLeaf
+        INTERNAL Recno  AS LONG
+        INTERNAL Key    AS BYTE[]
+        INTERNAL Trail  AS BYTE
+        INTERNAL Dup    AS BYTE
         INTERNAL PROPERTY KeyText AS STRING GET SELF:Key:ToAscii()
-        CONSTRUCTOR (nRecno AS LONG, bKey AS BYTE[])
+        INTERNAL PROPERTY DebuggerDisplay AS STRING GET String.Format("{0,6} {1} ", Recno, KeyText)
+        CONSTRUCTOR (nRecno AS LONG, bKey AS BYTE[], nDup AS BYTE, nTrail AS BYTE)
             SELF:Recno := nRecno
             SELF:Key   := (BYTE[]) bKey:Clone()
+            SELF:Dup   := nDup
+            SELF:Trail := nTrail
             RETURN
-    END STRUCTURE
+    END CLASS
 	/// <summary>
 	/// CdxLeaf page. this class maps the Leaf page from the file in memory
     /// Manipulating the page is implemented in the CdxTag class
@@ -80,11 +97,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _dataBytes      AS BYTE
 
         // Other fields 
-		PRIVATE _keyLen    AS WORD
-        PRIVATE _lenShift  AS INT
         PRIVATE _leaves    AS List<CdxLeaf>
-        PRIVATE _prevData  AS BYTE[]
-        PROTECTED _bTrail    AS BYTE
 
 
 #endregion
@@ -110,53 +123,51 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS WORD)
             SUPER(bag, nPage, buffer)
-            _keyLen     := nKeyLen
+            KeyLength   := nKeyLen
             _leaves     := NULL
-            _prevData   := BYTE[]{nKeyLen}
-            _bTrail     := 0
+            TrailByte   := 0
             SELF:_getValues()
 
             RETURN
         INTERNAL METHOD InitBlank(oTag AS CdxTag) AS VOID
             SELF:Tag    := oTag
-            SELF:Initialize(_keyLen)
+            SELF:Initialize(KeyLength)
             IF Tag != NULL
-                _bTrail := (BYTE) (IIF(Tag:KeyType == __UsualType.String, 32, 0) )
+                TrailByte := (BYTE) (IIF(Tag:KeyType == __UsualType.String, 32, 0) )
             ELSE
-                _bTrail := 32
+                TrailByte := 32
             ENDIF
 
         PROTECTED VIRTUAL METHOD _setTag(newTag AS CdxTag) AS VOID
             _tag := newTag
             IF newTag != NULL
-                _bTrail := (BYTE) (IIF(_tag:KeyType == __UsualType.String, 32, 0) )
+                TrailByte := (BYTE) (IIF(_tag:KeyType == __UsualType.String, 32, 0) )
             ENDIF
 
-        INTERNAL VIRTUAL METHOD Initialize(keyLength AS WORD) AS VOID
+        INTERNAL VIRTUAL METHOD Initialize(nKeyLength AS WORD) AS VOID
             VAR wasRoot := SELF:IsRoot
             SELF:PageType       := CdxPageType.Leaf
             IF wasRoot
                 SELF:SetRoot()
             ENDIF
+            
+            IF SELF:Tag != NULL
+                SELF:Tag:SetLeafProperties(SELF)
+            ELSE
+                SELF:SetProperties()
+            ENDIF
+            SELF:LenShift      := (nKeyLength << 8 ) | (8 - SELF:DuplicateBits)
+            RETURN
+
+        PRIVATE METHOD SetProperties() AS VOID
             SELF:ClearRecordsAndKeys()
-            _keyLen             := keyLength
-            VAR bits            := CdxHelpers.GetBits(keyLength)
+            VAR bits            := CdxHelpers.GetBits(SELF:KeyLength)
             // base dupCountMask, trailCountMNask, numbitsRecno and other info are based on keylength 
             SELF:DataBytes      := IIF (bits > 12, 5, IIF( bits > 8, 4, 3))
             SELF:RecordBits     := (SELF:DataBytes << 3) - (bits << 1)
             SELF:DuplicateBits  := SELF:TrailingBits  := bits
             SELF:TrailingMask   := SELF:DuplicateMask := (BYTE) (( 1 << bits  ) - 1)
             SELF:RecnoMask      := (1 << SELF:RecordBits) -1
-            SELF:_lenShift      := (keyLength << 8 ) | (8 - SELF:DuplicateBits)
-            IF SELF:Tag != NULL
-                VAR numRecs     := SELF:Tag:RDD:RecCount
-                DO WHILE _AND(numRecs , SELF:RecnoMask) != numRecs
-                    SELF:DataBytes  += 1
-                    SELF:RecordBits += 8
-                    SELF:RecnoMask  := (1 << SELF:RecordBits) -1
-                ENDDO
-            ENDIF
-
             RETURN
 
         INTERNAL METHOD ClearRecordsAndKeys() AS VOID
@@ -166,9 +177,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             memset(SELF:Buffer,CDXLEAF_HEADERLEN,CDXLEAF_BYTESFREE,0)
             RETURN
 
-        PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
+        INTERNAL VIRTUAL METHOD Read() AS LOGIC
 			VAR Ok := SUPER:Read()
-            Debug.Assert (SELF:PageType:HasFlag(CdxPageType.Leaf))
+            System.Diagnostics.Debug.Assert (SELF:PageType:HasFlag(CdxPageType.Leaf))
             IF Ok
                 SELF:_getValues()
             ENDIF
@@ -182,7 +193,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             LOCAL nOffSet   AS Int32
             LOCAL nRecno    AS Int32
-            Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
+            System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nOffSet     := CDXLEAF_HEADERLEN + nPos * SELF:DataBytes
             nRecno      := _GetLong(nOffSet) 
             nRecno      := _AND( nRecno , SELF:RecnoMask)
@@ -191,8 +202,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PUBLIC METHOD GetChildPage(nPos AS Int32) AS Int32
             RETURN 0
 
+        PUBLIC METHOD GetChildren as IList<LONG>
+            RETURN List<LONG>{}
+
         PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
-            Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
+            System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             SELF:_ExpandLeaves(FALSE)
             RETURN _leaves[nPos]:Key
 #endregion
@@ -204,18 +218,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN TRUE
             ENDIF
             LOCAL nOffSet   AS Int32
-            LOCAL aBytes := BYTE[]{_KeyLen} AS BYTE[]
+            LOCAL aBytes := BYTE[]{KeyLength} AS BYTE[]
             LOCAL nRecno    AS Int32
-            LOCAL nDup, nTrail AS Int32
-            LOCAL nKey      AS Int32
+            LOCAL nDup, nTrail AS BYTE
+            LOCAL nCopy     AS Int32
             LOCAL nStart    AS Int32
             LOCAL nStep     AS Int32
             LOCAL nLast     AS Int32
             LOCAL trailchar  AS BYTE
-            VAR dupMask    := SELF:DuplicateMask
-            VAR dupBits    := SELF:DuplicateBits
-            VAR trailMask  := SELF:TrailingMask
-            VAR recnoBits  := SELF:RecordBits
 
             
             // First key starts at end of page
@@ -231,45 +241,48 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:NumKeys > 0
                 nLast := SELF:NumKeys-1
                 FOR VAR nI := 0 TO nLast
-                    LOCAL iTemp AS Int32
+                    LOCAL iTemp AS WORD
                     nRecno  := _GetLong(nOffSet)
-                    IF SELF:DataBytes <= 4
-                        iTemp := nRecno >> recnoBits
-                    ELSE
-                        iTemp   := _GetWord(nOffSet + recnoBits/8)
-                    ENDIF
-                    nDup    := IIF(nI ==0, 0,  _AND(iTemp , dupMask))
-                    nTrail  := (BYTE) _AND((iTemp >> dupBits) , trailMask)
-                    nKey    := _KeyLen - nTrail - nDup
+                    nRecno  := _AND( nRecno , SELF:RecnoMask)
+                    iTemp   := _GetWord(nOffSet + SELF:DataBytes - 2)
+                    SELF:_getDupTrail(iTemp, OUT nDup, OUT nTrail)
+                    nCopy    := SELF:KeyLength - nTrail - nDup
                     IF nTrail > 0
-                        IF nTrail > _KeyLen
-                            ? "nTrail > _KeyLen"
-                        ENDIF
-                        TRY
-                            MemSet(aBytes, _KeyLen - nTrail, nTrail, trailChar)
-                        CATCH e AS Exception
+                        IF nTrail > SELF:KeyLength
+                            //? "nTrail > _KeyLen"
                             NOP
-                        END TRY
+                        ELSE
+                            TRY
+                                MemSet(aBytes, SELF:KeyLength - nTrail, nTrail, trailChar)
+                            CATCH AS Exception
+                                NOP
+                            END TRY
+                        ENDIF
                     ENDIF
                     // Copy to aBytes from pos nDup
-                    IF nKey > 0
-                        IF nKey > nStart
-                            ? "nKey > nStart"
-                            Altd()
+                    IF nCopy > 0
+                        IF nCopy > nStart
+                            //? "nKey > nStart"
+                            NOP // Altd()
+                        ELSE
+                            TRY
+                                System.Array.Copy(Buffer, nStart - nCopy, aBytes, nDup, nCopy)
+                            CATCH AS Exception
+                                NOP
+                            END TRY
+                            nStart := nStart - nCopy
                         ENDIF
-                        TRY
-                            System.Array.Copy(Buffer, nStart - nKey, aBytes, nDup, nKey)
-                        CATCH e AS Exception
-                            NOP
-                        END TRY
-                        nStart := nStart - nKey
                     ENDIF
-                    nRecno      := _AND( nRecno , SELF:RecnoMask)
-                    _leaves.Add( CdxLeaf{ nRecno, aBytes})
+                    _leaves.Add( CdxLeaf{ nRecno, aBytes,nDup, nTrail})
                     nOffSet      += nStep
                 NEXT
             ENDIF
             RETURN TRUE
+
+        PROTECTED INTERNAL OVERRIDE METHOD Write() AS LOGIC
+            SELF:Compress()
+            RETURN SUPER:Write()
+            
 
         PRIVATE METHOD _getValues AS VOID
             _numKeys        := _GetWord(CDXLEAF_OFFSET_NUMKEYS)
@@ -283,6 +296,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _dupBits        := Buffer[CDXLEAF_OFFSET_DUPCOUNTBITS]
             _trailBits      := Buffer[CDXLEAF_OFFSET_TRAILINGBITS]
             _dataBytes      := Buffer[CDXLEAF_OFFSET_DATABYTES]
+            LenShift       := (SELF:KeyLength << 8 ) | (8 - SELF:DuplicateBits)
+
 
 #region Properties
         // We read the values from our cache but write back to the cache and the buffer at the same time
@@ -319,10 +334,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 			
 		INTERNAL PROPERTY DataBytes	AS BYTE	GET _dataBytes;
 			SET _buffer[CDXLEAF_OFFSET_DATABYTES] := _dataBytes := VALUE, _hot := TRUE
+
+        INTERNAL PROPERTY TrailByte    AS BYTE AUTO
+        INTERNAL PROPERTY KeyLength    AS WORD AUTO
+        INTERNAL PROPERTY LenShift     AS INT AUTO
+
+
 #endregion			
 
 #region Other properties
-        INTERNAL PROPERTY KeyLength AS WORD GET _keyLen
             
         // Retrieve an index node in the current Page, at the specified position
         // return CdxLeagPageNode which always returns 0 for the ChildPage
@@ -335,7 +355,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY LastNode AS CdxPageNode GET IIF(SELF:NumKeys == 0, NULL, SELF[SELF:NumKeys-1])
         INTERNAL PROPERTY Leaves    AS IList<CdxLeaf>
             GET
-                // Does not expand the leaves
+                _ExpandLeaves(FALSE)
                 RETURN SELF:_leaves
             END GET
         END PROPERTY
@@ -345,148 +365,281 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_ExpandLeaves(TRUE)
             RETURN SELF:_leaves
 
-        INTERNAL PROPERTY DebugLeaves AS IList<CdxLeaf>
-            GET
-                RETURN SELF:GetLeaves()
-            END GET
-        END PROPERTY
-
-        INTERNAL METHOD ExpandRecnos() AS CdxAction
-            LOCAL aRecNos AS INT[]
-            LOCAL nCount := NumKeys AS INT
-            LOCAL aKeys   AS BYTE[][]
-            ? "ExpandRecnos() page "+SELF:Pageno:ToString("X")
-            IF SELF:Freespace < nCount
-                // we need at least nCount extra bytes because we are adding 1 byte for every recno
-                // Not enough space. We have to add another leaf page
-                // This will not work for the TagList but should never happen with the Tag List
-                Debug.Assert(! SELF IS CdxTagList)
-                RETURN CdxAction.AddLeaf(SELF,0,NULL)
-            ENDIF
-            aRecNos := INT[]{nCount}
-            aKeys    := BYTE[][]{nCount}            
-            FOR VAR i := 0 TO nCount-1
-                aRecNos[i] := SELF:GetRecno(i)
-                aKeys[i]   := SELF:GetKey(i)
-            NEXT
-            SELF:DataBytes  += 1
-            SELF:RecordBits += 8
-            SELF:RecnoMask  := (1 << SELF:RecordBits) -1
-            SELF:ClearRecordsAndKeys()
-            FOR VAR i := 0 TO nCount-1
-                SELF:Add(aRecNos[i], aKeys[i])
-            NEXT
-            SELF:Write()
-            RETURN CdxAction.OK
-
-
+ 
+   
         // This method assumes keys are added in the right order.
-        // It assymes that the _prevData array contains the key from the previous record
-        INTERNAL METHOD Add(recno AS LONG, data AS BYTE[]) AS CdxAction
+        INTERNAL METHOD Add(recno AS LONG, key AS BYTE[]) AS CdxAction
             LOCAL nTrailCount AS BYTE
             LOCAL nDupCount   AS BYTE
             //System.Diagnostics.Trace.WriteLine(i"CdxLeafPage:Add({recno})")
             IF _AND( recno, SELF:RecnoMask) != recno
-                ? "Need to expand recnos"
-                RETURN CdxAction.ExpandRecnos(SELF)
+                //Debug( "triggers ExpandRecnos", "Rec", recno)
+                RETURN CdxAction.ExpandRecnos(SELF, recno, key, -1)
             ENDIF
-            nTrailCount := _getTrailCount(data)
+            //Debug("rec",recno, "keys", self:NumKeys, "free before", self:Freespace)
+            SELF:_ExpandLeaves(FALSE)
+            nTrailCount := _getTrailCount(key)
             IF SELF:NumKeys == 0
                 nDupCount := 0
             ELSE
-                nDupCount := _getDupCount(data, nTrailCount)
+                VAR prevkey := _Leaves[SELF:NumKeys-1]:Key
+                nDupCount   := _getDupCount(prevkey, key, nTrailCount)
             ENDIF
-            LOCAL nBytesToCopy := SELF:_keyLen - nDupCount - nTrailCount AS WORD
-            IF SELF:Freespace < (nBytesToCopy+SELF:DataBytes)
-                RETURN CdxAction.AddLeaf(SELF, recno, data)
+            VAR nBytesNeeded := SELF:KeyLength - nDupCount - nTrailCount  + SELF:DataBytes 
+            IF SELF:Freespace < nBytesNeeded + nDupCount
+                //Debug( "triggers SplitLeaf", "Rec", recno)
+                RETURN CdxAction.SplitLeaf(SELF, recno, key, _leaves:Count)
             ENDIF
-            System.Array.Copy(data, _prevData, _KeyLen)
-            LOCAL nHeaderLen := CDXLEAF_HEADERLEN + SELF:NumKeys * SELF:DataBytes AS INT
-            LOCAL nStart := nHeaderLen + SELF:Freespace - nBytesToCopy  AS INT
-            SELF:_placeRecno(SELF:NumKeys, recno, SELF:_makeDupTrail(nDupCount, nTrailCount))
-            IF nBytesToCopy != 0
-                System.Array.Copy(data, nDupCount, buffer, nStart,  nBytesToCopy)
-                SELF:Freespace := SELF:Freespace -  nBytesToCopy - SELF:DataBytes
-            ELSE
-                SELF:Freespace := SELF:Freespace -  SELF:DataBytes
+            VAR leaf := CdxLeaf{recno, key,nDupCount, nTrailCount}
+            _leaves:Add( leaf)
+#ifdef TESTCDX
+            IF _leaves:Count > 1
+                ValidateLeaves(_leaves[_leaves:Count-2], leaf)
             ENDIF
-            IF SELF:ValidLeaves
-                _leaves:Add( CdxLeaf{recno, data})
-            ENDIF
+#endif
             SELF:NumKeys += 1
+            SELF:Freespace -= nBytesNeeded
+            //Debug("rec",recno, "keys", self:NumKeys, "free after", self:Freespace)
+            SELF:Write()
             RETURN CdxAction.Ok
 
+
+        INTERNAL METHOD SetLeaves(leaves AS IList<CdxLeaf>, nStart AS LONG, nCount AS LONG) AS CdxAction
+            LOCAL action AS CdxAction
+            //Debug(nStart, nCount, "keys", self:NumKeys, "free", self:Freespace)
+            SELF:ClearRecordsAndKeys()
+            FOR VAR nKey := nStart TO nStart+nCount-1
+                LOCAL key := leaves[nKey] AS CdxLeaf
+                action := SELF:Add(key:Recno, key:Key)
+            NEXT
+            action := SELF:Compress()
+            SELF:Write()
+            RETURN action
 
         INTERNAL METHOD Insert(nPos AS LONG, recno AS LONG, key AS BYTE[]) AS CdxAction
 
             // A quick calculation if we have enough room, ignoring the duplicate count
-            LOCAL nTrailCount AS LONG
-            //? i"CdxLeafPage:Insert({PageNo:X} {nPos},{recno},{key.ToAscii(false)})"
+            LOCAL nTrailCount AS BYTE
+            LOCAL nBytesNeeded AS WORD
+            LOCAL last := FALSE AS LOGIC
+            LOCAL adjustNext := FALSE AS LOGIC
+            LOCAL leaf AS CdxLeaf
+            IF _AND( recno, SELF:RecnoMask) != recno
+                //Debug(  "triggers ExpandRecnos", SELF:PageNo:ToString("X8"), "Rec", recno)
+                RETURN CdxAction.ExpandRecnos(SELF,recno, key, nPos)
+            ENDIF
+            //Debug("Pos",nPos, "Rec", recno, "keys", self:NumKeys, "free before", self:Freespace)
             nTrailCount := _getTrailCount(key)
-            VAR nBytesNeeded := SELF:DataBytes + SELF:_keyLen - nTrailCount
-            IF SELF:Freespace < nBytesNeeded
+            // we calculate if a key fits without looking at the Duplicate bytes to make things easier
+            // it might fit when the # of duplicate bytes is large, but we simply don't allow it
+            nBytesNeeded := SELF:DataBytes + SELF:KeyLength - nTrailCount 
+            IF SELF:Freespace < nBytesNeeded 
+                //Debug( "triggers SplitLeaf",  "Rec", recno)
                 RETURN CdxAction.SplitLeaf(SELF, recno,key, nPos)
             ENDIF
             // Todo: optimize. We are now expanding the leaves which could be overkill.
-            _ExpandLeaves(FALSE)
+            SELF:_ExpandLeaves(FALSE)
             // compare position in page
-            #ifdef TESTCDX
-            IF nPos > 0
-                VAR existingkey := SELF:_leaves[nPos-1]:Key
-                VAR nComp := SELF:Tag:__Compare(existingkey, key, SELF:_keyLen)
-                Debug.Assert(nComp <=0) // New key larger than existig key
+            LOCAL nDupCount AS BYTE
+            IF _Leaves:Count == 0
+                leaf := CdxLeaf{recno, Key, 0, nTrailCount}
+                _Leaves:Add(leaf)
+                SELF:Freespace -= nBytesNeeded  
+                last := TRUE
+            ELSEIF nPos < 0 .OR. nPos >= _Leaves:Count
+                VAR prevLeaf := _Leaves[_Leaves:Count-1]
+                VAR prevkey := prevLeaf:Key
+                nDupCount := SELF:_getDupCount(prevkey, key,  nTrailCount)
+                leaf := CdxLeaf{recno, Key, nDupCount, nTrailCount}
+                _Leaves:Add(leaf)
+#ifdef TESTCDX
+                ValidateLeaves(prevLeaf, leaf)
+#endif
+                SELF:Freespace -= (nBytesNeeded-nDupCount)
+                last := TRUE
+            ELSEIF nPos == 0
+                nDupCount       := 0
+                SELF:Freespace  -= (nBytesNeeded-nDupCount)
+                leaf := CdxLeaf{Recno, Key,nDupCount,nTrailCount}
+                _Leaves:Insert(nPos, leaf)
+                adjustNext      := TRUE
+            ELSE // nPos > 0 .AND. nPos < _Leaves:Count
+                VAR prevLeaf    := _Leaves[nPos-1]
+                nDupCount       := SELF:_getDupCount(prevLeaf:Key, key,  nTrailCount)
+                SELF:Freespace  -= (nBytesNeeded-nDupCount)
+                leaf := CdxLeaf{Recno, Key,nDupCount,nTrailCount}
+
+                _Leaves:Insert(nPos, leaf)
+#ifdef TESTCDX
+                validateLeaves(prevLeaf, leaf)
+#endif
+                adjustNext      := TRUE
             ENDIF
-            IF nPos < SELF:_Leaves:Count
-                VAR existingkey := SELF:_leaves[nPos]:Key
-                VAR nComp := SELF:Tag:__Compare(existingkey, key, SELF:_keyLen)
-                Debug.Assert(nComp >=0) // New key smaller than existig key
-            ELSEIF SELF:_leaves:Count > 0
-                VAR existingkey := SELF:_leaves[SELF:_leaves:Count-1]:Key
-                VAR nComp := SELF:Tag:__Compare(existingkey, key, SELF:_keyLen)
-                Debug.Assert(nComp <=0) // New key larger than existing key
+            IF adjustNext
+                VAR nextLeaf := _Leaves[nPos+1]
+                nDupCount    := SELF:_getDupCount(key, nextLeaf:Key,  nextLeaf:Trail)
+                IF nDupCount != nextLeaf:Dup
+                    //Debug("Adjusted next leaf dup from ", nextLeaf:Dup, "to", nDupCount)
+                    VAR diff        := nDupCount - nextLeaf:Dup
+                    SELF:Freespace  += diff
+                    nextLeaf:Dup    := nDupCount
+                ENDIF
+#ifdef TESTCDX
+                validateLeaves(leaf, nextLeaf) 
+#endif
             ENDIF
-            #endif
-            IF nPos < 0 .OR. nPos >= _Leaves:Count
-                _Leaves:Add(CdxLeaf{recno, Key})
-            ELSE // IF nPos >= 0 .AND. nPos < _Leaves:Count
-                _Leaves:Insert(nPos, CdxLeaf{Recno, Key})
-            ENDIF
+            SELF:NumKeys := (WORD) _Leaves:Count
+            //Debug("Pos",nPos, "Rec", recno, "keys", self:NumKeys, "free after", self:Freespace)
+
             VAR result := CdxAction.Ok
-            IF nPos == SELF:NumKeys .AND. ! SELF:PageType:HasFlag(CdxPageType.Root)
+            IF last .AND. ! SELF:PageType:HasFlag(CdxPageType.Root)
+                //Debug( "triggers ChangeParent")
                 result := CdxAction.ChangeParent(SELF)
             ENDIF
-            SELF:NumKeys += 1
             VAR compResult := SELF:Compress()
             IF CompResult:Type != CdxActionType.Ok
                 RETURN CompResult
             ENDIF
+            SELF:Write()
             RETURN result
 
+#ifdef TESTCDX
+        INTERNAL METHOD ValidateChain() AS VOID
+            LOCAL oPage AS CdxLeafPage
+            LOCAL oLeft AS CdxLeaf
+            LOCAL oRight AS CdxLeaf
+            IF SELF:NumKeys == 0 
+                RETURN
+            ENDIF
+            IF SELF:HasLeft
+                oPage := SELF:Tag:GetPage(SELF:LeftPtr)
+                IF oPage:NumKeys > 0
+                    oLeft := oPage:Leaves[oPage:NumKeys-1]
+                    oRight := SELF:Leaves[0]
+                    ValidateLeaves(oLeft, oRight)
+                ENDIF
+            ENDIF
+            IF SELF:HasRight
+                oPage := SELF:Tag:GetPage(SELF:RightPtr)
+                IF oPage:NumKeys > 0
+                    oRight := oPage:Leaves[0]
+                    oLeft := SELF:Leaves[SELF:NumKeys-1]
+                    ValidateLeaves(oLeft, oRight)
+                ENDIF
+            ENDIF
 
+        INTERNAL METHOD ValidateLeaves(oLeft AS CdxLeaf, oRight AS CdxLeaf) AS LOGIC
+            LOCAL nDiff AS LONG
+            IF SELF:Tag == NULL
+                RETURN TRUE
+            ENDIF
+            nDiff := SELF:Tag:__Compare(oLeft:Key, oRight:Key, oLeft:Key:Length)
+            IF nDiff == -1
+                RETURN TRUE
+            ELSEIF nDiff == 0 .AND. oLeft:Recno < oRight:Recno
+                RETURN TRUE
+            ENDIF
+            //SELF:Debug("Incorrect order of Keys", oLeft:Key:ToAscii(),oRight:Key:ToAscii())
+            RETURN FALSE
+
+        METHOD Validate() AS VOID
+            SELF:_ExpandLeaves(FALSE)
+//            FOR var i := 0  to SELF:_leaves:Count-2
+//                var leaf1 := self:_leaves[i]
+//                var leaf2 := self:_leaves[i+1]
+//                IF ! ValidateLeaves(leaf1, leaf2)
+//                    SELF:Debug("Corruption detected: incorrect order of Keys", leaf1:Key:ToAscii(),leaf2:Key:ToAscii())
+//                ENDIF
+//            NEXT
+            IF SELF:NumKeys > 0
+                IF SELF:HasLeft
+                    var oLeft := SELF:_tag:GetPage(SELF:LeftPtr) astype CdxLeafPage
+                    if oLeft != NULL_OBJECT
+                        IF oLeft:Leaves:Count > 0
+                            var oLeftKey := oLeft:Leaves[oLeft:Leaves:Count-1]
+                            var oOurKey  := SELF:Leaves[0]
+                            IF ! ValidateLeaves(oLeftKey, oOurKey)
+                                SELF:Debug("Corruption detected: Last key on left page",oLeft:PageNo:ToString("X")," is not < our first key", oLeftKey:Key:ToAscii():Trim(),oOurKey:Key:ToAscii():Trim())
+                            ENDIF
+                        ENDIF
+                    ELSE
+                        SELF:Debug("Corruption detected: Could not read Left Page")
+
+                    ENDIF
+                ENDIF
+                IF SELF:HasRight
+                    var oRight := SELF:_tag:GetPage(SELF:RightPtr) astype CdxLeafPage
+                    if oRight != NULL_OBJECT
+                        IF  oRight:Leaves:Count > 0
+                            var oRightKey   := oRight:Leaves[0]
+                            var oOurKey     := SELF:Leaves[SELF:Leaves:Count-1]
+                            IF ! ValidateLeaves(oOurKey, oRightKey)
+                                SELF:Debug("Corruption detected: Last key on our page is not < first key on right page", oRight:PageNo:ToString("X"), oOurKey:Key:ToAscii():Trim(),oRightKey:Key:ToAscii():Trim())
+                            ENDIF
+                        ENDIF
+                    ELSE
+                        SELF:Debug("Corruption detected: Could not read Right Page")
+                    ENDIF
+                ENDIF
+            ENDIF
+
+#endif
         INTERNAL METHOD Split(oPageR AS CdxLeafPage, action AS CdxAction) AS CdxAction
-            VAR leaves      := SELF:GetLeaves()
-            //? "CdxLeafPage:Split( "+SELF:PageNo:ToString("X") +", "+oPageR:PageNo:ToString("X")+" ) "
-            leaves:Insert(action:Pos, CdxLeaf{action:Recno, action:Key})
+            //Debug("New", oPageR:PageNo:ToString("X"))
+            VAR leaves      := _leaves
+            IF action:Recno > 0
+                leaves := SELF:GetLeaves()
+                VAR nTrailCount := SELF:_getTrailCount(action:Key)
+                LOCAL nDupCount AS BYTE
+                VAR nPos := SELF:FindKey(action:Key,action:Recno,action:Key:Length)
+                LOCAL leaf AS CdxLeaf
+                IF nPos == 0
+                    nDupCount := 0
+                    leaf := CdxLeaf{action:Recno, action:Key, 0, nTrailCount}
+                    leaves:Insert(0, leaf)
+#ifdef TESTCDX 
+                    IF leaves:Count > 1
+                        ValidateLeaves(leaf, leaves[1])
+                    ENDIF
+#endif
+                ELSEIF nPos > 0 .and. nPos < leaves:Count
+                    VAR nextLeaf := leaves[nPos]
+                    VAR nextKey := nextLeaf:Key
+                    nDupCount := SELF:_getDupCount(nextKey, action:Key, nTrailCount)
+                    leaf := CdxLeaf{action:Recno, action:Key, nDupCount, nTrailCount}
+                    leaves:Insert(nPos, leaf)
+#ifdef TESTCDX
+                    ValidateLeaves(leaf, nextLeaf)
+                    IF nPos > 0
+                        ValidateLeaves( leaves[nPos-1], leaf)
+                    ENDIF
+#endif
+                ELSE
+                    // append at the end
+                    VAR prevLeaf := leaves[leaves:Count-1]
+                    VAR prevKey := prevLeaf:Key
+                    nDupCount := SELF:_getDupCount(prevkey, action:Key, nTrailCount)
+                    leaf := CdxLeaf{action:Recno, action:Key, nDupCount, nTrailCount}
+                    leaves:Add(leaf)
+#ifdef TESTCDX
+                    ValidateLeaves(prevLeaf, leaf)
+#endif
+                    
+                ENDIF
+                
+            ENDIF
             VAR half := leaves:Count /2
             //? "Writing to page 1", oPageR:PageNo:ToString("X")
-            SELF:ClearRecordsAndKeys()
-            FOR VAR i := 0 TO half
-                VAR leaf := leaves[i]
-                action := CdxAction.AddKey(leaf:Recno, leaf:Key)
-                action := SELF:Tag:DoAction(action)
-                Debug.Assert(action:IsOk())
-            NEXT
-            oPageR:ClearRecordsAndKeys()
-            SELF:Write()
+            SELF:SetLeaves(leaves, 0, half)
+            oPageR:SetLeaves(leaves, half, leaves:Count - half)
             //? "Writing to page 2", oPageR:PageNo:ToString("X")
-            SELF:Tag:AdjustStack(SELF, oPageR, oPageR:NumKeys)
-            FOR VAR i := half+1 TO leaves:Count-1
-                VAR leaf := leaves[i]
-                action := CdxAction.AddKey(leaf:Recno, leaf:Key)
-                action := SELF:Tag:DoAction(action)
-                Debug.Assert(action:IsOk())
-            NEXT
+            SELF:Write()
             oPageR:Write()
+            SELF:Tag:AdjustStack(SELF, oPageR, oPageR:NumKeys)
+#ifdef TESTCDX
+            SELF:Write()
+            SELF:ValidateChain()
+#endif
             RETURN CdxAction.Ok
 
 
@@ -497,12 +650,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR result := CdxAction.Ok
                 IF nPos == SELF:NumKeys -1
                     //SELF:Tag:SetChildToProcess(SELF:PageNo)
+                    //Debug(  "updates last key, triggers ChangeParent")
                     result := CdxAction.ChangeParent(SELF)
                 ENDIF
                 _Leaves:RemoveAt(nPos)
                 SELF:NumKeys -= 1
                 IF SELF:NumKeys = 0
-                    RETURN CdxAction.Delete(SELF)
+                    RETURN CdxAction.DeletePage(SELF)
                 ENDIF
                 LOCAL result2 :=  SELF:Compress() AS CdxAction
                 IF result2.Type == CdxActionType.Ok
@@ -517,7 +671,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // Todo: optimize. We are now expanding the leaves which could be overkill.
             IF nPos >= 0 .AND. nPos < SELF:NumKeys
                 _ExpandLeaves(FALSE)
-                _Leaves[nPos] := CdxLeaf{node:Recno, node:KeyBytes}
+                VAR nTrailCount := SELF:_getTrailCount(node:KeyBytes)
+                LOCAL nDupCount AS BYTE
+                IF nPos == 0
+                    nDupCount := 0
+                ELSE
+                    nDupCount := SELF:_getDupCount(SELF:_leaves[nPos-1]:Key, node:KeyBytes,nTrailCount)
+                ENDIF
+                _Leaves[nPos] := CdxLeaf{node:Recno, node:KeyBytes, nDupCount, nTrailCount}
                 RETURN SELF:Compress()
             ENDIF
             RETURN CdxAction.OutofBounds(SELF)
@@ -527,86 +688,149 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // Also the buffer is saved (because we may discover a 'page full' and we need to restore then
             // maybe we can restore from disk ?
             // finally: do we have to call Write? Or is it enough to set the page as dirty
-            IF !SELF:ValidLeaves
+            //Debug("keys", self:NumKeys, "free", self:Freespace)
+
+            IF SELF:NumKeys == 0 .OR. ! SELF:ValidLeaves
                 RETURN CdxAction.Ok
             ENDIF
-            VAR copy := (BYTE[]) SELF:Buffer:Clone()
-            VAR leaves := SELF:_Leaves
+            VAR leaves  := SELF:_Leaves
             SELF:InitBlank(SELF:Tag)
-            SELF:_leaves := NULL
-            FOREACH VAR Leaf IN leaves
-                VAR result := SELF:Add(leaf:Recno, leaf:Key)
-                IF result.Type != CdxActionType.Ok
-                    Array.Copy(copy, SELF:Buffer, SELF:Buffer:Length)
-                    RETURN result
+            //LOCAL lastKey  := NULL AS BYTE[]
+
+            LOCAL nKey   := 0 AS INT
+            LOCAL nStart := CDXLEAF_HEADERLEN + SELF:Freespace AS WORD
+            FOREACH Leaf AS CdxLeaf IN leaves
+                VAR nDup   := leaf:Dup
+                VAR nTrail := leaf:Trail
+                IF nKey == 0
+                    nDup := 0
+//                ELSE
+//                    nDup     := SELF:_getDupCount(lastKey, leaf:Key, nTrail)
+//                    IF nDup != leaf:Dup
+//                        leaf:Dup := nDup
+//                    ENDIF
                 ENDIF
+                //lastKey  := Leaf:Key
+
+                VAR nBytesToCopy := SELF:KeyLength - nDup - nTrail
+                IF SELF:Freespace < (SELF:DataBytes + nBytesToCopy)
+                    VAR action := CdxAction.SplitLeaf(SELF, -1, NULL, 0)
+                    SELF:_leaves := leaves
+                    RETURN SELF:Tag:DoAction(action)
+                ENDIF
+                SELF:_placeRecno(nKey, Leaf:Recno, SELF:_makeDupTrail(nDup, nTrail))
+                IF nBytesToCopy != 0
+                    System.Array.Copy(leaf:Key, nDup, buffer, nStart-nBytesToCopy,  nBytesToCopy)
+                ENDIF
+                SELF:Freespace := SELF:Freespace -  (nBytesToCopy + SELF:DataBytes)
+                nStart  -= nBytesToCopy  
+                nKey    += 1
             NEXT
-            SELF:Write()
+            SELF:NumKeys := (WORD) leaves:Count
+            SELF:_leaves := leaves
+#ifdef TESTCDX
+            SELF:ValidateChain()
+#endif
             RETURN CdxAction.Ok
 
  
        PRIVATE METHOD _getTrailCount(data AS BYTE[]) AS BYTE
            LOCAL iLastTrail AS LONG
-           LOCAL bTrail := _bTrail AS BYTE
            iLastTrail  := 0
            FOR VAR i := data:Length -1 DOWNTO 0 
-                IF data[i] != bTrail
+                IF data[i] != TrailByte
                     iLastTrail := i
                     EXIT
                 ENDIF
            NEXT
            RETURN (BYTE)  (data:Length - iLastTrail -1)
 
-        PRIVATE METHOD _getDupCount(data AS BYTE[], trailCount AS LONG) AS BYTE
-           LOCAL last := data:Length - trailCount  AS LONG
-           LOCAL dup AS LONG
-           FOR dup := 0 UPTO last -1 
-              IF data[dup] != _prevData[dup]
-                 EXIT
-              ENDIF
-           NEXT
-           RETURN (BYTE) dup
+        PRIVATE METHOD _getDupCount(prevdata AS BYTE[], data AS BYTE[], trailCount AS LONG) AS BYTE
+           BEGIN UNCHECKED
+               LOCAL last := data:Length - trailCount  AS LONG
+               LOCAL dup AS LONG
+               dup := 0
+               DO WHILE dup < last
+                   if data[dup] != prevdata[dup]
+                       EXIT
+                   ENDIF
+                   dup++
+               ENDDO
+               RETURN (BYTE) dup
+           END UNCHECKED
 
        PRIVATE METHOD _makeDupTrail(dupCount AS BYTE, trailCount AS BYTE) AS WORD
-            LOCAL w     := wordStruct{} AS wordStruct
+            BEGIN UNCHECKED
+                LOCAL shift AS INT
+                shift     := SELF:LenShift & 0xFF
+                wValue:b1 := (BYTE) dupCount << shift
+                wValue:b2 := trailCount
+                wValue:wordValue := wValue:wordValue << shift
+                RETURN wValue:WordValue
+            END UNCHECKED
+
+
+       PRIVATE METHOD _getDupTrail(wData AS WORD, dupCount OUT BYTE, trailCount OUT BYTE) AS VOID
             LOCAL shift AS INT
-            shift := SELF:_lenShift & 0xFF
-            w:b1 := (BYTE) dupCount << shift
-            w:b2 := trailCount
-            IF dupCount + trailCount > 40
-                Altd()
-            endif
-            RETURN w:wordValue << shift
+            shift := SELF:LenShift & 0xFF
+            wValue:wordValue := wData >> shift
+            trailCount := wValue:b2
+            dupCount   := wValue:b1 >> shift
+            RETURN 
+            
 
        PRIVATE METHOD _placeRecno(nIndex AS INT, recno AS LONG, dupLen AS WORD) AS VOID
-            LOCAL nOffset AS LONG
-            LOCAL nValue := LongStruct{} AS LongStruct
-            nOffSet           := CDXLEAF_HEADERLEN + nIndex * SELF:DataBytes
-            nValue:LongValue  := recno
-	        buffer[nOffSet]   :=  nValue:b1
-            buffer[nOffSet+1] :=  nValue:b2  
-            buffer[nOffSet+2] :=  nValue:b3
-            IF SELF:DataBytes > 3
-               buffer[nOffSet+3] :=  nValue:b4
-            ENDIF
-            nOffSet := nOffSet + SELF:DataBytes - 2
-            LOCAL wValue := _GetWord(nOffSet) AS WORD
-            wValue |= dupLen
-            _SetWord(nOffSet , wValue)
+            BEGIN UNCHECKED
+                LOCAL nOffset AS LONG
+                nOffSet           := CDXLEAF_HEADERLEN + nIndex * SELF:DataBytes
+                liValue:LongValue  := recno
+	            buffer[nOffSet]   :=  liValue:b1
+                buffer[nOffSet+1] :=  liValue:b2  
+                buffer[nOffSet+2] :=  liValue:b3
+                IF SELF:DataBytes > 3
+                    buffer[nOffSet+3] :=  liValue:b4
+                ENDIF
+                nOffSet := nOffSet + SELF:DataBytes - 2
+                LOCAL wValue := _GetWord(nOffSet) AS WORD
+                wValue |= dupLen
+                _SetWord(nOffSet , wValue)
+            END UNCHECKED
             RETURN
+
+
+       INTERNAL OVERRIDE METHOD FindKey(key AS BYTE[], recno AS LONG, nSearchLen AS LONG) AS WORD
+            SELF:_ExpandLeaves(FALSE)
+            IF SELF:NumKeys > 0
+                LOCAL nI AS WORD
+                FOR nI := 0 TO SELF:Numkeys -1
+                    VAR leaf    := _leaves[nI]
+                    VAR pageKey := leaf:Key
+                    VAR nDiff   := SELF:Tag:__Compare(pageKey, key, nSearchLen)
+                    IF nDiff == 0
+                        IF leaf:Recno >= recno
+                            RETURN nI
+                        ENDIF
+                    ELSEIF nDiff > 0
+                        // insert before this key
+                        RETURN nI
+                    ENDIF
+               NEXT
+           ENDIF
+           RETURN SELF:NumKeys+1
 
        INTERNAL METHOD Dump AS STRING
             LOCAL Sb AS stringBuilder
-            LOCAL i AS WORD
+            VAR iLen := SELF:Tag:KeyLength
             sb := stringBuilder{}
-            VAR item := SELF[0]
             sb:AppendLine("--------------------------")
-            sb:AppendLine(String.Format("{0} Page {1:X6}, # of keys: {2}", SELF:PageType, SELF:PageNo, SELF:NumKeys))
+            sb:AppendLine(String.Format("{0} Page {1:X6}, # of keys: {2}, Free Bytes {3}", SELF:PageType, SELF:PageNo, SELF:NumKeys, SELF:Freespace))
             sb:AppendLine(String.Format("Left page reference {0:X6}", SELF:LeftPtr))
             IF SELF:NumKeys > 0
-                FOR  i := 0 TO SELF:NumKeys-1
-                    item:Pos := i
-                    sb:AppendLine(String.Format("Item {0,2}, Record {1,5} : {2} ", i,  item:Recno, item:KeyText))
+               SELF:_ExpandLeaves(FALSE)
+               VAR nPos := 0
+               FOREACH VAR leaf IN _leaves
+                    sb:AppendLine(String.Format("Item {0,2}, Record {1,5}, Data {2,3}, Dup {3,3}, Trail {4,3} : {5} ", nPos,  leaf:Recno, iLen-Leaf:Dup-leaf:Trail, Leaf:Dup, leaf:Trail, leaf:KeyText))
+                    nPos++
                 NEXT
             ENDIF
             sb:AppendLine(String.Format("Right page reference {0:X6}", SELF:RightPtr))

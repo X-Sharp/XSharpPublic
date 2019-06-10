@@ -15,8 +15,7 @@ BEGIN NAMESPACE XSharp.RDD
             SUPER()
             SELF:_oMemo := _oDbtMemo := DBTMemo{SELF}
             
-        VIRTUAL PROPERTY SysName AS STRING GET "DBFDBT"
-                
+        VIRTUAL PROPERTY Driver AS STRING GET "DBFDBT"
         // Return the memo content as STRING
         METHOD GetValue(nFldPos AS LONG) AS OBJECT
             LOCAL buffer AS BYTE[]
@@ -101,7 +100,9 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _blockSize  AS SHORT
         PROTECT _lockScheme AS DbfLocking
         PROPERTY Shared AS LOGIC GET _Shared
-        STATIC PROPERTY DefExt as STRING AUTO
+        PROTECTED PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR  .AND. SELF:_hFile != IntPtr.Zero      
+
+        STATIC PROPERTY DefExt AS STRING AUTO
         STATIC CONSTRUCTOR
             DefExt := DBT_MEMOEXT
         
@@ -123,7 +124,7 @@ BEGIN NAMESPACE XSharp.RDD
         CONSTRUCTOR (oRDD AS DBF)
             SUPER(oRDD)
             SELF:_oRdd := oRDD
-            SELF:_hFile := IntPtr.Zero
+            SELF:_hFile := F_ERROR
             SELF:_Shared := SELF:_oRDD:_Shared
             SELF:_ReadOnly := SELF:_oRdd:_ReadOnly
             SELF:_Encoding := SELF:_oRdd:_Encoding
@@ -230,7 +231,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL isOk := FALSE AS LOGIC
             LOCAL locked := FALSE AS LOGIC
             //
-            IF ( SELF:_hFile == F_ERROR )
+            IF !SELF:IsOpen
                 RETURN FALSE
             ENDIF
             //
@@ -326,7 +327,7 @@ BEGIN NAMESPACE XSharp.RDD
             /// <inheritdoc />
         VIRTUAL METHOD CloseMemFile( ) AS LOGIC
             LOCAL isOk := FALSE AS LOGIC
-            IF ( SELF:_hFile != F_ERROR )
+            IF SELF:IsOpen
                 //
                 TRY
                     isOk := FClose( SELF:_hFile )
@@ -350,7 +351,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_ReadOnly  := info:ReadOnly
             //
             SELF:_hFile     := FCreate( SELF:_FileName) 
-            isOk := ( SELF:_hFile != F_ERROR )
+            isOk := SELF:IsOpen
             IF isOk
                 // Per default, Header Block Size if 512
                 LOCAL memoHeader AS BYTE[]
@@ -376,9 +377,12 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_FileName  := System.IO.Path.ChangeExtension( SELF:_FileName, DefExt )
             SELF:_Shared    := info:Shared
             SELF:_ReadOnly  := info:ReadOnly
-            //
+            IF File(_FileName)
+                _FileName := FPathName()
+            ENDIF
+
             SELF:_hFile     := Fopen(SELF:_FileName, info:FileMode)
-            isOk := ( SELF:_hFile != F_ERROR )
+            isOk := SELF:IsOpen
             IF isOk
                 // Per default, Block Size if 512
                 SELF:_initContext()
@@ -391,10 +395,8 @@ BEGIN NAMESPACE XSharp.RDD
             
         PROPERTY NextAvailableBlock 	 AS LONG
             GET 
-                LOCAL nBlock := 0 AS LONG
-                LOCAL isOk AS LOGIC
-                isOk := ( SELF:_hFile != F_ERROR )
-                IF isOk
+               LOCAL nBlock := 0 AS LONG
+               IF SELF:IsOpen
                     LOCAL _memoBlock AS BYTE[]
                     // NextBlock is at the beginning of MemoFile
                     _memoBlock := BYTE[]{4}
@@ -409,9 +411,7 @@ BEGIN NAMESPACE XSharp.RDD
             END GET
             
             SET 
-                LOCAL isOk AS LOGIC
-                isOk := ( SELF:_hFile != F_ERROR )
-                IF isOk
+                 IF SELF:IsOpen
                     LOCAL _memoBlock AS BYTE[]
                     _memoBlock := BYTE[]{4}
                     Array.Copy(BitConverter.GetBytes(VALUE),0, _memoBlock, 0, SIZEOF(LONG))
@@ -429,7 +429,10 @@ BEGIN NAMESPACE XSharp.RDD
         // Return the result of the operation
         PROTECTED METHOD _tryLock( nOffset AS UINT64, nLong AS LONG, nTries AS LONG  ) AS LOGIC
             LOCAL locked AS LOGIC
-            //
+            IF ! SELF:IsOpen
+                RETURN FALSE
+            ENDIF
+  
             REPEAT
                 TRY
                     locked := FFLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
@@ -450,6 +453,9 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECTED METHOD _unlock( nOffset AS UINT64, nLong AS LONG ) AS LOGIC
             LOCAL unlocked AS LOGIC
             //
+            IF ! SELF:IsOpen
+                RETURN FALSE
+            ENDIF
             TRY
                 unlocked := FFUnLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
             CATCH ex AS Exception

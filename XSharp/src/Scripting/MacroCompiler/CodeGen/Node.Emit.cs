@@ -417,9 +417,19 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
-            if (Alias != null) Alias.Emit(ilg);
+            bool memvar = false;
+            if (Alias != null && Alias.Token.value.ToUpper() == "M")
+                memvar = true;
+            else if (Alias != null)
+                Alias.Emit(ilg);
             Field.Emit(ilg);
-            var m = Compilation.Get(Alias != null ? WellKnownMembers.XSharp_RT_Functions___FieldGetWa : WellKnownMembers.XSharp_RT_Functions___FieldGet) as MethodSymbol;
+            MethodSymbol m;
+            if (memvar)
+                m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___MemVarGet) as MethodSymbol;
+            else if (Alias != null)
+                m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldGetWa) as MethodSymbol;
+            else
+                m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldGet) as MethodSymbol;
             ilg.Emit(OpCodes.Call, m.Method);
             if (!preserve)
                 ilg.Emit(OpCodes.Pop);
@@ -428,10 +438,21 @@ namespace XSharp.MacroCompiler.Syntax
         {
             var v = ilg.DeclareLocal(Compilation.Get(NativeType.Usual).Type);
             ilg.Emit(OpCodes.Stloc, v.LocalIndex);
-            if (Alias != null) Alias.Emit(ilg);
+            bool memvar = false;
+            if (Alias != null && Alias.Token.value.ToUpper() == "M")
+                memvar = true;
+            else if (Alias != null)
+                Alias.Emit(ilg);
             Field.Emit(ilg);
             ilg.Emit(OpCodes.Ldloc, v.LocalIndex);
-            var m = Compilation.Get(Alias != null ? WellKnownMembers.XSharp_RT_Functions___FieldSetWa : WellKnownMembers.XSharp_RT_Functions___FieldSet) as MethodSymbol;
+            MethodSymbol m;
+            if (memvar)
+                m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___MemVarPut) as MethodSymbol;
+            else if (Alias != null)
+                m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldSetWa) as MethodSymbol;
+            else
+                m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldSet) as MethodSymbol;
+
             ilg.Emit(OpCodes.Call, m.Method);
             if (!preserve)
                 ilg.Emit(OpCodes.Pop);

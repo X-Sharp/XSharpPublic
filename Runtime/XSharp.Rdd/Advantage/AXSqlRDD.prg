@@ -14,10 +14,8 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
 	/// <summary>Create instande of RDD </summary>
     CONSTRUCTOR()
         SELF:m_hStatement := System.IntPtr.Zero
-        SUPER:_Driver := "Advantage.AXSQLRDD"
+        SUPER:_Driver := "AXSQLRDD"
 
-	/// <inheritdoc />
-    VIRTUAL PROPERTY SysName AS STRING GET "AXSQLRDD"
 	/// <inheritdoc />
     VIRTUAL METHOD Close() AS LOGIC
         IF (! SUPER:Close())

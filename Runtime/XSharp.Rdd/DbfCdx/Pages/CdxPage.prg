@@ -34,6 +34,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Buffer AS BYTE[] GET _buffer
         INTERNAL PROPERTY PageNo AS Int32 GET _nPage SET _nPage := VALUE
 
+        // Helper fields
+        PROTECTED wValue := WordStruct{} AS WordStruct
+        PROTECTED liValue := LongStruct{} AS LongStruct
 
         PROTECTED VIRTUAL METHOD _setTag(newTag AS CdxTag) AS VOID
             _tag := newTag
@@ -58,11 +61,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 			
 		PROTECTED INTERNAL VIRTUAL METHOD Write() AS LOGIC
+            IF ! Self:IsHot
+                return TRUE
+            ENDIF
 			VAR lOk :=  _Bag:Write(SELF)
             SELF:IsHot := FALSE
             RETURN lOk
 
-    	PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
+    	INTERNAL VIRTUAL METHOD Read() AS LOGIC
 			VAR lOk :=  _Bag:Read(SELF)
             SELF:IsHot := FALSE
             RETURN lOk
@@ -93,112 +99,106 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _GetWord(nOffSet AS INT) AS WORD
-                LOCAL nValue := WordStruct{} AS WordStruct
-	            nValue:b1 := buffer[nOffSet]
-                nValue:b2 := buffer[nOffSet+1]
-                RETURN nValue:wordValue
+                BEGIN UNCHECKED
+                    wValue:b1 := buffer[nOffSet]
+                    wValue:b2 := buffer[nOffSet+1]
+                    RETURN wValue:wordValue
+                END UNCHECKED
 
            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _GetShort(nOffSet AS INT) AS SHORT
-                LOCAL nValue := WordStruct{} AS WordStruct
-	            nValue:b1 := buffer[nOffSet]
-                nValue:b2 := buffer[nOffSet+1]
-                RETURN nValue:ShortValue
+                BEGIN UNCHECKED
+    	            wValue:b1 := buffer[nOffSet]
+                    wValue:b2 := buffer[nOffSet+1]
+                    RETURN wValue:ShortValue
+                END UNCHECKED
 				
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
-			PROTECTED INTERNAL METHOD _SetWord(nOffSet AS INT, wValue AS WORD) AS VOID
-                LOCAL nValue := WordStruct{} AS WordStruct
-                nValue:wordValue := wValue
-	            buffer[nOffSet]   := nValue:b1
-                buffer[nOffSet+1] := nValue:b2
-				_hot := TRUE
-                RETURN 
+			PROTECTED INTERNAL METHOD _SetWord(nOffSet AS INT, _wValue AS WORD) AS VOID
+                BEGIN UNCHECKED
+                    wValue:wordValue := _wValue
+	                buffer[nOffSet]   := wValue:b1
+                    buffer[nOffSet+1] := wValue:b2
+				    _hot := TRUE
+                END UNCHECKED
+                RETURN
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _SetShort(nOffSet AS INT, siValue AS SHORT) AS VOID
-                LOCAL nValue := WordStruct{} AS WordStruct
-                nValue:shortValue := siValue
-	            buffer[nOffSet]   := nValue:b1
-                buffer[nOffSet+1] := nValue:b2
+                wValue:shortValue := siValue
+	            buffer[nOffSet]   := wValue:b1
+                buffer[nOffSet+1] := wValue:b2
 				_hot := TRUE
                 RETURN 
 
 				
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _GetDWord(nOffSet AS INT) AS DWORD
-                LOCAL nValue := LongStruct{} AS LongStruct
-	            nValue:b1 := buffer[nOffSet]
-                nValue:b2 := buffer[nOffSet+1]
-                nValue:b3 := buffer[nOffSet+2]
-                nValue:b4 := buffer[nOffSet+3]
-                RETURN nValue:dwordValue
+	            liValue:b1 := buffer[nOffSet]
+                liValue:b2 := buffer[nOffSet+1]
+                liValue:b3 := buffer[nOffSet+2]
+                liValue:b4 := buffer[nOffSet+3]
+                RETURN liValue:dwordValue
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _GetDWordLE(nOffSet AS INT) AS DWORD
-                LOCAL nValue := LongStruct{} AS LongStruct
-	            nValue:b4 := buffer[nOffSet]
-                nValue:b3 := buffer[nOffSet+1]
-                nValue:b2 := buffer[nOffSet+2]
-                nValue:b1 := buffer[nOffSet+3]
-                RETURN nValue:dwordValue
+	            liValue:b4 := buffer[nOffSet]
+                liValue:b3 := buffer[nOffSet+1]
+                liValue:b2 := buffer[nOffSet+2]
+                liValue:b1 := buffer[nOffSet+3]
+                RETURN liValue:dwordValue
 				
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _SetDWord(nOffSet AS INT, dwValue AS DWORD) AS VOID
-                LOCAL nValue  := LongStruct{} AS LongStruct
-                nValue:dwordValue := dwValue
-	            buffer[nOffSet]   :=  nValue:b1  
-                buffer[nOffSet+1] :=  nValue:b2  
-                buffer[nOffSet+2] :=  nValue:b3  
-                buffer[nOffSet+3] :=  nValue:b4  
+                liValue:dwordValue := dwValue
+	            buffer[nOffSet]   :=  liValue:b1  
+                buffer[nOffSet+1] :=  liValue:b2  
+                buffer[nOffSet+2] :=  liValue:b3  
+                buffer[nOffSet+3] :=  liValue:b4  
 				_hot := TRUE
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _SetDWordLE(nOffSet AS INT, dwValue AS DWORD) AS VOID
-                LOCAL nValue := LongStruct{} AS LongStruct
-                nValue:dwordValue := dwValue
-	            buffer[nOffSet]   :=  nValue:b4  
-                buffer[nOffSet+1] :=  nValue:b3  
-                buffer[nOffSet+2] :=  nValue:b2  
-                buffer[nOffSet+3] :=  nValue:b1  
+                liValue:dwordValue := dwValue
+	            buffer[nOffSet]   :=  liValue:b4  
+                buffer[nOffSet+1] :=  liValue:b3  
+                buffer[nOffSet+2] :=  liValue:b2  
+                buffer[nOffSet+3] :=  liValue:b1  
 				_hot := TRUE
                 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _GetLong(nOffSet AS INT) AS Int32
-                LOCAL nValue := LongStruct{} AS LongStruct
-	            nValue:b1 := buffer[nOffSet]
-                nValue:b2 := buffer[nOffSet+1]
-                nValue:b3 := buffer[nOffSet+2]
-                nValue:b4 := buffer[nOffSet+3]
-                RETURN nValue:LongValue
+	            liValue:b1 := buffer[nOffSet]
+                liValue:b2 := buffer[nOffSet+1]
+                liValue:b3 := buffer[nOffSet+2]
+                liValue:b4 := buffer[nOffSet+3]
+                RETURN liValue:LongValue
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL METHOD _GetLongLE(nOffSet AS INT) AS Int32
-                LOCAL nValue := LongStruct{} AS LongStruct
-	            nValue:b4 := buffer[nOffSet]
-                nValue:b3 := buffer[nOffSet+1]
-                nValue:b2 := buffer[nOffSet+2]
-                nValue:b1 := buffer[nOffSet+3]
-                RETURN nValue:LongValue
+	            liValue:b4 := buffer[nOffSet]
+                liValue:b3 := buffer[nOffSet+1]
+                liValue:b2 := buffer[nOffSet+2]
+                liValue:b1 := buffer[nOffSet+3]
+                RETURN liValue:LongValue
 			
 				
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
-			PROTECTED INTERNAL METHOD _SetLong(nOffSet AS INT, liValue AS Int32) AS VOID
-                LOCAL nValue := LongStruct{} AS LongStruct
-                nValue:LongValue := liValue
-	            buffer[nOffSet]   :=  nValue:b1  
-                buffer[nOffSet+1] :=  nValue:b2  
-                buffer[nOffSet+2] :=  nValue:b3  
-                buffer[nOffSet+3] :=  nValue:b4  
+			PROTECTED INTERNAL METHOD _SetLong(nOffSet AS INT, longValue AS Int32) AS VOID
+                liValue:LongValue := longValue
+	            buffer[nOffSet]   :=  liValue:b1  
+                buffer[nOffSet+1] :=  liValue:b2  
+                buffer[nOffSet+2] :=  liValue:b3  
+                buffer[nOffSet+3] :=  liValue:b4  
 				_hot := TRUE
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
-			PROTECTED INTERNAL METHOD _SetLongLE(nOffSet AS INT, liValue AS Int32) AS VOID
-                LOCAL nValue := LongStruct{} AS LongStruct
-                nValue:LongValue := liValue
-	            buffer[nOffSet]   :=  nValue:b4 
-                buffer[nOffSet+1] :=  nValue:b3  
-                buffer[nOffSet+2] :=  nValue:b2  
-                buffer[nOffSet+3] :=  nValue:b1  
+			PROTECTED INTERNAL METHOD _SetLongLE(nOffSet AS INT, longValue AS Int32) AS VOID
+                liValue:LongValue := longValue
+	            buffer[nOffSet]   :=  liValue:b4 
+                buffer[nOffSet+1] :=  liValue:b3  
+                buffer[nOffSet+2] :=  liValue:b2  
+                buffer[nOffSet+3] :=  liValue:b1  
 				_hot := TRUE
 
 
@@ -229,11 +229,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             #endregion
 
 
+
         STATIC METHOD MemSet(bytes AS BYTE[], start AS INT, length AS INT, bValue AS BYTE) AS VOID
-            VAR finish := start+length-1
-            FOR VAR i := start TO finish
-                bytes[i] := bValue
-            NEXT
+            BEGIN UNCHECKED
+                VAR finish := start+length-1
+                FOR VAR i := start TO finish
+                    bytes[i] := bValue
+                NEXT
+            END UNCHECKED
 
 		INTERNAL CONST CDXPAGE_SIZE        := 512 AS WORD
 

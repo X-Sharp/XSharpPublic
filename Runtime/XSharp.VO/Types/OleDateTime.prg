@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -86,14 +86,14 @@ CLASS XSharp.OleDateTime
 		    RETURN 
         END SET
     END PROPERTY
-    /// <inheritdoc cref="M:System.DateTime.ToString(System.IFormatProvider)">
+    /// <inheritdoc cref="M:System.DateTime.ToString(System.IFormatProvider)" />
 	VIRTUAL METHOD ToString( provider AS IFormatProvider ) AS STRING
 		RETURN dt:ToString( provider )
-	/// <inheritdoc cref="M:System.DateTime.ToString(System.String,System.IFormatProvider)">	
+	/// <inheritdoc cref="M:System.DateTime.ToString(System.String,System.IFormatProvider)" />
 	VIRTUAL METHOD ToString( s AS STRING, fp AS IFormatProvider ) AS STRING
 		RETURN dt:ToString( s, fp )
 
-    /// <inheritdoc cref="M:System.DateTime.ToString(System.String)">	
+    /// <inheritdoc cref="M:System.DateTime.ToString(System.String)" />
 	OVERRIDE METHOD ToString() AS STRING
 		RETURN dt:ToString()
     /// <exclude/>

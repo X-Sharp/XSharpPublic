@@ -347,13 +347,32 @@ FUNCTION OrdKeyVal() AS USUAL STRICT
     VoDb.OrderInfo(DBOI_KEYVAL, NIL, NIL, REF result)
     RETURN result
 	
-	
-	
+/// <summary>Determines the number of orders for the current work area.  </summary>
+/// <returns>OrdCount() returns the number of open indexes as a numeric value.
+/// When no index is open or when no file is open in the current workarea, the return value is 0. </returns>
+FUNCTION OrdCount() AS DWORD
+    RETURN IIF (Used(), DBOrderInfo(DBOI_ORDERCOUNT),0)	
+
+/// <summary>Return a list of all tag names for the current work area. </summary>
+/// <returns>OrdList() returns a one dimensional array holding strings with the tag names of all open indexes.
+/// When no index is open, an empty array is returned. </returns>
+FUNCTION OrdList() AS ARRAY STRICT 
+	LOCAL aResult AS ARRAY        
+	LOCAL nIndex, nCount AS DWORD
+	aResult := {}                
+	nCount := OrdCount()
+	FOR nIndex := 1 UPTO nCount
+		AAdd(aResult, DBOrderInfo(DBOI_NAME, ,nIndex) )
+	NEXT
+	RETURN aResult
+
 /// <summary>
 /// </summary>
 /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+/// <param name="cOrdBag">A character string containing the file name of the index to open. The file name can be specified without a path or a file extension.</param>
+/// <param name="uOrder">The name or the numeric position of the the tag to become the controlling index. If uOrder is missing, then the first one becomes the controlling index. </param>
 FUNCTION OrdListAdd(cOrdBag, uOrder) AS LOGIC CLIPPER
-	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.OrdListAdd(cOrdBag, uOrder))
+	RETURN VoDb.OrdListAdd(cOrdBag, uOrder)
 
 
 
@@ -361,7 +380,7 @@ FUNCTION OrdListAdd(cOrdBag, uOrder) AS LOGIC CLIPPER
 /// </summary>
 /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION OrdListClear(cOrdBag, uOrder)  AS LOGIC CLIPPER
-	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.OrdListClear(cOrdBag, uOrder))
+	RETURN VoDb.OrdListClear(cOrdBag, uOrder)
 	
 	
 /// <exclude />
@@ -435,3 +454,61 @@ FUNCTION OrdSetFocus(uOrder, cOrdBag) AS USUAL CLIPPER
 	VoDb.OrdSetFocus(cOrdBag, uOrder, OUT cOrder)
 	RETURN cOrder
 	
+
+   /// <summary>Checks if a scope is set in a work area.</summary>
+    /// <param name="uScope">An optional constant that indicates which scope needs to be set.<br/>
+    /// <include file="RTComments.xml" path="Comments/ScopeParams/*"  /> <br/></param>
+    /// <returns><include file="RTComments.xml" path="Comments/ScopeReturn/*"  /></returns>
+FUNCTION DbScope(uScope) AS USUAL CLIPPER
+    LOCAL nScope AS LONG
+    IF IsNil(uScope)
+        uScope := OrdScope(TOPSCOPE)
+        IF isNil(uScope)
+            uScope := OrdScope(BOTTOMSCOPE)
+        ENDIF
+        RETURN ! IsNil(uScope)
+    ENDIF
+    EnForceNumeric(uScope)
+    nScope := uScope
+    SWITCH nScope
+    CASE SCOPE_TOP
+        uScope := OrdScope(TOPSCOPE)
+    CASE SCOPE_BOTTOM
+        uScope := OrdScope(BOTTOMSCOPE)
+    CASE SCOPE_BOTH
+        uScope := {OrdScope(TOPSCOPE),OrdScope(BOTTOMSCOPE)}
+    OTHERWISE
+        uScope := NIL
+    END SWITCH
+    RETURN uScope
+    
+    /// <summary>Sets scope values.</summary>
+    /// <param name="nScope">A constant that indicates which scope needs to be set.<br/>
+    /// <include file="RTComments.xml" path="Comments/ScopeParams/*"  /></param>
+    /// <param name="uValue">The value that needs to be set.
+    /// The type of the value must match the type of the index expression.</param>
+    /// <returns>TRUE when the scope was set succesfully, otherwise FALSE.</returns>
+FUNCTION DbSetScope(nScope AS LONG, uValue AS USUAL) AS LOGIC
+    LOCAL lResult := TRUE AS LOGIC
+    TRY
+        SWITCH nScope
+        CASE SCOPE_TOP
+            OrdScope(TOPSCOPE,uValue)
+            lResult := XSharp.RuntimeState:LastRDDError == NULL
+                
+        CASE SCOPE_BOTTOM
+            OrdScope(BOTTOMSCOPE, uValue)
+            lResult := XSharp.RuntimeState:LastRDDError == NULL
+                
+        CASE SCOPE_BOTH
+            OrdScope(TOPSCOPE,uValue)
+            OrdScope(BOTTOMSCOPE, uValue)
+            lResult := XSharp.RuntimeState:LastRDDError == NULL
+        
+        OTHERWISE
+            lResult := FALSE
+        END SWITCH
+    CATCH AS Exception
+        lResult := FALSE
+    END TRY
+    RETURN lResult

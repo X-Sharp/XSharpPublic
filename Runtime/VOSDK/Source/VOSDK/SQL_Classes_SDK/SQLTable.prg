@@ -482,8 +482,8 @@ METHOD Notify ( kNotification, uDescription )
 
 		ELSEIF kNotification = NOTIFYINTENTTOMOVE
 			lRetValue := SUPER:Notify( kNotification, uDescription )
-			IF lRetValue .and. lRelationsActive
-				DO WHILE lRetValue .and. nChild < ALen( aRelationChildren )
+			IF lRetValue .AND. lRelationsActive
+				DO WHILE lRetValue .AND. nChild < ALen( aRelationChildren )
 					nChild++
 					lRetValue := aRelationChildren[nChild]:Notify( kNotification )
 				ENDDO

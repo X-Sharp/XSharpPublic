@@ -17,6 +17,7 @@ using MSBuild = Microsoft.Build.Evaluation;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
 using LanguageService.CodeAnalysis.XSharp;
+using System.Reflection;
 
 namespace XSharp.Project
 {
@@ -83,14 +84,15 @@ namespace XSharp.Project
             _prjNode.FindNodesOfType<XSharpProjectReferenceNode>(prjNodes);
             foreach (var prjNode in prjNodes)
             {
-                options.Add("r:"+prjNode.ReferencedProjectOutputPath);
+                options.Add("r:" + prjNode.ReferencedProjectOutputPath);
             }
             var comNodes = new List<XSharpComReferenceNode>();
             _prjNode.FindNodesOfType<XSharpComReferenceNode>(comNodes);
             foreach (var comNode in comNodes)
             {
-                options.Add("r:"+comNode.Url);
+                options.Add("r:" + comNode.Url);
             }
+
 
             var defines = "";
             var value = "";
@@ -136,6 +138,16 @@ namespace XSharp.Project
             }
 
             ParseOptions = XSharpParseOptions.FromVsValues(options);
+            if (this.ConfigCanonicalName != null && ConfigCanonicalName.ConfigName.ToUpper() == "DEBUG")
+            {
+                // dirty trick to set property with private setter
+                PropertyInfo pi = ParseOptions.GetType().GetProperty("DebugEnabled");
+                if (pi != null)
+                {
+                    pi.SetValue(ParseOptions, true);
+                }
+
+            }
         }
 
     }

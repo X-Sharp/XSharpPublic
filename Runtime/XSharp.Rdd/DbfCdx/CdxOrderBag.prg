@@ -58,18 +58,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
             THROW NotImplementedException{}
 
-        internal static method GetIndexExtFromDbfExt(cDbfName as STRING) AS STRING
-            switch System.IO.Path.GetExtension(cDbfName:ToLower())
-            case ".vcx"         // Control Library
-            case ".scx"         // Screen
-            case ".pjx"         // Project
-            case ".mnx"         // Menu
-            case ".frx"         // Report
-                return ""
-            case ".dbc"         // database container
-                return ".dcx"
-            end switch
-            return CDX_EXTENSION
+        INTERNAL STATIC METHOD GetIndexExtFromDbfExt(cDbfName AS STRING) AS STRING
+            SWITCH System.IO.Path.GetExtension(cDbfName:ToLower())
+            CASE ".vcx"         // Control Library
+            CASE ".scx"         // Screen
+            CASE ".pjx"         // Project
+            CASE ".mnx"         // Menu
+            CASE ".frx"         // Report
+                RETURN ""
+            CASE ".dbc"         // database container
+                RETURN ".dcx"
+            END SWITCH
+            RETURN CDX_EXTENSION
             /// <inheritdoc />
         METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
             LOCAL cTag AS STRING
@@ -179,7 +179,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL cDbf      AS STRING
             cFullName := cBagName
             cDbf      := SELF:_oRDD:_FileName
-            var cExt  := GetIndexExtFromDbfExt(cDBF)
+            VAR cExt  := GetIndexExtFromDbfExt(cDBF)
             IF String.IsNullOrEmpty(cFullName)
                 cFullName := Path.ChangeExtension(cDBF, cExt)
             ELSEIF String.IsNullOrEmpty(Path.GetExtension(cFullName))
@@ -248,7 +248,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             cFullName := cFileName := info:BagName
             IF String.IsNullOrEmpty(Path.GetExtension(cFullName))
-                var cExt  := GetIndexExtFromDbfExt(cFullName)
+                VAR cExt  := GetIndexExtFromDbfExt(cFullName)
                 cFullName := Path.ChangeExtension(cFullname, cExt)
             ENDIF
             cPath := Path.GetDirectoryName(cFullName)
@@ -386,9 +386,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL isOk AS LOGIC
             IF oPage:PageNo == -1
                 oPage:PageNo := SELF:FindFreePage()
+                oPage:IsHot  := TRUE
+                SELF:_PageList:SetPage(oPage:PageNo, oPage)
             ENDIF
-            FSeek3( SELF:_hFile, oPage:PageNo, SeekOrigin.Begin )
-			isOk :=  FWrite3(SELF:_hFile, oPage:Buffer, (DWORD) oPage:Buffer:Length) == (DWORD) oPage:Buffer:Length
+            IF oPage:IsHot
+                FSeek3( SELF:_hFile, oPage:PageNo, SeekOrigin.Begin )
+			    isOk :=  FWrite3(SELF:_hFile, oPage:Buffer, (DWORD) oPage:Buffer:Length) == (DWORD) oPage:Buffer:Length
+            ELSE
+                isOk := TRUE
+            ENDIF
             RETURN IsOk
 
 
@@ -396,7 +402,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD GetPage(nPage AS Int32, nKeyLen AS WORD,tag AS CdxTag) AS CdxPage
            VAR page := SELF:_PageList:GetPage(nPage, nKeyLen,tag)
            IF page != NULL
-                SELF:_PageList:Add(page)
+                SELF:SetPage( page)
            ENDIF
            RETURN page
   

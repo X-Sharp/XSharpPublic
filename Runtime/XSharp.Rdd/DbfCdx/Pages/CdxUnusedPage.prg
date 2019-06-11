@@ -9,7 +9,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	/// CdxLeaf page. this class maps the Leaf page from the file in memory
     /// Manipulating the page is implemented in the CdxTag class
 	/// </summary>
-	INTERNAL CLASS CdxGeneralPage INHERIT CdxPage 
+	INTERNAL SEALED CLASS CdxGeneralPage INHERIT CdxPage 
 		
 	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[])
             SUPER(bag, nPage, buffer)

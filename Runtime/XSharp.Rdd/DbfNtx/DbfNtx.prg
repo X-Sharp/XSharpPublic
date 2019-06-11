@@ -12,14 +12,13 @@ BEGIN NAMESPACE XSharp.RDD
     CLASS DBFNTX INHERIT DBFDBT
         INTERNAL _indexList AS NtxOrderList
         INTERNAL PROPERTY CurrentOrder AS NtxOrder GET _indexList:CurrentOrder
-        
+        VIRTUAL PROPERTY Driver AS STRING GET "DBFNTX"
             CONSTRUCTOR()
                 SUPER()
                 SELF:_indexList := NtxOrderList{SELF}
                 SELF:_oIndex 	:= NULL
                 RETURN
                 
-            PROPERTY SysName AS STRING GET "DBFNTX"	
             
             #REGION Order Support 
             VIRTUAL METHOD OrderCreate(orderInfo AS DBORDERCREATEINFO ) AS LOGIC

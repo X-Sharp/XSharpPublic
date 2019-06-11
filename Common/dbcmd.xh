@@ -1,27 +1,33 @@
-****
-*  DbCmds.xh
-*  X# Database Command
-*
-*  IMPORTANT:  Functions beginning with an underscore
-*  character are reserved, version-dependent functions.
-*  These functions should not be called directly.
-*
+///////////////////////////////////////////////////////////////////////////
+// DbCmds.xh
+//
+// XSharp Database commands
+//
+// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+// IMPORTANT:  Functions beginning with an underscore
+//             character are reserved, version-dependent functions.
+//             These functions should not be called directly.
+//
+// Caution: do not modify this file. It will be overwritten during product updates
+//
 
 ****
 *  DB SETs
 *
 
-#command SET EXCLUSIVE <x:ON,OFF,&>     =>  Set( _SET_EXCLUSIVE, <(x)> )
-#command SET EXCLUSIVE (<x>)            =>  Set( _SET_EXCLUSIVE, <x> )
+#command SET EXCLUSIVE <x:ON,OFF,&>     =>  SetExclusive(<(x)> )
+#command SET EXCLUSIVE (<x>)            =>  SetExclusive( <x> )
 
-#command SET SOFTSEEK <x:ON,OFF,&>      =>  Set( _SET_SOFTSEEK, <(x)> )
-#command SET SOFTSEEK (<x>)             =>  Set( _SET_SOFTSEEK, <x> )
+#command SET SOFTSEEK <x:ON,OFF,&>      =>  SetSoftSeek( <(x)> )
+#command SET SOFTSEEK (<x>)             =>  SetSoftSeek( <x> )
 
-#command SET UNIQUE <x:ON,OFF,&>        =>  Set( _SET_UNIQUE, <(x)> )
-#command SET UNIQUE (<x>)               =>  Set( _SET_UNIQUE, <x> )
+#command SET UNIQUE <x:ON,OFF,&>        =>  SetUnique( <(x)> )
+#command SET UNIQUE (<x>)               =>  SetUnique( <x> )
 
-#command SET DELETED <x:ON,OFF,&>       =>  Set( _SET_DELETED, <(x)> )
-#command SET DELETED (<x>)              =>  Set( _SET_DELETED, <x> )
+#command SET DELETED <x:ON,OFF,&>       =>  SetDeleted( <(x)> )
+#command SET DELETED (<x>)              =>  SetDeleted( <x> )
 
 
 
@@ -65,7 +71,7 @@
 #command INDEX ON <key> TO <(file)> [<u: UNIQUE>]                       ;
       => dbCreateIndex(                                                 ;
                         <(file)>, <"key">, <{key}>,                     ;
-                        if( <.u.>, .t., NIL )                           ;
+                        IIF( <.u.>, TRUE, NIL )                           ;
                       )
 
 
@@ -75,8 +81,8 @@
 
 
 #command APPEND BLANK           => dbAppend()
-#command PACK                   => __dbPack()
-#command ZAP                    => __dbZap()
+#command PACK                   => dbPack()
+#command ZAP                    => dbZap()
 #command UNLOCK                 => dbUnlock()
 #command UNLOCK ALL             => dbUnlockAll()
 #command COMMIT                 => dbCommitAll()
@@ -100,29 +106,29 @@
 #command FIND = <xpr>           => ( find := <xpr> )
 
 
-#command CONTINUE               => __dbContinue()
+#command CONTINUE               => dbContinue()
 
 #command LOCATE                                                         ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+         [FOR <FOR>]                                                    ;
+         [WHILE <WHILE>]                                                ;
+         [NEXT <NEXT>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
                                                                         ;
-      => __dbLocate( <{for}>, <{while}>, <next>, <rec>, <.rest.> )
+      => dbLocate( <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.> )
 
 
 
-#command SET RELATION TO        => dbClearRel()
+#command SET RELATION TO        => DbClearRelation()
 
 #command SET RELATION                                                   ;
          [<add:ADDITIVE>]                                               ;
          [TO <key1> INTO <(alias1)> [, [TO] <keyn> INTO <(aliasn)>]]    ;
                                                                         ;
       => if ( !<.add.> )                                                ;
-       ;    dbClearRel()                                                ;
-       ; end                                                            ;
+       ;    DbClearRelation()                                           ;
+       ; END                                                            ;
                                                                         ;
        ; dbSetRelation( <(alias1)>, <{key1}>, <"key1"> )                ;
       [; dbSetRelation( <(aliasn)>, <{keyn}>, <"keyn"> )]
@@ -132,24 +138,24 @@
 #command SET FILTER TO <xpr>    => dbSetFilter( <{xpr}>, <"xpr"> )
 
 #command SET FILTER TO <x:&>                                            ;
-      => if ( Empty(<(x)>) )                                            ;
+      => IF ( Empty(<(x)>) )                                            ;
        ;    dbClearFilter()                                             ;
-       ; else                                                           ;
+       ; ELSE                                                           ;
        ;    dbSetFilter( <{x}>, <(x)> )                                 ;
-       ; end
+       ; END
 
 
 #command REPLACE [ <f1> WITH <x1> [, <fn> WITH <xn>] ]                  ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+         [FOR <FOR>]                                                    ;
+         [WHILE <WHILE>]                                                ;
+         [NEXT <NEXT>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
                                                                         ;
       => DBEval(                                                        ;
                  {|| _FIELD-><f1> := <x1> [, _FIELD-><fn> := <xn>]},    ;
-                 <{for}>, <{while}>, <next>, <rec>, <.rest.>            ;
+                 <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>            ;
                )
 
 
@@ -159,30 +165,30 @@
 
 
 #command DELETE                                                         ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+         [FOR <FOR>]                                                    ;
+         [WHILE <WHILE>]                                                ;
+         [NEXT <NEXT>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
                                                                         ;
       => DBEval(                                                        ;
                  {|| dbDelete()},                                       ;
-                 <{for}>, <{while}>, <next>, <rec>, <.rest.>            ;
+                 <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>            ;
                )
 
 
 #command RECALL                                                         ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+         [FOR <FOR>]                                                    ;
+         [WHILE <WHILE>]                                                ;
+         [NEXT <NEXT>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
                                                                         ;
       => DBEval(                                                        ;
                  {|| dbRecall()},                                       ;
-                 <{for}>, <{while}>, <next>, <rec>, <.rest.>            ;
+                 <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>            ;
                )
 
 
@@ -191,134 +197,134 @@
 
 
 #command CREATE <(file1)> [FROM <(file2)>]                              ;
-      => __dbCreate( <(file1)>, <(file2)> )
+      => _DbCreate( <(file1)>, <(file2)> )
 
 
 #command COPY [STRUCTURE] [EXTENDED] [TO <(file)>]                      ;
-      => __dbCopyXStruct( <(file)> )
+      => dbCopyXStruct( <(file)> )
 
 
 #command COPY [STRUCTURE] [TO <(file)>] [FIELDS <fields,...>]           ;
-      => __dbCopyStruct( <(file)>, { <(fields)> } )
+      => dbCopyStruct( <(file)>, { <(fields)> } )
 
 
 #command COPY [TO <(file)>] [DELIMITED [WITH <*delim*>]]                ;
          [FIELDS <fields,...>]                                          ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+         [FOR <FOR>]                                                    ;
+         [WHILE <WHILE>]                                                ;
+         [NEXT <NEXT>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
                                                                         ;
-      => __dbCopyDelim(                                                 ;
+      => dbCopyDelim(                                                   ;
                         <(file)>, <(delim)>, { <(fields)> },            ;
-                        <{for}>, <{while}>, <next>, <rec>, <.rest.>     ;
+                        <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>     ;
                       )
 
 
 #command COPY [TO <(file)>] [SDF]                                       ;
          [FIELDS <fields,...>]                                          ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+         [FOR <FOR>]                                                    ;
+         [WHILE <WHILE>]                                                ;
+         [NEXT <NEXT>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
                                                                         ;
-      => __dbCopySDF(                                                   ;
+      => dbCopySDF(                                                     ;
                       <(file)>, { <(fields)> },                         ;
-                      <{for}>, <{while}>, <next>, <rec>, <.rest.>       ;
+                      <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>       ;
                     )
 
 
 #command COPY [TO <(file)>]                                             ;
          [FIELDS <fields,...>]                                          ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+         [FOR <FOR>]                                                    ;
+         [WHILE <WHILE>]                                                ;
+         [NEXT <NEXT>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
                                                                         ;
-      => __dbCopy(                                                      ;
+      => dbCopy(                                                        ;
                    <(file)>, { <(fields)> },                            ;
-                   <{for}>, <{while}>, <next>, <rec>, <.rest.>          ;
+                   <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>          ;
                  )
 
 
 #command APPEND [FROM <(file)>] [DELIMITED [WITH <*delim*>]]            ;
          [FIELDS <fields,...>]                                          ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+         [FOR <FOR>]                                                    ;
+         [WHILE <WHILE>]                                                ;
+         [NEXT <NEXT>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
                                                                         ;
-      => __dbAppDelim(                                                  ;
+      => dbAppDelim(                                                    ;
                        <(file)>, <(delim)>, { <(fields)> },             ;
-                       <{for}>, <{while}>, <next>, <rec>, <.rest.>      ;
+                       <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>      ;
                      )
 
 
 #command APPEND [FROM <(file)>] [SDF]                                   ;
          [FIELDS <fields,...>]                                          ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+         [FOR <FOR>]                                                    ;
+         [WHILE <WHILE>]                                                ;
+         [NEXT <NEXT>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
                                                                         ;
-      => __dbAppSDF(                                                    ;
+      => dbAppSDF(                                                      ;
                      <(file)>, { <(fields)> },                          ;
-                     <{for}>, <{while}>, <next>, <rec>, <.rest.>        ;
+                     <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>        ;
                    )
 
 
 #command APPEND [FROM <(file)>]                                         ;
          [FIELDS <fields,...>]                                          ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+         [FOR <FOR>]                                                    ;
+         [WHILE <WHILE>]                                                ;
+         [NEXT <NEXT>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
                                                                         ;
-      => __dbApp(                                                       ;
+      => dbApp(                                                         ;
                   <(file)>, { <(fields)> },                             ;
-                  <{for}>, <{while}>, <next>, <rec>, <.rest.>           ;
+                  <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>           ;
                 )
 
 
 
 #command SORT [TO <(file)>] [ON <fields,...>]                           ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+         [FOR <FOR>]                                                    ;
+         [WHILE <WHILE>]                                                ;
+         [NEXT <NEXT>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
                                                                         ;
-      => __dbSort(                                                      ;
+      => dbSort(                                                        ;
                    <(file)>, { <(fields)> },                            ;
-                   <{for}>, <{while}>, <next>, <rec>, <.rest.>          ;
+                   <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>          ;
                  )
 
 
 #command TOTAL [TO <(file)>] [ON <key>]                                 ;
          [FIELDS <fields,...>]                                          ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+         [FOR <FOR>]                                                    ;
+         [WHILE <WHILE>]                                                ;
+         [NEXT <NEXT>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
                                                                         ;
-      => __dbTotal(                                                     ;
+      => dbTotal(                                                       ;
                     <(file)>, <{key}>, { <(fields)> },                  ;
-                    <{for}>, <{while}>, <next>, <rec>, <.rest.>         ;
+                    <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>         ;
                   )
 
 
@@ -326,7 +332,7 @@
          [REPLACE <f1> WITH <x1> [, <fn> WITH <xn>]]                    ;
          [<rand:RANDOM>]                                                ;
                                                                         ;
-      => __dbUpdate(                                                    ;
+      => dbUpdate(                                                      ;
                      <(alias)>, <{key}>, <.rand.>,                      ;
                      {|| _FIELD-><f1> := <x1> [, _FIELD-><fn> := <xn>]} ;
                    )
@@ -334,9 +340,9 @@
 
 #command JOIN [WITH <(alias)>] [TO <file>]                              ;
          [FIELDS <fields,...>]                                          ;
-         [FOR <for>]                                                    ;
+         [FOR <FOR>]                                                    ;
                                                                         ;
-      => __dbJoin( <(alias)>, <(file)>, { <(fields)> }, <{for}> )
+      => dbJoin( <(alias)>, <(file)>, { <(fields)> }, <{FOR}> )
 
 
 #command COUNT [TO <var>]                                               ;

@@ -192,6 +192,38 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			SetExact(FALSE)
 			Assert.Equal( 2, (INT) AScanBin(a, "Fre"))
 			Assert.Equal( 0, (INT) AScanBinExact(a, "Fre"))
+
+			a := {1, 2, 3, 1}
+			Assert.Equal( 1, (INT) AScan(a, 1) )
+			Assert.Equal( 3, (INT) AScan(a, 3 , 2 , 2) )
+			Assert.Equal( 0, (INT) AScan(a, 3 , 2 , 1) )
+			Assert.Equal( 2, (INT) AScan(a, 2 , NIL , NIL) )
+			Assert.Equal( 2, (INT) AScan(a, 2 , 1 , NIL) )
+			Assert.Equal( 2, (INT) AScan(a, 2 , 2 , NIL) )
+			Assert.Equal( 0, (INT) AScan(a, 2 , 3 , NIL) )
+			Assert.Equal( 2, (INT) AScan(a, 2 , NIL , 2) )
+			Assert.Equal( 0, (INT) AScan(a, 2 , NIL , 1) )
+			Assert.Equal( 0, (INT) AScan(a, 2 , NIL , -1) )
+			Assert.Equal( 0, (INT) AScan(a, 2 , NIL , -2) )
+			Assert.Equal( 2, (INT) AScan(a, 2 , NIL , -3) )
+			Assert.Equal( 2, (INT) AScan(a, 2 , 4 , -3) )
+			Assert.Equal( 0, (INT) AScan(a, 2 , 4 , -2) )
+			Assert.Equal( 0, (INT) AScan(a, 2 , 4 , -1) )
+			Assert.Equal( 2, (INT) AScan(a, 2 , 3 , -2) )
+			Assert.Equal( 0, (INT) AScan(a, 2 , 3 , -1) )
+			Assert.Equal( 0, (INT) AScan(a, 2 , 1 , -1) )
+
+			Assert.Equal( 4, (INT) AScan(a, 1 , 4 , -1) )
+			Assert.Equal( 4, (INT) AScan(a, 1 , 4 , -2) )
+			Assert.Equal( 4, (INT) AScan(a, 1 , 4 , -3) )
+			Assert.Equal( 4, (INT) AScan(a, 1 , 4 , -4) )
+			Assert.Equal( 4, (INT) AScan(a, 1 , NIL , -1) )
+			Assert.Equal( 4, (INT) AScan(a, 1 , NIL , -4) )
+			Assert.Equal( 0, (INT) AScan(a, 1 , 3 , -1) )
+			Assert.Equal( 0, (INT) AScan(a, 1 , 3 , -2) )
+			Assert.Equal( 1, (INT) AScan(a, 1 , 3 , -3) )
+			Assert.Equal( 1, (INT) AScan(a, 1 , 3 , -4) )
+
 		[Trait("Category", "Array")];
 		[Fact];
 		METHOD AevalTest() AS VOID

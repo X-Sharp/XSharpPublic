@@ -341,42 +341,27 @@ FUNCTION NTrim(n AS USUAL) AS STRING
 	CASE __UsualType.Decimal
       ret := ConversionHelpers.AdjustDecimalSeparator(_Str1(  (FLOAT) n )):Trim()
     OTHERWISE
-      THROW Error.DataTypeError( __ENTITY__, NAMEOF(n), 1, n)
+      THROW Error.DataTypeError( __FUNCTION__, NAMEOF(n), 1, n)
    END SWITCH
    RETURN ret
 
 
-/// <summary>
-/// Pad character, numeric, and Date values with fill characters on the right.
-/// </summary>
-/// <param name="uValue"></param>
-/// <param name="nLength"></param>
-/// <param name="cPad"></param>
-/// <returns>
-/// </returns>
+/// <summary>Pad values with fill characters on the right.</summary>
+/// <param name="uValue">Value to pad</param>
+/// <param name="nLength">Length of result string. </param>
+/// <param name="cPad">Pad character to use. Defaults to the space character.</param>
+/// <returns>The string padded to the requested length. When the value is longer than the requested length 
+/// then the string will be truncated to that length.</returns>
 FUNCTION Pad( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRING
 	RETURN PadR( uValue, nLength, cPad )
 
-/// <summary>
-/// Pad character, numeric, and Date values with fill characters on the right.
-/// </summary>
-/// <param name="uValue"></param>
-/// <param name="nLength"></param>
-/// <param name="cPad"></param>
-/// <returns>
-/// </returns>
+/// <inheritdoc cref="M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)" />
 FUNCTION Pad( uValue AS USUAL, nLength AS DWORD, cPad := " " AS STRING ) AS STRING
 	RETURN PadR( uValue, (INT) nLength, cPad )
 
 
-/// <summary>
-/// Pad character, numeric, and Date values with fill characters on both the right and left.
-/// </summary>
-/// <param name="uValue"></param>
-/// <param name="nLength"></param>
-/// <param name="cPad"></param>
-/// <returns>
-/// </returns>
+/// <summary>Pad values with fill characters on both the right and left.</summary>
+/// <inheritdoc cref="M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)" />
 FUNCTION PadC( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRING
 	// If they send in an empty string then change to " "
 	IF cPad == NULL .OR. cPad :Length == 0
@@ -401,26 +386,14 @@ FUNCTION PadC( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
 
 	RETURN ret
 
-/// <summary>
-/// Pad character, numeric, and Date values with fill characters on both the right and left.
-/// </summary>
-/// <param name="uValue"></param>
-/// <param name="nLength"></param>
-/// <param name="cPad"></param>
-/// <returns>
-/// </returns>
+/// <summary>Pad values with fill characters on both the right and left.</summary>
+/// <inheritdoc cref="M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)" />
 FUNCTION PadC( uValue AS USUAL, nLength AS DWORD, cPad := " " AS STRING ) AS STRING
 	RETURN PadC( uValue, (INT) nLength, cPad )
 
 
-/// <summary>
-/// Pad character, numeric, and Date values with fill characters on the left.
-/// </summary>
-/// <param name="cSource"></param>
-/// <param name="nLength"></param>
-/// <param name="cPad"></param>
-/// <returns>
-/// </returns>
+/// <summary>Pad values with fill characters on the left.</summary>
+/// <inheritdoc cref="M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)" />
 FUNCTION PadL( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRING
 	// If they send in an empty string then change to " "
 	IF cPad == NULL .OR. cPad :Length == 0
@@ -434,37 +407,17 @@ FUNCTION PadL( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
 	ENDIF
 	RETURN IIF( ret:Length > nLength, ret:Remove( nLength ), ret:PadLeft( nLength, cPad[0] ) )
 
-/// <summary>
-/// Pad character, numeric, and Date values with fill characters on the left.
-/// </summary>
-/// <param name="cSource"></param>
-/// <param name="nLength"></param>
-/// <param name="cPad"></param>
-/// <returns>
-/// </returns>
+/// <summary>Pad values with fill characters on the left.</summary>
+/// <inheritdoc cref="M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)" />
 FUNCTION PadL( uValue AS USUAL, nLength AS DWORD, cPad := " " AS STRING ) AS STRING
 	RETURN PadL( uValue, (INT) nLength, cPad )
 
 
-/// <summary>
-/// Pad character, numeric, and Date values with fill characters on the right.
-/// </summary>
-/// <param name="uValue"></param>
-/// <param name="nLength"></param>
-/// <param name="cFillStr"></param>
-/// <returns>
-/// </returns>
+/// <inheritdoc cref="M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)" />
 FUNCTION PadR( uValue AS USUAL, nLength AS DWORD, cPad := " " AS STRING ) AS STRING
 	RETURN PadR( uValue, (INT) nLength, cPad )
 
-/// <summary>
-/// Pad character, numeric, and Date values with fill characters on the right.
-/// </summary>
-/// <param name="cSource"></param>
-/// <param name="nLength"></param>
-/// <param name="cPad"></param>
-/// <returns>
-/// </returns>
+/// <inheritdoc cref="M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)" />
 FUNCTION PadR( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRING
 	// If they send in an empty string then change to " "
 	IF cPad == NULL .OR. cPad:Length == 0
@@ -533,14 +486,14 @@ FUNCTION _Str(nValue ,uLen ,uDec ) AS STRING CLIPPER
     LOCAL nLen,  nDec AS LONG
     LOCAL dwLen, dwDec AS DWORD
 	IF PCount() > 0 .AND. ! nValue:IsNumeric
-       THROW Error.DataTypeError( __ENTITY__, NAMEOF(nValue),1, nValue, uLen, uDec)
+       THROW Error.DataTypeError( __FUNCTION__, NAMEOF(nValue),1, nValue, uLen, uDec)
     ENDIF
 	SWITCH PCount()
 	CASE 1
 		RETURN _Str1( nValue)
 	CASE 2
 		IF ! uLen:IsNumeric
-			THROW Error.DataTypeError( __ENTITY__, NAMEOF(uLen),2,nValue, uLen, uDec)
+			THROW Error.DataTypeError( __FUNCTION__, NAMEOF(uLen),2,nValue, uLen, uDec)
         ENDIF
         nLen := uLen
         IF nLen < 0
@@ -555,10 +508,10 @@ FUNCTION _Str(nValue ,uLen ,uDec ) AS STRING CLIPPER
 		ENDIF
 	CASE 3
 		IF ! uLen:IsNumeric
-			THROW Error.DataTypeError( __ENTITY__, NAMEOF(uLen),2,nValue, uLen, uDec)
+			THROW Error.DataTypeError( __FUNCTION__, NAMEOF(uLen),2,nValue, uLen, uDec)
 		ENDIF
 		IF ! uDec:IsNumeric
-			THROW Error.DataTypeError( __ENTITY__, NAMEOF(uDec),3,nValue, uLen, uDec)
+			THROW Error.DataTypeError( __FUNCTION__, NAMEOF(uDec),3,nValue, uLen, uDec)
         ENDIF
         nLen := uLen
         nDec := uDec
@@ -664,7 +617,7 @@ FUNCTION StrZero(n AS USUAL) AS STRING
 	RETURN _PadZero(cValue)
 
 	/// <summary>
-	/// Convert a number to a word.
+	/// Convert a number to a dword.
 	/// </summary>
 	/// <param name="n"></param>
 	/// <returns>
@@ -673,45 +626,25 @@ FUNCTION ToWord(n AS USUAL) AS DWORD
 	RETURN (DWORD) n
 
 
-/// <summary>
-/// Convert an integer expression to a Psz.
-/// </summary>
-/// <param name="l"></param>
-/// <param name="dwLen"></param>
-/// <param name="dwDec"></param>
-/// <returns>
-/// </returns>
+/// <inheritdoc cref="M:XSharp.RT.Functions.StrLong(System.Int32,System.UInt32,System.UInt32)" />
 FUNCTION StrInt(l AS LONG,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 	RETURN Str3( l, dwLen, dwDec)
 
-	/// <summary>
-	/// Convert a long integer expression to a Psz.
-	/// </summary>
-	/// <param name="l"></param>
-	/// <param name="dwLen"></param>
-	/// <param name="dwDec"></param>
-	/// <returns>
-	/// </returns>
+/// <inheritdoc cref="M:XSharp.RT.Functions.Str3(XSharp.__Float,System.UInt32,System.UInt32)" />
+/// <param name="l">Number to format.</param>
 FUNCTION StrLong(l AS LONG,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 	RETURN StrInt(l, dwLen, dwDec)
 
-	/// <summary>
-	/// Convert a Float expression to a Psz.
-	/// </summary>
-	/// <param name="flSource"></param>
-	/// <param name="dwLen"></param>
-	/// <param name="dwDec"></param>
-	/// <returns>
-	/// </returns>
-FUNCTION StrFloat(flSource AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
-	RETURN Str3( flSource, dwLen, dwDec )
+/// <inheritdoc cref="M:XSharp.RT.Functions.Str3(XSharp.__Float,System.UInt32,System.UInt32)" />
+FUNCTION StrFloat(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
+	RETURN Str3( f, dwLen, dwDec )
 
 
 
 
 
 /// <summary>
-/// Convert a numeric expression to a string.
+/// Convert a numeric expression to a string with an optional decimal separator based on the settings in the runtime state.
 /// </summary>
 /// <param name="f"></param>
 /// <returns>
@@ -767,17 +700,17 @@ INTERNAL FUNCTION _Str2(f AS FLOAT,dwLen AS DWORD) AS STRING
 
 
 /// <summary>
-/// Convert a numeric expression to a string of specific length and decimal places.
+/// Convert a numeric expression to a string of specific length and decimal places 
 /// </summary>
-/// <param name="f"></param>
-/// <param name="dwLen"></param>
-/// <param name="dwDec"></param>
-/// <returns>
-/// </returns>
+/// <param name="f">Number to format</param>
+/// <param name="dwLen">Total length of result string.</param>
+/// <param name="dwDec">Number of decimals.</param>
+/// <returns>A string with decimal separator based on the runtime state.</returns>
 FUNCTION Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 	RETURN ConversionHelpers.AdjustDecimalSeparator(_Str3(f, dwLen, dwDec))
 
-/// <exclude/>
+/// <inheritdoc cref="M:XSharp.RT.Functions.Str3(XSharp.__Float,System.UInt32,System.UInt32)" />
+/// <returns>A string with DOT as decimal separator.</returns>
 FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 
 
@@ -811,13 +744,10 @@ FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
    RETURN ConversionHelpers.FormatNumber(f, (INT) dwLen, (INT) dwDec)
 
 
-/// <summary>
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
+/// <inheritdoc cref="M:XSharp.RT.Functions.Val(System.String)" />
+/// <returns>The numeric value as a FLOAT.</returns>
 FUNCTION StrToFloat(c AS STRING) AS FLOAT
-    return (FLOAT) Val(c)
+    RETURN (FLOAT) Val(c)
 
 
 
@@ -827,9 +757,8 @@ FUNCTION StrToFloat(c AS STRING) AS FLOAT
 /// <summary>
 /// Convert a string containing a numeric value to a numeric data type.
 /// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
+/// <param name="cNumber">Number to convert. This may contain decimal separator, Hex notation, U or L suffix or Exponential notation.</param>
+/// <returns>The numeric value as a USUAL.This may be a FLOAT, a LONG or an INT64.</returns>
 FUNCTION Val(cNumber AS STRING) AS USUAL
 	RETURN _Val(AllTrim(cNumber))
 
@@ -884,7 +813,6 @@ FUNCTION Bin2F(c AS STRING) AS FLOAT
         nDec := Bin2W(SubStr3(c, 11,2))
         val  := Bin2Real8(SubStr3(c, 1,8))
         RETURN FLOAT{val, 0, nDec}
-        
     ENDIF
 	RETURN 0.0
 	

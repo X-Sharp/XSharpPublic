@@ -106,9 +106,9 @@ CLASS AssemblyInfo
 			ENDIF
 			folders:Add(folderPath)
 			FOREACH path AS STRING IN SystemTypeController.AssemblyFileNames
-				folderPath := Path.GetDirectoryName(path)
+				folderPath := System.IO.Path.GetDirectoryName(path)
 				IF ! folders:Contains(folderPath)
-					assemblyPath := Path.Combine(folderPath, name)
+					assemblyPath := System.IO.Path.Combine(folderPath, name)
 					IF File.Exists(assemblyPath)
 						VAR asm := AssemblyInfo.LoadAssemblyFromFile(assemblyPath)
 						IF asm != NULL

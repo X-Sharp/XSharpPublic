@@ -996,9 +996,9 @@ FUNCTION __DBSSeek( xValue AS USUAL, lSoft AS USUAL, lLast AS USUAL, nTries  := 
    //            in which lLast is passed to the RDD.
 	LOCAL lRet  AS LOGIC
 
-	Default(@lSoft, SetSoftSeek())
-	Default(@lLast, FALSE)
-	Default(@xValue, "")
+	DEFAULT(@lSoft, SetSoftSeek())
+	DEFAULT(@lLast, FALSE)
+	DEFAULT(@xValue, "")
 
 	DO WHILE nTries > 0
 		NetErr( FALSE )

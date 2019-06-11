@@ -49,7 +49,7 @@ namespace XSharp.Project
         internal const string VO2Description = "Initialize strings to empty string (String.Empty) ( /vo2). Please note that in .NET a NULL_STRING is not the same as a string with length 0";
         internal const string VO3Description = "Add the virtual modifier to all methods by default (which is the normal Visual Objects behavior) (/vo3)";
         internal const string VO4Description = "Implicit signed/unsigned integer conversions (/vo4)";
-        internal const string VO5Description = "Methods without parameters and calling convention are compiled as Clipper calling convention (/vo5). Please note that without this switch all methods without parameters will be seen as STRICT. Methods with untyped parameters are always seen as CLIPPER calling convention (/vo7)";
+        internal const string VO5Description = "Methods without parameters and calling convention are compiled as Clipper calling convention (/vo5). \nPlease note that without this switch all methods without parameters will be seen as STRICT. Methods with untyped parameters are always seen as CLIPPER calling convention.";
         internal const string VO6Description = "Implicit conversions between typed function PTR and PTR (/vo6)";
         internal const string VO7Description = "Compatible implicit casts and Conversions (/vo7)";
         internal const string VO8Description = "Makes the preprocessor case insensitive and also controls how #ifdef inspects #defines (/vo8)";

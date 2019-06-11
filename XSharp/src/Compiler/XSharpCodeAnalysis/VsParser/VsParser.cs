@@ -53,8 +53,8 @@ namespace XSharp.Parser
                 var file = error.Node.SourceFileName;
                 var ls = loc.GetLineSpan().Span;
 #else
-                var file = error.Node.SourceFileName;
-                var ls = new LinePositionSpan();
+                string file= error.Node.SourceFileName;
+                var ls = new LinePositionSpan() { Line = error.Node.MappedLine, Column = error.Node.Position, FileName = error.Node.SourceFileName };
 #endif
                 var msg = ErrorFacts.GetMessage(error.Code, CultureInfo.CurrentCulture);
                 if (ErrorFacts.IsWarning(error.Code))
@@ -236,7 +236,7 @@ namespace XSharp.Parser
                 else
                 {
                     //Debug.WriteLine(_fileName + "(" + line + 1 + "," + charPositionInLine + 1 + "): error: " + msg);
-                    _parseErrors.Add(new ParseErrorData(ErrorCode.ERR_ParserError, msg));
+                    _parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_ParserError, msg));
                 }
             }
         }

@@ -3209,7 +3209,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (!isDim && hasArraySub)
             {
-                context.ArraySub.AddError(new ParseErrorData(ErrorCode.ERR_FeatureNotAvailableInDialect, "Indexed Class variable", _options.Dialect.ToString()));
+                context.ArraySub.AddError(new ParseErrorData(context, ErrorCode.ERR_FeatureNotAvailableInDialect, "Indexed Class variable", _options.Dialect.ToString()));
             }
             if (!isDim && isFixed)
             {
@@ -3814,7 +3814,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // no type parameters on access and assign
                 if (context.TypeParameters != null || context._ConstraintsClauses.Count > 0)
                 {
-                    context.AddError(new ParseErrorData(ErrorCode.Err_TypeParametersAccessAssign));
+                    context.AddError(new ParseErrorData(context, ErrorCode.Err_TypeParametersAccessAssign));
                 }
             }
             if (isInInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0)
@@ -5124,7 +5124,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (par != context._Params.Last())
                     {
-                        par.AddError(new ParseErrorData(ErrorCode.ERR_VarargsLast, par));
+                        par.AddError(new ParseErrorData(context, ErrorCode.ERR_VarargsLast, par));
                     }
                     //var parent = context.Parent;
                     //if (!(parent is XP.VodllContext))
@@ -5493,7 +5493,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (!isDim && hasArraySub)
             {
-                context.ArraySub.AddError(new ParseErrorData(ErrorCode.ERR_FeatureNotAvailableInDialect, "Indexed Local", _options.Dialect.ToString()));
+                context.ArraySub.AddError(new ParseErrorData(context, ErrorCode.ERR_FeatureNotAvailableInDialect, "Indexed Local", _options.Dialect.ToString()));
             }
         }
 
@@ -5543,7 +5543,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // multi dim is not supported yet in X# runtime.
             if (_options.XSharpRuntime)
             {
-                sub.AddError(new ParseErrorData(ErrorCode.ERR_ParserError, "DIM string arrays must have one dimension"));
+                sub.AddError(new ParseErrorData(sub, ErrorCode.ERR_ParserError, "DIM string arrays must have one dimension"));
                 return null;
             }
             // Vulcan has StringArrayInit, but that does not return a string, so we have to generate a special function for this
@@ -5723,7 +5723,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var name = context.Id.GetText();
             if (CurrentEntity?.Data.GetField(name) != null)
             {
-                context.AddError(new ParseErrorData(ErrorCode.ERR_MemvarFieldWithSameName, name));
+                context.AddError(new ParseErrorData(context, ErrorCode.ERR_MemvarFieldWithSameName, name));
             }
             var variable = _syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null,
                 (context.Expression == null) ? null :
@@ -5733,9 +5733,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             variables.Add(variable);
             var modifiers = _pool.Allocate();
             if (isConst)
-                context.AddError(new ParseErrorData(ErrorCode.ERR_ImplicitlyTypedVariableCannotBeConst));
+                context.AddError(new ParseErrorData(context, ErrorCode.ERR_ImplicitlyTypedVariableCannotBeConst));
             if (isStatic)
-                context.AddError(new ParseErrorData(ErrorCode.ERR_ImplicitlyTypedVariableCannotBeStatic));
+                context.AddError(new ParseErrorData(context, ErrorCode.ERR_ImplicitlyTypedVariableCannotBeStatic));
             context.Put(_syntaxFactory.LocalDeclarationStatement(
                 modifiers.ToList<SyntaxToken>(),
                 _syntaxFactory.VariableDeclaration(_impliedType, variables),
@@ -7167,7 +7167,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 int ranks = rankSpecifiers[0].Sizes.Count;
                 if (ranks != context.ArgList?._Args?.Count)
-                    context.AddError(new ParseErrorData(ErrorCode.ERR_BadCtorArgCount, context.Type.GetText(), context.ArgList?._Args?.Count ?? 0));
+                    context.AddError(new ParseErrorData(context, ErrorCode.ERR_BadCtorArgCount, context.Type.GetText(), context.ArgList?._Args?.Count ?? 0));
                 var sizes = _pool.AllocateSeparated<ExpressionSyntax>();
                 if (context.ArgList?._Args != null)
                 {

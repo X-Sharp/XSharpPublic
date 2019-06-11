@@ -51,7 +51,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                _parseErrors.Add(new ParseErrorData(ErrorCode.ERR_ParserError, e.Message));
+                _parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_ParserError, e.Message));
             }
             System.Diagnostics.Debug.WriteLine("Parsing aborted for : " + _fileName);
             System.Diagnostics.Debug.WriteLine("     error detected : " + e.Message);
@@ -110,7 +110,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                 {
                     //Debug.WriteLine(_fileName + "(" + line + 1 + "," + charPositionInLine + 1 + "): error: " + msg);
-                    _parseErrors.Add(new ParseErrorData(ErrorCode.ERR_ParserError, msg));
+                    _parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_ParserError, msg));
                 }
             }
         }
@@ -198,7 +198,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             catch (Exception e)
             {
                 // Exception during Lexing 
-                parseErrors.Add(new ParseErrorData(ErrorCode.ERR_Internal, e.Message, e.StackTrace));
+                parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
                 // create empty token stream so we can continue the rest of the code
                 _lexerTokenStream = new BufferedTokenStream(new ListTokenSource(new List<IToken>()));
             }
@@ -263,7 +263,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 catch (Exception e)
                 {
                     // Exception during Preprocessing
-                    parseErrors.Add(new ParseErrorData(ErrorCode.ERR_Internal, e.Message, e.StackTrace));
+                    parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
                     // create empty token stream so we can continue the rest of the code
                     _preprocessorTokenStream = new BufferedTokenStream(new ListTokenSource(new List<IToken>()));
                 }
@@ -393,7 +393,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 catch (Exception e)
                 {
-                    parseErrors.Add(new ParseErrorData(ErrorCode.ERR_Internal, e.Message, e.StackTrace));
+                    parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
                 }
                 eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                 if (!parseErrors.IsEmpty())

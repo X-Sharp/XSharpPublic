@@ -464,7 +464,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.end);
             if (context.Info == null)   // This should not happen
             {
-                context.AddError(new ParseErrorData(ErrorCode.WRN_XPPMethodNotDeclared, context.ShortName));
+                context.AddError(new ParseErrorData(context, ErrorCode.WRN_XPPMethodNotDeclared, context.ShortName));
                 // setup dummy declaration
                 context.Info = new XppDeclaredMethodInfo() { Name = context.ShortName, Parent = _currentClass, Declaration = context, Entity = context, Visibility = XP.HIDDEN, Inline = true};
             }
@@ -503,7 +503,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 current = FindClassInfo(name);
                 if (current == null)
                 {
-                    context.AddError(new ParseErrorData(ErrorCode.ERR_XPPClassNotFound, name));
+                    context.AddError(new ParseErrorData(context, ErrorCode.ERR_XPPClassNotFound, name));
                 }
                 current = _classes.LastOrDefault();
             }
@@ -569,7 +569,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.end);
             if (context.Info == null)
             {
-                context.AddError(new ParseErrorData(ErrorCode.WRN_XPPMethodNotDeclared, context.ShortName));
+                context.AddError(new ParseErrorData(context, ErrorCode.WRN_XPPMethodNotDeclared, context.ShortName));
                 // setup dummy declaration
                 context.Info = new XppDeclaredMethodInfo() { Name = context.ShortName, Declaration = context, Entity = context, Visibility = XP.HIDDEN };
             }
@@ -844,7 +844,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         kw = SyntaxFactory.MakeToken(SyntaxKind.SealedKeyword, m.Text);
                         break;
                     case XP.FREEZE:
-                        context.AddError(new ParseErrorData(ErrorCode.WRN_XPPFrozedNotSupported));
+                        context.AddError(new ParseErrorData(context, ErrorCode.WRN_XPPFrozedNotSupported));
                         break;
                     default:
                         break;

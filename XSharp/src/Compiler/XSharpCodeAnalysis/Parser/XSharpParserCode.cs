@@ -695,12 +695,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             this(token: enode.Symbol, code: code, args: args)
         {
         }
-        internal ParseErrorData(ErrorCode code) :
-            this(node: null, code: code, args: Array.Empty<object>())
-        { }
-        internal ParseErrorData(ErrorCode code, params object[] args) :
+        //internal ParseErrorData(ErrorCode code) :
+        //    this(node: null, code: code, args: Array.Empty<object>())
+        //{ }
+        internal ParseErrorData(string fileName, ErrorCode code, params object[] args) :
             this(node: null, code: code, args: args)
-        { }
+        {
+            var token = new XSharpToken(0);
+            var node = new XTerminalNodeImpl(token);
+            node.SourceFileName = fileName;
+            this.Node = node;
+        }
         internal ParseErrorData(IXParseTree node, ErrorCode code) :
             this(node, code, Array.Empty<object>())
         { }
@@ -759,6 +764,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         IXParseTree,
         IErrorNode
     {
+        private string fileName = null;
         public XTerminalNodeImpl(IToken symbol) : base(symbol)
         { }
         public object CsNode { get; set; }
@@ -773,6 +779,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             get
             {
+                if (fileName != null)
+                    return fileName;
                 var ct = (Symbol as XSharpToken);
                 if (ct != null)
                 {
@@ -782,6 +790,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
                 return "<unknown>";
             }
+            set => fileName = value;
         }
         public string MappedFileName { get { return ((XSharpToken)Symbol).MappedFileName; } }
         public int MappedLine { get { return ((XSharpToken)Symbol).MappedLine; } }

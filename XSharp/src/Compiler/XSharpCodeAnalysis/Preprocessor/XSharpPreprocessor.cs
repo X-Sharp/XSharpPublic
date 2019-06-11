@@ -391,7 +391,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var d = Diagnostic.Create(new SyntaxDiagnosticInfo(error.Code));
             d = _options.CommandLineArguments.CompilationOptions.FilterDiagnostic(d);
             if (d != null)
-            { 
+            {
                _parseErrors.Add(error);
             }
 #else
@@ -443,7 +443,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 catch (Exception e)
                 {
-                    addParseError(new ParseErrorData(ErrorCode.ERR_PreProcessorError, "Error processing PPO file: " + e.Message));
+                    addParseError(new ParseErrorData(fileName, ErrorCode.ERR_PreProcessorError, "Error processing PPO file: " + e.Message));
                 }
             }
             // Add default IncludeDirs;
@@ -703,7 +703,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Detect recursion
             var x = inputs;
             while (x != null)
-            { 
+            {
                 if (string.Compare(x.SourceFileName , filename, true) == 0)
                 {
                     addParseError(new ParseErrorData(symbol, ErrorCode.ERR_PreProcessorError, "Recursive include file ("+filename+") detected",filename));
@@ -776,7 +776,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         void addDefine(IList<XSharpToken> line, IList<XSharpToken> original)
         {
-            // Check to see if the define contains a LPAREN, and there is no space in between them. 
+            // Check to see if the define contains a LPAREN, and there is no space in between them.
             // Then it is a pseudo function that we will store as a #xtranslate UDC
             // this returns a list that includes #define and the ID
             if (line.Count < 2)
@@ -818,7 +818,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             addParseError(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineSame, def.Text));
                         }
-                        else 
+                        else
                         {
                             if (! _duplicateFile)
                             {
@@ -973,7 +973,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return ex;
         }
 #endif
-        private bool isObsoleteIncludeFile(string includeFileName)
+        private bool isObsoleteIncludeFile(string includeFileName, XSharpToken token)
         {
             string file = PathUtilities.GetFileName(includeFileName, true).ToLower();
             bool obsolete = false;
@@ -1028,7 +1028,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (obsolete)
             {
-                addParseError(new ParseErrorData(ErrorCode.WRN_ObsoleteInclude, includeFileName, assemblyName+".dll"));
+                addParseError(new ParseErrorData(token, ErrorCode.WRN_ObsoleteInclude, includeFileName, assemblyName+".dll"));
             }
             return obsolete;
         }
@@ -1039,7 +1039,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             SourceText text = null;
             Exception fileReadException = null;
             PPIncludeFile includeFile = null;
-            if (isObsoleteIncludeFile(includeFileName))
+            if (isObsoleteIncludeFile(includeFileName,fileNameToken))
             {
                 return true;
             }
@@ -1108,7 +1108,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
 
                 }
-            }                
+            }
             if (nfp == null)
             {
                 if (fileReadException != null)
@@ -1143,7 +1143,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     DebugOutput("{0} line {1} Include {2}", fname, 0, nfp);
                 }
             }
-            
+
             if (includeFile == null)
             {
                 // we have nfp and text with the file contents
@@ -1210,7 +1210,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (isdefined )
             {
                 if ( _options.VOPreprocessorBehaviour)
-                { 
+                {
                     var value = symbolDefines[define];
                     if (value?.Count == 1)
                     {
@@ -1232,7 +1232,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (isdefined )
                 {
                     if (_options.VOPreprocessorBehaviour)
-                    { 
+                    {
                         var value = macroDefines[define]();
                         if (value != null)
                         {
@@ -1377,7 +1377,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    
+
                     writeToPPO(original, true);
                     int start = line[1].StartIndex;
                     int end = line[line.Count - 1].StopIndex;
@@ -1652,7 +1652,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // #define FOO 1
             // #define BAR FOO + 1
             // when the code is "? BAR" then we need to translate this to "? 1 + 1"
-            // For performance reasons we assume there is nothing to do, so we only 
+            // For performance reasons we assume there is nothing to do, so we only
             // start allocating a result collection when a define is detected
             // otherwise we will simply return the original string
             bool hasChanged = false;
@@ -1779,7 +1779,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private List<IList<XSharpToken>> splitCommands(IList<XSharpToken> tokens, out IList<XSharpToken> separators)
         {
-            var result = new List<IList<XSharpToken>>(10); 
+            var result = new List<IList<XSharpToken>>(10);
             var current = new List<XSharpToken>(tokens.Count);
             separators = new List<XSharpToken>();
             foreach (var t in tokens)
@@ -1815,7 +1815,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (rule == null)
                 {
                     // nothing to do, so exit. Leave changed the way it is. This does not have to be the first iteration
-                    break; 
+                    break;
                 }
                 result = doReplace(result, rule, matchInfo);
                 if (usedRules.HasRecursion(rule, result))
@@ -1832,7 +1832,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (cmds.Count <= 1)
                 {
                     // single statement result. Try again to see if the new statement matches another UDC rule
-                    continue; 
+                    continue;
                 }
                 else
                 {
@@ -1880,7 +1880,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #endregion
 
-  
+
         private List<XSharpToken> doReplace(IList<XSharpToken> line, PPRule rule, PPMatchRange[] matchInfo)
         {
             Debug.Assert(line?.Count > 0);

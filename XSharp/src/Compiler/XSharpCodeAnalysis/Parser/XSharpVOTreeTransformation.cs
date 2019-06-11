@@ -951,7 +951,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             var name = memvar.Id.GetText();
                             if (CurrentEntity.Data.GetField(name) != null)
                             {
-                                context.AddError(new ParseErrorData(ErrorCode.ERR_MemvarFieldWithSameName, name));
+                                context.AddError(new ParseErrorData(context, ErrorCode.ERR_MemvarFieldWithSameName, name));
                             }
                             else
                             { 
@@ -966,7 +966,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             var name = memvar.Id.GetText();
                             if (CurrentEntity.Data.GetField(name) != null )
                             {
-                                context.AddError(new ParseErrorData(ErrorCode.ERR_MemvarFieldWithSameName, name));
+                                context.AddError(new ParseErrorData(context, ErrorCode.ERR_MemvarFieldWithSameName, name));
                             }
                             else
                             { 
@@ -3920,7 +3920,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var name = field.Id.GetText();
                     if (CurrentEntity.Data.GetField(name) != null)
                     {
-                        context.AddError(new ParseErrorData(ErrorCode.ERR_MemvarFieldWithSameName, name));
+                        context.AddError(new ParseErrorData(context, ErrorCode.ERR_MemvarFieldWithSameName, name));
                     }
                     else
                     {

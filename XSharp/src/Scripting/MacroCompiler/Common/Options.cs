@@ -18,7 +18,7 @@ namespace XSharp.MacroCompiler
     {
         public static readonly MacroOptions Default = new MacroOptions();
 
-        public bool AllowFourLetterAbbreviations = true;
+        public bool AllowFourLetterAbbreviations = false;
         public bool AllowOldStyleComments = true;
         public bool AllowSingleQuotedStrings = true;
         public bool AllowPackedDotOperators = true;

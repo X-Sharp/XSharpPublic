@@ -65,13 +65,13 @@ namespace XSharp.MacroCompiler
             }
         }
 
-        IDictionary<string, TokenType> SymIds
-        {
-            get
-            {
-                return symIds;
-            }
-        }
+        //IDictionary<string, TokenType> SymIds
+        //{
+        //    get
+        //    {
+        //        return symIds;
+        //    }
+        //}
 
         char Lb()
         {
@@ -419,7 +419,7 @@ namespace XSharp.MacroCompiler
                             break;
                         case TokenType.EQ:
                             if (Expect('=')) t = TokenType.EEQ;
-                            else if (Expect('>')) t = TokenType.UDCSEP;
+                            //else if (Expect('>')) t = TokenType.UDCSEP;
                             break;
                         case TokenType.NOT:
                             if (Expect('=')) t = TokenType.NEQ;
@@ -493,51 +493,51 @@ namespace XSharp.MacroCompiler
                                             value = null;
                                             Rewind(start + 1);
                                         }
-                                        else
-                                        {
-                                            t = tt;
-                                            if (tt >= TokenType.PP_FIRST && t <= TokenType.PP_LAST)
-                                            {
-                                                _inPp = true;
-                                                HasPreprocessorTokens = true;
-                                                switch (tt)
-                                                {
-                                                    case TokenType.PP_COMMAND:
-                                                    case TokenType.PP_TRANSLATE:
-                                                        HasPPUDCs = true;
-                                                        break;
-                                                    case TokenType.PP_IFDEF:
-                                                    case TokenType.PP_IFNDEF:
-                                                    case TokenType.PP_ELSE:
-                                                    case TokenType.PP_ENDIF:
-                                                        HasPPIfdefs = true;
-                                                        break;
-                                                    case TokenType.PP_REGION:
-                                                    case TokenType.PP_ENDREGION:
-                                                        HasPPRegions = true;
-                                                        break;
-                                                    case TokenType.PP_ERROR:
-                                                    case TokenType.PP_WARNING:
-                                                        HasPPMessages = true;
-                                                        break;
-                                                    case TokenType.PP_INCLUDE:
-                                                        HasPPIncludes = true;
-                                                        break;
-                                                    case TokenType.PP_DEFINE:
-                                                    case TokenType.PP_UNDEF:
-                                                        HasPPDefines = true;
-                                                        break;
-                                                    case TokenType.PP_LINE:
-                                                    default:
-                                                        break;
-                                                }
-                                            }
-                                            else if (tt == TokenType.PRAGMA)
-                                            {
-                                                ch = Channel.PRAGMACHANNEL;
-                                                while (!ReachEol()) ;
-                                            }
-                                        }
+                                        //else
+                                        //{
+                                        //    t = tt;
+                                        //    if (tt >= TokenType.PP_FIRST && t <= TokenType.PP_LAST)
+                                        //    {
+                                        //        _inPp = true;
+                                        //        HasPreprocessorTokens = true;
+                                        //        switch (tt)
+                                        //        {
+                                        //            case TokenType.PP_COMMAND:
+                                        //            case TokenType.PP_TRANSLATE:
+                                        //                HasPPUDCs = true;
+                                        //                break;
+                                        //            case TokenType.PP_IFDEF:
+                                        //            case TokenType.PP_IFNDEF:
+                                        //            case TokenType.PP_ELSE:
+                                        //            case TokenType.PP_ENDIF:
+                                        //                HasPPIfdefs = true;
+                                        //                break;
+                                        //            case TokenType.PP_REGION:
+                                        //            case TokenType.PP_ENDREGION:
+                                        //                HasPPRegions = true;
+                                        //                break;
+                                        //            case TokenType.PP_ERROR:
+                                        //            case TokenType.PP_WARNING:
+                                        //                HasPPMessages = true;
+                                        //                break;
+                                        //            case TokenType.PP_INCLUDE:
+                                        //                HasPPIncludes = true;
+                                        //                break;
+                                        //            case TokenType.PP_DEFINE:
+                                        //            case TokenType.PP_UNDEF:
+                                        //                HasPPDefines = true;
+                                        //                break;
+                                        //            case TokenType.PP_LINE:
+                                        //            default:
+                                        //                break;
+                                        //        }
+                                        //    }
+                                        //    else if (tt == TokenType.PRAGMA)
+                                        //    {
+                                        //        ch = Channel.PRAGMACHANNEL;
+                                        //        while (!ReachEol()) ;
+                                        //    }
+                                        //}
                                     }
                                 }
                             }

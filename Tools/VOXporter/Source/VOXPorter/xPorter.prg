@@ -43,7 +43,7 @@ FUNCTION Start(asParams AS STRING[]) AS VOID
 	oOptions:DontGenerateEmptyFiles := TRUE
 	oOptions:AdjustCallbackFunctions := TRUE      
 	oOptions:SortEntitiesByName := TRUE
-	oOptions:UseXSharpRuntime := FALSE
+	oOptions:UseXSharpRuntime := TRUE
     oOptions:CopyResourcesToProjectFolder := TRUE
 	xPorter.Options := oOptions
 	

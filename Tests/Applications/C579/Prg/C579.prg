@@ -35,9 +35,9 @@ IF l
 ELSE
 	THROW Exception{"Incorrect result"}
 END IF
-INTERFACE iTest
+/*INTERFACE iTest
 	EXPORT Name AS STRING	// should not get a default
-END INTERFACE		
+END INTERFACE*/
 STRUCTURE strTest
 	EXPORT Name AS STRING   // should not get a default
 END STRUCTURE

@@ -4,7 +4,9 @@ FUNCTION Start() AS VOID
 	// Following ccode in c# compiles without errors
 	// In x#, it reports error XS1503: Argument 1: cannot convert from 'int' to 'string'
 	LOCAL oChartAreaCollection AS System.Windows.Forms.DataVisualization.Charting.ChartAreaCollection
-	? oChartAreaCollection[0]
+	IF FALSE
+		? oChartAreaCollection[0]
+	ENDIF
 
 	// Basically the class hierarchy of oChartAreaCollection is similar to the one below
 	// But this one does compile with no issues. Apparently there's something else getting in the way in the ChartAreaCollection class

@@ -13,6 +13,7 @@
 [assembly: AssemblyConfigurationAttribute( ASSEMBLY_CONFIGURATION )]
 [assembly: AssemblyCompanyAttribute( COMPANY_NAME )]
 [assembly: AssemblyProductAttribute( PRODUCT_NAME )]
+[assembly: AssemblyCulture("")]
 [assembly: AssemblyCopyrightAttribute( COPYRIGHT_STR )]
 [assembly: ComVisibleAttribute( FALSE )]
 [assembly: ClsCompliant( FALSE )]

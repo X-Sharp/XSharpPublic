@@ -221,29 +221,22 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
     [DebuggerDisplay("Action {Type}")];
-    INTERNAL STRUCTURE CdxAction
-        INTERNAL PROPERTY Type  AS CdxActionType AUTO
-        INTERNAL PROPERTY Page  AS CdxTreePage   AUTO
-        INTERNAL PROPERTY Page2 AS CdxTreePage   AUTO
-        INTERNAL PROPERTY Pos   AS LONG AUTO
-        INTERNAL PROPERTY Recno AS LONG AUTO
-        INTERNAL PROPERTY Key   AS BYTE[] AUTO 
-        INTERNAL PROPERTY ChildPage AS LONG AUTO 
+    INTERNAL CLASS CdxAction
+        INTERNAL PROPERTY Type  AS CdxActionType AUTO   
+        INTERNAL PROPERTY Page  AS CdxTreePage   AUTO  := NULL
+        INTERNAL PROPERTY Page2 AS CdxTreePage   AUTO  := NULL
+        INTERNAL PROPERTY Pos   AS LONG AUTO           := 0
+        INTERNAL PROPERTY Recno AS LONG AUTO           := -1
+        INTERNAL PROPERTY Key   AS BYTE[] AUTO         := NULL
+        INTERNAL PROPERTY ChildPage AS LONG AUTO       := 0
         PRIVATE STATIC _Ok AS CdxAction
 
         STATIC CONSTRUCTOR
             _Ok := CdxAction{CdxActionType.Ok}
 
         PRIVATE CONSTRUCTOR(ntype AS CdxActionType)
-            Type  := nType
-            Page  := NULL
-            Page2 := NULL
-            Pos   := 0
-            Recno := -1
-            Key   := NULL
-            ChildPage := 0
+            Type   := nType
 
-            
 
         STATIC PROPERTY Ok AS CdxAction GET _Ok
 
@@ -292,12 +285,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL STATIC METHOD Balance(oPage AS CdxTreePage) AS CdxAction
             RETURN CdxAction{CdxActionType.Balance}{Page := oPage}
 
-
         INTERNAL STATIC METHOD OutOfBounds(oPage AS CdxTreePage) AS CdxAction
             RETURN CdxAction{CdxActionType.OutOfBounds}{Page := oPage}
             
-    END STRUCTURE
-
- 
+    END CLASS
 
 END NAMESPACE

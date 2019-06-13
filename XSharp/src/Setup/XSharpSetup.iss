@@ -7,7 +7,7 @@
 
 
 #ifndef Compression
-#define Compression     "lzma/ultra"
+#define Compression     "lzma/ultra64"
 ; "lzma/ultra"
 ;#define Compression     "none" 
 #endif
@@ -19,11 +19,11 @@
 
 ; version info and similar stuff.
   
-#define Version             "2.0.2.1"
+#define Version             "2.0.2.2"
 #define FileNameVersion     "2RC2"
-#define VIVersion           "2.0.2.1"
-#define TouchDate           "2019-06-11"
-#define TouchTime           "02:20:10"
+#define VIVersion           "2.0.2.2"
+#define TouchDate           "2019-06-12"
+#define TouchTime           "02:20:20"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
 #define DevPublicFolder     "C:\Xsharp\DevPublic"
@@ -154,7 +154,7 @@ AppPublisher={#Company}
 AppPublisherURL={#XSharpURL}
 AppSupportURL={#XSharpURL}
 AppUpdatesURL={#XSharpURL}
-DefaultDirName={pf}\{#Product}
+DefaultDirName={commonpf}\{#Product}
 DefaultGroupName={#Product}
 LicenseFile=Baggage\License.txt
 OutputDir={#OutPutFolder} 
@@ -163,6 +163,7 @@ OutputManifestFile=Setup-Manifest.txt
 SetupIconFile=Baggage\XSharp.ico
 Compression={#Compression}
 SolidCompression=yes
+LZMAUseSeparateProcess=yes
 SetupLogging=yes
 WindowResizable=yes
 
@@ -178,6 +179,8 @@ Wizardsmallimagefile=Baggage\XSharp_Bmp_Banner.bmp
 ;WizardImagefile=Baggage\XSharp_Bmp_DialogXMas.bmp
 WizardImagefile=Baggage\XSharp_Bmp_Dialog.bmp
 ;WizardImagefile=Baggage\XSharp_Snowman.bmp
+WizardStyle=modern
+WizardResizable=true
 
 ;Uninstaller
 UninstallFilesDir={app}\uninst
@@ -784,7 +787,7 @@ Type: dirifempty;     Name: "{app}";
 Type: filesandordirs; Name: "{group}";
 
 
-Type: filesandordirs; Name: "{pf}\MsBuild\{#Product}"             ; 
+Type: filesandordirs; Name: "{commonpf}\MsBuild\{#Product}"             ; 
 Type: filesandordirs; Name: "{commondocs}\XSharp\Examples";
 Type: filesandordirs; Name: "{commondocs}\XSharp\Scripting";
 Type: dirifempty;     Name: "{commondocs}\XSharp"; 
@@ -1239,8 +1242,8 @@ begin
       commands := commands + DelFolder(Vs2015Path+'Extensions\XSharp');
       commands := commands + DelUserFolders(ExpandConstant('{#VS14LocalDir}'));
       commands := commands + CopyToVsFolder(Vs2015Path);
-      commands := commands + DelFolder(ExpandConstant('{pf}\MsBuild\XSharp'));
-      commands := commands + CopyMsBuild(ExpandConstant('{pf}\MsBuild\XSharp'));
+      commands := commands + DelFolder(ExpandConstant('{commonpf}\MsBuild\XSharp'));
+      commands := commands + CopyMsBuild(ExpandConstant('{commonpf}\MsBuild\XSharp'));
       SaveStringToFile( ExpandConstant('{app}\uninst\deployvs2015.cmd'), commands, False);
   end
 end;
@@ -1540,6 +1543,9 @@ begin
     PrintButton.Height := WizardForm.BackButton.Height;
     PrintButton.Left := WizardForm.LicenseMemo.Left+WizardForm.LicenseMemo.Width - PrintButton.Width;
     PrintButton.OnClick := @PrintButtonClick;
+    PrintButton.Anchors := [akRight, akBottom]
+    WizardForm.LicenseMemo.Font.Name := 'Courier New';
+    WizardForm.LicenseMemo.Font.Size := 9;
     OriginalTypeChange := WizardForm.TypesCombo.OnChange ;
     WizardForm.TypesCombo.OnChange := @TypeChange;
     Log('InitializeWizard end');

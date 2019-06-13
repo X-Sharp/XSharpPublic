@@ -375,16 +375,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             CASE TypeCode.String
                 text := (STRING)toConvert
             CASE TypeCode.Boolean
-                text := "F"
-                IF (LOGIC) toConvert
-                    text := "T"
-                ENDIF
+                text := IIF ((LOGIC) toConvert, "T", "F")
             END SWITCH
             IF sLen > text:Length
                 sLen := text:Length
             ENDIF
             resultLength := sLen
-            SELF:_oRDD:_Encoding:GetBytes( text, 0, slen, buffer, 0)
+            SELF:_Encoding:GetBytes( text, 0, slen, buffer, 0)
             RETURN TRUE
             
         METHOD SetOrderScope(itmScope AS OBJECT , uiScope AS DBOrder_Info ) AS LOGIC

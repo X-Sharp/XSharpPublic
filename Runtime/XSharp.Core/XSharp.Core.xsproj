@@ -123,10 +123,7 @@
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
-    <Reference Include="System">
-      <Name>System</Name>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
+    <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -196,6 +193,7 @@
     <Compile Include="State\Set.prg" />
     <Compile Include="State\State.prg" />
     <Compile Include="Types\Attributes.prg" />
+    <Compile Include="Types\Dialect.prg" />
     <Compile Include="Types\Error.prg" />
     <Compile Include="Types\ErrorEnums.prg" />
     <Compile Include="Types\Interfaces.prg" />

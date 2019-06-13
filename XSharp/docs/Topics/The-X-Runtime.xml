@@ -143,7 +143,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_RDD">XSharp.RDD.DLL</link></para>
         </td>
         <td style="width:618px;">
-          <para styleclass="Normal">This will contain the various RDDs implemented for X#. <text style="font-weight:bold; font-style:italic;">It is not included yet.</text></para>
+          <para styleclass="Normal">This will contain the various RDDs implemented for X#.</para>
         </td>
         <td style="width:271px;">
           <para styleclass="Normal">X# Core</para>

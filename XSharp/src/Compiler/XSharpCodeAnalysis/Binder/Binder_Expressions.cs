@@ -645,10 +645,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             var name = node.Identifier.ValueText;
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-            var nsResult = LookupResult.GetInstance();
             if (nsOrTypesFirst)
             { 
-               this.LookupSymbolsWithFallback(nsResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: LookupOptions.NamespacesOrTypesOnly);
+               this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: LookupOptions.NamespacesOrTypesOnly);
             }
             if (lookupResult.IsClear)
             {
@@ -680,16 +679,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     useSiteDiagnostics = null;
                     lookupResult.Clear();
                     this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
-                }
-            }
-            if (!nsResult.IsClear && lookupResult.IsClear)
-            {
-                foreach (var symbol in nsResult.Symbols)
-                {
-                    if (!lookupResult.Symbols.Contains(symbol))
-                    {
-                        lookupResult.Symbols.Add(symbol);
-                    }
                 }
             }
             diagnostics.Add(node, useSiteDiagnostics);

@@ -586,42 +586,43 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             stmts.Clear();
             call = GenerateMethodCall(XSharpSpecialNames.ModuleName + "." + XSharpSpecialNames.AppInit, true);
             stmts.Add(GenerateExpressionStatement(call, true));
-            var ame = _syntaxFactory.AnonymousMethodExpression(
-                null,
-                SyntaxFactory.MakeToken(SyntaxKind.DelegateKeyword),
-                EmptyParameterList(),
-                body);
+            stmts.Add(body);
+            //var ame = _syntaxFactory.AnonymousMethodExpression(
+            //    null,
+            //    SyntaxFactory.MakeToken(SyntaxKind.DelegateKeyword),
+            //    EmptyParameterList(),
+            //    body);
             //ame.XGenerated = true;
-            var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
-            var vardecl = _syntaxFactory.VariableDeclarator(SyntaxFactory.MakeIdentifier("Xs$a"), null,
-               _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), ame));
-            variables.Add(vardecl);
-            vardecl.XNode = stmts[0].XNode;
+            //var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
+            //var vardecl = _syntaxFactory.VariableDeclarator(SyntaxFactory.MakeIdentifier(XSharpSpecialNames.ActionVariable), null,
+            //   _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), ame));
+            //variables.Add(vardecl);
+            //vardecl.XNode = stmts[0].XNode;
             //vardecl.XGenerated = true;
-            var varType = GenerateQualifiedName("System.Action");
-            if (!isVoidType(returntype))
-            {
-                var typeArgs = _syntaxFactory.TypeArgumentList(
-                    SyntaxFactory.MakeToken(SyntaxKind.LessThanToken),
-                    MakeSeparatedList<TypeSyntax>(returntype),
-                    SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken)
-                    );
-                varType = _syntaxFactory.GenericName(SyntaxFactory.MakeIdentifier("Func"), typeArgs);
-            }
-            var localdecl = _syntaxFactory.LocalDeclarationStatement(
-                    EmptyList<SyntaxToken>(),
-                    _syntaxFactory.VariableDeclaration(varType, variables),
-                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            //localdecl.XGenerated = true;
-            localdecl.XNode = stmts[0].XNode;
-            stmts.Add(localdecl);
-            var invoke = _syntaxFactory.InvocationExpression(GenerateSimpleName("Xs$a"), EmptyArgumentList());
-            invoke.XGenerated = true;
-            invoke.XNode = stmts[0].XNode;
-            if (isVoidType(returntype))
-                stmts.Add(GenerateExpressionStatement(invoke));
-            else
-                stmts.Add(GenerateReturn(invoke));
+            //var varType = GenerateQualifiedName("System.Action");
+            //if (!isVoidType(returntype))
+            //{
+            //    var typeArgs = _syntaxFactory.TypeArgumentList(
+            //        SyntaxFactory.MakeToken(SyntaxKind.LessThanToken),
+            //        MakeSeparatedList<TypeSyntax>(returntype),
+            //        SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken)
+            //        );
+            //    varType = _syntaxFactory.GenericName(SyntaxFactory.MakeIdentifier("Func"), typeArgs);
+            //}
+            //var localdecl = _syntaxFactory.LocalDeclarationStatement(
+            //        EmptyList<SyntaxToken>(),
+            //        _syntaxFactory.VariableDeclaration(varType, variables),
+            //        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            ////localdecl.XGenerated = true;
+            //localdecl.XNode = stmts[0].XNode;
+            //stmts.Add(localdecl);
+            //var invoke = _syntaxFactory.InvocationExpression(GenerateSimpleName(XSharpSpecialNames.ActionVariable), EmptyArgumentList());
+            //invoke.XGenerated = true;
+            //invoke.XNode = stmts[0].XNode;
+            //if (isVoidType(returntype))
+            //    stmts.Add(GenerateExpressionStatement(invoke));
+            //else
+            //    stmts.Add(GenerateReturn(invoke));
             var tryblock = MakeBlock(stmts);
             stmts.Clear();
             call = GenerateMethodCall(XSharpSpecialNames.ModuleName + "." + XSharpSpecialNames.AppExit, true);

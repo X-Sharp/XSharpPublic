@@ -196,18 +196,23 @@ namespace Microsoft.CodeAnalysis.CSharp
             return newbody;
         }
 
-        private static BoundExpressionStatement vulcanruntimeStateAssign(SyntaxNode syntax, FieldSymbol field, bool value, TypeSymbol type)
+        private static BoundExpressionStatement vulcanruntimeStateAssign(SyntaxNode syntax, FieldSymbol field, bool value)
         {
             var bfa = new BoundFieldAccess(syntax, null, field, ConstantValue.NotAvailable) { WasCompilerGenerated = true };
-            var lit = new BoundLiteral(syntax, ConstantValue.Create(value), type) { WasCompilerGenerated = true };
+            var lit = new BoundLiteral(syntax, ConstantValue.Create(value), field.Type) { WasCompilerGenerated = true };
             var ass = new BoundAssignmentOperator(syntax, bfa, lit, isRef: false, lit.Type) { WasCompilerGenerated = true };
             var stmt = new BoundExpressionStatement(syntax, ass) { WasCompilerGenerated = true };
             return stmt;
         }
-        private static BoundExpressionStatement xsharpruntimeStateAssign(SyntaxNode syntax, PropertySymbol prop, bool value, TypeSymbol type)
+        private static BoundExpressionStatement xsharpruntimeStateAssign(SyntaxNode syntax, PropertySymbol prop, object value)
         {
-            var bpa = new BoundPropertyAccess(syntax, null, prop, LookupResultKind.Viable,type) { WasCompilerGenerated = true };
-            var lit = new BoundLiteral(syntax, ConstantValue.Create(value), type) { WasCompilerGenerated = true };
+            var bpa = new BoundPropertyAccess(syntax, null, prop, LookupResultKind.Viable,prop.Type) { WasCompilerGenerated = true };
+            BoundLiteral lit;
+            if (value is bool)
+                lit = new BoundLiteral(syntax, ConstantValue.Create(( bool) value), prop.Type) { WasCompilerGenerated = true };
+            else 
+                lit = new BoundLiteral(syntax, ConstantValue.Create((int)value), prop.Type) { WasCompilerGenerated = true };
+
             var ass = new BoundAssignmentOperator(syntax, bpa, lit, isRef: false, lit.Type) { WasCompilerGenerated = true };
             var stmt = new BoundExpressionStatement(syntax, ass) { WasCompilerGenerated = true };
             return stmt;
@@ -238,23 +243,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var type = vulcanrt.GetTypeByMetadataName("Vulcan.Runtime.State");
                 if (type != null)
                 {
-                    var logic = comp.GetSpecialType(SpecialType.System_Boolean);
-                    var mem = type.GetMembers("CompilerOptionFOvf");
-                    if (mem.Length > 0 && mem[0].Kind == SymbolKind.Field)
+                    string[] names = { XSharpSpecialNames.RTCompilerOptionOvf,
+                                    XSharpSpecialNames.RTCompilerOptionOvf,
+                                    XSharpSpecialNames.RTCompilerOptionVO11};
+                    bool[] values = { comp.Options.CheckOverflow ,
+                                        comp.Options.CheckOverflow ,
+                                        comp.Options.vo11};
+
+                    for (int n = 0; n < names.Length; n++)
                     {
-                        newstatements.Add(vulcanruntimeStateAssign(oldbody.Syntax, mem[0] as FieldSymbol, comp.Options.CheckOverflow, logic));
+                        var mem = type.GetMembers(names[n]);
+                        if (mem.Length == 1 && mem[0] is FieldSymbol fld)
+                        {
+                            newstatements.Add(vulcanruntimeStateAssign(oldbody.Syntax, fld, values[n]));
+                        }
                     }
-                    mem = type.GetMembers("CompilerOptionOvf");
-                    if (mem.Length > 0 && mem[0].Kind == SymbolKind.Field)
-                    {
-                        newstatements.Add(vulcanruntimeStateAssign(oldbody.Syntax, mem[0] as FieldSymbol, comp.Options.CheckOverflow, logic));
-                    }
-                    mem = type.GetMembers("CompilerOptionVO11");
-                    if (mem.Length > 0 && mem[0].Kind == SymbolKind.Field)
-                    {
-                        newstatements.Add(vulcanruntimeStateAssign(oldbody.Syntax, mem[0] as FieldSymbol, comp.Options.vo11, logic));
-                    }
-                }
+                 }
             }
             var xc = comp.GetBoundReferenceManager().GetReferencedAssemblies().Where(x => x.Value.Name == "XSharp.Core");
             if (xc.Count() != 0)
@@ -263,26 +267,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var type = xsrt.GetTypeByMetadataName("XSharp.RuntimeState");
                 if (type != null)
                 {
-                    var logic = comp.GetSpecialType(SpecialType.System_Boolean);
-                    var mem = type.GetMembers("CompilerOptionFOvf");
-                    if (mem.Length > 0 && mem[0].Kind == SymbolKind.Property)
+                    string[] names = { XSharpSpecialNames.RTCompilerOptionOvf,
+                                    XSharpSpecialNames.RTCompilerOptionVO11,
+                                    XSharpSpecialNames.RTCompilerOptionVO13,
+                                    XSharpSpecialNames.RTDialect};
+                    object[] values = { comp.Options.CheckOverflow ,
+                                        comp.Options.vo11,
+                                        comp.Options.vo13,
+                                        comp.Options.Dialect};
+                    for (int n = 0; n < names.Length; n++)
                     {
-                        newstatements.Add(xsharpruntimeStateAssign(oldbody.Syntax, mem[0] as PropertySymbol, comp.Options.CheckOverflow, logic));
-                    }
-                    mem = type.GetMembers("CompilerOptionOvf");
-                    if (mem.Length > 0 && mem[0].Kind == SymbolKind.Property)
-                    {
-                        newstatements.Add(xsharpruntimeStateAssign(oldbody.Syntax, mem[0] as PropertySymbol, comp.Options.CheckOverflow, logic));
-                    }
-                    mem = type.GetMembers("CompilerOptionVO11");
-                    if (mem.Length > 0 && mem[0].Kind == SymbolKind.Property)
-                    {
-                        newstatements.Add(xsharpruntimeStateAssign(oldbody.Syntax, mem[0] as PropertySymbol, comp.Options.vo11, logic));
-                    }
-                    mem = type.GetMembers("CompilerOptionVO13");
-                    if (mem.Length > 0 && mem[0].Kind == SymbolKind.Property)
-                    {
-                        newstatements.Add(xsharpruntimeStateAssign(oldbody.Syntax, mem[0] as PropertySymbol, comp.Options.vo13, logic));
+                        var mem = type.GetMembers(names[n]);
+                        if (mem.Length == 1 && mem[0] is PropertySymbol prop)
+                        {
+                            newstatements.Add(xsharpruntimeStateAssign(oldbody.Syntax, prop, values[n]));
+                        }
                     }
                 }
             }

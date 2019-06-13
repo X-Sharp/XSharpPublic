@@ -121,6 +121,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string PCallProc = "$PCallGetDelegate";
         internal const string SymbolTable = "Xs$SymbolTable";
         internal const string PSZTable = "Xs$PSZLiteralsTable";
+        internal const string ActionVariable = "Xs$a";
 
         internal const string VoPszList = "Xs$PszList";
         internal const string ClipperArgs = "Xs$Args";
@@ -142,6 +143,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string XSharpVFPFunctionsClass = "XSharp.VFP.Functions";
         internal const string VODllFunctionsClass = ".Functions";
         internal const string ModuleName = "<Module>";
+        internal const string RTDialect = "Dialect";
+        internal const string RTCompilerOptionVO11 = "CompilerOptionVO11";
+        internal const string RTCompilerOptionVO13 = "CompilerOptionVO13";
+        internal const string RTCompilerOptionFOvf = "CompilerOptionFOvf";
+        internal const string RTCompilerOptionOvf = "CompilerOptionOvf";
+        
+
     }
 
     internal static class XSharpFunctionNames

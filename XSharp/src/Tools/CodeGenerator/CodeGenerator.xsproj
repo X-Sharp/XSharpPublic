@@ -89,12 +89,12 @@
       <ProjectConfigurationsDeclaredAsItems />
     </ProjectCapabilities>
   </ProjectExtensions>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PostBuildEvent>XCopy $(TargetDir)$(TargetName).%2a \XSharp\DevPublic\External\$(Configuration)\%2a.%2a /y</PostBuildEvent>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU' and Exists('$(DevPublicDir)Binaries\$(Configuration)\XSharpProject.dll')">
+    <PostBuildEvent>XCopy $(TargetDir)$(TargetName).%2a $(DevPublicDir)External\$(Configuration)\%2a.%2a /y /q &gt; NUL</PostBuildEvent>
     <RunPostBuildEvent />
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PostBuildEvent>XCopy $(TargetDir)$(TargetName).%2a \XSharp\DevPublic\External\$(Configuration)\%2a.%2a /y</PostBuildEvent>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU' and Exists('$(DevPublicDir)Binaries\$(Configuration)\XSharpProject.dll')">
+    <PostBuildEvent>XCopy $(TargetDir)$(TargetName).%2a $(DevPublicDir)External\$(Configuration)\%2a.%2a /y /q &gt; NUL</PostBuildEvent>
     <RunPostBuildEvent />
   </PropertyGroup>
 </Project>

@@ -19,6 +19,7 @@
     <DebugSymbols>true</DebugSymbols>
     <ErrorReport>prompt</ErrorReport>
     <DefineConstants>COMPILERCORE;XSHARP;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS;VSPARSER</DefineConstants>
+	<RuntimeIdentifiers>win;win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
@@ -313,9 +314,9 @@
     <Folder Include="Compilation\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
+  <PropertyGroup Condition="Exists('$(DevPublicDir)binaries\$(Configuration)\XSharpProject.dll')" >
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
-    <PostBuildEvent>copy $(OutDir)XSharp.VsParser.??? \xsharp\devpublic\external\$(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>copy $(OutDir)XSharp.VsParser.??? $(DevPublicDir)external\$(ConfigurationName) &gt; NUL</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

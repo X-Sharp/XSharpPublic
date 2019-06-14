@@ -118,6 +118,9 @@
         </td>
       </tr>
     </table></para>
+    <list id="62" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">The compiler now registers the Dialect of the main in the Dialect property of the RuntimeState (Non Core dialects only)</li>
+    </list>
     <para styleclass="Heading2">MacroCompiler</para>
     <list id="62" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Fixed a problem with escaped literal strings</li>

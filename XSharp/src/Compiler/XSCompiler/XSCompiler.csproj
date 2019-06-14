@@ -77,4 +77,7 @@
 	</Compile>
   </ItemGroup>
   <Import Project="$(CoreSource)..\CommandLine\CommandLine.projitems" Label="Shared" />
+  <PropertyGroup>
+    <PreBuildEvent>taskkill  /f /t /fi "IMAGENAME eq XSCompiler.exe" &gt; NUL</PreBuildEvent>
+</PropertyGroup>
 </Project>

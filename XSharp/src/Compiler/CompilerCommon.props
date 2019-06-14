@@ -7,6 +7,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <!-- Note: All directories in this list end with a back slash -->
+	<DevPublicDir>$(Solutiondir)\..\..\devpublic\</DevPublicDir>
+	<DevRtDir>$(Solutiondir)\..\..\devrt\</DevRtDir>
     <RoslynDir>$(Solutiondir)\..\Roslyn\</RoslynDir>
     <RoslynBin>$(RoslynDir)Binaries\</RoslynBin>
     <RoslynSrc>$(RoslynDir)Src\</RoslynSrc>

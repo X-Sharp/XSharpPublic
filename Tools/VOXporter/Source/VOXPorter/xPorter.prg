@@ -280,6 +280,19 @@ CLASS xPorter
 					_aSDKDefines:Add(oField:Name:ToUpper() , oField:GetValue(NULL):ToString())
 				END IF
 			NEXT
+			TRY
+				// those were not included in the SDK_Defines.dll
+				_aSDKDefines:Add("VOVER_FILE_VERSION", e"\"0,0,0,0\"")
+				_aSDKDefines:Add("VOVER_PROD_VERSION", e"\"0,0,0,0\"")
+				_aSDKDefines:Add("VOVER_COMPANY", e"\"\"")
+				_aSDKDefines:Add("VOVER_FILE_VERSION_TXT", e"\"\"")
+				_aSDKDefines:Add("VOVER_PROD_VERSION_TXT", e"\"\"")
+				_aSDKDefines:Add("VOVER_COPYRIGHT", e"\"\"")
+				_aSDKDefines:Add("VOVER_PROD_NAME", e"\"\"")
+				_aSDKDefines:Add("VOVER_DEVELOPMENT", e"\"\"")
+				_aSDKDefines:Add("VOVER_DEVWEBSITE", e"\"\"")
+				_aSDKDefines:Add("VOVER_WEBSITE", e"\"\"")
+			END TRY
 		CATCH e AS Exception
 			MessageBox.Show(e:ToString())
 		END TRY
@@ -1046,6 +1059,9 @@ CLASS ApplicationDescriptor
                             LOCAL aResult   := List<STRING>{} AS List<STRING>
                             FOREACH cLine AS STRING IN oXideResources:GetContents():ToArray()
                                 IF xPorter.Options:CopyResourcesToProjectFolder
+                                	// in XIDE, all resource of one file are included in a single
+                                	// buffer, so we need to check every line for resource markers
+                                	// Probably need to redesign this...
                                     VAR cNewLine := SELF:AdjustResource(cLine, cFolder , FALSE)
                                     aResult:Add(cNewLine)
                                 ELSE
@@ -1100,7 +1116,7 @@ CLASS ApplicationDescriptor
             CASE "CURSOR"
                 lHasFile := TRUE
             OTHERWISE
-                lHasFile := TRUE
+                lHasFile := FALSE
             END SWITCH
             IF lHasFile
                 LOCAL nPos      := cLine:IndexOf(aElements[2]) + aElements[2]:Length AS INT
@@ -1123,7 +1139,7 @@ CLASS ApplicationDescriptor
                 ENDIF
             ENDIF
         ENDIF
-       RETURN cLine:Trim()
+       RETURN cLine:TrimEnd()
 
 	METHOD CreateAppFile(cFolder AS STRING , lXide AS LOGIC) AS VOID
 		LOCAL oTemplate AS StreamReader
@@ -1595,9 +1611,9 @@ CLASS ModuleDescriptor
 		FOREACH oEntity AS EntityDescriptor IN SELF:_aEntities
 			DO CASE
 			CASE oEntity:Type == EntityType._Resource
-				IF oEntity:Name:ToUpper() == "VS_VERSION_INFO"
+/*				IF oEntity:Name:ToUpper() == "VS_VERSION_INFO"
 					LOOP
-				END IF
+				END IF*/
 				oCode := oEntity:Generate()
 				aResources:Add(oEntity:Name , oCode)
 			END CASE
@@ -2110,6 +2126,8 @@ CLASS EntityDescriptor
 						EXIT
 					CASE cUpper == "__VERSION__" .or. cUpper == tag_version
 						cWord := "1"
+/*					CASE cUpper == "VS_VERSION_INFO"
+						cWord := "1"*/
 					CASE cUpper == "__APPWIZDIR__" .or. cUpper == tag_appwiz
 						cWord := VOFolder.Get() + "\Appwiz"
 					CASE cUpper == "__CAVOSAMPLESROOTDIR__" .or. cUpper == tag_samples
@@ -2145,6 +2163,10 @@ CLASS EntityDescriptor
 						LOCAL cValue AS STRING
 						cValue := xPorter.SDKDefines[cUpper]
 						IF xPorter.Options:ReplaceResourceDefinesWithValues .or. (cValue:Contains("'") .or. cValue:Contains('"'))
+							#warning Need to check here
+							// need to check where this is needed and when not
+							// as it is now, it replaces defines for VERSION resource like VOVER_FILE_VERSION_TXT
+							// from '""' as defined manually above, to an empty string without quotes
 							cLine += cValue:Replace(e"\"" , ""):Replace("'" , "")
 						ELSE
 							cLine += cWord

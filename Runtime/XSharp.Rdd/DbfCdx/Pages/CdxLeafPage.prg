@@ -718,7 +718,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // Todo: optimize. We are now expanding and compressing the leaves which could be overkill.
             // Also the buffer is saved (because we may discover a 'page full' and we need to restore then
             // maybe we can restore from disk ?
-            // finally: do we have to call Write? Or is it enough to set the page as dirty
             //Debug("keys", self:NumKeys, "free", self:Freespace)
 
             IF SELF:NumKeys == 0 .OR. ! SELF:ValidLeaves
@@ -736,11 +735,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR nTrail := leaf:Trail
                 IF nKey == 0
                     nDup := 0
-//                ELSE
-//                    nDup     := SELF:_getDupCount(lastKey, leaf:Key, nTrail)
-//                    IF nDup != leaf:Dup
-//                        leaf:Dup := nDup
-//                    ENDIF
+		ELSE
+		    NOP
+		    // The dup and trail values are already stored in the leaves
                 ENDIF
                 //lastKey  := Leaf:Key
 

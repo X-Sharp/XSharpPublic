@@ -88,8 +88,8 @@
 #define XIDEFolder          DevFolder + "\Xide\"
 
 #define SnippetsSource      DevPublicFolder + "\VisualStudio\ProjectPackage\Snippets\"
-#define XIDESetup           "XIDE_Set_up_1.17.exe"
-#define XIDEVersion         "1.17"
+#define XIDESetup           "XIDE_Set_up_1.18.exe"
+#define XIDEVersion         "1.18"
 #define StdFlags            "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
 #define GACInstall          "gacinstall uninsnosharedfileprompt uninsrestartdelete"
 #define GACShared           "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"

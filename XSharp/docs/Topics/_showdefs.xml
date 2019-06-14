@@ -3,7 +3,7 @@
 <topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>opt-showdefs</title>
   <keywords>
-    <keyword>/showdefs</keyword>
+    <keyword>-showdefs</keyword>
   </keywords>
   <body>
     <header>

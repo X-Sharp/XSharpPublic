@@ -43,6 +43,14 @@
               <task-config-value name="make4status">*</task-config-value>
             </task-config-group>
           </export-task>
+          <export-task name="Publish as HXS" format="HXS">
+            <task-config-group name="settings">
+              <task-config-value name="outputfile">..\Binaries\Help\XSharp.mshc</task-config-value>
+              <task-config-value name="deletetemp">1</task-config-value>
+              <task-config-value name="make2include">HXS</task-config-value>
+              <task-config-value name="make2status">*</task-config-value>
+            </task-config-group>
+          </export-task>
         </export-tasks>
       </export-task-group>
     </export-task-groups>
@@ -253,7 +261,7 @@
    <meta name="generator" content="Help &amp; Manual" />
    <meta name="keywords" content="<%TOPIC_KEYWORDS%>" />
    <meta http-equiv="Content-Type" content="text/html; charset=<%DOCCHARSET%>" />
-   <IF_CHM><meta http-equiv="X-UA-Compatible" content="IE=8" /></IF_CHM>
+   <IF_CHM><meta http-equiv="X-UA-Compatible" content="IE=10" /></IF_CHM>
    <IF_HTML><meta http-equiv="X-UA-Compatible" content="IE=edge" /></IF_HTML>
    <meta name="description" content="<%TOPIC_DESCRIPTION%>" />
    <meta name="picture" content="<%TOPIC_PICTURE%>" />
@@ -475,7 +483,7 @@
     <config-group name="user">
       <config-group name="robert">
         <config-group name="project">
-          <config-value name="lastexport">0</config-value>
+          <config-value name="lastexport">2</config-value>
         </config-group>
         <config-group name="report">
           <config-value name="type">4</config-value>
@@ -511,9 +519,9 @@
       <config-value name="usesecondarywindows">0</config-value>
     </config-group>
     <config-group name="mshc">
-      <config-value name="vendor">XSharp</config-value>
+      <config-value name="vendor">XSharp BV</config-value>
       <config-value name="product">X#</config-value>
-      <config-value name="book">XSharp Documentation</config-value>
+      <config-value name="book">X# XSharp Documentation</config-value>
     </config-group>
     <config-group name="hxs">
       <config-value name="filetype">0</config-value>

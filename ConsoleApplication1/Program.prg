@@ -5,7 +5,8 @@
 USING XSharp.RDD
 FUNCTION Start() AS VOID
     TRY
-        TestIndexUpdates()
+        TestDbfFromChris()
+        //TestIndexUpdates()
         //testVFPFiles()
         //testOrdNameInvalid()
         //aevalNil()
@@ -69,8 +70,21 @@ FUNCTION Start() AS VOID
     END TRY
     WAIT
     RETURN
-
-DEFINE records := 20_000
+FUNCTION testDbfFromChris( ) AS VOID
+local f as float
+f := seconds()
+? DbUseArea(,"DBFCDX","C:\test\Foo")
+? DbReindex() // null reference exception
+? DbSetOrder(1)
+? DbGoTop(), RecNo()
+? DbGoBottom(), RecNo() // 2905
+? DbSetOrder(0)
+? DbGoTop(), RecNo()
+? DbGoBottom(), RecNo() // 2964
+? DbCloseArea()
+? Seconds() - f
+RETURN
+DEFINE records := 50_000
 DEFINE changes := 2000
 FUNCTION TestIndexUpdates() 
     LOCAL aFields AS ARRAY

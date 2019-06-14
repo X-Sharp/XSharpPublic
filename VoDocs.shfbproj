@@ -21,20 +21,21 @@
     <Language>en-US</Language>
     <DocumentationSources>
       <DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\VOConsoleClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\VOReportClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.dll" />
-<DocumentationSource sourceFile="Docs\VOConsoleClasses_manual.xml" />
-<DocumentationSource sourceFile="Docs\VOGUIClasses_manual.xml" />
-<DocumentationSource sourceFile="Docs\VOInternetClasses_manual.xml" />
-<DocumentationSource sourceFile="Docs\VORDDClasses_manual.xml" />
-<DocumentationSource sourceFile="Docs\VOReportClasses_manual.xml" />
-<DocumentationSource sourceFile="Docs\VOSQLClasses_manual.xml" />
-<DocumentationSource sourceFile="Docs\VOSystemClasses_manual.xml" />
-<DocumentationSource sourceFile="Docs\VOSDK_Classes.xml" /></DocumentationSources>
+      <DocumentationSource sourceFile="Binaries\Documentation\VOConsoleClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOReportClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.dll" />
+      <DocumentationSource sourceFile="Docs\VOConsoleClasses_manual.xml" />
+      <DocumentationSource sourceFile="Docs\VOGUIClasses_manual.xml" />
+      <DocumentationSource sourceFile="Docs\VOInternetClasses_manual.xml" />
+      <DocumentationSource sourceFile="Docs\VORDDClasses_manual.xml" />
+      <DocumentationSource sourceFile="Docs\VOReportClasses_manual.xml" />
+      <DocumentationSource sourceFile="Docs\VOSQLClasses_manual.xml" />
+      <DocumentationSource sourceFile="Docs\VOSystemClasses_manual.xml" />
+      <DocumentationSource sourceFile="Docs\VOSDK_Classes.xml" />
+    </DocumentationSources>
     <HelpTitle>X# Visual Objects SDK Documentation</HelpTitle>
     <HelpFileVersion>2.0.1.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
@@ -43,13 +44,13 @@
     <NamespaceGrouping>False</NamespaceGrouping>
     <Preliminary>False</Preliminary>
     <SdkLinkTarget>Blank</SdkLinkTarget>
-    <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
+    <HelpFileFormat>MSHelpViewer</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
     <PresentationStyle>VS2013Xs</PresentationStyle>
     <CleanIntermediates>False</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
-    <IndentHtml>False</IndentHtml>
+    <IndentHtml>True</IndentHtml>
     <BuildAssemblerVerbosity>OnlyErrors</BuildAssemblerVerbosity>
     <VisibleItems>Attributes, ExplicitInterfaceImplementations, ProtectedInternalAsProtected, PublicCompilerGenerated, NonBrowsable</VisibleItems>
     <ComponentConfigurations>
@@ -152,18 +153,18 @@
     <BuildLogFile>C:\XSharp\DevRt\Binaries\Obj\VOHelp\BuildLog.log</BuildLogFile>
     <CatalogProductId>VS</CatalogProductId>
     <CatalogVersion>100</CatalogVersion>
-    <VendorName>XSharp</VendorName>
-    <ProductTitle>XSharp</ProductTitle>
-    <TocParentId>xshelp_x-reference</TocParentId>
+    <VendorName>XSharp BV</VendorName>
+    <ProductTitle>X#</ProductTitle>
+    <TocParentId>-1</TocParentId>
     <TocParentVersion>100</TocParentVersion>
     <TopicVersion>100</TopicVersion>
     <MSHelpViewerSdkLinkType>Msdn</MSHelpViewerSdkLinkType>
-    <CatalogName>VisualStudio14</CatalogName>
+    <CatalogName>VisualStudio15</CatalogName>
     <ProjectSummary>This is the generated documentation for the Visual Objects SDK classes.&amp;lt%3bbr/&amp;gt%3b
 Most of this documentation has been automatically lifted from the Visual Objects documentation.
 </ProjectSummary>
     <WorkingPath>Binaries\obj\VOHelp\</WorkingPath>
-    <SearchResultsDisplayVersion>X# VOSDK</SearchResultsDisplayVersion>
+    <SearchResultsDisplayVersion>X#</SearchResultsDisplayVersion>
     <ApiFilter>
       <Filter entryType="Namespace" fullName="VO" isExposed="True">
         <Filter entryType="Delegate" fullName="VO.__CellEditProcDelegate" filterName="__CellEditProcDelegate" isExposed="False" />
@@ -1502,6 +1503,7 @@ The Runtime will also respect these implicit namespaces, so CreateInstance(#DbSe
     </NamespaceSummaries>
     <MaximumGroupParts>2</MaximumGroupParts>
     <SaveComponentCacheCapacity>100</SaveComponentCacheCapacity>
+    <TocOrder>-1</TocOrder>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->

@@ -58,16 +58,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
 
-
-
-
-
-
-
-
-
-
-
         INTERNAL METHOD DoAction(action AS CdxAction) AS CdxAction
             // Dispatcher that evaluates actions that have to be done.
             // action is a Flag value, so we look for each of the following actions
@@ -129,7 +119,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     END SWITCH
                 ENDDO
             CATCH ex AS Exception
-                _UpdateError(ex,"CdxTag.Doaction","Error performing action "+action:Type:ToString())
+                _UpdateError(ex,"CdxTag.DoAction","Error performing action "+action:Type:ToString())
 
             END TRY
             RETURN action
@@ -240,7 +230,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF oParent != NULL_OBJECT
                 LOCAL nPos AS LONG
                 nPos  := oParent:FindPage(oPage:PageNo)
-                IF nPos != -1
+                IF nPos != -1 .and. nPos < oParent:NumKeys
                     //oParent:Debug("Updated page", oPage:PageNo:ToString("X"))
                     result := oParent:Replace(nPos, oLast)
                     SELF:DoAction(result)
@@ -452,13 +442,28 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD ExpandRecnos(action AS CdxAction) AS CdxAction
             VAR oPageL   := SELF:CurrentLeaf
             var leaves   := oPageL:GetLeaves()
-            VAR oPageR   := SELF:NewLeafPage()
-            var nHalf    := leaves:Count/2
             local result as CdxAction
-            // new key that triggered expansion is inside action
+            // Only allocate page when we think that it does not fit.
+            // To be safe we assume expanding takes 1 byte per key + we want the new key to fit as well
+            if oPageL:FreeSpace > (oPageL:DataBytes + SELF:KeyLength + leaves:Count +1)
+                SELF:SetLeafProperties(oPageL)
+                oPageL:SetLeaves(leaves, 0, leaves:Count)
+                result := oPageL:Insert(action:Pos, action:Recno, action:Key)
+                return result
+            endif
+            var nHalf    := leaves:Count/2
+            VAR oPageR   := SELF:NewLeafPage()
             oPageL:AddRightSibling(oPageR)
+            SELF:SetLeafProperties(oPageL)
             result := oPageL:SetLeaves(leaves, 0, nHalf)
+            IF ! result:IsOk()
+                result := SELF:DoAction(result)
+            endif
+            SELF:SetLeafProperties(oPageR)
             result := oPageR:SetLeaves(leaves, nHalf, leaves:Count - nHalf)
+            IF ! result:IsOk()
+                result := SELF:DoAction(result)
+            endif
             var pos := action:Pos
             if  pos != -1
                 //oPageL:Debug("Expand for recno ", action:Recno, "position", pos, "half", nHalf)
@@ -470,6 +475,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 endif
             else
                 result := oPageR:Add(action:Recno, action:Key)
+            endif
+            IF ! result:IsOk()
+                result := SELF:DoAction(result)
             endif
             action := CdxAction.ChangeParent(oPageL, oPageR)
             result := SELF:DoAction(action)

@@ -8,17 +8,22 @@ USING System.IO
 /// <summary>
 /// Fill a series of Array with directory information.
 /// </summary>
-/// <param name="cPath"></param>
-/// <param name="aFNAME"></param>
-/// <param name="aFSIZE"></param>
-/// <param name="aFDATE"></param>
-/// <param name="aFTIME"></param>
-/// <param name="aFATTR"></param>
-/// <returns>
-/// </returns>
-FUNCTION ADir(cPath ,aFNAME ,aFSIZE ,aFDATE ,aFTIME ,aFATTR ) AS DWORD CLIPPER
-	IF ! cPath:IsString
-		THROW Error.ArgumentError(__FUNCTION__, NAMEOF(cPath), 2,<OBJECT>{cPath})
+/// <param name="cFileSpec">The file specification for the directory search.
+/// Besides a file name, this specification may include an optional drive, directory, and extension.
+/// The file name and extension may include the standard wildcard characters (* and ?).
+/// If you do not specify a drive and directory, this function uses the SetDefault() setting.</param>
+/// <param name="aFName">The array to fill with the file names matching <paramref name="cFileSpec" />.  Each element will contain the file name and extension as a string, in all uppercase letters. </param>
+/// <param name="aFSize">The array to fill with the sizes of the corresponding files in <paramref name="aFName" />. </param>
+/// <param name="aFDate">The array to fill with the dates of the corresponding files in <paramref name="aFName" />.</param>
+/// <param name="aFTime">The array to fill with the times of the corresponding files in <paramref name="aFName" />, in the form hh:mm:ss. </param>
+/// <param name="aFAttr">The array to fill with attributes of the corresponding files in <paramref name="aFName" />.  If <paramref name="aFAttr" /> is specified, hidden, system, and
+/// directory files are included as well as normal files.  If <paramref name="aFAttr" /> is not specified, only normal files are included.</param>
+/// <returns>The number of files matching the directory skeleton described in <paramref name="cFileSpec" />./// </returns>
+/// <remarks>ADir() is a compatibility function and therefore not recommended.
+/// It is superseded by the Directory() function, which returns all file information in a multidimensional array.</remarks>
+FUNCTION ADir(cFileSpec ,aFName ,aFSize ,aFDate,aFTime,aFAttr) AS DWORD CLIPPER
+	IF ! cFileSpec:IsString
+		THROW Error.ArgumentError(__FUNCTION__, NAMEOF(cFileSpec), 1,<OBJECT>{cFileSpec})
 	ENDIF
 	LOCAL aFiles	AS ARRAY
 	LOCAL lHasArg   := FALSE AS LOGIC
@@ -27,7 +32,6 @@ FUNCTION ADir(cPath ,aFNAME ,aFSIZE ,aFDATE ,aFTIME ,aFATTR ) AS DWORD CLIPPER
 	LOCAL aDates	:= NULL_ARRAY AS ARRAY
 	LOCAL aTimes    := NULL_ARRAY AS ARRAY
 	LOCAL aAttribs  := NULL_ARRAY AS ARRAY
-	aFiles := Directory(cPath,FA_NORMAL)
 	IF aFName:IsArray
 		aNames  := aFName
 		lHasArg := TRUE
@@ -48,6 +52,11 @@ FUNCTION ADir(cPath ,aFNAME ,aFSIZE ,aFDATE ,aFTIME ,aFATTR ) AS DWORD CLIPPER
 		aAttribs  := aFAttr
 		lHasArg := TRUE
 	ENDIF
+    if aAttribs != NULL_ARRAY
+        aFiles := Directory(cFileSpec,FA_NORMAL+FC_HIDDEN+FC_SYSTEM+FC_READONLY)
+    ELSE
+        aFiles := Directory(cFileSpec,FA_NORMAL)    
+    ENDIF
 	IF ALen(aFiles) > 0 .AND. lHasArg
 		LOCAL x AS DWORD
 		FOR x := 1 TO ALen(aFiles)
@@ -86,7 +95,8 @@ FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
 	LOCAL aReturn	AS ARRAY
 	LOCAL cPath		AS STRING
 	LOCAL cFileMask AS STRING
-	IF xAttr:IsNil
+    LOCAL lWild     AS LOGIC
+    IF xAttr:IsNil
 		nAttr := 0
 	ELSEIF xAttr:IsNumeric
 		nAttr := (DWORD) xAttr
@@ -101,18 +111,23 @@ FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
 			AAdd(aReturn, {DriveInfo{cFileSpec}:VolumeLabel, 0, NULL_DATE, "00:00:00", "V"})
 		END TRY
 	ENDIF
-	IF System.IO.Directory.Exists(cFileSpec)
-		cFileSpec += "\*.*"
-	ELSEIF cFileSpec:EndsWith("\")
-		cFileSpec += "*.*"
-	ELSEIF cFileSpec:Length == 2 && cFileSpec[1] == ':' .AND. Char.IsLetter( cFileSpec, 0 )   // only a drive letter specified
-		VAR  curdir := Environment.CurrentDirectory 
-		IF Char.ToUpper( cFileSpec[0] ) == Char.ToUpper( curdir[0] )  // if same drive, use current directory
-			cFileSpec := curdir + "\*.*"
-		ELSE
-			cFileSpec += "\*.*"
-		ENDIF   
-	ENDIF
+    lWild := cFileSpec:Contains("*") .or. cFileSpec:Contains("?") 
+    IF ! lWild
+        local sPathSep as STRING
+        sPathSep := System.IO.Path.DirectorySeparatorChar:ToString()
+	    IF System.IO.Directory.Exists(cFileSpec)
+            cFileSpec += sPathSep + "*.*"
+	    ELSEIF cFileSpec:EndsWith(sPathSep)
+		    cFileSpec += "*.*"
+	    ELSEIF cFileSpec:Length == 2 && cFileSpec[1] == System.IO.Path.VolumeSeparatorChar .AND. Char.IsLetter( cFileSpec, 0 )   // only a drive letter specified
+		    VAR  curdir := Environment.CurrentDirectory 
+		    IF Char.ToUpper( cFileSpec[0] ) == Char.ToUpper( curdir[0] )  // if same drive, use current directory
+                cFileSpec := curdir + sPathSep + "*.*"
+		    ELSE
+			    cFileSpec += sPathSep  + "*.*"
+		    ENDIF   
+	    ENDIF
+    ENDIF
 	TRY
 		cPath := Path.GetDirectoryName(cFileSpec)
 	CATCH

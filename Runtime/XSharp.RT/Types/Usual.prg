@@ -7,6 +7,7 @@ USING System
 USING System.Runtime.InteropServices
 USING System.Runtime.CompilerServices
 USING System.Diagnostics
+using System.Text
 USING XSharp.Internal
 BEGIN NAMESPACE XSharp
     /// <summary>Internal type that implements the VO Compatible USUAL type.<br/>
@@ -196,8 +197,8 @@ BEGIN NAMESPACE XSharp
                         SELF:_flags:decimals := -1
                     ENDIF
                 CASE System.TypeCode.Single
-                    SELF:_flags				:= UsualFlags{__UsualType.Float}
-                    SELF:_valueData:r8	:= (REAL8)o
+                    SELF:_flags			:= UsualFlags{__UsualType.Float}
+                    SELF:_valueData:r8	:= (REAL4)o
                     SELF:_flags:width	:= -1
                     SELF:_flags:decimals := -1
 
@@ -1907,6 +1908,7 @@ BEGIN NAMESPACE XSharp
         STATIC OPERATOR IMPLICIT(val AS REAL8) AS __Usual
             RETURN __Usual{val}
 
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(val AS SHORT) AS __Usual
@@ -2228,10 +2230,15 @@ BEGIN NAMESPACE XSharp
             #endregion
 
         #region IIndexer
+		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+		/// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
+		/// <returns>The element stored at the indicated location in the collection.</returns>
+        /// <remarks>When the contents of the USUAL is not an array or does not support indexed access then a runtime error is generated.</remarks>
         PROPERTY SELF[index AS INT[]] AS USUAL
             GET
               IF SELF:IsArray
                  RETURN  SELF:_arrayValue:__GetElement(index)
+
               ELSEIF SELF:IsObject .AND. _refData IS IIndexedProperties
                   VAR props := (IIndexedProperties) _refData
                   IF index:Length == 1
@@ -2240,7 +2247,8 @@ BEGIN NAMESPACE XSharp
                       RETURN props[pos]
                   ENDIF
               ENDIF
-              THROW ConversionError(ARRAY , typeof(ARRAY), SELF)
+
+              THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
             END GET
             SET
               IF SELF:IsArray
@@ -2255,18 +2263,26 @@ BEGIN NAMESPACE XSharp
                    ENDIF
                    RETURN
               ENDIF
-              THROW ConversionError(ARRAY , typeof(ARRAY), SELF)
+
+              THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
             END SET
         END PROPERTY
         #endregion
 
+
         #region IIndexedProperties
-        PROPERTY SELF[index AS INT   ] AS USUAL
+		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+		/// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
+		/// <returns>The element stored at the indicated location in the collection.</returns>
+        /// <remarks>When the contents of the USUAL is not an array or does not support indexed access then a runtime error is generated.</remarks>
+
+        PROPERTY SELF[index AS INT ] AS USUAL
             GET
                 IF SELF:IsArray
                     VAR a := SELF:_arrayValue
                     RETURN a:__GetElement(index)
                 ENDIF
+
                 VAR indexer := _refData ASTYPE IIndexedProperties
                 IF indexer == NULL
                     THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
@@ -2279,6 +2295,7 @@ BEGIN NAMESPACE XSharp
                     a:__SetElement(index,VALUE)
                     RETURN
                 ENDIF
+   
                 VAR indexer := _refData ASTYPE IIndexedProperties
                 IF indexer == NULL
                     THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
@@ -2286,6 +2303,11 @@ BEGIN NAMESPACE XSharp
                 indexer[index] := VALUE
             END SET
         END PROPERTY
+
+		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+        /// <param name="name"><include file="RTComments.xml" path="Comments/NameBasedIndexParam/*" /></param>
+		/// <returns>The element stored at the indicated location in the collection.</returns>
+        /// <remarks>When the contents of the USUAL is not an array or does not name based indexing  then a runtime error is generated.</remarks>
 
         PROPERTY SELF[name  AS STRING] AS USUAL 
             GET

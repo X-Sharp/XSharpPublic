@@ -76,21 +76,25 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR rbits  := SELF:RecordBits 
             VAR mask   := SELF:RecnoMask  
             SELF:Initialize(KeyLength)
+            SELF:TrailByte  := 0
             SELF:DataBytes  := dbytes 
             SELF:RecordBits := rbits  
             SELF:RecnoMask  := mask   
             FOREACH VAR tag IN aTags
                 VAR bytes := BYTE[]{ keyLength}
                 VAR name := tag:OrderName
-				// Be sure to fill the Buffer with 0
+            	// Be sure to fill the Buffer with 0
 				MemSet( bytes, 0, keyLength, 0)
 				System.Text.Encoding.ASCII:GetBytes( name, 0, Math.Min(keyLength,name:Length), bytes, 0)
 				_hot := TRUE
 
                 LOCAL action := SELF:Add(tag:Header:PageNo, bytes) AS CdxAction
                 IF action:Type == CdxActionType.ExpandRecnos
-                    SELF:Tag:DoAction(action)
+                    var leaves := SELF:GetLeaves()
+                    SELF:SetRecordBits(tag:Header:PageNo)
+                    SELF:SetLeaves(leaves, 0, leaves:Count)
                     action := SELF:Add(tag:Header:PageNo, bytes)
+                    Debug.Assert(action:IsOk())
                 ENDIF
             NEXT
             SELF:Compress()

@@ -568,7 +568,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF page IS CdxBranchPage VAR branchPage
                 LOCAL nChildPage AS LONG
                 nChildPage := branchPage:GetChildPage(page:NumKeys-1)
-                RETURN SELF:_locateFirst(nChildPage)
+                RETURN SELF:_locateLast(nChildPage)
             ENDIF
             VAR node := page[page:NumKeys-1]
             SELF:_saveCurrentRecord(node)

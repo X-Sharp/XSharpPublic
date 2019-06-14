@@ -1,7 +1,7 @@
 #include "..\..\SharedSource\BuildNumber.h"
 
 #define FILE_DESCRIPTION "VO-Compatible GUI Classes Library"
-
+#define VS_VERSION_INFO 1
 VS_VERSION_INFO VERSIONINFO
  FILEVERSION FILEVERSION_NUMBER
  PRODUCTVERSION VERSION_NUMBER

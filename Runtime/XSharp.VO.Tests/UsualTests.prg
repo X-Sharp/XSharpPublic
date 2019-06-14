@@ -85,6 +85,45 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			RETURN
 
 		[Fact, Trait("Category", "Usual")];
+		METHOD UsualReal4Tests() AS VOID
+			LOCAL u AS USUAL
+			LOCAL r AS REAL4
+			r := 1.0
+            u:= r
+			Assert.Equal(UsualType(u), (DWORD) FLOAT)
+			r := u
+			Assert.Equal(r,(REAL4) 1.0)
+			Assert.Equal(r,  (REAL4) u)
+			r := System.Single.MaxValue
+            u:= r
+			Assert.Equal(UsualType(u), (DWORD) FLOAT)
+			r := u
+			Assert.Equal(r,System.Single.MaxValue)
+			Assert.Equal(r,  (REAL4) u)
+				
+			RETURN
+
+        [Fact, Trait("Category", "Usual")];
+		METHOD UsualReal8Tests() AS VOID
+			LOCAL u AS USUAL
+			LOCAL r AS REAL8
+			r := 1.0
+            u:= r
+			Assert.Equal(UsualType(u), (DWORD) FLOAT)
+			r := u
+			Assert.Equal(r,(REAL8) 1.0)
+			Assert.Equal(r,  (REAL8) u)
+			r := System.Double.MaxValue
+            u:= r
+			Assert.Equal(UsualType(u), (DWORD) FLOAT)
+			r := u
+			Assert.Equal(r,System.Double.MaxValue)
+			Assert.Equal(r,  (REAL8) u)
+				
+			RETURN
+
+
+		[Fact, Trait("Category", "Usual")];
 		METHOD UsualShortTests() AS VOID
 			LOCAL u AS USUAL
 			LOCAL l AS LONG

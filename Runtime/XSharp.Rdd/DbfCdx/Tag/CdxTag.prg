@@ -164,34 +164,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR numRecs     := SELF:RDD:RecCount
             page:ClearRecordsAndKeys()
             page:KeyLength      := SELF:KeyLength
-            VAR bits            := CdxHelpers.GetBits(SELF:KeyLength)
-            DO CASE
-            CASE numRecs < 2^12
-                page:RecordBits     := 12
-            CASE numRecs < 2^16
-                page:RecordBits     := 16
-            CASE numRecs < 2^24
-                page:RecordBits     := 24
-            OTHERWISE
-                page:RecordBits     := 32
-            ENDCASE
-            var totalBits       := page:RecordBits + bits + bits
-            DO CASE
-            CASE totalBits    <= 24
-                page:DataBytes := 3
-            CASE totalBits    <= 32
-                page:DataBytes := 4
-            CASE totalBits    <= 40
-                page:DataBytes := 5
-            OTHERWISE
-                page:DataBytes := 6
-            ENDCASE
-            
-            page:DuplicateBits  := bits
-            page:TrailingBits   := bits
-            page:TrailingMask   := (BYTE) (( 1 << bits  ) - 1)
-            page:DuplicateMask  := (BYTE) (( 1 << bits  ) - 1)
-            page:RecnoMask      := (1 << page:RecordBits) -1
+            page:SetRecordBits(numRecs)
             RETURN
 
         INTERNAL METHOD EvaluateExpressions() AS LOGIC
@@ -402,16 +375,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             CASE TypeCode.String
                 text := (STRING)toConvert
             CASE TypeCode.Boolean
-                text := "F"
-                IF (LOGIC) toConvert
-                    text := "T"
-                ENDIF
+                text := IIF ((LOGIC) toConvert, "T", "F")
             END SWITCH
             IF sLen > text:Length
                 sLen := text:Length
             ENDIF
             resultLength := sLen
-            SELF:_oRDD:_Encoding:GetBytes( text, 0, slen, buffer, 0)
+            SELF:_Encoding:GetBytes( text, 0, slen, buffer, 0)
             RETURN TRUE
             
         METHOD SetOrderScope(itmScope AS OBJECT , uiScope AS DBOrder_Info ) AS LOGIC

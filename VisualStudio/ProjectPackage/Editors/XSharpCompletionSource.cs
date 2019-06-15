@@ -3320,9 +3320,9 @@ namespace XSharpLanguage
         /// <param name="foundElement"></param>
         private static void SearchConstructorIn(CompletionType cType, Modifiers minVisibility, out CompletionElement foundElement)
         {
-            WriteOutputMessage($"--> SearchConstructorIn {cType.FullName}");
+            WriteOutputMessage($"--> SearchConstructorIn {cType?.FullName}");
             foundElement = null;
-            if (cType.XType != null)
+            if (cType?.XType != null)
             {
                 //
                 XTypeMember xMethod = cType.XType.Members.Where(x =>
@@ -3369,7 +3369,7 @@ namespace XSharpLanguage
                     return;
                 }
             }
-            else if (cType.SType != null)
+            else if (cType?.SType != null)
             {
                 MemberInfo[] members;
                 //
@@ -4051,7 +4051,7 @@ namespace XSharpLanguage
         public CompletionElement(MemberInfo SystemElement)
         {
             this.foundElement = SystemElement;
-            if (SystemElement.Name.EndsWith(">"))
+            if (SystemElement != null && SystemElement.Name.EndsWith(">"))
                 this.isGeneric = true;
         }
 

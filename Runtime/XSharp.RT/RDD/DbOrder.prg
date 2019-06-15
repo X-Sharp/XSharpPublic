@@ -459,6 +459,9 @@ FUNCTION OrdSetFocus(uOrder, cOrdBag) AS USUAL CLIPPER
     /// <param name="uScope">An optional constant that indicates which scope needs to be set.<br/>
     /// <include file="RTComments.xml" path="Comments/ScopeParams/*"  /> <br/></param>
     /// <returns><include file="RTComments.xml" path="Comments/ScopeReturn/*"  /></returns>
+    /// <seealso cref='M:XSharp.RT.Functions.DbSetScope(System.Int32,XSharp.__Usual)' />
+    /// <seealso cref='M:XSharp.RT.Functions.DbClearScope(System.Int32)' />
+
 FUNCTION DbScope(uScope) AS USUAL CLIPPER
     LOCAL nScope AS LONG
     IF IsNil(uScope)
@@ -488,6 +491,9 @@ FUNCTION DbScope(uScope) AS USUAL CLIPPER
     /// <param name="uValue">The value that needs to be set.
     /// The type of the value must match the type of the index expression.</param>
     /// <returns>TRUE when the scope was set succesfully, otherwise FALSE.</returns>
+    /// <seealso cref='M:XSharp.RT.Functions.DbClearScope(System.Int32)' />
+    /// <seealso cref='M:XSharp.RT.Functions.DbScope(XSharp.__Usual)' />
+
 FUNCTION DbSetScope(nScope AS LONG, uValue AS USUAL) AS LOGIC
     LOCAL lResult := TRUE AS LOGIC
     TRY
@@ -503,6 +509,38 @@ FUNCTION DbSetScope(nScope AS LONG, uValue AS USUAL) AS LOGIC
         CASE SCOPE_BOTH
             OrdScope(TOPSCOPE,uValue)
             OrdScope(BOTTOMSCOPE, uValue)
+            lResult := XSharp.RuntimeState:LastRDDError == NULL
+        
+        OTHERWISE
+            lResult := FALSE
+        END SWITCH
+    CATCH AS Exception
+        lResult := FALSE
+    END TRY
+    RETURN lResult
+
+    /// <summary>Clears the top and/or bottom scope. </summary>
+    /// <param name="nScope">A constant that indicates which scope needs to be set.<br/>
+    /// <include file="RTComments.xml" path="Comments/ScopeParams/*"  /></param>
+    /// <returns>TRUE when the scope was cleared succesfully, otherwise FALSE.</returns>
+    /// <seealso cref='M:XSharp.RT.Functions.DbSetScope(System.Int32,XSharp.__Usual)' />
+    /// <seealso cref='M:XSharp.RT.Functions.DbScope(XSharp.__Usual)' />
+
+FUNCTION DbClearScope(nScope AS LONG) AS LOGIC
+    LOCAL lResult := TRUE AS LOGIC
+    TRY
+        SWITCH nScope
+        CASE SCOPE_TOP
+            OrdScope(TOPSCOPE,NIL)
+            lResult := XSharp.RuntimeState:LastRDDError == NULL
+                
+        CASE SCOPE_BOTTOM
+            OrdScope(BOTTOMSCOPE, NIL)
+            lResult := XSharp.RuntimeState:LastRDDError == NULL
+                
+        CASE SCOPE_BOTH
+            OrdScope(TOPSCOPE,NIL)
+            OrdScope(BOTTOMSCOPE, NIL)
             lResult := XSharp.RuntimeState:LastRDDError == NULL
         
         OTHERWISE

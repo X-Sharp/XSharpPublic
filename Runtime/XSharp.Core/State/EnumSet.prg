@@ -73,7 +73,8 @@ BEGIN NAMESPACE XSharp
 		MEMBER MATH			:= 57	// INT
 		MEMBER INTERNATIONAL:= 58	// STRING
 		MEMBER DATECOUNTRY  := 59	// INT
-		// 65 - 97 unused
+
+ 		// 65 - 97 unused
 
 		// X# helper state
 		MEMBER EpochCent     := 70		// Numeric
@@ -91,6 +92,7 @@ BEGIN NAMESPACE XSharp
 		MEMBER ErrorBlock   := 82  // Codeblock
         MEMBER OPTIONVO13	:= 83	// Logic
         MEMBER LastRddError := 84   // Exception object
+        MEMBER Dialect      := 85   // XSharpDialect value
         // 86 - 97 unused
 		MEMBER DICT        := 98	// LOGIC
 		MEMBER INTL        := 99	// LOGIC
@@ -121,6 +123,18 @@ BEGIN NAMESPACE XSharp
 		MEMBER SQL_QUERY            := 154
 		MEMBER SQL_TABLE_PASSWORDS  := 155
 		MEMBER COLLATION_NAME       := 156
+
+        // Xbase++ defines
+        MEMBER CharSet          := 160
+        MEMBER HandleEvent      := 161
+        MEMBER DevTimeOut       := 162
+        MEMBER Accelerators     := 163
+        MEMBER Colormode        := 164
+        // Optimize already defined
+        MEMBER Rushmore         := 165
+        MEMBER SmartFilter      := 166
+        MEMBER NullValue        := 167
+
 
 		// 100 - 117 Harbour extensions
 		MEMBER LANGUAGE       :=  180  
@@ -364,6 +378,25 @@ DEFINE _SET_SQL_QUERY            := Set.SQL_QUERY
 DEFINE _SET_SQL_TABLE_PASSWORDS  := Set.SQL_TABLE_PASSWORDS
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_COLLATION_NAME       := Set.COLLATION_NAME     
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+
+// Xbase++ additions
+define  _SET_CHARSET     := Set.CharSet
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+define  _SET_HANDLEEVENT := Set.HandleEvent
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+define  _SET_DEVTIMEOUT  := Set.DevTimeOut
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+define  _SET_ACCELERATORS := Set.Accelerators
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+define  _SET_COLORMODE    := Set.Colormode
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+define  _SET_RUSHMORE    := Set.Rushmore
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+define  _SET_SMARTFILTER := Set.SmartFilter
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+define  _SET_NULLVALUE   := Set.NullValue
+
 	
 #endregion
 

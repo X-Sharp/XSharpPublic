@@ -1514,7 +1514,7 @@ namespace XSharpLanguage
                 }
                 modVis += this.Visibility.ToString() + " ";
                 //
-                if ( this.IsStatic )
+                if (this.IsStatic)
                 {
                     modVis += "STATIC" + " ";
                 }
@@ -2267,6 +2267,7 @@ namespace XSharpLanguage
         {
             List<String> tokenList = new List<string>();
             String token;
+            IToken lastToken = null;
             //
             stopToken = null;
 
@@ -2329,10 +2330,10 @@ namespace XSharpLanguage
                 //return tokenList;
             }
             // Not a CRLF ? Ok, should be the next one...except if the next one is CRLF !!
-            if ( nextToken.Type != XSharpLexer.EOS)
+            if (nextToken.Type != XSharpLexer.EOS)
             {
                 //if ( list[((XSharpToken)nextToken).OriginalTokenIndex + 1].Type != XSharpLexer.EOS )
-                    nextToken = list[((XSharpToken)nextToken).OriginalTokenIndex + 1];
+                nextToken = list[((XSharpToken)nextToken).OriginalTokenIndex + 1];
             }
             if (stopToken == null)
             {
@@ -2360,6 +2361,7 @@ namespace XSharpLanguage
             bool inCtor = false;
             while (triggerToken != null)
             {
+                lastToken = triggerToken;
                 token = triggerToken.Text;
                 if (triggerToken.Channel != XSharpLexer.DefaultTokenChannel)
                 {
@@ -2401,7 +2403,7 @@ namespace XSharpLanguage
                     //case XSharpLexer.COMMA:
                     case XSharpLexer.USING:
                     case XSharpLexer.AS:
-                    case XSharpLexer.IS:                    
+                    case XSharpLexer.IS:
                     case XSharpLexer.REF:
                     case XSharpLexer.IMPLEMENTS:
                     case XSharpLexer.INHERIT:
@@ -2479,6 +2481,55 @@ namespace XSharpLanguage
             }
             //
             tokenList.Reverse();
+            if (tokenList.Count > 0)
+            {
+                token = tokenList[0];
+                // Could be the case in a WITH...END construct
+                if ((token.CompareTo(":") == 0) || (token.CompareTo(".") == 0))
+                {
+                    bool inWith = false;
+                    IToken lastID = null;
+                    XSharpToken temp;
+                    int withLine = -1;
+                    int indexWith;
+                    // We stopped there
+                    triggerToken = lastToken;
+                    // search for WITH....
+                    while (triggerToken != null)
+                    {
+                        triggerToken = GetPreviousToken(tokens, triggerToken, false);
+                        switch (triggerToken.Type)
+                        {
+                            case XSharpLexer.WITH:
+                                inWith = true;
+                                withLine = triggerToken.Line;
+                                temp = (XSharpToken)triggerToken;
+                                indexWith = temp.OriginalTokenIndex;
+                                triggerToken = null;
+                                break;
+                            case XSharpLexer.ID:
+                                lastID = triggerToken;
+                                break;
+                        }
+                    }
+                    //
+                    if (inWith)
+                    {
+                        // So now, get the ID associated with WITH
+                        if (lastID != null)
+                        {
+                            if (lastID.Line == withLine)
+                            {
+                                temp = (XSharpToken)lastID;
+                                //indexWith = temp.OriginalTokenIndex;
+                                // Ok, let's say that the LastID is the one used by WITH
+                                // SO, inject it in the beginning of the list
+                                tokenList.Insert(0, lastID.Text);
+                            }
+                        }
+                    }
+                }
+            }
             // Now, we may have some post-treatment
             List<String> returnList = new List<string>();
             int i = 0;
@@ -2527,7 +2578,7 @@ namespace XSharpLanguage
                         }
                     }
                 }
-                else if ( ( file.Project.ProjectNode.ParseOptions.Dialect == XSharpDialect.XPP ) && (token.CompareTo("::") == 0) )
+                else if ((file.Project.ProjectNode.ParseOptions.Dialect == XSharpDialect.XPP) && (token.CompareTo("::") == 0))
                 {
                     returnList.Add("SELF");
                     returnList.Add(":");
@@ -2619,7 +2670,7 @@ namespace XSharpLanguage
                     name = name.Substring(0, pos);
                 }
                 XType nSpace = new XType(name, Kind.Namespace, Modifiers.None,
-                    Modifiers.Public, found.Range, found.Interval,file);
+                    Modifiers.Public, found.Range, found.Interval, file);
                 return nSpace;
             }
 #if TRACE
@@ -2874,9 +2925,9 @@ namespace XSharpLanguage
                         {
                             foundElement = new CompletionElement(cType.SType);
                         }
-                        if ( ( foundElement != null ) && (foundElement.IsGeneric))
+                        if ((foundElement != null) && (foundElement.IsGeneric))
                         {
-                            if ( String.IsNullOrEmpty(foundElement.GenericTypeName) )
+                            if (String.IsNullOrEmpty(foundElement.GenericTypeName))
                             {
                                 if (currentToken.EndsWith(">"))
                                 {
@@ -2885,7 +2936,7 @@ namespace XSharpLanguage
                                     if (index != -1)
                                     {
                                         // Extract the Generic params
-                                        genName = genName.Substring(index+1);
+                                        genName = genName.Substring(index + 1);
                                         genName = genName.Substring(0, genName.Length - 1);
                                         foundElement.GenericTypeName = genName;
                                     }
@@ -2912,7 +2963,7 @@ namespace XSharpLanguage
                     if ((currentPos == 0) && (startOfExpression))
                     {
                         var globType = SearchFunctionIn(currentMember.File, currentToken, out foundElement);
-                        if ((foundElement != null) && ( foundElement.IsInitialized))
+                        if ((foundElement != null) && (foundElement.IsInitialized))
                         {
                             return globType;
                         }
@@ -3085,14 +3136,14 @@ namespace XSharpLanguage
             WriteOutputMessage($"SearchType in file {xFile.SourcePath} {currentToken}");
             // check for a system type
             var usings = xFile.Usings.ToList();
-            if ( !String.IsNullOrEmpty(currentNs))
+            if (!String.IsNullOrEmpty(currentNs))
                 usings.Add(currentNs);
             var stype = xFile.Project.FindSystemType(currentToken, usings);
             if (stype != null)
             {
                 cType = new CompletionType(stype);
                 foundElement = new CompletionElement(stype);
-                if ( foundElement.IsGeneric)
+                if (foundElement.IsGeneric)
                 {
                     // We may need to adapt...
                     string searchTypeName = currentToken;
@@ -3943,7 +3994,7 @@ namespace XSharpLanguage
             return currentToken;
         }
 
-        internal static IToken GetPreviousToken(ITokenStream tokens, IToken currentToken)
+        internal static IToken GetPreviousToken(ITokenStream tokens, IToken currentToken, bool checkLine)
         {
             XSharpToken prev = null;
             if (currentToken != null)
@@ -3955,7 +4006,7 @@ namespace XSharpLanguage
                     if (prev.OriginalTokenIndex == 0)
                         return null;
                     prev = (XSharpToken)tokens.Get(prev.OriginalTokenIndex - 1);
-                    if (prev.Line != Line)
+                    if (checkLine && (prev.Line != Line))
                     {
                         prev = null;
                     }
@@ -3963,6 +4014,13 @@ namespace XSharpLanguage
             }
             return prev;
         }
+
+        internal static IToken GetPreviousToken(ITokenStream tokens, IToken currentToken)
+        {
+            return GetPreviousToken(tokens, currentToken, true);
+        }
+
+
         static void WriteOutputMessage(string message)
         {
             XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharp.Codecompletion :" + message);
@@ -4274,7 +4332,7 @@ namespace XSharpLanguage
             //
             foreach (var keyword in lexer.KwIds)
             {
-                xTypes.Add(new XType(keyword.Key, Kind.Keyword, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty,null));
+                xTypes.Add(new XType(keyword.Key, Kind.Keyword, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty, null));
             }
             //
             _xTypes = xTypes.ToImmutableList();

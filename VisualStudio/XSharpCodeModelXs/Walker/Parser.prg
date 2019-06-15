@@ -51,6 +51,7 @@ BEGIN NAMESPACE XSharpModel
 		PRIVATE listNS AS List<NameSpaceObject>
 		PRIVATE aEndMarkers AS STRING[]
 		PRIVATE aSpecialEndMarkers AS STRING[]
+		PRIVATE aSpecialEndClassMarkers AS STRING[]
 		PRIVATE dictXPPVis AS Dictionary<STRING , STRING>
 
 		CONSTRUCTOR()
@@ -79,7 +80,8 @@ BEGIN NAMESPACE XSharpModel
 		METHOD SetCoreDialect() AS VOID
 			currentDialect := XSharpDialect.Core
 			aEndMarkers :=  <STRING>{"END"}
-			aSpecialEndMarkers := <STRING>{"END"}
+			aSpecialEndMarkers := <STRING>{"IF", "DO", "WHILE", "WITH" }
+			aSpecialEndClassMarkers := <STRING>{"END"}
 
 
 		STATIC CONSTRUCTOR()
@@ -91,9 +93,9 @@ BEGIN NAMESPACE XSharpModel
 			    oEntityVisibility := Dictionary<STRING , STRING>{}
 			    oDirectives := Dictionary<STRING , STRING>{}
 			    hBrk := Dictionary<CHAR,CHAR>{}
-			    aTokenIn := <STRING>{"IF", "DO", "WHILE", "FOR", "FOREACH", "TRY", "REPEAT", "SWITCH"}
+			    aTokenIn := <STRING>{"IF", "DO", "WHILE", "FOR", "FOREACH", "TRY", "REPEAT", "SWITCH", "WITH"}
 			    aTokenInOut := <STRING>{"ELSE", "ELSEIF", "CASE", "OTHERWISE", "CATCH", "FINALLY", "RECOVER" }
-			    aTokenOut := <STRING>{"ENDIF", "ENDDO", "ENDCASE", "NEXT", "ENDTRY", "UNTIL"}
+			    aTokenOut := <STRING>{"ENDIF", "ENDDO", "ENDCASE", "NEXT", "ENDTRY", "UNTIL", "ENDWITH", "END" }
 			    aEntityWords := <STRING>{"EVENT" , "PROTECT" , "PROTECTED", "INSTANCE" , "EXPORT" , "PUBLIC" , "PRIVATE" , "HIDDEN" , "INTERNAL" , "MEMBER" , "GLOBAL"}
 			    aOperators := <CHAR>{'+','-','*','/','%','&','|','>','<','=','!','~'}
 			    aEndKeyWords := <STRING>{"CLASS","STRUCTURE","STRUCT","INTERFACE","ENUM"}
@@ -167,8 +169,8 @@ BEGIN NAMESPACE XSharpModel
 							System.Array.Copy( aTemp, SELF:aEndMarkers, aTemp:Length )
 							System.Array.Copy( aXPPEnd, 0, SELF:aEndMarkers, aTemp:Length, aXPPEnd:Length )
 							//
-							SELF:aSpecialEndMarkers := STRING[]{ aXPPEnd.Length }
-							System.Array.Copy( aXPPEnd, SELF:aSpecialEndMarkers, aXPPEnd:Length )
+							SELF:aSpecialEndClassMarkers := STRING[]{ aXPPEnd.Length }
+							System.Array.Copy( aXPPEnd, SELF:aSpecialEndClassMarkers, aXPPEnd:Length )
 							// Add the INLINE keyword as a Visiblity
 							IF ! oEntityVisibility:ContainsKey("INLINE")
 								oEntityVisibility:Add( "INLINE", "INLINE" )
@@ -1269,7 +1271,7 @@ BEGIN NAMESPACE XSharpModel
 							_SetLineType(oStatementLine, LineType.TokenOut)
 							oStatementLine:cArgument := cUpperWord
 							// Is it a Single Keyword end Marker ??
-							IF (System.Array.IndexOf(SELF:aSpecialEndMarkers , cUpperWord) != -1 )
+							IF (System.Array.IndexOf(SELF:aSpecialEndClassMarkers , cUpperWord) != -1 )
 								state:lIgnore := TRUE
 								lInEnum := FALSE
 								_SetLineType(oStatementLine, LineType.EndClass)
@@ -1287,6 +1289,9 @@ BEGIN NAMESPACE XSharpModel
 								cTypedClassName := ""
 								cClassNameSpace := ""
 								cClassType := ""
+							ELSEIF System.Array.IndexOf(aSpecialEndMarkers , cUpperWord) != -1
+								_SetLineType(oStatementLine, LineType.TokenOut)
+								oStatementLine:cArgument := cUpperWord
 							ELSEIF cUpperWord == "NAMESPACE"
 								// Update the latest Namespace
 								IF ( SELF:stackNS:Count > 0 )

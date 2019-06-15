@@ -64,6 +64,7 @@ CLASS XSharp.RuntimeState
 			SELF:_SetThreadValue(Set.FloatDelta , 0.0000000000001)
 			SELF:_SetThreadValue(Set.DOSCODEPAGE, Win32.GetDosCodePage())
 			SELF:_SetThreadValue(Set.WINCODEPAGE, Win32.GetWinCodePage())
+            SELF:_SetThreadValue(Set.Dialect, XSharpDialect.Core)
 			// Add null value for Clipper collation 
 			SELF:_SetThreadValue<BYTE[]>(Set.CollationTable, NULL )
 			SELF:_SetThreadValue(Set.CollationMode, CollationMode.Windows)
@@ -147,6 +148,7 @@ CLASS XSharp.RuntimeState
     /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO13" />
     /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionOVF" />
     /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionFOVF" />
+    /// <seealso cref="P:XSharp.RuntimeState.Dialect" />
 	STATIC PROPERTY CompilerOptionVO11 AS LOGIC ;
         GET GetValue<LOGIC>(Set.OPTIONVO11);
         SET SetValue<LOGIC>(Set.OPTIONVO11, VALUE)
@@ -156,6 +158,7 @@ CLASS XSharp.RuntimeState
     /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO11" />
     /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionOVF" />
     /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionFOVF" />
+    /// <seealso cref="P:XSharp.RuntimeState.Dialect" />
 	STATIC PROPERTY CompilerOptionVO13 AS LOGIC ;
         GET GetValue<LOGIC>(Set.OPTIONVO13);
         SET SetValue<LOGIC>(Set.OPTIONVO13, VALUE)
@@ -171,15 +174,27 @@ CLASS XSharp.RuntimeState
     /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO11" />
     /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO13" />
     /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionFOVF" />
+    /// <seealso cref="P:XSharp.RuntimeState.Dialect" />
 	STATIC PROPERTY CompilerOptionOVF AS LOGIC ;
         GET GetValue<LOGIC>(Set.OPTIONOVF);
         SET SetValue<LOGIC>(Set.OPTIONOVF, VALUE)
+
+    /// <summary>The current compiler setting for the X# Dialect as defined when compiling the main application.
+	/// This value gets assigned in the startup code for applications in the VO or Vulcan dialect.</summary>
+    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO11" />
+    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO13" />
+    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionFOVF" />
+    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionOVF" />
+	STATIC PROPERTY Dialect AS XSharpDialect ;
+        GET GetValue<XSharpDialect>(Set.Dialect);
+        SET SetValue<XSharpDialect>(Set.Dialect, VALUE)
 
 	/// <summary>The current compiler setting for the FOVF compiler option as defined when compiling the main application.
 	/// This value gets assigned in the startup code for applications in the VO or Vulcan dialect.</summary>
     /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO11" />
     /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO13" />
     /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionOVF" />
+    /// <seealso cref="P:XSharp.RuntimeState.Dialect" />
 	STATIC PROPERTY CompilerOptionFOVF AS LOGIC ;
         GET GetValue<LOGIC>(Set.OPTIONOVF);
         SET SetValue<LOGIC>(Set.OPTIONOVF, VALUE)

@@ -17,9 +17,15 @@ DEFINE F_SIZE  := 2
 /// <summary>Position in Directory() sub-array for last file write date(as a date).</summary>
 /// <include file="CoreComments.xml" path="Comments/Directory/*" />
 DEFINE F_DATE  := 3
+/// <summary>Position in Directory() sub-array for last file write date(as a date).</summary>
+/// <include file="CoreComments.xml" path="Comments/Directory/*" />
+DEFINE F_WRITE_DATE  := 3
 /// <summary>Position in Directory() sub-array for last file write time(as a string).</summary>
 /// <include file="CoreComments.xml" path="Comments/Directory/*" />
 DEFINE F_TIME  := 4
+/// <summary>Position in Directory() sub-array for last file write time(as a string).</summary>
+/// <include file="CoreComments.xml" path="Comments/Directory/*" />
+DEFINE F_WRITE_TIME  := 4
 /// <summary>Position in Directory() sub-array for file attributes(as a number).</summary>
 /// <include file="CoreComments.xml" path="Comments/Directory/*" />
 DEFINE F_ATTR  := 5

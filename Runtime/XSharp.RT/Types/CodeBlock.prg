@@ -16,6 +16,13 @@ USING System.Runtime.CompilerServices
 [DebuggerDisplay( "{ToString(),nq}", Type := "CODEBLOCK" )] ;
 ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock
 	PRIVATE INITONLY _pcount AS INT
+
+    PRIVATE STATIC nullArgs as USUAL[]
+
+    STATIC CONSTRUCTOR
+        nullArgs := USUAL[]{0}
+        RETURN
+
 	/// <summary>Returns the number of parameters in the codeblock</summary>
 	PUBLIC VIRTUAL METHOD PCount AS INT 
 		RETURN _Pcount
@@ -41,7 +48,12 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock
 	/// Eval method that can be called from code that does not "know" about the USUAL type.
 	/// </summary>
 	PUBLIC VIRTUAL METHOD EvalBlock(args PARAMS OBJECT[] ) AS OBJECT
-		VAR uArgs := _ObjectArrayToUsualArray(args)
+        LOCAL uArgs as USUAL[]
+        if args:Length == 0
+            uArgs := nullArgs
+        ELSE
+		    uArgs := _ObjectArrayToUsualArray(args)
+        ENDIF
 		RETURN SELF:Eval(uArgs)
 		
 		
@@ -74,7 +86,13 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock
 	PROTECT _lIsBlock   AS LOGIC
 	/// <exclude />
 	PROTECT _addsMemVars AS LOGIC
-	
+
+    STATIC PRIVATE nullArgs as OBJECT[]
+
+    STATIC CONSTRUCTOR
+        nullArgs := OBJECT[]{0}
+        RETURN
+
 	/// <summary>This constructor is used by the Macro Compiler</summary>
 	/// <param name="innerBlock">Compiled codeblock created by the macro compiler.</param>
 	/// <param name="cMacro">Macro string that was used to create the codeblock.</param>
@@ -103,7 +121,12 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock
             iLevel := 0
         ENDIF
         TRY
-		    VAR oArgs := _UsualArrayToObjectArray(args)
+            LOCAL oArgs as OBJECT[]
+            if args:Length == 0
+                oArgs := nullArgs
+            ELSE
+                oArgs := _UsualArrayToObjectArray(args)
+            ENDIF
 		    oRes := SELF:_innerBlock:EvalBlock(oArgs)
 		    uRes := __Usual{oRes}
         FINALLY

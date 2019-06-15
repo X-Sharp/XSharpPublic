@@ -26,13 +26,15 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			hFile := FCreate(cFile)
 			cLine := "line1"
 			FWriteLine(hFile, cLine)
-			cLine := "line2"
+			cLine := "line2" 
 			FWriteLine(hFile, cLine)
 			FClose(hFile)
 			cText := MemoRead(cFile)
 			Assert.Equal(e"line1\r\nline2\r\n", cText)
             VAR aFiles := Directory("test.txt")
             Assert.Equal(1, (INT) Alen(aFiles))
+            aFiles := Directory(System.Environment.CurrentDirectory+"\*.txt")
+            Assert.True( Alen(aFiles) >= 1)
 			FErase(cFile)
             aFiles := Directory("test.txt")
             Assert.Equal(0, (INT) Alen(aFiles))

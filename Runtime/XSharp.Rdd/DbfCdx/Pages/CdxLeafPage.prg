@@ -132,7 +132,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD InitBlank(oTag AS CdxTag) AS VOID
             SELF:Tag    := oTag
             SELF:Initialize(KeyLength)
-            IF Tag != NULL
+            IF SELF IS CdxTagList
+                TrailByte := 0
+            ELSEIF Tag != NULL
                 TrailByte := (BYTE) (IIF(Tag:KeyType == __UsualType.String, 32, 0) )
             ELSE
                 TrailByte := 32
@@ -360,6 +362,35 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END GET
         END PROPERTY
 #endregion
+        INTERNAL METHOD SetRecordBits(numRecs as LONG) AS VOID
+            VAR bits            := CdxHelpers.GetBits(SELF:KeyLength)
+            DO CASE
+            CASE numRecs < 2^12
+                SELF:RecordBits     := 12
+            CASE numRecs < 2^16
+                SELF:RecordBits     := 16
+            CASE numRecs < 2^24
+                SELF:RecordBits     := 24
+            OTHERWISE
+                SELF:RecordBits     := 32
+            ENDCASE
+            var totalBits       := SELF:RecordBits + bits + bits
+            DO CASE
+            CASE totalBits    <= 24
+                SELF:DataBytes := 3
+            CASE totalBits    <= 32
+                SELF:DataBytes := 4
+            CASE totalBits    <= 40
+                SELF:DataBytes := 5
+            OTHERWISE
+                SELF:DataBytes := 6
+            ENDCASE
+            
+            SELF:DuplicateBits  := bits
+            SELF:TrailingBits   := bits
+            SELF:TrailingMask   := (BYTE) (( 1 << bits  ) - 1)
+            SELF:DuplicateMask  := (BYTE) (( 1 << bits  ) - 1)
+            SELF:RecnoMask      := (1 << SELF:RecordBits) -1
 
         INTERNAL METHOD GetLeaves() AS IList<CdxLeaf>
             SELF:_ExpandLeaves(TRUE)
@@ -687,14 +718,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // Todo: optimize. We are now expanding and compressing the leaves which could be overkill.
             // Also the buffer is saved (because we may discover a 'page full' and we need to restore then
             // maybe we can restore from disk ?
-            // finally: do we have to call Write? Or is it enough to set the page as dirty
             //Debug("keys", self:NumKeys, "free", self:Freespace)
 
             IF SELF:NumKeys == 0 .OR. ! SELF:ValidLeaves
                 RETURN CdxAction.Ok
             ENDIF
             VAR leaves  := SELF:_Leaves
-            SELF:InitBlank(SELF:Tag)
+            //SELF:InitBlank(SELF:Tag)
+            SELF:ClearRecordsAndKeys()
             //LOCAL lastKey  := NULL AS BYTE[]
 
             LOCAL nKey   := 0 AS INT
@@ -704,11 +735,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR nTrail := leaf:Trail
                 IF nKey == 0
                     nDup := 0
-//                ELSE
-//                    nDup     := SELF:_getDupCount(lastKey, leaf:Key, nTrail)
-//                    IF nDup != leaf:Dup
-//                        leaf:Dup := nDup
-//                    ENDIF
+		ELSE
+		    NOP
+		    // The dup and trail values are already stored in the leaves
                 ENDIF
                 //lastKey  := Leaf:Key
 

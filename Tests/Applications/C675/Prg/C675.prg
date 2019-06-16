@@ -1,6 +1,7 @@
 // 675. System.NullReferenceException
 // Wehn /vo2 is enabled, STRING LOCALs and fields get initialized to ""
 // It would be more consistent to make also the internal field of AUTO STRING properties to initialize to "" as well
+// Also STATIC LOCAL strings should be initialized
 CLASS TestClass
 	EXPORT cExport AS STRING
 	PROPERTY cAutoProperty AS STRING AUTO
@@ -16,6 +17,10 @@ FUNCTION Start() AS VOID
 	xAssertTrue(o:cExport:Length == 0)
 
 	xAssertTrue(o:cAutoProperty:Length == 0) // System.NullReferenceException
+	
+	STATIC LOCAL sc AS STRING
+	xAssertTrue(sc != NULL)
+	xAssertTrue(sc:Length == 0)
 RETURN
 
 PROC xAssertTrue(l AS LOGIC)

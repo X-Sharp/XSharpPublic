@@ -16,6 +16,29 @@ USING System.Text
 /// </returns>
 FUNCTION Crypt(cSource AS STRING,cKey AS STRING) AS STRING
 	LOCAL bSource AS BYTE[]
+	LOCAL bDest  AS BYTE[]
+    LOCAL enc     AS Encoding
+    IF cSource?:Length == 0 .OR. cKey?:Length == 0
+        RETURN cSource
+    ENDIF
+    enc         := StringHelpers.WinEncoding
+    bSource     := enc:GetBytes(cSource)
+    bDest := Crypt(bSource, cKey, FALSE)
+    cSource := enc:GetString(bDest)
+	RETURN cSource
+
+/// <summary>
+/// Encrypt or decrypt an array of bytes.
+/// </summary>
+/// <param name="bSource"></param>
+/// <param name="cKey"></param>
+/// <returns>
+/// </returns>
+FUNCTION Crypt(bSource AS BYTE[],cKey AS STRING) AS BYTE[]
+	RETURN Crypt(bSource, cKey, TRUE)
+
+FUNCTION Crypt(bSource AS BYTE[],cKey AS STRING,lCreateNewArray AS LOGIC) AS BYTE[]
+	LOCAL bDest   AS BYTE[]
     LOCAL bKey    AS BYTE[]
     LOCAL enc     AS Encoding
     LOCAL keyLen  AS INT
@@ -28,14 +51,19 @@ FUNCTION Crypt(cSource AS STRING,cKey AS STRING) AS STRING
     LOCAL nPos     AS INT
     LOCAL nKeyPos  AS INT
     LOCAL bCurrent AS BYTE
-    IF cSource?:Length == 0 .OR. cKey?:Length == 0
-        RETURN cSource
+    IF bSource:Length == 0 .OR. cKey?:Length == 0
+        RETURN bSource
     ENDIF
     enc         := StringHelpers.WinEncoding
-    bSource     := enc:GetBytes(cSource)
     bKey        := enc:GetBytes(cKey)
     keyLen      := cKey:Length
-    sourceLen   := cSource:Length
+    sourceLen   := bSource:Length
+    IF lCreateNewArray
+	    bDest       := BYTE[]{sourceLen}
+	    System.Array.Copy(bSource, bDest, sourceLen)
+    ELSE
+    	bDest := bSource
+    END IF
     uiCode1     := (WORD) (bKey[1] ~ keyLen)
     uiCode2     := 0xAAAA
     nPos        := 1
@@ -66,12 +94,11 @@ FUNCTION Crypt(cSource AS STRING,cKey AS STRING) AS STRING
             uiCode2 := (WORD)( (uiCode2 & 0xFF00) | bNibble )
             uiCounter--
         ENDDO
-        bSource[nPos] := bCurrent ~ bNibble
+        bDest[nPos] := bCurrent ~ bNibble
         nPos ++
         nKeyPos++
     ENDDO
-    cSource := enc:GetString(bSource)
-	RETURN cSource
+	RETURN bDest
 
 /// <summary>
 /// Encrypt or decrypt a string, changing the contents of the original string as well as returning the encrypted string.

@@ -2,8 +2,8 @@
   "profiles": {
     "xsc": {
       "commandName": "Project",
-      "commandLineArgs": "@LastXSharpResponseFile.Rsp ",
-      "workingDirectory": "c:\\XSharp\\DevRt\\XppConsole"
+      "commandLineArgs": "@C675.rsp",
+      "workingDirectory": "c:\\XSharp\\Dev\\Tests"
     }
   }
 }

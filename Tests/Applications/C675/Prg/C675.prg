@@ -4,7 +4,10 @@
 // Also STATIC LOCAL strings should be initialized
 CLASS TestClass
 	EXPORT cExport AS STRING
-	PROPERTY cAutoProperty AS STRING AUTO
+	PROPERTY cAutoProperty AS STRING AUTO  
+	METHOD Foo() AS STRING
+		STATIC LOCAL sFoo AS STRING
+		RETURN sFoo
 END CLASS
 
 FUNCTION Start() AS VOID
@@ -17,13 +20,15 @@ FUNCTION Start() AS VOID
 	xAssertTrue(o:cExport:Length == 0)
 
 	xAssertTrue(o:cAutoProperty:Length == 0) // System.NullReferenceException
+
+	xAssertTrue(o:Foo():Length == 0) // System.NullReferenceException
 	
 	STATIC LOCAL sc AS STRING
 	xAssertTrue(sc != NULL)
 	xAssertTrue(sc:Length == 0)
 RETURN
 
-PROC xAssertTrue(l AS LOGIC)
+STATIC PROC xAssertTrue(l AS LOGIC)
 IF l
 	? "Assertion passed"
 ELSE

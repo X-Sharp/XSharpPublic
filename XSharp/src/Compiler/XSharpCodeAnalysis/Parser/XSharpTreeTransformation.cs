@@ -2480,7 +2480,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 filename = RemoveUnwantedCharacters(filename);
                 string className = GlobalClassName + "$" + filename + "$";
                 AddUsingWhenMissing(GlobalEntities.Usings, className, true, null);
-                GlobalEntities.Members.Add(GenerateGlobalClass(className, false, false, GlobalEntities.StaticGlobalClassMembers));
+                GlobalEntities.Members.Add(GenerateGlobalClass(className, true, false, GlobalEntities.StaticGlobalClassMembers));
                 GlobalEntities.StaticGlobalClassMembers.Clear();
             }
 
@@ -5604,6 +5604,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 varType = _getMissingType();
             }
             var initExpr = context.Expression?.Get<ExpressionSyntax>();
+            bool simpleInit = false;
             varType.XVoDecl = true;
             if (context.As?.Type == XP.IS)
             { 
@@ -5625,16 +5626,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (isStatic)
             {
-                staticName = XSharpSpecialNames.StaticLocalFieldNamePrefix + context.Id.Get<SyntaxToken>().Text + UniqueNameSuffix;
+                staticName = XSharpSpecialNames.StaticLocalFieldNamePrefix + CurrentEntity.ShortName+"$"+context.Id.Get<SyntaxToken>().Text + UniqueNameSuffix;
+                if (initExpr == null)
+                {
+                    initExpr = GenerateInitializer(context.DataType);
+                }
+                simpleInit = (initExpr is LiteralExpressionSyntax);
                 ClassEntities.Peek().Members.Add(
                     _syntaxFactory.FieldDeclaration(
                         EmptyList<AttributeListSyntax>(),
                         TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
                         _syntaxFactory.VariableDeclaration(varType,
-                            MakeSeparatedList(GenerateVariable(SyntaxFactory.Identifier(staticName)))),
+                            MakeSeparatedList(GenerateVariable(SyntaxFactory.Identifier(staticName),simpleInit ? initExpr : null))),
                         SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
                     );
-                if (initExpr != null)
+                if (initExpr != null && ! simpleInit)
                 {
                     ClassEntities.Peek().Members.Add(
                         _syntaxFactory.FieldDeclaration(
@@ -5691,7 +5697,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _syntaxFactory.RefType(SyntaxFactory.MakeToken(SyntaxKind.RefKeyword), null, varType), variables),
                     SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
                 decl.Add(ldecl);
-                if (initExpr != null)
+                if (initExpr != null && ! simpleInit)
                 {
                     decl.Add(GenerateIfStatement(
                         GenerateSimpleName(staticName + XSharpSpecialNames.StaticLocalInitFieldNameSuffix),

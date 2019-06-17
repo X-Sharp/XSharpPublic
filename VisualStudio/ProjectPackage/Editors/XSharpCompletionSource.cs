@@ -2258,12 +2258,12 @@ namespace XSharpLanguage
 
             bool ok = XSharp.Parser.VsParser.Lex(bufferText, fileName, parseoptions, reporter, out tokenStream);
             var stream = tokenStream as BufferedTokenStream;
-            return GetTokenList(triggerPointPosition, triggerPointLineNumber, stream, out stopToken, fromGotoDefn, file, dotAsSelector);
+            return GetTokenList(triggerPointPosition, triggerPointLineNumber, stream, out stopToken, fromGotoDefn, file, dotAsSelector, fromMember);
         }
 
 
         public static List<String> GetTokenList(int triggerPointPosition, int triggerPointLineNumber,
-            BufferedTokenStream tokens, out IToken stopToken, bool fromGotoDefn, XFile file, bool dotAsSelector)
+            BufferedTokenStream tokens, out IToken stopToken, bool fromGotoDefn, XFile file, bool dotAsSelector, XTypeMember fromMember)
         {
             List<String> tokenList = new List<string>();
             String token;
@@ -2498,6 +2498,12 @@ namespace XSharpLanguage
                     while (triggerToken != null)
                     {
                         triggerToken = GetPreviousToken(tokens, triggerToken, false);
+                        // We should check that we are not getting out of the current member.....
+                        if ( triggerToken.StartIndex < fromMember.Interval.Start)
+                        {
+                            triggerToken = null;
+                            break;
+                        }
                         switch (triggerToken.Type)
                         {
                             case XSharpLexer.WITH:
@@ -2518,11 +2524,12 @@ namespace XSharpLanguage
                         // So now, get the ID associated with WITH
                         if (lastID != null)
                         {
+                            // Guess that the ID is on the same line as the WITH
                             if (lastID.Line == withLine)
                             {
                                 temp = (XSharpToken)lastID;
                                 //indexWith = temp.OriginalTokenIndex;
-                                // Ok, let's say that the LastID is the one used by WITH
+                                // Ok, let's guess that the LastID is the one used by WITH
                                 // SO, inject it in the beginning of the list
                                 tokenList.Insert(0, lastID.Text);
                             }

@@ -33,6 +33,30 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// </summary>
     public abstract partial class CSharpSyntaxTree : SyntaxTree
     {
+        // NOTE: 
+        // The spans and positions the we get here (when calculating breakpoint positions mostly)
+        // have nothing to do with the real sourcecode.
+        // Generated Using lines and generated static functions class also are included in the positions.
+        // So a function like this
+        // FUNCTION Start as VOID
+        // Console.ReadLine()
+        // RETURN
+        // will be represented by a tree like this 
+        // using  static Functions  ;
+        // using  System  ;
+        // partial  public static class Functions
+        // {
+        //   static public void Start() 
+        //   {
+        //      Console.ReadLine(); return;
+        //   }
+        // }
+        // so where the actual position in the source for the function start is 0
+        // in the tree it will be a much larger number !
+        // therefore we find the C# node in the tree first
+        // and then use the X# node attached to it to find the real source location
+
+
         internal bool Generated { get; set; }
         private CSharpSyntaxNode GetNode(CSharpSyntaxNode root, int position)
         {
@@ -51,6 +75,25 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return null;
         }
+
+        private CSharpSyntaxNode GetStatement(CSharpSyntaxNode node )
+        {
+            if (node is ExpressionSyntax)
+            {
+                var original = node;
+                while (node != null)
+                {
+                    if (node is StatementSyntax)
+                        break;
+                    node = node.Parent;
+                }
+                if (node == null)
+                { 
+                    node = original;
+                }
+            }
+            return node;
+        }
         private LineVisibility GetXNodeVisibility(int position)
         {
             var root = (CSharpSyntaxNode)GetRoot();
@@ -65,12 +108,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var node = GetNode(root, position);
                 if (node != null)
-                { 
-                    if (node.XNode != null && node.XNode.IsHidden)
-                        return LineVisibility.Hidden;
-                    if (node.XGenerated)
-                        return LineVisibility.Hidden;
+                {
+                    node = GetStatement(node);
                 }
+                if (node!= null && node.XGenerated)
+                    return LineVisibility.Hidden;
             }
             return LineVisibility.Visible;
         }
@@ -177,24 +219,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     snode = snode.Parent;
                 }
-                else if (snode.Parent is AssignmentExpressionSyntax)
-                {
-                    snode = snode.Parent;
-                }
-                else if (snode is IdentifierNameSyntax )
-                {
-                    // walk until we find the statement
-                    var tmpnode = snode;
-                    while (tmpnode != null && tmpnode.Parent != null)
-                    {
-                        tmpnode = tmpnode.Parent;
-                        if (tmpnode is StatementSyntax)
-                        {
-                            snode = tmpnode;
-                            break;
-                        }
-                    }
-                }
+                snode = GetStatement(snode);
                 if (snode.XNode != null)
                 {
                     var xNode = snode.XNode as XSharpParserRuleContext;

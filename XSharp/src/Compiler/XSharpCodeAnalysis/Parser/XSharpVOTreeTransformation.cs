@@ -627,8 +627,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             stmts.Clear();
             call = GenerateMethodCall(XSharpSpecialNames.ModuleName + "." + XSharpSpecialNames.AppExit, true);
             stmts.Add(GenerateExpressionStatement(call, true));
-            stmts.Add(GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.GcCollect, true)));
-            stmts.Add(GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.GcWait, true)));
+            stmts.Add(GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.GcCollect, true),true));
+            stmts.Add(GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.GcWait, true), true));
             var finallyblock = MakeBlock(stmts);
             var finallyclause = _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
                     finallyblock);

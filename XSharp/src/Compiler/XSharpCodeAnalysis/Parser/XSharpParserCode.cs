@@ -747,7 +747,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
     public interface IXParseTree : IParseTree
     {
         object CsNode { get; set; }
-        bool IsHidden { get; }
         int Position { get; }
         int FullWidth { get; }
         string SourceFileName { get; }
@@ -768,7 +767,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public XTerminalNodeImpl(IToken symbol) : base(symbol)
         { }
         public object CsNode { get; set; }
-        public bool IsHidden { get { return false; } }
         public int Position { get { return Symbol.StartIndex; } }
         public int FullWidth { get { return Symbol.StopIndex - Symbol.StartIndex + 1; } }
         public string ToString(string format, IFormatProvider formatProvider)

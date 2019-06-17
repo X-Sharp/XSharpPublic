@@ -2483,8 +2483,9 @@ namespace XSharpLanguage
             tokenList.Reverse();
             if (tokenList.Count > 0)
             {
+                // First token
                 token = tokenList[0];
-                // Could be the case in a WITH...END construct
+                // Could be a COLON or a DOT, it will could be the case in a WITH...END construct
                 if ((token.CompareTo(":") == 0) || (token.CompareTo(".") == 0))
                 {
                     bool inWith = false;
@@ -2596,9 +2597,11 @@ namespace XSharpLanguage
                     switch (lowerToken)
                     {
                         case "this":
+                            // THIS will turn to a SELF
                             returnList.Add("SELF");
                             break;
                         case ".":
+                            // dot in first place will mean SELF.
                             if (returnList.Count == 0)
                             {
                                 returnList.Add("SELF");

@@ -48,6 +48,7 @@ BEGIN NAMESPACE XSharpModel
 
         PROPERTY IsArray AS LOGIC AUTO
         PROPERTY IsTyped AS LOGIC GET _isTyped
+		PROPERTY IsParameter AS LOGIC GET _isParameter
         PROPERTY ParamType AS ParamType AUTO
         PROPERTY Prototype AS STRING GET SUPER:Name
         PROPERTY ParamTypeDesc AS STRING

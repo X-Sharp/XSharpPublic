@@ -25,6 +25,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     {
         private XSharpParser _parser;
         private IList<ParseErrorData> _parseErrors;
+        CSharpParseOptions _options;
 
 
         private void checkMissingKeyword(object endToken, ParserRuleContext context, string msg)
@@ -89,10 +90,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        public XSharpParseErrorAnalysis(XSharpParser parser, IList<ParseErrorData> parseErrors)
+        public XSharpParseErrorAnalysis(XSharpParser parser, IList<ParseErrorData> parseErrors, CSharpParseOptions options)
         {
             _parser = parser;
             _parseErrors = parseErrors;
+            _options = options;
         }
 
         public override void VisitErrorNode([NotNull] IErrorNode node)
@@ -117,6 +119,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //}
         }
 
+        // Check for incorrect operators
+        public override void ExitAssignoperator([NotNull] XSharpParser.AssignoperatorContext context)
+        {
+            if (context.Op.Type != XSharpParser.ASSIGN_OP && _options.Dialect != XSharpDialect.FoxPro)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_AssignmentOperatorExpected));
+            }
+        }
+
         // Check for missing end keywords for statement blocks
 
         public override void ExitWhileStmt([NotNull] XSharpParser.WhileStmtContext context)
@@ -126,26 +137,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitForStmt([NotNull] XSharpParser.ForStmtContext context)
         {
             checkMissingKeyword(context.e, context, "NEXT");
-            IToken Op;
-            Op = context.Op;
-            if (Op == null && context.AssignExpr is XSharpParser.BinaryExpressionContext)
+            IToken Op = null;
+            if (context.AssignExpr is XSharpParser.BinaryExpressionContext)
             {
                 var bin = context.AssignExpr as XSharpParser.BinaryExpressionContext;
                 Op = bin.Op;
             }
-            if (Op == null && context.AssignExpr is XSharpParser.AssignmentExpressionContext)
+            else if (context.AssignExpr is XSharpParser.AssignmentExpressionContext)
             {
                 var ass = context.AssignExpr as XSharpParser.AssignmentExpressionContext;
-                Op = ass.Op;
+                Op= ass.Op;
             }
-
-            if (Op != null && Op.Type != XSharpLexer.ASSIGN_OP)
+            if (Op != null && Op.Type != XSharpParser.ASSIGN_OP && _options.Dialect != XSharpDialect.FoxPro)
             {
-                var err = ErrorCode.ERR_UnexpectedToken;
-                IToken anchor = Op;
-                var errdata = new ParseErrorData(anchor, err, "'"+Op.Text+ "' (':=' expected)");
-                _parseErrors.Add(errdata);
-
+                context.AddError(new ParseErrorData(context, ErrorCode.WRN_AssignmentOperatorExpected));
             }
         }
         public override void ExitForeachStmt([NotNull] XSharpParser.ForeachStmtContext context)

@@ -3243,7 +3243,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         initExpr = initExpr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_SyntaxError, "AS"));
                         context.Initializer.Put(initExpr);
-                        ((IXParseTree)context.ASSIGN_OP()).Put(initExpr);
+                        context.Op.Put(initExpr);
                         context.Put(GenerateVariable(context.Id.Get<SyntaxToken>(), initExpr));
                     }
                     else
@@ -5734,8 +5734,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var variable = _syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null,
                 (context.Expression == null) ? null :
                 _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), context.Expression.Get<ExpressionSyntax>()));
-            if (context.Op.Type != XP.ASSIGN_OP)
-                variable = variable.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_AssignmentOperatorExpected));
             variables.Add(variable);
             var modifiers = _pool.Allocate();
             if (isConst)
@@ -5776,10 +5774,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Id.Get<SyntaxToken>(),
                 null,
                 _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), context.Expr.Get<ExpressionSyntax>()));
-            if (context.Op.Type != XP.ASSIGN_OP)
-            {
-                decl = decl.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_AssignmentOperatorExpected));
-            }
             context.Put(decl);
         }
 
@@ -5824,24 +5818,37 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.AssignExpr != null)
             {
                 var assign = context.AssignExpr as XP.AssignmentExpressionContext;
-                if (assign == null)
+                var bin = context.AssignExpr as XP.BinaryExpressionContext;
+                if (assign == null && bin == null)
                 {
                     context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                     context.AddError(new ParseErrorData(context.Dir, ErrorCode.ERR_SyntaxError, ":="));
                     return;
                 }
-                if (assign.Op.Type != XP.ASSIGN_OP)
-                {
-                    context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-                    context.AddError(new ParseErrorData(assign.Op, ErrorCode.ERR_SyntaxError, ":="));
-                    return;
+                if (assign != null)
+                { 
+                    context.AssignExpr.SetSequencePoint();
+                    iterExpr = assign.Left.Get<ExpressionSyntax>();
+                    initExpr = assign.Right.Get<ExpressionSyntax>();
+                    assignExpr = assign.Get<ExpressionSyntax>();
+                    iterExpr.XNode = assign;
+                    initExpr.XNode = assign;
                 }
-                context.AssignExpr.SetSequencePoint();
-                iterExpr = assign.Left.Get<ExpressionSyntax>();
-                initExpr = assign.Right.Get<ExpressionSyntax>();
-                assignExpr = assign.Get<ExpressionSyntax>();
-                iterExpr.XNode = assign;
-                initExpr.XNode = assign;
+                else // must be a binary expression then
+                {
+                    if (bin.Op.Type != XP.EQ)
+                    {
+                        context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                        context.AddError(new ParseErrorData(context.Dir, ErrorCode.ERR_SyntaxError, ":="));
+                        return;
+                    }
+                    context.AssignExpr.SetSequencePoint();
+                    iterExpr = bin.Left.Get<ExpressionSyntax>();
+                    initExpr = bin.Right.Get<ExpressionSyntax>();
+                    assignExpr = MakeSimpleAssignment(iterExpr, initExpr);
+                    iterExpr.XNode = assign;
+                    initExpr.XNode = assign;
+                }
             }
             else
             {
@@ -6529,7 +6536,57 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    var stmt = GenerateExpressionStatement(exprCtx.Get<ExpressionSyntax>());
+                    // check for binary expression with '=' operator.
+                    // convert to assignment and add a warning when not in FoxPro dialect
+                    // please note that the expression
+                    // x = y = z
+                    // is represented as
+                    //    Binary Expression
+                    //       Left = Binary Expression x == y
+                    //       Op   = ==
+                    //       Right = Simple Name z
+                    // so we need to 'rebuild' the expression
+
+                    var expr = exprCtx.Get<ExpressionSyntax>();
+                    if (expr is BinaryExpressionSyntax bin)
+                    {
+                        bool nestedAssign = false;
+                        var xNode1 = bin.XNode as XP.BinaryExpressionContext;
+                        var oldStyleAssign = bin.OperatorToken.Kind == SyntaxKind.EqualsEqualsToken && xNode1 != null && xNode1.Op.Type == XP.EQ ;
+                        if (bin.Left is BinaryExpressionSyntax binLeft)
+                        {
+                            if (binLeft.OperatorToken.Kind == SyntaxKind.EqualsEqualsToken)
+                            {
+                                var xNode2 = binLeft.XNode as XP.BinaryExpressionContext;
+                                nestedAssign = xNode2 != null && xNode2.Op.Type == XP.EQ;
+                            }
+
+                        }
+                        if (oldStyleAssign || nestedAssign)
+                        {
+                            // check for x = y = z, but also x = y > z
+                            if (nestedAssign)
+                            {
+                                var Left = (BinaryExpressionSyntax)bin.Left;
+                                var assignTo = Left.Left;
+                                var valueToAssign = _syntaxFactory.BinaryExpression(
+                                                    bin.Kind,
+                                                    Left.Right,
+                                                    bin.OperatorToken,
+                                                    bin.Right);
+                                expr = MakeSimpleAssignment(assignTo, valueToAssign);
+                            }
+                            else
+                            {
+                                expr = MakeSimpleAssignment(bin.Left, bin.Right);
+                            }
+                        }
+                        if (_options.Dialect != XSharpDialect.FoxPro)
+                        {
+                            expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_AssignmentOperatorExpected));
+                        }
+                    }
+                    var stmt = GenerateExpressionStatement(expr);
                     stmt.XNode = exprCtx;
                     statements.Add(stmt);
                 }

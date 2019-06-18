@@ -148,7 +148,7 @@ dllcallconv         : Cc=( CLIPPER | STRICT | PASCAL | THISCALL | FASTCALL | ASP
 parameterList       : LPAREN (Params+=parameter (COMMA Params+=parameter)*)? RPAREN
                     ;
 
-parameter           : (Attributes=attributes)? Self=SELF? Id=identifier (ASSIGN_OP Default=expression)? (Modifiers=parameterDeclMods Type=datatype)?
+parameter           : (Attributes=attributes)? Self=SELF? Id=identifier (Op=assignoperator Default=expression)? (Modifiers=parameterDeclMods Type=datatype)?
                     | Ellipsis=ELLIPSIS
                     ;
 
@@ -163,7 +163,7 @@ funcprocModifiers   : ( Tokens+=(STATIC | INTERNAL | PUBLIC | EXPORT | UNSAFE) )
                     ;
 
 
-using_              : USING (Static=STATIC)? (Alias=identifierName ASSIGN_OP)? Name=name eos
+using_              : USING (Static=STATIC)? (Alias=identifierName Op=assignoperator)? Name=name eos
                     ;
 
 
@@ -197,7 +197,7 @@ methodtype          : Token=(METHOD | ACCESS | ASSIGN)
 
 // Convert to constant on Globals class. Expression must be resolvable at compile time
 vodefine            : (Modifiers=funcprocModifiers)?
-                      DEFINE Id=identifier ASSIGN_OP Expr=expression (AS DataType=typeName)? eos
+                      DEFINE Id=identifier Op=assignoperator Expr=expression (AS DataType=typeName)? eos
                     ;
 
 vostruct            : (Modifiers=votypeModifiers)?
@@ -309,7 +309,7 @@ enum_               : (Attributes=attributes)? (Modifiers=enumModifiers)?
 enumModifiers       : ( Tokens+=(NEW | PUBLIC| EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN) )+
                     ;
 
-enummember          : (Attributes=attributes)? MEMBER? Id=identifier (ASSIGN_OP Expr=expression)? eos
+enummember          : (Attributes=attributes)? MEMBER? Id=identifier (Op=assignoperator Expr=expression)? eos
                     ;
 
 event_              : (Attributes=attributes)? (Modifiers=eventModifiers)?
@@ -348,7 +348,7 @@ classvarModifiers   : ( Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE |
 classVarList        : Var+=classvar (COMMA Var+=classvar)* (As=(AS | IS) DataType=datatype)?
                     ;
 
-classvar            : (Dim=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? (ASSIGN_OP Initializer=expression)?
+classvar            : (Dim=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Initializer=expression)?
                     ;
 
 arraysub            : ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression)+		// x][y
@@ -360,7 +360,7 @@ property            : (Attributes=attributes)? (Modifiers=memberModifiers)?
                       PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=nameDot)? Id=identifier)
                       (ParamList=propertyParameterList)?
                       (AS Type=datatype)?
-                      ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (ASSIGN_OP Initializer=expression)? end=eos	// Auto
+                      ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (Op=assignoperator Initializer=expression)? end=eos	// Auto
                         | (LineAccessors+=propertyLineAccessor)+ end=eos													// Single Line
                         | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? Ignored=identifier?  eos				// Multi Line
                       )
@@ -482,7 +482,7 @@ attributeTarget     : Id=identifier COLON
 attribute           : Name=name (LPAREN (Params+=attributeParam (COMMA Params+=attributeParam)* )? RPAREN )?
                     ;
 
-attributeParam      : Name=identifierName ASSIGN_OP Expr=expression     #propertyAttributeParam
+attributeParam      : Name=identifierName Op=assignoperator Expr=expression     #propertyAttributeParam
                     | Expr=expression                                   #exprAttributeParam
                     ;
 
@@ -506,8 +506,8 @@ statement           : Decl=localdecl                        #declarationStmt
                     | NOP (LPAREN RPAREN )? end=eos								#nopStmt
                     | FOR
                         ( AssignExpr=expression
-                        | (LOCAL? ForDecl=IMPLIED | ForDecl=VAR) ForIter=identifier Op=(ASSIGN_OP|EQ) Expr=expression
-                        | ForDecl=LOCAL ForIter=identifier Op=(ASSIGN_OP|EQ) Expr=expression (AS Type=datatype)?
+                        | (LOCAL? ForDecl=IMPLIED | ForDecl=VAR) ForIter=identifier Op=assignoperator Expr=expression
+                        | ForDecl=LOCAL ForIter=identifier Op=assignoperator Expr=expression (AS Type=datatype)?
                         )
                       Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
                       (STEP Step=expression)? end=eos
@@ -597,7 +597,7 @@ statement           : Decl=localdecl                        #declarationStmt
                       Exprs+=expression (COMMA Exprs+=expression)+  end=eos			#expressionStmt
 	                ;
 
-withLine            : Op=(DOT|COLON) Name=simpleName AsOp=(ASSIGN_OP|EQ) Expr=expression end=eos       // assignment to field or property
+withLine            : Op=(DOT|COLON) Name=simpleName AssOp=assignoperator Expr=expression end=eos       // assignment to field or property
                     | Op=(DOT|COLON) Name=simpleName L=LPAREN  R=RPAREN  end=eos                       // method call without arguments
                     | Op=(DOT|COLON) Name=simpleName L=LPAREN  ArgList=argumentList R=RPAREN  end=eos  // method call with arguments
                     ;
@@ -625,7 +625,7 @@ variableDeclaration	: (LOCAL? Var=IMPLIED | Var=VAR) Decl+=variableDeclarator (C
                     | LOCAL Decl+=variableDeclarator (COMMA Decl+=variableDeclarator)* (AS Type=datatype)?
                     ;
 
-variableDeclarator  : Id=identifier Op=(ASSIGN_OP|EQ) Expr=expression
+variableDeclarator  : Id=identifier Op=assignoperator Expr=expression
                     ;
 
 // Variable declarations
@@ -654,10 +654,10 @@ localdecl          : LOCAL (Static=STATIC)? LocalVars+=localvar (COMMA LocalVars
                    ;
 
 localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT ArraySub=arraysub RBRKT)?
-                     (ASSIGN_OP Expression=expression)? (As=(AS | IS) DataType=datatype)?
+                     (Op=assignoperator Expression=expression)? (As=(AS | IS) DataType=datatype)?
                    ;
 
-impliedvar         : (Const=CONST)? Id=identifier Op=(ASSIGN_OP|EQ) Expression=expression
+impliedvar         : (Const=CONST)? Id=identifier Op=assignoperator Expression=expression
                    ;
 
 fielddecl          : FIELD Fields+=identifierName (COMMA Fields+=identifierName)* (IN Alias=identifierName)? end=eos
@@ -673,7 +673,7 @@ xbasedecl           : T=(MEMVAR|PARAMETERS|LPARAMETERS)      // MEMVAR  Foo, Bar
                       end=eos
                     ;
 
-xbasevar            : Id=identifierName (ASSIGN_OP Expression=expression)?
+xbasevar            : Id=identifierName (Op=assignoperator Expression=expression)?
                     ;
 
 // The operators in VO have the following precedence level:
@@ -690,6 +690,10 @@ xbasevar            : Id=identifierName (ASSIGN_OP Expression=expression)?
 //           ( 3)  multiplicative       * / %
 //           ( 2)  exponentation        ^ **
 //           ( 1)  unary                + - ++ -- ~
+
+
+assignoperator      : Op = (ASSIGN_OP | EQ)
+                    ;
 
 expression          : Expr=expression Op=(DOT | COLON) Name=simpleName          #accessMember           // member access
                     |                 Op=COLONCOLON   Name=simpleName           #accessMember           // XPP & Harbour SELF member access
@@ -805,7 +809,7 @@ objectOrCollectioninitializer : ObjInit=objectinitializer
 objectinitializer   : LCURLY (Members+=memberinitializer (COMMA Members+=memberinitializer)*)? RCURLY
                     ;
 
-memberinitializer   : Name=identifierName ASSIGN_OP Expr=initializervalue
+memberinitializer   : Name=identifierName Op=assignoperator Expr=initializervalue
                     ;
 
 initializervalue    : Init=objectOrCollectioninitializer // Put this first to make sure we are not matching a literal array for { expr [, expr] }
@@ -826,7 +830,7 @@ argumentList        :  Args+=namedArgument (COMMA Args+=namedArgument)*
                     ;
 
                     // NOTE: Expression is optional so we can skip arguments for VO/Vulcan compatibility
-namedArgument       :  {AllowNamedArgs}?  Name=identifierName ASSIGN_OP  ( RefOut=(REF | OUT) )? Expr=expression?
+namedArgument       :  {AllowNamedArgs}?  Name=identifierName Op=assignoperator  ( RefOut=(REF | OUT) )? Expr=expression?
                     |  ( RefOut=(REF | OUT) )? Expr=expression?
                     ;
 
@@ -889,7 +893,7 @@ arrayElement        : Expr=expression?      // VO Array elements are optional
 anonType            : CLASS LCURLY (Members+=anonMember (COMMA Members+=anonMember)*)? RCURLY
                     ;
 
-anonMember          : Name=identifierName ASSIGN_OP Expr=expression
+anonMember          : Name=identifierName Op=assignoperator Expr=expression
                     | Expr=expression
                     ;
 
@@ -945,7 +949,7 @@ queryBody           : (Bodyclauses+=queryBodyClause)* SorG=selectOrGroupclause (
                     ;
 
 queryBodyClause     : From=fromClause                                                                    #fromBodyClause
-                    | LET Id=identifier ASSIGN_OP Expr=expression                                        #letClause
+                    | LET Id=identifier Op=assignoperator Expr=expression                                        #letClause
                     | WHERE Expr=expression                                                              #whereClause        // expression must be Boolean
                     | JOIN Id=identifier (AS Type=typeName)?
                       IN Expr=expression ON OnExpr=expression EQUALS EqExpr=expression

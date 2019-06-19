@@ -678,6 +678,7 @@ BEGIN NAMESPACE XSharp.ADS
                 delCloseSQLStatement := ACE32.AdsCloseSQLStatement
                 delCloseTable        := ACE32.AdsCloseTable
                 delCommitTransaction := ACE32.AdsCommitTransaction
+				delConnect60         := ACE32.AdsConnect60
                 delContinue          := ACE32.AdsContinue
                 delCopyTableStructure	:= ACE32.AdsCopyTableStructure
                 delCreateFTSIndex		:= ACE32.AdsCreateFTSIndex
@@ -877,6 +878,7 @@ BEGIN NAMESPACE XSharp.ADS
                 delCloseSQLStatement := ACE64.AdsCloseSQLStatement
                 delCloseTable        := ACE64.AdsCloseTable
                 delCommitTransaction := ACE64.AdsCommitTransaction
+				delConnect60         := ACE64.AdsConnect60
                 delContinue          := ACE64.AdsContinue
                 delCopyTableStructure	:= ACE64.AdsCopyTableStructure
                 delCreateFTSIndex		:= ACE64.AdsCreateFTSIndex
@@ -1083,6 +1085,7 @@ BEGIN NAMESPACE XSharp.ADS
         PRIVATE STATIC delCloseSQLStatement AS _delH
         PRIVATE STATIC delCloseTable        AS _delH
         PRIVATE STATIC delCommitTransaction AS _delH
+		PRIVATE STATIC delConnect60         AS _delConnect60
         PRIVATE STATIC delContinue          AS _delHOutW
         PRIVATE STATIC delCopyTableStructure	AS _delHS
         PRIVATE STATIC delCreateFTSIndex		AS _delCreateFTSIndex
@@ -1330,6 +1333,9 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsContinue(hTable AS IntPtr , pbFound OUT WORD) AS DWORD
             RETURN delContinue(hTable, OUT pbFound)
             
+        PUBLIC STATIC METHOD AdsConnect60(pucServerPath AS STRING , usServerTypes AS WORD, pucUserName AS STRING , pucPassword AS STRING , ulOptions AS DWORD, phConnect OUT IntPtr ) AS DWORD 
+			return delConnect60(pucServerPath, usServerTypes, pucUserName, pucPassword, ulOptions, OUT phConnect)
+			
         PUBLIC STATIC METHOD AdsCopyTableStructure(hTable AS IntPtr , strFile AS STRING ) AS DWORD 
             RETURN delCopyTableStructure(hTable, strFile)
             
@@ -1864,7 +1870,6 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsCompareBookmarks(strBookmark1 as string , strBookmark2 as string , plResult out int ) as DWORD 
         PUBLIC STATIC METHOD AdsConnect(strServerName as string , phConnect out IntPtr ) as DWORD 
         PUBLIC STATIC METHOD AdsConnect26(strServerName as string , usServerTypes as WORD, phConnect out IntPtr ) as DWORD 
-        PUBLIC STATIC METHOD AdsConnect60(strServerPath as string , usServerTypes as WORD, strUserName as string , strPassword as string , ulOptions as DWORD, phConnect out IntPtr ) as DWORD 
         PUBLIC STATIC METHOD AdsConvertTable(hObj as IntPtr ,  usFilterOption as WORD, strFile as string , usTableType as WORD) as DWORD 
         PUBLIC STATIC METHOD AdsCopyTable(hObj as IntPtr , usFilterOption as WORD , strFile as string ) as DWORD 
         PUBLIC STATIC METHOD AdsCopyTableContents(hObjFrom as IntPtr , hTableTo as IntPtr , usFilterOption as WORD) as DWORD 
@@ -2156,6 +2161,8 @@ BEGIN NAMESPACE XSharp.ADS
     INTERNAL DELEGATE _delCreateFTSIndex(hTable AS IntPtr , strFileName AS STRING , strTag AS STRING , strField AS STRING , ulPageSize AS DWORD , ulMinWordLen AS DWORD , ulMaxWordLen AS DWORD , usUseDefaultDelim AS WORD , strDelimiters AS STRING , usUseDefaultNoise AS WORD , strNoiseWords AS STRING , usUseDefaultDrop AS WORD , strDropChars AS STRING , usUseDefaultConditionals AS WORD , strConditionalChars AS STRING , strReserved1 AS STRING , strReserved2 AS STRING , ulOptions AS DWORD) AS DWORD 
     INTERNAL DELEGATE _delCreateIndex (hObj AS IntPtr , strFileName AS STRING , strTag AS STRING , strExpr AS STRING , strCondition AS STRING , strWhile AS STRING , ulOptions AS DWORD, phIndex OUT IntPtr ) AS DWORD 
     INTERNAL DELEGATE _delCreateTable90(hConnect AS IntPtr, strName AS STRING , strDBObjName AS STRING , usTableType AS WORD, usCharType AS WORD , usLockType AS WORD , usCheckRights AS WORD , usMemoSize AS WORD , strFields AS STRING , ulOptions AS DWORD, strCollation AS STRING , phTable OUT IntPtr ) AS DWORD         
+	INTERNAL DELEGATE _delConnect60(pucServerPath AS STRING , usServerTypes AS WORD, pucUserName AS STRING , pucPassword AS STRING , ulOptions AS DWORD, phConnect OUT IntPtr ) AS DWORD 
+	
     INTERNAL DELEGATE _delEvalStringExpr(hTable AS IntPtr , strExpr AS STRING , [IN] [OUT] strResult AS CHAR[] , wLen REF WORD ) AS DWORD 
     INTERNAL DELEGATE _delExtractKey(hIndex AS IntPtr , [IN] [OUT] strKey AS CHAR[] , wLen REF WORD ) AS DWORD 
     INTERNAL DELEGATE _delGetAOFOptLevel(hTable AS IntPtr , pusOptLevel OUT WORD , [IN] [OUT] strNonOpt AS CHAR[] , wLen REF WORD ) AS DWORD 

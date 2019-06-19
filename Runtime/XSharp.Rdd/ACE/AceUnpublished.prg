@@ -3,7 +3,7 @@ USING System.Runtime.InteropServices
 
 BEGIN NAMESPACE XSharp.ADS
 
-	INTERNAL CLASS ACEUNPUB
+	PUBLIC CLASS ACEUNPUB
 		PRIVATE ENUM PathInfo
 		
 			MEMBER PATH_DRIVE := 1
@@ -348,7 +348,7 @@ BEGIN NAMESPACE XSharp.ADS
 		PUBLIC STATIC EXTERN METHOD AdsSetPacketSize(hConnect as Intptr, usPacketLength as WORD ) as DWORD 
 		PUBLIC STATIC EXTERN METHOD AdsSetProperty(hObj as Intptr, ulOperation as DWORD , ulValue as DWORD ) as DWORD 
 		PUBLIC STATIC EXTERN METHOD AdsSetRecordPartial(hObj as Intptr, pucRec as string , ulLen as DWORD ) as DWORD 
-        PUBLIC STATIC EXTERN METHOD AdsSetTableCharType(hTbl as Intptr, usCharType as WORD ) as DWORD 
+		PUBLIC STATIC EXTERN METHOD AdsSetTableCharType(hTbl as Intptr, usCharType as WORD ) as DWORD 
 		PUBLIC STATIC EXTERN METHOD AdsSetTimeStampRaw(hObj as Intptr, lFieldOrdinal as DWORD , pucBuf ref UINT64 , ulLen as DWORD ) as DWORD 
 		PUBLIC STATIC EXTERN METHOD AdsSetTimeStampRaw(hObj as Intptr, pucFldName as string , pucBuf ref UINT64 , ulLen as DWORD ) as DWORD 
 		PUBLIC STATIC EXTERN METHOD AdsSetupRI(hConnection as IntPtr , lTableID as int , ucOpen as byte , ulServerWAN as DWORD ) as DWORD 

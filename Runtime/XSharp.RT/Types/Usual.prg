@@ -518,6 +518,8 @@ BEGIN NAMESPACE XSharp
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         STATIC OPERATOR >(lhs AS __Usual, rhs AS __Usual) AS LOGIC
             SWITCH lhs:_usualType
+            CASE __UsualType.Void
+                RETURN FALSE
             CASE __UsualType.Long
                 SWITCH rhs:_usualType
                 CASE __UsualType.Long		; RETURN lhs:_intValue > rhs:_intValue
@@ -593,6 +595,8 @@ BEGIN NAMESPACE XSharp
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         STATIC OPERATOR >=(lhs AS __Usual, rhs AS __Usual) AS LOGIC
             SWITCH lhs:_usualType
+            CASE __UsualType.Void
+                RETURN rhs:_usualType == __UsualType.Void
             CASE __UsualType.Long
                 SWITCH rhs:_usualType
                 CASE __UsualType.Long		; RETURN lhs:_intValue >= rhs:_intValue
@@ -666,6 +670,8 @@ BEGIN NAMESPACE XSharp
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         STATIC OPERATOR <(lhs AS __Usual, rhs AS __Usual) AS LOGIC
             SWITCH lhs:_usualType
+            CASE __UsualType.Void
+                RETURN FALSE
             CASE __UsualType.Long
                 SWITCH rhs:_usualType
                 CASE __UsualType.Long		; RETURN lhs:_intValue < rhs:_intValue
@@ -739,6 +745,8 @@ BEGIN NAMESPACE XSharp
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         STATIC OPERATOR <=(lhs AS __Usual, rhs AS __Usual) AS LOGIC
             SWITCH lhs:_usualType
+            CASE __UsualType.Void
+                RETURN rhs:_usualType == __UsualType.Void
             CASE __UsualType.Long
                 SWITCH rhs:_usualType
                 CASE __UsualType.Long		; RETURN lhs:_intValue <= rhs:_intValue

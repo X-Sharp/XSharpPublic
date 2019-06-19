@@ -117,11 +117,11 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             LOCAL oResult AS OBJECT
             SWITCH nOrdinal
             CASE DbInfo.DBI_MEMOHANDLE
-                    IF ( SELF:_oFptMemo != NULL .AND. SELF:_oFptMemo:_Open)
-                        oResult := SELF:_oFptMemo:_hFile
-                    ELSE
-                        oResult := IntPtr.Zero
-                    ENDIF
+                IF ( SELF:_oFptMemo != NULL .AND. SELF:_oFptMemo:_Open)
+                    oResult := SELF:_oFptMemo:_hFile
+                ELSE
+                    oResult := IntPtr.Zero
+                ENDIF
                     
             CASE DbInfo.DBI_MEMOEXT
                     IF ( SELF:_oFptMemo != NULL .AND. SELF:_oFptMemo:_Open)
@@ -131,20 +131,31 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
                     ENDIF
                     IF oNewValue IS STRING
                         FptMemo.DefExt := (STRING) oNewValue
-                ENDIF
+                    ENDIF
             CASE DbInfo.DBI_MEMOBLOCKSIZE
                 oResult := SELF:_oFptMemo:BlockSize
+                IF oNewValue != NULL
+                    TRY
+                        LOCAL size AS LONG
+                        size:= Convert.ToInt32(oNewValue)
+                        SELF:_oFptMemo:BlockSize := (SHORT) size
+                    CATCH ex AS exception
+                        oResult := ""   
+                        SELF:_dbfError(ex, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, "DBFDBT.Info")
+                    END TRY
+                ENDIF
+
             CASE DBInfo.DBI_MEMOFIELD
-                    oResult := ""
-                    IF oNewValue != NULL
-                        TRY
-                            LOCAL fldPos AS LONG
-                            fldPos := Convert.ToInt32(oNewValue)
-                            oResult := SELF:GetValue(fldPos)
-                        CATCH ex AS exception
-                            oResult := ""   
-                            SELF:_dbfError(ex, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, "DBFDBT.Info")
-                        END TRY
+                oResult := ""
+                IF oNewValue != NULL
+                    TRY
+                        LOCAL fldPos AS LONG
+                        fldPos := Convert.ToInt32(oNewValue)
+                        oResult := SELF:GetValue(fldPos)
+                    CATCH ex AS exception
+                        oResult := ""   
+                        SELF:_dbfError(ex, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, "DBFDBT.Info")
+                    END TRY
                 ENDIF
             CASE DbInfo.DBI_MEMOTYPE
                 oResult := DB_MEMO_FPT
@@ -207,7 +218,8 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             SELF:_lockScheme:Initialize( DbfLockingModel.FoxPro )
             IF ( SELF:BlockSize == 0 )
                 //SELF:BlockSize := FPT_DEFBLOCKSIZE
-                SELF:BlockSize := (SHORT) XSharp.RuntimeState.MemoBlockSize
+                SELF:_BlockSize := (SHORT) XSharp.RuntimeState.MemoBlockSize
+                SELF:_WriteBlockSize()
             ENDIF
             
             
@@ -262,7 +274,7 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             // Get the raw data length
         VIRTUAL PROTECTED METHOD _getValueLength(nFldPos AS INT) AS INT
             // In FPT :
-            // The first 4 Bytes contains the tpye of Memo Data
+            // The first 4 Bytes contains the type of Memo Data
             // The next 4 Bytes contains the length of Memo data, including the first 8 bytes
             LOCAL blockNbr AS LONG
             LOCAL blockLen := 0 AS LONG
@@ -289,7 +301,7 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             
             /// <inheritdoc />
         VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
-            // We receive hea the raw Data : We now have to put extra information on it
+            // We receive the raw Data : We now have to put extra information on it
             // 4 Bytes for the "type" of memo data
             // 4 Bytes for the length of block
             LOCAL objType AS System.Type
@@ -338,6 +350,12 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             ENDIF
             LongToFox(nType, memoBlock,0)
             // Ok, we now have a FPT Memoblock, save
+            // TODO: write the value to the file, including:
+            // - check if the current block exists
+            // - check if the current block has enough space
+            // - add the current block to the 'deleted blocks' list when not enough space
+            // - allocate a new block from either the list of deleted blocks or at the end of the file
+            // - and of course locking the file.
             RETURN SUPER:PutValue( nFldPos, memoBlock )
             
             /// <inheritdoc />
@@ -377,18 +395,18 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
                 // Per default, Header Block Size if 512
                 LOCAL memoHeader AS BYTE[]
                 LOCAL nextBlock AS LONG
-                //
+                
                 memoHeader := BYTE[]{ DBTMemo.HeaderSize }
                 nextBlock := 1
                 Array.Copy(BitConverter.GetBytes(nextBlock),0, memoHeader, 0, SIZEOF(LONG))
-                //
+                
                 FWrite3( SELF:_hFile, memoHeader, DBTMemo.HeaderSize )
-                //
+                
                 SELF:_initContext()
             ELSE
                 SELF:_oRDD:_DbfError( ERDD.CREATE_MEMO, XSharp.Gencode.EG_CREATE )
             ENDIF
-            //
+            
             RETURN isOk
             
             /// <inheritdoc />
@@ -414,36 +432,37 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             
         VIRTUAL PROPERTY BlockSize 	 AS SHORT
             GET 
-                LOCAL nSize := 0 AS SHORT
-                 IF SELF:IsOpen
+               IF SELF:IsOpen .and. _blockSize == 0
                     LOCAL _sizeOfBlock AS BYTE[]
-                    // _sizeOfBlock is at the beginning of MemoFile, at posiion 6
+                    // _sizeOfBlock is at the beginning of MemoFile, at position 6-7 (0 based
+                    // see https://hwiegman.home.xs4all.nl/fileformats/dbf/8599s21w(v=vs.71).aspx.htm
                     _sizeOfBlock := BYTE[]{2}
                     LOCAL savedPos := FSeek3(SELF:_hFile, 0, FS_RELATIVE ) AS LONG
                     FSeek3( SELF:_hFile, 6, FS_SET )
-                    IF ( FRead3( SELF:_hFile, _sizeOfBlock, 2 ) == 2 )
-                        nSize := FoxToShort(_sizeOfBlock,0)
+                    IF FRead3( SELF:_hFile, _sizeOfBlock, 2 ) == 2 
+                        SELF:_blockSize := FoxToShort(_sizeOfBlock,0)
                     ENDIF
                     FSeek3(SELF:_hFile, savedPos, FS_SET )
-                    SELF:_blockSize := nSize
                 ENDIF
-                RETURN nSize
+                RETURN _blockSize
             END GET
-            
             SET 
-                IF SELF:IsOpen
-                    LOCAL _sizeOfBlock AS BYTE[]
-                    _sizeOfBlock := BYTE[]{2}
-                    ShortToFox( VALUE, _sizeOfBlock,0)
-                    LOCAL savedPos := FSeek3(SELF:_hFile, 0, FS_RELATIVE ) AS LONG
-                    FSeek3( SELF:_hFile, 6, FS_SET )
-                    FWrite3( SELF:_hFile, _sizeOfBlock, 2 )
-                    FSeek3(SELF:_hFile, savedPos, FS_SET )
-                    SELF:_blockSize := VALUE
-                ENDIF
+                SELF:_blockSize := VALUE
             END SET
             
         END PROPERTY
+
+        METHOD _WriteBlockSize() AS VOID
+            IF SELF:IsOpen
+                LOCAL _sizeOfBlock AS BYTE[]
+                _sizeOfBlock := BYTE[]{2}
+                ShortToFox( SELF:_blockSize, _sizeOfBlock,0)
+                LOCAL savedPos := FSeek3(SELF:_hFile, 0, FS_RELATIVE ) AS LONG
+                FSeek3( SELF:_hFile, 6, FS_SET )
+                FWrite3( SELF:_hFile, _sizeOfBlock, 2 )
+                FSeek3(SELF:_hFile, savedPos, FS_SET )
+            ENDIF
+            RETURN
         
         // Place a lock : <nOffset> indicate where the lock should be; <nLong> indicate the number bytes to lock
         // If it fails, the operation is tried <nTries> times, waiting 1ms between each operation.

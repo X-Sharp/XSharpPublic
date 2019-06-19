@@ -5,7 +5,8 @@
 USING XSharp.RDD
 FUNCTION Start() AS VOID
     TRY
-        TestDbfFromChris()
+        FptMemoTest()
+        //TestDbfFromChris()
         //TestIndexUpdates()
         //testVFPFiles()
         //testOrdNameInvalid()
@@ -70,6 +71,25 @@ FUNCTION Start() AS VOID
     END TRY
     WAIT
     RETURN
+Function FptMemoTest() AS VOID
+	RDDSetDefault("DBFCDX")
+	DbUseArea(TRUE, "DBFCDX", "c:\download\Memos X#\SETUP.DBF","MEMOS")
+    DBInfo(DBI_MEMOBLOCKSIZE, 31)
+	FOR VAR i := 1 to FCount()
+        local oValue as object
+        oValue := FieldGet(i)
+        if oValue is Byte[]
+            var bytes := (byte[]) oValue
+            var size := BitConverter.ToInt16(bytes,0)
+            ? i, "Array of ", size, "elements"
+        else
+            ? i, oValue
+        endif
+
+		
+	NEXT
+	DBCloseArea()
+	RETURN
 FUNCTION testDbfFromChris( ) AS VOID
 local f as float
 f := seconds()

@@ -695,7 +695,7 @@ FUNCTION SetInternational() AS STRING
 /// <remarks>
 /// SetInternational() allows XSharp apps to operate in different international modes.  
 /// The "CLIPPER" mode is provided for compatibility with CA-Clipper applications and uses an 
-/// internationalization routine defined in the nation module.
+/// internationalization routine defined in the nation module.<br/>
 /// The "Windows" mode uses international services provided by Windows.
 /// When you set this mode several settings will be changed
 /// <list type="table">

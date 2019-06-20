@@ -10,6 +10,45 @@ USING XSharp.RDD.Support
 USING XSharp.RDD.CDX
 
 
+INTERNAL ENUM FlexArrayTypes
+    MEMBER NIL      := 0
+    MEMBER UChar    := 1       // 1 byte
+    MEMBER Char     := 2       // 1 byte
+    MEMBER Short    := 3       // 2 bytes
+    MEMBER UShort   := 4      // 2 bytes
+    MEMBER Long     := 5      // 4 bytes
+    MEMBER String32 := 6    // 4 bytes length followed by string
+    MEMBER String16 := 7   // 2 bytes length followed by string
+    MEMBER Float    := 8      // 10 bytes 
+    MEMBER Double   := 9      // 8 bytes
+    MEMBER Date     := 10     // 4 bytes
+    MEMBER Logic    := 11    // 1 byte
+    MEMBER Array    := 12    // 2 bytes length followed by array
+    MEMBER CodeBlock:= 13    // ?
+    MEMBER DateJ    := 14    // 4 bytes
+    MEMBER Double2  := 15       // len, dec, 8 byte double
+    MEMBER Cyclic   := 16       // Cyclic array, stored how ?
+    MEMBER UCHar1   := 17       // byte, dec
+    MEMBER Char1    := 18       // char, dec
+    MEMBER Short1   := 19       // 2, followed by len
+    MEMBER UShort1  := 20       // 2, followed by len
+    MEMBER Long1    := 21       // 4, followed by len
+    MEMBER Unused   := 22       // no data
+    MEMBER Object   := 23       // ?
+    MEMBER Null     := 24       // no data
+    MEMBER True     := 25
+    MEMBER False    := 26
+    MEMBER LDouble  := 27       
+    MEMBER UCHar2   := 28       // byte[1], len, dec 
+    MEMBER CHar2    := 29       // byte[1], len, dec 
+    MEMBER Short2   := 30       // short[2], len, dec 
+    MEMBER UShort2  := 31       // ushort[2], len, dec 
+    MEMBER Long2    := 32       // long[4], len, dec
+    MEMBER ULong2   := 33       // ulong[4], len, dec
+END ENUM
+
+
+#region Conversion Functions
 INTERNAL FUNCTION ShortToBuff(siValue AS SHORT, buffer AS BYTE[], nOffSet AS LONG) AS VOID
     LOCAL nValue := WordStruct{} AS WordStruct
     nValue:shortValue := siValue
@@ -33,7 +72,13 @@ INTERNAL FUNCTION FoxToShort(buffer AS BYTE[], nOffSet AS LONG) AS SHORT
     nValue:b1 := buffer[nOffSet+1]   
     nValue:b2 := buffer[nOffSet+0]
     RETURN nValue:shortValue
-    
+
+INTERNAL FUNCTION FoxToWord(buffer AS BYTE[], nOffSet AS LONG) AS WORD
+    LOCAL nValue := WordStruct{} AS WordStruct
+    nValue:b1 := buffer[nOffSet+1]   
+    nValue:b2 := buffer[nOffSet+0]
+    RETURN nValue:wordValue
+        
     
 INTERNAL FUNCTION BuffToLong(buffer AS BYTE[], nOffSet AS LONG) AS LONG
     LOCAL nValue := LongStruct{} AS LongStruct
@@ -42,6 +87,7 @@ INTERNAL FUNCTION BuffToLong(buffer AS BYTE[], nOffSet AS LONG) AS LONG
     nValue:b3 := buffer[nOffSet+2]
     nValue:b4 := buffer[nOffSet+3]
     RETURN nValue:longValue
+
     
 INTERNAL FUNCTION LongToBuff(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) AS LONG
     LOCAL nValue := LongStruct{} AS LongStruct
@@ -60,6 +106,15 @@ INTERNAL FUNCTION FoxToLong(buffer AS BYTE[], nOffSet AS LONG) AS LONG
     nValue:b2 := buffer[nOffSet+2]
     nValue:b1 := buffer[nOffSet+3]
     RETURN nValue:longValue
+
+INTERNAL FUNCTION FoxToDword(buffer AS BYTE[], nOffSet AS LONG) AS DWORD
+    LOCAL nValue := LongStruct{} AS LongStruct
+    nValue:b4 := buffer[nOffSet+0]
+    nValue:b3 := buffer[nOffSet+1]
+    nValue:b2 := buffer[nOffSet+2]
+    nValue:b1 := buffer[nOffSet+3]
+    RETURN nValue:dwordValue
+
     
 INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) AS LONG
     LOCAL nValue := LongStruct{} AS LongStruct
@@ -69,7 +124,7 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
     buffer[nOffSet+2] := nValue:b2
     buffer[nOffSet+3] := nValue:b1
     RETURN liValue
-    
+#endregion    
     
     BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFFPT RDD. For DBF/FPT. No index support at this level</summary>
@@ -80,32 +135,222 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             SELF:_oMemo := _oFptMemo := FptMemo{SELF}
             /// <inheritdoc />	
         PROPERTY Driver AS STRING GET "DBFFPT"
-        
-        
+
+
+
+    
+        /*
+        METHOD DecodeFlexArray(nType as LONG, bData as byte[]) as object
+            local iLen as Int32
+            local aValues as Object[]
+            LOCAL nOffSet   as Int32
+            local nDim as Int16
+            nDim    := bData[ 0]
+            nOffSet := 1
+            IF nType == 1002 // 16 bits
+                iLen := FoxToShort(bData, nOffSet)
+                nOffSet += 2
+            ELSE
+                iLen := FoxToLong(bData, nOffSet)
+                nOffSet += 4
+            ENDIF
+            aValues := OBJECT[]{iLen}
+            FOR VAR i := 0 to iLen-1
+                var nFldType := bData[nOffSet]
+                local element as Object
+                local length as Long
+                nOffSet += 1
+                VAR nArrType := (FlexArrayTypes) nFldType
+                SWITCH nArrType
+                CASE FlexArrayTypes.NIL
+                    element := NULL
+                CASE FlexArrayTypes.Char
+                    element := (sByte) bData[ nOffSet]
+                    nOffSet += 1
+                CASE FlexArrayTypes.UChar
+                    element := (Byte) bData[ nOffSet]
+                    nOffSet += 1
+                CASE FlexArrayTypes.Short
+                    element := FoxToShort(bData,nOffSet)
+                    nOffSet += 2
+                CASE FlexArrayTypes.UShort
+                    element := FoxToWord(bData,nOffSet)
+                    nOffSet += 2
+                CASE FlexArrayTypes.Long     
+                    element := BitConverter.ToUInt32(bData,nOffSet)
+                    nOffSet += 4
+                CASE FlexArrayTypes.String32 
+                    length := BitConverter.ToUInt32(bData,nOffSet)
+                    nOffSet += 4
+                    element := _encoding:GetString(bData, nOffSet, length)
+                    nOffSet += length
+                CASE FlexArrayTypes.String16 
+                    length := BitConverter.ToUInt16(bData,nOffSet)
+                    nOffSet += 2
+                    element := _encoding:GetString(bData, nOffSet, length)
+                    nOffSet += length
+                CASE FlexArrayTypes.Float    
+                    element := 0.0
+                    nOffSet += 10
+                CASE FlexArrayTypes.Double 
+                    element := BitConverter.ToDouble(bData, nOffSet)
+                    nOffSet += 8
+                CASE FlexArrayTypes.Date     
+                    element := BitConverter.ToInt32(bData, nOffSet)
+                    nOffSet += 4
+                CASE FlexArrayTypes.Logic    
+                    element := bData[nOffSet] != 0
+                    nOffSet += 1
+                CASE FlexArrayTypes.Array    
+                    element := bData[nOffSet] != 0
+                    nOffSet += 1
+
+                CASE FlexArrayTypes.CodeBlock 
+                    SELF:_dbfError(null, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, "DBFDBT.Info")
+
+                CASE FlexArrayTypes.DateJ    
+                    element := BitConverter.ToInt32(bData, nOffSet)
+                    nOffSet += 4
+                CASE FlexArrayTypes.Double2  
+                    element := BitConverter.ToDouble(bData, nOffSet)
+                    nOffSet += 6
+
+                CASE FlexArrayTypes.Cyclic   
+                    SELF:_dbfError(null, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, "DBFDBT.Info")
+                CASE FlexArrayTypes.UCHar1  
+                    element := (sByte) bData[ nOffSet]
+                    nOffSet += 2
+                CASE FlexArrayTypes.Char1    
+                    element := (Byte) bData[ nOffSet]
+                    nOffSet += 2
+                CASE FlexArrayTypes.Short1   
+                    element := FoxToShort(bData, nOffSet)
+                    nOffSet += 3
+                CASE FlexArrayTypes.UShort1  
+                    element := FoxToWord(bData, nOffSet)
+                    nOffSet += 3
+                CASE FlexArrayTypes.Long1  
+                    element := FoxToLong(bData, nOffSet)
+                    nOffSet += 5
+                CASE FlexArrayTypes.Unused   
+                    SELF:_dbfError(null, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, "DBFDBT.Info")
+                CASE FlexArrayTypes.Object   
+                    SELF:_dbfError(null, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, "DBFDBT.Info")
+                CASE FlexArrayTypes.Null     
+                    element := NULL
+                CASE FlexArrayTypes.True     
+                    element := TRUE
+                CASE FlexArrayTypes.False    
+                    element := FALSE
+                CASE FlexArrayTypes.LDouble
+                    SELF:_dbfError(null, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, "DBFDBT.Info")
+                CASE FlexArrayTypes.UCHar2   
+                    element := (SByte) bData[ nOffSet]
+                    nOffSet += 3
+                CASE FlexArrayTypes.CHar2    
+                    element := (Byte) bData[ nOffSet]
+                    nOffSet += 3
+                CASE FlexArrayTypes.Short2   
+                    element := FoxToShort(bData, nOffSet)
+                    nOffSet += 4
+                CASE FlexArrayTypes.UShort2  
+                    element := FoxToWord(bData, nOffSet)
+                    nOffSet += 4
+                CASE FlexArrayTypes.Long2    
+                    element := FoxToLong(bData, nOffSet)
+                    nOffSet += 6
+                CASE FlexArrayTypes.ULong2   
+                    element := FoxToDWord(bData, nOffSet)
+                    nOffSet += 6
+                OTHERWISE
+                    SELF:_dbfError(null, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, "DBFDBT.Info")
+                END SWITCH
+                aValues[i] := element
+            NEXT
+            RETURN aValues
+            */
+
+        METHOD DecodeValue(nType as LONG, bData as BYTE[]) as object
+            LOCAL encoding  as Encoding
+             encoding := SELF:_Encoding //ASCIIEncoding{}
+             IF nType == 0
+                return bData
+            ELSEIF nType == 1
+                return encoding:GetString(bData)
+            ELSE
+                IF SELF:_oFptMemo:isFlex
+                    SWITCH nType
+                    CASE 1000  // indexblock
+                        return NULL
+                    CASE 1001  // Deleted
+                        return NULL
+                    CASE 1002  // 16 bit array
+                        //return DecodeFlexArray(nType, bData)
+                        return bData
+                    CASE 1003  // Clipper Object
+                        return NULL_OBJECT
+                    CASE 1004  // 32 bit array
+                        //return DecodeFlexArray(nType, bData)
+                        return bData
+                    CASE 1005  // VO Object
+                    CASE 1006  // NIL
+                        return NULL_OBJECT
+                    CASE 1007  // TRUE
+                        return TRUE
+                    CASE 1008  // FALSE
+                        return FALSE
+                    CASE 1009  // JDATE
+                        return FALSE
+                    CASE 1010  // SByte
+                        return (Sbyte) bData[0]
+                    CASE 1011  // Byte
+                        return (byte) bData[0]
+                    CASE 1012  // Short
+                        return FoxToShort(bData, 0)
+                    CASE 1013  // Word
+                        return FoxToWord(bData, 0)
+                    CASE 1014  // Int32
+                        return FoxToLong(bData, 0)
+                    CASE 1015  // DWORD
+                        return FoxToDword(bData, 0)
+                    CASE 1016  // 8 byte double
+                        return BitConverter.ToDouble(bData, 0)
+                    CASE 1017  // 10 byte double
+                        return 0.0
+                    CASE 1018  // Compressed Characters
+                        return ""
+                    CASE 1019  // String Longer > 32 K
+                        return encoding:GetString(bData)
+                    CASE 1020  // Compressed string > 32 K
+                        return ""
+                    case 10000  // 14 byte clipper item with a double
+                        return 0.0
+                    case 10001  // Logical stored as 4 byte Long
+                        return FoxToLong(bData, 0) != 0
+                    case 10002  // empty string
+                        return ""
+                    case -1     // Illegal
+                        return NIL
+                    end switch
+                ENDIF
+            ENDIF
+            RETURN bData
+
+
         
         METHOD GetValue(nFldPos AS LONG) AS OBJECT
-            LOCAL rawData AS BYTE[]
-            LOCAL buffer AS BYTE[]
             LOCAL nType AS LONG
             IF SELF:_isMemoField( nFldPos )
                 // At this level, the return value is the raw Data, in BYTE[]
-                rawData := (BYTE[])SUPER:GetValue(nFldPos)
+                var rawData := (BYTE[])SUPER:GetValue(nFldPos)
                 IF rawData != NULL
                     // So, extract the "real" Data
-                    buffer := BYTE[]{ rawData:Length - 8}
+                    VAR buffer := BYTE[]{ rawData:Length - 8}
                     Array.Copy(rawData,8, buffer, 0, buffer:Length)
                     // Get the Underlying type from the MemoBlock
                     // 0 : Picture (on MacOS); 1: Memo; 2 : Object
                     nType := FoxToLong( rawData, 0)
-                    IF SELF:_isMemoField( nFldPos ) .AND. ( nType == 1 )
-                        LOCAL encoding AS Encoding //ASCIIEncoding
-                        LOCAL str AS STRING
-                        encoding := SELF:_Encoding //ASCIIEncoding{}
-                        str :=  encoding:GetString(buffer)
-                        // Convert to String and return
-                        RETURN str
-                    ENDIF
-                    RETURN buffer
+                    RETURN SELF:DecodeValue(nType, buffer)
                 ELSE
                     RETURN String.Empty
                 ENDIF
@@ -171,6 +416,8 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             
             
     /// <summary>FPT Memo class. Implements the FTP support.</summary>
+    // To also support FPT files created with FlexFile we also need to read the FlexFile header and decode that.
+
     INTERNAL CLASS FPTMemo INHERIT BaseMemo IMPLEMENTS IMemo
         INTERNAL _hFile	    AS IntPtr
         INTERNAL _FileName  AS STRING
@@ -178,12 +425,23 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
         PROTECT _Shared     AS LOGIC
         PROTECT _ReadOnly   AS LOGIC
         PROTECT _oRDD       AS DBF
+        PROTECT _isFlex     AS LOGIC
+        PROTECT _nextFree   AS LONG
         PROTECT _blockSize  AS SHORT
+        PROTECT _verMajor   as BYTE
+        PROTECT _verMinor   as BYTE
+        PROTECT _indexHosed as BYTE
+        PROTECT _indexLen as LONG
+        PROTECT _indexLoc as LONG
+        PROTECT _updateCnt as LONG
+        PROTECT _rootPtr as LONG
+        PROTECT _updCount as LONG
         PROTECT _lockScheme AS DbfLocking
+        PROTECT _altBlockSize as SHORT
         PROPERTY Shared AS LOGIC GET _Shared
         STATIC PROPERTY DefExt AS STRING AUTO
         PROTECTED PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR  .AND. SELF:_hFile != IntPtr.Zero      
-
+        INTERNAL PROPERTY IsFlex as LOGIC GET _isFlex
         STATIC CONSTRUCTOR
             DefExt := FPT_MEMOEXT
             
@@ -216,10 +474,11 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             
         VIRTUAL PROTECTED METHOD _initContext() AS VOID
             SELF:_lockScheme:Initialize( DbfLockingModel.FoxPro )
+            SELF:ReadHeader()
             IF ( SELF:BlockSize == 0 )
                 //SELF:BlockSize := FPT_DEFBLOCKSIZE
                 SELF:_BlockSize := (SHORT) XSharp.RuntimeState.MemoBlockSize
-                SELF:_WriteBlockSize()
+                SELF:_WriteHeader()
             ENDIF
             
             
@@ -430,40 +689,9 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             //
             RETURN isOk
             
-        VIRTUAL PROPERTY BlockSize 	 AS SHORT
-            GET 
-               IF SELF:IsOpen .and. _blockSize == 0
-                    LOCAL _sizeOfBlock AS BYTE[]
-                    // _sizeOfBlock is at the beginning of MemoFile, at position 6-7 (0 based
-                    // see https://hwiegman.home.xs4all.nl/fileformats/dbf/8599s21w(v=vs.71).aspx.htm
-                    _sizeOfBlock := BYTE[]{2}
-                    LOCAL savedPos := FSeek3(SELF:_hFile, 0, FS_RELATIVE ) AS LONG
-                    FSeek3( SELF:_hFile, 6, FS_SET )
-                    IF FRead3( SELF:_hFile, _sizeOfBlock, 2 ) == 2 
-                        SELF:_blockSize := FoxToShort(_sizeOfBlock,0)
-                    ENDIF
-                    FSeek3(SELF:_hFile, savedPos, FS_SET )
-                ENDIF
-                RETURN _blockSize
-            END GET
-            SET 
-                SELF:_blockSize := VALUE
-            END SET
-            
-        END PROPERTY
+        VIRTUAL PROPERTY BlockSize 	 AS SHORT GET _BlockSize SET _blockSize := value
 
-        METHOD _WriteBlockSize() AS VOID
-            IF SELF:IsOpen
-                LOCAL _sizeOfBlock AS BYTE[]
-                _sizeOfBlock := BYTE[]{2}
-                ShortToFox( SELF:_blockSize, _sizeOfBlock,0)
-                LOCAL savedPos := FSeek3(SELF:_hFile, 0, FS_RELATIVE ) AS LONG
-                FSeek3( SELF:_hFile, 6, FS_SET )
-                FWrite3( SELF:_hFile, _sizeOfBlock, 2 )
-                FSeek3(SELF:_hFile, savedPos, FS_SET )
-            ENDIF
-            RETURN
-        
+       
         // Place a lock : <nOffset> indicate where the lock should be; <nLong> indicate the number bytes to lock
         // If it fails, the operation is tried <nTries> times, waiting 1ms between each operation.
         // Return the result of the operation
@@ -506,6 +734,82 @@ INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) 
             
         VIRTUAL METHOD Zap() AS LOGIC
             THROW NotImplementedException{}
+
+        PRIVATE METHOD ReadHeader() AS LOGIC
+            // FoxPro memo Header:
+            // Byte offset  Description
+            // 00 ? 03      Location of next free block1
+            // 04 ? 05      Unused
+            // 06 ? 07      Block size (bytes per block)1
+            // 08 ? 511     Unused
+            // FlexFile Header starts as 512. Following positions are relative
+            // 00 - 08      Header "FlexFile3"
+            // 09 - 09      Version Major
+            // 10 - 10      Version Minor
+            // 11 - 11      Index = defect
+            // 12 - 15      Index Length
+            // 16 - 19      Index location
+            // 20 - 23      Root Pointer
+            // 24 - 27      Update Count
+            // 28 - 29      Alternative Block Size (allows block sizes < 32)
+
+            VAR buffer := BYTE[]{512}
+            LOCAL savedPos := FSeek3(SELF:_hFile, 0, FS_RELATIVE ) AS LONG
+            LOCAL nFileLen as LONG
+            nFileLen := FSeek3(SELF:_hFile, 0, FS_END)
+            FSeek3(SELF:_hFile, 0, FS_SET)
+            Fread3( SELF:_hFile,buffer, 512)
+            _nextFree  := BitConverter.ToInt32(buffer, 0)
+            _blockSize := BitConverter.ToInt16(buffer, 6)
+            // read Flex Header
+            if nFileLen >= 1024
+                Fread3( SELF:_hFile,buffer, 512)
+                _isFlex := buffer[0] == 70  ;// F
+                            .and. buffer[1] == 108; // l
+                            .and. buffer[2] == 101; // e
+                            .and. buffer[3] == 120; // x
+                            .and. buffer[4] == 70 ; // F
+                            .and. buffer[5] == 105; // i
+                            .and. buffer[6] == 108; // l
+                            .and. buffer[7] == 101;  // e
+                            .and. buffer[8] == 51   // 3
+                IF _isFlex
+                    SELF:_verMajor   :=  buffer[9]
+                    SELF:_verMinor   :=  buffer[10]
+                    SELF:_indexHosed := buffer[11]
+                    self:_indexLen   := BitConverter.ToInt32(buffer, 12)
+                    self:_indexLoc   := BitConverter.ToInt32(buffer, 16)
+                    self:_rootPtr    := BitConverter.ToInt32(buffer, 20)
+                    self:_updCount   := BitConverter.ToInt32(buffer, 24)
+                    SELF:_altBlockSize := BitConverter.ToInt16(buffer, 28)
+                    SELF:_blockSize   := _altBlockSize
+                ENDIF
+            ELSE
+                _isFlex := FALSE
+                SELF:_verMajor   := 0
+                SELF:_verMinor   := 0
+                SELF:_indexHosed := 0
+                self:_indexLen   := 0
+                self:_indexLoc   := 0
+                self:_updateCnt  := 0
+                self:_rootPtr    := 0
+                SELF:_altBlockSize := 0
+            ENDIF
+            FSeek3(SELF:_hFile, savedPos, FS_SET )
+            RETURN TRUE
+        METHOD _WriteHeader() AS VOID
+            IF SELF:IsOpen
+                LOCAL _sizeOfBlock AS BYTE[]
+                _sizeOfBlock := BYTE[]{2}
+                ShortToFox( SELF:_blockSize, _sizeOfBlock,0)
+                LOCAL savedPos := FSeek3(SELF:_hFile, 0, FS_RELATIVE ) AS LONG
+                FSeek3( SELF:_hFile, 6, FS_SET )
+                FWrite3( SELF:_hFile, _sizeOfBlock, 2 )
+                FSeek3(SELF:_hFile, savedPos, FS_SET )
+            ENDIF
+            RETURN
+   
+
     END CLASS    
     
     

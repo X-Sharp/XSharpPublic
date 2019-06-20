@@ -75,10 +75,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             oSb:AppendLine("KeyLen    : "+SELF:KeySize:ToString())
             oSb:AppendLine("Options   : "+SELF:Options:ToString())
             oSb:AppendLine("Sig       : "+SELF:Signature:ToString())
-            oSb:AppendLine("HeaderLen : "+SELF:HeaderLen:ToString())
-            oSb:AppendLine("PageLen   : "+SELF:PageLen:ToString())
-            oSb:AppendLine("Collation : "+SELF:Collation:ToString())
             oSb:AppendLine("Descending: "+SELF:Descending:ToString())
+            oSb:AppendLine("Collation : "+SELF:VFPCollation)
             RETURN oSb:ToString()
 
 #endregion
@@ -89,16 +87,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _version    := _GetDWord(CDXTAGHEADER_VERSION)
             _keyLength  := _GetWord(CDXTAGHEADER_KEYLENGTH)
             _options    := (CdxOptions)Buffer[CDXTAGHEADER_OPTIONS]
-            _headerLen  := _GetWord(CDXTAGHEADER_HEADERLEN)
-            _collation  := _GetLong(CDXTAGHEADER_COLLATION)
-            _pageLen    := _GetWord(CDXTAGHEADER_PAGELEN)
             _keyExprPos := _GetWord(CDXTAGHEADER_KEYEXPRPOS)
             _keyExprLen := _GetWord(CDXTAGHEADER_KEYEXPRLEN)
             _forExprPos := _GetWord(CDXTAGHEADER_FOREXPRPOS)
             _forExprLen := _GetWord(CDXTAGHEADER_FOREXPRLEN)
             _keyExpression := _GetString(_keyExprPos+CDXPAGE_SIZE, _keyExprLen)
             _forExpression := _GetString(_forExprPos+CDXPAGE_SIZE, _forExprLen)
-            _descending := _GetWord( CDXTAGHEADER_DESCENDING ) != 0
+            _descending  := _GetWord( CDXTAGHEADER_DESCENDING ) != 0
+            _vfpCollation  := _GetString(CDXTAGHEADER_VFPCOLLATION, 8)
 
 #region Fields
         PRIVATE _rootPage as LONG
@@ -106,9 +102,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _version as DWORD
         PRIVATE _keyLength as WORD
         PRIVATE _options as CdxOptions
-        private _headerLen as WORD
-        PRIVATE _collation as long
-        PRIVATE _pageLen   as WORD
         PRIVATE _keyExprPos as WORD
         PRIVATE _keyExprLen as WORD
         PRIVATE _forExprPos as WORD
@@ -116,6 +109,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _keyExpression as STRING
         PRIVATE _forExpression AS STRING
         PRIVATE _descending as LOGIC
+        PRIVATE _vfpCollation    as STRING    // GENERAL, ARABIC, DUTCH, GREEK, GERMAN etc
 #endregion
 #region properties
 
@@ -136,16 +130,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 		PROTECTED INTERNAL PROPERTY Signature  AS BYTE GET _GetByte(CDXTAGHEADER_SIG) ;
             SET _SetByte(CDXTAGHEADER_SIG, VALUE)
-
-        PROTECTED INTERNAL PROPERTY HeaderLen AS WORD	GET _headerLen;
-			SET _SetWord(CDXTAGHEADER_HEADERLEN, VALUE), _headerLen := Value
-
-        PROTECTED INTERNAL PROPERTY PageLen		AS WORD	GET _pageLen;
-			SET _SetWord(CDXTAGHEADER_PAGELEN, VALUE), isHot := TRUE
-
-        PROTECTED INTERNAL PROPERTY Collation	AS LONG	GET _collation;
-			SET _SetLong(CDXTAGHEADER_COLLATION, VALUE), _collation := Value
-
 
 	    PROTECTED INTERNAL PROPERTY KeyExprPos AS WORD GET _keyExprPos;
 			SET _SetWord(CDXTAGHEADER_KEYEXPRPOS, VALUE), _keyExprPos := Value
@@ -168,6 +152,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROTECTED INTERNAL PROPERTY ForExpression AS STRING GET _forExpression ;
             SET _SetString(ForExprPos+CDXPAGE_SIZE, ForExprLen, VALUE) , _forExpression := Value
 
+        PROTECTED INTERNAL PROPERTY VFPCollation AS STRING GET _vfpCollation ;
+            SET _SetString(CDXTAGHEADER_VFPCOLLATION, 8, VALUE) , _vfpCollation := Value
+
+
 #endregion
 #region constants
 		PRIVATE CONST CDXTAGHEADER_ROOT		        := 0x00	AS WORD		// Byte offset to Root
@@ -184,7 +172,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE CONST CDXTAGHEADER_LANG           := 0x44 AS WORD // 26 bytes
         PRIVATE CONST CDXTAGHEADER_COLLATVER      := 0x76 AS WORD // 4 bytes
         PRIVATE CONST CDXTAGHEADER_RESERVED2      := 0x7a AS WORD // 372 bytes
-        PRIVATE CONST CDXTAGHEADER_VFPCODEPAGE    := 0x1ee AS WORD // 5 bytes
+        PRIVATE CONST CDXTAGHEADER_VFPCOLLATION    := 0x1ee AS WORD // 5 bytes
         PRIVATE CONST CDXTAGHEADER_IGNORECASE     := 0x1f3 AS WORD // 1 byte
         PRIVATE CONST CDXTAGHEADER_EXPR_LEN       := 0x1f4 AS WORD // 2 byte2
         // end of Harbour defines

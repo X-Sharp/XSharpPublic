@@ -219,6 +219,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_keySize    := 0
                 SELF:getKeyValue := _getExpressionValue
                 isOk             := SELF:_determineSize(oKey)
+                IF SELF:Header:KeySize != SELF:_keySize
+                    IF !String.IsNullOrEmpty(SELF:header:VFPCollation)
+                        SELF:_keySize := SELF:HEader:KeySize
+                    ELSE
+                        SELF:_oRdd:_dbfError(null, SubCodes.EDB_EXPRESSION,GenCode.EG_SYNTAX,  "DBFCDX.EvaluateExpressions") 
+                    ENDIF
+                ENDIF
             ENDIF
             IF ! isOk
                 RETURN FALSE
@@ -229,7 +236,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 TRY
                     SELF:_ForCodeBlock := SELF:_oRdd:Compile(SELF:_ForExpr)
                 CATCH ex AS Exception
-                    SELF:_oRdd:_dbfError( ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
+                    SELF:_oRdd:_dbfError( ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFCDX.EvaluateExpressions")
                     RETURN FALSE
                 END TRY
                 SELF:_oRdd:GoTo(1)
@@ -238,7 +245,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     VAR oValue := SELF:_oRdd:EvalBlock(SELF:_ForCodeBlock)
                     evalOk     := SELF:_oRdd:_getUsualType(oValue) == __UsualType.Logic
                 CATCH ex AS Exception
-                    SELF:_oRdd:_dbfError(ex, SubCodes.EDB_EXPRESSION,GenCode.EG_SYNTAX,  "DBFNTX.Compile") 
+                    SELF:_oRdd:_dbfError(ex, SubCodes.EDB_EXPRESSION,GenCode.EG_SYNTAX,  "DBFCDX.EvaluateExpressions") 
                     evalOk := FALSE
                 END TRY
                 IF !evalOk

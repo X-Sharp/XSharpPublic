@@ -39,13 +39,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool IsScript => Options.Kind == SourceCodeKind.Script;
         public bool IsXPP => Options.Dialect == XSharpDialect.XPP;
         public bool IsFox => Options.Dialect == XSharpDialect.FoxPro;
-
-        void missingToken(string token)
-        {
-            if (Interpreter.PredictionMode == Antlr4.Runtime.Atn.PredictionMode.Sll)
-                throw new ParseCanceledException("Missing token'" + token + "'");
-            NotifyErrorListeners("Missing token'" + token + "'");
-        }
         void unexpectedToken(string token)
         {
             if (Interpreter.PredictionMode == Antlr4.Runtime.Atn.PredictionMode.Sll)
@@ -61,14 +54,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             NotifyErrorListeners(token, msg, null);
 
         }
-        void unexpectedToken(IToken token)
-        {
-            if (Interpreter.PredictionMode == Antlr4.Runtime.Atn.PredictionMode.Sll)
-                unexpectedToken(token?.Text);
-            string msg = "Too many '" + token?.Text + "' tokens";
-            NotifyErrorListeners(token, msg, null);
-        }
-
 
         bool validExpressionStmt()
         {

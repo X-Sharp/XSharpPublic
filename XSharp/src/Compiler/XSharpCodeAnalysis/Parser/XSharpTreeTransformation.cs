@@ -6005,6 +6005,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var rhs = context.Name.Get<SimpleNameSyntax>();
             var expr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, lhs,
                                                         SyntaxFactory.MakeToken(SyntaxKind.DotToken), rhs);
+            StatementSyntax stmt;
             if (context.L != null && context.R != null)
             {
                 // Method call because we have LPAREN and RPAREN
@@ -6017,15 +6018,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     argList = EmptyArgumentList();
                 }
-                var stmt = GenerateExpressionStatement( _syntaxFactory.InvocationExpression(expr, argList));
-                context.Put(stmt);
+                stmt = GenerateExpressionStatement( _syntaxFactory.InvocationExpression(expr, argList));
             }
             else
             {
                 // assignment statement
-                var stmt = GenerateExpressionStatement(MakeSimpleAssignment(expr, context.Expr.Get<ExpressionSyntax>()));
-                context.Put(stmt);
+                stmt = GenerateExpressionStatement(MakeSimpleAssignment(expr, context.Expr.Get<ExpressionSyntax>()));
             }
+            if (context.Op.Type == XP.DOT && ! _options.Dialect.AllowDotAsSendOperator())
+            {
+                stmt = stmt.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_UnexpectedToken, context.Op.Text));
+            }
+            context.Put(stmt);
         }
 
         #endregion

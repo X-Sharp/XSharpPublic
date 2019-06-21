@@ -134,6 +134,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             checkMissingKeyword(context.e, context, "END[DO]");
         }
+
+        public override void ExitWithBlock([NotNull] XSharpParser.WithBlockContext context)
+        {
+            checkMissingKeyword(context.e, context, "END [WITH]");
+        }
+
         public override void ExitForStmt([NotNull] XSharpParser.ForStmtContext context)
         {
             checkMissingKeyword(context.e, context, "NEXT");

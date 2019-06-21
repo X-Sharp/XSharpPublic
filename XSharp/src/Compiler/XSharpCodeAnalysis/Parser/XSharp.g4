@@ -566,7 +566,7 @@ statement           : Decl=localdecl                        #declarationStmt
                       (e=END USING? eos)?						#blockStmt
                     | BEGIN Key=UNSAFE end=eos
                       StmtBlk=statementBlock
-                      (e=END UNSAFE? eos)?							#blockStmt
+                      (e=END UNSAFE? eos)?						#blockStmt
                     | BEGIN Key=CHECKED end=eos
                       StmtBlk=statementBlock
                       (e=END CHECKED? eos)?						#blockStmt
@@ -575,11 +575,11 @@ statement           : Decl=localdecl                        #declarationStmt
                       (e=END UNCHECKED? eos)?					#blockStmt
                     | BEGIN Key=FIXED ( VarDecl=variableDeclaration ) end=eos
                       StmtBlk=statementBlock
-                      (e=END FIXED? eos)?						#blockStmt
+                      (e=END FIXED? eos)?						  #blockStmt
 
                     | WITH Expr=expression end=eos
                        (Lines +=withLine)+
-                      e=END WITH eos      #withBlock
+                      (e=END WITH? eos)?              #withBlock
 
                     | {IsFox}? TEXT (TO Id=identifier (Add=ADDITIVE)? (Merge=TEXTMERGE)? (NoShow=NOSHOW)? (FLAGS Flags=expression)? (PRETEXT Pretext=expression)? )? end=EOS
                        String=TEXT_STRING_CONST

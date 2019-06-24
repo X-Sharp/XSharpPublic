@@ -43,6 +43,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private bool CheckImplicitCast(TypeSymbol sourceType, TypeSymbol targetType, SyntaxNode syntax, DiagnosticBag diagnostics)
         {
+            // do not silently cast one enum to another !
+            if (sourceType.IsEnumType() || targetType.IsEnumType() )
+                return false;
+
             // do not throw an warnings for IIF() expressions with types that are too big
             // for the LHS of the assignment
             if (syntax.Kind() == SyntaxKind.ConditionalExpression)
@@ -69,8 +73,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
 
                 }
+                return true;
             }
-            return true;
+            return false;
         }
         private BoundExpression BindVOCompareString(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
             BoundExpression left, BoundExpression right, ref int compoundStringLength)

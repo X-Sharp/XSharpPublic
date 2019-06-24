@@ -7171,9 +7171,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 argList = EmptyArgumentList();
             }
+            context.HasRefArguments = HasRefArguments(argList);
             context.Put(_syntaxFactory.InvocationExpression(expr, argList));
 
         }
+        private bool HasRefArguments(ArgumentListSyntax list)
+        {
+            // Check for parameters by reference
+            for (int i = 0; i < list.Arguments.Count; i++)
+            {
+                var arg = list.Arguments[i];
+                if ((arg.Expression is PrefixUnaryExpressionSyntax pes && pes.Kind == SyntaxKind.AddressOfExpression) ||
+                    arg.RefKindKeyword != null)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private bool GenerateSLen(XP.MethodCallContext context)
         {
             // Pseudo function SLen
@@ -7217,6 +7233,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     argList = EmptyArgumentList();
                 }
+                context.HasRefArguments = HasRefArguments(argList);
                 if (context.Init != null)
                 {
                     init = context.Init.Get<InitializerExpressionSyntax>();

@@ -148,6 +148,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Rewrite the receiver
             BoundExpression rewrittenReceiver = VisitExpression(node.ReceiverOpt);
 
+#if XSHARP
+            var result = VisitCallClipperConvention(node);
+            if (result != null)
+            {
+                return result;
+            }
+#endif
             // Rewrite the arguments.
             // NOTE: We may need additional argument rewriting such as generating a params array, re-ordering arguments based on argsToParamsOpt map, inserting arguments for optional parameters, etc.
             // NOTE: This is done later by MakeArguments, for now we just lower each argument.

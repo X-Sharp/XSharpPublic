@@ -26,6 +26,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public override BoundNode VisitObjectCreationExpression(BoundObjectCreationExpression node)
         {
             Debug.Assert(node != null);
+#if XSHARP
+            var result = VisitCtorCallClipperConvention(node);
+            if (result != null)
+            {
+                return result;
+            }
+#endif
 
             // Rewrite the arguments.
             // NOTE: We may need additional argument rewriting such as generating a params array,

@@ -276,7 +276,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
 
         }
-
+        public partial class MethodCallContext
+        {
+            public bool HasRefArguments;
+        }
+        public partial class CtorCallContext
+        {
+            public bool HasRefArguments;
+        }
 
         public partial class RepeatStmtContext : ILoopStmtContext
         {

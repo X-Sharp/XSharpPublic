@@ -5,7 +5,7 @@ EnForceType(cname, STRING)
 EnforceType(REF nAttributes, LONG)
 oObject := uObject
 IF oObject IS XSharp.XPP.DataObject
-    local DObject := oObject as DataObject
+    local DObject := (DataObject) oObject as DataObject
     return DObject:IsMemberVar(cName)
 ENDIF
 IF oObject IS XSharp.XPP.Abstract var AO

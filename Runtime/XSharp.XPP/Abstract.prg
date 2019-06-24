@@ -104,7 +104,7 @@ CLASS XSharp.XPP.Abstract
             RETURN oType:IsAssignableFrom(SELF:GetType())
         ELSEIF IsObject(uParent)
             IF ((OBJECT) uParent) IS System.Type 
-                otype := (OBJECT) uParent
+                otype := (System.Type) uParent
                 RETURN oType:IsAssignableFrom(SELF:GetType())
             ENDIF
         ENDIF
@@ -124,7 +124,7 @@ CLASS XSharp.XPP.Abstract
         /// - CLASS_DESCR_METHODS<br/>
         /// - CLASS_DESCR_SUPERDETAILS : this is not supported in X#.<br/>
         /// </remarks>
-    METHOD ClassDescribe(nInfo) AS ARRAY CLIPPER
+    VIRTUAL METHOD ClassDescribe(nInfo) AS ARRAY CLIPPER
         LOCAL aResult AS ARRAY
         LOCAL otype   AS System.Type
         LOCAL aFields AS ARRAY

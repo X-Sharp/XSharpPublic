@@ -1,16 +1,17 @@
-﻿using System
-using System.Collections.Generic
-$if$ ($targetframeworkversion$ >= 3.5)using System.Linq
-$endif$using System.Runtime.Serialization
-using System.ServiceModel
-using System.Text
+﻿USING System
+USING System.Collections.Generic
+$if$ ($targetframeworkversion$ >= 3.5)USING System.Linq
+$ENDIF$USING System.Runtime.Serialization
+USING System.ServiceModel
+USING System.Text
 
-namespace $rootnamespace$
-{
-	[ServiceContract]
-	public interface $safeitemrootname$
-	{
-		[OperationContract]
-		void DoWork()
-	}
-}
+BEGIN NAMESPACE $rootnamespace$
+
+	[ServiceContract];
+	PUBLIC INTERFACE $safeitemrootname$
+
+		[OperationContract];
+		METHOD DoWork() AS VOID STRICT
+
+	END INTERFACE
+END NAMESPACE

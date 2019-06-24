@@ -202,12 +202,13 @@ PUBLIC CLASS XSharp.MemVar
 	    
     
 	STATIC METHOD PrivatesEnum(lCurrentOnly := FALSE AS LOGIC) AS IEnumerator<STRING>
+        CheckCurrent()
 		RETURN _GetUniquePrivates(lCurrentOnly):GetEnumerator()
 
 
     
  	STATIC METHOD PrivatesFirst(lCurrentOnly := FALSE AS LOGIC) AS STRING
-		_PrivatesEnum := PrivatesEnum(lCurrentOnly)
+        _PrivatesEnum := PrivatesEnum(lCurrentOnly)
 		_PrivatesEnum:Reset()
 		RETURN PrivatesNext()
 
@@ -243,13 +244,17 @@ PUBLIC CLASS XSharp.MemVar
 		IF _priv    
 			CheckCurrent() 
 			IF !Current:ContainsKey(name)
-				Current:Add(MEMVAR{name,NIL})
+                if XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
+                    Current:Add(@@MemVar{name,FALSE})
+                ELSE
+				    Current:Add(@@MemVar{name,NIL})
+                ENDIF
 			ENDIF
 		ELSE
             BEGIN LOCK Publics
 			    IF !Publics:ContainsKey(name)  
-				    VAR memvar := MEMVAR{name,FALSE}        // publics are always initialized with FALSE
-				    Publics:Add(MEMVAR )
+				    VAR oMemVar := @@MemVar{name,FALSE}        // publics are always initialized with FALSE
+				    Publics:Add(oMemVar )
 			    ENDIF
             END LOCK
 		ENDIF  
@@ -267,7 +272,7 @@ PUBLIC CLASS XSharp.MemVar
 		ENDIF            
 		THROW Error{"Undeclared variable :"+name:ToString()}
     
-	STATIC METHOD Put(name AS STRING, VALUE AS USUAL) AS USUAL
+	STATIC METHOD Put(name AS STRING, uValue AS USUAL) AS USUAL
 		LOCAL oMemVar AS XSharp.MemVar
 		// assign to existing memvar first
 		// privates take precedence over publics ?
@@ -277,14 +282,14 @@ PUBLIC CLASS XSharp.MemVar
 		ENDIF      		
 		IF oMemVar != NULL
             BEGIN LOCK oMemVar
-			    oMemVar:Value := VALUE
+			    oMemVar:Value := uValue
             END LOCK
 		ELSE
 			// memvar does not exist, then add it at the current level
 			CheckCurrent()
-			Current:Add(MEMVAR{name,VALUE})
+			Current:Add(@@MemVar{name,uValue})
 		ENDIF    
-		RETURN VALUE
+		RETURN uValue
 
     
 	STATIC METHOD ClearAll() AS VOID

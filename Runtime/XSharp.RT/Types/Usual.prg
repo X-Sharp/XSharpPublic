@@ -282,7 +282,7 @@ BEGIN NAMESPACE XSharp
 
         #region properties
         PRIVATE PROPERTY _isByRef		AS LOGIC	GET _flags:isByRef
-        INTERNAL PROPERTY _usualType		AS __UsualType GET _flags:usualType
+        INTERNAL PROPERTY _usualType	AS __UsualType GET _flags:usualType
 
         /// No checks for typeflag. These private properties should always be accessed after checking the correct type
         PRIVATE PROPERTY _arrayValue    AS ARRAY			GET (ARRAY) _refData
@@ -303,18 +303,30 @@ BEGIN NAMESPACE XSharp
         PRIVATE PROPERTY _width			AS SBYTE GET _flags:width
         PRIVATE PROPERTY _decimals		AS SBYTE GET _flags:decimals
         // Is .. ?
-        INTERNAL PROPERTY IsArray		AS LOGIC GET _usualtype == __UsualType.Array
-        INTERNAL PROPERTY IsCodeblock	AS LOGIC GET _usualtype == __UsualType.Codeblock
-        INTERNAL PROPERTY IsDate		AS LOGIC GET _usualtype == __UsualType.Date
-        INTERNAL PROPERTY IsDateTime	AS LOGIC GET _usualtype == __UsualType.DateTime
-        INTERNAL PROPERTY IsDecimal		AS LOGIC GET _usualtype == __UsualType.Decimal
-        INTERNAL PROPERTY IsFloat		AS LOGIC GET _usualtype == __UsualType.Float
-        INTERNAL PROPERTY IsInt64		AS LOGIC GET _usualtype == __UsualType.Int64
-        INTERNAL PROPERTY IsLogic		AS LOGIC GET _usualtype == __UsualType.Logic
-        INTERNAL PROPERTY IsLong		AS LOGIC GET _usualtype == __UsualType.Long
-        INTERNAL PROPERTY IsInteger		AS LOGIC GET _usualtype == __UsualType.Long .OR. _usualtype == __UsualType.Int64
-        INTERNAL PROPERTY Type			AS __UsualType GET _flags:usualType
-        INTERNAL PROPERTY IsNumeric AS LOGIC
+        /// <summary>This property returns TRUE when the USUAL is of type ARRAY </summary>
+        PUBLIC PROPERTY IsArray		AS LOGIC GET _usualtype == __UsualType.Array
+        /// <summary>This property returns TRUE when the USUAL is of type CODEBLOCK </summary>
+        PUBLIC PROPERTY IsCodeblock	AS LOGIC GET _usualtype == __UsualType.Codeblock
+        /// <summary>This property returns TRUE when the USUAL is of type DATE </summary>
+        PUBLIC PROPERTY IsDate		AS LOGIC GET _usualtype == __UsualType.Date
+        /// <summary>This property returns TRUE when the USUAL is of type DateTime </summary>
+        PUBLIC PROPERTY IsDateTime	AS LOGIC GET _usualtype == __UsualType.DateTime
+        /// <summary>This property returns TRUE when the USUAL is of type Decimal </summary>
+        PUBLIC PROPERTY IsDecimal	AS LOGIC GET _usualtype == __UsualType.Decimal
+        /// <summary>This property returns TRUE when the USUAL is of type FLOAT </summary>
+        PUBLIC PROPERTY IsFloat		AS LOGIC GET _usualtype == __UsualType.Float
+        /// <summary>This property returns TRUE when the USUAL is of type Int64 </summary>
+        PUBLIC PROPERTY IsInt64		AS LOGIC GET _usualtype == __UsualType.Int64
+        /// <summary>This property returns TRUE when the USUAL is of type LOGIC </summary>
+        PUBLIC PROPERTY IsLogic		AS LOGIC GET _usualtype == __UsualType.Logic
+        /// <summary>This property returns TRUE when the USUAL is of type Long </summary>
+        PUBLIC PROPERTY IsLong		AS LOGIC GET _usualtype == __UsualType.Long
+        /// <summary>This property returns TRUE when the USUAL is of type LONG or INT64 </summary>
+        PUBLIC PROPERTY IsInteger	AS LOGIC GET _usualtype == __UsualType.Long .OR. _usualtype == __UsualType.Int64
+        /// <summary>This property returns the __UsualType of the USUAL </summary>
+        PUBLIC PROPERTY Type		AS __UsualType GET _flags:usualType
+        /// <summary>This property returns TRUE when the USUAL is of type LONG, Int64, FLOAT or Decimal</summary>
+        PUBLIC PROPERTY IsNumeric AS LOGIC
             GET
                 SWITCH _usualType
                 CASE __UsualType.Long
@@ -328,11 +340,17 @@ BEGIN NAMESPACE XSharp
             END GET
         END PROPERTY
 
-        INTERNAL PROPERTY IsObject		AS LOGIC GET _usualtype == __UsualType.Object
-        INTERNAL PROPERTY IsPtr			AS LOGIC GET _usualtype == __UsualType.Ptr
-        INTERNAL PROPERTY IsSymbol		AS LOGIC GET _usualtype == __UsualType.Symbol
-        INTERNAL PROPERTY IsString		AS LOGIC GET _usualtype == __UsualType.String
-        INTERNAL PROPERTY IsByRef		AS LOGIC GET _isByRef
+        /// <summary>This property returns TRUE when the USUAL is of type Object</summary>
+        PUBLIC PROPERTY IsObject		AS LOGIC GET _usualtype == __UsualType.Object
+        /// <summary>This property returns TRUE when the USUAL is of type Ptr (IntPtr)</summary>
+        PUBLIC PROPERTY IsPtr			AS LOGIC GET _usualtype == __UsualType.Ptr
+        /// <summary>This property returns TRUE when the USUAL is of type Symbol</summary>
+        PUBLIC PROPERTY IsSymbol		AS LOGIC GET _usualtype == __UsualType.Symbol
+        /// <summary>This property returns TRUE when the USUAL is of type String</summary>
+        PUBLIC PROPERTY IsString		AS LOGIC GET _usualtype == __UsualType.String
+        /// <summary>This property returns TRUE when the USUAL is passed by reference (not implemented yet)</summary>
+        PUBLIC   PROPERTY IsByRef		AS LOGIC GET _isByRef
+        /// <summary>This property returns TRUE when the USUAL is a reference type (Array, Decimal, Object, String)</summary>
         PRIVATE PROPERTY IsReferenceType AS LOGIC
             GET
                 SWITCH _usualType
@@ -346,23 +364,24 @@ BEGIN NAMESPACE XSharp
                 END SWITCH
             END GET
         END PROPERTY
+        /// <summary>This property returns TRUE when the USUAL Empty. </summary>
         INTERNAL PROPERTY IsEmpty AS LOGIC
             GET
                 SWITCH _usualType
                 CASE __UsualType.Array		; RETURN _arrayValue == NULL .OR. _arrayValue:Length == 0
                 CASE __UsualType.Codeblock	; RETURN _codeblockValue == NULL
-                CASE __UsualType.Date			; RETURN _dateValue:IsEmpty
-                CASE __UsualType.DateTime		; RETURN _dateTimeValue == DateTime.MinValue
-                CASE __UsualType.Decimal		; RETURN _decimalValue == 0
+                CASE __UsualType.Date		; RETURN _dateValue:IsEmpty
+                CASE __UsualType.DateTime	; RETURN _dateTimeValue == DateTime.MinValue
+                CASE __UsualType.Decimal	; RETURN _decimalValue == 0
                 CASE __UsualType.Float		; RETURN _floatValue == 0.0
                 CASE __UsualType.Int64		; RETURN _i64Value == 0
                 CASE __UsualType.Logic		; RETURN _logicValue == FALSE
-                CASE __UsualType.Long			; RETURN _intValue == 0
+                CASE __UsualType.Long		; RETURN _intValue == 0
                 CASE __UsualType.Object		; RETURN _refData == NULL
-                CASE __UsualType.Ptr			; RETURN _ptrValue == IntPtr.Zero
+                CASE __UsualType.Ptr		; RETURN _ptrValue == IntPtr.Zero
                 CASE __UsualType.String		; RETURN EmptyString(_stringValue)
                 CASE __UsualType.Symbol		; RETURN _symValue == 0
-                CASE __UsualType.Void			; RETURN TRUE
+                CASE __UsualType.Void		; RETURN TRUE
                 OTHERWISE
                     Debug.Fail( "Unhandled data type in Usual:Empty()" )
                 END SWITCH
@@ -370,6 +389,7 @@ BEGIN NAMESPACE XSharp
             END GET
         END PROPERTY
 
+        /// <summary>This property returns TRUE when the USUAL is NIL, or when the usual is a reference type and NULL or when the isual is a PTR type and IntPtr.Zero</summary>
         INTERNAL PROPERTY IsNil AS LOGIC
             GET
                 RETURN SELF:_usualType == __UsualType.Void .OR. ;
@@ -379,23 +399,24 @@ BEGIN NAMESPACE XSharp
             END GET
         END PROPERTY
 
-        INTERNAL PROPERTY SystemType AS System.Type
+        /// <summary>This property returns the System.Type that represents the value of the usual.</summary>
+        PUBLIC PROPERTY SystemType AS System.Type
             GET
                 SWITCH _usualType
                 CASE __UsualType.Array		; RETURN TYPEOF(ARRAY)
                 CASE __UsualType.Codeblock	; RETURN TYPEOF(CODEBLOCK)
-                CASE __UsualType.Date			; RETURN TYPEOF(DATE)
-                CASE __UsualType.DateTime		; RETURN TYPEOF(System.DateTime)
-                CASE __UsualType.Decimal		; RETURN TYPEOF(System.Decimal)
+                CASE __UsualType.Date		; RETURN TYPEOF(DATE)
+                CASE __UsualType.DateTime	; RETURN TYPEOF(System.DateTime)
+                CASE __UsualType.Decimal	; RETURN TYPEOF(System.Decimal)
                 CASE __UsualType.Float		; RETURN TYPEOF(FLOAT)
                 CASE __UsualType.Int64		; RETURN TYPEOF(INT64)
                 CASE __UsualType.Logic		; RETURN TYPEOF(LOGIC)
-                CASE __UsualType.Long			; RETURN TYPEOF(INT)
+                CASE __UsualType.Long		; RETURN TYPEOF(INT)
                 CASE __UsualType.Object		; RETURN TYPEOF(OBJECT)
-                CASE __UsualType.Ptr			; RETURN TYPEOF(IntPtr)
+                CASE __UsualType.Ptr		; RETURN TYPEOF(IntPtr)
                 CASE __UsualType.String		; RETURN TYPEOF(STRING)
                 CASE __UsualType.Symbol		; RETURN TYPEOF(SYMBOL)
-                CASE __UsualType.Void			; RETURN TYPEOF(USUAL)
+                CASE __UsualType.Void		; RETURN TYPEOF(USUAL)
                 OTHERWISE
                     Debug.Fail( "Unhandled data type in Usual:SystemType" )
                 END SWITCH
@@ -420,7 +441,8 @@ BEGIN NAMESPACE XSharp
         #endregion
 
         #region implementation IComparable<T>
-        /// <exclude/>
+        /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <include file="RTComments.xml" path="Comments/UsualCompare/*" />
         PUBLIC METHOD CompareTo(rhs AS __Usual) AS LONG
             IF SELF:_UsualType == rhs:_UsualType
                 // Compare ValueTypes
@@ -516,6 +538,7 @@ BEGIN NAMESPACE XSharp
 
         #region Comparison Operators
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <include file="RTComments.xml" path="Comments/UsualCompare/*" />
         STATIC OPERATOR >(lhs AS __Usual, rhs AS __Usual) AS LOGIC
             SWITCH lhs:_usualType
             CASE __UsualType.Void
@@ -582,8 +605,8 @@ BEGIN NAMESPACE XSharp
                 END SWITCH
             CASE __UsualType.DateTime
                 SWITCH (rhs:_usualType)
-                CASE __UsualType.DateTime	; RETURN lhs:_dateTimeValue > rhs:_dateTimeValue
                 CASE __UsualType.Date		; RETURN lhs:_dateTimeValue > (DateTime) rhs:_dateValue
+                CASE __UsualType.DateTime	; RETURN lhs:_dateTimeValue > rhs:_dateTimeValue
                 OTHERWISE
                     NOP // error below
                 END SWITCH
@@ -593,6 +616,7 @@ BEGIN NAMESPACE XSharp
             THROW BinaryError(">", __CavoStr(VOErrors.ARGSINCOMPATIBLE), FALSE, lhs, rhs)
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <include file="RTComments.xml" path="Comments/UsualCompare/*" />
         STATIC OPERATOR >=(lhs AS __Usual, rhs AS __Usual) AS LOGIC
             SWITCH lhs:_usualType
             CASE __UsualType.Void
@@ -657,7 +681,7 @@ BEGIN NAMESPACE XSharp
                 END SWITCH
             CASE __UsualType.DateTime
                 SWITCH (rhs:_usualType)
-                CASE __UsualType.Date		; RETURN lhs:_dateValue		>=  rhs:_dateValue
+                CASE __UsualType.Date		; RETURN lhs:_dateTimeValue	>=  (DateTime) rhs:_dateValue
                 CASE __UsualType.DateTime	; RETURN lhs:_dateTimeValue >=  rhs:_dateTimeValue
                 OTHERWISE
                     NOP // error below
@@ -668,6 +692,7 @@ BEGIN NAMESPACE XSharp
             THROW BinaryError(">=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), FALSE, lhs, rhs)
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <include file="RTComments.xml" path="Comments/UsualCompare/*" />
         STATIC OPERATOR <(lhs AS __Usual, rhs AS __Usual) AS LOGIC
             SWITCH lhs:_usualType
             CASE __UsualType.Void
@@ -732,7 +757,7 @@ BEGIN NAMESPACE XSharp
                 END SWITCH
             CASE __UsualType.DateTime
                 SWITCH (rhs:_usualType)
-                CASE __UsualType.Date		; RETURN lhs:_dateValue		<  rhs:_dateValue
+                CASE __UsualType.Date		; RETURN lhs:_dateTimeValue	<  (DateTime) rhs:_dateValue
                 CASE __UsualType.DateTime	; RETURN lhs:_dateTimeValue <  rhs:_dateTimeValue
                 OTHERWISE
                     NOP // error below
@@ -743,6 +768,7 @@ BEGIN NAMESPACE XSharp
             THROW BinaryError("<", __CavoStr(VOErrors.ARGSINCOMPATIBLE), FALSE, lhs, rhs)
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <include file="RTComments.xml" path="Comments/UsualCompare/*" />
         STATIC OPERATOR <=(lhs AS __Usual, rhs AS __Usual) AS LOGIC
             SWITCH lhs:_usualType
             CASE __UsualType.Void
@@ -807,7 +833,7 @@ BEGIN NAMESPACE XSharp
                 END SWITCH
             CASE __UsualType.DateTime
                 SWITCH (rhs:_usualType)
-                CASE __UsualType.Date		; RETURN lhs:_dateValue		<=  rhs:_dateValue
+                CASE __UsualType.Date		; RETURN lhs:_dateTimeValue	<=  (DateTime) rhs:_dateValue
                 CASE __UsualType.DateTime	; RETURN lhs:_dateTimeValue <=  rhs:_dateTimeValue
                 OTHERWISE
                     NOP // error below

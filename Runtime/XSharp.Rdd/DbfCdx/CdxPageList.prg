@@ -102,9 +102,9 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             
         INTERNAL METHOD Append( pageNo AS LONG ) AS CdxPage
             LOCAL page AS CdxTreePage
-            page := SELF:_FindPage(pageNo)
+            page := (CdxTreePage) SELF:_FindPage(pageNo)
             IF page == NULL
-                page := SELF:GetPage(pageNo, 0,NULL)
+                page := (CdxTreePage) SELF:GetPage(pageNo, 0,NULL)
                 SELF:SetPage(pageNo, page)
             ENDIF
             SELF:_dumpPage(page)
@@ -115,9 +115,9 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
         INTERNAL METHOD Read(pageNo AS LONG ) AS CdxTreePage
             LOCAL page AS CdxTreePage
 
-            page := SELF:_FindPage(pageNo)
+            page := (CdxTreePage) SELF:_FindPage(pageNo)
             IF page == NULL
-                page := SELF:GetPage(pageNo, 0,NULL)
+                page := (CdxTreePage) SELF:GetPage(pageNo, 0,NULL)
                 SELF:_pages:Add(pageNo, page)
             ENDIF
             SELF:_dumpPage(page)

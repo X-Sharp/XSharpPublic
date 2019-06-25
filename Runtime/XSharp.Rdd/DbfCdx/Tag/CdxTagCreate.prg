@@ -466,7 +466,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             //   when there was only one leaf page then we don't create a branch, otherwise
             //   we create as many branches as necessary.
             LOCAL oLeaf  AS CdxLeafPage
-            oLeaf       := _tag:Stack:Top:Page
+            oLeaf       := (CdxLeafPage) _tag:Stack:Top:Page
             VAR action  := CdxAction.ChangeParent(oLeaf)
             action      := _tag.Doaction(action)
             VAR root := _tag:Stack:Root?:Page

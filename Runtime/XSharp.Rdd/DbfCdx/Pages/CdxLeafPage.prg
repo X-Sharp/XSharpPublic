@@ -619,7 +619,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             //Debug("New", oPageR:PageNo:ToString("X"))
             VAR leaves      := _leaves
             IF action:Recno > 0
-                leaves := SELF:GetLeaves()
+                leaves := (List<CdxLeaf>) SELF:GetLeaves()
                 VAR nTrailCount := SELF:_getTrailCount(action:Key)
                 LOCAL nDupCount AS BYTE
                 VAR nPos := SELF:FindKey(action:Key,action:Recno,action:Key:Length)

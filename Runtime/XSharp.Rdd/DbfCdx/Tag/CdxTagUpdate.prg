@@ -190,7 +190,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF oParent == NULL
                 // walk the whole level to find the page above this one
                 FOREACH VAR oLoop in oPage:CurrentLevel
-                    oParent := SELF:Stack:GetParent(oLoop)
+                    oParent := (CdxBranchPage) SELF:Stack:GetParent(oLoop)
                     IF oParent != NULL_OBJECT
                         EXIT
                     ENDIF
@@ -246,14 +246,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     // we need to propagate that to the top
                     IF result:Type == CdxActionType.OK
                         IF nPos == oParent:NumKeys -1
-                            oGrandParent := SELF:Stack:GetParent(oParent)
+                            oGrandParent := (CdxBranchPage) SELF:Stack:GetParent(oParent)
                         ENDIF
                     ENDIF
                 ELSE
                     // Should no longer happen since we now pass 2 pages
                     result := SELF:AddToParent(oParent, action)
                     IF result:Type == CdxActionType.OK
-                       oGrandParent := SELF:Stack:GetParent(oParent)
+                       oGrandParent := (CdxBranchPage) SELF:Stack:GetParent(oParent)
                     ENDIF
                 ENDIF
             ENDIF
@@ -591,7 +591,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             IF page:NumKeys > 0
                 VAR pageNo  := page:LastNode:ChildPageNo
-                page    := SELF:OrderBag:GetPage(pageNo, _keySize, SELF)
+                page    := (CdxTreePage) SELF:OrderBag:GetPage(pageNo, _keySize, SELF)
                 IF page IS CdxLeafPage 
                     SELF:PushPage(page, 0)
                     RETURN (CdxLeafPage) page

@@ -235,7 +235,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 CASE TypeCode.Int64
                 CASE TypeCode.Single
                 CASE TypeCode.Double
-                    num := info:Order
+                    num := Convert.ToInt32(info:Order)
                     IF ((num >= 0) .AND. (num <= SELF:_Orders:Count))
                         result := num
                     ENDIF

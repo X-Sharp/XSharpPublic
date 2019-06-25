@@ -613,7 +613,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 LOCAL oPage as CdxTreePage
                 LOCAL nLevel as LONG
                 oPage  := SELF:GetPage(SELF:_rootPage)
-                aPages := oPage:GetChildren()
+                aPages := (List<int>) oPage:GetChildren()
                 nLevel := 1
                 ? "Level", nLevel, 1, "page"
                 DO WHILE aPages:Count > 0

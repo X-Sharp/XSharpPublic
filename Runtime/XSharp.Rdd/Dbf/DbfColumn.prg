@@ -448,7 +448,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             if SELF:Length == 10
                 str     := SUPER:_GetString(buffer)
-                result  := _Val(str)
+                result  := Convert.ToInt32(_Val(str))
             ELSE
                 result := BuffToLong(buffer, SELF:OffSet)
             ENDIF
@@ -620,7 +620,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN NULL
             ENDIF
             tmp := BitConverter.ToInt64(buffer, SELF:offset)
-            result := tmp/ (10 ^ self:Decimals)
+            result := (decimal) (tmp/ (10 ^ self:Decimals))
             RETURN result
 
 
@@ -637,7 +637,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
                 RETURN FALSE
             ENDIF
-            i64Value := currValue * (System.Decimal) (10^ self:Decimals)
+            i64Value := (int64) (currValue * (System.Decimal) (10^ self:Decimals))
             var data := BitConverter.GetBytes(i64Value)
             Array.Copy(data, 0, buffer, self:OffSet, self:Length)
             RETURN TRUE

@@ -14,10 +14,12 @@ BEGIN NAMESPACE XSharp.RDD
 INTERNAL CLASS FptHeader
     // FoxPro memo Header:
     // Byte offset  Description
-    // 00 ? 03      Location of next free block1
-    // 04 ? 05      Unused
-    // 06 ? 07      Block size (bytes per block)1
-    // 08 ? 511     Unused
+    // 00 - 03      Location of next free block
+    // 04 - 05      Unused
+    // 06 - 07      Block size (bytes per block)
+    // 08 - 511     Unused
+    // Note numbers are in FOX notation: Integers stored with the most significant byte first.
+
     PRIVATE Buffer as Byte[]
     INTERNAL CONST OFFSET_NEXTFREE  := 0 as LONG
     INTERNAL CONST OFFSET_UNUSED    := 4 as LONG
@@ -25,7 +27,7 @@ INTERNAL CLASS FptHeader
     INTERNAL CONST FOXHEADER_LENGTH := 512 AS LONG
     INTERNAL CONST FOXHEADER_OFFSET := 0 AS LONG
     
-    INTERNAL PROPERTY Size as LONG GET FOXHEADER_LENGTH
+    INTERNAL PROPERTY Size as DWORD GET FOXHEADER_LENGTH
 
     INTERNAL CONSTRUCTOR()
         SELF:Buffer := Byte[]{FOXHEADER_LENGTH}
@@ -42,12 +44,12 @@ INTERNAL CLASS FptHeader
             ENDIF
         END SET
     END PROPERTY
-    INTERNAL PROPERTY NextFree AS LONG
+    INTERNAL PROPERTY NextFree AS DWORD
         GET
-            return FoxToLong(buffer, OFFSET_NEXTFREE)
+            return FoxToDword(buffer, OFFSET_NEXTFREE)
         END GET
         SET
-            LongToFox(value, buffer, OFFSET_NEXTFREE)
+            DwordToFox(value, buffer, OFFSET_NEXTFREE)
         END SET
     END PROPERTY
     INTERNAL PROPERTY UnUsed AS WORD
@@ -104,9 +106,9 @@ INTERNAL CLASS FlexHeader
         SELF:Signature := "FlexFile3"
         SELF:MajorVersion := 2
         SELF:MinorVersion := 8
-        SELF:IndexDefect  := TRUE
+        SELF:IndexDefect  := FALSE
 
-    INTERNAL PROPERTY Size as LONG GET FLEXHEADER_LENGTH
+    INTERNAL PROPERTY Size as DWORD GET FLEXHEADER_LENGTH
 
     INTERNAL PROPERTY AltBlockSize  AS WORD  GET BuffToWord(SELF:buffer, OFFSET_BLOCKSIZE)  SET WordToBuff(value, SELF:Buffer, OFFSET_BLOCKSIZE)
     INTERNAL PROPERTY MajorVersion  as BYTE  GET SELF:Buffer[OFFSET_MAJOR]                  SET SELF:Buffer[OFFSET_MAJOR] := value

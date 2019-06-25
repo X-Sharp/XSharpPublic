@@ -473,7 +473,11 @@ BEGIN NAMESPACE XSharp.RDD
                 Array.Copy(data, 0, buffer, self:OffSet, self:Length)
             ELSE
                 LOCAL strValue as STRING
-                strValue := intValue:ToString():PadLeft(10,' ')
+                IF intValue == 0
+                    strValue := String{' ',10}
+                ELSE
+                    strValue := intValue:ToString():PadLeft(10,' ')
+                endif
                 SELF:_PutString(buffer, strValue)
             ENDIF
             RETURN TRUE

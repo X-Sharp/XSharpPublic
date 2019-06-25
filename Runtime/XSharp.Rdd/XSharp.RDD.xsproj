@@ -54,7 +54,6 @@
     <Dialect>Core</Dialect>
     <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
     <UseSharedCompilation>true</UseSharedCompilation>
-
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -145,6 +144,9 @@
     <Compile Include="DbfNtx\Order\NtxOrderLock.prg" />
     <Compile Include="DbfNtx\Order\NtxOrderNavigate.prg" />
     <Compile Include="DbfNtx\Order\NtxOrderUpdate.prg" />
+    <Compile Include="Dbf\Headers.prg" />
+    <Compile Include="Dbf\Structures.prg" />
+    <Compile Include="Dbf\Functions.prg" />
     <Compile Include="Dbf\DbfVfp.prg" />
     <Compile Include="Dbf\DBF.prg" />
     <Compile Include="Dbf\DbfBlob.prg" />
@@ -156,6 +158,7 @@
     <Compile Include="Dbf\DbfSmt.prg" />
     <Compile Include="Dbf\Dbf_NotImplemented.prg" />
     <Compile Include="Dbf\DbMemo.prg" />
+    <Compile Include="Dbf\FptEnums.prg" />
     <Compile Include="Enums.prg" />
     <Compile Include="Other\DELIM.prg" />
     <Compile Include="Other\SDF.prg" />
@@ -252,7 +255,6 @@
     <CommandLineOption />
     <PPO>false</PPO>
     <UseSharedCompilation>true</UseSharedCompilation>
-
     <NoStdDef>false</NoStdDef>
     <Prefer32Bit>False</Prefer32Bit>
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>

@@ -225,36 +225,38 @@ BEGIN NAMESPACE XSharp
                         // boxed __Usual
                         VAR u   := (__Usual)o
                         SELF    := u 
-                    ELSEIF vartype == TYPEOF(ARRAY)
+                    ELSEIF vartype == TYPEOF(ARRAY) 
                         SELF:_flags				:= UsualFlags{__UsualType.Array}
-                        SELF:_refData  := o
-                    ELSEIF vartype == TYPEOF(DATE)
+                        SELF:_refData           := (ARRAY) o
+                    ELSEIF vartype == TYPEOF(DATE) 
                         SELF:_flags				:= UsualFlags{__UsualType.Date}
-                        SELF:_valueData:d		:=  (DATE) o
-                    ELSEIF vartype == TYPEOF(SYMBOL)
+                        SELF:_valueData:d		:= (DATE) o
+                    ELSEIF vartype == TYPEOF(SYMBOL) 
                         SELF:_flags				:= UsualFlags{__UsualType.Symbol}
-                        SELF:_valueData:s		:=   (SYMBOL) o
-                    ELSEIF vartype == TYPEOF(IntPtr)
+                        SELF:_valueData:s		:= (SYMBOL) o
+                    ELSEIF vartype == TYPEOF(IntPtr) 
                         SELF:_flags				:= UsualFlags{__UsualType.Ptr}
-                        SELF:_valueData:p		:=  (IntPtr) o
+                        SELF:_valueData:p		:= (IntPtr) o
                     ELSEIF vartype == TYPEOF(System.Reflection.Pointer)
                         SELF:_flags				:= UsualFlags{__UsualType.Ptr}
                         SELF:_valueData:p		:= Intptr{System.Reflection.Pointer.UnBox(o)}
-                    ELSEIF o IS IDate
+                    ELSEIF o IS IDate VAR d
                         SELF:_flags				:= UsualFlags{__UsualType.Date}
-                        SELF:_valueData:d		:= DATE{(IDate) o }
-                    ELSEIF o IS IFloat
+                        SELF:_valueData:d		:= DATE{d }
+                    ELSEIF o IS IFloat VAR f
                         SELF:_flags				:= UsualFlags{__UsualType.Float}
-                        LOCAL f := (IFLoat) o AS IFloat
                         SELF:_valueData:r8		:= f:Value
                         SELF:_flags:Width		:= (Sbyte) f:Digits
                         SELF:_flags:Decimals	:= (Sbyte) f:Decimals
-                    ELSEIF o IS ICodeblock
+                    ELSEIF o IS ICodeblock VAR cb
                         SELF:_flags				:= UsualFlags{__UsualType.Codeblock}
-                        SELF:_refData := o
+                        SELF:_refData           := cb
+                    ELSEIF o is OBJECT[]   VAR oArray
+                        SELF:_flags				:= UsualFlags{__UsualType.ARRAY}
+                        SELF:_refData           := Array{oArray}
                     ELSE
-                        SELF:_flags				:= UsualFlags{__UsualType.Object}
-                        SELF:_refData := o
+                        SELF:_flags				:= UsualFlags{__UsualType.OBJECT}
+                        SELF:_refData           := o
                     ENDIF
                 END SWITCH
             ENDIF

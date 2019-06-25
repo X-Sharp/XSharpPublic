@@ -247,7 +247,7 @@ FUNCTION AsString(u AS USUAL) AS STRING
 				result := "{[0000000000]0x00000000}"
 			ELSE
 				VAR cHashCode := String.Format("{0:X8}", aValue:GetHashCode())
-				result := "{["+STRING.Format("{0:D8}",aValue:Length)+"]0x"+cHashCode+"}"
+				result := "{["+STRING.Format("{0:D10}",aValue:Length)+"]0x"+cHashCode+"}"
 			ENDIF
 
 		CASE u:IsObject

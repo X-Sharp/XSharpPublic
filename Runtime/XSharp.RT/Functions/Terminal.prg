@@ -111,8 +111,7 @@ FUNCTION ShowArray  (aTest as array, cName := "" as STRING) AS VOID
     LOCAL n         AS DWORD
     LOCAL x         AS USUAL
     LOCAL cOut      AS STRING
-    LOCAL cOutTemp  AS STRING
-    LOCAL nType     AS DWORD
+    LOCAL cOutTemp := "" AS STRING
 
     IF cName:Length == 0
         cName := "a"

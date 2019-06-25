@@ -638,6 +638,67 @@ CLASS XSharp.CoreDb
         END TRY
         RETURN FALSE
 
+        /// <summary>
+        /// Retrieve the value of a specified database field as an array of bytes
+        /// </summary>
+        /// <param name="nPos"></param>
+        /// <param name="oRet"></param>
+        /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+        /// <param name="oRet">The returnvalue is returned through this parameter</param>
+    STATIC METHOD FieldGetBytes(nPos AS DWORD,oRet REF BYTE[]) AS LOGIC
+        TRY
+            LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
+             IF oRDD IS WorkArea VAR oWa
+                local oFld as RDDFieldInfo
+                
+                oFld := oWA:GetField((LONG) nPos)
+                if oFld != NULL
+                    VAR nOffSet := oFld:Offset
+                    VAR nLen    := oFld:Length
+                    local result as byte[]
+                    result := byte[]{nLen}
+                    var aCopy := oWA:GetRec()
+                    System.Array.Copy(aCopy, nOffset, result,0, nLen)
+                    oRet := result
+                    return true
+                ENDIF
+            ENDIF
+            oRet := NULL
+            RETURN FALSE
+        CATCH e AS Exception
+            RuntimeState.LastRDDError := e
+        END TRY
+        RETURN FALSE
+
+       /// <summary>
+        /// Retrieve the value of a specified database field as an array of bytes
+        /// </summary>
+        /// <param name="nPos"></param>
+        /// <param name="oRet"></param>
+        /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+        /// <param name="oRet">The returnvalue is returned through this parameter</param>
+    STATIC METHOD FieldPutBytes(nPos AS DWORD, aValue AS BYTE[]) AS LOGIC
+        TRY
+             LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
+             IF oRDD IS WorkArea VAR oWa
+                local oFld as RDDFieldInfo
+                oFld := oWA:GetField((LONG) nPos)
+                if oFld != NULL
+                    VAR nOffSet := oFld:Offset
+                    VAR nLen    := oFld:Length
+                    if aValue != NULL .and. aValue:Length >= nLen
+                        var aCopy := oWA:GetRec()
+                        System.Array.Copy(aValue, 0, aCopy, nOffSet, nLen)
+                        oWa:PutRec(aCopy)
+                        return true
+                    ENDIF
+                ENDIF
+            ENDIF
+            RETURN FALSE
+        CATCH e AS Exception
+            RuntimeState.LastRDDError := e
+        END TRY
+        RETURN FALSE
         /// <inheritdoc cref="M:XSharp.RDD.IRdd.FieldInfo(System.Int32,System.Int32,System.Object)" />
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBFieldInfo().

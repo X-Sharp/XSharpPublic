@@ -106,12 +106,12 @@ INTERNAL STRUCTURE FtpMemoToken
     END PROPERTY
 
     /// This includes the length of the token
-    INTERNAL PROPERTY Length as Int32       
+    INTERNAL PROPERTY Length as DWORD       
         GET
-            RETURN FoxToLong(Buffer, 4)
+            RETURN FoxToDword(Buffer, 4)
         END GET
         SET
-            LongToFox(value, Buffer, 4)
+            DwordToFox(value, Buffer, 4)
         END SET
     END PROPERTY
 

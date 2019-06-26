@@ -730,6 +730,24 @@ FUNCTION FieldGet(nPos) AS USUAL CLIPPER
     DEFAULT( REF nPos, 1)
     _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldGet(nPos, REF xRetVal))
     RETURN xRetVal
+
+/// <summary>Read an array of bytes direct from the workarea buffer.</summary>
+/// <remarks>This will only work for DBF based workareas (not for Advantage workareas)</remarks>
+FUNCTION FieldGetBytes(nPos ) AS BYTE[] CLIPPER
+    LOCAL bRetVal := NULL AS BYTE[]
+     DEFAULT( REF nPos, 1)
+    _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldGetBytes(nPos, REF bRetVal))
+    RETURN bRetVal
+
+
+/// <summary>Write an array of bytes direct to the workarea buffer.</summary>
+/// <remarks>This will only work for DBF based workareas (not for Advantage workareas)</remarks>
+FUNCTION FieldPutBytes(nPos AS USUAL, aBytes as BYTE[]) AS LOGIC
+     DEFAULT( REF nPos, 1)
+    _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldPutBytes(nPos, aBytes))
+    RETURN TRUE
+
+
     
 FUNCTION FieldGetArea(workarea AS DWORD, symField AS SYMBOL) AS USUAL 
     LOCAL oldArea := VoDbGetSelect() AS DWORD

@@ -349,16 +349,19 @@ PUBLIC OVERRIDE METHOD Close() AS LOGIC
 	
 PUBLIC OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
 	LOCAL isOk AS LOGIC
-	
+	LOCAL lMemo := FALSE as LOGIC
 	isOk := SUPER:Create(openInfo)
-	IF  XSharp.RuntimeState.Ansi .AND. isOk
-		VAR sig := SELF:_Header:Version
-                //SET bit TO Force ANSI Signature
-		sig := sig |4
-                //Should we also SET the CodePage ??
-                //SELF:_Header:DbfCodePage := DbfCodePage.CP_DBF_WIN_ANSI
-		SELF:_Header:Version := sig
-	ENDIF
+	FOREACH var fld in SELF:_fields
+		IF fld:FieldType:IsMemo()
+		    lMemo := TRUE
+            EXIT
+        ENDIF
+    NEXT
+	IF lMemo
+        SELF:_Header:Version := DbfVersion.FoxPro2WithMemo
+    ELSE
+        SELF:_Header:Version := DbfVersion.FoxBaseDBase3NoMemo
+    ENDIF
     RETURN isOk
 
    

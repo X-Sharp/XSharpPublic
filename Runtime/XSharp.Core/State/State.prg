@@ -309,8 +309,8 @@ CLASS XSharp.RuntimeState
 	/// <summary>The DOS Codepage. This gets read at startup from the OS().</summary>
     /// <seealso cref="P:XSharp.RuntimeState.DosEncoding" />
     STATIC PROPERTY DosCodePage AS LONG 
-        GET 
-			RETURN GetValue<LONG>(Set.DOSCODEPAGE)
+        GET
+            RETURN Convert.ToInt32(GetValue<OBJECT>(Set.DOSCODEPAGE))
 		END GET
         SET 
 			SetValue<LONG>(Set.DOSCODEPAGE, VALUE) 
@@ -322,16 +322,16 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>Date Epoch value that determines how dates without century digits are interpreted.</summary>
     STATIC PROPERTY Epoch AS DWORD ;
-        GET GetValue<DWORD>(Set.EPOCH);
+        GET Convert.ToUInt32(GetValue<OBJECT>(Set.EPOCH));
         SET SetValue<DWORD>(Set.EPOCH, VALUE)
 
 	/// <summary>Date Epoch Year value. This gets set by the SetEpoch() function to the Epoch year % 100.</summary>
     STATIC PROPERTY EpochYear AS DWORD ;
-        GET GetValue<DWORD>(Set.EPOCHYEar)
+        GET Convert.ToUInt32(GetValue<OBJECT>(Set.EPOCHYEAR));
 
 	/// <summary>Date Epoch Century value. This gets set by the SetEpoch() function to the century in which the Epoch year falls.</summary>
     STATIC PROPERTY EpochCent AS DWORD ;
-        GET GetValue<DWORD>(Set.EPOCHCent)
+        GET Convert.ToUInt32(GetValue<OBJECT>(Set.EPOCHCENT));
 
 
 	/// <summary>String comparison Exact flag that determines how comparisons with the single '=' characters should be done.</summary>
@@ -363,7 +363,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>Number of tries that were done when the last lock operation failed.</summary>
     STATIC PROPERTY LockTries AS DWORD ;
-        GET GetValue<DWORD>(Set.LOCKTRIES);
+        GET Convert.ToUInt32(GetValue<OBJECT>(Set.LOCKTRIES));
         SET SetValue<DWORD>(Set.LOCKTRIES, VALUE)
 
     /// <summary>The setting that determines whether to use the High Performance (HP) locking schema for newly created .NTX files</summary>
@@ -377,9 +377,9 @@ CLASS XSharp.RuntimeState
 
 
 	/// <summary>The current default MemoBlock size.</summary>
-    STATIC PROPERTY MemoBlockSize AS DWORD;
-        GET GetValue<DWORD>(Set.MEMOBLOCKSIZE);
-        SET SetValue<DWORD>(Set.MEMOBLOCKSIZE, VALUE)
+    STATIC PROPERTY MemoBlockSize AS WORD;
+        GET Convert.ToUInt16(GetValue<OBJECT>(Set.MEMOBLOCKSIZE));
+        SET SetValue<WORD>(Set.MEMOBLOCKSIZE, VALUE)
 
 
 	/// <summary>Did the last RDD operation cause a Network Error ?</summary>
@@ -400,7 +400,7 @@ CLASS XSharp.RuntimeState
 	/// <summary>The Thousand separator</summary>
     /// <seealso cref="P:XSharp.RuntimeState.DecimalSep" />
     STATIC PROPERTY ThousandSep AS DWORD ;
-        GET GetValue<DWORD>(Set.THOUSANDSEP);
+        GET Convert.ToUInt32(GetValue<OBJECT>(Set.THOUSANDSEP));
         SET SetValue<DWORD>(Set.THOUSANDSEP, VALUE)
 
 
@@ -413,7 +413,7 @@ CLASS XSharp.RuntimeState
     /// <seealso cref="P:XSharp.RuntimeState.WinEncoding" />
     STATIC PROPERTY WinCodePage AS LONG
 	GET
-        RETURN GetValue<LONG>(Set.WINCODEPAGE)
+        RETURN Convert.ToInt32(GetValue<OBJECT>(Set.WINCODEPAGE))
 	END GET
 	SET 
         SetValue<LONG>(Set.WINCODEPAGE, VALUE)

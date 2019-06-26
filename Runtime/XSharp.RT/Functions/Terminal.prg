@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -104,3 +104,39 @@ FUNCTION _wait( prompt AS STRING ) AS STRING
 /// <exclude/>
 FUNCTION DoEvents() AS VOID
     System.Windows.Forms.Application.DoEvents()
+
+
+FUNCTION ShowArray  (aTest as array, cName := "" as STRING) AS VOID
+    LOCAL i         AS DWORD
+    LOCAL n         AS DWORD
+    LOCAL x         AS USUAL
+    LOCAL cOut      AS STRING
+    LOCAL cOutTemp := "" AS STRING
+
+    IF cName:Length == 0
+        cName := "a"
+    ENDIF
+
+    n := ALen(aTest)
+
+    FOR i := 1 TO n
+        cOut := cName + "[" + NTrim(i) + "]"
+        x    := aTest[i]
+
+        IF x:isArray
+            cOutTemp := cOut
+        ENDIF
+
+        cOut += " = "
+        cOut += AsString(x)
+        cOut += " ("
+        cOut += ValType(x)
+        cOut += ")"
+        Qout(cOut)
+
+        IF x:IsArray
+            ShowArray(x, cOutTemp)
+        ENDIF
+
+    NEXT
+    RETURN 

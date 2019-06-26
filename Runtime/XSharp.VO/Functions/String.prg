@@ -16,8 +16,62 @@ USING System.Text
 /// </returns>
 FUNCTION Crypt(cSource AS STRING,cKey AS STRING) AS STRING
 	LOCAL bSource AS BYTE[]
-    LOCAL bKey    AS BYTE[]
+	LOCAL bDest  AS BYTE[]
+	LOCAL bKey  AS BYTE[]
     LOCAL enc     AS Encoding
+    IF cSource?:Length == 0 .OR. cKey?:Length < 2
+        RETURN cSource
+    ENDIF
+    enc         := StringHelpers.WinEncoding
+    bSource     := enc:GetBytes(cSource)
+    bKey        := enc:GetBytes(cKey)
+    bDest 		:= Crypt(bSource, bKey)
+    cSource 	:= enc:GetString(bDest)
+	RETURN cSource
+
+
+/// <summary>
+/// Encrypt or decrypt a string handling its characters as single bytes (high order byte is ignored)
+/// </summary>
+/// <param name="cSource"></param>
+/// <param name="cKey"></param>
+/// <returns>
+/// </returns>
+FUNCTION CryptRaw(cSource AS STRING,cKey AS STRING) AS STRING
+	LOCAL bSource AS BYTE[]
+	LOCAL bDest  AS BYTE[]
+	LOCAL bKey  AS BYTE[]
+    IF cSource?:Length == 0 .OR. cKey?:Length < 2
+        RETURN cSource
+    ENDIF
+    bSource     := BYTE[]{cSource:Length}
+    FOR LOCAL n := 1 AS INT UPTO cSource:Length
+    	bSource[n] := unchecked( (BYTE)cSource[n-1] )
+    NEXT
+    bKey     := BYTE[]{cKey:Length}
+    FOR LOCAL n := 1 AS INT UPTO cKey:Length
+    	bKey[n] := unchecked( (BYTE)cKey[n-1] )
+    NEXT
+    
+    bDest := Crypt(bSource, bKey)
+
+    LOCAL sDest AS StringBuilder
+    sDest := StringBuilder{cSource:Length}
+    FOREACH b AS BYTE IN bDest
+    	sDest:Append((Char)b)
+    NEXT
+    
+	RETURN sDest:ToString()
+
+/// <summary>
+/// Encrypt or decrypt an array of bytes.
+/// </summary>
+/// <param name="bSource"></param>
+/// <param name="cKey"></param>
+/// <returns>
+/// </returns>
+FUNCTION Crypt(bSource AS BYTE[],bKey AS BYTE[]) AS BYTE[]
+	LOCAL bDest   AS BYTE[]
     LOCAL keyLen  AS INT
     LOCAL sourceLen AS INT
     LOCAL uiCode1 AS WORD
@@ -28,15 +82,19 @@ FUNCTION Crypt(cSource AS STRING,cKey AS STRING) AS STRING
     LOCAL nPos     AS INT
     LOCAL nKeyPos  AS INT
     LOCAL bCurrent AS BYTE
-    IF cSource?:Length == 0 .OR. cKey?:Length == 0
-        RETURN cSource
+    IF bSource:Length == 0 .OR. bKey?:Length < 2
+        RETURN bSource
     ENDIF
-    enc         := StringHelpers.WinEncoding
-    bSource     := enc:GetBytes(cSource)
-    bKey        := enc:GetBytes(cKey)
-    keyLen      := cKey:Length
-    sourceLen   := cSource:Length
+    keyLen      := bKey:Length
+    sourceLen   := bSource:Length
+/*  IF lCreateNewArray
+	    bDest       := BYTE[]{sourceLen}
+	    System.Array.Copy(bSource, bDest, sourceLen)
+    ELSE*/
+    	bDest := bSource
+//  END IF
     uiCode1     := (WORD) (bKey[1] ~ keyLen)
+    uiCode1     := (WORD) (((DWORD)bKey[1] + (DWORD)bKey[2] * (DWORD)256) ~ (DWORD)keyLen)
     uiCode2     := 0xAAAA
     nPos        := 1
     nKeyPos     := keyLen+1
@@ -66,12 +124,11 @@ FUNCTION Crypt(cSource AS STRING,cKey AS STRING) AS STRING
             uiCode2 := (WORD)( (uiCode2 & 0xFF00) | bNibble )
             uiCounter--
         ENDDO
-        bSource[nPos] := bCurrent ~ bNibble
+        bDest[nPos] := bCurrent ~ bNibble
         nPos ++
         nKeyPos++
     ENDDO
-    cSource := enc:GetString(bSource)
-	RETURN cSource
+	RETURN bDest
 
 /// <summary>
 /// Encrypt or decrypt a string, changing the contents of the original string as well as returning the encrypted string.

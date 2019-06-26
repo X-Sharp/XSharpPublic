@@ -101,8 +101,8 @@ CLASS DBFVFP INHERIT DBFCDX
     METHOD AddField(info AS RddFieldInfo) AS LOGIC
         LOCAL isOk AS LOGIC
         isok := SUPER:AddField( info )
-        IF String.Compare(info:Name, _NULLFLAGS,TRUE) == 0 .and. info IS DbfNullColumn
-            SELF:_NullColumn := info
+        IF String.Compare(info:Name, _NULLFLAGS,TRUE) == 0 .and. info IS DbfNullColumn VAR dbfnc
+            SELF:_NullColumn := dbfnc
         ENDIF
         IF info IS DbfColumn VAR column
             IF column:isVarLength

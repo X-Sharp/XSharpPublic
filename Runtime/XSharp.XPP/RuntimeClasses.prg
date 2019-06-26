@@ -386,8 +386,8 @@ CLASS XSharp.XPP.ClassObject
                     IF oSuper IS XSharp.XPP.ClassObject VAR rtClass
                         cSuperClass := rtClass:Name
                     ELSE
-                        IF oSuper IS System.Type
-                            oSuperType := oSuper
+                        IF oSuper IS System.Type var st
+                            oSuperType := st
                         ELSE
                             oSuperType := oSuper:GetType()
                         ENDIF

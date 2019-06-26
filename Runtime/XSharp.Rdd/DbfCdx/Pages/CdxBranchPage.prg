@@ -261,7 +261,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
  
         INTERNAL METHOD Split(oTarget AS CdxBranchPage, action AS CdxAction) AS CdxAction
-            LOCAL branches  := SELF:Branches AS List<CdxBranch>
+            VAR  branches  := (List<CdxBranch>) SELF:Branches
             VAR nPos := SELF:FindKey(action:Key,action:Recno, action:Key:Length)
             //Self:Debug("Split to page", oTarget:PageNo:ToString("X"))
             if nPos < self:NumKeys -1

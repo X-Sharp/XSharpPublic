@@ -79,20 +79,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
        INTERNAL OVERRIDE PROPERTY KeyBytes AS BYTE[]
             GET
-               if _pos >= 0 .and. _pos < SELF:_Page:NumKeys
+               IF _pos >= 0 .AND. _pos < SELF:_Page:NumKeys
                  RETURN SELF:_Page:GetKey(_pos)
-                endif
-                return null
+                ENDIF
+                RETURN NULL
             END GET
         END PROPERTY
 
 
         INTERNAL OVERRIDE PROPERTY ChildPageNo AS LONG
             GET
-                if _pos >= 0 .and. _pos < SELF:_Page:NumKeys
+                IF _pos >= 0 .AND. _pos < SELF:_Page:NumKeys
                     RETURN SELF:_Page:GetChildPage(_pos)
-                endif
-                return -1
+                ENDIF
+                RETURN -1
             END GET
         END PROPERTY
 
@@ -100,10 +100,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		// It is after the page_offset, which is a long, so 4 bytes after
         INTERNAL OVERRIDE PROPERTY Recno AS LONG
             GET
-                if _pos >= 0 .and. _pos < SELF:_Page:NumKeys
+                IF _pos >= 0 .AND. _pos < SELF:_Page:NumKeys
                     RETURN SELF:_Page:GetRecno(_pos)
                 ENDIF
-                return -1
+                RETURN -1
             END GET
         END PROPERTY
 

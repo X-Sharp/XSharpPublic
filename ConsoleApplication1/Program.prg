@@ -74,15 +74,15 @@ FUNCTION Start() AS VOID
     WAIT
     RETURN
 
-Function TestFptCreate() AS VOID
-    local aStruct as array
+FUNCTION TestFptCreate() AS VOID
+    LOCAL aStruct AS ARRAY
     aStruct := { ;
         {"NUMBER","N", 10, 0} ,;
         {"MEMO","M", 10, 0} }
     DbCreate("C:\test\testFpt",aStruct, "DBFCDX")
     DbCLoseArea()
     DbUseArea(TRUE, "DBFCDX", "C:\test\testFpt", "TEST")
-    FOR var i := 1 to 10
+    FOR VAR i := 1 TO 10
         DbAppend()
         FieldPut(1, i)
         FieldPut(2, Repl("X", 10))
@@ -91,36 +91,34 @@ Function TestFptCreate() AS VOID
     DbCloseArea()
     RETURN
 
-Function DescartesDbfTest as Void
+FUNCTION DescartesDbfTest AS VOID
 	RDDSetDefault("DBFVFP")
 	DbUseArea(TRUE, "DBFVFP", "c:\Descartes\testdbf\ZENSTATS.DBF","ZENSTATS")
-    //DbSetIndex("c:\Descartes\testdbf\ZENSTATS1Gen.NTX")
-    OrdSetFocus("recno")
+    DbSetIndex("c:\Descartes\testdbf\ZENSTATS1Gen.NTX")
     DbOrderInfo(DBOI_USER+42)
     DbGoTop()
-//    ? DbSeek("11768282018090611173")
+    ? DbSeek("117682820180906111733")
 //    DbOrderInfo(DBOI_USER+42)
 //    DbSetIndex("c:\Descartes\testdbf\zenstat2.ntx")
 //    DbOrderInfo(DBOI_USER+42)
 //    DbSetIndex("c:\Descartes\testdbf\zenstat3.ntx")
 //    DbOrderInfo(DBOI_USER+42)
 //    DbSetIndex("c:\Descartes\testdbf\zenstat9.ntx")
-//    DbOrderInfo(DBOI_USER+42)
-//	FOR VAR i := 1 to FCount()
-//        local oValue as object
-//        oValue := FieldGet(i)
-//        ? i, oValue
-//	NEXT
+	FOR VAR i := 1 TO FCount()
+        LOCAL oValue AS OBJECT
+        oValue := FieldGet(i)
+        ? i, oValue
+	NEXT
 	DBCloseArea()
 	RETURN
 
-Function FptMemoTest() AS VOID
+FUNCTION FptMemoTest() AS VOID
 	RDDSetDefault("DBFCDX")
 	DbUseArea(TRUE, "DBFCDX", "c:\download\Memos X#\SETUP.DBF","MEMOS")
-	FOR VAR i := 1 to FCount()
-        local oValue as object
+	FOR VAR i := 1 TO FCount()
+        LOCAL oValue AS OBJECT
         oValue := FieldGet(i)
-        if IsArray(oValue)
+        IF IsArray(oValue)
             ShowArray(oValue, "Field"+Ntrim(i))
         ELSE
             ? i, oValue, FieldGetBytes((LONG) i)
@@ -131,7 +129,7 @@ Function FptMemoTest() AS VOID
 	DBCloseArea()
 	RETURN
 FUNCTION testDbfFromChris( ) AS VOID
-local f as float
+LOCAL f AS FLOAT
 f := seconds()
 ? DbUseArea(,"DBFCDX","C:\test\Foo")
 ? DbReindex() // null reference exception
@@ -172,7 +170,7 @@ FUNCTION TestIndexUpdates()
     ? "CheckOrder Start"
     CheckOrder()
     ? "CheckOrder Stop"
-    Wait
+    WAIT
     _Quit()
     FOR  n := 1 UPTO changes
         VAR nRec := 1 + (n * 13) % (records - 1)

@@ -180,15 +180,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR type := SELF:_oRdd:_getUsualType(toConvert)
             SWITCH type
             CASE __UsualType.String
-                SELF:_keySize := (WORD) ((STRING)toConvert):Length
+                SELF:_sourceKeySize := SELF:_keySize := (WORD) ((STRING)toConvert):Length
             CASE __UsualType.Long
             CASE __UsualType.Float
             CASE __UsualType.Date
-                SELF:_keySize := 8      // all stored as numeric
+                SELF:_sourceKeySize := SELF:_keySize := 8      // all stored as numeric
             CASE __UsualType.Logic
-                SELF:_keySize := 1
+                SELF:_sourceKeySize := SELF:_keySize := 1
             OTHERWISE
-                SELF:_keySize := 0
+                SELF:_sourceKeySize := SELF:_keySize := 0
                 RETURN FALSE
             END SWITCH
             

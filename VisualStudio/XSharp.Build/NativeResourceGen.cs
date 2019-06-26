@@ -135,6 +135,7 @@ namespace XSharp.Build {
             string Result = null;
             cmds = new StringBuilder();
             if (this.numberofInputFiles > 0) {
+                cmds.Append("#define __VERSION__ " + Constants.Version.Replace(".","")  + " \r\n");
                 foreach(var item in this.Sources) {
                     try {
                         var fileName = item.GetMetadata("Fullpath");

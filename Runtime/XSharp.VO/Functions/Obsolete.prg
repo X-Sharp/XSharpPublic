@@ -899,3 +899,143 @@ FUNCTION GetDASPtr() AS IntPtr
 	
 
 
+// constants for the obsolete functions
+/// <exclude />
+DEFINE MEMORY_COLLECT := -1
+/// <exclude />
+DEFINE MEMORY_SYSTEM_FREE := 0
+/// <exclude />
+DEFINE MEMORY_SYSTEM_MAX := 1
+/// <exclude />
+DEFINE MEMORY_DYNINFOFREE := 2
+/// <exclude />
+DEFINE MEMORY_DYNINFOMAX := 3
+/// <exclude />
+DEFINE MEMORY_KIDSTACK_SIZE := 4
+/// <exclude />
+DEFINE MEMORY_KIDSTACK_FREE := 5
+/// <exclude />
+DEFINE MEMORY_STACK_SIZE := 6
+/// <exclude />
+DEFINE MEMORY_STACK_FREE := 7
+/// <exclude />
+DEFINE MEMORY_MAXATOM := 8
+/// <exclude />
+DEFINE MEMORY_ACTIVATION := 9
+/// <exclude />
+DEFINE MEMORY_PUBLIC := 10
+/// <exclude />
+DEFINE MEMORY_PRIVAT := 11
+/// <exclude />
+DEFINE MEMORY_DYNINFOUSED := 12
+/// <exclude />
+DEFINE MEMORY_MEMTOTAL := 13
+/// <exclude />
+DEFINE MEMORY_DS_SIZE := 14
+/// <exclude />
+DEFINE MEMORY_CS_SIZE := 15
+/// <exclude />
+DEFINE MEMORY_REGISTEREXIT_COUNT := 16
+/// <exclude />
+DEFINE MEMORY_REGCOLLNOTIFYSTART_COUNT := 17
+/// <exclude />
+DEFINE MEMORY_REGCOLLNOTIFYEND_COUNT := 18
+/// <exclude />
+DEFINE MEMORY_REGISTERKID := 19
+/// <exclude />
+DEFINE MEMORY_REGISTERAXIT := 20
+/// <exclude />
+DEFINE MEMORY_COLLECTCOUNT := 21
+/// <exclude />
+/// <exclude />
+DEFINE MEMORY_DYNINFOSIZE := 22
+/// <exclude />
+DEFINE MEMORY_RT_DGROUP := 23
+/// <exclude />
+DEFINE MEMORY_RT_DS := 24
+/// <exclude />
+DEFINE MEMORY_SS := 25
+/// <exclude />
+DEFINE MEMORY_DS := 26
+/// <exclude />
+/// <exclude />
+DEFINE MEMORY_CS := 27
+/// <exclude />
+DEFINE MEMORY_SEQUENCE := 28
+/// <exclude />
+DEFINE MEMORY_STACKKID := 29
+/// <exclude />
+DEFINE MEMORY_SP := 30
+/// <exclude />
+DEFINE MEMORY_GLOBALSEL := 31
+/// <exclude />
+DEFINE MEMORY_FUNCTIONCOUNT := 32
+/// <exclude />
+DEFINE MEMORY_CLASSCOUNT := 33
+/// <exclude />
+DEFINE MEMORY_DB_DS := 34
+/// <exclude />
+DEFINE MEMORY_DB_DS_SIZE := 35
+/// <exclude />
+DEFINE MEMORY_WINDOWS_SYSTEMRESOURCES := 100
+/// <exclude />
+DEFINE MEMORY_WINDOWS_GDIRESOURCES := 101
+/// <exclude />
+DEFINE MEMORY_WINDOWS_USERRESOURCES := 102
+/// <exclude />
+DEFINE GC_TYPE_STACK := 1
+/// <exclude />
+DEFINE GC_TYPE_REGISTERKID := 2
+/// <exclude />
+DEFINE GC_ENTRY_MAX_STRSIZE := 48
+
+/// <exclude />
+DEFINE CLASS_DEBUG_ALLOC := 0x01
+/// <exclude />
+DEFINE CLASS_DEBUG_INIT := 0x02
+/// <exclude />
+DEFINE CLASS_DEBUG_AXIT := 0x04
+/// <exclude />
+DEFINE CLASS_DEBUG_SEND := 0x08
+/// <exclude />
+DEFINE CLASS_DEBUG_IVARGET := 0x10
+/// <exclude />
+DEFINE CLASS_DEBUG_IVARPUT := 0x20
+/// <exclude />
+DEFINE CLASS_DEBUG_DECLARE := 0x40
+/// <exclude />
+DEFINE CLASS_DEBUG_UNDECL := 0x80
+/// <exclude />
+DEFINE CLASS_DEBUG_METHDECL := 0x100
+/// <exclude />
+DEFINE CLASS_DEBUG_NOIVARGET := 0x200
+/// <exclude />
+DEFINE CLASS_DEBUG_NOIVARPUT := 0x400
+/// <exclude />
+DEFINE CLASS_DEBUG_ALL := 0xFFFFFFFF
+
+/// <exclude />
+DEFINE WAGNER_STRING := (0)
+/// <exclude />
+DEFINE WAGNER_OBJECT := (2)
+/// <exclude />
+DEFINE WAGNER_ARRAY := (4)
+/// <exclude />
+DEFINE WAGNER_FIXED := (6)
+/// <exclude />
+DEFINE WAGNER_FLOAT := (8)
+/// <exclude />
+DEFINE WAGNER_ARRAY_PAGE := (10)
+/// <exclude />
+/// <exclude />
+DEFINE WAGNER_BINARY := (0x40)
+/// <exclude />
+DEFINE WAGNER_STATIC := (0x80)
+/// <exclude />
+DEFINE WAGNER_FORWARD := (0xFFFD)
+/// <exclude />
+DEFINE WAGNER_HAS_AXIT := (0x80)
+/// <exclude />
+DEFINE WAGNER_AXIT_CALLED := (0x04)
+/// <exclude />
+DEFINE WAGNER_OLDSPACE_STATE := (0x02)

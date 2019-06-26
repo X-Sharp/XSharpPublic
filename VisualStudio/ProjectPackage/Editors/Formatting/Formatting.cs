@@ -309,14 +309,17 @@ namespace XSharp.Project
                     int lineContinue = 0;
                     int prevIndentSize = 0;
                     int continueOffset = _indentSize * _indentFactor;
+                    char prevstart = '\0';
                     foreach (var snapLine in lines)
                     {
+                        bool lineAfterAttributes = false;
                         // Ignore Empty lines
                         if (snapLine.Length > 0)
                         {
                             SnapshotSpan sSpan = new SnapshotSpan(snapLine.Start, snapLine.End);
                             string lineText = sSpan.GetText();
                             lineText = lineText.Trim();
+
                             if (lineText.Length > 0)
                             {
                                 char start = lineText.Substring(0, 1)[0];
@@ -324,10 +327,15 @@ namespace XSharp.Project
                                 //
                                 if (lineContinue==1)
                                 {
-                                    if ( start != '[')
+                                    if ( prevstart != '[')
                                     {
                                         indentSize = prevIndentSize + continueOffset;
                                     }
+                                    else
+                                    {
+                                        lineAfterAttributes = true;
+                                    }
+
                                 }
                                 else if (lineContinue>1)
                                 {
@@ -337,6 +345,7 @@ namespace XSharp.Project
                                 {
                                     indentSize = getDesiredIndentationInDocument(snapLine, regions, out inComment);
                                 }
+                                prevstart = start;
                                 // Not in comment, Multiple line but not Attribute
                                 if (!inComment && (end == ';') )
                                 {
@@ -348,8 +357,11 @@ namespace XSharp.Project
                                     }
                                     else if (lineContinue ==1)
                                     {
-                                        lineContinue = 2;
-                                        prevIndentSize = indentSize;
+                                        if (!lineAfterAttributes)
+                                        {
+                                            lineContinue = 2;
+                                            prevIndentSize = indentSize;
+                                        }
                                     }
                                 }
                                 else

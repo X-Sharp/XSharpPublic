@@ -153,7 +153,18 @@ namespace XSharp.Project
                     ((XSharpProjectPackage)package).OpenInBrowser("https://www.xsharp.info");
                     break;
                 case IdOnlineHelp:
-                    ((XSharpProjectPackage)package).OpenInBrowser("https://www.xsharp.info/help");
+                    string REG_KEY = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;
+                    string InstallPath = (string)Microsoft.Win32.Registry.GetValue(REG_KEY, XSharp.Constants.RegistryValue, "");
+                    string docPath = System.IO.Path.Combine(InstallPath, @"Help\XSharp.chm");
+                    if (System.IO.File.Exists(docPath))
+                    {
+                        System.Diagnostics.Process.Start(docPath);
+                    }
+                    else
+                    {
+                        VsShellUtilities.ShowMessageBox(ServiceProvider, "Cannot find file \"" + docPath + "\"", "Can't show documentation", OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                    }
+
                     break;
             }
 

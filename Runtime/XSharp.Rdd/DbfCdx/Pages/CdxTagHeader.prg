@@ -21,9 +21,9 @@
         char    lang                0x44        26      . ADI files for Advantage use this !
         char    collatver           0x76        4       .
         char    reserved            0x7a        372     .
-        char    vfpcodepage         0x1ee       5       .
-        char    ignorecase          0x1f3       1       .
-        char    expression length   0x1f4       2       .
+        char    vfpcollation        0x1ee       8       .
+        //char    ignorecase          0x1f3       1       .  // overlaps ?
+        //char    expression length   0x1f4       2       .  // overlaps ?
 		int2	descend;			0x1f6 = 502 2       . 
 		int2	forExprPos          0x1f8 = 504 2       .
 		int2	forExprLen;			0x1fa = 506 2       . Key Expression Length + For Expression Length Max 512
@@ -97,19 +97,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _vfpCollation  := _GetString(CDXTAGHEADER_VFPCOLLATION, 8)
 
 #region Fields
-        PRIVATE _rootPage as LONG
-        PRIVATE _freeList AS LONG
-        PRIVATE _version as DWORD
-        PRIVATE _keyLength as WORD
-        PRIVATE _options as CdxOptions
-        PRIVATE _keyExprPos as WORD
-        PRIVATE _keyExprLen as WORD
-        PRIVATE _forExprPos as WORD
-        PRIVATE _forExprLen as WORD
-        PRIVATE _keyExpression as STRING
-        PRIVATE _forExpression AS STRING
-        PRIVATE _descending as LOGIC
-        PRIVATE _vfpCollation    as STRING    // GENERAL, ARABIC, DUTCH, GREEK, GERMAN etc
+        PRIVATE _rootPage       as LONG
+        PRIVATE _freeList       AS LONG
+        PRIVATE _version        as DWORD
+        PRIVATE _keyLength      as WORD
+        PRIVATE _options        as CdxOptions
+        PRIVATE _keyExprPos     as WORD
+        PRIVATE _keyExprLen     as WORD
+        PRIVATE _forExprPos     as WORD
+        PRIVATE _forExprLen     as WORD
+        PRIVATE _keyExpression  as STRING
+        PRIVATE _forExpression  AS STRING
+        PRIVATE _descending     as LOGIC
+        PRIVATE _vfpCollation   as STRING    // GENERAL, ARABIC, DUTCH, GREEK, GERMAN etc
 #endregion
 #region properties
 
@@ -164,6 +164,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		PRIVATE CONST CDXTAGHEADER_KEYLENGTH	   := 0x0c	AS WORD		// Length of key
 		PRIVATE CONST CDXTAGHEADER_OPTIONS		   := 0x0e	AS WORD		// CdxOptions : bit field
 		PRIVATE CONST CDXTAGHEADER_Sig			   := 0x0f   AS WORD
+        PRIVATE CONST CDXTAGHEADER_VFPCOLLATION    := 0x1ee AS WORD     // 8 bytes GENERAL, MACHINE, DUTCH, GERMAN , NORDIC etc
+
         // Harbour documents these values
         PRIVATE CONST CDXTAGHEADER_HEADERLEN      := 0x10 AS WORD  // 2
         PRIVATE CONST CDXTAGHEADER_PAGELEN        := 0x12 AS WORD  // 2
@@ -172,9 +174,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE CONST CDXTAGHEADER_LANG           := 0x44 AS WORD // 26 bytes
         PRIVATE CONST CDXTAGHEADER_COLLATVER      := 0x76 AS WORD // 4 bytes
         PRIVATE CONST CDXTAGHEADER_RESERVED2      := 0x7a AS WORD // 372 bytes
-        PRIVATE CONST CDXTAGHEADER_VFPCOLLATION    := 0x1ee AS WORD // 5 bytes
-        PRIVATE CONST CDXTAGHEADER_IGNORECASE     := 0x1f3 AS WORD // 1 byte
-        PRIVATE CONST CDXTAGHEADER_EXPR_LEN       := 0x1f4 AS WORD // 2 byte2
+        //PRIVATE CONST CDXTAGHEADER_IGNORECASE     := 0x1f3 AS WORD // 1 byte
+        //PRIVATE CONST CDXTAGHEADER_EXPR_LEN       := 0x1f4 AS WORD // 2 byte2
         // end of Harbour defines
 		PRIVATE CONST CDXTAGHEADER_DESCENDING	  := 0x1f6	AS WORD		// 0 = Ascending, 1 = Descending
 		PRIVATE CONST CDXTAGHEADER_FOREXPRPOS     := 0x1f8	AS WORD		// Offset of Filter expression

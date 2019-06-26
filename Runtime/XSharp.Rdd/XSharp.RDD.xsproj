@@ -136,6 +136,7 @@
     <Compile Include="DbfCdx\Tag\CdxTagLock.prg" />
     <Compile Include="DbfCdx\Tag\CdxTagNavigation.prg" />
     <Compile Include="DbfCdx\Tag\CdxTagUpdate.prg" />
+    <Compile Include="DbfCdx\VfpCollation.prg" />
     <Compile Include="DbfNtx\DbfNtx.prg" />
     <Compile Include="DbfNtx\Order\NtxOrderIO.prg" />
     <Compile Include="DbfNtx\Order\NtxOrder.prg" />
@@ -184,6 +185,9 @@
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="VfpCollations.Designer.prg">
+      <DependentUpon>VfpCollations.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ACE\" />
@@ -196,6 +200,7 @@
     <Folder Include="Dbf\" />
     <Folder Include="Other\" />
     <Folder Include="Properties\" />
+    <Folder Include="VfpCollations\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\commonAssemblyInfo.prg">
@@ -217,6 +222,92 @@
     <None Include="DbfCdx\CdxReadme.txt" />
     <None Include="DbfCdx\Todo.txt" />
     <None Include="DbfNtx\NtxFormat.txt" />
+    <None Include="VfpCollations\CZECH_1250_Collate.bin" />
+    <None Include="VfpCollations\CZECH_1250_Combi.bin" />
+    <None Include="VfpCollations\CZECH_852_Collate.bin" />
+    <None Include="VfpCollations\CZECH_852_Combi.bin" />
+    <None Include="VfpCollations\CZECH_895_Collate.bin" />
+    <None Include="VfpCollations\CZECH_895_Combi.bin" />
+    <None Include="VfpCollations\DUTCH_1252_Collate.bin" />
+    <None Include="VfpCollations\DUTCH_437_Collate.bin" />
+    <None Include="VfpCollations\DUTCH_850_Collate.bin" />
+    <None Include="VfpCollations\GENERAL_1250_Collate.bin" />
+    <None Include="VfpCollations\GENERAL_1252_Collate.bin" />
+    <None Include="VfpCollations\GENERAL_1254_Collate.bin" />
+    <None Include="VfpCollations\GENERAL_437_Collate.bin" />
+    <None Include="VfpCollations\GENERAL_620_Collate.bin" />
+    <None Include="VfpCollations\GENERAL_850_Collate.bin" />
+    <None Include="VfpCollations\GENERAL_852_Collate.bin" />
+    <None Include="VfpCollations\GENERAL_857_Collate.bin" />
+    <None Include="VfpCollations\GENERAL_861_Collate.bin" />
+    <None Include="VfpCollations\GENERAL_865_Collate.bin" />
+    <None Include="VfpCollations\GENERAL_895_Collate.bin" />
+    <None Include="VfpCollations\GERMAN_1252_Collate.bin" />
+    <None Include="VfpCollations\GERMAN_437_Collate.bin" />
+    <None Include="VfpCollations\GREEK_1253_Collate.bin" />
+    <None Include="VfpCollations\GREEK_737_Collate.bin" />
+    <None Include="VfpCollations\HUNGARY_1250_Collate.bin" />
+    <None Include="VfpCollations\HUNGARY_1250_Combi.bin" />
+    <None Include="VfpCollations\HUNGARY_852_Collate.bin" />
+    <None Include="VfpCollations\HUNGARY_852_Combi.bin" />
+    <None Include="VfpCollations\ICELAND_1252_Collate.bin" />
+    <None Include="VfpCollations\ICELAND_437_Collate.bin" />
+    <None Include="VfpCollations\ICELAND_850_Collate.bin" />
+    <None Include="VfpCollations\ICELAND_861_Collate.bin" />
+    <None Include="VfpCollations\MACHINE_1250_Collate.bin" />
+    <None Include="VfpCollations\MACHINE_1251_Collate.bin" />
+    <None Include="VfpCollations\MACHINE_1252_Collate.bin" />
+    <None Include="VfpCollations\MACHINE_1253_Collate.bin" />
+    <None Include="VfpCollations\MACHINE_1254_Collate.bin" />
+    <None Include="VfpCollations\MACHINE_437_Collate.bin" />
+    <None Include="VfpCollations\MACHINE_620_Collate.bin" />
+    <None Include="VfpCollations\MACHINE_737_Collate.bin" />
+    <None Include="VfpCollations\MACHINE_850_Collate.bin" />
+    <None Include="VfpCollations\MACHINE_852_Collate.bin" />
+    <None Include="VfpCollations\MACHINE_857_Collate.bin" />
+    <None Include="VfpCollations\MACHINE_861_Collate.bin" />
+    <None Include="VfpCollations\MACHINE_865_Collate.bin" />
+    <None Include="VfpCollations\MACHINE_866_Collate.bin" />
+    <None Include="VfpCollations\MACHINE_895_Collate.bin" />
+    <None Include="VfpCollations\NORDAN_1252_Collate.bin" />
+    <None Include="VfpCollations\NORDAN_1252_Combi.bin" />
+    <None Include="VfpCollations\NORDAN_437_Collate.bin" />
+    <None Include="VfpCollations\NORDAN_437_Combi.bin" />
+    <None Include="VfpCollations\NORDAN_850_Collate.bin" />
+    <None Include="VfpCollations\NORDAN_850_Combi.bin" />
+    <None Include="VfpCollations\NORDAN_865_Collate.bin" />
+    <None Include="VfpCollations\NORDAN_865_Combi.bin" />
+    <None Include="VfpCollations\POLISH_1250_Collate.bin" />
+    <None Include="VfpCollations\POLISH_620_Collate.bin" />
+    <None Include="VfpCollations\POLISH_852_Collate.bin" />
+    <None Include="VfpCollations\RUSSIAN_1251_Collate.bin" />
+    <None Include="VfpCollations\RUSSIAN_866_Collate.bin" />
+    <None Include="VfpCollations\SLOVAK_1250_Collate.bin" />
+    <None Include="VfpCollations\SLOVAK_1250_Combi.bin" />
+    <None Include="VfpCollations\SLOVAK_852_Collate.bin" />
+    <None Include="VfpCollations\SLOVAK_852_Combi.bin" />
+    <None Include="VfpCollations\SLOVAK_895_Collate.bin" />
+    <None Include="VfpCollations\SLOVAK_895_Combi.bin" />
+    <None Include="VfpCollations\SPANISH_1252_Collate.bin" />
+    <None Include="VfpCollations\SPANISH_1252_Combi.bin" />
+    <None Include="VfpCollations\SPANISH_437_Collate.bin" />
+    <None Include="VfpCollations\SPANISH_437_Combi.bin" />
+    <None Include="VfpCollations\SPANISH_850_Collate.bin" />
+    <None Include="VfpCollations\SPANISH_850_Combi.bin" />
+    <None Include="VfpCollations\SWEFIN_1252_Collate.bin" />
+    <None Include="VfpCollations\SWEFIN_437_Collate.bin" />
+    <None Include="VfpCollations\SWEFIN_850_Collate.bin" />
+    <None Include="VfpCollations\SWEFIN_865_Collate.bin" />
+    <None Include="VfpCollations\TURKISH_1254_Collate.bin" />
+    <None Include="VfpCollations\TURKISH_857_Collate.bin" />
+    <None Include="VfpCollations\UNIQWT_1252_Collate.bin" />
+    <None Include="VfpCollations\UNIQWT_437_Collate.bin" />
+    <None Include="VfpCollations\UNIQWT_850_Collate.bin" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="VfpCollations.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

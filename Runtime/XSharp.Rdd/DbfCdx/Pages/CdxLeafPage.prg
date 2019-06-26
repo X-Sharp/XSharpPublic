@@ -135,7 +135,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF IS CdxTagList
                 TrailByte := 0
             ELSEIF Tag != NULL
-                TrailByte := (BYTE) (IIF(Tag:KeyType == __UsualType.String, 32, 0) )
+                IF Tag:Collation != NULL
+                    TrailByte := 0
+                ELSE
+                    TrailByte := (BYTE) (IIF(Tag:KeyType == __UsualType.String, 32, 0) )
+                ENDIF
             ELSE
                 TrailByte := 32
             ENDIF
@@ -143,7 +147,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROTECTED VIRTUAL METHOD _setTag(newTag AS CdxTag) AS VOID
             _tag := newTag
             IF newTag != NULL
-                TrailByte := (BYTE) (IIF(_tag:KeyType == __UsualType.String, 32, 0) )
+                IF _Tag:Collation != NULL
+                    TrailByte := 0
+                ELSE
+                    TrailByte := (BYTE) (IIF(_Tag:KeyType == __UsualType.String, 32, 0) )
+                ENDIF
             ENDIF
 
         INTERNAL VIRTUAL METHOD Initialize(nKeyLength AS WORD) AS VOID
@@ -619,7 +627,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             //Debug("New", oPageR:PageNo:ToString("X"))
             VAR leaves      := _leaves
             IF action:Recno > 0
-                leaves := SELF:GetLeaves()
+                leaves := (List<CdxLeaf>) SELF:GetLeaves()
                 VAR nTrailCount := SELF:_getTrailCount(action:Key)
                 LOCAL nDupCount AS BYTE
                 VAR nPos := SELF:FindKey(action:Key,action:Recno,action:Key:Length)

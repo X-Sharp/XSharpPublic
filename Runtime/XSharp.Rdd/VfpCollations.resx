@@ -1,0 +1,364 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="CZECH_1250_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\CZECH_1250_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CZECH_1250_COMBI" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\CZECH_1250_Combi.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CZECH_852_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\CZECH_852_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CZECH_852_COMBI" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\CZECH_852_Combi.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CZECH_895_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\CZECH_895_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CZECH_895_COMBI" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\CZECH_895_Combi.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="DUTCH_1252_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\DUTCH_1252_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="DUTCH_437_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\DUTCH_437_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="DUTCH_850_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\DUTCH_850_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="GENERAL_1250_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\GENERAL_1250_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="GENERAL_1252_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\GENERAL_1252_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="GENERAL_1254_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\GENERAL_1254_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="GENERAL_437_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\GENERAL_437_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="GENERAL_620_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\GENERAL_620_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="GENERAL_850_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\GENERAL_850_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="GENERAL_852_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\GENERAL_852_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="GENERAL_857_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\GENERAL_857_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="GENERAL_861_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\GENERAL_861_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="GENERAL_865_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\GENERAL_865_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="GENERAL_895_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\GENERAL_895_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="GERMAN_1252_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\GERMAN_1252_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="GERMAN_437_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\GERMAN_437_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="GREEK_1253_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\GREEK_1253_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="GREEK_737_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\GREEK_737_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="HUNGARY_1250_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\HUNGARY_1250_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="HUNGARY_1250_COMBI" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\HUNGARY_1250_Combi.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="HUNGARY_852_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\HUNGARY_852_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="HUNGARY_852_COMBI" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\HUNGARY_852_Combi.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ICELAND_1252_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\ICELAND_1252_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ICELAND_437_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\ICELAND_437_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ICELAND_850_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\ICELAND_850_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ICELAND_861_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\ICELAND_861_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MACHINE_1250_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\MACHINE_1250_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MACHINE_1251_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\MACHINE_1251_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MACHINE_1252_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\MACHINE_1252_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MACHINE_1253_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\MACHINE_1253_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MACHINE_1254_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\MACHINE_1254_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MACHINE_437_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\MACHINE_437_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MACHINE_620_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\MACHINE_620_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MACHINE_737_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\MACHINE_737_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MACHINE_850_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\MACHINE_850_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MACHINE_852_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\MACHINE_852_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MACHINE_857_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\MACHINE_857_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MACHINE_861_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\MACHINE_861_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MACHINE_865_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\MACHINE_865_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MACHINE_866_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\MACHINE_866_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MACHINE_895_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\MACHINE_895_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="NORDAN_1252_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\NORDAN_1252_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="NORDAN_1252_COMBI" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\NORDAN_1252_Combi.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="NORDAN_437_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\NORDAN_437_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="NORDAN_437_COMBI" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\NORDAN_437_Combi.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="NORDAN_850_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\NORDAN_850_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="NORDAN_850_COMBI" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\NORDAN_850_Combi.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="NORDAN_865_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\NORDAN_865_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="NORDAN_865_COMBI" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\NORDAN_865_Combi.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="POLISH_1250_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\POLISH_1250_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="POLISH_620_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\POLISH_620_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="POLISH_852_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\POLISH_852_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="RUSSIAN_1251_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\RUSSIAN_1251_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="RUSSIAN_866_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\RUSSIAN_866_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SLOVAK_1250_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\SLOVAK_1250_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SLOVAK_1250_COMBI" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\SLOVAK_1250_Combi.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SLOVAK_852_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\SLOVAK_852_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SLOVAK_852_COMBI" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\SLOVAK_852_Combi.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SLOVAK_895_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\SLOVAK_895_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SLOVAK_895_COMBI" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\SLOVAK_895_Combi.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SPANISH_1252_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\SPANISH_1252_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SPANISH_1252_COMBI" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\SPANISH_1252_Combi.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SPANISH_437_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\SPANISH_437_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SPANISH_437_COMBI" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\SPANISH_437_Combi.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SPANISH_850_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\SPANISH_850_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SPANISH_850_COMBI" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\SPANISH_850_Combi.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SWEFIN_1252_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\SWEFIN_1252_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SWEFIN_437_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\SWEFIN_437_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SWEFIN_850_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\SWEFIN_850_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SWEFIN_865_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\SWEFIN_865_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="TURKISH_1254_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\TURKISH_1254_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="TURKISH_857_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\TURKISH_857_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="UNIQWT_1252_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\UNIQWT_1252_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="UNIQWT_437_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\UNIQWT_437_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="UNIQWT_850_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\UNIQWT_850_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+</root>

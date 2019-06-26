@@ -952,7 +952,7 @@ BEGIN NAMESPACE XSharp.RDD
                             FindCbType()
                         ENDIF
                         IF oCbType != NULL
-                            oBlock := Activator.CreateInstance(oCbType, <OBJECT>{oBlock, sBlock, isBlock, addsMemVars})
+                            oBlock := (ICodeBlock) Activator.CreateInstance(oCbType, <OBJECT>{oBlock, sBlock, isBlock, addsMemVars})
                         ENDIF
                     ENDIF
 				ENDIF

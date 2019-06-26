@@ -5,7 +5,10 @@
 USING XSharp.RDD
 FUNCTION Start() AS VOID
     TRY
-        TestDbfFromChris()
+        //testFptCreate()
+        DescartesDbfTest()
+        //FptMemoTest()
+        //TestDbfFromChris()
         //TestIndexUpdates()
         //testVFPFiles()
         //testOrdNameInvalid()
@@ -70,8 +73,63 @@ FUNCTION Start() AS VOID
     END TRY
     WAIT
     RETURN
+
+FUNCTION TestFptCreate() AS VOID
+    LOCAL aStruct AS ARRAY
+    aStruct := { ;
+        {"NUMBER","N", 10, 0} ,;
+        {"MEMO","M", 10, 0} }
+    DbCreate("C:\test\testFpt",aStruct, "DBFCDX")
+    DbCLoseArea()
+    DbUseArea(TRUE, "DBFCDX", "C:\test\testFpt", "TEST")
+    FOR VAR i := 1 TO 10
+        DbAppend()
+        FieldPut(1, i)
+        FieldPut(2, Repl("X", 10))
+    NEXT
+    DbCommit()
+    DbCloseArea()
+    RETURN
+
+FUNCTION DescartesDbfTest AS VOID
+	RDDSetDefault("DBFVFP")
+	DbUseArea(TRUE, "DBFVFP", "c:\Descartes\testdbf\ZENSTATS.DBF","ZENSTATS")
+    DbSetIndex("c:\Descartes\testdbf\ZENSTATS1Gen.NTX")
+    DbOrderInfo(DBOI_USER+42)
+    DbGoTop()
+    ? DbSeek("117682820180906111733")
+//    DbOrderInfo(DBOI_USER+42)
+//    DbSetIndex("c:\Descartes\testdbf\zenstat2.ntx")
+//    DbOrderInfo(DBOI_USER+42)
+//    DbSetIndex("c:\Descartes\testdbf\zenstat3.ntx")
+//    DbOrderInfo(DBOI_USER+42)
+//    DbSetIndex("c:\Descartes\testdbf\zenstat9.ntx")
+	FOR VAR i := 1 TO FCount()
+        LOCAL oValue AS OBJECT
+        oValue := FieldGet(i)
+        ? i, oValue
+	NEXT
+	DBCloseArea()
+	RETURN
+
+FUNCTION FptMemoTest() AS VOID
+	RDDSetDefault("DBFCDX")
+	DbUseArea(TRUE, "DBFCDX", "c:\download\Memos X#\SETUP.DBF","MEMOS")
+	FOR VAR i := 1 TO FCount()
+        LOCAL oValue AS OBJECT
+        oValue := FieldGet(i)
+        IF IsArray(oValue)
+            ShowArray(oValue, "Field"+Ntrim(i))
+        ELSE
+            ? i, oValue, FieldGetBytes((LONG) i)
+        ENDIF
+
+		
+	NEXT
+	DBCloseArea()
+	RETURN
 FUNCTION testDbfFromChris( ) AS VOID
-local f as float
+LOCAL f AS FLOAT
 f := seconds()
 ? DbUseArea(,"DBFCDX","C:\test\Foo")
 ? DbReindex() // null reference exception
@@ -112,7 +170,7 @@ FUNCTION TestIndexUpdates()
     ? "CheckOrder Start"
     CheckOrder()
     ? "CheckOrder Stop"
-    Wait
+    WAIT
     _Quit()
     FOR  n := 1 UPTO changes
         VAR nRec := 1 + (n * 13) % (records - 1)

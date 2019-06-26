@@ -2344,7 +2344,7 @@ CASE DbfLockingModel.Harbour64
         SELF:FileSize := 0x7ffffffeU
         SELF:RecordSize := 1U
     SELF:Direction := 1
-    CASE DbfLockingModel.VOAnsi
+CASE DbfLockingModel.VOAnsi
     SELF:Offset     := 0x80000000
     SELF:FileSize   := 0x7fffffffU
     SELF:RecordSize := 1U

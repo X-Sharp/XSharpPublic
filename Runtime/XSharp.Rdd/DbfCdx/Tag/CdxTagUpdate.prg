@@ -153,7 +153,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 oPage:LeftPtr := -1
                 // if oPageL has no LeftPtr .and. also no RightPtr then the level may be removed ?
-                Debug.Assert(pageL:HasLeft .or. pageL:HasRight)
+                Debug.Assert(pageL:HasLeft .OR. pageL:HasRight)
             ENDIF
             IF oPage:HasRight
                 VAR pageR := SELF:GetPage(oPage:RightPtr)
@@ -185,52 +185,52 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN result
 
-        INTERNAL METHOD FindParent(oPage as CdxTreePage) AS CdxTreePage
+        INTERNAL METHOD FindParent(oPage AS CdxTreePage) AS CdxTreePage
             VAR oParent   := SELF:Stack:Getparent(oPage) ASTYPE  CdxBranchPage
             IF oParent == NULL
                 // walk the whole level to find the page above this one
-                FOREACH VAR oLoop in oPage:CurrentLevel
-                    oParent := SELF:Stack:GetParent(oLoop)
+                FOREACH VAR oLoop IN oPage:CurrentLevel
+                    oParent := (CdxBranchPage) SELF:Stack:GetParent(oLoop)
                     IF oParent != NULL_OBJECT
                         EXIT
                     ENDIF
                 NEXT
             ENDIF
-            if oParent != NULL
-                if oParent:FindPage(oPage:PageNo) == -1
-                    local found := FALSE as LOGIC
+            IF oParent != NULL
+                IF oParent:FindPage(oPage:PageNo) == -1
+                    LOCAL found := FALSE AS LOGIC
                     IF oParent:HasRight
-                        var oRight := SELF:GetPage(oParent:RightPtr) ASTYPE CdxBranchPage
+                        VAR oRight := SELF:GetPage(oParent:RightPtr) ASTYPE CdxBranchPage
                         found   := oRight:FindPage(oPage:PageNo) != -1
-                        if found
+                        IF found
                             oParent := oRight
                         ENDIF
                     ENDIF
                     IF ! found
                         oParent := (CdxBranchPage) oParent:FirstPageOnLevel
-                        do while oParent != NULL .and. oParent:FindPage(oPage:PageNo) == -1
-                            if oParent:HasRight
+                        DO WHILE oParent != NULL .AND. oParent:FindPage(oPage:PageNo) == -1
+                            IF oParent:HasRight
                                 oParent := SELF:GetPage(oParent:RightPtr) ASTYPE CdxBranchPage
                             ELSE
                                 oParent := NULL
                             ENDIF
-                        enddo
+                        ENDDO
                     ENDIF
-                endif
+                ENDIF
             ENDIF
             RETURN oParent
 
         INTERNAL METHOD ChangeParent(action AS CdxAction) AS CdxAction
             VAR oPage     := action:Page
             VAR oPage2    := action:Page2   // only filled after a pagesplit
-            var oParent   := SELF:FindParent(oPage) astype CdxBranchPage
+            VAR oParent   := SELF:FindParent(oPage) ASTYPE CdxBranchPage
             VAR result    := CdxAction.Ok
             VAR oLast     := oPage:LastNode
-            LOCAL oGrandParent := NULL as CdxBranchPage
+            LOCAL oGrandParent := NULL AS CdxBranchPage
             IF oParent != NULL_OBJECT
                 LOCAL nPos AS LONG
                 nPos  := oParent:FindPage(oPage:PageNo)
-                IF nPos != -1 .and. nPos < oParent:NumKeys
+                IF nPos != -1 .AND. nPos < oParent:NumKeys
                     //oParent:Debug("Updated page", oPage:PageNo:ToString("X"))
                     result := oParent:Replace(nPos, oLast)
                     SELF:DoAction(result)
@@ -246,14 +246,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     // we need to propagate that to the top
                     IF result:Type == CdxActionType.OK
                         IF nPos == oParent:NumKeys -1
-                            oGrandParent := SELF:Stack:GetParent(oParent)
+                            oGrandParent := (CdxBranchPage) SELF:Stack:GetParent(oParent)
                         ENDIF
                     ENDIF
                 ELSE
                     // Should no longer happen since we now pass 2 pages
                     result := SELF:AddToParent(oParent, action)
                     IF result:Type == CdxActionType.OK
-                       oGrandParent := SELF:Stack:GetParent(oParent)
+                       oGrandParent := (CdxBranchPage) SELF:Stack:GetParent(oParent)
                     ENDIF
                 ENDIF
             ENDIF
@@ -262,7 +262,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN result
 
-        INTERNAL METHOD AddToParent(oParent as CdxBranchPage, action as CdxAction) AS CdxAction
+        INTERNAL METHOD AddToParent(oParent AS CdxBranchPage, action AS CdxAction) AS CdxAction
             VAR oPage     := action:Page 
             VAR result    := CdxAction.Ok
             VAR oLast     := oPage:LastNode
@@ -272,38 +272,38 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // the key on the Branch page to the right of the oParent
 
             // First check to see if the parent has room for an extra child node
-            if oParent:NumKeys >= oParent:MaxKeys
-                var tmp := CdxAction.AddBranch(oParent, oPage:PageNo, oLast:Recno,oLast:KeyBytes )
-                result := Self:AddBranch(tmp)
+            IF oParent:NumKeys >= oParent:MaxKeys
+                VAR tmp := CdxAction.AddBranch(oParent, oPage:PageNo, oLast:Recno,oLast:KeyBytes )
+                result := SELF:AddBranch(tmp)
                 IF ! result.IsOk()
-                    return Self:Doaction(result)
+                    RETURN SELF:Doaction(result)
                 ENDIF
             ENDIF
             // determine position where to insert the page
-            LOCAL nPos as LONG
+            LOCAL nPos AS LONG
             oLast    := oPage:LastNode
             nPos     := oParent:FindKey(oLast:KeyBytes, oLast:Recno, oLast:KeyBytes:Length)
-            if nPos >= oParent:NumKeys -1
+            IF nPos >= oParent:NumKeys -1
                 VAR nDiff := SELF:__Compare(oParent:LastNode:KeyBytes, oLast:KeyBytes, oLast:KeyBytes:Length)
                 IF nDiff > 0
                     //oParent:Debug("Inserted", oPage:PageType, oPage:PageNo:ToString("X"), oPage:LastNode:KeyBytes:ToAscii())
                     result := oParent:Insert(nPos, oLast)
                 ELSEIF nDiff == 0
                     nPos := oParent:NumKeys -1
-                    if oParent:GetRecno(nPos) > oLast:Recno
+                    IF oParent:GetRecno(nPos) > oLast:Recno
                         result := oParent:Insert(nPos, oLast)
                     ELSE
                         result := oParent:Add(oLast)
                     ENDIF
                 ELSE
                     // Make sure that the key is not already inserted on the next page
-                    local lMustAdd := TRUE as LOGIC
-                    if oParent:HasRight
-                        var oRightPage := (CdxBranchPage) SELF:GetPage(oParent:RightPtr)
-                        if oRightPage:FindPage(oLast:Page:PageNo) >= 0
+                    LOCAL lMustAdd := TRUE AS LOGIC
+                    IF oParent:HasRight
+                        VAR oRightPage := (CdxBranchPage) SELF:GetPage(oParent:RightPtr)
+                        IF oRightPage:FindPage(oLast:Page:PageNo) >= 0
                             lMustAdd := FALSE
                         ENDIF
-                    endif
+                    ENDIF
                     IF lMustAdd
                         //oParent:Debug("Added", oPage:PageType, oPage:PageNo:ToString("X"), oPage:LastNode:KeyBytes:ToAscii())
                         result := oParent:Add(oLast)
@@ -312,7 +312,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSE
                 result := oParent:Insert(nPos, oLast)
             ENDIF
-            return SELF:DoAction(result)
+            RETURN SELF:DoAction(result)
 
         INTERNAL METHOD InsertParent(action AS CdxAction) AS CdxAction
             // We assume the page in the action is the right of the two pages that need to get a parent
@@ -441,44 +441,44 @@ BEGIN NAMESPACE XSharp.RDD.CDX
      
         PRIVATE METHOD ExpandRecnos(action AS CdxAction) AS CdxAction
             VAR oPageL   := SELF:CurrentLeaf
-            var leaves   := oPageL:GetLeaves()
-            local result as CdxAction
+            VAR leaves   := oPageL:GetLeaves()
+            LOCAL result AS CdxAction
             // Only allocate page when we think that it does not fit.
             // To be safe we assume expanding takes 1 byte per key + we want the new key to fit as well
-            if oPageL:FreeSpace > (oPageL:DataBytes + SELF:KeyLength + leaves:Count +1)
+            IF oPageL:FreeSpace > (oPageL:DataBytes + SELF:KeyLength + leaves:Count +1)
                 SELF:SetLeafProperties(oPageL)
                 oPageL:SetLeaves(leaves, 0, leaves:Count)
                 result := oPageL:Insert(action:Pos, action:Recno, action:Key)
-                return result
-            endif
-            var nHalf    := leaves:Count/2
+                RETURN result
+            ENDIF
+            VAR nHalf    := leaves:Count/2
             VAR oPageR   := SELF:NewLeafPage()
             oPageL:AddRightSibling(oPageR)
             SELF:SetLeafProperties(oPageL)
             result := oPageL:SetLeaves(leaves, 0, nHalf)
             IF ! result:IsOk()
                 result := SELF:DoAction(result)
-            endif
+            ENDIF
             SELF:SetLeafProperties(oPageR)
             result := oPageR:SetLeaves(leaves, nHalf, leaves:Count - nHalf)
             IF ! result:IsOk()
                 result := SELF:DoAction(result)
-            endif
-            var pos := action:Pos
-            if  pos != -1
+            ENDIF
+            VAR pos := action:Pos
+            IF  pos != -1
                 //oPageL:Debug("Expand for recno ", action:Recno, "position", pos, "half", nHalf)
-                if pos < nHalf
+                IF pos < nHalf
                     result := oPageL:Insert(pos, action:Recno, action:Key)
                     
-                else
+                ELSE
                     result := oPageR:Insert(pos - nHalf, action:Recno, action:Key)
-                endif
-            else
+                ENDIF
+            ELSE
                 result := oPageR:Add(action:Recno, action:Key)
-            endif
+            ENDIF
             IF ! result:IsOk()
                 result := SELF:DoAction(result)
-            endif
+            ENDIF
             action := CdxAction.ChangeParent(oPageL, oPageR)
             result := SELF:DoAction(action)
             SELF:AdjustStack(oPageL, oPageR, oPageR:NumKeys)
@@ -591,7 +591,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             IF page:NumKeys > 0
                 VAR pageNo  := page:LastNode:ChildPageNo
-                page    := SELF:OrderBag:GetPage(pageNo, _keySize, SELF)
+                page    := (CdxTreePage) SELF:OrderBag:GetPage(pageNo, _keySize, SELF)
                 IF page IS CdxLeafPage 
                     SELF:PushPage(page, 0)
                     RETURN (CdxLeafPage) page

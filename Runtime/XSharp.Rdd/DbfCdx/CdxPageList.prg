@@ -45,25 +45,29 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
 
             IF ! isOk
                 RETURN NULL
-            endif
+            ENDIF
 
 			//
             // Inspect first 2 byte and determine the page
             LOCAL nType AS SHORT
             nType := BitConverter.ToInt16(buffer, 0)
-            SWITCH nType
-            CASE 0  // Branche
-            CASE 1  // Root
-                 oResult :=  CdxBranchPage{SELF:_bag, nPage, buffer,nKeyLen}
-                 oResult:Tag := tag
-            CASE 2  // Leaf
-            CASE 3  // List of Tags
+            LOCAL nPT := (CdxPageType)  nType AS CdxPageType
+            IF nPT:HasFlag(CdxPageType.Leaf)
                 oResult := CdxLeafPage{SELF:_bag, nPage, buffer, nKeyLen}
                 oResult:Tag := tag
-            OTHERWISE 
-               oResult := CdxGeneralPage{SELF:_bag, nPage, buffer}
-               oResult:Tag := tag
-            END SWITCH
+            ELSE
+                SWITCH nType
+                CASE 0  // Branche
+                CASE 1  // Root
+                CASE 4  // VFP Branch
+                CASE 5  // VFP Root
+                     oResult :=  CdxBranchPage{SELF:_bag, nPage, buffer,nKeyLen}
+                     oResult:Tag := tag
+                OTHERWISE 
+                   oResult := CdxGeneralPage{SELF:_bag, nPage, buffer}
+                   oResult:Tag := tag
+                END SWITCH
+            ENDIF
             SELF:SetPage(nPage, oResult)
             SELF:_DumpPage(oResult)
             RETURN oResult
@@ -102,9 +106,9 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             
         INTERNAL METHOD Append( pageNo AS LONG ) AS CdxPage
             LOCAL page AS CdxTreePage
-            page := SELF:_FindPage(pageNo)
+            page := (CdxTreePage) SELF:_FindPage(pageNo)
             IF page == NULL
-                page := SELF:GetPage(pageNo, 0,NULL)
+                page := (CdxTreePage) SELF:GetPage(pageNo, 0,NULL)
                 SELF:SetPage(pageNo, page)
             ENDIF
             SELF:_dumpPage(page)
@@ -115,9 +119,9 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
         INTERNAL METHOD Read(pageNo AS LONG ) AS CdxTreePage
             LOCAL page AS CdxTreePage
 
-            page := SELF:_FindPage(pageNo)
+            page := (CdxTreePage) SELF:_FindPage(pageNo)
             IF page == NULL
-                page := SELF:GetPage(pageNo, 0,NULL)
+                page := (CdxTreePage) SELF:GetPage(pageNo, 0,NULL)
                 SELF:_pages:Add(pageNo, page)
             ENDIF
             SELF:_dumpPage(page)

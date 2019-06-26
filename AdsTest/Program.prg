@@ -4,13 +4,24 @@ USING System.Linq
 USING System.Text
 
 FUNCTION Start AS VOID STRICT
-    LOCAL aStruct AS ARRAY
     TRY
-    aStruct := {{"ASCII","C",10,0},{"SET","C",10,0}}
-    DBCreate("Test",aStruct)
-    DbUseArea(TRUE,,"Test")
-    //DbFieldInfo(DBS_ALIAS, FieldPos("SET"), "_SET")
-    DBCreateIndex("test","ASCII+SET")
+        local i as dword
+        RddSetDefault("ADSADT")
+        DbUseArea(TRUE,,"c:\Tools\Advantage 10.10\acesdk\Redistribute\adscollate.adt")
+        DO WHILE ! EOF()
+            ? _FIELD->SHORTNAME, _FIELD->CODEPAGE, _FIELD->UnicodeLoc
+            System.IO.File.WriteAllBytes(trim(_FIELD->NAME)+"_Upper.Bin", _FIELD->UPPER)
+            System.IO.File.WriteAllBytes(trim(_FIELD->NAME)+"_Lower.Bin", _FIELD->LOWER)
+            System.IO.File.WriteAllBytes(trim(_FIELD->NAME)+"_CE.Bin", _FIELD->CE)
+            IF !ISString(_FIELD->CONTRACTIO)
+                System.IO.File.WriteAllBytes(trim(_FIELD->NAME)+"_Contract.Bin", _FIELD->CONTRACTIO)
+            ENDIF
+            DbSkip(1)
+        ENDDO
+        //DbSetIndex("c:\Descartes\testdbf\ZENSTAT1.NTX")
+        //DbSeek("117682820180906111733")
+        //? Found(), Recno()
+        DbCloseArea()
     CATCH e AS Exception
         ? e:Message
     END TRY

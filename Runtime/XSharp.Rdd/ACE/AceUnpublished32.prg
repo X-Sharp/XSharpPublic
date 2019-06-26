@@ -1,9 +1,9 @@
-﻿USING System
+USING System
 USING System.Runtime.InteropServices
 
 BEGIN NAMESPACE XSharp.ADS
  
-	INTERNAL CLASS ACEUNPUB32
+	PUBLIC CLASS ACEUNPUB32
 		
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
 		PUBLIC STATIC EXTERN METHOD AdsBuildKeyFromRecord(hTag AS Intptr, mpucRecBuffer AS STRING , ulRecordLen AS DWORD , pucKey AS CHAR[], pusKeyLen REF WORD ) AS DWORD 

@@ -854,7 +854,7 @@ METHOD GetValue(nFldPos AS INT) AS OBJECT
 		ELSEIF ! SELF:_CheckError(result,EG_READ)
           // Exception
 		ENDIF
-		RETURN wValue == 0
+		RETURN wValue != 0
 	CASE DbFieldType.Date
 		LOCAL lJulian AS LONG
 		result := ACE.AdsGetJulian(SELF:_Table, dwField, OUT lJulian)

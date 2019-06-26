@@ -7,19 +7,19 @@
 USING System.Collections
 BEGIN NAMESPACE XSharp.RDD.CDX
     INTERNAL CLASS VfpCollation
-        INTERNAL PROPERTY Name       AS STRING AUTO
-        INTERNAL PROPERTY CodePage   as INT AUTO
-        INTERNAL PROPERTY ResourceName as STRING AUTO
-        INTERNAL PROPERTY WeightTable as BYTE[] AUTO
-        INTERNAL PROPERTY WorkBuffer  as BYTE[] AUTO
-        INTERNAL PROPERTY HasCombi   AS LOGIC AUTO
-        INTERNAL PROPERTY CombiChars  as BitArray AUTO
-        INTERNAL PROPERTY CombiTable  as BYTE[] AUTO
+        INTERNAL PROPERTY Name          AS STRING AUTO
+        INTERNAL PROPERTY CodePage      AS INT AUTO
+        INTERNAL PROPERTY ResourceName  AS STRING AUTO
+        INTERNAL PROPERTY WeightTable   AS BYTE[] AUTO
+        INTERNAL PROPERTY WorkBuffer    AS BYTE[] AUTO
+        INTERNAL PROPERTY HasCombi      AS LOGIC AUTO
+        INTERNAL PROPERTY CombiChars    AS BitArray AUTO
+        INTERNAL PROPERTY CombiTable    AS BYTE[] AUTO
 
-        INTERNAL CONSTRUCTOR(cName as STRING, nCodePage as INT)
+        INTERNAL CONSTRUCTOR(cName AS STRING, nCodePage AS INT)
             SELF:HasCombi := FALSE
             SELF:ResourceName := upper(cName)+"_"+nCodePage:ToString()
-            SELF:WorkBuffer := Byte[]{512}
+            SELF:WorkBuffer := BYTE[]{512}
             SWITCH Upper(cName)
             CASE "CZECH"
                 SELF:HasCombi := TRUE
@@ -197,7 +197,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 			        SELF:WeightTable := bytes
 		        ENDIF
 	        ENDIF
-            if SELF:HasCombi
+            IF SELF:HasCombi
 	            obj := rm:GetObject(resourcename+"_COMBI") 
 	            IF obj != NULL
 		            VAR bytes := obj ASTYPE BYTE[]
@@ -205,9 +205,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 			            SELF:CombiTable := bytes
 		            ENDIF
                     SELF:CombiChars := System.Collections.BitArray{256}
-                    FOR VAR nI := 1 to self:CombiTable:Length Step 4
-                        local nByte as BYTE
-                        nByte := self:CombiTable[nI]
+                    FOR VAR nI := 1 TO SELF:CombiTable:Length STEP 4
+                        LOCAL nByte AS BYTE
+                        nByte := SELF:CombiTable[nI]
                         SELF:CombiChars[nByte] := TRUE
                     NEXT
 
@@ -215,10 +215,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN
 
-        METHOD Unsupported(cName as STRING, nCodePage as INT) AS VOID
-            Throw Exception{"The combination of Collation '"+cName+"' and Codepage "+nCodePage:ToString()+" is not allowed"}
+        METHOD Unsupported(cName AS STRING, nCodePage AS INT) AS VOID
+            THROW Exception{"The combination of Collation '"+cName+"' and Codepage "+nCodePage:ToString()+" is not allowed"}
 
-        METHOD Translate(bytes as BYTE[]) AS LOGIC
+        METHOD Translate(bytes AS BYTE[]) AS LOGIC
             IF SELF:HasCombi
                 RETURN SELF:TranslateCombi(bytes)
             ELSE
@@ -226,12 +226,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
 
 
-        METHOD TranslateCombi(bytes as BYTE[]) AS LOGIC
-            LOCAL nI        as LONG
-            LOCAL nLen      as LONG
-            LOCAL bSource   as BYTE
-            LOCAL nTargetOffSet as LONG
-            LOCAL nCombiLength as LONG
+        METHOD TranslateCombi(bytes AS BYTE[]) AS LOGIC
+            LOCAL nI        AS LONG
+            LOCAL nLen      AS LONG
+            LOCAL bSource   AS BYTE
+            LOCAL nTargetOffSet AS LONG
+            LOCAL nCombiLength AS LONG
             // The combination table has groups of 4 bytes
             // 0) First Byte
             // 1) Second Byte
@@ -240,22 +240,22 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             nTargetOffSet := 0
             nLen    := bytes:Length /2
             nCombiLength := SELF:CombiTable:Length
-            FOR nI := 0 to  nLen -1
+            FOR nI := 0 TO  nLen -1
                 bSource := bytes[nI]
                 IF bSource == 0
-                    exit
-                endif
-                IF nI < nLen-1 .and. SELF:CombiChars[bSource]
+                    EXIT
+                ENDIF
+                IF nI < nLen-1 .AND. SELF:CombiChars[bSource]
                     VAR bNext := bytes[nI+1]
-                    FOR VAR nCombi := 0 to nCombiLength step 4
-                        var nCombi1 := SELF:CombiTable[nCombi]
-                        var nCombi2 := SELF:CombiTable[nCombi+1]
-                        if bSource == nCombi1 .and. bNext == nCombi2
+                    FOR VAR nCombi := 0 TO nCombiLength STEP 4
+                        VAR nCombi1 := SELF:CombiTable[nCombi]
+                        VAR nCombi2 := SELF:CombiTable[nCombi+1]
+                        IF bSource == nCombi1 .AND. bNext == nCombi2
                             // Found match 
                             WorkBuffer[nTargetOffSet]   := SELF:CombiTable[nCombi+2]
                             nTargetOffSet += 1
                             nI            += 1 // increment extra because we have just consumed 2 characters
-                            Loop
+                            LOOP
                         ENDIF
                     NEXT
                 ENDIF
@@ -263,15 +263,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN FALSE
                 ENDIF
             NEXT
-            FOR nI := nTargetOffSet to bytes:Length -1
+            FOR nI := nTargetOffSet TO bytes:Length -1
                 Workbuffer[nI] := 0
             NEXT
             System.Array.Copy(Workbuffer, bytes, bytes:Length)            
-            return TRUE
+            RETURN TRUE
 
-        PRIVATE METHOD TranslateWorker(bSource as BYTE, nTargetOffSet REF LONG) AS LOGIC
-            LOCAL nOffSet   as LONG
-            LOCAL bTarget   as BYTE
+        PRIVATE METHOD TranslateWorker(bSource AS BYTE, nTargetOffSet REF LONG) AS LOGIC
+            LOCAL nOffSet   AS LONG
+            LOCAL bTarget   AS BYTE
             LOCAL bSpecial  AS BYTE
             // Each offset in the weight table contains 8 bytes
             // Some characters are replaced with more than one byte. For example ë gets replaced with the same character as e + 0x04 for the trema
@@ -301,27 +301,27 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN TRUE
 
-        METHOD TranslateSingle(bytes as BYTE[]) AS LOGIC
-            LOCAL nI        as LONG
-            LOCAL nLen      as LONG
-            LOCAL bSource   as BYTE
-            LOCAL nTargetOffSet as LONG
+        METHOD TranslateSingle(bytes AS BYTE[]) AS LOGIC
+            LOCAL nI        AS LONG
+            LOCAL nLen      AS LONG
+            LOCAL bSource   AS BYTE
+            LOCAL nTargetOffSet AS LONG
             nTargetOffSet := 0
             nLen    := bytes:Length /2
-            FOR nI := 0 to  nLen -1
+            FOR nI := 0 TO  nLen -1
                 bSource  := bytes[nI]
                 IF bSource == 0
-                    exit
-                endif
+                    EXIT
+                ENDIF
                 IF ! SELF:TranslateWorker(bSource, REF nTargetOffSet)
                     RETURN FALSE
                 ENDIF
             NEXT
-            FOR nI := nTargetOffSet to bytes:Length -1
+            FOR nI := nTargetOffSet TO bytes:Length -1
                 Workbuffer[nI] := 0
             NEXT
             System.Array.Copy(Workbuffer, bytes, bytes:Length)            
-            return TRUE
+            RETURN TRUE
 
     END CLASS
 END NAMESPACE

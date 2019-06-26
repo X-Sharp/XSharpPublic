@@ -655,7 +655,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 foundPos := minPos
                 IF foundPos >= nodeCount
                     foundPos -= 1
-                endif
+                ENDIF
                 node:Pos := foundPos
                 IF searchMode == SearchMode.Left .AND. foundPos < nodeCount .AND. SELF:__Compare(node:KeyBytes, keyBuffer, keyLength) == 0
                     searchMode := SearchMode.LeftFound
@@ -765,7 +765,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         len     := text:Length
                         IF SELF:_Collation != NULL
                             len := 0
-                            DO WHILE abNewKey[len] != 0 .and. len < abNewKey:Length
+                            DO WHILE abNewKey[len] != 0 .AND. len < abNewKey:Length
                                 len++
                             ENDDO
                         ENDIF

@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         STATIC METHOD ToAscii (SELF bytes AS BYTE[], lHex AS LOGIC) AS STRING
             VAR sb := System.Text.StringBuilder{}
-            if bytes == NULL
+            IF bytes == NULL
                 RETURN ""
             ENDIF
             IF lHex
@@ -190,7 +190,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL STATIC METHOD ChangeParent(oPage AS CdxTreePage) AS CdxAction
             RETURN CdxAction{CdxActionType.ChangeParent}{Page := oPage}
 
-        INTERNAL STATIC METHOD ChangeParent(oPage1 AS CdxTreePage, oPage2 as CdxTreePage) AS CdxAction
+        INTERNAL STATIC METHOD ChangeParent(oPage1 AS CdxTreePage, oPage2 AS CdxTreePage) AS CdxAction
             RETURN CdxAction{CdxActionType.ChangeParent}{Page := oPage1, Page2 := oPage2}
 
         INTERNAL STATIC METHOD AddBranch(oPage AS CdxTreePage,  nChild AS LONG, nRecno AS LONG, bKey AS BYTE[]) AS CdxAction
@@ -202,7 +202,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL STATIC METHOD DeleteFromParent(oPage AS CdxTreePage) AS CdxAction
             RETURN CdxAction{CdxActionType.DeleteFromParent}{Page := oPage}
 
-        INTERNAL STATIC METHOD ExpandRecnos(oPage AS CdxLeafPage, nRecno as LONG, bKey as BYTE[], nPos as INT) AS CdxAction
+        INTERNAL STATIC METHOD ExpandRecnos(oPage AS CdxLeafPage, nRecno AS LONG, bKey AS BYTE[], nPos AS INT) AS CdxAction
             RETURN CdxAction{CdxActionType.ExpandRecnos}{Page := oPage, Recno := nRecno, Key := bKey, Pos := nPos}
 
         INTERNAL STATIC METHOD Balance(oPage AS CdxTreePage) AS CdxAction

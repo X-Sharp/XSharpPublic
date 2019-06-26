@@ -45,13 +45,13 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
 
             IF ! isOk
                 RETURN NULL
-            endif
+            ENDIF
 
 			//
             // Inspect first 2 byte and determine the page
             LOCAL nType AS SHORT
             nType := BitConverter.ToInt16(buffer, 0)
-            LOCAL nPT := (CdxPageType)  nType as CdxPageType
+            LOCAL nPT := (CdxPageType)  nType AS CdxPageType
             IF nPT:HasFlag(CdxPageType.Leaf)
                 oResult := CdxLeafPage{SELF:_bag, nPage, buffer, nKeyLen}
                 oResult:Tag := tag

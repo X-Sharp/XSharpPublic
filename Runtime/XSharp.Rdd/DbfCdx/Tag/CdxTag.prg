@@ -171,7 +171,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN
 
 
-        INTERNAL METHOD SetLeafProperties(page as CdxLeafPage) as VOID
+        INTERNAL METHOD SetLeafProperties(page AS CdxLeafPage) AS VOID
             VAR numRecs     := SELF:RDD:RecCount
             page:ClearRecordsAndKeys()
             page:KeyLength      := SELF:KeyLength
@@ -201,7 +201,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             SELF:_KeyExprType := SELF:_oRdd:_getUsualType(oKey)
             IF SELF:_KeyExprType == __UsualType.String
-                IF SELF:_Collation != null
+                IF SELF:_Collation != NULL
                     SELF:__Compare := _compareCollation
                 ELSE
                     SELF:__Compare := _compareText
@@ -243,7 +243,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF SELF:_Collation != NULL
                         SELF:_keySize := SELF:Header:KeySize
                     ELSE
-                        SELF:_oRdd:_dbfError(null, SubCodes.EDB_EXPRESSION,GenCode.EG_SYNTAX,  "DBFCDX.EvaluateExpressions") 
+                        SELF:_oRdd:_dbfError(NULL, SubCodes.EDB_EXPRESSION,GenCode.EG_SYNTAX,  "DBFCDX.EvaluateExpressions") 
                     ENDIF
                 ENDIF
             ENDIF
@@ -636,24 +636,29 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 sBlock := SELF:_Header:Dump("Filedump for:"+sName)
                 FWrite(hDump, sBlock)
                 // Collect all pages
-                LOCAL aPages as List<LONG>
-                LOCAL oPage as CdxTreePage
-                LOCAL nLevel as LONG
+                LOCAL aPages AS List<LONG>
+                LOCAL oPage AS CdxTreePage
+                LOCAL nLevel AS LONG
                 oPage  := SELF:GetPage(SELF:_rootPage)
-                aPages := (List<int>) oPage:GetChildren()
+                aPages := (List<INT>) oPage:GetChildren()
                 nLevel := 1
-                ? "Level", nLevel, 1, "page"
+                LOCAL sbLevels AS StringBuilder
+                sbLevels := StringBuilder{}
+                sbLevels:AppendLine("------------------------------")
+                sbLevels:AppendLine("CDX Levels:")
+                sbLevels:AppendLine("Level 1 : 1 page")
                 DO WHILE aPages:Count > 0
                     LOCAL aChildren AS List<LONG>
                     nLevel += 1
-                    ? "Level", nLevel, aPages:Count, "pages"
+                    sbLevels:AppendLine("Level "+nLevel:ToString()+" : "+aPages:Count:ToString()+" pages")
                     aChildren := List<LONG>{}
-                    FOREACH pageNo as LONG in aPages
+                    FOREACH pageNo AS LONG IN aPages
                         oPage := SELF:GetPage(pageNo)
                         aChildren:AddRange(oPage:GetChildren())
                     NEXT
                     aPages := aChildren
                 ENDDO
+                sbLevels:AppendLine("------------------------------")
 
 
                 _oRdd:GoTop()
@@ -695,6 +700,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDDO
                 FWrite(hDump, sbFree:ToString())
                 FWrite(hDump, sRecords:ToString())
+                FWrite(hDump, sbLevels:ToString())
                 FClose(hDump)
                 
             ENDIF

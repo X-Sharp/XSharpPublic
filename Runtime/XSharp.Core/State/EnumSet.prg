@@ -74,7 +74,7 @@ BEGIN NAMESPACE XSharp
 		MEMBER INTERNATIONAL:= 58	// STRING
 		MEMBER DATECOUNTRY  := 59	// INT
 
- 		// 65 - 97 unused
+ 		// 60 - 69 unused
 
 		// X# helper state
 		MEMBER EpochCent     := 70		// Numeric
@@ -123,6 +123,7 @@ BEGIN NAMESPACE XSharp
 		MEMBER SQL_QUERY            := 154
 		MEMBER SQL_TABLE_PASSWORDS  := 155
 		MEMBER COLLATION_NAME       := 156
+		MEMBER AXSLOADED            := 157
 
         // Xbase++ defines
         MEMBER CharSet          := 160
@@ -136,7 +137,7 @@ BEGIN NAMESPACE XSharp
         MEMBER NullValue        := 167
 
 
-		// 100 - 117 Harbour extensions
+		// 180 - 197 Harbour extensions
 		MEMBER LANGUAGE       :=  180  
 		MEMBER IDLEREPEAT     :=  181 
 		MEMBER FILECASE       :=  182			
@@ -289,6 +290,13 @@ DEFINE _SET_DATECOUNTRY		:= Set.DATECOUNTRY
 DEFINE _SET_DICT			:= Set.Dict			
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_INTL			:= Set.Intl		
+
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_BLOB_CIRCULAR_ARRAY_REF := Set.BLOBCIRCREF
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_USER := Set.User
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_AXSLOADED := Set.AXSLOADED
 	
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_COLLATIONMODE	:= Set.COLLATIONMODE	
@@ -308,6 +316,8 @@ DEFINE _SET_AUTOOPEN    		:= Set.AUTOOPEN
 DEFINE _SET_AUTOORDER   		:= Set.AUTOORDER    
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_HPLOCKING   		:= Set.HPLOCKING    
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_HPLOCK      		:= Set.HPLOCKING    
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_NEWINDEXLOCK		:= Set.NEWINDEXLOCK 
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
@@ -403,3 +413,8 @@ define  _SET_NULLVALUE   := Set.NullValue
 
 DEFINE _MAX_PATH := 260
 DEFINE MAX_PATH := 260
+
+
+
+
+

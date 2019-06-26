@@ -5,7 +5,9 @@
 USING XSharp.RDD
 FUNCTION Start() AS VOID
     TRY
-        FptMemoTest()
+        //testFptCreate()
+        DescartesDbfTest()
+        //FptMemoTest()
         //TestDbfFromChris()
         //TestIndexUpdates()
         //testVFPFiles()
@@ -71,20 +73,58 @@ FUNCTION Start() AS VOID
     END TRY
     WAIT
     RETURN
+
+Function TestFptCreate() AS VOID
+    local aStruct as array
+    aStruct := { ;
+        {"NUMBER","N", 10, 0} ,;
+        {"MEMO","M", 10, 0} }
+    DbCreate("C:\test\testFpt",aStruct, "DBFCDX")
+    DbCLoseArea()
+    DbUseArea(TRUE, "DBFCDX", "C:\test\testFpt", "TEST")
+    FOR var i := 1 to 10
+        DbAppend()
+        FieldPut(1, i)
+        FieldPut(2, Repl("X", 10))
+    NEXT
+    DbCommit()
+    DbCloseArea()
+    RETURN
+
+Function DescartesDbfTest as Void
+	RDDSetDefault("DBFVFP")
+	DbUseArea(TRUE, "DBFVFP", "c:\Descartes\testdbf\ZENSTATS.DBF","ZENSTATS")
+    //DbSetIndex("c:\Descartes\testdbf\ZENSTATS1Gen.NTX")
+    OrdSetFocus("recno")
+    DbOrderInfo(DBOI_USER+42)
+    DbGoTop()
+//    ? DbSeek("11768282018090611173")
+//    DbOrderInfo(DBOI_USER+42)
+//    DbSetIndex("c:\Descartes\testdbf\zenstat2.ntx")
+//    DbOrderInfo(DBOI_USER+42)
+//    DbSetIndex("c:\Descartes\testdbf\zenstat3.ntx")
+//    DbOrderInfo(DBOI_USER+42)
+//    DbSetIndex("c:\Descartes\testdbf\zenstat9.ntx")
+//    DbOrderInfo(DBOI_USER+42)
+//	FOR VAR i := 1 to FCount()
+//        local oValue as object
+//        oValue := FieldGet(i)
+//        ? i, oValue
+//	NEXT
+	DBCloseArea()
+	RETURN
+
 Function FptMemoTest() AS VOID
 	RDDSetDefault("DBFCDX")
 	DbUseArea(TRUE, "DBFCDX", "c:\download\Memos X#\SETUP.DBF","MEMOS")
-    DBInfo(DBI_MEMOBLOCKSIZE, 31)
 	FOR VAR i := 1 to FCount()
         local oValue as object
         oValue := FieldGet(i)
-        if oValue is Byte[]
-            var bytes := (byte[]) oValue
-            var size := BitConverter.ToInt16(bytes,0)
-            ? i, "Array of ", size, "elements"
-        else
-            ? i, oValue
-        endif
+        if IsArray(oValue)
+            ShowArray(oValue, "Field"+Ntrim(i))
+        ELSE
+            ? i, oValue, FieldGetBytes((LONG) i)
+        ENDIF
 
 		
 	NEXT

@@ -43,9 +43,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _newKeyLen AS LONG
         PRIVATE _KeyExprType AS LONG
         PRIVATE _keySize AS WORD
+        PRIVATE _sourcekeySize AS WORD
         PRIVATE _rootPage AS LONG
         PRIVATE _ordCondInfo AS DbOrderCondInfo
-        //INTERNAL _tagNumber AS INT
         INTERNAL _orderName AS STRING
         INTERNAL _Ansi AS LOGIC
         // Scopes
@@ -59,12 +59,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PRIVATE _bag            AS CdxOrderBag
         PRIVATE getKeyValue     AS ValueBlock       // Delegate to calculate the key
+        PRIVATE _collation      AS VFPCollation
 
 #endregion
 
 
 
 #region Properties
+        INTERNAL PROPERTY Collation         AS VFPCollation GET _collation
         INTERNAL PROPERTY Expression        AS STRING GET _KeyExpr
         INTERNAL PROPERTY Encoding          AS Encoding GET _Encoding
         INTERNAL PROPERTY RDD               AS Dbfcdx GET _oRDD
@@ -82,6 +84,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY KeyType        	AS INT GET SELF:_KeyExprType
         INTERNAL PROPERTY KeyCodeBlock      AS ICodeBlock GET _KeyCodeBlock
         INTERNAL PROPERTY KeyLength         AS WORD GET SELF:_keySize
+        INTERNAL PROPERTY SourceKeyLength   AS WORD GET SELF:_sourcekeySize
         INTERNAL PROPERTY Partial        	AS LOGIC GET SELF:Custom
         INTERNAL PROPERTY Conditional       AS LOGIC GET !String.IsNullOrEmpty(_ForExpr)
         INTERNAL PROPERTY Custom         	AS LOGIC GET Options:HasFlag(CdxOptions.Custom)
@@ -134,6 +137,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:Open()
 
 
+
 	    METHOD Open() AS LOGIC
             SELF:_Header:Read()
             SELF:_KeyExpr := SELF:_Header:KeyExpression
@@ -146,6 +150,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:Signature      := SELF:_Header:Signature
             SELF:_Descending    := SELF:_Header:Descending
             SELF:_rootPage      := SELF:_Header:RootPage
+            IF !String.IsNullOrEmpty(SELF:_Header:VfpCollation)
+                IF SELF:_oRDD IS DBFVFP 
+                    SELF:_Collation := VfpCollation{SELF:_Header:VfpCollation,SELF:_oRDD:Header:CodePage:ToCodePage()}
+                ELSE
+                    SELF:_oRdd:_dbfError( SubCodes.ERDD_CORRUPT, GenCode.EG_CORRUPTION, "CdxTag.Open","Indexes with collation must be opened with the DBFVFP driver")
+                ENDIF
+            ENDIF
             IF ! SELF:EvaluateExpressions()
                 RETURN FALSE
             ENDIF
@@ -190,7 +201,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             SELF:_KeyExprType := SELF:_oRdd:_getUsualType(oKey)
             IF SELF:_KeyExprType == __UsualType.String
-                SELF:__Compare := _compareText
+                IF SELF:_Collation != null
+                    SELF:__Compare := _compareCollation
+                ELSE
+                    SELF:__Compare := _compareText
+                ENDIF
             ELSE
                 SELF:__Compare := _compareBin
             ENDIF
@@ -204,24 +219,29 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR fType           := SELF:_oRdd:_fields[_SingleField]:FieldType
                 SWITCH fType
                 CASE DbFieldType.Number
-                    SELF:_keySize   := 8
+                    SELF:_sourceKeySize := SELF:_keySize   := 8
                     SELF:getKeyValue := _getNumFieldValue
                 CASE DbFieldType.Date
                     // CDX converts the Date to a Julian Number and stores that as a Real8 in the index
-                    SELF:_keySize   := 8
+                    SELF:_sourceKeySize := SELF:_keySize   := 8
                     SELF:getKeyValue := _getDateFieldValue
                 OTHERWISE
-                    SELF:_keySize   :=  (WORD) SELF:_oRdd:_fields[_SingleField]:Length
+                    SELF:_sourceKeySize := SELF:_keySize   := (WORD) SELF:_oRdd:_fields[_SingleField]:Length
                     SELF:getKeyValue := _getFieldValue
+                    IF SELF:_Collation != NULL
+                        SELF:_keySize := SELF:Header:KeySize
+                        SELF:getKeyValue := _getFieldValueWithCollation
+                    ENDIF
+
                 END SWITCH
                 isOk := TRUE
             ELSE
-                SELF:_keySize    := 0
+                SELF:_sourceKeySize := SELF:_keySize    := 0
                 SELF:getKeyValue := _getExpressionValue
                 isOk             := SELF:_determineSize(oKey)
                 IF SELF:Header:KeySize != SELF:_keySize
-                    IF !String.IsNullOrEmpty(SELF:header:VFPCollation)
-                        SELF:_keySize := SELF:HEader:KeySize
+                    IF SELF:_Collation != NULL
+                        SELF:_keySize := SELF:Header:KeySize
                     ELSE
                         SELF:_oRdd:_dbfError(null, SubCodes.EDB_EXPRESSION,GenCode.EG_SYNTAX,  "DBFCDX.EvaluateExpressions") 
                     ENDIF
@@ -315,6 +335,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN RuntimeState.StringCompare(aLHS, aRHS, nLength)
 
+        INTERNAL STATIC METHOD _compareCollation(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
+            RETURN _compareBin(aLHS, aRHS, nLength)
+
+
         INTERNAL STATIC METHOD _compareBin(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
             IF aRHS == NULL
                 RETURN 0
@@ -389,6 +413,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             resultLength := sLen
             SELF:_Encoding:GetBytes( text, 0, slen, buffer, 0)
+            IF SELF:_Collation != NULL
+                SELF:_Collation:Translate(buffer)
+            ENDIF
             RETURN TRUE
             
         METHOD SetOrderScope(itmScope AS OBJECT , uiScope AS DBOrder_Info ) AS LOGIC
@@ -704,6 +731,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_oRDD:Validate()
             Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
             RETURN TRUE
+
+        PRIVATE METHOD _getFieldValueWithCollation(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
+            SELF:_getFieldValue(sourceIndex, byteArray)
+            SELF:_Collation:Translate(byteArray)
+            RETURN TRUE
+
             
         PRIVATE METHOD _getExpressionValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             LOCAL result := TRUE AS LOGIC
@@ -717,6 +750,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 result := FALSE
             END TRY
             RETURN result
+
+
 
     END CLASS
 END NAMESPACE

@@ -761,10 +761,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                     needPadStr := FALSE
                     IF seekInfo:Value:GetType() == TYPEOF(STRING)
-                        text := (STRING)seekInfo:Value
-                        len := text:Length
+                        text    := (STRING)seekInfo:Value
+                        len     := text:Length
+                        IF SELF:_Collation != NULL
+                            len := 0
+                            DO WHILE abNewKey[len] != 0 .and. len < abNewKey:Length
+                                len++
+                            ENDDO
+                        ENDIF
                         padLen := len
-                        IF len < SELF:_keySize
+                        IF len < SELF:_sourcekeySize
                             needPadStr := TRUE
                             abNewKey[len] := 1
                             padLen := len + 1

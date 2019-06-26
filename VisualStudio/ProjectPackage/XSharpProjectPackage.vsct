@@ -117,14 +117,14 @@
 
         </Strings>
       </Button>
-      <Button guid="guidXSharpProjectCmdSet" id="idHelpOnLine" priority="0x0100" type="Button">
+      <Button guid="guidXSharpProjectCmdSet" id="idHelpOffLine" priority="0x0100" type="Button">
         <Parent guid="guidXSharpProjectCmdSet" id="idHelpMenuGroup" />
         <Icon guid="guidImages" id="bmpXSharp" />
         <Strings>
-          <ButtonText>XSharp Online Help</ButtonText>
-          <ToolTipText>Opens XSharp Online Help</ToolTipText>
-          <CommandName>&amp;XSharp Online Help</CommandName>
-          <CanonicalName>XSharp Online Help</CanonicalName>
+          <ButtonText>XSharp Documentation</ButtonText>
+          <ToolTipText>Opens XSharp Documentation</ToolTipText>
+          <CommandName>&amp;XSharp Documentation</CommandName>
+          <CanonicalName>XSharp Documentation</CanonicalName>
 
         </Strings>
       </Button>
@@ -285,7 +285,7 @@
       <IDSymbol name="idXporter"       value="0x0100" />
       <IDSymbol name="idVOXporter"     value="0x0103" />
       <IDSymbol name="idWebsite" value="0x0101" />
-      <IDSymbol name="idHelpOnLine"    value="0x0102" />
+      <IDSymbol name="idHelpOffLine"    value="0x0102" />
       <IDSymbol name="idToolsMenuGroup" value="0x1020" />
       <IDSymbol name="idHelpMenuGroup" value="0x1021" />
       <IDSymbol name="idViewMenuGroup" value="0x1022" />

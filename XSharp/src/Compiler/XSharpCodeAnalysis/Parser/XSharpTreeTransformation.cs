@@ -8267,6 +8267,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // so it is easier to fix Void expressions as last expression in the list
             if (context.Expr != null)
             {
+                context.SetSequencePoint(context.Expr.Start, context.Expr.Stop);
                 block = context.Expr?.Get<ExpressionSyntax>();
             }
             else
@@ -8274,15 +8275,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                block = context.StmtBlk?.Get<BlockSyntax>()
                         ?? context.ExprList?.Get<BlockSyntax>()
                         ?? MakeBlock(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+
             }
             // set debugger sequence point to first statement or first expression
             if (context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0)
             {
-                context.SetSequencePoint(context.StmtBlk._Stmts[0].Stop);
+                context.SetSequencePoint(context.StmtBlk._Stmts[0].Start, context.StmtBlk._Stmts[0].Stop);
             }
             else if (context.ExprList != null && context.ExprList._Exprs.Count > 0)
             {
-                context.SetSequencePoint(context.ExprList._Exprs[0].Stop);
+                context.SetSequencePoint(context.ExprList._Exprs[0].Start, context.ExprList._Exprs[0].Stop);
             }
             //context.Put(block);
             context.CsNode = block;
@@ -8297,8 +8299,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 paramList = paramList.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_CodeBlockWithTypeParameters));
                 
             }
-            if (context.lambda != null )
+            if (context.lambda != null)
             {
+                context.SetSequencePoint(context.Start, context.lambda);
                 bool bWarn;
                 if (context.Or == null && context.P1 == null && context.P2 == null)
                 {
@@ -8318,7 +8321,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     bWarn = false;
                     if (context.P1 == null)
                     {
-                        paramList = paramList.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_SyntaxError,"Opening Pipe ('|') character"));
+                        paramList = paramList.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_SyntaxError, "Opening Pipe ('|') character"));
                     }
                     if (context.P2 == null)
                     {
@@ -8329,6 +8332,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     paramList = paramList.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_LamdaExpressionWithPipes));
                 }
+            }
+            else
+            {
+                context.SetSequencePoint(context.Start, context.Code.Start);
             }
 
             var node = _syntaxFactory.ParenthesizedLambdaExpression(

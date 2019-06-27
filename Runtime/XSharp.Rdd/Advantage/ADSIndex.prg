@@ -161,8 +161,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         //
         hIndex := SELF:Index
         IF (info:Order != NULL)
-            IF info:Order IS STRING
-                VAR cOrder := (STRING) info:Order
+            IF info:Order IS STRING VAR cOrder
                 IF String.IsNullOrEmpty(cOrder)
                     result := 0
                 ELSE
@@ -459,8 +458,7 @@ CASE DBOI_SCOPETOPCLEAR
         info:Result := oTmpInfo:Result
         IF (info:Order == NULL)
             SELF:Index := IntPtr.Zero
-        ELSEIF info:Order IS STRING
-            VAR orderName := (STRING) info:Order
+        ELSEIF info:Order IS STRING VAR orderName
             IF ! String.IsNullOrEmpty(orderName)
                 orderName := Path.GetFileNameWithoutExtension(orderName)
                 LOCAL hIndex AS IntPtr

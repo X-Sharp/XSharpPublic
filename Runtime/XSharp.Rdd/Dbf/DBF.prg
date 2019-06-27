@@ -58,8 +58,8 @@ BEGIN NAMESPACE XSharp.RDD
         //PROTECT _addFieldPos    AS LONG     // Used by AddFields Method, and SetFieldsExtent
         PROTECT _lockScheme     AS DbfLocking
         PROTECT _NewRecord      AS LOGIC
-        INTERNAL _NullColumn    as DbfNullColumn // Column definition for _NullFlags, used in DBFVFP driver
-        INTERNAL _NullCount      := 0 as LONG   // to count the NULL and Length bits for DBFVFP
+        INTERNAL _NullColumn    AS DbfNullColumn // Column definition for _NullFlags, used in DBFVFP driver
+        INTERNAL _NullCount      := 0 AS LONG   // to count the NULL and Length bits for DBFVFP
         
         STATIC PROTECT _Extension := ".DBF" AS STRING
         INTERNAL PROPERTY FullPath AS STRING GET _FileName
@@ -79,8 +79,8 @@ BEGIN NAMESPACE XSharp.RDD
             FOR VAR  i := __ARRAYBASE__ TO SELF:_RecordLength - (1 -__ARRAYBASE__)
                 SELF:_BlankBuffer[i] := 0x20 // space
             NEXT
-            FOREACH oFld as RddFieldInfo in _Fields
-                if oFld IS DbfColumn VAR column
+            FOREACH oFld AS RddFieldInfo IN _Fields
+                IF oFld IS DbfColumn VAR column
                     column:InitValue(SELF:_BlankBuffer)
                 ENDIF
             NEXT
@@ -896,7 +896,7 @@ METHOD Create(info AS DbOpenInfo) AS LOGIC
 
 // Allow subclass (VFP) to set Extra flags
 PROTECTED VIRTUAL METHOD _checkField( dbffld REF DbfField) AS LOGIC
-    return dbffld:Type:IsStandard()
+    RETURN dbffld:Type:IsStandard()
 
     
     // Write the Fields Header, based on the _Fields List
@@ -912,9 +912,9 @@ PROTECTED VIRTUAL METHOD _writeFieldsHeader() AS LOGIC
     ENDIF
     
     currentField:Initialize()
-    LOCAL nOffSet as LONG
+    LOCAL nOffSet AS LONG
     nOffSet := 0
-    FOREACH VAR fld in SELF:_Fields
+    FOREACH VAR fld IN SELF:_Fields
         currentField:Offset := fld:Offset
         currentField:Name   := fld:Name
         currentField:Type   := fld:FieldType
@@ -930,7 +930,7 @@ PROTECTED VIRTUAL METHOD _writeFieldsHeader() AS LOGIC
             ENDIF
         ENDIF
         currentField:Flags := fld:Flags
-        IF ! _checkField(ref currentField)
+        IF ! _checkField(REF currentField)
             SELF:_DbfError( ERDD.CREATE_FILE, XSharp.Gencode.EG_DATATYPE,"DBF:Create()", "Invalid "+fld:ToString())
             RETURN FALSE
         ENDIF
@@ -1068,7 +1068,7 @@ PRIVATE METHOD _readFieldsHeader() AS LOGIC
         ENDIF
         FOR VAR i := nStart TO fieldCount - ( 1 - nStart )
             Array.Copy(fieldsBuffer, i*DbfField.SIZE, currentField:Buffer, 0, DbfField.SIZE )
-            var column := DbfColumn.Create(REF currentField, SELF)
+            VAR column := DbfColumn.Create(REF currentField, SELF)
             SELF:AddField( column)
             IF column:IsMemo
                 SELF:_HasMemo := TRUE
@@ -1130,7 +1130,7 @@ METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
 METHOD AddField(info AS RddFieldInfo) AS LOGIC
     LOCAL isOk AS LOGIC
     // convert RddFieldInfo to DBFColumn
-    IF ! (info is DbfColumn)
+    IF ! (info IS DbfColumn)
         info := DbfColumn.Create(info, SELF)
     ENDIF
     isok := SUPER:AddField( info )
@@ -1919,8 +1919,8 @@ CASE DBRI_RAWRECORD
     oResult := SELF:_Encoding:GetString(SELF:_RecordBuffer,0, SELF:_RecordLength)
 CASE DBRI_UPDATED
         oResult := SELF:_Hot
-        IF oNewValue IS LOGIC
-            IF (LOGIC) oNewValue
+        IF oNewValue IS LOGIC VAR isNew
+            IF isNew
                 SELF:_BufferValid := FALSE
                 SELF:_ReadRecord()
             ENDIF

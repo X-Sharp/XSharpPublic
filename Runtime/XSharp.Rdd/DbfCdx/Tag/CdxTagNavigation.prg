@@ -38,6 +38,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         RETURN FALSE
                     ENDIF
                     LOCAL recno AS LONG
+                    SELF:ClearStack()
                     IF SELF:Descending
                         recno := SELF:_locateFirst(SELF:_rootPage)
                     ELSE
@@ -76,6 +77,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         RETURN FALSE
                     ENDIF
                     LOCAL recno AS LONG
+                    SELF:ClearStack()
                     IF SELF:Descending
                         recno := SELF:_locateLast(SELF:_rootPage)
                     ELSE

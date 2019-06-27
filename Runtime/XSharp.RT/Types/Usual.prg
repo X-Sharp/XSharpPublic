@@ -1903,7 +1903,7 @@ BEGIN NAMESPACE XSharp
         STATIC OPERATOR IMPLICIT(val AS OBJECT) AS __Usual
             LOCAL result AS __Usual
             IF val == NULL
-                result := __Usual{NULL, TRUE}
+                result := __Usual._NIL
             ELSE
                 result := __Usual{val}
             ENDIF

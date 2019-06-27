@@ -9,6 +9,60 @@
     <header>
       <para styleclass="Heading1">Version History</para>
     </header>
+    <para styleclass="Heading1">Changes in 2.1.0.0 (Bandol Release)</para>
+    <para styleclass="Heading2">Compiler</para>
+    <list id="61" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Code generation for STATIC LOCALs of type STRING was not initializing the variables to an empty string when /vo2 was selected. We have also improved code generation for STATIC LOCALs when they are initialized with a compile time constant</li>
+      <li styleclass="List">In preparation for the support for variables passed by reference to functions/methods with clipper calling convention we are now assigning back the locals variables to the parameter array at the end of a funciton/method with clipper calling convention.</li>
+      <li styleclass="List">The compiler would not complain if you were assigning a value of one enum to a variable of another enum. This has been fixed.</li>
+      <li styleclass="List">Added support for the FoxPro &apos;=&apos; assignment operators. Other dialects also allow the assignment operator but a warning is generated in the other dialects.</li>
+      <li styleclass="List">Xbase++ classes inside BEGIN NAMESPACE .. END NAMESPACE were not recognized. This has been fixed.</li>
+      <li styleclass="List">Statements inside WITH blocks are no longer contrained to assignment expressions and method calls. You can now use the WITH syntax for expressions anywhere inside a WITH block. If the compiler can't find the WITH variable then it will output a new error message (XS9082)</li>
+    </list>
+    <para styleclass="Heading2">MacroCompiler</para>
+    <para styleclass="Heading2">Runtime</para>
+    <list id="61" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Added functions FieldPutBytes() and FieldGetBytes()</li>
+      <li styleclass="List">Added function ShowArray()</li>
+      <li styleclass="List">Added several defines that were missing, such as MAX_ALLOC and ASC_A.</li>
+      <li styleclass="List">Added Crypt() overloads that accept BYTE[] arguments</li>
+      <li styleclass="List">The ClassDescribe method for DataObject classes (XPP dialect) now includes properties and methods that were dynamically added.</li>
+      <li styleclass="List">Fixed a problem with the RELEASE command for MemVars. This was also releasing variables defined outside the current function / method.</li>
+      <li styleclass="List">There is now also a difference between the FoxPro dialect and other dialects in the behaviour of the RELEASE command. FoxPro completely deletes the variables, the other dialect set the value of the variables to NIL.</li>
+      <li styleclass="List">New PRIVATE memvars are intialized to FALSE in the FoxPro dialect. In the other dialects they are initialized to NIL.</li>
+      <li styleclass="List">Some numeric properties in the RuntimeState were giving a problem when a numeric of one type was written and another numeric type was expected when reading. This has been fixed.</li>
+      <li styleclass="List">Fixed a problem with return NIL values from Macro compiled codeblocks.</li>
+    </list>
+    <para styleclass="Heading2">RDD System</para>
+    <list id="61" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Added support for different block sizes in DBFFPT. </li>
+      <li styleclass="List">DBFFPT now allows to override the blocksize (when creating) from the users code. Please note that block sizes &lt; 32 bytes prevent the FPT from opening in Visual FoxPro.</li>
+      <li styleclass="List">Added support for reading various Flexfile memo field types, including arrays.</li>
+      <li styleclass="List">Added support for writing to FPT files</li>
+      <li styleclass="List">When creating FPT files we now also write the FlexFile header. Please note that our FPT driver does not support &quot;record recycling&quot; for deleted blocks like FlexFile does. We also only support writing STRING values to FPT files and Byte[] values.</li>
+      <li styleclass="List">Added support for Visual FoxPro created CDX files that were created with the COLLATE option. The RDD dll now contains collation tables for all possible combinations of collation and CodePage.</li>
+      <li styleclass="List">Added support for USUALs with a NIL value and the comparison operators (&gt;, &gt;=, &lt;, &lt;=). These operators return FALSE, except the &gt;= and &lt;= operators which return TRUE when both sides of the comparison are NIL.</li>
+      <li styleclass="List">We exposed several Advantage related function and types. Also the function AdsConnect60() was defined. We have not created functions for all available functions in Ace32 and Ace64, but only the ones needed in the RDD.</li>
+      <li styleclass="List">If you are missing a function in the ACE class, please let us know. All functions should be available and accessible now in the Ace32 and Ace64 classes or in the ACEUNPUB32 or ACEUNPUB64 classes.</li>
+      <li styleclass="List">The ADS RDD was returning incorrect values for LOGIC fields.</li>
+      <li styleclass="List">Fixed some problems with skipping in CDX indexes and scopes and filters.</li>
+      <li styleclass="List">Executing DbGoTop() twice or DbGoBottom() twice for DBFCDX would confuse the RDD. This has been fixed.</li>
+    </list>
+    <para styleclass="Heading2">Visual Studio integration</para>
+    <list id="61" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Added support for WITH .. END WITH blocks in the editor</li>
+      <li styleclass="List">When generating Native Resources (RC files) the BuildSystem now sets a #define __VERSION__. This will have the fileversion number of the XSharp.Build.DLL without the dots. (2.1.0.0 will be written as &quot;2100&quot;)</li>
+      <li styleclass="List">The XSharp help item in the VS Help menu now opens the local Help (CHM) file</li>
+      <li styleclass="List">Fixed a problem in the WCF service template</li>
+      <li styleclass="List">Correction to the multi line indenting for code that uses attributes</li>
+      <li styleclass="List">Code generation for new Event handlers now includes a RETURN statement, even when VS does not add one to the statement list</li>
+      <li styleclass="List">The intellisense option &quot;Show completionlist after every character&quot; has been disabled since it was having a negative impact on performance and would also insert keywords with @@ characters in front of them.</li>
+      <li styleclass="List"></li>
+    </list>
+    <para styleclass="Heading2">Tools</para>
+    <list id="61" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">VOXporter now also exports VERSIONINFO resources</li>
+    </list>
     <para styleclass="Heading1">Changes in 2.0.2.0 (Bandol RC 2)</para>
     <para styleclass="Heading2">Compiler</para>
     <list id="61" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">

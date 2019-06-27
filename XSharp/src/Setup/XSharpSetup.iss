@@ -19,11 +19,11 @@
 
 ; version info and similar stuff.
   
-#define Version             "2.0.2.3"
+#define Version             "2.0.2.2"
 #define FileNameVersion     "2RC2"
-#define VIVersion           "2.0.2.3"
-#define TouchDate           "2019-06-14"
-#define TouchTime           "02:20:30"
+#define VIVersion           "2.0.2.2"
+#define TouchDate           "2019-06-26"
+#define TouchTime           "02:20:20"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
 #define DevPublicFolder     "C:\Xsharp\DevPublic"
@@ -316,7 +316,7 @@ Source: "{#VOXPorterBinFolder}Fab_VO_Entities.dll";       DestDir: "{app}\VOXPor
 Source: "{#VOXPorterBinFolder}XI*.dll";                   DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
 Source: "{#VOXPorterBinFolder}SDK_DEFINES.dll";           DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
 Source: "{#VOXPorterFolder}VOXporter.ini";                DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
-Source: "{#VOXPorterFolder}ReadMe.rtf";                   DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
+;Source: "{#VOXPorterFolder}ReadMe.rtf";                   DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
 ; Templates
 Source: "{#VOXPorterFolder}Templates\*";                   DestDir: "{app}\VOXPorter\Templates"; Flags: {#StdFlags} ; 
 
@@ -329,7 +329,7 @@ Source: "{#VOXPorterFolder}Templates\*";                   DestDir: "{app}\VOXPo
 
 
 ; Support files
-Source: "Baggage\Readme{# Suffix}.rtf";                          DestDir: "{app}";   DestName:"Readme.rtf" ; Flags: isreadme {#StdFlags}; 
+;Source: "Baggage\Readme{# Suffix}.rtf";                          DestDir: "{app}";   DestName:"Readme.rtf" ; Flags: isreadme {#StdFlags}; 
 Source: "Baggage\Whatsnew.rtf";                           DestDir: "{app}";   DestName:"Whatsnew.rtf" ; Flags: isreadme {#StdFlags}; 
 
 Source: "Baggage\Redist.txt";                             DestDir: "{app}\Redist" ; Flags: {#StdFlags}; 
@@ -558,7 +558,7 @@ Name: "{group}\{cm:ProgramOnTheWeb,{#Product}}";          Filename: "{#XSharpURL
 Name: "{group}\{cm:UninstallProgram,{#Product}}";         Filename: "{uninstallexe}";  WorkingDir: "{app}\uninst" ; Parameters: "/LOG";
 Name: "{group}\{#Product} XPorter";                       Filename: "{app}\bin\xporter.exe";
 Name: "{group}\{#Product} VOXPorter";                     Filename: "{app}\VoXPorter\VoXPorter.exe";
-Name: "{group}\{#Product} Readme";                        Filename: "{app}\Readme.rtf";
+;Name: "{group}\{#Product} Readme";                        Filename: "{app}\Readme.rtf";
 Name: "{group}\{#Product} What's New";                    Filename: "{app}\Whatsnew.rtf";
 Name: "{group}\{#Product} Documentation (CHM)";           Filename: "{app}\Help\XSharp.chm"; 
 Name: "{group}\{#Product} Documentation (PDF)";           Filename: "{app}\Help\XSharp.pdf"; 

@@ -578,7 +578,7 @@ statement           : Decl=localdecl                        #declarationStmt
                       (e=END FIXED? eos)?						  #blockStmt
 
                     | WITH Expr=expression end=eos
-                       (Lines +=withLine)+
+                      StmtBlk=statementBlock
                       (e=END WITH? eos)?              #withBlock
 
                     | {IsFox}? TEXT (TO Id=identifier (Add=ADDITIVE)? (Merge=TEXTMERGE)? (NoShow=NOSHOW)? (FLAGS Flags=expression)? (PRETEXT Pretext=expression)? )? end=EOS
@@ -597,10 +597,6 @@ statement           : Decl=localdecl                        #declarationStmt
                       Exprs+=expression (COMMA Exprs+=expression)+  end=eos			#expressionStmt
 	                ;
 
-withLine            : Op=(DOT|COLON) Name=simpleName AssOp=assignoperator Expr=expression end=eos       // assignment to field or property
-                    | Op=(DOT|COLON) Name=simpleName L=LPAREN  R=RPAREN  end=eos                       // method call without arguments
-                    | Op=(DOT|COLON) Name=simpleName L=LPAREN  ArgList=argumentList R=RPAREN  end=eos  // method call with arguments
-                    ;
 
 ifElseBlock         : Cond=expression end=eos StmtBlk=statementBlock
                       ( ELSEIF ElseIfBlock=ifElseBlock 
@@ -695,8 +691,8 @@ xbasevar            : Id=identifierName (Op=assignoperator Expression=expression
 assignoperator      : Op = (ASSIGN_OP | EQ)
                     ;
 
-expression          : Expr=expression Op=(DOT | COLON) Name=simpleName          #accessMember           // member access
-                    |                 Op=COLONCOLON   Name=simpleName           #accessMember           // XPP & Harbour SELF member access
+expression          : Expr=expression Op=(DOT | COLON) Name=simpleName          #accessMember           // member access. 
+                    |    Op=(DOT|COLON|COLONCOLON)   Name=simpleName           #accessMember           // XPP & Harbour SELF member access or inside WITH
                     | Left=expression Op=(DOT | COLON) AMP LPAREN Right=expression RPAREN  #accessMemberLate // aa:&(Expr). Expr must evaluate to a string which is the ivar name
                                                                                                         // can become IVarGet() or IVarPut when this expression is the LHS of an assignment
                     | Left=expression Op=(DOT | COLON) AMP Name=identifierName  #accessMemberLateName   // aa:&Name  Expr must evaluate to a string which is the ivar name

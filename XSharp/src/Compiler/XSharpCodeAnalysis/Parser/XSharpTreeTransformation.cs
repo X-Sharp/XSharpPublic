@@ -5985,52 +5985,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitWithBlock([NotNull] XP.WithBlockContext context)
         {
-            
+
             var stmts = new List<StatementSyntax>();
             var declstmt = GenerateLocalDecl(context.VarName, _impliedType, context.Expr.Get<ExpressionSyntax>());
             stmts.Add(declstmt);
-            foreach (var stmt in context._Lines)
-            {
-                stmts.Add(stmt.Get<StatementSyntax>());
-            }
-            var block = MakeBlock(stmts);
-            context.Put(block);
-        }
+            BlockSyntax block = context.StmtBlk.Get<BlockSyntax>();
+            stmts.AddRange(block.Statements.Nodes);
+            context.Put(MakeBlock(stmts));
+        }                    
 
-        public override void ExitWithLine([NotNull] XP.WithLineContext context)
-        {
-            // this can be either an assignment or a method call
-            string varName = ((XP.WithBlockContext)context.Parent).VarName;
-            var lhs = GenerateSimpleName(varName);
-            var rhs = context.Name.Get<SimpleNameSyntax>();
-            var expr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, lhs,
-                                                        SyntaxFactory.MakeToken(SyntaxKind.DotToken), rhs);
-            StatementSyntax stmt;
-            if (context.L != null && context.R != null)
-            {
-                // Method call because we have LPAREN and RPAREN
-                ArgumentListSyntax argList;
-                if (context.ArgList != null)
-                {
-                    argList = context.ArgList.Get<ArgumentListSyntax>();
-                }
-                else
-                {
-                    argList = EmptyArgumentList();
-                }
-                stmt = GenerateExpressionStatement( _syntaxFactory.InvocationExpression(expr, argList));
-            }
-            else
-            {
-                // assignment statement
-                stmt = GenerateExpressionStatement(MakeSimpleAssignment(expr, context.Expr.Get<ExpressionSyntax>()));
-            }
-            if (context.Op.Type == XP.DOT && ! _options.Dialect.AllowDotAsSendOperator())
-            {
-                stmt = stmt.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_UnexpectedToken, context.Op.Text));
-            }
-            context.Put(stmt);
-        }
 
         #endregion
 
@@ -6862,6 +6825,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.ArgList?.Get<BracketedArgumentListSyntax>() ?? EmptyBracketedArgumentList()
             ));
         }
+
+        protected virtual XP.WithBlockContext FindWithBlock(XSharpParserRuleContext context)
+        {
+            var parent = context.Parent;
+            while (parent != null && !(parent is XP.IEntityContext))
+            {
+                if (parent is XP.WithBlockContext)
+                {
+                    break;
+                }
+                parent = parent.Parent;
+            }
+            return parent as XP.WithBlockContext;
+        }
+
         protected virtual void CoreAccessMember([NotNull] XP.AccessMemberContext context)
         {
             if (context.Op.Type == XP.COLONCOLON)
@@ -6870,11 +6848,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     GenerateSelf(),
                     context.Name.Get<SimpleNameSyntax>()));
             }
+            else if (context.Expr == null)
+            {
+                // find surrounding WITH expression.
+                var parent = FindWithBlock(context);
+                if (parent is XP.WithBlockContext wb)
+                {
+                    var VarName = GenerateSimpleName(wb.VarName);
+                    context.Put(MakeSimpleMemberAccess(VarName,context.Name.Get<SimpleNameSyntax>()));
+                }
+                else
+                {
+                    var node = GenerateLiteral(0);
+                    node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_MissingWithStatement));
+                    context.Put(node);
+                }
+            }
             else
             {
-                context.Put(MakeSimpleMemberAccess(
-                    context.Expr.Get<ExpressionSyntax>(),
-                    context.Name.Get<SimpleNameSyntax>()));
+                context.Put(MakeSimpleMemberAccess(context.Expr.Get<ExpressionSyntax>(),context.Name.Get<SimpleNameSyntax>()));
             }
         }
 

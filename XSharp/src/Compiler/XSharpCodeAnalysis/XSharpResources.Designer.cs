@@ -6848,6 +6848,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can&apos;t locate WITH statement for DOT/COLON expression without left hand side..
+        /// </summary>
+        internal static string ERR_MissingWithStatement {
+            get {
+                return ResourceManager.GetString("ERR_MissingWithStatement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A deconstruction cannot mix declarations and expressions on the left-hand-side..
         /// </summary>
         internal static string ERR_MixedDeconstructionUnsupported {

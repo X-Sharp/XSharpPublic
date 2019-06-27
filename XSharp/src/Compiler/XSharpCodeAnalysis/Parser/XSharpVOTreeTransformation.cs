@@ -1606,15 +1606,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
         {
-            if (context.Op.Type == XP.COLONCOLON)
-            {
-                context.Put(MakeSimpleMemberAccess(
-                    GenerateSelf(),
-                    context.Name.Get<SimpleNameSyntax>()));
-                return;
-
-            }
-            else if (context.Op.Type == XP.DOT)
+            if (context.Op.Type == XP.DOT && context.Expr != null)
             {
                 if (context.Expr.Get<ExpressionSyntax>() is NameSyntax)
                 {
@@ -1625,9 +1617,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     return;
                 }
             }
-            context.Put(MakeSimpleMemberAccess(
-                context.Expr.Get<ExpressionSyntax>(),
-                context.Name.Get<SimpleNameSyntax>()));
+            CoreAccessMember(context);
         }
 
         public override void ExitPrefixExpression([NotNull] XP.PrefixExpressionContext context)

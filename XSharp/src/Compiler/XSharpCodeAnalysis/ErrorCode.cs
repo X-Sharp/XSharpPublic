@@ -1709,6 +1709,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_CannotTakeAddressOfAliasedExpression = 9079,
         ERR_InvalidLiteral = 9080,
         WRN_ObsoleteInclude = 9081,
+        ERR_MissingWithStatement = 9082,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

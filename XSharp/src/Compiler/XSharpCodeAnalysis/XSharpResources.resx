@@ -5654,5 +5654,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_ObsoleteInclude" xml:space="preserve">
     <value>Include file '{0}' will be skipped because its values are included in assembly '{1}'.</value>
   </data>
+  <data name="ERR_MissingWithStatement" xml:space="preserve">
+    <value>Can't locate WITH statement for DOT/COLON expression without left hand side.</value>
+  </data>
   
 </root>

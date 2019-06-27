@@ -134,12 +134,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     internal class XSharpXPPTreeTransformation : XSharpVOTreeTransformation
     {
         internal IList<XppClassInfo> _classes;
+        internal Stack<IList<XppClassInfo>> _classstack;
         internal XppClassInfo _currentClass = null;
         public XSharpXPPTreeTransformation(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool,
                     ContextAwareSyntax syntaxFactory, string fileName) :
                     base(parser, options, pool, syntaxFactory, fileName)
         {
             _classes = new List<XppClassInfo>();
+            _classstack = new Stack<IList<XppClassInfo>>();
             _currentClass = null;
             _entryPoint = "Main";
         }
@@ -818,9 +820,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _exitSource(context, entities);
         }
 
+        public override void EnterNamespace_([NotNull] XP.Namespace_Context context)
+        {
+            base.EnterNamespace_(context);
+            _classstack.Push(_classes);
+            _classes = new List<XppClassInfo>();
+        }
         public override void ExitNamespace_([NotNull] XP.Namespace_Context context)
         {
             // we do not call base.ExitNamespace
+            bindClasses();
+            _classes = _classstack.Pop();
             var entities = new List<XSharpParserRuleContext>();
             // do not add the methods. These should be linked to a class
             entities.AddRange(context._Entities.Where(e => !(e.GetChild(0) is XP.XppmethodContext)));

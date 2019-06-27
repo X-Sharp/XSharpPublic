@@ -25,7 +25,7 @@ CLASS DBFVFP INHERIT DBFCDX
     RETURN isOk
 
     PROTECTED VIRTUAL METHOD _checkField( dbffld REF DbfField) AS LOGIC
-        return dbffld:Type:IsVfp()
+        RETURN dbffld:Type:IsVfp()
 
      METHOD _SetFoxHeader() AS VOID
         LOCAL lVar AS LOGIC
@@ -33,7 +33,7 @@ CLASS DBFVFP INHERIT DBFCDX
         // check for foxpro field types and adjust the header
         lVar        := FALSE
         lAutoIncr   := FALSE
-        FOREACH VAR fld in _Fields
+        FOREACH VAR fld IN _Fields
             SWITCH fld:FieldType
             CASE DBFieldType.VarChar
             CASE DBFieldType.VarBinary
@@ -60,9 +60,9 @@ CLASS DBFVFP INHERIT DBFCDX
         RETURN 
     /// <inheritdoc />
     METHOD CreateFields(aFields AS RddFieldInfo[]) AS LOGIC
-        local NullCount := 0 as LONG
-        LOCAL nullFld  := NULL as RddFieldInfo
-        FOREACH var fld in aFields
+        LOCAL NullCount := 0 AS LONG
+        LOCAL nullFld  := NULL AS RddFieldInfo
+        FOREACH VAR fld IN aFields
             IF fld:IsNullable
                 NullCount += 1
             ENDIF
@@ -74,7 +74,7 @@ CLASS DBFVFP INHERIT DBFCDX
             ENDIF
         NEXT
         IF nullFld != NULL
-            LOCAL nLen as LONG
+            LOCAL nLen AS LONG
             nLen := NullCount / 8
             IF NullCount %8 != 0
                 nLen += 1
@@ -101,7 +101,7 @@ CLASS DBFVFP INHERIT DBFCDX
     METHOD AddField(info AS RddFieldInfo) AS LOGIC
         LOCAL isOk AS LOGIC
         isok := SUPER:AddField( info )
-        IF String.Compare(info:Name, _NULLFLAGS,TRUE) == 0 .and. info IS DbfNullColumn VAR dbfnc
+        IF String.Compare(info:Name, _NULLFLAGS,TRUE) == 0 .AND. info IS DbfNullColumn VAR dbfnc
             SELF:_NullColumn := dbfnc
         ENDIF
         IF info IS DbfColumn VAR column
@@ -115,16 +115,16 @@ CLASS DBFVFP INHERIT DBFCDX
         RETURN isOk
 
     OVERRIDE PROTECTED METHOD _readRecord() AS LOGIC
-        LOCAL lOk as LOGIC
+        LOCAL lOk AS LOGIC
         lOk := SUPER:_readRecord()
-        IF lOk .and. SELF:_NullColumn != NULL
+        IF lOk .AND. SELF:_NullColumn != NULL
             SELF:_NullColumn:GetValue(SELF:_RecordBuffer)
         ENDIF
         RETURN lOk
 
     OVERRIDE PROTECTED METHOD _writeRecord() AS LOGIC
         // Write VFP Null flags, if any
-        IF SELF:_NullColumn != NULL .and. ! SELF:_ReadOnly 
+        IF SELF:_NullColumn != NULL .AND. ! SELF:_ReadOnly 
             SELF:_NullColumn:PutValue(0, SELF:_RecordBuffer)
         ENDIF
         RETURN SUPER:_writeRecord() 

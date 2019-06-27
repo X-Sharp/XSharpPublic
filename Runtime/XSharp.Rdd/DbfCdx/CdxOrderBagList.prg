@@ -239,11 +239,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN NULL
 
         METHOD FindOrder(orderinfo AS DbOrderInfo) AS CdxTag
-            IF orderInfo:Order IS STRING
-                VAR name := (STRING) orderInfo:Order
+            IF orderInfo:Order IS STRING VAR name
                 RETURN FindOrderByName(orderinfo:BagName, name)
-            ELSEIF orderInfo:Order IS LONG
-                VAR number := (LONG) orderInfo:Order
+            ELSEIF orderInfo:Order IS LONG VAR number
                 IF number > 0
                     FOREACH oBag AS CdxOrderBag IN _bags
                         IF number <= oBag:Tags:Count

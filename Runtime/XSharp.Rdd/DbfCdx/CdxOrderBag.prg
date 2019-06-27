@@ -73,8 +73,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             /// <inheritdoc />
         METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
             LOCAL cTag AS STRING
-            IF info:Order IS STRING
-                cTag := (STRING) info:Order
+            IF info:Order IS STRING VAR strOrder
+                cTag := strOrder
             ELSE
                 cTag := Path.GetFileNameWithoutExtension(info:BagName)
                 info:Order := cTag
@@ -343,8 +343,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:_root:FreeList != 0
                 nPage := SELF:_root:FreeList
                 VAR oPage := SELF:_PageList:GetPage(nPage, 0, NULL)
-                IF oPage IS CdxTreePage
-                    VAR tpage := (CdxTreePage) oPage
+                IF oPage IS CdxTreePage VAR tPage
                     nNext := tpage:NextFree
                     IF nNext == -1
                         nNext := 0

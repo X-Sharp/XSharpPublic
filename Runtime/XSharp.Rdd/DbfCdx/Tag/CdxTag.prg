@@ -417,7 +417,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_Collation:Translate(buffer)
             ENDIF
             RETURN TRUE
-            
+
+ 
         METHOD SetOrderScope(itmScope AS OBJECT , uiScope AS DBOrder_Info ) AS LOGIC
             LOCAL uiRealLen AS LONG
             LOCAL result AS LOGIC
@@ -547,15 +548,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     oldRec := SELF:_Recno
                     record := 0
                     IF !SELF:_oRdd:_Eof
-                        recno := SELF:_locateKey(NULL, 0, SearchMode.Top,0)
-                        IF SELF:_oRdd:__Goto(recno)
-                            SELF:_oRdd:SkipFilter(1)
-                        ENDIF
+                        SELF:GoTop()
                         recno := SELF:_Recno
                         count := 1
+                        VAR dir := IIF(SELF:Descending, -1, 1)
                         DO WHILE recno != 0 .AND. recno != oldRec
                             count++
-                            recno := SELF:_ScopeSkip(1)
+                            recno := SELF:_ScopeSkip(dir)
                         ENDDO
                         record := count
                     ENDIF
@@ -669,11 +668,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 sRecords:AppendLine("------------------------------")
                 DO WHILE ! _oRdd:EOF
                     VAR key := _oRdd:EvalBlock(SELF:_KeyCodeBlock)
-                    IF key IS IDate
-                        VAR d := key ASTYPE IDate
+                    IF key IS IDate VAR d
                         key := DateTime{d:Year, d:Month, d:Day}:ToString("yyyyMMdd")
-                    ELSEIF key IS IFLoat
-                        VAR f := key ASTYPE IFloat
+                    ELSEIF key IS IFLoat VAR f
                         key   :=  f:Value:ToString("F"+f:Decimals:ToString())
                     ENDIF
                     sRecords:AppendLine(String.Format("{0,10} {1}", _oRdd:Recno, key))
@@ -716,17 +713,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
         PRIVATE METHOD _getDateFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             LOCAL oValue := SELF:_oRdd:GetValue(_SingleField+1) AS OBJECT
-            IF oValue IS IDate
-                VAR valueDate := (IDate)oValue
+            IF oValue IS IDate VAR valueDate
                 IF !valueDate:IsEmpty
                     oValue := DateTime{valueDate:Year, valueDate:Month, valueDate:Day}
                 ELSE
                     oValue := DateTime.MinValue
                 ENDIF
             ENDIF
-            IF oValue IS DateTime
+            IF oValue IS DateTime VAR dt
                 LOCAL r8 := DoubleStruct{} AS DoubleStruct
-                VAR longValue  := _toJulian((DateTime) oValue)
+                VAR longValue  := _toJulian(dt)
                 r8:DoubleValue := Convert.ToDouble(longValue)
                 r8:SaveToIndex(byteArray)
                 RETURN TRUE

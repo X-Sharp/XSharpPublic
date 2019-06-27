@@ -54,8 +54,8 @@ BEGIN NAMESPACE XSharp.RDD
                 ELSE
                     oResult := DBT_MEMOEXT
                 ENDIF
-                IF oNewValue IS STRING
-                    DbtMemo.DefExt := (STRING) oNewValue
+                IF oNewValue IS STRING VAR strExt
+                    DbtMemo.DefExt := strExt
                 ENDIF
             CASE DbInfo.DBI_MEMOBLOCKSIZE
                 oResult := SELF:_oDbtMemo:BlockSize

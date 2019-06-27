@@ -915,18 +915,16 @@ METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
 		RETURN TRUE
 	ENDIF
     // Handle IDate and IFloat
-	IF oValue IS IDate
-		LOCAL oDate AS IDate
+	IF oValue IS IDate VAR oDate
 		tc := TypeCode.DateTime
-		oDate := (IDate) oValue
 		IF oDate:IsEmpty
 			oValue := DateTime.MinValue
 		ELSE
 			oValue := DateTime{oDate:Year, oDate:Month, oDate:Day}
 		ENDIF
-	ELSEIF oValue IS IFloat
+	ELSEIF oValue IS IFloat VAR floatValue
 		tc := TypeCode.Double
-		oValue := ((IFloat) oValue):Value
+		oValue := floatValue:Value
 	ELSE
 		tc := Type.GetTypeCode(oValue:GetType())
 	ENDIF

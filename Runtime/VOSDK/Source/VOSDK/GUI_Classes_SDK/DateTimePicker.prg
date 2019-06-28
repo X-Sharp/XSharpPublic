@@ -90,7 +90,7 @@ ASSIGN Format(sNewFormat)
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, dwStyle, lDataAware) 
 	
 
-	Default(@lDataAware, TRUE)
+	DEFAULT(@lDataAware, TRUE)
 
 	SUPER(oOwner, xID, oPoint, oDimension, "SysDateTimePick32", dwStyle, lDataAware)
 	RETURN 
@@ -193,6 +193,7 @@ ASSIGN SelectedTime(sNewTime)
     // Suggestion from Håkon Clausen 
     SELF:SetDateTime(NULL_DATE, sNewTime)
 	RETURN 
+	
 METHOD SetDateTime(dNewDate AS DATE, sNewTime AS STRING) AS VOID STRICT
     // Suggestion from Håkon Clausen and Dirk Herijgers 
     LOCAL sDate IS _winSYSTEMTIME
@@ -214,15 +215,29 @@ METHOD SetDateTime(dNewDate AS DATE, sNewTime AS STRING) AS VOID STRICT
         // get current value from control and set the parts that are given
         SendMessage(SELF:Handle(), DTM_GETSYSTEMTIME, 0, LONG(_CAST, @sDate))
         IF dNewDate != NULL_DATE
-            sDate:wDay       := LoWord(Day(dNewDate))
-            sDate:wMonth     := LoWord(Month(dNewDate))
-            sDate:wYear      := LoWord(Year(dNewDate))
+            sDate:wDay       := LoWord (dNewDate:Day )   
+   	        sDate:wMonth     := LoWord (dNewDate:Month ) 
+       	    sDate:wYear      := LoWord (dNewDate:Year )        		
         ENDIF
 
         IF SLen(sNewTime) > 0
+
+        	// Start  KHR
+        	
+        	// make sure that lateron DTM_SETSYSTEMTIME is always called with a valid date part !
+		    dNewDate := ConDate(sDate:wYear, sDate:wMonth, sDate:wDay)
+		    IF dNewDate == NULL_DATE
+	            dNewDate          := Today()
+	            sDate:wDay       := LoWord (dNewDate:Day )   
+	   	        sDate:wMonth     := LoWord (dNewDate:Month ) 
+	       	    sDate:wYear      := LoWord (dNewDate:Year )        		
+        	ENDIF        		
+        	// End KHR
+        	
             sDate:wHour      := Val(Left(sNewTime, 2))
-            sDate:wMinute    := Val(SubStr(sNewTime, 4,2))
-            sDate:wSecond    := Val(SubStr(sNewTime, 7,2))
+            sDate:wMinute    := Val(SubStr3(sNewTime, 4,2))
+            sDate:wSecond    := Val(SubStr3(sNewTime, 7,2))
+
         ENDIF
     ENDIF
 

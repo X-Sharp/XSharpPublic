@@ -53,7 +53,8 @@
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
     <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
-    <UseSharedCompilation>false</UseSharedCompilation>
+    <UseSharedCompilation>true</UseSharedCompilation>
+
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -250,7 +251,8 @@
     </AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
-    <UseSharedCompilation>false</UseSharedCompilation>
+    <UseSharedCompilation>true</UseSharedCompilation>
+
     <NoStdDef>false</NoStdDef>
     <Prefer32Bit>False</Prefer32Bit>
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>

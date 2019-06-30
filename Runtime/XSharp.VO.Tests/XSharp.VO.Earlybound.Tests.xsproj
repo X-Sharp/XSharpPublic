@@ -65,7 +65,8 @@
     <DebuggerCommandArguments>$(TargetPath)</DebuggerCommandArguments>
     <DebuggerWorkingDirectory>c:\XSharp\DevPublic\packages\xunit.runner.console.2.2.0\tools\</DebuggerWorkingDirectory>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>false</UseSharedCompilation>
+    <UseSharedCompilation>true</UseSharedCompilation>
+
     <DisabledWarnings />
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>

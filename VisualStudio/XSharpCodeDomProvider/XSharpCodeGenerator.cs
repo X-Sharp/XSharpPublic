@@ -555,7 +555,14 @@ namespace XSharp.CodeDom
                     this.Indent++;
                     if (!this.IsCurrentInterface && ((e.Attributes & MemberAttributes.ScopeMask) != MemberAttributes.Abstract))
                     {
-                        this.GenerateStatements(e.Statements);
+                        if (e.Statements.Count == 0)
+                        {
+                            this.GenerateMethodReturnStatement(new CodeMethodReturnStatement());
+                        }
+                        else
+                        {
+                            this.GenerateStatements(e.Statements);
+                        }
                     }
                     this.Indent--;
                 }

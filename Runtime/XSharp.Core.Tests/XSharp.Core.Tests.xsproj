@@ -62,7 +62,8 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
-    <UseSharedCompilation>false</UseSharedCompilation>
+    <UseSharedCompilation>true</UseSharedCompilation>
+
     <DisabledWarnings>
     </DisabledWarnings>
     <SignAssembly>false</SignAssembly>
@@ -188,7 +189,8 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
-    <UseSharedCompilation>false</UseSharedCompilation>
+    <UseSharedCompilation>true</UseSharedCompilation>
+
     <DisabledWarnings>165</DisabledWarnings>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>

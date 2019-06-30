@@ -184,11 +184,10 @@ namespace XSharpLanguage
                 // Start of Process
                 String filterText = "";
                 // Check if we can get the member where we are
-                var containingline = triggerPoint.GetContainingLine().LineNumber;
-                XTypeMember member = XSharpTokenTools.FindMember(containingline, this._file);
+                int currentLine = triggerPoint.GetContainingLine().LineNumber;
+                XTypeMember member = XSharpTokenTools.FindMember(currentLine, this._file);
                 XType currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, this._file);
                 // Standard TokenList Creation (based on colon Selector )
-                int currentLine = triggerPoint.GetContainingLine().LineNumber;
                 List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, currentLine, _buffer.CurrentSnapshot, out _stopToken, false, _file, false, member);
                 // We might be here due to a COMPLETEWORD command, so we have no typedChar
                 // but we "may" have a incomplete word like System.String.To

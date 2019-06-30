@@ -10,6 +10,7 @@ rem if "%msbuilddir%" == "" goto NotFound
 :found
 Echo Building Runtime %1 Configuration
 rem Echo Using MsBuild in "%msbuilddir%"
+if not "%XSHARPDEV%" == "" Echo Using X# development compiler in "%XSHARPDEV%"
 msbuild Runtime.sln 		/fl1 /flp1:Append /p:Configuration=%1	/p:Platform="Any CPU"     /t:Build  /m /v:m
 rem /v:q /nologo 
 if exist buildRt%1.log del buildRt%1.log

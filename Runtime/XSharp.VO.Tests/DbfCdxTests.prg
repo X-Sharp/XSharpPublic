@@ -26,20 +26,20 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			IF System.IO.File.Exists(cFileName_WithExt)
 				System.IO.File.Delete(cFileName_WithExt)
 			END IF
-			Assert.True(  DBCreate(cFileName_NoExt , aFields , "DBFCDX")  )
+			Assert.True(  DbCreate(cFileName_NoExt , aFields , "DBFCDX")  )
 			Assert.True(  System.IO.File.Exists(cFileName_WithExt) )
 			
 			IF System.IO.File.Exists(cFileName_WithExt)
 				System.IO.File.Delete(cFileName_WithExt)
 			END IF
-			Assert.True(  DBCreate(cFileName_WithExt , aFields , "DBFCDX")  )
+			Assert.True(  DbCreate(cFileName_WithExt , aFields , "DBFCDX")  )
 			Assert.True(  System.IO.File.Exists(cFileName_WithExt) )
 	
 			cFileName_WithExt := cFileName_NoExt + ".none"
 			IF System.IO.File.Exists(cFileName_WithExt)
 				System.IO.File.Delete(cFileName_WithExt)
 			END IF
-			Assert.True(  DBCreate(cFileName_WithExt , aFields , "DBFCDX")  )
+			Assert.True(  DbCreate(cFileName_WithExt , aFields , "DBFCDX")  )
 			Assert.True(  System.IO.File.Exists(cFileName_WithExt) )
 		RETURN
 	
@@ -50,13 +50,13 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			aFields := {{"TEST","C",10,0}}
 			cFileName := "DBAppend_Exclusive"
 	
-			Assert.True(  DBCreate(cFileName , aFields , "DBFCDX")  )
-			Assert.True(  DBUseArea(,"DBFCDX",cFileName,,FALSE) )
+			Assert.True(  DbCreate(cFileName , aFields , "DBFCDX")  )
+			Assert.True(  DbUseArea(,"DBFCDX",cFileName,,FALSE) )
 			Assert.True(  RecCount() == 0 )
-			Assert.True(  DBAppend() )
+			Assert.True(  DbAppend() )
 			FieldPut(1 , "test")
 			Assert.True(  AllTrim(FieldGet(1)) == "test" )
-			Assert.True(  DBCloseArea() )
+			Assert.True(  DbCloseArea() )
 		RETURN
 	
 		[Fact, Trait("Category", "DBFFuncs")];
@@ -66,52 +66,52 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			aFields := {{"TEST","C",10,0}}
 			cFileName := "DBAppend_Shared"
 	
-			Assert.True(  DBCreate(cFileName , aFields , "DBFCDX")  )
-			Assert.True(  DBUseArea(,"DBFCDX",cFileName,,TRUE) )
+			Assert.True(  DbCreate(cFileName , aFields , "DBFCDX")  )
+			Assert.True(  DbUseArea(,"DBFCDX",cFileName,,TRUE) )
 			Assert.True(  RecCount() == 0 )
-			Assert.True(  DBAppend() )
+			Assert.True(  DbAppend() )
 			FieldPut(1 , "test")
 			Assert.True(  AllTrim(FieldGet(1)) == "test" )
-			Assert.True(  DBCloseArea() )
+			Assert.True(  DbCloseArea() )
 		RETURN
 	
 		[Fact, Trait("Category", "DBFFuncs")];
 		METHOD DBAppend_more() AS VOID
 		LOCAL cDbf AS STRING
 			cDbf := "testappend.DbF"
-			RDDSetDefault( "DBFCDX" )
-			Assert.True(  DBCreate(cDbf , { {"TEST","C",10,0} }) )
+			RddSetDefault( "DBFCDX" )
+			Assert.True(  DbCreate(cDbf , { {"TEST","C",10,0} }) )
 			// Appending in exclusive mode:
-			Assert.True( DBUseArea(, , cDbf , "alias1" , FALSE) )
-			Assert.True( DBAppend() )
+			Assert.True( DbUseArea(, , cDbf , "alias1" , FALSE) )
+			Assert.True( DbAppend() )
 			Assert.True( RecCount() == 1 )
 			FieldPut(1, "test") // ok
 			Assert.True( AllTrim(FieldGet(1)) == "test" )
-			Assert.True( DBCloseArea() )
+			Assert.True( DbCloseArea() )
 	
 			// Appending in SHARED mode:
-			Assert.True( DBUseArea(, , cDbf , "alias2" , TRUE) )
+			Assert.True( DbUseArea(, , cDbf , "alias2" , TRUE) )
 			Assert.True( RecCount() == 1 )
-			Assert.True( DBAppend() )// returns true but does not append record
+			Assert.True( DbAppend() )// returns true but does not append record
 			Assert.True( RecCount() == 2 )
 			FieldPut(1, "test2") // ok
 			Assert.True( AllTrim(FieldGet(1)) == "test2" )
-			Assert.True( DBCloseArea() )
+			Assert.True( DbCloseArea() )
 		RETURN
 	
 		[Fact, Trait("Category", "DBFFuncs")];
 		METHOD DBUseArea_same_file_twice() AS VOID
 		LOCAL cDbf AS STRING
-			RDDSetDefault( "DBFCDX" )
+			RddSetDefault( "DBFCDX" )
 			cDbf := "testtwice.DbF"
-			Assert.True(  DBCreate(cDbf , { {"TEST","C",10,0} }) )
+			Assert.True(  DbCreate(cDbf , { {"TEST","C",10,0} }) )
 	
 			// shared mode
-			Assert.True( DBUseArea(, , cDbf , , FALSE) )
-			Assert.True( DBCloseArea() )
+			Assert.True( DbUseArea(, , cDbf , , FALSE) )
+			Assert.True( DbCloseArea() )
 	
-			Assert.True( DBUseArea(, , cDbf , , FALSE) )
-			Assert.True( DBCloseArea() )
+			Assert.True( DbUseArea(, , cDbf , , FALSE) )
+			Assert.True( DbCloseArea() )
 		RETURN
 
 
@@ -122,37 +122,37 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cFileName := GetTempFileName("test")
 			FErase(cFileName + ".cdx")
 
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
-			DBCreate(cFileName , { {"CFIELD","C",10,0} })
-			DBUseArea(,,cFileName)
-			DBAppend()
+			DbCreate(cFileName , { {"CFIELD","C",10,0} })
+			DbUseArea(,,cFileName)
+			DbAppend()
 			
 			LOCAL u AS USUAL
-			VODBSkip(-1)
+			VoDbSkip(-1)
 			
-			VODBInfo(DBI_FULLPATH , REF u)
+			VoDbInfo(DBI_FULLPATH , REF u)
 			LOCAL c AS STRING
 			c := u
 			? c
 			Assert.True(c:EndsWith("test.DBF") .AND. c:Contains(":\"))
-			VODBInfo(DBI_DB_VERSION , REF u)
+			VoDbInfo(DBI_DB_VERSION , REF u)
 			Assert.True(SLen(u) > 1)
-			VODBInfo(DBI_ALIAS , REF u)
+			VoDbInfo(DBI_ALIAS , REF u)
 			Assert.Equal("test" , u)
 			
-			VODBInfo(DBI_BOF , REF u)
+			VoDbInfo(DBI_BOF , REF u)
 			Assert.Equal(TRUE , (LOGIC) u)
-			VODBInfo(DBI_EOF , REF u)
+			VoDbInfo(DBI_EOF , REF u)
 			Assert.Equal(FALSE ,(LOGIC)  u)
-			VODBInfo(DBI_ISANSI , REF u)
+			VoDbInfo(DBI_ISANSI , REF u)
 			Assert.Equal(SetAnsi() ,(LOGIC)  u)
-			VODBInfo(DBI_FCOUNT , REF u)
+			VoDbInfo(DBI_FCOUNT , REF u)
 			Assert.Equal(1, (LONG)  u)
-			VODBInfo(DBI_READONLY , REF u)
+			VoDbInfo(DBI_READONLY , REF u)
 			Assert.Equal(FALSE,(LOGIC)  u)
 			
-			DBCloseArea()
+			DbCloseArea()
 		RETURN
 
 		[Fact, Trait("Category", "DBF")];
@@ -161,21 +161,21 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cDbf := GetTempFileName("testAppendShared")
 			FErase(cDbf + ".cdx")
 
-			RDDSetDefault( "DBFCDX" )
-			DBCreate(cDbf , { {"TEST","C",10,0} })
+			RddSetDefault( "DBFCDX" )
+			DbCreate(cDbf , { {"TEST","C",10,0} })
 			
 //			Appending in exclusive mode:
-			DBUseArea(, , cDbf , "alias2" , FALSE)
-			Assert.True( DBAppend() )
+			DbUseArea(, , cDbf , "alias2" , FALSE)
+			Assert.True( DbAppend() )
 			Assert.Equal( 1 , RecCount() )
 			FieldPut(1, "test") // ok
-			DBCloseArea()
+			DbCloseArea()
 			
 //			Appending in SHARED mode:
-			DBUseArea(, , cDbf , "alias2" , TRUE)
-			Assert.True( DBAppend() ) // returns true but does not append record
+			DbUseArea(, , cDbf , "alias2" , TRUE)
+			Assert.True( DbAppend() ) // returns true but does not append record
 			Assert.Equal( 2 , RecCount() ) // returns 1, wrong
-			DBCloseArea()
+			DbCloseArea()
 		RETURN
 
 		[Fact, Trait("Category", "DBF")];
@@ -184,17 +184,17 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cDbf := GetTempFileName("testdbf")
 			FErase(cDbf + ".cdx")
 			
-			RDDSetDefault( "DBFCDX" )
+			RddSetDefault( "DBFCDX" )
 			
-			DBCreate(cDbf , { {"TEST","C",10,0} })
+			DbCreate(cDbf , { {"TEST","C",10,0} })
 			
 //			opening and closing once
-			DBUseArea(, , cDbf , , FALSE)
-			DBCloseArea()
+			DbUseArea(, , cDbf , , FALSE)
+			DbCloseArea()
 			
 //			opening and closing again
-			Assert.True( DBUseArea(, , cDbf , , FALSE) )
-			Assert.True( DBCloseArea() )
+			Assert.True( DbUseArea(, , cDbf , , FALSE) )
+			Assert.True( DbCloseArea() )
 		RETURN
 
 		[Fact, Trait("Category", "DBF")];
@@ -203,11 +203,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cFileName := GetTempFileName()
 			FErase(cFileName + ".cdx")
 
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
-			DBCreate(cFileName, {{"FLD1","N",10,2},{"FLD2","N",10,0}})
-			DBUseArea(,,cFileName)
-			DBAppend()
+			DbCreate(cFileName, {{"FLD1","N",10,2},{"FLD2","N",10,0}})
+			DbUseArea(,,cFileName)
+			DbAppend()
 
 			SetDecimalSep(Asc(","))
 			FieldPut(1 , 12.34) // not saved in the dbf
@@ -217,7 +217,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			FieldPut(1 , 12.34)
 			Assert.Equal(12.34 , (FLOAT) FieldGet(1))
 
-			DBCloseArea()
+			DbCloseArea()
 		RETURN
 
 		[Fact, Trait("Category", "DBF")];
@@ -226,18 +226,18 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cFileName := GetTempFileName()
 			FErase(cFileName + ".cdx")
 
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
-			DBCreate(cFileName, {{"FLD1","N",10,4}})
-			DBUseArea( , , cFileName , "tempalias")
-			DBAppend()
-			DBCloseArea()
+			DbCreate(cFileName, {{"FLD1","N",10,4}})
+			DbUseArea( , , cFileName , "tempalias")
+			DbAppend()
+			DbCloseArea()
 			
-			DBUseArea( , , cFileName)
+			DbUseArea( , , cFileName)
 			FieldPut(1 , FLOAT{46.11}) // ! a float isn/t stored !
-			DBCommit()
+			DbCommit()
 			Assert.Equal(46.11 , (FLOAT) FieldGet(1)) // runtime exception
-			DBCloseArea()
+			DbCloseArea()
 		RETURN
 	
 	
@@ -247,16 +247,16 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cFileName := GetTempFileName()
 			FErase(cFileName + ".cdx")
 
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
-			DBCreate(cFileName, {{"FLD1","N",10,4}})
-			DBUseArea( , , cFileName , "tempalias")
-			DBAppend()
+			DbCreate(cFileName, {{"FLD1","N",10,4}})
+			DbUseArea( , , cFileName , "tempalias")
+			DbAppend()
 			Assert.Equal("", FieldName(100)) // exception
 			Assert.Equal("", FieldName(0))
 			Assert.Equal(NULL_SYMBOL, FieldSym(100))
 			Assert.Equal(NULL_SYMBOL, FieldSym(0))
-			DBCloseArea()
+			DbCloseArea()
 		RETURN
 	
 	
@@ -267,23 +267,23 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cFileName := GetTempFileName()
 			FErase(cFileName + ".cdx")
 
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
-			DBCreate(cFileName, {{"FLD1","C",10,0}})
-			DBUseArea( , , cFileName , "tempalias" , TRUE)
-			DBAppend()
-			DBAppend()
-			DBGoTop()
-			DBRLock()
-			DBRLockList()
-			Assert.Equal(1, (INT) ALen(DBRLockList()))
-			Assert.Equal(1, (INT) DBRLockList()[1])
-			DBUnlock()
-			DBSkip()
-			DBRLock()
-			Assert.Equal(1, (INT)  ALen(DBRLockList()))
-			Assert.Equal(2, (INT) DBRLockList()[1])
-			DBCloseArea()
+			DbCreate(cFileName, {{"FLD1","C",10,0}})
+			DbUseArea( , , cFileName , "tempalias" , TRUE)
+			DbAppend()
+			DbAppend()
+			DbGoTop()
+			DbRLock()
+			DbRLockList()
+			Assert.Equal(1, (INT) ALen(DbRLockList()))
+			Assert.Equal(1, (INT) DbRLockList()[1])
+			DbUnLock()
+			DbSkip()
+			DbRLock()
+			Assert.Equal(1, (INT)  ALen(DbRLockList()))
+			Assert.Equal(2, (INT) DbRLockList()[1])
+			DbCloseArea()
 		RETURN
 	
 		[Fact, Trait("Category", "DBF")];
@@ -292,50 +292,50 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cDbf := __FUNCTION__
 			FErase(cDbf + ".cdx")
 
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
 			IF System.IO.File.Exists(cDbf)
 				System.IO.File.Delete(cDbf)
 			END IF
-			DBCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFCDX", TRUE)
-			DBAppend()
+			DbCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFCDX", TRUE)
+			DbAppend()
 			FieldPut(1, "ABC")
-			DBAppend()
+			DbAppend()
 			FieldPut(1, "DEF")
-			DBAppend()
+			DbAppend()
 			FieldPut(1, "GHI")
-			DBAppend()
+			DbAppend()
 			FieldPut(1, "JKL")
 			Assert.Equal(4 , (INT) RecCount())
 			Assert.Equal(4 , (INT) LastRec())
-			DBCloseArea()
+			DbCloseArea()
 						
-			DBUseArea(,,cDbf)
+			DbUseArea(,,cDbf)
 //			"Setting filter to GHI, should be one record:"
 //			"Instead, record 1 and 3 are shown"
-			DBSetFilter({||AllTrim(FIELD->CFIELD) == "GHI"})
-			DBGoTop()
+			DbSetFilter({||AllTrim(FIELD->CFIELD) == "GHI"})
+			DbGoTop()
 			LOCAL nCount := 0 AS INT
 			DO WHILE .NOT. EoF()
 				Assert.Equal(3 , (INT) RecNo())
 				FieldGet(1)
-				DBSkip(+1)
+				DbSkip(+1)
 				nCount ++
 			END DO
 			Assert.Equal(1 , nCount)
 			
-			DBGoBottom()
-			Assert.False( EOF() )
+			DbGoBottom()
+			Assert.False( Eof() )
 			nCount := 0
 			DO WHILE .NOT. EoF()
 				Assert.Equal(3 , (INT) RecNo())
 				nCount ++
 				FieldGet(1)
-				DBSkip(+1)
+				DbSkip(+1)
 			END DO
 			Assert.Equal(1 , nCount)
 			
-			DBCloseArea()
+			DbCloseArea()
 		RETURN
 
 		[Fact, Trait("Category", "DBF")];
@@ -345,18 +345,18 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cDbf := GetTempFileName()
 			FErase(cDbf + ".cdx")
 			
-			DBCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFCDX", TRUE)
-			DBAppend()
+			DbCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFCDX", TRUE)
+			DbAppend()
 			FieldPut(1, "ABC")
 			
-			l := DBRecordInfo( DBRI_RECNO ) // exception
+			l := DbRecordInfo( DBRI_RECNO ) // exception
 			Assert.True(l)
-			l := DBRecordInfo( DBRI_DELETED ) // exception
+			l := DbRecordInfo( DBRI_DELETED ) // exception
 			Assert.False(l)
-			l := DBRecordInfo( DBRI_LOCKED ) // exception
+			l := DbRecordInfo( DBRI_LOCKED ) // exception
 			Assert.True(l)
 			
-			DBCloseArea()
+			DbCloseArea()
 		RETURN
 		
 		[Fact, Trait("Category", "DBF")];
@@ -365,17 +365,17 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cDbf := __FUNCTION__
 			FErase(cDbf + ".cdx")
 			
-			DBCreate(cDbf, {{"NFIELD","N",10,3}}, "DBFCDX", TRUE)
-			DBAppend()
+			DbCreate(cDbf, {{"NFIELD","N",10,3}}, "DBFCDX", TRUE)
+			DbAppend()
 			FieldPut(1, 1.23)
 			
-			Assert.Equal("NFIELD",	DBFieldInfo( DBS_NAME , 1 ) ) // NullReferenceException
-			Assert.Equal("N",		DBFieldInfo( DBS_TYPE , 1 ) )
-			Assert.Equal(10,		(INT) DBFieldInfo( DBS_LEN , 1 ) )
-			Assert.Equal(3,			(INT) DBFieldInfo( DBS_DEC , 1 ) )
-			Assert.Equal(5,			(INT) DBFieldInfo( DBS_PROPERTIES , 1 ) )
+			Assert.Equal("NFIELD",	DbFieldInfo( DBS_NAME , 1 ) ) // NullReferenceException
+			Assert.Equal("N",		DbFieldInfo( DBS_TYPE , 1 ) )
+			Assert.Equal(10,		(INT) DbFieldInfo( DBS_LEN , 1 ) )
+			Assert.Equal(3,			(INT) DbFieldInfo( DBS_DEC , 1 ) )
+			Assert.Equal(5,			(INT) DbFieldInfo( DBS_PROPERTIES , 1 ) )
 			
-			DBCloseArea()
+			DbCloseArea()
 		RETURN
 
 		[Fact, Trait("Category", "DBF")];
@@ -384,25 +384,25 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cDbf := __FUNCTION__
 			FErase(cDbf + ".cdx")
 			
-			DBCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFCDX", TRUE)
-			DBAppend()
+			DbCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFCDX", TRUE)
+			DbAppend()
 			FieldPut(1, "ABC")
-			DBAppend()
+			DbAppend()
 			FieldPut(1, "DEF")
 			
-			DBGoTop()
+			DbGoTop()
 			Assert.Equal(1, (INT) RecNo())
-			Assert.Equal(FALSE, EOF())
+			Assert.Equal(FALSE, Eof())
 			
 //			 Any of the below cause the record pointer to go EOF
-			Assert.False( DBRecordInfo(DBRI_DELETED , 0) )
-			DBRecordInfo(DBRI_BUFFPTR , 0)
-			DBRecordInfo(DBRI_RAWDATA , 0)
+			Assert.False( DbRecordInfo(DBRI_DELETED , 0) )
+			DbRecordInfo(DBRI_BUFFPTR , 0)
+			DbRecordInfo(DBRI_RAWDATA , 0)
 			
 			Assert.Equal(1, (INT) RecNo())
-			Assert.Equal(FALSE, EOF())
+			Assert.Equal(FALSE, Eof())
 			
-			DBCloseArea()
+			DbCloseArea()
 		RETURN
 	
 		[Fact, Trait("Category", "DBF")];
@@ -411,44 +411,44 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cDbf := __FUNCTION__
 			FErase(cDbf + ".cdx")
 
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
-			DBCreate(cDbf, {{"NFIELD","N",10,0}}, "DBFCDX", TRUE)
-			DBAppend()
+			DbCreate(cDbf, {{"NFIELD","N",10,0}}, "DBFCDX", TRUE)
+			DbAppend()
 			FieldPut(1, 123)
-			DBAppend()
+			DbAppend()
 			FieldPut(1, 456)
-			DBAppend()
+			DbAppend()
 			FieldPut(1, 789)
 			
-			DBGoTop()
-			Assert.True( DBLocate({||_FIELD->NFIELD > 300} , , , , TRUE) ) // DBSCOPEREST
+			DbGoTop()
+			Assert.True( DbLocate({||_FIELD->NFIELD > 300} , , , , TRUE) ) // DBSCOPEREST
 			Assert.True( Found() )
 			Assert.Equal(456.0 , (FLOAT)  FieldGet(1) )
 			
 //			DBContinue() returns TRUE (correct) but does not move record pointer at all
-			Assert.True( DBContinue() )
+			Assert.True( DbContinue() )
 			Assert.True( Found() )
 			Assert.Equal( 789.0 , (FLOAT)  FieldGet(1) )
 			
-			Assert.True( DBContinue() )
+			Assert.True( DbContinue() )
 			Assert.False( Found() )
 			Assert.Equal( 0.0 , (FLOAT) FieldGet(1) )
 			
-			Assert.True( DBContinue() )
+			Assert.True( DbContinue() )
 			Assert.False( Found() )
 			Assert.Equal( 0.0 , (FLOAT) FieldGet(1) )
 			
-			DBCloseArea()
+			DbCloseArea()
 		RETURN
 
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBAppendWithNoWorkarea() AS VOID
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
-			DBCloseAll()
-			Assert.False( DBAppend() )
+			DbCloseAll()
+			Assert.False( DbAppend() )
 		RETURN
 
 
@@ -460,34 +460,34 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		PRIVATE METHOD Shared_Cdx_helper(lUseIndexFormVO AS LOGIC) AS VOID
 			LOCAL cDbf AS STRING
 			LOCAL cCdx AS STRING
-            RDDSetDefault("DBFCDX")
+            RddSetDefault("DBFCDX")
 			cDbf := GetTempFileName("testcdx")
 			cCdx := cDbf + ".cdx"
             FErase(cCdx)
 			
-			Assert.True( DBCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 }}) )
-			Assert.True( DBUseArea(,,cDbf,,FALSE) )
-			Assert.True( DBAppend() )
+			Assert.True( DbCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 }}) )
+			Assert.True( DbUseArea(,,cDbf,,FALSE) )
+			Assert.True( DbAppend() )
 			FieldPut ( 1 , "B")
-			Assert.True( DBAppend() )
+			Assert.True( DbAppend() )
 			FieldPut ( 1 , "A")
-			Assert.True( DBCloseArea() )
+			Assert.True( DbCloseArea() )
 			
 			IF lUseIndexFormVO
 				System.IO.File.WriteAllBytes(cCdx , Convert.FromBase64String("AAQAAAAAAAAAAAAACgDgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAQD//////////94B//8AAA8PEAQEAwAGMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABURVNUQ0RYAAoAAAAAAAAAAAAACgBgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwABAAAABwBDRklFTEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAgD//////////+AB//8AAA8PEAQEAwIAkAEAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEJB"))
 			ELSE
-				Assert.True( DBUseArea(,,cDbf,,TRUE) ) // ----- opening in SHARED mode
-				Assert.True( DBCreateIndex(cCdx , "CFIELD") ) // returns TRUE
-				Assert.True( DBCloseArea() )
+				Assert.True( DbUseArea(,,cDbf,,TRUE) ) // ----- opening in SHARED mode
+				Assert.True( DbCreateIndex(cCdx , "CFIELD") ) // returns TRUE
+				Assert.True( DbCloseArea() )
 			END IF
 			
-			Assert.True( DBUseArea(,,cDbf,,FALSE) )
-			Assert.True( DBSetIndex(cCdx) )
-			DBGoTop()
+			Assert.True( DbUseArea(,,cDbf,,FALSE) )
+			Assert.True( DbSetIndex(cCdx) )
+			DbGoTop()
 			Assert.True( AllTrim(FieldGet(1)) == "A" )
-			DBGoBottom()
+			DbGoBottom()
 			Assert.True( AllTrim(FieldGet(1)) == "B" )
-			Assert.True( DBCloseArea() ) // XSharp.RDD.RddError here
+			Assert.True( DbCloseArea() ) // XSharp.RDD.RddError here
 			
             Assert.True( FErase(cDbf + ".dbf") )
             Assert.True( FErase(cCdx) ) // false if still in use
@@ -500,25 +500,25 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cDbf := GetTempFileName()
 			FErase(cDbf + ".cdx")
 
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
-			Assert.True(  DBCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 },;
+			Assert.True(  DbCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 },;
 			{"DFIELD" , "D" , 8 , 0 }}) )
-			Assert.True( DBUseArea(,,cDbf) )
-			DBAppend()
+			Assert.True( DbUseArea(,,cDbf) )
+			DbAppend()
 			FieldPut ( 1 , "B")
-			DBAppend()
+			DbAppend()
 			FieldPut ( 1 , "A")
-			Assert.True( DBCloseArea() )
+			Assert.True( DbCloseArea() )
 			
-			Assert.True( DBUseArea(,,cDbf) )
+			Assert.True( DbUseArea(,,cDbf) )
 			LOCAL u AS USUAL
 			u := FieldGet(2) // it should be a NULL_DATE
 			Assert.True( u == NULL_DATE )
 			FieldPut(2,u) // exception
 			FieldPut(2,NULL_DATE) // exception
 			Assert.True( FieldGet(2) == NULL_DATE )
-			Assert.True(  DBCloseArea() )
+			Assert.True(  DbCloseArea() )
 		RETURN
 
 
@@ -532,35 +532,35 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cCdx AS STRING
 			LOCAL aResult AS ARRAY
 			
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 			
 			cDbf := GetTempFileName("testcdx1")
 			cCdx := cDbf + ".cdx"
 			FErase(cCdx)
 			
-			DBCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 }} , "DBFCDX")
-			DBUseArea(,,cDbf)
-			DBAppend()
+			DbCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 }} , "DBFCDX")
+			DbUseArea(,,cDbf)
+			DbAppend()
 			FieldPut ( 1 , "ABC")
-			DBAppend()
+			DbAppend()
 			FieldPut ( 1 , "GHI")
-			DBAppend()
+			DbAppend()
 			FieldPut ( 1 , "DEF")
-			DBAppend()
+			DbAppend()
 			FieldPut ( 1 , "K")
-			DBCloseArea()
+			DbCloseArea()
 			
 			IF lUseIndexFormVO
 				System.IO.File.WriteAllBytes(cCdx , Convert.FromBase64String("AAQAAAAAAAAAAAAACgDgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAQD//////////90B//8AAA8PEAQEAwAGIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFRFU1RDRFgxAAoAAAAAAAAAAAAACgBgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwABAAAABwBDRklFTEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMABAD//////////9IB//8AAA8PEAQEAwEAcAMAcAIAcAQAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABLR0hJREVGQUJD"))
 			ELSE
-				Assert.True( DBUseArea(,,cDbf) )
-				Assert.True( DBCreateIndex(cCdx , "CFIELD") )
-				Assert.True( DBCloseArea() )
+				Assert.True( DbUseArea(,,cDbf) )
+				Assert.True( DbCreateIndex(cCdx , "CFIELD") )
+				Assert.True( DbCloseArea() )
 			END IF
 			
-			Assert.True( DBUseArea(,,cDbf,,FALSE) )
+			Assert.True( DbUseArea(,,cDbf,,FALSE) )
 //			Assert.True( DBSetIndex(cCdx) )
-			Assert.True( DBSetOrder(1) )
+			Assert.True( DbSetOrder(1) )
 			
 			aResult := GetRecords()
 //			should be ABC, DEF, GHI, K
@@ -569,8 +569,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True( aResult[3] == "GHI")
 			Assert.True( aResult[4] == "K")
 			
-			DBGoTop()
-			DBSkip()
+			DbGoTop()
+			DbSkip()
 			FieldPut(1,"HHH")
 			aResult := GetRecords()
 //			should be ABC, GHI, HHH, K, because the record has been moved in the index
@@ -579,15 +579,15 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True( aResult[3] == "HHH")
 			Assert.True( aResult[4] == "K")
 
-			DBGoTop()
-			DBSkip(2)
+			DbGoTop()
+			DbSkip(2)
 			FieldPut(1,"DEF") // restore it
 			
-			Assert.True( DBCloseArea() )
+			Assert.True( DbCloseArea() )
 
 
-			Assert.True( DBUseArea(,,cDbf,,TRUE) )
-			Assert.True( DBSetIndex(cCdx) )
+			Assert.True( DbUseArea(,,cDbf,,TRUE) )
+			Assert.True( DbSetIndex(cCdx) )
 			aResult := GetRecords()
 //			should be ABC, DEF, GHI, K
 			Assert.True( aResult[1] == "ABC")
@@ -595,8 +595,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True( aResult[3] == "GHI")
 			Assert.True( aResult[4] == "K")
 			
-			DBGoTop()
-			DBSkip()
+			DbGoTop()
+			DbSkip()
 			Assert.True(RLock())
 			FieldPut(1,"III")
 			aResult := GetRecords()
@@ -606,16 +606,16 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True( aResult[3] == "III")
 			Assert.True( aResult[4] == "K")
 			
-			Assert.True( DBCloseArea() )
+			Assert.True( DbCloseArea() )
 		RETURN
 
 		PRIVATE STATIC METHOD GetRecords() AS ARRAY
 			LOCAL aResult AS ARRAY
 			aResult := {}
-			DBGoTop()
+			DbGoTop()
 			DO WHILE .NOT. Eof()
 				AAdd(aResult , AllTrim(FieldGet(1)))
-				DBSkip()
+				DbSkip()
 			END DO
 		RETURN aResult
 
@@ -631,35 +631,35 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cCdx := cFileName + ".cdx"
 			FErase(cCdx)
 
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
-			DBCreate(cFileName, {{"FLD1","C",10,0},{"FLD2","N",10,0}})
-			DBUseArea( , , cFileName , , FALSE)
+			DbCreate(cFileName, {{"FLD1","C",10,0},{"FLD2","N",10,0}})
+			DbUseArea( , , cFileName , , FALSE)
 			FOR LOCAL n := 1 AS INT UPTO 10
-				DBAppend()
+				DbAppend()
 				FieldPut(1, n:ToString())
 				FieldPut(2, n)
 			NEXT
 			IF lUseIndexFormVO
-				Assert.True( DBCloseArea() )
+				Assert.True( DbCloseArea() )
 				System.IO.File.WriteAllBytes(cCdx , Convert.FromBase64String("AAQAAAAAAAAAAAAACgDgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAQD//////////90B//8AAA8PEAQEAwAGIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFRFU1RDRFgyAAoAAAAAAAAAAAAACABgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQABAAAABQBGTEQyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMACgD//////////78B//8AAA8PEAQEAwEAYAIAcAMAYQQAYQUAYQYAYQcAYQgAYQkAYQoAYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACQiIBwYFBAIwL/w"))
 			ELSE
-				Assert.True( DBCreateIndex(cCdx , "FLD2") )
-				Assert.True( DBCloseArea() )
+				Assert.True( DbCreateIndex(cCdx , "FLD2") )
+				Assert.True( DbCloseArea() )
 			END IF
 
-			DBUseArea( , , cFileName , , FALSE)
+			DbUseArea( , , cFileName , , FALSE)
 //			Assert.True( DBSetIndex(cCdx) )
-			Assert.True( DBSetOrder(1) )
-			DBGoTop()
+			Assert.True( DbSetOrder(1) )
+			DbGoTop()
 			LOCAL nCount := 0 AS INT
-			DO WHILE ! EOF()
+			DO WHILE ! Eof()
 				nCount ++
 				Assert.True( FieldGet(2) == RecNo() )
 				Assert.True( FieldGet(2) == nCount )
-				Assert.True( DBSkip() )
+				Assert.True( DbSkip() )
 			END DO
-			Assert.True( DBCloseArea() )
+			Assert.True( DbCloseArea() )
 		RETURN
 
 		[Fact, Trait("Category", "DBF")];
@@ -668,21 +668,21 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cFileName := GetTempFileName()
 			FErase(cFileName + ".cdx")
 
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
-			Assert.True( DBCreate(cFileName, {{"FLD1","C",10,0}}) )
+			Assert.True( DbCreate(cFileName, {{"FLD1","C",10,0}}) )
 			
-			Assert.True( DBUseArea ( TRUE , , cFileName , "a1") )
-			Assert.Equal( 1u , DBGetSelect() )
-			Assert.True( DBCloseArea() )
+			Assert.True( DbUseArea ( TRUE , , cFileName , "a1") )
+			Assert.Equal( 1u , DbGetSelect() )
+			Assert.True( DbCloseArea() )
 			
-			Assert.True( DBUseArea ( TRUE , , cFileName , "a2") )
-			Assert.Equal( 1u , DBGetSelect() )
-			Assert.True( DBCloseArea() )
+			Assert.True( DbUseArea ( TRUE , , cFileName , "a2") )
+			Assert.Equal( 1u , DbGetSelect() )
+			Assert.True( DbCloseArea() )
 			
-			Assert.True( DBUseArea ( TRUE , , cFileName , "a3") )
-			Assert.Equal( 1u , DBGetSelect() )
-			Assert.True( DBCloseArea() )
+			Assert.True( DbUseArea ( TRUE , , cFileName , "a3") )
+			Assert.Equal( 1u , DbGetSelect() )
+			Assert.True( DbCloseArea() )
 		RETURN
 
 		// FOX-ES1QLR6Y5L , dbRecordInfo ( DBRI_LOCKED ) always returns .f.
@@ -692,39 +692,39 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cFileName := GetTempFileName()
 			FErase(cFileName + ".cdx")
 
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
             TRY
 			SetExclusive ( FALSE )
-			DBCreate ( cFileName , { {"id", "C", 5, 0} })
+			DbCreate ( cFileName , { {"id", "C", 5, 0} })
 		
-			DBUseArea ( , , cFileName )
-			DBAppend()
-			DBAppend()
-			DBAppend()
-			DBGoTop()
+			DbUseArea ( , , cFileName )
+			DbAppend()
+			DbAppend()
+			DbAppend()
+			DbGoTop()
 			
-			Assert.True( DBRLock ( RecNo() ) )
-			Assert.True( DBRecordInfo ( DBRI_LOCKED ) ) // Should show TRUE
-			Assert.True( AScan ( DBRLockList() , RecNo() ) > 0 )
+			Assert.True( DbRLock ( RecNo() ) )
+			Assert.True( DbRecordInfo ( DBRI_LOCKED ) ) // Should show TRUE
+			Assert.True( AScan ( DbRLockList() , RecNo() ) > 0 )
 			
-			DBSkip()
+			DbSkip()
 //			record 2 - no lock
-			Assert.False( DBRecordInfo ( DBRI_LOCKED ) )
-			Assert.False( AScan ( DBRLockList() , RecNo() ) > 0 )
+			Assert.False( DbRecordInfo ( DBRI_LOCKED ) )
+			Assert.False( AScan ( DbRLockList() , RecNo() ) > 0 )
 			
-			DBSkip()
-			Assert.True( DBRLock ( RecNo() ) )
-			Assert.True( DBRecordInfo ( DBRI_LOCKED ) ) // Should show TRUE
-			Assert.True( AScan ( DBRLockList() , RecNo() ) > 0 )
+			DbSkip()
+			Assert.True( DbRLock ( RecNo() ) )
+			Assert.True( DbRecordInfo ( DBRI_LOCKED ) ) // Should show TRUE
+			Assert.True( AScan ( DbRLockList() , RecNo() ) > 0 )
 			
 			LOCAL a AS ARRAY
-			a:= DBRLockList()
+			a:= DbRLockList()
 			Assert.Equal( 2 , (INT) ALen(a) )
 			Assert.Equal( 1 , (INT) a[1] )
 			Assert.Equal( 3 , (INT) a[2] )
 
             FINALLY
-			DBCloseArea()
+			DbCloseArea()
 			
 			SetExclusive ( TRUE ) // restore
             END TRY
@@ -733,9 +733,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD Alias_test() AS VOID
 
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
-			DBCloseAll()
+			DbCloseAll()
 			Assert.True( Alias() == "" )
 			Assert.True( Alias0() == "" )
 			Assert.True( Alias0Sym() == "" )
@@ -747,20 +747,20 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cFileName := GetTempFileName()
 			FErase(cFileName + ".cdx")
 			
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
-			DBCreate(cFileName, {{"FLD1","C",10,0}})
-			DBUseArea(,,cFileName,,FALSE)
-			DBCloseArea()
+			DbCreate(cFileName, {{"FLD1","C",10,0}})
+			DbUseArea(,,cFileName,,FALSE)
+			DbCloseArea()
 
 //			exception here
-			Assert.True( DBCreate(cFileName, {{"FLD1","N",10,0}}) )
+			Assert.True( DbCreate(cFileName, {{"FLD1","N",10,0}}) )
 			
-			Assert.True( DBUseArea(,,cFileName) )
-			DBAppend()
+			Assert.True( DbUseArea(,,cFileName) )
+			DbAppend()
 			FieldPut(1 , 123)
 			Assert.True( FieldGet(1) == 123 )
-			Assert.True( DBCloseArea() )
+			Assert.True( DbCloseArea() )
 		RETURN
 
 
@@ -768,15 +768,15 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBError_test() AS VOID
 			LOCAL cDbf AS STRING
 			
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
 			cDbf := GetTempFileName()
 			FErase(cDbf + ".cdx")
 			
-			DBCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 }})
-			DBUseArea(,,cDbf,,TRUE)
-			Assert.True( DBAppend() )
-			Assert.True( DBUnlock() )
+			DbCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 }})
+			DbUseArea(,,cDbf,,TRUE)
+			Assert.True( DbAppend() )
+			Assert.True( DbUnLock() )
 			TRY
 				? FieldPut ( 1 , "ABC") // record not locked
 			CATCH e AS XSharp.Error
@@ -786,7 +786,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				? e:OSCodeText
 				? e:ToString() // exception here
 			FINALLY
-				Assert.True( DBCloseArea() )
+				Assert.True( DbCloseArea() )
 			END TRY
 		RETURN
 
@@ -800,50 +800,50 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cDbf AS STRING
 			LOCAL cCdx AS STRING
 			
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
 			cDbf := GetTempFileName("testcdx")
 			cCdx := cDbf + ".cdx"
 			FErase(cCdx)
 			
-			DBCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
-			DBUseArea(,,cDbf,,FALSE)
-			DBAppend()
+			DbCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
+			DbUseArea(,,cDbf,,FALSE)
+			DbAppend()
 			FieldPut(1,123)
-			DBAppend()
+			DbAppend()
 			FieldPut(1,456)
 			IF lUseIndexFormVO
-				DBCloseArea()
+				DbCloseArea()
 				System.IO.File.WriteAllBytes(cCdx , Convert.FromBase64String("AAQAAAAAAAAAAAAACgDgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAQD//////////90B//8AAA8PEAQEAwAGIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFRFU1RDRFgzAAoAAAAAAAAAAAAACABgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwABAAAABwBORklFTEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAgD//////////90B//8AAA8PEAQEAwEAUAIAUQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHyAwF7A"))
 			ELSE
-				DBCreateIndex(cCdx, "NFIELD")
-				DBCloseArea()
+				DbCreateIndex(cCdx, "NFIELD")
+				DbCloseArea()
 			END IF
 			
 
 			// necessary sequence to reproduce the problem below
-			DBUseArea(,,cDbf,,FALSE)
+			DbUseArea(,,cDbf,,FALSE)
 //			DBSetIndex(cCdx)
-			DBSetOrder(1)
-			DBGoTop()
+			DbSetOrder(1)
+			DbGoTop()
 			Assert.Equal(1, (INT)RecNo()) // 1
-			DBGoBottom()
+			DbGoBottom()
 			Assert.Equal(2, (INT)RecNo()) // 2
-			DBSkip(-1)
+			DbSkip(-1)
 			Assert.Equal(1, (INT)RecNo()) // 1
-			DBGoTo(2)
+			DbGoto(2)
 			Assert.Equal(2, (INT)RecNo()) // 2
 
 
-			DBSkip(+1)
-			Assert.Equal(TRUE, (LOGIC)EOF()) // FALSE, wrong
+			DbSkip(+1)
+			Assert.Equal(TRUE, (LOGIC)Eof()) // FALSE, wrong
 			Assert.Equal(3, (INT)RecNo()) // 2, wrong
 
-			DBSkip(+1)
-			Assert.Equal(TRUE, (LOGIC)EOF()) // TRUE
+			DbSkip(+1)
+			Assert.Equal(TRUE, (LOGIC)Eof()) // TRUE
 			Assert.Equal(3, (INT)RecNo()) // 3
 
-			DBCloseArea()
+			DbCloseArea()
 		RETURN
 
 
@@ -851,27 +851,27 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBOrderInfo_DBOI_SETCODEBLOCK() AS VOID
 			LOCAL cDBF, cCDX AS STRING
 			
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
 			cDBF := GetTempFileName("test")
 			cCDX := cDBF + ".cdx"
 			FErase(cCdx)
 			
-			DBCreate( cDBF , {{"ID" , "C" , 5 , 0 }})
-			DBUseArea(,,cDBF)
+			DbCreate( cDBF , {{"ID" , "C" , 5 , 0 }})
+			DbUseArea(,,cDBF)
 			
-			DBAppend()
+			DbAppend()
 			FieldPut(1, "one")
 			
-			DBCreateIndex(cCDX , "Upper (ID)")
-			DBCloseArea()
+			DbCreateIndex(cCDX , "Upper (ID)")
+			DbCloseArea()
 			
-			DBUseArea(,,cDBF)
-			DBSetIndex(cCDX)
+			DbUseArea(,,cDBF)
+			DbSetIndex(cCDX)
 			
-			? "DBOI_SETCODEBLOCK" , DBOrderInfo( DBOI_SETCODEBLOCK )
+			? "DBOI_SETCODEBLOCK" , DbOrderInfo( DBOI_SETCODEBLOCK )
 			
-			DBCloseArea()		
+			DbCloseArea()		
 		RETURN
 
 		
@@ -887,40 +887,40 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cCdx := cDbf + ".cdx"
 			FErase(cCdx)
 
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
-			DBCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
-			DBUseArea(,"DBFCDX",cDbf)
+			DbCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
+			DbUseArea(,"DBFCDX",cDbf)
 			FOR LOCAL n := 1 AS INT UPTO 20
-				DBAppend()
+				DbAppend()
 				FieldPut(1,n)
 			NEXT
 			IF lUseIndexFormVO
 				System.IO.File.WriteAllBytes(cCdx , Convert.FromBase64String("AAQAAAAAAAAAAAAACgDgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAQD//////////90B//8AAA8PEAQEAwAGIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFRFU1RDRFg0AAoAAAAAAAAAAAAACABgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwABAAAABwBORklFTEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAFAD//////////5cB//8AAA8PEAQEAwEAYAIAcAMAYQQAYQUAYQYAYQcAYQgAYQkAYQoAYQsAYQwAYQ0AYQ4AYQ8AYRAAYREAYRIAYRMAYRQAYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANDMyMTAuLCooJiQiIBwYFBAIwL/w"))
 			ELSE
-				DBCreateIndex(cDbf , "NFIELD")
+				DbCreateIndex(cDbf , "NFIELD")
 			END IF
-			DBCloseArea()
+			DbCloseArea()
 			
-			DBUseArea(,"DBFCDX",cDbf) // 20 records
+			DbUseArea(,"DBFCDX",cDbf) // 20 records
 //			DBSetIndex ( cDbf )
-			DBSetOrder(1)
-			Assert.Equal( (INT) DBOrderInfo( DBOI_KEYCOUNT ) , 20)
+			DbSetOrder(1)
+			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) , 20)
 			Assert.Equal( (INT) OrdScope(TOPSCOPE, 5) , 5) // NULL
 			Assert.Equal( (INT) OrdScope(BOTTOMSCOPE, 10) , 10) // NULL
-			DBGoTop()
+			DbGoTop()
 			
-			Assert.Equal( (INT) DBOrderInfo( DBOI_KEYCOUNT ) , 6) // still 20 - but must be 6
+			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) , 6) // still 20 - but must be 6
 			LOCAL nCount := 0 AS INT
-			DO WHILE ! EOF() // all 20 records are listed
+			DO WHILE ! Eof() // all 20 records are listed
 				? FieldGet ( 1 )
-				DBSkip ( 1 )
+				DbSkip ( 1 )
 				nCount ++
 			ENDDO
 			Assert.Equal( 6 , nCount)
-			Assert.Equal( 5 , (INT) DBOrderInfo( DBOI_SCOPETOP ) ) // {(0x0000)0x00000000} CLASS
-			Assert.Equal( 10 , (INT) DBOrderInfo( DBOI_SCOPEBOTTOM ) ) // {(0x0000)0x00000000} CLASS
-			DBCloseArea()
+			Assert.Equal( 5 , (INT) DbOrderInfo( DBOI_SCOPETOP ) ) // {(0x0000)0x00000000} CLASS
+			Assert.Equal( 10 , (INT) DbOrderInfo( DBOI_SCOPEBOTTOM ) ) // {(0x0000)0x00000000} CLASS
+			DbCloseArea()
 		RETURN
 		
 
@@ -930,26 +930,26 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cDbf := GetTempFileName()
 			FErase(cDbf + ".cdx")
 			
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
 			LOCAL uCollation AS USUAL
 			uCollation := SetCollation(#ORDINAL)
 			
-			DBCreate( cDbf, {{"NFIELD" , "N" , 5 , 0 }})
-			DBUseArea(,"DBFCDX",cDbf)
+			DbCreate( cDbf, {{"NFIELD" , "N" , 5 , 0 }})
+			DbUseArea(,"DBFCDX",cDbf)
 			FOR LOCAL n := 1 AS INT UPTO 20
-				DBAppend()
+				DbAppend()
 				FieldPut(1,n)
 			NEXT
-			DBCreateIndex(cDbf + ".cdx" , "NFIELD")
-			DBCloseArea()
+			DbCreateIndex(cDbf + ".cdx" , "NFIELD")
+			DbCloseArea()
 			
-			DBUseArea(,"DBFCDX",cDbf)
-			DBSetIndex ( cDbf + ".cdx" )
-			Assert.Equal( (INT) DBOrderInfo( DBOI_KEYCOUNT ) , 20)
-			Assert.Equal( (INT) UsualType( DBOrderInfo( DBOI_KEYCOUNT )  ) , 1) // first time returns 6
-			Assert.Equal( (INT) UsualType( DBOrderInfo( DBOI_KEYCOUNT )  ) , 1) // second time it returns 1 correctly
-			DBCloseArea()
+			DbUseArea(,"DBFCDX",cDbf)
+			DbSetIndex ( cDbf + ".cdx" )
+			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) , 20)
+			Assert.Equal( (INT) UsualType( DbOrderInfo( DBOI_KEYCOUNT )  ) , 1) // first time returns 6
+			Assert.Equal( (INT) UsualType( DbOrderInfo( DBOI_KEYCOUNT )  ) , 1) // second time it returns 1 correctly
+			DbCloseArea()
 			
 			SetCollation(uCollation)
 		RETURN
@@ -961,19 +961,19 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			FErase(cDbf + ".cdx")
 			FErase(cDbf)
 			
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 			
-			DBCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
-			DBUseArea(,"DBFCDX",cDbf)
+			DbCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
+			DbUseArea(,"DBFCDX",cDbf)
 			FOR LOCAL n := 1 AS INT UPTO 20
-				DBAppend()
+				DbAppend()
 				FieldPut(1,n)
 			NEXT
-			DBCreateIndex(cDbf , "NFIELD")
+			DbCreateIndex(cDbf , "NFIELD")
 			Assert.True( File(cDbf + ".dbf" ) )
 			Assert.True( File(cDbf + ".cdx" ) )
 			Assert.False( File(cDbf) )
-			DBCloseArea()
+			DbCloseArea()
 			
 		RETURN
 		
@@ -984,36 +984,36 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL i AS DWORD
 			LOCAL cDBF, cCDX AS STRING
 			
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
 			aValues := { "ssss" , "hhhh", "wwww" , "aaaa" }
 			cDBF := GetTempFileName()
 			cCDX := cDbf
 			FErase(cCdx + ".cdx")
-			DBCreate( cDBF , {{"LAST" , "C" , 20 , 0 } , ;
+			DbCreate( cDBF , {{"LAST" , "C" , 20 , 0 } , ;
 								{"TEXT1" , "C" , 10 , 0 } , ;
 								{"NUM1" , "N" , 10 , 2 }})
 			
-			DBUseArea(,,cDBF,,FALSE)
+			DbUseArea(,,cDBF,,FALSE)
 			FOR i := 1 UPTO ALen ( aValues )
-				DBAppend()
+				DbAppend()
 				FieldPut(1,aValues [i])
 			NEXT
-			DBCreateIndex(cCDX, "Upper ( Last)")
-			DBCloseArea()
+			DbCreateIndex(cCDX, "Upper ( Last)")
+			DbCloseArea()
 			
-			DBUseArea(,,cDBF,,TRUE) // open shared !
-			DBSetIndex(cCDX)
-			DBGoTop()
+			DbUseArea(,,cDBF,,TRUE) // open shared !
+			DbSetIndex(cCDX)
+			DbGoTop()
 			? "current (indexed) order"
-			DO WHILE ! EOF()
+			DO WHILE ! Eof()
 				? FieldGet ( 1 )
-				DBSkip ( 1 )
+				DbSkip ( 1 )
 			ENDDO
-			DBGoTop()
+			DbGoTop()
 			// "now replace the index field #LAST content 'aaaa' with 'pppp'"
 			// "and also update another field"
-			Assert.True( DBRLock ( RecNo() )  )
+			Assert.True( DbRLock ( RecNo() )  )
 			// "Replacing", AllTrim(FieldGet(1)), "with 'pppp'"
 			FieldPut ( 1 , "pppp" ) // Note: This is the index field
 				
@@ -1023,17 +1023,17 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			FieldPut ( 2 , "Eins" )
 			FieldPut ( 3 , 123.45 )
 			
-			DBCommit()
+			DbCommit()
 			
-			DBRUnlock ( RecNo() )
+			DbRUnLock ( RecNo() )
 			
-			Assert.False( DBSeek( "AAAA" ) ) // must show .F.
-			Assert.True( DBSeek ("PPPP" ) ) // must show .T.
+			Assert.False( DbSeek( "AAAA" ) ) // must show .F.
+			Assert.True( DbSeek ("PPPP" ) ) // must show .T.
 			// "Record order now:"
 			// "(should be hhhh, pppp, ssss , wwww)"
-			DBGoTop()
+			DbGoTop()
 			LOCAL nCount := 0 AS INT
-			DO WHILE ! EOF()
+			DO WHILE ! Eof()
 				? AllTrim(FieldGet(1)) , FieldGet(3) , AllTrim(FieldGet(2))
 				nCount ++
 				DO CASE
@@ -1046,9 +1046,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				CASE nCount == 4
 					Assert.Equal( "wwww", AllTrim(FieldGet(1)) )
 				END CASE
-				DBSkip ( 1 )
+				DbSkip ( 1 )
 			ENDDO
-			DBCloseArea()
+			DbCloseArea()
 		RETURN
 	
 	
@@ -1062,41 +1062,41 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aValues AS ARRAY 
 			LOCAL i AS DWORD
 			
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
 			cDBF := GetTempFileName("testcdx")
 			FErase(cDbf + ".cdx")
 			
 			aValues := { 44 , 12, 34 , 21 }                                 
-			DBCreate( cDBF , {{"AGE" , "N" , 3 , 0 } })
-			DBUseArea(,"DBFCDX",cDBF,,FALSE) 
-			Assert.Equal(0 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 0,  ok
+			DbCreate( cDBF , {{"AGE" , "N" , 3 , 0 } })
+			DbUseArea(,"DBFCDX",cDBF,,FALSE) 
+			Assert.Equal(0 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) ) // 0,  ok
 			FOR i := 1 UPTO ALen ( aValues )
-				DBAppend()
+				DbAppend()
 				FieldPut(1,aValues [i])  
 			NEXT 
-			Assert.Equal(0 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 0,  ok
+			Assert.Equal(0 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) ) // 0,  ok
 
 			IF lUseIndexFormVO
 				System.IO.File.WriteAllBytes(cDbf + ".cdx" , Convert.FromBase64String("AAQAAAAAAAAAAAAACgDgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAQD//////////90B//8AAA8PEAQEAwAGIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFRFU1RDRFg1AAoAAAAAAAAAAAAACABgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAABAAAABABhZ2UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMABAD//////////9cB//8AAA8PEAQEAwIAYAQAYQMAYQEAYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEZBNcAo"))
 			ELSE
-				DBCreateIndex(cDbf, "age" ) 
+				DbCreateIndex(cDbf, "age" ) 
 			END IF
-			DBCloseArea()
+			DbCloseArea()
 
-			DBUseArea(,"DBFCDX",cDBF,,FALSE) 
-			DBSetOrder(1)
-			Assert.Equal(4 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
-			DBGoTop() 
-			Assert.Equal(4 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
-			DO WHILE ! EOF()
+			DbUseArea(,"DBFCDX",cDBF,,FALSE) 
+			DbSetOrder(1)
+			Assert.Equal(4 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
+			DbGoTop() 
+			Assert.Equal(4 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
+			DO WHILE ! Eof()
 //			? FieldGet ( 1 ) 
-				DBSkip(1)
+				DbSkip(1)
 			ENDDO 
-			Assert.Equal(4 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // NIL, should be 4
-			DBSkip(-1)
-			Assert.Equal(4 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
-			DBCloseArea ()
+			Assert.Equal(4 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) ) // NIL, should be 4
+			DbSkip(-1)
+			Assert.Equal(4 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
+			DbCloseArea ()
 		RETURN
 
 
@@ -1113,49 +1113,49 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cDBF := GetTempFileName("testcdx")
 			FErase(cDbf + ".cdx")
 		
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 			SetDeleted(FALSE)
 			
 //			test also with those
 //			aValues := { "vaa" , "abba", "acb" , "aaab"  , "adab"  , "baac"  , "aeab"  , "baaAaa" }
 			aValues := { "vvv" , "abb", "acb" , "aaa"  , "bbb" }
-			DBCreate( cDBF , {{"LAST" , "C" ,10 , 0 } })
-			DBUseArea(,"DBFCDX",cDBF,,FALSE)
+			DbCreate( cDBF , {{"LAST" , "C" ,10 , 0 } })
+			DbUseArea(,"DBFCDX",cDBF,,FALSE)
 			FOR i := 1 UPTO ALen ( aValues )
-				DBAppend()
+				DbAppend()
 				FieldPut(1,aValues [i])  
 			NEXT 
-			Assert.Equal(0 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			Assert.Equal(0 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
 			IF lUseIndexFormVO
-				DBCloseArea()
+				DbCloseArea()
 				System.IO.File.WriteAllBytes(cDbf + ".cdx" , Convert.FromBase64String("AAQAAAAAAAAAAAAACgDgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAQD//////////90B//8AAA8PEAQEAwAGIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFRFU1RDRFg2AAoAAAAAAAAAAAAACgBgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAABAAAADABVcHBlcihMQVNUKQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMABQD//////////8wB//8AAA8PEAQEAwQAcAIAcQMAcQUAcAEAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABWVlZCQkJDQkJCQUFB"))
 			ELSE
-				DBCreateIndex(cDbf, "Upper(LAST)" ) 
-				DBCloseArea()
+				DbCreateIndex(cDbf, "Upper(LAST)" ) 
+				DbCloseArea()
 			END IF
 		
-			DBUseArea(,"DBFCDX",cDBF,,TRUE) 
-			DBSetOrder(1)
-			Assert.Equal(5 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			DbUseArea(,"DBFCDX",cDBF,,TRUE) 
+			DbSetOrder(1)
+			Assert.Equal(5 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
 			// ? "Setting scope"
 			LOCAL u AS USUAL
 			u := "A"
-			VODBOrderInfo( DBOI_SCOPETOP, "", NIL, REF u )
-			VODBOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF u )
+			VoDbOrderInfo( DBOI_SCOPETOP, "", NIL, REF u )
+			VoDbOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF u )
 		
-			DBGoTop()
+			DbGoTop()
 			Assert.Equal(4 , (INT)RecNo())
-			DBGoBottom()
+			DbGoBottom()
 			Assert.Equal(3 , (INT)RecNo())
 		
-			DBGoTop() 
+			DbGoTop() 
 		
-			Assert.Equal(3 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
-			DO WHILE ! EOF()
-				DBSkip(1)
+			Assert.Equal(3 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
+			DO WHILE ! Eof()
+				DbSkip(1)
 			ENDDO 
-			Assert.Equal(3 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
-			DBCloseArea()
+			Assert.Equal(3 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
+			DbCloseArea()
 
 			SetDeleted(FALSE)
 		RETURN
@@ -1171,7 +1171,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aValues AS ARRAY 
 			LOCAL i AS DWORD
 			
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
 			cDBF := GetTempFileName("testcdx")
 			FErase(cDbf + ".cdx")
@@ -1181,44 +1181,44 @@ BEGIN NAMESPACE XSharp.VO.Tests
 //			test also with those
 //			aValues := { "vaa" , "abba", "acb" , "aaab"  , "adab"  , "baac"  , "aeab"  , "baaAaa" }
 			aValues := { "vvv" , "abb", "acb" , "aaa"  , "bbb" }
-			DBCreate( cDBF , {{"LAST" , "C" ,10 , 0 } })
-			DBUseArea(,"DBFCDX",cDBF,,FALSE)
+			DbCreate( cDBF , {{"LAST" , "C" ,10 , 0 } })
+			DbUseArea(,"DBFCDX",cDBF,,FALSE)
 			FOR i := 1 UPTO ALen ( aValues )
-				DBAppend()
+				DbAppend()
 				FieldPut(1,aValues [i])  
 			NEXT 
-			Assert.Equal(0 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
-			DBCloseArea()
+			Assert.Equal(0 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
+			DbCloseArea()
 
 			IF lUseIndexFormVO
 				System.IO.File.WriteAllBytes(cDbf + ".cdx" , Convert.FromBase64String("AAQAAAAAAAAAAAAACgDgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAQD//////////90B//8AAA8PEAQEAwAGIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFRFU1RDRFg2AAoAAAAAAAAAAAAACgBgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAABAAAADABVcHBlcihMQVNUKQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMABQD//////////8wB//8AAA8PEAQEAwQAcAIAcQMAcQUAcAEAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABWVlZCQkJDQkJCQUFB"))
-				DBUseArea(,"DBFCDX",cDBF,,TRUE) 
+				DbUseArea(,"DBFCDX",cDBF,,TRUE) 
 			ELSE
-				DBUseArea(,"DBFCDX",cDBF,,TRUE) 
-				DBCreateIndex(cDbf, "Upper(LAST)" ) 
+				DbUseArea(,"DBFCDX",cDBF,,TRUE) 
+				DbCreateIndex(cDbf, "Upper(LAST)" ) 
 			END IF
 		
-			DBSetOrder(1)
-			Assert.Equal(5 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
+			DbSetOrder(1)
+			Assert.Equal(5 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
 			// ? "Setting scope"
 			LOCAL u AS USUAL
 			u := "A"
-			VODBOrderInfo( DBOI_SCOPETOP, "", NIL, REF u )
-			VODBOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF u )
+			VoDbOrderInfo( DBOI_SCOPETOP, "", NIL, REF u )
+			VoDbOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF u )
 		
-			DBGoTop()
+			DbGoTop()
 			Assert.Equal(4 , (INT)RecNo())
-			DBGoBottom()
+			DbGoBottom()
 			Assert.Equal(3 , (INT)RecNo())
 		
-			DBGoTop() 
+			DbGoTop() 
 		
-			Assert.Equal(3 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
-			DO WHILE ! EOF()
-				DBSkip(1)
+			Assert.Equal(3 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
+			DO WHILE ! Eof()
+				DbSkip(1)
 			ENDDO 
-			Assert.Equal(3 , (INT)DBOrderInfo( DBOI_KEYCOUNT ))
-			DBCloseArea()
+			Assert.Equal(3 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
+			DbCloseArea()
 
 			SetDeleted(FALSE)
 		RETURN
@@ -1235,7 +1235,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cDBF AS STRING
 			LOCAL cCdx AS STRING
 
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
 			aValues := { 44 , 12, 34 , 21 }                                
 			cDBF := GetTempFileName("testcdx8")
@@ -1244,44 +1244,44 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			IF System.IO.File.Exists(cCdx)
 				System.IO.file.Delete(cCdx)
 			END IF
-			DBCreate( cDBF , {{"AGE" , "N" , 3 , 0 } })                                        
-			DBUseArea(,"DBFCDX",cDBF,,FALSE)
-			Assert.Equal(0, (INT)DBOrderInfo( DBOI_KEYCOUNT ) )   //  0  ok
+			DbCreate( cDBF , {{"AGE" , "N" , 3 , 0 } })                                        
+			DbUseArea(,"DBFCDX",cDBF,,FALSE)
+			Assert.Equal(0, (INT)DbOrderInfo( DBOI_KEYCOUNT ) )   //  0  ok
 			FOR i := 1 UPTO ALen ( aValues )
-				DBAppend()
+				DbAppend()
 				FieldPut(1,aValues [i]) 
 			NEXT
-			Assert.Equal(0, (INT)DBOrderInfo( DBOI_KEYCOUNT ) ) //  0 ,ok
-			Assert.Equal(0, (INT)DBOrderInfo( DBOI_NUMBER ) )  //  -1,  but should show 0
+			Assert.Equal(0, (INT)DbOrderInfo( DBOI_KEYCOUNT ) ) //  0 ,ok
+			Assert.Equal(0, (INT)DbOrderInfo( DBOI_NUMBER ) )  //  -1,  but should show 0
 
 
 			IF lUseIndexFormVO
 				System.IO.File.WriteAllBytes(cDbf + ".cdx" , Convert.FromBase64String("AAQAAAAAAAAAAAAACgDgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAQD//////////90B//8AAA8PEAQEAwAGIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFRFU1RDRFg4AAoAAAAAAAAAAAAACABgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAABAAAABABhZ2UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMABAD//////////9cB//8AAA8PEAQEAwIAYAQAYQMAYQEAYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEZBNcAo"))
 			ELSE
-				DBCreateIndex( cCdx, "age" )
+				DbCreateIndex( cCdx, "age" )
 			END IF
-			DBCloseArea()
+			DbCloseArea()
 			
-			DBUseArea(,"DBFCDX",cDBF,,FALSE)
-			DBSetOrder(1)
+			DbUseArea(,"DBFCDX",cDBF,,FALSE)
+			DbSetOrder(1)
 			
-			DBGoTop()
-			DO WHILE ! EOF()
+			DbGoTop()
+			DO WHILE ! Eof()
 //				? FieldGet ( 1 )
-				DBSkip(1)
+				DbSkip(1)
 			ENDDO
 
-			Assert.True( DBClearIndex(, cCdx) )
+			Assert.True( DbClearIndex(, cCdx) )
 
-			DBGoTop()
+			DbGoTop()
 			Assert.Equal(1, (INT)RecNo())
 
-			Assert.True( DBSetIndex ( cCdx ) )
+			Assert.True( DbSetIndex ( cCdx ) )
 
-			Assert.Equal(4, (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 4, ok
-			Assert.Equal(1, (INT) DBOrderInfo( DBOI_NUMBER ) )  // still  -1 , but should show  1
-			Assert.Equal("TESTCDX8", (STRING) DBOrderInfo( DBOI_NAME ) )  // ok , "TESTDBF"
-			DBCloseArea ()
+			Assert.Equal(4, (INT) DbOrderInfo( DBOI_KEYCOUNT ) ) // 4, ok
+			Assert.Equal(1, (INT) DbOrderInfo( DBOI_NUMBER ) )  // still  -1 , but should show  1
+			Assert.Equal("TESTCDX8", (STRING) DbOrderInfo( DBOI_NAME ) )  // ok , "TESTDBF"
+			DbCloseArea ()
 		RETURN
 
 
@@ -1291,33 +1291,33 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aValues AS ARRAY
 			LOCAL i AS DWORD
 			
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
 			cDBF := GetTempFileName()
 			FErase(cDbf + ".cdx")
 			aValues := { 1,4,2,3 }
-			DBCreate( cDBF , {{"NUM" , "N" ,5 , 0 } })
-			DBUseArea(,"DBFCDX",cDBF,,FALSE)
+			DbCreate( cDBF , {{"NUM" , "N" ,5 , 0 } })
+			DbUseArea(,"DBFCDX",cDBF,,FALSE)
 			FOR i := 1 UPTO ALen ( aValues )
-				DBAppend()
+				DbAppend()
 				FieldPut(1,aValues [i])
 			NEXT
-			DBGoTop()
+			DbGoTop()
 			
 			// DESCENDING = TRUE
-			Assert.True( DBSetOrderCondition(,,,,,,,,,,TRUE) )
-			Assert.True( DBCreateIndex(cDbf, "NUM" ) )
+			Assert.True( DbSetOrderCondition(,,,,,,,,,,TRUE) )
+			Assert.True( DbCreateIndex(cDbf, "NUM" ) )
 			
-			DBGoTop()
+			DbGoTop()
 			aValues := { 4,3,2,1 }
 			LOCAL nCount := 0 AS INT
 			DO WHILE .NOT. EoF()
 				nCount ++
 				Assert.Equal((INT)aValues[nCount] , (INT)FieldGet(1))
-				DBSkip()
+				DbSkip()
 			END DO
 			
-			DBCloseArea()
+			DbCloseArea()
 		RETURN
 
 
@@ -1327,25 +1327,25 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cDBF := GetTempFileName()
 			FErase(cDbf + ".cdx")
 			
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
-			DBCloseAll() // worakaroudn for previous test crashing
+			DbCloseAll() // worakaroudn for previous test crashing
 			
-			DBCreate( cDBF , {{"LEFT" , "N" ,5 , 0 } , {"STR" , "C" ,5 , 0 } })
-			DBUseArea(,"DBFCDX",cDBF,,FALSE)
-			DBAppend()
+			DbCreate( cDBF , {{"LEFT" , "N" ,5 , 0 } , {"STR" , "C" ,5 , 0 } })
+			DbUseArea(,"DBFCDX",cDBF,,FALSE)
+			DbAppend()
 			FieldPut(1,1)
 			FieldPut(2,"A")
-			DBAppend()
+			DbAppend()
 			FieldPut(1,11)
 			FieldPut(2,"B")
-			DBGoTop()
-			Assert.True( DBCreateIndex(cDbf, "STR" ) )
-			Assert.True( DBSetFilter(&("{||LEFT<10}")) )
-			DBGoTop()
-			DBSkip()
-			Assert.True( EOF() )
-			DBCloseArea()
+			DbGoTop()
+			Assert.True( DbCreateIndex(cDbf, "STR" ) )
+			Assert.True( DbSetFilter(&("{||LEFT<10}")) )
+			DbGoTop()
+			DbSkip()
+			Assert.True( Eof() )
+			DbCloseArea()
 		RETURN
 
 
@@ -1353,61 +1353,61 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD Uninitialized_fields() AS VOID
 			LOCAL cDbf AS STRING
 
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
-			DBCloseAll()
+			DbCloseAll()
 			
 			cDBF := GetTempFileName()
 			FErase(cDbf + ".cdx")
-			DBCreate( cDBF , {{"FIELDN" , "N" ,5 , 0 } })
-			DBUseArea(,"DBFCDX",cDBF)
-			DBAppend()
+			DbCreate( cDBF , {{"FIELDN" , "N" ,5 , 0 } })
+			DbUseArea(,"DBFCDX",cDBF)
+			DbAppend()
 			FieldPut(1,1)
-			DBAppend() // no field assigned
-			DBCloseArea()
+			DbAppend() // no field assigned
+			DbCloseArea()
 			
-			DBUseArea(,"DBFCDX",cDBF)
-			Assert.True( DBCreateIndex(cDbf, "FIELDN" ) )
-			DBCloseArea()
+			DbUseArea(,"DBFCDX",cDBF)
+			Assert.True( DbCreateIndex(cDbf, "FIELDN" ) )
+			DbCloseArea()
 		RETURN
 
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBOrderInfo_DBOI_KEYTYPE() AS VOID
 			LOCAL cDbf AS STRING
-			DBCloseAll()
+			DbCloseAll()
 			
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
 			cDBF := GetTempFileName("testnewer")
 			FErase(cDbf + ".cdx")
-			DBCreate( cDBF , {{"FIELDN" , "N" ,5 , 0 } , ;
+			DbCreate( cDBF , {{"FIELDN" , "N" ,5 , 0 } , ;
 			{"FIELDS" , "C" ,15 , 0 } , ;
 			{"FIELDL" , "L" ,1 , 0 } , ;
 			{"FIELDD" , "D" ,8 , 0 } })
-			DBUseArea(,"DBFCDX",cDBF)
-			DBAppend()
+			DbUseArea(,"DBFCDX",cDBF)
+			DbAppend()
 			FieldPut(1,1)
-			DBCloseArea()
+			DbCloseArea()
 			
-			DBUseArea(,"DBFCDX",cDBF)
-			DBCreateIndex(cDbf + ".cdx", "FIELDN" )
-			Assert.Equal(3, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 14 (), should be 3 (FLOAT)
-			DBCloseArea()
+			DbUseArea(,"DBFCDX",cDBF)
+			DbCreateIndex(cDbf + ".cdx", "FIELDN" )
+			Assert.Equal(3, (INT)DbOrderInfo( DBOI_KEYTYPE ) ) // 14 (), should be 3 (FLOAT)
+			DbCloseArea()
 			FErase(cDbf + ".cdx")
-			DBUseArea(,"DBFCDX",cDBF,,FALSE)
-			DBCreateIndex(cDbf + ".cdx", "FIELDS" )
-			Assert.Equal(7, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 18 (PTR), should be 7 (STRING)
+			DbUseArea(,"DBFCDX",cDBF,,FALSE)
+			DbCreateIndex(cDbf + ".cdx", "FIELDS" )
+			Assert.Equal(7, (INT)DbOrderInfo( DBOI_KEYTYPE ) ) // 18 (PTR), should be 7 (STRING)
 			FErase(cDbf + ".cdx")
-			DBUseArea(,"DBFCDX",cDBF,,FALSE)
-			DBCreateIndex(cDbf + ".cdx", "FIELDD" )
-			Assert.Equal(2, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 16, should be 2 (DATE)
+			DbUseArea(,"DBFCDX",cDBF,,FALSE)
+			DbCreateIndex(cDbf + ".cdx", "FIELDD" )
+			Assert.Equal(2, (INT)DbOrderInfo( DBOI_KEYTYPE ) ) // 16, should be 2 (DATE)
 			FErase(cDbf + ".cdx")
-			DBUseArea(,"DBFCDX",cDBF,,FALSE)
-			DBCreateIndex(cDbf + ".cdx", "FIELDL" )
-			Assert.Equal(8, (INT)DBOrderInfo( DBOI_KEYTYPE ) ) // 3 (FLOAT), should be 8
+			DbUseArea(,"DBFCDX",cDBF,,FALSE)
+			DbCreateIndex(cDbf + ".cdx", "FIELDL" )
+			Assert.Equal(8, (INT)DbOrderInfo( DBOI_KEYTYPE ) ) // 3 (FLOAT), should be 8
 			
-			DBCloseArea()
+			DbCloseArea()
 		RETURN
 
 
@@ -1418,37 +1418,37 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 		PRIVATE METHOD DBSetOrderCondition_with_FOR_helper(lUseIndexFormVO AS LOGIC) AS VOID
 			LOCAL cDbf AS STRING
-			DBCloseAll()
+			DbCloseAll()
 			
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
 			cDBF := GetTempFileName("testcdx9")
 			FErase(cDbf + ".cdx")
 			
-			DBCreate( cDBF , {{"FIELDN" , "N" ,5 , 0 } })
-			DBUseArea(,"DBFCDX",cDBF) 
-			DBAppend()
+			DbCreate( cDBF , {{"FIELDN" , "N" ,5 , 0 } })
+			DbUseArea(,"DBFCDX",cDBF) 
+			DbAppend()
 			FieldPut(1,1)
-			DBAppend()
+			DbAppend()
 			FieldPut(1,4)
-			DBAppend()
+			DbAppend()
 			FieldPut(1,2)
-			DBAppend()
+			DbAppend()
 			FieldPut(1,3)
-			DBCloseArea()
+			DbCloseArea()
 			
 			IF lUseIndexFormVO
 				System.IO.File.WriteAllBytes(cDbf + ".cdx" , Convert.FromBase64String("AAQAAAAAAAAAAAAACgDgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAQD//////////90B//8AAA8PEAQEAwAGIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFRFU1RDRFg5AAoAAAAAAAAAAAAACABoAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEABwAJAAAABwBGSUVMRE4ARklFTEROPjIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAgD//////////98B//8AAA8PEAQEAwQAYAIAYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEMAI"))
-				DBUseArea(,"DBFCDX",cDBF) 
+				DbUseArea(,"DBFCDX",cDBF) 
 			ELSE
-				DBUseArea(,"DBFCDX",cDBF) 
-				DBSetOrderCondition( "FIELDN>2",{||_FIELD->FIELDN>2},,,,,,,,, TRUE)
-				DBCreateIndex(cDbf, "FIELDN" )
+				DbUseArea(,"DBFCDX",cDBF) 
+				DbSetOrderCondition( "FIELDN>2",{||_FIELD->FIELDN>2},,,,,,,,, TRUE)
+				DbCreateIndex(cDbf, "FIELDN" )
 			END IF
 		
 			// Should show only 4,3, but it shows all records 4,3,2,1
-			Assert.True( DBSetOrder(1) )
-			DBGoTop()
+			Assert.True( DbSetOrder(1) )
+			DbGoTop()
 			LOCAL nCount := 0 AS INT
 			DO WHILE .NOT. EoF()
 				nCount ++
@@ -1457,16 +1457,16 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				ELSEIF nCount == 1
 					Assert.Equal(3 ,(INT)FieldGet(1))
 				END IF
-				DBSkip()
+				DbSkip()
 			END DO
 		    
 			Assert.Equal(2 ,nCount)
 			
 			// Should both show true, but both return false
-			Assert.True( DBOrderInfo( DBOI_ISCOND ) )
-			Assert.True( DBOrderInfo( DBOI_ISDESC ) )
+			Assert.True( DbOrderInfo( DBOI_ISCOND ) )
+			Assert.True( DbOrderInfo( DBOI_ISDESC ) )
 			
-			DBCloseArea()
+			DbCloseArea()
 		RETURN
 
 
@@ -1475,24 +1475,24 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aDbf AS ARRAY
 			LOCAL cDbf AS STRING
 
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
-			DBCloseAll()
+			DbCloseAll()
 			
 			cDBF := GetTempFileName("testcdx1")
 			FErase(cDbf + ".cdx")
 			aDbf := {{ "AGE" , "N" , 2 , 0 }}
-			DBCreate( cDBF , aDbf)
+			DbCreate( cDBF , aDbf)
 			
-			DBUseArea(,"DBFCDX",cDBF,,FALSE)
-			DBAppend()
+			DbUseArea(,"DBFCDX",cDBF,,FALSE)
+			DbAppend()
 			
 			Assert.False( Found() )// FALSE, ok
-			Assert.True( DBSetFound( FALSE ) )
+			Assert.True( DbSetFound( FALSE ) )
 			Assert.False( Found() ) // TRUE! wrong
-			Assert.True( DBSetFound( TRUE ) )
+			Assert.True( DbSetFound( TRUE ) )
 			Assert.True( Found() ) // TRUE correct
-			DBCloseArea()
+			DbCloseArea()
 		RETURN
 
 
@@ -1501,40 +1501,40 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aDbf AS ARRAY
 			LOCAL cDbf AS STRING
 
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
-			DBCloseAll()
+			DbCloseAll()
 			
 			cDBF := GetTempFileName("testcdx1")
 			FErase(cDbf + ".cdx")
 			aDbf := {{ "AGE" , "N" , 2 , 0 }}
-			DBCreate( cDBF , aDbf)
+			DbCreate( cDBF , aDbf)
 			
-		    DBCreate( cDBF , aDbf)
-		    DBUseArea(,"DBFCDX",cDBF,,FALSE)
+		    DbCreate( cDBF , aDbf)
+		    DbUseArea(,"DBFCDX",cDBF,,FALSE)
 		   
-		    DBAppend()
+		    DbAppend()
 		   
-		    DBCloseArea()
+		    DbCloseArea()
 		   
-		    DBUseArea( TRUE ,"DBFCDX",cDBF,"AREA1" ,TRUE )
-		    DBUseArea( TRUE ,"DBFCDX",cDBF,"AREA2" ,TRUE )
+		    DbUseArea( TRUE ,"DBFCDX",cDBF,"AREA1" ,TRUE )
+		    DbUseArea( TRUE ,"DBFCDX",cDBF,"AREA2" ,TRUE )
 		    
-		    Assert.True( DBSelectArea ( "AREA1" ) )
+		    Assert.True( DbSelectArea ( "AREA1" ) )
 		    Assert.Equal("AREA1", Alias() )
 		    Assert.False( Found() )
-		    Assert.True( DBSetFound ( TRUE ) )
+		    Assert.True( DbSetFound ( TRUE ) )
 		    Assert.True( Found() )
 		   
-		    Assert.True( DBSelectArea ( "AREA2" ) )
+		    Assert.True( DbSelectArea ( "AREA2" ) )
 		    Assert.Equal( "AREA2" , Alias() )
 		    Assert.False( Found() )
-		    Assert.True( DBSetFound  ( FALSE ) )
+		    Assert.True( DbSetFound  ( FALSE ) )
 		    Assert.False( Found() )
 
-		    Assert.True( DBCloseArea() )
-		    Assert.True( DBSelectArea ( "AREA1" ) )
-		    Assert.True( DBCloseArea() )
+		    Assert.True( DbCloseArea() )
+		    Assert.True( DbSelectArea ( "AREA1" ) )
+		    Assert.True( DbCloseArea() )
 		RETURN
 
 
@@ -1543,31 +1543,31 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aDbf AS ARRAY
 			LOCAL cDbf AS STRING
 
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
-			DBCloseAll()
+			DbCloseAll()
 			
 			cDBF := GetTempFileName("testcdx1")
 			FErase(cDbf + ".cdx")
 		    aDbf := {{ "AGE" , "N" , 2 , 0 }}
-		    DBCreate( cDBF , aDbf)
-		    DBUseArea(,,cDBF,,FALSE)
+		    DbCreate( cDBF , aDbf)
+		    DbUseArea(,,cDBF,,FALSE)
 		   
-		    DBAppend()
+		    DbAppend()
 		    FieldPut(1,1)
-		    DBCloseArea()
+		    DbCloseArea()
 		   
-		    DBUseArea( TRUE ,"DBFCDX",cDBF,"AREA1" ,TRUE )
-		    DBUseArea( TRUE ,"DBFCDX",cDBF,"AREA2" ,TRUE )
+		    DbUseArea( TRUE ,"DBFCDX",cDBF,"AREA1" ,TRUE )
+		    DbUseArea( TRUE ,"DBFCDX",cDBF,"AREA2" ,TRUE )
 		    
-		    DBSelectArea ( "AREA1" )  
-		    Assert.True( DBLocate({||_FIELD->AGE == 1}) )
+		    DbSelectArea ( "AREA1" )  
+		    Assert.True( DbLocate({||_FIELD->AGE == 1}) )
 		    Assert.True( Found() )
 		   
-		    DBSelectArea ( "AREA2" )   
+		    DbSelectArea ( "AREA2" )   
 		    Assert.False( Found() )
 		
-		    DBCloseAll()
+		    DbCloseAll()
 		RETURN
 
 
@@ -1576,36 +1576,36 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aDbf AS ARRAY
 			LOCAL cDbf AS STRING
 			
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 			
-			DBCloseAll()
+			DbCloseAll()
 			
 			cDBF := GetTempFileName()
 			FErase(cDbf + ".cdx")
 			
 		    aDbf := {{ "AGE" , "N" , 2 , 0 }}
-			DBCreate( cDBF , aDbf)
+			DbCreate( cDBF , aDbf)
 
-			DBUseArea(,"DBFCDX",cDBF,,FALSE)
-			DBAppend()
-			DBAppend()
-			DBAppend()
-			DBCloseArea()
+			DbUseArea(,"DBFCDX",cDBF,,FALSE)
+			DbAppend()
+			DbAppend()
+			DbAppend()
+			DbCloseArea()
 			
-			Assert.True( DBUseArea( TRUE ,"DBFCDX",cDBF,"AREA1" ,TRUE ) )// open shared
-			DBGoTop()
-			Assert.True( DBRLock ( RecNo() ) ) // lock first record
-			Assert.Equal( 1 , (INT) ALen ( DBRLockList() ) )
+			Assert.True( DbUseArea( TRUE ,"DBFCDX",cDBF,"AREA1" ,TRUE ) )// open shared
+			DbGoTop()
+			Assert.True( DbRLock ( RecNo() ) ) // lock first record
+			Assert.Equal( 1 , (INT) ALen ( DbRLockList() ) )
 			
-			Assert.True( DBUseArea( TRUE ,"DBFCDX",cDBF,"AREA2" ,TRUE ) ) // open shared
-			DBGoBottom()
-			Assert.True( DBRLock ( RecNo() ) ) // lock last record
-			Assert.Equal( 1 , (INT) ALen ( DBRLockList() ) )
+			Assert.True( DbUseArea( TRUE ,"DBFCDX",cDBF,"AREA2" ,TRUE ) ) // open shared
+			DbGoBottom()
+			Assert.True( DbRLock ( RecNo() ) ) // lock last record
+			Assert.Equal( 1 , (INT) ALen ( DbRLockList() ) )
 			
-			Assert.False( FLock() )
+			Assert.False( Flock() )
 			// what's the correct return value here??
 			// Assert.Equal( 0 , (INT) ALen ( DBRLockList() ) )
-			DBCloseAll()
+			DbCloseAll()
 		RETURN
 
 
@@ -1616,38 +1616,38 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aValues AS ARRAY
 			LOCAL i AS DWORD       
 
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 
-			DBCloseAll()
+			DbCloseAll()
 			
 			cDBF := __FUNCTION__
 			FErase(cDbf + ".cdx")
 
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 			Assert.True( IndexKey() == "")
 			Assert.True( IndexOrd() == 0)
 			Assert.True( IndexCount() == 0)
 			Assert.True( Upper(IndexExt()) ==  ".CDX")
-			Assert.True( DBOrderInfo(DBOI_INDEXEXT) == NIL )
+			Assert.True( DbOrderInfo(DBOI_INDEXEXT) == NIL )
 			
 			aValues := { 44 , 12, 34 , 21 }
 			aDbf := {{ "AGE" , "N" , 2 , 0 }}
 			
-			DBCreate( cDBF , aDbf)
-			DBUseArea(,"DBFCDX",cDBF,,FALSE)                    
+			DbCreate( cDBF , aDbf)
+			DbUseArea(,"DBFCDX",cDBF,,FALSE)                    
 			FOR i := 1 UPTO ALen ( aValues )
-				DBAppend()
+				DbAppend()
 				FieldPut(1,aValues [i])
 			NEXT    
-			DBCreateIndex( cDbf, "age" )
+			DbCreateIndex( cDbf, "age" )
 			
 			Assert.Equal( "age" , (STRING) IndexKey() )
 			Assert.True( IndexOrd() == 1 )
 			Assert.True( IndexCount() == 1 )
 			Assert.True( Upper(IndexExt()) == ".CDX")
-			Assert.True( DBOrderInfo(DBOI_INDEXEXT) == ".CDX")
+			Assert.True( DbOrderInfo(DBOI_INDEXEXT) == ".CDX")
 			
-			DBCloseArea()
+			DbCloseArea()
 		RETURN
 
 
@@ -1668,41 +1668,41 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cDBF := GetTempFileName("testcdx")
 			aValues := { {44,d} , {12,d-1}, {34,NULL_DATE} , {21,d+1} }                                
 			
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 			cCdx := cDbf + ".cdx"
 			FErase(cCdx)
-			DBCreate( cDbf , {{"FIELDN" , "N" , 3 , 0 } , {"FIELDD" , "D" , 8 , 0 } })                                        
-			DBUseArea(,"DBFCDX",cDBF,,FALSE)
+			DbCreate( cDbf , {{"FIELDN" , "N" , 3 , 0 } , {"FIELDD" , "D" , 8 , 0 } })                                        
+			DbUseArea(,"DBFCDX",cDBF,,FALSE)
 			FOR i := 1 UPTO ALen ( aValues )
-				DBAppend()
+				DbAppend()
 				FieldPut(1,aValues [i,1]) 
 				FieldPut(2,aValues [i,2]) 
 			NEXT
-			DBCloseArea()
+			DbCloseArea()
 			
 			IF nTestType == 1
 				System.IO.File.WriteAllBytes(cDbf + ".cdx" , Convert.FromBase64String("AAQAAAAAAAAAAAAACgDgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAwD//////////88B//8AAA8PEAQEAwASQAAMNQAGIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABURVNUQ0RYOE4yRklFTEREAAoAAAAAAAAAAAAACABgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwABAAAABwBGSUVMRE4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMABAD//////////9cB//8AAA8PEAQEAwIAYAQAYQMAYQEAYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEZBNcAoABAAAAAAAAAAAAAACABgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAABAAAACAAtRklFTEROAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMABAD//////////78B//8AAA8PEAQEAwEAAAMAAQQAAQIAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANf////////K////////vv///////z+5////////ABYAAAAAAAAAAAAACABgAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwABAAAABwBGSUVMREQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMABAD//////////9UB//8AAA8PEAQEAwMAcAIAQAEANAQAQwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADVgMFCwdSA"))
-				DBUseArea(,"DBFCDX",cDBF,,FALSE)
+				DbUseArea(,"DBFCDX",cDBF,,FALSE)
 			ELSEIF nTestType == 2
-				DBUseArea(,"DBFCDX",cDBF,,FALSE)
-				DBCreateIndex( cCdx, "FIELDN" )
-				DBCreateOrder("FIELDN2", cCdx, "-FIELDN" )
-				DBCreateOrder("FIELDD", cCdx, "FIELDD" )
-                DBSetOrder(1)
+				DbUseArea(,"DBFCDX",cDBF,,FALSE)
+				DbCreateIndex( cCdx, "FIELDN" )
+				DbCreateOrder("FIELDN2", cCdx, "-FIELDN" )
+				DbCreateOrder("FIELDD", cCdx, "FIELDD" )
+                DbSetOrder(1)
 			ELSE
-				DBUseArea(,"DBFCDX",cDBF,,FALSE)
-				DBCreateIndex( cCdx, "FIELDN" )
-				DBCreateOrder("FIELDN2", cCdx, "-FIELDN" )
-				DBCreateOrder("FIELDD", cCdx, "FIELDD" )
+				DbUseArea(,"DBFCDX",cDBF,,FALSE)
+				DbCreateIndex( cCdx, "FIELDN" )
+				DbCreateOrder("FIELDN2", cCdx, "-FIELDN" )
+				DbCreateOrder("FIELDD", cCdx, "FIELDD" )
 
-				DBCloseArea()
-				DBUseArea(,"DBFCDX",cDBF,,FALSE)
+				DbCloseArea()
+				DbUseArea(,"DBFCDX",cDBF,,FALSE)
 			END IF
 
 			
 			LOCAL nCount := 0 AS INT
 
-			DBGoTop()
+			DbGoTop()
 			DO WHILE .NOT. EOF()
 				nCount ++
 				DO CASE
@@ -1716,12 +1716,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 					Assert.True(RecNo() == 1)
 				END CASE
 //				? FieldGet(1), FieldGet(2) , RecNo()
-				DBSkip()
+				DbSkip()
 			ENDDO
 			
 			nCount := 0
-			DBSetOrder(1)
-			DBGoTop()
+			DbSetOrder(1)
+			DbGoTop()
 			DO WHILE .NOT. EOF()
 				nCount ++
 				DO CASE
@@ -1735,12 +1735,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 					Assert.True(RecNo() == 1)
 				END CASE
 //				? FieldGet(1), FieldGet(2) , RecNo()
-				DBSkip()
+				DbSkip()
 			ENDDO
 			
 			nCount := 0
-			DBSetOrder(2)
-			DBGoTop()
+			DbSetOrder(2)
+			DbGoTop()
 			DO WHILE .NOT. EOF()
 				nCount ++
 				DO CASE
@@ -1754,12 +1754,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 					Assert.True(RecNo() == 2)
 				END CASE
 //				? FieldGet(1), FieldGet(2) , RecNo()
-				DBSkip()
+				DbSkip()
 			ENDDO
 			
 			nCount := 0
-			DBSetOrder(3) 
-			DBGoTop()
+			DbSetOrder(3) 
+			DbGoTop()
 			DO WHILE .NOT. EOF()
 				nCount ++
 				DO CASE
@@ -1773,10 +1773,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 					Assert.True(RecNo() == 4)
 				END CASE
 //				? FieldGet(1), FieldGet(2) , RecNo()
-				DBSkip()
+				DbSkip()
 			ENDDO
 			
-			DBCloseArea()
+			DbCloseArea()
 		RETURN
 		
 
@@ -1786,7 +1786,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cDBF AS STRING
 			
             TRY
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 			SetExclusive( FALSE )
 			
 			cDBF := GetTempFileName()
@@ -1794,22 +1794,22 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			FErase(cDBF + ".cdx")
 			
 			DbfTests.CreateDatabase(cDBF , { { "CFIELD" , "C" , 5 , 0 }} , { "AAA" , "CCC" , "BBB" } )
-			DBCreateIndex(cDbf , "CFIELD")
-			DBCloseAll()
+			DbCreateIndex(cDbf , "CFIELD")
+			DbCloseAll()
 			
-			DBUseArea(,"DBFCDX",cDBF )
-			DBGoTop()
-			DBSkip()
+			DbUseArea(,"DBFCDX",cDBF )
+			DbGoTop()
+			DbSkip()
 			
 			Assert.Equal( 3, (INT) RecNo() )
 			Assert.Equal( "BBB  ", FieldGet(1) )
 			
-			Assert.True( DBRLock()  )
-			Assert.True( DBDelete() )
-			Assert.True( DBUnlock() ) // StackOverflow here
+			Assert.True( DbRLock()  )
+			Assert.True( DbDelete() )
+			Assert.True( DbUnLock() ) // StackOverflow here
 			
             FINALLY
-			DBCloseAll()
+			DbCloseAll()
             SetExclusive ( TRUE )
             END TRY
 		RETURN
@@ -1822,7 +1822,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aFields, aValues AS ARRAY
 			LOCAL i AS DWORD
 			
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 			
 			cDbf := GetTempFileName("test1")
 			FErase(cDbf + ".cdx")
@@ -1830,46 +1830,46 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			aValues := {"Gas" , "Abc", "Golden" , "Guru" , "Ddd" , "Aaa" , "Ggg"}
 			aFields := { {"CFIELD" , "C" , 10 , 0} }
 			
-			DBCreate(cDbf , aFields)
-			DBUseArea(,,cDBF , , FALSE)
-			DBCreateIndex(cDbf , "Upper(CFIELD)")
+			DbCreate(cDbf , aFields)
+			DbUseArea(,,cDBF , , FALSE)
+			DbCreateIndex(cDbf , "Upper(CFIELD)")
 			FOR i := 1 UPTO ALen(aValues)
-				DBAppend()
+				DbAppend()
 				FieldPut(1, aValues[i])
 			NEXT
 			
-			DBGoTop()
-			Assert.Equal(7 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) ) // 7, correct
+			DbGoTop()
+			Assert.Equal(7 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) ) // 7, correct
 			
 			// Setting order scope
 			OrdScope(TOPSCOPE, "G")
 			OrdScope(BOTTOMSCOPE, "G")
-			DBGoTop()
+			DbGoTop()
 			
 			// VO: -2 with NTX, 4 with CDX
-			Assert.Equal(4 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) )
+			Assert.Equal(4 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) )
 			
-			Assert.True( DBSeek("G")    ) // TRUE, correct
-			Assert.True( DBSeek("GOLD") ) // TRUE with NTX, FALSE with CDX. VO TRUE in both
+			Assert.True( DbSeek("G")    ) // TRUE, correct
+			Assert.True( DbSeek("GOLD") ) // TRUE with NTX, FALSE with CDX. VO TRUE in both
 			
 			// Clearing order scope
 			OrdScope(TOPSCOPE, NIL)
 			OrdScope(BOTTOMSCOPE, NIL)
-			Assert.Equal( 7 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) )
-			Assert.True( DBSeek("G") )
-			Assert.True( DBSeek("GOLD") )
+			Assert.Equal( 7 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) )
+			Assert.True( DbSeek("G") )
+			Assert.True( DbSeek("GOLD") )
 			
 			// Setting order scope again
 			OrdScope(TOPSCOPE, "G")
 			OrdScope(BOTTOMSCOPE, "G")
-			DBGoTop()
+			DbGoTop()
 			// VO: -2 with NTX, 4 with CDX
-			Assert.Equal(4 , (INT) DBOrderInfo( DBOI_KEYCOUNT ) )
+			Assert.Equal(4 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) )
 			
-			Assert.True( DBSeek("G")    ) // TRUE, correct
-			Assert.True( DBSeek("GOLD") ) // TRUE with NTX, FALSE with CDX. VO TRUE in both
+			Assert.True( DbSeek("G")    ) // TRUE, correct
+			Assert.True( DbSeek("GOLD") ) // TRUE with NTX, FALSE with CDX. VO TRUE in both
 			
-			DBCloseArea()
+			DbCloseArea()
 		RETURN
 
 
@@ -1881,7 +1881,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aFields, aValues AS ARRAY
 			LOCAL i AS DWORD
 			
-			RDDSetDefault ( "DBFCDX" )
+			RddSetDefault ( "DBFCDX" )
 			aFields := { { "LAST" , "C" , 20 , 0 }}
 			aValues := { "b" , "d" , "c", "e" , "a" }
 			cDBF := GetTempFileName()
@@ -1889,46 +1889,46 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cIndex := cDbf + "x"
 			FErase ( cIndex + IndexExt() )
 //			 -----------------
-			DBCreate( cDBF , AFields)
-			DBUseArea(,"DBFCDX",cDBF )
+			DbCreate( cDBF , AFields)
+			DbUseArea(,"DBFCDX",cDBF )
 			FOR i := 1 UPTO ALen ( aValues )
-				DBAppend()
+				DbAppend()
 				FieldPut ( 1 , aValues [ i ] )
 			NEXT
 			
-			DBCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper(_FIELD->LAST) } )
-			DBSetOrder ( 1 )
+			DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper(_FIELD->LAST) } )
+			DbSetOrder ( 1 )
 			
-			Assert.False( DBOrderInfo(DBOI_ISDESC) ) // false, correct
+			Assert.False( DbOrderInfo(DBOI_ISDESC) ) // false, correct
 			Assert.False( OrdDescend() ) // true, incorrect
 
-			DBGoTop()
+			DbGoTop()
 			LOCAL aResult AS ARRAY
 			LOCAL nIndex AS INT
 			aResult := {5,1,3,2,4}
 			nIndex := 0
-			DO WHILE ! EOF()
+			DO WHILE ! Eof()
 //				5,1,3,2,4 correct
 				nIndex ++
 				Assert.Equal((INT) aResult[nIndex] , (INT) RecNo() )
-				DBSkip(1)
+				DbSkip(1)
 			ENDDO
 			
 			Assert.False( OrdDescend ( ,, TRUE ) )
-			Assert.True( DBOrderInfo(DBOI_ISDESC) ) // false, wrong
+			Assert.True( DbOrderInfo(DBOI_ISDESC) ) // false, wrong
 			Assert.True( OrdDescend() )
 			
-			DBGoTop()
+			DbGoTop()
 			aResult := {4,2,3,1,5}
 			nIndex := 0
-			DO WHILE ! EOF()
+			DO WHILE ! Eof()
 //				5,1,3,2,4 again, wrong, should be 4,2,3,1,5
 				nIndex ++
 				Assert.Equal((INT) aResult[nIndex] , (INT) RecNo() )
-				DBSkip(1)
+				DbSkip(1)
 			ENDDO
 
-			DBCloseAll()
+			DbCloseAll()
 		RETURN
 
 
@@ -1941,7 +1941,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL lUnique AS LOGIC
 
 			lUnique := SetUnique()
-			RDDSetDefault ( "DBFCDX" )
+			RddSetDefault ( "DBFCDX" )
 			
 			aFields := { { "LAST" , "C" , 20 , 0 }}
 			aValues := { "a" , "d" , "f", "c" }
@@ -1951,20 +1951,20 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			FErase ( cIndex + IndexExt() )
 //			 -----------------
-			DBCreate( cDBF , AFields)
-			DBUseArea(,"DBFCDX",cDBF )
+			DbCreate( cDBF , AFields)
+			DbUseArea(,"DBFCDX",cDBF )
 			FOR i := 1 UPTO ALen ( aValues )
-				DBAppend()
+				DbAppend()
 				FieldPut ( 1 , aValues [ i ] )
 			NEXT
 			
 			Assert.True( OrdCondSet() )
 			Assert.True( OrdCreate(cIndex, "ORDER1", "upper(LAST)", { || Upper ( _FIELD-> LAST) } ) )
-			DBSetOrder ( 1 )
+			DbSetOrder ( 1 )
 			Assert.Equal( "ORDER1" , OrdName() ) // "ORDER1"
 			Assert.False( OrdIsUnique() ) // always returns true !
-			Assert.False( DBOrderInfo(DBOI_UNIQUE ) ) // ok
-			Assert.False( DBOrderInfo(DBOI_ISDESC ) ) // ok
+			Assert.False( DbOrderInfo(DBOI_UNIQUE ) ) // ok
+			Assert.False( DbOrderInfo(DBOI_ISDESC ) ) // ok
 			
 			Assert.True( OrdCondSet() )
 //			 create a descend and unique order
@@ -1972,12 +1972,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			SetUnique ( TRUE )
 			OrdCreate(cIndex, "ORDER2", "upper(LAST)", { || Upper ( _FIELD-> LAST) } )
 			
-			DBSetOrder ( 2 )
+			DbSetOrder ( 2 )
 			Assert.Equal( "ORDER2" , OrdName() ) // "ORDER2"
 			Assert.True( OrdIsUnique() ) // always returns true !
-			Assert.True( DBOrderInfo(DBOI_UNIQUE ) ) // ok
-			Assert.True( DBOrderInfo(DBOI_ISDESC ) ) // ok
-			DBCloseAll()
+			Assert.True( DbOrderInfo(DBOI_UNIQUE ) ) // ok
+			Assert.True( DbOrderInfo(DBOI_ISDESC ) ) // ok
+			DbCloseAll()
 			Assert.True( SetUnique ( lUnique ) )
 		RETURN
 
@@ -1989,7 +1989,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aFields, aValues AS ARRAY
 			LOCAL i AS DWORD
 			
-			RDDSetDefault ( "DBFCDX" )
+			RddSetDefault ( "DBFCDX" )
 			
 			aFields := { { "LAST" , "C" , 20 , 0 }}
 			
@@ -2001,40 +2001,40 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cIndex := cDbf
 			FErase ( cIndex + IndexExt() )
 
-			DBCreate( cDBF , AFields)
-			DBUseArea(,"DBFCDX",cDBF )
+			DbCreate( cDBF , AFields)
+			DbUseArea(,"DBFCDX",cDBF )
 			FOR i := 1 UPTO ALen ( aValues )
-				DBAppend()
+				DbAppend()
 				FieldPut ( 1 , aValues [ i ] )
 			NEXT
 			
 			FOR i := 1 UPTO 2
-				DBSetOrderCondition()
+				DbSetOrderCondition()
 				IF i == 2
 //					 second order should be a custom order.
-					DBSetOrderCondition(,,,,,,,,,,,,, TRUE)
+					DbSetOrderCondition(,,,,,,,,,,,,, TRUE)
 				ENDIF
-				DBCreateOrder ( "ORDER"+ NTrim(i) , cIndex , "upper(LAST)" , { ||Upper ( _FIELD->LAST) } )
+				DbCreateOrder ( "ORDER"+ NTrim(i) , cIndex , "upper(LAST)" , { ||Upper ( _FIELD->LAST) } )
 //				? OrdCreate(cIndex, "ORDER"+NTrim(i), "upper(LAST)", { || Upper ( _Field->LAST) } ) // ok
 			NEXT
 
-			DBSetOrder ( 1 )
+			DbSetOrder ( 1 )
 			Assert.Equal( "ORDER1", OrdName() ) // "ORDER1" ok
 			Assert.Equal( 1 , (INT) OrdNumber() ) // 1 ok
 			Assert.Equal( "upper(LAST)" ,  OrdKey(1) ) // "UPPER(LAST)" ok
-			Assert.False( (LOGIC) DBOrderInfo ( DBOI_CUSTOM ) ) // returns FALSE ok
-			Assert.Equal( 11 , (INT) DBOrderInfo ( DBOI_KEYCOUNT ) ) // ok, shows 11
+			Assert.False( (LOGIC) DbOrderInfo ( DBOI_CUSTOM ) ) // returns FALSE ok
+			Assert.Equal( 11 , (INT) DbOrderInfo ( DBOI_KEYCOUNT ) ) // ok, shows 11
 			Assert.Equal( 11 , (INT) OrdKeyCount( 1 , cIndex ) ) // ok, shows 11
 			Assert.Equal( 11 , (INT) OrdKeyCount( "ORDER1" , cIndex) ) // ok, shows 11
 			Assert.Equal( 11 , (INT) OrdKeyCount( 1 ) )
 			Assert.Equal( 11 , (INT) OrdKeyCount() )
 			
-			DBSetOrder ( 2 )
+			DbSetOrder ( 2 )
 			Assert.Equal( "ORDER2", OrdName() ) // "ORDER2" ok
 			Assert.Equal( 2 , (INT) OrdNumber() ) // 2 ok
 			Assert.Equal( "upper(LAST)" ,  OrdKey(2) ) // "UPPER(LAST)" ok
-			Assert.True( (LOGIC) DBOrderInfo ( DBOI_CUSTOM ) ) // NOTE: returns FALSE instead of TRUE
-			Assert.Equal( 0 , (INT) DBOrderInfo ( DBOI_KEYCOUNT ) ) // NOTE: shows 11 instead of 0
+			Assert.True( (LOGIC) DbOrderInfo ( DBOI_CUSTOM ) ) // NOTE: returns FALSE instead of TRUE
+			Assert.Equal( 0 , (INT) DbOrderInfo ( DBOI_KEYCOUNT ) ) // NOTE: shows 11 instead of 0
 			Assert.Equal( 0 , (INT) OrdKeyCount( 2 , cIndex ) ) // NOTE: shows 11 instead of 0
 			Assert.Equal( 0 , (INT) OrdKeyCount( "ORDER2" , cIndex) ) // NOTE: shows 11 instead of 0
 			Assert.Equal( 0 , (INT) OrdKeyCount( 2 ) )
@@ -2053,7 +2053,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				Assert.Equal( 2 , (INT) IndexOrd() )
 			END TRY
 			Assert.True( lException )
-			DBCloseAll()
+			DbCloseAll()
 		RETURN
 
 
@@ -2184,7 +2184,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aFields, aValues AS ARRAY
 			LOCAL i AS DWORD
 			
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 			aFields := { { "LAST" , "C" , 20 , 0 }}
 			aValues := { "b" , "c" , "d", "e" , "a" }
 			
@@ -2192,20 +2192,20 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cIndex := cDbf
 			FErase ( cIndex + IndexExt() )
 			
-			DBCreate( cDBF , AFields)
-			DBUseArea(,,cDBF)
+			DbCreate( cDBF , AFields)
+			DbUseArea(,,cDBF)
 			FOR i := 1 UPTO ALen ( aValues )
-				DBAppend()
+				DbAppend()
 				FieldPut ( 1 , aValues [ i ] )
 			NEXT
-			DBCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper (_FIELD->LAST) } )
-			DBCloseAll()
+			DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper (_FIELD->LAST) } )
+			DbCloseAll()
 			
 //			 When ".cdx" is added SetIndex() returns true
 //			 cIndex := cIndex + IndexExt()
-			DBUseArea(,,cDBF)
-			Assert.True( VODBOrdListAdd(cIndex , NIL) ) // Returns FALSE, error
-			DBCloseAll()
+			DbUseArea(,,cDBF)
+			Assert.True( VoDbOrdListAdd(cIndex , NIL) ) // Returns FALSE, error
+			DbCloseAll()
 		RETURN
 
 
@@ -2214,7 +2214,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD SetDefault_test() AS VOID
 			LOCAL cPath, cDbf AS STRING
 			LOCAL cDefault AS STRING
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 			
 			cPath := System.IO.Path.GetTempPath()
 			IF .NOT. cPath:EndsWith("\")
@@ -2230,11 +2230,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cDefault := GetDefault()
 			SetDefault(cPath)
 			
-			Assert.True( DBCreate( cPath + cDbf , { { "ID" , "C" , 5 , 0 } , {"MEM" , "M" , 10 , 0}} ) )
+			Assert.True( DbCreate( cPath + cDbf , { { "ID" , "C" , 5 , 0 } , {"MEM" , "M" , 10 , 0}} ) )
 //			 System.IO.FileNotFoundException
 //			 Could not find file '<path_of_exe>\mydbf.DBT'.
-			Assert.True( DBUseArea(,,cDbf ) )
-			Assert.True( DBCloseArea()      )
+			Assert.True( DbUseArea(,,cDbf ) )
+			Assert.True( DbCloseArea()      )
 			
 			SetDefault(cDefault)
 		RETURN
@@ -2249,7 +2249,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL nCount AS INT
 			LOCAL i AS DWORD
 			
-			RDDSetDefault ( "DBFCDX" )
+			RddSetDefault ( "DBFCDX" )
 			
 			aFields := { { "NUM" , "N" , 8 , 0 },{ "LAST" , "C" , 100 , 0 }} 
 			aValues := { "b" , "c" , "d", "e" , "a" , "r" , "t" , "g" , "m" , "n" , "t" , "b" , "h" , "f" , "y", "r", "t", "y", "z", "v", "e", "r", "b", "z", "b", "m", "w", "e" }
@@ -2257,43 +2257,43 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cDBF := GetTempFileName()
 			FErase ( cDbf + IndexExt() )       
 			
-			DBCreate( cDBF , AFields)
-			DBUseArea(,,cDBF )
+			DbCreate( cDBF , AFields)
+			DbUseArea(,,cDBF )
 			FOR i := 1 UPTO ALen ( aValues )
-				DBAppend()
+				DbAppend()
 				FieldPut ( 1 , i )                                      
 				FieldPut ( 2 , Replicate( aValues [ i ] , 50) )
 			NEXT
-			DBCreateIndex ( cDBF , "NUM" , {||_FIELD->NUM})
-			DBCreateOrder ( "LAST" , cDBF , "LAST" , {||_FIELD->LAST})
-			DBCloseAll()
+			DbCreateIndex ( cDBF , "NUM" , {||_FIELD->NUM})
+			DbCreateOrder ( "LAST" , cDBF , "LAST" , {||_FIELD->LAST})
+			DbCloseAll()
 			
 			
-			DBUseArea(,,cDBF )
-			DBSetOrder(2)
-			DBGoBottom()
+			DbUseArea(,,cDBF )
+			DbSetOrder(2)
+			DbGoBottom()
 			
 			FieldPut(2, "a")
-			DBSkip(-5)
+			DbSkip(-5)
 			FieldPut(2, "d")
-			DBSkip(5)
+			DbSkip(5)
 			FieldPut(2, "z")
 			
 			
 			cPrev := NULL
 			nCount := 0
-			DBGoTop()
+			DbGoTop()
 			DO WHILE .not. EoF()
 				nCount ++
 				IF cPrev != NULL
 					Assert.True( cPrev <= FieldGet(2) )
 				END IF
 				cPrev := FieldGet(2)
-				DBSkip()
+				DbSkip()
 			END DO
 			Assert.Equal( nCount, (INT) ALen(aValues) )
 	
-			DBCloseArea()
+			DbCloseArea()
 		RETURN
 		
 	
@@ -2303,7 +2303,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aFields AS ARRAY
 			LOCAL cDBF AS STRING
 			
-			RDDSetDefault("DBFCDX")
+			RddSetDefault("DBFCDX")
 			cDBF := System.IO.Path.GetTempPath() + "cdxtest"
 
 			aFields := { { "LAST" , "C" , 20 , 0 } , { "COMMENTS" , "M" , 10 , 0 }}
@@ -2311,7 +2311,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			FErase(cDBF + ".dbt")
 			FErase(cDBF + ".fpt")
 			
-			DBCreate( cDBF , AFields)
+			DbCreate( cDBF , AFields)
 //			DBCreate( cDBF , AFields , "DBFCDX") // same
 			
 			Assert.False( (LOGIC) File(cDBF + ".dbt") )
@@ -2322,20 +2322,20 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			END IF
 
 			TRY
-				DBUseArea(,,cDBF)
+				DbUseArea(,,cDBF)
 			FINALLY
-				DBCloseAll()
+				DbCloseAll()
 			END TRY
 
 
-			RDDSetDefault("DBFNTX")
+			RddSetDefault("DBFNTX")
 			cDBF := System.IO.Path.GetTempPath() + "ntxtest"
 
 			aFields := { { "LAST" , "C" , 20 , 0 } , { "COMMENTS" , "M" , 10 , 0 }}
 			FErase(cDBF + ".dbt")
 			FErase(cDBF + ".fpt")
 			
-			DBCreate( cDBF , aFields)
+			DbCreate( cDBF , aFields)
 			
 			Assert.True( (LOGIC) File(cDBF + ".dbt") )
 			Assert.False( (LOGIC) File(cDBF + ".fpt") )
@@ -2345,10 +2345,58 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			END IF
 
 			TRY
-				DBUseArea(,,cDBF)
+				DbUseArea(,,cDBF)
 			FINALLY
-				DBCloseAll()
+				DbCloseAll()
 			END TRY
+		RETURN		
+
+
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD CDX_DBGoTop() AS VOID
+			LOCAL aFields AS ARRAY
+			LOCAL cDBF AS STRING
+			
+			RddSetDefault("DBFCDX")
+			cDBF := System.IO.Path.GetTempPath() + "cdxtest1"
+
+			aFields := { { "LAST" , "C" , 20 , 0 }}
+			FErase(cDBF + ".cdx")
+			FErase(cDBF + ".dbt")
+			FErase(cDBF + ".fpt")
+			
+			DbCreate( cDBF , AFields)
+
+			DbUseArea(,"DBFCDX" , cDbf)
+			FOR LOCAL n := 1 AS INT UPTO 1000
+				DbAppend()
+				FieldPut(1,"A"+AsString(n % 77))
+			NEXT
+			DbCreateOrder( "ORDER1" , cDbf + ".cdx" , "upper(LAST)" , { || Upper ( _Field->LAST) }  )
+			DbCloseArea()
+			
+			LOCAL nCount AS INT
+			DbUseArea(,"DBFCDX" , cDbf)
+
+			DbGoTop()
+			DbGoTop()
+			nCount := 0
+			DO WHILE .NOT. Eof()
+				nCount ++
+				DbSkip()
+			END DO
+			Assert.Equal( nCount, 1000 )
+
+			DbGoBottom()
+			DbGoBottom()
+			nCount := 0
+			DO WHILE .NOT. Bof()
+				nCount ++
+				DbSkip(-1)
+			END DO
+			Assert.Equal( nCount, 1000 )
+			DbCloseArea()
 		RETURN		
 
 

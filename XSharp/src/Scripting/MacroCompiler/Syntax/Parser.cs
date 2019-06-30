@@ -199,12 +199,13 @@ namespace XSharp.MacroCompiler
                 case TokenType.LCURLY:
                 case TokenType.IIF:
                 case TokenType.FIELD:
-                //case TokenType.ARGLIST:
                 case TokenType.VO_AND:
                 case TokenType.VO_OR:
                 case TokenType.VO_XOR:
                 case TokenType.VO_NOT:
                     return true;
+                case TokenType.ARGLIST:
+                    return _options.ParseStatements;
                 case TokenType.LT:
                     {
                         var p = Mark();
@@ -327,8 +328,11 @@ namespace XSharp.MacroCompiler
                 // TODO nvk: Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN							#intrinsicExpression	// _Or(expr, expr, expr)
                 // TODO nvk: AMP LPAREN Expr=expression RPAREN							#macro					// &( expr )
                 // TODO nvk: AMP Id=identifierName										#macro					// &id
-                //case TokenType.ARGLIST:
-                //    throw Error(Lt(), ErrorCode.NotSupported, Lt()?.value);
+                case TokenType.ARGLIST:
+                    if (_options.ParseStatements)
+                        throw Error(Lt(), ErrorCode.NotSupported, Lt()?.value);
+                    else
+                        goto default;
                 case TokenType.VO_AND:
                 case TokenType.VO_OR:
                 case TokenType.VO_XOR:

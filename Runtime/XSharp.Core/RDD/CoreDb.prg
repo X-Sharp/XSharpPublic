@@ -648,19 +648,30 @@ CLASS XSharp.CoreDb
     STATIC METHOD FieldGetBytes(nPos AS DWORD,oRet REF BYTE[]) AS LOGIC
         TRY
             LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
-             IF oRDD IS WorkArea VAR oWa
-                local oFld as RDDFieldInfo
+             IF oRDD IS Workarea VAR oDBF
+                LOCAL oFld AS RDDFieldInfo
                 
-                oFld := oWA:GetField((LONG) nPos)
-                if oFld != NULL
-                    VAR nOffSet := oFld:Offset
-                    VAR nLen    := oFld:Length
-                    local result as byte[]
-                    result := byte[]{nLen}
-                    var aCopy := oWA:GetRec()
-                    System.Array.Copy(aCopy, nOffset, result,0, nLen)
-                    oRet := result
-                    return true
+                oFld := oDBF:GetField((LONG) nPos)
+                IF oFld != NULL
+                    IF oFld:FieldType.IsMemo()
+                        VAR nBlock := oDBF:_getMemoBlockNumber( (LONG)nPos)
+                        IF nBlock == 0
+                            oRet := BYTE[]{0}
+                        ELSEIF oDBF:_Memo != NULL
+                            oRet := (BYTE[]) oDbf:_Memo:GetValue((LONG) nPos)
+                        ELSE
+                            oRet := BYTE[]{0}
+                        ENDIF
+                    ELSE
+                        VAR nOffSet := oFld:Offset
+                        VAR nLen    := oFld:Length
+                        LOCAL result AS BYTE[]
+                        result := BYTE[]{nLen}
+                        VAR aCopy := oDBF:GetRec()
+                        System.Array.Copy(aCopy, nOffset, result,0, nLen)
+                        oRet := result
+                    ENDIF
+                    RETURN TRUE
                 ENDIF
             ENDIF
             oRet := NULL
@@ -681,16 +692,20 @@ CLASS XSharp.CoreDb
         TRY
              LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
              IF oRDD IS WorkArea VAR oWa
-                local oFld as RDDFieldInfo
+                LOCAL oFld AS RDDFieldInfo
                 oFld := oWA:GetField((LONG) nPos)
-                if oFld != NULL
-                    VAR nOffSet := oFld:Offset
-                    VAR nLen    := oFld:Length
-                    if aValue != NULL .and. aValue:Length >= nLen
-                        var aCopy := oWA:GetRec()
-                        System.Array.Copy(aValue, 0, aCopy, nOffSet, nLen)
-                        oWa:PutRec(aCopy)
-                        return true
+                IF oFld != NULL
+                    IF oFld:FieldType.IsMemo()
+                        RETURN FieldPut(nPos, aValue)
+                    ELSE
+                        VAR nOffSet := oFld:Offset
+                        VAR nLen    := oFld:Length
+                        IF aValue != NULL .AND. aValue:Length >= nLen
+                            VAR aCopy := oWA:GetRec()
+                            System.Array.Copy(aValue, 0, aCopy, nOffSet, nLen)
+                            oWa:PutRec(aCopy)
+                            RETURN TRUE
+                        ENDIF
                     ENDIF
                 ENDIF
             ENDIF

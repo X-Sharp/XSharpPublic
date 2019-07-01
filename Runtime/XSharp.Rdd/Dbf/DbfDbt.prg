@@ -13,7 +13,7 @@ BEGIN NAMESPACE XSharp.RDD
         PRIVATE _oDBtMemo AS DbtMemo
         CONSTRUCTOR
             SUPER()
-            SELF:_oMemo := _oDbtMemo := DBTMemo{SELF}
+            SELF:_Memo := _oDbtMemo := DBTMemo{SELF}
             
         VIRTUAL PROPERTY Driver AS STRING GET "DBFDBT"
         // Return the memo content as STRING

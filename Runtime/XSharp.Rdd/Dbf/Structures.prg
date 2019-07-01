@@ -91,27 +91,27 @@ END STRUCTURE
 
 
 INTERNAL STRUCTURE FtpMemoToken
-    PRIVATE Buffer as Byte[]
+    PRIVATE Buffer AS BYTE[]
 
-    INTERNAL CONSTRUCTOR(bData as Byte[])
+    INTERNAL CONSTRUCTOR(bData AS BYTE[])
         Buffer := bData
 
-    INTERNAL PROPERTY DataType as FlexFieldType
+    INTERNAL PROPERTY DataType AS FlexFieldType
         GET
             RETURN (FlexFieldType) FoxToLong(Buffer, 0)
         END GET
         SET
-            LongToFox((LONG) value, Buffer, 0)
+            LongToFox((LONG) VALUE, Buffer, 0)
         END SET
     END PROPERTY
 
     /// This includes the length of the token
-    INTERNAL PROPERTY Length as DWORD       
+    INTERNAL PROPERTY Length AS DWORD       
         GET
             RETURN FoxToDword(Buffer, 4)
         END GET
         SET
-            DwordToFox(value, Buffer, 4)
+            DwordToFox(VALUE, Buffer, 4)
         END SET
     END PROPERTY
 
@@ -120,7 +120,7 @@ INTERNAL STRUCTURE FtpMemoToken
         SELF:Length   := 0
         RETURN
 
-    INTERNAL METHOD Write(hFile as IntPtr) AS LOGIC
+    INTERNAL METHOD Write(hFile AS IntPtr) AS LOGIC
         TRY
             RETURN FWrite3(hFile, Buffer, 8) == 8
         CATCH AS IOException
@@ -128,7 +128,7 @@ INTERNAL STRUCTURE FtpMemoToken
         END TRY
         
 
-    INTERNAL METHOD Read(hFile as IntPtr) AS LOGIC
+    INTERNAL METHOD Read(hFile AS IntPtr) AS LOGIC
         TRY
             
             RETURN Fread3(hFile, Buffer, 8) == 8

@@ -491,7 +491,6 @@ USING System.Diagnostics
                 blockLen := SELF:_getValueLength( nFldPos )
                 IF SELF:_setBlockPos(blockNbr)
                     block := BYTE[]{blockLen}
-                    // Max 512 Blocks
                     IF FRead3( SELF:_hFile, block, (DWORD)blockLen ) != blockLen 
                         block := NULL
                     ENDIF
@@ -543,14 +542,52 @@ USING System.Diagnostics
             
             /// <inheritdoc />
 
-        PRIVATE METHOD WriteFiller(nToWrite AS DWORD) AS VOID
+        PRIVATE METHOD WriteFiller(nToWrite AS DWORD, lDeleted AS LOGIC) AS VOID
             LOCAL filler AS BYTE[]
+            LOCAL fillByte AS BYTE
+            fillByte := IIF(lDeleted, 0xF0, 0xAF)
             filler := BYTE[]{(LONG) nToWrite}
-            filler[nToWrite-1] := 0xAF
+            FOR VAR i := 0 TO nToWrite-1
+                filler[i] := fillByte
+            NEXT
             IF FWrite3(SELF:_hFile, filler, nToWrite) != nToWrite
                 SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_WRITE, GenCode.EG_WRITE, "FPTMemo.PutValue")
             ENDIF
             RETURN
+
+        PRIVATE METHOD DeleteBlock(blockNbr AS LONG) AS VOID
+            // Todo: add deleted block to FlexFile deleted blocks list
+            IF SELF:_setBlockPos(blockNbr)
+                VAR block := BYTE[]{8}
+                FRead3( SELF:_hFile, block, 8) 
+                LOCAL token AS FtpMemoToken
+                token := FtpMemoToken{block}
+                token:DataType := FlexFieldType.Delete
+                // Adjust the length to the whole of the block. Flexfile also does that
+                token:Length   := SELF:RoundToBlockSize(token:Length +8)  - 8
+                IF SELF:LockHeader(TRUE)
+                    SELF:_setBlockPos(blockNbr)
+                    IF FWrite3(SELF:_hFile, block, 8) != 8
+                        SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_WRITE, GenCode.EG_WRITE, "FPTMemo.PutValue")
+                    ENDIF
+                    // Clear the data. FlexFiles does not do that, but I think it's better to clean up.
+                    SELF:WriteFiller(token:Length, TRUE)
+                    SELF:UnLockHeader(TRUE)
+                ENDIF
+            ENDIF
+            RETURN
+
+        METHOD _WriteBlock (bytes AS BYTE[]) AS LOGIC
+            IF FWrite3(SELF:_hFile, bytes, (DWORD) bytes:Length) != (DWORD) Bytes:Length
+                SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_WRITE, GenCode.EG_WRITE, "FPTMemo.PutValue")
+            ENDIF
+            // write remainder of block
+            LOCAL nToWrite AS DWORD
+            nToWrite := SELF:CalculateFillerSpace((DWORD) bytes:Length)
+            IF nToWrite != 0
+                SELF:WriteFiller(nToWrite, FALSE)
+            ENDIF
+            RETURN TRUE
 
         VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
             IF !SELF:IsOpen
@@ -560,48 +597,43 @@ USING System.Diagnostics
             IF bytes == NULL
                 RETURN FALSE
             ENDIF
+            // AT this level the bytes[] array already contains the header with type and length
             LOCAL nCurrentLen AS DWORD
             LOCAL blockNbr AS LONG
+            LOCAL lNewBlock := FALSE AS LOGIC
             // length including header block
             blockNbr := SELF:_oRDD:_getMemoBlockNumber( nFldPos )
             IF blockNbr != 0
                 nCurrentLen := SELF:_getValueLength(nFldPos)
-                IF nCurrentLen >= (DWORD) bytes:Length
+                nCurrentLen := SELF:RoundToBlockSize(nCurrentLen)
+                VAR needed := SELF:RoundToBlockSize((DWORD) bytes:Length)
+                IF nCurrentLen >= needed
                     IF SELF:_setBlockPos(blockNbr)
                         IF SELF:LockHeader(TRUE)
-                            IF FWrite3(SELF:_hFile, bytes, (DWORD) bytes:Length) != (DWORD) Bytes:Length
-                                SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_WRITE, GenCode.EG_WRITE, "FPTMemo.PutValue")
-                            ENDIF
-                            // write remainder of block
-                            LOCAL nToWrite AS DWORD
-                            nToWrite := SELF:CalculateFillerSpace(nCurrentLen)
-                            IF nToWrite != 0
-                                SELF:WriteFiller(nToWrite)
-                            ENDIF
+                            SELF:_WriteBlock(bytes)
                             SELF:UnLockHeader(TRUE)
+                            SELF:LastWrittenBlockNumber := blockNbr
                             RETURN TRUE
                         ENDIF
                     ELSE
                         SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_WRITE, GenCode.EG_WRITE, "FPTMemo.PutValue")
                     ENDIF
                 ELSE
-                    // Deallocate block
+                    // Deallocate block and allocate new
+                    DeleteBlock(blockNbr)
+                    lNewBlock := TRUE
                 ENDIF
             ELSE
                 // Allocate block at the end or from free blocks
                 // write the block
+                lNewBlock := TRUE
+            ENDIF
+            IF lNewBlock
                 IF SELF:LockHeader(TRUE)
                     LOCAL nPos AS DWORD
                     nPos := SELF:_fptHeader:NextFree * _blockSize
                     fSeek3(SELF:_hFile, (LONG) nPos, FS_SET)
-                    IF FWrite3(SELF:_hFile, bytes, (DWORD) bytes:Length) != (DWORD) Bytes:Length
-                        SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_WRITE, GenCode.EG_WRITE, "FPTMemo.PutValue")
-                    ENDIF
-                    LOCAL nToWrite AS DWORD
-                    nToWrite := SELF:CalculateFillerSpace((DWORD) Bytes:Length)
-                    IF nToWrite != 0
-                        SELF:WriteFiller(nToWrite)
-                    ENDIF
+                    SELF:_WriteBlock(bytes)
                     LOCAL nFileSize AS DWORD
                     nFileSize := FTell(SELF:_hFile)
                     SELF:_fptHeader:NextFree    := nFileSize / _blockSize

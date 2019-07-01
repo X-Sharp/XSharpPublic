@@ -16,7 +16,7 @@ USING System.Diagnostics
         PRIVATE _oFptMemo AS FptMemo
         CONSTRUCTOR   
             SUPER()
-            SELF:_oMemo := _oFptMemo := FptMemo{SELF}
+            SELF:_Memo := _oFptMemo := FptMemo{SELF}
             /// <inheritdoc />	
         PROPERTY Driver AS STRING GET "DBFFPT"
 
@@ -283,9 +283,9 @@ USING System.Diagnostics
                     IF SELF:HasMemo
                         LOCAL bData AS BYTE[]
                         bData := SELF:EncodeValue(oValue)
-                        IF _oMemo:PutValue(nFldPos, bData)
+                        IF SELF:_oFptMemo:PutValue(nFldPos, bData)
                             // Update the Field Info with the new MemoBlock Position
-                            RETURN oColumn:PutValue(SELF:_oMemo:LastWrittenBlockNumber, SELF:_RecordBuffer)
+                            RETURN oColumn:PutValue(SELF:_oFptMemo:LastWrittenBlockNumber, SELF:_RecordBuffer)
                         ENDIF
                     ELSE
                         RETURN SUPER:PutValue(nFldPos, oValue)

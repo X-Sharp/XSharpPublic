@@ -53,7 +53,6 @@ BEGIN NAMESPACE XSharp.RDD
         //PROTECT _CryptKey		AS STRING
         //PROTRECT _Trigger		as DbTriggerDelegate
         PROTECT _oIndex			AS BaseIndex
-        PROTECT _oMemo			AS BaseMemo
         PROTECT _Hot            AS LOGIC
         //PROTECT _addFieldPos    AS LONG     // Used by AddFields Method, and SetFieldsExtent
         PROTECT _lockScheme     AS DbfLocking
@@ -71,7 +70,8 @@ BEGIN NAMESPACE XSharp.RDD
         STATIC PRIVATE  culture := System.Globalization.CultureInfo.InvariantCulture AS CultureInfo
         INTERNAL  _numformat AS NumberFormatInfo
         PROTECTED PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR
-        PROTECTED PROPERTY HasMemo AS LOGIC GET SELF:_oMemo != NULL
+        PROTECTED PROPERTY HasMemo AS LOGIC GET SELF:_Memo != NULL
+        PROTECTED PROPERTY Memo AS BaseMemo GET (BaseMemo) SELF:_Memo
         
         PRIVATE METHOD _AllocateBuffers() AS VOID
             SELF:_RecordBuffer  := BYTE[]{ SELF:_RecordLength}
@@ -746,7 +746,7 @@ METHOD Zap() AS LOGIC
         IF SELF:_HasMemo 
             // Zap Memo
             IF SELF:HasMemo
-                RETURN _oMemo:Zap()
+                RETURN _Memo:Zap()
             ELSE
                 RETURN SUPER:Zap()
             ENDIF
@@ -852,9 +852,6 @@ METHOD Create(info AS DbOpenInfo) AS LOGIC
         
         SELF:_Encoding := System.Text.Encoding.GetEncoding( codePage ) 
         //
-        IF SELF:HasMemo
-            SELF:_oMemo:_Encoding := SELF:_Encoding
-        ENDIF
         // Convert the Windows CodePage to a DBF CodePage
         SELF:_Header:CodePage := CodePageExtensions.ToHeaderCodePage( (OsCodePage)codePage ) 
         // Init Header version, should it be a parameter ?
@@ -987,9 +984,6 @@ METHOD Open(info AS XSharp.RDD.Support.DbOpenInfo) AS LOGIC
             SELF:_Ansi := SELF:_Header:IsAnsi
             SELF:_Encoding := System.Text.Encoding.GetEncoding( CodePageExtensions.ToCodePage( SELF:_Header:CodePage )  )
             //
-            IF SELF:HasMemo
-                SELF:_oMemo:_Encoding := SELF:_Encoding
-            ENDIF
         ELSE
             SELF:_DbfError( ERDD.CORRUPT_HEADER, XSharp.Gencode.EG_CORRUPTION )
         ENDIF
@@ -1367,7 +1361,7 @@ INTERNAL VIRTUAL METHOD _isMemoField( nFldPos AS LONG ) AS LOGIC
     RETURN oColumn:IsMemo
     
     // Retrieve the BlockNumber as it is written in the DBF
-INTERNAL METHOD _getMemoBlockNumber( nFldPos AS LONG ) AS LONG
+OVERRIDE METHOD _getMemoBlockNumber( nFldPos AS LONG ) AS LONG
     LOCAL blockNbr := 0 AS LONG
     SELF:ForceRel()
     VAR oColumn := SELF:_GetColumn(nFldPos)
@@ -1389,7 +1383,7 @@ METHOD GetValue(nFldPos AS LONG) AS OBJECT
         IF oColumn:IsMemo
             IF SELF:HasMemo
                 // At this level, the return value is the raw Data, in BYTE[]
-                RETURN _oMemo:GetValue(nFldPos)
+                RETURN _Memo:GetValue(nFldPos)
             ELSE
                 RETURN SUPER:GetValue(nFldPos)
             ENDIF
@@ -1400,7 +1394,7 @@ METHOD GetValue(nFldPos AS LONG) AS OBJECT
         IF SELF:EoF
             IF oColumn:IsMemo
                 // At this level, the return value is the raw Data, in BYTE[]
-                RETURN _oMemo:GetValue(nFldPos)
+                RETURN _Memo:GetValue(nFldPos)
             ELSE
                 ret := oColumn:EmptyValue()
             ENDIF
@@ -1414,7 +1408,7 @@ METHOD GetValue(nFldPos AS LONG) AS OBJECT
 METHOD GetValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
     SELF:ForceRel()
     IF SELF:HasMemo
-        RETURN _oMemo:GetValueFile(nFldPos, fileName)
+        RETURN _Memo:GetValueFile(nFldPos, fileName)
     ELSE
         RETURN SUPER:GetValueFile(nFldPos, fileName)
     ENDIF
@@ -1423,7 +1417,7 @@ METHOD GetValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
 METHOD GetValueLength(nFldPos AS LONG) AS LONG
     SELF:ForceRel()
     IF SELF:HasMemo
-        RETURN _oMemo:GetValueLength(nFldPos)
+        RETURN _Memo:GetValueLength(nFldPos)
     ELSE
         RETURN SUPER:GetValueLength(nFldPos)
     ENDIF
@@ -1453,7 +1447,7 @@ METHOD Flush() 			AS LOGIC
     //
     FFlush( SELF:_hFile )
     IF SELF:HasMemo
-        isOk := _oMemo:Flush()
+        isOk := _Memo:Flush()
     ENDIF
     RETURN isOk
     
@@ -1526,9 +1520,9 @@ METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
         VAR oColumn := SELF:_GetColumn(nFldPos)
         IF oColumn:IsMemo
             IF SELF:HasMemo
-                IF _oMemo:PutValue(nFldPos, oValue)
+                IF _Memo:PutValue(nFldPos, oValue)
                     // Update the Field Info with the new MemoBlock Position
-                    oColumn:PutValue(SELF:_oMemo:LastWrittenBlockNumber, SELF:_RecordBuffer)
+                    oColumn:PutValue(SELF:Memo:LastWrittenBlockNumber, SELF:_RecordBuffer)
                 ENDIF
             ELSE
                 RETURN SUPER:PutValue(nFldPos, oValue)
@@ -1542,7 +1536,7 @@ METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
     /// <inheritdoc />
 METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
     IF SELF:HasMemo
-        RETURN _oMemo:PutValueFile(nFldPos, fileName)
+        RETURN _Memo:PutValueFile(nFldPos, fileName)
     ELSE
         RETURN SUPER:PutValue(nFldPos, fileName)
     ENDIF
@@ -1558,14 +1552,14 @@ METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
     /// <inheritdoc />
 METHOD CloseMemFile() 	AS LOGIC
     IF SELF:HasMemo
-        RETURN _oMemo:CloseMemFile()
+        RETURN _Memo:CloseMemFile()
     ELSE
         RETURN SUPER:CloseMemFile()
     ENDIF
     /// <inheritdoc />
 METHOD CreateMemFile(info AS DbOpenInfo) 	AS LOGIC
     IF SELF:HasMemo
-        RETURN _oMemo:CreateMemFile(info)
+        RETURN _Memo:CreateMemFile(info)
     ELSE
         RETURN SUPER:CreateMemFile(info)
     ENDIF
@@ -1573,7 +1567,7 @@ METHOD CreateMemFile(info AS DbOpenInfo) 	AS LOGIC
     /// <inheritdoc />
 METHOD OpenMemFile(info AS DbOpenInfo) 	AS LOGIC
     IF SELF:HasMemo
-        RETURN _oMemo:OpenMemFile(info)
+        RETURN _Memo:OpenMemFile(info)
     ELSE
         RETURN SUPER:OpenMemFile(info)
     ENDIF

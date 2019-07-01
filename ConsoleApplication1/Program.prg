@@ -5,8 +5,13 @@
 USING XSharp.RDD
 FUNCTION Start() AS VOID
     TRY
+        TestGrowFpt()
+        //TestNil()
+        //OrdDescFreeze()
+        //TestFreezeFilterDesc()
+        // testGoTopGoTopCdx()
         //testFptCreate()
-        DescartesDbfTest()
+        //DescartesDbfTest()
         //FptMemoTest()
         //TestDbfFromChris()
         //TestIndexUpdates()
@@ -73,6 +78,171 @@ FUNCTION Start() AS VOID
     END TRY
     WAIT
     RETURN
+
+FUNCTION TestGrowFpt AS VOID
+LOCAL aFields AS ARRAY
+LOCAL cFile AS STRING
+RddSetDefault ( "DBFCDX" )
+cFile := "C:\Test\TestFpt"
+aFields := { { "ID" , "N" , 2 , 0 },{ "MEMO" , "M" , 10 , 0 }}
+DbCreate(cFile, aFields)
+DbUseArea(, "DBFCDX", cFile)
+DbAppend()
+FieldPut(1, 1)
+FieldPut(2, Repl("X", 20))
+DbCloseArea()
+DbUseArea(, "DBFCDX", cFile)
+FieldPut(1, 1)
+FieldPut(2, Repl("X", 24))
+DbCloseArea()
+DbUseArea(, "DBFCDX", cFile)
+FieldPut(1, 1)
+FieldPut(2, Repl("X", 64))
+DbCloseArea()
+RETURN
+
+FUNCTION TestNil() AS VOID
+? ValType(Evaluate("NIL")) // O, wrong
+? ValType(NIL) // U, ok
+    RETURN
+
+FUNCTION OrdDescFreeze() AS VOID
+LOCAL cDBF, cPfad, cIndex, cDriver AS STRING 
+LOCAL aFields, aValues AS ARRAY  
+LOCAL i AS DWORD
+LOCAL lSet AS LOGIC  
+
+   	cDriver := RddSetDefault ( "DBFCDX" ) 
+ 	
+	aFields := { { "LAST" , "C" , 20 , 0 }}  
+	aValues := { "b" , "d" , "c", "e" , "a" , "o" , "p" , "r"}	
+	cPfad := "C:\test\"         
+	cDBF := cPfad + "Foo"
+	cIndex := cPfad + "Foox" 
+	
+	FErase ( cIndex + IndexExt() )	
+	
+	// -----------------  
+	
+	lSet := SetDeleted(TRUE)	// <------------  SetDeleted(TRUE) must be set to TRUE !!!
+	
+	? DbCreate( cDBF , aFields)
+	? DbUseArea( ,"DBFCDX",cDBF , , TRUE )		
+	
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend() 
+		FieldPut ( 1 , aValues [ i ] ) 			
+	NEXT 
+
+	? DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper ( _FIELD->LAST) }  )  		
+
+	? DbSetOrder ( 1 )  
+	
+ 	OrdScope(TOPSCOPE,  "A")   // <-------- Must be the *very* first order value !
+	OrdScope(BOTTOMSCOPE, "O")
+    ? "Ascending"
+   	DbGoTop() 
+
+	DO WHILE ! Eof()
+	   ? recno(), FieldGet ( 1)
+		DbSkip ( 1)
+	ENDDO  
+	
+    	?
+
+	OrdDescend( , , TRUE)
+	? "Descending"
+   	DbGoTop() 
+
+	DO WHILE ! Eof()
+	   ? recno(), FieldGet ( 1)
+		DbSkip ( 1)
+	ENDDO 
+		
+	DbCloseAll() 
+	
+	RddSetDefault ( cDriver )	 
+    SetDeleted(lSet)
+	
+	RETURN	
+FUNCTION TestFreezeFilterDesc() AS VOID
+
+LOCAL cPath AS STRING
+LOCAL cDbf AS STRING
+cPath := "C:\test\"
+cDbf := "mydbf"
+? FErase ( cPath + cDbf + ".dbf" )
+? FErase ( cPath + cDbf + ".cdx" )
+
+RddSetDefault ( "DBFCDX" )
+DbCreate(cPath + cDbf,{{"FIRST" , "C" , 10,0}})
+
+DbUseArea(,"DBFCDX" , cPath + cDbf)
+DbAppend()
+FieldPut(1,"Karl-Heinz")
+DbAppend()
+FieldPut(1,"Robert")
+DbAppend()
+FieldPut(1,"Chris")
+DbAppend()
+FieldPut(1,"Karl")
+DbGoTop()
+
+? OrdCondSet(,,,,,,,,,,TRUE) // descending
+? DbCreateOrder( "ORDER1" , cDbf + ".cdx" , "upper(FIRST)" , { || Upper (_FIELD->FIRST) } )
+
+DbSetOrder(1)
+DbGoTop()
+
+DbSetFilter(,"upper(FIRST) = '" + "K" + "'" )
+DbGoTop()
+? Recno(), _FIELD->FIRST
+DbSkip(1)
+? Recno(), _FIELD->FIRST
+
+DbGoTop()
+
+LOCAL uRetVal AS USUAL
+// program freeze here:
+? VoDbOrderInfo( DBOI_POSITION, "", NIL, REF uRetVal )
+? uRetVal
+DbSkip(1)
+? VoDbOrderInfo( DBOI_POSITION, "", NIL, REF uRetVal )
+? uRetVal
+
+RETURN
+
+
+
+FUNCTION testGoTopGoTopCdx AS VOID
+LOCAL cPath AS STRING
+LOCAL cDbf AS STRING
+cPath := "C:\test\"
+cDbf := "mydbf"
+? FErase ( cPath + cDbf + ".dbf" )
+? FErase ( cPath + cDbf + ".cdx" )
+
+RddSetDefault ( "DBFCDX" )
+DbCreate(cPath + cDbf,{{"LAST" , "C" , 10,0}})
+DbUseArea(,"DBFCDX" , cPath + cDbf)
+FOR LOCAL n := 1 AS INT UPTO 1000
+    DbAppend()
+    FieldPut(1,"A"+AsString(n % 77))
+NEXT
+? DbCreateOrder( "ORDER1" , cDbf + ".cdx" , "upper(LAST)" , { || Upper ( _FIELD->LAST) } )
+? DbCloseArea()
+
+DbUseArea(,"DBFCDX" , cPath + cDbf)
+DbGoTop()
+DbGoTop()
+LOCAL nCount := 0 AS INT
+DO WHILE .NOT. VoDbEof()
+    nCount ++
+    // ? FieldGet(1), RecNo()
+    DbSkip()
+END DO
+? "Count=", nCount // only 80
+DbCloseArea()
 
 FUNCTION TestFptCreate() AS VOID
     LOCAL aStruct AS ARRAY

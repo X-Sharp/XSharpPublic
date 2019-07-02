@@ -121,11 +121,19 @@ namespace XSharp.Project
                             // simplify things: take lowest and highest numbers and do all lines in between
                             int first = lines[0];
                             int last = lines[lines.Length - 1];
+                            if (last > snapshot.LineCount - 1)
+                            {
+                                last = snapshot.LineCount - 1;
+                            }
                             for (int nLine = first; nLine <= last; nLine++)
                             {
                                 ITextSnapshotLine line = snapshot.GetLineFromLineNumber(nLine);
                                 formatLineCase(editSession, line);
                             }
+                        }
+                        catch (Exception)
+                        {
+                            ;
                         }
                         finally
                         {

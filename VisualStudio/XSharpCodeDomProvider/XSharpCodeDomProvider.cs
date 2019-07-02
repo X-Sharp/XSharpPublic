@@ -72,6 +72,11 @@ namespace XSharp.CodeDom
 
             {
                 //
+                // validate to see if something has changed in the compileUnit
+                //
+                if (options == null)
+                    options = new CodeGeneratorOptions();
+                options.BlankLinesBetweenMembers = false;
                 base.GenerateCodeFromCompileUnit(compileUnit, writer, options);
                 //
 #if WRITE2LOGFILE

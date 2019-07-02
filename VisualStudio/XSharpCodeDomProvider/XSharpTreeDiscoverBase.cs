@@ -250,7 +250,32 @@ namespace XSharp.CodeDom
             //
             return retValue;
         }
-
+        protected TypeAttributes ContextToStructureModifiers(XSharpParser.StructureModifiersContext modifiers)
+        {
+            TypeAttributes retValue = TypeAttributes.Public;
+            //
+            if (modifiers.INTERNAL().Length > 0)
+                retValue = TypeAttributes.NestedAssembly;
+            //
+            if (modifiers.HIDDEN().Length > 0)
+                retValue = TypeAttributes.NestedPrivate;
+            //
+            if (modifiers.PRIVATE().Length > 0)
+                retValue = TypeAttributes.NestedPrivate;
+            //
+            if (modifiers.PROTECTED().Length > 0)
+            {
+                if (modifiers.INTERNAL().Length > 0)
+                    retValue = TypeAttributes.NestedFamORAssem;
+                else
+                    retValue = TypeAttributes.NestedFamily;
+            }
+            //
+            if (modifiers.EXPORT().Length > 0 || modifiers.PUBLIC().Length > 0)
+                retValue = TypeAttributes.Public;
+            //
+            return retValue;
+        }
         protected MemberAttributes decodeMemberAttributes(IList<IToken> tokens)
         {
             MemberAttributes retValue = MemberAttributes.Public;
@@ -364,6 +389,7 @@ namespace XSharp.CodeDom
                 index++;
             }
             element.UserData[XSharpCodeConstants.USERDATA_CODE] = prototype.ToString();
+            FillCodeDomDesignerData(element, context.Start.Line, context.Start.Column);
         }
 
         protected CodeSnippetTypeMember CreateSnippetMember(ParserRuleContext context)
@@ -371,22 +397,11 @@ namespace XSharp.CodeDom
             // The original source code
             var xtoken = context.Start as XSharpToken;
             var start = xtoken.OriginalTokenIndex;
-            while (start > 0)
-            {
-                if (_tokens[start-1].Channel == XSharpLexer.Hidden)
-                {
-                    start = start - 1;
-                    continue;
-                }
-                else
-                {
-                    break;
-                }
-            }
+
             var startIndex = _tokens[start].StartIndex;
             int length = context.Stop.StopIndex - startIndex + 1;
             string sourceCode = this.SourceCode.Substring(startIndex, length);
-            CodeSnippetTypeMember snippet = new CodeSnippetTypeMember(sourceCode);
+            XCodeSnippetTypeMember snippet = new XCodeSnippetTypeMember(sourceCode);
             FillCodeDomDesignerData(snippet, context.Start.Line, context.Start.Column);
             return snippet;
         }

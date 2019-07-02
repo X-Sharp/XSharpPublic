@@ -64,7 +64,7 @@ namespace XSharp.CodeDom
         /// <returns></returns>
         public CodeCompileUnit Parse(string source)
         {
-            CodeCompileUnit ccu = new CodeCompileUnit();
+            XCodeCompileUnit ccu = new XCodeCompileUnit();
             //
             try
             {
@@ -97,6 +97,7 @@ namespace XSharp.CodeDom
                 //
                 ccu = discover.CodeCompileUnit;
                 ccu.UserData[XSharpCodeConstants.USERDATA_FILENAME] = this.FileName;
+                ccu.UserData[XSharpCodeConstants.USERDATA_CODE]     = source;
             }
             catch ( Exception ex )
             {

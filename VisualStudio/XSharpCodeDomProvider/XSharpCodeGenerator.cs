@@ -31,6 +31,7 @@ namespace XSharp.CodeDom
         private string staticSelector;
         private string entrypointCode = null;
         private List<String> _using;
+        private int indentSave = 0;
         public XSharpCodeGenerator() : base()
         {
             this.selector = ":";
@@ -235,6 +236,7 @@ namespace XSharp.CodeDom
             {
                 // Do we have some Source Code pushed here by our Parser ??
                 // when so then that source code also includes the constructor line
+                writeTrivia(e.UserData);
                 if (e.UserData.Contains(XSharpCodeConstants.USERDATA_CODE))
                 {
                     String sourceCode = e.UserData[XSharpCodeConstants.USERDATA_CODE] as string;
@@ -335,6 +337,7 @@ namespace XSharp.CodeDom
         {
             if (!this.IsCurrentDelegate && !this.IsCurrentEnum)
             {
+                writeTrivia(e.UserData);
                 if (e.CustomAttributes.Count > 0)
                 {
                     this.GenerateAttributes(e.CustomAttributes);
@@ -384,6 +387,7 @@ namespace XSharp.CodeDom
         {
             if (!this.IsCurrentDelegate && !this.IsCurrentInterface)
             {
+                writeTrivia(e.UserData);
                 if (this.IsCurrentEnum)
                 {
                     if (e.CustomAttributes.Count > 0)
@@ -417,7 +421,7 @@ namespace XSharp.CodeDom
                     }
                     base.Output.Write(" AS ");
                     this.OutputType(e.Type);
-                    //base.Output.WriteLine();
+                    base.Output.WriteLine();
                 }
             }
         }
@@ -499,10 +503,10 @@ namespace XSharp.CodeDom
 
         protected override void GenerateMethod(CodeMemberMethod e, CodeTypeDeclaration c)
         {
-
-            //
             if ((this.IsCurrentClass || this.IsCurrentStruct) || this.IsCurrentInterface)
             {
+                writeTrivia(e.UserData);
+
                 // Do we have some Source Code pushed here by our Parser ??
                 // this code contains the method declaration line as well
                 if (e.UserData.Contains(XSharpCodeConstants.USERDATA_CODE))
@@ -619,6 +623,7 @@ namespace XSharp.CodeDom
         protected override void GenerateCompileUnitStart(CodeCompileUnit e)
         {
             bool generateComment = true;
+            this.Options.BlankLinesBetweenMembers = false;
             _using.Clear();
             base.GenerateCompileUnitStart(e);
             if (e.UserData.Contains(XSharpCodeConstants.USERDATA_NOHEADER))
@@ -648,6 +653,8 @@ namespace XSharp.CodeDom
                 entrypointCode = null;
             }
             base.GenerateCompileUnitEnd(e);
+            writeTrivia(e.UserData, true);
+
         }
 
         protected override void GenerateMethodReferenceExpression(CodeMethodReferenceExpression e)
@@ -684,6 +691,21 @@ namespace XSharp.CodeDom
             base.Output.WriteLine();
         }
 
+
+        private void writeTrivia(IDictionary userData, bool ending = false)
+        {
+            string key;
+            key = ending ? XSharpCodeConstants.USERDATA_ENDINGTRIVIA : XSharpCodeConstants.USERDATA_LEADINGTRIVIA;
+            if (userData.Contains(key))
+            {
+                String trivia = userData[key] as string;
+                this.Output.Write(trivia);
+                if (!trivia.EndsWith("\r\n"))
+                    this.Output.WriteLine("");
+            }
+
+        }
+
         private void writeCodeBefore(IDictionary userData)
         {
             if (userData.Contains(XSharpCodeConstants.USERDATA_CODEBEFORE))
@@ -698,8 +720,8 @@ namespace XSharp.CodeDom
 
         protected override void GenerateNamespace(CodeNamespace e)
         {
-            this.Options.BlankLinesBetweenMembers = false;
-                this.GenerateCommentStatements(e.Comments);
+            writeTrivia(e.UserData);
+            this.GenerateCommentStatements(e.Comments);
 
             // Generate Imports BEFORE the NameSpace
             writeCodeBefore(e.UserData);
@@ -757,6 +779,7 @@ namespace XSharp.CodeDom
         {
             if ((this.IsCurrentClass || this.IsCurrentStruct) || this.IsCurrentInterface)
             {
+                writeTrivia(e.UserData);
                 if (e.CustomAttributes.Count > 0)
                 {
                     this.GenerateAttributes(e.CustomAttributes);
@@ -870,6 +893,9 @@ namespace XSharp.CodeDom
 
         protected override void GenerateSnippetMember(CodeSnippetTypeMember e)
         {
+            // the base class resets indent for Snippet Members
+            this.Indent = this.indentSave;
+            writeTrivia(e.UserData);
             base.Output.Write(e.Text);
         }
 
@@ -929,6 +955,7 @@ namespace XSharp.CodeDom
         {
             if (this.IsCurrentClass || this.IsCurrentStruct)
             {
+                writeTrivia(e.UserData);
                 if (e.CustomAttributes.Count > 0)
                 {
                     this.GenerateAttributes(e.CustomAttributes);
@@ -946,6 +973,8 @@ namespace XSharp.CodeDom
             if (!this.IsCurrentDelegate)
             {
                 this.Indent--;
+                writeTrivia(e.UserData, true);
+
                 base.Output.WriteLine();
                 base.Output.Write("END ");
                 if (e.IsClass)
@@ -965,13 +994,12 @@ namespace XSharp.CodeDom
                     base.Output.Write("ENUM");
                 }
                 base.Output.WriteLine();
-                this.Options.BlankLinesBetweenMembers = false;
             }
         }
 
         protected override void GenerateTypeStart(CodeTypeDeclaration e)
         {
-            this.Options.BlankLinesBetweenMembers = true;
+            writeTrivia(e.UserData);
             writeCodeBefore(e.UserData);
             if (e.CustomAttributes.Count > 0)
             {
@@ -1082,6 +1110,7 @@ namespace XSharp.CodeDom
                 }
                 base.Output.WriteLine();
                 this.Indent++;
+                this.indentSave = this.Indent;
             }
             else
             {

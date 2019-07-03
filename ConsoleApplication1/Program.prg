@@ -5,7 +5,8 @@
 USING XSharp.RDD
 FUNCTION Start() AS VOID
     TRY
-        TestGrowFpt()
+        TestUniqueCdx()
+        //TestGrowFpt()
         //TestNil()
         //OrdDescFreeze()
         //TestFreezeFilterDesc()
@@ -78,6 +79,66 @@ FUNCTION Start() AS VOID
     END TRY
     WAIT
     RETURN
+FUNCTION TestUniqueCdx() AS VOID
+
+LOCAL cDBF, cPfad, cIndex, cDriver AS STRING 
+LOCAL aFields, aValues AS ARRAY  
+LOCAL i AS DWORD
+
+   	cDriver := RddSetDefault ( "DBFCDX" ) 
+ 	
+	aFields := { { "LAST" , "C" , 20 , 0 }}  
+	aValues := { "d" , "c", "e" , "a" , "o" , "p" , "r" , "b" }	
+	         
+	cDBF := cPfad + "Foo"
+	cIndex := cPfad + "Foox" 
+	
+	FErase ( cIndex + IndexExt() )	
+	
+	// -----------------  
+	
+	? DbCreate( cDBF , AFields)
+	? DbUseArea( ,"DBFCDX",cDBF , , TRUE )		
+	
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend() 
+		FieldPut ( 1 , aValues [ i ] ) 			
+	NEXT 
+
+	// TRUE == UNIQUE   
+	? DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper ( _FIELD->LAST) } , TRUE  )  
+	
+	? DbSetOrder ( 1 )   
+	
+	
+	DbAppend() 
+	FieldPut ( 1 , "a" ) 			
+	
+	DbAppend() 
+	FieldPut ( 1 , "b" ) 			
+	
+	DbGoTop()   	
+			
+   ?	
+   ? "OrdIsUnique" ,  OrdIsUnique()   // TRUE ok
+   ? "DBOrderinfo DBOI_UNIQUE", DbOrderInfo(DBOI_UNIQUE ) // TRUE ok
+   ? "OrdKeyCount()" , OrdKeyCount() // must be 8 , but shows 12
+   ? "DBOrderinfo DBOI_KEYCOUNT", DbOrderInfo(DBOI_KEYCOUNT ) // must be 8 , but shows 12
+   ? "Reccount()", RecCount()    // 10 ok	
+   ?
+	
+	DO WHILE ! Eof()
+	   ? FieldGet ( 1)
+		DbSkip ( 1) 
+		
+	ENDDO 
+	
+	
+	DbCloseAll() 
+	
+	RddSetDefault ( cDriver )	 
+	
+	RETURN		
 
 FUNCTION TestGrowFpt AS VOID
 LOCAL aFields AS ARRAY

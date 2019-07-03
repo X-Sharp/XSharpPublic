@@ -384,6 +384,7 @@ USING System.Diagnostics
         STATIC PROPERTY DefExt AS STRING AUTO
         PROTECTED PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR  .AND. SELF:_hFile != IntPtr.Zero      
         INTERNAL PROPERTY IsFlex AS LOGIC GET _isFlex
+        PROPERTY Encoding AS Encoding GET SELF:_oRdd:_Encoding
         STATIC CONSTRUCTOR
             DefExt := FPT_MEMOEXT
 
@@ -454,7 +455,6 @@ USING System.Diagnostics
             SELF:_hFile := IntPtr.Zero
             SELF:_Shared := SELF:_oRDD:_Shared
             SELF:_ReadOnly := SELF:_oRdd:_ReadOnly
-            SELF:_Encoding := SELF:_oRdd:_Encoding
             SELF:_blockData := BYTE[]{8}
             SELF:_fptHeader   := FptHeader{}
             SELF:_flexHeader  := FlexHeader{}

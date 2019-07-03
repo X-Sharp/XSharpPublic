@@ -554,7 +554,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF SELF:Unique
                     IF SELF:_locate(SELF:_newValue:Key, SELF:_keySize, SearchMode.Left, SELF:_rootPage,recordNo)  == 0
                         VAR page := SELF:Stack:Top:Page
-                        VAR pos  := SELF:Stack:Top:Pos+1
+                        VAR pos  := SELF:Stack:Top:Pos
                         SELF:DoAction(CdxAction.InsertKey(page, pos, SELF:_newValue:Recno, SELF:_newValue:Key))
                     ELSE
                         SELF:ClearStack()

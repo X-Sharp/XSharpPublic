@@ -70,7 +70,7 @@ BEGIN NAMESPACE XSharp.RDD
         STATIC PRIVATE  culture := System.Globalization.CultureInfo.InvariantCulture AS CultureInfo
         INTERNAL  _numformat AS NumberFormatInfo
         PROTECTED PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR
-        PROTECTED PROPERTY HasMemo AS LOGIC GET SELF:_Memo != NULL
+        PROTECTED PROPERTY HasMemo AS LOGIC GET SELF:_hasMemo
         PROTECTED PROPERTY Memo AS BaseMemo GET (BaseMemo) SELF:_Memo
         
         PRIVATE METHOD _AllocateBuffers() AS VOID
@@ -1129,7 +1129,7 @@ METHOD AddField(info AS RddFieldInfo) AS LOGIC
     ENDIF
     isok := SUPER:AddField( info )
     IF isOk  .AND. info:IsMemo
-        SELF:_HasMemo := TRUE
+        SELF:_hasMemo := TRUE
     ENDIF
     RETURN isOk
     

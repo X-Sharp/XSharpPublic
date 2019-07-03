@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -15,8 +15,8 @@ BEGIN NAMESPACE XSharp.Core.Tests
 
 		[Fact, Trait("Category", "Misc")]; 
 		METHOD FileTest() AS VOID
-			Assert.Equal(true,File("c:\windows\system32\shell32.dll"))
-			Assert.Equal(false,File(null))
+			Assert.Equal(TRUE,File("c:\windows\system32\shell32.dll"))
+			Assert.Equal(FALSE,File(NULL))
 
 			Assert.Equal("XSHARP\DEVRT\BINARIES\DEBUG", CurDir():ToUpper())
 		RETURN

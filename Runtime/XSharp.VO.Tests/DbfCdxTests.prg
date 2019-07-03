@@ -534,7 +534,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			RddSetDefault("DBFCDX")
 			
-			cDbf := GetTempFileName("testcdx1")
+			cDbf := GetTempFileName("testcdx1"+IIF(lUseIndexFormVO, "V","X"))
 			cCdx := cDbf + ".cdx"
 			FErase(cCdx)
 			
@@ -1580,7 +1580,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			DbCloseAll()
 			
-			cDBF := GetTempFileName()
+			cDBF := __Function__
 			FErase(cDbf + ".cdx")
 			
 		    aDbf := {{ "AGE" , "N" , 2 , 0 }}
@@ -2283,7 +2283,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cPrev := NULL
 			nCount := 0
 			DbGoTop()
-			DO WHILE .not. EoF()
+			DO WHILE .NOT. EoF()
 				nCount ++
 				IF cPrev != NULL
 					Assert.True( cPrev <= FieldGet(2) )
@@ -2373,7 +2373,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				DbAppend()
 				FieldPut(1,"A"+AsString(n % 77))
 			NEXT
-			DbCreateOrder( "ORDER1" , cDbf + ".cdx" , "upper(LAST)" , { || Upper ( _Field->LAST) }  )
+			DbCreateOrder( "ORDER1" , cDbf + ".cdx" , "upper(LAST)" , { || Upper ( _FIELD->LAST) }  )
 			DbCloseArea()
 			
 			LOCAL nCount AS INT

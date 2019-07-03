@@ -178,7 +178,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD AliasNameReuse() AS VOID
 			LOCAL cDbf AS STRING
-			cDbf := GetTempFileName("testdbf")
+			cDbf := __FUNCTION__
 			
 			RDDSetDefault( "DBFNTX" )
 			
@@ -387,7 +387,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBContinue_test() AS VOID
 			LOCAL cDbf AS STRING
-			cDbf := GetTempFileName()
+			cDbf := __FUNCTION__
 			DBCreate(cDbf, {{"NFIELD","N",10,0}}, "DBFNTX", TRUE)
 			DBAppend()
 			FieldPut(1, 123)
@@ -434,7 +434,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			RDDSetDefault("DBFNTX")
 
-			cDbf := GetTempFileName()
+			cDbf := __Function__
 			cNtx := cDbf + ".ntx"
 			
 			Assert.True( DBCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 }}) )

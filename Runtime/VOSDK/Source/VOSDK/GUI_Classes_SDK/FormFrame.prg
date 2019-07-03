@@ -150,7 +150,7 @@ METHOD AddControl(oControl)
 
 
 	IF !IsInstanceOfUsual(oControl,#Control)
-		WCError{#AddControl,#__FormFrame,__WCSTypeError,oControl,1}:@@Throw()
+		WCError{#AddControl,#__FormFrame,__WCSTypeError,oControl,1}:Throw()
 	ENDIF
 
 	oPoint := oControl:Origin
@@ -362,10 +362,10 @@ METHOD ChangeFormSize(oPt, oDim, lWinCoordinates)
 	LOCAL oPoint	   AS Point
 	LOCAL sPoint IS _WinPoint
 	IF !IsInstanceOfUsual(oDim, #Dimension)
-		WCError{#ChangeFormSize,#__FormFrame,__WCSTypeError,oDim,1}:@@Throw()
+		WCError{#ChangeFormSize,#__FormFrame,__WCSTypeError,oDim,1}:Throw()
 	ENDIF
 	IF !IsInstanceOfUsual(oPt, #Point)
-		WCError{#ChangeFormSize,#__FormFrame,__WCSTypeError,oPt,1}:@@Throw()
+		WCError{#ChangeFormSize,#__FormFrame,__WCSTypeError,oPt,1}:Throw()
 	ENDIF
 	oDimension := oDim
 	oPoint	  := oPt

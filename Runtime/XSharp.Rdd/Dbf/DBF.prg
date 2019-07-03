@@ -313,10 +313,10 @@ METHOD Lock( lockInfo REF DbLockInfo ) AS LOGIC
     LOCAL isOk AS LOGIC
     SELF:ForceRel()
     BEGIN LOCK SELF
-    IF lockInfo:@@METHOD == DbLockInfo.LockMethod.Exclusive  .OR. ;
-    lockInfo:@@METHOD == DbLockInfo.LockMethod.Multiple 
+    IF lockInfo:METHOD == DbLockInfo.LockMethod.Exclusive  .OR. ;
+        lockInfo:METHOD == DbLockInfo.LockMethod.Multiple 
         isOk := SELF:_lockRecord( lockInfo )
-    ELSEIF lockInfo:@@METHOD == DbLockInfo.LockMethod.File 
+    ELSEIF lockInfo:METHOD == DbLockInfo.LockMethod.File 
         isOk := SELF:_lockDBFFile( )
     ELSE
         isOk := TRUE

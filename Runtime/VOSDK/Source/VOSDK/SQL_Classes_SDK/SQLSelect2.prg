@@ -164,7 +164,7 @@ METHOD AppendRow( lForce )
 				sValues += ","
 			ENDIF
 			sInsert +=  cQuote + oColumn:ColName  + cQuote
-			IF ( oData:@@Null )
+			IF ( oData:Null )
 				sValues += "NULL"
 			ELSE
 				sValues += cValue
@@ -439,7 +439,7 @@ METHOD DataField( uFieldPos )
 	ENDIF
 	RETURN oRet
 
-METHOD @@Delete() 
+METHOD Delete() 
 	LOCAL sDelete       AS STRING
 	LOCAL oDelete       AS SQLStatement
 	LOCAL nIndex        AS DWORD

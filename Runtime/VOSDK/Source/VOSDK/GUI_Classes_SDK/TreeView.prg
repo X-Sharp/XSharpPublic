@@ -49,7 +49,7 @@ METHOD __Expand(hItem AS PTR, dwMode AS DWORD, lAll AS LOGIC, lForceNotify AS LO
       IF dwMode = TVE_TOGGLE
       	lDo := TRUE
       ELSE
-	      IF _And(sTVItem:State, TVIS_EXPANDED) = TVIS_EXPANDED
+	      IF _AND(sTVItem:State, TVIS_EXPANDED) = TVIS_EXPANDED
 	      	lDo := (dwMode = TVE_COLLAPSE)
 	      ELSE
 	      	lDo := (dwMode = TVE_EXPAND)
@@ -57,7 +57,7 @@ METHOD __Expand(hItem AS PTR, dwMode AS DWORD, lAll AS LOGIC, lForceNotify AS LO
 		ENDIF
 	   lOK := TRUE
 	   IF lDo
-	   	IF _And(sTVItem:State, TVIS_EXPANDEDONCE) = TVIS_EXPANDEDONCE
+	   	IF _AND(sTVItem:State, TVIS_EXPANDEDONCE) = TVIS_EXPANDEDONCE
 	   		IF oFormSurface != NULL_OBJECT
 	   			hOwner := oFormSurface:Handle()
 	   		ELSE
@@ -70,7 +70,7 @@ METHOD __Expand(hItem AS PTR, dwMode AS DWORD, lAll AS LOGIC, lForceNotify AS LO
 		   ENDIF
 		   IF lDo
 		   	IF (lOK := TreeView_Expand(hWnd, hItem, dwMode))
-			   	IF hOwner != Null_Ptr
+			   	IF hOwner != NULL_PTR
 			   		sNMTV:action       := dwMode
 			         sNMTV:hdr:hwndFrom := hWnd
 			   		sNMTV:hdr:_code    := DWORD(TVN_ITEMEXPANDED)
@@ -110,7 +110,7 @@ METHOD __GetHandleFromSymbol(symItem AS USUAL) AS PTR STRICT
 	ELSEIF IsInstanceOf(symItem, #TreeViewItem)
 		symToLookUp := symItem:NameSym
 	ELSE
-		WCError{#__GetHandleFromSymbol,#TreeView,__WCSTypeError,symItem,1}:@@Throw()
+		WCError{#__GetHandleFromSymbol,#TreeView,__WCSTypeError,symItem,1}:Throw()
 	ENDIF
 
 	//dwCount := AScan(aTreeItems, {|x| x[1] == symToLookUp})
@@ -149,7 +149,7 @@ METHOD __GetValueFromSymbol(symItem AS USUAL) AS USUAL STRICT
 	ELSEIF IsInstanceOf(symItem, #TreeViewItem)
 		symToLookUp := symItem:NameSym
 	ELSE
-		WCError{#__GetHandleFromSymbol,#TreeView,__WCSTypeError,symItem,1}:@@Throw()
+		WCError{#__GetHandleFromSymbol,#TreeView,__WCSTypeError,symItem,1}:Throw()
 	ENDIF
 
 	//dwCount := AScan(aValues, {|x| x[1] == symToLookUp})
@@ -277,7 +277,7 @@ METHOD __UpdateValue(symItem AS USUAL, uNewValue AS USUAL) AS USUAL STRICT
 	ELSEIF IsInstanceOf(symItem, #TreeViewItem)
 		symToLookUp := symItem:NameSym
 	ELSE
-		WCError{#__GetHandleFromSymbol,#TreeView,__WCSTypeError,symItem,1}:@@Throw()
+		WCError{#__GetHandleFromSymbol,#TreeView,__WCSTypeError,symItem,1}:Throw()
 	ENDIF
 
    dwCount := ALen(aValues)
@@ -303,10 +303,10 @@ METHOD Collapse(symName, lRemoveChildItems, lAll, lForceNotify)
 
 	
 
-	Default(@lRemoveChildItems, FALSE)
+	DEFAULT(@lRemoveChildItems, FALSE)
 
 	IF lRemoveChildItems
-		dwFlag := _Or(TVE_COLLAPSERESET, TVE_COLLAPSE)
+		dwFlag := _OR(TVE_COLLAPSERESET, TVE_COLLAPSE)
 		lAll   := lForceNotify := FALSE
 	ELSE
 		dwFlag := TVE_COLLAPSE
@@ -318,7 +318,7 @@ METHOD Collapse(symName, lRemoveChildItems, lAll, lForceNotify)
 		RETURN FALSE
 	ENDIF
 
-   RETURN SELF:__Expand(hThisItem, dwFlag, IsLogic(lAll) .and. lAll, IsLogic(lForceNotify) .and. lForceNotify)
+   RETURN SELF:__Expand(hThisItem, dwFlag, IsLogic(lAll) .AND. lAll, IsLogic(lForceNotify) .AND. lForceNotify)
 
 METHOD DeleteAll() 
 	
@@ -342,7 +342,7 @@ METHOD DeleteItem(symName, lChildsOnly)
 		RETURN FALSE
 	ENDIF
 
-   IF IsLogic(lChildsOnly) .and. lChildsOnly
+   IF IsLogic(lChildsOnly) .AND. lChildsOnly
       hChild := TreeView_GetChild(SELF:Handle(), hThisItem)
 	   DO WHILE hChild != NULL_PTR
 			TreeView_DeleteItem(hWnd, hChild)
@@ -405,7 +405,7 @@ METHOD EditItemLabel(symName)
 
 	hThisItem := SELF:__GetHandleFromSymbol(symName)
 
-	IF (hThisItem != TVI_ROOT) .and. (hThisItem != TVI_FIRST) .and. (hThisItem != TVI_LAST) .and. (hThisItem != NULL_PTR)
+	IF (hThisItem != TVI_ROOT) .AND. (hThisItem != TVI_FIRST) .AND. (hThisItem != TVI_LAST) .AND. (hThisItem != NULL_PTR)
 		TreeView_EditLabel(SELF:Handle(), hThisItem)
 	ENDIF
 
@@ -414,7 +414,7 @@ METHOD EditItemLabel(symName)
 METHOD EnableDragDrop(lEnable) 
 	
 
-	Default(@lEnable, TRUE)
+	DEFAULT(@lEnable, TRUE)
 
 	lDragDropEnabled := lEnable
 
@@ -449,7 +449,7 @@ METHOD Expand(symName, lAll, lForceNotify)
 		RETURN FALSE
 	ENDIF
 
-   RETURN SELF:__Expand(hThisItem, TVE_EXPAND, IsLogic(lAll) .and. lAll, IsLogic(lForceNotify) .and. lForceNotify)
+   RETURN SELF:__Expand(hThisItem, TVE_EXPAND, IsLogic(lAll) .AND. lAll, IsLogic(lForceNotify) .AND. lForceNotify)
 
 METHOD GetDropHighlight() 
 	//SE-060523
@@ -504,7 +504,7 @@ METHOD GetItemAttributes(symItem)
 
 	// set up the structure to receive item attributes
 	strucItem:hItem := SELF:__GetHandleFromSymbol(symItem)
-	strucItem:mask := _Or(TVIF_TEXT, TVIF_CHILDREN, TVIF_IMAGE, TVIF_SELECTEDIMAGE, TVIF_PARAM, TVIF_STATE)
+	strucItem:mask := _OR(TVIF_TEXT, TVIF_CHILDREN, TVIF_IMAGE, TVIF_SELECTEDIMAGE, TVIF_PARAM, TVIF_STATE)
 	pszItemText := @aBuf[1]
 	strucItem:pszText := pszItemText
 	strucItem:cchTextMax := 256
@@ -516,24 +516,24 @@ METHOD GetItemAttributes(symItem)
 		oTreeViewItem:NameSym := symTemp
 		oTreeViewItem:TextValue := Psz2String(strucItem:pszText)
 		oTreeViewItem:Value := SELF:__GetValueFromSymbol(symTemp)
-		oTreeViewItem:Bold := _And(strucItem:state, TVIS_BOLD) != 0
-		oTreeViewItem:Disabled := _And(strucItem:state, TVIS_CUT) != 0
-		oTreeViewItem:DropTarget := _And(strucItem:state, TVIS_DROPHILITED) != 0
-		oTreeViewItem:Expanded := _And(strucItem:state, TVIS_EXPANDED) != 0
-		oTreeViewItem:Focused := _And(strucItem:state, TVIS_FOCUSED) != 0
-		oTreeViewItem:Selected := _And(strucItem:state, TVIS_SELECTED) != 0
+		oTreeViewItem:Bold := _AND(strucItem:state, TVIS_BOLD) != 0
+		oTreeViewItem:Disabled := _AND(strucItem:state, TVIS_CUT) != 0
+		oTreeViewItem:DropTarget := _AND(strucItem:state, TVIS_DROPHILITED) != 0
+		oTreeViewItem:Expanded := _AND(strucItem:state, TVIS_EXPANDED) != 0
+		oTreeViewItem:Focused := _AND(strucItem:state, TVIS_FOCUSED) != 0
+		oTreeViewItem:Selected := _AND(strucItem:state, TVIS_SELECTED) != 0
 		oTreeViewItem:ImageIndex := strucItem:iImage + 1
 		oTreeViewItem:SelectedImageIndex := strucItem:iSelectedImage + 1
 		oTreeViewItem:__TreeViewControl := SELF
 
 		// get extended image information by isolating the state bits and
 		// shifting by the appropriate number of bytes to get the image index
-		dwMask := _And(strucItem:state, TVIS_STATEIMAGEMASK)
+		dwMask := _AND(strucItem:state, TVIS_STATEIMAGEMASK)
 		IF dwMask != 0
 			oTreeViewItem:StateImageIndex := dwMask >> 12
 		ENDIF
 
-		dwMask := _And(strucItem:state, TVIS_OVERLAYMASK)
+		dwMask := _AND(strucItem:state, TVIS_OVERLAYMASK)
 		IF dwMask != 0
 			oTreeViewItem:OverlayImageIndex := dwMask >> 8
 		ENDIF
@@ -549,7 +549,7 @@ METHOD GetItemBoundingBox(symItem, lTextOnly)
 
 	
 
-	Default(@lTextOnly, FALSE)
+	DEFAULT(@lTextOnly, FALSE)
 
 	hItem := SELF:__GetHandleFromSymbol(symItem)
 	strucRect:left := LONGINT(_CAST, hItem)
@@ -658,14 +658,14 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	IF IsNil(kStyle)
 		dwStyle := WS_BORDER
 	ELSE
-		dwStyle := _Or(DWORD(kStyle), DWORD(_CAST, WS_BORDER))
+		dwStyle := _OR(DWORD(kStyle), DWORD(_CAST, WS_BORDER))
 	ENDIF
 
 	IF IsInstanceOfUsual(xID, #ResourceID)
 		SUPER(oOwner, xID, oPoint, oDimension, , dwStyle, TRUE)
 	ELSE
 		SUPER(oOwner, xID, oPoint, oDimension, "SysTreeView32", dwStyle, TRUE)
-		SELF:SetStyle(_Or(TVS_HASLINES, TVS_HASBUTTONS, TVS_LINESATROOT, TVS_EDITLABELS))
+		SELF:SetStyle(_OR(TVS_HASLINES, TVS_HASBUTTONS, TVS_LINESATROOT, TVS_EDITLABELS))
 	ENDIF
 
 	aValues := {}
@@ -717,38 +717,38 @@ METHOD InsertItem(symParentName, symInsertAfter, oTreeViewItem)
 		// set item visual states individually
 		IF oTreeViewItem:Bold
 			dwMask := TVIF_STATE
-			dwStateMask := _Or(dwStateMask, TVIS_BOLD)
-			dwState := _Or(dwState, TVIS_BOLD)
+			dwStateMask := _OR(dwStateMask, TVIS_BOLD)
+			dwState := _OR(dwState, TVIS_BOLD)
 		ENDIF
 
 		IF oTreeViewItem:Disabled
 			dwMask := TVIF_STATE
-			dwStateMask := _Or(dwStateMask, TVIS_CUT)
-			dwState := _Or(dwState, TVIS_CUT)
+			dwStateMask := _OR(dwStateMask, TVIS_CUT)
+			dwState := _OR(dwState, TVIS_CUT)
 		ENDIF
 
 		IF oTreeViewItem:DropTarget
 			dwMask := TVIF_STATE
-			dwStateMask := _Or(dwStateMask, TVIS_DROPHILITED)
-			dwState := _Or(dwState, TVIS_DROPHILITED)
+			dwStateMask := _OR(dwStateMask, TVIS_DROPHILITED)
+			dwState := _OR(dwState, TVIS_DROPHILITED)
 		ENDIF
 
 		IF oTreeViewItem:Expanded
 			dwMask := TVIF_STATE
-			dwStateMask := _Or(dwStateMask, TVIS_EXPANDED)
-			dwState := _Or(dwState, TVIS_EXPANDED)
+			dwStateMask := _OR(dwStateMask, TVIS_EXPANDED)
+			dwState := _OR(dwState, TVIS_EXPANDED)
 		ENDIF
 
 		IF oTreeViewItem:Focused
 			dwMask := TVIF_STATE
-			dwStateMask := _Or(dwStateMask, TVIS_FOCUSED)
-			dwState := _Or(dwState, TVIS_FOCUSED)
+			dwStateMask := _OR(dwStateMask, TVIS_FOCUSED)
+			dwState := _OR(dwState, TVIS_FOCUSED)
 		ENDIF
 
 		IF oTreeViewItem:Selected
 			dwMask := TVIF_STATE
-			dwStateMask := _Or(dwStateMask, TVIS_SELECTED)
-			dwState := _Or(dwState, TVIS_SELECTED)
+			dwStateMask := _OR(dwStateMask, TVIS_SELECTED)
+			dwState := _OR(dwState, TVIS_SELECTED)
 		ENDIF
 
 		// set up image information
@@ -768,7 +768,7 @@ METHOD InsertItem(symParentName, symInsertAfter, oTreeViewItem)
 		ENDIF
 
 		// set up the insert structure
-		strucInsertItem:u:item:mask := _Or(TVIF_TEXT, TVIF_IMAGE, TVIF_SELECTEDIMAGE, dwMask) //, TVIF_PARAM
+		strucInsertItem:u:item:mask := _OR(TVIF_TEXT, TVIF_IMAGE, TVIF_SELECTEDIMAGE, dwMask) //, TVIF_PARAM
 		//strucInsertItem.u.item.lparam := LONG(_CAST, oTreeViewItem:NameSym)
 		strucInsertItem:u:item:statemask := dwStateMask
 		strucInsertItem:u:item:state := dwState
@@ -798,7 +798,7 @@ METHOD InsertItem(symParentName, symInsertAfter, oTreeViewItem)
 
 			// set additional image information individually
 			IF oTreeViewItem:StateImageIndex != 0
-				strucItem:mask := _Or(TVIF_HANDLE, TVIF_STATE)
+				strucItem:mask := _OR(TVIF_HANDLE, TVIF_STATE)
 				strucItem:hItem := hThisItem
 				strucItem:statemask := TVIS_STATEIMAGEMASK
 				strucItem:state := INDEXTOSTATEIMAGEMASK(oTreeViewItem:StateImageIndex)
@@ -806,7 +806,7 @@ METHOD InsertItem(symParentName, symInsertAfter, oTreeViewItem)
 			ENDIF
 
 			IF oTreeViewItem:OverlayImageIndex != 0
-				strucItem:mask := _Or(TVIF_HANDLE, TVIF_STATE)
+				strucItem:mask := _OR(TVIF_HANDLE, TVIF_STATE)
 				strucItem:hItem := hThisItem
 				strucItem:statemask := TVIS_OVERLAYMASK
 				strucItem:state := INDEXTOOVERLAYMASK(oTreeViewItem:OverlayImageIndex)
@@ -846,7 +846,7 @@ METHOD SelectItem(symItem, symCode, lSelect)
 		RETURN FALSE
 	ENDIF
 
-	Default(@lSelect, TRUE)
+	DEFAULT(@lSelect, TRUE)
 	IF (lSelect)
 		hThisItem := SELF:__GetHandleFromSymbol(symItem)
 	ELSE
@@ -873,63 +873,63 @@ METHOD SetItemAttributes(oTreeViewItem)
 	
 
 	IF (NULL_STRING != oTreeViewItem:TextValue)
-		dwMask := _or(dwMask, TVIF_TEXT)
+		dwMask := _OR(dwMask, TVIF_TEXT)
 		pszItemText := StringAlloc(oTreeViewItem:TextValue)
 		strucItem:pszText := pszItemText
 	ENDIF
 
 	IF (oTreeViewItem:ImageIndex != 0)
-		dwMask := _Or(dwMask, TVIF_IMAGE)
+		dwMask := _OR(dwMask, TVIF_IMAGE)
 		strucItem:iImage := oTreeViewItem:ImageIndex - 1
 	ENDIF
 
-	dwMask := _Or(dwMask, TVIF_SELECTEDIMAGE)
+	dwMask := _OR(dwMask, TVIF_SELECTEDIMAGE)
 	IF (oTreeViewItem:SelectedImageIndex != 0)
 		strucItem:iSelectedImage := oTreeViewItem:SelectedImageIndex - 1
 	ELSE
 		strucItem:iSelectedImage := oTreeViewItem:ImageIndex - 1
 	ENDIF
 
-	dwMask := _Or(dwMask, TVIF_STATE)
-	strucItem:statemask := _Or(strucItem:statemask, TVIS_BOLD, TVIS_FOCUSED, TVIS_SELECTED,;
+	dwMask := _OR(dwMask, TVIF_STATE)
+	strucItem:statemask := _OR(strucItem:statemask, TVIS_BOLD, TVIS_FOCUSED, TVIS_SELECTED,;
 		TVIS_DROPHILITED, TVIS_CUT)
 	IF oTreeViewItem:Bold
-		strucItem:state := _Or(strucItem:state, TVIS_BOLD)
+		strucItem:state := _OR(strucItem:state, TVIS_BOLD)
 	ENDIF
 
 	IF oTreeViewItem:Focused
-		strucItem:state := _Or(strucItem:state, TVIS_FOCUSED)
+		strucItem:state := _OR(strucItem:state, TVIS_FOCUSED)
 	ENDIF
 
 	IF oTreeViewItem:Selected
-		strucItem:state := _Or(strucItem:state, TVIS_SELECTED)
+		strucItem:state := _OR(strucItem:state, TVIS_SELECTED)
 	ENDIF
 
 	IF oTreeViewItem:DropTarget
-		strucItem:state := _Or(strucItem:state, TVIS_DROPHILITED)
+		strucItem:state := _OR(strucItem:state, TVIS_DROPHILITED)
 	ENDIF
 
 	IF oTreeViewItem:Disabled
-		strucItem:state := _Or(strucItem:state, TVIS_CUT)
+		strucItem:state := _OR(strucItem:state, TVIS_CUT)
 	ENDIF
 	/*
 	 if oTreeViewItem:Expanded
  	strucItem.state := _Or(strucItem.state, TVIS_EXPANDED)
 	 endif
 	*/
-	strucItem:mask := _Or(dwMask, TVIF_HANDLE)
+	strucItem:mask := _OR(dwMask, TVIF_HANDLE)
 	strucItem:hItem := SELF:__GetHandleFromSymbol(oTreeViewItem:NameSym)
 	TreeView_SetItem(SELF:Handle(),  @strucItem)
 
 	//if oTreeViewItem:StateImageIndex != 0
-	dwMask := _Or(TVIF_STATE, TVIF_HANDLE)
+	dwMask := _OR(TVIF_STATE, TVIF_HANDLE)
 	strucItem:statemask := TVIS_STATEIMAGEMASK
 	strucItem:state := INDEXTOSTATEIMAGEMASK(oTreeViewItem:StateImageIndex)
 	TreeView_SetItem(SELF:Handle(),  @strucItem)
 	//endif
 
 	//if oTreeViewItem:OverlayImageIndex != 0
-	dwMask := _Or(TVIF_STATE, TVIF_HANDLE)
+	dwMask := _OR(TVIF_STATE, TVIF_HANDLE)
 	strucItem:statemask := TVIS_OVERLAYMASK
 	strucItem:state := INDEXTOOVERLAYMASK(oTreeViewItem:OverlayImageIndex)
 	TreeView_SetItem(SELF:Handle(),  @strucItem)
@@ -974,11 +974,11 @@ METHOD Toggle(symName, lAll, lForceNotify)
 	//SE-060524
 	LOCAL hThisItem AS PTR
 
-	IF (hThisItem := SELF:__GetHandleFromSymbol(symName)) == Null_Ptr
+	IF (hThisItem := SELF:__GetHandleFromSymbol(symName)) == NULL_PTR
 	   RETURN FALSE
 	ENDIF
 
-   RETURN SELF:__Expand(hThisItem, TVE_TOGGLE, IsLogic(lAll) .and. lAll, IsLogic(lForceNotify) .and. lForceNotify)
+   RETURN SELF:__Expand(hThisItem, TVE_TOGGLE, IsLogic(lAll) .AND. lAll, IsLogic(lForceNotify) .AND. lForceNotify)
 
 ACCESS VisibleCount 
 	
@@ -1031,7 +1031,7 @@ METHOD Collapse(lAll, lForceNotify)
 	ENDIF
 	RETURN FALSE
 
-METHOD @@Delete(lChildsOnly) 
+METHOD Delete(lChildsOnly) 
 	
 	IF (oTVControl != NULL_OBJECT)
 		RETURN oTVControl:DeleteItem(symName, lChildsOnly)

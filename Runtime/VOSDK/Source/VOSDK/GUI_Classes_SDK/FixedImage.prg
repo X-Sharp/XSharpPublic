@@ -32,7 +32,7 @@ CONSTRUCTOR(uOwner, uID, uPoint, uDimension, uResID)
 			cWindowName:="#"+LTrim(AsString(uResID:ID))
 		ENDIF
 	ELSE
-		WCError{#Init,#FixedBitmap,__WCSTypeError}:@@Throw()
+		WCError{#Init,#FixedBitmap,__WCSTypeError}:Throw()
 	ENDIF
 
 	RETURN 

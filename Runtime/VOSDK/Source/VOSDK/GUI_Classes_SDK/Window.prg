@@ -1086,7 +1086,7 @@ METHOD __ProcessToolTip(oControlNotifyEvent AS OBJECT) AS VOID STRICT
     IF IsInstanceOf(oObject, #ToolBar)
         cTipText  := oObject:GetTipText(ID, #MenuItemID)
 		IF SELF:Menu != NULL_OBJECT
-			SELF:@@StatusMessage(SELF:Menu:Hyperlabel(ID))
+			SELF:StatusMessage(SELF:Menu:Hyperlabel(ID))
 		ENDIF
     ELSEIF IsMethod(oObject, #GetTipText)
         cTipText := oObject:GetTipText(ID)
@@ -1377,7 +1377,7 @@ ASSIGN Automated(lNewVal)
 	//RvdH 041128 Changed because OLE is now always loaded
 	IF lNewVal != SELF:lAutomated
 		// 	IF (gpfnOLERegisterAutomationObject == NULL_PTR) .or. (gpfnOLEUnRegisterAutomationObject == NULL_PTR)
-		// 		WCError{#Automated,ClassName(SELF),__WCSCNoAutomation}:@@Throw()
+		// 		WCError{#Automated,ClassName(SELF),__WCSCNoAutomation}:Throw()
 		// 	ELSE
 		SELF:lAutomated := lNewVal
 #ifdef USE_OLEOBJECT
@@ -1918,7 +1918,7 @@ METHOD Draw(oDrawObject)
 	
 	IF !IsArray(oDrawObject)
 		IF !IsInstanceOfUsual(oDrawObject,#DrawObject)
-			WCError{#Draw,#Window,__WCSTypeError,oDrawObject,1}:@@Throw()
+			WCError{#Draw,#Window,__WCSTypeError,oDrawObject,1}:Throw()
 		ENDIF
 		oDraw := oDrawObject
 		oDraw:__SetWindow(SELF)
@@ -1928,7 +1928,7 @@ METHOD Draw(oDrawObject)
 		cnt := ALen(aDraw)
 		FOR i:=1 TO cnt
 			IF !IsInstanceOfUsual(aDraw[i],#DrawObject)
-				WCError{#Draw,#Window,__WCSTypeError,oDrawObject[i],1}:@@Throw()
+				WCError{#Draw,#Window,__WCSTypeError,oDrawObject[i],1}:Throw()
 			ENDIF
 			oDraw := aDraw[i]
 			oDraw:__SetWindow(SELF)
@@ -2018,7 +2018,7 @@ METHOD EnableDragDropClient(lEnable)
 	
 	IF !IsNil(lEnable)
 		IF !IsLogic(lEnable)
-			WCError{#EnableDragDropClient,#Window,__WCSTypeError,lEnable,1}:@@Throw()
+			WCError{#EnableDragDropClient,#Window,__WCSTypeError,lEnable,1}:Throw()
 		ENDIF
 	ELSE
 		lEnable := TRUE
@@ -2041,7 +2041,7 @@ METHOD EnableDragDropServer(lEnable)
 	
 	IF !IsNil(lEnable)
 		IF !IsLogic(lEnable)
-			WCError{#EnableDragDropServer,#Window,__WCSTypeError,lEnable,1}:@@Throw()
+			WCError{#EnableDragDropServer,#Window,__WCSTypeError,lEnable,1}:Throw()
 		ENDIF
 	ELSE
 		lEnable := TRUE
@@ -2066,13 +2066,13 @@ METHOD EnableHelp(lEnable, oHelpDisplay)
 	
 	IF !IsNil(lEnable)
 		IF !IsLogic(lEnable)
-			WCError{#EnableHelp,#Window,__WCSTypeError,lEnable,1}:@@Throw()
+			WCError{#EnableHelp,#Window,__WCSTypeError,lEnable,1}:Throw()
 		ENDIF
 	ENDIF
 	
 	IF !IsNil(oHelpDisplay)
 		IF !IsInstanceOfUsual(oHelpDisplay,#HelpDisplay)
-			WCError{#EnableHelp,#Window,__WCSTypeError,oHelpDisplay,2}:@@Throw()
+			WCError{#EnableHelp,#Window,__WCSTypeError,oHelpDisplay,2}:Throw()
 		ENDIF
 	ENDIF
 	
@@ -2260,7 +2260,7 @@ ASSIGN HelpDisplay(oHelpDisplay)
 	RETURN 
 	// if !IsNil(oHelpDisplay)
 	// if !IsInstanceOfUsual(oHelpDisplay,#HelpDisplay)
-	// WCError{#EnableHelp,#Window,__WCSTypeError,oHelpDisplay,2}:@@Throw()
+	// WCError{#EnableHelp,#Window,__WCSTypeError,oHelpDisplay,2}:Throw()
 	// endif
 	// endif
 	
@@ -2281,7 +2281,7 @@ METHOD HelpRequest(oHelpRequestEvent)
 	IF oCurrentHelp != NULL_OBJECT
 		cHelpContext:=oEvt:HelpContext
 		IF NULL_STRING != cHelpContext
-			oCurrentHelp:show(cHelpContext, oEvt:@@HELPINFO)
+			oCurrentHelp:show(cHelpContext, oEvt:HelpInfo)
 			SELF:EventReturnValue := 1l
 		ELSE
 			dwType := oEvt:HelpType
@@ -2439,7 +2439,7 @@ ASSIGN HyperLabel(oHL)
 	
 	IF IsInstanceOfUsual(oHL,#HyperLabel)
 		oHyperLabel := oHL
-		SELF:@@StatusMessage(oHL, MESSAGEPERMANENT)
+		SELF:StatusMessage(oHL, MESSAGEPERMANENT)
 	ENDIF
 	
 	RETURN 
@@ -2840,7 +2840,7 @@ ACCESS Origin
 
 ASSIGN Origin(oPoint) 
 	IF !IsInstanceOfUsual(oPoint, #Point)
-		WCError{#Origin,#Window,__WCSTypeError,oPoint,1}:@@Throw()
+		WCError{#Origin,#Window,__WCSTypeError,oPoint,1}:Throw()
 	ENDIF
 	SELF:oOrigin := Point{oPoint:x, oPoint:y}
 	WCMoveWindow(SELF, SELF:oOrigin, SELF:Size, TRUE)
@@ -2922,7 +2922,7 @@ METHOD PaintBoundingBox(oBoundingBox, kPaintMode)
 	
 	
 	IF !IsInstanceOfUsual(oBoundingBox, #BoundingBox)
-		WCError{#PaintBoundingBox,#Window,__WCSTypeError,oBoundingBox,1}:@@Throw()
+		WCError{#PaintBoundingBox,#Window,__WCSTypeError,oBoundingBox,1}:Throw()
 	ENDIF
 	
 	IF oForeground == NULL_OBJECT
@@ -3010,7 +3010,7 @@ METHOD Print(oDevice)
 	
 	IF !IsNil(oDevice)
 		IF !IsInstanceOfUsual(oDevice, #PrintingDevice)
-			WCError{#Init,#Printer,__WCSTypeError,oDevice,2}:@@Throw()
+			WCError{#Init,#Printer,__WCSTypeError,oDevice,2}:Throw()
 		ENDIF
 		oPrintingDev := oDevice
 	ELSE
@@ -3059,12 +3059,12 @@ METHOD RegisterTimer(nInterval, lOneTime)
 	
 	
 	IF !IsLong(nInterval)
-		WCError{#RegisterTimer,#Window,__WCSTypeError,nInterval,1}:@@Throw()
+		WCError{#RegisterTimer,#Window,__WCSTypeError,nInterval,1}:Throw()
 	ENDIF
 	
 	IF !IsNil(lOneTime)
 		IF !IsLogic(lOneTime)
-			WCError{#RegisterTimer,#Window,__WCSTypeError,lOneTime,2}:@@Throw()
+			WCError{#RegisterTimer,#Window,__WCSTypeError,lOneTime,2}:Throw()
 		ENDIF
 		IF lOneTime
 			dwTimerInterval := 0
@@ -3162,11 +3162,11 @@ METHOD Scroll(oDimension, oBoundingBox, lClip)
 	LOCAL oPoint AS Point
 	
 	IF !IsInstanceOfUsual(oDimension,#Dimension)
-		WCError{#Scroll,#Window,__WCSTypeError,oDimension,1}:@@Throw()
+		WCError{#Scroll,#Window,__WCSTypeError,oDimension,1}:Throw()
 	ENDIF
 	IF !IsNil(oBoundingBox)
 		IF !IsInstanceOfUsual(oBoundingBox,#BoundingBox)
-			WCError{#Scroll,#Window,__WCSTypeError,oBoundingBox,2}:@@Throw()
+			WCError{#Scroll,#Window,__WCSTypeError,oBoundingBox,2}:Throw()
 		ENDIF
 		oBB:=oBoundingBox
 	ELSE
@@ -3182,7 +3182,7 @@ METHOD Scroll(oDimension, oBoundingBox, lClip)
 	
 	IF !IsNil(lClip)
 		IF !IsLogic(lClip)
-			WCError{#Scroll,#Window,__WCSTypeError,lClip,3}:@@Throw()
+			WCError{#Scroll,#Window,__WCSTypeError,lClip,3}:Throw()
 		ENDIF
 		IF lClip
 			strucRectClip:=@strucRectScroll
@@ -3410,7 +3410,7 @@ ASSIGN Size(oDimension)
 		oDimension := oDimension:Size
 	ENDIF
 	IF !IsInstanceOfUsual(oDimension, #Dimension)
-		WCError{#Size,#Window,__WCSTypeError,oDimension,1}:@@Throw()
+		WCError{#Size,#Window,__WCSTypeError,oDimension,1}:Throw()
 	ENDIF
 
 	WCMoveWindow(SELF, SELF:Origin, oDimension, TRUE)
@@ -3422,7 +3422,7 @@ ASSIGN Size(oDimension)
 METHOD SizeText(cTextToSize) 
 	LOCAL winSize IS _winSize
 	IF !IsString(cTextToSize)
-		WCError{#SizeText,#Window,__WCSTypeError,cTextToSize,1}:@@Throw()
+		WCError{#SizeText,#Window,__WCSTypeError,cTextToSize,1}:Throw()
 	ENDIF
 	
 	DCFontNeeded := TRUE
@@ -3434,7 +3434,7 @@ METHOD SizeText(cTextToSize)
 	RETURN Dimension{0,0}
 	
 
-METHOD @@StatusMessage(oHL, ntype) 
+METHOD StatusMessage(oHL, ntype) 
 	
 	
 	RETURN NIL
@@ -3497,10 +3497,10 @@ METHOD TextPrint(cText, oPoint)
 	
 	
 	IF !IsString(cText)
-		WCError{#TextPrint,#Window,__WCSTypeError,cText,1}:@@Throw()
+		WCError{#TextPrint,#Window,__WCSTypeError,cText,1}:Throw()
 	ENDIF
 	IF !IsInstanceOfUsual(oPoint,#Point)
-		WCError{#TextPrint,#Window,__WCSTypeError,oPoint,2}:@@Throw()
+		WCError{#TextPrint,#Window,__WCSTypeError,oPoint,2}:Throw()
 	ENDIF
 	
 	DCFontNeeded := TRUE

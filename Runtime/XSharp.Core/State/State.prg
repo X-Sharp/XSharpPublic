@@ -208,7 +208,7 @@ CLASS XSharp.RuntimeState
 
 
 	/// <summary>The current ANSI setting</summary>
-    STATIC PROPERTY @@Ansi AS LOGIC ;
+    STATIC PROPERTY Ansi AS LOGIC ;
         GET GetValue<LOGIC>(Set.Ansi);
         SET SetValue<LOGIC>(Set.Ansi, VALUE)
 

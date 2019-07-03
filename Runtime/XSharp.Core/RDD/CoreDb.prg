@@ -833,7 +833,7 @@ CLASS XSharp.CoreDb
         LOCAL dbli AS DbLockInfo
         dbli := DbLockInfo{}
         dbli:Result := FALSE
-        dbli:@@METHOD := DbLockInfo.LockMethod.File
+        dbli:METHOD := DbLockInfo.LockMethod.File
         RETURN oRDD:Lock(dbli)
         })
         
@@ -1518,9 +1518,9 @@ CLASS XSharp.CoreDb
         lockInfo := DbLockInfo{}
         lockInfo:RecId := uRecID
         IF uRecID == NULL
-            lockInfo:@@METHOD  := DbLockInfo.LockMethod.Exclusive
+            lockInfo:METHOD  := DbLockInfo.LockMethod.Exclusive
         ELSE
-            lockInfo:@@METHOD  := DbLockInfo.LockMethod.Multiple
+            lockInfo:METHOD  := DbLockInfo.LockMethod.Multiple
         ENDIF
         RETURN oRDD:Lock(lockInfo)
         })

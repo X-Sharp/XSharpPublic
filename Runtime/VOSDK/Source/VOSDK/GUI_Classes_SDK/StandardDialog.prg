@@ -64,7 +64,7 @@ CONSTRUCTOR(uOwner,oColor)
 
 	IF !IsNil(uOwner)
 		IF !IsInstanceOfUsual(uOwner,#Window)
-			WCError{#Init,#PaletteDialog,__WCSTypeError,uOwner,1}:@@Throw()
+			WCError{#Init,#PaletteDialog,__WCSTypeError,uOwner,1}:Throw()
 		ENDIF
 	ENDIF
 
@@ -106,7 +106,7 @@ CONSTRUCTOR(uOwner,oColor)
 
 	IF !IsNil(uOwner)
 		IF !IsInstanceOfUsual(uOwner,#Window)
-			WCError{#Init,#SelectDialog,__WCSTypeError,uOwner,1}:@@Throw()
+			WCError{#Init,#SelectDialog,__WCSTypeError,uOwner,1}:Throw()
 		ENDIF
 	ENDIF
 
@@ -159,7 +159,7 @@ CONSTRUCTOR(oColor)
 
 	IF !IsNil(oColor)
 		IF !IsInstanceOfUsual(oColor,#Color)
-			WCError{#Init,#StandardColorDialog,__WCSTypeError,oColor,1}:@@Throw()
+			WCError{#Init,#StandardColorDialog,__WCSTypeError,oColor,1}:Throw()
 		ENDIF
 	ENDIF
 
@@ -382,7 +382,7 @@ CONSTRUCTOR(uOwner, cInitPath)
 	SUPER()
 	IF !IsNil(uOwner)
 		IF !IsInstanceOfUsual(uOwner,#Window)
-			WCError{#Init,#TextBox,__WCSTypeError,uOwner,1}:@@Throw()
+			WCError{#Init,#TextBox,__WCSTypeError,uOwner,1}:Throw()
 		ELSE
 			oOwner:=uOwner
 		ENDIF
@@ -883,7 +883,7 @@ CONSTRUCTOR(uOwner)
 
 	IF !IsNil(uOwner)
 		IF !IsInstanceOfUsual(uOwner,#Window) .AND. IsInstanceOfUsual( uOwner,#Printer)
-			WCError{#Init,#StandardFontDialog,__WCSTypeError,uOwner,1}:@@Throw()
+			WCError{#Init,#StandardFontDialog,__WCSTypeError,uOwner,1}:Throw()
 		ENDIF
 	ENDIF
 
@@ -1070,7 +1070,7 @@ FUNCTION __LoadComDlgDLL()
     hDll := LoadLibrary(String2Psz( "COMDLG32.DLL"))
 	IF (hDll == NULL_PTR)
 		rsFormat := ResourceString{__WCSLoadLibraryError}
-		WCError{#__LoadComDlgDLL, #StandardDialog, VO_Sprintf(rsFormat:value, "COMDLG32.DLL"),,,FALSE}:@@Throw()
+		WCError{#__LoadComDlgDLL, #StandardDialog, VO_Sprintf(rsFormat:value, "COMDLG32.DLL"),,,FALSE}:Throw()
 		RETURN FALSE
 	ENDIF
 

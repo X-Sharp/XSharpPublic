@@ -14,7 +14,7 @@ METHOD Add(oImage)
 		ELSEIF IsInstanceOfUsual(oImage, #Icon)
 			nReturnValue := ImageList_AddIcon(hImageList, oImage:Handle()) + 1
 		ELSE
-			WCError{#Add, #ImageList, __WCSTypeError, oImage, 1}:@@Throw()
+			WCError{#Add, #ImageList, __WCSTypeError, oImage, 1}:Throw()
 		ENDIF
 	ENDIF
 

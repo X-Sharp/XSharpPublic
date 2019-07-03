@@ -1,4 +1,4 @@
-﻿PARTIAL CLASS CMessage
+PARTIAL CLASS CMessage
 
    PROTECT cHeader             AS STRING
 	PROTECT cBody               AS STRING
@@ -378,10 +378,10 @@ METHOD FakeAttachmentList()
 
 	RETURN cRet
 
-ACCESS @@From
+ACCESS From
    RETURN __FormatAddress(SELF:cFromAddress, SELF:cFromName)
 
-ASSIGN @@From(cValue)
+ASSIGN From(cValue)
    //SE-040717
    LOCAL cAddress AS STRING
    LOCAL cName    AS STRING
@@ -467,7 +467,7 @@ METHOD GetHeaderInfo()
 
     SELF:__GetMailTime(__GetMailInfo(cHeader, TEMP_DATE, FALSE))
 
-    SELF:@@From       := __GetMailInfo(cHeader, TEMP_FROM, FALSE)
+    SELF:From       := __GetMailInfo(cHeader, TEMP_FROM, FALSE)
     SELF:ReplyTo    := __GetMailInfo(cHeader, TEMP_REPLY, FALSE)
     SELF:Subject    := __GetMailInfo(cHeader, TEMP_SUBJECT, FALSE)
     SELF:MessageID  := __GetMailInfo(cHeader, TEMP_MESSAGEID, FALSE) // , TRUE

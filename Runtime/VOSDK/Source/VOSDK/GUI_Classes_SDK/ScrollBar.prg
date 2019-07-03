@@ -51,7 +51,7 @@ ACCESS BlockSize
 ASSIGN BlockSize(nSize) 
 
 	IF !IsLong(nSize) .OR. nSize<0
-		WCError{#BlockSize,#ScrollBar,__WCSTypeError,nSize,1}:@@Throw()
+		WCError{#BlockSize,#ScrollBar,__WCSTypeError,nSize,1}:Throw()
 	ENDIF
 
 	wBlockSize := nSize
@@ -113,7 +113,7 @@ ACCESS PageSize
 ASSIGN PageSize(nValue) 
 	//SE-051114
 	IF !IsLong(nValue)
-		WCError{#PageSize, #ScrollBar, __WCSTypeError, nValue, 1}:@@Throw()
+		WCError{#PageSize, #ScrollBar, __WCSTypeError, nValue, 1}:Throw()
 	ENDIF
    //RvdH 070320 This was setting the Position and not the size 
    //SELF:SetInfo(NIL, nValue)
@@ -138,7 +138,7 @@ ACCESS Range
 ASSIGN Range(oScrollRange) 
 	
 	IF ! IsInstanceOfUsual(oScrollRange, #Range)
-		WCError{#Range,#ScrollBar,__WCSTypeError,oRange,1}:@@Throw()
+		WCError{#Range,#ScrollBar,__WCSTypeError,oRange,1}:Throw()
 	ENDIF
 	
 	oRange := oScrollRange 
@@ -158,7 +158,7 @@ METHOD SetInfo(oScrollRange, nThumbPosition, nPageSize, lDisableNoScroll)
 	sScrollInfo:cbSize := _SIZEOF(_winSCROLLINFO)
 	IF ! IsNil(oScrollRange)
 		IF ! IsInstanceOfUsual(oRange,#Range)
-			WCError{#SetInfo, #ScrollBar, __WCSTypeError, oRange, 1}:@@Throw()
+			WCError{#SetInfo, #ScrollBar, __WCSTypeError, oRange, 1}:Throw()
 		ENDIF
 	   oRange := oScrollRange
 	   sScrollInfo:fMask := SIF_RANGE
@@ -168,7 +168,7 @@ METHOD SetInfo(oScrollRange, nThumbPosition, nPageSize, lDisableNoScroll)
 
    IF ! IsNil(nThumbPosition)
       IF ! IsLong(nThumbPosition)
-		   WCError{#SetInfo, #ScrollBar, __WCSTypeError, nThumbPosition, 2}:@@Throw()
+		   WCError{#SetInfo, #ScrollBar, __WCSTypeError, nThumbPosition, 2}:Throw()
 	   ENDIF
 	   sScrollInfo:fMask := _OR(sScrollInfo:fMask, SIF_POS)
 	   sScrollInfo:nPos  := nThumbPosition
@@ -176,7 +176,7 @@ METHOD SetInfo(oScrollRange, nThumbPosition, nPageSize, lDisableNoScroll)
 
 	IF ! IsNil(nPageSize)
       IF ! IsLong(nPageSize)
-		   WCError{#SetInfo, #ScrollBar, __WCSTypeError, nPageSize, 3}:@@Throw()
+		   WCError{#SetInfo, #ScrollBar, __WCSTypeError, nPageSize, 3}:Throw()
 	   ENDIF
 	   sScrollInfo:fMask := _OR(sScrollInfo:fMask, SIF_PAGE)
 	   sScrollInfo:nPage := nPageSize
@@ -238,7 +238,7 @@ ACCESS TextValue
 ASSIGN TextValue(cNewPos) 
 	LOCAL wOldValue AS LONGINT
 	IF !IsString(cNewPos)
-		WCError{#TextValue,#ScrollBar,__WCSTypeError,cNewPos,1}:@@Throw()
+		WCError{#TextValue,#ScrollBar,__WCSTypeError,cNewPos,1}:Throw()
 	ENDIF
 	wOldValue 				:= SELF:Thumbposition
 	SELF:Thumbposition 	:= Val(cNewPos)
@@ -262,7 +262,7 @@ ACCESS ThumbPosition
 
 ASSIGN ThumbPosition(nValue) 
 	IF !IsLong(nValue)
-		WCError{#Thumbposition,#ScrollBar,__WCSTypeError,nValue,1}:@@Throw()
+		WCError{#Thumbposition,#ScrollBar,__WCSTypeError,nValue,1}:Throw()
 	ENDIF
    //SE-051114
 	SELF:SetInfo(NIL, nValue)
@@ -276,7 +276,7 @@ ACCESS UnitSize
 ASSIGN UnitSize(nSize) 
 	
 	IF !IsLong(nSize) .OR. nSize<0
-		WCError{#UnitSize,#ScrollBar,__WCSTypeError,nSize,1}:@@Throw()
+		WCError{#UnitSize,#ScrollBar,__WCSTypeError,nSize,1}:Throw()
 	ENDIF
 	wUnitSize:=nSize
 

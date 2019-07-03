@@ -197,8 +197,8 @@ METHOD FIELDPUT( uFieldPos, uValue )
 		//  pTemp := PTR( _CAST, aData[nIndex]:Value )
 		// RvdH 050413 get pTemp before case
 		oData := aData[nIndex]
-		IF oData:@@Null
-			oData:@@Null := FALSE
+		IF oData:Null
+			oData:Null := FALSE
 			oData:ValueChanged := TRUE
 			lRowModified := TRUE
 		ENDIF
@@ -475,7 +475,7 @@ METHOD GetData( iCol )
 		aData := aSQLData
 	ENDIF
 	oData := aData[nIndex]
-	IF SELF:lEof .OR. oData:@@Null
+	IF SELF:lEof .OR. oData:Null
 		#IFDEF __DEBUG__
 			__SQLOutputDebug( "**          :GetData IS NULL" )
 		#ENDIF
@@ -661,7 +661,7 @@ METHOD GetTimeStamp( uFieldPos )
 	ELSE
 		oData := aSQLData[nIndex]
 	ENDIF
-	IF oData:@@Null
+	IF oData:Null
 		cVal := Space( uiLen )
 	ELSE
 		cVal := Mem2String( oData:ptrValue , uiLen )

@@ -1,4 +1,4 @@
-﻿STATIC FUNCTION __FindStatus(h AS PTR) AS DWORD STRICT
+STATIC FUNCTION __FindStatus(h AS PTR) AS DWORD STRICT
     RETURN AScan(agStatus, {|a| a[STATUS_HANDLE] == h} )
 
 
@@ -204,7 +204,7 @@ METHOD CloseRemote()
 
 
 
-ACCESS @@Connected
+ACCESS Connected
     RETURN (SELF:hConnect != NULL_PTR)
 
 

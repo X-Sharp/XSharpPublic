@@ -225,7 +225,7 @@ CONSTRUCTOR(cJobname, oDevice)
 
 	IF !IsNil(oDevice)
 		IF !IsInstanceOfUsual(oDevice, #PrintingDevice)
-			WCError{#Init,#Printer,__WCSTypeError,oDevice,2}:@@Throw()
+			WCError{#Init,#Printer,__WCSTypeError,oDevice,2}:Throw()
 		ENDIF
 		oPrintingDev := oDevice
 	ELSE
@@ -259,7 +259,7 @@ CONSTRUCTOR(cJobname, oDevice)
 
 		IF !IsNil(cJobName)
 			IF !IsString(cJobname)
-				WCError{#Init,#Printer, __WCStypeError, cJobname, 2}:@@Throw()
+				WCError{#Init,#Printer, __WCStypeError, cJobname, 2}:Throw()
 			ENDIF
 			sJobName := cJobname
 		ELSE
@@ -348,7 +348,7 @@ METHOD PrinterError(oPerr)
 	
 
 	IF !IsNil(oPerr) .AND. !IsInstanceOfUsual(oPerr,#PrinterErrorEvent)
-		WCError{#PrinterError,#printer,__WCSTypeError,oPerr,1}:@@Throw()
+		WCError{#PrinterError,#printer,__WCSTypeError,oPerr,1}:Throw()
 	ENDIF
 
 	wErrorType := oPerr:ErrorType
@@ -370,7 +370,7 @@ METHOD PrinterExpose(oPrinterExposeEvt)
 	
 
 	IF !IsNil(oPrinterExposeEvt) .AND. !IsInstanceOfUsual(oPrinterExposeEvt,#PrinterExposeEvent)
-		WCError{#PrinterExpose,#printer,__WCSTypeError,oPrinterExposeEvt,1}:@@Throw()
+		WCError{#PrinterExpose,#printer,__WCSTypeError,oPrinterExposeEvt,1}:Throw()
 	ENDIF
 	RETURN TRUE
 
@@ -385,7 +385,7 @@ METHOD Start(oRange)
 
 	IF !IsNil(oRange)
 		IF !IsInstanceOfUsual(oRange, #Range)
-			WCError{#Start,#Printer,__WCSTypeError,oRange,1}:@@Throw()
+			WCError{#Start,#Printer,__WCSTypeError,oRange,1}:Throw()
 		ENDIF           
 		iPageNum := oRange:Min
 	ENDIF

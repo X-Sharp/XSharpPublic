@@ -159,7 +159,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 	IF (!CAPaintIsLoaded())
 		LoadError := WCError{#Init,#MultiMediaContainer,__WCSCAPaintLoadFailed}
 		LoadError:CanDefault := TRUE
-		LoadError:@@Throw()
+		LoadError:Throw()
 	ENDIF
 
 	uValue := NULL_STRING
@@ -219,7 +219,7 @@ FUNCTION __LoadMSVFWDll()
 	hDll := LoadLibrary(String2Psz("MSVFW32.DLL"))
 	IF (hDll == NULL_PTR)
 		rsFormat := ResourceString{__WCSLoadLibraryError}
-		WCError{#LoadSplitWindowDLL, #SplitWindow, VO_Sprintf(rsFormat:value, "MSVFW32.DLL"),,,FALSE}:@@Throw()
+		WCError{#LoadSplitWindowDLL, #SplitWindow, VO_Sprintf(rsFormat:value, "MSVFW32.DLL"),,,FALSE}:Throw()
 		RETURN FALSE
 	ENDIF
 

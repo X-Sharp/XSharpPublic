@@ -69,7 +69,7 @@ METHOD __BuildUpdateStmt AS STRING STRICT
 		oData			:= aSQLData[nIndex]
 		nODBCType  := oCol:ODBCType
 		IF nODBCType = SQL_LONGVARCHAR .OR. nODBCType = SQL_LONGVARBINARY   .OR. nODBCTYPE = SQL_WLONGVARCHAR
-			IF !oData:@@Null
+			IF !oData:Null
 				LOOP
 			ENDIF
 		ENDIF
@@ -114,7 +114,7 @@ METHOD  __CopyDataBuffer( aSQLSource AS ARRAY, aSQLTarget AS ARRAY) AS ARRAY STR
 		FOR nIndex := 1 TO nCols
 			oTarget := aSQLTarget[nIndex]
 			oSource := aSQLSource[nIndex]
-			oTarget:@@Null 		 	:= oSource:@@Null
+			oTarget:Null 		 	:= oSource:Null
 			oTarget:ValueChanged := oSource:ValueChanged
 		NEXT
 		// Now copy the data
@@ -434,11 +434,11 @@ METHOD __GetLongData( nODBCType AS SHORTINT, nIndex AS DWORD ) AS LOGIC STRICT
 		IF nRetCode == SQL_SUCCESS   .OR. nRetCode == SQL_SUCCESS_WITH_INFO    
 
 			IF nSize = SQL_NULL_DATA
-				oData:@@Null := TRUE
+				oData:Null := TRUE
 				lRet := TRUE
 				EXIT
 			ELSE
-				oData:@@Null := FALSE
+				oData:Null := FALSE
 			ENDIF
 			
 			//RvdH 070430 If they have a ZERO length string, get out of here
@@ -1061,7 +1061,7 @@ METHOD __InitColValue( nIndex AS DWORD ) AS LOGIC STRICT
 	//RvdH 070716 Moved initialization from appended records from Append()
 	IF SELF:lAppendFlag
 		oData	   				:= aAppendData[nIndex]
-		oData:@@Null 			:= TRUE
+		oData:Null 			:= TRUE
 		oData:ValueChanged 	:= FALSE
 		oData:LongValue 		:= NULL_STRING
 		nSize 					:= aSQLColumns[nIndex]:FieldSpec:Length + 1
@@ -1085,12 +1085,12 @@ METHOD __InitColValue( nIndex AS DWORD ) AS LOGIC STRICT
 			nNull 	:= pLength[1]
 			
 			IF nNull = SQL_NULL_DATA
-				oData:@@Null := TRUE
+				oData:Null := TRUE
 				IF nODBCType = SQL_LONGVARCHAR   .OR. nODBCType = SQL_WLONGVARCHAR
 					oData:LongValue := NULL_STRING // Space( 10 )
 				ENDIF
 			ELSE
-				oData:@@Null := FALSE
+				oData:Null := FALSE
 				IF nODBCType = SQL_LONGVARCHAR .OR. nODBCType = SQL_WLONGVARCHAR
 					// When Long column is bound we get its value now
 					oData:LongValue := Psz2String( oData:ptrValue)
@@ -1124,9 +1124,9 @@ METHOD __InitColValue( nIndex AS DWORD ) AS LOGIC STRICT
 					
 				ELSE
 					IF nSize = SQL_NULL_DATA
-						oData:@@Null := TRUE
+						oData:Null := TRUE
 					ELSE
-						oData:@@Null := FALSE
+						oData:Null := FALSE
 					ENDIF
 					lRet := TRUE
 				ENDIF
@@ -1433,7 +1433,7 @@ METHOD __SetNullData( nODBCType AS SHORTINT, nIndex AS DWORD, aData AS ARRAY) AS
 	LOCAL oData 	AS SqlData
 	
 	oData 				 := aData[nIndex]
-	oData:@@Null         := TRUE
+	oData:Null         := TRUE
 	oData:ValueChanged := TRUE
 	SELF:lRowModified  := TRUE
 	IF nODBCType = SQL_LONGVARCHAR .OR. nODBCType = SQL_LONGVARBINARY .OR. nODBCType = SQL_WLONGVARCHAR
@@ -1543,7 +1543,7 @@ METHOD __UpdateLongData( lAppend AS LOGIC ) AS VOID STRICT
 		nODBCType := oCol:ODBCType
 		IF ( nODBCType = SQL_LONGVARCHAR ) .OR. ( nODBCType = SQL_LONGVARBINARY ) .OR. ( nODBCType = SQL_WLONGVARCHAR )
 			oData := aData[nIndex]
-			IF oData:ValueChanged .AND. ! oData:@@Null
+			IF oData:ValueChanged .AND. ! oData:Null
 				//cTemp := AsString( oData:Value )
 				cTemp := oData:LongValue
 				SELF:__PutLongData( cTemp, nODBCType, nIndex, lAppend )

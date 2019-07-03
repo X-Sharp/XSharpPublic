@@ -21,11 +21,11 @@ METHOD ChangeBackground(oBrush, kWhere)
 	
 
 	IF !IsInstanceOfUsual(oBrush, #Brush)
-		WCError{#ChangeBackground, #__SplitView, __WCSTypeError, oBrush, 1}:@@Throw()
+		WCError{#ChangeBackground, #__SplitView, __WCSTypeError, oBrush, 1}:Throw()
 	ENDIF
 	IF !IsNil(kWhere)
 		IF !IsLong(kWhere)
-			WCError{#ChangeBackground, #__SplitView, __WCSTypeError, kWhere, 2}:@@Throw()
+			WCError{#ChangeBackground, #__SplitView, __WCSTypeError, kWhere, 2}:Throw()
 		ENDIF
 	ENDIF
 
@@ -270,7 +270,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lHorizontalDrag, lVerticalDrag, kAl
 
 	// the owner must be a window
 	IF !IsInstanceOfUsual(oOwner, #Window)
-		WCError{#Init, #__SplitView, __WCSTypeError, oOwner, 1}:@@Throw()
+		WCError{#Init, #__SplitView, __WCSTypeError, oOwner, 1}:Throw()
 	ENDIF
 	oWin := oOwner
 
@@ -679,7 +679,7 @@ CONSTRUCTOR(oOwner, lHorizontalDrag, lVerticalDrag, kAlignment)
 		ELSEIF IsInstanceOf(oOBject, #DialogWindow)
 			SUPER(oOwner)
 		ELSEIF IsInstanceOf(oObject, #Window)
-			WCError{#Init, #SplitWindow, __WCSTypeError, oOwner, 1}:@@Throw()
+			WCError{#Init, #SplitWindow, __WCSTypeError, oOwner, 1}:Throw()
 		ELSE
 			SUPER(oOwner)
 		ENDIF
@@ -879,7 +879,7 @@ FUNCTION __LoadSplitWindowDLL()
 	hDll := LoadLibrary(PSZ(_CAST, "CATO3SPL.DLL"))
 	IF (hDll == NULL_PTR)
 		rsFormat := ResourceString{__WCSLoadLibraryError}
-		WCError{#LoadSplitWindowDLL, #SplitWindow, VO_Sprintf(rsFormat:value, "CATO3SPL.DLL"),,,FALSE}:@@Throw()
+		WCError{#LoadSplitWindowDLL, #SplitWindow, VO_Sprintf(rsFormat:value, "CATO3SPL.DLL"),,,FALSE}:Throw()
 		RETURN FALSE
 	ENDIF
 

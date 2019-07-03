@@ -724,7 +724,7 @@ ASSIGN Bitmap(oNewBitmap)
 				ENDIF
 			ENDIF
 		ELSE
-			WCError{#Bitmap,#ToolBar,"Can not assign a Bitmap in imagelist mode!",oNewBitmap,1}:@@Throw()
+			WCError{#Bitmap,#ToolBar,"Can not assign a Bitmap in imagelist mode!",oNewBitmap,1}:Throw()
 		ENDIF
 	ENDIF
 
@@ -1751,7 +1751,7 @@ METHOD SetImageList(uImageList, symType, symTB)
 			SendMessage(oTB:Handle, dwMsg, 0u, LONGINT(_CAST, oImagelist:Handle()))
 		ENDIF
 	ELSE
-		WCError{#SetImageList,#ToolBar,"Can not assign an ImageList in bitmap mode!",uImageList,1}:@@Throw()
+		WCError{#SetImageList,#ToolBar,"Can not assign an ImageList in bitmap mode!",uImageList,1}:Throw()
 	ENDIF
 
 	RETURN oImageList

@@ -687,7 +687,7 @@ METHOD GetNextItem(kRelationship, lDisabled, lDropTarget, lFocused, lSelected, n
 
 	IF !IsNil(nItemStart)
 		IF !IsLong(nItemStart)
-			WCError{#GetNextItem, #ListView, __WCSTypeError, nItemStart, 6}:@@Throw()
+			WCError{#GetNextItem, #ListView, __WCSTypeError, nItemStart, 6}:Throw()
 		ELSE
 			kRelationship := LV_GNIBYITEM
 			nItemStart--
@@ -1127,7 +1127,7 @@ METHOD SetExLVStyle(kExStyle, lEnable)
 	
 
 	IF !IsLong(kExStyle)
-		WCError{#SetExLVStyle,#ListView,__WCSTypeError,kExStyle,}:@@Throw()
+		WCError{#SetExLVStyle,#ListView,__WCSTypeError,kExStyle,}:Throw()
 	ENDIF
 
 	IF IsNil(lEnable) .OR. !IsLogic(lEnable)
@@ -1513,7 +1513,7 @@ ASSIGN FieldSpec(oNewFieldSpec)
 	
 
 	IF !IsInstanceOfUsual(oNewFieldSpec, #FieldSpec)
-		WCError{#FieldSpec, #ListViewColumn, __WCSTypeError, oNewFieldSpec, 1}:@@Throw()
+		WCError{#FieldSpec, #ListViewColumn, __WCSTypeError, oNewFieldSpec, 1}:Throw()
 	ENDIF
 
 	// set up FieldSpec information for the column

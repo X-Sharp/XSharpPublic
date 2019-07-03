@@ -74,7 +74,7 @@ BEGIN NAMESPACE XSharp
         #endregion
         #region Properties
         /// <summary>REAL8 (System.Double) value</summary>
-        PROPERTY @@Value    AS REAL8	GET _value			
+        PROPERTY Value    AS REAL8	GET _value			
         /// <summary>Width </summary>
         PROPERTY Digits   AS INT	GET _length		
         /// <summary>Number of decimals</summary>

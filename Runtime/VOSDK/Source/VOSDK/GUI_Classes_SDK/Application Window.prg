@@ -12,7 +12,7 @@ CLASS AppWindow INHERIT Window
 	
 	oHL := oEvent:HyperLabel
 	IF (oHL != NULL_OBJECT)
-		SELF:@@StatusMessage(oHL, nType)
+		SELF:StatusMessage(oHL, nType)
 	ENDIF
 	RETURN
 	
@@ -151,7 +151,7 @@ METHOD Dispatch(oEvent)
 
 METHOD EnableBorder(kBorderStyle) 
 	
-	Default(@kBorderStyle, WINDOWSIZINGBORDER)
+	DEFAULT(@kBorderStyle, WINDOWSIZINGBORDER)
 	
 	DO CASE
 	CASE kBorderStyle == WINDOWNOBORDER
@@ -184,7 +184,7 @@ METHOD EnableHorizontalScroll(lEnable)
 	
 
 METHOD EnableMaxBox(lEnable) 
-	Default(@lEnable, TRUE)
+	DEFAULT(@lEnable, TRUE)
 	
 	SELF:SetStyle(WS_MAXIMIZEBOX, lEnable)
 	
@@ -196,7 +196,7 @@ METHOD EnableMaxBox(lEnable)
 	
 
 METHOD EnableMinBox(lEnable) 
-	Default(@lEnable, TRUE)
+	DEFAULT(@lEnable, TRUE)
 	
 	SELF:SetStyle(WS_MINIMIZEBOX, lEnable)
 	
@@ -225,7 +225,7 @@ METHOD EnableOleDropTarget(lEnable)
 	RETURN FALSE
 
 METHOD EnableStatusBar(lEnable) 
-	Default(@lEnable, TRUE)
+	DEFAULT(@lEnable, TRUE)
 	
 	IF lEnable
 		IF (SELF:StatusBar == NULL_OBJECT)
@@ -242,7 +242,7 @@ METHOD EnableStatusBar(lEnable)
 	
 
 METHOD EnableSystemMenu(lEnable) 
-	Default(@lEnable, TRUE)
+	DEFAULT(@lEnable, TRUE)
 	
 	SELF:SetStyle(WS_SYSMENU, lEnable)
 	IF ! lEnable
@@ -265,7 +265,7 @@ METHOD EnableSystemMenu(lEnable)
 	
 
 METHOD EnableToolBar(lEnable) 
-	Default(@lEnable, TRUE)
+	DEFAULT(@lEnable, TRUE)
 	
 	IF (SELF:ToolBar != NULL_OBJECT)
 		IF lEnable
@@ -279,7 +279,7 @@ METHOD EnableToolBar(lEnable)
 	
 
 METHOD EnableVerticalScroll(lEnable) 
-	Default(@lEnable, TRUE)
+	DEFAULT(@lEnable, TRUE)
 	
 	IF lEnable
 		IF (oVertScroll == NULL_OBJECT)
@@ -374,12 +374,12 @@ ASSIGN StatusBar(oNewStatusBar)
 	RETURN 
 	
 
-METHOD @@StatusMessage(oHL, nType) 
+METHOD StatusMessage(oHL, nType) 
 	LOCAL Message AS STRING
 	LOCAL oStatBar AS StatusBar
 	LOCAL oOwner AS OBJECT
 	
-	Default(@nType, MESSAGETRANSIENT)
+	DEFAULT(@nType, MESSAGETRANSIENT)
 	
 	IF SELF:StatusBar != NULL_OBJECT
 		oStatBar := SELF:StatusBar

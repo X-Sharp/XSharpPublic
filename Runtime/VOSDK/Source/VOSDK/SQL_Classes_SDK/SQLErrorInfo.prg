@@ -138,9 +138,9 @@ ASSIGN SQLState( uVal )
 	ENDIF
 	RETURN 
 #ifdef __XSHARP_RT__
-METHOD @@Throw() AS VOID  STRICT
+METHOD Throw() AS VOID  STRICT
 #else
-METHOD @@Throw() 
+METHOD Throw() 
 #endif
 
 	RETURN Eval( ErrorBlock(), SELF )
@@ -160,7 +160,7 @@ ACCESS ErrorList
       oStmt		:= SELF:MethodSelf 		
 	   oErr 		:= SELF
 
-		WHILE oErr != null_object .and. (Val(oErr:SQLState) <> 0 .or. oErr:NativeError <> 0)
+		WHILE oErr != NULL_OBJECT .AND. (Val(oErr:SQLState) <> 0 .OR. oErr:NativeError <> 0)
 	
 			AAdd( aRet, { oErr:NativeError, oErr:SQLState, oErr:ErrorMessage } )
 		   oErr		:= SQLErrorInfo{ oStmt, SELF:FuncSym,            ;

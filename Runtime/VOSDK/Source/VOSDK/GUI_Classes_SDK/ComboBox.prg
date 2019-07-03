@@ -37,7 +37,7 @@ ASSIGN CurrentText(cNewText)
 	
 
 	IF !IsString(cNewText)
-		WCError{#CurrentText,#ComboBox,__WCSTypeError,cNewText,1}:@@Throw()
+		WCError{#CurrentText,#ComboBox,__WCSTypeError,cNewText,1}:Throw()
 	ENDIF
 
 	cCurrentText := SELF:__SetText(cNewText)
@@ -104,7 +104,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kComboType, kStyle)
 
 	IF !IsNil(kComboType)
 		IF !IsLong(kComboType)
-			WCError{#Init,#ComboBox,__WCSTypeError,kComboType,5}:@@Throw()
+			WCError{#Init,#ComboBox,__WCSTypeError,kComboType,5}:Throw()
 		ENDIF
 		liComboType := kComboType
 	ELSE
@@ -124,7 +124,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kComboType, kStyle)
 		CASE (liComboType == BOXDROPDOWNLIST)
 			SELF:SetStyle(_OR(dwStyle, DWORD(_CAST, CBS_DROPDOWNLIST)))
 		OTHERWISE
-			WCError{#Init,#ComboBox,__WCSTypeError,liComboType,5}:@@Throw()
+			WCError{#Init,#ComboBox,__WCSTypeError,liComboType,5}:Throw()
 		ENDCASE
 	ENDIF
 	SELF:__ClassName := "ComboBox"
@@ -201,7 +201,7 @@ METHOD DeleteItem(nItemNumber)
 
 	IF ! IsNil(nItemNumber)
 		IF !IsLong(nItemNumber)
-			WCError{#DeleteItem,#ComboBoxEx,__WCSTypeError,nItemNumber,1}:@@Throw()
+			WCError{#DeleteItem,#ComboBoxEx,__WCSTypeError,nItemNumber,1}:Throw()
 		ENDIF
 		IF (nItemNumber != 0)
 			dwPos := nItemNumber-1
@@ -359,7 +359,7 @@ METHOD SetExCBStyle(kExStyle, lEnable)
 	
 
 	IF !IsLong(kExStyle)
-		WCError{#SetExCBStyle,#ComboBoxEx,__WCSTypeError,kExStyle,}:@@Throw()
+		WCError{#SetExCBStyle,#ComboBoxEx,__WCSTypeError,kExStyle,}:Throw()
 	ENDIF
 
 	IF IsNil(lEnable) .OR. !IsLogic(lEnable)

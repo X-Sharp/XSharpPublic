@@ -27,7 +27,7 @@ CONSTRUCTOR(sName)
 	SUPER()
 
 	IF !IsString(sName)
-		WCError{#Init, #ResourceFile, __WCSTypeError, sName, 1}:@@Throw()
+		WCError{#Init, #ResourceFile, __WCSTypeError, sName, 1}:Throw()
 	ENDIF
 
 	hLib := LoadLibrary(String2Psz(sName))

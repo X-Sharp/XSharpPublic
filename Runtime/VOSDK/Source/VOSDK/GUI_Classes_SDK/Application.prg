@@ -128,7 +128,7 @@ METHOD Exec(kExecType, oObject)
 	LOCAL lTranslated AS LOGIC	//RvdH 050426
 
 
-	Default(@kExecType, EXECNORMAL)
+	DEFAULT(@kExecType, EXECNORMAL)
 
 	lObject := !IsNil(oObject)
 

@@ -190,7 +190,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             IF SELF:IsBinary
                 LOCAL nLen := Math.Min(SELF:Length, str:Length) AS LONG
-                System.Text.Encoding.@@Default:GetBytes(str, 0, nLen, buffer, SELF:Offset)
+                System.Text.Encoding.Default:GetBytes(str, 0, nLen, buffer, SELF:Offset)
             ELSE
                 SELF:_PutString(buffer, str)
             ENDIF
@@ -222,7 +222,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN NULL
             ENDIF
             IF SELF:IsBinary
-                result := System.Text.Encoding.@@Default:GetString(buffer, SELF:OffSet, SELF:Length)
+                result := System.Text.Encoding.Default:GetString(buffer, SELF:OffSet, SELF:Length)
             ELSE
                 result := SUPER:_GetString(buffer)
             ENDIF

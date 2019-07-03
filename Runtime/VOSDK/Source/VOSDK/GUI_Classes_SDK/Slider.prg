@@ -78,7 +78,7 @@ ASSIGN BlockSize(nBlockSize)
 	
 
 	IF !IsLong(nBlockSize) .OR. nBlockSize < 0
-		WCError{#BlockSize, #Slider, __WCSTypeError, nBlockSize, 1}:@@Throw()
+		WCError{#BlockSize, #Slider, __WCSTypeError, nBlockSize, 1}:Throw()
 	ENDIF
 	SendMessage(SELF:Handle(), TBM_SETPAGESIZE, 0, nBlockSize)
 
@@ -149,7 +149,7 @@ ASSIGN Range(oNewRange)
 	
 
 	IF !IsInstanceOfUsual(oNewRange, #Range)
-		WCError{#Range, #Slider, __WCSTypeError, oNewRange, 1}:@@Throw()
+		WCError{#Range, #Slider, __WCSTypeError, oNewRange, 1}:Throw()
 	ENDIF
 
 	SendMessage(SELF:Handle(), TBM_SETRANGEMIN, DWORD(_CAST, FALSE), oNewRange:Min)
@@ -195,7 +195,7 @@ ASSIGN ThumbPosition(nThumbPosition)
 	
 
 	IF !IsLong(nThumbPosition)
-		WCError{#ThumbPosition, #Slider, __WCSTypeError, nThumbPosition, 1}:@@Throw()
+		WCError{#ThumbPosition, #Slider, __WCSTypeError, nThumbPosition, 1}:Throw()
 	ENDIF
 	SendMessage(SELF:Handle(), TBM_SETPOS, DWORD(_CAST, TRUE), nThumbPosition)
 
@@ -253,7 +253,7 @@ ASSIGN UnitSize(nUnitSize)
 	
 
 	IF !IsLong(nUnitSize) .OR. nUnitSize < 0
-		WCError{#UnitSize, #Slider, __WCSTypeError, nUnitSize, 1}:@@Throw()
+		WCError{#UnitSize, #Slider, __WCSTypeError, nUnitSize, 1}:Throw()
 	ENDIF
 	SendMessage(SELF:Handle(), TBM_SETLINESIZE, 0, nUnitSize)
 

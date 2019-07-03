@@ -187,7 +187,7 @@ METHOD Arrange(kArrangeStyle)
 		liStyle := ArrangeCascade
 	ELSE
 		IF !IsLong(kArrangeStyle)
-			WCError{#Arrange,#ShellWindow,__WCSTypeError,kArrangeStyle,1}:@@Throw()
+			WCError{#Arrange,#ShellWindow,__WCSTypeError,kArrangeStyle,1}:Throw()
 		ENDIF
 		liStyle := kArrangeStyle
 	ENDIF
@@ -478,7 +478,7 @@ METHOD Handle(nHandleType) AS PTR
 	
 	IF !IsNil(nHandleType)
 		IF !IsLong(nHandleType)
-			WCError{#Handle,#ShellWindow,__WCSTypeError,nHandleType,1}:@@Throw()
+			WCError{#Handle,#ShellWindow,__WCSTypeError,nHandleType,1}:Throw()
 		ENDIF
 		IF (nHandleType == 4)
 			RETURN hwndClient

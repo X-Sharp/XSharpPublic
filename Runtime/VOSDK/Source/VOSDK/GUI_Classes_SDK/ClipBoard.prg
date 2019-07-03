@@ -39,7 +39,7 @@ METHOD GetItemSize(kFormat)
 	
 
 	IF !IsLong(kFormat)
-		WCError{#GetItemSize,#Clipboard,__WCSTypeError,kFormat,1}:@@Throw()
+		WCError{#GetItemSize,#Clipboard,__WCSTypeError,kFormat,1}:Throw()
 	ENDIF
 
 	DO CASE
@@ -154,7 +154,7 @@ METHOD Insert(xType)
 		ENDIF
 		CloseClipboard()
 	ELSE
-		WCError{#Insert,#Clipboard,__WCSTypeError,xType,1}:@@Throw()
+		WCError{#Insert,#Clipboard,__WCSTypeError,xType,1}:Throw()
 	ENDIF
 
 	RETURN SELF
@@ -213,7 +213,7 @@ METHOD RetrieveBitmap(oBitmap)
 
 	
 	IF !IsInstanceOfUsual(oBitmap,#Bitmap)
-		WCError{#RetrieveBitmap,#Clipboard,__WCSTypeError,oBitmap,1}:@@Throw()
+		WCError{#RetrieveBitmap,#Clipboard,__WCSTypeError,oBitmap,1}:Throw()
 	ENDIF
 
 	IF !OpenClipboard(NULL_PTR)
@@ -330,7 +330,7 @@ METHOD RetrieveString(nStringLength)
 
 	IF !IsNil(nStringLength)
 		IF !IsLong(nStringLength)
-			WCError{#RetrieveString,#Clipboard,__WCSTypeError,nStringLength,1}:@@Throw()
+			WCError{#RetrieveString,#Clipboard,__WCSTypeError,nStringLength,1}:Throw()
 		ENDIF
 		dwLen := nStringLength
 	ENDIF

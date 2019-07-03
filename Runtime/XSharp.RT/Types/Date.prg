@@ -54,7 +54,7 @@ BEGIN NAMESPACE XSharp
 
 		#region datetime conversions
             /// <summary>Return DATE value as DateTime.</summary>
-			PUBLIC PROPERTY @@Value AS System.DateTime
+			PUBLIC PROPERTY Value AS System.DateTime
 				GET
 					IF (_ymd == 0)
 						RETURN System.DateTime.MinValue
@@ -292,14 +292,14 @@ BEGIN NAMESPACE XSharp
 				// convert to julian date like vo
 				// # of days since 1-1-1901 + 2415386
 				LOCAL nDays AS DWORD
-				nDays := (DWORD) (dValue:@@Value - _dtCalc):Days + CLIPPER_MIN_DATE
+				nDays := (DWORD) (dValue:Value - _dtCalc):Days + CLIPPER_MIN_DATE
 				RETURN nDays
 
 
 			/// <include file="RTComments.xml" path="Comments/Converter/*" />
 			STATIC OPERATOR EXPLICIT(dValue AS DATE) AS INT
 				LOCAL nDays AS LONG
-				nDays := (INT) ((dValue:@@Value - _dtCalc):Days + CLIPPER_MIN_DATE)
+				nDays := (INT) ((dValue:Value - _dtCalc):Days + CLIPPER_MIN_DATE)
 				RETURN nDays
 
 			/// <include file="RTComments.xml" path="Comments/Converter/*" />
@@ -329,7 +329,7 @@ BEGIN NAMESPACE XSharp
 
 			/// <exclude />
 			METHOD ToDateTime() AS System.DateTime
-				RETURN SELF:@@Value
+				RETURN SELF:Value
 
 			/// <exclude />
 			METHOD FromDateTime(dtvalue AS System.DateTime) AS DATE
@@ -373,7 +373,7 @@ BEGIN NAMESPACE XSharp
 
 			/// <include file="RTComments.xml" path="Comments/Operator/*" />
 			STATIC OPERATOR IMPLICIT(v AS DATE) AS System.DateTime
-				RETURN v:@@Value
+				RETURN v:Value
 
 			/// <include file="RTComments.xml" path="Comments/Operator/*" />
 			STATIC OPERATOR <(lhs AS DATE, rhs AS DATE) AS LOGIC
@@ -423,42 +423,42 @@ BEGIN NAMESPACE XSharp
 			/// <exclude />
             [MethodImpl(MethodImplOptions.AggressiveInlining)];
 			METHOD Add(days AS REAL8) AS DATE
-				VAR res := SELF:@@Value:AddDays(days)
+				VAR res := SELF:Value:AddDays(days)
 				RETURN DATE{res}
 			/// <exclude />
             [MethodImpl(MethodImplOptions.AggressiveInlining)];
 			METHOD Add(days AS LONG) AS DATE
-				VAR res := SELF:@@Value:AddDays(days)
+				VAR res := SELF:Value:AddDays(days)
 				RETURN DATE{res}
 			/// <exclude />
             [MethodImpl(MethodImplOptions.AggressiveInlining)];
 			METHOD Add(days AS INT64) AS DATE
-				VAR res := SELF:@@Value:AddDays(days)
+				VAR res := SELF:Value:AddDays(days)
 				RETURN DATE{res}
 
 			/// <exclude />
             [MethodImpl(MethodImplOptions.AggressiveInlining)];
 			METHOD Add(span AS System.TimeSpan) AS DATE
-				VAR res := SELF:@@Value:Add(span)
+				VAR res := SELF:Value:Add(span)
 				RETURN DATE{res}
 
 			/// <exclude />
             [MethodImpl(MethodImplOptions.AggressiveInlining)];
 			METHOD Add(days AS DWORD) AS DATE
-				VAR res := SELF:@@Value:AddDays(days)
+				VAR res := SELF:Value:AddDays(days)
 				RETURN DATE{res}
 
 			/// <exclude />
             [MethodImpl(MethodImplOptions.AggressiveInlining)];
 			METHOD Add(days AS UINT64) AS DATE
-				VAR res := SELF:@@Value:AddDays(days)
+				VAR res := SELF:Value:AddDays(days)
 				RETURN DATE{res}
 
 			/// <exclude />
             [MethodImpl(MethodImplOptions.AggressiveInlining)];
 			METHOD Subtract(lhs AS DATE) AS LONG
 				LOCAL span AS System.TimeSpan
-				span := (System.TimeSpan)(SELF:@@Value - lhs:@@Value)
+				span := (System.TimeSpan)(SELF:Value - lhs:Value)
 				RETURN span:Days
 
 			/// <exclude />
@@ -508,68 +508,68 @@ BEGIN NAMESPACE XSharp
 			// be a proper (localized) error message
 			/// <inheritdoc />
 			METHOD IConvertible.ToBoolean(provider AS System.IFormatProvider) AS LOGIC
-				RETURN ((IConvertible)@@Value):ToBoolean(provider)
+				RETURN ((IConvertible)SELF:Value):ToBoolean(provider)
 
 			/// <inheritdoc />
 			METHOD IConvertible.ToByte(provider AS System.IFormatProvider) AS BYTE
-				RETURN ((IConvertible)@@Value):ToByte(provider)
+				RETURN ((IConvertible)SELF:Value):ToByte(provider)
 
 			/// <inheritdoc />
 			METHOD IConvertible.ToChar(provider AS System.IFormatProvider) AS CHAR
-				RETURN ((IConvertible)@@Value):ToChar(provider)
+				RETURN ((IConvertible)SELF:Value):ToChar(provider)
 
 			/// <inheritdoc />
 			METHOD IConvertible.ToDateTime(provider AS System.IFormatProvider) AS System.DateTime
-				RETURN @@Value
+				RETURN SELF:Value
 
 			/// <inheritdoc />
 			METHOD IConvertible.ToDecimal(provider AS System.IFormatProvider) AS Decimal
-				RETURN ((IConvertible)@@Value):ToDecimal(provider)
+				RETURN ((IConvertible)SELF:Value):ToDecimal(provider)
 
 			/// <inheritdoc />
 			METHOD IConvertible.ToDouble(provider AS System.IFormatProvider) AS REAL8
-				RETURN ((IConvertible)@@Value):ToDouble(provider)
+				RETURN ((IConvertible)SELF:Value):ToDouble(provider)
 
 			/// <inheritdoc />
 			METHOD IConvertible.ToInt16(provider AS System.IFormatProvider) AS SHORT
-				RETURN ((IConvertible)@@Value):ToInt16(provider)
+				RETURN ((IConvertible)SELF:Value):ToInt16(provider)
 
 			/// <inheritdoc />
 			METHOD IConvertible.ToInt32(provider AS System.IFormatProvider) AS LONG
-				RETURN ((IConvertible)@@Value):ToInt32(provider)
+				RETURN ((IConvertible)SELF:Value):ToInt32(provider)
 
 			/// <inheritdoc />
 			METHOD IConvertible.ToInt64(provider AS System.IFormatProvider) AS INT64
-				RETURN ((IConvertible)@@Value):ToInt64(provider)
+				RETURN ((IConvertible)SELF:Value):ToInt64(provider)
 
 			/// <inheritdoc />
 			METHOD IConvertible.ToSByte(provider AS System.IFormatProvider) AS SByte
-				RETURN ((IConvertible)@@Value):ToSByte(provider)
+				RETURN ((IConvertible)SELF:Value):ToSByte(provider)
 
 			/// <inheritdoc />
 			METHOD IConvertible.ToSingle(provider AS System.IFormatProvider) AS REAL4
-				RETURN ((IConvertible)@@Value):ToSingle(provider)
+				RETURN ((IConvertible)SELF:Value):ToSingle(provider)
 
 			/// <inheritdoc />
 			METHOD IConvertible.ToType(conversionType AS System.Type, provider AS System.IFormatProvider) AS OBJECT
 				IF conversionType == TYPEOF(DATE)
 					RETURN SELF
 				ELSEIF conversionType == TYPEOF(System.DateTime)
-					RETURN SELF:@@Value
+					RETURN SELF:Value
 				ENDIF
-				RETURN ((IConvertible)@@Value):ToType(conversionType, provider)
+				RETURN ((IConvertible)SELF:Value):ToType(conversionType, provider)
 
 			/// <inheritdoc />
 			METHOD IConvertible.ToUInt16(provider AS System.IFormatProvider) AS WORD
-				RETURN ((IConvertible)@@Value):ToUInt16(provider)
+				RETURN ((IConvertible)SELF:Value):ToUInt16(provider)
 
 			/// <inheritdoc />
 			METHOD IConvertible.ToUInt32(provider AS System.IFormatProvider) AS DWORD
-				RETURN ((IConvertible)@@Value):ToUInt32(provider)
+				RETURN ((IConvertible)SELF:Value):ToUInt32(provider)
 
 			/// <inheritdoc />
 			METHOD IConvertible.ToUInt64(provider AS System.IFormatProvider) AS UINT64
-				RETURN ((IConvertible)@@Value):ToUInt64(provider)
+				RETURN ((IConvertible)SELF:Value):ToUInt64(provider)
 		#endregion
 
 		#region ToString()
@@ -585,13 +585,13 @@ BEGIN NAMESPACE XSharp
 				IF (_ymd == 0)
 					RETURN RuntimeState.NullDateString
 				ENDIF
-				RETURN @@Value:ToString(provider)
+				RETURN SELF:Value:ToString(provider)
 			/// <inheritdoc cref="M:System.DateTime.ToString(System.String)"/>
 			METHOD ToString(s AS STRING) AS STRING
 				IF (_ymd == 0)
 					RETURN RuntimeState.NullDateString
 				ENDIF
-				RETURN @@Value:ToString(s)
+				RETURN SELF:Value:ToString(s)
 			/// <inheritdoc />
 			METHOD ToString(s AS STRING, fp AS System.IFormatProvider) AS STRING
 				IF (_ymd == 0)
@@ -600,7 +600,7 @@ BEGIN NAMESPACE XSharp
 				IF (s == NULL)
 					s := XSharp.RuntimeState.DateFormat
 				ENDIF
-				RETURN @@Value:ToString(s, fp)
+				RETURN SELF:Value:ToString(s, fp)
 		#endregion
 		#region properties
 

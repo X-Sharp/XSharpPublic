@@ -1,4 +1,4 @@
-﻿CLASS CHttp  INHERIT CSession
+CLASS CHttp  INHERIT CSession
     PROTECT hRequest          	AS PTR
     PROTECT cResponse         	AS STRING
     PROTECT cResponseHeader   	AS STRING
@@ -179,7 +179,7 @@ METHOD GetDocumentFromServer	(cServer, cDocument, cID, cPw)
 
     SELF:ConnectRemote(cServer, cID, cPw)
 
-    IF SELF:@@Connected
+    IF SELF:Connected
         IF SELF:OpenRequest("GET", cDocument, HTTP_VERSION)
             IF SELF:SendRequest("", NULL_PTR, 0)
                 SELF:GetResponseHeader()

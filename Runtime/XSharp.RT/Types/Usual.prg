@@ -7,7 +7,7 @@ USING System
 USING System.Runtime.InteropServices
 USING System.Runtime.CompilerServices
 USING System.Diagnostics
-using System.Text
+USING System.Text
 USING XSharp.Internal
 BEGIN NAMESPACE XSharp
     /// <summary>Internal type that implements the VO Compatible USUAL type.<br/>
@@ -251,9 +251,9 @@ BEGIN NAMESPACE XSharp
                     ELSEIF o IS ICodeblock VAR cb
                         SELF:_flags				:= UsualFlags{__UsualType.Codeblock}
                         SELF:_refData           := cb
-                    ELSEIF o is OBJECT[]   VAR oArray
+                    ELSEIF o IS OBJECT[]   VAR oArray
                         SELF:_flags				:= UsualFlags{__UsualType.ARRAY}
-                        SELF:_refData           := Array{oArray}
+                        SELF:_refData           := ARRAY{oArray}
                     ELSE
                         SELF:_flags				:= UsualFlags{__UsualType.OBJECT}
                         SELF:_refData           := o
@@ -430,7 +430,7 @@ BEGIN NAMESPACE XSharp
         #endregion
         #region Properties FOR the Debugger
         /// <exclude />
-        PROPERTY @@Value AS OBJECT
+        PROPERTY Value AS OBJECT
             GET
                 IF (_UsualType == __UsualType.Void)
                     RETURN "NIL"
@@ -848,7 +848,7 @@ BEGIN NAMESPACE XSharp
 
         #region IEquatable<T>
         /// <inheritdoc />
-        PUBLIC METHOD @@Equals(u AS __Usual) AS LOGIC
+        PUBLIC METHOD Equals(u AS __Usual) AS LOGIC
             IF u:IsNil
                 RETURN SELF:IsNil
             ENDIF
@@ -857,7 +857,7 @@ BEGIN NAMESPACE XSharp
             #endregion
         #region Operators FOR Equality
         /// <inheritdoc />
-        PUBLIC OVERRIDE METHOD @@Equals(obj AS OBJECT) AS LOGIC
+        PUBLIC OVERRIDE METHOD Equals(obj AS OBJECT) AS LOGIC
             IF obj == NULL
                 RETURN SELF:IsNil
             ENDIF
@@ -2412,7 +2412,7 @@ BEGIN NAMESPACE XSharp
                 _uvalue := u
 
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
-            PUBLIC PROPERTY @@Value AS OBJECT GET _uvalue:@@Value
+            PUBLIC PROPERTY Value AS OBJECT GET _uvalue:Value
             PUBLIC PROPERTY Type  AS __UsualType GET _uvalue:_usualType
 
         END CLASS

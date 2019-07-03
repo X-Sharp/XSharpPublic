@@ -125,11 +125,11 @@ METHOD ChangeFont(New_Font, lRescale)
 	ENDIF
 	
 	IF !IsNil(New_Font) .AND. !IsInstanceOf(New_Font, #Font)
-		WCError{#ChangeFont, #DialogWindow, __WCStypeError, New_Font,1}:@@Throw()
+		WCError{#ChangeFont, #DialogWindow, __WCStypeError, New_Font,1}:Throw()
 	ENDIF
 	
 	IF !IsNil(lRescale) .AND. !IsLogic(lRescale)
-		WCError{#ChangeFont, #DialogWindow, __WCStypeError, lRescale,2}:@@Throw()
+		WCError{#ChangeFont, #DialogWindow, __WCStypeError, lRescale,2}:Throw()
 	ENDIF
 	oOldFont := SELF:Font
 	
@@ -361,7 +361,7 @@ METHOD HelpRequest(oHelpRequestEvent)
 		oHRE := oHelpRequestEvent 		
 		cHelpContext := oHRE:HelpContext
 		IF NULL_STRING != cHelpContext
-			SELF:HelpDisplay:Show(cHelpContext, oHRE:@@HelpInfo)
+			SELF:HelpDisplay:Show(cHelpContext, oHRE:HelpInfo)
 		ELSE
 			SUPER:HelpRequest(oHRE)
 		ENDIF
@@ -383,7 +383,7 @@ CONSTRUCTOR(oOwner, xResourceID, lModal)
 	ENDIF
 	
 	IF !IsNil(oOwner) .AND. !IsInstanceOfUsual(oOwner, #Window) .AND. !IsInstanceOfUsual(oOwner, #ToolBar) .AND. !IsPtr(oOwner)
-		WCError{#Init,#DialogWindow,__WCSTypeError,oOwner,1}:@@Throw()
+		WCError{#Init,#DialogWindow,__WCSTypeError,oOwner,1}:Throw()
 	ENDIF
 	
 	// should (might) change (separate class for TabDialogs) depending on how we implement DataDialog
@@ -452,7 +452,7 @@ CONSTRUCTOR(oOwner, xResourceID, lModal)
 	// MessageBox(0, "CreateDialog, hinst : "+AsSTring(hRSCHAndle)+", add: "+AsString(oResourceID:Address()),"create", 0)
 	
 	IF !IsWindow(hwnd)
-		WCError{#Init,#DialogWindow,__WCSCreateDlgFailed}:@@Throw()
+		WCError{#Init,#DialogWindow,__WCSCreateDlgFailed}:Throw()
 	ENDIF
 	
 	lIsChild := (_AND(WS_CHILD, GetWindowLong(hwnd, GWL_STYLE)) != 0)

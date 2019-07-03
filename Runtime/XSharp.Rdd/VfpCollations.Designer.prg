@@ -22,8 +22,8 @@ BEGIN NAMESPACE XSharp.RDD
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()] ;
     INTERNAL CLASS VfpCollations
         
-        PRIVATE static resourceMan AS System.Resources.ResourceManager
-        PRIVATE static resourceCulture AS System.Globalization.CultureInfo
+        PRIVATE STATIC resourceMan AS System.Resources.ResourceManager
+        PRIVATE STATIC resourceCulture AS System.Globalization.CultureInfo
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")] ;
         CONSTRUCTOR()  STRICT
         
@@ -34,10 +34,10 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL STATIC PROPERTY ResourceManager AS System.Resources.ResourceManager
         
             GET
-                if (OBJECT.ReferenceEquals(resourceMan, NULL))
-                    LOCAL temp := System.Resources.ResourceManager{"XSharp.RDD.VfpCollations", typeof(VfpCollations):@@Assembly} AS System.Resources.ResourceManager
+                IF (OBJECT.ReferenceEquals(resourceMan, NULL))
+                    LOCAL temp := System.Resources.ResourceManager{"XSharp.RDD.VfpCollations", typeof(VfpCollations):Assembly} AS System.Resources.ResourceManager
                     resourceMan := temp
-                endif
+                ENDIF
                 RETURN resourceMan
             END GET
         END PROPERTY
@@ -54,7 +54,7 @@ BEGIN NAMESPACE XSharp.RDD
             END GET
         
             SET
-                resourceCulture := value
+                resourceCulture := VALUE
             END SET
         END PROPERTY
         

@@ -75,7 +75,7 @@ CLASS DataBrowser INHERIT Control
 
 	//PP-040410
 	IF oDataColumn == NULL_OBJECT
-		WCError{#AddColumn,#DataBrowser,__WCSTypeError,oDataColumn,1}:@@Throw()
+		WCError{#AddColumn,#DataBrowser,__WCSTypeError,oDataColumn,1}:Throw()
 	ENDIF
 
 	oDC := oDataColumn
@@ -1224,7 +1224,7 @@ METHOD __FindColumn(nIndex AS USUAL) AS DWORD STRICT
 		RETURN 0
 
 	OTHERWISE
-		WCError{#__FindColumn,#DataBrowser,__WCSTypeError,nIndex,1}:@@Throw()
+		WCError{#__FindColumn,#DataBrowser,__WCSTypeError,nIndex,1}:Throw()
 	ENDCASE
 
 	RETURN 0
@@ -1751,11 +1751,11 @@ METHOD ChangeBackground ( oBrush, kWhere )
 	
 
 	IF !IsInstanceOfUsual(oBrush,#Brush)
-		WCError{#ChangeBackground,#DataBrowser,__WCSTypeError,oBrush,1}:@@Throw()
+		WCError{#ChangeBackground,#DataBrowser,__WCSTypeError,oBrush,1}:Throw()
 	ENDIF
 	IF !IsNil(kWhere)
 		IF !IsLong(kWhere)
-			WCError{#ChangeBackground,#DataBrowser,__WCSTypeError,kWhere,2}:@@Throw()
+			WCError{#ChangeBackground,#DataBrowser,__WCSTypeError,kWhere,2}:Throw()
 		ENDIF
 	ENDIF
 
@@ -1823,11 +1823,11 @@ METHOD ChangeFont(oFont, kWhere)
 	
 
 	IF !IsInstanceOfUsual(oFont,#Font)
-		WCError{#ChangeFont,#DataBrowser,__WCSTypeError,oFont,1}:@@Throw()
+		WCError{#ChangeFont,#DataBrowser,__WCSTypeError,oFont,1}:Throw()
 	ENDIF
 	IF !IsNil(kWhere)
 		IF !IsLong(kWhere)
-			WCError{#ChangeFont,#DataBrowser,__WCSTypeError,kWhere,2}:@@Throw()
+			WCError{#ChangeFont,#DataBrowser,__WCSTypeError,kWhere,2}:Throw()
 		ENDIF
 	ENDIF
 
@@ -1873,11 +1873,11 @@ METHOD ChangeTextColor(oColor, kWhere)
 	IF IsNumeric(oColor)
 		oColor := Color{oColor}
 	ELSEIF !IsInstanceOfUsual(oColor,#Color)
-		WCError{#ChangeTextColor,#DataBrowser,__WCSTypeError,oColor,1}:@@Throw()
+		WCError{#ChangeTextColor,#DataBrowser,__WCSTypeError,oColor,1}:Throw()
 	ENDIF
 	IF !IsNil(kWhere)
 		IF !IsLong(kWhere)
-			WCError{#ChangeTextColor,#DataBrowser,__WCSTypeError,kWhere,2}:@@Throw()
+			WCError{#ChangeTextColor,#DataBrowser,__WCSTypeError,kWhere,2}:Throw()
 		ENDIF
 	ENDIF
 
@@ -1962,9 +1962,9 @@ METHOD ColumnFocusChange(oDataColumn, lHasFocus)
 
 	oHL := oDataColumn:Status
 	IF (oHL != NULL_OBJECT)
-		SELF:Owner:@@StatusMessage(oHL:Description, MESSAGEERROR)
+		SELF:Owner:StatusMessage(oHL:Description, MESSAGEERROR)
 	ELSEIF lHasFocus .AND. (oDataColumn:HyperLabel != NULL_OBJECT)
-		SELF:Owner:@@StatusMessage(oDataColumn:HyperLabel:Description, MESSAGECONTROL)
+		SELF:Owner:StatusMessage(oDataColumn:HyperLabel:Description, MESSAGECONTROL)
 	ENDIF
 
 	RETURN SELF
@@ -2327,7 +2327,7 @@ METHOD EnableBorder(kBorderType)
 
 	IF !IsNil(kBorderType)
 		IF !IsLong(kBorderType)
-			WCError{#EnableBorder,#DataBrowser,__WCSTypeError,kBorderType,1}:@@Throw()
+			WCError{#EnableBorder,#DataBrowser,__WCSTypeError,kBorderType,1}:Throw()
 		ENDIF
 	ENDIF
 
@@ -2353,7 +2353,7 @@ METHOD EnableColumnMove(lAllowMove)
 
 	IF !IsNil(lAllowMove)
 		IF !IsLogic(lAllowMove)
-			WCError{#EnableColumnMove,#DataBrowser,__WCSTypeError,lAllowMove,1}:@@Throw()
+			WCError{#EnableColumnMove,#DataBrowser,__WCSTypeError,lAllowMove,1}:Throw()
 		ENDIF
 	ENDIF
 
@@ -2372,7 +2372,7 @@ METHOD EnableColumnReSize(lAllowResize)
 
 	IF !IsNil(lAllowResize)
 		IF !IsLogic(lAllowResize)
-			WCError{#EnableColumnReSize,#DataBrowser,__WCSTypeError,lAllowResize,1}:@@Throw()
+			WCError{#EnableColumnReSize,#DataBrowser,__WCSTypeError,lAllowResize,1}:Throw()
 		ENDIF
 	ENDIF
 
@@ -2392,7 +2392,7 @@ METHOD EnableColumnTitles(lEnable)
 
 	IF !IsNil(lEnable)
 		IF !IsLogic(lEnable)
-			WCError{#EnableColumnTitles,#DataBrowser,__WCSTypeError,lEnable,1}:@@Throw()
+			WCError{#EnableColumnTitles,#DataBrowser,__WCSTypeError,lEnable,1}:Throw()
 		ENDIF
 	ELSE
 		lEnable:=TRUE
@@ -2427,7 +2427,7 @@ METHOD EnableGrid ( lShowGrid )
 
 	IF !IsNil(lShowGrid)
 		IF !IsLogic(lShowGrid)
-			WCError{#EnableGrid,#DataBrowser,__WCSTypeError,lShowGrid,1}:@@Throw()
+			WCError{#EnableGrid,#DataBrowser,__WCSTypeError,lShowGrid,1}:Throw()
 		ENDIF
 	ELSE
 		lShowGrid:=TRUE
@@ -2446,7 +2446,7 @@ METHOD EnableHorizontalScroll ( lAllowScroll )
 
 	IF !IsNil(lAllowScroll)
 		IF !IsLogic(lAllowScroll)
-			WCError{#EnableHorizontalScroll,#DataBrowser,__WCSTypeError,lAllowScroll,1}:@@Throw()
+			WCError{#EnableHorizontalScroll,#DataBrowser,__WCSTypeError,lAllowScroll,1}:Throw()
 		ENDIF
 	ELSE
 		lAllowScroll:=TRUE
@@ -2473,7 +2473,7 @@ METHOD EnableHorizontalSplit ( lShowSplit )
 
 	IF !IsNil(lShowSplit)
 		IF !IsLogic(lShowSplit)
-			WCError{#EnableHorizontalSplit,#DataBrowser,__WCSTypeError,lShowSplit,1}:@@Throw()
+			WCError{#EnableHorizontalSplit,#DataBrowser,__WCSTypeError,lShowSplit,1}:Throw()
 		ENDIF
 	ELSE
 		lShowSplit:=TRUE
@@ -2487,7 +2487,7 @@ METHOD EnableVerticalScroll ( lAllowScroll )
 
 	IF !IsNil(lAllowScroll)
 		IF !IsLogic(lAllowScroll)
-			WCError{#EnableVerticalScroll,#DataBrowser,__WCSTypeError,lAllowScroll,1}:@@Throw()
+			WCError{#EnableVerticalScroll,#DataBrowser,__WCSTypeError,lAllowScroll,1}:Throw()
 		ENDIF
 	ELSE
 		lAllowScroll:=TRUE
@@ -2514,7 +2514,7 @@ METHOD EnableVerticalSplit(lShowSplit, nMode)
 
 	IF !IsNil(lShowSplit)
 		IF !IsLogic(lShowSplit)
-			WCError{#EnableVerticalSplit,#DataBrowser,__WCSTypeError,lShowSplit,1}:@@Throw()
+			WCError{#EnableVerticalSplit,#DataBrowser,__WCSTypeError,lShowSplit,1}:Throw()
 		ENDIF
 	ELSE
 		lShowSplit := TRUE
@@ -2522,7 +2522,7 @@ METHOD EnableVerticalSplit(lShowSplit, nMode)
 
 	IF !IsNil(nMode)
 		IF !IsLong(nMode)
-			WCError{#EnableVerticalSplit,#DataBrowser,__WCSTypeError,nMode,2}:@@Throw()
+			WCError{#EnableVerticalSplit,#DataBrowser,__WCSTypeError,nMode,2}:Throw()
 		ENDIF
 	ELSE
 		nMode := GBSSBMIDDLE
@@ -2561,7 +2561,7 @@ METHOD GetColumn(xColumnID)
 	
 
 	IF !IsLong(xColumnID) .AND. !IsSymbol(xColumnID) .AND. !IsString(xColumnID)
-		WCError{#GetColumn,#DataBrowser,__WCSTypeError,xColumnID,1}:@@Throw()
+		WCError{#GetColumn,#DataBrowser,__WCSTypeError,xColumnID,1}:Throw()
 	ENDIF
 
 	dwPosition := SELF:__FindColumn(xColumnID)
@@ -2585,7 +2585,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 	__LoadContainerDLL()
 
 	IF !IsInstanceOfUsual(oOwner,#Window)
-		WCError{#Init,#DataBrowser,__WCSTypeError,oOwner,1}:@@Throw()
+		WCError{#Init,#DataBrowser,__WCSTypeError,oOwner,1}:Throw()
 	ENDIF
 	oWin := oOwner
 
@@ -2863,7 +2863,7 @@ METHOD SetCaption(cText)
 	ELSEIF IsString(cText)
 		cCaption := cText
 	ELSEIF !IsNil(cText)
-		WCError{#SetCaption,#DataBrowser,__WCSTypeError,cText,1}:@@Throw()
+		WCError{#SetCaption,#DataBrowser,__WCSTypeError,cText,1}:Throw()
 	ENDIF
 
 	SELF:SuspendUpdate()
@@ -2901,11 +2901,11 @@ METHOD SetColumn(oDataColumn, nColumnNumber)
 	
 
 	IF !IsInstanceOfUsual(oDataColumn,#DataColumn)
-		WCError{#SetColumn,#DataBrowser,__WCSTypeError,oDataColumn,1}:@@Throw()
+		WCError{#SetColumn,#DataBrowser,__WCSTypeError,oDataColumn,1}:Throw()
 	ENDIF
 	IF !IsNil(nColumnNumber)
 		IF !IsLong(nColumnNumber)
-			WCError{#SetColumn,#DataBrowser,__WCSTypeError,nColumnNumber,2}:@@Throw()
+			WCError{#SetColumn,#DataBrowser,__WCSTypeError,nColumnNumber,2}:Throw()
 		ENDIF
 	ENDIF
 
@@ -2924,7 +2924,7 @@ METHOD SetColumnFocus(oColumn)
 	LOCAL oDC AS DataColumn
 
 	IF !IsInstanceOfUsual(oColumn,#DataColumn)
-		WCError{#SetColumnFocus,#DataBrowser,__WCSTypeError,oColumn,1}:@@Throw()
+		WCError{#SetColumnFocus,#DataBrowser,__WCSTypeError,oColumn,1}:Throw()
 	ENDIF
 
 	// Cpc 2010-03-25 strongly typed to workaround bug #852
@@ -2943,12 +2943,12 @@ METHOD SetPointer(oPointer, kWhere)
 	DEFAULT(@oPointer, Pointer{PointerArrow})
 
 	IF !IsInstanceOfUsual(oPointer,#Pointer)
-		WCError{#SetPointer,#Pointer,__WCSTypeError,oPointer,1}:@@Throw()
+		WCError{#SetPointer,#Pointer,__WCSTypeError,oPointer,1}:Throw()
 	ENDIF
 
 	IF !IsNil(kWhere)
 		IF !IsLong(kWhere)
-			WCError{#SetPointer,#DataBrowser,__WCSTypeError,kWhere,2}:@@Throw()
+			WCError{#SetPointer,#DataBrowser,__WCSTypeError,kWhere,2}:Throw()
 		ENDIF
 	ENDIF
 
@@ -2974,7 +2974,7 @@ METHOD SetStandardStyle(kStyle)
 
 	IF !IsNil(kStyle)
 		IF !IsLong(kStyle)
-			WCError{#SetStandardStyle,#DataBrowser,__WCSTypeError,kStyle,1}:@@Throw()
+			WCError{#SetStandardStyle,#DataBrowser,__WCSTypeError,kStyle,1}:Throw()
 		ENDIF
 	ENDIF
 
@@ -3087,7 +3087,7 @@ METHOD Use(oServer)
 
 	IF !IsNil(oServer)
 		IF !IsInstanceOfUsual(oServer,#DataServer)
-			WCError{#Use,#DataBrowser,__WCSTypeError,oServer,1}:@@Throw()
+			WCError{#Use,#DataBrowser,__WCSTypeError,oServer,1}:Throw()
 		ENDIF
 		IF oDataServer != oServer
 			IF oDataServer != NULL_OBJECT
@@ -3311,7 +3311,7 @@ METHOD __Gather() AS DataColumn STRICT
 			IF (oHL != NULL_OBJECT) .AND. (oParent != NULL_OBJECT)
 				oWin := oParent:Owner
 				IF IsInstanceOf(oWin,#AppWindow)
-					oWin:@@StatusMessage((ResourceString{__WCSError2}:value)+oHL:Description,MESSAGEERROR)
+					oWin:StatusMessage((ResourceString{__WCSError2}:value)+oHL:Description,MESSAGEERROR)
 				ENDIF
 			ENDIF
 		ELSEIF !IsNil(cbGetSetBlock) .AND. IsCodeBlock(cbGetSetBlock)
@@ -3507,7 +3507,7 @@ ASSIGN Alignment (nNewAlign)
 	
 
 	IF !IsLong(nNewAlign)
-		WCError{#Alignment,#DataColumn,__WCSTypeError,nNewAlign,1}:@@Throw()
+		WCError{#Alignment,#DataColumn,__WCSTypeError,nNewAlign,1}:Throw()
 	ENDIF
 
 	iAlign := nNewAlign
@@ -3652,11 +3652,11 @@ METHOD ChangeBackground(oBrush, kWhere)
 	
 
 	IF !IsInstanceOfUsual(oBrush,#Brush)
-		WCError{#ChangeBackground,#DataColumn,__WCSTypeError,oBrush,1}:@@Throw()
+		WCError{#ChangeBackground,#DataColumn,__WCSTypeError,oBrush,1}:Throw()
 	ENDIF
 	IF !IsNil(kWhere)
 		IF !IsLong(kWhere)
-			WCError{#ChangeBackground,#DataColumn,__WCSTypeError,kWhere,1}:@@Throw()
+			WCError{#ChangeBackground,#DataColumn,__WCSTypeError,kWhere,1}:Throw()
 		ENDIF
 	ENDIF
 
@@ -3694,11 +3694,11 @@ METHOD ChangeTextColor(oColor, kWhere)
 	ELSEIF IsInstanceOfUsual(oColor,#Color)
 		oNewColor := oColor
 	ELSE
-		WCError{#ChangeTextColor,#DataColumn,__WCSTypeError,oColor,1}:@@Throw()
+		WCError{#ChangeTextColor,#DataColumn,__WCSTypeError,oColor,1}:Throw()
 	ENDIF
 	IF !IsNil(kWhere)
 		IF !IsLong(kWhere)
-			WCError{#ChangeTextColor,#DataColumn,__WCSTypeError,kWhere,2}:@@Throw()
+			WCError{#ChangeTextColor,#DataColumn,__WCSTypeError,kWhere,2}:Throw()
 		ENDIF
 	ENDIF
 
@@ -3773,7 +3773,7 @@ METHOD EnableCellDraw(symMethodName)
 
 	IF !IsNil(symMethodName)
 		IF !IsSymbol(symMethodName)
-			WCError{#EnableCellDraw,#DataColumn,__WCSTypeError,symMethodName,1}:@@Throw()
+			WCError{#EnableCellDraw,#DataColumn,__WCSTypeError,symMethodName,1}:Throw()
 		ENDIF
 		symUserDrawMethod := symMethodName
 	ELSE
@@ -3805,7 +3805,7 @@ METHOD EnableColumnMove(lAllowMove)
 
 	DEFAULT(@lAllowMove, TRUE)
 	IF !IsLogic(lAllowMove)
-		WCError{#EnableColumnMove,#DataColumn,__WCSTypeError,lAllowMove,1}:@@Throw()
+		WCError{#EnableColumnMove,#DataColumn,__WCSTypeError,lAllowMove,1}:Throw()
 	ENDIF
 
 	IF lAllowMove
@@ -3824,7 +3824,7 @@ METHOD EnableColumnReSize(lAllowResize)
 	DEFAULT(@lAllowResize, TRUE)
 
 	IF !IsLogic(lAllowResize)
-		WCError{#EnableColumnReSize,#DataColumn,__WCSTypeError,lAllowResize,1}:@@Throw()
+		WCError{#EnableColumnReSize,#DataColumn,__WCSTypeError,lAllowResize,1}:Throw()
 	ENDIF
 
 	IF lAllowResize
@@ -3846,7 +3846,7 @@ ASSIGN FieldSpec(oFS)
 	
 
 	IF !IsInstanceOfUsual(oFS,#FieldSpec)
-		WCError{#FieldSpec,#DataColumn,__WCSTypeError,oFS,1}:@@Throw()
+		WCError{#FieldSpec,#DataColumn,__WCSTypeError,oFS,1}:Throw()
 	ENDIF
 
 	oFieldSpec := oFS
@@ -3936,7 +3936,7 @@ ASSIGN HyperLabel(oNewHL)
 		lExplicitHL := FALSE
 		// Should we reset the caption ??
 	ELSE
-		WCError{#HyperLabel,#DataColumn,__WCSTypeError,oNewHL,1}:@@Throw()
+		WCError{#HyperLabel,#DataColumn,__WCSTypeError,oNewHL,1}:Throw()
 	ENDIF
 
 	RETURN 
@@ -3953,7 +3953,7 @@ CONSTRUCTOR(nWidth, xColumnID)
 		iSize := __GetFSDefaultLength(nWidth)
 		SELF:FieldSpec := nWidth
 	ELSEIF !IsLong(nWidth)
-		WCError{#Init,#DataColumn,__WCSTypeError,nWidth,1}:@@Throw()
+		WCError{#Init,#DataColumn,__WCSTypeError,nWidth,1}:Throw()
 	ELSE
 		iSize := nWidth
 	ENDIF
@@ -4022,7 +4022,7 @@ METHOD LinkDF(oDataServer, nFieldData)
 	
 
 	IF !IsInstanceOfUsual(oDataServer,#DataServer)
-		WCError{#LinkDF,#DataColumn,__WCSTypeError,oDataServer,1}:@@Throw()
+		WCError{#LinkDF,#DataColumn,__WCSTypeError,oDataServer,1}:Throw()
 	ENDIF
 
 	IF !IsNil(oServer) .AND. oDataServer!=oServer
@@ -4144,12 +4144,12 @@ METHOD SetCaption(cText, kAlignment)
 
 	IF !IsNil(cText)
 		IF !IsString(cText)
-			WCError{#SetCaption,#DataColumn,__WCSTypeError,cText,1}:@@Throw()
+			WCError{#SetCaption,#DataColumn,__WCSTypeError,cText,1}:Throw()
 		ENDIF
 	ENDIF
 	IF !IsNil(kAlignment)
 		IF !IsLong(kAlignment)
-			WCError{#SetCaption,#DataColumn,__WCSTypeError,kAlignment,2}:@@Throw()
+			WCError{#SetCaption,#DataColumn,__WCSTypeError,kAlignment,2}:Throw()
 		ENDIF
 	ELSE
 		kAlignment:=gbaAlignCenter
@@ -4215,7 +4215,7 @@ METHOD SetModified(lModified)
 	
 
 	IF !IsLogic(lModified)
-		WCError{#SetModified,#DataColumn,__WCSTypeError,lModified,1}:@@Throw()
+		WCError{#SetModified,#DataColumn,__WCSTypeError,lModified,1}:Throw()
 	ENDIF
 	SELF:lModified:=lModified
 
@@ -4225,7 +4225,7 @@ METHOD SetStandardStyle(kStyle)
 	
 
 	IF !IsLong(kStyle)
-		WCError{#SetStandardStyle,#DataColumn,__WCSTypeError,kStyle,1}:@@Throw()
+		WCError{#SetStandardStyle,#DataColumn,__WCSTypeError,kStyle,1}:Throw()
 	ENDIF
 
 	DO CASE
@@ -4248,7 +4248,7 @@ METHOD SetValue(cNewValue)
 	
 
 	IF !IsString(cNewValue)
-		WCError{#SetValue,#DataColumn,__WCSTypeError,cNewValue,1}:@@Throw()
+		WCError{#SetValue,#DataColumn,__WCSTypeError,cNewValue,1}:Throw()
 	ENDIF
 
 	IF !(cNewValue == cTextValue)
@@ -4295,7 +4295,7 @@ ASSIGN TextValue(sNewText)
 	
 
 	IF !IsString(sNewText)
-		WCError{#TextValue,#DataColumn,__WCSTypeError,sNewText,1}:@@Throw()
+		WCError{#TextValue,#DataColumn,__WCSTypeError,sNewText,1}:Throw()
 	ENDIF
 
 	cTextValue := sNewText
@@ -4349,7 +4349,7 @@ ASSIGN ValueChanged(lNewFlag)
 	
 
 	IF !IsLogic(lNewFlag)
-		WCError{#ValueChanged,#DataColumn,__WCSTypeError,lNewFlag,1}:@@Throw()
+		WCError{#ValueChanged,#DataColumn,__WCSTypeError,lNewFlag,1}:Throw()
 	ENDIF
 
 	RETURN lChanged := lNewFlag
@@ -4388,7 +4388,7 @@ ASSIGN Width(nNewWidth)
 	
 
 	IF !IsLong(nNewWidth)
-		WCError{#Width,#DataColumn,__WCSTypeError,nNewWidth,1}:@@Throw()
+		WCError{#Width,#DataColumn,__WCSTypeError,nNewWidth,1}:Throw()
 	ENDIF
 
 	StrucFI:cxWidth := nNewWidth
@@ -4848,7 +4848,7 @@ FUNCTION __LoadContainerDLL()
     hDll := LoadLibrary(String2Psz( "CATO3CNT.DLL"))
 	IF (hDll == NULL_PTR)
 		rsFormat := ResourceString{__WCSLoadLibraryError}
-		WCError{#LoadContainerDLL, #DataBrowser, VO_Sprintf(rsFormat:value, "CATO3CNT.DLL"),,,FALSE}:@@Throw()
+		WCError{#LoadContainerDLL, #DataBrowser, VO_Sprintf(rsFormat:value, "CATO3CNT.DLL"),,,FALSE}:Throw()
 		RETURN FALSE
 	ENDIF
 	ghContainerDLL  			:= hDll
@@ -5029,7 +5029,7 @@ STATIC FUNCTION __GetProcAddress(cProcname AS STRING)	AS	PTR
 	LOCAL pAddr AS PTR
 	pAddr := GetProcAddress(ghContainerDLL, String2Psz(cProcname))
 	IF pAddr == NULL_PTR
-		WCError{#LoadContainerDLL, #DataBrowser, "Could not find address of function "+cProcname+" in CATO3CNT.DLL",,,FALSE}:@@Throw()
+		WCError{#LoadContainerDLL, #DataBrowser, "Could not find address of function "+cProcname+" in CATO3CNT.DLL",,,FALSE}:Throw()
 	ENDIF
 	RETURN pAddr  
 

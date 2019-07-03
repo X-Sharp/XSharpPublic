@@ -37,7 +37,7 @@ ASSIGN Pressed(lPressed)
 	
 
 	IF !IsLogic(lPressed)
-		WCError{#Pressed,#RadioButton,__WCSTypeError,lPressed,1}:@@Throw()
+		WCError{#Pressed,#RadioButton,__WCSTypeError,lPressed,1}:Throw()
 	ENDIF
 
 	IF SELF:ValidateControl()
@@ -69,7 +69,7 @@ ASSIGN TextValue(cNewValue)
 	
 
 	IF !IsString(cNewValue)
-		WCError{#TextValue,#RadioButton,__WCSTypeError,cNewValue,1}:@@Throw()
+		WCError{#TextValue,#RadioButton,__WCSTypeError,cNewValue,1}:Throw()
 	ENDIF
 	lOldTicked := SELF:pressed
 

@@ -8,26 +8,26 @@
 #include "..\..\SharedSource\BuildNumber.h" 
 #include "..\..\SharedSource\RuntimeNames.h"  
 
-[assembly: AssemblyTitleAttribute( "VO-Compatible RDD Classes Library" )]
-[assembly: AssemblyDescriptionAttribute( "VO-Compatible RDD Classes" )]
-[assembly: AssemblyConfigurationAttribute( ASSEMBLY_CONFIGURATION )]
-[assembly: AssemblyCompanyAttribute( COMPANY_NAME )]
-[assembly: AssemblyProductAttribute( PRODUCT_NAME )]
-[assembly: AssemblyCopyrightAttribute( COPYRIGHT_STR )]
-[assembly: ComVisibleAttribute( FALSE )]
-[assembly: ClsCompliant( FALSE )]
+[ASSEMBLY: AssemblyTitleAttribute( "VO-Compatible RDD Classes Library" )]
+[ASSEMBLY: AssemblyDescriptionAttribute( "VO-Compatible RDD Classes" )]
+[ASSEMBLY: AssemblyConfigurationAttribute( ASSEMBLY_CONFIGURATION )]
+[ASSEMBLY: AssemblyCompanyAttribute( COMPANY_NAME )]
+[ASSEMBLY: AssemblyProductAttribute( PRODUCT_NAME )]
+[ASSEMBLY: AssemblyCopyrightAttribute( COPYRIGHT_STR )]
+[ASSEMBLY: ComVisibleAttribute( FALSE )]
+[ASSEMBLY: ClsCompliant( FALSE )]
 //[assembly: AllowPartiallyTrustedCallersAttribute()]
-[assembly: AssemblyVersionAttribute( VERSION_NUMBER_STR )]
-[assembly: AssemblyFileVersionAttribute( FILEVERSION_NUMBER_STR )]
-[assembly: AssemblyInformationalVersionAttribute( INFORMATIONAL_NUMBER_STR )]
+[ASSEMBLY: AssemblyVersionAttribute( VERSION_NUMBER_STR )]
+[ASSEMBLY: AssemblyFileVersionAttribute( FILEVERSION_NUMBER_STR )]
+[ASSEMBLY: AssemblyInformationalVersionAttribute( INFORMATIONAL_NUMBER_STR )]
 #ifdef __XSHARP_RT__
-[assembly: ImplicitNamespaceAttribute( VULCAN_VOSDK_NAMESPACE )]
+[ASSEMBLY: ImplicitNamespaceAttribute( VULCAN_VOSDK_NAMESPACE )]
 #else
-[assembly: Vulcan.VulcanImplicitNamespaceAttribute( VULCAN_VOSDK_NAMESPACE )]
+[ASSEMBLY: Vulcan.VulcanImplicitNamespaceAttribute( VULCAN_VOSDK_NAMESPACE )]
 #endif
 
-[module: UnverifiableCodeAttribute()]
-[assembly: AllowPartiallyTrustedCallersAttribute()]
+[MODULE: UnverifiableCodeAttribute()]
+[ASSEMBLY: AllowPartiallyTrustedCallersAttribute()]
 #ifdef __CLR4__
-[assembly: SecurityRulesAttribute (SecurityRuleSet.Level1)]
+[ASSEMBLY: SecurityRulesAttribute (SecurityRuleSet.Level1)]
 #endif

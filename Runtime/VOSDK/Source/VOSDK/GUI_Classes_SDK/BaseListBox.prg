@@ -11,11 +11,11 @@ METHOD AddItem(cItem, nItemNumber)
 	
 	
 	IF !IsString(cItem)
-		WCError{#AddItem,#BaseListBox,__WCSTypeError,cItem,1}:@@Throw()
+		WCError{#AddItem,#BaseListBox,__WCSTypeError,cItem,1}:Throw()
 	ENDIF
 	IF !IsNil(nItemNumber)
 		IF !IsLong(nItemNumber)
-			WCError{#AddItem,#BaseListBox,__WCSTypeError,nItemNumber,2}:@@Throw()
+			WCError{#AddItem,#BaseListBox,__WCSTypeError,nItemNumber,2}:Throw()
 		ENDIF
 		IF nItemNumber==0
 			dwMessType := LBAddString
@@ -70,7 +70,7 @@ METHOD DeleteItem(nItemNumber)
 	
 	IF !IsNil(nItemNumber)
 		IF !IsLong(nItemNumber)
-			WCError{#DeleteItem,#BaseListBox,__WCSTypeError,nItemNumber,1}:@@Throw()
+			WCError{#DeleteItem,#BaseListBox,__WCSTypeError,nItemNumber,1}:Throw()
 		ENDIF
 		IF (nItemNumber != 0)
 			dwPos := nItemNumber-1
@@ -107,13 +107,13 @@ METHOD FindItem(cItem, lWholeItem, nStart)
 	//RvdH 080516 Changed from DWORD to LONG (-1 means: search from start)
 	LOCAL liStart AS LONGINT
 	IF !IsString(cItem)
-		WCError{#FindItem,#BaseListBox,__WCSTypeError,cItem,1}:@@Throw()
+		WCError{#FindItem,#BaseListBox,__WCSTypeError,cItem,1}:Throw()
 	ENDIF
 	
 	iMessType := LBFindStringExact //Default is exact match
 	IF !IsNil(lWholeItem)
 		IF !IsLogic(lWholeItem)
-			WCError{#FindItem,#BaseListBox,__WCSTypeError,lWholeItem,2}:@@Throw()
+			WCError{#FindItem,#BaseListBox,__WCSTypeError,lWholeItem,2}:Throw()
 		ENDIF
 		IF !lWholeItem
 			iMessType := LBFindString
@@ -122,7 +122,7 @@ METHOD FindItem(cItem, lWholeItem, nStart)
 	
 	IF !IsNil(nStart)
 		IF !IsLong(nstart)
-			WCError{#FindItem,#BaseListBox,__WCSTypeError,nStart,3}:@@Throw()
+			WCError{#FindItem,#BaseListBox,__WCSTypeError,nStart,3}:Throw()
 		ENDIF
 		liStart := nStart-1
 	ENDIF
@@ -151,14 +151,14 @@ METHOD GetItem(nItemNumber, nLength)
 	LOCAL hHandle AS PTR
 	IF !IsNil(nItemNumber)
 		IF !IsLong(nItemNumber)
-			WCError{#GetItem,#BaseListBox,__WCSTypeError,nItemNumber,1}:@@Throw()
+			WCError{#GetItem,#BaseListBox,__WCSTypeError,nItemNumber,1}:Throw()
 		ENDIF
 		liPosition := nItemNumber
 	ENDIF
 	
 	IF !IsNil(nLength)
 		IF !IsLong(nLength)
-			WCError{#GetItem,#BaseListBox,__WCSTypeError,nLength,2}:@@Throw()
+			WCError{#GetItem,#BaseListBox,__WCSTypeError,nLength,2}:Throw()
 		ENDIF
 		IF (nLength < 0)
 			liLength := 65535
@@ -247,7 +247,7 @@ METHOD SetTop(nItemNumber)
 	
 	IF !IsNil(nItemNumber)
 		IF !IsLong(nItemNumber)
-			WCError{#SetTop,#BaseListBox,__WCSTypeError,nItemNumber,1}:@@Throw()
+			WCError{#SetTop,#BaseListBox,__WCSTypeError,nItemNumber,1}:Throw()
 		ENDIF
 		(liPosition := nItemNumber)
 	ENDIF

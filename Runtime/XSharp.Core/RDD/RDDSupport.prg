@@ -77,7 +77,7 @@ STRUCTURE DbLockInfo
 	PUBLIC RecId		AS OBJECT
 	 
 	/// <summary>A constant indicating the type of lock to obtain.  The possible values are of the Lockmethod enum. </summary>
-	PUBLIC @@Method		AS LockMethod
+	PUBLIC @@Method AS LockMethod
 	
 	/// <summary>A flag that is TRUE if the lock operation was successful.</summary>
 	PUBLIC Result		AS LOGIC
@@ -155,7 +155,7 @@ CLASS DbOrderCondInfo
 	/// <summary>A flag that is TRUE if the new order will be a custom built order.</summary>
 	PUBLIC Custom			AS LOGIC
 	/// <summary> A flag that is TRUE if the order should be created in descending order. </summary>
-	PUBLIC @@Descending 	AS LOGIC
+	PUBLIC DESCENDING 	AS LOGIC
 	/// <summary>A code block defining the expression to evaluate every StepSize rows during the creation of the order.  The code block referenced should return a logical value: TRUE indicates that creation of the order should continue normally, and FALSE indicates that order creation should terminate. </summary>
 	PUBLIC EvalBlock		AS ICodeblock 
 	/// <summary>A code block defining the for condition to use for the creation and maintenance of the order.</summary>
@@ -259,7 +259,7 @@ CLASS DbOrderInfo
             IF Order == NULL 
                 RETURN String.IsNullOrEmpty(BagName)
             ENDIF
-            IF Order is LONG .and. (LONG) Order = 0
+            IF Order IS LONG .AND. (LONG) Order = 0
                 RETURN String.IsNullOrEmpty(BagName)
             ENDIF
             RETURN FALSE
@@ -352,7 +352,7 @@ STRUCTURE DbSeekInfo
 	/// <summary>A flag that is TRUE if a soft seek is to be performed. </summary>
 	PUBLIC SoftSeek AS LOGIC
 	/// <summary>An object containing the key value to find.</summary>
-	PUBLIC @@Value AS OBJECT
+	PUBLIC Value AS OBJECT
 END STRUCTURE
 
 /// <summary>Helper class to store information needed to perform a physical sort. </summary> 
@@ -422,7 +422,7 @@ CLASS RddFieldInfo
 	PUBLIC Length 		AS LONG
 	PUBLIC Decimals 	AS LONG
 	PUBLIC Alias 		AS STRING
-    	PUBLIC Flags        as DbfFieldFlags
+    	PUBLIC Flags        AS DbfFieldFlags
 	PUBLIC Offset       AS LONG
     
      /// <summary>Construct a RddFieldInfo object.</summary>
@@ -436,7 +436,7 @@ CLASS RddFieldInfo
 			IF sType:IndexOf("0",1) >= 0
 			    Flags |= DbfFieldFlags.Nullable
 			ENDIF
-			IF FieldType:IsBinary() .or. sType:IndexOf("B", 1) >= 0
+			IF FieldType:IsBinary() .OR. sType:IndexOf("B", 1) >= 0
 			    Flags |= DbfFieldFlags.Binary
 			ENDIF
 		ELSE
@@ -450,7 +450,7 @@ CLASS RddFieldInfo
 		SELF:Offset := nOffSet
 		RETURN
     /// <summary>Construct a RddFieldInfo object.</summary>        
-	CONSTRUCTOR(sName AS STRING, nType AS DbFieldType, nLength AS LONG, nDecimals AS LONG, nOffSet := -1 AS LONG, nFlags := DbfFieldFlags.None as DbfFieldFlags)
+	CONSTRUCTOR(sName AS STRING, nType AS DbFieldType, nLength AS LONG, nDecimals AS LONG, nOffSet := -1 AS LONG, nFlags := DbfFieldFlags.None AS DbfFieldFlags)
 		SELF:Name 		:= sName                                
 		SELF:FieldType 	:= nType
 		SELF:Length 	:= nLength
@@ -460,7 +460,7 @@ CLASS RddFieldInfo
         	SELF:Flags      := nFLags
 		RETURN
 
-    CONSTRUCTOR(oInfo as RddFieldInfo)
+    CONSTRUCTOR(oInfo AS RddFieldInfo)
  		SELF:Name 		:= oInfo:Name                                
 		SELF:FieldType 	:= oInfo:FieldType
 		SELF:Length 	:= oInfo:Length
@@ -478,18 +478,18 @@ CLASS RddFieldInfo
     METHOD SameType(oFld AS RDDFieldInfo) AS LOGIC
         RETURN SELF:FieldType == oFld:FieldType .AND. SELF:Length == oFld:Length .AND. SELF:Decimals == oFld:Decimals
 
-    VIRTUAL METHOD Validate() as LOGIC
+    VIRTUAL METHOD Validate() AS LOGIC
         RETURN TRUE
 
     OVERRIDE METHOD ToString() AS STRING
-        RETURN SELF:Name+" ('"+SELF:FieldTypeStr+"',"+Self:Length:ToString()+","+SELF:Decimals:ToString()+")"
+        RETURN SELF:Name+" ('"+SELF:FieldTypeStr+"',"+SELF:Length:ToString()+","+SELF:Decimals:ToString()+")"
 
     PROPERTY FieldTypeStr AS STRING GET ((CHAR) SELF:FieldType):ToString()
-    PROPERTY IsMemo      as LOGIC GET SELF:FieldType:IsMemo()
-    PROPERTY IsBinary    as LOGIC GET SELF:FieldType:IsBinary()
+    PROPERTY IsMemo      AS LOGIC GET SELF:FieldType:IsMemo()
+    PROPERTY IsBinary    AS LOGIC GET SELF:FieldType:IsBinary()
     PROPERTY IsNullable  AS LOGIC GET SELF:Flags:HasFlag(DbfFieldFlags.Nullable)
-    PROPERTY IsAutoIncrement as LOGIC GET SELF:Flags:HasFLag(DbfFieldFlags.AutoIncrement)
-    PROPERTY IsStandard  as LOGIC GET SELF:FieldType:IsStandard()
+    PROPERTY IsAutoIncrement AS LOGIC GET SELF:Flags:HasFLag(DbfFieldFlags.AutoIncrement)
+    PROPERTY IsStandard  AS LOGIC GET SELF:FieldType:IsStandard()
     PROPERTY IsVfp       AS LOGIC GET SELF:FieldType:IsVfp()
     PROPERTY IsVarLength AS LOGIC GET SELF:FieldType:IsVarLength()
 
@@ -497,7 +497,7 @@ END CLASS
 
 
 STATIC CLASS RDDExtensions
-    STATIC METHOD IsMemo(SELF eType as DBFieldType ) AS LOGIC
+    STATIC METHOD IsMemo(SELF eType AS DBFieldType ) AS LOGIC
         SWITCH eType
         CASE DBFieldType.Memo
         CASE DbFieldType.Picture
@@ -506,7 +506,7 @@ STATIC CLASS RDDExtensions
         END SWITCH
         RETURN FALSE
 
-    STATIC METHOD IsVarLength(SELF eType as DBFieldType ) AS LOGIC
+    STATIC METHOD IsVarLength(SELF eType AS DBFieldType ) AS LOGIC
         SWITCH eType
         CASE DbFieldType.VarBinary
         CASE DbFieldType.VarChar
@@ -514,7 +514,7 @@ STATIC CLASS RDDExtensions
         END SWITCH
         RETURN FALSE
 
-    STATIC METHOD IsStandard(SELF eType as DBFieldType ) AS LOGIC
+    STATIC METHOD IsStandard(SELF eType AS DBFieldType ) AS LOGIC
         SWITCH eType
         CASE DbFieldType.Character
         CASE DbFieldType.Date
@@ -525,7 +525,7 @@ STATIC CLASS RDDExtensions
         END SWITCH
         RETURN FALSE
 
-    STATIC METHOD IsBinary(SELF eType as DBFieldType ) AS LOGIC
+    STATIC METHOD IsBinary(SELF eType AS DBFieldType ) AS LOGIC
         SWITCH eType
         CASE DBFieldType.Integer
         CASE DbFieldType.Currency
@@ -539,7 +539,7 @@ STATIC CLASS RDDExtensions
         END SWITCH
         RETURN FALSE
 
-    STATIC METHOD IsVfp(SELF eType as DBFieldType ) AS LOGIC
+    STATIC METHOD IsVfp(SELF eType AS DBFieldType ) AS LOGIC
         SWITCH eType
         CASE DBFieldType.Character
         CASE DbFieldType.Blob

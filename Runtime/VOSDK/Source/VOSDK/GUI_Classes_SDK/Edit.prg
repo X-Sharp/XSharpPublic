@@ -32,7 +32,7 @@ ACCESS Caption
 ASSIGN Caption(cNewCaption) 
 	
 	IF !IsString(cNewCaption)
-		WCError{#Caption,#Edit,__WCSTypeError,cNewCaption,1}:@@Throw()
+		WCError{#Caption,#Edit,__WCSTypeError,cNewCaption,1}:Throw()
 	ENDIF
 	RETURN cCaption := cNewCaption
 
@@ -139,7 +139,7 @@ ASSIGN Modified(lModified)
 	
 
 	IF !IsLogic(lModified)
-		WCError{#Modified,#Edit,__WCSTypeError,lModified,1}:@@Throw()
+		WCError{#Modified,#Edit,__WCSTypeError,lModified,1}:Throw()
 	ENDIF
 
 	IF SELF:ValidateControl()
@@ -160,7 +160,7 @@ METHOD Paste(cNewString)
 			SendMessage(hHandle, WM_PASTE, 0, 0)
 		ELSE
 			IF !IsString(cNewString)
-				WCError{#Paste,#Edit,__WCSTypeError,cNewString,1}:@@Throw()
+				WCError{#Paste,#Edit,__WCSTypeError,cNewString,1}:Throw()
 			ENDIF
 			SendMessage(SELF:Handle(), EM_REPLACESEL, 0, LONGINT(_CAST, String2Psz(cNewString)))
 		ENDIF
@@ -208,7 +208,7 @@ ACCESS SelectedText
 ASSIGN SelectedText(cNewString) 
 	
 	IF !IsString(cNewString)
-		WCError{#SelectedText,#Edit,__WCSTypeError,cNewString,1}:@@Throw()
+		WCError{#SelectedText,#Edit,__WCSTypeError,cNewString,1}:Throw()
 	ENDIF
 	IF SELF:ValidateControl()
 		SendMessage( SELF:Handle(), EM_REPLACESEL, 0, LONGINT(_CAST, String2Psz(cNewString)))
@@ -230,7 +230,7 @@ ACCESS Selection
 ASSIGN Selection(oSelection) 
 	LOCAL oSel AS Selection
 	IF !IsInstanceOfUsual(oSelection,#Selection)
-		WCError{#Selection,#Edit,__WCSTypeError,oSelection,1}:@@Throw()
+		WCError{#Selection,#Edit,__WCSTypeError,oSelection,1}:Throw()
 	ENDIF
 	oSel := oSelection
 	IF SELF:ValidateControl()
@@ -279,7 +279,7 @@ ASSIGN TextLimit(nChars)
 	LOCAL hHandle AS PTR
 
 	IF !IsNumeric(nChars)
-		WCError{#TextLimit,#Edit,__WCSTypeError,nChars,1}:@@Throw()
+		WCError{#TextLimit,#Edit,__WCSTypeError,nChars,1}:Throw()
 	ENDIF
 
 	IF SELF:ValidateControl()
@@ -311,7 +311,7 @@ ASSIGN TextValue(cNewText)
 	
 
 	IF !IsString(cNewText)
-		WCError{#TextValue,#Edit,__WCSTypeError,cNewText,1}:@@Throw()
+		WCError{#TextValue,#Edit,__WCSTypeError,cNewText,1}:Throw()
 	ENDIF
 
 	cOldValue := AsString(uValue)
@@ -628,7 +628,7 @@ ASSIGN FocusSelect(wNewValue)
 	
 
 	IF !IsLong(wNewValue)
-		WCError{#FocusSelect,#SingleLineEdit,__WCSTypeError,wNewValue,1}:@@Throw()
+		WCError{#FocusSelect,#SingleLineEdit,__WCSTypeError,wNewValue,1}:Throw()
 	ENDIF
 
 	IF (wNewValue < 0) .OR. (wNewValue > 4)
@@ -657,7 +657,7 @@ ASSIGN OverWrite(wNewValue)
 	
 
 	IF !IsLong(wNewValue)
-		WCError{#OverWrite,#SingleLineEdit,__WCSTypeError,wNewValue,1}:@@Throw()
+		WCError{#OverWrite,#SingleLineEdit,__WCSTypeError,wNewValue,1}:Throw()
 	ENDIF
 
 	IF (wNewValue < 0) .OR. (wNewValue > 2)
@@ -685,7 +685,7 @@ ASSIGN Picture(cNewPicture)
 	
 
 	IF !IsString(cNewPicture)
-		WCError{#Picture,#SingleLineEdit,__WCSTypeError,cNewPicture,1}:@@Throw()
+		WCError{#Picture,#SingleLineEdit,__WCSTypeError,cNewPicture,1}:Throw()
 	ENDIF
 
 	IF (oEditString == NULL_OBJECT)
@@ -717,7 +717,7 @@ ASSIGN ScrollMode(wNewValue)
 	
 
 	IF !IsLong(wNewValue)
-		WCError{#ScrMode,#SingleLineEdit,__WCSTypeError,wNewValue,1}:@@Throw()
+		WCError{#ScrMode,#SingleLineEdit,__WCSTypeError,wNewValue,1}:Throw()
 	ENDIF
 
 	IF (wNewValue < 0) .OR. (wNewValue > 2)

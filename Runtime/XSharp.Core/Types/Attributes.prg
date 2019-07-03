@@ -85,7 +85,7 @@ BEGIN NAMESPACE XSharp.Internal
 		PRIVATE INITONLY _value AS OBJECT
 		PRIVATE INITONLY _flag  AS INT
 		/// <summary>Value of the default parameter</summary>
-		PROPERTY @@Value AS OBJECT GET _value
+		PROPERTY Value AS OBJECT GET _value
         /// <summary>Flag indicating the type of the default parameter</summary>
         /// <remarks>
 	    /// 0 = Regular .Net default value 

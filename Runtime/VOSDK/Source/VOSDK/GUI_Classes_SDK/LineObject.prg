@@ -80,15 +80,15 @@ CONSTRUCTOR(oPoint1, oPoint2, oPen)
 	SUPER(oPoint1)
 
 	IF !IsInstanceOfUsual(oPoint1,#Point)
-		WCError{#Init,#LineObject,__WCSTypeError,oPoint1,1}:@@Throw()
+		WCError{#Init,#LineObject,__WCSTypeError,oPoint1,1}:Throw()
 	ENDIF
 	IF !IsInstanceOfUsual(oPoint2,#Point)
-		WCError{#Init,#LineObject,__WCSTypeError,oPoint2,2}:@@Throw()
+		WCError{#Init,#LineObject,__WCSTypeError,oPoint2,2}:Throw()
 	ENDIF
 
 	IF !IsNil(oPen)
 		IF !IsInstanceOfUsual(oPen,#Pen)
-			WCError{#Init,#LineObject,__WCSTypeError,oPen,3}:@@Throw()
+			WCError{#Init,#LineObject,__WCSTypeError,oPen,3}:Throw()
 		ENDIF
 		SELF:oPen := oPen
 	ENDIF
@@ -120,7 +120,7 @@ ASSIGN Pen(oNewPen)
 
 	IF !IsNil(oPen)
 		IF !IsInstanceOfUsual(oNewPen,#Pen)
-			WCError{#Pen,#LineObject,__WCSTypeError,oNewPen,1}:@@Throw()
+			WCError{#Pen,#LineObject,__WCSTypeError,oNewPen,1}:Throw()
 		ENDIF
 	ENDIF
 
@@ -139,7 +139,7 @@ ASSIGN Size(oNewSize)
 	
 
 	IF !IsInstanceOfUsual(oNewSize,#Dimension)
-		WCError{#Size,#LineObject,__WCSTypeError,oNewSize,1}:@@Throw()
+		WCError{#Size,#LineObject,__WCSTypeError,oNewSize,1}:Throw()
 	ENDIF
 
 	oEnd:X := SELF:Origin:X + oNewSize:Width

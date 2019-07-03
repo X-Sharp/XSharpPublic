@@ -64,7 +64,7 @@ METHOD Handle(nHandleType)
 
 	IF !IsNil(nHandleType)
 		IF !IsLong(nHandleType)
-			WCError{#Handle,#Cursor,__WCSTypeError,nHandleType,1}:@@Throw()
+			WCError{#Handle,#Cursor,__WCSTypeError,nHandleType,1}:Throw()
 		ENDIF
 	ENDIF
 
@@ -88,7 +88,7 @@ CONSTRUCTOR(oOwner, oObject, lDimmed)
 	
 
 	IF !IsInstanceOfUsual(oOwner,#Window)
-		WCError{#Init,#Cursor,__WCSTypeError,oOwner,1}:@@Throw()
+		WCError{#Init,#Cursor,__WCSTypeError,oOwner,1}:Throw()
 	ENDIF
 
 	oWnd := oOwner
@@ -96,7 +96,7 @@ CONSTRUCTOR(oOwner, oObject, lDimmed)
 		oDim := oObject
 		IF !IsNil(lDimmed)
 			IF !IsLogic(lDimmed)
-				WCError{#Init,#Cursor,__WCSTypeError,lDimmed,3}:@@Throw()
+				WCError{#Init,#Cursor,__WCSTypeError,lDimmed,3}:Throw()
 			ENDIF
 			SELF:lDimmed := lDimmed
 		ELSE
@@ -105,10 +105,10 @@ CONSTRUCTOR(oOwner, oObject, lDimmed)
 		SELF:Position := Point{0,0}
 	ELSE
 		IF !IsInstanceOfUsual(oObject,#Bitmap)
-			WCError{#Init,#Cursor,__WCSTypeError,oObject,2}:@@Throw()
+			WCError{#Init,#Cursor,__WCSTypeError,oObject,2}:Throw()
 		ENDIF
 		IF !IsNil(lDimmed)
-			WCError{#Init,#Cursor,__WCSTypeError,lDimmed,3}:@@Throw()
+			WCError{#Init,#Cursor,__WCSTypeError,lDimmed,3}:Throw()
 		ENDIF
 		oBitmap := oObject
 		oDim := oBitmap:Size
@@ -147,7 +147,7 @@ ASSIGN Position(oNewPoint)
 	
 
 	IF !IsInstanceOfUsual(oNewPoint,#Point)
-		WCError{#Position,#Cursor,__WCSTypeError,oNewPoint,1}:@@Throw()
+		WCError{#Position,#Cursor,__WCSTypeError,oNewPoint,1}:Throw()
 	ENDIF
 
 	oPoint := oNewPoint

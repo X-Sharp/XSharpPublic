@@ -71,7 +71,7 @@ CONSTRUCTOR(xID, xResourceFile)
 	ENDIF
 
 	IF argTypeError
-		WCError{#Init, #ResourceID, __WCSTypeError}:@@Throw()
+		WCError{#Init, #ResourceID, __WCSTypeError}:Throw()
 	ENDIF
 	
 #ifdef __VULCAN__		

@@ -35,7 +35,7 @@ ASSIGN Brush(oNewBrush)
 
 	IF !IsNil(oNewBrush)
 		IF !IsInstanceOfUsual(oNewBrush,#Brush)
-			WCError{#Brush,#ShapeObject,__WCSTypeError,oNewBrush,1}:@@Throw()
+			WCError{#Brush,#ShapeObject,__WCSTypeError,oNewBrush,1}:Throw()
 		ENDIF
 	ENDIF
 	RETURN oBrush:=oNewBrush
@@ -58,17 +58,17 @@ CONSTRUCTOR(oPoint, oDimension, oPen, oBrush)
 	SUPER(oPoint)
 
 	IF !IsInstanceOfUsual(oDimension,#Dimension)
-		WCError{#Init,#ShapeObject,__WCSTypeError,oDimension,2}:@@Throw()
+		WCError{#Init,#ShapeObject,__WCSTypeError,oDimension,2}:Throw()
 	ENDIF
 	IF !IsNil(oPen)
 		IF !IsInstanceOfUsual(oPen,#Pen)
-			WCError{#Init,#ShapeObject,__WCSTypeError,oPen,3}:@@Throw()
+			WCError{#Init,#ShapeObject,__WCSTypeError,oPen,3}:Throw()
 		ENDIF
 		SELF:oPen:=oPen
 	ENDIF
 	IF !IsNil(oBrush)
 		IF !IsInstanceOfUsual(oBrush,#Brush)
-			WCError{#Init,#ShapeObject,__WCSTypeError,oBrush,4}:@@Throw()
+			WCError{#Init,#ShapeObject,__WCSTypeError,oBrush,4}:Throw()
 		ENDIF
 		SELF:oBrush:=oBrush
 	ENDIF
@@ -85,7 +85,7 @@ ASSIGN Pen(oNewPen)
 
 	IF !IsNil(oNewPen)
 		IF !IsInstanceOfUsual(oNewPen,#Pen)
-			WCError{#Pen,#ShapeObject,__WCSTypeError,oNewPen,1}:@@Throw()
+			WCError{#Pen,#ShapeObject,__WCSTypeError,oNewPen,1}:Throw()
 		ENDIF
 	ENDIF
 
@@ -96,7 +96,7 @@ ACCESS Size
 
 ASSIGN Size(oNewDimension) 
 	IF !IsInstanceOfUsual(oNewDimension,#Dimension)
-		WCError{#Size,#ShapeObject,__WCSTypeError,oNewDimension,1}:@@Throw()
+		WCError{#Size,#ShapeObject,__WCSTypeError,oNewDimension,1}:Throw()
 	ENDIF
 	RETURN oDimension := Dimension{oNewDimension:Width, oNewDimension:Height}
 END CLASS

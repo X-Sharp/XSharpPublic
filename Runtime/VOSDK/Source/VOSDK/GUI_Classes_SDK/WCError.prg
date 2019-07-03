@@ -40,7 +40,7 @@ CONSTRUCTOR(methodName, className, desc, VAR, varnum, lAllowIgnore)
 	RETURN 
 
 //RvdH 080814 Not needed. Also in parent class
-//METHOD @@Throw() 
+//METHOD Throw() 
 //	RETURN Eval(ErrorBlock(), SELF)
 END CLASS
 

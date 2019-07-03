@@ -346,10 +346,10 @@ ASSIGN Family(nFamily)
    RETURN 
 
 
-ACCESS @@PitchFixed 
+ACCESS PitchFixed 
 	RETURN _AND(lfPitchAndFamily, 0x03) == 1
 
-ASSIGN @@PitchFixed(lfState) 
+ASSIGN PitchFixed(lfState) 
 	LOCAL lfNewPitchAndFamily AS BYTE
 
 	IF lfState == TRUE
@@ -365,10 +365,10 @@ ASSIGN @@PitchFixed(lfState)
 
 	RETURN 
 
-ACCESS @@PitchVariable 
+ACCESS PitchVariable 
 	RETURN _AND(lfPitchAndFamily, 0x03) == 2
 
-ASSIGN @@PitchVariable(lfState) 
+ASSIGN PitchVariable(lfState) 
 	LOCAL lfNewPitchAndFamily AS BYTE
 
 	IF lfState == TRUE

@@ -1,4 +1,4 @@
-﻿// TestHelpers.prg
+// TestHelpers.prg
 // Created by    : fabri
 // Creation Date : 6/8/2018 11:16:12 AM
 // Created for   : 
@@ -38,8 +38,8 @@ FUNCTION LoremIpsum( maxLength AS LONG , minWords AS LONG , maxWords AS LONG , m
     IF ( rand == NULL )
         rand := Random{ (LONG)DateTime.Now.Ticks }
     ENDIF
-    numSentences := rand:@@NEXT(maxSentences - minSentences) + minSentences + 1
-    numWords := rand:@@NEXT(maxWords - minWords) + minWords + 1
+    numSentences := rand:NEXT(maxSentences - minSentences) + minSentences + 1
+    numWords := rand:NEXT(maxWords - minWords) + minWords + 1
     result := StringBuilder{}
     //
     LOCAL nStart AS INT
@@ -60,7 +60,7 @@ FUNCTION LoremIpsum( maxLength AS LONG , minWords AS LONG , maxWords AS LONG , m
                 IF ( quit )
                     EXIT
                 ENDIF
-                r := rand:@@NEXT(words:Length)+1
+                r := rand:NEXT(words:Length)+1
                 IF ( result:Length + words[r]:Length >= maxLength )
                     quit := TRUE
                     EXIT

@@ -8,10 +8,10 @@
 BEGIN NAMESPACE XSharp
     /// <summary>This enum specifies the collation mode used to create and update index strings.</summary>
 	ENUM CollationMode
-		MEMBER @@Windows
-		MEMBER @@Clipper
-		MEMBER @@Unicode
-		MEMBER @@Ordinal
+		MEMBER Windows
+		MEMBER Clipper
+		MEMBER Unicode
+		MEMBER Ordinal
 	END ENUM
 END NAMESPACE
 
@@ -20,7 +20,7 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 	/// <summary>This enum specifies how files should be opened.</summary>
 	ENUM AutoShareMode
 		MEMBER NoChange		 := 0
-		MEMBER @@Auto		 := 1
+		MEMBER Auto		 := 1
 		MEMBER ForceExclusive := 2
 	END ENUM
 	

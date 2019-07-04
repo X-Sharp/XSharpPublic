@@ -792,13 +792,12 @@ aliasExpression     : MEMVAR ALIAS VarName=identifier                           
                     | Alias=identifier              ALIAS AMP Field=expression  #aliasedFieldLate	    // CUSTOMER->&fldName
                     | FIELD ALIAS (Alias=identifier ALIAS)? AMP Field=expression #aliasedFieldLate	  // _FIELD->CUSTOMER->&fldName or _FIELD->&fldName
                     | LPAREN Area=identifier RPAREN ALIAS AMP Field=expression  #aliasedFieldLate	  // (nCust)->&fldName
-                    // Note that the LPAREN .. RPAREN in the next rule is mandatory
-                    // Otherwise the system will evaluate the 2nd condition in the following expression also in the workarea
-                    // because it will match (Eof()) with a paren expression.
+                    // Note that the LPAREN .. RPAREN has been added to make sure that the expression does not match the Paren Expression
                     // !(CUSTOMER)->(Eof()) .and. SomeOtherCondition
-                    // When LPAREN and RPAREN are mandatory then only Eof() will be evaluated in the workarea.
-                    | Id=identifier                  ALIAS LPAREN Expr=expression RPAREN  #aliasedExpr          // id -> expr       
-                    | LPAREN Alias=expression RPAREN ALIAS LPAREN Expr=expression RPAREN   #aliasedExpr          // (expr) -> expr   
+                    // Beccause the subrule with LPAREN and RPAREN is listed first then only Eof() will be evaluated in the workarea.
+                    | ( Id=identifier | LPAREN Alias=expression RPAREN)
+                       ALIAS ( (LPAREN Expr=expression RPAREN)
+                      | Expr=expression )                                     #aliasedExpr          // id -> expr   or (expr) -> expr 
                     ;
 
 // Initializers
@@ -1066,7 +1065,7 @@ keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST 
 
 
 keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CHAR | CONST |  DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | INITONLY | INTERNAL
-                    | LOCK | NAMESPACE | NEW | OUT | PARTIAL | SCOPE | SEALED | SET |  TRY | UNICODE |  VALUE | VIRTUAL  
+                    | LOCK | NAMESPACE | NEW | OUT | PARTIAL | REF | SCOPE | SEALED | SET |  TRY | UNICODE |  VALUE | VIRTUAL  
                     )
                     ;
 

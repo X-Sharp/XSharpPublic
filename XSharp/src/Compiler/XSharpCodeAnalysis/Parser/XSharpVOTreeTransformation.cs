@@ -3996,7 +3996,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        public ExpressionSyntax GenerateAliasedExpression(
+        public CSharpSyntaxNode GenerateAliasedExpression(
             [NotNull] XSharpParserRuleContext context,
             ExpressionSyntax wa, ExpressionSyntax expr)
         {
@@ -4025,6 +4025,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 ; // leave unchanged
             }
+            var push = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.PushWorkarea : VulcanQualifiedFunctionNames.PushWorkarea, MakeArgumentList(MakeArgument(wa)), true);
+            var pop = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.PopWorkarea : VulcanQualifiedFunctionNames.PopWorkarea, EmptyArgumentList(), true);
+            var pushStmt = GenerateExpressionStatement(push, true);
+            var popStmt = GenerateExpressionStatement(pop, true);
+            if (context.Parent.Parent.Parent is XP.ExpressionStmtContext)
+            {
+                // context.Parent is always a primaryexpression
+                // if context.Parent.Parent is a Expressionstatement then we do not have 
+                // save the return value of the expression
+                var list = new List<StatementSyntax>() { pushStmt, GenerateExpressionStatement(expr), popStmt };
+                return MakeBlock(list);
+            }
 
             if (_options.XSharpRuntime)
             {
@@ -4041,10 +4053,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(mcall);
                 return mcall;
             }
-            var push = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.PushWorkarea : VulcanQualifiedFunctionNames.PushWorkarea, MakeArgumentList(MakeArgument(wa)), true);
-            var pop = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.PopWorkarea : VulcanQualifiedFunctionNames.PopWorkarea, EmptyArgumentList(), true);
-            var pushStmt = GenerateExpressionStatement(push, true);
-            var popStmt = GenerateExpressionStatement(pop, true);
 
             // Vulcan does not have __AreaEval()
             // So we generate the following
@@ -4214,21 +4222,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     alias = context.Alias.Get<ExpressionSyntax>();
                 }
-                // check to see for
-                // (expr)->Name := value
-           
-
-
-                
                 var expr = GenerateAliasedExpression(
                             context,
                             alias,     // workarea
                             context.Expr.Get<ExpressionSyntax>() // expression
                         );
-                expr = _syntaxFactory.ParenthesizedExpression(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    expr,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
                 context.Put(expr);
             }
         }

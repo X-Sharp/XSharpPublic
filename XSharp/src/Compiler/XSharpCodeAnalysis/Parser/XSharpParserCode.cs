@@ -55,6 +55,56 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         }
 
+        bool IsTypeCastAllowed()
+        {
+            // after we added support for the WITH statement the following code was incorrectly recognized as typecast
+            // ? (n):ToString()
+            // we don't worry here about the correct order of () and []. The parser rule takes care of that.
+            if (InputStream.La(1) != LPAREN)
+                return false;
+            int nestedlevel = 1;
+            int la = 2;
+            while (true)
+            {
+                var c = InputStream.La(la);
+                switch (c)
+                {
+                    case LPAREN:
+                        nestedlevel += 1;
+                        break;
+                    case RPAREN:
+                        nestedlevel -= 1;
+                        break;
+                    case EOS:
+                        // EOS so no valid typecast
+                        return false;
+                    case ID:                // (Mytype)
+                    case DOT:               // (System.String)
+                    case QMARK:             // (Mytype?)
+                    case LBRKT:             // (long[])
+                    case RBRKT:             // (long[])
+                    case COMMA:             // (long[,])
+                        break;
+                    default:
+                        if (XSharpLexer.IsKeyword(c))
+                            break;
+                        // no other tokens allowed for typename
+                        return false;
+
+                }
+                if (nestedlevel == 0)
+                    break;
+                la += 1;
+            }
+            if (InputStream.La(la) == RPAREN )
+            {
+                // if there is a DOT or COLON after the RPAREN then return false
+                var c = InputStream.La(la + 1);
+                if (c == DOT || c == COLON)
+                    return false;
+            }
+            return true;
+        }
         bool validExpressionStmt()
         {
             var la = InputStream.La(2);

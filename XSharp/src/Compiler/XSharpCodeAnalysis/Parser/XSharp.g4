@@ -700,7 +700,7 @@ expression          : Expr=expression Op=(DOT | COLON) Name=simpleName          
                     | Expr=expression LPAREN ArgList=argumentList  RPAREN       #methodCall             // method call, params
                     | Expr=expression LBRKT ArgList=bracketedArgumentList RBRKT #arrayAccess            // Array element access
                     | Left=expression Op=QMARK Right=boundExpression            #condAccessExpr         // expr ? expr
-                    | LPAREN Type=datatype RPAREN Expr=expression               #typeCast               // (typename) expr
+                    | {IsTypeCastAllowed() }? LPAREN Type=datatype RPAREN Expr=expression               #typeCast               // (typename) expr
                     | Expr=expression Op=(INC | DEC)                            #postfixExpression      // expr ++/--
                     | Op=AWAIT Expr=expression                                  #awaitExpression        // AWAIT expr
                     | Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC) Expr=expression #prefixExpression   // +/-/~/&/++/-- expr

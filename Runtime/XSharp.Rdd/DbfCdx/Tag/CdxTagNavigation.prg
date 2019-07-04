@@ -604,6 +604,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR topStack      := SELF:CurrentStack
             // How many Items in that page ?
             nodeCount := page:NumKeys
+            IF (nodeCount == 0)
+                SELF:PushPage(page, 0)
+                RETURN   0
+            ENDIF
             // Get the first node on the page
             node := page[0]
             

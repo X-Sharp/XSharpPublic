@@ -1580,7 +1580,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			DbCloseAll()
 			
-			cDBF := __Function__
+			cDBF := __FUNCTION__
 			FErase(cDbf + ".cdx")
 			
 		    aDbf := {{ "AGE" , "N" , 2 , 0 }}

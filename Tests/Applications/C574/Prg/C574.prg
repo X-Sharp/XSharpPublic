@@ -31,4 +31,6 @@ FUNCTION AsType(n AS INT) AS INT
 RETURN n
 FUNCTION Repeat(n AS INT) AS INT
 RETURN n
-
+               
+Function Ref(n as int) as INT
+	return n

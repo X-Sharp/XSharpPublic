@@ -40130,8 +40130,9 @@ FileType = Code
 CopyToBin = 0
 [C397 - Strange issue with pointers and alias expressions References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.2.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.2.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.2.0
 [C397 - Strange issue with pointers and alias expressions Resources]
 [C397 - Strange issue with pointers and alias expressions Native Resources]
 [C397 - Strange issue with pointers and alias expressions License files]
@@ -58860,7 +58861,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C573 - Problem RETURNing VOSTRUCT PTR from PROPERTY
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C574 - Errror message needs improvement, when using keyword as identifier *************
 Application = C574 - Errror message needs improvement, when using keyword as identifier
 IDEVersion = 1.06
@@ -66256,9 +66257,9 @@ FileType = Code
 CopyToBin = 0
 [C645 - Compiler crash with usuals and decimals with the X# runtime References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\xSharp\DevRt\Bin\Debug\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\xSharp\DevRt\Bin\Debug\XSharp.RT.dll,1,1
-ReferenceBrowse = C:\xSharp\DevRt\Bin\Debug\XSharp.VO.dll,1,1
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.2.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.2.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.2.0
 [C645 - Compiler crash with usuals and decimals with the X# runtime Resources]
 [C645 - Compiler crash with usuals and decimals with the X# runtime Native Resources]
 [C645 - Compiler crash with usuals and decimals with the X# runtime License files]
@@ -69070,9 +69071,9 @@ FileType = Code
 CopyToBin = 0
 [C673 - Various issues with MEMVAR, PUBLIC etc References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.0.1.0
-ReferenceGAC = XSharp.RT,1,0,2.0.1.0
-ReferenceGAC = XSharp.VO,1,0,2.0.1.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.2.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.2.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.2.0
 [C673 - Various issues with MEMVAR, PUBLIC etc Resources]
 [C673 - Various issues with MEMVAR, PUBLIC etc Native Resources]
 [C673 - Various issues with MEMVAR, PUBLIC etc License files]

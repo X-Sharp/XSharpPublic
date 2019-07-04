@@ -791,9 +791,14 @@ aliasExpression     : MEMVAR ALIAS VarName=identifier                           
                       LPAREN Area=identifier RPAREN ALIAS Field=identifier      #aliasedField		      // (nCust)->NAME  
                     | Alias=identifier              ALIAS AMP Field=expression  #aliasedFieldLate	    // CUSTOMER->&fldName
                     | FIELD ALIAS (Alias=identifier ALIAS)? AMP Field=expression #aliasedFieldLate	  // _FIELD->CUSTOMER->&fldName or _FIELD->&fldName
-                    | LPAREN Area=identifier RPAREN ALIAS AMP Field=expression  #aliasedFieldLate	  // (nCust)->&fldName 
-                    | Id=identifier                  ALIAS Expr=expression      #aliasedExpr          // id -> expr       
-                    | LPAREN Alias=expression RPAREN ALIAS Expr=expression      #aliasedExpr          // (expr) -> expr   
+                    | LPAREN Area=identifier RPAREN ALIAS AMP Field=expression  #aliasedFieldLate	  // (nCust)->&fldName
+                    // Note that the LPAREN .. RPAREN in the next rule is mandatory
+                    // Otherwise the system will evaluate the 2nd condition in the following expression also in the workarea
+                    // because it will match (Eof()) with a paren expression.
+                    // !(CUSTOMER)->(Eof()) .and. SomeOtherCondition
+                    // When LPAREN and RPAREN are mandatory then only Eof() will be evaluated in the workarea.
+                    | Id=identifier                  ALIAS LPAREN Expr=expression RPAREN  #aliasedExpr          // id -> expr       
+                    | LPAREN Alias=expression RPAREN ALIAS LPAREN Expr=expression RPAREN   #aliasedExpr          // (expr) -> expr   
                     ;
 
 // Initializers

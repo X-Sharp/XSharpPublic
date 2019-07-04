@@ -3996,7 +3996,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        public CSharpSyntaxNode GenerateAliasedExpression(
+        public ExpressionSyntax GenerateAliasedExpression(
             [NotNull] XSharpParserRuleContext context,
             ExpressionSyntax wa, ExpressionSyntax expr)
         {
@@ -4025,76 +4025,64 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 ; // leave unchanged
             }
-            var push = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.PushWorkarea: VulcanQualifiedFunctionNames.PushWorkarea, MakeArgumentList(MakeArgument(wa)),true);
+
+            if (_options.XSharpRuntime)
+            {
+                // Convert to generic method call that takes care of switching workareas
+                // alias can be a literal, or variable
+                // __AreaEval ( alias, { => Expr })
+                expr = _syntaxFactory.ParenthesizedLambdaExpression(
+                        asyncKeyword: null,
+                        parameterList: EmptyParameterList(),
+                        arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
+                        expr);
+                var args = MakeArgumentList(MakeArgument(wa), MakeArgument(expr));
+                var mcall = GenerateMethodCall(XSharpQualifiedFunctionNames.AreaEval, args);
+                context.Put(mcall);
+                return mcall;
+            }
+            var push = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.PushWorkarea : VulcanQualifiedFunctionNames.PushWorkarea, MakeArgumentList(MakeArgument(wa)), true);
             var pop = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.PopWorkarea : VulcanQualifiedFunctionNames.PopWorkarea, EmptyArgumentList(), true);
             var pushStmt = GenerateExpressionStatement(push, true);
             var popStmt = GenerateExpressionStatement(pop, true);
 
-            if (context.Parent.Parent.Parent is XP.ExpressionStmtContext)
-            {
-                // context.Parent is always a primaryexpression
-                // if context.Parent.Parent is a Expressionstatement then we do not have 
-                // save the return value of the expression
-                var list = new List<StatementSyntax>() { pushStmt, GenerateExpressionStatement(expr), popStmt };
-                return MakeBlock(list);
-            }
-            else
-            {
-                // when not an expression statement, then we must save the result of expr
-                // of the expression.
-                // we do this by converting the expression to a anonymous method and returning the value from this expression
-                // CUSTOMER->(<Expression>)
-                //
-                // translate to :
-                //
-                // GeneratedFunctionCall(CUSTOMER, expr)
-                //   __pushWorkarea(CUSTOMER)
-                //   try
-                //     return expr
-                //   finally
-                //     __popWorkarea()
-                //   end
-                // }:Eval()
-                if (_options.XSharpRuntime)
-                {
-                    // Convert to generic method call that takes care of switching workareas
-                    // alias can be a literal, or variable
-                    // __AreaEval ( alias, { => Expr })
-                    expr = _syntaxFactory.ParenthesizedLambdaExpression(
-                            asyncKeyword: null,
-                            parameterList: EmptyParameterList(),
-                            arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
-                            expr);
-                    var args = MakeArgumentList(MakeArgument(wa), MakeArgument(expr));
-                    var mcall = GenerateMethodCall(XSharpQualifiedFunctionNames.AreaEval, args);
-                    context.Put(mcall);
-                    return mcall;
-                }
-                // Vulcan does not have __AreaEval()
-                return _syntaxFactory.InvocationExpression(
-                MakeSimpleMemberAccess(
-                    MakeCastTo(_codeblockType,
-                        _syntaxFactory.ParenthesizedLambdaExpression(
-                            asyncKeyword: null,
-                            parameterList: EmptyParameterList(),
-                            arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
-                            body: MakeBlock(MakeList<StatementSyntax>(
-                                pushStmt,
-                                _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
-                                    MakeBlock(MakeList<StatementSyntax>(GenerateReturn(expr))),
-                                    EmptyList<CatchClauseSyntax>(),
-                                    _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
-                                        MakeBlock(MakeList<StatementSyntax>(popStmt))
-                                        )
+            // Vulcan does not have __AreaEval()
+            // So we generate the following
+            // CUSTOMER->(<Expression>)
+            //
+            // translate to a lambda with the following contents:
+            //
+            //  {  => 
+            //   __pushWorkarea(CUSTOMER)
+            //   try
+            //     return expr
+            //   finally
+            //     __popWorkarea()
+            //   end
+            // }:Eval()
+            return _syntaxFactory.InvocationExpression(
+            MakeSimpleMemberAccess(
+                MakeCastTo(_codeblockType,
+                    _syntaxFactory.ParenthesizedLambdaExpression(
+                        asyncKeyword: null,
+                        parameterList: EmptyParameterList(),
+                        arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
+                        body: MakeBlock(MakeList<StatementSyntax>(
+                            pushStmt,
+                            _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
+                                MakeBlock(MakeList<StatementSyntax>(GenerateReturn(expr))),
+                                EmptyList<CatchClauseSyntax>(),
+                                _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
+                                    MakeBlock(MakeList<StatementSyntax>(popStmt))
                                     )
-                                ))
-                            )
-                        ),
-                    _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(XSharpFunctionNames.Eval))
+                                )
+                            ))
+                        )
                     ),
-                EmptyArgumentList());
+                _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(XSharpFunctionNames.Eval))
+                ),
+            EmptyArgumentList());
 
-            }
 
         }
 
@@ -4182,7 +4170,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;
     
             if (context.Expr.IsIdentifier())
-            {
+            { 
                 string field = context.Expr.GetText();
                 var varName = GenerateLiteral(field);
                 if (context.Id != null || context.Alias.IsIdentifier())
@@ -4237,7 +4225,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             alias,     // workarea
                             context.Expr.Get<ExpressionSyntax>() // expression
                         );
-                
+                expr = _syntaxFactory.ParenthesizedExpression(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    expr,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
                 context.Put(expr);
             }
         }

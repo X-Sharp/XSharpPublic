@@ -372,7 +372,7 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC CONST ADS_RAW := 16 AS WORD
         PUBLIC CONST ADS_CURDOUBLE := 17 AS WORD
         PUBLIC CONST ADS_MONEY := 18 AS WORD
-        PUBLIC CONST ADS_INT64INT64 := 19 AS WORD
+        PUBLIC CONST ADS_INT64  := 19 AS WORD
         PUBLIC CONST ADS_CISTRING := 20 AS WORD
         PUBLIC CONST ADS_ROWVERSION := 21 AS WORD
         PUBLIC CONST ADS_MODTIME := 22 AS WORD
@@ -1334,7 +1334,7 @@ BEGIN NAMESPACE XSharp.ADS
             RETURN delContinue(hTable, OUT pbFound)
             
         PUBLIC STATIC METHOD AdsConnect60(pucServerPath AS STRING , usServerTypes AS WORD, pucUserName AS STRING , pucPassword AS STRING , ulOptions AS DWORD, phConnect OUT IntPtr ) AS DWORD 
-			return delConnect60(pucServerPath, usServerTypes, pucUserName, pucPassword, ulOptions, OUT phConnect)
+			RETURN delConnect60(pucServerPath, usServerTypes, pucUserName, pucPassword, ulOptions, OUT phConnect)
 			
         PUBLIC STATIC METHOD AdsCopyTableStructure(hTable AS IntPtr , strFile AS STRING ) AS DWORD 
             RETURN delCopyTableStructure(hTable, strFile)

@@ -175,59 +175,60 @@ PRIVATE METHOD _FieldSub() AS LOGIC
 		cName := STRING{sb,0, wLen}
 		fi := RddFieldInfo{cName,DbFieldType.Character,1,0}
 		fi:Length := (INT) ulLength
-		
-		SWITCH usType
-		CASE ACE.ADS_TIMESTAMP
-		CASE ACE.ADS_MODTIME
+		LOCAL eType := (AdsFieldType) usType AS AdsFieldType
+		SWITCH eType
+		CASE AdsFieldType.TIMESTAMP
+		CASE AdsFieldType.MODTIME
 			fi:Length := 22
 			fi:fieldType := DbFieldType.Character
-		CASE ACE.ADS_TIME
+		CASE AdsFieldType.TIME
 			fi:Length := 11
 			fi:fieldType := DbFieldType.Character
-		CASE ACE.ADS_MONEY
-		CASE ACE.ADS_ROWVERSION
+		CASE AdsFieldType.MONEY
+		CASE AdsFieldType.ROWVERSION
 			fi:Length := 22
 			fi:fieldType := DbFieldType.Character
-		CASE ACE.ADS_STRING
-		CASE ACE.ADS_VARCHAR
-		CASE ACE.ADS_CISTRING
-		CASE ACE.ADS_VARCHAR_FOX
-		CASE ACE.ADS_NCHAR
-		CASE ACE.ADS_NVARCHAR
+		CASE AdsFieldType.STRING
+		CASE AdsFieldType.VARCHAR
+		CASE AdsFieldType.CISTRING
+		CASE AdsFieldType.VARCHAR_FOX
+		CASE AdsFieldType.NCHAR
+		CASE AdsFieldType.NVARCHAR
 			fi:fieldType := DbFieldType.Character
-		CASE ACE.ADS_MEMO
-		CASE ACE.ADS_BINARY
-		CASE ACE.ADS_IMAGE
-		CASE ACE.ADS_NMEMO
+		CASE AdsFieldType.MEMO
+		CASE AdsFieldType.BINARY
+		CASE AdsFieldType.IMAGE
+		CASE AdsFieldType.NMEMO
 			fi:fieldType := DbFieldType.Memo
 			fi:Length := 10
-		CASE ACE.ADS_RAW
-		CASE ACE.ADS_VARBINARY_FOX
+		CASE AdsFieldType.RAW
+		CASE AdsFieldType.VARBINARY_FOX
 			fi:fieldType := DbFieldType.Memo
-		CASE ACE.ADS_SHORTINT
-		CASE ACE.ADS_AUTOINC
-		CASE ACE.ADS_INTEGER
-		CASE ACE.ADS_NUMERIC
+		CASE AdsFieldType.SHORTINT
+		CASE AdsFieldType.AUTOINC
+		CASE AdsFieldType.INTEGER
+		CASE AdsFieldType.NUMERIC
 			fi:fieldType := DbFieldType.Number
-			IF usType == ACE.ADS_SHORTINT
+            SWITCH eType
+			CASE AdsFieldType.SHORTINT
 				fi:Length := 6
-			ELSEIF usType == ACE.ADS_AUTOINC
+			CASE AdsFieldType.AUTOINC
 				fi:Length := 10
-			ELSEIF usType == ACE.ADS_INTEGER
+			CASE AdsFieldType.INTEGER
 				fi:Length := 11
-			ELSE
+			OTHERWISE // Numeric
 				fi:Length := (INT) ulLength
-			ENDIF
+			END SWITCH
 			SELF:_CheckError(ACE.AdsGetFieldDecimals(SELF:_Table, num, OUT wDecimals),EG_OPEN)
 			fi:Decimals := wDecimals
-		CASE ACE.ADS_LOGICAL
+		CASE AdsFieldType.LOGICAL
 			fi:fieldType := DbFieldType.Logic
-		CASE ACE.ADS_DATE
-		CASE ACE.ADS_COMPACTDATE
+		CASE AdsFieldType.DATE
+		CASE AdsFieldType.COMPACTDATE
 			fi:fieldType := DbFieldType.Date
 			fi:Length := 8
-		CASE ACE.ADS_DOUBLE
-		CASE ACE.ADS_CURDOUBLE
+		CASE AdsFieldType.DOUBLE
+		CASE AdsFieldType.CURDOUBLE
 			fi:Length := 20
 			fi:fieldType := DbFieldType.Number
 			SELF:_CheckError(ACE.AdsGetFieldDecimals(SELF:_Table, num, OUT wDecimals),EG_OPEN)
@@ -732,39 +733,42 @@ METHOD GetValue(nFldPos AS INT) AS OBJECT
 	LOCAL fld       := SELF:_Fields[nFldPos-1] AS RddFieldInfo
 	length  := (DWORD) fld:Length +1
 	SELF:_CheckError(ACE.AdsGetFieldType(SELF:_Table, dwField, OUT wType),EG_READ)
+    LOCAL eType := (AdsFieldType) wType AS AdsFieldType
 	SWITCH fld:FieldType
 	CASE DbFieldType.Character
-		SWITCH wType
-		CASE ACE.ADS_TIME
-		CASE ACE.ADS_TIMESTAMP
-		CASE ACE.ADS_MONEY
-		CASE ACE.ADS_ROWVERSION
-		CASE ACE.ADS_MODTIME
+		SWITCH eType
+		CASE AdsFieldType.TIME
+		CASE AdsFieldType.TIMESTAMP
+		CASE AdsFieldType.MONEY
+		CASE AdsFieldType.ROWVERSION
+		CASE AdsFieldType.MODTIME
 			_CheckError(ACE.AdsIsEmpty(SELF:_Table,  dwField , OUT isEmpty),EG_READ)
 			IF isEmpty == 1
 				RETURN NULL
 			ENDIF
 			chars := CHAR[] {length}
 			result := ACE.AdsGetField(SELF:_Table, dwField, chars, REF length ,0)
-		CASE ACE.ADS_STRING
-		CASE ACE.ADS_VARCHAR
-		CASE ACE.ADS_CISTRING
-		CASE ACE.ADS_VARCHAR_FOX
+		CASE AdsFieldType.STRING
+		CASE AdsFieldType.VARCHAR
+		CASE AdsFieldType.CISTRING
+		CASE AdsFieldType.VARCHAR_FOX
+		CASE AdsFieldType.NCHAR
+		CASE AdsFieldType.NVARCHAR
 			chars := CHAR[] {length}
-			result := ACE.AdsGetString(SELF:_Table, dwField, chars, REF length ,0)
-		CASE ACE.ADS_NCHAR
-		CASE ACE.ADS_NVARCHAR
-			chars := CHAR[] {length}
-			result := ACE.AdsGetStringW(SELF:_Table, dwField, chars, REF length ,0)
+            IF eType:IsUnicode()
+			    result := ACE.AdsGetStringW(SELF:_Table, dwField, chars, REF length ,0)
+            ELSE
+			    result := ACE.AdsGetString(SELF:_Table, dwField, chars, REF length ,0)
+            ENDIF
 		OTHERWISE
 			SELF:ADSERROR(ERDD_DATATYPE, EG_DATATYPE)
 		END SWITCH
 		SWITCH result
 		CASE 0
-			IF wType != ACE.ADS_NCHAR .AND. wType != ACE.ADS_NVARCHAR
-				RETURN SELF:_Ansi2Unicode(chars, (INT) length)
+			IF eType:IsUnicode()
+                RETURN STRING{chars, 0, (INT) length}
 			ELSE
-				RETURN STRING{chars, 0, (INT) length}
+				RETURN SELF:_Ansi2Unicode(chars, (INT) length)
 			ENDIF
 		CASE ACE.AE_NO_CURRENT_RECORD
 			RETURN STRING{' ', (INT) length}
@@ -772,11 +776,11 @@ METHOD GetValue(nFldPos AS INT) AS OBJECT
 			SELF:_CheckError(result,EG_READ)
 		END SWITCH
 	CASE DbFieldType.Memo
-		SWITCH wType
-		CASE ACE.ADS_MEMO
-		CASE ACE.ADS_BINARY
-		CASE ACE.ADS_IMAGE
-		CASE ACE.ADS_NMEMO
+		SWITCH (AdsFieldType) wType
+		CASE AdsFieldType.MEMO
+		CASE AdsFieldType.NMEMO
+		CASE AdsFieldType.BINARY
+		CASE AdsFieldType.IMAGE
 			result := ACE.AdsGetMemoLength(SELF:_Table, dwField, OUT length )
 			SWITCH result
 			CASE 0
@@ -784,7 +788,7 @@ METHOD GetValue(nFldPos AS INT) AS OBJECT
 					RETURN string.Empty
 				ENDIF
 			CASE ACE.AE_NO_CURRENT_RECORD
-				IF wType == ACE.ADS_MEMO .OR. wType == ACE.ADS_NMEMO
+				IF eType:IsMemo()
 					RETURN string.Empty
 				ELSE    // image and binary
 					RETURN NULL
@@ -792,23 +796,23 @@ METHOD GetValue(nFldPos AS INT) AS OBJECT
 			OTHERWISE
 				SELF:_CheckError(result,EG_READ)
 			END SWITCH
-			SWITCH wType
-			CASE ACE.ADS_MEMO
+			SWITCH eType
+			CASE AdsFieldType.MEMO
 				chars := CHAR[] {++length}
 				SELF:_CheckError(ACE.AdsGetString(SELF:_Table, dwField, chars, REF length ,0),EG_READ)
 				RETURN SELF:_Ansi2Unicode(chars, (INT) length)
-			CASE ACE.ADS_NMEMO
+			CASE AdsFieldType.NMEMO
 				chars := CHAR[] {++length}
 				SELF:_CheckError(ACE.AdsGetStringW(SELF:_Table, dwField, chars, REF length ,0),EG_READ)
-			CASE ACE.ADS_BINARY
-			CASE ACE.ADS_IMAGE
+			CASE AdsFieldType.BINARY
+			CASE AdsFieldType.IMAGE
 				bytes := BYTE[] {length}
 				SELF:_CheckError(ACE.AdsGetBinary(SELF:_Table, dwField, 0, bytes, REF length ),EG_READ)
 				RETURN bytes
 			END SWITCH
 			
-		CASE ACE.ADS_RAW
-		CASE ACE.ADS_VARBINARY_FOX
+		CASE AdsFieldType.RAW
+		CASE AdsFieldType.VARBINARY_FOX
 			result := ACE.AdsIsEmpty(SELF:_Table, dwField, OUT isEmpty)
 			IF result == 0
 				IF isEmpty == 1
@@ -823,19 +827,19 @@ METHOD GetValue(nFldPos AS INT) AS OBJECT
 			RETURN bytes
 		END SWITCH
 	CASE DbFieldType.Number
-		SWITCH wType
-		CASE ACE.ADS_NUMERIC
-		CASE ACE.ADS_DOUBLE
-		CASE ACE.ADS_INTEGER
-		CASE ACE.ADS_SHORTINT
-		CASE ACE.ADS_AUTOINC
-		CASE ACE.ADS_CURDOUBLE
+		SWITCH eType
+		CASE AdsFieldType.NUMERIC
+		CASE AdsFieldType.DOUBLE
+		CASE AdsFieldType.INTEGER
+		CASE AdsFieldType.SHORTINT
+		CASE AdsFieldType.AUTOINC
+		CASE AdsFieldType.CURDOUBLE
 			LOCAL r8 AS REAL8
 			result := ACE.AdsGetDouble(SELF:_Table, dwField, OUT r8)
 			IF result == ACE.AE_NO_CURRENT_RECORD
 				r8 := 0.0
 			ENDIF
-			IF wType == ACE.ADS_DOUBLE .OR. wType == ACE.ADS_CURDOUBLE
+			IF eType:IsDouble()
 				VAR value := r8:ToString()
 				VAR pos := VALUE:IndexOf('.')
 				RETURN DbFloat{r8, fld:Length, IIF(pos > 0, fld:Length - pos -1, 0)}
@@ -931,54 +935,53 @@ METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
 	LOCAL wType AS WORD
 	LOCAL result := 0 AS DWORD
 	SELF:_CheckError(ACE.AdsGetFieldType(SELF:_Table, dwField, OUT wType),EG_READ)
+    LOCAL eType := (AdsFieldType) wType AS AdsFieldType
 	SWITCH fld:FieldType
 	CASE DbFieldType.Character
 	CASE DbFieldType.Memo
 		LOCAL length AS DWORD
 		LOCAL strValue AS STRING
-		SWITCH wType
-		CASE ACE.ADS_STRING
-		CASE ACE.ADS_MEMO
-		CASE ACE.ADS_VARCHAR
-		CASE ACE.ADS_CISTRING
+		SWITCH eType
+		CASE AdsFieldType.STRING
+		CASE AdsFieldType.MEMO
+		CASE AdsFieldType.VARCHAR
+        CASE AdsFieldType.VARCHAR_FOX
+		CASE AdsFieldType.CISTRING
+		CASE AdsFieldType.NCHAR
+		CASE AdsFieldType.NVARCHAR
+		CASE AdsFieldType.NMEMO
 			IF tc != TypeCode.String
 				SELF:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","String expected")
 			ENDIF
 			strValue := (STRING) oValue
-			length := (DWORD) strValue:Length
+			length  := (DWORD) strValue:Length
+            IF ! eType:IsMemo()
+                length := Math.Min(length, (DWORD) fld:Length)
+            ENDIF
 			IF length == 0
 				result := ACE.AdsSetEmpty(SELF:_Table, dwField)
 			ELSE
-				result := ACE.AdsSetString(SELF:_Table, dwField, strValue, length)
+                IF eType:IsUnicode()
+                    result := ACE.AdsSetStringW(SELF:_Table, dwField, strValue, length)
+                ELSE
+                    result := ACE.AdsSetString(SELF:_Table, dwField, strValue, length)
+                ENDIF
 			ENDIF
-		CASE ACE.ADS_NCHAR
-		CASE ACE.ADS_NVARCHAR
-		CASE ACE.ADS_NMEMO
-			IF tc != TypeCode.String
-				SELF:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","String expected")
-			ENDIF
-			strValue := (STRING) oValue
-			length := (DWORD) strValue:Length
-			IF length == 0
-				result := ACE.AdsSetEmpty(SELF:_Table, dwField)
-			ELSE
-				result := ACE.AdsSetStringW(SELF:_Table, dwField, strValue, length)
-			ENDIF
-		CASE ACE.ADS_TIME
-		CASE ACE.ADS_TIMESTAMP
-		CASE ACE.ADS_MONEY
-		CASE ACE.ADS_ROWVERSION
-		CASE ACE.ADS_MODTIME
+		CASE AdsFieldType.TIME
+		CASE AdsFieldType.TIMESTAMP
+		CASE AdsFieldType.MONEY
+		CASE AdsFieldType.ROWVERSION
+		CASE AdsFieldType.MODTIME
 			IF tc != TypeCode.String
 				SELF:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","String expected")
 			ENDIF
 			strValue := (STRING) oValue
 			length := (DWORD) strValue:Length
 			result := ACE.AdsSetField(SELF:_Table, dwField, strValue, length)
-		CASE ACE.ADS_BINARY
-		CASE ACE.ADS_IMAGE
-		CASE ACE.ADS_RAW
-		CASE ACE.ADS_VARBINARY_FOX
+		CASE AdsFieldType.BINARY
+		CASE AdsFieldType.IMAGE
+		CASE AdsFieldType.RAW
+		CASE AdsFieldType.VARBINARY_FOX
 			IF tc != TypeCode.String .AND. tc != TypeCode.Object
 				SELF:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","String or Object expected")
 			ENDIF
@@ -988,9 +991,9 @@ METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
 				result := ACE.AdsSetString(SELF:_Table, dwField, strValue, length)
 			ELSE
 				LOCAL bytes AS BYTE[]
-				bytes := (BYTE[]) oValue
-				length := (DWORD) bytes:Length
-				IF wType == ACE.ADS_RAW .OR. wType == ACE.ADS_VARBINARY_FOX
+				bytes   := (BYTE[]) oValue
+				length  := (DWORD) bytes:Length
+				IF eType == AdsFieldType.RAW .OR. eType == AdsFieldType.VARBINARY_FOX
 					result := ACE.AdsSetField(SELF:_Table, dwField, bytes, length)
 				ELSE
 					result := ACE.AdsSetBinary(SELF:_Table, dwField, wType, length, 0, bytes, length)
@@ -1019,6 +1022,7 @@ METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
 		ENDIF
 		SELF:_CheckError(ACE.AdsSetLogical(SELF:_Table, dwField, (WORD)  IIF( (LOGIC) oValue, 1, 0)),EG_WRITE)
 	CASE DbFieldType.Date
+        // Note that the XSharp.__Date type also returns a typecode of DateTime
 		IF tc != TypeCode.DateTime
 			SELF:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","Date or DateTime value expected")
 		ENDIF

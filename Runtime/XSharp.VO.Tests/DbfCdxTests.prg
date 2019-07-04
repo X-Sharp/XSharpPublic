@@ -1824,21 +1824,23 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			RddSetDefault("DBFCDX")
 			
-			cDbf := GetTempFileName("test1")
+			cDbf := GetTempFileName()
 			FErase(cDbf + ".cdx")
 			
 			aValues := {"Gas" , "Abc", "Golden" , "Guru" , "Ddd" , "Aaa" , "Ggg"}
 			aFields := { {"CFIELD" , "C" , 10 , 0} }
 			
 			DbCreate(cDbf , aFields)
-			DbUseArea(,,cDBF , , FALSE)
+			DbUseArea(,,cDBF )
 			DbCreateIndex(cDbf , "Upper(CFIELD)")
 			FOR i := 1 UPTO ALen(aValues)
-				DbAppend()
-				FieldPut(1, aValues[i])
+				IF DbAppend()
+				    FieldPut(1, aValues[i])
+                ENDIF
 			NEXT
 			
 			DbGoTop()
+            DbCommit()
 			Assert.Equal(7 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) ) // 7, correct
 			
 			// Setting order scope
@@ -2399,10 +2401,35 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbCloseArea()
 		RETURN		
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD CDX_SeekEmptyDbf() AS VOID
+			LOCAL aFields AS ARRAY
+			LOCAL cDBF AS STRING
+			
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
 
+			aFields := { { "LAST" , "C" , 20 , 0 }}
+			FErase(cDBF + ".cdx")
+			FErase(cDBF + ".dbt")
+			FErase(cDBF + ".fpt")
+			
+			DbCreate( cDBF , AFields)
+
+			DbUseArea(,"DBFCDX" , cDbf)
+			DbCreateOrder( "ORDER1" , cDbf + ".cdx" , "upper(LAST)" , { || Upper ( _FIELD->LAST) }  )
+
+			DbGoTop()
+            DbSeek("A")
+			DbCloseArea()
+
+		RETURN	
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
-		RETURN GetTempFileName("testdbf")
+           STATIC nCounter AS LONG
+            ++nCounter
+		    RETURN GetTempFileName("testcdx"+Ntrim(nCounter))
+		    
 		STATIC PRIVATE METHOD GetTempFileName(cFileName AS STRING) AS STRING
 			// we may want to put them to a specific folder etc
 		RETURN cFileName

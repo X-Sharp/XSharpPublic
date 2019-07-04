@@ -17,8 +17,6 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		METHOD FileTest() AS VOID
 			Assert.Equal(TRUE,File("c:\windows\system32\shell32.dll"))
 			Assert.Equal(FALSE,File(NULL))
-
-			Assert.Equal("XSHARP\DEVRT\BINARIES\DEBUG", CurDir():ToUpper())
 		RETURN
 
 	END CLASS

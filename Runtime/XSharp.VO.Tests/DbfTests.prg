@@ -275,7 +275,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBFilter() AS VOID
 			LOCAL cDbf AS STRING
 			cDbf := GetTempFileName()
-			IF System.IO.File.Exists(cDbf)
+			IF System.IO.File.Exists(cDbf) 
 				System.IO.File.Delete(cDbf)
 			END IF
 			DBCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFNTX", TRUE)
@@ -434,7 +434,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			RDDSetDefault("DBFNTX")
 
-			cDbf := __Function__
+			cDbf := GetTempFileName()
 			cNtx := cDbf + ".ntx"
 			
 			Assert.True( DBCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 }}) )
@@ -1997,7 +1997,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
-		RETURN GetTempFileName("testdbf")
+            STATIC nCounter AS LONG
+            ++nCounter
+		    RETURN GetTempFileName("testdbf"+Ntrim(nCounter))
 		STATIC PRIVATE METHOD GetTempFileName(cFileName AS STRING) AS STRING
 			// we may want to put them to a specific folder etc
 		RETURN cFileName

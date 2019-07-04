@@ -17,21 +17,29 @@
       <li styleclass="List">The compiler would not complain if you were assigning a value of one enum to a variable of another enum. This has been fixed.</li>
       <li styleclass="List">Added support for the FoxPro &apos;=&apos; assignment operators. Other dialects also allow the assignment operator but a warning is generated in the other dialects.</li>
       <li styleclass="List">Xbase++ classes inside BEGIN NAMESPACE .. END NAMESPACE were not recognized. This has been fixed.</li>
-      <li styleclass="List">Statements inside WITH blocks are no longer contrained to assignment expressions and method calls. You can now use the WITH syntax for expressions anywhere inside a WITH block. If the compiler can't find the WITH variable then it will output a new error message (XS9082)</li>
+      <li styleclass="List">Statements inside WITH blocks are no longer contrained to assignment expressions and method calls. You can now use the WITH syntax for expressions anywhere inside a WITH block. If the compiler can&apos;t find the WITH variable then it will output a new error message (XS9082)</li>
+      <li styleclass="List">Updated the Aliased Expression rules to make sure that compound expressions properly respect the parentheses.</li>
     </list>
     <para styleclass="Heading2">MacroCompiler</para>
+    <list id="61" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Fixed a problem with resolving Field names that were identical to keyword abbreviations (for example CODE) and for Field names that are equal to built in function names (such as SET)</li>
+    </list>
     <para styleclass="Heading2">Runtime</para>
     <list id="61" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Added functions FieldPutBytes() and FieldGetBytes()</li>
       <li styleclass="List">Added function ShowArray()</li>
       <li styleclass="List">Added several defines that were missing, such as MAX_ALLOC and ASC_A.</li>
       <li styleclass="List">Added Crypt() overloads that accept BYTE[] arguments</li>
-      <li styleclass="List">The ClassDescribe method for DataObject classes (XPP dialect) now includes properties and methods that were dynamically added.</li>
+      <li styleclass="List">The ClassDescribe() method for DataObject classes (XPP dialect) now includes properties and methods that were dynamically added.</li>
       <li styleclass="List">Fixed a problem with the RELEASE command for MemVars. This was also releasing variables defined outside the current function / method.</li>
-      <li styleclass="List">There is now also a difference between the FoxPro dialect and other dialects in the behaviour of the RELEASE command. FoxPro completely deletes the variables, the other dialect set the value of the variables to NIL.</li>
+      <li styleclass="List">There is now also a difference between the FoxPro dialect and other dialects in the behaviour of the RELEASE command. <br/>FoxPro completely deletes the variables, the other dialect set the value of the variables to NIL.</li>
       <li styleclass="List">New PRIVATE memvars are intialized to FALSE in the FoxPro dialect. In the other dialects they are initialized to NIL.</li>
       <li styleclass="List">Some numeric properties in the RuntimeState were giving a problem when a numeric of one type was written and another numeric type was expected when reading. This has been fixed.</li>
       <li styleclass="List">Fixed a problem with return NIL values from Macro compiled codeblocks.</li>
+      <li styleclass="List">The parameter to DbClearScope() is now optional</li>
+      <li styleclass="List">The USUAL type now allows to compare between values of type PTR and LONG/INT64 The PTR value is converted to the appropriate Integral type and then an Integral comparison is done.</li>
+      <li styleclass="List">The USUAL type now also allows comparisons between any type and NIL. </li>
+      <li styleclass="List"></li>
     </list>
     <para styleclass="Heading2">RDD System</para>
     <list id="61" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -47,6 +55,9 @@
       <li styleclass="List">The ADS RDD was returning incorrect values for LOGIC fields.</li>
       <li styleclass="List">Fixed some problems with skipping in CDX indexes and scopes and filters.</li>
       <li styleclass="List">Executing DbGoTop() twice or DbGoBottom() twice for DBFCDX would confuse the RDD. This has been fixed.</li>
+      <li styleclass="List">Fixed a problem with Seeking() in an empty DBF file</li>
+      <li styleclass="List">FieldPut for STRING fields in the Advantage RDD now truncates the fields to the maximum length of the field before assigning the value</li>
+      <li styleclass="List">Fixed a problem with UNIQUE CDX Indexes.</li>
     </list>
     <para styleclass="Heading2">Visual Studio integration</para>
     <list id="61" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">

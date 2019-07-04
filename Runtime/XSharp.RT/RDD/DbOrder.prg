@@ -479,8 +479,8 @@ FUNCTION DbScope(uScope) AS USUAL CLIPPER
     CASE SCOPE_BOTTOM
         uScope := OrdScope(BOTTOMSCOPE)
     CASE SCOPE_BOTH
-        uScope := {OrdScope(TOPSCOPE),OrdScope(BOTTOMSCOPE)}
     OTHERWISE
+        uScope := {OrdScope(TOPSCOPE),OrdScope(BOTTOMSCOPE)}
         uScope := NIL
     END SWITCH
     RETURN uScope
@@ -507,11 +507,10 @@ FUNCTION DbSetScope(nScope AS LONG, uValue AS USUAL) AS LOGIC
             lResult := XSharp.RuntimeState:LastRDDError == NULL
                 
         CASE SCOPE_BOTH
+        OTHERWISE
             OrdScope(TOPSCOPE,uValue)
             OrdScope(BOTTOMSCOPE, uValue)
             lResult := XSharp.RuntimeState:LastRDDError == NULL
-        
-        OTHERWISE
             lResult := FALSE
         END SWITCH
     CATCH AS Exception
@@ -537,14 +536,12 @@ FUNCTION DbClearScope(nScope AS LONG) AS LOGIC
         CASE SCOPE_BOTTOM
             OrdScope(BOTTOMSCOPE, NIL)
             lResult := XSharp.RuntimeState:LastRDDError == NULL
-                
-        CASE SCOPE_BOTH
+
+        CASE SCOPE_BOTH        
+        OTHERWISE   // SCOPE_BOTH is default in Xbase++
             OrdScope(TOPSCOPE,NIL)
             OrdScope(BOTTOMSCOPE, NIL)
             lResult := XSharp.RuntimeState:LastRDDError == NULL
-        
-        OTHERWISE
-            lResult := FALSE
         END SWITCH
     CATCH AS Exception
         lResult := FALSE

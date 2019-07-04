@@ -108,7 +108,7 @@
         </item>
         <item>
           <term>SCOPE_BOTH</term>
-          <description>The top and also the bottom scope.</description>
+          <description>The top and also the bottom scope. This is the <em>default</em>.</description>
         </item>
       </list>
     </span>

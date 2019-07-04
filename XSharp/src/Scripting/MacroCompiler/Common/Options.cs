@@ -14,6 +14,13 @@ namespace XSharp.MacroCompiler
         TreatAsFieldOrMemvar,
     }
 
+    public enum ParseMode
+    {
+        Expression,
+        Statements,
+        Entities,
+    }
+
     public class MacroOptions
     {
         public static readonly MacroOptions Default = new MacroOptions();
@@ -35,6 +42,10 @@ namespace XSharp.MacroCompiler
         }
 
         public VariableResolution UndeclaredVariableResolution = VariableResolution.TreatAsFieldOrMemvar;
+
+        public ParseMode ParseMode = ParseMode.Expression;
+        internal bool ParseEntities { get => ParseMode == ParseMode.Entities; }
+        internal bool ParseStatements { get => ParseMode == ParseMode.Statements || ParseMode == ParseMode.Entities; }
 
         internal BindOptions Binding { get; private set; } = BindOptions.Default;
     }

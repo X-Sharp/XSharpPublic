@@ -78,18 +78,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     case EOS:
                         // EOS so no valid typecast
                         return false;
-                    case ID:                // (Mytype)
-                    case DOT:               // (System.String)
-                    case QMARK:             // (Mytype?)
-                    case LBRKT:             // (long[])
-                    case RBRKT:             // (long[])
-                    case COMMA:             // (long[,])
+                  default:
                         break;
-                    default:
-                        if (XSharpLexer.IsKeyword(c))
-                            break;
-                        // no other tokens allowed for typename
-                        return false;
 
                 }
                 if (nestedlevel == 0)

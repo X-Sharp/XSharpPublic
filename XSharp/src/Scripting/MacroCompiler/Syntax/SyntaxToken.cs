@@ -56,11 +56,11 @@ namespace XSharp.MacroCompiler.Syntax
         DEFAULT,
 
         //// New XSharp Keywords (no 4 letter abbreviations) [entity]
-        ADD, ASSEMBLY, EXTERN, FIXED, MODULE, OVERRIDE, PARAMS, UNSAFE,
+        ADD, ASSEMBLY, EXTERN, FIXED, MODULE, OVERRIDE, PARAMS, REMOVE, UNSAFE,
 
         //// New XSharp Keywords (no 4 letter abbreviations) [statement]
         ARGLIST, ASCENDING, BY, DESCENDING, EQUALS, FROM, GROUP, INTO, JOIN, LET, NOP,
-        ON, ORDERBY, REMOVE, SELECT, SWITCH, VAR, VOLATILE, WHERE, YIELD,
+        ON, ORDERBY, SELECT, SWITCH, VAR, VOLATILE, WHERE, YIELD,
 
         //// New XSharp expr Keywords (no 4 letter abbreviations)
         AWAIT, ASYNC, ASTYPE, CHECKED, UNCHECKED, 
@@ -76,9 +76,6 @@ namespace XSharp.MacroCompiler.Syntax
         // XSharp Types
         DYNAMIC, DECIMAL, DATETIME,
         LAST_TYPE,
-
-        // Vulcan UDCs [entity]
-        WAIT, ACCEPT, CANCEL, QUIT,
 
         // UDC Tokens that should be shown in the keyword color [entity]
         UDC_KEYWORD,
@@ -278,11 +275,6 @@ namespace XSharp.MacroCompiler.Syntax
                 {"UPTO", TokenType.UPTO},
                 {"WHILE", TokenType.WHILE},
 
-                // Vulcan UDCs
-                {"WAIT", TokenType.WAIT},
-                {"ACCEPT", TokenType.ACCEPT},
-                {"CANCEL", TokenType.CANCEL},
-                {"QUIT", TokenType.QUIT},
             };
 
             var VoKeywords = new Dictionary<string, TokenType>

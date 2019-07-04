@@ -110,11 +110,17 @@ namespace XSharp.MacroCompiler
             }
             foreach(var m in Type.GetMembers(flags))
             {
-                var ms = MemberSymbol.Create(this, m);
-                if (ms != null)
-                {
-                    MemberTable.Add(m, ms);
-                    AddMember(m.Name, ms);
+                lock (this)
+                { 
+                    var ms = MemberSymbol.Create(this, m);
+                    if (ms != null)
+                    {
+                        if (! MemberTable.ContainsKey(m))
+                        { 
+                            MemberTable.Add(m, ms);
+                        }
+                        AddMember(m.Name, ms);
+                    }
                 }
             }
             if (NativeType == NativeType.Array)

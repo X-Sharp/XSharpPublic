@@ -184,11 +184,10 @@ namespace XSharpLanguage
                 // Start of Process
                 String filterText = "";
                 // Check if we can get the member where we are
-                var containingline = triggerPoint.GetContainingLine().LineNumber;
-                XTypeMember member = XSharpTokenTools.FindMember(containingline, this._file);
+                int currentLine = triggerPoint.GetContainingLine().LineNumber;
+                XTypeMember member = XSharpTokenTools.FindMember(currentLine, this._file);
                 XType currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, this._file);
                 // Standard TokenList Creation (based on colon Selector )
-                int currentLine = triggerPoint.GetContainingLine().LineNumber;
                 List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, currentLine, _buffer.CurrentSnapshot, out _stopToken, false, _file, false, member);
                 // We might be here due to a COMPLETEWORD command, so we have no typedChar
                 // but we "may" have a incomplete word like System.String.To
@@ -2258,12 +2257,12 @@ namespace XSharpLanguage
 
             bool ok = XSharp.Parser.VsParser.Lex(bufferText, fileName, parseoptions, reporter, out tokenStream);
             var stream = tokenStream as BufferedTokenStream;
-            return GetTokenList(triggerPointPosition, triggerPointLineNumber, stream, out stopToken, fromGotoDefn, file, dotAsSelector);
+            return GetTokenList(triggerPointPosition, triggerPointLineNumber, stream, out stopToken, fromGotoDefn, file, dotAsSelector, fromMember);
         }
 
 
         public static List<String> GetTokenList(int triggerPointPosition, int triggerPointLineNumber,
-            BufferedTokenStream tokens, out IToken stopToken, bool fromGotoDefn, XFile file, bool dotAsSelector)
+            BufferedTokenStream tokens, out IToken stopToken, bool fromGotoDefn, XFile file, bool dotAsSelector, XTypeMember fromMember)
         {
             List<String> tokenList = new List<string>();
             String token;
@@ -2483,8 +2482,9 @@ namespace XSharpLanguage
             tokenList.Reverse();
             if (tokenList.Count > 0)
             {
+                // First token
                 token = tokenList[0];
-                // Could be the case in a WITH...END construct
+                // Could be a COLON or a DOT, it will could be the case in a WITH...END construct
                 if ((token.CompareTo(":") == 0) || (token.CompareTo(".") == 0))
                 {
                     bool inWith = false;
@@ -2498,6 +2498,12 @@ namespace XSharpLanguage
                     while (triggerToken != null)
                     {
                         triggerToken = GetPreviousToken(tokens, triggerToken, false);
+                        // We should check that we are not getting out of the current member.....
+                        if ( triggerToken.StartIndex < fromMember.Interval.Start)
+                        {
+                            triggerToken = null;
+                            break;
+                        }
                         switch (triggerToken.Type)
                         {
                             case XSharpLexer.WITH:
@@ -2518,11 +2524,12 @@ namespace XSharpLanguage
                         // So now, get the ID associated with WITH
                         if (lastID != null)
                         {
+                            // Guess that the ID is on the same line as the WITH
                             if (lastID.Line == withLine)
                             {
                                 temp = (XSharpToken)lastID;
                                 //indexWith = temp.OriginalTokenIndex;
-                                // Ok, let's say that the LastID is the one used by WITH
+                                // Ok, let's guess that the LastID is the one used by WITH
                                 // SO, inject it in the beginning of the list
                                 tokenList.Insert(0, lastID.Text);
                             }
@@ -2589,9 +2596,11 @@ namespace XSharpLanguage
                     switch (lowerToken)
                     {
                         case "this":
+                            // THIS will turn to a SELF
                             returnList.Add("SELF");
                             break;
                         case ".":
+                            // dot in first place will mean SELF.
                             if (returnList.Count == 0)
                             {
                                 returnList.Add("SELF");

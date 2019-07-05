@@ -19,7 +19,7 @@ using System.Diagnostics;
 using System.Collections.Immutable;
 using XSharpModel;
 using System.Collections;
-
+using System.IO;
 namespace XSharp.CodeDom
 {
 
@@ -75,7 +75,7 @@ namespace XSharp.CodeDom
         public XSharpClassDiscover(IProjectTypeHelper projectNode) : base(projectNode)
         {
             // The default (empty) CodeCompileUnit, so we can work if none is provided
-            this.CodeCompileUnit = new CodeCompileUnit();
+            this.CodeCompileUnit = new XCodeCompileUnit();
             // The default Namespace, so we can work if none is provided... :)
             this.CurrentNamespace = new XCodeNamespace("");
             this.CodeCompileUnit.Namespaces.Add(this.CurrentNamespace);
@@ -92,7 +92,7 @@ namespace XSharp.CodeDom
             _tokens = null;
         }
 
-        public CodeCompileUnit CodeCompileUnit { get; internal set; }
+        public XCodeCompileUnit CodeCompileUnit { get; internal set; }
 
         public XCodeTypeDeclaration CurrentClass { get; private set; }
         public Stack<XCodeNamespace> NamespaceStack { get; private set; }
@@ -396,7 +396,7 @@ namespace XSharp.CodeDom
                 _startToken = context._Entities[0].Start.StartIndex;
             }
             //
-            newNamespace.Comments.AddRange(context.GetLeadingComments(_tokens));
+            writeTrivia(newNamespace, context);
             this.NamespaceStack.Push(this.CurrentNamespace);
             //
             if (string.IsNullOrEmpty(this.CurrentNamespace.Name))
@@ -426,6 +426,18 @@ namespace XSharp.CodeDom
             this.CurrentNamespace = this.NamespaceStack.Pop();
         }
 
+        public override void ExitSource([NotNull] XSharpParser.SourceContext context)
+        {
+            var lastEnt = context._Entities.LastOrDefault();
+            if (lastEnt != null)
+            {
+
+                writeTrivia(CodeCompileUnit, lastEnt, true);
+
+            }
+        }
+
+
         public override void EnterClass_(XSharpParser.Class_Context context)
         {
             XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText());
@@ -436,7 +448,7 @@ namespace XSharp.CodeDom
             CurrentNamespace.Types.Add(newClass);
             // That's a Class
             newClass.IsClass = true;
-            newClass.Comments.AddRange(context.GetLeadingComments(_tokens));
+            writeTrivia(newClass, context);
             //
             if (context.Modifiers == null)
             {
@@ -510,18 +522,115 @@ namespace XSharp.CodeDom
             _startToken = _tokens[tokenIndex].StartIndex;
         }
 
+        public override void EnterStructure_(XSharpParser.Structure_Context context)
+        {
+            XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText());
+            // Set as Current working Class
+            AddCodeBefore(newClass.UserData, context.Start.StartIndex);
+            CurrentClass = newClass;
+            // and push into the Namespace
+            CurrentNamespace.Types.Add(newClass);
+            // That's a Class
+            newClass.IsStruct = true;
+            writeTrivia(newClass, context);
+            //
+            if (context.Modifiers == null)
+            {
+                newClass.TypeAttributes = System.Reflection.TypeAttributes.Public;
+            }
+            else
+            {
+                // Modifiers
+                foreach (var t in context.Modifiers._Tokens)
+                {
+                    switch (t.Type)
+                    {
+                        case XSharpParser.PARTIAL:
+                            newClass.IsPartial = true;
+                            break;
+                        case XSharpParser.SEALED:
+                            newClass.Attributes |= MemberAttributes.Final;
+                            break;
+                        case XSharpParser.ABSTRACT:
+                            newClass.Attributes |= MemberAttributes.Abstract;
+                            break;
+                        case XSharpParser.INTERNAL:
+                            newClass.Attributes |= MemberAttributes.Assembly;
+                            break;
+                        case XSharpParser.PUBLIC:
+                            newClass.Attributes |= MemberAttributes.Public;
+                            break;
+                    }
+                }
+                // What Visibility ?
+                newClass.TypeAttributes = ContextToStructureModifiers(context.Modifiers);
+            }
+
+            // IMPLEMENTS ?
+            if ((context._Implements != null) && (context._Implements.Count > 0))
+            {
+                foreach (var interfaces in context._Implements)
+                {
+                    var ifName = interfaces.GetCleanText();
+                    newClass.BaseTypes.Add(BuildTypeReference(ifName));
+                }
+            }
+            //
+            // Add the variables from this class to the Members collection and lookup table
+            _members.Clear();
+            if (FieldList.ContainsKey(context))
+            {
+                var fields = FieldList[context];
+                foreach (var f in fields)
+                {
+                    newClass.Members.Add(f);
+                    addClassMember(new XMemberType(f.Name, MemberTypes.Field, false, findType(f.Type.BaseType), f.Type.BaseType));
+                }
+            }
+            var token = context.Stop as XSharpToken;
+            var tokenIndex = token.OriginalTokenIndex;
+            var line = token.Line;
+            for (;;)
+            {
+                if (tokenIndex >= _tokens.Count - 1)
+                    break;
+                tokenIndex++;
+                if (_tokens[tokenIndex].Line > line)
+                    break;
+            }
+            _startToken = _tokens[tokenIndex].StartIndex;
+        }
+
+        public override void ExitStructure_([NotNull] XSharpParser.Structure_Context context)
+        {
+            var lastmember = context._Members.LastOrDefault();
+            if (lastmember != null)
+            {
+                // collect trivia after last member
+                writeTrivia(CurrentClass, lastmember, true);
+            }
+            _members.Clear();
+        }
+
         public override void ExitClass_([NotNull] XSharpParser.Class_Context context)
         {
+            var lastmember = context._Members.LastOrDefault();
+            if (lastmember != null)
+            {
+                // collect trivia after last member
+                writeTrivia(CurrentClass, lastmember, true);
+            }
             _members.Clear();
         }
         public override void EnterMethod([NotNull] XSharpParser.MethodContext context)
         {
             _locals.Clear();
             var newMethod = new XCodeMemberMethod();
-            newMethod.Comments.AddRange(context.GetLeadingComments(_tokens));
+            writeTrivia(newMethod, context);
             newMethod.Name = context.Id.GetCleanText();
             newMethod.Attributes = MemberAttributes.Public;
             newMethod.Parameters.AddRange(GetParametersList(context.ParamList));
+            FillCodeDomDesignerData(newMethod, context.Start.Line, context.Start.Column);
             var returnType = BuildDataType(context.Type);
             newMethod.ReturnType = returnType;
             //
@@ -586,7 +695,8 @@ namespace XSharp.CodeDom
         public override void EnterEvent_([NotNull] XSharpParser.Event_Context context)
         {
             var evt = new XCodeMemberEvent();
-            evt.Comments.AddRange(context.GetLeadingComments(_tokens));
+            writeTrivia(evt, context);
+            FillCodeDomDesignerData(evt, context.Start.Line, context.Start.Column);
             evt.Name = context.Id.GetCleanText();
             evt.Attributes = MemberAttributes.Public;
             var typeName = context.Type.GetCleanText();
@@ -619,7 +729,8 @@ namespace XSharp.CodeDom
         public override void EnterConstructor([NotNull] XSharpParser.ConstructorContext context)
         {
             var ctor = new XCodeConstructor();
-            ctor.Comments.AddRange(context.GetLeadingComments(_tokens));
+            writeTrivia(ctor, context);
+            FillCodeDomDesignerData(ctor, context.Start.Line, context.Start.Column);
             ctor.Attributes = MemberAttributes.Public;
             ctor.Parameters.AddRange(GetParametersList(context.ParamList));
             //
@@ -639,7 +750,7 @@ namespace XSharp.CodeDom
             // Ok, let's "cheat" : We will not analyze the element
             // we will just copy the whole source code in a Snippet Member
             CodeSnippetTypeMember snippet = CreateSnippetMember(context);
-            snippet.Comments.AddRange(context.GetLeadingComments(_tokens));
+            writeTrivia(snippet, context);
             this.CurrentClass.Members.Add(snippet);
         }
 
@@ -648,7 +759,7 @@ namespace XSharp.CodeDom
             // Ok, let's "cheat" : We will not analyze the element
             // we will just copy the whole source code in a Snippet Member
             CodeSnippetTypeMember snippet = CreateSnippetMember(context);
-            snippet.Comments.AddRange(context.GetLeadingComments(_tokens));
+            writeTrivia(snippet, context);
             this.CurrentClass.Members.Add(snippet);
         }
 
@@ -657,7 +768,7 @@ namespace XSharp.CodeDom
             // Ok, let's "cheat" : We will not analyze the element
             // we will just copy the whole source code in a Snippet Member
             CodeSnippetTypeMember snippet = CreateSnippetMember(context);
-            snippet.Comments.AddRange(context.GetLeadingComments(_tokens));
+            writeTrivia(snippet, context);
             this.CurrentClass.Members.Add(snippet);
         }
 
@@ -1492,75 +1603,112 @@ namespace XSharp.CodeDom
 
 
 
+        private void writeTrivia(CodeObject o, XSharpParserRuleContext context, bool end = false)
+        {
+            string trivia;
+            if (end)
+                trivia = context.GetEndingTrivia(_tokens);
+            else
+                trivia = context.GetLeadingTrivia(_tokens);
+            if (! string.IsNullOrEmpty(trivia))
+            {
+                var key = end ? XSharpCodeConstants.USERDATA_ENDINGTRIVIA : XSharpCodeConstants.USERDATA_LEADINGTRIVIA;
+                o.UserData[key] = trivia;
+            }
 
+        }
 
 
     }
     static class ParseHelpers
     {
-        public static CodeCommentStatement[] GetLeadingComments(this ParserRuleContext context, IList<IToken> tokens)
+        public static string GetLeadingTrivia(this ParserRuleContext context, IList<IToken> tokens)
         {
             // comment ends with token before the start of the method/class etc.
-            int endPos = ((XSharpToken)context.Start).OriginalTokenIndex- 1;
-            int startPos = endPos;
-            var stmts = new List<CodeCommentStatement>();
-            while (startPos >= 0 && (tokens[startPos].Channel != 0 || tokens[startPos].Type == XSharpLexer.EOS))
+            int pos = ((XSharpToken)context.Start).OriginalTokenIndex ;
+            int startline = tokens[pos].Line;
+            pos--;
+            // skip to end of previous line
+            while (pos >= 0 && tokens[pos].Line == startline)
             {
-                var token = tokens[startPos] ;
-                if (XSharpLexer.IsComment(token.Type))
-                {
-                    string line = token.Text.TrimStart();
-                    switch (token.Type)
-                    {
-                        case XSharpLexer.DOC_COMMENT:
-                            stmts.Insert(0, new CodeCommentStatement(line.Substring(3).Trim(), true));
-                            break;
-                        case XSharpLexer.SL_COMMENT:
-                            if (line.StartsWith("*"))
-                            {
-                                stmts.Insert(0, new CodeCommentStatement(line.Substring(1).Trim(), false));
-                            }
-                            else
-                            {
-                                stmts.Insert(0, new CodeCommentStatement(line.Substring(2).Trim(), false));
-                            }
-                            break;
-                        case XSharpLexer.ML_COMMENT:
-                            // remove terminators and convert to list of single line comments
-                            var lines = line.Substring(2, line.Length - 4).Replace("\r", "").Split('\n');
-                            CodeCommentStatement[] cmts = new CodeCommentStatement[lines.Length];
-                            for (int i = 0; i < lines.Length; i++)
-                            {
-                                cmts[i] = new CodeCommentStatement(lines[i], false);
-                            }
-                            for (int i = lines.Length - 1; i >= 0; i--)
-                            {
-                                stmts.Insert(0, cmts[i]);
-                            }
-                            break;
-                        default:
-                            // what else
-                            break;
-                    }
-                }
-                startPos--;
+                pos--;
             }
-            // clear auto generated comments
-            bool wasgenerated = false;
-            foreach (var stmt in stmts)
+            // skip CRLF
+            pos--;
+            var sb = new StringBuilder();
+            while (pos >= 0 )
             {
-                if (stmt.Comment.Text.Contains("<auto-generated>"))
+                var token = tokens[pos];
+                if (token.Channel != 0 )
                 {
-                    wasgenerated = true;
+                    sb.Insert(0, token.Text);
+                    pos--;
+                }
+                // only append EOS tokens when they are preceded with whitespace or comments
+                else if (token.Type == XSharpParser.EOS && pos > 0 && tokens[pos-1].Channel != 0)
+                {
+                    sb.Insert(0, token.Text);
+                    pos--;
+                }
+                else
+                {
                     break;
                 }
             }
-            if (wasgenerated)
+            var result = sb.ToString().TrimEnd();
+            if (! string.IsNullOrEmpty(result))
             {
-                stmts.Clear();
+                result = removeGeneratedComment(result);
             }
-            return stmts.ToArray();
+            return result;
         }
+
+        private static string removeGeneratedComment(string source)
+        {
+            if (source.IndexOf("<auto-generated>") == -1)
+                return source;
+            var lines = source.Split(new string[] { "\r\n" },StringSplitOptions.None);
+            var sb = new StringBuilder();
+            for (int i = 0; i < lines.Length; i++)
+            {
+                var line = lines[i];
+                if (!line.StartsWith("//"))
+                {
+                    sb.AppendLine(line);
+                }
+            }
+            return sb.ToString();
+        }
+
+        public static string GetEndingTrivia(this ParserRuleContext context, IList<IToken> tokens)
+        {
+            // comment ends with token before the start of the method/class etc.
+            int pos = ((XSharpToken)context.Stop).OriginalTokenIndex +1;
+            var sb = new StringBuilder();
+            var lastIsSpecial = false;
+            while (pos  < tokens.Count )
+            {
+                var token = tokens[pos];
+                if (token.Channel != 0)
+                {
+                    sb.Append(token.Text);
+                    pos++;
+                    lastIsSpecial = true;
+                }
+                else if (token.Type == XSharpParser.EOS && lastIsSpecial)
+                {
+                    sb.Append(token.Text);
+                    pos++;
+                    lastIsSpecial = false;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return sb.ToString().TrimEnd();
+        }
+
 
         public static System.Boolean IsNumeric(System.Object Expression)
         {

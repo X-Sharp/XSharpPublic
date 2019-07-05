@@ -200,7 +200,7 @@ FUNCTION FieldGetSym(symField AS SYMBOL) AS USUAL
     LOCAL dwPos AS DWORD
     dwPos := FieldPosSym(symField)
     IF dwPos == 0
-        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME,  symField  )
+        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME,  <OBJECT>{symField}  )
     ENDIF
     RETURN FieldGet( dwPos )  
     
@@ -236,7 +236,7 @@ FUNCTION FieldPutSym(symField AS SYMBOL,uValue AS USUAL) AS USUAL
     LOCAL dwPos AS DWORD
     dwPos := FieldPosSym(symField)
     IF dwPos == 0
-        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME,  symField  )
+        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME,  <OBJECT>{symField}  )
     ENDIF
     RETURN FieldPut( dwPos ,uValue )
     
@@ -348,7 +348,7 @@ FUNCTION DbCreate (   cName,  aStruct, cRddName , lNew,  cAlias, cDelim, lJustOp
     ELSE
         THROW Error.DataTypeError( __FUNCTION__, nameof(cRddName ), 3, { cRddName  } )
     ENDIF
-    IF ! lRetCode .and. RuntimeState.LastRDDError != NULL
+    IF ! lRetCode .AND. RuntimeState.LastRDDError != NULL
         THROW RuntimeState.LastRDDError
     ENDIF
     RETURN lRetCode
@@ -742,7 +742,7 @@ FUNCTION FieldGetBytes(nPos ) AS BYTE[] CLIPPER
 
 /// <summary>Write an array of bytes direct to the workarea buffer.</summary>
 /// <remarks>This will only work for DBF based workareas (not for Advantage workareas)</remarks>
-FUNCTION FieldPutBytes(nPos AS USUAL, aBytes as BYTE[]) AS LOGIC
+FUNCTION FieldPutBytes(nPos AS USUAL, aBytes AS BYTE[]) AS LOGIC
      DEFAULT( REF nPos, 1)
     _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldPutBytes(nPos, aBytes))
     RETURN TRUE
@@ -758,7 +758,7 @@ FUNCTION FieldGetArea(workarea AS DWORD, symField AS SYMBOL) AS USUAL
         dwPos := FieldPosSym(symField)
         IF dwPos == 0
            VoDbSetSelect( (INT) oldArea)
-           THROW Error.VODBError(EG_ARG, EDB_FIELDNAME, __FUNCTION__, {symField})
+           THROW Error.VODBError(EG_ARG, EDB_FIELDNAME, __FUNCTION__, <OBJECT>{symField})
         ELSE
             VODBFieldGet( dwPos, REF result )
         ENDIF
@@ -776,7 +776,7 @@ FUNCTION FieldPutArea(workarea AS DWORD, symField AS SYMBOL, uNewValue AS USUAL)
         dwPos := FieldPosSym(symField)
         IF dwPos == 0
            VoDbSetSelect( (INT) oldArea)
-           THROW Error.VODBError(EG_ARG, EDB_FIELDNAME, __FUNCTION__, {symField})
+           THROW Error.VODBError(EG_ARG, EDB_FIELDNAME, __FUNCTION__, <OBJECT>{symField})
         ELSE
             VODBFieldPut( dwPos, uNewValue)
         ENDIF

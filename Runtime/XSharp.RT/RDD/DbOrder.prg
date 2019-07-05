@@ -460,20 +460,20 @@ FUNCTION OrdSetFocus(uOrder, cOrdBag) AS USUAL CLIPPER
     /// <include file="RTComments.xml" path="Comments/ScopeParams/*"  /> <br/></param>
     /// <returns><include file="RTComments.xml" path="Comments/ScopeReturn/*"  /></returns>
     /// <seealso cref='M:XSharp.RT.Functions.DbSetScope(System.Int32,XSharp.__Usual)' />
-    /// <seealso cref='M:XSharp.RT.Functions.DbClearScope(System.Int32)' />
+    /// <seealso cref='M:XSharp.RT.Functions.DbClearScope(XSharp.__Usual)' />
 
 FUNCTION DbScope(uScope) AS USUAL CLIPPER
-    LOCAL nScope AS LONG
     IF IsNil(uScope)
         uScope := OrdScope(TOPSCOPE)
-        IF isNil(uScope)
+        IF uScope:IsNil
             uScope := OrdScope(BOTTOMSCOPE)
         ENDIF
-        RETURN ! IsNil(uScope)
+        RETURN ! uScope:IsNil
     ENDIF
-    EnForceNumeric(uScope)
-    nScope := uScope
-    SWITCH nScope
+    IF !uScope:IsNumeric
+        uScope := SCOPE_BOTH
+    ENDIF
+    SWITCH (LONG) uScope
     CASE SCOPE_TOP
         uScope := OrdScope(TOPSCOPE)
     CASE SCOPE_BOTTOM
@@ -481,7 +481,6 @@ FUNCTION DbScope(uScope) AS USUAL CLIPPER
     CASE SCOPE_BOTH
     OTHERWISE
         uScope := {OrdScope(TOPSCOPE),OrdScope(BOTTOMSCOPE)}
-        uScope := NIL
     END SWITCH
     RETURN uScope
     
@@ -491,7 +490,7 @@ FUNCTION DbScope(uScope) AS USUAL CLIPPER
     /// <param name="uValue">The value that needs to be set.
     /// The type of the value must match the type of the index expression.</param>
     /// <returns>TRUE when the scope was set succesfully, otherwise FALSE.</returns>
-    /// <seealso cref='M:XSharp.RT.Functions.DbClearScope(System.Int32)' />
+    /// <seealso cref='M:XSharp.RT.Functions.DbClearScope(XSharp.__Usual)' />
     /// <seealso cref='M:XSharp.RT.Functions.DbScope(XSharp.__Usual)' />
 
 FUNCTION DbSetScope(nScope AS LONG, uValue AS USUAL) AS LOGIC
@@ -509,9 +508,9 @@ FUNCTION DbSetScope(nScope AS LONG, uValue AS USUAL) AS LOGIC
         CASE SCOPE_BOTH
         OTHERWISE
             OrdScope(TOPSCOPE,uValue)
-            OrdScope(BOTTOMSCOPE, uValue)
             lResult := XSharp.RuntimeState:LastRDDError == NULL
-            lResult := FALSE
+            OrdScope(BOTTOMSCOPE, uValue)
+            lResult := lResult .AND. (XSharp.RuntimeState:LastRDDError == NULL)
         END SWITCH
     CATCH AS Exception
         lResult := FALSE
@@ -519,16 +518,19 @@ FUNCTION DbSetScope(nScope AS LONG, uValue AS USUAL) AS LOGIC
     RETURN lResult
 
     /// <summary>Clears the top and/or bottom scope. </summary>
-    /// <param name="nScope">A constant that indicates which scope needs to be set.<br/>
+    /// <param name="nScope">An optional constant that indicates which scope needs to be set.<br/>
     /// <include file="RTComments.xml" path="Comments/ScopeParams/*"  /></param>
     /// <returns>TRUE when the scope was cleared succesfully, otherwise FALSE.</returns>
     /// <seealso cref='M:XSharp.RT.Functions.DbSetScope(System.Int32,XSharp.__Usual)' />
     /// <seealso cref='M:XSharp.RT.Functions.DbScope(XSharp.__Usual)' />
 
-FUNCTION DbClearScope(nScope AS LONG) AS LOGIC
+FUNCTION DbClearScope(uScope) AS LOGIC CLIPPER
     LOCAL lResult := TRUE AS LOGIC
+    IF !uScope:IsNumeric
+        uScope := SCOPE_BOTH
+    ENDIF
     TRY
-        SWITCH nScope
+        SWITCH (LONG) uScope
         CASE SCOPE_TOP
             OrdScope(TOPSCOPE,NIL)
             lResult := XSharp.RuntimeState:LastRDDError == NULL
@@ -540,8 +542,9 @@ FUNCTION DbClearScope(nScope AS LONG) AS LOGIC
         CASE SCOPE_BOTH        
         OTHERWISE   // SCOPE_BOTH is default in Xbase++
             OrdScope(TOPSCOPE,NIL)
-            OrdScope(BOTTOMSCOPE, NIL)
             lResult := XSharp.RuntimeState:LastRDDError == NULL
+            OrdScope(BOTTOMSCOPE, NIL)
+            lResult := lResult .AND. (XSharp.RuntimeState:LastRDDError == NULL)
         END SWITCH
     CATCH AS Exception
         lResult := FALSE

@@ -88,7 +88,7 @@ FUNCTION __FieldGet( fieldName AS STRING ) AS USUAL
     LOCAL fieldpos := FieldPos( fieldName ) AS DWORD
     LOCAL ret := NULL AS OBJECT
     IF fieldpos == 0
-        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  nameof(fieldName), 1, fieldName  )
+        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  nameof(fieldName), 1, <OBJECT>{fieldName}  )
     ELSE
          _DbThrowErrorOnFailure(__FUNCTION__, CoreDb.FieldGet( fieldpos, REF ret ))
     ENDIF
@@ -123,7 +123,7 @@ FUNCTION __FieldGetWa( area AS USUAL, fieldName AS STRING ) AS USUAL
             RuntimeState.CurrentWorkarea := curArea
         END TRY   
     ELSE
-        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(area), 1, area  )
+        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(area), 1, <OBJECT>{area}  )
     ENDIF
     RETURN ret
 
@@ -141,7 +141,7 @@ FUNCTION __FieldGetWa( area AS USUAL, fieldName AS STRING ) AS USUAL
 FUNCTION __FieldSet( fieldName AS STRING, uValue AS USUAL ) AS USUAL
     LOCAL fieldpos := FieldPos( fieldName ) AS DWORD
     IF fieldpos == 0
-        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  nameof(fieldName), 1, fieldName  )
+        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  nameof(fieldName), 1, <OBJECT>{fieldName}  )
     ELSE
         _DbThrowErrorOnFailure(__FUNCTION__, CoreDb.FieldPut( fieldpos, uValue))
     ENDIF
@@ -177,7 +177,7 @@ FUNCTION __FieldSetWa( area AS USUAL, fieldName AS STRING, uValue AS USUAL ) AS 
             RuntimeState.CurrentWorkarea := curArea
         END TRY   
     ELSE
-        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(area),1, area  )
+        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(area),1, <OBJECT>{area}  )
     ENDIF
     // Note: must return the same value passed in, to allow chained assignment expressions
     RETURN uValue
@@ -193,7 +193,7 @@ FUNCTION __FieldSetWa( area AS USUAL, fieldName AS STRING, uValue AS USUAL ) AS 
 FUNCTION __AreaEval<T>(area AS USUAL, action AS @@Func<T>) AS USUAL
     LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
     LOCAL newArea := _Select( area ) AS DWORD
-    LOCAL result  := Default(T) AS T
+    LOCAL result  := DEFAULT(T) AS T
     IF newArea > 0
         RuntimeState.CurrentWorkarea := newArea
         
@@ -203,7 +203,7 @@ FUNCTION __AreaEval<T>(area AS USUAL, action AS @@Func<T>) AS USUAL
             RuntimeState.CurrentWorkarea := curArea
         END TRY   
     ELSE
-        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(area),1, area  )
+        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(area),1, <OBJECT>{area}  )
     ENDIF
     RETURN result
 
@@ -229,7 +229,7 @@ FUNCTION __AreaEval(area AS USUAL, action AS System.Action) AS LOGIC
             RuntimeState.CurrentWorkarea := curArea
         END TRY   
     ELSE
-        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(area),1, area  )
+        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(area),1, <OBJECT>{area}  )
     ENDIF
     RETURN result
     
@@ -300,7 +300,7 @@ FUNCTION __pushWorkarea( alias AS USUAL ) AS VOID
     IF newArea > 0
         RuntimeState.PushCurrentWorkarea( newArea )
     ELSE
-        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, { alias } )
+        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, <OBJECT>{ alias } )
     ENDIF
     RETURN
     

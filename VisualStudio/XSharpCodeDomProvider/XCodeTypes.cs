@@ -71,6 +71,8 @@ namespace XSharp.CodeDom
 
         }
     }
+
+
     [DebuggerDisplay("{Name,nq}")]
     internal class XCodeTypeDeclaration : CodeTypeDeclaration
     {
@@ -83,6 +85,13 @@ namespace XSharp.CodeDom
     internal class XCodeMemberMethod : CodeMemberMethod
     {
         internal XCodeMemberMethod() : base()
+        {
+
+        }
+    }
+    internal class XCodeCompileUnit : CodeCompileUnit
+    {
+        internal XCodeCompileUnit() : base()
         {
 
         }
@@ -115,6 +124,14 @@ namespace XSharp.CodeDom
     internal class XCodeFieldReferenceExpression : CodeFieldReferenceExpression
     {
         internal XCodeFieldReferenceExpression(CodeExpression lhs, string name) : base(lhs, name)
+        {
+
+        }
+    }
+
+    internal class XCodeSnippetTypeMember : CodeSnippetTypeMember
+    {
+        internal XCodeSnippetTypeMember(string text) : base(text)
         {
 
         }

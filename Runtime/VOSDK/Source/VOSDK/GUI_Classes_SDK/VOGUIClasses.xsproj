@@ -53,11 +53,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
+      <Link>SDKAssemblyinfo.prg</Link>
+    </Compile>
     <Compile Include="Accelerator.prg" />
     <Compile Include="AnimationControl.prg" />
     <Compile Include="Application Window.prg" />
     <Compile Include="Application.prg" />
-    <Compile Include="AssemblyInfo.prg" />
     <Compile Include="BaseListBox.prg" />
     <Compile Include="Bitmap.prg" />
     <Compile Include="BitmapObject.prg" />
@@ -133,6 +135,7 @@
     <Compile Include="Printer.prg" />
     <Compile Include="PrintingDevice.prg" />
     <Compile Include="ProgressBar.prg" />
+    <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="PushButton.prg" />
     <Compile Include="RadioButton.prg" />
     <Compile Include="RadioButtonGroup.prg" />

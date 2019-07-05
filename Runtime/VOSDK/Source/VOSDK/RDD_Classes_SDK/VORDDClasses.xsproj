@@ -11,6 +11,7 @@
     <XSharpProjectversion>2.0.2.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>
@@ -21,7 +22,9 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
-    <Compile Include="AssemblyInfo.prg" />
+    <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
+      <Link>SDKAssemblyinfo.prg</Link>
+    </Compile>
     <Compile Include="DBDefine.prg" />
     <Compile Include="DBFileSpec.prg" />
     <Compile Include="DBFuncs.prg" />
@@ -33,6 +36,7 @@
     <Compile Include="DBServer3.prg" />
     <Compile Include="DBServer4.prg" />
     <Compile Include="DBServerA.prg" />
+    <Compile Include="Properties\AssemblyInfo.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

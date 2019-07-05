@@ -11,6 +11,7 @@
     <XSharpProjectversion>2.0.2.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>
@@ -20,7 +21,9 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
-    <Compile Include="AssemblyInfo.prg" />
+    <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
+      <Link>SDKAssemblyinfo.prg</Link>
+    </Compile>
     <Compile Include="Class Def.prg" />
     <Compile Include="DataField.prg" />
     <Compile Include="DataServer.prg" />
@@ -29,6 +32,7 @@
     <Compile Include="FileSpec.prg" />
     <Compile Include="Hyperlabel.prg" />
     <Compile Include="ObjCodeBlock.prg" />
+    <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="SystemLangDef.prg" />
   </ItemGroup>
   <ItemGroup>

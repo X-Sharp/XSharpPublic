@@ -20,7 +20,9 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
-    <Compile Include="AssemblyInfo.prg" />
+    <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
+      <Link>SDKAssemblyinfo.prg</Link>
+    </Compile>
     <Compile Include="CA Container.prg" />
     <Compile Include="CA Split.prg" />
     <Compile Include="CDErr.prg" />
@@ -40,6 +42,7 @@
     <Compile Include="OLE Automation.prg" />
     <Compile Include="OLE Control.prg" />
     <Compile Include="OpenGL.prg" />
+    <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="RAS.prg" />
     <Compile Include="Richedit.prg" />
     <Compile Include="Shell API.prg" />

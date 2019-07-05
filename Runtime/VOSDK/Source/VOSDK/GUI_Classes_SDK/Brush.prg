@@ -81,7 +81,7 @@ METHOD CreateNew(xColor, kHatchStyle)
 	ENDIF
 
 	IF argTypeError
-		WCError{#Init, #Brush, __WCSTypeError}:@@Throw()
+		WCError{#Init, #Brush, __WCSTypeError}:Throw()
 	ENDIF
 	RETURN SELF
 

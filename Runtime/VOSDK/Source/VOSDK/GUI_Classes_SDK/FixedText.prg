@@ -191,7 +191,7 @@ METHOD SetStandardStyle(kTextStyle)
 
 	
 	IF !IsLong(kTextStyle)
-		WCError{#SetStandardStyle,#FixedText,__WCSTypeError,kTextStyle,1}:@@Throw()
+		WCError{#SetStandardStyle,#FixedText,__WCSTypeError,kTextStyle,1}:Throw()
 	ENDIF
 
 	SWITCH (INT) kTextStyle

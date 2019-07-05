@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -20,7 +20,7 @@ STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFLoat, IConvertible
 		Decimals := dec
 	/// <inheritdoc />
 	OVERRIDE METHOD ToString() AS STRING
-        RETURN @@VALUE:ToString()
+        RETURN SELF:Value:ToString()
 
 	#region IConvertible INTERFACE
 	METHOD GetTypeCode() AS TypeCode
@@ -104,5 +104,5 @@ STRUCTURE XSharp.RDD.DbDate IMPLEMENTS IDate
         IF IsEmpty
             RETURN "    -  -  "
         ENDIF
-        RETURN SELF:@@Value:ToString("yyyy-MM-dd")
+        RETURN SELF:Value:ToString("yyyy-MM-dd")
 END STRUCTURE

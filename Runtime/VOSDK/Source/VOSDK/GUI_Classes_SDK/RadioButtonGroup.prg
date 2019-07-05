@@ -139,7 +139,7 @@ METHOD FillUsing(aContents)
 	
 
 	IF !IsArray(aContents)
-		WCError{#FillUsing,#RadioButtonGroup,__WCSTypeError,aContents,1}:@@Throw()
+		WCError{#FillUsing,#RadioButtonGroup,__WCSTypeError,aContents,1}:Throw()
 	ENDIF
 
 	wContentsLength := ALen(aContents)
@@ -160,7 +160,7 @@ METHOD FillUsing(aContents)
 					uButton := uElement[1]
 					uDefValue := wIndex
 				ELSE
-					WCError{#FillUsing,#RadioButtonGroup,__WCSTypeError,aContents,1}:@@Throw()
+					WCError{#FillUsing,#RadioButtonGroup,__WCSTypeError,aContents,1}:Throw()
 				ENDIF
 			ELSE
 				uButton := uElement
@@ -170,7 +170,7 @@ METHOD FillUsing(aContents)
 			IF IsNumeric(uButton) .OR. IsString(uButton)
 				uButton := RadioButton{oFormSurface, ResourceID{uButton}}
 			ELSEIF !IsInstanceOfUsual(uButton, #RadioButton)
-				WCError{#FillUsing,#RadioButtonGroup,__WCSTypeError,aContents,1}:@@Throw()
+				WCError{#FillUsing,#RadioButtonGroup,__WCSTypeError,aContents,1}:Throw()
 			ENDIF
 
 			AAdd(aButtons, uButton)

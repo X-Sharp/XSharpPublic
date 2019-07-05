@@ -54,7 +54,7 @@ CONSTRUCTOR(xResourceID)
 
 		hPointer := LoadCursor(hInst, lpPointer)
 	ELSE
-		WCError{#Init, #Pointer, __WCSTypeError}:@@Throw()
+		WCError{#Init, #Pointer, __WCSTypeError}:Throw()
 	ENDIF
 
 	RETURN 

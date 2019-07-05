@@ -80,7 +80,7 @@ ACCESS Range
 ASSIGN Range(oNewRange) 
 	LOCAL sUpper, sLower AS SHORTINT
 	IF !IsInstanceOfUsual(oNewRange, #Range)
-		WCError{#Range, #Spinner, __WCSTypeError, oNewRange, 1}:@@Throw()
+		WCError{#Range, #Spinner, __WCSTypeError, oNewRange, 1}:Throw()
 	ENDIF
 	sUpper := oNewRange:Max
 	sLower := oNewRange:Min
@@ -97,7 +97,7 @@ ACCESS ThumbPosition
 
 ASSIGN ThumbPosition(nThumbPosition) 
 	IF !IsLong(nThumbPosition)
-		WCError{#ThumbPosition, #Spinner, __WCSTypeError, nThumbPosition, 1}:@@Throw()
+		WCError{#ThumbPosition, #Spinner, __WCSTypeError, nThumbPosition, 1}:Throw()
 	ENDIF
 	//SendMessage(SELF:Handle(), UDM_SETPOS, DWORD(_CAST, TRUE), MAKELONG(WORD(_CAST, SHORTINT(nThumbPosition)), 0))
 	SendMessage(SELF:Handle(), UDM_SETPOS32, 0, nThumbPosition)

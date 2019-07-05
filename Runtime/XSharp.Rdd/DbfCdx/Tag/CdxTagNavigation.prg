@@ -38,6 +38,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         RETURN FALSE
                     ENDIF
                     LOCAL recno AS LONG
+                    SELF:ClearStack()
                     IF SELF:Descending
                         recno := SELF:_locateFirst(SELF:_rootPage)
                     ELSE
@@ -76,6 +77,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         RETURN FALSE
                     ENDIF
                     LOCAL recno AS LONG
+                    SELF:ClearStack()
                     IF SELF:Descending
                         recno := SELF:_locateLast(SELF:_rootPage)
                     ELSE
@@ -83,7 +85,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                     result := SELF:_oRdd:__Goto(recno)
                     IF result
-                        result := SELF:_oRdd:SkipFilter(1)
+                        result := SELF:_oRdd:SkipFilter(1)  
                     ENDIF
                 ENDIF
                 RETURN result    
@@ -201,14 +203,21 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF !SELF:HasScope
                     RETURN result
                 ENDIF
-                IF changedBof
-                    SELF:_oRdd:_Bof := isBof
+                IF SELF:Descending
+                    IF changedBof
+                        SELF:_oRdd:_Eof := isBof
+                    ENDIF
+                    IF changedEof
+                        SELF:_oRdd:_Bof := isEof
+                    ENDIF
+                ELSE
+                    IF changedBof
+                        SELF:_oRdd:_Bof := isBof
+                    ENDIF
+                    IF changedEof
+                        SELF:_oRdd:_Eof := isEof
+                    ENDIF
                 ENDIF
-                IF !changedEof
-                    RETURN result
-                ENDIF
-                SELF:_oRdd:_Eof := isEof
-                
             CATCH ex AS Exception
                 SELF:_oRdd:_dbfError(ex, SubCodes.EDB_SKIP,GenCode.EG_CORRUPTION,  "CdxTag.SkipRaw") 
             FINALLY
@@ -595,6 +604,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR topStack      := SELF:CurrentStack
             // How many Items in that page ?
             nodeCount := page:NumKeys
+            IF (nodeCount == 0)
+                SELF:PushPage(page, 0)
+                RETURN   0
+            ENDIF
             // Get the first node on the page
             node := page[0]
             

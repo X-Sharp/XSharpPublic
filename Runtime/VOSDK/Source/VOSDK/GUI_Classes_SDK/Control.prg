@@ -308,7 +308,7 @@ METHOD __Unlink(oDataServer := NIL AS USUAL) AS Control STRICT
 		oServer:= NULL_OBJECT
 	ELSE
 		IF !IsInstanceOfUsual(oDataServer,#DataServer)
-			WCError{#__Unlink,#Control,__WCSTypeError,oDataServer,1}:@@Throw()
+			WCError{#__Unlink,#Control,__WCSTypeError,oDataServer,1}:Throw()
 		ENDIF
 		IF (oDataServer == oServer)
 			uGetSetOwner:= NIL
@@ -361,7 +361,7 @@ ASSIGN __Value(uNewValue AS USUAL)  STRICT
 		uTemp := oFieldSpec:Transform(uNewValue)
 		IF IsNil(uTemp)
 			oHLStatus := oFieldSpec:Status
-			WCError{#__Value,#Control,__WCSTypeError}:@@Throw()
+			WCError{#__Value,#Control,__WCSTypeError}:Throw()
 		ELSE
 			SELF:uValue := oFieldSpec:Val(uTemp)
 			SELF:TextValue := uTemp
@@ -401,7 +401,7 @@ ASSIGN Background(oNewBrush)
 	
 	IF !IsNil(oNewBrush)
 		IF !IsInstanceOfUsual(oNewBrush,#Brush)
-			WCError{#Background,#Control,__WCSTypeError,oNewBrush,1}:@@Throw()
+			WCError{#Background,#Control,__WCSTypeError,oNewBrush,1}:Throw()
 		ENDIF
 	ENDIF
 	
@@ -497,7 +497,7 @@ METHOD Create()
 			__WCRegisterControl(SELF) //register after we get the handle
 		ELSE
 			// !!! Maybe we should remove this before shipping !!!
-			WCError{#Create,#Control,__WCSCreateCtlFailed,SELF}:@@Throw()
+			WCError{#Create,#Control,__WCSCreateCtlFailed,SELF}:Throw()
 		ENDIF
 	ENDIF
 	
@@ -833,7 +833,7 @@ ASSIGN FieldSpec(oDSAssign)
 	//
 	
 	IF !IsInstanceOfUsual(oDSAssign,#FieldSpec)
-		WCError{#FieldSpec,#Control,__WCSTypeError,oDSAssign,1}:@@Throw()
+		WCError{#FieldSpec,#Control,__WCSTypeError,oDSAssign,1}:Throw()
 	ENDIF
 	
 	oFieldSpec := oDSAssign
@@ -871,7 +871,7 @@ METHOD Handle(uType) AS PTR
 	
 	
 	IF !IsNil(uType) .AND. !IsLong(uType)
-		WCError{#Handle,#Control,__WCSTypeError,uType,1}:@@Throw()
+		WCError{#Handle,#Control,__WCSTypeError,uType,1}:Throw()
 	ENDIF
 	IF (hWnd == NULL_PTR )
 		SELF:Create()
@@ -933,7 +933,7 @@ ASSIGN HyperLabel(oNewHL)
 		lExplicitHL := TRUE
 		SELF:Caption := oNewHL:Caption
 	ELSEIF oNewHL != NIL
-		WCError{#HyperLabel,#Control,__WCSTypeError,oNewHL,1}:@@Throw()
+		WCError{#HyperLabel,#Control,__WCSTypeError,oNewHL,1}:Throw()
 	ELSE
 		//PP-040410 next line was incorrectly assigning NIL
 		__oHyperLabel := NULL_OBJECT
@@ -952,7 +952,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cRegClass, kStyle, lDataAware)
 	ELSEIF IsPtr(oOwner)
 		oParent := __ForeignWindow{oOwner}
 	ELSE
-		WCError{#Init,#Control,__WCSTypeError,oOwner,1}:@@Throw()
+		WCError{#Init,#Control,__WCSTypeError,oOwner,1}:Throw()
 	ENDIF
 	
 	IF IsInstanceOf(oParent,#DataWindow) 
@@ -968,7 +968,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cRegClass, kStyle, lDataAware)
 		ENDIF
 	ELSE
 		IF !IsInstanceOfUsual(xID,#ResourceID)
-			WCError{#Init,#Control,__WCSTypeError,xID,2}:@@Throw()
+			WCError{#Init,#Control,__WCSTypeError,xID,2}:Throw()
 		ENDIF               
 	ENDIF
 	
@@ -1006,14 +1006,14 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cRegClass, kStyle, lDataAware)
 		ENDIF
 	ELSEIF (IsInstanceOf(oFormSurface,#Window) .OR. IsInstanceOf(oFormSurface,#Control)) .AND. IsLong(xID)
 		IF !IsInstanceOfUsual(oPoint,#Point)
-			WCError{#Init,#Control,__WCSTypeError,oPoint,3}:@@Throw()
+			WCError{#Init,#Control,__WCSTypeError,oPoint,3}:Throw()
 		ENDIF
 		IF !IsInstanceOfUsual(oDimension,#Dimension)
-			WCError{#Init,#Control,__WCSTypeError,oDimension,4}:@@Throw()
+			WCError{#Init,#Control,__WCSTypeError,oDimension,4}:Throw()
 		ENDIF
 		
 		IF !IsNil(cRegClass) .AND. !IsString(cRegClass)
-			WCError{#Init,#Control,__WCSTypeError,cRegClass,5}:@@Throw()
+			WCError{#Init,#Control,__WCSTypeError,cRegClass,5}:Throw()
 		ENDIF
 		
 		oSize 	:= Dimension{oDimension:Width, oDimension:Height}
@@ -1033,7 +1033,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cRegClass, kStyle, lDataAware)
 			dwExStyle := _OR(dwExStyle, DWORD(_CAST, WS_EX_CLIENTEDGE), DWORD(_CAST, WS_EX_STATICEDGE))
 		ENDIF
 	ELSE
-		WCError{#Init,#Control,__WCSTypeError}:@@Throw()
+		WCError{#Init,#Control,__WCSTypeError}:Throw()
 	ENDIF
 	
 	IF IsLogic(lDataAware)
@@ -1115,7 +1115,7 @@ METHOD LinkDF(oDS, siDF)
 	ENDIF	
 	
 	IF !IsInstanceOfUsual(oDS,#DataServer)
-		WCError{#LinkDF,#Control,__WCSTypeError,oDS,1}:@@Throw()
+		WCError{#LinkDF,#Control,__WCSTypeError,oDS,1}:Throw()
 	ENDIF
 	
 	IF (!IsNil(oServer) .AND. (oDS!=oServer))
@@ -1235,7 +1235,7 @@ ACCESS Origin
 
 ASSIGN Origin(oPoint) 
 	IF !IsInstanceOfUsual(oPoint, #Point)
-		WCError{#Origin,#Control,__WCSTypeError,oPoint,1}:@@Throw()
+		WCError{#Origin,#Control,__WCSTypeError,oPoint,1}:Throw()
 	ENDIF
 	
 	IF (hWnd == NULL_PTR)
@@ -1290,12 +1290,12 @@ METHOD PerformValidations() CLIPPER
 
 METHOD RegisterTimer(nInterval,lOneTime) 
 	IF !IsLong(nInterval)
-		WCError{#RegisterTimer,#Control,__WCSTypeError,nInterval,1}:@@Throw()
+		WCError{#RegisterTimer,#Control,__WCSTypeError,nInterval,1}:Throw()
 	ENDIF
 	
 	IF !IsNil(lOneTime)
 		IF !IsLogic(lOneTime)
-			WCError{#RegisterTimer,#Control,__WCSTypeError,lOneTime,2}:@@Throw()
+			WCError{#RegisterTimer,#Control,__WCSTypeError,lOneTime,2}:Throw()
 		ENDIF
 		IF lOneTime
 			dwTimerInterval:=0
@@ -1362,7 +1362,7 @@ METHOD SetExStyle(kExStyle, lEnable)
 	
 	
 	IF !IsLong(kExStyle)
-		WCError{#SetExStyle,#Control,__WCSTypeError,kExStyle,}:@@Throw()
+		WCError{#SetExStyle,#Control,__WCSTypeError,kExStyle,}:Throw()
 	ENDIF
 	
 	IF IsNil(lEnable) .OR. !IsLogic(lEnable)
@@ -1419,7 +1419,7 @@ METHOD SetStyle(kStyle, lEnable)
 	LOCAL dwTemp AS DWORD
 	
 	IF !IsLong(kStyle)
-		WCError{#SetStyle,#Control,__WCSTypeError,kStyle,}:@@Throw()
+		WCError{#SetStyle,#Control,__WCSTypeError,kStyle,}:Throw()
 	ENDIF
 	
 	IF IsNil(lEnable) .OR. !IsLogic(lEnable)
@@ -1480,7 +1480,7 @@ ASSIGN Size(oDimension)
 	ENDIF
 	
 	IF !IsInstanceOfUsual(oDimension,#Dimension)
-		WCError{#Size,#Control,__WCSTypeError,oDimension,1}:@@Throw()
+		WCError{#Size,#Control,__WCSTypeError,oDimension,1}:Throw()
 	ENDIF
 	
 	IF (hWnd == NULL_PTR)
@@ -1503,7 +1503,7 @@ ASSIGN Status(oStatus)
     IF IsObject(oStatus) .AND. (IsInstanceOf(oStatus, #HyperLabel) .OR. oStatus == NULL_OBJECT)
          RETURN oHlStatus := oStatus
     ENDIF    
-    WCError{#Status,#Control,__WCSTypeError,oStatus,1}:@@Throw()
+    WCError{#Status,#Control,__WCSTypeError,oStatus,1}:Throw()
     RETURN oStatus
 	
 
@@ -1614,7 +1614,7 @@ ASSIGN ValueChanged(lFlag)
 	
 	
 	IF !IsLogic(lFlag)
-		WCError{#ValueChanged,#Control,__WCSTypeError,lFlag,1}:@@Throw()
+		WCError{#ValueChanged,#Control,__WCSTypeError,lFlag,1}:Throw()
 	ENDIF
 	
 	RETURN SELF:lChanged := lFlag

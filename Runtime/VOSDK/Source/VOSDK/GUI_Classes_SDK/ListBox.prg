@@ -195,7 +195,7 @@ ACCESS Caption
 
 ASSIGN Caption(cNewCaption) 
 	IF !IsString(cNewCaption)
-		WCError{#Caption,#ListBox,__WCSTypeError,cNewCaption,1}:@@Throw()
+		WCError{#Caption,#ListBox,__WCSTypeError,cNewCaption,1}:Throw()
 	ENDIF
 	RETURN cCaption := cNewCaption
 
@@ -204,11 +204,11 @@ METHOD ChangeSelected(oRange, lEnabled)
 	DEFAULT(@lEnabled, TRUE)
 
 	IF !IsInstanceOfUsual(oRange,#Range)
-		WCError{#ChangeSelected,#ListBox,__WCSTypeError,oRange,1}:@@Throw()
+		WCError{#ChangeSelected,#ListBox,__WCSTypeError,oRange,1}:Throw()
 	ENDIF
 
 	IF !IsLogic(lEnabled)
-		WCError{#ChangeSelected,#ListBox,__WCSTypeError,lEnabled,2}:@@Throw()
+		WCError{#ChangeSelected,#ListBox,__WCSTypeError,lEnabled,2}:Throw()
 	ENDIF
 
 	lSet := lEnabled
@@ -263,7 +263,7 @@ ACCESS CurrentItem
 
 ASSIGN CurrentItem(cValue) 
 	IF !IsString(cValue)
-		WCError{#CurrentItem,#ListBox,__WCSTypeError,cValue,1}:@@Throw()
+		WCError{#CurrentItem,#ListBox,__WCSTypeError,cValue,1}:Throw()
 	ENDIF
 	SELF:CurrentItemNo := SELF:FindItem(cValue)
 
@@ -332,7 +332,7 @@ ASSIGN CurrentItemNo(nItemNo)
 
 	
 	IF !IsLong(nItemNo)
-		WCError{#CurrentItemNo,#ListBox,__WCSTypeError,nItemNo,1}:@@Throw()
+		WCError{#CurrentItemNo,#ListBox,__WCSTypeError,nItemNo,1}:Throw()
 	ENDIF
 	SELF:__CurrentItemNo := nItemNo
 
@@ -357,7 +357,7 @@ ASSIGN CurrentItemNo(nItemNo)
 ASSIGN CurrentText(cNewText) 
 	
 	IF !IsString(cNewText)
-		WCError{#CurrentText,#ListBox,__WCSTypeError,cNewText,1}:@@Throw()
+		WCError{#CurrentText,#ListBox,__WCSTypeError,cNewText,1}:Throw()
 	ENDIF
 	RETURN SELF:__SetText(cNewText)
 
@@ -381,7 +381,7 @@ METHOD DeselectItem(nItemId)
 	LOCAL dwItem AS DWORD
 
 	IF !IsLong(nItemId)
-		WCError{#DeSelectItem,#ListBox,__WCSTypeError,nItemId,1}:@@Throw()
+		WCError{#DeSelectItem,#ListBox,__WCSTypeError,nItemId,1}:Throw()
 	ENDIF
 
 	dwItem := nItemId-1
@@ -411,10 +411,10 @@ METHOD FillUsing(aContents, symField1, symField2)
 		aContents := Send(aContents, #GetLookUpTable, Min(0x7FFF, IVarGet(aContents, #RecCount)), symField1, symField2)
 	ELSEIF IsArray(aContents)
 		IF !IsNil(symField1) .OR. !IsNil(symField2)
-			WCError{#FillUsing,#ListBox,__WCSTypeError,symField1,2}:@@Throw()
+			WCError{#FillUsing,#ListBox,__WCSTypeError,symField1,2}:Throw()
 		ENDIF
 	ELSE
-		WCError{#FillUsing,#ListBox,__WCSTypeError,aContents,1}:@@Throw()
+		WCError{#FillUsing,#ListBox,__WCSTypeError,aContents,1}:Throw()
 	ENDIF
 
 	SELF:Clear()
@@ -433,7 +433,7 @@ METHOD FillUsing(aContents, symField1, symField2)
 					uDisplayValue := uElement[1]
 					uDefValue := uElement[1]
 				ELSE
-					WCError{#FillUsing,#ListBox,__WCSTypeError,aContents,1}:@@Throw()
+					WCError{#FillUsing,#ListBox,__WCSTypeError,aContents,1}:Throw()
 				ENDIF
 			ELSE
 				uDisplayValue := uElement
@@ -637,7 +637,7 @@ METHOD SelectItem(nItemId)
 	LOCAL dwItem AS DWORD
 
 	IF !IsLong(nItemId)
-		WCError{#SelectItem,#ListBox,__WCSTypeError,nItemId,1}:@@Throw()
+		WCError{#SelectItem,#ListBox,__WCSTypeError,nItemId,1}:Throw()
 	ENDIF
 
 	dwItem := nItemId-1
@@ -700,7 +700,7 @@ ASSIGN TextValue(cNewText)
 	LOCAL cOldValue AS STRING
 
 	IF !IsString(cNewText)
-		WCError{#TextValue,#ListBox,__WCSTypeError,cNewText,1}:@@Throw()
+		WCError{#TextValue,#ListBox,__WCSTypeError,cNewText,1}:Throw()
 	ENDIF
 
 	cSelValue := cNewText

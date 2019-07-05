@@ -45,7 +45,7 @@ VOSTRUCT _winFOCUS_EVENT_RECORD
 VOSTRUCT _winINPUT_RECORD
 	MEMBER EventType AS WORD
 
-	MEMBER @@Event IS Event_win
+	MEMBER Event IS Event_win
 
 
 
@@ -222,7 +222,7 @@ _DLL FUNC SetConsoleTextAttribute( hConsoleOutput AS PTR, wAttributes AS WORD);
 	AS LOGIC PASCAL:KERNEL32.SetConsoleTextAttribute
 
 
-_DLL FUNC SetConsoleCtrlHandler( HandleRoutine  AS PTR, Add AS LOGIC );
+_DLL FUNC SetConsoleCtrlHandler( HandleRoutine  AS PTR, ADD AS LOGIC );
 	AS LOGIC PASCAL:KERNEL32.SetConsoleCtrlHandler
 
 

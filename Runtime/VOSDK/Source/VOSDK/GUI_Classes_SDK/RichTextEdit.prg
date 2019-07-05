@@ -581,7 +581,7 @@ METHOD Print(oPrintingDevice, oRange)
 
 	RETURN TRUE
 
-ACCESS @@Protected 
+ACCESS Protected 
 	LOCAL strucCharFormat IS _winCHARFORMAT
 
 	
@@ -592,7 +592,7 @@ ACCESS @@Protected
 
 	RETURN _AND(strucCharFormat:dwEffects, CFE_PROTECTED) != 0
 
-ASSIGN @@Protected(lEnable) 
+ASSIGN Protected(lEnable) 
 	LOCAL strucCharFormat IS _winCHARFORMAT
 
 	strucCharFormat:cbSize := _SIZEOF(_winCHARFORMAT)

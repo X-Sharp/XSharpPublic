@@ -31,9 +31,9 @@ CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2
 	RETURN 
 
 #ifdef __XSHARP_RT__
-METHOD @@Throw() AS VOID STRICT
+METHOD Throw() AS VOID STRICT
 #else
-METHOD @@Throw()
+METHOD Throw()
 #endif
 
 	IF CanBreak()

@@ -41,7 +41,7 @@ METHOD Handle(nHandleType)
 
 	IF !IsNil(nHandleType)
 		IF !IsLong(nHandleType)
-			WCError{#Handle,#DrawObject,__WCSTypeError,nHandleType,1}:@@Throw()
+			WCError{#Handle,#DrawObject,__WCSTypeError,nHandleType,1}:Throw()
 		ENDIF
 	ENDIF
 
@@ -60,7 +60,7 @@ METHOD HitTest(oPoint)
 	
 
 	IF !IsInstanceOfUsual(oPoint,#Point)
-		WCError{#HitTest,#DrawObject,__WCSTypeError,oPoint,1}:@@Throw()
+		WCError{#HitTest,#DrawObject,__WCSTypeError,oPoint,1}:Throw()
 	ENDIF
 
 	oBB := SELF:BoundingBox
@@ -74,7 +74,7 @@ CONSTRUCTOR(oPoint)
 
 	SUPER()
 	IF !IsInstanceOfUsual(oPoint,#Point)
-		WCError{#Init,#DrawObject,__WCSTypeError,oPoint,1}:@@Throw()
+		WCError{#Init,#DrawObject,__WCSTypeError,oPoint,1}:Throw()
 	ENDIF
 
 	
@@ -91,7 +91,7 @@ ASSIGN Origin(oNewPoint)
 	
 
 	IF !IsInstanceOfUsual(oNewPoint,#Point)
-		WCError{#Origin,#DrawObject,__WCSTypeError,oNewPoint,1}:@@Throw()
+		WCError{#Origin,#DrawObject,__WCSTypeError,oNewPoint,1}:Throw()
 	ENDIF
 
 	RETURN oPoint := Point{oNewPoint:X, oNewPoint:Y}
@@ -105,7 +105,7 @@ ASSIGN RasterOperation(kRaster)
 	
 
 	IF !IsLong(kRaster)
-		WCError{#RasterOperation,#DrawObject,__WCSTypeError,kRaster,1}:@@Throw()
+		WCError{#RasterOperation,#DrawObject,__WCSTypeError,kRaster,1}:Throw()
 	ENDIF
 
 	RETURN wRop := kRaster
@@ -119,7 +119,7 @@ ASSIGN Size(oNewSize)
 	
 
 	IF !IsInstanceOfUsual(oNewSize,#Dimension)
-		WCError{#Size,#DrawObject,__WCSTypeError,oNewSize,1}:@@Throw()
+		WCError{#Size,#DrawObject,__WCSTypeError,oNewSize,1}:Throw()
 	ENDIF
 
 	RETURN Dimension{0,0}

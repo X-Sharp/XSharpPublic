@@ -16,7 +16,7 @@ ASSIGN Checked(lChecked)
 
 	IF SELF:ValidateControl()
 		IF !IsLogic(lChecked)
-			WCError{#Checked,#CheckBox,__WCSTypeError,lChecked,1}:@@Throw()
+			WCError{#Checked,#CheckBox,__WCSTypeError,lChecked,1}:Throw()
 		ENDIF
 		SendMessage(SELF:Handle(), BM_SETCHECK, DWORD(_CAST, lChecked), 0)
 	ENDIF
@@ -80,7 +80,7 @@ ASSIGN TextValue(cNewValue)
 
 	
 	IF !IsString(cNewValue)
-		WCError{#TextValue,#CheckBox,__WCSTypeError,cNewValue,1}:@@Throw()
+		WCError{#TextValue,#CheckBox,__WCSTypeError,cNewValue,1}:Throw()
 	ENDIF
 
 	lOldTicked := SELF:Checked

@@ -178,7 +178,9 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDDO
             RETURN isOk
-			
+
+		VIRTUAL METHOD _getMemoBlockNumber( nFldPos AS LONG ) AS LONG
+            RETURN 0
 			
 			/// <inheritdoc />
 		VIRTUAL METHOD GoTop( ) AS LOGIC

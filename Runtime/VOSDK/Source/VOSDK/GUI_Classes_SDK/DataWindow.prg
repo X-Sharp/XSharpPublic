@@ -433,7 +433,7 @@ METHOD __Delete() AS LOGIC STRICT
 	oHLStatus:= NULL_OBJECT // assume success
 	IF oAttachedserver!=NULL_OBJECT
 		IF SELF:__CheckRecordStatus()
-			lRetCode := oAttachedServer:@@Delete()
+			lRetCode := oAttachedServer:Delete()
 			IF lRetCode
 				IF SetDeleted() .OR. IsInstanceOf(oAttachedServer,#SQLSelect)
 					SELF:Skip(1)
@@ -483,7 +483,7 @@ METHOD __DoValidate(oControl AS Control) AS DataWindow STRICT
 				SELF:__UpdateStatus()
 			ELSE
 				oHLStatus := oControl:Status
-				SELF:@@StatusMessage(NULL_STRING, MessageError)
+				SELF:StatusMessage(NULL_STRING, MessageError)
 				IF !IsNil(oAttachedServer)
 					IF !oControl:__Gather()
 						oHLStatus := oAttachedServer:Status
@@ -748,7 +748,7 @@ METHOD __StatusMessage(uDescription AS USUAL, nMode AS LONGINT) AS DataWindow ST
 	IF !IsString(uTemp)
 		uTemp := ResourceString{__WCSUnknownStatusMSG}:value
 	ENDIF
-	SELF:@@StatusMessage(uTemp, nMode)
+	SELF:StatusMessage(uTemp, nMode)
 	RETURN SELF
 	
 
@@ -1005,7 +1005,7 @@ ASSIGN Browser(oDataBrowser)
 	
 	
 	IF !IsInstanceOfUsual(oDataBrowser, #Control) .OR. (oDataBrowser == NULL_OBJECT)
-		WCError{#Browser,#DataWindow,__WCSTypeError,oDataBrowser,1}:@@Throw()
+		WCError{#Browser,#DataWindow,__WCSTypeError,oDataBrowser,1}:Throw()
 	ENDIF
 	
 	oGBrowse := oDataBrowser
@@ -1098,12 +1098,12 @@ ASSIGN Caption(sNewCaption)
 METHOD ChangeFont(oFont, lUpdate) 
 	
 	IF !IsInstanceOfUsual(oFont,#Font)
-		WCError{#ChangeFont,#DataWindow,__WCSTypeError,oFont,1}:@@Throw()
+		WCError{#ChangeFont,#DataWindow,__WCSTypeError,oFont,1}:Throw()
 	ENDIF
 	
 	IF !IsNil(lUpdate)
 		IF !IsLogic(lUpdate)
-			WCError{#ChangeFont,#DataWindow,__WCSTypeError,lUpdate,2}:@@Throw()
+			WCError{#ChangeFont,#DataWindow,__WCSTypeError,lUpdate,2}:Throw()
 		ENDIF
 	ELSE
 		lUpdate := FALSE
@@ -1260,12 +1260,12 @@ ASSIGN ConcurrencyControl( nMode)
 		CASE nMode == #ccFile
 			newMode := ccFile
 		OTHERWISE
-			WCError{#ConcurrencyControl,#DataWindow,__WCSTypeError,nMode,1}:@@Throw()
+			WCError{#ConcurrencyControl,#DataWindow,__WCSTypeError,nMode,1}:Throw()
 		ENDCASE
 	ELSEIF IsNumeric(nMode)
 		newMode := nMode
 	ELSE
-		WCError{#ConcurrencyControl,#DataWindow,__WCSTypeError,nMode,1}:@@Throw()
+		WCError{#ConcurrencyControl,#DataWindow,__WCSTypeError,nMode,1}:Throw()
 	ENDIF
 	
 	SELF:nCCMode := newMode
@@ -1899,7 +1899,7 @@ METHOD HelpRequest(oHelpRequestEvent)
 			.AND. SELF:HelpDisplay != NULL_OBJECT ;
 			.AND. SELF:CurrentView == #FormView ;
 			.AND. (NULL_STRING != (cHelpContext := oHelpRequestEvent:HelpContext))
-		SELF:HelpDisplay:Show(cHelpContext, oHelpRequestEvent:@@HelpInfo) //SE-060522
+		SELF:HelpDisplay:Show(cHelpContext, oHelpRequestEvent:HelpInfo) //SE-060522
 		SELF:EventReturnValue := 1l
 	ELSE
 		SUPER:HelpRequest(oHelpRequestEvent)
@@ -1979,7 +1979,7 @@ CONSTRUCTOR(oOwner, oSource, nResourceID, nDialogStyle)
 			SUPER(oOwner, TRUE)
 		ELSEIF IsInstanceOf(oObject, #Window)
 			// <XXX> invalid owner - throw error
-			WCError{#Init,#DataWindow,__WCSTypeError,oOwner,1}:@@Throw()
+			WCError{#Init,#DataWindow,__WCSTypeError,oOwner,1}:Throw()
 		ELSE
 			SUPER(oOwner)
 		ENDIF
@@ -2697,7 +2697,7 @@ ASSIGN Status(oStatus)
 	
 	
 	IF !IsInstanceOfUsual(oStatus,#Hyperlabel)
-		WCError{#Status,#DataWindow,__WCSTypeError,oStatus,1}:@@Throw()
+		WCError{#Status,#DataWindow,__WCSTypeError,oStatus,1}:Throw()
 	ENDIF
 	
 	RETURN oHLStatus := oStatus
@@ -2878,7 +2878,7 @@ METHOD Use(oDataServer)
 			IF (oHLStatus != NULL_OBJECT)
 				ErrorBox{, oHLStatus}:Show()
 			ELSE
-				WCError{#oDataServer,#DataWindow,__WCSTypeError,oDataServer,1}:@@Throw()
+				WCError{#oDataServer,#DataWindow,__WCSTypeError,oDataServer,1}:Throw()
 			ENDIF
 			SELF:lValidFlag := FALSE
 		ENDIF
@@ -2924,7 +2924,7 @@ METHOD ViewAs(symViewType)
 	
 
 	IF !IsSymbol(symViewType)
-		WCError{#ViewAs,#DataWindow,__WCSTypeError,symViewType,1}:@@Throw()
+		WCError{#ViewAs,#DataWindow,__WCSTypeError,symViewType,1}:Throw()
 	ENDIF
 	
 	IF (sCurrentView == symViewType)
@@ -3006,7 +3006,7 @@ METHOD ViewAs(symViewType)
 			Send(oGBrowse, #__NOTIFYChanges, GBNFY_VIEWASFORM)
 		ENDIF
 	ELSE
-		WCError{#ViewAs,#DataWindow,__WCSTypeError,symViewType,1}:@@Throw()
+		WCError{#ViewAs,#DataWindow,__WCSTypeError,symViewType,1}:Throw()
 	ENDIF
 	
 	SELF:__Scatter()

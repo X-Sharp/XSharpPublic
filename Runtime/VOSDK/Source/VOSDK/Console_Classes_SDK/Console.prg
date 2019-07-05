@@ -187,7 +187,7 @@ ASSIGN Title( sNewTitle )
 
 	RETURN 
 
-METHOD @@Wait 
+METHOD Wait 
 	LOCAL sInput 	IS _WININPUT_RECORD          
 	LOCAL sKey		AS _winKEY_EVENT_RECORD
 	LOCAL dwEvents	AS DWORD
@@ -204,7 +204,7 @@ METHOD @@Wait
 		
 		DO CASE
 		CASE sInput:EventType == KEY_EVENT   
-			sKey := (_winKEY_EVENT_RECORD PTR) @sInput:@@Event                 
+			sKey := (_winKEY_EVENT_RECORD PTR) @sInput:Event                 
 			// Only respond to Keyup event for Specific Key
 			IF (sKey:uChar:AsciiChar != 0 .AND. ! sKey:bKeyDown)
 				#IFDEF __DEBUG__
@@ -214,7 +214,7 @@ METHOD @@Wait
 				cResult := Chr(sKey:uChar:AsciiChar)
 			ENDIF
 		CASE sInput:EventType == _MOUSE_EVENT
-			IF sInput:@@Event:MouseEvent:dwButtonState != 0
+			IF sInput:Event:MouseEvent:dwButtonState != 0
 				#IFDEF __DEBUG__
 					_DebOut32(String2Psz("Console Mouse Button Event"))
 				#ENDIF

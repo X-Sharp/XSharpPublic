@@ -10,18 +10,18 @@ USING System.Text
 INTERNAL STATIC CLASS TransFormHelpers
     [Flags] ;
     ENUM TransformPictures
-        None        := 0
-        Left        := 1
-        Credit      := 2
-        @@Date      := 4
-        British     := 8
-        NonTemplate := 16
-        Debit       := 32
-        ZeroBlank   := 64
-        ParenLeft   := 128
-        ParenRight  := 256
-        Upper       := 512
-        YesNo       := 1024
+        MEMBER None        := 0
+        MEMBER Left        := 1
+        MEMBER Credit      := 2
+        MEMBER Date        := 4
+        MEMBER British     := 8
+        MEMBER NonTemplate := 16
+        MEMBER Debit       := 32
+        MEMBER ZeroBlank   := 64
+        MEMBER ParenLeft   := 128
+        MEMBER ParenRight  := 256
+        MEMBER Upper       := 512
+        MEMBER YesNo       := 1024
     END ENUM
 
     STATIC METHOD SplitPict(cSayPicture AS STRING, cPic OUT STRING, cFunc OUT STRING) AS LOGIC

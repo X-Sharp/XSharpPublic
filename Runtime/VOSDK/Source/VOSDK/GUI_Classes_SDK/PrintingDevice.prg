@@ -249,7 +249,7 @@ CONSTRUCTOR(uName)
 		MemFree(ptrTemp)
 	ELSE
 		IF !IsString(uName)
-			WCError{#Init,#PrintingDevice,__WCSTypeError,uName,1}:@@Throw()
+			WCError{#Init,#PrintingDevice,__WCSTypeError,uName,1}:Throw()
 		ENDIF
 		cTemp:=uName
 	ENDIF
@@ -474,7 +474,7 @@ FUNCTION __LoadWinSpoolDLL()
     hDll := LoadLibrary(String2Psz("WINSPOOL.DRV"))
 	IF (hDll == NULL_PTR)
 		rsFormat := ResourceString{__WCSLoadLibraryError}
-		WCError{#LoadSplitWindowDLL, #SplitWindow, VO_Sprintf(rsFormat:value, "WINSPOOL.DRV"),,,FALSE}:@@Throw()
+		WCError{#LoadSplitWindowDLL, #SplitWindow, VO_Sprintf(rsFormat:value, "WINSPOOL.DRV"),,,FALSE}:Throw()
 		RETURN FALSE
 	ENDIF
 

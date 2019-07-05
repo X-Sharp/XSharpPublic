@@ -51,7 +51,7 @@ CONSTRUCTOR(xResourceID, kLoadOption, iWidth, iHeight)
 		RETURN 
 		
 	ELSEIF !IsInstanceOfUsual(xResourceID, #ResourceID)
-		WCError{#Init, #Bitmap, __WCSTypeError, xResourceID, 1}:@@Throw()
+		WCError{#Init, #Bitmap, __WCSTypeError, xResourceID, 1}:Throw()
 #ifdef __VULCAN__
       GC.SuppressFinalize( SELF )
 #endif		

@@ -50,7 +50,7 @@ ASSIGN Beep(uBeep)
 	
 
 	IF !IsLogic(uBeep)
-		WCError{#Beep,#TextBox,__WCSTypeError,uBeep}:@@Throw()
+		WCError{#Beep,#TextBox,__WCSTypeError,uBeep}:Throw()
 	ENDIF
 
 	RETURN (lBeep := uBeep)
@@ -64,7 +64,7 @@ ASSIGN Caption(uCaption)
 	
 
 	IF !IsString(uCaption)
-		WCError{#Caption,#TextBox,__WCSTypeError,uCaption}:@@Throw()
+		WCError{#Caption,#TextBox,__WCSTypeError,uCaption}:Throw()
 	ENDIF
 	RETURN cCaption:=uCaption
 
@@ -75,7 +75,7 @@ CONSTRUCTOR(uParent, uCaption, uText, nType)
 
 	IF !IsNil(uParent)
 		IF !IsInstanceOfUsual(uParent, #Window)
-			WCError{#Init,#TextBox,__WCSTypeError,uParent,1}:@@Throw()
+			WCError{#Init,#TextBox,__WCSTypeError,uParent,1}:Throw()
 		ELSE
 			oParent := uParent
 		ENDIF
@@ -88,7 +88,7 @@ CONSTRUCTOR(uParent, uCaption, uText, nType)
 
 	IF !IsNil(uCaption)
 		IF !IsString(uCaption)
-			WCError{#Init,#TextBox,__WCSTypeError,uCaption,2}:@@Throw()
+			WCError{#Init,#TextBox,__WCSTypeError,uCaption,2}:Throw()
 		ENDIF
 		cCaption := uCaption
 	ELSE
@@ -97,7 +97,7 @@ CONSTRUCTOR(uParent, uCaption, uText, nType)
 
 	IF !IsNil(uText)
 		IF !IsString(uText)
-			WCError{#Init,#TextBox,__WCSTypeError,uText,3}:@@Throw()
+			WCError{#Init,#TextBox,__WCSTypeError,uText,3}:Throw()
 		ENDIF
 		cText := uText
 	ELSE
@@ -120,7 +120,7 @@ ASSIGN Message(uText)
 	
 
 	IF !IsString(uText)
-		WCError{#text,#TextBox,__WCSTypeError,uText}:@@Throw()
+		WCError{#text,#TextBox,__WCSTypeError,uText}:Throw()
 	ENDIF
 
 	RETURN cText:=uText
@@ -161,7 +161,7 @@ ASSIGN TYPE(uType)
 	
 
 	IF !IsLong(uType)
-		WCError{#Type,#TextBox,__WCSTypeError,uType,1}:@@Throw()
+		WCError{#Type,#TextBox,__WCSTypeError,uType,1}:Throw()
 	ENDIF
 	dwType := uType
 

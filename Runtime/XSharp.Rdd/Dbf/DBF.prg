@@ -53,13 +53,12 @@ BEGIN NAMESPACE XSharp.RDD
         //PROTECT _CryptKey		AS STRING
         //PROTRECT _Trigger		as DbTriggerDelegate
         PROTECT _oIndex			AS BaseIndex
-        PROTECT _oMemo			AS BaseMemo
         PROTECT _Hot            AS LOGIC
         //PROTECT _addFieldPos    AS LONG     // Used by AddFields Method, and SetFieldsExtent
         PROTECT _lockScheme     AS DbfLocking
         PROTECT _NewRecord      AS LOGIC
-        INTERNAL _NullColumn    as DbfNullColumn // Column definition for _NullFlags, used in DBFVFP driver
-        INTERNAL _NullCount      := 0 as LONG   // to count the NULL and Length bits for DBFVFP
+        INTERNAL _NullColumn    AS DbfNullColumn // Column definition for _NullFlags, used in DBFVFP driver
+        INTERNAL _NullCount      := 0 AS LONG   // to count the NULL and Length bits for DBFVFP
         
         STATIC PROTECT _Extension := ".DBF" AS STRING
         INTERNAL PROPERTY FullPath AS STRING GET _FileName
@@ -71,7 +70,8 @@ BEGIN NAMESPACE XSharp.RDD
         STATIC PRIVATE  culture := System.Globalization.CultureInfo.InvariantCulture AS CultureInfo
         INTERNAL  _numformat AS NumberFormatInfo
         PROTECTED PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR
-        PROTECTED PROPERTY HasMemo AS LOGIC GET SELF:_oMemo != NULL
+        PROTECTED PROPERTY HasMemo AS LOGIC GET SELF:_hasMemo
+        PROTECTED PROPERTY Memo AS BaseMemo GET (BaseMemo) SELF:_Memo
         
         PRIVATE METHOD _AllocateBuffers() AS VOID
             SELF:_RecordBuffer  := BYTE[]{ SELF:_RecordLength}
@@ -79,8 +79,8 @@ BEGIN NAMESPACE XSharp.RDD
             FOR VAR  i := __ARRAYBASE__ TO SELF:_RecordLength - (1 -__ARRAYBASE__)
                 SELF:_BlankBuffer[i] := 0x20 // space
             NEXT
-            FOREACH oFld as RddFieldInfo in _Fields
-                if oFld IS DbfColumn VAR column
+            FOREACH oFld AS RddFieldInfo IN _Fields
+                IF oFld IS DbfColumn VAR column
                     column:InitValue(SELF:_BlankBuffer)
                 ENDIF
             NEXT
@@ -313,10 +313,10 @@ METHOD Lock( lockInfo REF DbLockInfo ) AS LOGIC
     LOCAL isOk AS LOGIC
     SELF:ForceRel()
     BEGIN LOCK SELF
-    IF lockInfo:@@METHOD == DbLockInfo.LockMethod.Exclusive  .OR. ;
-    lockInfo:@@METHOD == DbLockInfo.LockMethod.Multiple 
+    IF lockInfo:METHOD == DbLockInfo.LockMethod.Exclusive  .OR. ;
+        lockInfo:METHOD == DbLockInfo.LockMethod.Multiple 
         isOk := SELF:_lockRecord( lockInfo )
-    ELSEIF lockInfo:@@METHOD == DbLockInfo.LockMethod.File 
+    ELSEIF lockInfo:METHOD == DbLockInfo.LockMethod.File 
         isOk := SELF:_lockDBFFile( )
     ELSE
         isOk := TRUE
@@ -746,7 +746,7 @@ METHOD Zap() AS LOGIC
         IF SELF:_HasMemo 
             // Zap Memo
             IF SELF:HasMemo
-                RETURN _oMemo:Zap()
+                RETURN _Memo:Zap()
             ELSE
                 RETURN SUPER:Zap()
             ENDIF
@@ -852,9 +852,6 @@ METHOD Create(info AS DbOpenInfo) AS LOGIC
         
         SELF:_Encoding := System.Text.Encoding.GetEncoding( codePage ) 
         //
-        IF SELF:HasMemo
-            SELF:_oMemo:_Encoding := SELF:_Encoding
-        ENDIF
         // Convert the Windows CodePage to a DBF CodePage
         SELF:_Header:CodePage := CodePageExtensions.ToHeaderCodePage( (OsCodePage)codePage ) 
         // Init Header version, should it be a parameter ?
@@ -896,7 +893,7 @@ METHOD Create(info AS DbOpenInfo) AS LOGIC
 
 // Allow subclass (VFP) to set Extra flags
 PROTECTED VIRTUAL METHOD _checkField( dbffld REF DbfField) AS LOGIC
-    return dbffld:Type:IsStandard()
+    RETURN dbffld:Type:IsStandard()
 
     
     // Write the Fields Header, based on the _Fields List
@@ -912,9 +909,9 @@ PROTECTED VIRTUAL METHOD _writeFieldsHeader() AS LOGIC
     ENDIF
     
     currentField:Initialize()
-    LOCAL nOffSet as LONG
+    LOCAL nOffSet AS LONG
     nOffSet := 0
-    FOREACH VAR fld in SELF:_Fields
+    FOREACH VAR fld IN SELF:_Fields
         currentField:Offset := fld:Offset
         currentField:Name   := fld:Name
         currentField:Type   := fld:FieldType
@@ -930,7 +927,7 @@ PROTECTED VIRTUAL METHOD _writeFieldsHeader() AS LOGIC
             ENDIF
         ENDIF
         currentField:Flags := fld:Flags
-        IF ! _checkField(ref currentField)
+        IF ! _checkField(REF currentField)
             SELF:_DbfError( ERDD.CREATE_FILE, XSharp.Gencode.EG_DATATYPE,"DBF:Create()", "Invalid "+fld:ToString())
             RETURN FALSE
         ENDIF
@@ -987,9 +984,6 @@ METHOD Open(info AS XSharp.RDD.Support.DbOpenInfo) AS LOGIC
             SELF:_Ansi := SELF:_Header:IsAnsi
             SELF:_Encoding := System.Text.Encoding.GetEncoding( CodePageExtensions.ToCodePage( SELF:_Header:CodePage )  )
             //
-            IF SELF:HasMemo
-                SELF:_oMemo:_Encoding := SELF:_Encoding
-            ENDIF
         ELSE
             SELF:_DbfError( ERDD.CORRUPT_HEADER, XSharp.Gencode.EG_CORRUPTION )
         ENDIF
@@ -1068,7 +1062,7 @@ PRIVATE METHOD _readFieldsHeader() AS LOGIC
         ENDIF
         FOR VAR i := nStart TO fieldCount - ( 1 - nStart )
             Array.Copy(fieldsBuffer, i*DbfField.SIZE, currentField:Buffer, 0, DbfField.SIZE )
-            var column := DbfColumn.Create(REF currentField, SELF)
+            VAR column := DbfColumn.Create(REF currentField, SELF)
             SELF:AddField( column)
             IF column:IsMemo
                 SELF:_HasMemo := TRUE
@@ -1130,12 +1124,12 @@ METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
 METHOD AddField(info AS RddFieldInfo) AS LOGIC
     LOCAL isOk AS LOGIC
     // convert RddFieldInfo to DBFColumn
-    IF ! (info is DbfColumn)
+    IF ! (info IS DbfColumn)
         info := DbfColumn.Create(info, SELF)
     ENDIF
     isok := SUPER:AddField( info )
     IF isOk  .AND. info:IsMemo
-        SELF:_HasMemo := TRUE
+        SELF:_hasMemo := TRUE
     ENDIF
     RETURN isOk
     
@@ -1367,7 +1361,7 @@ INTERNAL VIRTUAL METHOD _isMemoField( nFldPos AS LONG ) AS LOGIC
     RETURN oColumn:IsMemo
     
     // Retrieve the BlockNumber as it is written in the DBF
-INTERNAL METHOD _getMemoBlockNumber( nFldPos AS LONG ) AS LONG
+OVERRIDE METHOD _getMemoBlockNumber( nFldPos AS LONG ) AS LONG
     LOCAL blockNbr := 0 AS LONG
     SELF:ForceRel()
     VAR oColumn := SELF:_GetColumn(nFldPos)
@@ -1389,7 +1383,7 @@ METHOD GetValue(nFldPos AS LONG) AS OBJECT
         IF oColumn:IsMemo
             IF SELF:HasMemo
                 // At this level, the return value is the raw Data, in BYTE[]
-                RETURN _oMemo:GetValue(nFldPos)
+                RETURN _Memo:GetValue(nFldPos)
             ELSE
                 RETURN SUPER:GetValue(nFldPos)
             ENDIF
@@ -1400,7 +1394,7 @@ METHOD GetValue(nFldPos AS LONG) AS OBJECT
         IF SELF:EoF
             IF oColumn:IsMemo
                 // At this level, the return value is the raw Data, in BYTE[]
-                RETURN _oMemo:GetValue(nFldPos)
+                RETURN _Memo:GetValue(nFldPos)
             ELSE
                 ret := oColumn:EmptyValue()
             ENDIF
@@ -1414,7 +1408,7 @@ METHOD GetValue(nFldPos AS LONG) AS OBJECT
 METHOD GetValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
     SELF:ForceRel()
     IF SELF:HasMemo
-        RETURN _oMemo:GetValueFile(nFldPos, fileName)
+        RETURN _Memo:GetValueFile(nFldPos, fileName)
     ELSE
         RETURN SUPER:GetValueFile(nFldPos, fileName)
     ENDIF
@@ -1423,7 +1417,7 @@ METHOD GetValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
 METHOD GetValueLength(nFldPos AS LONG) AS LONG
     SELF:ForceRel()
     IF SELF:HasMemo
-        RETURN _oMemo:GetValueLength(nFldPos)
+        RETURN _Memo:GetValueLength(nFldPos)
     ELSE
         RETURN SUPER:GetValueLength(nFldPos)
     ENDIF
@@ -1453,7 +1447,7 @@ METHOD Flush() 			AS LOGIC
     //
     FFlush( SELF:_hFile )
     IF SELF:HasMemo
-        isOk := _oMemo:Flush()
+        isOk := _Memo:Flush()
     ENDIF
     RETURN isOk
     
@@ -1526,9 +1520,9 @@ METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
         VAR oColumn := SELF:_GetColumn(nFldPos)
         IF oColumn:IsMemo
             IF SELF:HasMemo
-                IF _oMemo:PutValue(nFldPos, oValue)
+                IF _Memo:PutValue(nFldPos, oValue)
                     // Update the Field Info with the new MemoBlock Position
-                    oColumn:PutValue(SELF:_oMemo:LastWrittenBlockNumber, SELF:_RecordBuffer)
+                    oColumn:PutValue(SELF:Memo:LastWrittenBlockNumber, SELF:_RecordBuffer)
                 ENDIF
             ELSE
                 RETURN SUPER:PutValue(nFldPos, oValue)
@@ -1542,7 +1536,7 @@ METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
     /// <inheritdoc />
 METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
     IF SELF:HasMemo
-        RETURN _oMemo:PutValueFile(nFldPos, fileName)
+        RETURN _Memo:PutValueFile(nFldPos, fileName)
     ELSE
         RETURN SUPER:PutValue(nFldPos, fileName)
     ENDIF
@@ -1558,14 +1552,14 @@ METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
     /// <inheritdoc />
 METHOD CloseMemFile() 	AS LOGIC
     IF SELF:HasMemo
-        RETURN _oMemo:CloseMemFile()
+        RETURN _Memo:CloseMemFile()
     ELSE
         RETURN SUPER:CloseMemFile()
     ENDIF
     /// <inheritdoc />
 METHOD CreateMemFile(info AS DbOpenInfo) 	AS LOGIC
     IF SELF:HasMemo
-        RETURN _oMemo:CreateMemFile(info)
+        RETURN _Memo:CreateMemFile(info)
     ELSE
         RETURN SUPER:CreateMemFile(info)
     ENDIF
@@ -1573,7 +1567,7 @@ METHOD CreateMemFile(info AS DbOpenInfo) 	AS LOGIC
     /// <inheritdoc />
 METHOD OpenMemFile(info AS DbOpenInfo) 	AS LOGIC
     IF SELF:HasMemo
-        RETURN _oMemo:OpenMemFile(info)
+        RETURN _Memo:OpenMemFile(info)
     ELSE
         RETURN SUPER:OpenMemFile(info)
     ENDIF
@@ -1919,8 +1913,8 @@ CASE DBRI_RAWRECORD
     oResult := SELF:_Encoding:GetString(SELF:_RecordBuffer,0, SELF:_RecordLength)
 CASE DBRI_UPDATED
         oResult := SELF:_Hot
-        IF oNewValue IS LOGIC
-            IF (LOGIC) oNewValue
+        IF oNewValue IS LOGIC VAR isNew
+            IF isNew
                 SELF:_BufferValid := FALSE
                 SELF:_ReadRecord()
             ENDIF

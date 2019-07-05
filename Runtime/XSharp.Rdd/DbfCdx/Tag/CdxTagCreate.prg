@@ -306,8 +306,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL error := FALSE AS LOGIC
             TRY
                 VAR res := SELF:_oRdd:EvalBlock(oBlock)
-                IF res IS LOGIC 
-                    isOk := (LOGIC) res
+                IF res IS LOGIC VAR ok
+                    isOk := ok
                 ELSEIF lMustBeLogic
                     error := TRUE
                 ELSE

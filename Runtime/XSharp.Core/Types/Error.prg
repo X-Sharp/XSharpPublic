@@ -260,7 +260,7 @@ BEGIN NAMESPACE XSharp
       
       
     /// <summary>Throw the error.</summary>
-    VIRTUAL METHOD @@Throw AS VOID STRICT
+    VIRTUAL METHOD Throw AS VOID STRICT
         THROW SELF
     
     #region STATIC methods TO construct an error
@@ -522,64 +522,64 @@ BEGIN NAMESPACE XSharp
         // These numbers must match with the types defined in the compiler
         // They also match with the USUAL types in VO (BaseType.h)
         /// <exclude/>	
-        MEMBER @@Void		:=0
+        MEMBER Void		:=0
         /// <exclude/>	
-        MEMBER @@Long		:=1
+        MEMBER Long		:=1
         /// <exclude/>	
-        MEMBER @@Date		:=2
+        MEMBER Date		:=2
         /// <exclude/>	
-        MEMBER @@Float		:=3
+        MEMBER Float		:=3
         /// <exclude/>	
-        MEMBER @@Fixed      := 4 // Note # 4 (FIXED) was defined but never used in VO
+        MEMBER Fixed      := 4 // Note # 4 (FIXED) was defined but never used in VO
         /// <exclude/>	
-        MEMBER @@Array		:=5
+        MEMBER Array		:=5
         /// <exclude/>	
-        MEMBER @@Object		:=6
+        MEMBER Object		:=6
         /// <exclude/>	
-        MEMBER @@String		:=7
+        MEMBER String		:=7
         /// <exclude/>	
-        MEMBER @@Logic		:=8
+        MEMBER Logic		:=8
         /// <exclude/>	
-        MEMBER @@Codeblock	:=9
+        MEMBER Codeblock	:=9
         /// <exclude/>	
-        MEMBER @@Symbol		:=10
+        MEMBER Symbol		:=10
         // see below for missing values
         // The follow numbers are defined but never stored inside a USUAL in VO and Vulcan
         /// <exclude/>	
-        MEMBER @@Byte		:=11
+        MEMBER Byte		:=11
         /// <exclude/>	
-        MEMBER @@ShortInt	:=12
+        MEMBER ShortInt	:=12
         /// <exclude/>	
-        MEMBER @@Word		:=13
+        MEMBER Word		:=13
         /// <exclude/>	
-        MEMBER @@DWord		:=14
+        MEMBER DWord		:=14
         /// <exclude/>	
-        MEMBER @@Real4		:=15
+        MEMBER Real4		:=15
         /// <exclude/>	
-        MEMBER @@Real8		:=16
+        MEMBER Real8		:=16
         /// <exclude/>	
-        MEMBER @@Psz		:=17
+        MEMBER Psz		:=17
         /// <exclude/>	
-        MEMBER @@Ptr		:=18
+        MEMBER Ptr		:=18
         /// <exclude/>	
-        MEMBER @@Usual		:=19	// USUAL by Ref, not implemented in Vulcan
+        MEMBER Usual		:=19	// USUAL by Ref, not implemented in Vulcan
         // 20 and 21 not used
         /// <exclude/>	
-        MEMBER @@Int64		:=22
+        MEMBER Int64		:=22
         /// <exclude/>	
-        MEMBER @@Uint64     :=23
+        MEMBER Uint64     :=23
         /// <exclude/>	
-        MEMBER @@Char		:=24    // not stored in a usual
+        MEMBER Char		:=24    // not stored in a usual
         /// <exclude/>	
-        MEMBER @@Dynamic    :=25
+        MEMBER Dynamic    :=25
         /// <exclude/>	
-        MEMBER @@DateTime	:=26
+        MEMBER DateTime	:=26
         /// <exclude/>	
-        MEMBER @@Decimal	:=27
+        MEMBER Decimal	:=27
         /// <exclude/>	
-        MEMBER @@Memo		:=32	// Used in RDD system in VO
+        MEMBER Memo		:=32	// Used in RDD system in VO
         /// <exclude/>	
-        MEMBER @@Invalid    :=99
+        MEMBER Invalid    :=99
     END ENUM
 
 END NAMESPACE

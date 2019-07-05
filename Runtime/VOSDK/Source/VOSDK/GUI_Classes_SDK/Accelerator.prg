@@ -12,7 +12,7 @@ METHOD AddAccelerator(oAccelerator)
 
 
    IF ! IsInstanceOfUsual(oAccelerator, #Accelerator)
-		WCError{#AddAccelerator, #Accelerator, __WCSTypeError, oAccelerator, 1}:@@Throw()
+		WCError{#AddAccelerator, #Accelerator, __WCSTypeError, oAccelerator, 1}:Throw()
 	ENDIF
 
    IF hAccel == NULL_PTR
@@ -162,7 +162,7 @@ CONSTRUCTOR(xResourceID)
       ENDIF
 		RETURN
    ELSE
-		WCError{#Init, #Accelerator, __WCSTypeError, xResourceID, 1}:@@Throw()
+		WCError{#Init, #Accelerator, __WCSTypeError, xResourceID, 1}:Throw()
 	ENDIF
 
    aAccels := NULL_ARRAY

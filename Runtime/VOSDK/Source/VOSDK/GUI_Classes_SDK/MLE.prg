@@ -26,7 +26,7 @@ METHOD GetLine(nLineNumber, nMaxLength)
 		IF IsNil(nLineNumber) .OR. (IsLong(nLineNumber) .AND. nLineNumber==0)
 			dwIndex := DWORD(SendMessage(hHandle, EM_LINEFROMCHAR, 0xffffffff, 0))
 		ELSEIF !IsLong(nLineNumber)
-			WCError{#GetLine, #MultiLineEdit, __WCSTypeError, nLineNumber, 1}:@@Throw()
+			WCError{#GetLine, #MultiLineEdit, __WCSTypeError, nLineNumber, 1}:Throw()
 		ELSE
 			dwIndex := nLineNumber-1
 		ENDIF
@@ -34,7 +34,7 @@ METHOD GetLine(nLineNumber, nMaxLength)
 		IF IsNil(nMaxLength) .OR. (IsLong(nMaxLength) .AND. nMaxLength==-1)
 			dwChars := SELF:GetLineLength(dwIndex+1)
 		ELSEIF !IsLong(nMaxLength)
-			WCError{#GetLine, #MultiLineEdit, __WCSTypeError, nMaxLength, 2}:@@Throw()
+			WCError{#GetLine, #MultiLineEdit, __WCSTypeError, nMaxLength, 2}:Throw()
 		ELSE
 			dwChars := nMaxLength
 		ENDIF
@@ -63,7 +63,7 @@ METHOD GetLineLength(nLineNumber)
 	IF IsNil(nLineNumber) .OR. (IsLong(nLineNumber) .AND. nLineNumber==0)
 		dwIndex := 0xffffffff
 	ELSEIF !IsLong(nLineNumber)
-		WCError{#GetLineLength, #MultiLineEdit, __WCSTypeError, nLineNumber, 1}:@@Throw()
+		WCError{#GetLineLength, #MultiLineEdit, __WCSTypeError, nLineNumber, 1}:Throw()
 	ELSE
 		dwIndex := nLineNumber-1
 	ENDIF
@@ -132,11 +132,11 @@ METHOD PageUp()
 
 	RETURN SELF
 
-METHOD @@ScrollHorizontal(nChars) 
+METHOD ScrollHorizontal(nChars) 
 	
 
 	IF !IsLong(nChars)
-		WCError{#ScrollHorizontal, #MultiLineEdit, __WCSTypeError, nChars, 1}:@@Throw()
+		WCError{#ScrollHorizontal, #MultiLineEdit, __WCSTypeError, nChars, 1}:Throw()
 	ENDIF
 
 	IF SELF:ValidateControl()
@@ -145,11 +145,11 @@ METHOD @@ScrollHorizontal(nChars)
 
 	RETURN SELF
 
-METHOD @@ScrollVertical(nLines) 
+METHOD ScrollVertical(nLines) 
 	
 
 	IF !IsLong(nLines)
-		WCError{#ScrollVertical, #MultiLineEdit, __WCSTypeError, nLines, 1}:@@Throw()
+		WCError{#ScrollVertical, #MultiLineEdit, __WCSTypeError, nLines, 1}:Throw()
 	ENDIF
 
 	IF SELF:ValidateControl()

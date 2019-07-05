@@ -119,7 +119,7 @@ ASSIGN TabSize(nNewTabSize)
 	
 	
 	IF !IsLong(nNewTabSize)
-		WCError{#TabSize,#FormattedTextObject,__WCSTypeError,nNewTabSize,1}:@@Throw()
+		WCError{#TabSize,#FormattedTextObject,__WCSTypeError,nNewTabSize,1}:Throw()
 	ENDIF
 	
 	RETURN wTabSize:=nNewTabSize

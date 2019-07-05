@@ -27,7 +27,7 @@ ASSIGN Color(oNewColor)
 	
 
 	IF !IsInstanceOfUsual(oNewColor,#Color)
-		WCError{#Color,#TextObject,__WCSTypeError,oNewColor,1}:@@Throw()
+		WCError{#Color,#TextObject,__WCSTypeError,oNewColor,1}:Throw()
 	ENDIF
 
 	RETURN (oColor := oNewColor)
@@ -53,7 +53,7 @@ ASSIGN DisplayText(cNewText)
 	
 
 	IF !IsString(cNewText)
-		WCError{#DisplayText,#TextObject,__WCSTypeError,cNewText,1}:@@Throw()
+		WCError{#DisplayText,#TextObject,__WCSTypeError,cNewText,1}:Throw()
 	ENDIF
 
 	RETURN (cText := cNewText)
@@ -99,7 +99,7 @@ ASSIGN Font(oNewFont)
 	
 
 	IF !IsInstanceOfUsual(oNewFont,#Font)
-		WCError{#Font,#TextObject,__WCSTypeError,oNewFont,1}:@@Throw()
+		WCError{#Font,#TextObject,__WCSTypeError,oNewFont,1}:Throw()
 	ENDIF
 
 	RETURN oFont:=oNewFont
@@ -118,14 +118,14 @@ CONSTRUCTOR(oPoint, cText, oFont, oColor)
 
 	IF !IsNil(cText)
 		IF !IsString(cText)
-			WCError{#Init,#TextObject,__WCSTypeError,cText,2}:@@Throw()
+			WCError{#Init,#TextObject,__WCSTypeError,cText,2}:Throw()
 		ENDIF
 		SELF:cText := cText
 	ENDIF
 
 	IF !IsNil(oFont)
 		IF !IsInstanceOfUsual(oFont,#Font)
-			WCError{#Init,#TextObject,__WCSTypeError,oFont,3}:@@Throw()
+			WCError{#Init,#TextObject,__WCSTypeError,oFont,3}:Throw()
 		ENDIF
 		SELF:oFont:=oFont
 	ELSE
@@ -134,7 +134,7 @@ CONSTRUCTOR(oPoint, cText, oFont, oColor)
 
 	IF !IsNil(oColor)
 		IF !IsInstanceOfUsual(oColor,#Color)
-			WCError{#Init,#TextObject,__WCSTypeError,oColor,4}:@@Throw()
+			WCError{#Init,#TextObject,__WCSTypeError,oColor,4}:Throw()
 		ENDIF
 		SELF:oColor := oColor
 	ELSE

@@ -236,8 +236,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             macroDefines.Add("__CLRVERSION__", () => new XSharpToken(XSharpLexer.STRING_CONST, "\"" + _options.ClrVersion.ToString() + ".0\""));
             macroDefines.Add("__DATE__", () => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.Date.ToString("yyyyMMdd") + '"'));
             macroDefines.Add("__DATETIME__", () => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToString() + '"'));
-            if (_options.DebugEnabled)
+            bool debug = false;
+            if (options.PreprocessorSymbolNames.Contains((name) => name.ToUpper() == "DEBUG"))
+                debug = true;
+            if (options.PreprocessorSymbolNames.Contains((name) => name.ToUpper() == "NDEBUG"))
+                debug = false;
+            if (debug)
+            { 
                 macroDefines.Add("__DEBUG__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
+            }
             macroDefines.Add("__DIALECT__", () => new XSharpToken(XSharpLexer.STRING_CONST, '"' + options.Dialect.ToString() + '"'));
             switch (_options.Dialect)
             {

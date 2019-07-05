@@ -5,7 +5,9 @@
 USING XSharp.RDD
 FUNCTION Start() AS VOID
     TRY
-        TestUniqueCdx()
+        testseeknotfound()
+        //testscope()
+        //TestUniqueCdx()
         //TestGrowFpt()
         //TestNil()
         //OrdDescFreeze()
@@ -79,6 +81,35 @@ FUNCTION Start() AS VOID
     END TRY
     WAIT
     RETURN
+
+FUNCTION testseeknotfound AS VOID
+
+RddSetDefault("DBFVFP")
+DbuseArea(TRUE, "DBFVFP", "c:\Descartes\testdbf\Robert\trajekt.dbf", "TRA")
+? SELECT()
+OrdListAdd("c:\Descartes\testdbf\Robert\TRAJEKT1.ntx")
+OrdListAdd("c:\Descartes\testdbf\Robert\TRAJEKT2.ntx")
+OrdListAdd("c:\Descartes\testdbf\Robert\TRAJEKT3.ntx")
+OrdListAdd("c:\Descartes\testdbf\Robert\TRAJEKT4.ntx")
+OrdListAdd("c:\Descartes\testdbf\Robert\TRAJEKT5.ntx")
+OrdListAdd("c:\Descartes\testdbf\Robert\TRAJEKT6.ntx")
+OrdListAdd("c:\Descartes\testdbf\Robert\TRAJEKT9.ntx")
+OrdSetFocus(1)
+? IndexCount()
+DbSelectArea(0)
+
+? SELECT()
+LOCAL aValues := {"1190499", "1190893","1190926","1190976","1191145"}
+TRA->(DbSetScope(0, "119"))
+TRA->(DbClearScope())
+FOR VAR nI := 1 TO alen(aValues)
+    ? aValues[nI], TRA->(DbSeek(aValues[nI]+"1"))
+NEXT
+DbCloseArea()
+RETURN
+
+
+
 FUNCTION TestUniqueCdx() AS VOID
 
 LOCAL cDBF, cPfad, cIndex, cDriver AS STRING 

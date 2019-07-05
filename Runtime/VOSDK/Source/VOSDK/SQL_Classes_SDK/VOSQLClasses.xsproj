@@ -48,7 +48,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.prg" />
+    <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
+      <Link>SDKAssemblyinfo.prg</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="SQLCatalog.prg" />
     <Compile Include="SQLColumn.prg" />
     <Compile Include="SQLColumnAttributes.prg" />

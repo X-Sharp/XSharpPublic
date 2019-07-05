@@ -134,9 +134,10 @@
     </span>
   </TrueOrFalse>
   <ScopeInfo>
-    <summary>Scope value for DbScope() and DbSetScope().</summary>
+    <summary>Scope value for DbScope(), DbSetScope() and DbClearScope().</summary>
     <seealso cref='M:XSharp.RT.Functions.DbScope(XSharp.__Usual)' >DbScope()</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbSetScope(System.Int32,XSharp.__Usual)' >DbSetScope()</seealso>
+    <seealso cref='M:XSharp.RT.Functions.DbClearScope(XSharp.__Usual)' >DbClearScope()</seealso>
   </ScopeInfo>
   <LastError>
     <span>

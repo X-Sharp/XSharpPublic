@@ -78,7 +78,7 @@ ASSIGN Decimals (uDecimals)
 	ELSE
 		//  UH 12/16/1999
 		//  BREAK DbError{ SELF, #Decimals, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADDECIMALS), uDecimals, "uDecimals" }
-		DbError{ SELF, #Decimals, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADDECIMALS), uDecimals, "uDecimals" }:@@Throw()
+		DbError{ SELF, #Decimals, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADDECIMALS), uDecimals, "uDecimals" }:Throw()
 	ENDIF
 	RETURN 
 
@@ -100,14 +100,14 @@ CONSTRUCTOR( oHLName, uType, uLength, uDecimals )
 	ELSE
 		//  UH 12/16/1999
 		//  BREAK DbError{SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADNAME), oHLName, "oHLName" }
-		DbError{SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADNAME), oHLName, "oHLName" }:@@Throw()
+		DbError{SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADNAME), oHLName, "oHLName" }:Throw()
 	ENDIF
 
 	IF IsString( uType )
 		cType := Upper(uType)
 		IF cType == "C" .OR. cType == "M"
 			wType := STRING
-		ELSEIF ctype == "N" .or. cType == "F"
+		ELSEIF ctype == "N" .OR. cType == "F"
 			wType := FLOAT
 			lNumeric:=TRUE
 			cType := "N"
@@ -123,7 +123,7 @@ CONSTRUCTOR( oHLName, uType, uLength, uDecimals )
 			wType := TYPE_MULTIMEDIA
 		ELSE
 			cType := ""
-			DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:@@Throw()
+			DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:Throw()
 		ENDIF
 	ELSE
 		wType := uType
@@ -133,13 +133,13 @@ CONSTRUCTOR( oHLName, uType, uLength, uDecimals )
 			cType := "L"
 		ELSEIF wType = DATE
 			cType := "D"
-		ELSEIF lNumeric:=   wType=INT   .or.; // also Long //367@005
-			wType=FLOAT .or.;              //367@005
-			wType=BYTE  .or.;              //367@005
-			wType=SHORTINT .or.;              //367@005
-			wtype=WORD  .or.;              //367@005
-			wType=DWORD .or.;              //367@005
-			wType=REAL4 .or.;              //367@005
+		ELSEIF lNumeric:=   wType=INT   .OR.; // also Long //367@005
+			wType=FLOAT .OR.;              //367@005
+			wType=BYTE  .OR.;              //367@005
+			wType=SHORTINT .OR.;              //367@005
+			wtype=WORD  .OR.;              //367@005
+			wType=DWORD .OR.;              //367@005
+			wType=REAL4 .OR.;              //367@005
 			wtype=REAL8                    //367@005
 			cType := "N"                                   //367@005
 			// Ansgar 7/9/97 added MulitMedia
@@ -148,16 +148,16 @@ CONSTRUCTOR( oHLName, uType, uLength, uDecimals )
 		ELSE
 			wType := 0
 			//  UH 12/16/1999
-			DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:@@Throw()
+			DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:Throw()
 		ENDIF
 	ENDIF
 
 	IF IsNumeric( uLength )
 		wLength := uLength
 	ELSE
-		IF lNumeric .or. cType="C"
+		IF lNumeric .OR. cType="C"
 			//  UH 12/16/1999
-			DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADLENGTH), uLength, "uLength" }:@@Throw()
+			DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADLENGTH), uLength, "uLength" }:Throw()
 		ENDIF
 	ENDIF
 
@@ -166,7 +166,7 @@ CONSTRUCTOR( oHLName, uType, uLength, uDecimals )
 	ELSEIF IsNumeric( uDecimals )
 		wDecimals := uDecimals
 	ELSE
-		DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADDECIMALS), uDecimals, "uDecimals" }:@@Throw()
+		DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADDECIMALS), uDecimals, "uDecimals" }:Throw()
 	ENDIF
 	RETURN 
 
@@ -225,7 +225,7 @@ METHOD PerformValidations(uValue, arg)
 		ENDIF
 
 		// Check data type (no conversions here!)
-		IF !(UsualType(uValue) == wType .OR. (lNumeric .AND. IsNumeric(uValue)) .or. ((wType == TYPE_MULTIMEDIA) .and. IsString(uValue)))
+		IF !(UsualType(uValue) == wType .OR. (lNumeric .AND. IsNumeric(uValue)) .OR. ((wType == TYPE_MULTIMEDIA) .AND. IsString(uValue)))
 			IF oHLType == NULL_OBJECT
 				oHLType := HyperLabel{ #FieldSpecType, , VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDTYPE,oHyperLabel:Name,TypeAsString(wType)) }
 			ENDIF
@@ -351,14 +351,14 @@ METHOD SetLength( w, oHL )
 		IF IsNumeric( w )
 			wLength := w
 		ELSE
-			DbError{ SELF, #SetLength, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADSI), w, "w" }:@@Throw()
+			DbError{ SELF, #SetLength, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADSI), w, "w" }:Throw()
 		ENDIF
 	ENDIF
 	IF oHL# NIL
 		IF IsInstanceOfUsual( oHL, #HyperLabel )
 			oHLLength := oHL
 		ELSE
-			DbError{ SELF, #SetLength, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:@@Throw()
+			DbError{ SELF, #SetLength, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
 		ENDIF
 	ENDIF
 	RETURN NIL
@@ -371,14 +371,14 @@ METHOD SetMinLength( w, oHL )
 		IF IsNumeric( w )
 			wMinLength := w
 		ELSE
-			DbError{ SELF, #SetMinLength, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADSI), w, "w" }:@@Throw()
+			DbError{ SELF, #SetMinLength, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADSI), w, "w" }:Throw()
 		ENDIF
 	ENDIF
 	IF !IsNil(oHL)
 		IF IsInstanceOfUsual( oHL, #HyperLabel )
 			oHLMinLength := oHL
 		ELSE
-			DbError{ SELF, #SetMinLength, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:@@Throw()
+			DbError{ SELF, #SetMinLength, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
 		ENDIF
 	ENDIF
 	RETURN NIL
@@ -396,7 +396,7 @@ METHOD SetRange( uMinimum, uMaximum, oHL )
 		IF IsInstanceOfUsual( oHL, #HyperLabel )
 			oHLRange := oHL
 		ELSE
-			DbError{ SELF, #SetRange, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:@@Throw()
+			DbError{ SELF, #SetRange, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
 		ENDIF
 	ENDIF
 	RETURN NIL
@@ -411,13 +411,13 @@ METHOD SetRequired( lReq, oHL )
 	ELSEIF IsLogic( lReq )
 		lRequired := lReq
 	ELSE
-		DbError{ SELF, #SetRequired, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADLREQ), lReq, "lReq" }:@@Throw()
+		DbError{ SELF, #SetRequired, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADLREQ), lReq, "lReq" }:Throw()
 	ENDIF
 	IF !IsNil(oHL)
 		IF IsInstanceOfUsual( oHL, #HyperLabel )
 			oHLRequired := oHL
 		ELSE
-			DbError{ SELF, #SetRequired, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:@@Throw()
+			DbError{ SELF, #SetRequired, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
 		ENDIF
 	ENDIF
 	RETURN NIL
@@ -432,7 +432,7 @@ METHOD SetType( uType, oHL )
 			cType := Upper(uType)
 			IF cType == "C" .OR. cType == "M"
 				wType := STRING
-			ELSEIF cType == "N" .or. cType == "F"
+			ELSEIF cType == "N" .OR. cType == "F"
 				wType := FLOAT
 				lNumeric:=TRUE
 				cType := "N"
@@ -452,7 +452,7 @@ METHOD SetType( uType, oHL )
 
 			ELSE
 				cType := ""
-				DbError{ SELF, #SetType, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:@@Throw()
+				DbError{ SELF, #SetType, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:Throw()
 			ENDIF
 		ELSE
 			//367@005 start
@@ -463,13 +463,13 @@ METHOD SetType( uType, oHL )
 				cType := "L"
 			ELSEIF wType = DATE
 				cType := "D"
-			ELSEIF lNumeric:=   wType=INT   .or.; // also Long
-				wType=FLOAT .or.;
-				wType=BYTE  .or.;
-				wType=SHORTINT .or.;
-				wtype=WORD  .or.;
-				wType=DWORD .or.;
-				wType=REAL4 .or.;
+			ELSEIF lNumeric:=   wType=INT   .OR.; // also Long
+				wType=FLOAT .OR.;
+				wType=BYTE  .OR.;
+				wType=SHORTINT .OR.;
+				wtype=WORD  .OR.;
+				wType=DWORD .OR.;
+				wType=REAL4 .OR.;
 				wtype=REAL8
 				cType := "N"
 				// Ansgar 7/9/97 added Bitmap
@@ -478,7 +478,7 @@ METHOD SetType( uType, oHL )
 
 			ELSE
 				wType := 0
-				DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:@@Throw()
+				DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:Throw()
 			ENDIF
 		ENDIF
 	ENDIF
@@ -486,7 +486,7 @@ METHOD SetType( uType, oHL )
 		IF IsInstanceOfUsual( oHL, #HyperLabel )
 			oHLType := oHL
 		ELSE
-			DbError{ SELF, #SetType, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:@@Throw()
+			DbError{ SELF, #SetType, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
 		ENDIF
 	ENDIF
 	RETURN NIL
@@ -505,14 +505,14 @@ METHOD SetValidation( cb, oHL )
 		ELSEIF IsString( cb )
 			cbValidation := &( "{ | |" + cb + " }" )
 		ELSE
-			DbError{ SELF, #SetValidation, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADCB), cb, "cb" }:@@Throw()
+			DbError{ SELF, #SetValidation, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADCB), cb, "cb" }:Throw()
 		ENDIF
 	ENDIF
 	IF !IsNil(oHL)
 		IF IsInstanceOfUsual( oHL, #HyperLabel )
 			oHLValidation := oHL
 		ELSE
-			DbError{ SELF, #SetValidation, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:@@Throw()
+			DbError{ SELF, #SetValidation, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
 		ENDIF
 	ENDIF
 	RETURN NIL
@@ -524,8 +524,8 @@ ACCESS Status
 	RETURN oHLStatus
 
 ASSIGN Status (oHL)                             
-	IF !IsInstanceOfUsual( oHL, #HyperLabel ) .and. (!IsObject(oHL) .or. !(oHL==Null_Object))
-		DbError{ SELF, #Status, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:@@Throw()
+	IF !IsInstanceOfUsual( oHL, #HyperLabel ) .AND. (!IsObject(oHL) .OR. !(oHL==NULL_OBJECT))
+		DbError{ SELF, #Status, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
 	ENDIF
 	oHLStatus := oHL
 	RETURN 
@@ -570,8 +570,8 @@ METHOD Transform( uValue )
 					cResult:=cTemp
 				ENDIF
 			ENDIF
-		ELSEIF uValue==NIL .and. wType==STRING //390@016
-			cResult := Null_String             //390@016
+		ELSEIF uValue==NIL .AND. wType==STRING //390@016
+			cResult := NULL_STRING             //390@016
 		ELSE
 			cResult := AsString(uValue)
 		ENDIF
@@ -593,7 +593,7 @@ METHOD Val( cString )
 	LOCAL cType AS STRING
 
 	IF !IsString( cString )     // This is a generic converter
-		DbError{ SELF, #Val, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADSTRING), cString, "cString" }:@@Throw()
+		DbError{ SELF, #Val, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADSTRING), cString, "cString" }:Throw()
 	ENDIF
 
 	IF lNumeric

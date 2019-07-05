@@ -158,7 +158,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
 
             
-        PRIVATE METHOD _HeaderCreate(lScoped as LOGIC) AS LOGIC
+        PRIVATE METHOD _HeaderCreate(lScoped AS LOGIC) AS LOGIC
             SELF:_Header := NtxHeader{ SELF:_hFile }
             SELF:_Header:Signature              := NtxHeaderFlags.Default
             SELF:_Header:IndexingVersion        := SELF:_indexVersion
@@ -353,8 +353,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL error := FALSE AS LOGIC
             TRY
                 VAR res := SELF:_oRdd:EvalBlock(oBlock)
-                IF res IS LOGIC 
-                    isOk := (LOGIC) res
+                IF res IS LOGIC VAR ok
+                    isOk := ok
                 ELSEIF lMustBeLogic
                     error := TRUE
                 ELSE

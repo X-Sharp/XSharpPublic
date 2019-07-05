@@ -259,17 +259,17 @@ METHOD SetDataField( nFieldPos, oField )
 
 	IF aDataFields = NULL_ARRAY
 		///RvdH Changed define
-		DbError{ SELF,  #SetDataField, EG_SEQUENCE, __CavoStr( __CAVOSTR_SQLCLASS__NODATAFIELDSEXIST ) }:@@Throw()
+		DbError{ SELF,  #SetDataField, EG_SEQUENCE, __CavoStr( __CAVOSTR_SQLCLASS__NODATAFIELDSEXIST ) }:Throw()
 
 	ELSEIF !IsNumeric( nFieldPos )    .OR. ;
 		nFieldPos < 1           .OR. ;
 		nFieldPos > ALen( aDataFields )
 		///RvdH Changed define
-		DbError{ SELF, #SetDataField, EG_ARG,  __CavoStr( __CAVOSTR_SQLCLASS__BADFIELDPOSITION ), nFieldPos, "nFieldPos" }:@@Throw()
+		DbError{ SELF, #SetDataField, EG_ARG,  __CavoStr( __CAVOSTR_SQLCLASS__BADFIELDPOSITION ), nFieldPos, "nFieldPos" }:Throw()
 
 	ELSEIF IsNil( oField ) .OR. !IsInstanceOfUsual( oField,#DataField )
 		///RvdH Changed define
-		DbError{ SELF,  #SetDataField, EG_ARG,  __CavoStr( __CAVOSTR_SQLCLASS__BADFIELDPOSITION ), nFieldPos, "nFieldPos" }:@@Throw()
+		DbError{ SELF,  #SetDataField, EG_ARG,  __CavoStr( __CAVOSTR_SQLCLASS__BADFIELDPOSITION ), nFieldPos, "nFieldPos" }:Throw()
 
 	ELSE
 		oDF := aDataFields[nFieldPos]
@@ -395,7 +395,7 @@ METHOD SetTimeStamp( uFieldPos, cTimestamp )
 	ENDIF
 	MemCopy( oData:ptrValue, String2Psz(cTimestamp ), Min( SLen( cTimestamp ), oData:Length ) )
 	oData:ValueChanged 	:= TRUE
-	oData:@@Null         := FALSE
+	oData:Null         := FALSE
 
 
 	lRowModified := TRUE

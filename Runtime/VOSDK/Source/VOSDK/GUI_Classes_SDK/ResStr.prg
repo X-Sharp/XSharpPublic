@@ -17,13 +17,13 @@ CONSTRUCTOR(xResourceID, nMaxLen)
 	IF IsNumeric(xResourceID) .OR. IsSymbol(xResourceID)
 		xResourceID := ResourceID{xResourceID} // , GetNatDLLHandle()}
 	ELSEIF !IsInstanceOfUsual(xResourceID, #ResourceID)
-		WCError{#Init, #ResourceString, __WCSTypeError, xResourceID, 1}:@@Throw()
+		WCError{#Init, #ResourceString, __WCSTypeError, xResourceID, 1}:Throw()
 	ENDIF
 
 	IF IsNil(nMaxLen)
 		nMaxLen := 256
 	ELSEIF !IsNumeric(nMaxLen)
-		WCError{#Init, #ResourceString, __WCSTypeError, nMaxLen, 2}:@@Throw()
+		WCError{#Init, #ResourceString, __WCSTypeError, nMaxLen, 2}:Throw()
 	ENDIF
 
 	hInst := xResourceID:Handle()

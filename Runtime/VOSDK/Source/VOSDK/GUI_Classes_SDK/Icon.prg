@@ -44,7 +44,7 @@ CONSTRUCTOR(xResourceID, kLoadOption, iWidth, iHeight)
 		IF IsSymbol(xResourceID) .OR. IsString(xResourceID)
 			xResourceID := ResourceID{xResourceID}
 		ELSEIF !IsInstanceOfUsual(xResourceID, #ResourceID)
-			WCError{#Init, #Icon, __WCSTypeError, xResourceID, 1}:@@Throw()
+			WCError{#Init, #Icon, __WCSTypeError, xResourceID, 1}:Throw()
 		ENDIF
 
 		hInst := xResourceID:Handle()

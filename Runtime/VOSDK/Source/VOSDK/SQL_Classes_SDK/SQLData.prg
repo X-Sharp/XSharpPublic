@@ -23,7 +23,7 @@ METHOD Initialize( pData AS PTR, pLength AS PTR, nLen AS DWORD, lNull AS LOGIC, 
 	SELF:PtrValue 	   := pData
 	SELF:ptrLength    := pLength
 	SELF:Length 		:= nLen
-	SELF:@@Null 			:= lNull
+	SELF:Null 			:= lNull
 	SELF:ValueChanged := lChanged
 	RETURN
 END CLASS

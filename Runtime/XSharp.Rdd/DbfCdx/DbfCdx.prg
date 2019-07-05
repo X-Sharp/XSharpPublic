@@ -168,8 +168,7 @@ OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD , info AS DbOrderInfo ) AS OBJECT
 	CASE DBOI_ISDESC
 		IF workOrder != NULL
 			VAR oldValue  := workOrder:Descending
-			IF info:Result IS LOGIC
-				VAR descend := (LOGIC) info:Result
+			IF info:Result IS LOGIC VAR descend
 				workOrder:Descending := descend
 			ENDIF
 			info:Result := oldValue
@@ -263,8 +262,7 @@ CASE DBOI_KEYSIZE
 		IF workOrder != NULL
 			LOCAL lOld AS LOGIC
 			lOld := workOrder:Custom
-			IF info:Result IS LOGIC
-				VAR custom := (LOGIC) info:Result
+			IF info:Result IS LOGIC VAR custom
 				IF custom
 					workOrder:SetCustom()
 				ENDIF
@@ -349,19 +347,26 @@ PUBLIC OVERRIDE METHOD Close() AS LOGIC
 	
 PUBLIC OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
 	LOCAL isOk AS LOGIC
-	LOCAL lMemo := FALSE as LOGIC
+	LOCAL lMemo := FALSE AS LOGIC
 	isOk := SUPER:Create(openInfo)
-	FOREACH var fld in SELF:_fields
-		IF fld:FieldType:IsMemo()
-		    lMemo := TRUE
-            EXIT
+    IF isOk
+	    FOREACH VAR fld IN SELF:_fields
+		    IF fld:FieldType:IsMemo()
+		        lMemo := TRUE
+                EXIT
+            ENDIF
+        NEXT
+        LOCAL cIndex AS STRING
+        cIndex := System.IO.Path.ChangeExtension(SELF:FullPath, ".CDX")
+        IF System.IO.File.Exists(cIndex)
+            System.IO.File.Delete(cIndex)
         ENDIF
-    NEXT
-	IF lMemo
-        SELF:_Header:Version := DbfVersion.FoxPro2WithMemo
-    ELSE
-        SELF:_Header:Version := DbfVersion.FoxBaseDBase3NoMemo
-    ENDIF
+	    IF lMemo
+            SELF:_Header:Version := DbfVersion.FoxPro2WithMemo
+        ELSE
+            SELF:_Header:Version := DbfVersion.FoxBaseDBase3NoMemo
+        ENDIF
+    ENDIF    
     RETURN isOk
 
    

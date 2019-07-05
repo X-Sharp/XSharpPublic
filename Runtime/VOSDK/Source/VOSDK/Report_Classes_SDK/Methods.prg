@@ -186,7 +186,7 @@ METHOD __CreateDefinerWindow(cReportName, iWindowType, cSQLStatement, iReportSty
 	
 	AAdd(aOpenNames, {char1, hWrmHandle, .F. }) // last element is if a previewer is open
 	nOpenIndex := INT(ALen(aOpenNames))   // Don't just increment. Index can be reset by SetFocus
-    oOwner:@@StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_COMMANDERROR2),servername, "FILE.OPEN", "" ))
+    oOwner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_COMMANDERROR2),servername, "FILE.OPEN", "" ))
 	
 	IF  !MonitorIsOn
 		// set an advise to be notified of events
@@ -223,7 +223,7 @@ METHOD __ExecuteNow (oDDEMC)
 	
 	// Special handling for File.Close commands
 	IF (At("FILE.CLOSE", oDDEMC:cCmd) != 0)
-        oOwner:@@StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_TOCLOSEFILE),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
+        oOwner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_TOCLOSEFILE),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
 		CloseMethodCalled := TRUE  // record that the VO program is initiator, rather than the user.
 		// Stops DataUpdate from generating second FILE.CLOSE command to CARET if user closes View
 		// If CARETRUN user closes report, this flag lets DataUpdate delete it from the OpenNames array
@@ -261,7 +261,7 @@ METHOD __ExecuteNow (oDDEMC)
 		// even with no file open, CA-RET should accept [APP...] commands or WINDOW.CLOSE.ALL
 		// ReportQueueIsBusy is now FALSE, set it TRUE if this cmd is Modal (alias asynchronous)
 		ReportQueueIsBusy := oDDEMC:isModal
-        oOwner:@@StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_COMMANDERROR2),servername, oDDEMC:cCmd, endOfMsg )) //419@0001 MS 12/07/94
+        oOwner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_COMMANDERROR2),servername, oDDEMC:cCmd, endOfMsg )) //419@0001 MS 12/07/94
 		IF (SELF:sPreviewTitle == "")
 			IF (aOpenNames[nOpenIndex, 3] = .T. )
 				sItem := "CA - Report Viewer : [" + SELF:ActiveFile + "]"
@@ -289,7 +289,7 @@ METHOD __ExecuteNow (oDDEMC)
 			ENDIF
 		ENDIF
 	ELSE
-        oOwner:@@StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_CLOSEDREPORT),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
+        oOwner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_CLOSEDREPORT),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
 		eb := ErrorBox{NIL, VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_COMMANDERROR1), oDDEMC:cCmd , servername)} //419@0001 MS 12/07/94
 		eb := ErrorBox {NIL,__CavoStr(__CAVOSTR_REPORTCLASS_COMMANDERROR1)+oDDEMC :cCmd + __CavoStr(__CAVOSTR_REPORTCLASS_COMMANDERROR2)+servername}
 		eb :Show()
@@ -557,17 +557,17 @@ METHOD DataUpdate(oEvent)
 		
 		
 		IF newdata == "Report.Close"  // sent when the definer window is closed
-            owner:@@StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_CLOSEDREPORT),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
+            owner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_CLOSEDREPORT),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
             SELF:__OneReportLess()
             _event := REPORTCLOSEEVENT
             CloseMethodCalled := FALSE
 
         ELSEIF newdata == "Report.Complete"
-            owner:@@StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_COMPLETEDREPORT),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
+            owner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_COMPLETEDREPORT),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
             _event := REPORTCOMPLETEEVENT
 
         ELSEIF newdata == "View.Close" // sent when a preview window is closed
-            owner:@@StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_CLOSEDREPORT),servername,"")) //419@0001 MS 12/07/94
+            owner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_CLOSEDREPORT),servername,"")) //419@0001 MS 12/07/94
             _event := REPORTVIEWCLOSEEVENT
 
             // Indicate that the preview window is closed.
@@ -576,18 +576,18 @@ METHOD DataUpdate(oEvent)
             ENDIF
 
         ELSEIF newdata == "Report.Opened"
-            owner:@@StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_OPENEDREPORT),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
+            owner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_OPENEDREPORT),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
             _event := REPORTOPENEVENT
 
         ELSEIF  (At("File.Save",newdata) != 0) // this is a "File.Save;FILENAME" advice
             IF nOpenIndex > 0
                 aOpenNames[nOpenIndex, 1] := SubStr(newdata,11,Len(newdata)-10)
             ENDIF
-            owner:@@StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_SAVEDREPORT),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
+            owner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_SAVEDREPORT),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
             _event := REPORTFILESAVEEVENT
 
         ELSEIF newdata == "Report.Complete.Error"   // introduced in CA-RET v2.0
-            owner:@@StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_DETECTEDERRORS),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
+            owner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_DETECTEDERRORS),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
 			_event := REPORTCOMPLETEERROREVENT
 		ENDIF
 		

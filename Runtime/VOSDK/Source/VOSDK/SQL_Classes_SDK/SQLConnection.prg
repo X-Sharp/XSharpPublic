@@ -566,9 +566,9 @@ METHOD Connect( cDataSource, cUserID, cPassword )
 	LOCAL pSource        AS PSZ
 
 	//  UH 11/13/2001
-	Default( @cDataSource, "" )
-	Default( @cUserID, "" )
-	Default( @cPassword, "" )
+	DEFAULT( @cDataSource, "" )
+	DEFAULT( @cUserID, "" )
+	DEFAULT( @cPassword, "" )
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:Connect( "+AsString( cDataSource )+","+  ;
@@ -694,11 +694,11 @@ ASSIGN ConnHandle( uVal )
 	ELSE
 		IF lConnFlag
 			IF !SELF:Disconnect()
-				oErrInfo:@@Throw()
+				oErrInfo:Throw()
 			ENDIF
 		ENDIF
 		IF !SELF:__FreeConnect()
-			oErrInfo:@@Throw()
+			oErrInfo:Throw()
 		ENDIF
 		SELF:hDbc := uVal
 		#IFDEF __DEBUG__
@@ -718,7 +718,7 @@ ASSIGN DataSource( uVal )
 		SELF:cSourceName := uVal
 	ELSE
 		SELF:__GenerateSqlError( __CavoStr( __CAVOSTR_SQLCLASS__CONNECTED ), #DataSource )
-		oErrInfo:@@Throw()
+		oErrInfo:Throw()
 	ENDIF
 
 	RETURN SELF:cSourceName
@@ -1249,7 +1249,7 @@ ASSIGN Password( uVal )
 		SELF:cAuthString := uVal
 	ELSE
 		SELF:__GenerateSqlError( __CavoStr( __CAVOSTR_SQLCLASS__CONNECTED ), #Password )
-		oErrInfo:@@Throw()
+		oErrInfo:Throw()
 	ENDIF
 
 	RETURN SELF:cAuthString
@@ -1364,7 +1364,7 @@ ASSIGN UserID( uVal )
 		SELF:cUser := uVal
 	ELSE
 		SELF:__GenerateSqlError( __CavoStr( __CAVOSTR_SQLCLASS__CONNECTED ), #UserID )
-		oErrInfo:@@Throw()
+		oErrInfo:Throw()
 	ENDIF
 
 	RETURN SELF:cUser
@@ -1908,7 +1908,7 @@ FUNCTION SQLConnectErrorMsg( lValue ) AS LOGIC
 	//
 	// Set connection error messagebox flag
 	//
-	Default( @lValue, FALSE )
+	DEFAULT( @lValue, FALSE )
 
 	lConnErrMsg := lValue
 

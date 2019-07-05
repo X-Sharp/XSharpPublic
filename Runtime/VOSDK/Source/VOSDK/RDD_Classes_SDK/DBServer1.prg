@@ -542,7 +542,7 @@ DESTRUCTOR( )
 		RECOVER USING oError       
 			//RvdH 070509 Always throw errors on Axit. The owner window may be gone!
 			IF (IsInstanceOfUsual(oError, #Error))
-				oError:@@Throw()
+				oError:Throw()
 			ENDIF
 			
 		END SEQUENCE

@@ -211,7 +211,7 @@ CONSTRUCTOR(xResourceID)
 		IF IsNumeric(xResourceID) .OR. IsPtr(xResourceID) .OR. IsSymbol(xResourceID) .OR. IsString(xResourceID)
 			xResourceID := ResourceID{xResourceID}
 		ELSEIF !IsInstanceOfUsual(xResourceID, #ResourceID)
-			WCError{#Init, #Menu, __WCSTypeError}:@@Throw()
+			WCError{#Init, #Menu, __WCSTypeError}:Throw()
 		ENDIF
 
 		hInst := xResourceID:Handle()
@@ -338,10 +338,10 @@ METHOD RegisterItem(nItemID, oHyperLabel, hParentMenu, nPosition)
 			ENDIF
 			AAdd(aItem, {nItemID, oHyperLabel})
 		ELSE
-			WCError{#RegisterItem, #Menu, __WCSTypeError, nItemID, 1}:@@Throw()
+			WCError{#RegisterItem, #Menu, __WCSTypeError, nItemID, 1}:Throw()
 		ENDIF
 	ELSE
-		WCError{#RegisterItem, #Menu, __WCSTypeError, nItemID, 1}:@@Throw()
+		WCError{#RegisterItem, #Menu, __WCSTypeError, nItemID, 1}:Throw()
 	ENDIF
 
 	RETURN lResult
@@ -372,7 +372,7 @@ METHOD ShowAsPopup(oOwner, oPoint, kButton, kAlignment, oNotOverlap)
 	//PP-041001 Update from S. Ebert
 
 	IF !IsInstanceOfUsual(oOwner, #Window) .AND. !IsInstanceOfUsual(oOwner, #Control)
-		WCError{#ShowPopup, #Menu, __WCSTypeError, oOwner, 1}:@@Throw()
+		WCError{#ShowPopup, #Menu, __WCSTypeError, oOwner, 1}:Throw()
 	ENDIF
 
 	Default(@kButton, PM_RIGHTBUTTON)
@@ -493,7 +493,7 @@ METHOD UnregisterItem(nItemID)
 		   ENDIF
 		NEXT  // dwIndex
 	ELSE
-		WCError{#UnregisterItem, #Menu, __WCSTypeError, nItemID, 1}:@@Throw()
+		WCError{#UnregisterItem, #Menu, __WCSTypeError, nItemID, 1}:Throw()
 	ENDIF
 
 	RETURN NIL

@@ -318,4 +318,75 @@ PUBLIC ENUM AdsCharTypes AS WORD
 	MEMBER SLOVAK_VFP_CI_AS_895
 END ENUM
 
+PUBLIC ENUM AdsFieldType
+    MEMBER LOGICAL              := ACE.ADS_LOGICAL 
+    MEMBER NUMERIC              := ACE.ADS_NUMERIC 
+    MEMBER DATE                 := ACE.ADS_DATE 
+    MEMBER STRING               := ACE.ADS_STRING 
+    MEMBER MEMO                 := ACE.ADS_MEMO 
+    MEMBER BINARY               := ACE.ADS_BINARY 
+    MEMBER IMAGE                := ACE.ADS_IMAGE 
+    MEMBER VARCHAR              := ACE.ADS_VARCHAR 
+    MEMBER COMPACTDATE          := ACE.ADS_COMPACTDATE 
+    MEMBER DOUBLE               := ACE.ADS_DOUBLE 
+    MEMBER INTEGER              := ACE.ADS_INTEGER 
+    MEMBER SHORTINT             := ACE.ADS_SHORTINT 
+    MEMBER TIME                 := ACE.ADS_TIME 
+    MEMBER TIMESTAMP            := ACE.ADS_TIMESTAMP 
+    MEMBER AUTOINC              := ACE.ADS_AUTOINC 
+    MEMBER RAW                  := ACE.ADS_RAW 
+    MEMBER CURDOUBLE            := ACE.ADS_CURDOUBLE 
+    MEMBER MONEY                := ACE.ADS_MONEY 
+    MEMBER INT64                := ACE.ADS_INT64
+    MEMBER CISTRING             := ACE.ADS_CISTRING 
+    MEMBER ROWVERSION           := ACE.ADS_ROWVERSION 
+    MEMBER MODTIME              := ACE.ADS_MODTIME 
+    MEMBER VARCHAR_FOX          := ACE.ADS_VARCHAR_FOX 
+    MEMBER VARBINARY_FOX        := ACE.ADS_VARBINARY_FOX 
+    MEMBER SYSTEM_FIELD         := ACE.ADS_SYSTEM_FIELD 
+    MEMBER NCHAR                := ACE.ADS_NCHAR 
+    MEMBER NVARCHAR             := ACE.ADS_NVARCHAR  
+    MEMBER NMEMO                := ACE.ADS_NMEMO  
+END ENUM
+
 END NAMESPACE
+
+
+STATIC CLASS AdsEnumExtensions
+    STATIC METHOD IsMemo(SELF type AS AdsFieldType ) AS LOGIC
+        SWITCH type
+        CASE AdsFieldType.MEMO
+        CASE AdsFieldType.NMEMO
+            RETURN TRUE
+        END SWITCH
+        RETURN FALSE
+
+    STATIC METHOD IsUnicode(SELF type AS AdsFieldType ) AS LOGIC
+        SWITCH type
+        CASE AdsFieldType.NCHAR
+        CASE AdsFieldType.NVARCHAR
+        CASE AdsFieldType.NMEMO
+            RETURN TRUE
+        END SWITCH
+        RETURN FALSE
+
+    STATIC METHOD IsBinary(SELF type AS AdsFieldType ) AS LOGIC
+        SWITCH type
+        CASE AdsFieldType.IMAGE
+        CASE AdsFieldType.BINARY
+        CASE AdsFieldType.RAW
+        CASE AdsFieldType.VARBINARY_FOX
+            RETURN TRUE
+        END SWITCH
+        RETURN FALSE
+
+    STATIC METHOD IsDouble(SELF type AS AdsFieldType ) AS LOGIC
+        SWITCH type
+        CASE AdsFieldType.DOUBLE
+        CASE AdsFieldType.CURDOUBLE
+            RETURN TRUE
+        END SWITCH
+        RETURN FALSE
+
+
+END CLASS

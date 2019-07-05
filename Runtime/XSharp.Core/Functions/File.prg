@@ -249,9 +249,9 @@ BEGIN NAMESPACE XSharp.IO
 			
 			oStream := createManagedFileStream(cFile, oMode)
 			IF oStream != NULL
-				hFile := (IntPtr) random:@@Next(1, Int32.MaxValue)
+				hFile := (IntPtr) random:Next(1, Int32.MaxValue)
 				DO WHILE streams:ContainsKey(hFile)
-					hFile := (IntPtr) random:@@Next(1, Int32.MaxValue)
+					hFile := (IntPtr) random:Next(1, Int32.MaxValue)
 				ENDDO
 			ELSE
 				hFile := F_ERROR

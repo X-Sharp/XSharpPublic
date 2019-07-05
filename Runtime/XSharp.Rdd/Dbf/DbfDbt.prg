@@ -11,9 +11,11 @@ BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFDBT RDD. For DBF/DBT. No index support at this level</summary>
     CLASS DBFDBT INHERIT DBF
         PRIVATE _oDBtMemo AS DbtMemo
+        PROPERTY Encoding AS Encoding GET SUPER:_Encoding
+
         CONSTRUCTOR
             SUPER()
-            SELF:_oMemo := _oDbtMemo := DBTMemo{SELF}
+            SELF:_Memo := _oDbtMemo := DBTMemo{SELF}
             
         VIRTUAL PROPERTY Driver AS STRING GET "DBFDBT"
         // Return the memo content as STRING
@@ -24,10 +26,8 @@ BEGIN NAMESPACE XSharp.RDD
                 // At this level, the return value is the raw Data, in BYTE[]
                 buffer := (BYTE[])SUPER:GetValue(nFldPos)
                 IF ( buffer != NULL )
-                    LOCAL encoding AS Encoding //ASCIIEncoding
                     LOCAL str AS STRING
-                    encoding := SELF:_Encoding // ASCIIEncoding{}
-                    str :=  encoding:GetString(buffer)
+                    str :=  SELF:Encoding:GetString(buffer)
                     // Convert to String and return
                     RETURN str
                 ELSE
@@ -54,8 +54,8 @@ BEGIN NAMESPACE XSharp.RDD
                 ELSE
                     oResult := DBT_MEMOEXT
                 ENDIF
-                IF oNewValue IS STRING
-                    DbtMemo.DefExt := (STRING) oNewValue
+                IF oNewValue IS STRING VAR strExt
+                    DbtMemo.DefExt := strExt
                 ENDIF
             CASE DbInfo.DBI_MEMOBLOCKSIZE
                 oResult := SELF:_oDbtMemo:BlockSize
@@ -127,7 +127,6 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_hFile := F_ERROR
             SELF:_Shared := SELF:_oRDD:_Shared
             SELF:_ReadOnly := SELF:_oRdd:_ReadOnly
-            SELF:_Encoding := SELF:_oRdd:_Encoding
             // We should read the MEMOBLOCK setting here : 512 Per default
             SELF:_blockSize := 0
             
@@ -249,7 +248,7 @@ BEGIN NAMESPACE XSharp.RDD
             ELSE
                 LOCAL encoding AS Encoding //ASCIIEncoding
                 memoBlock := BYTE[]{str:Length}
-                encoding := SELF:_Encoding //ASCIIEncoding{}
+                encoding := SELF:_oRdd:_Encoding 
                 encoding:GetBytes( str, 0, str:Length, memoBlock, 0 )
             ENDIF
             // Now, calculate where we will write the Datas

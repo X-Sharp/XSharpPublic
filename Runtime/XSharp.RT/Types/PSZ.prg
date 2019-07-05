@@ -66,7 +66,7 @@ BEGIN NAMESPACE XSharp
 		
 		
 		/// <exclude />	
-		METHOD @@Equals( p AS PSZ ) AS LOGIC
+		METHOD Equals( p AS PSZ ) AS LOGIC
 			
 			LOCAL ret := FALSE AS LOGIC
 			IF _value == p:_value
@@ -98,7 +98,7 @@ BEGIN NAMESPACE XSharp
 		
 		
 			/// <exclude/>
-         OVERRIDE METHOD @@Equals( o AS OBJECT ) AS LOGIC
+         OVERRIDE METHOD Equals( o AS OBJECT ) AS LOGIC
 			LOCAL ret := FALSE AS LOGIC
 			
 			IF o IS PSZ

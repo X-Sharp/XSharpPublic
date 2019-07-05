@@ -135,8 +135,8 @@ FUNCTION MakeTimeStamp( dDate, nSeconds )
    LOCAL cFrac         AS STRING
    LOCAL cTime         AS STRING
 
-   Default(@dDate, Today( ))
-   Default(@nSeconds, Seconds( ))
+   DEFAULT(@dDate, Today( ))
+   DEFAULT(@nSeconds, Seconds( ))
    IF nSeconds > 0.0
       cFrac    := LTrim( __Str( Frac( nSeconds ) ) )
       cFrac    := SubStr2( cFrac, At2( ".", cFrac ) + 1 )
@@ -304,7 +304,7 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
    LOCAL nHigh                 AS LONGINT
    LOCAL bVal					AS BYTE
 
-   IF  oSQLData:@@Null
+   IF  oSQLData:Null
       IF lEqual
          IF lUseIS
             sValue := __CAVOSTR_SQLCLASS__IS_NULL

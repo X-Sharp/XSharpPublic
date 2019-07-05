@@ -91,7 +91,7 @@ CONSTRUCTOR(oPoint, oDimension, oBitmap)
 	
 	SUPER(oPoint,oDimension)
 	IF !IsInstanceOfUsual(oBitMap,#BitMap)
-		WCError{#Init,#BitmapObject,__WCSTypeError,oBitmap,3}:@@Throw()
+		WCError{#Init,#BitmapObject,__WCSTypeError,oBitmap,3}:Throw()
 	ENDIF
 	
 	SELF:oBitmap:=oBitmap

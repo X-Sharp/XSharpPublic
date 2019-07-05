@@ -58,7 +58,7 @@ INTERNAL ENUM FlexFieldType
     MEMBER Array32      := 1004
     MEMBER Object32     := 1005
     MEMBER Nil          := 1006
-    Member LogicTrue    := 1007
+    MEMBER LogicTrue    := 1007
     MEMBER LogicFalse   := 1008
     MEMBER JDate        := 1009
     MEMBER SByte        := 1010

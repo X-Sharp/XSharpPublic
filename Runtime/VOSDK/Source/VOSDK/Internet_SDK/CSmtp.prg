@@ -1,4 +1,4 @@
-﻿CLASS CSmtp INHERIT CMailAbstract
+CLASS CSmtp INHERIT CMailAbstract
 
 	// the class to send an email
 
@@ -330,7 +330,7 @@ METHOD SendHeaderInfo()
 	// when the same person is in CC's, BCC's or in the TO list
 	
 	IF IsString(cFrom)
-		cFromAdr := __ParseAddress(SELF:oEmail:@@From, @cName)
+		cFromAdr := __ParseAddress(SELF:oEmail:From, @cName)
 	ENDIF
 
 	aRCPT := {}

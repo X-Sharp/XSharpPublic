@@ -15,7 +15,7 @@ METHOD Handle ( uType )
 	
 	IF !IsNil(uType)
 		IF !IsLong(uType)
-			WCError{#Handle,#Pen,__WCSTypeError,uType}:@@Throw()
+			WCError{#Handle,#Pen,__WCSTypeError,uType}:Throw()
 		ENDIF
 	ENDIF
 
@@ -28,7 +28,7 @@ CONSTRUCTOR(uColor, uLineStyle, uWidth)
 	SUPER()
 	IF !IsNil(uColor)
 		IF !IsInstanceOfUsual(uColor,#Color)
-			WCError{#Init,#Pen,__WCSTypeError,uColor,1}:@@Throw()
+			WCError{#Init,#Pen,__WCSTypeError,uColor,1}:Throw()
 		ENDIF
 	ELSE
 		uColor:=Color{}
@@ -36,14 +36,14 @@ CONSTRUCTOR(uColor, uLineStyle, uWidth)
 
 	IF !IsNil(uLineStyle)
 		IF !IsLong(uLineStyle)
-			WCError{#Init,#Pen,__WCSTypeError,uLineStyle,2}:@@Throw()
+			WCError{#Init,#Pen,__WCSTypeError,uLineStyle,2}:Throw()
 		ENDIF
 		liStyle:=uLineStyle
 	ENDIF
 
 	IF !IsNil(uWidth)
 		IF !IsLong(uWidth)
-			WCError{#Init,#Pen,__WCSTypeError,uWidth,3}:@@Throw()
+			WCError{#Init,#Pen,__WCSTypeError,uWidth,3}:Throw()
 		ENDIF
 	ELSE
 		uWidth:=1

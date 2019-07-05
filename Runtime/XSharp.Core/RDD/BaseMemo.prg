@@ -10,7 +10,6 @@ USING XSharp.RDD.Support
 /// <seealso cref="T:XSharp.RDD.IMemo"/>
 CLASS XSharp.RDD.BaseMemo IMPLEMENTS IMemo
     PROTECTED _oArea AS WorkArea
-	PUBLIC _Encoding      AS Encoding
     
     /// <summary>Create the BaseMemo object</summary>
     /// <param name="oArea">Workarea object that 'owns' this memo object </param>

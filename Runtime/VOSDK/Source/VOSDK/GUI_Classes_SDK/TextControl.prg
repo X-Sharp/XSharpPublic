@@ -117,7 +117,7 @@ METHOD __SetText(cNewText AS STRING) AS STRING STRICT
 
 //PP-040410 Parameter checking not required with strong typing
 // 	IF !IsString(cNewText)
-// 		WCError{#__SetText,#TextControl,__WCSTypeError,cNewText,1}:@@Throw()
+// 		WCError{#__SetText,#TextControl,__WCSTypeError,cNewText,1}:Throw()
 // 	ENDIF
 
 	IF SELF:ValidateControl()
@@ -177,7 +177,7 @@ ASSIGN Caption(cNewCaption)
 	
 
 	IF !IsString(cNewCaption)
-		WCError{#Caption,#TextControl,__WCSTypeError,cNewCaption,1}:@@Throw()
+		WCError{#Caption,#TextControl,__WCSTypeError,cNewCaption,1}:Throw()
 	ENDIF
 	cCaption := cNewCaption
 
@@ -247,7 +247,7 @@ ASSIGN CurrentText(cNewText)
 
 	
 	IF !IsString(cNewText)
-		WCError{#CurrentText,#TextControl,__WCSTypeError,cNewText,1}:@@Throw()
+		WCError{#CurrentText,#TextControl,__WCSTypeError,cNewText,1}:Throw()
 	ENDIF
 
 	cCurrentText := SELF:__SetText(cNewText)
@@ -288,7 +288,7 @@ METHOD Font(oNewFont, lRescal)  // hong. 01/22/96
 
 	IF !IsNil(oNewFont)
 		IF !IsInstanceOfUsual(oNewFont, #Font)
-			WCError{#Font, #TextControl, __WCSTypeError, oNewFont,1}:@@Throw()
+			WCError{#Font, #TextControl, __WCSTypeError, oNewFont,1}:Throw()
 		ENDIF
 	ENDIF
 
@@ -420,7 +420,7 @@ ASSIGN TextColor(_oColor)
 	
 
 	IF ! IsInstanceOfUsual(_oColor,#Color)
-		WCError{#TextColor,#TextControl,__WCSTypeError,_oColor,1}:@@Throw()
+		WCError{#TextColor,#TextControl,__WCSTypeError,_oColor,1}:Throw()
 	ENDIF
     oColor := _oColor
 	dwDefaultColor := GetSysColor(COLOR_WINDOWTEXT)
@@ -458,7 +458,7 @@ ASSIGN TextValue(cNewCaption)
 
 	
 	IF !IsString(cNewCaption)
-		WCError{#TextValue,#TextControl,__WCSTypeError,cNewCaption,1}:@@Throw()
+		WCError{#TextValue,#TextControl,__WCSTypeError,cNewCaption,1}:Throw()
 	ENDIF
 
 	cTextValue := SELF:__SetText(cNewCaption)

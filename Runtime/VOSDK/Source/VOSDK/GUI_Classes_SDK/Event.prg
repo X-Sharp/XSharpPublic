@@ -288,7 +288,7 @@ METHOD FileName(nfile)
 	
 
 	IF !IsLong(nFile)
-		WCError{#FileName,#DragEvent,__WCSTypeError,nfile,1}:@@Throw()
+		WCError{#FileName,#DragEvent,__WCSTypeError,nfile,1}:Throw()
 	ENDIF
 
 	nfile--
@@ -471,7 +471,7 @@ CLASS HelpRequestEvent INHERIT @@Event
 
 	RETURN NULL_STRING
 
-ACCESS @@HelpInfo AS PTR STRICT 
+ACCESS HelpInfo AS PTR STRICT 
 	//SE-060522
 	
 

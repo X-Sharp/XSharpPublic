@@ -19,10 +19,11 @@
 
 ; version info and similar stuff.
   
-#define Version             "2.0.2.3"
-#define FileNameVersion     "2RC2"
+#define AssemblyVersion     "2.0.2.0"
+#define FileVersion         "2.0.2.3"
+#define FileNameVersion     "2RC2c"
 #define VIVersion           "2.0.2.3"
-#define TouchDate           "2019-06-26"
+#define TouchDate           "2019-07-05"
 #define TouchTime           "02:20:30"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
@@ -51,9 +52,8 @@
 #define SetupExeName        "XSharpSetupRt"+FileNameVersion+Suffix
 
 #define Product             "XSharp Runtime"
-#define ProdBuild           "XSharp Runtime version "+ Version
+#define ProdBuild           "XSharp Runtime version "+ FileVersion
 #define Company             "XSharp BV"
-#define RegCompany          "XSharpBV"
 #define XSharpURL           "http://www.xsharp.info"
 #define CopyRight           "Copyright © 2015-2019 XSharp B.V."
 
@@ -61,7 +61,7 @@
 #define KeyFile             DevFolder + "\build\Signatures\XSharpCert.pfx"
 #define TimeStampURL        "http://timestamp.globalsign.com/scripts/timstamp.dll"
 #define KeyPassword         "J1O39dGG6FPLXWj"
-#define Description         "XSharp, xBase compiler for .Net"
+#define Description         "XSharp (X#), xBase compiler for .Net"
 
 
 ;Source Folders and other related stuff
@@ -71,12 +71,8 @@
 
 #define StdFlags            "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
 #define GACInstall          "gacinstall uninsnosharedfileprompt uninsrestartdelete"
-#define GACShared           "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"
-#define ImmutableVersion    "System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
-#define MetadataVersion     "System.Reflection.Metadata, Version=1.4.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
-;#define ValueTupleVersion   "System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51"
-#define XSharpVersion       ", Version="+Version+", Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL" 
-#define VOSDKVersion        ", Version="+Version+", Culture=neutral, PublicKeyToken=a967d8055360a7b9, processorArchitecture=x86" 
+#define XSharpVersion       ", Version="+AssemblyVersion+", Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL" 
+#define VOSDKVersion        ", Version="+AssemblyVersion+", Culture=neutral, PublicKeyToken=a967d8055360a7b9, processorArchitecture=x86" 
 
 
 [Setup]
@@ -88,11 +84,13 @@ DisableWelcomePage=no
 DisableStartupPrompt=yes
 DisableReadyMemo=yes
 DisableFinishedPage=no
-;InfoBeforeFile=Baggage\ReadmeShort{# Suffix}.rtf
+;DiskSpanning=yes
+;DiskSliceSize=max
+InfoBeforeFile=Baggage\rtwhatsnew.rtf
 AppName={#Product}
-AppVersion={#Version}
+AppVersion={#FileVersion}
 AppCopyright={# CopyRight}
-AppVerName={#Product} {#Version}
+AppVerName={#Product} {#FileVersion}
 AppPublisher={#Company}
 AppPublisherURL={#XSharpURL}
 AppSupportURL={#XSharpURL}
@@ -178,8 +176,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 ; Text files, independent of Debug/Release and independent of Fox
 
 ; Include Files
-Source: "{#CommonFolder}*.xh";                            DestDir: "{app}\Include"; Flags: touch {#StdFlags}; 
-
+Source: "{#CommonFolder}*.xh";          DestDir: "{app}\Include"; Flags: touch uninsneveruninstall {#StdFlags}; 
+Source: "baggage\rtwhatsnew.rtf";				DestDir: "{app}"; Flags: touch {#StdFlags}; 
 
 ; Runtime in the GAC
 ; must list each file individually because of the strong name
@@ -261,7 +259,7 @@ Source: "{#BinRtFolder}XSharp.??.dll";                      DestDir: "{app}\Asse
 Source: "{#BinRtFolder}VOWin32*.dll";                       DestDir: "{app}\Assemblies"; Flags: {#StdFlags} signonce ;
 Source: "{#BinRtFolder}VO*Classes.dll";                     DestDir: "{app}\Assemblies"; Flags: {#StdFlags} signonce ;
 Source: "{#BinRtHelpFolder}XSharp*.xml";                    DestDir: "{app}\Assemblies"; Flags: {#StdFlags}
-    Source: "{#BinRtVoHelpFolder}VO*.xml";                      DestDir: "{app}\Assemblies"; Flags: {#StdFlags}
+Source: "{#BinRtVoHelpFolder}VO*.xml";                      DestDir: "{app}\Assemblies"; Flags: {#StdFlags}
 
 
 

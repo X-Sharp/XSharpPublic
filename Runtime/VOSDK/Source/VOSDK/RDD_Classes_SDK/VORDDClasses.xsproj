@@ -12,6 +12,20 @@
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <NamedArgs>false</NamedArgs>
+    <Unsafe>false</Unsafe>
+    <StandardDefs />
+    <MemVar>false</MemVar>
+    <Undeclared>false</Undeclared>
+    <VO7>true</VO7>
+    <XPP1>false</XPP1>
+    <VO6>false</VO6>
+    <VO15>true</VO15>
+    <VO14>false</VO14>
+    <VO4>true</VO4>
+    <VO9>false</VO9>
+    <VO10>false</VO10>
+    <LB>false</LB>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>

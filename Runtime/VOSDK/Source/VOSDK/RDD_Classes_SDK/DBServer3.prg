@@ -595,14 +595,14 @@ METHOD Join( oDBSource, oFSTarget, aFieldList, cbForBlock )
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			IF( IsInstanceOfUsual( oDBSource, #DbServer ) )
-				cSource := oDBSource:Alias
+			IF IsObject(oDBSource) .and. __Usual.ToObject(oDBSource) IS DbServer VAR oDb
+				cSource := oDb:Alias
 			ELSE
 				cSource := AsString( oDBSource )
 			ENDIF
 
-			IF( IsInstanceOfUsual( oFSTarget, #FileSpec ) )
-				cTarget := oFSTarget:FullPath
+			IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFs
+				cTarget := oFS:FullPath
 			ELSE
 				cTarget := AsString( oFSTarget )
 			ENDIF
@@ -985,7 +985,7 @@ METHOD Notify(	 kNotification,	 uDescription )
 		IF siSuspendNotification == 0 .AND. nClients > 0
 			VODBSelect( wWorkArea, @dwCurrentWorkArea )
 			FOR w := 1 UPTO nClients
-				aClients[w]:Notify( kNotification, uDescription )
+				Send(aClients[w], #Notify, kNotification, uDescription )
 			NEXT  // w
 			VODBSetSelect( LONGINT(dwCurrentWorkArea ) )
 		ENDIF
@@ -997,7 +997,7 @@ METHOD Notify(	 kNotification,	 uDescription )
 		IF siSuspendNotification == 0
 			IF nClients > 0
 				FOR w := 1 UPTO nClients
-					IF ! ( uRetValue := aClients[w]:Notify( kNotification ) )
+					IF ! ( uRetValue := Send(aClients[w],#Notify, kNotification ) )
 						EXIT
 					ENDIF
 				NEXT  // w
@@ -1006,7 +1006,7 @@ METHOD Notify(	 kNotification,	 uDescription )
 			IF uRetValue .AND. lRelationsActive
 				IF (w := ALen( aRelationChildren )) > 0
 					FOR nChild := 1 UPTO w
-						IF ! ( uRetValue := aRelationChildren[nChild]:Notify( kNotification ) )
+						IF ! ( uRetValue := Send(aRelationChildren[nChild],#Notify, kNotification ) )
 							EXIT
 						ENDIF
 					NEXT  // nChild
@@ -1015,7 +1015,7 @@ METHOD Notify(	 kNotification,	 uDescription )
 		ELSE
 			IF (w := ALen( aRelationChildren )) > 0
 				FOR nChild := 1 UPTO w
-					aRelationChildren[nChild]:__NotifyBufferFlush()
+					Send(aRelationChildren[nChild],#__NotifyBufferFlush)
 				NEXT  // nChild
 			ENDIF
 		ENDIF
@@ -1135,8 +1135,8 @@ METHOD OrderDescend( uOrder, oFSIndex, lNew )
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
-		IF IsInstanceOfUsual( oFSIndex, #FileSpec )
-			cTarget := oFSIndex:FullPath
+		IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFS
+			cTarget := oFS:FullPath
 		ELSE
 			IF IsString( oFSIndex )
 				cTarget := oFSIndex
@@ -1174,8 +1174,8 @@ METHOD OrderInfo( kOrderInfoType, oFSIndex, uOrder, uOrdVal )
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
-		IF IsInstanceOfUsual( oFSIndex, #FileSpec )
-			cTarget := oFSIndex:FullPath
+		IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFS
+			cTarget := oFS:FullPath
 		ELSE
 			IF IsString( oFSIndex )
 				cTarget := oFSIndex
@@ -1246,8 +1246,8 @@ METHOD OrderIsUnique( uOrder, oFSIndex )
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
-		IF IsInstanceOfUsual( oFSIndex, #FileSpec )
-			cTarget := oFSIndex:FullPath
+		IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFS
+			cTarget := oFS:FullPath
 		ELSE
 			IF IsString( oFSIndex )
 				cTarget := oFSIndex
@@ -1284,8 +1284,8 @@ METHOD OrderKeyAdd( uOrder, oFSIndex, uKeyValue )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		IF IsInstanceOfUsual( oFSIndex, #FileSpec )
-			cTarget := oFSIndex:FullPath
+		IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFS
+			cTarget := oFS:FullPath
 		ELSE
 			IF IsString( oFSIndex )
 				cTarget := oFSIndex
@@ -1323,8 +1323,8 @@ METHOD OrderKeyCount( uOrder, oFSIndex )
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
-		IF IsInstanceOfUsual( oFSIndex, #FileSpec )
-			cTarget := oFSIndex:FullPath
+		IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFS
+			cTarget := oFS:FullPath
 		ELSE
 			IF IsString( oFSIndex )
 				cTarget := oFSIndex
@@ -1353,7 +1353,7 @@ METHOD OrderKeyDel( uOrder, oFSIndex )
    LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL lRetCode AS USUAL
 	LOCAL oError AS USUAL
-	LOCAL cTraget AS STRING
+	LOCAL cTarget AS STRING
 
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__, AsString(uOrder), AsString(OFsIndex))
@@ -1362,14 +1362,14 @@ METHOD OrderKeyDel( uOrder, oFSIndex )
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
-		IF IsInstanceOfUsual( oFSIndex, #FileSpec )
-			cTraget := oFSIndex:FullPath
+		IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFS
+			cTarget := oFS:FullPath
 		ELSE
 			IF IsString( oFSIndex )
-				cTraget := oFSIndex
+				cTarget := oFSIndex
 			ENDIF
 		ENDIF
-		IF ! VODBOrderInfo( DBOI_KEYDELETE, cTraget, uOrder, @lRetCode )
+		IF ! VODBOrderInfo( DBOI_KEYDELETE, cTarget, uOrder, @lRetCode )
 			BREAK ErrorBuild(_VODBErrInfoPtr())
 		ENDIF
 
@@ -1451,8 +1451,8 @@ METHOD OrderKeyNo( uOrder, oFSIndex )
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
-		IF IsInstanceOfUsual( oFSIndex, #FileSpec )
-			cTarget := oFSIndex:FullPath
+		IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFS
+			cTarget := oFS:FullPath
 		ELSE
 			IF IsString( oFSIndex )
 				cTarget := oFSIndex

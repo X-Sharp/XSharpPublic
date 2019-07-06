@@ -780,6 +780,11 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.UPTO] = true;
             softKws[(int)TokenType.USING] = true;
             softKws[(int)TokenType.WINCALL] = true;
+
+            for(var i = (int)TokenType.FIRST_POSITIONAL_KEYWORD+1; i < (int)TokenType.LAST_POSITIONAL_KEYWORD; i++)
+            {
+                softKws[i] = true;
+            }
         }
 
         internal static bool IsSoftKeyword(TokenType t)

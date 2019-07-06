@@ -685,6 +685,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| NIKOS := \"123\"}", Args(), "VarPut(NIKOS):123", typeof(STRING))
         TestMacro(mc, e"{|a,b| asdgfafd(123) }", Args(), NULL, NULL, ErrorCode.NotAMethod)
         TestMacro(mc, e"{|| CODE+SET}", Args(), "VarGet(CODE)VarGet(SET)", typeof(STRING))
+        TestMacro(mc, e"{|| LONG}", Args(), "VarGet(LONG)", typeof(STRING))
 
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         RETURN

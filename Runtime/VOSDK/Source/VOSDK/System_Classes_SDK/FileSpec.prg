@@ -58,9 +58,9 @@ CLASS FileSpec
 	PROTECT cFSPath         AS STRING
 	PROTECT cFSFileName     AS STRING
 	PROTECT cFSExtension    AS STRING
-	PROTECT oErrorInfo      AS USUAL
+	PROTECT oErrorInfo      AS Error
 
-	METHOD __DefaultFullPath ()  AS STRING STRICT 
+METHOD __DefaultFullPath ()  AS STRING STRICT 
 	//Locates the first file using SetDefault(), CurDir() and SetPath()
 	//If no file is found then the ASSIGNed drive, path, filename and extension is used.
 	//
@@ -228,8 +228,6 @@ METHOD __SetFileName(cTestName AS STRING) AS STRING STRICT
 	//
 	// Set the FileName
 	//
-	// 461@004 RJ - 10-07-95 - rewrite and/or cleanup of code
-	//
 	IF Empty(cTestName) // .OR. !IsString(cTestName)
 		RETURN cFSFileName := NULL_STRING
 	ENDIF
@@ -251,8 +249,6 @@ METHOD __SetFileName(cTestName AS STRING) AS STRING STRICT
 METHOD __SetFilePath(cTestPath AS STRING ) AS STRING STRICT  
 	//
 	// Set the path
-	//
-	// 461@004 RJ - 10-07-95 - rewrite and/or cleanup of code
 	//
 	LOCAL aFullPath     AS ARRAY
 
@@ -281,8 +277,6 @@ METHOD AppendToPath(cDirectory)
     //                      oFSOrders := FileSpec{ "ORDERS.DBF" }
     //                      oFSOrders:Path := oFSCust:Path
     //                      oFSOrders:AppendToPath( "ORDERS" )
-    //
-    // 461@004 RJ - 10-07-95 - rewrite and/or cleanup of code
     //
 
     LOCAL cPath     AS STRING
@@ -359,7 +353,6 @@ METHOD Copy(oFSTarget, lName)
 	// oFSTarget := FileSpec{ "A:\CUSTDATA" }          // specify target file
 	// oFSSource:Copy( oFSTarget )             // copy the file
 	//
-	// 461@004 RJ - 10-07-95 - rewrite and/or cleanup of code
 	// oFSTarget is assumed to be a file name. Include backslash char if only a path:
 	// oFS:Copy("C:\TMP\")
 	// copies SELF's file into C:\TMP
@@ -382,8 +375,8 @@ METHOD Copy(oFSTarget, lName)
 		lName := FALSE
 	ENDIF
 
-	IF IsInstanceOfUsual(oFSTarget, #FileSpec)
-		cTarget := oFSTarget:FullPath
+	IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec
+		cTarget := ((FileSpec)oFSTarget):FullPath
 	ELSE
 		IF Empty(oFSTarget) .OR. !IsString(oFSTarget)
 			RETURN FALSE
@@ -432,7 +425,7 @@ METHOD Copy(oFSTarget, lName)
         ENDIF              
         //SE 080414
         IF oFSTarget != NULL_OBJECT
-            oFSTarget:FileName := cNewName
+            ((FileSpec)oFSTarget):FileName := cNewName
         ENDIF  
     ENDIF
 
@@ -448,11 +441,12 @@ METHOD Copy(oFSTarget, lName)
 	RECOVER USING oError
 		ErrorBlock(cbOldErr)
 		// get some kind of description for the DOS error
-		IF oError:OsCode != 0
-			oError:Description := VO_Sprintf(__CAVOSTR_SYSLIB_DOS_ERROR, NTrim(oError:OsCode) + ;
-				" (" + DosErrString(oError:OsCode) + ")")
+        LOCAL oErr := oError as Error
+		IF oErr:OsCode != 0
+			oErr:Description := VO_Sprintf(__CAVOSTR_SYSLIB_DOS_ERROR, NTrim(oErr:OsCode) + ;
+				" (" + DosErrString(oErr:OsCode) + ")")
 		ENDIF
-		SELF:oErrorInfo := oError
+		SELF:oErrorInfo := oErr
 		lRetCode := FALSE
 
 	END SEQUENCE
@@ -508,7 +502,6 @@ ASSIGN Drive(cDrive)
 	IF !Empty(cDrive) .AND. IsString(cDrive)
 
 		cDrive := Upper(cDrive)
-		// 461@003 RJ - 10-06-95 - Added single drive letter support
 		IF At2(":", cDrive) = 0
 			cDrive += ":"
 		ENDIF
@@ -524,29 +517,28 @@ ACCESS ErrInfo
 
 METHOD Error( oError, symMethod )   
 	LOCAL cErrorValType AS STRING
+    LOCAL oErr as Error
 
-	IF !IsInstanceOfUsual(oError, #Error)
+	IF IsObject(oError) .and. __Usual.ToObject(oError) IS Error 
+        oErr := oError
+    ELSE
 		cErrorValType := ValType(oError)
-		oError := Error{ }
-		oError:GenCode := EG_ERRORBUILD
-
-		//418@JFS001 changed CAVO_Str_BadErrorObject --> __CavoStr(__CAVOSTR_SYSCLASS_BADERROROBJECT)
-		oError:Description := VO_Sprintf(__CAVOSTR_SYSCLASS_BADERROROBJECT,cErrorValType) //419@TR017
-
+		oErr := Error{ }
+		oErr:GenCode := EG_ERRORBUILD
+		oErr:Description := VO_Sprintf(__CAVOSTR_SYSCLASS_BADERROROBJECT,cErrorValType) 
 	ENDIF
 
-	oError:MethodSelf := SELF
+	oErr:MethodSelf := SELF
 
 	IF symMethod = NIL .OR. UsualType( symMethod ) != SYMBOL
-		oError:FuncSym := #Unknown
+		oErr:FuncSym := #Unknown
 	ELSE
-		oError:FuncSym := symMethod
+		oErr:FuncSym := symMethod
 	ENDIF
 
 	//oError:choice := EC_BREAK
-	Eval( ErrorBlock( ), oError )
+	Eval( ErrorBlock( ), oErr )
 	RETURN NIL
-	//359@003 end
 
 ACCESS Extension                    
 	//
@@ -557,8 +549,6 @@ ACCESS Extension
 ASSIGN Extension(cExtension)        
 	//
 	// Assign file extension
-	//
-	// 461@004 RJ - 10-07-95 - rewrite and/or cleanup of code
 	//
 
 	IF Empty(cExtension) .OR. !IsString(cExtension)
@@ -625,7 +615,6 @@ ASSIGN FileName( cFileName )
 		//RvdH 050610 Don't remove the spaces.  They could be correct nowadays.
 		//cFileName := AdjustFName(cFileName)
 
-		// 464@002 RJ   11-06-95 - only use SetDefault() if drive/path was used in SetDefault()
 		// only set the drive is it was sent in as an argument or SetDefault() includes a driver letter
 		// and cFSDrive is NULL
 		IF At2(":", cFileName) != 0
@@ -748,15 +737,15 @@ METHOD Move(oFSTarget, lName)
 	LOCAL lRetCode      AS LOGIC
 
 	LOCAL cbOldErr      AS USUAL
-	LOCAL oError            AS USUAL
+	LOCAL oError        AS USUAL
 
 	IF Empty(lName) .OR. !IsLogic(lName)
 		lName := FALSE
 
 	ENDIF
 
-	IF IsInstanceOfUsual(oFSTarget, #FileSpec)
-		cTarget := oFSTarget:FullPath
+	IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec
+		cTarget := ((FileSpec)oFSTarget):FullPath
 
 	ELSE
 		IF Empty(oFSTarget) .OR. !IsString(oFSTarget)
@@ -812,7 +801,7 @@ METHOD Move(oFSTarget, lName)
 		ENDIF
         //SE 080414
         IF oFSTarget != NULL_OBJECT
-            oFSTarget:FileName := cNewName
+            ((FileSpec)oFSTarget):FileName := cNewName
         ENDIF  
     ENDIF
 
@@ -864,13 +853,14 @@ METHOD Move(oFSTarget, lName)
         ErrorBlock(cbOldErr)
 	RECOVER USING oError
 		ErrorBlock(cbOldErr)
+        LOCAL oErr := oError as Error
 		// get some kind of description for the DOS error
-		IF oError:OsCode != 0
-			oError:Description := VO_Sprintf(__CAVOSTR_SYSLIB_DOS_ERROR, NTrim(oError:OsCode) + ;
-				" (" + DosErrString(oError:OsCode) + ")")
+		IF oErr:OsCode != 0
+			oErr:Description := VO_Sprintf(__CAVOSTR_SYSLIB_DOS_ERROR, NTrim(oErr:OsCode) + ;
+				" (" + DosErrString(oErr:OsCode) + ")")
 		ENDIF
 
-		SELF:oErrorInfo := oError
+		SELF:oErrorInfo := oErr
 		lRetCode := FALSE
 
 	END SEQUENCE
@@ -987,8 +977,8 @@ METHOD Rename(oFSTarget, lName)
 
 	ENDIF
 
-	IF IsInstanceOfUsual(oFSTarget, #FileSpec)
-		cTarget := oFSTarget:FileName + oFSTarget:Extention
+	IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec
+		cTarget := ((FileSpec)oFSTarget):FileName + ((FileSpec)oFSTarget):Extension
 
 	ELSE
 		IF Empty(oFSTarget) .OR. !IsString(oFSTarget)
@@ -1098,7 +1088,7 @@ ACCESS TimeChanged
 
 END CLASS
 
-PARTIAL CLASS FSError           INHERIT Error   //359@003
+PARTIAL CLASS FSError           INHERIT Error   
 
 CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2 ) 
     //RvdH 080609 Added call to super:Init to correctly fill the callstack
@@ -1124,8 +1114,8 @@ CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2
 	ENDIF
 
 	IF oHLErrorMessage# NIL
-		IF IsInstanceOfUsual( oHLErrorMessage, #HyperLabel )
-			SELF:Description := oHLErrorMessage:Description
+		IF IsObject( oHLErrorMessage) .and. __USual.ToObject(oHLErrorMessage) IS HyperLabel 
+			SELF:Description := ((HyperLabel)oHLErrorMessage):Description
 		ELSE
 			SELF:Description := oHLErrorMessage
 
@@ -1474,16 +1464,16 @@ FUNCTION __SplitPath    (oFS , cString , aFullPath )
     aFullPath[3] := Psz2String(PSZ(_CAST, @abName[1]))
     aFullPath[4] := Psz2String(PSZ(_CAST, @abExt[1]))
 
-	IF IsInstanceOfUsual(oFS, #FileSpec)
+	IF IsObject(oFS) .and. __Usual.ToObject(oFS) IS FileSpec
 	
 	   //SE-081211 fixes a problem with UNC pathnames
        IF aFullPath[2] == NULL_STRING
-          aFullPath[2] := oFS:Path
+          aFullPath[2] := ((FileSpec)oFS):Path
        ENDIF
       
        IF aFullPath[1] == NULL_STRING
           IF ! Left(aFullPath[2],2) == "\\"  //SE-081211 copy drive only if path is no UNC path
-             aFullPath[1] := oFS:Drive 
+             aFullPath[1] := ((FileSpec)oFS):Drive 
           ENDIF   
        ENDIF
 

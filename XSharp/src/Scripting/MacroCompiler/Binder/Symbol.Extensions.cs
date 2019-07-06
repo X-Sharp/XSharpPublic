@@ -20,15 +20,56 @@ namespace XSharp.MacroCompiler
                 return true;
             if (s is SymbolList)
             {
-                bool methods = false;
+                bool methods = true;
                 foreach(var m in (s as SymbolList).Symbols)
                 {
-                    if (m is MethodBaseSymbol)
-                        methods = true;
+                    if (!(m is MethodBaseSymbol))
+                    {
+                        methods = false;
+                        break;
+                    }
                 }
                 return methods;
             }
             return false;
+        }
+
+        internal static Symbol UniqueIdent(this Symbol s)
+        {
+            if (s is SymbolList)
+            {
+                Symbol u = null;
+                foreach (var m in (s as SymbolList).Symbols)
+                {
+                    if (!(m is MethodBaseSymbol) && !(m is TypeSymbol) && !(m is NamespaceSymbol))
+                    {
+                        if (u != null)
+                            return null;
+                        u = m;
+                    }
+                }
+                return u;
+            }
+            return s;
+        }
+
+        internal static Symbol UniqueType(this Symbol s)
+        {
+            if (s is SymbolList)
+            {
+                Symbol u = null;
+                foreach (var m in (s as SymbolList).Symbols)
+                {
+                    if (m is TypeSymbol)
+                    {
+                        if (u != null)
+                            return s;
+                        u = m;
+                    }
+                }
+                return u;
+            }
+            return s;
         }
 
         internal static TypeSymbol Type(this Symbol s) => (s as TypedSymbol)?.Type;

@@ -32,6 +32,8 @@ namespace XSharp.MacroCompiler.Syntax
         }
         internal virtual void RequireType()
         {
+            if (Symbol is SymbolList)
+                Symbol = Symbol.UniqueType();
             if (Symbol == null)
                 ThrowError(ErrorCode.NotFound, "Type");
             if (!(Symbol is TypeSymbol))
@@ -135,6 +137,10 @@ namespace XSharp.MacroCompiler.Syntax
                 else if (Symbol is NamespaceSymbol)
                 {
                     Symbol = null;
+                }
+                else if (Symbol is SymbolList)
+                {
+                    Symbol = Symbol.UniqueIdent();
                 }
             }
             if (Symbol == null)

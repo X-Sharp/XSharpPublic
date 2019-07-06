@@ -237,9 +237,20 @@ RETURN n
 func testRet(x as string) as string
 return x
 
+global Error := 321 as int
+
+global ErrorLevel := 1 as int
+
+class ErrString
+    static V := 333 as int
+end class
+
 BEGIN NAMESPACE MacroCompilerTest
 
 	FUNCTION Start() AS VOID
+        //StartTest()
+        //return
+
 	    SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))
 
         ReportMemory("initial")
@@ -622,6 +633,13 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a,b| a := \"abcdef\", a:&testRet(b)() }", Args(8,"ToUpperInvariant"), NULL, NULL, ErrorCode.ArgumentsNotMatch)
         TestMacro(mc, e"{|a,b| a := \"abcdef\", a:(&b[1])() }", Args(8,{"ToUpperInvariant"}), "ABCDEF", typeof(STRING))
         TestMacro(mc, e"{|a,b| a := \"abcdef\", (a:&b[1])() }", Args(8,{"ToUpperInvariant"}), "ABCDEF", typeof(STRING))
+        TestMacro(mc, e"{|| Error}", Args(), 321, typeof(int))
+        TestMacro(mc, e"{|| Error{\"TEST\"}:Message}", Args(), "TEST", typeof(string))
+        TestMacro(mc, e"{|| Error := 123}", Args(), 123, typeof(int))
+        TestMacro(mc, e"{|| ErrorLevel}", Args(), 1, typeof(int))
+        TestMacro(mc, e"{|| ErrorLevel()}", Args(), 0, typeof(dword))
+        TestMacro(mc, e"{|| ErrString(0)}", Args(), "", typeof(string))
+        TestMacro(mc, e"{|| ErrString.V}", Args(), 333, typeof(int))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")
@@ -767,6 +785,8 @@ BEGIN NAMESPACE MacroCompilerTest
         Console.WriteLine("  Completed in {0}", dt)
         Console.WriteLine("  Memory: +{0} bytes", GC.GetTotalMemory(FALSE) - m)
         Console.WriteLine()
+
+        mc:Compile("")
         RETURN mc
 
     FUNCTION ReportMemory(description AS STRING) AS VOID

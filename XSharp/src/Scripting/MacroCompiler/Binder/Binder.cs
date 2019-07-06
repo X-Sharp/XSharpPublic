@@ -317,36 +317,29 @@ namespace XSharp.MacroCompiler
 
         internal static Symbol LookupName(string name)
         {
+            Symbol v = Global.Lookup(name);
+            foreach (var u in Usings)
             {
-                Symbol v = Global.Lookup(name);
-                if (v != null)
-                    return v;
-            }
-            {
-                Symbol v = null;
-                foreach (var u in Usings)
+                Symbol t = u.Lookup(name);
+                if (t != null)
                 {
-                    Symbol t = u.Lookup(name);
-                    if (t != null)
+                    if (v != null)
                     {
-                        if (v != null)
-                        {
-                            if (!(v is SymbolList))
-                                v = new SymbolList(v);
-                            if (!(t is SymbolList))
-                                (v as SymbolList).Add(t);
-                            else
-                            {
-                                foreach (var ts in (t as SymbolList).Symbols)
-                                    (v as SymbolList).Add(ts);
-                            }
-                        }
+                        if (!(v is SymbolList))
+                            v = new SymbolList(v);
+                        if (!(t is SymbolList))
+                            (v as SymbolList).Add(t);
                         else
-                            v = t;
+                        {
+                            foreach (var ts in (t as SymbolList).Symbols)
+                                (v as SymbolList).Add(ts);
+                        }
                     }
+                    else
+                        v = t;
                 }
-                return v;
             }
+            return v;
         }
 
         internal static Symbol ResolveSuffix(string fullname, Symbol type)

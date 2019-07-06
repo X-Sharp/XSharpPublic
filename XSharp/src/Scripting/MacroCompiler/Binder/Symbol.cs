@@ -338,8 +338,8 @@ namespace XSharp.MacroCompiler
         }
         internal PropertySymbol(TypeSymbol contType, PropertyInfo property) : base(contType, property, Binder.FindType(property.PropertyType), property.MemberType, AccessMode.GetSet)
         {
-            Getter = Property.GetMethod != null ? ContainingType.MemberTable[Property.GetMethod] as MethodSymbol : null;
-            Setter = Property.SetMethod != null ? ContainingType.MemberTable[Property.SetMethod] as MethodSymbol : null;
+            Getter = Property.GetMethod?.IsPublic == true ? ContainingType.MemberTable[Property.GetMethod] as MethodSymbol : null;
+            Setter = Property.SetMethod?.IsPublic == true ? ContainingType.MemberTable[Property.SetMethod] as MethodSymbol : null;
         }
         internal PropertySymbol(TypeSymbol contType, MethodSymbol getter, MethodSymbol setter, bool valueLast) : base(contType, null, Binder.FindType(getter.Method.ReturnType), MemberTypes.Property, AccessMode.GetSet)
         {

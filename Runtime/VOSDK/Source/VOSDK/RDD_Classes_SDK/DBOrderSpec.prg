@@ -45,7 +45,7 @@ CLASS OrderSpec
 
 	RETURN DBUseArea( TRUE, SELF:oDBF:RDDs, SELF:oDBF:FullPath, cAlias, FALSE, FALSE )
 
-
+PROPERTY __DBf as DbFileSpec GET oDBF
 METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT  
 	// Gets order information and assigns info into the OrderSpec Object.
 	// Assumes that the workarea defined by cAlias is already opened and the order
@@ -57,7 +57,7 @@ METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT
 	IF SLen( cAlias )  > 0
 		aKeyInfo := ArrayNew( 4 )
 
-		cRDD := SELF:DBF:RDD_Name
+		cRDD := SELF:__DBf:RDD_Name
 
 		aKeyInfo[ORD_KEYTYPE] := ( cAlias )->( DBOrderInfo( DBOI_KEYTYPE ) )
 		DO CASE
@@ -80,13 +80,13 @@ METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT
 
 		// non-conditional order information
 		SELF:FileName           := ( cAlias )->( DBOrderInfo( DBOI_FULLPATH ) )
-		SELF:DBF:IndexNames     := ( cAlias )->( DBOrderInfo( DBOI_FULLPATH ) )
+		SELF:__DBf:IndexNames     := ( cAlias )->( DBOrderInfo( DBOI_FULLPATH ) )
 		SELF:OrderName          := ( cAlias )->( DBOrderInfo( DBOI_NAME ) )
 		SELF:OrderExpr          := ( cAlias )->( DBOrderInfo( DBOI_EXPRESSION ) )
 		SELF:OrderBlock         := &( "{||" + SELF:OrderExpr + "}" )
 		SELF:Unique             := ( cAlias )->( DBOrderInfo( DBOI_UNIQUE ) )
 
-		SELF:DBF:Orders         := SELF
+		SELF:__DBf:Orders         := SELF
 
 		// key info
 		SELF:KeyInfo            := aKeyInfo
@@ -353,15 +353,15 @@ CONSTRUCTOR( oDBFS )
 	//
 	// oDBFS is an existing DBFileSpec object
 	//
-	IF IsInstanceOfUsual( oDBFS, #DbFileSpec )
-		SELF:oDBF := oDBFS
-		IF oDBFS:Orders == NULL_ARRAY
-			oDBFS:Orders := {}
+    IF IsObject(oDBFS) .and. __Usual.ToObject(oDBFS) IS DbFileSpec  
+		SELF:oDBf := oDBFS
+		IF SELF:__DBf:Orders == NULL_ARRAY
+			SELF:__DBf:Orders := {}
 
 		ENDIF
 
-		IF oDBFS:IndexNames == NULL_ARRAY
-			oDBFS:IndexNames := {}
+		IF SELF:__DBf:IndexNames == NULL_ARRAY
+			SELF:__DBf:IndexNames := {}
 
 		ENDIF
 
@@ -443,11 +443,11 @@ METHOD OrderAdd( oFS, uOrder )
 	//LOCAL oSelf         AS OrderSpec
 	LOCAL cAlias		AS STRING
 
-	IF IsInstanceOfUsual( oFS, #FileSpec )
-		cDrive      := oFS:Drive
-		cPath       := oFS:Path
-		cFile       := oFS:FileName
-		cExt        := oFS:Extension
+	IF IsObject(oFS) .and. __Usual.ToObject(oFS) IS FileSpec VAR oFS2
+		cDrive      := oFS2:Drive
+		cPath       := oFS2:Path
+		cFile       := oFS2:FileName
+		cExt        := oFS2:Extension
 
 		// default drive and path to where DBF file is
 		IF Empty( cDrive )
@@ -567,11 +567,11 @@ METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique )
 	LOCAL nNext         AS USUAL
 	LOCAL nRec          AS USUAL
 
-	IF IsInstanceOfUsual( oFS, #FileSpec )
-		cDrive      := oFS:Drive
-		cPath       := oFS:Path
-		cFile       := oFS:FileName
-		cExt        := oFS:Extension
+	IF IsObject(oFS) .and. __Usual.ToObject(oFS) IS FileSpec VAR oFS2
+		cDrive      :=oFS2:Drive
+		cPath       :=oFS2:Path
+		cFile       :=oFS2:FileName
+		cExt        :=oFS2:Extension
 
 		// default drive and path to where DBF file is
 		IF Empty( cDrive )
@@ -730,11 +730,12 @@ METHOD OrderDelete( uOrder )
 			ENDIF
 
 			IF lRetCode
-				nOrders := ALen( SELF:oDBF:Orders )
+				nOrders := ALen( SELF:__DBF:Orders )
 				FOR i := 1 UPTO nOrders
-					IF SELF:oDBF:Orders[ i ]:FileName == SELF:cFileName
-						ADel( SELF:oDBF:Orders, i )
-						ASize( SELF:oDBF:Orders, nOrders - 1 )
+                    VAR os := (OrderSpec) SELF:__DBF:Orders[ i ]
+					IF os:FileName == SELF:cFileName
+						ADel( SELF:__DBF:Orders, i )
+						ASize( SELF:__DBF:Orders, nOrders - 1 )
 						EXIT
 					ENDIF
 				NEXT
@@ -769,7 +770,8 @@ METHOD OrderDelete( uOrder )
 			NEXT
 			nOrders := ALen( SELF:oDBF:Orders )
 			FOR i := 1 UPTO nOrders
-				IF SELF:oDBF:Orders[ i ]:FileName == SELF:cFileName
+                VAR os := (OrderSpec) SELF:__DBF:Orders[ i ]
+	            IF os:FileName == SELF:cFileName
 					ADel( SELF:oDBF:Orders, i )
 					ASize( SELF:oDBF:Orders, nFiles - 1 )
 					EXIT

@@ -1085,7 +1085,7 @@ FUNCTION __MakeErrObj( nTries ) AS USUAL  CLIPPER
 	oError := ErrorBuild( _VODBErrInfoPtr( ) )
 
 	IF ! IsNil( nTries )
-		oError:Tries := nTries
+		((Error)oError):Tries := nTries
 	ENDIF
 
 	RETURN oError     

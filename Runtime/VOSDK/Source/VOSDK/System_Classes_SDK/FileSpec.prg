@@ -1088,7 +1088,7 @@ ACCESS TimeChanged
 
 END CLASS
 
-PARTIAL CLASS FSError           INHERIT Error   
+PARTIAL CLASS FSError           INHERIT Error   //359@003
 
 CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2 ) 
     //RvdH 080609 Added call to super:Init to correctly fill the callstack
@@ -1446,23 +1446,23 @@ FUNCTION __SplitPath    (oFS , cString , aFullPath )
 	//  aFullPath[ 4 ] = extension including "."
 	//
 
-	LOCAL i         AS DWORD
-    LOCAL DIM abDrive[MAXDRIVENAME] AS BYTE
-    LOCAL DIM abDir	 [MAXDIRNAME]   AS BYTE
-    LOCAL DIM abName [MAXFILENAME]  AS BYTE
-    LOCAL DIM abExt  [MAXEXTNAME]	AS BYTE
+	LOCAL i      AS DWORD
+    LOCAL cDrive AS STRING
+    LOCAL cDir	 AS STRING
+    LOCAL cName  AS STRING
+    LOCAL cExt   AS STRING
 
 	FOR i := 1 UPTO ALen(aFullPath)
 		aFullPath[ i ] := NULL_STRING
 	NEXT
        
 
-    SplitPath(cString, PSZ(_CAST, @abDrive[1]), PSZ(_CAST,@abDir[1]), PSZ(_CAST,@abName[1]), PSZ(_CAST,@abExt[1]))
+    SplitPath(cString, REF cDrive, REF cDir, REF cName, REF cExt)
 
-    aFullPath[1] := Psz2String(PSZ(_CAST, @abDrive[1]))
-    aFullPath[2] := Psz2String(PSZ(_CAST, @abDir[1]))
-    aFullPath[3] := Psz2String(PSZ(_CAST, @abName[1]))
-    aFullPath[4] := Psz2String(PSZ(_CAST, @abExt[1]))
+    aFullPath[1] := cDrive
+    aFullPath[2] := cDir
+    aFullPath[3] := cName
+    aFullPath[4] := cExt
 
 	IF IsObject(oFS) .and. __Usual.ToObject(oFS) IS FileSpec
 	

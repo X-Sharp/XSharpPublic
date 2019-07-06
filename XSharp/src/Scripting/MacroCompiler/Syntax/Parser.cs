@@ -1008,7 +1008,7 @@ namespace XSharp.MacroCompiler
                         break;
                     case AssocType.BinaryAlias:
                         this.assoc = AssocType.BinaryLeft;
-                        Parse = _parse;
+                        Parse = _parse_alias;
                         Combine = _combine_binary_alias;
                         break;
                     case AssocType.BinarySubstr:
@@ -1032,6 +1032,12 @@ namespace XSharp.MacroCompiler
                 n = new SyntaxToken(p.ConsumeAndGet());
                 Debug.Assert(n.Token.type == type);
                 return this;
+            }
+            Oper _parse_alias(Parser p, out Node n)
+            {
+                n = new SyntaxToken(p.ConsumeAndGet());
+                Debug.Assert(n.Token.type == type);
+                return p.La() == TokenType.LPAREN || p.La() == TokenType.AMP ? this : AliasExpr;
             }
             Oper _parse_gt(Parser p, out Node n)
             {
@@ -1119,6 +1125,7 @@ namespace XSharp.MacroCompiler
 
         static readonly Oper[] Opers;
         static readonly Oper[] PrefixOpers;
+        static readonly Oper AliasExpr;
 
         static Parser()
         {
@@ -1190,6 +1197,7 @@ namespace XSharp.MacroCompiler
             Opers[(int)TokenType.ASSIGN_LSHIFT] = new Oper(AssocType.BinaryAssignOp, TokenType.ASSIGN_LSHIFT, 22);
             Opers[(int)TokenType.ASSIGN_RSHIFT] = new Oper(AssocType.BinaryAssignOp, TokenType.ASSIGN_RSHIFT, 22);
             Opers[(int)TokenType.ASSIGN_XOR] = new Oper(AssocType.BinaryAssignOp, TokenType.ASSIGN_XOR, 22);
+            AliasExpr = new Oper(AssocType.BinaryAlias, TokenType.ALIAS, 23);
         }
     }
 }

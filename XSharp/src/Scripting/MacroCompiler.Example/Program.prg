@@ -248,9 +248,6 @@ end class
 BEGIN NAMESPACE MacroCompilerTest
 
 	FUNCTION Start() AS VOID
-        //StartTest()
-        //return
-
 	    SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))
 
         ReportMemory("initial")
@@ -677,6 +674,8 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a,b| BAse->(MyDbDo(b))}", Args("BASE","ARG"), "BAse->Do(ARG)", typeof(STRING))
         TestMacro(mc, e"{|a,b| BASe->MyDbDo(b)}", Args("BASE","ARG"), "BASe->Do(ARG)", typeof(STRING))
         TestMacro(mc, e"{|a,b| MyDbDo(b)}", Args("BASE","ARG"), "Do(ARG)", typeof(STRING))
+        TestMacro(mc, e"Test1->(MyDbDo(\"F1\"))+MyDbDo(\"F2\")", Args(), "Test1->Do(F1)Do(F2)", typeof(string))
+        TestMacro(mc, e"Test1->MyDbDo(\"F1\")+MyDbDo(\"F2\")", Args(), "Test1->Do(F1)Test1->Do(F2)", typeof(string))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarGet, "MyVarGet")

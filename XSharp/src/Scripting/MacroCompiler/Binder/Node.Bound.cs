@@ -114,7 +114,11 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             if (Affinity != BindAffinity.Type)
-                return new IdExpr(Token).Bind(b);
+            {
+                Expr e = new IdExpr(Token);
+                b.Bind(ref e, Affinity);
+                return e;
+            }
             Symbol = Binder.GetNativeTypeFromToken(Kind) ?? ThrowError(ErrorCode.NotSupported,Kind);
             return null;
         }

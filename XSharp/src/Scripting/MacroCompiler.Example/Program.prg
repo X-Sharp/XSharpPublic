@@ -469,10 +469,11 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a,b| default(testclass.nested.fff) }", Args(), NULL, NULL, ErrorCode.NotAType)
         TestMacro(mc, e"{|a,b| (testclass.nested.fff)123 }", Args(), NULL, NULL, ErrorCode.NotAType)
         TestMacro(mc, e"{|a,b| (testclass.nested)123 }", Args(), NULL, NULL, ErrorCode.NoConversion)
-        TestMacro(mc, e"{|a,b| int is ValueType }", Args(), NULL, NULL, ErrorCode.NotAnExpression)
-        TestMacro(mc, e"{|a,b| int }", Args(), NULL, NULL, ErrorCode.NotAnExpression)
-        TestMacro(mc, e"{|a,b| U(int) }", Args(), NULL, NULL, ErrorCode.NotAnExpression)
-//        TestMacro(mc, "U", Args(), null, null, ErrorCode.NotAnExpression) // It is treated as field/memvar
+        TestMacro(mc, e"{|a,b| int is ValueType }", Args(), true, typeof(logic)) // 'int' is treated as ID, generates local
+        TestMacro(mc, e"{|a,b| int }", Args(), NULL, NULL) // 'int' is treated as ID, generates local
+        TestMacro(mc, e"{|a,b| U(int) }", Args(), NULL, NULL) // 'int' is treated as ID, generates local
+        TestMacro(mc, e"{|a,b| (int)a }", Args(123U), 123, typeof(int))
+///        TestMacro(mc, "U", Args(), null, null, ErrorCode.NotAnExpression) // It is treated as field/memvar
 //        TestMacro(mc, e"{|a,b| asdgfafd(123) }", Args(), null, null, ErrorCode.NotAMethod)
         TestMacro(mc, e"{|a,b| testclass.nested(123) }", Args(), NULL, NULL, ErrorCode.NotAMethod)
         TestMacro(mc, e"{|a,b| Console.Write(null) }", Args(), NULL, typeof(OBJECT))

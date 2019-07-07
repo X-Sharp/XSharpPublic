@@ -14,8 +14,6 @@
 
 #define FOX
 ;#undef FOX
-; define the next line to prevent cab building and have a fast test
-;#define FAST
 
 ; version info and similar stuff.
   
@@ -23,7 +21,7 @@
 #define FileVersion         "2.0.2.3"
 #define FileNameVersion     "2RC2c"
 #define VIVersion           "2.0.2.3"
-#define TouchDate           "2019-07-05"
+#define TouchDate           "2019-07-07"
 #define TouchTime           "02:20:30"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
@@ -73,6 +71,7 @@
 #define GACInstall          "gacinstall uninsnosharedfileprompt uninsrestartdelete"
 #define XSharpVersion       ", Version="+AssemblyVersion+", Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL" 
 #define VOSDKVersion        ", Version="+AssemblyVersion+", Culture=neutral, PublicKeyToken=a967d8055360a7b9, processorArchitecture=x86" 
+#define VOSDKVersionAnyCPU  ", Version="+AssemblyVersion+", Culture=neutral, PublicKeyToken=a967d8055360a7b9, processorArchitecture=MSIL" 
 
 
 [Setup]
@@ -82,10 +81,10 @@
 AppId={{477B7845-48AF-4ACC-BAC6-90003B1EE562}
 DisableWelcomePage=no
 DisableStartupPrompt=yes
-DisableReadyMemo=yes
+DisableReadyMemo=no
 DisableFinishedPage=no
-;DiskSpanning=yes
-;DiskSliceSize=max
+DisableDirPage=yes
+
 InfoBeforeFile=Baggage\rtwhatsnew.rtf
 AppName={#Product}
 AppVersion={#FileVersion}
@@ -97,6 +96,7 @@ AppSupportURL={#XSharpURL}
 AppUpdatesURL={#XSharpURL}
 DefaultDirName={commonpf}\XSharp
 DefaultGroupName={#Product}
+AlwaysShowDirOnReadyPage=true
 LicenseFile=Baggage\License.txt
 OutputDir={#OutPutFolder} 
 OutputBaseFilename={#SetupExeName}
@@ -192,8 +192,8 @@ Components: main\gac;  Source: "{#BinFolder}XSharp.CodeAnalysis.dll";           
 Components: main\gac;  Source: "{#BinFolder}XSharp.Scripting.dll";                 DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;
 
 Components: main\gac;  Source: "{#BinRtFolder}VOWin32APILibrary.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOWin32APILibrary{#VOSDKVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}VOSystemClasses.dll";                DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOSystemClasses{#VOSDKVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}VORDDClasses.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VORDDClasses{#VOSDKVersion}" 
+Components: main\gac;  Source: "{#BinRtFolder}VOSystemClasses.dll";                DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOSystemClasses{#VOSDKVersionAnyCPU}" 
+Components: main\gac;  Source: "{#BinRtFolder}VORDDClasses.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VORDDClasses{#VOSDKVersionAnyCPU}" 
 Components: main\gac;  Source: "{#BinRtFolder}VOSQLClasses.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOSQLClasses{#VOSDKVersion}" 
 Components: main\gac;  Source: "{#BinRtFolder}VOGUIClasses.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOGUIClasses{#VOSDKVersion}" 
 Components: main\gac;  Source: "{#BinRtFolder}VOReportClasses.dll";                DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOReportClasses{#VOSDKVersion}" 
@@ -284,6 +284,14 @@ Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VOSQLClasses";
 Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VOReportClasses";
 Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VOSystemClasses";
 Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VOWin32APILibrary";
+Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_MSIL\VoInternetclasses";
+Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_MSIL\VoConsoleClasses";
+Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_MSIL\VOGUIClasses";
+Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_MSIL\VORDDClasses";
+Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_MSIL\VOSQLClasses";
+Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_MSIL\VOReportClasses";
+Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_MSIL\VOSystemClasses";
+Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_MSIL\VOWin32APILibrary";
 
 
 [UninstallDelete]
@@ -298,11 +306,11 @@ Type: filesandordirs; Name: "{app}\Redist"                        ;
 Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VoInternetclasses";
 Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VoConsoleClasses";
 Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VOGUIClasses";
-Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VORDDClasses";
 Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VOSQLClasses";
 Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VOReportClasses";
-Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VOSystemClasses";
 Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VOWin32APILibrary";
+Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_MSIL\VORDDClasses";
+Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_MSIL\VOSystemClasses";
 
 
 [Messages]
@@ -313,19 +321,68 @@ WelcomeLabel2=This installer will install {#ProdBuild} on your computer.%n%nIt i
 
 [Code]
 Program setup;
+var
+  
+  PrintButton: TButton;
+  XSharpInstalled: Boolean;
+  XSharpDir: String;
+/////////////////////////////////////////////////////////////////////
+procedure PrintButtonClick(Sender: TObject);
+var ResultCode :integer;
+begin
+ExtractTemporaryFile('license.txt');
+if not ShellExec('Print', ExpandConstant('{tmp}\license.txt'),
+     '', '', SW_SHOW, ewNoWait, ResultCode) then
+//if not ShellExec('', ExpandConstant('{tmp}\license.txt'),
+//     '', '', SW_SHOW, ewNoWait, ResultCode) then
+end;
+procedure DetectXSharp();
+begin
+  XSharpInstalled := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\XSharpBV\XSharp','XSharpPath',XSharpDir) ;
+  IF XSharpInstalled  then begin
+    XSharpInstalled := FileExists(XSharpDir+'\bin\xsc.exe');
+  end
  
+end;
 
+/////////////////////////////////////////////////////////////////////
+Procedure CurPageChanged(CurPage: Integer);
+begin
+  PrintButton.Visible := CurPage = wpLicense;
+end;
 procedure InitializeWizard();
 begin
     
     Log('InitializeWizard start');
     { Kill running process to help success the installation}
+    PrintButton := TButton.Create(WizardForm);
+    PrintButton.Caption := '&Print...';
+    { PrintButton is placed on the License Page, bottom right of the license Memo. Width and Height are copied from BackButton}
+    PrintButton.Parent := WizardForm.LicenseAcceptedRadio.Parent
+    PrintButton.Top := WizardForm.LicenseAcceptedRadio.Top;
+    PrintButton.Width := WizardForm.BackButton.Width;
+    PrintButton.Height := WizardForm.BackButton.Height;
+    PrintButton.Left := WizardForm.LicenseMemo.Left+WizardForm.LicenseMemo.Width - PrintButton.Width;
+    PrintButton.OnClick := @PrintButtonClick;
+    PrintButton.Anchors := [akRight, akBottom]
     WizardForm.LicenseMemo.Font.Name := 'Courier New';
     WizardForm.LicenseMemo.Font.Size := 9;
     Log('InitializeWizard end');
 end;
 
 
+function InitializeSetup(): Boolean;
+begin
+  Log('InitializeSetup start');
+  DetectXSharp();
+  result := true;
+  if not XSharpInstalled then
+  begin
+    MsgBox('X# has not been detected, You need to run the normal X# installer first. This installer will now abort.', mbConfirmation, MB_OK) 
+    result := false;
+  end;
+  Log('InitializeSetup end');  
+end;
 
 #expr SaveToFile(AddBackslash(SourcePath) + "Preprocessed.iss")
 

@@ -7,9 +7,9 @@
 
 
 #ifndef Compression
-#define Compression     "lzma/ultra64"
+;#define Compression     "lzma/ultra64"
 ; "lzma/ultra"
-;#define Compression     "none" 
+#define Compression     "none" 
 #endif
 
 #define FOX
@@ -98,6 +98,9 @@
 ;#define ValueTupleVersion   "System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51"
 #define XSharpVersion       ", Version="+Version+", Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL" 
 #define VOSDKVersion        ", Version="+Version+", Culture=neutral, PublicKeyToken=a967d8055360a7b9, processorArchitecture=x86" 
+#define VOSDKVersionAnyCPU  ", Version="+Version+", Culture=neutral, PublicKeyToken=a967d8055360a7b9, processorArchitecture=MSIL" 
+#define RuntimeAppId        "{477B7845-48AF-4ACC-BAC6-90003B1EE562}"
+#define SetupAppId          "{32EB192A-B120-4055-800E-74B48B80DA06}"
 
 
 ;
@@ -140,7 +143,7 @@
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{32EB192A-B120-4055-800E-74B48B80DA06}
+AppId={{#SetupAppId}
 DisableWelcomePage=no
 DisableStartupPrompt=yes
 DisableReadyMemo=yes
@@ -891,11 +894,9 @@ procedure PrintButtonClick(Sender: TObject);
 var ResultCode :integer;
 begin
 ExtractTemporaryFile('license.txt');
-if not ShellExec('Print', ExpandConstant('{tmp}\license.txt'),
-     '', '', SW_SHOW, ewNoWait, ResultCode) then
-//if not ShellExec('', ExpandConstant('{tmp}\license.txt'),
-//     '', '', SW_SHOW, ewNoWait, ResultCode) then
-end;
+ShellExec('Print', ExpandConstant('{tmp}\license.txt'),
+     '', '', SW_SHOW, ewNoWait, ResultCode) ;
+
 {
 VS2017.txt will contain:
 InstanceId: 3a89761f (Complete)
@@ -971,17 +972,31 @@ begin
 end;
 
 /////////////////////////////////////////////////////////////////////
-function GetUninstallString(): String;
+function GetUninstallStringHelper(AppId: String): String;
 var
   sUnInstPath: String;
   sUnInstallString: String;
 begin
-  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}_is1');
+  sUnInstPath := 'Software\Microsoft\Windows\CurrentVersion\Uninstall\'+AppId+'_is1';
   sUnInstallString := '';
   if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
     RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
   Result := sUnInstallString;
 end;
+
+
+/////////////////////////////////////////////////////////////////////
+function GetUninstallString(): String;
+begin
+  result := GetUninstallStringHelper('{#SetupAppId}');
+end;
+
+/////////////////////////////////////////////////////////////////////
+function GetUninstallStringRT(): String;
+begin
+  result := GetUninstallStringHelper('{#RuntimeAppId}');
+end;
+begin
 
 /////////////////////////////////////////////////////////////////////
 function IsUpgrade(): Boolean;
@@ -989,9 +1004,14 @@ begin
   Result := (GetUninstallString() <> '');
 end;
 
-
 /////////////////////////////////////////////////////////////////////
-Function UninstallPreviousVersion(): Integer;
+function IsRuntimeInstalled(): Boolean;
+begin
+  Result := (GetUninstallStringRT() <> '');
+end;
+
+
+Function UninstallHelper(sUnInstallString: String, message: String): Integer
 var
   sUnInstallString: String;
   iResultCode: Integer;
@@ -1005,16 +1025,36 @@ begin
   Result := 0;
 
   // get the uninstall string of the old app
-  sUnInstallString := GetUninstallString();
   if sUnInstallString <> '' then begin
     sUnInstallString := RemoveQuotes(sUnInstallString);
-    WizardForm.StatusLabel.Caption := 'Uninstalling previous version...';
+    WizardForm.StatusLabel.Caption := message;
     if Exec(sUnInstallString, '/VERYSILENT /NORESTART /SUPPRESSMSGBOXES /LOG','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
       Result := 3
     else
       Result := 2;
-  end else
+  end else begin
     Result := 1;
+    end;
+end;
+
+
+/////////////////////////////////////////////////////////////////////
+Function UninstallPreviousVersion(): Integer;
+var
+  sUnInstallString: String;
+begin
+  sUnInstallString := GetUninstallString();
+  result := UninstallHelper(sUninstallString, 'Uninstalling previous version...');
+end;
+
+/////////////////////////////////////////////////////////////////////
+Function UninstallRuntime(): Integer;
+var
+  sUnInstallString: String;
+begin
+  // get the uninstall string of the old runtime
+  sUnInstallString := GetUninstallStringRT();
+  result := UninstallHelper(sUninstallString, 'Uninstalling previous runtime...');
 end;
 
 
@@ -1506,6 +1546,13 @@ var ResultCode: integer;
 begin
     if CurStep = ssInstall then
     begin
+      if (IsRuntimeInstalled()) then
+      begin
+          Log('CurStepChanged = ssInstall; Start uninstall runtime');
+          ResultCode := UnInstallRuntime();
+          Log('CurStepChanged = ssInstall; End uninstall runtime, result: '+IntToStr(ResultCode));
+      end;    
+
       if (IsUpgrade()) then
       begin
           Log('CurStepChanged = ssInstall; Start uninstall previous version');
@@ -1581,9 +1628,7 @@ begin
     // for other info, check out this link 
     // http://stackoverflow.com/questions/199080/how-to-detect-what-net-framework-versions-and-service-packs-are-installed
     regkey := 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full'
-
     RegQueryStringValue(HKLM, regkey, 'InstallPath', regval);
-
     result := regval;
 end; 
 
@@ -1596,9 +1641,7 @@ begin
     // for other info, check out this link 
     // http://stackoverflow.com/questions/199080/how-to-detect-what-net-framework-versions-and-service-packs-are-installed
     regkey := 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full'
-
     RegQueryStringValue(HKLM, regkey, 'InstallPath', regval);
-
     StringChangeEx(regval, '\Framework', '\Framework64', false);
     result := regval;
 end; 

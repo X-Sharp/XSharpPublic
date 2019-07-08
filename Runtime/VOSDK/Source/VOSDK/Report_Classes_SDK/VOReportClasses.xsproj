@@ -20,10 +20,13 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
-    <Compile Include="AssemblyInfo.prg" />
+    <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
+      <Link>SDKAssemblyinfo.prg</Link>
+    </Compile>
     <Compile Include="Declares.prg" />
     <Compile Include="Defines.prg" />
     <Compile Include="Methods.prg" />
+    <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="ReportLangDef.prg" />
     <Compile Include="Structures.prg" />
   </ItemGroup>

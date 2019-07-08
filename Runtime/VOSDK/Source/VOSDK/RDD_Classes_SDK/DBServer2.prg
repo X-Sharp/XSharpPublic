@@ -25,11 +25,11 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver,
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			IF IsInstanceOfUsual( oFSTarget, #FileSpec )
-				cTarget := oFSTarget:FullPath
+			IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFS
+				cTarget := oFS:FullPath
 				
-			ELSEIF IsInstanceOfUsual( oFSTarget, #DbServer )
-				cTarget := oFSTarget:FileSpec:FullPath
+			ELSEIF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS DbServer VAR oDb
+				cTarget := oDb:__FileSpec:FullPath
 				
 			ELSE
 				cTarget := oFSTarget
@@ -190,8 +190,8 @@ METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBloc
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			IF IsInstanceOfUsual( oFSTarget, #FileSpec )
-				cTarget := oFSTarget:FullPath
+			IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFS
+				cTarget := oFS:FullPath
 			ELSE
 				cTarget := oFSTarget
 			ENDIF
@@ -329,8 +329,8 @@ METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			IF IsInstanceOfUsual( oFSTarget, #FileSpec )
-				cTarget := oFSTarget:FullPath
+			IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFS
+				cTarget := oFS:FullPath
 			ELSE
 				cTarget := oFSTarget
 			ENDIF
@@ -467,9 +467,9 @@ METHOD CopyStructure( oFSTarget, aFieldList )
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		IF IsInstanceOfUsual( oFSTarget, #FileSpec )
-			cTarget := oFSTarget:FullPath
-			cFileName := oFSTarget:FileName
+		IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFS
+			cTarget := oFS:FullPath
+			cFileName := oFS:FileName
 			
 			IF Upper( SELF:oFileSpec:FileName ) == Upper( cFileName )
 				cAlias := Symbol2String( __ConstructUniqueAlias( cFileName ) )
@@ -690,8 +690,8 @@ METHOD CreateIndex( oFSIndex, cExpr, cbExpr, lUnique )
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			IF IsInstanceOfUsual( oFSIndex, #FileSpec )
-				cIndexFileName := oFSIndex:FullPath
+			IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFs
+				cIndexFileName := oFs:FullPath
 			ELSEIF ! IsNil( oFSIndex )
 				cIndexFileName := oFSIndex
 			ELSE
@@ -777,8 +777,8 @@ METHOD CreateOrder( cOrderName, cIndexFileName, cExpr, cbExpr, lUnique )
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			IF IsInstanceOfUsual( cIndexFileName, #FileSpec )
-				cIndexFileName := cIndexFileName:FullPath
+			IF IsObject(cIndexFileName) .and. __Usual.ToObject(cIndexFileName) IS FileSpec VAR oFs
+				cIndexFileName := oFs:FullPath
 			ELSEIF IsNil( cIndexFileName )
 				IF IsNil( cOrderName )
 					BREAK DbError{ SELF, #CreateOrder, EG_ARG,  ;
@@ -1098,8 +1098,8 @@ METHOD DeleteOrder( uOrder, cIndexFileName )
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
-		IF IsInstanceOfUsual( cIndexFileName, #FileSpec )
-			cOrdBag := cIndexFileName:FullPath
+		IF IsObject(cIndexFileName) .and. __Usual.ToObject(cIndexFileName) IS FileSpec VAR oFs
+			cOrdBag := oFs:FullPath
 		ELSE
 			cOrdBag := cIndexFileName
 		ENDIF
@@ -1135,6 +1135,7 @@ METHOD DeleteOrder( uOrder, cIndexFileName )
 METHOD Error( oError, symMethod ) 
 	STATIC LOCAL lErrorProcessingSemaphor AS LOGIC
 	LOCAL cErrorValType AS STRING
+    LOCAL oErr  as Error
 	
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
@@ -1146,25 +1147,27 @@ METHOD Error( oError, symMethod )
 		
 		IF ! IsInstanceOfUsual( oError, #Error )
 			cErrorValType := ValType( oError )
-			oError := Error{ }
-			oError:GenCode := EG_ERRORBUILD
-			oError:Description := VO_Sprintf( __CAVOSTR_DBFCLASS_BADERROROBJECT, cErrorValType )
+			oErr := oError := Error{ }
+			oErr:GenCode := EG_ERRORBUILD
+			oErr:Description := VO_Sprintf( __CAVOSTR_DBFCLASS_BADERROROBJECT, cErrorValType )
+        ELSE
+            oErr := oError
 		ENDIF
 		IF IsNil( symMethod ) .OR. ! IsSymbol( symMethod )
-			oError:FuncSym := #Unknown
+			oErr:FuncSym := #Unknown
 		ELSE
-			oError:FuncSym := symMethod
+			oErr:FuncSym := symMethod
 		ENDIF
 		
-		oError:MethodSelf := SELF
+		oErr:MethodSelf := SELF
 		
-		oHLStatus := SELF:__GenerateStatusHL( oError )
+		oHLStatus := SELF:__GenerateStatusHL( oErr )
 		
 		IF IsArray( aClients ) .AND. nClients != 0 .AND. IsMethod( aClients[1], #Error )
-			aClients[1]:Error( oError )
+			Send(aClients[1],#Error, oErr )
 		ELSE
 			lErrorProcessingSemaphor := FALSE
-			Eval( ErrorBlock( ), oError )
+			Eval( ErrorBlock( ), oErr )
 		ENDIF
 		
 		lErrorProcessingSemaphor := FALSE
@@ -1382,7 +1385,7 @@ METHOD FieldGetFormatted( uField )
 		IF IsNil( aDataFields[wPos] )
 			aDataFields[wPos] := SELF:__BuildDataField( aStruct[wPos] )
 		ENDIF
-		uRetVal := aDataFields[wPos]:FieldSpec:Transform( uRetVal )
+        SELF:__DataField(wPos):__FieldSpec:Transform( uRetVal )
 		
 	RECOVER USING oError
 		oErrorInfo := oError
@@ -1418,7 +1421,7 @@ METHOD FieldHyperLabel( uField )
 			IF IsNil( aDataFields[wPos] )
 				aDataFields[wPos] := SELF:__BuildDataField( aStruct[wPos] )
 			ENDIF
-			uRetVal := aDataFields[ wPos ]:HyperLabel
+			uRetVal := SELF:__DataField(wPos):HyperLabel
 		ELSE
 			BREAK DbError{ SELF, #FieldHyperlabel, EG_ARG,  ;
 				__CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ), uField, "uField" }
@@ -1628,7 +1631,7 @@ METHOD FieldSpec( uField )
 			IF IsNil( aDataFields[wPos] )
 				aDataFields[wPos] := SELF:__BuildDataField( aStruct[wPos] )
 			ENDIF
-			uRetVal := aDataFields[wPos]:FieldSpec
+			uRetVal := SELF:__DataField(wPos):FieldSpec
 		ELSE
 			SELF:__SetStatusHL( #FieldSpec, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ) )
 			uRetVal := NULL_OBJECT
@@ -1668,7 +1671,7 @@ METHOD FieldStatus( uField )
 			IF IsNil( aDataFields[wPos] )
 				aDataFields[wPOS] := SELF:__BuildDataField( aStruct[wPos] )
 			ENDIF
-			uRetVal := aDataFields[wPos]:FieldSpec:Status
+			uRetVal := SELF:__DataField(wPos):__FieldSpec:Status
 		ELSE
 			SELF:__SetStatusHL( #FieldStatus, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ) )
 			uRetVal := NULL_OBJECT
@@ -1744,7 +1747,7 @@ METHOD FieldValidate( uField, uValue )
 			IF IsNil( aDataFields[wPos] )
 				aDataFields[wPos] := SELF:__BuildDataField( aStruct[wPos] )
 			ENDIF
-			uRetVal := aDataFields[wPos]:FieldSpec:PerformValidations( uValue )
+			uRetVal := SELF:__DataField(wPos):__FieldSpec:PerformValidations( uValue )
 		ELSE
 			BREAK DbError{ SELF, #FieldValidate, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ),  ;
 				uField, "uField" }

@@ -447,10 +447,67 @@ namespace XSharp.CodeDom
             }
         }
 
+        public CodeAttributeDeclarationCollection GenerateAttributes(XSharpParser.AttributesContext context)
+        {
+            /*
+                Parser definition for attributes
+                attributes          : ( AttrBlk+=attributeBlock )+
+                                    ;
+                attributeBlock      : LBRKT Target=attributeTarget? Attributes+=attribute (COMMA Attributes+=attribute)* RBRKT
+                                    ;
+                attributeTarget     : Id=identifier COLON
+                                    | Kw=keyword COLON
+                                    ;
+                attribute           : Name=name (LPAREN (Params+=attributeParam (COMMA Params+=attributeParam)* )? RPAREN )?
+                                    ;
+                attributeParam      : Name=identifierName Op=assignoperator Expr=expression
+                                    | Expr=expression
+               attributes      = CodeAttributeDeclarationCollection
+               attributeBlock  = CodeAttributeDeclaration
+               attributeTarget =
+               attribute       =
+               arg for attrib = CodeAttributeArgument
+               list of args   = CodeAttributeArgumentCollection
+            */
+            var result = new CodeAttributeDeclarationCollection();
+            foreach (var blk in context._AttrBlk)
+            {
+                foreach (var attr in blk._Attributes)
+                {
+                    var name = attr.Name.GetText();
+                    var codeattr = new CodeAttributeDeclaration(name);
+                    foreach (XSharpParser.AttributeParamContext par in attr._Params)
+                    {
+                        var arg = new CodeAttributeArgument();
+                        if (par is XSharpParser.PropertyAttributeParamContext )
+                        {
+                            var papc = par as XSharpParser.PropertyAttributeParamContext;
+                            if (papc.Name != null)
+                            {
+                                arg.Name = papc.Name.GetText();
+                            }
+                            arg.Value = BuildExpression(papc.Expr, false);
+                        }
+                        else if (par is XSharpParser.ExprAttributeParamContext)
+                        {
+                            var eapc = par as XSharpParser.ExprAttributeParamContext;
+                            arg.Value = BuildExpression(eapc.Expr, false);
+                        }
+                        codeattr.Arguments.Add(arg);
+                    }
+                    result.Add(codeattr);
+                }
+            }
+            return result;
+        }
 
         public override void EnterClass_(XSharpParser.Class_Context context)
         {
             XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText());
+            if (context.Attributes != null)
+            {
+                newClass.CustomAttributes = GenerateAttributes(context.Attributes);
+            }
             CurrentClass = newClass;
             // and push into the Namespace
             CurrentNamespace.Types.Add(newClass);
@@ -535,6 +592,10 @@ namespace XSharp.CodeDom
             XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText());
             // Set as Current working Class
             CurrentClass = newClass;
+            if (context.Attributes != null)
+            {
+                newClass.CustomAttributes = GenerateAttributes(context.Attributes);
+            }
             // and push into the Namespace
             CurrentNamespace.Types.Add(newClass);
             // That's a Class
@@ -667,6 +728,10 @@ namespace XSharp.CodeDom
             if (newMethod.Name == "InitializeComponent")
             {
                 initComponent = newMethod;
+                if (context.Attributes != null)
+                {
+                    newMethod.CustomAttributes = GenerateAttributes(context.Attributes);
+                }
             }
             else
             {

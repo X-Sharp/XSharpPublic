@@ -56,7 +56,7 @@ CLASS FieldSpec
 		IF !IsNil(uMin) .AND. !IsNil(uMax)
 			oHLRange := HyperLabel{ #FieldSpecRange, ,  ;
 				/* 418@JFS001 changed FS_MSG_INVALIDRANGE1 --> __CavoStr(__CAVOSTR_DBFCLASS_INVALIDRANGE1)*/;
-				VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDRANGE,oHyperLabel:Name,AsString(uMin),AsString( uMax )) } //419@TR019
+				VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDRANGE,oHyperLabel:Name,AsString(uMin),AsString( uMax )) } 
 		ENDIF
 	ENDIF
 	RETURN
@@ -93,7 +93,7 @@ CONSTRUCTOR( oHLName, uType, uLength, uDecimals )
 	//                      or as a 1-char string ("N","C","D","L","M")
 	// uLength          ( required for some data types, not for LOGIC for example )
 	// uDecimals        ( optional ) defaults to 0
-	IF IsInstanceOfUsual( oHLName, #HyperLabel )
+	IF IsObject(oHLName) .and. __Usual.ToObject(oHLName) IS HyperLabel 
 		oHyperLabel := oHLName
 	ELSEIF IsSymbol( oHLName ) .OR. IsString( oHLName )
 		oHyperLabel := HyperLabel{ oHLName }
@@ -133,16 +133,15 @@ CONSTRUCTOR( oHLName, uType, uLength, uDecimals )
 			cType := "L"
 		ELSEIF wType = DATE
 			cType := "D"
-		ELSEIF lNumeric:=   wType=INT   .OR.; // also Long //367@005
-			wType=FLOAT .OR.;              //367@005
-			wType=BYTE  .OR.;              //367@005
-			wType=SHORTINT .OR.;              //367@005
-			wtype=WORD  .OR.;              //367@005
-			wType=DWORD .OR.;              //367@005
-			wType=REAL4 .OR.;              //367@005
-			wtype=REAL8                    //367@005
-			cType := "N"                                   //367@005
-			// Ansgar 7/9/97 added MulitMedia
+		ELSEIF lNumeric:=   wType=INT   .OR.; // also Long 
+			wType=FLOAT .OR.;              
+			wType=BYTE  .OR.;              
+			wType=SHORTINT .OR.;           
+			wtype=WORD  .OR.;              
+			wType=DWORD .OR.;              
+			wType=REAL4 .OR.;              
+			wtype=REAL8                    
+			cType := "N"                   
 		ELSEIF (wType == TYPE_MULTIMEDIA)
 			cType := "X"
 		ELSE
@@ -207,8 +206,8 @@ METHOD PerformValidations(uValue, arg)
 		RETURN .T. 
 	ENDIF
 
-	IF (IsString(uValue) .AND. Empty(AllTrim(uValue))) .OR. ;  //383@014
-		(IsDate(uValue) .AND. uValue == NULL_DATE)         //383@014
+	IF (IsString(uValue) .AND. Empty(AllTrim(uValue))) .OR. ;  
+		(IsDate(uValue) .AND. uValue == NULL_DATE)         
 		// Check required
 		IF lRequired
 			IF IsNil(oHLRequired)
@@ -280,7 +279,7 @@ METHOD PerformValidations(uValue, arg)
 		wLen := SLen(cValue)
 
 		IF wLen > wLength .AND. ;
-			!(cType == "M" /*.AND. wLength == 10 .AND. !wLength > 65536*/ ) //381@011
+			!(cType == "M" /*.AND. wLength == 10 .AND. !wLength > 65536*/ ) 
 
 			IF oHLLength == NULL_OBJECT
 				oHLLength := HyperLabel{ #FieldSpecLength, , VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDLENGTH,oHyperLabel:Name,Str( wLength ) ) }
@@ -339,7 +338,6 @@ ASSIGN Picture( cNewPicture )
 	RETURN cPicture := cNewPicture
 
 ACCESS Required                                 
-	//430@TR021 new
 	RETURN lRequired
 
 METHOD SetLength( w, oHL )                      
@@ -354,8 +352,8 @@ METHOD SetLength( w, oHL )
 			DbError{ SELF, #SetLength, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADSI), w, "w" }:Throw()
 		ENDIF
 	ENDIF
-	IF oHL# NIL
-		IF IsInstanceOfUsual( oHL, #HyperLabel )
+	IF oHL # NIL
+		IF IsObject(oHL) .and. __Usual.ToObject(oHL) IS HyperLabel
 			oHLLength := oHL
 		ELSE
 			DbError{ SELF, #SetLength, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
@@ -375,7 +373,7 @@ METHOD SetMinLength( w, oHL )
 		ENDIF
 	ENDIF
 	IF !IsNil(oHL)
-		IF IsInstanceOfUsual( oHL, #HyperLabel )
+		IF IsObject(oHL) .and. __Usual.ToObject(oHL) IS HyperLabel 
 			oHLMinLength := oHL
 		ELSE
 			DbError{ SELF, #SetMinLength, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
@@ -393,7 +391,7 @@ METHOD SetRange( uMinimum, uMaximum, oHL )
 		uMax := uMaximum
 	ENDIF
 	IF !IsNil(oHL)
-		IF IsInstanceOfUsual( oHL, #HyperLabel )
+		IF IsObject(oHL) .and. __Usual.ToObject(oHL) IS HyperLabel 
 			oHLRange := oHL
 		ELSE
 			DbError{ SELF, #SetRange, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
@@ -414,7 +412,7 @@ METHOD SetRequired( lReq, oHL )
 		DbError{ SELF, #SetRequired, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADLREQ), lReq, "lReq" }:Throw()
 	ENDIF
 	IF !IsNil(oHL)
-		IF IsInstanceOfUsual( oHL, #HyperLabel )
+		IF IsObject(oHL) .and. __Usual.ToObject(oHL) IS HyperLabel 
 			oHLRequired := oHL
 		ELSE
 			DbError{ SELF, #SetRequired, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
@@ -455,7 +453,6 @@ METHOD SetType( uType, oHL )
 				DbError{ SELF, #SetType, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:Throw()
 			ENDIF
 		ELSE
-			//367@005 start
 			wType := uType
 			IF wType = STRING
 				cType := "C"
@@ -472,7 +469,6 @@ METHOD SetType( uType, oHL )
 				wType=REAL4 .OR.;
 				wtype=REAL8
 				cType := "N"
-				// Ansgar 7/9/97 added Bitmap
 			ELSEIF (wType == TYPE_MULTIMEDIA)
 				cType := "B"
 
@@ -483,7 +479,7 @@ METHOD SetType( uType, oHL )
 		ENDIF
 	ENDIF
 	IF !IsNil(oHL)
-		IF IsInstanceOfUsual( oHL, #HyperLabel )
+		IF IsObject(oHL) .and. __Usual.ToObject(oHL) IS HyperLabel
 			oHLType := oHL
 		ELSE
 			DbError{ SELF, #SetType, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
@@ -509,7 +505,7 @@ METHOD SetValidation( cb, oHL )
 		ENDIF
 	ENDIF
 	IF !IsNil(oHL)
-		IF IsInstanceOfUsual( oHL, #HyperLabel )
+		IF IsObject(oHL) .and. __Usual.ToObject(oHL) IS HyperLabel
 			oHLValidation := oHL
 		ELSE
 			DbError{ SELF, #SetValidation, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
@@ -523,11 +519,13 @@ ACCESS Status
 	// most recently made validation ( see METHOD PerformValidations ).
 	RETURN oHLStatus
 
-ASSIGN Status (oHL)                             
-	IF !IsInstanceOfUsual( oHL, #HyperLabel ) .AND. (!IsObject(oHL) .OR. !(oHL==NULL_OBJECT))
+ASSIGN Status (oHL)
+    IF IsObject(oHL) .and. __Usual.ToObject(oHL) IS HyperLabel
+        oHLStatus := oHL
+    ELSE
 		DbError{ SELF, #Status, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
 	ENDIF
-	oHLStatus := oHL
+	
 	RETURN 
 
 METHOD Transform( uValue )                      
@@ -535,9 +533,9 @@ METHOD Transform( uValue )
 	// should default to windows formats
 
 	LOCAL cResult   AS STRING
-	LOCAL cTemp     AS STRING   //377@010
-	LOCAL lScience  AS LOGIC    //377@010
-	LOCAL lZero :=FALSE   AS LOGIC    //377@010
+	LOCAL cTemp     AS STRING   
+	LOCAL lScience  AS LOGIC    
+	LOCAL lZero :=FALSE   AS LOGIC    
 
 	IF cPicture == NULL_STRING
 		IF lNumeric
@@ -570,8 +568,8 @@ METHOD Transform( uValue )
 					cResult:=cTemp
 				ENDIF
 			ENDIF
-		ELSEIF uValue==NIL .AND. wType==STRING //390@016
-			cResult := NULL_STRING             //390@016
+		ELSEIF uValue==NIL .AND. wType==STRING 
+			cResult := NULL_STRING             
 		ELSE
 			cResult := AsString(uValue)
 		ENDIF
@@ -636,7 +634,6 @@ METHOD Validate( uValue, arg )
 	RETURN cbValidation = NIL .OR. Eval( cbValidation, uValue, arg )
 
 ACCESS Validation                               
-	//430@TR021 new
 	RETURN cbValidation
 
 ACCESS ValType                                  

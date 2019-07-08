@@ -40,17 +40,18 @@ namespace XSharp.CodeDom
     [DebuggerDisplay("{Name,nq}")]
     internal class XCodeTypeReferenceExpression : CodeTypeReferenceExpression
     {
+        internal string Name { get; private set; }
         internal XCodeTypeReferenceExpression(System.Type type) : base(type)
         {
-
+            Name = type.FullName;
         }
         internal XCodeTypeReferenceExpression(string type) : base(type)
         {
-
+            Name = type;
         }
         internal XCodeTypeReferenceExpression(CodeTypeReference type) : base(type)
         {
-
+            Name = type.BaseType;
         }
     }
 

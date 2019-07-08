@@ -682,11 +682,12 @@ namespace XSharp.MacroCompiler
                         // In that case we change the type from Keyword to ID
                         if (st == TokenType.ID && La() == '.')
                         {
-                            if (t != TokenType.SELF && t != TokenType.SUPER)
-                            {
-                                t = TokenType.ID;
-                                st = TokenType.UNRECOGNIZED;
-                            }
+                            // Do not convert to ID here - handle at parser!
+                            //if (t != TokenType.SELF && t != TokenType.SUPER)
+                            //{
+                            //    t = TokenType.ID;
+                            //    st = TokenType.UNRECOGNIZED;
+                            //}
                             _inDottedIdentifier = true;
                         }
                         else if (t == TokenType.ID)

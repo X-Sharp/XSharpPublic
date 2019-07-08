@@ -796,7 +796,7 @@ namespace XSharp.MacroCompiler
                 {
                     Token o = ConsumeAndGet();
                     var field = Require(ParseId(), ErrorCode.Expected, "name");
-                    return alias.Token.type == TokenType.M
+                    return (_options.AllowMemvarAlias && alias.Token.type == TokenType.M)
                         ? new MemvarExpr(new LiteralExpr(field.Token, TokenType.SYMBOL_CONST), o) as Expr
                         : new AliasExpr(new LiteralExpr(alias.Token, TokenType.SYMBOL_CONST), new LiteralExpr(field.Token, TokenType.SYMBOL_CONST), o);
                 }
@@ -804,6 +804,13 @@ namespace XSharp.MacroCompiler
                 {
                     return new AliasExpr(null, new LiteralExpr(alias.Token, TokenType.SYMBOL_CONST), alias.Token);
                 }
+            }
+            if (_options.AllowMemvarAlias && La() == TokenType.M && La(2) == TokenType.DOT && (La(3) == TokenType.ID || TokenAttr.IsSoftKeyword(La(3))))
+            {
+                Consume();
+                var o = ConsumeAndGet();
+                var v = Require(ParseId(), ErrorCode.Expected, "name");
+                return new MemvarExpr(new LiteralExpr(v.Token, TokenType.SYMBOL_CONST), o);
             }
             return null;
         }

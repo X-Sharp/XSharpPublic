@@ -7,9 +7,9 @@ CLASS DataServer
 	PROTECT nClients		AS DWORD
 	PROTECT nCCMode		AS DWORD
 	PROTECT nLastLock		AS DWORD
-	//RvdH-030916 Strong typing
-	METHOD __ClearLocks( ) AS VOID STRICT 
-	//RvdH-030916 Strong typing
+
+METHOD __ClearLocks( ) AS VOID STRICT 
+
 
 	DO CASE
 	CASE nCCMode == ccStable
@@ -22,12 +22,13 @@ CLASS DataServer
 
 	RETURN
 
+METHOD __DataField (nFieldPosition as DWORD) AS DataField
+    RETURN aDataFields[ nFieldPosition ]
+
 ACCESS __Clients AS ARRAY STRICT 
-	//RvdH-030916 Strong typing
 	RETURN SELF:aClients
 
 METHOD __SetupLocks( ) AS VOID STRICT 
-	//RvdH-030916 Strong typing
 
 	nLastLock := 0
 
@@ -117,7 +118,7 @@ ASSIGN ConcurrencyControl( nMode)
 	RETURN SELF:nCCMode
 
 METHOD DataField( nFieldPosition ) 
-	RETURN aDataFields[ nFieldPosition ]
+	RETURN __DataField (nFieldPosition)
 
 ACCESS DBStruct 
 	LOCAL aStruct	AS ARRAY
@@ -127,7 +128,7 @@ ACCESS DBStruct
 	aStruct := ArrayNew( wFieldCount )
 	FOR w := 1 UPTO wFieldCount
 		oDF := aDataFields[ w ]
-		aStruct[ w ] := { oDF:Name, oDF:FieldSpec:UsualType, oDF:FieldSpec:Length, oDF:FieldSpec:Decimals }
+		aStruct[ w ] := { oDF:Name, oDF:__FieldSpec:UsualType, oDF:__FieldSpec:Length, oDF:__FieldSpec:Decimals }
 	NEXT
 
 	RETURN aStruct
@@ -148,10 +149,10 @@ METHOD FieldGetFormatted( nFieldPosition )
 	RETURN NIL
 
 METHOD FieldHyperLabel( nFieldPosition ) 
-	RETURN aDataFields[ nFieldPosition ]:HyperLabel
+	RETURN __DataField (nFieldPosition):HyperLabel
 
 METHOD FieldName( nFieldPosition ) 
-	RETURN aDataFields[ nFieldPosition ]:HyperLabel:Name
+	RETURN __DataField (nFieldPosition):__HyperLabel:Name
 
 METHOD FieldPos( nFieldPosition ) 
 	RETURN NIL
@@ -160,16 +161,16 @@ METHOD FIELDPUT( nFieldPosition, uValue )
 	RETURN NIL
 
 METHOD FieldSpec( nFieldPosition ) 
-	RETURN aDataFields[ nFieldPosition ]:FieldSpec
+	RETURN __DataField (nFieldPosition):FieldSpec
 
 METHOD FieldStatus( nFieldPosition ) 
-	RETURN aDataFields[ nFieldPosition ]:FieldSpec:Status
+	RETURN __DataField (nFieldPosition):__FieldSpec:Status
 
 METHOD FieldSym( nFieldPosition ) 
-	RETURN aDataFields[ nFieldPosition ]:HyperLabel:NameSym
+	RETURN __DataField (nFieldPosition):__HyperLabel:NameSym
 
 METHOD FieldValidate( nFieldPosition, uValue ) 
-	RETURN aDataFields[ nFieldPosition ]:FieldSpec:PerformValidations( uValue )
+	RETURN __DataField (nFieldPosition):__FieldSpec:PerformValidations( uValue )
 
 METHOD FLOCK( ) 
 	RETURN FALSE
@@ -184,8 +185,8 @@ METHOD GoTop( )
 	RETURN FALSE
 
 ACCESS HLStatus
-// This always returns the status, regardless of the error flag	
-RETURN SELF:oHLStatus	
+    // This always returns the status, regardless of the error flag	
+    RETURN SELF:oHLStatus	
 
 ACCESS HyperLabel 
 	RETURN oHyperLabel
@@ -199,14 +200,12 @@ CONSTRUCTOR( )
 	RETURN 
 
 ACCESS Name 
-
 	IF oHyperlabel != NULL_OBJECT
 		RETURN oHyperLabel:Name
 	ENDIF
 	RETURN NULL_STRING
 
 ACCESS NameSym 
-
 	IF oHyperlabel != NULL_OBJECT
 		RETURN oHyperLabel:NameSym
 	ENDIF
@@ -222,9 +221,11 @@ METHOD NoIVarPut( symFieldName, uValue )
 	RETURN uValue
 
 METHOD Notify( kNotification, uDescription ) 
-	//RvdH 070306 unsupported syntax under Vulcan.NET
+	//unsupported syntax under .NET
 	//aClients:Notify( kNotification, uDescription )
-	ASend(aClients,#Notify, kNotification, uDescription )
+    FOREACH oClient as OBJECT in aClients
+        Send(oClient, #Notify, kNotification, uDescription )
+    NEXT
 	RETURN SELF
 
 METHOD PostInit( ) 
@@ -269,8 +270,6 @@ METHOD Seek( uValue )
 
 METHOD SetDataField( nFieldPosition, oDataField ) 
 	LOCAL wFieldPosition := nFieldPosition	AS WORD
-	LOCAL oField := oDataField				AS DataField
-	LOCAL oDF								AS DataField
 
 	IF aDataFields = NULL_ARRAY
 		BREAK DbError{ SELF, #SetDataField, EG_SEQUENCE, ;
@@ -279,15 +278,17 @@ METHOD SetDataField( nFieldPosition, oDataField )
 		wFieldPosition < 1 .OR. wFieldPosition > ALen( aDataFields )
 		BREAK DbError{ SELF, #SetDataField, EG_ARG, ;
 			__CavoStr(__CAVOSTR_DBFCLASS_BADFIELDPOSITION), nFieldPosition, "nFieldPosition" }
-	ELSEIF /*IsNil( oDataField ) .OR. */! IsInstanceOfUsual( oDataField, #DataField )
+	ELSEIF ! (__Usual.ToObject(oDataField) IS DataField)
 		BREAK DbError{ SELF, #SetDataField, EG_ARG,   ;
 			__CavoStr(__CAVOSTR_DBFCLASS_BADFIELDPOSITION), nFieldPosition, "nFieldPosition" }
 	ELSE
+	    LOCAL oField := oDataField				AS DataField
+	    LOCAL oDF								AS DataField
 		oDF := aDataFields[ wFieldPosition ]
 		IF oField:Name == oDF:Name .AND.    ;
-			oField:FieldSpec:UsualType == oDF:FieldSpec:UsualType .AND.     ;
-			oField:FieldSpec:Length == oDF:FieldSpec:Length .AND.   ;
-			oField:FieldSpec:Decimals == oDF:FieldSpec:Decimals
+			oField:__FieldSpec:UsualType == oDF:__FieldSpec:UsualType .AND.     ;
+			oField:__FieldSpec:Length    == oDF:__FieldSpec:Length .AND.   ;
+			oField:__FieldSpec:Decimals  == oDF:__FieldSpec:Decimals
 			aDataFields[ wFieldPosition ] := oField
 			RETURN TRUE
 		ELSE
@@ -302,7 +303,6 @@ ACCESS Status
 	RETURN oHLStatus
 
 ASSIGN Status(oHl) 
-	// DHer: 18/12/2008
 	SELF:oHLStatus := oHl
 RETURN SELF:oHLStatus
 

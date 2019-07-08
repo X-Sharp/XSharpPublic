@@ -1,5 +1,7 @@
 PARTIAL CLASS DbServer
 
+PROPERTY __FileSpec as FileSpec GET SELF:oFileSpec
+
 ACCESS Alias 
 		#IFDEF __DEBUG__
 			DBFDebug(__ENTITY__, Symbol2String( symAlias ))
@@ -670,7 +672,9 @@ ACCESS  PaintedStructure
 	aRet := {}
 	
 	FOR i:=1 UPTO nField
-		AAdd( aRet, { aFDesc[i][DBC_NAME] , aFDesc[i][DBC_FIELDSPEC]:valtype , aFDesc[i][DBC_FIELDSPEC]:length , aFDesc[i][DBC_FIELDSPEC]:Decimals } )
+        LOCAL oFs as FieldSpec
+        oFs := aFDesc[i][DBC_FIELDSPEC]
+		AAdd( aRet, { aFDesc[i][DBC_NAME] , oFS:valtype , oFS:length , oFS:Decimals } )
 	NEXT
 	
 	RETURN aRet

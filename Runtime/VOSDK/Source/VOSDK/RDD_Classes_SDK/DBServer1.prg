@@ -69,10 +69,10 @@ METHOD AppendDB( oFSSource, aFieldList, cbForBlock, cbWhileBlock, uScope, cDrive
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			IF IsInstanceOfUsual( oFSSource, #FileSpec )
-				cSource := oFSSource:FullPath
-			ELSEIF IsInstanceOfUsual( oFSSource, #DbServer )
-				cSource := oFSSource:FileSpec:FullPath
+			IF  IsObject(oFSSource) .and. __Usual.ToObject(oFSSource) IS FileSpec 
+				cSource := ((FileSpec) oFSSource):FullPath
+			ELSEIF IsObject(oFSSource) .and. __Usual.ToObject(oFSSource) IS DbServer VAR oDb
+				cSource := oDb:__FileSpec:FullPath
 			ELSE
 				cSource := oFSSource
 			ENDIF
@@ -184,8 +184,8 @@ METHOD AppendDelimited( oFSSource, cDelimiter, aFieldList, cbForBlock, cbWhileBl
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			IF IsInstanceOfUsual( oFSSource, #FileSpec )
-				cSource := oFSSource:FullPath
+			IF IsObject(oFSSource) .and. __Usual.ToObject(oFSSource) IS FileSpec  VAR oFS
+				cSource := oFS:FullPath
 			ELSE
 				cSource := oFSSource
 			ENDIF
@@ -290,8 +290,8 @@ METHOD AppendSDF(oFSSource,aFieldList,cbForBlock,cbWhileBlock,uScope)
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			IF IsInstanceOfUsual( oFSSource, #FileSpec )
-				cSource := oFSSource:FullPath
+			IF IsObject(oFSSource) .and. __Usual.ToObject(oFSSource) IS FileSpec 
+				cSource := ((FileSpec) oFSSource):FullPath
 
 			ELSE
 				cSource := oFSSource
@@ -541,8 +541,8 @@ DESTRUCTOR( )
 
 		RECOVER USING oError       
 			//RvdH 070509 Always throw errors on Axit. The owner window may be gone!
-			IF (IsInstanceOfUsual(oError, #Error))
-				oError:Throw()
+			IF IsObject(oError) .and. __Usual.ToObject(oError) IS Error VAR oErr
+				oErr:Throw()
 			ENDIF
 			
 		END SEQUENCE
@@ -567,8 +567,8 @@ METHOD BLOBDirectExport( nPointer, oFSTarget, kMode )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		IF IsInstanceOfUsual( oFSTarget, #FileSpec )
-			cTarget := oFSTarget:FullPath
+		IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFS
+			cTarget := oFS:FullPath
 		ELSE
 			cTarget := oFSTarget
 		ENDIF
@@ -635,8 +635,8 @@ METHOD BLOBDirectImport( nPointer, oFSSource )
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
-		IF IsInstanceOfUsual( oFSSource, #FileSpec )
-			cTarget := oFSSource:FullPath
+		IF IsObject(oFSSource) .and. __Usual.ToObject(oFSSource) IS FileSpec 
+			cTarget := ((FileSpec) oFSSource):FullPath
 		ELSE
 			cTarget := oFSSource
 		ENDIF
@@ -709,8 +709,8 @@ METHOD BLOBExport( uField, oFSTarget, kMode )
 			BREAK DbError{ SELF, #BLOBExport, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ),  ;
 				uField, "uField" }
 		ENDIF
-		IF IsInstanceOfUsual( oFSTarget, #FileSpec )
-			cTarget := oFSTarget:FullPath
+        IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFS
+			cTarget := oFS:FullPath
 		ELSE
 			cTarget := oFSTarget
 		ENDIF
@@ -797,8 +797,8 @@ METHOD BLOBImport( uField, oFSSource )
 			BREAK DbError{ SELF, #BLOBImport, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ),  ;
 				uField, "uField" }
 		ENDIF
-		IF IsInstanceOfUsual( oFSSource, #FileSpec )
-			cTarget := oFSSource:FullPath
+		IF IsObject(oFSSource) .and. __Usual.ToObject(oFSSource) IS FileSpec 
+			cTarget := ((FileSpec) oFSSource):FullPath
 		ELSE
 			cTarget := oFSSource
 		ENDIF
@@ -1154,7 +1154,7 @@ METHOD Close( )
 			VODBSelect( wWorkArea, @dwCurrentWorkArea )
 			SELF:__OptimisticFlush( )
 			IF ! IsNil( oDBSelectionParent )
-				oDBSelectionParent:__ClearChildRelation( SELF )
+				Send(oDBSelectionParent,#__ClearChildRelation, SELF )
 				oDBSelectionParent := NULL_OBJECT
 			ENDIF
 			SELF:ClearRelation( )

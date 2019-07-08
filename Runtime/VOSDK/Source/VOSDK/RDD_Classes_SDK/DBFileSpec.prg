@@ -67,10 +67,10 @@ METHOD Copy( oDBFSTarget, lIDX, lName )
 
 		BEGIN SEQUENCE
 			IF cFileName != NULL_STRING
-				IF IsInstanceOfUsual( oDBFSTarget, #FileSpec )
-					cDrive := oDBFSTarget:Drive
-					cPath := oDBFSTarget:Path
-					cFileName := oDBFSTarget:FileName
+				IF IsObject(oDBFSTarget) .and. __Usual.ToObject(oDBFSTarget) IS FileSpec VAR oFS
+					cDrive      := oFS:Drive
+					cPath       := oFS:Path
+					cFileName   := oFS:FileName
 					IF cFileName == NULL_STRING
 						cFileName := SELF:MemFileName
 					ENDIF
@@ -123,12 +123,13 @@ METHOD Copy( oDBFSTarget, lIDX, lName )
 
 		RECOVER USING oError
 			ErrorBlock( cbOldErr )
-			IF oError:OsCode != 0
-				oError:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oError:OsCode ) + ;
-					" ( " + DosErrString( oError:OsCode ) + " )" )
+            LOCAL oErr := oError as Error
+			IF oErr:OsCode != 0
+				oErr:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oErr:OsCode ) + ;
+					" ( " + DosErrString( oErr:OsCode ) + " )" )
 			ENDIF
 
-			SELF:oErrorInfo := oError
+			SELF:oErrorInfo := oErr
 			lRetCode := FALSE
 
 		END SEQUENCE
@@ -151,8 +152,8 @@ METHOD CopyTo( oFS, cDriver, lWantAnsi )
 	LOCAL nNext AS USUAL
 	LOCAL nRec AS USUAL
 
-	IF IsInstanceOfUsual( oFS, #FileSpec )
-		oFS := oFS:FullPath
+	IF IsObject(oFS) .and. __Usual.ToObject(oFS) IS FileSpec 
+		oFS := ((FileSpec) oFS):FullPath
 	ENDIF
 
 	IF Empty( oFS ) .OR. ! IsString( oFS )
@@ -243,12 +244,13 @@ METHOD CopyTo( oFS, cDriver, lWantAnsi )
 
 	RECOVER USING oError
 		ErrorBlock( cbOldErr )
-		IF oError:OsCode != 0
-			oError:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oError:OsCode ) + ;
-				" ( " + DosErrString( oError:OsCode ) + " )" )
+        LOCAL oErr := oError as Error
+		IF oErr:OsCode != 0
+			oErr:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oErr:OsCode ) + ;
+				" ( " + DosErrString( oErr:OsCode ) + " )" )
 		ENDIF
 
-		SELF:oErrorInfo := oError
+		SELF:oErrorInfo := oErr
 		lRetCode := FALSE
 
 	END SEQUENCE
@@ -270,8 +272,8 @@ METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRDDs )
 	LOCAL cbOldErr AS USUAL
 	LOCAL oError AS USUAL
 
-	IF IsInstanceOfUsual( cFullPath, #FileSpec )
-		cFullPath := cFullPath:FullPath
+	IF IsObject(cFullPath) .and. __Usual.ToObject(cFullPath) IS FileSpec  VAR oFS
+		cFullPath := oFS:FullPath
 	ENDIF
 
 	cbOldErr := ErrorBlock( { | oErr | _Break( oErr ) } )
@@ -364,12 +366,13 @@ METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRDDs )
 
 	RECOVER USING oError
 		ErrorBlock( cbOldErr )
-		IF oError:OsCode != 0
-			oError:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oError:OsCode ) + ;
-				" ( " + DosErrString( oError:OsCode ) + " )" )
+        LOCAL oErr := oError as Error
+		IF oErr:OsCode != 0
+			oErr:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oErr:OsCode ) + ;
+				" ( " + DosErrString( oErr:OsCode ) + " )" )
 		ENDIF
 
-		SELF:oErrorInfo := oError
+		SELF:oErrorInfo := oErr
 		lRetCode := FALSE
 
 	END SEQUENCE
@@ -458,7 +461,7 @@ METHOD DBFSGetInfo( xRDDs, aHidden )
 			CASE oMemoHandle:GetType() == TypeOf(IntPtr)
 				lMemoHandle := (IntPtr)oMemoHandle != IntPtr.Zero
 			CASE oMemoHandle:GetType() == TypeOf(PTR)
-				lMemoHandle := (PTR)oMemoHandle != NULL_PTR
+				lMemoHandle := (IntPtr) oMemoHandle != IntPtr.Zero
 			OTHERWISE
 				lMemoHandle := FALSE
 			END CASE
@@ -478,10 +481,10 @@ METHOD DBFSGetInfo( xRDDs, aHidden )
 
 	RECOVER USING oError
 		ErrorBlock( cbOldErr )
-
-		IF oError:OsCode != 0
-			oError:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oError:OsCode ) +  ;
-				" ( " + DosErrString( oError:OsCode ) + " )" )
+        LOCAL oErr := oError as Error
+		IF oErr:OsCode != 0
+			oErr:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oErr:OsCode ) +  ;
+				" ( " + DosErrString( oErr:OsCode ) + " )" )
 		ENDIF
 
 		IF lRetCode
@@ -490,13 +493,13 @@ METHOD DBFSGetInfo( xRDDs, aHidden )
 
 		lRetCode := FALSE
 
-		oError:FuncSym := String2Symbol( "DBFileSpec:DBFSGetInfo" )
-		oError:CanDefault := FALSE
-		oError:CanRetry   := FALSE
+		oErr:FuncSym := String2Symbol( "DBFileSpec:DBFSGetInfo" )
+		oErr:CanDefault := FALSE
+		oErr:CanRetry   := FALSE
 
-		SELF:oErrorInfo := oError
+		SELF:oErrorInfo := oErr
 
-		Eval( cbOldErr, oError )
+		Eval( cbOldErr, oErr )
 
 	END SEQUENCE
 
@@ -528,12 +531,6 @@ METHOD Delete()
 	LOCAL cFileFullPath AS STRING
 	LOCAL cMemFullPath AS STRING
 	LOCAL lRetCode AS LOGIC
-	// LOCAL cPath AS STRING         // dcaton 070430 never used
-	LOCAL cFileName AS STRING
-	//   LOCAL cDBFTarget AS STRING  // dcaton 070430 never used
-	LOCAL i AS DWORD
-	LOCAL nOrders AS DWORD
-	LOCAL nFiles AS DWORD
 
 	cFileFullPath := SELF:__FullPathAcc()
 
@@ -566,38 +563,35 @@ METHOD Delete()
 		IF lRetCode .AND. ! Empty( SELF:aIndexNames )
 			// cPath := SubStr3( cFileFullPath, 1, RAt2( "\", cFileFullPath ) )  // dcaton 070439 never used
 
-			nOrders := ALen( SELF:aOrders )
-			nFiles := ALen( SELF:aIndexNames )
-			FOR i := 1 UPTO nFiles
-				cFileName := SELF:aIndexNames[i]
+			FOREACH cFame as STRING in SELF:aIndexNames
 				//cDBFTarget := cPath + SubStr2( cFileName, RAt2( "\", cFileName ) + 1 )  // dcaton 070430 never used
-				lRetCode := FErase( cFileName ) 
+				lRetCode := FErase( cFame ) 
 			NEXT
 
-			FOR i := 1 UPTO nOrders
+			FOREACH os as OrderSpec in aOrders
 				IF lRetCode
-					SELF:aOrders[i]:FileName := NULL_STRING
-					SELF:aOrders[i]:OrderName := NULL_STRING
-					SELF:aOrders[i]:OrderExpr := NULL_STRING
-					SELF:aOrders[i]:OrderBlock := NIL
-					SELF:aOrders[i]:Unique := FALSE
-					SELF:aOrders[i]:KeyInfo := NULL_ARRAY
-					SELF:aOrders[i]:IsCond := FALSE
-					SELF:aOrders[i]:ForCond := NULL_STRING
-					SELF:aOrders[i]:ForBlock := NIL
-					SELF:aOrders[i]:WhileBlock := NIL
-					SELF:aOrders[i]:EvalBlock := NIL
-					SELF:aOrders[i]:Interval := 0
-					SELF:aOrders[i]:Start := 0
-					SELF:aOrders[i]:Records := 0
-					SELF:aOrders[i]:Recno := 0
-					SELF:aOrders[i]:Rest := FALSE
-					SELF:aOrders[i]:Descend := FALSE
-					SELF:aOrders[i]:All := FALSE
-					SELF:aOrders[i]:Add := FALSE
-					SELF:aOrders[i]:Custom := FALSE
-					SELF:aOrders[i]:Current := FALSE
-					SELF:aOrders[i]:NoOptimize := FALSE
+					os:FileName := NULL_STRING
+					os:OrderName := NULL_STRING
+					os:OrderExpr := NULL_STRING
+					os:OrderBlock := NIL
+					os:Unique := FALSE
+					os:KeyInfo := NULL_ARRAY
+					os:IsCond := FALSE
+					os:ForCond := NULL_STRING
+					os:ForBlock := NIL
+					os:WhileBlock := NIL
+					os:EvalBlock := NIL
+					os:Interval := 0
+					os:Start := 0
+					os:Records := 0
+					os:Recno := 0
+					os:Rest := FALSE
+					os:Descend := FALSE
+					os:All := FALSE
+					os:Add := FALSE
+					os:Custom := FALSE
+					os:Current := FALSE
+					os:NoOptimize := FALSE
 				ENDIF
 			NEXT
 
@@ -794,8 +788,8 @@ CONSTRUCTOR( cFullPath, cDriver, _aRDDs )
 	SELF:aOrders := { }
 	SELF:aIndexNames := { }
 
-	IF IsInstanceOfUsual( cFullPath, #FileSpec )
-		cFullPath := cFullPath:FullPath
+	IF IsObject(cFullPath) .and. __Usual.ToObject(cFullPath) IS FileSpec  VAR oFS
+		cFullPath := oFS:FullPath
 	ENDIF
 
 	IF Empty( cDriver ) .OR. ! IsString( cDriver )
@@ -923,8 +917,6 @@ METHOD Move( oDBFSTarget, lIDX, lName )
 	LOCAL lRetCode AS LOGIC
 	LOCAL cPath AS STRING
 	LOCAL i AS DWORD
-	LOCAL j AS DWORD
-	LOCAL nOrders AS DWORD
 	LOCAL nFiles AS DWORD
 
 	IF Empty( lName ) .OR. ! IsLogic( lName )
@@ -1000,7 +992,6 @@ METHOD Move( oDBFSTarget, lIDX, lName )
 			IF lRetCode .AND. lIDX .AND. ! Empty( SELF:aIndexNames )
 				IF SubStr3( cTargetPath, 1, At2( ":", cTargetPath ) ) == SubStr3( cSourcePath, 1, At2( ":", cSourcePath ) )
 					cPath := Upper( cTargetPath )
-					nOrders := ALen( SELF:aOrders )
 					nFiles := ALen( SELF:aIndexNames )
 					FOR i := 1 UPTO nFiles
 						cFileName := SELF:aIndexNames[i]
@@ -1025,9 +1016,9 @@ METHOD Move( oDBFSTarget, lIDX, lName )
 							lRetCode := FRename( cFileName , cTargetPath  )
 						ENDIF
 						IF lRetCode
-							FOR j := 1 UPTO nOrders
-								IF SELF:aOrders[j]:FileName == cFileName
-									SELF:aOrders[j]:FileName := cTargetPath
+							FOREACH os as OrderSpec in SELF:aOrders
+								IF os:FileName == cFileName
+									os:FileName := cTargetPath
 								ENDIF
 							NEXT
 							SELF:aIndexNames[i] := cTargetPath
@@ -1036,7 +1027,6 @@ METHOD Move( oDBFSTarget, lIDX, lName )
 
 				ELSE
 					cPath := Upper( cTargetPath )
-					nOrders := ALen( SELF:aOrders )
 					nFiles := ALen( SELF:aIndexNames )
 					FOR i := 1 UPTO nFiles
 						cFileName := SELF:aIndexNames[i]
@@ -1057,9 +1047,9 @@ METHOD Move( oDBFSTarget, lIDX, lName )
 						IF lRetCode
 							lRetCode := FErase( cFileName  )
 							IF lRetCode
-								FOR j := 1 UPTO nOrders
-									IF SELF:aOrders[j]:FileName == cFileName
-										SELF:aOrders[j]:FileName := cTargetPath
+								FOREACH os as OrderSpec in SELF:aOrders
+									IF os:FileName == cFileName
+										os:FileName := cTargetPath
 									ENDIF
 								NEXT
 								SELF:aIndexNames[i] := cTargetPath
@@ -1071,12 +1061,14 @@ METHOD Move( oDBFSTarget, lIDX, lName )
 
 		RECOVER USING oError
 			ErrorBlock( cbOldErr )
-			IF oError:OsCode != 0
-				oError:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oError:OsCode ) + ;
-					" ( " + DosErrString( oError:OsCode ) + " )" )
+            LOCAL oErr := oError as Error
+
+			IF oErr:OsCode != 0
+				oErr:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oErr:OsCode ) + ;
+					" ( " + DosErrString( oErr:OsCode ) + " )" )
 			ENDIF
 
-			SELF:oErrorInfo := oError
+			SELF:oErrorInfo := oErr
 			lRetCode := FALSE
 
 		END SEQUENCE
@@ -1093,7 +1085,7 @@ ACCESS Orders
 
 ASSIGN Orders( oOrderSpec ) 
 
-	IF IsInstanceOfUsual( oOrderSpec, #OrderSpec )
+	IF IsObject(oOrderSpec) .and. __Usual.ToObject(oOrderSpec) IS OrderSpec  
 		AAdd( SELF:aOrders, oOrderSpec )
 	ENDIF
 	IF IsArray( oOrderSpec )
@@ -1160,8 +1152,6 @@ METHOD Rename( oDBFSNewName, lName )
 	LOCAL cbOldErr AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL lRetCode AS LOGIC
-	LOCAL nOrders AS DWORD
-	LOCAL i AS DWORD
 
 	IF IsString( oDBFSNewName )
 		oDBFSNewName := Upper( oDBFSNewName )
@@ -1227,10 +1217,9 @@ METHOD Rename( oDBFSNewName, lName )
 			lRetCode := FRename( cFileName , cTargetPath  )
 
 			IF lRetCode
-				nOrders := ALen( SELF:aOrders )
-				FOR i := 1 UPTO nOrders
-					IF SELF:aOrders[i]:FileName == cFileName
-						SELF:aOrders[i]:FileName := cTargetPath
+				FOREACH os as OrderSpec IN SELF:aOrders
+					IF os:FileName == cFileName
+						os:FileName := cTargetPath
 					ENDIF
 				NEXT
 
@@ -1240,12 +1229,14 @@ METHOD Rename( oDBFSNewName, lName )
 
 	RECOVER USING oError
 		ErrorBlock( cbOldErr )
-		IF oError:OsCode != 0
-			oError:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oError:OsCode ) +  ;
-				" ( " + DosErrString( oError:OsCode ) + " )" )
+        LOCAL oErr := oError as Error
+
+		IF oErr:OsCode != 0
+			oErr:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oErr:OsCode ) +  ;
+				" ( " + DosErrString( oErr:OsCode ) + " )" )
 		ENDIF
 
-		SELF:oErrorInfo := oError
+		SELF:oErrorInfo := oErr
 		lRetCode := FALSE
 
 	END SEQUENCE

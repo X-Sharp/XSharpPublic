@@ -649,6 +649,20 @@ namespace XSharp.MacroCompiler.Syntax
         }
         internal override void RequireGetAccess() => base.RequireValue();
     }
+    internal partial class MemvarExpr : Expr
+    {
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Var);
+            Var.RequireGetAccess();
+            b.Convert(ref Var, Compilation.Get(NativeType.String));
+            Datatype = Compilation.Get(NativeType.Usual);
+            return null;
+        }
+        internal override void RequireGetAccess() => RequireValue();
+        internal override void RequireSetAccess() => RequireValue();
+        internal override void RequireGetSetAccess() => RequireValue();
+    }
     internal partial class AliasExpr : Expr
     {
         internal override Node Bind(Binder b)

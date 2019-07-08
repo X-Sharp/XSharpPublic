@@ -63,7 +63,10 @@ namespace XSharp.MacroCompiler.Syntax
         ON, ORDERBY, SELECT, SWITCH, VAR, VOLATILE, WHERE, YIELD,
 
         //// New XSharp expr Keywords (no 4 letter abbreviations)
-        AWAIT, ASYNC, ASTYPE, CHECKED, UNCHECKED, 
+        AWAIT, ASYNC, ASTYPE, CHECKED, UNCHECKED,
+
+        // Fox kws
+        M,
         LAST_POSITIONAL_KEYWORD,
 
         // Predefined types
@@ -493,6 +496,9 @@ namespace XSharp.MacroCompiler.Syntax
 			    // Vulcan types
 			    {"INT64", TokenType.INT64},
                 {"UINT64", TokenType.UINT64},
+
+                // Fox kws
+                {"M", TokenType.M},
             };
 
             voKwIds = new Dictionary<string, TokenType>(StringComparer.OrdinalIgnoreCase);

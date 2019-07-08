@@ -219,6 +219,12 @@ namespace XSharp.MacroCompiler.Syntax
         internal IifExpr(Expr cond, Expr trueExpr, Expr falseExpr, Token o) : base(o) { Cond = cond; True = trueExpr; False = falseExpr; }
         public override string ToString() { return "(IIF(" + Cond.ToString() + "," + True.ToString() + "," + False.ToString() + "))"; }
     }
+    internal partial class MemvarExpr : Expr
+    {
+        internal Expr Var;
+        internal MemvarExpr(Expr var, Token o) : base(o) { Var = var; }
+        public override string ToString() { return "(M->" + Var.ToString() + ")"; }
+    }
     internal partial class AliasExpr : Expr
     {
         internal Expr Alias;

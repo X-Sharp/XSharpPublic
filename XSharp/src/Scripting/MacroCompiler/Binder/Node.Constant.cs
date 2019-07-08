@@ -129,6 +129,9 @@ namespace XSharp.MacroCompiler.Syntax
     internal partial class IifExpr : Expr
     {
     }
+    internal partial class MemvarExpr : Expr
+    {
+    }
     internal partial class AliasExpr : Expr
     {
     }

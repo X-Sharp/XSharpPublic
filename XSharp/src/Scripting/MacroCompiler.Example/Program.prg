@@ -164,6 +164,12 @@ FUNCTION MyVarGet(name AS STRING) AS USUAL
 FUNCTION MyVarPut(name AS STRING, VALUE AS USUAL) AS USUAL
     RETURN wag + "VarPut(" + name +"):" + VALUE:ToString()
 
+FUNCTION MyMemVarGet(name AS STRING) AS USUAL
+    RETURN "MemVarGet(" + name + ")"
+
+FUNCTION MyMemVarPut(name AS STRING, VALUE AS USUAL) AS USUAL
+    RETURN "MemVarPut(" + name +"):" + VALUE:ToString()
+
 FUNCTION MyFieldGet(name AS STRING) AS USUAL
     RETURN wag + "FieldGet(" + name + ")"
 
@@ -639,6 +645,11 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| ErrString(0)}", Args(), "", typeof(string))
         TestMacro(mc, e"{|| ErrString.V}", Args(), 333, typeof(int))
 
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet, "MyMemVarGet")
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut, "MyMemVarPut")
+        TestMacro(mc, e"{|| M->NAME}", Args(), "MemVarGet(NAME)", typeof(STRING))
+        TestMacro(mc, e"{|| M->NAME := \"Nikos\"}", Args(), "MemVarPut(NAME):Nikos", typeof(STRING))
+
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSet, "MyFieldSet")
@@ -677,6 +688,8 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a,b| MyDbDo(b)}", Args("BASE","ARG"), "Do(ARG)", typeof(STRING))
         TestMacro(mc, e"Test1->(MyDbDo(\"F1\"))+MyDbDo(\"F2\")", Args(), "Test1->Do(F1)Do(F2)", typeof(string))
         TestMacro(mc, e"Test1->MyDbDo(\"F1\")+MyDbDo(\"F2\")", Args(), "Test1->Do(F1)Test1->Do(F2)", typeof(string))
+        TestMacro(mc, e"{|| @@M->NAME}", Args(), "FieldGet(M,NAME)", typeof(STRING))
+        TestMacro(mc, e"{|| @@M->NAME := \"Nikos\"}", Args(), "FieldSet(M,NAME):Nikos", typeof(STRING))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarGet, "MyVarGet")

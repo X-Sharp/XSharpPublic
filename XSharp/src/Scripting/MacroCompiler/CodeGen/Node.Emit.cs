@@ -413,20 +413,37 @@ namespace XSharp.MacroCompiler.Syntax
                 ilg.Emit(OpCodes.Pop);
         }
     }
+    internal partial class MemvarExpr : Expr
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Var.Emit(ilg);
+            MethodSymbol m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___MemVarGet) as MethodSymbol;
+            ilg.Emit(OpCodes.Call, m.Method);
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
+        }
+        internal override void EmitSet(ILGenerator ilg, bool preserve)
+        {
+            var v = ilg.DeclareLocal(Compilation.Get(NativeType.Usual).Type);
+            ilg.Emit(OpCodes.Stloc, v.LocalIndex);
+            Var.Emit(ilg);
+            ilg.Emit(OpCodes.Ldloc, v.LocalIndex);
+            MethodSymbol m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___MemVarPut) as MethodSymbol;
+            ilg.Emit(OpCodes.Call, m.Method);
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
+        }
+    }
     internal partial class AliasExpr : Expr
     {
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
-            bool memvar = false;
-            if (Alias != null && Alias.Token.value.ToUpper() == "M")
-                memvar = true;
-            else if (Alias != null)
+            if (Alias != null)
                 Alias.Emit(ilg);
             Field.Emit(ilg);
             MethodSymbol m;
-            if (memvar)
-                m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___MemVarGet) as MethodSymbol;
-            else if (Alias != null)
+            if (Alias != null)
                 m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldGetWa) as MethodSymbol;
             else
                 m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldGet) as MethodSymbol;
@@ -438,17 +455,12 @@ namespace XSharp.MacroCompiler.Syntax
         {
             var v = ilg.DeclareLocal(Compilation.Get(NativeType.Usual).Type);
             ilg.Emit(OpCodes.Stloc, v.LocalIndex);
-            bool memvar = false;
-            if (Alias != null && Alias.Token.value.ToUpper() == "M")
-                memvar = true;
-            else if (Alias != null)
+            if (Alias != null)
                 Alias.Emit(ilg);
             Field.Emit(ilg);
             ilg.Emit(OpCodes.Ldloc, v.LocalIndex);
             MethodSymbol m;
-            if (memvar)
-                m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___MemVarPut) as MethodSymbol;
-            else if (Alias != null)
+            if (Alias != null)
                 m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldSetWa) as MethodSymbol;
             else
                 m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldSet) as MethodSymbol;

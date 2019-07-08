@@ -1024,23 +1024,32 @@ namespace XSharp.CodeDom
         private CodeExpression buildXTypeMemberExpression(XType xtype, string name)
         {
             var l = new XCodeTypeReferenceExpression(xtype.FullName);
-            if (xtype.Members.Where(m => String.Compare(m.Name, name, true) == 0 &&
-                (m.Kind == Kind.Field || m.Kind == Kind.EnumMember) ).Count() > 0)
+            XTypeMember m = null;
+            m = xtype.Members.Where(e => String.Compare(e.Name, name, true) == 0 &&
+                (e.Kind == Kind.Field || e.Kind == Kind.EnumMember)).FirstOrDefault();
+            if (m != null)
             {
-                return new XCodeFieldReferenceExpression(l, name);
+                var fld = new XCodeFieldReferenceExpression(l, name);
+                return fld;
             }
-            if (xtype.Members.Where(m => String.Compare(m.Name, name, true) == 0 &&
-            (m.Kind == Kind.Property || m.Kind == Kind.Access || m.Kind == Kind.Assign)).Count() > 0)
+            m = xtype.Members.Where(e => String.Compare(e.Name, name, true) == 0 &&
+                (e.Kind == Kind.Property || e.Kind == Kind.Access || e.Kind == Kind.Assign)).FirstOrDefault();
+            if (m != null)
             {
-                return new XCodePropertyReferenceExpression(l, name);
+                var prop = new XCodePropertyReferenceExpression(l, name);
+                return prop;
             }
-            if (xtype.Members.Where(m => String.Compare(m.Name, name, true) == 0 && m.Kind == Kind.Method).Count() > 0)
+            m = xtype.Members.Where(e => String.Compare(e.Name, name, true) == 0 && e.Kind == Kind.Method).FirstOrDefault();
+            if (m != null)
             {
-                return new XCodeMethodReferenceExpression(l, name);
+                var met = new XCodeMethodReferenceExpression(l, name);
+                return met;
             }
-            if (xtype.Members.Where(m => String.Compare(m.Name, name, true) == 0 && m.Kind == Kind.Event).Count() > 0)
+            m = xtype.Members.Where(e => String.Compare(e.Name, name, true) == 0 && e.Kind == Kind.Event).FirstOrDefault();
+            if (m != null)
             {
-                return new XCodeEventReferenceExpression(l, name);
+                var evt = new XCodeEventReferenceExpression(l, name);
+                return evt;
             }
             return null;
         }
@@ -1773,3 +1782,4 @@ namespace XSharp.CodeDom
         }
     }
 }
+

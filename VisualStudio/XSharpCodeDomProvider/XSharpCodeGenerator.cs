@@ -1174,6 +1174,10 @@ namespace XSharp.CodeDom
         protected override string GetTypeOutput(CodeTypeReference typeRef)
         {
             string str = string.Empty;
+            if (typeRef.Options.HasFlag(CodeTypeReferenceOptions.GlobalReference))
+            {
+                str = "global::" ;
+            }
             CodeTypeReference arrayElementType = typeRef;
             if (typeRef.UserData.Contains(XSharpCodeConstants.USERDATA_CODE))
             {
@@ -1338,7 +1342,14 @@ namespace XSharp.CodeDom
 
         protected override void OutputType(CodeTypeReference typeRef)
         {
-            this.Output.Write(this.GetTypeOutput(typeRef));
+            // Fix problem where Windows Forms designer does not put the fully qualified path to the global
+            // resources in the typereference
+            string typeName = this.GetTypeOutput(typeRef);
+            if (typeName.EndsWith(".Resources") && ! typeName.EndsWith("Properties.Resources"))
+            {
+                typeName = typeName.Replace(".Resources", ".Properties.Resources");
+            }
+            this.Output.Write(typeName);
         }
 
         protected override void OutputOperator(CodeBinaryOperatorType op)
@@ -1697,12 +1708,13 @@ namespace XSharp.CodeDom
             TypeAttributes typeAttributes = e.TypeAttributes;
             switch ((typeAttributes & TypeAttributes.VisibilityMask))
             {
-                case TypeAttributes.AutoLayout:
+
                 case TypeAttributes.NestedAssembly:
                 case TypeAttributes.NestedFamANDAssem:
                     base.Output.Write("INTERNAL ");
                     break;
 
+                case TypeAttributes.AutoLayout:
                 case TypeAttributes.Public:
                 case TypeAttributes.NestedPublic:
                     base.Output.Write("PUBLIC ");
@@ -1718,6 +1730,9 @@ namespace XSharp.CodeDom
 
                 case TypeAttributes.NestedFamORAssem:
                     base.Output.Write("PROTECTED INTERNAL ");
+                    break;
+                default:
+                    base.Output.Write("PUBLIC ");
                     break;
             }
         }

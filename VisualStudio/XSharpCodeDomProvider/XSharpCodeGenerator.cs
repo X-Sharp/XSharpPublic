@@ -728,6 +728,7 @@ namespace XSharp.CodeDom
             //
             this.GenerateNamespaceStart(e);
             //this.Output.WriteLine("");
+            this.GenerateNamespaceImports(e);
             this.GenerateTypes(e);
             this.GenerateNamespaceEnd(e);
         }
@@ -744,6 +745,7 @@ namespace XSharp.CodeDom
 
         protected override void GenerateNamespaceImport(CodeNamespaceImport e)
         {
+            writeTrivia(e.UserData);
             if (!_using.Contains(e.Namespace.ToLowerInvariant()))
             {
                 base.Output.Write("USING ");
@@ -1347,7 +1349,10 @@ namespace XSharp.CodeDom
             string typeName = this.GetTypeOutput(typeRef);
             if (typeName.EndsWith(".Resources") && ! typeName.EndsWith("Properties.Resources"))
             {
-                typeName = typeName.Replace(".Resources", ".Properties.Resources");
+                if (typeName.ToLower().StartsWith("global::"))
+                {
+                    typeName = typeName.Replace(".Resources", ".Properties.Resources");
+                }
             }
             this.Output.Write(typeName);
         }

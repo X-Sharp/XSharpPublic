@@ -379,7 +379,17 @@ namespace XSharp.CodeDom
             return _locals.ContainsKey(name);
         }
 
+
         #endregion
+
+        public override void EnterUsing_([NotNull] XSharpParser.Using_Context context)
+        {
+            var import = new XCodeNamespaceImport(context.Name.GetText());
+            writeTrivia(import, context);
+            CurrentNamespace.Imports.Add(import);
+            _usings.Add(import.Namespace);
+        }
+
         public override void EnterNamespace_(XSharpParser.Namespace_Context context)
         {
             string newNamespaceName = context.Name.GetCleanText();
@@ -441,8 +451,6 @@ namespace XSharp.CodeDom
         public override void EnterClass_(XSharpParser.Class_Context context)
         {
             XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText());
-            // Set as Current working Class
-            AddCodeBefore(newClass.UserData, context.Start.StartIndex);
             CurrentClass = newClass;
             // and push into the Namespace
             CurrentNamespace.Types.Add(newClass);
@@ -526,7 +534,6 @@ namespace XSharp.CodeDom
         {
             XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText());
             // Set as Current working Class
-            AddCodeBefore(newClass.UserData, context.Start.StartIndex);
             CurrentClass = newClass;
             // and push into the Namespace
             CurrentNamespace.Types.Add(newClass);

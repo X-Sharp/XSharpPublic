@@ -101,7 +101,8 @@ namespace Microsoft.VisualStudio.Project
         }
         public static void SetGlobalProperty(Microsoft.Build.Evaluation.Project project, string name, string value)
         {
-            project.SetGlobalProperty(name, value);
+            if (project != null)
+                project.SetGlobalProperty(name, value);
         }
         public static IEnumerable<Microsoft.Build.Evaluation.ProjectItem> GetStaticAndVisibleItemsInOrder(Microsoft.Build.Evaluation.Project project)
         {

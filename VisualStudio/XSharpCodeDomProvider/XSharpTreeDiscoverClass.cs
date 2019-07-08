@@ -463,9 +463,9 @@ namespace XSharp.CodeDom
                 attributeParam      : Name=identifierName Op=assignoperator Expr=expression
                                     | Expr=expression
                attributes      = CodeAttributeDeclarationCollection
-               attributeBlock  = CodeAttributeDeclaration
-               attributeTarget =
-               attribute       =
+               attributeBlock  = list of attributes: CodeAttributeDeclaration
+               attributeTarget = not used at this level.
+               attribute       = CodeAttributeDeclaration
                arg for attrib = CodeAttributeArgument
                list of args   = CodeAttributeArgumentCollection
             */

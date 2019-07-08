@@ -1021,6 +1021,29 @@ namespace XSharp.CodeDom
             }
             return null;
         }
+        private CodeExpression buildXTypeMemberExpression(XType xtype, string name)
+        {
+            var l = new XCodeTypeReferenceExpression(xtype.FullName);
+            if (xtype.Members.Where(m => String.Compare(m.Name, name, true) == 0 &&
+                (m.Kind == Kind.Field || m.Kind == Kind.EnumMember) ).Count() > 0)
+            {
+                return new XCodeFieldReferenceExpression(l, name);
+            }
+            if (xtype.Members.Where(m => String.Compare(m.Name, name, true) == 0 &&
+            (m.Kind == Kind.Property || m.Kind == Kind.Access || m.Kind == Kind.Assign)).Count() > 0)
+            {
+                return new XCodePropertyReferenceExpression(l, name);
+            }
+            if (xtype.Members.Where(m => String.Compare(m.Name, name, true) == 0 && m.Kind == Kind.Method).Count() > 0)
+            {
+                return new XCodeMethodReferenceExpression(l, name);
+            }
+            if (xtype.Members.Where(m => String.Compare(m.Name, name, true) == 0 && m.Kind == Kind.Event).Count() > 0)
+            {
+                return new XCodeEventReferenceExpression(l, name);
+            }
+            return null;
+        }
 
         private CodeExpression buildTypeMemberExpression(CodeExpression target, TypeXType txtype, string name, out TypeXType memberType)
         {
@@ -1147,23 +1170,43 @@ namespace XSharp.CodeDom
         private CodeExpression BuildAccessMember(XSharpParser.AccessMemberContext amc, bool right)
         {
             var elements = new List<XSharpParser.AccessMemberContext>();
+            string typeName;
             System.Type type = null;
+            XType xtype = null;
             // if the top level element has a Dot it may be a type of a field of a type.
             if (amc.Op.Type == XSharpParser.DOT)
             {
                 // aa.bb.cc.dd
-                type = findType(amc.Expr.GetCleanText());
+                typeName = amc.Expr.GetCleanText();
+                var memberName = amc.Name.GetCleanText();
+                type = findType(typeName);
                 if (type != null)
                 {
 
-                    var result = buildTypeMemberExpression(type, amc.Name.GetCleanText());
+                    var result = buildTypeMemberExpression(type, memberName);
                     if (result != null)
                         return result;
                 }
-                type = findType(amc.GetCleanText());
+                else
+                {
+                     xtype = findXType(typeName);
+                    if (xtype != null)
+                    {
+                        var result = buildXTypeMemberExpression(xtype, memberName);
+                        if (result != null)
+                            return result;
+                    }
+                }
+                typeName = amc.GetCleanText();
+                type = findType(typeName);
                 if (type != null)
                 {
-                    return new XCodeTypeReferenceExpression(type);
+                    return new XCodeTypeReferenceExpression(typeName);
+                }
+                xtype = findXType(typeName);
+                if (xtype != null)
+                {
+                    return new XCodeTypeReferenceExpression(typeName);
                 }
             }
 

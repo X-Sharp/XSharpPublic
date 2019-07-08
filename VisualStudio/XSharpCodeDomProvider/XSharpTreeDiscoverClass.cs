@@ -379,7 +379,17 @@ namespace XSharp.CodeDom
             return _locals.ContainsKey(name);
         }
 
+
         #endregion
+
+        public override void EnterUsing_([NotNull] XSharpParser.Using_Context context)
+        {
+            var import = new XCodeNamespaceImport(context.Name.GetText());
+            writeTrivia(import, context);
+            CurrentNamespace.Imports.Add(import);
+            _usings.Add(import.Namespace);
+        }
+
         public override void EnterNamespace_(XSharpParser.Namespace_Context context)
         {
             string newNamespaceName = context.Name.GetCleanText();
@@ -437,12 +447,67 @@ namespace XSharp.CodeDom
             }
         }
 
+        public CodeAttributeDeclarationCollection GenerateAttributes(XSharpParser.AttributesContext context)
+        {
+            /*
+                Parser definition for attributes
+                attributes          : ( AttrBlk+=attributeBlock )+
+                                    ;
+                attributeBlock      : LBRKT Target=attributeTarget? Attributes+=attribute (COMMA Attributes+=attribute)* RBRKT
+                                    ;
+                attributeTarget     : Id=identifier COLON
+                                    | Kw=keyword COLON
+                                    ;
+                attribute           : Name=name (LPAREN (Params+=attributeParam (COMMA Params+=attributeParam)* )? RPAREN )?
+                                    ;
+                attributeParam      : Name=identifierName Op=assignoperator Expr=expression
+                                    | Expr=expression
+               attributes      = CodeAttributeDeclarationCollection
+               attributeBlock  = CodeAttributeDeclaration
+               attributeTarget =
+               attribute       =
+               arg for attrib = CodeAttributeArgument
+               list of args   = CodeAttributeArgumentCollection
+            */
+            var result = new CodeAttributeDeclarationCollection();
+            foreach (var blk in context._AttrBlk)
+            {
+                foreach (var attr in blk._Attributes)
+                {
+                    var name = attr.Name.GetText();
+                    var codeattr = new CodeAttributeDeclaration(name);
+                    foreach (XSharpParser.AttributeParamContext par in attr._Params)
+                    {
+                        var arg = new CodeAttributeArgument();
+                        if (par is XSharpParser.PropertyAttributeParamContext )
+                        {
+                            var papc = par as XSharpParser.PropertyAttributeParamContext;
+                            if (papc.Name != null)
+                            {
+                                arg.Name = papc.Name.GetText();
+                            }
+                            arg.Value = BuildExpression(papc.Expr, false);
+                        }
+                        else if (par is XSharpParser.ExprAttributeParamContext)
+                        {
+                            var eapc = par as XSharpParser.ExprAttributeParamContext;
+                            arg.Value = BuildExpression(eapc.Expr, false);
+                        }
+                        codeattr.Arguments.Add(arg);
+                    }
+                    result.Add(codeattr);
+                }
+            }
+            return result;
+        }
 
         public override void EnterClass_(XSharpParser.Class_Context context)
         {
             XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText());
-            // Set as Current working Class
-            AddCodeBefore(newClass.UserData, context.Start.StartIndex);
+            if (context.Attributes != null)
+            {
+                newClass.CustomAttributes = GenerateAttributes(context.Attributes);
+            }
             CurrentClass = newClass;
             // and push into the Namespace
             CurrentNamespace.Types.Add(newClass);
@@ -526,8 +591,11 @@ namespace XSharp.CodeDom
         {
             XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText());
             // Set as Current working Class
-            AddCodeBefore(newClass.UserData, context.Start.StartIndex);
             CurrentClass = newClass;
+            if (context.Attributes != null)
+            {
+                newClass.CustomAttributes = GenerateAttributes(context.Attributes);
+            }
             // and push into the Namespace
             CurrentNamespace.Types.Add(newClass);
             // That's a Class
@@ -660,6 +728,10 @@ namespace XSharp.CodeDom
             if (newMethod.Name == "InitializeComponent")
             {
                 initComponent = newMethod;
+                if (context.Attributes != null)
+                {
+                    newMethod.CustomAttributes = GenerateAttributes(context.Attributes);
+                }
             }
             else
             {
@@ -1021,6 +1093,38 @@ namespace XSharp.CodeDom
             }
             return null;
         }
+        private CodeExpression buildXTypeMemberExpression(XType xtype, string name)
+        {
+            var l = new XCodeTypeReferenceExpression(xtype.FullName);
+            XTypeMember m = null;
+            m = xtype.Members.Where(e => String.Compare(e.Name, name, true) == 0 &&
+                (e.Kind == Kind.Field || e.Kind == Kind.EnumMember)).FirstOrDefault();
+            if (m != null)
+            {
+                var fld = new XCodeFieldReferenceExpression(l, name);
+                return fld;
+            }
+            m = xtype.Members.Where(e => String.Compare(e.Name, name, true) == 0 &&
+                (e.Kind == Kind.Property || e.Kind == Kind.Access || e.Kind == Kind.Assign)).FirstOrDefault();
+            if (m != null)
+            {
+                var prop = new XCodePropertyReferenceExpression(l, name);
+                return prop;
+            }
+            m = xtype.Members.Where(e => String.Compare(e.Name, name, true) == 0 && e.Kind == Kind.Method).FirstOrDefault();
+            if (m != null)
+            {
+                var met = new XCodeMethodReferenceExpression(l, name);
+                return met;
+            }
+            m = xtype.Members.Where(e => String.Compare(e.Name, name, true) == 0 && e.Kind == Kind.Event).FirstOrDefault();
+            if (m != null)
+            {
+                var evt = new XCodeEventReferenceExpression(l, name);
+                return evt;
+            }
+            return null;
+        }
 
         private CodeExpression buildTypeMemberExpression(CodeExpression target, TypeXType txtype, string name, out TypeXType memberType)
         {
@@ -1147,23 +1251,43 @@ namespace XSharp.CodeDom
         private CodeExpression BuildAccessMember(XSharpParser.AccessMemberContext amc, bool right)
         {
             var elements = new List<XSharpParser.AccessMemberContext>();
+            string typeName;
             System.Type type = null;
+            XType xtype = null;
             // if the top level element has a Dot it may be a type of a field of a type.
             if (amc.Op.Type == XSharpParser.DOT)
             {
                 // aa.bb.cc.dd
-                type = findType(amc.Expr.GetCleanText());
+                typeName = amc.Expr.GetCleanText();
+                var memberName = amc.Name.GetCleanText();
+                type = findType(typeName);
                 if (type != null)
                 {
 
-                    var result = buildTypeMemberExpression(type, amc.Name.GetCleanText());
+                    var result = buildTypeMemberExpression(type, memberName);
                     if (result != null)
                         return result;
                 }
-                type = findType(amc.GetCleanText());
+                else
+                {
+                     xtype = findXType(typeName);
+                    if (xtype != null)
+                    {
+                        var result = buildXTypeMemberExpression(xtype, memberName);
+                        if (result != null)
+                            return result;
+                    }
+                }
+                typeName = amc.GetCleanText();
+                type = findType(typeName);
                 if (type != null)
                 {
-                    return new XCodeTypeReferenceExpression(type);
+                    return new XCodeTypeReferenceExpression(typeName);
+                }
+                xtype = findXType(typeName);
+                if (xtype != null)
+                {
+                    return new XCodeTypeReferenceExpression(typeName);
                 }
             }
 
@@ -1730,3 +1854,4 @@ namespace XSharp.CodeDom
         }
     }
 }
+

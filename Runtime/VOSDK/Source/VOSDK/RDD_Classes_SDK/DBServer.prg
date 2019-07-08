@@ -26,7 +26,7 @@ PARTIAL CLASS DbServer INHERIT DataServer
 	PROTECT lStoredAllRecords AS USUAL
 	PROTECT lStoredRestOfFile AS LOGIC
 	PROTECT wLastSelectionRec AS LONGINT
-	PROTECT oErrorInfo AS USUAL
+	PROTECT oErrorInfo AS Error
 	PROTECT lErrorFlag AS LOGIC
 	PROTECT nEffectiveCCMode AS DWORD
 	PROTECT aCurrentBuffer AS ARRAY
@@ -709,11 +709,11 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd )
 		siSuspendNotification := 0
 		dwCurrentWorkArea := VODBGetSelect( )
 
-		IF IsInstanceOfUsual( oFile, #FileSpec )
-			IF Empty( oFile:Extension )
-				oFile:Extension := ".DBF"
+		IF  IsObject(oFile) .and. __Usual.ToObject(oFile) IS FileSpec var oFS
+			IF Empty( oFS:Extension )
+				oFS:Extension := ".DBF"
 			ENDIF
-			oFileSpec := oFile
+			oFileSpec := oFS
 
 		ELSEIF IsString( oFile ) .OR. IsSymbol( oFile )
 			oFileSpec := FileSpec{ oFile }

@@ -2,6 +2,9 @@ CLASS DataField
 	PROTECT oFieldSpec		AS FieldSpec
 	PROTECT oHyperLabel	AS HyperLabel
 
+PROPERTY __FieldSpec as FieldSpec GET oFieldSpec
+PROPERTY __HyperLabel as HyperLabel GET oHyperLabel
+
 METHOD AsString( ) 
 	RETURN oHyperLabel:AsString( )
 
@@ -13,7 +16,7 @@ ACCESS HyperLabel
 
 CONSTRUCTOR( oHLName, oFS ) 
 
-	IF IsInstanceOfUsual( oHLName, #HyperLabel )
+	IF IsObject( oHLName) .and. __USual.ToObject(oHLName) IS HyperLabel 
 		oHyperLabel := oHLName
 	ELSEIF IsString( oHLName ) .OR. IsSymbol( oHLName )
 		oHyperLabel := HyperLabel{ oHLName }
@@ -21,7 +24,7 @@ CONSTRUCTOR( oHLName, oFS )
 		BREAK DbError{ SELF, #Init, EG_ARG, ;
 			__CavoStr(__CAVOSTR_DBFCLASS_BADHLNAME), oHLName, "oHLName" }
 	ENDIF
-	IF IsInstanceOfUsual( oFS, #FieldSpec )
+	IF IsObject(oFS) .and. __Usual.ToObject(oFS) IS FieldSpec 
 		oFieldSpec := oFS
 	ELSE
 		BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADFS), oFS, "oFS" }

@@ -1,25 +1,24 @@
 ////////////////////////////////////////////////////////////////////////////////
-// AssemblyInfo.prg
+// SDKAssemblyInfo.prg
+
 
 #using System.Reflection
 #using System.Runtime.InteropServices
 #using System.Security
 
-#include "..\..\SharedSource\BuildNumber.h" 
-#include "..\..\SharedSource\RuntimeNames.h"  
+#include "BuildNumber.h" 
+#include "RuntimeNames.h"  
 
-[assembly: AssemblyTitleAttribute( "VO-Compatible SQL Classes Library" )]
-[assembly: AssemblyDescriptionAttribute( "VO-Compatible SQL Classes" )]
 [assembly: AssemblyConfigurationAttribute( ASSEMBLY_CONFIGURATION )]
 [assembly: AssemblyCompanyAttribute( COMPANY_NAME )]
 [assembly: AssemblyProductAttribute( PRODUCT_NAME )]
 [assembly: AssemblyCopyrightAttribute( COPYRIGHT_STR )]
 [assembly: ComVisibleAttribute( FALSE )]
-[assembly: ClsCompliant( FALSE )]
+[assembly: CLSCompliant( FALSE )]
 //[assembly: AllowPartiallyTrustedCallersAttribute()]
 [assembly: AssemblyVersionAttribute( VERSION_NUMBER_STR )]
-[assembly: AssemblyFileVersionAttribute( FILEVERSION_NUMBER_STR )]
 [assembly: AssemblyInformationalVersionAttribute( INFORMATIONAL_NUMBER_STR )]
+[assembly: AssemblyFileVersionAttribute( FILEVERSION_NUMBER_STR )]
 #ifdef __XSHARP_RT__
 [assembly: ImplicitNamespaceAttribute( VULCAN_VOSDK_NAMESPACE )]
 #else

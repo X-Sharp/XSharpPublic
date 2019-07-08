@@ -735,9 +735,9 @@ METHOD SetDataField( nFieldPosition, oDataField )
 
 		ELSE
 			IF oField:Name == aStruct[wFieldPosition, DBS_NAME] .AND.  ;
-				oField:FieldSpec:ValType 	== aStruct[wFieldPosition, DBS_TYPE] .AND.  ;
-				oField:FieldSpec:Length 	== aStruct[wFieldPosition, DBS_LEN] .AND.  ;
-				oField:FieldSpec:Decimals 	== aStruct[wFieldPosition, DBS_DEC]
+				oField:__FieldSpec:ValType 	== aStruct[wFieldPosition, DBS_TYPE] .AND.  ;
+				oField:__FieldSpec:Length 	== aStruct[wFieldPosition, DBS_LEN] .AND.  ;
+				oField:__FieldSpec:Decimals 	== aStruct[wFieldPosition, DBS_DEC]
 				aDataFields[wFieldPosition] := oField
 				lRetCode := TRUE
 			ELSE
@@ -861,8 +861,8 @@ METHOD SetIndex( oFSIndexFile )
 			IF IsNil(oFSIndexFile)
 				lRetCode := __DBSOrdListClear("", NIL, nTries)
 			ELSE
-				IF IsInstanceOfUsual( oFSIndexFile, #FileSpec )
-					cIndexFileName := oFSIndexFile:FullPath
+				 IF IsObject(oFSIndexFile) .and. __Usual.ToObject(oFSIndexFile) IS FileSpec VAR oFs
+					cIndexFileName := oFS:FullPath
 				ELSE
 					cIndexFileName := oFSIndexFile
 				ENDIF
@@ -912,8 +912,8 @@ METHOD SetOrder( uOrder, cIndexFileName )
       SELF:__OptimisticFlush()
 
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
-		IF IsInstanceOfUsual( cIndexFileName, #FileSpec )
-			cIndexFileName := cIndexFileName:FullPath
+		IF IsObject(cIndexFileName) .and. __Usual.ToObject(cIndexFileName) IS FileSpec VAR oFs
+			cIndexFileName := oFS:FullPath
 		ELSEIF IsNil(cIndexFileName)
 			cIndexFileName:=""
 		ENDIF
@@ -1043,8 +1043,8 @@ METHOD SetRelation(oDBChild,uRelation,cRelation,lSelective)
 		IF oDBChild == NIL
 			SELF:ClearRelation()
 		ELSE
-			IF IsInstanceOfUsual( oDBChild, #DbServer )
-				cChildAlias := oDBChild:ALIAS
+			IF IsObject(oDbChild) .and. __Usual.ToObject(oDBChild) IS DbServer VAR oDb
+				cChildAlias := oDb:ALIAS
 			ELSE
 				BREAK DbError{ SELF, #SetRelation, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADCHILD), oDBChild, "oDBChild" }
 			ENDIF
@@ -1073,7 +1073,7 @@ METHOD SetRelation(oDBChild,uRelation,cRelation,lSelective)
 				BREAK DbError{ SELF, #SetRelation, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_NOFIELDS), uRelation, "uRelation" }
 			ENDIF
 
-			oDBChild:__NotifyBufferFlush()
+			Send(oDBChild,#__NotifyBufferFlush)
 
          VODBSelect( wWorkArea, @dwCurrentWorkArea )
          lRetCode := VODBSetRelation( cChildAlias, cbRelationExpression, cRelationExpression )
@@ -1087,9 +1087,9 @@ METHOD SetRelation(oDBChild,uRelation,cRelation,lSelective)
 			ENDIF
 			lRelationsActive := TRUE
 			IF IsLogic(lSelective) .AND. lSelective
-				oDBChild:__AcceptSelectiveRelation( SELF, wWorkArea, cbRelationExpression )
+				Send(oDBChild,#__AcceptSelectiveRelation, SELF, wWorkArea, cbRelationExpression )
 			ENDIF
-			oDBChild:Notify( NOTIFYRELATIONCHANGE )
+			Send(oDBChild,#Notify, NOTIFYRELATIONCHANGE )
 		ENDIF
 
 	RECOVER USING oError
@@ -1250,8 +1250,8 @@ METHOD Sort(oFSTarget,aFieldList,cbForBlock,cbWhileBlock,uScope)
     BEGIN SEQUENCE
 	VODBSelect( wWorkArea, @dwCurrentWorkArea )
 	IF SELF:Notify( NOTIFYINTENTTOMOVE )
-		IF IsInstanceOfUsual( oFSTarget, #FileSpec )
-			cTarget := oFSTarget:FullPath
+		IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFs
+			cTarget := oFS:FullPath
 		ELSE
 			cTarget := oFSTarget
 		ENDIF
@@ -1531,8 +1531,8 @@ METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope)
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			IF IsInstanceOfUsual( oFSTarget, #FileSpec )
-				cTarget := oFSTarget:FullPath
+			IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFs
+				cTarget := oFS:FullPath
 			ELSE
 				cTarget := oFSTarget
 			ENDIF
@@ -1733,8 +1733,8 @@ METHOD Update(oDbServer,cbKey,lRandomFlag,cbReplace)
       SELF:__OptimisticFlush()
 
 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
-		IF IsInstanceOfUsual( oDbServer, #DbServer )
-			cAlias := oDbServer:ALIAS
+		IF IsObject(oDbServer) .and. __Usual.ToObject(oDbServer) IS DbServer VAR oDb
+			cAlias := oDb:ALIAS
 		ELSE
 			cAlias := AsString( oDbServer )
 		ENDIF

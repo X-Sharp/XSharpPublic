@@ -398,7 +398,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             lRecCount := SELF:_oRdd:RecCount
             // create sorthelper
             SELF:_initSort(lRecCount)
-            SELF:_sorter:Unique := TRUE
+            SELF:_sorter:Unique := SELF:_Unique
             IF ordCondInfo:Active
                 RETURN SELF:_CondCreate(ordCondInfo)
             ENDIF

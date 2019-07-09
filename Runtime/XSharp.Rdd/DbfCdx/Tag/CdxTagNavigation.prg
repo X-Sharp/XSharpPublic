@@ -28,7 +28,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             locked := FALSE
             TRY
                 IF SELF:HasBottomScope
-                    result := SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPEBOTTOM)
+                    IF SELF:Descending
+                        result := SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
+                    ELSE
+                        result := SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPEBOTTOM)
+                    ENDIF
                 ELSE
                     SELF:_oRdd:GoCold()
                     SELF:_oRdd:_Top := FALSE
@@ -65,7 +69,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_oRdd:GoCold()
                 
                 IF SELF:HasTopScope
-                    result := SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
+                    IF SELF:Descending
+                        result := SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPEBOTTOM)
+                    ELSE
+                        result := SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
+                    ENDIF
                     IF !SELF:_oRdd:_Found
                         SELF:_oRdd:_Bof := TRUE
                     ENDIF
@@ -103,7 +111,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL nLen      AS LONG
             uiRealLen := 0
             byteArray := BYTE[]{ _keySize }
-            // Convert the seeked key to a byte Array
+            // Convert the key to a byte Array
             IF !SELF:_ToString(seekInfo:Value, SELF:_keySize, byteArray, REF uiRealLen)
                 SELF:_oRdd:_dbfError( SubCodes.ERDD_VAR_TYPE, GenCode.EG_DATATYPE,SELF:fileName)
                 RETURN FALSE
@@ -112,6 +120,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL nScopeBottom AS LONG
             nScopeTop    := SELF:TopScopeNo
             nScopeBottom := SELF:BottomScopeNo
+            // compare with scopes widhout checking for descending
             IF SELF:_Scopes[nScopeTop]:IsSet
                 nLen := Math.Min(SELF:_Scopes[nScopeTop]:Size, uiRealLen)
                 IF SELF:__Compare(byteArray, SELF:_Scopes[nScopeTop]:Buffer, nLen) < 0
@@ -203,20 +212,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF !SELF:HasScope
                     RETURN result
                 ENDIF
-                IF SELF:Descending
-                    IF changedBof
-                        SELF:_oRdd:_Eof := isBof
-                    ENDIF
-                    IF changedEof
-                        SELF:_oRdd:_Bof := isEof
-                    ENDIF
-                ELSE
-                    IF changedBof
-                        SELF:_oRdd:_Bof := isBof
-                    ENDIF
-                    IF changedEof
-                        SELF:_oRdd:_Eof := isEof
-                    ENDIF
+                IF changedBof
+                    SELF:_oRdd:_Bof := isBof
+                ENDIF
+                IF changedEof
+                    SELF:_oRdd:_Eof := isEof
                 ENDIF
             CATCH ex AS Exception
                 SELF:_oRdd:_dbfError(ex, SubCodes.EDB_SKIP,GenCode.EG_CORRUPTION,  "CdxTag.SkipRaw") 
@@ -310,22 +310,28 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _getScopePos() AS LONG
             LOCAL first AS LONG
             LOCAL last AS LONG
-            IF SELF:HasTopScope
-                IF SELF:__Compare(SELF:_currentValue:Key, SELF:_Scopes[TopScopeNo]:Buffer, SELF:_Scopes[TopScopeNo]:Size) < 0
+            local nDiff as LONG
+            // Use numbers and not properties here for simplicity of code.
+            // that way we don't have to check for the direction of the difference in combination with the descending flag
+            IF SELF:_Scopes[0]:IsSet
+                nDiff := SELF:__Compare(SELF:_currentValue:Key, SELF:_Scopes[0]:Buffer, SELF:_Scopes[0]:Size) 
+                IF nDiff < 0
                     RETURN 0
                 ENDIF
             ENDIF
-            IF SELF:HasBottomScope
-                IF SELF:__Compare(SELF:_currentValue:Key, SELF:_Scopes[BottomScopeNo]:Buffer, SELF:_Scopes[BottomScopeNo]:Size) > 0
+            IF SELF:_Scopes[1]:IsSet
+                nDiff := SELF:__Compare(SELF:_currentValue:Key, SELF:_Scopes[1]:Buffer, SELF:_Scopes[1]:Size)
+                IF nDiff > 0
                     RETURN 0
                 ENDIF
             ENDIF
-            first := 1
-            last := 1
+            
             last := SELF:_findItemPos()
             IF SELF:HasTopScope
                 SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
                 first := SELF:_findItemPos()
+            ELSE
+                first := 1
             ENDIF
             IF last > first
                 RETURN last - first + 1
@@ -396,9 +402,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         lNumKeys--
                         // Note we hardcoded the ranges here on purpose. Otherwise it does NOT work
                         IF SkipDirection == SkipDirection.Backward
-                            IF SELF:_Scopes[TOPSCOPE]:IsSet
+                            IF SELF:_Scopes[TopScope]:IsSet
                                 LOCAL nRes AS LONG
-                                nRes := SELF:__Compare(SELF:_currentvalue:Key, SELF:_Scopes[TOPSCOPE]:Buffer, SELF:_Scopes[TOPSCOPE]:Size) 
+                                nRes := SELF:__Compare(SELF:_currentvalue:Key, SELF:_Scopes[TopScope]:Buffer, SELF:_Scopes[TopScope]:Size) 
                                 VAR lBOF := nRes < 0
                                 IF lBOF
                                     IF SELF:Descending
@@ -411,10 +417,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                 ENDIF
                             ENDIF
                         ELSE
-                            IF SELF:_Scopes[BOTTOMSCOPE]:IsSet
+                            IF SELF:_Scopes[BottomScope]:IsSet
                                 SELF:_oRdd:_Bof := FALSE
                                 LOCAL nRes AS LONG
-                                nRes := SELF:__Compare(SELF:_currentvalue:Key, SELF:_Scopes[BOTTOMSCOPE]:Buffer, SELF:_Scopes[BOTTOMSCOPE]:Size) 
+                                nRes := SELF:__Compare(SELF:_currentvalue:Key, SELF:_Scopes[BottomScope]:Buffer, SELF:_Scopes[BottomScope]:Size) 
                                 VAR lEOF := nRes > 0
                                 IF lEOF
                                     IF SELF:Descending
@@ -446,27 +452,27 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF uiScope == DBOrder_Info.DBOI_SCOPETOP
                 obj     := SELF:_Scopes[TopScopeNo]:Value
                 IF obj == NULL
-                    result := SELF:GoTop()
-                    mustSeek := FALSE
+                    result      := SELF:GoTop()
+                    mustSeek    := FALSE
                 ELSE
                     seekInfo:Last := SELF:Descending
                     mustSeek      := TRUE
                 ENDIF
             ELSE
-                obj := SELF:_Scopes[BOTTOMSCOPENo]:Value
+                obj := SELF:_Scopes[BottomScopeNo]:Value
                 IF obj == NULL
-                    result := SELF:GoBottom()
-                    mustSeek := FALSE
+                    result      := SELF:GoBottom()
+                    mustSeek    := FALSE
                 ELSE
-                    seekInfo:Last := !SELF:Descending
-                    mustSeek := TRUE
+                    seekInfo:Last   := !SELF:Descending
+                    mustSeek        := TRUE
                 ENDIF
             ENDIF
             IF mustSeek
                 seekInfo:Value      := obj
                 seekInfo:SoftSeek   := TRUE
                 result              := SELF:_Seek(seekInfo, obj)
-                SELF:_oRdd:_Found := SELF:_isBeforeBottomScope()
+                SELF:_oRdd:_Found   := SELF:_isBeforeBottomScope()
                 IF !SELF:_oRdd:_Found
                     SELF:_oRdd:GoTo(0)
                 ENDIF
@@ -515,6 +521,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                     SELF:Stack:Clear()
                 ENDIF
+            ENDIF
+            IF result
+                SELF:_oRDD:__GoTo(recno)
             ENDIF
             RETURN result
             
@@ -593,21 +602,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
             SWITCH searchMode
             CASE SearchMode.Right
-		/*
-                minPos := 0
-                maxPos := nodeCount
-                DO WHILE minPos < maxPos
-                    foundPos := (minPos + maxPos) / 2
-                    node:Pos := foundPos
-                    IF SELF:__Compare(node:KeyBytes, keyBuffer, bufferLen) <= 0
-                        minPos := foundPos + 1
-                    ELSE
-                        maxPos := foundPos
-                    ENDIF
-                ENDDO
-                foundPos := minPos
- 
-		*/
                 foundPos := page:FindKey(keyBuffer, recNo, keyLength)
                 IF page IS CdxBranchPage .AND. foundPos >= nodeCount
                     foundPos := nodeCount-1
@@ -724,7 +718,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _Seek(seekInfo AS DBSEEKINFO , abNewKey AS BYTE[] ) AS LOGIC
             LOCAL recno AS LONG
             LOCAL result AS LOGIC
-            LOCAL cmpMinMax AS LONG
             LOCAL fSoft AS LOGIC
             LOCAL recnoOk AS LONG
             LOCAL locked AS LOGIC
@@ -737,15 +730,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL len AS INT
             LOCAL text AS STRING
             LOCAL temp AS BYTE
-            
+            LOCAL oldDescend as LOGIC
             recno := 0
             result := FALSE
-            cmpMinMax := 0
             fSoft := FALSE
             recnoOK := 0
             locked := FALSE
+            oldDescend   := SELF:Descending
+            deletedState := XSharp.RuntimeState.Deleted
             TRY
-                deletedState := XSharp.RuntimeState.Deleted
+                SELF:Descending := FALSE
+                if oldDescend
+                    seekInfo:Last := ! seekInfo:Last
+                ENDIF
                 SELF:_oRdd:GoCold()
                 locked := SELF:SLock()
                 IF locked
@@ -793,7 +790,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                 temp:= currentKeyBuffer[len]
                                 currentKeyBuffer[len] := Byte.MaxValue
                                 strCmpMaxMin := SELF:__Compare(SELF:_newValue:Key, currentKeyBuffer, padLen)
-                                IF strCmp > 0 .AND. cmpMinMax < 0
+                                IF strCmp > 0 .AND. strCmpMaxMin < 0
                                     found := TRUE
                                 ENDIF
                                 IF !found
@@ -874,6 +871,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FALSE
                 
             FINALLY
+                SELF:Descending := oldDescend
                 IF locked
                     result := SELF:UnLock()
                 ENDIF

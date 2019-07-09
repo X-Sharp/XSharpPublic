@@ -1029,10 +1029,9 @@ CLASS ApplicationDescriptor
                         VAR aContents := oPair:Value:GetContents():ToArray()
                         cRcSource     := aContents[1]
                         
-                        IF xPorter.Options:CopyResourcesToProjectFolder
-                            cRcSource := SELF:AdjustResource(cRcSource,cFolder,TRUE)
-                            aContents[1] := cRcSource 
-                        ENDIF
+						cRcSource := SELF:AdjustResource(cRcSource,cFolder,TRUE)
+						aContents[1] := cRcSource 
+
 						File.WriteAllLines(cFolder + "\" + cResFileName , aContents , System.Text.Encoding.Default)
 						oModule:AddVSrc(cResFileName)
 
@@ -1058,15 +1057,11 @@ CLASS ApplicationDescriptor
 							cResFileName := oModule:PathValidName + ".rc"
                             LOCAL aResult   := List<STRING>{} AS List<STRING>
                             FOREACH cLine AS STRING IN oXideResources:GetContents():ToArray()
-                                IF xPorter.Options:CopyResourcesToProjectFolder
-                                	// in XIDE, all resource of one file are included in a single
-                                	// buffer, so we need to check every line for resource markers
-                                	// Probably need to redesign this...
-                                    VAR cNewLine := SELF:AdjustResource(cLine, cFolder , FALSE)
-                                    aResult:Add(cNewLine)
-                                ELSE
-                                    aResult:Add(cLine)
-                                ENDIF
+                            	// in XIDE, all resource of one file are included in a single
+                            	// buffer, so we need to check every line for resource markers
+                            	// Probably need to redesign this...
+                            	cLine := SELF:AdjustResource(cLine, cFolder , FALSE)
+                                aResult:Add(cLine)
                             NEXT
 							File.WriteAllLines(cFolder + "\" + cResFileName , aResult , System.Text.Encoding.Default)
 							oModule:AddXIDErc(cResFileName)
@@ -1119,27 +1114,41 @@ CLASS ApplicationDescriptor
                 lHasFile := FALSE
             END SWITCH
             IF lHasFile
-                LOCAL nPos      := cLine:IndexOf(aElements[2]) + aElements[2]:Length AS INT
-                LOCAL cFileName := cLine:SubString(nPos) AS STRING
+            	// space below is needed, to make sure we do not get the first "icon" in: myicon icon "filename"
+                LOCAL nPos       := cLine:IndexOf(" " + aElements[2]) + aElements[2]:Length + 1 AS INT
+                LOCAL cFileName  := cLine:SubString(nPos) AS STRING
+                LOCAL lHasQuotes := FALSE AS LOGIC
                 cFileName := cFileName:Trim()
                 IF cFileName:StartsWith(e"\"") .and. cFileName:EndsWith(e"\"") .and. cFileName:Length > 2
+                	lHasQuotes := TRUE
                     cFileName := cFileName:Substring(1, cFileName:Length-2)
                 ENDIF
                 IF SafeFileExists(cFileName)
-                    VAR cDestName := System.IO.Path.Combine(cResourcesFolder, System.IO.Path.GetFileName(cFileName))
-                    IF ! System.IO.File.Exists(cDestName)
-                        System.IO.File.Copy(cFileName, cDestName)
-                    ENDIF
-                    // change to relative path
-                    cDestName := cDestName:Replace(cFolder+"\", "")
-                    IF lAddToOtherFiles
-	                    SELF:_aOtherFiles:Add(cDestName)
-                    END IF
-                    cLine  := cLine :Replace(cFileName, cDestName)
+					LOCAL cDestName AS STRING
+                	IF xPorter.Options:CopyResourcesToProjectFolder
+						cDestName := Path.Combine(cResourcesFolder, Path.GetFileName(cFileName))
+	                    IF ! SafeFileExists(cDestName)
+	                        File.Copy(cFileName, cDestName)
+	                    ENDIF
+	                    // change to relative path
+	                    cDestName := cDestName:Replace(cFolder+"\", "")
+	                    IF lAddToOtherFiles
+		                    SELF:_aOtherFiles:Add(cDestName)
+	                    END IF
+                	ELSE
+                		cDestName := Path.GetFullPath(cFileName)
+                	ENDIF
+                	// always surround filenames with quotes, to make sure we have no issues with spaces in filenames
+					IF .not. lHasQuotes
+						cDestName := e"\"" + cDestName + e"\""
+					ENDIF
+					// when filenames are inside quotes, then backslashes need to be doubled, otherwise are being seen as escape sequences
+					cDestName := cDestName:Replace("\" , "\\")
+                    cLine  := cLine:Replace(cFileName, cDestName)
                 ENDIF
             ENDIF
         ENDIF
-       RETURN cLine:TrimEnd()
+       RETURN cLine //:TrimEnd() // why trim?
 
 	METHOD CreateAppFile(cFolder AS STRING , lXide AS LOGIC) AS VOID
 		LOCAL oTemplate AS StreamReader
@@ -1595,9 +1604,9 @@ CLASS ModuleDescriptor
 		FOREACH oEntity AS EntityDescriptor IN SELF:_aEntities
 			DO CASE
 			CASE oEntity:Type == EntityType._Resource
-				IF oEntity:Name:ToUpper() == "VS_VERSION_INFO"
+/*				IF oEntity:Name:ToUpper() == "VS_VERSION_INFO"
 					LOOP
-				END IF
+				END IF*/
 				RETURN TRUE
 			END CASE
 		NEXT
@@ -2114,6 +2123,9 @@ CLASS EntityDescriptor
 				END IF
 
 				DO CASE
+
+				CASE oWord:cWord == " " .or. oWord:cWord == e"\t"
+					NOP
 
 				CASE oWord:eStatus == WordStatus.Text // no literals or comments
 					STATIC LOCAL tag_version := tag + "VERSION" + tag AS STRING

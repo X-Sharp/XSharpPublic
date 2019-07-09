@@ -22,6 +22,7 @@ using Microsoft.VisualStudio.TextManager.Interop;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 using XSharpModel;
+using System.Collections.Generic;
 namespace XSharp.Project
 {
     /// <summary>
@@ -138,6 +139,19 @@ namespace XSharp.Project
             return base.ExcludeFromProject();
         }
 
+        private static string typeNameToSubtype(string typeName)
+        {
+            switch (typeName.ToLower())
+            {
+                case "form":
+                case "system.windows.forms.form":
+                    return ProjectFileAttributeValue.Form;
+                case "usercontrol":
+                case "system.windows.forms.usercontrol":
+                    return ProjectFileAttributeValue.UserControl;
+            }
+            return null;
+        }
 
         internal void DetermineSubType()
         {
@@ -145,6 +159,11 @@ namespace XSharp.Project
             // Parse the contents of the file and see if we have a windows form or a windows control
             XSharpProjectNode projectNode = ProjectMgr as XSharpProjectNode;
             XSharpModel.XFile xfile = projectNode.ProjectModel.FindFullPath(this.Url);
+            if (xfile == null)
+            {
+                projectNode.ProjectModel.AddFile(this.Url);
+                xfile = projectNode.ProjectModel.FindFullPath(this.Url);
+            }
             if (xfile != null)
             {
                 xfile.WaitParsing();
@@ -165,16 +184,43 @@ namespace XSharp.Project
                     if (words.Length > 0)
                     {
                         var parentclass = words[0].ToLower();
-                        switch (parentclass)
+                        SubType = typeNameToSubtype(parentclass);
+                        if (string.IsNullOrEmpty(SubType))
                         {
-                            case "form":
-                            case "system.windows.forms.form":
-                                SubType = ProjectFileAttributeValue.Form;
-                                break;
-                            case "usercontrol":
-                            case "system.windows.forms.usercontrol":
-                                SubType = ProjectFileAttributeValue.UserControl;
-                                break;
+                            var usings = new List<string>();
+                            if (xfile != null)
+                            {
+                                usings.AddRange(xfile.Usings);
+                            }
+                            var mgr = this.ProjectMgr as XSharpProjectNode;
+                            var type = mgr.ResolveType(parentclass, usings);
+                            if (type != null)
+                            {
+                                while (type.BaseType != null)
+                                {
+                                    var bt = type.BaseType;
+                                    SubType = typeNameToSubtype(bt.Name);
+                                    if (!String.IsNullOrEmpty(SubType))
+                                        break;
+                                    type = bt;
+                                }
+                            }
+                            else
+                            {
+                                var xtype = mgr.ResolveXType(parentclass, usings);
+                                if (xtype != null)
+                                {
+                                    while (xtype != null && !String.IsNullOrEmpty(xtype.ParentName))
+                                    {
+                                        var parent = xtype.ParentName;
+                                        SubType = typeNameToSubtype(parent);
+                                        if (!String.IsNullOrEmpty(SubType))
+                                            break;
+                                        xtype = mgr.ResolveXType(parent, usings);
+                                    }
+                                }
+                            }
+
                         }
                         if (SubType != null && this.ItemNode.GetMetadata(ProjectFileConstants.SubType) != SubType)
                         {
@@ -359,6 +405,9 @@ namespace XSharp.Project
                 case XFileType.Settings:
                     this.Generator = "SettingsSingleFileGenerator";
                     break;
+                default:
+                    DetermineSubType();
+                    break;
             }
 
         }
@@ -444,7 +493,7 @@ namespace XSharp.Project
                         this.ItemNode.ItemName = ProjectFileConstants.EmbeddedResource;
                     }
                     break;
-                
+
 
                 default:
                     break;
@@ -702,7 +751,7 @@ namespace XSharp.Project
 
         protected override bool RenameDocument(string oldName, string newName, out HierarchyNode newNodeOut)
         {
-            
+
             var result = base.RenameDocument(oldName, newName, out newNodeOut);
             if (result)
             {

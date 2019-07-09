@@ -544,6 +544,9 @@ BEGIN NAMESPACE XSharpModel
             IF ! AssemblyInfo.DisableXSharpProjectReferences
                 WriteOutputMessage("LookupReferenced() "+typeName)
                 FOREACH project AS XProject IN SELF:ReferencedProjects
+                    IF project == SELF
+                        loop
+                    ENDIF
                     xType := project:Lookup(typeName, caseInvariant)
                     IF xType != NULL
                         WriteOutputMessage(String.Format("LookupReferenced() found in {0}: {1} ", project:Name, xType:FullName))

@@ -108,7 +108,7 @@ namespace XSharp.Project
                     XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(lineNumber, _file);
                     XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, _file);
                     // adjust caretpos, for other completions we need to stop before the caret. Now we include the caret
-                    List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos + 1, lineNumber, tokens.TokenStream, out stopToken, true, _file, false);
+                    List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos + 1, lineNumber, tokens.TokenStream, out stopToken, true, _file, false, member);
                     // Check if we can get the member where we are
                     //if (tokenList.Count > 1)
                     //{
@@ -148,6 +148,13 @@ namespace XSharp.Project
                             else if ( gotoElement.XSharpElement is XSharpModel.XTypeMember)
                             {
                                 QuickInfoTypeMember qitm = new QuickInfoTypeMember((XSharpModel.XTypeMember)gotoElement.XSharpElement);
+                                var description = new TextBlock();
+                                description.Inlines.AddRange(qitm.WPFDescription);
+                                qiContent.Add(description);
+                            }
+                            else if (gotoElement.XSharpElement is XSharpModel.XVariable)
+                            {
+                                QuickInfoVariable qitm = new QuickInfoVariable((XSharpModel.XVariable)gotoElement.XSharpElement);
                                 var description = new TextBlock();
                                 description.Inlines.AddRange(qitm.WPFDescription);
                                 qiContent.Add(description);
@@ -592,6 +599,76 @@ namespace XSharp.Project
                         temp.Foreground = Brushes.Blue;
                         content.Add(temp);
                     }
+                    //
+                    return content;
+                }
+            }
+
+        }
+
+
+        internal class QuickInfoVariable
+        {
+            XSharpModel.XVariable xVar;
+
+            internal QuickInfoVariable(XSharpModel.XVariable var)
+            {
+                this.xVar = var;
+            }
+
+            public List<Inline> WPFDescription
+            {
+                get
+                {
+                    List<Inline> content = new List<Inline>();
+
+                    Run temp;
+                    if (this.xVar.IsParameter)
+                    {
+                        temp = new Run("PARAMETER" + " ");
+                        temp.Foreground = Brushes.Blue;
+                        content.Add(temp);
+                    }
+                    else
+                    {
+                        temp = new Run("LOCAL" + " ");
+                        temp.Foreground = Brushes.Blue;
+                        content.Add(temp);
+                    }
+                    //
+                    content.AddRange(this.WPFPrototype);
+                    //
+                    if (this.xVar.IsTyped)
+                    {
+                        temp = new Run(this.xVar.ParamTypeDesc + " ");
+                        temp.Foreground = Brushes.Blue;
+                        content.Add(temp);
+                        //
+                        temp = new Run(this.xVar.TypeName );
+                        temp.Foreground = Brushes.Blue;
+                        content.Add(temp);
+                        if (this.xVar.IsArray)
+                        {
+                            temp = new Run("[] ");
+                            temp.Foreground = Brushes.Blue;
+                            content.Add(temp);
+                        }
+                    }
+                    //
+                    return content;
+                }
+
+            }
+
+            public List<Inline> WPFPrototype
+            {
+                get
+                {
+                    List<Inline> content = new List<Inline>();
+                    Run temp;
+                    //
+                    temp = new Run(this.xVar.Name);
+                    content.Add(temp);
                     //
                     return content;
                 }

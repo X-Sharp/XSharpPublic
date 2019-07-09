@@ -516,7 +516,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                 ENDIF
             ENDIF
-            SELF:_oRdd:__Goto(oldRec)
+            SELF:_GoToRecno(oldRec)
+
             IF SELF:Shared
                 isOk := SELF:UnLock()
             ENDIF

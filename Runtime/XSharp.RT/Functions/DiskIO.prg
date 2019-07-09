@@ -203,6 +203,7 @@ INTERNAL STATIC METHOD AddDirectoryInfo( aReturn AS ARRAY, cDirectory AS STRING,
 			IF lAdd
 				cAttribute += "D"
                 VAR aFile := DirectoryHelper.FileSystemInfo2Array(oDir, cAttribute)
+                aFile[F_NAME] := cName
                 aadd(aReturn, aFile)
 			ENDIF
 		ENDIF

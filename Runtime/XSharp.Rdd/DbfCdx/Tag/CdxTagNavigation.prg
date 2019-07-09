@@ -287,35 +287,23 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN node:Recno
             
             
-        PRIVATE METHOD _findItemPos(record REF LONG , nodePage AS LOGIC ) AS LOGIC
-            LOCAL page  AS CdxTreePage
-            LOCAL node  AS CdxPageNode
+        PRIVATE METHOD _findItemPos() AS LONG
+            
             IF SELF:Stack:Empty
-                RETURN FALSE
+                return -1
             ENDIF
+            // this assumes the top of the stack has the leaf page where our key is.
+            // we count the # of keys to the right of that page and add the pos on the top of the stack
             VAR topStack := SELF:Stack:Top
-            page := topStack:Page
-            node := page[topStack:Pos]
-            IF nodePage
-                topStack:Pos--
-                record++
-                RETURN TRUE
-            ENDIF
-            IF node:ChildPageNo != 0
-                SELF:_locate(NULL, 0, SearchMode.Bottom, node:ChildPageNo,0)
-                record += topStack:Pos 
-                topStack:Pos := 0
-                RETURN TRUE
-            ENDIF
-            IF topStack:Pos == 0
-                DO WHILE ! SELF:Stack:Empty .AND. topStack:Pos == 0
-                    topStack := SELF:PopPage()
-                ENDDO
-                RETURN SELF:_findItemPos(REF record, TRUE)
-            ENDIF
-            record += topStack:Pos
-            topStack:Pos := 0
-            RETURN TRUE
+            local page  := (CdxTreePage) topStack:Page as CdxTreePage
+            local pos as LONG
+            pos := TopStack:Pos
+            do while page:HasLeft
+                var nextPage := page:LeftPtr
+                page := self:GetPage(nextPage)
+                pos += page:NumKeys
+            enddo
+            RETURN pos
             
               
             
@@ -334,14 +322,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             first := 1
             last := 1
-            DO WHILE SELF:_findItemPos(REF last, FALSE)
-                NOP
-            ENDDO
+            last := SELF:_findItemPos()
             IF SELF:HasTopScope
                 SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
-                DO WHILE SELF:_findItemPos(REF first, FALSE)
-                    NOP
-                ENDDO
+                first := SELF:_findItemPos()
             ENDIF
             IF last > first
                 RETURN last - first + 1
@@ -428,10 +412,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             ENDIF
                         ELSE
                             IF SELF:_Scopes[BOTTOMSCOPE]:IsSet
-                                IF recno != 0
-                                    SELF:_oRdd:_Eof := TRUE
-                                    RETURN result
-                                ENDIF
                                 SELF:_oRdd:_Bof := FALSE
                                 LOCAL nRes AS LONG
                                 nRes := SELF:__Compare(SELF:_currentvalue:Key, SELF:_Scopes[BOTTOMSCOPE]:Buffer, SELF:_Scopes[BOTTOMSCOPE]:Size) 

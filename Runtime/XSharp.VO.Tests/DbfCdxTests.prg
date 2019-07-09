@@ -2425,10 +2425,131 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		RETURN	
 
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD CDX_OrdKeyCount() AS VOID
+			LOCAL aFields AS ARRAY
+			LOCAL dwCount AS DWORD
+			LOCAL cDBF AS STRING
+			
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
+
+			aFields := { { "LAST" , "C" , 10 , 0 }}
+			FErase(cDBF + ".cdx")
+			FErase(cDBF + ".dbt")
+			FErase(cDBF + ".fpt")
+			
+			DbCreate( cDBF , aFields)
+
+			DbUseArea( ,"DBFCDX",cDBF , , TRUE )
+			FOR LOCAL n := 1 AS DWORD UPTO 1000
+				DbAppend()
+				FieldPut(1, Chr(65 + (n % 5)) )
+			NEXT
+			DbAppend()
+			FieldPut(1, "D" )
+			DbAppend()
+			FieldPut(1, "E" )
+			DbAppend()
+			FieldPut(1, "D" )
+			DbAppend()
+			FieldPut(1, "F" )
+
+			DbGoTop()
+			
+			DbCreateOrder( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			
+			DbSetOrder ( 1 ) 
+			DbGoTop()
+		
+			OrdScope( TOPSCOPE, "C" )
+			OrdScope( BOTTOMSCOPE, "C" )
+		
+			DbGoTop()
+		
+			Assert.Equal(200, (INT) OrdKeyCount() )
+		
+			DbGoTop()
+			DO WHILE ! Eof()
+				dwCount += 1
+				DbSkip(1)
+			ENDDO
+			Assert.Equal(200, dwCount)
+			
+			DbGoTop()
+			DbSkip(2)
+			Assert.False( Eof() )
+
+
+			OrdScope( TOPSCOPE, "D" )
+			OrdScope( BOTTOMSCOPE, "D" )
+			DbGoTop()
+			Assert.Equal(202, (INT) OrdKeyCount() )
+	
+			OrdScope( TOPSCOPE, "E" )
+			OrdScope( BOTTOMSCOPE, "E" )
+			DbGoTop()
+			Assert.Equal(201, (INT) OrdKeyCount() )
+			DbGoTop()
+			DbSkip(5)
+			Assert.False( Eof() )
+	
+			OrdScope( TOPSCOPE, "F" )
+			OrdScope( BOTTOMSCOPE, "F" )
+			DbGoTop()
+			Assert.Equal(1, (INT) OrdKeyCount() )
+			DbGoTop()
+			DbSkip(2)
+			Assert.True( Eof() )
+	
+			DbCloseArea()
+		RETURN	
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD CDX_DbSetOrderCondition() AS VOID
+			LOCAL aFields AS ARRAY
+			LOCAL dwCount AS DWORD
+			LOCAL cDBF AS STRING
+			LOCAL n AS DWORD
+			
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
+
+			aFields := { { "LAST" , "C" , 10 , 0 }}
+			FErase(cDBF + ".cdx")
+			FErase(cDBF + ".dbt")
+			FErase(cDBF + ".fpt")
+			
+			DbCreate( cDBF , aFields)
+
+			DbUseArea( ,"DBFCDX",cDBF , , TRUE )
+			FOR n := 1 UPTO 600
+				DbAppend()
+				FieldPut(1, Chr(65 + (n % 3)) )
+			NEXT
+		
+			DbSetOrderCondition (,,,,,,,600,,,,,,,)
+			DbGoTop()
+			DbCreateOrder( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			Assert.Equal(600, (INT) OrdKeyCount() )
+
+			DbGoTop()
+			dwCount := 0
+			DO WHILE .not. eof()
+				dwCount ++
+				DbSkip()
+			END DO
+			Assert.Equal(600, dwCount )
+	
+			DbCloseArea()
+		RETURN	
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG
             ++nCounter
-		    RETURN GetTempFileName("testcdx"+Ntrim(nCounter))
+		    RETURN GetTempFileName("testcdx"+NTrim(nCounter))
 		    
 		STATIC PRIVATE METHOD GetTempFileName(cFileName AS STRING) AS STRING
 			// we may want to put them to a specific folder etc

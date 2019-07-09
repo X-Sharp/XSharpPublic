@@ -181,6 +181,8 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
+            if (!b.Options.AllowDotAccess && Token.type == TokenType.DOT)
+                ThrowError(ErrorCode.DotMemberAccess);
             b.Bind(ref Expr);
             Expr.RequireValue();
             if (Member is NameExpr MemberName)
@@ -226,9 +228,28 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr, BindAffinity.Type);
-            Symbol = b.Lookup(Expr.Symbol, Member.LookupName) ?? ThrowError(Binder.LookupError(Expr, this));
-            Datatype = Symbol.Type();
+            if (!b.Options.AllowDotAccess || Expr.Symbol.UniqueType() is TypeSymbol)
+            {
+                Expr.RequireType();
+                Symbol = b.Lookup(Expr.Symbol, Member.LookupName) ?? ThrowError(Binder.LookupError(Expr, this));
+                Datatype = Symbol.Type();
+            }
+            else
+            {
+                // Ugly hack: bind as member access!
+                var e = new MemberAccessExpr(Expr, Member.Token, Member);
+                b.Bind(ref e);
+                Expr = e.Expr;
+                Symbol = e.Symbol;
+                Datatype = e.Datatype;
+            }
             return null;
+        }
+        internal override Expr Cloned(Binder b)
+        {
+            if (!(Expr.Symbol is TypeSymbol))
+                b.Cache(ref Expr);
+            return this;
         }
     }
     internal partial class AssignExpr : Expr

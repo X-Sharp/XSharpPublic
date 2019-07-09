@@ -645,6 +645,12 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| ErrString(0)}", Args(), "", typeof(string))
         TestMacro(mc, e"{|| ErrString.V}", Args(), 333, typeof(int))
 
+        // FoxPro dot access
+        TestMacro(mc, e"{|| testclass{}.NString((byte)1) }", Args(), "child", typeof(STRING))
+        TestMacro(mc, e"{|a| a := testclass{}, a.prop }", Args(), 0, typeof(INT))
+        TestMacro(mc, e"{|| tsi.v1 }", Args(), 1, typeof(INT))
+        TestMacro(mc, e"{|| tci.v1 := 10, tci.v1++, tci.v1 }", Args(), 11, typeof(INT))
+
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet, "MyMemVarGet")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut, "MyMemVarPut")
         TestMacro(mc, e"{|| M->NAME}", Args(), "MemVarGet(NAME)", typeof(STRING))

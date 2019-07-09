@@ -49,6 +49,7 @@ namespace XSharp.MacroCompiler
         NoInstanceOverload = 229,
         InvalidRuntimeIdExpr = 230,
         NameExpected = 231,
+        DotMemberAccess = 232,
     }
 
     internal class ErrorString
@@ -95,6 +96,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.NoInstanceOverload, "Method or function {0} is no instance overload" },
             { ErrorCode.InvalidRuntimeIdExpr, "Invalid runtime identifier (&) expression" },
             { ErrorCode.NameExpected, "Member name expected" },
+            { ErrorCode.DotMemberAccess, "Dot operator does not allow instance member access" },
         };
 
         static internal string Get(ErrorCode e) { return _errorStrings[e]; }

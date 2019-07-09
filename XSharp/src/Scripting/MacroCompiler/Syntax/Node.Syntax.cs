@@ -51,12 +51,12 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal Expr Expr;
         internal Expr Member;
-        internal MemberAccessExpr(Expr e, Expr n) : base(n.Token) { Expr = e; Member = n; }
+        internal MemberAccessExpr(Expr e, Token o, Expr n) : base(o) { Expr = e; Member = n; }
         public override string ToString() { return "(" + Expr.ToString() + ':' + Member.ToString() + ")"; }
     }
     internal partial class QualifiedNameExpr : NameExpr
     {
-        internal TypeExpr Expr;
+        internal Expr Expr;
         internal NameExpr Member;
         internal QualifiedNameExpr(TypeExpr e, NameExpr n) : base(n.Token, n.Name, n.Arity) { Expr = e; Member = n; }
         public override string ToString() { return "(" + Expr.ToString() + '.' + Member.ToString() + ")"; }

@@ -35,6 +35,7 @@ namespace XSharp.MacroCompiler
         public bool VODateConstants = true;
 
         public bool AllowMemvarAlias = true;
+        public bool AllowDotAccess = true;
 
         public bool ArrayZero = false;
 

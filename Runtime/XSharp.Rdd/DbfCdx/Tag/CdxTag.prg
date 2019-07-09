@@ -559,9 +559,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         record := count
                     ENDIF
                 ELSE
-                    record := 1
-                    DO WHILE SELF:_findItemPos(REF record, FALSE)
-                    ENDDO
+                    record := SELF:_findItemPos()
                 ENDIF
             ENDIF
             SELF:_oRdd:__Goto(oldRec)

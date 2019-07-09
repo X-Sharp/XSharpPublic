@@ -25,6 +25,11 @@ namespace XSharp.MacroCompiler.Syntax
         internal TypeSymbol ThrowError(CompilationError e) { throw e; }
         internal virtual void RequireValue()
         {
+            if (Symbol is SymbolList && Symbol.UniqueIdent() is Symbol s)
+            {
+                Symbol = s;
+                Datatype = s.Type();
+            }
             if (Datatype == null)
                 ThrowError(ErrorCode.NotAnExpression, Symbol);
             if (Symbol is SymbolList)
@@ -149,7 +154,7 @@ namespace XSharp.MacroCompiler.Syntax
                     Symbol = Symbol.UniqueIdent();
                 }
             }
-            if (Symbol == null)
+            if (Symbol == null && Affinity != BindAffinity.Type)
             {
                 if (Affinity == BindAffinity.Alias)
                 {
@@ -185,35 +190,7 @@ namespace XSharp.MacroCompiler.Syntax
                 ThrowError(ErrorCode.DotMemberAccess);
             b.Bind(ref Expr);
             Expr.RequireValue();
-            if (Member is NameExpr MemberName)
-            {
-                if (Affinity == BindAffinity.Invoke)
-                {
-                    Symbol = b.Lookup(Expr.Datatype, MemberName.LookupName);
-                    if (Symbol == null)
-                    {
-                        if (b.Options.Binding.HasFlag(BindOptions.AllowDynamic) && Expr.Datatype.IsUsualOrObject())
-                        {
-                            b.Convert(ref Expr, Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object));
-                            Symbol = new DynamicSymbol(MemberName.LookupName);
-                        }
-                        else
-                            ThrowError(Binder.LookupError(Expr, MemberName));
-                    }
-                }
-                else
-                {
-                    b.Convert(ref Expr, Compilation.Get(NativeType.Object));
-                    Symbol = new DynamicSymbol(MemberName.LookupName);
-                }
-            }
-            else if (Member is RuntimeIdExpr)
-            {
-                b.Bind(ref Member, BindAffinity.Member);
-                Symbol = new DynamicExprSymbol(Member);
-            }
-            else
-                ThrowError(ErrorCode.NameExpected);
+            Symbol = b.BindMemberAccess(ref Expr, ref Member, Affinity);
             Datatype = Symbol.Type();
             return null;
         }
@@ -222,26 +199,38 @@ namespace XSharp.MacroCompiler.Syntax
             b.Cache(ref Expr);
             return this;
         }
+        internal static MemberAccessExpr Bound(Binder b, Expr expr, Expr member, BindAffinity affinity)
+        {
+            expr.RequireValue();
+            var e = new MemberAccessExpr(expr, Token.None, member);
+            e.Symbol = b.BindMemberAccess(ref e.Expr, ref e.Member, affinity);
+            e.Datatype = e.Symbol.Type();
+            return e;
+        }
     }
     internal partial class QualifiedNameExpr : NameExpr
     {
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr, BindAffinity.Type);
-            if (!b.Options.AllowDotAccess || Expr.Symbol.UniqueType() is TypeSymbol)
+            if (Expr.Symbol.UniqueType() is TypeSymbol t)
             {
-                Expr.RequireType();
-                Symbol = b.Lookup(Expr.Symbol, Member.LookupName) ?? ThrowError(Binder.LookupError(Expr, this));
+                Expr.Symbol = t;
+                Symbol = b.Lookup(t, Member.LookupName) ?? ThrowError(Binder.LookupError(Expr, this));
                 Datatype = Symbol.Type();
             }
-            else
+            if (Symbol == null)
             {
-                // Ugly hack: bind as member access!
-                var e = new MemberAccessExpr(Expr, Member.Token, Member);
-                b.Bind(ref e);
-                Expr = e.Expr;
-                Symbol = e.Symbol;
-                Datatype = e.Datatype;
+                if (b.Options.AllowDotAccess)
+                {
+                    if (Expr.Symbol.UniqueIdent() != null)
+                        return MemberAccessExpr.Bound(b, Expr, Member, Affinity);
+                    if (Expr is NameExpr aname && Member is NameExpr fname)
+                        return AliasExpr.Bound(aname.LookupName, fname.LookupName);
+                    Expr.RequireValue();
+                }
+                else
+                    Expr.RequireType();
             }
             return null;
         }
@@ -704,6 +693,14 @@ namespace XSharp.MacroCompiler.Syntax
         internal static AliasExpr Bound(string fieldName)
         {
             return new AliasExpr(null, LiteralExpr.Bound(Constant.Create(fieldName)), Token.None) { Datatype = Compilation.Get(NativeType.Usual) };
+        }
+        internal static AliasExpr Bound(string aliasName, string fieldName)
+        {
+            return new AliasExpr(
+                LiteralExpr.Bound(Constant.Create(aliasName)),
+                LiteralExpr.Bound(Constant.Create(fieldName)),
+                Token.None)
+                { Datatype = Compilation.Get(NativeType.Usual) };
         }
         internal static AliasExpr Bound(Expr field)
         {

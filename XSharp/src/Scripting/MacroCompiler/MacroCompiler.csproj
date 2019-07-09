@@ -15,7 +15,7 @@
     <TargetFrameworkProfile />
     <OutputPath>$(Solutiondir)Binaries\$(Configuration)\</OutputPath>
     <PlatformTarget>AnyCPU</PlatformTarget>
-	<RuntimeIdentifiers>win;win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win;win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,6 +39,7 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Properties\Constants.cs</Link>
     </Compile>
+    <Compile Include="Binder\Binder.Access.cs" />
     <Compile Include="Binder\Binder.Error.cs" />
     <Compile Include="Binder\Node.Constant.cs" />
     <Compile Include="Binder\Operator.Binary.cs" />
@@ -92,12 +93,11 @@
       <HintPath>..\..\..\Runtime\XSharp.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <!-- On machines where the runtime output path exists the macro compiler will be copied to the runtime output folder  --> 
- <PropertyGroup Condition="Exists('$(DevRtDir)binaries\$(Configuration)\XSharp.Core.DLL')" >
+  <!-- On machines where the runtime output path exists the macro compiler will be copied to the runtime output folder  -->
+  <PropertyGroup Condition="Exists('$(DevRtDir)binaries\$(Configuration)\XSharp.Core.DLL')">
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <PostBuildEvent>xcopy $(OutDir)XSharp.MacroCompiler.??? $(DevRtDir)binaries\$(Configuration) /q /y &gt; NUL</PostBuildEvent>
   </PropertyGroup>
-  
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

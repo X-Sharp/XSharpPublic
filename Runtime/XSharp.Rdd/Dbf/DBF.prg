@@ -252,6 +252,11 @@ METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
             ENDIF
             IF isOk 
                 Array.Copy(SELF:_BlankBuffer, SELF:_RecordBuffer, SELF:_RecordLength)
+                FOREACH oFld AS RddFieldInfo IN _Fields
+                    IF oFld IS DbfColumn VAR column
+                        column:NewRecord(SELF:_RecordBuffer)
+                    ENDIF   
+                NEXT
                 // Now, update state
                 SELF:_RecCount++
                 SELF:_RecNo         := SELF:_RecCount
@@ -1058,8 +1063,9 @@ PRIVATE METHOD _readFieldsHeader() AS LOGIC
             nStart -= 1
         ENDIF
         FOR VAR i := nStart TO fieldCount - ( 1 - nStart )
-            Array.Copy(fieldsBuffer, i*DbfField.SIZE, currentField:Buffer, 0, DbfField.SIZE )
-            VAR column := DbfColumn.Create(REF currentField, SELF)
+            local nPos := i*DbfField.SIZE as LONG
+            Array.Copy(fieldsBuffer, nPos, currentField:Buffer, 0, DbfField.SIZE )
+            VAR column := DbfColumn.Create(REF currentField, SELF, nPos + DbfHeader.SIZE)
             SELF:AddField( column)
             IF column:IsMemo
                 SELF:_HasMemo := TRUE
@@ -1071,6 +1077,26 @@ PRIVATE METHOD _readFieldsHeader() AS LOGIC
         
     ENDIF
     RETURN isOk
+
+INTERNAL METHOD _readField(nOffSet as LONG, oField as DbfField) AS LOGIC
+    // Read single field. Called from AutoIncrement code to read the counter value
+    local nPos as LONG
+    nPos := (LONG) Ftell(SELF:_hFile)
+    FSeek3(SELF:_hFile, nOffSet, FS_SET)
+    Fread3(SELF:_hFile, oField:Buffer, (DWORD) oField:Buffer:Length)
+    FSeek3(SELF:_hFile, nPos, FS_SET)
+    RETURN TRUE
+
+INTERNAL METHOD _writeField(nOffSet as LONG, oField as DbfField) AS LOGIC
+    local nPos as LONG
+    // Write single field in header. Called from AutoIncrement code to update the counter value
+    nPos := (LONG) Ftell(SELF:_hFile)
+    FSeek3(SELF:_hFile, nOffSet, FS_SET)
+    FWrite3(SELF:_hFile, oField:Buffer, (DWORD) oField:Buffer:Length)
+    FSeek3(SELF:_hFile, nPos, FS_SET)
+    RETURN TRUE
+
+
     
     // Write the DBF file Header : Last DateTime of modification (now), Current Reccount
 PRIVATE METHOD _writeHeader() AS LOGIC
@@ -1145,56 +1171,88 @@ PROTECT OVERRIDE METHOD _checkFields(info AS RddFieldInfo) AS LOGIC
     
 /// <inheritdoc />
 METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
-    LOCAL oResult AS OBJECT
-    LOCAL nArrPos := nFldPos AS LONG
-    BEGIN LOCK SELF
-    IF ! SELF:_readRecord()
-        oResult := SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
-        RETURN oResult
-    ENDIF
-    IF SELF:_FieldIndexValidate(nArrPos)
-        IF __ARRAYBASE__ == 0
-            nArrPos -= 1
-        ENDIF
-    ENDIF
-    //
-    SWITCH nOrdinal
-    // These are handled in the parent class and also take care of aliases etc.
-CASE DbFieldInfo.DBS_NAME
-CASE DbFieldInfo.DBS_LEN
-CASE DbFieldInfo.DBS_DEC
-CASE DbFieldInfo.DBS_TYPE
-CASE DbFieldInfo.DBS_ALIAS
-        oResult := SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
+    LOCAL oResult := NULL AS OBJECT
+    IF SELF:_FieldIndexValidate(nFldPos)
+        BEGIN LOCK SELF
         
-CASE DbFieldInfo.DBS_ISNULL
-CASE DbFieldInfo.DBS_COUNTER
-CASE DbFieldInfo.DBS_STEP
-
-CASE DbFieldInfo.DBS_BLOB_GET
-CASE DbFieldInfo.DBS_BLOB_TYPE
-        // Returns the data type of a BLOB (memo) field. This
-        // is more efficient than using Type() or ValType()
-        // since the data itself does not have to be retrieved
-    // from the BLOB file in order to determine the type.
-CASE DbFieldInfo.DBS_BLOB_LEN	    // Returns the storage length of the data in a BLOB (memo) file
-CASE DbFieldInfo.DBS_BLOB_OFFSET	// Returns the file offset of the data in a BLOB (memo) file.
-CASE DbFieldInfo.DBS_BLOB_POINTER
-        // Returns a numeric pointer to the data in a blob
-        // file. This pointer can be used with BLOBDirectGet(),
-        // BLOBDirectImport(), etc.
+            //
+            SWITCH nOrdinal
+            // These are handled in the parent class and also take care of aliases etc.
+            CASE DbFieldInfo.DBS_NAME
+            CASE DbFieldInfo.DBS_LEN
+            CASE DbFieldInfo.DBS_DEC
+            CASE DbFieldInfo.DBS_TYPE
+            CASE DbFieldInfo.DBS_ALIAS
+                oResult := SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
         
-CASE DbFieldInfo.DBS_BLOB_DIRECT_TYPE
-CASE DbFieldInfo.DBS_BLOB_DIRECT_LEN
+            CASE DbFieldInfo.DBS_ISNULL
+            CASE DbFieldInfo.DBS_COUNTER
+            CASE DbFieldInfo.DBS_STEP
+                oResult := NULL
+                local oColumn as DbfColumn
+                oColumn := SELF:_GetColumn(nFldPos)
+                if oColumn != NULL
+                    
+                    IF nOrdinal == DbFieldInfo.DBS_ISNULL
+                        oResult := oColumn:IsNull()
+                    ELSEIF nOrdinal == DbFieldInfo.DBS_COUNTER
+                        if oColumn IS DbfAutoIncrementColumn VAR dbfac
+                            dbfac:Read()
+                            oResult := dbfac:Counter
+                            if oNewValue != null
+                                // update counter
+                                local iNewValue as Int32
+                                iNewValue := Convert.ToInt32(oNewValue)
+                                IF SELF:HeaderLock(DbLockMode.Lock)
+                                    dbfac:Counter := iNewValue
+                                    dbfac:Write()
+                                    SELF:HeaderLock(DbLockMode.UnLock)
+                                ENDIF
+                            ENDIF
+                        ENDIF
+                    ELSEIF nOrdinal == DbFieldInfo.DBS_STEP
+                        if oColumn IS DbfAutoIncrementColumn VAR dbfac
+                            dbfac:Read()
+                            oResult := dbfac:IncrStep
+                            if oNewValue != null
+                                // update step
+                                local iNewValue as Int32
+                                iNewValue := Convert.ToInt32(oNewValue)
+                                IF SELF:HeaderLock(DbLockMode.Lock)
+                                    dbfac:IncrStep := iNewValue
+                                    dbfac:Write()
+                                    SELF:HeaderLock(DbLockMode.UnLock)
+                                ENDIF
+                            ENDIF
+                        ENDIF
+                    ENDIF
+                ENDIF
 
-CASE DbFieldInfo.DBS_STRUCT
-CASE DbFieldInfo.DBS_PROPERTIES
-CASE DbFieldInfo.DBS_USER
-    OTHERWISE
-    // Everything falls through to parent at this moment
-    oResult := SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
-    END SWITCH
-    END LOCK
+            CASE DbFieldInfo.DBS_BLOB_GET
+            CASE DbFieldInfo.DBS_BLOB_TYPE
+                // Returns the data type of a BLOB (memo) field. This
+                // is more efficient than using Type() or ValType()
+                // since the data itself does not have to be retrieved
+            // from the BLOB file in order to determine the type.
+            CASE DbFieldInfo.DBS_BLOB_LEN	    // Returns the storage length of the data in a BLOB (memo) file
+            CASE DbFieldInfo.DBS_BLOB_OFFSET	// Returns the file offset of the data in a BLOB (memo) file.
+            CASE DbFieldInfo.DBS_BLOB_POINTER
+                // Returns a numeric pointer to the data in a blob
+                // file. This pointer can be used with BLOBDirectGet(),
+                // BLOBDirectImport(), etc.
+        
+            CASE DbFieldInfo.DBS_BLOB_DIRECT_TYPE
+            CASE DbFieldInfo.DBS_BLOB_DIRECT_LEN
+
+            CASE DbFieldInfo.DBS_STRUCT
+            CASE DbFieldInfo.DBS_PROPERTIES
+            CASE DbFieldInfo.DBS_USER
+            OTHERWISE
+                // Everything falls through to parent at this moment
+                oResult := SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
+            END SWITCH
+        END LOCK
+    ENDIF
     RETURN oResult
     
     
@@ -1389,12 +1447,8 @@ METHOD GetValue(nFldPos AS LONG) AS OBJECT
         ENDIF
     ELSE
         IF SELF:EoF
-            IF oColumn:IsMemo
-                // At this level, the return value is the raw Data, in BYTE[]
-                RETURN _Memo:GetValue(nFldPos)
-            ELSE
-                ret := oColumn:EmptyValue()
-            ENDIF
+            // do not call _Memo for empty values. Memo columns return an empty string for the empty value
+           ret := oColumn:EmptyValue()
         ELSE
             SELF:_DbfError( ERDD.READ, XSharp.Gencode.EG_READ )
         ENDIF

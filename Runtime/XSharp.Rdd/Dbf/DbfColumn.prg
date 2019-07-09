@@ -13,8 +13,9 @@ USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>Class for DBF Column reading / writing </summary>
     CLASS DbfColumn INHERIT RDDFieldInfo
-        INTERNAL NullBit   := -1 AS LONG
-        INTERNAL LengthBit := -1 AS LONG
+        INTERNAL NullBit        := -1 AS LONG
+        INTERNAL LengthBit      := -1 AS LONG
+        INTERNAL OffSetInHeader := -1 as LONG
         INTERNAL RDD        AS XSharp.RDD.DBF
 
         STATIC METHOD Create(oInfo AS RDDFieldInfo, oRDD AS XSharp.RDD.DBF) AS DbfColumn
@@ -66,10 +67,18 @@ BEGIN NAMESPACE XSharp.RDD
             END SWITCH
 
 
-        STATIC METHOD Create(oField REF DbfField, oRDD AS XSharp.RDD.DBF) AS DbfColumn
+        STATIC METHOD Create(oField REF DbfField, oRDD AS XSharp.RDD.DBF, nHeaderOffSet as LONG) AS DbfColumn
             LOCAL oInfo AS RDDFieldInfo
+            LOCAL oColumn as DbfColumn
             oInfo        := RddFieldInfo{oField:Name, oField:Type, oField:Len, oField:Dec, oField:Offset, oField:Flags}
-            RETURN DbfColumn.Create(oInfo, oRDD)
+            oColumn      := DbfColumn.Create(oInfo, oRDD)
+            oColumn:OffSetInHeader := nHeaderOffSet
+            IF oColumn is DbfAutoIncrementColumn VAR dbfac
+                dbfac:IncrStep  := oField:IncStep
+                dbfac:Counter   := oField:Counter
+            ENDIF
+            return oColumn
+
 
 
         PROTECTED CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.RDD.DBF)
@@ -78,7 +87,13 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN
 
 
-        VIRTUAL METHOD InitValue(buffer AS BYTE[]) AS VOID
+       VIRTUAL METHOD InitValue(buffer AS BYTE[]) AS VOID
+            // this gets called to update the initialize the buffer for 'append blank'. Gets called once when a DBF is opened.
+            RETURN
+
+       VIRTUAL METHOD NewRecord(buffer AS BYTE[]) AS VOID
+            // this gets called to update the appended record. Only used at this moment to set the AutoIncrement value
+            // but can also be used to set a timestamp or rowversion later
             RETURN
 
         PROTECTED METHOD _GetString(buffer AS BYTE[]) AS STRING
@@ -481,7 +496,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN TRUE
 
         OVERRIDE METHOD EmptyValue() AS OBJECT
-            RETURN 0
+            RETURN ""
 
        OVERRIDE METHOD Validate() AS LOGIC
             RETURN (SELF:Length == 10 .OR. SELF:Length == 4)  .AND.  SELF:Decimals == 0 
@@ -554,15 +569,50 @@ BEGIN NAMESPACE XSharp.RDD
 
     /// <summary>Class for reading / writing AutoIncrement Columns. </summary>
     CLASS DbfAutoIncrementColumn INHERIT DbfIntegerColumn
-        //INTERNAL IncrStep as LONG
-        //INTERNAL Counter  AS LONG
+        INTERNAL IncrStep as LONG
+        INTERNAL Counter  AS LONG
 
         CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.RDD.DBF)
             SUPER(oInfo,oRDD)
-            //SELF:IncrStep := oField:IncStep
-            //SELF:Counter  := oField:Counter
-
             RETURN
+
+        VIRTUAL METHOD Read() AS LOGIC
+            LOCAL oField  as DbfField
+            oField := DbfField{}
+            oField:initialize()
+            SELF:RDD:_readField(SELF:OffSetInHeader, oField)
+            SELF:Counter := oField:Counter
+            SELF:IncrStep := oField:IncStep
+            RETURN TRUE
+
+        VIRTUAL METHOD Write() AS LOGIC
+            LOCAL oField  as DbfField
+            oField := DbfField{}
+            oField:initialize()
+            SELF:RDD:_readField(SELF:OffSetInHeader, oField)
+            oField:Counter := SELF:Counter 
+            oField:IncStep := (BYTE) SELF:IncrStep 
+            SELF:RDD:_writeField(SELF:OffSetInHeader, oField)
+            RETURN TRUE
+
+
+        VIRTUAL METHOD NewRecord(buffer AS BYTE[]) AS VOID
+            // when shared then read the header again to get the current values of the counter and incrstep
+            // increment the counter and write to the header
+            // then write the current value to the buffer
+            LOCAL nCurrent as LONG
+            nCurrent := SELF:Counter
+            IF SELF:RDD:HeaderLock(DbLockMode.Lock)
+            
+                SELF:Read()
+                SELF:Counter += SELF:IncrStep
+                SELF:Write()
+                SELF:RDD:HeaderLock( DbLockMode.UnLock )
+            ENDIF
+            SELF:PutValue(nCurrent, buffer)
+            RETURN
+
+
     END CLASS
 
     /// <summary>Class for reading / writing Double Columns. </summary>

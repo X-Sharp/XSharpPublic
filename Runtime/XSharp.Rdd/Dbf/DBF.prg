@@ -402,10 +402,10 @@ PROTECT METHOD _unlockFile( ) AS LOGIC
     ENDIF
     //
     TRY
-    unlocked := FFUnlock( SELF:_hFile, (DWORD)iOffset, (DWORD)SELF:_lockScheme:FileSize )
+        unlocked := FFUnlock( SELF:_hFile, (DWORD)iOffset, (DWORD)SELF:_lockScheme:FileSize )
     CATCH ex AS Exception
-    unlocked := FALSE
-    SELF:_dbfError(ex, SubCodes.ERDD_WRITE_UNLOCK,GenCode.EG_LOCK_ERROR,  "DBF._unlockFile") 
+        unlocked := FALSE
+        SELF:_dbfError(ex, SubCodes.ERDD_WRITE_UNLOCK,GenCode.EG_LOCK_ERROR,  "DBF._unlockFile") 
     END TRY
     RETURN unlocked
     
@@ -452,10 +452,10 @@ PROTECT METHOD _lockFile( ) AS LOGIC
     ENDIF
     //
     TRY
-    locked := FFLock( SELF:_hFile, (DWORD)iOffset, (DWORD)SELF:_lockScheme:FileSize )
+        locked := FFLock( SELF:_hFile, (DWORD)iOffset, (DWORD)SELF:_lockScheme:FileSize )
     CATCH ex AS Exception
-    locked := FALSE
-    SELF:_dbfError(ex, SubCodes.ERDD_WRITE_LOCK,GenCode.EG_LOCK_ERROR,  "DBF._lockFile") 
+        locked := FALSE
+        SELF:_dbfError(ex, SubCodes.ERDD_WRITE_LOCK,GenCode.EG_LOCK_ERROR,  "DBF._lockFile") 
     END TRY
     RETURN locked
     
@@ -724,13 +724,10 @@ METHOD Zap() AS LOGIC
     ENDIF
     
     IF SELF:_ReadOnly 
-        // Error !! Cannot be written !
         SELF:_DbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
         RETURN FALSE
     ENDIF
-    //
     IF SELF:_Shared 
-        // Error !! Cannot be written !
         SELF:_DbfError( ERDD.SHARED, XSharp.Gencode.EG_SHARED )
         RETURN FALSE
     ENDIF
@@ -1748,11 +1745,11 @@ VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
     CASE DbInfo.DBI_LOCKOFFSET
         oResult := SELF:_lockScheme:Offset
         
-CASE DbInfo.DBI_FILEHANDLE
-    oResult := SELF:_hFile
-CASE DbInfo.DBI_FULLPATH
-    oResult := SELF:_FileName
-CASE DbInfo.DBI_TABLEEXT
+    CASE DbInfo.DBI_FILEHANDLE
+        oResult := SELF:_hFile
+    CASE DbInfo.DBI_FULLPATH
+        oResult := SELF:_FileName
+    CASE DbInfo.DBI_TABLEEXT
         IF SELF:_FileName != NULL
             oResult := System.IO.Path.GetExtension(SELF:_FileName)
         ELSE
@@ -1762,38 +1759,38 @@ CASE DbInfo.DBI_TABLEEXT
             _Extension := (STRING) oNewValue
         ENDIF
         
-CASE DbInfo.DBI_SHARED
+    CASE DbInfo.DBI_SHARED
         oResult := SELF:Shared 
         
-CASE DbInfo.DBI_READONLY
-CASE DbInfo.DBI_ISREADONLY
+    CASE DbInfo.DBI_READONLY
+    CASE DbInfo.DBI_ISREADONLY
         oResult := SELF:_ReadOnly
         
-CASE DbInfo.DBI_ISANSI
+    CASE DbInfo.DBI_ISANSI
         oResult := SELF:_Ansi
         
         
-CASE DbInfo.DBI_ISFLOCK
+    CASE DbInfo.DBI_ISFLOCK
         oResult := SELF:_fLocked
         
-CASE DbInfo.DBI_MEMOHANDLE
-    oResult := IntPtr.Zero      // Should be handled in the memo subclass
-CASE DbInfo.DBI_MEMOEXT
-    oResult := ""               // Should be handled in the memo subclass
-CASE DbInfo.DBI_MEMOBLOCKSIZE
-    oResult := 0
-CASE DBInfo.DBI_MEMOFIELD
+    CASE DbInfo.DBI_MEMOHANDLE
+        oResult := IntPtr.Zero      // Should be handled in the memo subclass
+    CASE DbInfo.DBI_MEMOEXT
+        oResult := ""               // Should be handled in the memo subclass
+    CASE DbInfo.DBI_MEMOBLOCKSIZE
+        oResult := 0
+    CASE DBInfo.DBI_MEMOFIELD
         oResult := ""
     // DbInfo.TRANSREC
-CASE DbInfo.DBI_VALIDBUFFER
+    CASE DbInfo.DBI_VALIDBUFFER
         oResult := SELF:_BufferValid
         // CASE DbInfo.DBI_POSITIONED
         
-CASE DbInfo.DBI_OPENINFO
+    CASE DbInfo.DBI_OPENINFO
         oResult := SELF:_OpenInfo
         
-CASE DbInfo.DBI_DB_VERSION
-CASE DbInfo.DBI_RDD_VERSION
+    CASE DbInfo.DBI_DB_VERSION
+    CASE DbInfo.DBI_RDD_VERSION
         LOCAL oAsm AS System.Reflection.AssemblyName
         LOCAL oType AS System.Type
         oType := typeof(DBF)
@@ -1802,9 +1799,9 @@ CASE DbInfo.DBI_RDD_VERSION
         
         // Harbour extensions. Some are supported. Other not yet
     // case DbInfo.DBI_ISREADONLY
-CASE DbInfo.DBI_LOCKSCHEME
-    RETURN 0
-CASE DbInfo.DBI_ROLLBACK
+    CASE DbInfo.DBI_LOCKSCHEME
+        RETURN 0
+    CASE DbInfo.DBI_ROLLBACK
         IF SELF:_Hot
             IF SELF:_NewRecord
                 Array.Copy(SELF:_BlankBuffer, SELF:_RecordBuffer, SELF:_RecordLength)
@@ -1814,45 +1811,45 @@ CASE DbInfo.DBI_ROLLBACK
             ENDIF
             SELF:_Hot := FALSE
     ENDIF
-CASE DbInfo.DBI_PASSWORD
-    oResult := NULL             
-CASE DbInfo.DBI_ISENCRYPTED     
-    oResult := FALSE
-CASE DbInfo.DBI_MEMOTYPE
-    oResult := DB_MEMO_NONE
-CASE DbInfo.DBI_SEPARATOR
-    oResult := ""
-CASE DbInfo.DBI_MEMOVERSION
-    oResult := 0
-CASE DbInfo.DBI_TABLETYPE
-    oResult := 0
-CASE DbInfo.DBI_SCOPEDRELATION
-    oResult := FALSE
-CASE DbInfo.DBI_TRIGGER
-    oResult := NULL     // Todo
-CASE DbInfo.DBI_DECRYPT         // Todo
-CASE DbInfo.DBI_ENCRYPT         // Todo
-CASE DbInfo.DBI_MEMOPACK
-CASE DbInfo.DBI_DIRTYREAD
-CASE DbInfo.DBI_POSITIONED
-CASE DbInfo.DBI_ISTEMPORARY
-CASE DbInfo.DBI_LOCKTEST
-CASE DbInfo.DBI_TRANSREC
-CASE DbInfo.DBI_SETHEADER
-    //CASE DbInfo.DBI_CODEPAGE_HB    // defined above
-CASE DbInfo.DBI_RM_SUPPORTED
-CASE DbInfo.DBI_RM_CREATE
-CASE DbInfo.DBI_RM_REMOVE
-CASE DbInfo.DBI_RM_CLEAR 
-CASE DbInfo.DBI_RM_FILL  
-CASE DbInfo.DBI_RM_ADD   
-CASE DbInfo.DBI_RM_DROP  
-CASE DbInfo.DBI_RM_TEST  
-CASE DbInfo.DBI_RM_COUNT 
-CASE DbInfo.DBI_RM_HANDLE
-    RETURN FALSE
+    CASE DbInfo.DBI_PASSWORD
+        oResult := NULL             
+    CASE DbInfo.DBI_ISENCRYPTED     
+        oResult := FALSE
+    CASE DbInfo.DBI_MEMOTYPE
+        oResult := DB_MEMO_NONE
+    CASE DbInfo.DBI_SEPARATOR
+        oResult := ""
+    CASE DbInfo.DBI_MEMOVERSION
+        oResult := 0
+    CASE DbInfo.DBI_TABLETYPE
+        oResult := 0
+    CASE DbInfo.DBI_SCOPEDRELATION
+        oResult := FALSE
+    CASE DbInfo.DBI_TRIGGER
+        oResult := NULL     // Todo
+    CASE DbInfo.DBI_DECRYPT         // Todo
+    CASE DbInfo.DBI_ENCRYPT         // Todo
+    CASE DbInfo.DBI_MEMOPACK
+    CASE DbInfo.DBI_DIRTYREAD
+    CASE DbInfo.DBI_POSITIONED
+    CASE DbInfo.DBI_ISTEMPORARY
+    CASE DbInfo.DBI_LOCKTEST
+    CASE DbInfo.DBI_TRANSREC
+    CASE DbInfo.DBI_SETHEADER
+        //CASE DbInfo.DBI_CODEPAGE_HB    // defined above
+    CASE DbInfo.DBI_RM_SUPPORTED
+    CASE DbInfo.DBI_RM_CREATE
+    CASE DbInfo.DBI_RM_REMOVE
+    CASE DbInfo.DBI_RM_CLEAR 
+    CASE DbInfo.DBI_RM_FILL  
+    CASE DbInfo.DBI_RM_ADD   
+    CASE DbInfo.DBI_RM_DROP  
+    CASE DbInfo.DBI_RM_TEST  
+    CASE DbInfo.DBI_RM_COUNT 
+    CASE DbInfo.DBI_RM_HANDLE
+        RETURN FALSE
     OTHERWISE
-    oResult := SUPER:Info(nOrdinal, oNewValue)
+        oResult := SUPER:Info(nOrdinal, oNewValue)
     END SWITCH
     RETURN oResult
     

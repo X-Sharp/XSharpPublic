@@ -833,7 +833,9 @@ USING System.Diagnostics
                      SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_READ, GenCode.EG_READ, "FPTMemo.ReadHeader")
                 ENDIF
                 _isFlex := SELF:_flexHeader:Valid
-                 SELF:_blockSize     := SELF:_flexHeader:AltBlockSize
+                if _blockSize == 0 .and. SELF:_flexHeader:AltBlockSize != 0
+                    SELF:_blockSize     := SELF:_flexHeader:AltBlockSize
+                endif
             ELSE
                 _isFlex := FALSE
             ENDIF
@@ -841,7 +843,7 @@ USING System.Diagnostics
             RETURN TRUE
 
         METHOD WriteHeader() AS VOID
-            IF SELF:IsOpen
+            IF SELF:IsOpen .and. ! SELF:_oRDD:_ReadOnly
                 IF ! SELF:_fptHeader:Write(SELF:_hFile)
                     SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_WRITE, GenCode.EG_WRITE, "FPTMemo.WriteHeader")
                 ENDIF

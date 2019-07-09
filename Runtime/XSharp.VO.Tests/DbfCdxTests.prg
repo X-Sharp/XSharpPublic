@@ -2506,6 +2506,46 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbCloseArea()
 		RETURN	
 
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD CDX_DbSetOrderCondition() AS VOID
+			LOCAL aFields AS ARRAY
+			LOCAL dwCount AS DWORD
+			LOCAL cDBF AS STRING
+			LOCAL n AS DWORD
+			
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
+
+			aFields := { { "LAST" , "C" , 10 , 0 }}
+			FErase(cDBF + ".cdx")
+			FErase(cDBF + ".dbt")
+			FErase(cDBF + ".fpt")
+			
+			DbCreate( cDBF , aFields)
+
+			DbUseArea( ,"DBFCDX",cDBF , , TRUE )
+			FOR n := 1 UPTO 600
+				DbAppend()
+				FieldPut(1, Chr(65 + (n % 3)) )
+			NEXT
+		
+			DbSetOrderCondition (,,,,,,,600,,,,,,,)
+			DbGoTop()
+			DbCreateOrder( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			Assert.Equal(600, (INT) OrdKeyCount() )
+
+			DbGoTop()
+			dwCount := 0
+			DO WHILE .not. eof()
+				dwCount ++
+				DbSkip()
+			END DO
+			Assert.Equal(600, dwCount )
+	
+			DbCloseArea()
+		RETURN	
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG
             ++nCounter

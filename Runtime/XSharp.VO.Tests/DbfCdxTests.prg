@@ -2589,6 +2589,39 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN	
 
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD CDX_Deleted() AS VOID
+			LOCAL cDBF AS STRING
+			LOCAL nCount := 0 AS INT
+			
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
+			
+			DbfTests.CreateDatabase(cDbf , ;
+							{ { "LAST" , "C" , 20 , 0 }} , ;
+							{ "e" , "o" , "g" })
+
+		  	DbSetOrderCondition ( "! DELETED()" , { || ! Deleted()  } )  
+			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } ) 
+			DbSetOrder(1)
+			
+			DbGoTop() 
+			Assert.Equal(3, (INT) OrdKeyCount())
+			DbGoBottom()
+			Assert.True( DbDelete() )
+			DbGoTop()
+			Assert.Equal(2, (INT) OrdKeyCount())
+			
+			DO WHILE ! Eof()
+				nCount ++
+				DbSkip(1)
+			ENDDO 
+			Assert.Equal( 2 , nCount )
+			
+			DbCloseArea()
+		RETURN	
+
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG

@@ -2546,6 +2546,83 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbCloseArea()
 		RETURN	
 
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD CDX_OrdDescend() AS VOID
+			LOCAL cResult AS STRING
+			LOCAL cDBF AS STRING
+			
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
+			
+			DbfTests.CreateDatabase(cDbf , ;
+							{ { "LAST" , "C" , 20 , 0 }} , ;
+							{ "b" , "d" , "c", "e" , "g1" , "g3" , "g45" , "a" , "o" , "p" , "r"})
+
+			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) }  )  		
+			DbSetOrder ( 1 ) 
+			
+			OrdScope(TOPSCOPE,  "C")   
+			OrdScope(BOTTOMSCOPE, "O") 
+			DbGoTop() 
+			Assert.Equal(7, (INT) OrdKeyCount())
+			
+			cResult := ""
+			DO WHILE ! Eof()
+				cResult += AllTrim(FieldGet(1)) + " "
+				DbSkip ( 1)
+			ENDDO  
+			Assert.Equal( "c d e g1 g3 g45 o" , AllTrim(cResult) )
+
+			OrdDescend( , , TRUE)
+			DbGoTop()
+			Assert.Equal(7, (INT) OrdKeyCount())
+
+			cResult := ""
+			DO WHILE ! Eof()
+				cResult += AllTrim(FieldGet(1)) + " "
+				DbSkip ( 1)
+			ENDDO 
+			Assert.Equal( "o g45 g3 g1 e d c" , AllTrim(cResult) )
+			
+			DbCloseArea()
+		RETURN	
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD CDX_Deleted() AS VOID
+			LOCAL cDBF AS STRING
+			LOCAL nCount := 0 AS INT
+			
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
+			
+			DbfTests.CreateDatabase(cDbf , ;
+							{ { "LAST" , "C" , 20 , 0 }} , ;
+							{ "e" , "o" , "g" })
+
+		  	DbSetOrderCondition ( "! DELETED()" , { || ! Deleted()  } )  
+			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } ) 
+			DbSetOrder(1)
+			
+			DbGoTop() 
+			Assert.Equal(3, (INT) OrdKeyCount())
+			DbGoBottom()
+			Assert.True( DbDelete() )
+			DbGoTop()
+			Assert.Equal(2, (INT) OrdKeyCount())
+			
+			DO WHILE ! Eof()
+				nCount ++
+				DbSkip(1)
+			ENDDO 
+			Assert.Equal( 2 , nCount )
+			
+			DbCloseArea()
+		RETURN	
+
+
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG
             ++nCounter

@@ -1242,7 +1242,7 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.String
                     SWITCH rhs:_usualType
-                    CASE __UsualType.String		; RETURN CompilerServices.__StringSubtract(lhs, rhs)
+                    CASE __UsualType.String		; RETURN CompilerServices.StringSubtract(lhs, rhs)
                         OTHERWISE					; THROW BinaryError("-", __CavoStr(VOErrors.ARGNOTSTRING), FALSE, lhs, rhs)
                     END SWITCH
                 CASE __UsualType.Date

@@ -23,11 +23,11 @@ namespace XSharp.MacroCompiler
 
     public class MacroOptions
     {
-        public static readonly MacroOptions Default = new MacroOptions();
+        public static MacroOptions Default { get => new MacroOptions(); }
 
-        public static readonly MacroOptions VisualObjects = new MacroOptions() { AllowMemvarAlias = false, AllowDotAccess = false };
+        public static MacroOptions VisualObjects { get => new MacroOptions() { AllowMemvarAlias = false, AllowDotAccess = false }; }
 
-        public static readonly MacroOptions FoxPro = new MacroOptions() { };
+        public static MacroOptions FoxPro { get => new MacroOptions() { }; }
 
         public bool AllowFourLetterAbbreviations = false;
         public bool AllowOldStyleComments = true;

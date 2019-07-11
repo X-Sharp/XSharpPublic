@@ -14,9 +14,12 @@ namespace XSharp.Runtime
         internal Compilation<object, RuntimeCodeblockDelegate> compiler;
 
 
-        public MacroCompiler()
+        public MacroCompiler(): this(RuntimeState.Dialect == XSharpDialect.FoxPro ? MacroOptions.FoxPro : MacroOptions.VisualObjects) { }
+
+        public MacroCompiler(MacroOptions o)
         {
-            options = new MacroOptions() { AllowSingleQuotedStrings = true };
+            options = o;
+            options.AllowSingleQuotedStrings = true;
             GetCompiler(true);
         }
 

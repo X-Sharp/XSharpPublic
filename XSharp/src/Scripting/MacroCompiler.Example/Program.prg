@@ -801,7 +801,7 @@ BEGIN NAMESPACE MacroCompilerTest
         VAR m := GC:GetTotalMemory(TRUE)
         VAR t := DateTime.Now
 
-        VAR mc := XSharp.Runtime.MacroCompiler{}
+        VAR mc := XSharp.Runtime.MacroCompiler{XSharp.MacroCompiler.MacroOptions.Default}
 
         VAR dt := DateTime.Now - t
         t += dt

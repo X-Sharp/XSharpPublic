@@ -13,8 +13,8 @@ FUNCTION ErrorDialog( txt AS STRING ) AS INT
 CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
 
     EXPORT INSTANCE ErrorText AS System.Windows.Forms.TextBox
-    PRIVATE INSTANCE CloseButton AS System.Windows.Forms.Button
-    PRIVATE INSTANCE CopyButton AS System.Windows.Forms.Button
+    EXPORT INSTANCE CloseButton AS System.Windows.Forms.Button
+    EXPORT INSTANCE CopyButton AS System.Windows.Forms.Button
 
     CONSTRUCTOR( e AS Exception )
       SUPER()

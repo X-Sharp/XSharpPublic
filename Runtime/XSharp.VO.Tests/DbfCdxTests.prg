@@ -2429,7 +2429,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         [Fact, Trait("Category", "DBF")];
 		METHOD CDX_OrdKeyCount() AS VOID
 			LOCAL aFields AS ARRAY
-			LOCAL dwCount AS DWORD
+			LOCAL dwCount AS INT
 			LOCAL cDBF AS STRING
 			
 			RddSetDefault("DBFCDX")
@@ -2458,7 +2458,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			DbGoTop()
 			
-			DbCreateOrder( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			DbCreateOrder( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _FIELD->LAST) } )
 			
 			DbSetOrder ( 1 ) 
 			DbGoTop()
@@ -2510,7 +2510,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         [Fact, Trait("Category", "DBF")];
 		METHOD CDX_DbSetOrderCondition() AS VOID
 			LOCAL aFields AS ARRAY
-			LOCAL dwCount AS DWORD
+			LOCAL dwCount AS INT
 			LOCAL cDBF AS STRING
 			LOCAL n AS DWORD
 			
@@ -2532,12 +2532,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		
 			DbSetOrderCondition (,,,,,,,600,,,,,,,)
 			DbGoTop()
-			DbCreateOrder( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			DbCreateOrder( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _FIELD->LAST) } )
 			Assert.Equal(600, (INT) OrdKeyCount() )
 
 			DbGoTop()
 			dwCount := 0
-			DO WHILE .not. eof()
+			DO WHILE .NOT. eof()
 				dwCount ++
 				DbSkip()
 			END DO
@@ -2559,7 +2559,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 							{ { "LAST" , "C" , 20 , 0 }} , ;
 							{ "b" , "d" , "c", "e" , "g1" , "g3" , "g45" , "a" , "o" , "p" , "r"})
 
-			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) }  )  		
+			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _FIELD->LAST) }  )  		
 			DbSetOrder ( 1 ) 
 			
 			OrdScope(TOPSCOPE,  "C")   
@@ -2602,7 +2602,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 							{ "e" , "o" , "g" })
 
 		  	DbSetOrderCondition ( "! DELETED()" , { || ! Deleted()  } )  
-			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } ) 
+			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _FIELD->LAST) } ) 
 			DbSetOrder(1)
 			
 			DbGoTop() 

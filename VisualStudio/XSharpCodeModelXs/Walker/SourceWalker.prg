@@ -109,7 +109,7 @@ BEGIN NAMESPACE XSharpModel
 			//return self:Parse(lines, lIncludeLocals)
 
 		METHOD Parse(lines AS IList<STRING> , lIncludeLocals AS LOGIC) AS ParseResult
-			WriteOutputMessage("-->> Parse() "+_file:FullPath+"(# lines " +lines:Count:ToString()+" locals "+lIncludeLocals+" )")
+			WriteOutputMessage("-->> Parse() "+_file:FullPath+"(# lines " +lines:Count:ToString()+" locals "+lIncludeLocals:ToString()+" )")
 
 			VAR oParser := XSharpModel.Parser{}
 			oParser:StartPosition := SELF:StartPosition

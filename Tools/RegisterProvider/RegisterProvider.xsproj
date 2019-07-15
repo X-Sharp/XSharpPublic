@@ -14,7 +14,7 @@
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
     <OutputName>RegisterProvider</OutputName>
-    <XSharpProjectversion>2.0.1.1</XSharpProjectversion>
+    <XSharpProjectversion>2.0.2.0</XSharpProjectversion>
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
   </PropertyGroup>

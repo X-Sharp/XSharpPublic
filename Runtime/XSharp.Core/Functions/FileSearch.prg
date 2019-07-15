@@ -7,7 +7,9 @@
 USING System.Collections.Generic
 USING System.IO
 USING System.Linq
-/// <summary>This delegate is used when you want to implement your own function for the logic behind the File() function</summary>
+/// <summary>This delegate is used when you want to implement your own function for the logic behind the File() function. You can register your own FileSearcher by calling the RegisterFileSearch() function.</summary>
+/// <seealso cref='M:XSharp.Core.Functions.RegisterFileSearch(XSharp.FileSearcher)' >RegisterFileSearch() Function</seealso>
+
 PUBLIC DELEGATE XSharp.FileSearcher(cIn AS STRING) AS STRING
 INTERNAL STATIC CLASS XSharp.FileSearch
     STATIC PRIVATE foundEntries	:= List<OBJECT>{} AS List<OBJECT>

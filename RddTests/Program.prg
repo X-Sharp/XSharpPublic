@@ -5,7 +5,13 @@
 USING XSharp.RDD
 FUNCTION Start() AS VOID
     TRY
-        testseeknotfound()
+        DescOrderScope()
+        //DirTest()
+        //TestAutoIncrement()
+        //TestOrdScope()
+        //TestOrderCondition()
+        //testOpenDbServer()
+        //testseeknotfound()
         //testscope()
         //TestUniqueCdx()
         //TestGrowFpt()
@@ -80,6 +86,255 @@ FUNCTION Start() AS VOID
         ErrorDialog(e)
     END TRY
     WAIT
+    RETURN
+
+FUNCTION DescOrderScope() AS VOID 
+LOCAL cDBF, cPfad, cIndex, cDriver AS STRING 
+LOCAL aFields, aValues AS ARRAY  
+LOCAL i AS DWORD
+LOCAL lUseFirstScope AS LOGIC 
+//LOCAL lSet AS LOGIC  
+
+    
+    lUseFirstScope := FALSE   
+    
+    
+
+   	cDriver := RddSetDefault ( "DBFCDX" ) 
+ 	
+	aFields := { { "LAST" , "C" , 20 , 0 }}  
+	
+	
+//	aValues := { "b" , "d" , "c", "e" , "a" , "o" , "p" , "r" , "g" }
+	
+	aValues := { "b" , "d" , "c", "e" , "g1" , "g3" , "g45" , "a" , "o" , "p" , "r"}			
+	         
+	
+	cDBF := cPfad + "Foo"
+	cIndex := cPfad + "Foox" 
+	
+	
+	FErase ( cIndex + IndexExt() )	
+	
+	// -----------------  
+	
+//	lSet := SetDeleted(FALSE)	
+	
+	? DbCreate( cDBF , aFields)
+	? DbUseArea( ,"DBFCDX",cDBF , , TRUE )		
+	
+	FOR i := 1 UPTO ALen ( aValues )
+		
+		DbAppend() 
+		
+		FieldPut ( 1 , aValues [ i ] ) 			
+		
+	NEXT 
+
+	? DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper ( _Field->LAST) }  )  		
+
+	? DbSetOrder ( 1 ) 
+	 
+	?
+	
+	IF lUseFirstScope
+		
+	 	OrdScope(TOPSCOPE,  "A")   
+		OrdScope(BOTTOMSCOPE, "O") 
+		
+		? "TopScope: 'A'"
+		? "BottomScope: 'O'"		
+	
+	ELSE
+	 	OrdScope(TOPSCOPE,  "G")   
+		OrdScope(BOTTOMSCOPE, "G")
+		
+		? "TopScope: 'G'"
+		? "BottomScope: 'G'"		
+		
+	ENDIF		
+	
+   	DbGoTop() 
+   	
+   	?
+	? "OrderKeyCount()" , OrdKeyCount()   	
+    ?
+	DO WHILE ! Eof()
+		
+	   ? FieldGet ( 1)
+
+		DbSkip ( 1)
+
+	ENDDO  
+	
+    ?
+//    ? "M", DbSeek("M",TRUE), Found(), Eof(), FieldGet(1)
+//    ? "O", DbSeek("O",TRUE), Found(), Eof(), FieldGet(1)
+//    ? "P", DbSeek("P",TRUE), Found(), Eof(), FieldGet(1)
+    
+	OrdDescend( , , TRUE)
+	
+
+   	DbGoTop()
+   	
+   	?
+	? "OrderKeyCount()" , OrdKeyCount()   	 
+	?
+	DO WHILE ! Eof()
+		
+	   ? FieldGet ( 1)
+
+		DbSkip ( 1)
+
+	ENDDO
+    IF lUseFirstScope
+    ? "A", DbSeek("A",TRUE), Found(), Eof(), FieldGet(1)
+    ? "B", DbSeek("B",TRUE), Found(), Eof(), FieldGet(1)
+    ? "C", DbSeek("C",TRUE), Found(), Eof(), FieldGet(1)
+    ? "D", DbSeek("D",TRUE), Found(), Eof(), FieldGet(1)
+    ? "E", DbSeek("E",TRUE), Found(), Eof(), FieldGet(1)
+    ? "F", DbSeek("F",TRUE), Found(), Eof(), FieldGet(1)
+    ? "G", DbSeek("G",TRUE), Found(), Eof(), FieldGet(1)
+    ? "M", DbSeek("M",TRUE), Found(), Eof(), FieldGet(1)
+    ? "O", DbSeek("O",TRUE), Found(), Eof(), FieldGet(1)
+    ? "P", DbSeek("P",TRUE), Found(), Eof(), FieldGet(1)
+    ELSE
+    ? "F", DbSeek("F",TRUE), Found(), Eof(), FieldGet(1)
+    ? "G", DbSeek("G",TRUE), Found(), Eof(), FieldGet(1)
+    ? "H", DbSeek("H",TRUE), Found(), Eof(), FieldGet(1)
+    ENDIF
+	
+	
+	DbCloseAll() 
+	
+	RddSetDefault ( cDriver )	 
+//    SetDeleted(lSet)
+	
+	RETURN		
+
+function dirtest as void
+    local afiles as array
+    afiles := Directory( "C:\temp\dirtest\*.*", "D" )
+    ShowArray(aFiles)
+    return
+
+Function testAutoIncrement() as void
+    local cDbf as STRING
+    local aStruct as array
+    aStruct := { {"COUNTER","I+",4,0},;
+            {"NAME", "C", 10, 0} }
+    cDbf := "c:\Test\testvfp.dbf"
+    RddSetDefault("DBFVFP")
+    DbCreate(cDbf, aStruct, "DBFVFP")
+    DbCloseArea()
+    wait
+    DbUseArea(,,cDbf, "TestVfp")
+    DbFieldInfo(DBS_COUNTER, 1, 100)
+    DbFieldInfo(DBS_STEP, 1, 2)
+    DbCloseArea()
+    wait
+    DbUseArea(,,cDbf, "TestVfp")
+    ShowArray(dBStruct())
+    DbAppend()
+    ? FieldGet(1)
+    FieldPut(2, repl(chr(65+FieldGet(1)),10))
+    ? DbFieldInfo(DBS_COUNTER, 1)
+    ? DbFieldInfo(DBS_STEP, 1)
+    ? DbFieldInfo(DBS_ISNULL, 1)
+    DbFieldInfo(DBS_COUNTER, 1, 100)
+    ? DbFieldInfo(DBS_COUNTER, 1)
+    DbCommit()
+    USE
+    WAIT
+    RETURN
+
+FUNCTION TestOrdScope() AS VOID 
+	LOCAL cDBF AS STRING 
+	LOCAL dwCount AS DWORD
+	
+   	RddSetDefault ( "DBFCDX" ) 
+	cDBf  := "C:\test\test1"
+
+	FErase ( cDbf + ".dbf" )	
+	FErase ( cDbf + ".cdx" )	
+
+	DbCreate(cDbf , {{"LAST","C",10,0}})
+	DbUseArea( ,"DBFCDX",cDBF , , TRUE )
+	FOR LOCAL n := 1 AS DWORD UPTO 1000
+		DbAppend()
+		FieldPut(1, Chr(65 + (n % 5)) )
+	NEXT
+	DbGoTop()
+	
+	? DbCreateOrder( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+	
+	DbSetOrder ( 1 ) 
+	DbGoTop()
+    OrdScope( TOPSCOPE, "C" )
+	OrdScope( BOTTOMSCOPE, "C" )
+
+	DbGoTop()
+
+	? "OrdKeyCount()", OrdKeyCount()  
+
+	DbGoTop()
+	DO WHILE ! Eof()
+		dwCount += 1
+		DbSkip(1)
+	ENDDO
+	? "scope manually counted: " , dwCount
+	
+	DbGoTop()
+	DbSkip(2)
+	? Eof() // TRUE, should be false
+	
+	DbCloseAll()	
+RETURN
+
+function TestOrderCondition() as void
+	LOCAL cDBF AS STRING 
+	LOCAL dwCount AS DWORD
+	LOCAL n AS DWORD
+	
+   	RddSetDefault ( "DBFCDX" ) 
+	cDBf  := "C:\test\test1"
+
+	FErase ( cDbf + ".dbf" )	
+	FErase ( cDbf + ".cdx" )	
+
+	DbCreate(cDbf , {{"LAST","C",10,0}})
+	DbUseArea( ,"DBFCDX",cDBF , , TRUE )
+	FOR n := 1 UPTO 6
+		DbAppend()
+		FieldPut(1, Chr(65 + (n % 3)) )
+	NEXT
+
+	DbSetOrderCondition (,,,,,,,6,,,,,,,)
+	DbGoTop()
+	DbCreateOrder( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+	? OrdKeyCount() // 4, should be 6
+	? 
+	DbGoTop()
+	dwCount := 0
+	DO WHILE .not. eof()
+		dwCount ++
+		DbSkip()
+	END DO
+	? dwCount  // 4, should be 6
+	DbCloseArea()
+RETURN
+
+function testOpenDbServer() as void
+    local oServer as DbServer
+    local cPath as string
+    cPath := "c:\cavo28SP3\Samples\Email\EMAIL.DBF"
+    oServer := DBServer{ cPath, true, true, "DBFVFP" }
+    do while ! oServer:EoF
+        ? oServer:FIELDGET(1)
+        oServer:Skip(1)
+    enddo
+    ? oServer:Used
+    oServer:Close()
     RETURN
 
 FUNCTION testseeknotfound AS VOID

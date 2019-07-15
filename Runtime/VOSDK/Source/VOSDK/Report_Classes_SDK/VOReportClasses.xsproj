@@ -8,7 +8,7 @@
     <Name>VOReportClasses</Name>
     <OutputName>VOReportClasses</OutputName>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <XSharpProjectversion>2.0.2.0</XSharpProjectversion>
+    <XSharpProjectversion>2.0.3.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
   </PropertyGroup>

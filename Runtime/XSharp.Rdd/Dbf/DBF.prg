@@ -598,12 +598,11 @@ METHOD Recall() AS LOGIC
     SELF:ForceRel()
     isOk := SELF:_readRecord()
     IF isOk
-        SELF:_RecordBuffer[ 0 ] := (BYTE)' '
-        SELF:_Deleted := FALSE
-        //
         IF ! SELF:_Hot
             SELF:GoHot()
         ENDIF
+        SELF:_RecordBuffer[ 0 ] := (BYTE)' '
+        SELF:_Deleted := FALSE
     ELSE
         SELF:_DbfError( ERDD.READ, XSharp.Gencode.EG_READ )
     ENDIF
@@ -617,12 +616,12 @@ METHOD Delete() AS LOGIC
     isOk := SELF:_readRecord()
     IF isOk
         IF SELF:_isValid
-            SELF:_RecordBuffer[ 0 ] := (BYTE)'*'
-            SELF:_Deleted := TRUE
-            //
             IF ! SELF:_Hot
                 SELF:GoHot()
             ENDIF
+            SELF:_RecordBuffer[ 0 ] := (BYTE)'*'
+            SELF:_Deleted := TRUE
+            //
         ENDIF
     ELSE
         // VO does not report an error when deleting on an invalid record
@@ -651,12 +650,12 @@ METHOD PutRec(aRec AS BYTE[]) AS LOGIC
     // First, Check the Size
     IF aRec:Length == SELF:_RecordLength 
         IF SELF:_readRecord()
-            Array.Copy(aRec, SELF:_RecordBuffer, SELF:_RecordLength)
             IF ! SELF:_Hot
                 isOk := SELF:GoHot()
             ELSE
                 isOk := TRUE
             ENDIF
+            Array.Copy(aRec, SELF:_RecordBuffer, SELF:_RecordLength)
         ENDIF
     ELSE
         SELF:_dbfError( ERDD.DATAWIDTH, XSharp.Gencode.EG_DATAWIDTH )

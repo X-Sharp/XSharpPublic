@@ -391,7 +391,7 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 	/// </note>
 	///</summary>
     /// <seealso cref='M:XSharp.RT.Functions.DbOrderInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' >DbOrderInfo()</seealso>
-    /// <remarks>The types in the list of possible value are the types of the return value when you call DbOrderInfo() with this enum value.</ermarks>
+    /// <remarks>The types in the list of possible value are the types of the return value when you call DbOrderInfo() with this enum value.</remarks>
 	ENUM DbOrder_Info
         // These number match the defines for Vulcan
         // there are some differences between the various dialects unfortunately
@@ -401,6 +401,8 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER DBOI_EXPRESSION 	:= 2 	
         /// <summary>Number: The current key position in scope and filter</summary>
 		MEMBER DBOI_POSITION 	:= 3  	
+        /// <summary>Alias for DBOI_POSITION</summary>
+        MEMBER DBOI_KEYGOTO     := 3
         /// <summary>Alias for DBOI_POSITION</summary>
 		MEMBER DBOI_KEYNO	 	:= 3	
         /// <summary>Number: The current key position disregarding filters</summary>
@@ -464,8 +466,6 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER DBOI_CUSTOM 		:= 45 
         /// <summary>Logic: Was a skip to adjacent unique Key successful?  </summary>
 		MEMBER DBOI_SKIPUNIQUE 	:= 46 
-        /// <summary></summary>
-		MEMBER DBOI_KEYGOTO 	:= 47	
         /// <summary>Number: Number of keys in the index order</summary>
 		MEMBER DBOI_KEYSINCLUDED:= 48  
         /// <summary>Number: The key number disregarding filters</summary>
@@ -477,9 +477,11 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 
 		// 54-59
 		/* These shouldn't need an open table */
-		MEMBER DBOI_STRICTREAD   := 60  /* Flag for avoiding RDD hierarchy and using a bigger buffer when indexing  */
-		MEMBER DBOI_OPTIMIZE     := 61  /* Flag for whether to use query optimization             */
-		MEMBER DBOI_AUTOOPEN     := 62  /* Flag for automatically opening structural indexes      */
+        /// <summary>The following numbers are reserved but not implemented yet.</summary>
+        MEMBER DBOI_STRICTREAD   := 60  /* Flag for avoiding RDD hierarchy and using a bigger buffer when indexing  */
+        MEMBER DBOI_OPTIMIZE     := 61  /* Flag for whether to use query optimization             */
+        MEMBER DBOI_AUTOOPEN     := 62  /* Flag for automatically opening structural indexes      */
+
 		MEMBER DBOI_AUTOORDER    := 63  /* When a structural index is opened, the order to be set */
 		MEMBER DBOI_AUTOSHARE    := 64  /* When a network is detected, open the index shared, otherwise open exclusively   */ 
 
@@ -591,12 +593,11 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER Picture		:= 80  	 
         /// <summary>'Q' = VarBinary , between 1 and 255 </summary>
 		MEMBER VarBinary		:= 81	 
-        /// <summary>'V' = Any/summary>
+        /// <summary>'V' = Any</summary>
 		MEMBER VarChar      := 86	 
 
-        /// <summary>'0' = Null Flags
+        /// <summary>'0' = Null Flags</summary>
         MEMBER NullFlags        := 48
-
 
         // other types for Harbour will be supported later
         /*

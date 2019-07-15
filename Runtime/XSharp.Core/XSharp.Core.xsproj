@@ -33,7 +33,7 @@
     <VO15>false</VO15>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.0.2.0</XSharpProjectversion>
+    <XSharpProjectversion>2.0.3.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
     <NamedArgs>false</NamedArgs>

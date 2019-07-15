@@ -135,6 +135,12 @@ ENUM XSharp.VOErrors
     MEMBER E_OPEN_MSAVE     := 2006
 #endregion
 
+#region error dialog
+    MEMBER ERRORDIALOG_TITLE   := 2010
+    MEMBER ERRORDIALOG_CLOSE   := 2011
+    MEMBER ERRORDIALOG_COPY    := 2012
+#endregion
+
 #region _WCS
 	MEMBER __WCSFIRST := 4000
 	MEMBER __WCSLIBRARYNAME 				:= __WCSFIRST +   1

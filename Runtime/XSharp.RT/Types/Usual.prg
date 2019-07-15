@@ -1242,7 +1242,7 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.String
                     SWITCH rhs:_usualType
-                    CASE __UsualType.String		; RETURN CompilerServices.__StringSubtract(lhs, rhs)
+                    CASE __UsualType.String		; RETURN CompilerServices.StringSubtract(lhs, rhs)
                         OTHERWISE					; THROW BinaryError("-", __CavoStr(VOErrors.ARGNOTSTRING), FALSE, lhs, rhs)
                     END SWITCH
                 CASE __UsualType.Date
@@ -1656,20 +1656,20 @@ BEGIN NAMESPACE XSharp
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS BYTE
             TRY
                 SWITCH u:_usualType
-                CASE __UsualType.Long		; RETURN CHECKED((BYTE) u:_intValue)
-                CASE __UsualType.Int64		; RETURN CHECKED((BYTE) u:_i64Value)
+                CASE __UsualType.Long		; RETURN UNCHECKED((BYTE) u:_intValue)
+                CASE __UsualType.Int64		; RETURN UNCHECKED((BYTE) u:_i64Value)
                 CASE __UsualType.Float
                     IF RuntimeState.CompilerOptionVO11
-                        RETURN CHECKED(Convert.ToByte(u:_r8Value))
+                        RETURN UNCHECKED(Convert.ToByte(u:_r8Value))
                     ELSE
-                        RETURN CHECKED((BYTE) u:_r8Value)
+                        RETURN UNCHECKED((BYTE) u:_r8Value)
                     ENDIF
                 CASE __UsualType.Logic		; RETURN (BYTE) IIF(u:_logicValue, 1, 0)
                 CASE __UsualType.Decimal
                     IF RuntimeState.CompilerOptionVO11
-                        RETURN CHECKED(Convert.ToByte(u:_decimalValue ))
+                        RETURN UNCHECKED(Convert.ToByte(u:_decimalValue ))
                     ELSE
-                        RETURN CHECKED((BYTE) u:_decimalValue )
+                        RETURN UNCHECKED((BYTE) u:_decimalValue )
                     ENDIF
                 CASE __UsualType.Void		; RETURN  0
                 OTHERWISE
@@ -1686,20 +1686,20 @@ BEGIN NAMESPACE XSharp
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS SHORT
             TRY
                 SWITCH u:_usualType
-                CASE __UsualType.Long	; RETURN CHECKED((SHORT) u:_intValue)
-                CASE __UsualType.Int64	; RETURN CHECKED((SHORT) u:_i64Value)
+                CASE __UsualType.Long	; RETURN UNCHECKED((SHORT) u:_intValue)
+                CASE __UsualType.Int64	; RETURN UNCHECKED((SHORT) u:_i64Value)
                 CASE __UsualType.Float
                     IF RuntimeState.CompilerOptionVO11
-                        RETURN CHECKED(Convert.ToInt16(u:_r8value))
+                        RETURN UNCHECKED(Convert.ToInt16(u:_r8value))
                     ELSE
-                        RETURN CHECKED((SHORT) u:_r8Value)
+                        RETURN UNCHECKED((SHORT) u:_r8Value)
                     ENDIF
 
                 CASE __UsualType.Decimal
                     IF RuntimeState.CompilerOptionVO11
-                        RETURN CHECKED(Convert.ToInt16(u:_decimalValue ))
+                        RETURN UNCHECKED(Convert.ToInt16(u:_decimalValue ))
                     ELSE
-                        RETURN CHECKED((SHORT) u:_decimalValue )
+                        RETURN UNCHECKED((SHORT) u:_decimalValue )
                     ENDIF
 
                 CASE __UsualType.Logic	; RETURN (SHORT) IIF(u:_logicValue, 1, 0)
@@ -1807,10 +1807,10 @@ BEGIN NAMESPACE XSharp
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS SByte
             TRY
                 SWITCH u:_usualType
-                CASE __UsualType.Long	; RETURN CHECKED( (SByte) u:_intValue)
-                CASE __UsualType.Int64	; RETURN CHECKED( (SByte) u:_i64Value)
-                CASE __UsualType.Float	; RETURN CHECKED( (SByte) u:_r8Value)
-                CASE __UsualType.Decimal; RETURN CHECKED((SByte) u:_decimalValue )
+                CASE __UsualType.Long	; RETURN UNCHECKED( (SByte) u:_intValue)
+                CASE __UsualType.Int64	; RETURN UNCHECKED( (SByte) u:_i64Value)
+                CASE __UsualType.Float	; RETURN UNCHECKED( (SByte) u:_r8Value)
+                CASE __UsualType.Decimal; RETURN UNCHECKED((SByte) u:_decimalValue )
                 CASE __UsualType.Logic	; RETURN (SByte) IIF(u:_logicValue, 1, 0)
                 CASE __UsualType.Void	; RETURN 0
                 OTHERWISE
@@ -1828,10 +1828,10 @@ BEGIN NAMESPACE XSharp
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS WORD
             TRY
                 SWITCH u:_usualType
-                CASE __UsualType.Long	; RETURN CHECKED((WORD) u:_intValue)
-                CASE __UsualType.Int64	; RETURN CHECKED((WORD) u:_i64Value)
-                CASE __UsualType.Float	; RETURN CHECKED((WORD) u:_r8Value)
-                CASE __UsualType.Decimal; RETURN CHECKED((WORD) u:_decimalValue )
+                CASE __UsualType.Long	; RETURN UNCHECKED((WORD) u:_intValue)
+                CASE __UsualType.Int64	; RETURN UNCHECKED((WORD) u:_i64Value)
+                CASE __UsualType.Float	; RETURN UNCHECKED((WORD) u:_r8Value)
+                CASE __UsualType.Decimal; RETURN UNCHECKED((WORD) u:_decimalValue )
                 CASE __UsualType.Logic	; RETURN (WORD) IIF(u:_logicValue, 1, 0)
                 CASE __UsualType.Void	; RETURN 0
                 OTHERWISE

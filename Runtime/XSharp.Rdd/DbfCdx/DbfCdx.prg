@@ -84,8 +84,11 @@ VIRTUAL METHOD OrderListFocus(orderInfo AS DbOrderInfo) AS LOGIC
 VIRTUAL METHOD OrderListRebuild() AS LOGIC
 	BEGIN LOCK SELF
 		IF SELF:Shared 
-                        // Error !! Cannot be written !
 			SELF:_DbfError( ERDD.SHARED, XSharp.Gencode.EG_SHARED )
+			RETURN FALSE
+		ENDIF
+		IF SELF:_Readonly
+			SELF:_DbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY)
 			RETURN FALSE
 		ENDIF
 		
@@ -374,7 +377,7 @@ METHOD Open(info AS DbOpenInfo) AS LOGIC
 	LOCAL lOk AS LOGIC
 	lOk := SUPER:Open(info)
 	IF lOk
-                // Open strucural index
+        // Open structural index
 		IF RuntimeState.AutoOpen
 			VAR cExt  := CdxOrderBag.GetIndexExtFromDbfExt(info:FileName)
 			IF ! String.IsNullOrEmpty(cExt)

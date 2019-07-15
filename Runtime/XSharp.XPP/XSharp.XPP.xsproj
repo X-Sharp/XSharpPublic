@@ -47,7 +47,7 @@
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <AssemblyOriginatorKeyFile>$(SOlutionDir)Common\xsharp.snk</AssemblyOriginatorKeyFile>
     <NamedArgs />
-    <XSharpProjectversion>2.0.2.0</XSharpProjectversion>
+    <XSharpProjectversion>2.0.3.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
   </PropertyGroup>
@@ -83,7 +83,6 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-
     <DisabledWarnings>162,553</DisabledWarnings>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -182,7 +181,6 @@ copy $(TargetPath) \xsharp\dev\xsharp\Runtime</PostBuildEvent>
     <Prefer32Bit>False</Prefer32Bit>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-
     <DisabledWarnings>162,171,553,1591</DisabledWarnings>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>

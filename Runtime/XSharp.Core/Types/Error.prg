@@ -211,9 +211,9 @@ BEGIN NAMESPACE XSharp
       sb:AppendLine(e"FuncSym :\t" 	+ SELF:FuncSym   )
       LOCAL sev := (Severity) SELF:Severity AS Severity
       sb:AppendLine(e"Severity :\t" 	+ sev:ToString() )
-      sb:AppendLine(e"CanDefault :\t"	+ SELF:CanDefault)
-      sb:AppendLine(e"CanRetry :\t"	+ SELF:CanRetry )
-      sb:AppendLine(e"CanSubstitute :\t" + SELF:CanSubstitute)
+      sb:AppendLine(e"CanDefault :\t"	+ SELF:CanDefault:ToString())
+      sb:AppendLine(e"CanRetry :\t"	+ SELF:CanRetry:ToString() )
+      sb:AppendLine(e"CanSubstitute :\t" + SELF:CanSubstitute:ToString())
       IF ! String.IsNullOrEmpty(SELF:Operation)
         sb:AppendLine(e"Operation :\t" + SELF:Operation)
       ENDIF

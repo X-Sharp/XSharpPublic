@@ -479,6 +479,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// </returns>
         private static bool ConcatExprCanBeOptimizedWithToString(TypeSymbol symbol)
         {
+#if XSHARP
+            return false;
+#else
             // There are several constraints applied here in support of backwards compatibility:
             // - This optimization potentially changes the order in which ToString is called
             //   on the arguments.  That's a a compatibility issue if one argument's ToString
@@ -501,6 +504,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 default:
                     return false;
             }
+#endif
         }
     }
 }

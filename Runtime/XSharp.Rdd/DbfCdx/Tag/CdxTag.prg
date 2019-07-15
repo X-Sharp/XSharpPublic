@@ -472,21 +472,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:_oRdd:SkipFilter(1)
                     oldRec := SELF:_Recno
                     records := 0
-                    IF !SELF:_oRdd:_Eof
-                        recno := SELF:_locateKey(NULL, 0, SearchMode.Top,0)
-                        isOk := SELF:_oRdd:__Goto(recno)
-                        IF isOk
-                            isOk := SELF:_oRdd:SkipFilter(1)
-                        ENDIF
-                        recno := SELF:_Recno
-                        last := SELF:_oRdd:RecCount + 1
-                        count := 0
-                        DO WHILE recno != 0 .AND. recno < last
-                            count++
-                            recno := SELF:_ScopeSkip(1)
-                        ENDDO
-                        records := count
+                    recno := SELF:_locateKey(NULL, 0, SearchMode.Top,0)
+                    isOk := SELF:_oRdd:__Goto(recno)
+                    IF isOk
+                        isOk := SELF:_oRdd:SkipFilter(1)
                     ENDIF
+                    recno := SELF:_Recno
+                    last := SELF:_oRdd:RecCount + 1
+                    count := 0
+                    DO WHILE recno != 0 .AND. recno < last
+                        count++
+                        recno := SELF:_ScopeSkip(1)
+                    ENDDO
+                    records := count
                 ELSE
                      records := 0
                     IF SELF:GoTop()

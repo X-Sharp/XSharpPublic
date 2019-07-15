@@ -514,7 +514,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             result := TRUE
             SELF:_saveCurrentKey(recno,SELF:_currentValue)
             IF SELF:_goRecord(SELF:_currentValue:Key, SELF:_keySize, recno) != recno
-                IF SELF:_goRecord(NULL, 0, recno) != recno
+                IF SELF:_goRecord(NULL, 0, recno) != recno .and. recno <= self:_oRDD:Reccount
                     IF !SELF:Unique .AND. !SELF:Conditional .AND. !SELF:Custom
                         SELF:_oRdd:_dbfError( SubCodes.ERDD_RECNO_MISSING, GenCode.EG_CORRUPTION,SELF:fileName)
                         result := FALSE
@@ -827,7 +827,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                         ENDIF
                                     ENDDO
                                     recno := recnoOK
-                                    result := SELF:_oRdd:__GoTo(recno)
+                                    result := SELF:_GotoRecno(recno)
                                     IF recno != 0
                                         found := TRUE
                                     ENDIF
@@ -843,7 +843,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                     ELSE
                                         IF diff == -strCmp
                                             found := TRUE
-                                            result := SELF:_oRdd:__Goto(recno)
+                                            result := SELF:_GotoRecno(recno)
                                         ELSE
                                             result := SELF:_oRdd:__Goto(0)
                                         ENDIF

@@ -3467,5 +3467,14 @@
   </data>  
     <data name="E_OPEN_MSAVE" xml:space="preserve">
     <value>The file for the SAVE command could not be created.</value>
-  </data>  
+  </data>
+  <data name="ERRORDIALOG_TITLE" xml:space="preserve">
+    <value>Application Error - </value>
+  </data>
+  <data name="ERRORDIALOG_CLOSE" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="ERRORDIALOG_COPY" xml:space="preserve">
+    <value>&amp;Copy To Clipboard</value>
+  </data>
 </root>

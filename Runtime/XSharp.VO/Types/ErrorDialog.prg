@@ -19,7 +19,8 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
     CONSTRUCTOR( e AS Exception )
       SUPER()
       SELF:InitializeComponent()
-      Text += System.Reflection.Assembly.GetCallingAssembly():Location
+      SELF:SetLanguageStrings()
+      SELF:Text += System.Reflection.Assembly.GetCallingAssembly():Location
       ErrorText:Text := e:ToString()
       ErrorText:Select( 0, 0 )
       RETURN
@@ -27,10 +28,16 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
     CONSTRUCTOR( txt AS STRING )
       SUPER()
       SELF:InitializeComponent()
-      Text += System.Reflection.Assembly.GetCallingAssembly():Location
+      SELF:SetLanguageStrings()
+      SELF:Text += System.Reflection.Assembly.GetCallingAssembly():Location
       ErrorText:Text := txt
       ErrorText:Select( 0, 0 )
       RETURN
+
+    PRIVATE METHOD SetLanguageStrings() as VOID
+        SELF:Text               := __CavoStr(XSharp.VOErrors.ERRORDIALOG_TITLE)
+        SELF:CloseButton:Text   := __CavoStr(XSharp.VOErrors.ERRORDIALOG_CLOSE)
+        SELF:CopyButton:Text    := __CavoStr(XSharp.VOErrors.ERRORDIALOG_COPY)
 
     PRIVATE METHOD InitializeComponent() AS VOID
         SELF:ErrorText := System.Windows.Forms.TextBox{}

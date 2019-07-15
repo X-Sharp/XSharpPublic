@@ -28,11 +28,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             locked := FALSE
             TRY
                 IF SELF:HasBottomScope
-                    IF SELF:Descending
-                        result := SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
-                    ELSE
-                        result := SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPEBOTTOM)
-                    ENDIF
+                    result := SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPEBOTTOM)
                 ELSE
                     SELF:_oRdd:GoCold()
                     SELF:_oRdd:_Top := FALSE
@@ -69,11 +65,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_oRdd:GoCold()
                 
                 IF SELF:HasTopScope
-                    IF SELF:Descending
-                        result := SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPEBOTTOM)
-                    ELSE
-                        result := SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
-                    ENDIF
+                    result := SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
                     IF !SELF:_oRdd:_Found
                         SELF:_oRdd:_Bof := TRUE
                     ENDIF
@@ -512,6 +504,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD _GoToRecno(recno AS LONG ) AS LOGIC
             LOCAL result AS LOGIC
             result := TRUE
+            SELF:_oRDD:__GoTo(recno)
             SELF:_saveCurrentKey(recno,SELF:_currentValue)
             IF SELF:_goRecord(SELF:_currentValue:Key, SELF:_keySize, recno) != recno
                 IF SELF:_goRecord(NULL, 0, recno) != recno .and. recno <= self:_oRDD:Reccount

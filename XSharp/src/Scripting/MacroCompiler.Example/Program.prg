@@ -690,6 +690,8 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a,b| MyDbDo(b)}", Args("BASE","ARG"), "Do(ARG)", typeof(STRING))
         TestMacro(mc, e"Test1->(MyDbDo(\"F1\"))+MyDbDo(\"F2\")", Args(), "Test1->Do(F1)Do(F2)", typeof(string))
         TestMacro(mc, e"Test1->MyDbDo(\"F1\")+MyDbDo(\"F2\")", Args(), "Test1->Do(F1)Test1->Do(F2)", typeof(string))
+        TestMacro(mc, e"{|| M->NAME}", Args(), "MemVarGet(NAME)", typeof(STRING))
+        TestMacro(mc, e"{|| M->NAME := \"Nikos\"}", Args(), "MemVarPut(NAME):Nikos", typeof(STRING))
         TestMacro(mc, e"{|| @@M->NAME}", Args(), "FieldGet(M,NAME)", typeof(STRING))
         TestMacro(mc, e"{|| @@M->NAME := \"Nikos\"}", Args(), "FieldSet(M,NAME):Nikos", typeof(STRING))
 
@@ -709,6 +711,10 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| tci.v1 := 10, tci.v1++, tci.v1 }", Args(), 11, typeof(INT))
         TestMacro(mc, e"{|| DEVS.NIKOS}", Args(), "FieldGet(DEVS,NIKOS)", typeof(STRING))
         TestMacro(mc, e"{|| DEVS.NIKOS := \"123\"}", Args(), "FieldSet(DEVS,NIKOS):123", typeof(STRING))
+        TestMacro(mc, e"{|| M.NAME}", Args(), "MemVarGet(NAME)", typeof(STRING))
+        TestMacro(mc, e"{|| M.NAME := \"Nikos\"}", Args(), "MemVarPut(NAME):Nikos", typeof(STRING))
+        TestMacro(mc, e"{|| @@M.NAME}", Args(), "FieldGet(M,NAME)", typeof(STRING))
+        TestMacro(mc, e"{|| @@M.NAME := \"Nikos\"}", Args(), "FieldSet(M,NAME):Nikos", typeof(STRING))
 
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         RETURN

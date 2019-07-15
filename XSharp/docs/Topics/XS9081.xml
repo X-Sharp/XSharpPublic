@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9081</title>
+  <keywords>
+    <keyword>Include file</keyword>
+    <keyword>XS9081</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS9081</para>
+    </header>
+    <para styleclass="Body Text">Include file &apos;{0}&apos; will be skipped because its values are included in assembly &apos;{1}&apos;.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">Vulcan.Net and some of the other dialects use Include files to define various constants. These constants are now included as DEFINE in the X# runtime libraries.</para>
+    <para styleclass="Body Text">When the compiler detects that your code is still including these include files it will warn you and will NOT read the contents of the include files.<br/>This is in particular important for some header files, such as SET.CH from Xbase++ where some of the numeric values of the defines have been changed because they were incompatible with the same named values in other dialects.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:italic; color:#339966;">// Assume you compile with the X# runtime and VO SDK libraries included</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#include &quot;VOWin32APILibrary.vh&quot; &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// warning XS9081 here</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? WM_CREATE &#160; &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// this will still work because WM_CREATE is included as constant in VOWin32APILibrary.dll </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
+  </body>
+</topic>

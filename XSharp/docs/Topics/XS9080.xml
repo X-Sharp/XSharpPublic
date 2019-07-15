@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9080</title>
+  <keywords>
+    <keyword>XS9080</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9080</para>
+    </header>
+    <para styleclass="Normal">Invalid literal expression.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error gets generated when a Date or DateTime literal has been included that contains invalid values</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; ? 2019.06.31 &#160; </text><tab /><tab /><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// Error XS9080 here, June 31 does not exist</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; ? {^2019-06-31} &#160; </text><tab /><tab /><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// Error XS9080 here, June 31 does not exist</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; ? {^2019-06-30 01:60:00} &#160; </text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// Error XS9080 here, 60 is an invalid number for minutes.</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text></para>
+  </body>
+</topic>

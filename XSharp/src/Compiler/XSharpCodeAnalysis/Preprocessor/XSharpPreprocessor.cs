@@ -237,10 +237,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             macroDefines.Add("__DATE__", () => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.Date.ToString("yyyyMMdd") + '"'));
             macroDefines.Add("__DATETIME__", () => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToString() + '"'));
             bool debug = false;
+#if VSPARSER
+            if (options.PreprocessorSymbolsUpper.Contains("DEBUG"))
+                debug = true;
+            if (options.PreprocessorSymbolsUpper.Contains("NDEBUG"))
+                debug = false;
+#else
             if (options.PreprocessorSymbolNames.Contains((name) => name.ToUpper() == "DEBUG"))
                 debug = true;
             if (options.PreprocessorSymbolNames.Contains((name) => name.ToUpper() == "NDEBUG"))
                 debug = false;
+#endif
             if (debug)
             { 
                 macroDefines.Add("__DEBUG__", () => new XSharpToken(XSharpLexer.TRUE_CONST));

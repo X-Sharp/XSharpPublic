@@ -7,9 +7,9 @@
 
 
 #ifndef Compression
-;#define Compression     "lzma/ultra64"
+#define Compression     "lzma/ultra64"
 ; "lzma/ultra"
-#define Compression     "none" 
+;#define Compression     "none" 
 #endif
 
 #define FOX
@@ -19,11 +19,11 @@
 
 ; version info and similar stuff.
   
-#define Version             "2.0.2.2"
-#define FileNameVersion     "2RC2"
-#define VIVersion           "2.0.2.2"
-#define TouchDate           "2019-06-26"
-#define TouchTime           "02:20:20"
+#define Version             "2.0.3.0"
+#define FileNameVersion     "2RC3"
+#define VIVersion           "2.0.3.0"
+#define TouchDate           "2019-07-15"
+#define TouchTime           "02:30:00"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
 #define DevPublicFolder     "C:\Xsharp\DevPublic"
@@ -59,7 +59,7 @@
 #define SetupExeName        "XSharpSetup"+FileNameVersion+Suffix
 
 #define Product             "XSharp"
-#define ProdBuild           "XSharp Bandol Beta version "+ Version
+#define ProdBuild           "XSharp Bandol RC 3 version "+ Version
 #define Company             "XSharp BV"
 #define RegCompany          "XSharpBV"
 #define XSharpURL           "http://www.xsharp.info"
@@ -146,7 +146,7 @@
 AppId={{#SetupAppId}
 DisableWelcomePage=no
 DisableStartupPrompt=yes
-DisableReadyMemo=yes
+DisableReadyMemo=no
 DisableFinishedPage=no
 InfoBeforeFile=Baggage\ReadmeShort{# Suffix}.rtf
 AppName={#Product}
@@ -181,7 +181,7 @@ VersionInfoProductVersion={# VIVersion}
 Wizardsmallimagefile=Baggage\XSharp_Bmp_Banner.bmp 
 ;WizardImagefile=Baggage\XSharp_Bmp_DialogXMas.bmp
 WizardImagefile=Baggage\XSharp_Bmp_Dialog.bmp
-;WizardImagefile=Baggage\XSharp_Snowman.bmp
+;WizardImagefile=Baggage\XSharp_Summer.bmp
 WizardStyle=modern
 WizardResizable=true
 
@@ -198,7 +198,7 @@ TouchTime={#=TouchTime}
 
 ; Make sure they are admins
 PrivilegesRequired=admin
-UsedUserAreasWarning=false
+UsedUserAreasWarning=true
 ; Make sure they are running on Windows 2000 Or Higher
 Minversion=6.0.600
 
@@ -375,8 +375,8 @@ Components: main\gac;  Source: "{#BinFolder}XSharp.CodeAnalysis.dll";           
 Components: main\gac;  Source: "{#BinFolder}XSharp.Scripting.dll";                 DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;
 
 Components: main\gac;  Source: "{#BinRtFolder}VOWin32APILibrary.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOWin32APILibrary{#VOSDKVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}VOSystemClasses.dll";                DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOSystemClasses{#VOSDKVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}VORDDClasses.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VORDDClasses{#VOSDKVersion}" 
+Components: main\gac;  Source: "{#BinRtFolder}VOSystemClasses.dll";                DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOSystemClasses{#VOSDKVersionAnyCPU}" 
+Components: main\gac;  Source: "{#BinRtFolder}VORDDClasses.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VORDDClasses{#VOSDKVersionAnyCPU}" 
 Components: main\gac;  Source: "{#BinRtFolder}VOSQLClasses.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOSQLClasses{#VOSDKVersion}" 
 Components: main\gac;  Source: "{#BinRtFolder}VOGUIClasses.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOGUIClasses{#VOSDKVersion}" 
 Components: main\gac;  Source: "{#BinRtFolder}VOReportClasses.dll";                DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOReportClasses{#VOSDKVersion}" 
@@ -896,7 +896,7 @@ begin
 ExtractTemporaryFile('license.txt');
 ShellExec('Print', ExpandConstant('{tmp}\license.txt'),
      '', '', SW_SHOW, ewNoWait, ResultCode) ;
-
+end;
 {
 VS2017.txt will contain:
 InstanceId: 3a89761f (Complete)
@@ -996,7 +996,7 @@ function GetUninstallStringRT(): String;
 begin
   result := GetUninstallStringHelper('{#RuntimeAppId}');
 end;
-begin
+
 
 /////////////////////////////////////////////////////////////////////
 function IsUpgrade(): Boolean;
@@ -1011,9 +1011,8 @@ begin
 end;
 
 
-Function UninstallHelper(sUnInstallString: String, message: String): Integer
+Function UninstallHelper(sUnInstallString, message: String): Integer;
 var
-  sUnInstallString: String;
   iResultCode: Integer;
 begin
 // Return Values:

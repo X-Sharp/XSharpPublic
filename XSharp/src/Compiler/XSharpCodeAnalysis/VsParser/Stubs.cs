@@ -199,6 +199,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public SourceCodeKind Kind { get; set; }
 
         public IList<string> PreprocessorSymbols { get; set; } = new List<string>();
+        public IList<string> PreprocessorSymbolsUpper { get; set; } = new List<string>();
+
         public static CSharpParseOptions Default => new CSharpParseOptions();
 
         public static CSharpParseOptions FromVsValues( IList<string> options)
@@ -207,6 +209,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var diags = new List<Diagnostic>();
             parser.ResetXSharpCommandlineOptions();
             var defines = new List<string>();
+            var definesUpper = new List<string>();
             foreach (var opt in options)
             {
                 string name, value;
@@ -226,6 +229,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     var defs = value.Split(new char[] { ';' },StringSplitOptions.RemoveEmptyEntries);
                     defines.AddRange(defs);
+                    foreach (var d in defs)
+                    {
+                        definesUpper.Add(d.ToUpper());
+                    }
                 }
                 else
                 {
@@ -235,6 +242,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var xopts = parser.XSharpSpecificCompilationOptions;
             var result = new CSharpParseOptions().WithXSharpSpecificOptions(xopts);
             result.PreprocessorSymbols = defines;
+            result.PreprocessorSymbolsUpper = definesUpper;
             return result;
         }
 

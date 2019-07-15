@@ -31224,9 +31224,9 @@ FileType = Code
 CopyToBin = 0
 [C312 - PCALL complete sample References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
 [C312 - PCALL complete sample Resources]
 [C312 - PCALL complete sample Native Resources]
 [C312 - PCALL complete sample License files]
@@ -32843,7 +32843,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C327 - cannot convert DWORD to IntPtr Resources]
 [C327 - cannot convert DWORD to IntPtr Native Resources]
 [C327 - cannot convert DWORD to IntPtr License files]
@@ -33450,7 +33450,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C333 - PCALL() with class field PTR Resources]
 [C333 - PCALL() with class field PTR Native Resources]
 [C333 - PCALL() with class field PTR License files]
@@ -34663,7 +34663,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C345 - Problem passing string as PSZ parameter Resources]
 [C345 - Problem passing string as PSZ parameter Native Resources]
 [C345 - Problem passing string as PSZ parameter License files]
@@ -34967,8 +34967,8 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVORDDClasses,1,0,4.0.401.0
+ReferenceGAC = VulcanVOSystemClasses,1,0,1.1.401.0
+ReferenceGAC = VulcanVORDDClasses,1,0,1.1.401.0
 [C348 - Incorrect error about mixing STRICT/CLIPPER Resources]
 [C348 - Incorrect error about mixing STRICT/CLIPPER Native Resources]
 [C348 - Incorrect error about mixing STRICT/CLIPPER License files]
@@ -35171,7 +35171,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C350 - Problem passing VOSTRUCT as parameter Resources]
 [C350 - Problem passing VOSTRUCT as parameter Native Resources]
 [C350 - Problem passing VOSTRUCT as parameter License files]
@@ -35475,7 +35475,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C353 - Some issues with VOSTRUCTs Resources]
 [C353 - Some issues with VOSTRUCTs Native Resources]
 [C353 - Some issues with VOSTRUCTs License files]
@@ -35577,7 +35577,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVORDDClasses,1,0,4.0.401.0
+ReferenceGAC = VulcanVORDDClasses,1,0,1.1.401.0
 [C354 - No error with missing /ins compiler option Resources]
 [C354 - No error with missing /ins compiler option Native Resources]
 [C354 - No error with missing /ins compiler option License files]
@@ -38404,7 +38404,7 @@ CopyToBin = 0
 [C381 - Helpdisplay References]
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C381 - Helpdisplay Resources]
 [C381 - Helpdisplay Native Resources]
 [C381 - Helpdisplay License files]
@@ -39011,7 +39011,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
+ReferenceGAC = VulcanVOGUIClasses,1,0,1.1.401.0
 [C386 - Probem embedding native resource files Resources]
 [C386 - Probem embedding native resource files Native Resources]
 NativeResourceFile = External , %AppPath%\Prg\C386.rc
@@ -40130,9 +40130,9 @@ FileType = Code
 CopyToBin = 0
 [C397 - Strange issue with pointers and alias expressions References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.2.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.2.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.2.0
+ReferenceGAC = XSharp.Core,1,0,2.0.2.0
+ReferenceGAC = XSharp.RT,1,0,2.0.2.0
+ReferenceGAC = XSharp.VO,1,0,2.0.2.0
 [C397 - Strange issue with pointers and alias expressions Resources]
 [C397 - Strange issue with pointers and alias expressions Native Resources]
 [C397 - Strange issue with pointers and alias expressions License files]
@@ -42318,7 +42318,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C416 - Problem invoking delegate passed as parameter
 
-ApplicationGroup = 277C4CD0-A49F-40CE-9680-36717155B0A2
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C417 - (not supported also in vulcan) Cannot convert INTERFACE to USUAL *************
 Application = C417 - (not supported also in vulcan) Cannot convert INTERFACE to USUAL
 IDEVersion = 1.06
@@ -46509,7 +46509,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
+ReferenceGAC = VulcanVOGUIClasses,1,0,1.1.401.0
 [C458 - Name conflict between DEFINE and METHOD Resources]
 [C458 - Name conflict between DEFINE and METHOD Native Resources]
 [C458 - Name conflict between DEFINE and METHOD License files]
@@ -50238,7 +50238,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C492 - #error and #warning messages are output by the compiler with whitespace removed
 
-ApplicationGroup = 40E29AF9-85EE-4D50-BADC-953EE318D423
+ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
 ; ************** APPLICATION C493 - VO compatibility isssues with VOSTRUCTs *************
 Application = C493 - VO compatibility isssues with VOSTRUCTs
 IDEVersion = 1.06
@@ -50282,8 +50282,9 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVORDDClasses,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
 [C493 - VO compatibility isssues with VOSTRUCTs Resources]
 [C493 - VO compatibility isssues with VOSTRUCTs Native Resources]
 NativeResourceFile = External , %AppPath%\Resources\C493.rc
@@ -51094,8 +51095,8 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOInternetClasses,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
+ReferenceGAC = VulcanVOInternetClasses,1,0,1.1.401.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C501 - Error about ambiguous function (used to be a warning) Resources]
 [C501 - Error about ambiguous function (used to be a warning) Native Resources]
 [C501 - Error about ambiguous function (used to be a warning) License files]
@@ -55255,10 +55256,10 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVORDDClasses,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
+ReferenceGAC = VulcanVOGUIClasses,1,0,1.1.401.0
+ReferenceGAC = VulcanVOSystemClasses,1,0,1.1.401.0
+ReferenceGAC = VulcanVORDDClasses,1,0,1.1.401.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C541 - Runtime AccessViolationException with VOSTRUCT and PSZ Resources]
 [C541 - Runtime AccessViolationException with VOSTRUCT and PSZ Native Resources]
 NativeResourceFile = External , %AppPath%\Resources\C541.rc
@@ -55667,7 +55668,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C545 - Problem using _DLL FUNCs with __arglist params Resources]
 [C545 - Problem using _DLL FUNCs with __arglist params Native Resources]
 [C545 - Problem using _DLL FUNCs with __arglist params License files]
@@ -65811,7 +65812,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C640 - Failed to emit module error when /unsafe is missing
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C641 - Runtime error with SHORT( _CAST , usual) *************
 Application = C641 - Runtime error with SHORT( _CAST , usual)
 IDEVersion = 1.06
@@ -66257,9 +66258,9 @@ FileType = Code
 CopyToBin = 0
 [C645 - Compiler crash with usuals and decimals with the X# runtime References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.2.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.2.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.2.0
+ReferenceGAC = XSharp.Core,1,0,2.0.2.0
+ReferenceGAC = XSharp.RT,1,0,2.0.2.0
+ReferenceGAC = XSharp.VO,1,0,2.0.2.0
 [C645 - Compiler crash with usuals and decimals with the X# runtime Resources]
 [C645 - Compiler crash with usuals and decimals with the X# runtime Native Resources]
 [C645 - Compiler crash with usuals and decimals with the X# runtime License files]
@@ -66559,9 +66560,9 @@ FileType = Code
 CopyToBin = 0
 [C648 - Problems using _FIELD with the X# runtime References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.2.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.2.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.2.0
+ReferenceGAC = XSharp.Core,1,0,2.0.2.0
+ReferenceGAC = XSharp.RT,1,0,2.0.2.0
+ReferenceGAC = XSharp.VO,1,0,2.0.2.0
 [C648 - Problems using _FIELD with the X# runtime Resources]
 [C648 - Problems using _FIELD with the X# runtime Native Resources]
 [C648 - Problems using _FIELD with the X# runtime License files]
@@ -69071,9 +69072,9 @@ FileType = Code
 CopyToBin = 0
 [C673 - Various issues with MEMVAR, PUBLIC etc References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.2.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.2.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.2.0
+ReferenceGAC = XSharp.Core,1,0,2.0.2.0
+ReferenceGAC = XSharp.RT,1,0,2.0.2.0
+ReferenceGAC = XSharp.VO,1,0,2.0.2.0
 [C673 - Various issues with MEMVAR, PUBLIC etc Resources]
 [C673 - Various issues with MEMVAR, PUBLIC etc Native Resources]
 [C673 - Various issues with MEMVAR, PUBLIC etc License files]
@@ -69335,7 +69336,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C675 - STRING AUTO properties not initialized with /vo2
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C676 - Compiler error with PROPERTY with empty SET when /vo2+ is enabled *************
 Application = C676 - Compiler error with PROPERTY with empty SET when /vo2+ is enabled
 IDEVersion = 1.06
@@ -69475,8 +69476,8 @@ FileType = Code
 CopyToBin = 0
 [C677 - Problem calling a constructor with PARAMS parameter with a USUAL References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.2.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.2.0
+ReferenceGAC = XSharp.Core,1,0,2.0.2.0
+ReferenceGAC = XSharp.RT,1,0,2.0.2.0
 [C677 - Problem calling a constructor with PARAMS parameter with a USUAL Resources]
 [C677 - Problem calling a constructor with PARAMS parameter with a USUAL Native Resources]
 [C677 - Problem calling a constructor with PARAMS parameter with a USUAL License files]

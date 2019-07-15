@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -13,7 +13,7 @@ STATIC CLASS XSharp.Internal.CompilerServices
 	///<summary>
     /// Subtract 2 strings.
     ///</summary>
-	STATIC METHOD __StringSubtract (lhs AS STRING, rhs AS STRING) AS STRING
+	STATIC METHOD StringSubtract (lhs AS STRING, rhs AS STRING) AS STRING
 		IF lhs != NULL .AND. rhs != NULL
 			VAR len := lhs:Length + rhs:Length
 			RETURN (lhs:TrimEnd() + rhs:TrimEnd()):PadRight(len)

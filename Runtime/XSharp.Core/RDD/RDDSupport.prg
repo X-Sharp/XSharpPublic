@@ -439,6 +439,9 @@ CLASS RddFieldInfo
 			IF FieldType:IsBinary() .OR. sType:IndexOf("B", 1) >= 0
 			    Flags |= DbfFieldFlags.Binary
 			ENDIF
+            IF sType:Contains('+')
+                Flags |= DbfFieldFlags.AutoIncrement
+            ENDIF
 		ELSE
 			FieldType := DBFieldType.Unknown
 		ENDIF
@@ -482,7 +485,7 @@ CLASS RddFieldInfo
         RETURN TRUE
 
     OVERRIDE METHOD ToString() AS STRING
-        RETURN SELF:Name+" ('"+SELF:FieldTypeStr+"',"+SELF:Length:ToString()+","+SELF:Decimals:ToString()+")"
+        RETURN SELF:Name+" ('"+SELF:FieldTypeStr+"',"+SELF:Length:ToString()+","+SELF:Decimals:ToString()+","+SELF:Flags:ToString()+")"
 
     PROPERTY FieldTypeStr AS STRING GET ((CHAR) SELF:FieldType):ToString()
     PROPERTY IsMemo      AS LOGIC GET SELF:FieldType:IsMemo()

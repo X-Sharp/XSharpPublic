@@ -119,8 +119,8 @@ INTERNAL CLASS MemWriter
         LOCAL oErr AS Error
         oErr := Error{FException()}
         oErr:Gencode := EG_READ
-        oErr:SubCode := 2005
-        oErr:FuncSym := "_MRESTORE"
+        oErr:SubCode := XSharp.VOErrors.E_OPEN_MSAVE
+        oErr:FuncSym := "_MSAVE"
         oErr:FileName := cFileName
         oErr:OSCode   := FError()
         THROW oErr
@@ -315,7 +315,7 @@ INTERNAL CLASS MemReader
         LOCAL oErr AS Error
         oErr := Error{FException()}
         oErr:Gencode := EG_READ
-        oErr:SubCode := 2005
+        oErr:SubCode := XSharp.VOErrors.E_OPEN_MRESTORE
         oErr:FuncSym := "_MRESTORE"
         oErr:FileName := cFileName
         oErr:OSCode   := FError()

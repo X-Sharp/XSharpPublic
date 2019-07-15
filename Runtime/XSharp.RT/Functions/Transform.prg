@@ -234,7 +234,7 @@ INTERNAL STATIC CLASS TransFormHelpers
                 ENDIF
                 IF !TransFormHelpers.IsPictureLiteral(c'N', cPic[(INT) w-1])
                     IF Char.IsDigit(cChar)
-                        cNumString += cChar
+                        cNumString += cChar:ToString()
                     ELSEIF cChar == c'-'
                         lNegative := TRUE
                     ENDIF

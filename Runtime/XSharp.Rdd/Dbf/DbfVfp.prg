@@ -25,7 +25,18 @@ CLASS DBFVFP INHERIT DBFCDX
     RETURN isOk
 
     PROTECTED VIRTUAL METHOD _checkField( dbffld REF DbfField) AS LOGIC
-        RETURN dbffld:Type:IsVfp()
+        IF dbffld:Type:IsVfp()
+            if dbffld:Flags:HasFlag(DBFFieldFlags.Autoincrement)
+                if dbffld:Counter == 0
+                    dbffld:Counter := 1
+                endif
+                if dbffld:IncStep == 0
+                    dbffld:IncStep := 1
+                endif
+            ENDIF
+            return true
+        ENDIF
+        RETURN FALSE
 
      METHOD _SetFoxHeader() AS VOID
         LOCAL lVar AS LOGIC
@@ -57,11 +68,13 @@ CLASS DBFVFP INHERIT DBFCDX
         ENDIF
         SELF:_Header:HeaderLen += 263
         SELF:_HeaderLength   += 263
-        RETURN 
+        RETURN
+
     /// <inheritdoc />
     METHOD CreateFields(aFields AS RddFieldInfo[]) AS LOGIC
         LOCAL NullCount := 0 AS LONG
         LOCAL nullFld  := NULL AS RddFieldInfo
+        LOCAL lOk := FALSE as LOGIC
         FOREACH VAR fld IN aFields
             IF fld:IsNullable
                 NullCount += 1
@@ -81,18 +94,19 @@ CLASS DBFVFP INHERIT DBFCDX
             ENDIF
             nullFld:Length := (BYTE) nLen
         ENDIF
-        RETURN SUPER:CreateFields(aFields)
+        lOk := SUPER:CreateFields(aFields)
+        RETURN lOk
 
         PROPERTY FieldCount AS LONG
         GET
-        LOCAL ret := 0 AS LONG
-        IF SELF:_Fields != NULL 
-            ret := SELF:_Fields:Length
-            IF SELF:_NullColumn != NULL
-                ret -= 1
+            LOCAL ret := 0 AS LONG
+            IF SELF:_Fields != NULL 
+                ret := SELF:_Fields:Length
+                IF SELF:_NullColumn != NULL
+                    ret -= 1
+                ENDIF
             ENDIF
-        ENDIF
-        RETURN ret
+            RETURN ret
         END GET
         END PROPERTY
 

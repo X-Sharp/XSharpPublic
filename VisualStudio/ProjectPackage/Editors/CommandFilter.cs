@@ -570,9 +570,9 @@ namespace XSharp.Project
                                         StartSignatureSession(true);
                                         break;
                                     default:
-                                        if (_optionsPage.ShowAfterChar)
-                                            if (Char.IsLetterOrDigit(ch) || ch == '_')
-                                                StartCompletionSession(nCmdID, '\0');
+                                        //if (_optionsPage.ShowAfterChar)
+                                        //    if (Char.IsLetterOrDigit(ch) || ch == '_')
+                                        //        StartCompletionSession(nCmdID, '\0');
                                         break;
                                 }
                             }

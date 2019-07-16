@@ -491,6 +491,16 @@
     <ZipProject Include="Templates\Projects\XPPClassLibrary\XPPClassLibrary.png" />
     <ZipProject Include="Templates\Projects\XPPClassLibrary\XPPClassLibrary.vstemplate" />
     <ZipProject Include="Templates\Projects\XPPClassLibrary\XPPClassLibrary.xsproj" />
+    <ZipProject Include="Templates\Projects\FoxClassLibrary\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\FoxClassLibrary\Class1.prg" />
+    <ZipProject Include="Templates\Projects\FoxClassLibrary\FoxClassLibrary.png" />
+    <ZipProject Include="Templates\Projects\FoxClassLibrary\FoxClassLibrary.vstemplate" />
+    <ZipProject Include="Templates\Projects\FoxClassLibrary\FoxClassLibrary.xsproj" />
+    <ZipProject Include="Templates\Projects\CoreClassLibrary\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\CoreClassLibrary\Class1.prg" />
+    <ZipProject Include="Templates\Projects\CoreClassLibrary\CoreClassLibrary.png" />
+    <ZipProject Include="Templates\Projects\CoreClassLibrary\CoreClassLibrary.vstemplate" />
+    <ZipProject Include="Templates\Projects\CoreClassLibrary\ClassLibrary.xsproj" />
     <Content Include="XSharp.png" />
     <VSCTCompile Include="XSharpProjectPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>

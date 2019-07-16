@@ -2703,6 +2703,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(4, (INT) OrdKeyCount() )
 
 			DbCloseArea()
+			
+			SetDeleted(FALSE)
 		RETURN	
 
 

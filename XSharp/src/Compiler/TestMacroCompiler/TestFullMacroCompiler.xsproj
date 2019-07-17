@@ -20,7 +20,7 @@
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <TargetFrameworkProfile />
     <OutputPath>$(Binariesdir)Exes</OutputPath>
-    <XSharpProjectversion>2.0.2.0</XSharpProjectversion>
+    <XSharpProjectversion>2.0.3.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)src\Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
   </PropertyGroup>

@@ -22,7 +22,7 @@
 #define Version             "2.0.3.0"
 #define FileNameVersion     "2RC3"
 #define VIVersion           "2.0.3.0"
-#define TouchDate           "2019-07-15"
+#define TouchDate           "2019-07-16"
 #define TouchTime           "02:30:00"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
@@ -198,7 +198,7 @@ TouchTime={#=TouchTime}
 
 ; Make sure they are admins
 PrivilegesRequired=admin
-UsedUserAreasWarning=true
+UsedUserAreasWarning=false
 ; Make sure they are running on Windows 2000 Or Higher
 Minversion=6.0.600
 
@@ -518,11 +518,10 @@ Components: vs2015 or vs2017; Source: "{#BinPFolder}Itemtemplates\H*.Zip";      
 Components: vs2015 or vs2017; Source: "{#BinPFolder}Itemtemplates\T*.Zip";              DestDir: "{app}\Extension\Project\ItemTemplates\Code";        Flags: recursesubdirs {#StdFlags}; 
 Components: vs2015 or vs2017; Source: "{#BinPFolder}Itemtemplates\R*.Zip";              DestDir: "{app}\Extension\Project\ItemTemplates\Resources";   Flags: recursesubdirs {#StdFlags}; 
 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*test*.zip";       DestDir: "{app}\Extension\Project\ProjectTemplates\Test";     Flags: recursesubdirs {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*unit*.zip";       DestDir: "{app}\Extension\Project\ProjectTemplates\Test";     Flags: recursesubdirs {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*class*.zip";      DestDir: "{app}\Extension\Project\ProjectTemplates\Windows";  Flags: recursesubdirs {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*Cons*.zip";       DestDir: "{app}\Extension\Project\ProjectTemplates\Windows";  Flags: recursesubdirs {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*App*.zip";        DestDir: "{app}\Extension\Project\ProjectTemplates\Windows";  Flags: recursesubdirs {#StdFlags}; 
+Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\Test*.zip";        DestDir: "{app}\Extension\Project\ProjectTemplates\Test";         Flags: recursesubdirs {#StdFlags}; 
+Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\Class*.zip";       DestDir: "{app}\Extension\Project\ProjectTemplates\ClassLibraries";  Flags: recursesubdirs {#StdFlags}; 
+Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*Cons*.zip";       DestDir: "{app}\Extension\Project\ProjectTemplates\Windows";      Flags: recursesubdirs {#StdFlags}; 
+Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*App*.zip";        DestDir: "{app}\Extension\Project\ProjectTemplates\Windows";      Flags: recursesubdirs {#StdFlags}; 
 ; Snippets
 Components: vs2015 or vs2017; Source: "{#SnippetsSource}*.*";                          DestDir: "{app}\Extension\{# SnippetsPath}";          Flags: recursesubdirs {#StdFlags}; 
 
@@ -583,7 +582,7 @@ Components: vs2015\help; Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"
 Components: vs2017\help; Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; ValueName: "Help23Installed"; ValueType: string; ValueData: "yes" ;  
 
 ; set the VSHelp to Offline
-Components: vs2015\help;  Root: HKCU; Subkey: "{#Vs14RegPath}\Help"; ValueName:"UseOnlineHelp"; ValueType: dword; ValueData: 0; Flags: noerror;
+;Components: vs2015\help;  Root: HKCU; Subkey: "{#Vs14RegPath}\Help"; ValueName:"UseOnlineHelp"; ValueType: dword; ValueData: 0; Flags: noerror;
 ; Cannot set VS 2017 Online help off. It is in a private registry
 
 ; When Vulcan is Installed then update its extension registration so we can handle the priorities in our project system

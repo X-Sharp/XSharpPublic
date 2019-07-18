@@ -254,6 +254,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             var s = text.Lines.GetLinePosition(span.Start);
             var e = text.Lines.GetLinePosition(span.End);
+            if (e.Line > s.Line+1)
+            {
+                // prevent multi line break points
+                e = new LinePosition(s.Line + 1, 0);
+            }
             //System.Diagnostics.Debug.WriteLine($" {span.Start} {file} {s.Line}");
             return new FileLinePositionSpan(file, s, e);
         }

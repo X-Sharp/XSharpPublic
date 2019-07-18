@@ -751,7 +751,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             CSharpSyntaxNode node = _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             return NotInDialect(node, feature);
         }
-        internal CSharpSyntaxNode NotInDialect(CSharpSyntaxNode node, string feature, string additional = "")
+        internal T NotInDialect<T>(T node, string feature, string additional = "") where T : CSharpSyntaxNode
         {
             return node.WithAdditionalDiagnostics(
                 new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, feature, _options.Dialect.ToString()+" "+additional));
@@ -1030,7 +1030,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (ignored != null && !_options.Dialect.AllowGarbage())
             {
-                stmt = (StatementSyntax)NotInDialect(stmt, message);
+                stmt = NotInDialect(stmt, message);
             }
             return stmt;
         }
@@ -1038,7 +1038,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (ignored != null && !_options.Dialect.AllowGarbage())
             {
-                member = (MemberDeclarationSyntax)NotInDialect(member, message);
+                member = NotInDialect(member, message);
             }
             return member;
         }
@@ -5038,7 +5038,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (context.Type != null && context.Type.GetText().ToLower() != "void")
                 {
-                    returntype = (TypeSyntax) NotInDialect(returntype, "Procedure with non VOID return type");
+                    returntype = NotInDialect(returntype, "Procedure with non VOID return type");
                 }
                 else
                 {
@@ -7151,7 +7151,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     //case "CCALL":
                     //case "PCALLNATIVE":
                     //case "CCALLNATIVE":
-                    //    expr = (ExpressionSyntax)NotInDialect(expr, name + " pseudo function");
+                    //    expr = NotInDialect(expr, name + " pseudo function");
                     //    break;
             }
             ArgumentListSyntax argList;
@@ -8115,7 +8115,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (item.Expr != null)
                         l.Add(item.Expr.Get<ExpressionSyntax>());
                     else
-                        l.Add((ExpressionSyntax)NotInDialect(GenerateLiteral(false), "omitting (typed) array elements"));
+                        l.Add(NotInDialect(GenerateLiteral(false), "omitting (typed) array elements"));
                 }
                 exprs = l.ToList();
                 _pool.Free(l);
@@ -8152,7 +8152,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_UntypedArrayNotAvailableInDialect, _options.Dialect.ToString()));
                 }
             }
-            context.Put<ExpressionSyntax>(expr);
+            context.Put(expr);
         }
 
         private bool isNestedArray(XP.LiteralArrayContext context)
@@ -8597,7 +8597,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitXbaseType([NotNull] XP.XbaseTypeContext context)
         {
-            var type = (TypeSyntax)NotInDialect(_objectType, context.Token.Text);
+            var type = NotInDialect(_objectType, context.Token.Text);
             context.Put(type);
         }
 
@@ -8740,7 +8740,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private ExpressionSyntax NoAlias()
         {
-            return (ExpressionSyntax)NotInDialect(GenerateLiteral("alias"), "ALIAS(->) operator");
+            return NotInDialect(GenerateLiteral("alias"), "ALIAS(->) operator");
         }
         public override void ExitAliasedExpression([NotNull] XP.AliasedExpressionContext context)
         {
@@ -8770,22 +8770,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
         public override void ExitMacro([NotNull] XP.MacroContext context)
         {
-            context.Put((ExpressionSyntax)NotInDialect(GenerateLiteral("macro"), "MACRO compiler"));
+            context.Put(NotInDialect(GenerateLiteral("macro"), "MACRO compiler"));
             return;
         }
         public override void ExitMacroName([NotNull] XP.MacroNameContext context)
         {
-            context.Put((ExpressionSyntax)NotInDialect(GenerateLiteral("macro"), "MACRO compiler"));
+            context.Put(NotInDialect(GenerateLiteral("macro"), "MACRO compiler"));
             return;
         }
         public override void ExitAccessMemberLate([NotNull] XP.AccessMemberLateContext context)
         {
-            context.Put((ExpressionSyntax)NotInDialect(GenerateLiteral("value"), "Late bound member access"));
+            context.Put(NotInDialect(GenerateLiteral("value"), "Late bound member access"));
             return;
         }
         public override void ExitAccessMemberLateName([NotNull] XP.AccessMemberLateNameContext context)
         {
-            context.Put((ExpressionSyntax)NotInDialect(GenerateLiteral("value"), "Late bound member access"));
+            context.Put(NotInDialect(GenerateLiteral("value"), "Late bound member access"));
             return;
         }
 
@@ -8797,7 +8797,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 MakeSeparatedList<ExpressionSyntax>(context._Members),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
-            context.Put<InitializerExpressionSyntax>(objinit);
+            context.Put(objinit);
         }
         public override void ExitCollectioninitializer([NotNull] XP.CollectioninitializerContext context)
         {
@@ -8806,7 +8806,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 MakeSeparatedList<ExpressionSyntax>(context._Members),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
-            context.Put<InitializerExpressionSyntax>(collinit);
+            context.Put(collinit);
         }
         public override void ExitMemberinitializer([NotNull] XP.MemberinitializerContext context)
         {
@@ -8815,22 +8815,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Name.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
                 context.Expr.Get<ExpressionSyntax>());
-            context.Put<ExpressionSyntax>(memberinit);
+            context.Put(memberinit);
         }
         public override void ExitObjectOrCollectioninitializer([NotNull] XP.ObjectOrCollectioninitializerContext context)
         {
             if (context.ObjInit != null)
-                context.Put<ExpressionSyntax>(context.ObjInit.Get<ExpressionSyntax>());
+                context.Put(context.ObjInit.Get<ExpressionSyntax>());
             else
-                context.Put<ExpressionSyntax>(context.CollInit.Get<ExpressionSyntax>());
+                context.Put(context.CollInit.Get<ExpressionSyntax>());
 
         }
         public override void ExitInitializervalue([NotNull] XP.InitializervalueContext context)
         {
             if (context.Expr != null)
-                context.Put<ExpressionSyntax>(context.Expr.Get<ExpressionSyntax>());
+                context.Put(context.Expr.Get<ExpressionSyntax>());
             else
-                context.Put<ExpressionSyntax>(context.Init.Get<ExpressionSyntax>());
+                context.Put(context.Init.Get<ExpressionSyntax>());
         }
         #endregion
         #endregion

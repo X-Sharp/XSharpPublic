@@ -1135,7 +1135,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (type == null)
             {
-                type = (TypeSyntax)NotInDialect(_objectType, context.Token.Text);
+                type = NotInDialect(_objectType, context.Token.Text);
             }
             context.Put(type);
         }
@@ -1177,7 +1177,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     var chainArgs = args?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
                     var chainExpr = MakeSimpleMemberAccess(
-                        chain.Type == XP.SELF ? (ExpressionSyntax)GenerateSelf() : GenerateSuper(),
+                        chain.Type == XP.SELF ? GenerateSelf() : GenerateSuper(),
                         GenerateSimpleName(".ctor"));
                     body = MakeBlock(MakeList<StatementSyntax>(
                         GenerateExpressionStatement(_syntaxFactory.InvocationExpression(chainExpr, chainArgs)),
@@ -1860,7 +1860,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (op == SyntaxKind.EmptyStatement)
                     {
                         expr = GenerateFieldSetWa(area, fieldName, right);
-                        expr = (ExpressionSyntax)NotInDialect(expr, "Complex operation: " + context.Op.Text);
+                        expr = NotInDialect(expr, "Complex operation: " + context.Op.Text);
                     }
                     else
                     {
@@ -1884,19 +1884,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ExpressionSyntax expr;
                 ExpressionSyntax field;
                 string alias = null;
+                string area = null;
                 if (fieldNode != null)
                 {
                     field = GenerateLiteral(fieldNode.Field.GetText());
                     alias = fieldNode.Alias?.GetText();
+                    area = fieldNode.Area?.GetText();
                 }
                 else
                 {
                     field = GenerateLiteral(fieldNodeLate.Field.GetText());
                     alias = fieldNodeLate.Alias?.GetText();
+                    area = fieldNodeLate.Area?.GetText();
                 }
                 if (context.Op.Type == XP.ASSIGN_OP)
                 {
-                    expr = GenerateFieldSet(alias, field, right);
+                    if (! String.IsNullOrEmpty(area))
+                    {
+                        expr = GenerateFieldSetWa(GenerateSimpleName(area), field, right);
+                    }
+                    else
+                    { 
+                        expr = GenerateFieldSet(alias, field, right);
+                    }
                 }
                 else
                 {
@@ -1905,13 +1915,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // left already has the FieldGet
                     if (op == SyntaxKind.EmptyStatement)
                     {
-                        expr = GenerateFieldSet(alias, field, right);
-                        expr = (ExpressionSyntax)NotInDialect(expr, "Complex operation: " + context.Op.Text);
+                        expr = GenerateLiteral(0);
+                        expr = NotInDialect(expr, "Complex operation: " + context.Op.Text);
                     }
                     else
                     {
                         expr = _syntaxFactory.BinaryExpression(op, left, token, right);
-                        expr = GenerateFieldSet(alias, field, expr);
+                        if (!String.IsNullOrEmpty(area))
+                        {
+                            expr = GenerateFieldSetWa(GenerateSimpleName(area), field, expr);
+                        }
+                        else
+                        {
+                            expr = GenerateFieldSet(alias, field, expr);
+                        }
                     }
 
                 }
@@ -1941,7 +1958,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (op == SyntaxKind.EmptyStatement)
                     {
                         expr = GenerateMemVarPut(name, right);
-                        expr = (ExpressionSyntax)NotInDialect(expr, "Complex operation: " + context.Op.Text);
+                        expr = NotInDialect(expr, "Complex operation: " + context.Op.Text);
                     }
                     else
                     {
@@ -1982,7 +1999,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (op == SyntaxKind.EmptyStatement)
                             {
                                 expr = GenerateFieldSet(fieldInfo.Alias, field, right);
-                                expr = (ExpressionSyntax)NotInDialect(expr, "Complex operation: " + context.Op.Text);
+                                expr = NotInDialect(expr, "Complex operation: " + context.Op.Text);
                             }
                             else
                             {
@@ -2006,7 +2023,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (op == SyntaxKind.EmptyStatement)
                             {
                                 expr = GenerateMemVarPut(field, right);
-                                expr = (ExpressionSyntax)NotInDialect(expr, "Complex operation: " + context.Op.Text);
+                                expr = NotInDialect(expr, "Complex operation: " + context.Op.Text);
                             }
                             else
                             {
@@ -3838,7 +3855,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken))),
                     SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)))),
                 initializer);
-            context.Put<ExpressionSyntax>(CreateObject(_arrayType, MakeArgumentList(MakeArgument(expr))));
+            context.Put(CreateObject(_arrayType, MakeArgumentList(MakeArgument(expr))));
 
         }
         public override void ExitLiteralValue([NotNull] XP.LiteralValueContext context)
@@ -3946,7 +3963,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (cbc?.LambdaParamList == null || cbc?.LambdaParamList.ImplicitParams != null)
                     {
                         block = MakeBlock(GenerateReturn((ExpressionSyntax)context.CsNode));
-                        context.Put<BlockSyntax>(block);
+                        context.Put(block);
                     }
                 }
             }
@@ -3957,7 +3974,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (cbcontext?.lambda == null)
                 {
                     block = MakeBlock(GenerateReturn(GenerateNIL()));
-                    context.Put<BlockSyntax>(block);
+                    context.Put(block);
                 }
             }
         }

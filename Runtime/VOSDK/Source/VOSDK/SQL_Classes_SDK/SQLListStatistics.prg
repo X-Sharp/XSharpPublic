@@ -37,8 +37,8 @@ METHOD Execute()
 	IF nRet != SQL_SUCCESS
 		oStmt:ErrInfo := SQLErrorInfo{  SELF,                       ;
             #Execute,                      ;
-            oStmt:Connection:EnvHandle, ;
-            oStmt:Connection:ConnHandle,;
+            oStmt:__Connection:EnvHandle, ;
+            oStmt:__Connection:ConnHandle,;
             oStmt:StatementHandle       }
         RETURN FALSE
 	ENDIF

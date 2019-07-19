@@ -6,7 +6,7 @@ CLASS SQLValue INHERIT DataField
 CONSTRUCTOR( oHyperLabel, oFieldSpec, nODBCType, nScale, lNullable ) 
 
 	IF IsInstanceOfUsual(oFieldspec, #FieldSpec) 	///RvdH Added Check
-		oFieldSpec:Nullable := lNullable
+		((FieldSpec)oFieldSpec):Nullable := lNullable
 	ENDIF
 
 	SUPER( oHyperLabel, oFieldSpec )

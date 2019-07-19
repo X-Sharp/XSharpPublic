@@ -104,7 +104,7 @@ METHOD __BuildSQLString() AS VOID STRICT
 	LOCAL nMax          AS DWORD
 	LOCAL uTempValue    AS USUAL
 	LOCAL lNeedOP       AS LOGIC
-	LOCAL oFldSpec      AS USUAL
+	LOCAL oFldSpec      AS FieldSpec
 	LOCAL cVal          AS STRING
 	LOCAL cParentField  AS STRING
 	LOCAL cChildField   AS STRING
@@ -485,7 +485,7 @@ METHOD Notify ( kNotification, uDescription )
 			IF lRetValue .AND. lRelationsActive
 				DO WHILE lRetValue .AND. nChild < ALen( aRelationChildren )
 					nChild++
-					lRetValue := aRelationChildren[nChild]:Notify( kNotification )
+					lRetValue := Send(aRelationChildren[nChild],#Notify, kNotification )
 				ENDDO
 			ENDIF
 			RETURN lRetValue
@@ -506,7 +506,7 @@ METHOD Notify ( kNotification, uDescription )
 				SELF:ResetNotification()
 				lSelectionSeek := FALSE
 
-				IF oStmt:ErrInfo:ErrorFlag
+				IF oStmt:__ErrInfo:ErrorFlag
 					RETURN NIL
 				ENDIF
 			ENDIF
@@ -575,7 +575,7 @@ METHOD Relation( nRelation )
 		ENDIF
 
 		// then return the childs's relationship to the parent
-		RETURN aRelationChildren[nRelation]:Relation()
+		RETURN Send(aRelationChildren[nRelation],#Relation)
 	ENDIF
 
 
@@ -640,10 +640,10 @@ METHOD SetRelation( oChild, uRelation, cRelation )
 		ENDIF
 		lRelationsActive := TRUE
 
-		IF ! oChild:__AcceptSelectiveRelation( SELF, uRelation, cRelation )
+		IF ! Send(oChild,#__AcceptSelectiveRelation, SELF, uRelation, cRelation )
 			RETURN FALSE
 		ENDIF
-		oChild:Notify( NOTIFYRELATIONCHANGE )
+		Send(oChild,#Notify, NOTIFYRELATIONCHANGE )
 	ENDIF
 
 	RETURN TRUE

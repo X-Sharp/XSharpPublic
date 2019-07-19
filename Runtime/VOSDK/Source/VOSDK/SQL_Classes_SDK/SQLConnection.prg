@@ -335,7 +335,7 @@ METHOD __CloseExtraStmt(oStmt AS SQLStatement)  AS VOID STRICT
 	oNewStmt := oStmt
 	oNewStmt:FreeStmt(SQL_DROP)
 	IF oNewStmt:Connection != SELF
-		oNewStmt:Connection:__Free()
+		oNewStmt:__Connection:__Free()
 	ENDIF
 	RETURN
 
@@ -734,7 +734,7 @@ METHOD Disconnect()
 
 	FOR nIndex := 1 TO ALen( aStmts )
 		IF aStmts[nIndex] != NIL
-			aStmts[nIndex]:Destroy()
+			((SqlStatement)aStmts[nIndex]):Destroy()
 		ENDIF
 	NEXT
 
@@ -1402,8 +1402,8 @@ FUNCTION SQLDropMyConnection( cMySourceName, cMyUserID, cMyPassword )
 					", hTask="+ AsString( hTask ) )
 			#ENDIF
 			IF aMyConn[nIndex,5] == 1
-				aMyConn[nIndex,4]:Disconnect()
-				aMyConn[nIndex,4]:__FreeConnect()
+				((SqlConnection)aMyConn[nIndex,4]):Disconnect()
+				((SqlConnection)aMyConn[nIndex,4]):__FreeConnect()
 				ADel( aMyConn, nIndex )
 				ASize( aMyConn, ALen( aMyConn ) - 1 )
 			ELSE
@@ -1654,7 +1654,7 @@ FUNCTION __RemoveConnection( hDbc )
 	#ENDIF
 
 	FOR nIndex := 1 TO ALen( aMyConn )
-		IF  ( aMyConn[nIndex] != NIL ) .AND. ( aMyConn[nIndex,4]:ConnHandle = hDbc )
+		IF  ( aMyConn[nIndex] != NIL ) .AND. ( ((SqlConnection)aMyConn[nIndex,4]):ConnHandle = hDbc )
 			#IFDEF __DEBUG__
 				__SQLOutputDebug( "** found Connection, index="+AsString( nIndex )+     ;
 					", count="+ AsString( aMyConn[nIndex,5] ) )

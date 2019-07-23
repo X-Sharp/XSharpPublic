@@ -1,4 +1,4 @@
-﻿CLASS CSocket
+CLASS CSocket
 	// UH 10/06/1998
 	// PROTECT nSocket AS INT
 	PROTECT nSocket AS DWORD
@@ -1120,7 +1120,7 @@ CONSTRUCTOR(xOwner, nType, xSocket, xSocketStatus)
 
 METHOD InternetStatus( nContext, nStatus, xStatus, nStatusLength )
 	IF IsMethod(SELF:oOwner, #InternetStatus)
-		RETURN SELF:oOwner:InternetStatus(nContext, nStatus, xStatus, nStatusLength)
+		RETURN Send(SELF:oOwner,#InternetStatus,nContext, nStatus, xStatus, nStatusLength)
 	ENDIF
 	RETURN TRUE
 

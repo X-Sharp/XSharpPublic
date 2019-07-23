@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>Class Library VO Dialect</Name>
+    <Description>A project for creating a X# class library (.dll) for the VO Dialect</Description>
+    <Icon>VOClassLibrary.png</Icon>
+    <TemplateID>XSharp.VOClassLibrary</TemplateID>
+    <ProjectType>XSharp</ProjectType>
+    <SortOrder>1</SortOrder>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>ClassLibrary</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <LanguageTag Value="X#" />
+    <PlatformTag Value="Windows" />
+    <ProjectTypeTag Value="Library" />
+
+  </TemplateData>
+  <TemplateContent>
+    <Project File="VOClassLibrary.xsproj" ReplaceParameters="true">
+      <!-- 
+      These are the items which will show up when a new project is created using the custom project system.
+      Items referenced in here must also be referenced in the project file.
+      -->
+      <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.prg">AssemblyInfo.prg</ProjectItem>
+      <ProjectItem ReplaceParameters="true" OpenInEditor="true">Class1.prg</ProjectItem>
+    </Project>
+  </TemplateContent>
+</VSTemplate>

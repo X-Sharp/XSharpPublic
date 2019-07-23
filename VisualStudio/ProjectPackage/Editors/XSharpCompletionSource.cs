@@ -62,7 +62,7 @@ namespace XSharpLanguage
         private IToken _stopToken;
 
         private XFile _file;
-        private bool _coreDialect;
+        private bool _allowDot;
         private bool _showTabs;
         private bool _keywordsInAll;
         private bool _dotUniversal;
@@ -85,7 +85,7 @@ namespace XSharpLanguage
             // Retrieve from Project properties later: _file.Project.ProjectNode.ParseOptions.
             var prj = _file.Project.ProjectNode;
             var parseoptions = prj.ParseOptions;
-            _coreDialect = parseoptions.Dialect == XSharpDialect.Core;
+            _allowDot = parseoptions.Dialect == XSharpDialect.Core || parseoptions.Dialect == XSharpDialect.FoxPro;
             _settingIgnoreCase = true;
             _stopToken = null;
             this.aggregator = aggregator;
@@ -105,7 +105,7 @@ namespace XSharpLanguage
                     throw new ObjectDisposedException("XSharpCompletionSource");
                 _showTabs = _optionsPage.CompletionListTabs;
                 _keywordsInAll = _optionsPage.KeywordsInAll;
-                if (_coreDialect)
+                if (_allowDot)
                 {
                     _dotUniversal = _optionsPage.UseDotAsUniversalSelector;
                 }

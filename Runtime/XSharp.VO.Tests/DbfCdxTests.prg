@@ -2708,6 +2708,85 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN	
 
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD CDX_OrdScope_and_SetFilter() AS VOID
+			LOCAL nCount := 0 AS INT
+			LOCAL cDBF AS STRING
+			
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
+			
+			DbfTests.CreateDatabase(cDbf , ;
+							{ { "LAST" , "C" , 20 , 0 }} , ;
+							{ "A1" ,"A3" , "A2",  "Go1" , "G1" , "g2" , "g3", "go2"  , "h2" , "h4" } )
+
+			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			DbSetOrder ( 1 )
+		
+			OrdScope ( TOPSCOPE, "A" )
+			OrdScope ( BOTTOMSCOPE, "G" )
+			
+			Assert.Equal(8 , (INT) OrdKeyCount() )
+			
+			LOCAL cFilter AS STRING
+			cFilter := "GO" 
+			
+			Assert.True( DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  } , "Upper (LAST) = "+ cFilter )  )
+			DbGoTop()
+			Assert.False( Eof() )
+			Assert.Equal(2 , (INT) OrdKeyCount() )
+			Assert.False( Eof() )
+			DbGoTop()
+			Assert.False( Eof() )
+
+			DO WHILE ! Eof()
+				nCount ++
+				DbSkip ( 1 )
+			ENDDO
+			Assert.Equal(2 , nCount )
+
+			DbCloseArea()
+		RETURN	
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD CDX_OrdScope_and_SetFilter_numerics() AS VOID
+			LOCAL nCount := 0 AS INT
+			LOCAL cDBF AS STRING
+			
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
+			
+			DbfTests.CreateDatabase(cDbf , ;
+							{ { "LAST" , "N" , 20 , 0 }} , ;
+							{ 1,2,3,4,5,6,3,4 } )
+
+			DbCreateOrder ( "ORDER1" , cDbf , "LAST" , { || _Field->LAST } )
+			DbSetOrder ( 1 )
+		
+			OrdScope ( TOPSCOPE, 2 )
+			OrdScope ( BOTTOMSCOPE, 5 )
+			
+			Assert.Equal(6 , (INT) OrdKeyCount() )
+			
+			Assert.True( DbSetFilter ( { || _Field->LAST == 3  } , "LAST == 3")  )
+			DbGoTop()
+			Assert.False( Eof() )
+			Assert.Equal(2 , (INT) OrdKeyCount() )
+			Assert.False( Eof() )
+			DbGoTop()
+			Assert.False( Eof() )
+
+			DO WHILE ! Eof()
+				nCount ++
+				DbSkip ( 1 )
+			ENDDO
+			Assert.Equal(2 , nCount )
+
+			DbCloseArea()
+		RETURN	
+
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG

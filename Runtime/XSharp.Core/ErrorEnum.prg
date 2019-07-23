@@ -520,6 +520,7 @@ ENUM XSharp.VOErrors
 	
 	// NOTE DUPLICATE VALUES WILL CAUSE PROBLEM WITH LOOKUP. THEREFORE RT_MSG_ERR IS A DEFINE
 	// MEMBER RT_MSG_ERR     := 0X4000
+    // This matches the numeric values for the Gencode ENum + 0x4000
 	/// <summary>String ID for the first error message </summary>
 	MEMBER RT_MSG_ERR_0        := RT_MSG_ERR + 0 
 	/// <exclude />

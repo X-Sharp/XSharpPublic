@@ -153,9 +153,9 @@
             this.chkDotAsUniversalSelector.AutoSize = true;
             this.chkDotAsUniversalSelector.Location = new System.Drawing.Point(13, 59);
             this.chkDotAsUniversalSelector.Name = "chkDotAsUniversalSelector";
-            this.chkDotAsUniversalSelector.Size = new System.Drawing.Size(241, 17);
+            this.chkDotAsUniversalSelector.Size = new System.Drawing.Size(276, 17);
             this.chkDotAsUniversalSelector.TabIndex = 1;
-            this.chkDotAsUniversalSelector.Text = "Dot (.) as universal selector (Core dialect only)";
+            this.chkDotAsUniversalSelector.Text = "Dot (.) as universal selector (Core and FoxPro dialect)";
             this.chkDotAsUniversalSelector.UseVisualStyleBackColor = true;
             this.chkDotAsUniversalSelector.CheckedChanged += new System.EventHandler(this.chkDotAsUniversalSelector_CheckedChanged);
             // 
@@ -177,7 +177,7 @@
             // multiFactor
             // 
             this.multiFactor.Location = new System.Drawing.Point(220, 118);
-            this.multiFactor.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.multiFactor.Margin = new System.Windows.Forms.Padding(2);
             this.multiFactor.Name = "multiFactor";
             this.multiFactor.Size = new System.Drawing.Size(27, 20);
             this.multiFactor.TabIndex = 10;

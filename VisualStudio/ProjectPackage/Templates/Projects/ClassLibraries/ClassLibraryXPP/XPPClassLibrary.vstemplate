@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
   <TemplateData>
-    <Name>Class Library</Name>
-    <Description>A project for creating a X# class library (.dll) for the Core dialect</Description>
-    <Icon>ClassLibrary.png</Icon>
-    <TemplateID>XSharp.ClassLibrary</TemplateID>
+    <Name>Class Library XBase++ Dialect</Name>
+    <Description>A project for creating a X# class library (.dll) for the Xbase++ Dialect</Description>
+    <Icon>XPPClassLibrary.png</Icon>
+    <TemplateID>XSharp.XPPClassLibrary</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <SortOrder>1</SortOrder>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
@@ -14,13 +14,10 @@
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
     <LanguageTag Value="X#" />
     <PlatformTag Value="Windows" />
-    <PlatformTag Value="Linux" />
-    <PlatformTag Value="MacOS" />
     <ProjectTypeTag Value="Library" />
-
   </TemplateData>
   <TemplateContent>
-    <Project File="ClassLibrary.xsproj" ReplaceParameters="true">
+    <Project File="XPPClassLibrary.xsproj" ReplaceParameters="true">
       <!-- 
       These are the items which will show up when a new project is created using the custom project system.
       Items referenced in here must also be referenced in the project file.

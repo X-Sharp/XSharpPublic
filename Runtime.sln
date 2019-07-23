@@ -48,7 +48,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VOSDK", "VOSDK", "{FABD1B90-611A-48D5-9D69-BC148E103030}"
 	ProjectSection(SolutionItems) = preProject
 		Runtime\VOSDK\Source\SharedSource\BuildNumber.h = Runtime\VOSDK\Source\SharedSource\BuildNumber.h
-		Runtime\VOSDK\Source\SharedSource\RuntimeNames.h = Runtime\VOSDK\Source\SharedSource\RuntimeNames.h
 	EndProjectSection
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VOConsoleClasses", "Runtime\VOSDK\Source\VOSDK\Console_Classes_SDK\VOConsoleClasses.xsproj", "{D0A5DA23-00B5-41FD-8564-96246B1E222F}"

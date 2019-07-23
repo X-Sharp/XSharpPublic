@@ -30,6 +30,7 @@ namespace XSharp.Project.OptionsPages
             chkKeywordsInAll.Checked = optionsPage.KeywordsInAll;
             chkDotAsUniversalSelector.Checked = optionsPage.UseDotAsUniversalSelector;
             //chkShowAfterChar.Checked = optionsPage.ShowAfterChar;
+            chkShowAfterChar.Visible = false;
             chkShowAfterChar.Checked = false;
             grpCase.Enabled = true;
             switch (optionsPage.KeywordCase)

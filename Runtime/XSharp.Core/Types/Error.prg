@@ -108,6 +108,19 @@ BEGIN NAMESPACE XSharp
 
     /// <summary>A value of any data type unused by the Error system.  It is provided as a user-definable slot, allowing arbitrary information to be attached to an Error object and retrieved later</summary>
     VIRTUAL PROPERTY Cargo              AS OBJECT AUTO
+    
+	PRIVATE _StackTrace AS STRING
+    VIRTUAL PROPERTY StackTrace         AS STRING
+    	GET
+    		IF String.IsNullOrEmpty(SELF:_StackTrace)
+    			RETURN SUPER:StackTrace
+    		END IF
+    		RETURN SELF:_StackTrace
+    	END GET
+    	SET
+    		SELF:_StackTrace := VALUE
+    	END SET
+    END PROPERTY
 
 
     PRIVATE METHOD setDefaultValues() AS VOID
@@ -144,6 +157,7 @@ BEGIN NAMESPACE XSharp
     ELSE
         SELF:Description := ex:Message
         SELF:GenCode     := EG_EXCEPTION
+        SELF:_StackTrace := ex:StackTrace
     ENDIF
 
     /// <summary>Create an Error Object with the Innner Exception and other parameters</summary>

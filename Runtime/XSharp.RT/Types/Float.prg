@@ -74,7 +74,7 @@ BEGIN NAMESPACE XSharp
         #endregion
         #region Properties
         /// <summary>REAL8 (System.Double) value</summary>
-        PROPERTY Value    AS REAL8	GET _value			
+        PROPERTY @@Value    AS REAL8	GET _value			
         /// <summary>Width </summary>
         PROPERTY Digits   AS INT	GET _length		
         /// <summary>Number of decimals</summary>
@@ -97,6 +97,15 @@ BEGIN NAMESPACE XSharp
             LOCAL delta AS REAL8
             LOCAL diff  AS REAL8
             LOCAL equal AS LOGIC
+            
+            IF Double.IsNaN(rhs:_value) .or. Double.IsNaN(SELF:_value)
+            	RETURN Double.IsNaN(rhs:_value) .and. Double.IsNaN(SELF:_value)
+            ELSEIF rhs:_value == Double.PositiveInfinity .or. SELF:_value == Double.PositiveInfinity
+            	RETURN rhs:_value == SELF:_value
+            ELSEIF rhs:_value == Double.NegativeInfinity .or. SELF:_value == Double.NegativeInfinity
+            	RETURN rhs:_value == SELF:_value
+            END IF
+            
             delta := RuntimeState.FloatDelta
             diff := _value - rhs:_value
             IF delta == 0.0

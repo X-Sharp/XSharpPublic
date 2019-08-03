@@ -199,7 +199,7 @@ END CLASS
 FUNCTION AsHexString(uValue AS USUAL) AS STRING
 	LOCAL result AS STRING
 	IF uValue:IsString
-		result := c2Hex( (STRING) uValue)
+		result := C2Hex( (STRING) uValue)
 	ELSEIF uValue:IsNumeric
 		result := String.Format("{0:X8}", (INT64) uValue)
 	ELSE
@@ -467,7 +467,7 @@ FUNCTION Str(n ,uLen ,uDec ) AS STRING CLIPPER
             nDec := (DWORD) uDec
         ENDIF
     ENDIF
-	result := _str3(n, nLen, nDec)
+	result := _Str3(n, nLen, nDec)
 	IF lTrimSpaces
 		result := result:TrimStart()
 	END IF
@@ -659,6 +659,16 @@ FUNCTION Str1(f AS USUAL) AS STRING
 INTERNAL FUNCTION _Str1(f AS FLOAT) AS STRING
 	VAR nDecimals := f:decimals
 	VAR nDigits   := f:Digits
+
+	SWITCH (Double)f
+	CASE Double.NaN
+		RETURN Double.NaN:ToString()
+	CASE Double.PositiveInfinity
+		RETURN Double.PositiveInfinity:ToString()
+	CASE Double.NegativeInfinity
+		RETURN Double.NegativeInfinity:ToString()
+	END SWITCH
+	
 	IF nDecimals < 0 .OR. RuntimeState.Fixed
 		nDecimals := (SHORT) RuntimeState.Decimals
 	ENDIF

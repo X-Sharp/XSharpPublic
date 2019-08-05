@@ -20,9 +20,9 @@
 ; version info and similar stuff.
   
 #define Version             "2.0.3.0"
-#define FileNameVersion     "2RC3"
-#define VIVersion           "2.0.3.0"
-#define TouchDate           "2019-07-16"
+#define FileNameVersion     "2RC3a"
+#define VIVersion           "2.0.3.1"
+#define TouchDate           "2019-07-18"
 #define TouchTime           "02:30:00"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"

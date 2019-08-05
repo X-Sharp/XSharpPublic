@@ -42,7 +42,7 @@
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
     <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
-    <AssemblyOriginatorKeyFile>c:\xsharp\devrt\runtime\vosdk\source\sharedbinaries\vulcanstrongnamekey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(Solutiondir)Runtime\vosdk\source\sharedbinaries\vulcanstrongnamekey.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <PlatformTarget>x86</PlatformTarget>

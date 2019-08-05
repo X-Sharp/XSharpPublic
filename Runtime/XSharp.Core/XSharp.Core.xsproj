@@ -1,11 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
-  <PropertyGroup Label="Globals">
-    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
-    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
-    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+  <Import Project="..\Runtime.Targets" />
+  <PropertyGroup>
+    <ProjectGuid>535dff14-efb7-43f5-a4e1-71c1c4280040</ProjectGuid>
+    <RootNamespace>XSharp</RootNamespace>
+    <AssemblyName>XSharp.Core</AssemblyName>
+    <Name>XSharp.Core</Name>
+    <Dialect>Core</Dialect>
+    <OutputName>XSharp.Core</OutputName>
     <AZ>true</AZ>
     <CS>false</CS>
     <LB>false</LB>
@@ -13,48 +16,11 @@
     <Unsafe>false</Unsafe>
     <INS>false</INS>
     <NS>false</NS>
-    <VO1>false</VO1>
-    <VO2>false</VO2>
-    <VO3>false</VO3>
-    <VO4>false</VO4>
-    <VO5>false</VO5>
-    <VO6>false</VO6>
-    <VO7>false</VO7>
-    <VO8>false</VO8>
-    <VO9>false</VO9>
-    <VO10>false</VO10>
-    <VO11>false</VO11>
-    <VO12>false</VO12>
-    <VO13>false</VO13>
-    <VO14>false</VO14>
-    <StartupObject />
-    <ApplicationIcon />
-    <Prefer32Bit>False</Prefer32Bit>
-    <VO15>false</VO15>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <VO16>false</VO16>
     <XSharpProjectversion>2.0.3.0</XSharpProjectversion>
-    <Includepaths>$(Solutiondir)Common</Includepaths>
-    <Nostandarddefs>true</Nostandarddefs>
     <NamedArgs>false</NamedArgs>
-    <StandardDefs />
     <MemVar>false</MemVar>
     <Undeclared>false</Undeclared>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ProjectGuid>535dff14-efb7-43f5-a4e1-71c1c4280040</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XSharp</RootNamespace>
-    <AssemblyName>XSharp.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <Name>XSharp.Core</Name>
-    <Nologo>true</Nologo>
-    <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>Core</Dialect>
-    <AssemblyOriginatorKeyFile>$(SOlutionDir)Common\xsharp.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -64,18 +30,11 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>False</Prefer32Bit>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
     <DisabledWarnings>162</DisabledWarnings>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <PPO>false</PPO>
-    <NoStdDef>true</NoStdDef>
-    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
-    <CommandLineOption />
-    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -88,37 +47,19 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
     <DisabledWarnings>162</DisabledWarnings>
-    <SignAssembly>true</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <PPO>false</PPO>
-    <NoStdDef>false</NoStdDef>
-    <Prefer32Bit>False</Prefer32Bit>
-    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
-    <CommandLineOption />
-    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>False</Prefer32Bit>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
     <DisabledWarnings>168;9001;162;1591</DisabledWarnings>
-    <SignAssembly>true</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <PPO>false</PPO>
-    <NoStdDef>true</NoStdDef>
-    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
-    <CommandLineOption />
     <DocumentationFile>XSharp.Core.Xml</DocumentationFile>
-    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
+    <CommandLineOption>/noclipcall</CommandLineOption>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>

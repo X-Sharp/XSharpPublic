@@ -201,7 +201,11 @@ FUNCTION AsHexString(uValue AS USUAL) AS STRING
 	IF uValue:IsString
 		result := C2Hex( (STRING) uValue)
 	ELSEIF uValue:IsNumeric
-		result := String.Format("{0:X8}", (INT64) uValue)
+        IF uValue:IsInt64
+		    result := String.Format("{0:X}", (INT64) uValue)
+        ELSE
+            result := String.Format("{0:X}", (INT) uValue)
+        ENDIF
 	ELSE
 		result := ""
 	ENDIF

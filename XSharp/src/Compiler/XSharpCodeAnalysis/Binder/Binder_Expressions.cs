@@ -448,8 +448,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         else if (isUsual)
                         {
-                            earlyBound |= String.Compare(propName, "_NIL", StringComparison.OrdinalIgnoreCase) == 0;
-                            //earlyBound |= String.Compare(propName, "Value", StringComparison.OrdinalIgnoreCase) == 0;
+                            // USUAL._NIL and USUAL.ToObject()
+                            var m = Compilation.UsualType().GetMembers(propName);
+                            if (m.Length > 0 && m[0].IsStatic)
+                                earlyBound |= true;
                         }
                         else if (isObject)
                         {

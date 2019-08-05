@@ -1150,7 +1150,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             XP.ParameterListContext paramlist,
             XP.StatementBlockContext stmtblock,
             XSharpParserRuleContext errorcontext,
-            IToken chain = null,
+            XP.ConstructorchainContext chain = null,
             XP.ArgumentListContext args = null,
             bool isInInterface = false)
         {
@@ -1177,7 +1177,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     var chainArgs = args?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
                     var chainExpr = MakeSimpleMemberAccess(
-                        chain.Type == XP.SELF ? GenerateSelf() : GenerateSuper(),
+                        chain.Start.Type == XP.SELF ? GenerateSelf() : GenerateSuper(),
                         GenerateSimpleName(".ctor"));
                     body = MakeBlock(MakeList<StatementSyntax>(
                         GenerateExpressionStatement(_syntaxFactory.InvocationExpression(chainExpr, chainArgs)),
@@ -1246,7 +1246,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     modifiers: modifiers,
                     identifier: typeId,
                     parameterList: parameters,
-                    initializer: createInitializer(chain, args),
+                    initializer: createInitializer(chain),
                     body: body,
                     expressionBody: null,
                     semicolonToken: (stmtblock?._Stmts?.Count > 0) ? null :
@@ -1435,7 +1435,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var ctor = createConstructor(
                 context, mods, context.Attributes, context.ParamList, context.StmtBlk, context,
-                context.Chain, context.ArgList, context.isInInterface());
+                context.Chain, context.Chain?.ArgList, context.isInInterface());
             if (ctor != null)
             {
                 context.Put(ctor);

@@ -43,7 +43,7 @@ macroScript         : ( CbExpr=codeblock | Code=codeblockCode ) EOS
                       EOF
                     ;
 
-source              : eos? (Entities+=entity )*
+source              : (Entities+=entity )*
                       EOF
                     ;
 
@@ -73,6 +73,7 @@ entity              : namespace_
                     | destructor                // Destructor Class xxx syntax
                     | {IsXPP}? xppmethod        // XPP method, will be linked to XPP Class
                     | {AllowXBaseVariables}? filewidememvar      // memvar declared at file level
+                    | eos                       // Blank Lines between entities
                     ;
 
 
@@ -138,7 +139,7 @@ vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? //
                       )
                        
                       ( CharSet=(AUTO | ANSI | UNICODE) )?
-                      eos
+                      EOS
                     ;
 
 dllcallconv         : Cc=( CLIPPER | STRICT | PASCAL | THISCALL | FASTCALL | ASPEN | WINCALL | CALLBACK)
@@ -163,14 +164,14 @@ funcprocModifiers   : ( Tokens+=(STATIC | INTERNAL | PUBLIC | EXPORT | UNSAFE) )
                     ;
 
 
-using_              : USING (Static=STATIC)? (Alias=identifierName Op=assignoperator)? Name=name eos
+using_              : USING (Static=STATIC)? (Alias=identifierName Op=assignoperator)? Name=name EOS
                     ;
 
 
                     // [STATIC] GLOBAL [CONST] Identifier [:= Expression] [, Identifier2 [:= Expression2] ] [AS Type]
                     // STATIC          [CONST] Identifier [:= Expression] [, Identifier2 [:= Expression2] ] [AS Type]
-voglobal            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? Global=GLOBAL (Const=CONST)? Vars=classVarList end=eos 
-                    | (Attributes=attributes)? Static=STATIC (Const=CONST)? Vars=classVarList end=eos 
+voglobal            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? Global=GLOBAL (Const=CONST)? Vars=classVarList end=EOS 
+                    | (Attributes=attributes)? Static=STATIC (Const=CONST)? Vars=classVarList end=EOS
                     ;
 
 
@@ -197,7 +198,7 @@ methodtype          : Token=(METHOD | ACCESS | ASSIGN)
 
 // Convert to constant on Globals class. Expression must be resolvable at compile time
 vodefine            : (Modifiers=funcprocModifiers)?
-                      DEFINE Id=identifier Op=assignoperator Expr=expression (AS DataType=typeName)? eos
+                      DEFINE Id=identifier Op=assignoperator Expr=expression (AS DataType=typeName)? EOS
                     ;
 
 vostruct            : (Modifiers=votypeModifiers)?
@@ -223,7 +224,7 @@ votypeModifiers     : ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE | STATIC ) 
 
 namespace_          : BEGIN NAMESPACE Name=name e=eos
                       (Entities+=entity)*
-                      END NAMESPACE Ignored=name?  eos
+                      END NAMESPACE Ignored=name?  EOS
                     ;
 
 interface_          : (Attributes=attributes)? (Modifiers=interfaceModifiers)?            
@@ -233,7 +234,7 @@ interface_          : (Attributes=attributes)? (Modifiers=interfaceModifiers)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)*              // Optional typeparameterconstraints for Generic Interface
                       e=eos
                       (Members+=classmember)*
-                      END INTERFACE Ignored=identifier?   eos
+                      END INTERFACE Ignored=identifier?  EOS
                     ;
 
 interfaceModifiers  : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
@@ -293,7 +294,7 @@ delegate_           : (Attributes=attributes)? (Modifiers=delegateModifiers)?
                       ParamList=parameterList?
                       (AS Type=datatype)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)*
-                      e=eos
+                      e=EOS
                     ;
 
 delegateModifiers   : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE) )+
@@ -314,9 +315,9 @@ enummember          : (Attributes=attributes)? MEMBER? Id=identifier (Op=assigno
 
 event_              : (Attributes=attributes)? (Modifiers=eventModifiers)?
                        EVENT (ExplicitIface=nameDot)? Id=identifier (AS Type=datatype)?
-                       ( end=eos
-                        | (LineAccessors += eventLineAccessor)+ end=eos
-                        | Multi=eos (Accessors+=eventAccessor)+ END EVENT? Ignored=identifier? eos
+                       ( end=EOS
+                        | (LineAccessors += eventLineAccessor)+ end=EOS
+                        | Multi=eos (Accessors+=eventAccessor)+ END EVENT? Ignored=identifier? EOS
                        )
                     ;
 
@@ -360,9 +361,9 @@ property            : (Attributes=attributes)? (Modifiers=memberModifiers)?
                       PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=nameDot)? Id=identifier)
                       (ParamList=propertyParameterList)?
                       (AS Type=datatype)?
-                      ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (Op=assignoperator Initializer=expression)? end=eos	// Auto
-                        | (LineAccessors+=propertyLineAccessor)+ end=eos													// Single Line
-                        | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? Ignored=identifier?  eos				// Multi Line
+                      ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (Op=assignoperator Initializer=expression)? end=EOS	// Auto
+                        | (LineAccessors+=propertyLineAccessor)+ end=EOS													// Single Line
+                        | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? Ignored=identifier?  EOS				// Multi Line
                       )
                     ;
 
@@ -408,16 +409,19 @@ classmember         : Member=method                                 #clsmethod
                     ;
 
 constructor         :  (Attributes=attributes)? (Modifiers=constructorModifiers)?
-                      CONSTRUCTOR (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
+                      c1=CONSTRUCTOR (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
                         (CallingConvention=callingconvention)? 
                         (CLASS (Namespace=nameDot)? ClassId=identifier)?		
                         end=eos
-                      (Chain=(SELF | SUPER)
-                      (
-                          (LPAREN RPAREN)
-                        | (LPAREN ArgList=argumentList RPAREN)
-                      ) eos)?
+                      (Chain=constructorchain)?
                       StmtBlk=statementBlock
+                      (END c2=CONSTRUCTOR Ignored=identifier? EOS)?
+                    ;
+
+constructorchain    : (SELF | SUPER)
+                        ( (LPAREN RPAREN)
+                        | (LPAREN ArgList=argumentList RPAREN)
+                        ) eos
                     ;
 
 constructorModifiers: ( Tokens+=( PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | EXTERN | STATIC ) )+
@@ -427,10 +431,11 @@ declare             : DECLARE (ACCESS | ASSIGN | METHOD )  Ids+=identifier (COMM
                     ;
 
 destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
-                      DESTRUCTOR (LPAREN RPAREN)? 
+                      d1=DESTRUCTOR (LPAREN RPAREN)? 
                       (CLASS (Namespace=nameDot)? ClassId=identifier)?
                       end=eos
                       StmtBlk=statementBlock
+                      (END d2=DESTRUCTOR Ignored=identifier? EOS)?
                     ;
 
 destructorModifiers : ( Tokens+=EXTERN )+
@@ -456,11 +461,13 @@ conversionOps		: Token=( IMPLICIT | EXPLICIT )
                     ;
 
 operator_           : Attributes=attributes? Modifiers=operatorModifiers?
-                      OPERATOR (Operation=overloadedOps | Conversion=conversionOps) Gt=GT?
+                      o1=OPERATOR (Operation=overloadedOps | Conversion=conversionOps) Gt=GT?
                       ParamList=parameterList
                       (AS Type=datatype)?
                       end=eos
                       StmtBlk=statementBlock
+                     (END o1=OPERATOR Ignored=identifier? EOS)?
+                      
                     ;
 
 operatorModifiers   : ( Tokens+=(PUBLIC | STATIC | EXTERN) )+
@@ -486,14 +493,14 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                     | Expr=expression                                   #exprAttributeParam
                     ;
 
-globalAttributes    : LBRKT Target=globalAttributeTarget Attributes+=attribute (COMMA Attributes+=attribute)* RBRKT eos
+globalAttributes    : LBRKT Target=globalAttributeTarget Attributes+=attribute (COMMA Attributes+=attribute)* RBRKT EOS
                     ;
 
 globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
                       ;
 
-filewidememvar      : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierName)* end=eos
-                    | Token=PUBLIC XVars+=xbasevar (COMMA XVars+=xbasevar)*  end=eos
+filewidememvar      : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierName)* end=EOS
+                    | Token=PUBLIC XVars+=xbasevar (COMMA XVars+=xbasevar)*  end=EOS
                     ;
 
 

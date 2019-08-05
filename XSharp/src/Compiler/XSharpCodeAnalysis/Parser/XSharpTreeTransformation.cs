@@ -2368,6 +2368,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected void ProcessEntity(SyntaxListBuilder<MemberDeclarationSyntax> globalTypes, XSharpParserRuleContext context)
         {
             var s = context.CsNode;
+            if (s == null)
+                return;
             if (s is NamespaceDeclarationSyntax)
             {
                 GlobalEntities.Members.Add(s as MemberDeclarationSyntax);
@@ -2447,7 +2449,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var entities = new List<XSharpParserRuleContext>();
             entities.AddRange(context._Entities);
-
             _exitSource(context, entities);
         }
         private string RemoveUnwantedCharacters(string input)
@@ -3566,16 +3567,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        protected ConstructorInitializerSyntax createInitializer(IToken chain, XP.ArgumentListContext args)
+        protected ConstructorInitializerSyntax createInitializer(XP.ConstructorchainContext chain)
         {
             if (chain == null)
                 return null;
 
             else
-                return _syntaxFactory.ConstructorInitializer(chain.CtorInitializerKind(),
+                return _syntaxFactory.ConstructorInitializer(chain.Start.CtorInitializerKind(),
                                             SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
-                                            chain.SyntaxKeyword(),
-                                            args?.Get<ArgumentListSyntax>() ?? EmptyArgumentList());
+                                            chain.Start.SyntaxKeyword(),
+                                            chain.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList());
         }
 
         public override void ExitConstructor([NotNull] XP.ConstructorContext context)
@@ -3591,7 +3592,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (context.isInInterface())
             {
-                context.AddError(new ParseErrorData(context.CONSTRUCTOR(), ErrorCode.ERR_InterfacesCantContainConstructors));
+                context.AddError(new ParseErrorData(context.c1, ErrorCode.ERR_InterfacesCantContainConstructors));
             }
             else
             {
@@ -3627,10 +3628,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     modifiers: mods,
                     identifier: parentId,
                     parameterList: parameters,
-                    initializer: createInitializer(context.Chain, context.ArgList),
+                    initializer: createInitializer(context.Chain),
                     body: body,
                     expressionBody: null,
                     semicolonToken: (context.StmtBlk?._Stmts?.Count > 0) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                if (context.Chain != null)
+                {
+                    context.Chain.SetSequencePoint();
+                }
+
                 if (missingParent)
                 {
                     ctor = ctor.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError, "Missing CLASS clause"));
@@ -3664,7 +3670,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (context.isInInterface())
             {
-                context.AddError(new ParseErrorData(context.DESTRUCTOR(), ErrorCode.ERR_InterfacesCantContainConstructors));
+                context.AddError(new ParseErrorData(context.d1, ErrorCode.ERR_InterfacesCantContainConstructors));
             }
             else
             {

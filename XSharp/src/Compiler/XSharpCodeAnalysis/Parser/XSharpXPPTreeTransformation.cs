@@ -730,7 +730,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(accessors);
             return prop;
         }
-        private void bindClasses()
+        private void bindXPPClasses()
         {
             // note that this runs AFTER the entities have been walked and is called from ExitSource
             var classes = new List<XSharpParserRuleContext>();
@@ -813,7 +813,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitSource([NotNull] XP.SourceContext context)
         {
             // Bind our XPP Classes first and then call _exitSource with the entities that are not a XppMethodContext
-            bindClasses();
+            bindXPPClasses();
             var entities = new List<XSharpParserRuleContext>();
             // do not add the methods. These should be linked to a class
             entities.AddRange(context._Entities.Where(e => !(e.GetChild(0) is XP.XppmethodContext)));
@@ -829,7 +829,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitNamespace_([NotNull] XP.Namespace_Context context)
         {
             // we do not call base.ExitNamespace
-            bindClasses();
+            bindXPPClasses();
             _classes = _classstack.Pop();
             var entities = new List<XSharpParserRuleContext>();
             // do not add the methods. These should be linked to a class

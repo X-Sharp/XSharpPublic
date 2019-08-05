@@ -3440,7 +3440,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private ExpressionSyntax GenerateInitializer(XP.DatatypeContext datatype)
         {
-            if (_options.VONullStrings)
+            if (_options.VONullStrings && datatype != null)
             {
                 var isString = datatype.CsNode is PredefinedTypeSyntax pts
                     && pts.Keyword.Kind == SyntaxKind.StringKeyword;
@@ -5815,6 +5815,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitForStmt([NotNull] XP.ForStmtContext context)
         {
             ExpressionSyntax assignExpr, whileExpr, incrExpr, iterExpr, initExpr;
+            context.SetSequencePoint(context.end);
             if (context.AssignExpr != null)
             {
                 var assign = context.AssignExpr as XP.AssignmentExpressionContext;
@@ -5859,6 +5860,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 assignExpr.XNode = context.Expr;
                 initExpr.XNode = context.Expr;
                 context.Expr.SetSequencePoint();
+                context.ForIter.SetSequencePoint();
             }
             if (context.Step == null)
             {

@@ -775,14 +775,22 @@ FUNCTION CreateInstance(cClassName,_args) AS OBJECT CLIPPER
 		args[nArg-1] := _GetFParam(nArg)
 	NEXT 
     LOCAL ctor := OOPHelpers.FindBestOverLoad(constructors, __FUNCTION__ ,args) AS ConstructorInfo
-	
+	IF ctor == NULL
+    	VAR oError := Error.VOError( EG_NOMETHOD, __FUNCTION__, "Constructor", 0 , NULL)
+        oError:Description := "No CONSTRUCTOR defined for type "+ (String) cClassName
+        throw oError
+    ENDIF
 	LOCAL oRet AS OBJECT  
 	TRY
 		LOCAL oArgs := OOPHelpers.MatchParameters(ctor, args) AS OBJECT[]
 		oRet := ctor:Invoke( oArgs )
-	CATCH
-		VAR oError := Error.VOError( EG_NOMETHOD, __FUNCTION__, "Constructor", 0 , NULL)
-        oError:Description := oError:Message+" 'CONSTRUCTOR'"
+    CATCH e as Error
+        THROW e
+	CATCH e as Exception
+        if e:InnerException IS Error
+            THROW e:InnerException
+        ENDIF
+		VAR oError := Error{e}
         THROW oError
 	END TRY
 	RETURN oRet

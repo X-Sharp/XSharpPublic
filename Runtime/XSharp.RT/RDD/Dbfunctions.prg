@@ -305,16 +305,14 @@ FUNCTION RddName        () AS STRING STRICT
 
 
 FUNCTION RddSetDefault  () AS STRING STRICT
-    RETURN RuntimeState.DefaultRDD
+    RETURN VoDb.RddSetDefault(NULL_STRING)
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
 
 FUNCTION RddSetDefault  (cDriver AS STRING) AS STRING
-	LOCAL cOld := RuntimeState.DefaultRDD AS STRING
-    RuntimeState.DefaultRDD := cDriver
-	RETURN cOld
+    RETURN VoDb.RddSetDefault(cDriver)
 
 
 /// <summary>

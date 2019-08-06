@@ -130,9 +130,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var usualType = Compilation.UsualType();
                 var pszType = Compilation.PszType();
                 var cf = ((NamedTypeSymbol)expr.Type).ConstructedFrom;
-                // in VO the indexer for a PSZ starts with 1. In Vulcan with 0.
-                // So this is NOT compatible with Vulcan
-                if (cf == pszType && !Compilation.Options.ArrayZero && Compilation.Options.Dialect == XSharpDialect.VO )
+                if (cf == pszType )
                 {
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
                     foreach (var arg in analyzedArguments.Arguments)
@@ -151,8 +149,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, arg.Syntax, arg.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
                             }
                         }
-                        if (!Compilation.Options.ArrayZero)
-                        {
+                        // in VO the indexer for a PSZ starts with 1. In Vulcan with 0.
+                        // we assume that all other dialects are closer to VO
+                        if (Compilation.Options.Dialect != XSharpDialect.Vulcan)
+                        { 
                             newarg = SubtractIndex(newarg, diagnostics,specialType);
                         }
                         argsBuilder.Add(newarg);

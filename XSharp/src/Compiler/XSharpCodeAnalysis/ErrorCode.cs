@@ -1710,6 +1710,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_InvalidLiteral = 9080,
         WRN_ObsoleteInclude = 9081,
         ERR_MissingWithStatement = 9082,
+        ERR_CantCastPtrInAnyCpu = 9083,
+        ERR_CantCastPtrInPlatform = 9084,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

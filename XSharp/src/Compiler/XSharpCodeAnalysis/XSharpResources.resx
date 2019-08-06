@@ -4243,7 +4243,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Member '{0}' added during the current debug session can only be accessed from within its declaring assembly '{1}'.</value>
   </data>
   <data name="ERR_MutuallyExclusiveOptions" xml:space="preserve">
-    <value>Compilation options '{0}' and '{1}' can't both be specified at the same time.</value>
+    <value>Compilation options '{0}' and '{1}' cannot both be specified at the same time.</value>
   </data>
   <data name="ERR_LinkedNetmoduleMetadataMustProvideFullPEImage" xml:space="preserve">
     <value>Linked netmodule metadata must provide a full PE image: '{0}'.</value>
@@ -4312,7 +4312,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>SyntaxTreeSemanticModel must be provided in order to provide minimal type qualification.</value>
   </data>
   <data name="CantReferenceCompilationOf" xml:space="preserve">
-    <value>Can't reference compilation of type '{0}' from {1} compilation.</value>
+    <value>Cannot reference compilation of type '{0}' from {1} compilation.</value>
   </data>
   <data name="SyntaxTreeAlreadyPresent" xml:space="preserve">
     <value>Syntax tree already present</value>
@@ -5655,7 +5655,13 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Include file '{0}' will be skipped because its values are included in assembly '{1}'.</value>
   </data>
   <data name="ERR_MissingWithStatement" xml:space="preserve">
-    <value>Can't locate WITH statement for DOT/COLON expression without left hand side.</value>
+    <value>Cannot locate WITH statement for DOT/COLON expression without left hand side.</value>
   </data>
-  
+  <data name="ERR_CantCastPtrInAnyCpu" xml:space="preserve">
+    <value>Cannot implicitly convert between '{0}' and 'PTR' in platform '{1}' because the size of 'PTR' cannot be determined at compile time.</value>
+  </data>
+  <data name="ERR_CantCastPtrInPlatform" xml:space="preserve">
+    <value>Cannot implicitly convert between '{0}' and 'PTR' in platform '{1}' because the size of '{0}' does not match the size of 'PTR' for the target platform.</value>
+  </data>
+
 </root>

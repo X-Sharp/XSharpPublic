@@ -62,7 +62,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can&apos;t reference compilation of type &apos;{0}&apos; from {1} compilation..
+        ///   Looks up a localized string similar to Cannot reference compilation of type &apos;{0}&apos; from {1} compilation..
         /// </summary>
         internal static string CantReferenceCompilationOf {
             get {
@@ -2515,6 +2515,24 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_CantCallSpecialMethod {
             get {
                 return ResourceManager.GetString("ERR_CantCallSpecialMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot implicitly convert between &apos;{0}&apos; and &apos;PTR&apos; in platform &apos;{1}&apos; because the size of &apos;PTR&apos; cannot be determined at compile time..
+        /// </summary>
+        internal static string ERR_CantCastPtrInAnyCpu {
+            get {
+                return ResourceManager.GetString("ERR_CantCastPtrInAnyCpu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot implicitly convert between &apos;{0}&apos; and &apos;PTR&apos; in platform &apos;{1}&apos; because the size of &apos;{0}&apos; does not match the size of &apos;PTR&apos; for the target platform..
+        /// </summary>
+        internal static string ERR_CantCastPtrInPlatform {
+            get {
+                return ResourceManager.GetString("ERR_CantCastPtrInPlatform", resourceCulture);
             }
         }
         
@@ -6848,7 +6866,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can&apos;t locate WITH statement for DOT/COLON expression without left hand side..
+        ///   Looks up a localized string similar to Cannot locate WITH statement for DOT/COLON expression without left hand side..
         /// </summary>
         internal static string ERR_MissingWithStatement {
             get {
@@ -6947,7 +6965,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Compilation options &apos;{0}&apos; and &apos;{1}&apos; can&apos;t both be specified at the same time..
+        ///   Looks up a localized string similar to Compilation options &apos;{0}&apos; and &apos;{1}&apos; cannot both be specified at the same time..
         /// </summary>
         internal static string ERR_MutuallyExclusiveOptions {
             get {

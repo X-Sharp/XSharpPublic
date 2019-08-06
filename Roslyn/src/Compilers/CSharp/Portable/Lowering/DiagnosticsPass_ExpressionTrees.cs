@@ -536,7 +536,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                         Error(ErrorCode.ERR_ExpressionTreeContainsTupleConversion, node);
                     }
                     break;
-
+#if XSHARP
+                case ConversionKind.IntegerToPointer:
+                    VOCheckIntegerToPointer(node);
+                    break;
+#endif
                 default:
                     break;
             }

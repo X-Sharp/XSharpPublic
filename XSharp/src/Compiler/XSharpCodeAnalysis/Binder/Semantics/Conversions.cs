@@ -316,6 +316,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             return Conversion.Identity;
                         }
+                        return Conversion.IntegerToPointer;
                     }
                     if (source.IsPointerType() || source.IsVoidPointer() 
                         || source.SpecialType == SpecialType.System_IntPtr || source.SpecialType == SpecialType.System_UIntPtr)
@@ -415,6 +416,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     return Conversion.Identity;
                 }
+                return Conversion.IntegerToPointer;
             }
             // When unsafe we always allow to cast void * to typed *
             // Is this OK ?

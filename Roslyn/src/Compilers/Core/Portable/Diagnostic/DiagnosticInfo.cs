@@ -332,8 +332,13 @@ namespace Microsoft.CodeAnalysis
             {
                 return message;
             }
-
+#if XSHARP
+            var result = String.Format(formatProvider, message, GetArgumentsToUse(formatProvider));
+            result = result.Replace("'void*'", "'PTR'");
+            return result;
+#else
             return String.Format(formatProvider, message, GetArgumentsToUse(formatProvider));
+#endif
         }
 
         protected object[] GetArgumentsToUse(IFormatProvider formatProvider)

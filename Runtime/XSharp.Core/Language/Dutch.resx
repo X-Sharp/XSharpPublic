@@ -1077,137 +1077,8 @@
   <data name="IDTT_CUSTOMBITMAP" xml:space="preserve">
     <value>Wijzig naar formulierweergave</value>
   </data>
-  <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
-    <value>aLookupTable moet afmeting n by 2 hebben</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARG" xml:space="preserve">
-    <value>%V1s Arg: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARG_ERROR" xml:space="preserve">
-    <value>&lt;Fout Arg&gt;</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARGNUM" xml:space="preserve">
-    <value>%V1s ArgNum: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARGS" xml:space="preserve">
-    <value>Argumenten:</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARGTYPE" xml:space="preserve">
-    <value>%V1s ArgType: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARGTYPE_REQ" xml:space="preserve">
-    <value>%V1s geldig ArgType: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CALLED_FROM" xml:space="preserve">
-    <value>%V1s Aangeroepen vanuit: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CHOICE" xml:space="preserve">
-    <value>%V1s%V2s Keuze: %s %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CMD_LINE" xml:space="preserve">
-    <value>%V1s Commando regel: %-23s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CONVERSION" xml:space="preserve">
-    <value>%V1s in Conversion %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CURDIR" xml:space="preserve">
-    <value>CurDir</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_DANGER" xml:space="preserve">
-    <value>* Gevaarlijk *:</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_DISK" xml:space="preserve">
-    <value>Schijf</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_DISK_FREE" xml:space="preserve">
-    <value>Beschikbaar</value>
-  </data>
   <data name="__CAVOSTR_SYSLIB_DOS_ERROR" xml:space="preserve">
     <value>%V1s DOS Fout: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ENTITY" xml:space="preserve">
-    <value>%V1s Entiteit: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ERR_IN_ERR" xml:space="preserve">
-    <value>Fout in Fout</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ERROR" xml:space="preserve">
-    <value>%V1s %s. Fout</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FILE" xml:space="preserve">
-    <value>%V1s Bestand: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FILE_HANDLE" xml:space="preserve">
-    <value>%V1s Filehandle: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FUNCPTR" xml:space="preserve">
-    <value>%V1s%V2s FuncPtr: %s %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FUNCTION" xml:space="preserve">
-    <value>%V1s Functie: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_HANDLE" xml:space="preserve">
-    <value>HND</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_HANDLE_CUR" xml:space="preserve">
-    <value>cur</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_HANDLE_END" xml:space="preserve">
-    <value>end</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_IVARS" xml:space="preserve">
-    <value>%V1s IVars: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_LINE" xml:space="preserve">
-    <value>%V1s Regel: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_MAX" xml:space="preserve">
-    <value>%V1s Max: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_MODULE" xml:space="preserve">
-    <value>%V1s Module: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_OBJECT" xml:space="preserve">
-    <value>%V1s Object: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_OPERATION" xml:space="preserve">
-    <value>%V1s Verrichting: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_SUBCODE" xml:space="preserve">
-    <value>%V1s SubCode: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_SUBST_TYPE" xml:space="preserve">
-    <value>%V1s returneerd: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_SUBSYSTEM" xml:space="preserve">
-    <value>%V1s SubSysteem: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_TO" xml:space="preserve">
-    <value>%V1s  tot %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_TRIES" xml:space="preserve">
-    <value>%V1s Pogingen: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_WARNING" xml:space="preserve">
-    <value>Waarschuwing:</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_OLEBASE" xml:space="preserve">
-    <value>OLE Base</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CONVERSION_CALLED_FROM" xml:space="preserve">
-    <value>%V1s%V2s in Conversie %s aangeroepen door: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CONVERSION_TO" xml:space="preserve">
-    <value>%V1s%V2s in Conversion %s to %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FUNCTION_CALLED_FROM" xml:space="preserve">
-    <value>%V1s%V2s in Functie %s aangeroepen door: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_NOMEM" xml:space="preserve">
-    <value>Te weinig geheugen</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_INCTYPES" xml:space="preserve">
-    <value>Onbegrijpelijke gegevenstypen</value>
   </data>
   <data name="__CAVOSTR_SYSCLASS_BADCAPTION" xml:space="preserve">
     <value>Ongeldige titel</value>
@@ -1964,10 +1835,10 @@
     <value>Aanmelding mislukt</value>
   </data>
   <data name="ERR_FILE_EXISTS" xml:space="preserve">
-    <value>Remote bestand bestaat reeds</value>
+    <value>Extern bestand bestaat reeds</value>
   </data>
   <data name="ERR_UNKNOWN_CODE_TYPE" xml:space="preserve">
-    <value>Onbekend encoding type</value>
+    <value>Onbekend coderingstype</value>
   </data>
   <data name="ERR_WSA_WAIT_TIMEOUT" xml:space="preserve">
     <value>Fout tijdens wachttijd</value>
@@ -1986,5 +1857,264 @@
   </data>
   <data name="ERR_NO_ARTICLE" xml:space="preserve">
     <value>Dergelijk bericht niet gevonden</value>
+  </data>
+  <data name="ARGCANNOTBEZERO" xml:space="preserve">
+    <value>Argument kan niet 0 zijn</value>
+  </data>
+  <data name="ARGNOTCODEBLOCK" xml:space="preserve">
+    <value>Argument is geen CODEBLOCK</value>
+  </data>
+  <data name="ARGLISTING" xml:space="preserve">
+    <value>   {0}: {1} ({2}){3}</value>
+    <comment>Used in Error.Message</comment>
+  </data>
+  <data name="ARGNOTDATE" xml:space="preserve">
+    <value>Argument is geen DATE</value>
+  </data>
+  <data name="ARGNOTINT32" xml:space="preserve">
+    <value>Argument is geen INT</value>
+  </data>
+  <data name="ARGNOTINTEGER" xml:space="preserve">
+    <value>Argument is geen geheel getal</value>
+  </data>
+  <data name="ARGNOTNUMERIC" xml:space="preserve">
+    <value>Argument is niet numeriek</value>
+  </data>
+  <data name="ARGNOTSTRING" xml:space="preserve">
+    <value>Argument is geen string</value>
+  </data>
+  <data name="ARGSINCOMPATIBLE" xml:space="preserve">
+    <value>Argumenten zijn onverenigbaar</value>
+  </data>
+  <data name="ARGSNOTSAMETYPE" xml:space="preserve">
+    <value>Argumenten zijn niet van hetzelfde type</value>
+  </data>
+  <data name="ARGUMENT" xml:space="preserve">
+    <value>Argument</value>
+  </data>
+  <data name="ARGUMENTSHEADING" xml:space="preserve">
+    <value>Argument(en):</value>
+  </data>
+  <data name="ATRANSLATE" xml:space="preserve">
+    <value>aLookupTable is geen array of element is geen array</value>
+  </data>
+  <data name="DATATYPEERROR" xml:space="preserve">
+    <value>Datatype fout</value>
+  </data>
+  <data name="DATE_ADD" xml:space="preserve">
+    <value>Ongeldinge optelling voor USUAL van het type DATE; RHS bevat een incompatibel type</value>
+  </data>
+  <data name="DATE_SUBTRACT" xml:space="preserve">
+    <value>Ongeldige aftrek operatie USUAL van het type DATE; RHS bevat een incompatibel type</value>
+  </data>
+  <data name="ERROR_ARG" xml:space="preserve">
+    <value>Argument</value>
+  </data>
+  <data name="ERROR_ARGNUM" xml:space="preserve">
+    <value>Argument Nummer</value>
+  </data>
+  <data name="ERROR_ARGTYPE" xml:space="preserve">
+    <value>Argument Type</value>
+  </data>
+  <data name="ERROR_ARGS" xml:space="preserve">
+    <value>Argumenten:</value>
+  </data>
+  <data name="ERROR_ARGTYPE_REQ" xml:space="preserve">
+    <value>Verwacht Argument Type</value>
+  </data>
+  <data name="ERROR_FILENAME" xml:space="preserve">
+    <value>Bestandsnaam</value>
+  </data>
+  <data name="ERROR_FUNCTION" xml:space="preserve">
+    <value>Functie</value>
+  </data>
+  <data name="ERROR_DESCRIPTION" xml:space="preserve">
+    <value>Beschrijving</value>
+  </data>
+  <data name="ERROR_OPERATION" xml:space="preserve">
+    <value>SubSysteem</value>
+  </data>
+  <data name="ERROR_CODE" xml:space="preserve">
+    <value>Fout code</value>
+  </data>
+  <data name="ERROR_GENCODE" xml:space="preserve">
+    <value>GenCode</value>
+  </data>
+  <data name="ERROR_SUBCODE" xml:space="preserve">
+    <value>SubCode</value>
+  </data>
+  <data name="ERROR_OSCODE" xml:space="preserve">
+    <value>OsCode</value>
+  </data>
+  <data name="ERROR_SEVERITY" xml:space="preserve">
+    <value>Ernst</value>
+  </data>
+  <data name="ERROR_FUNCSYM" xml:space="preserve">
+    <value>FuncSym</value>
+  </data>
+  <data name="ERROR_TRIES" xml:space="preserve">
+    <value>Pogingen</value>
+  </data>
+  <data name="ERROR_CANDEFAULT" xml:space="preserve">
+    <value>Kan standaard</value>
+  </data>
+  <data name="ERROR_CANRETRY" xml:space="preserve">
+    <value>Kan opnieuw proberen</value>
+  </data>
+  <data name="ERROR_CANSUBSTITUTE" xml:space="preserve">
+    <value>Kan vervangen</value>
+  </data>
+  <data name="ERROR_SUBSYSTEM" xml:space="preserve">
+    <value>Subsystem</value>
+  </data>
+  <data name="ERROR_STACK" xml:space="preserve">
+    <value>Aangeroepen door</value>
+  </data>
+  <data name="ERROR_CALLEDFROM" xml:space="preserve">
+    <value>Aangeroepen door</value>
+  </data>
+  <!-- The following strings are not used (yet) in X#-->
+  <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
+    <value>aLookupTable moet afmeting n by 2 hebben</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ERROR" xml:space="preserve">
+    <value>%V1s %s. Fout</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_FILE_HANDLE" xml:space="preserve">
+    <value>%V1s FileHandle: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_FUNCPTR" xml:space="preserve">
+    <value>%V1s%V2s FuncPtr: %s %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CHOICE" xml:space="preserve">
+    <value>%V1s%V2s Keuze: %s %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CMD_LINE" xml:space="preserve">
+    <value>%V1s Commando regel: %-23s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CONVERSION" xml:space="preserve">
+    <value>%V1s in Conversie %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CURDIR" xml:space="preserve">
+    <value>CurDir</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DANGER" xml:space="preserve">
+    <value>* Gevaarlijk *:</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DISK" xml:space="preserve">
+    <value>Schijf</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DISK_FREE" xml:space="preserve">
+    <value>Beschikbaar</value>
+  </data>
+    <data name="__CAVOSTR_SYSLIB_ENTITY" xml:space="preserve">
+    <value>%V1s Entiteit: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ERR_IN_ERR" xml:space="preserve">
+    <value>Fout in Fout</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE" xml:space="preserve">
+    <value>HND</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE_CUR" xml:space="preserve">
+    <value>cur</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE_END" xml:space="preserve">
+    <value>end</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_IVARS" xml:space="preserve">
+    <value>%V1s IVars: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_LINE" xml:space="preserve">
+    <value>%V1s Regel: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_MAX" xml:space="preserve">
+    <value>%V1s Max: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_MODULE" xml:space="preserve">
+    <value>%V1s Module: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_OBJECT" xml:space="preserve">
+    <value>%V1s Object: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_SUBST_TYPE" xml:space="preserve">
+    <value>%V1s returneerd: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_TO" xml:space="preserve">
+    <value>%V1s  tot %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_WARNING" xml:space="preserve">
+    <value>Waarschuwing:</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_OLEBASE" xml:space="preserve">
+    <value>OLE Base</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CONVERSION_TO" xml:space="preserve">
+    <value>%V1s%V2s in Conversion %s to %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_NOMEM" xml:space="preserve">
+    <value>Te weinig geheugen</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_INCTYPES" xml:space="preserve">
+    <value>Onbegrijpelijke gegevenstypen</value>
+  </data>
+  <!-- End of unused strings-->
+  <data name="INVALIDARGTYPE" xml:space="preserve">
+    <value>Ongeldig argumenttype</value>
+  </data>
+  <data name="INVALIDARGVALUE" xml:space="preserve">
+    <value>Ongeldige argumentwaarde</value>
+  </data>
+  <data name="OSVERSION" xml:space="preserve">
+    <value>{0} (Version {1}.{2}, Build {3}, Revision {4})</value>
+  </data>
+  <data name="RUNTIMEERROR" xml:space="preserve">
+    <value>Runtime Error</value>
+    <comment>Beginning of runtime error message</comment>
+  </data>
+  <data name="STRINGLENNE1" xml:space="preserve">
+    <value>Stringlengte! = 1</value>
+  </data>
+  <data name="USUALOVERFLOWERR" xml:space="preserve">
+    <value>Numerieke overloop bij het converteren van USUAL van type '{0}' naar '{1}'</value>
+  </data>
+  <data name="USUALBINARYOPERR" xml:space="preserve">
+    <value>{0} operator niet beschikbaar voor USUAL-typen '{1}' en '{2}'</value>
+  </data>
+  <data name="USUALUNARYOPERR" xml:space="preserve">
+    <value>{0} operator niet beschikbaar voor USUAL type '{1}'</value>
+  </data>
+  <data name="USUALCONVERSIONERR" xml:space="preserve">
+    <value>Conversiefout van USUAL ({0}) naar {1}</value>
+  </data>
+  <data name="VERSION" xml:space="preserve">
+    <value>Version: </value>
+  </data>
+  <data name="ARGISNULL" xml:space="preserve">
+    <value>Argument is NULL</value>
+  </data>
+  <data name="UNKNOWNRDD" xml:space="preserve">
+    <value>Ongeldige RDD naam</value>
+  </data>
+  <data name="ARRAYBOUNDS" xml:space="preserve">
+    <value>Ongeldige array index</value>
+  </data>
+  <data name="USUALNOTINDEXED" xml:space="preserve">
+    <value>Waarde in USUAL ondersteunt geen geïndexeerde bewerkingen. De waarde moet een X # Array zijn of de interface '{0}' implementeren.</value>
+  </data>
+  <data name="E_OPEN_MRESTORE" xml:space="preserve">
+    <value>Het bestand voor de RESTORE opdracht kan niet geopend worden.</value>
+  </data>
+  <data name="E_OPEN_MSAVE" xml:space="preserve">
+    <value>Het bestand voor de SAVE opdracht kan niet aangemaakt worden.</value>
+  </data>
+  <data name="ERRORDIALOG_TITLE" xml:space="preserve">
+    <value>Applicatie Fout - </value>
+  </data>
+  <data name="ERRORDIALOG_CLOSE" xml:space="preserve">
+    <value>Sluiten</value>
+  </data>
+  <data name="ERRORDIALOG_COPY" xml:space="preserve">
+    <value>Kopieer naar Klembord</value>
   </data>
 </root>

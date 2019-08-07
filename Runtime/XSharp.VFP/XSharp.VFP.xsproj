@@ -19,6 +19,9 @@
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <NamedArgs />
     <XSharpProjectversion>2.0.3.0</XSharpProjectversion>
+	<IncludePaths>$(CommonInclude)</IncludePaths>
+	<Nostandarddefs>true</Nostandarddefs>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -46,7 +49,7 @@
     <UseSharedCompilation>true</UseSharedCompilation>
     <DisabledWarnings>162,553</DisabledWarnings>
   </PropertyGroup>
- <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
@@ -59,7 +62,7 @@
     <DisabledWarnings>162,171,553,1591</DisabledWarnings>
     <DocumentationFile>XSharp.VFP.Xml</DocumentationFile>
     <CommandLineOption>/noclipcall</CommandLineOption>
-  </PropertyGroup>  
+  </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
@@ -122,5 +125,4 @@ copy $(TargetPath) \xsharp\dev\xsharp\Runtime</PostBuildEvent>
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
- 
 </Project>

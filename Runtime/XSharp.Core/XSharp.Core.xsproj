@@ -21,6 +21,9 @@
     <NamedArgs>false</NamedArgs>
     <MemVar>false</MemVar>
     <Undeclared>false</Undeclared>
+	<IncludePaths>$(Solutiondir)Common</IncludePaths>
+	<Nostandarddefs>true</Nostandarddefs>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

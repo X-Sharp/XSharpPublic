@@ -159,6 +159,9 @@ BEGIN NAMESPACE XSharp
         SELF:GenCode     := EG_EXCEPTION
         SELF:_StackTrace := ex:StackTrace
     ENDIF
+    IF String.IsNullOrEmpty(SELF:StackTrace)
+        SELF:StackTrace  := System.Diagnostics.StackTrace{2,TRUE}:ToString()
+    ENDIF
 
     /// <summary>Create an Error Object with the Innner Exception and other parameters</summary>
     CONSTRUCTOR (ex AS Exception, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[])
@@ -177,7 +180,7 @@ BEGIN NAMESPACE XSharp
     SELF:setDefaultValues()
     SELF:Gencode := dwGenCode
     SELF:Arg	 := cArg
-    
+
     /// <summary>Create an Error Object for a Gencode, Argument Name and Description.</summary>
     CONSTRUCTOR (dwgencode AS DWORD, cArg AS STRING, cDescription AS STRING)
     SUPER(cDescription)
@@ -203,48 +206,55 @@ BEGIN NAMESPACE XSharp
     SELF:Gencode := dwgencode
     SELF:SubCode := dwSubcode
     
-    
+
+    PRIVATE METHOD LangString(e as VOErrors) AS STRING
+        local cString := __CavoStr(e):Trim() as string
+        if cString:Endswith(":")
+            cString := cString:Substring(0, cString:Length-1):Trim()
+        endif
+        return cString+e" :\t"
+
     /// <inheritdoc />
     OVERRIDE METHOD ToString() AS STRING
       LOCAL sb AS StringBuilder
       LOCAL nGenCode AS GenCode
       nGenCode := (GenCode) SELF:GenCode
       sb := StringBuilder{}
-      sb:AppendLine( e"Description :\t" + SELF:Description)
-      sb:AppendLine( e"SubSystem :\t" 	+ SELF:SubSystem )
-      sb:AppendLine( e"GenCode :\t" 	+ nGenCode:ToString()  )
-      sb:AppendLine( e"GenCodeText :\t" + SELF:GenCodeText  )
+      
+      sb:AppendLine( LangString(VOErrors.ERROR_DESCRIPTION) + SELF:Description)
+      sb:AppendLine( LangString(VOErrors.ERROR_SUBSYSTEM) + SELF:SubSystem )
+      sb:AppendLine( LangString(VOErrors.ERROR_GENCODE) + nGenCode:ToString()  +" " +SELF:GenCodeText  )
       IF SELF:SubCode != 0
-        sb:AppendLine( e"SubCode :\t" 	+ SELF:SubCode:ToString() )
-        sb:AppendLine( e"SubCodeText :\t"	+ SELF:SubCodeText)
+        sb:AppendLine( LangString(VOErrors.ERROR_SUBCODE) + SELF:SubCode:ToString() +" "+SELF:SubCodeText)
       ENDIF
       IF SELF:OsCode != 0
-        sb:AppendLine(e"OsCode :\t" 	+ SELF:OsCode:ToString() )
-        sb:AppendLine(e"OsCodeText :\t" + SELF:OsCodeText )
+        sb:AppendLine( LangString(VOErrors.ERROR_OSCODE)  + SELF:OsCode:ToString() +" " +SELF:OsCodeText )
       ENDIF
-      sb:AppendLine(e"FuncSym :\t" 	+ SELF:FuncSym   )
+      IF !String.IsNullOrEmpty(SELF:FuncSym)
+        sb:AppendLine(LangString(VOErrors.ERROR_FUNCSYM) + SELF:FuncSym   )
+      ENDIF
       LOCAL sev := (Severity) SELF:Severity AS Severity
-      sb:AppendLine(e"Severity :\t" 	+ sev:ToString() )
-      sb:AppendLine(e"CanDefault :\t"	+ SELF:CanDefault:ToString())
-      sb:AppendLine(e"CanRetry :\t"	+ SELF:CanRetry:ToString() )
-      sb:AppendLine(e"CanSubstitute :\t" + SELF:CanSubstitute:ToString())
+      sb:AppendLine(LangString(VOErrors.ERROR_SEVERITY)     + sev:ToString() )
+      sb:AppendLine(LangString(VOErrors.ERROR_CANDEFAULT)   + SELF:CanDefault:ToString())
+      sb:AppendLine(LangString(VOErrors.ERROR_CANRETRY)     +SELF:CanRetry:ToString() )
+      sb:AppendLine(LangString(VOErrors.ERROR_CANSUBSTITUTE) +SELF:CanSubstitute:ToString())
       IF ! String.IsNullOrEmpty(SELF:Operation)
-        sb:AppendLine(e"Operation :\t" + SELF:Operation)
+        sb:AppendLine(LangString(VOErrors.ERROR_OPERATION) + SELF:Operation)
       ENDIF
       IF ! String.IsNullOrEmpty(SELF:FileName)
-        sb:AppendLine(e"FileName :\t"	+ SELF:FileName )
+        sb:AppendLine(LangString(VOErrors.ERROR_FILENAME) + SELF:FileName )
       ENDIF
       IF SELF:Tries != 0
-          sb:AppendLine(e"Tries :\t" 	+ SELF:Tries:ToString()    )
+          sb:AppendLine(LangString(VOErrors.ERROR_TRIES) + SELF:Tries:ToString()    )
      ENDIF              
       IF SELF:ArgType != 0
-        sb:AppendLine(e"ArgType :\t" 	+ TypeString(SELF:ArgType    ) )
+        sb:AppendLine(LangString(VOErrors.ERROR_ARGTYPE) 	+ TypeString(SELF:ArgType    ) )
       ENDIF 
       IF SELF:ArgNum != 0
-        sb:AppendLine(e"ArgNum :\t" 	+ SELF:ArgNum:ToString()    )
+        sb:AppendLine(LangString(VOErrors.ERROR_ARGNUM) 	+ SELF:ArgNum:ToString()    )
       ENDIF
-      IF SELF:Arg != NULL
-        sb:AppendLine(e"Arg :\t" 		+ SELF:Arg)
+      IF ! String.IsNullOrEmpty(SELF:Arg)
+        sb:AppendLine(LangString(VOErrors.ERROR_ARG)	+ SELF:Arg)
       ENDIF 
       LOCAL cArgs AS STRING
       IF SELF:Args != NULL .AND. SELF:Args:Length > 0
@@ -262,14 +272,16 @@ BEGIN NAMESPACE XSharp
                 lFirst := FALSE
             NEXT
             cArgs += "}"
-            sb:AppendLine(e"Args :\t" + cArgs)
+            sb:AppendLine(LangString(VOErrors.ERROR_ARGS)+ cArgs)
       ENDIF 
       IF SELF:ArgTypeReqType != NULL
-        sb:AppendLine(e"ArgTypeReq :\t" + SELF:ArgTypeReqType:FullName)
+        sb:AppendLine(LangString(VOErrors.ERROR_ARGTYPE_REQ) + SELF:ArgTypeReqType:FullName)
       ENDIF
       IF ! String.IsNullOrEmpty(SELF:CallFuncSym)
-        sb:AppendLine(e"CallFuncSym :\t" + SELF:CallFuncSym  )
+        sb:AppendLine(LangString(VOErrors.ERROR_CALLEDFROM) + SELF:CallFuncSym  )
       ENDIF
+      sb:AppendLine(LangString(VOErrors.ERROR_STACK))
+      sb:AppendLine(SELF:StackTrace  )
       RETURN sb:ToString()
       
       

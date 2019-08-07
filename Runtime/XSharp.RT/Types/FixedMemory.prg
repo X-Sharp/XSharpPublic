@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -94,21 +94,25 @@ INTERNAL STATIC UNSAFE CLASS XSharp.FixedMemory
      [MethodImpl(MethodImplOptions.AggressiveInlining)];
      PRIVATE STATIC METHOD _GetMemBlockStart (pMemory AS IntPtr) AS FixedMemBlockStart PTR
         LOCAL pMemBlockStart  AS FixedMemBlockStart PTR
+        LOCAL i64 as Int64
         IF Is32Bits
-            pMemBlockStart := (FixedMemBlockStart PTR) (pMemory:ToInt32() - SIZEOF(FixedMemBlockStart))
+            i64 := (pMemory:ToInt32() - SIZEOF(FixedMemBlockStart))
         ELSE
-            pMemBlockStart := (FixedMemBlockStart PTR) (pMemory:ToInt64() - SIZEOF(FixedMemBlockStart))
+            i64 := (pMemory:ToInt64() - SIZEOF(FixedMemBlockStart))
         ENDIF
+        pMemBlockStart := (FixedMemBlockStart PTR) IntPtr{i64}:ToPointer()
         RETURN pMemBlockStart
         
      [MethodImpl(MethodImplOptions.AggressiveInlining)];
      PRIVATE STATIC METHOD _GetMemBlockEnd (pMemory AS IntPTR ) AS FixedMemBlockEnd PTR
         VAR pMemBlockStart := _GetMemBlockStart (pMemory)
+        LOCAL i64 as Int64
         IF Is32Bits
-            RETURN ( FixedMemBlockEnd PTR) ( pMemory:ToInt32() + pMemBlockStart:dwSize)
+            i64 := pMemory:ToInt32() + pMemBlockStart:dwSize
         ELSE
-            RETURN ( FixedMemBlockEnd PTR) (pMemory:ToInt64() + pMemBlockStart:dwSize)
+            i64 := pMemory:ToInt64() + pMemBlockStart:dwSize
         ENDIF
+        RETURN ( FixedMemBlockEnd PTR) IntPtr{i64}:ToPointer()
         
         
     STATIC METHOD Alloc(nGroup AS DWORD, nSize AS DWORD) AS IntPtr

@@ -2347,18 +2347,87 @@
   <data name="RT_MSG_ERR_ARGCOUNT" xml:space="preserve">
     <value>ERRORBUILD: numero argomenti ERRORFUNC  &lt;&gt;1</value>
   </data>
+  <data name="RT_MSG_MAIL_ERR1" xml:space="preserve">
+    <value>SendMail(): Caricamento della DLL MAPI non riuscito</value>
+  </data>
+  <data name="RT_MSG_MAIL_ERR2" xml:space="preserve">
+    <value>SendMail(): Impossibile ottenere il punto di ingresso della funzione nella DLL MAPI</value>
+  </data>
+  <data name="RT_MSG_MAIL_ERR3" xml:space="preserve">
+    <value>SendMail(): Impossibile inviare %s. Error code: %d</value>
+  </data>
+  <data name="RT_MSG_ACCESS_VIOLATION" xml:space="preserve">
+    <value>Access Violation</value>
+  </data>
+  <data name="RT_MSG_DATATYPE_MISALIGNMENT" xml:space="preserve">
+    <value>Datatype Misalignment</value>
+  </data>
+  <data name="RT_MSG_SINGLE_STEP" xml:space="preserve">
+    <value>Single Step</value>
+  </data>
+  <data name="RT_MSG_ARRAY_BOUNDS_EXCEEDED" xml:space="preserve">
+    <value>Array Bounds exceeded</value>
+  </data>
+  <data name="RT_MSG_FLT_DENORMAL_OPERAND" xml:space="preserve">
+    <value>Float denormal operand</value>
+  </data>
+  <data name="RT_MSG_FLT_DIVIDE_BY_ZERO" xml:space="preserve">
+    <value>Float divide by zero</value>
+  </data>
+  <data name="RT_MSG_FLT_INEXACT_RESULT" xml:space="preserve">
+    <value>Float inexact result</value>
+  </data>
+  <data name="RT_MSG_FLT_INVALID_OPERATION" xml:space="preserve">
+    <value>Float invalid operation</value>
+  </data>
+  <data name="RT_MSG_FLT_OVERFLOW" xml:space="preserve">
+    <value>Float overflow</value>
+  </data>
+  <data name="RT_MSG_FLT_STACK_CHECK" xml:space="preserve">
+    <value>Float stack check</value>
+  </data>
+  <data name="RT_MSG_FLT_UNDERFLOW" xml:space="preserve">
+    <value>Float underflow</value>
+  </data>
+  <data name="RT_MSG_INT_DIVIDE_BY_ZERO" xml:space="preserve">
+    <value>Integer divide by zero</value>
+  </data>
+  <data name="RT_MSG_INT_OVERFLOW" xml:space="preserve">
+    <value>Integer overflow</value>
+  </data>
+  <data name="RT_MSG_PRIV_INSTRUCTION" xml:space="preserve">
+    <value>priv instruction</value>
+  </data>
+  <data name="RT_MSG_IN_PAGE_ERROR" xml:space="preserve">
+    <value>In page error</value>
+  </data>
+  <data name="RT_MSG_ILLEGAL_INSTRUCTION" xml:space="preserve">
+    <value>Illegal Instruction</value>
+  </data>
+  <data name="RT_MSG_NONCONTINUABLE_EXCEPTION" xml:space="preserve">
+    <value>Noncontinuable Exception</value>
+  </data>
+  <data name="RT_MSG_STACK_OVERFLOW" xml:space="preserve">
+    <value>Stack overflow</value>
+  </data>
+  <data name="RT_MSG_INVALID_DISPOSITION" xml:space="preserve">
+    <value>Invalid disposition</value>
+  </data>
+  <data name="RT_MSG_GUARD_PAGE" xml:space="preserve">
+    <value>Guard Page</value>
+  </data>
   <data name="ARGCANNOTBEZERO" xml:space="preserve">
     <value>Argomento non può essere 0</value>
   </data>
   <data name="ARGNOTCODEBLOCK" xml:space="preserve">
-    <value>Argomento non è un codeblock</value>
+    <value>Argomento non è un CODEBLOCK</value>
   </data>
   <data name="ARGLISTING" xml:space="preserve">
     <value>   {0}: {1} ({2}){3}</value>
     <comment>Used in Error.Message</comment>
   </data>
   <data name="ARGNOTDATE" xml:space="preserve">
-    <value>Argomento non è una data</value>
+    <value>Argomento non è una DATE</value>
   </data>
   <data name="ARGNOTINT32" xml:space="preserve">
     <value>Argomento non è in valore numerico intero</value>
@@ -2391,29 +2460,28 @@
     <value>Errore tipo dati</value>
   </data>
   <data name="DATE_ADD" xml:space="preserve">
-    <value>Addizione non valida da valore DATE: USUAL contiene un tipo incompatibile</value>
+    <value>Addizione non valida a USUAL contenente DATE; RHS contiene un tipo incompatibile</value>
   </data>
   <data name="DATE_SUBTRACT" xml:space="preserve">
-    <value>Sottrazione non valida da valore DATE: USUAL contiene un tipo incompatibile</value>
+    <value>Sottrazione non valida USUAL contenente DATE: RHS contiene un tipo incompatibile</value>
   </data>
   <data name="ERROR_ARG" xml:space="preserve">
-    <value>Arg: </value>
+    <value>Argomento</value>
   </data>
   <data name="ERROR_ARGNUM" xml:space="preserve">
-    <value>ArgNum : </value>
+    <value>Numero argomento</value>
   </data>
   <data name="ERROR_ARGTYPE" xml:space="preserve">
-    <value>ArgType : </value>
+    <value>Tipo di argomento</value>
   </data>
   <data name="ERROR_ARGS" xml:space="preserve">
-    <value>Arguments : </value>
+    <value>Argomenti</value>
   </data>
-
   <data name="ERROR_ARGTYPE_REQ" xml:space="preserve">
-    <value>Expected ArgType</value>
+    <value>Tipo di argomento previsto</value>
   </data>
   <data name="ERROR_FILENAME" xml:space="preserve">
-    <value>File</value>
+    <value>Nome del file</value>
   </data>
   <data name="ERROR_FUNCTION" xml:space="preserve">
     <value>Funzione</value>
@@ -2437,25 +2505,22 @@
     <value>OsCode</value>
   </data>
   <data name="ERROR_SEVERITY" xml:space="preserve">
-    <value>Severity</value>
+    <value>Gravità</value>
   </data>
   <data name="ERROR_FUNCSYM" xml:space="preserve">
     <value>Funzione</value>
-  </data>
-  <data name="ERROR_FILENAME" xml:space="preserve">
-    <value>Nome file</value>
   </data>
   <data name="ERROR_TRIES" xml:space="preserve">
     <value>Prova</value>
   </data>
   <data name="ERROR_CANDEFAULT" xml:space="preserve">
-    <value>CanDefault</value>
+    <value>Può  Default</value>
   </data>
   <data name="ERROR_CANRETRY" xml:space="preserve">
-    <value>CanRetry</value>
+    <value>Riprova</value>
   </data>
   <data name="ERROR_CANSUBSTITUTE" xml:space="preserve">
-    <value>CanSubstitute</value>
+    <value>Può sostituire</value>
   </data>
   <data name="ERROR_SUBSYSTEM" xml:space="preserve">
     <value>Sottosistema</value>
@@ -2466,13 +2531,9 @@
   <data name="ERROR_CALLEDFROM" xml:space="preserve">
     <value>Chiamato da</value>
   </data>
-
   <!-- The following strings are not used (yet) in X#-->
     <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
     <value>aLookupTable deve essere dimensionato da n a 2</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ERR_IN_ERR" xml:space="preserve">
-    <value>Errore in Errore</value>
   </data>
   <data name="__CAVOSTR_SYSLIB_ERROR" xml:space="preserve">
     <value>%V1s %s. Errore</value>
@@ -2505,10 +2566,10 @@
     <value>free</value>
   </data>
   <data name="__CAVOSTR_SYSLIB_ENTITY" xml:space="preserve">
-    <value>%V1s Entity: %s</value>
+    <value>%V1s Entità: %s</value>
   </data>
   <data name="__CAVOSTR_SYSLIB_ERR_IN_ERR" xml:space="preserve">
-    <value>Error in Error</value>
+    <value>Errore in ErrorHandler</value>
   </data>
   <data name="__CAVOSTR_SYSLIB_HANDLE" xml:space="preserve">
     <value>HND</value>

@@ -1380,8 +1380,6 @@
   <data name="__CAVOSTR_SYSLIB_DOS_ERROR" xml:space="preserve">
     <value>%V1s DOS Error: %s</value>
   </data>
-
-
   <data name="__CAVOSTR_SYSCLASS_BADCAPTION" xml:space="preserve">
     <value>Caption invalid</value>
   </data>
@@ -2286,7 +2284,7 @@
     <value>Lock Failure</value>
   </data>
   <data name="RT_MSG_ERR_42" xml:space="preserve">
-    <value>To many threads</value>
+    <value>Too many threads</value>
   </data>
   <data name="RT_MSG_ERR_43" xml:space="preserve">
     <value>Reserved error number</value>
@@ -2451,14 +2449,14 @@
     <value>Argument cannot be 0</value>
   </data>
   <data name="ARGNOTCODEBLOCK" xml:space="preserve">
-    <value>Argument is not codeblock</value>
+    <value>Argument is not CODEBLOCK</value>
   </data>
   <data name="ARGLISTING" xml:space="preserve">
     <value>   {0}: {1} ({2}){3}</value>
     <comment>Used in Error.Message</comment>
   </data>
   <data name="ARGNOTDATE" xml:space="preserve">
-    <value>Argument is not a date</value>
+    <value>Argument is not a DATE</value>
   </data>
   <data name="ARGNOTINT32" xml:space="preserve">
     <value>Argument is not an INT</value>
@@ -2491,29 +2489,28 @@
     <value>Data type error</value>
   </data>
   <data name="DATE_ADD" xml:space="preserve">
-    <value>Invalid addition to DATE; USUAL contains incompatible type</value>
+    <value>Invalid addition to USUAL containing DATE; RHS contains incompatible type</value>
   </data>
   <data name="DATE_SUBTRACT" xml:space="preserve">
-    <value>Invalid subtraction from DATE; USUAL contains incompatible type</value>
+    <value>Invalid subtraction from USUAL containing DATE; RHS contains incompatible type</value>
   </data>
   <data name="ERROR_ARG" xml:space="preserve">
-    <value>Arg: </value>
+    <value>Argument</value>
   </data>
   <data name="ERROR_ARGNUM" xml:space="preserve">
-    <value>ArgNum : </value>
+    <value>Argument Number</value>
   </data>
   <data name="ERROR_ARGTYPE" xml:space="preserve">
-    <value>ArgType : </value>
+    <value>Argument Type</value>
   </data>
   <data name="ERROR_ARGS" xml:space="preserve">
-    <value>Arguments : </value>
+    <value>Arguments</value>
   </data>
-
   <data name="ERROR_ARGTYPE_REQ" xml:space="preserve">
-    <value>Expected ArgType</value>
+    <value>Expected Argument Type</value>
   </data>
   <data name="ERROR_FILENAME" xml:space="preserve">
-    <value>File</value>
+    <value>FileName</value>
   </data>
   <data name="ERROR_FUNCTION" xml:space="preserve">
     <value>Function</value>
@@ -2542,20 +2539,17 @@
   <data name="ERROR_FUNCSYM" xml:space="preserve">
     <value>FuncSym</value>
   </data>
-  <data name="ERROR_FILENAME" xml:space="preserve">
-    <value>FileName</value>
-  </data>
   <data name="ERROR_TRIES" xml:space="preserve">
     <value>Tries</value>
   </data>
   <data name="ERROR_CANDEFAULT" xml:space="preserve">
-    <value>CanDefault</value>
+    <value>Can Default</value>
   </data>
   <data name="ERROR_CANRETRY" xml:space="preserve">
-    <value>CanRetry</value>
+    <value>Can Retry</value>
   </data>
   <data name="ERROR_CANSUBSTITUTE" xml:space="preserve">
-    <value>CanSubstitute</value>
+    <value>Can Substitute</value>
   </data>
   <data name="ERROR_SUBSYSTEM" xml:space="preserve">
     <value>Subsystem</value>
@@ -2566,13 +2560,9 @@
   <data name="ERROR_CALLEDFROM" xml:space="preserve">
     <value>Called from</value>
   </data>
-
   <!-- The following strings are not used (yet) in X#-->
   <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
     <value>aLookupTable must be dimensioned n by 2</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ERR_IN_ERR" xml:space="preserve">
-    <value>Error in Error Handler</value>
   </data>
   <data name="__CAVOSTR_SYSLIB_ERROR" xml:space="preserve">
     <value>%V1s %s. Error</value>
@@ -2608,7 +2598,7 @@
     <value>%V1s Entity: %s</value>
   </data>
   <data name="__CAVOSTR_SYSLIB_ERR_IN_ERR" xml:space="preserve">
-    <value>Error in Error</value>
+    <value>Error in ErrorHandler</value>
   </data>
   <data name="__CAVOSTR_SYSLIB_HANDLE" xml:space="preserve">
     <value>HND</value>
@@ -2638,7 +2628,7 @@
     <value>%V1s returns: %s</value>
   </data>
    <data name="__CAVOSTR_SYSLIB_TO" xml:space="preserve">
-    <value>%V1s  to %s</value>
+    <value>%V1s to %s</value>
   </data>
   <data name="__CAVOSTR_SYSLIB_WARNING" xml:space="preserve">
     <value>Warning:</value>

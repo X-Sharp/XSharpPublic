@@ -787,10 +787,10 @@ namespace XSharp.MacroCompiler
         {
             if (La(2) == TokenType.ALIAS)
             {
-                if (Expect(TokenType.FIELD))
-                    Require(Expect(TokenType.ALIAS), ErrorCode.Expected, "'->'");
                 if (La(3) == TokenType.LPAREN || La(3) == TokenType.AMP || La(4) == TokenType.LPAREN)
                     return null;
+                if (Expect(TokenType.FIELD))
+                    Require(Expect(TokenType.ALIAS), ErrorCode.Expected, "'->'");
                 var alias = Require(ParseId(), ErrorCode.Expected, "name");
                 if (La() == TokenType.ALIAS)
                 {

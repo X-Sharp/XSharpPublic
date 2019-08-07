@@ -19,7 +19,7 @@
     <OutputName>CodeGenerator</OutputName>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <XSharpProjectversion>2.0.2.0</XSharpProjectversion>
+    <XSharpProjectversion>2.0.3.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)src\Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <OutputPath>$(Solutiondir)Binaries\$(Configuration)\</OutputPath>

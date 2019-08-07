@@ -78,7 +78,7 @@ BEGIN NAMESPACE XSharp
         MEMBER EG_MAX          := 59
         
     END ENUM
-    /// <summary>Error code Enum that matches the Visual Objecs and Vulcan Error Severity codes</summary>
+    /// <summary>Error code Enum that matches the Visual Objecs and Vulcan Error Severity codesFDesc</summary>
     /// <note type="tip">
     /// These enums are also available as DEFINES and can therefore also be used without the "Severity." prefix.
     /// </note>

@@ -44,8 +44,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case ConversionKind.Deconstruction:
                 case ConversionKind.StackAllocToPointerType:
                 case ConversionKind.StackAllocToSpanType:
-				
+
 #if XSHARP
+                case ConversionKind.IntegerToPointer:
                 case ConversionKind.IntPtr:
 #endif
                     return true;
@@ -61,8 +62,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case ConversionKind.ExplicitUserDefined:
                 case ConversionKind.PointerToPointer:
                 case ConversionKind.PointerToInteger:
-                case ConversionKind.IntegerToPointer:
 #if !XSHARP
+                case ConversionKind.IntegerToPointer:
                 case ConversionKind.IntPtr:
 #endif
                     return false;

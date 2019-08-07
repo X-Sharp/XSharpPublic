@@ -3,8 +3,8 @@ DEFINE __CAVOSTR_SYSCLASS_BADCAPTION 		                      := VOErrors.__CAVOS
 DEFINE __CAVOSTR_SYSCLASS_BADDESCRIPTION 	                      := VOErrors.__CAVOSTR_SYSCLASS_BADDESCRIPTION 	           
 DEFINE __CAVOSTR_SYSCLASS_BADHELPCONTEXT 	                      := VOErrors.__CAVOSTR_SYSCLASS_BADHELPCONTEXT 	           
 DEFINE __CAVOSTR_SYSCLASS_BADNAME 		                          := VOErrors.__CAVOSTR_SYSCLASS_BADNAME
-DEFINE __CAVOSTR_SYSLIB_DOS_ERROR                                 := VOErrors.__CAVOSTR_SYSLIB_DOS_ERROR                      
 
+DEFINE __CAVOSTR_SYSLIB_DOS_ERROR                               := VOErrors.__CAVOSTR_SYSLIB_DOS_ERROR                      
 
 DEFINE __CAVOSTR_DBFCLASS_FIRST_STRING		                    := VOErrors.__CAVOSTR_DBFCLASS_FIRST_STRING		      
 DEFINE __CAVOSTR_DBFCLASS_LAST_STRING		                    := VOErrors.__CAVOSTR_DBFCLASS_LAST_STRING		      

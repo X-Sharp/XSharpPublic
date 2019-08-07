@@ -1370,14 +1370,14 @@ INTERNAL METHOD _getUsualType(oValue AS OBJECT) AS __UsualType
     ELSE
     typeCde := Type.GetTypeCode(oValue:GetType())
     SWITCH typeCde
-CASE TypeCode.SByte
+    CASE TypeCode.SByte
     CASE TypeCode.Byte
-CASE TypeCode.Int16
-CASE TypeCode.UInt16
+    CASE TypeCode.Int16
+    CASE TypeCode.UInt16
     CASE TypeCode.Int32
         RETURN __UsualType.LONG
     CASE TypeCode.UInt32
-CASE TypeCode.Int64
+    CASE TypeCode.Int64
     CASE TypeCode.UInt64
     CASE TypeCode.Single
     CASE TypeCode.Double

@@ -309,7 +309,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     lOk := FALSE
                 ENDIF
             NEXT
-            SELF:FlushPages()
+            lOk := SELF:FlushPages() .and. lOk
             RETURN lOk
 
          INTERNAL METHOD FlushPages() AS LOGIC

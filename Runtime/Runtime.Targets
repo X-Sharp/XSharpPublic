@@ -4,7 +4,6 @@
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
-    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharp</RootNamespace>
@@ -14,9 +13,6 @@
     <Nologo>true</Nologo>
     <Nostandarddefs>true</Nostandarddefs>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <IncludePaths>$(Solutiondir)Common</IncludePaths>
-    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <AssemblyOriginatorKeyFile>$(Solutiondir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -27,5 +23,6 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
     <ErrorReport>prompt</ErrorReport>
+    <CommonInclude>$(Solutiondir)Common</CommonInclude>
   </PropertyGroup>
 </Project>

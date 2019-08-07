@@ -1347,138 +1347,10 @@
   <data name="IDTT_CUSTOMBITMAP" xml:space="preserve">
     <value>Vista a scheda</value>
   </data>
-  <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
-    <value>aLookupTable deve essere dimensionato da n a 2</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARG" xml:space="preserve">
-    <value>%V1s Arg: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARG_ERROR" xml:space="preserve">
-    <value>&lt;Err Arg&gt;</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARGNUM" xml:space="preserve">
-    <value>%V1s ArgNum: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARGS" xml:space="preserve">
-    <value>Argomenti:</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARGTYPE" xml:space="preserve">
-    <value>%V1s Tipo di Argomento: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARGTYPE_REQ" xml:space="preserve">
-    <value>%V1s Tipo di Argomento valido: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CALLED_FROM" xml:space="preserve">
-    <value>%V1s chiamato da: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CHOICE" xml:space="preserve">
-    <value>%V1s%V2s scelta: %s %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CMD_LINE" xml:space="preserve">
-    <value>%V1s Riga di commando: %-23s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CONVERSION" xml:space="preserve">
-    <value>%V1s in Conversione %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CURDIR" xml:space="preserve">
-    <value>Cartella corrente</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_DANGER" xml:space="preserve">
-    <value>* Attenzione *:</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_DISK" xml:space="preserve">
-    <value>Disco</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_DISK_FREE" xml:space="preserve">
-    <value>libero</value>
-  </data>
   <data name="__CAVOSTR_SYSLIB_DOS_ERROR" xml:space="preserve">
     <value>%V1s DOS Error: %s</value>
   </data>
-  <data name="__CAVOSTR_SYSLIB_ENTITY" xml:space="preserve">
-    <value>%V1s Entità: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ERR_IN_ERR" xml:space="preserve">
-    <value>Errore in Errore</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ERROR" xml:space="preserve">
-    <value>%V1s %s. Errore</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FILE" xml:space="preserve">
-    <value>%V1s File: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FILE_HANDLE" xml:space="preserve">
-    <value>%V1s FileHandle: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FUNCPTR" xml:space="preserve">
-    <value>%V1s%V2s FuncPtr: %s %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FUNCTION" xml:space="preserve">
-    <value>%V1s Funzione: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_HANDLE" xml:space="preserve">
-    <value>HND</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_HANDLE_CUR" xml:space="preserve">
-    <value>corrente</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_HANDLE_END" xml:space="preserve">
-    <value>fine</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_IVARS" xml:space="preserve">
-    <value>%V1s IVars: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_LINE" xml:space="preserve">
-    <value>%V1s Linea: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_MAX" xml:space="preserve">
-    <value>%V1s Max: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_MODULE" xml:space="preserve">
-    <value>%V1s Modulo: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_OBJECT" xml:space="preserve">
-    <value>%V1s Oggetto: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_OPERATION" xml:space="preserve">
-    <value>%V1s Operazione: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_SUBCODE" xml:space="preserve">
-    <value>%V1s SubCodice: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_SUBST_TYPE" xml:space="preserve">
-    <value>%V1s restituisce: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_SUBSYSTEM" xml:space="preserve">
-    <value>%V1s SubSystem: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_TO" xml:space="preserve">
-    <value>%V1s  a %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_TRIES" xml:space="preserve">
-    <value>%V1s prova: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_WARNING" xml:space="preserve">
-    <value>Attenzione:</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_OLEBASE" xml:space="preserve">
-    <value>OLE Base</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CONVERSION_CALLED_FROM" xml:space="preserve">
-    <value>%V1s%V2s in Conversione %s Chiamato da: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CONVERSION_TO" xml:space="preserve">
-    <value>%V1s%V2s in Conversione %s a %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FUNCTION_CALLED_FROM" xml:space="preserve">
-    <value>%V1s%V2s in Funzione %s Chiamato da: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_NOMEM" xml:space="preserve">
-    <value>Memoria insufficiente</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_INCTYPES" xml:space="preserve">
-    <value>Tipi di dato indeterminabile</value>
-  </data>
+
   <data name="__CAVOSTR_SYSCLASS_BADCAPTION" xml:space="preserve">
     <value>Titolo non valido</value>
   </data>
@@ -2524,15 +2396,166 @@
   <data name="DATE_SUBTRACT" xml:space="preserve">
     <value>Sottrazione non valida da valore DATE: USUAL contiene un tipo incompatibile</value>
   </data>
-  <data name="DESCRIPTION" xml:space="preserve">
+  <data name="ERROR_ARG" xml:space="preserve">
+    <value>Arg: </value>
+  </data>
+  <data name="ERROR_ARGNUM" xml:space="preserve">
+    <value>ArgNum : </value>
+  </data>
+  <data name="ERROR_ARGTYPE" xml:space="preserve">
+    <value>ArgType : </value>
+  </data>
+  <data name="ERROR_ARGS" xml:space="preserve">
+    <value>Arguments : </value>
+  </data>
+
+  <data name="ERROR_ARGTYPE_REQ" xml:space="preserve">
+    <value>Expected ArgType</value>
+  </data>
+  <data name="ERROR_FILENAME" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="ERROR_FUNCTION" xml:space="preserve">
+    <value>Funzione</value>
+  </data>
+  <data name="ERROR_DESCRIPTION" xml:space="preserve">
     <value>Descrizione:</value>
   </data>
-  <data name="OPERATION" xml:space="preserve">
+  <data name="ERROR_OPERATION" xml:space="preserve">
     <value>Operazione:</value>
   </data>
   <data name="ERRORCODE" xml:space="preserve">
     <value>Codice Errore:</value>
   </data>
+  <data name="ERROR_GENCODE" xml:space="preserve">
+    <value>GenCode</value>
+  </data>
+  <data name="ERROR_SUBCODE" xml:space="preserve">
+    <value>SubCodice</value>
+  </data>
+  <data name="ERROR_OSCODE" xml:space="preserve">
+    <value>OsCode</value>
+  </data>
+  <data name="ERROR_SEVERITY" xml:space="preserve">
+    <value>Severity</value>
+  </data>
+  <data name="ERROR_FUNCSYM" xml:space="preserve">
+    <value>Funzione</value>
+  </data>
+  <data name="ERROR_FILENAME" xml:space="preserve">
+    <value>Nome file</value>
+  </data>
+  <data name="ERROR_TRIES" xml:space="preserve">
+    <value>Prova</value>
+  </data>
+  <data name="ERROR_CANDEFAULT" xml:space="preserve">
+    <value>CanDefault</value>
+  </data>
+  <data name="ERROR_CANRETRY" xml:space="preserve">
+    <value>CanRetry</value>
+  </data>
+  <data name="ERROR_CANSUBSTITUTE" xml:space="preserve">
+    <value>CanSubstitute</value>
+  </data>
+  <data name="ERROR_SUBSYSTEM" xml:space="preserve">
+    <value>Sottosistema</value>
+  </data>
+  <data name="ERROR_STACK" xml:space="preserve">
+    <value>Chiamato da</value>
+  </data>
+  <data name="ERROR_CALLEDFROM" xml:space="preserve">
+    <value>Chiamato da</value>
+  </data>
+
+  <!-- The following strings are not used (yet) in X#-->
+    <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
+    <value>aLookupTable deve essere dimensionato da n a 2</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ERR_IN_ERR" xml:space="preserve">
+    <value>Errore in Errore</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ERROR" xml:space="preserve">
+    <value>%V1s %s. Errore</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_FILE_HANDLE" xml:space="preserve">
+    <value>%V1s FileHandle: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_FUNCPTR" xml:space="preserve">
+    <value>%V1s%V2s FuncPtr: %s %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CHOICE" xml:space="preserve">
+    <value>%V1s%V2s Choice: %s %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CMD_LINE" xml:space="preserve">
+    <value>%V1s Command Line: %-23s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CONVERSION" xml:space="preserve">
+    <value>%V1s in Conversion %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CURDIR" xml:space="preserve">
+    <value>CurDir</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DANGER" xml:space="preserve">
+    <value>* Danger *:</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DISK" xml:space="preserve">
+    <value>Disk</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DISK_FREE" xml:space="preserve">
+    <value>free</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ENTITY" xml:space="preserve">
+    <value>%V1s Entity: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ERR_IN_ERR" xml:space="preserve">
+    <value>Error in Error</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE" xml:space="preserve">
+    <value>HND</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE_CUR" xml:space="preserve">
+    <value>corrente</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE_END" xml:space="preserve">
+    <value>fine</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_IVARS" xml:space="preserve">
+    <value>%V1s IVars: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_LINE" xml:space="preserve">
+    <value>%V1s Linea: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_MAX" xml:space="preserve">
+    <value>%V1s Max: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_MODULE" xml:space="preserve">
+    <value>%V1s Modulo: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_OBJECT" xml:space="preserve">
+    <value>%V1s Oggetto: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_SUBST_TYPE" xml:space="preserve">
+    <value>%V1s restituisce: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_TO" xml:space="preserve">
+    <value>%V1s  a %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_WARNING" xml:space="preserve">
+    <value>Attenzione:</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_OLEBASE" xml:space="preserve">
+    <value>OLE Base</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CONVERSION_TO" xml:space="preserve">
+    <value>%V1s%V2s in Conversione %s a %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_NOMEM" xml:space="preserve">
+    <value>Memoria insufficiente</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_INCTYPES" xml:space="preserve">
+    <value>Tipi di dato indeterminabile</value>
+  </data>
+  <!-- End of unused strings-->
   <data name="INVALIDARGTYPE" xml:space="preserve">
     <value>Tipo argomento non valido</value>
   </data>
@@ -2548,10 +2571,6 @@
   </data>
   <data name="STRINGLENNE1" xml:space="preserve">
     <value>Lunghezza stringa != 1</value>
-  </data>
-  <data name="SUBSYSTEM" xml:space="preserve">
-    <value>Sottosistema: </value>
-    <comment>needs colon and trailing space</comment>
   </data>
   <data name="USUALOVERFLOWERR" xml:space="preserve">
     <value>Overflow numerico nella conversione di USUAL da tipo '{0}' a tipo '{1}'</value>
@@ -2585,5 +2604,14 @@
   </data>
   <data name="E_OPEN_MSAVE" xml:space="preserve">
     <value>Non è stato possibile creare il file per il comando SAVE</value>
+  </data>
+  <data name="ERRORDIALOG_TITLE" xml:space="preserve">
+    <value>Errore di applicazione - </value>
+  </data>
+  <data name="ERRORDIALOG_CLOSE" xml:space="preserve">
+    <value>Chiudi</value>
+  </data>
+  <data name="ERRORDIALOG_COPY" xml:space="preserve">
+    <value>&amp;Copia nella clipboard</value>
   </data>
 </root>

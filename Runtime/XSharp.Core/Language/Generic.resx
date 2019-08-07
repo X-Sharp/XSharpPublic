@@ -2496,9 +2496,6 @@
   <data name="DATE_SUBTRACT" xml:space="preserve">
     <value>Invalid subtraction from DATE; USUAL contains incompatible type</value>
   </data>
-  <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
-    <value>aLookupTable must be dimensioned n by 2</value>
-  </data>
   <data name="ERROR_ARG" xml:space="preserve">
     <value>Arg: </value>
   </data>
@@ -2529,9 +2526,6 @@
   </data>
   <data name="ERROR_CODE" xml:space="preserve">
     <value>Error Code</value>
-  </data>
-  <data name="ERROR_OPERATION" xml:space="preserve">
-    <value>Operation</value>
   </data>
   <data name="ERROR_GENCODE" xml:space="preserve">
     <value>GenCode</value>
@@ -2574,6 +2568,12 @@
   </data>
 
   <!-- The following strings are not used (yet) in X#-->
+  <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
+    <value>aLookupTable must be dimensioned n by 2</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ERR_IN_ERR" xml:space="preserve">
+    <value>Error in Error Handler</value>
+  </data>
   <data name="__CAVOSTR_SYSLIB_ERROR" xml:space="preserve">
     <value>%V1s %s. Error</value>
   </data>

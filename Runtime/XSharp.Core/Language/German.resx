@@ -1356,137 +1356,8 @@
   <data name="IDTT_CUSTOMBITMAP" xml:space="preserve">
     <value>Wechsle zur Formularansicht</value>
   </data>
-  <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
-    <value>aLookupTable muß n, 2 dimensioniert sein</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARG" xml:space="preserve">
-    <value>%V1s Arg: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARG_ERROR" xml:space="preserve">
-    <value>&lt;Err Arg&gt;</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARGNUM" xml:space="preserve">
-    <value>%V1s ArgNum: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARGS" xml:space="preserve">
-    <value>Argumente:</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARGTYPE" xml:space="preserve">
-    <value>%V1s ArgTyp: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARGTYPE_REQ" xml:space="preserve">
-    <value>%V1s zulässiger ArgType: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CALLED_FROM" xml:space="preserve">
-    <value>%V1s Gerufen von: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CHOICE" xml:space="preserve">
-    <value>%V1s%V2s Wahl: %s %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CMD_LINE" xml:space="preserve">
-    <value>%V1s Befehlszeile: %-23s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CONVERSION" xml:space="preserve">
-    <value>%V1s in Conversion %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CURDIR" xml:space="preserve">
-    <value>CurDir</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_DANGER" xml:space="preserve">
-    <value>* Gefahr *:</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_DISK" xml:space="preserve">
-    <value>Platte</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_DISK_FREE" xml:space="preserve">
-    <value>frei</value>
-  </data>
   <data name="__CAVOSTR_SYSLIB_DOS_ERROR" xml:space="preserve">
     <value>%V1s DOS Error: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ENTITY" xml:space="preserve">
-    <value>%V1s Entität: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ERR_IN_ERR" xml:space="preserve">
-    <value>Fehler in Fehler</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ERROR" xml:space="preserve">
-    <value>%V1s %s. Fehler</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FILE" xml:space="preserve">
-    <value>%V1s Datei: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FILE_HANDLE" xml:space="preserve">
-    <value>%V1s Dateihandle: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FUNCPTR" xml:space="preserve">
-    <value>%V1s%V2s FuncPtr: %s %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FUNCTION" xml:space="preserve">
-    <value>%V1s Funktion: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_HANDLE" xml:space="preserve">
-    <value>HND</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_HANDLE_CUR" xml:space="preserve">
-    <value>cur</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_HANDLE_END" xml:space="preserve">
-    <value>end</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_IVARS" xml:space="preserve">
-    <value>%V1s IVars: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_LINE" xml:space="preserve">
-    <value>%V1s Zeile: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_MAX" xml:space="preserve">
-    <value>%V1s Max: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_MODULE" xml:space="preserve">
-    <value>%V1s Modul: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_OBJECT" xml:space="preserve">
-    <value>%V1s Objekt: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_OPERATION" xml:space="preserve">
-    <value>%V1s Operation: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_SUBCODE" xml:space="preserve">
-    <value>%V1s SubCode: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_SUBST_TYPE" xml:space="preserve">
-    <value>%V1s gibt zurück: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_SUBSYSTEM" xml:space="preserve">
-    <value>%V1s SubSystem: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_TO" xml:space="preserve">
-    <value>%V1s  zu %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_TRIES" xml:space="preserve">
-    <value>%V1s Versuche: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_WARNING" xml:space="preserve">
-    <value>Warnung:</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_OLEBASE" xml:space="preserve">
-    <value>OLE Base</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CONVERSION_CALLED_FROM" xml:space="preserve">
-    <value>%V1s%V2s in Conversion %s gerufen von: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CONVERSION_TO" xml:space="preserve">
-    <value>%V1s%V2s in Conversion %s zu %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FUNCTION_CALLED_FROM" xml:space="preserve">
-    <value>%V1s%V2s in Funktion %s gerufen von: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_NOMEM" xml:space="preserve">
-    <value>Kein freier Speicher</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_INCTYPES" xml:space="preserve">
-    <value>Unverständliche Datentypen</value>
   </data>
   <data name="__CAVOSTR_SYSCLASS_BADCAPTION" xml:space="preserve">
     <value>Caption ungültig</value>
@@ -1633,7 +1504,7 @@
     <value>si ungültig</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_BADSTRING" xml:space="preserve">
-    <value>cString ist kein STRING</value>
+    <value>cString ist nicht vom Typ STRING</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_BADTYPE" xml:space="preserve">
     <value>uType ungültig oder fehlend</value>
@@ -1927,7 +1798,7 @@
     <value>ColumnAttributes Parameter Ungültig</value>
   </data>
   <data name="TMSG_YN" xml:space="preserve">
-    <value>Y/N</value>
+    <value>J/N</value>
   </data>
   <data name="TMSG_ALERTDEFAULT" xml:space="preserve">
     <value>Ein Fehler ist aufgetreten</value>
@@ -2065,7 +1936,7 @@
     <value>Option kann nicht gesetzt werden</value>
   </data>
   <data name="ERROR_INTERNET_SHUTDOWN" xml:space="preserve">
-    <value>Shutdown</value>
+    <value>Ausschalten</value>
   </data>
   <data name="ERROR_INTERNET_INCORRECT_USER_NAME" xml:space="preserve">
     <value>Falscher Benutzername</value>
@@ -2227,7 +2098,7 @@
     <value>Redirect fehlgeschlagen</value>
   </data>
   <data name="ERROR_INTERNET_SECURITY_CHANNEL_ERROR" xml:space="preserve">
-    <value>Security channel error</value>
+    <value>Sicherheitskanalfehler</value>
   </data>
   <data name="ERROR_INTERNET_UNABLE_TO_CACHE_FILE" xml:space="preserve">
     <value>Kann Datei nicht cachen</value>
@@ -2323,7 +2194,7 @@
     <value>Alias wird bereits benutzt</value>
   </data>
   <data name="RT_MSG_ERR_19" xml:space="preserve">
-    <value>Variable not initialized</value>
+    <value>Variable nicht initialisiert</value>
   </data>
   <data name="RT_MSG_ERR_20" xml:space="preserve">
     <value>Erstellungs-Fehler</value>
@@ -2392,7 +2263,7 @@
     <value>Lock fehlgeschlagen</value>
   </data>
   <data name="RT_MSG_ERR_42" xml:space="preserve">
-    <value>To many threads</value>
+    <value>Zu viele Threads</value>
   </data>
   <data name="RT_MSG_ERR_43" xml:space="preserve">
     <value>Reservierte Fehlernummer</value>
@@ -2428,7 +2299,22 @@
     <value>Fehler beim Erstellen des Fehlerobjekts</value>
   </data>
   <data name="RT_MSG_ERR_54" xml:space="preserve">
-    <value>DynAlloc: Zeiger auf dynamischen Speicherbereich</value>
+    <value>DynAlloc: PTR to DynData</value>
+  </data>
+  <data name="RT_MSG_ERR_55" xml:space="preserve">
+    <value>Typ ist nicht zugänglich</value>
+  </data>
+  <data name="RT_MSG_ERR_56" xml:space="preserve">
+    <value>Methode ist überladen, Send () wird für überladene Methoden nicht unterstützt</value>
+  </data>
+  <data name="RT_MSG_ERR_57" xml:space="preserve">
+    <value>Es wurden nicht genügend Argumente an die Zielmethode übergeben</value>
+  </data>
+  <data name="RT_MSG_ERR_58" xml:space="preserve">
+    <value>Zu viele Argumente wurden an die Zielmethode übergeben</value>
+  </data>
+  <data name="RT_MSG_ERR_59" xml:space="preserve">
+    <value>Ausnahme ausgelöst durch CLR oder externen Code</value>
   </data>
   <data name="RT_MSG_ERR_UNKNOWN" xml:space="preserve">
     <value>Unbekannter Fehler</value>
@@ -2451,789 +2337,6 @@
   <data name="RT_MSG_RELEASE" xml:space="preserve">
     <value>Version 2.8 SP3</value>
   </data>
-  <data name="RT_MSG_DOSERR_0" xml:space="preserve">
-    <value>Erfolgreich beendet</value>
-  </data>
-  <data name="RT_MSG_DOSERR_1" xml:space="preserve">
-    <value>Ungültige Funktionsanzahl</value>
-  </data>
-  <data name="RT_MSG_DOSERR_2" xml:space="preserve">
-    <value>Datei nicht gefunden</value>
-  </data>
-  <data name="RT_MSG_DOSERR_3" xml:space="preserve">
-    <value>Verzeichnis nicht gefunden</value>
-  </data>
-  <data name="RT_MSG_DOSERR_4" xml:space="preserve">
-    <value>Zu wenig Dateihandles</value>
-  </data>
-  <data name="RT_MSG_DOSERR_5" xml:space="preserve">
-    <value>Zugriff verweigert</value>
-  </data>
-  <data name="RT_MSG_DOSERR_6" xml:space="preserve">
-    <value>Ungültiges Dateihandle</value>
-  </data>
-  <data name="RT_MSG_DOSERR_7" xml:space="preserve">
-    <value>Speichersteuerblöcke zerstört</value>
-  </data>
-  <data name="RT_MSG_DOSERR_8" xml:space="preserve">
-    <value>Nicht genügend Speicher</value>
-  </data>
-  <data name="RT_MSG_DOSERR_9" xml:space="preserve">
-    <value>Ungültige Speicherblock-Adresse</value>
-  </data>
-  <data name="RT_MSG_DOSERR_10" xml:space="preserve">
-    <value>Ungültige Umgebung</value>
-  </data>
-  <data name="RT_MSG_DOSERR_11" xml:space="preserve">
-    <value>Ungültiges Format</value>
-  </data>
-  <data name="RT_MSG_DOSERR_12" xml:space="preserve">
-    <value>Ungültiger Zugriffs-Code</value>
-  </data>
-  <data name="RT_MSG_DOSERR_13" xml:space="preserve">
-    <value>Ungültige Daten</value>
-  </data>
-  <data name="RT_MSG_DOSERR_14" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_15" xml:space="preserve">
-    <value>Ungültige Laufwerksnummer</value>
-  </data>
-  <data name="RT_MSG_DOSERR_16" xml:space="preserve">
-    <value>Verzeichnis kann nicht gelöscht werden</value>
-  </data>
-  <data name="RT_MSG_DOSERR_17" xml:space="preserve">
-    <value>Nicht das gleiche Gerät</value>
-  </data>
-  <data name="RT_MSG_DOSERR_18" xml:space="preserve">
-    <value>Keine weiteren Dateien</value>
-  </data>
-  <data name="RT_MSG_DOSERR_19" xml:space="preserve">
-    <value>Diskette ist schreibgeschützt</value>
-  </data>
-  <data name="RT_MSG_DOSERR_20" xml:space="preserve">
-    <value>Unbekannte Geräteeinheit</value>
-  </data>
-  <data name="RT_MSG_DOSERR_21" xml:space="preserve">
-    <value>Laufwerk nicht bereit</value>
-  </data>
-  <data name="RT_MSG_DOSERR_22" xml:space="preserve">
-    <value>Unbekannter Befehl</value>
-  </data>
-  <data name="RT_MSG_DOSERR_23" xml:space="preserve">
-    <value>Datenfehler (CRC)</value>
-  </data>
-  <data name="RT_MSG_DOSERR_24" xml:space="preserve">
-    <value>Fehlerhafte Request-Struktur-Laenge</value>
-  </data>
-  <data name="RT_MSG_DOSERR_25" xml:space="preserve">
-    <value>Seek-Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_26" xml:space="preserve">
-    <value>Unbekannter Mediumtyp</value>
-  </data>
-  <data name="RT_MSG_DOSERR_27" xml:space="preserve">
-    <value>Sektor nicht gefunden</value>
-  </data>
-  <data name="RT_MSG_DOSERR_28" xml:space="preserve">
-    <value>Kein Papier im Drucker</value>
-  </data>
-  <data name="RT_MSG_DOSERR_29" xml:space="preserve">
-    <value>Schreibfehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_30" xml:space="preserve">
-    <value>Lesefehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_31" xml:space="preserve">
-    <value>Allgemeiner Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_32" xml:space="preserve">
-    <value>Zugriff verweigert</value>
-  </data>
-  <data name="RT_MSG_DOSERR_33" xml:space="preserve">
-    <value>Sperrverletzung</value>
-  </data>
-  <data name="RT_MSG_DOSERR_34" xml:space="preserve">
-    <value>Ungültiger Diskettenwechsel</value>
-  </data>
-  <data name="RT_MSG_DOSERR_35" xml:space="preserve">
-    <value>FCB nicht verfügber</value>
-  </data>
-  <data name="RT_MSG_DOSERR_36" xml:space="preserve">
-    <value>Sharing-Puffer-Überlauf</value>
-  </data>
-  <data name="RT_MSG_DOSERR_37" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_38" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_39" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_40" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_41" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_42" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_43" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_44" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_45" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_46" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_47" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_48" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_49" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_50" xml:space="preserve">
-    <value>Netzwerk-Anforderung nicht unterstützt</value>
-  </data>
-  <data name="RT_MSG_DOSERR_51" xml:space="preserve">
-    <value>Entfernter Computer reagiert nicht</value>
-  </data>
-  <data name="RT_MSG_DOSERR_52" xml:space="preserve">
-    <value>Doppelter Name im Netzwerk</value>
-  </data>
-  <data name="RT_MSG_DOSERR_53" xml:space="preserve">
-    <value>Netzwerkname nicht gefunden</value>
-  </data>
-  <data name="RT_MSG_DOSERR_54" xml:space="preserve">
-    <value>Netzwerk besetzt</value>
-  </data>
-  <data name="RT_MSG_DOSERR_55" xml:space="preserve">
-    <value>Netzwerk-Gerät existiert nicht mehr</value>
-  </data>
-  <data name="RT_MSG_DOSERR_56" xml:space="preserve">
-    <value>Net-BIOS Befehlsanzahl überschritten</value>
-  </data>
-  <data name="RT_MSG_DOSERR_57" xml:space="preserve">
-    <value>Netzwerk-Adapter-Hardware-Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_58" xml:space="preserve">
-    <value>Ungültige Netzwerk-Antwort</value>
-  </data>
-  <data name="RT_MSG_DOSERR_59" xml:space="preserve">
-    <value>Unerwarteter Netzwerk-Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_60" xml:space="preserve">
-    <value>Inkompatibler Remoteadapter</value>
-  </data>
-  <data name="RT_MSG_DOSERR_61" xml:space="preserve">
-    <value>Drucker-Warteschlange ist voll</value>
-  </data>
-  <data name="RT_MSG_DOSERR_62" xml:space="preserve">
-    <value>Nicht genügend Platz für den Druck der Datei</value>
-  </data>
-  <data name="RT_MSG_DOSERR_63" xml:space="preserve">
-    <value>Druck-Datei gelöscht</value>
-  </data>
-  <data name="RT_MSG_DOSERR_64" xml:space="preserve">
-    <value>Netzwerkname gelöscht</value>
-  </data>
-  <data name="RT_MSG_DOSERR_65" xml:space="preserve">
-    <value>Zugriff verweigert</value>
-  </data>
-  <data name="RT_MSG_DOSERR_66" xml:space="preserve">
-    <value>Falscher Netzwerk-Gerätetyp</value>
-  </data>
-  <data name="RT_MSG_DOSERR_67" xml:space="preserve">
-    <value>Netzwerkname nicht gefunden</value>
-  </data>
-  <data name="RT_MSG_DOSERR_68" xml:space="preserve">
-    <value>Maximale Anzahl an Netzwerknamen überschritten</value>
-  </data>
-  <data name="RT_MSG_DOSERR_69" xml:space="preserve">
-    <value>Net-BIOS Sessionlimit überschritten</value>
-  </data>
-  <data name="RT_MSG_DOSERR_70" xml:space="preserve">
-    <value>Temporärer Halt</value>
-  </data>
-  <data name="RT_MSG_DOSERR_71" xml:space="preserve">
-    <value>Netzwerk-Anforderung nicht akzeptiert</value>
-  </data>
-  <data name="RT_MSG_DOSERR_72" xml:space="preserve">
-    <value>Druck -oder Laufwerksumleitung wurde angehalten</value>
-  </data>
-  <data name="RT_MSG_DOSERR_73" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_74" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_75" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_76" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_77" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_78" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_79" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_80" xml:space="preserve">
-    <value>Datei existiert bereits</value>
-  </data>
-  <data name="RT_MSG_DOSERR_81" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_82" xml:space="preserve">
-    <value>Verzeichnis-Eintrag kann nicht erstellt werden</value>
-  </data>
-  <data name="RT_MSG_DOSERR_83" xml:space="preserve">
-    <value>Fehler bei INT 24</value>
-  </data>
-  <data name="RT_MSG_DOSERR_84" xml:space="preserve">
-    <value>Zu viele Umleitungen</value>
-  </data>
-  <data name="RT_MSG_DOSERR_85" xml:space="preserve">
-    <value>Doppelte Umleitung</value>
-  </data>
-  <data name="RT_MSG_DOSERR_86" xml:space="preserve">
-    <value>Ungültiges Passwort</value>
-  </data>
-  <data name="RT_MSG_DOSERR_87" xml:space="preserve">
-    <value>Ungültiger Parameter</value>
-  </data>
-  <data name="RT_MSG_DOSERR_88" xml:space="preserve">
-    <value>Netzwerk-Geräte-Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_89" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_90" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_91" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_92" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_93" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_94" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_95" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_96" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_97" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_98" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_99" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_100" xml:space="preserve">
-    <value>Fehler beim Lesen vom Laufwerk</value>
-  </data>
-  <data name="RT_MSG_DOSERR_101" xml:space="preserve">
-    <value>Fehler beim Schreiben auf das Laufwerk</value>
-  </data>
-  <data name="RT_MSG_DOSERR_102" xml:space="preserve">
-    <value>Datei nicht zugeordnet</value>
-  </data>
-  <data name="RT_MSG_DOSERR_103" xml:space="preserve">
-    <value>Datei nicht geöffnet</value>
-  </data>
-  <data name="RT_MSG_DOSERR_104" xml:space="preserve">
-    <value>Datei nicht zur Eingabe geöffnet</value>
-  </data>
-  <data name="RT_MSG_DOSERR_105" xml:space="preserve">
-    <value>Datei nicht zur Ausgabe geöffnet</value>
-  </data>
-  <data name="RT_MSG_DOSERR_106" xml:space="preserve">
-    <value>Ungültiges numerisches Format</value>
-  </data>
-  <data name="RT_MSG_DOSERR_107" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_108" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_109" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_110" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_111" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_112" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_113" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_114" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_115" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_116" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_117" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_118" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_119" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_120" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_121" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_122" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_123" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_124" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_125" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_126" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_127" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_128" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_129" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_130" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_131" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_132" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_133" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_134" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_135" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_136" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_137" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_138" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_139" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_140" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_141" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_142" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_143" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_144" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_145" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_146" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_147" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_148" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_149" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_150" xml:space="preserve">
-    <value>Diskette ist schreibgeschützt</value>
-  </data>
-  <data name="RT_MSG_DOSERR_151" xml:space="preserve">
-    <value>Unbekanntes Gerät</value>
-  </data>
-  <data name="RT_MSG_DOSERR_152" xml:space="preserve">
-    <value>Laufwerk nicht bereit</value>
-  </data>
-  <data name="RT_MSG_DOSERR_153" xml:space="preserve">
-    <value>Unbekannter Befehl</value>
-  </data>
-  <data name="RT_MSG_DOSERR_154" xml:space="preserve">
-    <value>CRC Fehler in den Daten</value>
-  </data>
-  <data name="RT_MSG_DOSERR_155" xml:space="preserve">
-    <value>Fehlerhafte Laufwerks-Request-Strukturlänge</value>
-  </data>
-  <data name="RT_MSG_DOSERR_156" xml:space="preserve">
-    <value>Disk-Seek-Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_157" xml:space="preserve">
-    <value>Unbekannter Mediumtyp</value>
-  </data>
-  <data name="RT_MSG_DOSERR_158" xml:space="preserve">
-    <value>Sektor nicht gefunden</value>
-  </data>
-  <data name="RT_MSG_DOSERR_159" xml:space="preserve">
-    <value>Kein Papier im Drucker</value>
-  </data>
-  <data name="RT_MSG_DOSERR_160" xml:space="preserve">
-    <value>Geräte-Schreibfehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_161" xml:space="preserve">
-    <value>Geräte-Lesefehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_162" xml:space="preserve">
-    <value>Hardware-Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_163" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_164" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_165" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_166" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_167" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_168" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_169" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_170" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_171" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_172" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_173" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_174" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_175" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_176" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_177" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_178" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_179" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_180" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_181" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_182" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_183" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_184" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_185" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_186" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_187" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_188" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_189" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_190" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_191" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_192" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_193" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_194" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_195" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_196" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_197" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_198" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_199" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_200" xml:space="preserve">
-    <value>Division durch Null</value>
-  </data>
-  <data name="RT_MSG_DOSERR_201" xml:space="preserve">
-    <value>Bereichsgrenzen-Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_202" xml:space="preserve">
-    <value>Stack-Überlauf</value>
-  </data>
-  <data name="RT_MSG_DOSERR_203" xml:space="preserve">
-    <value>Heap-Überlauf</value>
-  </data>
-  <data name="RT_MSG_DOSERR_204" xml:space="preserve">
-    <value>Ungültige Zeigeroperation</value>
-  </data>
-  <data name="RT_MSG_DOSERR_205" xml:space="preserve">
-    <value>Floating-Point-Überlauf</value>
-  </data>
-  <data name="RT_MSG_DOSERR_206" xml:space="preserve">
-    <value>Floating-Point-Underflow</value>
-  </data>
-  <data name="RT_MSG_DOSERR_207" xml:space="preserve">
-    <value>Ungültige Gleitkommaoperation</value>
-  </data>
-  <data name="RT_MSG_DOSERR_208" xml:space="preserve">
-    <value>Overlay-Manager nicht installiert</value>
-  </data>
-  <data name="RT_MSG_DOSERR_209" xml:space="preserve">
-    <value>Overlay-Datei-Lesefehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_210" xml:space="preserve">
-    <value>Objekt nicht initialisiert</value>
-  </data>
-  <data name="RT_MSG_DOSERR_211" xml:space="preserve">
-    <value>Aufruf einer abstrakten Methode</value>
-  </data>
-  <data name="RT_MSG_DOSERR_212" xml:space="preserve">
-    <value>Stream-Registrier-Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_213" xml:space="preserve">
-    <value>Collection-Index ausserhalb des Bereiches</value>
-  </data>
-  <data name="RT_MSG_DOSERR_214" xml:space="preserve">
-    <value>Collection-Überlauf Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_215" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_216" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_217" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_218" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_219" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_220" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_221" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_222" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_223" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_224" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_225" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_226" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_227" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_228" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_229" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_230" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_231" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_232" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_233" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_234" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_235" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_236" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_237" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_238" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_239" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_240" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_241" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_242" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_243" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_244" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_245" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_246" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_247" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_248" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_249" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_250" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_251" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_252" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_253" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_254" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
-  <data name="RT_MSG_DOSERR_255" xml:space="preserve">
-    <value>Programabbruch</value>
-  </data>
-  <data name="RT_MSG_DOSERR_256" xml:space="preserve">
-    <value>Laufwerkskapazität erschöpft</value>
-  </data>
-  <data name="RT_MSG_DOSERR_257" xml:space="preserve">
-    <value>Ende der Datei</value>
-  </data>
-  <data name="RT_MSG_DOSERR_258" xml:space="preserve">
-    <value>Ungültiger Parameter</value>
-  </data>
-  <data name="RT_MSG_DOSERR_FFFF" xml:space="preserve">
-    <value>Falsche Diskette</value>
-  </data>
-  <data name="RT_MSG_DOSERR_UNKNOWN" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
-  </data>
   <data name="RT_MSG_ERR_INSTALLED" xml:space="preserve">
     <value>ERRORBUILD: keine ERRORFUNC installiert</value>
   </data>
@@ -3253,10 +2356,10 @@
     <value>ERRORBUILD: ERRORFUNC-Parameteranzahl &lt;&gt;1</value>
   </data>
   <data name="RT_MSG_MAIL_ERR1" xml:space="preserve">
-    <value>SendMail(): Failed to load the MAPI DLL</value>
+    <value>SendMail(): Fehler beim Laden der MAPI-DLL</value>
   </data>
   <data name="RT_MSG_MAIL_ERR2" xml:space="preserve">
-    <value>SendMail(): Failed to get function entry point in the MAPI DLL</value>
+    <value>SendMail(): Fehler beim Abrufen des Funktionseinstiegspunkts in der MAPI-DLL</value>
   </data>
   <data name="RT_MSG_MAIL_ERR3" xml:space="preserve">
     <value>SendMail(): Failed to send %s. Error code: %d</value>
@@ -3316,9 +2419,268 @@
     <value>Stack overflow</value>
   </data>
   <data name="RT_MSG_INVALID_DISPOSITION" xml:space="preserve">
-    <value>Invalid disposition</value>
+    <value>Ungültige Disposition</value>
   </data>
   <data name="RT_MSG_GUARD_PAGE" xml:space="preserve">
     <value>Guard Page</value>
+  </data>
+  <data name="ARGCANNOTBEZERO" xml:space="preserve">
+    <value>Argument kann nicht 0 sein</value>
+  </data>
+  <data name="ARGNOTCODEBLOCK" xml:space="preserve">
+    <value>Argument ist kein CODEBLOCK</value>
+  </data>
+  <data name="ARGLISTING" xml:space="preserve">
+    <value>   {0}: {1} ({2}){3}</value>
+    <comment>Used in Error.Message</comment>
+  </data>
+  <data name="ARGNOTDATE" xml:space="preserve">
+    <value>Argument ist kein DATE</value>
+  </data>
+  <data name="ARGNOTINT32" xml:space="preserve">
+    <value>Argument ist kein INT</value>
+  </data>
+  <data name="ARGNOTINTEGER" xml:space="preserve">
+    <value>Argument ist kein ganzzahliger Typ</value>
+  </data>
+  <data name="ARGNOTNUMERIC" xml:space="preserve">
+    <value>Argument ist nicht numerisch</value>
+  </data>
+  <data name="ARGNOTSTRING" xml:space="preserve">
+    <value>Argument is nicht eine Zeichenkette</value>
+  </data>
+  <data name="ARGSINCOMPATIBLE" xml:space="preserve">
+    <value>Argumente sind nicht unvereinbar</value>
+  </data>
+  <data name="ARGSNOTSAMETYPE" xml:space="preserve">
+    <value>Argumente are not the same type</value>
+  </data>
+  <data name="ARGUMENT" xml:space="preserve">
+    <value>Argument</value>
+  </data>
+  <data name="ARGUMENTSHEADING" xml:space="preserve">
+    <value>Argument(e):</value>
+  </data>
+  <data name="ATRANSLATE" xml:space="preserve">
+    <value>aLookupTable ist kein Array oder Element ist kein Array</value>
+  </data>
+  <data name="DATATYPEERROR" xml:space="preserve">
+    <value>Datentypfehler</value>
+  </data>
+  <data name="DATE_ADD" xml:space="preserve">
+    <value>Ungültiger additierung zu USUAL der DATE enthält; RHS enthält inkompatiblen Typ</value>
+  </data>
+  <data name="DATE_SUBTRACT" xml:space="preserve">
+    <value>Ungültige Subtraktion von USUAL der DATE enthält; RHS enthält inkompatiblen Typ</value>
+  </data>
+  <data name="ERROR_ARG" xml:space="preserve">
+    <value>Arg</value>
+  </data>
+  <data name="ERROR_ARGNUM" xml:space="preserve">
+    <value>Argumentnummer</value>
+  </data>
+  <data name="ERROR_ARGTYPE" xml:space="preserve">
+    <value>Argumenttyp</value>
+  </data>
+  <data name="ERROR_ARGS" xml:space="preserve">
+    <value>Argumente</value>
+  </data>
+  <data name="ERROR_ARGTYPE_REQ" xml:space="preserve">
+    <value>Erwartet Datentype</value>
+  </data>
+  <data name="ERROR_FILENAME" xml:space="preserve">
+    <value>Datei</value>
+  </data>
+  <data name="ERROR_FUNCTION" xml:space="preserve">
+    <value>Funktion</value>
+  </data>
+  <data name="ERROR_DESCRIPTION" xml:space="preserve">
+    <value>Beschreibung</value>
+  </data>
+  <data name="ERROR_OPERATION" xml:space="preserve">
+    <value>Operation</value>
+  </data>
+  <data name="ERROR_CODE" xml:space="preserve">
+    <value>Fehlercode</value>
+  </data>
+  <data name="ERROR_GENCODE" xml:space="preserve">
+    <value>Generischer Code</value>
+  </data>
+  <data name="ERROR_SUBCODE" xml:space="preserve">
+    <value>Untercode</value>
+  </data>
+  <data name="ERROR_OSCODE" xml:space="preserve">
+    <value>Betriebssystemcode</value>
+  </data>
+  <data name="ERROR_SEVERITY" xml:space="preserve">
+    <value>Schwere</value>
+  </data>
+  <data name="ERROR_FUNCSYM" xml:space="preserve">
+    <value>FuncSym</value>
+  </data>
+  <data name="ERROR_TRIES" xml:space="preserve">
+    <value>Versuche</value>
+  </data>
+  <data name="ERROR_CANDEFAULT" xml:space="preserve">
+    <value>Kann Default</value>
+  </data>
+  <data name="ERROR_CANRETRY" xml:space="preserve">
+    <value>Kann erneut versuchen</value>
+  </data>
+  <data name="ERROR_CANSUBSTITUTE" xml:space="preserve">
+    <value>Kann ersetzen</value>
+  </data>
+  <data name="ERROR_SUBSYSTEM" xml:space="preserve">
+    <value>Teilsystem</value>
+  </data>
+  <data name="ERROR_STACK" xml:space="preserve">
+    <value>Gerufen von</value>
+  </data>
+  <data name="ERROR_CALLEDFROM" xml:space="preserve">
+    <value>Gerufen von</value>
+  </data>
+  <!-- The following strings are not used (yet) in X#-->
+   <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
+    <value>aLookupTable muß n, 2 dimensioniert sein</value>
+  </data>
+    <data name="__CAVOSTR_SYSLIB_ERROR" xml:space="preserve">
+    <value>%V1s %s. Fehler</value>
+  </data>
+    <data name="__CAVOSTR_SYSLIB_FILE_HANDLE" xml:space="preserve">
+    <value>%V1s Dateihandle: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_FUNCPTR" xml:space="preserve">
+    <value>%V1s%V2s FuncPtr: %s %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CHOICE" xml:space="preserve">
+    <value>%V1s%V2s Wahl: %s %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CMD_LINE" xml:space="preserve">
+    <value>%V1s Befehlszeile: %-23s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CONVERSION" xml:space="preserve">
+    <value>%V1s in Konvertierung %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CURDIR" xml:space="preserve">
+    <value>CurDir</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DANGER" xml:space="preserve">
+    <value>* Gefahr *:</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DISK" xml:space="preserve">
+    <value>Platte</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DISK_FREE" xml:space="preserve">
+    <value>frei</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ENTITY" xml:space="preserve">
+    <value>%V1s Entität: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ERR_IN_ERR" xml:space="preserve">
+    <value>Fehler in Fehler</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE" xml:space="preserve">
+    <value>HND</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE_CUR" xml:space="preserve">
+    <value>cur</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE_END" xml:space="preserve">
+    <value>end</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_IVARS" xml:space="preserve">
+    <value>%V1s IVars: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_LINE" xml:space="preserve">
+    <value>%V1s Zeile: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_MAX" xml:space="preserve">
+    <value>%V1s Max: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_MODULE" xml:space="preserve">
+    <value>%V1s Modul: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_OBJECT" xml:space="preserve">
+    <value>%V1s Objekt: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_SUBST_TYPE" xml:space="preserve">
+    <value>%V1s gibt zurück: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_TO" xml:space="preserve">
+    <value>%V1s zu %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_WARNING" xml:space="preserve">
+    <value>Warnung:</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_OLEBASE" xml:space="preserve">
+    <value>OLE Base</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CONVERSION_TO" xml:space="preserve">
+    <value>%V1s%V2s in Conversion %s zu %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_NOMEM" xml:space="preserve">
+    <value>Kein freier Speicher</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_INCTYPES" xml:space="preserve">
+    <value>Unverständliche Datentypen</value>
+  </data>
+  <!-- End of unused strings-->
+  <data name="INVALIDARGTYPE" xml:space="preserve">
+    <value>Ungültiger Argumenttyp</value>
+  </data>
+  <data name="INVALIDARGVALUE" xml:space="preserve">
+    <value>Ungültiger Argumentwert</value>
+  </data>
+  <data name="OSVERSION" xml:space="preserve">
+    <value>{0} (Version {1}.{2}, Build {3}, Revision {4})</value>
+  </data>
+  <data name="RUNTIMEERROR" xml:space="preserve">
+    <value>Laufzeit Fehler</value>
+    <comment>Beginning of runtime error message</comment>
+  </data>
+  <data name="STRINGLENNE1" xml:space="preserve">
+    <value>Stringlänge! = 1</value>
+  </data>
+  <data name="USUALOVERFLOWERR" xml:space="preserve">
+    <value>Numerische Überlauf beim konvertieren von USUAL DatenType '{0}' auf '{1}'</value>
+  </data>
+  <data name="USUALBINARYOPERR" xml:space="preserve">
+    <value>{0} operator nicht verfügbar für USUAL Datentype '{1}' und '{2}'</value>
+  </data>
+  <data name="USUALUNARYOPERR" xml:space="preserve">
+    <value>{0} operator nicht verfügbar für USUAL Datentypen '{1}'</value>
+  </data>
+  <data name="USUALCONVERSIONERR" xml:space="preserve">
+    <value>Konvertierungsfehler von USUAL ({0}) nach {1}</value>
+  </data>
+  <data name="VERSION" xml:space="preserve">
+    <value>Version: </value>
+  </data>
+  <data name="ARGISNULL" xml:space="preserve">
+    <value>Argument ist NULL</value>
+  </data>
+  <data name="UNKNOWNRDD" xml:space="preserve">
+    <value>Ungültige RDD name</value>
+  </data>
+  <data name="ARRAYBOUNDS" xml:space="preserve">
+    <value>Ungültiger Array-Index</value>
+  </data>
+  <data name="USUALNOTINDEXED" xml:space="preserve">
+    <value>value in USUAL unterstützt keine indizierten Operationen. Der Wert muss ein X# Array sein oder die Schnittstelle '{0}' implementieren.</value>
+  </data>
+  <data name="E_OPEN_MRESTORE" xml:space="preserve">
+    <value>Die datei für das RESTORE Befehl konnte  nicht geöffnet werden.</value>
+  </data>
+  <data name="E_OPEN_MSAVE" xml:space="preserve">
+    <value>Die datei für das SAVE Befehl konnte nicht erstellt werden.</value>
+  </data>
+  <data name="ERRORDIALOG_TITLE" xml:space="preserve">
+    <value>Anwendungsfehler - </value>
+  </data>
+  <data name="ERRORDIALOG_CLOSE" xml:space="preserve">
+    <value>Beenden</value>
+  </data>
+  <data name="ERRORDIALOG_COPY" xml:space="preserve">
+    <value>In Zwischenablage kopieren</value>
   </data>
 </root>

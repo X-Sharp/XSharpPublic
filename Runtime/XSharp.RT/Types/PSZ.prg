@@ -258,7 +258,7 @@ BEGIN NAMESPACE XSharp
 			// DWORD -> PSZ
 			/// <include file="RTComments.xml" path="Comments/Operator/*" />
 			OPERATOR IMPLICIT( d AS DWORD ) AS PSZ
-				RETURN PSZ{ IntPtr{ (PTR) d } }
+				RETURN PSZ{ IntPtr{ (int64) d} } 
 			
 			///////////////////////////////////////////////////////////////////////////
 			// Conversion Operators - From PSZ...  

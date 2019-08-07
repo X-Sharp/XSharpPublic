@@ -1370,14 +1370,14 @@ INTERNAL METHOD _getUsualType(oValue AS OBJECT) AS __UsualType
     ELSE
     typeCde := Type.GetTypeCode(oValue:GetType())
     SWITCH typeCde
-CASE TypeCode.SByte
+    CASE TypeCode.SByte
     CASE TypeCode.Byte
-CASE TypeCode.Int16
-CASE TypeCode.UInt16
+    CASE TypeCode.Int16
+    CASE TypeCode.UInt16
     CASE TypeCode.Int32
         RETURN __UsualType.LONG
     CASE TypeCode.UInt32
-CASE TypeCode.Int64
+    CASE TypeCode.Int64
     CASE TypeCode.UInt64
     CASE TypeCode.Single
     CASE TypeCode.Double
@@ -1483,19 +1483,23 @@ METHOD Flush() 			AS LOGIC
         SELF:_DbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
         RETURN FALSE
     ENDIF
-    isOk := SELF:GoCold()
-    IF isOk
-        IF SELF:Shared 
-            SELF:HeaderLock( DbLockMode.Lock )
+    IF SELF:_Hot 
+        isOk := SELF:GoCold()
+        IF isOk
+            IF SELF:Shared 
+                SELF:HeaderLock( DbLockMode.Lock )
+            ENDIF
+            SELF:_putEndOfFileMarker()
+            SELF:_writeHeader()
+            IF SELF:Shared 
+                SELF:HeaderLock( DbLockMode.UnLock )
+            ENDIF
         ENDIF
-        SELF:_putEndOfFileMarker()
-        SELF:_writeHeader()
-        IF SELF:Shared 
-            SELF:HeaderLock( DbLockMode.UnLock )
-        ENDIF
+        FFlush( SELF:_hFile )
+    ELSE
+        isOk := TRUE
     ENDIF
     //
-    FFlush( SELF:_hFile )
     IF SELF:HasMemo
         isOk := _Memo:Flush()
     ENDIF

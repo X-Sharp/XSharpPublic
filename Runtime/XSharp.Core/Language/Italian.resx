@@ -127,7 +127,7 @@
     <value>Identificatore record vuoto</value>
   </data>
   <data name="EDB_SETRELATION" xml:space="preserve">
-    <value>ALIAS errato per il database child</value>
+    <value>ALIAS errato per il database figlio</value>
   </data>
   <data name="EDB_USE" xml:space="preserve">
     <value>Nome file errato</value>
@@ -154,10 +154,10 @@
     <value>Errore definizione filtro</value>
   </data>
   <data name="EDB_CYCLICREL" xml:space="preserve">
-    <value>Relazione ciclica tra database</value>
+    <value>Relazione ciclica tra tabelle</value>
   </data>
   <data name="EDB_CREATETABLE" xml:space="preserve">
-    <value>Errore in creazione database</value>
+    <value>Errore in creazione tabella</value>
   </data>
   <data name="EDB_RDDNOTFOUND" xml:space="preserve">
     <value>RDD non trovato</value>
@@ -175,13 +175,13 @@
     <value>Errore creazione totali</value>
   </data>
   <data name="EDB_RECNO" xml:space="preserve">
-    <value>Argomento di numero record errato</value>
+    <value>Numero record indicato errato</value>
   </data>
   <data name="EDB_EXPRESSION" xml:space="preserve">
     <value>Espressione mancante per il compilatore macro</value>
   </data>
   <data name="EDB_EXPR_WIDTH" xml:space="preserve">
-    <value>Expressione troppo lunga per il compilatore macro</value>
+    <value>Espressione troppo lunga per il compilatore macro</value>
   </data>
   <data name="EDB_DRIVERLOAD" xml:space="preserve">
     <value>Impossibile caricare l'RDD</value>
@@ -211,13 +211,13 @@
     <value>Funzione Init dell'RDD mancante</value>
   </data>
   <data name="EDB_ERRORINIT" xml:space="preserve">
-    <value>Funzione Init dell'RDD errata</value>
+    <value>Esecuzione funzione Init dell'RDD fallita</value>
   </data>
   <data name="EDB_DBSTRUCT" xml:space="preserve">
-    <value>Struttura non risponde</value>
+    <value>Struttura non corretta</value>
   </data>
   <data name="EDB_NOTABLE" xml:space="preserve">
-    <value>L'area di lavoro corrente non contiene un database</value>
+    <value>L'area di lavoro corrente non contiene una tabella</value>
   </data>
   <data name="EDB_NOORDER" xml:space="preserve">
     <value>Nessun ordine specificato</value>
@@ -262,19 +262,19 @@
     <value>Errore tipo di dato</value>
   </data>
   <data name="ERDD_DATAWIDTH" xml:space="preserve">
-    <value>Errore grandezza dato</value>
+    <value>Errore lunghezza dato</value>
   </data>
   <data name="ERDD_UNLOCKED" xml:space="preserve">
-    <value>Necessario bloccare il record</value>
+    <value>Blocco del record necessario</value>
   </data>
   <data name="ERDD_SHARED" xml:space="preserve">
     <value>Errore di condivisione</value>
   </data>
   <data name="ERDD_APPENDLOCK" xml:space="preserve">
-    <value>Errore di appendlock</value>
+    <value>Errore di blocco durante l'append</value>
   </data>
   <data name="ERDD_READONLY" xml:space="preserve">
-    <value>Solo lettura</value>
+    <value>Sola lettura</value>
   </data>
   <data name="ERDD_NULLKEY" xml:space="preserve">
     <value>Chiave non definita</value>
@@ -286,7 +286,7 @@
     <value>Superato il limite dell'indice di ordinamento</value>
   </data>
   <data name="ERDD_INIT_LOCK" xml:space="preserve">
-    <value>Errore di inizializzazione del blocco</value>
+    <value>Errore di inizializzazione schema di blocco</value>
   </data>
   <data name="ERDD_READ_LOCK" xml:space="preserve">
     <value>Impossible bloccare in lettura</value>
@@ -310,7 +310,7 @@
     <value>Timeout nello sblocco del file indice in lettura</value>
   </data>
   <data name="ERDD_WRITE_UNLOCK_TIMEOUT" xml:space="preserve">
-    <value>Timeout nello sblocco del file indice in   \nscrittura</value>
+    <value>Timeout nello sblocco del file indice in scrittura</value>
   </data>
   <data name="ERDD_CLOSE_FILE" xml:space="preserve">
     <value>Chiusura database</value>
@@ -328,7 +328,7 @@
     <value>Numero record non trovato</value>
   </data>
   <data name="ERDD_NOORDER" xml:space="preserve">
-    <value>L'area di lavoro corrente non contiene un ordinamento</value>
+    <value>L'area di lavoro corrente non contiene un indice</value>
   </data>
   <data name="ERDD_UNSUPPORTED" xml:space="preserve">
     <value>Operazione non supportata dall'RDD corrente</value>
@@ -349,10 +349,10 @@
     <value>Errore nella lettura dal disco</value>
   </data>
   <data name="ERDD_SORT_INIT" xml:space="preserve">
-    <value>Inizializzazione di un ordinamento</value>
+    <value>Inizializzazione ordinamento</value>
   </data>
   <data name="ERDD_SORT_ADVANCE" xml:space="preserve">
-    <value>Avanzamento di un ordinamento</value>
+    <value>Avanzamento ordinamento</value>
   </data>
   <data name="ERDD_SORT_SORT" xml:space="preserve">
     <value>Errore di ordinamento</value>
@@ -361,13 +361,13 @@
     <value>Errore completando l'ordinamento</value>
   </data>
   <data name="ERDD_SORT_END" xml:space="preserve">
-    <value>Errore di fine ordinamento</value>
+    <value>Errore terminando l'ordinamento</value>
   </data>
   <data name="ERDD_READ_TEMPFILE" xml:space="preserve">
     <value>Errore nella lettura del file temporaneo</value>
   </data>
   <data name="ERDD_STREAM_NUM" xml:space="preserve">
-    <value>Errore di ordinamento</value>
+    <value>Numero errato di stream di ordinamento</value>
   </data>
   <data name="ERDD_CREATE_TEMPFILE" xml:space="preserve">
     <value>Errore nella creazione del file temporaneo</value>
@@ -415,7 +415,7 @@
     <value>&lt;&lt;&lt; Status sconosciuto &gt;&gt;&gt;</value>
   </data>
   <data name="__WCSUNKNOWNSTATUSMSG" xml:space="preserve">
-    <value>Messaggio di Status sconosciuto</value>
+    <value>Messaggio di stato sconosciuto</value>
   </data>
   <data name="__WCSERROR2" xml:space="preserve">
     <value>Errore :</value>
@@ -439,10 +439,10 @@
     <value>Server Non trovato</value>
   </data>
   <data name="__WCSIPCTOPICNOTFOUND" xml:space="preserve">
-    <value>Topic non presente sul server</value>
+    <value>Topic IPC non presente sul server</value>
   </data>
   <data name="__WCSIPCITEMNOTFOUND" xml:space="preserve">
-    <value>Item non presente sul server</value>
+    <value>Item IPC non presente sul server</value>
   </data>
   <data name="__WCSIPCOUTOFMEMORY" xml:space="preserve">
     <value>Memoria insufficiente</value>
@@ -463,7 +463,7 @@
     <value>Creazione del controllo fallita</value>
   </data>
   <data name="__WCSCREATEDLGFAILED" xml:space="preserve">
-    <value>Creazione della risorsa Dialog fallita</value>
+    <value>Creazione Dialog da una risorsa fallita</value>
   </data>
   <data name="__WCSHOSTVOAPP" xml:space="preserve">
     <value>Applicazione Visual Objects</value>
@@ -493,7 +493,7 @@
     <value>La libreria CAPAINT.DLL non può essere caricata</value>
   </data>
   <data name="__WCSCNOAUTOMATION" xml:space="preserve">
-    <value>Le funzionalità OLE Automation Server non sono disponibili.\nPer favore includi le libreria OLE Server.</value>
+    <value>Le funzionalità OLE Automation Server non sono disponibili.\nPer favore includere le libreria OLE Server.</value>
   </data>
   <data name="RT_MSG_MONTH1" xml:space="preserve">
     <value>Gennaio</value>
@@ -580,7 +580,7 @@
     <value>Grassetto</value>
   </data>
   <data name="IDT_ITALIC" xml:space="preserve">
-    <value>Italic</value>
+    <value>Corsivo</value>
   </data>
   <data name="IDT_UNDERLINE" xml:space="preserve">
     <value>Sottolineato</value>
@@ -628,10 +628,10 @@
     <value>Giustificato</value>
   </data>
   <data name="IDT_ADDTEXT" xml:space="preserve">
-    <value>Aggiungi al testo</value>
+    <value>Aggiungi testo</value>
   </data>
   <data name="IDT_CENTERTEXT" xml:space="preserve">
-    <value>Centra il testo</value>
+    <value>Centra testo</value>
   </data>
   <data name="IDT_TABLE" xml:space="preserve">
     <value>Tabella</value>
@@ -643,7 +643,7 @@
     <value>Bordo in basso</value>
   </data>
   <data name="IDT_LIGHTSHADING" xml:space="preserve">
-    <value>Griglia</value>
+    <value>Ombreggiatura</value>
   </data>
   <data name="IDT_COPY" xml:space="preserve">
     <value>Copia</value>
@@ -682,10 +682,10 @@
     <value>Selezione Celle</value>
   </data>
   <data name="IDT_SCROLLMINUS" xml:space="preserve">
-    <value>Scroll-</value>
+    <value>Scorri-</value>
   </data>
   <data name="IDT_SCROLLPLUS" xml:space="preserve">
-    <value>Scroll+</value>
+    <value>Scorri+</value>
   </data>
   <data name="IDT_BUTTON" xml:space="preserve">
     <value>Bottone</value>
@@ -757,7 +757,7 @@
     <value>Edita grafico</value>
   </data>
   <data name="IDT_LINE" xml:space="preserve">
-    <value>Linee</value>
+    <value>Linea</value>
   </data>
   <data name="IDT_ARROW" xml:space="preserve">
     <value>Freccia</value>
@@ -805,10 +805,10 @@
     <value>Avanti</value>
   </data>
   <data name="IDT_BACK" xml:space="preserve">
-    <value>Dietro</value>
+    <value>Indietro</value>
   </data>
   <data name="IDT_COLOR" xml:space="preserve">
-    <value>Colori</value>
+    <value>Colore</value>
   </data>
   <data name="IDT_3DFRAME" xml:space="preserve">
     <value>Rettangolo 3D</value>
@@ -826,7 +826,7 @@
     <value>Vai</value>
   </data>
   <data name="IDT_STEPMACRO" xml:space="preserve">
-    <value>Step</value>
+    <value>Passo</value>
   </data>
   <data name="IDT_TRACEOUTMACRO" xml:space="preserve">
     <value>Esci</value>
@@ -868,7 +868,7 @@
     <value>Elenco puntato</value>
   </data>
   <data name="IDT_UNINDENT" xml:space="preserve">
-    <value>No rientro</value>
+    <value>Rimuovi rientro</value>
   </data>
   <data name="IDT_INDENT" xml:space="preserve">
     <value>Rientro</value>
@@ -901,7 +901,7 @@
     <value>Tab sinistra</value>
   </data>
   <data name="IDT_CENTERTAB" xml:space="preserve">
-    <value>Tab centro</value>
+    <value>Tab centrato</value>
   </data>
   <data name="IDT_RIGHTTAB" xml:space="preserve">
     <value>Tab destra</value>
@@ -913,7 +913,7 @@
     <value>Paragrafo</value>
   </data>
   <data name="IDT_HELP" xml:space="preserve">
-    <value>Help</value>
+    <value>Aiuto</value>
   </data>
   <data name="IDT_DELETE" xml:space="preserve">
     <value>Cancella</value>
@@ -922,7 +922,7 @@
     <value>Ora</value>
   </data>
   <data name="IDT_MAIL" xml:space="preserve">
-    <value>Posta</value>
+    <value>Email</value>
   </data>
   <data name="IDT_TUTORIAL" xml:space="preserve">
     <value>Tutorial</value>
@@ -961,7 +961,7 @@
     <value>Chiudi documento</value>
   </data>
   <data name="IDTT_SAVE" xml:space="preserve">
-    <value>Salva il documento attivo</value>
+    <value>Salva modifiche apportate al documento attivo</value>
   </data>
   <data name="IDTT_PRINT" xml:space="preserve">
     <value>Stampa il documento attivo</value>
@@ -976,7 +976,7 @@
     <value>In grassetto il testo selezionato</value>
   </data>
   <data name="IDTT_ITALIC" xml:space="preserve">
-    <value>In italic il testo selezionato</value>
+    <value>In corsivo il testo selezionato</value>
   </data>
   <data name="IDTT_UNDERLINE" xml:space="preserve">
     <value>In sottolineato il testo selezionato</value>
@@ -1006,10 +1006,10 @@
     <value>Applica il separatore delle migliaia alle celle selezionate</value>
   </data>
   <data name="IDTT_DECIMALPLUS" xml:space="preserve">
-    <value>Aggiungi un decimale al formato del numero</value>
+    <value>Aggiungi una posizione decimale al formato del numero</value>
   </data>
   <data name="IDTT_DECIMALMINUS" xml:space="preserve">
-    <value>Rimuovi un decimale al formato del numero</value>
+    <value>Rimuovi una posizione decimale dal formato del numero</value>
   </data>
   <data name="IDTT_LEFT" xml:space="preserve">
     <value>Allinea il testo a sinistra</value>
@@ -1036,25 +1036,25 @@
     <value>Aggiungi un bordo intorno alla cella</value>
   </data>
   <data name="IDTT_BORDERLOW" xml:space="preserve">
-    <value>Aggiungi un bordo alla parte bassa della cella</value>
+    <value>Aggiungi un bordo alla parte inferiore della cella</value>
   </data>
   <data name="IDTT_LIGHTSHADING" xml:space="preserve">
-    <value>Applica tono chiaro</value>
+    <value>Applica ombreggiatura chiara</value>
   </data>
   <data name="IDTT_COPY" xml:space="preserve">
-    <value>Copia la selezione</value>
+    <value>Copia la selezione negli appunti</value>
   </data>
   <data name="IDTT_PASTEFORMAT" xml:space="preserve">
-    <value>Incolla il formato dalle celle copiate</value>
+    <value>Incolla solo il formato dalle celle copiate</value>
   </data>
   <data name="IDTT_PASTEVALUE" xml:space="preserve">
-    <value>Incolla il valore dalle celle copiate</value>
+    <value>Incolla solo il valore dalle celle copiate</value>
   </data>
   <data name="IDTT_UNDO" xml:space="preserve">
-    <value>Annulla l'ultima azione o comando</value>
+    <value>Annulla l'ultima azione o commando</value>
   </data>
   <data name="IDTT_REPEAT" xml:space="preserve">
-    <value>Ripeti l'ultima azione o comando</value>
+    <value>Ripeti l'ultima azione o commando</value>
   </data>
   <data name="IDTT_ZOOMIN" xml:space="preserve">
     <value>Aumenta l'ingrandimento del documento corrente</value>
@@ -1072,10 +1072,10 @@
     <value>Blocca e sblocca le righe o gli oggetti selezionati</value>
   </data>
   <data name="IDTT_OUTLINESYMBOL" xml:space="preserve">
-    <value>Mostra/Nascondi caratteri speciali</value>
+    <value>Mostra e nasconde i caratteri speciali</value>
   </data>
   <data name="IDTT_SELECTCELL" xml:space="preserve">
-    <value>Seleziona le cellule evidenziate</value>
+    <value>Seleziona le celle evidenziate</value>
   </data>
   <data name="IDTT_SCROLLMINUS" xml:space="preserve">
     <value>Sposta in alto le righe o le colonne selezionate</value>
@@ -1084,7 +1084,7 @@
     <value>Sposta in basso le righe o le colonne selezionate</value>
   </data>
   <data name="IDTT_BUTTON" xml:space="preserve">
-    <value>Bottone per l'assegnazione di una macro</value>
+    <value>Visualizza un bottone per l'assegnazione di una macro</value>
   </data>
   <data name="IDTT_PICTURE" xml:space="preserve">
     <value>Incolla un'immagine</value>
@@ -1141,10 +1141,10 @@
     <value>Disegna un grafico a Radar</value>
   </data>
   <data name="IDTT_COLUMNLINECHART" xml:space="preserve">
-    <value>Disegna un grafico a Col-Linee</value>
+    <value>Disegna un grafico a colonne-linee</value>
   </data>
   <data name="IDTT_COLUMNSTOCKCHART" xml:space="preserve">
-    <value>Disegna un grafico a Col-Stock</value>
+    <value>Disegna un grafico a colonne-stock</value>
   </data>
   <data name="IDTT_CHARTFORMAT" xml:space="preserve">
     <value>Disegna un grafico a nel Formato preferito</value>
@@ -1189,7 +1189,7 @@
     <value>Seleziona un oggetto grafico</value>
   </data>
   <data name="IDTT_EDITPOINT" xml:space="preserve">
-    <value>Cambia la figura del poligono</value>
+    <value>Cambia la forma del poligono</value>
   </data>
   <data name="IDTT_GROUP" xml:space="preserve">
     <value>Unisci in un solo oggetto gli oggetti selezionati</value>
@@ -1207,7 +1207,7 @@
     <value>Cambia il colore delle celle o degli oggetti selezionati</value>
   </data>
   <data name="IDTT_3DFRAME" xml:space="preserve">
-    <value>Disegna un rettangolo intorno alle celle o oggetti</value>
+    <value>Disegna un rettangolo ombreggiato intorno alle celle o oggetti</value>
   </data>
   <data name="IDTT_NEWMACRO" xml:space="preserve">
     <value>Crea una nuova macro</value>
@@ -1264,22 +1264,22 @@
     <value>Crea un elenco puntato</value>
   </data>
   <data name="IDTT_UNINDENT" xml:space="preserve">
-    <value>Muovi il rientro al precedente tabulatore</value>
+    <value>Sposta il rientro al precedente tabulatore</value>
   </data>
   <data name="IDTT_INDENT" xml:space="preserve">
-    <value>Muovi il rientro al prossimo tabulatore</value>
+    <value>Sposta il rientro al prossimo tabulatore</value>
   </data>
   <data name="IDTT_COLUMNFORMAT" xml:space="preserve">
-    <value>Cambia il formato colonna entro la sezione</value>
+    <value>Cambia il formato colonna all'interno delle sezioni</value>
   </data>
   <data name="IDTT_FRAME" xml:space="preserve">
-    <value>Inserisci un frame vuoto o metti un bordo al testo selezionato</value>
+    <value>Inserisce una cornice vuota o mette un bordo al testo selezionato</value>
   </data>
   <data name="IDTT_OBJECT" xml:space="preserve">
-    <value>Inserisci un oggetto</value>
+    <value>Inserisce un oggetto</value>
   </data>
   <data name="IDTT_GRAPH" xml:space="preserve">
-    <value>Inserisci un grafico</value>
+    <value>Inserisce un grafico</value>
   </data>
   <data name="IDTT_ENVELOPE" xml:space="preserve">
     <value>Crea una busta che verrà stampata insieme al corrente documento</value>
@@ -1294,25 +1294,25 @@
     <value>Adatta alla pagina</value>
   </data>
   <data name="IDTT_LEFTTAB" xml:space="preserve">
-    <value>Imposta allineamento a sinistra</value>
+    <value>Imposta un tab con allineamento a sinistra</value>
   </data>
   <data name="IDTT_CENTERTAB" xml:space="preserve">
-    <value>Imposta allineamento al centro</value>
+    <value>Imposta un tab con allineamento al centro</value>
   </data>
   <data name="IDTT_RIGHTTAB" xml:space="preserve">
-    <value>Imposta allineamento a destra</value>
+    <value>Imposta un tab con allineamento a destra</value>
   </data>
   <data name="IDTT_DECIMALTAB" xml:space="preserve">
-    <value>Imposta un tab al punto decimale</value>
+    <value>Imposta un tab con allineamento al punto decimale</value>
   </data>
   <data name="IDTT_PARAGRAPH" xml:space="preserve">
     <value>Inizio nuovo paragrafo</value>
   </data>
   <data name="IDTT_HELP" xml:space="preserve">
-    <value>Attiva l'help menù</value>
+    <value>Attiva il menu Aiuto</value>
   </data>
   <data name="IDTT_DELETE" xml:space="preserve">
-    <value>Cancella il testo selezionato</value>
+    <value>Elimina il testo selezionato</value>
   </data>
   <data name="IDTT_TIME" xml:space="preserve">
     <value>Imposta un timer</value>
@@ -1347,140 +1347,12 @@
   <data name="IDTT_CUSTOMBITMAP" xml:space="preserve">
     <value>Vista a scheda</value>
   </data>
-  <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
-    <value>aLookupTable deve essere dimensionato da n a 2</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARG" xml:space="preserve">
-    <value>%V1s Arg: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARG_ERROR" xml:space="preserve">
-    <value>&lt;Err Arg&gt;</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARGNUM" xml:space="preserve">
-    <value>%V1s ArgNum: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARGS" xml:space="preserve">
-    <value>Argomenti:</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARGTYPE" xml:space="preserve">
-    <value>%V1s Tipo di Argomento: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARGTYPE_REQ" xml:space="preserve">
-    <value>%V1s Tipo di Argomento valido: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CALLED_FROM" xml:space="preserve">
-    <value>%V1s chiamato da: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CHOICE" xml:space="preserve">
-    <value>%V1s%V2s scelta: %s %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CMD_LINE" xml:space="preserve">
-    <value>%V1s Linea di Commando: %-23s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CONVERSION" xml:space="preserve">
-    <value>%V1s in Conversione %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CURDIR" xml:space="preserve">
-    <value>Cartella corrente</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_DANGER" xml:space="preserve">
-    <value>* Attenzione *:</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_DISK" xml:space="preserve">
-    <value>Disco</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_DISK_FREE" xml:space="preserve">
-    <value>libero</value>
-  </data>
   <data name="__CAVOSTR_SYSLIB_DOS_ERROR" xml:space="preserve">
     <value>%V1s DOS Error: %s</value>
   </data>
-  <data name="__CAVOSTR_SYSLIB_ENTITY" xml:space="preserve">
-    <value>%V1s Entità: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ERR_IN_ERR" xml:space="preserve">
-    <value>Errore in Errore</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ERROR" xml:space="preserve">
-    <value>%V1s %s. Errore</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FILE" xml:space="preserve">
-    <value>%V1s File: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FILE_HANDLE" xml:space="preserve">
-    <value>%V1s FileHandle: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FUNCPTR" xml:space="preserve">
-    <value>%V1s%V2s FuncPtr: %s %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FUNCTION" xml:space="preserve">
-    <value>%V1s Funzione: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_HANDLE" xml:space="preserve">
-    <value>HND</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_HANDLE_CUR" xml:space="preserve">
-    <value>corrente</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_HANDLE_END" xml:space="preserve">
-    <value>fine</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_IVARS" xml:space="preserve">
-    <value>%V1s IVars: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_LINE" xml:space="preserve">
-    <value>%V1s Linea: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_MAX" xml:space="preserve">
-    <value>%V1s Max: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_MODULE" xml:space="preserve">
-    <value>%V1s Modulo: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_OBJECT" xml:space="preserve">
-    <value>%V1s Oggetto: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_OPERATION" xml:space="preserve">
-    <value>%V1s Operazione: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_SUBCODE" xml:space="preserve">
-    <value>%V1s SubCodice: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_SUBST_TYPE" xml:space="preserve">
-    <value>%V1s restituisce: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_SUBSYSTEM" xml:space="preserve">
-    <value>%V1s SubSystem: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_TO" xml:space="preserve">
-    <value>%V1s  a %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_TRIES" xml:space="preserve">
-    <value>%V1s prova: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_WARNING" xml:space="preserve">
-    <value>Attenzione:</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_OLEBASE" xml:space="preserve">
-    <value>OLE Base</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CONVERSION_CALLED_FROM" xml:space="preserve">
-    <value>%V1s%V2s in Conversione %s Chiamato da: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CONVERSION_TO" xml:space="preserve">
-    <value>%V1s%V2s in Conversione %s a %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FUNCTION_CALLED_FROM" xml:space="preserve">
-    <value>%V1s%V2s in Funzione %s Chiamato da: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_NOMEM" xml:space="preserve">
-    <value>Memoria insufficiente</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_INCTYPES" xml:space="preserve">
-    <value>Data types indeterminabile</value>
-  </data>
+
   <data name="__CAVOSTR_SYSCLASS_BADCAPTION" xml:space="preserve">
-    <value>Caption non valida</value>
+    <value>Titolo non valido</value>
   </data>
   <data name="__CAVOSTR_SYSCLASS_BADDESCRIPTION" xml:space="preserve">
     <value>Descrizione non valida</value>
@@ -1489,7 +1361,7 @@
     <value>HelpContext non valido</value>
   </data>
   <data name="__CAVOSTR_SYSCLASS_BADNAME" xml:space="preserve">
-    <value>Nome non valido o perso</value>
+    <value>Nome non valido o mancante</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_ALIAS" xml:space="preserve">
     <value>%V1s Alias: %s</value>
@@ -1510,19 +1382,19 @@
     <value>Tipo di parametro non valido, cbFilterBlock</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_BADNEXT" xml:space="preserve">
-    <value>L'argomento non può essere negativo</value>
+    <value>Il prossimo argomento non può essere negativo</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_BADNEXT_CAPTION" xml:space="preserve">
-    <value>Argomento errato</value>
+    <value>Prossimo argomento errato</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_BADREADONLYMODE" xml:space="preserve">
-    <value>ReadOnlymode: parametro non valido</value>
+    <value>Parametro ReadOnlymode non valido</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_BADSHAREMODE" xml:space="preserve">
-    <value>Sharemode: parametro non valido</value>
+    <value>Parametro Sharemode non valido</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_FIELDSPEC" xml:space="preserve">
-    <value>Specifica di campo errata</value>
+    <value>Definizione di campo errata</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_LOCKFAILED" xml:space="preserve">
     <value>Tentativo di lock del record fallito</value>
@@ -1534,13 +1406,13 @@
     <value>Lunghezza dell'Array discordante tra acbExpression e aFieldList</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_NODATAFIELDSEXIST" xml:space="preserve">
-    <value>Il DataFields non esiste, devi crearlo prima della replace</value>
+    <value>DataFields non esistono, devi crearli prima della sostituzione</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_NOFIELDS" xml:space="preserve">
     <value>Nessun campo specificato</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_NOFILENAME" xml:space="preserve">
-    <value>Impossibile trovare il parametro Filename</value>
+    <value>Parametro Filename mancante</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_NOGOTOP" xml:space="preserve">
     <value>GoTop() fallito</value>
@@ -1570,13 +1442,13 @@
     <value>Record Cambiato</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_SELECTIVENOTFOUND" xml:space="preserve">
-    <value>Selezione del valore non trovata</value>
+    <value>Valore selezionato non trovato</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_SELECTIVESEEK" xml:space="preserve">
-    <value>Selezione del valore non uguale al valore cercato</value>
+    <value>Valore selezionato diverso dal valore di ricerca</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_SELECTIVEVALUE" xml:space="preserve">
-    <value>Selezione del valore non uguale all'espressione dell'indice</value>
+    <value>Valore selezionatodiverso dall'espressione dell'indice</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_BADFS" xml:space="preserve">
     <value>oFS non valido o perso</value>
@@ -1588,7 +1460,7 @@
     <value>Parametro non valido per Assign ConcurrencyControl</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_BADFIELDPOSITION" xml:space="preserve">
-    <value>nPosizione del campo non valida o persa</value>
+    <value>nFieldPosition non valida o mancante</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_BADTRANSLATIONARRAY" xml:space="preserve">
     <value>aLookupTable non è un array o è un array vuoto</value>
@@ -1597,7 +1469,7 @@
     <value>cb non valido</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_BADDECIMALS" xml:space="preserve">
-    <value>uDecimali non validi o persi</value>
+    <value>uDecimals non valido o mancante</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_BADDRIVE" xml:space="preserve">
     <value>Drive non valido</value>
@@ -1636,7 +1508,7 @@
     <value>%V1s%V2s %s : la massima lunghezza è %s</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_INVALIDMAX" xml:space="preserve">
-    <value>%V1s%V2s %s non può essere più grande di %s</value>
+    <value>%V1s%V2s %s non può essere maggiore di %s</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_INVALIDMIN" xml:space="preserve">
     <value>%V1s%V2s %s deve essere almeno %s</value>
@@ -1654,10 +1526,10 @@
     <value>%V1s %s : Valore non valido</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_REQUIRED" xml:space="preserve">
-    <value>%V1s %s e richiesto</value>
+    <value>%V1s %s è richiesto</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_INTENTTOMOVE" xml:space="preserve">
-    <value>IntentToMove torna falso.</value>
+    <value>IntentToMove ritorna falso.</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION" xml:space="preserve">
     <value>IntentToMove fallito.</value>
@@ -1669,7 +1541,7 @@
     <value>File indice errato</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_KEYVALUE" xml:space="preserve">
-    <value>c il KeyValue del cbKeyValue deve essere specificato</value>
+    <value>cKeyValue del cbKeyValue deve essere specificato</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_INVALIDORDER" xml:space="preserve">
     <value>Ordinamento errato</value>
@@ -1699,7 +1571,7 @@
     <value>Errore di conversione da argomento VO a variabile OLE</value>
   </data>
   <data name="OLEAUTO_ERROR_EXP_NO_DESC" xml:space="preserve">
-    <value>L'OLE automation server ha sollevato una eccezione</value>
+    <value>L'OLE automation server ha provocato una eccezione</value>
   </data>
   <data name="OLEAUTO_ERROR_MSG_GET_PROPERTY_FAILED" xml:space="preserve">
     <value>Errore nella lettura delle proprietà</value>
@@ -1726,7 +1598,7 @@
     <value>Il nome dell'argomento non è presente tra gli argomenti in lista</value>
   </data>
   <data name="OLEAUTO_ERROR_MSG_NAMED_ARG_NOTSUPP" xml:space="preserve">
-    <value>Il nome degli argomenti sono supportati soltanto per la chiamata ai metodi</value>
+    <value>I nomi degli argomenti sono supportati soltanto per la chiamata ai metodi</value>
   </data>
   <data name="OLEAUTO_ERROR_MSG_VARIANT_ARGS" xml:space="preserve">
     <value>Chiamata al Metodo OLE con Parametri Array di Variabile non supportato</value>
@@ -1735,7 +1607,7 @@
     <value>OLE AutoObject non inizializzato o distrutto</value>
   </data>
   <data name="OLEAUTO_ERROR_NO_ITYPELIB_INTERFACE" xml:space="preserve">
-    <value>L'OLE AutoObject non supporta ITypeLib interface o già distrutto</value>
+    <value>L'OLE AutoObject non supporta l'interfaccia ITypeLib o già distrutto</value>
   </data>
   <data name="IDS_OLERUNTIME" xml:space="preserve">
     <value>Visual Objects OLE Run Time</value>
@@ -1753,22 +1625,22 @@
     <value>%V1s%V2s %s ha chiuso il report %s</value>
   </data>
   <data name="__CAVOSTR_REPORTCLASS_COMMANDERROR1" xml:space="preserve">
-    <value>%V1s%V2s ReportQueue: aprire il report prima di chiamare comandi DDE : %s to %s</value>
+    <value>%V1s%V2s ReportQueue necessita di un report aperto prima di eseguire commandi DDE : %s to %s</value>
   </data>
   <data name="__CAVOSTR_REPORTCLASS_COMMANDERROR2" xml:space="preserve">
     <value>%V1s%V2s%V3s %s to %s %s</value>
   </data>
   <data name="__CAVOSTR_REPORTCLASS_COMPLETEDREPORT" xml:space="preserve">
-    <value>%V1s%V2s %s report completato %s</value>
+    <value>%V1s%V2s %s ha completato il report %s</value>
   </data>
   <data name="__CAVOSTR_REPORTCLASS_DETECTEDERRORS" xml:space="preserve">
-    <value>%V1s%V2s %s riscontrato uno o più errori completando il report %s</value>
+    <value>%V1s%V2s %s riscontrati uno o più errori completando il report %s</value>
   </data>
   <data name="__CAVOSTR_REPORTCLASS_OPENEDREPORT" xml:space="preserve">
-    <value>%V1s%V2s %s report aperto %s</value>
+    <value>%V1s%V2s %s ha aperto il report %s</value>
   </data>
   <data name="__CAVOSTR_REPORTCLASS_SAVEDREPORT" xml:space="preserve">
-    <value>%V1s%V2s %s report salvato come %s</value>
+    <value>%V1s%V2s %s ha salvato il report come %s</value>
   </data>
   <data name="__CAVOSTR_REPORTCLASS_SAVETOFILEINFO1" xml:space="preserve">
     <value>Errore di Programma nel Parametro 2 del ReportQueue:SaveToFile</value>
@@ -1801,7 +1673,7 @@
     <value>%V1s %s è chiuso</value>
   </data>
   <data name="__CAVOSTR_REPORTCLASS_ABOUTTITLE" xml:space="preserve">
-    <value>About CA-Visual Objects Report Editor</value>
+    <value>Su CA-Visual Objects Report Editor</value>
   </data>
   <data name="__CAVOSTR_REPORTCLASS_ABOUTBODY" xml:space="preserve">
     <value>Computer Associates International, Inc.\nCA-Visual Objects Report Editor</value>
@@ -1813,13 +1685,13 @@
     <value>VO-ODBC</value>
   </data>
   <data name="__CAVOSTR_SQLCLASS__ENV_ALLOC" xml:space="preserve">
-    <value>L'ambiente già assegnato</value>
+    <value>Ambiente già allocato</value>
   </data>
   <data name="__CAVOSTR_SQLCLASS__ENV_FREE" xml:space="preserve">
     <value>Ambiente già liberato</value>
   </data>
   <data name="__CAVOSTR_SQLCLASS__CON_ALLOC" xml:space="preserve">
-    <value>Collegamento già assegnato</value>
+    <value>Collegamento già allocato</value>
   </data>
   <data name="__CAVOSTR_SQLCLASS__CON_FREE" xml:space="preserve">
     <value>Collegamento già liberato</value>
@@ -1840,16 +1712,16 @@
     <value>S1000</value>
   </data>
   <data name="__CAVOSTR_SQLCLASS__STMT_NOT_ALLOC" xml:space="preserve">
-    <value>Dichiarazione non assegnata</value>
+    <value>Istruzione non allocata</value>
   </data>
   <data name="__CAVOSTR_SQLCLASS__STMT_PREP" xml:space="preserve">
-    <value>Dichiarazione già preparata</value>
+    <value>Istruzione già preparata</value>
   </data>
   <data name="__CAVOSTR_SQLCLASS__NO_STMT" xml:space="preserve">
-    <value>Dichiarazione mancante</value>
+    <value>Istruzione mancante</value>
   </data>
   <data name="__CAVOSTR_SQLCLASS__STMT_ALLOC" xml:space="preserve">
-    <value>Dichiarazione già assegnata</value>
+    <value>Istruzione già allocata</value>
   </data>
   <data name="__CAVOSTR_SQLCLASS__FUNCSEQ_ERR" xml:space="preserve">
     <value>S1010</value>
@@ -1873,7 +1745,7 @@
     <value>Numero record non valido</value>
   </data>
   <data name="__CAVOSTR_SQLCLASS__BACKWARDS" xml:space="preserve">
-    <value>Tentativo di skippare indietro dal buffer</value>
+    <value>Tentativo di movimento indietro oltre limite</value>
   </data>
   <data name="__CAVOSTR_SQLCLASS__BOF" xml:space="preserve">
     <value>Già sulla prima riga</value>
@@ -1909,34 +1781,34 @@
     <value>Impossibile aggiornare la colonna!</value>
   </data>
   <data name="__CAVOSTR_SQLCLASS__NODATAFIELDSEXIST" xml:space="preserve">
-    <value>Creare il DataFields prima di una replace</value>
+    <value>Nessun DataFields esiste, è necessario crearli prima della sostituzione</value>
   </data>
   <data name="__CAVOSTR_SQLCLASS__BADFIELDPOSITION" xml:space="preserve">
-    <value>nFieldPosition non valida o persa</value>
+    <value>nFieldPosition non valida o mancante</value>
   </data>
   <data name="__CAVOSTR_SQLCLASS__INVALIDCOLATT" xml:space="preserve">
-    <value>ColumnAttributes Parameter non valida</value>
+    <value>Parametro ColumnAttributes non valido</value>
   </data>
   <data name="TMSG_YN" xml:space="preserve">
     <value>Y/N</value>
   </data>
   <data name="TMSG_ALERTDEFAULT" xml:space="preserve">
-    <value>Un errore</value>
+    <value>E' accaduto un errore</value>
   </data>
   <data name="TMSG_NOTERMWIN" xml:space="preserve">
-    <value>Il Sistema non può creare la finestra di default</value>
+    <value>Impossibile creare la finestra di default</value>
   </data>
   <data name="TMSG_FNTCHNG" xml:space="preserve">
     <value>Cambia Font</value>
   </data>
   <data name="TMSG_MARK" xml:space="preserve">
-    <value>Da schermo a ClipBoard</value>
+    <value>Da schermo a Appunti</value>
   </data>
   <data name="TMSG_SCREEN2FILE" xml:space="preserve">
     <value>Da schermo a File</value>
   </data>
   <data name="TMSG_MEMRECOUR" xml:space="preserve">
-    <value>Inserimento ricorsivo MemCheck()</value>
+    <value>Chiamata ricorsiva a MemCheck()</value>
   </data>
   <data name="TMSG_DYNCHECKERR" xml:space="preserve">
     <value>&gt;&gt;DYNCHECK FALLITO!!</value>
@@ -1948,7 +1820,7 @@
     <value>Entità</value>
   </data>
   <data name="TMSG_HNDCONTENTS" xml:space="preserve">
-    <value>Indice:</value>
+    <value>Contenuto:</value>
   </data>
   <data name="TMSG_HNDVAR" xml:space="preserve">
     <value>Variabile</value>
@@ -1957,7 +1829,7 @@
     <value>Impossibile cambiare dimensione del font usando Memoedit()</value>
   </data>
   <data name="TMSG_FONTCHGERR" xml:space="preserve">
-    <value>Cambio del Font impossibile</value>
+    <value>Cambio font impossibile</value>
   </data>
   <data name="TMSG_MUSTSELECT" xml:space="preserve">
     <value>Devi selezionare un device!</value>
@@ -1966,16 +1838,16 @@
     <value>Nessun device selezionato</value>
   </data>
   <data name="TMSG_NOLINK" xml:space="preserve">
-    <value>Collegamento alla stampante non creato. DC occupato, o non corretto win.ini:device settings</value>
+    <value>Collegamento alla stampante non creato. DC occupato, o non win.ini:device settings non corretto</value>
   </data>
   <data name="TMSG_PRNSETUP" xml:space="preserve">
-    <value>Terminal:Imposta stampante</value>
+    <value>Configurazione Terminal:Printer</value>
   </data>
   <data name="TMSG_PAGENO" xml:space="preserve">
     <value>Pagina N°</value>
   </data>
   <data name="TMSG_PRESSANYKEY" xml:space="preserve">
-    <value>Un tasto per continuare...</value>
+    <value>Premi un tasto per continuare...</value>
   </data>
   <data name="TMSG_APPENDSCREEN" xml:space="preserve">
     <value>Aggiungi la schermata al file</value>
@@ -1984,13 +1856,13 @@
     <value>Tutti i files</value>
   </data>
   <data name="TMSG_LOCKEDFONT" xml:space="preserve">
-    <value>Impossibile cambiare Font</value>
+    <value>Il font non può essere ancora cambiato</value>
   </data>
   <data name="TMSG_NOACCELERATORS" xml:space="preserve">
-    <value>L'Accelerators non caricato. Avvio del programma interrotto</value>
+    <value>Acceleratori non caricati. Avvio del programma interrotto</value>
   </data>
   <data name="TMSG_ONTOP" xml:space="preserve">
-    <value>Resta on Top</value>
+    <value>Resta in primo piano</value>
   </data>
   <data name="RT_MSG_SHORT_TRUE" xml:space="preserve">
     <value>T</value>
@@ -2023,7 +1895,7 @@
     <value>Y/N</value>
   </data>
   <data name="ERROR_INTERNET_OUT_OF_HANDLES" xml:space="preserve">
-    <value>Fuori dagli handles</value>
+    <value>Handles esauriti</value>
   </data>
   <data name="ERROR_INTERNET_TIMEOUT" xml:space="preserve">
     <value>Timeout</value>
@@ -2050,7 +1922,7 @@
     <value>Opzione non valida</value>
   </data>
   <data name="ERROR_INTERNET_BAD_OPTION_LENGTH" xml:space="preserve">
-    <value>Lunghezza dell' opzione</value>
+    <value>Lunghezza opzione errata</value>
   </data>
   <data name="ERROR_INTERNET_OPTION_NOT_SETTABLE" xml:space="preserve">
     <value>Opzione non impostabile</value>
@@ -2059,13 +1931,13 @@
     <value>Shutdown</value>
   </data>
   <data name="ERROR_INTERNET_INCORRECT_USER_NAME" xml:space="preserve">
-    <value>User name non corretto</value>
+    <value>Nome utente non corretto</value>
   </data>
   <data name="ERROR_INTERNET_INCORRECT_PASSWORD" xml:space="preserve">
     <value>Password non corretta</value>
   </data>
   <data name="ERROR_INTERNET_LOGIN_FAILURE" xml:space="preserve">
-    <value>Login fallita</value>
+    <value>Login fallito</value>
   </data>
   <data name="ERROR_INTERNET_INVALID_OPERATION" xml:space="preserve">
     <value>Operazione non valida</value>
@@ -2074,10 +1946,10 @@
     <value>Operazione cancellata</value>
   </data>
   <data name="ERROR_INTERNET_INCORRECT_HANDLE_TYPE" xml:space="preserve">
-    <value>Handle type non corretto</value>
+    <value>Tipo handle non corretto</value>
   </data>
   <data name="ERROR_INTERNET_INCORRECT_HANDLE_STATE" xml:space="preserve">
-    <value>Handle state non corretto</value>
+    <value>Stato handle non corretto</value>
   </data>
   <data name="ERROR_INTERNET_NOT_PROXY_REQUEST" xml:space="preserve">
     <value>Nessun proxy richiesto</value>
@@ -2092,13 +1964,13 @@
     <value>Nessun accesso diretto</value>
   </data>
   <data name="ERROR_INTERNET_NO_CONTEXT" xml:space="preserve">
-    <value>Nessun context</value>
+    <value>Nessun contesto</value>
   </data>
   <data name="ERROR_INTERNET_NO_CALLBACK" xml:space="preserve">
     <value>Nessun callback</value>
   </data>
   <data name="ERROR_INTERNET_REQUEST_PENDING" xml:space="preserve">
-    <value>Richiesta pendente</value>
+    <value>In attesa di richiesta</value>
   </data>
   <data name="ERROR_INTERNET_INCORRECT_FORMAT" xml:space="preserve">
     <value>Formato non corretto</value>
@@ -2125,40 +1997,40 @@
     <value>Ui necessario</value>
   </data>
   <data name="ERROR_INTERNET_HANDLE_EXISTS" xml:space="preserve">
-    <value>L'Handle esiste</value>
+    <value>Handle esistente</value>
   </data>
   <data name="ERROR_INTERNET_SEC_CERT_DATE_INVALID" xml:space="preserve">
-    <value>Sec cert date non valido</value>
+    <value>Data certificato non valida</value>
   </data>
   <data name="ERROR_INTERNET_SEC_CERT_CN_INVALID" xml:space="preserve">
-    <value>Sec cert cn non valido</value>
+    <value>CN certificato non valido</value>
   </data>
   <data name="ERROR_INTERNET_HTTP_TO_HTTPS_ON_REDIR" xml:space="preserve">
-    <value>Http to https rediretto</value>
+    <value>Errore durante la redirezione da http a https</value>
   </data>
   <data name="ERROR_INTERNET_HTTPS_TO_HTTP_ON_REDIR" xml:space="preserve">
-    <value>Https to http rediretto</value>
+    <value>Redirezione da https to http</value>
   </data>
   <data name="ERROR_INTERNET_MIXED_SECURITY" xml:space="preserve">
-    <value>Sicurezza mista</value>
+    <value>Sicurezza combinata</value>
   </data>
   <data name="ERROR_INTERNET_CHG_POST_IS_NON_SECURE" xml:space="preserve">
-    <value>Il Chg post non è sicuro</value>
+    <value>Chg post non è sicuro</value>
   </data>
   <data name="ERROR_INTERNET_POST_IS_NON_SECURE" xml:space="preserve">
     <value>Il Post non è sicuro</value>
   </data>
   <data name="ERROR_INTERNET_CLIENT_AUTH_CERT_NEEDED" xml:space="preserve">
-    <value>L'Auth del Client è necessaria</value>
+    <value>Autorizzazione client è necessaria</value>
   </data>
   <data name="ERROR_INTERNET_INVALID_CA" xml:space="preserve">
-    <value>Ca non valido</value>
+    <value>CA non valida</value>
   </data>
   <data name="ERROR_INTERNET_CLIENT_AUTH_NOT_SETUP" xml:space="preserve">
-    <value>Nessun setup per il Client auth</value>
+    <value>Nessuna impostazione per l'autorizzazione client</value>
   </data>
   <data name="ERROR_INTERNET_ASYNC_THREAD_FAILED" xml:space="preserve">
-    <value>Thread Async fallito</value>
+    <value>Thread asyncrono fallito</value>
   </data>
   <data name="ERROR_INTERNET_REDIRECT_SCHEME_CHANGE" xml:space="preserve">
     <value>Schema di redirezione cambiato</value>
@@ -2167,7 +2039,7 @@
     <value>Transferimento in corso</value>
   </data>
   <data name="ERROR_FTP_DROPPED" xml:space="preserve">
-    <value>Ftp caduto</value>
+    <value>Ftp interrotto</value>
   </data>
   <data name="ERROR_GOPHER_PROTOCOL_ERROR" xml:space="preserve">
     <value>Errore di Protocollo</value>
@@ -2200,7 +2072,7 @@
     <value>Header non trovato</value>
   </data>
   <data name="ERROR_HTTP_DOWNLEVEL_SERVER" xml:space="preserve">
-    <value>Downlevel server</value>
+    <value>Errore downlevel server</value>
   </data>
   <data name="ERROR_HTTP_INVALID_SERVER_RESPONSE" xml:space="preserve">
     <value>Risposta del server non valida</value>
@@ -2212,13 +2084,13 @@
     <value>Risposta non valida</value>
   </data>
   <data name="ERROR_HTTP_HEADER_ALREADY_EXISTS" xml:space="preserve">
-    <value>L'Header già esiste</value>
+    <value>Header già esistente</value>
   </data>
   <data name="ERROR_HTTP_REDIRECT_FAILED" xml:space="preserve">
     <value>Redirezione fallita</value>
   </data>
   <data name="ERROR_INTERNET_SECURITY_CHANNEL_ERROR" xml:space="preserve">
-    <value>Errore del Security channel</value>
+    <value>Errore nel security channel</value>
   </data>
   <data name="ERROR_INTERNET_UNABLE_TO_CACHE_FILE" xml:space="preserve">
     <value>Impossibile la cache del file</value>
@@ -2233,13 +2105,13 @@
     <value>Logon fallito</value>
   </data>
   <data name="ERR_FILE_EXISTS" xml:space="preserve">
-    <value>Il file remoto già esiste</value>
+    <value>Il file remoto esiste già</value>
   </data>
   <data name="ERR_UNKNOWN_CODE_TYPE" xml:space="preserve">
-    <value>Encoding type sconosciuto</value>
+    <value>Tipo di encoding sconosciuto</value>
   </data>
   <data name="ERR_WSA_WAIT_TIMEOUT" xml:space="preserve">
-    <value>Attesa, errore di timout</value>
+    <value>Errore di timeout durante l'attesa</value>
   </data>
   <data name="ERR_NEWSGROUP_MISSING" xml:space="preserve">
     <value>Nessun news group</value>
@@ -2308,13 +2180,13 @@
     <value>Variabile non esportata</value>
   </data>
   <data name="RT_MSG_ERR_17" xml:space="preserve">
-    <value>Carattere errato nell'alias</value>
+    <value>Carattere non valido nell'alias</value>
   </data>
   <data name="RT_MSG_ERR_18" xml:space="preserve">
     <value>Alias già in uso</value>
   </data>
   <data name="RT_MSG_ERR_19" xml:space="preserve">
-    <value>Variable not initialized</value>
+    <value>Variabile non inizializzata</value>
   </data>
   <data name="RT_MSG_ERR_20" xml:space="preserve">
     <value>Errore in creazione</value>
@@ -2332,7 +2204,7 @@
     <value>Errore in scrittura</value>
   </data>
   <data name="RT_MSG_ERR_25" xml:space="preserve">
-    <value>Errore in stampa</value>
+    <value>Errore di stampa</value>
   </data>
   <data name="RT_MSG_ERR_26" xml:space="preserve">
     <value>Simbolo non definito</value>
@@ -2350,7 +2222,7 @@
     <value>Operazione non supportata</value>
   </data>
   <data name="RT_MSG_ERR_31" xml:space="preserve">
-    <value>Superato limite</value>
+    <value>limite superato</value>
   </data>
   <data name="RT_MSG_ERR_32" xml:space="preserve">
     <value>File danneggiato</value>
@@ -2383,7 +2255,7 @@
     <value>Blocco non effettuato</value>
   </data>
   <data name="RT_MSG_ERR_42" xml:space="preserve">
-    <value>To many threads</value>
+    <value>troppi threads</value>
   </data>
   <data name="RT_MSG_ERR_43" xml:space="preserve">
     <value>Codice di  errore riservato</value>
@@ -2401,7 +2273,7 @@
     <value>Errore di stack del processore</value>
   </data>
   <data name="RT_MSG_ERR_48" xml:space="preserve">
-    <value>Errore di stack dell'Eval</value>
+    <value>Errore di stack dell'evaluazione</value>
   </data>
   <data name="RT_MSG_ERR_49" xml:space="preserve">
     <value>Nessun Errorblock</value>
@@ -2416,814 +2288,46 @@
     <value>Errore di paginazione</value>
   </data>
   <data name="RT_MSG_ERR_53" xml:space="preserve">
-    <value>Errore di creazione dell'Errorobject</value>
+    <value>Errore di creazione dell'oggetto di errore</value>
   </data>
   <data name="RT_MSG_ERR_54" xml:space="preserve">
     <value>DynAlloc: PTR a DynData</value>
+  </data>
+  <data name="RT_MSG_ERR_55" xml:space="preserve">
+    <value>Tipo non accessibile</value>
+  </data>
+  <data name="RT_MSG_ERR_56" xml:space="preserve"> 
+    <value>Send() non è supportato per metodi con firme multiple</value>
+  </data>
+  <data name="RT_MSG_ERR_57" xml:space="preserve">
+    <value>Troppo pochi argomenti passati al metodo</value>
+  </data>
+  <data name="RT_MSG_ERR_58" xml:space="preserve">
+    <value>Troppi argomenti passati al metodo</value>
+  </data>
+  <data name="RT_MSG_ERR_59" xml:space="preserve">
+    <value>Eccezione generata dal CLR o codice esterno</value>
   </data>
   <data name="RT_MSG_ERR_UNKNOWN" xml:space="preserve">
     <value>Errore sconosciuto</value>
   </data>
   <data name="RT_MSG_CORRUPTION" xml:space="preserve">
-    <value>problema di memoria</value>
+    <value>memoria corrotta</value>
   </data>
   <data name="RT_MSG_FATAL" xml:space="preserve">
-    <value>errore QUIT</value>
+    <value>errore fatale</value>
   </data>
   <data name="RT_MSG_APPLI" xml:space="preserve">
     <value>Applicazione</value>
   </data>
   <data name="RT_MSG_LINE" xml:space="preserve">
-    <value>Linea</value>
+    <value>Riga</value>
   </data>
   <data name="RT_MSG_FUNC" xml:space="preserve">
     <value>Funzione</value>
   </data>
   <data name="RT_MSG_RELEASE" xml:space="preserve">
     <value>Version 2.8 SP3</value>
-  </data>
-  <data name="RT_MSG_DOSERR_0" xml:space="preserve">
-    <value>Completato con successo</value>
-  </data>
-  <data name="RT_MSG_DOSERR_1" xml:space="preserve">
-    <value>Numero funzione errata</value>
-  </data>
-  <data name="RT_MSG_DOSERR_2" xml:space="preserve">
-    <value>File non trovato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_3" xml:space="preserve">
-    <value>Percorso non trovato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_4" xml:space="preserve">
-    <value>Troppi file aperti</value>
-  </data>
-  <data name="RT_MSG_DOSERR_5" xml:space="preserve">
-    <value>Accesso negato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_6" xml:space="preserve">
-    <value>Handle errato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_7" xml:space="preserve">
-    <value>Blocchi di controllo memoria danneggiati</value>
-  </data>
-  <data name="RT_MSG_DOSERR_8" xml:space="preserve">
-    <value>Memoria insufficiente</value>
-  </data>
-  <data name="RT_MSG_DOSERR_9" xml:space="preserve">
-    <value>Indirizzo di memoria errato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_10" xml:space="preserve">
-    <value>Ambiente errato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_11" xml:space="preserve">
-    <value>Formato errato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_12" xml:space="preserve">
-    <value>Codice d'accesso errato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_13" xml:space="preserve">
-    <value>Dato errato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_14" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_15" xml:space="preserve">
-    <value>Unità errata</value>
-  </data>
-  <data name="RT_MSG_DOSERR_16" xml:space="preserve">
-    <value>Impossibile rimuovere la directory corrente</value>
-  </data>
-  <data name="RT_MSG_DOSERR_17" xml:space="preserve">
-    <value>Device non uguali</value>
-  </data>
-  <data name="RT_MSG_DOSERR_18" xml:space="preserve">
-    <value>Nessun'altro file</value>
-  </data>
-  <data name="RT_MSG_DOSERR_19" xml:space="preserve">
-    <value>Disco protetto in scrittura</value>
-  </data>
-  <data name="RT_MSG_DOSERR_20" xml:space="preserve">
-    <value>Unità sconosciuta</value>
-  </data>
-  <data name="RT_MSG_DOSERR_21" xml:space="preserve">
-    <value>Unità non pronta</value>
-  </data>
-  <data name="RT_MSG_DOSERR_22" xml:space="preserve">
-    <value>Comando sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_23" xml:space="preserve">
-    <value>Errore CRC nei dati</value>
-  </data>
-  <data name="RT_MSG_DOSERR_24" xml:space="preserve">
-    <value>Richiesta errata di lunghezza struttura</value>
-  </data>
-  <data name="RT_MSG_DOSERR_25" xml:space="preserve">
-    <value>Errore di ricerca</value>
-  </data>
-  <data name="RT_MSG_DOSERR_26" xml:space="preserve">
-    <value>Dispositivo sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_27" xml:space="preserve">
-    <value>Settore non trovato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_28" xml:space="preserve">
-    <value>Carta mancante nella stampante</value>
-  </data>
-  <data name="RT_MSG_DOSERR_29" xml:space="preserve">
-    <value>Errore di scrittura</value>
-  </data>
-  <data name="RT_MSG_DOSERR_30" xml:space="preserve">
-    <value>Errore di lettura</value>
-  </data>
-  <data name="RT_MSG_DOSERR_31" xml:space="preserve">
-    <value>Errore generale</value>
-  </data>
-  <data name="RT_MSG_DOSERR_32" xml:space="preserve">
-    <value>Violazione di condivisione</value>
-  </data>
-  <data name="RT_MSG_DOSERR_33" xml:space="preserve">
-    <value>Violazione di blocco</value>
-  </data>
-  <data name="RT_MSG_DOSERR_34" xml:space="preserve">
-    <value>Cambiamento di disco errato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_35" xml:space="preserve">
-    <value>FCB non disponibile</value>
-  </data>
-  <data name="RT_MSG_DOSERR_36" xml:space="preserve">
-    <value>Overflow del buffer condiviso</value>
-  </data>
-  <data name="RT_MSG_DOSERR_37" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_38" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_39" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_40" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_41" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_42" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_43" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_44" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_45" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_46" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_47" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_48" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_49" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_50" xml:space="preserve">
-    <value>Richiesta di rete non supportata</value>
-  </data>
-  <data name="RT_MSG_DOSERR_51" xml:space="preserve">
-    <value>Il computer remoto non risponde</value>
-  </data>
-  <data name="RT_MSG_DOSERR_52" xml:space="preserve">
-    <value>Nome duplicato sulla rete</value>
-  </data>
-  <data name="RT_MSG_DOSERR_53" xml:space="preserve">
-    <value>Nome di rete non trovato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_54" xml:space="preserve">
-    <value>Rete occupata</value>
-  </data>
-  <data name="RT_MSG_DOSERR_55" xml:space="preserve">
-    <value>Device di rete non più esistente</value>
-  </data>
-  <data name="RT_MSG_DOSERR_56" xml:space="preserve">
-    <value>Superato il limite del comando Net BIOS</value>
-  </data>
-  <data name="RT_MSG_DOSERR_57" xml:space="preserve">
-    <value>Errore di hardware - adattore di rete</value>
-  </data>
-  <data name="RT_MSG_DOSERR_58" xml:space="preserve">
-    <value>Risposta non corretta dalla rete</value>
-  </data>
-  <data name="RT_MSG_DOSERR_59" xml:space="preserve">
-    <value>Errore di rete</value>
-  </data>
-  <data name="RT_MSG_DOSERR_60" xml:space="preserve">
-    <value>Adattore remoto incompatibile</value>
-  </data>
-  <data name="RT_MSG_DOSERR_61" xml:space="preserve">
-    <value>Buffer di stampa pieno</value>
-  </data>
-  <data name="RT_MSG_DOSERR_62" xml:space="preserve">
-    <value>Spazio insufficente per file di stampa</value>
-  </data>
-  <data name="RT_MSG_DOSERR_63" xml:space="preserve">
-    <value>File di stampa cancellato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_64" xml:space="preserve">
-    <value>Nome di rete cancellato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_65" xml:space="preserve">
-    <value>Accesso negato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_66" xml:space="preserve">
-    <value>Tipo di device di rete errato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_67" xml:space="preserve">
-    <value>Nome rete non trovato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_68" xml:space="preserve">
-    <value>Nome rete troppo lungo</value>
-  </data>
-  <data name="RT_MSG_DOSERR_69" xml:space="preserve">
-    <value>Superato il limite della sessione NetBIOS</value>
-  </data>
-  <data name="RT_MSG_DOSERR_70" xml:space="preserve">
-    <value>Sospensione temporanea</value>
-  </data>
-  <data name="RT_MSG_DOSERR_71" xml:space="preserve">
-    <value>Richiesta di rete non accettata</value>
-  </data>
-  <data name="RT_MSG_DOSERR_72" xml:space="preserve">
-    <value>Sospensione della stampante o disco</value>
-  </data>
-  <data name="RT_MSG_DOSERR_73" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_74" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_75" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_76" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_77" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_78" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_79" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_80" xml:space="preserve">
-    <value>File già esistente</value>
-  </data>
-  <data name="RT_MSG_DOSERR_81" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_82" xml:space="preserve">
-    <value>Impossible creare il direttorio</value>
-  </data>
-  <data name="RT_MSG_DOSERR_83" xml:space="preserve">
-    <value>Errore nell'INT 24</value>
-  </data>
-  <data name="RT_MSG_DOSERR_84" xml:space="preserve">
-    <value>Troppi indirizzamenti</value>
-  </data>
-  <data name="RT_MSG_DOSERR_85" xml:space="preserve">
-    <value>Indirizzamento duplicato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_86" xml:space="preserve">
-    <value>Password errata</value>
-  </data>
-  <data name="RT_MSG_DOSERR_87" xml:space="preserve">
-    <value>Parametro errato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_88" xml:space="preserve">
-    <value>Errore sul device di rete</value>
-  </data>
-  <data name="RT_MSG_DOSERR_89" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_90" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_91" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_92" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_93" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_94" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_95" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_96" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_97" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_98" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_99" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_100" xml:space="preserve">
-    <value>Errore di lettura del disco</value>
-  </data>
-  <data name="RT_MSG_DOSERR_101" xml:space="preserve">
-    <value>Errore di scrittura sul disco</value>
-  </data>
-  <data name="RT_MSG_DOSERR_102" xml:space="preserve">
-    <value>File non assegnato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_103" xml:space="preserve">
-    <value>File non aperto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_104" xml:space="preserve">
-    <value>File non aperto per l'input</value>
-  </data>
-  <data name="RT_MSG_DOSERR_105" xml:space="preserve">
-    <value>File non aperto per l'output</value>
-  </data>
-  <data name="RT_MSG_DOSERR_106" xml:space="preserve">
-    <value>Formato numerico errato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_107" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_108" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_109" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_110" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_111" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_112" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_113" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_114" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_115" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_116" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_117" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_118" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_119" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_120" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_121" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_122" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_123" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_124" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_125" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_126" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_127" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_128" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_129" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_130" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_131" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_132" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_133" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_134" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_135" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_136" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_137" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_138" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_139" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_140" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_141" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_142" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_143" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_144" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_145" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_146" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_147" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_148" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_149" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_150" xml:space="preserve">
-    <value>Disco protetto in scrittura</value>
-  </data>
-  <data name="RT_MSG_DOSERR_151" xml:space="preserve">
-    <value>Unità sconosciuta</value>
-  </data>
-  <data name="RT_MSG_DOSERR_152" xml:space="preserve">
-    <value>Unità non pronta</value>
-  </data>
-  <data name="RT_MSG_DOSERR_153" xml:space="preserve">
-    <value>Comando sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_154" xml:space="preserve">
-    <value>Errore CRC nei dati</value>
-  </data>
-  <data name="RT_MSG_DOSERR_155" xml:space="preserve">
-    <value>Lunghezza nella struttura di richiesta drive errata</value>
-  </data>
-  <data name="RT_MSG_DOSERR_156" xml:space="preserve">
-    <value>Errore ricerca su disco</value>
-  </data>
-  <data name="RT_MSG_DOSERR_157" xml:space="preserve">
-    <value>Dispositivo sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_158" xml:space="preserve">
-    <value>Settore non trovato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_159" xml:space="preserve">
-    <value>Carta mancante nella stampante</value>
-  </data>
-  <data name="RT_MSG_DOSERR_160" xml:space="preserve">
-    <value>Errore di scrittura device</value>
-  </data>
-  <data name="RT_MSG_DOSERR_161" xml:space="preserve">
-    <value>Errore di lettura device</value>
-  </data>
-  <data name="RT_MSG_DOSERR_162" xml:space="preserve">
-    <value>Errore di hardware</value>
-  </data>
-  <data name="RT_MSG_DOSERR_163" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_164" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_165" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_166" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_167" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_168" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_169" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_170" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_171" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_172" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_173" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_174" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_175" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_176" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_177" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_178" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_179" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_180" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_181" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_182" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_183" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_184" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_185" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_186" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_187" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_188" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_189" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_190" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_191" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_192" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_193" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_194" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_195" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_196" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_197" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_198" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_199" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_200" xml:space="preserve">
-    <value>Divisione per zero</value>
-  </data>
-  <data name="RT_MSG_DOSERR_201" xml:space="preserve">
-    <value>Errore di verifica intervallo</value>
-  </data>
-  <data name="RT_MSG_DOSERR_202" xml:space="preserve">
-    <value>Overflow di stack</value>
-  </data>
-  <data name="RT_MSG_DOSERR_203" xml:space="preserve">
-    <value>Overflow di heap</value>
-  </data>
-  <data name="RT_MSG_DOSERR_204" xml:space="preserve">
-    <value>Operazione di puntamento errato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_205" xml:space="preserve">
-    <value>Overflow su operazione in virgola mobile</value>
-  </data>
-  <data name="RT_MSG_DOSERR_206" xml:space="preserve">
-    <value>Underflow su operazione in virgola mobile</value>
-  </data>
-  <data name="RT_MSG_DOSERR_207" xml:space="preserve">
-    <value>Operazione in virgola mobile errata</value>
-  </data>
-  <data name="RT_MSG_DOSERR_208" xml:space="preserve">
-    <value>Gestore overlay non installato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_209" xml:space="preserve">
-    <value>Errore di lettura del file di overlay</value>
-  </data>
-  <data name="RT_MSG_DOSERR_210" xml:space="preserve">
-    <value>Oggetto non inizializzato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_211" xml:space="preserve">
-    <value>Chiamata a un metodo astratto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_212" xml:space="preserve">
-    <value>Errore di registrazione Stream</value>
-  </data>
-  <data name="RT_MSG_DOSERR_213" xml:space="preserve">
-    <value>Indice di collezione fuori intervallo</value>
-  </data>
-  <data name="RT_MSG_DOSERR_214" xml:space="preserve">
-    <value>Errore di overflow di collezione</value>
-  </data>
-  <data name="RT_MSG_DOSERR_215" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_216" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_217" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_218" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_219" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_220" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_221" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_222" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_223" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_224" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_225" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_226" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_227" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_228" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_229" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_230" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_231" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_232" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_233" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_234" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_235" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_236" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_237" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_238" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_239" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_240" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_241" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_242" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_243" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_244" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_245" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_246" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_247" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_248" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_249" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_250" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_251" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_252" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_253" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_254" xml:space="preserve">
-    <value>Errore sconosciuto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_255" xml:space="preserve">
-    <value>Programma interrotto</value>
-  </data>
-  <data name="RT_MSG_DOSERR_256" xml:space="preserve">
-    <value>Disco pieno</value>
-  </data>
-  <data name="RT_MSG_DOSERR_257" xml:space="preserve">
-    <value>Fine file</value>
-  </data>
-  <data name="RT_MSG_DOSERR_258" xml:space="preserve">
-    <value>Parametro errato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_FFFF" xml:space="preserve">
-    <value>Disco danneggiato</value>
-  </data>
-  <data name="RT_MSG_DOSERR_UNKNOWN" xml:space="preserve">
-    <value>Errore sconosciuto</value>
   </data>
   <data name="RT_MSG_ERR_INSTALLED" xml:space="preserve">
     <value>ERRORBUILD: nessun  ERRORFUNC installato</value>
@@ -3241,7 +2345,334 @@
     <value>ERRORBUILD: nessun ERRORFUNC CLIPPER trovato</value>
   </data>
   <data name="RT_MSG_ERR_ARGCOUNT" xml:space="preserve">
-    <value>ERRORBUILD:  argcount ERRORFUNC  &lt;&gt;1</value>
+    <value>ERRORBUILD: numero argomenti ERRORFUNC  &lt;&gt;1</value>
   </data>
-
+  <data name="RT_MSG_MAIL_ERR1" xml:space="preserve">
+    <value>SendMail(): Caricamento della DLL MAPI non riuscito</value>
+  </data>
+  <data name="RT_MSG_MAIL_ERR2" xml:space="preserve">
+    <value>SendMail(): Impossibile ottenere il punto di ingresso della funzione nella DLL MAPI</value>
+  </data>
+  <data name="RT_MSG_MAIL_ERR3" xml:space="preserve">
+    <value>SendMail(): Impossibile inviare %s. Error code: %d</value>
+  </data>
+  <data name="RT_MSG_ACCESS_VIOLATION" xml:space="preserve">
+    <value>Access Violation</value>
+  </data>
+  <data name="RT_MSG_DATATYPE_MISALIGNMENT" xml:space="preserve">
+    <value>Datatype Misalignment</value>
+  </data>
+  <data name="RT_MSG_SINGLE_STEP" xml:space="preserve">
+    <value>Single Step</value>
+  </data>
+  <data name="RT_MSG_ARRAY_BOUNDS_EXCEEDED" xml:space="preserve">
+    <value>Array Bounds exceeded</value>
+  </data>
+  <data name="RT_MSG_FLT_DENORMAL_OPERAND" xml:space="preserve">
+    <value>Float denormal operand</value>
+  </data>
+  <data name="RT_MSG_FLT_DIVIDE_BY_ZERO" xml:space="preserve">
+    <value>Float divide by zero</value>
+  </data>
+  <data name="RT_MSG_FLT_INEXACT_RESULT" xml:space="preserve">
+    <value>Float inexact result</value>
+  </data>
+  <data name="RT_MSG_FLT_INVALID_OPERATION" xml:space="preserve">
+    <value>Float invalid operation</value>
+  </data>
+  <data name="RT_MSG_FLT_OVERFLOW" xml:space="preserve">
+    <value>Float overflow</value>
+  </data>
+  <data name="RT_MSG_FLT_STACK_CHECK" xml:space="preserve">
+    <value>Float stack check</value>
+  </data>
+  <data name="RT_MSG_FLT_UNDERFLOW" xml:space="preserve">
+    <value>Float underflow</value>
+  </data>
+  <data name="RT_MSG_INT_DIVIDE_BY_ZERO" xml:space="preserve">
+    <value>Integer divide by zero</value>
+  </data>
+  <data name="RT_MSG_INT_OVERFLOW" xml:space="preserve">
+    <value>Integer overflow</value>
+  </data>
+  <data name="RT_MSG_PRIV_INSTRUCTION" xml:space="preserve">
+    <value>priv instruction</value>
+  </data>
+  <data name="RT_MSG_IN_PAGE_ERROR" xml:space="preserve">
+    <value>In page error</value>
+  </data>
+  <data name="RT_MSG_ILLEGAL_INSTRUCTION" xml:space="preserve">
+    <value>Illegal Instruction</value>
+  </data>
+  <data name="RT_MSG_NONCONTINUABLE_EXCEPTION" xml:space="preserve">
+    <value>Noncontinuable Exception</value>
+  </data>
+  <data name="RT_MSG_STACK_OVERFLOW" xml:space="preserve">
+    <value>Stack overflow</value>
+  </data>
+  <data name="RT_MSG_INVALID_DISPOSITION" xml:space="preserve">
+    <value>Invalid disposition</value>
+  </data>
+  <data name="RT_MSG_GUARD_PAGE" xml:space="preserve">
+    <value>Guard Page</value>
+  </data>
+  <data name="ARGCANNOTBEZERO" xml:space="preserve">
+    <value>Argomento non può essere 0</value>
+  </data>
+  <data name="ARGNOTCODEBLOCK" xml:space="preserve">
+    <value>Argomento non è un CODEBLOCK</value>
+  </data>
+  <data name="ARGLISTING" xml:space="preserve">
+    <value>   {0}: {1} ({2}){3}</value>
+    <comment>Used in Error.Message</comment>
+  </data>
+  <data name="ARGNOTDATE" xml:space="preserve">
+    <value>Argomento non è una DATE</value>
+  </data>
+  <data name="ARGNOTINT32" xml:space="preserve">
+    <value>Argomento non è in valore numerico intero</value>
+  </data>
+  <data name="ARGNOTINTEGER" xml:space="preserve">
+    <value>Argomento non è in valore numerico intero</value>
+  </data>
+  <data name="ARGNOTNUMERIC" xml:space="preserve">
+    <value>Argomento non è un valore numerico</value>
+  </data>
+  <data name="ARGNOTSTRING" xml:space="preserve">
+    <value>Argomento non è una stringa</value>
+  </data>
+  <data name="ARGSINCOMPATIBLE" xml:space="preserve">
+    <value>Argomenti non sono compatibili</value>
+  </data>
+  <data name="ARGSNOTSAMETYPE" xml:space="preserve">
+    <value>Argomenti non sono dello stesso tipo</value>
+  </data>
+  <data name="ARGUMENT" xml:space="preserve">
+    <value>Argomento</value>
+  </data>
+  <data name="ARGUMENTSHEADING" xml:space="preserve">
+    <value>Argoment(o/i):</value>
+  </data>
+  <data name="ATRANSLATE" xml:space="preserve">
+    <value>aLookupTable non è un array o elemento non è un array</value>
+  </data>
+  <data name="DATATYPEERROR" xml:space="preserve">
+    <value>Errore tipo dati</value>
+  </data>
+  <data name="DATE_ADD" xml:space="preserve">
+    <value>Addizione non valida a USUAL contenente DATE; RHS contiene un tipo incompatibile</value>
+  </data>
+  <data name="DATE_SUBTRACT" xml:space="preserve">
+    <value>Sottrazione non valida USUAL contenente DATE: RHS contiene un tipo incompatibile</value>
+  </data>
+  <data name="ERROR_ARG" xml:space="preserve">
+    <value>Argomento</value>
+  </data>
+  <data name="ERROR_ARGNUM" xml:space="preserve">
+    <value>Numero argomento</value>
+  </data>
+  <data name="ERROR_ARGTYPE" xml:space="preserve">
+    <value>Tipo di argomento</value>
+  </data>
+  <data name="ERROR_ARGS" xml:space="preserve">
+    <value>Argomenti</value>
+  </data>
+  <data name="ERROR_ARGTYPE_REQ" xml:space="preserve">
+    <value>Tipo di argomento previsto</value>
+  </data>
+  <data name="ERROR_FILENAME" xml:space="preserve">
+    <value>Nome del file</value>
+  </data>
+  <data name="ERROR_FUNCTION" xml:space="preserve">
+    <value>Funzione</value>
+  </data>
+  <data name="ERROR_DESCRIPTION" xml:space="preserve">
+    <value>Descrizione:</value>
+  </data>
+  <data name="ERROR_OPERATION" xml:space="preserve">
+    <value>Operazione:</value>
+  </data>
+  <data name="ERRORCODE" xml:space="preserve">
+    <value>Codice Errore:</value>
+  </data>
+  <data name="ERROR_GENCODE" xml:space="preserve">
+    <value>GenCode</value>
+  </data>
+  <data name="ERROR_SUBCODE" xml:space="preserve">
+    <value>SubCodice</value>
+  </data>
+  <data name="ERROR_OSCODE" xml:space="preserve">
+    <value>OsCode</value>
+  </data>
+  <data name="ERROR_SEVERITY" xml:space="preserve">
+    <value>Gravità</value>
+  </data>
+  <data name="ERROR_FUNCSYM" xml:space="preserve">
+    <value>Funzione</value>
+  </data>
+  <data name="ERROR_TRIES" xml:space="preserve">
+    <value>Prova</value>
+  </data>
+  <data name="ERROR_CANDEFAULT" xml:space="preserve">
+    <value>Può  Default</value>
+  </data>
+  <data name="ERROR_CANRETRY" xml:space="preserve">
+    <value>Riprova</value>
+  </data>
+  <data name="ERROR_CANSUBSTITUTE" xml:space="preserve">
+    <value>Può sostituire</value>
+  </data>
+  <data name="ERROR_SUBSYSTEM" xml:space="preserve">
+    <value>Sottosistema</value>
+  </data>
+  <data name="ERROR_STACK" xml:space="preserve">
+    <value>Chiamato da</value>
+  </data>
+  <data name="ERROR_CALLEDFROM" xml:space="preserve">
+    <value>Chiamato da</value>
+  </data>
+  <!-- The following strings are not used (yet) in X#-->
+    <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
+    <value>aLookupTable deve essere dimensionato da n a 2</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ERROR" xml:space="preserve">
+    <value>%V1s %s. Errore</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_FILE_HANDLE" xml:space="preserve">
+    <value>%V1s FileHandle: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_FUNCPTR" xml:space="preserve">
+    <value>%V1s%V2s FuncPtr: %s %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CHOICE" xml:space="preserve">
+    <value>%V1s%V2s Choice: %s %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CMD_LINE" xml:space="preserve">
+    <value>%V1s Command Line: %-23s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CONVERSION" xml:space="preserve">
+    <value>%V1s in Conversion %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CURDIR" xml:space="preserve">
+    <value>CurDir</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DANGER" xml:space="preserve">
+    <value>* Danger *:</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DISK" xml:space="preserve">
+    <value>Disk</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DISK_FREE" xml:space="preserve">
+    <value>free</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ENTITY" xml:space="preserve">
+    <value>%V1s Entità: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ERR_IN_ERR" xml:space="preserve">
+    <value>Errore in ErrorHandler</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE" xml:space="preserve">
+    <value>HND</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE_CUR" xml:space="preserve">
+    <value>corrente</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE_END" xml:space="preserve">
+    <value>fine</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_IVARS" xml:space="preserve">
+    <value>%V1s IVars: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_LINE" xml:space="preserve">
+    <value>%V1s Linea: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_MAX" xml:space="preserve">
+    <value>%V1s Max: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_MODULE" xml:space="preserve">
+    <value>%V1s Modulo: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_OBJECT" xml:space="preserve">
+    <value>%V1s Oggetto: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_SUBST_TYPE" xml:space="preserve">
+    <value>%V1s restituisce: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_TO" xml:space="preserve">
+    <value>%V1s  a %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_WARNING" xml:space="preserve">
+    <value>Attenzione:</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_OLEBASE" xml:space="preserve">
+    <value>OLE Base</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CONVERSION_TO" xml:space="preserve">
+    <value>%V1s%V2s in Conversione %s a %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_NOMEM" xml:space="preserve">
+    <value>Memoria insufficiente</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_INCTYPES" xml:space="preserve">
+    <value>Tipi di dato indeterminabile</value>
+  </data>
+  <!-- End of unused strings-->
+  <data name="INVALIDARGTYPE" xml:space="preserve">
+    <value>Tipo argomento non valido</value>
+  </data>
+  <data name="INVALIDARGVALUE" xml:space="preserve">
+    <value>Valore argomento non valido</value>
+  </data>
+  <data name="OSVERSION" xml:space="preserve">
+    <value>{0} (Versione {1}.{2}, Build {3}, Revisione {4})</value>
+  </data>
+  <data name="RUNTIMEERROR" xml:space="preserve">
+    <value>Errore Runtime</value>
+    <comment>Beginning of runtime error message</comment>
+  </data>
+  <data name="STRINGLENNE1" xml:space="preserve">
+    <value>Lunghezza stringa != 1</value>
+  </data>
+  <data name="USUALOVERFLOWERR" xml:space="preserve">
+    <value>Overflow numerico nella conversione di USUAL da tipo '{0}' a tipo '{1}'</value>
+  </data>
+  <data name="USUALBINARYOPERR" xml:space="preserve">
+    <value>Operatore {0} not disponibile per i tipi USUAL '{1}' e '{2}'</value>
+  </data>
+  <data name="USUALUNARYOPERR" xml:space="preserve">
+    <value>Operatore {0} not disponibile per il tipo USUAL '{1}'</value>
+  </data>
+  <data name="USUALCONVERSIONERR" xml:space="preserve">
+    <value>Errore di conversione da USUAL ({0}) a {1}</value>
+  </data>
+  <data name="VERSION" xml:space="preserve">
+    <value>Versione:</value>
+  </data>
+  <data name="ARGISNULL" xml:space="preserve">
+    <value>Argomento è NULL</value>
+  </data>
+  <data name="UNKNOWNRDD" xml:space="preserve">
+    <value>Nome RDD non valido</value>
+  </data>
+  <data name="ARRAYBOUNDS" xml:space="preserve">
+    <value>Indice array non valido</value>
+  </data>
+  <data name="USUALNOTINDEXED" xml:space="preserve">
+    <value>Il valore assegnato a USUAL non supporta operazioni indicizzate. Il valore deve implementare l'interfaccia '{0}'.</value>
+  </data>
+  <data name="E_OPEN_MRESTORE" xml:space="preserve">
+    <value>Non è stato possibile aprire il file per il comando RESTORE</value>
+  </data>
+  <data name="E_OPEN_MSAVE" xml:space="preserve">
+    <value>Non è stato possibile creare il file per il comando SAVE</value>
+  </data>
+  <data name="ERRORDIALOG_TITLE" xml:space="preserve">
+    <value>Errore di applicazione - </value>
+  </data>
+  <data name="ERRORDIALOG_CLOSE" xml:space="preserve">
+    <value>Chiudi</value>
+  </data>
+  <data name="ERRORDIALOG_COPY" xml:space="preserve">
+    <value>&amp;Copia nella clipboard</value>
+  </data>
 </root>

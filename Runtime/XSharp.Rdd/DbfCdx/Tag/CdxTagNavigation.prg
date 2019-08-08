@@ -480,7 +480,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF SELF:HasBottomScope
                     itmBottomScope := SELF:_Scopes[BottomScopeNo]:VALUE
                     SELF:_ToString(itmBottomScope, SELF:_keySize, SELF:_newValue:Key)
-                    IF SELF:__Compare(SELF:_newValue:Key, SELF:_currentValue:Key, SELF:_keySize) >= 0
+                    // Make sure we only compare the # of characters defined for the bottomScope
+                    local nKeyComp as INT
+                    nKeyComp := SELF:_Scopes[BottomScopeNo]:Size
+                    IF SELF:__Compare(SELF:_newValue:Key, SELF:_currentValue:Key, nKeyComp) >= 0
                         isOk := TRUE
                     ENDIF
                 ELSE

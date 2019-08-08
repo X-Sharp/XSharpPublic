@@ -464,7 +464,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN FALSE
                 ENDIF
             ENDIF
-            IF SELF:HasScope
+            IF SELF:HasScope .and. ! XSharp.RuntimeState.Deleted .and. ! SELF:_oRdd:_FilterInfo:Active
                 SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPEBOTTOM)
                 records := SELF:_getScopePos()
             ELSE

@@ -2892,7 +2892,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				END IF
 			ENDDO
 			
-			Assert.Equal(5, (INT) OrdKeyCount() )
+			Assert.Equal(3, (INT) OrdKeyCount() )
 			
 			DbCloseAll()
 

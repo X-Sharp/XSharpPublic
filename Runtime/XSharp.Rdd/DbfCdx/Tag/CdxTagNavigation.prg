@@ -447,7 +447,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     result      := SELF:GoTop()
                     mustSeek    := FALSE
                 ELSE
-                    seekInfo:Last := SELF:Descending
+                    seekInfo:Last   := FALSE
                     mustSeek      := TRUE
                 ENDIF
             ELSE
@@ -456,7 +456,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     result      := SELF:GoBottom()
                     mustSeek    := FALSE
                 ELSE
-                    seekInfo:Last   := !SELF:Descending
+                    seekInfo:Last   := TRUE
                     mustSeek        := TRUE
                 ENDIF
             ENDIF
@@ -480,7 +480,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF SELF:HasBottomScope
                     itmBottomScope := SELF:_Scopes[BottomScopeNo]:VALUE
                     SELF:_ToString(itmBottomScope, SELF:_keySize, SELF:_newValue:Key)
-                    IF SELF:__Compare(SELF:_newValue:Key, SELF:_currentValue:Key, SELF:_keySize) >= 0
+                    // Make sure we only compare the # of characters defined for the bottomScope
+                    local nKeyComp as INT
+                    nKeyComp := SELF:_Scopes[BottomScopeNo]:Size
+                    IF SELF:__Compare(SELF:_newValue:Key, SELF:_currentValue:Key, nKeyComp) >= 0
                         isOk := TRUE
                     ENDIF
                 ELSE
@@ -700,11 +703,49 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN 0
             
-            
-        PRIVATE METHOD _skipFilter(recno AS LONG , iPolar AS SkipDirection ) AS LONG
+        PRIVATE METHOD _skipFilter(recno AS LONG , direction AS SkipDirection ) AS LONG
+			LOCAL fromBottom   AS LOGIC
+            LOCAL fromTop      AS LOGIC
+            LOCAL recordHidden AS LOGIC
+            LOCAL result       AS LOGIC
+            LOCAL cbFilter     AS ICodeblock
+            LOCAL fRtDeleted   AS LOGIC
+            LOCAL fi           as DbFilterInfo
+            fi := _oRdd:_FilterInfo
             IF SELF:_oRdd:__Goto(recno)
-                SELF:_oRdd:SkipFilter((INT) iPolar)
-                recno := SELF:_Recno
+                fRtDeleted := RuntimeState.Deleted
+                IF fi:Active
+                    cbFilter    := fi:FilterBlock
+                ELSE
+                    cbFilter    := NULL
+                ENDIF
+                IF cbFilter == NULL .AND. ! fRtDeleted
+                    // No filter and not SetDeleted(TRUE), so nothing to do.
+                    RETURN recno
+                ENDIF
+               recordHidden:= TRUE 
+               result      := TRUE 
+               DO WHILE recordHidden
+                    // Check deleted first, that is easier and has less overhead
+                    IF fRtDeleted
+                        recordHidden := SELF:_oRDD:Deleted
+                    ELSE
+                        recordHidden := FALSE
+                    ENDIF
+
+                    IF ! recordHidden .AND. cbFilter != NULL
+                        recordHidden := ! (LOGIC) SELF:_oRDD:EvalBlock(cbFilter)
+                    ENDIF
+                    IF recordHidden 
+                        recno := SELF:_getNextKey(direction)
+                        if recno == 0
+                            EXIT
+                        endif
+                        SELF:_oRDD:__Goto(recno)
+                    ELSE
+                        EXIT
+                    ENDIF
+                 ENDDO
             ENDIF
             RETURN recno
 

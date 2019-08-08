@@ -1347,137 +1347,8 @@
   <data name="IDTT_CUSTOMBITMAP" xml:space="preserve">
     <value>Cambiar a vista de formulario</value>
   </data>
-  <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
-    <value>aLookupTable debe tener n por 2 dimensiones</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARG" xml:space="preserve">
-    <value>%V1s Arg: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARG_ERROR" xml:space="preserve">
-    <value>&lt;Err Arg&gt;</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARGNUM" xml:space="preserve">
-    <value>%V1s ArgNum: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARGS" xml:space="preserve">
-    <value>Argumentos:</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARGTYPE" xml:space="preserve">
-    <value>%V1s ArgType: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ARGTYPE_REQ" xml:space="preserve">
-    <value>%V1s ArgType legal: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CALLED_FROM" xml:space="preserve">
-    <value>%V1s Llamado desde: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CHOICE" xml:space="preserve">
-    <value>%V1s%V2s Elección: %s %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CMD_LINE" xml:space="preserve">
-    <value>%V1s Linea de comando: %-23s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CONVERSION" xml:space="preserve">
-    <value>%V1s en Conversión %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CURDIR" xml:space="preserve">
-    <value>CurDir</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_DANGER" xml:space="preserve">
-    <value>* Peligro *:</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_DISK" xml:space="preserve">
-    <value>Disco</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_DISK_FREE" xml:space="preserve">
-    <value>libre</value>
-  </data>
   <data name="__CAVOSTR_SYSLIB_DOS_ERROR" xml:space="preserve">
     <value>%V1s Error DOS: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ENTITY" xml:space="preserve">
-    <value>%V1s Entidad: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ERR_IN_ERR" xml:space="preserve">
-    <value>Error en Error</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_ERROR" xml:space="preserve">
-    <value>%V1s %s. Error</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FILE" xml:space="preserve">
-    <value>%V1s Fichero: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FILE_HANDLE" xml:space="preserve">
-    <value>%V1s FileHandle: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FUNCPTR" xml:space="preserve">
-    <value>%V1s%V2s FuncPtr: %s %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FUNCTION" xml:space="preserve">
-    <value>%V1s Funcion: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_HANDLE" xml:space="preserve">
-    <value>HND</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_HANDLE_CUR" xml:space="preserve">
-    <value>cur</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_HANDLE_END" xml:space="preserve">
-    <value>end</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_IVARS" xml:space="preserve">
-    <value>%V1s IVars: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_LINE" xml:space="preserve">
-    <value>%V1s Linea: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_MAX" xml:space="preserve">
-    <value>%V1s Max: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_MODULE" xml:space="preserve">
-    <value>%V1s Modulo: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_OBJECT" xml:space="preserve">
-    <value>%V1s Objeto: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_OPERATION" xml:space="preserve">
-    <value>%V1s Operacion: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_SUBCODE" xml:space="preserve">
-    <value>%V1s SubCode: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_SUBST_TYPE" xml:space="preserve">
-    <value>%V1s retorna: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_SUBSYSTEM" xml:space="preserve">
-    <value>%V1s SubSistema: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_TO" xml:space="preserve">
-    <value>%V1s  a %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_TRIES" xml:space="preserve">
-    <value>%V1s Intentos: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_WARNING" xml:space="preserve">
-    <value>Atención:</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_OLEBASE" xml:space="preserve">
-    <value>OLE Base</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CONVERSION_CALLED_FROM" xml:space="preserve">
-    <value>%V1s%V2s en Conversion %s Llamado desde: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_CONVERSION_TO" xml:space="preserve">
-    <value>%V1s%V2s en Conversión %s a %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_FUNCTION_CALLED_FROM" xml:space="preserve">
-    <value>%V1s%V2s en Funcion %s Llamado desde: %s</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_NOMEM" xml:space="preserve">
-    <value>Sin memoria</value>
-  </data>
-  <data name="__CAVOSTR_SYSLIB_INCTYPES" xml:space="preserve">
-    <value>Tipos de datos incomprensibles</value>
   </data>
   <data name="__CAVOSTR_SYSCLASS_BADCAPTION" xml:space="preserve">
     <value>Caption inválido</value>
@@ -2418,6 +2289,21 @@
   <data name="RT_MSG_ERR_54" xml:space="preserve">
     <value>DynAlloc: PTR a DynData</value>
   </data>
+  <data name="RT_MSG_ERR_55" xml:space="preserve">
+    <value>Type is inaccessible</value>
+  </data>
+  <data name="RT_MSG_ERR_56" xml:space="preserve">
+    <value>Method is overloaded, Send() is not supported for overloaded methods</value>
+  </data>
+  <data name="RT_MSG_ERR_57" xml:space="preserve">
+    <value>Not enough arguments passed to target method</value>
+  </data>
+  <data name="RT_MSG_ERR_58" xml:space="preserve">
+    <value>Too many arguments passed to target method</value>
+  </data>
+  <data name="RT_MSG_ERR_59" xml:space="preserve">
+    <value>Exception raised by CLR or external code</value>
+  </data>
   <data name="RT_MSG_ERR_UNKNOWN" xml:space="preserve">
     <value>Error desconocido</value>
   </data>
@@ -2454,4 +2340,218 @@
   <data name="RT_MSG_ERR_NOCLIPPER" xml:space="preserve">
     <value>ERRORBUILD: no se encuentra CLIPPER ERRORFUNC</value>
   </data>
+  <data name="RT_MSG_ERR_ARGCOUNT" xml:space="preserve">
+    <value>ERRORBUILD: ERRORFUNC argcount &lt;&gt;1</value>
+  </data>
+  <data name="RT_MSG_MAIL_ERR1" xml:space="preserve">
+    <value>SendMail(): Failed to load the MAPI DLL</value>
+  </data>
+  <data name="RT_MSG_MAIL_ERR2" xml:space="preserve">
+    <value>SendMail(): Failed to get function entry point in the MAPI DLL</value>
+  </data>
+  <data name="RT_MSG_MAIL_ERR3" xml:space="preserve">
+    <value>SendMail(): Failed to send %s. Error code: %d</value>
+  </data>
+  <data name="RT_MSG_ACCESS_VIOLATION" xml:space="preserve">
+    <value>Access Violation</value>
+  </data>
+  <data name="RT_MSG_DATATYPE_MISALIGNMENT" xml:space="preserve">
+    <value>Datatype Misalignment</value>
+  </data>
+  <data name="RT_MSG_SINGLE_STEP" xml:space="preserve">
+    <value>Single Step</value>
+  </data>
+  <data name="RT_MSG_ARRAY_BOUNDS_EXCEEDED" xml:space="preserve">
+    <value>Array Bounds exceeded</value>
+  </data>
+  <data name="RT_MSG_FLT_DENORMAL_OPERAND" xml:space="preserve">
+    <value>Float denormal operand</value>
+  </data>
+  <data name="RT_MSG_FLT_DIVIDE_BY_ZERO" xml:space="preserve">
+    <value>Float divide by zero</value>
+  </data>
+  <data name="RT_MSG_FLT_INEXACT_RESULT" xml:space="preserve">
+    <value>Float inexact result</value>
+  </data>
+  <data name="RT_MSG_FLT_INVALID_OPERATION" xml:space="preserve">
+    <value>Float invalid operation</value>
+  </data>
+  <data name="RT_MSG_FLT_OVERFLOW" xml:space="preserve">
+    <value>Float overflow</value>
+  </data>
+  <data name="RT_MSG_FLT_STACK_CHECK" xml:space="preserve">
+    <value>Float stack check</value>
+  </data>
+  <data name="RT_MSG_FLT_UNDERFLOW" xml:space="preserve">
+    <value>Float underflow</value>
+  </data>
+  <data name="RT_MSG_INT_DIVIDE_BY_ZERO" xml:space="preserve">
+    <value>Integer divide by zero</value>
+  </data>
+  <data name="RT_MSG_INT_OVERFLOW" xml:space="preserve">
+    <value>Integer overflow</value>
+  </data>
+  <data name="RT_MSG_PRIV_INSTRUCTION" xml:space="preserve">
+    <value>priv instruction</value>
+  </data>
+  <data name="RT_MSG_IN_PAGE_ERROR" xml:space="preserve">
+    <value>In page error</value>
+  </data>
+  <data name="RT_MSG_ILLEGAL_INSTRUCTION" xml:space="preserve">
+    <value>Illegal Instruction</value>
+  </data>
+  <data name="RT_MSG_NONCONTINUABLE_EXCEPTION" xml:space="preserve">
+    <value>Noncontinuable Exception</value>
+  </data>
+  <data name="RT_MSG_STACK_OVERFLOW" xml:space="preserve">
+    <value>Stack overflow</value>
+  </data>
+  <data name="RT_MSG_INVALID_DISPOSITION" xml:space="preserve">
+    <value>Invalid disposition</value>
+  </data>
+  <data name="RT_MSG_GUARD_PAGE" xml:space="preserve">
+    <value>Guard Page</value>
+  </data>
+  <data name="ARGCANNOTBEZERO" xml:space="preserve">
+    <value>Argument cannot be 0</value>
+  </data>
+  <data name="ARGNOTCODEBLOCK" xml:space="preserve">
+    <value>Argument is not CODEBLOCK</value>
+  </data>
+  <data name="ARGLISTING" xml:space="preserve">
+    <value>   {0}: {1} ({2}){3}</value>
+    <comment>Used in Error.Message</comment>
+  </data>
+  <data name="ERROR_ARGS" xml:space="preserve">
+    <value>Argumentos</value>
+  </data>
+  <data name="ERROR_FILENAME" xml:space="preserve">
+    <value>Fichero</value>
+  </data>
+  <data name="ERROR_FUNCTION" xml:space="preserve">
+    <value>Funcion</value>
+  </data>
+  <data name="ERROR_DESCRIPTION" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="ERROR_OPERATION" xml:space="preserve">
+    <value>Operacion</value>
+  </data>
+  <data name="ERROR_CODE" xml:space="preserve">
+    <value>Error Code</value>
+  </data>
+  <data name="ERROR_GENCODE" xml:space="preserve">
+    <value>GenCode</value>
+  </data>
+  <data name="ERROR_SUBCODE" xml:space="preserve">
+    <value>SubCode</value>
+  </data>
+  <data name="ERROR_OSCODE" xml:space="preserve">
+    <value>OsCode</value>
+  </data>
+  <data name="ERROR_SEVERITY" xml:space="preserve">
+    <value>Severity</value>
+  </data>
+  <data name="ERROR_FUNCSYM" xml:space="preserve">
+    <value>FuncSym</value>
+  </data>
+  <data name="ERROR_TRIES" xml:space="preserve">
+    <value>Intentos</value>
+  </data>
+  <data name="ERROR_SUBSYSTEM" xml:space="preserve">
+    <value>SubSistema</value>
+  </data>
+  <data name="ERROR_STACK" xml:space="preserve">
+    <value>Llamado desde</value>
+  </data>
+  <data name="ERROR_CALLEDFROM" xml:space="preserve">
+    <value>Llamado desde</value>
+  </data>
+  <!-- The following strings are not used (yet) in X#-->
+  <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
+    <value>aLookupTable debe tener n por 2 dimensiones</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ERROR" xml:space="preserve">
+    <value>%V1s %s. Error</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_FILE_HANDLE" xml:space="preserve">
+    <value>%V1s FileHandle: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_FUNCPTR" xml:space="preserve">
+    <value>%V1s%V2s FuncPtr: %s %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CHOICE" xml:space="preserve">
+    <value>%V1s%V2s Elección: %s %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CMD_LINE" xml:space="preserve">
+    <value>%V1s Linea de comando: %-23s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CONVERSION" xml:space="preserve">
+    <value>%V1s en Conversión %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CURDIR" xml:space="preserve">
+    <value>CurDir</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DANGER" xml:space="preserve">
+    <value>* Peligro *:</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DISK" xml:space="preserve">
+    <value>Disco</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DISK_FREE" xml:space="preserve">
+    <value>libre</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ENTITY" xml:space="preserve">
+    <value>%V1s Entidad: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ERR_IN_ERR" xml:space="preserve">
+    <value>Error en Error</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE" xml:space="preserve">
+    <value>HND</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE_CUR" xml:space="preserve">
+    <value>cur</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE_END" xml:space="preserve">
+    <value>end</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_IVARS" xml:space="preserve">
+    <value>%V1s IVars: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_LINE" xml:space="preserve">
+    <value>%V1s Linea: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_MAX" xml:space="preserve">
+    <value>%V1s Max: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_MODULE" xml:space="preserve">
+    <value>%V1s Modulo: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_OBJECT" xml:space="preserve">
+    <value>%V1s Objeto: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_SUBST_TYPE" xml:space="preserve">
+    <value>%V1s retorna: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_TO" xml:space="preserve">
+    <value>%V1s  a %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_WARNING" xml:space="preserve">
+    <value>Atención:</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_OLEBASE" xml:space="preserve">
+    <value>OLE Base</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CONVERSION_TO" xml:space="preserve">
+    <value>%V1s%V2s en Conversión %s a %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_NOMEM" xml:space="preserve">
+    <value>Sin memoria</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_INCTYPES" xml:space="preserve">
+    <value>Tipos de datos incomprensibles</value>
+  </data>
+  <!-- End of unused strings-->
+ 
 </root>

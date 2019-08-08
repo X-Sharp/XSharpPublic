@@ -269,6 +269,7 @@ METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
                 // Mark RecordBuffer and Header as Hot
                 SELF:_Hot           := TRUE
                 SELF:_Header:isHot  := TRUE
+                SELF:_writeHeader()
                 // Now, Save
                 IF SELF:_HeaderLocked 
                     SELF:GoCold()

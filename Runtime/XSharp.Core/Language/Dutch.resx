@@ -1973,6 +1973,64 @@
   <data name="ERROR_CALLEDFROM" xml:space="preserve">
     <value>Aangeroepen door</value>
   </data>
+  <data name="INVALIDARGTYPE" xml:space="preserve">
+    <value>Ongeldig argumenttype</value>
+  </data>
+  <data name="INVALIDARGVALUE" xml:space="preserve">
+    <value>Ongeldige argumentwaarde</value>
+  </data>
+  <data name="OSVERSION" xml:space="preserve">
+    <value>{0} (Version {1}.{2}, Build {3}, Revision {4})</value>
+  </data>
+  <data name="RUNTIMEERROR" xml:space="preserve">
+    <value>Runtime Error</value>
+    <comment>Beginning of runtime error message</comment>
+  </data>
+  <data name="STRINGLENNE1" xml:space="preserve">
+    <value>Stringlengte! = 1</value>
+  </data>
+  <data name="USUALOVERFLOWERR" xml:space="preserve">
+    <value>Numerieke overloop bij het converteren van USUAL van type '{0}' naar '{1}'</value>
+  </data>
+  <data name="USUALBINARYOPERR" xml:space="preserve">
+    <value>{0} operator niet beschikbaar voor USUAL-typen '{1}' en '{2}'</value>
+  </data>
+  <data name="USUALUNARYOPERR" xml:space="preserve">
+    <value>{0} operator niet beschikbaar voor USUAL type '{1}'</value>
+  </data>
+  <data name="USUALCONVERSIONERR" xml:space="preserve">
+    <value>Conversiefout van USUAL ({0}) naar {1}</value>
+  </data>
+  <data name="VERSION" xml:space="preserve">
+    <value>Version: </value>
+  </data>
+  <data name="ARGISNULL" xml:space="preserve">
+    <value>Argument is NULL</value>
+  </data>
+  <data name="UNKNOWNRDD" xml:space="preserve">
+    <value>Ongeldige RDD naam</value>
+  </data>
+  <data name="ARRAYBOUNDS" xml:space="preserve">
+    <value>Ongeldige array index</value>
+  </data>
+  <data name="USUALNOTINDEXED" xml:space="preserve">
+    <value>Waarde in USUAL ondersteunt geen geïndexeerde bewerkingen. De waarde moet een X # Array zijn of de interface '{0}' implementeren.</value>
+  </data>
+  <data name="E_OPEN_MRESTORE" xml:space="preserve">
+    <value>Het bestand voor de RESTORE opdracht kan niet geopend worden.</value>
+  </data>
+  <data name="E_OPEN_MSAVE" xml:space="preserve">
+    <value>Het bestand voor de SAVE opdracht kan niet aangemaakt worden.</value>
+  </data>
+  <data name="ERRORDIALOG_TITLE" xml:space="preserve">
+    <value>Applicatie Fout - </value>
+  </data>
+  <data name="ERRORDIALOG_CLOSE" xml:space="preserve">
+    <value>Sluiten</value>
+  </data>
+  <data name="ERRORDIALOG_COPY" xml:space="preserve">
+    <value>Kopieer naar Klembord</value>
+  </data>
   <!-- The following strings are not used (yet) in X#-->
   <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
     <value>aLookupTable moet afmeting n by 2 hebben</value>
@@ -2059,62 +2117,5 @@
     <value>Onbegrijpelijke gegevenstypen</value>
   </data>
   <!-- End of unused strings-->
-  <data name="INVALIDARGTYPE" xml:space="preserve">
-    <value>Ongeldig argumenttype</value>
-  </data>
-  <data name="INVALIDARGVALUE" xml:space="preserve">
-    <value>Ongeldige argumentwaarde</value>
-  </data>
-  <data name="OSVERSION" xml:space="preserve">
-    <value>{0} (Version {1}.{2}, Build {3}, Revision {4})</value>
-  </data>
-  <data name="RUNTIMEERROR" xml:space="preserve">
-    <value>Runtime Error</value>
-    <comment>Beginning of runtime error message</comment>
-  </data>
-  <data name="STRINGLENNE1" xml:space="preserve">
-    <value>Stringlengte! = 1</value>
-  </data>
-  <data name="USUALOVERFLOWERR" xml:space="preserve">
-    <value>Numerieke overloop bij het converteren van USUAL van type '{0}' naar '{1}'</value>
-  </data>
-  <data name="USUALBINARYOPERR" xml:space="preserve">
-    <value>{0} operator niet beschikbaar voor USUAL-typen '{1}' en '{2}'</value>
-  </data>
-  <data name="USUALUNARYOPERR" xml:space="preserve">
-    <value>{0} operator niet beschikbaar voor USUAL type '{1}'</value>
-  </data>
-  <data name="USUALCONVERSIONERR" xml:space="preserve">
-    <value>Conversiefout van USUAL ({0}) naar {1}</value>
-  </data>
-  <data name="VERSION" xml:space="preserve">
-    <value>Version: </value>
-  </data>
-  <data name="ARGISNULL" xml:space="preserve">
-    <value>Argument is NULL</value>
-  </data>
-  <data name="UNKNOWNRDD" xml:space="preserve">
-    <value>Ongeldige RDD naam</value>
-  </data>
-  <data name="ARRAYBOUNDS" xml:space="preserve">
-    <value>Ongeldige array index</value>
-  </data>
-  <data name="USUALNOTINDEXED" xml:space="preserve">
-    <value>Waarde in USUAL ondersteunt geen geïndexeerde bewerkingen. De waarde moet een X # Array zijn of de interface '{0}' implementeren.</value>
-  </data>
-  <data name="E_OPEN_MRESTORE" xml:space="preserve">
-    <value>Het bestand voor de RESTORE opdracht kan niet geopend worden.</value>
-  </data>
-  <data name="E_OPEN_MSAVE" xml:space="preserve">
-    <value>Het bestand voor de SAVE opdracht kan niet aangemaakt worden.</value>
-  </data>
-  <data name="ERRORDIALOG_TITLE" xml:space="preserve">
-    <value>Applicatie Fout - </value>
-  </data>
-  <data name="ERRORDIALOG_CLOSE" xml:space="preserve">
-    <value>Sluiten</value>
-  </data>
-  <data name="ERRORDIALOG_COPY" xml:space="preserve">
-    <value>Kopieer naar Klembord</value>
-  </data>
+  
 </root>

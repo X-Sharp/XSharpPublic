@@ -472,27 +472,28 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:_oRdd:SkipFilter(1)
                     oldRec := SELF:_Recno
                     records := 0
+                    local lWasDescending as LOGIC
+                    lWasDescending := SELF:Descending
+                    IF lWasDescending
+                        SELF:Descending := FALSE
+                    ENDIF
                     isOk := SELF:GoTop()
                     recno := SELF:_Recno
                     last := SELF:_oRdd:RecCount + 1
                     count := 0
                     local nToSkip as LONG
-                    if SELF:Descending
-                        nToSkip := -1
-                    ELSE
-                        nToSkip := 1
-                    endif
                     local previous as long
                     previous := recno
                     DO WHILE recno != 0 .AND. recno < last
                         count++
-                        recno := SELF:_ScopeSkip(nToSkip)
+                        recno := SELF:_ScopeSkip(1)
                         if recno == previous
                             exit
                         endif
                         previous := recno
                     ENDDO
                     records := count
+                    SELF:Descending := lWasDescending
                 ELSE
                      records := 0
                     IF SELF:GoTop()

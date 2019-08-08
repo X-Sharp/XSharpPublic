@@ -2531,6 +2531,64 @@
   <data name="ERROR_CALLEDFROM" xml:space="preserve">
     <value>Chiamato da</value>
   </data>
+  <data name="INVALIDARGTYPE" xml:space="preserve">
+    <value>Tipo argomento non valido</value>
+  </data>
+  <data name="INVALIDARGVALUE" xml:space="preserve">
+    <value>Valore argomento non valido</value>
+  </data>
+  <data name="OSVERSION" xml:space="preserve">
+    <value>{0} (Versione {1}.{2}, Build {3}, Revisione {4})</value>
+  </data>
+  <data name="RUNTIMEERROR" xml:space="preserve">
+    <value>Errore Runtime</value>
+    <comment>Beginning of runtime error message</comment>
+  </data>
+  <data name="STRINGLENNE1" xml:space="preserve">
+    <value>Lunghezza stringa != 1</value>
+  </data>
+  <data name="USUALOVERFLOWERR" xml:space="preserve">
+    <value>Overflow numerico nella conversione di USUAL da tipo '{0}' a tipo '{1}'</value>
+  </data>
+  <data name="USUALBINARYOPERR" xml:space="preserve">
+    <value>Operatore {0} not disponibile per i tipi USUAL '{1}' e '{2}'</value>
+  </data>
+  <data name="USUALUNARYOPERR" xml:space="preserve">
+    <value>Operatore {0} not disponibile per il tipo USUAL '{1}'</value>
+  </data>
+  <data name="USUALCONVERSIONERR" xml:space="preserve">
+    <value>Errore di conversione da USUAL ({0}) a {1}</value>
+  </data>
+  <data name="VERSION" xml:space="preserve">
+    <value>Versione:</value>
+  </data>
+  <data name="ARGISNULL" xml:space="preserve">
+    <value>Argomento è NULL</value>
+  </data>
+  <data name="UNKNOWNRDD" xml:space="preserve">
+    <value>Nome RDD non valido</value>
+  </data>
+  <data name="ARRAYBOUNDS" xml:space="preserve">
+    <value>Indice array non valido</value>
+  </data>
+  <data name="USUALNOTINDEXED" xml:space="preserve">
+    <value>Il valore assegnato a USUAL non supporta operazioni indicizzate. Il valore deve implementare l'interfaccia '{0}'.</value>
+  </data>
+  <data name="E_OPEN_MRESTORE" xml:space="preserve">
+    <value>Non è stato possibile aprire il file per il comando RESTORE</value>
+  </data>
+  <data name="E_OPEN_MSAVE" xml:space="preserve">
+    <value>Non è stato possibile creare il file per il comando SAVE</value>
+  </data>
+  <data name="ERRORDIALOG_TITLE" xml:space="preserve">
+    <value>Errore di applicazione - </value>
+  </data>
+  <data name="ERRORDIALOG_CLOSE" xml:space="preserve">
+    <value>Chiudi</value>
+  </data>
+  <data name="ERRORDIALOG_COPY" xml:space="preserve">
+    <value>&amp;Copia nella clipboard</value>
+  </data>
   <!-- The following strings are not used (yet) in X#-->
     <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
     <value>aLookupTable deve essere dimensionato da n a 2</value>
@@ -2617,62 +2675,5 @@
     <value>Tipi di dato indeterminabile</value>
   </data>
   <!-- End of unused strings-->
-  <data name="INVALIDARGTYPE" xml:space="preserve">
-    <value>Tipo argomento non valido</value>
-  </data>
-  <data name="INVALIDARGVALUE" xml:space="preserve">
-    <value>Valore argomento non valido</value>
-  </data>
-  <data name="OSVERSION" xml:space="preserve">
-    <value>{0} (Versione {1}.{2}, Build {3}, Revisione {4})</value>
-  </data>
-  <data name="RUNTIMEERROR" xml:space="preserve">
-    <value>Errore Runtime</value>
-    <comment>Beginning of runtime error message</comment>
-  </data>
-  <data name="STRINGLENNE1" xml:space="preserve">
-    <value>Lunghezza stringa != 1</value>
-  </data>
-  <data name="USUALOVERFLOWERR" xml:space="preserve">
-    <value>Overflow numerico nella conversione di USUAL da tipo '{0}' a tipo '{1}'</value>
-  </data>
-  <data name="USUALBINARYOPERR" xml:space="preserve">
-    <value>Operatore {0} not disponibile per i tipi USUAL '{1}' e '{2}'</value>
-  </data>
-  <data name="USUALUNARYOPERR" xml:space="preserve">
-    <value>Operatore {0} not disponibile per il tipo USUAL '{1}'</value>
-  </data>
-  <data name="USUALCONVERSIONERR" xml:space="preserve">
-    <value>Errore di conversione da USUAL ({0}) a {1}</value>
-  </data>
-  <data name="VERSION" xml:space="preserve">
-    <value>Versione:</value>
-  </data>
-  <data name="ARGISNULL" xml:space="preserve">
-    <value>Argomento è NULL</value>
-  </data>
-  <data name="UNKNOWNRDD" xml:space="preserve">
-    <value>Nome RDD non valido</value>
-  </data>
-  <data name="ARRAYBOUNDS" xml:space="preserve">
-    <value>Indice array non valido</value>
-  </data>
-  <data name="USUALNOTINDEXED" xml:space="preserve">
-    <value>Il valore assegnato a USUAL non supporta operazioni indicizzate. Il valore deve implementare l'interfaccia '{0}'.</value>
-  </data>
-  <data name="E_OPEN_MRESTORE" xml:space="preserve">
-    <value>Non è stato possibile aprire il file per il comando RESTORE</value>
-  </data>
-  <data name="E_OPEN_MSAVE" xml:space="preserve">
-    <value>Non è stato possibile creare il file per il comando SAVE</value>
-  </data>
-  <data name="ERRORDIALOG_TITLE" xml:space="preserve">
-    <value>Errore di applicazione - </value>
-  </data>
-  <data name="ERRORDIALOG_CLOSE" xml:space="preserve">
-    <value>Chiudi</value>
-  </data>
-  <data name="ERRORDIALOG_COPY" xml:space="preserve">
-    <value>&amp;Copia nella clipboard</value>
-  </data>
+  
 </root>

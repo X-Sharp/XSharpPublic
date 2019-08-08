@@ -2361,63 +2361,7 @@
   <data name="RT_MSG_MAIL_ERR2" xml:space="preserve">
     <value>SendMail(): Fehler beim Abrufen des Funktionseinstiegspunkts in der MAPI-DLL</value>
   </data>
-  <data name="RT_MSG_MAIL_ERR3" xml:space="preserve">
-    <value>SendMail(): Failed to send %s. Error code: %d</value>
-  </data>
-  <data name="RT_MSG_ACCESS_VIOLATION" xml:space="preserve">
-    <value>Access Violation</value>
-  </data>
-  <data name="RT_MSG_DATATYPE_MISALIGNMENT" xml:space="preserve">
-    <value>Datatype Misalignment</value>
-  </data>
-  <data name="RT_MSG_SINGLE_STEP" xml:space="preserve">
-    <value>Single Step</value>
-  </data>
-  <data name="RT_MSG_ARRAY_BOUNDS_EXCEEDED" xml:space="preserve">
-    <value>Array Bounds exceeded</value>
-  </data>
-  <data name="RT_MSG_FLT_DENORMAL_OPERAND" xml:space="preserve">
-    <value>Float denormal operand</value>
-  </data>
-  <data name="RT_MSG_FLT_DIVIDE_BY_ZERO" xml:space="preserve">
-    <value>Float divide by zero</value>
-  </data>
-  <data name="RT_MSG_FLT_INEXACT_RESULT" xml:space="preserve">
-    <value>Float inexact result</value>
-  </data>
-  <data name="RT_MSG_FLT_INVALID_OPERATION" xml:space="preserve">
-    <value>Float invalid operation</value>
-  </data>
-  <data name="RT_MSG_FLT_OVERFLOW" xml:space="preserve">
-    <value>Float overflow</value>
-  </data>
-  <data name="RT_MSG_FLT_STACK_CHECK" xml:space="preserve">
-    <value>Float stack check</value>
-  </data>
-  <data name="RT_MSG_FLT_UNDERFLOW" xml:space="preserve">
-    <value>Float underflow</value>
-  </data>
-  <data name="RT_MSG_INT_DIVIDE_BY_ZERO" xml:space="preserve">
-    <value>Integer divide by zero</value>
-  </data>
-  <data name="RT_MSG_INT_OVERFLOW" xml:space="preserve">
-    <value>Integer overflow</value>
-  </data>
-  <data name="RT_MSG_PRIV_INSTRUCTION" xml:space="preserve">
-    <value>priv instruction</value>
-  </data>
-  <data name="RT_MSG_IN_PAGE_ERROR" xml:space="preserve">
-    <value>In page error</value>
-  </data>
-  <data name="RT_MSG_ILLEGAL_INSTRUCTION" xml:space="preserve">
-    <value>Illegal Instruction</value>
-  </data>
-  <data name="RT_MSG_NONCONTINUABLE_EXCEPTION" xml:space="preserve">
-    <value>Noncontinuable Exception</value>
-  </data>
-  <data name="RT_MSG_STACK_OVERFLOW" xml:space="preserve">
-    <value>Stack overflow</value>
-  </data>
+
   <data name="RT_MSG_INVALID_DISPOSITION" xml:space="preserve">
     <value>Ungültige Disposition</value>
   </data>
@@ -2539,7 +2483,66 @@
   <data name="ERROR_CALLEDFROM" xml:space="preserve">
     <value>Gerufen von</value>
   </data>
-  <!-- The following strings are not used (yet) in X#-->
+
+  <data name="INVALIDARGTYPE" xml:space="preserve">
+    <value>Ungültiger Argumenttyp</value>
+  </data>
+  <data name="INVALIDARGVALUE" xml:space="preserve">
+    <value>Ungültiger Argumentwert</value>
+  </data>
+  <data name="OSVERSION" xml:space="preserve">
+    <value>{0} (Version {1}.{2}, Build {3}, Revision {4})</value>
+  </data>
+  <data name="RUNTIMEERROR" xml:space="preserve">
+    <value>Laufzeit Fehler</value>
+    <comment>Beginning of runtime error message</comment>
+  </data>
+  <data name="STRINGLENNE1" xml:space="preserve">
+    <value>Stringlänge! = 1</value>
+  </data>
+  <data name="USUALOVERFLOWERR" xml:space="preserve">
+    <value>Numerische Überlauf beim konvertieren von USUAL DatenType '{0}' auf '{1}'</value>
+  </data>
+  <data name="USUALBINARYOPERR" xml:space="preserve">
+    <value>{0} operator nicht verfügbar für USUAL Datentype '{1}' und '{2}'</value>
+  </data>
+  <data name="USUALUNARYOPERR" xml:space="preserve">
+    <value>{0} operator nicht verfügbar für USUAL Datentypen '{1}'</value>
+  </data>
+  <data name="USUALCONVERSIONERR" xml:space="preserve">
+    <value>Konvertierungsfehler von USUAL ({0}) nach {1}</value>
+  </data>
+  <data name="VERSION" xml:space="preserve">
+    <value>Version: </value>
+  </data>
+  <data name="ARGISNULL" xml:space="preserve">
+    <value>Argument ist NULL</value>
+  </data>
+  <data name="UNKNOWNRDD" xml:space="preserve">
+    <value>Ungültige RDD name</value>
+  </data>
+  <data name="ARRAYBOUNDS" xml:space="preserve">
+    <value>Ungültiger Array-Index</value>
+  </data>
+  <data name="USUALNOTINDEXED" xml:space="preserve">
+    <value>value in USUAL unterstützt keine indizierten Operationen. Der Wert muss ein X# Array sein oder die Schnittstelle '{0}' implementieren.</value>
+  </data>
+  <data name="E_OPEN_MRESTORE" xml:space="preserve">
+    <value>Die datei für das RESTORE Befehl konnte  nicht geöffnet werden.</value>
+  </data>
+  <data name="E_OPEN_MSAVE" xml:space="preserve">
+    <value>Die datei für das SAVE Befehl konnte nicht erstellt werden.</value>
+  </data>
+  <data name="ERRORDIALOG_TITLE" xml:space="preserve">
+    <value>Anwendungsfehler - </value>
+  </data>
+  <data name="ERRORDIALOG_CLOSE" xml:space="preserve">
+    <value>Beenden</value>
+  </data>
+  <data name="ERRORDIALOG_COPY" xml:space="preserve">
+    <value>In Zwischenablage kopieren</value>
+  </data>
+    <!-- The following strings are not used (yet) in X#-->
    <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
     <value>aLookupTable muß n, 2 dimensioniert sein</value>
   </data>
@@ -2625,62 +2628,4 @@
     <value>Unverständliche Datentypen</value>
   </data>
   <!-- End of unused strings-->
-  <data name="INVALIDARGTYPE" xml:space="preserve">
-    <value>Ungültiger Argumenttyp</value>
-  </data>
-  <data name="INVALIDARGVALUE" xml:space="preserve">
-    <value>Ungültiger Argumentwert</value>
-  </data>
-  <data name="OSVERSION" xml:space="preserve">
-    <value>{0} (Version {1}.{2}, Build {3}, Revision {4})</value>
-  </data>
-  <data name="RUNTIMEERROR" xml:space="preserve">
-    <value>Laufzeit Fehler</value>
-    <comment>Beginning of runtime error message</comment>
-  </data>
-  <data name="STRINGLENNE1" xml:space="preserve">
-    <value>Stringlänge! = 1</value>
-  </data>
-  <data name="USUALOVERFLOWERR" xml:space="preserve">
-    <value>Numerische Überlauf beim konvertieren von USUAL DatenType '{0}' auf '{1}'</value>
-  </data>
-  <data name="USUALBINARYOPERR" xml:space="preserve">
-    <value>{0} operator nicht verfügbar für USUAL Datentype '{1}' und '{2}'</value>
-  </data>
-  <data name="USUALUNARYOPERR" xml:space="preserve">
-    <value>{0} operator nicht verfügbar für USUAL Datentypen '{1}'</value>
-  </data>
-  <data name="USUALCONVERSIONERR" xml:space="preserve">
-    <value>Konvertierungsfehler von USUAL ({0}) nach {1}</value>
-  </data>
-  <data name="VERSION" xml:space="preserve">
-    <value>Version: </value>
-  </data>
-  <data name="ARGISNULL" xml:space="preserve">
-    <value>Argument ist NULL</value>
-  </data>
-  <data name="UNKNOWNRDD" xml:space="preserve">
-    <value>Ungültige RDD name</value>
-  </data>
-  <data name="ARRAYBOUNDS" xml:space="preserve">
-    <value>Ungültiger Array-Index</value>
-  </data>
-  <data name="USUALNOTINDEXED" xml:space="preserve">
-    <value>value in USUAL unterstützt keine indizierten Operationen. Der Wert muss ein X# Array sein oder die Schnittstelle '{0}' implementieren.</value>
-  </data>
-  <data name="E_OPEN_MRESTORE" xml:space="preserve">
-    <value>Die datei für das RESTORE Befehl konnte  nicht geöffnet werden.</value>
-  </data>
-  <data name="E_OPEN_MSAVE" xml:space="preserve">
-    <value>Die datei für das SAVE Befehl konnte nicht erstellt werden.</value>
-  </data>
-  <data name="ERRORDIALOG_TITLE" xml:space="preserve">
-    <value>Anwendungsfehler - </value>
-  </data>
-  <data name="ERRORDIALOG_CLOSE" xml:space="preserve">
-    <value>Beenden</value>
-  </data>
-  <data name="ERRORDIALOG_COPY" xml:space="preserve">
-    <value>In Zwischenablage kopieren</value>
-  </data>
 </root>

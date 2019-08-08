@@ -360,7 +360,11 @@ CLASS XSharp.CoreDb
     STATIC METHOD Commit() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
-        RETURN oRDD:Flush()
+        LOCAL lOk := oRDD:Skip(0) AS LOGIC
+        IF lOk
+            lOk := oRDD:Flush()
+        ENDIF
+        RETURN lOk
         })
         
         /// <summary>
@@ -935,6 +939,8 @@ CLASS XSharp.CoreDb
             LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
             IF (nOrdinal == DBI_RDD_OBJECT)
                 oRet := oRDD
+            ELSEIF (nOrdinal == DBI_RDD_LIST)
+                oRet := _RddList{(WOrkArea) oRDD}
             ELSE
                 oRet := oRDD:Info((INT) nOrdinal, oRet)
             ENDIF

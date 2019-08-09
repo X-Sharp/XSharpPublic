@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9084</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9084</para>
+    </header>
+    <para styleclass="Normal">Cannot implicitly convert between &apos;{0}&apos; and &apos;PTR&apos; in platform &apos;{1}&apos; because the size of &apos;{0}&apos; does not match the size of &apos;PTR&apos; for the target platform.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error occurs when casting a variable to a PTR in the X86 or X64 platform </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The only allowed conversions are:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="3" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Platform</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Allowed</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">X86</para>
+        </td>
+        <td>
+          <para styleclass="Normal">LONG -&gt; PTR<br/>DWORD -&gt; PTR</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">X64</para>
+        </td>
+        <td>
+          <para styleclass="Normal">INT64 -&gt; PTR</para>
+          <para styleclass="Normal">UINT64-&gt;PTR</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">All other conversions will produce this error.</para>
+  </body>
+</topic>

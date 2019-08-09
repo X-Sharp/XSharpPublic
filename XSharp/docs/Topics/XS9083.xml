@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9083</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9083</para>
+    </header>
+    <para styleclass="Normal">Cannot implicitly convert between &apos;{0}&apos; and &apos;PTR&apos; in platform &apos;{1}&apos; because the size of &apos;PTR&apos; cannot be determined at compile time.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error occurs when compiling for platforms other then X86 and X64 because the compiler does not know the size of the PTR type at compile time.</para>
+  </body>
+</topic>

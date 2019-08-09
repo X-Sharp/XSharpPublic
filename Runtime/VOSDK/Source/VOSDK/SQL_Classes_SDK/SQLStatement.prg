@@ -1,4 +1,4 @@
-PARTIAL CLASS SQLStatement
+CLASS SQLStatement
 	
 	HIDDEN  hStmt   			AS PTR
 	HIDDEN  cStatement      AS STRING

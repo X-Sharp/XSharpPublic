@@ -11,14 +11,14 @@
       <para styleclass="Heading1">X# Keywords</para>
     </header>
     <para styleclass="Body Text">The table below has the keywords that are available in the X# language.</para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">The Keywords in the <text style="font-weight:bold;">VO </text><text style="font-weight:normal;">column find their origin in the Visual Objects language. When the compiler dialect is set to VO then these keywords may be abbreviated (4 letter minimum)</text></li>
       <li styleclass="Body Text"><text style="font-weight:normal;">The Keywords in the </text><text style="font-weight:bold;">VN</text><text style="font-weight:normal;"> column were introduced in Vulcan.NET. These keywords may never be abbreviated, and most of these keywords are positional, so are only recognized in certain positions in the language. That also means that these keywords may be used as Variable Names or Method names</text></li>
       <li styleclass="Body Text"><text style="font-weight:normal;">The Keywords in the </text><text style="font-weight:bold;">X#</text><text style="font-weight:normal;"> column were introduced in X#. Just like the VN keywords they may never be abbreviated and they are also positional.</text></li>
       <li styleclass="Body Text"><text style="font-weight:normal;">Keywords that are listed in the Id column may also be used as an identifier. These are so called &quot;context sensitive&quot; keywords. You may see in the Visual Studio editor that these keywords will change color depending on the position in the source. </text><br/><text style="font-weight:normal;">For example if you start typing PROPERTY the word will be shown in the IDENTIFIER color:</text></li>
     </list>
     <para styleclass="Body Text" style="margin-left:39px;"><image src="Keyword1.jpg" scale="100.00%" styleclass="Image Caption"></image></para>
-    <para styleclass="Body Text"><tab /><text style="font-weight:normal;"> But as soon as you continue to complete the PROPERTY definition it will get the KEYWORD color:</text></para>
+    <para styleclass="Body Text"><tab/><text style="font-weight:normal;"> But as soon as you continue to complete the PROPERTY definition it will get the KEYWORD color:</text></para>
     <para styleclass="Body Text" style="margin-left:39px;"><image src="Keyword2.jpg" scale="100.00%" styleclass="Image Caption"></image></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="229" colcount="7" style="border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
       <thead style="vertical-align:top">
@@ -199,7 +199,7 @@
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Parameters">Parameters</link>&#32;</para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Parameters">Parameters</link> </para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal">Part of type specification</para>
@@ -3327,7 +3327,7 @@
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Symbols-And-Operators">Operators</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal">REMOVE Part of an Event</para>
@@ -4431,7 +4431,7 @@
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Symbols-And-Operators">Operators</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal">Varargs local variable for functions with ... (Ellipses) parameter</para>
@@ -4454,7 +4454,7 @@
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Symbols-And-Operators">Operators</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal">Logical Operator</para>
@@ -4477,7 +4477,7 @@
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Symbols-And-Operators">Operators</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal">Cast operator</para>
@@ -4638,7 +4638,7 @@
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Symbols-And-Operators">Operators</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal">Logical Operator</para>
@@ -4661,7 +4661,7 @@
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Symbols-And-Operators">Operators</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal">Logical Operator</para>
@@ -4730,7 +4730,7 @@
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Symbols-And-Operators">Operators</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal">Logical Operator</para>
@@ -4753,7 +4753,7 @@
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Symbols-And-Operators">Operators</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal">Logical Operator</para>
@@ -4799,7 +4799,7 @@
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Symbols-And-Operators">Operators</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal">Logical Operator</para>
@@ -4822,7 +4822,7 @@
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Symbols-And-Operators">Operators</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal">Logical Operator</para>
@@ -4868,7 +4868,7 @@
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Symbols-And-Operators">Operators</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal">Logical Operator</para>

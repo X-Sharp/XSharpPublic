@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Workarea</title>
+  <keywords>
+    <keyword>_FIELD</keyword>
+    <keyword>-&gt;</keyword>
+    <keyword>ALIAS</keyword>
+    <keyword>alias operator</keyword>
+    <keyword>dynamic memory variable</keyword>
+    <keyword>FIELD</keyword>
+    <keyword>operator</keyword>
+    <keyword>workarea</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Workarea</para>
+    </header>
+    <para styleclass="Normal">X# uses the following Workarea operators:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="3" style="width:auto;">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Operator</text></para>
+        </td>
+        <td style="width:30%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Example</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Meaning</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">-&gt;</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Customer-&gt;LastName<br/>FIELD-&gt;FirstName<br/>_FIELD-&gt;Salary<br/>M-&gt;Name<br/>A-&gt;City</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Field &quot;<text styleclass="Normal">LastName</text>&quot; in the &quot;<text styleclass="Normal">Customer</text>&quot; workarea<br/>Field &quot;<text styleclass="Normal">FirstName</text>&quot; in the current workarea<br/>Field &quot;<text styleclass="Normal">Salary</text>&quot; in the current workarea<br/>The dynamic memory variable &quot;<text styleclass="Normal">Name</text>&quot; (public or private)<br/>The field <text styleclass="Normal">City</text> in workarea 1. <br/>Allowed single letter aliases are A .. J. <br/><br/>Note that FIELD and _FIELD are synonyms.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Customer.LastName<br/><br/><br/></para>
+        </td>
+        <td>
+          <para styleclass="Body Text">In the VFP dialect we also support the DOT (&quot;.&quot;) syntax for aliased operations.<br/>Please note that this is ambiguous because the compiler cannot detect at compile time if CUSTOMER is a workarea or for example a MEMVAR. If there is a local variable with the name CUSTOMER then this will access the LASTNAME property of the CUSTOMER local variable.</para>
+          <para styleclass="Body Text">In all other cases this will produce code that looks for either a CUSTOMER workarea or memory variable at runtime.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">M.Name</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">In the VFP dialect we also support the DOT (&quot;.&quot;) syntax for memvar access. This is also ambiguous because NAME can be both a local variable or a dynamic memory variable &quot;NAME&quot; (public or private). However the compiler will be able to detect the local variable at compile time and when this is not found then it will access the dynamic memory variable.</para>
+        </td>
+      </tr>
+    </table></para>
+  </body>
+</topic>

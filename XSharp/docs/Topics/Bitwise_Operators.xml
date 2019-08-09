@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Bitwise</title>
   <keywords>
     <keyword>&amp;</keyword>
@@ -8,12 +8,14 @@
     <keyword>.OR.</keyword>
     <keyword>|</keyword>
     <keyword>~</keyword>
+    <keyword>bitwise operator</keyword>
+    <keyword>operator</keyword>
   </keywords>
   <body>
     <header>
       <para styleclass="Heading1">Bitwise</para>
     </header>
-    <para styleclass="Normal">X# uses the following Bitwise (binary) operators:</para>
+    <para styleclass="Normal">X# uses the following Bitwise (binary) operators. There are simple character versions of these and also pseudo functions:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="4" style="width:auto;">
       <tr style="vertical-align:top">

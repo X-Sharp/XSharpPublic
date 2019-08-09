@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Relational</title>
+  <keywords>
+    <keyword>&lt;</keyword>
+    <keyword>&lt;=</keyword>
+    <keyword>&gt;</keyword>
+    <keyword>&gt;=</keyword>
+    <keyword>Clipper</keyword>
+    <keyword>&apos;compatible string comparions</keyword>
+    <keyword>operator</keyword>
+    <keyword>Ordinal</keyword>
+    <keyword>relational operator</keyword>
+    <keyword>SetCollation</keyword>
+    <keyword>Unicode</keyword>
+    <keyword>-vo13</keyword>
+    <keyword>Windows</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Relational</para>
+    </header>
+    <para styleclass="Normal">X# uses the following Logical operators:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab /><tab /></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="11" colcount="3" style="width:auto;">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Operator</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Example</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Meaning</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">&lt;</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">x &lt; y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">less than (true if x is less than y).<br/><text style="font-weight:bold;">See below for string comparisons</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">&lt;=</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">x &lt;= y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">less than or equal to (true if x is less than or equal to y).<br/><text style="font-weight:bold;">See below for string comparisons</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">&gt;</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">x &gt; y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">greater than (true if x is greater than y).<br/><text style="font-weight:bold;">See below for string comparisons</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">&gt;=</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">x &gt;= y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">greater than or equals to (true if x is greater than or equal to y).<br/><text style="font-weight:bold;">See below for string comparisons</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">=</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">x = y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">equality. <br/><text style="font-weight:bold; font-style:italic;">Note that there is a difference between = and == for strings only. See below</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">==</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">x == y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">exact equality. <br/><text style="font-weight:bold; font-style:italic;">Note that there is a difference between = and == for strings only. See below</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">&lt;&gt;, #, !=</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">x &lt;&gt; y, x # y, x != y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">not equal<br/><text style="font-weight:bold;">Note that for strings this follows the same rules as the single = operator.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">$</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">x $ y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Is substring of. Returns true if the first string is a substring of the second (case sensitive !)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">IS</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">x IS y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Type compatibility. Returns true if the evaluated left operand can be cast to the type specified in the right operand (a static type).</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">ASTYPE</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">x ASTYPE y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Type conversion. Returns the left operand cast to the type specified by the right operand (a static type), but as returns null where (T)x would throw an exception.</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Heading2">String comparisons</para>
+    <para styleclass="Normal">The &apos;=&apos; and &apos;==&apos; operators behave differently for strings, and the behavior of the single equals also depends on a runtime setting.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">If you call SetExact(FALSE) then ‘=’ equates the characters up to the length of the string on the right-hand side of the operator ignoring the remaining characters on the left. This is the default setting. If you call SetExact(TRUE) then = and == have the same meaning for strings. </para>
+    <para styleclass="Body Text">The &lt;, &lt;=, &gt; and &gt;= operators for strings have a behavior that depends on a <text style="font-weight:bold;">compiler option</text> and a <text style="font-weight:bold;">runtime setting</text>. The <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo13">-vo13</link> compiler option &apos;compatible string comparions&apos; tells the compiler that it needs to use a runtime function for string comparisons. The behavior of this runtime function depends on the setting of SetCollation(). There are 4 possible values for SetCollation():</para>
+    <para styleclass="Body Text"><table styleclass="Default" rowcount="5" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Setting</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Description</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Clipper</para>
+        </td>
+        <td>
+          <para styleclass="Normal">This setting will convert both strings to OEM strings using the current DOS codepage. After that the strings will be compared using the string comparison / weight &#160;tables that are defined with SetNatDLL(). The default comparison uses a wight based on the byte number. Other comparisons available are for example GERMAN, DUTCH, FRENCH, RUSSION, SPANISH, SLOV852 etc. <br/>This setting should be used if your application needs to share files with CLIPPER programs.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Windows</para>
+        </td>
+        <td>
+          <para styleclass="Normal">This setting will convert both strings to ANSI using the current ANSI codepage. After that the strings will be compared using the normal windows ANSI CompareString() code. This setting should be used when your application shares files with VO programs</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Unicode</para>
+        </td>
+        <td>
+          <para styleclass="Normal">This setting will NOT convert strings and will do a normal Unicode string comparison using the String.Compare() method from the .Net </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Ordinal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">This setting will NOT convert strings and will do a normal Ordinal string comparison using the String.CompareOrdinal() method &#160;from the .Net. This is the <text style="font-weight:bold;">fastest.</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Body Text">The &gt;= and &lt;= operators for strings also take into account the setting for SetExact(). The &apos;equalness&apos; of the 2 strings is determined by the same rules as the &apos;=&apos; operator.</para>
+  </body>
+</topic>

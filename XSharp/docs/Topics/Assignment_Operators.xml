@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Assignment operators</title>
   <keywords>
     <keyword>%=</keyword>
@@ -13,8 +13,11 @@
     <keyword>~=</keyword>
     <keyword>+=</keyword>
     <keyword>&lt;&lt;=</keyword>
+    <keyword>=</keyword>
     <keyword>-=</keyword>
     <keyword>&gt;&gt;=</keyword>
+    <keyword>assignment operator</keyword>
+    <keyword>operator</keyword>
   </keywords>
   <body>
     <header>
@@ -22,7 +25,7 @@
     </header>
     <para styleclass="Normal">X# uses the following Assignment operators:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="13" colcount="3" style="width:auto;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="14" colcount="3" style="width:auto;">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text style="font-weight:bold;">Operator</text></para>
@@ -43,6 +46,17 @@
         </td>
         <td>
           <para styleclass="Body Text">Store the value of the second operand in the object specified by the first operand (simple assignment).</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">=</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">x = y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Store the value of the second operand in the object specified by the first operand (simple assignment). <br/><text style="font-weight:bold;">This is allowed in the VFP dialect only ! In all other dialects assigning a value with a &apos;=&apos; operator will generate a warning.</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -167,5 +181,7 @@
         </td>
       </tr>
     </table></para>
+    <para styleclass="Heading2">Assignment operators and XBase types </para>
+    <para styleclass="Normal">See the topic about <link displaytype="text" defaultstyle="true" type="topiclink" href="Binary_Operators">Binary operators</link> to see which complex assignment operators are supported.</para>
   </body>
 </topic>

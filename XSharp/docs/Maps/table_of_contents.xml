@@ -702,30 +702,30 @@
             <caption translate="true">Initializers</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="423889109101067" build="ALL" modified="2016-11-03T10:36:35.577Z" icon="0" href="X-Symbols-And-Operators">
-          <caption translate="true">X# Symbols and Operators</caption>
-          <topicref type="topic" id="423887682890922" build="ALL" modified="2017-05-19T15:05:14.868Z" icon="0" href="Assignment">
+        <topicref type="topic" id="423889109101067" build="ALL" modified="2019-08-09T12:34:42.829Z" icon="0" href="X-Operators">
+          <caption translate="true">X# Operators</caption>
+          <topicref type="topic" id="423889867171741" build="ALL" modified="2019-08-09T13:02:56.793Z" icon="0" href="Binary_Operators">
+            <caption translate="true">Binary</caption>
+          </topicref>
+          <topicref type="topic" id="423887682890922" build="ALL" modified="2019-08-09T12:34:49.373Z" icon="0" href="Assignment_Operators">
             <caption translate="true">Assignment operators</caption>
           </topicref>
-          <topicref type="topic" id="42387974843972" build="ALL" modified="2016-01-19T21:11:46.442Z" icon="0" href="Logical">
+          <topicref type="topic" id="42387974843972" build="ALL" modified="2019-08-09T12:34:54.498Z" icon="0" href="Logical_Operators">
             <caption translate="true">Logical</caption>
           </topicref>
-          <topicref type="topic" id="42390446934182" build="ALL" modified="2016-01-19T21:11:46.496Z" icon="0" href="Bitwise">
+          <topicref type="topic" id="42390446934182" build="ALL" modified="2019-08-09T12:34:58.928Z" icon="0" href="Bitwise_Operators">
             <caption translate="true">Bitwise</caption>
           </topicref>
-          <topicref type="topic" id="42390595140805" build="ALL" modified="2016-01-19T21:11:46.550Z" icon="0" href="Relational">
+          <topicref type="topic" id="42390595140805" build="ALL" modified="2019-08-09T12:35:04.309Z" icon="0" href="Relational_Operators">
             <caption translate="true">Relational</caption>
           </topicref>
-          <topicref type="topic" id="423889057077198" build="ALL" modified="2016-01-19T21:11:46.615Z" icon="0" href="Shift">
+          <topicref type="topic" id="423889057077198" build="ALL" modified="2019-08-09T12:35:09.251Z" icon="0" href="Shift_Operators">
             <caption translate="true">Shift</caption>
           </topicref>
-          <topicref type="topic" id="423889867171741" build="ALL" modified="2016-01-19T21:11:46.680Z" icon="0" href="Simple">
-            <caption translate="true">Simple</caption>
-          </topicref>
-          <topicref type="topic" id="423890249914780" build="ALL" modified="2016-01-19T21:11:46.748Z" icon="0" href="Unary">
+          <topicref type="topic" id="423890249914780" build="ALL" modified="2019-08-09T12:35:14.296Z" icon="0" href="Unary_Operators">
             <caption translate="true">Unary</caption>
           </topicref>
-          <topicref type="topic" id="423888894934256" build="ALL" modified="2016-01-19T22:09:49.901Z" icon="0" href="Workarea">
+          <topicref type="topic" id="423888894934256" build="ALL" modified="2019-08-09T12:35:20.228Z" icon="0" href="Workarea_Operators">
             <caption translate="true">Workarea</caption>
           </topicref>
         </topicref>

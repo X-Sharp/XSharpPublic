@@ -196,13 +196,6 @@ FUNCTION CTOL(c AS STRING) AS LOGIC
     ENDIF
     RETURN FALSE
 
-INTERNAL FUNCTION _GetHexChar(c AS CHAR, c1 OUT CHAR, c2 OUT CHAR) AS STRING
-    LOCAL s AS STRING
-    s := String.Format("{0:X2}",(INT) c)
-    c1 := s[0]
-    c2 := s[1]
-    RETURN s
-
 /// <summary>
 /// </summary>
 /// <param name="c"></param>
@@ -212,14 +205,11 @@ FUNCTION C2Hex(cSource AS STRING) AS STRING
     LOCAL sb AS StringBuilder
     sb := StringBuilder{cSource:Length*2}
     FOREACH c AS CHAR IN cSource
-        LOCAL c1, c2 AS CHAR
-        _GetHexChar(c, OUT c1, OUT c2)
         IF sb:Length > 0
             sb:Append(' ')
         ENDIF
-        sb:Append(c1)
-        sb:Append(c2)
-        
+        var s := String.Format("{0:X2}",(INT) c)
+        sb:Append(s)
     NEXT
     RETURN sb:ToString()
 

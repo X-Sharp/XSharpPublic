@@ -369,6 +369,7 @@ Components: main\gac;  Source: "{#BinRtFolder}XSharp.Rdd.dll";                  
 Components: main\gac;  Source: "{#BinRtFolder}XSharp.VO.dll";                      DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.VO{#XSharpVersion}" 
 Components: main\gac;  Source: "{#BinRtFolder}XSharp.RT.dll";                      DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.RT{#XSharpVersion}" 
 Components: main\gac;  Source: "{#BinRtFolder}XSharp.XPP.dll";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.XPP{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinRtFolder}XSharp.VFP.dll";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.VFP{#XSharpVersion}" 
 Components: main\gac;  Source: "{#BinDllFolder}XSharp.MacroCompiler.dll";          DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.MacroCompiler{#XSharpVersion}" 
 Components: main\gac;  Source: "{#BinDllFolder}XSharp.MacroCompiler.Full.dll";     DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
 Components: main\gac;  Source: "{#BinFolder}XSharp.CodeAnalysis.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  

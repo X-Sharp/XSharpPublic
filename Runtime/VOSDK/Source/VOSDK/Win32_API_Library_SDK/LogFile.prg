@@ -47,13 +47,13 @@ METHOD DebugMsg(cLine  AS STRING)
 
 	RETURN n > 0
 
-METHOD DumpError( oError  ) 
+METHOD DumpError( oErr  ) 
 	LOCAL hf			AS PTR
 	LOCAL cStack	AS STRING
 	LOCAL cCaption	AS STRING
 	LOCAL nLeft		AS DWORD
 	LOCAL nRight	AS DWORD
-
+    LOCAL oError   := oErr as Error
 
 	hf := __NetOpen(SELF:cFName, FO_READWRITE)
 
@@ -71,26 +71,24 @@ METHOD DumpError( oError  )
 		FPuts(hf, "GenCode         :" + ErrString(oError:GenCode ) )
 
 		//FdW//20060916-Begin
-		IF IVarGetInfo(oError,#Stack)<>0
-			cStack:=AsString(oError:Stack)
-			IF !Empty(cStack)
-				cCaption:="Stack           :"
-				nLeft:=1
-				nRight:=At2(CRLF,cStack)
+		cStack:=AsString(oError:StackTrace)
+		IF !Empty(cStack)
+			cCaption:="Stack           :"
+			nLeft:=1
+			nRight:=At2(CRLF,cStack)
+			IF nRight==0
+				nRight:=SLen(cStack)+1
+			ENDIF
+			DO WHILE nRight>nLeft
+				FPuts(hf,cCaption+"'"+SubStr3(cStack,nLeft,nRight-nLeft+1)+"'")
+				//FPutS(hf,cCaption+"'"+SubStr3(cStack,nLeft,nLeft-nRight+1)+"'")
+				nLeft:=nRight+2
+				nRight:=At3(cStack,CRLF,nLeft)
+				cCaption:="                :"
 				IF nRight==0
 					nRight:=SLen(cStack)+1
 				ENDIF
-				DO WHILE nRight>nLeft
-					FPuts(hf,cCaption+"'"+SubStr3(cStack,nLeft,nRight-nLeft+1)+"'")
-					//FPutS(hf,cCaption+"'"+SubStr3(cStack,nLeft,nLeft-nRight+1)+"'")
-					nLeft:=nRight+2
-					nRight:=At3(cStack,CRLF,nLeft)
-					cCaption:="                :"
-					IF nRight==0
-						nRight:=SLen(cStack)+1
-					ENDIF
-				ENDDO
-			ENDIF
+			ENDDO
 		ENDIF
 		//FdW//20060916-End
 

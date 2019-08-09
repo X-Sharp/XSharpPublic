@@ -18,7 +18,7 @@
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <AZ>false</AZ>
     <CS>false</CS>
-    <LB>true</LB>
+    <LB>false</LB>
     <OVF>false</OVF>
     <Unsafe>true</Unsafe>
     <INS>true</INS>
@@ -39,6 +39,10 @@
     <VO14>true</VO14>
     <vo15>true</vo15>
     <VO16>false</VO16>
+    <XPP1>false</XPP1>
+    <StandardDefs />
+    <Undeclared>false</Undeclared>
+    <MemVar>false</MemVar>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
     <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>

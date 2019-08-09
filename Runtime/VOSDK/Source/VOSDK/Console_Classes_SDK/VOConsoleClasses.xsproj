@@ -2,6 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <Import Project="..\VOSDK.Targets" />
+  <!-- Please note that many properties are read from VOSDK.Targets -->
   <PropertyGroup>
     <ProjectGuid>d0a5da23-00b5-41fd-8564-96246b1e222f</ProjectGuid>
     <AssemblyName>VOConsoleClasses</AssemblyName>
@@ -11,11 +12,7 @@
     <XSharpProjectversion>2.0.3.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
-    <LB>false</LB>
-    <NamedArgs>false</NamedArgs>
-    <StandardDefs />
-    <MemVar>false</MemVar>
-    <Undeclared>false</Undeclared>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>

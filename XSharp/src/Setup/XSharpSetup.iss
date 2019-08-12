@@ -19,11 +19,11 @@
 
 ; version info and similar stuff.
   
-#define Version             "2.0.3.0"
-#define FileNameVersion     "2RC3a"
-#define VIVersion           "2.0.3.1"
-#define TouchDate           "2019-07-18"
-#define TouchTime           "02:30:00"
+#define Version             "2.0.4.0"
+#define FileNameVersion     "2GA"
+#define VIVersion           "2.0.4.0"
+#define TouchDate           "2019-08-12"
+#define TouchTime           "02:00:00"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
 #define DevPublicFolder     "C:\Xsharp\DevPublic"
@@ -59,7 +59,7 @@
 #define SetupExeName        "XSharpSetup"+FileNameVersion+Suffix
 
 #define Product             "XSharp"
-#define ProdBuild           "XSharp Bandol RC 3 version "+ Version
+#define ProdBuild           "XSharp Bandolversion "+ Version
 #define Company             "XSharp BV"
 #define RegCompany          "XSharpBV"
 #define XSharpURL           "http://www.xsharp.info"

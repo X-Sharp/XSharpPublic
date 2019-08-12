@@ -861,7 +861,7 @@ CLASS ApplicationDescriptor
 
 	METHOD AddModule(cName AS STRING , cCode AS STRING) AS ModuleDescriptor
 	RETURN SELF:AddModule(cName , cCode:Split(<STRING>{e"\r\n" , e"\r" , e"\n"} , StringSplitOptions.None))
-	METHOD AddModule(cName AS STRING , aCode AS IEnumerable) AS ModuleDescriptor
+	METHOD AddModule(cName AS STRING , aCode AS STRING[]) AS ModuleDescriptor
 		LOCAL oModule AS ModuleDescriptor
 		cName := cName:TrimStart()
 		FOREACH c AS Char IN e"/?:&\*\"<>|#%"
@@ -1060,7 +1060,7 @@ CLASS ApplicationDescriptor
                             	// in XIDE, all resource of one file are included in a single
                             	// buffer, so we need to check every line for resource markers
                             	// Probably need to redesign this...
-                            	var cLine := SELF:AdjustResource(cLinex, cFolder , FALSE)
+                            	VAR cLine := SELF:AdjustResource(cLinex, cFolder , FALSE)
                                 aResult:Add(cLine)
                             NEXT
 							File.WriteAllLines(cFolder + "\" + cResFileName , aResult , System.Text.Encoding.Default)
@@ -1402,7 +1402,7 @@ CLASS ModuleDescriptor
 
 	PROTECT _aDesigners AS List<Designer>
 
-	CONSTRUCTOR(cName AS STRING , oApp AS ApplicationDescriptor , aCode AS IEnumerable)
+	CONSTRUCTOR(cName AS STRING , oApp AS ApplicationDescriptor , aCode AS STRING[])
 		SELF:_cName := cName
 		SELF:_aLines := List<LineObject>{}
 		SELF:_oApp := oApp
@@ -1410,8 +1410,9 @@ CLASS ModuleDescriptor
 		SELF:_aEntities := List<EntityDescriptor>{}
 		SELF:_aDefines := SortedList<STRING , STRING>{}
 		SELF:_aConstructors := List<STRING>{}
-		FOREACH oLine AS OBJECT IN aCode
-			SELF:_aLines:Add(LineObject{oLine:ToString()})
+		SELF:Adjust_VXP_Tags(aCode)
+		FOREACH cLine AS STRING IN aCode
+			SELF:_aLines:Add(LineObject{cLine})
 		NEXT
 		SELF:_aVSrc := List<STRING>{}
 		SELF:_cXIDErc := NULL
@@ -1433,6 +1434,47 @@ CLASS ModuleDescriptor
 	RETURN SELF:_aDefines:ContainsKey(cDefine)
 	METHOD GetDefineValue(cDefine AS STRING) AS STRING
 	RETURN SELF:_aDefines[cDefine]
+	
+	PROTECTED METHOD Adjust_VXP_Tags(aCode AS STRING[]) AS VOID
+		FOR LOCAL n := 1 AS INT UPTO aCode:Length
+			LOCAL cLine, cUpper AS STRING
+			LOCAL nAt AS INT
+			cLine := aCode[n]
+			cUpper := cLine:ToUpperInvariant()
+			nAt := nAt := cUpper:IndexOf("VXP-")
+			IF nAt != -1
+				LOCAL nCommentMarker := -1 AS INT
+				LOCAL nTest := 0 AS INT
+				nTest := nAt
+				DO WHILE nTest > 0
+					nTest --
+					IF cLine[nTest] == '/' .and. cLine[nTest + 1] == '/'
+						nCommentMarker := nTest
+						DO WHILE nCommentMarker > 0 .and. (cLine[nCommentMarker - 1] == ' ' .or. cLine[nCommentMarker - 1] == '\t')
+							nCommentMarker --
+						END DO
+						EXIT
+					END IF
+				END DO
+				IF nCommentMarker != -1
+					DO CASE
+					CASE cUpper:IndexOf("VXP-DEL") == nAt
+						aCode[n] := ""
+					CASE cUpper:IndexOf("VXP-COM") == nAt
+						cLine := "// " + cLine:Substring(0 , nCommentMarker)
+						aCode[n] := cLine
+					CASE cUpper:IndexOf("VXP-UNC") == nAt
+						cLine := cLine:Substring(0 , nCommentMarker)
+						nCommentMarker := cLine:IndexOf("//")
+						IF nCommentMarker != -1
+							cLine := cLine:Substring(0,nCommentMarker) + cLine:Substring(nCommentMarker + 2)
+							aCode[n] := cLine
+						END IF
+					END CASE
+				END IF
+			END IF
+		NEXT
+	RETURN
 
 	METHOD FindClass(cName AS STRING) AS ClassDescriptor
 		FOREACH oClass AS ClassDescriptor IN SELF:_aClasses

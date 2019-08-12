@@ -501,6 +501,11 @@
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryCore\CoreClassLibrary.png" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryCore\CoreClassLibrary.vstemplate" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryCore\ClassLibrary.xsproj" />
+    <ZipProject Include="Templates\Projects\Windows\VFPConsole\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VFPConsole\Program.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VFPConsole\VFPConsole.png" />
+    <ZipProject Include="Templates\Projects\Windows\VFPConsole\VFPConsole.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\VFPConsole\VFPConsole.xsproj" />
     <Content Include="XSharp.png" />
     <VSCTCompile Include="XSharpProjectPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>

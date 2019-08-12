@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
+    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>XSharp</RootNamespace>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <TargetFrameworkProfile />
+    <Nologo>true</Nologo>
+    <Nostandarddefs>true</Nostandarddefs>
+    <GenerateFullPaths>true</GenerateFullPaths>
+    <AssemblyOriginatorKeyFile>$(Solutiondir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <Prefer32Bit>False</Prefer32Bit>
+    <CommandLineOption />
+    <PPO>false</PPO>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <ErrorReport>prompt</ErrorReport>
+    <CommonInclude>$(Solutiondir)Common</CommonInclude>
+  </PropertyGroup>
+</Project>

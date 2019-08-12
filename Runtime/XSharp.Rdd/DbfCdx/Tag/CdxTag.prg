@@ -464,7 +464,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN FALSE
                 ENDIF
             ENDIF
-            IF SELF:HasScope
+            IF SELF:HasScope .and. ! XSharp.RuntimeState.Deleted .and. ! SELF:_oRdd:_FilterInfo:Active
                 SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPEBOTTOM)
                 records := SELF:_getScopePos()
             ELSE
@@ -472,19 +472,28 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:_oRdd:SkipFilter(1)
                     oldRec := SELF:_Recno
                     records := 0
-                    recno := SELF:_locateKey(NULL, 0, SearchMode.Top,0)
-                    isOk := SELF:_oRdd:__Goto(recno)
-                    IF isOk
-                        isOk := SELF:_oRdd:SkipFilter(1)
+                    local lWasDescending as LOGIC
+                    lWasDescending := SELF:Descending
+                    IF lWasDescending
+                        SELF:Descending := FALSE
                     ENDIF
+                    isOk := SELF:GoTop()
                     recno := SELF:_Recno
                     last := SELF:_oRdd:RecCount + 1
                     count := 0
+                    local nToSkip as LONG
+                    local previous as long
+                    previous := recno
                     DO WHILE recno != 0 .AND. recno < last
                         count++
                         recno := SELF:_ScopeSkip(1)
+                        if recno == previous
+                            exit
+                        endif
+                        previous := recno
                     ENDDO
                     records := count
+                    SELF:Descending := lWasDescending
                 ELSE
                      records := 0
                     IF SELF:GoTop()

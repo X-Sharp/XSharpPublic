@@ -2,6 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <Import Project="..\VOSDK.Targets" />
+  <!-- Please note that many properties are read from VOSDK.Targets -->
   <PropertyGroup>
     <ProjectGuid>86DA1B42-FBF9-432B-A2D2-67A4F357F019</ProjectGuid>
     <AssemblyName>VOSQLClasses</AssemblyName>
@@ -13,7 +14,6 @@
     <Nostandarddefs>false</Nostandarddefs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
   </PropertyGroup>

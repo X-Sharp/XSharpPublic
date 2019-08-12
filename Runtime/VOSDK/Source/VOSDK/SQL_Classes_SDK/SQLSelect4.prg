@@ -80,7 +80,7 @@ METHOD Notify( kNotification, uDescription )
 			SELF:lNotifyIntentToMove := TRUE
 			DO WHILE lRetValue .AND. nClient < ALen( aClients )
 				nClient++
-				lRetValue := aClients[nClient]:Notify( kNotification )
+				lRetValue := Send(aClients[nClient],#Notify, kNotification )
 			ENDDO
 			RETURN lRetValue
 
@@ -126,7 +126,7 @@ METHOD NumResultCols()
 		__SQLOutputDebug( "             nNumCols="+AsString( nNumColsNew ) )
 	#ENDIF
 	SELF:nNumCols := nNumColsNew
-	oStmt:ErrInfo:ErrorFlag := FALSE
+	oStmt:__ErrInfo:ErrorFlag := FALSE
 	RETURN nNumCols
 
 
@@ -171,7 +171,7 @@ METHOD ResetCursor( nUpdateType )
 	IF nUpdateType = SQL_SC_UPD_KEY
 
 		FOR i := 1 TO nNumCols
-			IF aSQLData[i]:ValueChanged
+			IF ((SqlData)aSQLData[i]):ValueChanged
 
 				IF  AScan( SELF:aIndexCol, i ) > 0
 					lKeyChanged := TRUE
@@ -230,7 +230,7 @@ METHOD RollBack()
 		__SQLOutputDebug( "** SQLSelect:Rollback()" )
 	#ENDIF
 
-	RETURN SELF:oStmt:Connection:RollBack()
+	RETURN SELF:oStmt:__Connection:RollBack()
 
 
 METHOD SetColumnAttributes(uFieldPos, oColAttributes) 
@@ -273,7 +273,7 @@ METHOD SetDataField( nFieldPos, oField )
 
 	ELSE
 		oDF := aDataFields[nFieldPos]
-		IF oField:Name == oDF:Name
+		IF ((DataField) oField):Name == oDF:Name
 
 			aDataFields[nFieldPos] := oField
 
@@ -301,14 +301,14 @@ METHOD SetPos( nPos, nOption, nLock )
 		nLock := SQL_LOCK_NO_CHANGE
 	ENDIF
 
-	nRetCode := SQLSetPos( SELF:Statement:StatementHandle, ;
+	nRetCode := SQLSetPos( SELF:oStmt:StatementHandle, ;
 							nPos, ;
 							nOption,;
 							nLock )
 
 	IF nRetCode = SQL_SUCCESS
 		lRet := TRUE
-		oStmt:ErrInfo:ErrorFlag := FALSE
+		oStmt:__ErrInfo:ErrorFlag := FALSE
 	ELSE
 		oStmt:MakeErrorInfo(SELF, #SQLSetPos, nRetCode)
 	ENDIF
@@ -337,7 +337,7 @@ METHOD SetPrimaryKey( uFieldPos )
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #SetPrimaryKey )
 		ELSE
 			AAdd( aIndexCol, nIndex )
-			oStmt:ErrInfo:ErrorFlag := FALSE
+			oStmt:__ErrInfo:ErrorFlag := FALSE
 			lRet := TRUE
 		ENDIF
 	ENDIF
@@ -366,8 +366,8 @@ METHOD SetTimeStamp( uFieldPos, cTimestamp )
 		SELF:Error( oErr )
 		RETURN NIL
 	ENDIF
-
-	nODBCType := aSQLColumns[nIndex]:ODBCType
+    LOCAL oCol := aSQLColumns[nIndex] as SqlColumn
+	nODBCType := oCol:ODBCType
 	IF ( nODBCType != SQL_TIMESTAMP )
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #SetTimeStamp  )
 		oErr := oStmt:ErrInfo
@@ -399,8 +399,8 @@ METHOD SetTimeStamp( uFieldPos, cTimestamp )
 
 
 	lRowModified := TRUE
-	SELF:Notify( NOTIFYFIELDCHANGE, aSQLColumns[nIndex]:NameSym )
-	oStmt:ErrInfo:ErrorFlag := FALSE
+	SELF:Notify( NOTIFYFIELDCHANGE, oCol:NameSym )
+	oStmt:__ErrInfo:ErrorFlag := FALSE
 	RETURN cTimestamp
 
 METHOD Skip( nRecordCount ) 
@@ -561,7 +561,7 @@ METHOD UpdateCursor()
 		lRet := oUpdate:Execute()
 		IF !lRet
 			SELF:__CopySQLError( #Update, oUpdate:ErrInfo )
-			IF oStmt:ErrInfo:ReturnCode != SQL_SUCCESS_WITH_INFO
+			IF oStmt:__ErrInfo:ReturnCode != SQL_SUCCESS_WITH_INFO
 				oConn:__CloseExtraStmt(oUpdate)
 				EXIT
 			ENDIF
@@ -603,7 +603,7 @@ METHOD UpdateKey()
 	cUpdate     += " where "
 	//aDataBuffer := aSQLDataBuffer[nBuffIndex, SQL_DATA_BUFFER]
 	aDataBuffer	:= SELF:aOriginalRecord
-	cQuote  		:= oStmt:Connection:IdentifierQuoteChar
+	cQuote  		:= oStmt:__Connection:IdentifierQuoteChar
 
 	FOR nIndex := 1 TO ALen( aIndexCol )
 		nTemp   := aIndexCol[nIndex]
@@ -623,7 +623,7 @@ METHOD UpdateKey()
 
 		SELF:__CopySQLError( #Update, oUpdate:ErrInfo )
 
-		IF oStmt:ErrInfo:ReturnCode != SQL_SUCCESS_WITH_INFO
+		IF oStmt:__ErrInfo:ReturnCode != SQL_SUCCESS_WITH_INFO
 			oConn:__CloseExtraStmt(oUpdate)
 			RETURN FALSE
 		ENDIF
@@ -663,7 +663,7 @@ METHOD UpdateVal()
 		lRowModified := FALSE
 		SELF:__CopySQLError( #Update, oUpdate:ErrInfo )
 
-		IF oStmt:ErrInfo:ReturnCode != SQL_SUCCESS_WITH_INFO
+		IF oStmt:__ErrInfo:ReturnCode != SQL_SUCCESS_WITH_INFO
 			oConn:__CloseExtraStmt(oUpdate)
 			RETURN FALSE
 		ENDIF

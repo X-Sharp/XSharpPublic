@@ -8,6 +8,7 @@
     #define REG_COMPANY_NAME  "XSharpBV"
 
     // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE CONSTANTS.CS FILE
+
     #define VERSION_NUMBER_STR     "2.0.0.0"
     #define VERSION_NUMBER			2,0,0,0
     #define FILEVERSION_NUMBER       2,0,4,0

@@ -2,17 +2,16 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <Import Project="..\VOSDK.Targets" />
+  <!-- Please note that many properties are read from VOSDK.Targets -->
   <PropertyGroup>
     <ProjectGuid>A62EF59E-7473-4C55-BED8-63CA0D896995</ProjectGuid>
     <AssemblyName>VOInternetClasses</AssemblyName>
     <Name>VOInternetClasses</Name>
     <OutputName>VOInternetClasses</OutputName>
-    <Dialect>Vulcan</Dialect>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <XSharpProjectversion>2.0.3.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
-    <NamedArgs />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>

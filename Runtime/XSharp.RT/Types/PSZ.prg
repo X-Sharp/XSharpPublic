@@ -163,12 +163,12 @@ BEGIN NAMESPACE XSharp
 		/// <exclude />
 		PROPERTY Address AS IntPtr GET _value
 		/// <exclude />
-		PROPERTY Item[index AS INT] AS BYTE
+		PROPERTY SELF[index AS INT] AS BYTE
 			GET
-				RETURN _value[index]
+				RETURN _value[index + __ARRAYBASE__]
 			END GET
 			SET
-				_value[index] := VALUE
+				_value[index + __ARRAYBASE__] := VALUE
 			END SET
 		END PROPERTY
 		
@@ -258,7 +258,7 @@ BEGIN NAMESPACE XSharp
 			// DWORD -> PSZ
 			/// <include file="RTComments.xml" path="Comments/Operator/*" />
 			OPERATOR IMPLICIT( d AS DWORD ) AS PSZ
-				RETURN PSZ{ IntPtr{ (PTR) d } }
+				RETURN PSZ{ IntPtr{ (int64) d} } 
 			
 			///////////////////////////////////////////////////////////////////////////
 			// Conversion Operators - From PSZ...  

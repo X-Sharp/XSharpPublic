@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -27,15 +27,7 @@ FUNCTION ErrString(nGenCode AS DWORD) AS STRING
 	/// <param name="nDosErr">The DOS error number that you want a description for.</param>
 	/// <returns>The message string associated with the error number.</returns>
 FUNCTION DosErrString(nDosErr AS DWORD) AS STRING
-	LOCAL cResource AS STRING
-	LOCAL cResult AS STRING
-	cResource := "RT_MSG_DOSERR_" + nDosErr:ToString() 
-	// when not found return string from RT_MSG_DOSERR_UNKNOWN
-	cResult := Messages.GetString(cResource)
-	IF String.IsNullOrEmpty(cResult)
-		cResult := Messages.GetString("RT_MSG_DOSERR_UNKNOWN")
-	ENDIF
-	RETURN cResult
+    RETURN System.ComponentModel.Win32Exception{ (INT) nDosErr }.Message
 
 
 

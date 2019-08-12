@@ -205,7 +205,7 @@ END CLASS
 /// ? AsHexString("abcdef")                // 61 62 63 64 65 66<br/>
 /// </example>
 /// <seealso cref='M:XSharp.Core.Functions.C2Hex(System.String)' >C2Hex</seealso>
-/// <seealso cref='M:XSharp.Core.Functions._C2Hex(System.String)' >_C2Hex</seealso>
+/// <seealso cref='M:XSharp.Core.Functions._C2Hex(System.String,System.Boolean)' >_C2Hex</seealso>
 FUNCTION AsHexString(uValue AS USUAL) AS STRING
     LOCAL result AS STRING
     IF uValue:IsString

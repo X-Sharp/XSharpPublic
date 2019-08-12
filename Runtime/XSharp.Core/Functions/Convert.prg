@@ -225,7 +225,7 @@ FUNCTION _C2Hex(cSource AS STRING, lAddSpace as LOGIC) AS STRING
 ///  ? C2Hex("abcdef")               // 616263646566<br/>
 /// </example>
 /// <seealso cref='M:XSharp.RT.Functions.AsHexString(XSharp.__Usual)' >AsHexString</seealso>
-/// <seealso cref='M:XSharp.Core.Functions._C2Hex(System.String)' >_C2Hex</seealso>
+/// <seealso cref='M:XSharp.Core.Functions._C2Hex(System.String,System.Boolean)' >_C2Hex</seealso>
 FUNCTION C2Hex(cSource AS STRING) AS STRING
     RETURN _C2Hex(cSource, FALSE)
 

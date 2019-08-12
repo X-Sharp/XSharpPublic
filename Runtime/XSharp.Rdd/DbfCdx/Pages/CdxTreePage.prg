@@ -74,7 +74,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         END GET
         END PROPERTY
 
-#ifdef DEBUG
+/*
+#ifdef DEBUG 
         PRIVATE oPageLeft  AS CdxTreePage
         PRIVATE oPageRight AS CdxTreePage
         INTERNAL PROPERTY PageLeft AS CdxTreePage
@@ -102,7 +103,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END GET
         END PROPERTY
 #endif
-  
+*/  
         #endregion
         
         ABSTRACT INTERNAL METHOD InitBlank(oTag AS CdxTag) AS VOID

@@ -196,22 +196,38 @@ FUNCTION CTOL(c AS STRING) AS LOGIC
     ENDIF
     RETURN FALSE
 
-/// <summary>
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-FUNCTION C2Hex(cSource AS STRING) AS STRING
+/// <summary>Convert a string value to a hexadecimal string.</summary>
+/// <param name="cSource">String to convert</param>
+/// <param name="lAddSpace">When TRUE then the inidividual characters are separated with a space in the result string</param>
+/// <returns>A string with the hex representation of the value</returns>
+/// <example>
+///  ? _C2Hex("abcdef", TRUE)                // 61 62 63 64 65 66<br/>
+///  ? _C2Hex("abcdef", FALSE)               // 616263646566<br/>
+/// </example>
+/// <seealso cref='M:XSharp.RT.Functions.AsHexString(XSharp.__Usual)' >AsHexString</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.C2Hex(System.String)' >C2Hex</seealso>
+FUNCTION _C2Hex(cSource AS STRING, lAddSpace as LOGIC) AS STRING
     LOCAL sb AS StringBuilder
     sb := StringBuilder{cSource:Length*2}
     FOREACH c AS CHAR IN cSource
-        IF sb:Length > 0
+        IF sb:Length > 0 .and. lAddSpace
             sb:Append(' ')
         ENDIF
         var s := String.Format("{0:X2}",(INT) c)
         sb:Append(s)
     NEXT
     RETURN sb:ToString()
+
+/// <summary>Convert a string value to a hexadecimal string.</summary>
+/// <param name="cSource">String to convert</param>
+/// <returns>A string with the hex representation of the value</returns>
+/// <example>
+///  ? C2Hex("abcdef")               // 616263646566<br/>
+/// </example>
+/// <seealso cref='M:XSharp.RT.Functions.AsHexString(XSharp.__Usual)' >AsHexString</seealso>
+/// <seealso cref='M:XSharp.Core.Functions._C2Hex(System.String)' >_C2Hex</seealso>
+FUNCTION C2Hex(cSource AS STRING) AS STRING
+    RETURN _C2Hex(cSource, FALSE)
 
 // helper function to convert bytes to string
 

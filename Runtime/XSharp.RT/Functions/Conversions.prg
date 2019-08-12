@@ -190,16 +190,26 @@ INTERNAL STATIC CLASS ConversionHelpers
 
 END CLASS
 
-    /// <summary>
-    /// Convert a value to a hexadecimal string.
-    /// </summary>
-    /// <param name="uValue">A string or Numeric value.</param>
-    /// <returns>A string with the hex representation of the value
-    /// </returns>
+/// <summary>
+/// Convert a value to a hexadecimal string.
+/// </summary>
+/// <param name="uValue">A string or Numeric value.</param>
+/// <returns>A string with the hex representation of the value</returns>
+/// <example>
+/// LOCAL cAlpha AS STRING <br/>
+/// LOCAL siSum AS SHORTINT<br/>
+/// cAlpha := "ABCDEF"<br/>
+/// siSum := 100<br/>
+/// ? AsHexString(cAlpha)                  // 41 42 43 44 45 46<br/>
+/// ? AsHexString(siSum)                   // 00000064<br/>
+/// ? AsHexString("abcdef")                // 61 62 63 64 65 66<br/>
+/// </example>
+/// <seealso cref='M:XSharp.Core.Functions.C2Hex(System.String)' >C2Hex</seealso>
+/// <seealso cref='M:XSharp.Core.Functions._C2Hex(System.String)' >_C2Hex</seealso>
 FUNCTION AsHexString(uValue AS USUAL) AS STRING
     LOCAL result AS STRING
     IF uValue:IsString
-        result := C2Hex( (STRING) uValue)
+        result := _C2Hex( (STRING) uValue, TRUE)
     ELSEIF uValue:IsNumeric
         IF uValue:IsInt64
             result := String.Format("{0:X16}", (INT64) uValue)
@@ -331,8 +341,15 @@ FUNCTION DescendA(uValue REF USUAL) AS USUAL
 /// Convert a numeric expression to a left-trimmed string.
 /// </summary>
 /// <param name="n">A Usual with a numeric or date value</param>
-/// <returns>
-/// </returns>
+/// <returns>NTrim() returns the same value as LTrim(Str(<nNum>)).
+/// Thus, any conversion rules that apply to the Str() function also apply to the NTrim() function.</returns>
+/// <example>
+/// ? NTrim(234)                     // "234" <br/>
+/// ? LTrim(Str(234))                // "234"<br/>
+/// ? Str(234)                       // "       234"<br/>
+/// </example>
+/// <seealso cref='M:XSharp.Core.Functions.LTrim(System.String)'>LTrim</seealso>
+/// <seealso cref='M:XSharp.RT.Functions.Str(XSharp.__Usual)'>Str</seealso>
 FUNCTION NTrim(n AS USUAL) AS STRING
     LOCAL ret AS STRING
     SWITCH n:_UsualType
@@ -356,6 +373,10 @@ FUNCTION NTrim(n AS USUAL) AS STRING
 /// <param name="cPad">Pad character to use. Defaults to the space character.</param>
 /// <returns>The string padded to the requested length. When the value is longer than the requested length 
 /// then the string will be truncated to that length.</returns>
+/// <seealso cref="M:XSharp.RT.Functions.PadR(XSharp.__Usual,System.Int32,System.String)" >
+/// <seealso cref="M:XSharp.RT.Functions.PadC(XSharp.__Usual,System.Int32,System.String)" >
+/// <seealso cref="M:XSharp.RT.Functions.PadL(XSharp.__Usual,System.Int32,System.String)" >
+/// <seealso cref="M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)" >
 FUNCTION Pad( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRING
     RETURN PadR( uValue, nLength, cPad )
 
@@ -435,15 +456,46 @@ FUNCTION PadR( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
     ENDIF
     RETURN IIF( ret:Length > nLength, ret:Remove( nLength ), ret:PadRight( nLength, cPad[0] ) )
 
-
-
 /// <summary>
 /// Convert a numeric expression to a string.
 /// </summary>
-/// <param name="n"></param>
-/// <param name="uLen"></param>
-/// <param name="uDec"></param>
-/// <returns>The string with always a decimal separator that matches the current SetDecimalSep() setting.</returns>
+/// <param name="n">The numeric expression to convert to a string. </param>
+/// <param name="uLen">The length of the string to return, including decimal digits, decimal point, and sign.<br/>
+/// A value of -1 specifies that any right padding is suppressed.  However, decimal places are still returned as specified in <paramref name="nDecimals"/>. <br/>
+/// If <paramref name="nLength" /> is not specified,  SetDigit() and SetDigitFixed() determine the number of digits that are returned. 
+/// </param>
+/// <param name="uDec">The number of decimal places in the return value.
+/// A value of -1 specifies that only the significant digits to the right of the decimal point are returned (see example below).
+/// The number of whole digits in the return value, however, are still determined by the <paramref name="nLength" /> argument. 
+/// If <paramref name="nDecimals" /> is not specified, SetDecimal() and SetFixed()  determine the number of decimals that are returned. <br/>
+/// The representation of the decimal point is determined by the current setting of SetDecimalSep().</param>
+
+/// <returns>The string with always a decimal separator that matches the current SetDecimalSep() setting. <br/>
+/// - If <nNumber> is an expression that yields a numeric overflow, a runtime error is generated that could be handled by the currently installed error handler.  Either "+INF" or "-INF", which represent the biggest possible float number, is returned by the error handler. <br/>
+/// - If <paramref name="nLength"/> is less than the number of whole number digits in <paramref name="n"/>, the result will be in scientific notation.  If the result of scientific notation does not fit, a series of asterisk is returned. <br/><br/>
+/// Rounding is determined as follows:<br/>
+/// - If <paramref name="nLength"/> is less than the number of decimal digits required for the decimal portion of the returned string, the return value is rounded to the available number of decimal places. <br/>
+/// - If <paramref name="nLength"/> is specified, but <paramref name="nDecimals"/> is omitted (no decimal places), the return value is rounded to an integer. <br/>
+/// - If <paramref name="nLength"/> and <paramref name="nDecimals"/> are not specified, they are taken out of the internal float format inside the FLOAT, or out of SetDigit() if the internal digit number is 0.  If SetFixed() or SetDigitFixed() is TRUE, these values are overridden by the values of SetDecimal() or SetDigit().<br/>
+/// - If SetScience() is TRUE, the return will be in scientific notation. Moreover, If SetDigit() specifies a number that is less than the number of whole number digits in <nNumber> and SetDigitFixed() is set to TRUE, the result is in scientific notation.  But if scientific notation does not fit, the result is a series of asterisks.<br/>
+/// </returns>
+/// <remarks>
+/// Str() is commonly used to concatenate numbers to strings.  Thus, it is useful for creating codes for items, such as part numbers, from numbers and for creating order keys that combine numeric and character data. <br/>
+/// Str() is like Transform(), which formats numbers as strings using a mask instead of length and decimal specifications.<br/>
+/// The inverse of Str() is Val() which converts numbers formatted as strings to numeric values.<br/>
+/// </remarks>
+/// <seealso cref="M:XSharp.RT.Functions.NTrim(XSharp.__Usual)" >
+/// <seealso cref="M:XSharp.RT.Functions.Str1(XSharp.__Usual)" >
+/// <seealso cref="M:XSharp.RT.Functions.Str2(XSharp.__Usual,System.UInt32)" >
+/// <seealso cref="M:XSharp.RT.Functions.Str3(XSharp.__Usual,System.UInt32,System.UInt32)" >
+/// <seealso cref="M:XSharp.RT.Functions.StrLong(System.Int32,System.UInt32,System.UInt32)" >
+/// <seealso cref="M:XSharp.RT.Functions.StrFloat(XSharp.__Float,System.UInt32,System.UInt32)" >
+/// <seealso cref="M:XSharp.Core.Functions.SetDigit(System.UInt32)" >
+/// <seealso cref="M:XSharp.Core.Functions.SetDigitFixed(System.Boolean)" >
+/// <seealso cref="M:XSharp.Core.Functions.SetDecimalSep(System.UInt32)" >
+/// <seealso cref="M:XSharp.Core.Functions.SetScience(System.Boolean)" >
+/// <seealso cref="M:XSharp.RT.Functions.Transform(XSharp.__Usual,System.String)" >
+/// <seealso cref="M:XSharp.RT.Functions.Val(System.String)" >
 FUNCTION Str(n ,uLen ,uDec ) AS STRING CLIPPER
     IF PCount() < 1 .OR. pCount() > 3
         RETURN ""

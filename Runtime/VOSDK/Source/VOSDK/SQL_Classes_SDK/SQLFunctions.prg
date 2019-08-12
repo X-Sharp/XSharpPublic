@@ -350,7 +350,7 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
          sValue += __Str( dVal )
 
       CASE nODBCType = SQL_DECIMAL .OR. nODBCType = SQL_NUMERIC
-         uiLen := oSQLColumn:FieldSpec:Length
+         uiLen := oSQLColumn:__FieldSpec:Length
 
          cTemp := Mem2String( pTemp, uiLen )
          sValue += AllTrim( __AdjustString( cTemp ) )

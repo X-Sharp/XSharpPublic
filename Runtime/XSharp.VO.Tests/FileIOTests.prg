@@ -38,6 +38,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			FErase(cFile)
             aFiles := Directory("test.txt")
             Assert.Equal(0, (INT) Alen(aFiles))
+            aFiles := Directory("C:\XSharp\*.*","D")
 		RETURN
 
 	END CLASS

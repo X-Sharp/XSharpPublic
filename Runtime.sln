@@ -30,6 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Common\Constants.cs = Common\Constants.cs
 		Common\constants.prg = Common\constants.prg
 		Runtime\README.md = Runtime\README.md
+		Runtime\Runtime.Targets = Runtime\Runtime.Targets
 		Runtime\VOSDK\Source\SharedSource\SDKAssemblyinfo.prg = Runtime\VOSDK\Source\SharedSource\SDKAssemblyinfo.prg
 		Common\version.xh = Common\version.xh
 		Common\XSharpDefs.xh = Common\XSharpDefs.xh

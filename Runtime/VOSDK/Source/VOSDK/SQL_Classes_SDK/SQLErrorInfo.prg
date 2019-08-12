@@ -164,8 +164,8 @@ ACCESS ErrorList
 	
 			AAdd( aRet, { oErr:NativeError, oErr:SQLState, oErr:ErrorMessage } )
 		   oErr		:= SQLErrorInfo{ oStmt, SELF:FuncSym,            ;
-	                                 oStmt:Connection:EnvHandle,         ;
-	                                 oStmt:Connection:ConnHandle,        ;
+	                                 oStmt:__Connection:EnvHandle,         ;
+	                                 oStmt:__Connection:ConnHandle,        ;
 	                                 oStmt:StatementHandle }
 		ENDDO		
 	

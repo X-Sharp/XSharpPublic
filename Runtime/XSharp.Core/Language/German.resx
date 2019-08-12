@@ -208,7 +208,7 @@
     <value>Keine Order angegeben</value>
   </data>
   <data name="EDB_NOINITFUNC" xml:space="preserve">
-    <value>Vermisse Init Funktion des RDD</value>
+    <value>Init Funktion des RDD fehlt</value>
   </data>
   <data name="EDB_ERRORINIT" xml:space="preserve">
     <value>Init Funktion des RDD fehlgeschlagen</value>
@@ -286,7 +286,7 @@
     <value>Index-Datei Tag Limit überschritten</value>
   </data>
   <data name="ERDD_INIT_LOCK" xml:space="preserve">
-    <value>Fehler beim initialisieren des Sperr-Schema</value>
+    <value>Fehler beim Initialisieren des Sperr-Schemas</value>
   </data>
   <data name="ERDD_READ_LOCK" xml:space="preserve">
     <value>Kann Lese-Sperre nicht durchführen</value>
@@ -301,10 +301,10 @@
     <value>Fehler beim Aufheben der Schreib-Sperre</value>
   </data>
   <data name="ERDD_READ_LOCK_TIMEOUT" xml:space="preserve">
-    <value>Timeout Fehler bei der Lese-Sperre der Index-Datei</value>
+    <value>Timeout Fehler beim Setzen der Lese-Sperre der Index-Datei</value>
   </data>
   <data name="ERDD_WRITE_LOCK_TIMEOUT" xml:space="preserve">
-    <value>Timeout Fehler bei der Schreib-Sperre der Index-Datei</value>
+    <value>Timeout Fehler beim Setzen der Schreib-Sperre der Index-Datei</value>
   </data>
   <data name="ERDD_READ_UNLOCK_TIMEOUT" xml:space="preserve">
     <value>Timeout Fehler beim Aufheben der Lese-Sperre der Index-Datei</value>
@@ -739,7 +739,7 @@
     <value>3D Spalte</value>
   </data>
   <data name="IDT_3DCOLUMNAREACHART" xml:space="preserve">
-    <value>3D Col-Area</value>
+    <value>3D Spaltenbereich</value>
   </data>
   <data name="IDT_3DLINECHART" xml:space="preserve">
     <value>3D Zeile</value>
@@ -760,10 +760,10 @@
     <value>Col-Stock</value>
   </data>
   <data name="IDT_CHARTFORMAT" xml:space="preserve">
-    <value>Chart Format</value>
+    <value>Diagramm Format</value>
   </data>
   <data name="IDT_EDITCHART" xml:space="preserve">
-    <value>Edit Chart</value>
+    <value> Diagramm bearbeiten</value>
   </data>
   <data name="IDT_LINE" xml:space="preserve">
     <value>Linie</value>
@@ -931,7 +931,7 @@
     <value>Zeit</value>
   </data>
   <data name="IDT_MAIL" xml:space="preserve">
-    <value>Post</value>
+    <value>Mail</value>
   </data>
   <data name="IDT_TUTORIAL" xml:space="preserve">
     <value>Tutorial</value>
@@ -1033,7 +1033,7 @@
     <value>Richtet Text aus</value>
   </data>
   <data name="IDTT_ADDTEXT" xml:space="preserve">
-    <value>Adds unattached text or a text box</value>
+    <value>Fügt unverankerten Text oder Text-Box hinzu</value>
   </data>
   <data name="IDTT_CENTERTEXT" xml:space="preserve">
     <value>Zentriert Text über ausgewählte Spalten</value>
@@ -1105,61 +1105,61 @@
     <value>Berechnet Formeln im Dokument</value>
   </data>
   <data name="IDTT_AREACHART" xml:space="preserve">
-    <value>Zeichnet ein einfaches Flächenchart</value>
+    <value>Zeichnet ein einfaches Flächendiagramm</value>
   </data>
   <data name="IDTT_BARCHART" xml:space="preserve">
-    <value>Zeichnet ein einfaches Balkenchart</value>
+    <value>Zeichnet ein einfaches Balkendiagramm</value>
   </data>
   <data name="IDTT_COLUMNCHART" xml:space="preserve">
-    <value>Zeichnet ein einfaches Säulenchart</value>
+    <value>Zeichnet ein einfaches Säulendiagramm</value>
   </data>
   <data name="IDTT_STACKCHART" xml:space="preserve">
-    <value>Zeichnet ein gestapeltes Säulenchart</value>
+    <value>Zeichnet ein gestapeltes Säulendiagramm</value>
   </data>
   <data name="IDTT_LINECHART" xml:space="preserve">
-    <value>Zeichnet ein einfaches Linienchart</value>
+    <value>Zeichnet ein einfaches Liniendiagramm</value>
   </data>
   <data name="IDTT_PIECHART" xml:space="preserve">
-    <value>Zeichnet ein Tortenchart mit Prozentangaben</value>
+    <value>Zeichnet ein Tortendiagramm mit Prozentangaben</value>
   </data>
   <data name="IDTT_SCATTERCHART" xml:space="preserve">
-    <value>Zeichnet ein scatter(or XY) chart</value>
+    <value>Zeichnet ein XY Diagramm</value>
   </data>
   <data name="IDTT_3DAREACHART" xml:space="preserve">
-    <value>Zeichnet ein 3D Flächenchart</value>
+    <value>Zeichnet ein 3D Flächendiagramm</value>
   </data>
   <data name="IDTT_3DBARCHART" xml:space="preserve">
-    <value>Zeichnet ein 3D Balkenchart</value>
+    <value>Zeichnet ein 3D Balkendiagramm</value>
   </data>
   <data name="IDTT_3DCOLUMNCHART" xml:space="preserve">
-    <value>Zeichnet ein 3D Säulenchart</value>
+    <value>Zeichnet ein 3D Säulendiagramm</value>
   </data>
   <data name="IDTT_3DCOLUMNAREACHART" xml:space="preserve">
-    <value>Zeichnet ein 3D Säulenchart mit 3D Plot Bereich</value>
+    <value>Zeichnet ein 3D Säulendiagramm mit 3D Plot Bereich</value>
   </data>
   <data name="IDTT_3DLINECHART" xml:space="preserve">
-    <value>Zeichnet ein 3D Linienchart</value>
+    <value>Zeichnet ein 3D Liniendiagramm</value>
   </data>
   <data name="IDTT_3DPIECHART" xml:space="preserve">
-    <value>Zeichnet ein 3D Tortenchart mit Prozentangaben</value>
+    <value>Zeichnet ein 3D Tortendiagramm mit Prozentangaben</value>
   </data>
   <data name="IDTT_3DSURFACECHART" xml:space="preserve">
-    <value>Zeichnet ein 3D Oberflächenchart</value>
+    <value>Zeichnet ein 3D Oberflächendiagramm</value>
   </data>
   <data name="IDTT_RADARCHART" xml:space="preserve">
-    <value>Zeichnet ein Radarchart</value>
+    <value>Zeichnet ein Radardiagramm</value>
   </data>
   <data name="IDTT_COLUMNLINECHART" xml:space="preserve">
-    <value>Zeichnet ein einfaches Säulenchart überlagert mit einem Linienchart</value>
+    <value>Zeichnet ein einfaches Säulendiagramm überlagert mit einem Liniendiagramm</value>
   </data>
   <data name="IDTT_COLUMNSTOCKCHART" xml:space="preserve">
-    <value>Zeichnet ein einfaches Säulenchart für Bestandspreise</value>
+    <value>Zeichnet ein einfaches Säulendiagramm für Aktienkurse</value>
   </data>
   <data name="IDTT_CHARTFORMAT" xml:space="preserve">
-    <value>Eingefügtes Chart im bevorzugten Format</value>
+    <value>Eingefügtes Diagrammim bevorzugten Format</value>
   </data>
   <data name="IDTT_EDITCHART" xml:space="preserve">
-    <value>Erzeuge oder bearbeite ein Spezialchart</value>
+    <value>Erzeuge oder bearbeite ein Spezialdiagramm</value>
   </data>
   <data name="IDTT_LINE" xml:space="preserve">
     <value>Zeichnet eine Linie</value>
@@ -1207,10 +1207,10 @@
     <value>Zerlegt ein Gruppenobjekt in Einzelobjekte</value>
   </data>
   <data name="IDTT_FRONT" xml:space="preserve">
-    <value>Plaziert selektierte Objekte vor andere Objekte</value>
+    <value>Platziert selektierte Objekte vor andere Objekte</value>
   </data>
   <data name="IDTT_BACK" xml:space="preserve">
-    <value>Plaziert selektierte Objekte hiner andere Objekte</value>
+    <value>Platziert selektierte Objekte hiner andere Objekte</value>
   </data>
   <data name="IDTT_COLOR" xml:space="preserve">
     <value>Ändert Zell- oder Objektvordergrundfarbe</value>
@@ -1504,7 +1504,7 @@
     <value>si ungültig</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_BADSTRING" xml:space="preserve">
-    <value>cString ist nicht vom Typ STRING</value>
+    <value>cString ist kein STRING</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_BADTYPE" xml:space="preserve">
     <value>uType ungültig oder fehlend</value>
@@ -1516,10 +1516,10 @@
     <value>%V1s%V2s %s : maximale Länge ist %s</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_INVALIDMAX" xml:space="preserve">
-    <value>%V1s%V2s %s kann nicht länger sein als %s</value>
+    <value>%V1s%V2s %s kann nicht größer sein als %s</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_INVALIDMIN" xml:space="preserve">
-    <value>%V1s%V2s %s muß wenigsten so lang sein wie %s</value>
+    <value>%V1s%V2s %s muß mindestens so groß sein wie %s</value>
   </data>
   <data name="__CAVOSTR_DBFCLASS_INVALIDMINLENGTH" xml:space="preserve">
     <value>%V1s%V2s %s : minimale Länge ist %s</value>
@@ -1960,7 +1960,7 @@
     <value>Falscher Handle Status</value>
   </data>
   <data name="ERROR_INTERNET_NOT_PROXY_REQUEST" xml:space="preserve">
-    <value>Nicht Proxy request</value>
+    <value>Kein Proxy Request</value>
   </data>
   <data name="ERROR_INTERNET_REGISTRY_VALUE_NOT_FOUND" xml:space="preserve">
     <value>Registrywert nicht gefunden</value>
@@ -2008,7 +2008,7 @@
     <value>Handle existiert</value>
   </data>
   <data name="ERROR_INTERNET_SEC_CERT_DATE_INVALID" xml:space="preserve">
-    <value>Sec cert date ungültig</value>
+    <value>Sec Cert Datum ungültig</value>
   </data>
   <data name="ERROR_INTERNET_SEC_CERT_CN_INVALID" xml:space="preserve">
     <value>Sec cert cn ungültig</value>
@@ -2035,19 +2035,19 @@
     <value>Ungültige CA</value>
   </data>
   <data name="ERROR_INTERNET_CLIENT_AUTH_NOT_SETUP" xml:space="preserve">
-    <value>Client auth nicht eingerichtet</value>
+    <value>Client Authentification nicht eingerichtet</value>
   </data>
   <data name="ERROR_INTERNET_ASYNC_THREAD_FAILED" xml:space="preserve">
     <value>Async thread fehlgeschlagen</value>
   </data>
   <data name="ERROR_INTERNET_REDIRECT_SCHEME_CHANGE" xml:space="preserve">
-    <value>Redirect scheme wechsel</value>
+    <value>Redirect Schemawechsel</value>
   </data>
   <data name="ERROR_FTP_TRANSFER_IN_PROGRESS" xml:space="preserve">
     <value>Übertragung läuft</value>
   </data>
   <data name="ERROR_FTP_DROPPED" xml:space="preserve">
-    <value>Ftp dropped</value>
+    <value>Ftp abgebrochen</value>
   </data>
   <data name="ERROR_GOPHER_PROTOCOL_ERROR" xml:space="preserve">
     <value>Protokolfehler</value>
@@ -2098,7 +2098,7 @@
     <value>Redirect fehlgeschlagen</value>
   </data>
   <data name="ERROR_INTERNET_SECURITY_CHANNEL_ERROR" xml:space="preserve">
-    <value>Sicherheitskanalfehler</value>
+    <value>Security channel error</value>
   </data>
   <data name="ERROR_INTERNET_UNABLE_TO_CACHE_FILE" xml:space="preserve">
     <value>Kann Datei nicht cachen</value>
@@ -2119,7 +2119,7 @@
     <value>Unbekannter Encodingtyp</value>
   </data>
   <data name="ERR_WSA_WAIT_TIMEOUT" xml:space="preserve">
-    <value>Wartezeit überschritten Fehler</value>
+    <value>Wartezeit überschritten</value>
   </data>
   <data name="ERR_NEWSGROUP_MISSING" xml:space="preserve">
     <value>Es gibt keine solche Newsgroup</value>
@@ -2299,22 +2299,22 @@
     <value>Fehler beim Erstellen des Fehlerobjekts</value>
   </data>
   <data name="RT_MSG_ERR_54" xml:space="preserve">
-    <value>DynAlloc: PTR to DynData</value>
+    <value>DynAlloc: Zeiger auf dynamischen Speicherbereich</value>
   </data>
   <data name="RT_MSG_ERR_55" xml:space="preserve">
-    <value>Typ ist nicht zugänglich</value>
+    <value>Type is inaccessible</value>
   </data>
   <data name="RT_MSG_ERR_56" xml:space="preserve">
-    <value>Methode ist überladen, Send () wird für überladene Methoden nicht unterstützt</value>
+    <value>Method ist überladen, Send() wird für überladene Methoden nicht unterstützt</value>
   </data>
   <data name="RT_MSG_ERR_57" xml:space="preserve">
-    <value>Es wurden nicht genügend Argumente an die Zielmethode übergeben</value>
+    <value>Nicht genug Argumente an Zielmethode übermittelt</value>
   </data>
   <data name="RT_MSG_ERR_58" xml:space="preserve">
-    <value>Zu viele Argumente wurden an die Zielmethode übergeben</value>
+    <value>Zu viele Arguments an Zielmethode übermittelt</value>
   </data>
   <data name="RT_MSG_ERR_59" xml:space="preserve">
-    <value>Ausnahme ausgelöst durch CLR oder externen Code</value>
+    <value>Exception ausgelöst durch CLR oder exteren Code</value>
   </data>
   <data name="RT_MSG_ERR_UNKNOWN" xml:space="preserve">
     <value>Unbekannter Fehler</value>
@@ -2356,20 +2356,25 @@
     <value>ERRORBUILD: ERRORFUNC-Parameteranzahl &lt;&gt;1</value>
   </data>
   <data name="RT_MSG_MAIL_ERR1" xml:space="preserve">
-    <value>SendMail(): Fehler beim Laden der MAPI-DLL</value>
+    <value>SendMail(): Konnte MAPI DLL nicht laden</value>
   </data>
   <data name="RT_MSG_MAIL_ERR2" xml:space="preserve">
-    <value>SendMail(): Fehler beim Abrufen des Funktionseinstiegspunkts in der MAPI-DLL</value>
+    <value>SendMail(): Funktionseinsprungpunkt in der MAPI DLL nicht gefunden</value>
   </data>
-
+  <data name="RT_MSG_MAIL_ERR3" xml:space="preserve">
+    <value>SendMail(): Sendefehler %s. Error code: %d</value>
+  </data>
+  <data name="RT_MSG_ACCESS_VIOLATION" xml:space="preserve">
+    <value>Zugriffsverletzung</value>
+  </data>
+  <data name="RT_MSG_DATATYPE_MISALIGNMENT" xml:space="preserve">
+    <value>Datatyp Misalignment</value>
+  </data>
   <data name="RT_MSG_INVALID_DISPOSITION" xml:space="preserve">
     <value>Ungültige Disposition</value>
   </data>
-  <data name="RT_MSG_GUARD_PAGE" xml:space="preserve">
-    <value>Guard Page</value>
-  </data>
   <data name="ARGCANNOTBEZERO" xml:space="preserve">
-    <value>Argument kann nicht 0 sein</value>
+    <value>Argument darf nicht 0 sein</value>
   </data>
   <data name="ARGNOTCODEBLOCK" xml:space="preserve">
     <value>Argument ist kein CODEBLOCK</value>
@@ -2379,25 +2384,25 @@
     <comment>Used in Error.Message</comment>
   </data>
   <data name="ARGNOTDATE" xml:space="preserve">
-    <value>Argument ist kein DATE</value>
+    <value>Argument ist kein Datum</value>
   </data>
   <data name="ARGNOTINT32" xml:space="preserve">
     <value>Argument ist kein INT</value>
   </data>
   <data name="ARGNOTINTEGER" xml:space="preserve">
-    <value>Argument ist kein ganzzahliger Typ</value>
+    <value>Argument ist kein Ganzzahl-Typ</value>
   </data>
   <data name="ARGNOTNUMERIC" xml:space="preserve">
     <value>Argument ist nicht numerisch</value>
   </data>
   <data name="ARGNOTSTRING" xml:space="preserve">
-    <value>Argument is nicht eine Zeichenkette</value>
+    <value>Argument ist keine Zeichenkette</value>
   </data>
   <data name="ARGSINCOMPATIBLE" xml:space="preserve">
-    <value>Argumente sind nicht unvereinbar</value>
+    <value>Argumente sind incompatibel</value>
   </data>
   <data name="ARGSNOTSAMETYPE" xml:space="preserve">
-    <value>Argumente are not the same type</value>
+    <value>Arguments haben nicht den gleichen Typ</value>
   </data>
   <data name="ARGUMENT" xml:space="preserve">
     <value>Argument</value>
@@ -2406,16 +2411,16 @@
     <value>Argument(e):</value>
   </data>
   <data name="ATRANSLATE" xml:space="preserve">
-    <value>aLookupTable ist kein Array oder Element ist kein Array</value>
+    <value>aLookupTable ist kein Array oder ein Element ist kein Array</value>
   </data>
   <data name="DATATYPEERROR" xml:space="preserve">
     <value>Datentypfehler</value>
   </data>
   <data name="DATE_ADD" xml:space="preserve">
-    <value>Ungültiger additierung zu USUAL der DATE enthält; RHS enthält inkompatiblen Typ</value>
+    <value>Ungültige Addition zu DATE; USUAL enthält incompatiblen Typ</value>
   </data>
   <data name="DATE_SUBTRACT" xml:space="preserve">
-    <value>Ungültige Subtraktion von USUAL der DATE enthält; RHS enthält inkompatiblen Typ</value>
+    <value>Ungültige Subtraction von DATE; USUAL enthält incompatiblen Typ</value>
   </data>
   <data name="ERROR_ARG" xml:space="preserve">
     <value>Arg</value>
@@ -2445,7 +2450,7 @@
     <value>Operation</value>
   </data>
   <data name="ERROR_CODE" xml:space="preserve">
-    <value>Fehlercode</value>
+    <value>Error Code</value>
   </data>
   <data name="ERROR_GENCODE" xml:space="preserve">
     <value>Generischer Code</value>
@@ -2475,7 +2480,7 @@
     <value>Kann ersetzen</value>
   </data>
   <data name="ERROR_SUBSYSTEM" xml:space="preserve">
-    <value>Teilsystem</value>
+    <value>Subsystem</value>
   </data>
   <data name="ERROR_STACK" xml:space="preserve">
     <value>Gerufen von</value>
@@ -2498,19 +2503,19 @@
     <comment>Beginning of runtime error message</comment>
   </data>
   <data name="STRINGLENNE1" xml:space="preserve">
-    <value>Stringlänge! = 1</value>
+    <value>Zeichenkettenlänge  != 1</value>
   </data>
   <data name="USUALOVERFLOWERR" xml:space="preserve">
-    <value>Numerische Überlauf beim konvertieren von USUAL DatenType '{0}' auf '{1}'</value>
+    <value>Numerischer Überlauf beim Konvertieren von USUAL von Typ "{0}" in "{1}"</value>
   </data>
   <data name="USUALBINARYOPERR" xml:space="preserve">
-    <value>{0} operator nicht verfügbar für USUAL Datentype '{1}' und '{2}'</value>
+    <value>{0} Operator nicht verfügbar for USUAL Typen "{1}" und "{2}"</value>
   </data>
   <data name="USUALUNARYOPERR" xml:space="preserve">
-    <value>{0} operator nicht verfügbar für USUAL Datentypen '{1}'</value>
+    <value>{0} Operator nicht verfügbar für USUAL Typ "{1}"</value>
   </data>
   <data name="USUALCONVERSIONERR" xml:space="preserve">
-    <value>Konvertierungsfehler von USUAL ({0}) nach {1}</value>
+    <value>Konvertierungsfehler von USUAL ({0})  oin {1}</value>
   </data>
   <data name="VERSION" xml:space="preserve">
     <value>Version: </value>
@@ -2519,28 +2524,28 @@
     <value>Argument ist NULL</value>
   </data>
   <data name="UNKNOWNRDD" xml:space="preserve">
-    <value>Ungültige RDD name</value>
+    <value>Ungültiger RDD-Name</value>
   </data>
   <data name="ARRAYBOUNDS" xml:space="preserve">
-    <value>Ungültiger Array-Index</value>
+    <value>Ungültiger Arrayindex</value>
   </data>
   <data name="USUALNOTINDEXED" xml:space="preserve">
-    <value>value in USUAL unterstützt keine indizierten Operationen. Der Wert muss ein X# Array sein oder die Schnittstelle '{0}' implementieren.</value>
+    <value>Der Wert in USUAL unterstützt keine indizierten Operationen. Er muß ein X# Array sein oder das Interface "{0}" implementieren.</value>
   </data>
   <data name="E_OPEN_MRESTORE" xml:space="preserve">
-    <value>Die datei für das RESTORE Befehl konnte  nicht geöffnet werden.</value>
+    <value>Die Datei für das RESTORE Kommando konnte nicht geöffnet werden.</value>
   </data>
   <data name="E_OPEN_MSAVE" xml:space="preserve">
-    <value>Die datei für das SAVE Befehl konnte nicht erstellt werden.</value>
+    <value>Die Datei für das SAVE Kommando konnte nicht erstellt werden.</value>
   </data>
   <data name="ERRORDIALOG_TITLE" xml:space="preserve">
     <value>Anwendungsfehler - </value>
   </data>
   <data name="ERRORDIALOG_CLOSE" xml:space="preserve">
-    <value>Beenden</value>
+    <value>Schließen</value>
   </data>
   <data name="ERRORDIALOG_COPY" xml:space="preserve">
-    <value>In Zwischenablage kopieren</value>
+    <value>&amp;In die Zwischenablage kopieren</value>
   </data>
     <!-- The following strings are not used (yet) in X#-->
    <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
@@ -2565,7 +2570,7 @@
     <value>%V1s in Konvertierung %s</value>
   </data>
   <data name="__CAVOSTR_SYSLIB_CURDIR" xml:space="preserve">
-    <value>CurDir</value>
+    <value>Aktuelles Verzeichnis</value>
   </data>
   <data name="__CAVOSTR_SYSLIB_DANGER" xml:space="preserve">
     <value>* Gefahr *:</value>
@@ -2583,13 +2588,13 @@
     <value>Fehler in Fehler</value>
   </data>
   <data name="__CAVOSTR_SYSLIB_HANDLE" xml:space="preserve">
-    <value>HND</value>
+    <value>Handle</value>
   </data>
   <data name="__CAVOSTR_SYSLIB_HANDLE_CUR" xml:space="preserve">
-    <value>cur</value>
+    <value>Cursor-Handle</value>
   </data>
   <data name="__CAVOSTR_SYSLIB_HANDLE_END" xml:space="preserve">
-    <value>end</value>
+    <value>Ende</value>
   </data>
   <data name="__CAVOSTR_SYSLIB_IVARS" xml:space="preserve">
     <value>%V1s IVars: %s</value>

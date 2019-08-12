@@ -3,9 +3,29 @@
 //
 #include "dbcmds.vh"
 USING XSharp.RDD
+using System.IO
+[STAThread];
 FUNCTION Start() AS VOID
     TRY
-        DescOrderScope()
+        TestHexString()
+        //FrankM()
+        //Ticket118a()
+        //Ticket118()
+        //Ticket120()
+        //Ticket103a()
+        //Ticket103()
+        //Ticket119()
+        //Ticket119a()
+        //Ticket115Orig()
+        //Ticket115()
+        //TestDosErrors()
+        //TestDBFTouch()
+        //TestMemoAtEof()
+        //TestAsHexString()
+        //ContructorException()
+        //testSetDefault()
+        //FptLock()
+        //DescOrderScope()
         //DirTest()
         //TestAutoIncrement()
         //TestOrdScope()
@@ -82,11 +102,799 @@ FUNCTION Start() AS VOID
         //Start9()
         //Start10()
         //Start11()
-        CATCH e
+   CATCH e as Exception
+        if ! (e is Error)
+            e := Error{e}
+        endif
         ErrorDialog(e)
     END TRY
     WAIT
     RETURN
+FUNCTION TestHexString() AS VOID 
+LOCAL x AS INT64 
+
+	x := 30000 
+
+	 ? "AsHexString" , AsHexString (  x )  // 0000000000007530	 	 
+	 
+	 ?
+	 ? "AsHexString" , AsHexString ( (INT) x  )   //  00007530
+	 
+	  x := 222_222_222_344_234 
+	 ? 
+	 ? "AsHexString" , AsHexString ( x  )  //  0000CA1C249FC02A
+	 ?
+	 ? "AsHexString" , AsHexString ( "abcdef" )  // 616263646566  instead of  "61 62 63 64 65 66"            
+	 ?
+	 
+	 RETURN 	
+
+    FUNCTION FrankM(  ) AS VOID
+
+	LOCAL DirList AS ARRAY
+	DirList := Directory( "C:\*.*", "DRHS" )
+	LOCAL Entry AS ARRAY
+	LOCAL Info AS STRING
+	LOCAL i AS DWORD
+    ? ALen( DirList )
+    WAIT
+	FOR i := 1 TO ALen( DirList )
+		Entry := DirList[i]
+     ? Entry[F_NAME], Entry[F_SIZE],;
+       Entry[F_DATE], Entry[F_TIME],;
+       Entry[F_ATTR]
+	NEXT
+	
+RETURN
+
+Function Ticket118a() as void
+
+	LOCAL cDBF, cPfad, cIndex AS STRING 
+	LOCAL aFields, aValues AS ARRAY 
+	LOCAL i AS DWORD                  
+	
+	cPfad := "C:\test\"
+	RddSetDefault ( "DBFCDX" )  
+	
+	cDBF := cPfad + "Foo"
+	cIndex := cPfad + "Foox" 
+	
+	FErase ( cIndex + IndexExt() )	
+	
+	aFields := { { "LAST" , "C" , 20 , 0 } } 
+	
+	aValues := { "a1" , "a2", "a3" , "a4" , "a5" , "a6" ,"g1", "g2" , "g3" , "g4" , "g5" , "o1" , "o2" , "o3" , "o4" , "o5" , "u1", "u2","u3" , "u4" }	
+	
+	? DbCreate( cDBF , AFields)
+	? DbUseArea( ,,cDBF , , TRUE )		
+	
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend() 
+		FieldPut ( 1 , aValues [ i ] ) 
+		IF InList ( Upper ( aValues [ i ] ) , "G1" , "G2" , "O5" ) 
+			? "DBDelete()" , DbDelete() 			
+		ENDIF 
+	NEXT 
+	
+	// create a descending order 
+	
+	? DbSetOrderCondition( , , , , , , , , , ,TRUE )
+	? DbCreateOrder ( "ORDER2" , cIndex , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+	
+	? DbSetOrder ( 1 )  
+	?   
+	
+	DbGoTop() 
+	
+	DO WHILE ! Eof() 
+		? FieldGet ( 1 ) 
+		DbSkip ( 1 ) 
+	ENDDO 	
+	
+	// ---------
+	?
+	
+	SetDeleted ( FALSE ) 
+	
+	? OrdKeyCount() // 20  ok
+	
+	SetDeleted ( TRUE  ) 	 
+	? OrdKeyCount() //  Here it hangs because SetDeleted() is true ... 
+	
+	? " This line is never reached ..."
+	
+	// -------------
+	
+	DbCloseAll() 
+RETURN
+FUNCTION Ticket118() AS VOID
+	LOCAL cDBF, cPfad, cIndex AS STRING 
+	LOCAL aFields, aValues AS ARRAY 
+	LOCAL i AS DWORD                  
+	
+	cPfad := "C:\test\"
+	
+	RddSetDefault ( "DBFCDX" )  
+	
+	cDBF := cPfad + "Foo"
+	cIndex := cPfad + "Foox" 
+	
+	FErase ( cIndex + IndexExt() )	
+	
+	aFields := { { "LAST" , "C" , 20 , 0 } } 
+	
+	aValues := { "a1" , "a2", "a3" , "a4" , "a5" , "a6" ,"g1", "g2" , "g3" , "g4" , "g5" , "o1" , "o2" , "o3" , "o4" , "o5" , "u1", "u2","u3" , "u4" }	
+	
+	? DbCreate( cDBF , AFields)
+	? DbUseArea( ,,cDBF , , TRUE )		
+	
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend() 
+		FieldPut ( 1 , aValues [ i ] ) 
+		
+		IF InList ( Upper ( aValues [ i ] ) , "G1" , "G2" , "O5" ) 
+			? "DBDelete()" , DbDelete() 			
+		ENDIF 
+	NEXT 
+	
+	? DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+	
+	? DbSetOrder ( 1 )  
+	?
+	// ---------
+	
+	OrdScope ( TOPSCOPE, "G" ) 
+	OrdScope ( BOTTOMSCOPE, "G" ) 
+	
+//	OrdScope ( TOPSCOPE, "A" ) 
+//	OrdScope ( BOTTOMSCOPE, "G" ) 
+	
+	?  OrdKeyCount() 
+	?
+	
+	SetDeleted ( TRUE )  // no problem if set to FALSE
+	
+	OrdDescend ( , , TRUE )
+	DbGoTop()
+	
+	// SetDeleted(TRUE) causes a endless loop ...
+	
+	DO WHILE ! Eof()
+		? AllTrim(FieldGet ( 1 ) ) , RecNo(), Eof(), Bof()
+		DbSkip ( 1 ) 
+	ENDDO
+	
+	?
+	? "This line is never reached" 
+	?
+	?  OrdKeyCount(), "should be 3"
+	
+	DbCloseAll()
+RETURN
+
+FUNCTION Ticket120() AS VOID
+	LOCAL cDBF, cPfad, cDriver, cIndex AS STRING 
+	LOCAL aFields, aValues AS ARRAY 
+	LOCAL i AS DWORD                  
+	
+	cPfad := "C:\test\"
+	
+	cDriver := RddSetDefault ( "DBFCDX" )  
+	
+	cDBF := cPfad + "Foo"
+	cIndex := cPfad + "Foox" 
+	
+	FErase ( cIndex + IndexExt() )	
+	
+	aFields := { { "LAST" , "C" , 20 , 0 } } 
+	aValues := { "a1" , "a2", "a3" , "a4" , "a5" , "a6" ,"g1", "g2" , "g3" , "g4" , "g5" , "o1" , "o2" , "o3" , "o4" , "o5" , "u1", "u2","u3" , "u4" }	
+	
+	? DbCreate( cDBF , AFields)
+	? DbUseArea( ,,cDBF , , TRUE )		
+	
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend() 
+		FieldPut ( 1 , aValues [ i ] ) 
+		IF InList ( Upper ( aValues [ i ] ) , "G1" , "G2" , "O5" ) 
+			? "DBDelete()" , DbDelete() 			
+		ENDIF 
+	NEXT 
+	
+	? DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+	
+	? DbSetOrder ( 1 )  
+	?
+	
+	// ---------
+	
+	SetDeleted ( TRUE ) 
+	
+	OrdScope ( TOPSCOPE, "G" ) 
+	OrdScope ( BOTTOMSCOPE, "G" ) 
+// DbGoTop() 	
+	
+	? OrdKeyCount(), "should be 3" // 3 ok
+	
+	SetDeleted ( FALSE ) 
+//	DbGoTop() 		
+	
+	? OrdKeyCount(), "should be 5" // 5 ok
+	
+	// -------------
+	
+	OrdScope ( TOPSCOPE, NIL ) 
+	OrdScope ( BOTTOMSCOPE, NIL ) 
+	
+	// If TOPSCOPE and BOTTOMSCOPE is not equal 
+	// OrdKeyCount() seems to ignore a SetDeleted( TRUE ) ?
+	
+	OrdScope ( TOPSCOPE, "A" ) 
+	OrdScope ( BOTTOMSCOPE, "G" ) 
+	
+	?  
+	SetDeleted( TRUE ) 	
+	? OrdKeyCount(), "should be 9"    // 11	 but must show 9 
+
+	SetDeleted( FALSE ) 
+	? OrdKeyCount(), "should be 11"    // 11	ok
+	//------------  
+	
+	DbCloseAll() 
+RETURN
+FUNCTION Ticket103a() AS VOID
+	LOCAL cDBF, cPfad, cDriver, cIndex, cFilter AS STRING
+	LOCAL aFields, aValues AS ARRAY
+	LOCAL i AS DWORD       
+	
+	cDriver := RddSetDefault ( "DBFCDX" ) 
+	
+	cPfad := "C:\test\"
+	
+	cDBF := cPfad + "Foo"
+	cIndex := cPfad + "Foox"
+	
+	FErase ( cIndex + IndexExt() )  
+	
+	aFields := { { "LAST" , "N" , 5 , 0 } }
+	
+	aValues := { 1,2,3,4,5,6,3,4 }
+	
+   // -------------------
+	
+	? DbCreate( cDBF , AFields)
+	? DbUseArea( ,,cDBF , , TRUE )                
+	
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend()
+		FieldPut ( 1 , aValues [ i ] )
+	NEXT        
+	
+	? DbCreateOrder ( "ORDER1" , cIndex , "LAST" , { || _Field->LAST } )
+	? DbSetOrder ( 1 )
+
+	OrdScope ( TOPSCOPE, 2 )
+	OrdScope ( BOTTOMSCOPE, 5 )
+	
+	?
+	? "OrdKeycount() Scope" , OrdKeyCount() , "must be 6" //  6, ok
+	?               
+	
+	?  DbSetFilter ( { || _Field->LAST == 3  } , "LAST == 3")  
+	DbGoTop()
+	?
+	? "Eof" , Eof()  // false
+	
+	? "OrdKeycount() after Filter on Scope" , OrdKeyCount() , "must be 2" //  0, must be 2
+	
+	? "Eof" , Eof()  // false
+	DbGoTop()
+	
+//	 -------------
+	
+	DO WHILE ! Eof()
+		? FieldGet ( 1 )
+		DbSkip ( 1 )
+	ENDDO
+	
+	DbCloseAll()     
+	RddSetDefault ( cDriver )    
+RETURN
+FUNCTION Ticket103() AS VOID
+	LOCAL cDBF, cPfad, cDriver, cIndex, cFilter AS STRING
+	LOCAL aFields, aValues AS ARRAY
+	LOCAL i AS DWORD       
+	
+	cDriver := RddSetDefault ( "DBFCDX" ) 
+	
+	cPfad := "C:\test\"
+	
+	cDBF := cPfad + "Foo"
+	cIndex := cPfad + "Foox"
+	
+	FErase ( cIndex + IndexExt() )  
+	
+	aFields := { { "LAST" , "C" , 20 , 0 } }
+	
+	aValues := { "A1" ,"A3" , "A2",  "Go1" , "G1" , "g2" , "g3", "go2"  , "h2" , "h4" }
+	
+   // -------------------
+	
+	? DbCreate( cDBF , AFields)
+	? DbUseArea( ,,cDBF , , TRUE )                
+	
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend()
+		FieldPut ( 1 , aValues [ i ] )
+	NEXT        
+	
+	? DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+	? DbSetOrder ( 1 )
+
+	OrdScope ( TOPSCOPE, "A" )
+	OrdScope ( BOTTOMSCOPE, "G" )
+	
+	?
+	? "OrdKeycount() Scope" , OrdKeyCount() , "must be 8" //  8, ok
+	?               
+	
+	cFilter := "GO" 
+	
+	?  DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  } , "Upper (LAST) = "+ cFilter )  
+	DbGoTop()
+	?
+	? "Eof" , Eof()  // TRUE, should be false
+	
+	? "OrdKeycount() after Filter on Scope" , OrdKeyCount() , "must be 2" //  9, must be 2
+	
+	? "Eof" , Eof()  // TRUE, should be false
+	DbGoTop()
+	? "Eof" , Eof()  // TRUE, should be false
+	
+//	 -------------
+	
+//	 NOTE: eof () is already TRUE, so the DO WHILE will not be executed
+	
+	DO WHILE ! Eof()
+		? FieldGet ( 1 )
+		DbSkip ( 1 )
+		
+	ENDDO
+	
+	DbCloseAll()     
+	RddSetDefault ( cDriver )    
+RETURN
+
+FUNCTION Ticket119a() AS VOID
+	LOCAL cDBF, cPfad, cIndex, cFilter  AS STRING 
+	LOCAL aFields, aValues AS ARRAY 
+	LOCAL i AS DWORD                  
+	
+	cPfad := "C:\test\"
+	
+	RddSetDefault ( "DBFCDX" )  
+	
+	cDBF := cPfad + "Foo"
+	cIndex := cPfad + "Foox" 
+	FErase ( cIndex + IndexExt() )	
+	
+	aFields := { { "LAST" , "C" , 20 , 0 } } 
+	aValues := { "a1" , "a2", "a3" , "a4" , "a5" , "a6" ,"g1", "g2" , "g3" , "g4" , "g5" , "o1" , "o2" , "o3" , "o4" , "o5" , "u1", "u2","u3" , "u4" }	
+	
+	? DbCreate( cDBF , AFields)
+	? DbUseArea( ,,cDBF , , TRUE )		
+	
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend() 
+		FieldPut ( 1 , aValues [ i ] ) 
+		IF InList ( Upper ( aValues [ i ] ) , "G1" , "G2" , "O5" ) 
+			? "DBDelete()" , DbDelete() 			
+		ENDIF 
+	NEXT 
+	
+	? DbCreateOrder ( "ORDER2" , cIndex , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+	? DbSetOrder ( 1 )  
+	? 
+	
+	// -----------
+	
+	cFilter := "A"  // result does include *no* deleted records  ! 
+	
+	?  DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  } , "Upper (LAST) = "+ cFilter )  
+	?
+	? OrdKeyCount() , "should be 6"  // 6 , ok 
+	
+	OrdDescend ( , , TRUE ) 
+	
+//	SetDeleted ( FALSE )
+//	SetDeleted ( TRUE )  
+	
+	// OrdKeyCount() hangs no matter how the SetDeleted() setting is. 
+	
+	? OrdKeyCount()  , "should be 6" 
+	
+	
+	// -------------
+	
+	DbCloseAll() 
+RETURN
+FUNCTION Ticket119() AS VOID
+	LOCAL cDBF, cPfad, cIndex, cFilter  AS STRING 
+	LOCAL aFields, aValues AS ARRAY 
+	LOCAL i AS DWORD                  
+	
+	cPfad := "C:\test\"
+	
+	RddSetDefault ( "DBFCDX" )  
+	
+	cDBF := cPfad + "Foo"
+	cIndex := cPfad + "Foox" 
+	
+	FErase ( cIndex + IndexExt() )	
+	aFields := { { "LAST" , "C" , 20 , 0 } } 
+	aValues := { "a1" , "a2", "a3" , "a4" , "a5" , "a6" ,"g1", "g2" , "g3" , "g4" , "g5" , "o1" , "o2" , "o3" , "o4" , "o5" , "u1", "u2","u3" , "u4" }	
+	
+	? DbCreate( cDBF , AFields)
+	? DbUseArea( ,,cDBF , , TRUE )		
+	
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend() 
+		FieldPut ( 1 , aValues [ i ] ) 
+		IF InList ( Upper ( aValues [ i ] ) , "G1" , "G2" , "O5" ) 
+			? "DBDelete()" , DbDelete() 			
+		ENDIF 
+	NEXT 
+	
+	? DbCreateOrder ( "ORDER2" , cIndex , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+	
+	? DbSetOrder ( 1 )  
+	? 
+	
+	// -----------
+	
+	cFilter := "G"  // result does include deleted records  ! 
+	
+	SetDeleted ( FALSE ) 	    
+	
+	?
+	? "DBSetFilter" , DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  } , "Upper (LAST) = "+ cFilter ) 
+	?            
+	
+	DbGoTop()
+	
+	? OrdKeyCount() , "should be 5" //  5 ok
+	
+	SetDeleted ( TRUE  ) 	 
+	
+	#IFNDEF __XSHARP__ 
+	
+		// the __XSHARP__ Define is used because VO doesn´t refresh the filter - as X# does -
+		// if SetDeleted() is changed on the fly . 
+		//
+		// NOTE: e.g. using a simple DBGoTop() instead doesn´t help. 
+		//  
+	
+	DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  } , "Upper (LAST) = "+ cFilter )  
+	
+	#ENDIF	
+	
+	? OrdKeyCount(), "should be 3"  //  3 ok  
+	
+	
+	// -------------  
+	
+	// now change the filter to descend sort on the fly 
+	
+	OrdDescend ( , , TRUE ) 
+	
+	// -------------
+	
+	? 
+	
+	SetDeleted ( FALSE )  
+	
+	#IFNDEF __XSHARP__ 
+	DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  } , "Upper (LAST) = "+ cFilter )  
+	#ENDIF	 
+	
+	? OrdKeyCount() , "should be 5" //  shows 0  ...
+	
+	SetDeleted ( TRUE  ) 
+	
+	#IFNDEF __XSHARP__ 
+	DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  } , "Upper (LAST) = "+ cFilter )  
+	#ENDIF		
+	
+	? OrdKeyCount(), "should be 3"  // 	shows 0  ...  
+	
+	// ---------
+   // switch back to ascending sort
+   // --------- 
+	?
+	
+	OrdDescend ( , , FALSE ) 
+	
+	SetDeleted ( FALSE ) 
+	
+	#IFNDEF __XSHARP__ 
+	DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  } , "Upper (LAST) = "+ cFilter )  
+	#ENDIF
+	
+	? OrdKeyCount(), "should be 5"  //  5, ok
+	
+	SetDeleted ( TRUE ) 
+	
+	#IFNDEF __XSHARP__ 
+	DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  } , "Upper (LAST) = "+ cFilter )
+	#ENDIF
+	
+	? OrdKeyCount() , "should be 3" // 	3, ok
+	
+	// -------------
+	
+	DbCloseAll()
+RETURN
+
+Function TestDosErrors() as VOID
+    FOR var i := 1 to 1000
+        var cErr := DosErrString((DWORD) i)
+        if ! cErr:StartsWith("Unknown")
+        ? i, cErr
+        ENDIF
+    NEXT
+    RETURN
+    FUNCTION Ticket115Orig( ) AS VOID
+	LOCAL cDBF, cPfad, cDriver, cIndex AS STRING 
+	LOCAL aFields, aValues AS ARRAY 
+	LOCAL i AS DWORD 
+	LOCAL lFound, lAddUmlauteName,lUseGermanDll AS LOGIC 
+	
+	SetAnsi ( TRUE ) 
+	SetCentury( TRUE )   
+	
+	cDriver := RddSetDefault ( "DBFCDX" ) 
+	
+    // ---------------- 
+	lUseGermanDll := TRUE
+	// ------------- 
+	
+	IF lUseGermanDll
+		
+		SetInternational ( #clipper  ) 
+		SetCollation ( #clipper ) 
+		
+		IF ! SetNatDLL ( "German" )  		   
+			? "German not loaded" 
+		ENDIF 	                           
+		SetDateCountry ( DateCountry.German )
+		SetThousandSep ( Asc ( "." ))   
+		SetDecimalSep ( Asc ( "," ))   
+	ELSE 
+    	//SetAppLocaleID(MAKELCID(MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN), SORT_GERMAN_PHONE_BOOK))  // Telefonbuch    	
+		SetAppLocaleID(MAKELCID(MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN), SORT_DEFAULT)) // Wörterbuch
+	ENDIF  
+	
+	cDBF := cPfad + "Foo"
+	cIndex := cPfad + "Foox" 
+	
+	FErase ( cIndex + IndexExt() )	
+	
+	aFields := { { "LAST" , "C" , 20 , 0 } } 
+	
+	aValues := { "Art" ,"Aero" , "Anfang",  "Goethe" , "Äffin" , "Ärger" , "Ärmlich", "Goldmann" ,;
+				"Götz" , "Ober" , "Otter" , "Österreich" , "Östrogon" , "Ötzi" ,"Unter" , ;
+				"Übel" , "Überheblich" , "Üblich" , "Göthe" }  
+	
+	// -------------
+	
+	lAddUmlauteName := FALSE 
+	
+	IF lAddUmlauteName				
+		AAdd( aValues , "Göbel")
+	ELSE 
+		AAdd( aValues , "Gobel")
+	ENDIF 		
+	
+    // -------------------
+	
+	? DbCreate( cDBF , AFields)
+	? DbUseArea( ,,cDBF , , TRUE )		
+	
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend() 
+		FieldPut ( 1 , aValues [ i ] ) 
+	NEXT         
+	
+	? DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+	
+	? DbSetOrder ( 1 )  
+	
+	DbGoTop()
+	
+	?
+	? "Seek ART", DbSeek ( "ART") 
+	? DbRLock()
+	FieldPut ( 1 , "Aart" ) 
+	? DbCommit()
+	? DbRUnLock()
+	?
+	? "Seek AART" , DbSeek ( "AART")
+	? DbRLock()
+	FieldPut ( 1 , "Art" ) 	
+	? DbCommit()
+	? DbRUnLock()
+	?
+	? "Seek GOETHE" , DbSeek ( "GOETHE")
+	? DbRLock()
+	FieldPut ( 1 , "Gooethe" ) 
+	? DbCommit()
+	? DbRUnLock()
+	?
+	? "Seek GOOETHE" , lFound:= DbSeek ( "GOOETHE")
+	IF lFound
+		? FieldGet ( 1 )
+		? DbRLock()
+		FieldPut ( 1 , "Goethe" ) 	
+		? DbCommit()
+		? DbRUnLock()
+	ELSE 
+		? "Not found " , Eof()
+	ENDIF 		
+	
+	DbGoTop()
+	
+	?
+	? "OrdKeyCount()", OrdKeyCount()
+	? "Reccount()" , RecCount()
+	?
+	
+	DO WHILE ! Eof() 
+		
+		? FieldGet ( 1 ) 
+		DbSkip ( 1 ) 
+		
+	ENDDO 	
+
+	
+	DbCloseAll() 	
+	RddSetDefault ( cDriver )
+RETURN
+FUNCTION Ticket115( ) AS VOID
+	LOCAL cDBF AS STRING 
+	LOCAL aFields, aValues AS ARRAY 
+	LOCAL i AS DWORD 
+	
+	RddSetDefault ( "DBFCDX" ) 
+	
+	// makes no difference
+//	SetCollation ( #clipper ) 
+//	SetCollation ( #windows ) 
+	
+	cDBF := "c:\test\aaa"
+	FErase ( cDBF + IndexExt() )	
+	
+	aFields := { { "LAST" , "C" , 20 , 0 } } 
+	aValues := { "Art" ,"Aero" , "Anfang",  "Goethe" , "Äffin" , ;
+				"Ärger" , "Ärmlich", "Goldmann" ,"Üblich" , "Göthe" }  
+	
+	DbCreate( cDBF , AFields)
+	DbUseArea( ,,cDBF , , FALSE )		
+	
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend() 
+		FieldPut ( 1 , aValues [ i ] ) 
+	NEXT         
+	
+	DbCreateOrder ( "ORDER1" , cDBF , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+	DbGoTop()
+	
+	// ? "Seek GOETHE" , DbSeek ( "GOETHE")
+	DbGoto(4) // same result as with seek()
+	FieldPut ( 1 , "GOOETHE" ) 
+	? RecNo() // 4
+	? DbCommit() // without this, it works correctly!
+	?
+	DbGoTop()
+	? "Seek GOOETHE" , DbSeek ( "GOOETHE") // returns false, it should find it
+	
+	DbGoto(4)
+	? "Record 4 has", FieldGet(1)
+	?
+	
+	wait
+	DbGoTop()
+	?
+	? "OrdKeyCount()", OrdKeyCount()
+	? "Reccount()" , RecCount()
+	?
+	
+	DO WHILE ! Eof() 
+		? recno(), FieldGet ( 1 ) 
+		DbSkip ( 1 ) 
+	ENDDO 	
+	DbCloseAll() 	
+RETURN
+
+FUNCTION TestDBFTouch() AS VOID
+LOCAL cDbf AS STRING
+cDbf := "C:\test\test.dbf"
+? DbCreate(cDbf , {{"TEST","L",1,0}})
+? File.GetLastWriteTime(cDbf)
+System.Threading.Thread.Sleep(2000)
+? DbUseArea(,,cDbf)
+? File.GetLastWriteTime(cDbf)
+? DbCloseArea()
+? File.GetLastWriteTime(cDbf) // 2 seconds later than first one
+RETURN
+
+FUNCTION TestMemoAtEof() AS VOID
+	LOCAL cDbf AS STRING
+	cDbf := "C:\TEST\mytest"
+	RddSetDefault("DBFCDX")
+	DbCreate(cDbf , {{"MYCHAR","C",10,0},{"MYMEMO","M",10,0}})
+	DbUseArea(,,cDbf)
+	DbAppend()
+	FieldPut(1,"str contents")
+	FieldPut(2,"memo contents")
+	DbSkip(+1)
+	? Eof() // TRUE, correct
+	? FieldGet(1) // empty string
+	? FieldGet(2) // exception
+	DbCloseArea()
+RETURN
+FUNCTION TestAsHexString() AS VOID
+LOCAL s AS INT
+s := -1
+? AsHexString(s)
+RETURN
+
+FUNCTION ContructorException() AS VOID
+	LOCAL u AS USUAL
+	TRY
+		//u := CreateInstance("TestClass1") // "No exported method 'CONSTRUCTOR'"
+		u := TestClass1{}
+		Send(u,"TestMethod") // "Argument" is not numeric, correct error message
+	CATCH e AS Exception
+		? e:ToString()
+	END TRY
+RETURN
+
+CLASS TestClass1
+	CONSTRUCTOR()
+		CauseException()
+	RETURN
+	METHOD TestMethod() AS VOID
+		CauseException()
+	RETURN
+END CLASS
+
+PROCEDURE CauseException()
+	LOCAL u AS USUAL
+	u := 1
+	? u + TRUE
+RETURN
+
+Function TestSetDefault() AS VOID
+    ? RddSetDefault(NULL_STRING)
+    RETURN
+Function FptLock() as VOID
+	LOCAL cDBF AS STRING 
+
+ 	cDbf := "C:\TEST\mydbf"
+
+   	RddSetDefault ( "DBFCDX" ) 
+	FErase ( cDbf + ".dbf" )	
+	FErase ( cDbf + ".cdx" )	
+	FErase ( cDbf + ".fpt" )	
+	
+	? DbCreate( cDBF , {{"MEMOFLD" , "M" , 10 , 0}},"DBFCDX")
+	? DbUseArea( ,,cDBF , , TRUE )
+	? DbAppend()
+	FieldPut(1 , "memo contents")
+	DbCommit()
+	
+	WAIT "Open dbf file from a VO app now"
+
+	DbCloseAll() 
 
 FUNCTION DescOrderScope() AS VOID 
 LOCAL cDBF, cPfad, cIndex, cDriver AS STRING 
@@ -214,8 +1022,10 @@ LOCAL lUseFirstScope AS LOGIC
 
 function dirtest as void
     local afiles as array
-    afiles := Directory( "C:\temp\dirtest\*.*", "D" )
+    afiles := Directory( "C:\XSharp\*.*","D" )
     ShowArray(aFiles)
+    //afiles := Directory( "c:\temp", "D" )
+    //ShowArray(aFiles)
     return
 
 Function testAutoIncrement() as void

@@ -5,7 +5,6 @@ USING System.Text
 
 FUNCTION Start AS VOID STRICT
     TRY
-        local i as dword
         RddSetDefault("ADSADT")
         DbUseArea(TRUE,,"c:\Tools\Advantage 10.10\acesdk\Redistribute\adscollate.adt")
         DO WHILE ! EOF()

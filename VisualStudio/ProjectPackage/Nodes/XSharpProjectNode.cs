@@ -1000,7 +1000,8 @@ namespace XSharp.Project
             if ((pReference.Type == prjReferenceType.prjReferenceTypeAssembly) ||
                 (pReference.Type == prjReferenceType.prjReferenceTypeActiveX))
             {
-                ProjectModel.RemoveAssemblyReference(pReference.Path);
+                if (! String.IsNullOrEmpty(pReference.Path))
+                    ProjectModel.RemoveAssemblyReference(pReference.Path);
             }
         }
 
@@ -1016,7 +1017,8 @@ namespace XSharp.Project
             if ((pReference.Type == prjReferenceType.prjReferenceTypeAssembly) ||
                 (pReference.Type == prjReferenceType.prjReferenceTypeActiveX))
             {
-                ProjectModel.UpdateAssemblyReference(pReference.Path);
+                if (!String.IsNullOrEmpty(pReference.Path))
+                    ProjectModel.UpdateAssemblyReference(pReference.Path);
             }
         }
         #endregion

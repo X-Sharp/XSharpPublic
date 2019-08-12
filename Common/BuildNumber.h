@@ -8,11 +8,12 @@
     #define REG_COMPANY_NAME  "XSharpBV"
 
     // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE CONSTANTS.CS FILE
-#define VERSION_NUMBER_STR     "2.0.0.0"
-#define VERSION_NUMBER			2,0.0,0
-#define FILEVERSION_NUMBER       2,0,4,0
-#define FILEVERSION_NUMBER_STR   "2.0.4.0"
-#define INFORMATIONAL_NUMBER_STR  "2.0 GA"
+
+    #define VERSION_NUMBER_STR     "2.0.0.0"
+    #define VERSION_NUMBER			2,0,0,0
+    #define FILEVERSION_NUMBER       2,0,4,0
+    #define FILEVERSION_NUMBER_STR   "2.0.4.0"
+    #define INFORMATIONAL_NUMBER_STR  "2.0 GA"
 
     #ifdef __DEBUG__
         #define ASSEMBLY_CONFIGURATION "Debug"

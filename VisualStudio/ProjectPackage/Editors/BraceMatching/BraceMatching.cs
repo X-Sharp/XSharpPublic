@@ -14,6 +14,7 @@ using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using XSharpLanguage;
 using LanguageService.CodeAnalysis.XSharp;
+using XSharpModel;
 
 namespace XSharp.Project.Editors.BraceMatching
 {
@@ -128,7 +129,7 @@ namespace XSharp.Project.Editors.BraceMatching
             }
             catch (Exception)
             {
-
+                yield break;
             }
             // use the tokens stored in the buffer properties
             XSharpTokens xTokens = null;
@@ -137,6 +138,7 @@ namespace XSharp.Project.Editors.BraceMatching
             if (SourceBuffer.Properties.ContainsProperty(typeof(XSharpTokens)))
             {
                 xTokens = SourceBuffer.Properties.GetProperty<XSharpTokens>(typeof(XSharpTokens));
+                tokens = xTokens.TokenStream.GetTokens();
                 if (xTokens.SnapShot.Version != currentChar.Snapshot.Version)
                 {
                     // get source from the start of the file until the current entity
@@ -146,34 +148,19 @@ namespace XSharp.Project.Editors.BraceMatching
                     {
                         try
                         {
-                            offset = member.Interval.Start;
-                            var length = member.Interval.Width;
-                            if (offset + length > currentChar.Snapshot.Length)
-                            {
-                                length = currentChar.Snapshot.Length - offset;
-                            }
-                            //
-                            string text = currentChar.Snapshot.GetText(offset, length);
-                            var reporter = new ErrorIgnorer();
-                            ITokenStream tokenStream;
-                            XSharpParseOptions parseoptions;
-                            var prj = xfile.Project.ProjectNode;
-                            parseoptions = prj.ParseOptions;
-                            bool ok = XSharp.Parser.VsParser.Lex(text, xfile.FullPath, parseoptions, reporter, out tokenStream);
-                            var bstream = tokenStream as BufferedTokenStream;
-                            tokens = bstream.GetTokens();
+                            var sourceWalker = new SourceWalker(xfile);
+                            string text = currentChar.Snapshot.GetText();
+                            var stream = (BufferedTokenStream) sourceWalker.Lex(text);
+                            tokens = stream.GetTokens();
                         }
-                        catch
+                        catch (Exception e)
                         {
                             // if it crashes, that might be because the snapshot used for the Lex/Parse is no more
                             // so, we may have a too much difference
-                            yield break;
+                            // we do not break but simply use the 'old' tokens
+                            System.Diagnostics.Debug.WriteLine(e.Message);
                         }
                     }
-                }
-                else
-                {
-                    tokens = xTokens.TokenStream.GetTokens();
                 }
             }
 
@@ -226,15 +213,15 @@ namespace XSharp.Project.Editors.BraceMatching
                                 (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpBraceCloseFormat)))
                             sortedTags.Add(tag);
                     }
-                    sortedTags.Sort((a, b) => a.Span.Start.Position.CompareTo(b.Span.Start.Position));
+                    sortedTags.Sort((a, b) => a.Span.Start.Position.CompareTo(b.Span.Start.Position)*1000 + string.Compare(a.ClassificationType.Classification, b.ClassificationType.Classification));
                     //
-                    int indexTag = sortedTags.FindIndex(x => currentChar.Position >= x.Span.Start.Position && currentChar.Position <= x.Span.End.Position);
-                    if (indexTag != -1)
+                    var tags = sortedTags.Where(x => currentChar.Position >= x.Span.Start.Position && currentChar.Position <= x.Span.End.Position);
+                    foreach (var currentTag in tags)
                     {
-                        var currentTag = sortedTags[indexTag];
+                        var index = sortedTags.IndexOf(currentTag);
                         if (currentTag.ClassificationType.IsOfType(ColorizerConstants.XSharpBraceOpenFormat))
                         {
-                            if (FindMatchingCloseTag(sortedTags, indexTag, snapshot, out pairSpan))
+                            if (FindMatchingCloseTag(sortedTags, index, snapshot, out pairSpan))
                             {
                                 var span = currentTag.Span;
                                 yield return new TagSpan<TextMarkerTag>(span, new TextMarkerTag("bracehighlight"));
@@ -243,7 +230,7 @@ namespace XSharp.Project.Editors.BraceMatching
                         }
                         else
                         {
-                            if (FindMatchingOpenTag(sortedTags, indexTag, snapshot, out pairSpan))
+                            if (FindMatchingOpenTag(sortedTags, index, snapshot, out pairSpan))
                             {
                                 var span = currentTag.Span;
                                 yield return new TagSpan<TextMarkerTag>(pairSpan, new TextMarkerTag("bracehighlight"));

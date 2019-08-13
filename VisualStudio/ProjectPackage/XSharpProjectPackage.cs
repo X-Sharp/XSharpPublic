@@ -78,7 +78,7 @@ namespace XSharp.Project
     /// <para>ProvideProjectItem: Declares that a package provides a project item.</para>
     /// </remarks>
     ///
-    [InstalledProductRegistration("#110", "#112", XSharp.Constants.Version, IconResourceID = 400)]
+    [InstalledProductRegistration("#110", "#112", XSharp.Constants.FileVersion, IconResourceID = 400)]
     [Description(ProjectSystemName)]
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]

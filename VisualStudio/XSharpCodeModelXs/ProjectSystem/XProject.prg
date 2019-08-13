@@ -158,7 +158,7 @@ BEGIN NAMESPACE XSharpModel
                         SELF:ResolveUnprocessedProjectReferences()
                         SELF:ResolveUnprocessedStrangerReferences()
                         FOREACH DLL AS STRING IN SELF:_projectOutputDLLs:Values
-                            IF SystemTypeController.FindAssemblyByLocation(DLL) == NULL
+                            IF SystemTypeController.FindAssemblyByLocation(DLL) != NULL
                                 SELF:WriteOutputMessage("ResolveReferences: No need to load types for Foreign assembly. Assembly is already loaded: "+DLL)
                                 SELF:AddAssemblyReference(DLL)
                             ENDIF

@@ -4,7 +4,6 @@
     <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
     <PropertyGroup>
         <NuGetPackageImportStamp />
-        <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
         <ProjectGuid>$guid1$</ProjectGuid>
         <OutputType>Library</OutputType>
         <AppDesignerFolder>Properties</AppDesignerFolder>

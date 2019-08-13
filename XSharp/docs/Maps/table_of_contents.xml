@@ -729,6 +729,60 @@
             <caption translate="true">Workarea</caption>
           </topicref>
         </topicref>
+        <topicref type="topic" id="436904872840076" modified="2019-08-13T13:24:44.214Z" icon="0" href="X-Commands">
+          <caption translate="true">X# Commands</caption>
+          <topicref type="topic" id="43689689406335" modified="2019-08-13T13:24:44.220Z" icon="0" href="Commands-in-Alphabetical-Order">
+            <caption translate="true">Commands in Alphabetical Order</caption>
+          </topicref>
+          <topicref type="topic" id="436906885634999" modified="2019-08-13T13:24:44.225Z" icon="0" href="Commands-by-Category">
+            <caption translate="true">Commands by Category</caption>
+            <topicref type="topic" id="436904522122400" modified="2019-08-13T13:24:44.231Z" icon="0" href="Comment">
+              <caption translate="true">Comment</caption>
+            </topicref>
+            <topicref type="topic" id="436905850607204" modified="2019-08-13T13:24:44.237Z" icon="0" href="Database">
+              <caption translate="true">Database</caption>
+            </topicref>
+            <topicref type="topic" id="436905312879542" modified="2019-08-13T13:24:44.243Z" icon="0" href="Date-and-Time">
+              <caption translate="true">Date and Time</caption>
+            </topicref>
+            <topicref type="topic" id="436903553365998" modified="2019-08-13T13:24:44.249Z" icon="0" href="Entity-Declaration">
+              <caption translate="true">Entity Declaration</caption>
+            </topicref>
+            <topicref type="topic" id="436907198029150" modified="2019-08-13T13:24:44.255Z" icon="0" href="Environment-_-Settings">
+              <caption translate="true">Environment / Settings</caption>
+            </topicref>
+            <topicref type="topic" id="436904993941353" modified="2019-08-13T13:24:44.260Z" icon="0" href="File">
+              <caption translate="true">File</caption>
+            </topicref>
+            <topicref type="topic" id="436906513166225" modified="2019-08-13T13:24:44.266Z" icon="0" href="Index-_-Order">
+              <caption translate="true">Index / Order</caption>
+            </topicref>
+            <topicref type="topic" id="43689615776633" modified="2019-08-13T13:24:44.271Z" icon="0" href="International-_-Settings">
+              <caption translate="true">International / Settings</caption>
+            </topicref>
+            <topicref type="topic" id="436907157304843" modified="2019-08-13T13:24:44.277Z" icon="0" href="Locking">
+              <caption translate="true">Locking</caption>
+            </topicref>
+            <topicref type="topic" id="436905710726514" modified="2019-08-13T13:24:44.282Z" icon="0" href="Macros">
+              <caption translate="true">Macros</caption>
+              <topicref type="topic" id="43692603731653" modified="2019-08-13T13:24:44.287Z" icon="0" href="Amp_Command">
+                <caption translate="true">&amp; Command</caption>
+              </topicref>
+            </topicref>
+            <topicref type="topic" id="436904248928525" modified="2019-08-13T13:24:44.293Z" icon="0" href="Program-Control">
+              <caption translate="true">Program Control</caption>
+            </topicref>
+            <topicref type="topic" id="43688506710440" modified="2019-08-13T13:24:44.298Z" icon="0" href="Terminal-Window">
+              <caption translate="true">Terminal Window</caption>
+              <topicref type="topic" id="436905627487723" modified="2019-08-13T13:24:44.304Z" icon="0" href="Qout_Command">
+                <caption translate="true">? Command</caption>
+              </topicref>
+            </topicref>
+            <topicref type="topic" id="436903748633322" modified="2019-08-13T13:24:44.311Z" icon="0" href="Variables">
+              <caption translate="true">Variables</caption>
+            </topicref>
+          </topicref>
+        </topicref>
         <topicref type="topic" id="423891454294167" build="ALL" modified="2016-01-19T22:47:35.715Z" icon="0" href="X-Preprocessor-Directives">
           <caption translate="true">X# Preprocessor Directives</caption>
           <topicref type="topic" id="424525433369825" build="ALL" modified="2017-04-19T15:34:58.041Z" icon="0" href="pp-Command">

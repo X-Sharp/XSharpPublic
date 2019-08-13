@@ -480,6 +480,8 @@ namespace Microsoft.VisualStudio.Project
                 foreach (var item in group)
                 {
                     string fullPath = item.GetMetadataValue("fullpath");
+                    if (!File.Exists(fullPath))
+                        continue;
                     AssemblyName name = AssemblyName.GetAssemblyName(fullPath);
 
                     // Try with full assembly name and then with weak assembly name.

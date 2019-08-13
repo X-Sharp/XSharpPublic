@@ -2269,6 +2269,8 @@ namespace XSharpLanguage
             IToken lastToken = null;
             //
             stopToken = null;
+            if (tokens == null)
+                return tokenList;
 
             // locate the last token before the trigger point
             // Use binary search in stead of linear search

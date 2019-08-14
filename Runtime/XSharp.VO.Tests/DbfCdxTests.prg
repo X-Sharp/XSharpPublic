@@ -2950,9 +2950,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			SetDeleted ( TRUE  ) 	 
 			
-			#warning disabled following test because it makes tests stop responding
+//			#warning disabled following test because it makes tests stop responding
 			//  Here it hangs because SetDeleted() is true
-//			Assert.Equal(17 , (INT) OrdKeyCount() )
+			Assert.Equal(17 , (INT) OrdKeyCount() )
 			
 			DbCloseAll() 
 			
@@ -3064,11 +3064,61 @@ BEGIN NAMESPACE XSharp.VO.Tests
 //			SetDeleted ( TRUE )  
 			
 			// OrdKeyCount() hangs no matter how the SetDeleted() setting is. 
-			#warning disabled following test because it makes tests stop responding
-			// Assert.Equal(6, (INT) OrdKeyCount() ) // 6 , ok 
+//			#warning disabled following test because it makes tests stop responding
+			Assert.Equal(6, (INT) OrdKeyCount() ) // 6 , ok 
 
 			DbCloseAll() 
 		RETURN	
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD OrdKeyNo_with_no_condition() AS VOID
+			LOCAL cDBF AS STRING
+			LOCAL lDeleted AS LOGIC
+			LOCAL nCounter AS INT
+			
+			lDeleted := SetDeleted()
+
+			TRY
+				RddSetDefault("DBFCDX")
+				cDBF := GetTempFileName()
+				
+				DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } , { "a1" , "g1", "g2" , "o5"  } )
+	
+				DbUseArea( ,,cDBF , , TRUE )		
+				DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+				DbSetOrder ( 1 ) 
+	
+				lDeleted := SetDeleted ( FALSE  )
+				DbGoTop()
+				nCounter := 1
+				DO WHILE ! Eof()
+			       // ordKeyNo() returns zero based values if no condition is set,
+			       // e.g. if no filter, no scope or the setting setdeleted (false) is used.
+	//				? FieldGet ( 1 ) , OrdKeyNo()
+					Assert.Equal(nCounter , (INT)OrdKeyNo())
+					DbSkip(1)
+					nCounter ++
+				ENDDO               
+			
+				SetDeleted ( TRUE  ) // Now the ordkeyno() values are correctly one based.       
+			
+				DbGoTop()
+				nCounter := 1
+				DO WHILE ! Eof()
+	//				? FieldGet ( 1 ) , OrdKeyNo()
+					Assert.Equal(nCounter , (INT)OrdKeyNo())
+					DbSkip(1)
+					nCounter ++
+				ENDDO               
+	
+				DbCloseAll() 
+			FINALLY
+
+				SetDeleted( lDeleted )
+
+			END TRY
+		END METHOD
 
 
 

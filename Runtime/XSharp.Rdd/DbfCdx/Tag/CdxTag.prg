@@ -496,7 +496,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:Descending := lWasDescending
                 ELSE
                      records := 0
-                    IF SELF:GoTop()
+                    IF SELF:GoTop() .and. ! SELF:Stack:Empty
                         VAR topStack := SELF:CurrentStack
                         VAR page     := topStack:Page
                         DO WHILE TRUE

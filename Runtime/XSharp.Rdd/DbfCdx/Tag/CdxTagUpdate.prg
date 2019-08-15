@@ -346,9 +346,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         oldRoot:Write()
                     ENDIF
                 ENDIF
-                Header:RootPage := oPage:PageNo
-                Header:Write()
             ENDIF
+            Header:RootPage := oPage:PageNo
+            Header:Write()
             oPage:SetRoot()
             oPage:Write()
             _rootPage := oPage:PageNo

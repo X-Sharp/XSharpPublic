@@ -713,8 +713,8 @@ METHOD Pack() AS LOGIC
             ENDIF
         ENDDO
         //
-        SELF:_Hot := FALSE
         SELF:_RecCount := nTotal
+        SELF:_Hot := TRUE
         SELF:Flush()
         //
     ENDIF
@@ -742,8 +742,8 @@ METHOD Zap() AS LOGIC
         SELF:Goto(0)
         // Zap means, set the RecCount to zero, so any other write with overwrite datas
         SELF:_RecCount := 0
-        SELF:_Header:isHot := TRUE
-        SELF:_writeHeader()
+        SELF:_Hot := TRUE
+        isOk := SELF:Flush()
         // Memo File ?
         IF SELF:_HasMemo 
             // Zap Memo

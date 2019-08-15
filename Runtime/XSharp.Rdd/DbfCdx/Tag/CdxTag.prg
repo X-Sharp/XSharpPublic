@@ -481,7 +481,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     recno := SELF:_Recno
                     last := SELF:_oRdd:RecCount + 1
                     count := 0
-                    local nToSkip as LONG
                     local previous as long
                     previous := recno
                     DO WHILE recno != 0 .AND. recno < last

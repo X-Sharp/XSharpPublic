@@ -22,7 +22,7 @@
 #define Version             "2.0.4.0"
 #define FileNameVersion     "2GA"
 #define VIVersion           "2.0.4.0"
-#define TouchDate           "2019-08-12"
+#define TouchDate           "2019-08-13"
 #define TouchTime           "02:00:00"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
@@ -319,7 +319,7 @@ Source: "{#VOXPorterBinFolder}Fab_VO_Entities.dll";       DestDir: "{app}\VOXPor
 Source: "{#VOXPorterBinFolder}XI*.dll";                   DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
 Source: "{#VOXPorterBinFolder}SDK_DEFINES.dll";           DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
 Source: "{#VOXPorterFolder}VOXporter.ini";                DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
-;Source: "{#VOXPorterFolder}ReadMe.rtf";                   DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
+Source: "{#VOXPorterFolder}ReadMe.rtf";                   DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
 ; Templates
 Source: "{#VOXPorterFolder}Templates\*";                   DestDir: "{app}\VOXPorter\Templates"; Flags: {#StdFlags} ; 
 

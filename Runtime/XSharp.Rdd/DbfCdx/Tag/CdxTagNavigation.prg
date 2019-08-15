@@ -83,9 +83,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ELSE
                         recno := SELF:_locateFirst(SELF:_rootPage)
                     ENDIF
-                    result := SELF:_oRdd:__Goto(recno)
-                    IF result
-                        result := SELF:_oRdd:SkipFilter(1)  
+                    IF (recno > 0)
+                        result := SELF:_oRdd:__Goto(recno)
+                        IF result
+                            result := SELF:_oRdd:SkipFilter(1)  
+                        ENDIF
+                    ELSE
+                        result := SELF:_oRdd:__Goto(0)
+                        SELF:_oRdd:_Eof := TRUE
+                        result := TRUE
                     ENDIF
                 ENDIF
                 RETURN result    
@@ -295,7 +301,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 page := self:GetPage(nextPage)
                 pos += page:NumKeys
             enddo
-            RETURN pos
+            RETURN pos+1
             
               
             

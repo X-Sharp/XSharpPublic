@@ -697,7 +697,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     var nextLeaf := leaves[nPos+1]
                     var prevLeaf := leaves[nPos-1]
                     nextLeaf:Dup := _getDupCount(prevLeaf:Key, nextLeaf:Key,nextLeaf:Trail)
-                elseif nPos == 0
+                elseif nPos == 0 .and. _Leaves:Count > 1
                     leaves[1]:Dup := 0
                 endif
                 _Leaves:RemoveAt(nPos)

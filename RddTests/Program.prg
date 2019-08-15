@@ -7,7 +7,9 @@ using System.IO
 [STAThread];
 FUNCTION Start() AS VOID
     TRY
-        TestHexString()
+        testAOtter()
+        //Ticket127()
+        //TestHexString()
         //FrankM()
         //Ticket118a()
         //Ticket118()
@@ -110,6 +112,188 @@ FUNCTION Start() AS VOID
     END TRY
     WAIT
     RETURN
+
+Function TestAOtter() as void
+
+LOCAL cDBF, cPfad, cDriver, cIndex AS STRING
+LOCAL aFields, aValues AS ARRAY
+LOCAL i AS DWORD
+LOCAL lUseGermanDll AS LOGIC
+
+                 SetAnsi ( TRUE )
+
+     SetCentury( TRUE )
+
+     cDriver := RddSetDefault ( "DBFCDX" )
+
+     // ----------------
+
+                 lUseGermanDll := TRUE
+
+                 // -------------
+
+                 IF lUseGermanDll
+
+                     SetInternational ( #clipper  )
+
+                 SetCollation ( #clipper )
+
+                                IF ! SetNatDLL ( "German" )
+
+                                                ? "German not loaded"
+
+                                ENDIF
+
+                 SetDateCountry ( DateCountry.German )
+
+                     SetThousandSep ( Asc ( "." ))
+
+                 SetDecimalSep ( Asc ( "," ))
+
+                 ELSE
+
+//            SetAppLocaleID(MAKELCID(MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN), SORT_GERMAN_PHONE_BOOK))  // Telefonbuch
+
+// SetAppLocaleID(MAKELCID(MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN), SORT_DEFAULT)) // Wörterbuch
+
+ENDIF
+
+                 cDBF := cPfad + "Foo"
+
+                 cIndex := cPfad + "Foox"
+
+                 FErase ( cIndex + IndexExt() )
+
+                 aFields := { { "LAST" , "C" , 20 , 0 } }
+
+                 aValues := { "Art" ,"Aero" , "Anfang",  "Goethe" , "Goldmann" ,"Ober" , "Otter" , "Unter" }
+
+
+                 ? DbCreate( cDBF , AFields)
+
+                 ? DbUseArea( ,,cDBF , , TRUE )
+
+                 FOR i := 1 UPTO ALen ( aValues )
+
+                                DbAppend()
+
+                                FieldPut ( 1 , aValues [ i ] )
+
+                 NEXT
+
+                 ? DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+                 ? DbCreateOrder ( "ORDER2" , cIndex , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+                 ? DbCreateOrder ( "ORDER3" , cIndex , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+
+                 ? DbSetOrder ( 1 )
+
+                 DbGoTop()
+
+                 ?
+
+                 ? "Seek OTTER", DbSeek ( "OTTER")
+
+                 ? DbRLock()
+
+                 FieldPut ( 1 , "Aotter" )
+
+                 ? DbCommit()
+
+                 ? DbRUnLock()
+
+     ?
+
+                 ? "Seek AOTTER" , DbSeek ( "AOTTER")
+
+                 ? DbRLock()
+
+                 FieldPut ( 1 , "Otter" )
+                 ? OrdKeyCount()
+                 ? OrdKeyNo()
+                 ? DbCommit()
+
+                 ? DbRUnLock()
+
+                 ?
+
+                 DbGoTop()
+
+                 DO WHILE ! Eof()
+
+                                ? FieldGet ( 1 )
+
+                                DbSkip ( 1 )
+
+                 ENDDO
+
+                 ?
+
+                 DbCloseAll()
+
+                 ? DbUseArea( ,,cDBF , , TRUE )
+
+                 ? DbSetIndex ( cIndex )
+
+                ? DbSetOrder ( 1 )
+
+                 ? "Seek OTTER" , DbSeek ( "OTTER")
+
+                 ? DbRLock()
+
+                 FieldPut ( 1 , "Aotter" )
+
+                 ? DbCommit()
+
+                 ? DbRUnLock()
+
+                 ?
+
+                 DbGoTop()
+
+                 DO WHILE ! Eof()
+
+                                ? FieldGet ( 1 )
+
+                                DbSkip ( 1 )
+
+                 ENDDO
+
+                 DbCloseAll()
+
+                 RddSetDefault ( cDriver )
+
+                 RETURN
+
+
+    FUNCTION Ticket127() AS VOID
+	LOCAL cDBF, cPfad, cIndex AS STRING
+
+	RddSetDefault ( "DBFCDX" ) 
+	
+	cPfad := "c:\test\"
+
+	cDBF := cPfad + "Test.dbf"
+	cIndex := cPfad + "TestCDX.cdx"
+	FErase(cDbf)
+	FErase(cPfad + ".cdx")
+	FErase(cIndex)
+	? cDbf , File(cDbf)
+	? cIndex , File(cIndex)
+
+	? DbCreate( cDBF , { { "LAST" , "C" , 20 , 0 } } )
+	? DbUseArea( ,,cDBF , , TRUE )
+	// OK
+	? DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+	DbCloseArea()
+
+	FErase(cDbf)
+//	FErase(cIndex) // no error if file deleted in advance
+	? DbCreate( cDBF , { { "LAST" , "C" , 20 , 0 } } )
+	? DbUseArea( ,,cDBF , , TRUE )
+	// exception here:
+	? DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+	DbCloseArea()
+RETURN
 FUNCTION TestHexString() AS VOID 
 LOCAL x AS INT64 
 

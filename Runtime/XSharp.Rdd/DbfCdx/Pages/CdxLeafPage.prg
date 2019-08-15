@@ -740,9 +740,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN CdxAction.Ok
             ENDIF
             VAR leaves  := SELF:_Leaves
-            //SELF:InitBlank(SELF:Tag)
             SELF:ClearRecordsAndKeys()
-            //LOCAL lastKey  := NULL AS BYTE[]
 
             LOCAL nKey   := 0 AS INT
             LOCAL nStart := CDXLEAF_HEADERLEN + SELF:Freespace AS WORD
@@ -750,13 +748,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR nDup   := leaf:Dup
                 VAR nTrail := leaf:Trail
                 IF nKey == 0
-                    nDup := 0
-		ELSE
-		    NOP
-		    // The dup and trail values are already stored in the leaves
+                    nDup := 0  // The first key cannot have any duplicates
+		        ELSE
+		            NOP // The dup and trail values are already stored in the leaves
                 ENDIF
-                //lastKey  := Leaf:Key
-
                 VAR nBytesToCopy := SELF:KeyLength - nDup - nTrail
                 IF SELF:Freespace < (SELF:DataBytes + nBytesToCopy)
                     VAR action := CdxAction.SplitLeaf(SELF, -1, NULL, 0)

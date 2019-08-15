@@ -3234,6 +3234,43 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		END METHOD
 
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD DBSeek_test() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL cRet AS STRING
+
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
+			FErase ( cDbf + IndexExt() )
+			
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } , { "u1" , "u2", "o2" , "o1"  } )
+
+			DbUseArea( ,,cDBF , , TRUE )                
+			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			DbSetOrder ( 1 )
+			DbGoTop()
+			cRet := ""
+			DO WHILE ! Eof()
+				cRet += AllTrim( FieldGet ( 1 ) )
+				DbSkip ( 1 )                       
+			ENDDO
+			Assert.Equal( "o1o2u1u2" , cRet )
+			Assert.False( DbSeek ( "P" , FALSE , TRUE ) ) // seek for last occurence       
+			
+			OrdDescend ( , , TRUE )
+			DbGoTop()
+			cRet := ""
+			DO WHILE ! Eof()
+				cRet += AllTrim( FieldGet ( 1 ) )
+				DbSkip ( 1 )                       
+			ENDDO               
+			Assert.Equal( "u2u1o2o1" , cRet )
+			Assert.False( DbSeek ( "P" , FALSE , TRUE ) ) // seek for last occurence       
+		
+			DbCloseAll()
+		END METHOD
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG
             ++nCounter

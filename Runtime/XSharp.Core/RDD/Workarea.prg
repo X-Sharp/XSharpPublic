@@ -38,8 +38,6 @@ BEGIN NAMESPACE XSharp.RDD
 		PUBLIC _Found			AS LOGIC	
 		/// <summary>Is at top?</summary>
 		PUBLIC _Top			    AS LOGIC	
-		/// <summary>Result of last macro evaluation</summary>
-		PUBLIC _Result		    AS OBJECT                
 		/// <summary>Current Scope</summary>
 		PUBLIC _ScopeInfo		AS DbScopeInfo
 		/// <summary>Current Filter</summary>
@@ -57,8 +55,6 @@ BEGIN NAMESPACE XSharp.RDD
 		PUBLIC _TransRec		AS LOGIC
 		/// <summary>Size of record</summary>
 		PUBLIC _RecordLength	AS LONG   	
-		/// <summary>Current Record</summary>
-		PUBLIC _RecordBuffer	AS BYTE[]	
 		/// <summary>Field delimiter (for DELIM RDD)</summary>
 		PUBLIC _Delimiter	:= "" AS STRING	
 		/// <summary>Field separator (for DELIM RDD)</summary>
@@ -67,10 +63,6 @@ BEGIN NAMESPACE XSharp.RDD
 		PUBLIC _ReadOnly		AS LOGIC	
 		/// <summary> Is the file opened Shared ?</summary>
 		PUBLIC _Shared			AS LOGIC	
-		/// <summary>File handle of the current file</summary>
-		PUBLIC _hFile			AS IntPtr
-		/// <summary>Should the file be flushed (it is dirty) ?</summary>
-		PUBLIC _Flush			AS LOGIC		
 		
 		// Memo and Order Implementation
 		/// <summary>Current memo implementation.</summary>
@@ -97,7 +89,6 @@ BEGIN NAMESPACE XSharp.RDD
 			SELF:_Parents	 := 0   
 			SELF:_Memo		 := BaseMemo{SELF}
 			SELF:_Order		 := BaseIndex{SELF}     
-			SELF:_Result	 := NULL
 			SELF:_FileName	 := String.Empty
 			SELF:_Fields	 := NULL
 			SELF:_Area		 := 0
@@ -105,7 +96,6 @@ BEGIN NAMESPACE XSharp.RDD
 			SELF:_ReadOnly   := FALSE
 			SELF:_MaxFieldNameLength := 10
 			SELF:_Alias		 := String.Empty
-			SELF:_RecordBuffer := NULL
 			SELF:_Disposed   := FALSE
             SELF:_FieldNames := Dictionary<STRING, INT>{Stringcomparer.OrdinalIgnoreCase}
 		/// <exclude />	
@@ -792,6 +782,7 @@ BEGIN NAMESPACE XSharp.RDD
 			VIRTUAL METHOD RelEval(relinfo AS DbRelInfo) AS LOGIC
                 // Evaluate block in the Area of the Parent
                 VAR originalArea := XSharp.RuntimeState.CurrentWorkArea
+                SELF:_EvalResult := NULL
                 TRY
                     XSharp.RuntimeState.CurrentWorkArea := relinfo:Parent:Area
                     SELF:_EvalResult := relinfo:Parent:EvalBlock(relinfo:Block)
@@ -966,22 +957,22 @@ BEGIN NAMESPACE XSharp.RDD
 			/// <inheritdoc />
 		VIRTUAL METHOD EvalBlock(oBlock AS ICodeblock) AS OBJECT
 				LOCAL currentWk AS DWORD
-                LOCAL result AS OBJECT
 				currentWk := XSharp.RuntimeState.Workareas:CurrentWorkAreaNO
                 // Only switch workarea when needed
+                SELF:_EvalResult := NULL
                 IF currentWk != SELF:Area
 				    TRY
 					    XSharp.RuntimeState.CurrentWorkArea := SELF:Area
-                        SELF:_EvalResult := result := oBlock:EvalBlock()
+                        SELF:_EvalResult := oBlock:EvalBlock()
                     CATCH
                         THROW
 				    FINALLY
 					    XSharp.RuntimeState.Workareas:CurrentWorkAreaNO := currentWk
                     END TRY
                 ELSE
-                    SELF:_EvalResult := result := oBlock:EvalBlock()
+                    SELF:_EvalResult := oBlock:EvalBlock()
                 ENDIF
-				RETURN result 
+				RETURN SELF:_EvalResult 
 			
 			/// <inheritdoc />
 		VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
@@ -1048,7 +1039,6 @@ BEGIN NAMESPACE XSharp.RDD
 			
 			/// <inheritdoc />
 		VIRTUAL METHOD RecInfo(nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT  
-
 			RETURN NULL
 			
 			/// <inheritdoc />

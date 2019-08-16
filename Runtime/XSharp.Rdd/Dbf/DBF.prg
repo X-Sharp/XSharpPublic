@@ -714,8 +714,8 @@ METHOD Pack() AS LOGIC
         ENDDO
         //
         SELF:_RecCount := nTotal
-        SELF:_Hot := TRUE
-        SELF:Flush()
+        SELF:_Flush := TRUE
+        isOk := SELF:Flush()
         //
     ENDIF
     RETURN isOk
@@ -742,7 +742,7 @@ METHOD Zap() AS LOGIC
         SELF:Goto(0)
         // Zap means, set the RecCount to zero, so any other write with overwrite datas
         SELF:_RecCount := 0
-        SELF:_Hot := TRUE
+        SELF:_Flush := TRUE
         isOk := SELF:Flush()
         // Memo File ?
         IF SELF:_HasMemo 
@@ -1475,7 +1475,7 @@ METHOD GetValueLength(nFldPos AS LONG) AS LONG
     
     /// <inheritdoc />
 METHOD Flush() 			AS LOGIC
-    LOCAL isOk AS LOGIC
+    LOCAL isOk as LOGIC
     IF ! SELF:IsOpen
         RETURN FALSE
     ENDIF
@@ -1484,7 +1484,7 @@ METHOD Flush() 			AS LOGIC
         SELF:_DbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
         RETURN FALSE
     ENDIF
-    IF SELF:_Hot 
+    IF SELF:_Hot .or. SELF:_Flush
         isOk := SELF:GoCold()
         IF isOk
             IF SELF:Shared 

@@ -54,7 +54,12 @@ namespace XSharp.MacroCompiler
             }
             else if ((symbol as SymbolList)?.HasMethodBase == true)
             {
+                // when there is a method in an xsharp runtime library
+                // and another in a users library then we allow the users code to override the built in method
+                // this is NOT allowed for constructors but only for normal static methods
                 var methods = symbol as SymbolList;
+                var ourmethods = new SymbolList();
+                var theirmethods = new SymbolList();
                 for (int i = 0; i<methods.Symbols.Count; i++)
                 {
                     var m = methods.Symbols[i];
@@ -63,7 +68,24 @@ namespace XSharp.MacroCompiler
                         CheckArguments(m as MemberSymbol, ((MethodBaseSymbol)m).Parameters, args, ref ovRes, options);
                         if (ovRes?.Exact == true)
                             break;
+                        if (m is MethodSymbol ms)
+                        {
+                            if (ms.IsInXSharpRuntime())
+                                ourmethods.Add(ms);
+                            else
+                                theirmethods.Add(ms);
+                        }
                     }
+                }
+                // When we find exactly one match in their code and it overrides
+                // a method in the X# runtime then use that method.
+                if (ourmethods.Symbols.Count > 0 && theirmethods.Symbols.Count == 1)
+                {
+                    methods.Symbols.Clear();
+                    methods.Symbols.AddRange(theirmethods.Symbols);
+                    var m = theirmethods.Symbols[0];
+                    ovRes = null;
+                    CheckArguments(m as MemberSymbol, ((MethodBaseSymbol)m).Parameters, args, ref ovRes, options);
                 }
             }
 

@@ -33,7 +33,21 @@ namespace XSharp.MacroCompiler
             }
             return false;
         }
-
+        internal static bool IsInXSharpRuntime(this MethodSymbol s)
+        {
+            string asmName = s.Method.DeclaringType.Assembly.GetName().Name.ToLower();
+            switch (asmName)
+            {
+                case "xsharp.core":
+                case "xsharp.rdd":
+                case "xsharp.rt":
+                case "xsharp.vo":
+                case "xsharp.vfp":
+                case "xsharp.xpp":
+                    return true;
+            }
+            return false;
+        }
         internal static Symbol UniqueIdent(this Symbol s)
         {
             if (s is SymbolList)

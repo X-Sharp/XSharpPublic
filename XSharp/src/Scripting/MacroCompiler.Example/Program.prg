@@ -25,6 +25,9 @@ FUNCTION A(i REF OBJECT) AS INT
     i := 1000 + v
     RETURN v
 
+FUNCTION AllTrim(cValue as STRING) AS STRING
+    RETURN "MyAlltrim()"
+
 FUNCTION I0() AS INT
     RETURN 123;
 
@@ -715,7 +718,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| M.NAME := \"Nikos\"}", Args(), "MemVarPut(NAME):Nikos", typeof(STRING))
         TestMacro(mc, e"{|| @@M.NAME}", Args(), "FieldGet(M,NAME)", typeof(STRING))
         TestMacro(mc, e"{|| @@M.NAME := \"Nikos\"}", Args(), "FieldSet(M,NAME):Nikos", typeof(STRING))
-
+        TestMacro(mc, e"{|| Alltrim('abc')}", Args(), "MyAlltrim()", typeof(STRING))
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         RETURN
 

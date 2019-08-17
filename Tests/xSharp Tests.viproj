@@ -39011,7 +39011,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOGUIClasses,1,0,1.1.303.0
+ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
 [C386 - Probem embedding native resource files Resources]
 [C386 - Probem embedding native resource files Native Resources]
 NativeResourceFile = External , %AppPath%\Prg\C386.rc
@@ -48343,8 +48343,9 @@ FileType = Code
 CopyToBin = 0
 [C475 - Runtime problems comparing SYMBOL/DATE to NULL/NULL_OBJECT References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+ReferenceGAC = CLR4,XSharp.Core
+ReferenceGAC = CLR4,XSharp.RT
+ReferenceGAC = CLR4,XSharp.VO
 [C475 - Runtime problems comparing SYMBOL/DATE to NULL/NULL_OBJECT Resources]
 [C475 - Runtime problems comparing SYMBOL/DATE to NULL/NULL_OBJECT Native Resources]
 [C475 - Runtime problems comparing SYMBOL/DATE to NULL/NULL_OBJECT License files]
@@ -55256,10 +55257,10 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOGUIClasses,1,0,1.1.303.0
-ReferenceGAC = VulcanVOSystemClasses,1,0,1.1.303.0
-ReferenceGAC = VulcanVORDDClasses,1,0,1.1.303.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVORDDClasses,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
 [C541 - Runtime AccessViolationException with VOSTRUCT and PSZ Resources]
 [C541 - Runtime AccessViolationException with VOSTRUCT and PSZ Native Resources]
 NativeResourceFile = External , %AppPath%\Resources\C541.rc
@@ -57185,9 +57186,9 @@ FileType = Code
 CopyToBin = 0
 [C560 - CreateInstance() cannot "see" classes with namespaces References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VO.dll,1,1
+ReferenceGAC = CLR4,XSharp.Core
+ReferenceGAC = CLR4,XSharp.RT
+ReferenceGAC = CLR4,XSharp.VO
 [C560 - CreateInstance() cannot "see" classes with namespaces Resources]
 [C560 - CreateInstance() cannot "see" classes with namespaces Native Resources]
 [C560 - CreateInstance() cannot "see" classes with namespaces License files]
@@ -68468,9 +68469,9 @@ FileType = Code
 CopyToBin = 0
 [C667 - XPP Test App References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.XPP.dll,1,1
+ReferenceGAC = CLR4,XSharp.Core
+ReferenceGAC = CLR4,XSharp.RT
+ReferenceGAC = CLR4,XSharp.VO
 [C667 - XPP Test App Resources]
 [C667 - XPP Test App Native Resources]
 [C667 - XPP Test App License files]
@@ -69577,10 +69578,10 @@ FileType = Code
 CopyToBin = 0
 [R678 References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Rdd.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VO.dll,1,1
+ReferenceGAC = CLR4,XSharp.Core
+ReferenceGAC = CLR4,XSharp.RT
+ReferenceGAC = CLR4,XSharp.VO
+ReferenceGAC = CLR4,XSharp.Rdd
 [R678 Resources]
 [R678 Native Resources]
 [R678 License files]
@@ -69680,9 +69681,9 @@ FileType = Code
 CopyToBin = 0
 [C678 - Internal compielr error with __Usual.ToObject() and /lb+ References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.3.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.3.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.3.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.0
 [C678 - Internal compielr error with __Usual.ToObject() and /lb+ Resources]
 [C678 - Internal compielr error with __Usual.ToObject() and /lb+ Native Resources]
 [C678 - Internal compielr error with __Usual.ToObject() and /lb+ License files]
@@ -69782,9 +69783,9 @@ FileType = Code
 CopyToBin = 0
 [C679 - Internal compiler error with STATIC LOCALS with no type clause and /vo2 References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.3.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.3.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.3.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.0
 [C679 - Internal compiler error with STATIC LOCALS with no type clause and /vo2 Resources]
 [C679 - Internal compiler error with STATIC LOCALS with no type clause and /vo2 Native Resources]
 [C679 - Internal compiler error with STATIC LOCALS with no type clause and /vo2 License files]

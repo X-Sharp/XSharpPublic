@@ -83,15 +83,13 @@ namespace XSharp.MacroCompiler
                 {
                     methods.Symbols.Clear();
                     methods.Symbols.AddRange(theirmethods.Symbols);
+                    ovRes = null;
                     for (int i = 0; i < methods.Symbols.Count; i++)
                     {
                         var m = methods.Symbols[i];
-                        if ((m as MethodSymbol)?.Method.IsStatic == isStatic || m is ConstructorSymbol)
-                        {
-                            CheckArguments(m as MemberSymbol, ((MethodBaseSymbol)m).Parameters, args, ref ovRes, options);
-                            if (ovRes?.Exact == true)
-                                break;
-                        }
+                        CheckArguments(m as MemberSymbol, ((MethodBaseSymbol)m).Parameters, args, ref ovRes, options);
+                        if (ovRes?.Exact == true)
+                            break;
                     }
                 }
             }

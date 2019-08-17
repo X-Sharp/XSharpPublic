@@ -18,7 +18,7 @@ namespace XSharp.MacroCompiler
     }
     internal partial class SymbolList : Symbol
     {
-        internal override string FullName { get { return "<symbol group>"; } }
+        internal override string FullName { get { return "<symbol group>(" +this.Symbols.Count.ToString()+")"; } }
     }
     internal abstract partial class ContainerSymbol : Symbol
     {
@@ -67,7 +67,7 @@ namespace XSharp.MacroCompiler
     }
     internal partial class ParameterListSymbol : Symbol
     {
-        internal override string FullName { get { return "<parameter-list>"; } }
+        internal override string FullName { get { return "<parameter-list>("+this.Parameters.Length.ToString()+")"; } }
     }
     internal abstract partial class MethodBaseSymbol : MemberSymbol
     {

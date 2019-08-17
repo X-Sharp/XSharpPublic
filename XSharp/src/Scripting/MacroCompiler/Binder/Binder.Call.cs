@@ -58,7 +58,7 @@ namespace XSharp.MacroCompiler
                 // and another in a users library then we allow the users code to override the built in method
                 // this is NOT allowed for constructors but only for normal static methods
                 var methods = symbol as SymbolList;
-                var ourmethods = new SymbolList();
+                bool inRuntime = false;
                 var theirmethods = new SymbolList();
                 for (int i = 0; i<methods.Symbols.Count; i++)
                 {
@@ -71,21 +71,28 @@ namespace XSharp.MacroCompiler
                         if (m is MethodSymbol ms)
                         {
                             if (ms.IsInXSharpRuntime())
-                                ourmethods.Add(ms);
+                                inRuntime = true;
                             else
                                 theirmethods.Add(ms);
                         }
                     }
                 }
-                // When we find exactly one match in their code and it overrides
-                // a method in the X# runtime then use that method.
-                if (ourmethods.Symbols.Count > 0 && theirmethods.Symbols.Count == 1)
+                // When we find one or more matches in their code and they override
+                // a method in the X# runtime then only look at their overrides
+                if (inRuntime && theirmethods.Symbols.Count > 0)
                 {
                     methods.Symbols.Clear();
                     methods.Symbols.AddRange(theirmethods.Symbols);
-                    var m = theirmethods.Symbols[0];
-                    ovRes = null;
-                    CheckArguments(m as MemberSymbol, ((MethodBaseSymbol)m).Parameters, args, ref ovRes, options);
+                    for (int i = 0; i < methods.Symbols.Count; i++)
+                    {
+                        var m = methods.Symbols[i];
+                        if ((m as MethodSymbol)?.Method.IsStatic == isStatic || m is ConstructorSymbol)
+                        {
+                            CheckArguments(m as MemberSymbol, ((MethodBaseSymbol)m).Parameters, args, ref ovRes, options);
+                            if (ovRes?.Exact == true)
+                                break;
+                        }
+                    }
                 }
             }
 

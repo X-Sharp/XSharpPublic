@@ -2035,6 +2035,77 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD NTX_Pack() AS VOID
+			LOCAL cDbf AS STRING
+
+			RddSetDefault("DBFNTX")
+			cDBF := GetTempFileName()
+			FErase ( cDbf + IndexExt() )
+			
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } , { "a1" , "o5" , "g2", "g1" }	)
+			
+			DbUseArea( ,,cDBF , , FALSE )
+			DbGoTop()
+			DbDelete()
+			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper (	_Field->LAST) } )
+			DbCloseArea()
+			
+			DbUseArea( ,,cDBF , , FALSE )	 // open not shared
+			DbSetIndex ( cDbf ) 
+			
+			// Note: the OrdKeyCount() call below seems to be responsible that	later on DbPack() throws a 
+			// RDD exception - but only if the "DBFNTX" driver is used ! 
+			//
+			// When you deactivate the OrdKeycount() call, DBPack() returns true	and the DBF has AS expected 
+			// 3 records - but the NTX is damaged.
+			
+			Assert.Equal((INT) OrdKeyCount() , 4)
+			Assert.Equal((INT) RecCount() , 4)
+			DbPack()
+			Assert.Equal((INT) OrdKeyCount() , 3)
+			Assert.Equal((INT) RecCount() , 3)
+			DbCloseArea()
+		RETURN
+
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD NTX_CDX_Zap() AS VOID
+			SELF:NTX_CDX_Zap_helper("DBFNTX")
+			SELF:NTX_CDX_Zap_helper("DBFCDX")
+		END METHOD
+		PROTECTED METHOD NTX_CDX_Zap_helper(cDriver AS STRING) AS VOID
+			LOCAL cDbf AS STRING
+
+			RddSetDefault(cDriver)
+			cDBF := GetTempFileName()
+			FErase ( cDbf + IndexExt() )
+			
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } , { "a1" , "o5" , "g2", "g1" }	)
+			
+			DbUseArea( ,,cDBF , , FALSE )
+			DbGoTop()
+			DbDelete()
+			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper (	_Field->LAST) } )
+			DbCloseAll()
+			
+			DbUseArea( ,,cDBF , , FALSE ) // open not shared
+			DbSetIndex ( cDbf )
+			
+			Assert.Equal(4 , (INT) OrdKeyCount() )
+			Assert.Equal(4 , (INT) RecCount() )
+			DbZap()
+			Assert.Equal(0 , (INT) OrdKeyCount() )
+			Assert.Equal(0 , (INT) RecCount() )
+			
+			DbGoTop()
+			Assert.True( Eof() )
+			Assert.Equal(0 , (INT) OrdKeyCount() )
+			Assert.Equal(0 , (INT) RecCount() )
+			DbCloseAll()
+		RETURN
+
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
             STATIC nCounter AS LONG

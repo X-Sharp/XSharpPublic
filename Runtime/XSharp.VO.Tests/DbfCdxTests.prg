@@ -3232,6 +3232,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			ENDDO
 			Assert.Equal("a1g2o5" , cRet )
 
+			DbCloseArea()
 		END METHOD
 
 

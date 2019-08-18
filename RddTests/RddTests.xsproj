@@ -152,6 +152,11 @@
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Runtime\XSharp.VFP\XSharp.VFP.xsproj">
+      <Name>XSharp.VFP</Name>
+      <Project>{3a771f0e-9400-4a19-8663-c71567ebfa29}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Runtime\XSharp.VO\XSharp.VO.xsproj">
       <Name>XSharp.VO</Name>
       <Project>{06099c3d-1697-4eb1-9f53-8a9a50b9eacd}</Project>

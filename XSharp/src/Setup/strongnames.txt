@@ -1,0 +1,29 @@
+;This file is generated and then later used by inno to read the strong names of the X# Runtime assemblies
+[StrongNames]
+XSharp.Core.dll=XSharp.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL
+XSharp.MacroCompiler.dll=XSharp.MacroCompiler, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL
+XSharp.Rdd.dll=XSharp.Rdd, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL
+XSharp.RT.dll=XSharp.RT, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL
+XSharp.VFP.dll=XSharp.VFP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL
+XSharp.VO.dll=XSharp.VO, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL
+XSharp.XPP.dll=XSharp.XPP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL
+VOConsoleClasses.dll=VOConsoleClasses, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a967d8055360a7b9, ProcessorArchitecture=X86
+VOGUIClasses.dll=VOGUIClasses, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a967d8055360a7b9, ProcessorArchitecture=X86
+VOInternetClasses.dll=VOInternetClasses, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a967d8055360a7b9, ProcessorArchitecture=X86
+VORDDClasses.dll=VORDDClasses, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a967d8055360a7b9, ProcessorArchitecture=MSIL
+VOReportClasses.dll=VOReportClasses, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a967d8055360a7b9, ProcessorArchitecture=X86
+VOSQLClasses.dll=VOSQLClasses, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a967d8055360a7b9, ProcessorArchitecture=X86
+VOSystemClasses.dll=VOSystemClasses, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a967d8055360a7b9, ProcessorArchitecture=MSIL
+VOWin32APILibrary.dll=VOWin32APILibrary, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a967d8055360a7b9, ProcessorArchitecture=X86
+XSharp.Build.dll=XSharp.Build, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL
+XSharp.CodeGenerator.dll=XSharp.CodeGenerator, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL
+XSharp.VODesigners.dll=XSharp.VODesigners, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL
+XSharp.VSParser.dll=XSharp.VSParser, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL
+XSharpCodeDomProvider.dll=XSharpCodeDomProvider, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL
+XSharpColorizer.dll=XSharpColorizer, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL
+XSharpDebugger.dll=XSharpDebugger, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=X86
+XSharpModel.dll=XSharpModel, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL
+XSharpProject.dll=XSharpProject, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=X86
+XSharpVoEditors.dll=XSharpVoEditors, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=X86
+System.Collections.Immutable.dll=System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, ProcessorArchitecture=MSIL
+System.Reflection.Metadata.dll=System.Reflection.Metadata, Version=1.4.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, ProcessorArchitecture=MSIL

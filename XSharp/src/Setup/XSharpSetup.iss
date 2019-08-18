@@ -4,45 +4,53 @@
 
 ; mssigntool = "c:\Program Files (x86)\Windows Kits\10\bin\10.0.17134.0\x86\signtool.exe"   $p
 
-
-
 #ifndef Compression
 #define Compression     "lzma/ultra64"
 ; "lzma/ultra"
 ;#define Compression     "none" 
 #endif
 
-#define FOX
-;#undef FOX
+;#define FOX
+#undef FOX
+#define VSHELP
+;#undef VSHELP
 ; define the next line to prevent cab building and have a fast test
 ;#define FAST
 
 ; version info and similar stuff.
-  
+
+           
 #define Version             "2.0.4.0"
+#define AssemblyVersion     "2.0.0.0"
 #define FileNameVersion     "2GA"
 #define VIVersion           "2.0.4.0"
-#define TouchDate           "2019-08-13"
+#define TouchDate           "2019-08-18"
 #define TouchTime           "02:00:00"
 
-#define DevFolder           "C:\Xsharp\Dev\XSharp"
-#define DevPublicFolder     "C:\Xsharp\DevPublic"
-#define SetupFolder         DevFolder + "\src\Setup"
+; Folder names
 
-#define BinPFolder          DevPublicFolder + "\Binaries\Release\"
+#define DevFolder           "C:\Xsharp\Dev\XSharp\"
+#define DevPublicFolder     "C:\Xsharp\DevPublic\"
+#define SetupFolder         DevFolder + "src\Setup\"
+
+#define BinPFolder          DevPublicFolder + "Binaries\Release\"
 #define BinRtFolder         "C:\Xsharp\DevRt\Binaries\Release\"
 #define BinRtDFolder        "C:\Xsharp\DevRt\Binaries\Debug\"
 #define BinRtHelpFolder     "C:\Xsharp\DevRt\Binaries\Help\"
 #define BinRtVoHelpFolder   "C:\Xsharp\DevRt\Binaries\VoHelp\"
-#define ObjFolder           DevPublicFolder +"\Binaries\Obj\"
+#define ObjFolder           DevPublicFolder +"Binaries\Obj\"
 #define DebuggerObjFolder   ObjFolder + "Release\XSharpDebugger\"
 #define ProjectObjFolder    ObjFolder + "Release\XSharpProject\"
-#define BinDFolder          DevFolder + "\Binaries\Debug\net46\"
-#define BinRFolder          DevFolder + "\Binaries\Release\net46\"
-#define BinDllDFolder       DevFolder + "\Binaries\Debug\Dlls\"
-#define BinDllRFolder       DevFolder + "\Binaries\Release\Dlls\"
-#define BinCoreDFolder      DevFolder + "\Binaries\Release\netcoreapp2.0\"
-#define BinCoreRFolder      DevFolder + "\Binaries\Release\netcoreapp2.0\"
+#define BinDFolder          DevFolder + "Binaries\Debug\net46\"
+#define BinRFolder          DevFolder + "Binaries\Release\net46\"
+#define BinDllDFolder       DevFolder + "Binaries\Debug\Dlls\"
+#define BinDllRFolder       DevFolder + "Binaries\Release\Dlls\"
+#define BinCoreDFolder      DevFolder + "Binaries\Release\netcoreapp2.0\"
+#define BinCoreRFolder      DevFolder + "Binaries\Release\netcoreapp2.0\"
+
+#define StrongNamesTxt      SetupFolder +"strongnames.txt"
+#define GetStrongName(x)    ReadIni(StrongNamesTxt, 'Strongnames', x)
+
 
 #ifdef FOX
 #define Suffix              "Fox"
@@ -67,7 +75,7 @@
 #define InstallPath         "XSharpPath"
 
 ; Code Signing
-#define KeyFile             DevFolder + "\build\Signatures\XSharpCert.pfx"
+#define KeyFile             DevFolder + "build\Signatures\XSharpCert.pfx"
 #define TimeStampURL        "http://timestamp.globalsign.com/scripts/timstamp.dll"
 #define KeyPassword         "J1O39dGG6FPLXWj"
 #define Description         "XSharp, xBase compiler for .Net"
@@ -77,43 +85,38 @@
 
 ;Source Folders and other related stuff
 
-#define CommonFolder        DevFolder + "\src\Common\"
-#define ToolsFolder         DevFolder + "\src\Tools\"
-#define VOXporterFolder     DevPublicFolder + "\Binaries\Release\"
-#define VOXporterBinFolder  DevPublicFolder + "\Binaries\Release\"
-#define ExamplesFolder      DevPublicFolder + "\Samples\"
-#define ScriptFolder        DevPublicFolder + "\ScriptSamples\"
-#define OutPutFolder        DevFolder + "\Binaries\Setup"
-#define DocFolder           DevFolder + "\Binaries\Help\"
-#define XIDEFolder          DevFolder + "\Xide\"
+#define CommonFolder        DevFolder + "src\Common\"
+#define ToolsFolder         DevFolder + "src\Tools\"
+#define VOXporterFolder     DevPublicFolder + "Binaries\Release\"
+#define VOXporterBinFolder  DevPublicFolder + "Binaries\Release\"
+#define ExamplesFolder      DevPublicFolder + "Samples\"
+#define ScriptFolder        DevPublicFolder + "ScriptSamples\"
+#define OutPutFolder        DevFolder + "Binaries\Setup"
+#define DocFolder           DevFolder + "Binaries\Help\"
+#define XIDEFolder          DevFolder + "Xide\"
 
-#define SnippetsSource      DevPublicFolder + "\VisualStudio\ProjectPackage\Snippets\"
+#define SnippetsSource      DevPublicFolder + "VisualStudio\ProjectPackage\Snippets\"
 #define XIDESetup           "XIDE_Set_up_1.18.exe"
 #define XIDEVersion         "1.18"
 #define StdFlags            "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
 #define GACInstall          "gacinstall uninsnosharedfileprompt uninsrestartdelete"
-#define GACShared           "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"
-#define ImmutableVersion    "System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
-#define MetadataVersion     "System.Reflection.Metadata, Version=1.4.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
-;#define ValueTupleVersion   "System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51"
-#define XSharpVersion       ", Version="+Version+", Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL" 
-#define VOSDKVersion        ", Version="+Version+", Culture=neutral, PublicKeyToken=a967d8055360a7b9, processorArchitecture=x86" 
-#define VOSDKVersionAnyCPU  ", Version="+Version+", Culture=neutral, PublicKeyToken=a967d8055360a7b9, processorArchitecture=MSIL" 
 #define RuntimeAppId        "{477B7845-48AF-4ACC-BAC6-90003B1EE562}"
 #define SetupAppId          "{32EB192A-B120-4055-800E-74B48B80DA06}"
-
-
-;
+#define GACx86              "{win}\Microsoft.NET\assembly\GAC_32\"
+#define GACIL               "{win}\Microsoft.NET\assembly\GAC_MSIL\";
 ; preprocess the help cab files
 ;
 #ifndef FAST
-#expr Exec( SetupFolder+'\makecabs.cmd')
+#expr Exec( SetupFolder+'GetStrongNames.exe')
+#ifdef VSHELP
+#expr Exec( SetupFolder+'makecabs.cmd')
+#endif
 #expr Exec( 'taskkill  /f /t /fi "IMAGENAME eq XSCompiler.exe"')
 
 ; Write version to VSIX files
 ; The updatevsix.exe is created from updatevsix.prg in this folder
-#expr Exec(SetupFolder+'\updatevsix.exe', '"' + VIVersion + '" "' + DebuggerObjFolder + 'extension.vsixmanifest"' ,SetupFolder,1,sw_ShowNormal)
-#expr Exec(SetupFolder+'\updatevsix.exe', '"' + VIVersion + '" "' + ProjectObjFolder  + 'extension.vsixmanifest"' ,SetupFolder,1,sw_ShowNormal)
+#expr Exec(SetupFolder+'updatevsix.exe', '"' + VIVersion + '" "' + DebuggerObjFolder + 'extension.vsixmanifest"' ,SetupFolder,1,sw_ShowNormal)
+#expr Exec(SetupFolder+'updatevsix.exe', '"' + VIVersion + '" "' + ProjectObjFolder  + 'extension.vsixmanifest"' ,SetupFolder,1,sw_ShowNormal)
 #endif
 
 ; Registry name for prgx extension
@@ -215,22 +218,15 @@ Name: "main";             Description: "The XSharp Compiler and Build System";  
 Name: "main\script";      Description: "Register .prgx as X# Script extension";             Types: full custom;         Flags: disablenouninstallwarning; 
 Name: "main\ngen";        Description: "Optimize performance by generating native images";  Types: full custom;         Flags: disablenouninstallwarning;    
 Name: "main\gac";         Description: "Register runtime DLLs in the GAC (recommended !)";  Types: full custom;         Flags: disablenouninstallwarning; 
+Name: "main\examples";    Description: "Install the Xsharp Examples";                       Types: full custom;         Flags: disablenouninstallwarning; 
 Name: "vs2015";           Description: "Visual Studio 2015 Integration";                    Types: full custom;         Flags: disablenouninstallwarning;  Check: Vs2015IsInstalled; 
 Name: "vs2015\help";      Description: "Install offline VS 2015 documentation";             Types: full custom;         Flags: disablenouninstallwarning;  Check: HelpViewer22Found; 
-Name: "vs2017";           Description: "Visual Studio 2017 & 2019 Integration";             Types: full custom;         Flags: disablenouninstallwarning;  Check: vs2017IsInstalled or Vs2019IsInstalled; 
+Name: "vs2017";           Description: "Visual Studio 2017 Integration";                    Types: full custom;         Flags: disablenouninstallwarning;  Check: vs2017IsInstalled; 
 ; Note: if you change the text in the next line remember to also adjust the text in the code that changes this line when the 2017 helpviewer is not installed
 Name: "vs2017\help";      Description: "Install offline VS 2017 documentation";             Types: full custom;         Flags: disablenouninstallwarning;  Check: vs2017IsInstalled; 
+Name: "vs2019";           Description: "Visual Studio 2019 Integration";                    Types: full custom;         Flags: disablenouninstallwarning;  Check: Vs2019IsInstalled; 
+Name: "vs2019\help";      Description: "Install offline VS 2019 documentation";             Types: full custom;         Flags: disablenouninstallwarning;  Check: vs2019IsInstalled; 
 Name: "xide";             Description: "Include the XIDE {# XIDEVersion} installer";        Types: full custom;         Flags: disablenouninstallwarning;
-
-
-
-;[Tasks]
-;Name: envPath; Description: "Add XSharp to your PATH variable" 
-;Name: desktopicon; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; Components: main
-;Name: desktopicon\common; Description: "For all users"; GroupDescription: "Additional icons:"; Components: main; Flags: exclusive
-;Name: desktopicon\user; Description: "For the current user only"; GroupDescription: "Additional icons:"; Components: main; Flags: exclusive unchecked
-;Name: quicklaunchicon; Description: "Create a &Quick Launch icon"; GroupDescription: "Additional icons:"; Components: main; Flags: unchecked
-;Name: associate; Description: "&Associate files"; GroupDescription: "Other tasks:"; Flags: unchecked
 
 [Dirs]
 Name: "{app}\Assemblies";
@@ -248,20 +244,29 @@ Name: "{app}\Snippets"
 Name: "{app}\Tools";
 Name: "{app}\Uninst";
 Name: "{app}\Xide";
+; Folders that depend on components
 Components: vs2015; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp";                              
-Components: vs2015; Name: "{userdocs}\Visual Studio 2015\Code Snippets\XSharp\My Code Snippets";   
+Components: vs2015; Name: "{userdocs}\Visual Studio 2015\Code Snippets\XSharp\My Code Snippets";  
+ 
 Components: vs2017; Name: "{code:GetVs2017IdeDir|1}\Extensions\XSharp";    Check: HasVs2017('1');
 Components: vs2017; Name: "{code:GetVs2017IdeDir|2}\Extensions\XSharp";    Check: HasVs2017('2');
 Components: vs2017; Name: "{code:GetVs2017IdeDir|3}\Extensions\XSharp";    Check: HasVs2017('3');
 Components: vs2017; Name: "{userdocs}\Visual Studio 2017\Code Snippets\XSharp\My Code Snippets";   
 
+Components: vs2019; Name: "{code:GetVs2019IdeDir|1}\Extensions\XSharp";    Check: HasVs2019('1');
+Components: vs2019; Name: "{code:GetVs2019IdeDir|2}\Extensions\XSharp";    Check: HasVs2019('2');
+Components: vs2019; Name: "{code:GetVs2019IdeDir|3}\Extensions\XSharp";    Check: HasVs2019('3');
+Components: vs2019; Name: "{userdocs}\Visual Studio 2019\Code Snippets\XSharp\My Code Snippets";   
+
 ; user template folders
 Components: vs2015; Name: "{userdocs}\Visual Studio 2015\Templates\ProjectTemplates\XSharp";   
 Components: vs2015; Name: "{userdocs}\Visual Studio 2015\Templates\ItemTemplates\XSharp";   
-Components: vs2017; Name: "{userdocs}\Visual Studio 2017\Templates\ProjectTemplates\XSharp";    Check: vs2017IsInstalled; 
-Components: vs2017; Name: "{userdocs}\Visual Studio 2017\Templates\ItemTemplates\XSharp";       Check: vs2017IsInstalled; 
-Components: vs2017; Name: "{userdocs}\Visual Studio 2019\Templates\ProjectTemplates\XSharp";    Check: vs2019IsInstalled; 
-Components: vs2017; Name: "{userdocs}\Visual Studio 2019\Templates\ItemTemplates\XSharp";       Check: vs2019IsInstalled; 
+
+Components: vs2017; Name: "{userdocs}\Visual Studio 2017\Templates\ProjectTemplates\XSharp";    
+Components: vs2017; Name: "{userdocs}\Visual Studio 2017\Templates\ItemTemplates\XSharp";       
+
+Components: vs2019; Name: "{userdocs}\Visual Studio 2019\Templates\ProjectTemplates\XSharp";    
+Components: vs2019; Name: "{userdocs}\Visual Studio 2019\Templates\ItemTemplates\XSharp";       
 
 
 [Languages]
@@ -350,39 +355,40 @@ Source: "{#BinPFolder}XSharp.Build.dll";                  DestDir: "{app}\MsBuil
 Source: "{#BinPFolder}XSharp.Build.pdb";                  DestDir: "{app}\MsBuild";        Flags: {#StdFlags}; 
 
 ;Documentation
-  Source: "{#DocFolder}XSharp.pdf";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags}; 
+Source: "{#DocFolder}XSharp.pdf";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags}; 
 Source: "{#DocFolder}XSharp.chm";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags}; 
+Source: "{#BinRtHelpFolder}XSRuntime.chm";               DestDir: "{app}\Help";        Flags: touch {#StdFlags}; 
+Source: "{#BinRtVoHelpFolder}XSVOSDK.chm";               DestDir: "{app}\Help";        Flags: touch {#StdFlags}; 
+#ifdef VSHELP
 Source: "{#DocFolder}XSharp.msha";                       DestDir: "{app}\Help";        Flags: touch {#StdFlags}; 
 Source: "{#DocFolder}XSharp.cab";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags} signonce; 
-Source: "{#BinRtHelpFolder}XSRuntime.chm";               DestDir: "{app}\Help";        Flags: touch {#StdFlags}; 
 Source: "{#BinRtHelpFolder}XSRuntime.cab";               DestDir: "{app}\Help";        Flags: touch {#StdFlags} signonce; 
-Source: "{#BinRtVoHelpFolder}XSVOSDK.chm";               DestDir: "{app}\Help";        Flags: touch {#StdFlags}; 
 Source: "{#BinRtVoHelpFolder}XSVOSDK.cab";               DestDir: "{app}\Help";        Flags: touch {#StdFlags} signonce; 
-
+#endif
 ;XIDE
 Components: Xide; Source: "{#XIDEFolder}{#XIDESetup}";   DestDir: "{app}\Xide";        Flags: touch {#StdFlags}; 
 
 ; Runtime in the GAC
 ; must list each file individually because of the strong name
-Components: main\gac;  Source: "{#BinRtFolder}XSharp.Core.dll";                    DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.Core{#XSharpVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}XSharp.Rdd.dll";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.Rdd{#XSharpVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}XSharp.VO.dll";                      DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.VO{#XSharpVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}XSharp.RT.dll";                      DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.RT{#XSharpVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}XSharp.XPP.dll";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.XPP{#XSharpVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}XSharp.VFP.dll";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.VFP{#XSharpVersion}" 
-Components: main\gac;  Source: "{#BinDllFolder}XSharp.MacroCompiler.dll";          DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.MacroCompiler{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinRtFolder}XSharp.Core.dll";                    DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "{# GetStrongName('xsharp.core.dll')}"; 
+Components: main\gac;  Source: "{#BinRtFolder}XSharp.Rdd.dll";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "{# GetStrongName('xsharp.rdd.dll')}";
+Components: main\gac;  Source: "{#BinRtFolder}XSharp.VO.dll";                      DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "{# GetStrongName('xsharp.vo.dll')}"; 
+Components: main\gac;  Source: "{#BinRtFolder}XSharp.RT.dll";                      DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "{# GetStrongName('xsharp.rt.dll')}"; 
+Components: main\gac;  Source: "{#BinRtFolder}XSharp.XPP.dll";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "{# GetStrongName('xsharp.xpp.dll')}";
+Components: main\gac;  Source: "{#BinRtFolder}XSharp.VFP.dll";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "{# GetStrongName('xsharp.vfp.dll')}";
+Components: main\gac;  Source: "{#BinDllFolder}XSharp.MacroCompiler.dll";          DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "{# GetStrongName('xsharp.macrocompiler.dll')}";
 Components: main\gac;  Source: "{#BinDllFolder}XSharp.MacroCompiler.Full.dll";     DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
 Components: main\gac;  Source: "{#BinFolder}XSharp.CodeAnalysis.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
 Components: main\gac;  Source: "{#BinFolder}XSharp.Scripting.dll";                 DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;
 
-Components: main\gac;  Source: "{#BinRtFolder}VOWin32APILibrary.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOWin32APILibrary{#VOSDKVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}VOSystemClasses.dll";                DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOSystemClasses{#VOSDKVersionAnyCPU}" 
-Components: main\gac;  Source: "{#BinRtFolder}VORDDClasses.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VORDDClasses{#VOSDKVersionAnyCPU}" 
-Components: main\gac;  Source: "{#BinRtFolder}VOSQLClasses.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOSQLClasses{#VOSDKVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}VOGUIClasses.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOGUIClasses{#VOSDKVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}VOReportClasses.dll";                DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOReportClasses{#VOSDKVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}VOConsoleClasses.dll";               DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOConsoleClasses{#VOSDKVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}VOInternetClasses.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOInternetClasses{#VOSDKVersion}" 
+Components: main\gac;  Source: "{#BinRtFolder}VOWin32APILibrary.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "{# GetStrongName('VOWin32APILibrary.dll')}"; 
+Components: main\gac;  Source: "{#BinRtFolder}VOSystemClasses.dll";                DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "{# GetStrongName('VOSystemClasses.dll')}";  
+Components: main\gac;  Source: "{#BinRtFolder}VORDDClasses.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "{# GetStrongName('VORDDClasses.dll')}";       
+Components: main\gac;  Source: "{#BinRtFolder}VOSQLClasses.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "{# GetStrongName('VOSQLClasses.dll')}";     
+Components: main\gac;  Source: "{#BinRtFolder}VOGUIClasses.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "{# GetStrongName('VOGUIClasses.dll')}";     
+Components: main\gac;  Source: "{#BinRtFolder}VOReportClasses.dll";                DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "{# GetStrongName('VOReportClasses.dll')}";  
+Components: main\gac;  Source: "{#BinRtFolder}VOConsoleClasses.dll";               DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "{# GetStrongName('VOConsoleClasses.dll')}"; 
+Components: main\gac;  Source: "{#BinRtFolder}VOInternetClasses.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "{# GetStrongName('VOInternetClasses.dll')}";
 
 
 ; Runtime
@@ -454,75 +460,80 @@ Source: "{#BinPFolder}SetupCheck2017.exe";                  DestDir: "{tmp}";   
 ; Deploy and Cleanup VS folders
 ; this images are the triggers to delete old files in the various VS Installations
 Components: vs2015;  Source: "{#BinPFolder}XSharpVSIXLogo.png ";               DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\Project";  Flags: {#StdFlags}; BeforeInstall: DeleteOldFiles(2015);
+
 Components: vs2017;  Source: "{#BinPFolder}XSharpVSIXLogo.png ";               DestDir: "{code:GetVs2017IdeDir|1}\Extensions\XSharp\Project"; Flags: {#StdFlags}; Check: HasVs2017('1'); BeforeInstall: DeleteOldFiles(20171);
 Components: vs2017;  Source: "{#BinPFolder}XSharpVSIXLogo.png ";               DestDir: "{code:GetVs2017IdeDir|2}\Extensions\XSharp\Project"; Flags: {#StdFlags}; Check: HasVs2017('2'); BeforeInstall: DeleteOldFiles(20172);
 Components: vs2017;  Source: "{#BinPFolder}XSharpVSIXLogo.png ";               DestDir: "{code:GetVs2017IdeDir|3}\Extensions\XSharp\Project"; Flags: {#StdFlags}; Check: HasVs2017('3'); BeforeInstall: DeleteOldFiles(20173);
 
+Components: vs2019;  Source: "{#BinPFolder}XSharpVSIXLogo.png ";               DestDir: "{code:GetVs2019IdeDir|1}\Extensions\XSharp\Project"; Flags: {#StdFlags}; Check: HasVs2019('1'); BeforeInstall: DeleteOldFiles(20191);
+Components: vs2019;  Source: "{#BinPFolder}XSharpVSIXLogo.png ";               DestDir: "{code:GetVs2019IdeDir|2}\Extensions\XSharp\Project"; Flags: {#StdFlags}; Check: HasVs2019('2'); BeforeInstall: DeleteOldFiles(20192);
+Components: vs2019;  Source: "{#BinPFolder}XSharpVSIXLogo.png ";               DestDir: "{code:GetVs2019IdeDir|3}\Extensions\XSharp\Project"; Flags: {#StdFlags}; Check: HasVs2019('3'); BeforeInstall: DeleteOldFiles(20193);
 
-Components: vs2015 or vs2017; Source: "{#BinDllFolder}XSharp.VSParser.dll";       DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinDllFolder}XSharp.VSParser.pdb";       DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
+
+Source: "{#BinDllFolder}XSharp.VSParser.dll";       DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
+Source: "{#BinDllFolder}XSharp.VSParser.pdb";       DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
 
 ; Codedom provider must go to the gac because of WPF
 ; always install this, also on a build server
 
-Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{app}\Extension\Project"; StrongAssemblyName: "XSharpCodeDomProvider{#XSharpVersion}" ; Flags: {#StdFlags} {#GACInstall};
+Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} {#GACInstall}; StrongAssemblyName: "{# GetStrongName('XSharpCodeDomProvider.dll')}" ; 
 Source: "{#BinPFolder}XSharpCodeDomProvider.pdb";         DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
 
 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpColorizer.dll";              DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} signonce; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpColorizer.pdb";              DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpModel.dll";                  DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} signonce; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpModel.pdb";                  DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharp.VsParser.dll";              DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} signonce; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharp.VsParser.pdb";              DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}System.Collections.Immutable.dll"; DestDir: "{app}\Extension\Project"; StrongAssemblyName: "{#ImmutableVersion}";  Flags: {#StdFlags} {#GACShared};
-Components: vs2015 or vs2017; Source: "{#BinPFolder}System.Reflection.Metadata.dll";   DestDir: "{app}\Extension\Project"; StrongAssemblyName: "{#MetadataVersion}";   Flags: {#StdFlags} {#GACShared};
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpProject.dll";                DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} signonce; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpProject.dll.config";         DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpProject.pdb";                DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpProject.pkgdef";             DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#ProjectObjFolder}extension.vsixmanifest";     DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}Designers.pkgdef";                 DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
+Source: "{#BinPFolder}XSharpColorizer.dll";              DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} signonce; 
+Source: "{#BinPFolder}XSharpColorizer.pdb";              DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
+Source: "{#BinPFolder}XSharpModel.dll";                  DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} signonce; 
+Source: "{#BinPFolder}XSharpModel.pdb";                  DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
+Source: "{#BinPFolder}XSharp.VsParser.dll";              DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} signonce; 
+Source: "{#BinPFolder}XSharp.VsParser.pdb";              DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
+Source: "{#BinPFolder}System.Collections.Immutable.dll"; DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} {#GACInstall} sharedfile;   StrongAssemblyName: "{# GetStrongName('System.Collections.Immutable.dll')}" ; 
+Source: "{#BinPFolder}System.Reflection.Metadata.dll";   DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} {#GACInstall} sharedfile;   StrongAssemblyName: "{# GetStrongName('System.Reflection.Metadata.dll')}" ;
+Source: "{#BinPFolder}XSharpProject.dll";                DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} signonce; 
+Source: "{#BinPFolder}XSharpProject.dll.config";         DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
+Source: "{#BinPFolder}XSharpProject.pdb";                DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
+Source: "{#BinPFolder}XSharpProject.pkgdef";             DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
+Source: "{#ProjectObjFolder}extension.vsixmanifest";     DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
+Source: "{#BinPFolder}Designers.pkgdef";                 DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
 
-Components: vs2015 or vs2017; Source: "Baggage\XSharp.ico";                             DestDir: "{app}\Extension\Project";  Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "Baggage\License.txt";                            DestDir: "{app}\Extension\Project";  Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpVSIXLogo.png ";               DestDir: "{app}\Extension\Project";  Flags: {#StdFlags}; 
+Source: "Baggage\XSharp.ico";                             DestDir: "{app}\Extension\Project";  Flags: {#StdFlags}; 
+Source: "Baggage\License.txt";                            DestDir: "{app}\Extension\Project";  Flags: {#StdFlags}; 
+Source: "{#BinPFolder}XSharpVSIXLogo.png ";               DestDir: "{app}\Extension\Project";  Flags: {#StdFlags}; 
 
 
 ; VOEditors
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharp.CodeGenerator.dll";          DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} signonce;  
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpVoEditors.dll";               DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} signonce; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharp.VODesigners.dll";            DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} signonce;
+Source: "{#BinPFolder}XSharp.CodeGenerator.dll";          DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} signonce;  
+Source: "{#BinPFolder}XSharpVoEditors.dll";               DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} signonce; 
+Source: "{#BinPFolder}XSharp.VODesigners.dll";            DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} signonce;
 
 
 ; Debugger
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpDebugger.dll";                DestDir: "{app}\Extension\Debugger"; Flags: {#StdFlags} signonce; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpDebugger.pdb";                DestDir: "{app}\Extension\Debugger"; Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpDebugger.pkgdef";             DestDir: "{app}\Extension\Debugger"; Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpDebugger.vsdconfig";          DestDir: "{app}\Extension\Debugger"; Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "Baggage\XSharp.ico";                             DestDir: "{app}\Extension\Debugger"; Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "Baggage\License.txt";                            DestDir: "{app}\Extension\Debugger"; Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpVSIXLogo.png ";               DestDir: "{app}\Extension\Debugger"; Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#DebuggerObjFolder}extension.vsixmanifest";     DestDir: "{app}\Extension\Debugger"; Flags: {#StdFlags}; 
+Source: "{#BinPFolder}XSharpDebugger.dll";                DestDir: "{app}\Extension\Debugger"; Flags: {#StdFlags} signonce; 
+Source: "{#BinPFolder}XSharpDebugger.pdb";                DestDir: "{app}\Extension\Debugger"; Flags: {#StdFlags}; 
+Source: "{#BinPFolder}XSharpDebugger.pkgdef";             DestDir: "{app}\Extension\Debugger"; Flags: {#StdFlags}; 
+Source: "{#BinPFolder}XSharpDebugger.vsdconfig";          DestDir: "{app}\Extension\Debugger"; Flags: {#StdFlags}; 
+Source: "Baggage\XSharp.ico";                             DestDir: "{app}\Extension\Debugger"; Flags: {#StdFlags}; 
+Source: "Baggage\License.txt";                            DestDir: "{app}\Extension\Debugger"; Flags: {#StdFlags}; 
+Source: "{#BinPFolder}XSharpVSIXLogo.png ";               DestDir: "{app}\Extension\Debugger"; Flags: {#StdFlags}; 
+Source: "{#DebuggerObjFolder}extension.vsixmanifest";     DestDir: "{app}\Extension\Debugger"; Flags: {#StdFlags}; 
 
 
 
 ; ItemTemplates per folder
-Components: vs2015 or vs2017; Source: "{#BinPFolder}Itemtemplates\Wpf*.Zip";            DestDir: "{app}\Extension\Project\ItemTemplates\WPF";        Flags: recursesubdirs {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}Itemtemplates\VO*.Zip";             DestDir: "{app}\Extension\Project\ItemTemplates\VO";         Flags: recursesubdirs {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}Itemtemplates\*Internal.Zip";       DestDir: "{app}\Extension\Project\ItemTemplates\Internal";   Flags: recursesubdirs {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}Itemtemplates\Wcf*.Zip";            DestDir: "{app}\Extension\Project\ItemTemplates\WCF";        Flags: recursesubdirs {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}Itemtemplates\Form*.Zip";           DestDir: "{app}\Extension\Project\ItemTemplates\Windows Forms"; Flags: recursesubdirs {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}Itemtemplates\U*.Zip";              DestDir: "{app}\Extension\Project\ItemTemplates\Windows Forms"; Flags: recursesubdirs {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}Itemtemplates\C*.Zip";              DestDir: "{app}\Extension\Project\ItemTemplates\Code";        Flags: recursesubdirs {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}Itemtemplates\H*.Zip";              DestDir: "{app}\Extension\Project\ItemTemplates\Code";        Flags: recursesubdirs {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}Itemtemplates\T*.Zip";              DestDir: "{app}\Extension\Project\ItemTemplates\Code";        Flags: recursesubdirs {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}Itemtemplates\R*.Zip";              DestDir: "{app}\Extension\Project\ItemTemplates\Resources";   Flags: recursesubdirs {#StdFlags}; 
+Source: "{#BinPFolder}Itemtemplates\Wpf*.Zip";            DestDir: "{app}\Extension\Project\ItemTemplates\WPF";        Flags: recursesubdirs {#StdFlags}; 
+Source: "{#BinPFolder}Itemtemplates\VO*.Zip";             DestDir: "{app}\Extension\Project\ItemTemplates\VO";         Flags: recursesubdirs {#StdFlags}; 
+Source: "{#BinPFolder}Itemtemplates\*Internal.Zip";       DestDir: "{app}\Extension\Project\ItemTemplates\Internal";   Flags: recursesubdirs {#StdFlags}; 
+Source: "{#BinPFolder}Itemtemplates\Wcf*.Zip";            DestDir: "{app}\Extension\Project\ItemTemplates\WCF";        Flags: recursesubdirs {#StdFlags}; 
+Source: "{#BinPFolder}Itemtemplates\Form*.Zip";           DestDir: "{app}\Extension\Project\ItemTemplates\Windows Forms"; Flags: recursesubdirs {#StdFlags}; 
+Source: "{#BinPFolder}Itemtemplates\U*.Zip";              DestDir: "{app}\Extension\Project\ItemTemplates\Windows Forms"; Flags: recursesubdirs {#StdFlags}; 
+Source: "{#BinPFolder}Itemtemplates\C*.Zip";              DestDir: "{app}\Extension\Project\ItemTemplates\Code";        Flags: recursesubdirs {#StdFlags}; 
+Source: "{#BinPFolder}Itemtemplates\H*.Zip";              DestDir: "{app}\Extension\Project\ItemTemplates\Code";        Flags: recursesubdirs {#StdFlags}; 
+Source: "{#BinPFolder}Itemtemplates\T*.Zip";              DestDir: "{app}\Extension\Project\ItemTemplates\Code";        Flags: recursesubdirs {#StdFlags}; 
+Source: "{#BinPFolder}Itemtemplates\R*.Zip";              DestDir: "{app}\Extension\Project\ItemTemplates\Resources";   Flags: recursesubdirs {#StdFlags}; 
 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\Test*.zip";        DestDir: "{app}\Extension\Project\ProjectTemplates\Test";         Flags: recursesubdirs {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\Class*.zip";       DestDir: "{app}\Extension\Project\ProjectTemplates\ClassLibraries";  Flags: recursesubdirs {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*Cons*.zip";       DestDir: "{app}\Extension\Project\ProjectTemplates\Windows";      Flags: recursesubdirs {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*App*.zip";        DestDir: "{app}\Extension\Project\ProjectTemplates\Windows";      Flags: recursesubdirs {#StdFlags}; 
+Source: "{#BinPFolder}ProjectTemplates\Test*.zip";        DestDir: "{app}\Extension\Project\ProjectTemplates\Test";         Flags: recursesubdirs {#StdFlags}; 
+Source: "{#BinPFolder}ProjectTemplates\Class*.zip";       DestDir: "{app}\Extension\Project\ProjectTemplates\ClassLibraries";  Flags: recursesubdirs {#StdFlags}; 
+Source: "{#BinPFolder}ProjectTemplates\*Cons*.zip";       DestDir: "{app}\Extension\Project\ProjectTemplates\Windows";      Flags: recursesubdirs {#StdFlags}; 
+Source: "{#BinPFolder}ProjectTemplates\*App*.zip";        DestDir: "{app}\Extension\Project\ProjectTemplates\Windows";      Flags: recursesubdirs {#StdFlags}; 
 ; Snippets
 Components: vs2015 or vs2017; Source: "{#SnippetsSource}*.*";                          DestDir: "{app}\Extension\{# SnippetsPath}";          Flags: recursesubdirs {#StdFlags}; 
 
@@ -530,28 +541,28 @@ Components: vs2015 or vs2017; Source: "{#SnippetsSource}*.*";                   
 
 
 ; Examples
-Source: "{#ExamplesFolder}*.prg";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
-Source: "{#ExamplesFolder}SDK_Defines.dll";    DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
-Source: "{#ExamplesFolder}*.rc";               DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
-Source: "{#ExamplesFolder}*.resx";             DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
-Source: "{#ExamplesFolder}*.txt";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
-Source: "{#ExamplesFolder}*.?h";               DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
-Source: "{#ExamplesFolder}*.sln";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
-Source: "{#ExamplesFolder}*.dbf";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
-Source: "{#ExamplesFolder}*.ntx";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
-Source: "{#ExamplesFolder}*.xs*";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
-Source: "{#ExamplesFolder}*.vi*";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
-Source: "{#ExamplesFolder}*.inf";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
-Source: "{#ExamplesFolder}*.tpl";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
-Source: "{#ExamplesFolder}*.ico";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
-Source: "{#ExamplesFolder}*.bmp";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
-Source: "{#ExamplesFolder}*.cur";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
-Source: "{#ExamplesFolder}*.man";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
-Source: "{#ExamplesFolder}ca?o*.dll";          DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
-Source: "{#ExamplesFolder}msvc*.dll";          DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
+Components: main\examples; Source: "{#ExamplesFolder}*.prg";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Components: main\examples; Source: "{#ExamplesFolder}SDK_Defines.dll";    DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Components: main\examples; Source: "{#ExamplesFolder}*.rc";               DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Components: main\examples; Source: "{#ExamplesFolder}*.resx";             DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Components: main\examples; Source: "{#ExamplesFolder}*.txt";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Components: main\examples; Source: "{#ExamplesFolder}*.?h";               DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Components: main\examples; Source: "{#ExamplesFolder}*.sln";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Components: main\examples; Source: "{#ExamplesFolder}*.dbf";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Components: main\examples; Source: "{#ExamplesFolder}*.ntx";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Components: main\examples; Source: "{#ExamplesFolder}*.xs*";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Components: main\examples; Source: "{#ExamplesFolder}*.vi*";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Components: main\examples; Source: "{#ExamplesFolder}*.inf";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Components: main\examples; Source: "{#ExamplesFolder}*.tpl";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Components: main\examples; Source: "{#ExamplesFolder}*.ico";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
+Components: main\examples; Source: "{#ExamplesFolder}*.bmp";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
+Components: main\examples; Source: "{#ExamplesFolder}*.cur";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
+Components: main\examples; Source: "{#ExamplesFolder}*.man";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
+Components: main\examples; Source: "{#ExamplesFolder}ca?o*.dll";          DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
+Components: main\examples; Source: "{#ExamplesFolder}msvc*.dll";          DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
 
 ; Scripting
-Source: "{#ScriptFolder}*.*";                  DestDir: "{commondocs}\XSharp\Scripting";    Flags: recursesubdirs {#StdFlags};
+Components: main\examples; Source: "{#ScriptFolder}*.*";                  DestDir: "{commondocs}\XSharp\Scripting";    Flags: recursesubdirs {#StdFlags};
 
 ; update machine.config
 Source:"{#BinPFolder}RegisterProvider.exe";    DestDir: "{app}\Tools";                     Flags: signonce {#StdFlags};
@@ -564,15 +575,15 @@ Name: "{group}\{#Product} VOXPorter";                     Filename: "{app}\VoXPo
 ;Name: "{group}\{#Product} Readme";                        Filename: "{app}\Readme.rtf";
 Name: "{group}\{#Product} What's New";                    Filename: "{app}\Whatsnew.rtf";
 Name: "{group}\{#Product} Documentation (CHM)";           Filename: "{app}\Help\XSharp.chm"; 
-Name: "{group}\{#Product} Documentation (PDF)";           Filename: "{app}\Help\XSharp.pdf"; 
+;Name: "{group}\{#Product} Documentation (PDF)";           Filename: "{app}\Help\XSharp.pdf"; 
 Name: "{group}\{#Product} Vulcan Runtime Reference (CHM)"; Filename: "{app}\Help\XSVulcan.chm"; 
 Name: "{group}\{#Product} Runtime Reference (CHM)";       Filename: "{app}\Help\XSRuntime.chm"; 
 Name: "{group}\{cm:UninstallProgram,{#Product}}";         Filename: "{uninstallexe}"; 
-Name: "{group}\{#Product} Examples";                      Filename: "{commondocs}\XSharp\Examples";
-Name: "{commondesktop}\XSharp Examples";                  Filename: "{commondocs}\XSharp\Examples";
-Name: "{commondesktop}\XSharp Script Examples";           Filename: "{commondocs}\XSharp\Scripting";
-Name: "{userdocs}\XSharp Examples";                       Filename: "{commondocs}\XSharp\Examples";
-Name: "{userdocs}\XSharp Script Examples";                Filename: "{commondocs}\XSharp\Scripting";
+Components: main\examples; Name: "{group}\{#Product} Examples";                      Filename: "{commondocs}\XSharp\Examples";
+Components: main\examples; Name: "{commondesktop}\XSharp Examples";                  Filename: "{commondocs}\XSharp\Examples";
+Components: main\examples; Name: "{commondesktop}\XSharp Script Examples";           Filename: "{commondocs}\XSharp\Scripting";
+Components: main\examples; Name: "{userdocs}\XSharp Examples";                       Filename: "{commondocs}\XSharp\Examples";
+Components: main\examples; Name: "{userdocs}\XSharp Script Examples";                Filename: "{commondocs}\XSharp\Scripting";
 
 
 [Registry]
@@ -581,6 +592,7 @@ Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; Flags: uninsdeletekey
 Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; ValueName: "{#InstallPath}"; ValueType: string; ValueData: "{app}" ;
 Components: vs2015\help; Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; ValueName: "Help22Installed"; ValueType: string; ValueData: "yes" ;  
 Components: vs2017\help; Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; ValueName: "Help23Installed"; ValueType: string; ValueData: "yes" ;  
+Components: vs2019\help; Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; ValueName: "Help23Installed"; ValueType: string; ValueData: "yes" ;  
 
 ; set the VSHelp to Offline
 ;Components: vs2015\help;  Root: HKCU; Subkey: "{#Vs14RegPath}\Help"; ValueName:"UseOnlineHelp"; ValueType: dword; ValueData: 0; Flags: noerror;
@@ -625,60 +637,69 @@ Root: HKLM; Subkey: "Software\Microsoft\.NETFramework\v4.0.30319\AssemblyFolders
 ; .xh
 
 ;project
-Components: vs2015 or vs2017; Root: HKCR; SubKey: ".xsproj";                              ValueData: "XSharp.xsprojfile";         ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
-Components: vs2015 or vs2017; Root: HKCR; SubKey: ".xsproj";                              ValueData: "text/plain";                ValueType: string;  ValueName: "Content Type";
-Components: vs2015 or vs2017; Root: HKCR; SubKey: ".xsprj";                               ValueData: "XSharp.xsprojfile";         ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
-Components: vs2015 or vs2017; Root: HKCR; SubKey: ".xsprj";                               ValueData: "text/plain";                ValueType: string;  ValueName: "Content Type";
-Components: vs2015 or vs2017; Root: HKCR; Subkey: "XSharp.xsprojfile";                    ValueData: "XSharp Project File";       ValueType: string;  ValueName: "";   Flags: uninsdeletekey; 
-Components: vs2015 or vs2017; Root: HKCR; Subkey: "XSharp.xsprojfile\DefaultIcon";        ValueData: "{app}\Images\XSharpProject.ico,0"; ValueType: string;  ValueName: ""
+Root: HKCR; SubKey: ".xsproj";                              ValueData: "XSharp.xsprojfile";         ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
+Root: HKCR; SubKey: ".xsproj";                              ValueData: "text/plain";                ValueType: string;  ValueName: "Content Type";
+Root: HKCR; SubKey: ".xsprj";                               ValueData: "XSharp.xsprojfile";         ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
+Root: HKCR; SubKey: ".xsprj";                               ValueData: "text/plain";                ValueType: string;  ValueName: "Content Type";
+Root: HKCR; Subkey: "XSharp.xsprojfile";                    ValueData: "XSharp Project File";       ValueType: string;  ValueName: "";   Flags: uninsdeletekey; 
+Root: HKCR; Subkey: "XSharp.xsprojfile\DefaultIcon";        ValueData: "{app}\Images\XSharpProject.ico,0"; ValueType: string;  ValueName: ""
 Components: vs2015;           Root: HKCR; Subkey: "XSharp.xsprojfile\shell\Open";         ValueData: "&Open in Visual Studio 2015";  ValueType: string;  ValueName: ""
-Components: vs2017;           Root: HKCR; Subkey: "XSharp.xsprojfile\shell\Open";         ValueData: "&Open in Visual Studio 2017";  ValueType: string;  ValueName: ""
 Components: vs2015;           Root: HKCR; Subkey: "XSharp.xsprojfile\shell\open\command"; ValueData: """{code:GetVs2015IdeDir}\devenv.exe""  ""%1""";  ValueType: string;  ValueName: ""
-; associate with 1st version of Vs2017
+Components: vs2017;           Root: HKCR; Subkey: "XSharp.xsprojfile\shell\Open";         ValueData: "&Open in Visual Studio 2017";  ValueType: string;  ValueName: ""
 Components: vs2017;           Root: HKCR; Subkey: "XSharp.xsprojfile\shell\open\command"; ValueData: """{code:GetVs2017IdeDir|1}\devenv.exe""  ""%1""";  ValueType: string;  ValueName: ""
+Components: vs2019;           Root: HKCR; Subkey: "XSharp.xsprojfile\shell\Open";         ValueData: "&Open in Visual Studio 2019";  ValueType: string;  ValueName: ""
+Components: vs2019;           Root: HKCR; Subkey: "XSharp.xsprojfile\shell\open\command"; ValueData: """{code:GetVs2019IdeDir|1}\devenv.exe""  ""%1""";  ValueType: string;  ValueName: ""
 
 ; source
-Components: vs2015 or vs2017; Root: HKCR; SubKey: ".prg";                                 ValueData: "XSharp.sourcefile";             ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
-Components: vs2015 or vs2017; Root: HKCR; SubKey: ".prg";                                 ValueData: "text/plain";                    ValueType: string;  ValueName: "Content Type";
-Components: vs2015 or vs2017; Root: HKCR; SubKey: ".xs";                                  ValueData: "XSharp.sourcefile";             ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
-Components: vs2015 or vs2017; Root: HKCR; SubKey: ".xs";                                  ValueData: "text/plain";                    ValueType: string;  ValueName: "Content Type";
-Components: vs2015 or vs2017; Root: HKCR; Subkey: "XSharp.sourcefile";                    ValueData: "XSharp Source File";            ValueType: string;  ValueName: "" ;  Flags: uninsdeletekey; 
-Components: vs2015 or vs2017; Root: HKCR; Subkey: "XSharp.sourcefile\DefaultIcon";        ValueData: "{app}\Images\xsharp.ico,0";     ValueType: string;  ValueName: ""
+Root: HKCR; SubKey: ".prg";                                 ValueData: "XSharp.sourcefile";             ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
+Root: HKCR; SubKey: ".prg";                                 ValueData: "text/plain";                    ValueType: string;  ValueName: "Content Type";
+Root: HKCR; SubKey: ".xs";                                  ValueData: "XSharp.sourcefile";             ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
+Root: HKCR; SubKey: ".xs";                                  ValueData: "text/plain";                    ValueType: string;  ValueName: "Content Type";
+Root: HKCR; Subkey: "XSharp.sourcefile";                    ValueData: "XSharp Source File";            ValueType: string;  ValueName: "" ;  Flags: uninsdeletekey; 
+Root: HKCR; Subkey: "XSharp.sourcefile\DefaultIcon";        ValueData: "{app}\Images\xsharp.ico,0";     ValueType: string;  ValueName: ""
 Components: vs2015;           Root: HKCR; Subkey: "XSharp.sourcefile\shell\Open";         ValueData: "&Open in Visual Studio 2015";   ValueType: string;  ValueName: ""
-Components: vs2017;           Root: HKCR; Subkey: "XSharp.sourcefile\shell\Open";         ValueData: "&Open in Visual Studio 2017";   ValueType: string;  ValueName: ""
 Components: vs2015;           Root: HKCR; Subkey: "XSharp.sourcefile\shell\open\command"; ValueData: """{code:GetVs2015IdeDir}\devenv.exe""  ""%1""";  ValueType: string;  ValueName: ""
+Components: vs2017;           Root: HKCR; Subkey: "XSharp.sourcefile\shell\Open";         ValueData: "&Open in Visual Studio 2017";   ValueType: string;  ValueName: ""
 Components: vs2017;           Root: HKCR; Subkey: "XSharp.sourcefile\shell\open\command"; ValueData: """{code:GetVs2017IdeDir|1}\devenv.exe""  ""%1""";  ValueType: string;  ValueName: ""
+Components: vs2019;           Root: HKCR; Subkey: "XSharp.sourcefile\shell\Open";         ValueData: "&Open in Visual Studio 2019";   ValueType: string;  ValueName: ""
+Components: vs2019;           Root: HKCR; Subkey: "XSharp.sourcefile\shell\open\command"; ValueData: """{code:GetVs2019IdeDir|1}\devenv.exe""  ""%1""";  ValueType: string;  ValueName: ""
 
 ;ppo
-Components: vs2015 or vs2017; Root: HKCR; SubKey: ".ppo";                              ValueData: "XSharp.ppofile";            ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
-Components: vs2015 or vs2017; Root: HKCR; SubKey: ".ppo";                              ValueData: "text/plain";                ValueType: string;  ValueName: "Content Type";
-Components: vs2015 or vs2017; Root: HKCR; Subkey: "XSharp.ppofile";                    ValueData: "XSharp Preprocessor Output File";        ValueType: string;  ValueName: "" ;  Flags: uninsdeletekey; 
-Components: vs2015 or vs2017; Root: HKCR; Subkey: "XSharp.ppofile\DefaultIcon";        ValueData: "{app}\Images\xsharp.ico,0"; ValueType: string;  ValueName: ""
+Root: HKCR; SubKey: ".ppo";                              ValueData: "XSharp.ppofile";            ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
+Root: HKCR; SubKey: ".ppo";                              ValueData: "text/plain";                ValueType: string;  ValueName: "Content Type";
+Root: HKCR; Subkey: "XSharp.ppofile";                    ValueData: "XSharp Preprocessor Output File";        ValueType: string;  ValueName: "" ;  Flags: uninsdeletekey; 
+Root: HKCR; Subkey: "XSharp.ppofile\DefaultIcon";        ValueData: "{app}\Images\xsharp.ico,0"; ValueType: string;  ValueName: ""
 Components: vs2015;           Root: HKCR; Subkey: "XSharp.ppofile\shell\Open";         ValueData: "&Open in Visual Studio 2015";  ValueType: string;  ValueName: ""
-Components: vs2017;           Root: HKCR; Subkey: "XSharp.ppofile\shell\Open";         ValueData: "&Open in Visual Studio 2017";  ValueType: string;  ValueName: ""
 Components: vs2015;           Root: HKCR; Subkey: "XSharp.ppofile\shell\open\command"; ValueData: """{code:GetVs2015IdeDir}\devenv.exe""  ""%1""";  ValueType: string;  ValueName: ""
+Components: vs2017;           Root: HKCR; Subkey: "XSharp.ppofile\shell\Open";         ValueData: "&Open in Visual Studio 2017";  ValueType: string;  ValueName: ""
 Components: vs2017;           Root: HKCR; Subkey: "XSharp.ppofile\shell\open\command"; ValueData: """{code:GetVs2017IdeDir|1}\devenv.exe""  ""%1""";  ValueType: string;  ValueName: ""
+Components: vs2019;           Root: HKCR; Subkey: "XSharp.ppofile\shell\Open";         ValueData: "&Open in Visual Studio 2017";  ValueType: string;  ValueName: ""
+Components: vs2019;           Root: HKCR; Subkey: "XSharp.ppofile\shell\open\command"; ValueData: """{code:GetVs2019IdeDir|1}\devenv.exe""  ""%1""";  ValueType: string;  ValueName: ""
 
 ; headers
-Components: vs2015 or vs2017; Root: HKCR; SubKey: ".vh";                                  ValueData: "XSharp.headerfile";         ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
-Components: vs2015 or vs2017; Root: HKCR; SubKey: ".vh";                                  ValueData: "text/plain";                ValueType: string;  ValueName: "Content Type";
-Components: vs2015 or vs2017; Root: HKCR; SubKey: ".xh";                                  ValueData: "XSharp.headerfile";         ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
-Components: vs2015 or vs2017; Root: HKCR; SubKey: ".xh";                                  ValueData: "text/plain";                ValueType: string;  ValueName: "Content Type";
-Components: vs2015 or vs2017; Root: HKCR; SubKey: ".ch";                                  ValueData: "XSharp.headerfile";         ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
-Components: vs2015 or vs2017; Root: HKCR; SubKey: ".ch";                                  ValueData: "text/plain";                ValueType: string;  ValueName: "Content Type";
-Components: vs2015 or vs2017; Root: HKCR; Subkey: "XSharp.headerfile";                    ValueData: "XSharp Header File";        ValueType: string;  ValueName: "" ;  Flags: uninsdeletekey; 
-Components: vs2015 or vs2017; Root: HKCR; Subkey: "XSharp.headerfile\DefaultIcon";        ValueData: "{app}\Images\xsharp.ico,0"; ValueType: string;  ValueName: ""
+Root: HKCR; SubKey: ".vh";                                  ValueData: "XSharp.headerfile";         ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
+Root: HKCR; SubKey: ".vh";                                  ValueData: "text/plain";                ValueType: string;  ValueName: "Content Type";
+Root: HKCR; SubKey: ".xh";                                  ValueData: "XSharp.headerfile";         ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
+Root: HKCR; SubKey: ".xh";                                  ValueData: "text/plain";                ValueType: string;  ValueName: "Content Type";
+Root: HKCR; SubKey: ".ch";                                  ValueData: "XSharp.headerfile";         ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
+Root: HKCR; SubKey: ".ch";                                  ValueData: "text/plain";                ValueType: string;  ValueName: "Content Type";
+Root: HKCR; Subkey: "XSharp.headerfile";                    ValueData: "XSharp Header File";        ValueType: string;  ValueName: "" ;  Flags: uninsdeletekey; 
+Root: HKCR; Subkey: "XSharp.headerfile\DefaultIcon";        ValueData: "{app}\Images\xsharp.ico,0"; ValueType: string;  ValueName: ""
 Components: vs2015;           Root: HKCR; Subkey: "XSharp.headerfile\shell\Open";         ValueData: "&Open in Visual Studio 2015";  ValueType: string;  ValueName: ""
-Components: vs2017;           Root: HKCR; Subkey: "XSharp.headerfile\shell\Open";         ValueData: "&Open in Visual Studio 2017";  ValueType: string;  ValueName: ""
 Components: vs2015;           Root: HKCR; Subkey: "XSharp.headerfile\shell\open\command"; ValueData: """{code:GetVs2015IdeDir}\devenv.exe""  ""%1""";  ValueType: string;  ValueName: ""
+Components: vs2017;           Root: HKCR; Subkey: "XSharp.headerfile\shell\Open";         ValueData: "&Open in Visual Studio 2017";  ValueType: string;  ValueName: ""
 Components: vs2017;           Root: HKCR; Subkey: "XSharp.headerfile\shell\open\command"; ValueData: """{code:GetVs2017IdeDir|1}\devenv.exe""  ""%1""";  ValueType: string;  ValueName: ""
-
+Components: vs2019;           Root: HKCR; Subkey: "XSharp.headerfile\shell\Open";         ValueData: "&Open in Visual Studio 2019";  ValueType: string;  ValueName: ""
+Components: vs2019;           Root: HKCR; Subkey: "XSharp.headerfile\shell\open\command"; ValueData: """{code:GetVs2019IdeDir|1}\devenv.exe""  ""%1""";  ValueType: string;  ValueName: ""
 
 [Ini]
 Components: vs2015; Filename: "{code:GetVs2015IdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#Version}"; Flags: uninsdeletesection; 
 Components: vs2017; Filename: "{code:GetVs2017IdeDir|1}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#Version}"; Flags: uninsdeletesection; Check: HasVs2017('1')
 Components: vs2017; Filename: "{code:GetVs2017IdeDir|2}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#Version}"; Flags: uninsdeletesection; Check: HasVs2017('2')
 Components: vs2017; Filename: "{code:GetVs2017IdeDir|3}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#Version}"; Flags: uninsdeletesection; Check: HasVs2017('3')
+Components: vs2019; Filename: "{code:GetVs2019IdeDir|1}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#Version}"; Flags: uninsdeletesection; Check: HasVs2019('1')
+Components: vs2019; Filename: "{code:GetVs2019IdeDir|2}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#Version}"; Flags: uninsdeletesection; Check: HasVs2019('2')
+Components: vs2019; Filename: "{code:GetVs2019IdeDir|3}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#Version}"; Flags: uninsdeletesection; Check: HasVs2019('3')
 
 Filename: "{app}\VOXPorter\VoXporter.Ini";  Section:"General"; Key: "NOWARNINGSCREEN"; String: "0" ;
 Filename: "{app}\VOXPorter\VoXporter.Ini";  Section:"General"; Key: "SDKDEFINESDLL";   String: "{app}\VOXPorter\SDK_DEFINES.dll" ;
@@ -686,23 +707,32 @@ Filename: "{app}\VOXPorter\VoXporter.Ini";  Section:"General"; Key: "SDKDEFINESD
 
 [Run]
 Filename: "{app}\Tools\RegisterProvider.exe"; Flags: runhidden;
-
+#ifdef VSHELP
 ; Remove old Help contents
 Components: vs2015\help; Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio14 {#HelpUninstall2}";   StatusMsg:"UnInstalling VS Help for VS2015"; Flags: waituntilidle;
 Components: vs2017\help; Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio15 {#HelpUninstall2}";   StatusMsg:"UnInstalling VS Help for VS2017"; Flags: waituntilidle;
+Components: vs2019\help; Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio15 {#HelpUninstall2}";   StatusMsg:"UnInstalling VS Help for VS2019"; Flags: waituntilidle;
 
 Components: vs2015\help; Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpInstall1} VisualStudio14 {#HelpInstall2}";     StatusMsg:"Installing VS Help for VS2015"; Flags: waituntilidle;
 Components: vs2017\help; Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpInstall1} VisualStudio15 {#HelpInstall2}";     StatusMsg:"Installing VS Help for VS2017";  Flags: waituntilidle;
+Components: vs2019\help; Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpInstall1} VisualStudio15 {#HelpInstall2}";     StatusMsg:"Installing VS Help for VS2019";  Flags: waituntilidle;
+#endif
 Components: XIDE;        Filename: "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE {# XIDEVersion} Installer"; Flags: postInstall;  
 
 Components: main\ngen;  Filename: "{app}\uninst\instngen.cmd";      Check: CreateNGenTask(); Flags: Runhidden ; StatusMsg: "Generating Native images, please wait.....";
-Components: vs2015;     Filename: "{app}\uninst\deployvs2015.cmd";  Check: DeployToVs2015(); Flags: Runhidden ; StatusMsg: "Deploying extension to VS 2015, please wait.....";
-Components: vs2017;     Filename: "{app}\uninst\deployvs2017.cmd";  Check: DeployToVs2017(); Flags: Runhidden ; StatusMsg: "Deploying extension to VS 2017, please wait.....";
-Components: vs2017;     Filename: "{app}\uninst\deployvs2019.cmd";  Check: DeployToVs2019(); Flags: Runhidden ; StatusMsg: "Deploying extension to VS 2019, please wait.....";
+Components: vs2015;     Filename: "{app}\uninst\deployvs2015.cmd";  Check: DeployToVs2015(1); Flags: Runhidden ; StatusMsg: "Deploying extension to VS 2015, please wait.....";
+Components: vs2017;     Filename: "{app}\uninst\deployvs2017.cmd";  Check: DeployToVs2017(1); Flags: Runhidden ; StatusMsg: "Deploying extension to VS 2017, please wait.....";
+Components: vs2019;     Filename: "{app}\uninst\deployvs2019.cmd";  Check: DeployToVs2019(1); Flags: Runhidden ; StatusMsg: "Deploying extension to VS 2019, please wait.....";
 
 [UninstallRun]
-Components: vs2015\help; Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio14 {#HelpUninstall2}";   StatusMsg:"UnInstalling VS Help for VS2015"; Flags: waituntilidle;
-Components: vs2017\help; Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio15 {#HelpUninstall2}";   StatusMsg:"UnInstalling VS Help for VS2017"; Flags: waituntilidle;
+#ifdef VSHELP
+Components: vs2015\help; Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio14 {#HelpUninstall2}";   Flags: waituntilidle;
+Components: vs2017\help; Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio15 {#HelpUninstall2}";   Flags: waituntilidle;
+Components: vs2019\help; Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio15 {#HelpUninstall2}";   Flags: waituntilidle;
+#endif
+Components: vs2015;     Filename: "{app}\uninst\removevs2015.cmd";  Flags: Runhidden ; 
+Components: vs2017;     Filename: "{app}\uninst\removevs2017.cmd";  Flags: Runhidden ; 
+Components: vs2019;     Filename: "{app}\uninst\removevs2019.cmd";  Flags: Runhidden ;
 
 Components: main\ngen;  Filename: "{app}\uninst\uninstngen.cmd";  Flags: Runhidden;
 
@@ -728,14 +758,30 @@ Type: filesandordirs; Name: "{app}\Redist";
 Type: filesandordirs; Name: "{app}\Help";
 
 ; Old VOSDK files, better safe than sorry
-Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VoInternetclasses";
-Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VoConsoleClasses";
-Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VOGUIClasses";
-Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VORDDClasses";
-Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VOSQLClasses";
-Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VOReportClasses";
-Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VOSystemClasses";
-Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VOWin32APILibrary";
+Type: filesandordirs; Name: "{# Gacx86}VoInternetclasses";
+Type: filesandordirs; Name: "{# Gacx86}VoConsoleClasses";
+Type: filesandordirs; Name: "{# Gacx86}VOGUIClasses";
+Type: filesandordirs; Name: "{# Gacx86}VORDDClasses";
+Type: filesandordirs; Name: "{# Gacx86}VOSQLClasses";
+Type: filesandordirs; Name: "{# Gacx86}VOReportClasses";
+Type: filesandordirs; Name: "{# Gacx86}VOSystemClasses";
+Type: filesandordirs; Name: "{# Gacx86}VOWin32APILibrary";
+Type: filesandordirs; Name: "{# Gacil}VoInternetclasses";
+Type: filesandordirs; Name: "{# Gacil}VoConsoleClasses";
+Type: filesandordirs; Name: "{# Gacil}VOGUIClasses";
+Type: filesandordirs; Name: "{# Gacil}VORDDClasses";
+Type: filesandordirs; Name: "{# Gacil}VOSQLClasses";
+Type: filesandordirs; Name: "{# Gacil}VOReportClasses";
+Type: filesandordirs; Name: "{# Gacil}VOSystemClasses";
+Type: filesandordirs; Name: "{# Gacil}VOWin32APILibrary";
+Type: filesandordirs; Name: "{# Gacil}XSharp.Core";
+Type: filesandordirs; Name: "{# Gacil}XSharp.RT";
+Type: filesandordirs; Name: "{# Gacil}XSharp.VO";
+Type: filesandordirs; Name: "{# Gacil}XSharp.RDD";
+Type: filesandordirs; Name: "{# Gacil}XSharp.MacroCompiler";
+Type: filesandordirs; Name: "{# Gacil}XSharp.XPP";
+Type: filesandordirs; Name: "{# Gacil}XSharp.VFP";
+
 
 Components: vs2015; Type: filesandordirs; Name: "{#Vs14LocalDir}\vtc";                            
 Components: vs2015; Type: filesandordirs; Name: "{#Vs14LocalDir}\ComponentModelCache";            
@@ -748,20 +794,33 @@ Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017I
 Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId|1}\ComponentModelCache";       Check: HasVs2017('1');
 Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId|2}\ComponentModelCache";       Check: HasVs2017('2');
 Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId|3}\ComponentModelCache";       Check: HasVs2017('3');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|1}\Extensions\XSharp";  Check: HasVs2017('1') or HasVs2019('1');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|2}\Extensions\XSharp";  Check: HasVs2017('2') or HasVs2019('2');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|3}\Extensions\XSharp";  Check: HasVs2017('3') or HasVs2019('3');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|1}\MsBuild\XSharp";  Check: HasVs2017('1') or HasVs2019('1');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|2}\MsBuild\XSharp";  Check: HasVs2017('2') or HasVs2019('2');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|3}\MsBuild\XSharp";  Check: HasVs2017('3') or HasVs2019('3');
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|1}\Extensions\XSharp"; Check: HasVs2017('1') ;
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|2}\Extensions\XSharp"; Check: HasVs2017('2') ;
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|3}\Extensions\XSharp"; Check: HasVs2017('3') ;
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|1}\MsBuild\XSharp";   Check: HasVs2017('1') ;
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|2}\MsBuild\XSharp";   Check: HasVs2017('2') ;
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|3}\MsBuild\XSharp";   Check: HasVs2017('3') ;
+
+Components: vs2019; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2019InstanceId|1}\vtc";                       Check: HasVs2019('1');
+Components: vs2019; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2019InstanceId|2}\vtc";                       Check: HasVs2019('2');
+Components: vs2019; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2019InstanceId|3}\vtc";                       Check: HasVs2019('3');
+Components: vs2019; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2019InstanceId|1}\ComponentModelCache";       Check: HasVs2019('1');
+Components: vs2019; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2019InstanceId|2}\ComponentModelCache";       Check: HasVs2019('2');
+Components: vs2019; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2019InstanceId|3}\ComponentModelCache";       Check: HasVs2019('3');
+Components: vs2019; Type: filesandordirs; Name: "{code:GetVs2019IdeDir|1}\Extensions\XSharp";  Check:  HasVs2019('1');
+Components: vs2019; Type: filesandordirs; Name: "{code:GetVs2019IdeDir|2}\Extensions\XSharp";  Check:  HasVs2019('2');
+Components: vs2019; Type: filesandordirs; Name: "{code:GetVs2019IdeDir|3}\Extensions\XSharp";  Check:  HasVs2019('3');
+Components: vs2019; Type: filesandordirs; Name: "{code:GetVs2019BaseDir|1}\MsBuild\XSharp";    Check:  HasVs2019('1');
+Components: vs2019; Type: filesandordirs; Name: "{code:GetVs2019BaseDir|2}\MsBuild\XSharp";    Check:  HasVs2019('2');
+Components: vs2019; Type: filesandordirs; Name: "{code:GetVs2019BaseDir|3}\MsBuild\XSharp";    Check:  HasVs2019('3');
 
 ; delete local cache for VS2019
-Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|1}\vtc";                       Check: HasVs2019('1');
-Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|2}\vtc";                       Check: HasVs2019('2');
-Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|3}\vtc";                       Check: HasVs2019('3');
-Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|1}\ComponentModelCache";       Check: HasVs2019('1');
-Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|2}\ComponentModelCache";       Check: HasVs2019('2');
-Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|3}\ComponentModelCache";       Check: HasVs2019('3');
+Components: vs2019; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2019InstanceId|1}\vtc";                       Check: HasVs2019('1');
+Components: vs2019; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2019InstanceId|2}\vtc";                       Check: HasVs2019('2');
+Components: vs2019; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2019InstanceId|3}\vtc";                       Check: HasVs2019('3');
+Components: vs2019; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2019InstanceId|1}\ComponentModelCache";       Check: HasVs2019('1');
+Components: vs2019; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2019InstanceId|2}\ComponentModelCache";       Check: HasVs2019('2');
+Components: vs2019; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2019InstanceId|3}\ComponentModelCache";       Check: HasVs2019('3');
 
 
 Type: filesandordirs; Name: "{group}" ;
@@ -796,24 +855,19 @@ Type: filesandordirs; Name: "{commondocs}\XSharp\Scripting";
 Type: dirifempty;     Name: "{commondocs}\XSharp"; 
 
 Components: vs2015; Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp"  ;  
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|1}\Extensions\XSharp" ;  Check: HasVs2017('1') or HasVs2019('1') ;
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|2}\Extensions\XSharp";   Check: HasVs2017('2') or HasVs2019('2');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|3}\Extensions\XSharp";   Check: HasVs2017('3') or HasVs2019('3');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|1}\MsBuild\XSharp";     Check: HasVs2017('1') or HasVs2019('1');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|2}\MsBuild\XSharp";     Check: HasVs2017('2') or HasVs2019('2');
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|3}\MsBuild\XSharp";     Check: HasVs2017('3') or HasVs2019('3');
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|1}\Extensions\XSharp" ;  Check: HasVs2017('1')  ;
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|2}\Extensions\XSharp";   Check: HasVs2017('2') ;
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir|3}\Extensions\XSharp";   Check: HasVs2017('3') ;
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|1}\MsBuild\XSharp";     Check: HasVs2017('1') ;
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|2}\MsBuild\XSharp";     Check: HasVs2017('2') ;
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir|3}\MsBuild\XSharp";     Check: HasVs2017('3') ;
 
-; VOSDK files, better safe than sorry
-Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VoInternetclasses";
-Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VoConsoleClasses";
-Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VOGUIClasses";
-Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VORDDClasses";
-Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VOSQLClasses";
-Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VOReportClasses";
-Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VOSystemClasses";
-Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_32\VOWin32APILibrary";
-
-
+Components: vs2019; Type: filesandordirs; Name: "{code:GetVs2019IdeDir|1}\Extensions\XSharp" ;  Check: HasVs2019('1') ;
+Components: vs2019; Type: filesandordirs; Name: "{code:GetVs2019IdeDir|2}\Extensions\XSharp";   Check: HasVs2019('2');
+Components: vs2019; Type: filesandordirs; Name: "{code:GetVs2019IdeDir|3}\Extensions\XSharp";   Check: HasVs2019('3');
+Components: vs2019; Type: filesandordirs; Name: "{code:GetVs2019BaseDir|1}\MsBuild\XSharp";     Check: HasVs2019('1');
+Components: vs2019; Type: filesandordirs; Name: "{code:GetVs2019BaseDir|2}\MsBuild\XSharp";     Check: HasVs2019('2');
+Components: vs2019; Type: filesandordirs; Name: "{code:GetVs2019BaseDir|3}\MsBuild\XSharp";     Check: HasVs2019('3');
 
 ; Template cache and component cache
 ;vs2015
@@ -827,21 +881,50 @@ Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017I
 Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId|2}\ComponentModelCache";        Check: HasVs2017('2');
 Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId|3}\ComponentModelCache";        Check: HasVs2017('3');
 
-;vs2017
-Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|1}\vtc";                        Check: HasVs2019('1');
-Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|2}\vtc";                        Check: HasVs2019('2');
-Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|3}\vtc";                        Check: HasVs2019('3');
-Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|1}\ComponentModelCache";        Check: HasVs2019('1');
-Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|2}\ComponentModelCache";        Check: HasVs2019('2');
-Components: vs2017; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2017InstanceId|3}\ComponentModelCache";        Check: HasVs2019('3');
+;vs2019
+Components: vs2019; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2019InstanceId|1}\vtc";                        Check: HasVs2019('1');
+Components: vs2019; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2019InstanceId|2}\vtc";                        Check: HasVs2019('2');
+Components: vs2019; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2019InstanceId|3}\vtc";                        Check: HasVs2019('3');
+Components: vs2019; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2019InstanceId|1}\ComponentModelCache";        Check: HasVs2019('1');
+Components: vs2019; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2019InstanceId|2}\ComponentModelCache";        Check: HasVs2019('2');
+Components: vs2019; Type: filesandordirs; Name: "{#Vs16LocalDir}{code:GetVs2019InstanceId|3}\ComponentModelCache";        Check: HasVs2019('3');
+
+; Old VOSDK files, better safe than sorry
+Type: filesandordirs; Name: "{# Gacx86}VoInternetclasses";
+Type: filesandordirs; Name: "{# Gacx86}VoConsoleClasses";
+Type: filesandordirs; Name: "{# Gacx86}VOGUIClasses";
+Type: filesandordirs; Name: "{# Gacx86}VORDDClasses";
+Type: filesandordirs; Name: "{# Gacx86}VOSQLClasses";
+Type: filesandordirs; Name: "{# Gacx86}VOReportClasses";
+Type: filesandordirs; Name: "{# Gacx86}VOSystemClasses";
+Type: filesandordirs; Name: "{# Gacx86}VOWin32APILibrary";
+Type: filesandordirs; Name: "{# Gacil}VoInternetclasses";
+Type: filesandordirs; Name: "{# Gacil}VoConsoleClasses";
+Type: filesandordirs; Name: "{# Gacil}VOGUIClasses";
+Type: filesandordirs; Name: "{# Gacil}VORDDClasses";
+Type: filesandordirs; Name: "{# Gacil}VOSQLClasses";
+Type: filesandordirs; Name: "{# Gacil}VOReportClasses";
+Type: filesandordirs; Name: "{# Gacil}VOSystemClasses";
+Type: filesandordirs; Name: "{# Gacil}VOWin32APILibrary";
+Type: filesandordirs; Name: "{# Gacil}XSharp.Core";
+Type: filesandordirs; Name: "{# Gacil}XSharp.RT";
+Type: filesandordirs; Name: "{# Gacil}XSharp.VO";
+Type: filesandordirs; Name: "{# Gacil}XSharp.RDD";
+Type: filesandordirs; Name: "{# Gacil}XSharp.MacroCompiler";
+Type: filesandordirs; Name: "{# Gacil}XSharp.XPP";
+Type: filesandordirs; Name: "{# Gacil}XSharp.VFP";
+
+
 
 
 [Messages]
+
 WelcomeLabel1=Welcome to {# Product} (X#) 
-WelcomeLabel2=This installer will install {#ProdBuild} on your computer.%n%nIt is recommended that you close all other applications before continuing, especially all running copies of Visual Studio.
-;WizardInfoBefore=Warning
-;InfoBeforeLabel=You are about to install Beta software
-;InfoBeforeClickLabel=Only continue the installation if you are aware of the following:
+#ifdef FOX
+WelcomeLabel2=This installer will install {#ProdBuild} (FOX Subscribers edition) on your computer.%n%nIt is recommended that you close all other applications before continuing, especially all running copies of Visual Studio.
+#else
+WelcomeLabel2=This installer will install {#ProdBuild} (Free - Public edition) on your computer.%n%nIt is recommended that you close all other applications before continuing, especially all running copies of Visual Studio.
+#endif
 
 
 
@@ -934,8 +1017,8 @@ begin
     StringChangeEx(Paths, ';;',';',true);
     { Overwrite (or create if missing) path environment variable }
     if RegWriteStringValue(HKEY_LOCAL_MACHINE, {#EnvironmentKey}, 'Path', Paths)
-    then Log(Format('The [%s] added to PATH: [%s]', [Path, Paths]))
-    else Log(Format('Error while adding the [%s] to PATH: [%s]', [Path, Paths]));
+    then Log(Format('The folder [%s] was added to PATH: [%s]', [Path, Paths]))
+    else Log(Format('Error while adding [%s] to PATH: [%s]', [Path, Paths]));
 end;
 
 /////////////////////////////////////////////////////////////////////
@@ -957,8 +1040,8 @@ begin
     StringChangeEx(Paths, ';;',';',true);
     { Overwrite path environment variable }
     if RegWriteStringValue(HKEY_LOCAL_MACHINE, {#EnvironmentKey}, 'Path', Paths)
-    then Log(Format('The [%s] removed from PATH: [%s]', [Path, Paths]))
-    else Log(Format('Error while removing the [%s] from PATH: [%s]', [Path, Paths]));
+    then Log(Format('The folder [%s] was removed from PATH: [%s]', [Path, Paths]))
+    else Log(Format('Error while removing [%s] from PATH: [%s]', [Path, Paths]));
 end;
 
 /////////////////////////////////////////////////////////////////////
@@ -1263,15 +1346,23 @@ begin
 
 end;
 
-function CopyToVsFolder(path: String) : String;
+
+function RunVsUpdate(path: String) : String;
 begin
   result := '';
-  result := result+ 'XCOPY '+ExpandConstant('"{app}\Extension\*.*" "')+path+'Extensions\XSharp" /i /s /y'+#13+#10;
   result := result + '"'+path+'Devenv.exe" /updateconfiguration'+#13+#10;
 
 end;
 
-function DeployToVs2015: Boolean;
+
+function CopyToVsFolder(path: String) : String;
+begin
+  result := '';
+  result := result+ 'XCOPY '+ExpandConstant('"{app}\Extension\*.*" "')+path+'Extensions\XSharp" /i /s /y'+#13+#10;
+
+end;
+
+function DeployToVs2015(mustcopy: Integer): Boolean;
 var commands: string;
 begin
   result := Vs2015Installed;
@@ -1280,10 +1371,18 @@ begin
       commands := '';
       commands := commands + DelFolder(Vs2015Path+'Extensions\XSharp');
       commands := commands + DelUserFolders(ExpandConstant('{#VS14LocalDir}'));
-      commands := commands + CopyToVsFolder(Vs2015Path);
+      if (mustcopy = 1) then
+        commands := commands + CopyToVsFolder(Vs2015Path);
+      commands := commands + RunVsUpdate(Vs2015Path);
       commands := commands + DelFolder(ExpandConstant('{commonpf}\MsBuild\XSharp'));
-      commands := commands + CopyMsBuild(ExpandConstant('{commonpf}\MsBuild\XSharp'));
-      SaveStringToFile( ExpandConstant('{app}\uninst\deployvs2015.cmd'), commands, False);
+      if (mustcopy = 1) then
+        commands := commands + CopyMsBuild(ExpandConstant('{commonpf}\MsBuild\XSharp'));
+      if (mustcopy = 1) then
+        SaveStringToFile( ExpandConstant('{app}\uninst\deployvs2015.cmd'), commands, False)
+      else
+        SaveStringToFile( ExpandConstant('{app}\uninst\removevs2015.cmd'), commands, False);
+      if (mustcopy = 1) then
+        DeployToVs2015(0);
   end
 end;
 
@@ -1308,7 +1407,7 @@ end ;
 
 
 /////////////////////////////////////////////////////////////////////
-function DeployToVs2017: Boolean;
+function DeployToVs2017(mustcopy: Integer): Boolean;
 var commands: string;
 begin
   result := Vs2017Installed;
@@ -1319,31 +1418,45 @@ begin
       begin
         commands := commands + DelFolder(Vs2017Path1+'Extensions\XSharp');
         commands := commands + DelUserFolders(ExpandConstant('{#VS15LocalDir}'+vs2017InstanceId1));
-        commands := commands + CopyToVsFolder(Vs2017Path1);
+        if (mustcopy = 1) then 
+           commands := commands + CopyToVsFolder(Vs2017Path1);
+        commands := commands + RunVsUpdate(Vs2017Path1);
         commands := commands + DelFolder(Vs2017BaseDir1+'\MsBuild\XSharp');
-        commands := commands + CopyMsBuild(Vs2017BaseDir1+'\MsBuild\XSharp');
+        if (mustcopy = 1) then
+          commands := commands + CopyMsBuild(Vs2017BaseDir1+'\MsBuild\XSharp');
        end;
       if HasVs2017('2') then 
       begin
         commands := commands + DelFolder(Vs2017Path2+'Extensions\XSharp');
         commands := commands + DelUserFolders(ExpandConstant('{#VS15LocalDir}'+vs2017InstanceId2));
         commands := commands + CopyToVsFolder(Vs2017Path2);
+        if (mustcopy = 1) then 
+          commands := commands + RunVsUpdate(Vs2017Path2);
         commands := commands + DelFolder(Vs2017BaseDir2+'\MsBuild\XSharp');
-        commands := commands + CopyMsBuild(Vs2017BaseDir2+'\MsBuild\XSharp');
+        if (mustcopy = 1) then
+          commands := commands + CopyMsBuild(Vs2017BaseDir2+'\MsBuild\XSharp');
        end ;
       if HasVs2017('3') then 
       begin
         commands := commands + DelFolder(Vs2017Path3+'Extensions\XSharp');
         commands := commands + DelUserFolders(ExpandConstant('{#VS15LocalDir}'+vs2017InstanceId3));
-        commands := commands + CopyToVsFolder(Vs2017Path3);
+        if (mustcopy = 1) then 
+           commands := commands + CopyToVsFolder(Vs2017Path3);
+        commands := commands + RunVsUpdate(Vs2017Path3);
         commands := commands + DelFolder(Vs2017BaseDir3+'\MsBuild\XSharp');
-        commands := commands + CopyMsBuild(Vs2017BaseDir3+'\MsBuild\XSharp');
+        if (mustcopy = 1) then
+          commands := commands + CopyMsBuild(Vs2017BaseDir3+'\MsBuild\XSharp');
       end;
-      SaveStringToFile( ExpandConstant('{app}\uninst\deployvs2017.cmd'), commands, False);
+      if (mustcopy = 1) then
+        SaveStringToFile( ExpandConstant('{app}\uninst\deployvs2017.cmd'), commands, False)
+      else
+        SaveStringToFile( ExpandConstant('{app}\uninst\removevs2017.cmd'), commands, False);
+      if (mustcopy = 1) then
+        DeployToVs2017(0);
   end
 end;
 
-function DeployToVs2019: Boolean;
+function DeployToVs2019(mustcopy: Integer): Boolean;
 var commands: string;
 begin
   result := Vs2019Installed;
@@ -1354,28 +1467,42 @@ begin
       begin
         commands := commands + DelFolder(Vs2017Path1+'Extensions\XSharp');
         commands := commands + DelUserFolders(ExpandConstant('{#VS16LocalDir}'+vs2017InstanceId1));
-        commands := commands + CopyToVsFolder(Vs2017Path1);
+        if (mustcopy = 1) then
+          commands := commands + CopyToVsFolder(Vs2017Path1);
+        commands := commands + RunVsUpdate(Vs2017Path1);
         commands := commands + DelFolder(Vs2017BaseDir1+'\MsBuild\XSharp');
-        commands := commands + CopyMsBuild(Vs2017BaseDir1+'\MsBuild\XSharp');
+        if (mustcopy = 1) then
+          commands := commands + CopyMsBuild(Vs2017BaseDir1+'\MsBuild\XSharp');
        end;
       if HasVs2019('2') then 
       begin
         commands := commands + DelFolder(Vs2017Path2+'Extensions\XSharp');
         commands := commands + DelUserFolders(ExpandConstant('{#VS16LocalDir}'+vs2017InstanceId2));
-        commands := commands + CopyToVsFolder(Vs2017Path2);
+        if (mustcopy = 1) then
+          commands := commands + CopyToVsFolder(Vs2017Path2);
+        commands := commands + RunVsUpdate(Vs2017Path1);
         commands := commands + DelFolder(Vs2017BaseDir2+'\MsBuild\XSharp');
-        commands := commands + CopyMsBuild(Vs2017BaseDir2+'\MsBuild\XSharp');
+        if (mustcopy = 1) then
+          commands := commands + CopyMsBuild(Vs2017BaseDir2+'\MsBuild\XSharp');
        end ;
       if HasVs2019('3') then 
       begin
         commands := commands + DelFolder(Vs2017Path3+'Extensions\XSharp');
         commands := commands + DelUserFolders(ExpandConstant('{#VS16LocalDir}'+vs2017InstanceId3));
-        commands := commands + CopyToVsFolder(Vs2017Path3);
+        if (mustcopy = 1) then
+          commands := commands + CopyToVsFolder(Vs2017Path3);
+        commands := commands + RunVsUpdate(Vs2017Path3);
         commands := commands + DelFolder(Vs2017BaseDir3+'\MsBuild\XSharp');
-        commands := commands + CopyMsBuild(Vs2017BaseDir3+'\MsBuild\XSharp');
+        if (mustcopy = 1) then
+          commands := commands + CopyMsBuild(Vs2017BaseDir3+'\MsBuild\XSharp');
       end;
-
-      SaveStringToFile( ExpandConstant('{app}\uninst\deployvs2019.cmd'), commands, False);
+      if (mustcopy = 1) then
+        SaveStringToFile( ExpandConstant('{app}\uninst\deployvs2019.cmd'), commands, False)
+      else
+        SaveStringToFile( ExpandConstant('{app}\uninst\removevs2019.cmd'), commands, False);
+      if (mustcopy = 1) then
+        DeployToVs2019(0);
+      
   end
 end;
 /////////////////////////////////////////////////////////////////////
@@ -1412,6 +1539,15 @@ begin
   end;
 end;
 
+function GetVs2019IdeDir(Param: String): String;
+begin
+  case param of 
+  '1': result := vs2017Path1;
+  '2': result := vs2017Path2;
+  '3': result := vs2017Path3;
+  end;
+end;
+
 { get instance id so we can delete the proper folder in appdata\local }
 function GetVs2017InstanceId(Param: String): String;
 begin
@@ -1421,7 +1557,15 @@ begin
   '3': result := Vs2017InstanceId3;
   end;
 end;
-
+{ get instance id so we can delete the proper folder in appdata\local }
+function GetVs2019InstanceId(Param: String): String;
+begin
+  case param of 
+  '1': result := Vs2017InstanceId1;
+  '2': result := Vs2017InstanceId2;
+  '3': result := Vs2017InstanceId3;
+  end;
+end;
 
 /////////////////////////////////////////////////////////////////////
 function GetVs2017BaseDir(Param: String): String;
@@ -1433,6 +1577,14 @@ begin
   end;
 end;
 
+function GetVs2019BaseDir(Param: String): String;
+begin
+  case param of 
+  '1': result := Vs2017BaseDir1;
+  '2': result := Vs2017BaseDir2;
+  '3': result := Vs2017BaseDir3;
+  end;
+end;
 /////////////////////////////////////////////////////////////////////
 function GetHelp22Dir(Param: String): String;
 begin
@@ -1448,7 +1600,8 @@ end;
 /////////////////////////////////////////////////////////////////////
 Procedure Checkvs2017Help();
 var
-  VsHelpItem: Integer;
+  VsHelpItem2017: Integer;
+  VsHelpItem2019: Integer;
   Caption: String;
   i: Integer;
 begin
@@ -1456,14 +1609,21 @@ begin
   for i:= 0 to WizardForm.ComponentsList.Items.Count-1 do
   begin
     Caption := WizardForm.ComponentsList.ItemCaption[i];
-    if (Pos('2017',Caption) > 0) and (Pos('documentation', Caption) > 0) then VsHelpItem := i;
+    if (Pos('2017',Caption) > 0) and (Pos('documentation', Caption) > 0) then VsHelpItem2017 := i;
+    if (Pos('2019',Caption) > 0) and (Pos('documentation', Caption) > 0) then VsHelpItem2019 := i;
   end;
    
   if Vs2017Installed and Not HelpViewer23Installed then
   begin
-     WizardForm.ComponentsList.ItemCaption[VsHelpItem] := 'Cannot install the VS 2017 documentation because the Help Viewer component is not installed';
-     WizardForm.ComponentsList.ItemEnabled[VsHelpItem] := false;
-     WizardForm.ComponentsList.Checked[VsHelpItem] := false;
+     WizardForm.ComponentsList.ItemCaption[VsHelpItem2017] := 'Cannot install the VS 2017 documentation because the Help Viewer component is not installed';
+     WizardForm.ComponentsList.ItemEnabled[VsHelpItem2017] := false;
+     WizardForm.ComponentsList.Checked[VsHelpItem2017] := false;
+  end;
+  if Vs2019Installed and Not HelpViewer23Installed then
+  begin
+     WizardForm.ComponentsList.ItemCaption[VsHelpItem2019] := 'Cannot install the VS 2019 documentation because the Help Viewer component is not installed';
+     WizardForm.ComponentsList.ItemEnabled[VsHelpItem2019] := false;
+     WizardForm.ComponentsList.Checked[VsHelpItem2019] := false;
   end;
 
 end;

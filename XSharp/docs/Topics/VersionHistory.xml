@@ -25,6 +25,7 @@
     <para styleclass="Heading2">MacroCompiler</para>
     <list id="63" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Fixed a problem with some aliased expressions</li>
+      <li styleclass="List">The macro compiler now detects that you are overriding a built-in function in your own code and will no longer throw an &quot;ambigous method&quot; exception but will choose function from your code over functions defined in the X# runtime</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <list id="63" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -38,6 +39,7 @@
       <li styleclass="List">Low level file errors now include the callstack</li>
       <li styleclass="List">Fixed some problems in AsHexString()</li>
       <li styleclass="List">The DosErrString() no longer gets its messages from the language string tables. The messages have been removed and also the related members in the XSharp.VOErrors enum.</li>
+      <li styleclass="List">Added a Turkish language resource.</li>
     </list>
     <para styleclass="Heading2">RDD System</para>
     <list id="63" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -45,8 +47,10 @@
       <li styleclass="List">Fixed several problems with OrdKeyCount() and filters, scopes and SetDeleted() setting</li>
       <li styleclass="List">Some DBF files have a value in the Decimals byte for field definitions for field types that do not support decimals. This was causing problems. These decimals are now ignored.</li>
       <li styleclass="List">Opening and closing a DBF without making changes was updating the time stamp. This has been fixed.</li>
+      <li styleclass="List">Fixed problems in Pack() and Zap()</li>
+      <li styleclass="List">Fixed a problem where custom indexes were accidentally updated.</li>
+      <li styleclass="List">Fixed several problems with OrdKeyCount() in combination with Filters, SetDeleted() and scopes.</li>
     </list>
-    <para styleclass="List"></para>
     <para styleclass="Heading2">VO SDK Classes</para>
     <list id="63" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Most of the libraries now compile with &quot;Late Binding&quot; disabled for better performance. <br/>To help in doing this some typed properties have been added such as SqlStatement:__Connection which is typed as SQLConnection. </li>
@@ -57,7 +61,6 @@
       <li styleclass="List">Improved Brace matching for keywords. Several BEGIN .. END constructs have now been included as well as CASE statements inside DO CASE and SWITCH, RECOVER, FINALLY, ELSE, ELSEIF and OTHERWISE</li>
       <li styleclass="List">Fix a problem with adding and deleting references when unloaded or unavailable references existed.</li>
     </list>
-    <para styleclass="List"></para>
     <para styleclass="Heading2">VOXPorter</para>
     <list id="64" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">The program is now able to comment, uncomment and delete source code lines from the VO code when exporting to XSharp. <br/>You have to add comments <text style="font-weight:bold;">at the end of the line</text>. The following comments are supported:</li>

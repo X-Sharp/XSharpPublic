@@ -7,7 +7,12 @@ using System.IO
 [STAThread];
 FUNCTION Start() AS VOID
     TRY
-        testAOtter()
+        
+        SetNatDLL("TURKISH")
+        TestZap2()
+        //TestPack2()
+        //DbSeekTest()
+        //testAOtter()
         //Ticket127()
         //TestHexString()
         //FrankM()
@@ -111,6 +116,279 @@ FUNCTION Start() AS VOID
         ErrorDialog(e)
     END TRY
     WAIT
+    RETURN
+FUNCTION TestZap2() AS VOID               
+
+LOCAL cDBF, cPfad, cDriver, cIndex AS STRING
+
+LOCAL aFields, aValues AS ARRAY
+
+LOCAL i AS DWORD
+
+ 
+
+ 
+
+    cDriver := RddSetDefault ( "DBFCDX" )
+
+    
+
+ 
+
+                cDBF := cPfad + "Foo"
+
+                cIndex := cPfad + "Foox"
+
+               
+
+                FErase ( cIndex + IndexExt() )
+
+               
+
+ 
+
+                aFields := { { "LAST" , "C" , 20 , 0 } }
+
+ 
+
+                aValues := { "a1" , "o5" , "g2", "g1" }      
+
+               
+
+                              
+
+    // -------------------
+
+               
+
+                ? DbCreate( cDBF , AFields)
+
+                ? DbUseArea( ,,cDBF , , TRUE )  // open shared               
+
+               
+
+                FOR i := 1 UPTO ALen ( aValues )
+
+                               DbAppend()
+
+                               FieldPut ( 1 , aValues [ i ] )
+
+                              
+
+                               IF InList ( Upper ( aValues [i] ) , "G1" )
+
+                                               ? "DBDelete()" , DbDelete()
+
+                                              
+
+                               ENDIF  
+
+                                                                                             
+
+                NEXT
+
+               
+
+               
+
+                ? DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+
+ 
+
+                DbCloseAll()
+
+               
+
+    ?
+
+  
+
+                ? DbUseArea( ,,cDBF , , FALSE ) // open not shared
+
+                ? DbSetIndex ( cIndex )
+
+                              
+
+                ?
+
+                // Note: the OrdKeyCount() call below seems to be responsible that later on DBZap() throws a
+
+                // RDD exception - no matter if the "DBFNTX" or "DBFCDX" driver is used !
+
+                //
+
+                // When you deactivate the OrdKeycount() call below, DBZap() returns true and the DBF has as expected
+
+                // 0 records
+
+                                                              
+
+                ? OrdKeyCount()  // <---  activate/deactivate the line if the "DBFCDX" or "DBFNTX" driver is used.
+
+                              
+
+                ? RecCount()
+
+                ? "DBZap()" , DbZap()
+
+                ? OrdKeyCount()
+
+                ? RecCount()
+
+               
+
+                DbGoTop()
+
+               
+
+                ?
+
+                ? "eof()" , Eof()
+
+                ? OrdKeyCount() , RecCount()
+
+                ?
+
+                DO WHILE ! Eof()
+
+                              
+
+                               ? FieldGet ( 1 )
+
+                              
+
+                               DbSkip ( 1)
+
+                              
+
+                              
+
+                ENDDO
+
+                              
+
+               
+
+                RddSetDefault ( cDriver )
+
+                              
+
+                RETURN        
+    FUNCTION TestPack2() AS VOID 	
+LOCAL cDBF, cPfad, cDriver, cIndex AS STRING 
+LOCAL aFields, aValues AS ARRAY 
+LOCAL i AS DWORD
+
+
+    cDriver := RddSetDefault ( "DBFNTX" )
+
+	cDBF := cPfad + "Foo"
+	cIndex := cPfad + "Foox" 
+	
+	FErase ( cIndex + IndexExt() )
+	
+
+	aFields := { { "LAST" , "C" , 20 , 0 } } 
+
+	aValues := { "a1" , "o5" , "g2", "g1" }	
+	
+		
+    // -------------------
+	
+	? DbCreate( cDBF , AFields)
+	? DbUseArea( ,,cDBF , , TRUE )	// open shared 	
+	
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend() 
+		FieldPut ( 1 , aValues [ i ] ) 
+		
+		IF InList ( Upper ( aValues [i] ) , "G1" ) 
+			? "DBDelete()" , DbDelete()
+			
+		ENDIF 	
+						
+	NEXT 
+	
+	
+	? DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper (_Field->LAST) } )
+
+	DbCloseAll()
+	
+    ?
+   
+	? DbUseArea( ,,cDBF , , FALSE )	 // open not shared
+	? DbSetIndex ( cIndex ) 
+		
+	?
+	// Note: the OrdKeyCount() call below seems to be responsible that  later on DBPack() throws a 
+	// RDD exception - but only if the "DBFNTX" driver is used ! 
+	//
+	// When you deactivate the OrdKeycount() call, DBPack() returns true and the DBF has as expected 
+	// 3 records - but the NTX is damaged.
+				
+	? OrdKeyCount()  // <---  activate/deactivate this line if the "DBFNTX" driver is used
+		
+	? RecCount() 
+	? "DBPack()" , DbPack()
+	? OrdKeyCount()
+	? RecCount() 
+   	
+	DbGoTop()
+	 
+	?
+	? "eof()" , Eof() 
+	? OrdKeyCount() , RecCount()
+	?
+	DO WHILE ! Eof()
+		
+		? FieldGet ( 1 )
+		
+		DbSkip ( 1) 
+		
+		
+	ENDDO 
+		
+	
+	RddSetDefault ( cDriver )
+		
+	RETURN
+		FUNCTION DbSeekTest() as VOID
+			LOCAL cDbf AS STRING
+			LOCAL cRet AS STRING
+
+			RddSetDefault("DBFNTX")
+			cDBF := "DbSeekTest"
+			FErase ( cDbf + IndexExt() )
+			
+			DbCreate(cDbf, { { "LAST" , "C" , 20 , 0 } })
+
+			DbUseArea( ,,cDBF , , TRUE )
+            foreach var value in { "u1" , "u2", "o2" , "o1"  }
+                DbAppend()
+                FieldPut(1, value)
+            next
+			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			DbSetOrder ( 1 )
+			DbGoTop()
+			cRet := ""
+			DO WHILE ! Eof()
+				cRet += AllTrim( FieldGet ( 1 ) )
+				DbSkip ( 1 )                       
+			ENDDO
+            ?  "o1o2u1u2" == cRet
+            ? DbSeek ( "P" , FALSE , TRUE )  // seek for last occurence       
+			
+			OrdDescend ( , , TRUE )
+			DbGoTop()
+			cRet := ""
+			DO WHILE ! Eof()
+				cRet += AllTrim( FieldGet ( 1 ) )
+				DbSkip ( 1 )                       
+			ENDDO               
+			? "u2u1o2o1" = cRet 
+			? DbSeek ( "P" , FALSE , TRUE )  // seek for last occurence       
+		
+			DbCloseAll()
     RETURN
 
 Function TestAOtter() as void

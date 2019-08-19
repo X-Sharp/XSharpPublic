@@ -468,7 +468,7 @@ FUNCTION SetNatDLL(cNewDLL AS STRING) AS LOGIC
 /// <exclude/>
 FUNCTION _SetCollation(cBase AS STRING) AS LOGIC
 	VAR rm := System.Resources.ResourceManager{ "XSharp.Collations", TYPEOF(Functions):Assembly }
-	VAR obj := rm:GetObject(cBase:ToUpper()) 
+	VAR obj := rm:GetObject(cBase:ToUpper())
 	IF obj != NULL
 		VAR bytes := obj ASTYPE BYTE[]
 		IF bytes != NULL

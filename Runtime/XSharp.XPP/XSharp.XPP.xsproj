@@ -17,9 +17,9 @@
     <INS>false</INS>
     <NS>true</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.0.3.0</XSharpProjectversion>
- 	<IncludePaths>$(CommonInclude)</IncludePaths>
-	<Nostandarddefs>true</Nostandarddefs>
+    <XSharpProjectversion>2.0.4.0</XSharpProjectversion>
+    <IncludePaths>$(CommonInclude)</IncludePaths>
+    <Nostandarddefs>true</Nostandarddefs>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">

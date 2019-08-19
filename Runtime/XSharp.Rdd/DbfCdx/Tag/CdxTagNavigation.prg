@@ -550,9 +550,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 nChildPage := branchPage:GetChildPage(0)
                 RETURN SELF:_locateFirst(nChildPage)
             ENDIF
-            VAR node := page[0]
-            SELF:_saveCurrentRecord(node)
-            RETURN node:Recno
+            IF page:NumKeys > 0
+                VAR node := page[0]
+                SELF:_saveCurrentRecord(node)
+                RETURN node:Recno
+            ENDIF
+            RETURN 0
                
             
         PRIVATE METHOD _locateLast(pageOffSet AS LONG) AS LONG
@@ -567,9 +570,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 nChildPage := branchPage:GetChildPage(page:NumKeys-1)
                 RETURN SELF:_locateLast(nChildPage)
             ENDIF
-            VAR node := page[page:NumKeys-1]
-            SELF:_saveCurrentRecord(node)
-            RETURN node:Recno
+            IF page:NumKeys > 0
+                VAR node := page[page:NumKeys-1]
+                SELF:_saveCurrentRecord(node)
+                RETURN node:Recno
+            ENDIF
+            RETURN 0
 
 
         PRIVATE METHOD _locate(keyBuffer AS BYTE[] , keyLength AS LONG , searchMode AS SearchMode , pageOffset AS LONG, recNo AS LONG) AS LONG

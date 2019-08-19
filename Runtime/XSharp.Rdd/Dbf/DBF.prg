@@ -741,6 +741,7 @@ METHOD Zap() AS LOGIC
         SELF:Goto(0)
         // Zap means, set the RecCount to zero, so any other write with overwrite datas
         SELF:_RecCount := 0
+        SELF:_RecNo := 0
         SELF:_Flush := TRUE
         isOk := SELF:Flush()
         // Memo File ?

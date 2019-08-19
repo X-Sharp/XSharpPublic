@@ -1,1 +1,0 @@
-UpdateVsix %1 %2

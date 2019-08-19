@@ -10,8 +10,8 @@
 ;#define Compression     "none" 
 #endif
 
-;#define FOX
-#undef FOX
+#define FOX
+;#undef FOX
 #define VSHELP
 ;#undef VSHELP
 ; define the next line to prevent cab building and have a fast test
@@ -24,7 +24,7 @@
 #define AssemblyVersion     "2.0.0.0"
 #define FileNameVersion     "2GA"
 #define VIVersion           "2.0.4.0"
-#define TouchDate           "2019-08-18"
+#define TouchDate           "2019-08-19"
 #define TouchTime           "02:00:00"
 
 ; Folder names
@@ -67,7 +67,7 @@
 #define SetupExeName        "XSharpSetup"+FileNameVersion+Suffix
 
 #define Product             "XSharp"
-#define ProdBuild           "XSharp Bandolversion "+ Version
+#define ProdBuild           "XSharp Bandol version "+ Version
 #define Company             "XSharp BV"
 #define RegCompany          "XSharpBV"
 #define XSharpURL           "http://www.xsharp.info"
@@ -96,8 +96,8 @@
 #define XIDEFolder          DevFolder + "Xide\"
 
 #define SnippetsSource      DevPublicFolder + "VisualStudio\ProjectPackage\Snippets\"
-#define XIDESetup           "XIDE_Set_up_1.18.exe"
-#define XIDEVersion         "1.18"
+#define XIDESetup           "XIDE_Set_up_1.19.exe"
+#define XIDEVersion         "1.19"
 #define StdFlags            "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
 #define GACInstall          "gacinstall uninsnosharedfileprompt uninsrestartdelete"
 #define RuntimeAppId        "{477B7845-48AF-4ACC-BAC6-90003B1EE562}"
@@ -921,9 +921,9 @@ Type: filesandordirs; Name: "{# Gacil}XSharp.VFP";
 
 WelcomeLabel1=Welcome to {# Product} (X#) 
 #ifdef FOX
-WelcomeLabel2=This installer will install {#ProdBuild} (FOX Subscribers edition) on your computer.%n%nIt is recommended that you close all other applications before continuing, especially all running copies of Visual Studio.
+WelcomeLabel2=This installer will install {#ProdBuild} (FOX edition) on your computer.%n%nIt is recommended that you close all other applications before continuing, especially all running copies of Visual Studio.
 #else
-WelcomeLabel2=This installer will install {#ProdBuild} (Free - Public edition) on your computer.%n%nIt is recommended that you close all other applications before continuing, especially all running copies of Visual Studio.
+WelcomeLabel2=This installer will install {#ProdBuild} (Public edition) on your computer.%n%nIt is recommended that you close all other applications before continuing, especially all running copies of Visual Studio.
 #endif
 
 

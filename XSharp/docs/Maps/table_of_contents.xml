@@ -741,6 +741,30 @@
             </topicref>
             <topicref type="topic" id="436905850607204" modified="2019-08-13T13:24:44.237Z" icon="0" href="Database">
               <caption translate="true">Database</caption>
+              <topicref type="topic" id="436959948447118" build="ALL" modified="2005-06-21T23:33:20.156Z" icon="0" href="command_APPEND_BLANK">
+                <caption translate="true">APPEND BLANK Command</caption>
+              </topicref>
+              <topicref type="topic" id="436956696260961" build="ALL" modified="2005-06-21T23:33:24.453Z" icon="0" href="command_APPEND_FROM">
+                <caption translate="true">APPEND FROM Command</caption>
+              </topicref>
+              <topicref type="topic" id="436959767492127" build="ALL" modified="2005-06-21T23:32:19.468Z" icon="0" href="command_AVERAGE">
+                <caption translate="true">AVERAGE Command</caption>
+              </topicref>
+              <topicref type="topic" id="436959392659364" build="ALL" modified="2005-06-21T23:32:55.625Z" icon="0" href="command_CLEAR_ALL">
+                <caption translate="true">CLEAR ALL Command</caption>
+              </topicref>
+              <topicref type="topic" id="436959858002471" build="ALL" modified="2005-07-08T09:54:35.171Z" icon="0" href="command_CLOSE">
+                <caption translate="true">CLOSE Command</caption>
+              </topicref>
+              <topicref type="topic" id="436959353901900" build="ALL" modified="2005-06-21T23:31:14.953Z" icon="0" href="command_CONTINUE">
+                <caption translate="true">CONTINUE Command</caption>
+              </topicref>
+              <topicref type="topic" id="436957491884871" build="ALL" modified="2005-06-21T23:34:03.421Z" icon="0" href="command_COPY_STRUCTURE">
+                <caption translate="true">COPY STRUCTURE Command</caption>
+              </topicref>
+              <topicref type="topic" id="436958956041974" build="ALL" modified="2005-06-21T23:34:03.421Z" icon="0" href="command_COPY_STRUCTURE_EXTENDE">
+                <caption translate="true">COPY STRUCTURE EXTENDED Command</caption>
+              </topicref>
             </topicref>
             <topicref type="topic" id="436905312879542" modified="2019-08-13T13:24:44.243Z" icon="0" href="Date-and-Time">
               <caption translate="true">Date and Time</caption>

@@ -2,24 +2,27 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XSharp.Core</title>
+  <keywords>
+    <keyword>XSharp.Core</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">XSharp.Core</para>
     </header>
     <para styleclass="Normal">This is the base DLL of the X# Runtime. It contains:</para>
-    <list id="10" type="ul" listtype="bullet" formatstring="&#8226;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="3" type="ul" listtype="bullet" formatstring="&#8226;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="List">Common interfaces, such as IDate, IFloat, ICodeBlock, IMacroCompiler, used by other X# components</li>
       <li styleclass="List">Runtime functions that use standard .Net datatypes such as SLen(), AllTrim(), SLen().</li>
     </list>
-    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">The Runtime State (SetDeleted(), SetExact() etc)</li>
       <li styleclass="List">The Workarea information </li>
       <li styleclass="List">The nation resources and collations.</li>
     </list>
-    <list id="12" type="ul" listtype="bullet" formatstring="&#8226;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="5" type="ul" listtype="bullet" formatstring="&#8226;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="List">RDD related functions that do not depend on XBase types as DATE, USUAL and FLOAT.</li>
     </list>
-    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">The low level File/IO </li>
     </list>
     <para styleclass="List"></para>

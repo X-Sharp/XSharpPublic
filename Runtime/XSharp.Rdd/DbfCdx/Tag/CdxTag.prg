@@ -481,7 +481,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     recno := SELF:_Recno
                     last := SELF:_oRdd:RecCount + 1
                     count := 0
-                    local nToSkip as LONG
                     local previous as long
                     previous := recno
                     DO WHILE recno != 0 .AND. recno < last
@@ -496,7 +495,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:Descending := lWasDescending
                 ELSE
                      records := 0
-                    IF SELF:GoTop()
+                    IF SELF:GoTop() .and. ! SELF:Stack:Empty
                         VAR topStack := SELF:CurrentStack
                         VAR page     := topStack:Page
                         DO WHILE TRUE

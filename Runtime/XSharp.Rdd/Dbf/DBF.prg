@@ -18,6 +18,11 @@ BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBF RDD. Usually not used 'stand alone'</summary>
     PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
         
+#region STATIC properties and fields
+        STATIC PROTECT _Extension := ".DBF" AS STRING
+        STATIC PRIVATE  culture := System.Globalization.CultureInfo.InvariantCulture AS CultureInfo
+
+#endregion	
         PROTECT _RelInfoPending  AS DbRelInfo
         
         PROTECT _Header			AS DbfHeader
@@ -26,10 +31,11 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _BlankBuffer    AS BYTE[]
         INTERNAL _isValid        AS LOGIC    // Current Position is Valid
         PROTECT _HasMemo		AS LOGIC
+	PROTECT INTERNAL _hFile			AS IntPtr
+	PROTECT INTERNAL _Flush			AS LOGIC		
+	PROTECT INTERNAL _RecordBuffer	AS BYTE[]	
 
 
-        //PROTECT _HasTags		AS LOGIC
-        //PROTECT _HasAutoInc		AS LOGIC
         //PROTECT _HasTimeStamp	AS LOGIC
         //PROTECT _LastUpdate	    AS DateTime
         PROTECT _RecCount		AS LONG
@@ -39,12 +45,10 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _Positioned		AS LOGIC 	//
         //PROTECT _Appended		AS LOGIC	// Record has been added ?
         PROTECT _Deleted		AS LOGIC	// Record has been deleted ?
-        //PROTECT _HeaderDirty	AS LOGIC	// Header is dirty ?
         PROTECT _fLocked		AS LOGIC    // File Locked ?
         PROTECT _HeaderLocked	AS LOGIC
         //PROTECT _PackMemo		AS LOGIC
         INTERNAL _OpenInfo		AS DbOpenInfo // current dbOpenInfo structure in OPEN/CREATE method
-        //PROTECT _ParentRelInfo	AS DbRelInfo  // parent rel struct
         PROTECT _Locks			AS List<LONG>
         //PROTECT _DirtyRead		AS LONG
         //PROTECT _HasTrigger		AS LOGIC
@@ -54,24 +58,19 @@ BEGIN NAMESPACE XSharp.RDD
         //PROTRECT _Trigger		as DbTriggerDelegate
         PROTECT _oIndex			AS BaseIndex
         PROTECT _Hot            AS LOGIC
-        //PROTECT _addFieldPos    AS LONG     // Used by AddFields Method, and SetFieldsExtent
         PROTECT _lockScheme     AS DbfLocking
         PROTECT _NewRecord      AS LOGIC
-        INTERNAL _NullColumn    AS DbfNullColumn // Column definition for _NullFlags, used in DBFVFP driver
-        INTERNAL _NullCount      := 0 AS LONG   // to count the NULL and Length bits for DBFVFP
+        PROTECT INTERNAL _NullColumn    AS DbfNullColumn // Column definition for _NullFlags, used in DBFVFP driver
+        PROTECT INTERNAL _NullCount      := 0 AS LONG   // to count the NULL and Length bits for DBFVFP
         
-        STATIC PROTECT _Extension := ".DBF" AS STRING
-        INTERNAL PROPERTY FullPath AS STRING GET _FileName
-        INTERNAL PROPERTY Header AS DbfHeader GET _Header
-        INTERNAL _Ansi          AS LOGIC
-        //
-        INTERNAL _Encoding      AS Encoding
-        //
-        STATIC PRIVATE  culture := System.Globalization.CultureInfo.InvariantCulture AS CultureInfo
-        INTERNAL  _numformat AS NumberFormatInfo
-        PROTECTED PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR
-        PROTECTED PROPERTY HasMemo AS LOGIC GET SELF:_hasMemo
-        PROTECTED PROPERTY Memo AS BaseMemo GET (BaseMemo) SELF:_Memo
+        PROTECT INTERNAL PROPERTY FullPath AS STRING GET _FileName
+        PROTECT INTERNAL PROPERTY Header AS DbfHeader GET _Header
+        PROTECT INTERNAL _Ansi          AS LOGIC
+        PROTECT INTERNAL _Encoding      AS Encoding
+        PROTECT INTERNAL  _numformat AS NumberFormatInfo
+        PROTECT PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR
+        PROTECT PROPERTY HasMemo AS LOGIC GET SELF:_hasMemo
+        PROTECT PROPERTY Memo AS BaseMemo GET (BaseMemo) SELF:_Memo
         
         PRIVATE METHOD _AllocateBuffers() AS VOID
             SELF:_RecordBuffer  := BYTE[]{ SELF:_RecordLength}
@@ -97,28 +96,28 @@ BEGIN NAMESPACE XSharp.RDD
             /// <inheritdoc />
         METHOD GoTop() AS LOGIC
             IF SELF:IsOpen
-            BEGIN LOCK SELF
-                SELF:GoTo( 1 )
-                SELF:_Top := TRUE
-                SELF:_Bottom := FALSE
-                SELF:_BufferValid := FALSE
-                // Apply Filter and SetDeleted
-                RETURN SkipFilter(1)
-            END LOCK
-            ENDIF
+                BEGIN LOCK SELF
+                    SELF:GoTo( 1 )
+                    SELF:_Top := TRUE
+                    SELF:_Bottom := FALSE
+                    SELF:_BufferValid := FALSE
+                    // Apply Filter and SetDeleted
+                    RETURN SkipFilter(1)
+                END LOCK
+                ENDIF
         RETURN FALSE
         
     /// <inheritdoc />
     METHOD GoBottom() AS LOGIC
         IF SELF:IsOpen
-        BEGIN LOCK SELF
-            SELF:Goto( SELF:RecCount )
-            SELF:_Top := FALSE
-            SELF:_Bottom := TRUE
-            SELF:_BufferValid := FALSE
-            // Apply Filter and SetDeleted
-            RETURN SkipFilter(-1)
-        END LOCK
+            BEGIN LOCK SELF
+                SELF:Goto( SELF:RecCount )
+                SELF:_Top := FALSE
+                SELF:_Bottom := TRUE
+                SELF:_BufferValid := FALSE
+                // Apply Filter and SetDeleted
+                RETURN SkipFilter(-1)
+            END LOCK
         ENDIF
     RETURN FALSE
     
@@ -167,14 +166,14 @@ RETURN FALSE
 METHOD GoToId(oRec AS OBJECT) AS LOGIC
     LOCAL result AS LOGIC
     BEGIN LOCK SELF
-    TRY
-    VAR nRec := Convert.ToInt32( oRec )
-    result := SELF:Goto( nRec )
-    CATCH ex AS Exception
-    SELF:_dbfError(ex, SubCodes.EDB_GOTO,GenCode.EG_DATATYPE,  "DBF.GoToId") 
-    result := FALSE
-    END TRY
-END LOCK
+        TRY
+        VAR nRec := Convert.ToInt32( oRec )
+        result := SELF:Goto( nRec )
+        CATCH ex AS Exception
+        SELF:_dbfError(ex, SubCodes.EDB_GOTO,GenCode.EG_DATATYPE,  "DBF.GoToId") 
+        result := FALSE
+        END TRY
+    END LOCK
 RETURN result
 
 /// <inheritdoc />
@@ -232,52 +231,52 @@ METHOD SkipRaw(nToSkip AS INT) AS LOGIC
 METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
     LOCAL isOk := FALSE AS LOGIC
     IF SELF:IsOpen
-    BEGIN LOCK SELF
-        // Validate
-        isOk := SELF:GoCold()
-        IF isOk 
-            //
-            IF SELF:_ReadOnly 
-                // Error !! Cannot be written !
-                SELF:_DbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
-                isOk := FALSE
-            ENDIF
-            IF  SELF:Shared 
-                IF  SELF:_Locks:Count > 0  .AND. lReleaseLock
-                    SELF:UnLock( 0 ) // Unlock All Records
-                ENDIF
-                SELF:AppendLock( DbLockMode.Lock )
-            ELSE
-                SELF:_HeaderLocked := FALSE
-            ENDIF
+        BEGIN LOCK SELF
+            // Validate
+            isOk := SELF:GoCold()
             IF isOk 
-                Array.Copy(SELF:_BlankBuffer, SELF:_RecordBuffer, SELF:_RecordLength)
-                FOREACH oFld AS RddFieldInfo IN _Fields
-                    IF oFld IS DbfColumn VAR column
-                        column:NewRecord(SELF:_RecordBuffer)
-                    ENDIF   
-                NEXT
-                // Now, update state
-                SELF:_RecCount++
-                SELF:_RecNo         := SELF:_RecCount
-                SELF:_EOF           := FALSE
-                SELF:_Bof           := FALSE
-                SELF:_Deleted       := FALSE
-                SELF:_BufferValid   := TRUE
-                SELF:_isValid       := TRUE
-                SELF:_NewRecord     := TRUE
-                // Mark RecordBuffer and Header as Hot
-                SELF:_Hot           := TRUE
-                SELF:_Header:isHot  := TRUE
-                SELF:_writeHeader()
-                // Now, Save
-                IF SELF:_HeaderLocked 
-                    SELF:GoCold()
-                    SELF:AppendLock( DbLockMode.UnLock )
+                //
+                IF SELF:_ReadOnly 
+                    // Error !! Cannot be written !
+                    SELF:_DbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+                    isOk := FALSE
+                ENDIF
+                IF  SELF:Shared 
+                    IF  SELF:_Locks:Count > 0  .AND. lReleaseLock
+                        SELF:UnLock( 0 ) // Unlock All Records
+                    ENDIF
+                    SELF:AppendLock( DbLockMode.Lock )
+                ELSE
+                    SELF:_HeaderLocked := FALSE
+                ENDIF
+                IF isOk 
+                    Array.Copy(SELF:_BlankBuffer, SELF:_RecordBuffer, SELF:_RecordLength)
+                    FOREACH oFld AS RddFieldInfo IN _Fields
+                        IF oFld IS DbfColumn VAR column
+                            column:NewRecord(SELF:_RecordBuffer)
+                        ENDIF   
+                    NEXT
+                    // Now, update state
+                    SELF:_RecCount++
+                    SELF:_RecNo         := SELF:_RecCount
+                    SELF:_EOF           := FALSE
+                    SELF:_Bof           := FALSE
+                    SELF:_Deleted       := FALSE
+                    SELF:_BufferValid   := TRUE
+                    SELF:_isValid       := TRUE
+                    SELF:_NewRecord     := TRUE
+                    // Mark RecordBuffer and Header as Hot
+                    SELF:_Hot           := TRUE
+                    SELF:_Header:isHot  := TRUE
+                    SELF:_writeHeader()
+                    // Now, Save
+                    IF SELF:_HeaderLocked 
+                        SELF:GoCold()
+                        SELF:AppendLock( DbLockMode.UnLock )
+                    ENDIF
                 ENDIF
             ENDIF
-        ENDIF
-    END LOCK
+        END LOCK
     ENDIF
 //
 RETURN isOk
@@ -288,26 +287,26 @@ METHOD AppendLock( lockMode AS DbLockMode ) AS LOGIC
     LOCAL isOk := FALSE AS LOGIC
     //
     BEGIN LOCK SELF
-    IF lockMode == DbLockMode.Lock
-        // Try to Lock for 123 ms
-        isOk := SELF:HeaderLock( lockMode )
-        IF isOk 
-            // Now Add the "new" record to the Locked Records ?
-            LOCAL newRecno := SELF:RecCount AS LONG
-            newRecno++
-            IF !SELF:_Locks:Contains( newRecno ) .AND. !SELF:_fLocked
-                isOk := SELF:_lockRecord( newRecno )
-            ENDIF
-            IF !isOk 
-                IF SELF:_HeaderLocked 
-                    SELF:HeaderLock( DbLockMode.UnLock )
+        IF lockMode == DbLockMode.Lock
+            // Try to Lock for 123 ms
+            isOk := SELF:HeaderLock( lockMode )
+            IF isOk 
+                // Now Add the "new" record to the Locked Records ?
+                LOCAL newRecno := SELF:RecCount AS LONG
+                newRecno++
+                IF !SELF:_Locks:Contains( newRecno ) .AND. !SELF:_fLocked
+                    isOk := SELF:_lockRecord( newRecno )
                 ENDIF
-                SELF:_dbfError( ERDD.APPENDLOCK, XSharp.Gencode.EG_APPENDLOCK )
+                IF !isOk 
+                    IF SELF:_HeaderLocked 
+                        SELF:HeaderLock( DbLockMode.UnLock )
+                    ENDIF
+                    SELF:_dbfError( ERDD.APPENDLOCK, XSharp.Gencode.EG_APPENDLOCK )
+                ENDIF
             ENDIF
+        ELSE
+            SELF:HeaderLock( lockMode )
         ENDIF
-    ELSE
-        SELF:HeaderLock( lockMode )
-    ENDIF
     END LOCK
     //
     RETURN isOk
@@ -319,14 +318,14 @@ METHOD Lock( lockInfo REF DbLockInfo ) AS LOGIC
     LOCAL isOk AS LOGIC
     SELF:ForceRel()
     BEGIN LOCK SELF
-    IF lockInfo:METHOD == DbLockInfo.LockMethod.Exclusive  .OR. ;
-        lockInfo:METHOD == DbLockInfo.LockMethod.Multiple 
-        isOk := SELF:_lockRecord( lockInfo )
-    ELSEIF lockInfo:METHOD == DbLockInfo.LockMethod.File 
-        isOk := SELF:_lockDBFFile( )
-    ELSE
-        isOk := TRUE
-    ENDIF
+        IF lockInfo:METHOD == DbLockInfo.LockMethod.Exclusive  .OR. ;
+            lockInfo:METHOD == DbLockInfo.LockMethod.Multiple 
+            isOk := SELF:_lockRecord( lockInfo )
+        ELSEIF lockInfo:METHOD == DbLockInfo.LockMethod.File 
+            isOk := SELF:_lockDBFFile( )
+        ELSE
+            isOk := TRUE
+        ENDIF
     END LOCK
     RETURN isOk
     
@@ -335,16 +334,16 @@ METHOD HeaderLock( lockMode AS DbLockMode ) AS LOGIC
     //
     IF lockMode == DbLockMode.Lock 
     // Try to Lock for 123 ms
-    SELF:_HeaderLocked := SELF:_tryLock( SELF:_lockScheme:Offset, 1, (LONG)XSharp.RuntimeState.LockTries)
+        SELF:_HeaderLocked := SELF:_tryLock( SELF:_lockScheme:Offset, 1, (LONG)XSharp.RuntimeState.LockTries)
     ELSE
-    TRY
-        VAR unlocked := FFUnlock( SELF:_hFile, (DWORD)SELF:_lockScheme:Offset, 1 )
-        IF unlocked
+        TRY
+            VAR unlocked := FFUnlock( SELF:_hFile, (DWORD)SELF:_lockScheme:Offset, 1 )
+            IF unlocked
+                SELF:_HeaderLocked := FALSE
+            ENDIF
+        CATCH ex AS Exception
             SELF:_HeaderLocked := FALSE
-        ENDIF
-    CATCH ex AS Exception
-        SELF:_HeaderLocked := FALSE
-        SELF:_dbfError(ex, SubCodes.ERDD_WRITE_UNLOCK,GenCode.EG_LOCK_ERROR,  "DBF.HeaderLock") 
+            SELF:_dbfError(ex, SubCodes.ERDD_WRITE_UNLOCK,GenCode.EG_LOCK_ERROR,  "DBF.HeaderLock") 
         END TRY
     ENDIF
     //
@@ -357,34 +356,34 @@ METHOD UnLock(oRecId AS OBJECT) AS LOGIC
     LOCAL isOk AS LOGIC
     //
     IF SELF:Shared 
-    BEGIN LOCK SELF
-    //
-    SELF:GoCold()
-    TRY
-        recordNbr := Convert.ToInt32( oRecId )
-    CATCH ex AS Exception
-        recordNbr := 0
-        SELF:_dbfError(ex, SubCodes.ERDD_DATATYPE,GenCode.EG_LOCK_ERROR,  "DBF.UnLock") 
-        END TRY
+        BEGIN LOCK SELF
         //
-        isOk := TRUE
-        IF SELF:_Locks:Count > 0 
-            IF recordNbr == 0 
-                // Create a copy with ToArray() because _unlockRecord modifies the collection
-                FOREACH VAR nbr IN SELF:_Locks:ToArray()
-                    isOk := isOk .AND. SELF:_unlockRecord( nbr )
-                NEXT
-                SELF:_Locks:Clear()  // Should be useless as the record is removed from the list in _unlockRecord
-            ELSE
-                isOk := SELF:_unlockRecord( recordNbr )
+            SELF:GoCold()
+            TRY
+                recordNbr := Convert.ToInt32( oRecId )
+            CATCH ex AS Exception
+                recordNbr := 0
+                SELF:_dbfError(ex, SubCodes.ERDD_DATATYPE,GenCode.EG_LOCK_ERROR,  "DBF.UnLock") 
+            END TRY
+            //
+            isOk := TRUE
+            IF SELF:_Locks:Count > 0 
+                IF recordNbr == 0 
+                    // Create a copy with ToArray() because _unlockRecord modifies the collection
+                    FOREACH VAR nbr IN SELF:_Locks:ToArray()
+                        isOk := isOk .AND. SELF:_unlockRecord( nbr )
+                    NEXT
+                    SELF:_Locks:Clear()  // Should be useless as the record is removed from the list in _unlockRecord
+                ELSE
+                    isOk := SELF:_unlockRecord( recordNbr )
+                ENDIF
             ENDIF
-        ENDIF
-        IF SELF:_fLocked  .AND. recordNbr == 0 
-            isOk := SELF:_unlockFile( )
-            IF isOk
-                SELF:_fLocked := FALSE
+            IF SELF:_fLocked  .AND. recordNbr == 0 
+                isOk := SELF:_unlockFile( )
+                IF isOk
+                    SELF:_fLocked := FALSE
+                ENDIF
             ENDIF
-        ENDIF
         END LOCK
     ELSE
         isOk := TRUE
@@ -475,11 +474,11 @@ PROTECTED METHOD _tryLock( nOffset AS INT64, nLong AS LONG, nTries AS LONG  ) AS
     ENDIF
     
     REPEAT
-    TRY
-        locked := FFLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
-    CATCH ex AS Exception
-        locked := FALSE
-        SELF:_dbfError(ex, SubCodes.ERDD_WRITE_LOCK,GenCode.EG_LOCK_ERROR,  "DBF._tryLock") 
+        TRY
+            locked := FFLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
+        CATCH ex AS Exception
+            locked := FALSE
+            SELF:_dbfError(ex, SubCodes.ERDD_WRITE_LOCK,GenCode.EG_LOCK_ERROR,  "DBF._tryLock") 
         END TRY
         IF !locked 
             nTries --
@@ -535,10 +534,10 @@ PROTECTED METHOD _lockRecord( recordNbr AS LONG ) AS LOGIC
     ENDIF
     //
     TRY
-    locked := FFLock( SELF:_hFile, (DWORD)iOffset, (DWORD)SELF:_lockScheme:RecordSize )
+        locked := FFLock( SELF:_hFile, (DWORD)iOffset, (DWORD)SELF:_lockScheme:RecordSize )
     CATCH ex AS Exception
-    locked := FALSE
-    SELF:_dbfError(ex, SubCodes.ERDD_WRITE_LOCK,GenCode.EG_LOCK_ERROR,  "DBF._lockRecord") 
+        locked := FALSE
+        SELF:_dbfError(ex, SubCodes.ERDD_WRITE_LOCK,GenCode.EG_LOCK_ERROR,  "DBF._lockRecord") 
     END TRY
     IF locked
         SELF:_Locks:Add( recordNbr )
@@ -557,13 +556,13 @@ PROTECTED METHOD _lockRecord( lockInfo REF DbLockInfo ) AS LOGIC
     
     isOk := TRUE
     IF lockInfo:RecId == NULL 
-    nToLock := (UINT64)SELF:RecNo
+        nToLock := (UINT64)SELF:RecNo
     ELSE
-    TRY
-        nToLock := Convert.ToUInt64( lockInfo:RecId )
-    CATCH ex AS Exception
-        SELF:_dbfError( ex, ERDD.DATATYPE, XSharp.Gencode.EG_DATATYPE )
-        isOk := FALSE
+        TRY
+            nToLock := Convert.ToUInt64( lockInfo:RecId )
+        CATCH ex AS Exception
+            SELF:_dbfError( ex, ERDD.DATATYPE, XSharp.Gencode.EG_DATATYPE )
+            isOk := FALSE
         END TRY
         IF isOk
             IF nToLock > SELF:RecCount  .OR. nToLock < 1 
@@ -575,7 +574,7 @@ PROTECTED METHOD _lockRecord( lockInfo REF DbLockInfo ) AS LOGIC
     IF isOk 
         // Already locked ?
         IF SELF:Shared .AND. !SELF:_Locks:Contains( (LONG)nToLock ) 
-            IF lockInfo:@@METHOD == DbLockInfo.LockMethod.Multiple 
+            IF lockInfo:Method == DbLockInfo.LockMethod.Multiple 
                 // Just add the lock to the list
                 isOk := SELF:_lockRecord( (LONG)nToLock )
             ELSE // DbLockInfo.LockMethod.Exclusive
@@ -614,20 +613,20 @@ METHOD Delete() AS LOGIC
     LOCAL isOk AS LOGIC
     SELF:ForceRel()
     BEGIN LOCK SELF
-    isOk := SELF:_readRecord()
-    IF isOk
-        IF SELF:_isValid
-            IF ! SELF:_Hot
-                SELF:GoHot()
+        isOk := SELF:_readRecord()
+        IF isOk
+            IF SELF:_isValid
+                IF ! SELF:_Hot
+                    SELF:GoHot()
+                ENDIF
+                SELF:_RecordBuffer[ 0 ] := (BYTE)'*'
+                SELF:_Deleted := TRUE
+                //
             ENDIF
-            SELF:_RecordBuffer[ 0 ] := (BYTE)'*'
-            SELF:_Deleted := TRUE
-            //
+        ELSE
+            // VO does not report an error when deleting on an invalid record
+            isOk := TRUE // SELF:_DbfError( ERDD.READ, XSharp.Gencode.EG_READ )
         ENDIF
-    ELSE
-        // VO does not report an error when deleting on an invalid record
-        isOk := TRUE // SELF:_DbfError( ERDD.READ, XSharp.Gencode.EG_READ )
-    ENDIF
     END LOCK
     RETURN isOk
     
@@ -637,11 +636,11 @@ METHOD GetRec() AS BYTE[]
     SELF:ForceRel()
     // Read Record to Buffer
     BEGIN LOCK SELF
-    IF SELF:_readRecord()
-        //
-        records := BYTE[]{ SELF:_RecordLength }
-        Array.Copy(SELF:_RecordBuffer, records, SELF:_RecordLength)
-    ENDIF
+        IF SELF:_readRecord()
+            //
+            records := BYTE[]{ SELF:_RecordLength }
+            Array.Copy(SELF:_RecordBuffer, records, SELF:_RecordLength)
+        ENDIF
     END LOCK
     RETURN records
     
@@ -713,9 +712,9 @@ METHOD Pack() AS LOGIC
             ENDIF
         ENDDO
         //
-        SELF:_Hot := FALSE
         SELF:_RecCount := nTotal
-        SELF:Flush()
+        SELF:_Flush := TRUE
+        isOk := SELF:Flush()
         //
     ENDIF
     RETURN isOk
@@ -742,8 +741,9 @@ METHOD Zap() AS LOGIC
         SELF:Goto(0)
         // Zap means, set the RecCount to zero, so any other write with overwrite datas
         SELF:_RecCount := 0
-        SELF:_Header:isHot := TRUE
-        SELF:_writeHeader()
+        SELF:_RecNo := 0
+        SELF:_Flush := TRUE
+        isOk := SELF:Flush()
         // Memo File ?
         IF SELF:_HasMemo 
             // Zap Memo
@@ -1010,7 +1010,7 @@ PRIVATE METHOD _readHeader() AS LOGIC
     IF ! SELF:IsOpen
         RETURN FALSE
     ENDIF
-    isOk := ( FRead3(SELF:_hFile, SELF:_Header:Buffer, DbfHeader.SIZE) == DbfHeader.SIZE )
+    isOk := FRead3(SELF:_hFile, SELF:_Header:Buffer, DbfHeader.SIZE) == DbfHeader.SIZE 
     //
     IF isOk 
         SELF:_HeaderLength := SELF:_Header:HeaderLen
@@ -1022,7 +1022,7 @@ PRIVATE METHOD _readHeader() AS LOGIC
         ENDIF
         SELF:_RecCount := SELF:_Header:RecCount
         // Move to top, after header
-        isOk := ( FSeek3( SELF:_hFile, DbfHeader.SIZE, SeekOrigin.Begin ) == DbfHeader.SIZE )
+        isOk := FSeek3( SELF:_hFile, DbfHeader.SIZE, SeekOrigin.Begin ) == DbfHeader.SIZE 
         IF isOk 
             isOk := _readFieldsHeader()
         ENDIF
@@ -1040,7 +1040,7 @@ PRIVATE METHOD _readFieldsHeader() AS LOGIC
     SELF:_NullCount := 0
     // Read full Fields Header
     VAR fieldsBuffer := BYTE[]{ fieldDefSize }
-    isOk := ( FRead3( SELF:_hFile, fieldsBuffer, (DWORD)fieldDefSize ) == (DWORD)fieldDefSize )
+    isOk := FRead3( SELF:_hFile, fieldsBuffer, (DWORD)fieldDefSize ) == (DWORD)fieldDefSize 
     IF isOk 
         SELF:_HasMemo := FALSE
         VAR currentField := DbfField{}
@@ -1103,29 +1103,28 @@ PRIVATE METHOD _writeHeader() AS LOGIC
     LOCAL ret := TRUE AS LOGIC
     // Really ?
     IF SELF:_Header:isHot 
-    //
-    IF SELF:_ReadOnly 
-        // Error !! Cannot be written !
-        SELF:_DbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
-        RETURN FALSE
-    ENDIF
-    // Update the Date/Time information
-    LOCAL dtInfo AS DateTime
-    dtInfo := DateTime.Now
-    SELF:_Header:Year := (BYTE)(dtInfo:Year % 100)
-    SELF:_Header:Month := (BYTE)dtInfo:Month
-    SELF:_Header:Day := (BYTE)dtInfo:Day
-    // Update the number of records
-    SELF:_Header:RecCount := SELF:RecCount
-    // Now Write
-    // Go Top
-    FSeek3( SELF:_hFile, 0, FS_SET )
-    // Write just the File Header
-    TRY
-        ret := ( FWrite3( SELF:_hFile, SELF:_Header:Buffer, (DWORD)DbfHeader.SIZE ) == (DWORD)DbfHeader.SIZE )
-    CATCH ex AS Exception
-        SELF:_DbfError( ex, ERDD.WRITE, XSharp.Gencode.EG_WRITE )
-        ret := FALSE
+        IF SELF:_ReadOnly 
+            // Error !! Cannot be written !
+            SELF:_DbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+            RETURN FALSE
+        ENDIF
+        // Update the Date/Time information
+        LOCAL dtInfo AS DateTime
+        dtInfo := DateTime.Now
+        SELF:_Header:Year := (BYTE)(dtInfo:Year % 100)
+        SELF:_Header:Month := (BYTE)dtInfo:Month
+        SELF:_Header:Day := (BYTE)dtInfo:Day
+        // Update the number of records
+        SELF:_Header:RecCount := SELF:RecCount
+        // Now Write
+        // Go Top
+        FSeek3( SELF:_hFile, 0, FS_SET )
+        // Write just the File Header
+        TRY
+            ret := ( FWrite3( SELF:_hFile, SELF:_Header:Buffer, (DWORD)DbfHeader.SIZE ) == (DWORD)DbfHeader.SIZE )
+        CATCH ex AS Exception
+            SELF:_DbfError( ex, ERDD.WRITE, XSharp.Gencode.EG_WRITE )
+            ret := FALSE
         END TRY
         // Ok, go Cold
         SELF:_Header:isHot := FALSE
@@ -1475,7 +1474,7 @@ METHOD GetValueLength(nFldPos AS LONG) AS LONG
     
     /// <inheritdoc />
 METHOD Flush() 			AS LOGIC
-    LOCAL isOk AS LOGIC
+    LOCAL isOk as LOGIC
     IF ! SELF:IsOpen
         RETURN FALSE
     ENDIF
@@ -1484,7 +1483,7 @@ METHOD Flush() 			AS LOGIC
         SELF:_DbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
         RETURN FALSE
     ENDIF
-    IF SELF:_Hot 
+    IF SELF:_Hot .or. SELF:_Flush
         isOk := SELF:GoCold()
         IF isOk
             IF SELF:Shared 

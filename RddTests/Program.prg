@@ -7,9 +7,9 @@ using System.IO
 [STAThread];
 FUNCTION Start() AS VOID
     TRY
-        
-        SetNatDLL("TURKISH")
-        TestZap2()
+        TestZap3()
+        //SetNatDLL("TURKISH")
+        //TestZap2()
         //TestPack2()
         //DbSeekTest()
         //testAOtter()
@@ -117,6 +117,90 @@ FUNCTION Start() AS VOID
     END TRY
     WAIT
     RETURN
+
+FUNCTION TestZap3() AS VOID 	
+LOCAL cDBF, cPfad, cDriver, cIndex AS STRING 
+LOCAL aFields, aValues AS ARRAY 
+LOCAL i AS DWORD
+
+LOCAL lShowNIL AS LOGIC 
+
+	// -------------
+	lShowNIL := FALSE
+	// ------------- 
+ 
+    cDriver := RddSetDefault ( "DBFCDX" ) 
+    
+ 
+	cDBF := cPfad + "Foo"
+	cIndex := cPfad + "Foox" 
+	
+	FErase ( cIndex + IndexExt() )
+	
+
+	aFields := { { "LAST" , "C" , 20 , 0 } } 
+
+	aValues := { "a1" , "o5" , "g2", "g1" }	
+	
+		
+    // -------------------
+	
+	? DbCreate( cDBF , AFields)
+	? DbUseArea( ,,cDBF , , TRUE )	// open shared 	
+	
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend() 
+		FieldPut ( 1 , aValues [ i ] ) 
+		
+		IF InList ( Upper ( aValues [i] ) , "G1" ) 
+			? "DBDelete()" , DbDelete()
+			
+		ENDIF 	
+						
+	NEXT 
+	
+	
+	? DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper (_Field->LAST) } )
+
+	DbCloseAll()
+	
+    ?
+   
+	? DbUseArea( ,,cDBF , , FALSE )	 // open not shared
+	? DbSetIndex ( cIndex ) 
+	? DbSetOrder ( 1 )
+		
+	?
+				
+	? OrdKeyCount()  
+	? RecCount() 
+	? "DBZap()" , DbZap() 
+
+	IF lShowNIL
+		? OrdKeyCount()  //  <--------- shows NIL instead of 0
+		? RecCount() 
+	ENDIF 
+   	
+    ?
+	? "DBGoTop()" , DbGoTop()  // <--------- causes a ArgumentNullException if lShowNIL is set to false 
+	?
+	? "eof()" , Eof() 
+	? OrdKeyCount(), RecCount()
+	?
+	DO WHILE ! Eof()
+		
+		? FieldGet ( 1 )
+		
+		DbSkip ( 1) 
+		
+		
+	ENDDO 
+		
+	
+	RddSetDefault ( cDriver )
+		
+	RETURN	
+
 FUNCTION TestZap2() AS VOID               
 
 LOCAL cDBF, cPfad, cDriver, cIndex AS STRING

@@ -2950,9 +2950,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			SetDeleted ( TRUE  ) 	 
 			
-			#warning disabled following test because it makes tests stop responding
+//			#warning disabled following test because it makes tests stop responding
 			//  Here it hangs because SetDeleted() is true
-//			Assert.Equal(17 , (INT) OrdKeyCount() )
+			Assert.Equal(17 , (INT) OrdKeyCount() )
 			
 			DbCloseAll() 
 			
@@ -3064,13 +3064,213 @@ BEGIN NAMESPACE XSharp.VO.Tests
 //			SetDeleted ( TRUE )  
 			
 			// OrdKeyCount() hangs no matter how the SetDeleted() setting is. 
-			#warning disabled following test because it makes tests stop responding
-			// Assert.Equal(6, (INT) OrdKeyCount() ) // 6 , ok 
+//			#warning disabled following test because it makes tests stop responding
+			Assert.Equal(6, (INT) OrdKeyCount() ) // 6 , ok 
 
 			DbCloseAll() 
 		RETURN	
 
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD OrdKeyNo_with_no_condition() AS VOID
+			LOCAL cDBF AS STRING
+			LOCAL lDeleted AS LOGIC
+			LOCAL nCounter AS INT
+			
+			lDeleted := SetDeleted()
+
+			TRY
+				RddSetDefault("DBFCDX")
+				cDBF := GetTempFileName()
+				
+				DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } , { "a1" , "g1", "g2" , "o5"  } )
+	
+				DbUseArea( ,,cDBF , , TRUE )		
+				DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+				DbSetOrder ( 1 ) 
+	
+				lDeleted := SetDeleted ( FALSE  )
+				DbGoTop()
+				nCounter := 1
+				DO WHILE ! Eof()
+			       // ordKeyNo() returns zero based values if no condition is set,
+			       // e.g. if no filter, no scope or the setting setdeleted (false) is used.
+	//				? FieldGet ( 1 ) , OrdKeyNo()
+					Assert.Equal(nCounter , (INT)OrdKeyNo())
+					DbSkip(1)
+					nCounter ++
+				ENDDO               
+			
+				SetDeleted ( TRUE  ) // Now the ordkeyno() values are correctly one based.       
+			
+				DbGoTop()
+				nCounter := 1
+				DO WHILE ! Eof()
+	//				? FieldGet ( 1 ) , OrdKeyNo()
+					Assert.Equal(nCounter , (INT)OrdKeyNo())
+					DbSkip(1)
+					nCounter ++
+				ENDDO               
+	
+				DbCloseAll() 
+			FINALLY
+
+				SetDeleted( lDeleted )
+
+			END TRY
+		END METHOD
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD ZapTest() AS VOID
+			FOR LOCAL i := 1 AS INT UPTO 3
+				ZapTest_helper(i)
+			NEXT
+		END METHOD
+
+		METHOD ZapTest_helper(nType AS INT) AS VOID
+			LOCAL cDBF AS STRING
+			LOCAL nCount AS INT
+			
+			cDBF := GetTempFileName()
+			FErase(cDbf + ".dbf")
+			FErase(cDbf + ".cdx")
+			FErase(cDbf + ".ntx")
+
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } , { "a1" , "g1", "g2" , "o5"  } )
+			
+			DO CASE
+			CASE  nType == 1
+				? "testing with no index:"
+			CASE nType == 2
+				? "testing with NTX:"
+				RddSetDefault ( "DBFNTX" )
+			CASE nType == 3
+				? "testing with CDX:"
+				RddSetDefault ( "DBFCDX" )
+			END CASE
+			
+			IF nType != 1
+				DbUseArea( ,,cDBF , , TRUE )
+				DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+				DbCloseAll()              
+			END IF
+			
+			DbUseArea( ,,cDBF , , FALSE )
+			IF nType != 1
+				DbSetIndex ( cDBF )
+			ENDIF
+			Assert.True( DbZap() )
+			DbCloseAll()
+		
+			DbUseArea( ,,cDBF , , TRUE )
+			IF nType != 1
+				DbSetIndex ( cDBF )
+				DbSetOrder ( 1 )
+			ENDIF
+			
+			DbGoTop()
+			Assert.True( Eof() )
+			Assert.Equal( 0 , (INT) RecCount() )
+			Assert.False( IsNil( OrdKeyCount() ) )
+			Assert.Equal( 0 , (INT) OrdKeyCount() )
+			nCount := 0
+			DO WHILE ! Eof()
+				nCount ++
+				DbSkip ( 1)
+			ENDDO
+			Assert.Equal( 0 , nCount )
+
+		END METHOD
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD PackTest() AS VOID
+			LOCAL aValues AS ARRAY
+			LOCAL cDbf AS STRING
+			LOCAL cRet AS STRING
+			LOCAL i AS INT
+
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
+			FErase ( cDbf + IndexExt() )
+			
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } )
+			aValues := { "a1" , "g1", "g2" , "o5"  }     
+			
+			DbUseArea( ,,cDBF , , TRUE )                
+			FOR i := 1 UPTO ALen ( aValues )
+				DbAppend()
+				FieldPut ( 1 , aValues [ i ] )
+				IF InList ( Upper ( aValues [i] ) , "G1" )
+					? "DBDelete()" , DbDelete()
+				ENDIF  
+			NEXT
+			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			DbCloseAll()              
+			
+			DbUseArea( ,,cDBF , , FALSE )
+			DbSetIndex ( cDbf )
+			Assert.True( DbPack() ) //   NOTE:   returns TRUE  , though a DBFCDX DBPack() creates garbage.
+			DbCloseAll()
+			
+			Assert.True( DbUseArea( ,,cDBF , , TRUE ) )
+			Assert.True( DbSetIndex ( cDbf ) )
+			Assert.True( DbSetOrder ( 1 ) )
+			
+			DbGoTop()
+			
+			Assert.False( Eof() )
+			Assert.False( IsNil( OrdKeyCount() ) )
+			Assert.Equal(3 , (INT) OrdKeyCount() )
+			// should print a1 g2 o5
+			cRet := ""
+			DO WHILE ! Eof()
+				? FieldGet ( 1 )
+				cRet += AllTrim(FieldGet ( 1 ))
+				DbSkip ( 1)
+			ENDDO
+			Assert.Equal("a1g2o5" , cRet )
+
+			DbCloseArea()
+		END METHOD
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD DBSeek_test() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL cRet AS STRING
+
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
+			FErase ( cDbf + IndexExt() )
+			
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } , { "u1" , "u2", "o2" , "o1"  } )
+
+			DbUseArea( ,,cDBF , , TRUE )                
+			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			DbSetOrder ( 1 )
+			DbGoTop()
+			cRet := ""
+			DO WHILE ! Eof()
+				cRet += AllTrim( FieldGet ( 1 ) )
+				DbSkip ( 1 )                       
+			ENDDO
+			Assert.Equal( "o1o2u1u2" , cRet )
+			Assert.False( DbSeek ( "P" , FALSE , TRUE ) ) // seek for last occurence       
+			
+			OrdDescend ( , , TRUE )
+			DbGoTop()
+			cRet := ""
+			DO WHILE ! Eof()
+				cRet += AllTrim( FieldGet ( 1 ) )
+				DbSkip ( 1 )                       
+			ENDDO               
+			Assert.Equal( "u2u1o2o1" , cRet )
+			Assert.False( DbSeek ( "P" , FALSE , TRUE ) ) // seek for last occurence       
+		
+			DbCloseAll()
+		END METHOD
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG

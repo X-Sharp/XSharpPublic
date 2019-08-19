@@ -128,8 +128,7 @@
   </ProjectExtensions>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PreBuildEvent />
-    <PostBuildEvent>rem Copy Files for the Macro Compiler
-copy $(TargetPath) \xsharp\dev\xsharp\Runtime</PostBuildEvent>
+    <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">

@@ -17,12 +17,12 @@
     <INS>false</INS>
     <NS>false</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.0.4.0</XSharpProjectversion>
+    <XSharpProjectversion>2.0.3.0</XSharpProjectversion>
     <NamedArgs>false</NamedArgs>
     <MemVar>false</MemVar>
     <Undeclared>false</Undeclared>
-    <IncludePaths>$(Solutiondir)Common</IncludePaths>
-    <Nostandarddefs>true</Nostandarddefs>
+	<IncludePaths>$(Solutiondir)Common</IncludePaths>
+	<Nostandarddefs>true</Nostandarddefs>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
@@ -245,12 +245,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Language\Swedish.resx">
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Language\Turkish.resx">
-      <SubType>Designer</SubType>
-      <Generator> </Generator>
     </EmbeddedResource>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->

@@ -544,13 +544,11 @@ CLASS XSharp.RuntimeState
 		year := IIF(Century , "YYYY" , "YY")
 		SWITCH (DateCountry) country
 			CASE XSharp.DateCountry.American
-            CASE XSharp.DateCountry.MDY
 				format := "MM/DD/" + year
 			CASE XSharp.DateCountry.Ansi
 				format := year + ".MM.DD"
 			CASE XSharp.DateCountry.British
 			CASE XSharp.DateCountry.French
-            CASE XSharp.DateCountry.DMY
                 // What a laugh, the British & french have an identical format. 
 				format := "DD/MM/" + year
 			CASE XSharp.DateCountry.German
@@ -558,8 +556,6 @@ CLASS XSharp.RuntimeState
 			CASE XSharp.DateCountry.Italian
 				format := "DD-MM-" + year
 			CASE XSharp.DateCountry.Japanese
-            CASE XSharp.DateCountry.Taiwan
-            CASE XSharp.DateCountry.Ymd
 				format := year + "/MM/DD"
 			CASE XSharp.DateCountry.USA
 				format := "MM-DD-" + year
@@ -758,7 +754,6 @@ CLASS XSharp.RuntimeState
         END SWITCH
         RETURN 0
 END CLASS
-
 
 
 

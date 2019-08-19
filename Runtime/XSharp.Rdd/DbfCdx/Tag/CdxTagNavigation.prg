@@ -83,15 +83,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ELSE
                         recno := SELF:_locateFirst(SELF:_rootPage)
                     ENDIF
-                    IF (recno > 0)
-                        result := SELF:_oRdd:__Goto(recno)
-                        IF result
-                            result := SELF:_oRdd:SkipFilter(1)  
-                        ENDIF
-                    ELSE
-                        result := SELF:_oRdd:__Goto(0)
-                        SELF:_oRdd:_Eof := TRUE
-                        result := TRUE
+                    result := SELF:_oRdd:__Goto(recno)
+                    IF result
+                        result := SELF:_oRdd:SkipFilter(1)  
                     ENDIF
                 ENDIF
                 RETURN result    
@@ -301,31 +295,35 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 page := self:GetPage(nextPage)
                 pos += page:NumKeys
             enddo
-            RETURN pos+1
+            RETURN pos
             
               
             
         PRIVATE METHOD _getScopePos() AS LONG
             LOCAL first AS LONG
             LOCAL last AS LONG
+            local nDiff as LONG
             // Use numbers and not properties here for simplicity of code.
             // that way we don't have to check for the direction of the difference in combination with the descending flag
-            IF SELF:_Scopes[TOPSCOPE]:IsSet
-                IF SELF:__Compare(SELF:_currentValue:Key, SELF:_Scopes[TOPSCOPE]:Buffer, SELF:_Scopes[TOPSCOPE]:Size)  < 0
+            IF SELF:_Scopes[0]:IsSet
+                nDiff := SELF:__Compare(SELF:_currentValue:Key, SELF:_Scopes[0]:Buffer, SELF:_Scopes[0]:Size) 
+                IF nDiff < 0
                     RETURN 0
                 ENDIF
             ENDIF
-            IF SELF:_Scopes[BOTTOMSCOPE]:IsSet
-                IF SELF:__Compare(SELF:_currentValue:Key, SELF:_Scopes[BOTTOMSCOPE]:Buffer, SELF:_Scopes[BOTTOMSCOPE]:Size) > 0
+            IF SELF:_Scopes[1]:IsSet
+                nDiff := SELF:__Compare(SELF:_currentValue:Key, SELF:_Scopes[1]:Buffer, SELF:_Scopes[1]:Size)
+                IF nDiff > 0
                     RETURN 0
                 ENDIF
             ENDIF
-            first := 1
-            last := 1
+            
             last := SELF:_findItemPos()
             IF SELF:HasTopScope
                 SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
                 first := SELF:_findItemPos()
+            ELSE
+                first := 1
             ENDIF
             IF last > first
                 RETURN last - first + 1
@@ -441,7 +439,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL seekInfo AS DbSeekInfo
             LOCAL obj AS OBJECT
             LOCAL mustSeek AS LOGIC
-
             result := TRUE
             seekInfo := DbSeekInfo{}
             IF uiScope == DBOrder_Info.DBOI_SCOPETOP
@@ -550,12 +547,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 nChildPage := branchPage:GetChildPage(0)
                 RETURN SELF:_locateFirst(nChildPage)
             ENDIF
-            IF page:NumKeys > 0
-                VAR node := page[0]
-                SELF:_saveCurrentRecord(node)
-                RETURN node:Recno
-            ENDIF
-            RETURN 0
+            VAR node := page[0]
+            SELF:_saveCurrentRecord(node)
+            RETURN node:Recno
                
             
         PRIVATE METHOD _locateLast(pageOffSet AS LONG) AS LONG
@@ -570,12 +564,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 nChildPage := branchPage:GetChildPage(page:NumKeys-1)
                 RETURN SELF:_locateLast(nChildPage)
             ENDIF
-            IF page:NumKeys > 0
-                VAR node := page[page:NumKeys-1]
-                SELF:_saveCurrentRecord(node)
-                RETURN node:Recno
-            ENDIF
-            RETURN 0
+            VAR node := page[page:NumKeys-1]
+            SELF:_saveCurrentRecord(node)
+            RETURN node:Recno
 
 
         PRIVATE METHOD _locate(keyBuffer AS BYTE[] , keyLength AS LONG , searchMode AS SearchMode , pageOffset AS LONG, recNo AS LONG) AS LONG
@@ -613,7 +604,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 node:Pos := foundPos
             CASE SearchMode.Left
-            CASE SearchMode.SoftSeek
+            CASE SearchMode.LeftFound
                 minPos := 0
                 maxPos := nodeCount
                 VAR found := FALSE 
@@ -624,7 +615,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF cmp >= 0
                         found := TRUE
                     ENDIF
-                    IF cmp  < 0
+                        IF cmp  < 0
                         minPos := foundPos + 1
                     ELSE
                         maxPos := foundPos
@@ -650,7 +641,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 node:Pos := foundPos
                 IF searchMode == SearchMode.Left .AND. foundPos < nodeCount .AND. SELF:__Compare(node:KeyBytes, keyBuffer, keyLength) == 0
-                    searchMode := SearchMode.SoftSeek
+                    searchMode := SearchMode.LeftFound
                 ENDIF
             CASE SearchMode.Bottom
                 IF nodeCount > 0
@@ -681,7 +672,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
             IF foundPos < nodeCount .AND. foundPos >= 0
                 SWITCH searchMode
-                CASE SearchMode.SoftSeek
+                CASE SearchMode.LeftFound
                 CASE SearchMode.Bottom
                 CASE SearchMode.Top
                     SELF:_saveCurrentRecord(node)
@@ -695,7 +686,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 CASE SearchMode.Right
                     RETURN 0
                 END SWITCH
-            ELSEIF searchMode == SearchMode.SoftSeek
+            ELSEIF searchMode == SearchMode.LeftFound
                 DO WHILE ! SELF:Stack:Empty .AND. topStack:Pos == topStack:Page:NumKeys
                     topStack := SELF:PopPage()
                 ENDDO
@@ -713,7 +704,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN 0
             
         PRIVATE METHOD _skipFilter(recno AS LONG , direction AS SkipDirection ) AS LONG
+			LOCAL fromBottom   AS LOGIC
+            LOCAL fromTop      AS LOGIC
             LOCAL recordHidden AS LOGIC
+            LOCAL result       AS LOGIC
             LOCAL cbFilter     AS ICodeblock
             LOCAL fRtDeleted   AS LOGIC
             LOCAL fi           as DbFilterInfo
@@ -730,6 +724,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN recno
                 ENDIF
                recordHidden:= TRUE 
+               result      := TRUE 
                DO WHILE recordHidden
                     // Check deleted first, that is easier and has less overhead
                     IF fRtDeleted
@@ -754,24 +749,29 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN recno
 
-        PRIVATE METHOD _Seek(seekInfo AS DBSEEKINFO , bSearchKey AS BYTE[] ) AS LOGIC
-            LOCAL recno := 0 AS LONG
-            LOCAL result := FALSE  AS LOGIC
-            LOCAL fSoft := FALSE AS LOGIC
-            LOCAL recnoOk := 0 AS LONG
-            LOCAL locked := FALSE AS LOGIC
+        PRIVATE METHOD _Seek(seekInfo AS DBSEEKINFO , abNewKey AS BYTE[] ) AS LOGIC
+            LOCAL recno AS LONG
+            LOCAL result AS LOGIC
+            LOCAL fSoft AS LOGIC
+            LOCAL recnoOk AS LONG
+            LOCAL locked AS LOGIC
             LOCAL strCmp AS INT
             LOCAL strCmpMaxMin AS INT
             LOCAL diff AS INT
+            LOCAL deletedState AS LOGIC
             LOCAL padLen AS INT
             LOCAL needPadStr AS LOGIC
             LOCAL len AS INT
             LOCAL text AS STRING
             LOCAL temp AS BYTE
             LOCAL oldDescend as LOGIC
-            LOCAL activeFilter as LOGIC
+            recno := 0
+            result := FALSE
+            fSoft := FALSE
+            recnoOK := 0
+            locked := FALSE
             oldDescend   := SELF:Descending
-            activeFilter := XSharp.RuntimeState.Deleted .OR. SELF:_oRdd:_FilterInfo:Active 
+            deletedState := XSharp.RuntimeState.Deleted
             TRY
                 SELF:Descending := FALSE
                 if oldDescend
@@ -779,136 +779,130 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 SELF:_oRdd:GoCold()
                 locked := SELF:SLock()
-                IF ! locked
-                    RETURN FALSE
-                ENDIF
-
-                IF SELF:Shared
-                    SELF:_currentValue:Recno := 0
-                ENDIF
-                needPadStr := FALSE
-                IF seekInfo:Value:GetType() == TYPEOF(STRING)
-                    text    := (STRING)seekInfo:Value
-                    len     := text:Length
-                    IF SELF:_Collation != NULL
-                        len := 0
-                        DO WHILE bSearchKey[len] != 0 .AND. len < bSearchKey:Length
-                            len++
-                        ENDDO
+                IF locked
+                    IF SELF:Shared
+                        SELF:_currentValue:Recno := 0
                     ENDIF
-                    padLen := len
-                    IF len < SELF:_sourcekeySize
-                        needPadStr := TRUE
-                        bSearchKey[len] := 1
-                        padLen := len + 1
-                        fSoft := seekInfo:SoftSeek
-                        seekInfo:SoftSeek := TRUE
+                    needPadStr := FALSE
+                    IF seekInfo:Value:GetType() == TYPEOF(STRING)
+                        text    := (STRING)seekInfo:Value
+                        len     := text:Length
+                        IF SELF:_Collation != NULL
+                            len := 0
+                            DO WHILE abNewKey[len] != 0 .AND. len < abNewKey:Length
+                                len++
+                            ENDDO
+                        ENDIF
+                        padLen := len
+                        IF len < SELF:_sourcekeySize
+                            needPadStr := TRUE
+                            abNewKey[len] := 1
+                            padLen := len + 1
+                            fSoft := seekInfo:SoftSeek
+                            seekInfo:SoftSeek := TRUE
+                        ENDIF
+                    ELSE
+                        len := SELF:_keySize
+                        padLen := len
                     ENDIF
-                ELSE
-                    len := SELF:_keySize
-                    padLen := len
-                ENDIF
-                recno  := SELF:_locateKey(bSearchKey, padLen, IIF(seekInfo:SoftSeek , SearchMode.SoftSeek , SearchMode.Left),0)
-                result := SELF:_oRdd:__Goto(recno)
-                IF activeFilter
-                    SELF:_oRdd:SkipFilter(1)
-                    recno := SELF:_Recno
-                ENDIF
-                LOCAL found := false AS LOGIC
-                IF SELF:_oRdd:_isValid
-                    // Get Current Key
-                    VAR currentKeyBuffer := SELF:_currentvalue:Key
-                    // Note: Softseek will also be set when an incomplete key is passed
-                    IF activeFilter .OR. seekInfo:SoftSeek .OR. seekInfo:Last
-                        SELF:_ToString(seekInfo:Value, SELF:_keySize, SELF:_newValue:Key, REF SELF:_newKeyLen)
-                        strCmp := SELF:__Compare(bSearchKey, currentKeyBuffer, len)
-                        found := (strCmp == 0)
-                        IF needPadStr .AND. !found
-                            SELF:_newValue:Key[len] := 1
-                            temp:= currentKeyBuffer[len]
-                            currentKeyBuffer[len] := Byte.MaxValue
-                            strCmpMaxMin := SELF:__Compare(SELF:_newValue:Key, currentKeyBuffer, padLen)
-                            IF strCmp > 0 .AND. strCmpMaxMin < 0
-                                found := TRUE
-                            ENDIF
-                            IF !found
-                                SELF:_newValue:Key[len] := Byte.MaxValue
-                                currentKeyBuffer[len] := 1
+                    recno := SELF:_locateKey(abNewKey, padLen, IIF(seekInfo:SoftSeek , SearchMode.LeftFound , SearchMode.Left),0)
+                    result := SELF:_oRdd:__Goto(recno)
+                    IF deletedState .OR. SELF:_oRdd:_FilterInfo:Active
+                        SELF:_oRdd:SkipFilter(1)
+                        recno := SELF:_Recno
+                    ENDIF
+                    LOCAL found AS LOGIC
+                    IF SELF:_oRdd:_isValid
+                        // Get Current Key
+                        VAR currentKeyBuffer := SELF:_currentvalue:Key
+                        IF deletedState .OR. SELF:_oRdd:_FilterInfo:Active .OR. seekInfo:SoftSeek .OR. seekInfo:Last
+                            SELF:_ToString(seekInfo:Value, SELF:_keySize, SELF:_newValue:Key, REF SELF:_newKeyLen)
+                            strCmp := SELF:__Compare(abNewKey, currentKeyBuffer, len)
+                            found := (strCmp == 0)
+                            IF needPadStr .AND. !found
+                                SELF:_newValue:Key[len] := 1
+                                temp:= currentKeyBuffer[len]
+                                currentKeyBuffer[len] := Byte.MaxValue
                                 strCmpMaxMin := SELF:__Compare(SELF:_newValue:Key, currentKeyBuffer, padLen)
-                                IF strCmp < 0 .AND. strCmpMaxMin > 0
+                                IF strCmp > 0 .AND. strCmpMaxMin < 0
                                     found := TRUE
                                 ENDIF
+                                IF !found
+                                    SELF:_newValue:Key[len] := Byte.MaxValue
+                                    currentKeyBuffer[len] := 1
+                                    strCmpMaxMin := SELF:__Compare(SELF:_newValue:Key, currentKeyBuffer, padLen)
+                                    IF strCmp < 0 .AND. strCmpMaxMin > 0
+                                        found := TRUE
+                                    ENDIF
+                                ENDIF
+                                SELF:_newValue:Key[len] := 0
+                                currentKeyBuffer[len] := temp
+                                seekInfo:SoftSeek := fSoft
                             ENDIF
-                            SELF:_newValue:Key[len] := 0
-                            currentKeyBuffer[len] := temp
-                            seekInfo:SoftSeek := fSoft
-                        ENDIF
-                        IF found
-                            // we are on the first matching key. When we seek Last then we 
-                            // skip to the last record that matches the key that we searched for
-                            IF seekInfo:Last
-                                DO WHILE strCmp == 0
-                                    recnoOK := recno
-                                    recno := SELF:_nextKey(1)
-                                    IF activeFilter
-                                        recno := SELF:_skipFilter(recno, SkipDirection.Forward)
-                                        IF SELF:_oRdd:_Eof .OR. recno == recnoOK
+                            IF found
+                                IF seekInfo:Last
+                                    DO WHILE strCmp == 0
+                                        recnoOK := recno
+                                        recno := SELF:_nextKey(1)
+                                        IF deletedState .OR. SELF:_oRdd:_FilterInfo:Active
+                                            recno := SELF:_skipFilter(recno, SkipDirection.Forward)
+                                            IF SELF:_oRdd:_Eof .OR. recno == recnoOK
+                                                EXIT
+                                            ENDIF
+                                        ENDIF
+                                        IF recno == 0
                                             EXIT
                                         ENDIF
-                                    ENDIF
-                                    IF recno == 0
-                                        EXIT
-                                    ENDIF
-                                    currentKeyBuffer := SELF:_currentvalue:Key
-                                    strCmp := SELF:__Compare(SELF:_newValue:Key, currentKeyBuffer, len)
-                                    IF strCmp != 0
-                                        recno := SELF:_nextKey(-1)
-                                        EXIT
-                                    ENDIF
-                                ENDDO
-                                recno := recnoOK
-                                result := SELF:_GotoRecno(recno)
-                                IF recno != 0
-                                    found := TRUE
-                                ENDIF
-                            ENDIF
-                        ELSE
-                            // Not found, why are we doing this ?
-                            IF seekInfo:Last
-                                diff := strCmp
-                                recno := SELF:_nextKey(-1)
-                                strCmp := SELF:__Compare(SELF:_newValue:Key, currentKeyBuffer, len)
-                                found := (strCmp == 0)
-                                IF found
-                                    result := SELF:_oRdd:__Goto(recno)
-                                ELSE
-                                    IF diff == -strCmp
+                                        currentKeyBuffer := SELF:_currentvalue:Key
+                                        strCmp := SELF:__Compare(SELF:_newValue:Key, currentKeyBuffer, len)
+                                        IF strCmp != 0
+                                            recno := SELF:_nextKey(-1)
+                                            EXIT
+                                        ENDIF
+                                    ENDDO
+                                    recno := recnoOK
+                                    result := SELF:_GotoRecno(recno)
+                                    IF recno != 0
                                         found := TRUE
-                                        result := SELF:_GotoRecno(recno)
-                                    ELSE
-                                        result := SELF:_oRdd:__Goto(0)
                                     ENDIF
                                 ENDIF
                             ELSE
-                                IF !seekInfo:SoftSeek
-                                    result := SELF:_oRdd:__Goto(0)
+                                IF seekInfo:Last
+                                    diff := strCmp
+                                    recno := SELF:_nextKey(-1)
+                                    strCmp := SELF:__Compare(SELF:_newValue:Key, currentKeyBuffer, len)
+                                    found := (strCmp == 0)
+                                    IF found
+                                        result := SELF:_oRdd:__Goto(recno)
+                                    ELSE
+                                        IF diff == -strCmp
+                                            found := TRUE
+                                            result := SELF:_GotoRecno(recno)
+                                        ELSE
+                                            result := SELF:_oRdd:__Goto(0)
+                                        ENDIF
+                                    ENDIF
+                                ELSE
+                                    IF !seekInfo:SoftSeek
+                                        result := SELF:_oRdd:__Goto(0)
+                                    ENDIF
                                 ENDIF
                             ENDIF
+                        ELSE
+                            strCmp := SELF:__Compare(abNewKey, currentKeyBuffer, len)
+                            found := (strCmp == 0)
                         ENDIF
+                    ELSE
+                        found := FALSE
                     ENDIF
-                    if found
-                        strCmp := SELF:__Compare(bSearchKey, currentKeyBuffer, len)
-                        found := (strCmp == 0)
-                    endif
-                ELSE
-                    found := FALSE
+                    IF !SELF:_oRdd:_isValid
+                        SELF:ClearStack()
+                    ENDIF
+                    SELF:_oRdd:_Bof := (SELF:_oRdd:RecCount == 0)
+                    SELF:_oRdd:_Found := found
+                    RETURN result
                 ENDIF
-                IF !SELF:_oRdd:_isValid
-                    SELF:ClearStack()
-                ENDIF
-                SELF:_oRdd:_Bof := (SELF:_oRdd:RecCount == 0)
-                SELF:_oRdd:_Found := found
-                RETURN result
+                RETURN FALSE
                 
             FINALLY
                 SELF:Descending := oldDescend

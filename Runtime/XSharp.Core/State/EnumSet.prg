@@ -114,14 +114,7 @@ BEGIN NAMESPACE XSharp
 		MEMBER WINCODEPAGE	:= 113		// Numeric
 		MEMBER DOSCODEPAGE	:= 114		// Numeric
 		MEMBER COLLATIONMODE:= 115		// COLLATIONMODE (STRING)
-
-        // FoxPro Settings
-        MEMBER FOXCOLLATE   := 120
-        MEMBER NEAR         := 121
-        MEMBER MEMOWIDTH    := 122
-        MEMBER SQLANSI      := 123
-
-
+		
 		// Advantage extensions
 		MEMBER AXSLOCKING           := 150
 		MEMBER RIGHTSCHECKING       := 151

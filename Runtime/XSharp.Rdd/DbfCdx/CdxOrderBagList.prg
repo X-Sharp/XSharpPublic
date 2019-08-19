@@ -72,16 +72,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     oBag := SELF:FindOrderBag(info:BagName)
                     IF oBag == NULL_OBJECT
                         // bag does not exist
-                        if File(info:BagName)
-                            local orderInfo as DbOrderInfo
-                            orderInfo := DbOrderInfo{}
-                            orderInfo:BagName := FPathName()
-                            IF SELF:Add(orderInfo, FALSE)
-                                oBag := SELF:FindOrderBag(info:BagName)
-                            ENDIF
-                        ELSE
-                            oBag := SELF:_CreateBag(info)
-                        endif
+                        oBag := SELF:_CreateBag(info)
                     ENDIF
                     VAR lOk := oBag:OrderCreate(info)
                     IF lOk

@@ -1,4 +1,4 @@
-
+﻿
 USING System.Globalization
 USING System.Resources
 
@@ -93,7 +93,7 @@ INTERNAL CLASS Messages
 		"FRENCH", "GENERIC", "GERMAN", "GERMAN2", "HUNG852", "HUNGCWI", "ITALIAN", ;
 		"NORWEGN", "POL-ISO", "POL-MAZ", "POL852", "PORT850", "PORT860", "ROMANIA", ;
 		"RUSSIAN", "SERBIA", "SL-W-95", "SL-W-AS7", "SL-W-EE", "SLOV852", "SLOV895", ;
-		"SPANISH", "SWEDISH", "TURKISH","UK"}
+		"SPANISH", "SWEDISH", "UK"}
 		_generic := Messages{"XSharp.Language.Generic"}
 
 	PROTECTED CONSTRUCTOR(name AS STRING)

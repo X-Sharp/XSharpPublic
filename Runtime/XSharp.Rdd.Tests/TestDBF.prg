@@ -214,7 +214,6 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			
 		[Fact, Trait("Dbf", "DeleteRecall")];
 		METHOD CheckDeleteRecall() AS VOID
-			SetDeleted(FALSE)
 			VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF

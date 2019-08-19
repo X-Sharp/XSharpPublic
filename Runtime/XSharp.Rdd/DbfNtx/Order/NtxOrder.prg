@@ -95,6 +95,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL PROPERTY OrderName AS STRING GET _orderName
 	    INTERNAL PROPERTY Shared    AS LOGIC GET _Shared
         INTERNAL PROPERTY _Recno AS LONG GET _oRdd:Recno
+        INTERNAL PROPERTY HasTopScope AS LOGIC GET _Scopes[TOPSCOPE]:IsSet
+        INTERNAL PROPERTY HasBottomScope AS LOGIC GET _Scopes[BOTTOMSCOPE]:IsSet
         INTERNAL PROPERTY HasScope AS LOGIC GET _Scopes[TOPSCOPE]:IsSet .OR. _Scopes[BOTTOMSCOPE]:IsSet
         INTERNAL PROPERTY TopScope AS OBJECT GET _Scopes[TOPSCOPE]:Value
         INTERNAL PROPERTY BottomScope AS OBJECT GET _Scopes[BOTTOMSCOPE]:VALUE
@@ -336,7 +338,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PUBLIC METHOD Flush() AS LOGIC
             IF !SELF:Shared .AND. SELF:_Hot .AND. SELF:_hFile != F_ERROR
                 SELF:GoCold()
-                SELF:_PageList:Flush(FALSE)
+                SELF:_PageList:Flush(TRUE)
                 SELF:_Header:IndexingVersion        := 1
                 SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
                 SELF:_Header:FirstPageOffset        := SELF:_firstPageOffset

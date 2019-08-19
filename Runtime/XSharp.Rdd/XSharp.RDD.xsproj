@@ -17,13 +17,13 @@
     <INS>true</INS>
     <NS>false</NS>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <XSharpProjectversion>2.0.4.0</XSharpProjectversion>
+    <XSharpProjectversion>2.0.3.0</XSharpProjectversion>
     <NamedArgs>true</NamedArgs>
     <MemVar>false</MemVar>
     <Undeclared>false</Undeclared>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <IncludePaths>$(CommonInclude)</IncludePaths>
-    <Nostandarddefs>true</Nostandarddefs>
+	<IncludePaths>$(CommonInclude)</IncludePaths> 
+	<Nostandarddefs>true</Nostandarddefs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

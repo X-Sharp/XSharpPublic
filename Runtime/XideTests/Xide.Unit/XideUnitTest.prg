@@ -253,10 +253,7 @@ CLASS Xide.Unit.Assert
 			XideUnitTest.TestRun(FALSE , "False() returned: " + l:ToString() , ProcFile(1) , ProcLine(1))
 		END IF
 	RETURN
-	STATIC METHOD Throws(e AS Type , o AS System.Action) AS VOID
-		#warning Implement Throws
-	STATIC METHOD Throws<T>(o AS System.Action) AS VOID
-		#warning Implement Throws
+	STATIC METHOD @@Throws(e AS Type , o AS System.Action) AS VOID
 
 	STATIC METHOD Ignore() AS VOID
 	STATIC METHOD Fail() AS VOID
@@ -321,9 +318,4 @@ CLASS IgnoreAttribute INHERIT System.Attribute
 	RETURN
 END CLASS
 
-
-CLASS Vulcan.Error
-END CLASS
-CLASS Vulcan.Internal.VOStructAttribute
-END CLASS
 

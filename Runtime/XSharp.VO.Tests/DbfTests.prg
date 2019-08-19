@@ -163,14 +163,14 @@ BEGIN NAMESPACE XSharp.VO.Tests
 //			Appending in exclusive mode:
 			DbUseArea(, , cDbf , "alias2" , FALSE)
 			Assert.True( DbAppend() )
-			Assert.Equal(  RecCount() ,1)
+			Assert.Equal( 1 , RecCount() )
 			FieldPut(1, "test") // ok
 			DbCloseArea()
 			
 //			Appending in SHARED mode:
 			DbUseArea(, , cDbf , "alias2" , TRUE)
 			Assert.True( DbAppend() ) // returns true but does not append record
-			Assert.Equal(  RecCount() ,2) // returns 1, wrong
+			Assert.Equal( 2 , RecCount() ) // returns 1, wrong
 			DbCloseArea()
 		RETURN
 
@@ -204,7 +204,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			SetDecimalSep(Asc(","))
 			FieldPut(1 , 12.34) // not saved in the dbf
-			Assert.Equal((FLOAT) FieldGet(1),12.34 ) // 0,00
+			Assert.Equal(12.34 , (FLOAT) FieldGet(1)) // 0,00
 
 			SetDecimalSep(Asc("."))
 			FieldPut(1 , 12.34)
@@ -1838,15 +1838,15 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			NEXT
 			
 			DbGoTop()
-			Assert.Equal((INT) DbOrderInfo( DBOI_KEYCOUNT ) ,7 ) // 7, correct
+			Assert.Equal(7 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) ) // 7, correct
 			
 			// Setting order scope
 			OrdScope(TOPSCOPE, "G")
 			OrdScope(BOTTOMSCOPE, "G")
 			DbGoTop()
 			
-			// VO: -2 with NTX, 4 with CDX 
-			Assert.Equal((INT) DbOrderInfo( DBOI_KEYCOUNT ) ,4)
+			// VO: -2 with NTX, 4 with CDX
+			Assert.Equal(-2 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) )
 			
 			Assert.True( DbSeek("G")    ) // TRUE, correct
 			Assert.True( DbSeek("GOLD") ) // TRUE with NTX, FALSE with CDX. VO TRUE in both
@@ -1854,7 +1854,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			// Clearing order scope
 			OrdScope(TOPSCOPE, NIL)
 			OrdScope(BOTTOMSCOPE, NIL)
-			Assert.Equal(  (INT) DbOrderInfo( DBOI_KEYCOUNT ) ,7)
+			Assert.Equal( 7 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) )
 			Assert.True( DbSeek("G") )
 			Assert.True( DbSeek("GOLD") )
 			
@@ -1863,7 +1863,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			OrdScope(BOTTOMSCOPE, "G")
 			DbGoTop()
 			// VO: -2 with NTX, 4 with CDX
-			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) ,4 )
+			Assert.Equal(-2 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) )
 			
 			Assert.True( DbSeek("G")    ) // TRUE, correct
 			Assert.True( DbSeek("GOLD") ) // TRUE with NTX, FALSE with CDX. VO TRUE in both
@@ -2032,77 +2032,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				NEXT
 			NEXT
 			DbCloseArea()
-		RETURN
-
-
-		[Fact, Trait("Category", "DBF")];
-		METHOD NTX_Pack() AS VOID
-			LOCAL cDbf AS STRING
-
-			RddSetDefault("DBFNTX")
-			cDBF := GetTempFileName()
-			FErase ( cDbf + IndexExt() )
-			
-			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } , { "a1" , "o5" , "g2", "g1" }	)
-			
-			DbUseArea( ,,cDBF , , FALSE )
-			DbGoTop()
-			DbDelete()
-			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper (	_Field->LAST) } )
-			DbCloseArea()
-			
-			DbUseArea( ,,cDBF , , FALSE )	 // open not shared
-			DbSetIndex ( cDbf ) 
-			
-			// Note: the OrdKeyCount() call below seems to be responsible that	later on DbPack() throws a 
-			// RDD exception - but only if the "DBFNTX" driver is used ! 
-			//
-			// When you deactivate the OrdKeycount() call, DBPack() returns true	and the DBF has AS expected 
-			// 3 records - but the NTX is damaged.
-			
-			Assert.Equal((INT) OrdKeyCount() , 4)
-			Assert.Equal((INT) RecCount() , 4)
-			DbPack()
-			Assert.Equal((INT) OrdKeyCount() , 3)
-			Assert.Equal((INT) RecCount() , 3)
-			DbCloseArea()
-		RETURN
-
-
-		[Fact, Trait("Category", "DBF")];
-		METHOD NTX_CDX_Zap() AS VOID
-			SELF:NTX_CDX_Zap_helper("DBFNTX")
-			SELF:NTX_CDX_Zap_helper("DBFCDX")
-		END METHOD
-		PROTECTED METHOD NTX_CDX_Zap_helper(cDriver AS STRING) AS VOID
-			LOCAL cDbf AS STRING
-
-			RddSetDefault(cDriver)
-			cDBF := GetTempFileName()
-			FErase ( cDbf + IndexExt() )
-			
-			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } , { "a1" , "o5" , "g2", "g1" }	)
-			
-			DbUseArea( ,,cDBF , , FALSE )
-			DbGoTop()
-			DbDelete()
-			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper (	_Field->LAST) } )
-			DbCloseAll()
-			
-			DbUseArea( ,,cDBF , , FALSE ) // open not shared
-			DbSetIndex ( cDbf )
-			
-			Assert.Equal(4 , (INT) OrdKeyCount() )
-			Assert.Equal(4 , (INT) RecCount() )
-			DbZap()
-			Assert.Equal(0 , (INT) OrdKeyCount() )
-			Assert.Equal(0 , (INT) RecCount() )
-			
-			DbGoTop()
-			Assert.True( Eof() )
-			Assert.Equal(0 , (INT) OrdKeyCount() )
-			Assert.Equal(0 , (INT) RecCount() )
-			DbCloseAll()
 		RETURN
 
 

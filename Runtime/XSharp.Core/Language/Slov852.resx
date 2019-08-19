@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EDB_SEEK" xml:space="preserve">
-    <value>Neplatný argument pre vyhľadávanie</value>
+    <value>Neplatný argument pre vyh¾dávanie</value>
   </data>
   <data name="EDB_SKIP" xml:space="preserve">
-    <value>Neplatný počet skokov</value>
+    <value>Neplatný poèet skokov</value>
   </data>
   <data name="EDB_GOTO" xml:space="preserve">
     <value>Prázdny identifikátor záznamu</value>
@@ -142,7 +142,7 @@
     <value>Neplatná špecifikácia mena súboru</value>
   </data>
   <data name="EDB_FIELDNAME" xml:space="preserve">
-    <value>Neplatné meno poľa</value>
+    <value>Neplatné meno po¾a</value>
   </data>
   <data name="EDB_BADALIAS" xml:space="preserve">
     <value>Neplatná špecifikácia alias</value>
@@ -157,7 +157,7 @@
     <value>???</value>
   </data>
   <data name="EDB_CREATETABLE" xml:space="preserve">
-    <value>Chyba vytvorenia tabuľky</value>
+    <value>Chyba vytvorenia tabu¾ky</value>
   </data>
   <data name="EDB_RDDNOTFOUND" xml:space="preserve">
     <value>RDD nenájdené</value>
@@ -166,16 +166,16 @@
     <value>Neplatné indexové pole</value>
   </data>
   <data name="EDB_SELECT" xml:space="preserve">
-    <value>Neplatné číslo pracovnej oblasti</value>
+    <value>Neplatné èíslo pracovnej oblasti</value>
   </data>
   <data name="EDB_SYMSELECT" xml:space="preserve">
     <value>Neplatná specifikácia alias</value>
   </data>
   <data name="EDB_TOTAL" xml:space="preserve">
-    <value>Chyba vytvárania súčtu</value>
+    <value>Chyba vytvárania súètu</value>
   </data>
   <data name="EDB_RECNO" xml:space="preserve">
-    <value>Neplatný argument čísla záznamu</value>
+    <value>Neplatný argument èísla záznamu</value>
   </data>
   <data name="EDB_EXPRESSION" xml:space="preserve">
     <value>Výraz pre kompilátor makier neprešiel</value>
@@ -190,10 +190,10 @@
     <value>Neplatný argument (#%u) funkcie %s</value>
   </data>
   <data name="EDB_NOAREAS" xml:space="preserve">
-    <value>Neexistuje voľná pracovná oblas</value>
+    <value>Neexistuje vo¾ná pracovná oblas</value>
   </data>
   <data name="EDB_NOMEM" xml:space="preserve">
-    <value>Prekročenie rozsahu pamäti</value>
+    <value>Prekroèenie rozsahu pamäti</value>
   </data>
   <data name="EDB_NOFIELDS" xml:space="preserve">
     <value>Nie sú definované polia</value>
@@ -217,7 +217,7 @@
     <value>Štruktúra nezodpovedá</value>
   </data>
   <data name="EDB_NOTABLE" xml:space="preserve">
-    <value>Aktuálna pracovna oblas neobsahuje tabuľku</value>
+    <value>Aktuálna pracovna oblas neobsahuje tabu¾ku</value>
   </data>
   <data name="EDB_NOORDER" xml:space="preserve">
     <value>Nešpecifikované poradie</value>
@@ -244,7 +244,7 @@
     <value>Vytvorenie indexového súboru</value>
   </data>
   <data name="ERDD_READ" xml:space="preserve">
-    <value>Chyba čítania</value>
+    <value>Chyba èítania</value>
   </data>
   <data name="ERDD_WRITE" xml:space="preserve">
     <value>Chyba zápisu</value>
@@ -253,16 +253,16 @@
     <value>Poškodenie dát</value>
   </data>
   <data name="ERDD_CORRUPT_HEADER" xml:space="preserve">
-    <value>Hlavička databázy je poškodená</value>
+    <value>Hlavièka databázy je poškodená</value>
   </data>
   <data name="ERDD_RDDVERSION" xml:space="preserve">
-    <value>Nesprávna verzia ovládača</value>
+    <value>Nesprávna verzia ovládaèa</value>
   </data>
   <data name="ERDD_DATATYPE" xml:space="preserve">
     <value>Chyba typu dát</value>
   </data>
   <data name="ERDD_DATAWIDTH" xml:space="preserve">
-    <value>Chyba dĺžky dát</value>
+    <value>Chyba dåžky dát</value>
   </data>
   <data name="ERDD_UNLOCKED" xml:space="preserve">
     <value>Veta bola uzamknutá</value>
@@ -274,43 +274,43 @@
     <value>Chyba uzamknutia pri Append</value>
   </data>
   <data name="ERDD_READONLY" xml:space="preserve">
-    <value>Len pre čítanie</value>
+    <value>Len pre èítanie</value>
   </data>
   <data name="ERDD_NULLKEY" xml:space="preserve">
-    <value>Prázdny kľúè</value>
+    <value>Prázdny k¾úè</value>
   </data>
   <data name="ERDD_NTXLIMIT" xml:space="preserve">
-    <value>Prekročený limit indexových súborov</value>
+    <value>Prekroèený limit indexových súborov</value>
   </data>
   <data name="ERDD_TAGLIMIT" xml:space="preserve">
-    <value>Prekročený limit prvkov indexového súboru</value>
+    <value>Prekroèený limit prvkov indexového súboru</value>
   </data>
   <data name="ERDD_INIT_LOCK" xml:space="preserve">
     <value>Chyba inicializácie systému uzamykania</value>
   </data>
   <data name="ERDD_READ_LOCK" xml:space="preserve">
-    <value>Nie je možné uzamknú pro čítanie</value>
+    <value>Nie je možné uzamknú pro èítanie</value>
   </data>
   <data name="ERDD_WRITE_LOCK" xml:space="preserve">
     <value>Chyba uzamknutia pri zápise</value>
   </data>
   <data name="ERDD_READ_UNLOCK" xml:space="preserve">
-    <value>Chyba uzamknutia pri čítaní</value>
+    <value>Chyba uzamknutia pri èítaní</value>
   </data>
   <data name="ERDD_WRITE_UNLOCK" xml:space="preserve">
     <value>Chyba odomknutia pri zápise</value>
   </data>
   <data name="ERDD_READ_LOCK_TIMEOUT" xml:space="preserve">
-    <value>Časové oneskorenie uzamknutia pre čítanie indexového súboru</value>
+    <value>Èasové oneskorenie uzamknutia pre èítanie indexového súboru</value>
   </data>
   <data name="ERDD_WRITE_LOCK_TIMEOUT" xml:space="preserve">
-    <value>Časové oneskorenie uzamknutia pre zápis indexového súboru</value>
+    <value>Èasové oneskorenie uzamknutia pre zápis indexového súboru</value>
   </data>
   <data name="ERDD_READ_UNLOCK_TIMEOUT" xml:space="preserve">
-    <value>Časové oneskorenie odomknutia indexového súboru uzamknutého pre čítanie</value>
+    <value>Èasové oneskorenie odomknutia indexového súboru uzamknutého pre èítanie</value>
   </data>
   <data name="ERDD_WRITE_UNLOCK_TIMEOUT" xml:space="preserve">
-    <value>Časové oneskorenie odomknutia indexového súboru uzamknutého pre zápis</value>
+    <value>Èasové oneskorenie odomknutia indexového súboru uzamknutého pre zápis</value>
   </data>
   <data name="ERDD_CLOSE_FILE" xml:space="preserve">
     <value>Uzatvorenie databázy</value>
@@ -325,7 +325,7 @@
     <value>Chybná špecifikácia poradia</value>
   </data>
   <data name="ERDD_RECNO_MISSING" xml:space="preserve">
-    <value>Číslo záznamu nenájdené</value>
+    <value>Èíslo záznamu nenájdené</value>
   </data>
   <data name="ERDD_NOORDER" xml:space="preserve">
     <value>Aktuálna pracovná oblas neobsahuje žiadne poradie</value>
@@ -337,16 +337,16 @@
     <value>Chyba zápisu do NTX súboru</value>
   </data>
   <data name="ERDD_KEY_NOT_FOUND" xml:space="preserve">
-    <value>Kľúč nenájdený</value>
+    <value>K¾úè nenájdený</value>
   </data>
   <data name="ERDD_KEY_EVAL" xml:space="preserve">
-    <value>Neznámy alebo chybný kľúčový výraz</value>
+    <value>Neznámy alebo chybný k¾úèový výraz</value>
   </data>
   <data name="ERDD_VAR_TYPE" xml:space="preserve">
     <value>Chybný typ premennej</value>
   </data>
   <data name="ERDD_READ_BUFFER" xml:space="preserve">
-    <value>Chyba čítania z disku</value>
+    <value>Chyba èítania z disku</value>
   </data>
   <data name="ERDD_SORT_INIT" xml:space="preserve">
     <value>Inicializácia triedenia</value>
@@ -358,19 +358,19 @@
     <value>Chyba triedenia</value>
   </data>
   <data name="ERDD_SORT_COMPLETE" xml:space="preserve">
-    <value>Chyba ukončenia triedenia</value>
+    <value>Chyba ukonèenia triedenia</value>
   </data>
   <data name="ERDD_SORT_END" xml:space="preserve">
-    <value>Chybné ukončenie triedenia</value>
+    <value>Chybné ukonèenie triedenia</value>
   </data>
   <data name="ERDD_READ_TEMPFILE" xml:space="preserve">
-    <value>Chyba čítania dočasného súboru</value>
+    <value>Chyba èítania doèasného súboru</value>
   </data>
   <data name="ERDD_STREAM_NUM" xml:space="preserve">
-    <value>Chybný počet tokov pre triedenie</value>
+    <value>Chybný poèet tokov pre triedenie</value>
   </data>
   <data name="ERDD_CREATE_TEMPFILE" xml:space="preserve">
-    <value>Chyba vytvorenia dočasného súboru</value>
+    <value>Chyba vytvorenia doèasného súboru</value>
   </data>
   <data name="DISKIO_WRITE" xml:space="preserve">
     <value>Chybný zápis do vyrovnávacej pamäti</value>
@@ -383,142 +383,31 @@
   </data>
   <data name="ERDD_INVALIDARG" xml:space="preserve">
     <value>Neplatný argument predaný do info funkcie</value>
-  </data> 
-<data name="__WCSLIBRARYNAME" xml:space="preserve">
-    <value>GUI Triedy</value>
-  </data> 
-<data name="__WCSTYPEERROR" xml:space="preserve">
-    <value>Chybný typ argumentu.</value>
-  </data> 
-<data name="__WCSLOADLIBRARYERROR" xml:space="preserve">
-    <value>%V1s Nadá sa načítať knižnica: %s</value>
-  </data> 
-<data name="__WCSERROR" xml:space="preserve">
-    <value>Chyba</value>
-  </data> 
-<data name="__WCSAREAINDEX" xml:space="preserve">
-    <value>Window_WindowCanvas</value>
-  </data> 
-<data name="__WCSUNKNOWN" xml:space="preserve">
-    <value>Nezníme:</value>
-  </data> 
-<data name="__WCSWARNING" xml:space="preserve">
-    <value>Varovanie!</value>
-  </data> 
-<data name="__WCSCHGDISCARD" xml:space="preserve">
-    <value>Vaše zmeny sa stratia</value>
-  </data> 
-<data name="__WCSDATAWINDOW" xml:space="preserve">
-    <value>%V1s Datové Okno: %s</value>
-  </data> 
-<data name="__WCSDWUNTITLED" xml:space="preserve">
-    <value>DataWindow: &lt;bez titulu&gt;</value>
-  </data> 
-<data name="__WCSUNKNOWNSTATUSMSG" xml:space="preserve">
-    <value>Neznámy status správi</value>
-  </data> 
-<data name="__WCSERROR2" xml:space="preserve">
-    <value>Chyba:</value>
-  </data> 
-<data name="__WCSDSNOTOPEN" xml:space="preserve">
-    <value>%V1s%V2s DataServer %s ( %s ) nie je otvorený</value>
-  </data> 
-<data name="__WCSDELETEFAILED" xml:space="preserve">
-    <value>Chyba dát</value>
-  </data> 
-<data name="__WCSCHANGINGVIEW" xml:space="preserve">
-    <value>Zmena pohladu zruší vaše zmeny.</value>
-  </data> 
-<data name="__WCSDELETEFAILEDMSG" xml:space="preserve">
-    <value>Odstránenie záznamu zlyhalo - neznámy dôvod</value>
-  </data> 
-<data name="__WCSDELETEDRECORD" xml:space="preserve">
-    <value>Odstránený záznam</value>
-  </data> 
-<data name="__WCSIPCSERVERNOTFOUND" xml:space="preserve">
-    <value>Server sa nenašiel</value>
-  </data> 
-<data name="__WCSIPCTOPICNOTFOUND" xml:space="preserve">
-    <value>Téma sa nenašla na serveri</value>
-  </data> 
-<data name="__WCSIPCITEMNOTFOUND" xml:space="preserve">
-    <value>Položka sa nenašla na serveri</value>
-  </data> 
-<data name="__WCSIPCOUTOFMEMORY" xml:space="preserve">
-    <value>Systém nemá dostatok pamäte</value>
-  </data> 
-<data name="__WCSALLFILES" xml:space="preserve">
-    <value>Všetky súbory</value>
-  </data> 
-<data name="__WCSPRINTERNODISKSPACE" xml:space="preserve">
-    <value>Systém nemá dostatok miesta na disku</value>
-  </data> 
-<data name="__WCSDATADIALOG" xml:space="preserve">
-    <value>%V1s Data Dialog: %s</value>
-  </data> 
-<data name="__WCSDBROWSEROBJECT" xml:space="preserve">
-    <value>(Data Browser Object)</value>
-  </data> 
-<data name="__WCSCREATECTLFAILED" xml:space="preserve">
-    <value>Vytvorenie ovládania zlyhalo</value>
-  </data> 
-<data name="__WCSCREATEDLGFAILED" xml:space="preserve">
-    <value>Vytvorenie dialógového okna zo zdroja zlyhalo</value>
-  </data> 
-<data name="__WCSHOSTVOAPP" xml:space="preserve">
-    <value>Visual Objects Aplikácia</value>
-  </data> 
-<data name="__WCSHOSTDATABROWSER" xml:space="preserve">
-    <value>Visual Objects Data Browser</value>
-  </data> 
-<data name="__WCSHOSTDATAWINDOW" xml:space="preserve">
-    <value>Visual Objects Data Window</value>
-  </data> 
-<data name="__WCSPICTUREYN" xml:space="preserve">
-    <value>ANan</value>
-  </data> 
-<data name="__WCSPICTURETFYN" xml:space="preserve">
-    <value>PNANpfan</value>
-  </data> 
-<data name="__WCSNOOLESUPPORT" xml:space="preserve">
-    <value>Táto aplikácia neobsahuje podporu OLE. Polia databázy OLE sa ignorujú.</value>
-  </data> 
-<data name="__WCSTEXTBOX" xml:space="preserve">
-    <value>TextBox</value>
-  </data> 
-<data name="__WCSINFOBOX" xml:space="preserve">
-    <value>InfoBox</value>
-  </data> 
-<data name="__WCSCAPAINTLOADFAILED" xml:space="preserve">
-    <value>CAPAINT.DLL sa nepodarilo načítať</value>
-  </data> 
-<data name="__WCSCNOAUTOMATION" xml:space="preserve">
-    <value>Funkcie servera OLE Automation nie sú k dispozícii. \ NZahrňte prosím knižnicu servera OLE</value>
-  </data> 
-<data name="RT_MSG_MONTH1" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_MONTH1" xml:space="preserve">
     <value>Január</value>
-  </data> 
-<data name="RT_MSG_MONTH2" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_MONTH2" xml:space="preserve">
     <value>Február</value>
-  </data> 
-<data name="RT_MSG_MONTH3" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_MONTH3" xml:space="preserve">
     <value>Marec</value>
-  </data> 
-<data name="RT_MSG_MONTH4" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_MONTH4" xml:space="preserve">
     <value>Apríl</value>
-  </data> 
-<data name="RT_MSG_MONTH5" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_MONTH5" xml:space="preserve">
     <value>Máj</value>
-  </data> 
-<data name="RT_MSG_MONTH6" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_MONTH6" xml:space="preserve">
     <value>Jún</value>
-  </data> 
-<data name="RT_MSG_MONTH7" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_MONTH7" xml:space="preserve">
     <value>Júl</value>
-  </data> 
-<data name="RT_MSG_MONTH8" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_MONTH8" xml:space="preserve">
     <value>August</value>
-  </data> 
+  </data>
   <data name="RT_MSG_MONTH9" xml:space="preserve">
     <value>September</value>
   </data>
@@ -532,7 +421,7 @@
     <value>December</value>
   </data>
   <data name="RT_MSG_DAY1" xml:space="preserve">
-    <value>Nedeľa</value>
+    <value>Nede¾a</value>
   </data>
   <data name="RT_MSG_DAY2" xml:space="preserve">
     <value>Pondelok</value>
@@ -554,2123 +443,230 @@
   </data>
   <data name="RT_MSG_INFOSTRING" xml:space="preserve">
     <value>SLOV-852 ASCII</value>
-  </data> 
-<data name="IDT_NEWSHEET" xml:space="preserve">
-    <value>Nový zošit</value>
-  </data> 
-<data name="IDT_OPEN" xml:space="preserve">
-    <value>Otvoriť</value>
-  </data> 
-<data name="IDT_CLOSE" xml:space="preserve">
-    <value>Zatvoriť</value>
-  </data> 
-<data name="IDT_SAVE" xml:space="preserve">
-    <value>Uložiť</value>
-  </data> 
-<data name="IDT_PRINT" xml:space="preserve">
-    <value>Tlačiť</value>
-  </data> 
-<data name="IDT_PREVIEW" xml:space="preserve">
-    <value>Ukažka</value>
-  </data> 
-<data name="IDT_SUM" xml:space="preserve">
-    <value>Suma</value>
-  </data> 
-<data name="IDT_BOLD" xml:space="preserve">
-    <value>Tučné</value>
-  </data> 
-<data name="IDT_ITALIC" xml:space="preserve">
-    <value>Kurzíva</value>
-  </data> 
-<data name="IDT_UNDERLINE" xml:space="preserve">
-    <value>Podčiarknuté</value>
-  </data> 
-<data name="IDT_CROSSOUT" xml:space="preserve">
-    <value>Preškrtnuté</value>
-  </data> 
-<data name="IDT_SIZEPLUS" xml:space="preserve">
-    <value>Veľkosť+</value>
-  </data> 
-<data name="IDT_SIZEMINUS" xml:space="preserve">
-    <value>Veľkosť-</value>
-  </data> 
-<data name="IDT_SUPERSCRIPT" xml:space="preserve">
-    <value>Superscript</value>
-  </data> 
-<data name="IDT_SUBSCRIPT" xml:space="preserve">
-    <value>Index</value>
-  </data> 
-<data name="IDT_CURRENCY" xml:space="preserve">
-    <value>Mena</value>
-  </data> 
-<data name="IDT_PERCENT" xml:space="preserve">
-    <value>Percento</value>
-  </data> 
-<data name="IDT_COMMA" xml:space="preserve">
-    <value>čiarka</value>
-  </data> 
-<data name="IDT_DECIMALPLUS" xml:space="preserve">
-    <value>Desatinné+</value>
-  </data> 
-<data name="IDT_DECIMALMINUS" xml:space="preserve">
-    <value>Desatinné-</value>
-  </data> 
-<data name="IDT_LEFT" xml:space="preserve">
-    <value>Vľavo</value>
-  </data> 
-<data name="IDT_CENTER" xml:space="preserve">
-    <value>Stred</value>
-  </data> 
-<data name="IDT_RIGHT" xml:space="preserve">
-    <value>Pravo</value>
-  </data> 
-<data name="IDT_JUSTIFY" xml:space="preserve">
-    <value>Zarovnanie</value>
-  </data> 
-<data name="IDT_ADDTEXT" xml:space="preserve">
-    <value>Pridať text</value>
-  </data> 
-<data name="IDT_CENTERTEXT" xml:space="preserve">
-    <value>Centrovať text</value>
-  </data> 
-<data name="IDT_TABLE" xml:space="preserve">
-    <value>Tabuľka</value>
-  </data> 
-<data name="IDT_BORDERRECT" xml:space="preserve">
-    <value>Okraj</value>
-  </data> 
-<data name="IDT_BORDERLOW" xml:space="preserve">
-    <value>Hrana</value>
-  </data> 
-<data name="IDT_LIGHTSHADING" xml:space="preserve">
-    <value>Tieň</value>
-  </data> 
-<data name="IDT_COPY" xml:space="preserve">
-    <value>Kopirovať</value>
-  </data> 
-<data name="IDT_PASTEFORMAT" xml:space="preserve">
-    <value>Prilepiť formát</value>
-  </data> 
-<data name="IDT_PASTEVALUE" xml:space="preserve">
-    <value>Prilepiť hodnotu</value>
-  </data> 
-<data name="IDT_UNDO" xml:space="preserve">
-    <value>Vrátenie späť</value>
-  </data> 
-<data name="IDT_REPEAT" xml:space="preserve">
-    <value>Opakovať</value>
-  </data> 
-<data name="IDT_ZOOMIN" xml:space="preserve">
-    <value>Priblížiť</value>
-  </data> 
-<data name="IDT_ZOOMOUT" xml:space="preserve">
-    <value>Oddialiť</value>
-  </data> 
-<data name="IDT_SORTATOZ" xml:space="preserve">
-    <value>Triediť A-Z</value>
-  </data> 
-<data name="IDT_SORTZTOA" xml:space="preserve">
-    <value>Triediť Z-A</value>
-  </data> 
-<data name="IDT_LOCK" xml:space="preserve">
-    <value>Zamknúť</value>
-  </data> 
-<data name="IDT_OUTLINESYMBOL" xml:space="preserve">
-    <value>Obrys</value>
-  </data> 
-<data name="IDT_SELECTCELL" xml:space="preserve">
-    <value>Vyberte bunku</value>
-  </data> 
-<data name="IDT_SCROLLMINUS" xml:space="preserve">
-    <value>Rolovať-</value>
-  </data> 
-<data name="IDT_SCROLLPLUS" xml:space="preserve">
-    <value>Rolovať+</value>
-  </data> 
-<data name="IDT_BUTTON" xml:space="preserve">
-    <value>Tlačítko</value>
-  </data> 
-<data name="IDT_PICTURE" xml:space="preserve">
-    <value>Obrázok</value>
-  </data> 
-<data name="IDT_SPELLCHECK" xml:space="preserve">
-    <value>Kontrola pravopisu</value>
-  </data> 
-<data name="IDT_CALCULATE" xml:space="preserve">
-    <value>Výpočet</value>
-  </data> 
-<data name="IDT_AREACHART" xml:space="preserve">
-    <value>Oblasť</value>
-  </data> 
-<data name="IDT_BARCHART" xml:space="preserve">
-    <value>Pruh</value>
-  </data> 
-<data name="IDT_COLUMNCHART" xml:space="preserve">
-    <value>Stĺpec</value>
-  </data> 
-<data name="IDT_STACKCHART" xml:space="preserve">
-    <value>Stoh</value>
-  </data> 
-<data name="IDT_LINECHART" xml:space="preserve">
-    <value>Riadok</value>
-  </data> 
-<data name="IDT_PIECHART" xml:space="preserve">
-    <value>Koláč</value>
-  </data> 
-<data name="IDT_SCATTERCHART" xml:space="preserve">
-    <value>Rozptyl</value>
-  </data> 
-<data name="IDT_3DAREACHART" xml:space="preserve">
-    <value>3D Oblsť</value>
-  </data> 
-<data name="IDT_3DBARCHART" xml:space="preserve">
-    <value>3D Pruh</value>
-  </data> 
-<data name="IDT_3DCOLUMNCHART" xml:space="preserve">
-    <value>3D Stĺpec</value>
-  </data> 
-<data name="IDT_3DCOLUMNAREACHART" xml:space="preserve">
-    <value>3D Stl-Oblasť</value>
-  </data> 
-<data name="IDT_3DLINECHART" xml:space="preserve">
-    <value>3D Riadok</value>
-  </data> 
-<data name="IDT_3DPIECHART" xml:space="preserve">
-    <value>3D Koláč</value>
-  </data> 
-<data name="IDT_3DSURFACECHART" xml:space="preserve">
-    <value>3D Povrch</value>
-  </data> 
-<data name="IDT_RADARCHART" xml:space="preserve">
-    <value>Radar</value>
-  </data> 
-<data name="IDT_COLUMNLINECHART" xml:space="preserve">
-    <value>Col-Line</value>
-  </data> 
-<data name="IDT_COLUMNSTOCKCHART" xml:space="preserve">
-    <value>Col-Stock</value>
-  </data> 
-<data name="IDT_CHARTFORMAT" xml:space="preserve">
-    <value>Formát grafu</value>
-  </data> 
-<data name="IDT_EDITCHART" xml:space="preserve">
-    <value>Upraviť graf</value>
-  </data> 
-<data name="IDT_LINE" xml:space="preserve">
-    <value>Riadok</value>
-  </data> 
-<data name="IDT_ARROW" xml:space="preserve">
-    <value>Šipka</value>
-  </data> 
-<data name="IDT_FREEHAND" xml:space="preserve">
-    <value>Ruky</value>
-  </data> 
-<data name="IDT_RECTANGLE" xml:space="preserve">
-    <value>Obdĺžnik</value>
-  </data> 
-<data name="IDT_ELLIPSE" xml:space="preserve">
-    <value>Elipsa</value>
-  </data> 
-<data name="IDT_ARC" xml:space="preserve">
-    <value>Oblúk</value>
-  </data> 
-<data name="IDT_POLYGON" xml:space="preserve">
-    <value>Polygon</value>
-  </data> 
-<data name="IDT_FILLEDRECTANGLE" xml:space="preserve">
-    <value>Vyplnený obdĺžnik</value>
-  </data> 
-<data name="IDT_FILLEDELLIPSE" xml:space="preserve">
-    <value>Vyplnená elipsa</value>
-  </data> 
-<data name="IDT_FILLEDARC" xml:space="preserve">
-    <value>Vyplnený oblúk</value>
-  </data> 
-<data name="IDT_FILLEDPOLYGON" xml:space="preserve">
-    <value>Vyplnený polygon</value>
-  </data> 
-<data name="IDT_SELECTOBJECT" xml:space="preserve">
-    <value>Vyberte objekt</value>
-  </data> 
-<data name="IDT_EDITPOINT" xml:space="preserve">
-    <value>Upraviť bod</value>
-  </data> 
-<data name="IDT_GROUP" xml:space="preserve">
-    <value>Skupina</value>
-  </data> 
-<data name="IDT_UNGROUP" xml:space="preserve">
-    <value>Oddeliť</value>
-  </data> 
-<data name="IDT_FRONT" xml:space="preserve">
-    <value>Predne</value>
-  </data> 
-<data name="IDT_BACK" xml:space="preserve">
-    <value>Zadne</value>
-  </data> 
-<data name="IDT_COLOR" xml:space="preserve">
-    <value>Farba</value>
-  </data> 
-<data name="IDT_3DFRAME" xml:space="preserve">
-    <value>3D Okraj</value>
-  </data> 
-<data name="IDT_NEWMACRO" xml:space="preserve">
-    <value>Nové makro</value>
-  </data> 
-<data name="IDT_FUNCTION" xml:space="preserve">
-    <value>Funkcia</value>
-  </data> 
-<data name="IDT_CALC" xml:space="preserve">
-    <value>CALC</value>
-  </data> 
-<data name="IDT_GOMACRO" xml:space="preserve">
-    <value>Choď</value>
-  </data> 
-<data name="IDT_STEPMACRO" xml:space="preserve">
-    <value>Krok</value>
-  </data> 
-<data name="IDT_TRACEOUTMACRO" xml:space="preserve">
-    <value>Sledovanie</value>
-  </data> 
-<data name="IDT_TRACEINMACRO" xml:space="preserve">
-    <value>Sledujte</value>
-  </data> 
-<data name="IDT_RUNMACRO" xml:space="preserve">
-    <value>Beh</value>
-  </data> 
-<data name="IDT_SKIPMACRO" xml:space="preserve">
-    <value>Skok</value>
-  </data> 
-<data name="IDT_RESETMACRO" xml:space="preserve">
-    <value>Reset</value>
-  </data> 
-<data name="IDT_RECORDMACRO" xml:space="preserve">
-    <value>Záznam</value>
-  </data> 
-<data name="IDT_STOPMACRO" xml:space="preserve">
-    <value>Stop</value>
-  </data> 
-<data name="IDT_PAUSEMACRO" xml:space="preserve">
-    <value>Pauza</value>
-  </data> 
-<data name="IDT_NEW" xml:space="preserve">
-    <value>Nový</value>
-  </data> 
-<data name="IDT_CUT" xml:space="preserve">
-    <value>Rez</value>
-  </data> 
-<data name="IDT_PASTE" xml:space="preserve">
-    <value>Prilepiť</value>
-  </data> 
-<data name="IDT_NUMBERLIST" xml:space="preserve">
-    <value>Zoznam čísel</value>
-  </data> 
-<data name="IDT_BULLETLIST" xml:space="preserve">
-    <value>Zoznam odrážok</value>
-  </data> 
-<data name="IDT_UNINDENT" xml:space="preserve">
-    <value>Zrušiť odsadenie</value>
-  </data> 
-<data name="IDT_INDENT" xml:space="preserve">
-    <value>Odsadenie</value>
-  </data> 
-<data name="IDT_COLUMNFORMAT" xml:space="preserve">
-    <value>Formát stĺpca</value>
-  </data> 
-<data name="IDT_FRAME" xml:space="preserve">
-    <value>Okraj</value>
-  </data> 
-<data name="IDT_OBJECT" xml:space="preserve">
-    <value>Objekt</value>
-  </data> 
-<data name="IDT_GRAPH" xml:space="preserve">
-    <value>Graf</value>
-  </data> 
-<data name="IDT_ENVELOPE" xml:space="preserve">
-    <value>Obálka</value>
-  </data> 
-<data name="IDT_PAGELAYOUT" xml:space="preserve">
-    <value>Rozloženie strany</value>
-  </data> 
-<data name="IDT_PAGENORMAL" xml:space="preserve">
-    <value>Normálna strana</value>
-  </data> 
-<data name="IDT_PAGEFIT" xml:space="preserve">
-    <value>Prispôsobenie stránky</value>
-  </data> 
-<data name="IDT_LEFTTAB" xml:space="preserve">
-    <value>Left Tab</value>
-  </data> 
-<data name="IDT_CENTERTAB" xml:space="preserve">
-    <value>Center Tab</value>
-  </data> 
-<data name="IDT_RIGHTTAB" xml:space="preserve">
-    <value>Right Tab</value>
-  </data> 
-<data name="IDT_DECIMALTAB" xml:space="preserve">
-    <value>Decimal Tab</value>
-  </data> 
-<data name="IDT_PARAGRAPH" xml:space="preserve">
-    <value>Paragraf</value>
-  </data> 
-<data name="IDT_HELP" xml:space="preserve">
-    <value>Pomoc</value>
-  </data> 
-<data name="IDT_DELETE" xml:space="preserve">
-    <value>Vymazať</value>
-  </data> 
-<data name="IDT_TIME" xml:space="preserve">
-    <value>Čas</value>
-  </data> 
-<data name="IDT_MAIL" xml:space="preserve">
-    <value>Pošta</value>
-  </data> 
-<data name="IDT_TUTORIAL" xml:space="preserve">
-    <value>Cvičenie</value>
-  </data> 
-<data name="IDT_DISKETTEIO" xml:space="preserve">
-    <value>Disk I/O</value>
-  </data> 
-<data name="IDT_FIND" xml:space="preserve">
-    <value>Nájsť</value>
-  </data> 
-<data name="IDT_PREVREC" xml:space="preserve">
-    <value>Predošlý</value>
-  </data> 
-<data name="IDT_NEXTREC" xml:space="preserve">
-    <value>Ďalší</value>
-  </data> 
-<data name="IDT_STARTREC" xml:space="preserve">
-    <value>Štart</value>
-  </data> 
-<data name="IDT_ENDREC" xml:space="preserve">
-    <value>Koniec</value>
-  </data> 
-<data name="IDT_VGBROWSE" xml:space="preserve">
-    <value>Zobraziť tabuľku</value>
-  </data> 
-<data name="IDT_CUSTOMBITMAP" xml:space="preserve">
-    <value>Zobraziť formulár</value>
-  </data> 
-<data name="IDTT_NEWSHEET" xml:space="preserve">
-    <value>Vytvoriť nový pracovný zošiť</value>
-  </data> 
-<data name="IDTT_OPEN" xml:space="preserve">
-    <value>Otvoriť existujúci dokument</value>
-  </data> 
-<data name="IDTT_CLOSE" xml:space="preserve">
-    <value>Zatvoriť dokument</value>
-  </data> 
-<data name="IDTT_SAVE" xml:space="preserve">
-    <value>Uložiť zmeny vykonané v aktívnom dokumente</value>
-  </data> 
-<data name="IDTT_PRINT" xml:space="preserve">
-    <value>Tlačiť aktívny dokument</value>
-  </data> 
-<data name="IDTT_PREVIEW" xml:space="preserve">
-    <value>Zobraziť na obrazovke stránku ktorá sa má vytlačiť</value>
-  </data> 
-<data name="IDTT_SUM" xml:space="preserve">
-    <value>Vypočítať súčet</value>
-  </data> 
-<data name="IDTT_BOLD" xml:space="preserve">
-    <value>Nastaví tučný štýl vybratého písma</value>
-  </data> 
-<data name="IDTT_ITALIC" xml:space="preserve">
-    <value>Nastaví vybraný štýl písma na kurzívu</value>
-  </data> 
-<data name="IDTT_UNDERLINE" xml:space="preserve">
-    <value>Podčiarkne vybraný tex</value>
-  </data> 
-<data name="IDTT_CROSSOUT" xml:space="preserve">
-    <value>Vyškrtne vybraný text</value>
-  </data> 
-<data name="IDTT_SIZEPLUS" xml:space="preserve">
-    <value>Zvätší veľkosť písma vybraného textu</value>
-  </data> 
-<data name="IDTT_SIZEMINUS" xml:space="preserve">
-    <value>Zmenší veľkosť písma vybraného textu</value>
-  </data> 
-<data name="IDTT_SUPERSCRIPT" xml:space="preserve">
-    <value>Nastaví vybraný text na horný index</value>
-  </data> 
-<data name="IDTT_SUBSCRIPT" xml:space="preserve">
-    <value>Nastaví vybraný text na predvolený štýl</value>
-  </data> 
-<data name="IDTT_CURRENCY" xml:space="preserve">
-    <value>Použije štýl meny na vybrané bunky</value>
-  </data> 
-<data name="IDTT_PERCENT" xml:space="preserve">
-    <value>Použije percentuálny štýl na vybrané bunky</value>
-  </data> 
-<data name="IDTT_COMMA" xml:space="preserve">
-    <value>Použije čiarku na vybrané bunky</value>
-  </data> 
-<data name="IDTT_DECIMALPLUS" xml:space="preserve">
-    <value>Do formátu čísla pridá jedno desatinné miesto</value>
-  </data> 
-<data name="IDTT_DECIMALMINUS" xml:space="preserve">
-    <value>Odstráni jedno desatinné miesto vo formáte čísla</value>
-  </data> 
-<data name="IDTT_LEFT" xml:space="preserve">
-    <value>Zarovná vľavo</value>
-  </data> 
-<data name="IDTT_CENTER" xml:space="preserve">
-    <value>Centruje text</value>
-  </data> 
-<data name="IDTT_RIGHT" xml:space="preserve">
-    <value>Zarovná vpravo</value>
-  </data> 
-<data name="IDTT_JUSTIFY" xml:space="preserve">
-    <value>Zarovná text</value>
-  </data> 
-<data name="IDTT_ADDTEXT" xml:space="preserve">
-    <value>Pridá nepripojený text alebo textové pole</value>
-  </data> 
-<data name="IDTT_CENTERTEXT" xml:space="preserve">
-    <value>Vycentruje text medzi vybrané stĺpce</value>
-  </data> 
-<data name="IDTT_TABLE" xml:space="preserve">
-    <value>Použije formát tabuľky</value>
-  </data> 
-<data name="IDTT_BORDERRECT" xml:space="preserve">
-    <value>Pridá orámovanie  okrajov bunky</value>
-  </data> 
-<data name="IDTT_BORDERLOW" xml:space="preserve">
-    <value>Pridá orámovanie na spodnú hranu bunky</value>
-  </data> 
-<data name="IDTT_LIGHTSHADING" xml:space="preserve">
-    <value>Používa ľahké tieňovanie</value>
-  </data> 
-<data name="IDTT_COPY" xml:space="preserve">
-    <value>Skopíruje výber do schránky</value>
-  </data> 
-<data name="IDTT_PASTEFORMAT" xml:space="preserve">
-    <value>Vloží iba formáty z kopírovanej bunky</value>
-  </data> 
-<data name="IDTT_PASTEVALUE" xml:space="preserve">
-    <value>Vloží iba hodnoty z skopírovanej bunky</value>
-  </data> 
-<data name="IDTT_UNDO" xml:space="preserve">
-    <value>Vráti späť poslednú akciu alebo príkaz</value>
-  </data> 
-<data name="IDTT_REPEAT" xml:space="preserve">
-    <value>Zopakuje poslednú akciu alebo príkaz</value>
-  </data> 
-<data name="IDTT_ZOOMIN" xml:space="preserve">
-    <value>Zvyši zväčšenie zobrazeného dokumentu</value>
-  </data> 
-<data name="IDTT_ZOOMOUT" xml:space="preserve">
-    <value>Zniži zväčšenie zobrazeného dokumentu</value>
-  </data> 
-<data name="IDTT_SORTATOZ" xml:space="preserve">
-    <value>Zoradí vybrané riadky vzostupne</value>
-  </data> 
-<data name="IDTT_SORTZTOA" xml:space="preserve">
-    <value>Zoradí vybrané riadky v zostupnej orde</value>
-  </data> 
-<data name="IDTT_LOCK" xml:space="preserve">
-    <value>Uzamkne a odomkne vybrané bunky a objekty</value>
-  </data> 
-<data name="IDTT_OUTLINESYMBOL" xml:space="preserve">
-    <value>Zobrazí a skryje obrysové symboly</value>
-  </data> 
-<data name="IDTT_SELECTCELL" xml:space="preserve">
-    <value>Vyberie iba viditeľné bunky vo výbere</value>
-  </data> 
-<data name="IDTT_SCROLLMINUS" xml:space="preserve">
-    <value>Prezentuje vybrané riadky alebo stĺpce</value>
-  </data> 
-<data name="IDTT_SCROLLPLUS" xml:space="preserve">
-    <value>Znižuje vybrané riadky alebo stĺpce</value>
-  </data> 
-<data name="IDTT_BUTTON" xml:space="preserve">
-    <value>Nakreslí tlačidlo na priradenie makra</value>
-  </data> 
-<data name="IDTT_PICTURE" xml:space="preserve">
-    <value>Vloží obrázok prepojeného výberu</value>
-  </data> 
-<data name="IDTT_SPELLCHECK" xml:space="preserve">
-    <value>Spustí kontrolu pravopisu</value>
-  </data> 
-<data name="IDTT_CALCULATE" xml:space="preserve">
-    <value>Vypočíta vzorce pre dokument</value>
-  </data> 
-<data name="IDTT_AREACHART" xml:space="preserve">
-    <value>Nakreslí jednoduchú oblasť grafu</value>
-  </data> 
-<data name="IDTT_BARCHART" xml:space="preserve">
-    <value>Nakreslí jednoduchý pruhový graf</value>
-  </data> 
-<data name="IDTT_COLUMNCHART" xml:space="preserve">
-    <value>Nakreslí jednoduchý stĺpcový graf</value>
-  </data> 
-<data name="IDTT_STACKCHART" xml:space="preserve">
-    <value>Nakreslí skladaný stĺpcový graf</value>
-  </data> 
-<data name="IDTT_LINECHART" xml:space="preserve">
-    <value>Nakreslí jednoduchý čiarový graf</value>
-  </data> 
-<data name="IDTT_PIECHART" xml:space="preserve">
-    <value>Nakreslí koláčový graf s  percentami</value>
-  </data> 
-<data name="IDTT_SCATTERCHART" xml:space="preserve">
-    <value>Nakreslí graf rozptylu (alebo XY)</value>
-  </data> 
-<data name="IDTT_3DAREACHART" xml:space="preserve">
-    <value>Nakreslí 3D graf</value>
-  </data> 
-<data name="IDTT_3DBARCHART" xml:space="preserve">
-    <value>Nakreslí 3D pásový graf</value>
-  </data> 
-<data name="IDTT_3DCOLUMNCHART" xml:space="preserve">
-    <value>Nakreslí 3D stĺpcový gra</value>
-  </data> 
-<data name="IDTT_3DCOLUMNAREACHART" xml:space="preserve">
-    <value>Nakreslí 3D stĺpcový graf s 3D oblasťou</value>
-  </data> 
-<data name="IDTT_3DLINECHART" xml:space="preserve">
-    <value>Nakreslí 3D čiarový graf</value>
-  </data> 
-<data name="IDTT_3DPIECHART" xml:space="preserve">
-    <value>Nakreslí 3D koláčový graf s  percentami</value>
-  </data> 
-<data name="IDTT_3DSURFACECHART" xml:space="preserve">
-    <value>Nakreslí 3D povrchový graf</value>
-  </data> 
-<data name="IDTT_RADARCHART" xml:space="preserve">
-    <value>Nakreslí radarový graf</value>
-  </data> 
-<data name="IDTT_COLUMNLINECHART" xml:space="preserve">
-    <value>Nakreslí stĺpcový graf prekrytý čiarovým grafom</value>
-  </data> 
-<data name="IDTT_COLUMNSTOCKCHART" xml:space="preserve">
-    <value>Nakreslí stĺpcový graf pre ceny akcií</value>
-  </data> 
-<data name="IDTT_CHARTFORMAT" xml:space="preserve">
-    <value>Vložený graf vo výhodnom formáte</value>
-  </data> 
-<data name="IDTT_EDITCHART" xml:space="preserve">
-    <value>Vytvorte alebo upravte prispôsobený graf</value>
-  </data> 
-<data name="IDTT_LINE" xml:space="preserve">
-    <value>Nakreslí čiaru</value>
-  </data> 
-<data name="IDTT_ARROW" xml:space="preserve">
-    <value>Nakreslí šipku</value>
-  </data> 
-<data name="IDTT_FREEHAND" xml:space="preserve">
-    <value>Nakreslí čiary od ruky</value>
-  </data> 
-<data name="IDTT_RECTANGLE" xml:space="preserve">
-    <value>Nakreslí obdĺžnik alebo štvorec</value>
-  </data> 
-<data name="IDTT_ELLIPSE" xml:space="preserve">
-    <value>Nakreslí ovál alebo kruh</value>
-  </data> 
-<data name="IDTT_ARC" xml:space="preserve">
-    <value>Nakreslí oblúk alebo kruhový segment</value>
-  </data> 
-<data name="IDTT_POLYGON" xml:space="preserve">
-    <value>Nakreslí mnohouholník</value>
-  </data> 
-<data name="IDTT_FILLEDRECTANGLE" xml:space="preserve">
-    <value>Nakreslí vyplnený obdĺžnik</value>
-  </data> 
-<data name="IDTT_FILLEDELLIPSE" xml:space="preserve">
-    <value>Nakreslí vyplnený ovál alebo kruh</value>
-  </data> 
-<data name="IDTT_FILLEDARC" xml:space="preserve">
-    <value>Nakreslí vyplnený segment oblúka alebo kruhu</value>
-  </data> 
-<data name="IDTT_FILLEDPOLYGON" xml:space="preserve">
-    <value>Nakreslí vyplnený mnohouholník</value>
-  </data> 
-<data name="IDTT_SELECTOBJECT" xml:space="preserve">
-    <value>Vyberie grafický objekt</value>
-  </data> 
-<data name="IDTT_EDITPOINT" xml:space="preserve">
-    <value>Mení tvar mnohouholníka</value>
-  </data> 
-<data name="IDTT_GROUP" xml:space="preserve">
-    <value>Spája vybrané grafické objekty do jedného objektu</value>
-  </data> 
-<data name="IDTT_UNGROUP" xml:space="preserve">
-    <value>Rozdeľuje zoskupený objekt na jednotlivé objekty</value>
-  </data> 
-<data name="IDTT_FRONT" xml:space="preserve">
-    <value>Umiestni vybrané objekty pred ostatné</value>
-  </data> 
-<data name="IDTT_BACK" xml:space="preserve">
-    <value>Umiestni vybratý objekt za iné objekty</value>
-  </data> 
-<data name="IDTT_COLOR" xml:space="preserve">
-    <value>Zmení farbu popredia bunky alebo objektu</value>
-  </data> 
-<data name="IDTT_3DFRAME" xml:space="preserve">
-    <value>Pridá tieňovaný obdĺžnik okolo buniek alebo objektu</value>
-  </data> 
-<data name="IDTT_NEWMACRO" xml:space="preserve">
-    <value>Vytvorí nový list makra</value>
-  </data> 
-<data name="IDTT_FUNCTION" xml:space="preserve">
-    <value>Vloží funkciu</value>
-  </data> 
-<data name="IDTT_CALC" xml:space="preserve">
-    <value>Prepočítajte všetky hodnoty</value>
-  </data> 
-<data name="IDTT_GOMACRO" xml:space="preserve">
-    <value>Prehrá makro</value>
-  </data> 
-<data name="IDTT_STEPMACRO" xml:space="preserve">
-    <value>Prechádza vybratým makrom</value>
-  </data> 
-<data name="IDTT_TRACEOUTMACRO" xml:space="preserve">
-    <value>Sleduje výstupy krokov makra</value>
-  </data> 
-<data name="IDTT_TRACEINMACRO" xml:space="preserve">
-    <value>Sleduje vstupy krokov makra</value>
-  </data> 
-<data name="IDTT_RUNMACRO" xml:space="preserve">
-    <value>Spustí makro</value>
-  </data> 
-<data name="IDTT_SKIPMACRO" xml:space="preserve">
-    <value>Preskočí krok v makre</value>
-  </data> 
-<data name="IDTT_RESETMACRO" xml:space="preserve">
-    <value>Obnoví makro proces</value>
-  </data> 
-<data name="IDTT_RECORDMACRO" xml:space="preserve">
-    <value>Zaznamenáva akcie na vytvorenie makra</value>
-  </data> 
-<data name="IDTT_STOPMACRO" xml:space="preserve">
-    <value>Zastavenie záznamu makra</value>
-  </data> 
-<data name="IDTT_PAUSEMACRO" xml:space="preserve">
-    <value>Pozasataví proces makra</value>
-  </data> 
-<data name="IDTT_NEW" xml:space="preserve">
-    <value>Vytvorí nový dokument</value>
-  </data> 
-<data name="IDTT_CUT" xml:space="preserve">
-    <value>Oreže výber a vloží ho do schránky</value>
-  </data> 
-<data name="IDTT_PASTE" xml:space="preserve">
-    <value>Vloží obsah schránky do bodu vloženia</value>
-  </data> 
-<data name="IDTT_NUMBERLIST" xml:space="preserve">
-    <value>Vytvorí očíslovaný zoznam na základe aktuálnych predvolených nastavení</value>
-  </data> 
-<data name="IDTT_BULLETLIST" xml:space="preserve">
-    <value>Vytvorí zoznam odrážok na základe aktuálnych predvolených nastavení</value>
-  </data> 
-<data name="IDTT_UNINDENT" xml:space="preserve">
-    <value>Presunie ľavú zarážku na predchádzajúcu zarážku tabulátora</value>
-  </data> 
-<data name="IDTT_INDENT" xml:space="preserve">
-    <value>Presunie ľavú zarážku na nasledujúcu zarážku karty</value>
-  </data> 
-<data name="IDTT_COLUMNFORMAT" xml:space="preserve">
-    <value>Zmení formát stĺpca v sekciách</value>
-  </data> 
-<data name="IDTT_FRAME" xml:space="preserve">
-    <value>Vloží prázdny rám alebo orámuje vybraný text</value>
-  </data> 
-<data name="IDTT_OBJECT" xml:space="preserve">
-    <value>Vloží objekt</value>
-  </data> 
-<data name="IDTT_GRAPH" xml:space="preserve">
-    <value>Vloží graf</value>
-  </data> 
-<data name="IDTT_ENVELOPE" xml:space="preserve">
-    <value>Vytvorí obálku, ktorá sa vytlačí spolu s aktuálnym dokumentom</value>
-  </data> 
-<data name="IDTT_PAGELAYOUT" xml:space="preserve">
-    <value>Zmena mierky zobrazenia úprav tak, aby sa zobrazila celá stránka</value>
-  </data> 
-<data name="IDTT_PAGENORMAL" xml:space="preserve">
-    <value>Prispôsobí zobrazenie úprav na 100%</value>
-  </data> 
-<data name="IDTT_PAGEFIT" xml:space="preserve">
-    <value>Škála zobrazenia úprav umožňuje zobraziť šírku stránky</value>
-  </data> 
-<data name="IDTT_LEFTTAB" xml:space="preserve">
-    <value>Nastaví zarovnávanie vľavo</value>
-  </data> 
-<data name="IDTT_CENTERTAB" xml:space="preserve">
-    <value>Nastaví zarovnávanie na stred</value>
-  </data> 
-<data name="IDTT_RIGHTTAB" xml:space="preserve">
-    <value>Nastaví zarovnávanie v pravo</value>
-  </data> 
-<data name="IDTT_DECIMALTAB" xml:space="preserve">
-    <value>Nastaví kartu na desatinné miesto</value>
-  </data> 
-<data name="IDTT_PARAGRAPH" xml:space="preserve">
-    <value>Začína nový odsek</value>
-  </data> 
-<data name="IDTT_HELP" xml:space="preserve">
-    <value>Aktivuje ponuku pomocníka</value>
-  </data> 
-<data name="IDTT_DELETE" xml:space="preserve">
-    <value>Odstráni vybraný text</value>
-  </data> 
-<data name="IDTT_TIME" xml:space="preserve">
-    <value>Nastaví časovať</value>
-  </data> 
-<data name="IDTT_MAIL" xml:space="preserve">
-    <value>Nastaví poštu</value>
-  </data> 
-<data name="IDTT_TUTORIAL" xml:space="preserve">
-    <value>Spustí procesy výučby</value>
-  </data> 
-<data name="IDTT_DISKETTEIO" xml:space="preserve">
-    <value>Čítanie / zápis súborov z / na disketu</value>
-  </data> 
-<data name="IDTT_FIND" xml:space="preserve">
-    <value>Vyhľadá určený objekt alebo textový reťazec</value>
-  </data> 
-<data name="IDTT_PREVREC" xml:space="preserve">
-    <value>Prechod na predchádzajúci záznam</value>
-  </data> 
-<data name="IDTT_NEXTREC" xml:space="preserve">
-    <value>Prechod na nasledujúci záznam</value>
-  </data> 
-<data name="IDTT_STARTREC" xml:space="preserve">
-    <value>Prechod na prvý záznam</value>
-  </data> 
-<data name="IDTT_ENDREC" xml:space="preserve">
-    <value>Prechod na posledný záznam</value>
-  </data> 
-<data name="IDTT_VGBROWSE" xml:space="preserve">
-    <value>Zmeň na tabuľku</value>
-  </data> 
-<data name="IDTT_CUSTOMBITMAP" xml:space="preserve">
-    <value>Zmenň na formulár</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_DOS_ERROR" xml:space="preserve">
-    <value>%V1s DOS Chyba: %s</value>
-  </data> 
-<data name="__CAVOSTR_SYSCLASS_BADCAPTION" xml:space="preserve">
-    <value>Neplatný titulok</value>
-  </data> 
-<data name="__CAVOSTR_SYSCLASS_BADDESCRIPTION" xml:space="preserve">
-    <value>Neplatný popis</value>
-  </data> 
-<data name="__CAVOSTR_SYSCLASS_BADHELPCONTEXT" xml:space="preserve">
-    <value>Neplatný obsah pomocníka</value>
-  </data> 
-<data name="__CAVOSTR_SYSCLASS_BADNAME" xml:space="preserve">
-    <value>Neplatné meno alebo chýba</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_ALIAS" xml:space="preserve">
-    <value>%V1s Alias: %s</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADCHILD" xml:space="preserve">
-    <value>Neplatný parameter typu: oDBChild</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADEXPRESSION" xml:space="preserve">
-    <value>%V1s Neplatný parameter typu: acbExpression [ %s ]</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADFIELDMATCH" xml:space="preserve">
-    <value>Informácie FieldSpec sa nezhodujú</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADFILENAME" xml:space="preserve">
-    <value>Neplatné meno súboru</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADFILTERBLOCK" xml:space="preserve">
-    <value>Neplatný parameter typu, cbFilterBlock</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADNEXT" xml:space="preserve">
-    <value>Nasledujúci arument nemôže byť negatívny</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADNEXT_CAPTION" xml:space="preserve">
-    <value>Zlý nasledujúci argument</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADREADONLYMODE" xml:space="preserve">
-    <value>Neplatný parameter ReadOnlymode</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADSHAREMODE" xml:space="preserve">
-    <value>Neplatný paramater modu zdieľania</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_FIELDSPEC" xml:space="preserve">
-    <value>Nesprávna špecifikácia poľa</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_LOCKFAILED" xml:space="preserve">
-    <value>Pokus o zablokovanie záznamu zlyhal</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_LOCKFAILED_CAPTION" xml:space="preserve">
-    <value>Uzamknutie zlyhalo</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_MISMATCH" xml:space="preserve">
-    <value>Nesúlad dĺžky polí medzi acbExpression a aFieldList</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_NODATAFIELDSEXIST" xml:space="preserve">
-    <value>Neexistujú žiadne dátové polia, musia sa pred výmenou vytvoriť</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_NOFIELDS" xml:space="preserve">
-    <value>Nie sú zadané žiadne polia</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_NOFILENAME" xml:space="preserve">
-    <value>Parameter názvu súboru chýba</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_NOGOTOP" xml:space="preserve">
-    <value>GoTop() zlyhal</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_NOGOTOP_CAPTION" xml:space="preserve">
-    <value>Nepodaril sa prechod na</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_NOSEEK" xml:space="preserve">
-    <value>Hľadanie zadanej odnoty zlyhalo</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_NOSELECTIONACTIVE" xml:space="preserve">
-    <value>Momentálne nie je aktívny žiadny výber</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_NOTABLE" xml:space="preserve">
-    <value>Tabuľka sa nedala otvoriť</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_NOTABLE_CAPTION" xml:space="preserve">
-    <value>Žiadna žabuľka</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_NOTABLE2" xml:space="preserve">
-    <value>Tabuľka nie je otvorená</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_RECORDCHANGED" xml:space="preserve">
-    <value>Záznam sa od posledného čítania zmenil</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_RECORDCHANGED_CAPTION" xml:space="preserve">
-    <value>Záznam bol zmenený</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_SELECTIVENOTFOUND" xml:space="preserve">
-    <value>Hodnota výberu sa nenašla</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_SELECTIVESEEK" xml:space="preserve">
-    <value>Hodnota výberu sa nerovná hľadanej hodnote</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_SELECTIVEVALUE" xml:space="preserve">
-    <value>Hodnota výberu sa nerovná indexovému vyjadreniu</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADFS" xml:space="preserve">
-    <value>oFS je neplatný alebo chýba</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADHLNAME" xml:space="preserve">
-    <value>Nesprávne oHLName</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN" xml:space="preserve">
-    <value>Neplatný parameter pre Assign ConcurrencyControl</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADFIELDPOSITION" xml:space="preserve">
-    <value>nFieldPosition je neplatný alebo chýba</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADTRANSLATIONARRAY" xml:space="preserve">
-    <value>aLookupTable nie je pole alebo prázdne pole</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADCB" xml:space="preserve">
-    <value>Neplatný cb</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADDECIMALS" xml:space="preserve">
-    <value>Udecimal je naplatný alebo chýba</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADDRIVE" xml:space="preserve">
-    <value>Neplatný disk</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADEXTENSION" xml:space="preserve">
-    <value>Neplatné rozšírenie</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADHL" xml:space="preserve">
-    <value>oHL neplatné</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADLENGTH" xml:space="preserve">
-    <value>uLength je neplatné alebo chýba</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADLREQ" xml:space="preserve">
-    <value>Neplatné lReq</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADNAME" xml:space="preserve">
-    <value>oHlName je neplatné alebo chýba</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADPATH" xml:space="preserve">
-    <value>Neplatná cesta</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADSI" xml:space="preserve">
-    <value>Neplatné si</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADSTRING" xml:space="preserve">
-    <value>cString nie je typu STRING</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADTYPE" xml:space="preserve">
-    <value>uType je neplatné alebo chýba</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADTYPE2" xml:space="preserve">
-    <value>uType je neplatné</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_INVALIDLENGTH" xml:space="preserve">
-    <value>%V1s%V2s %s : maximálna dĺžka je %s</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_INVALIDMAX" xml:space="preserve">
-    <value>%V1s%V2s %s nesmie byť väčšie ako %s</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_INVALIDMIN" xml:space="preserve">
-    <value>%V1s%V2s %s musí  byť aspom %s</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_INVALIDMINLENGTH" xml:space="preserve">
-    <value>%V1s%V2s %s : minimálna dĺžka je %s</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_INVALIDRANGE" xml:space="preserve">
-    <value>%V1s%V2s%V3s %s rozsah je %s to %</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_INVALIDTYPE" xml:space="preserve">
-    <value>%V1s%V2s %s : ineplatný dátovy typ, môže byť %s</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_INVALIDVALUE" xml:space="preserve">
-    <value>%V1s %s : neplatná hodnota</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_REQUIRED" xml:space="preserve">
-    <value>%V1s %s vyžaduje sa</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_INTENTTOMOVE" xml:space="preserve">
-    <value>IntentToMove vrátil NEPRAVDA</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION" xml:space="preserve">
-    <value>IntentToMove zlyhal.</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADPARENT" xml:space="preserve">
-    <value>Zadaný neplatný rodič</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_INVALIDINDEX" xml:space="preserve">
-    <value>Neplatný indexový súbor</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_KEYVALUE" xml:space="preserve">
-    <value>cKeyValue z cbKeyValue musí byť špecifikovaná</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_INVALIDORDER" xml:space="preserve">
-    <value>Neplatna objednávka</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_NOFIELDMATCH" xml:space="preserve">
-    <value>Poliam DBF nezodpovedajú žiadne polia</value>
-  </data> 
-<data name="__CAVOSTR_DBFCLASS_BADALIAS" xml:space="preserve">
-    <value>Neplatný alias</value>
-  </data> 
-<data name="OLEAUTO_ERROR_FIRST" xml:space="preserve">
-    <value>OLE Automation Client</value>
-  </data> 
-<data name="OLEAUTO_ERROR_MSG_NO_GET_PROPERTY" xml:space="preserve">
-    <value>Žiadna vlastnosť</value>
-  </data> 
-<data name="OLEAUTO_ERROR_MSG_NO_SET_PROPERTY" xml:space="preserve">
-    <value>Nie je nastavená vlastnosť</value>
-  </data> 
-<data name="OLEAUTO_ERROR_MSG_UNKNOWN_ERROR" xml:space="preserve">
-    <value>Vyskytla sa neznáma chyba OLE</value>
-  </data> 
-<data name="OLEAUTO_ERROR_MSG_NO_MEMORY" xml:space="preserve">
-    <value>Nedostatok pamäte</value>
-  </data> 
-<data name="OLEAUTO_ERROR_MSG_CONVERTERR" xml:space="preserve">
-    <value>Chyba pri prevode argumentu VO na variant OLE</value>
-  </data> 
-<data name="OLEAUTO_ERROR_EXP_NO_DESC" xml:space="preserve">
-    <value>Server automatizácie OLE uviedol výnimku</value>
-  </data> 
-<data name="OLEAUTO_ERROR_MSG_GET_PROPERTY_FAILED" xml:space="preserve">
-    <value>Vyvolanie vlastnosti zlyhalo</value>
-  </data> 
-<data name="OLEAUTO_ERROR_MSG_SET_PROPERTY_FAILED" xml:space="preserve">
-    <value>Vyvolanie sady vlastností zlyhalo</value>
-  </data> 
-<data name="OLEAUTO_ERROR_MSG_NO_METHOD" xml:space="preserve">
-    <value>Žiadna metóda</value>
-  </data> 
-<data name="OLEAUTO_ERROR_MSG_METHOD_FAILED" xml:space="preserve">
-    <value>Vyvolanie metódy zlyhalo</value>
-  </data> 
-<data name="OLEAUTO_ERROR_MSG_PARAM_MISSING" xml:space="preserve">
-    <value>Nedostatok parametrov pre metódu</value>
-  </data> 
-<data name="OLEAUTO_ERROR_MSG_NAMED_ARG" xml:space="preserve">
-    <value>Pomenovaný argument sa nenašiel</value>
-  </data> 
-<data name="OLEAUTO_ERROR_MSG_INIT_FAILED" xml:space="preserve">
-    <value>Inicializácia zlyhala</value>
-  </data> 
-<data name="OLEAUTO_ERROR_MSG_NAMED_ARG_LAST" xml:space="preserve">
-    <value>Pomenované argumenty nemôžu pokračovať v bežných argumentoch v zozname argumentov</value>
-  </data> 
-<data name="OLEAUTO_ERROR_MSG_NAMED_ARG_NOTSUPP" xml:space="preserve">
-    <value>Pomenované argumenty sú podporované iba pre volania metód</value>
-  </data> 
-<data name="OLEAUTO_ERROR_MSG_VARIANT_ARGS" xml:space="preserve">
-    <value>Volanie na metódu OLE s podporou parametrov variantu nie je podporované</value>
-  </data> 
-<data name="OLEAUTO_ERROR_NO_IDISPATCH_INTERFACE" xml:space="preserve">
-    <value>OLE AutoObject nebol inicializovaný alebo je už zničený</value>
-  </data> 
-<data name="OLEAUTO_ERROR_NO_ITYPELIB_INTERFACE" xml:space="preserve">
-    <value>OLE AutoObject nepodporuje rozhranie ITypeLib alebo je už zničené</value>
-  </data> 
-<data name="IDS_OLERUNTIME" xml:space="preserve">
-    <value>Visual Objects OLE Run Time</value>
-  </data> 
-<data name="IDS_NOAPPDOCFILE" xml:space="preserve">
-    <value>Nemôžem nájsť Application Doc File:</value>
-  </data> 
-<data name="IDS_NOINSERT" xml:space="preserve">
-    <value>Nie je možné vložiť objekt. Dôraz sa musí klásť na kontrolu OLE.</value>
-  </data> 
-<data name="IDS_CREATEFAILED" xml:space="preserve">
-    <value>Vytvorenie objektu zlyhalo</value>
-  </data> 
-<data name="__CAVOSTR_REPORTCLASS_CLOSEDREPORT" xml:space="preserve">
-    <value>%V1s%V2s %s má zatvorený report %s</value>
-  </data> 
-<data name="__CAVOSTR_REPORTCLASS_COMMANDERROR1" xml:space="preserve">
-    <value>%V1s%V2s ReportQueue potrebuje otvorený report pred odoslaním DDE príkazu : %s to %s</value>
-  </data> 
-<data name="__CAVOSTR_REPORTCLASS_COMMANDERROR2" xml:space="preserve">
-    <value>%V1s%V2s%V3s %s do %s %s</value>
-  </data> 
-<data name="__CAVOSTR_REPORTCLASS_COMPLETEDREPORT" xml:space="preserve">
-    <value>%V1s%V2s %s dokončil report %s</value>
-  </data> 
-<data name="__CAVOSTR_REPORTCLASS_DETECTEDERRORS" xml:space="preserve">
-    <value>%V1s%V2s %s zistená chyba dokončenia  reportu %s</value>
-  </data> 
-<data name="__CAVOSTR_REPORTCLASS_OPENEDREPORT" xml:space="preserve">
-    <value>%V1s%V2s %s má otvorený report %s</value>
-  </data> 
-<data name="__CAVOSTR_REPORTCLASS_SAVEDREPORT" xml:space="preserve">
-    <value>%V1s%V2s %s ulož report ako %s</value>
-  </data> 
-<data name="__CAVOSTR_REPORTCLASS_SAVETOFILEINFO1" xml:space="preserve">
-    <value>Chyba programovania v parametri 2 na ReportQueue: SaveToFile</value>
-  </data> 
-<data name="__CAVOSTR_REPORTCLASS_SAVETOFILEINFO2" xml:space="preserve">
-    <value>Predvolený typ súboru na „RTF“, iná možnosť je „TEXT“</value>
-  </data> 
-<data name="__CAVOSTR_REPORTCLASS_THEREPORT" xml:space="preserve">
-    <value>%V1s report %s</value>
-  </data> 
-<data name="__CAVOSTR_REPORTCLASS_TOCLOSEFILE" xml:space="preserve">
-    <value>%V1s%V2s %s na zatvorenie súboru %s</value>
-  </data> 
-<data name="__CAVOSTR_REPORTCLASS_SYNCHRONOUS" xml:space="preserve">
-    <value>Synchrónne</value>
-  </data> 
-<data name="__CAVOSTR_REPORTCLASS_ASYNCHRONOUS" xml:space="preserve">
-    <value>Asynchrónne</value>
-  </data> 
-<data name="__CAVOSTR_REPORTCLASS_DDE_PENDING" xml:space="preserve">
-    <value>%V1s%V2s %s čakajúci na DDE prílkaz %s</value>
-  </data> 
-<data name="__CAVOSTR_REPORTCLASS_REPORTS_OPEN" xml:space="preserve">
-    <value>%V1s %s reporty sú práve otvorené :</value>
-  </data> 
-<data name="__CAVOSTR_REPORTCLASS_REPORT" xml:space="preserve">
-    <value>%V1s%V2s    Report %s je %s</value>
-  </data> 
-<data name="__CAVOSTR_REPORTCLASS_ISCLOSED" xml:space="preserve">
-    <value>%V1s %s je zatvorený</value>
-  </data> 
-<data name="__CAVOSTR_REPORTCLASS_ABOUTTITLE" xml:space="preserve">
-    <value>O CA-Visual Objects Report Editor</value>
-  </data> 
-<data name="__CAVOSTR_REPORTCLASS_ABOUTBODY" xml:space="preserve">
-    <value>Computer Associates International, Inc.\nCA-Visual Objects Report Editor</value>
-  </data> 
-<data name="__CAVOSTR_REPORTCLASS_PARAMERROR" xml:space="preserve">
-    <value>Neplatný parameter</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS_SUBSYS" xml:space="preserve">
-    <value>VO-ODBC</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__ENV_ALLOC" xml:space="preserve">
-    <value>Prostredie už pridelené</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__ENV_FREE" xml:space="preserve">
-    <value>Prostredie už bolo uvoľnené</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__CON_ALLOC" xml:space="preserve">
-    <value>Spojenie je už pridelené</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__CON_FREE" xml:space="preserve">
-    <value>Spojenie už bolo uvoľnené</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__CONNECTED" xml:space="preserve">
-    <value>Už ste pripojení</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__NOT_CONN" xml:space="preserve">
-    <value>Nepripojení</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__CANCELLED" xml:space="preserve">
-    <value>Žiadosť bola zrušená</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__ODBC_VO" xml:space="preserve">
-    <value>[CA][ODBC VO]</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__GENERAL_ERR" xml:space="preserve">
-    <value>S1000</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__STMT_NOT_ALLOC" xml:space="preserve">
-    <value>Výpis nebol pridelený</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__STMT_PREP" xml:space="preserve">
-    <value>Vyhlásenie už bolo pripravené</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__NO_STMT" xml:space="preserve">
-    <value>Chýbajúce vyhlásenie</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__STMT_ALLOC" xml:space="preserve">
-    <value>Vyhlásenie už bolo pridelené</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__FUNCSEQ_ERR" xml:space="preserve">
-    <value>S1010</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__PARM_TYPE" xml:space="preserve">
-    <value>Nepodporovaný typ parametra</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__MEM_ALLOC" xml:space="preserve">
-    <value>Nie je možné prideliť pamäť</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__BADCOL" xml:space="preserve">
-    <value>Neplatný stĺpec</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__BADFLD" xml:space="preserve">
-    <value>Neplatné pole</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__BADPAR" xml:space="preserve">
-    <value>Neplatný parameter</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__BADRECNO" xml:space="preserve">
-    <value>Neplatné číslo záznamu</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__BACKWARDS" xml:space="preserve">
-    <value>Pokus o preskočenie dozadu z vyrovnávacej pamäte</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__BOF" xml:space="preserve">
-    <value>Už v prvom riadku</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__EOF" xml:space="preserve">
-    <value>Už na konci súboru</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__NOFLDS" xml:space="preserve">
-    <value>Nie je špecifikované pole</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__NO_KEY" xml:space="preserve">
-    <value>Primárny kľúč nedefinovaný</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__NO_ROW" xml:space="preserve">
-    <value>Riadok(y) nenájdené</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__NO_INS" xml:space="preserve">
-    <value>Riadok nevložený</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__INV_OP" xml:space="preserve">
-    <value>Neplatná operácia</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__NO_CSR" xml:space="preserve">
-    <value>Chyba sekvencie</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__BADVALID" xml:space="preserve">
-    <value>Chyba overenia poľa</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__EMPTY" xml:space="preserve">
-    <value>Tabuľka je prázdna</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__UPDATE_COL" xml:space="preserve">
-    <value>Nemôžem aktualizovať stĺpec</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__NODATAFIELDSEXIST" xml:space="preserve">
-    <value>Neexistujú žiadne dátové polia, musia sa pred výmenou vytvoriť</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__BADFIELDPOSITION" xml:space="preserve">
-    <value>nFieldPosition je neplatn alebo chýba</value>
-  </data> 
-<data name="__CAVOSTR_SQLCLASS__INVALIDCOLATT" xml:space="preserve">
-    <value>Neplatný ColumnAttributes parameter</value>
-  </data> 
-<data name="TMSG_YN" xml:space="preserve">
-    <value>A/N</value>
-  </data> 
-<data name="TMSG_ALERTDEFAULT" xml:space="preserve">
-    <value>Objavila sa chyba</value>
-  </data> 
-<data name="TMSG_NOTERMWIN" xml:space="preserve">
-    <value>Systém nemôže vytvoriť predvolené okno</value>
-  </data> 
-<data name="TMSG_FNTCHNG" xml:space="preserve">
-    <value>Zmeniť písmo</value>
-  </data> 
-<data name="TMSG_MARK" xml:space="preserve">
-    <value>Obrazovka do ClipBoardu</value>
-  </data> 
-<data name="TMSG_SCREEN2FILE" xml:space="preserve">
-    <value>Obrazovnka do súboru</value>
-  </data> 
-<data name="TMSG_MEMRECOUR" xml:space="preserve">
-    <value>Rekurzívne zadané MemCheck (</value>
-  </data> 
-<data name="TMSG_HNDLINE" xml:space="preserve">
-    <value>Riadok</value>
-  </data> 
-<data name="TMSG_HNDENTITY" xml:space="preserve">
-    <value>Entita</value>
-  </data> 
-<data name="TMSG_HNDCONTENTS" xml:space="preserve">
-    <value>Obsah:</value>
-  </data> 
-<data name="TMSG_HNDVAR" xml:space="preserve">
-    <value>Premenná</value>
-  </data> 
-<data name="TMSG_NOCHANGE" xml:space="preserve">
-    <value>Počas používania Memoedit () nie je možné meniť veľkosť písma</value>
-  </data> 
-<data name="TMSG_FONTCHGERR" xml:space="preserve">
-    <value>Zmena písma nie je možná</value>
-  </data> 
-<data name="TMSG_MUSTSELECT" xml:space="preserve">
-    <value>MUSÍTE vybrať zariadenie!</value>
-  </data> 
-<data name="TMSG_NODEVSEL" xml:space="preserve">
-    <value>Nie je vybraté žiadne zariadenie</value>
-  </data> 
-<data name="TMSG_NOLINK" xml:space="preserve">
-    <value>Nedá sa vytvoriť odkaz na tlačiareň. Žiadne volné DC alebo nesprávne win.ini: nastavenia zariadenia</value>
-  </data> 
-<data name="TMSG_PRNSETUP" xml:space="preserve">
-    <value>Terminál: Nastavenie tlačiarne</value>
-  </data> 
-<data name="TMSG_PAGENO" xml:space="preserve">
-    <value>Strana číslo:</value>
-  </data> 
-<data name="TMSG_PRESSANYKEY" xml:space="preserve">
-    <value>Pre pokračovanie stlačte ľubovolnú klávesu...</value>
-  </data> 
-<data name="TMSG_APPENDSCREEN" xml:space="preserve">
-    <value>Pripdajte obrazovku do súboru</value>
-  </data> 
-<data name="TMSG_APPENDALL" xml:space="preserve">
-    <value>Všetky súbory</value>
-  </data> 
-<data name="TMSG_LOCKEDFONT" xml:space="preserve">
-    <value>Písmo zatiaľ nie je možné zmeniť</value>
-  </data> 
-<data name="TMSG_NOACCELERATORS" xml:space="preserve">
-    <value>Akcelerátory sa nedajú načítať. Začiatok programu bol prerušený</value>
-  </data> 
-<data name="TMSG_ONTOP" xml:space="preserve">
-    <value>Zostaňte na vrchole</value>
-  </data> 
-<data name="RT_MSG_SHORT_TRUE" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_SHORT_TRUE" xml:space="preserve">
     <value>P</value>
-  </data> 
-<data name="RT_MSG_SHORT_FALSE" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_SHORT_FALSE" xml:space="preserve">
     <value>N</value>
-  </data> 
-<data name="RT_MSG_LONG_TRUE" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_LONG_TRUE" xml:space="preserve">
     <value>PRAVDA</value>
-  </data> 
-<data name="RT_MSG_LONG_FALSE" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_LONG_FALSE" xml:space="preserve">
     <value>NEPRAVDA</value>
-  </data> 
-<data name="RT_MSG_SHORT_YES" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_SHORT_YES" xml:space="preserve">
     <value>A</value>
-  </data> 
-<data name="RT_MSG_SHORT_NO" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_SHORT_NO" xml:space="preserve">
     <value>N</value>
-  </data> 
-<data name="RT_MSG_LONG_YES" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_LONG_YES" xml:space="preserve">
     <value>ÁNO</value>
-  </data> 
-<data name="RT_MSG_LONG_NO" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_LONG_NO" xml:space="preserve">
     <value>NIE</value>
-  </data> 
-<data name="RT_MSG_CURRENCY" xml:space="preserve">
-    <value>€</value>
-  </data> 
-<data name="RT_MSG_YNSTRING" xml:space="preserve">
-    <value>A/N</value>
-  </data> 
-<data name="ERROR_INTERNET_OUT_OF_HANDLES" xml:space="preserve">
-    <value>Out of handles</value>
-  </data> 
-<data name="ERROR_INTERNET_TIMEOUT" xml:space="preserve">
-    <value>Čas vypršal</value>
-  </data> 
-<data name="ERROR_INTERNET_EXTENDED_ERROR" xml:space="preserve">
-    <value>Rozšírená chyba</value>
-  </data> 
-<data name="ERROR_INTERNET_INTERNAL_ERROR" xml:space="preserve">
-    <value>Interná chyba</value>
-  </data> 
-<data name="ERROR_INTERNET_INVALID_URL" xml:space="preserve">
-    <value>Neplatné URL</value>
-  </data> 
-<data name="ERROR_INTERNET_UNRECOGNIZED_SCHEME" xml:space="preserve">
-    <value>Nerozpoznaná schéma</value>
-  </data> 
-<data name="ERROR_INTERNET_NAME_NOT_RESOLVED" xml:space="preserve">
-    <value>Názov nebol vyriešený</value>
-  </data> 
-<data name="ERROR_INTERNET_PROTOCOL_NOT_FOUND" xml:space="preserve">
-    <value>Protokol nenájdený</value>
-  </data> 
-<data name="ERROR_INTERNET_INVALID_OPTION" xml:space="preserve">
-    <value>Neplatná možnosť</value>
-  </data> 
-<data name="ERROR_INTERNET_BAD_OPTION_LENGTH" xml:space="preserve">
-    <value>Nesprávna dĺžka možnosti</value>
-  </data> 
-<data name="ERROR_INTERNET_OPTION_NOT_SETTABLE" xml:space="preserve">
-    <value>Možnosť nie je nastaviteľná</value>
-  </data> 
-<data name="ERROR_INTERNET_SHUTDOWN" xml:space="preserve">
-    <value>Vypnúť</value>
-  </data> 
-<data name="ERROR_INTERNET_INCORRECT_USER_NAME" xml:space="preserve">
-    <value>Nesprávne meno používateľa</value>
-  </data> 
-<data name="ERROR_INTERNET_INCORRECT_PASSWORD" xml:space="preserve">
-    <value>Nesprávne heslo</value>
-  </data> 
-<data name="ERROR_INTERNET_LOGIN_FAILURE" xml:space="preserve">
-    <value>Zlyhanie prihlásenia</value>
-  </data> 
-<data name="ERROR_INTERNET_INVALID_OPERATION" xml:space="preserve">
-    <value>Neplatná operácia</value>
-  </data> 
-<data name="ERROR_INTERNET_OPERATION_CANCELLED" xml:space="preserve">
-    <value>Operácia bola pretušená</value>
-  </data> 
-<data name="ERROR_INTERNET_INCORRECT_HANDLE_TYPE" xml:space="preserve">
-    <value>Nesprávny typ handle</value>
-  </data> 
-<data name="ERROR_INTERNET_INCORRECT_HANDLE_STATE" xml:space="preserve">
-    <value>Nesprávny stav handle</value>
-  </data> 
-<data name="ERROR_INTERNET_NOT_PROXY_REQUEST" xml:space="preserve">
-    <value>Žiadosť o proxy</value>
-  </data> 
-<data name="ERROR_INTERNET_REGISTRY_VALUE_NOT_FOUND" xml:space="preserve">
-    <value>Hodnota registra sa nenašla</value>
-  </data> 
-<data name="ERROR_INTERNET_BAD_REGISTRY_PARAMETER" xml:space="preserve">
-    <value>Chybný parameter registra</value>
-  </data> 
-<data name="ERROR_INTERNET_NO_DIRECT_ACCESS" xml:space="preserve">
-    <value>Žiadny priamy prístup</value>
-  </data> 
-<data name="ERROR_INTERNET_NO_CONTEXT" xml:space="preserve">
-    <value>Žiadni kontex</value>
-  </data> 
-<data name="ERROR_INTERNET_NO_CALLBACK" xml:space="preserve">
-    <value>Žiadne spätné volanie</value>
-  </data> 
-<data name="ERROR_INTERNET_REQUEST_PENDING" xml:space="preserve">
-    <value>Čakajúca žiadosť</value>
-  </data> 
-<data name="ERROR_INTERNET_INCORRECT_FORMAT" xml:space="preserve">
-    <value>Nesprávny formát</value>
-  </data> 
-<data name="ERROR_INTERNET_ITEM_NOT_FOUND" xml:space="preserve">
-    <value>Položka sa nenašla</value>
-  </data> 
-<data name="ERROR_INTERNET_CANNOT_CONNECT" xml:space="preserve">
-    <value>Nemôže sa pripojiť</value>
-  </data> 
-<data name="ERROR_INTERNET_CONNECTION_ABORTED" xml:space="preserve">
-    <value>Propojenie prerušené</value>
-  </data> 
-<data name="ERROR_INTERNET_CONNECTION_RESET" xml:space="preserve">
-    <value>Reset pripojenia</value>
-  </data> 
-<data name="ERROR_INTERNET_FORCE_RETRY" xml:space="preserve">
-    <value>Vynútiť opakovanie</value>
-  </data> 
-<data name="ERROR_INTERNET_INVALID_PROXY_REQUEST" xml:space="preserve">
-    <value>Neplatná žiadosť o proxy</value>
-  </data> 
-<data name="ERROR_INTERNET_NEED_UI" xml:space="preserve">
-    <value>Potrebujete ui</value>
-  </data> 
-<data name="ERROR_INTERNET_HANDLE_EXISTS" xml:space="preserve">
-    <value>Handle existuje</value>
-  </data> 
-<data name="ERROR_INTERNET_SEC_CERT_DATE_INVALID" xml:space="preserve">
-    <value>Neplatný dátum bezpečnostného certifikátu</value>
-  </data> 
-<data name="ERROR_INTERNET_SEC_CERT_CN_INVALID" xml:space="preserve">
-    <value>Neplatný cn bezpečnostného certifikátu</value>
-  </data> 
-<data name="ERROR_INTERNET_HTTP_TO_HTTPS_ON_REDIR" xml:space="preserve">
-    <value>Http to https on redir</value>
-  </data> 
-<data name="ERROR_INTERNET_HTTPS_TO_HTTP_ON_REDIR" xml:space="preserve">
-    <value>Https to http on redir</value>
-  </data> 
-<data name="ERROR_INTERNET_MIXED_SECURITY" xml:space="preserve">
-    <value>Kombinovaná bezpečnosť</value>
-  </data> 
-<data name="ERROR_INTERNET_CHG_POST_IS_NON_SECURE" xml:space="preserve">
-    <value>Chg príspevok nie je bezpečný</value>
-  </data> 
-<data name="ERROR_INTERNET_POST_IS_NON_SECURE" xml:space="preserve">
-    <value>Príspevok nie je bezpečný</value>
-  </data> 
-<data name="ERROR_INTERNET_CLIENT_AUTH_CERT_NEEDED" xml:space="preserve">
-    <value>Je potrebný certifikát klienta</value>
-  </data> 
-<data name="ERROR_INTERNET_INVALID_CA" xml:space="preserve">
-    <value>Nneplatné CA</value>
-  </data> 
-<data name="ERROR_INTERNET_CLIENT_AUTH_NOT_SETUP" xml:space="preserve">
-    <value>Klient nie je nastavený</value>
-  </data> 
-<data name="ERROR_INTERNET_ASYNC_THREAD_FAILED" xml:space="preserve">
-    <value>Async vlákno zlyhalo</value>
-  </data> 
-<data name="ERROR_INTERNET_REDIRECT_SCHEME_CHANGE" xml:space="preserve">
-    <value>Zmena schémy presmerovania</value>
-  </data> 
-<data name="ERROR_FTP_TRANSFER_IN_PROGRESS" xml:space="preserve">
-    <value>Prebieha prevod</value>
-  </data> 
-<data name="ERROR_FTP_DROPPED" xml:space="preserve">
-    <value>FTP padol</value>
-  </data> 
-<data name="ERROR_GOPHER_PROTOCOL_ERROR" xml:space="preserve">
-    <value>Chyba protokolu</value>
-  </data> 
-<data name="ERROR_GOPHER_NOT_FILE" xml:space="preserve">
-    <value>Žiadny súbor</value>
-  </data> 
-<data name="ERROR_GOPHER_DATA_ERROR" xml:space="preserve">
-    <value>Chyba údajov</value>
-  </data> 
-<data name="ERROR_GOPHER_END_OF_DATA" xml:space="preserve">
-    <value>Koniec údajov</value>
-  </data> 
-<data name="ERROR_GOPHER_INVALID_LOCATOR" xml:space="preserve">
-    <value>Neplatný vyhľadávač</value>
-  </data> 
-<data name="ERROR_GOPHER_INCORRECT_LOCATOR_TYPE" xml:space="preserve">
-    <value>Nesprávny typ vyhľadávača</value>
-  </data> 
-<data name="ERROR_GOPHER_NOT_GOPHER_PLUS" xml:space="preserve">
-    <value>Not gopher plus</value>
-  </data> 
-<data name="ERROR_GOPHER_ATTRIBUTE_NOT_FOUND" xml:space="preserve">
-    <value>Atribút nenájdený</value>
-  </data> 
-<data name="ERROR_GOPHER_UNKNOWN_LOCATOR" xml:space="preserve">
-    <value>Neznámy vyhľadávač</value>
-  </data> 
-<data name="ERROR_HTTP_HEADER_NOT_FOUND" xml:space="preserve">
-    <value>Záhlavie nenájdená</value>
-  </data> 
-<data name="ERROR_HTTP_DOWNLEVEL_SERVER" xml:space="preserve">
-    <value>Server nižšej úrovne</value>
-  </data> 
-<data name="ERROR_HTTP_INVALID_SERVER_RESPONSE" xml:space="preserve">
-    <value>Neplatná odpoveď servera</value>
-  </data> 
-<data name="ERROR_HTTP_INVALID_HEADER" xml:space="preserve">
-    <value>Neplatná hlavička</value>
-  </data> 
-<data name="ERROR_HTTP_INVALID_QUERY_REQUEST" xml:space="preserve">
-    <value>Neplatná žiadosť o dopyt</value>
-  </data> 
-<data name="ERROR_HTTP_HEADER_ALREADY_EXISTS" xml:space="preserve">
-    <value>Záhlavie už existuje</value>
-  </data> 
-<data name="ERROR_HTTP_REDIRECT_FAILED" xml:space="preserve">
-    <value>Presmerovanie zlyhalo</value>
-  </data> 
-<data name="ERROR_INTERNET_SECURITY_CHANNEL_ERROR" xml:space="preserve">
-    <value>Chyba zabezpečovacieho kanála</value>
-  </data> 
-<data name="ERROR_INTERNET_UNABLE_TO_CACHE_FILE" xml:space="preserve">
-    <value>Súbor sa nepodarilo uložiť do vyrovnávacej pamäte</value>
-  </data> 
-<data name="ERROR_INTERNET_TCPIP_NOT_INSTALLED" xml:space="preserve">
-    <value>TCP/IP nie je nainštalovaný</value>
-  </data> 
-<data name="ERROR_HTTP_NOT_REDIRECTED" xml:space="preserve">
-    <value>Bez presmerovania</value>
-  </data> 
-<data name="ERR_LOGON_FAILED" xml:space="preserve">
-    <value>Prihlásenie zlyhalo</value>
-  </data> 
-<data name="ERR_FILE_EXISTS" xml:space="preserve">
-    <value>Vzdialený súbor už existuje</value>
-  </data> 
-<data name="ERR_UNKNOWN_CODE_TYPE" xml:space="preserve">
-    <value>Neznámy typ kódovania</value>
-  </data> 
-<data name="ERR_WSA_WAIT_TIMEOUT" xml:space="preserve">
-    <value>Počkajte na chybu časového limitu</value>
-  </data> 
-<data name="ERR_NEWSGROUP_MISSING" xml:space="preserve">
-    <value>Žiadna takáto diskusná skupina</value>
-  </data> 
-<data name="ERR_NO_NEWSGROUP" xml:space="preserve">
-    <value>Nebola vybraná žiadna diskusná skupina</value>
-  </data> 
-<data name="ERR_NO_ARTICLE_SELECTED" xml:space="preserve">
-    <value>Nebol vybraný žiadny aktuálny článok</value>
-  </data> 
-<data name="ERR_NO_ARTICLE_NUMBER" xml:space="preserve">
-    <value>V tejto skupine nie je uvedené žiadne číslo článku</value>
-  </data> 
-<data name="ERR_NO_ARTICLE" xml:space="preserve">
-    <value>Takýto článok nebol nájdený</value>
-  </data> 
-<data name="RT_MSG_ERR_0" xml:space="preserve">
-    <value>Čakajte...</value>
-  </data> 
-<data name="RT_MSG_ERR_1" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_0" xml:space="preserve">
+    <value>Èakajte...</value>
+  </data>
+  <data name="RT_MSG_ERR_1" xml:space="preserve">
     <value>Chyba argumentu</value>
-  </data> 
-<data name="RT_MSG_ERR_2" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_2" xml:space="preserve">
     <value>Chyba rozsahu</value>
-  </data> 
-<data name="RT_MSG_ERR_3" xml:space="preserve">
-    <value>Pretečenie reazca</value>
-  </data> 
-<data name="RT_MSG_ERR_4" xml:space="preserve">
-    <value>Numerické pretečenie</value>
-  </data> 
-<data name="RT_MSG_ERR_5" xml:space="preserve">
-    <value>Deliteľ nula</value>
-  </data> 
-<data name="RT_MSG_ERR_6" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_3" xml:space="preserve">
+    <value>Preteèenie reazca</value>
+  </data>
+  <data name="RT_MSG_ERR_4" xml:space="preserve">
+    <value>Numerické preteèenie</value>
+  </data>
+  <data name="RT_MSG_ERR_5" xml:space="preserve">
+    <value>Delite¾ nula</value>
+  </data>
+  <data name="RT_MSG_ERR_6" xml:space="preserve">
     <value>Numerická chyba</value>
-  </data> 
-<data name="RT_MSG_ERR_7" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_7" xml:space="preserve">
     <value>Chyba syntaxe</value>
-  </data> 
-<data name="RT_MSG_ERR_8" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_8" xml:space="preserve">
     <value>Operácia je príliš zložitá</value>
-  </data> 
-<data name="RT_MSG_ERR_9" xml:space="preserve">
-    <value>Pretečenie bloku pamäte</value>
-  </data> 
-<data name="RT_MSG_ERR_10" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_9" xml:space="preserve">
+    <value>Preteèenie bloku pamäte</value>
+  </data>
+  <data name="RT_MSG_ERR_10" xml:space="preserve">
     <value>Chyba SEQUENCE</value>
-  </data> 
-<data name="RT_MSG_ERR_11" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_11" xml:space="preserve">
     <value>Málo pamäte</value>
-  </data> 
-<data name="RT_MSG_ERR_12" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_12" xml:space="preserve">
     <value>Nedefinovaná funkcia</value>
-  </data> 
-<data name="RT_MSG_ERR_13" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_13" xml:space="preserve">
     <value>Neexistuje exportovaná metóda</value>
-  </data> 
-<data name="RT_MSG_ERR_14" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_14" xml:space="preserve">
     <value>Premenná neexistuje</value>
-  </data> 
-<data name="RT_MSG_ERR_15" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_15" xml:space="preserve">
     <value>Alias neexistuje</value>
-  </data> 
-<data name="RT_MSG_ERR_16" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_16" xml:space="preserve">
     <value>Neexistuje exportovaná premenná</value>
-  </data> 
-<data name="RT_MSG_ERR_17" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_17" xml:space="preserve">
     <value>Chybný znak v alias</value>
-  </data> 
-<data name="RT_MSG_ERR_18" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_18" xml:space="preserve">
     <value>Alias sa už používa</value>
-  </data> 
-<data name="RT_MSG_ERR_19" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_19" xml:space="preserve">
     <value>Variable not initialized</value>
-  </data> 
-<data name="RT_MSG_ERR_20" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_20" xml:space="preserve">
     <value>Chyba vytvorenia</value>
-  </data> 
-<data name="RT_MSG_ERR_21" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_21" xml:space="preserve">
     <value>Chyba otevorenia</value>
-  </data> 
-<data name="RT_MSG_ERR_22" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_22" xml:space="preserve">
     <value>Chyba uzavretia</value>
-  </data> 
-<data name="RT_MSG_ERR_23" xml:space="preserve">
-    <value>Chyba čítania</value>
-  </data> 
-<data name="RT_MSG_ERR_24" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_23" xml:space="preserve">
+    <value>Chyba èítania</value>
+  </data>
+  <data name="RT_MSG_ERR_24" xml:space="preserve">
     <value>Chyba zápisu</value>
-  </data> 
-<data name="RT_MSG_ERR_25" xml:space="preserve">
-    <value>Chyba tlače</value>
-  </data> 
-<data name="RT_MSG_ERR_26" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_25" xml:space="preserve">
+    <value>Chyba tlaèe</value>
+  </data>
+  <data name="RT_MSG_ERR_26" xml:space="preserve">
     <value>Nedefinovaný symbol</value>
-  </data> 
-<data name="RT_MSG_ERR_27" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_27" xml:space="preserve">
     <value>Nedefinovaná trieda</value>
-  </data> 
-<data name="RT_MSG_ERR_28" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_28" xml:space="preserve">
     <value>Chybná trieda</value>
-  </data> 
-<data name="RT_MSG_ERR_29" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_29" xml:space="preserve">
     <value>Nedovolený odkaz</value>
-  </data> 
-<data name="RT_MSG_ERR_30" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_30" xml:space="preserve">
     <value>Operácia nie je podporovaná</value>
-  </data> 
-<data name="RT_MSG_ERR_31" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_31" xml:space="preserve">
     <value>Limit je prekroèený</value>
-  </data> 
-<data name="RT_MSG_ERR_32" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_32" xml:space="preserve">
     <value>Detekovaný zmätok</value>
-  </data> 
-<data name="RT_MSG_ERR_33" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_33" xml:space="preserve">
     <value>Chyba typu dát</value>
-  </data> 
-<data name="RT_MSG_ERR_34" xml:space="preserve">
-    <value>Chyba dĺžky dát</value>
-  </data> 
-<data name="RT_MSG_ERR_35" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_34" xml:space="preserve">
+    <value>Chyba dåžky dát</value>
+  </data>
+  <data name="RT_MSG_ERR_35" xml:space="preserve">
     <value>Pracovná oblas sa nepoužíva</value>
-  </data> 
-<data name="RT_MSG_ERR_36" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_36" xml:space="preserve">
     <value>Pracovná oblas nie je indexovaná</value>
-  </data> 
-<data name="RT_MSG_ERR_37" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_37" xml:space="preserve">
     <value>Požaduje se exkluzívny prístup</value>
-  </data> 
-<data name="RT_MSG_ERR_38" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_38" xml:space="preserve">
     <value>Požaduje se uzamknutie</value>
-  </data> 
-<data name="RT_MSG_ERR_39" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_39" xml:space="preserve">
     <value>Zápis nie je povolený</value>
-  </data> 
-<data name="RT_MSG_ERR_40" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_40" xml:space="preserve">
     <value>Zlyhanie uzamknutia pri Append</value>
-  </data> 
-<data name="RT_MSG_ERR_41" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_41" xml:space="preserve">
     <value>Zlyhanie uzamknutia</value>
-  </data> 
-<data name="RT_MSG_ERR_42" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_42" xml:space="preserve">
     <value>To many threads</value>
-  </data> 
-<data name="RT_MSG_ERR_43" xml:space="preserve">
-    <value>Rezervované číslo chyby</value>
-  </data> 
-<data name="RT_MSG_ERR_44" xml:space="preserve">
-    <value>Rezervované číslo chyby</value>
-  </data> 
-<data name="RT_MSG_ERR_45" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_43" xml:space="preserve">
+    <value>Rezervované èíslo chyby</value>
+  </data>
+  <data name="RT_MSG_ERR_44" xml:space="preserve">
+    <value>Rezervované èíslo chyby</value>
+  </data>
+  <data name="RT_MSG_ERR_45" xml:space="preserve">
     <value>Zlyhanie uzamknutia</value>
-  </data> 
-<data name="RT_MSG_ERR_46" xml:space="preserve">
-    <value>Časové oneskorenie uzamknutia</value>
-  </data> 
-<data name="RT_MSG_ERR_47" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_46" xml:space="preserve">
+    <value>Èasové oneskorenie uzamknutia</value>
+  </data>
+  <data name="RT_MSG_ERR_47" xml:space="preserve">
     <value>Chyba zásobníka procesoru</value>
-  </data> 
-<data name="RT_MSG_ERR_48" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_48" xml:space="preserve">
     <value>Chyba vyhodnocovacieho zásobníka</value>
-  </data> 
-<data name="RT_MSG_ERR_49" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_49" xml:space="preserve">
     <value>Neexistuje errorblock</value>
-  </data> 
-<data name="RT_MSG_ERR_50" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_50" xml:space="preserve">
     <value>Všeobecné porušenie ochrany</value>
-  </data> 
-<data name="RT_MSG_ERR_51" xml:space="preserve">
-    <value>Chybný ukazovateľ</value>
-  </data> 
-<data name="RT_MSG_ERR_52" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_51" xml:space="preserve">
+    <value>Chybný ukazovate¾</value>
+  </data>
+  <data name="RT_MSG_ERR_52" xml:space="preserve">
     <value>Chybná stránka</value>
-  </data> 
-<data name="RT_MSG_ERR_53" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_53" xml:space="preserve">
     <value>Chyba vytvorenia objektu Error</value>
-  </data> 
-<data name="RT_MSG_ERR_54" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_54" xml:space="preserve">
     <value>DynAlloc: PTR do DynData</value>
-  </data> 
-<data name="RT_MSG_ERR_55" xml:space="preserve">
-    <value>Typ je neprístupný</value>
-  </data> 
-<data name="RT_MSG_ERR_56" xml:space="preserve">
-    <value>Metóda je preťažená, funkcia Send () nie je pre preťažené metódy podporovaná</value>
-  </data> 
-<data name="RT_MSG_ERR_57" xml:space="preserve">
-    <value>Do cieľovej metódy sa nedostalo dosť argumentov</value>
-  </data> 
-<data name="RT_MSG_ERR_58" xml:space="preserve">
-    <value>Do cieľovej metódy bolo odovzdaných príliš veľa argumentov</value>
-  </data> 
-<data name="RT_MSG_ERR_59" xml:space="preserve">
-    <value>Výnimka vyvolaná CLR alebo externým kódom</value>
-  </data> 
-<data name="RT_MSG_ERR_UNKNOWN" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_UNKNOWN" xml:space="preserve">
     <value>Neznáma chyba</value>
-  </data> 
-<data name="RT_MSG_CORRUPTION" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_CORRUPTION" xml:space="preserve">
     <value>Problém s pamäou</value>
-  </data> 
-<data name="RT_MSG_FATAL" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_FATAL" xml:space="preserve">
     <value>Chyba QUIT</value>
-  </data> 
-<data name="RT_MSG_APPLI" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_APPLI" xml:space="preserve">
     <value>Aplikácia</value>
-  </data> 
-<data name="RT_MSG_LINE" xml:space="preserve">
-    <value>Čiara</value>
-  </data> 
-<data name="RT_MSG_FUNC" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_LINE" xml:space="preserve">
+    <value>Èiara</value>
+  </data>
+  <data name="RT_MSG_FUNC" xml:space="preserve">
     <value>Funkcia</value>
-  </data> 
-<data name="RT_MSG_RELEASE" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_RELEASE" xml:space="preserve">
     <value>Version 2.8 SP3</value>
-  </data> 
-<data name="RT_MSG_ERR_INSTALLED" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_INSTALLED" xml:space="preserve">
     <value>ERRORBUILD: ERRORFUNC nie je inštalovaná</value>
-  </data> 
-<data name="RT_MSG_ERR_GURU" xml:space="preserve">
-    <value>ERRORBUILD: chýba Guru tabuľka</value>
-  </data> 
-<data name="RT_MSG_ERR_STACK" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_GURU" xml:space="preserve">
+    <value>ERRORBUILD: chýba Guru tabu¾ka</value>
+  </data>
+  <data name="RT_MSG_ERR_STACK" xml:space="preserve">
     <value>ERRORBUILD: malá oblas pre zásobník</value>
-  </data> 
-<data name="RT_MSG_ERR_PARAM" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_PARAM" xml:space="preserve">
     <value>ERRORBUILD: chybná strucparam</value>
-  </data> 
-<data name="RT_MSG_ERR_NOCLIPPER" xml:space="preserve">
+  </data>
+  <data name="RT_MSG_ERR_NOCLIPPER" xml:space="preserve">
     <value>ERRORBUILD: Nenájdená CLIPPER ERRORFUNC</value>
-  </data> 
-<data name="RT_MSG_ERR_ARGCOUNT" xml:space="preserve">
-    <value>ERRORBUILD: ERRORFUNC argcount &lt;&gt;1</value>
-  </data> 
-<data name="RT_MSG_MAIL_ERR1" xml:space="preserve">
-    <value>SendMail (): Nepodarilo sa načítať knižnicu DLL MAPI</value>
-  </data> 
-<data name="RT_MSG_MAIL_ERR2" xml:space="preserve">
-    <value>SendMail (): Nepodarilo sa získať funkčný vstupný bod v MAPI DLL</value>
-  </data> 
-<data name="RT_MSG_MAIL_ERR3" xml:space="preserve">
-    <value>SendMail (): Nepodarilo sa odoslať% s. Kód chyby:% d</value>
-  </data> 
-<data name="RT_MSG_ACCESS_VIOLATION" xml:space="preserve">
-    <value>Nasilny vstup</value>
-  </data> 
-<data name="RT_MSG_DATATYPE_MISALIGNMENT" xml:space="preserve">
-    <value>Nesprávne zarovnanie údajového typu</value>
-  </data> 
-<data name="RT_MSG_SINGLE_STEP" xml:space="preserve">
-    <value>Jeden krok</value>
-  </data> 
-<data name="RT_MSG_ARRAY_BOUNDS_EXCEEDED" xml:space="preserve">
-    <value>Prekročil sa rozsah poľa</value>
-  </data> 
-<data name="RT_MSG_FLT_DENORMAL_OPERAND" xml:space="preserve">
-    <value>Plávajúci denormal operand</value>
-  </data> 
-<data name="RT_MSG_FLT_DIVIDE_BY_ZERO" xml:space="preserve">
-    <value>Delenie nulou</value>
-  </data> 
-<data name="RT_MSG_FLT_INEXACT_RESULT" xml:space="preserve">
-    <value>Výsledok s plávajúcim pohybom</value>
-  </data> 
-<data name="RT_MSG_FLT_INVALID_OPERATION" xml:space="preserve">
-    <value>Plávajúca neplatná operácia</value>
-  </data> 
-<data name="RT_MSG_FLT_OVERFLOW" xml:space="preserve">
-    <value>Plávajúce pretečenie</value>
-  </data> 
-<data name="RT_MSG_FLT_STACK_CHECK" xml:space="preserve">
-    <value>Kontrola pávajúceho zásobníka</value>
-  </data> 
-<data name="RT_MSG_FLT_UNDERFLOW" xml:space="preserve">
-    <value>Plávajúce prúdenie</value>
-  </data> 
-<data name="RT_MSG_INT_DIVIDE_BY_ZERO" xml:space="preserve">
-    <value>Celé číslo delené nulou</value>
-  </data> 
-<data name="RT_MSG_INT_OVERFLOW" xml:space="preserve">
-    <value>Celočíselné pretečenie</value>
-  </data> 
-<data name="RT_MSG_PRIV_INSTRUCTION" xml:space="preserve">
-    <value>priv inštrukcia</value>
-  </data> 
-<data name="RT_MSG_IN_PAGE_ERROR" xml:space="preserve">
-    <value>Chyba stránky</value>
-  </data> 
-<data name="RT_MSG_ILLEGAL_INSTRUCTION" xml:space="preserve">
-    <value>Nelegálna inštrukcia</value>
-  </data> 
-<data name="RT_MSG_NONCONTINUABLE_EXCEPTION" xml:space="preserve">
-    <value>Neplatný pokyn na nepretržitú výnimku</value>
-  </data> 
-<data name="RT_MSG_STACK_OVERFLOW" xml:space="preserve">
-    <value>Pretečenie zásobníka</value>
-  </data> 
-<data name="RT_MSG_INVALID_DISPOSITION" xml:space="preserve">
-    <value>Neplatná dispozícia</value>
-  </data> 
-<data name="RT_MSG_GUARD_PAGE" xml:space="preserve">
-    <value>Strážca stránky</value>
-  </data> 
-<data name="ARGCANNOTBEZERO" xml:space="preserve">
-    <value>Argument nemôže byť 0</value>
-  </data> 
-<data name="ARGNOTCODEBLOCK" xml:space="preserve">
-    <value>Argument nie je CODEBLOCK</value>
-  </data> 
-<data name="ARGLISTING" xml:space="preserve">
-    <value>{0}: {1} ({2}){3}</value>
-  </data> 
-<data name="ARGNOTDATE" xml:space="preserve">
-    <value>Argument nie je dátum</value>
-  </data> 
-<data name="ARGNOTINT32" xml:space="preserve">
-    <value>Argument nie je celočíselný</value>
-  </data> 
-<data name="ARGNOTINTEGER" xml:space="preserve">
-    <value>Argument nie je celočíselný typ</value>
-  </data> 
-<data name="ARGNOTNUMERIC" xml:space="preserve">
-    <value>Argument nie je číslo</value>
-  </data> 
-<data name="ARGNOTSTRING" xml:space="preserve">
-    <value>Argument nie je reťazec</value>
-  </data> 
-<data name="ARGSINCOMPATIBLE" xml:space="preserve">
-    <value>Argumenty sú nezlučiteľné</value>
-  </data> 
-<data name="ARGSNOTSAMETYPE" xml:space="preserve">
-    <value>Argumenty nie sú rovnakého typu</value>
-  </data> 
-<data name="ARGUMENT" xml:space="preserve">
-    <value>Argument</value>
-  </data> 
-<data name="ARGUMENTSHEADING" xml:space="preserve">
-    <value>Argument(y):</value>
-  </data> 
-<data name="ATRANSLATE" xml:space="preserve">
-    <value>aLookupTable nie je pole alebo prvok nie je pole</value>
-  </data> 
-<data name="DATATYPEERROR" xml:space="preserve">
-    <value>Chyba typu údajov</value>
-  </data> 
-<data name="DATE_ADD" xml:space="preserve">
-    <value>Neplatný dodatok k USUAL obsahujúci DATE</value>
-  </data> 
-<data name="DATE_SUBTRACT" xml:space="preserve">
-    <value>Neplatný odpočet od USUAL obsahujúci DATE</value>
-  </data> 
-<data name="ERROR_ARG" xml:space="preserve">
-    <value>Argument</value>
-  </data> 
-<data name="ERROR_ARGNUM" xml:space="preserve">
-    <value>Argument číslo</value>
-  </data> 
-<data name="ERROR_ARGTYPE" xml:space="preserve">
-    <value>Typ argumentu</value>
-  </data> 
-<data name="ERROR_ARGS" xml:space="preserve">
-    <value>Argumenty</value>
-  </data> 
-<data name="ERROR_ARGTYPE_REQ" xml:space="preserve">
-    <value>Očakávaný typ argumentu</value>
-  </data> 
-<data name="ERROR_FILENAME" xml:space="preserve">
-    <value>Názov súboru</value>
-  </data> 
-<data name="ERROR_FUNCTION" xml:space="preserve">
-    <value>Funkcia</value>
-  </data> 
-<data name="ERROR_DESCRIPTION" xml:space="preserve">
-    <value>Popis</value>
-  </data> 
-<data name="ERROR_OPERATION" xml:space="preserve">
-    <value>Operácia</value>
-  </data> 
-<data name="ERROR_CODE" xml:space="preserve">
-    <value>Kód chyby</value>
-  </data> 
-<data name="ERROR_GENCODE" xml:space="preserve">
-    <value>GenCode</value>
-  </data> 
-<data name="ERROR_SUBCODE" xml:space="preserve">
-    <value>SubCode</value>
-  </data> 
-<data name="ERROR_OSCODE" xml:space="preserve">
-    <value>OsCode</value>
-  </data> 
-<data name="ERROR_SEVERITY" xml:space="preserve">
-    <value>Prísnosť</value>
-  </data> 
-<data name="ERROR_FUNCSYM" xml:space="preserve">
-    <value>FuncSym</value>
-  </data> 
-<data name="ERROR_TRIES" xml:space="preserve">
-    <value>Tries</value>
-  </data> 
-<data name="ERROR_CANDEFAULT" xml:space="preserve">
-    <value>Možné predvolené</value>
-  </data> 
-<data name="ERROR_CANRETRY" xml:space="preserve">
-    <value>Možné opakovať</value>
-  </data> 
-<data name="ERROR_CANSUBSTITUTE" xml:space="preserve">
-    <value>Možné nahradiť</value>
-  </data> 
-<data name="ERROR_SUBSYSTEM" xml:space="preserve">
-    <value>Subsystem</value>
-  </data> 
-<data name="ERROR_STACK" xml:space="preserve">
-    <value>Volané z</value>
-  </data> 
-<data name="ERROR_CALLEDFROM" xml:space="preserve">
-    <value>Volané z</value>
-  </data> 
-<data name="INVALIDARGTYPE" xml:space="preserve">
-    <value>Neplatný typ argumentu</value>
-  </data> 
-<data name="INVALIDARGVALUE" xml:space="preserve">
-    <value>Neplatná hodnota argumentu</value>
-  </data> 
-<data name="OSVERSION" xml:space="preserve">
-    <value>{0} (Verzia {1}.{2}, Zostavené {3}, Revízia {4})</value>
-  </data> 
-<data name="RUNTIMEERROR" xml:space="preserve">
-    <value>Runtime chyba</value>
-  </data> 
-<data name="STRINGLENNE1" xml:space="preserve">
-    <value>Reťazec dĺžja  != 1</value>
-  </data> 
-<data name="USUALOVERFLOWERR" xml:space="preserve">
-    <value>Numerické pretečenie pri konverzii USUAL typu "{0}" na "{1}"</value>
-  </data> 
-<data name="USUALBINARYOPERR" xml:space="preserve">
-    <value>Operátor {0} nie je k dispozícii pre bežné typy "{1}" a "{2}"</value>
-  </data> 
-<data name="USUALUNARYOPERR" xml:space="preserve">
-    <value>Operátor {0} nie je k dispozícii pre typ USUAL "{1}"</value>
-  </data> 
-<data name="USUALCONVERSIONERR" xml:space="preserve">
-    <value>Chyba konverzie z USUAL ({0}) na {1}</value>
-  </data> 
-<data name="VERSION" xml:space="preserve">
-    <value>Verzia:</value>
-  </data> 
-<data name="ARGISNULL" xml:space="preserve">
-    <value>Argument je NULL</value>
-  </data> 
-<data name="UNKNOWNRDD" xml:space="preserve">
-    <value>Neplatný RDD názov</value>
-  </data> 
-<data name="ARRAYBOUNDS" xml:space="preserve">
-    <value>Neplatný index poľa</value>
-  </data> 
-<data name="USUALNOTINDEXED" xml:space="preserve">
-    <value>Hodnota v USUAL nepodporuje indexované operácie. Hodnota musí byť X # Array alebo implementovať rozhranie "{0}</value>
-  </data> 
-<data name="E_OPEN_MRESTORE" xml:space="preserve">
-    <value>Súbor pre príkaz RESTORE sa nepodarilo otvoriť.</value>
-  </data> 
-<data name="E_OPEN_MSAVE" xml:space="preserve">
-    <value>Súbor pre príkaz SAVE sa nepodarilo vytvoriť.</value>
-  </data> 
-<data name="ERRORDIALOG_TITLE" xml:space="preserve">
-    <value>Chyba aplikácie -</value>
-  </data> 
-<data name="ERRORDIALOG_CLOSE" xml:space="preserve">
-    <value>Zavrieť</value>
-  </data> 
-<data name="ERRORDIALOG_COPY" xml:space="preserve">
-    <value>&amp;Kopírovať do schránky</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
-    <value>aLookupTable musí mať rozmer n 2</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_ERROR" xml:space="preserve">
-    <value>%V1s %s. chyba</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_FILE_HANDLE" xml:space="preserve">
-    <value>%V1s FileHandle: %s</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_FUNCPTR" xml:space="preserve">
-    <value>%V1s%V2s FuncPtr: %s %s</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_CHOICE" xml:space="preserve">
-    <value>%V1s%V2s výber: %s %s</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_CMD_LINE" xml:space="preserve">
-    <value>%V1s Príkazový riadok: %-23s</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_CONVERSION" xml:space="preserve">
-    <value>%V1s pri konverzii %s</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_CURDIR" xml:space="preserve">
-    <value>Altuálny priečinok</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_DANGER" xml:space="preserve">
-    <value>* Nebezpečný *:</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_DISK" xml:space="preserve">
-    <value>Disk</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_DISK_FREE" xml:space="preserve">
-    <value>voľný</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_ENTITY" xml:space="preserve">
-    <value>%V1s Entita: %s</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_ERR_IN_ERR" xml:space="preserve">
-    <value>Chyba v nástroji ErrorHandler</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_HANDLE" xml:space="preserve">
-    <value>HND</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_HANDLE_CUR" xml:space="preserve">
-    <value>cur</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_HANDLE_END" xml:space="preserve">
-    <value>koniec</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_IVARS" xml:space="preserve">
-    <value>%V1s IPremenné: %s</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_LINE" xml:space="preserve">
-    <value>%V1s Riadok: %s</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_MAX" xml:space="preserve">
-    <value>%V1s Max: %s</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_MODULE" xml:space="preserve">
-    <value>%V1s Modul: %s</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_OBJECT" xml:space="preserve">
-    <value>%V1s Objekt: %s</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_SUBST_TYPE" xml:space="preserve">
-    <value>%V1s vracia: %s</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_TO" xml:space="preserve">
-    <value>%V1s do %s</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_WARNING" xml:space="preserve">
-    <value>Upozornenie:</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_OLEBASE" xml:space="preserve">
-    <value>OLE Base</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_CONVERSION_TO" xml:space="preserve">
-    <value>%V1s%V2s pri konverzii %s to %s</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_NOMEM" xml:space="preserve">
-    <value>Nedostatok pamäte</value>
-  </data> 
-<data name="__CAVOSTR_SYSLIB_INCTYPES" xml:space="preserve">
-    <value>Nezrozumiteľné typy údajov</value>
-  </data> 
-<data name="__WCSUNKNOWNSTATUS" xml:space="preserve">
-    <value>&lt;&lt;&lt; Neznámy status &gt;&gt;&gt;</value>
-  </data> 
-<data name="TMSG_DYNCHECKERR" xml:space="preserve">
-    <value>&gt;&gt;DYNCHECK ZLYHAL!!</value>
-  </data> 
-  </root>
+  </data>
+</root>

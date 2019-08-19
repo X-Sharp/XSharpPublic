@@ -7,7 +7,6 @@
       <para styleclass="Heading1">Bound Expressions</para>
     </header>
     <para styleclass="Normal">Bound expressions are expressions that access properties or members from objects or structures</para>
-    <para styleclass="Heading2"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example"><table styleclass="Default" rowcount="7" colcount="5">
       <thead style="vertical-align:top">

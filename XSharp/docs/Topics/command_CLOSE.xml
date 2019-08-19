@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">CLOSE Command</title>
+  <keywords>
+    <keyword translate="true">Commands</keyword>
+    <keyword translate="true">CLOSE command</keyword>
+    <keyword translate="true">CLOSE ALL command</keyword>
+    <keyword translate="true">CLOSE ALTERNATE command</keyword>
+    <keyword translate="true">CLOSE DATABASES command</keyword>
+    <keyword translate="true">CLOSE INDEXES command</keyword>
+    <keyword translate="true">CLOSE FORMAT command</keyword>
+    <keyword translate="true">Files<keyword translate="true">closing</keyword></keyword>
+    <keyword translate="true">Closing<keyword translate="true">files</keyword></keyword>
+    <keyword translate="true">Index/order</keyword>
+    <keyword translate="true">Databases</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Normal"></para>
+      <para styleclass="Code Example"><text styleclass="Normal" translate="true">&#32;</text><text styleclass="Heading1" translate="true">CLOSE Command</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1" translate="true">Purpose</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Close specified file type.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1" translate="true">Syntax</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">CLOSE [&lt;</text><text styleclass="Italic" translate="true">xcAlias</text><text styleclass="Normal" translate="true">&gt; | ALL | ALTERNATE | DATABASES | INDEXES]</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1" translate="true">Arguments</text></para>
+    <para styleclass="List"><text styleclass="Normal" translate="true">&lt;</text><text styleclass="Italic" translate="true">xcAlias</text><text styleclass="Normal" translate="true">&gt;</text><tab /><text styleclass="Normal" translate="true">The alias identifier for the work area where all files are closed.</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><text styleclass="Normal" translate="true">ALL</text><tab /><text styleclass="Normal" translate="true">Closes database and index files in all work areas, releasing all active filters, relations, and format definitions.</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><text styleclass="Normal" translate="true">ALTERNATE</text><tab /><text styleclass="Normal" translate="true">Closes the currently open alternate file.</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><text styleclass="Normal" translate="true">DATABASES</text><tab /><text styleclass="Normal" translate="true">Closes all database, memo, and associated index files in all work areas, and releases all active filters and relations. &#160;It does not, however, have any effect on the active format.</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><text styleclass="Normal" translate="true">INDEXES</text><tab /><text styleclass="Normal" translate="true">Closes all index files and clears the order list in the current work area.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1" translate="true">Description</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">CLOSE with no option closes the current database and associated files. &#160;A number of other operations close files as a side effect, but it is always a good idea to explicitly close files when you are finished using them.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1" translate="true">Libraries</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">System Library, Terminal</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1" translate="true">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBCloseArea" styleclass="Normal" translate="true">DBCloseArea()</link><text styleclass="Normal" translate="true">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_FClose" style="font-family:Arial; font-size:10pt; text-decoration:underline; color:#000000;" translate="true">FClose()</link><text styleclass="Normal" translate="true">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INDEX" styleclass="Normal" translate="true">SET INDEX</link><text styleclass="Normal" translate="true">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE" styleclass="Normal" translate="true">USE</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -17,9 +17,9 @@
     <INS>false</INS>
     <NS>true</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.0.3.0</XSharpProjectversion>
-	<IncludePaths>$(CommonInclude)</IncludePaths>
-	<Nostandarddefs>true</Nostandarddefs>
+    <XSharpProjectversion>2.0.4.0</XSharpProjectversion>
+    <IncludePaths>$(CommonInclude)</IncludePaths>
+    <Nostandarddefs>true</Nostandarddefs>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
@@ -155,8 +155,7 @@
   </ProjectExtensions>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PreBuildEvent />
-    <PostBuildEvent>rem Copy Files for the Macro Compiler
-copy $(TargetPath) \xsharp\dev\xsharp\Runtime</PostBuildEvent>
+    <PostBuildEvent />
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">

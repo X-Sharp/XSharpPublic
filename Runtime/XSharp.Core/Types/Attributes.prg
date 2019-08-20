@@ -150,7 +150,7 @@ BEGIN NAMESPACE XSharp
     /// <remarks>
 	/// This type is not in the internal namespace because it is supposed to be used by 3rd party vendors as well
 	/// </remarks>
-	[AttributeUsage(AttributeTargets.Assembly)];
+	[AttributeUsage(AttributeTargets.Assembly, AllowMultiple := true)];
 	SEALED CLASS ImplicitNamespaceAttribute INHERIT Attribute
 		PRIVATE INITONLY _namespace AS STRING
 	    ///<summary>Name of the implicit namespace.</summary>		

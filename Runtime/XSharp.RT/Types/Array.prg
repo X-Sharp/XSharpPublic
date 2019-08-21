@@ -87,15 +87,16 @@ BEGIN NAMESPACE XSharp
             RETURN newArray
 
         INTERNAL STATIC METHOD __ArrayNewHelper(dimensions AS INT[], currentDim AS INT) AS ARRAY
-            LOCAL capacity  AS DWORD // one based ?
+            LOCAL size AS DWORD
             LOCAL newArray AS ARRAY
-            capacity := (DWORD) dimensions[currentDim]
-            newArray := ARRAY{capacity}
+            size := (DWORD) dimensions[currentDim]
+            // ARRAY{} constructor param is named "capacity", but it adds empty elements to the array, so it is "size" really. We might want to redesign that
+            newArray := ARRAY{size} 
             IF currentDim != dimensions:Length
                 LOCAL nextDim := currentDim+1 AS INT
                 LOCAL index   := 1 AS INT
-                DO WHILE index <= capacity
-                    newArray:Add(USUAL{__ArrayNewHelper(dimensions,nextDim)})
+                DO WHILE index <= size
+                    newArray[index - 1 + __ARRAYBASE__] := USUAL{__ArrayNewHelper(dimensions,nextDim)}
                     index+=1
                 ENDDO
                 RETURN newArray

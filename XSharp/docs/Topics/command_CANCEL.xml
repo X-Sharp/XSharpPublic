@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CANCEL Command</title>
+  <keywords>
+    <keyword>CANCEL command</keyword>
+    <keyword>Closing<keyword>files</keyword></keyword>
+    <keyword>Commands</keyword>
+    <keyword>Files<keyword>closing</keyword></keyword>
+    <keyword>Program control</keyword>
+    <keyword>QUIT command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CANCEL Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Terminate the application, close all open files, and return control to the operating system.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">CANCEL | QUIT</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">You can use either command from anywhere in an application. &#160;A RETURN executed from the Start() routine performs the same action.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Usage: &#160;</text>Both commands can be used from anywhere in an application. &#160;A RETURN executed at the highest level procedure or a BREAK, with no pending SEQUENCE, can also be used to QUIT an application.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example uses QUIT in a dialog box:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">IF DialogYesNo(10, 10, &quot;Quit application&quot;, ;<br/><tab /><tab />BG+/B,B/W&quot;, 2)<br/><tab />QUIT<br/>ENDIF</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_BEGIN_SEQUENCE">BEGIN SEQUENCE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_ErrorLevel">ErrorLevel()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RETURN">RETURN</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

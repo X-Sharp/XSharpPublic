@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SEEK Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Finding<keyword>records</keyword></keyword>
+    <keyword>Index/order</keyword>
+    <keyword>Records<keyword>finding</keyword></keyword>
+    <keyword>SEEK command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SEEK Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Search an order for the first key matching the specified expression, position the record pointer to the corresponding record, and set the Found() flag.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">SEEK &lt;<text styleclass="Italic">uKeyValue</text>&gt; [SOFTSEEK] [LAST]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;uKeyValue&gt;<tab />An expression to match with an order key value.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">SOFTSEEK<tab />If SOFTSEEK is specified (or if SetSoftSeek() is TRUE), the record pointer is positioned to the record with the next higher key value, and Found() returns FALSE after an unsuccessful SEEK. &#160;EOF() returns TRUE only if there are no keys in the order greater than &lt;uKeyValue&gt;.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />If SOFTSEEK is not specified and SetSoftSeek() is FALSE, the record pointer is positioned to LastRec() + 1, EOF() returns TRUE, and Found() returns FALSE after an unsuccessful SEEK.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">LAST<tab />If LAST is specified, SEEK finds the last occurrence of the specified key value. &#160;If LAST is not specified, SEEK finds the first occurrence.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">If the SEEK is successful, Found() is set to TRUE and the record pointer is positioned to the matching record.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">The following example searches for &quot;Doe&quot; using the SEEK command:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE customer NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SET INDEX </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> customer</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SEEK </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;Doe&quot;</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Found</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">.</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">.</text><text style="font-weight:bold; font-style:normal; color:#000000;"> &#160;&lt;Statements</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&gt;</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">.</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example performs a soft seek for &quot;Doe&quot; using SOFTSEEK clause of the SEEK command. &#160;Note that the SOFTSEEK clause does not have any effect of the SetSoftSeek() flag:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE customer NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SET INDEX </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> customer</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> SetSoftSeek</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><tab /><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// FALSE</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SEEK </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;Doe&quot;</text><text style="font-weight:bold; font-style:normal; color:#000000;"> SOFTSEEK</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> SetSoftSeek</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><tab /><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Still FALSE</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">!</text><text style="font-weight:bold; font-style:normal; color:#000000;">Found</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Customer</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Name</text><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Returns next logical</text><br/><tab /><tab /><tab /><tab /><tab /><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// name after &quot;Doe&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBSeek">DBSeek()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBSetIndex">DBSetIndex()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBSetOrder">DBSetOrder()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INDEX">SET INDEX</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ORDER">SET ORDER</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

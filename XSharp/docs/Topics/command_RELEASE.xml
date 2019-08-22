@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>RELEASE Command</title>
+  <keywords>
+    <keyword>Clearing<keyword>memory variables</keyword></keyword>
+    <keyword>Commands</keyword>
+    <keyword>Deleting<keyword>memory variables</keyword></keyword>
+    <keyword>Memory variables</keyword>
+    <keyword>Memory variables<keyword>clearing</keyword><keyword>deleting</keyword></keyword>
+    <keyword>RELEASE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">RELEASE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Releases public and private memory variables visible to the current routine by assigning a NIL value to them.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">RELEASE &lt;<text styleclass="Italic">idMemvarList</text>&gt;</para>
+    <para styleclass="Normal">RELEASE ALL [LIKE | EXCEPT &lt;<text styleclass="Italic">Skeleton</text>&gt;]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;idMemvarList&gt;<tab />A list of private or public variables to release. &#160;Specifying a variable name that does not exist or is not visible raises a runtime error.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ALL<tab />Releases all private variables and leaves public variables intact.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">LIKE | EXCEPT &lt;Skeleton&gt;</para>
+    <para styleclass="List"><tab />Specifies a set of visible private variables to release (LIKE) or keep (EXCEPT) and leaves public variables intact. &#160;&lt;Skeleton&gt; can include literal characters as well as the standard wildcard characters, * and ?. &#160;If no variables match the &lt;Skeleton&gt;, nothing happens.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">This command does not actually delete the specified variables from memory like CLEAR ALL or CLEAR MEMORY. &#160;Instead, it releases the value of the variables by assigning NIL to them. &#160;For this reason, variables that are hidden do not become visible until termination of the routine initiating the RELEASE operation.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>Declared variables and constants are not affected by the RELEASE command. &#160;For information on the lifetime and visibility of variables, refer to the &quot;Variables, Constants, and Declarations&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide</text>.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLEAR_MEMORY">CLEAR MEMORY</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PRIVATE">PRIVATE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PUBLIC">PUBLIC</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_QUIT">QUIT</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

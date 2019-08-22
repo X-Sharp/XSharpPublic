@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET SCOPE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Index/order</keyword>
+    <keyword>Scoping key values</keyword>
+    <keyword>SET SCOPE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET SCOPE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Change the top boundary for scoping key values in the controlling order.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">SET SCOPE TO [&lt;<text styleclass="Italic">uNewTop</text>&gt; [, &lt;<text styleclass="Italic">uNewBottom</text>&gt;]]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;uNewTop&gt;<tab />The top range of key values that will be included in the controlling order&apos;s current scope. &#160;&lt;uNewTop&gt; can be an expression that matches the data type of the key expression in the controlling order or a code block that returns the correct data type.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;uNewBottom&gt;<tab />The bottom range of key values that will be included in the controlling order&apos;s current scope. &#160;&lt;uNewBottom&gt; can be an expression that matches the data type of the key expression in the controlling order or a code block that returns the correct data type.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />Note: &#160;If &lt;uNewBottom&gt; is not specified, &lt;uNewTop&gt; is taken for both the top and bottom range values.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">SET SCOPE, when used with no arguments, clears the top and bottom scopes; this is equivalent to OrdScope(0, NIL) followed by OrdScope(1, NIL). &#160;If &lt;<text styleclass="Italic">uNewTop</text>&gt; is specified alone, SET SCOPE sets the top and bottom scope to the indicated value (that is, OrdScope(0, &lt;<text styleclass="Italic">uNewTop</text>&gt;) followed by OrdScope(1, &lt;<text styleclass="Italic">uNewTop</text>&gt;). &#160;If both &lt;<text styleclass="Italic">uNewTop</text>&gt; and &lt;<text styleclass="Italic">uNewBottom</text>&gt; are specified, SET SCOPE sets the top and bottom scope as indicated (that is, OrdScope(0, &lt;<text styleclass="Italic">uNewTop</text>&gt;) followed by OrdScope(1, &lt;<text styleclass="Italic">uNewBottom</text>&gt;).. &#160;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_OrdScope">OrdScope()</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>UNION Statement</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Compiledeclaration</keyword>
+    <keyword>Entity declaration</keyword>
+    <keyword>Union entities</keyword>
+    <keyword>Union entities<keyword>declaring</keyword><keyword>specifying members</keyword></keyword>
+    <keyword>UNION statement</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">UNION Statement</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Declare a union entity and its member names.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">[STATIC] UNION &lt;<text styleclass="Italic">idUnion</text>&gt; [ALIGN 1|2|4|8]</para>
+    <para styleclass="Normal">MEMBER &lt;<text styleclass="Italic">idVarList</text>&gt; AS | IS &lt;<text styleclass="Italic">idType</text>&gt; [ ,…]</para>
+    <para styleclass="Normal">MEMBER DIM &lt;<text styleclass="Italic">ArraySpec</text>&gt; [ ,…] AS | IS &lt;<text styleclass="Italic">idType</text>&gt; [ ,…]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>The MEMBER statement is shown using two syntax diagrams for convenience. &#160;You can declare variables and dimensioned arrays using a single MEMBER statement if each definition is separated by a comma.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">STATIC<tab />Restricts the visibility of the union to the module in which it is declared. &#160;If omitted, the union has application-wide visibility.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;idUnion&gt;<tab />A valid identifier name for the union. &#160;A union is an entity and shares the same name space as other entities. &#160;This means that it is not possible to have a union and a constant, for example, with the same name.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">MEMBER<tab />Declares one or more union member variables or dimensioned arrays. &#160;You can specify multiple MEMBER declarations on separate lines.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;idVarList&gt;<tab />A comma-separated list of identifier names for the union member variables.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">DIM &lt;ArraySpec&gt;<tab />The specification for a dimensioned array to use as a union member. &#160;&lt;ArraySpec&gt; is one of the following:</para>
+    <para styleclass="List"><tab />&lt;idArray&gt;[&lt;nElements&gt;, &lt;nElements&gt;, &lt;nElements&gt;]</para>
+    <para styleclass="List"><tab />&lt;idArray&gt;[&lt;nElements&gt;],[&lt;nElements&gt;], [&lt;nElements&gt;]</para>
+    <para styleclass="List"><tab />All dimensions except the first are optional.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />&lt;nElements&gt; defines the number of elements in a particular dimension of an array. &#160;The number of dimensions is determined by how many &lt;nElements&gt; arguments you specify.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />&lt;nElements&gt; can be a literal numeric representation or a simple numeric expression involving only operators, literals, and DEFINE constants; however, more complicated expressions (such as function calls) are not allowed.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">AS &lt;idType&gt;<tab />Specifies the data type of the variable you are declaring (called <link displaytype="text" defaultstyle="true" type="topiclink" href="strong_typing_gloss" domain="CavoIde.hmxz">strong typing</link>). &#160;For DIM arrays, declares the data type for all array elements. &#160;The AS &lt;idType&gt; is required for all union members.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />Refer to the CLASS entry for a list of valid values for &lt;idType&gt;. &#160;Note that the following data types are not supported in unions because they are dynamic types that require garbage collection:</para>
+    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />ARRAY</para>
+    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />FLOAT</para>
+    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />OBJECT</para>
+    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />&lt;idClass&gt;</para>
+    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />STRING</para>
+    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />USUAL</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />Refer to the &quot;Variables, Constants, and Declarations&quot; chapter in the Programmer&apos;s Guide for a complete discussion of data types and the advantages of strong typing.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">IS &lt;idType&gt;<tab />Specifies a union data type in which the memory needed to hold the union is allocated on the stack (i.e., &lt;idUnion&gt; is the only &lt;idType&gt; allowed with the IS keyword).</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ALIGN 1|2|4|8<tab />Specifies the memory alignment of the structure. The default is 4, which means that all members are aligned at DWORD boundaries, since that gives the best performance on a 32 bits platform and is also the default alignment for most C/C++ compilers. You may want to change this when you need to match a C/C++ structure that has been defined with a different alignment (the #pragma pack in a C/C++ header file). </para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />Note: The default alignment for C/C++ compilers is 4 as well, unless the structure contains doubles (REAL8 in &lt;%APP%&gt;). In that case the C/C++ compiler uses an alignment of 8. &lt;%APP%&gt; does NOT automatically choose an alignment of 8, so you must add the ALIGN 8 to your structure in these circumstances.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">UNIONs are like STRUCTUREs, but all members start at offset zero (0). &#160;In other words, assigning a value to a union member affects all other union members. &#160;As the size of the union is equal to the size of the biggest member, changing one member will change all of the others because they occupy the same memory.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">You use the UNION statement to mark the beginning of the definition of a union entity, followed by one or more MEMBER statements that define what the union looks like. &#160;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>See the Strongly Typed Variables section in the &quot;Variables, Constants and Declarations&quot; chapter of the <text styleclass="Italic">Programmer&apos;s Guide </text> for more information.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">The following is a conversion example:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">UNION </text><text style="font-weight:bold; font-style:normal; color:#000000;">wb </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ALIGN</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">1</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">MEMBER</text><text style="font-weight:bold; font-style:normal; color:#000000;"> w </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WORD</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">BYTE</text><text style="font-weight:bold; font-style:normal; color:#000000;"> bLo </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">BYTE</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">BYTE</text><text style="font-weight:bold; font-style:normal; color:#000000;"> bHi </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">BYTE</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:bold; font-style:normal; color:#000000;"> x</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:bold; font-style:normal; color:#000000;"> u </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IS</text><text style="font-weight:bold; font-style:normal; color:#000000;"> wb</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#000000;"> u</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">.</text><text style="font-weight:bold; font-style:normal; color:#000000;">w </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">0x1234</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> u</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">.</text><text style="font-weight:bold; font-style:normal; color:#000000;">bLo &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// 52 (=0x34)</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> u</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">.</text><text style="font-weight:bold; font-style:normal; color:#000000;">bHi &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// 18 (=0x12)</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_VOSTRUCT">STRUCTURE</link></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:12px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:144px left ;"></para>
+  </body>
+</topic>

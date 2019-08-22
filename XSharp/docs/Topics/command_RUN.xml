@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>RUN Command</title>
+  <keywords>
+    <keyword>Applications<keyword>executing</keyword></keyword>
+    <keyword>Commands</keyword>
+    <keyword>Executing<keyword>applications</keyword></keyword>
+    <keyword>Program control</keyword>
+    <keyword>RUN command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">RUN Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Execute a Windows or DOS application, a batch file, or a DOS command.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">RUN &lt;<text styleclass="Italic">xcCommandLine</text>&gt;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;xcCommandLine&gt;<tab />The command line is made up of two parts. &#160;The first part is one of the following:</para>
+    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />An executable Windows or DOS program</para>
+    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />A .PIF file</para>
+    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />A .BAT file</para>
+    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />Any resident DOS command</para>
+    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />COMMAND.COM</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />The second part is the command line parameters that will be passed to the specified application.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />NOTE: When running DOS programs, it is best to specify the file extension (for example, .EXE) rather than allow DOS to determine the default; otherwise, the RUN command will generate a temporary file named VODOSRUN.BAT to run the specified program. </para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">RUN executes a Windows or DOS program or a DOS command from within an application.</para>
+    <para styleclass="Normal">The application name in &lt;<text styleclass="Italic">xcCommandLine</text>&gt; may optionally contain a path. &#160;If it does not, Windows will search for the application in the following order:</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><tab /><text styleclass="Normal">The current directory</text></li>
+      <li styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><tab /><text styleclass="Normal">The Windows directory</text></li>
+      <li styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><tab /><text styleclass="Normal">The Windows SYSTEM subdirectory</text></li>
+      <li styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><tab /><text styleclass="Normal">The directory that contains the currently executing module (.EXE or .DLL)</text></li>
+      <li styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><tab /><text styleclass="Normal">The directories in the PATH environment variable </text></li>
+      <li styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><tab /><text styleclass="Normal">All network drives</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If you use RUN to start a Windows application, the two applications will be run <text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">asynchronously</text>. &#160;In other words, your &#160;&lt;%APP%&gt;application will not wait for the called application to finish but will continue to execute the instructions following the RUN command.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If you specify a DOS application, a .BAT file, or a DOS command, Windows will create a DOS task and switch to it, thereby stopping your application. &#160;During the execution of the DOS task, however, the user may switch back to the calling application.. &#160;The calling application will automatically resume execution after the DOS task terminates. </para>
+    <para styleclass="Normal">If you run a DOS program, you might consider setting up a .PIF file (using the PIF Editor provided by Windows) to fine tune the execution environment. &#160;For example you might specify that the DOS application is to be executed in a window rather than in full-screen mode. &#160;If you are using a .PIF file, pass the name of the .PIF file to the RUN command instead of the name of your application or give it the same base name as your application and put it into the same directory. &#160;In the latter case, Windows will pick it up automatically if you pass the application name to the RUN command.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example starts the Windows Notepad editor on a file called DATA.TXT:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">RUN notepad data.txt</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">One of the options you can give your users is direct access to DOS. &#160;Do this with:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">RUN command.com</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic class="popup" template="Popup" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Embedded topics</title>
+  <body>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+  </body>
+</topic>

@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>RESTORE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Memory variables<keyword>restoring</keyword></keyword>
+    <keyword>RESTORE command</keyword>
+    <keyword>Restoring<keyword>memory variables</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">RESTORE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Recreate public and private variables previously saved to a file and initialize them with their former values.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">RESTORE FROM &lt;<text styleclass="Italic">xcSourceFile</text>&gt; [ADDITIVE]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;xcSourceFile&gt;<tab />The name of the memory file (created, for example, with SAVE), including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension is .MEM.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />This command attempts to open &lt;xcSourceFile&gt; in shared mode. &#160;If the file does not exist, a runtime error is raised. &#160;If the file is successfully opened, the operation proceeds. &#160;If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE. &#160;Refer to the &quot;Concurrency Control&quot; chapter in the Programmer&apos;s Guide for more information on resolving concurrency conflicts.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ADDITIVE<tab />Causes memory variables loaded from the memory file to be added to the existing pool of memory variables.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">The scope of the variable is not saved with the variable but is instead established when the variable is restored. &#160;Arrays and declared variables cannot be saved or restored.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">When memory variables are restored, they are recreated as private variables with the scope of the current procedure or function unless they exist as public variables and you specify the ADDITIVE clause . &#160;If ADDITIVE is specified, public and private variables with the same names are overwritten unless hidden with PRIVATE. &#160;If ADDITIVE is not specified, all public and private variables are released before the memory file is loaded.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">When restoring variables that were saved in a CLIPPER program, the variable names are truncated to 10 characters. &#160;This is because CLIPPER honors only the first 10 characters and generates the .MEM file using only these characters. &#160;&lt;%APP%&gt;, however, honors <text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">all</text> characters. &#160;For example, in CLIPPER, the two variable names ThisIsALongVariable and ThisIsALon refer to the same variable; this is not the case in &lt;%APP%&gt;.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>Declared variables are not affected by the RESTORE command. &#160;If a variable has been declared in the current routine, and a variable with the same name is restored, only the declared variable is visible unless references to the restored variable are prefaced with the _MEMVAR-&gt; alias.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example demonstrates a typical application of SAVE and RESTORE. &#160;Here memory variables containing screens are created using SAVE TO and RESTORE FROM:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">// Create and use a pseudo array of screens<br/>SAVE SCREEN TO cScreen1<br/>SAVE ALL LIKE cScreen* TO Screens<br/><br/>&lt;Statements&gt;...<br/><br/>RESTORE FROM Screens ADDITIVE<br/>nNumber = &quot;1&quot;<br/>RESTORE SCREEN FROM (&quot;cScreen&quot; + nNumber)</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PRIVATE">PRIVATE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PUBLIC">PUBLIC</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SAVE">SAVE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetDefault">SetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetPath">SetPath()</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

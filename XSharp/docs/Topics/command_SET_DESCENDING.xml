@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET DESCENDING Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Index/order</keyword>
+    <keyword>SET DESCENDING command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET DESCENDING Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Change the descending flag of the controlling order.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">SET DESCENDING ON | OFF | (<text styleclass="Italic">&lt;lToggle&gt;</text>)</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Bold"><text style="font-weight:normal;">Note: The initial default of this setting depends on whether the controlling order was created with descending as an attribute.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">SET DESCENDING is functionally equivalent to OrdDescend(). &#160;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_OrdDescend">OrdDescend()</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

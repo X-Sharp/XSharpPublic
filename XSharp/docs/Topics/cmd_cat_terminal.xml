@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Terminal Window</title>
+  <keywords>
+    <keyword>Commands<keyword>Terminal Window</keyword></keyword>
+    <keyword>Terminal Window Commands</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Terminal Window</para>
+    </header>
+    <para styleclass="link" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_QUESTION" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">?|??</link></para>
+    <para styleclass="link" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCEPT" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">ACCEPT</link></para>
+    <para styleclass="link" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_COLOR" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">SET COLOR</link></para>
+    <para styleclass="link" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_WAIT" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">WAIT</link></para>
+    <para styleclass="link" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="Normal"><text styleclass="Heading2">Note: &#160;&lt;%APPV%&gt; no longer supports the following commands: &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">@...BOX</para>
+    <para styleclass="Normal">@...CLEAR</para>
+    <para styleclass="Normal">@...SAY</para>
+    <para styleclass="Normal">@...TO</para>
+    <para styleclass="Normal">@..GET</para>
+    <para styleclass="Normal">DISPLAY</para>
+    <para styleclass="Normal">INPUT</para>
+    <para styleclass="Normal">LIST</para>
+    <para styleclass="Normal">READ</para>
+    <para styleclass="Normal">SET CONSOLE</para>
+    <para styleclass="Normal">SET DEVICE</para>
+    <para styleclass="Normal">SET PRINTER</para>
+    <para styleclass="Normal">TEXT ... ENDTEXT</para>
+    <para styleclass="Normal">TYPE</para>
+  </body>
+</topic>

@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>JOIN Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Creating<keyword>files</keyword></keyword>
+    <keyword>Databases</keyword>
+    <keyword>Files<keyword>creating</keyword></keyword>
+    <keyword>JOIN command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">JOIN Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Create a new database file by merging selected records and fields from two work areas based on a specified condition.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">JOIN WITH &lt;<text styleclass="Italic">xcAlias</text>&gt; TO &lt;<text styleclass="Italic">xcTargetFile</text>&gt; FOR &lt;<text styleclass="Italic">lCondition</text>&gt; [FIELDS &lt;<text styleclass="Italic">idFieldList</text>&gt;]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">WITH &lt;xcAlias&gt;<tab />The alias identifier for the work area to merge with the current work area. &#160;If there is no open database associated with &lt;xcAlias&gt;, a runtime error is raised.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />The name of the target database file, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD (see the &quot;RDD Specifics&quot; appendix in the Programmer&apos;s Guide for details on a particular RDD).</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. &#160;Refer to the &quot;Concurrency Control&quot; chapter in the Programmer&apos;s Guide for more information on resolving concurrency conflicts.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">FOR &lt;lCondition&gt;<tab />A condition that is processed for each visible record in the current work area using every visible record in the WITH work area. &#160;If a record meets the condition, a new record is written to &lt;xcTargetFile&gt;. &#160;If a record does not meet the specified condition, it is ignored and the next record is processed.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />Warning! &#160;The number of records processed will be the LastRec() of the primary work area multiplied by the LastRec() of the secondary work area. &#160;For example, if you have two database files with 100 records each, the number of records JOIN processes is the equivalent of sequentially processing a single database file of 10,000 records. &#160;Therefore, use this command carefully.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">FIELDS &lt;idFieldList&gt;<tab />The projection of fields from both work areas into the new database file. &#160;To specify fields in the secondary work area, reference them with the alias operator (-&gt;). &#160;If the FIELDS clause is not specified, all fields from the current work area are included in the target database file.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Deleted records: &#160;</text>If SetDeleted() is FALSE, deleted records in both source files are processed, but their deleted status is not retained in &lt;<text styleclass="Italic">xcTargetFile</text>&gt;; thus, no record in the target file is marked for deletion, regardless of its deleted status in the source files.</para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Visibility: &#160;</text>If SetDeleted() is TRUE, deleted records (in both files) are not visible and are, therefore, not processed. &#160;Similarly, records that are filtered (with DBSetFilter() or a conditional controlling order) are not processed.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example joins the CUSTOMER.DBF with INVOICES.DBF to produce PURCHASES.DBF:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE invoices NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">USE customer NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">JOIN </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WITH</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Invoices </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> purchases</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">;</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">FOR</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Last </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">=</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Invoices</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Last</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">;</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">FIELDS First</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Last</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Invoices</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Number</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">;</text><br/><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">Invoices</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Amount</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBJoin">DBJoin()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_RELATION">SET RELATION</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetDefault">SetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetPath">SetPath()</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

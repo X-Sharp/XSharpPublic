@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET ORDER Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Index/order</keyword>
+    <keyword>Orders<keyword>setting controlling order</keyword></keyword>
+    <keyword>SET ORDER command</keyword>
+    <keyword>Setting<keyword>controlling order</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET ORDER Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Set the controlling order for the current work area.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">SET ORDER TO [&lt;<text styleclass="Italic">nPosition</text>&gt; | TAG &lt;<text styleclass="Italic">xcOrder</text>&gt; [IN &lt;<text styleclass="Italic">xcIndexFile</text>&gt;]]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;nPosition&gt; | TAG &lt;xcOrder&gt;</para>
+    <para styleclass="List"><tab />The name of the new controlling order or a number representing its position in the order list. &#160;Using the order name is the preferred method since the position may be difficult to determine using multiple-order indexes. &#160;Specifying a value of 0 has the special effect of returning the database file to its natural order. &#160;Specifying an invalid value will raise a runtime error.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />Note: &#160;The syntax of this command differs from other Xbase dialects where the TAG keyword is optional.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">IN &lt;xcIndexFile&gt;<tab />The name of an index file, including an optional drive and directory (no extension should be specified). &#160;Use this argument to remove ambiguity when there are two or more orders with the same name in different index files.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />If &lt;xcIndexFile&gt; is not open by the current process in the current work area, a runtime error is raised.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />SET ORDER TO with no arguments is the same as SET ORDER TO 0.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">The controlling order determines the order in which the database file is processed. &#160;No matter which order is currently controlling the logical order of the database file, all orders in the order list are properly updated when records are added or updated. &#160;This is true even if you SET ORDER TO 0. &#160;Changing the controlling order does not move the record pointer.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Before using this command, use SET INDEX or DBSetIndex() to add orders from an index file to the order list.</para>
+    <para styleclass="Normal">SET ORDER is functionally equivalent to DBSetOrder(). &#160;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">The following example illustrates a typical use of SET ORDER to select between several orders:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">USE customer NEW<br/>INDEX ON Lastname TO names<br/>INDEX ON City + State TO region<br/>SET INDEX TO names, region<br/>//<br/>SET ORDER TO TAG &quot;Region&quot;<br/>? DBOrderInfo(DBOI_EXPRESSION)<br/>// Result: &#160;City + State<br/><br/>SET ORDER TO 0<br/>? DBOrderInfo(DBOI_EXPRESSION)<br/>// Result: &#160;NULL_STRING<br/><br/>SET ORDER TO TAG &quot;Names&quot;<br/>? DBOrderInfo(DBOI_EXPRESSION)<br/>// Result: &#160;Lastname</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBOrderInfo">DBOrderInfo()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBSeek">DBSeek()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBSetIndex">DBSetIndex()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBSetOrder">DBSetOrder()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_INDEX">INDEX</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SEEK">SEEK</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INDEX">SET INDEX</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

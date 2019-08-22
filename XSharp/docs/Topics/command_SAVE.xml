@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SAVE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Copying<keyword>memory variables</keyword></keyword>
+    <keyword>Memory variables</keyword>
+    <keyword>Memory variables<keyword>copying to disk files</keyword><keyword>saving</keyword></keyword>
+    <keyword>SAVE command</keyword>
+    <keyword>SAVE TO command</keyword>
+    <keyword>Saving<keyword>memory variables</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SAVE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Copy public and private memory variables visible within the current routine to a disk file.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">SAVE TO &lt;<text styleclass="Italic">xcTargetFile</text>&gt; [ALL [LIKE | EXCEPT &lt;<text styleclass="Italic">Skeleton</text>&gt;]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;xcTargetFile&gt;<tab />The name of the file, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension is .MEM.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. &#160;Refer to the &quot;Concurrency Control&quot; chapter in the Programmer&apos;s Guide for more information on resolving concurrency conflicts.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ALL<tab />Saves all private and public variables.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">LIKE | EXCEPT &lt;Skeleton&gt;</para>
+    <para styleclass="List"><tab />Specifies a set of visible public and private variables to save (LIKE) or exclude (EXCEPT). &#160;&lt;Skeleton&gt; can include literal characters as well as the standard wildcard characters, * and ?. &#160;If no variables match the &lt;Skeleton&gt;, nothing happens.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">The scope of the variable is not saved but is instead established when the variable is restored. &#160;Arrays and declared variables cannot be saved or restored.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example saves all visible private and public variables to TEMP.MEM:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">PRIVATE cOne := &quot;1&quot;<br/>SAVE ALL TO temp</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This example saves all visible private and public variables with names beginning with c to MYVARS.MEM:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">SAVE ALL LIKE c* TO myvars</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This example saves all visible private and public variables with names that do not begin with c to MYVARS2.MEM:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">SAVE ALL EXCEPT c* TO myvars2</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PRIVATE">PRIVATE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PUBLIC">PUBLIC</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RESTORE">RESTORE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetDefault">SetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetPath">SetPath()</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Entity Declaration</title>
+  <keywords>
+    <keyword>Commands<keyword>Entity Declaration</keyword></keyword>
+    <keyword>Entity Declaration Commands</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Entity Declaration</para>
+    </header>
+    <para styleclass="link"></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command__DLL">_DLL</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCESS">ACCESS</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONSTRUCTOR">CONSTRUCTOR</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DECLARE_METHOD">DECLARE METHOD</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DEFINE">DEFINE</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DESTRUCTOR">DESTRUCTOR</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_EVENT">EVENT</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FUNCTION">FUNCTION</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_GLOBAL">GLOBAL</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPERATOR">OPERATOR</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROCEDURE">PROCEDURE</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROPERTY">PROPERTY</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_STRUCTURE">STRUCTURE</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_UNION">UNION</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_VOSTRUCT">VOSTRUCT</link></para>
+  </body>
+</topic>

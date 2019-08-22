@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>STORE Command</title>
+  <keywords>
+    <keyword>Adding<keyword>values to variables</keyword></keyword>
+    <keyword>Commands</keyword>
+    <keyword>Memory variable</keyword>
+    <keyword>STORE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">STORE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Assign a value to one or more variables.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">STORE &lt;<text styleclass="Italic">uValue</text>&gt; TO &lt;<text styleclass="Italic">idVarList</text>&gt;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;uValue&gt;<tab />A value to assign to the specified variables.</para>
+    <para styleclass="List">TO &lt;idVarList&gt;<tab />Defines a list of one or more variables that are assigned the value &lt;uValue&gt;. &#160;If any variable reference in the list is ambiguous (that is, not declared at compile time or not explicitly qualified with an alias), it is assumed to be MEMVAR. &#160;If any variable in the list is not visible or does not exist, a private variable is created using &lt;uValue&gt;.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">The STORE command is defined using the assignment operator (:=). &#160;Refer to the &quot;Variables, Constants, and Declarations&quot; chapter and the &quot;Operators and Expressions&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide </text>for more information on assigning values to variables.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Assigning a value to an entire array: &#160;</text>In &lt;%APP%&gt;, neither the STORE command nor the assignment operators can assign a single value to an entire array. &#160;Use the AFill() function for this purpose.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">These statements create and assign values to undeclared private variables:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">STORE &quot;string&quot; TO cVar1, cVar2, cVar3<br/>cVar1 := &quot;string2&quot;<br/>cVar2 := _MEMVAR-&gt;cVar1</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">These statements assign multiple variables using both STORE and the inline assignment operator (:=). &#160;The methods produce identical code:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">STORE &quot;value&quot; to cVar1, cVar2, cVar3<br/>cVar1 := cVar2 := cVar3 := &quot;value&quot;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">These statements assign values to the same field referenced explicitly with an alias. &#160;The first assignment uses the field alias (_FIELD-&gt;), where the second uses the actual alias name:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">USE sales NEW<br/>STORE 1200.98 TO _FIELD-&gt;CustBal<br/>STORE 1200.98 TO Sales-&gt;CustBal</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_AFill">AFill()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PRIVATE">PRIVATE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PUBLIC">PUBLIC</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RELEASE">RELEASE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_REPLACE">REPLACE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RESTORE">RESTORE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SAVE">SAVE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_STATIC">STATIC</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

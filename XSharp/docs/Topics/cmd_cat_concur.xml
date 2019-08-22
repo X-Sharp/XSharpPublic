@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Concurrency Control</title>
+  <keywords>
+    <keyword>Commands<keyword>Concurrency Control</keyword><keyword>Locking</keyword></keyword>
+    <keyword>Concurrency Control Commands</keyword>
+    <keyword>Locking Commands</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Concurrency Control</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COMMIT">COMMIT</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_EXCLUSIVE">SET EXCLUSIVE</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_UNLOCK">UNLOCK</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link></para>
+    <para styleclass="link"></para>
+  </body>
+</topic>

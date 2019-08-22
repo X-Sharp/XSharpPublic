@@ -1,9 +1,146 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Under Construction" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Commands in Alphabetical Order</title>
   <body>
-    <header><para styleclass="Heading1">Commands in Alphabetical Order</para></header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <header>
+      <para styleclass="Heading1">Commands in Alphabetical Order</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This reference lists both the commands that are &apos;built-in&apos; into the compiler and commands that are defined as default &apos;User Defined Commands&apos; in STD.UDC.</para>
+    <para styleclass="Normal">Some commands are marked with an asterisk as &apos;deprecated&apos;. They may not be available in future versions of %APP%</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table rowcount="2" colcount="2" style="width:auto; cell-padding:0px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Heading2">Built-in Commands</para>
+        </td>
+        <td>
+          <para styleclass="Heading2">Commands in STD.UDC</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_IFDEF">#ifdef #else #endif</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_IFNDEF">#ifndef #else #endif</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_QUESTION">?|??</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command__DLL">_DLL</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCESS">ACCESS</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_BEGIN_SEQUENCE">BEGIN SEQUENCE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DECLARE">DECLARE*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DEFINE">DEFINE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO">DO*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_CASE">DO CASE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_WHILE">DO WHILE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FIELD">FIELD</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOR">FOR</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FUNCTION">FUNCTION</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_GLOBAL">GLOBAL</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_IF">IF</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_MEMVAR">MEMVAR*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PARAMETERS">PARAMETERS*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PRIVATE">PRIVATE*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROCEDURE">PROCEDURE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PUBLIC">PUBLIC*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RETURN">RETURN</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_STATIC">STATIC</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_VOSTRUCT">STRUCTURE</link></para>
+          <para styleclass="link"></para>
+          <para styleclass="link"></para>
+          <para styleclass="Heading2"></para>
+        </td>
+        <td>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCEPT">ACCEPT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_APPEND_BLANK">APPEND BLANK</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_APPEND_FROM">APPEND FROM</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_AVERAGE">AVERAGE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CANCEL">CANCEL</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLEAR_ALL">CLEAR ALL*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLEAR_MEMORY">CLEAR MEMORY*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE">CLOSE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COMMIT">COMMIT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONTINUE">CONTINUE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_FILE">COPY FILE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE">COPY STRUCTURE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE_EXTENDE">COPY STRUCTURE EXTENDED</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_TO">COPY TO</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COUNT">COUNT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE">CREATE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_FROM">CREATE FROM</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DEFAULT">DEFAULT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE">DELETE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_FILE">DELETE FILE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_TAG">DELETE TAG</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DIR">DIR</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ERASE">ERASE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_EXTERNAL">EXTERNAL*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FIND">FIND</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_GO">GO</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_INDEX">INDEX</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_JOIN">JOIN</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCATE">LOCATE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_NOTE">NOTE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PACK">PACK</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_QUIT">QUIT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RECALL">RECALL</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_REINDEX">REINDEX</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RELEASE">RELEASE*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RENAME">RENAME</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_REPLACE">REPLACE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RESTORE">RESTORE*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RUN">RUN</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SAVE">SAVE*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SEEK">SEEK</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SELECT">SELECT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ANSI">SET ANSI</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_CENTURY">SET CENTURY</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_COLLATION">SET COLLATION</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_COLOR">SET COLOR</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DATE">SET DATE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DATE_FORMAT">SET DATE FORMAT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DECIMALS">SET DECIMALS</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DEFAULT">SET DEFAULT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DELETED">SET DELETED</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DESCENDING">SET DESCENDING</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DIGITFIXED">SET DIGITFIXED</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DIGITS">SET DIGITS</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DRIVER">SET DRIVER</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_EPOCH">SET EPOCH</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_EXCLUSIVE">SET EXCLUSIVE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_FILTER">SET FILTER</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_FIXED">SET FIXED</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INDEX">SET INDEX</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INTERNATIONAL">SET INTERNATIONAL</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_MEMOBLOCK">SET MEMOBLOCK</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_OPTIMIZE">SET OPTIMIZE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ORDER">SET ORDER</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_PATH">SET PATH</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_RELATION">SET RELATION</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_SCOPE">SET SCOPE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_SCOPEBOTTOM">SET SCOPEBOTTOM</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_SCOPETOP">SET SCOPETOP</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_SOFTSEEK">SET SOFTSEEK</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_UNIQUE">SET UNIQUE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SKIP">SKIP</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SORT">SORT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_STORE">STORE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SUM">SUM</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_TOTAL">TOTAL</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_UNLOCK">UNLOCK</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_UPDATE">UPDATE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_WAIT">WAIT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ZAP">ZAP</link></para>
+          <para styleclass="Normal"></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Heading2"></para>
+    <para styleclass="Heading2"></para>
   </body>
 </topic>

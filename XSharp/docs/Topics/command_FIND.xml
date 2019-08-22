@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>FIND Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>FIND command</keyword>
+    <keyword>Index/order</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">FIND Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Search an order for the first key matching the specified string, position the record pointer to the corresponding record, and set the Found() flag.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>FIND is a compatibility command and is no longer recommended. &#160;It is superseded by SEEK. &#160;See SEEK for more information.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">FIND &lt;<text styleclass="Italic">xcKeyValue</text>&gt;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;xcKeyValue&gt;<tab />Part or all of the order key of a record to search for. &#160;When an expression is specified instead of a literal string, FIND is equivalent to SEEK.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">If SetSoftSeek() is FALSE and FIND does not find a record, the record pointer is positioned to LastRec() + 1, EOF() returns TRUE, and Found() returns FALSE.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If SetSoftSeek() is TRUE and FIND does not find a record, the record pointer is positioned to the record with the next greater key value, and Found() returns FALSE. &#160;In this case, EOF() returns TRUE only if there are no keys in the index greater than the search argument.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If the record is found, Found() is set to TRUE and the record pointer is positioned on the found record.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">These examples show simple FIND results:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE sales INDEX branch NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">FIND </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">(&quot;500&quot;)</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Found</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">(),</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">EOF</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">(),</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RECNO</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Result: &#160;FALSE TRUE 85</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">FIND </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">200</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Found</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">(),</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">EOF</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">(),</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RECNO</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Result: &#160;TRUE FALSE 5</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">FIND </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;100&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Found</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">(),</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">EOF</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">(),</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RECNO</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Result: &#160;TRUE FALSE 1 </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_EOF">EOF()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_Found">Found()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_RecNo">RecNo()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SEEK">SEEK</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INDEX">SET INDEX</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ORDER">SET ORDER</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetSoftSeek">SetSoftSeek()</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

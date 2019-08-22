@@ -16,21 +16,20 @@
     <header>
       <para styleclass="Heading1">CLEAR ALL Command</para>
     </header>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
     <para styleclass="Normal">Release all public and private variables, close all open database, index, alternate, and memo files in all active work areas, and select work area 1.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>CLEAR ALL is a compatibility command and is no longer recommended. &#160;It is superseded by the command or function that performs the specific action you need. &#160;See the list below.</para>
+    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>CLEAR ALL is a compatibility command and is no longer recommended. &#160;It is superseded by the command or function that performs the specific action you need. &#160;See the list below.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
     <para styleclass="Normal">CLEAR ALL</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
     <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Declared Variables: &#160;</text>CLEAR ALL does not release declared variables or constants.</para>
-    <para styleclass="Normal">You can close files associated with work areas with one of the various forms of the CLOSE command. &#160;You can release private and public variables using the RELEASE command although explicitly releasing variables is discouraged in most cases. &#160;For more information on the scope and lifetime of variables, refer to the &quot;Variables, Constants, and Declarations&quot; chapter in the <text styleclass="Italic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Programmer&apos;s Guide</text>.</para>
+    <para styleclass="Normal">You can close files associated with work areas with one of the various forms of the CLOSE command. &#160;You can release private and public variables using the RELEASE command although explicitly releasing variables is discouraged in most cases. &#160;For more information on the scope and lifetime of variables, refer to the &quot;Variables, Constants, and Declarations&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide</text>.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Libraries</text></para>
-    <para styleclass="Normal">System Library, Terminal</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLEAR_MEMORY">CLEAR MEMORY</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE">CLOSE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBCloseArea">DBCloseArea()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_FClose">FClose()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RELEASE">RELEASE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_Select">Select()</link></para>

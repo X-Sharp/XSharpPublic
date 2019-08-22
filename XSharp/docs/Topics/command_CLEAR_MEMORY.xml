@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CLEAR MEMORY Command</title>
+  <keywords>
+    <keyword>CLEAR MEMORY command</keyword>
+    <keyword>Clearing memory</keyword>
+    <keyword>Commands</keyword>
+    <keyword>Deleting<keyword>memory variables</keyword></keyword>
+    <keyword>Memory</keyword>
+    <keyword>Memory<keyword>clearing</keyword><keyword>deleting variables</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CLEAR MEMORY Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Delete both public and private memory variables from the memory variable table.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">CLEAR MEMORY</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">It operates in contrast to RELEASE ALL which does not actually delete public and private memory variables, but assigns NIL to those whose scope is the current procedure. &#160;CLEAR MEMORY is the only way to delete all public memory variables from current memory. &#160;Declared variables and constants, however, are unaffected by CLEAR MEMORY.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">For more information on variables, refer to the &quot;Variables, Constants, and Declarations&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide</text>.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_MemClear">MemClear()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RELEASE">RELEASE</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

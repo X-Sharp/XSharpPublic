@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET OPTIMIZE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Environment</keyword>
+    <keyword>Filters<keyword>optimizing</keyword></keyword>
+    <keyword>Index/order</keyword>
+    <keyword>Optimizing filters</keyword>
+    <keyword>SET OPTIMIZE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET OPTIMIZE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Change the setting that determines whether to optimize using the open orders when processing a filtered database file.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">SET OPTIMIZE ON | OFF | (&lt;<text styleclass="Italic">lToggle</text>&gt;)</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">ON<tab />Turns optimization on.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">OFF<tab />Turns optimization off.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;lToggle&gt;<tab />Turns optimization on if TRUE or off is FALSE.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />Note: &#160;The initial default of this setting depends on the RDD. &#160;Check RDDInfo(_SET_OPTIMIZE) to find out the setting for the RDD in use for the current work area.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">For RDDs that support optimization, such as DBFCDX, SET OPTIMIZE determines whether to optimize filters based on the orders open in the current work area. &#160;If this flag is ON, the RDD will optimize the search for records that meet the filter condition to the fullest extent possible, minimizing the need to read the actual data from the database file.</para>
+    <para styleclass="Normal">If this flag is OFF, the RDD will not optimize.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBSetFilter">DBSetFilter()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_RDDInfo">RDDInfo()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_FILTER">SET FILTER</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

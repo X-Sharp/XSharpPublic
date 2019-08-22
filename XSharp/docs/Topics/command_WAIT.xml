@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>WAIT Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Terminal window</keyword>
+    <keyword>WAIT command</keyword>
+    <keyword>Wait states</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">WAIT Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Display a prompt after sending a carriage return/linefeed to the terminal window, then wait for a key to be pressed.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>WAIT is a compatibility command and is no longer recommended. &#160;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">WAIT [&lt;<text styleclass="Italic">uValuePrompt</text>&gt;] [TO &lt;<text styleclass="Italic">idVar</text>&gt;]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;uValuePrompt&gt;<tab />An optional prompt displayed before the input area. &#160;If omitted, &quot;Press any key to continue...&quot; is displayed. &#160;Specify NULL_STRING if you do not want to display a prompt.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">TO &lt;idVar&gt;<tab />The variable that will hold input from the keyboard. &#160;If there is no variable named &lt;idVar&gt; that is visible to the current routine, a private variable is created. &#160;&lt;idVar&gt; is assigned the keystroke as a string. &#160;If an Alt or Ctrl key combination is pressed, WAIT assigns Chr(0) to &lt;idVar&gt;. &#160;</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />Non-alphanumeric values entered by pressing an Alt+key combination assign the specified character. &#160;If the character can be displayed, it is echoed to the screen. &#160;</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Example</text></para>
+    <para styleclass="Normal">This example illustrates how to store the WAIT keystroke as an array element:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><br/>WAIT &quot;Press a key...&quot; TO aVar[1]<br/>? aVar[1]<tab /><tab /><tab />// Result: &#160;key pressed in<br/><tab /><tab /><tab /><tab /><tab />// Response to WAIT<br/>? aVar[2]<tab /><tab /><tab />// Result: &#160;NIL<br/>? ValType(aVar)<tab /><tab />// Result: &#160;A<br/>? ValType(aVar[1])<tab />// Result: &#160;C</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCEPT">ACCEPT</link></para>
+  </body>
+</topic>

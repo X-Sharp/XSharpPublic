@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>COPY FILE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>COPY FILE command</keyword>
+    <keyword>Copying<keyword>files</keyword></keyword>
+    <keyword>Files<keyword>copying</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">COPY FILE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Copy a file to a new file or to a device.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">COPY FILE &lt;<text styleclass="Italic">xcSourceFile</text>&gt; TO &lt;<text styleclass="Italic">xcTargetFile</text>&gt; | &lt;<text styleclass="Italic">xcDevice</text>&gt;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;xcSourceFile&gt;<tab />The name of the source file to copy, including an optional drive, directory, and extension.</para>
+    <para styleclass="List"><tab />If &lt;xcSourceFile&gt; does not exist, a runtime error is raised. &#160;If it exists, this command attempts to open the file in shared mode and, if successful, it proceeds. &#160;If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />The name of the target file, including an optional drive, directory, and extension.</para>
+    <para styleclass="List"><tab />If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. &#160;Refer to the &quot;Concurrency Control&quot; chapter in the Programmer&apos;s Guide for more information on resolving concurrency conflicts.</para>
+    <para styleclass="List"><tab />See SetDefault() and SetPath() for file searching and creation rules. &#160;This command does not supply a default extension for either file name.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">TO &lt;xcDevice&gt;<tab />The name of the target device specified without a trailing colon. &#160;When you specify one of the following device names: &#160;PRN, LPT1, LPT2, LPT3, COM1, or COM2, COPY FILE searches the Windows section of WIN.INI for a Device entry to use for the printing device. &#160;If there is no Device entry, it looks for a Devices entry and presents the user with a list box of devices from which to choose.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example copies a file to a new file, then tests for the existence of the new file:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">COPY FILE test.prg TO real.prg<br/>? File(&quot;real.prg&quot;)<tab /><tab /><tab />// Result: &#160;TRUE</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The next example prints the contents of a file by copying it to the default device:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">COPY FILE real.prg TO PRN</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_TO">COPY TO</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_FCopy">FCopy()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_FILE">DELETE FILE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RENAME">RENAME</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetDefault">SetDefault()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetPath">SetPath()</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

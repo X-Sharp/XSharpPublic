@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SUM Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Evaluating records</keyword>
+    <keyword>Records</keyword>
+    <keyword>Records<keyword>evaluating</keyword><keyword>totaling</keyword></keyword>
+    <keyword>SUM command</keyword>
+    <keyword>Totaling records</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SUM Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Total a series of numeric expressions for a range of records in the current work area, and assign the results to a series of variables.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">SUM &lt;<text styleclass="Italic">nValueList</text>&gt; TO &lt;<text styleclass="Italic">idVarList</text>&gt; [&lt;<text styleclass="Italic">Scope</text>&gt;] [WHILE &lt;<text styleclass="Italic">lCondition</text>&gt;] [FOR &lt;<text styleclass="Italic">lCondition</text>&gt;]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;nValueList&gt;<tab />The list of values to sum for each record processed. &#160;Note that the &lt;nValueList&gt; is required and not optional as it is in other dialects.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">TO &lt;idVarList&gt;<tab />Defines a list of one or more variables to assign the results of the sum. &#160;If any variable reference in the list is ambiguous (that is, not declared at compile time or not explicitly qualified with an alias), it is assumed to be MEMVAR. &#160;If any variable in the list is not visible or does not exist, a private variable is created using &lt;uValue&gt;.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;Scope&gt;<tab />The portion of the current database file to process. &#160;The default is all visible records.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">WHILE &lt;lCondition&gt;<tab />A condition that each visible record within the scope must meet, starting with the current record. &#160;As soon as the while condition fails, the process terminates. &#160;If no &lt;Scope&gt; is specified, having a while condition changes the default scope to the rest of the visible records in the file.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">FOR &lt;lCondition&gt;<tab />A condition that each visible record within the scope must meet in order to be processed. &#160;If a record does not meet the specified condition, it is ignored and the next visible record is processed.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example illustrates the use of SUM:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:bold; font-style:normal; color:#000000;"> nTotalPrice</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> nTotalAmount</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">USE sales NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SUM Price </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">*</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">.10,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Amount </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> nTotalPrice</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> nTotalAmount</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> nTotalPrice</text><tab /><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Result: &#160;151515.00</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> nTotalAmount</text><tab /><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Result: &#160;150675.00</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_AVERAGE">AVERAGE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COUNT">COUNT</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBEval">DBEval()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_TOTAL">TOTAL</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

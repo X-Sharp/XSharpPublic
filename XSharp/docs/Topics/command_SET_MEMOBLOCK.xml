@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET MEMOBLOCK Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Memo files</keyword>
+    <keyword>SET MEMOBLOCK command</keyword>
+    <keyword>Setting<keyword>block size for memo files</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET MEMOBLOCK Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Change the block size for memo files.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">SET MEMOBLOCK TO &lt;<text styleclass="Italic">nSize</text>&gt;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">The initial memo file block size depends on the RDD. &#160;For most drivers that support the .DBT memo file format, it is 512 bytes. &#160;However, if you are using BLOB files (.DBV) via inheritance from the DBFBLOB driver, the default is 1.</para>
+    <para styleclass="Normal">SET MEMOBLOCK is functionally equivalent to calling RDDInfo(_SET_MEMOBLOCKSIZE, &lt;<text styleclass="Italic">nSize</text>&gt;). &#160;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_RDDInfo">RDDInfo()</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Popup" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__IncludeMethodParameters</title>
+  <body>
+    <para styleclass="List">TypeParameters<tab />This is supported for methods with generic type arguments. This something like &lt;T&gt; for a method with one type parameter named T. Usually one of the parameters in the parameter list is then also of type T.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;idParam&gt;<tab />A method parameter variable. &#160;A variable specified in this manner is automatically declared local. &#160;These variables, also called formal parameters, are used to receive arguments that you pass when you call the function.</para>
+    <para styleclass="List"><tab /></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">AS | REF &lt;idType&gt;<tab />Specifies the data type of the parameter variable (called <link displaytype="text" defaultstyle="true" type="topiclink" href="strong_typing_gloss" domain="CavoIde.hmxz">strong typing</link>). &#160;AS indicates that the parameter must be passed by value, and REF indicates that it must be passed by reference with the @ operator.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />The valid values for &lt;idType&gt; and the initial values associated with each are listed in the table below:</para>
+    <para styleclass="List"></para>
+    <para styleclass="List" style="tabstops:336px left,432px left,528px left ;"><tab />Data Type<tab />Default Initial Value</para>
+    <para styleclass="List" style="tabstops:336px left,432px left,528px left ;"><tab />ARRAY<tab />NULL_ARRAY (see Note below)<tab /></para>
+    <para styleclass="List" style="tabstops:336px left,432px left,528px left ;"><tab />CODEBLOCK<tab />NULL_CODEBLOCK<tab /></para>
+    <para styleclass="List" style="tabstops:336px left,432px left,528px left ;"><tab />DATE<tab />NULL_DATE</para>
+    <para styleclass="List" style="tabstops:336px left,432px left,528px left ;"><tab />LOGIC<tab />FALSE</para>
+    <para styleclass="List" style="tabstops:336px left,432px left,528px left ;"><tab />OBJECT, &lt;idClass&gt;<tab />NULL_OBJECT</para>
+    <para styleclass="List" style="tabstops:336px left,432px left,528px left ;"><tab />STRING<tab />NULL_STRING</para>
+    <para styleclass="List" style="tabstops:336px left,432px left,528px left ;"><tab />SYMBOL<tab />NULL_SYMBOL</para>
+    <para styleclass="List" style="tabstops:336px left,432px left,528px left ;"><tab />SHORTINT, INT<tab />0</para>
+    <para styleclass="List" style="tabstops:336px left,432px left,528px left ;"><tab />LONGINT, FLOAT<tab />0</para>
+    <para styleclass="List" style="tabstops:336px left,432px left,528px left ;"><tab />BYTE, WORD, DWORD<tab />0</para>
+    <para styleclass="List" style="tabstops:336px left,432px left,528px left ;"><tab />REAL4, REAL8<tab />0</para>
+    <para styleclass="List" style="tabstops:336px left,432px left,528px left ;"><tab />USUAL<tab />NIL</para>
+    <para styleclass="List" style="tabstops:336px left,432px left,528px left ;"><tab />PSZ<tab />NULL_PSZ</para>
+    <para styleclass="List" style="tabstops:336px left,432px left,528px left ;"><tab />PTR, &lt;idStructure&gt;<tab />NULL_PTR</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />Note: &#160;NULL_ARRAY is the initial value for an array declared using, for example, LOCAL &lt;idArray&gt; AS ARRAY. &#160;If you specify array dimensions as part of the declaration you are, in effect, making an assignment to the array and, therefore, NULL_ARRAY will not apply.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />Note 2: &#160; If you use strong typing for method parameters, you also need to speficy its return type and calling convention and you need to declare the method in the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link> declaration. See section about strong typed methods below.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />See the &quot;Variables, Constants, and Declarations&quot; chapter in the Programmer&apos;s Guide for a complete discussion of data types and the advantages of strong typing.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">AS &lt;idType&gt;<tab />Specifies the data type of the method return value. &#160;Note that in addition to all of the &lt;idType&gt; values listed in the table above, functions can be declared with AS VOID to indicate that the function has no return value.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />See the &quot;Variables, Constants, and Declarations&quot; chapter in the Programmer&apos;s Guide for a complete discussion of data types and the advantages of strong typing.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />Note &#160; If you declare the return type of a method you must also strong type its parameters, specify the calling convention and you need to declare the method in the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link> declaration. See section about strong typed methods below.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">TypeParameterConstraints<tab />Here you can specify constraints for the Type parameters, such as WHERE T IS SomeName or WHERE T IS New</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__callingconvention" inline="false"/></para>
+    <para styleclass="List"><tab /></para>
+    <para styleclass="List">CLASS &lt;idClass&gt;<tab />The class to which this method belongs. This clause is mandatory for entities declared outside of a CLASS .. END CLASS construct.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">EXPORT LOCAL<tab />This clause is allowed by X# but ignored.</para>
+    <para styleclass="List"></para>
+  </body>
+</topic>

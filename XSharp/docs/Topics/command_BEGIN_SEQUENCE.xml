@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>BEGIN SEQUENCE Statement</title>
+  <keywords>
+    <keyword>BEGIN SEQUENCE statement</keyword>
+    <keyword>Branching</keyword>
+    <keyword>BREAK statement</keyword>
+    <keyword>END SEQUENCE statement</keyword>
+    <keyword>Program control</keyword>
+    <keyword>RECOVER statement</keyword>
+    <keyword>RECOVER USING statement</keyword>
+    <keyword>Statements</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">BEGIN SEQUENCE Statement</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Define a sequence of statements for a BREAK.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">BEGIN SEQUENCE</para>
+    <para styleclass="Normal"><tab />&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
+    <para styleclass="Normal">[BREAK [&lt;<text styleclass="Italic">uValue</text>&gt;]]</para>
+    <para styleclass="Normal"><tab />&lt;<text styleclass="Italic">Statements</text>&gt;... &#160;</para>
+    <para styleclass="Normal">[RECOVER [USING &lt;<text styleclass="Italic">idVar</text>&gt;]]</para>
+    <para styleclass="Normal"><tab />&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
+    <para styleclass="Normal">END [SEQUENCE]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">BREAK &lt;uValue&gt;<tab />Branches execution to the statement immediately following the nearest RECOVER statement if one is specified, or the nearest END SEQUENCE statement. &#160;&lt;uValue&gt; is the value returned into the &lt;idVar&gt; specified in the USING clause of the RECOVER statement.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">RECOVER USING &lt;idVar&gt;</para>
+    <para styleclass="List"><tab />A recover point in the SEQUENCE construct where control branches after a BREAK statement. &#160;If this clause is specified, &lt;idVar&gt; receives the value returned by the BREAK statement. &#160;In general, this is an error object. &#160;&lt;idVar&gt; must be a declared variable and cannot be strongly typed.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">END<tab />The end point of the SEQUENCE control structure. &#160;If no RECOVER statement is specified, control branches to the first statement following the END statement after a BREAK.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">BEGIN SEQUENCE...END is a control structure used for exception and runtime error handling. &#160;It delimits a block of statements defining a discrete operation, including invoked procedures and functions. &#160;With the exception of the BREAK statement, the entire construct must fall within the same entity definition.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">When a BREAK is encountered anywhere in a block of statements following the BEGIN SEQUENCE statement up to the corresponding RECOVER statement, control branches to the program statement immediately following the RECOVER statement. &#160;If a RECOVER statement is not specified, control branches to the statement following the END statement, terminating the SEQUENCE. &#160;If control reaches a RECOVER statement without encountering a BREAK, it branches to the statement following the corresponding END.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The RECOVER statement optionally receives a parameter passed by a BREAK statement that is specified with a return value. &#160;This is usually an error object, generated and returned by the current error handling block defined by ErrorBlock(). &#160;If an error object is returned, it can be sent messages to query information about the error. &#160;With this information, a runtime error can be handled within the context of the operation rather than in the current runtime error handler.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">You cannot RETURN, LOOP, or EXIT between a BEGIN SEQUENCE and RECOVER statement</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Control structures can be nested to any depth. &#160;The only requirement is that each control structure be properly nested.</para>
+    <para styleclass="Normal">For more information on error objects, refer to the Error Class entry. &#160;For more information on error handling, refer to the &quot;Error and Exception Handling&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide</text>.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This code fragment demonstrates a SEQUENCE construct in which the BREAK occurs within the current procedure:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">BEGIN SEQUENCE<br/><tab />&lt;Statements&gt;...<br/><tab />IF lBreakCond<br/><tab /><tab />BREAK<br/><tab />ENDIF<br/>RECOVER<br/><tab />&lt;Recovery Statements&gt;...<br/>END<br/><br/>&lt;Recovery Statements&gt;...</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This example demonstrates an error handler returning an error object to the variable specified in the USING clause of the RECOVER statement:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">LOCAL oLocal, bLastHandler<br/>// Save current and set new error handler<br/>bLastHandler := ErrorBlock({|oErr| ;<br/><tab /><tab />MyHandler(oErr, TRUE)})<br/><br/>BEGIN SEQUENCE<br/><tab />.<br/><tab />. &#160;&lt;Operation that might fail&gt;...<br/><tab />.<br/>RECOVER USING oLocal<br/><br/><tab />// Send messages to oLocal &amp; handle the error<br/><tab />? &quot;Error: &#160;&quot;<br/><tab />IF oLocal:GenCode != 0<br/><tab /><tab />?? oLocal:Description<br/><tab />ENDIF<br/><tab />.<br/><tab />. &#160;<br/><tab />.<br/>END<br/><br/>// Restore previous error handler<br/>ErrorBlock(bLastHandler)<br/><br/>FUNCTION MyHandler(oError, lLocalHandler)<br/><tab />// Handle locally returning the error object<br/><tab />IF lLocalHandler<br/><tab /><tab />BREAK oError<br/><tab />ENDIF<br/><tab /><br/><tab />&lt;Other statements to handle the error&gt;...</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This example re-executes a SEQUENCE statement block by issuing a LOOP from within the RECOVER statement block:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">DO WHILE TRUE<br/><tab />BEGIN SEQUENCE<br/><br/><tab /><tab />&lt;Operation that may fail&gt;...<br/><br/><tab />RECOVER<br/><tab /><tab />IF PrintRecover()<br/><tab /><tab /><tab /><tab />// Repeat the SEQUENCE statement block<br/><tab /><tab /><tab />LOOP<br/><tab /><tab />ENDIF<br/><tab />END<br/><tab />EXIT<tab /><tab /><tab />// Escape from the operation<br/><br/>ENDDO</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_Break">_Break()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_CanBreak">CanBreak()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="class_Error">Error Class</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_ErrorBlock">ErrorBlock()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RETURN">RETURN</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

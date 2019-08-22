@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>COUNT Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>COUNT command</keyword>
+    <keyword>Counting records</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Records<keyword>counting</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">COUNT Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Tally the number of records from the current work area that match the specified record scope and condition, and place the result in the specified variable.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">COUNT TO &lt;<text styleclass="Italic">idVar</text>&gt; [&lt;<text styleclass="Italic">Scope</text>&gt;] [WHILE &lt;<text styleclass="Italic">lCondition</text>&gt;] [FOR &lt;<text styleclass="Italic">lCondition</text>&gt;]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">TO &lt;idVar&gt;<tab />The variable or field that holds the COUNT result. &#160;A variable that either does not exist or is invisible is created as a private variable.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;Scope&gt;<tab />The portion of the current database file to process. &#160;The default is all visible records.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">WHILE &lt;lCondition&gt;<tab />A condition that each visible record within the scope must meet, starting with the current record. &#160;As soon as the while condition fails, the process terminates. &#160;If no &lt;Scope&gt; is specified, having a while condition changes the default scope to the rest of the visible records in the file.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">FOR &lt;lCondition&gt;<tab />A condition that each visible record within the scope must meet in order to be processed. &#160;If a record does not meet the specified condition, it is ignored and the next visible record is processed.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example demonstrates a COUNT using a particular Branch in SALES.DBF:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE sales NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">COUNT </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> nBranchCnt </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FOR</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Branch </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">=</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">100</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> nBranchCnt</text><tab /><tab /><tab /><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Result: &#160;4</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The next example tallies the number of records in SALES.DBF whose Branch has the value of 100 and assigns the result to the Count field in BRANCH.DBF for branch 100:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE branch INDEX branch NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SEEK </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">100</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">USE sales INDEX salesbranch NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SEEK </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">100</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">COUNT </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Branch</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Count </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WHILE</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Sales</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Branch </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">=</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">100</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_AVERAGE">AVERAGE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBEval">DBEval()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_LastRec">LastRec()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SUM">SUM</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_TOTAL">TOTAL</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

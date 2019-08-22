@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>TOTAL Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Records<keyword>totaling</keyword></keyword>
+    <keyword>TOTAL command</keyword>
+    <keyword>Totaling records</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">TOTAL Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Summarize records in the current work area by key value to a database file.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">TOTAL ON &lt;<text styleclass="Italic">uKeyValue</text>&gt; FIELDS &lt;<text styleclass="Italic">idFieldList</text>&gt; TO &lt;<text styleclass="Italic">xcTargetFile</text>&gt; [&lt;<text styleclass="Italic">Scope</text>&gt;] </para>
+    <para styleclass="Normal"><tab />[WHILE &lt;<text styleclass="Italic">lCondition</text>&gt;] [FOR &lt;<text styleclass="Italic">lCondition</text>&gt;]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">ON &lt;uKeyValue&gt;<tab />The key value used to summarize the records. &#160;To make the summarizing operation accurate, the current database file should be indexed or sorted on this expression.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">FIELDS &lt;idFieldList&gt;<tab />The list of numeric fields to total. &#160;If the FIELDS clause is not specified, no numeric fields are totaled. &#160;Instead each numeric field in the target file contains the value for the first record in the source file matching the key value.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />The name of the target database file to write the totaled records, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD (see the &quot;RDD Specifics&quot; appendix in the Programmer&apos;s Guide for details on a particular RDD).</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. &#160;Refer to the &quot;Concurrency Control&quot; chapter in the Programmer&apos;s Guide for more information on resolving concurrency conflicts.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;Scope&gt;<tab />The portion of the current database file to process. &#160;The default is all visible records.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">WHILE &lt;lCondition&gt;<tab />A condition that each visible record within the scope must meet, starting with the current record. &#160;As soon as the while condition fails, the process terminates. &#160;If no &lt;Scope&gt; is specified, having a while condition changes the default scope to the rest of the visible records in the file.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">FOR &lt;lCondition&gt;<tab />A condition that each visible record within the scope must meet in order to be processed. &#160;If a record does not meet the specified condition, it is ignored and the next visible record is processed.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">TOTAL works by first copying the structure of the current database file to specified target file, except for memo fields. &#160;It then sequentially scans the current database file within the specified scope of records.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">As each record with a unique key value is encountered, that record is copied to the target database file. &#160;The values of numeric fields specified in the FIELDS list from successive records with the same key value are added to fields with the same names in the target file. &#160;Summarization proceeds until a record with a new key value is encountered at which point the process is repeated.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Important! &#160;</text><text styleclass="Italic">To successfully total numeric fields, the numeric fields in the current database file structure must be large enough to hold the largest total possible for that numeric field. &#160;A runtime error will be raised if there is a numeric field overflow.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">TOTAL is functionally equivalent to DBTotal(). &#160;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Deleted records: &#160;</text>If SetDeleted() is FALSE, deleted records in the source file are processed. &#160;Records in the target file inherit the deleted status of the first matching record in the source file.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Visibility: &#160;</text>If SetDeleted() is TRUE, however, deleted records are not visible and are, therefore, not processed. &#160;Similarly, filtered records (with DBSetFilter() or a conditional controlling order) are not processed.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">In this example, a database file is totaled on the key expression of the controlling order using a macro expression. &#160;When the macro expression is encountered, the expression is evaluated and the resulting string is substituted for the TOTAL &lt;<text styleclass="Italic">uKeyValue</text>&gt; argument:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE sales INDEX branch NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">TOTAL ON &amp;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">(</text><text style="font-weight:bold; font-style:normal; color:#000000;">IndexKey</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">(0))</text><text style="font-weight:bold; font-style:normal; color:#000000;"> FIELDS Amount </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Summary</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_AVERAGE">AVERAGE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBTotal">DBTotal()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_INDEX">INDEX</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetDefault">SetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetPath">SetPath()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SORT">SORT</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SUM">SUM</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_UPDATE">UPDATE</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

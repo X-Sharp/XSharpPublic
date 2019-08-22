@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>COPY TO Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>COPY TO command</keyword>
+    <keyword>Copying<keyword>records</keyword></keyword>
+    <keyword>Databases</keyword>
+    <keyword>Exporting<keyword>records</keyword></keyword>
+    <keyword>Records</keyword>
+    <keyword>Records<keyword>copying</keyword><keyword>exporting</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">COPY TO Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Export records to a new database or text file.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">COPY TO &lt;<text styleclass="Italic">xcTargetFile</text>&gt; [FIELDS &lt;<text styleclass="Italic">idFieldList</text>&gt;] [&lt;<text styleclass="Italic">Scope</text>&gt;] </para>
+    <para styleclass="Normal"><tab />[WHILE &lt;<text styleclass="Italic">lCondition</text>&gt;] [FOR &lt;<text styleclass="Italic">lCondition</text>&gt;]</para>
+    <para styleclass="Normal"><tab />[SDF] | [DELIMITED [WITH BLANK | &lt;<text styleclass="Italic">xcDelimiter</text>&gt;]] | </para>
+    <para styleclass="Normal"><tab />[VIA &lt;<text styleclass="Italic">cDriver</text>&gt;] [INHERIT FROM &lt;<text styleclass="Italic">acRDDs</text>&gt;]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />The name of the target file, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD (see the &quot;RDD Specifics&quot; appendix in the Programmer&apos;s Guide for details on a particular RDD). &#160;For text files, it is .TXT.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. &#160;Refer to the &quot;Concurrency Control&quot; chapter in the Programmer&apos;s Guide for more information on resolving concurrency conflicts.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">FIELDS &lt;idFieldList&gt;<tab />The list of fields to copy to &lt;xcTargetFile&gt;. &#160;The default is all fields.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;Scope&gt;<tab />The portion of the current database file to process. &#160;The default is all visible records.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">WHILE &lt;lCondition&gt;<tab />A condition that each visible record within the scope must meet, starting with the current record. &#160;As soon as the while condition fails, the process terminates. &#160;If no &lt;Scope&gt; is specified, having a while condition changes the default scope to the rest of the visible records in the file.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">FOR &lt;lCondition&gt;<tab />A condition that each visible record within the scope must meet in order to be processed. &#160;If a record does not meet the specified condition, it is ignored and the next visible record is processed.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">SDF<tab />A System Data Format file with format specifications as shown in the table below. &#160;Records and fields are fixed length.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">File Element<tab />Format<tab /></para>
+    <para styleclass="List">Character fields<tab />Padded with trailing blanks<tab /></para>
+    <para styleclass="List">Date fields<tab />yyyymmdd<tab /></para>
+    <para styleclass="List">Logical fields<tab />T or F<tab /></para>
+    <para styleclass="List">Memo fields<tab />Ignored<tab /></para>
+    <para styleclass="List">Numeric fields<tab />Padded with leading blanks for zeros<tab /></para>
+    <para styleclass="List">Field separator<tab />None<tab /></para>
+    <para styleclass="List">Record separator<tab />Carriage return/linefeed<tab /></para>
+    <para styleclass="List">End of file marker<tab />1A hex or Chr(26)<tab /></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">DELIMITED [WITH &lt;xcDelimiter&gt;]</para>
+    <para styleclass="List"><tab />A text file in which character fields are enclosed in double quote marks (the default delimiter) or the specified &lt;xcDelimiter&gt;. &#160;Fields and records are variable length, and the format specifications are shown in the table below:</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">File Element<tab />Format<tab /></para>
+    <para styleclass="List">Character fields<tab />Delimited, with trailing blanks truncated<tab /></para>
+    <para styleclass="List">Date fields<tab />yyyymmdd<tab /></para>
+    <para styleclass="List">Logical fields<tab />T or F<tab /></para>
+    <para styleclass="List">Memo fields<tab />Ignored<tab /></para>
+    <para styleclass="List">Numeric fields<tab />Leading zeros truncated<tab /></para>
+    <para styleclass="List">Field separator<tab />Comma<tab /></para>
+    <para styleclass="List">Record separator<tab />Carriage return/linefeed<tab /></para>
+    <para styleclass="List">End of file marker<tab />1A hex or Chr(26)<tab /></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">DELIMITED WITH BLANK</para>
+    <para styleclass="List"><tab />A text file in which fields are separated by one space and character fields are not enclosed in delimiters. &#160;The format specifications are shown in the table below:</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">File Element<tab />Format<tab /></para>
+    <para styleclass="List">Character fields<tab />Not delimited, trailing blanks truncated<tab /></para>
+    <para styleclass="List">Date fields<tab />yyyymmdd<tab /></para>
+    <para styleclass="List">Logical fields<tab />T or F<tab /></para>
+    <para styleclass="List">Memo fields<tab />Ignored<tab /></para>
+    <para styleclass="List">Numeric fields<tab />Leading zeros truncated<tab /></para>
+    <para styleclass="List">Field separator<tab />Single blank space<tab /></para>
+    <para styleclass="List">Record separator<tab />Carriage return/linefeed<tab /></para>
+    <para styleclass="List">End of file marker<tab />1A hex or Chr(26)<tab /></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab /><tab />Warning! &#160;If the DELIMITED WITH clause is specified on a COPY TO command line, it must be the last clause specified.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">VIA &lt;cDriver&gt;<tab />The name of the RDD that will service the work area. &#160;If not specified, the default RDD as determined by RDDSetDefault() is used.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">INHERIT FROM &lt;acRDDs&gt;</para>
+    <para styleclass="List"><tab /><tab />A one-dimensional array with the names of RDDs from which the main RDD inherits special functionality. &#160;This allows you to use RDDs with special capabilities, like encryption or decryption, in different work areas with different database drivers. &#160;These RDDs overlay special functions of the main RDD (specified with the VIA clause). &#160;If multiple RDDs (specified with this INHERIT FROM clause) implement the same function, the function associated with the last RDD in the list takes precedence.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Deleted records: &#160;</text>If SetDeleted() is FALSE, deleted records in the source file are copied to &lt;<text styleclass="Italic">xcTargetFile</text>&gt; where they retain their deleted status.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Visibility: &#160;</text>If SetDeleted() is TRUE, however, deleted records are not visible and are, therefore, not processed. &#160;Similarly, filtered records (with DBSetFilter() or a conditional controlling order) are not processed.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example demonstrates copying to another database file:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE sales NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">COPY </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> temp</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This example demonstrates the layout of an SDF file with four fields, one for each data type:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE testdata NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">COPY </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEXT</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">1</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> temp SDF</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">TYPE</text><text style="font-weight:bold; font-style:normal; color:#000000;"> temp</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">.</text><text style="font-weight:bold; font-style:normal; color:#000000;">txt</text><br/><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Result: &#160;Character &#160; 12.0019890801T</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The next example demonstrates the layout of a DELIMITED file:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">COPY </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEXT</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">1</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> temp DELIMITED</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">TYPE</text><text style="font-weight:bold; font-style:normal; color:#000000;"> temp</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">.</text><text style="font-weight:bold; font-style:normal; color:#000000;">txt</text><br/><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Result: &#160;&quot;Character&quot;,12.00,19890801,T</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Finally, this example demonstrates the layout of a DELIMITED file WITH a different delimiter:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">COPY </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEXT</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">1</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> temp DELIMITED </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WITH</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&apos;</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">TYPE temp.txt</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">// Result: &#160;&apos;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Character</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&apos;,12.00,19890801,T</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_APPEND_FROM">APPEND FROM</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_FILE">COPY FILE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE">COPY STRUCTURE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBCopy">DBCopy()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBCopyDelim">DBCopyDelim()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_RDDSetDefault">RDDSetDefault()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetDefault">SetDefault()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetDeleted">SetDeleted()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetPath">SetPath()</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

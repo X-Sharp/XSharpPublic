@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Memory Variable</title>
+  <keywords>
+    <keyword>Commands<keyword>Memory Variable</keyword></keyword>
+    <keyword>Memory Variable Commands</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Memory Variable</para>
+    </header>
+    <para styleclass="List"></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLEAR_MEMORY">CLEAR MEMORY</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DECLARE">DECLARE</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_MEMVAR">MEMVAR</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PARAMETERS">PARAMETERS</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PRIVATE">PRIVATE</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PUBLIC">PUBLIC</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RELEASE">RELEASE</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RESTORE">RESTORE</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SAVE">SAVE</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_STORE">STORE</link></para>
+    <para styleclass="List"></para>
+  </body>
+</topic>

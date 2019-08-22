@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>DIR Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>DIR command</keyword>
+    <keyword>Displaying<keyword>file listing</keyword></keyword>
+    <keyword>Files<keyword>displaying</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">DIR Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Display a listing of files.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">DIR [&lt;<text styleclass="Italic">xcFileSpec</text>&gt;]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;xcFileSpec&gt;<tab />The file specification for the directory search. &#160;Besides a file name, this specification may also include an optional drive, directory, and extension. &#160;The file name and extension may include the standard wildcard characters (* and ?). &#160;If you do not specify a drive and directory, this function respects SetDefault().</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />If the argument is omitted, the default file specification is *.DBF.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />If &lt;xcFileSpec&gt; is not specified, the listing includes the file name, date of last update, and number of records. &#160;Otherwise, it includes the file name, extension, number of bytes, and date of last update.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Directory picklists:</text><tab />To present directory information to the user, use ADir() to return one or more arrays of directory information, and AChoice() to present a picklist to the user.</para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Array directory:</text><tab />To save the directory listing in an array, use Directory() instead of Dir().</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example displays all files, all database files, and all text files in the current directory:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">cFilespec := &quot;*.*&quot;<br/>DIR (cFilespec)<tab /><tab />// Display all files<br/>DIR<tab /><tab /><tab /><tab /><tab />// Display all .dbf files<br/>DIR *.txt<tab /><tab /><tab /><tab />// Display all text files</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_ADir">ADir()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_Directory">Directory()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetDefault">SetDefault()</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

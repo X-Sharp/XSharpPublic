@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>#ifndef Statement</title>
+  <keywords>
+    <keyword>#else statement</keyword>
+    <keyword>#endif statement</keyword>
+    <keyword>#ifndef statement</keyword>
+    <keyword>Building<keyword>code</keyword></keyword>
+    <keyword>Code<keyword>building</keyword></keyword>
+    <keyword>Program control</keyword>
+    <keyword>Statements</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">#ifndef Statement</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Build a section of code if a constant is FALSE, 0, or not defined.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">#ifndef &lt;<text styleclass="Italic">idConstant</text>&gt;</para>
+    <para styleclass="Normal"><tab />&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
+    <para styleclass="Normal">[#else] </para>
+    <para styleclass="Normal"><tab />&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
+    <para styleclass="Normal">#endif</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;idConstant&gt;<tab />The name of a constant whose absence is being verified.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">#ifndef...#endif lets you perform a conditional build by identifying a section of source code to include if a specified constant is defined as FALSE or 0 or is not defined. &#160;The #else statement specifies the code to include if the #ifndef condition fails, and the #endif terminates the conditional build block.</para>
+    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>You can use #ifndef with compiler entities other than constants, such as functions and globals. &#160;In these cases, the statement tests for existence only, and does not look at the value of the entity.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:12px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This code fragment is a general skeleton for a conditional build with #ifndef. &#160;Since the constant <text styleclass="Italic">lDebug </text>is set to FALSE, the code between the #ifndef and #else statements will be built, and the code between the #else and #endif statements will be ignored:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">DEFINE</text><text style="font-weight:bold; font-style:normal; color:#000000;"> lDebug </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FALSE</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Start</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">#IFNDEF</text><text style="font-weight:bold; font-style:normal; color:#000000;"> lDebug</text><br/><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">&lt;Optimized version </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">OF</text><text style="font-weight:bold; font-style:normal; color:#000000;"> code</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&gt;...</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">#ELSE</text><br/><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">&lt;Debugging version </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">OF</text><text style="font-weight:bold; font-style:normal; color:#000000;"> code</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&gt;...</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">#ENDIF</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Changing the DEFINE statement as follows will build the code between the #else and #endif statements instead.</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">DEFINE</text><text style="font-weight:bold; font-style:normal; color:#000000;"> lDebug </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TRUE</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_IFDEF" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">#ifdef</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DEFINE" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">DEFINE</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

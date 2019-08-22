@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>EVENT Statement</title>
+  <keywords>
+    <keyword>Access() Methods</keyword>
+    <keyword>Compile-time declaration</keyword>
+    <keyword>Declaration statements</keyword>
+    <keyword>Entity declaration</keyword>
+    <keyword>EVENT statement</keyword>
+    <keyword>Statements</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">EVENT Statement</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Declare a method to access a non-exported or virtual instance variable.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal"><tab />[Attributes] </para>
+    <para styleclass="Normal"><tab />[Modifiers] </para>
+    <para styleclass="Normal"><tab /><text style="font-weight:bold;">EVENT</text>&lt;<text styleclass="Italic">idName</text>&gt;</para>
+    <para styleclass="Normal"><tab />[AS &lt;<text styleclass="Italic">idType</text>&gt;] [&lt;<text styleclass="Italic">idConvention</text>&gt;]</para>
+    <para styleclass="Normal"><tab />[</para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;[ REMOVE &lt;removeExpression&gt; ] &#160;[ADD &lt;addExpression&gt;] </para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;| [ ADD &lt;eventaddbody &gt; END ADD]</para>
+    <para styleclass="Normal"><tab /> &#160; [REMOVE &lt;eventremovebody &gt; END REMOVE] </para>
+    <para styleclass="Normal"><tab /> &#160;END EVENT</para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET DECIMALS Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Decimals<keyword>setting number of places</keyword></keyword>
+    <keyword>Displaying<keyword>numbers</keyword></keyword>
+    <keyword>Environment</keyword>
+    <keyword>SET DECIMALS command</keyword>
+    <keyword>Setting<keyword>decimal places</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET DECIMALS Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Change the setting that determines the number of decimal places used to display numbers.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">SET DECIMALS TO [&lt;<text styleclass="Italic">nDecimals</text>&gt;]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">SET DECIMALS TO with no argument is equivalent to SET DECIMALS TO 0. &#160;SET DECIMALS is functionally equivalent to SetDecimal(). &#160;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetDecimal">SetDecimal()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetDecimalSep">SetDecimalSep()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetFixed">SetFixed()</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

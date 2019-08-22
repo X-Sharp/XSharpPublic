@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>UNLOCK Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Concurrency control</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Locking work areas</keyword>
+    <keyword>UNLOCK ALL command</keyword>
+    <keyword>UNLOCK command</keyword>
+    <keyword>Work areas<keyword>locking</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">UNLOCK Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Release all locks for a work area.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">UNLOCK [ALL]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">ALL<tab />Releases all current locks in all work areas. &#160;If not specified, only the lock in the current work area is released.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">UNLOCK is functionally equivalent to DBUnlock() and UNLOCK ALL is functionally equivalent to DBUnlockAll(). &#160;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example attempts an update operation that requires a record lock. &#160;If the RLock() is successful, the record is updated with a function and the RLock() is released with UNLOCK:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE sales INDEX salesman SHARED NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text style="font-weight:bold; font-style:normal; color:#000000;"> RLock</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">UpdateRecord</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">UNLOCK</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ELSE</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;Record update failed&quot;</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">BREAK</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBRLock">DBRLock()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBUnlock">DBUnlock()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBUnlockAll">DBUnlockAll()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_FLock">FLock()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_RLock">RLock()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetExclusive">SetExclusive()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

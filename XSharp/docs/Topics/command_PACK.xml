@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>PACK Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases<keyword>records</keyword></keyword>
+    <keyword>Deleting</keyword>
+    <keyword>PACK command</keyword>
+    <keyword>Records<keyword>deleting</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">PACK Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Remove all records marked for deletion from the current database file, rebuild all active orders, and recover all physical space occupied by the deleted records. Note that this will not affect memo files. Unused space in memo files can only be recovered by using COPY.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">PACK</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">PACK is functionally equivalent to DBPack(). &#160;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Warning! &#160;</text><text styleclass="Italic">PACK does not create backup files. &#160;You may want to make a backup of the file (using COPY FILE, for example) before issuing this command; otherwise, you will not be able to recover deleted records.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">The following shows the result of a simple PACK:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> sales </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEW</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? LastRec() &#160; &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// Result: &#160;84</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">DELETE</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RECORD</text><text style="font-weight:normal; font-style:normal; color:#000000;"> 4</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">PACK</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? LastRec() &#160; &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// Result: &#160;83</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBPack">DBPack()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE">DELETE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_Deleted">Deleted()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RECALL">RECALL</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_REINDEX">REINDEX</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetDeleted">SetDeleted()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetExclusive">SetExclusive()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ZAP">ZAP</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

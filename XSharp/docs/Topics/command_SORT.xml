@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SORT Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Records<keyword>sorting</keyword></keyword>
+    <keyword>SORT command</keyword>
+    <keyword>Sorting records</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SORT Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Copy records from the current work area to a database file in sorted order.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">SORT TO &lt;<text styleclass="Italic">xcTargetFile</text>&gt; ON &lt;<text styleclass="Italic">idFieldList</text>&gt; [&lt;<text styleclass="Italic">Scope</text>&gt;] [WHILE &lt;<text styleclass="Italic">lCondition</text>&gt;] [FOR &lt;<text styleclass="Italic">lCondition</text>&gt;]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />The name of the target database file to write the sorted records, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD (see the &quot;RDD Specifics&quot; appendix in the Programmer&apos;s Guide for details on a particular RDD).</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. &#160;Refer to the &quot;Concurrency Control&quot; chapter in the Programmer&apos;s Guide for more information on resolving concurrency conflicts.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ON &lt;idFieldList&gt;<tab />The sort keys, specified as a comma-separated list of field names. &#160;You may optionally add, after each field name, /A (to sort in dictionary order), /C (to ignore capitalization), or /D (to sort in descending order). &#160;The default setting is /A.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;Scope&gt;<tab />The portion of the current database file to process. &#160;The default is all visible records.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">WHILE &lt;lCondition&gt;<tab />A condition that each visible record within the scope must meet, starting with the current record. &#160;As soon as the while condition fails, the process terminates. &#160;If no &lt;Scope&gt; is specified, having a while condition changes the default scope to the rest of the visible records in the file.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">FOR &lt;lCondition&gt;<tab />A condition that each visible record within the scope must meet in order to be processed. &#160;If a record does not meet the specified condition, it is ignored and the next visible record is processed.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">SORT is functionally equivalent to DBSort(). &#160;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example copies a mailing list using a descending sort key to a smaller list for printing:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE mailing INDEX zip</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SEEK </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;900&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SORT ON Lastname </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">/</text><text style="font-weight:bold; font-style:normal; color:#000000;">D</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Firstname </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">/</text><text style="font-weight:bold; font-style:normal; color:#000000;">D </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> invite </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">;</text><br/><tab /><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">WHILE</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Zip </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">=</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;900&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">USE invite NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">REPORT FORM rsvplist </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> PRINTER</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_ASort">ASort()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBSort">DBSort()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_FLock">FLock()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_INDEX">INDEX</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetDefault">SetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetPath">SetPath()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

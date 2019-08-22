@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic class="popup" template="Popup" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">__IncludeStrongTyping</title>
+  <body>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1" translate="true">Strongly &#160;typed Methods</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">In addition to &lt;%APP%&gt; untyped method implementation, </text><text styleclass="Bold" translate="true">strong typing</text><text styleclass="Normal" translate="true"> of method parameters and return values is now supported, providing you with a mechanism through which highly stable code can be obtained. &#160;The type information supplied enables the compiler to perform the necessary type checking and, thus, guarantee a much higher stable code quality.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">A further benefit obtained by utilizing strongly typed methods is that of performance. &#160;The implementation of typed methods presumes that when the programmer employs strongly typed messages, the compiler can effectively perform an </text><text styleclass="Bold" translate="true">early binding</text><text styleclass="Normal" translate="true"> for the respective methods invocation. &#160;As a result of this implementation, typed methods invocations are somewhat faster than the respective untyped counterparts. &#160;These advantages are, however, attained at the price of losing the flexibility which untyped methods offer.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">It is, therefore, important to remember that interchangeably using both the typed and the untyped versions of a particular methods in an inheritance chain is neither permissible nor possible.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">&lt;%APP%&gt; allows strong typing of METHODs, ACCESSes and ASSIGNs. &#160;The programmer accomplishes the specification of the strongly typed methods with &lt;%APP%&gt; in two steps:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Indented"><text styleclass="Indented" translate="true">1.</text><tab /><text styleclass="Indented" translate="true">A mandatory declaration of the typed method is given in its respective class.</text></para>
+    <para styleclass="Indented"><tab /><text styleclass="Indented" translate="true">This declaration is reponsible for declaring the order of the methods in the so-called virtual table which &lt;%APP%&gt; employs for the invocation of typed methods. &#160;A re-declaration of a method in a subclass is NOT permissible, since it would cause abiguity for the compiler.</text></para>
+    <para styleclass="Indented"><text styleclass="Indented" translate="true">2.</text><tab /><text styleclass="Indented" translate="true">Define the strongly typed method. &#160;</text></para>
+    <para styleclass="Indented"><tab /><text styleclass="Indented" translate="true">Unlike strongly typed functions, method typing requires strongly typing of the method arguments, the method return value AND speficying a valid calling convention. &#160;</text><br/><text styleclass="Indented" translate="true">The following calling conventions are valid for typed methods: STRICT, PASCAL or CALLBACK.</text></para>
+  </body>
+</topic>

@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>IF Statement</title>
+  <keywords>
+    <keyword>Branching</keyword>
+    <keyword>Conditional execution</keyword>
+    <keyword>ELSE statement</keyword>
+    <keyword>ELSEIF statement</keyword>
+    <keyword>END statement</keyword>
+    <keyword>ENDIF statement</keyword>
+    <keyword>IF statement</keyword>
+    <keyword>Program control</keyword>
+    <keyword>Statements</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">IF Statement</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Conditionally execute a block of statements.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">IF &lt;<text styleclass="Italic">lCondition</text>&gt;</para>
+    <para styleclass="Normal"><tab />&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
+    <para styleclass="Normal">[ELSEIF &lt;<text styleclass="Italic">lCondition</text>&gt;]</para>
+    <para styleclass="Normal"><tab />&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
+    <para styleclass="Normal">[ELSE]</para>
+    <para styleclass="Normal"><tab />&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
+    <para styleclass="Normal">END[IF]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;lCondition&gt;<tab />If this expression evaluates to TRUE, the statements following it up until the next ELSEIF, ELSE, or ENDIF are executed. &#160;Afterwards, control branches to the statement following the next ENDIF statement.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ELSE<tab />If all preceding IF and ELSEIF conditions evaluate to FALSE, the statements following the ELSE up until the next ENDIF are executed. &#160;Afterwards, control branches to the statement following the next ENDIF statement.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">IF works by branching to the statement following the first &lt;<text styleclass="Italic">lCondition</text>&gt; that evaluates to TRUE. &#160;If all conditions evaluate to FALSE, it branches to the statement following the ELSE statement (if specified). &#160;Execution proceeds until the next ELSEIF, ELSE, or ENDIF is encountered, and control then branches to the first statement following the next ENDIF statement.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Control structures can be nested to any depth. &#160;The only requirement is that each control structure be properly nested.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>IF...ELSEIF...ENDIF is identical to DO CASE...ENDCASE, with neither syntax having a performance advantage over the other. &#160;The IF construct is also similar to the IIf() operator which can be used within expressions.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example evaluates a number of conditions using an IF...ELSEIF...ENDIF construct:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">LOCAL nNumber := 0<br/><br/>IF nNumber &lt; 50<br/><tab />? &quot;Less than 50&quot;<br/>ELSEIF nNumber = 50<br/><tab />? &quot;Is equal to 50&quot;<br/>ELSE<br/><tab />? &quot;Greater than 50&quot;<br/>ENDIF</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_BEGIN_SEQUENCE">BEGIN SEQUENCE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_CASE">DO CASE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_WHILE">DO WHILE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOR">FOR</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Operator_IIf">IIf()</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

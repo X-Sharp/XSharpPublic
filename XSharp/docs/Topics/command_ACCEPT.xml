@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>ACCEPT Command</title>
+  <keywords>
+    <keyword>ACCEPT command</keyword>
+    <keyword>Commands</keyword>
+    <keyword>Terminal window</keyword>
+    <keyword>Wait states</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">ACCEPT Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Take input from the keyboard and assign it to a memory variable.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">ACCEPT [&lt;<text styleclass="Italic">uValuePrompt</text>&gt;] TO &lt;<text styleclass="Italic">idVar</text>&gt;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;uValuePrompt&gt;<tab />An optional prompt displayed before the input area.</para>
+    <para styleclass="List">TO &lt;idVar&gt;<tab />The variable that will hold input from the keyboard. &#160;If there is no variable named &lt;idVar&gt; that is visible to the current routine, a private variable is created.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">When ACCEPT is executed, it first performs a carriage return/linefeed, displays the prompt in the terminal window, and begins taking characters from the keyboard at the position immediately following the prompt.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Up to 255 characters can be entered. &#160;When input reaches the edge of the window, as defined by MaxCol(), the cursor moves to the next line.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">ACCEPT supports only two editing keys: &#160;Backspace and Enter (Esc is not supported). &#160;Backspace deletes the last character typed. &#160;Enter confirms entry and is the only key that can terminate an ACCEPT. &#160;If Enter is the only key pressed, ACCEPT assigns a NULL_STRING to &lt;<text styleclass="Italic">idVar</text>&gt;.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example uses ACCEPT to get keyboard input from the user:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cVar</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">ACCEPT </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;Enter a value: &#160;&quot;</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cVar</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cVar </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">=</text><text style="font-weight:bold; font-style:normal; color:#000000;"> NULL_STRING</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;User pressed Enter&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ELSE</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;User input:&quot;,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cVar</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

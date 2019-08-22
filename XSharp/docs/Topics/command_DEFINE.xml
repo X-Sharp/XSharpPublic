@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>DEFINE Statement</title>
+  <keywords>
+    <keyword>Compile-time declaration</keyword>
+    <keyword>Constants<keyword>declaring</keyword></keyword>
+    <keyword>Declaration statements</keyword>
+    <keyword>Define</keyword>
+    <keyword>DEFINE statement</keyword>
+    <keyword>Entity declaration</keyword>
+    <keyword>Statements</keyword>
+    <keyword>STATIC DEFINE statement</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">DEFINE Statement</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Declare a constant name and its value to the compiler.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">[STATIC] DEFINE &lt;<text styleclass="Italic">idConstant</text>&gt; := &lt;<text styleclass="Italic">uValue</text>&gt;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">STATIC<tab />Restricts the visibility of the constant to the module in which it is declared. &#160;If omitted, the constant has application-wide visibility.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;idConstant&gt;<tab />A valid identifier name for the constant. &#160;A constant is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a constant and a global variable, for example, with the same name.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;uValue&gt;<tab />A constant value that is assigned to &lt;idConstant&gt;. &#160;This value can be a literal representation of one of the data types listed below or a simple expression involving only operators, literals, and other DEFINE constants; however, more complicated expressions (including class instantiation) are not allowed.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />Note: &#160;Although the Chr() function cannot be used in &lt;uValue&gt;, the _Chr() operator can. &#160;_Chr() is otherwise identical in functionality to Chr().</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />See the &quot;Data Types&quot; chapter in the Programmer&apos;s Guide for more information on how to form literal values for the various data types.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">Once the constant name and value is declared and initialized with the DEFINE statement, you can not change the value of &lt;<text styleclass="Italic">idConstant</text>&gt; without provoking a compiler error. &#160;The constant value &lt;<text styleclass="Italic">uValue</text>&gt; will be used whenever the &lt;<text styleclass="Italic">idConstant</text>&gt; identifier name is encountered in your application.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">You can hide a constant name from a routine by declaring a variable with the same name (with LOCAL, MEMVAR, or FIELD). &#160;The search order for a variable name is as follows:</para>
+    <para styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">1.</text><tab /><text styleclass="Normal">LOCALs, local parameters, MEMVARs, and FIELDs</text></para>
+    <para styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">2.</text><tab /><text styleclass="Normal">SELF instance variables (i.e., without &lt;</text><text styleclass="Italic">idObject</text><text styleclass="Normal">&gt;: &#160;prefix in class methods)</text></para>
+    <para styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">3.</text><tab /><text styleclass="Normal">GLOBALs and DEFINEs</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Tip: &#160;</text>You can perform a conditional build based on the value of a DEFINE constant. &#160;See the #ifdef and #ifndef statements in this chapter for more information and examples.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">The following example assigns an application name to the constant <text styleclass="Italic">cAppName</text>. &#160;This value is then displayed at the beginning and end of the application run:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">DEFINE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> cAppName := &quot;Accounts Payable&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">...</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? &quot;Start of &quot;, cAppName, &quot; application.&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ...</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? &quot;End of &quot;, cAppName, &quot; application.&quot;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_IFDEF">#ifdef</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_IFNDEF">#ifndef</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_GLOBAL">GLOBAL</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

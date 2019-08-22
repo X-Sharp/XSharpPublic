@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>GO Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Finding<keyword>specific records</keyword></keyword>
+    <keyword>GO BOTTOM command</keyword>
+    <keyword>GO command</keyword>
+    <keyword>GO TOP command</keyword>
+    <keyword>GOTO command</keyword>
+    <keyword>Records<keyword>pointing to</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">GO Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Move the pointer to the specified record.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">GO[TO] &lt;<text styleclass="Italic">uRecID</text>&gt; | TOP | BOTTOM</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;uRecID&gt;<tab />The record to go to. &#160;The data type and interpretation of &lt;uRecID&gt; is determined by the RDD. &#160;For .DBF files, it is the record number. &#160;If &lt;uRecID&gt; does not exist, the work area is positioned to LastRec() + 1, and both EOF() and BOF() return TRUE.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">TOP<tab />Specifies the first logical record in the current work area.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">BOTTOM<tab />Specifies the last logical record in the current work area.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Visibility: &#160;</text>Even though a particular record may not be visible (because, for example, of DBSetFilter(), SetDeleted(TRUE), or a conditional controlling order), you can still go to that record.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example saves the current record number, searches for a key, then restores the record pointer to the saved position:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:bold; font-style:normal; color:#000000;"> KeyExists</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">(</text><text style="font-weight:bold; font-style:normal; color:#000000;">uKeyExpr</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">)</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:bold; font-style:normal; color:#000000;"> nSavRecord </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RECNO</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Save the current record pointer position</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:bold; font-style:normal; color:#000000;"> lFound</text><br/><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">SEEK uKeyExpr</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">(</text><text style="font-weight:bold; font-style:normal; color:#000000;">lFound </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Found</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">())</text><br/><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">.</text><br/><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">.</text><text style="font-weight:bold; font-style:normal; color:#000000;"> &#160;&lt;Statements</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&gt;</text><br/><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">.</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text><br/><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">GOTO nSavRecord</text><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Restore the record pointer </text><br/><tab /><tab /><tab /><tab /><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// position</text><br/><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:bold; font-style:normal; color:#000000;"> lFound</text></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBGoTo">DBGoTo()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBSetFilter">DBSetFilter()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBSetRelation">DBSetRelation()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_LastRec">LastRec()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_RecNo">RecNo()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetDeleted">SetDeleted()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_RELATION">SET RELATION</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SKIP">SKIP</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

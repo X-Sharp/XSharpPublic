@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>UPDATE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Fields<keyword>updating</keyword></keyword>
+    <keyword>UPDATE command</keyword>
+    <keyword>Updating fields</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">UPDATE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Replace fields in the current work area with values from another work area, based on the specified key value.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">UPDATE FROM &lt;<text styleclass="Italic">xcAlias</text>&gt; ON &lt;<text styleclass="Italic">uKeyValue</text>&gt; [RANDOM]REPLACE &lt;<text styleclass="Italic">idField</text>&gt; WITH &lt;<text styleclass="Italic">uValue</text>&gt;</para>
+    <para styleclass="Normal"><tab /> [, &lt;<text styleclass="Italic">idField</text>&gt; WITH &lt;<text styleclass="Italic">uValue</text>&gt;...]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">FROM &lt;xcAlias&gt;<tab />The alias identifier for the work area used to update records in the current work area. &#160;If there is no open database file associated with the specified alias, a runtime error is raised.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ON &lt;uKeyValue&gt;<tab />The expression that defines matching records in the FROM work area.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">REPLACE &lt;idField&gt;<tab />A field in the current work area to update with a new value.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">WITH &lt;uValue&gt;<tab />The value used to update the current field. &#160;You must reference any field contained in the FROM work area with the correct alias.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">RANDOM<tab />If specified, the current work area must be ordered (using an index order) by &lt;uKeyValue&gt; but the FROM work area records can be in any order. &#160;If not specified, both the current work area and the FROM work area must be ordered (logically or physically) by &lt;uKeyValue&gt;.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">UPDATE can only update records in the current work area with unique key values. &#160;When there is more than one instance of a key value, only the first record with the key value is updated. &#160;The FROM work area, however, can have duplicate key values.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">UPDATE is functionally equivalent to DBUpdate(). &#160;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Deleted records: &#160;</text>If SetDeleted() is FALSE, deleted records in both files are processed. &#160;Records in the file being updated retain their deleted status and are not affected by the deleted status of records in the FROM file.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Visibility: &#160;</text>If SetDeleted() is TRUE, however, deleted records are not visible and are, therefore, not processed. &#160;Similarly, filtered records (with DBSetFilter() or a conditional controlling order) are not processed.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Shared mode: &#160;</text>For a shared database, UPDATE requires a file lock on the current database file. &#160;The FROM database file can be open in any mode. &#160;Refer to the &quot;Concurrency Control&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide</text> for more information on locking.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example updates the CUSTOMER database file with outstanding invoice amounts:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE invoices NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">USE customer INDEX customer NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">UPDATE FROM Invoices ON Last</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">;</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">REPLACE Owed </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WITH</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Owed </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">+</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Invoices</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Amount RANDOM</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBCreateIndex">DBCreateIndex()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBUpdate">DBUpdate()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_FLock">FLock()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_INDEX">INDEX</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_JOIN">JOIN</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_REPLACE">REPLACE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetUnique">SetUnique()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SORT">SORT</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_TOTAL">TOTAL</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

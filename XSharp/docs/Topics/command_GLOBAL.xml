@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>GLOBAL Statement</title>
+  <keywords>
+    <keyword>Arrays<keyword>declaring</keyword></keyword>
+    <keyword>Compiledeclaration</keyword>
+    <keyword>Declaration statements</keyword>
+    <keyword>GLOBAL statement</keyword>
+    <keyword>Statements</keyword>
+    <keyword>STATIC GLOBAL statement</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">GLOBAL Statement</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Declare a variable or array that is available to the entire application or module.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">[STATIC] GLOBAL &lt;<text styleclass="Italic">idVar</text>&gt; [:= &lt;<text styleclass="Italic">uValue</text>&gt;] [AS | IS &lt;<text styleclass="Italic">idType</text>&gt;]</para>
+    <para styleclass="Normal">[STATIC] GLOBAL DIM &lt;<text styleclass="Italic">ArraySpec</text>&gt; AS | IS &lt;<text styleclass="Italic">idType</text>&gt;</para>
+    <para styleclass="Normal">[STATIC] GLOBAL &lt;<text styleclass="Italic">ArraySpec</text>&gt; [AS ARRAY]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">STATIC<tab />Restricts the visibility of the global variable to the module in which it is declared. &#160;If omitted, the variable has application-wide visibility.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;idVar&gt;<tab />A valid identifier name for the variable. &#160;A global variable is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a global variable and a function, for example, with the same name.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;uValue&gt;<tab />A constant value that is assigned to &lt;idVar&gt;. &#160;This value can be a literal representation of one of the data types listed below or a simple expression involving only operators, literals, and DEFINE constants; however, more complicated expressions (including class instantiation) are not allowed.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />Note: &#160;Although &lt;uValue&gt; can be a literal array, it must be one-dimensional. &#160;Multi-dimensional literal arrays are not allowed. &#160;For example, {1, 2, 3} is allowed, but { {1, 2, 3}, {4, 5, 6}, {7, 8, 9} } is not.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />Note: &#160;Although the Chr() function cannot be used in &lt;uValue&gt;, the _Chr() operator can. &#160;_Chr() is otherwise identical in functionality to Chr().</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />If &lt;uValue&gt; is not specified, the initial value of the variable depends on the data type you declare (e.g., NIL if you do not use strong typing, 0 for AS INT, etc.)</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />See the &quot;Data Types,&quot; &quot;Arrays,&quot; and &quot;Code Blocks&quot; chapters in the Programmer&apos;s Guide for more information on how to form literal values for the various data types.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">DIM &lt;ArraySpec&gt;<tab />The specification for a dimensioned array to declare.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;ArraySpec&gt;<tab />The specification for a dynamic array to declare.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />In both cases, &lt;ArraySpec&gt; is one of the following:</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;idArray&gt;[&lt;nElements&gt;, &lt;nElements&gt;, &lt;nElements&gt;]</para>
+    <para styleclass="List">&lt;idArray&gt;[&lt;nElements&gt;][&lt;nElements&gt;][&lt;nElements&gt;]</para>
+    <para styleclass="List"><tab />All dimensions except the first are optional.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />&lt;idArray&gt; is a valid identifier name for the array to declare. &#160;For dynamic arrays, array elements are initialized to NIL. &#160;For dimensioned arrays, the initial value of the elements depends on the data type as explained above for &lt;uValue&gt;.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />&lt;nElements&gt; defines the number of elements in a particular dimension of an array. &#160;The number of dimensions is determined by how many &lt;nElements&gt; arguments you specify.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />&lt;nElements&gt; can be a literal numeric representation or a simple numeric expression involving only operators, literals, and DEFINE constants; however, more complicated expressions (such as function calls) are not allowed.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">AS &lt;idType&gt;<tab />Specifies the data type of the variable you are declaring (called <link displaytype="text" defaultstyle="true" type="topiclink" href="strong_typing_gloss" domain="CavoIde.hmxz">strong typing</link>). &#160;For DIM arrays, declares the data type for all array elements.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />The valid values for &lt;idType&gt; and the initial values associated with each are listed in the table below:</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />Data Type<tab />Default Initial Value<tab /></para>
+    <para styleclass="List"><tab />ARRAY<tab />NULL_ARRAY (see Note below)<tab /></para>
+    <para styleclass="List"><tab />CODEBLOCK<tab />NULL_CODEBLOCK<tab /></para>
+    <para styleclass="List"><tab />DATE<tab />NULL_DATE<tab /></para>
+    <para styleclass="List"><tab />LOGIC<tab />FALSE<tab /></para>
+    <para styleclass="List"><tab />OBJECT, &lt;idClass&gt;<tab />NULL_OBJECT<tab /></para>
+    <para styleclass="List"><tab />STRING<tab />NULL_STRING<tab /></para>
+    <para styleclass="List"><tab />SYMBOL<tab />NULL_SYMBOL<tab /></para>
+    <para styleclass="List"><tab />SHORTINT, INT<tab />0</para>
+    <para styleclass="List"><tab />LONGINT, FLOAT<tab />0</para>
+    <para styleclass="List"><tab />BYTE, WORD<tab />0</para>
+    <para styleclass="List"><tab />DWORD<tab />0</para>
+    <para styleclass="List"><tab />REAL4, REAL8<tab />0<tab /></para>
+    <para styleclass="List"><tab />USUAL<tab />NIL<tab /></para>
+    <para styleclass="List"><tab />PSZ<tab />NULL_PSZ<tab /></para>
+    <para styleclass="List"><tab />PTR, &lt;idStructure&gt;<tab />NULL_PTR<tab /></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />Note: &#160;NULL_ARRAY is the initial value for an array declared using, for example, LOCAL &lt;idArray&gt; AS ARRAY. &#160;If you specify array dimensions as part of the declaration you are, in effect, making an assignment to the array and, therefore, NULL_ARRAY will not apply.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />See the &quot;Variables, Constants, and Declarations&quot; chapter in the Programmer&apos;s Guide for a complete discussion of data types and the advantages of strong typing.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">IS &lt;idType&gt;<tab />Specifies a structure data type in which the memory needed to hold the structure is allocated on the stack (i.e., &lt;idStructure&gt; is the only &lt;idType&gt; allowed with the IS keyword). &#160;See the STRUCTURE entry in this guide for more information on data structure memory allocation.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">AS ARRAY<tab />For dynamic array declarations, specifies the data type of the entire array.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Search order for variables: &#160;</text>You can hide a global variable name from a routine by declaring another variable with the same name (with LOCAL, MEMVAR, or FIELD). &#160;The search order for a variable name is as follows:</para>
+    <para styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">1.</text><tab /><text styleclass="Normal">LOCALs, local parameters, MEMVARs, and FIELDs</text></para>
+    <para styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">2.</text><tab /><text styleclass="Normal">SELF instance variables (i.e., without &lt;</text><text styleclass="Italic">idObject</text><text styleclass="Normal">&gt;: &#160;prefix in class methods)</text></para>
+    <para styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">3.</text><tab /><text styleclass="Normal">GLOBALs and DEFINEs</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">The following example illustrates using the GLOBAL statement to create a global variable, a global dimensioned array, and a global dynamic array. &#160;The dynamic array, since it is declared with STATIC GLOBAL, is visible only in the current module:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">GLOBAL</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cAppName </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;Accounts Payable&quot;</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">GLOBAL</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DIM</text><text style="font-weight:bold; font-style:normal; color:#000000;"> aiValues</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">[2][10]</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">STATIC</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">GLOBAL</text><text style="font-weight:bold; font-style:normal; color:#000000;"> aPoly</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">[100]</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">...</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Start</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;Start of &quot;,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cAppName</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot; application.&quot;</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">AFill</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">(</text><text style="font-weight:bold; font-style:normal; color:#000000;">aPoly</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">0)</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">...</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;End of &quot;,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cAppName</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot; application.&quot;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DEFINE">DEFINE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL</link></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:12px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:144px left ;"></para>
+  </body>
+</topic>

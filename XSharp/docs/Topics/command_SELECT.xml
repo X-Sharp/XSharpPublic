@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SELECT Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>SELECT command</keyword>
+    <keyword>Selecting<keyword>work areas</keyword></keyword>
+    <keyword>Work areas<keyword>changing</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SELECT Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Change the current work area.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">SELECT &lt;<text styleclass="Italic">xnWorkArea</text>&gt; | &lt;<text styleclass="Italic">xcAlias</text>&gt;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;xnWorkArea&gt;<tab />A number from 0 to 250 that specifies the work area to select.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;xcAlias&gt;<tab />The alias identifier for the work area to select. &#160;If there is no open database file associated with the specified alias, a runtime error is raised.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">SELECT causes the specified work area to become the current work area. &#160;All subsequent database operations will apply to this work area unless another work area is explicitly specified for an operation.</para>
+    <para styleclass="Normal">SELECT is functionally equivalent to DBSelectArea(). &#160;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Selecting 0: &#160;</text>Selecting work area 0 causes the lowest numbered unoccupied work area to become the current work area. &#160;Using SELECT 0 before opening a file is equivalent to USE with the NEW option.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Aliased expressions: &#160;</text>The alias operator (-&gt;) can temporarily select a work area while an expression is evaluated and automatically restore the previously selected work area afterward. &#160;Refer to &quot;Operators and Expressions&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide</text>, for more information.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example opens a series of database files by selecting each work area by number, then using each database file in that work area:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">SELECT </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">1</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">USE customer</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SELECT </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">2</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">USE invoices</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SELECT </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">3</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">USE parts</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SELECT customer</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">To make your code independent of the work area number used, a better method is to open each database in the next available work area by specifying the NEW clause on the USE command line. &#160;In this example USE...NEW is employed instead of SELECT 0, then USE:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE customer NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">USE invoices NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SELECT customer</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This code fragment changes work areas while saving the current work area name to a variable by using the Select() function. &#160;After executing an operation for the new work area, the original work area is restored:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">nLastArea </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Select</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">USE newfile NEW</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#000000;">&lt;Statements</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&gt;...</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SELECT </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">(</text><text style="font-weight:bold; font-style:normal; color:#000000;">nLastArea</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">)</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_Alias">Alias()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBSelectArea">DBSelectArea()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_Select">Select()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_Used">Used()</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

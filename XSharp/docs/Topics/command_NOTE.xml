@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>NOTE Command</title>
+  <keywords>
+    <keyword>&amp;&amp; characters</keyword>
+    <keyword>* character</keyword>
+    <keyword>/* characters</keyword>
+    <keyword>// characters</keyword>
+    <keyword>Adding<keyword>comments</keyword></keyword>
+    <keyword>Commands</keyword>
+    <keyword>Comments<keyword>adding</keyword></keyword>
+    <keyword>NOTE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">NOTE Command</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Place a single-line comment in a program.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">NOTE [&lt;<text styleclass="Italic">CommentText</text>&gt;]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:12px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:144px left ;"><text styleclass="Normal">&lt;</text><text styleclass="Italic">CommentText</text><text styleclass="Normal">&gt;</text><tab /><text styleclass="Normal">The comment text.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">NOTE is command synonym for the single-line comment indicator (*). &#160;All characters after NOTE are ignored until the compiler encounters a carriage return/linefeed. &#160;This means a single-line comment cannot be continued with the semicolon onto a new line.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">There are several other comment indicators in the language that are described in the &quot;Overview of Language Elements&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide</text>.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">These examples show the various comment symbols:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// This is a comment</text><br/><text style="font-weight:bold; font-style:normal; color:#ff00ff;">/* This is a comment */</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">*</text><text style="font-weight:bold; font-style:normal; color:#000000;"> This </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IS</text><text style="font-weight:bold; font-style:normal; color:#000000;"> a comment</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">&amp;&amp; This </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IS</text><text style="font-weight:bold; font-style:normal; color:#000000;"> a comment</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">NOTE This </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IS</text><text style="font-weight:bold; font-style:normal; color:#000000;"> a comment</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

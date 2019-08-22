@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET FILTER Command</title>
+  <keywords>
+    <keyword>Clearing filters</keyword>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Filters</keyword>
+    <keyword>Filters<keyword>clearing</keyword><keyword>setting</keyword></keyword>
+    <keyword>SET FILTER command</keyword>
+    <keyword>Setting<keyword>filters</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET FILTER Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Set or clear a filter condition for the current work area.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">SET FILTER TO [&lt;<text styleclass="Italic">lCondition</text>&gt;]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">TO &lt;lCondition&gt;<tab />The condition used to filter records.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />SET FILTER TO without an argument clears the filter condition.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">When a filter is set, records that do not meet the filter condition are not logically visible. &#160;The filter condition can be returned as a string using the DBFilter() function.</para>
+    <para styleclass="Normal">That is, database operations which act on logical records will not consider these records except to access them specifically by record number. &#160;So, for example, you can GOTO a filtered record or process one using the RECORD &lt;<text styleclass="Italic">nRecord</text>&gt; scope.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>Once a filter is set, it is not activated until the record pointer is moved from its current position. &#160;You can use GO TOP to activate it.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">SET FILTER TO when specified with a condition is functionally equivalent to DBSetFilter() with the condition expressed as a code block and a string. &#160;SET FILTER TO with no arguments is equivalent to DBClearFilter(). &#160;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Tip: &#160;</text>If the RDD you are using supports optimization, use SET OPTIMIZE to control whether the RDD will optimize the filter search based on the available orders in the work area.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Visibility: &#160;</text>As with SetDeleted(), a filter has no effect on INDEX and REINDEX. &#160;To create a conditional index, use the FOR condition of the INDEX command.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example filters EMPLOYEE.DBF to only those records where the age is greater than 50:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE employee INDEX name NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SET FILTER </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Age </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">50</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">LIST Lastname</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Firstname</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Age</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Phone</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SET FILTER </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBClearFilter">DBClearFilter()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBFilter">DBFilter()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBSetFilter">DBSetFilter()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_OPTIMIZE">SET OPTIMIZE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetDeleted">SetDeleted()</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

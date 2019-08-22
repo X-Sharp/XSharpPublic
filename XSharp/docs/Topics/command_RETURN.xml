@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>RETURN Statement</title>
+  <keywords>
+    <keyword>Closing<keyword>routines</keyword></keyword>
+    <keyword>Program control</keyword>
+    <keyword>RETURN statement</keyword>
+    <keyword>Statements</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">RETURN Statement</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Terminate a routine by returning control to the calling routine or operating system if executed from the Start() routine.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">RETURN [&lt;<text styleclass="Italic">uValue</text>&gt;]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;uValue&gt;<tab />May be specified in a function or method definition to designate its return value. &#160;Procedure definitions do not allow &lt;uValue&gt; as part of the RETURN statement. &#160;See the FUNCTION and METHOD entries in this guide for information about default return values if &lt;uValue&gt; is not specified.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">All private variables created and local variables declared in the current routine are released from memory when control returns.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">These examples illustrate the general form of the RETURN statement in a procedure and in a function:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">PROCEDURE &lt;idProcedure&gt;()<br/><tab />&lt;Statements&gt;...<br/><tab />RETURN<br/><br/>FUNCTION &lt;idFunction&gt;()<br/><tab />&lt;Statements&gt;...<br/><tab />RETURN &lt;uValue&gt;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The next example returns an array, created in a function, to a calling routine:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">FUNCTION PassArrayBack()<br/><tab />PRIVATE aArray[10][10]<br/><tab />aArray[1][1] = &quot;myString&quot;<br/><tab />RETURN aArray</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_BEGIN_SEQUENCE">BEGIN SEQUENCE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FUNCTION">FUNCTION</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PRIVATE">PRIVATE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROCEDURE">PROCEDURE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PUBLIC">PUBLIC</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_QUIT">QUIT</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

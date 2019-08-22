@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CLASS Statement</title>
+  <keywords>
+    <keyword>Binding of instance variables</keyword>
+    <keyword>Class names<keyword>declaring</keyword></keyword>
+    <keyword>CLASS statement</keyword>
+    <keyword>Classes</keyword>
+    <keyword>Classes</keyword>
+    <keyword>Classes<keyword>declaring Class names</keyword><keyword>inheritance</keyword><keyword>object instantiation</keyword></keyword>
+    <keyword>Compile-time declaration</keyword>
+    <keyword>Declaration statements</keyword>
+    <keyword>Entity declaration</keyword>
+    <keyword>EXPORT INSTANCE statement</keyword>
+    <keyword>EXPORT statement</keyword>
+    <keyword>HIDDEN INSTANCE statement</keyword>
+    <keyword>HIDDEN statement</keyword>
+    <keyword>INHERIT statement</keyword>
+    <keyword>INSTANCE statement</keyword>
+    <keyword>Instance variables</keyword>
+    <keyword>Instance variables</keyword>
+    <keyword>Instance variables</keyword>
+    <keyword>Instance variables<keyword>binding</keyword><keyword>declaring</keyword><keyword>exporting</keyword><keyword>hiding</keyword></keyword>
+    <keyword>Object instantiation</keyword>
+    <keyword>PROTECT INSTANCE statement</keyword>
+    <keyword>PROTECT statement</keyword>
+    <keyword>Statements</keyword>
+    <keyword>STATIC CLASS statement</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CLASS Statement</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Declare a class name to the compiler.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">CLASS &lt;<text styleclass="Italic">idClass</text>&gt; [INHERIT &lt;<text styleclass="Italic">idClass</text>&gt;]</para>
+    <para styleclass="Normal"><tab />[INSTANCE &lt;<text styleclass="Italic">idVar</text>&gt; [:= &lt;<text styleclass="Italic">uValue</text>&gt;] [, ...]</para>
+    <para styleclass="Normal"><tab /><tab />[AS &lt;<text styleclass="Italic">idType</text>&gt;] [, ...]]</para>
+    <para styleclass="Normal"><tab />[HIDDEN [INSTANCE] &lt;<text styleclass="Italic">idVar</text>&gt; [:= &lt;<text styleclass="Italic">uValue</text>&gt;] [, ...]</para>
+    <para styleclass="Normal"><tab /><tab />[AS &lt;<text styleclass="Italic">idType</text>&gt;] [, ...]]</para>
+    <para styleclass="Normal"><tab />[EXPORT [INSTANCE] &lt;<text styleclass="Italic">idVar</text>&gt; [:= &lt;<text styleclass="Italic">uValue</text>&gt;] [, ...]</para>
+    <para styleclass="Normal"><tab /><tab />[AS &lt;<text styleclass="Italic">idType</text>&gt;] [, ...]]</para>
+    <para styleclass="Normal"><tab />[PROTECT [INSTANCE] &lt;<text styleclass="Italic">idVar</text>&gt; [:= &lt;<text styleclass="Italic">uValue</text>&gt;] [, ...]</para>
+    <para styleclass="Normal"><tab /><tab />[AS &lt;<text styleclass="Italic">idType</text>&gt;] [, ...]]</para>
+    <para styleclass="Normal"><tab />DECLARE ( ACCESS | ASSIGN | METHOD ) &lt;message_identifier_list&gt;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;idClass&gt;<tab />A valid identifier name for the class. &#160;A class is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a class and a global variable, for example, with the same name.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">INHERIT &lt;idClass&gt;<tab />The name of an existing class (called a superclass) from which the new class inherits methods and instance variables (with the exception of HIDDEN).</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">INSTANCE<tab />Declares instance variables that are visible only in methods of the class being defined and its subclasses (i.e., classes that INHERIT it). &#160;INSTANCE variables are very similar to PROTECT variables, but they are slower to access. &#160;The only functional difference between these two types of instance variables is the way in which they interact with ACCESS and ASSIGN methods (see ACCESS and ASSIGN statements in this guide for more information). &#160;You can specify multiple INSTANCE declarations on separate lines.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">HIDDEN [INSTANCE]<tab />Declares instance variables that are visible only in methods of the class being defined — HIDDEN variables are not visible in subclasses. &#160;You can specify multiple HIDDEN declarations on separate lines.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">EXPORT [INSTANCE]<tab />Declares instance variables that are visible from outside as well as inside the methods of the class and its subclasses. &#160;You can specify multiple EXPORT declarations on separate lines.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">PROTECT [INSTANCE]</para>
+    <para styleclass="List"><tab />Declares instance variables that are visible only in methods of the class being defined and its subclasses (i.e., classes that INHERIT it). &#160;PROTECT variables are very similar to INSTANCE variables, but they are faster to access. &#160;The only functional difference between these two types of instance variables is the way in which they interact with ACCESS and ASSIGN methods (see ACCESS and ASSIGN statements in this guide for more information). &#160;You can specify multiple PROTECT declarations on separate lines.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;idVar&gt;<tab />A valid identifier name for the instance variable to declare.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;uValue&gt;<tab />The initial value to assign to the instance variable. &#160;This can be any valid expression with the exception of a class instantiation (that is, expressions of the form &lt;idClass&gt;{[&lt;uArgList&gt;]} are not allowed).</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />If &lt;uValue&gt; is not specified, the initial value of the variable depends on the data type you declare (e.g., NIL if you do not use strong typing, 0 for AS INT, etc.) &#160;See AS &lt;idType&gt; for a table of initial values by data type.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">AS &lt;idType&gt;<tab />Specifies the data type associated with the instance variables (called <link displaytype="text" defaultstyle="true" type="topiclink" href="strong_typing_gloss" domain="CavoIde.hmxz">strong typing</link>). &#160;If omitted, the instance variables will be polymorphic and will have an initial value of NIL.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />The valid values for &lt;idType&gt; and the initial values associated with each are listed in the table below:</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">Data Type<tab />Default Initial Value<tab /></para>
+    <para styleclass="List">ARRAY<tab />NULL_ARRAY (see Note below)<tab /></para>
+    <para styleclass="List">CODEBLOCK<tab />NULL_CODEBLOCK<tab /></para>
+    <para styleclass="List">DATE<tab />NULL_DATE<tab /></para>
+    <para styleclass="List">LOGIC<tab />FALSE<tab /></para>
+    <para styleclass="List">OBJECT<tab />NULL_OBJECT<tab /></para>
+    <para styleclass="List">&lt;idClass&gt;<tab />NULL_OBJECT</para>
+    <para styleclass="List">STRING<tab />NULL_STRING<tab /></para>
+    <para styleclass="List">SYMBOL<tab />NULL_SYMBOL<tab /></para>
+    <para styleclass="List">SHORTINT<tab />0</para>
+    <para styleclass="List">INT<tab />0</para>
+    <para styleclass="List">LONGINT<tab />0</para>
+    <para styleclass="List">FLOAT<tab />0</para>
+    <para styleclass="List">BYTE<tab />0</para>
+    <para styleclass="List">WORD<tab />0</para>
+    <para styleclass="List">DWORD<tab />0</para>
+    <para styleclass="List">REAL4<tab />0</para>
+    <para styleclass="List">REAL8<tab />0<tab /></para>
+    <para styleclass="List">USUAL<tab />NIL<tab /></para>
+    <para styleclass="List">PSZ<tab />NULL_PSZ<tab /></para>
+    <para styleclass="List">PTR<tab />NULL_PTR<tab /></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab /><tab />Note: &#160;NULL_ARRAY is the initial value for an array declared using, for example, LOCAL &lt;idArray&gt; AS ARRAY. &#160;If you specify array dimensions as part of the declaration you are, in effect, making an assignment to the array and, therefore, NULL_ARRAY will not apply.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">DECLARE &#160;( ACCESS | ASSIGN | METHOD ) &#160;&lt;message_identifier_list&gt;</para>
+    <para styleclass="List"><tab />Declares a list of strongly typed methods in the order that they must appear in the virtual table of the Class.</para>
+    <para styleclass="List"><tab />Declaring the methods is required for strongly typed methods.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">See the &quot;Variables, Constants, and Declarations&quot; chapter in the Programmer&apos;s Guide for a complete discussion of data types and the advantages of strong typing.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">With any of the INSTANCE statements, you can list several variable names separated by commas and followed by an AS &lt;idType&gt; clause to indicate that all names listed are to be typed as indicated. &#160;Furthermore, you can specify many such typed lists within the same statement. &#160;If you do this, each data type applies to the names listed to its left. &#160;For example:</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">HIDDEN x, z AS INT, cName, cAddr AS STRING</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">In this case, the variables x and z are typed as INT, while the variables cName and cAddr are typed as STRING.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">After the class name is declared to the compiler, it is followed by 0 or more instance variable declaration statements. &#160;You use a class name to declare variables (see GLOBAL and LOCAL statements in this guide) designed to hold instances of a specific class, to instantiate instances of the class, and to define methods (see the METHOD statement in this guide) and subclasses for the class.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Binding of instance variables: &#160;</text>Instance variables can be either <text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">early </text>or <text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">late bound</text>, depending on how you declare them and how you use them.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Early binding happens if the memory location of a variable is known at compile time. &#160;The compiler knows exactly how to reference the variable and can, therefore, generate code to do so.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Late binding is necessary if the memory location of a variable is unknown at compile time. &#160;The compiler cannot determine from the program source code exactly where the variable is or how to go about referencing it, so it generates code to look the symbol up in a table. &#160;The lookup is performed at runtime.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Since there is no need for a runtime lookup with early bound instance variables, using them instead of late bound variables will significantly improve the performance of your application. &#160;The following table summarizes the binding and visibility issues for the four types of instance variables:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Variable Type</text><tab /><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Binding</text><tab /><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Visibility</text><tab /></para>
+    <para styleclass="List"><text styleclass="Normal">EXPORT</text><tab /><text styleclass="Normal">Early, if possible</text><tab /><text styleclass="Normal">Application-wide for CLASS and module-wide for STATIC CLASS</text><tab /></para>
+    <para styleclass="List"><text styleclass="Normal">INSTANCE</text><tab /><text styleclass="Normal">Always late</text><tab /><text styleclass="Normal">In class and subclasses</text><tab /></para>
+    <para styleclass="List"><text styleclass="Normal">HIDDEN</text><tab /><text styleclass="Normal">Always early</text><tab /><text styleclass="Normal">In class only</text><tab /></para>
+    <para styleclass="List"><text styleclass="Normal">PROTECT</text><tab /><text styleclass="Normal">Always early</text><tab /><text styleclass="Normal">In class and subclasses</text><tab /></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Object instantiation: &#160;</text>Once you declare a class, you create instances of the class using the class name followed by the instantiation operators, {}. &#160;The syntax is as follows:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">&lt;idClass&gt;{[&lt;uArgList&gt;]}</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">where &lt;<text styleclass="Italic">uArgList</text>&gt; is an optional comma-separated list of values passed as arguments to a special method called Init() (see the METHOD statement in this guide for more information on the Init() method).</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Accessing instance variables: &#160;</text>The syntax to access an exported instance variable externally (i.e., from any entity that is not a method of its class) is as follows:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">&lt;idObject&gt;:&lt;idVar&gt;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">You can access non-exported instance variables only from methods in which they are visible. &#160;Within a method, you use the following syntax for accessing all instance variables:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">[SELF:]&lt;idVar&gt;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The SELF: &#160;prefix is optional except in the case of an access/assign method (see the ACCESS and ASSIGN statement entries in this guide for more information and the METHOD statement for more information on SELF).</para>
+    <para styleclass="Normal">Instance variables are just like other program variables. &#160;You can access them anywhere in the language where an expression is allowed.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The prefix [STATIC] is no longer supported &#160;by &lt;%APP%&gt;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">The following example defines two classes, one of which inherits values from the other, and demonstrates how to create a class instance with initial values for the instance variables:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Start</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:bold; font-style:normal; color:#000000;"> oCust </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Customer</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">oCust </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Customer</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">{</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;Louis&quot;,</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">92.07.22,</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;GA&quot;,</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">987</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">}</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">oCust</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:</text><text style="font-weight:bold; font-style:normal; color:#000000;">DisplayAll</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> oCust</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:</text><text style="font-weight:bold; font-style:normal; color:#000000;">Name</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">...</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Declare Person class</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Person</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">EXPORT</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Name </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">INSTANCE</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Birth </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DATE</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Declare Customer class to inherit from Person</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Customer </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INHERIT</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Person</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">PROTECT</text><text style="font-weight:bold; font-style:normal; color:#000000;"> CustNum </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SHORTINT</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">INSTANCE</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Address </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Declare method to initialize instance variables</text><br/><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Note that cName and dBirth are available to the </text><br/><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Customer class, even though they are not declared</text><br/><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// as part of the class — they are inherited from Person</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">METHOD</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Init</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">(</text><text style="font-weight:bold; font-style:normal; color:#000000;">cOne</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> dTwo</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cThree</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> nFour</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">)</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">;</text><br/><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Customer</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">Name </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cOne</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">Birth </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;"> dTwo</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">Address </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cThree</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">CustNum </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;"> nFour</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SELF</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Declare method to display all instance variables</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">METHOD</text><text style="font-weight:bold; font-style:normal; color:#000000;"> DisplayAll</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Customer</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;Name: &#160; &#160; &quot;,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Name</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;Birth Date: &#160;&quot;,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Birth</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;Address: &#160; &quot;,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Address</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;Number: &#160; &#160;&quot;,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> CustNum</text></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCESS">ACCESS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_ClassName">ClassName()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:12px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:144px left ;"></para>
+  </body>
+</topic>

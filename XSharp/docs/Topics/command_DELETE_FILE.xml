@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>DELETE FILE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>DELETE FILE command</keyword>
+    <keyword>Deleting<keyword>files</keyword></keyword>
+    <keyword>Files<keyword>deleting</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">DELETE FILE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Remove a file from disk.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">DELETE FILE | ERASE &lt;<text styleclass="Italic">xcSourceFile</text>&gt;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;xcSourceFile&gt;<tab />The name of the file to delete, including an optional drive, directory, and extension. &#160;SetDefault() and SetPath() do not affect this command. &#160;It assumes the current Windows drive and directory if none is specified. &#160;No default extension is supplied.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />Warning! &#160;Files must be closed before deleting them.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example removes a specified file from disk then tests to see if the file was removed:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">? File(&quot;temp.dbf&quot;)<tab /><tab />// Result: &#160;TRUE<br/>DELETE FILE temp.dbf<br/>? File(&quot;temp.dbf&quot;)<tab /><tab />// Result: &#160;FALSE</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_CurDir">CurDir()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_FErase">FErase()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_File">File()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

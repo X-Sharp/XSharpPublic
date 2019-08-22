@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>COMMIT Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>COMMIT ALL command</keyword>
+    <keyword>COMMIT command</keyword>
+    <keyword>Concurrency control</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Flushing updates</keyword>
+    <keyword>Updates<keyword>flushing</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">COMMIT Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Flush all pending updates in all work areas.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">COMMIT [ALL]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">COMMIT causes all pending updates to all work areas to be written to disk. &#160;It is functionally equivalent to DBCommit() for every occupied work area. &#160;COMMIT ALL is functionally equivalent to DBCommitAll().</para>
+    <para styleclass="Normal">All updated database and order buffers are written to DOS, and a DOS Commit request is issued for all files associated with all work areas.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Shared mode: &#160;</text>COMMIT makes database updates visible to other processes. &#160;To insure data integrity, issue DBCommit() before an unlock operation. &#160;For more information on update visibility, refer to &quot;Concurrency Control&quot; in the <text styleclass="Italic">Programmer&apos;s Guide</text>.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">COMMIT uses DOS interrupt 21h function 68h to perform the solid-disk write. &#160;It is up to the network software to properly implement this request. &#160;Check with the network software vendor to see if this is supported.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">In this example, COMMIT forces a write to disk after a series of memory variables are assigned to field variables:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE sales EXCLUSIVE NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">_MEMVAR</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Name </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Sales</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Name</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">_MEMVAR</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Amount </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Sales</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Amount</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">@</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">10,</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">10</text><text style="font-weight:bold; font-style:normal; color:#000000;"> GET _MEMVAR</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Name</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">@</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">11,</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">10</text><text style="font-weight:bold; font-style:normal; color:#000000;"> GET _MEMVAR</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Amount</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">READ</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Updated</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">APPEND BLANK</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">REPLACE Sales</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Name </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WITH</text><text style="font-weight:bold; font-style:normal; color:#000000;"> _MEMVAR</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Name</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">REPLACE Sales</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Amount </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WITH</text><text style="font-weight:bold; font-style:normal; color:#000000;"> _MEMVAR</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Amount</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">COMMIT</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBCommit">DBCommit()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBCommitAll">DBCommitAll()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_GO">GO</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SKIP">SKIP</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

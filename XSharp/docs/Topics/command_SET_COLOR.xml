@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET COLOR Command</title>
+  <keywords>
+    <keyword>Colors<keyword>setting</keyword></keyword>
+    <keyword>Commands</keyword>
+    <keyword>SET COLOR command</keyword>
+    <keyword>SET COLOUR command</keyword>
+    <keyword>Setting<keyword>colors</keyword></keyword>
+    <keyword>Terminal window</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET COLOR Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Change the setting that determines the current color for the terminal window.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">SET COLOR | COLOUR TO [&lt;<text styleclass="Italic">xcColorString</text>&gt;]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">SET COLOR is functionally equivalent to SetColor(). &#160;SET COLOR TO with no arguments is the same as SetColor(NULL_STRING), returning to the default color settings.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example uses the unselected setting to make the current GET red on white while the rest are black on white:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">cColor </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;W/N&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SET COLOR </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">(</text><text style="font-weight:bold; font-style:normal; color:#000000;">cColor</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">)</text><br/></para>
+    <para styleclass="Normal"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetColor">SetColor()</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

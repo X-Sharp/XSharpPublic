@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>DESTRUCTOR Statement</title>
+  <keywords>
+    <keyword>Compile-time declaration</keyword>
+    <keyword>Declaration statements</keyword>
+    <keyword>DESTRUCTOR statement</keyword>
+    <keyword>Entity declaration</keyword>
+    <keyword>Statements</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">DESTRUCTOR Statement</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Declare a method to access a non-exported or virtual instance variable.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal"><tab />[Attributes] </para>
+    <para styleclass="Normal"><tab />[Modifiers] </para>
+    <para styleclass="Normal"><tab /><text style="font-weight:bold;">DESTRUCTOR [()]</text></para>
+    <para styleclass="Normal"><tab />[CLASS &lt;<text styleclass="Italic">idClass</text>&gt;]</para>
+    <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">MethodBody</text>&gt;]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

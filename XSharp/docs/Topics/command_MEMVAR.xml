@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>MEMVAR Statement</title>
+  <keywords>
+    <keyword>Compiledeclaration</keyword>
+    <keyword>Declaration statements</keyword>
+    <keyword>Memory variable</keyword>
+    <keyword>MEMVAR statement</keyword>
+    <keyword>Statements</keyword>
+    <keyword>Variable declaration</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">MEMVAR Statement</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Declare one or more memory variable names to be used by the current routine.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal">MEMVAR &lt;<text styleclass="Italic">idMemvarList</text>&gt;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;idMemvarList&gt;<tab />A list of public and private variable names to declare to the compiler.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Normal">When you use the MEMVAR statement to declare variables, unaliased references to variables in &lt;<text styleclass="Italic">idMemvarList</text>&gt; are treated as if they were preceded by the special memory variable alias </para>
+    <para styleclass="Normal">(_MEMVAR-&gt;).</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Like other variable declaration statements (such as LOCAL and FIELD), you must place MEMVAR statements before any executable statements (including PRIVATE, PUBLIC, and PARAMETERS) in the routine you are defining. &#160;The MEMVAR statement has no effect on the macro operator, which always assumes memory variables.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The MEMVAR statement neither creates the variables nor verifies their existence. &#160;Its primary purpose is to ensure correct references to variables that are known to exist at runtime. &#160;Attempting to access variables before they are created will raise a runtime error.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">For more information on variable declarations and scoping, refer to the &quot;Variables, Constants, and Declarations&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide</text>.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Normal">This example demonstrates the relationship between a private and field variable with the same name. &#160;The private variable is declared with the MEMVAR statement:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Example()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">MEMVAR</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Amount, Address</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Amount := 100</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; USE customer </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEW</text><br/><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? Amount &#160; &#160; &#160;</text><tab /><text style="font-weight:bold; font-style:italic; color:#339966;">// Refers to Amount private variable</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? Customer-&gt;Amount</text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// Refers to Amount field variable</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FIELD">FIELD</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PARAMETERS">PARAMETERS</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PRIVATE">PRIVATE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PUBLIC">PUBLIC</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_STATIC">STATIC</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

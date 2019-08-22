@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>RENAME Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Files<keyword>renaming</keyword></keyword>
+    <keyword>RENAME command</keyword>
+    <keyword>Renaming<keyword>files</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">RENAME Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Change the name of a file to a new name.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">RENAME &lt;<text styleclass="Italic">xcSourceFile</text>&gt; TO &lt;<text styleclass="Italic">xcTargetFile</text>&gt;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;xcSourceFile&gt;<tab />The name of the source file to rename, including an optional drive, directory, and extension. &#160;If &lt;xcSourceFile&gt; does not exist, a runtime error is raised.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />The name of the new file, including an optional drive, directory, and extension. &#160;If &lt;xcTargetFile&gt; exists or is open, RENAME does nothing.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />SetDefault() and SetPath() do not affect this command. &#160;It assumes the current Windows drive and directory if none is specified. &#160;No default extensions are supplied.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">If the target directory is different from the source directory, the file moves to the new directory.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Warning! &#160;</text><text styleclass="Italic">Files must be closed before renaming. &#160;Attempting to rename an open file will produce unpredictable results. &#160;When a database file is renamed, remember that any associated memo file must also be renamed. &#160;Failure to do so can compromise the integrity of your application.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Normal">This example renames a file, checking for the existence of the target file before beginning the RENAME operation:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">xcOldFile := &quot;oldfile.txt&quot;<br/>xcNewFile := &quot;newfile.txt&quot;<br/>IF !File(xcNewFile)<br/><tab />RENAME (xcOldFile) TO (xcNewFile)<br/>ELSE<br/><tab />? &quot;File already exists&quot;<br/>ENDIF</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_FILE">COPY FILE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_CurDir">CurDir()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_FILE">DELETE FILE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_File">File()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_FErase">FErase()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_FRename">FRename()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RUN">RUN</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

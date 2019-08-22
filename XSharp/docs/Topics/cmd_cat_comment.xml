@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Comment</title>
+  <keywords>
+    <keyword>Commands<keyword>Comments</keyword></keyword>
+    <keyword>Comments</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Comment</para>
+    </header>
+    <para styleclass="List"></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_NOTE">NOTE</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_TEXTBLOCK">TEXTBLOCK</link></para>
+    <para styleclass="List"></para>
+  </body>
+</topic>

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Variable Declaration</title>
+  <keywords>
+    <keyword>Commands<keyword>Variable Declaration</keyword></keyword>
+    <keyword>Variable Declaration Commands</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Variable Declaration</para>
+    </header>
+    <para styleclass="List"></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FIELD">FIELD</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_MEMVAR">MEMVAR</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_STATIC">STATIC</link></para>
+    <para styleclass="List"></para>
+  </body>
+</topic>

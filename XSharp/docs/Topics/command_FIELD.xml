@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>FIELD Statement</title>
+  <keywords>
+    <keyword>Compiledeclaration</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Declaration statements</keyword>
+    <keyword>FIELD statement</keyword>
+    <keyword>Statements</keyword>
+    <keyword>Variable declaration</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">FIELD Statement</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Declare one or more database field names to be used by the current routine.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal">FIELD &lt;<text styleclass="Italic">idFieldList</text>&gt; [IN &lt;<text styleclass="Italic">idAlias</text>&gt;]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;idFieldList&gt;<tab />A list of names to declare as fields to the compiler.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">IN &lt;idAlias&gt;<tab />An alias to assume when there are unaliased references to the names specified in the &lt;idFieldList&gt;.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">When you use the FIELD statement to declare fields, unaliased references to variables in &lt;<text styleclass="Italic">idFieldList</text>&gt; are treated as if they were preceded by the special field alias (_FIELD-&gt;) or &lt;<text styleclass="Italic">idAlias</text>&gt;-&gt; if the IN clause is specified.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Like other variable declaration statements (i.e., LOCAL and MEMVAR), you must place FIELD statements before any executable statements (including PRIVATE, PUBLIC, and PARAMETERS) in the routine you are defining. &#160;The FIELD statement has no effect on the macro operator, which always assumes memory variables.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The FIELD statement neither opens a database file nor verifies the existence of the specified fields. &#160;It is useful primarily to ensure correct references to fields that are known to exist at runtime. &#160;Attempting to access the fields when the associated database is not in use will raise a runtime error.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">For more information on variable declarations and scoping, refer to the &quot;Variables, Constants, and Declarations&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide</text>.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Normal">This function includes statements to declare database field names in both the current and Employee work areas:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:bold; font-style:normal; color:#000000;"> DisplayRecord</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">FIELD</text><text style="font-weight:bold; font-style:normal; color:#000000;"> CustNo</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> OrderNo</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Orders</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">FIELD</text><text style="font-weight:bold; font-style:normal; color:#000000;"> EmpName</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> EmpCode </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IN</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Employee</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">USE employee NEW</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">USE orders NEW</text><br/><tab /><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> CustNo</text><tab /><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Refers to Orders-&gt;CustNo</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> EmpName</text><tab /><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Refers to Employee-&gt;EmpName</text><br/><tab /><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">CLOSE orders</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">CLOSE employee</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBFieldInfo">DBFieldInfo()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_MEMVAR">MEMVAR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_STATIC">STATIC</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

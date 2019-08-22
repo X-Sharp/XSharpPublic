@@ -30,7 +30,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 
-    internal class XSharpVOTreeTransformation : XSharpTreeTransformation
+    internal class XSharpTreeTransformationRT : XSharpTreeTransformationCore
     {
         // XBase Type Names
         #region Fields
@@ -49,11 +49,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private readonly string _defaultParameterType;
         private readonly string _actualType;
         private readonly string _clipperCallingConvention;
-        private readonly string _winBoolType;
 
         private ArrayTypeSyntax arrayOfUsual = null;
         private ArrayTypeSyntax arrayOfString = null;
-        private bool voStructHasDim;
         private Dictionary<string, MemVarFieldInfo> _memvars = null;
 
 
@@ -70,7 +68,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
 
         #region Constructors and destructors
-        public XSharpVOTreeTransformation(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool,
+        public XSharpTreeTransformationRT(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool,
             ContextAwareSyntax syntaxFactory, string fileName) :
             base(parser, options, pool, syntaxFactory, fileName)
         {
@@ -91,7 +89,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _defaultParameterType = XSharpQualifiedTypeNames.DefaultParameter;
                 _actualType = XSharpQualifiedTypeNames.ActualType;
                 _clipperCallingConvention = XSharpQualifiedTypeNames.ClipperCallingConvention;
-                _winBoolType = XSharpQualifiedTypeNames.WinBool;
             }
             else
             {
@@ -110,7 +107,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _defaultParameterType = VulcanQualifiedTypeNames.DefaultParameter;
                 _actualType = VulcanQualifiedTypeNames.ActualType;
                 _clipperCallingConvention = VulcanQualifiedTypeNames.ClipperCallingConvention;
-                _winBoolType = VulcanQualifiedTypeNames.WinBool;
             }
             if (_options.SupportsMemvars)
             {
@@ -204,9 +200,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 arrayOfString = _syntaxFactory.ArrayType(_stringType, emptyrank);
             }
         }
-        private static XSharpVOTreeTransformation getTransform(CSharpParseOptions options)
+        private static XSharpTreeTransformationRT getTransform(CSharpParseOptions options)
         {
-            return new XSharpVOTreeTransformation(null, options, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
+            return new XSharpTreeTransformationRT(null, options, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
         }
 
         #endregion
@@ -263,7 +259,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     GlobalEntities.Members, eof).
                     CreateRed());
         }
-        public static SyntaxTree DefaultVOSyntaxTree(IEnumerable<SyntaxTree> trees, bool isApp)
+        public static SyntaxTree DefaultRTSyntaxTree(IEnumerable<SyntaxTree> trees, bool isApp)
         {
             // Trees is NEVER empty !
             CSharpParseOptions options = (CSharpParseOptions)trees.First().Options;
@@ -4370,178 +4366,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #endregion
 
-        #region VO Types
-
-        public override void EnterVostruct([NotNull] XP.VostructContext context)
-        {
-            voStructHasDim = false;
-        }
-
-        public override void ExitVostruct([NotNull] XP.VostructContext context)
-        {
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
-            if (voStructHasDim)
-            {
-                var modBuilder = _pool.Allocate();
-                modBuilder.AddRange(mods);
-                modBuilder.Add(SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword));
-                mods = modBuilder.ToList<SyntaxToken>();
-                _pool.Free(modBuilder);
-            }
-            var attargs = ArrayBuilder<AttributeArgumentSyntax>.GetInstance();
-            attargs.Add(_syntaxFactory.AttributeArgument(null, null, GenerateQualifiedName(SystemQualifiedNames.LayoutSequential)));
-            if (context.Alignment != null)
-            {
-                var lit = GenerateLiteral(context.Alignment);
-                attargs.Add(_syntaxFactory.AttributeArgument(GenerateNameEquals("Pack"), null, lit));
-            }
-
-            MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
-                attributeLists: MakeList(
-                    MakeAttributeList(
-                        target: null,
-                        attributes: MakeSeparatedList(
-                            _syntaxFactory.Attribute(
-                                name: GenerateQualifiedName(SystemQualifiedNames.StructLayout),
-                                argumentList: MakeAttributeArgumentList(MakeSeparatedList(attargs.ToArrayAndFree()))
-                                )
-                            ))
-                    ),
-                modifiers: mods,
-                keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
-                identifier: context.Id.Get<SyntaxToken>(),
-                typeParameterList: null,
-                baseList: null,
-                constraintClauses: null,
-                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                members: (context._Members?.Count > 0) ? MakeList<MemberDeclarationSyntax>(context._Members) : EmptyList<MemberDeclarationSyntax>(),
-                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                semicolonToken: null);
-            m.XVoDecl = true;
-            if (context.Namespace != null)
-            {
-                m = AddNameSpaceToMember(context.Namespace, m);
-            }
-            else
-            {
-                m = (MemberDeclarationSyntax)CheckTypeName(context, "VOSTRUCT", m);
-            }
-            context.Put(m);
-        }
-
-        private TypeSyntax voStructMemberDataType(XP.VostructmemberContext context)
-        {
-            var varType = context.DataType?.Get<TypeSyntax>() ?? MissingType();
-            if (context.DataType is XP.SimpleDatatypeContext)
-            {
-                var sdt = context.DataType as XP.SimpleDatatypeContext;
-                if (sdt.TypeName.NativeType != null)
-                {
-                    if (sdt.TypeName.NativeType.Token.Type == XP.LOGIC)
-                    {
-                        varType = GenerateQualifiedName(_winBoolType);
-                    }
-                }
-            }
-            return varType;
-        }
-
-        public override void ExitVostructmember([NotNull] XP.VostructmemberContext context)
-        {
-            bool isDim = context.Dim != null;
-            bool isUnionMember = (context.Parent is XP.VounionContext);
-            var varType = voStructMemberDataType(context);
-
-            varType.XVoDecl = true;
-            if (context.As?.Type == XP.IS)
-            {
-                varType.XVoIsDecl = true;
-            }
-            if (isDim)
-            {
-                voStructHasDim = true;
-            }
-
-            SyntaxList<AttributeListSyntax> atts = null;
-            if (isUnionMember)
-            {
-                var args = MakeSeparatedList(
-                                        _syntaxFactory.AttributeArgument(null, null,
-                                            GenerateLiteral("0", 0)));
-                var arglist = MakeAttributeArgumentList(args);
-                var att = MakeSeparatedList(
-                            _syntaxFactory.Attribute(
-                                name: GenerateQualifiedName(SystemQualifiedNames.FieldOffset),
-                                argumentList: arglist));
-                atts = MakeAttributeList(null, att);
-            }
-            else
-            {
-                atts = EmptyList<AttributeListSyntax>();
-            }
-            context.Put(_syntaxFactory.FieldDeclaration(
-                atts,
-                TokenList(SyntaxKind.PublicKeyword, isDim ? SyntaxKind.FixedKeyword : SyntaxKind.None),
-                _syntaxFactory.VariableDeclaration(varType,
-                    MakeSeparatedList(
-                        isDim ? GenerateBuffer(context.Id.Get<SyntaxToken>(), MakeBracketedArgumentList(context.ArraySub._ArrayIndex.Select(e => _syntaxFactory.Argument(null, null, e.Get<ExpressionSyntax>())).ToArray()))
-                        : GenerateVariable(context.Id.Get<SyntaxToken>()))),
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-        }
-
-        public override void EnterVounion([NotNull] XP.VounionContext context)
-        {
-            voStructHasDim = false;
-        }
-
-        public override void ExitVounion([NotNull] XP.VounionContext context)
-        {
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
-            if (voStructHasDim)
-            {
-                var modBuilder = _pool.Allocate();
-                modBuilder.AddRange(mods);
-                modBuilder.Add(SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword));
-                mods = modBuilder.ToList<SyntaxToken>();
-                _pool.Free(modBuilder);
-            }
-
-            MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
-                attributeLists: MakeList(
-                    MakeAttributeList(
-                        target: null,
-                        attributes: MakeSeparatedList(
-                            _syntaxFactory.Attribute(
-                                name: GenerateQualifiedName(SystemQualifiedNames.StructLayout),
-                                argumentList: MakeAttributeArgumentList(
-                                    MakeSeparatedList(_syntaxFactory.AttributeArgument(null, null, GenerateQualifiedName(SystemQualifiedNames.LayoutExplicit)))
-                                    )
-                                )
-                            ))
-                    ),
-                modifiers: mods,
-                keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
-                identifier: context.Id.Get<SyntaxToken>(),
-                typeParameterList: null,
-                baseList: null,
-                constraintClauses: null,
-                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                members: (context._Members?.Count > 0) ? MakeList<MemberDeclarationSyntax>(context._Members) : EmptyList<MemberDeclarationSyntax>(),
-                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                semicolonToken: null);
-            m.XVoDecl = true;
-            if (context.Namespace != null)
-            {
-                m = AddNameSpaceToMember(context.Namespace, m);
-            }
-            else
-            {
-                m = (MemberDeclarationSyntax)CheckTypeName(context, "UNION", m);
-            }
-            context.Put(m);
-        }
-
-        #endregion
+        
  
     }
 }

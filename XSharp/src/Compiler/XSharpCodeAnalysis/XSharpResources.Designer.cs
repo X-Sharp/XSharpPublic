@@ -15335,6 +15335,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unbalanced textmerge operators &apos;&lt;&lt;&apos; and &apos;&gt;&gt;&apos;..
+        /// </summary>
+        internal static string WRN_UnbalancedTextMergeOperators {
+            get {
+                return ResourceManager.GetString("WRN_UnbalancedTextMergeOperators", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Variable &apos;{0}&apos; has not been declared. Assuming this is a FIELD or a MEMVAR..
         /// </summary>
         internal static string WRN_UndeclaredVariable {

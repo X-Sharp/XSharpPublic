@@ -64,17 +64,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                     string functionsClass = null;
                     if (compilation.Options.HasRuntime )
                     {
-                        functionsClass = Syntax.InternalSyntax.XSharpVOTreeTransformation.VOGlobalClassName(opts);
+                        functionsClass = Syntax.InternalSyntax.XSharpTreeTransformationRT.VOGlobalClassName(opts);
                     }
                     else
                     {
-                        functionsClass = Syntax.InternalSyntax.XSharpTreeTransformation.GlobalFunctionClassName(opts.TargetDLL);
+                        functionsClass = Syntax.InternalSyntax.XSharpTreeTransformationCore.GlobalFunctionClassName(opts.TargetDLL);
                     }
                     if (!string.IsNullOrEmpty(functionsClass))
                     {
                         var declbinder = usingsBinder.WithAdditionalFlags(BinderFlags.SuppressConstraintChecks);
                         var diagnostics = DiagnosticBag.GetInstance();
-                        var name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(functionsClass);
+                        var name = Syntax.InternalSyntax.XSharpTreeTransformationCore.ExtGenerateQualifiedName(functionsClass);
                         var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
                         if (imported.Kind == SymbolKind.NamedType)
                         {
@@ -97,7 +97,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     foreach (var n in defNs)
                     {
-                        var name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(n);
+                        var name = Syntax.InternalSyntax.XSharpTreeTransformationCore.ExtGenerateQualifiedName(n);
                         var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
                         if (imported.Kind == SymbolKind.Namespace)
                         {
@@ -126,7 +126,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     var defaultNamespace = args[0].Value.ToString();
                                     if (!string.IsNullOrEmpty(defaultNamespace))
                                     {
-                                        var name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(defaultNamespace);
+                                        var name = Syntax.InternalSyntax.XSharpTreeTransformationCore.ExtGenerateQualifiedName(defaultNamespace);
                                         var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
                                         if (imported.Kind == SymbolKind.Namespace)
                                         {
@@ -145,7 +145,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     var globalClassName = args[0].Value.ToString();
                                     if (!string.IsNullOrEmpty(globalClassName))
                                     {
-                                        var name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(globalClassName);
+                                        var name = Syntax.InternalSyntax.XSharpTreeTransformationCore.ExtGenerateQualifiedName(globalClassName);
                                         var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
                                         if (imported.Kind == SymbolKind.NamedType)
                                         {
@@ -157,7 +157,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     var defaultNamespace = args[1].Value.ToString();
                                     if (!string.IsNullOrEmpty(defaultNamespace) && compilation.Options.ImplicitNameSpace)
                                     {
-                                        var name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(defaultNamespace);
+                                        var name = Syntax.InternalSyntax.XSharpTreeTransformationCore.ExtGenerateQualifiedName(defaultNamespace);
                                         var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
                                         if (imported.Kind == SymbolKind.Namespace)
                                         {

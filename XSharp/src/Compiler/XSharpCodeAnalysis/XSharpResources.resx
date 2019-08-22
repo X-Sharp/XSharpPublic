@@ -5663,5 +5663,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_CantCastPtrInPlatform" xml:space="preserve">
     <value>Cannot implicitly convert between '{0}' and 'PTR' in platform '{1}' because the size of '{0}' does not match the size of 'PTR' for the target platform.</value>
   </data>
-
+  <data name="WRN_UnbalancedTextMergeOperators" xml:space="preserve">
+    <value>Unbalanced textmerge operators '&lt;&lt;' and '&gt;&gt;'.</value>
+  </data>
+  
 </root>

@@ -50,8 +50,8 @@ source              : (Entities+=entity )*
 entity              : namespace_
                     // types
                     | class_
-                    | {IsXPP}? xppclass         // XPP Class definition
-                    //| {IsFox}? foxclass         // FoxPro Class definition*/
+                    | xppclass         // XPP Class definition
+                    | foxclass         // FoxPro Class definition*/
                     | structure_
                     | interface_
                     | delegate_
@@ -532,6 +532,7 @@ statement           : Decl=localdecl                        #declarationStmt
                     | Q=(QMARK | QQMARK)
                        (Exprs+=expression (COMMA Exprs+=expression)*)?
                        end=eos                                            #qoutStmt
+                    | B=(BACKSLASH | BACKBACKSLASH) String=TEXT_STRING_CONST end=EOS #textoutStmt    // only supported in FoxPro dialect
                     | BEGIN SEQUENCE end=eos
                       StmtBlk=statementBlock
                       (RECOVER RecoverBlock=recoverBlock)?
@@ -588,20 +589,21 @@ statement           : Decl=localdecl                        #declarationStmt
                       StmtBlk=statementBlock
                       (e=END WITH? eos)?              #withBlock
 
-                    | {IsFox}? TEXT (TO Id=identifier (Add=ADDITIVE)? (Merge=TEXTMERGE)? (NoShow=NOSHOW)? (FLAGS Flags=expression)? (PRETEXT Pretext=expression)? )? end=EOS
+                    | TEXT (TO Id=identifier (Add=ADDITIVE)? (Merge=TEXTMERGE)? (NoShow=NOSHOW)? (FLAGS Flags=expression)? (PRETEXT Pretext=expression)? )? end=EOS
                        String=TEXT_STRING_CONST
-                       ENDTEXT e=eos                #textStmt
+                       ENDTEXT e=eos                #textStmt   // only supported in FoxPro dialect
 
                       // NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
                       // The first ExpressonStmt rule matches a single expression
                       // The second Rule matches a single expression with an extraneous RPAREN RCURLY or RBRKT
                       // The third rule matches more than one expression
+                      // The EQ sign is supported for the FoxPro dialect
                     | {validExpressionStmt()}?
-                      Exprs+=expression  end=eos									#expressionStmt
+                      (eq=EQ)? Exprs+=expression  end=eos									                            #expressionStmt
                     | {validExpressionStmt()}?
-                      Exprs+=expression t=(RPAREN|RCURLY|RBRKT)  end=eos {eosExpected($t);}		#expressionStmt
+                      (eq=EQ)? Exprs+=expression t=(RPAREN|RCURLY|RBRKT)  end=eos {eosExpected($t);}		#expressionStmt
                     | {validExpressionStmt()}?
-                      Exprs+=expression (COMMA Exprs+=expression)+  end=eos			#expressionStmt
+                      (eq=EQ)? Exprs+=expression (COMMA Exprs+=expression)+  end=eos			              #expressionStmt
 	                ;
 
 
@@ -956,7 +958,7 @@ queryBody           : (Bodyclauses+=queryBodyClause)* SorG=selectOrGroupclause (
                     ;
 
 queryBodyClause     : From=fromClause                                                                    #fromBodyClause
-                    | LET Id=identifier Op=assignoperator Expr=expression                                        #letClause
+                    | LET Id=identifier Op=assignoperator Expr=expression                                #letClause
                     | WHERE Expr=expression                                                              #whereClause        // expression must be Boolean
                     | JOIN Id=identifier (AS Type=typeName)?
                       IN Expr=expression ON OnExpr=expression EQUALS EqExpr=expression

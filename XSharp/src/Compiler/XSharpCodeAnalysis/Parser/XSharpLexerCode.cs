@@ -98,7 +98,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         bool _currentLineIsPreprocessorDefinition = false;
         bool _currentLineHasEos = true;
         bool _nextLineTextMode = false;
-        bool _textMode = false;
+        bool _foxTextMode = false;
+        bool _foxTextLineMode = false;
         int _lastToken = NL;
         IList<ParseErrorData> _lexErrors = new List<ParseErrorData>();
 
@@ -262,7 +263,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 if (_nextLineTextMode)
                 {
                     // this happens in FoxPro dialect only, because only there the TEXT keyword is available
-                    _textMode = true;
+                    _foxTextMode = true;
                     _nextLineTextMode = false;
                 }
                 return true;
@@ -517,14 +518,35 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
+        private IToken parseTextLine()
+        {
+            while (La_1 != TokenConstants.Eof && La_1 != '\r' && La_1 != '\n')
+                parseOne();
+            parseType(TEXT_STRING_CONST);
+            Interpreter.Column += (InputStream.Index - _startCharIndex);
+            XSharpToken t = TokenFactory.Create(this.SourcePair, _tokenType, _textSb.ToString(), _tokenChannel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as XSharpToken;
+            Emit(t);
+            _foxTextLineMode = false;
+            return t;
+
+        }
+
         // this happens in FoxPro dialect only, because only there the TEXT keyword is available
         private IToken parseTextEndText()
         {
-            // contine to collect tokens until end of line
+            // continue to collect tokens until end of line
             // until the line starts with ENDTEXT
 
             while (La_1 != Eof)
             {
+                switch (La_1)
+                {
+                    case ' ':
+                    case '\t':
+                        parseOne();
+                        continue;
+                }
+
                 if ((La_1 == 'e' || La_1 == 'E') && (La_2 == 'n' || La_2 == 'N') && (La_3 == 'd' || La_3 == 'D')
                     && (La_4 == 't' || La_4 == 'T') && (La_5 == 'e' || La_5 == 'E') && (La_6 == 'x' || La_6 == 'X')
                     && (La_7 == 't' || La_7 == 'T'))
@@ -538,7 +560,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     break;
             }
             parseType(TEXT_STRING_CONST);
-            _textMode = false;
+            _foxTextMode = false;
             Interpreter.Column += (InputStream.Index - _startCharIndex);
             XSharpToken  t = TokenFactory.Create(this.SourcePair, _tokenType, _textSb.ToString(), _tokenChannel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as XSharpToken;
             Emit(t);
@@ -550,9 +572,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 parseInit();
                 // this happens in FoxPro dialect only, because only there the TEXT keyword is available
-                if (_textMode)
+                if (_foxTextMode)
                 {
                     return parseTextEndText();
+                }
+                if (_foxTextLineMode)
+                {
+                    return parseTextLine();
                 }
 
                 if (La_1 == '\uFEFF') parseSkip();
@@ -595,6 +621,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         break;
                     case '\\':       // used inside #command to escape '<'
                         parseOne(BACKSLASH);
+                        if (LastToken == NL && Options.Dialect == XSharpDialect.FoxPro)
+                        { 
+                            if (La_1 == '\\')
+                                parseOne(BACKBACKSLASH);
+                            // todo: In FoxPro dialect this 'eats' the whole line and makes this a TEXT_STRING_CONST
+                            _foxTextLineMode = true;
+                        }
                         break;
                     case '|':
                         parseOne(PIPE);
@@ -718,6 +751,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         if (La_1 == '?')
                             parseOne(QQMARK);
                         break;
+
                     case '=':
                         parseOne(EQ);
                         if (La_1 == '=')

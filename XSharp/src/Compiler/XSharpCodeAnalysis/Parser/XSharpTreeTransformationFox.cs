@@ -32,9 +32,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
     [DebuggerDisplay("{Name}")]
 
-    internal class XSharpFoxTreeTransformation : XSharpVOTreeTransformation
+    internal class XSharpTreeTransformationFox : XSharpTreeTransformationRT
     {
-        public XSharpFoxTreeTransformation(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool,
+        public XSharpTreeTransformationFox(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool,
                     ContextAwareSyntax syntaxFactory, string fileName) :
                     base(parser, options, pool, syntaxFactory, fileName)
         {
@@ -219,5 +219,75 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
 
         }
+
+        private bool checkTextMergeDelimiters(string sourceText)
+        {
+            var open = sourceText.Contains("<<");
+            var close = sourceText.Contains(">>");
+            bool unbalanced = false;
+            if (open && close)
+            {
+                var numOpen = sourceText.Length - sourceText.Replace("<<", "").Length;
+                var numClose = sourceText.Length - sourceText.Replace(">>", "").Length;
+                if (numOpen == numClose)    // balanced, may still be incorrect, such as >> aaa <<
+                {
+                    sourceText = sourceText.Replace("<<", "{");
+                    sourceText = sourceText.Replace(">>", "}");
+                    // check to see if open is before close
+                    string worker = sourceText;
+                    numOpen = worker.IndexOf("{");
+                    numClose = worker.IndexOf("}");
+                    while (numClose > numOpen && numClose != -1)
+                    {
+                        worker = worker.Substring(numClose + 1);
+                        numOpen = worker.IndexOf("{");
+                        numClose = worker.IndexOf("}");
+                    }
+                    if (numOpen > numClose)
+                        unbalanced = true;
+                }
+                else
+                {
+                    unbalanced = true;
+                }
+            }
+            else if (open || close)
+            {
+                unbalanced = true;
+            }
+            return !unbalanced;
+        }
+
+        public override void ExitTextoutStmt([NotNull] XP.TextoutStmtContext context)
+        {
+            //Todo: Improved parsing of expressions:
+            // split string into literal strings with {0} {1}  etc
+            // and use a second lexer and parser to create expressions for each of the embedded elements
+            var sourceText = context.String.Text;
+            ExpressionSyntax expr;
+            bool delimitersOk = checkTextMergeDelimiters(sourceText);
+            if (delimitersOk)
+            {
+                sourceText = sourceText.Replace("<<", "{");
+                sourceText = sourceText.Replace(">>", "}");
+                expr = parseInterpolatedString(sourceText);
+            }
+            else
+            {
+                expr = GenerateLiteral(sourceText);
+            }
+            var arg2 = context.B.Type == XP.BACKBACKSLASH ? GenerateLiteral(false) : GenerateLiteral(true);
+            var cond = GenerateMethodCall("SetTextMerge", true);
+            var arg1 = MakeConditional(cond, expr, GenerateLiteral(context.String.Text));
+            var args = MakeArgumentList(MakeArgument(arg1), MakeArgument(arg2));
+            var call = GenerateMethodCall("__TextOut", args, true); 
+            var stmt = GenerateExpressionStatement(call);
+            if (!delimitersOk)
+                stmt = stmt.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_UnbalancedTextMergeOperators));
+            context.Put(stmt);
+            return;
+        }
+
+        
     }
 }

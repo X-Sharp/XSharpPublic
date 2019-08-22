@@ -131,12 +131,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
     }
 
-    internal class XSharpXPPTreeTransformation : XSharpVOTreeTransformation
+    internal class XSharpTreeTransformationXPP : XSharpTreeTransformationRT
     {
         internal IList<XppClassInfo> _classes;
         internal Stack<IList<XppClassInfo>> _classstack;
         internal XppClassInfo _currentClass = null;
-        public XSharpXPPTreeTransformation(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool,
+        public XSharpTreeTransformationXPP(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool,
                     ContextAwareSyntax syntaxFactory, string fileName) :
                     base(parser, options, pool, syntaxFactory, fileName)
         {

@@ -33,7 +33,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 
-    internal class XSharpTreeTransformation : XSharpBaseListener
+    internal partial class XSharpTreeTransformationCore : XSharpBaseListener
     {
         #region Nested classes
         internal class SyntaxEntities
@@ -231,7 +231,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
         #region Construction and destruction
-        public XSharpTreeTransformation(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool,
+        public XSharpTreeTransformationCore(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool,
             ContextAwareSyntax syntaxFactory, string fileName)
         {
             _pool = pool;
@@ -261,7 +261,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             XSharpSpecificCompilationOptions xopt = new XSharpSpecificCompilationOptions();
             xopt.TargetDLL = targetDLL;
             opt = opt.WithXSharpSpecificOptions(xopt);
-            var t = new XSharpTreeTransformation(null, opt, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
+            var t = new XSharpTreeTransformationCore(null, opt, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
 
             string globalClassName = t.GetGlobalClassName(targetDLL);
 
@@ -745,17 +745,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return result;
         }
 
-
-        internal CSharpSyntaxNode NotInDialect(string feature)
-        {
-            CSharpSyntaxNode node = _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            return NotInDialect(node, feature);
-        }
-        internal T NotInDialect<T>(T node, string feature, string additional = "") where T : CSharpSyntaxNode
-        {
-            return node.WithAdditionalDiagnostics(
-                new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, feature, _options.Dialect.ToString()+" "+additional));
-        }
 
         internal string UniqueNameSuffix
         {
@@ -4797,41 +4786,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        public override void ExitVostruct([NotNull] XP.VostructContext context)
-        {
-            MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
-                attributeLists: EmptyList<AttributeListSyntax>(),
-                modifiers: null,
-                keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
-                identifier: context.Id.Get<SyntaxToken>(),
-                typeParameterList: null,
-                baseList: null,
-                constraintClauses: null,
-                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                members: EmptyList<MemberDeclarationSyntax>(),
-                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                semicolonToken: null);
-
-            context.Put(NotInDialect(m, "VOSTRUCT"));
-        }
-
-        public override void ExitVounion([NotNull] XP.VounionContext context)
-        {
-            MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
-                attributeLists: EmptyList<AttributeListSyntax>(),
-                modifiers: null,
-                keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
-                identifier: context.Id.Get<SyntaxToken>(),
-                typeParameterList: null,
-                baseList: null,
-                constraintClauses: null,
-                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                members: EmptyList<MemberDeclarationSyntax>(),
-                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                semicolonToken: null);
-
-            context.Put(NotInDialect(m, "UNION"));
-        }
 
         protected bool IsStringType(TypeSyntax type)
         {
@@ -5754,17 +5708,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(modifiers);
         }
 
-        public override void ExitXbasedeclStmt([NotNull] XP.XbasedeclStmtContext context)
-        {
-            context.Put(context.xbasedecl().Get<StatementSyntax>());
-        }
-
-        public override void ExitXbasedecl([NotNull] XP.XbasedeclContext context)
-        {
-            context.SetSequencePoint(context.end);
-            context.Put(NotInDialect(context.T.Text + " statement"));
-        }
-
  
         public override void ExitVariableDeclaration([NotNull] XP.VariableDeclarationContext context)
         {
@@ -6219,18 +6162,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.StmtBlk.Get<BlockSyntax>()));
         }
 
-        public override void ExitSeqStmt([NotNull] XP.SeqStmtContext context)
-        {
-            context.Put(NotInDialect("BEGIN SEQUENCE statement"));
-            return;
-        }
-
-        public override void ExitRecoverBlock([NotNull] XP.RecoverBlockContext context)
-        {
-            context.SetSequencePoint(context.end);
-            context.Put(NotInDialect("RECOVER USING block"));
-            return;
-        }
 
         #endregion
 
@@ -6576,8 +6507,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var block = MakeBlock(statements);
                 context.Put(block);
             }
-
             _pool.Free(statements);
+            if (context.eq!= null && _options.Dialect != XSharpDialect.FoxPro)
+            {
+                var node = context.Get<StatementSyntax>();
+                node = NotInDialect(node, "= Command");
+                context.Put(node);
+            }
         }
 
 
@@ -7817,10 +7753,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #region Data Types
 
-        public override void ExitArrayOfType([NotNull] XP.ArrayOfTypeContext context)
-        {
-            context.Put(NotInDialect(_objectType, "ARRAY OF <type>"));
-        }
 
         public override void ExitPtrDatatype([NotNull] XP.PtrDatatypeContext context)
         {
@@ -7914,8 +7846,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // C# normal, X# extended strings
                 originalText = "$" + xsharpText.Substring(2);
             }
+            ExpressionSyntax result = parseInterpolatedString(originalText);
+            return result;
+        }
+
+        protected ExpressionSyntax parseInterpolatedString( string sourceText)
+        {
             ExpressionSyntax result;
-            using (var lexer = new Lexer(Text.SourceText.From(originalText), this._options, allowPreprocessorDirectives: false))
+            if (! sourceText.StartsWith("$\""))
+            {
+                sourceText = "$\"" + sourceText + "\"";
+            }
+            using (var lexer = new Lexer(Text.SourceText.From(sourceText), this._options, allowPreprocessorDirectives: false))
             {
                 using (var parser = new LanguageParser(lexer, oldTree: null, changes: null, cancellationToken: default(CancellationToken)))
                 {
@@ -7924,7 +7866,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return result;
         }
-
         protected int[] DecodeDateTimeConst(string dateliteral)
         {
             string[] args;
@@ -8603,11 +8544,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
             }
         }
-        public override void ExitXbaseType([NotNull] XP.XbaseTypeContext context)
-        {
-            var type = NotInDialect(_objectType, context.Token.Text);
-            context.Put(type);
-        }
 
         public override void ExitUsualTypeNameExpression([NotNull] XP.UsualTypeNameExpressionContext context)
         {
@@ -8740,16 +8676,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion  
 
         #region Workareas
-        public override void ExitFielddecl([NotNull] XP.FielddeclContext context)
-        {
-            context.Put(NotInDialect("FIELD statement"));
-            return;
-        }
-
-        private ExpressionSyntax NoAlias()
-        {
-            return NotInDialect(GenerateLiteral("alias"), "ALIAS(->) operator");
-        }
         public override void ExitAliasedExpression([NotNull] XP.AliasedExpressionContext context)
         {
             context.Put(context.Expr.Get<ExpressionSyntax>());
@@ -8759,43 +8685,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(NoAlias());
             return;
         }
-        public override void ExitAliasedMemvar([NotNull] XP.AliasedMemvarContext context)
-        {
-            context.Put(NoAlias());
-            return;
-        }
-        public override void ExitAliasedField([NotNull] XP.AliasedFieldContext context)
-        {
-            context.Put(NoAlias());
-            return;
-        }
-
-        public override void ExitAliasedFieldLate([NotNull] XP.AliasedFieldLateContext context)
-        {
-            context.Put(NoAlias());
-            return;
-        }
         #endregion
-        public override void ExitMacro([NotNull] XP.MacroContext context)
-        {
-            context.Put(NotInDialect(GenerateLiteral("macro"), "MACRO compiler"));
-            return;
-        }
-        public override void ExitMacroName([NotNull] XP.MacroNameContext context)
-        {
-            context.Put(NotInDialect(GenerateLiteral("macro"), "MACRO compiler"));
-            return;
-        }
-        public override void ExitAccessMemberLate([NotNull] XP.AccessMemberLateContext context)
-        {
-            context.Put(NotInDialect(GenerateLiteral("value"), "Late bound member access"));
-            return;
-        }
-        public override void ExitAccessMemberLateName([NotNull] XP.AccessMemberLateNameContext context)
-        {
-            context.Put(NotInDialect(GenerateLiteral("value"), "Late bound member access"));
-            return;
-        }
 
         #region  object and collection initializers
         public override void ExitObjectinitializer([NotNull] XP.ObjectinitializerContext context)

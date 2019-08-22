@@ -421,8 +421,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     result.NeedsProcessing = treeTransform.GlobalEntities.NeedsProcessing;
                     if (_options.HasRuntime)
                     {
-                        result.LiteralSymbols = ((XSharpVOTreeTransformation)treeTransform).LiteralSymbols;
-                        result.LiteralPSZs = ((XSharpVOTreeTransformation)treeTransform).LiteralPSZs;
+                        result.LiteralSymbols = ((XSharpTreeTransformationRT)treeTransform).LiteralSymbols;
+                        result.LiteralPSZs = ((XSharpTreeTransformationRT)treeTransform).LiteralPSZs;
                     }
                 }
                 return result;
@@ -443,29 +443,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        internal static XSharpTreeTransformation CreateTransform(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool,
+        internal static XSharpTreeTransformationCore CreateTransform(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool,
                     ContextAwareSyntax syntaxFactory, string fileName)
         {
-            XSharpTreeTransformation treeTransform;
             switch (options.Dialect)
             {
                 case XSharpDialect.Core:
-                    treeTransform = new XSharpTreeTransformation(parser, options, pool, syntaxFactory, fileName);
-                    break;
+                    return new XSharpTreeTransformationCore(parser, options, pool, syntaxFactory, fileName);
                 case XSharpDialect.VO:
                 case XSharpDialect.Vulcan:
-                case XSharpDialect.Harbour:
-                    treeTransform = new XSharpVOTreeTransformation(parser, options, pool, syntaxFactory, fileName);
-                    break;
+                    return new XSharpTreeTransformationVO(parser, options, pool, syntaxFactory, fileName);
                 case XSharpDialect.FoxPro:
-                    treeTransform = new XSharpFoxTreeTransformation(parser, options, pool, syntaxFactory, fileName);
-                    break;
+                    return new XSharpTreeTransformationFox(parser, options, pool, syntaxFactory, fileName);
                 case XSharpDialect.XPP:
+                    return new XSharpTreeTransformationXPP(parser, options, pool, syntaxFactory, fileName);
+                case XSharpDialect.Harbour:
                 default:
-                treeTransform = new XSharpXPPTreeTransformation(parser, options, pool, syntaxFactory, fileName);
-                    break;
+                    return new XSharpTreeTransformationRT(parser, options, pool, syntaxFactory, fileName);
             }
-            return treeTransform;
         }
 
         internal TNode ParseWithStackGuard<TNode>(Func<TNode> parseFunc, Func<TNode> createEmptyNodeFunc) where TNode : CSharpSyntaxNode
@@ -607,7 +602,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return name;
         }
 
-        private MemberDeclarationSyntax WrapInNamespace(XSharpTreeTransformation trans , MemberDeclarationSyntax member, 
+        private MemberDeclarationSyntax WrapInNamespace(XSharpTreeTransformationCore trans , MemberDeclarationSyntax member, 
             XP.Namespace_Context xns, string defaultNamespace)
         {
             if (xns != null || !String.IsNullOrEmpty(defaultNamespace))
@@ -887,7 +882,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return null;
         }
 
-        private ClassDeclarationSyntax _generateSymbolsClass(Dictionary<string, FieldDeclarationSyntax> fields ,XSharpTreeTransformation trans)
+        private ClassDeclarationSyntax _generateSymbolsClass(Dictionary<string, FieldDeclarationSyntax> fields ,XSharpTreeTransformationCore trans)
         {
             var clsmembers = _pool.Allocate<MemberDeclarationSyntax>();
             foreach (var field in fields)
@@ -910,7 +905,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return decl;
         }
 
-        private ClassDeclarationSyntax _generatePszClass(Dictionary<string, Tuple<string, FieldDeclarationSyntax>> fields, XSharpTreeTransformation trans)
+        private ClassDeclarationSyntax _generatePszClass(Dictionary<string, Tuple<string, FieldDeclarationSyntax>> fields, XSharpTreeTransformationCore trans)
         {
             var clsmembers = _pool.Allocate<MemberDeclarationSyntax>();
             foreach (var field in fields)
@@ -935,7 +930,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
         private List<MemberDeclarationSyntax> GeneratePartialProperties (List<PartialPropertyElement> classes, 
-            SyntaxListBuilder<UsingDirectiveSyntax> usingslist, XSharpTreeTransformation trans)
+            SyntaxListBuilder<UsingDirectiveSyntax> usingslist, XSharpTreeTransformationCore trans)
         {
             // Create a list of member declarations for all partial types 
             // that do not have a constructor (when /vo16 is selected)
@@ -980,7 +975,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // For each unique name add a property
             foreach (var element in dict)
             {
-                var prop = new XSharpTreeTransformation.SyntaxClassEntities.VoPropertyInfo();
+                var prop = new XSharpTreeTransformationCore.SyntaxClassEntities.VoPropertyInfo();
                 prop.idName = SyntaxFactory.Identifier(element.Key);
                 foreach (var m in element.Value)
                 {

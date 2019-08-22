@@ -7856,6 +7856,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (! sourceText.StartsWith("$\""))
             {
                 sourceText = "$\"" + sourceText + "\"";
+                sourceText = sourceText.Replace("\n", "\\n");
+                sourceText = sourceText.Replace("\r", "\\r");
             }
             using (var lexer = new Lexer(Text.SourceText.From(sourceText), this._options, allowPreprocessorDirectives: false))
             {

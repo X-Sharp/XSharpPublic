@@ -173,6 +173,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string RunInitProcs = "RunInitProcs";
         internal const string VarGet = "__VarGet";
         internal const string VarPut = "__VarPut";
+        internal const string TextSupport = "__TextSupport";
+        internal const string TextOut = "__TextOut";
+        internal const string TextMergeCheck = "SetTextMerge";
     }
     internal static class VulcanQualifiedFunctionNames
     {

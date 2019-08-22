@@ -45,44 +45,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             CoreAccessMember(context);
         }
 
-        public override void ExitTextStmt([NotNull] XP.TextStmtContext context)
-        {
-            if (context.Id != null)
-            {
-                ExpressionSyntax expr;
-                ExpressionSyntax value = GenerateLiteral(context.String.Text);
-                var arg1 = MakeArgument(value);
-                var arg2 = MakeArgument(GenerateLiteral(context.Merge != null));
-                var arg3 = MakeArgument(GenerateLiteral(context.NoShow != null));
-                var arg4 = MakeArgument(context.Flags != null ? context.Flags.Get<ExpressionSyntax>() : GenerateLiteral(0) );
-                var arg5 = MakeArgument(context.Pretext != null ? context.Pretext.Get<ExpressionSyntax>() : GenerateNIL() );
-                var args = MakeArgumentList(arg1, arg2, arg3, arg4, arg5);
-                value = GenerateMethodCall("__TextSupport", args);
-
-                if (context.Add != null)
-                {
-                    expr = _syntaxFactory.AssignmentExpression(
-                         SyntaxKind.AddAssignmentExpression,
-                        GenerateSimpleName(context.Id.GetText()),
-                        SyntaxFactory.MakeToken(SyntaxKind.PlusEqualsToken),
-                        value);
-                }
-                else
-                {
-                    expr = _syntaxFactory.AssignmentExpression(
-                         SyntaxKind.SimpleAssignmentExpression,
-                        GenerateSimpleName(context.Id.GetText()),
-                        SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                        value);
-                }
-                context.Put(GenerateExpressionStatement(expr));
-
-            }
-            else
-            {
-                context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-            }
-        }
+ 
         public override void ExitFoxclsvars([NotNull] XP.FoxclsvarsContext context)
         {
             context.Put(context.Member.Get<MemberDeclarationSyntax>());
@@ -219,7 +182,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
 
         }
-
+        #region TextMergeSupport
         private bool checkTextMergeDelimiters(string sourceText)
         {
             var open = sourceText.Contains("<<");
@@ -258,13 +221,73 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return !unbalanced;
         }
 
+        public override void ExitTextStmt([NotNull] XP.TextStmtContext context)
+        {
+            var sourceText = context.String.Text;
+            ExpressionSyntax stringExpr;
+            bool delimitersOk = checkTextMergeDelimiters(sourceText);
+            bool hasDelim = sourceText.IndexOf("<<") >= 0 && sourceText.IndexOf(">>") >= 2;
+            if (delimitersOk && hasDelim)
+            {
+                sourceText = sourceText.Replace("<<", "{");
+                sourceText = sourceText.Replace(">>", "}");
+                stringExpr = parseInterpolatedString(sourceText);
+            }
+            else
+            {
+                stringExpr = GenerateLiteral(sourceText);
+            }
+            if (hasDelim && context.Merge == null)
+            {
+                var txtmerge = GenerateMethodCall(XSharpFunctionNames.TextMergeCheck, true);
+                stringExpr = MakeConditional(txtmerge, stringExpr, GenerateLiteral(context.String.Text));
+            }
+
+            var arg1 = MakeArgument(stringExpr);
+            var arg2 = MakeArgument(GenerateLiteral(context.NoShow != null));
+            var arg3 = MakeArgument(context.Flags != null ? context.Flags.Get<ExpressionSyntax>() : GenerateLiteral(0));
+            var arg4 = MakeArgument(context.Pretext != null ? context.Pretext.Get<ExpressionSyntax>() : GenerateNIL());
+            var args = MakeArgumentList(arg1, arg2, arg3, arg4);
+            var call = GenerateMethodCall(XSharpFunctionNames.TextSupport, args);
+
+            if (context.Id != null)
+            {
+                // Call TextSupport  Function and generate assign expression
+                AssignmentExpressionSyntax assignExpr;
+                var id = GenerateSimpleName(context.Id.GetText());
+                if (context.Add != null)
+                {
+                    assignExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.AddAssignmentExpression, id, SyntaxFactory.MakeToken(SyntaxKind.PlusEqualsToken), call);
+                }
+                else
+                {
+                    assignExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, id, SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), call);
+                }
+                context.Put(GenerateExpressionStatement(assignExpr));
+            }
+            else
+            {
+                // no assignment, simply call the TextSupport function
+                context.Put(GenerateExpressionStatement(call));
+            }
+            if (!delimitersOk)
+            {
+                var stmt = context.Get<StatementSyntax>();
+                stmt = stmt.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_UnbalancedTextMergeOperators));
+                context.Put(stmt);
+            }
+            return;
+        }
+
         public override void ExitTextoutStmt([NotNull] XP.TextoutStmtContext context)
         {
             //Todo: Improved parsing of expressions:
             // split string into literal strings with {0} {1}  etc
-            // and use a second lexer and parser to create expressions for each of the embedded elements
+            // and use a second lexer, parser and tree walker to create an ExpressionSyntax for each of the sub expressions
+            // instead of the interpolated string parser to make sure that all 'our' quirks of the language are recognized.
             var sourceText = context.String.Text;
             ExpressionSyntax expr;
+            bool hasDelim = sourceText.IndexOf("<<") >= 0 && sourceText.IndexOf(">>") >= 2;
             bool delimitersOk = checkTextMergeDelimiters(sourceText);
             if (delimitersOk)
             {
@@ -277,17 +300,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 expr = GenerateLiteral(sourceText);
             }
             var arg2 = context.B.Type == XP.BACKBACKSLASH ? GenerateLiteral(false) : GenerateLiteral(true);
-            var cond = GenerateMethodCall("SetTextMerge", true);
+            var cond = GenerateMethodCall(XSharpFunctionNames.TextMergeCheck, true);
+            if (! hasDelim)
+            {
+                cond = GenerateLiteral(false);
+            }
             var arg1 = MakeConditional(cond, expr, GenerateLiteral(context.String.Text));
             var args = MakeArgumentList(MakeArgument(arg1), MakeArgument(arg2));
-            var call = GenerateMethodCall("__TextOut", args, true); 
+            var call = GenerateMethodCall(XSharpFunctionNames.TextOut, args, true); 
             var stmt = GenerateExpressionStatement(call);
             if (!delimitersOk)
                 stmt = stmt.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_UnbalancedTextMergeOperators));
             context.Put(stmt);
             return;
         }
+        #endregion
 
-        
     }
 }

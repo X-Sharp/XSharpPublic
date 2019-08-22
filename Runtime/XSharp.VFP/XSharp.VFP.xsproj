@@ -85,10 +85,12 @@
     <Compile Include="..\..\Common\constants.prg">
       <Link>constants.prg</Link>
     </Compile>
+    <Compile Include="Enums.prg" />
     <Compile Include="Functions.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SystemVariables.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

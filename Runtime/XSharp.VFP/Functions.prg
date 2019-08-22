@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 /// <summary>Creates an object from a class definition or an Automation-enabled application.</summary>
 /// <param name="cClassName">Specifies the class or OLE object from which the new object is created.</param>
 /// <param name="_args">These optional parameters are used to pass values to the Init event procedure for the class.

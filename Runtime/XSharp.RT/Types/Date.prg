@@ -598,7 +598,7 @@ BEGIN NAMESPACE XSharp
 					RETURN RuntimeState.NullDateString
 				ENDIF
 				IF (s == NULL)
-					s := XSharp.RuntimeState.DateFormat
+					s := XSharp.RuntimeState.GetValue<String>(Set.DateFormatNet)
 				ENDIF
 				RETURN SELF:Value:ToString(s, fp)
 		#endregion

@@ -19,7 +19,7 @@ GLOBAL _PRETEXT   := "" AS STRING
 ///<summary>Contains the number of records processed by the most recently executed table command.</summary>
 GLOBAL _TALLY    := 0 AS LONG
 ///<summary>Directs output from the \ | \\ and TEXT ... ENDTEXT text merge commands to a low-level file.</summary>
-GLOBAL _TEXT     := 0 AS LONG
+GLOBAL _TEXT     := -1 AS INT64
 ///<summary>Contains a numeric value indicating the current trigger procedure nesting level.</summary>
 GLOBAL _TRIGGERLEVEL := 0 AS LONG
 ///<summary></summary>

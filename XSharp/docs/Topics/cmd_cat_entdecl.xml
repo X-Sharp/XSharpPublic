@@ -22,6 +22,7 @@
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_EVENT">EVENT</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FUNCTION">FUNCTION</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_GLOBAL">GLOBAL</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_INTERFACE">INTERFACE</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPERATOR">OPERATOR</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROCEDURE">PROCEDURE</link></para>

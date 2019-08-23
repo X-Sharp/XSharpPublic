@@ -10,7 +10,7 @@
     <header>
       <para styleclass="Heading1">Runtime Declaration</para>
     </header>
-    <para styleclass="link"></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL Statement</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DECLARE">DECLARE</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PARAMETERS">PARAMETERS</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PRIVATE">PRIVATE</link></para>

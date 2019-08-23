@@ -22,11 +22,13 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
     <para styleclass="List">&lt;xcCommandLine&gt;<tab />The command line is made up of two parts. &#160;The first part is one of the following:</para>
-    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />An executable Windows or DOS program</para>
-    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />A .PIF file</para>
-    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />A .BAT file</para>
-    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />Any resident DOS command</para>
-    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />COMMAND.COM</para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">An executable Windows or DOS program</li>
+      <li styleclass="List">A .PIF file</li>
+      <li styleclass="List">A .BAT file</li>
+      <li styleclass="List">Any resident DOS command</li>
+      <li styleclass="List">COMMAND.COM</li>
+    </list>
     <para styleclass="List"></para>
     <para styleclass="List"><tab />The second part is the command line parameters that will be passed to the specified application.</para>
     <para styleclass="List"></para>

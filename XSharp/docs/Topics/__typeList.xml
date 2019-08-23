@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__typeList</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__typeList</para>
+    </header>
+    <para styleclass="List"><tab />The valid values for &lt;idType&gt; and the initial values associated with each are listed in the table below:</para>
+    <para styleclass="List"></para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">Data Type<tab />Default Initial Value<tab /></para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">ARRAY<tab />NULL_ARRAY (see Note below)<tab /></para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">CODEBLOCK<tab />NULL_CODEBLOCK<tab /></para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">DATE<tab />NULL_DATE<tab /></para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">LOGIC<tab />FALSE<tab /></para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">OBJECT<tab />NULL_OBJECT<tab /></para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">&lt;idClass&gt;<tab />NULL_OBJECT</para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">STRING<tab />NULL_STRING<tab /></para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">SYMBOL<tab />NULL_SYMBOL<tab /></para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">SHORTINT<tab />0</para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">INT<tab />0</para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">LONGINT<tab />0</para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">FLOAT<tab />0</para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">BYTE<tab />0</para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">WORD<tab />0</para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">DWORD<tab />0</para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">REAL4<tab />0</para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">REAL8<tab />0<tab /></para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">USUAL<tab />NIL<tab /></para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">PSZ<tab />NULL_PSZ<tab /></para>
+    <para styleclass="List" style="text-indent:-255px; margin-left:385px; tabstops:144px left,385px left ;">PTR<tab />NULL_PTR<tab /></para>
+  </body>
+</topic>

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>FOREACH Statement</title>
+  <keywords>
+    <keyword>Branching</keyword>
+    <keyword>Conditional execution</keyword>
+    <keyword>EXIT statement</keyword>
+    <keyword>FOREACH statement</keyword>
+    <keyword>LOOP statement</keyword>
+    <keyword>NEXT statement</keyword>
+    <keyword>Program control</keyword>
+    <keyword>Statements</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">FOREACH Statement</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Execute a block of statements a specified number of times.</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

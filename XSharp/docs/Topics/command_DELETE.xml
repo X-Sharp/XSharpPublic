@@ -42,7 +42,7 @@
     <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
     <para styleclass="Normal">This example demonstrates use of the FOR clause to mark a set of records for deletion:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE sales INDEX salesman NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">DELETE ALL </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FOR</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Inactive</text></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> sales </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">INDEX</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> salesman </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">NEW</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">DELETE</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> ALL </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FOR</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Inactive</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Normal"></para>

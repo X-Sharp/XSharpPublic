@@ -46,13 +46,17 @@
     <para styleclass="List">AS &lt;idType&gt;<tab />Specifies the data type of the variable you are declaring (called <link displaytype="text" defaultstyle="true" type="topiclink" href="strong_typing_gloss" domain="CavoIde.hmxz">strong typing</link>). &#160;For DIM arrays, declares the data type for all array elements. &#160;The AS &lt;idType&gt; is required for all union members.</para>
     <para styleclass="List"></para>
     <para styleclass="List"><tab />Refer to the CLASS entry for a list of valid values for &lt;idType&gt;. &#160;Note that the following data types are not supported in unions because they are dynamic types that require garbage collection:</para>
-    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />ARRAY</para>
-    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />FLOAT</para>
-    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />OBJECT</para>
-    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />&lt;idClass&gt;</para>
-    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />STRING</para>
-    <para styleclass="List"><image src="square.bmp" scale="100.00%"></image><tab />USUAL</para>
-    <para styleclass="List"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <list id="0" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+        <li styleclass="List">ARRAY</li>
+        <li styleclass="List">FLOAT</li>
+        <li styleclass="List">OBJECT</li>
+        <li styleclass="List">&lt;idClass&gt;</li>
+        <li styleclass="List">STRING</li>
+        <li styleclass="List">USUAL</li>
+        <li styleclass="List"></li>
+      </list>
+    </list>
     <para styleclass="List"><tab />Refer to the &quot;Variables, Constants, and Declarations&quot; chapter in the Programmer&apos;s Guide for a complete discussion of data types and the advantages of strong typing.</para>
     <para styleclass="List"></para>
     <para styleclass="List">IS &lt;idType&gt;<tab />Specifies a union data type in which the memory needed to hold the union is allocated on the stack (i.e., &lt;idUnion&gt; is the only &lt;idType&gt; allowed with the IS keyword).</para>

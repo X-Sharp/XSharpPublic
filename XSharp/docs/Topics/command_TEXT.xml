@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>TEXT Command</title>
+  <keywords>
+    <keyword>Closing files</keyword>
+    <keyword>Commands</keyword>
+    <keyword>Files<keyword>closing</keyword></keyword>
+    <keyword>Program control</keyword>
+    <keyword>TEXT Statement</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">TEXT Statement</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

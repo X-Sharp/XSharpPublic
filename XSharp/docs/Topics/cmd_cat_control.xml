@@ -23,10 +23,16 @@
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_WHILE">DO WHILE</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_EXTERNAL">EXTERNAL</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOR">FOR</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOREACH">FOREACH</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_IF">IF</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_NOP">NOP</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_QUIT">QUIT</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_REPEAT_UNTIL">REPEAT UNTIL</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RETURN">RETURN</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RUN">RUN</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SWITCH">SWITCH</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_TEXT">TEXT</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_TRY_CATCH">TRY CATCH</link></para>
     <para styleclass="link"></para>
   </body>
 </topic>

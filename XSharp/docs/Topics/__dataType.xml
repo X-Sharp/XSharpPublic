@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__dataType</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__dataType</para>
+    </header>
+    <para styleclass="List">AS &lt;idType&gt;<tab />Specifies the data type associated with the instance variables (called <link displaytype="text" defaultstyle="true" type="topiclink" href="strong_typing_gloss" domain="CavoIde.hmxz">strong typing</link>). &#160;If omitted, the instance variables will be polymorphic and will have an initial value of NIL.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__typeList" inline="false"/></para>
+  </body>
+</topic>

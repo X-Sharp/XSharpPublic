@@ -26,6 +26,12 @@
     <topicref type="topic" id="385066667365089" build="ALL" modified="2005-07-08T09:03:38.578Z" icon="0" href="__IncludeStrongTyping">
       <caption translate="true">__IncludeStrongTyping</caption>
     </topicref>
+    <topicref type="topic" id="436998848002267" build="ALL" modified="2019-08-22T18:49:27.601Z" icon="0" href="__dataType">
+      <caption translate="true">__dataType</caption>
+    </topicref>
+    <topicref type="topic" id="436996450060440" build="ALL" modified="2019-08-22T18:51:05.132Z" icon="0" href="__typeList">
+      <caption translate="true">__typeList</caption>
+    </topicref>
   </topicref>
   <topicref type="topic" id="423886812341331" build="ALL" modified="2019-06-14T18:30:32.542Z" icon="0" href="XSharp">
     <caption translate="true">X# Documentation</caption>
@@ -951,6 +957,9 @@
               <topicref type="topic" id="384613776896508" build="ALL" modified="2005-06-21T23:31:43.515Z" icon="0" href="command_CLASS">
                 <caption translate="true">CLASS Statement</caption>
               </topicref>
+              <topicref type="topic" id="436995949548839" build="ALL" modified="2019-08-22T19:02:45.816Z" icon="0" href="command_INTERFACE">
+                <caption translate="true">INTERFACE Statement</caption>
+              </topicref>
               <topicref type="topic" id="436995536280198" build="ALL" modified="2019-08-22T16:46:18.340Z" icon="0" href="command_CONSTRUCTOR">
                 <caption translate="true">CONSTRUCTOR Statement</caption>
               </topicref>
@@ -1191,11 +1200,11 @@
               <topicref type="topic" id="384614041083108" build="ALL" modified="2005-06-21T23:34:40.656Z" icon="0" href="command_DEFAULT">
                 <caption translate="true">DEFAULT Command</caption>
               </topicref>
-              <topicref type="topic" id="384612279994244" build="ALL" modified="2005-06-21T23:44:09.578Z" icon="0" href="command_DO">
-                <caption translate="true">DO Statement</caption>
-              </topicref>
               <topicref type="topic" id="384614597322040" build="ALL" modified="2005-06-21T23:44:13.156Z" icon="0" href="command_DO_CASE">
                 <caption translate="true">DO CASE Statement</caption>
+              </topicref>
+              <topicref type="topic" id="384612279994244" build="ALL" modified="2005-06-21T23:44:09.578Z" icon="0" href="command_DO">
+                <caption translate="true">DO Statement</caption>
               </topicref>
               <topicref type="topic" id="384614699101848" build="ALL" modified="2005-06-21T23:44:13.156Z" icon="0" href="command_DO_WHILE">
                 <caption translate="true">DO WHILE Statement</caption>
@@ -1206,17 +1215,35 @@
               <topicref type="topic" id="384614708239396" build="ALL" modified="2005-06-21T23:43:58.234Z" icon="0" href="command_FOR">
                 <caption translate="true">FOR Statement</caption>
               </topicref>
+              <topicref type="topic" id="436999119843888" build="ALL" modified="2019-08-22T18:32:15.730Z" icon="0" href="command_FOREACH">
+                <caption translate="true">FOREACH Statement</caption>
+              </topicref>
               <topicref type="topic" id="384614779259998" build="ALL" modified="2005-06-21T23:44:23.250Z" icon="0" href="command_IF">
                 <caption translate="true">IF Statement</caption>
               </topicref>
+              <topicref type="topic" id="436997670757836" build="ALL" modified="2019-08-22T18:34:25.860Z" icon="0" href="command_NOP">
+                <caption translate="true">NOP Statement</caption>
+              </topicref>
               <topicref type="topic" id="384612172638112" build="ALL" modified="2005-06-21T23:44:27.828Z" icon="0" href="command_QUIT">
                 <caption translate="true">QUIT Command</caption>
+              </topicref>
+              <topicref type="topic" id="436997417190491" build="ALL" modified="2019-08-22T18:36:39.295Z" icon="0" href="command_REPEAT_UNTIL">
+                <caption translate="true">REPEAT UNTIL Statement</caption>
               </topicref>
               <topicref type="topic" id="384614113111175" build="ALL" modified="2005-06-21T23:44:32.218Z" icon="0" href="command_RETURN">
                 <caption translate="true">RETURN Statement</caption>
               </topicref>
               <topicref type="topic" id="384615570493792" build="ALL" modified="2005-06-21T23:44:37.156Z" icon="0" href="command_RUN">
                 <caption translate="true">RUN Command</caption>
+              </topicref>
+              <topicref type="topic" id="43701717101438" build="ALL" modified="2019-08-22T18:32:56.549Z" icon="0" href="command_SWITCH">
+                <caption translate="true">SWITCH Statement</caption>
+              </topicref>
+              <topicref type="topic" id="436998364558141" build="ALL" modified="2019-08-22T18:34:42.157Z" icon="0" href="command_TEXT">
+                <caption translate="true">TEXT Statement</caption>
+              </topicref>
+              <topicref type="topic" id="436999313841944" build="ALL" modified="2019-08-22T18:35:26.191Z" icon="0" href="command_TRY_CATCH">
+                <caption translate="true">TRY CATCH Statement</caption>
               </topicref>
             </topicref>
             <topicref type="topic" id="436966329416659" build="ALL" modified="2019-08-21T16:53:50.778Z" icon="0" href="cmd_cat_rtdecl">

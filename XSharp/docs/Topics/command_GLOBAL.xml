@@ -44,8 +44,8 @@
     <para styleclass="List"></para>
     <para styleclass="List"><tab />In both cases, &lt;ArraySpec&gt; is one of the following:</para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;idArray&gt;[&lt;nElements&gt;, &lt;nElements&gt;, &lt;nElements&gt;]</para>
-    <para styleclass="List">&lt;idArray&gt;[&lt;nElements&gt;][&lt;nElements&gt;][&lt;nElements&gt;]</para>
+    <para styleclass="List"><tab />&lt;idArray&gt;[&lt;nElements&gt;, &lt;nElements&gt;, &lt;nElements&gt;]</para>
+    <para styleclass="List"><tab />&lt;idArray&gt;[&lt;nElements&gt;][&lt;nElements&gt;][&lt;nElements&gt;]</para>
     <para styleclass="List"><tab />All dimensions except the first are optional.</para>
     <para styleclass="List"></para>
     <para styleclass="List"><tab />&lt;idArray&gt; is a valid identifier name for the array to declare. &#160;For dynamic arrays, array elements are initialized to NIL. &#160;For dimensioned arrays, the initial value of the elements depends on the data type as explained above for &lt;uValue&gt;.</para>
@@ -54,32 +54,9 @@
     <para styleclass="List"></para>
     <para styleclass="List"><tab />&lt;nElements&gt; can be a literal numeric representation or a simple numeric expression involving only operators, literals, and DEFINE constants; however, more complicated expressions (such as function calls) are not allowed.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">AS &lt;idType&gt;<tab />Specifies the data type of the variable you are declaring (called <link displaytype="text" defaultstyle="true" type="topiclink" href="strong_typing_gloss" domain="CavoIde.hmxz">strong typing</link>). &#160;For DIM arrays, declares the data type for all array elements.</para>
+    <para styleclass="List"><snippet src="__dataType" inline="false"/></para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />The valid values for &lt;idType&gt; and the initial values associated with each are listed in the table below:</para>
-    <para styleclass="List"></para>
-    <para styleclass="List"><tab />Data Type<tab />Default Initial Value<tab /></para>
-    <para styleclass="List"><tab />ARRAY<tab />NULL_ARRAY (see Note below)<tab /></para>
-    <para styleclass="List"><tab />CODEBLOCK<tab />NULL_CODEBLOCK<tab /></para>
-    <para styleclass="List"><tab />DATE<tab />NULL_DATE<tab /></para>
-    <para styleclass="List"><tab />LOGIC<tab />FALSE<tab /></para>
-    <para styleclass="List"><tab />OBJECT, &lt;idClass&gt;<tab />NULL_OBJECT<tab /></para>
-    <para styleclass="List"><tab />STRING<tab />NULL_STRING<tab /></para>
-    <para styleclass="List"><tab />SYMBOL<tab />NULL_SYMBOL<tab /></para>
-    <para styleclass="List"><tab />SHORTINT, INT<tab />0</para>
-    <para styleclass="List"><tab />LONGINT, FLOAT<tab />0</para>
-    <para styleclass="List"><tab />BYTE, WORD<tab />0</para>
-    <para styleclass="List"><tab />DWORD<tab />0</para>
-    <para styleclass="List"><tab />REAL4, REAL8<tab />0<tab /></para>
-    <para styleclass="List"><tab />USUAL<tab />NIL<tab /></para>
-    <para styleclass="List"><tab />PSZ<tab />NULL_PSZ<tab /></para>
-    <para styleclass="List"><tab />PTR, &lt;idStructure&gt;<tab />NULL_PTR<tab /></para>
-    <para styleclass="List"></para>
-    <para styleclass="List"><tab />Note: &#160;NULL_ARRAY is the initial value for an array declared using, for example, LOCAL &lt;idArray&gt; AS ARRAY. &#160;If you specify array dimensions as part of the declaration you are, in effect, making an assignment to the array and, therefore, NULL_ARRAY will not apply.</para>
-    <para styleclass="List"></para>
-    <para styleclass="List"><tab />See the &quot;Variables, Constants, and Declarations&quot; chapter in the Programmer&apos;s Guide for a complete discussion of data types and the advantages of strong typing.</para>
-    <para styleclass="List"></para>
-    <para styleclass="List">IS &lt;idType&gt;<tab />Specifies a structure data type in which the memory needed to hold the structure is allocated on the stack (i.e., &lt;idStructure&gt; is the only &lt;idType&gt; allowed with the IS keyword). &#160;See the STRUCTURE entry in this guide for more information on data structure memory allocation.</para>
+    <para styleclass="List">IS &lt;idType&gt;<tab />Specifies a structure data type in which the memory needed to hold the structure is allocated on the stack (i.e., &lt;idStructure&gt; is the only &lt;idType&gt; allowed with the IS keyword). &#160;See the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_VOSTRUCT">VOSTRUCT</link> entry in this guide for more information on data structure memory allocation.</para>
     <para styleclass="List"></para>
     <para styleclass="List">AS ARRAY<tab />For dynamic array declarations, specifies the data type of the entire array.</para>
     <para styleclass="List"></para>

@@ -12,38 +12,9 @@
     <para styleclass="List">&lt;idParam&gt;<tab />A function parameter variable. &#160;A variable specified in this manner is automatically declared local. &#160;These variables, also called formal parameters, are used to receive arguments that you pass when you call the function.</para>
     <para styleclass="List"></para>
     <para styleclass="List">AS | REF &lt;idType&gt;<tab />Specifies the data type of the parameter variable (called <link displaytype="text" defaultstyle="true" type="topiclink" href="strong_typing_gloss" domain="CavoIde.hmxz">strong typing</link>). &#160;AS indicates that the parameter must be passed by value, and REF indicates that it must be passed by reference with the @ operator.</para>
+    <para styleclass="Body Text"><tab /><snippet src="__typeList" inline="false"/></para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />The valid values for &lt;idType&gt; and the initial values associated with each are listed in the table below:</para>
-    <para styleclass="List"></para>
-    <para styleclass="List" style="text-indent:-280px; margin-left:410px; tabstops:144px left,411px left ;">Data Type<tab />Default Initial Value<tab /></para>
-    <para styleclass="List" style="text-indent:-280px; margin-left:410px; tabstops:144px left,411px left ;">ARRAY<tab />NULL_ARRAY (see Note below)<tab /></para>
-    <para styleclass="List" style="text-indent:-280px; margin-left:410px; tabstops:144px left,411px left ;">CODEBLOCK<tab />NULL_CODEBLOCK<tab /></para>
-    <para styleclass="List" style="text-indent:-280px; margin-left:410px; tabstops:144px left,411px left ;">DATE<tab />NULL_DATE<tab /></para>
-    <para styleclass="List" style="text-indent:-280px; margin-left:410px; tabstops:144px left,411px left ;">LOGIC<tab />FALSE<tab /></para>
-    <para styleclass="List" style="text-indent:-280px; margin-left:410px; tabstops:144px left,411px left ;">OBJECT, &lt;idClass&gt;<tab />NULL_OBJECT<tab /></para>
-    <para styleclass="List" style="text-indent:-280px; margin-left:410px; tabstops:144px left,411px left ;">STRING<tab />NULL_STRING<tab /></para>
-    <para styleclass="List" style="text-indent:-280px; margin-left:410px; tabstops:144px left,411px left ;">SYMBOL<tab />NULL_SYMBOL<tab /></para>
-    <para styleclass="List" style="text-indent:-280px; margin-left:410px; tabstops:144px left,411px left ;">SHORTINT, INT<tab />0</para>
-    <para styleclass="List" style="text-indent:-280px; margin-left:410px; tabstops:144px left,411px left ;">LONGINT, FLOAT<tab />0</para>
-    <para styleclass="List" style="text-indent:-280px; margin-left:410px; tabstops:144px left,411px left ;">BYTE, WORD, DWORD<tab />0</para>
-    <para styleclass="List" style="text-indent:-280px; margin-left:410px; tabstops:144px left,411px left ;">REAL4, REAL8<tab />0<tab /></para>
-    <para styleclass="List" style="text-indent:-280px; margin-left:410px; tabstops:144px left,411px left ;">USUAL<tab />NIL<tab /></para>
-    <para styleclass="List" style="text-indent:-280px; margin-left:410px; tabstops:144px left,411px left ;">PSZ<tab />NULL_PSZ<tab /></para>
-    <para styleclass="List" style="text-indent:-280px; margin-left:410px; tabstops:144px left,411px left ;">PTR, &lt;idStructure&gt;<tab />NULL_PTR<tab /></para>
-    <para styleclass="List"></para>
-    <para styleclass="List"><tab />Note: &#160;NULL_ARRAY is the initial value for an array declared using, for example, LOCAL &lt;idArray&gt; AS ARRAY. &#160;If you specify array dimensions as part of the declaration you are, in effect, making an assignment to the array and, therefore, NULL_ARRAY will not apply.</para>
-    <para styleclass="List"></para>
-    <para styleclass="List"><tab />See the &quot;Variables, Constants, and Declarations&quot; chapter in the Programmer&apos;s Guide for a complete discussion of data types and the advantages of strong typing.</para>
-    <para styleclass="List"></para>
-    <para styleclass="List">AS &lt;idType&gt;<tab />Specifies the data type of the function return value. &#160;Note that in addition to all of the &lt;idType&gt; values listed in the table above, functions can be declared with AS VOID to indicate that the function has no return value.</para>
-    <para styleclass="List"></para>
-    <para styleclass="List"><tab />See the &quot;Variables, Constants, and Declarations&quot; chapter in the Programmer&apos;s Guide for a complete discussion of data types and the advantages of strong typing.</para>
-    <para styleclass="List"></para>
-    <para styleclass="List">AS &lt;idType&gt;<tab />Specifies the data type of the method return value. &#160;Note that in addition to all of the &lt;idType&gt; values listed in the table above, functions can be declared with AS VOID to indicate that the function has no return value.</para>
-    <para styleclass="List"></para>
-    <para styleclass="List"><tab />See the &quot;Variables, Constants, and Declarations&quot; chapter in the Programmer&apos;s Guide for a complete discussion of data types and the advantages of strong typing.</para>
-    <para styleclass="List"></para>
-    <para styleclass="List"><tab />Note &#160; If you declare the return type of a method you must also strong type its parameters, specify the calling convention and you need to declare the method in the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link> declaration. See section about strong typed methods below.</para>
+    <para styleclass="List"><snippet src="__dataType" inline="false"/></para>
     <para styleclass="List"></para>
     <para styleclass="List">TypeParameterConstraints<tab />Here you can specify constraints for the Type parameters, such as WHERE T IS SomeName or WHERE T IS New</para>
     <para styleclass="List"></para>

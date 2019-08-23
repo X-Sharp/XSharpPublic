@@ -91,7 +91,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SystemVariables.prg" />
-    <Compile Include="_TextOutPut.prg" />
+    <Compile Include="TextOutPut.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

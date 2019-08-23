@@ -436,10 +436,10 @@ METHOD EnableSort(symMethodName)
 
 	RETURN symSortRoutineName := symMethodName
 
-METHOD EnsureVisible(nItem, lPartiallyVisible) 
+METHOD EnsureVisible(nItem, lPartiallyVisible)
 	
-
-	RETURN LOGIC(_CAST, ListView_EnsureVisible(SELF:Handle(), INT(nItem - 1), WORD(_CAST, lPartiallyVisible)))
+	Default(@lPartiallyVisible , FALSE)
+	RETURN LOGIC(_CAST, ListView_EnsureVisible(SELF:Handle(), INT(nItem - 1), iif(lPartiallyVisible , 1 , 0) ))
 
 ACCESS FullRowSelect 
 	RETURN SELF:GetExLVStyle(LVS_EX_FULLROWSELECT)

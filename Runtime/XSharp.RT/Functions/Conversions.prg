@@ -506,6 +506,33 @@ FUNCTION Str(n ,uLen ,uDec ) AS STRING CLIPPER
     IF PCount() < 1 .OR. pCount() > 3
         RETURN ""
     ENDIF
+
+    // Handle integer values
+    IF n:IsInteger .and. (PCount() <= 2 .or. (PCount() == 3 .and. uDec:IsNumeric .and. uDec == 0) )
+    	LOCAL cRet AS STRING
+    	LOCAL nDigits AS INT
+
+    	cRet := ((INT64)n):ToString()
+
+    	IF uLen:IsNumeric
+    		IF uLen < 0
+    			nDigits := cRet:Length
+    		ELSE
+	    		nDigits := uLen
+    		END IF
+    	ELSE
+    		nDigits := (INT)RuntimeState.Digits
+    	END IF
+
+    	IF cRet:Length > nDigits
+    		cRet := System.String{c'*' , nDigits}
+    	ELSEIF cRet:Length < RuntimeState.Digits
+    		cRet := cRet:PadLeft(nDigits)
+    	END IF
+
+    	RETURN cRet
+    END IF
+
     LOCAL result AS STRING
     LOCAL nLen AS DWORD
     LOCAL nDec AS DWORD

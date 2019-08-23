@@ -68,6 +68,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
 
         #region Constructors and destructors
+        protected override XSharpTreeTransformationCore CreateWalker(XSharpParser parser)
+        {
+            return new XSharpTreeTransformationRT(parser, _options, _pool, _syntaxFactory, _fileName);
+        }
         public XSharpTreeTransformationRT(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool,
             ContextAwareSyntax syntaxFactory, string fileName) :
             base(parser, options, pool, syntaxFactory, fileName)

@@ -30,6 +30,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     {
         private bool voStructHasDim;
         private readonly string _winBoolType;
+        protected override XSharpTreeTransformationCore CreateWalker(XSharpParser parser)
+        {
+            return new XSharpTreeTransformationVO(parser, _options, _pool, _syntaxFactory, _fileName);
+        }
 
         public XSharpTreeTransformationVO(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool,
             ContextAwareSyntax syntaxFactory, string fileName) :

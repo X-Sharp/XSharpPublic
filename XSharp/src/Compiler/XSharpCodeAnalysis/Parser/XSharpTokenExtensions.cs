@@ -125,7 +125,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return text.Substring(1, text.Length > 2 ? text.Length - 2 : 0);
         }
 
-        private static string EscapedStringValue(string text)
+        internal static string EscapedStringValue(string text)
         {
             if (text.Length <= 3)
                 return "";

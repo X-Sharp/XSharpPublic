@@ -22,6 +22,7 @@ using Roslyn.Utilities;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
+using System.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
@@ -30,10 +31,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
     using System.Diagnostics;
 
-    [DebuggerDisplay("{Name}")]
 
+    
     internal class XSharpTreeTransformationFox : XSharpTreeTransformationRT
     {
+        protected override XSharpTreeTransformationCore CreateWalker(XSharpParser parser)
+        {
+            return new XSharpTreeTransformationFox(parser, _options, _pool, _syntaxFactory, _fileName);
+        }
+
         public XSharpTreeTransformationFox(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool,
                     ContextAwareSyntax syntaxFactory, string fileName) :
                     base(parser, options, pool, syntaxFactory, fileName)
@@ -45,8 +51,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             CoreAccessMember(context);
         }
 
- 
-        public override void ExitFoxclsvars([NotNull] XP.FoxclsvarsContext context)
+         public override void ExitFoxclsvars([NotNull] XP.FoxclsvarsContext context)
         {
             context.Put(context.Member.Get<MemberDeclarationSyntax>());
         }
@@ -221,6 +226,64 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return !unbalanced;
         }
 
+        private string ReplaceFoxTextDelimiters(string source)
+        {
+            var sb = new StringBuilder(source.Length);
+            bool extended = false;
+            char last = '\0';
+            for (int i = 0; i < source.Length; i++)
+            {
+                var c = source[i];
+                switch (c)
+                {
+                    case '<':
+                        if (i < source.Length-1 && source[i+1] == '<')
+                        {
+                            c = '{';
+                            i++;
+                        }
+                        break;
+                    case '>':
+                        if (i < source.Length - 1 && source[i + 1] == '>')
+                        {
+                            c = '}';
+                            i++;
+
+                        }
+                        break;
+                    case '"':
+                        extended = true;
+                        sb.Append('\\');
+                        break;
+                    case '\n':
+                        extended = true;
+                        sb.Append('\\');
+                        c = 'n';
+                        break;
+                    case '\t':
+                        extended = true;
+                        sb.Append('\\');
+                        c = 't';
+                        break;
+                    case '\r':
+                        extended = true;
+                        sb.Append('\\');
+                        c = 'r';
+                        break;
+                    default:
+                        break;
+                }
+                sb.Append(c);
+                last = c;
+            }
+            source = sb.ToString();
+            if (extended)
+                source  = "ei\"" + source + "\"";
+            else
+                source = "i\"" + source + "\"";
+            return source;
+        }
+
         public override void ExitTextStmt([NotNull] XP.TextStmtContext context)
         {
             var sourceText = context.String.Text;
@@ -229,9 +292,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool hasDelim = sourceText.IndexOf("<<") >= 0 && sourceText.IndexOf(">>") >= 2;
             if (delimitersOk && hasDelim)
             {
-                sourceText = sourceText.Replace("<<", "{");
-                sourceText = sourceText.Replace(">>", "}");
-                stringExpr = parseInterpolatedString(sourceText);
+                sourceText = ReplaceFoxTextDelimiters(sourceText);
+                stringExpr = CreateInterPolatedStringExpression(sourceText);
             }
             else
             {
@@ -281,26 +343,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitTextoutStmt([NotNull] XP.TextoutStmtContext context)
         {
-            //Todo: Improved parsing of expressions:
-            // split string into literal strings with {0} {1}  etc
-            // and use a second lexer, parser and tree walker to create an ExpressionSyntax for each of the sub expressions
-            // instead of the interpolated string parser to make sure that all 'our' quirks of the language are recognized.
             var sourceText = context.String.Text;
             ExpressionSyntax expr;
             bool hasDelim = sourceText.IndexOf("<<") >= 0 && sourceText.IndexOf(">>") >= 2;
             bool delimitersOk = checkTextMergeDelimiters(sourceText);
             if (delimitersOk)
             {
-                sourceText = sourceText.Replace("<<", "{");
-                sourceText = sourceText.Replace(">>", "}");
-                expr = parseInterpolatedString(sourceText);
+                sourceText = ReplaceFoxTextDelimiters(sourceText);
+                expr = CreateInterPolatedStringExpression(sourceText);
             }
             else
             {
                 expr = GenerateLiteral(sourceText);
             }
-            var arg2 = context.B.Type == XP.BACKBACKSLASH ? GenerateLiteral(false) : GenerateLiteral(true);
-            var cond = GenerateMethodCall(XSharpFunctionNames.TextMergeCheck, true);
+            var arg2 = GenerateLiteral(context.B.Type != XP.BACKBACKSLASH);
+            var cond = GenerateMethodCall(XSharpFunctionNames.TextMergeCheck, true);  
             if (! hasDelim)
             {
                 cond = GenerateLiteral(false);

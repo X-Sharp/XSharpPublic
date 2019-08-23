@@ -158,7 +158,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected readonly TypeSyntax _intType;
         protected readonly TypeSyntax _dateTimeType;
 
-
         protected string _fileName;
         protected bool _isScript;
         protected string _entryPoint;
@@ -729,6 +728,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Helpers
+
 
         protected SyntaxToken GetRShiftToken(IToken firstGT, IToken secondGT)
         {
@@ -7742,7 +7742,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitSimpleName([NotNull] XP.SimpleNameContext context)
         {
-            if (context.GenericArgList == null)
+            if (context.GenericArgList == null || context.GenericArgList._GenericArgs.Count == 0)
                 context.Put(_syntaxFactory.IdentifierName(context.Id.Get<SyntaxToken>()));
             else
                 context.Put(_syntaxFactory.GenericName(context.Id.Get<SyntaxToken>(), context.GenericArgList.Get<TypeArgumentListSyntax>()));
@@ -7822,52 +7822,194 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(context.LiteralArray.Get<ExpressionSyntax>());
         }
 
-        private ExpressionSyntax CreateInterPolatedStringExpression([NotNull] XP.LiteralValueContext context)
+        protected ExpressionSyntax CreateInterPolatedStringExpression([NotNull] string text)
         {
-            // Use the C# parser to do the parsing of the Interpolated strings.
-            // SELF: Syntax will be translated to this.
-            // All other property syntax needs use the '.' as separator
-            IToken t = context.Token;
-            var xsharpText = t.Text;
-            int nIndex = xsharpText.IndexOf("{self:", StringComparison.OrdinalIgnoreCase);
-            while (nIndex >= 0)
+            bool extended = false;
+            // cut off i" and ", could also be ei" and ie"
+            if (text[1] == '"')
             {
-                xsharpText = xsharpText.Substring(0, nIndex) + "{this." + xsharpText.Substring(nIndex + 6);
-                nIndex = xsharpText.IndexOf("{self:", StringComparison.OrdinalIgnoreCase);
+                text = text.Substring(2, text.Length - 3);
             }
-            string originalText;
-            if (xsharpText.IndexOf('"') == 1)           // i"..."
+            else
             {
-                //C# verbatim, X# normal
-                originalText = "$@" + xsharpText.Substring(1);
+                text = text.Substring(3, text.Length - 4);
+                extended = true;
             }
-            else                                      // ei"..." or ie"..."
+            ExpressionSyntax result = GenerateLiteral(text);
+            var pos1 = text.IndexOf("{");
+            var pos2= text.IndexOf("}");
+            if (pos1 == -1 && pos2 == -1)
             {
-                // C# normal, X# extended strings
-                originalText = "$" + xsharpText.Substring(2);
+                // no curly braces, so nothing to do
+                if (extended)
+                {
+                    text = "e\"" + text + "\"";
+                    result = GenerateLiteral(TokenExtensions.EscapedStringValue(text));
+                }
+
+                return result;
             }
-            ExpressionSyntax result = parseInterpolatedString(originalText);
+            if (pos1 == -1 || pos2 == -1 || pos1 > pos2)
+            {
+                if (pos1 == -1)
+                {
+                    result= result.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_UnexpectedCharacter, "}"));
+                }
+                else
+                {
+                    result = result.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_UnclosedExpressionHole));
+                }
+                return result;
+            }
+
+            var expressions = new List<string>();
+            var sbMask = new StringBuilder();
+            var sbExpr = new StringBuilder();
+            StringBuilder sbCurrent = sbMask;
+            bool afterBackSlash = false;
+            bool inString = false;
+            int nestLevel = 0;
+            char last = '\0';
+            foreach (char c in text)
+            {
+                var charToAppend = c;
+                if (inString && c != '\\' && !afterBackSlash)
+                {
+                    sbCurrent.Append(c);
+                    last = c; 
+                    continue;
+                }
+                else
+                {
+                    switch (c)
+                    {
+                        case '{':
+                            if (last != '{')        // double { is escaped {
+                            {
+                                nestLevel++;
+                                if (nestLevel == 1)
+                                {
+                                    sbCurrent = sbExpr;
+                                    sbMask.Append("{" + expressions.Count.ToString() + "}");
+                                    last = c;
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                ;// normal processing so we add a {
+                            }
+                            break;
+                        case '}':
+                            if (last != '}')// double } is escaped }
+                            {
+                                nestLevel--;
+                                if (nestLevel == 0)
+                                {
+                                    sbCurrent = sbMask;
+                                    expressions.Add(sbExpr.ToString());
+                                    sbExpr.Clear();
+                                    last = c;
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                ;// normal processing so we add a }
+                            }
+                            break;
+                        case '\\':
+                            if (extended)
+                            {
+                                if (afterBackSlash)
+                                {
+                                    afterBackSlash = false;
+                                    // normal processing so we add a \
+                                }
+                                else
+                                {
+                                    afterBackSlash = true;
+                                    last = c;
+                                    // do not add character
+                                    continue;
+                                }
+                            }
+                            break;
+                        case '"':
+                        case 'r':
+                        case 't':
+                        case 'n':
+                        case 'R':
+                        case 'T':
+                        case 'N':
+                            if (afterBackSlash)
+                            {
+                                if (c == 'n' || c == 'N')
+                                {
+                                    charToAppend = '\n';
+                                }
+                                else if (c == 'r' || c == 'R')
+                                {
+                                    charToAppend = '\r';
+                                }
+                                else if (c == 't' || c == 'T')
+                                {
+                                    charToAppend = '\t';
+                                }
+                                else
+                                {
+                                    // normal processing add "
+                                    inString = !inString;
+                                }
+                                afterBackSlash = false;
+                            }
+                            break;
+                    }
+                }
+                sbCurrent.Append(charToAppend);
+                last = charToAppend;
+            }
+
+            if (nestLevel != 0)
+            {
+                result = result.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_UnclosedExpressionHole));
+                return result;
+            }
+            // now we have a list of expressions and a mask
+            // parse each individual expression
+            var exprSyntax = new List<ExpressionSyntax>();
+            int iparam = 0;
+            string sMask = sbMask.ToString();
+            foreach (var expr in expressions)
+            {
+                string extra;
+                var res = ParseSubExpression(expr, out extra);
+                if (!String.IsNullOrEmpty(extra))
+                {
+                    extra = extra.Trim();
+                    if (extra.Length > 1 && (extra[0] == ',' || extra[0] == ':'))
+                    {
+                        sMask = sMask.Replace("{" + iparam.ToString() + "}", "{" + iparam.ToString() + extra + "}");
+                    }
+                    else
+                    {
+                        res = res.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_UnexpectedCharacter, extra));
+                    }
+                }
+                exprSyntax.Add(res);
+                iparam++;
+            }
+            // now we have a list of expression syntax node and a mask, so we can call String.Format
+            var args = new List<ArgumentSyntax>();
+            args.Add(MakeArgument(GenerateLiteral(sMask)));
+            foreach (var expr in exprSyntax)
+            {
+                args.Add(MakeArgument(expr));
+            }
+            result = GenerateMethodCall("String.Format", MakeArgumentList(args.ToArray()), true);
             return result;
         }
 
-        protected ExpressionSyntax parseInterpolatedString( string sourceText)
-        {
-            ExpressionSyntax result;
-            if (! sourceText.StartsWith("$\""))
-            {
-                sourceText = "$\"" + sourceText + "\"";
-                sourceText = sourceText.Replace("\n", "\\n");
-                sourceText = sourceText.Replace("\r", "\\r");
-            }
-            using (var lexer = new Lexer(Text.SourceText.From(sourceText), this._options, allowPreprocessorDirectives: false))
-            {
-                using (var parser = new LanguageParser(lexer, oldTree: null, changes: null, cancellationToken: default(CancellationToken)))
-                {
-                    result = parser.ParseInterpolatedStringToken();
-                }
-            }
-            return result;
-        }
         protected int[] DecodeDateTimeConst(string dateliteral)
         {
             string[] args;
@@ -7951,7 +8093,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             switch (context.Token.Type)
             {
                 case XP.INTERPOLATED_STRING_CONST:
-                    context.Put(CreateInterPolatedStringExpression(context));
+                    context.Put(CreateInterPolatedStringExpression(context.Token.Text));
                     return;
                 case XP.DATE_CONST:
                     elements = DecodeDateConst(context.Token.Text);
@@ -8733,6 +8875,75 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(context.Init.Get<ExpressionSyntax>());
         }
         #endregion
+        #endregion
+
+        #region ExpressionParser
+        protected ExpressionSyntax ParseSubExpression(string expression, out string extraText)
+        {
+            var lexer = XSharpLexer.Create(expression, _fileName, _options);
+            var parseErrors = ParseErrorData.NewBag();
+            extraText = null;
+            BufferedTokenStream tokenStream;
+            try
+            {
+                tokenStream = lexer.GetTokenStream();
+                tokenStream.Fill();
+            }
+            catch (Exception e)
+            {
+                parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
+                tokenStream = new BufferedTokenStream(new ListTokenSource(new List<IToken>()));
+            }
+            tokenStream = new CommonTokenStream(new ListTokenSource(tokenStream.tokens));
+            tokenStream.Fill();
+            var parser = new XSharpParser(tokenStream);
+            XSharpParserRuleContext tree = null; ;
+            try
+            {
+                tree = parser.expression();
+
+                // check to see if the whole expression was matched. If not then there may be a syntax error
+                int t = tokenStream.La(1);
+                string textafter = "";
+                while (t != XSharpLexer.EOS && t != XSharpLexer.Eof)
+                {
+                    var token = tokenStream.Lt(1);
+                    tokenStream.Consume();
+                    textafter += token.Text;
+                    t = tokenStream.La(1);
+                }
+                if (textafter.Length > 0)
+                    extraText = textafter;
+            }
+            catch (Exception e)
+            {
+                parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
+                tree = new XSharpParserRuleContext();
+            }
+            var errchecker = new XSharpParseErrorAnalysis(parser, parseErrors, _options);
+            var walker = new ParseTreeWalker();
+            walker.Walk(errchecker, tree);
+            if (parseErrors.Count == 0)
+            {
+                try
+                {
+                    var transform = CreateWalker(parser);
+                    // add our current entity so there is a context for memvars and fields
+                    transform.Entities.Push(this.CurrentEntity);
+                    walker.Walk(transform, tree);
+                }
+                catch (Exception e)
+                {
+                    parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
+                }
+            }
+            return tree.Get<ExpressionSyntax>();
+        }
+        protected virtual XSharpTreeTransformationCore CreateWalker(XSharpParser parser)
+        {
+            return new XSharpTreeTransformationCore(parser, _options, _pool, _syntaxFactory, _fileName);
+        }
+
         #endregion
 
     }

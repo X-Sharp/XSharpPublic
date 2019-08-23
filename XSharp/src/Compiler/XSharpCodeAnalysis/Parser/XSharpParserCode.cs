@@ -347,7 +347,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             EntityData data = new EntityData();
             public EntityData Data => data;
             public ParameterListContext Params => this.ParamList;
-            public DatatypeContext ReturnType => null;
+            public DatatypeContext ReturnType => this.Type;
             public String Name => ParentName + ShortName;
             public String ShortName => this.Id.GetText();
             public FuncprocModifiersContext FuncProcModifiers => Modifiers;

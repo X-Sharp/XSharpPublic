@@ -335,6 +335,12 @@ namespace Microsoft.CodeAnalysis
 #if XSHARP
             var result = String.Format(formatProvider, message, GetArgumentsToUse(formatProvider));
             result = result.Replace("'void*'", "'PTR'");
+            result = result.Replace("'XSharp.__Usual'", "'USUAL'");
+            result = result.Replace("'XSharp.__Date'", "'DATE'");
+            result = result.Replace("'XSharp.__Float'", "'FLOAT'");
+            result = result.Replace("'XSharp.__Array'", "'ARRAY'");
+            result = result.Replace("'XSharp.__Symbol'", "'SYMBOL'");
+            result = result.Replace("'XSharp.__Psz'", "'PSZ'");
             return result;
 #else
             return String.Format(formatProvider, message, GetArgumentsToUse(formatProvider));

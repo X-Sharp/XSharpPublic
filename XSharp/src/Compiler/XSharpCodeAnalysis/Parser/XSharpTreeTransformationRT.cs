@@ -2388,16 +2388,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                // other types all return a default expression
-                // This includes USUAL, DATE, ARRAY, STRING, FLOAT etc
-                if (returnType == _usualType && _options.Dialect == XSharpDialect.FoxPro)
-                {
-                    result = GenerateLiteral(false);
-                }
-                else
-                {
-                    result = MakeDefault(returnType);
-                }
+                 result = MakeDefault(returnType);
             }
             return result;
         }
@@ -2446,7 +2437,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 if (expr == null && _options.VOAllowMissingReturns && !ent.Data.MustBeVoid)
                 {
-                    errcode = ErrorCode.WRN_MissingReturnValue;
+                    if (_options.Dialect != XSharpDialect.FoxPro)
+                    {
+                        errcode = ErrorCode.WRN_MissingReturnValue;
+                    }
                     if (ent is XP.IEntityWithBodyContext ientbody)
                     {
                         TypeSyntax dataType;
@@ -2462,7 +2456,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 dataType = _getMissingType();
                         }
                         // calculate a new return value with a warning
-                        expr = GetReturnExpression(dataType);
+                        if (_options.Dialect == XSharpDialect.FoxPro && dataType == _usualType)
+                        {
+                            expr = GenerateLiteral(true);
+                        }
+                        else
+                        {
+                            expr = GetReturnExpression(dataType);
+                        }
                     }
                 }
                 if (ent.Data.MustBeVoid && expr != null)
@@ -3171,12 +3172,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 isEntryPoint = fc.Id.GetText().ToLower() == "start";
             }
-            context.Data.HasTypedParameter = false;
-            context.Data.HasMissingReturnType = (returnType == null);
-            if (context is XP.ProcedureContext pc)
+            else if (context is XP.ProcedureContext pc)
             {
                 isEntryPoint = pc.Id.GetText().ToLower() == "start";
             }
+
+            context.Data.HasTypedParameter = false;
+            context.Data.HasMissingReturnType = (returnType == null);
             if (!context.Data.HasMissingReturnType)
             {
                 string rtype = returnType.GetText().ToLower();

@@ -292,6 +292,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "vo9":     // Allow missing RETURN
                     options.Vo9 = positive;
+                    options.ExplicitVO9 = true;
                     break;
                 case "vo10":    // Compatible IIF
                     options.Vo10 = positive;
@@ -461,7 +462,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         private void ValidateXSharpSettings(List<Diagnostic> diagnostics) {
-            bool isVo = false;
+            bool withRT = false;
             var newDialect = options.Dialect;
             if (options.Dialect == XSharpDialect.Core)
             {
@@ -480,16 +481,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (newDialect.HasRuntime()) {
                 if (options.VulcanRTFuncsIncluded && options.VulcanRTIncluded) {
                     // Ok;
-                    isVo = true;
+                    withRT = true;
                 }
                 else if (options.XSharpRTIncluded  && options.XSharpCoreIncluded ) {
                     // Ok;
-                    isVo = true;
+                    withRT = true;
                 }
                 else if(options.TargetDLL == XSharpTargetDLL.VO || options.TargetDLL == XSharpTargetDLL.RDD ||
                     options.TargetDLL == XSharpTargetDLL.XPP || options.TargetDLL == XSharpTargetDLL.RT || options.TargetDLL == XSharpTargetDLL.VFP) {
                     // Ok
-                    isVo = true;
+                    withRT = true;
                 }
                 else {
                     AddDiagnostic(diagnostics, ErrorCode.ERR_DialectRequiresReferenceToRuntime, options.Dialect.ToString(),
@@ -497,7 +498,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     newDialect = XSharpDialect.Core;
                 }
             }
-            if (! isVo)
+            if (! withRT)
             {
                 if (options.Vo5)
                 {
@@ -550,6 +551,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (!options.ExplicitVO15)
                 {
                     options.Vo15 = true;            // Untyped allowed
+                }
+                if (! options.ExplicitVO9 && options.Dialect == XSharpDialect.FoxPro)
+                {
+                    options.Vo9 = true;             // generate default return values
                 }
             }
             options.Dialect = newDialect;

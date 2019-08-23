@@ -95,6 +95,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool XSharpCoreIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
         public bool XSharpXPPIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpXPP);
         public bool ExplicitVO15 { get; internal set; } = false;
+        public bool ExplicitVO9 { get; internal set; } = false;
         internal RuntimeAssemblies RuntimeAssemblies { get; set; } = RuntimeAssemblies.None;
         public bool Overflow { get; internal set; } = false;
         public bool OverflowHasBeenSet { get; internal set; } = false;

@@ -7,8 +7,8 @@ using System.IO
 [STAThread];
 FUNCTION Start() AS VOID
     TRY
-        //TestPackNtx()
-        TestZapNtx()
+        TestPackNtx()
+        //TestZapNtx()
         //TestNullDate()
         //TestZap3()
         //SetNatDLL("TURKISH")
@@ -124,6 +124,8 @@ FUNCTION Start() AS VOID
 FUNCTION TestPackNtx() AS VOID
 	
 	LOCAL cDbf AS STRING
+    local aArray as Array
+    aArray := Array{10}
 	cDbf := "C:\test\dbfpack"
 	RddSetDefault("DBFNTX")
 	DbCreate(cDbf , {{"FLD" , "C" , 10 , 1}})

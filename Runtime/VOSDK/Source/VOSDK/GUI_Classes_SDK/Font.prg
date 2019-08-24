@@ -231,7 +231,7 @@ CONSTRUCTOR(kFont, oDimension, sTypeFace)
 		lfHeight := __WCGetStdFontScreenHeight(iStdFontType)
 		lfWidth := 0
 
-		lfPitchAndFamily := _OR(lfPitchAndFamily, WORD(_CAST, __WCStdFontFamily[iStdFontType + 1]))
+		lfPitchAndFamily := _OR(lfPitchAndFamily, (WORD) __WCStdFontFamily[iStdFontType + 1])
 	ELSE
 		IF IsNumeric(oDimension)
 			//oDimension := self:ConvPntToDim(oDimension)

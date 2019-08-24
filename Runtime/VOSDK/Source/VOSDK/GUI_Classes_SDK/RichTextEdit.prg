@@ -98,7 +98,7 @@ ASSIGN Background(oBrush)
 ASSIGN BackgroundColor(oColor) 
 
 	oBackgroundColor := oColor
-	SendMessage(SELF:Handle(), EM_SETBKGNDCOLOR, DWORD(_CAST, FALSE), oColor:ColorRef)
+	SendMessage(SELF:Handle(), EM_SETBKGNDCOLOR, 0, oColor:ColorRef)
 
 	RETURN 
 
@@ -137,7 +137,7 @@ ACCESS ControlFont
 
 	strucCharFormat:cbSize := _SIZEOF(_winCHARFORMAT)
 	strucCharFormat:dwMask := DWORD(_CAST, _OR(CFM_FACE, CFM_SIZE, CFM_BOLD, CFM_ITALIC, CFM_STRIKEOUT, CFM_UNDERLINE))
-	SendMessage(SELF:Handle(), EM_GETCHARFORMAT, DWORD(_CAST, TRUE), LONGINT(_CAST, @strucCharFormat))
+	SendMessage(SELF:Handle(), EM_GETCHARFORMAT, 1, LONGINT(_CAST, @strucCharFormat))
 
 	DO CASE
 	CASE _AND(strucCharFormat:bPitchAndFamily, FF_DECORATIVE) == 1
@@ -178,7 +178,7 @@ ASSIGN ControlFont (oNewFont)
 	// First retrieve the current effects
 	strucCharFormat:cbSize := _SIZEOF(_winCHARFORMAT)
 	strucCharFormat:dwMask := DWORD(_CAST, _OR(CFM_FACE, CFM_SIZE, CFM_BOLD, CFM_ITALIC, CFM_STRIKEOUT, CFM_UNDERLINE))
-	SendMessage(SELF:Handle(), EM_GETCHARFORMAT, DWORD(_CAST, TRUE), LONGINT(_CAST, @strucCharFormat))
+	SendMessage(SELF:Handle(), EM_GETCHARFORMAT, 1, LONGINT(_CAST, @strucCharFormat))
 
 	IF (_AND(strucCharFormat:dwEffects, CFE_BOLD) != 0 .AND. !oNewFont:Bold) .OR. ;
 		(_AND(strucCharFormat:dwEffects, CFE_BOLD) == 0 .AND. oNewFont:Bold)
@@ -283,7 +283,7 @@ METHOD HideSelection(lTemporary)
 
 	DEFAULT(@lTemporary, TRUE)
 
-	SendMessage(SELF:Handle(), EM_HIDESELECTION, DWORD(_CAST, TRUE), LONGINT(_CAST, lTemporary))
+	SendMessage(SELF:Handle(), EM_HIDESELECTION, 1, LONGINT(_CAST, lTemporary))
 
 	RETURN NIL
 
@@ -588,7 +588,7 @@ ACCESS Protected
 
 	strucCharFormat:cbSize := _SIZEOF(_winCHARFORMAT)
 	strucCharFormat:dwMask := CFM_PROTECTED
-	SendMessage(SELF:Handle(), EM_GETCHARFORMAT, DWORD(_CAST, TRUE), LONGINT(_CAST, @strucCharFormat))
+	SendMessage(SELF:Handle(), EM_GETCHARFORMAT, 1, LONGINT(_CAST, @strucCharFormat))
 
 	RETURN _AND(strucCharFormat:dwEffects, CFE_PROTECTED) != 0
 
@@ -875,7 +875,7 @@ METHOD ShowSelection(lTemporary)
 
 	DEFAULT(@lTemporary, TRUE)
 
-	SendMessage(SELF:Handle(), EM_HIDESELECTION, DWORD(_CAST, FALSE), LONGINT(_CAST, lTemporary))
+	SendMessage(SELF:Handle(), EM_HIDESELECTION, 0, LONGINT(_CAST, lTemporary))
 
 	RETURN NIL
 
@@ -910,7 +910,7 @@ ACCESS TextColor
 
 	strucCharFormat:cbSize := _SIZEOF(_winCHARFORMAT)
 	strucCharFormat:dwMask := CFM_COLOR
-	SendMessage(SELF:Handle(), EM_GETCHARFORMAT, DWORD(_CAST, TRUE), LONGINT(_CAST, @strucCharFormat))
+	SendMessage(SELF:Handle(), EM_GETCHARFORMAT, 1, LONGINT(_CAST, @strucCharFormat))
 
 	//PP-031001: Fix color assignment
 	oColor := Color{}

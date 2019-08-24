@@ -557,7 +557,7 @@ METHOD GetItemAttributes(nItem)
 	
 
 	hHandle := SELF:Handle()
-
+    EnForceNumeric(nItem)
 	// retrieve image index and lparam
 	strucItem:iItem := nItem - 1
 	strucItem:mask := _OR(LVIF_IMAGE, LVIF_PARAM, LVIF_INDENT)
@@ -651,9 +651,9 @@ METHOD GetItemSpacing(symView)
 
 	// this only works for IconView and SmallIconView
 	IF symView == #IconView
-		RETURN ListView_GetItemSpacing(SELF:Handle(), DWORD(_CAST, FALSE))
+		RETURN ListView_GetItemSpacing(SELF:Handle(), 0)
 	ELSEIF symView == #SmallIconView
-		RETURN ListView_GetItemSpacing(SELF:Handle(), DWORD(_CAST, TRUE))
+		RETURN ListView_GetItemSpacing(SELF:Handle(), 1)
 	ENDIF
 
 	RETURN -1
@@ -670,7 +670,6 @@ METHOD GetNextItem(kRelationship, lDisabled, lDropTarget, lFocused, lSelected, n
 	DEFAULT(@lDropTarget, FALSE)
 	DEFAULT(@lFocused, FALSE)
 	DEFAULT(@lSelected, FALSE)
-
 	// create state argument
 	IF lDisabled
 		dwState := _OR(dwState, LVNI_CUT)

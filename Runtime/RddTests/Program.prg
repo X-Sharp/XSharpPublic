@@ -7,7 +7,9 @@ using System.IO
 [STAThread];
 FUNCTION Start() AS VOID
     TRY
-        TestNullDate()
+        //TestPackNtx()
+        TestZapNtx()
+        //TestNullDate()
         //TestZap3()
         //SetNatDLL("TURKISH")
         //TestZap2()
@@ -119,6 +121,57 @@ FUNCTION Start() AS VOID
     WAIT
     RETURN
 
+FUNCTION TestPackNtx() AS VOID
+	
+	LOCAL cDbf AS STRING
+	cDbf := "C:\test\dbfpack"
+	RddSetDefault("DBFNTX")
+	DbCreate(cDbf , {{"FLD" , "C" , 10 , 1}})
+	DbUseArea(,, cDbf)
+	DbAppend()
+	FieldPut(1, "a")
+	DbDelete()
+	DbAppend()
+	FieldPut(1, "b")
+	DbDelete()
+	DbCloseArea()
+	DbUseArea(, , cDbf ,, FALSE , FALSE)
+	DbPack()
+	DbCloseArea()
+
+	DbUseArea(, , cDbf ,, FALSE , FALSE)
+	? "records after pack()", RecCount() // 2
+	DbCloseArea()
+RETURN
+
+FUNCTION TestZapNtx() AS VOID
+	
+	LOCAL cDbf AS STRING
+    SetAnsi(FALSE)
+	cDbf := "C:\test\dbfzap"
+	RddSetDefault("DBFNTX")
+	DbCreate(cDbf , {{"FLD" , "C" , 10 , 1}})
+	DbUseArea(,, cDbf)
+	DbAppend()
+	FieldPut(1, "a")
+	DbDelete()
+	DbAppend()
+	FieldPut(1, "b")
+	DbDelete()
+	DbCloseArea()
+	
+	DbUseArea(, , cDbf ,, FALSE , FALSE)
+	? DbZap()
+	DbCloseArea()
+
+	DbUseArea(, , cDbf ,, FALSE , FALSE)
+	? RecCount() // 0, ok
+	DBAPPEND()
+	FIELDPUT(1, "aaa")
+	DBCLOSEAREA()
+
+	DbCloseArea()
+RETURN
 
 function TestNullDate() as VOID
     local aStruct as Array

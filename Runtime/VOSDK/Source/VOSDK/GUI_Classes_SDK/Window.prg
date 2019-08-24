@@ -2461,7 +2461,7 @@ ASSIGN Icon(oNewIcon)
 		hIcon := oIcon:Handle()
 	ENDIF
 	
-	SendMessage(SELF:handle(), WM_SETICON, DWORD(_CAST, TRUE), LONGINT(_CAST, hIcon))
+	SendMessage(SELF:handle(), WM_SETICON, 1, LONGINT(_CAST, hIcon))
 	
 	RETURN 
 	
@@ -2482,7 +2482,7 @@ ASSIGN IconSm(oNewIcon)
 		hIcon := oIconSmall:Handle()
 	ENDIF
 	
-	SendMessage(SELF:handle(), WM_SETICON, DWORD(_CAST, FALSE), LONGINT(_CAST, hIcon))
+	SendMessage(SELF:handle(), WM_SETICON, 0, LONGINT(_CAST, hIcon))
 	
 	RETURN 
 	

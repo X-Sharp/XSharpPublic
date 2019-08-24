@@ -1,4 +1,4 @@
-﻿CLASS __VOToolBarChild  INHERIT VObject
+CLASS __VOToolBarChild  INHERIT VObject
 	//RvdH 0702056 Added to replace Child Toolbar Subarray items
 	EXPORT NameSym 				AS SYMBOL
 	EXPORT Handle					AS PTR
@@ -835,7 +835,7 @@ METHOD ClickItem(nMenuItemID, symTB)
 	hwndTB := SELF:__FindToolBarHandle(symTB)
 
 	IF (hWndTB != NULL_PTR)
-		SendMessage(hWndTB, TB_CHECKBUTTON, nMenuItemID, LONGINT(_CAST, TRUE))
+		SendMessage(hWndTB, TB_CHECKBUTTON, nMenuItemID, 1)
 	ELSE
 		SELF:__TryDeferAction(#ClickItem, nMenuItemID, symTB)
 	ENDIF
@@ -1113,7 +1113,7 @@ METHOD DimItem(nMenuItemID, symTB)
 	hwndTB := SELF:__FindToolBarHandle(symTB)
 
 	IF hWndTB != NULL_PTR
-		SendMessage(hWndTB, TB_INDETERMINATE, nMenuItemID, LONGINT(_CAST, TRUE))
+		SendMessage(hWndTB, TB_INDETERMINATE, nMenuItemID, 1)
 	ELSE
 		SELF:__TryDeferAction(#DimItem, nMenuItemID, symTB)
 	ENDIF
@@ -1330,7 +1330,7 @@ METHOD HideItem(nMenuItemID, symTB)
 	hwndTB := SELF:__FindToolBarHandle(symTB)
 
 	IF hWndTB != NULL_PTR
-		SendMessage(hWndTB, TB_HIDEBUTTON, nMenuItemID, LONGINT(_CAST, TRUE))
+		SendMessage(hWndTB, TB_HIDEBUTTON, nMenuItemID, 1)
 	ELSE
 		SELF:__TryDeferAction(#HideItem, nMenuItemID, symTB)
 	ENDIF
@@ -1609,7 +1609,7 @@ METHOD PressItem(nMenuItemID, symTB)
 	hwndTB := SELF:__FindToolBarHandle(symTB)
 
 	IF (hWndTB != NULL_PTR)
-		SendMessage(hWndTB, TB_PRESSBUTTON, nMenuItemID, LONGINT(_CAST, TRUE))
+		SendMessage(hWndTB, TB_PRESSBUTTON, nMenuItemID, 1)
 	ELSE
 		SELF:__TryDeferAction(#PressItem, nMenuItemID, symTB)
 	ENDIF
@@ -1662,8 +1662,6 @@ METHOD SetRows(nRows, symTB)   // dcaton 070215 changed from ASSIGN to METHOD, V
 	LOCAL hwndTB AS PTR
 	LOCAL symToolBar AS SYMBOL
 
-	
-
 	IF (PCount() != 2) .OR. !IsSymbol(symTB)
 		symToolBar := #MAINTOOLBAR
 	ELSE
@@ -1673,7 +1671,7 @@ METHOD SetRows(nRows, symTB)   // dcaton 070215 changed from ASSIGN to METHOD, V
 	hwndTB := SELF:__FindToolBarHandle(symToolBar)
 
 	IF (hWndTB != NULL_PTR)
-		SendMessage(hWndTB, TB_SETROWS, MAKEWPARAM(WORD(_CAST, nRows), WORD(_CAST, TRUE)), LONGINT(_CAST, @strucRect))
+		SendMessage(hWndTB, TB_SETROWS, MAKEWPARAM((WORD) nRows, 1), LONGINT(_CAST, @strucRect))
 	ELSE
 		SELF:__TryDeferAction(#Rows, 0, symToolBar)
 	ENDIF
@@ -1803,7 +1801,7 @@ METHOD ShowItem(nMenuItemID, symTB)
 	hwndTB := SELF:__FindToolBarHandle(symTB)
 
 	IF (hWndTB != NULL_PTR)
-		SendMessage(hWndTB, TB_HIDEBUTTON, nMenuItemID, LONGINT(_CAST, FALSE))
+		SendMessage(hWndTB, TB_HIDEBUTTON, nMenuItemID, 0)
 	ELSE
 		SELF:__TryDeferAction(#ShowItem, nMenuItemID, symTB)
 	ENDIF
@@ -1819,7 +1817,7 @@ METHOD UnClickItem(nMenuItemID, symTB)
 	hwndTB := SELF:__FindToolBarHandle(symTB)
 
 	IF (hWndTB != NULL_PTR)
-		SendMessage(hWndTB, TB_CHECKBUTTON, nMenuItemID, LONGINT(_CAST, FALSE))
+		SendMessage(hWndTB, TB_CHECKBUTTON, nMenuItemID, 0)
 	ELSE
 		SELF:__TryDeferAction(#UnClickItem, nMenuItemID, symTB)
 	ENDIF
@@ -1836,7 +1834,7 @@ METHOD UnDimItem(nMenuItemID, symTB)
 	hwndTB := SELF:__FindToolBarHandle(symTB)
 
 	IF (hWndTB != NULL_PTR)
-		SendMessage(hWndTB, TB_INDETERMINATE, nMenuItemID, LONGINT(_CAST, FALSE))
+		SendMessage(hWndTB, TB_INDETERMINATE, nMenuItemID, 0)
 	ELSE
 		SELF:__TryDeferAction(#UnDimItem, nMenuItemID, symTB)
 	ENDIF
@@ -1852,7 +1850,7 @@ METHOD UnPressItem(nMenuItemID, symTB)
 	hwndTB := SELF:__FindToolBarHandle(symTB)
 
 	IF (hWndTB != NULL_PTR)
-		SendMessage(hWndTB, TB_PRESSBUTTON, nMenuItemID, LONGINT(_CAST, FALSE))
+		SendMessage(hWndTB, TB_PRESSBUTTON, nMenuItemID, 0)
 	ELSE
 		SELF:__TryDeferAction(#UnClickItem, nMenuItemID, symTB)
 	ENDIF

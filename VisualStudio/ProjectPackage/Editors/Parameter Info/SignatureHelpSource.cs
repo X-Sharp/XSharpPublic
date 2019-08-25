@@ -197,17 +197,22 @@ namespace XSharp.Project
                 if (elt is XSharpModel.XElement)
                 {
                     XSharpModel.XElement element = elt as XSharpModel.XElement;
-                    signatures.Add(CreateSignature(m_textBuffer, element.Prototype, "", ApplicableToSpan, comma));
                     //
                     if (elt is XSharpModel.XTypeMember)
                     {
                         XSharpModel.XTypeMember xMember = elt as XSharpModel.XTypeMember;
+                        signatures.Add(CreateSignature(m_textBuffer, xMember.Prototype, "", ApplicableToSpan, comma, xMember.Kind == XSharpModel.Kind.Constructor));
                         List<XSharpModel.XTypeMember> namesake = xMember.Namesake();
                         foreach (var member in namesake)
                         {
-                            signatures.Add(CreateSignature(m_textBuffer, member.Prototype, "", ApplicableToSpan, comma));
+                            signatures.Add(CreateSignature(m_textBuffer, member.Prototype, "", ApplicableToSpan, comma, member.Kind == XSharpModel.Kind.Constructor));
                         }
                         //
+                    }
+                    else
+                    {
+                        // Type ??
+                        signatures.Add(CreateSignature(m_textBuffer, element.Prototype, "", ApplicableToSpan, comma, false));
                     }
                     // why not ?
                     int paramCount = int.MaxValue;
@@ -227,7 +232,7 @@ namespace XSharp.Project
                     XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(element);
                     if (analysis.IsInitialized)
                     {
-                        signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan, comma));
+                        signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan, comma, (element.MemberType == MemberTypes.Constructor)));
                         // Any other member with the same name in the current Type and in the Parent(s) ?
                         SystemNameSake(element.DeclaringType, signatures, element.Name, analysis.Prototype, comma);
                         //
@@ -267,7 +272,7 @@ namespace XSharp.Project
                     // But don't add the current one
                     if (String.Compare(elementPrototype, analysis.Prototype, true) != 0)
                     {
-                        signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan, comma));
+                        signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan, comma, ctor ));
                     }
                 }
             }
@@ -279,7 +284,7 @@ namespace XSharp.Project
         }
 
  
-        private XSharpSignature CreateSignature(ITextBuffer textBuffer, string methodSig, string methodDoc, ITrackingSpan span, bool comma)
+        private XSharpSignature CreateSignature(ITextBuffer textBuffer, string methodSig, string methodDoc, ITrackingSpan span, bool comma, bool isCtor )
         {
             XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpSignatureHelpSource.CreateSignature()");
             XSharpSignature sig = new XSharpSignature(textBuffer, methodSig, methodDoc, null);
@@ -292,7 +297,11 @@ namespace XSharp.Project
             // 1 : param1 AS TYPE1
             // 2 : param2 AS TYPE2
             // 3 : AS TYPE3
-            string[] pars = methodSig.Split(new char[] { '(', ',', ')' });
+            string[] pars;
+            if (isCtor)
+                pars = methodSig.Split(new char[] { '{', ',', '}' });
+            else
+                pars = methodSig.Split(new char[] { '(', ',', ')' });
             List<IParameter> paramList = new List<IParameter>();
             int locusSearchStart = 0;
             // i = 1 to skip the MethodName; Length-1 to Skip the ReturnType

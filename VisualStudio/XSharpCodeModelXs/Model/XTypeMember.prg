@@ -154,10 +154,20 @@ BEGIN NAMESPACE XSharpModel
 		PROPERTY Prototype AS STRING
 			GET
 				VAR vars := ""
+				VAR desc := ""
 				IF SELF:Kind:HasParameters()
-					vars := "(" + SELF:ParameterList + ")"
+					IF ( SELF:Kind == Kind.@@Constructor )
+						vars := "{" + SELF:ParameterList + "}"
+					ELSE
+						vars := "(" + SELF:ParameterList + ")"
+					ENDIF 
 				ENDIF
-				VAR desc := SUPER:Name + vars
+				IF ( SELF:Kind == Kind.@@Constructor )
+					desc := SELF:Parent:FullName + vars
+				ELSE
+					desc := SUPER:Name + vars
+				ENDIF 
+				//
 				IF SELF:Kind:HasReturnType() .AND. ! String.IsNullOrEmpty(SELF:TypeName)
 					desc := desc + AsKeyWord + SELF:TypeName
 				ENDIF
@@ -168,10 +178,19 @@ BEGIN NAMESPACE XSharpModel
 		PROPERTY ComboPrototype AS STRING
 			GET
 				VAR vars := ""
+				VAR desc := ""
 				IF SELF:Kind:HasParameters()
-					vars := "(" + SELF:ComboParameterList + ")"
+					IF ( SELF:Kind == Kind.@@Constructor )
+						vars := "{" + SELF:ComboParameterList + "}"
+					ELSE
+						vars := "(" + SELF:ComboParameterList + ")"
+					ENDIF 
 				ENDIF
-				VAR desc := SUPER:Name + vars
+				IF ( SELF:Kind == Kind.@@Constructor )
+					desc := SELF:Parent:FullName + vars
+				ELSE
+					desc := SUPER:Name + vars
+				ENDIF 
 				IF SELF:Kind:HasReturnType() .AND. ! String.IsNullOrEmpty(SELF:TypeName)
 					desc := desc + AsKeyWord + SELF:TypeName
 				ENDIF

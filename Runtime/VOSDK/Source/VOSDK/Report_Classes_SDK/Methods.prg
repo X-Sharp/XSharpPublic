@@ -69,7 +69,7 @@ END CLASS
 
 CLASS ReportQueue //INHERIT IpcClient
 	HIDDEN RETname AS STRING    // The *.RET file for commands being Queued
-	HIDDEN oOwner                // object to be told about ReportClosed
+	HIDDEN oOwner  AS AppWindow    // object to be told about ReportClosed
 	
 	HIDDEN hDbConn AS DWORD     // current database handle
 	HIDDEN hWrmHandle AS DWORD  // handle for created report
@@ -212,11 +212,11 @@ METHOD __DumpQ()   // for debugging
 	RETURN SELF
 #endif 	
 
-METHOD __ExecuteNow (oDDEMC) 
+METHOD __ExecuteNow (uDDEMC) 
 	LOCAL eb AS ErrorBox
 	LOCAL char1
 	LOCAL endOfMsg AS STRING
-	
+	LOCAL oDDEMC := uDDEMC as DDEMC
 	endOfMsg := VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_THEREPORT), SELF:ActiveFile) //419@0001 MS 12/07/94
 	
 	// most command types are handled by the last lines of this method !
@@ -540,12 +540,12 @@ METHOD ConnectToDB(cDbName, cUserName, cPassword)
 	
 	RETURN FALSE
 	
-METHOD DataUpdate(oEvent) 
+METHOD DataUpdate(uEvent) 
 	// receives notifications of REPORTEVENTS
 	LOCAL oDDEMC AS DDEMC
 	LOCAL len
 	LOCAL r //return value
-	
+	LOCAL oEvent := uEvent as VO.Event
 	LOCAL newdata AS STRING
 	LOCAL lpAdvNtfy AS CAWRMADVISENTFY
 	LOCAL rWrmVwInit IS CAWRMCREATEVWINIT
@@ -557,17 +557,17 @@ METHOD DataUpdate(oEvent)
 		
 		
 		IF newdata == "Report.Close"  // sent when the definer window is closed
-            owner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_CLOSEDREPORT),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
+            oOwner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_CLOSEDREPORT),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
             SELF:__OneReportLess()
             _event := REPORTCLOSEEVENT
             CloseMethodCalled := FALSE
 
         ELSEIF newdata == "Report.Complete"
-            owner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_COMPLETEDREPORT),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
+            oOwner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_COMPLETEDREPORT),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
             _event := REPORTCOMPLETEEVENT
 
         ELSEIF newdata == "View.Close" // sent when a preview window is closed
-            owner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_CLOSEDREPORT),servername,"")) //419@0001 MS 12/07/94
+            oOwner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_CLOSEDREPORT),servername,"")) //419@0001 MS 12/07/94
             _event := REPORTVIEWCLOSEEVENT
 
             // Indicate that the preview window is closed.
@@ -576,18 +576,18 @@ METHOD DataUpdate(oEvent)
             ENDIF
 
         ELSEIF newdata == "Report.Opened"
-            owner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_OPENEDREPORT),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
+            oOwner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_OPENEDREPORT),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
             _event := REPORTOPENEVENT
 
         ELSEIF  (At("File.Save",newdata) != 0) // this is a "File.Save;FILENAME" advice
             IF nOpenIndex > 0
                 aOpenNames[nOpenIndex, 1] := SubStr(newdata,11,Len(newdata)-10)
             ENDIF
-            owner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_SAVEDREPORT),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
+            oOwner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_SAVEDREPORT),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
             _event := REPORTFILESAVEEVENT
 
         ELSEIF newdata == "Report.Complete.Error"   // introduced in CA-RET v2.0
-            owner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_DETECTEDERRORS),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
+            oOwner:StatusMessage(VO_Sprintf(__CavoStr(__CAVOSTR_REPORTCLASS_DETECTEDERRORS),servername, SELF:ActiveFile)) //419@0001 MS 12/07/94
 			_event := REPORTCOMPLETEERROREVENT
 		ENDIF
 		
@@ -757,12 +757,12 @@ METHOD Open(cReportName)
 	SELF:__CreateDefinerWindow(cReportName, FILE_OPEN)
 	RETURN SELF
 
-ASSIGN Origin(oPoint) 
+ASSIGN Origin(uPoint) 
 	// Everywhere else in CommonView (and VO) origin is BOTTOM left, but CA-RET uses TOP left
 	// Can't simply invert by subtracting Y co-ord from num of pixels in screen, because CA-RET draws
 	// ... DOWN and can't tell how many pixels high it will draw.
 	LOCAL h,w,x,y
-	
+	LOCAL oPoint := uPoint as Point
 	IF (!IsInstanceOf(oPoint, #POINT))
 		// handle error
 		Eval(ErrorBlock(), RCError{oPoint,1})
@@ -785,6 +785,9 @@ ASSIGN Origin(oPoint)
 	SELF :__QorExecute(DDEMC{FALSE,"APP.MOVE("+x+","+y+")"})
 	RETURN 
 
+
+ACCESS __Owner as Window
+    return oOwner
 ACCESS owner() 
 	RETURN oOwner
 
@@ -809,9 +812,9 @@ METHOD Preview(aParams, cPreviewTitle, iMC)
 	SELF :__QorExecute(DDEMC{TRUE,"FILE.PREVIEW()"})
 	RETURN SELF
 
-METHOD Print(aParams, oRange, nCopies) 
+METHOD Print(aParams, uRange, nCopies) 
 	LOCAL i AS INT
-	
+	LOCAL oRange := uRange as Range
 	DEFAULT(@nCopies, 1)
 	
 	FOR i:= 1 TO nCopies
@@ -943,13 +946,13 @@ METHOD Show(nShowState)
 	ENDIF
 	RETURN SELF
 
-ASSIGN Size(oDimension) 
+ASSIGN Size(uDimension) 
 	LOCAL w, h
-	
-	IF (!IsInstanceOf(oDimension, #DIMENSION))
+	IF (!IsInstanceOf(uDimension, #DIMENSION))
 		// handle error
-		Eval(ErrorBlock(), RCError{oDimension,1})
+		Eval(ErrorBlock(), RCError{uDimension,1})
 	ENDIF
+	LOCAL oDimension := uDimension as Dimension
 	
 	w := Str(oDimension :Width)
 	h := Str(oDimension :Height)

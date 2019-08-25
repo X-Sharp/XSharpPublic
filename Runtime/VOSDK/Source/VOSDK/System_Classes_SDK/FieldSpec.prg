@@ -82,6 +82,8 @@ ASSIGN Decimals (uDecimals)
 	ENDIF
 	RETURN 
 
+ACCESS __HyperLabel as HyperLabel
+    RETURN oHyperLabel
 ACCESS HyperLabel                               
 	// Returns the HyperLabel object
 	RETURN oHyperLabel

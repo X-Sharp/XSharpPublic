@@ -467,10 +467,12 @@ CLASS RddFieldInfo
  		SELF:Name 		:= oInfo:Name                                
 		SELF:FieldType 	:= oInfo:FieldType
 		SELF:Length 	:= oInfo:Length
-		SELF:Decimals 	:= oInfo:Decimals
 		SELF:Alias      := oInfo:Alias
 		SELF:Flags      := oInfo:Flags
 		SELF:OffSet     := oInfo:OffSet
+        IF SELF:FieldType:HasDecimals()
+        	SELF:Decimals 	:= oInfo:Decimals
+        ENDIF
        
     /// <summary>Clone a RddFieldInfo object.</summary>        
 	METHOD Clone() AS RddFieldInfo
@@ -541,7 +543,14 @@ STATIC CLASS RDDExtensions
             RETURN TRUE
         END SWITCH
         RETURN FALSE
-
+    STATIC METHOD HasDecimals(SELF eType AS DBFieldType ) AS LOGIC
+        SWITCH eType
+        CASE DbFieldType.Double
+        CASE DbFieldType.Float
+        CASE DBFieldType.Number
+            RETURN TRUE
+        END SWITCH
+        RETURN FALSE
     STATIC METHOD IsVfp(SELF eType AS DBFieldType ) AS LOGIC
         SWITCH eType
         CASE DBFieldType.Character

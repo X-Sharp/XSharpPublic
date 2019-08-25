@@ -51,8 +51,10 @@ BEGIN NAMESPACE XSharp
         MEMBER EG_UNLOCKED     := 38
         MEMBER EG_READONLY     := 39
         MEMBER EG_APPENDLOCK   := 40
-        MEMBER EG_LOCK			:= 41
-        // missing 42 .. 44
+        MEMBER EG_LOCK		   := 41
+        MEMBER EG_TOOMANYTHREADS := 42
+        MEMBER EG_RESERVED_43  := 43
+        MEMBER EG_RESERVED_44  := 44
         MEMBER EG_LOCK_ERROR   := 45
         MEMBER EG_LOCK_TIMEOUT := 46
         MEMBER EG_STACK        := 47
@@ -76,7 +78,7 @@ BEGIN NAMESPACE XSharp
         MEMBER EG_MAX          := 59
         
     END ENUM
-    /// <summary>Error code Enum that matches the Visual Objecs and Vulcan Error Severity codes</summary>
+    /// <summary>Error code Enum that matches the Visual Objecs and Vulcan Error Severity codesFDesc</summary>
     /// <note type="tip">
     /// These enums are also available as DEFINES and can therefore also be used without the "Severity." prefix.
     /// </note>

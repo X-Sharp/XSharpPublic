@@ -57,9 +57,9 @@ ACCESS CursorPos
 
 	RETURN ConsoleCoord{ sbi:dwCursorPosition:X, sbi:dwCursorPosition:Y }
 
-ASSIGN CursorPos( oNewPos ) 
+ASSIGN CursorPos( uNewPos ) 
 	LOCAL dwPos AS DWORD
-	
+	LOCAL oNewPos := uNewPos as ConsoleCoord
 	dwPos := _OR( ( DWORD( _CAST, oNewPos:Y ) << 16 ), DWORD( _CAST, oNewPos:X ) )
 	SetConsoleCursorPosition( hConOut, dwPos )
 
@@ -123,13 +123,13 @@ ACCESS Size
 
 	RETURN ConsoleCoord{ sbi:dwSize:X, sbi:dwSize:Y }
 
-ASSIGN Size( oNewSize ) 
+ASSIGN Size( uNewSize ) 
 	LOCAL sbi 				IS _winCONSOLE_SCREEN_BUFFER_INFO
 	LOCAL coordX 			AS DWORD
 	LOCAL coordY 			AS DWORD
 	LOCAL srWindowRect 	IS _winSMALL_RECT
 	LOCAL dwCoordScreen AS DWORD
-
+    LOCAL oNewSize := uNewSize as ConsoleCoord
 	GetConsoleScreenBufferInfo( hConOut, @sbi )
 
 	// get the largest size we can size the console window to

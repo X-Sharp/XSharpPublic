@@ -1029,6 +1029,7 @@ DEFINE HSR_INITIATE    := 0x00000008                      // iterative operation
 DEFINE HSR_DOWNLOAD    := 0x00000010                      // download to file
 DEFINE HSR_CHUNKED     := 0x00000020                      // operation is send of chunked data
 DEFINE INTERNET_ERROR_BASE                      := 12000
+DEFINE INTERNET_ERROR_FIRST                     := INTERNET_ERROR_BASE
 DEFINE ERROR_INTERNET_OUT_OF_HANDLES            := (INTERNET_ERROR_BASE + 1)
 DEFINE ERROR_INTERNET_TIMEOUT                   := (INTERNET_ERROR_BASE + 2)
 DEFINE ERROR_INTERNET_EXTENDED_ERROR            := (INTERNET_ERROR_BASE + 3)

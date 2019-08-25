@@ -116,7 +116,9 @@ FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
         local sPathSep as STRING
         sPathSep := System.IO.Path.DirectorySeparatorChar:ToString()
 	    IF System.IO.Directory.Exists(cFileSpec)
-            cFileSpec += sPathSep + "*.*"
+            IF _AND( nAttr,FA_DIRECTORY ) != FA_DIRECTORY
+                cFileSpec += sPathSep + "*.*"
+            ENDIF
 	    ELSEIF cFileSpec:EndsWith(sPathSep)
 		    cFileSpec += "*.*"
 	    ELSEIF cFileSpec:Length == 2 && cFileSpec[1] == System.IO.Path.VolumeSeparatorChar .AND. Char.IsLetter( cFileSpec, 0 )   // only a drive letter specified
@@ -139,13 +141,12 @@ FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
 	ENDIF
 	
 	cFileMask := Path.GetFileName( cFileSpec )
-	
+	LOCAL files AS STRING[]
 	IF _AND( nAttr,FA_DIRECTORY ) == FA_DIRECTORY
 		DirectoryHelper.AddDirectoryInfo( aReturn, cFileSpec, nAttr , NULL)
-	ENDIF
-	
+    ENDIF
 	// File Info
-	LOCAL files AS STRING[]
+	    
 	TRY
 		files := System.IO.Directory.GetFiles( cPath, cFileMask )
 		IF files != NULL
@@ -157,6 +158,8 @@ FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
 	CATCH
 		NOP
 	END TRY
+
+	
 	
 	// Directory info
 	IF _AND( nAttr, FA_DIRECTORY) == FA_DIRECTORY .AND. ( cFileSpec:Contains( "*" ) || cFileSpec:Contains( "?" ) )
@@ -203,7 +206,9 @@ INTERNAL STATIC METHOD AddDirectoryInfo( aReturn AS ARRAY, cDirectory AS STRING,
 			IF lAdd
 				cAttribute += "D"
                 VAR aFile := DirectoryHelper.FileSystemInfo2Array(oDir, cAttribute)
-                aFile[F_NAME] := cName
+                IF !String.IsNullOrEmpty(cName)
+                    aFile[F_NAME] := cName
+                ENDIF
                 aadd(aReturn, aFile)
 			ENDIF
 		ENDIF

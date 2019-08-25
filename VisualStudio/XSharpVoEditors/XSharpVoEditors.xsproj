@@ -40,14 +40,15 @@
     <VO13>false</VO13>
     <VO14>false</VO14>
     <VO15>false</VO15>
-    <XSharpProjectversion>2.0.3.0</XSharpProjectversion>
+    <XSharpProjectversion>2.0.4.0</XSharpProjectversion>
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
+    <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <Optimize>false</Optimize>
     <UseSharedCompilation>false</UseSharedCompilation>
     <DisabledWarnings>
@@ -55,7 +56,6 @@
     <WarningLevel>4</WarningLevel>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -64,15 +64,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <Optimize>true</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
     <DisabledWarnings>162</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
     <DefineConstants>TRACE</DefineConstants>
@@ -94,20 +91,6 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System.Xml" />
-    <Reference Include="XSharp.CodeGenerator, Version=1.0.2.0, Culture=neutral, PublicKeyToken=31c59c566fa38f21">
-      <Name>XSharp.CodeGenerator</Name>
-      <AssemblyName>XSharp.CodeGenerator.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\External\Debug\XSharp.CodeGenerator.dll</HintPath>
-    </Reference>
-    <Reference Include="XSharp.VODesigners, Version=1.2.1.0, Culture=neutral, PublicKeyToken=31c59c566fa38f21">
-      <Name>XSharp.VODesigners</Name>
-      <AssemblyName>XSharp.VODesigners.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\External\Debug\XSharp.VODesigners.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions.prg" />
@@ -126,6 +109,16 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CodeGenerator\CodeGenerator.xsproj">
+      <Name>CodeGenerator</Name>
+      <Project>{b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\VODesigners\VODesigners.xsproj">
+      <Name>VODesigners</Name>
+      <Project>{faac947e-0355-4f8d-adb9-c57b1c9357d2}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
       <Name>XSharpModelXs</Name>
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>

@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="..\Runtime.Targets" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{EB3F3142-07F7-48CA-B38D-F611C45A9511}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>XSharp.MacroCompiler</RootNamespace>
+    <AssemblyName>XSharp.MacroCompiler</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <OutputPath>$(Solutiondir)Binaries\$(Configuration)\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <RuntimeIdentifiers>win;win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\..\..\build\Rulesets\Roslyn_BuildRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Constants.cs">
+      <Link>Properties\Constants.cs</Link>
+    </Compile>
+    <Compile Include="Binder\Binder.Access.cs" />
+    <Compile Include="Binder\Binder.Error.cs" />
+    <Compile Include="Binder\Node.Constant.cs" />
+    <Compile Include="Binder\Operator.Binary.cs" />
+    <Compile Include="Binder\Binder.Argument.cs" />
+    <Compile Include="Binder\Binder.Array.cs" />
+    <Compile Include="Binder\Binder.BinaryOp.cs" />
+    <Compile Include="Binder\Binder.Call.cs" />
+    <Compile Include="Binder\Binder.Conversion.cs" />
+    <Compile Include="Binder\Binder.cs" />
+    <Compile Include="Binder\Binder.Expr.cs" />
+    <Compile Include="Binder\Binder.Literal.cs" />
+    <Compile Include="Binder\Binder.Type.cs" />
+    <Compile Include="Binder\Binder.UnaryOp.cs" />
+    <Compile Include="Binder\Node.Bound.cs" />
+    <Compile Include="Binder\Constant.cs" />
+    <Compile Include="Binder\Conversion.cs" />
+    <Compile Include="Binder\Operator.cs" />
+    <Compile Include="Binder\OverloadResult.cs" />
+    <Compile Include="Binder\Symbol.cs" />
+    <Compile Include="Binder\Operator.Unary.cs" />
+    <Compile Include="Binder\Symbol.Extensions.cs" />
+    <Compile Include="CodeGen\Operator.Binary.Emit.cs" />
+    <Compile Include="CodeGen\CodeGen.cs" />
+    <Compile Include="CodeGen\CodeGen.Emit.cs" />
+    <Compile Include="CodeGen\Constant.Emit.cs" />
+    <Compile Include="CodeGen\Conversion.Emit.cs" />
+    <Compile Include="CodeGen\Node.Emit.cs" />
+    <Compile Include="CodeGen\Operator.Unary.Emit.cs" />
+    <Compile Include="CodeGen\Symbol.Emit.cs" />
+    <Compile Include="Common\LiteralNames.cs" />
+    <Compile Include="Common\NativeTypes.cs" />
+    <Compile Include="Common\Options.cs" />
+    <Compile Include="Common\WellKnownMembers.cs" />
+    <Compile Include="Common\WellKnownTypes.cs" />
+    <Compile Include="Compiler\Compiler.cs" />
+    <Compile Include="Compiler\MacroCompiler.cs" />
+    <Compile Include="Diagnostic\Error.cs" />
+    <Compile Include="Diagnostic\Location.cs" />
+    <Compile Include="Diagnostic\Symbol.Name.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Binder\Intrinsic.cs" />
+    <Compile Include="Syntax\Lexer.cs" />
+    <Compile Include="Syntax\Literal.cs" />
+    <Compile Include="Syntax\Parser.cs" />
+    <Compile Include="Syntax\Node.Syntax.cs" />
+    <Compile Include="Syntax\SyntaxToken.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
+      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Name>XSharp.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <!-- On machines where the runtime output path exists the macro compiler will be copied to the runtime output folder  -->
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

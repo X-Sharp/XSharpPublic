@@ -394,14 +394,16 @@ USING System.Diagnostics
             IF SELF:Shared
                 IF SELF:_lockCount == 0
                     lOk := SELF:_tryLock(0, 1, 10)
-                    IF lOk .AND. refreshHeaders
+                    IF lOk
                         SELF:_lockCount := 1
-                        IF SELF:ReadHeader()
-                            IF SELF:IsFlex
-                                // Deal with indexes of deleted blocks
+                        IF refreshHeaders
+                            IF SELF:ReadHeader()
+                                IF SELF:IsFlex
+                                    // Deal with indexes of deleted blocks
+                                ENDIF
+                            ELSE
+                                SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_READ, GenCode.EG_READ, "FPTMemo.LockHeader")
                             ENDIF
-                        ELSE
-                            SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_READ, GenCode.EG_READ, "FPTMemo.LockHeader")
                         ENDIF
                     ENDIF
                 ELSE

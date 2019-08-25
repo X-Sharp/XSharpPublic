@@ -2,15 +2,16 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <Import Project="..\VOSDK.Targets" />
+  <!-- Please note that many properties are read from VOSDK.Targets -->
   <PropertyGroup>
     <ProjectGuid>6C93866F-1894-4E82-9ACA-55927CAE914A</ProjectGuid>
     <AssemblyName>VOWin32APILibrary</AssemblyName>
     <Name>VOWin32APILibrary</Name>
-    <AssemblyName>VOWin32APILibrary</AssemblyName>
+    <OutputName>VOWin32APILibrary</OutputName>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <XSharpProjectversion>2.0.3.0</XSharpProjectversion>
-    <Includepaths />
-    <Nostandarddefs />
+    <XSharpProjectversion>2.0.4.0</XSharpProjectversion>
+    <Includepaths>$(Solutiondir)Common</Includepaths>
+    <Nostandarddefs>false</Nostandarddefs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
   </PropertyGroup>

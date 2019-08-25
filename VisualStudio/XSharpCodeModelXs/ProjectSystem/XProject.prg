@@ -65,24 +65,28 @@ BEGIN NAMESPACE XSharpModel
             #region AssemblyReferences
 
             METHOD AddAssemblyReference(path AS STRING) AS VOID
-                SELF:WriteOutputMessage("AddAssemblyReference (string) "+path)
-                SELF:_clearTypeCache()
-                IF ! _unprocessedAssemblyReferences:ContainsKey(path)
-                    _unprocessedAssemblyReferences.TryAdd(path,path)
+                IF ! String.IsNullOrEmpty(path)
+                    SELF:WriteOutputMessage("AddAssemblyReference (string) "+path)
+                    SELF:_clearTypeCache()
+                    IF ! _unprocessedAssemblyReferences:ContainsKey(path)
+                        _unprocessedAssemblyReferences.TryAdd(path,path)
+                    ENDIF
                 ENDIF
 
             METHOD AddAssemblyReference(reference AS VSLangProj.Reference) AS VOID
                 LOCAL assemblyInfo AS AssemblyInfo
-                SELF:WriteOutputMessage("AddAssemblyReference (VSLangProj.Reference) "+reference:Path)
-                SELF:_clearTypeCache()
-                IF ! AssemblyInfo.DisableAssemblyReferences
-                    IF ! String.IsNullorEmpty(reference:Path)
-                        AddAssemblyReference(reference:Path)
-                    ELSE
-                        // create an assembly reference with the reference object and no real contents
-                        assemblyInfo := SystemTypeController.LoadAssembly(reference)
-                        SELF:_AssemblyReferences:Add(assemblyInfo)
-                        assemblyInfo:AddProject(SELF)
+                IF reference != NULL
+                    SELF:WriteOutputMessage("AddAssemblyReference (VSLangProj.Reference) "+reference:Path)
+                    SELF:_clearTypeCache()
+                    IF ! AssemblyInfo.DisableAssemblyReferences
+                        IF ! String.IsNullorEmpty(reference:Path)
+                            AddAssemblyReference(reference:Path)
+                        ELSE
+                            // create an assembly reference with the reference object and no real contents
+                            assemblyInfo := SystemTypeController.LoadAssembly(reference)
+                            SELF:_AssemblyReferences:Add(assemblyInfo)
+                            assemblyInfo:AddProject(SELF)
+                        ENDIF
                     ENDIF
                 ENDIF
 
@@ -96,24 +100,28 @@ BEGIN NAMESPACE XSharpModel
 
 
             METHOD RemoveAssemblyReference(fileName AS STRING) AS VOID
-                SELF:WriteOutputMessage("RemoveAssemblyReference() "+fileName)
-                SELF:_clearTypeCache()
-                LOCAL cOld AS STRING
-                IF _unprocessedAssemblyReferences:ContainsKey(fileName)
-                    _unprocessedAssemblyReferences:TryRemove(fileName, OUT cOld)
-                ENDIF
-                FOREACH info AS AssemblyInfo IN SELF:_AssemblyReferences
-                    IF String.Equals(info:FileName, fileName, System.StringComparison.OrdinalIgnoreCase)
-                        SELF:_AssemblyReferences:Remove(info)
-                        EXIT
+                IF ! String.IsNullOrEmpty(fileName)
+                    SELF:WriteOutputMessage("RemoveAssemblyReference() "+fileName)
+                    SELF:_clearTypeCache()
+                    LOCAL cOld AS STRING
+                    IF _unprocessedAssemblyReferences:ContainsKey(fileName)
+                        _unprocessedAssemblyReferences:TryRemove(fileName, OUT cOld)
                     ENDIF
-                NEXT
+                    FOREACH info AS AssemblyInfo IN SELF:_AssemblyReferences
+                        IF String.Equals(info:FileName, fileName, System.StringComparison.OrdinalIgnoreCase)
+                            SELF:_AssemblyReferences:Remove(info)
+                            EXIT
+                        ENDIF
+                    NEXT
+                ENDIF
 
             PRIVATE METHOD LoadReference(cDLL AS STRING) AS VOID
-                SELF:ProjectNode:SetStatusBarText(String.Format("Loading referenced types for project '{0}' from '{1}'", SELF:Name, System.IO.Path.GetFileName(cDLL)))
-                VAR assemblyInfo := SystemTypeController.LoadAssembly(cDLL)
-                SELF:_AssemblyReferences:Add(assemblyInfo)
-                assemblyInfo:AddProject(SELF)
+                IF ! String.IsNullOrEmpty(cDLL)
+                    SELF:ProjectNode:SetStatusBarText(String.Format("Loading referenced types for project '{0}' from '{1}'", SELF:Name, System.IO.Path.GetFileName(cDLL)))
+                    VAR assemblyInfo := SystemTypeController.LoadAssembly(cDLL)
+                    SELF:_AssemblyReferences:Add(assemblyInfo)
+                    assemblyInfo:AddProject(SELF)
+                ENDIF
                 RETURN
 
             PRIVATE METHOD ResolveUnprocessedAssemblyReferences() AS VOID
@@ -150,7 +158,7 @@ BEGIN NAMESPACE XSharpModel
                         SELF:ResolveUnprocessedProjectReferences()
                         SELF:ResolveUnprocessedStrangerReferences()
                         FOREACH DLL AS STRING IN SELF:_projectOutputDLLs:Values
-                            IF SystemTypeController.FindAssemblyByLocation(DLL) == NULL
+                            IF SystemTypeController.FindAssemblyByLocation(DLL) != NULL
                                 SELF:WriteOutputMessage("ResolveReferences: No need to load types for Foreign assembly. Assembly is already loaded: "+DLL)
                                 SELF:AddAssemblyReference(DLL)
                             ENDIF
@@ -166,7 +174,7 @@ BEGIN NAMESPACE XSharpModel
 
 
             METHOD UpdateAssemblyReference(fileName AS STRING) AS VOID
-                IF ! AssemblyInfo.DisableAssemblyReferences
+                IF ! AssemblyInfo.DisableAssemblyReferences .and. ! String.IsNullOrEmpty(fileName)
                     SystemTypeController.LoadAssembly(fileName):AddProject(SELF)
                 ENDIF
 
@@ -175,55 +183,65 @@ BEGIN NAMESPACE XSharpModel
             #region ProjectReferences
 
             METHOD AddProjectReference(url AS STRING) AS LOGIC
-                SELF:WriteOutputMessage("Add XSharp ProjectReference "+url)
-                IF ! SELF:_unprocessedProjectReferences:Contains(url)
-                    SELF:_unprocessedProjectReferences:Add(url)
-                    RETURN TRUE
+                IF ! String.IsNullOrEmpty(url)
+                    SELF:WriteOutputMessage("Add XSharp ProjectReference "+url)
+                    IF ! SELF:_unprocessedProjectReferences:Contains(url)
+                        SELF:_unprocessedProjectReferences:Add(url)
+                        RETURN TRUE
+                    ENDIF
                 ENDIF
                 RETURN FALSE
 
             METHOD AddProjectOutput(sProjectURL AS STRING, sOutputDLL AS STRING) AS VOID
-                SELF:WriteOutputMessage("AddProjectOutput "+sProjectURL+"("+sOutputDLL+")")
-                IF SELF:_projectOutputDLLs:ContainsKey(sProjectURL)
-                    SELF:_projectOutputDLLs:Item[sProjectURL] := sOutputDLL
-                ELSE
-                    SELF:_projectOutputDLLs:TryAdd(sProjectURL, sOutputDLL)
+                IF ! String.IsNullOrEmpty(sProjectURL) .and. ! String.IsNullOrEmpty(sOutputDLL)
+                    SELF:WriteOutputMessage("AddProjectOutput "+sProjectURL+"("+sOutputDLL+")")
+                    IF SELF:_projectOutputDLLs:ContainsKey(sProjectURL)
+                        SELF:_projectOutputDLLs:Item[sProjectURL] := sOutputDLL
+                    ELSE
+                        SELF:_projectOutputDLLs:TryAdd(sProjectURL, sOutputDLL)
+                    ENDIF
+                    SELF:_clearTypeCache()
                 ENDIF
-                SELF:_clearTypeCache()
 
             METHOD RemoveProjectOutput(sProjectURL AS STRING) AS VOID
-                WriteOutputMessage("RemoveProjectOutput() "+sProjectURL)
-                IF SELF:_projectOutputDLLs:ContainsKey(sProjectURL)
-                    SELF:RemoveProjectReferenceDLL(SELF:_projectOutputDLLs:Item[sProjectURL])
-                    LOCAL cOld AS STRING
-                    SELF:_projectOutputDLLs:TryRemove(sProjectURL, OUT cOld)
+                IF ! String.IsNullOrEmpty(sProjectURL)
+                    WriteOutputMessage("RemoveProjectOutput() "+sProjectURL)
+                    IF SELF:_projectOutputDLLs:ContainsKey(sProjectURL)
+                        SELF:RemoveProjectReferenceDLL(SELF:_projectOutputDLLs:Item[sProjectURL])
+                        LOCAL cOld AS STRING
+                        SELF:_projectOutputDLLs:TryRemove(sProjectURL, OUT cOld)
+                    ENDIF
+                    SELF:_clearTypeCache()
                 ENDIF
-                SELF:_clearTypeCache()
 
             METHOD RemoveProjectReference(url AS STRING) AS LOGIC
-                LOCAL prj AS XProject
-                LOCAL outputname AS STRING
-                WriteOutputMessage("RemoveProjectReference() "+url)
-                SELF:_clearTypeCache()
-                IF SELF:_unprocessedProjectReferences:Contains(url)
-                    SELF:_unprocessedProjectReferences:Remove(url)
-                    RETURN TRUE
+                IF ! String.IsNullOrEmpty(url)
+                    LOCAL prj AS XProject
+                    LOCAL outputname AS STRING
+                    WriteOutputMessage("RemoveProjectReference() "+url)
+                    SELF:_clearTypeCache()
+                    IF SELF:_unprocessedProjectReferences:Contains(url)
+                        SELF:_unprocessedProjectReferences:Remove(url)
+                        RETURN TRUE
+                    ENDIF
+                    // Does this url belongs to a project in the Solution ?
+                    prj := XSolution.FindProject(url)
+                    IF (SELF:_ReferencedProjects:Contains(prj))
+                        //
+                        outputname := prj:ProjectNode:OutputFile
+                        SELF:_ReferencedProjects:Remove(prj)
+                        RETURN TRUE
+                    ENDIF
+                    SELF:RemoveProjectOutput(url)
                 ENDIF
-                // Does this url belongs to a project in the Solution ?
-                prj := XSolution.FindProject(url)
-                IF (SELF:_ReferencedProjects:Contains(prj))
-                    //
-                    outputname := prj:ProjectNode:OutputFile
-                    SELF:_ReferencedProjects:Remove(prj)
-                    RETURN TRUE
-                ENDIF
-                SELF:RemoveProjectOutput(url)
                 RETURN FALSE
 
             METHOD RemoveProjectReferenceDLL(DLL AS STRING) AS VOID
-                WriteOutputMessage("RemoveProjectReferenceDLL() "+DLL)
-                SELF:_clearTypeCache()
-                SELF:RemoveAssemblyReference(DLL)
+                IF ! String.IsNullOrEmpty(DLL)
+                    WriteOutputMessage("RemoveProjectReferenceDLL() "+DLL)
+                    SELF:_clearTypeCache()
+                    SELF:RemoveAssemblyReference(DLL)
+                ENDIF
 
             PRIVATE METHOD ResolveUnprocessedProjectReferences() AS VOID
                 LOCAL existing AS List<STRING>
@@ -251,10 +269,12 @@ BEGIN NAMESPACE XSharpModel
 
             #region References TO other project systems
         METHOD AddStrangerProjectReference(url AS STRING) AS LOGIC
-            WriteOutputMessage("Add Foreign ProjectReference"+url)
-            IF ! SELF:_unprocessedStrangerProjectReferences:Contains(url)
-                SELF:_unprocessedStrangerProjectReferences:Add(url)
-                RETURN TRUE
+            IF ! String.IsNullOrEmpty(url)
+                WriteOutputMessage("Add Foreign ProjectReference"+url)
+                IF ! SELF:_unprocessedStrangerProjectReferences:Contains(url)
+                    SELF:_unprocessedStrangerProjectReferences:Add(url)
+                    RETURN TRUE
+                ENDIF
             ENDIF
             RETURN FALSE
 
@@ -297,23 +317,25 @@ BEGIN NAMESPACE XSharpModel
 
 
         METHOD RemoveStrangerProjectReference(url AS STRING) AS LOGIC
-            LOCAL prj AS Project
-            WriteOutputMessage("RemoveStrangerProjectReference() "+url)
-            SELF:_clearTypeCache()
-            IF SELF:_unprocessedStrangerProjectReferences:Contains(url)
-                SELF:_unprocessedStrangerProjectReferences:Remove(url)
-                RETURN TRUE
-            ENDIF
-            IF SELF:_failedStrangerProjectReferences:Contains(url)
-                SELF:_failedStrangerProjectReferences:Remove(url)
-                RETURN TRUE
-            ENDIF
+            IF ! String.IsNullOrEmpty(url)
+                LOCAL prj AS Project
+                WriteOutputMessage("RemoveStrangerProjectReference() "+url)
+                SELF:_clearTypeCache()
+                IF SELF:_unprocessedStrangerProjectReferences:Contains(url)
+                    SELF:_unprocessedStrangerProjectReferences:Remove(url)
+                    RETURN TRUE
+                ENDIF
+                IF SELF:_failedStrangerProjectReferences:Contains(url)
+                    SELF:_failedStrangerProjectReferences:Remove(url)
+                    RETURN TRUE
+                ENDIF
 
-            SELF:RemoveProjectOutput(url)
-            prj := SELF:ProjectNode:FindProject(url)
-            IF prj != NULL .AND. SELF:_StrangerProjects:Contains(prj)
-                SELF:_StrangerProjects:Remove(prj)
-                RETURN TRUE
+                SELF:RemoveProjectOutput(url)
+                prj := SELF:ProjectNode:FindProject(url)
+                IF prj != NULL .AND. SELF:_StrangerProjects:Contains(prj)
+                    SELF:_StrangerProjects:Remove(prj)
+                    RETURN TRUE
+                ENDIF
             ENDIF
             RETURN FALSE
 
@@ -380,7 +402,10 @@ BEGIN NAMESPACE XSharpModel
         #region 'Normal' Files
 
         METHOD AddFile(filePath AS STRING) AS LOGIC
-            RETURN SELF:AddFile(XFile{filePath})
+            IF ! String.IsNullOrEmpty(filePath)
+                RETURN SELF:AddFile(XFile{filePath})
+            ENDIF
+            RETURN FALSE
 
         METHOD AddFile(xFile AS XFile) AS LOGIC
             LOCAL xamlCodeBehindFile AS STRING
@@ -412,31 +437,34 @@ BEGIN NAMESPACE XSharpModel
             RETURN FALSE
 
         METHOD FindFullPath(fullPath AS STRING) AS XFile
-            IF SELF:_SourceFilesDict:ContainsKey(fullPath)
-                RETURN SELF:_SourceFilesDict:Item[fullPath]
-            ENDIF
-            IF SELF:_OtherFilesDict:ContainsKey(fullPath)
-                RETURN SELF:_OtherFilesDict:Item[fullPath]
+            IF ! String.IsNullOrEmpty(fullPath)
+                IF SELF:_SourceFilesDict:ContainsKey(fullPath)
+                    RETURN SELF:_SourceFilesDict:Item[fullPath]
+                ENDIF
+                IF SELF:_OtherFilesDict:ContainsKey(fullPath)
+                    RETURN SELF:_OtherFilesDict:Item[fullPath]
+                ENDIF
             ENDIF
             RETURN NULL
 
         METHOD RemoveFile(url AS STRING) AS VOID
             LOCAL file AS XFile
-            IF SELF:_OtherFilesDict:ContainsKey(url)
-                SELF:_OtherFilesDict:TryRemove(url, OUT file)
-                IF file != NULL .AND. file:IsXaml
-                    url := file:XamlCodeBehindFile
+            IF ! String.IsNullOrEmpty(url)
+                IF SELF:_OtherFilesDict:ContainsKey(url)
+                    SELF:_OtherFilesDict:TryRemove(url, OUT file)
+                    IF file != NULL .AND. file:IsXaml
+                        url := file:XamlCodeBehindFile
+                    ENDIF
+                ENDIF
+                IF SELF:_SourceFilesDict:ContainsKey(url)
+                    SELF:_SourceFilesDict:TryRemove(url, OUT file)
+                    IF file != NULL
+                        FOREACH VAR type IN file:TypeList:Values
+                            SELF:RemoveType(type)
+                        NEXT
+                    ENDIF
                 ENDIF
             ENDIF
-            IF SELF:_SourceFilesDict:ContainsKey(url)
-                SELF:_SourceFilesDict:TryRemove(url, OUT file)
-                IF file != NULL
-                    FOREACH VAR type IN file:TypeList:Values
-                        SELF:RemoveType(type)
-                    NEXT
-                ENDIF
-            ENDIF
-
             #endregion
 
         #region Lookup Types and Functions

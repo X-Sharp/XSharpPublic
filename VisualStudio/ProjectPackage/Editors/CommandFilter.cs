@@ -393,6 +393,7 @@ namespace XSharp.Project
         {
             if (XSharpProjectPackage.Instance.DebuggerIsRunning)
                 return;
+            bool changed = false;
             getEditorPreferences(TextView);
             if (_optionsPage.KeywordCase != 0)
             {
@@ -417,11 +418,17 @@ namespace XSharp.Project
                     if (edit.HasEffectiveChanges)
                     {
                         edit.Apply();
+                        changed = true;
                     }
                     else
                     {
                         edit.Cancel();
                     }
+                }
+                if (changed && _buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
+                {
+                    var classify = _buffer.Properties.GetProperty<XSharpClassifier>(typeof(XSharpClassifier));
+                    classify.Classify();
                 }
                 XSharpProjectPackage.Instance.DisplayOutPutMessage("<-- CommandFilter.formatCaseForBuffer()");
             }
@@ -570,9 +577,9 @@ namespace XSharp.Project
                                         StartSignatureSession(true);
                                         break;
                                     default:
-                                        if (_optionsPage.ShowAfterChar)
-                                            if (Char.IsLetterOrDigit(ch) || ch == '_')
-                                                StartCompletionSession(nCmdID, '\0');
+                                        //if (_optionsPage.ShowAfterChar)
+                                        //    if (Char.IsLetterOrDigit(ch) || ch == '_')
+                                        //        StartCompletionSession(nCmdID, '\0');
                                         break;
                                 }
                             }

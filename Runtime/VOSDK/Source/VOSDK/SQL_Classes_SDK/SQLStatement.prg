@@ -1,4 +1,4 @@
-PARTIAL CLASS SQLStatement
+CLASS SQLStatement
 	
 	HIDDEN  hStmt   			AS PTR
 	HIDDEN  cStatement      AS STRING
@@ -212,7 +212,7 @@ METHOD __SetParameters( aNewParams AS ARRAY) AS LOGIC STRICT
 		ENDIF
 
 	NEXT  
-	SELF:ErrInfo:ErrorFlag := FALSE
+	SELF:__ErrInfo:ErrorFlag := FALSE
 	RETURN TRUE
 	
 
@@ -257,9 +257,10 @@ METHOD Commit()
 		__SQLOutputDebug( "** SQLStatement:Commit()" )
 	#ENDIF
 	
-	RETURN SELF:Connection:Commit()
+	RETURN SELF:__Connection:Commit()
 	
-
+ACCESS __Connection as SqlConnection
+    RETURN SELF:oConn
 ACCESS Connection 
 	
 	RETURN SELF:oConn
@@ -293,6 +294,9 @@ METHOD Destroy()
 	ENDIF
 	RETURN NIL	
 	
+
+ACCESS __ErrInfo as SqlErrorInfo
+    return oErrInfo
 
 ACCESS ErrInfo 
 	
@@ -513,7 +517,7 @@ METHOD MakeErrorInfo(oObject, symMethod, nRetCode)
 											SELF:oConn:EnvHandle,         ;
 											SELF:oConn:ConnHandle,        ;
 											SELF:hStmt }
-	SELF:ErrInfo:ReturnCode := nRetCode
+	SELF:__ErrInfo:ReturnCode := nRetCode
 	RETURN SELF:ErrInfo
 	
 	
@@ -674,7 +678,7 @@ METHOD RollBack()
 		__SQLOutputDebug( "** SQLStatement:Rollback()" )
 	#ENDIF
 	
-	RETURN SELF:Connection:RollBack()
+	RETURN SELF:__Connection:RollBack()
 
 ACCESS RowSet 
 	

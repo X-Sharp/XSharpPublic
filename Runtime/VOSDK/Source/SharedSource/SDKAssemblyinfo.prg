@@ -7,7 +7,7 @@
 #using System.Security
 
 #include "BuildNumber.h" 
-#include "RuntimeNames.h"  
+
 
 [assembly: AssemblyConfigurationAttribute( ASSEMBLY_CONFIGURATION )]
 [assembly: AssemblyCompanyAttribute( COMPANY_NAME )]
@@ -20,9 +20,9 @@
 [assembly: AssemblyInformationalVersionAttribute( INFORMATIONAL_NUMBER_STR )]
 [assembly: AssemblyFileVersionAttribute( FILEVERSION_NUMBER_STR )]
 #ifdef __XSHARP_RT__
-[assembly: ImplicitNamespaceAttribute( VULCAN_VOSDK_NAMESPACE )]
+[assembly: ImplicitNamespaceAttribute( "VO" )]
 #else
-[assembly: Vulcan.VulcanImplicitNamespaceAttribute( VULCAN_VOSDK_NAMESPACE )]
+[assembly: Vulcan.VulcanImplicitNamespaceAttribute( "VO" )]
 #endif
 
 [module: UnverifiableCodeAttribute()]

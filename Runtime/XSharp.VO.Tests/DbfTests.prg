@@ -125,7 +125,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbUseArea(,,cFileName)
 			DbAppend()
 			
-			LOCAL u AS USUAL
+			LOCAL u := NIL AS USUAL
 			VoDbSkip(-1)
 			
 			VoDbInfo(DBI_FULLPATH , REF u)

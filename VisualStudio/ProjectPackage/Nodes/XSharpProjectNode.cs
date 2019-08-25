@@ -1000,7 +1000,8 @@ namespace XSharp.Project
             if ((pReference.Type == prjReferenceType.prjReferenceTypeAssembly) ||
                 (pReference.Type == prjReferenceType.prjReferenceTypeActiveX))
             {
-                ProjectModel.RemoveAssemblyReference(pReference.Path);
+                if (! String.IsNullOrEmpty(pReference.Path))
+                    ProjectModel.RemoveAssemblyReference(pReference.Path);
             }
         }
 
@@ -1016,7 +1017,8 @@ namespace XSharp.Project
             if ((pReference.Type == prjReferenceType.prjReferenceTypeAssembly) ||
                 (pReference.Type == prjReferenceType.prjReferenceTypeActiveX))
             {
-                ProjectModel.UpdateAssemblyReference(pReference.Path);
+                if (!String.IsNullOrEmpty(pReference.Path))
+                    ProjectModel.UpdateAssemblyReference(pReference.Path);
             }
         }
         #endregion
@@ -1884,7 +1886,7 @@ namespace XSharp.Project
         const string configPlatform = "$(Configuration)|$(Platform)";
         const string conditionDebug = "'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'";
         const string conditionRelease = "'$(Configuration)|$(Platform)' == 'Release|AnyCPU'";
-        const string import1DefaultProps1 = @"$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props";
+        const string importDefaultProps1 = @"$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props";
         const string importDefaultProps2 = @"$(XSharpProjectExtensionsPath)XSharp.Default.props";
         const string importProps = @"XSharp.props";
         const string importTargets = @"XSharp.targets";
@@ -1933,10 +1935,6 @@ namespace XSharp.Project
             {
                 ok = false;
             }
-            if (ok && str.IndexOf(XSharpProjectExtensionsPath, StringComparison.OrdinalIgnoreCase) == -1)
-            {
-                ok = false;
-            }
             if (ok && str.IndexOf("<DocumentationFile>false", StringComparison.OrdinalIgnoreCase) != -1)
             {
                 ok = false;
@@ -1945,7 +1943,7 @@ namespace XSharp.Project
             {
                 ok = false;
             }
-            if (ok && str.IndexOf(import1DefaultProps1, StringComparison.OrdinalIgnoreCase) == -1 &&
+            if (ok && str.IndexOf(importDefaultProps1, StringComparison.OrdinalIgnoreCase) == -1 &&
                 str.IndexOf(importDefaultProps2, StringComparison.OrdinalIgnoreCase) == -1)
             {
                 ok = false;
@@ -1991,7 +1989,7 @@ namespace XSharp.Project
                 var vers = this.BuildProject.Properties.Where(p => string.Compare(p.Name, ProjectVersion, StringComparison.OrdinalIgnoreCase) == 0).FirstOrDefault();
                 if (vers != null)
                 {
-                    ok = vers.UnevaluatedValue == Constants.Version;
+                    ok = vers.UnevaluatedValue == Constants.FileVersion;
                 }
                 else
                     ok = false;
@@ -2146,14 +2144,23 @@ namespace XSharp.Project
             var grp = groups.Where(g => g.Condition.Trim().Length == 0).FirstOrDefault();
             if (grp != null)
             {
-                if (addProperty(grp, ProjectVersion, Constants.Version))
+                if (addProperty(grp, ProjectVersion, Constants.FileVersion))
                     changed = true;
-                if (addProperty(grp, IncludePaths, debugInclude))
-                    changed = true;
-                if (addProperty(grp, Nostandarddefs, debugNoStdDefs))
-                    changed = true;
-                if (addProperty(grp, XSharpProjectExtensionsPath, @"$(MSBuildExtensionsPath)\XSharp\"))
-                    changed = true;
+                if (! String.IsNullOrEmpty(debugInclude))
+                {
+                    if (addProperty(grp, IncludePaths, debugInclude))
+                        changed = true;
+                }
+                if (!String.IsNullOrEmpty(debugNoStdDefs))
+                {
+                    if (addProperty(grp, Nostandarddefs, debugNoStdDefs))
+                        changed = true;
+                }
+                if (BuildProject.Xml.ToString().IndexOf("$("+XSharpProjectExtensionsPath,StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    if (addProperty(grp, XSharpProjectExtensionsPath, @"$(MSBuildExtensionsPath)\XSharp\"))
+                        changed = true;
+                }
             }
 
             MBC.ProjectImportElement iTargets = null;
@@ -2196,6 +2203,7 @@ namespace XSharp.Project
             return changed;
 
         }
+
         private bool addReferences()
         {
             MBC.ProjectItemElement voRef = null;
@@ -2238,10 +2246,13 @@ namespace XSharp.Project
             foreach (var import in BuildProject.Xml.Imports)
             {
                 var prj = import.Project;
-                if (String.Equals(prj, import1DefaultProps1, StringComparison.OrdinalIgnoreCase))
+                if (String.Equals(prj, importDefaultProps1, StringComparison.OrdinalIgnoreCase))
                     hasImportDefaultProps = true;
                 if (String.Equals(prj, importDefaultProps2, StringComparison.OrdinalIgnoreCase))
+                {
                     hasImportDefaultProps = true;
+                    import.Project = importDefaultProps1;
+                }
                 if (prj.IndexOf(importProps, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     hasImportProps = true;

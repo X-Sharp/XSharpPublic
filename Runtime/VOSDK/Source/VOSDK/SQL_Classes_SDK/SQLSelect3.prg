@@ -12,8 +12,8 @@ METHOD FieldHyperLabel  ( uFieldPos )
 	IF ( nIndex = 0 .OR. nIndex > nNumCols )
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldHyperLabel )
 	ELSE
-		oStmt:ErrInfo:ErrorFlag := FALSE
-		oRet := aSQLColumns[nIndex]:HyperLabel
+		oStmt:__ErrInfo:ErrorFlag := FALSE
+		oRet := SELF:__GetColumn(nIndex):HyperLabel
 	ENDIF
 	RETURN oRet
 
@@ -43,20 +43,20 @@ METHOD FieldInfo( kFieldInfoType, uFieldPos, uFieldVal )
 	IF nIndex = 0 .OR. nIndex > nNumCols
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldInfo )
 	ELSE
-		oStmt:ErrInfo:ErrorFlag := FALSE
+		oStmt:__ErrInfo:ErrorFlag := FALSE
 		oColumn := aSQLColumns[nIndex]
 		DO CASE
 		CASE kFieldInfoType = DBS_NAME
 			xRet := oColumn:ColName
 
 		CASE kFieldInfoType = DBS_TYPE
-			xRet := oColumn:FieldSpec:ValType
+			xRet := oColumn:__FieldSpec:ValType
 
 		CASE kFieldInfoType = DBS_LEN
-			xRet := oColumn:FieldSpec:Length
+			xRet := oColumn:__FieldSpec:Length
 
 		CASE kFieldInfoType = DBS_DEC
-			xRet := oColumn:FieldSpec:Decimals
+			xRet := oColumn:__FieldSpec:Decimals
 
 		CASE kFieldInfoType = DBS_ALIAS
 			IF IsSymbol( uFieldVal )
@@ -91,8 +91,8 @@ METHOD FieldName( siFieldPosition )
 	IF ( nIndex = 0 .OR. nIndex > nNumCols )
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldName )
 	ELSE
-		cRet := aSQLColumns[nIndex]:ColName
-		oStmt:ErrInfo:ErrorFlag := FALSE
+		cRet := SELF:__GetColumn(nIndex):ColName
+		oStmt:__ErrInfo:ErrorFlag := FALSE
 	ENDIF
 
 	RETURN cRet
@@ -110,7 +110,7 @@ METHOD FieldPos( cFieldName )
 		nRet := 0
 	ELSE
 		nRet := nIndex
-		oStmt:ErrInfo:ErrorFlag := FALSE
+		oStmt:__ErrInfo:ErrorFlag := FALSE
 	ENDIF
 	RETURN nRet
 
@@ -158,7 +158,7 @@ METHOD FIELDPUT( uFieldPos, uValue )
 		RETURN NIL
 	ENDIF
 
-	IF !SELF:ColumnAttributes( nIndex ):Updatable
+	IF ! ((SqlColumnAttributes)SELF:ColumnAttributes( nIndex )):Updatable
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__UPDATE_COL ), #FieldPut )
 		SELF:Error( oStmt:ErrInfo )
 		RETURN NIL
@@ -344,7 +344,7 @@ METHOD FIELDPUT( uFieldPos, uValue )
 		lRowModified       := TRUE
 	ENDIF
 	SELF:Notify( NOTIFYFIELDCHANGE, oColumn:NameSym )
-	oStmt:ErrInfo:ErrorFlag := FALSE
+	oStmt:__ErrInfo:ErrorFlag := FALSE
 	RETURN uValue
 
 
@@ -356,8 +356,8 @@ METHOD FieldSpec( uFieldPos )
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldSpec )
 		RETURN NULL_OBJECT
 	ENDIF
-	oStmt:ErrInfo:ErrorFlag := FALSE
-	RETURN aDataFields[nIndex]:FieldSpec
+	oStmt:__ErrInfo:ErrorFlag := FALSE
+	RETURN ((DataField)aDataFields[nIndex]):FieldSpec
 
 METHOD FieldStatus( uFieldPos ) 
 	LOCAL nIndex AS DWORD
@@ -370,9 +370,9 @@ METHOD FieldStatus( uFieldPos )
 	IF nIndex = 0 .OR. nIndex > nNumCols
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldStatus )
 	ELSE
-		oStmt:ErrInfo:ErrorFlag := FALSE
+		oStmt:__ErrInfo:ErrorFlag := FALSE
 
-		oRet := aSQLColumns[nIndex]:HyperLabel
+		oRet := SELF:__GetColumn(nIndex):HyperLabel
 	ENDIF
 	RETURN oRet
 
@@ -387,8 +387,8 @@ METHOD FieldSym( uFieldPos )
 	IF nIndex = 0 .OR. nIndex > nNumCols
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldSym )
 	ELSE
-		oStmt:ErrInfo:ErrorFlag := FALSE
-		symRet := aSQLColumns[nIndex]:HyperLabel:NameSym
+		oStmt:__ErrInfo:ErrorFlag := FALSE
+		symRet := SELF:__GetColumn(nIndex):__HyperLabel:NameSym
 	ENDIF
 
 	RETURN symRet
@@ -406,12 +406,13 @@ METHOD FieldValidate( uFieldPos, uValue )
 	IF nIndex = 0 .OR. nIndex > nNumCols
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldValidate )
 	ELSE
-		oStmt:ErrInfo:ErrorFlag := FALSE
-		lRet := aDataFields[nIndex]:FieldSpec:PerformValidations( uValue )
+		oStmt:__ErrInfo:ErrorFlag := FALSE
+        local oDF := aDataFields[nIndex] as DataField
+		lRet := oDF:__FieldSpec:PerformValidations( uValue )
 		IF !lRet
-			IF aDataFields[nIndex]:FieldSpec:Status != NULL_OBJECT
+			IF oDF:__FieldSpec:Status != NULL_OBJECT
 				//  Get description from hyperlabel
-				oStmt:__GenerateSQLError( aDataFields[nIndex]:FieldSpec:HyperLabel:Description ,  ;
+				oStmt:__GenerateSQLError( oDF:__FieldSpec:__HyperLabel:Description ,  ;
 					#FieldValidate )
 			ELSE
 				oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADVALID ), #FieldValidate )
@@ -466,8 +467,8 @@ METHOD GetData( iCol )
 		SELF:Error( oStmt:ErrInfo )
 		RETURN NIL
 	ENDIF
-	oStmt:ErrInfo:ErrorFlag := FALSE
-	nODBCType := aSQLColumns[nIndex]:ODBCType
+	oStmt:__ErrInfo:ErrorFlag := FALSE
+	nODBCType := SELF:__GetColumn(nIndex):ODBCType
 
 	IF lAppendFlag
 		aData := aAppendData
@@ -518,7 +519,8 @@ METHOD GetData( iCol )
 		cVal  := Mem2String( pTemp, nLen )
 		xVal  := Val( cVal )
 		IF UsualType( xVal ) = FLOAT
-			nDec := SELF:DataField( nIndex ):FieldSpec:Decimals
+            LOCAL oDF := SELF:DataField( nIndex ) as DataField
+			nDec := oDF:__FieldSpec:Decimals
 			xVal := Round( xVal, nDec )
 		ENDIF
 		RETURN xVal
@@ -655,7 +657,7 @@ METHOD GetTimeStamp( uFieldPos )
 		SELF:Error( oStmt:ErrInfo )
 		RETURN NIL
 	ENDIF
-	uiLen := oColumn:FieldSpec:Length
+	uiLen := oColumn:__FieldSpec:Length
 	IF lAppendFlag
 		oData := aAppendData[nIndex]
 	ELSE
@@ -667,7 +669,7 @@ METHOD GetTimeStamp( uFieldPos )
 		cVal := Mem2String( oData:ptrValue , uiLen )
 		cVal := __AdjustString( cVal )
 	ENDIF
-	oStmt:ErrInfo:ErrorFlag := FALSE
+	oStmt:__ErrInfo:ErrorFlag := FALSE
 	RETURN cVal
 
 METHOD GetTimeString( uFieldPos ) 

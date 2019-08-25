@@ -692,6 +692,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     //Debug(  "updates last key, triggers ChangeParent")
                     result := CdxAction.ChangeParent(SELF)
                 ENDIF
+                // we must adjust the dupcount for the element AFTER the element that will be deleted
+                if nPos > 0 .and. nPos < SELF:NumKeys-1
+                    var nextLeaf := leaves[nPos+1]
+                    var prevLeaf := leaves[nPos-1]
+                    nextLeaf:Dup := _getDupCount(prevLeaf:Key, nextLeaf:Key,nextLeaf:Trail)
+                elseif nPos == 0
+                    leaves[1]:Dup := 0
+                endif
                 _Leaves:RemoveAt(nPos)
                 SELF:NumKeys -= 1
                 IF SELF:NumKeys = 0

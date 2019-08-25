@@ -389,16 +389,16 @@ namespace Microsoft.VisualStudio.Project
                 // Some selector data was not valid.
             }
 
-            // Does such a reference already exist in the project?
-            ReferenceNode existingNode;
-            if (node.IsAlreadyAdded(out existingNode))
-            {
-                return existingNode;
-            }
 
             //Add the reference node to the project if we have a valid reference node
             if(node != null)
             {
+                // Does such a reference already exist in the project?
+                ReferenceNode existingNode;
+                if (node.IsAlreadyAdded(out existingNode))
+                {
+                    return existingNode;
+                }
                 // This call will find if the reference is in the project and, in this case
                 // will not add it again, so the parent node will not be set.
                 node.AddReference();

@@ -496,7 +496,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN TRUE
 
         OVERRIDE METHOD EmptyValue() AS OBJECT
-            RETURN ""
+            RETURN NULL
 
        OVERRIDE METHOD Validate() AS LOGIC
             RETURN (SELF:Length == 10 .OR. SELF:Length == 4)  .AND.  SELF:Decimals == 0 

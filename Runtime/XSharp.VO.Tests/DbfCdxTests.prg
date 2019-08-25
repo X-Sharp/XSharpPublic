@@ -128,7 +128,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbUseArea(,,cFileName)
 			DbAppend()
 			
-			LOCAL u AS USUAL
+			LOCAL u := NIL AS USUAL
 			VoDbSkip(-1)
 			
 			VoDbInfo(DBI_FULLPATH , REF u)
@@ -2429,7 +2429,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         [Fact, Trait("Category", "DBF")];
 		METHOD CDX_OrdKeyCount() AS VOID
 			LOCAL aFields AS ARRAY
-			LOCAL dwCount AS INT
+			LOCAL dwCount := 0 AS INT
 			LOCAL cDBF AS STRING
 			
 			RddSetDefault("DBFCDX")
@@ -2680,7 +2680,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
         [Fact, Trait("Category", "DBF")];
 		METHOD CDX_OrdKeyCount_at_EOF() AS VOID
-			LOCAL nCount := 0 AS INT
 			LOCAL cDBF AS STRING
 			
 			RddSetDefault("DBFCDX")
@@ -2703,6 +2702,372 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(4, (INT) OrdKeyCount() )
 
 			DbCloseArea()
+			
+			SetDeleted(FALSE)
+		RETURN	
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD CDX_OrdScope_and_SetFilter() AS VOID
+			LOCAL nCount := 0 AS INT
+			LOCAL cDBF AS STRING
+			
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
+			
+			DbfTests.CreateDatabase(cDbf , ;
+							{ { "LAST" , "C" , 20 , 0 }} , ;
+							{ "A1" ,"A3" , "A2",  "Go1" , "G1" , "g2" , "g3", "go2"  , "h2" , "h4" } )
+
+			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			DbSetOrder ( 1 )
+		
+			OrdScope ( TOPSCOPE, "A" )
+			OrdScope ( BOTTOMSCOPE, "G" )
+			
+			Assert.Equal(8 , (INT) OrdKeyCount() )
+			
+			LOCAL cFilter AS STRING
+			cFilter := "GO" 
+			
+			Assert.True( DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  } , "Upper (LAST) = "+ cFilter )  )
+			DbGoTop()
+			Assert.False( Eof() )
+			Assert.Equal(2 , (INT) OrdKeyCount() )
+			Assert.False( Eof() )
+			DbGoTop()
+			Assert.False( Eof() )
+
+			DO WHILE ! Eof()
+				nCount ++
+				DbSkip ( 1 )
+			ENDDO
+			Assert.Equal(2 , nCount )
+
+			DbCloseArea()
+		RETURN	
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD CDX_OrdScope_and_SetFilter_numerics() AS VOID
+			LOCAL nCount := 0 AS INT
+			LOCAL cDBF AS STRING
+			
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
+			
+			DbfTests.CreateDatabase(cDbf , ;
+							{ { "LAST" , "N" , 20 , 0 }} , ;
+							{ 1,2,3,4,5,6,3,4 } )
+
+			DbCreateOrder ( "ORDER1" , cDbf , "LAST" , { || _Field->LAST } )
+			DbSetOrder ( 1 )
+		
+			OrdScope ( TOPSCOPE, 2 )
+			OrdScope ( BOTTOMSCOPE, 5 )
+			
+			Assert.Equal(6 , (INT) OrdKeyCount() )
+			
+			Assert.True( DbSetFilter ( { || _Field->LAST == 3  } , "LAST == 3")  )
+			DbGoTop()
+			Assert.False( Eof() )
+			Assert.Equal(2 , (INT) OrdKeyCount() )
+			Assert.False( Eof() )
+			DbGoTop()
+			Assert.False( Eof() )
+
+			DO WHILE ! Eof()
+				nCount ++
+				DbSkip ( 1 )
+			ENDDO
+			Assert.Equal(2 , nCount )
+
+			DbCloseArea()
+		RETURN	
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD OrdScope_and_SetDeleted() AS VOID
+			LOCAL aValues AS ARRAY
+			LOCAL cDBF AS STRING
+			
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
+			
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } )
+			aValues := { "a1" , "a2", "a3" , "a4" , "a5" , "a6" ,"g1", "g2" , "g3" , "g4" , "g5" , "o1" , "o2" , "o3" , "o4" , "o5" , "u1", "u2","u3" , "u4" }
+
+			DbUseArea( ,,cDBF , , TRUE )		
+			
+			FOR LOCAL i := 1 AS INT UPTO ALen ( aValues )
+				DbAppend() 
+				FieldPut ( 1 , aValues [ i ] ) 
+				IF InList ( Upper ( aValues [ i ] ) , "G1" , "G2" , "O5" ) 
+					Assert.True( DbDelete() )
+				ENDIF 
+			NEXT 
+			
+			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			DbSetOrder ( 1 )  
+			
+			SetDeleted ( TRUE ) 
+			
+			OrdScope ( TOPSCOPE, "G" ) 
+			OrdScope ( BOTTOMSCOPE, "G" ) 
+		 	DbGoTop() 	
+			
+			Assert.Equal(3, (INT) OrdKeyCount() ) // 3 ok
+			
+			SetDeleted ( FALSE ) 
+			DbGoTop() 		
+			
+			Assert.Equal(5, (INT) OrdKeyCount() ) // 3 ok
+			
+			OrdScope ( TOPSCOPE, NIL ) 
+			OrdScope ( BOTTOMSCOPE, NIL ) 
+			
+			// If TOPSCOPE and BOTTOMSCOPE is not equal 
+			// OrdKeyCount() seems to ignore a SetDeleted( TRUE ) ?
+			
+			OrdScope ( TOPSCOPE, "A" ) 
+			OrdScope ( BOTTOMSCOPE, "G" ) 
+			
+			SetDeleted( TRUE ) 	
+			Assert.Equal(9, (INT) OrdKeyCount() ) // 11, should be 9
+		
+			SetDeleted( FALSE ) 
+			Assert.Equal(11, (INT) OrdKeyCount() ) // 11 ok
+			
+			DbCloseArea()
+		RETURN	
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD SetDeleted_SetDeleted_and_OrdScope1() AS VOID
+			LOCAL aValues AS ARRAY
+			LOCAL cDBF AS STRING
+			
+			TRY
+			
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
+			
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } )
+			aValues := { "a1" , "a2", "a3" , "a4" , "a5" , "a6" ,"g1", "g2" , "g3" , "g4" , "g5" , "o1" , "o2" , "o3" , "o4" , "o5" , "u1", "u2","u3" , "u4" }
+
+			DbUseArea( ,,cDBF , , TRUE )		
+			
+			FOR LOCAL i := 1 AS INT UPTO ALen ( aValues )
+				DbAppend() 
+				FieldPut ( 1 , aValues [ i ] ) 
+				IF InList ( Upper ( aValues [ i ] ) , "G1" , "G2" , "O5" ) 
+					DbDelete() 			
+				ENDIF 
+			NEXT 
+			
+			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			
+			DbSetOrder ( 1 )  
+
+			OrdScope ( TOPSCOPE, "G" ) 
+			OrdScope ( BOTTOMSCOPE, "G" ) 
+//			OrdScope ( TOPSCOPE, "A" ) 
+//			OrdScope ( BOTTOMSCOPE, "G" ) 
+			
+			Assert.Equal(5, (INT) OrdKeyCount() )
+			
+			SetDeleted ( TRUE )  // no problem if set to FALSE
+			
+			OrdDescend ( , , TRUE )
+			DbGoTop()
+			
+			// SetDeleted(TRUE) causes a endless loop ...
+			LOCAL nCount := 0 AS INT
+			DO WHILE ! Eof()
+//				? AllTrim(FieldGet ( 1 ) ) , RecNo(), Eof(), Bof()
+				DbSkip ( 1 )
+				nCount ++
+				IF nCount > 100
+					THROW Exception{"Skip() loop never ends"}
+				END IF
+			ENDDO
+			
+			Assert.Equal(3, (INT) OrdKeyCount() )
+			
+			DbCloseAll()
+
+			CATCH
+
+				THROW
+			
+			FINALLY
+				
+			SetDeleted(FALSE)
+			
+			END TRY
+		RETURN	
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD SetDeleted_SetDeleted_and_OrdScope2() AS VOID
+			LOCAL aValues AS ARRAY
+			LOCAL cDBF AS STRING
+			
+			TRY
+			
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
+			
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } )
+			aValues := { "a1" , "a2", "a3" , "a4" , "a5" , "a6" ,"g1", "g2" , "g3" , "g4" , "g5" , "o1" , "o2" , "o3" , "o4" , "o5" , "u1", "u2","u3" , "u4" }	
+	
+			DbUseArea( ,,cDBF , , TRUE )		
+			
+			FOR LOCAL i := 1 AS INT UPTO ALen ( aValues )
+				DbAppend() 
+				FieldPut ( 1 , aValues [ i ] ) 
+				IF InList ( Upper ( aValues [ i ] ) , "G1" , "G2" , "O5" ) 
+					DbDelete() 			
+				ENDIF 
+			NEXT 
+			
+			// create a descending order 
+			
+			DbSetOrderCondition( , , , , , , , , , ,TRUE )
+			DbCreateOrder ( "ORDER2" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			
+			DbSetOrder ( 1 )  
+			DbGoTop() 
+			
+			DO WHILE ! Eof() 
+				FieldGet ( 1 ) 
+				DbSkip ( 1 ) 
+			ENDDO 	
+			
+			SetDeleted ( FALSE ) 
+			
+			Assert.Equal(20 , (INT) OrdKeyCount() ) // 20  ok
+			
+			SetDeleted ( TRUE  ) 	 
+			
+			#warning disabled following test because it makes tests stop responding
+			//  Here it hangs because SetDeleted() is true
+//			Assert.Equal(17 , (INT) OrdKeyCount() )
+			
+			DbCloseAll() 
+			
+			FINALLY
+				
+				SetDeleted(FALSE)
+				
+			END TRY
+		RETURN	
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD Filter_Descending_and_OrdKeyCount1() AS VOID
+			LOCAL aValues AS ARRAY
+			LOCAL cDBF AS STRING
+			LOCAL cFilter AS STRING
+			
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
+			
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } )
+			aValues := { "a1" , "a2", "a3" , "a4" , "a5" , "a6" ,"g1", "g2" , "g3" , "g4" , "g5" , "o1" , "o2" , "o3" , "o4" , "o5" , "u1", "u2","u3" , "u4" }	
+	
+			DbUseArea( ,,cDBF , , TRUE )		
+			
+			FOR LOCAL i := 1 AS INT UPTO ALen ( aValues )
+				DbAppend() 
+				FieldPut ( 1 , aValues [ i ] ) 
+				IF InList ( Upper ( aValues [ i ] ) , "G1" , "G2" , "O5" ) 
+					DbDelete() 			
+				ENDIF 
+			NEXT 
+			
+			DbCreateOrder ( "ORDER2" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			
+			DbSetOrder ( 1 )  
+
+			cFilter := "G"  // result does include deleted records  ! 
+			
+			SetDeleted ( FALSE ) 	    
+			DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  } , "Upper (LAST) = "+ cFilter ) 
+			DbGoTop()
+			
+			Assert.Equal(5, (INT) OrdKeyCount() ) //  5 ok
+			
+			SetDeleted ( TRUE  ) 	 
+			
+			Assert.Equal(3, (INT) OrdKeyCount() ) //  3 ok  
+			
+			// now change the filter to descend sort on the fly 
+			
+			OrdDescend ( , , TRUE ) 
+			SetDeleted ( FALSE )  
+			DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  } , "Upper (LAST) = "+ cFilter )  
+			
+			Assert.Equal(5, (INT) OrdKeyCount() ) //  shows 0  ...
+			
+			SetDeleted ( TRUE  ) 
+			
+			Assert.Equal(3, (INT) OrdKeyCount() ) // 	shows 0  ...  
+			
+		   // switch back to ascending sort
+			
+			OrdDescend ( , , FALSE ) 
+			SetDeleted ( FALSE ) 
+			Assert.Equal(5, (INT) OrdKeyCount() ) //  5, ok
+
+			SetDeleted ( TRUE ) 
+			
+			Assert.Equal(3, (INT) OrdKeyCount() ) // 	3, ok
+			
+			DbCloseAll()
+		RETURN	
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD Filter_Descending_and_OrdKeyCount2() AS VOID
+			LOCAL aValues AS ARRAY
+			LOCAL cDBF AS STRING
+			LOCAL cFilter AS STRING
+			
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
+			
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } )
+			aValues := { "a1" , "a2", "a3" , "a4" , "a5" , "a6" ,"g1", "g2" , "g3" , "g4" , "g5" , "o1" , "o2" , "o3" , "o4" , "o5" , "u1", "u2","u3" , "u4" }	
+
+			DbUseArea( ,,cDBF , , TRUE )		
+			FOR LOCAL i := 1 AS DWORD UPTO ALen ( aValues )
+				DbAppend() 
+				FieldPut ( 1 , aValues [ i ] ) 
+				IF InList ( Upper ( aValues [ i ] ) , "G1" , "G2" , "O5" ) 
+					DbDelete() 			
+				ENDIF 
+			NEXT 
+			
+			DbCreateOrder ( "ORDER2" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			DbSetOrder ( 1 )  
+			
+			cFilter := "A"  // result does include *no* deleted records  ! 
+			
+			DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  } , "Upper (LAST) = "+ cFilter )  
+
+			Assert.Equal(6, (INT) OrdKeyCount() ) // 6 , ok 
+			
+			OrdDescend ( , , TRUE ) 
+			
+//			SetDeleted ( FALSE )
+//			SetDeleted ( TRUE )  
+			
+			// OrdKeyCount() hangs no matter how the SetDeleted() setting is. 
+			#warning disabled following test because it makes tests stop responding
+			// Assert.Equal(6, (INT) OrdKeyCount() ) // 6 , ok 
+
+			DbCloseAll() 
 		RETURN	
 
 

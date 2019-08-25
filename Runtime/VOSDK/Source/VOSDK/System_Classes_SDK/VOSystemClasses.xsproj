@@ -2,31 +2,24 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <Import Project="..\VOSDK.Targets" />
+  <!-- Please note that most important settings are read from VOSDK.Targets -->
   <PropertyGroup>
     <ProjectGuid>AC2AEBFF-69FF-405D-B7D9-6E5CB1DB914C</ProjectGuid>
     <AssemblyName>VOSystemClasses</AssemblyName>
     <Name>VOSystemClasses</Name>
     <OutputName>VOSystemClasses</OutputName>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <XSharpProjectversion>2.0.3.0</XSharpProjectversion>
+    <XSharpProjectversion>2.0.4.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <LB>false</LB>
-    <NamedArgs>false</NamedArgs>
-    <StandardDefs />
-    <MemVar>false</MemVar>
-    <Undeclared>false</Undeclared>
-    <Unsafe>false</Unsafe>
-    <VO10>false</VO10>
-    <XPP1>false</XPP1>
     <VO4>false</VO4>
-    <VO7>false</VO7>
     <VO6>false</VO6>
-    <VO15>true</VO15>
-    <VO14>false</VO14>
-    <VO9>false</VO9>
+    <VO7>false</VO7>
     <VO8>false</VO8>
+    <VO9>false</VO9>
+    <VO10>false</VO10>
+    <VO14>false</VO14>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>

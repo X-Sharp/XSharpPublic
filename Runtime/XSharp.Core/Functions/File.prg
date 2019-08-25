@@ -233,8 +233,12 @@ BEGIN NAMESPACE XSharp.IO
             RETURN
             
 		INTERNAL STATIC METHOD setErrorState ( o AS Exception ) AS VOID
-            lastException := o
+            local e as Error
+            e := Error{o}
+            e:StackTrace := o:StackTrace+System.Diagnostics.StackTrace{1,true}:ToString()
+            lastException := e
             errorCode := _AND ( (DWORD) System.Runtime.InteropServices.Marshal.GetHRForException ( o ) , 0x0000FFFF )
+            e:OsCode := errorCode
             RETURN
             
 		STATIC INTERNAL METHOD CreateFile(cFIle AS STRING, oMode AS VOFileMode) AS IntPtr

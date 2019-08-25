@@ -47,7 +47,8 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		__SQLOutputDebug( "** SQLSelect:__AllocStmt()" )
 	#ENDIF
 	RETURN SELF:oStmt:__AllocStmt()
-	
+METHOD __GetColumn(nIndex as DWORD) AS SqlColumn
+    return aSqlColumns[nIndex]
 
 METHOD __BuildUpdateStmt AS STRING STRICT 
 	// RvdH 050413 Added
@@ -62,7 +63,7 @@ METHOD __BuildUpdateStmt AS STRING STRICT
 	
 	cUpdate 	:= "update " + cTableName
 	cSet 		:= " set "
-	cQuote  	:= oStmt:Connection:IdentifierQuoteChar
+	cQuote  	:= oStmt:__Connection:IdentifierQuoteChar
 	nCount	:= 0
 	FOR nIndex := 1 TO nNumCols
 		oCol 			:= aSQLColumns[nIndex]
@@ -346,7 +347,7 @@ METHOD __GetCursorName () AS LOGIC STRICT
 			oStmt:MakeErrorInfo(SELF, #__GetCursorName, nRetCode)
 		ELSE
 			SELF:cCursor := Psz2String( pszBuffer )
-			oStmt:ErrInfo:ErrorFlag := FALSE
+			oStmt:__ErrInfo:ErrorFlag := FALSE
 			lRet := TRUE
 		ENDIF
 		MemFree( pszBuffer )
@@ -375,8 +376,8 @@ METHOD __GetFieldName( uFieldPosition AS USUAL) AS STRING STRICT
 	IF nIndex = 0 .OR. nIndex > nNumCols
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldName )
 	ELSE
-		oStmt:ErrInfo:ErrorFlag := FALSE
-		cRet := aSQLColumns[nIndex]:ColName
+		oStmt:__ErrInfo:ErrorFlag := FALSE
+		cRet := SELF:__GetColumn(nIndex):ColName
 	ENDIF
 	
 	RETURN cRet
@@ -496,7 +497,7 @@ METHOD __GetLongData( nODBCType AS SHORTINT, nIndex AS DWORD ) AS LOGIC STRICT
 			ENDIF
 		ELSE
 			oStmt:MakeErrorInfo(SELF, #__GetLongData, nRetCode)
-			nSize := oCol:FieldSpec:Length + 1
+			nSize := oCol:__FieldSpec:Length + 1
 			oData:LongValue := Space( nSize ) // Buffer( nSize )   dcaton 070330  Vulcan doesn't support Buffer()
 			EXIT
 		ENDIF
@@ -562,7 +563,7 @@ METHOD __GetUpdateStmt( nIndex AS DWORD, lAppend AS LOGIC) AS SqlStatement STRIC
 	
 	cRet := "update " + cTableName
 	cRet += " set "
-	cRet += aSQLColumns[nIndex]:ColName
+	cRet += SELF:__GetColumn(nIndex):ColName
 	cRet += " = ? "
 	
 	nType := SELF:__FigureScrollUpdateType()
@@ -605,7 +606,7 @@ METHOD __GetUpdateVal( lAppend AS LOGIC) AS STRING STRICT
 	ENDIF
 	
 	cWhere += " where "
-	cQuote := SELF:oStmt:Connection:IdentifierQuoteChar
+	cQuote := SELF:oStmt:__Connection:IdentifierQuoteChar
 	
 	FOR nIndex := 1 TO nNumCols
 		oCol 		  := aSQLColumns[nIndex]
@@ -802,8 +803,8 @@ METHOD __InitColumnDesc() AS LOGIC STRICT
 		nSize := ALen( aOldSQLColumns )                     
 		IF nSize = 0
 			cOldAlias := NULL_STRING
-		ELSEIF nSize >= nIndex .AND. aOldSQLColumns[nIndex]:ColName = cColName
-			cOldAlias := aOldSQLColumns[nIndex]:AliasName
+		ELSEIF nSize >= nIndex .AND. SELF:__GetColumn(nIndex):ColName = cColName
+			cOldAlias := SELF:__GetColumn(nIndex):AliasName
 		ENDIF
 		
 		nLength := nPrecision
@@ -1033,7 +1034,7 @@ METHOD __InitColumnDesc() AS LOGIC STRICT
 	ENDIF
 	
 	IF lRet
-		oStmt:ErrInfo:ErrorFlag := FALSE
+		oStmt:__ErrInfo:ErrorFlag := FALSE
 	ENDIF
 	
 	IF lLong .AND. ( SELF:nScrollUpdateType == SQL_SC_UPD_AUTO )
@@ -1064,10 +1065,10 @@ METHOD __InitColValue( nIndex AS DWORD ) AS LOGIC STRICT
 		oData:Null 			:= TRUE
 		oData:ValueChanged 	:= FALSE
 		oData:LongValue 		:= NULL_STRING
-		nSize 					:= aSQLColumns[nIndex]:FieldSpec:Length + 1
+		nSize 					:= SELF:__GetColumn(nIndex):__FieldSpec:Length + 1
 		// numeric?
 		pTemp := oData:ptrValue
-		IF __GetStringFromODBCType( aSQLColumns[nIndex]:ODBCType ) = "N"
+		IF __GetStringFromODBCType( SELF:__GetColumn(nIndex):ODBCType ) = "N"
 			MemSet( pTemp, 0, DWORD(nSize) )
 		ELSE
 			MemSet( pTemp, SQL_BLANK_CHARACTER, DWORD(nSize) )
@@ -1108,7 +1109,7 @@ METHOD __InitColValue( nIndex AS DWORD ) AS LOGIC STRICT
 				lRet := SELF:__GetLongData( nODBCType, nIndex )
 				
 			ELSE
-				nLen := oSQLColumn:FieldSpec:Length + 1
+				nLen := oSQLColumn:__FieldSpec:Length + 1
 				oData:Clear()
 				nODBCType := SQLType2CType( nODBCType )
 				
@@ -1245,7 +1246,7 @@ METHOD __PutLongData( cValue AS STRING, nODBCType AS SHORTINT, nIndex AS DWORD, 
 	ENDIF
 	
 	IF nRetCode = SQL_SUCCESS
-		oUpdate:ErrInfo:ErrorFlag := FALSE
+		oUpdate:__ErrInfo:ErrorFlag := FALSE
 	ELSE
 		oUpdate:MakeErrorInfo(SELF, #__PutLongData, nRetCode)
 		
@@ -1321,7 +1322,7 @@ METHOD __RecCount() AS LONGINT STRICT
 				AtC( "DISTINCT", cStatement ) > 0 .OR. ;
 				AtC( "GROUP BY", cStatement ) > 0
 			//RvdH 070507 Added alias for subselect (suggestion Markus Feser)
-			cQuoteChar := oStmt:Connection:IdentifierQuoteChar                       
+			cQuoteChar := oStmt:__Connection:IdentifierQuoteChar                       
          cCount := "select count( 1 ) from ( " + AllTrim(cStatement) + " ) "+cQuoteChar+"VOSQLSELECTCOUNTER"+cQuoteChar
 			
 		ELSE
@@ -1421,7 +1422,7 @@ METHOD __SetCursorName( cCursorName AS STRING) AS LOGIC STRICT
 		oStmt:MakeErrorInfo(SELF, #__SetCursorName, nRetCode)
 	ELSE
 		SELF:cCursor := cCursorName
-		oStmt:ErrInfo:ErrorFlag := FALSE
+		oStmt:__ErrInfo:ErrorFlag := FALSE
 		lRet := TRUE
 	ENDIF
 	

@@ -191,7 +191,7 @@ METHOD AppendRow( lForce )
 	IF !oInsert:Execute()
 		SELF:__CopySQLError( #AppendRow, oInsert:ErrInfo )
 
-		IF oStmt:ErrInfo:ReturnCode != SQL_SUCCESS_WITH_INFO
+		IF oStmt:__ErrInfo:ReturnCode != SQL_SUCCESS_WITH_INFO
 			oConn:__CloseExtraStmt(oInsert)
 			RETURN FALSE
 		ENDIF
@@ -322,7 +322,7 @@ METHOD Column( siCol )
 	IF nIndex = 0 .OR. nIndex > nNumCols
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADCOL ), #Column )
 	ELSE
-		oStmt:ErrInfo:ErrorFlag := FALSE
+		oStmt:__ErrInfo:ErrorFlag := FALSE
 		oColumn := aSQLColumns[nIndex]
 	ENDIF
 
@@ -405,7 +405,7 @@ METHOD ColumnAttributes( siCol )
    oSQLColAtt:CaseSensitive 	:= aValues[6] != 0
 	oSQLColAtt:Searchable 		:= aValues[7]
 
-	oStmt:ErrInfo:ErrorFlag 	:= FALSE
+	oStmt:__ErrInfo:ErrorFlag 	:= FALSE
 	SELF:aColumnAttributes[nIndex] := oSQLColAtt
 	//RvdH 050413 Replace Column in aSQLColumns since ColumAttributes is a subclass
 	SELF:aSQLColumns[nIndex] := oSqlColAtt
@@ -420,7 +420,7 @@ METHOD Commit()
 		__SQLOutputDebug( "** SQLSelect:Commit()" )
 	#ENDIF
 	SELF:Update(TRUE)
-	RETURN SELF:oStmt:Connection:Commit()
+	RETURN SELF:oStmt:__Connection:Commit()
 
 METHOD DataField( uFieldPos ) 
 	LOCAL nIndex        AS DWORD
@@ -433,7 +433,7 @@ METHOD DataField( uFieldPos )
 	IF nIndex = 0 .OR. nIndex > nNumCols
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #DataField )
 	ELSE
-		oStmt:ErrInfo:ErrorFlag := FALSE
+		oStmt:__ErrInfo:ErrorFlag := FALSE
 
 		oRet := aDataFields[nIndex]
 	ENDIF
@@ -467,7 +467,7 @@ METHOD Delete()
 		RETURN FALSE
 	ENDIF
 	nType := SELF:__FigureScrollUpdateType()
-	cQuote := oStmt:Connection:IdentifierQuoteChar
+	cQuote := oStmt:__Connection:IdentifierQuoteChar
 	DO CASE
 	CASE nType = SQL_SC_UPD_CURSOR
 
@@ -519,7 +519,7 @@ METHOD Delete()
 	oDelete:SQLString := SELF:PreExecute( oDelete:SQLString )
 	IF !oDelete:Execute()
 		SELF:__CopySQLError( #Delete, oDelete:ErrInfo )
-		IF oStmt:ErrInfo:ReturnCode != SQL_SUCCESS_WITH_INFO
+		IF oStmt:__ErrInfo:ReturnCode != SQL_SUCCESS_WITH_INFO
 			oConn:__CloseExtraStmt(oDelete)
 			RETURN FALSE
 		ENDIF
@@ -535,7 +535,7 @@ METHOD Delete()
 	ENDIF
 
 	lRowModified := FALSE
-	IF oStmt:Connection:ScrollCsr
+	IF oStmt:__Connection:ScrollCsr
 		nRecno := SELF:nRecNum
 		IF SELF:nRowCount > 0
 			IF SetDeleted()
@@ -582,7 +582,7 @@ METHOD DirectSkip( nSkip )
 	LOCAL nRowStat      AS WORD // dcaton 070206 was INT
 	LOCAL nRetCode      AS INT
 
-	nRetCode := SQLExtendedFetch( SELF:Statement:StatementHandle, ;
+	nRetCode := SQLExtendedFetch( SELF:oStmt:StatementHandle, ;
 									SQL_FETCH_RELATIVE, ;
 									nSkip, ;
 									@lRowCount, ;
@@ -611,7 +611,7 @@ METHOD Error( oError )
 	ELSE
 		lErrorProcessingSemaphor := TRUE
 		IF IsArray( aClients ) .AND. ALen( aClients ) != 0 .AND. IsMethod( aClients[1], #Error )
-			aClients[1]:Error( oError )
+			Send(aClients[1],#Error, oError )
 		ELSE
 			lErrorProcessingSemaphor := FALSE
 			Eval( ErrorBlock(), oError )
@@ -875,9 +875,9 @@ METHOD ExtendedFetch( nFetchType, nRow )
 		//
 		IF nRetCode   = SQL_SUCCESS_WITH_INFO .AND. ;
 			nFetchType = SQL_FETCH_PREV        .AND. ;
-			SubStr3( oStmt:ErrInfo:SQLState,1,5 ) = "01S06"
+			SubStr3( oStmt:__ErrInfo:SQLState,1,5 ) = "01S06"
 
-			oStmt:ErrInfo:ErrorFlag := FALSE
+			oStmt:__ErrInfo:ErrorFlag := FALSE
 
 			SELF:__SetRecordFlags( TRUE, NIL)
 
@@ -972,7 +972,7 @@ METHOD ExtendedFetch( nFetchType, nRow )
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "*** nRecNum = " + NTrim( nRecNum ) )
 	#ENDIF
-	oStmt:ErrInfo:ErrorFlag := FALSE
+	oStmt:__ErrInfo:ErrorFlag := FALSE
 	RETURN lRet
 
 METHOD Fetch( ) 
@@ -1035,7 +1035,7 @@ METHOD Fetch( )
 	SELF:lRowModified:= FALSE
 	SELF:lDeleteFlag := FALSE
 	SELF:nRowCount   := -1
-	SELF:oStmt:ErrInfo:ErrorFlag := FALSE
+	SELF:oStmt:__ErrInfo:ErrorFlag := FALSE
 	SELF:__SetRecordFlags( NIL, FALSE )
 	SELF:Notify( NOTIFYRECORDCHANGE, 1 )
 
@@ -1059,7 +1059,7 @@ METHOD FIELDGET( uField )
 	ELSE
 		xRet := SELF:GetData( nIndex )
 		IF xRet = NIL .AND. SELF:lNullAsBlank
-			cType := SELF:FieldSpec( uField ):ValType
+			cType := ((FieldSpec)SELF:FieldSpec( uField )):ValType
 			DO CASE
 			CASE cType == "C"
 				xRet := NULL_STRING
@@ -1095,8 +1095,8 @@ METHOD FieldGetFormatted( uFieldPos )
 		SELF:Error( oStmt:ErrInfo )
 	ELSE
 		xRet := SELF:FIELDGET( nIndex )
-		oStmt:ErrInfo:ErrorFlag := FALSE
-		xRet := aDataFields[nIndex]:FieldSpec:Transform( xRet )
+		oStmt:__ErrInfo:ErrorFlag := FALSE
+		xRet := ((DataField)aDataFields[nIndex]):__FieldSpec:Transform( xRet )
 	ENDIF
 
 	RETURN xRet

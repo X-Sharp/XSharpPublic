@@ -148,24 +148,25 @@ namespace XSharpColorizer
             }
 
         }
-
+        public void Classify()
+        {
+            ClassifyBuffer(this._buffer.CurrentSnapshot);
+        }
         private void ClassifyBuffer(ITextSnapshot snapshot)
         {
             if (disableSyntaxHighlighting)
                 return;
+            // verify if someone else did not classify this already
+            XSharpTokens xTokens = _buffer.GetTokens();
+            ITokenStream tokens = null;
             Debug("Starting classify at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-            ITokenStream tokens;
             tokens = _sourceWalker.Lex(snapshot.GetText());
             lock (gate)
             {
                 _snapshot = snapshot;
                 _tokens = tokens;
-                XSharpTokens xTokens = new XSharpTokens((BufferedTokenStream)tokens, snapshot);
-                if (_buffer.Properties.ContainsProperty(typeof(XSharpTokens)))
-                {
-                    _buffer.Properties.RemoveProperty(typeof(XSharpTokens));
-                }
-                _buffer.Properties.AddProperty(typeof(XSharpTokens), xTokens);
+                xTokens = new XSharpTokens((BufferedTokenStream)tokens, snapshot);
+                _buffer.Properties[typeof(XSharpTokens)] = xTokens;
 
             }
             BuildColorClassifications(tokens, snapshot);
@@ -692,11 +693,12 @@ namespace XSharpColorizer
         }
 
 
-        private ClassificationSpan ClassifyKeyword(IToken token, ITextSnapshot snapshot)
+        private List<ClassificationSpan> ClassifyKeyword(IToken token, ITextSnapshot snapshot)
         {
             var tokenType = token.Type;
-            ClassificationSpan result = null;
+            var result = new List<ClassificationSpan>();
             IClassificationType type = null;
+            IClassificationType type2 = null;
             IToken startToken = null;
             if (keywordContext != null)
             {
@@ -713,7 +715,7 @@ namespace XSharpColorizer
                 case XSharpLexer.DO:
                     if (startToken != null)
                     {
-                        if (startToken.Type == XSharpLexer.END)
+                        if (startToken.Type == XSharpLexer.END) // END DO
                             type = xsharpKwCloseType;
                         else
                             startToken = null;
@@ -722,7 +724,7 @@ namespace XSharpColorizer
                         keywordContext = token;
                     break;
 
-                case XSharpLexer.BEGIN:
+                case XSharpLexer.BEGIN:     // followed by another keyword
                     keywordContext = token;
                     //type = xsharpKwOpenType;
                     break;
@@ -730,9 +732,9 @@ namespace XSharpColorizer
                 case XSharpLexer.SWITCH:
                     type = xsharpKwOpenType;
                     if (startToken != null)
-                        if (startToken.Type == XSharpLexer.END)
+                        if (startToken.Type == XSharpLexer.END)     // END SWITCH
                             type = xsharpKwCloseType;
-                        else if ((startToken.Type != XSharpLexer.DO) || (startToken.Type != XSharpLexer.BEGIN))
+                        else if ((startToken.Type != XSharpLexer.DO) || (startToken.Type != XSharpLexer.BEGIN))  // DO SWITCH or BEGIN SWITCH are also allowed
                             startToken = null;
                     break;
 
@@ -740,7 +742,7 @@ namespace XSharpColorizer
                 case XSharpLexer.IF:
                     type = xsharpKwOpenType;
                     if (startToken != null)
-                        if (startToken.Type == XSharpLexer.END)
+                        if (startToken.Type == XSharpLexer.END)         // END TRY or END IF
                             type = xsharpKwCloseType;
                         else
                             startToken = null;
@@ -749,7 +751,7 @@ namespace XSharpColorizer
                 case XSharpLexer.WHILE:
                     type = xsharpKwOpenType;
                     if (startToken != null)
-                        if (startToken.Type == XSharpLexer.END)
+                        if (startToken.Type == XSharpLexer.END) // END WHILE
                             type = xsharpKwCloseType;
                         else if (startToken.Type != XSharpLexer.DO)
                             startToken = null;
@@ -758,18 +760,25 @@ namespace XSharpColorizer
 
                 case XSharpLexer.CASE:
                     if (startToken != null)
-                        if (startToken.Type == XSharpLexer.DO)
+                    {
+                        if (startToken.Type == XSharpLexer.DO)  // DO CASE
                             type = xsharpKwOpenType;
-                        else if (startToken.Type == XSharpLexer.END)
+                        else if (startToken.Type == XSharpLexer.END) // END CASE
                             type = xsharpKwCloseType;
+                    }
+                    else
+                    {
+                        type = xsharpKwCloseType;       // CASE inside, so close and open
+                        type2 = xsharpKwOpenType;
+                    }
                     break;
-
 
                 case XSharpLexer.FOR:
                 case XSharpLexer.FOREACH:
                 case XSharpLexer.REPEAT:
+                case XSharpLexer.TEXT:
                     startToken = null;
-                    type = xsharpKwOpenType;
+                    type = xsharpKwOpenType;            // Simple open
                     break;
 
                 case XSharpLexer.NEXT:
@@ -777,23 +786,69 @@ namespace XSharpColorizer
                 case XSharpLexer.ENDDO:
                 case XSharpLexer.ENDIF:
                 case XSharpLexer.ENDCASE:
+                case XSharpLexer.ENDTEXT:
                     startToken = null;
-                    type = xsharpKwCloseType;
+                    type = xsharpKwCloseType;           // Simple close
                     break;
 
-                case XSharpLexer.END:
+                case XSharpLexer.END:                   // followed by other keyword
                     keywordContext = token;
                     //type = xsharpKwCloseType;
                     break;
+                case XSharpLexer.ELSE:
+                case XSharpLexer.ELSEIF:
+                case XSharpLexer.OTHERWISE:
+                case XSharpLexer.RECOVER:
+                case XSharpLexer.CATCH:
+                case XSharpLexer.FINALLY:
+                    startToken = null;                  // inside other block, so close and open
+                    type = xsharpKwCloseType;
+                    type2 = xsharpKwOpenType;
+                    break;
 
+                // begin .. end
+                case XSharpLexer.SEQUENCE:
+                case XSharpLexer.NAMESPACE:
+                case XSharpLexer.LOCK:
+                case XSharpLexer.SCOPE:
+                case XSharpLexer.FIXED:
+                case XSharpLexer.UNSAFE:
+                case XSharpLexer.USING:
+                case XSharpLexer.CHECKED:
+                case XSharpLexer.UNCHECKED:
+                    if (startToken != null)
+                    {
+                        if (startToken.Type == XSharpLexer.BEGIN)           // prefixed by BEGIN
+                            type = xsharpKwOpenType;
+                        else if (startToken.Type == XSharpLexer.END)        // prefixed by END
+                            type = xsharpKwCloseType;
+                    }
+                    break;
+                case XSharpLexer.SET:
+                case XSharpLexer.GET:
+                case XSharpLexer.ADD:
+                case XSharpLexer.REMOVE:
+                    type = xsharpKwOpenType;
+                    if (startToken != null && startToken.Type == XSharpLexer.END)
+                    {
+                        type = xsharpKwCloseType;
+                    }
+                        break;
             }
             //
             if (type != null)
             {
                 if (startToken != null)
-                    result = Token2ClassificationSpan(startToken, token, snapshot, type);
+                    result.Add(Token2ClassificationSpan(startToken, token, snapshot, type));
                 else
-                    result = Token2ClassificationSpan(token, snapshot, type);
+                    result.Add(Token2ClassificationSpan(token, snapshot, type));
+            }
+            if (type2 != null)
+            {
+                if (startToken != null)
+                    result.Add(Token2ClassificationSpan(startToken, token, snapshot, type2));
+                else
+                    result.Add(Token2ClassificationSpan(token, snapshot, type2));
             }
             return result;
         }
@@ -845,11 +900,9 @@ namespace XSharpColorizer
                         // We can have some Open/Close keyword ( FOR..NEXT; WHILE...ENDDO; IF...ENDIF)
                         if (span.ClassificationType == xsharpKeywordType)
                         {
-                            span = ClassifyKeyword(token, snapshot);
-                            if (span != null)
-                            {
-                                newtags.Add(span);
-                            }
+                            var list = ClassifyKeyword(token, snapshot);
+                            foreach (var item in list)
+                                newtags.Add(item);
                         }
                         if (!disableRegions)
                         {

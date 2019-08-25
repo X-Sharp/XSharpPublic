@@ -28,6 +28,10 @@ BEGIN NAMESPACE XSharp
         CONSTRUCTOR(capacity AS DWORD)
             SUPER(capacity)
 
+            /// <inheritdoc />
+        CONSTRUCTOR(capacity AS DWORD, fill AS LOGIC)
+            SUPER(capacity, fill)
+
             /// <summary>Create an array and fill it with elements from an existing .Net array of USUALS</summary>
         CONSTRUCTOR( elements AS USUAL[] )
             SELF()
@@ -90,8 +94,7 @@ BEGIN NAMESPACE XSharp
             LOCAL size AS DWORD
             LOCAL newArray AS ARRAY
             size := (DWORD) dimensions[currentDim]
-            // ARRAY{} constructor param is named "capacity", but it adds empty elements to the array, so it is "size" really. We might want to redesign that
-            newArray := ARRAY{size} 
+            newArray := ARRAY{size, TRUE} 
             IF currentDim != dimensions:Length
                 LOCAL nextDim := currentDim+1 AS INT
                 LOCAL index   := 1 AS INT
@@ -107,7 +110,7 @@ BEGIN NAMESPACE XSharp
             LOCAL aResult AS ARRAY
             LOCAL nCount AS DWORD
             nCount := (DWORD) _internalList:Count
-            aResult := ARRAY{nCount}
+            aResult := ARRAY{nCount, TRUE}
             IF nCount == 0
                 // warning, nCount-1 below will become MAXDWORD for nCount == 0
                 RETURN aResult

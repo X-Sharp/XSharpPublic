@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -213,10 +213,17 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr, BindAffinity.Type);
-            if (Expr.Symbol.UniqueType() is TypeSymbol t)
+            var s = Expr.Symbol.UniqueTypeOrNamespace();
+            if (s is TypeSymbol t)
             {
                 Expr.Symbol = t;
                 Symbol = b.Lookup(t, Member.LookupName) ?? ThrowError(Binder.LookupError(Expr, this));
+                Datatype = Symbol.Type();
+            }
+            else if (s is NamespaceSymbol ns)
+            {
+                Expr.Symbol = ns;
+                Symbol = b.Lookup(ns, Member.LookupName) ?? ThrowError(Binder.LookupError(Expr, this));
                 Datatype = Symbol.Type();
             }
             if (Symbol == null)

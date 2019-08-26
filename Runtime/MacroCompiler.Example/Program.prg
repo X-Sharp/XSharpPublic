@@ -1,4 +1,4 @@
-﻿USING System
+USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
@@ -253,6 +253,17 @@ global ErrorLevel := 1 as int
 class ErrString
     static V := 333 as int
 end class
+
+begin namespace TestNS.Nested
+    class TestClass
+    end class
+end namespace
+
+CLASS TestNS2.TestClass
+	CONSTRUCTOR()
+	STATIC METHOD TestMethod() AS INT STRICT
+	RETURN 123
+END CLASS
 
 BEGIN NAMESPACE MacroCompilerTest
 
@@ -647,6 +658,9 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| ErrorLevel()}", Args(), 0, typeof(dword))
         TestMacro(mc, e"{|| ErrString(0)}", Args(), "", typeof(string))
         TestMacro(mc, e"{|| ErrString.V}", Args(), 333, typeof(int))
+        TestMacro(mc, e"System.Collections.ArrayList{}:GetType():FullName", Args(), "System.Collections.ArrayList", typeof(string))
+        TestMacro(mc, e"TestNS.Nested.TestClass{}:GetType():FullName", Args(), "TestNS.Nested.TestClass", typeof(string))
+        TestMacro(mc, e"TestNS2.TestClass{}:GetType():FullName", Args(), "TestNS2.TestClass", typeof(string))
 
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet, "MyMemVarGet")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut, "MyMemVarPut")

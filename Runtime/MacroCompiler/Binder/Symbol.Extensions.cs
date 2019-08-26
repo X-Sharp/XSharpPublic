@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -75,6 +75,25 @@ namespace XSharp.MacroCompiler
                 foreach (var m in (s as SymbolList).Symbols)
                 {
                     if (m is TypeSymbol)
+                    {
+                        if (u != null)
+                            return s;
+                        u = m;
+                    }
+                }
+                return u;
+            }
+            return s;
+        }
+
+        internal static Symbol UniqueTypeOrNamespace(this Symbol s)
+        {
+            if (s is SymbolList)
+            {
+                Symbol u = null;
+                foreach (var m in (s as SymbolList).Symbols)
+                {
+                    if (m is TypeSymbol || m is NamespaceSymbol)
                     {
                         if (u != null)
                             return s;

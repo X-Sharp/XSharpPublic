@@ -145,6 +145,7 @@ BEGIN NAMESPACE XSharpModel
 			SELF:_usingStatics	:= List<STRING>{}
 			SELF:_entityList    := List<XElement>{}
 		    SELF:_typeList		:= ConcurrentDictionary<STRING, XType>{System.StringComparer.InvariantCultureIgnoreCase}
+		    _usings.Add("XSharp")
 			IF SELF:HasCode
 				SELF:_globalType	:= XType.CreateGlobalType(SELF)
 				SELF:_typeList:TryAdd(SELF:_globalType:Name, SELF:_globalType)
@@ -169,6 +170,9 @@ BEGIN NAMESPACE XSharpModel
 						SELF:Project:AddType(type:Value)
 					NEXT
 					SELF:_usings:AddRange(usings)
+					if SELF:_usings:IndexOf("XSharp") == -1
+						SELF:_usings:Insert(0, "XSharp")
+					ENDIF
 					SELF:_usingStatics:AddRange(staticUsings)
 					SELF:_entityList:Clear()
 					SELF:_entityList:AddRange(aEntities)

@@ -87,7 +87,7 @@ ACCESS MaxSelCount
 	RETURN SendMessage(SELF:Handle(), MCM_GETMAXSELCOUNT, 0, 0)
 
 ASSIGN MaxSelCount(iNewVal)
-    EnForceNumeric(iNewVal)
+    EnForceNumeric(@iNewVal)
 	SendMessage(SELF:Handle(), MCM_SETMAXSELCOUNT, DWORD(_CAST, iNewVal), 0)
 	RETURN 
 

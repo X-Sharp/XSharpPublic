@@ -55,13 +55,12 @@ Function __TextOut(cText as STRING, lNewLine as LOGIC) AS VOID
     RETURN
 
 Function __TextSupport(cText as STRING, lNoShow as LOGIC, nFlags as LONG, uPreText as USUAL) AS STRING
-    local aLines as string[]
     local cPreText as STRING
     LOCAL nPreText as LONG
-    LOCAL lDeleteSpaces as LOGIC
-    LOCAL lDeleteTabs   AS LOGIC
-    LOCAL lDeleteCR     AS LOGIC
-    LOCAL lDeleteLF     AS LOGIC
+    LOCAL lDeleteSpaces := FALSE as LOGIC
+    LOCAL lDeleteTabs   := FALSE AS LOGIC
+    LOCAL lDeleteCR     := FALSE AS LOGIC
+    LOCAL lDeleteLF     := FALSE AS LOGIC
     IF IsString(uPreText)
         cPreText := uPreText
     ELSE

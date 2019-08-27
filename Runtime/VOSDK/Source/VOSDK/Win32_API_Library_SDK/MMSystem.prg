@@ -1297,7 +1297,7 @@ FUNCTION MCI_HMS_HOUR(hms) AS BYTE
 	RETURN (BYTE( _CAST, hms))
 
 FUNCTION MCI_HMS_MINUTE(hms)  AS BYTE
-    EnForceNumeric(hms)
+    EnForceNumeric(@hms)
     RETURN (BYTE) ( (WORD(hms) >> 8) )
 
 

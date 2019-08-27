@@ -704,10 +704,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN 0
             
         PRIVATE METHOD _skipFilter(recno AS LONG , direction AS SkipDirection ) AS LONG
-			LOCAL fromBottom   AS LOGIC
-            LOCAL fromTop      AS LOGIC
             LOCAL recordHidden AS LOGIC
-            LOCAL result       AS LOGIC
             LOCAL cbFilter     AS ICodeblock
             LOCAL fRtDeleted   AS LOGIC
             LOCAL fi           as DbFilterInfo
@@ -724,7 +721,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN recno
                 ENDIF
                recordHidden:= TRUE 
-               result      := TRUE 
                DO WHILE recordHidden
                     // Check deleted first, that is easier and has less overhead
                     IF fRtDeleted

@@ -7,19 +7,20 @@
       <para styleclass="Heading1">__IncludeFunctionParameters</para>
     </header>
     <para styleclass="List"></para>
-    <para styleclass="List">TypeParameters<tab />This is supported for methods with generic type arguments. This something like &lt;T&gt; for a method with one type parameter named T. Usually one of the parameters in the parameter list is then also of type T.</para>
+    <para styleclass="List">TypeParameters<tab/>This is supported for methods with generic type arguments. This something like &lt;T&gt; for a method with one type parameter named T. Usually one of the parameters in the parameter list is then also of type T.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;idParam&gt;<tab />A function parameter variable. &#160;A variable specified in this manner is automatically declared local. &#160;These variables, also called formal parameters, are used to receive arguments that you pass when you call the function.</para>
+    <para styleclass="List">&lt;idParam&gt;<tab/>A function parameter variable.  A variable specified in this manner is automatically declared local.  These variables, also called formal parameters, are used to receive arguments that you pass when you call the function.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">AS | REF &lt;idType&gt;<tab />Specifies the data type of the parameter variable (called <link displaytype="text" defaultstyle="true" type="topiclink" href="strong_typing_gloss" domain="CavoIde.hmxz">strong typing</link>). &#160;AS indicates that the parameter must be passed by value, and REF indicates that it must be passed by reference with the @ operator.</para>
-    <para styleclass="Body Text"><tab /><snippet src="__typeList" inline="false"/></para>
+    <para styleclass="List">AS | REF &lt;idType&gt;<tab/>Specifies the data type of the parameter variable (called strong typing).  AS indicates that the parameter must be passed by value, and REF indicates that it must be passed by reference with the @ operator.</para>
+    <para styleclass="Body Text"><tab/></para>
+    <para styleclass="Body Text"><snippet src="__typeList" inline="false"/></para>
     <para styleclass="List"></para>
-    <para styleclass="List"><snippet src="__dataType" inline="false"/></para>
+    <para styleclass="List"><snippet src="__asType" inline="false"/></para>
     <para styleclass="List"></para>
-    <para styleclass="List">TypeParameterConstraints<tab />Here you can specify constraints for the Type parameters, such as WHERE T IS SomeName or WHERE T IS New</para>
+    <para styleclass="List">TypeParameterConstraints<tab/>Here you can specify constraints for the Type parameters, such as WHERE T IS SomeName or WHERE T IS New</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__callingconvention" inline="false"/></para>
     <para styleclass="List"></para>
-    <para styleclass="List">EXPORT LOCAL<tab />This clause is allowed by X# but ignored.</para>
+    <para styleclass="List">EXPORT LOCAL<tab/>This clause is allowed by X# but ignored.</para>
   </body>
 </topic>

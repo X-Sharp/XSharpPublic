@@ -3,7 +3,6 @@
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>__CommandInclude</title>
   <body>
-    <para styleclass="Normal">Note:<tab />This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="List">Note<tab />This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostddefs">-nostddefs</link>) files then this command will not be available. If you tell the compiler to use a different standard header file (<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-stddefs">-stddef</link> ) then this command may also be not available</para>
   </body>
 </topic>

@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__isType</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__isType</para>
+    </header>
+    <para styleclass="List">IS &lt;idType&gt;<tab />Specifies a VOSTRUCT or UNION data type in which the memory needed to hold the structure is allocated on the stack (&lt;idStructure&gt; is the only &lt;idType&gt; allowed with the IS keyword.) See the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_VOSTRUCT">VOSTRUCT</link> entry in this guide for more information on data structure memory allocation.</para>
+  </body>
+</topic>

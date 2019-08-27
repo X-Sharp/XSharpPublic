@@ -24,11 +24,16 @@
     <para styleclass="Body Text">LOCAL IMPLIED &lt;idVar&gt; := &lt;expression&gt;</para>
     <para styleclass="Body Text"><text style="font-weight:bold; font-style:italic;">Note</text>: The LOCAL statement is shown using several syntax diagrams for convenience. You can declare variables, dynamic arrays, and dimensioned arrays using a single LOCAL statement if each definition is separated by a comma.</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">STATIC<tab />Causes the local variable to retain its value across invocations of the declaring entity but does not affect its visibility.</para>
+    <para styleclass="List">STATIC<tab />Causes the local variable to retain its value across invocations of the declaring entity but does not affect its visibility. </para>
+    <para styleclass="List"></para>
     <para styleclass="List">&lt;idVar&gt;<tab />A valid identifier name for the local variable to declare.</para>
+    <para styleclass="List"></para>
     <para styleclass="List">&lt;expression&gt;<tab />The initial value to assign to the variable.<br/>For LOCAL, this can be any valid expression.<br/>For STATIC LOCAL, this value can be a literal representation of one of the data types listed below or a simple expression involving only operators, literals, and DEFINE constants; however, more complicated expressions (including class instantiation) are not allowed.<br/>If &lt;uValue&gt; is not specified, the initial value of the variable depends on the data type you declare (e.g., NIL if you do not use strong typing, 0 for AS INT, etc.)</para>
+    <para styleclass="List"></para>
     <para styleclass="List"><text styleclass="Body Text">VAR</text><tab /><text styleclass="Normal">The compiler will calculate the type based on the expression in &lt;uValue&gt;</text></para>
+    <para styleclass="List"></para>
     <para styleclass="List"><text styleclass="Body Text">LOCAL IMPLIED</text><tab /><text styleclass="Normal">The compiler will calculate the type based on the expression in &lt;uValue&gt;</text></para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text">DIM &lt;ArraySpec&gt;<tab />The specification for a dimensioned array to declare.</para>
     <para styleclass="List"><text styleclass="Body Text">&lt;ArraySpec&gt;</text><tab /><text styleclass="Body Text">The specification for a dynamic array to declare.</text><br/><text styleclass="Body Text">In both cases, &lt;ArraySpec&gt; is one of the following:</text></para>
     <para styleclass="List"><tab /><text styleclass="Body Text">&lt;idArray&gt;[&lt;nElements&gt;, &lt;nElements&gt;, &lt;nElements&gt;]</text></para>
@@ -37,8 +42,11 @@
     <para styleclass="List"><tab /><text styleclass="Body Text">&lt;idArray&gt; is a valid identifier name for the array to declare. For dynamic arrays, array elements are initialized to NIL. For dimensioned arrays, the initial value of the elements depends on the data type as explained above for &lt;uValue&gt;.</text></para>
     <para styleclass="List"><tab /><text styleclass="Body Text">&lt;nElements&gt; defines the number of elements in a particular dimension of an array. The number of dimensions is determined by how many &lt;nElements&gt; arguments you specify.</text></para>
     <para styleclass="List"><tab /><text styleclass="Body Text">&lt;nElements&gt; can be a literal numeric representation or a simple numeric expression involving only operators, literals, and DEFINE constants; however, more complicated expressions (such as function calls) are not allowed.</text></para>
-    <para styleclass="List">AS &lt;idType&gt;<tab />Specifies the data type of whatever you are declaring (called strong typing). For DIM arrays, declares the data type for all array elements.</para>
-    <para styleclass="List">IS &lt;idType&gt;<tab />Specifies a structure data type in which the memory needed to hold the structure is allocated on the stack (&lt;idStructure&gt; is the only &lt;idType&gt; allowed with the IS keyword.) See the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_VOSTRUCT">VOSTRUCT</link> entry in this guide for more information on data structure memory allocation.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__asType" inline="false"/></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__isType" inline="false"/></para>
+    <para styleclass="List"></para>
     <para styleclass="List"><text styleclass="Body Text">AS ARRAY</text><tab /><text styleclass="Body Text">For dynamic array declarations, specifies the data type of the entire array</text></para>
     <para styleclass="Heading2">Description</para>
     <para styleclass="Body Text">LOCAL is a declaration statement that declares one or more variables or arrays as local to the current routine (i.e., function, method, or procedure). Like other variable declaration statements (such as FIELD and MEMVAR), you must place LOCAL statements before any executable statements (including PRIVATE, PUBLIC, and PARAMETERS) in the routine you are defining.</para>

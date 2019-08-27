@@ -406,6 +406,7 @@ classmember         : Member=method                                 #clsmethod
                     | Member=enum_                                  #nestedEnum
                     | Member=event_                                 #nestedEvent
                     | Member=interface_                             #nestedInterface
+                    | eos                                           #clseos// Blank Lines between entities
                     ;
 
 constructor         :  (Attributes=attributes)? (Modifiers=constructorModifiers)?

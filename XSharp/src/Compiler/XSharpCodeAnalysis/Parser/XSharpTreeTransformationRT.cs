@@ -1026,6 +1026,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
         }
+        
+        public override void ExitFilewidememvar([NotNull] XP.FilewidememvarContext context)
+        {
+            return;
+        }
         private MemVarFieldInfo getFileWideMemVar(string name)
         {
 
@@ -1036,6 +1041,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return memvar;
         }
+
         public override void ExitXbasedecl([NotNull] XP.XbasedeclContext context)
         {
             context.SetSequencePoint(context.end);

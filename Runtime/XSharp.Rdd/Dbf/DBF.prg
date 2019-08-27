@@ -1122,7 +1122,7 @@ PRIVATE METHOD _writeHeader() AS LOGIC
     SELF:_Header:Month := (BYTE)dtInfo:Month
     SELF:_Header:Day := (BYTE)dtInfo:Day
     // Update the number of records
-    SELF:_Header:RecCount := SELF:RecCount
+    SELF:_Header:RecCount := SELF:_RecCount
     // Now Write
     // Go Top
     FSeek3( SELF:_hFile, 0, FS_SET )

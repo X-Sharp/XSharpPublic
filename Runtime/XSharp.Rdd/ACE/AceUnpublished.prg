@@ -235,6 +235,12 @@ BEGIN NAMESPACE XSharp.ADS
             ELSE
                 RETURN ACEUNPUB64.AdsSetProperty90(hObj, ulOperation, uqValue)
             ENDIF
+		PUBLIC STATIC METHOD AdsSetLastError(ulErrCode as DWORD , pucDetails as string ) as DWORD 
+            IF Is32
+                RETURN ACEUNPUB32.AdsSetLastError(ulErrCode, pucDetails)
+            ELSE
+                RETURN ACEUNPUB64.AdsSetLastError(ulErrCode, pucDetails)
+            ENDIF
 
     #endregion
         
@@ -344,7 +350,6 @@ BEGIN NAMESPACE XSharp.ADS
 		PUBLIC STATIC EXTERN METHOD AdsSetFieldRaw(hObj as Intptr, pucFldName as string , pucBuf as byte[] , ulLen as DWORD ) as DWORD 
 		PUBLIC STATIC EXTERN METHOD AdsSetFlushFlag(hConnect as Intptr, usFlushEveryUpdate as WORD ) as DWORD 
 		PUBLIC STATIC EXTERN METHOD AdsSetInternalError(ulErrCode as DWORD , pucFile as string , ulLine as DWORD ) as DWORD 
-		PUBLIC STATIC EXTERN METHOD AdsSetLastError(ulErrCode as DWORD , pucDetails as string ) as DWORD 
 		PUBLIC STATIC EXTERN METHOD AdsSetPacketSize(hConnect as Intptr, usPacketLength as WORD ) as DWORD 
 		PUBLIC STATIC EXTERN METHOD AdsSetProperty(hObj as Intptr, ulOperation as DWORD , ulValue as DWORD ) as DWORD 
 		PUBLIC STATIC EXTERN METHOD AdsSetRecordPartial(hObj as Intptr, pucRec as string , ulLen as DWORD ) as DWORD 

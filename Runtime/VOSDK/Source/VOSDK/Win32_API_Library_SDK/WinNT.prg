@@ -1121,8 +1121,8 @@ FUNCTION UInt32x32To64(a AS DWORD, b AS DWORD) AS INT64
 
 
 FUNCTION MAKELANGID(p, s) AS WORD
-    EnForceNumeric(p)
-    EnForceNumeric(s)
+    EnForceNumeric(@p)
+    EnForceNumeric(@s)
     RETURN ( _OR( (WORD(_CAST, S) << 10), WORD(P)))
 
 FUNCTION PRIMARYLANGID(lgid AS WORD) AS WORD

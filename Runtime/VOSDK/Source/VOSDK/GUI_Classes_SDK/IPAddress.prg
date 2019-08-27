@@ -45,7 +45,7 @@ ACCESS Field1
 
 ASSIGN Field1(iNewVal) 
 	LOCAL dwAddr AS DWORD
-    EnForceNumeric(iNewVal)
+    EnForceNumeric(@iNewVal)
 	SendMessage(SELF:handle(), IPM_GETADDRESS, 0, LONGINT(_CAST, @dwAddr))
 	dwAddr := _Or(_And(0x00FFFFFFU, dwAddr), (DWORD(_CAST, iNewVal) << 24))
 	SendMessage(SELF:handle(), IPM_SETADDRESS, 0, LONGINT(_CAST, dwAddr))
@@ -59,7 +59,7 @@ ACCESS Field2
 
 ASSIGN Field2(iNewVal) 
 	LOCAL dwAddr AS DWORD
-    EnForceNumeric(iNewVal)
+    EnForceNumeric(@iNewVal)
 	SendMessage(SELF:handle(), IPM_GETADDRESS, 0, LONGINT(_CAST, @dwAddr))
 	dwAddr := _Or(_And(0xFF00FFFF, dwAddr), (DWORD(_CAST, iNewVal) << 16))
 	SendMessage(SELF:handle(), IPM_SETADDRESS, 0, LONGINT(_CAST, dwAddr))
@@ -75,7 +75,7 @@ ACCESS Field3
 
 ASSIGN Field3(iNewVal) 
 	LOCAL dwAddr AS DWORD
-    EnForceNumeric(iNewVal)
+    EnForceNumeric(@iNewVal)
 	SendMessage(SELF:handle(), IPM_GETADDRESS, 0, LONGINT(_CAST, @dwAddr))
 	dwAddr := _Or(_And(0xFFFF00FF, dwAddr), (DWORD(_CAST, iNewVal) << 8))
 	SendMessage(SELF:handle(), IPM_SETADDRESS, 0, LONGINT(_CAST, dwAddr))
@@ -89,7 +89,7 @@ ACCESS Field4
 
 ASSIGN Field4(iNewVal) 
 	LOCAL dwAddr AS DWORD
-    EnForceNumeric(iNewVal)
+    EnForceNumeric(@iNewVal)
 	SendMessage(SELF:handle(), IPM_GETADDRESS, 0, LONGINT(_CAST, @dwAddr))
 	dwAddr := _Or(_And(0xFFFFFF00, dwAddr), (DWORD(_CAST, iNewVal)))
 	SendMessage(SELF:handle(), IPM_SETADDRESS, 0, LONGINT(_CAST, dwAddr))

@@ -557,7 +557,7 @@ METHOD GetItemAttributes(nItem)
 	
 
 	hHandle := SELF:Handle()
-    EnForceNumeric(nItem)
+    EnForceNumeric(@nItem)
 	// retrieve image index and lparam
 	strucItem:iItem := nItem - 1
 	strucItem:mask := _OR(LVIF_IMAGE, LVIF_PARAM, LVIF_INDENT)

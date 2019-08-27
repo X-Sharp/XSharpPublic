@@ -19,7 +19,6 @@
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Body Text">[STATIC] LOCAL &lt;idVar&gt; [:= &lt;expression&gt;] [,...] [AS | IS &lt;idType&gt;] [, ...]</para>
     <para styleclass="Body Text">[STATIC] LOCAL DIM &lt;ArraySpec&gt; [, ...] AS | IS &lt;idType&gt; [, ...]</para>
-    <para styleclass="Body Text">[STATIC] LOCAL &lt;ArraySpec&gt; [, ...] [AS ARRAY] [, ...]</para>
     <para styleclass="Body Text">VAR &lt;idVar&gt; := &lt;expression&gt;</para>
     <para styleclass="Body Text">LOCAL IMPLIED &lt;idVar&gt; := &lt;expression&gt;</para>
     <para styleclass="Body Text"><text style="font-weight:bold; font-style:italic;">Note</text>: The LOCAL statement is shown using several syntax diagrams for convenience. You can declare variables, dynamic arrays, and dimensioned arrays using a single LOCAL statement if each definition is separated by a comma.</para>
@@ -47,7 +46,6 @@
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__isType" inline="false"/></para>
     <para styleclass="List"></para>
-    <para styleclass="List"><text styleclass="Body Text">AS ARRAY</text><tab /><text styleclass="Body Text">For dynamic array declarations, specifies the data type of the entire array</text></para>
     <para styleclass="Heading2">Description</para>
     <para styleclass="Body Text">LOCAL is a declaration statement that declares one or more variables or arrays as local to the current routine (i.e., function, method, or procedure). Like other variable declaration statements (such as FIELD and MEMVAR), you must place LOCAL statements before any executable statements (including PRIVATE, PUBLIC, and PARAMETERS) in the routine you are defining.</para>
     <para styleclass="Body Text">Local variable declarations hide all inherited private variables, visible public variables, instance variables, global variables, and constants with the same name. <br/>The search order for a variable name is as follows:</para>

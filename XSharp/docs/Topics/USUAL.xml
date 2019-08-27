@@ -9,11 +9,10 @@
     <header>
       <para styleclass="Heading1">USUAL</para>
     </header>
-    <para styleclass="Normal">The USUAL keyword denotes a datatype that can contain any data type. It consists internally of a type flag and a value. </para>
+    <para styleclass="Normal">The USUAL type is datatype that can contain any data type. It consists internally of a type flag and a value. This type can store any value.</para>
+    <para styleclass="Normal">The compiler treats this type in a special way. The compiler will not warn you when you assign a value of type USUAL to another type, but will automatically generate the necessary conversion operation/ </para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The USUAL keyword is a special type of declaration that allows any data type to be stored in it at runtime.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">USUAL is provided primarily for compatibility with code originally written in Visual Objects. It is not recommended for use in new code because the compiler cannot perform any type checking on expressions where one or more operands are USUAL. Any data type errors will only be discovered at runtime.</para>
+    <para styleclass="Normal">USUAL is provided primarily for compatibility with untyped code. It is not recommended for use in new code because the compiler cannot perform any type checking on expressions where one or more operands are USUAL. Any data type errors will only be discovered at runtime.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Locals, parameters and fields declared as USUAL also incur considerably more runtime overhead than strongly typed variables.</para>
     <para styleclass="Normal"></para>

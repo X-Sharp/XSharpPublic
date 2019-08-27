@@ -9,6 +9,6 @@
     <header>
       <para styleclass="Heading1">FLOAT</para>
     </header>
-    <para styleclass="Normal">The FLOAT keyword declares a type that stores a 64-bit floating point value, along with formatting information. The precision and range of a FLOAT are the same as that from a <link displaytype="text" defaultstyle="true" type="topiclink" href="REAL8">REAL8</link>, since the value of the float is stored in a REAL8.</para>
+    <para styleclass="Normal">The FLOAT type is a type that stores a 64-bit floating point value, along with formatting information. The precision and range of a FLOAT are the same as that from a <link displaytype="text" defaultstyle="true" type="topiclink" href="REAL8">REAL8</link>, since the value of the float is stored in a REAL8.</para>
   </body>
 </topic>

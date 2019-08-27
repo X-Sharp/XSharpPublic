@@ -17,7 +17,6 @@
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Body Text">[STATIC] GLOBAL &lt;idVar&gt; [:= &lt;uValue&gt;] [AS | IS &lt;idType&gt;]</para>
     <para styleclass="Body Text">[STATIC] GLOBAL DIM &lt;ArraySpec&gt; AS | IS &lt;idType&gt;</para>
-    <para styleclass="Body Text">[STATIC] GLOBAL &lt;ArraySpec&gt; [AS ARRAY]</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="List">STATIC<tab />Restricts the visibility of the global variable to the module in which it is declared. If omitted, the variable has application-wide visibility.</para>
     <para styleclass="List">&lt;idVar&gt;<tab />A valid identifier name for the variable. A global variable is an entity and, as such, shares the same name space as other entities. This means that it is not possible to have a global variable and a function, for example, with the same name.</para>
@@ -26,8 +25,6 @@
     <para styleclass="List">&lt;ArraySpec&gt;<tab />The specification for a dynamic array to declare.<br/><text styleclass="Body Text">In both cases, &lt;ArraySpec&gt; is one of the following:</text><br/><text styleclass="Body Text">&lt;idArray&gt;[&lt;nElements&gt;, &lt;nElements&gt;, &lt;nElements&gt;]</text><br/><text styleclass="Body Text">&lt;idArray&gt;[&lt;nElements&gt;][&lt;nElements&gt;][&lt;nElements&gt;]</text><br/><text styleclass="Body Text">All dimensions except the first are optional.</text><br/><text styleclass="Body Text">&lt;idArray&gt; is a valid identifier name for the array to declare. For dynamic arrays, array elements are initialized to NIL. For dimensioned arrays, the initial value of the elements depends on the data type as explained above for &lt;uValue&gt;.</text><br/><text styleclass="Body Text">&lt;nElements&gt; defines the number of elements in a particular dimension of an array. The number of dimensions is determined by how many &lt;nElements&gt; arguments you specify.</text><br/><text styleclass="Body Text">&lt;nElements&gt; can be a literal numeric representation or a simple numeric expression involving only operators, literals, and DEFINE constants; however, more complicated expressions (such as function calls) are not allowed.</text></para>
     <para styleclass="List"><snippet src="__asType" inline="false"/><text styleclass="Body Text">.</text></para>
     <para styleclass="List"><snippet src="__isType" inline="false"/></para>
-    <para styleclass="List">AS ARRAY<tab />For dynamic array declarations, specifies the data type of the entire array.</para>
-    <para styleclass="List"></para>
     <para styleclass="Heading2">Notes</para>
     <para styleclass="Body Text">Search order for variables: You can hide a global variable name from a routine by declaring another variable with the same name (with LOCAL, MEMVAR, or FIELD). </para>
     <para styleclass="Body Text">The search order for a variable name is as follows:</para>

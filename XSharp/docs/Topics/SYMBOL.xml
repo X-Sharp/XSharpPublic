@@ -9,7 +9,7 @@
     <header>
       <para styleclass="Heading1">SYMBOL</para>
     </header>
-    <para styleclass="Normal">The SYMBOL keyword declares a type contains a 32-bit integer that represents an index into an array of strings.</para>
+    <para styleclass="Normal">The SYMBOL type is a 32-bit integer that represents an index into an array of strings.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Since a SYMBOL represents a string, there is a built-in implicit conversion from SYMBOL to STRING, and from STRING to SYMBOL.</para>
     <para styleclass="Normal"></para>

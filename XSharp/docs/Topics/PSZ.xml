@@ -9,6 +9,6 @@
     <header>
       <para styleclass="Heading1">PSZ</para>
     </header>
-    <para styleclass="Normal">The PSZ keyword denotes an pointer type that points to a null terminated sequence of zero or more bytes, typically representing a printable character string.</para>
+    <para styleclass="Normal">The PSZ type is a pointer type that points to a null terminated sequence of zero or more bytes, typically representing a printable character string. This type is for backward compatibility only. Don&apos;t use this type in new code unless you have to.</para>
   </body>
 </topic>

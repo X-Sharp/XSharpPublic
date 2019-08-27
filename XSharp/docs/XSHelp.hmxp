@@ -698,6 +698,7 @@
       <file-mod href="command_UNLOCK.xml"/>
       <file-mod href="command_USE.xml"/>
       <file-mod href="command_NOTE.xml"/>
+      <file-mod href="Embedded_topics.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

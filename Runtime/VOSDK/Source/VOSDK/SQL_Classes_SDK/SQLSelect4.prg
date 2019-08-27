@@ -144,7 +144,7 @@ METHOD Prepare()
 	#ENDIF
 	RETURN oStmt:Prepare()
 
-METHOD Refresh() 
+METHOD Refresh() CLIPPER
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:Refresh()" )

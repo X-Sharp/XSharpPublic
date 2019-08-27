@@ -26,7 +26,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
  		[Trait("Category", "Array")];
 		[Fact];
 		METHOD ArrayFillTest() AS VOID
-			LOCAL testArray := ARRAY{3} AS ARRAY
+			LOCAL testArray := ArrayNew(3) AS ARRAY
 			AFill(testArray, 42)
 			Assert.Equal( 42 , (INT) testArray[1])
 			Assert.Equal( 42 , (INT) testArray[2])

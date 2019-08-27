@@ -17,6 +17,23 @@
     <Includepaths />
     <Nostandarddefs />
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <VO1>false</VO1>
+    <VO2>false</VO2>
+    <VO3>false</VO3>
+    <VO4>false</VO4>
+    <VO5>false</VO5>
+    <VO6>false</VO6>
+    <VO7>true</VO7>
+    <VO8>false</VO8>
+    <VO9>false</VO9>
+    <VO10>false</VO10>
+    <VO11>false</VO11>
+    <VO12>false</VO12>
+    <VO13>false</VO13>
+    <VO14>false</VO14>
+    <VO15>true</VO15>
+    <VO16>false</VO16>
+    <XPP1>false</XPP1>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -77,22 +94,32 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Runtime\XSharp.Core\XSharp.Core.xsproj">
+    <ProjectReference Include="..\VOSDK\Source\VOSDK\RDD_Classes_SDK\VORDDClasses.xsproj">
+      <Name>VORDDClasses</Name>
+      <Project>{d7079298-1712-4b03-ad76-4ec53bfe8356}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\VOSDK\Source\VOSDK\System_Classes_SDK\VOSystemClasses.xsproj">
+      <Name>VOSystemClasses</Name>
+      <Project>{ac2aebff-69ff-405d-b7d9-6e5cb1db914c}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Runtime\XSharp.Rdd\XSharp.RDD.xsproj">
+    <ProjectReference Include="..\XSharp.Rdd\XSharp.RDD.xsproj">
       <Name>XSharp.RDD</Name>
       <Project>{e83c6c8c-773f-4b01-a597-3d38398a9362}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Runtime\XSharp.RT\XSharp.RT.xsproj">
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
       <Name>XSharp.RT</Name>
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Runtime\XSharp.VO\XSharp.VO.xsproj">
+    <ProjectReference Include="..\XSharp.VO\XSharp.VO.xsproj">
       <Name>XSharp.VO</Name>
       <Project>{06099c3d-1697-4eb1-9f53-8a9a50b9eacd}</Project>
       <Private>True</Private>

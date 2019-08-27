@@ -8,6 +8,7 @@ FUNCTION Start() AS VOID
 	LOCAL cb1 AS USUAL
 	LOCAL i AS INT      
 	LOCAL nSecs AS FLOAT
+    SetMacroCompiler(typeof(XSharp.MacroCompiler))
     cb1 := MCompile("{|| 1+2 }")
     ? Time()         
     nSecs := Seconds()

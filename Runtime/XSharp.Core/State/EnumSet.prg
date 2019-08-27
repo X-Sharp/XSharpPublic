@@ -121,16 +121,6 @@ BEGIN NAMESPACE XSharp
         MEMBER Space        := 132      // Logic Space between ? and ?? field expressions
         
 
-        // Advantage extensions
-        MEMBER AXSLOCKING           := 150
-        MEMBER RIGHTSCHECKING       := 151
-        MEMBER CONNECTION_HANDLE    := 152
-        MEMBER EXACTKEYPOS          := 153
-        MEMBER SQL_QUERY            := 154
-        MEMBER SQL_TABLE_PASSWORDS  := 155
-        MEMBER COLLATION_NAME       := 156
-        MEMBER AXSLOADED            := 157
-
         // Xbase++ defines
         MEMBER CharSet          := 160
         MEMBER HandleEvent      := 161
@@ -165,6 +155,16 @@ BEGIN NAMESPACE XSharp
         
         // Start of user values
         MEMBER User           := 200
+        // Advantage extensions
+        MEMBER AXSLOCKING           := User+1
+        MEMBER RIGHTSCHECKING       := User+2
+        MEMBER CONNECTION_HANDLE    := User+3
+        MEMBER EXACTKEYPOS          := User+4
+        MEMBER SQL_QUERY            := User+5
+        MEMBER SQL_TABLE_PASSWORDS  := User+6
+        MEMBER COLLATION_NAME       := User+7
+        MEMBER SQL_TIMEOUT          := User+8
+        MEMBER SQL_PARAMETERS       := User+9
         
     END ENUM
 END NAMESPACE
@@ -301,8 +301,7 @@ DEFINE _SET_INTL			:= Set.Intl
 DEFINE _SET_BLOB_CIRCULAR_ARRAY_REF := Set.BLOBCIRCREF
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_USER := Set.User
-/// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_AXSLOADED := Set.AXSLOADED
+
     
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_COLLATIONMODE	:= Set.COLLATIONMODE	
@@ -395,6 +394,10 @@ DEFINE _SET_SQL_TABLE_PASSWORDS  := Set.SQL_TABLE_PASSWORDS
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_COLLATION_NAME       := Set.COLLATION_NAME     
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_SQL_PARAMETERS       :=  Set.SQL_PARAMETERS     
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_SQL_TIMEOUT          :=  Set.SQL_TIMEOUT        
+
 
 // Xbase++ additions
 DEFINE  _SET_CHARSET     := Set.CharSet

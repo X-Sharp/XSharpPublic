@@ -8,12 +8,13 @@ USING System
 USING XSharp.RDD
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
+USING System.Text
 CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
-     PUBLIC m_hStatement AS System.IntPtr
+     PUBLIC _hStatement AS System.IntPtr
 
 	/// <summary>Create instande of RDD </summary>
     CONSTRUCTOR()
-        SELF:m_hStatement := System.IntPtr.Zero
+        SELF:_hStatement := System.IntPtr.Zero
         SUPER:_Driver := "AXSQLRDD"
 
 	/// <inheritdoc />
@@ -21,9 +22,9 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
         IF (! SUPER:Close())
             RETURN FALSE
         ENDIF
-        IF (SELF:m_hStatement != System.IntPtr.Zero)
-            SUPER:_CheckError(ACE.AdsCloseSQLStatement(SELF:m_hStatement))
-            SELF:m_hStatement := System.IntPtr.Zero
+        IF (SELF:_hStatement != System.IntPtr.Zero)
+            SUPER:_CheckError(ACE.AdsCloseSQLStatement(SELF:_hStatement))
+            SELF:_hStatement := System.IntPtr.Zero
         ENDIF
         RETURN TRUE
 
@@ -31,164 +32,88 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
     PRIVATE METHOD ACEORDER() AS System.IntPtr
         RETURN SUPER:_Table
 
-    PROPERTY ACESQLStatementHandle AS System.IntPtr GET SELF:m_hStatement
+    PROPERTY ACESQLStatementHandle AS System.IntPtr GET SELF:_hStatement
 
 	/// <inheritdoc />
     VIRTUAL METHOD Info(uiOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
         IF (uiOrdinal == DBInfo.DBI_GET_ACE_STMT_HANDLE )
-            RETURN SELF:m_hStatement
+            RETURN SELF:_hStatement
         ENDIF
         RETURN SUPER:Info(uiOrdinal, oNewValue)
+
 	/// <inheritdoc />
-    VIRTUAL METHOD Open(lpOpenInfo AS DBOPENINFO) AS LOGIC
-        //LOCAL sName AS string
-        //LOCAL usual3 AS Usual
-        //LOCAL usual AS Usual
-        //LOCAL @@array AS Array
-        //LOCAL i AS Long
-        //LOCAL array2 AS Array
-        //LOCAL pucTableName AS string
-        //LOCAL pucPassword AS string
-        //LOCAL pucName AS Char[]
-        //LOCAL length AS Word
-        //LOCAL usual2 AS Usual
-        ////
-        //SUPER:PrintCallTrace(<string>{"Open"})
-        //SUPER:AxCheckRDDInfo()
-        //IF (SUPER:m_hConnection == System.IntPtr.Zero)
-            ////
-            //SUPER:_CheckError(ACEUNPUB.AdsSetLastError(5036, "The SQL driver requires a connection to Advantage."))
-            //RETURN FALSE
-        //ENDIF
-        //usual3 := Usual._NIL
-        //IF (Functions.VODBRDDInfo(205, @(usual3)))
-            ////
-            //sName := usual3
-        //ELSE
-            ////
-            //IF (lpOpenInfo:sExt != ".DBF")
-                ////
-                //sName := String.Concat(lpOpenInfo:sName, lpOpenInfo:sExt)
-            //ELSE
-                ////
-                //sName := lpOpenInfo:sName
-            //ENDIF
-        //ENDIF
-        //IF (SUPER:SetPaths() != 0)
-            ////
-            //RETURN FALSE
-        //ENDIF
-        //IF (! SUPER:_CheckError(ACE.AdsCreateSQLStatement(SUPER:m_hConnection, @(SELF:m_hStatement))))
-            ////
-            //RETURN FALSE
-        //ENDIF
-        //IF (! SUPER:_CheckError(ACE.AdsStmtSetTableType(SELF:m_hStatement, SUPER:m_usTableType)))
-            ////
-            //RETURN FALSE
-        //ENDIF
-        //IF (RuntimeState.Collation == 1)
-            ////
-            //IF (! SUPER:_CheckError(ACE.AdsStmtSetTableCharType(SELF:m_hStatement, 2)))
-                ////
-                //RETURN FALSE
-            //ENDIF
-        //ELSE
-            ////
-            //IF (! SUPER:_CheckError(ACE.AdsStmtSetTableCharType(SELF:m_hStatement, 1)))
-                ////
-                //RETURN FALSE
-            //ENDIF
-        //ENDIF
-        //IF (! SUPER:_CheckError(ACE.AdsStmtSetTableLockType(SELF:m_hStatement, SUPER:m_usLockType)))
-            ////
-            //RETURN FALSE
-        //ENDIF
-        //IF (lpOpenInfo:fReadOnly)
-            ////
-            //IF (! SUPER:_CheckError(ACE.AdsStmtSetTableReadOnly(SELF:m_hStatement, 1)))
-                ////
-                //RETURN FALSE
-            //ENDIF
-        //ELSE
-            ////
-            //IF (! SUPER:_CheckError(ACE.AdsStmtSetTableReadOnly(SELF:m_hStatement, 2)))
-                ////
-                //RETURN FALSE
-            //ENDIF
-        //ENDIF
-        //IF (! SUPER:_CheckError(ACE.AdsStmtSetTableRights(SELF:m_hStatement, SUPER:m_usCheckRights)))
-            ////
-            //RETURN FALSE
-        //ENDIF
-        //IF ((! String.IsNullOrEmpty(SUPER:m_strCollation) .AND. ((SUPER:m_usTableType == 3) .OR. (SUPER:m_usTableType == 4))) .AND. ! SUPER:_CheckError(ACE.AdsStmtSetTableCollation(SELF:m_hStatement, SUPER:m_strCollation)))
-            ////
-            //RETURN FALSE
-        //ENDIF
-        //usual := Usual._NIL
-        //IF (Functions.VODBRDDInfo(206, @(usual)) .AND. (usual != Usual._NIL))
-            ////
-            //TRY
-                ////
-                //@@array := usual
-                //i := 0
-                //WHILE ((i < @@array:get_Length()))
-                    ////
-                    //array2 := @@array:__GetElement(i)
-                    //pucTableName := array2:__GetElement(0)
-                    //pucPassword := array2:__GetElement(1)
-                    //IF (! SUPER:_CheckError(ACE.AdsStmtSetTablePassword(SELF:m_hStatement, pucTableName, pucPassword)))
-                        ////
-                        //RETURN FALSE
-                    //ENDIF
-                    //i++
-                //ENDDO
-            //CATCH obj1 as Object
-//
-            //END TRY
-        //ENDIF
-        //IF (! SUPER:_CheckError(ACE.AdsExecuteSQLDirect(SELF:m_hStatement, sName, @(SELF:_Table))))
-            ////
-            //SUPER:PrintCallTrace(<string>{"AdsExecuteSQLDirect failed"})
-            //SELF:Close()
-            //RDDBase.SetNetErr(TRUE)
-            //RETURN FALSE
-        //ENDIF
-        //IF (! (SUPER:_Table != System.IntPtr.Zero))
-            ////
-            //RETURN SELF:Close()
-        //ENDIF
-        //pucName := Char[]{261}
-        //length := (Word)pucName:Length 
-        //IF (! SUPER:_CheckError(ACE.AdsGetTableType(SUPER:_Table, @(SELF:m_usTableType))))
-            ////
-            //SELF:Close()
-            //RDDBase.SetNetErr(TRUE)
-            //RETURN FALSE
-        //ENDIF
-        //IF (! SUPER:AxFieldSub())
-            ////
-            //SELF:Close()
-            //RDDBase.SetNetErr(TRUE)
-            //RETURN FALSE
-        //ENDIF
-        //IF (ACE.AdsGetTableFilename(SUPER:_Table, 3, pucName, @(length)) == 0)
-            ////
-            //SUPER:m_dbfName := string{pucName, 0, length}
-            //SUPER:m_fileName := SUPER:m_dbfName
-        //ENDIF
-        //IF (RuntimeState.Collation == 1)
-            ////
-            //SUPER:m_Encoding := System.Text.Encoding.GetEncoding((Long)SUPER:GetDosCodePage() )
-        //ELSE
-            ////
-            //SUPER:m_Encoding := System.Text.Encoding.GetEncoding((Long)SUPER:GetWinCodePage() )
-        //ENDIF
-        //SUPER:m_uiArea := lpOpenInfo:uiArea
-        //usual2 := (Usual)lpOpenInfo:sAlias:Substring(0, lpOpenInfo:sAlias:IndexOf(' ')) 
-        //Functions.Default(@(usual2), "")
-        //SUPER:m_alias := Functions.__ConstructUniqueAlias(usual2)
-        //RDDBase.aliases[((Long)RuntimeState.get_CurrentWorkarea()  - 1) + 1] := SUPER:m_alias
-        //ACE.AdsGetIndexHandle(SUPER:_Table, null, @(SELF:m_hIndex))
+    VIRTUAL METHOD Open(openInfo AS DBOPENINFO) AS LOGIC
+        LOCAL sName AS string
+        LOCAL query AS object
+
+        SUPER:_CheckRDDInfo()
+        IF SELF:_Connection == IntPtr.Zero
+            SUPER:_CheckError(ACEUNPUB.AdsSetLastError(5036, "The SQL driver requires a connection to Advantage."),EG_OPEN,__ENTITY__)
+            RETURN FALSE
+        ENDIF
+        query := NULL_OBJECT
+        IF CoreDb.RDDInfo(_SET_SQL_QUERY, REF query) .and. query is STRING
+            sName := (STRING) query
+        ELSE
+            IF (openInfo:Extension != ".DBF")
+                sName := openInfo:FileName + openInfo:Extension
+            ELSE
+                sName := openInfo:FileName
+            ENDIF
+        ENDIF
+	    IF SELF:_SetPaths() != 0
+		    RETURN FALSE
+	    ENDIF
+
+        SELF:_CheckError(ACE.AdsCreateSQLStatement(SELF:_Connection, REF SELF:_hStatement),EG_OPEN,"AdsCreateSQLStatement")
+
+        SELF:_CheckError(ACE.AdsStmtSetTableType(SELF:_hStatement, SELF:_TableType),EG_OPEN,"AdsStmtSetTableType")
+
+        var charset := IIF (RuntimeState.CollationMode == CollationMode.Clipper, ACE.ADS_OEM,ACE.ADS_ANSI)
+        SELF:_CheckError(ACE.AdsStmtSetTableCharType(SELF:_hStatement, charset),EG_OPEN,"AdsStmtSetTableCharType")
+
+        SELF:_CheckError(ACE.AdsStmtSetTableLockType(SELF:_hStatement, SUPER:_LockType),EG_OPEN,"AdsStmtSetTableLockType")
+        var cursorMode := IIF (openInfo:ReadOnly, ACE.ADS_CURSOR_READONLY , ACE.ADS_CURSOR_READWRITE)
+
+        SELF:_CheckError(ACE.AdsStmtSetTableReadOnly(SELF:_hStatement, cursorMode),EG_OPEN,"AdsStmtSetTableReadOnly")
+
+        SELF:_CheckError(ACE.AdsStmtSetTableRights(SELF:_hStatement, SELF:_CheckRights),EG_OPEN,"AdsStmtSetTableRights")
+
+        IF ! String.IsNullOrEmpty(SELF:_Collation) .and. (SELF:_TableType == ACE.ADS_ADT .or. SELF:_TableType == ACE.ADS_VFP)
+            SELF:_CheckError(ACE.AdsStmtSetTableCollation(SELF:_hStatement, SELF:_Collation),EG_OPEN,"AdsStmtSetTableCollation")
+        ENDIF
+        LOCAL password := NULL_OBJECT AS OBJECT
+        IF CoreDb.RDDInfo(_SET_SQL_TABLE_PASSWORDS, ref password) .and. password is object[] var oInfo
+            FOREACH var element in oInfo
+                var oSub := (object[]) element
+                VAR cTableName := (String) oSub[0]
+                VAR cPassword  := (String) oSub[1]
+                SELF:_CheckError(ACE.AdsStmtSetTablePassword(SELF:_hStatement, cTableName, cPassword),EG_OPEN,"AdsStmtSetTablePassword")
+
+            NEXT
+        ENDIF
+        LOCAL nRes := ACE.AdsExecuteSQLDirect(SELF:_hStatement, sName, REF _Table) as DWORD
+        IF nRes != 0
+            SELF:Close()
+            SELF:_CheckError(nRes, EG_OPEN,"AdsExecuteSQLDirect")
+        ENDIF
+        IF SELF:_Table == IntPtr.Zero
+            SELF:Close()
+            RETURN FALSE
+        ENDIF
+        SELF:_CheckError(ACE.AdsGetTableType(SELF:_Table, REF _TableType),EG_OPEN,"AdsGetTableType")
+        IF ! SELF:_FieldSub()
+            SELF:Close()
+            RETURN FALSE
+        ENDIF
+        LOCAL length := MAX_PATH AS WORD
+	    LOCAL afileName AS CHAR[]
+	    afileName := CHAR[]{length}
+        SELF:_CheckError(ACE.AdsGetTableFilename(SELF:_Table, ACE.ADS_FULLPATHNAME, afileName, REF length),EG_OPEN,"AdsGetTableFilename")
+    	SELF:_FileName := STRING {aFileName,0, length}
+        SELF:_Encoding := Encoding.GetEncoding(IIF (charset == ACE.ADS_ANSI, RuntimeState.WinCodePage,RuntimeState.DosCodePage))
+        SELF:Alias   := openInfo:Alias
+	    SELF:Area    := openInfo:WorkArea
         RETURN SUPER:RecordMovement()
  
 
@@ -207,7 +132,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
         ACE.AdsCloseTable(SUPER:_Table)
         SUPER:_Table := System.IntPtr.Zero
         SUPER:_Index := System.IntPtr.Zero
-        SUPER:_CheckError(ACE.AdsExecuteSQL(SELF:m_hStatement, OUT SELF:_Table))
+        SUPER:_CheckError(ACE.AdsExecuteSQL(SELF:_hStatement, OUT SELF:_Table))
         IF ACE.AdsGotoRecord(SUPER:_Table, recNum) == 0
             IF ACE.AdsGetRecordCRC(SUPER:_Table, OUT dwCRC2, 1) == 0 .AND. dwCRC == dwCRC2
                 SUPER:RecordMovement()

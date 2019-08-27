@@ -288,7 +288,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 /// An uninitialized of the given length.
 /// </returns>
 FUNCTION ArrayCreate(dwDim AS DWORD) AS ARRAY 
-	RETURN __Array{dwDim}
+	RETURN __Array{dwDim, TRUE}
 	
 	
 /// <summary>

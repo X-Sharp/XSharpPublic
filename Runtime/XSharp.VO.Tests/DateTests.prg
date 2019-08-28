@@ -285,7 +285,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			SetDateCountry(DateCountry.USA) 
 			Assert.Equal("01-31-00", DToC(dDate))
 				 
-
+		[Fact, Trait("Category", "Time")];
+		METHOD ConTimeTest() AS VOID
+			Assert.Equal("13:34:54",ConTime(13,34,54))
+		RETURN
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

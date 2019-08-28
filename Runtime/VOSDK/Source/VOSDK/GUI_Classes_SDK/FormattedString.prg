@@ -494,7 +494,7 @@ ASSIGN Picture(cNewPicture AS STRING)  STRICT
 			sFuncChar := CharPos(sPicture, i)
 			iFuncPos := At2(sFuncChar, "BCDERXZ(!A")
 			IF (iFuncPos > 0)
-				#warning incompatibility with VO_Sprintf
+				#warning incompatibility with VO
 				// In X#, LOGIC PTR uses increments of 1 bytes, but each LOGIC field in the strucPictureFuncFlags
 				// takes 4 bytes, so we need the * 4 below:
 				LOGIC(pLogic + (iFuncPos - 1) * 4) := TRUE
@@ -693,10 +693,6 @@ METHOD PutChar(cChar AS STRING, iPos AS INT) AS VOID STRICT
 
 METHOD TestFirstChar(cChar) 
 	LOCAL iCurPos    AS LONGINT
-	LOCAL cTemplChar AS STRING
-
-	iCurPos    := oEditOwner:__CurPos
-	cTemplChar := CharPos(sTemplate, DWORD(iCurPos))
 	iCurPos := 1
 	IF !SELF:IsEditPos(iCurPos)
 		iCurPos := SELF:NextEditPos(iCurPos)

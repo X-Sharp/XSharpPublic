@@ -492,6 +492,10 @@ CLASS XSharp.RuntimeState
 		SELF:_SetThreadValue(Set.EpochCent, (DWORD) 2000)
 		SELF:_SetThreadValue(Set.Intl, CollationMode.Windows)
         SELF:_SetThreadValue(Set.Dict, TRUE)
+        // FoxPro settings that do not hurt in other dialects
+        SELF:_SetThreadValue(Set.FullPath, TRUE)
+        SELF:_SetThreadValue(Set.Space, TRUE)
+        SELF:_SetThreadValue(Set.Textmerge, FALSE)
 		RETURN
 
 

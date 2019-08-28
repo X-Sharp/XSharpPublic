@@ -102,7 +102,7 @@ ASSIGN MCBackgroundColor(oColor)
 	RETURN SELF:__SetMCColor(oColor, MCSC_BACKGROUND)
 
 ASSIGN MCFont(oNewFont) 
-	SendMessage(SELF:handle(), DTM_SETMCFONT, DWORD(_CAST, oNewFont:Handle()), LONGINT(_CAST, TRUE))
+	SendMessage(SELF:handle(), DTM_SETMCFONT, DWORD(_CAST, oNewFont:Handle()), 1)
 	RETURN 
 
 ACCESS MCMonthBackgroundColor 

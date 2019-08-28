@@ -18,7 +18,7 @@
     <NS>true</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <NamedArgs />
-    <XSharpProjectversion>2.0.4.0</XSharpProjectversion>
+    <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
@@ -85,10 +85,13 @@
     <Compile Include="..\..\Common\constants.prg">
       <Link>constants.prg</Link>
     </Compile>
+    <Compile Include="Enums.prg" />
     <Compile Include="Functions.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SystemVariables.prg" />
+    <Compile Include="TextOutPut.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

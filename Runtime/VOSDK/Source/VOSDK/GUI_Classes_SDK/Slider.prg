@@ -59,8 +59,8 @@ ACCESS SelectionRange
 ASSIGN SelectionRange(oNewSelectionRange) 
 	
 
-	SendMessage(SELF:Handle(), TBM_SETSELSTART, DWORD(_CAST, FALSE), oNewSelectionRange:Min)
-	SendMessage(SELF:Handle(), TBM_SETSELEND, DWORD(_CAST, TRUE), oNewSelectionRange:Max)
+	SendMessage(SELF:Handle(), TBM_SETSELSTART, 0, oNewSelectionRange:Min)
+	SendMessage(SELF:Handle(), TBM_SETSELEND, 1, oNewSelectionRange:Max)
 
 	RETURN 
 
@@ -111,7 +111,7 @@ METHOD Create()
 	IF (SUPER:Create() != NULL_PTR)
 		wMin := WORD(_AND(oRange:Min,0xFFFF)) 
 		wMax := WORD(_AND(oRange:Max,0xFFFF)) 
-		SendMessage(hWnd, TBM_SETRANGE, DWORD(_CAST, TRUE), MakeLong(wMin, wMax))
+		SendMessage(hWnd, TBM_SETRANGE, 1, MakeLong(wMin, wMax))
 	ENDIF
 
 	RETURN hWnd
@@ -152,8 +152,8 @@ ASSIGN Range(oNewRange)
 		WCError{#Range, #Slider, __WCSTypeError, oNewRange, 1}:Throw()
 	ENDIF
 
-	SendMessage(SELF:Handle(), TBM_SETRANGEMIN, DWORD(_CAST, FALSE), oNewRange:Min)
-	SendMessage(SELF:Handle(), TBM_SETRANGEMAX, DWORD(_CAST, TRUE), oNewRange:Max)
+	SendMessage(SELF:Handle(), TBM_SETRANGEMIN, 0, oNewRange:Min)
+	SendMessage(SELF:Handle(), TBM_SETRANGEMAX, 1, oNewRange:Max)
 
 	RETURN 
 
@@ -197,7 +197,7 @@ ASSIGN ThumbPosition(nThumbPosition)
 	IF !IsLong(nThumbPosition)
 		WCError{#ThumbPosition, #Slider, __WCSTypeError, nThumbPosition, 1}:Throw()
 	ENDIF
-	SendMessage(SELF:Handle(), TBM_SETPOS, DWORD(_CAST, TRUE), nThumbPosition)
+	SendMessage(SELF:Handle(), TBM_SETPOS, 1, nThumbPosition)
 
 	RETURN 
 

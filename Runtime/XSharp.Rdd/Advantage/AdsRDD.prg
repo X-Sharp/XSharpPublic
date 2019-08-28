@@ -122,10 +122,10 @@ INTERNAL METHOD _CheckRDDInfo() AS VOID
 		SELF:_CheckRights := ACE.ADS_IGNORERIGHTS
 	ENDIF
 	IF CoreDb.RddInfo(_SET_CONNECTION_HANDLE, REF oRet) .AND. oRet != NULL_OBJECT
-		IF oRet IS IntPtr
-			SELF:_Connection := (intPtr) oRet
-		ELSE
-			SELF:_Connection := IntPtr.Zero
+		IF oRet IS IntPtr VAR p
+			SELF:_Connection := p
+		ELSEIF oRet is DWORD VAR d
+			SELF:_Connection := IntPtr{d}
 		ENDIF
 	ELSE
 		SELF:_Connection := IntPtr.Zero
@@ -151,7 +151,7 @@ INTERNAL METHOD _Ansi2Unicode(source AS CHAR[], iLength AS LONG) AS STRING
     #endregion
 	
   #region Open and Close
-PRIVATE METHOD _FieldSub() AS LOGIC
+PROTECTED METHOD _FieldSub() AS LOGIC
 	LOCAL num AS DWORD
 	LOCAL sb AS CHAR[]
 	LOCAL wLen AS WORD
@@ -336,6 +336,7 @@ VIRTUAL METHOD Open(info AS DbOpenInfo) AS LOGIC
 		RETURN FALSE
 	ENDIF
 	IF !SELF:_FieldSub()
+
 		SELF:Close()
 		RETURN FALSE
 	ENDIF
@@ -1027,10 +1028,14 @@ METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
 			SELF:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","Date or DateTime value expected")
 		ENDIF
 		LOCAL dt   := (DateTime) oValue AS DateTime
-		LOCAL text := dt:ToString("yyyyMMdd") AS STRING
-		LOCAL r8Julian AS REAL8
-		SELF:_CheckError(AceUnPub.AdsConvertStringToJulian(text, (WORD) text:Length, OUT r8Julian),EG_WRITE)
-		SELF:_CheckError(ACE.AdsSetJulian(SELF:_Table, dwField, (LONG) r8Julian),EG_WRITE)
+        if (dt == DateTime.MinValue)
+            SELF:_CheckError(ACE.AdsSetEmpty(SELF:_Table, dwField),EG_WRITE)
+        ELSE
+		    LOCAL text := dt:ToString("yyyyMMdd") AS STRING
+		    LOCAL r8Julian AS REAL8
+		    SELF:_CheckError(AceUnPub.AdsConvertStringToJulian(text, (WORD) text:Length, OUT r8Julian),EG_WRITE)
+		    SELF:_CheckError(ACE.AdsSetJulian(SELF:_Table, dwField, (LONG) r8Julian),EG_WRITE)
+        ENDIF
 	OTHERWISE
 		SELF:ADSError(ERDD_DATATYPE, EG_DataType, "PutValue")
 	END SWITCH
@@ -1399,10 +1404,13 @@ VIRTUAL METHOD Info(uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
 		OTHERWISE
 			RETURN ".DBT"
 		END SWITCH
+
 	CASE DbInfo.DBI_RDD_VERSION
 		RETURN System.Reflection.Assembly.GetExecutingAssembly():GetName():Version:ToString()
+
 	CASE DbInfo.DBI_GET_ACE_TABLE_HANDLE
 		RETURN SELF:_Table
+
 	CASE DbInfo.DBI_MEMOBLOCKSIZE
 		LOCAL memoBlockSize AS WORD
 		result := ACE.AdsGetMemoBlockSize(SELF:_Table, OUT memoBlockSize)

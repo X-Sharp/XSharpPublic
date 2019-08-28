@@ -15,17 +15,28 @@
 /// Retrieve the setting that determines if TextMerge is active
 /// </summary>
 /// <param name="lSet"></param>
-/// <returns>
-/// </returns>
-
+/// <returns>The current setting</returns>
 Function SetTextMerge() AS LOGIC
    GETSTATE LOGIC Set.TextMerge
 
+
+/// <summary>
+/// Change the setting that determines if TextMerge is active
+/// </summary>
+/// <param name="lSet">TRUE when Merge must be used for TEXT .. ENDTEXT expressions without TEXTMERGE clause and for the \ and \\ commands.</param>
+/// <returns>The current setting</returns>
 Function SetTextMerge(lSet as LOGIC) AS LOGIC
    SETSTATE LOGIC Set.TextMerge lSet
 
 
-FUNCTION SetTextMerge(cFile as STRING) AS LOGIC
+/// <summary>
+/// Open/Close the file to which TEXT .. ENDTEXT values are written
+/// </summary>
+/// <param name="cFile">Name of the file to create. When this name is NULL or Empty then the file will be closed when it is open</param>
+/// <returns>TRUE when the file was succesfully opened / closed.</returns>
+/// <remarks>The file handle for the file will be stored in the _TEXT system variable.</remarks>
+/// <seealso cref='F:XSharp.VFP.Functions._TEXT' />
+FUNCTION SetTextFile(cFile as STRING) AS LOGIC
     local hFile as IntPtr
     IF _TEXT != -1
         hFile := IntPtr{_TEXT}

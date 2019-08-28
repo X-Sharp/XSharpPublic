@@ -33,7 +33,7 @@
       <DocumentationSource sourceFile="Docs\XsRuntimeClasses.xml" />
     </DocumentationSources>
     <HelpTitle>X# Runtime Reference</HelpTitle>
-    <HelpFileVersion>2.0.4.0</HelpFileVersion>
+    <HelpFileVersion>2.0.5.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
@@ -102,7 +102,6 @@
   <Filter entryType="Structure" fullName="XSharp.__Usual" filterName="__Usual" isExposed="True">
     <Filter entryType="Method" fullName="XSharp.__Usual.AsString" filterName="AsString" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.__Usual.Clone" filterName="Clone" isExposed="False" />
-    <Filter entryType="Method" fullName="XSharp.__Usual.CompareTo" filterName="CompareTo" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.__Usual.GetTypeCode" filterName="GetTypeCode" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.__Usual.ToObject" filterName="ToObject" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.__Usual.ToString" filterName="ToString" isExposed="False" />
@@ -150,22 +149,6 @@
     <Filter entryType="Method" fullName="XSharp.FixedMemBlockStart.IsValid" filterName="IsValid" isExposed="False" />
     <Filter entryType="Field" fullName="XSharp.FixedMemBlockStart.MAGIC" filterName="MAGIC" isExposed="False" />
   </Filter>
-  <Filter entryType="Class" fullName="XSharp.MemVar" filterName="MemVar" isExposed="True">
-    <Filter entryType="Method" fullName="XSharp.MemVar.GetHigherLevelPrivate" filterName="GetHigherLevelPrivate" isExposed="False" />
-    <Filter entryType="Method" fullName="XSharp.MemVar.PrivatesEnum" filterName="PrivatesEnum" isExposed="False" />
-    <Filter entryType="Method" fullName="XSharp.MemVar.PrivatesFirst" filterName="PrivatesFirst" isExposed="False" />
-    <Filter entryType="Method" fullName="XSharp.MemVar.PrivatesNext" filterName="PrivatesNext" isExposed="False" />
-    <Filter entryType="Method" fullName="XSharp.MemVar.PublicFind" filterName="PublicFind" isExposed="False" />
-    <Filter entryType="Method" fullName="XSharp.MemVar.PublicPut" filterName="PublicPut" isExposed="False" />
-    <Filter entryType="Method" fullName="XSharp.MemVar.PublicsCount" filterName="PublicsCount" isExposed="False" />
-    <Filter entryType="Method" fullName="XSharp.MemVar.PublicsEnum" filterName="PublicsEnum" isExposed="False" />
-    <Filter entryType="Method" fullName="XSharp.MemVar.PublicsFirst" filterName="PublicsFirst" isExposed="False" />
-    <Filter entryType="Method" fullName="XSharp.MemVar.PublicsNext" filterName="PublicsNext" isExposed="False" />
-    <Filter entryType="Method" fullName="XSharp.MemVar.Put" filterName="Put" isExposed="False" />
-    <Filter entryType="Method" fullName="XSharp.MemVar.Release" filterName="Release" isExposed="False" />
-    <Filter entryType="Method" fullName="XSharp.MemVar.ReleaseAll" filterName="ReleaseAll" isExposed="False" />
-    <Filter entryType="Method" fullName="XSharp.MemVar.ReleasePrivates" filterName="ReleasePrivates" isExposed="False" />
-  </Filter>
   <Filter entryType="Class" fullName="XSharp.OleAutoObject" filterName="OleAutoObject" isExposed="True">
     <Filter entryType="Method" fullName="XSharp.OleAutoObject.__OleIvarGet" filterName="__OleIvarGet" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.OleAutoObject.__OleIVarPut" filterName="__OleIVarPut" isExposed="False" />
@@ -194,14 +177,7 @@
     <Filter entryType="Method" fullName="XSharp.RuntimeState.PopCurrentWorkarea" filterName="PopCurrentWorkarea" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.RuntimeState.PushCurrentWorkarea" filterName="PushCurrentWorkarea" isExposed="False" />
   </Filter>
-  <Filter entryType="Class" fullName="XSharp.StringHelpers" filterName="StringHelpers" isExposed="False">
-    <Filter entryType="Method" fullName="XSharp.StringHelpers.Changed" filterName="Changed" isExposed="True" />
-    <Filter entryType="Method" fullName="XSharp.StringHelpers.CompareClipper" filterName="CompareClipper" isExposed="True" />
-    <Filter entryType="Method" fullName="XSharp.StringHelpers.CompareWindows" filterName="CompareWindows" isExposed="True" />
-    <Filter entryType="Method" fullName="XSharp.StringHelpers.GetValues" filterName="GetValues" isExposed="True" />
-    <Filter entryType="Property" fullName="XSharp.StringHelpers.DosEncoding" filterName="DosEncoding" isExposed="True" />
-    <Filter entryType="Property" fullName="XSharp.StringHelpers.WinEncoding" filterName="WinEncoding" isExposed="True" />
-  </Filter>
+  <Filter entryType="Class" fullName="XSharp.StringHelpers" filterName="StringHelpers" isExposed="False" />
   <Filter entryType="Enumeration" fullName="XSharp.VOErrors" filterName="VOErrors" isExposed="False" />
 </Filter>
 <Filter entryType="Namespace" fullName="XSharp.Core" isExposed="False">
@@ -702,6 +678,9 @@
   <Filter entryType="Class" fullName="XSharp.VFP.Functions" filterName="Functions" isExposed="True">
     <Filter entryType="Method" fullName="XSharp.VFP.Functions.$Exit" filterName="$Exit" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.VFP.Functions.$Init1" filterName="$Init1" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.VFP.Functions.$Init3" filterName="$Init3" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.VFP.Functions.__TextOut" filterName="__TextOut" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.VFP.Functions.__TextSupport" filterName="__TextSupport" isExposed="False" />
   </Filter>
 </Filter>
 <Filter entryType="Namespace" fullName="XSharp.VO" isExposed="True">

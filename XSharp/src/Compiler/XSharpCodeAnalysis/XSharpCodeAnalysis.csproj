@@ -17,7 +17,7 @@
          contains a reference to C# + VB CodeAnalysis. This ensures that the project
          reference is a higher version than the NuGet reference. -->
     <Version>$(NuGetPerBuildPreReleaseVersion)</Version>
-    <AntlrCall>java -jar $(SolutionDir).\build\antlr4-csharp-4.6.1-SNAPSHOT-complete.jar</AntlrCall>
+    <AntlrCall>java -jar $(SolutionDir).\build\antlr4-csharp-4.6.1-SNAPSHOT-complete.jar</AntlrCall> 
     <AntlrPackage>-package LanguageService.CodeAnalysis.XSharp.SyntaxParser</AntlrPackage>
     <AntlrOutputDir>$(MSBuildThisFileDirectory)Generated\</AntlrOutputDir>
     <AntlrInputDir>$(MSBuildThisFileDirectory)Parser\</AntlrInputDir>

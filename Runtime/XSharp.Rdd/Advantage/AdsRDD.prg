@@ -1028,10 +1028,14 @@ METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
 			SELF:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","Date or DateTime value expected")
 		ENDIF
 		LOCAL dt   := (DateTime) oValue AS DateTime
-		LOCAL text := dt:ToString("yyyyMMdd") AS STRING
-		LOCAL r8Julian AS REAL8
-		SELF:_CheckError(AceUnPub.AdsConvertStringToJulian(text, (WORD) text:Length, OUT r8Julian),EG_WRITE)
-		SELF:_CheckError(ACE.AdsSetJulian(SELF:_Table, dwField, (LONG) r8Julian),EG_WRITE)
+        if (dt == DateTime.MinValue)
+            SELF:_CheckError(ACE.AdsSetEmpty(SELF:_Table, dwField),EG_WRITE)
+        ELSE
+		    LOCAL text := dt:ToString("yyyyMMdd") AS STRING
+		    LOCAL r8Julian AS REAL8
+		    SELF:_CheckError(AceUnPub.AdsConvertStringToJulian(text, (WORD) text:Length, OUT r8Julian),EG_WRITE)
+		    SELF:_CheckError(ACE.AdsSetJulian(SELF:_Table, dwField, (LONG) r8Julian),EG_WRITE)
+        ENDIF
 	OTHERWISE
 		SELF:ADSError(ERDD_DATATYPE, EG_DataType, "PutValue")
 	END SWITCH

@@ -58,12 +58,14 @@ BEGIN NAMESPACE XSharp
 		
 		/// <exclude/>
         OVERRIDE METHOD ToString() AS STRING
-			RETURN Mem2String( _value, Length ) 
+            IF IsValid
+                RETURN Mem2String( _value, Length )
+            ENDIF
+            RETURN "<Invalid PSZ>("+ IntPtr{_value}:ToString()+")"
 	
 		/// <exclude />	
 		METHOD DebuggerString() AS STRING
 			RETURN IIF( _value == NULL_PTR, "NULL_PSZ", e"\""+ tostring() +  e"\"" )
-		
 		
 		/// <exclude />	
 		METHOD Equals( p AS PSZ ) AS LOGIC
@@ -118,11 +120,25 @@ BEGIN NAMESPACE XSharp
 				_value := NULL_PTR
 			ENDIF
 			RETURN
+
+        PRIVATE PROPERTY IsValid AS LOGIC
+            GET
+                TRY
+                    Marshal.ReadByte(_value)
+                    RETURN TRUE
+                CATCH
+                    RETURN FALSE
+                END TRY
+            END GET
+        END PROPERTY
 		/// <exclude />
 		PROPERTY Length AS DWORD
 			GET
 				LOCAL len AS DWORD
 				len := 0
+                IF !IsValid
+                    RETURN len
+                ENDIF
 				IF _value != NULL_PTR
 					DO WHILE _value[len+1] != 0
 						len++
@@ -135,12 +151,13 @@ BEGIN NAMESPACE XSharp
 		PROPERTY IsEmpty AS LOGIC
 			GET
 				LOCAL empty := TRUE AS LOGIC
-				LOCAL b AS BYTE
-				LOCAL x := 1 AS INT
-				IF _value != NULL_PTR
-					b := _value[x]
-					DO WHILE b != 0 .AND. empty
-						SWITCH b
+                IF IsValid
+				    LOCAL b AS BYTE
+				    LOCAL x := 1 AS INT
+				    IF _value != NULL_PTR
+					    b := _value[x]
+					    DO WHILE b != 0 .AND. empty
+						    SWITCH b
 							CASE 32
 							CASE 13
 							CASE 10
@@ -148,11 +165,12 @@ BEGIN NAMESPACE XSharp
 								NOP
 							OTHERWISE
 								empty := FALSE
-						END SWITCH
-						x += 1
-						b := _value[x]
-					ENDDO
-				ENDIF
+						    END SWITCH
+						    x += 1
+						    b := _value[x]
+					    ENDDO
+				    ENDIF
+                ENDIF
 				RETURN empty
 				
 				
@@ -165,10 +183,15 @@ BEGIN NAMESPACE XSharp
 		/// <exclude />
 		PROPERTY SELF[index AS INT] AS BYTE
 			GET
+                IF !IsValid
+                    RETURN 0
+                ENDIF
 				RETURN _value[index + __ARRAYBASE__]
 			END GET
 			SET
-				_value[index + __ARRAYBASE__] := VALUE
+                IF IsValid
+				    _value[index + __ARRAYBASE__] := VALUE
+                ENDIF
 			END SET
 		END PROPERTY
 		
@@ -258,7 +281,7 @@ BEGIN NAMESPACE XSharp
 			// DWORD -> PSZ
 			/// <include file="RTComments.xml" path="Comments/Operator/*" />
 			OPERATOR IMPLICIT( d AS DWORD ) AS PSZ
-				RETURN PSZ{ IntPtr{ (int64) d} } 
+				RETURN PSZ{ IntPtr{ (INT64) d} } 
 			
 			///////////////////////////////////////////////////////////////////////////
 			// Conversion Operators - From PSZ...  

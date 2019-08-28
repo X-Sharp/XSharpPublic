@@ -7,8 +7,6 @@ using System.IO
 [STAThread];
 FUNCTION Start() AS VOID
     TRY
-        ? PSZ(_CAST,"abc")
-        ? Psz{123}
         //TestPackNtx()
         //TestZapNtx()
         //TestNullDate()

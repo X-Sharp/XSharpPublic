@@ -108,7 +108,7 @@
     <Filter entryType="Property" fullName="XSharp.__Usual.Value" filterName="Value" isExposed="False" />
     <Filter entryType="Field" fullName="XSharp.__Usual._NIL" filterName="_NIL" isExposed="False" />
   </Filter>
-  <Filter entryType="Enumeration" fullName="XSharp.__UsualType" filterName="__UsualType" isExposed="False" />
+  <Filter entryType="Enumeration" fullName="XSharp.__UsualType" filterName="__UsualType" isExposed="True" />
   <Filter entryType="Structure" fullName="XSharp.__WinBool" filterName="__WinBool" isExposed="True">
     <Filter entryType="Method" fullName="XSharp.__WinBool.Equals" filterName="Equals" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.__WinBool.GetTypeCode" filterName="GetTypeCode" isExposed="False" />

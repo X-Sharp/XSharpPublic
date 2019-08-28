@@ -172,7 +172,7 @@ ASSIGN Margin (nNewValue)
 
 METHOD SetDrawStyle(dwDrawStyle, lEnable) 
 	//PP-030915 from S Ebert
-
+    EnForceNumeric(@dwDrawStyle)
 	IF IsLogic(lEnable)
 		IF lEnable
 			_dwDrawStyle :=  _OR(_dwDrawStyle, DWORD(_CAST, dwDrawStyle))

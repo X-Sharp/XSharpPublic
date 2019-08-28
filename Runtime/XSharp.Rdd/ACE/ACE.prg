@@ -684,6 +684,7 @@ BEGIN NAMESPACE XSharp.ADS
                 delCreateFTSIndex		:= ACE32.AdsCreateFTSIndex
                 delCreateIndex			:= ACE32.AdsCreateIndex
                 delCreateIndex90			:= ACE32.AdsCreateIndex90
+                delCreateSQLStatement   := ACE32.AdsCreateSQLStatement
                 delCreateTable90			:= ACE32.AdsCreateTable90
                 delDecryptRecord				:= ACE32.AdsDecryptRecord
                 delDecryptTable				:= ACE32.AdsDecryptTable
@@ -707,6 +708,7 @@ BEGIN NAMESPACE XSharp.ADS
                 delEvalStringExpr			:= ACE32.AdsEvalStringExpr
                 delEvalTestExpr				:= ACE32.AdsEvalTestExpr
                 delExecuteSQL				:= ACE32.AdsExecuteSQL
+                delExecuteSQLDirect				:= ACE32.AdsExecuteSQLDirect
                 delExtractKey				:= ACE32.AdsExtractKey
                 delFileToBinaryS				:= ACE32.AdsFileToBinary
                 delFileToBinaryD				:= ACE32.AdsFileToBinary
@@ -772,6 +774,7 @@ BEGIN NAMESPACE XSharp.ADS
                 //delGetStringWS				:= ACE32.AdsGetStringW
                 delGetTableFilename			:= ACE32.AdsGetTableFilename
                 delGetTableOpenOptions		:= ACE32.AdsGetTableOpenOptions
+                delGetTableType             := ACE32.AdsGetTableType
                 delGotoBottom        		:= ACE32.AdsGotoBottom
                 delGotoRecord           		:= ACE32.AdsGotoRecord
                 delGotoTop           		:= ACE32.AdsGotoTop
@@ -840,6 +843,13 @@ BEGIN NAMESPACE XSharp.ADS
                 delSkipUnique				:= ACE32.AdsSkipUnique
                 delStmtClearTablePasswords	:= ACE32.AdsStmtClearTablePasswords
                 delStmtDisableEncryption		:= ACE32.AdsStmtDisableEncryption
+                delStmtSetTableType     := ACE32.AdsStmtSetTableType
+                delStmtSetTableCharType		:= ACE32.AdsStmtSetTableCharType
+                delStmtSetTableCollation		:= ACE32.AdsStmtSetTableCollation
+                delStmtSetTableLockType		:= ACE32.AdsStmtSetTableLockType
+                delStmtSetTablePassword     := ACE32.AdsStmtSetTablePassword
+                delStmtSetTableReadonly		:= ACE32.AdsStmtSetTableReadonly	
+                delStmtSetTableRights		:= ACE32.AdsStmtSetTableRights	
                 delThreadExit			:= ACE32.AdsThreadExit
                 delUnlockRecord			:= ACE32.AdsUnlockRecord
                 delUnlockTable			:= ACE32.AdsUnlockTable
@@ -884,6 +894,7 @@ BEGIN NAMESPACE XSharp.ADS
                 delCreateFTSIndex		:= ACE64.AdsCreateFTSIndex
                 delCreateIndex			:= ACE64.AdsCreateIndex
                 delCreateIndex90			:= ACE64.AdsCreateIndex90
+                delCreateSQLStatement   := ACE64.AdsCreateSQLStatement
                 delCreateTable90			:= ACE64.AdsCreateTable90
                 delDecryptRecord				:= ACE64.AdsDecryptRecord
                 delDecryptTable				:= ACE64.AdsDecryptTable
@@ -907,6 +918,7 @@ BEGIN NAMESPACE XSharp.ADS
                 delEvalStringExpr			:= ACE64.AdsEvalStringExpr
                 delEvalTestExpr				:= ACE64.AdsEvalTestExpr
                 delExecuteSQL				:= ACE64.AdsExecuteSQL
+                delExecuteSQLDirect			:= ACE64.AdsExecuteSQLDirect
                 delExtractKey				:= ACE64.AdsExtractKey
                 delFileToBinaryS				:= ACE64.AdsFileToBinary
                 delFileToBinaryD				:= ACE64.AdsFileToBinary
@@ -972,6 +984,7 @@ BEGIN NAMESPACE XSharp.ADS
                 //delGetStringWS				:= ACE64.AdsGetStringW
                 delGetTableFilename			:= ACE64.AdsGetTableFilename
                 delGetTableOpenOptions		:= ACE64.AdsGetTableOpenOptions
+                delGetTableType             := ACE64.AdsGetTableType
                 delGotoBottom        		:= ACE64.AdsGotoBottom
                 delGotoRecord           		:= ACE64.AdsGotoRecord
                 delGotoTop           		:= ACE64.AdsGotoTop
@@ -1040,6 +1053,14 @@ BEGIN NAMESPACE XSharp.ADS
                 delSkipUnique				:= ACE64.AdsSkipUnique
                 delStmtClearTablePasswords	:= ACE64.AdsStmtClearTablePasswords
                 delStmtDisableEncryption		:= ACE64.AdsStmtDisableEncryption
+                delStmtSetTableType     := ACE64.AdsStmtSetTableType
+                delStmtSetTableCharType		:= ACE64.AdsStmtSetTableCharType
+                delStmtSetTableCollation		:= ACE64.AdsStmtSetTableCollation
+                delStmtSetTableLockType		:= ACE64.AdsStmtSetTableLockType
+                delStmtSetTablePassword     := ACE64.AdsStmtSetTablePassword
+                delStmtSetTableReadonly		:= ACE64.AdsStmtSetTableReadonly	
+                delStmtSetTableRights		:= ACE64.AdsStmtSetTableRights	
+
                 delThreadExit			:= ACE64.AdsThreadExit
                 delUnlockRecord			:= ACE64.AdsUnlockRecord
                 delUnlockTable			:= ACE64.AdsUnlockTable
@@ -1091,6 +1112,7 @@ BEGIN NAMESPACE XSharp.ADS
         PRIVATE STATIC delCreateFTSIndex		AS _delCreateFTSIndex
         PRIVATE STATIC delCreateIndex			AS _delCreateIndex
         PRIVATE STATIC delCreateIndex90			AS _delCreateIndex90
+        PRIVATE STATIC delCreateSQLStatement    AS _delHOutH
         PRIVATE STATIC delCreateTable90			AS _delCreateTable90
         PRIVATE STATIC delDecryptRecord				AS _delH
         PRIVATE STATIC delDecryptTable				AS _delH
@@ -1114,6 +1136,7 @@ BEGIN NAMESPACE XSharp.ADS
         PRIVATE STATIC delEvalStringExpr			AS _delEvalStringExpr
         PRIVATE STATIC delEvalTestExpr				AS _delHSOutW
         PRIVATE STATIC delExecuteSQL				AS _delHOutH
+        PRIVATE STATIC delExecuteSQLDirect          AS _delHSOutH
         PRIVATE STATIC delExtractKey				AS _delExtractKey
         PRIVATE STATIC delFileToBinaryS				AS _delHSWS
         PRIVATE STATIC delFileToBinaryD				AS _delHDWS
@@ -1179,6 +1202,7 @@ BEGIN NAMESPACE XSharp.ADS
         //PRIVATE STATIC delGetStringWS				AS _delGetStringS
         PRIVATE STATIC delGetTableFilename			AS _delGetTableFilename
         PRIVATE STATIC delGetTableOpenOptions		AS _delHOUTD
+        PRIVATE STATIC delGetTableType      		AS _delHOUTW
         PRIVATE STATIC delGotoBottom        		AS _delH
         PRIVATE STATIC delGotoRecord           		AS _delHD
         PRIVATE STATIC delGotoTop           		AS _delH
@@ -1247,6 +1271,13 @@ BEGIN NAMESPACE XSharp.ADS
         PRIVATE STATIC delSkipUnique				AS _delHI
         PRIVATE STATIC delStmtClearTablePasswords	AS _delH
         PRIVATE STATIC delStmtDisableEncryption		AS _delH
+        PRIVATE STATIC delStmtSetTableType		AS _delHW
+        PRIVATE STATIC delStmtSetTableCharType		AS _delHW
+        PRIVATE STATIC delStmtSetTableCollation     AS _delHS
+        PRIVATE STATIC delStmtSetTableLockType		AS _delHW
+        PRIVATE STATIC delStmtSetTablePassword      AS _delHSS
+        PRIVATE STATIC delStmtSetTableReadonly		AS _delHW
+        PRIVATE STATIC delStmtSetTableRights		AS _delHW
         PRIVATE STATIC delThreadExit			AS _del
         PRIVATE STATIC delUnlockRecord			AS _delHD
         PRIVATE STATIC delUnlockTable			AS _delH
@@ -1484,6 +1515,9 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsGetTableOpenOptions(hTable AS IntPtr , pulOptions OUT DWORD ) AS DWORD 
             RETURN delGetTableOpenOptions(hTable, OUT pulOptions)
             
+        PUBLIC STATIC METHOD AdsGetTableType(hTable as IntPtr , pusType out WORD) AS DWORD 
+            RETURN delGetTableType(hTable, OUT pusType)
+
         PUBLIC STATIC METHOD AdsGetLastTableUpdate(hTable AS IntPtr , [IN] [OUT] strDate AS CHAR[] , pusDateLen REF WORD ) AS DWORD 
             RETURN delGetLastTableUpdate(hTable , strDate , REF pusDateLen ) 
             
@@ -1859,7 +1893,34 @@ BEGIN NAMESPACE XSharp.ADS
             
         PUBLIC STATIC METHOD AdsIsIndexUnique(hIndex AS IntPtr , pbUnique OUT WORD ) AS DWORD 
             RETURN delIsIndexUnique(hIndex,  OUT pbUnique)
-            
+
+        PUBLIC STATIC METHOD AdsCreateSQLStatement(hConnect as IntPtr, phStatement out IntPtr ) as DWORD 
+            RETURN delCreateSQLStatement(hConnect,  OUT phStatement)
+
+         PUBLIC STATIC METHOD AdsStmtSetTableType(hStatement as IntPtr , usTableType as WORD) as DWORD 
+           RETURN delStmtSetTableType(hStatement,  usTableType)
+
+        PUBLIC STATIC METHOD AdsStmtSetTableCharType(hStatement as IntPtr , usCharType as WORD ) as DWORD 
+           RETURN delStmtSetTableCharType(hStatement,  usCharType)
+
+        PUBLIC STATIC METHOD AdsStmtSetTableCollation(hStatement as IntPtr , strCollation as string ) as DWORD 
+           RETURN delStmtSetTableCollation(hStatement,  strCollation)
+
+        PUBLIC STATIC METHOD AdsStmtSetTableLockType(hStatement as IntPtr , usLockType as WORD ) as DWORD 
+           RETURN delStmtSetTableLockType(hStatement,  usLockType)
+
+        PUBLIC STATIC METHOD AdsStmtSetTablePassword(hStatement as IntPtr , strTableName as string , strPassword as string ) as DWORD 
+           RETURN delStmtSetTablePassword(hStatement,  strTableName, strPassword)
+
+        PUBLIC STATIC METHOD AdsStmtSetTableReadOnly(hStatement as IntPtr , usReadOnly as WORD ) as DWORD 
+           RETURN delStmtSetTableReadOnly(hStatement,  usReadOnly)
+
+        PUBLIC STATIC METHOD AdsStmtSetTableRights(hStatement as IntPtr , usCheckRights as WORD ) as DWORD 
+            RETURN delStmtSetTableRights(hStatement,  usCheckRights)
+
+        PUBLIC STATIC METHOD AdsExecuteSQLDirect(hStatement as IntPtr , strSQL as string , phCursor out IntPtr ) as DWORD 
+            RETURN delExecuteSQLDirect(hStatement,  strSQL, OUT phCursor)
+
             #endregion
             
         // Unused methods
@@ -1874,7 +1935,6 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsCopyTable(hObj as IntPtr , usFilterOption as WORD , strFile as string ) as DWORD 
         PUBLIC STATIC METHOD AdsCopyTableContents(hObjFrom as IntPtr , hTableTo as IntPtr , usFilterOption as WORD) as DWORD 
         PUBLIC STATIC METHOD AdsCreateIndex61(hObj as IntPtr , strFileName as string , strTag as string , strExpr as string , strCondition as string , strWhile as string , ulOptions as DWORD, ulPageSize as DWORD , phIndex out IntPtr ) as DWORD 
-        PUBLIC STATIC METHOD AdsCreateSQLStatement(hConnect as IntPtr, phStatement out IntPtr ) as DWORD 
         PUBLIC STATIC METHOD AdsCreateSavepoint(hConnect as IntPtr, strSavepoint as string , ulOptions as DWORD) as DWORD 
         PUBLIC STATIC METHOD AdsCreateTable(hConnect as IntPtr, strName as string , strAlias as string , usTableType as WORD, usCharType as WORD , usLockType as WORD , usCheckRights as WORD , usMemoSize as WORD , strFields as string , phTable out IntPtr ) as DWORD 
         PUBLIC STATIC METHOD AdsCreateTable71(hConnect as IntPtr, strName as string , strDBObjName as string , usTableType as WORD, usCharType as WORD , usLockType as WORD , usCheckRights as WORD , usMemoSize as WORD , strFields as string , ulOptions as DWORD, phTable out IntPtr ) as DWORD 
@@ -2070,7 +2130,6 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsGetTableLockType(hTable as IntPtr , pusLockType out WORD ) as DWORD 
         PUBLIC STATIC METHOD AdsGetTableMemoSize(hTable as IntPtr , pusMemoSize out WORD ) as DWORD 
         PUBLIC STATIC METHOD AdsGetTableRights(hTable as IntPtr , pusRights out WORD ) as DWORD 
-        PUBLIC STATIC METHOD AdsGetTableType(hTable as IntPtr , pusType out WORD ) as DWORD 
         PUBLIC STATIC METHOD AdsGetTime(hTable as IntPtr , lFieldOrdinal as DWORD, [In] [Out] strBuf as char[] , wLen ref WORD ) as DWORD 
         PUBLIC STATIC METHOD AdsGetTime(hTable as IntPtr , strFldName as string , [In] [Out] strBuf as char[] , wLen ref WORD ) as DWORD 
         PUBLIC STATIC METHOD AdsGetVersion(pulMajor out DWORD , pulMinor out DWORD , strLetter as string , [In] [Out] strDesc as char[] , pusDescLen ref WORD ) as DWORD 
@@ -2144,13 +2203,6 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsStmtConstrainUpdates(hStatement as IntPtr , usConstrain as WORD ) as DWORD 
         PUBLIC STATIC METHOD AdsStmtEnableEncryption(hStatement as IntPtr , strPassword as string ) as DWORD 
         PUBLIC STATIC METHOD AdsStmtReadAllColumns(hStatement as IntPtr , usReadColumns as WORD ) as DWORD 
-        PUBLIC STATIC METHOD AdsStmtSetTableCharType(hStatement as IntPtr , usCharType as WORD ) as DWORD 
-        PUBLIC STATIC METHOD AdsStmtSetTableCollation(hStatement as IntPtr , strCollation as string ) as DWORD 
-        PUBLIC STATIC METHOD AdsStmtSetTableLockType(hStatement as IntPtr , usLockType as WORD ) as DWORD 
-        PUBLIC STATIC METHOD AdsStmtSetTablePassword(hStatement as IntPtr , strTableName as string , strPassword as string ) as DWORD 
-        PUBLIC STATIC METHOD AdsStmtSetTableReadOnly(hStatement as IntPtr , usReadOnly as WORD ) as DWORD 
-        PUBLIC STATIC METHOD AdsStmtSetTableRights(hStatement as IntPtr , usCheckRights as WORD ) as DWORD 
-        PUBLIC STATIC METHOD AdsStmtSetTableType(hStatement as IntPtr , usTableType as WORD) as DWORD 
         PUBLIC STATIC METHOD AdsVerifyPassword(hTable as IntPtr , pusEnabled out WORD ) as DWORD 
         PUBLIC STATIC METHOD AdsVerifySQL(hStatement as IntPtr , strSQL as string ) as DWORD 
         */

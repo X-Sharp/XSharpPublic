@@ -14,10 +14,7 @@ USING XUnit
 BEGIN NAMESPACE XSharp.VO.Tests
 
 	CLASS FloatTests
-		[Fact, Trait("Category", "Numeric")];
-		METHOD CONTIMETest() AS VOID
-			Assert.Equal("13:34:54",ConTime((DWORD)13,(DWORD)34,(DWORD)54))
-		RETURN
+
 
 		[Fact, Trait("Category", "Numeric")];
 		METHOD FracTest() AS VOID

@@ -22,10 +22,18 @@ BEGIN NAMESPACE XSharp
 			_internalList := List<T>{}
 			RETURN
 
-		/// <summary>Create an array with a certain number of elements. Each element will be filled with a default value.</summary>
+		/// <summary>Create an array with a certain capacity.</summary>
 		CONSTRUCTOR(capacity AS DWORD)
 			_internalList := List<T>{ (INT) capacity}
-			_internalList:AddRange(Enumerable.Repeat(DEFAULT(T),(INT) capacity))
+			//_internalList:AddRange(Enumerable.Repeat(DEFAULT(T),(INT) capacity))
+			RETURN
+
+		/// <summary>Create an array with a certain capacity and specify if it should be filled with default values.</summary>
+		CONSTRUCTOR(capacity AS DWORD, fill AS LOGIC)
+			_internalList := List<T>{ (INT) capacity}
+			IF fill
+				_internalList:AddRange(Enumerable.Repeat(DEFAULT(T),(INT) capacity))
+			ENDIF
 			RETURN
 
 		/// <summary>Create an array and fill it with elements from an existing collection.</summary>

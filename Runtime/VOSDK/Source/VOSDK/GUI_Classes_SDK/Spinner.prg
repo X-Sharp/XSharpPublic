@@ -84,22 +84,17 @@ ASSIGN Range(oNewRange)
 	ENDIF
 	sUpper := oNewRange:Max
 	sLower := oNewRange:Min
-	//SendMessage(SELF:Handle(), UDM_SETRANGE, 0, MAKELONG(WORD(_CAST, sUpper), WORD(_CAST, sLower)))
     SendMessage(SELF:Handle(), UDM_SETRANGE32, sLower, sUpper)	
 
 	RETURN 
 
 ACCESS ThumbPosition 
-	//LOCAL iThPos AS LONG	
-	//iThPos :=SendMessage(SELF:Handle(), UDM_GETPOS, 0, 0) 
-	//RETURN _AND(iThPos,0xFFFF)
-    RETURN SendMessage(SELF:Handle(), UDM_GETPOS32, 0, 0)
+   RETURN SendMessage(SELF:Handle(), UDM_GETPOS32, 0, 0)
 
 ASSIGN ThumbPosition(nThumbPosition) 
 	IF !IsLong(nThumbPosition)
 		WCError{#ThumbPosition, #Spinner, __WCSTypeError, nThumbPosition, 1}:Throw()
 	ENDIF
-	//SendMessage(SELF:Handle(), UDM_SETPOS, DWORD(_CAST, TRUE), MAKELONG(WORD(_CAST, SHORTINT(nThumbPosition)), 0))
 	SendMessage(SELF:Handle(), UDM_SETPOS32, 0, nThumbPosition)
 
 	RETURN 

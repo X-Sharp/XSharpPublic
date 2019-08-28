@@ -41,7 +41,7 @@ ASSIGN Pressed(lPressed)
 	ENDIF
 
 	IF SELF:ValidateControl()
-		SendMessage(SELF:Handle(), BM_SETCHECK, DWORD(_CAST, lPressed), 0)
+		SendMessage(SELF:Handle(), BM_SETCHECK, IIF( lPressed,1,0 ), 0)
 		SELF:Value := lPressed
 	ENDIF
 

@@ -2654,7 +2654,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 //		 	Assert.Equal(3 , nCount )
 //		 	Assert.Equal(3 , (INT) OrdKeyCount() )
-			#warning should it retuen 2 or 3?
+			#warning should it return 2 or 3?
 
 		 	Assert.True(nCount == 2 .or. nCount == 3)
 		 	LOCAL nOrdKey AS INT

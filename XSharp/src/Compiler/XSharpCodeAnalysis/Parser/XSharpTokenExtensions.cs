@@ -1617,21 +1617,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var e = expr as XSharpParser.ExpressionContext;
             if (e == null)
                 return false;
-            if (e is XSharpParser.PrefixExpressionContext)
+            if (e is XSharpParser.PrefixExpressionContext pfe)
             {
-                return ((XSharpParser.PrefixExpressionContext)e).Expr.IsLiteralExpression();
+                return pfe.Expr.IsLiteralExpression();
            }
-           if (e is XSharpParser.PrimaryExpressionContext)
+           if (e is XSharpParser.PrimaryExpressionContext primex)
            {
-                var pr = ((XSharpParser.PrimaryExpressionContext)e).Expr as XSharpParser.PrimaryContext;
-                if (pr is XSharpParser.VoConversionExpressionContext)
+                var pr = primex.Expr as XSharpParser.PrimaryContext;
+                if (pr is XSharpParser.VoConversionExpressionContext voconv)
                 {
-                    return ((XSharpParser.VoConversionExpressionContext)pr).Expr.IsLiteralExpression();
+                    return voconv.Expr.IsLiteralExpression();
                 }
-                if (pr is XSharpParser.VoCastExpressionContext)
+                if (pr is XSharpParser.VoCastExpressionContext vocast)
                 {
-                    return ((XSharpParser.VoCastExpressionContext)pr).Expr.IsLiteralExpression();
+                    return vocast.Expr.IsLiteralExpression();
                 }
+                return (pr is XSharpParser.LiteralExpressionContext);
             }
             return expr.IsLiteral();
         }
@@ -1651,13 +1652,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return false;
         }
-        public static bool IsBinaryExpression(this IXParseTree context)
-        {
-            if (context is XSharpParser.PrimaryExpressionContext)
-            {
-                return context.GetChild(0) is XSharpParser.BinaryExpressionContext;
-            }
-            return false;
-        }
+        
     }
 }

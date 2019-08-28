@@ -459,7 +459,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             stmts.Clear();
 
             // Create Exception
-            var arg1 = MakeArgument(GenerateLiteral("Error when executing code in Vulcan INIT procedure(s)"));
+            var arg1 = MakeArgument(GenerateLiteral("Error when executing code in INIT procedure(s)"));
             var arg2 = MakeArgument(GenerateSimpleName(XSharpSpecialNames.ExVarName));
             var excType = GenerateQualifiedName(SystemQualifiedNames.Exception);
             var Exception = CreateObject(excType, MakeArgumentList(arg1, arg2));
@@ -2932,7 +2932,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             //remove the quotes from the string
             expr = null;
-            if (!context.IsLiteralExpression())
+            if (!context.IsLiteralString())
                 return false;
             expr = context.Get<ExpressionSyntax>();
             var args = MakeArgumentList(MakeArgument(expr));
@@ -2973,7 +2973,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _literalPSZs.Add(fieldname, new Tuple<string, FieldDeclarationSyntax>(str, fielddecl));
             }
             expr = MakeSimpleMemberAccess(GenerateSimpleName(XSharpSpecialNames.PSZTable), GenerateSimpleName(fieldname));
-            expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak));
+            //expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak));
             return true;
         }
 
@@ -4327,27 +4327,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         context.Put(expr);
                         return;
                     }
-                }
+                 }
             }
-
             base.ExitVoConversionExpression(context);
-
         }
 
         public override void ExitTypeCast([NotNull] XP.TypeCastContext context)
         {
-            // Special case for (PSZ) Expression, this becomes String2Psz(<Expression>)
-            // but only when <Expression> is a literal string
+            // Special case for (PSZ) Expression, is stored in the PSZ Table when expression is a literal
             var dt = context.Type as XP.DatatypeContext;
-            if (dt is XP.SimpleDatatypeContext)
+            if (dt is XP.SimpleDatatypeContext sdt)
             {
-                var sdt = dt as XP.SimpleDatatypeContext;
                 if (sdt.TypeName.XType != null && sdt.TypeName.XType.Token.Type == XP.PSZ)
                 {
-                    if (context.Expr.IsLiteralString())
+                    ExpressionSyntax expr;
+                    if (GenerateLiteralPsz(context.Expr, out expr))
                     {
-                        var result = _GenerateString2Psz(context, context.Expr.Get<ExpressionSyntax>());
-                        context.Put(result);
+                        context.Put(expr);
                         return;
                     }
                 }
@@ -4358,8 +4354,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVoCastExpression([NotNull] XP.VoCastExpressionContext context)
         {
-            // Special case for PSZ(_CAST 
-            // PSZ(_CAST, "String") becomes String2Psz("String")
+            // PSZ(_CAST, literal) is stored in the PSZ Table
             if (context.XType != null)
             {
                 var xtype = context.XType as XP.XbaseTypeContext;

@@ -58,6 +58,8 @@ BEGIN NAMESPACE XSharp.ADS
 		    CASE AdsFieldType.DATE
 		    CASE AdsFieldType.COMPACTDATE
                 return AdsDateColumn{oInfo, oRDD, type,nPos}
+            OTHERWISE
+                oRDD:ADSERROR(ERDD_DATATYPE, EG_DataType, __ENTITY__,"Unexpected fieldtype: "+ ((int) type):ToString())
             END SWITCH
             RETURN NULL
 
@@ -75,6 +77,9 @@ BEGIN NAMESPACE XSharp.ADS
 
         VIRTUAL METHOD PutValue(oValue AS OBJECT) AS LOGIC
             RETURN FALSE
+
+   OVERRIDE METHOD ToString() AS STRING
+        RETURN SELF:Name+" ('"+SELF:FieldTypeStr+"',"+SELF:Length:ToString()+","+SELF:Decimals:ToString()+","+SELF:Adstype:ToString()+")"
 
     END CLASS
 
@@ -103,17 +108,15 @@ BEGIN NAMESPACE XSharp.ADS
 		    CASE AdsFieldType.NCHAR
 		    CASE AdsFieldType.NVARCHAR
 			    IF tc != TypeCode.String
-				    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","String expected")
+				    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, __ENTITY__,"String expected")
 			    ENDIF
 			    strValue := (STRING) oValue
 			    slength  := (DWORD) strValue:Length
-                IF ! SELF:AdsType:IsMemo()
-                    slength := Math.Min(slength, SELF:Length)
-                ENDIF
+                slength := Math.Min(slength, SELF:Length)
 			    IF slength == 0
 				    result := ACE.AdsSetEmpty(SELF:_Table, SELF:FieldPos)
 			    ELSE
-                    IF SELF:AdsType:IsUnicode()
+                    IF SELF:AdsType == AdsFieldType.NCHAR .or. SELF:AdsType == AdsFieldType.NVARCHAR
                         result := ACE.AdsSetStringW(SELF:_Table, SELF:FieldPos, strValue, slength)
                     ELSE
                         result := ACE.AdsSetString(SELF:_Table, SELF:FieldPos, strValue, slength)
@@ -125,16 +128,17 @@ BEGIN NAMESPACE XSharp.ADS
 		    CASE AdsFieldType.ROWVERSION
 		    CASE AdsFieldType.MODTIME
 			    IF tc != TypeCode.String
-				    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","String expected")
+				    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, __ENTITY__,"String expected")
 			    ENDIF
 			    strValue := (STRING) oValue
 			    slength  := (DWORD) strValue:Length
 			    result := ACE.AdsSetField(SELF:_Table, SELF:FieldPos, strValue, slength)
 		    OTHERWISE
-			    SELF:RDD:ADSError(ERDD_DATATYPE, EG_DataType, "PutValue")
+                // Should never happen. We filter on the type when creating the column object                
+			    SELF:RDD:ADSError(ERDD_DATATYPE, EG_DataType, __ENTITY__,"Unexpected fieldtype: "+SELF:AdsType:ToString())
 		    END SWITCH
             IF result != 0 .AND. result != ACE.AE_DATA_TRUNCATED
-			    SELF:RDD:ADSERROR(result, EG_WRITE, "PutValue")
+			    SELF:RDD:ADSERROR(result, EG_WRITE, __ENTITY__)
 		    ENDIF
             RETURN TRUE
 
@@ -169,17 +173,18 @@ BEGIN NAMESPACE XSharp.ADS
 		    CASE AdsFieldType.NCHAR
 		    CASE AdsFieldType.NVARCHAR
 			    chars := CHAR[] {slength}
-                IF SELF:AdsType:IsUnicode()
+                IF SELF:AdsType == AdsFieldType.NCHAR .or. SELF:AdsType == AdsFieldType.NVARCHAR
 			        result := ACE.AdsGetStringW(SELF:_Table, SELF:FieldPos, chars, REF slength ,0)
                 ELSE
 			        result := ACE.AdsGetString(SELF:_Table, SELF:FieldPos, chars, REF slength ,0)
                 ENDIF
 		    OTHERWISE
-			    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE)
+                // Should never happen. We filter on the type when creating the column object
+			    SELF:RDD:ADSError(ERDD_DATATYPE, EG_DataType, __ENTITY__,"Unexpected fieldtype: "+SELF:AdsType:ToString())
 		    END SWITCH
 		    SWITCH result
 		    CASE 0
-			    IF SELF:AdsType:IsUnicode()
+			    IF SELF:AdsType == AdsFieldType.NCHAR .or. SELF:AdsType == AdsFieldType.NVARCHAR
                     RETURN STRING{chars, 0, (INT) SELF:length}
 			    ELSE
 				    RETURN SELF:RDD:_Ansi2Unicode(chars, (INT) SELF:length)
@@ -243,7 +248,7 @@ BEGIN NAMESPACE XSharp.ADS
                 tc := TypeCode.DateTime
 	        ENDIF
 		    IF tc != TypeCode.DateTime
-			    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","Date or DateTime value expected")
+			    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, __ENTITY__,"Date or DateTime value expected")
 		    ENDIF
 
 		    LOCAL dt := (DateTime) oValue AS DateTime
@@ -284,13 +289,10 @@ BEGIN NAMESPACE XSharp.ADS
        OVERRIDE METHOD PutValue(oValue AS OBJECT) AS LOGIC
             VAR tc := Type.GetTypeCode(oValue:GetType())
 		    IF tc != TypeCode.Boolean
-			    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","Logic value expected")
+			    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, __ENTITY__,"Logic value expected")
 		    ENDIF
 		    SELF:RDD:_CheckError(ACE.AdsSetLogical(SELF:_Table, SELF:FieldPos, (WORD)  IIF( (LOGIC) oValue, 1, 0)),EG_WRITE)
             RETURN TRUE
-
-       OVERRIDE METHOD EmptyValue() AS OBJECT
-            RETURN FALSE
 
        OVERRIDE METHOD Validate() AS LOGIC
             RETURN SELF:Length == 1  .AND.  SELF:Decimals == 0 
@@ -325,7 +327,8 @@ BEGIN NAMESPACE XSharp.ADS
 				    RETURN DbFloat{r8, SELF:Length, SELF:Decimals}
 			    ENDIF
 		    OTHERWISE
-			    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE)
+                // Should never happen. We filter on the type when creating the column object
+			    SELF:RDD:ADSError(ERDD_DATATYPE, EG_DataType, __ENTITY__,"Unexpected fieldtype: "+SELF:AdsType:ToString())
 		    END SWITCH
             RETURN NULL
 
@@ -346,16 +349,13 @@ BEGIN NAMESPACE XSharp.ADS
 		        SELF:RDD:_CheckError(ACE.AdsSetDouble(SELF:_Table, SELF:FieldPos, r8),EG_WRITE)
         
             CATCH
-		        SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","Numeric value expected")
+		        SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, __ENTITY__,"Numeric value expected")
                 RETURN FALSE
 	        END TRY
         ELSE
 	        NOP // Do not allow to write to AUTO INC field
         ENDIF
         RETURN TRUE
-
-        OVERRIDE METHOD EmptyValue() AS OBJECT
-            RETURN DbFloat{0.0, SELF:Length, SELF:Decimals}
 
        OVERRIDE METHOD Validate() AS LOGIC
            IF SELF:Length >= 1  .AND.  SELF:Length <= 255 
@@ -391,7 +391,7 @@ BEGIN NAMESPACE XSharp.ADS
         OVERRIDE METHOD GetValue() AS OBJECT
             LOCAL isEmpty   := 0 AS WORD
             LOCAL result    := 0 as DWORD
-            LOCAL length    := 0 AS DWORD
+            LOCAL mlength    := 0 AS DWORD
             LOCAL bytes     := NULL AS BYTE[]
 			LOCAL chars := CHAR[] {length} as CHAR[]
             SWITCH SELF:AdsType
@@ -399,14 +399,14 @@ BEGIN NAMESPACE XSharp.ADS
 		    CASE AdsFieldType.NMEMO
 		    CASE AdsFieldType.BINARY
 		    CASE AdsFieldType.IMAGE
-			    result := ACE.AdsGetMemoLength(SELF:_Table, SELF:FieldPos, OUT length )
+			    result := ACE.AdsGetMemoLength(SELF:_Table, SELF:FieldPos, OUT mlength )
 			    SWITCH result
 			    CASE 0
 				    IF length == 0
 					    RETURN string.Empty
 				    ENDIF
 			    CASE ACE.AE_NO_CURRENT_RECORD
-				    IF AdsType:IsMemo()
+				    IF SELF:AdsType == AdsFieldType.MEMO .or. SELF:AdsType == AdsFieldType.NMEMO
 					    RETURN string.Empty
 				    ELSE    // image and binary
 					    RETURN NULL
@@ -416,16 +416,16 @@ BEGIN NAMESPACE XSharp.ADS
 			    END SWITCH
 			    SWITCH SELF:AdsType
 			    CASE AdsFieldType.MEMO
-				    chars := CHAR[] {++length}
-				    SELF:RDD:_CheckError(ACE.AdsGetString(SELF:_Table, SELF:FieldPos, chars, REF length ,0),EG_READ)
+				    chars := CHAR[] {mlength+1}
+				    SELF:RDD:_CheckError(ACE.AdsGetString(SELF:_Table, SELF:FieldPos, chars, REF mlength ,0),EG_READ)
 				    RETURN SELF:RDD:_Ansi2Unicode(chars, (INT) length)
 			    CASE AdsFieldType.NMEMO
 				    chars := CHAR[] {++length}
-				    SELF:RDD:_CheckError(ACE.AdsGetStringW(SELF:_Table, SELF:FieldPos, chars, REF length ,0),EG_READ)
+				    SELF:RDD:_CheckError(ACE.AdsGetStringW(SELF:_Table, SELF:FieldPos, chars, REF mlength ,0),EG_READ)
 			    CASE AdsFieldType.BINARY
 			    CASE AdsFieldType.IMAGE
-				    bytes := BYTE[] {length}
-				    SELF:RDD:_CheckError(ACE.AdsGetBinary(SELF:_Table, SELF:FieldPos, 0, bytes, REF length ),EG_READ)
+				    bytes := BYTE[] {mlength}
+				    SELF:RDD:_CheckError(ACE.AdsGetBinary(SELF:_Table, SELF:FieldPos, 0, bytes, REF mlength ),EG_READ)
 				    RETURN bytes
 			    END SWITCH
 			
@@ -439,10 +439,13 @@ BEGIN NAMESPACE XSharp.ADS
 			    ELSE
 				    SELF:RDD:_CheckError(result,EG_READ)
 			    ENDIF
-			    length := SELF:Length
-			    bytes := BYTE[] {length}
-			    SELF:RDD:_CheckError(ACE.AdsGetBinary(SELF:_Table, SELF:FieldPos, 0, bytes, REF length ),EG_READ)
+			    mlength := SELF:Length
+			    bytes := BYTE[] {mlength}
+			    SELF:RDD:_CheckError(ACE.AdsGetBinary(SELF:_Table, SELF:FieldPos, 0, bytes, REF mlength ),EG_READ)
 			    RETURN bytes
+            OTHERWISE
+                // Should never happen. We filter on the type when creating the column object
+			    SELF:RDD:ADSError(ERDD_DATATYPE, EG_DataType, __ENTITY__,"Unexpected fieldtype: "+SELF:AdsType:ToString())
 		    END SWITCH
             RETURN NULL
 
@@ -456,17 +459,14 @@ BEGIN NAMESPACE XSharp.ADS
 		    CASE AdsFieldType.MEMO
 		    CASE AdsFieldType.NMEMO
 			    IF tc != TypeCode.String
-				    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","String expected")
+				    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, __ENTITY__,"String expected")
 			    ENDIF
 			    strValue := (STRING) oValue
 			    slength  := (DWORD) strValue:Length
-                IF ! SELF:AdsType:IsMemo()
-                    slength := Math.Min(slength, SELF:Length)
-                ENDIF
 			    IF slength == 0
 				    result := ACE.AdsSetEmpty(SELF:_Table, SELF:FieldPos)
 			    ELSE
-                    IF SELF:AdsType:IsUnicode()
+                    IF SELF:AdsType == AdsFieldType.NMEMO 
                         result := ACE.AdsSetStringW(SELF:_Table, SELF:FieldPos, strValue, slength)
                     ELSE
                         result := ACE.AdsSetString(SELF:_Table, SELF:FieldPos, strValue, slength)
@@ -477,7 +477,7 @@ BEGIN NAMESPACE XSharp.ADS
 		    CASE AdsFieldType.RAW
 		    CASE AdsFieldType.VARBINARY_FOX
 			    IF tc != TypeCode.String .AND. tc != TypeCode.Object
-				    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","String or Object expected")
+				    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, __ENTITY__,"String or Object expected")
 			    ENDIF
 			    IF tc != TypeCode.String
 				    strValue := (STRING) oValue
@@ -494,16 +494,14 @@ BEGIN NAMESPACE XSharp.ADS
 				    ENDIF
 			    ENDIF
 		    OTHERWISE
-			    SELF:RDD:ADSError(ERDD_DATATYPE, EG_DataType, "PutValue")
+                // Should never happen. We filter on the type when creating the column object
+			    SELF:RDD:ADSError(ERDD_DATATYPE, EG_DataType, __ENTITY__,"Unexpected fieldtype: "+SELF:AdsType:ToString())
 		    END SWITCH
             IF result != 0 .AND. result != ACE.AE_DATA_TRUNCATED
-			    SELF:RDD:ADSERROR(result, EG_WRITE, "PutValue")
+			    SELF:RDD:ADSERROR(result, EG_WRITE, __ENTITY__)
 		    ENDIF
             RETURN TRUE
 
-
-        OVERRIDE METHOD EmptyValue() AS OBJECT
-            RETURN NULL
 
        OVERRIDE METHOD Validate() AS LOGIC
             RETURN SELF:Length == 10 .AND.  SELF:Decimals == 0 

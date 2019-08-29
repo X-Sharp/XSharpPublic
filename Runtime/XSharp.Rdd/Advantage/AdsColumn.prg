@@ -12,7 +12,7 @@ USING XSharp.RDD.Support
 USING XSharp.RDD.Enums
 
 BEGIN NAMESPACE XSharp.ADS
-    /// <summary>Class for DBF Column reading / writing </summary>
+    /// <summary>Class for Ads Column reading / writing </summary>
     CLASS AdsColumn INHERIT RDDFieldInfo
         INTERNAL RDD        AS XSharp.ADS.AdsRDD
         INTERNAL AdsType    as AdsFieldType
@@ -373,7 +373,7 @@ BEGIN NAMESPACE XSharp.ADS
 
     END CLASS
 
-    /// <summary>Class for reading / writing Memo Columns. This class returns and writes the block numbers.</summary>
+    /// <summary>Class for reading / writing Memo Columns. </summary>
     CLASS AdsMemoColumn INHERIT AdsColumn
         // AdsFieldType.MEMO
         // AdsFieldType.NMEMO

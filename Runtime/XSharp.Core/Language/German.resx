@@ -2483,7 +2483,7 @@
     <value>Subsystem</value>
   </data>
   <data name="ERROR_STACK" xml:space="preserve">
-    <value>Gerufen von</value>
+    <value>Aufrufreihenfolge</value>
   </data>
   <data name="ERROR_CALLEDFROM" xml:space="preserve">
     <value>Gerufen von</value>

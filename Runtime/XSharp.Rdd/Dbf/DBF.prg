@@ -17,7 +17,11 @@ USING System.Collections.Generic
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBF RDD. Usually not used 'stand alone'</summary>
 PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
+#region STATIC properties and fields
+        STATIC PROTECT _Extension := ".DBF" AS STRING
+        STATIC PRIVATE  culture := System.Globalization.CultureInfo.InvariantCulture AS CultureInfo
 	
+#endregion	
 	PROTECT _RelInfoPending  AS DbRelInfo
 	
 	PROTECT _Header			AS DbfHeader
@@ -44,7 +48,6 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
 	PROTECT _HeaderLocked	AS LOGIC
         //PROTECT _PackMemo		AS LOGIC
 	INTERNAL _OpenInfo		AS DbOpenInfo // current dbOpenInfo structure in OPEN/CREATE method
-        //PROTECT _ParentRelInfo	AS DbRelInfo  // parent rel struct
 	PROTECT _Locks			AS List<LONG>
         //PROTECT _DirtyRead		AS LONG
         //PROTECT _HasTrigger		AS LOGIC
@@ -54,24 +57,19 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
         //PROTRECT _Trigger		as DbTriggerDelegate
 	PROTECT _oIndex			AS BaseIndex
 	PROTECT _Hot            AS LOGIC
-        //PROTECT _addFieldPos    AS LONG     // Used by AddFields Method, and SetFieldsExtent
 	PROTECT _lockScheme     AS DbfLocking
 	PROTECT _NewRecord      AS LOGIC
-	INTERNAL _NullColumn    AS DbfNullColumn // Column definition for _NullFlags, used in DBFVFP driver
-	INTERNAL _NullCount      := 0 AS LONG   // to count the NULL and Length bits for DBFVFP
+        PROTECT INTERNAL _NullColumn    AS DbfNullColumn // Column definition for _NullFlags, used in DBFVFP driver
+        PROTECT INTERNAL _NullCount      := 0 AS LONG   // to count the NULL and Length bits for DBFVFP
 	
-	STATIC PROTECT _Extension := ".DBF" AS STRING
-INTERNAL PROPERTY FullPath AS STRING GET _FileName
-INTERNAL PROPERTY Header AS DbfHeader GET _Header
-	INTERNAL _Ansi          AS LOGIC
-        //
-	INTERNAL _Encoding      AS Encoding
-        //
-	STATIC PRIVATE  culture := System.Globalization.CultureInfo.InvariantCulture AS CultureInfo
-	INTERNAL  _numformat AS NumberFormatInfo
-PROTECTED PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR
-PROTECTED PROPERTY HasMemo AS LOGIC GET SELF:_hasMemo
-PROTECTED PROPERTY Memo AS BaseMemo GET (BaseMemo) SELF:_Memo
+        PROTECT INTERNAL PROPERTY FullPath AS STRING GET _FileName
+        PROTECT INTERNAL PROPERTY Header AS DbfHeader GET _Header
+        PROTECT INTERNAL _Ansi          AS LOGIC
+        PROTECT INTERNAL _Encoding      AS Encoding
+        PROTECT INTERNAL  _numformat AS NumberFormatInfo
+        PROTECT PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR
+        PROTECT PROPERTY HasMemo AS LOGIC GET SELF:_hasMemo
+        PROTECT PROPERTY Memo AS BaseMemo GET (BaseMemo) SELF:_Memo
 	
 PRIVATE METHOD _AllocateBuffers() AS VOID
 	SELF:_RecordBuffer  := BYTE[]{ SELF:_RecordLength}
@@ -215,6 +213,7 @@ RETURN result
     /// <inheritdoc />
 METHOD SkipRaw(nToSkip AS INT) AS LOGIC 
 	LOCAL isOk := TRUE AS LOGIC
+    LOCAL nNewRec as INT
     //
 	IF nToSkip == 0 
         // Refresh current Recno
@@ -224,7 +223,13 @@ METHOD SkipRaw(nToSkip AS INT) AS LOGIC
 		SELF:_Bof := currentBof
 		SELF:_Eof := currentEof
 	ELSE
-		isOk := SELF:Goto( SELF:_RecNo + nToSkip )
+        nNewRec := SELF:_RecNo + nToSkip
+        IF nNewRec != 0
+		    isOk := SELF:Goto( SELF:_RecNo + nToSkip )
+        ELSE
+            isOk := SELF:Goto( 1 )
+            SELF:_Bof := TRUE
+        ENDIF
 	ENDIF
 RETURN isOK 
 
@@ -581,7 +586,7 @@ PROTECTED METHOD _lockRecord( lockInfo REF DbLockInfo ) AS LOGIC
 	IF isOk 
         // Already locked ?
 		IF SELF:Shared .AND. !SELF:_Locks:Contains( (LONG)nToLock ) 
-			IF lockInfo:@@METHOD == DbLockInfo.LockMethod.Multiple 
+            IF lockInfo:Method == DbLockInfo.LockMethod.Multiple 
                 // Just add the lock to the list
 				isOk := SELF:_lockRecord( (LONG)nToLock )
 			ELSE // DbLockInfo.LockMethod.Exclusive
@@ -1017,7 +1022,7 @@ PRIVATE METHOD _readHeader() AS LOGIC
 	IF ! SELF:IsOpen
 		RETURN FALSE
 	ENDIF
-	isOk := ( FRead3(SELF:_hFile, SELF:_Header:Buffer, DbfHeader.SIZE) == DbfHeader.SIZE )
+    isOk := FRead3(SELF:_hFile, SELF:_Header:Buffer, DbfHeader.SIZE) == DbfHeader.SIZE 
     //
 	IF isOk 
 		SELF:_HeaderLength := SELF:_Header:HeaderLen
@@ -1029,7 +1034,7 @@ PRIVATE METHOD _readHeader() AS LOGIC
 		ENDIF
 		SELF:_RecCount := SELF:_Header:RecCount
         // Move to top, after header
-		isOk := ( FSeek3( SELF:_hFile, DbfHeader.SIZE, SeekOrigin.Begin ) == DbfHeader.SIZE )
+        isOk := FSeek3( SELF:_hFile, DbfHeader.SIZE, SeekOrigin.Begin ) == DbfHeader.SIZE 
 		IF isOk 
 			isOk := _readFieldsHeader()
 		ENDIF
@@ -1047,7 +1052,7 @@ PRIVATE METHOD _readFieldsHeader() AS LOGIC
 	SELF:_NullCount := 0
     // Read full Fields Header
 	VAR fieldsBuffer := BYTE[]{ fieldDefSize }
-	isOk := ( FRead3( SELF:_hFile, fieldsBuffer, (DWORD)fieldDefSize ) == (DWORD)fieldDefSize )
+    isOk := FRead3( SELF:_hFile, fieldsBuffer, (DWORD)fieldDefSize ) == (DWORD)fieldDefSize 
 	IF isOk 
 		SELF:_HasMemo := FALSE
 		VAR currentField := DbfField{}
@@ -1110,7 +1115,6 @@ PRIVATE METHOD _writeHeader() AS LOGIC
 	LOCAL ret := TRUE AS LOGIC
     // Really ?
 	IF SELF:_Header:isHot 
-    //
 		IF SELF:_ReadOnly 
         // Error !! Cannot be written !
 			SELF:_DbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )

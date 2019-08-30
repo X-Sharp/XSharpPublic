@@ -126,6 +126,8 @@ INTERNAL METHOD _CheckRDDInfo() AS VOID
 			SELF:_Connection := p
 		ELSEIF oRet is DWORD VAR d
 			SELF:_Connection := IntPtr{d}
+		ELSE
+			SELF:_Connection := IntPtr.Zero
 		ENDIF
 	ELSE
 		SELF:_Connection := IntPtr.Zero
@@ -238,8 +240,8 @@ PROTECTED METHOD _FieldSub() AS LOGIC
 			RETURN FALSE
 		END SWITCH
 		fi:Alias := NULL
-        local oCol as AdsColumn
-        oCol := AdsColumn.Create(fi, SELF, eType, num)
+		local oCol as AdsColumn
+		oCol := AdsColumn.Create(fi, SELF, eType, num)
 		IF ! SELF:AddField(oCol)
 			RETURN FALSE
 		ENDIF
@@ -697,8 +699,8 @@ RETURN SELF:RecordMovement()
   #region Read and Write
 METHOD GetValue(nFldPos AS INT) AS OBJECT
 	LOCAL dwField  := (DWORD) nFldPos  AS DWORD
-    LOCAL fld       := (AdsColumn )SELF:_Fields[nFldPos-1] AS AdsColumn
-    return fld:GetValue()
+	LOCAL column   := (AdsColumn )SELF:_Fields[nFldPos-1] AS AdsColumn
+    RETURN column:GetValue()
 
 
 METHOD Pack () AS LOGIC
@@ -717,7 +719,7 @@ RETURN SELF:GoTop()
 
 METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
 	LOCAL dwField  := (DWORD) nFldPos  AS DWORD
-	LOCAL fld := (AdsColumn) SELF:_Fields[nFldPos-1] AS AdsColumn
+	LOCAL column := (AdsColumn) SELF:_Fields[nFldPos-1] AS AdsColumn
 	IF ! SELF:GoHot()
 		RETURN FALSE
 	ENDIF
@@ -725,7 +727,7 @@ METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
 		SELF:_CheckError(ACE.AdsSetEmpty(SELF:_Table, dwField),EG_WRITE)
 		RETURN TRUE
 	ENDIF
-    RETURN fld:PutValue(oValue)
+    RETURN column:PutValue(oValue)
     #endregion
 
   #region Properties

@@ -120,6 +120,10 @@ BEGIN NAMESPACE XSharp
         MEMBER FullPath     := 131      // Logic Should CDX() and similar functions return full paths
         MEMBER Space        := 132      // Logic Space between ? and ?? field expressions
         
+        MEMBER FoxCollate   := 133
+        MEMBER Near         := 134
+        MEMBER MemoWidth    := 135
+	MEMBER SqlAnsi      := 136
 
         // Xbase++ defines
         MEMBER CharSet          := 160

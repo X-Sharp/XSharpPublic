@@ -66,7 +66,7 @@ BEGIN NAMESPACE XSharp
             SELF(__UsualType.Float)
             SELF:_valueData:r8		:= r8
             SELF:_flags:Width		:= -1
-            SELF:_flags:Decimals	:= -1
+            SELF:_flags:Decimals	:= RuntimeState.Decimals
             RETURN
 
         [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
@@ -200,13 +200,13 @@ BEGIN NAMESPACE XSharp
                     SELF:_flags			:= UsualFlags{__UsualType.Float}
                     SELF:_valueData:r8	:= (REAL4)o
                     SELF:_flags:width	:= -1
-                    SELF:_flags:decimals := -1
+                    SELF:_flags:decimals := RuntimeState.Decimals
 
                 CASE System.TypeCode.Double
                     SELF:_flags				:= UsualFlags{__UsualType.Float}
                     SELF:_valueData:r8 := (REAL8)o
                     SELF:_flags:width := -1
-                    SELF:_flags:decimals := -1
+                    SELF:_flags:decimals := RuntimeState.Decimals
 
                 CASE System.TypeCode.Decimal
                     SELF:_flags				:= UsualFlags{__UsualType.Decimal}
@@ -430,7 +430,7 @@ BEGIN NAMESPACE XSharp
         #endregion
         #region Properties FOR the Debugger
         /// <exclude />
-        PROPERTY Value AS OBJECT
+        PROPERTY VALUE AS OBJECT
             GET
                 IF (_UsualType == __UsualType.Void)
                     RETURN "NIL"
@@ -2467,7 +2467,7 @@ BEGIN NAMESPACE XSharp
                 _uvalue := u
 
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
-            PUBLIC PROPERTY Value AS OBJECT GET _uvalue:Value
+            PUBLIC PROPERTY VALUE AS OBJECT GET _uvalue:VALUE
             PUBLIC PROPERTY Type  AS __UsualType GET _uvalue:_usualType
 
         END CLASS

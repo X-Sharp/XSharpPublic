@@ -45,6 +45,7 @@ FUNCTION Start(asParams AS STRING[]) AS VOID
 	oOptions:SortEntitiesByName := TRUE
 	oOptions:UseXSharpRuntime := TRUE
     oOptions:CopyResourcesToProjectFolder := TRUE
+    oOptions:ReplaceResourceDefinesWithValues := TRUE
 	xPorter.Options := oOptions
 
 	ReadIni()
@@ -1738,14 +1739,19 @@ CLASS ClassDescriptor
 				oCode:AddLine(e"\tTRY")
 				oCode:AddLine(e"\t\toXApp := " + SELF:_cName + "{}")
 				oCode:AddLine(e"\t\toXApp:Start()")
-				oCode:AddLine(e"\tCATCH e AS Exception")
-				oCode:AddLine(e"\t\tLOCAL cMessage AS STRING")
-				oCode:AddLine(e"\t\tcMessage := e:Message")
-				oCode:AddLine(e"\t\tDO WHILE e:InnerException != NULL_OBJECT")
-				oCode:AddLine(e"\t\t\te := e:InnerException")
-				oCode:AddLine(e"\t\t\tcMessage += CRLF+e:Message")
-				oCode:AddLine(e"\t\tENDDO")
-				oCode:AddLine(e"\t\tErrorBox{NIL, cMessage}:Show()")
+				oCode:AddLine(e"\tCATCH oException AS Exception")
+				IF xPorter.Options:UseXSharpRuntime
+					oCode:AddLine(e"\t\tErrorDialog(oException)")
+				ELSE
+					// not calling ErrorDialog(), because the vulcan version needs a Windows.Forms reference
+					oCode:AddLine(e"\t\tLOCAL cMessage AS STRING")
+					oCode:AddLine(e"\t\tcMessage := oException:Message")
+					oCode:AddLine(e"\t\tDO WHILE oException:InnerException != NULL_OBJECT")
+					oCode:AddLine(e"\t\t\toException := oException:InnerException")
+					oCode:AddLine(e"\t\t\tcMessage += CRLF+oException:Message")
+					oCode:AddLine(e"\t\tENDDO")
+					oCode:AddLine(e"\t\tErrorBox{NIL, cMessage}:Show()")
+				END IF
 				oCode:AddLine(e"\tEND TRY")
 				oCode:AddLine(e"RETURN 0")
 				oCode:AddLine(e"")

@@ -539,7 +539,7 @@ FUNCTION Str(n ,uLen ,uDec ) AS STRING CLIPPER
     LOCAL lTrimSpaces := FALSE AS LOGIC
     IF uLen:IsNumeric
         IF uLen < 0
-            nLen := System.UInt32.MaxValue
+            nLen := System.UInt32.MaxValue - 1
             lTrimSpaces := TRUE
         ELSE
             nLen := (DWORD) uLen
@@ -828,13 +828,24 @@ FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
    ELSE
       dwDec := Math.Min( dwDec, MAXDECIMALS )
    ENDIF
+   
+   // dwLen == UInt32.MaxValue     : Nil passed for 2nd param of Str()
+   // dwLen == UInt32.MaxValue - 1 : Negative value for 2nd param of Str()
     
-   IF dwLen == 0 .OR. dwLen == UInt32.MaxValue 
+   IF dwLen == 0 .OR. dwLen == UInt32.MaxValue .or. dwLen == UInt32.MaxValue - 1
         IF dwDec > 0
-            IF ConversionHelpers.GetSignificantWholeDigits(f) > RuntimeState.Digits
-                RETURN STRING{ c'*', (INT) (RuntimeState.Digits + dwDec +1) } // VO's behavior...
+        	LOCAL nSignificant AS INT
+        	nSignificant := ConversionHelpers.GetSignificantWholeDigits(f)
+            IF .not. dwLen == UInt32.MaxValue - 1
+	            IF nSignificant > RuntimeState.Digits
+	                RETURN STRING{ c'*', (INT) (RuntimeState.Digits + dwDec +1) } // VO's behavior...
+	            END IF
             END IF
-            dwLen := (DWORD) RuntimeState.Digits + dwDec +1
+            IF dwLen == UInt32.MaxValue - 1
+	            dwLen := (DWORD) nSignificant + dwDec +1
+            ELSE
+	            dwLen := (DWORD) RuntimeState.Digits + dwDec +1
+            END IF
         ELSE
             dwLen := (DWORD) RuntimeState.Digits
         ENDIF

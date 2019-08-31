@@ -346,9 +346,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         oldRoot:Write()
                     ENDIF
                 ENDIF
-                Header:RootPage := oPage:PageNo
-                Header:Write()
             ENDIF
+            Header:RootPage := oPage:PageNo
+            Header:Write()
             oPage:SetRoot()
             oPage:Write()
             _rootPage := oPage:PageNo
@@ -548,7 +548,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                 ENDIF
             ENDIF
-            IF (lNewRecord .OR. changed) .AND. _newvalue:ForCond
+            IF (lNewRecord .OR. changed) .AND. _newvalue:ForCond .and. ! SELF:Custom
                 // new record or changed record, so insert the new key in the tree
                 SELF:ClearStack()
                 IF SELF:Unique

@@ -10,22 +10,42 @@ BEGIN NAMESPACE XSharp
 PUBLIC ENUM DateCountry
     // <summary>mm/dd/yy  mm/dd/yyyy</summary>
 	MEMBER American := 1   
+
     // <summary>yy.mm.dd  yyyy.mm.dd</summary>
 	MEMBER Ansi     := 2    
+
     // <summary>dd/mm/yy  dd/mm/yyyy</summary>
 	MEMBER British  := 3    
+
     // <summary>dd/mm/yy  dd/mm/yyyy</summary>
-	MEMBER French   := 4    
+	MEMBER French   := 4
+    
     // <summary>dd.mm.yy  dd.mm.yyyy</summary>
 	MEMBER German   := 5    
+
     // <summary>dd-mm-yy  dd-mm-yyyy</summary>
 	MEMBER Italian  := 6    
+
     // <summary>dd-mm-yy  dd-mm-yyyy</summary>
     MEMBER Dutch    := 6    
+
     // <summary>yy/mm/dd  yyyy/mm/dd</summary>
 	MEMBER Japanese := 7    
+
     // <summary>mm-dd-yy  mm-dd-yyyy </summary>
 	MEMBER USA      := 8    
+
+    // <summary>yy/mm/dd  yyyy/mm/dd</summary>
+	MEMBER Taiwan   := 9
+
+    // <summary>mm/dd/yy  mm/dd/yyyy</summary>
+	MEMBER MDY      := 10
+
+    // <summary>dd/mm/yy  dd/mm/yyyy</summary>
+	MEMBER DMY      := 11
+
+    // <summary>yy/mm/dd  yyyy/mm/dd</summary>
+	MEMBER YMD      := 12
 END ENUM
 END NAMESPACE
 #region defines
@@ -47,4 +67,13 @@ DEFINE DUTCH    := DateCountry.Dutch
 DEFINE JAPANESE := DateCountry.Japanese
 /// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
 DEFINE USA      := DateCountry.USA  
+/// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+DEFINE DMY      := DateCountry.DMY
+/// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+DEFINE MDY      := DateCountry.MDY
+/// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+DEFINE YMD      := DateCountry.YMD
+/// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+DEFINE TAIWAN   := DateCountry.TAIWAN
+
 #endregion

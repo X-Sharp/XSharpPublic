@@ -17,19 +17,14 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
     EXPORT INSTANCE CopyButton AS System.Windows.Forms.Button
 
     CONSTRUCTOR( e AS Exception )
-      SUPER()
-      SELF:InitializeComponent()
-      SELF:SetLanguageStrings()
-      SELF:Text += System.Reflection.Assembly.GetCallingAssembly():Location
-      ErrorText:Text := e:ToString()
-      ErrorText:Select( 0, 0 )
+        SELF(e:ToString())
       RETURN
 
     CONSTRUCTOR( txt AS STRING )
       SUPER()
       SELF:InitializeComponent()
       SELF:SetLanguageStrings()
-      SELF:Text += System.Reflection.Assembly.GetCallingAssembly():Location
+      SELF:Text += System.Reflection.Assembly.GetEntryAssembly():Location
       ErrorText:Text := txt
       ErrorText:Select( 0, 0 )
       RETURN

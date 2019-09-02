@@ -91,8 +91,6 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "AdsTest", "Runtime\AdsTest\
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "RddTests", "Runtime\RddTests\RddTests.xsproj", "{98B12B1A-D7B0-457A-B3BC-D7FA3C440264}"
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Explorer", "..\DevPublic\Samples\VOExporterExamples\Before\Explorer\Explorer.xsproj", "{0C4F4347-33C2-4A81-A1D5-306C46FDB0BD}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -244,12 +242,6 @@ Global
 		{98B12B1A-D7B0-457A-B3BC-D7FA3C440264}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
 		{98B12B1A-D7B0-457A-B3BC-D7FA3C440264}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98B12B1A-D7B0-457A-B3BC-D7FA3C440264}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0C4F4347-33C2-4A81-A1D5-306C46FDB0BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0C4F4347-33C2-4A81-A1D5-306C46FDB0BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0C4F4347-33C2-4A81-A1D5-306C46FDB0BD}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
-		{0C4F4347-33C2-4A81-A1D5-306C46FDB0BD}.Documentation|Any CPU.Build.0 = Debug|Any CPU
-		{0C4F4347-33C2-4A81-A1D5-306C46FDB0BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0C4F4347-33C2-4A81-A1D5-306C46FDB0BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -279,7 +271,6 @@ Global
 		{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02} = {3A990509-B444-4341-A665-5FDA3E8748BD}
 		{7A247F83-D97E-42FB-94D0-3ECD299038CC} = {AAA2A7F4-2856-4404-9B77-09D7AF56DE9D}
 		{98B12B1A-D7B0-457A-B3BC-D7FA3C440264} = {AAA2A7F4-2856-4404-9B77-09D7AF56DE9D}
-		{0C4F4347-33C2-4A81-A1D5-306C46FDB0BD} = {AAA2A7F4-2856-4404-9B77-09D7AF56DE9D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EF30CE30-FC9E-4FC7-B9F0-DCA49411ACFC}

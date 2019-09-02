@@ -1,4 +1,4 @@
-﻿#region DEFINES
+#region DEFINES
 STATIC DEFINE EMAILCOMPOSEDIALOG_ATTACHBUTTON := 108 
 STATIC DEFINE EMAILCOMPOSEDIALOG_ATTACHMENTS := 104 
 STATIC DEFINE EMAILCOMPOSEDIALOG_BCCBUTTON := 107 
@@ -46,8 +46,8 @@ METHOD AcceptAndSaveEmail(lSend)
 	LOCAL oMail AS EmailStore
 	LOCAL dwRecno AS DWORD
 
-	IF Empty(SELF:oDCToMLE:Value)
-		MessageBox(NULL_PTR, String2Psz("Sorry - you must supply at least a dummy 'TO' name"), String2Psz("Error"), MB_ICONSTOP+MB_OK)
+	IF Empty(SELF:oDCToMLE:@@Value)
+		MessageBox(NULL_PTR, PSZ("Sorry - you must supply at least a dummy 'TO' name"), PSZ("Error"), MB_ICONSTOP+MB_OK)
 		RETURN FALSE
 	ENDIF
 
@@ -55,11 +55,11 @@ METHOD AcceptAndSaveEmail(lSend)
 	SELF:Pointer := Pointer{POINTERHOURGLASS}
 	//SELF:oDlg:UpdateControls()
 	SELF:oDCBody:__Update()
-	SELF:oEmail:Body     := Trim(SELF:oDCBody:Value)
-	SELF:oEmail:DestList := Trim(SELF:oDCToMLE:Value)
-	SELF:oEmail:CCList   := Trim(SELF:oDCCCMLE:Value)
-	SELF:oEmail:BCCList  := Trim(SELF:oDCBCCMLE:Value)
-	SELF:oEmail:Subject  := Trim(SELF:oDCSubjectSLE:Value)
+	SELF:oEmail:Body     := Trim(SELF:oDCBody:@@Value)
+	SELF:oEmail:DestList := Trim(SELF:oDCToMLE:@@Value)
+	SELF:oEmail:CCList   := Trim(SELF:oDCCCMLE:@@Value)
+	SELF:oEmail:BCCList  := Trim(SELF:oDCBCCMLE:@@Value)
+	SELF:oEmail:Subject  := Trim(SELF:oDCSubjectSLE:@@Value)
 
 	// save the email into the outbox
 	oMail := EmailStore{}
@@ -110,7 +110,7 @@ METHOD AddAttachment()
    		nFiles := ALen(uFilename)
    		FOR nN := 1 UPTO nFiles
    			IF ! SELF:oEmail:AddAttachment(uFilename[nN])
-   				MessageBox(NULL_PTR,String2Psz(uFilename[nN]), String2Psz("Attachment Error"), MB_OK+MB_ICONERROR)
+   				MessageBox(NULL_PTR,String2Psz(uFilename[nN]), PSZ("Attachment Error"), MB_OK+MB_ICONERROR)
    			ENDIF
    		NEXT nN
    	   SELF:SetAttachments()
@@ -260,12 +260,12 @@ METHOD PostInit(oWindow,iCtlID,oServer,uExtra)
 	
 	SELF:MinSize := SELF:Size
 	
-	SELF:oDCBody:Value   := SELF:oEmail:Body
-	SELF:oDCToMLE:Value  := __Array2StrList(SELF:oEmail:DestList, ", ")
-	SELF:oDCCcMLE:Value  := __Array2StrList(SELF:oEmail:CCList, ", ")
-	SELF:oDCBccMLE:Value := __Array2StrList(SELF:oEmail:BCCList, ", ")
+	SELF:oDCBody:@@Value   := SELF:oEmail:Body
+	SELF:oDCToMLE:@@Value  := __Array2StrList(SELF:oEmail:DestList, ", ")
+	SELF:oDCCcMLE:@@Value  := __Array2StrList(SELF:oEmail:CCList, ", ")
+	SELF:oDCBccMLE:@@Value := __Array2StrList(SELF:oEmail:BCCList, ", ")
 
-	SELF:oDCSubjectSLE:Value := SELF:oEmail:Subject
+	SELF:oDCSubjectSLE:@@Value := SELF:oEmail:Subject
 	
 	SELF:oDCAttachments:AddColumn(ListViewColumn{200, HyperLabel{#FilesAttached, "Attached Files"}})
 	oDCAttachments:SetStyle(WS_BORDER, FALSE)
@@ -289,7 +289,7 @@ METHOD PrintMail()
 
 	ptrHandle := FCreate(cFilename, FC_NORMAL)
 	IF ptrHandle = F_ERROR
-		MessageBox(NULL_PTR, String2Psz(DosErrString(FError())), String2Psz("ERROR OPENING FILE"), MB_OK+MB_ICONERROR)
+		MessageBox(NULL_PTR, PSZ(DosErrString(FError())), PSZ("ERROR OPENING FILE"), MB_OK+MB_ICONERROR)
 	ELSE
 		nLines := MLCount(SELF:oEmail:MailHeader, 120, 9, TRUE)
 		FOR nN := 1 UPTO nLines
@@ -306,7 +306,7 @@ METHOD PrintMail()
 	ENDIF
 	FClose(ptrHandle)
 
-	ShellExecute(NULL_PTR, String2Psz("PRINT"),String2Psz(cFilename),NULL_PSZ,NULL_PSZ,SW_SHOWNORMAL)
+	ShellExecute(NULL_PTR, PSZ("PRINT"),String2Psz(cFilename),NULL_PSZ,NULL_PSZ,SW_SHOWNORMAL)
 	
 	RETURN SELF
 

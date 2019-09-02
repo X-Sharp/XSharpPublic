@@ -1,37 +1,38 @@
-﻿#region DEFINES
-STATIC DEFINE HELPABOUT_ABOUTTEXT := 100
-STATIC DEFINE HELPABOUT_PUSHBUTTON1 := 101
-STATIC DEFINE HELPABOUT_FIXEDBITMAP1 := 102
+#region DEFINES
+STATIC DEFINE HELPABOUT_ABOUTTEXT := 100 
+STATIC DEFINE HELPABOUT_FIXEDBITMAP1 := 102 
+STATIC DEFINE HELPABOUT_PUSHBUTTON1 := 101 
 #endregion
 
-PARTIAL CLASS HelpAbout INHERIT DIALOGWINDOW
-	PROTECT oDCAboutText AS FIXEDTEXT
-	PROTECT oCCPushButton1 AS PUSHBUTTON
-	PROTECT oDCFixedBitmap1 AS FIXEDBITMAP
+class HelpAbout inherit DIALOGWINDOW 
 
-	// {{%UC%}} User code starts here (DO NOT remove this line)  
+	protect oDCAboutText as FIXEDTEXT
+	protect oCCPushButton1 as PUSHBUTTON
+	protect oDCFixedBitmap1 as FIXEDBITMAP
 
-CONSTRUCTOR(oParent,uExtra)
+  //{{%UC%}} USER CODE STARTS HERE (do NOT remove this line)
 
-	SELF:PreInit(oParent,uExtra)
+CONSTRUCTOR(oParent,uExtra)  
 
-	SUPER(oParent , ResourceID{"HelpAbout" , _GetInst()} , TRUE)
+self:PreInit(oParent,uExtra)
 
-	SELF:oDCAboutText := FIXEDTEXT{SELF , ResourceID{ HELPABOUT_ABOUTTEXT  , _GetInst() } }
-	SELF:oDCAboutText:HyperLabel := HyperLabel{#AboutText , " CA-Visual Objects Standard Application" , NULL_STRING , NULL_STRING}
+SUPER(oParent,ResourceID{"HelpAbout",_GetInst()},TRUE)
 
-	SELF:oCCPushButton1 := PUSHBUTTON{SELF , ResourceID{ HELPABOUT_PUSHBUTTON1  , _GetInst() } }
-	SELF:oCCPushButton1:HyperLabel := HyperLabel{#PushButton1 , "OK" , NULL_STRING , NULL_STRING}
+oDCAboutText := FixedText{self,ResourceID{HELPABOUT_ABOUTTEXT,_GetInst()}}
+oDCAboutText:HyperLabel := HyperLabel{#AboutText," CA-Visual Objects Standard Application",NULL_STRING,NULL_STRING}
 
-	SELF:oDCFixedBitmap1 := FIXEDBITMAP{SELF , ResourceID{ HELPABOUT_FIXEDBITMAP1  , _GetInst() } }
-	SELF:oDCFixedBitmap1:HyperLabel := HyperLabel{#FixedBitmap1 , "POWVOBMP" , NULL_STRING , NULL_STRING}
+oCCPushButton1 := PushButton{self,ResourceID{HELPABOUT_PUSHBUTTON1,_GetInst()}}
+oCCPushButton1:HyperLabel := HyperLabel{#PushButton1,"OK",NULL_STRING,NULL_STRING}
 
-	SELF:Caption := "About Standard Application"
-	SELF:HyperLabel := HyperLabel{#HelpAbout , "About Standard Application" , NULL_STRING , NULL_STRING}
+oDCFixedBitmap1 := FIXEDBITMAP{self,ResourceID{HELPABOUT_FIXEDBITMAP1,_GetInst()}}
+oDCFixedBitmap1:HyperLabel := HyperLabel{#FixedBitmap1,"POWVOBMP",NULL_STRING,NULL_STRING}
 
-	SELF:PostInit(oParent,uExtra)
+self:Caption := "About Standard Application"
+self:HyperLabel := HyperLabel{#HelpAbout,"About Standard Application",NULL_STRING,NULL_STRING}
 
-RETURN
+self:PostInit(oParent,uExtra)
+
+return self
 
 
 METHOD PostInit(oParent,uExtra) 
@@ -46,7 +47,7 @@ METHOD PostInit(oParent,uExtra)
 	sVer := SubStr(sVer, RAt2(" ", sVer)+1)
 	oDCAboutText:CurrentText := _Chr(13)+" Visual Objects EMail Client Application"+_Chr(13)+_Chr(13);
 		+" Version "+sVer+_Chr(13)+_Chr(13);
-		+" © 1994-2007 GrafX Software Dev. Inc.& CA Int"
+		+" � 1994-2007 GrafX Software Dev. Inc.& CA Int"
 		
 	IF IsThemeEnabled()
 		s := "Visit <A HREF="+_chr(34)+;
@@ -68,20 +69,20 @@ METHOD PostInit(oParent,uExtra)
 		oFont1:Underline := TRUE
 		
 		oHL1 := HyperLink{SELF,-1,point{190,25},dimension{0,0},"http://www.grafxsoft.com"}
-		oHL1:ControlFont := oFont1
+		oHL1:controlfont := oFont1
 		oHL1:size := dimension{150,20}
 		oHL1:textcolor := color{COLORBLUE}
-		oHL1:ControlFont:underline := TRUE
+		oHL1:controlfont:underline := TRUE
 		oHL1:show()
 
 		oFont2 := Font{,8,"Microsoft Sans Serif"}
 		oFont2:Underline := TRUE
 
 		oHL2 := HyperLink{SELF,-1,point{190,5},dimension{0,0},"http://www.cavo.com"}
-		oHL2:ControlFont := oFont2
+		oHL2:controlfont := oFont2
 		oHL2:size := dimension{150,20}
 		oHL2:textcolor := color{COLORBLUE}
-		oHL2:ControlFont:underline := TRUE
+		oHL2:controlfont:underline := TRUE
 		oHL2:show()
 		
 	ENDIF

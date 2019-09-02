@@ -41,8 +41,10 @@
     <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>true</VO16>
+    <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
+    <Nostandarddefs>false</Nostandarddefs>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
@@ -51,8 +53,16 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings>9032;9043;618;162;649;9025</DisabledWarnings>
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile />
+    <PPO>false</PPO>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
@@ -62,48 +72,38 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
-    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
-    <Optimize>false</Optimize>
-    <UseSharedCompilation>true</UseSharedCompilation>
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
-    <DisabledWarnings>9032;9043;618;162;649;9025</DisabledWarnings>
-    <WarningLevel>4</WarningLevel>
-    <SignAssembly>false</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
-    <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths />
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-  </PropertyGroup>
-  <Import Project="$(XSharpProjectExtensionsPath)XSharp.props" />
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="VulcanRT">
-      <SpecificVersion>false</SpecificVersion>
-    </Reference>
-    <Reference Include="VulcanRTFuncs">
-      <SpecificVersion>false</SpecificVersion>
-    </Reference>
-    <Reference Include="VulcanVOConsoleClasses">
-      <SpecificVersion>false</SpecificVersion>
-    </Reference>
-    <Reference Include="VulcanVOWin32APILibrary">
-      <SpecificVersion>false</SpecificVersion>
-    </Reference>
-    <Reference Include="SDK_Defines.dll">
-      <Name>SDK_Defines.dll</Name>
-      <AssemblyName>SDK_Defines.dll.dll</AssemblyName>
-      <SpecificVersion>false</SpecificVersion>
+    <Reference Include="VOConsoleClasses, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a967d8055360a7b9">
+      <Name>VOConsoleClasses</Name>
+      <AssemblyName>VOConsoleClasses.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\\SDK_Defines.dll</HintPath>
+      <HintPath>..\..\Program Files (x86)\XSharp\Assemblies\VOConsoleClasses.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.Core</Name>
+      <AssemblyName>XSharp.Core.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\Program Files (x86)\XSharp\Assemblies\XSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.RT, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.RT</Name>
+      <AssemblyName>XSharp.RT.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\Program Files (x86)\XSharp\Assemblies\XSharp.RT.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.VO, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.VO</Name>
+      <AssemblyName>XSharp.VO.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\Program Files (x86)\XSharp\Assemblies\XSharp.VO.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -111,11 +111,15 @@
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
-  <Import Project="$(XSharpProjectExtensionsPath)XSharp.targets" />
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>
     <ProjectCapabilities>
       <ProjectConfigurationsDeclaredAsItems />
     </ProjectCapabilities>
   </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
 </Project>

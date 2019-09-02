@@ -1,7 +1,25 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.779
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9AD5EE46-1DBF-42D6-A10E-39866D7BE694}") = "Vopad", "Vopad\Vopad.xsproj", "{7DD3A029-F345-4854-A397-421854F0FB1F}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Vopad", "Vopad\Vopad.xsproj", "{58AA6767-5191-4F90-A756-4584A4C42279}"
 EndProject
-
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{58AA6767-5191-4F90-A756-4584A4C42279}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58AA6767-5191-4F90-A756-4584A4C42279}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58AA6767-5191-4F90-A756-4584A4C42279}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58AA6767-5191-4F90-A756-4584A4C42279}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C6465228-7849-4FEF-952F-89A904A0B384}
+	EndGlobalSection
+EndGlobal

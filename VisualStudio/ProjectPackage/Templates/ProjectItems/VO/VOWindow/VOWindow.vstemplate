@@ -11,14 +11,6 @@
      <SortOrder>201</SortOrder>
   </TemplateData>
   <TemplateContent>
-    <References>
-      <Reference>
-        <Assembly>VulcanVOGUIClasses</Assembly>
-      </Reference>
-      <Reference>
-        <Assembly>VulcanVOSystemClasses</Assembly>
-      </Reference>
-    </References>
     <ProjectItem OpenInEditor="false" ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.prg">VOWindow.prg</ProjectItem>
     <ProjectItem OpenInEditor="true" ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.$fileinputname$.xsfrm">VOWindow.xsfrm</ProjectItem>
     <ProjectItem OpenInEditor="false" ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.$fileinputname$.rc">VOwindow.rc</ProjectItem>

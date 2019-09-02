@@ -52,8 +52,8 @@ METHOD pbCancel( )
 	
 
 METHOD pbOK( ) 
-	SELF:owner:nLeftMargin := Val(oDCSleLM:Value) * 1440
-	SELF:owner:nRightMargin := Val(oDCSleRM:Value) * 1440
+	SELF:owner:nLeftMargin := Val(oDCSleLM:@@Value) * 1440
+	SELF:owner:nRightMargin := Val(oDCSleRM:@@Value) * 1440
 	SELF:EndDialog(1)
 	
 

@@ -1,0 +1,32 @@
+ 1 VERSIONINFO
+ FILEVERSION 		2,0,0,1
+ PRODUCTVERSION 	2,0,0,1
+ FILEFLAGSMASK 		0x3fL
+ FILEFLAGS 			0
+ FILEOS             4
+ FILETYPE 			1
+ FILESUBTYPE 		0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "This is a cool App!\0"
+            VALUE "CompanyName", "Computer Associates International, Inc.\0"
+            VALUE "FileDescription", "CA-Visual Objects 2.0 Explorer Sample\0"
+            VALUE "FileVersion", "2, 0, 0, %V%\0"
+            VALUE "InternalName", "Explorer Sample App\0"
+            VALUE "LegalCopyright", "Copyright \251 1992 - 1996\0"
+            VALUE "OriginalFilename", "Standard App.exe\0"
+            VALUE "ProductName", "CA-Visual Objects\0"
+            VALUE "ProductVersion", "2.0\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+
+

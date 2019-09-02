@@ -1,4 +1,4 @@
-EmailBrowserContextMenu MENU
+ EmailBrowserContextMenu MENU
 Begin
 	POPUP "Click"
 	BEGIN

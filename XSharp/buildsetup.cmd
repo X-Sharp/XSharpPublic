@@ -1,1 +1,0 @@
-"c:\Tools\Inno Setup 5\iscc.exe"  c:\XSharp\Dev\XSharp\src\Setup\XSharpSetup.iss 

@@ -1,5 +1,6 @@
 @echo off
 if /i "%1" == "Debug" goto Ok
+if /i "%1" == "Public" goto Ok
 if /i "%1" == "Release" goto Ok
 goto Error
 :Ok
@@ -18,7 +19,7 @@ rename msbuild1.log build-%1.log
 set XSharpDev=%tmpXSharpDev%
 Goto End
 :Error
-echo Syntax: Build Debug or Build Release 
+echo Syntax: Build Debug , Build Public or Build Release 
 goto end
 :NotFound
 echo Cannot locate VS 2017 MsBuild.exe

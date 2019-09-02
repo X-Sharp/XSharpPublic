@@ -459,11 +459,14 @@
             </topicref>
             <topicref type="topic" id="423890697550599" build="ALL" modified="2018-11-09T10:14:05.188Z" icon="0" href="User-defined-Types">
               <caption translate="true">User defined Types</caption>
-              <topicref type="topic" id="423888967356687" build="ALL" modified="2016-01-19T20:56:50.106Z" icon="0" href="CLASS">
+              <topicref type="topic" id="423888967356687" build="ALL" modified="2019-09-02T15:43:39.472Z" icon="0" href="CLASS">
                 <caption translate="true">CLASS</caption>
               </topicref>
-              <topicref type="topic" id="434688153269436" build="ALL" modified="2019-01-03T18:00:54.740Z" icon="0" href="CLASS">
+              <topicref type="topic" id="437107631655034" build="ALL" modified="2019-09-02T15:44:51.691Z" icon="0" href="CLASS-XPP">
                 <caption translate="true">CLASS (Xbase++ Syntax)</caption>
+              </topicref>
+              <topicref type="topic" id="437106075388185" build="ALL" modified="2019-09-02T15:44:46.334Z" icon="0" href="CLASS-VFP">
+                <caption translate="true">CLASS (VFP Syntax)</caption>
               </topicref>
               <topicref type="topic" id="423889694655495" build="ALL" modified="2016-01-19T20:56:50.161Z" icon="0" href="DELEGATE">
                 <caption translate="true">DELEGATE</caption>

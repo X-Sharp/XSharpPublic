@@ -10,16 +10,19 @@
     <AssemblyName>XSharp.Scripting</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TargetFramework>netstandard1.3</TargetFramework>
-    <DefineConstants>TRACE;DEBUG;SCRIPTING;XSHARP</DefineConstants>
+    <DefineConstants>TRACE;SCRIPTING;XSHARP</DefineConstants>
     <!--Use the C# compiler created in this solution-->
 
     <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
+
+    <Configurations>Debug;Release;Public</Configurations>
 
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\..\Compiler\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Public|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
   <ItemGroup>
     <PackageReference Include="RoslynTools.LightUp.System.Runtime.Loader" Version="$(RoslynToolsLightUpSystemRuntimeLoaderFixedVersion)" />

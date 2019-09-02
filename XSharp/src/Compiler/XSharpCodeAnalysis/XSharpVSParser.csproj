@@ -14,15 +14,19 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <CSCToolPath>$(GeneratedCompilerPath)</CSCToolPath>
-    <NoWarn>;1573;1591;1701;3008;3021</NoWarn>
+    <NoWarn>;1573;1591;1701;3008;3021;649</NoWarn>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
     <ErrorReport>prompt</ErrorReport>
     <DefineConstants>COMPILERCORE;XSHARP;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS;VSPARSER</DefineConstants>
-	<RuntimeIdentifiers>win;win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win;win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
+    <Configurations>Debug;Release;Public</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Public|AnyCPU' ">
+    <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
@@ -314,7 +318,7 @@
     <Folder Include="Compilation\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup Condition="Exists('$(DevPublicDir)binaries\$(Configuration)\XSharpProject.dll')" >
+  <PropertyGroup Condition="Exists('$(DevPublicDir)binaries\$(Configuration)\XSharpProject.dll')">
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <PostBuildEvent>copy $(OutDir)XSharp.VsParser.??? $(DevPublicDir)external\$(ConfigurationName) &gt; NUL</PostBuildEvent>
   </PropertyGroup>

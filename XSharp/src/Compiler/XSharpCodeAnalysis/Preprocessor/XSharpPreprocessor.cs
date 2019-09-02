@@ -140,9 +140,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal string SymbolName;
             internal XSharpToken Symbol;
             internal InputState parent;
-
             internal string MappedFileName;
             internal PPRule udc;
+
+
             internal InputState(ITokenStream tokens)
             {
                 Tokens = tokens;
@@ -1542,10 +1543,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 writeToPPO(original, true);
                 var ln = line[1];
-#if !VSPARSER
                 if (ln.Type == XSharpLexer.INT_CONST)
                 {
+#if !VSPARSER
                     inputs.MappedLineDiff = (int)ln.SyntaxLiteralValue(_options).Value - (ln.Line + 1);
+#else
+                    int temp;
+                    if (Int32.TryParse(ln.Text, out temp))
+                    { 
+                        inputs.MappedLineDiff = temp- (ln.Line + 1);
+                    }
+#endif
+
                     if (line.Count > 2)
                     {
                         ln = line[2];
@@ -1563,7 +1572,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     addParseError(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Integer literal expected"));
                 }
-#endif
             }
             else
             {

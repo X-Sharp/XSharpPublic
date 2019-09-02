@@ -16,12 +16,14 @@
     <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants);XSHARPPRE;NET46;</DefineConstants>
     <DefineConstants Condition="'$(TargetFramework)' != 'net46'">$(DefineConstants);XSHARPPRE;</DefineConstants>
     <CodeAnalysisRuleSet>$(CSharpSource)..\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <Configurations>Debug;Release;Public</Configurations>
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\CSCompiler\CSCompiler.csproj" />
     <ProjectReference Include="..\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Public|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
   <ItemGroup>
     <PackageReference Include="Microsoft.DiaSymReader.Native" Version="$(MicrosoftDiaSymReaderNativeVersion)" Condition="'$(DotNetBuildFromSource)' != 'true'" />

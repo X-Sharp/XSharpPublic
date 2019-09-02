@@ -2,6 +2,9 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XSharp.Macrocompiler</title>
+  <keywords>
+    <keyword>XSharp.Macrocompiler</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">XSharp.Macrocompiler</para>
@@ -12,14 +15,14 @@
     <para styleclass="Normal">SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">If you don&apos;t do this then the runtime will try to locate the macro compiler in the following locations:</para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">The directory where the XSharp.RT.DLL is loaded from</li>
       <li styleclass="Normal">The directories in the path. If you use this then make sure that the assemblies listed below are in the same folder as XSharp.MacroCompiler.DLL</li>
       <li styleclass="Normal">The Global Assembly Cache (GAC). If you use this mechanism then make sure that the assemblies listed below are also in the GAC.</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This assembly depends on:</para>
-    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List"><text styleclass="Normal">XSharp.Core.DLL</text></li>
     </list>
     <para styleclass="Heading3">Note<tab /></para>

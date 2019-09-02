@@ -2,6 +2,12 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9084</title>
+  <keywords>
+    <keyword>implicitly convert</keyword>
+    <keyword>X64</keyword>
+    <keyword>X86</keyword>
+    <keyword>XS9084</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">Error XS9084</para>

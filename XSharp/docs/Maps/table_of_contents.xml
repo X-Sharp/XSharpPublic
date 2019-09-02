@@ -202,6 +202,9 @@
       <topicref type="topic" id="432587430200533" build="ALL" modified="2018-06-07T17:54:16.764Z" icon="0" href="XSharp_RDD">
         <caption translate="true">XSharp.RDD</caption>
       </topicref>
+      <topicref type="topic" id="437104126658128" build="ALL" modified="2019-09-02T13:28:49.905Z" icon="0" href="RuntimeInstallationintheGAC">
+        <caption translate="true">Installation in the GAC</caption>
+      </topicref>
       <topicref type="topic" id="432593740906377" build="ALL" modified="2018-06-08T11:21:25.514Z" icon="0" href="XBase-Types">
         <caption translate="true">XBase Types</caption>
         <topicref type="topic" id="4324375231264" build="ALL" modified="2018-06-08T11:59:24.252Z" icon="0" href="Array-Of-Type">
@@ -5813,6 +5816,12 @@
         </topicref>
         <topicref type="topic" id="436866499498001" build="ALL" modified="2019-08-09T13:37:57.874Z" icon="0" href="XS9084">
           <caption translate="true">XS9084</caption>
+        </topicref>
+        <topicref type="topic" id="437103129201463" build="ALL" modified="2019-09-02T12:38:18.371Z" icon="0" href="XS9085">
+          <caption translate="true">XS9085</caption>
+        </topicref>
+        <topicref type="topic" id="437105328009109" build="ALL" modified="2019-09-02T12:38:24.680Z" icon="0" href="XS9086">
+          <caption translate="true">XS9086</caption>
         </topicref>
         <topicref type="topic" id="1009200" build="ALL" modified="2017-01-09T16:17:58.854Z" icon="0" href="XS9200">
           <caption translate="true">XS9200</caption>

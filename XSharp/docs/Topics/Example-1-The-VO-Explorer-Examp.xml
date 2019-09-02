@@ -6,14 +6,17 @@
     <header>
       <para styleclass="Heading1">Example 1: The VO Explorer Example</para>
     </header>
+    <para styleclass="Body Text">Please note: This example assumes that you have installed X# with the default installation options, and that the X# runtime is installed in the GAC.</para>
+    <para styleclass="Body Text">If you have not done that then the example won&apos;t run. Please <link displaytype="text" defaultstyle="true" type="topiclink" href="RuntimeInstallationintheGAC">see the chapter about this</link> in this documentation</para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text">As first example of XPorting VO apps we take the VO Explorer example.</para>
     <para styleclass="Body Text">Start the VO Xporter program and point it to the VO Explorer example:</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
-    <para styleclass="" style="text-align:center; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><image src="xportexplorer.png" scale="-100.00%" width="1400" height="989" styleclass="Image Caption"></image></para>
+    <para styleclass="" style="text-align:center; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><image src="xportexplorer.png" scale="-90.00%" width="606" height="428" styleclass="Image Caption"></image></para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:24px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
     <para styleclass="Body Text">On my machine the VO installation is in the C:\Cavo28SP3 folder. That may be different on your machine of course. </para>
     <para styleclass="Body Text">I have not changed any or the xPort options. The options are:</para>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><table styleclass="Default" rowcount="10" colcount="2" style="width:auto;">
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><table styleclass="Default" rowcount="14" colcount="2" style="width:auto;">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">Option</text></para>
@@ -97,11 +100,45 @@
           <para styleclass="Body Text">This option allows you to generate a DLL with only the defines from the AEF(s) or files you have selected. That may be useful if you have ported your code before with the Vulcan Transporter and want to get rid of the header files with the defines.</para>
         </td>
       </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Sort Entities by name</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">This will sort all entities on name, Methods will be sorted inside the CLASS.. ENDCLASS and functions will be sorted as well</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Use XSharp Runtime</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">When you select this (the default) then your app will be compiled against the X# runtime. Otherwise we will use the Vulcan runtime (which is not included with our product)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Copy Resources to Project folder</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">When you select this option then all BMP, ICO, CUR etc resources that are used in resource entities in your app will be copied to a Resources subfolder inside your project.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Replace Resource Defines with Value</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">This controls the way that the numeric identifiers associated with menu options and control identifiers on forms are exported to the external resource files</para>
+        </td>
+      </tr>
     </table></para>
     <para styleclass="Body Text">The XPorter will allow you to select a destination folder and names for your Visual Studio solution and project files.</para>
     <para styleclass="Body Text">After pressing xPort you will see the following folder s</para>
     <para styleclass="Body Text">C:\XporterOutput\Examples\Explorer<br/>C:\XporterOutput\Examples\Explorer\Explorer</para>
-    <para styleclass="Body Text">The first folder is the so called “Solution” folder<br/>The subfolder contains the project<br/>If you had selected multiple AEF files then each AEF would have its own subfolder under the Solution Folder</para>
+    <para styleclass="Body Text">C:\XporterOutput\Examples\Explorer\Explorer\Resources</para>
+    <para styleclass="Body Text">C:\XporterOutput\Examples\Explorer\Explorer\Properties</para>
+    <para styleclass="Body Text">The first folder is the so called “Solution” folder<br/>The subfolder contains the project and its files.<br/>If you had selected multiple AEF files then each AEF would have its own subfolder under the Solution Folder</para>
     <para styleclass="Body Text">The solution folder contains the files:</para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="2">
       <tr style="vertical-align:top">
@@ -338,8 +375,11 @@
     <para styleclass="Body Text"><image src="explorer-error.png" scale="100.00%"></image></para>
     <para styleclass="Body Text">The arrows in front of several modules show that there are subitems in these modules. Those subitems contain the Form, Menu and Icon resources.</para>
     <para styleclass="Body Text">Now let’s try to build the solution inside Visual Studio. (Menu option Build – Build Solution)</para>
-    <para styleclass="Body Text">This compiles the application and builds a debuggable version in the c:\XporterOutput\Explorer\Debug folder. You will see that this folder contains an EXE, PDB (debug symbols) and copies of the VulcanVO runtime libraries:<br/>Explorer.exe<br/>Explorer.pdb<br/>SDK_Defines.dll<br/>VulcanVOGUIClasses.dll<br/>VulcanVORDDClasses.dll<br/>VulcanVOSystemClasses.dll<br/>VulcanVOWin32APILibrary.dll</para>
-    <para styleclass="Body Text">Now can try to run the app. This works, but as soon as we select the File/Open menu option we will get a runtime error:</para>
+    <para styleclass="Body Text">This compiles the application and builds a debuggable version in the c:\XporterOutput\Explorer\Debug folder. You will see that this folder contains an EXE, PDB (debug symbols) and copies of the VO runtime libraries:<br/>Explorer.exe<br/>Explorer.pdb<br/>SDK_Defines.dll<br/>VOGUIClasses.dll<br/>VORDDClasses.dll<br/>VOSystemClasses.dll<br/>VOWin32APILibrary.dll</para>
+    <para styleclass="Body Text">XSharp.VO.dll</para>
+    <para styleclass="Body Text">XSharp.RT.dll</para>
+    <para styleclass="Body Text">XSharp.Core.dll</para>
+    <para styleclass="Body Text">Now can try to run the app. This works, but as soon as we select the File/Open menu option we will get a runtime error. After some resizing the screen looks similar to this</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><image src="explorer-solutionexplorer.png" scale="100.00%"></image><br/></para>
     <para styleclass="Body Text">The error message is clear: the app uses the splitwindow control and this requires the splitwindow support DLL.</para>
@@ -366,13 +406,13 @@
       <li styleclass="Body Text">Finally the Start function is marked with an attribute (The word between the square brackets). In this case the attribute is [STAThread] which means that the main function (and therefore the whole app) needs to run in <text style="font-weight:bold;">S</text>ingle <text style="font-weight:bold;">T</text>hreaded &#160;<text style="font-weight:bold;">A</text>ppartment mode. This is important if your app uses external code such as OCX/ActiveX controls.</li>
     </list>
     <list id="13" type="ul" listtype="bullet" formatstring="&#45;" levelreset="true" legalstyle="false" startfrom="0" styleclass="Body Text" style="font-family:Calibri; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text"><image src="explorer-startmodule.png" scale="100.00%"></image></li>
+      <li styleclass="Body Text"><image src="explorer-startmodule.png" scale="100.00%" styleclass="Image Caption"></image></li>
     </list>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:8pt; color:#000000;">
       <li styleclass="Body Text">If you look closer to the solution explorer in Visual Studio and click on the References node in the tree you will see that the example has references to the Vulcan runtime and the VO Class libraries as well as the SDK defines library that was included with the XPorter.</li>
     </list>
     <list id="14" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">If you open the project properties you will see on the General page that the selected dialect is “Visual Object” , on the Language page are most VO options are set and on the Build page the platform target is x86 (because the Vulcan runtime is x86) and several warnings have been suppressed. These warnings are:</li>
+      <li styleclass="Body Text">If you open the project properties you will see on the General page that the selected dialect is “Visual Object” , on the Dialect page are most VO options are set and on the Build page the platform target is x86 (because the GUI classes are designed to run in x86 mode) and several warnings have been suppressed. These warnings are:</li>
     </list>
     <para styleclass="Body Text"><table styleclass="Default" rowcount="7" colcount="2">
       <tr style="vertical-align:top">

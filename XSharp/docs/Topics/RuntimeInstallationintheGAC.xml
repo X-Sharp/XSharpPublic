@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Runtime Installation in the GAC</title>
+  <keywords>
+    <keyword>GAC</keyword>
+    <keyword>Installation</keyword>
+    <keyword>Runtime</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Runtime Installation in the GAC</para>
+    </header>
+    <para styleclass="Normal">The default behavior of the X# installer is to register the X# runtime in the GAC. The following files are registered there</para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">XSharp.Core.DLL</li>
+      <li styleclass="Normal">XSharp.RT.DLL</li>
+      <li styleclass="Normal">XSharp.VO.DLL</li>
+      <li styleclass="Normal">XSharp.XPP.DLL</li>
+      <li styleclass="Normal">XSharp.VFP.DLL</li>
+      <li styleclass="Normal">XSharp.RDD.DLL</li>
+      <li styleclass="Normal">XSharp.Macrocompiler.DLL</li>
+      <li styleclass="Normal">VOConsoleClasses.dll</li>
+      <li styleclass="Normal">VOGUIClasses.dll</li>
+      <li styleclass="Normal">VOInternetClasses.dll</li>
+      <li styleclass="Normal">VORDDClasses.dll</li>
+      <li styleclass="Normal">VOReportClasses.dll</li>
+      <li styleclass="Normal">VOSQLClasses.dll</li>
+      <li styleclass="Normal">VOSystemClasses.dll</li>
+      <li styleclass="Normal">VOWin32APILibrary.dll</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Some components are dynamically loaded at runtime and do not have to added as references to your application:</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">XSharp.RDD.DLL</li>
+      <li styleclass="Normal">XSharp.Macrocompiler.DLL</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The X# runtime tries to locate these assemblies in the GAC and in the directory where the application is installed.</para>
+    <para styleclass="Normal">If you are not installing the runtime to the GAC, then you must make sure that these two DLLs are available in your application folder. Otherwise you will get a runtime error when these DLLs are needed.</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

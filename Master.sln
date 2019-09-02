@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.779
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ED0EE32E-392F-4848-B0F6-5C13C628A4A9}"
 	ProjectSection(SolutionItems) = preProject
@@ -13,6 +13,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		VisualStudio\README.md = VisualStudio\README.md
 		Common\version.xh = Common\version.xh
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VsIntegration", "VsIntegration", "{7637B1E6-3ECF-4FC7-8A09-E776BA454D9A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{572D3DF8-636C-477B-BB87-8F15378FD7C6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project Package", "VisualStudio\ProjectPackage\Project Package.csproj", "{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}"
 EndProject
@@ -35,10 +39,6 @@ EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VODesigners", "VisualStudio\VODesigners\VODesigners.xsproj", "{FAAC947E-0355-4F8D-ADB9-C57B1C9357D2}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VODesigners_tester", "VisualStudio\VODesigners_tester\VODesigners_tester.xsproj", "{63D22C03-1D1A-4746-8E24-7BB1248696EE}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VsIntegration", "VsIntegration", "{7637B1E6-3ECF-4FC7-8A09-E776BA454D9A}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{572D3DF8-636C-477B-BB87-8F15378FD7C6}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "RegisterProvider", "Tools\RegisterProvider\RegisterProvider.xsproj", "{5190E508-E052-41D5-8824-EA472241489A}"
 EndProject
@@ -207,5 +207,8 @@ Global
 		{73C0DCA6-BFE5-40CB-9240-3DB1C37F5B34} = {572D3DF8-636C-477B-BB87-8F15378FD7C6}
 		{939B111B-6EBD-490F-A7F4-CE923D758A3B} = {572D3DF8-636C-477B-BB87-8F15378FD7C6}
 		{8A49A47C-ADE7-416C-8B28-CD3B401CBC25} = {572D3DF8-636C-477B-BB87-8F15378FD7C6}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {84EFF380-6744-4B48-AF01-1BED26682785}
 	EndGlobalSection
 EndGlobal

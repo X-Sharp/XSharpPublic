@@ -559,11 +559,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 if (!tryParseNewLine())
                     break;
             }
+            bool unmatched = (La_1 == Eof);
             parseType(TEXT_STRING_CONST);
             _foxTextMode = false;
             Interpreter.Column += (InputStream.Index - _startCharIndex);
             XSharpToken  t = TokenFactory.Create(this.SourcePair, _tokenType, _textSb.ToString(), _tokenChannel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as XSharpToken;
             Emit(t);
+            if (unmatched)
+            {
+                _lexErrors.Add(new ParseErrorData(t, ErrorCode.ERR_MissingEndText));
+            }
             return t;
         }
         public override IToken NextToken()
@@ -1027,7 +1032,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 type = t.Type;
                 // this happens in FoxPro dialect only, because only there the TEXT keyword is available
-                if (type == TEXT)
+                // but should only happen when TEXT is the first non ws token on a line
+                if (type == TEXT && this.LastToken == NL)
                 {
                     _nextLineTextMode = true;
                 }

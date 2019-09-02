@@ -6776,6 +6776,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to TEXT statement found without matching ENDTEXT..
+        /// </summary>
+        internal static string ERR_MissingEndText {
+            get {
+                return ResourceManager.GetString("ERR_MissingEndText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Command-line syntax error: Missing Guid for option &apos;{1}&apos;.
         /// </summary>
         internal static string ERR_MissingGuidForOption {

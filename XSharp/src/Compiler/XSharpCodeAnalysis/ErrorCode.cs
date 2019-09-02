@@ -1713,6 +1713,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_CantCastPtrInAnyCpu = 9083,
         ERR_CantCastPtrInPlatform = 9084,
         WRN_UnbalancedTextMergeOperators = 9085,
+        ERR_MissingEndText = 9086,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

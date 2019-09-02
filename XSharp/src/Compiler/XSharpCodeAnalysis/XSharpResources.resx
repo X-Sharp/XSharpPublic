@@ -5666,5 +5666,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_UnbalancedTextMergeOperators" xml:space="preserve">
     <value>Unbalanced textmerge operators '&lt;&lt;' and '&gt;&gt;'.</value>
   </data>
-  
+  <data name="ERR_MissingEndText" xml:space="preserve">
+    <value>TEXT statement found without matching ENDTEXT.</value>
+  </data>
 </root>

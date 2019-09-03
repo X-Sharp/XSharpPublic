@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-reference</title>
   <keywords>
     <keyword>-reference</keyword>
@@ -11,16 +11,11 @@
     </header>
     <para styleclass="Normal">The -reference option causes the compiler to import public type information in the specified file into the current project, thus enabling you to reference metadata from the specified assembly files.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-reference:[alias=]filename &#160;<br/>-reference:filename &#160;</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">filename</text><tab ->The name of a file that contains an assembly manifest. To import more than one file, include a separate -reference option for each file.</para>
-    <para styleclass="List"><text styleclass="Code Example">alias</text><tab ->A valid X# identifier that will represent a root namespace that will contain all namespaces in the assembly.</para>
+    <para styleclass="List"><text styleclass="Code Example">filename</text><tab />The name of a file that contains an assembly manifest. To import more than one file, include a separate -reference option for each file.</para>
+    <para styleclass="List"><text styleclass="Code Example">alias</text><tab />A valid X# identifier that will represent a root namespace that will contain all namespaces in the assembly.</para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">To import from more than one file, include a -reference option for each file.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The files you import must contain a manifest; the output file must have been compiled with one of The -target options other than -target:module.</para>
@@ -31,7 +26,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">If you reference an assembly (Assembly A) that references another assembly (Assembly B), you will need to reference Assembly B if:</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">A type you use from Assembly A inherits from a type or implements an interface from Assembly B.</li>
       <li styleclass="Normal" style="margin-left:13px;">You invoke a field, property, event, or method that has a return type or parameter type from Assembly B.</li>
     </list>

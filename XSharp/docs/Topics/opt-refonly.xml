@@ -12,7 +12,6 @@
     <para styleclass="Body Text">The -refonly option indicates that a reference assembly should be output instead of an implementation assembly, as the primary output. The -refonly parameter silently disables outputting PDBs, as reference assemblies cannot be executed.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">-refonly</text></para>
-    <para styleclass="Body Text"></para>
     <para styleclass="Body Text">Metadata-only assemblies have their method bodies replaced with a single throw null body, but include all members except anonymous types. The reason for using throw null bodies (as opposed to no bodies) is so that PEVerify could run and pass (thus validating the completeness of the metadata).</para>
     <para styleclass="Body Text">Reference assemblies include an assembly-level ReferenceAssembly attribute. This attribute may be specified in source (then the compiler won&apos;t need to synthesize it). Because of this attribute, runtimes will refuse to load reference assemblies for execution (but they can still be loaded in reflection-only mode). Tools that reflect on assemblies need to ensure they load reference assemblies as reflection-only, otherwise they will receive a typeload error from the runtime.</para>
     <para styleclass="Body Text">Reference assemblies further remove metadata (private members) from metadata-only assemblies:</para>

@@ -11,10 +11,8 @@
     </header>
     <para styleclass="Normal">Use The -nowin32manifest option to instruct the compiler not to embed any application manifest into the executable file.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-nowin32manifest &#160;</para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">When this option is used, the application will be subject to virtualization on Windows Vista unless you provide an application manifest in a Win32 Resource file or during a later build step.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>

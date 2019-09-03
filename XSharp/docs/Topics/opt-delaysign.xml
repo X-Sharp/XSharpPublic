@@ -11,13 +11,10 @@
     </header>
     <para styleclass="Normal">This compiler option causes the compiler to reserve space in the output file so that a digital signature can be added later.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-delaysign[ + | - ] &#160;</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">+ | -</text><tab ->Use -delaysign- if you want a fully signed assembly. Use -delaysign+ if you only want to place the public key in the assembly. The default is -delaysign-.</para>
+    <para styleclass="List"><text styleclass="Code Example">+ | -</text><tab />Use -delaysign- if you want a fully signed assembly. Use -delaysign+ if you only want to place the public key in the assembly. The default is -delaysign-.</para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">The -delaysign option has no effect unless used with -keyfile or -keycontainer.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">When you request a fully signed assembly, the compiler hashes the file that contains the manifest (assembly metadata) and signs that hash with the private key. The resulting digital signature is stored in the file that contains the manifest. When an assembly is delay signed, the compiler does not compute and store the signature, but reserves space in the file so the signature can be added later.</para>

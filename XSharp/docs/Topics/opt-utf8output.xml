@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-utf8output</title>
   <keywords>
     <keyword>-utf8output</keyword>
@@ -11,12 +11,8 @@
     </header>
     <para styleclass="Normal">The -utf8output option displays compiler output using UTF-8 encoding.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-utf8output &#160;</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">In some international configurations, compiler output cannot correctly be displayed in the console. In these configurations, use -utf8output and redirect compiler output to a file.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This compiler option is unavailable in Visual Studio and cannot be changed programmatically.</para>

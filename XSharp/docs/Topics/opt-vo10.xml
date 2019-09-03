@@ -11,26 +11,20 @@
     </header>
     <para styleclass="Normal">The -vo10 option enables the IIF operator to behave in a manner compatible with Visual Objects</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-vo10[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
     <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />Specifying +, or just -vo10, causes the IIF operator to behave as it does in Visual Objects. </para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">If the true and false expressions in an IIF operator are not the same, or one cannot be implicitly converted to the type of the other, the compiler will raise an error.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Visual Objects allows this, and implicitly converts both expressions to USUAL, causing the IIF expression to also return USUAL. This is neither safe or efficient, but code originally written in Visual Objects may depend on this behavior, and if -vo10 is not used, errors may occur at runtime.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example">LOCAL x as LOGIC<br/>x := TRUE<br/>? IIF( x, 1, &quot;Sunday&quot;)<br/></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> x </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOGIC</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">x := TRUE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IIF</text><text style="font-weight:normal; font-style:normal; color:#000000;">( x, 1, &quot;Sunday&quot;)</text><br/></para>
     <para styleclass="Normal">When you use The -vo10 compiler option then the compiler will convert this to:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example">? IIF( x, (USUAL)1, &#160;(USUAL) &quot;Sunday&quot;)<tab /><tab />-/ for the VO and Vulcan dialect</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">IIF</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">( x, (</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USUAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">)1, &#160;(</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USUAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">) &quot;Sunday&quot;) &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// for the VO and Vulcan dialect</text></para>
     <para styleclass="Normal">or </para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code Example">? IIF( x, (OBJECT)1, &#160;(OBJECT) &quot;Sunday&quot;)<tab /><tab />-/ for the Core dialect</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">IIF</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">( x, (</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">OBJECT</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">)1, &#160;(</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">OBJECT</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">) &quot;Sunday&quot;) &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// for the Core dialect</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>

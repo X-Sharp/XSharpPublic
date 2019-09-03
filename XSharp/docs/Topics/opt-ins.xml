@@ -9,16 +9,12 @@
     <header>
       <para styleclass="Heading1">-ins</para>
     </header>
-    <para styleclass="Normal">The -ins option specifies whether the compiler should automatically include namespaces from Vulcan Assemblies or X# assemblies compiled in VO/Vulcan dialect &#160;marked with the VulcanImplicitNameSpaceAttribute (Vulcan runtime) or ImplicitNameSpaceAttribute (X# runtime).</para>
+    <para styleclass="Normal">The -ins option specifies whether the compiler should automatically include namespaces from assemblies compiled in VO/Vulcan dialect &#160;marked with the ImplicitNameSpaceAttribute.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-ins[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab ->Specifying +, or just -ins, directs the compiler to automatically include namespaces from assemblies marked with the VulcanImplicitNameSpaceAttribute. </para>
+    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />Specifying +, or just -ins, directs the compiler to automatically include namespaces from assemblies marked with the VulcanImplicitNameSpaceAttribute. </para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">Class Libraries can be compiled with a special attribute:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>

@@ -11,15 +11,13 @@
     </header>
     <para styleclass="Normal">Creates a link to a .NET Framework resource in the output file. The resource file is not added to the output file. This differs from The -resource option which does embed a resource file in the output file.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-linkresource:filename[,identifier[,accessibility-modifier]] &#160;</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">filename<tab ->The .NET Framework resource file to which you want to link from the assembly.</para>
-    <para styleclass="List">identifier (optional)<tab ->The logical name for the resource; the name that is used to load the resource. The default is the name of the file.</para>
+    <para styleclass="List">filename<tab />The .NET Framework resource file to which you want to link from the assembly.</para>
+    <para styleclass="List">identifier (optional)<tab />The logical name for the resource; the name that is used to load the resource. The default is the name of the file.</para>
     <para styleclass="List">accessibility-modifier </para>
-    <para styleclass="List">(optional)<tab ->The accessibility of the resource: public or private. The default is public.</para>
-    <para styleclass="List"><text styleclass="Heading2">Remarks</text></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="List">(optional)<tab />The accessibility of the resource: public or private. The default is public.</para>
+    <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal">By default, linked resources are public in the assembly when they are created with the X# compiler. To make the resources private, specify <text styleclass="Code Example">private</text> as the accessibility modifier. No other modifier other than <text styleclass="Code Example">public</text> or <text styleclass="Code Example">private</text> is allowed.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">-linkresource requires one of The -target options other than -target:module.</para>

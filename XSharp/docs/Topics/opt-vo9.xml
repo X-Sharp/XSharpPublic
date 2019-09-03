@@ -1,24 +1,20 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-vo9</title>
   <keywords>
     <keyword>-vo9</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">-vo9<tab -><tab ->Allow missing return statements </para>
+      <para styleclass="Heading1">-vo9<tab /><tab />Allow missing return statements </para>
     </header>
     <para styleclass="Normal">The -vo9 option prevents the compiler from raising error XS0161 when a function or method does not have any RETURN statements</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-vo9[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List">+ | - <tab ->Specifying +, or just -vo9, allows functions and methods that do not have any RETURN statement to compile without raising an error. </para>
+    <para styleclass="List">+ | - <tab />Specifying +, or just -vo9, allows functions and methods that do not have any RETURN statement to compile without raising an error. </para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">Visual Objects allows functions and methods whose return type is not VOID to omit RETURN statements. The return value from any such functions or methods will always be the default value for the return type.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This is illegal in X#: all functions and methods must explicitly return a value unless the return type is VOID. However, this may prevent code that was originally written in Visual Objects from compiling in X#.</para>
@@ -27,14 +23,14 @@
     <para styleclass="Normal">This compiler option also checks for methods/functions that have a return statement without value. In that case a warning XS9026 is shown.<br/>The final check this compiler option does it for methods that have a return value but are not expected to return anything. If that is found then a warning XS9032 is shown.</para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
       <li styleclass="Normal" style="margin-left:13px;">In the Visual Objects Compatibility section, modify the &quot;Allow missing return statements&quot; property. </li>
     </list>
     <para styleclass="Heading2">Example</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> x( y )</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? y</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">METHOD</text><text style="font-weight:normal; font-style:normal; color:#000000;"> x( y </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? y</text><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; color:#000000;">&#32;</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">In the first example, the return type is not specified so it defaults to USUAL, and since there is no RETURN statement the function will always returns NIL (the default value for USUAL) in Visual Objects. In the second example, since there is no RETURN statement the method will always return zero (the default value for INT) in Visual Objects.</para>
     <para styleclass="Normal"></para>

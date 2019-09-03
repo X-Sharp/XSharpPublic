@@ -12,12 +12,9 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The -az option specifies that array elements begin with 0, rather than with 1 (the default).</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-az[+|-]</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List">+ | - <tab ->Specifying +, or just -az, directs the compiler to use 0-based array indexing rather than 1-based indexing. </para>
+    <para styleclass="List">+ | - <tab />Specifying +, or just -az, directs the compiler to use 0-based array indexing rather than 1-based indexing. </para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal">This option is off by default, since it would break existing Visual Objects source code. If you prefer to use 0-based arrays with existing code written for Visual Objects, you will need to examine every place in your source code that uses arrays and manually make the appropriate adjustments.</para>
     <para styleclass="Normal"></para>
@@ -32,7 +29,7 @@
     </list>
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">FUNCTION Start() AS VOID<br/> &#160;<tab ->LOCAL DIM a[1] AS INT<br/> &#160;<tab ->? a[0] -/ runtime error when -az switch is NOT used<br/> &#160;<tab ->? a[1] -/ runtime error when -az switch is used <br/><tab ->RETURN </para>
+    <para styleclass="Code with box">FUNCTION Start() AS VOID<br/> &#160;<tab />LOCAL DIM a[1] AS INT<br/> &#160;<tab />? a[0] -/ runtime error when -az switch is NOT used<br/> &#160;<tab />? a[1] -/ runtime error when -az switch is used <br/><tab />RETURN </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3"></para>

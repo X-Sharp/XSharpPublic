@@ -13,12 +13,10 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">This option is not supported yet in the current version of the compiler</text></para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-cs[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">+|-<tab ->Specifying +, or just -cs, directs the compiler to treat all type names as case-sensitive. </para>
+    <para styleclass="List">+|-<tab />Specifying +, or just -cs, directs the compiler to treat all type names as case-sensitive. </para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">This option is for those users who prefer a case-sensitive language. </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This option does not affect preprocessor symbols. The -vo8 compiler option controls case-sensitivitiy in the preprocessor. </para>

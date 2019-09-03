@@ -18,7 +18,7 @@
     <para styleclass="Normal">X# is an open source development language for .NET, based on the xBase language.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">It comes in different flavors, such as Core, Visual Objects, Vulcan.NET, xBase++, Harbour, Foxpro and more.</para>
-    <para styleclass="Normal">The current version of X# supports the <text style="font-weight:bold;">Core</text> dialect as well as the <text style="font-weight:bold;">VO, Vulcan and Harbour </text>dialect<br/>A separate X# runtime is not available yet. </para>
+    <para styleclass="Normal">The current version of X# supports the <text style="font-weight:bold;">Core</text> dialect as well as the <text style="font-weight:bold;">VO, Vulcan and Harbour </text>dialect<br/></para>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.05; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>

@@ -11,13 +11,10 @@
     </header>
     <para styleclass="Normal">The -baseaddress option lets you specify the preferred base address at which to load a DLL. </para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-baseaddress:address &#160;</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List">address<tab ->The base address for the DLL. This address can be specified as a decimal, hexadecimal, or octal number.</para>
+    <para styleclass="List">address<tab />The base address for the DLL. This address can be specified as a decimal, hexadecimal, or octal number.</para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">The default base address for a DLL is set by the .NET Framework common language runtime.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Be aware that the lower-order word in this address will be rounded. For example, if you specify 0x11110001, it will be rounded to 0x11110000.</para>

@@ -36,7 +36,7 @@
           <para styleclass="Normal"><text style="font-weight:bold;">PCOUNT</text>()</para>
         </td>
         <td>
-          <para styleclass="Body Text">This pseudo function is only available in the <text style="font-weight:bold;">VO/Vulcan</text> dialect and only in methods or functions with a CLIPPER calling convention. <br/>It returns the number of argument passed to the function. The function does not expect and does not allow any arguments.</para>
+          <para styleclass="Body Text">This pseudo function is only available in methods or functions with a CLIPPER calling convention. <br/>It returns the number of argument passed to the function. The function does not expect and does not allow any arguments.<br/><text style="font-weight:bold; font-style:italic;">Not available in Core.</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -52,7 +52,7 @@
           <para styleclass="Normal"><text style="font-weight:bold;">_GETMPARAM</text>() and <text style="font-weight:bold;">_GETFPARAM</text>()</para>
         </td>
         <td>
-          <para styleclass="Body Text">These pseudo functions are only available in the <text style="font-weight:bold;">VO/Vulcan</text> dialect and only in methods or functions with a CLIPPER calling convention. <br/>You can use them to retrieve a function parameter by position. You must pass a numeric expression to these functions. If you pass a number that is larger than the actual number of parameters at runtime then you will get an array access exception.</para>
+          <para styleclass="Body Text">These pseudo functions are only available in methods or functions with a CLIPPER calling convention. <br/>You can use them to retrieve a function parameter by position. You must pass a numeric expression to these functions. If you pass a number that is larger than the actual number of parameters at runtime then you will get an array access exception. <text style="font-weight:bold; font-style:italic;">Not available in Core.</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -60,7 +60,7 @@
           <para styleclass="Normal"><text style="font-weight:bold;">String2Psz</text>() and <text style="font-weight:bold;">Cast2Psz</text>()</para>
         </td>
         <td>
-          <para styleclass="Body Text">These pseudo functions are used in the VO/Vulcan dialect to convert DotNet strings to unmanaged Ansi PSZ strings. Not only is a PSZ created, but the functions also change the code generation and set up code to clear the allocated PSZ variable on exit of the function in which they are created.</para>
+          <para styleclass="Body Text">These pseudo functions are used to convert DotNet strings to unmanaged Ansi PSZ strings. Not only is a PSZ created, but the functions also change the code generation and set up code to clear the allocated PSZ variable on exit of the function in which they are created. <text style="font-weight:bold; font-style:italic;">Not available in Core.</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

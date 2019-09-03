@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-recurse</title>
   <keywords>
     <keyword>-recurse</keyword>
@@ -11,16 +11,11 @@
     </header>
     <para styleclass="Normal">The -recurse option enables you to compile source code files in all child directories of either the specified directory (dir) or of the project directory.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-recurse:[dir\]file &#160;</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List">dir (optional)<tab ->The directory in which you want the search to begin. If this is not specified, the search begins in the project directory.</para>
-    <para styleclass="List">file<tab ->The file(s) to search for. Wildcard characters are allowed.</para>
+    <para styleclass="List">dir (optional)<tab />The directory in which you want the search to begin. If this is not specified, the search begins in the project directory.</para>
+    <para styleclass="List">file<tab />The file(s) to search for. Wildcard characters are allowed.</para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">The -recurse option lets you compile source code files in all child directories of either the specified directory (dir) or of the project directory.</para>
     <para styleclass="Normal">You can use wildcards in a file name to compile all matching files in the project directory without using -recurse.</para>
     <para styleclass="Normal">This compiler option is unavailable in Visual Studio and cannot be changed programmatically.</para>

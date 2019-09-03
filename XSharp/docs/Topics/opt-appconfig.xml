@@ -11,14 +11,10 @@
     </header>
     <para styleclass="Normal">The -appconfig compiler option enables a X# application to specify the location of an assembly&apos;s application configuration (app.config) file to the common language runtime (CLR) at assembly binding time.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-appconfig:file &#160;</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
     <para styleclass="List"><text styleclass="Code Example">file</text><tab /><text styleclass="Normal">Required. The application configuration file that contains assembly binding settings.</text></para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">One use of -appconfig is advanced scenarios in which an assembly has to reference both the .NET Framework version and the .NET Framework for Silverlight version of a particular reference assembly at the same time. For example, a XAML designer written in Windows Presentation Foundation (WPF) might have to reference both the WPF Desktop, for the designer&apos;s user interface, and the subset of WPF that is included with Silverlight. The same designer assembly has to access both assemblies. By default, the separate references cause a compiler error, because assembly binding sees the two assemblies as equivalent.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The -appconfig compiler option enables you to specify the location of an app.config file that disables the default behavior by using a <text styleclass="Code Example">&lt;supportPortability&gt;</text> tag, as shown in the following example.</para>

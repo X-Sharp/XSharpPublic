@@ -11,10 +11,8 @@
     </header>
     <para styleclass="Normal">The -fullpaths option causes the compiler to specify the full path to the file when listing compilation errors and warnings.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-fullpaths &#160;</para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">By default, errors and warnings that result from compilation specify the name of the file in which an error was found. The -fullpaths option causes the compiler to specify the full path to the file.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This compiler option is unavailable in Visual Studio and cannot be changed programmatically. It is enabled by default when compiling inside Visual Studio.</para>

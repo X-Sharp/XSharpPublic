@@ -9,7 +9,7 @@
     <para styleclass="Normal" style="border-color:#000000; border-style:single; border-width:1px; padding:5px;"><table styleclass="Default" rowcount="1" colcount="1" style="background-color:#ffff99; head-row-background-color:#ffff99; alt-row-background-color:#ffff99;">
       <thead style="vertical-align:top">
         <td>
-          <para styleclass="Normal" style="border-color:#000000; border-style:single; border-width:1px; padding:5px;"><text style="font-weight:bold;">The X# Runtime is now available. There is no need anymore to compile against the Vulcan Runtime !</text></para>
+          <para styleclass="Normal" style="border-color:#000000; border-style:single; border-width:1px; padding:5px;"><text style="font-weight:bold;">The X# Runtime is now available. There is no need anymore to compile against the Vulcan Runtime !</text><br/><text style="font-weight:bold;">For now we still support the Vulcan runtime, but that support may be dropped in a future build of X#.</text></para>
         </td>
       </thead>
     </table></para>
@@ -18,7 +18,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">If you own a license of Vulcan, you can copy the DLLs that you find in the &lt;Vulcan.NET BaseFolder&gt;\Redist\4.0 folder to a folder that is inside your solution.</para>
     <para styleclass="Normal">Then add references to the DLLs that you need in your project.</para>
-    <para styleclass="Heading3">DLLs you <text style="color:#ff0000;">MUST</text> add if you compile for the VO/Vulcan dialect:</para>
+    <para styleclass="Heading3">DLLs you <text style="color:#ff0000;">MUST</text> add if you compile for the VO/Vulcan dialect with the Vulcan runtime:</para>
     <para styleclass="Normal"></para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">VulcanRT.DLL</li>

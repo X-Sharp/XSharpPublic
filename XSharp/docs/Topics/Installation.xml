@@ -30,7 +30,7 @@
           <para styleclass="Normal">- Assemblies</para>
         </td>
         <td style="width:993px;">
-          <para styleclass="Normal">the runtime assemblies that are selectable in the Add Reference dialog inside Visual Studio. <br/>Please note that this is a subset of the folders in the Redist Folder. For deploying your apps please use the files in the Redist folder</para>
+          <para styleclass="Normal">The runtime assemblies that are selectable in the Add Reference dialog inside Visual Studio. <br/>Please note that this is a subset of the folders in the Redist Folder. For deploying your apps please use the files in the Redist folder</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

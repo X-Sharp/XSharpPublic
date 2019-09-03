@@ -11,14 +11,10 @@
     </header>
     <para styleclass="Normal">The @ option lets you specify a file that contains compiler options and source code files to compile.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">@response_file &#160;</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">response_file</text><tab ->A file that lists compiler options or source code files to compile.</para>
+    <para styleclass="List"><text styleclass="Code Example">response_file</text><tab />A file that lists compiler options or source code files to compile.</para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">The compiler options and source code files will be processed by the compiler just as if they had been specified on the command line.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">To specify more than one response file in a compilation, specify multiple response file options. For example:</para>

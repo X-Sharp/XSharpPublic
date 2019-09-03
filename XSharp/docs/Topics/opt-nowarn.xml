@@ -11,11 +11,9 @@
     </header>
     <para styleclass="Normal">The -nowarn option lets you suppress the compiler from displaying one or more warnings. Separate multiple warning numbers with a comma.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-nowarn:number1[,number2,...] &#160;</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">number1, number2</text><tab ->Warning number(s) that you want the compiler to suppress.</para>
+    <para styleclass="List"><text styleclass="Code Example">number1, number2</text><tab />Warning number(s) that you want the compiler to suppress.</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal">You should only specify the numeric part of the warning identifier. For example, if you want to suppress XS0028, you could specify <text styleclass="Code Example">-nowarn:28</text>.</para>
     <para styleclass="Normal"></para>

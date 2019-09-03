@@ -23,10 +23,11 @@
     <para styleclass="Body Text">Attempting to specify a private variable that conflicts with a visible local variable is recognized by the compiler as an error. Private variables with the same name as a GLOBAL or DEFINE will not be recognized by the compiler.</para>
     <para styleclass="Body Text">In class methods, if the private variable conflicts with an instance variables, you should use the _MEMVAR-&gt; prefix to access the private variable and the SELF: prefix to access the instance variable to make sure that the right variable is used within a method if there is a name conflict. </para>
     <para styleclass="Body Text">In addition to the PRIVATE statement, you can create private variables by:</para>
-    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Assigning to a variable that does not exist or is not visible will create a private variable (only possible if you compile with the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-undeclared">-undeclared</link> command line option)</li>
       <li styleclass="Body Text">Receiving parameters using the PARAMETERS statement</li>
     </list>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text">Private variables are dynamically scoped. They exist until the creating routine returns to its caller or until explicitly released with CLEAR ALL, or CLEAR MEMORY.</para>
     <para styleclass="Heading2">Notes</para>
     <para styleclass="Body Text">Compatibility: The ALL, LIKE, and EXCEPT clauses of the PRIVATE statement supported by other Xbase dialects are not supported.</para>

@@ -8,13 +8,11 @@
     </header>
     <para styleclass="Normal">The -<text styleclass="Body Text">undeclared</text> option tells the compiler to enable the support for &#160;&apos;undeclared variables&apos;</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-undeclared [+ | -] &#160;</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
     <para styleclass="List">+ | - <tab />Specifying +, or just -undeclared, directs the compiler to <text styleclass="Normal">enable the support for &#160;&apos;undeclared variables&apos;</text></para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This will NOT work with the Core and Vulcan dialects.</para>
     <para styleclass="Normal">When the compiler detects an &apos;unknown identifier&apos; it will assume that this is either a field in the current workarea or a memory variable.</para>
     <para styleclass="Normal">The compiler option will only have effect when you also enabled -memvar</para>
     <para styleclass="Normal"></para>

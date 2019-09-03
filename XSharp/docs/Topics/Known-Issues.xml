@@ -6,8 +6,6 @@
     <header>
       <para styleclass="Heading1">Known Issues</para>
     </header>
-    <para styleclass="Body Text">The current build of the X# compiler can compile the Vulcan SDK without changes, except for some obvious errors in the Vulcan SDK that Vulcan did not find!</para>
-    <para styleclass="Body Text">We consider the Vulcan Compatibility of the compiler finished. All Vulcan code should compile without problems now.<br/>The next builds of the compiler will focus on bug fixing and adding some VO compatibility options which are listed below as well as adding some new features.</para>
     <para styleclass="Normal">Below is the complete (but short) list of things that are not supported yet or are known problems in the current build of X#.</para>
     <para styleclass="Heading2">Compiler</para>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">

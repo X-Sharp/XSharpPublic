@@ -11,13 +11,10 @@
     </header>
     <para styleclass="Normal">The -doc compiler option allows you to place documentation comments in an XML file.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-doc:file &#160;</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">file</text><tab ->The output file for XML, which is populated with the comments in the source code files of the compilation.</para>
+    <para styleclass="List"><text styleclass="Code Example">file</text><tab />The output file for XML, which is populated with the comments in the source code files of the compilation.</para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">In source code files, documentation comments that precede the following can be processed and added to the XML file:</para>
     <para styleclass="Normal"></para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">

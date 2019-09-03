@@ -5,35 +5,38 @@
   </topicref>
   <topicref type="topic" id="436965854048353" modified="2019-08-27T15:20:43.693Z" icon="0" href="Embedded_topics">
     <caption translate="true">Embedded topics</caption>
-    <topicref type="topic" id="437046261841966" build="ALL" modified="2019-08-27T14:53:43.097Z" icon="0" href="__isType">
+    <topicref type="topic" id="437046261841966" modified="2019-09-03T15:19:40.116Z" icon="0" href="__isType">
       <caption translate="true">__isType</caption>
     </topicref>
-    <topicref type="topic" id="436995820458338" build="ALL" modified="2019-08-22T17:41:11.746Z" icon="0" href="__callingconvention">
+    <topicref type="topic" id="436995820458338" modified="2019-09-03T15:19:40.123Z" icon="0" href="__callingconvention">
       <caption translate="true">__callingconvention</caption>
     </topicref>
-    <topicref type="topic" id="436997313619587" build="ALL" modified="2019-08-22T16:15:31.053Z" icon="0" href="__CommandInclude">
+    <topicref type="topic" id="436997313619587" modified="2019-09-03T15:19:40.130Z" icon="0" href="__CommandInclude">
       <caption translate="true">__CommandInclude</caption>
     </topicref>
-    <topicref type="topic" id="436997242569266" build="ALL" modified="2019-08-22T17:32:51.134Z" icon="0" href="__IncludeFunctionParameters">
+    <topicref type="topic" id="436997242569266" modified="2019-09-03T15:19:40.136Z" icon="0" href="__IncludeFunctionParameters">
       <caption translate="true">__IncludeFunctionParameters</caption>
     </topicref>
-    <topicref type="topic" id="436997825904631" build="ALL" modified="2019-08-22T16:56:20.139Z" icon="0" href="__IncludeLibRT">
+    <topicref type="topic" id="436997825904631" modified="2019-09-03T15:19:40.142Z" icon="0" href="__IncludeLibRT">
       <caption translate="true">__IncludeLibRT</caption>
     </topicref>
-    <topicref type="topic" id="436997002587073" build="ALL" modified="2019-08-22T16:41:37.742Z" icon="0" href="__IncludeMethodModifiers">
+    <topicref type="topic" id="436997002587073" modified="2019-09-03T15:19:40.148Z" icon="0" href="__IncludeMethodModifiers">
       <caption translate="true">__IncludeMethodModifiers</caption>
     </topicref>
-    <topicref type="topic" id="385064317732631" build="ALL" modified="2005-07-08T09:03:37.187Z" icon="0" href="__IncludeMethodParameters">
+    <topicref type="topic" id="385064317732631" modified="2019-09-03T15:19:40.154Z" icon="0" href="__IncludeMethodParameters">
       <caption translate="true">__IncludeMethodParameters</caption>
     </topicref>
-    <topicref type="topic" id="385066667365089" build="ALL" modified="2005-07-08T09:03:38.578Z" icon="0" href="__IncludeStrongTyping">
+    <topicref type="topic" id="385066667365089" modified="2019-09-03T15:19:40.160Z" icon="0" href="__IncludeStrongTyping">
       <caption translate="true">__IncludeStrongTyping</caption>
     </topicref>
-    <topicref type="topic" id="436998848002267" build="ALL" modified="2019-08-27T14:53:50.916Z" icon="0" href="__asType">
+    <topicref type="topic" id="436998848002267" modified="2019-09-03T15:19:40.167Z" icon="0" href="__asType">
       <caption translate="true">__asType</caption>
     </topicref>
-    <topicref type="topic" id="436996450060440" build="ALL" modified="2019-08-22T18:51:05.132Z" icon="0" href="__typeList">
+    <topicref type="topic" id="436996450060440" modified="2019-09-03T15:19:40.173Z" icon="0" href="__typeList">
       <caption translate="true">__typeList</caption>
+    </topicref>
+    <topicref type="topic" id="437116843107858" modified="2019-09-03T15:31:32.101Z" icon="0" href="Disclaimer">
+      <caption translate="true">__Disclaimer</caption>
     </topicref>
   </topicref>
   <topicref type="topic" id="423886812341331" build="ALL" modified="2019-06-14T18:30:32.542Z" icon="0" href="XSharp">
@@ -151,7 +154,7 @@
           <caption translate="true">XSharp Compiler Sourcecode License</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="428708026773084" build="ALL" modified="2017-05-15T22:23:34.706Z" icon="0" href="Acnowledgements">
+      <topicref type="topic" id="428708026773084" build="ALL" modified="2019-09-03T10:20:36.048Z" icon="0" href="Acknowledgements">
         <caption translate="true">Acknowledgements</caption>
       </topicref>
       <topicref type="topic" id="428724207686309" build="ALL" modified="2017-05-17T10:00:44.864Z" icon="0" href="Who-is-the-X-team">

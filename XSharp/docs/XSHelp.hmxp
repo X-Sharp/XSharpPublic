@@ -20,9 +20,8 @@
               <task-config-value name="outputfile">..\Binaries\Help\HTML\index.html</task-config-value>
               <task-config-value name="skin">XSharp_WebHelp.hmskin</task-config-value>
               <task-config-value name="make3include">HTML</task-config-value>
-              <task-config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER,OPT_BREADOFF,OPT_NOSERVER</task-config-value>
+              <task-config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER</task-config-value>
               <task-config-value name="make3status">*</task-config-value>
-              <task-config-value name="table_of_contents">Table of Contents</task-config-value>
             </task-config-group>
           </export-task>
           <export-task name="Publish as PDF" format="PDF">
@@ -42,8 +41,6 @@
               <task-config-value name="deletetemp">1</task-config-value>
               <task-config-value name="make2include">HXS</task-config-value>
               <task-config-value name="make2status">*</task-config-value>
-              <task-config-value name="skin">XSharp.hmskin </task-config-value>
-              <task-config-value name="table_of_contents">Table of Contents</task-config-value>
             </task-config-group>
           </export-task>
         </export-tasks>
@@ -150,7 +147,7 @@
       </styleclass>
       <styleclass name="T_Menu 10p" parentclass="T_Menu" shortcut="0"/>
       <tablestyleclass name="Default">
-        <style-set media="screen">width:100%; cell-padding:5px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;</style-set>
+        <style-set media="screen">width:auto; cell-padding:5px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;</style-set>
       </tablestyleclass>
     </styleclasses>
     <config-group name="project">
@@ -188,7 +185,7 @@
       <config-value name="make3status">*</config-value>
       <config-value name="tidyxml">1</config-value>
       <config-value name="contents">XSharp</config-value>
-      <config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER,OPT_BREADOFF,OPT_NOSERVER</config-value>
+      <config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER</config-value>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>
@@ -248,12 +245,15 @@
       <config-value name="topicsimplebuttons">1</config-value>
       <config-group name="TOPICSIMPLEBUTTON1">
         <config-value name="CAPTION" translate="true">Top</config-value>
+        <config-value name="IMAGE">btn_home_n.gif</config-value>
       </config-group>
       <config-group name="TOPICSIMPLEBUTTON2">
         <config-value name="CAPTION" translate="true">Previous</config-value>
+        <config-value name="IMAGE">btn_prev_n.gif</config-value>
       </config-group>
       <config-group name="TOPICSIMPLEBUTTON3">
         <config-value name="CAPTION" translate="true">Next</config-value>
+        <config-value name="IMAGE">btn_next_n.gif</config-value>
       </config-group>
       <config-group name="TOPICTEMPLATES">
         <config-value name="Default" translate="true"><![CDATA[<%DOCTYPE%>
@@ -281,9 +281,9 @@
       <%TOPIC_HEADER%>
     </td>
     <td style="text-align:right">
-     <a href="<%HREF_DEFAULT_PAGE%>">Top</a>&nbsp;
-     <IF_PREVIOUS_PAGE><a href="<%HREF_PREVIOUS_PAGE%>">Previous</a>&nbsp;</IF_PREVIOUS_PAGE>
-     <IF_NEXT_PAGE><a href="<%HREF_NEXT_PAGE%>">Next</a></IF_NEXT_PAGE>
+     <a href="<%HREF_DEFAULT_PAGE%>"><img src="btn_home_n.gif" style="border:none" alt="Top" /></a>&nbsp;
+     <IF_PREVIOUS_PAGE><a href="<%HREF_PREVIOUS_PAGE%>"><img src="btn_prev_n.gif" style="border:none" alt="Previous" /></a>&nbsp;</IF_PREVIOUS_PAGE>
+     <IF_NEXT_PAGE><a href="<%HREF_NEXT_PAGE%>"><img src="btn_next_n.gif" style="border:none" alt="Next" /></a></IF_NEXT_PAGE>
     </td>
   </tr>
 </table>
@@ -297,7 +297,6 @@
 </body>
 </html>]]></config-value>
       </config-group>
-      <config-value name="skin">XSharp_WebHelp.hmskin</config-value>
       <config-value name="navigationstyle">4</config-value>
       <config-value name="frameeditor">1</config-value>
       <config-value name="layoutthreeframe">0</config-value>
@@ -481,11 +480,163 @@
       <config-value name="googleanalytics">UA-68123763-1</config-value>
       <config-value name="outputfile">..\Binaries\Help\HTML\index.html</config-value>
       <config-value name="highlighthotspots">1</config-value>
+      <config-value name="skin">XSharp_WebHelp.hmskin</config-value>
+      <config-value name="searcheditor">0</config-value>
+      <config-value name="searchsimpletext1" translate="true"><![CDATA[<p class="navbar"><a href="<%HREF_CONTENT_PAGE%>">Contents</a>
+<IF_INDEX_PAGE> | <a href="<%HREF_INDEX_PAGE%>">Index</a></IF_INDEX_PAGE>
+<IF_SEARCH_PAGE> | <b>Search</b></IF_SEARCH_PAGE>
+</p>
+<hr/>
+<p class="submit">Enter one or more keywords to search ('*' and '?' wildcards are supported):</p>]]></config-value>
+      <config-value name="searchtemplate" translate="true"><![CDATA[<%DOCTYPE%>
+<html><head>
+   <title><%TITLE%></title>
+   <meta http-equiv="Content-Type" content="text/html; charset=<%DOCCHARSET%>" />
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+   <!-- This line includes the general project style sheet (not required) -->
+   <link type="text/css" href="<%STYLESHEET%>" rel="stylesheet" />
+
+   <!-- You can change the fonts, text colors, and styles of your search results with the CSS below -->
+   <style type="text/css">
+        body { background:#FFF; }
+        .navbar { font-size: 120%; }
+
+        .submit { font-size: 9pt; }
+        .highlight { background: #FFFF40; }
+        .searchheading { font-size: 9pt; font-weight: bold; }
+        .summary { font-size: 8pt; font-style: italic; }
+        .results { font-size: 9pt; }
+        .description { font-size: 9pt; }
+        .context { font-size: 9pt; }
+        .result_title { font-size: 9pt; }
+
+	       .suggestion { font-size: 100%; }
+	       .category { color: #999999; }
+	       .sorting { text-align: right; }
+	       .zoom_searchform { font-size: 100%; }
+	       .zoom_results_per_page { font-size: 80%; margin-left: 10px; }
+	       .zoom_match { font-size: 80%; margin-left: 10px;}
+	       .zoom_categories { font-size: 80%; }
+	       .zoom_categories ul { display: inline; margin: 0px; padding: 0px;}
+	       .zoom_categories li { display: inline; margin-left: 15px; list-style-type: none; }
+	       input.zoom_button {  }
+	       input.zoom_searchbox {  }
+	       .result_image { float: left; display: block; }
+	       .result_image img { margin: 10px; width: 80px; border: 0px; }
+	       .result_block { margin-top: 15px; margin-bottom: 15px; clear: left; }
+	       .result_altblock { margin-top: 15px; margin-bottom: 15px; clear: left; }
+	       .result_pages { font-size: 100%; }
+	       .result_pagescount { font-size: 100%; }
+	       .searchtime { font-size: 80%; }
+	       .recommended
+	       {
+		        background: #DFFFBF;
+	       		border-top: 1px dotted #808080;
+	       		border-bottom: 1px dotted #808080;
+	       		margin-top: 15px;
+	       		margin-bottom: 15px;
+	       }
+	       .recommended_heading { float: right; font-weight: bold; }
+	       .recommend_block { margin-top: 15px; margin-bottom: 15px; clear: left; }
+	       .recommend_title { font-size: 100%; }
+	       .recommend_description { font-size: 100%; color: #008000; }
+	       .recommend_infoline { font-size: 80%; font-style: normal; color: #808080;}
+
+ 	</style>
+</head>
+<body>
+<p class="navbar"><a href="<%HREF_CONTENT_PAGE%>">Contents</a>
+<IF_INDEX_PAGE> | <a href="<%HREF_INDEX_PAGE%>">Index</a></IF_INDEX_PAGE>
+<IF_SEARCH_PAGE> | <b>Search</b></IF_SEARCH_PAGE>
+</p>
+<hr/>
+<p class="submit">Enter one or more keywords to search ('*' and '?' wildcards are supported):</p>
+  <!-- This is where the search form and results will appear -->
+  <%SEARCH_SCRIPT%>
+
+<noscript>
+<p>You must have JavaScript enabled to use this version of the search engine.</p>
+</noscript>
+</body>
+</html>]]></config-value>
+      <config-group name="searchconstants">
+        <config-value name="STR_FORM_SEARCHFOR" translate="true">Search for:</config-value>
+        <config-value name="STR_FORM_SUBMIT_BUTTON" translate="true">Submit</config-value>
+        <config-value name="STR_FORM_RESULTS_PER_PAGE" translate="true">Results per page:</config-value>
+        <config-value name="STR_FORM_CATEGORY" translate="true">Category:</config-value>
+        <config-value name="STR_FORM_CATEGORY_ALL" translate="true">All</config-value>
+        <config-value name="STR_FORM_MATCH" translate="true">Match:</config-value>
+        <config-value name="STR_FORM_ANY_SEARCH_WORDS" translate="true">any search words</config-value>
+        <config-value name="STR_FORM_ALL_SEARCH_WORDS" translate="true">all search words</config-value>
+        <config-value name="STR_FORM_DATE_FROM" translate="true">From:</config-value>
+        <config-value name="STR_FORM_DATE_TO" translate="true">To:</config-value>
+        <config-value name="STR_FORM_DATE_BUTTON" translate="true">&amp;laquo;</config-value>
+        <config-value name="STR_NO_QUERY" translate="true">No search query entered.</config-value>
+        <config-value name="STR_RESULTS_FOR" translate="true">Search results for:</config-value>
+        <config-value name="STR_RESULTS_IN_ALL_CATEGORIES" translate="true">in all categories</config-value>
+        <config-value name="STR_RESULTS_IN_CATEGORY" translate="true">in category</config-value>
+        <config-value name="STR_POWEREDBY" translate="true">Search powered by</config-value>
+        <config-value name="STR_NO_RESULTS" translate="true">No results</config-value>
+        <config-value name="STR_RESULT" translate="true">result</config-value>
+        <config-value name="STR_RESULTS" translate="true">results</config-value>
+        <config-value name="STR_PHRASE_CONTAINS_COMMON_WORDS" translate="true">Your search query contained too many common words to return the entire set of results available. Please try again with a more specific query for better results.</config-value>
+        <config-value name="STR_SKIPPED_FOLLOWING_WORDS" translate="true">The following word(s) are in the skip word list and have been omitted from your search:</config-value>
+        <config-value name="STR_SKIPPED_PHRASE" translate="true">Note that you can not search for exact phrases beginning with a skipped word</config-value>
+        <config-value name="STR_SUMMARY_NO_RESULTS_FOUND" translate="true">No results found.</config-value>
+        <config-value name="STR_SUMMARY_FOUND_CONTAINING_ALL_TERMS" translate="true">found containing all search terms.</config-value>
+        <config-value name="STR_SUMMARY_FOUND_CONTAINING_SOME_TERMS" translate="true">found containing some search terms.</config-value>
+        <config-value name="STR_SUMMARY_FOUND" translate="true">found.</config-value>
+        <config-value name="STR_PAGES_OF_RESULTS" translate="true">pages of results.</config-value>
+        <config-value name="STR_MORETHAN" translate="true">More than</config-value>
+        <config-value name="STR_POSSIBLY_GET_MORE_RESULTS" translate="true">You can possibly get more results searching for</config-value>
+        <config-value name="STR_ANY_OF_TERMS" translate="true">any of the terms</config-value>
+        <config-value name="STR_ALL_CATS" translate="true">all categories</config-value>
+        <config-value name="STR_CAT_SUMMARY" translate="true">Refine your search by category:</config-value>
+        <config-value name="STR_DIDYOUMEAN" translate="true">Did you mean:</config-value>
+        <config-value name="STR_OR" translate="true">or</config-value>
+        <config-value name="STR_RECOMMENDED" translate="true">Recommended links</config-value>
+        <config-value name="STR_SORTEDBY_RELEVANCE" translate="true">Sorted by relevance</config-value>
+        <config-value name="STR_SORTBY_RELEVANCE" translate="true">Sort by relevance</config-value>
+        <config-value name="STR_SORTBY_DATE" translate="true">Sort by date</config-value>
+        <config-value name="STR_SORTEDBY_DATE" translate="true">Sorted by date &amp;#9660;</config-value>
+        <config-value name="STR_SORTEDBY_DATE_ASC" translate="true">Sorted by date &amp;#9650;</config-value>
+        <config-value name="STR_RESULT_TERMS_MATCHED" translate="true">Terms matched: </config-value>
+        <config-value name="STR_RESULT_SCORE" translate="true">Score: </config-value>
+        <config-value name="STR_RESULT_URL" translate="true">URL:</config-value>
+        <config-value name="STR_RESULT_PAGES" translate="true">Result Pages:</config-value>
+        <config-value name="STR_RESULT_PAGES_PREVIOUS" translate="true">Previous</config-value>
+        <config-value name="STR_RESULT_PAGES_NEXT" translate="true">Next</config-value>
+        <config-value name="STR_SEARCH_TOOK" translate="true">Search took</config-value>
+        <config-value name="STR_SECONDS" translate="true">seconds</config-value>
+        <config-value name="STR_MAX_RESULTS" translate="true">You have requested more results than served per query. Please try again with a more precise query.</config-value>
+      </config-group>
+      <config-value name="searchstoplist" translate="true">and,or,the,it,is,an,on,we,us,to,of,has,be,all,for,in,as,so,are,that,can,you,at,its,by,have,with,into</config-value>
+      <config-value name="searchskipwordsmin">3</config-value>
+      <config-value name="searchplatform">JSFILE</config-value>
+      <config-value name="searchjoinwordchars">.-_'</config-value>
+      <config-value name="searchexactphrase">0</config-value>
+      <config-value name="searchhighlight">1</config-value>
+      <config-value name="searchallowdate">0</config-value>
+      <config-value name="searchaccentinsensitive">0</config-value>
+      <config-value name="searchsinglecase">0</config-value>
+      <config-value name="hasindex">1</config-value>
+      <config-value name="hassearch">1</config-value>
+      <config-value name="contentnumbers">0</config-value>
+      <config-value name="contentnumberstyle">1.1.1.1.1.1</config-value>
+      <config-value name="contentlazysync">0</config-value>
+      <config-value name="contentsingleclick">0</config-value>
+      <config-value name="contentautocollapse">0</config-value>
+      <config-value name="contentexpand">0</config-value>
+      <config-value name="forcetocsync">1</config-value>
+      <config-value name="sitemap">https://www.xsharp.info/help</config-value>
+      <config-value name="contentindent">20</config-value>
+      <config-value name="defaulticons">1</config-value>
     </config-group>
     <config-group name="user">
       <config-group name="robert">
         <config-group name="project">
-          <config-value name="lastexport">0</config-value>
+          <config-value name="lastexport">3</config-value>
         </config-group>
         <config-group name="report">
           <config-value name="type">6</config-value>
@@ -702,6 +853,17 @@
       <file-mod href="command_USE.xml"/>
       <file-mod href="command_NOTE.xml"/>
       <file-mod href="Embedded_topics.xml"/>
+      <file-mod href="__isType.xml"/>
+      <file-mod href="__callingconvention.xml"/>
+      <file-mod href="__CommandInclude.xml"/>
+      <file-mod href="__IncludeFunctionParameters.xml"/>
+      <file-mod href="__IncludeLibRT.xml"/>
+      <file-mod href="__IncludeMethodModifiers.xml"/>
+      <file-mod href="__IncludeMethodParameters.xml"/>
+      <file-mod href="__IncludeStrongTyping.xml"/>
+      <file-mod href="__asType.xml"/>
+      <file-mod href="__typeList.xml"/>
+      <file-mod href="Disclaimer.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

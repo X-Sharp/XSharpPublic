@@ -11,13 +11,10 @@
     </header>
     <para styleclass="Normal">The -define compiler option defines name as a symbol in all source code files your program.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-define:name[;name2] &#160;</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">name, name2</text><tab ->The name of one or more symbols that you want to define.</para>
+    <para styleclass="List"><text styleclass="Code Example">name, name2</text><tab />The name of one or more symbols that you want to define.</para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">The -define option has the same effect as using a #define preprocessor directive except that the compiler option is in effect for all files in the project. A symbol remains defined in a source file until an #undef directive in the source file removes the definition. When you use The -define option, an #undef directive in one file has no effect on other source code files in the project.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">You can use symbols created by this option with #if, #else, #elif, and #endif to compile source files conditionally.</para>

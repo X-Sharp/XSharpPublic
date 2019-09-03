@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-win32manifest</title>
   <keywords>
     <keyword>-win32manifest</keyword>
@@ -11,15 +11,10 @@
     </header>
     <para styleclass="Normal">Use The -win32manifest option to specify a user-defined Win32 application manifest file to be embedded into a project&apos;s portable executable (PE) file.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-win32manifest: filename &#160;</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">filename</text><tab ->The name and location of the custom manifest file.</para>
+    <para styleclass="List"><text styleclass="Code Example">filename</text><tab />The name and location of the custom manifest file.</para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">By default, the X# compiler embeds an application manifest that specifies a requested execution level of &quot;asInvoker.&quot; It creates the manifest in the same folder in which the executable is built, typically the bin\Debug or bin\Release folder when you use Visual Studio. If you want to supply a custom manifest, for example to specify a requested execution level of &quot;highestAvailable&quot; or &quot;requireAdministrator,&quot; use this option to specify the name of the file.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Note </para>
@@ -27,7 +22,7 @@
     <para styleclass="Normal">An application that has no application manifest that specifies a requested execution level will be subject to file/registry virtualization under the User Account Control feature in Windows Vista. </para>
     <para styleclass="Normal">Your application will be subject to virtualization if either of these conditions is true:</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">You use the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowin32manifest">-nowin32manifest </link>option and you do not provide a manifest in a later build step or as part of a Windows Resource (.res) file by using The -win32res option.</li>
       <li styleclass="Normal" style="margin-left:13px;">You provide a custom manifest that does not specify a requested execution level.</li>
     </list>
@@ -36,7 +31,6 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">You can provide the application manifest as a custom post-build step or as part of a Win32 resource file by using the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowin32manifest">-nowin32manifest</link> &#160;option. Use that same option if you want your application to be subject to file or registry virtualization on Windows Vista. This will prevent the compiler from creating and embedding a default manifest in the portable executable (PE) file.</para>
     <para styleclass="Heading2">Example</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">The following example shows the default manifest that the X# compiler inserts into a PE.</para>
     <para styleclass="Heading2">Note </para>
     <para styleclass="Normal">The compiler inserts a standard application name &quot; MyApplication.app &quot; into the xml. This is a workaround to enable applications to run on Windows Server 2003 Service Pack 3.</para>

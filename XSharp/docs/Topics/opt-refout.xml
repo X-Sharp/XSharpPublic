@@ -10,17 +10,16 @@
       <para styleclass="Heading1">-refout</para>
     </header>
     <para styleclass="Body Text">The -refout option specifies a file path where the reference assembly should be output. This translates to metadataPeStream in the Emit API.</para>
-    <para styleclass="Body Text"></para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">-refout:</text>filepath</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">filepath</text><tab ->The name and path of the output file created by the compiler.</para>
+    <para styleclass="List"><text styleclass="Code Example">filepath</text><tab />The name and path of the output file created by the compiler.</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal" style="margin-top:19px; margin-bottom:14px; line-height:1.00; tabstops:none;"><text styleclass="List">The filename should generally match that of the primary assembly. The recommended convention (used by MSBuild) is to place the reference assembly in a &quot;ref/&quot; sub-folder relative to the primary assembly.</text></para>
     <para styleclass="Body Text">Metadata-only assemblies have their method bodies replaced with a single throw null body, but include all members except anonymous types. The reason for using throw null bodies (as opposed to no bodies) is so that PEVerify could run and pass (thus validating the completeness of the metadata).</para>
     <para styleclass="Body Text">Reference assemblies include an assembly-level ReferenceAssembly attribute. This attribute may be specified in source (then the compiler won&apos;t need to synthesize it). Because of this attribute, runtimes will refuse to load reference assemblies for execution (but they can still be loaded in reflection-only mode). Tools that reflect on assemblies need to ensure they load reference assemblies as reflection-only, otherwise they will receive a typeload error from the runtime.</para>
     <para styleclass="Body Text">Reference assemblies further remove metadata (private members) from metadata-only assemblies:</para>
-    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">A reference assembly only has references for what it needs in the API surface. The real assembly may have additional references related to specific implementations. </li>
       <li styleclass="Body Text">Private function-members (methods, properties, and events) are removed in cases where their removal doesn&apos;t observably impact compilation. If there are no InternalsVisibleTo attributes, do the same for internal function-members.</li>
       <li styleclass="Body Text">But all types (including private or nested types) are kept in reference assemblies. All attributes are kept (even internal ones).</li>

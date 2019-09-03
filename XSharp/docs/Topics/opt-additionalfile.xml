@@ -11,12 +11,9 @@
     </header>
     <para styleclass="Body Text">The -additionalfile commandline option allows you to include extra files in the assembly. To support this scenario the X# compiler can accept additional, non-source text files as inputs.</para>
     <para styleclass="Body Text"><text styleclass="Heading2">Syntax</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-additionalfile:file &#160;</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Body Text"></para>
     <para styleclass="Body Text">For example, an analyzer may enforce that a set of banned terms is not used within a project, or that every source file has a certain copyright header. The terms or copyright header could be passed to the analyzer as an additional file, rather than being hard-coded in the analyzer itself.</para>
-    <para styleclass="Body Text"><text styleclass="Heading2">Example</text></para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal">On the command line, additional files can be passed using The -additionalfile option. For example:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>

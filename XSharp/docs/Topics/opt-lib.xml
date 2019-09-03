@@ -11,14 +11,11 @@
     </header>
     <para styleclass="Normal">The -lib option specifies the location of assemblies referenced by means of the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-reference">-reference</link> option.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-lib:dir1[,dir2] &#160;</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">dir1</text><tab ->A directory for the compiler to look in if a referenced assembly is not found in the current working directory (the directory from which you are invoking the compiler) or in the common language runtime&apos;s system directory.</para>
-    <para styleclass="List"><text styleclass="Code Example">dir2</text><tab -><text styleclass="Normal">One or more additional directories to search in for assembly references. Separate additional directory names with a comma, and without white space between them.</text></para>
+    <para styleclass="List"><text styleclass="Code Example">dir1</text><tab />A directory for the compiler to look in if a referenced assembly is not found in the current working directory (the directory from which you are invoking the compiler) or in the common language runtime&apos;s system directory.</para>
+    <para styleclass="List"><text styleclass="Code Example">dir2</text><tab /><text styleclass="Normal">One or more additional directories to search in for assembly references. Separate additional directory names with a comma, and without white space between them.</text></para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">The compiler searches for assembly references that are not fully qualified in the following order:</para>
     <list id="2" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Current working directory. This is the directory from which the compiler is invoked.</li>

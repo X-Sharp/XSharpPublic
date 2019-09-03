@@ -12,18 +12,16 @@
     <para styleclass="Normal">Specify a mapping for source path names output by the compiler.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-<text styleclass="lang-console" style="font-family:&apos;Courier New&apos;; font-size:8pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">pathmap:path1=sourcePath1,path2=sourcePath2</text></para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="List">path1 <tab -><tab ->The full path to the source files in the current environment</para>
-    <para styleclass="List">sourcePath1 <tab ->The source path substituted for path1 in any output files.</para>
+    <para styleclass="List">path1 <tab /><tab />The full path to the source files in the current environment</para>
+    <para styleclass="List">sourcePath1 <tab />The source path substituted for path1 in any output files.</para>
     <para styleclass="List"></para>
     <para styleclass="List">To specify multiple mapped source paths, separate each with a comma.</para>
     <para styleclass="List"></para>
     <para styleclass="Body Text"><text styleclass="Heading2">Remarks</text></para>
     <para styleclass="Body Text">The compiler writes the source path into its output for the following reasons:</para>
-    <list id="28" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">The source path is substituted for an argument when the CallerFilePathAttribute is applied to an optional parameter.</li>
       <li styleclass="Body Text">The source path is embedded in a PDB file.</li>
       <li styleclass="Body Text">The path of the PDB file is embedded into a PE (portable executable) file.</li>

@@ -10,9 +10,7 @@
       <para styleclass="Heading1">-errorendlocation</para>
     </header>
     <para styleclass="Normal">The -errorendlocation tells the compiler to Output the line and column of the end location of &#160;each error in addition to the start location of the error/</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-errorendlocation</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal">This compiler option is unavailable in Visual Studio and cannot be changed programmatically. It is enabled by default when compiling inside Visual Studio.</para>

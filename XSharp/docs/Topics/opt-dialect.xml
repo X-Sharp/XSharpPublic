@@ -3,8 +3,8 @@
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-dialect</title>
   <keywords>
-    <keyword>-dialect</keyword>
     <keyword>dbase</keyword>
+    <keyword>-dialect</keyword>
     <keyword>foxpro</keyword>
     <keyword>Harbour</keyword>
     <keyword>vo</keyword>
@@ -17,15 +17,14 @@
     </header>
     <para styleclass="Normal">The -dialect compiler option selects the dialect that the compiler should follow. Valid options are: Core, VO, Vulcan, dBase, FoxPro, xBase++ and Harbour.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-dialect: Core | VO | Vulcan</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List" style="text-indent:-100px; margin-left:100px; tabstops:96px left,144px left ;">Core<tab ->Use the Core dialect. This is like C# with an xBase syntax. </para>
-    <para styleclass="List" style="text-indent:-100px; margin-left:100px; tabstops:96px left,144px left ;">VO<tab ->This activates the VO dialect. </para>
-    <para styleclass="List" style="text-indent:-100px; margin-left:100px; tabstops:96px left,144px left ;">Vulcan<tab ->This activates the Vulcan dialect. </para>
-    <para styleclass="List" style="text-indent:-100px; margin-left:100px; tabstops:96px left,144px left ;">Harbour<tab ->This activates the Harbour dialect. </para>
-    <para styleclass="List" style="text-indent:-100px; margin-left:100px; tabstops:96px left,144px left ;">XBasePP<tab ->This activates the Harbour dialect. </para>
+    <para styleclass="List" style="text-indent:-100px; margin-left:100px; tabstops:96px left,144px left ;">Core<tab />Use the Core dialect. This is like C# with an xBase syntax. </para>
+    <para styleclass="List" style="text-indent:-100px; margin-left:100px; tabstops:96px left,144px left ;">VO<tab />This activates the VO dialect. </para>
+    <para styleclass="List" style="text-indent:-100px; margin-left:100px; tabstops:96px left,144px left ;">Vulcan<tab />This activates the Vulcan dialect. </para>
+    <para styleclass="List" style="text-indent:-100px; margin-left:100px; tabstops:96px left,144px left ;">Harbour<tab />This activates the Harbour dialect. </para>
+    <para styleclass="List" style="text-indent:-100px; margin-left:100px; tabstops:96px left,144px left ;">XBasePP<tab />This activates the Harbour dialect. </para>
+    <para styleclass="List" style="text-indent:-100px; margin-left:100px; tabstops:96px left,144px left ;">FoxPro<tab />This activates the FoxPro dialect. </para>
     <para styleclass="Heading3"><link displaytype="text" defaultstyle="true" type="topiclink" href="Dialects" style="font-weight:normal;">See the dialect topic for differences between dialects</link></para>
     <para styleclass="Normal"></para>
   </body>

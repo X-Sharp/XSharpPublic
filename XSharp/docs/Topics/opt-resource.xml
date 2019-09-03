@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-resource</title>
   <keywords>
     <keyword>-resource</keyword>
@@ -11,19 +11,14 @@
     </header>
     <para styleclass="Normal">Embeds the specified resource into the output file.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-resource:filename[,identifier[,accessibility-modifier]] &#160;</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Arguments</para>
+    <para styleclass="List"><text styleclass="Code Example">filename</text><tab />The .NET Framework resource file that you want to embed in the output file.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">filename</text><tab ->The .NET Framework resource file that you want to embed in the output file.</para>
+    <para styleclass="List"><text styleclass="Code Example">identifier</text> (optional)<tab />The logical name for the resource; the name that is used to load the resource. The default is the name of the file name.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">identifier</text> (optional)<tab ->The logical name for the resource; the name that is used to load the resource. The default is the name of the file name.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">accessibility-modifier</text> (optional)<tab ->The accessibility of the resource: public or private. The default is public.</para>
+    <para styleclass="List"><text styleclass="Code Example">accessibility-modifier</text> (optional)<tab />The accessibility of the resource: public or private. The default is public.</para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">Use -linkresource to link a resource to an assembly and not add the resource file to the output file.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">By default, resources are public in the assembly when they are created by using the X# compiler. To make the resources private, specify <text styleclass="Code Example">private</text> as the accessibility modifier. No other accessibility other than <text styleclass="Code Example">public</text> or <text styleclass="Code Example">private</text> is allowed.</para>
@@ -36,7 +31,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Add a resource file to your project.</li>
       <li styleclass="Normal" style="margin-left:13px;">Select the file that you want to embed in Solution Explorer.</li>
       <li styleclass="Normal" style="margin-left:13px;">Select Build Action for the file in the Properties window.</li>

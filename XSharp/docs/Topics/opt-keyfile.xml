@@ -11,12 +11,10 @@
     </header>
     <para styleclass="Normal">Specifies the filename containing the cryptographic key.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-keyfile:file <text styleclass="Normal">&#32;</text></para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">file</text><tab ->The name of the file containing the strong name key.</para>
+    <para styleclass="List"><text styleclass="Code Example">file</text><tab />The name of the file containing the strong name key.</para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">When this option is used, the compiler inserts the public key from the specified file into the assembly manifest and then signs the final assembly with the private key. To generate a key file, type sn -k file at the command line.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">If you compile with -target:module, the name of the key file is held in the module and incorporated into the assembly that is created when you compile an assembly with -addmodule.</para>

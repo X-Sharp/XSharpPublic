@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-win32res</title>
   <keywords>
     <keyword>-win32res</keyword>
@@ -11,15 +11,10 @@
     </header>
     <para styleclass="Normal">The -win32res option inserts a Win32 resource in the output file.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-win32res:filename &#160;</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List">filename<tab ->The resource file that you want to add to your output file.</para>
+    <para styleclass="List">filename<tab />The resource file that you want to add to your output file.</para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">A Win32 resource file can be created with the Resource Compiler. The Resource Compiler is invoked when include native resources (.RC files) in your X# Visual studio solution</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">A Win32 resource can contain version or bitmap (icon) information that would help identify your application in the File Explorer. If you do not specify -win32res, the compiler will generate version information based on the assembly version. You can also include Menu and Dialog definitions in a RC file.</para>
@@ -29,7 +24,6 @@
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
     <para styleclass="Normal">You cannot set this compiler option inside Visual Studio. If your application has native resource files, then the build system will automatically convert this to a nativeresources.res file and include this file with The -win32res command line option in your assembly.</para>
     <para styleclass="Heading2">Example</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">Compile <text styleclass="Code Example">in.prg</text> and attach a Win32 resource file <text styleclass="Code Example">rf.res</text> to produce <text styleclass="Code Example">in.exe</text>:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>

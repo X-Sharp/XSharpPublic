@@ -1,24 +1,20 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-vo5</title>
   <keywords>
     <keyword>-vo5</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">-vo5<tab -><tab ->Implicit CLIPPER calling convention </para>
+      <para styleclass="Heading1">-vo5<tab /><tab />Implicit CLIPPER calling convention </para>
     </header>
     <para styleclass="Normal">The -vo5 option directs the compiler to implicitly use the CLIPPER calling convention for functions declared with zero-arguments and no explicit calling convention.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-vo5[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List">+ | - <tab ->Specifying +, or just -vo5, directs the compiler to implicitly use the CLIPPER calling convention for functions, methods and constructors that are declared with zero arguments and no explicit calling convention. </para>
+    <para styleclass="List">+ | - <tab />Specifying +, or just -vo5, directs the compiler to implicitly use the CLIPPER calling convention for functions, methods and constructors that are declared with zero arguments and no explicit calling convention. </para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">For compatibility with Clipper, Visual Objects uses the CLIPPER calling convention for all functions and methods that are declared with zero arguments and no explicit calling convention. The STRICT keyword may be used to override the default, and cause the function to use the STRICT calling convention.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">However, in the vast majority of cases, parameters are never passed to functions and methods declared with zero arguments, and using the CLIPPER calling convention by default incurs unnecessary overhead not only in the function itself, but at every call site. In addition, the CLIPPER calling convention allows any number and type of arguments to be passed, preventing compile time error checking.</para>
@@ -30,15 +26,14 @@
     <para styleclass="Normal">Regardless of whether this option is enabled or not, the CLIPPER and STRICT keywords can always be used to explicitly specify the desired calling convention.</para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
       <li styleclass="Normal" style="margin-left:13px;">In the Visual Objects Compatibility section, modify the &quot;Implicit CLIPPER calling convention&quot; property. </li>
     </list>
     <para styleclass="Heading2">Example</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo() </text><text style="font-weight:bold; font-style:italic; color:#339966;">// CLIPPER</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? pcount(), _getFParam( 1 )</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">foo( 1 )</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">&#32;</para>
-    <para styleclass="Code with box"><br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The above example will compile and run correctly if -vo5 is used, or if the CLIPPER keyword is added at the end of the FUNCTION foo() declaration. Otherwise, a compiler error will be generated on the call to foo(), as well as on the calls to pcount() and _getFParam() (which are illegal in a STRICT calling convention function).</para>
     <para styleclass="Normal"></para>

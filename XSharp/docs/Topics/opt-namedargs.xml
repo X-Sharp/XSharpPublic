@@ -8,11 +8,9 @@
     </header>
     <para styleclass="Body Text">Specifies whether to allow named arguments in the parser or not.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-namedargs [+ | -] &#160;</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List">+ | - <tab ->Specifying +, or just -namedargs, directs the compiler to allow namedarguments. Specifying - directs the compiler to NOT use named arguments</para>
+    <para styleclass="List">+ | - <tab />Specifying +, or just -namedargs, directs the compiler to allow namedarguments. Specifying - directs the compiler to NOT use named arguments</para>
     <para styleclass="List"></para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Body Text">The default = + for the Core dialect and - for all other dialects. So -namedargs- only is useful in combination with the Core dialect.</para>

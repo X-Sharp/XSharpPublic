@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-fovf</title>
   <keywords>
     <keyword>-checked</keyword>
@@ -10,6 +10,6 @@
     <header>
       <para styleclass="Heading1">-fovf</para>
     </header>
-    <para styleclass="Normal">The -fovf compiler option is an alias for the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-checked">-checked</link> command line option for compatibility with Vulcan.</para>
+    <para styleclass="Normal">The -fovf compiler option is an alias for the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-checked">-checked</link> command line option for compatibility.</para>
   </body>
 </topic>

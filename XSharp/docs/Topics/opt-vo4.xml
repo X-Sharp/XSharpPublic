@@ -1,24 +1,20 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-vo4</title>
   <keywords>
     <keyword>-vo4</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">-vo4<tab -><tab ->Implicit signed/unsigned conversions</para>
+      <para styleclass="Heading1">-vo4<tab /><tab />Implicit signed/unsigned conversions</para>
     </header>
     <para styleclass="Normal">The -vo4 option directs the compiler to implicitly convert signed integer types to/from unsigned types, and larger integer types to smaller types.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-vo4[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List">+ | - <tab ->Specifying +, or just -vo4, directs the compiler to implicitly convert signed integer values to/from unsigned values, and larger integer types to smaller integer types. This provides compatibility with Visual Objects, which permits such conversions without an explicit cast or conversion operator. </para>
+    <para styleclass="List">+ | - <tab />Specifying +, or just -vo4, directs the compiler to implicitly convert signed integer values to/from unsigned values, and larger integer types to smaller integer types. This provides compatibility with Visual Objects, which permits such conversions without an explicit cast or conversion operator. </para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">For safety reasons, this option is off by default. Implicitly converting between signed and unsigned integer types or between larger to smaller integer types can cause numeric overflow errors at runtime or unintended values to be passed depending upon whether overflow checking is enabled or disabled. By default, you must explicitly cast a signed integer to its unsigned counterpart and from larger integer types to smaller integer types and by explicitly doing so, it is assumed that the conversion is known by the programmer to be safe.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">When this option is enabled, the compiler will implicitly convert the data types listed in the table below:</para>
@@ -106,13 +102,13 @@
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
       <li styleclass="Normal" style="margin-left:13px;">In the Visual Objects Compatibility section, modify the &quot;Implicit signed/unsigned conversions&quot; property. </li>
     </list>
     <para styleclass="Heading2">Example</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> dw := 4294967296 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DWORD</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> i := -1 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><br/><br/><text style="font-weight:normal; font-style:normal; color:#000000;">DWORD_Function( i ) </text><text style="font-weight:bold; font-style:italic; color:#339966;">// no error if compiled with /vo4</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">INT_Function( dw ) </text><text style="font-weight:bold; font-style:italic; color:#339966;">// no error if compiled with /vo4</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> DWORD_Function( x </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DWORD</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? x</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> INT_Function( x </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? x</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"></para>
   </body>
 </topic>

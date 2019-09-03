@@ -12,7 +12,7 @@
       <para styleclass="Heading1">EVENT (Add and Remove)</para>
     </header>
     <para styleclass="Normal">XSharp now supports an extended Event syntax. Both a single line syntax is supported as a multi line:</para>
-    <para styleclass="Heading2">Old style syntax (compatible with Vulcan)</para>
+    <para styleclass="Heading2">Old style syntax </para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example">[Attributes] [Modifiers] EVENT [&lt;ExplicitInterface&gt;.] &lt;Id&gt; AS &lt;Type&gt; &#160; &#160;// Old Style</para>
     <para styleclass="Heading2">Single Line syntax with explicit expressions</para>

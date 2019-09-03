@@ -11,11 +11,9 @@
     </header>
     <para styleclass="Normal">Causes the compiler to make COM type information in the specified assemblies available to the project that you are currently compiling.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-link:fileList &#160;<br/>-/ -or- &#160;<br/>-l:fileList &#160;</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">fileList</text><tab ->Required. Comma-delimited list of assembly file names. If the file name contains a space, enclose the name in quotation marks.</para>
+    <para styleclass="List"><text styleclass="Code Example">fileList</text><tab />Required. Comma-delimited list of assembly file names. If the file name contains a space, enclose the name in quotation marks.</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal">The <text styleclass="Code Example">-link</text> option enables you to deploy an application that has embedded type information. The application can then use types in a runtime assembly that implement the embedded type information without requiring a reference to the runtime assembly. If various versions of the runtime assembly are published, the application that contains the embedded type information can work with the various versions without having to be recompiled. For an example, see Walkthrough: Embedding Types from Managed Assemblies.</para>
     <para styleclass="Normal"></para>

@@ -3,12 +3,12 @@
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-ns</title>
   <keywords>
-    <keyword>-ns</keyword>
     <keyword>BEGIN NAMESPACE</keyword>
     <keyword>CLASS</keyword>
     <keyword>DELEGATE</keyword>
     <keyword>ENUM</keyword>
     <keyword>INTERFACE</keyword>
+    <keyword>-ns</keyword>
     <keyword>STRUCTURE</keyword>
     <keyword>VOSTRUCT</keyword>
   </keywords>
@@ -18,13 +18,10 @@
     </header>
     <para styleclass="Normal">The -ns option explicitly specifies the default namespace for all types that do not have an explicit namespace in their name.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-ns[: ]namespaceName</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">namespaceName</text>&#32;<tab ->The name of the default namespace for all types declared in the application or class library. </para>
+    <para styleclass="List"><text styleclass="Code Example">namespaceName</text>&#32;<tab />The name of the default namespace for all types declared in the application or class library. </para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">If The -ns option is not specified, then types that are not prefixed with a namespace and types that are not in a BEGIN NAMESPACE .. END NAMESPACE construct will be compiled as so-called global types.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The -ns option will work on the following types:</para>

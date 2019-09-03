@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-errorreport</title>
   <keywords>
     <keyword>-errorreport</keyword>
@@ -11,23 +11,20 @@
     </header>
     <para styleclass="Normal">This compiler option provides a convenient way to report a X# internal compiler error</para>
     <para styleclass="Normal"><br/> Note </para>
-    <para styleclass="Normal">On Windows Vista and Windows Server 2008, the error reporting settings that you make for Visual Studio do not override the settings made through Windows Error Reporting (WER). WER settings always take precedence over Visual Studio error reporting settings.<br/></para>
+    <para styleclass="Normal">On Windows Vista and Windows Server 2008, the error reporting settings that you make for Visual Studio do not override the settings made through Windows Error Reporting (WER). WER settings always take precedence over Visual Studio error reporting settings.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">-errorreport:{ none | prompt | queue | send } &#160;</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Arguments</para>
+    <para styleclass="Normal">none<tab />Reports about internal compiler errors will not be collected or sent to Microsoft.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">none<tab ->Reports about internal compiler errors will not be collected or sent to Microsoft.</para>
+    <para styleclass="List">prompt<tab />Prompts you to send a report when you receive an internal compiler error. prompt is the default when you compile an application in the development environment.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">prompt<tab ->Prompts you to send a report when you receive an internal compiler error. prompt is the default when you compile an application in the development environment.</para>
+    <para styleclass="List">queue<tab />Queues the error report. When you log on with administrative credentials, you can report any failures since the last time that you were logged on. You will not be prompted to send reports for failures more than once every three days. queue is the default when you compile an application at the command line.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">queue<tab ->Queues the error report. When you log on with administrative credentials, you can report any failures since the last time that you were logged on. You will not be prompted to send reports for failures more than once every three days. queue is the default when you compile an application at the command line.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List">send<tab ->Automatically sends reports of internal compiler errors to Microsoft. To enable this option, you must first agree to the Microsoft data collection policy. The first time that you specify -errorreport:send on a computer, a compiler message will refer you to a Web site that contains the Microsoft data collection policy.</para>
+    <para styleclass="List">send<tab />Automatically sends reports of internal compiler errors to Microsoft. To enable this option, you must first agree to the Microsoft data collection policy. The first time that you specify -errorreport:send on a computer, a compiler message will refer you to a Web site that contains the Microsoft data collection policy.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">An internal compiler error (ICE) results when the compiler cannot process a source code file. When an ICE occurs, the compiler does not produce an output file or any useful diagnostic that you can use to fix your code.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">A user&apos;s ability to send reports depends on computer and user policy permissions.</para>
@@ -35,7 +32,7 @@
     <para styleclass="Normal">For more information about error debugger, see Description of the Dr. Watson for Windows (Drwtsn32.exe) Tool.</para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page. </li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Build property page.</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Advanced button.</li>

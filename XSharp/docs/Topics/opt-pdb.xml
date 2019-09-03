@@ -11,13 +11,10 @@
     </header>
     <para styleclass="Normal">The -pdb compiler option specifies the name and location of the debug symbols file.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-pdb:filename &#160;</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">filename</text><tab ->The name and location of the debug symbols file.</para>
+    <para styleclass="List"><text styleclass="Code Example">filename</text><tab />The name and location of the debug symbols file.</para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">When you specify <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-debug">-debug</link> , the compiler will create a .pdb file in the same directory where the compiler will create the output file (.exe or .dll) with a file name that is the same as the name of the output file.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">-pdb allows you to specify a non-default file name and location for the .pdb file.</para>

@@ -11,7 +11,6 @@
     </header>
     <para styleclass="Normal">The -nologo option suppresses display of the sign-on banner when the compiler starts up and display of informational messages during compiling.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-nologo &#160;</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>

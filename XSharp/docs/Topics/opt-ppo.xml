@@ -11,14 +11,12 @@
     </header>
     <para styleclass="Normal">The -ppo option directs the compiler to write the output of the preprocessor to a file.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-ppo [+ | -] &#160;</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List">+ | - <tab ->Specifying +, or just -ppo, directs the compiler to write the output of the preprocessor to a file. <br/>When ppo is not enabled then the compiler will delete any existing ppo files that match input file names </para>
+    <para styleclass="List">+ | - <tab />Specifying +, or just -ppo, directs the compiler to write the output of the preprocessor to a file. <br/>When ppo is not enabled then the compiler will delete any existing ppo files that match input file names </para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal">Each source file will be written to a file with the same base name and an extension of .ppo, in the same directory as the source file. If a .ppo file already exists, it will be overwritten without warning.</para>
-    <para styleclass="Heading2"> Tip: </para>
+    <para styleclass="Heading2">Tip: </para>
     <para styleclass="Normal">.ppo files can be viewed within Visual Studio. After enabling The -ppo option and rebuilding the project, select any node in the project in Solution Explorer, click the Show All Files button in the Solution Explorer toolbar, then double click the desired .ppo file node.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">To view a .prg and .ppo file side-by-side to compare them, right click the document tab in either the .prg or .ppo file and click New Vertical Tab Group.</para>

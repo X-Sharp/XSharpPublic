@@ -11,13 +11,10 @@
     </header>
     <para styleclass="Normal">This option specifies the class that contains the entry point to the program, if more than one class contains a Main method.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-main:class &#160;</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">class</text><tab ->The type that contains the Main method.</para>
+    <para styleclass="List"><text styleclass="Code Example">class</text><tab />The type that contains the Main method.</para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">If your compilation includes more than one type with a Main method, you can specify which type contains the Main method that you want to use as the entry point into the program.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This option is for use when compiling an .exe file.</para>

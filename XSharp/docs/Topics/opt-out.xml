@@ -11,13 +11,10 @@
     </header>
     <para styleclass="Normal">The -out option specifies the name of the output file.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-out:filename &#160;</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">filename</text><tab ->The name of the output file created by the compiler.</para>
+    <para styleclass="List"><text styleclass="Code Example">filename</text><tab />The name of the output file created by the compiler.</para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">On the command line, it is possible to specify multiple output files for your compilation. The compiler expects to find one or more source code files following The -out option. Then, all source code files will be compiled into the output file specified by that -out option.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Specify the full name and extension of the file you want to create.</para>

@@ -10,7 +10,7 @@
     <para styleclass="Body Text">After converting it with the same options as the 1st example we will have a folder structure like </para>
     <para styleclass="Body Text">C:\XporterOutput\Examples\VoPad<br/>C:\XporterOutput\Examples\VoPad\VoPad</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="2">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="3" colcount="2">
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
           <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">File</text></para>
@@ -33,14 +33,6 @@
         </td>
         <td style="vertical-align:top;">
           <para styleclass="Body Text">XIDE project file</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:top;">
-          <para styleclass="Body Text">SDK_Defines.dll</para>
-        </td>
-        <td style="vertical-align:top;">
-          <para styleclass="Body Text">Helper file that contains the defines from the Vulcan VO SDK assemblies</para>
         </td>
       </tr>
     </table></para>

@@ -11,10 +11,8 @@
     </header>
     <para styleclass="Body Text">Override the name of the standard defines file (default = XSharpDefs.xh)</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-stddefs:filepath</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
     <para styleclass="List" style="text-indent:-100px; margin-left:100px;"><text styleclass="Code with box">filepath</text><tab />The name and path of the header file to use in stead of XSharpDefs.Xh. When no path is included then the compiler will use the Includepath specified from the commandline (<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-i">-i</link>)</para>
   </body>
 </topic>

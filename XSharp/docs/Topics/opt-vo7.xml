@@ -11,14 +11,10 @@
     </header>
     <para styleclass="Normal">The -vo7 option directs the compiler to allow implicit casts and conversions that are allowed in Visual Objects but which would normally be illegal or require an explicit cast in X#.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-vo7[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
     <para styleclass="List">+ | - <tab />Specifying +, or just -vo7, directs the compiler to allow certain implicit casts and conversions that are allowed in Visual Objects. </para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">Visual Objects allows implicit casts between types with different semantics, whereas X# normally requires explicit casts in such cases.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">For example, Visual Objects allows implicit conversions between integer types and pointer types. While pointers are integers, they have different semantics. Integers are numerical values and pointers are addresses representing memory locations. In addition to the difference in semantics, the size of a pointer is dependent upon the underlying platform whereas the size of an integer does not change from platform to platform (with the exception of System.IntPtr).</para>
@@ -97,24 +93,19 @@
       </tr>
     </table></para>
     <para styleclass="Heading2">Example</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">The following code is valid in Visual Objects, but will not compile in X# unless -vo7 is used, because CreateObject() returns OBJECT and there is no implicit conversion from OBJECT to a more derived type (such a conversion cannot be guaranteed to be safe, and implicit conversions are always safe).</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">...</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> f </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> s </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SYMBOL</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">s := #foo</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">f := CreateObject( s ) </text><text style="font-weight:bold; font-style:italic; color:#339966;">// no implicit conversion from &apos;OBJECT&apos; to &apos;foo&apos;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Using -vo7 has the same effect as if the assignment into f were rewritten as:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box"></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">f := (foo) CreateObject( s )</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">In either case, the resulting code is exactly the same, and the cast to foo may fail at runtime. However, the explicit cast self-documents that you expect the return from CreateObject() to contain an instance of foo.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The following example is also valid in Visual Objects, but will not compile in X# unless -vo7 is used, because the @ operator returns the address of its operand (a typed pointer) and pointers are not the same as references in X#:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> x </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">ByRef( @x )</text><br/><br/><text style="font-weight:normal; font-style:normal; color:#000000;">...</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ByRef( i </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">REF</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">i := 5</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The -vo7 option will automatically convert @x, which resolves to type INT PTR, into REF INT which is compatible with the function parameter. However, it is recommended that you remove the @ operator rather than use -vo7 for this purpose.</para>
     <para styleclass="Normal"></para>

@@ -6,6 +6,110 @@
     <header>
       <para styleclass="Heading1">Disclaimer</para>
     </header>
-    <para styleclass="Body Text">The VO &amp; Vulcan dialect is &#160;supported both in combination with the Vulcan runtime as well as with the X# runtime.<br/>We have successfully compiled both the Vulcan SDK and applications that depend on this SDK.<br/>The Vulcan Runtime is part of the Vulcan.NET product. <br/>You can download a free trial version of Vulcan.NET from <link displaytype="text" defaultstyle="true" type="weblink" href="http://www.govulcan.net" target="_blank">www.govulcan.net</link> and use the runtime that comes with this trial version with X#. <br/>The runtime in the trial version does not have any technical restrictions<br/><link displaytype="text" defaultstyle="true" type="topiclink" href="Known-Issues">Click here for the complete (but short) list of known issues</link></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">At this moment X# supports the following Xbase dialects:</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><table styleclass="Default" rowcount="7" colcount="4">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Dialect</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Syntax</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Classes </para>
+        </td>
+        <td>
+          <para styleclass="Normal">Functions</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Complete</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Complete</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Complete</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Visual Objects</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Complete</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Complete</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Complete</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Vulcan</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Complete</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Complete</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Complete</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XBase++</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Partially. </para>
+        </td>
+        <td>
+          <para styleclass="Normal">Partially.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Partially</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">(Visual) FoxPro</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Partially. </para>
+        </td>
+        <td>
+          <para styleclass="Normal">Partially.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Partially.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">(X)Harbour</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Partially. </para>
+        </td>
+        <td>
+          <para styleclass="Normal">Partially.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Partially.</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">For more info about the dialects see the <link displaytype="text" defaultstyle="true" type="topiclink" href="Dialects">dialects topic </link>in this documentation</para>
   </body>
 </topic>

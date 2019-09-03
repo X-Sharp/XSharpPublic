@@ -12,10 +12,8 @@
     </header>
     <para styleclass="Normal">This option sends a listing of compiler options, and a brief description of each option, to stdout.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-help &#160;<br/>-? <text styleclass="Normal">&#32;</text></para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">If this option is included in a compilation, no output file will be created and no compilation will take place.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This compiler option is unavailable in Visual Studio and cannot be changed programmatically.</para>

@@ -11,19 +11,15 @@
     </header>
     <para styleclass="Normal">The -i option adds a directory to the list of directories the compiler searches for include files.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-i:dir</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">dir</text>&#32;<tab ->A directory to add to list list of directories the compiler searches for include files. </para>
+    <para styleclass="List"><text styleclass="Code Example">dir</text>&#32;<tab />A directory to add to list list of directories the compiler searches for include files. </para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">The compiler searches for files included with #include in the following order:</para>
     <para styleclass="Normal"></para>
     <list id="2" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">The current working directory </li>
-      <li styleclass="Normal" style="margin-left:13px;">The include subdirectory of the Vulcan.NET installation directory </li>
+      <li styleclass="Normal" style="margin-left:13px;">The include subdirectory of the Vulcan.NET installation directory (when applicable)</li>
       <li styleclass="Normal" style="margin-left:13px;">The include subdirectory of the XSharp installation directory </li>
       <li styleclass="Normal" style="margin-left:13px;">Any directories specified with -i </li>
       <li styleclass="Normal" style="margin-left:13px;">Any directories specified with the INCLUDE environment variable </li>

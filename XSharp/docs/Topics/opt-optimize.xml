@@ -11,10 +11,8 @@
     </header>
     <para styleclass="Normal">The -optimize option enables or disables optimizations performed by the compiler to make your output file smaller, faster, and more efficient.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-optimize[+ | -] &#160;</para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">-optimize also tells the common language runtime to optimize code at runtime.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">By default, optimizations are disabled. Specify -optimize+ to enable optimizations.</para>

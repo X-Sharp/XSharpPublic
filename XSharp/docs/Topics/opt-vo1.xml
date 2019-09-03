@@ -11,15 +11,10 @@
     </header>
     <para styleclass="Normal">The -vo1 compiler option directs the compiler to treat Init() methods as constructors and Axit methods as Destructor.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-vo1[+ | -] <text styleclass="Normal">&#32;</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
     <para styleclass="List">+ | - <tab />Specifying +, or just -vo2, directs the compiler to initialize all variables and fields of type STRING and all elements of DIM ... AS STRING arrays to an empty string (String.Empty). </para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
-    <para styleclass="Normal"></para>
     <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>

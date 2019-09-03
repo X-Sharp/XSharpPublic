@@ -11,11 +11,9 @@
     </header>
     <para styleclass="Normal">Specifies an assembly whose non-public types a .netmodule can access.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">-moduleassemblyname:assembly_name &#160;</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">assembly_name</text><tab ->The name of the assembly whose non-public types the .netmodule can access.</para>
+    <para styleclass="List"><text styleclass="Code Example">assembly_name</text><tab />The name of the assembly whose non-public types the .netmodule can access.</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">-moduleassemblyname should be used when building a .netmodule, and where the following conditions are true:</para>

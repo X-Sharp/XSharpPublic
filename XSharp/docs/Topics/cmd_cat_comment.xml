@@ -12,7 +12,7 @@
     </header>
     <para styleclass="List"></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_NOTE">NOTE</link></para>
-    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_TEXTBLOCK">TEXTBLOCK</link></para>
+    <para styleclass="link"></para>
     <para styleclass="List"></para>
   </body>
 </topic>

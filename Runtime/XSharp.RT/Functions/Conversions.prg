@@ -818,7 +818,7 @@ FUNCTION Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 /// <returns>A string with DOT as decimal separator.</returns>
 FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 
-
+   LOCAL lUnspecifiedDecimals := dwDec == UInt32.MaxValue AS LOGIC
    IF dwDec == UInt32.MaxValue
         IF RuntimeState.Fixed
             dwDec := (DWORD) RuntimeState.Decimals
@@ -842,7 +842,7 @@ FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 	            END IF
             END IF
             IF dwLen == UInt32.MaxValue - 1
-	            dwLen := (DWORD) nSignificant + dwDec +1
+	            dwLen := (DWORD) nSignificant + dwDec + 2
             ELSE
 	            dwLen := (DWORD) RuntimeState.Digits + dwDec +1
             END IF
@@ -853,8 +853,8 @@ FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
       dwLen := Math.Min( dwLen, MAXDIGITS )
    ENDIF
 
- 
-   IF dwDec > 0 .AND. dwLen != UInt32.MaxValue .AND. ( dwLen < ( dwDec + 2 ) )
+
+ IF dwDec > 0 .AND. dwLen != UInt32.MaxValue .and. !lUnspecifiedDecimals .AND. ( dwLen < ( dwDec + 2 ) )
       RETURN STRING{ c'*', (INT) dwLen }
    ENDIF
    RETURN ConversionHelpers.FormatNumber(f, (INT) dwLen, (INT) dwDec)

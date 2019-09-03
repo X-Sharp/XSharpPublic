@@ -62,9 +62,9 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
         SELF:CloseButton:Anchor := System.Windows.Forms.AnchorStyles.Bottom
         SELF:CloseButton:CausesValidation := FALSE
         SELF:CloseButton:DialogResult := System.Windows.Forms.DialogResult.OK
-        SELF:CloseButton:Location := System.Drawing.Point{302, 297}
+        SELF:CloseButton:Location := System.Drawing.Point{250, 297}
         SELF:CloseButton:Name := "CloseButton"
-        SELF:CloseButton:Size := System.Drawing.Size{75, 23}
+        SELF:CloseButton:Size := System.Drawing.Size{122, 23}
         SELF:CloseButton:TabIndex := 1
         SELF:CloseButton:Text := "Close"
         SELF:CloseButton:UseVisualStyleBackColor := TRUE
@@ -72,7 +72,7 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
         // CopyButton
         //
         SELF:CopyButton:Anchor := System.Windows.Forms.AnchorStyles.Bottom
-        SELF:CopyButton:Location := System.Drawing.Point{383, 297}
+        SELF:CopyButton:Location := System.Drawing.Point{410, 297}
         SELF:CopyButton:Name := "CopyButton"
         SELF:CopyButton:Size := System.Drawing.Size{122, 23}
         SELF:CopyButton:TabIndex := 2

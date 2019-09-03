@@ -1,6 +1,6 @@
 CLASS WCError INHERIT error
 
-CONSTRUCTOR(methodName, className, desc, VAR, varnum, lAllowIgnore) 
+CONSTRUCTOR(methodName, className, desc, varName, varnum, lAllowIgnore) 
 	LOCAL rsSubSystem AS ResourceString
     //RvdH 080609 Added call to super:Init to correctly fill the callstack
     SUPER()
@@ -26,9 +26,9 @@ CONSTRUCTOR(methodName, className, desc, VAR, varnum, lAllowIgnore)
 	ENDIF
 	CanDefault := lAllowIgnore
 
-	IF !IsNil(VAR) .OR. !IsNil(varnum)
-		arg:=AsString(VAR)
-		argtype:=UsualType(VAR)
+	IF !IsNil(varName) .OR. !IsNil(varnum)
+		arg:=AsString(varName)
+		argtype:=UsualType(varName)
 	ENDIF
 
 	IF !IsNil(varnum)

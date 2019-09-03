@@ -126,6 +126,9 @@ BEGIN NAMESPACE XSharp
     PRIVATE METHOD setDefaultValues() AS VOID
         SELF:FuncSym := ProcName(2)
         SELF:Args    := <OBJECT>{}
+        IF String.IsNullOrEmpty(SELF:StackTrace)
+            SELF:_StackTrace  := System.Diagnostics.StackTrace{2,TRUE}:ToString()
+        ENDIF
         RETURN
     
     /// <summary>Create an Error Object</summary>

@@ -19,10 +19,10 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
 
 	/// <inheritdoc />
     VIRTUAL METHOD Close() AS LOGIC
-        IF (! SUPER:Close())
+        IF ! SUPER:Close()
             RETURN FALSE
         ENDIF
-        IF (SELF:_hStatement != System.IntPtr.Zero)
+        IF SELF:_hStatement != System.IntPtr.Zero
             SUPER:_CheckError(ACE.AdsCloseSQLStatement(SELF:_hStatement))
             SELF:_hStatement := System.IntPtr.Zero
         ENDIF
@@ -149,8 +149,5 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
         SUPER:_CheckError(ACE.AdsRefreshRecord(SUPER:_Table))
     ENDIF
     RETURN TRUE
-
- 
-
 
 END CLASS

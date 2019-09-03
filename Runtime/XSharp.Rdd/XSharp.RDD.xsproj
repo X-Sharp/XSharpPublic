@@ -83,6 +83,7 @@
     <Compile Include="ACE\AceUnpublished32.prg" />
     <Compile Include="ACE\AceUnpublished64.prg" />
     <Compile Include="Advantage\AdsADT.prg" />
+    <Compile Include="Advantage\AdsColumn.prg" />
     <Compile Include="Advantage\AdsError.prg" />
     <Compile Include="Advantage\ADSIndex.prg" />
     <Compile Include="Advantage\ADSMemo.prg" />

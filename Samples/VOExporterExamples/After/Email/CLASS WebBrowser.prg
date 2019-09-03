@@ -1,11 +1,11 @@
-﻿using ShDocVw
-using AxShDocVw
 using Email
-using System.Collections.Generic
+using AxShDocVw
+using ShDocVw
+
 CLASS WebBrowser INHERIT MultiLineEdit
 	EXPORT Okay AS LOGIC
-    	EXPORT oHost as webBrowserHost
-    	EXPORT oWebBrowser as AxWebBrowser	
+    EXPORT oHost as webBrowserHost
+    EXPORT oWebBrowser as AxWebBrowser
 
 
 METHOD Display(cText AS STRING, lHtml AS LOGIC) AS VOID PASCAL 
@@ -30,7 +30,7 @@ METHOD Display(cText AS STRING, lHtml AS LOGIC) AS VOID PASCAL
 	ENDIF
 	
 	IF !Empty(cFileName)	
-        	SELF:oWebBrowser:Navigate(cFileName)
+		SELF:oWebBrowser:Navigate(cFileName)
 	ENDIF
 	
 	RETURN
@@ -43,7 +43,7 @@ METHOD GoEnd()
 	bError:=ErrorBlock({ |x| WebBrowserTrapError(x) })
 
  	BEGIN SEQUENCE			
-        	SELF:oWebBrowser:Navigate("#end" )
+		SELF:oWebBrowser:Navigate("#end" )
 
 		ErrorBlock(bError)
 	RECOVER
@@ -58,7 +58,7 @@ METHOD GoTop()
 	bError:=ErrorBlock({ |x| WebBrowserTrapError(x) })
 
  	BEGIN SEQUENCE			
-        	SELF:oWebBrowser:Navigate("#top" )
+		SELF:oWebBrowser:Navigate("#top" )
 		
 		ErrorBlock(bError)
 	RECOVER
@@ -73,7 +73,7 @@ METHOD HTMLPageGoBack()
 	bError:=ErrorBlock({ |x| WebBrowserTrapError(x) })
 
  	BEGIN SEQUENCE			
-        	SELF:oWebBrowser:Navigate("#goback" )
+		SELF:oWebBrowser:GoBack ()
 		ErrorBlock(bError)
 	RECOVER
 		ErrorBlock( bError )
@@ -87,7 +87,7 @@ METHOD HTMLPageGoForward()
 	bError:=ErrorBlock({ |x| WebBrowserTrapError(x) })
 
  	BEGIN SEQUENCE			
-        	SELF:oWebBrowser:Navigate("#goforward" )
+		SELF:oWebBrowser:GoForward ()
 		ErrorBlock(bError)
 	RECOVER
 		ErrorBlock( bError )
@@ -108,43 +108,22 @@ CONSTRUCTOR( oWindow, xID, oPoint, oDimension, lDataAware )
 
 	SELF:Caption	 := "WebBrowser"
 	SELF:HyperLabel := HyperLabel{ #WebBrowser, NULL_STRING, NULL_STRING, NULL_STRING }
-	//SELF:Okay		 := SELF:CreateEmbedding( "Shell.Explorer" )
-	oHost := webBrowserHost{}
-	SELF:oWebBrowser := oHost:axWebBrowser1
-	SetParent(oWebBrowser:Handle, self:Handle())
-	SELF:oWebBrowser:Visible := TRUE
-	SELF:oWebBrowser:NavigateComplete2 += NavigateComplete2
-	SELF:Okay := TRUE
+    SELF:oHost := webBrowserHost{}            // Create the host window, do not show !
+    SELF:oWebBrowser := SELF:oHost:axWebBrowser1   // Get the ActiveX on the form
+    SetParent(oWebBrowser:Handle, self:Handle())   // Using Windows API "steal" its handle and link to the MLE
+    SELF:oWebBrowser:Visible := TRUE            // make the webbrowser visible
+    SELF:oWebBrowser:NavigateComplete2 += NavigateComplete2
+    SELF:Okay := TRUE
+
 	RETURN SELF
-
-METHOD NavigateComplete2(sender AS OBJECT, e AS AxSHDocVw.DWebBrowserEvents2_NavigateComplete2Event) AS VOID
-    	SELF:Owner:StatusBar:SetText("Showing file: "+e:uRL:ToString())
-
-
-METHOD Resize(oEvent) 
-	LOCAL oDim as Dimension
-	SUPER:Resize(oEvent)
-	oDim := SELF:Size
-	IF oDim:Width > 0
-		SELF:oWebBrowser:SuspendLayout()
-		SELF:oWebBrowser:Location := System.Drawing.Point{0,0}
-		SELF:oWebBrowser:Size := System.Drawing.Size{oDim:Width,oDim:Height}
-		SELF:oWebBrowser:ResumeLayout()
-	ENDIF
-	RETURN NIL
-METHOD Destroy() CLIPPER
-    	SUPER:Destroy()
-    	SELF:oWebBrowser:Dispose()
-    	SELF:oHost:Dispose()
-    	RETURN NIL
 
 METHOD PageSetup() 
 	LOCAL bError 	AS CODEBLOCK
 
 	bError:=ErrorBlock({ |x| WebBrowserTrapError(x) })
 
- 	BEGIN SEQUENCE
-        	SELF:oWebBrowser:ExecWB(OLECMDID.OLECMDID_PAGESETUP, OLECMDEXECOPT.OLECMDEXECOPT_DODEFAULT)
+ 	BEGIN SEQUENCE			
+        SELF:oWebBrowser:ExecWB(OLECMDID.OLECMDID_PAGESETUP, OLECMDEXECOPT.OLECMDEXECOPT_DODEFAULT )
 		ErrorBlock(bError)
 	RECOVER
 		ErrorBlock( bError )
@@ -158,7 +137,7 @@ METHOD Print()
 	bError:=ErrorBlock({ |x| WebBrowserTrapError(x) })
 
  	BEGIN SEQUENCE			
-     		SELF:oWebBrowser:ExecWB(OLECMDID.OLECMDID_PRINT, OLECMDEXECOPT.OLECMDEXECOPT_DODEFAULT )
+        SELF:oWebBrowser:ExecWB(OLECMDID.OLECMDID_PRINT, OLECMDEXECOPT.OLECMDEXECOPT_DODEFAULT )
 		ErrorBlock(bError)
 	RECOVER
 		ErrorBlock( bError )
@@ -173,7 +152,7 @@ METHOD PrintPreview()
 	bError:=ErrorBlock({ |x| WebBrowserTrapError(x) })
 
  	BEGIN SEQUENCE			
-     		SELF:oWebBrowser:ExecWB(OLECMDID.OLECMDID_PRINTPREVIEW, OLECMDEXECOPT.OLECMDEXECOPT_DODEFAULT)
+     	Send( SELF, #ExecWB, OLECMDID_PRINTPREVIEW, OLECMDEXECOPT_DODEFAULT, NIL, NIL )
 		ErrorBlock(bError)
 	RECOVER
 		ErrorBlock( bError )
@@ -181,22 +160,25 @@ METHOD PrintPreview()
 
    RETURN SELF
 
-METHOD Quit(		) 
-	// Exits application and closes the open document.
+METHOD Resize(oEvent) 
+ LOCAL oDim as Dimension
+ SUPER:Resize(oEvent)
+ oDim := SELF:Size
+ IF oDim:Width > 0
+    SELF:oWebBrowser:SuspendLayout()
+    SELF:oWebBrowser:Location := System.Drawing.Point{0,0}
+    SELF:oWebBrowser:Size := System.Drawing.Size{oDim:Width,oDim:Height}
+    SELF:oWebBrowser:ResumeLayout()
+ ENDIF
+ RETURN NIL
 
-	//LOCAL oMethod  	AS cOleMethod
-	LOCAL uRetValue	AS USUAL
-//
-	//oMethod		      	:= cOleMethod{}
-	//oMethod:symName	  	:= String2Symbol("Quit")
-	//oMethod:iMemberid  	:= 300 
-	//oMethod:wInvokeKind	:= INVOKE_METHOD  
-//
-	//uRetValue := SELF:oAuto:__Invoke(oMethod, DWORD(_BP+16),PCount())
-//
-    	SELF:oWebBrowser:Quit()
-	RETURN (uRetValue)
-    
+METHOD Destroy()
+  SUPER:Destroy()
+  SELF:oWebBrowser:Dispose()
+  SELF:oHost:Dispose()
+  RETURN NIL
+METHOD NavigateComplete2(sender AS OBJECT, e AS DWebBrowserEvents2_NavigateComplete2Event) AS VOID
+       SELF:Owner:StatusBar:SetText("Showing file:" +e:uRL:ToString())
 END CLASS
 STATIC FUNCTION WebBrowserTrapError(oError AS Error)
 	BREAK oError

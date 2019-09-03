@@ -40,7 +40,7 @@
     <VO13>false</VO13>
     <VO14>false</VO14>
     <VO15>false</VO15>
-    <XSharpProjectversion>2.0.4.0</XSharpProjectversion>
+    <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>

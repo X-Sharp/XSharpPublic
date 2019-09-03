@@ -1,4 +1,4 @@
-ReplyMenu MENU
+ ReplyMenu MENU
 Begin
 	POPUP "Reply"
 	BEGIN

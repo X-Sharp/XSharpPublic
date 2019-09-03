@@ -2483,12 +2483,11 @@
     <value>Subsystem</value>
   </data>
   <data name="ERROR_STACK" xml:space="preserve">
-    <value>Gerufen von</value>
+    <value>Aufrufreihenfolge</value>
   </data>
   <data name="ERROR_CALLEDFROM" xml:space="preserve">
     <value>Gerufen von</value>
   </data>
-
   <data name="INVALIDARGTYPE" xml:space="preserve">
     <value>Ungültiger Argumenttyp</value>
   </data>
@@ -2547,14 +2546,14 @@
   <data name="ERRORDIALOG_COPY" xml:space="preserve">
     <value>&amp;In die Zwischenablage kopieren</value>
   </data>
-    <!-- The following strings are not used (yet) in X#-->
-   <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
+  <!-- The following strings are not used (yet) in X#-->
+  <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
     <value>aLookupTable muß n, 2 dimensioniert sein</value>
   </data>
-    <data name="__CAVOSTR_SYSLIB_ERROR" xml:space="preserve">
+  <data name="__CAVOSTR_SYSLIB_ERROR" xml:space="preserve">
     <value>%V1s %s. Fehler</value>
   </data>
-    <data name="__CAVOSTR_SYSLIB_FILE_HANDLE" xml:space="preserve">
+  <data name="__CAVOSTR_SYSLIB_FILE_HANDLE" xml:space="preserve">
     <value>%V1s Dateihandle: %s</value>
   </data>
   <data name="__CAVOSTR_SYSLIB_FUNCPTR" xml:space="preserve">

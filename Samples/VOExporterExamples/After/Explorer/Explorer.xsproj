@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup>
-    <ProjectGuid>{bf102398-aabb-4141-be44-2249006869de}</ProjectGuid>
+    <ProjectGuid>0C4F4347-33C2-4A81-A1D5-306C46FDB0BD</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Explorer</RootNamespace>
@@ -40,7 +40,9 @@
     <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>true</VO16>
-    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
+    <NoStandardDefs>false</NoStandardDefs>
+    <IncludePaths />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -58,8 +60,6 @@
     <DisabledWarnings>9032;9043;618;162;649;9025</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths />
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
@@ -81,44 +81,32 @@
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="VulcanRT">
+    <Reference Include="XSharp.Core">
       <SpecificVersion>false</SpecificVersion>
     </Reference>
-    <Reference Include="VulcanRTFuncs">
+    <Reference Include="XSharp.RT">
       <SpecificVersion>false</SpecificVersion>
     </Reference>
-    <Reference Include="VulcanVOSystemClasses">
+    <Reference Include="XSharp.VO">
       <SpecificVersion>false</SpecificVersion>
     </Reference>
-    <Reference Include="VulcanVORDDClasses">
+    <Reference Include="VOSystemClasses">
       <SpecificVersion>false</SpecificVersion>
     </Reference>
-    <Reference Include="VulcanVOGUIClasses">
+    <Reference Include="VORDDClasses">
       <SpecificVersion>false</SpecificVersion>
     </Reference>
-    <Reference Include="VulcanVOWin32APILibrary">
+    <Reference Include="VOGUIClasses">
       <SpecificVersion>false</SpecificVersion>
     </Reference>
-    <Reference Include="SDK_DEFINES.dll">
-      <Name>SDK_DEFINES.dll</Name>
-      <AssemblyName>SDK_DEFINES.dll.dll</AssemblyName>
+    <Reference Include="VOWin32APILibrary">
       <SpecificVersion>false</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\SDK_DEFINES.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Start.prg">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="Properties\cavowed.inf" />
-    <None Include="Properties\saswed.inf" />
-    <None Include="Properties\GSGWED.INF" />
-    <None Include="Properties\cavowed.tpl" />
-    <None Include="Properties\cavoded.tpl" />
-    <None Include="Properties\cavofed.tpl" />
-    <None Include="Resources\ONE.ICO" />
-    <None Include="Resources\TWO.ICO" />
     <Compile Include="Explorer Shell.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -138,6 +126,9 @@
       <DependentUpon>Menus.prg</DependentUpon>
     </NativeResource>
     <NativeResource Include="Menus.OrdersListViewMenu.rc">
+      <DependentUpon>Menus.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Menus.VS_VERSION_INFO.rc">
       <DependentUpon>Menus.prg</DependentUpon>
     </NativeResource>
     <VOBinary Include="Menus.CustomerExplorerMenu.xsmnu">
@@ -173,14 +164,17 @@
     <NativeResource Include="Icons.ICONTWO.rc">
       <DependentUpon>Icons.prg</DependentUpon>
     </NativeResource>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="CATO3SPL.DLL">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="MSVCRT.DLL">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Properties\cavowed.inf" />
+    <None Include="Properties\saswed.inf" />
+    <None Include="Properties\GSGWED.INF" />
+    <None Include="Properties\cavowed.tpl" />
+    <None Include="Properties\cavoded.tpl" />
+    <None Include="Properties\cavofed.tpl" />
+    <None Include="Resources\ONE.ICO" />
+    <None Include="Resources\TWO.ICO" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

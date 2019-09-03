@@ -189,7 +189,7 @@ method VerticalSpin( oSpinEvent )
 	super:VerticalSpin(oSpinEvent)
 
   if oSpinEvent:Spinner == oDCCrustSpinner
-  	oDCCrustEdit:TextValue := LTrim(AsString(oSpinEvent:Value))
+  	oDCCrustEdit:TextValue := LTrim(AsString(oSpinEvent:@@Value))
   endif	
 
 	return NIL

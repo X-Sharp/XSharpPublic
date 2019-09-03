@@ -1,4 +1,4 @@
-﻿#region DEFINES
+#region DEFINES
 STATIC DEFINE ADDRESSFROMBOOK_FIXEDTEXT1 := 107 
 STATIC DEFINE ADDRESSFROMBOOK_LOOKUP := 100 
 STATIC DEFINE ADDRESSFROMBOOK_MULTILINEEDIT1 := 102 
@@ -40,7 +40,7 @@ METHOD EditChange(oControlEvent)
 	IF oControl != Null_Object .and. oControl:NameSym == #SLELookUp
 		cContact := Trim(oControl:TextValue)
 		IF !SELF:Server:Seek(cContact)
-			MessageBox(NULL_PTR, String2Psz("The case sensitive search failed to find " + cContact), String2Psz("Lookup Failed"), MB_ICONSTOP+MB_OK)
+			MessageBox(NULL_PTR, String2Psz("The case sensitive search failed to find " + cContact), PSZ("Lookup Failed"), MB_ICONSTOP+MB_OK)
 		ENDIF
 	ENDIF		
 
@@ -138,7 +138,7 @@ METHOD PBMove( )
 		cTemp +=  "; "+ cEntry
 	ENDIF
 
-	SELF:oDCMultiLineEdit1:Value := cTemp
+	SELF:oDCMultiLineEdit1:@@Value := cTemp
 
 	RETURN SELF
 
@@ -156,7 +156,7 @@ METHOD PBNew( )
 METHOD PBOk( ) 
 
 	IF !IsNil(oControl)
-		oControl:Value := oDCMULtiLineEdit1:Value
+		oControl:@@Value := oDCMULtiLineEdit1:@@Value
 	ENDIF		
 
 	SELF:EndWindow()	
@@ -173,7 +173,7 @@ METHOD PostInit(oWindow,iCtlID,oServer,uExtra)
 	ELSE
 		// Using this window to select email addresses
 		SELF:oControl := uExtra
-		SELF:oDCMultiLineEdit1:Value := uExtra:Value
+		SELF:oDCMultiLineEdit1:@@Value := uExtra:@@Value
 	ENDIF
 
 	RETURN NIL

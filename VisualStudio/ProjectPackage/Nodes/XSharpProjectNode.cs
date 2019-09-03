@@ -1990,6 +1990,19 @@ namespace XSharp.Project
                 if (vers != null)
                 {
                     ok = vers.UnevaluatedValue == Constants.FileVersion;
+                    if (!ok)
+                    {
+                        var strVers = vers.UnevaluatedValue.Replace(".", "");
+                        int version = 0;
+                        if (Int32.TryParse(strVers, out version))
+                        {
+                            ok = version >= 2010;
+                        }
+                        else
+                        {
+                            ok = false;
+                        }
+                    }
                 }
                 else
                     ok = false;

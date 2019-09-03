@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -22,7 +22,7 @@ BEGIN NAMESPACE XSharp
 		PROPERTY Day		AS INT GET
 		/// <summary>Date as System.DateTime structure</summary>
 		/// <returns>System.DateTime value</returns>
-		PROPERTY Value		AS DateTime GET 
+		PROPERTY @@Value		AS DateTime GET 
 		/// <summary>Is the date empty (NULL_DATE)</summary>
 		/// <returns>Logical value</returns>
 		PROPERTY IsEmpty	AS LOGIC GET
@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharp
 	INTERFACE IFloat
 		/// <summary>Double value of the Float</summary>
 		/// <returns>Integer value</returns>
-		PROPERTY Value    AS REAL8 GET
+		PROPERTY @@Value    AS REAL8 GET
 		/// <summary>Number of digits (includes the optional decimal separator and decimals).</summary>
 		/// <returns>Integer value</returns>
 		PROPERTY Digits	  AS INT  GET 

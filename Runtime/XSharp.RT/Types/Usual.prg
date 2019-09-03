@@ -430,7 +430,7 @@ BEGIN NAMESPACE XSharp
         #endregion
         #region Properties FOR the Debugger
         /// <exclude />
-        PROPERTY VALUE AS OBJECT
+        PROPERTY @@Value AS OBJECT
             GET
                 IF (_UsualType == __UsualType.Void)
                     RETURN "NIL"
@@ -2467,7 +2467,7 @@ BEGIN NAMESPACE XSharp
                 _uvalue := u
 
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
-            PUBLIC PROPERTY VALUE AS OBJECT GET _uvalue:VALUE
+            PUBLIC PROPERTY @@Value AS OBJECT GET _uvalue:VALUE
             PUBLIC PROPERTY Type  AS __UsualType GET _uvalue:_usualType
 
         END CLASS

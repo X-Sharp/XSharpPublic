@@ -399,7 +399,7 @@ BEGIN NAMESPACE XSharp
         _svalue := s
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
-        PUBLIC PROPERTY VALUE AS OBJECT GET _svalue:_VALUE
+        PUBLIC PROPERTY @@Value AS OBJECT GET _svalue:_VALUE
 
     END CLASS
 

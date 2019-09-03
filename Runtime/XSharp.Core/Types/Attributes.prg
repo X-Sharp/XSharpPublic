@@ -14,7 +14,7 @@ BEGIN NAMESPACE XSharp.Internal
 	SEALED CLASS ActualTypeAttribute INHERIT Attribute
 		PRIVATE INITONLY _value AS System.Type
 		///<summary>The actual type of the parameter.</summary>
-		PROPERTY VALUE AS System.Type GET _value
+		PROPERTY @@Value AS System.Type GET _value
 		/// <summary></summary>	
 		CONSTRUCTOR(VALUE AS System.Type)
 			_value := VALUE
@@ -85,7 +85,7 @@ BEGIN NAMESPACE XSharp.Internal
 		PRIVATE INITONLY _value AS OBJECT
 		PRIVATE INITONLY _flag  AS INT
 		/// <summary>Value of the default parameter</summary>
-		PROPERTY Value AS OBJECT GET _value
+		PROPERTY @@Value AS OBJECT GET _value
         /// <summary>Flag indicating the type of the default parameter</summary>
         /// <remarks>
 	    /// 0 = Regular .Net default value 

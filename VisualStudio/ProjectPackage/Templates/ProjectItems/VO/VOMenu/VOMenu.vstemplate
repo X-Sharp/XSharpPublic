@@ -11,14 +11,6 @@
      <SortOrder>202</SortOrder>
   </TemplateData>
   <TemplateContent>
-    <References>
-      <Reference>
-        <Assembly>VulcanVOGUIClasses</Assembly>
-      </Reference>
-      <Reference>
-        <Assembly>VulcanVOSystemClasses</Assembly>
-      </Reference>
-    </References>
     <ProjectItem OpenInEditor="false" ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.prg">VOMenu.prg</ProjectItem>
     <ProjectItem OpenInEditor="true" ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.$fileinputname$.xsmnu">VOMenu.xsmnu</ProjectItem>
     <ProjectItem OpenInEditor="false" ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.$fileinputname$.rc">VOMenu.rc</ProjectItem>

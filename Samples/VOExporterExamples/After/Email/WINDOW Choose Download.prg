@@ -61,7 +61,7 @@ METHOD ButtonClick(oControlEvent)
 	SUPER:ButtonClick(oControlEvent)
 
 	IF IsInstanceOf(oControl, #RadioButton)
-		IF SELF:oDCSelectionOptions:Value = "DOWNLOAD"
+		IF SELF:oDCSelectionOptions:@@Value = "DOWNLOAD"
 			SELF:oDCDeleteDownloadedMail:Enable()
 		ELSE
 			SELF:oDCDeleteDownloadedMail:Disable()
@@ -199,18 +199,18 @@ METHOD OKButton()
 	LOCAL lAborted, lNoQuit	AS LOGIC
 	LOCAL oProgWin AS ProgressWindow
 	
-	IF Empty(SELF:oDCSelectionOptions:Value)
-		MessageBox(NULL_PTR, String2Psz("Please select a download mode"), String2Psz("Missing Information"), MB_ICONSTOP+MB_OK)
+	IF Empty(SELF:oDCSelectionOptions:@@Value)
+		MessageBox(NULL_PTR, PSZ("Please select a download mode"), PSZ("Missing Information"), MB_ICONSTOP+MB_OK)
 		RETURN NIL
 	ENDIF
 
-	IF SELF:oDCSelectionOptions:Value = "DOWNLOAD"	
+	IF SELF:oDCSelectionOptions:@@Value = "DOWNLOAD"	
 		cMessage := "Download selected headers ?"
 	ELSE
 		cMessage := "Delete selected headers ?"
 	ENDIF
 
-	IF MessageBox(NULL_PTR, String2Psz(cMessage), String2Psz("Process Selections"), MB_ICONINFORMATION+MB_YESNO) != IDYES
+	IF MessageBox(NULL_PTR, PSZ(cMessage), PSZ("Process Selections"), MB_ICONINFORMATION+MB_YESNO) != IDYES
 		RETURN NIL
 	ENDIF
 
@@ -242,7 +242,7 @@ METHOD OKButton()
 	cMessage := ""
 	IF oPop:Logon(aMailInfo[DEF_ACCOUNT],aMailInfo[DEF_PASSWORD])
 		oPop:GetStatus()
-		IF SELF:oDCSelectionOptions:Value = "DOWNLOAD"
+		IF SELF:oDCSelectionOptions:@@Value = "DOWNLOAD"
 		   oPop:Progress  := oProgWin
 		   oProgWin:Count := dwTotalSize
 			FOR dwMail := 1 UPTO dwTotal
@@ -330,7 +330,7 @@ METHOD PostInit(oParent,uExtra)
 
 	// set up download option
 	SELF:oDCDeleteDownloadedMail:Checked := aMailInfo[DEF_DELETEMAIL]
-	SELF:oDCSelectionOptions:Value := "DOWNLOAD"
+	SELF:oDCSelectionOptions:@@Value := "DOWNLOAD"
 
 	// allow resizing events from now
 	SELF:lSetupComplete := TRUE

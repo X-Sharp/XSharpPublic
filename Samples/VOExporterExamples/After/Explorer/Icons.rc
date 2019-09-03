@@ -1,2 +1,2 @@
-ICONONE Icon Resources\ONE.ICO
-ICONTWO Icon Resources\TWO.ICO
+ ICONONE Icon "Resources\\ONE.ICO"
+ ICONTWO Icon "Resources\\TWO.ICO"

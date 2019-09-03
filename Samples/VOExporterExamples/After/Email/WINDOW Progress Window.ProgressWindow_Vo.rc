@@ -1,4 +1,4 @@
-ProgressWindow_Vo DIALOGEX  30, 44, 232, 93
+ ProgressWindow_Vo DIALOGEX  30, 44, 232, 93
 STYLE	4|128|2147483648|12582912
 FONT	8, "MS Shell Dlg"
 BEGIN

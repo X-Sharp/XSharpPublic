@@ -5,13 +5,7 @@ FUNCTION Start() AS INT
 		oXApp := XApp{}
 		oXApp:Start()
 	CATCH e AS Exception
-		LOCAL cMessage AS STRING
-		cMessage := e:Message
-		DO WHILE e:InnerException != NULL_OBJECT
-			e := e:InnerException
-			cMessage += CRLF+e:Message
-		ENDDO
-		ErrorBox{NIL, cMessage}:Show()
+		ErrorDialog(e)
 	END TRY
 RETURN 0
 

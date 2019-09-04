@@ -12,7 +12,7 @@ GLOBAL gaNewKeywordsInXSharp := <STRING>{;
 	"EVENT","INT64","ENUM","DELEGATE","PARTIAL","INTERFACE",;
 	"CONSTRUCTOR","DESTRUCTOR","FINALLY","TRY","CATCH","THROW","SEALED","ABSTRACT","PUBLIC",;
 	"CONST","INITONLY","VIRTUAL","NEW","OPERATOR","EXPLICIT","IMPLICIT","PROPERTY",;
-	"SET","GET","VALUE","AUTO","OUT","IMPLIED";
+	"AUTO","OUT","IMPLIED";
 	} AS STRING[]
 
 GLOBAL DefaultOutputFolder := "" AS STRING
@@ -2042,6 +2042,11 @@ CLASS EntityDescriptor
 				cWord := ""
 				oNextWord:cWord := VOFolder.Get() + "\Samples"
 				oNextNextWord:cWord := ""
+
+			CASE cWord == "." .and. oNextNextWord != NULL .and. oNextNextWord:cWord == "." .and. (oNextWord:cWord:ToUpper() == "AND" .or. oNextWord:cWord:ToUpper() == "OR") .and. oWord:eStatus != WordStatus.Comment // can be literal, if the parser thinks 1.and.2 is a numeric
+				cWord := " " + cWord
+			CASE cWord == "." .and. oPrevWord != NULL .and. (oPrevWord:cWord:ToUpper() == "AND" .or. oPrevWord:cWord:ToUpper() == "OR") .and. oNextWord != NULL .and. oNextWord:cWord:Trim():Length != 0 .and. oWord:eStatus != WordStatus.Comment // as above
+				cWord := cWord + " "
 
 			CASE oWord:eStatus == WordStatus.Text // no literals or comments
 				cWordUpper := cWord:ToUpper()

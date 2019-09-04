@@ -1495,7 +1495,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         mods, context.Attributes, context.ParamList, context.StmtBlk, context);
                     if (ctor != null)
                     {
-                        context.Put(ctor);
+                        if (!context.isInClass() && context.ClassId != null)
+                        {
+                            var cls = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), ctor, context.Namespace);
+                            context.Put(cls);
+                        }
+                        else
+                        {
+                            context.Put(ctor);
+                        }
                     }
                     else
                     {
@@ -1511,7 +1519,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         mods, context.Attributes, context.StmtBlk, context);
                     if (dtor != null)
                     {
-                        context.Put(dtor);
+                        if (!context.isInClass() && context.ClassId != null)
+                        {
+                            var cls = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), dtor, context.Namespace);
+                            context.Put(cls);
+                        }
+                        else
+                        {
+                            context.Put(dtor);
+                        }
                     }
                     else
                     {

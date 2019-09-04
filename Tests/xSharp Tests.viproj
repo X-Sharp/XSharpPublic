@@ -36444,7 +36444,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C362 - Missing pinning of locals in unsafe generated code
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C363 - Compiler crash with /vo1 and Init() outside CLASS..END CLASS *************
 Application = C363 - Compiler crash with /vo1 and Init() outside CLASS..END CLASS
 IDEVersion = 1.06
@@ -36545,7 +36545,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C363 - Compiler crash with /vo1 and Init() outside CLASS..END CLASS
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C364 - Various issues with defining classs members outside of PARTIAL CLASS..END CLASS *************
 Application = C364 - Various issues with defining classs members outside of PARTIAL CLASS..END CLASS
 IDEVersion = 1.06
@@ -36596,7 +36596,7 @@ Switches=
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0
-VO1=0
+VO1=1
 VO2=0
 VO3=0
 VO4=0
@@ -39591,7 +39591,7 @@ Target = 0
 Platform = x86
 Language = XSharp
 Runtime = CLR4
-Dialect = Vulcan
+Dialect = VO
 Folder = %ProjectPath%\Applications\C392\
 PrgSubFolder = \Prg
 ResourcesSubFolder = 
@@ -46680,7 +46680,7 @@ Target = 0
 Platform = x86
 Language = XSharp
 Runtime = CLR4
-Dialect = Vulcan
+Dialect = VO
 Folder = %ProjectPath%\Applications\C460\
 PrgSubFolder = \Prg
 ResourcesSubFolder = 
@@ -69984,9 +69984,9 @@ FileType = Code
 CopyToBin = 0
 [R681 USUAL Casts References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,
-ReferenceGAC = CLR4,XSharp.RT,1,0,
-ReferenceGAC = CLR4,XSharp.VO,1,0,
+ReferenceGAC = XSharp.Core,1,0,
+ReferenceGAC = XSharp.RT,1,0,
+ReferenceGAC = XSharp.VO,1,0,
 [R681 USUAL Casts Resources]
 [R681 USUAL Casts Native Resources]
 [R681 USUAL Casts License files]

@@ -1679,7 +1679,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             if ((AccMet == null || AssMet == null) && !mergePartialDeclarations)
             {
-                // When one of the two is missing and we are in a partial class\
+                // When one of the two is missing and we are in a partial class
                 // then we generate a normal method. Later from the LanguageParser
                 // we will generate a property and in its body we will call the generated method
                 var ent = context as XP.IEntityContext;
@@ -1695,9 +1695,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                         var met = AccMet ?? AssMet;
                         cls.PartialProperties.Add(met);
-                        if (met.CsNode == null)
-                            met.CsNode = ((XP.ClsmethodContext)met.Parent).CsNode;
-                        ((XP.ClsmethodContext)met.Parent).CsNode = null;
+                        if (met.Parent is XP.ClsmethodContext cmc)
+                        {
+                            if (met.CsNode == null)
+                                met.CsNode = cmc.CsNode;
+                            cmc.CsNode = null;
+                        }
 
                     }
                     if (AccMet != null)
@@ -3974,7 +3977,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 m = m.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ExplicitExtension));
             }
-
+            bool separateMethod = false;
             if (context.ClassId != null)
             {
                 bool GenClass = true;
@@ -4007,18 +4010,52 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         else
                             GenClass = false;
-
-
                     }
                 }
 
-                if (!m.ContainsDiagnostics && GenClass)
+                if (GenClass)
                 {
-                    m = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), m, context.Namespace);
+                    MemberDeclarationSyntax mem = null;
+                    var ce = new SyntaxClassEntities(_pool);
+                    if (context.T.Token.Type != XP.METHOD && context.Parent is XP.EntityContext)
+                    {
+                        var parent = (ParserRuleContext)context.Parent;
+                        // replace context in parent with new Class_Context
+                        // and add this context as child
+                        // This is needed because our code in the XSharpLanguageParser that merges properties expects Class_Context nodes
+                        var cls = new XP.Class_Context(parent, 0);
+                        cls.Id = context.ClassId;
+                        cls.Start = context.Start;
+                        cls.Stop = context.Stop;
+                        parent.children.Remove(context);
+                        parent.AddChild(cls);
+                        cls.AddChild(context);
+                        cls.Data.Partial = true;
+                        context.parent = cls;
+                        ce.AddVoPropertyAccessor(context);
+                        context.Put(m); // this is needed by GenerateVOProperty
+                        var vop = ce.VoProperties.Values.First();
+                        var prop = GenerateVoProperty(vop, cls);
+                        mem = prop;
+                        GlobalEntities.NeedsProcessing = true;
+                        m = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), mem, context.Namespace);
+                        cls.Put(m);
+                    }
+                    else
+                    {
+                        mem = m;
+                        m = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), mem, context.Namespace);
+                        context.Put(m);
+                    }
+                    ce.Free();
+                    return;
                 }
             }
-            context.Put(m);
-            if (context.T.Token.Type != XP.METHOD)
+            else
+            {
+                context.Put(m);
+            }
+            if (context.T.Token.Type != XP.METHOD && ! separateMethod)
             {
                 if (context.Data.HasClipperCallingConvention && context.CallingConvention != null)
                 {

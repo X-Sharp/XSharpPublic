@@ -32843,7 +32843,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C327 - cannot convert DWORD to IntPtr Resources]
 [C327 - cannot convert DWORD to IntPtr Native Resources]
 [C327 - cannot convert DWORD to IntPtr License files]
@@ -33450,7 +33450,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C333 - PCALL() with class field PTR Resources]
 [C333 - PCALL() with class field PTR Native Resources]
 [C333 - PCALL() with class field PTR License files]
@@ -34663,7 +34663,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C345 - Problem passing string as PSZ parameter Resources]
 [C345 - Problem passing string as PSZ parameter Native Resources]
 [C345 - Problem passing string as PSZ parameter License files]
@@ -34967,8 +34967,8 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOSystemClasses,1,0,1.1.303.0
-ReferenceGAC = VulcanVORDDClasses,1,0,1.1.303.0
+ReferenceGAC = VulcanVOSystemClasses,1,0,1.1.401.0
+ReferenceGAC = VulcanVORDDClasses,1,0,1.1.401.0
 [C348 - Incorrect error about mixing STRICT/CLIPPER Resources]
 [C348 - Incorrect error about mixing STRICT/CLIPPER Native Resources]
 [C348 - Incorrect error about mixing STRICT/CLIPPER License files]
@@ -35171,7 +35171,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C350 - Problem passing VOSTRUCT as parameter Resources]
 [C350 - Problem passing VOSTRUCT as parameter Native Resources]
 [C350 - Problem passing VOSTRUCT as parameter License files]
@@ -35475,7 +35475,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C353 - Some issues with VOSTRUCTs Resources]
 [C353 - Some issues with VOSTRUCTs Native Resources]
 [C353 - Some issues with VOSTRUCTs License files]
@@ -35577,7 +35577,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVORDDClasses,1,0,1.1.303.0
+ReferenceGAC = VulcanVORDDClasses,1,0,1.1.401.0
 [C354 - No error with missing /ins compiler option Resources]
 [C354 - No error with missing /ins compiler option Native Resources]
 [C354 - No error with missing /ins compiler option License files]
@@ -38404,7 +38404,7 @@ CopyToBin = 0
 [C381 - Helpdisplay References]
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C381 - Helpdisplay Resources]
 [C381 - Helpdisplay Native Resources]
 [C381 - Helpdisplay License files]
@@ -46509,7 +46509,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOGUIClasses,1,0,1.1.303.0
+ReferenceGAC = VulcanVOGUIClasses,1,0,1.1.401.0
 [C458 - Name conflict between DEFINE and METHOD Resources]
 [C458 - Name conflict between DEFINE and METHOD Native Resources]
 [C458 - Name conflict between DEFINE and METHOD License files]
@@ -48343,9 +48343,9 @@ FileType = Code
 CopyToBin = 0
 [C475 - Runtime problems comparing SYMBOL/DATE to NULL/NULL_OBJECT References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core
-ReferenceGAC = CLR4,XSharp.RT
-ReferenceGAC = CLR4,XSharp.VO
+ReferenceGAC = XSharp.Core,1,0,
+ReferenceGAC = XSharp.RT,1,0,
+ReferenceGAC = XSharp.VO,1,0,
 [C475 - Runtime problems comparing SYMBOL/DATE to NULL/NULL_OBJECT Resources]
 [C475 - Runtime problems comparing SYMBOL/DATE to NULL/NULL_OBJECT Native Resources]
 [C475 - Runtime problems comparing SYMBOL/DATE to NULL/NULL_OBJECT License files]
@@ -51096,8 +51096,8 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOInternetClasses,1,0,1.1.303.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOInternetClasses,1,0,1.1.401.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C501 - Error about ambiguous function (used to be a warning) Resources]
 [C501 - Error about ambiguous function (used to be a warning) Native Resources]
 [C501 - Error about ambiguous function (used to be a warning) License files]
@@ -55669,7 +55669,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C545 - Problem using _DLL FUNCs with __arglist params Resources]
 [C545 - Problem using _DLL FUNCs with __arglist params Native Resources]
 [C545 - Problem using _DLL FUNCs with __arglist params License files]
@@ -57186,9 +57186,9 @@ FileType = Code
 CopyToBin = 0
 [C560 - CreateInstance() cannot "see" classes with namespaces References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core
-ReferenceGAC = CLR4,XSharp.RT
-ReferenceGAC = CLR4,XSharp.VO
+ReferenceGAC = XSharp.Core,1,0,
+ReferenceGAC = XSharp.RT,1,0,
+ReferenceGAC = XSharp.VO,1,0,
 [C560 - CreateInstance() cannot "see" classes with namespaces Resources]
 [C560 - CreateInstance() cannot "see" classes with namespaces Native Resources]
 [C560 - CreateInstance() cannot "see" classes with namespaces License files]
@@ -68469,9 +68469,9 @@ FileType = Code
 CopyToBin = 0
 [C667 - XPP Test App References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core
-ReferenceGAC = CLR4,XSharp.RT
-ReferenceGAC = CLR4,XSharp.VO
+ReferenceGAC = XSharp.Core,1,0,
+ReferenceGAC = XSharp.RT,1,0,
+ReferenceGAC = XSharp.VO,1,0,
 [C667 - XPP Test App Resources]
 [C667 - XPP Test App Native Resources]
 [C667 - XPP Test App License files]
@@ -69538,8 +69538,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = C677 - Problem calling a constructor with PARAMS parameter with a USUAL
 
 ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
-; ************** APPLICATION R678 *************
-Application = R678
+; ************** APPLICATION R678 Aliased Expressions *************
+Application = R678 Aliased Expressions
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -69570,22 +69570,22 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[R678 FileGroups]
-[R678 Files]
+[R678 Aliased Expressions FileGroups]
+[R678 Aliased Expressions Files]
 File = %AppPath%\Prg\R678.prg
 FileGUID = 5228C798-4818-4862-A05A-DEE0A115395C
 FileType = Code
 CopyToBin = 0
-[R678 References]
+[R678 Aliased Expressions References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core
-ReferenceGAC = CLR4,XSharp.RT
-ReferenceGAC = CLR4,XSharp.VO
-ReferenceGAC = CLR4,XSharp.Rdd
-[R678 Resources]
-[R678 Native Resources]
-[R678 License files]
-[R678 General Options]
+ReferenceGAC = XSharp.Core,1,0,
+ReferenceGAC = XSharp.RT,1,0,
+ReferenceGAC = XSharp.VO,1,0,
+ReferenceGAC = XSharp.Rdd,1,0,
+[R678 Aliased Expressions Resources]
+[R678 Aliased Expressions Native Resources]
+[R678 Aliased Expressions License files]
+[R678 Aliased Expressions General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -69611,7 +69611,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[R678 Configurations]
+[R678 Aliased Expressions Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -69638,7 +69638,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=1
   ForceConsole=0
   ForceX86=0
-ENDApplication = R678
+ENDApplication = R678 Aliased Expressions
 
 ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION C678 - Internal compielr error with __Usual.ToObject() and /lb+ *************
@@ -69681,9 +69681,9 @@ FileType = Code
 CopyToBin = 0
 [C678 - Internal compielr error with __Usual.ToObject() and /lb+ References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.0
+ReferenceGAC = XSharp.Core,1,0,2.0.0.0
+ReferenceGAC = XSharp.RT,1,0,2.0.0.0
+ReferenceGAC = XSharp.VO,1,0,2.0.0.0
 [C678 - Internal compielr error with __Usual.ToObject() and /lb+ Resources]
 [C678 - Internal compielr error with __Usual.ToObject() and /lb+ Native Resources]
 [C678 - Internal compielr error with __Usual.ToObject() and /lb+ License files]
@@ -69783,9 +69783,9 @@ FileType = Code
 CopyToBin = 0
 [C679 - Internal compiler error with STATIC LOCALS with no type clause and /vo2 References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.0
+ReferenceGAC = XSharp.Core,1,0,2.0.0.0
+ReferenceGAC = XSharp.RT,1,0,2.0.0.0
+ReferenceGAC = XSharp.VO,1,0,2.0.0.0
 [C679 - Internal compiler error with STATIC LOCALS with no type clause and /vo2 Resources]
 [C679 - Internal compiler error with STATIC LOCALS with no type clause and /vo2 Native Resources]
 [C679 - Internal compiler error with STATIC LOCALS with no type clause and /vo2 License files]
@@ -69942,6 +69942,108 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
 ENDApplication = C680 - Problem with ?: syntax
+
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
+; ************** APPLICATION R681 USUAL Casts *************
+Application = R681 USUAL Casts
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\R681\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R681
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 4DA1FD6E-443C-43EF-9367-B4A02E0B27DA
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R681 USUAL Casts FileGroups]
+[R681 USUAL Casts Files]
+File = %AppPath%\Prg\R681.prg
+FileGUID = 3A516DC2-A364-4DD3-9F09-78B4A4349D4E
+FileType = Code
+CopyToBin = 0
+[R681 USUAL Casts References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,
+ReferenceGAC = CLR4,XSharp.RT,1,0,
+ReferenceGAC = CLR4,XSharp.VO,1,0,
+[R681 USUAL Casts Resources]
+[R681 USUAL Casts Native Resources]
+[R681 USUAL Casts License files]
+[R681 USUAL Casts General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[R681 USUAL Casts Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = R681 USUAL Casts
 [EndApplications]
 
 [Configurations]

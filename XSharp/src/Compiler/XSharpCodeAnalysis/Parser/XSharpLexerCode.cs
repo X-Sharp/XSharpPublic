@@ -1694,6 +1694,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     // normal keywords
                     {"THIS", SELF},
+                    {"AND", LOGIC_AND},
+                    {"OR", LOGIC_OR},
+                    {"NOT", LOGIC_NOT},
                 }; 
                 var vfpKeyWordAbbrev = new Dictionary<string, int>
                 {

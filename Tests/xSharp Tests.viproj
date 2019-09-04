@@ -70044,6 +70044,211 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
 ENDApplication = R681 USUAL Casts
+
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
+; ************** APPLICATION R682 - FoxPro AND, OR, NOT *************
+Application = R682 - FoxPro AND, OR, NOT
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = FoxPro
+Folder = %ProjectPath%\Applications\R682\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R682
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = E8E4D0AA-D921-4243-87C4-B30BC78710D0
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R682 - FoxPro AND, OR, NOT FileGroups]
+[R682 - FoxPro AND, OR, NOT Files]
+File = %AppPath%\Prg\R682.prg
+FileGUID = 529211F9-86B9-4E98-ABEA-676022C929AE
+FileType = Code
+CopyToBin = 0
+[R682 - FoxPro AND, OR, NOT References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,
+ReferenceGAC = CLR4,XSharp.RT,1,0,
+ReferenceGAC = CLR4,XSharp.VO,1,0,
+[R682 - FoxPro AND, OR, NOT Resources]
+[R682 - FoxPro AND, OR, NOT Native Resources]
+[R682 - FoxPro AND, OR, NOT License files]
+[R682 - FoxPro AND, OR, NOT General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[R682 - FoxPro AND, OR, NOT Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = R682 - FoxPro AND, OR, NOT
+
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
+; ************** APPLICATION R683 FoxPro Text .. Endtext *************
+Application = R683 FoxPro Text .. Endtext
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = FoxPro
+Folder = %ProjectPath%\Applications\R683\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R683
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 440D0C84-6C82-4FE4-879B-544A46CE3B29
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R683 FoxPro Text .. Endtext FileGroups]
+[R683 FoxPro Text .. Endtext Files]
+File = %AppPath%\Prg\R683.prg
+FileGUID = 0DF0E29D-24A1-4B51-BACC-7E847E1F34C2
+FileType = Code
+CopyToBin = 0
+[R683 FoxPro Text .. Endtext References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,
+ReferenceGAC = CLR4,XSharp.RT,1,0,
+ReferenceGAC = CLR4,XSharp.VO,1,0,
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VFP.dll,1,1
+[R683 FoxPro Text .. Endtext Resources]
+[R683 FoxPro Text .. Endtext Native Resources]
+[R683 FoxPro Text .. Endtext License files]
+[R683 FoxPro Text .. Endtext General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[R683 FoxPro Text .. Endtext Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = R683 FoxPro Text .. Endtext
 [EndApplications]
 
 [Configurations]

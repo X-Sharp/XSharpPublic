@@ -1213,7 +1213,7 @@ xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+
 
 
 /// FoxPro Parser definities
-keywordfox          :Token=(ENDDEFINE|  LPARAMETERS| TEXT| ENDTEXT| ADDITIVE| FLAGS| PRETEXT| NOSHOW| TEXTMERGE | OLEPUBLIC | EXCLUDE)
+keywordfox          :Token=(ENDDEFINE|  LPARAMETERS| TEXT| ENDTEXT| ADDITIVE| FLAGS| PRETEXT| NOSHOW| TEXTMERGE | OLEPUBLIC | EXCLUDE | LOGIC_AND | LOGIC_OR | LOGIC_NOT)
                     ;
 // class declaration
 // text ... endtext

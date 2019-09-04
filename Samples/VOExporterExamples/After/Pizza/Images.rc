@@ -1,15 +1,15 @@
-BROCOLI Bitmap Resources\BROCOLI.bmp
-CHEESE Bitmap Resources\CHEESE.bmp
-CHEF1 Bitmap Resources\CHEF1.BMP
-CHEF2 Bitmap Resources\CHEF2.BMP
+ BROCOLI Bitmap "Resources\\BROCOLI.bmp"
+ CHEESE Bitmap "Resources\\CHEESE.bmp"
+ CHEF1 Bitmap "Resources\\CHEF1.BMP"
+ CHEF2 Bitmap "Resources\\CHEF2.BMP"
 
-EGGPLANT Bitmap Resources\EGGPLANT.bmp
-MARIOICON Icon Resources\mario.ico
-MUSHROOM Bitmap Resources\MUSHROOM.bmp
-NOPIZZA Bitmap Resources\NOPIZZA.bmp
-OLIVES Bitmap Resources\OLIVES.bmp
-ONION Bitmap Resources\ONION.bmp
-PEPPER Bitmap Resources\PEPPER.bmp
-PIZZA Bitmap Resources\PIZZA.bmp
-SALAMI Bitmap Resources\SALAMI.bmp
-TOMATO Bitmap Resources\TOMATO.bmp
+ EGGPLANT Bitmap "Resources\\EGGPLANT.bmp"
+ MARIOICON Icon "Resources\\mario.ico"
+ MUSHROOM Bitmap "Resources\\MUSHROOM.bmp"
+ NOPIZZA Bitmap "Resources\\NOPIZZA.bmp"
+ OLIVES Bitmap "Resources\\OLIVES.bmp"
+ ONION Bitmap "Resources\\ONION.bmp"
+ PEPPER Bitmap "Resources\\PEPPER.bmp"
+ PIZZA Bitmap "Resources\\PIZZA.bmp"
+ SALAMI Bitmap "Resources\\SALAMI.bmp"
+ TOMATO Bitmap "Resources\\TOMATO.bmp"

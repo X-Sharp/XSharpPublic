@@ -61,6 +61,9 @@ BEGIN NAMESPACE XSharp
             IF IsValid
                 RETURN Mem2String( _value, Length )
             ENDIF
+            IF _value == IntPtr.Zero
+                RETURN ""
+            ENDIF
             RETURN "<Invalid PSZ>("+ IntPtr{_value}:ToString()+")"
 	
 		/// <exclude />	
@@ -123,6 +126,9 @@ BEGIN NAMESPACE XSharp
 
         PRIVATE PROPERTY IsValid AS LOGIC
             GET
+                IF _value == IntPtr.Zero
+                    RETURN FALSE
+                ENDIF
                 TRY
                     Marshal.ReadByte(_value)
                     RETURN TRUE

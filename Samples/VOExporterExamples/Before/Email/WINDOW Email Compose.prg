@@ -46,7 +46,7 @@ METHOD AcceptAndSaveEmail(lSend)
 	LOCAL oMail AS EmailStore
 	LOCAL dwRecno AS DWORD
 
-	IF Empty(SELF:oDCToMLE:Value)
+	IF Empty(SELF:oDCToMLE:@@Value)
 		MessageBox(NULL_PTR, PSZ("Sorry - you must supply at least a dummy 'TO' name"), PSZ("Error"), MB_ICONSTOP+MB_OK)
 		RETURN FALSE
 	ENDIF
@@ -55,11 +55,11 @@ METHOD AcceptAndSaveEmail(lSend)
 	SELF:Pointer := Pointer{POINTERHOURGLASS}
 	//SELF:oDlg:UpdateControls()
 	SELF:oDCBody:__Update()
-	SELF:oEmail:Body     := Trim(SELF:oDCBody:Value)
-	SELF:oEmail:DestList := Trim(SELF:oDCToMLE:Value)
-	SELF:oEmail:CCList   := Trim(SELF:oDCCCMLE:Value)
-	SELF:oEmail:BCCList  := Trim(SELF:oDCBCCMLE:Value)
-	SELF:oEmail:Subject  := Trim(SELF:oDCSubjectSLE:Value)
+	SELF:oEmail:Body     := Trim(SELF:oDCBody:@@Value)
+	SELF:oEmail:DestList := Trim(SELF:oDCToMLE:@@Value)
+	SELF:oEmail:CCList   := Trim(SELF:oDCCCMLE:@@Value)
+	SELF:oEmail:BCCList  := Trim(SELF:oDCBCCMLE:@@Value)
+	SELF:oEmail:Subject  := Trim(SELF:oDCSubjectSLE:@@Value)
 
 	// save the email into the outbox
 	oMail := EmailStore{}
@@ -260,12 +260,12 @@ METHOD PostInit(oWindow,iCtlID,oServer,uExtra)
 	
 	SELF:MinSize := SELF:Size
 	
-	SELF:oDCBody:Value   := SELF:oEmail:Body
-	SELF:oDCToMLE:Value  := __Array2StrList(SELF:oEmail:DestList, ", ")
-	SELF:oDCCcMLE:Value  := __Array2StrList(SELF:oEmail:CCList, ", ")
-	SELF:oDCBccMLE:Value := __Array2StrList(SELF:oEmail:BCCList, ", ")
+	SELF:oDCBody:@@Value   := SELF:oEmail:Body
+	SELF:oDCToMLE:@@Value  := __Array2StrList(SELF:oEmail:DestList, ", ")
+	SELF:oDCCcMLE:@@Value  := __Array2StrList(SELF:oEmail:CCList, ", ")
+	SELF:oDCBccMLE:@@Value := __Array2StrList(SELF:oEmail:BCCList, ", ")
 
-	SELF:oDCSubjectSLE:Value := SELF:oEmail:Subject
+	SELF:oDCSubjectSLE:@@Value := SELF:oEmail:Subject
 	
 	SELF:oDCAttachments:AddColumn(ListViewColumn{200, HyperLabel{#FilesAttached, "Attached Files"}})
 	oDCAttachments:SetStyle(WS_BORDER, FALSE)

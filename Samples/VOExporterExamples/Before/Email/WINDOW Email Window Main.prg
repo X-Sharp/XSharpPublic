@@ -413,7 +413,7 @@ METHOD FillListView( oTVI )
       ENDIF
 	ENDIF
 
-	cEbox := oTVI:Value
+	cEbox := oTVI:@@Value
 	SELF:oDCEmailListView:DeleteAll()
 
 	IF cEbox == "ROOT"
@@ -1139,7 +1139,7 @@ METHOD TreeViewSelectionChanged(oTreeViewSelectionEvent)
 			oTVI:ImageIndex         := IMAGE_OPENBOOK
 			oTVI:SelectedImageIndex := IMAGE_OPENBOOK		
 			oDCEmailTreeView:SetItemAttributes(oTVI)
-			SELF:MailBox := oTVI:Value
+			SELF:MailBox := oTVI:@@Value
 			SELF:SetMenuAvailable(oTVI)
 			SELF:FillListView(oTVI)
 		ENDIF	

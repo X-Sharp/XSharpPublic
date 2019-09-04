@@ -1,4 +1,4 @@
-AttachmentsDialog DIALOGEX  36, 46, 271, 173
+ AttachmentsDialog DIALOGEX  36, 46, 271, 173
 STYLE	4|128|4096|2147483648|12582912|524288
 CAPTION	"Save Attachments"
 FONT	8, "MS Shell Dlg"

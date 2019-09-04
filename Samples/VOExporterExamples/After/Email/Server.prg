@@ -126,7 +126,7 @@ METHOD FileSaveAs(oOwner, oEMail)
 
 	IF !Empty(cFile)
 		IF File(cFile)
-			IF MessageBox(oWindow:Handle(), String2Psz("Do you wish to replace the existing file ?"), String2Psz("FILE EXISTENCE WARNING"), MB_ICONINFORMATION+MB_YESNO) != IDYES
+			IF MessageBox(oWindow:Handle(), PSZ("Do you wish to replace the existing file ?"), PSZ("FILE EXISTENCE WARNING"), MB_ICONINFORMATION+MB_YESNO) != IDYES
 				RETURN SELF
 			ENDIF
 			FErase(cFile)
@@ -162,7 +162,7 @@ METHOD FileSaveAs(oOwner, oEMail)
    		MemoWrit(cFile, cTemp)
    		oOwner:Pointer := NULL_OBJECT
    	ELSE
-	      MessageBox(oWindow:Handle(), String2Psz("Contents is empty, no file save!"), String2Psz("FILE EXISTENCE WARNING"), MB_ICONINFORMATION+MB_OK)
+	      MessageBox(oWindow:Handle(), PSZ("Contents is empty, no file save!"), PSZ("FILE EXISTENCE WARNING"), MB_ICONINFORMATION+MB_OK)
    	ENDIF	
 	ENDIF
 

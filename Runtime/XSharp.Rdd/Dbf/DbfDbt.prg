@@ -465,7 +465,20 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN unlocked
             
         VIRTUAL METHOD Zap() AS LOGIC
-            THROW NotImplementedException{}
+            IF SELF:IsOpen
+                IF SELF:Shared
+                    SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_SHARED, GenCode.EG_LOCK, "DbtMemo.Zap")
+                ENDIF
+                IF ! FChSize(SELF:_hFile, DBTMemo.HeaderSize)
+                    SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_WRITE, GenCode.EG_WRITE, "DbtMemo.Zap")
+                ENDIF
+                SELF:NextAvailableBlock := 1
+                RETURN SELF:Flush()
+            ELSE
+                SELF:_oRDD:_dbfError(FException(), SubCodes.EDB_NOTABLE, GenCode.EG_NOTABLE, "DbtMemo.Zap")
+                RETURN FALSE
+            ENDIF
+
             
       END CLASS    
     

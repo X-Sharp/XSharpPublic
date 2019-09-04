@@ -1,4 +1,4 @@
-﻿#region DEFINES
+#region DEFINES
 STATIC DEFINE OMARGINDIALOG_FTLM := 100
 STATIC DEFINE OMARGINDIALOG_FTRM := 101
 STATIC DEFINE OMARGINDIALOG_PBCANCEL := 105
@@ -52,8 +52,8 @@ METHOD pbCancel( )
 	
 
 METHOD pbOK( ) 
-	SELF:owner:nLeftMargin := Val(oDCSleLM:Value) * 1440
-	SELF:owner:nRightMargin := Val(oDCSleRM:Value) * 1440
+	SELF:owner:nLeftMargin := Val(oDCSleLM:@@Value) * 1440
+	SELF:owner:nRightMargin := Val(oDCSleRM:@@Value) * 1440
 	SELF:EndDialog(1)
 	
 
@@ -445,17 +445,19 @@ METHOD SetMargins()
 	
 
 END CLASS
+STATIC CLASS RichEditExtensions 
+   STATIC METHOD RTFChangeFont( SELF oEdit as RichEdit) AS VOID
+      LOCAL oFontDlg AS StandardFontDialog
+      oFontDlg := StandardFontDialog{oEdit:Owner}
+      oFontDlg:FontColor := oEdit:TextColor
+      oFontDlg:Font      := oEdit:ControlFont
+      oFontDlg:Show()
+      oEdit:TextColor := oFontDlg:FontColor
+      oEdit:ControlFont      := oFontDlg:Font
+   END CLASS
+	
 
-  STATIC CLASS RichEditExtensions
-  STATIC METHOD RTFChangeFont( SELF oEdit as RichEdit) AS VOID
-    LOCAL oFontDlg AS StandardFontDialog
-     oFontDlg := StandardFontDialog{oEdit:Owner}
-     oFontDlg:FontColor := oEdit:TextColor
-     oFontDlg:Font      := oEdit:Font
-     oFontDlg:Show()
-     oEdit:TextColor := oFontDlg:FontColor
-     oEdit:Font      := oFontDlg:Font
-  END CLASS
+
 
 CLASS SearchBox INHERIT ComboBox
 	

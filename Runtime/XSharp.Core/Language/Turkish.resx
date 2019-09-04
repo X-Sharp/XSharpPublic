@@ -1,0 +1,2702 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EDB_SEEK" xml:space="preserve">
+    <value>Geçersiz arama argümanı</value>
+  </data>
+  <data name="EDB_SKIP" xml:space="preserve">
+    <value>Geçersiz atlama sayısı</value>
+  </data>
+  <data name="EDB_GOTO" xml:space="preserve">
+    <value>Boş kayıt tanımlayıcısı</value>
+  </data>
+  <data name="EDB_SETRELATION" xml:space="preserve">
+    <value>Alt veritabanı için geçersiz TAKMA AD</value>
+  </data>
+  <data name="EDB_USE" xml:space="preserve">
+    <value>Geçersiz dosya adı belirtimi</value>
+  </data>
+  <data name="EDB_CREATEINDEX" xml:space="preserve">
+    <value>Geçersiz dosya adı belirtimi</value>
+  </data>
+  <data name="EDB_SETORDER" xml:space="preserve">
+    <value>Geçersiz indeks belirtimi</value>
+  </data>
+  <data name="EDB_SETINDEX" xml:space="preserve">
+    <value>Geçersiz dosya adı belirtimi</value>
+  </data>
+  <data name="EDB_FIELDNAME" xml:space="preserve">
+    <value>Geçersiz dosya adı</value>
+  </data>
+  <data name="EDB_BADALIAS" xml:space="preserve">
+    <value>Geçersiz takma ad belirtimi</value>
+  </data>
+  <data name="EDB_DUPALIAS" xml:space="preserve">
+    <value>Takma ad hale hazırda mevcut</value>
+  </data>
+  <data name="EDB_SETFILTER" xml:space="preserve">
+    <value>Hata ayar filtresi</value>
+  </data>
+  <data name="EDB_CYCLICREL" xml:space="preserve">
+    <value>???</value>
+  </data>
+  <data name="EDB_CREATETABLE" xml:space="preserve">
+    <value>Hata oluşturma tablosu</value>
+  </data>
+  <data name="EDB_RDDNOTFOUND" xml:space="preserve">
+    <value>RDD bulunamadı</value>
+  </data>
+  <data name="EDB_FIELDINDEX" xml:space="preserve">
+    <value>Geçersiz alan indeksi</value>
+  </data>
+  <data name="EDB_SELECT" xml:space="preserve">
+    <value>Geçersiz çalışma alanı sayısı</value>
+  </data>
+  <data name="EDB_SYMSELECT" xml:space="preserve">
+    <value>Geçersiz takma ad belirtimi</value>
+  </data>
+  <data name="EDB_TOTAL" xml:space="preserve">
+    <value>Toplamları oluştururken hata oluştu</value>
+  </data>
+  <data name="EDB_RECNO" xml:space="preserve">
+    <value>Geçersiz kayıt numarası argümanı</value>
+  </data>
+  <data name="EDB_EXPRESSION" xml:space="preserve">
+    <value>Makro derleyici için kalan ifade</value>
+  </data>
+  <data name="EDB_EXPR_WIDTH" xml:space="preserve">
+    <value>Makro derleyici için çok uzun ifade</value>
+  </data>
+  <data name="EDB_DRIVERLOAD" xml:space="preserve">
+    <value>RDD yüklenemiyor</value>
+  </data>
+  <data name="EDB_PARAM" xml:space="preserve">
+    <value>%s fonksiyonu için geçersiz argüman (#%u)</value>
+  </data>
+  <data name="EDB_NOAREAS" xml:space="preserve">
+    <value>Serbest çalışma alanı yok</value>
+  </data>
+  <data name="EDB_NOMEM" xml:space="preserve">
+    <value>Hafıza tükendi</value>
+  </data>
+  <data name="EDB_NOFIELDS" xml:space="preserve">
+    <value>Tanımlanmamış alan</value>
+  </data>
+  <data name="EDB_BAD_ERROR_INFO" xml:space="preserve">
+    <value>RDD hata bilgisi buruştu</value>
+  </data>
+  <data name="EDB_WRONGFIELDNAME" xml:space="preserve">
+    <value>Dosya adı halen mevcut</value>
+  </data>
+  <data name="EDB_ORDDESTROY" xml:space="preserve">
+    <value>Indeks belirtilmedi</value>
+  </data>
+  <data name="EDB_NOINITFUNC" xml:space="preserve">
+    <value>RDD başlatma fonksiyonu yok</value>
+  </data>
+  <data name="EDB_ERRORINIT" xml:space="preserve">
+    <value>RDD başlatma fonksiyonu başarısız</value>
+  </data>
+  <data name="EDB_DBSTRUCT" xml:space="preserve">
+    <value>Yapı cevap vermiyor</value>
+  </data>
+  <data name="EDB_NOTABLE" xml:space="preserve">
+    <value>Mevcut çalışma alanı tablo içermiyor</value>
+  </data>
+  <data name="EDB_NOORDER" xml:space="preserve">
+    <value>Indeks belirtilmedi</value>
+  </data>
+  <data name="EDB_ASSERTION" xml:space="preserve">
+    <value>Onaylama işlemi başarısız oldu</value>
+  </data>
+  <data name="ERDD_OPEN_FILE" xml:space="preserve">
+    <value>Açık veritabanı</value>
+  </data>
+  <data name="ERDD_OPEN_MEMO" xml:space="preserve">
+    <value>Açık memo alanı</value>
+  </data>
+  <data name="ERDD_OPEN_ORDER" xml:space="preserve">
+    <value>Açık indeks dosyası</value>
+  </data>
+  <data name="ERDD_CREATE_FILE" xml:space="preserve">
+    <value>Veritabanı olututma</value>
+  </data>
+  <data name="ERDD_CREATE_MEMO" xml:space="preserve">
+    <value>Memo dosyası oluşturma</value>
+  </data>
+  <data name="ERDD_CREATE_ORDER" xml:space="preserve">
+    <value>İndeks dosyası oluştur</value>
+  </data>
+  <data name="ERDD_READ" xml:space="preserve">
+    <value>Okuma hatası</value>
+  </data>
+  <data name="ERDD_WRITE" xml:space="preserve">
+    <value>Yazma hatası</value>
+  </data>
+  <data name="ERDD_CORRUPT" xml:space="preserve">
+    <value>Buruşma hatası</value>
+  </data>
+  <data name="ERDD_CORRUPT_HEADER" xml:space="preserve">
+    <value>Veritabanı başlığı  bozuk</value>
+  </data>
+  <data name="ERDD_RDDVERSION" xml:space="preserve">
+    <value>Yanlış sürücü versiyonu</value>
+  </data>
+  <data name="ERDD_DATATYPE" xml:space="preserve">
+    <value>Data tip hatası</value>
+  </data>
+  <data name="ERDD_DATAWIDTH" xml:space="preserve">
+    <value>Veri genişlik hatası</value>
+  </data>
+  <data name="ERDD_UNLOCKED" xml:space="preserve">
+    <value>Kayıt kilitleme gerekir</value>
+  </data>
+  <data name="ERDD_SHARED" xml:space="preserve">
+    <value>Paylaşım hatası</value>
+  </data>
+  <data name="ERDD_APPENDLOCK" xml:space="preserve">
+    <value>Kayıt eklemede kilit hatası</value>
+  </data>
+  <data name="ERDD_READONLY" xml:space="preserve">
+    <value>Yalnız okunabilir</value>
+  </data>
+  <data name="ERDD_NULLKEY" xml:space="preserve">
+    <value>Boş anahtar</value>
+  </data>
+  <data name="ERDD_NTXLIMIT" xml:space="preserve">
+    <value>İndeks dosyası sayı limiti aşıldı</value>
+  </data>
+  <data name="ERDD_TAGLIMIT" xml:space="preserve">
+    <value>İndeks dosyası etiket limiti aşıldı</value>
+  </data>
+  <data name="ERDD_INIT_LOCK" xml:space="preserve">
+    <value>Kilitleme şeması başlatma hatası</value>
+  </data>
+  <data name="ERDD_READ_LOCK" xml:space="preserve">
+    <value>Okuma için kilitleme yapılamıyor</value>
+  </data>
+  <data name="ERDD_WRITE_LOCK" xml:space="preserve">
+    <value>Yazma için kilitleme hatası</value>
+  </data>
+  <data name="ERDD_READ_UNLOCK" xml:space="preserve">
+    <value>Okuma için kilitleme hatası</value>
+  </data>
+  <data name="ERDD_WRITE_UNLOCK" xml:space="preserve">
+    <value>Yazma için kilit açma hatası</value>
+  </data>
+  <data name="ERDD_READ_LOCK_TIMEOUT" xml:space="preserve">
+    <value>İndeks dosyası okuma kilitlemesi sırasında zaman aşımı</value>
+  </data>
+  <data name="ERDD_WRITE_LOCK_TIMEOUT" xml:space="preserve">
+    <value>İndeks dosyası yazma kilitlemesi sırasında zaman aşımı</value>
+  </data>
+  <data name="ERDD_READ_UNLOCK_TIMEOUT" xml:space="preserve">
+    <value>İndeks dosyası okuma kilidi açılırken zaman aşımı</value>
+  </data>
+  <data name="ERDD_WRITE_UNLOCK_TIMEOUT" xml:space="preserve">
+    <value>İndeks dosyası yazma kilitlemesi açılırken zaman aşımı</value>
+  </data>
+  <data name="ERDD_CLOSE_FILE" xml:space="preserve">
+    <value>Veritabanı dosyasını kapat</value>
+  </data>
+  <data name="ERDD_CLOSE_MEMO" xml:space="preserve">
+    <value>Memo dosyasını kapat</value>
+  </data>
+  <data name="ERDD_CLOSE_ORDER" xml:space="preserve">
+    <value>İndeks dosyasını kapat</value>
+  </data>
+  <data name="ERDD_INVALID_ORDER" xml:space="preserve">
+    <value>Geçeriz indeks belirtimi</value>
+  </data>
+  <data name="ERDD_RECNO_MISSING" xml:space="preserve">
+    <value>Kayıt numarası yok</value>
+  </data>
+  <data name="ERDD_NOORDER" xml:space="preserve">
+    <value>Mevcut çalışma alanı bir indeks içermiyor</value>
+  </data>
+  <data name="ERDD_UNSUPPORTED" xml:space="preserve">
+    <value>İşlem mevcut RDD tarafından desteklenmiyor</value>
+  </data>
+  <data name="ERDD_WRITE_NTX" xml:space="preserve">
+    <value>NTX dosyası hata kaydediyor</value>
+  </data>
+  <data name="ERDD_KEY_NOT_FOUND" xml:space="preserve">
+    <value>Anahtar bulunamadı</value>
+  </data>
+  <data name="ERDD_KEY_EVAL" xml:space="preserve">
+    <value>Bilinmeyen veya geçersiz anahtar ifadesi</value>
+  </data>
+  <data name="ERDD_VAR_TYPE" xml:space="preserve">
+    <value>Değişken tipi</value>
+  </data>
+  <data name="ERDD_READ_BUFFER" xml:space="preserve">
+    <value>Diskten okuma hatası</value>
+  </data>
+  <data name="ERDD_SORT_INIT" xml:space="preserve">
+    <value>Sıralama başlaması</value>
+  </data>
+  <data name="ERDD_SORT_ADVANCE" xml:space="preserve">
+    <value>Sıralama ilerlemesi</value>
+  </data>
+  <data name="ERDD_SORT_SORT" xml:space="preserve">
+    <value>Sıralama hatası</value>
+  </data>
+  <data name="ERDD_SORT_COMPLETE" xml:space="preserve">
+    <value>Sıralama tamamlama hatası</value>
+  </data>
+  <data name="ERDD_SORT_END" xml:space="preserve">
+    <value>Sıralama bitirme hatası</value>
+  </data>
+  <data name="ERDD_READ_TEMPFILE" xml:space="preserve">
+    <value>Geçici dosya okunurken hata oluştu</value>
+  </data>
+  <data name="ERDD_STREAM_NUM" xml:space="preserve">
+    <value>Yanlış sıralama akım numarası</value>
+  </data>
+  <data name="ERDD_CREATE_TEMPFILE" xml:space="preserve">
+    <value>Geçici dosya hata oluşturuyor</value>
+  </data>
+  <data name="DISKIO_WRITE" xml:space="preserve">
+    <value>Ön bellege yazarken hata oluştu</value>
+  </data>
+  <data name="ERDD_WRONG_DRIVERTYPE" xml:space="preserve">
+    <value>Yanlış veritabanı sürücüsü kullanılıyor</value>
+  </data>
+  <data name="ERDD_OUTOFMEMORY" xml:space="preserve">
+    <value>Hafıza tahsisi başarısız</value>
+  </data>
+  <data name="ERDD_INVALIDARG" xml:space="preserve">
+    <value>Bir duyuru fonksiyonuna geçersiz argüman iletildi</value>
+  </data>
+  <data name="__WCSLIBRARYNAME" xml:space="preserve">
+    <value>GUI sınıfları</value>
+  </data>
+  <data name="__WCSTYPEERROR" xml:space="preserve">
+    <value>Geçersiz argüman tipi.</value>
+  </data>
+  <data name="__WCSLOADLIBRARYERROR" xml:space="preserve">
+    <value>%V1s Kütüphane yüklenemiyor: %s</value>
+  </data>
+  <data name="__WCSERROR" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="__WCSAREAINDEX" xml:space="preserve">
+    <value>Window_WindowCanvas</value>
+  </data>
+  <data name="4007" xml:space="preserve">
+    <value>Window_Caption</value>
+  </data>
+  <data name="4008" xml:space="preserve">
+    <value>Window_SizeBox</value>
+  </data>
+  <data name="4009" xml:space="preserve">
+    <value>Window_MinBox</value>
+  </data>
+  <data name="4010" xml:space="preserve">
+    <value>Window_MaxBox</value>
+  </data>
+  <data name="4011" xml:space="preserve">
+    <value>Window_SysMenuBox</value>
+  </data>
+  <data name="4012" xml:space="preserve">
+    <value>Window_Border</value>
+  </data>
+  <data name="4013" xml:space="preserve">
+    <value>Bilinmeyen</value>
+  </data>
+  <data name="4014" xml:space="preserve">
+    <value>Window_MenuBar</value>
+  </data>
+  <data name="4015" xml:space="preserve">
+    <value>Window_Close</value>
+  </data>
+  <data name="__WCSUNKNOWN" xml:space="preserve">
+    <value>Bilinmeyen:</value>
+  </data>
+  <data name="__WCSWARNING" xml:space="preserve">
+    <value>Uyarı!</value>
+  </data>
+  <data name="__WCSCHGDISCARD" xml:space="preserve">
+    <value>Değişiklikleriniz atılacak.</value>
+  </data>
+  <data name="__WCSDATAWINDOW" xml:space="preserve">
+    <value>%V1s Veri Penceresi: %s</value>
+  </data>
+  <data name="__WCSDWUNTITLED" xml:space="preserve">
+    <value>DataWindow: &lt; başlık yok &gt;</value>
+  </data>
+  <data name="__WCSUNKNOWNSTATUS" xml:space="preserve">
+    <value>&lt;&lt;&lt; Bilinmeyen durum &gt;&gt;&gt;</value>
+  </data>
+  <data name="__WCSUNKNOWNSTATUSMSG" xml:space="preserve">
+    <value>Bilinmeyen Durum mesajı</value>
+  </data>
+  <data name="__WCSERROR2" xml:space="preserve">
+    <value>Hata:</value>
+  </data>
+  <data name="__WCSDSNOTOPEN" xml:space="preserve">
+    <value>%V1s%V2s Veri sağlayıcı %s ( %s ) açık değil</value>
+  </data>
+  <data name="__WCSDELETEFAILED" xml:space="preserve">
+    <value>Silme başarısız</value>
+  </data>
+  <data name="__WCSCHANGINGVIEW" xml:space="preserve">
+    <value>Görünümü değiştirmek, değişiklikleri iptal eder.</value>
+  </data>
+  <data name="__WCSDELETEFAILEDMSG" xml:space="preserve">
+    <value>Kayıt silme başarısız - bilinmeyen bir sebep</value>
+  </data>
+  <data name="__WCSDELETEDRECORD" xml:space="preserve">
+    <value>&gt;&gt;&gt; KAYIT SİLİNDİ &lt;&lt;&lt;</value>
+  </data>
+  <data name="__WCSIPCSERVERNOTFOUND" xml:space="preserve">
+    <value>Veri sağlayıcı bulunamadı</value>
+  </data>
+  <data name="__WCSIPCTOPICNOTFOUND" xml:space="preserve">
+    <value>Konu, veri sağlayıcıda bulunamadı</value>
+  </data>
+  <data name="__WCSIPCITEMNOTFOUND" xml:space="preserve">
+    <value>Öğe veri sağlayıcıda bulunamadı</value>
+  </data>
+  <data name="__WCSIPCOUTOFMEMORY" xml:space="preserve">
+    <value>Sistem belleği yetersiz</value>
+  </data>
+  <data name="__WCSALLFILES" xml:space="preserve">
+    <value>Tüm Dosyalar (*.*)|*.*|</value>
+  </data>
+  <data name="__WCSPRINTERNODISKSPACE" xml:space="preserve">
+    <value>Sistem Disk Alanı yetersiz</value>
+  </data>
+  <data name="__WCSDATADIALOG" xml:space="preserve">
+    <value>%V1s Veri İletişim Kutusu: %s</value>
+  </data>
+  <data name="__WCSDBROWSEROBJECT" xml:space="preserve">
+    <value>(Veri Tarayıcı Nesnesi)</value>
+  </data>
+  <data name="__WCSCREATECTLFAILED" xml:space="preserve">
+    <value>Kontrol oluşturma başarısız oldu</value>
+  </data>
+  <data name="__WCSCREATEDLGFAILED" xml:space="preserve">
+    <value>Kaynaktan iletişim kutusu oluşturulamadı</value>
+  </data>
+  <data name="__WCSHOSTVOAPP" xml:space="preserve">
+    <value>Visual Objects Uygulaması</value>
+  </data>
+  <data name="__WCSHOSTDATABROWSER" xml:space="preserve">
+    <value>Visual Objects Veri Tarayıcısı</value>
+  </data>
+  <data name="__WCSHOSTDATAWINDOW" xml:space="preserve">
+    <value>Visual Objects Veri Penceresi</value>
+  </data>
+  <data name="__WCSPICTUREYN" xml:space="preserve">
+    <value>EHeh</value>
+  </data>
+  <data name="__WCSPICTURETFYN" xml:space="preserve">
+    <value>DYEHdyeh</value>
+  </data>
+  <data name="__WCSNOOLESUPPORT" xml:space="preserve">
+    <value>Bu uygulama OLE desteği bulundurmamakta. OLE veritabanı alanları iptal edildi.</value>
+  </data>
+  <data name="__WCSTEXTBOX" xml:space="preserve">
+    <value>MetinKutusu</value>
+  </data>
+  <data name="__WCSINFOBOX" xml:space="preserve">
+    <value>BilgiKutusu</value>
+  </data>
+  <data name="__WCSCAPAINTLOADFAILED" xml:space="preserve">
+    <value>CAPAINT.DLL dosyası yüklenemedi</value>
+  </data>
+  <data name="__WCSCNOAUTOMATION" xml:space="preserve">
+    <value>OLE Otomasyon Suncusu mevcut değil.\nLütfen OLE Sunucu kütüphanesini dahil ediniz.</value>
+  </data>
+  <data name="RT_MSG_MONTH1" xml:space="preserve">
+    <value>Ocak</value>
+  </data>
+  <data name="RT_MSG_MONTH2" xml:space="preserve">
+    <value>Şubat</value>
+  </data>
+  <data name="RT_MSG_MONTH3" xml:space="preserve">
+    <value>Mart</value>
+  </data>
+  <data name="RT_MSG_MONTH4" xml:space="preserve">
+    <value>Nisan</value>
+  </data>
+  <data name="RT_MSG_MONTH5" xml:space="preserve">
+    <value>Mayıs</value>
+  </data>
+  <data name="RT_MSG_MONTH6" xml:space="preserve">
+    <value>Haziran</value>
+  </data>
+  <data name="RT_MSG_MONTH7" xml:space="preserve">
+    <value>Temuz</value>
+  </data>
+  <data name="RT_MSG_MONTH8" xml:space="preserve">
+    <value>Ağustos</value>
+  </data>
+  <data name="RT_MSG_MONTH9" xml:space="preserve">
+    <value>Eylül</value>
+  </data>
+  <data name="RT_MSG_MONTH10" xml:space="preserve">
+    <value>Ekim</value>
+  </data>
+  <data name="RT_MSG_MONTH11" xml:space="preserve">
+    <value>Kasım</value>
+  </data>
+  <data name="RT_MSG_MONTH12" xml:space="preserve">
+    <value>Aralık</value>
+  </data>
+  <data name="RT_MSG_DAY1" xml:space="preserve">
+    <value>Pazar</value>
+  </data>
+  <data name="RT_MSG_DAY2" xml:space="preserve">
+    <value>Pazartesi</value>
+  </data>
+  <data name="RT_MSG_DAY3" xml:space="preserve">
+    <value>Salı</value>
+  </data>
+  <data name="RT_MSG_DAY4" xml:space="preserve">
+    <value>Çarşamba</value>
+  </data>
+  <data name="RT_MSG_DAY5" xml:space="preserve">
+    <value>Perşembe</value>
+  </data>
+  <data name="RT_MSG_DAY6" xml:space="preserve">
+    <value>Cuma</value>
+  </data>
+  <data name="RT_MSG_DAY7" xml:space="preserve">
+    <value>Cumartesi</value>
+  </data>
+  <data name="RT_MSG_INFOSTRING" xml:space="preserve">
+    <value>TR ASCII</value>
+  </data>
+  <data name="IDT_NEWSHEET" xml:space="preserve">
+    <value>Yeni Sayfa</value>
+  </data>
+  <data name="IDT_OPEN" xml:space="preserve">
+    <value>Aç</value>
+  </data>
+  <data name="IDT_CLOSE" xml:space="preserve">
+    <value>Kapat</value>
+  </data>
+  <data name="IDT_SAVE" xml:space="preserve">
+    <value>Kaydet</value>
+  </data>
+  <data name="IDT_PRINT" xml:space="preserve">
+    <value>Yazdır</value>
+  </data>
+  <data name="IDT_PREVIEW" xml:space="preserve">
+    <value>Ön İzleme</value>
+  </data>
+  <data name="IDT_SUM" xml:space="preserve">
+    <value>Toplam</value>
+  </data>
+  <data name="IDT_BOLD" xml:space="preserve">
+    <value>Koyu</value>
+  </data>
+  <data name="IDT_ITALIC" xml:space="preserve">
+    <value>İtalik</value>
+  </data>
+  <data name="IDT_UNDERLINE" xml:space="preserve">
+    <value>Alt Çizği</value>
+  </data>
+  <data name="IDT_CROSSOUT" xml:space="preserve">
+    <value>Üstü Çizili</value>
+  </data>
+  <data name="IDT_SIZEPLUS" xml:space="preserve">
+    <value>Boyut+</value>
+  </data>
+  <data name="IDT_SIZEMINUS" xml:space="preserve">
+    <value>Boyut-</value>
+  </data>
+  <data name="IDT_SUPERSCRIPT" xml:space="preserve">
+    <value>Üst Simge</value>
+  </data>
+  <data name="IDT_SUBSCRIPT" xml:space="preserve">
+    <value>Alt Simge</value>
+  </data>
+  <data name="IDT_CURRENCY" xml:space="preserve">
+    <value>Para birimi</value>
+  </data>
+  <data name="IDT_PERCENT" xml:space="preserve">
+    <value>Yüzde</value>
+  </data>
+  <data name="IDT_COMMA" xml:space="preserve">
+    <value>Virgül</value>
+  </data>
+  <data name="IDT_DECIMALPLUS" xml:space="preserve">
+    <value>Desimal+</value>
+  </data>
+  <data name="IDT_DECIMALMINUS" xml:space="preserve">
+    <value>Desimal-</value>
+  </data>
+  <data name="IDT_LEFT" xml:space="preserve">
+    <value>Sol</value>
+  </data>
+  <data name="IDT_CENTER" xml:space="preserve">
+    <value>Orta</value>
+  </data>
+  <data name="IDT_RIGHT" xml:space="preserve">
+    <value>Sağ</value>
+  </data>
+  <data name="IDT_JUSTIFY" xml:space="preserve">
+    <value>Düzenle</value>
+  </data>
+  <data name="IDT_ADDTEXT" xml:space="preserve">
+    <value>Metin Ekle</value>
+  </data>
+  <data name="IDT_CENTERTEXT" xml:space="preserve">
+    <value>Metni ortala</value>
+  </data>
+  <data name="IDT_TABLE" xml:space="preserve">
+    <value>Tablo</value>
+  </data>
+  <data name="IDT_BORDERRECT" xml:space="preserve">
+    <value>Sınır</value>
+  </data>
+  <data name="IDT_BORDERLOW" xml:space="preserve">
+    <value>Kenar</value>
+  </data>
+  <data name="IDT_LIGHTSHADING" xml:space="preserve">
+    <value>Gölgeleme</value>
+  </data>
+  <data name="IDT_COPY" xml:space="preserve">
+    <value>Kopyala</value>
+  </data>
+  <data name="IDT_PASTEFORMAT" xml:space="preserve">
+    <value>Yapıştırma Formatı</value>
+  </data>
+  <data name="IDT_PASTEVALUE" xml:space="preserve">
+    <value>Yapıştırma Değeri</value>
+  </data>
+  <data name="IDT_UNDO" xml:space="preserve">
+    <value>Geri Al</value>
+  </data>
+  <data name="IDT_REPEAT" xml:space="preserve">
+    <value>Tekrar et</value>
+  </data>
+  <data name="IDT_ZOOMIN" xml:space="preserve">
+    <value>Yakınlaştır</value>
+  </data>
+  <data name="IDT_ZOOMOUT" xml:space="preserve">
+    <value>Uzaklaştır</value>
+  </data>
+  <data name="IDT_SORTATOZ" xml:space="preserve">
+    <value>Sırala A-Z</value>
+  </data>
+  <data name="IDT_SORTZTOA" xml:space="preserve">
+    <value>Sırala Z-A</value>
+  </data>
+  <data name="IDT_LOCK" xml:space="preserve">
+    <value>Kilit</value>
+  </data>
+  <data name="IDT_OUTLINESYMBOL" xml:space="preserve">
+    <value>Çerçeve</value>
+  </data>
+  <data name="IDT_SELECTCELL" xml:space="preserve">
+    <value>Hücre seç</value>
+  </data>
+  <data name="IDT_SCROLLMINUS" xml:space="preserve">
+    <value>Kaydır-</value>
+  </data>
+  <data name="IDT_SCROLLPLUS" xml:space="preserve">
+    <value>Kaydır+</value>
+  </data>
+  <data name="IDT_BUTTON" xml:space="preserve">
+    <value>Buton</value>
+  </data>
+  <data name="IDT_PICTURE" xml:space="preserve">
+    <value>Resim</value>
+  </data>
+  <data name="IDT_SPELLCHECK" xml:space="preserve">
+    <value>Yazım denetimi</value>
+  </data>
+  <data name="IDT_CALCULATE" xml:space="preserve">
+    <value>Hesapla</value>
+  </data>
+  <data name="IDT_AREACHART" xml:space="preserve">
+    <value>Alan</value>
+  </data>
+  <data name="IDT_BARCHART" xml:space="preserve">
+    <value>Bar</value>
+  </data>
+  <data name="IDT_COLUMNCHART" xml:space="preserve">
+    <value>Sütun</value>
+  </data>
+  <data name="IDT_STACKCHART" xml:space="preserve">
+    <value>Yığın</value>
+  </data>
+  <data name="IDT_LINECHART" xml:space="preserve">
+    <value>Çizgi</value>
+  </data>
+  <data name="IDT_PIECHART" xml:space="preserve">
+    <value>Pay</value>
+  </data>
+  <data name="IDT_SCATTERCHART" xml:space="preserve">
+    <value>Dağıtma</value>
+  </data>
+  <data name="IDT_3DAREACHART" xml:space="preserve">
+    <value>3D Alan</value>
+  </data>
+  <data name="IDT_3DBARCHART" xml:space="preserve">
+    <value>3D Bar</value>
+  </data>
+  <data name="IDT_3DCOLUMNCHART" xml:space="preserve">
+    <value>3D Sütun</value>
+  </data>
+  <data name="IDT_3DCOLUMNAREACHART" xml:space="preserve">
+    <value>3D Sütun-Alanı</value>
+  </data>
+  <data name="IDT_3DLINECHART" xml:space="preserve">
+    <value>3D Çizgi</value>
+  </data>
+  <data name="IDT_3DPIECHART" xml:space="preserve">
+    <value>3D Pay</value>
+  </data>
+  <data name="IDT_3DSURFACECHART" xml:space="preserve">
+    <value>3D Yüzey</value>
+  </data>
+  <data name="IDT_RADARCHART" xml:space="preserve">
+    <value>Radar</value>
+  </data>
+  <data name="IDT_COLUMNLINECHART" xml:space="preserve">
+    <value>Sütun-Çizgi</value>
+  </data>
+  <data name="IDT_COLUMNSTOCKCHART" xml:space="preserve">
+    <value>Sütun-Stok</value>
+  </data>
+  <data name="IDT_CHARTFORMAT" xml:space="preserve">
+    <value>Grafik Formatı</value>
+  </data>
+  <data name="IDT_EDITCHART" xml:space="preserve">
+    <value>Grafik Düzenle</value>
+  </data>
+  <data name="IDT_LINE" xml:space="preserve">
+    <value>Çizgi</value>
+  </data>
+  <data name="IDT_ARROW" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="IDT_FREEHAND" xml:space="preserve">
+    <value>Elle</value>
+  </data>
+  <data name="IDT_RECTANGLE" xml:space="preserve">
+    <value>Dikdörtgen</value>
+  </data>
+  <data name="IDT_ELLIPSE" xml:space="preserve">
+    <value>Elips</value>
+  </data>
+  <data name="IDT_ARC" xml:space="preserve">
+    <value>Ark</value>
+  </data>
+  <data name="IDT_POLYGON" xml:space="preserve">
+    <value>Çokgen</value>
+  </data>
+  <data name="IDT_FILLEDRECTANGLE" xml:space="preserve">
+    <value>Dolu Dikdörtgen</value>
+  </data>
+  <data name="IDT_FILLEDELLIPSE" xml:space="preserve">
+    <value>Dolu Elips</value>
+  </data>
+  <data name="IDT_FILLEDARC" xml:space="preserve">
+    <value>Dolu Ark</value>
+  </data>
+  <data name="IDT_FILLEDPOLYGON" xml:space="preserve">
+    <value>Dolu Çokgen</value>
+  </data>
+  <data name="IDT_SELECTOBJECT" xml:space="preserve">
+    <value>Nesne Seç</value>
+  </data>
+  <data name="IDT_EDITPOINT" xml:space="preserve">
+    <value>Düzenleme Noktası</value>
+  </data>
+  <data name="IDT_GROUP" xml:space="preserve">
+    <value>Grupla</value>
+  </data>
+  <data name="IDT_UNGROUP" xml:space="preserve">
+    <value>Çöz</value>
+  </data>
+  <data name="IDT_FRONT" xml:space="preserve">
+    <value>Ön</value>
+  </data>
+  <data name="IDT_BACK" xml:space="preserve">
+    <value>Arka</value>
+  </data>
+  <data name="IDT_COLOR" xml:space="preserve">
+    <value>Renk</value>
+  </data>
+  <data name="IDT_3DFRAME" xml:space="preserve">
+    <value>3D Çerçeve</value>
+  </data>
+  <data name="IDT_NEWMACRO" xml:space="preserve">
+    <value>Yeni Makro</value>
+  </data>
+  <data name="IDT_FUNCTION" xml:space="preserve">
+    <value>Fonksiyon</value>
+  </data>
+  <data name="IDT_CALC" xml:space="preserve">
+    <value>HESAP</value>
+  </data>
+  <data name="IDT_GOMACRO" xml:space="preserve">
+    <value>Git</value>
+  </data>
+  <data name="IDT_STEPMACRO" xml:space="preserve">
+    <value>Adım</value>
+  </data>
+  <data name="IDT_TRACEOUTMACRO" xml:space="preserve">
+    <value>Trace Out</value>
+  </data>
+  <data name="IDT_TRACEINMACRO" xml:space="preserve">
+    <value>Trace In</value>
+  </data>
+  <data name="IDT_RUNMACRO" xml:space="preserve">
+    <value>Yürüt</value>
+  </data>
+  <data name="IDT_SKIPMACRO" xml:space="preserve">
+    <value>Atla</value>
+  </data>
+  <data name="IDT_RESETMACRO" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="IDT_RECORDMACRO" xml:space="preserve">
+    <value>Kayıt</value>
+  </data>
+  <data name="IDT_STOPMACRO" xml:space="preserve">
+    <value>Dur</value>
+  </data>
+  <data name="IDT_PAUSEMACRO" xml:space="preserve">
+    <value>Ara Ver</value>
+  </data>
+  <data name="IDT_NEW" xml:space="preserve">
+    <value>Yeni</value>
+  </data>
+  <data name="IDT_CUT" xml:space="preserve">
+    <value>Kes</value>
+  </data>
+  <data name="IDT_PASTE" xml:space="preserve">
+    <value>Yapıştır</value>
+  </data>
+  <data name="IDT_NUMBERLIST" xml:space="preserve">
+    <value>Sayı Listesi</value>
+  </data>
+  <data name="IDT_BULLETLIST" xml:space="preserve">
+    <value>Mermi Listesi</value>
+  </data>
+  <data name="IDT_UNINDENT" xml:space="preserve">
+    <value>Unindent</value>
+  </data>
+  <data name="IDT_INDENT" xml:space="preserve">
+    <value>Indent</value>
+  </data>
+  <data name="IDT_COLUMNFORMAT" xml:space="preserve">
+    <value>Sütun Formatı</value>
+  </data>
+  <data name="IDT_FRAME" xml:space="preserve">
+    <value>Çerçeve</value>
+  </data>
+  <data name="IDT_OBJECT" xml:space="preserve">
+    <value>Nesne</value>
+  </data>
+  <data name="IDT_GRAPH" xml:space="preserve">
+    <value>Grafik</value>
+  </data>
+  <data name="IDT_ENVELOPE" xml:space="preserve">
+    <value>Zarf</value>
+  </data>
+  <data name="IDT_PAGELAYOUT" xml:space="preserve">
+    <value>Sayfa Yapısı</value>
+  </data>
+  <data name="IDT_PAGENORMAL" xml:space="preserve">
+    <value>Normal Sayfa</value>
+  </data>
+  <data name="IDT_PAGEFIT" xml:space="preserve">
+    <value>Fit Sayafa</value>
+  </data>
+  <data name="IDT_LEFTTAB" xml:space="preserve">
+    <value>Sol Tab</value>
+  </data>
+  <data name="IDT_CENTERTAB" xml:space="preserve">
+    <value>Orta Tab</value>
+  </data>
+  <data name="IDT_RIGHTTAB" xml:space="preserve">
+    <value>Sağ Tab</value>
+  </data>
+  <data name="IDT_DECIMALTAB" xml:space="preserve">
+    <value>Desimal Tab</value>
+  </data>
+  <data name="IDT_PARAGRAPH" xml:space="preserve">
+    <value>Parağraph</value>
+  </data>
+  <data name="IDT_HELP" xml:space="preserve">
+    <value>Yardım</value>
+  </data>
+  <data name="IDT_DELETE" xml:space="preserve">
+    <value>Sil</value>
+  </data>
+  <data name="IDT_TIME" xml:space="preserve">
+    <value>Zaman</value>
+  </data>
+  <data name="IDT_MAIL" xml:space="preserve">
+    <value>Posta</value>
+  </data>
+  <data name="IDT_TUTORIAL" xml:space="preserve">
+    <value>Tutorial</value>
+  </data>
+  <data name="IDT_DISKETTEIO" xml:space="preserve">
+    <value>Disk I/O</value>
+  </data>
+  <data name="IDT_FIND" xml:space="preserve">
+    <value>Bul</value>
+  </data>
+  <data name="IDT_PREVREC" xml:space="preserve">
+    <value>Önceki</value>
+  </data>
+  <data name="IDT_NEXTREC" xml:space="preserve">
+    <value>Sonraki</value>
+  </data>
+  <data name="IDT_STARTREC" xml:space="preserve">
+    <value>Başlangıç</value>
+  </data>
+  <data name="IDT_ENDREC" xml:space="preserve">
+    <value>Son</value>
+  </data>
+  <data name="IDT_VGBROWSE" xml:space="preserve">
+    <value>Görünüm Tablosu</value>
+  </data>
+  <data name="IDT_CUSTOMBITMAP" xml:space="preserve">
+    <value>Görünüm Formu</value>
+  </data>
+  <data name="IDTT_NEWSHEET" xml:space="preserve">
+    <value>Yeni çalışma sayfası oluştur</value>
+  </data>
+  <data name="IDTT_OPEN" xml:space="preserve">
+    <value>Mevcut bir belgeyi açar</value>
+  </data>
+  <data name="IDTT_CLOSE" xml:space="preserve">
+    <value>Bir belgeyi kapatır</value>
+  </data>
+  <data name="IDTT_SAVE" xml:space="preserve">
+    <value>Aktif belgeye yapılan değişiklikleri kaydeder</value>
+  </data>
+  <data name="IDTT_PRINT" xml:space="preserve">
+    <value>Aktif bir belgeyi yazdırır</value>
+  </data>
+  <data name="IDTT_PREVIEW" xml:space="preserve">
+    <value>Yazdırılacak belgeyi ekranda gösterir</value>
+  </data>
+  <data name="IDTT_SUM" xml:space="preserve">
+    <value>Toplamı hesaplar</value>
+  </data>
+  <data name="IDTT_BOLD" xml:space="preserve">
+    <value>Seçilen yazı tipi stilini kalın olarak düzenler</value>
+  </data>
+  <data name="IDTT_ITALIC" xml:space="preserve">
+    <value>Seçilen yazı tipi stilini italik olarak düzenler</value>
+  </data>
+  <data name="IDTT_UNDERLINE" xml:space="preserve">
+    <value>Seçili metnin altını çizer</value>
+  </data>
+  <data name="IDTT_CROSSOUT" xml:space="preserve">
+    <value>Seçili metnin üstünü çizer</value>
+  </data>
+  <data name="IDTT_SIZEPLUS" xml:space="preserve">
+    <value>Seçili metnin yazı tipi boyutunu artırır</value>
+  </data>
+  <data name="IDTT_SIZEMINUS" xml:space="preserve">
+    <value>Seçili metnin yazı tipi boyutunu azaltır</value>
+  </data>
+  <data name="IDTT_SUPERSCRIPT" xml:space="preserve">
+    <value>Seçili metni üst simge stiline ayarlar</value>
+  </data>
+  <data name="IDTT_SUBSCRIPT" xml:space="preserve">
+    <value>Seçili metni alt simge stiline ayarlar</value>
+  </data>
+  <data name="IDTT_CURRENCY" xml:space="preserve">
+    <value>Seçili hücreye para birimi stili uygular</value>
+  </data>
+  <data name="IDTT_PERCENT" xml:space="preserve">
+    <value>Seçili hücreye yüzde stili uygular</value>
+  </data>
+  <data name="IDTT_COMMA" xml:space="preserve">
+    <value>Seçili hücrelere vigül stili uygular</value>
+  </data>
+  <data name="IDTT_DECIMALPLUS" xml:space="preserve"> 
+    <value>Sayı formatına bir desimal yeri ekler</value>
+  </data>
+  <data name="IDTT_DECIMALMINUS" xml:space="preserve">
+    <value>Sayı formatından bir desimal yeri çıkarır</value>
+  </data>
+  <data name="IDTT_LEFT" xml:space="preserve">
+    <value>Metni Sola dayalı düzenler</value>
+  </data>
+  <data name="IDTT_CENTER" xml:space="preserve">
+    <value>Meni ortalar</value>
+  </data>
+  <data name="IDTT_RIGHT" xml:space="preserve">
+    <value>Metni sağa dayalı düzenler</value>
+  </data>
+  <data name="IDTT_JUSTIFY" xml:space="preserve">
+    <value>Metni düzenler</value>
+  </data>
+  <data name="IDTT_ADDTEXT" xml:space="preserve">
+    <value>Eklenmemiş metin veya metin kutusu ekler</value>
+  </data>
+  <data name="IDTT_CENTERTEXT" xml:space="preserve">
+    <value>Seçili sütunlarda metni ortalar</value>
+  </data>
+  <data name="IDTT_TABLE" xml:space="preserve">
+    <value>Tablo formatı uygular</value>
+  </data>
+  <data name="IDTT_BORDERRECT" xml:space="preserve">
+    <value>Hücre kenarına sınır ekler</value>
+  </data>
+  <data name="IDTT_BORDERLOW" xml:space="preserve">
+    <value>Hücre alt kenarına sınır ekler</value>
+  </data>
+  <data name="IDTT_LIGHTSHADING" xml:space="preserve">
+    <value>Hafif gölgeleme uygular</value>
+  </data>
+  <data name="IDTT_COPY" xml:space="preserve">
+    <value>Seçimi metni panoya kopyalar</value>
+  </data>
+  <data name="IDTT_PASTEFORMAT" xml:space="preserve">
+    <value>Sadece kopyalanmış hücre formatlarını yapıştırır</value>
+  </data>
+  <data name="IDTT_PASTEVALUE" xml:space="preserve">
+    <value>Kopyalanan hücre değerlerini yapıştırır</value>
+  </data>
+  <data name="IDTT_UNDO" xml:space="preserve">
+    <value>Son aksiyon veya komutu iptal eder</value>
+  </data>
+  <data name="IDTT_REPEAT" xml:space="preserve">
+    <value>Son aksiyon veya komutu tekrar eder</value>
+  </data>
+  <data name="IDTT_ZOOMIN" xml:space="preserve">
+    <value>Gösterilen belgenin büyütme oranını artırır</value>
+  </data>
+  <data name="IDTT_ZOOMOUT" xml:space="preserve">
+    <value>Gösterilen belgenin büyütme oranını azaltır</value>
+  </data>
+  <data name="IDTT_SORTATOZ" xml:space="preserve">
+    <value>Seçi satırları artan bir şekilde sıralar</value>
+  </data>
+  <data name="IDTT_SORTZTOA" xml:space="preserve">
+    <value>Seçili satırları azalan bir şekilde sıralar</value>
+  </data>
+  <data name="IDTT_LOCK" xml:space="preserve">
+    <value>Seçili hücreleri ve nesneleri Kilitler veya çözer</value>
+  </data>
+  <data name="IDTT_OUTLINESYMBOL" xml:space="preserve">
+    <value>Ana hat sembollerini gösterir veya gizler</value>
+  </data>
+  <data name="IDTT_SELECTCELL" xml:space="preserve">
+    <value>Seçimdeki sadece görünen hücreleri seçer</value>
+  </data>
+  <data name="IDTT_SCROLLMINUS" xml:space="preserve">
+    <value>Seçilmiş satır ve sütunları destekler >Promotes selected rows or columns</value>
+  </data>
+  <data name="IDTT_SCROLLPLUS" xml:space="preserve">
+    <value>Seçilen satır ve sütunları indirger</value>
+  </data>
+  <data name="IDTT_BUTTON" xml:space="preserve">
+    <value>Bir makro atamak için bir buton çizer</value>
+  </data>
+  <data name="IDTT_PICTURE" xml:space="preserve">
+    <value>Bağlantılı seçime bir resim yapıştırır</value>
+  </data>
+  <data name="IDTT_SPELLCHECK" xml:space="preserve">
+    <value>Yazım denetleyicisini başlatır</value>
+  </data>
+  <data name="IDTT_CALCULATE" xml:space="preserve">
+    <value>Belge için formülleri hesaplar</value>
+  </data>
+  <data name="IDTT_AREACHART" xml:space="preserve">
+    <value>Basit bir alan grafiği çizer</value>
+  </data>
+  <data name="IDTT_BARCHART" xml:space="preserve">
+    <value>Basit bir bar grafiği çizer</value>
+  </data>
+  <data name="IDTT_COLUMNCHART" xml:space="preserve">
+    <value>Basit bir sütun grafiği çizer</value>
+  </data>
+  <data name="IDTT_STACKCHART" xml:space="preserve">
+    <value>Bir yığın sütun grafiği çizer</value>
+  </data>
+  <data name="IDTT_LINECHART" xml:space="preserve">
+    <value>Basit bir çizgi grafiği çizer</value>
+  </data>
+  <data name="IDTT_PIECHART" xml:space="preserve">
+    <value>Yüzde etiketleriyle basit bir pay grafiği çizer</value>
+  </data>
+  <data name="IDTT_SCATTERCHART" xml:space="preserve">
+    <value>Bir dağılım ( veya XY) grafiği çizer</value>
+  </data>
+  <data name="IDTT_3DAREACHART" xml:space="preserve">
+    <value>Bir 3D alan garfiği çizer</value>
+  </data>
+  <data name="IDTT_3DBARCHART" xml:space="preserve">
+    <value>Bir 3D bar grafiği çizer</value>
+  </data>
+  <data name="IDTT_3DCOLUMNCHART" xml:space="preserve">
+    <value>Bir 3D sütun grafiği çizer</value>
+  </data>
+  <data name="IDTT_3DCOLUMNAREACHART" xml:space="preserve">
+    <value>3D çizim alanına sahip bir sütun grafiği çizer</value>
+  </data>
+  <data name="IDTT_3DLINECHART" xml:space="preserve">
+    <value> Bir 3D çizgi grafiği çizer</value>
+  </data>
+  <data name="IDTT_3DPIECHART" xml:space="preserve">
+    <value>Yüzde etiketleriyle bir 3D pay grafiği çizer</value>
+  </data>
+  <data name="IDTT_3DSURFACECHART" xml:space="preserve">
+    <value>Bir 3D yüzey grafiği çizer</value>
+  </data>
+  <data name="IDTT_RADARCHART" xml:space="preserve">
+    <value>Bir radar grafiği çizer</value>
+  </data>
+  <data name="IDTT_COLUMNLINECHART" xml:space="preserve">
+    <value>Çizgi grafiği üzerine bir sütun grafiği çizer</value>
+  </data>
+  <data name="IDTT_COLUMNSTOCKCHART" xml:space="preserve">
+    <value>Hisse fiyatları için sütun garafiği çizer</value>
+  </data>
+  <data name="IDTT_CHARTFORMAT" xml:space="preserve">
+    <value>Tercih edilen formatta gömülü grafik</value>
+  </data>
+  <data name="IDTT_EDITCHART" xml:space="preserve">
+    <value>Özel bir grafik oluşturun veya düzenleyin</value>
+  </data>
+  <data name="IDTT_LINE" xml:space="preserve">
+    <value>Bir çizgi çizer</value>
+  </data>
+  <data name="IDTT_ARROW" xml:space="preserve">
+    <value>Bir ok çizer</value>
+  </data>
+  <data name="IDTT_FREEHAND" xml:space="preserve">
+    <value>Serbet stil çizgi çizer</value>
+  </data>
+  <data name="IDTT_RECTANGLE" xml:space="preserve">
+    <value>Dikdörtgen veya kare çizer</value>
+  </data>
+  <data name="IDTT_ELLIPSE" xml:space="preserve">
+    <value>Oval veya daire çizer</value>
+  </data>
+  <data name="IDTT_ARC" xml:space="preserve">
+    <value>Bir yay veya daire parçası çizer</value>
+  </data>
+  <data name="IDTT_POLYGON" xml:space="preserve">
+    <value>Bir poligon çizer</value>
+  </data>
+  <data name="IDTT_FILLEDRECTANGLE" xml:space="preserve">
+    <value>Dolu bir dikdörtgen çizer</value>
+  </data>
+  <data name="IDTT_FILLEDELLIPSE" xml:space="preserve">
+    <value>Dolu bir oval veya daire çizer</value>
+  </data>
+  <data name="IDTT_FILLEDARC" xml:space="preserve">
+    <value>Dolu bir yay veya daire parçası çizer</value>
+  </data>
+  <data name="IDTT_FILLEDPOLYGON" xml:space="preserve">
+    <value>Dolu bir poligon çizer</value>
+  </data>
+  <data name="IDTT_SELECTOBJECT" xml:space="preserve">
+    <value>Grafik nesnesi seçer</value>
+  </data>
+  <data name="IDTT_EDITPOINT" xml:space="preserve">
+    <value>Poligonun şeklini değiştirir</value>
+  </data>
+  <data name="IDTT_GROUP" xml:space="preserve">
+    <value>Seçilen grafik nesnelerini tek nesnede birleştirir</value>
+  </data>
+  <data name="IDTT_UNGROUP" xml:space="preserve">
+    <value>Bir grup nesnesini tek nesnelere ayırır</value>
+  </data>
+  <data name="IDTT_FRONT" xml:space="preserve">
+    <value>Seçilen nesneyi diğerlerinin önüne yerleştirir</value>
+  </data>
+  <data name="IDTT_BACK" xml:space="preserve">
+    <value>Seçilen nesneyi diğerlerinin arkasına yerleştirir</value>
+  </data>
+  <data name="IDTT_COLOR" xml:space="preserve">
+    <value>Hücre veya nesne ön plan rengini değiştirir</value>
+  </data>
+  <data name="IDTT_3DFRAME" xml:space="preserve">
+    <value>Hücre veya nesne çevresine gölgeli dörtgen ekler</value>
+  </data>
+  <data name="IDTT_NEWMACRO" xml:space="preserve">
+    <value>Yeni makro sayfası oluşturur</value>
+  </data>
+  <data name="IDTT_FUNCTION" xml:space="preserve">
+    <value>Bir fonksiyon ekler</value>
+  </data>
+  <data name="IDTT_CALC" xml:space="preserve">
+    <value>Tüm değerleri tekrar hesapla</value>
+  </data>
+  <data name="IDTT_GOMACRO" xml:space="preserve">
+    <value>Bir makro oynatır</value>
+  </data>
+  <data name="IDTT_STEPMACRO" xml:space="preserve">
+    <value>Seçili bir makronun adımları</value>
+  </data>
+  <data name="IDTT_TRACEOUTMACRO" xml:space="preserve">
+    <value>Makro adımlarla dışa izler</value>
+  </data>
+  <data name="IDTT_TRACEINMACRO" xml:space="preserve">
+    <value>Makro adımlarla içe izler</value>
+  </data>
+  <data name="IDTT_RUNMACRO" xml:space="preserve">
+    <value>Bir makro yürütür</value>
+  </data>
+  <data name="IDTT_SKIPMACRO" xml:space="preserve">
+    <value>Bir makro adım atlar</value>
+  </data>
+  <data name="IDTT_RESETMACRO" xml:space="preserve">
+    <value>Bir makro işlemini sıfırlar</value>
+  </data>
+  <data name="IDTT_RECORDMACRO" xml:space="preserve">
+    <value>Bir makro oluşturmak için yapılan işlemleri kaydeder</value>
+  </data>
+  <data name="IDTT_STOPMACRO" xml:space="preserve">
+    <value>Makro kaydını durdurur</value>
+  </data>
+  <data name="IDTT_PAUSEMACRO" xml:space="preserve">
+    <value>Bir makro işlemini duraklatır</value>
+  </data>
+  <data name="IDTT_NEW" xml:space="preserve">
+    <value>Yeni bir belge oluşturur</value>
+  </data>
+  <data name="IDTT_CUT" xml:space="preserve">
+    <value>Seçileni keser ve panoya yerleştirir</value>
+  </data>
+  <data name="IDTT_PASTE" xml:space="preserve">
+    <value>Pano içeriğini ekleme noktasına yerleştirir</value>
+  </data>
+  <data name="IDTT_NUMBERLIST" xml:space="preserve">
+    <value>Geçerli varsayılanlara göre numaralı bir liste oluşturur</value>
+  </data>
+  <data name="IDTT_BULLETLIST" xml:space="preserve">
+    <value>Geçerli varsayılanlara göre bir mermi listesi oluşturur</value>
+  </data>
+  <data name="IDTT_UNINDENT" xml:space="preserve">
+    <value>Sol girintiyi önceki sekme durağına taşır</value>
+  </data>
+  <data name="IDTT_INDENT" xml:space="preserve">
+    <value>Sol girintiyi sonraki sekme durağına taşır</value>
+  </data>
+  <data name="IDTT_COLUMNFORMAT" xml:space="preserve">
+    <value>Bölümlerdeki sütun biçimini değiştirir</value>
+  </data>
+  <data name="IDTT_FRAME" xml:space="preserve">
+    <value>Boş bir çerçeve ekler veya seçili metni çerçeveler</value>
+  </data>
+  <data name="IDTT_OBJECT" xml:space="preserve">
+    <value>Bir nesne ekler</value>
+  </data>
+  <data name="IDTT_GRAPH" xml:space="preserve">
+    <value>Bir grafik/grafikler ekler</value>
+  </data>
+  <data name="IDTT_ENVELOPE" xml:space="preserve">
+    <value>Geçerli belge ile birlikte yazdırılacak bir zarf oluşturur</value>
+  </data>
+  <data name="IDTT_PAGELAYOUT" xml:space="preserve">
+    <value>Tüm sayfayı görmek için düzenleme görünümünü ölçülendirir</value>
+  </data>
+  <data name="IDTT_PAGENORMAL" xml:space="preserve">
+    <value>Düzenleme görünümünü %100 olarak ölçeklendirir</value>
+  </data>
+  <data name="IDTT_PAGEFIT" xml:space="preserve">
+    <value>Sayfa genişliğini görmek için düzenleme görünümünü ölçeklendirir</value>
+  </data>
+  <data name="IDTT_LEFTTAB" xml:space="preserve">
+    <value>Sola hızalı bir sekme ayarlar</value>
+  </data>
+  <data name="IDTT_CENTERTAB" xml:space="preserve">
+    <value>Ortalı bir sekme ayarlar</value>
+  </data>
+  <data name="IDTT_RIGHTTAB" xml:space="preserve">
+    <value>Sağa hizalı bir sekme ayarlar</value>
+  </data>
+  <data name="IDTT_DECIMALTAB" xml:space="preserve">
+    <value>Ondalık noktada bir sekme ayarlar</value>
+  </data>
+  <data name="IDTT_PARAGRAPH" xml:space="preserve">
+    <value>Yeni bir paragraf başlatır</value>
+  </data>
+  <data name="IDTT_HELP" xml:space="preserve">
+    <value>Yardım menüsünü aktif hale getirir</value>
+  </data>
+  <data name="IDTT_DELETE" xml:space="preserve">
+    <value>Seçili metni siler</value>
+  </data>
+  <data name="IDTT_TIME" xml:space="preserve">
+    <value>Zamanlayıcıyı ayarlar</value>
+  </data>
+  <data name="IDTT_MAIL" xml:space="preserve">
+    <value>Bir posta ayarlar</value>
+  </data>
+  <data name="IDTT_TUTORIAL" xml:space="preserve">
+    <value>Öretici işlemleri başlatır</value>
+  </data>
+  <data name="IDTT_DISKETTEIO" xml:space="preserve">
+    <value>Disketten/diskete dosya okuma/yazma</value>
+  </data>
+  <data name="IDTT_FIND" xml:space="preserve">
+    <value>Belirli bir nesne veya metin dizesini arar</value>
+  </data>
+  <data name="IDTT_PREVREC" xml:space="preserve">
+    <value>Önceki kayda git</value>
+  </data>
+  <data name="IDTT_NEXTREC" xml:space="preserve">
+    <value>Sonraki kayda git</value>
+  </data>
+  <data name="IDTT_STARTREC" xml:space="preserve">
+    <value>İlk kayda git</value>
+  </data>
+  <data name="IDTT_ENDREC" xml:space="preserve">
+    <value>Son kayda git</value>
+  </data>
+  <data name="IDTT_VGBROWSE" xml:space="preserve">
+    <value>Tablo görünümüne değiştir</value>
+  </data>
+  <data name="IDTT_CUSTOMBITMAP" xml:space="preserve">
+    <value>Form görünümüne değiştir</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DOS_ERROR" xml:space="preserve">
+    <value>%V1s DOS Hatası: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSCLASS_BADCAPTION" xml:space="preserve">
+    <value>Başlık geçersiz</value>
+  </data>
+  <data name="__CAVOSTR_SYSCLASS_BADDESCRIPTION" xml:space="preserve">
+    <value>Tanım geçersiz</value>
+  </data>
+  <data name="__CAVOSTR_SYSCLASS_BADHELPCONTEXT" xml:space="preserve">
+    <value>İlgili yardım geçersiz</value>
+  </data>
+  <data name="__CAVOSTR_SYSCLASS_BADNAME" xml:space="preserve">
+    <value>İsim geçersiz veya yok</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_ALIAS" xml:space="preserve">
+    <value>%V1s Alias: %s</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADCHILD" xml:space="preserve">
+    <value>Geçersiz parametre tipi: oDBChild</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADEXPRESSION" xml:space="preserve">
+    <value>%V1s Geçersiz parametre tipi: acbExpression [ %s ]</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADFIELDMATCH" xml:space="preserve">
+    <value>FieldSpec bilgisi eşleşmiyor</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADFILENAME" xml:space="preserve">
+    <value>Geçersiz Dosya Adı</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADFILTERBLOCK" xml:space="preserve">
+    <value>Geçersiz parametre tipi, cbFilterBlock</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADNEXT" xml:space="preserve">
+    <value>Sonraki arguman negatif olmamalı</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADNEXT_CAPTION" xml:space="preserve">
+    <value>Kötü bir sonraki arguman</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADREADONLYMODE" xml:space="preserve">
+    <value>Yalnız okunabilir mod parametresi geçersiz</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADSHAREMODE" xml:space="preserve">
+    <value>Paylaşım modu parametresi geçersiz</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_FIELDSPEC" xml:space="preserve">
+    <value>Yanlış alan tanımı</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_LOCKFAILED" xml:space="preserve">
+    <value>Kayıt kilitleme tesebbüsü başarısız oldu</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_LOCKFAILED_CAPTION" xml:space="preserve">
+    <value>Kilitleme Başarısız</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_MISMATCH" xml:space="preserve">
+    <value>acbExpression ve aFieldList arasında dizin uzunluğu uyuşmazlığı</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NODATAFIELDSEXIST" xml:space="preserve">
+    <value>Veri alanları yok, değiştirmeden önce bunları oluşturmalısınız</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NOFIELDS" xml:space="preserve">
+    <value>Alanlar belirtilmedi</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NOFILENAME" xml:space="preserve">
+    <value>Dosya ismi parametresi yok</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NOGOTOP" xml:space="preserve">
+    <value>GoTop() başarısız</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NOGOTOP_CAPTION" xml:space="preserve">
+    <value>GoTop yapılamadı</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NOSEEK" xml:space="preserve">
+    <value>Arama değeri için arama başarısız</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NOSELECTIONACTIVE" xml:space="preserve">
+    <value>Şu anda aktif seçim yok</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NOTABLE" xml:space="preserve">
+    <value>Tablo açılamıyor</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NOTABLE_CAPTION" xml:space="preserve">
+    <value>Tablo yok</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NOTABLE2" xml:space="preserve">
+    <value>Tablo açılamadı</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_RECORDCHANGED" xml:space="preserve">
+    <value>Son okumadan beri kayıt değişti</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_RECORDCHANGED_CAPTION" xml:space="preserve">
+    <value>Kayıt Değişti</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_SELECTIVENOTFOUND" xml:space="preserve">
+    <value>Seçim değeri bulunamadı</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_SELECTIVESEEK" xml:space="preserve">
+    <value>Seçim değeri arama değerine eşit değil</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_SELECTIVEVALUE" xml:space="preserve">
+    <value>Seçim değeri indeks ifadesine eşit değil</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADFS" xml:space="preserve">
+    <value>oFS geçersiz veya yok</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADHLNAME" xml:space="preserve">
+    <value>oHLName geçersiz</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN" xml:space="preserve">
+    <value>ConcurrencyControl ataması için geçersiz parametre</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADFIELDPOSITION" xml:space="preserve">
+    <value>nFieldPosition geçersiz veya yok</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADTRANSLATIONARRAY" xml:space="preserve">
+    <value>aLookupTable dizin değil veya boş bir dizin</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADCB" xml:space="preserve">
+    <value>cb geçersiz</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADDECIMALS" xml:space="preserve">
+    <value>uDecimals geçersiz veya yok</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADDRIVE" xml:space="preserve">
+    <value>Geçersiz Sürücü</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADEXTENSION" xml:space="preserve">
+    <value>Geçersiz Eklenti</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADHL" xml:space="preserve">
+    <value>oHL geçersiz</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADLENGTH" xml:space="preserve">
+    <value>uLength geçersiz veya yok</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADLREQ" xml:space="preserve">
+    <value>lReq geçersiz</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADNAME" xml:space="preserve">
+    <value>oHLName geçersiz veya yok</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADPATH" xml:space="preserve">
+    <value>Geçersiz Yol</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADSI" xml:space="preserve">
+    <value>si geçersiz</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADSTRING" xml:space="preserve">
+    <value>cString DİZE tipinde değil</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADTYPE" xml:space="preserve">
+    <value>uType geçersiz veya yok</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADTYPE2" xml:space="preserve">
+    <value>uType geçersiz</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INVALIDLENGTH" xml:space="preserve">
+    <value>%V1s%V2s %s : maksimum uzunluk %s dir</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INVALIDMAX" xml:space="preserve">
+    <value>%V1s%V2s %s, %s'den büyük olamaz</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INVALIDMIN" xml:space="preserve">
+    <value>%V1s%V2s %s en azından %s kadar olmalı</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INVALIDMINLENGTH" xml:space="preserve">
+    <value>%V1s%V2s %s : minimum uzunluk %s dir</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INVALIDRANGE" xml:space="preserve">
+    <value>%V1s%V2s%V3s %s aralık %s - %s</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INVALIDTYPE" xml:space="preserve">
+    <value>%V1s%V2s %s : geçersiz veri tipi, %s olmalı</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INVALIDVALUE" xml:space="preserve">
+    <value>%V1s %s: geçersiz değer</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_REQUIRED" xml:space="preserve">
+    <value>%V1s %s gerekir</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INTENTTOMOVE" xml:space="preserve">
+    <value>IntentToMove yanlış döndü.</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION" xml:space="preserve">
+    <value>IntentToMove başarısız.</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADPARENT" xml:space="preserve">
+    <value>Geçersiz üst belirtimi</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INVALIDINDEX" xml:space="preserve">
+    <value>Geçersiz indeks dosyası</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_KEYVALUE" xml:space="preserve">
+    <value>cbKeyValue için cKeyValue belirtilmeli</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INVALIDORDER" xml:space="preserve">
+    <value>Geçersiz indeks</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NOFIELDMATCH" xml:space="preserve">
+    <value>DBF alanlarıyla eşleşen alan yok</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADALIAS" xml:space="preserve">
+    <value>Geçersiz takma ad</value>
+  </data>
+  <data name="OLEAUTO_ERROR_FIRST" xml:space="preserve">
+    <value>OLE Otomasyon İstemcisi</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_NO_GET_PROPERTY" xml:space="preserve">
+    <value>Get özelliği yok</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_NO_SET_PROPERTY" xml:space="preserve">
+    <value>Set özelliği yok</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_UNKNOWN_ERROR" xml:space="preserve">
+    <value>Bilinmeyen OLE hatası oluştu</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_NO_MEMORY" xml:space="preserve">
+    <value>Hafıza yetersiz</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_CONVERTERR" xml:space="preserve">
+    <value>VO değişkenini OLE argumanına değiştirme hatası</value>
+  </data>
+  <data name="OLEAUTO_ERROR_EXP_NO_DESC" xml:space="preserve">
+    <value>OLE otomasyon sunucusu bir istisna oluşturdu</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_GET_PROPERTY_FAILED" xml:space="preserve">
+    <value>Get özellik çağrısı başarısız</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_SET_PROPERTY_FAILED" xml:space="preserve">
+    <value>Set özellik çağrısı başarısız</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_NO_METHOD" xml:space="preserve">
+    <value>Metot yok</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_METHOD_FAILED" xml:space="preserve">
+    <value>Metot çağrısı başarısız</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_PARAM_MISSING" xml:space="preserve">
+    <value>Metot için yeterli parametre yok</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_NAMED_ARG" xml:space="preserve">
+    <value>İsimli arguman yok ??</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_INIT_FAILED" xml:space="preserve">
+    <value>Balatma işlemi başarısız</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_NAMED_ARG_LAST" xml:space="preserve">
+    <value>Adlandırılmış argümanlar, argüman listasinde mevcut argümanlardan önce gelemez</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_NAMED_ARG_NOTSUPP" xml:space="preserve">
+    <value>Adlandırılmış değişkenler sadece metot çağrılarında desteklenir</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_VARIANT_ARGS" xml:space="preserve">
+    <value>Varyant parametreler dizisiyle OLE metoduna çağrı deteklenmez</value>
+  </data>
+  <data name="OLEAUTO_ERROR_NO_IDISPATCH_INTERFACE" xml:space="preserve">
+    <value>OLE AutoObject başlatılmadı veya halehazırda yokedildi</value>
+  </data>
+  <data name="OLEAUTO_ERROR_NO_ITYPELIB_INTERFACE" xml:space="preserve">
+    <value>OLE AutoObject ITypeLib tipi arayüzü desteklemez veya henüz yok edildi</value>
+  </data>
+  <data name="IDS_OLERUNTIME" xml:space="preserve">
+    <value>Visual Objects OLE Çalışma Zamanı</value>
+  </data>
+  <data name="IDS_NOAPPDOCFILE" xml:space="preserve">
+    <value>Uygulama Döküman Dosyası bulunamadı:</value>
+  </data>
+  <data name="IDS_NOINSERT" xml:space="preserve">
+    <value>Nesne ekenemiyor. Odak noktası OLE kontrolünde olmalıdır</value>
+  </data>
+  <data name="IDS_CREATEFAILED" xml:space="preserve">
+    <value>Nesne oluşturma başarısız</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_CLOSEDREPORT" xml:space="preserve">
+    <value>%V1s%V2s %s, %s kapalı rapora sahip</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_COMMANDERROR1" xml:space="preserve">
+    <value>%V1s%V2s, ReportQueue DDE komutu göndermeden önce açık bir rapora ihtiyaç duyar: %s - %s</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_COMMANDERROR2" xml:space="preserve">
+    <value>%V1s%V2s%V3s %s - %s %s</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_COMPLETEDREPORT" xml:space="preserve">
+    <value>%V1s%V2s %s, %s olarak tamamlanmış rapor</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_DETECTEDERRORS" xml:space="preserve">
+    <value>%V1s%V2s %s, belirlenen hata(lar)'ın %s olarak tamamlanan raporu</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_OPENEDREPORT" xml:space="preserve">
+    <value>%V1s%V2s %s, %s olarak açılan rapor</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_SAVEDREPORT" xml:space="preserve">
+    <value>%V1s%V2s %s, %s olarak kaydedilen rapor</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_SAVETOFILEINFO1" xml:space="preserve">
+    <value>ReportQueue:SaveToFile için parametre 2'de programlama hatası</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_SAVETOFILEINFO2" xml:space="preserve">
+    <value>Varsayılan dosya tipi 'RTF', diğer tecih ise "TEXT" dir</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_THEREPORT" xml:space="preserve">
+    <value>%V1s the report %s</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_TOCLOSEFILE" xml:space="preserve">
+    <value>%V1s%V2s %s to close file %s</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_SYNCHRONOUS" xml:space="preserve">
+    <value>Senkron</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_ASYNCHRONOUS" xml:space="preserve">
+    <value>Asenkron</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_DDE_PENDING" xml:space="preserve">
+    <value>%V1s%V2s %s DDE komutu beklemede %s</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_REPORTS_OPEN" xml:space="preserve">
+    <value>%V1s %s raporlar şimdi açık:</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_REPORT" xml:space="preserve">
+    <value>%V1s%V2s    %s raporu %s dir</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_ISCLOSED" xml:space="preserve">
+    <value>%V1s %s kapalı</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_ABOUTTITLE" xml:space="preserve">
+    <value>CA-Visual Objects Rapor Editörü hakkında</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_ABOUTBODY" xml:space="preserve">
+    <value>Computer Associates International, Inc.\nCA-Visual Objects Rapor Editörü</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_PARAMERROR" xml:space="preserve">
+    <value>Geçersiz Parametre</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS_SUBSYS" xml:space="preserve">
+    <value>VO-ODBC</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__ENV_ALLOC" xml:space="preserve">
+    <value>Çevre zahten tahsis edildi</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__ENV_FREE" xml:space="preserve">
+    <value>Çevre zahten serbest bırakıldı</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__CON_ALLOC" xml:space="preserve">
+    <value>Bağlantı henüz kuruldu</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__CON_FREE" xml:space="preserve">
+    <value>Bağlantı serbest bırakıldı</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__CONNECTED" xml:space="preserve">
+    <value>Bağlantı tamam</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__NOT_CONN" xml:space="preserve">
+    <value>Bağlantı yok</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__CANCELLED" xml:space="preserve">
+    <value>Talep iptal edildi</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__ODBC_VO" xml:space="preserve">
+    <value>[CA][ODBC VO]</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__GENERAL_ERR" xml:space="preserve">
+    <value>S1000</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__STMT_NOT_ALLOC" xml:space="preserve">
+    <value>İfade tahsis edilmedi</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__STMT_PREP" xml:space="preserve">
+    <value>Açıklama zahten hazırlandı</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__NO_STMT" xml:space="preserve">
+    <value>Açıklama yok</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__STMT_ALLOC" xml:space="preserve">
+    <value>Açıklama henüz tahsis edildi</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__FUNCSEQ_ERR" xml:space="preserve">
+    <value>S1010</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__PARM_TYPE" xml:space="preserve">
+    <value>Desteklenmeyen parametre tipi</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__MEM_ALLOC" xml:space="preserve">
+    <value>Hafıza tahsisi yapılamıyor</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__BADCOL" xml:space="preserve">
+    <value>Geçersiz sütun</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__BADFLD" xml:space="preserve">
+    <value>Geçersiz alan</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__BADPAR" xml:space="preserve">
+    <value>Geçersiz parametre</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__BADRECNO" xml:space="preserve">
+    <value>Geçersiz kayıt numarası</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__BACKWARDS" xml:space="preserve">
+    <value>Tampondan geriye doğru atlamayı dene</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__BOF" xml:space="preserve">
+    <value>Henüz ilk satırda</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__EOF" xml:space="preserve">
+    <value>Henüz dosya sonunda</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__NOFLDS" xml:space="preserve">
+    <value>Alanlar belirtilmedi</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__NO_KEY" xml:space="preserve">
+    <value>Birinci anahtar belirlenmedi</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__NO_ROW" xml:space="preserve">
+    <value>Satır(lar) bulunamadı</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__NO_INS" xml:space="preserve">
+    <value>Satır girilmedi</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__INV_OP" xml:space="preserve">
+    <value>Geçersiz işlem</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__NO_CSR" xml:space="preserve">
+    <value>Sıra hatası; imleç açık değil</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__BADVALID" xml:space="preserve">
+    <value>Alan doğrulama hatası</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__EMPTY" xml:space="preserve">
+    <value>Tablo boş</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__UPDATE_COL" xml:space="preserve">
+    <value>Sütun güncellenemiyor!</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__NODATAFIELDSEXIST" xml:space="preserve">
+    <value>Veri alanları mevcut değil, değiştirmeden önce bunları oluşturmalısınız</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__BADFIELDPOSITION" xml:space="preserve">
+    <value>Alan pozisyonu (nFieldPosition) geçersiz veya yok</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__INVALIDCOLATT" xml:space="preserve">
+    <value>Geçersiz Sütun Nitelikleri (ColumnAttributes) Parametresi</value>
+  </data>
+  <data name="TMSG_YN" xml:space="preserve">
+    <value>E/H</value>
+  </data>
+  <data name="TMSG_ALERTDEFAULT" xml:space="preserve">
+    <value>Bir hata oluştu</value>
+  </data>
+  <data name="TMSG_NOTERMWIN" xml:space="preserve">
+    <value>Sistem varsayılan pencereyi oluşturamıyor </value>
+  </data>
+  <data name="TMSG_FNTCHNG" xml:space="preserve">
+    <value>Font Değişikliği</value>
+  </data>
+  <data name="TMSG_MARK" xml:space="preserve">
+    <value>Ekrandan Panoya</value>
+  </data>
+  <data name="TMSG_SCREEN2FILE" xml:space="preserve">
+    <value>Ekrandan Dosyaya</value>
+  </data>
+  <data name="TMSG_MEMRECOUR" xml:space="preserve">
+    <value>MemCheck() yinelemeli olarak girildi</value>
+  </data>
+  <data name="TMSG_DYNCHECKERR" xml:space="preserve">
+    <value>&gt;&gt;DYNCHECK BAŞARISIZ!!</value>
+  </data>
+  <data name="TMSG_HNDLINE" xml:space="preserve">
+    <value>Çizgi</value>
+  </data>
+  <data name="TMSG_HNDENTITY" xml:space="preserve">
+    <value>Öğe</value>
+  </data>
+  <data name="TMSG_HNDCONTENTS" xml:space="preserve">
+    <value>İçerikler:</value>
+  </data>
+  <data name="TMSG_HNDVAR" xml:space="preserve">
+    <value>Değişken</value>
+  </data>
+  <data name="TMSG_NOCHANGE" xml:space="preserve">
+    <value>Memoedit()'i kullanılırken yazı tipi boyutunu değiştiremezsiniz</value>
+  </data>
+  <data name="TMSG_FONTCHGERR" xml:space="preserve">
+    <value>Yazı tipi değişikliği mümkün değil</value>
+  </data>
+  <data name="TMSG_MUSTSELECT" xml:space="preserve">
+    <value>Bir cihaz seçmelisiniz!</value>
+  </data>
+  <data name="TMSG_NODEVSEL" xml:space="preserve">
+    <value>Cihaz seçimi yapılmadı</value>
+  </data>
+  <data name="TMSG_NOLINK" xml:space="preserve">
+    <value>Yazıcıyla bağlantı kurulamıyor. Serbest DC yok, veya yanlış vin.ini:device ayarları</value>
+  </data>
+  <data name="TMSG_PRNSETUP" xml:space="preserve">
+    <value>Terminal: Yazıcı kurulumu</value>
+  </data>
+  <data name="TMSG_PAGENO" xml:space="preserve">
+    <value>Sayfa No.</value>
+  </data>
+  <data name="TMSG_PRESSANYKEY" xml:space="preserve">
+    <value>Devam için bir tuşa basınız...</value>
+  </data>
+  <data name="TMSG_APPENDSCREEN" xml:space="preserve">
+    <value>Ekranı dosyaya ekle</value>
+  </data>
+  <data name="TMSG_APPENDALL" xml:space="preserve">
+    <value>Tüm dosyalar</value>
+  </data>
+  <data name="TMSG_LOCKEDFONT" xml:space="preserve">
+    <value>Yazı tipi henüz değiştirilemez</value>
+  </data>
+  <data name="TMSG_NOACCELERATORS" xml:space="preserve">
+    <value>Hızlandırıcılar yüklenemiyor. Program başlatma iptal edildi</value>
+  </data>
+  <data name="TMSG_ONTOP" xml:space="preserve">
+    <value>En üstte kal</value>
+  </data>
+  <data name="RT_MSG_SHORT_TRUE" xml:space="preserve">
+    <value>T</value>
+  </data>
+  <data name="RT_MSG_SHORT_FALSE" xml:space="preserve">
+    <value>F</value>
+  </data>
+  <data name="RT_MSG_LONG_TRUE" xml:space="preserve">
+    <value>DOĞRU</value>
+  </data>
+  <data name="RT_MSG_LONG_FALSE" xml:space="preserve">
+    <value>YANLIŞ</value>
+  </data>
+  <data name="RT_MSG_SHORT_YES" xml:space="preserve">
+    <value>Y</value>
+  </data>
+  <data name="RT_MSG_SHORT_NO" xml:space="preserve">
+    <value>N</value>
+  </data>
+  <data name="RT_MSG_LONG_YES" xml:space="preserve">
+    <value>EVET</value>
+  </data>
+  <data name="RT_MSG_LONG_NO" xml:space="preserve">
+    <value>HAYIR</value>
+  </data>
+  <data name="RT_MSG_CURRENCY" xml:space="preserve">
+    <value>$</value>
+  </data>
+  <data name="RT_MSG_YNSTRING" xml:space="preserve">
+    <value>E/H</value>
+  </data>
+  <data name="ERROR_INTERNET_OUT_OF_HANDLES" xml:space="preserve">
+    <value>Tutaçlar tükendi</value>
+  </data>
+  <data name="ERROR_INTERNET_TIMEOUT" xml:space="preserve">
+    <value>Zaman aşımı</value>
+  </data>
+  <data name="ERROR_INTERNET_EXTENDED_ERROR" xml:space="preserve">
+    <value>Genişletilmiş Hata</value>
+  </data>
+  <data name="ERROR_INTERNET_INTERNAL_ERROR" xml:space="preserve">
+    <value>İç Hata</value>
+  </data>
+  <data name="ERROR_INTERNET_INVALID_URL" xml:space="preserve">
+    <value>Geçersiz URL</value>
+  </data>
+  <data name="ERROR_INTERNET_UNRECOGNIZED_SCHEME" xml:space="preserve">
+    <value>Tanınmayan şema</value>
+  </data>
+  <data name="ERROR_INTERNET_NAME_NOT_RESOLVED" xml:space="preserve">
+    <value>Ad çözümlenemedi</value>
+  </data>
+  <data name="ERROR_INTERNET_PROTOCOL_NOT_FOUND" xml:space="preserve">
+    <value>Protokol bulunamadı</value>
+  </data>
+  <data name="ERROR_INTERNET_INVALID_OPTION" xml:space="preserve">
+    <value>Geçersiz seçenek</value>
+  </data>
+  <data name="ERROR_INTERNET_BAD_OPTION_LENGTH" xml:space="preserve">
+    <value>Hatalı seçenek uzunluğu</value>
+  </data>
+  <data name="ERROR_INTERNET_OPTION_NOT_SETTABLE" xml:space="preserve">
+    <value>Seçenek ayarlanamaz</value>
+  </data>
+  <data name="ERROR_INTERNET_SHUTDOWN" xml:space="preserve">
+    <value>Kapat</value>
+  </data>
+  <data name="ERROR_INTERNET_INCORRECT_USER_NAME" xml:space="preserve">
+    <value>Yanlış kullanıcı adı</value>
+  </data>
+  <data name="ERROR_INTERNET_INCORRECT_PASSWORD" xml:space="preserve">
+    <value>Yanlış parola</value>
+  </data>
+  <data name="ERROR_INTERNET_LOGIN_FAILURE" xml:space="preserve">
+    <value>Giriş başarısız</value>
+  </data>
+  <data name="ERROR_INTERNET_INVALID_OPERATION" xml:space="preserve">
+    <value>Geçersiz işlem</value>
+  </data>
+  <data name="ERROR_INTERNET_OPERATION_CANCELLED" xml:space="preserve">
+    <value>İşlem iptal edildi</value>
+  </data>
+  <data name="ERROR_INTERNET_INCORRECT_HANDLE_TYPE" xml:space="preserve">
+    <value>Yanlış tutaç tipi</value>
+  </data>
+  <data name="ERROR_INTERNET_INCORRECT_HANDLE_STATE" xml:space="preserve">
+    <value>Yanlış tutaç durumu</value>
+  </data>
+  <data name="ERROR_INTERNET_NOT_PROXY_REQUEST" xml:space="preserve">
+    <value>Proxy isteği değil</value>
+  </data>
+  <data name="ERROR_INTERNET_REGISTRY_VALUE_NOT_FOUND" xml:space="preserve">
+    <value>Kayıt defteri değeri bulunamadı</value>
+  </data>
+  <data name="ERROR_INTERNET_BAD_REGISTRY_PARAMETER" xml:space="preserve">
+    <value>Kötü kayıt defteri parametresi</value>
+  </data>
+  <data name="ERROR_INTERNET_NO_DIRECT_ACCESS" xml:space="preserve">
+    <value>Doğrudan erişim yok</value>
+  </data>
+  <data name="ERROR_INTERNET_NO_CONTEXT" xml:space="preserve">
+    <value>Bağlam yok</value>
+  </data>
+  <data name="ERROR_INTERNET_NO_CALLBACK" xml:space="preserve">
+    <value>Callback yok</value>
+  </data>
+  <data name="ERROR_INTERNET_REQUEST_PENDING" xml:space="preserve">
+    <value>Talep beklemede</value>
+  </data>
+  <data name="ERROR_INTERNET_INCORRECT_FORMAT" xml:space="preserve">
+    <value>Yanlış format</value>
+  </data>
+  <data name="ERROR_INTERNET_ITEM_NOT_FOUND" xml:space="preserve">
+    <value>Öğe bulunamadı</value>
+  </data>
+  <data name="ERROR_INTERNET_CANNOT_CONNECT" xml:space="preserve">
+    <value>Bağlanamıyor</value>
+  </data>
+  <data name="ERROR_INTERNET_CONNECTION_ABORTED" xml:space="preserve">
+    <value>Bağlantı iptal edildi</value>
+  </data>
+  <data name="ERROR_INTERNET_CONNECTION_RESET" xml:space="preserve">
+    <value>Bağlantı tekrar edildi</value>
+  </data>
+  <data name="ERROR_INTERNET_FORCE_RETRY" xml:space="preserve">
+    <value>Zorla yeniden dene</value>
+  </data>
+  <data name="ERROR_INTERNET_INVALID_PROXY_REQUEST" xml:space="preserve">
+    <value>Yanlış proxy istemi</value>
+  </data>
+  <data name="ERROR_INTERNET_NEED_UI" xml:space="preserve">
+    <value>ui gerekli</value>
+  </data>
+  <data name="ERROR_INTERNET_HANDLE_EXISTS" xml:space="preserve">
+    <value>Tutaç mevcut</value>
+  </data>
+  <data name="ERROR_INTERNET_SEC_CERT_DATE_INVALID" xml:space="preserve">
+    <value>Sec sertifika tarihi geçersiz</value>
+  </data>
+  <data name="ERROR_INTERNET_SEC_CERT_CN_INVALID" xml:space="preserve">
+    <value>Sec sertifika cn geçersiz</value>
+  </data>
+  <data name="ERROR_INTERNET_HTTP_TO_HTTPS_ON_REDIR" xml:space="preserve">
+    <value>http'den http'ye yeniden yönlendir</value>
+  </data>
+  <data name="ERROR_INTERNET_HTTPS_TO_HTTP_ON_REDIR" xml:space="preserve">
+    <value>http'lerden Http'ye yeniden yönlendir</value>
+  </data>
+  <data name="ERROR_INTERNET_MIXED_SECURITY" xml:space="preserve">
+    <value>Karma güvenlik</value>
+  </data>
+  <data name="ERROR_INTERNET_CHG_POST_IS_NON_SECURE" xml:space="preserve">
+    <value>Chg yayını güvenli değil</value>
+  </data>
+  <data name="ERROR_INTERNET_POST_IS_NON_SECURE" xml:space="preserve">
+    <value>Yayın güvenli değil</value>
+  </data>
+  <data name="ERROR_INTERNET_CLIENT_AUTH_CERT_NEEDED" xml:space="preserve">
+    <value>Müşteri yetki belgesi gerekli</value>
+  </data>
+  <data name="ERROR_INTERNET_INVALID_CA" xml:space="preserve">
+    <value>Geçersiz ca</value>
+  </data>
+  <data name="ERROR_INTERNET_CLIENT_AUTH_NOT_SETUP" xml:space="preserve">
+    <value>İstemci kimlik doğrulaması ayarlanmadı</value>
+  </data>
+  <data name="ERROR_INTERNET_ASYNC_THREAD_FAILED" xml:space="preserve">
+    <value>Eşzamansız iş parçası başarısız oldu</value>
+  </data>
+  <data name="ERROR_INTERNET_REDIRECT_SCHEME_CHANGE" xml:space="preserve">
+    <value>Yönlendirme şeması değişikliği</value>
+  </data>
+  <data name="ERROR_FTP_TRANSFER_IN_PROGRESS" xml:space="preserve">
+    <value>Transfer devam ediyor</value>
+  </data>
+  <data name="ERROR_FTP_DROPPED" xml:space="preserve">
+    <value>Ftp düştü</value>
+  </data>
+  <data name="ERROR_GOPHER_PROTOCOL_ERROR" xml:space="preserve">
+    <value>Protokol hatası</value>
+  </data>
+  <data name="ERROR_GOPHER_NOT_FILE" xml:space="preserve">
+    <value>Dosya değil</value>
+  </data>
+  <data name="ERROR_GOPHER_DATA_ERROR" xml:space="preserve">
+    <value>Veri hatası</value>
+  </data>
+  <data name="ERROR_GOPHER_END_OF_DATA" xml:space="preserve">
+    <value>Veri sonu</value>
+  </data>
+  <data name="ERROR_GOPHER_INVALID_LOCATOR" xml:space="preserve">
+    <value>Geçersiz konum belirleyici</value>
+  </data>
+  <data name="ERROR_GOPHER_INCORRECT_LOCATOR_TYPE" xml:space="preserve">
+    <value>Yanlış yer belirleme tipi</value>
+  </data>
+  <data name="ERROR_GOPHER_NOT_GOPHER_PLUS" xml:space="preserve">
+    <value>Gopher plus değil</value>
+  </data>
+  <data name="ERROR_GOPHER_ATTRIBUTE_NOT_FOUND" xml:space="preserve">
+    <value>Öznitelik bulunamadı</value>
+  </data>
+  <data name="ERROR_GOPHER_UNKNOWN_LOCATOR" xml:space="preserve">
+    <value>Bilinmeyen konumlandırıcı</value>
+  </data>
+  <data name="ERROR_HTTP_HEADER_NOT_FOUND" xml:space="preserve">
+    <value>Başlık bulunamadı</value>
+  </data>
+  <data name="ERROR_HTTP_DOWNLEVEL_SERVER" xml:space="preserve">
+    <value>Alt seviye sunucu</value>
+  </data>
+  <data name="ERROR_HTTP_INVALID_SERVER_RESPONSE" xml:space="preserve">
+    <value>Geçersiz sunucu yanıtı</value>
+  </data>
+  <data name="ERROR_HTTP_INVALID_HEADER" xml:space="preserve">
+    <value>Geçersiz başlık</value>
+  </data>
+  <data name="ERROR_HTTP_INVALID_QUERY_REQUEST" xml:space="preserve">
+    <value>Geçersiz sorgu isteği</value>
+  </data>
+  <data name="ERROR_HTTP_HEADER_ALREADY_EXISTS" xml:space="preserve">
+    <value>Başlık zahten var</value>
+  </data>
+  <data name="ERROR_HTTP_REDIRECT_FAILED" xml:space="preserve">
+    <value>Yönlendirme başarısız</value>
+  </data>
+  <data name="ERROR_INTERNET_SECURITY_CHANNEL_ERROR" xml:space="preserve">
+    <value>Güvenlik kanalı hatası</value>
+  </data>
+  <data name="ERROR_INTERNET_UNABLE_TO_CACHE_FILE" xml:space="preserve">
+    <value>Dosya ön belleğe alınamıyor</value>
+  </data>
+  <data name="ERROR_INTERNET_TCPIP_NOT_INSTALLED" xml:space="preserve">
+    <value>TCP/IP yüklenmedi</value>
+  </data>
+  <data name="ERROR_HTTP_NOT_REDIRECTED" xml:space="preserve">
+    <value>Yönlendirilmedi</value>
+  </data>
+  <data name="ERR_LOGON_FAILED" xml:space="preserve">
+    <value>Oturum açma başarısız oldu</value>
+  </data>
+  <data name="ERR_FILE_EXISTS" xml:space="preserve">
+    <value>Uzak dosya zahten var</value>
+  </data>
+  <data name="ERR_UNKNOWN_CODE_TYPE" xml:space="preserve">
+    <value>Bilinmeyen kodlama türü</value>
+  </data>
+  <data name="ERR_WSA_WAIT_TIMEOUT" xml:space="preserve">
+    <value>Zaman aşımı hatasını bekle</value>
+  </data>
+  <data name="ERR_NEWSGROUP_MISSING" xml:space="preserve">
+    <value>Böyle bir haber grubu yok</value>
+  </data>
+  <data name="ERR_NO_NEWSGROUP" xml:space="preserve">
+    <value>Haber grubu seçimi yapılmadı</value>
+  </data>
+  <data name="ERR_NO_ARTICLE_SELECTED" xml:space="preserve">
+    <value>Seçili makale yok</value>
+  </data>
+  <data name="ERR_NO_ARTICLE_NUMBER" xml:space="preserve">
+    <value>Bu grupta böyle bir makale sayısı yok</value>
+  </data>
+  <data name="ERR_NO_ARTICLE" xml:space="preserve">
+    <value>Böyle bir makale bulunamadı</value>
+  </data>
+  <data name="RT_MSG_ERR_0" xml:space="preserve">
+    <value>Bekleniyor...</value>
+  </data>
+  <data name="RT_MSG_ERR_1" xml:space="preserve">
+    <value>Argüman hatası</value>
+  </data>
+  <data name="RT_MSG_ERR_2" xml:space="preserve">
+    <value>Sınır hatası</value>
+  </data>
+  <data name="RT_MSG_ERR_3" xml:space="preserve">
+    <value>Dize taşması</value>
+  </data>
+  <data name="RT_MSG_ERR_4" xml:space="preserve">
+    <value>Numerik taşma</value>
+  </data>
+  <data name="RT_MSG_ERR_5" xml:space="preserve">
+    <value>Sıfır bölen</value>
+  </data>
+  <data name="RT_MSG_ERR_6" xml:space="preserve">
+    <value>Numerik hata</value>
+  </data>
+  <data name="RT_MSG_ERR_7" xml:space="preserve">
+    <value>Sözdizimi hatası</value>
+  </data>
+  <data name="RT_MSG_ERR_8" xml:space="preserve">
+    <value>İşlem çok karmasık</value>
+  </data>
+  <data name="RT_MSG_ERR_9" xml:space="preserve">
+    <value>Hafıza bloğu taşması</value>
+  </data>
+  <data name="RT_MSG_ERR_10" xml:space="preserve">
+    <value>SIRALAMA hatası</value>
+  </data>
+  <data name="RT_MSG_ERR_11" xml:space="preserve">
+    <value>Düşük hafıza</value>
+  </data>
+  <data name="RT_MSG_ERR_12" xml:space="preserve">
+    <value>Tanımlanmamış fonksiyon</value>
+  </data>
+  <data name="RT_MSG_ERR_13" xml:space="preserve">
+    <value>Dişa aktarılan metot yok</value>
+  </data>
+  <data name="RT_MSG_ERR_14" xml:space="preserve">
+    <value>Değişken mevcut değil</value>
+  </data>
+  <data name="RT_MSG_ERR_15" xml:space="preserve">
+    <value>Takma ad mevcut değil</value>
+  </data>
+  <data name="RT_MSG_ERR_16" xml:space="preserve">
+    <value>Dışa aktarılan değişken yok</value>
+  </data>
+  <data name="RT_MSG_ERR_17" xml:space="preserve">
+    <value>Takma ad içinde geçersiz karekter</value>
+  </data>
+  <data name="RT_MSG_ERR_18" xml:space="preserve">
+    <value>Takma ad zahten kullanılıyor</value>
+  </data>
+  <data name="RT_MSG_ERR_19" xml:space="preserve">
+    <value>Değişken başlatılmadı</value>
+  </data>
+  <data name="RT_MSG_ERR_20" xml:space="preserve">
+    <value>Oluşturma hatası</value>
+  </data>
+  <data name="RT_MSG_ERR_21" xml:space="preserve">
+    <value>Açma hatası</value>
+  </data>
+  <data name="RT_MSG_ERR_22" xml:space="preserve">
+    <value>Kapatma hatası</value>
+  </data>
+  <data name="RT_MSG_ERR_23" xml:space="preserve">
+    <value>Okuma hatası</value>
+  </data>
+  <data name="RT_MSG_ERR_24" xml:space="preserve">
+    <value>Yazma hatası</value>
+  </data>
+  <data name="RT_MSG_ERR_25" xml:space="preserve">
+    <value>Yazdırma hatası</value>
+  </data>
+  <data name="RT_MSG_ERR_26" xml:space="preserve">
+    <value>Tanımsız sembol</value>
+  </data>
+  <data name="RT_MSG_ERR_27" xml:space="preserve">
+    <value>Tanımsız sınıf</value>
+  </data>
+  <data name="RT_MSG_ERR_28" xml:space="preserve">
+    <value>Yanlış sınıf</value>
+  </data>
+  <data name="RT_MSG_ERR_29" xml:space="preserve">
+    <value>İllegal referans</value>
+  </data>
+  <data name="RT_MSG_ERR_30" xml:space="preserve">
+    <value>İşlem desteklenmiyor</value>
+  </data>
+  <data name="RT_MSG_ERR_31" xml:space="preserve">
+    <value>Limit aşıldı</value>
+  </data>
+  <data name="RT_MSG_ERR_32" xml:space="preserve">
+    <value>Buruşma tesbit edildi</value>
+  </data>
+  <data name="RT_MSG_ERR_33" xml:space="preserve">
+    <value>Veri tipi hatası</value>
+  </data>
+  <data name="RT_MSG_ERR_34" xml:space="preserve">
+    <value>Veri genişliği hatası</value>
+  </data>
+  <data name="RT_MSG_ERR_35" xml:space="preserve">
+    <value>Çalışma alanı kullanımda değil</value>
+  </data>
+  <data name="RT_MSG_ERR_36" xml:space="preserve">
+    <value>Çalışma alanı indeksli değil</value>
+  </data>
+  <data name="RT_MSG_ERR_37" xml:space="preserve">
+    <value>Özel (Exclusive) gerekli</value>
+  </data>
+  <data name="RT_MSG_ERR_38" xml:space="preserve">
+    <value>Kilit gerekli</value>
+  </data>
+  <data name="RT_MSG_ERR_39" xml:space="preserve">
+    <value>Yazmaya müsade edilmiyor</value>
+  </data>
+  <data name="RT_MSG_ERR_40" xml:space="preserve">
+    <value>Kayıt ekleme kilit başarısız</value>
+  </data>
+  <data name="RT_MSG_ERR_41" xml:space="preserve">
+    <value>Kilitleme başarısız</value>
+  </data>
+  <data name="RT_MSG_ERR_42" xml:space="preserve">
+    <value>To many threads</value>
+  </data>
+  <data name="RT_MSG_ERR_43" xml:space="preserve">
+    <value>Ayrılmış hata numarası</value>
+  </data>
+  <data name="RT_MSG_ERR_44" xml:space="preserve">
+    <value>Ayrılmış hata numarası</value>
+  </data>
+  <data name="RT_MSG_ERR_45" xml:space="preserve">
+    <value>Kilitleme Hatası</value>
+  </data>
+  <data name="RT_MSG_ERR_46" xml:space="preserve">
+    <value>Kilitleme Zamanaşımı</value>
+  </data>
+  <data name="RT_MSG_ERR_47" xml:space="preserve">
+    <value>İşlemci yığın hatası</value>
+  </data>
+  <data name="RT_MSG_ERR_48" xml:space="preserve">
+    <value>Yığın hatasını değerlendir</value>
+  </data>
+  <data name="RT_MSG_ERR_49" xml:space="preserve">
+    <value>Hata bloğu yok</value>
+  </data>
+  <data name="RT_MSG_ERR_50" xml:space="preserve">
+    <value>Genel koruma hatası</value>
+  </data>
+  <data name="RT_MSG_ERR_51" xml:space="preserve">
+    <value>Geçersiz işaretçi</value>
+  </data>
+  <data name="RT_MSG_ERR_52" xml:space="preserve">
+    <value>Sayfa hatası</value>
+  </data>
+  <data name="RT_MSG_ERR_53" xml:space="preserve">
+    <value>Hata nesnesi oluşturma hatası</value>
+  </data>
+  <data name="RT_MSG_ERR_54" xml:space="preserve">
+    <value>DynAlloc: PTR'den DynData'ya</value>
+  </data>
+  <data name="RT_MSG_ERR_55" xml:space="preserve">
+    <value>Tipe erişilemiyor</value>
+  </data>
+  <data name="RT_MSG_ERR_56" xml:space="preserve">
+    <value>Metot aşırı yüklenmiş, Send() aşırı yüklenmiş metotlar için desteklenmez</value>
+  </data>
+  <data name="RT_MSG_ERR_57" xml:space="preserve">
+    <value>Hedef metot'a yeterli arguman gönderilmedi</value>
+  </data>
+  <data name="RT_MSG_ERR_58" xml:space="preserve">
+    <value>Hedef metot'a fazla sayıda arguman gönderildi</value>
+  </data>
+  <data name="RT_MSG_ERR_59" xml:space="preserve">
+    <value>CLR veya harici kod ile bir istisna oluştu</value>
+  </data>
+  <data name="RT_MSG_ERR_UNKNOWN" xml:space="preserve">
+    <value>Bilinmeyen hata</value>
+  </data>
+  <data name="RT_MSG_CORRUPTION" xml:space="preserve">
+    <value>hafıza problemi</value>
+  </data>
+  <data name="RT_MSG_FATAL" xml:space="preserve">
+    <value>ÇIKIŞ hatası</value>
+  </data>
+  <data name="RT_MSG_APPLI" xml:space="preserve">
+    <value>Uygulama</value>
+  </data>
+  <data name="RT_MSG_LINE" xml:space="preserve">
+    <value>Çizgi</value>
+  </data>
+  <data name="RT_MSG_FUNC" xml:space="preserve">
+    <value>Fonksiyon</value>
+  </data>
+  <data name="RT_MSG_RELEASE" xml:space="preserve">
+    <value>Version 2.8 SP4</value>
+  </data>
+  <data name="RT_MSG_ERR_INSTALLED" xml:space="preserve">
+    <value>ERRORBUILD: ERRORFUNC yüklü değil</value>
+  </data>
+  <data name="RT_MSG_ERR_GURU" xml:space="preserve">
+    <value>ERRORBUILD: Guru tablosu yok</value>
+  </data>
+  <data name="RT_MSG_ERR_STACK" xml:space="preserve">
+    <value>ERRORBUILD: düşük yığın alanı</value>
+  </data>
+  <data name="RT_MSG_ERR_PARAM" xml:space="preserve">
+    <value>ERRORBUILD: geçersiz yapı parametresi (strucparam)</value>
+  </data>
+  <data name="RT_MSG_ERR_NOCLIPPER" xml:space="preserve">
+    <value>ERRORBUILD: CLIPPER hata fonsiyonu (ERRORFUNC) bulunamadı</value>
+  </data>
+  <data name="RT_MSG_ERR_ARGCOUNT" xml:space="preserve">
+    <value>ERRORBUILD: hata fonksiyonu (ERRORFUNC) argüment sayısı (argcount) &lt;&gt;1</value>
+  </data>
+  <data name="RT_MSG_MAIL_ERR1" xml:space="preserve">
+    <value>SendMail(): MAPI DLL yüklemesi başarısız</value>
+  </data>
+  <data name="RT_MSG_MAIL_ERR2" xml:space="preserve">
+    <value>SendMail(): MAPI DLL'de işlem giriş noktası alınamadı</value>
+  </data>
+  <data name="RT_MSG_MAIL_ERR3" xml:space="preserve">
+    <value>SendMail(): %s gönderme başarısız. Hata kodu: %d</value>
+  </data>
+  <data name="RT_MSG_ACCESS_VIOLATION" xml:space="preserve">
+    <value>Erişim ihlali</value>
+  </data>
+  <data name="RT_MSG_DATATYPE_MISALIGNMENT" xml:space="preserve">
+    <value>Veri tipi yanlış hizalama</value>
+  </data>
+  <data name="RT_MSG_SINGLE_STEP" xml:space="preserve">
+    <value>Tek adım</value>
+  </data>
+  <data name="RT_MSG_ARRAY_BOUNDS_EXCEEDED" xml:space="preserve">
+    <value>Dizin sınırı aşıldı</value>
+  </data>
+  <data name="RT_MSG_FLT_DENORMAL_OPERAND" xml:space="preserve">
+    <value>Kayan nokta anormal operandı</value>
+  </data>
+  <data name="RT_MSG_FLT_DIVIDE_BY_ZERO" xml:space="preserve">
+    <value>Kayan nokta sıfıra bölme</value>
+  </data>
+  <data name="RT_MSG_FLT_INEXACT_RESULT" xml:space="preserve">
+    <value>Kayan nokta kesin olmayan sonuç</value>
+  </data>
+  <data name="RT_MSG_FLT_INVALID_OPERATION" xml:space="preserve">
+    <value>Kayan nokta geçersiz operasyon</value>
+  </data>
+  <data name="RT_MSG_FLT_OVERFLOW" xml:space="preserve">
+    <value>Kayan nokta taşması</value>
+  </data>
+  <data name="RT_MSG_FLT_STACK_CHECK" xml:space="preserve">
+    <value>Kayan nokta yığın kontrolü</value>
+  </data>
+  <data name="RT_MSG_FLT_UNDERFLOW" xml:space="preserve">
+    <value>Kayan nokta yetersiz</value>
+  </data>
+  <data name="RT_MSG_INT_DIVIDE_BY_ZERO" xml:space="preserve">
+    <value>Tamsayıyı sıfıra böme</value>
+  </data>
+  <data name="RT_MSG_INT_OVERFLOW" xml:space="preserve">
+    <value>Tamsayı taşması</value>
+  </data>
+  <data name="RT_MSG_PRIV_INSTRUCTION" xml:space="preserve">
+    <value>Özel talimat</value>
+  </data>
+  <data name="RT_MSG_IN_PAGE_ERROR" xml:space="preserve">
+    <value>Sayfa hatası</value>
+  </data>
+  <data name="RT_MSG_ILLEGAL_INSTRUCTION" xml:space="preserve">
+    <value>Geçersiz talimat</value>
+  </data>
+  <data name="RT_MSG_NONCONTINUABLE_EXCEPTION" xml:space="preserve">
+    <value>Devam ettirilemeyen istisna</value>
+  </data>
+  <data name="RT_MSG_STACK_OVERFLOW" xml:space="preserve">
+    <value>Yığın taşması</value>
+  </data>
+  <data name="RT_MSG_INVALID_DISPOSITION" xml:space="preserve">
+    <value>Geçersiz düzenleme</value>
+  </data>
+  <data name="RT_MSG_GUARD_PAGE" xml:space="preserve">
+    <value>Muhafız sayfa</value>
+  </data>
+  <data name="ARGCANNOTBEZERO" xml:space="preserve">
+    <value>Argüman 0 olamaz</value>
+  </data>
+  <data name="ARGNOTCODEBLOCK" xml:space="preserve">
+    <value>Argüman kodblok değil</value>
+  </data>
+  <data name="ARGLISTING" xml:space="preserve">
+    <value>   {0}: {1} ({2}){3}</value>
+    <comment>Hata Mesajında kullanılır</comment>
+  </data>
+  <data name="ARGNOTDATE" xml:space="preserve">
+    <value>Argüman tarih değildir</value>
+  </data>
+  <data name="ARGNOTINT32" xml:space="preserve">
+    <value>Argüman sayısal (INT) değildir</value>
+  </data>
+  <data name="ARGNOTINTEGER" xml:space="preserve">
+    <value>Argüman tam sayı tipinde değildir</value>
+  </data>
+  <data name="ARGNOTNUMERIC" xml:space="preserve">
+    <value>Argüman sayısal değildir</value>
+  </data>
+  <data name="ARGNOTSTRING" xml:space="preserve">
+    <value>Argüman bir dize değildir</value>
+  </data>
+  <data name="ARGSINCOMPATIBLE" xml:space="preserve">
+    <value>Argümanalar uyumsuzdur</value>
+  </data>
+  <data name="ARGSNOTSAMETYPE" xml:space="preserve">
+    <value>Argümanalar aynı tipte değildir</value>
+  </data>
+  <data name="ARGUMENT" xml:space="preserve">
+    <value>Argüman</value>
+  </data>
+  <data name="ARGUMENTSHEADING" xml:space="preserve">
+    <value>Argüman(lar):</value>
+  </data>
+  <data name="ATRANSLATE" xml:space="preserve">
+    <value>aLookupTable bir dizin veya bir dizin elemanı değildir</value>
+  </data>
+  <data name="DATATYPEERROR" xml:space="preserve">
+    <value>Veri tipi hatası</value>
+  </data>
+  <data name="DATE_ADD" xml:space="preserve">
+    <value>DATE'e geçersiz ekleme, USUAL uyumsuz veri tipi içeriyor</value>
+  </data>
+  <data name="DATE_SUBTRACT" xml:space="preserve">
+    <value>DATE'den geçersiz çıkarma; USUAL uyumsuz veri tipi içeriyor</value>
+  </data>
+  <data name="DESCRIPTION" xml:space="preserve">
+    <value>Tanım: </value>
+  </data>
+  <data name="OPERATION" xml:space="preserve">
+    <value>İşlem: </value>
+  </data>
+  <data name="ERRORCODE" xml:space="preserve">
+    <value>Hata Kodu: </value>
+  </data>
+  <data name="INVALIDARGTYPE" xml:space="preserve">
+    <value>Geçersiz argüman tipi</value>
+  </data>
+  <data name="INVALIDARGVALUE" xml:space="preserve">
+    <value>Geçersiz argüman değeri</value>
+  </data>
+  <data name="OSVERSION" xml:space="preserve">
+    <value>{0} (Versiyon {1}.{2}, Derleme {3}, Revizyon {4})</value>
+  </data>
+  <data name="RUNTIMEERROR" xml:space="preserve">
+    <value>Runtime Error</value>
+    <comment>Çalışma zamanı hata mesajının başlangıcı</comment>
+  </data>
+  <data name="STRINGLENNE1" xml:space="preserve">
+    <value>Dize uzunluğu != 1</value>
+  </data>
+  <data name="SUBSYSTEM" xml:space="preserve">
+    <value>Altsistem: </value>
+    <comment>kolon ve arkada boşluk olması gerekiyor</comment>
+  </data>
+  <data name="USUALOVERFLOWERR" xml:space="preserve">
+    <value>Numeric overflow when converting USUAL of type '{0}' to '{1}'</value>
+  </data>
+  <data name="USUALBINARYOPERR" xml:space="preserve">
+    <value>{0} USUAL tipleri için operatör yok '{1}' and '{2}'</value>
+  </data>
+  <data name="USUALUNARYOPERR" xml:space="preserve">
+    <value>{0} USUAL tipleri için operatör yok '{1}'</value>
+  </data>
+  <data name="USUALCONVERSIONERR" xml:space="preserve">
+    <value>USUAL'den çevirme hatası ({0})  to {1}</value>
+  </data>
+  <data name="VERSION" xml:space="preserve">
+    <value>Versiyon: </value>
+  </data>
+  <data name="ARGISNULL" xml:space="preserve">
+    <value>Arguman NULL'dur</value>
+  </data>
+  <data name="UNKNOWNRDD" xml:space="preserve">
+    <value>Geçersiz RDD adı</value>
+  </data>
+  <data name="ARRAYBOUNDS" xml:space="preserve">
+    <value>Geçersiz indeks dizini</value>
+  </data>
+  <data name="USUALNOTINDEXED" xml:space="preserve">
+    <value>USUAL'de yer alan değer indeks işlemlerinde desteklenmiyor. Değer X# dizini veya '{0}' arayüzü uygulamalısınız.</value>
+  </data>
+  <data name="E_OPEN_MRESTORE" xml:space="preserve">
+    <value>RESTORE komutu için gerekli dosya açılamıyor.</value>
+  </data>  
+    <data name="E_OPEN_MSAVE" xml:space="preserve">
+    <value>SAVE komutu için gerekli dosya oluşturulamıyor.</value>
+  </data>
+  <data name="ERRORDIALOG_TITLE" xml:space="preserve">
+    <value>Uygulama Hatası</value>
+  </data>
+  <data name="ERRORDIALOG_CLOSE" xml:space="preserve">
+    <value>Kapat</value>
+  </data>
+  <data name="ERRORDIALOG_COPY" xml:space="preserve">
+    <value>&amp;Panoya Kopyala</value>
+  </data>
+  <!-- The following strings are not used (yet) in X#-->
+  <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
+    <value>Bir arama tablosu 2 x n olarak boyutlandırılmalıdır</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ARG" xml:space="preserve">
+    <value>%V1s Argu: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ARG_ERROR" xml:space="preserve">
+    <value>&lt;Hata Argu&gt;</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ARGNUM" xml:space="preserve">
+    <value>%V1s ArguNum: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ARGS" xml:space="preserve">
+    <value>Argumanlar:</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ARGTYPE" xml:space="preserve">
+    <value>%V1s ArguTip: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ARGTYPE_REQ" xml:space="preserve">
+    <value>%V1s Geçerli ArguTip: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CALLED_FROM" xml:space="preserve">
+    <value> %s'den %V1s olarak çağrıldı:</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CHOICE" xml:space="preserve">
+    <value>%V1s%V2s Seçim: %s %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CMD_LINE" xml:space="preserve">
+    <value>%V1s Komut Satırı: %-23s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CONVERSION" xml:space="preserve">
+    <value>%V1s in Conversion %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CURDIR" xml:space="preserve">
+    <value>CurDir</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DANGER" xml:space="preserve">
+    <value>* Tehlike *:</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DISK" xml:space="preserve">
+    <value>Disk</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DISK_FREE" xml:space="preserve">
+    <value>Boş</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DOS_ERROR" xml:space="preserve">
+    <value>%V1s DOS Hatası: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ENTITY" xml:space="preserve">
+    <value>%V1s Entity: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ERR_IN_ERR" xml:space="preserve">
+    <value>Hata içinde Hata</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ERROR" xml:space="preserve">
+    <value>%V1s %s. Hata</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_FILE" xml:space="preserve">
+    <value>%V1s Dosya: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_FILE_HANDLE" xml:space="preserve">
+    <value>%V1s DosyaTutacı: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_FUNCPTR" xml:space="preserve">
+    <value>%V1s%V2s FuncPtr: %s %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_FUNCTION" xml:space="preserve">
+    <value>%V1s Fonksiyon: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE" xml:space="preserve">
+    <value>HND</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE_CUR" xml:space="preserve">
+    <value>cur</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE_END" xml:space="preserve">
+    <value>son</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_IVARS" xml:space="preserve">
+    <value>%V1s IVars: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_LINE" xml:space="preserve">
+    <value>%V1s Çizgi: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_MAX" xml:space="preserve">
+    <value>%V1s Maks: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_MODULE" xml:space="preserve">
+    <value>%V1s Modül: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_OBJECT" xml:space="preserve">
+    <value>%V1s Nesne: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_OPERATION" xml:space="preserve">
+    <value>%V1s İşlem: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_SUBCODE" xml:space="preserve">
+    <value>%V1s AltKod: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_SUBST_TYPE" xml:space="preserve">
+    <value>%V1s Dönüşler: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_SUBSYSTEM" xml:space="preserve">
+    <value>%V1s AltSistem: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_TO" xml:space="preserve">
+    <value>%V1s e %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_TRIES" xml:space="preserve">
+    <value>%V1s Tries: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_WARNING" xml:space="preserve">
+    <value>Uyarı:</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_OLEBASE" xml:space="preserve">
+    <value>OLE Tabanı</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CONVERSION_CALLED_FROM" xml:space="preserve">
+    <value>%V1s%V2s in Conversion %s Called from: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CONVERSION_TO" xml:space="preserve">
+    <value>%V1s%V2s in Conversion %s to %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_FUNCTION_CALLED_FROM" xml:space="preserve">
+    <value>%V1s%V2s in Function %s Called from: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_NOMEM" xml:space="preserve">
+    <value>Bellek yetersiz</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_INCTYPES" xml:space="preserve">
+    <value>Anaşılamayan veri tipleri</value>
+  </data>
+  <!-- End of unused strings-->
+</root>

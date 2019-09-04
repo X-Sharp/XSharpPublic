@@ -138,7 +138,7 @@ METHOD PBMove( )
 		cTemp +=  +"; "+ cEntry
 	ENDIF
 
-	SELF:oDCMultiLineEdit1:Value := cTemp
+	SELF:oDCMultiLineEdit1:@@Value := cTemp
 
 	RETURN SELF
 
@@ -156,7 +156,7 @@ METHOD PBNew( )
 METHOD PBOk( ) 
 
 	IF !IsNil(oControl)
-		oControl:Value := oDCMULtiLineEdit1:Value
+		oControl:@@Value := oDCMULtiLineEdit1:@@Value
 	ENDIF		
 
 	SELF:EndWindow()	
@@ -173,7 +173,7 @@ METHOD PostInit(oWindow,iCtlID,oServer,uExtra)
 	ELSE
 		// Using this window to select email addresses
 		SELF:oControl := uExtra
-		SELF:oDCMultiLineEdit1:Value := uExtra:Value
+		SELF:oDCMultiLineEdit1:@@Value := uExtra:@@Value
 	ENDIF
 
 	RETURN NIL

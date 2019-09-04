@@ -1,13 +1,13 @@
-AAP_EMAIL_ICON ICON C:\Cavo28SP3\Samples\EMAIL\EMAIL32.ICO
-BOOK Icon Resources\BOOK.ICO
-BOX_ICON Icon Resources\BOX.ICO
-BOXTICK_ICON Icon Resources\BOXTICK.ICO
-FileCopyAVI AVI C:\Cavo28SP3\Samples\EMAIL\FileCopy.AVI
-OPENBOOK Icon Resources\OBOOK.ICO
-READICO Icon Resources\READ.ICO
-SENTICO Icon Resources\SENT.ICO
+ AAP_EMAIL_ICON ICON "Resources\\EMAIL32.ICO"
+ BOOK Icon "Resources\\BOOK.ICO"
+ BOX_ICON Icon "Resources\\BOX.ICO"
+ BOXTICK_ICON Icon "Resources\\BOXTICK.ICO"
+ FileCopyAVI AVI C:\Cavo28SP3\Samples\EMAIL\FileCopy.AVI
+ OPENBOOK Icon "Resources\\OBOOK.ICO"
+ READICO Icon "Resources\\READ.ICO"
+ SENTICO Icon "Resources\\SENT.ICO"
 
-UNREADICO Icon Resources\UNREAD.ICO
-WebReceiveAVI AVI C:\Cavo28SP3\Samples\EMAIL\WebReceive.AVI
-WebSendAVI AVI C:\Cavo28SP3\Samples\EMAIL\WEBSEND.AVI
+ UNREADICO Icon "Resources\\UNREAD.ICO"
+ WebReceiveAVI AVI C:\Cavo28SP3\Samples\EMAIL\WebReceive.AVI
+ WebSendAVI AVI C:\Cavo28SP3\Samples\EMAIL\WEBSEND.AVI
 

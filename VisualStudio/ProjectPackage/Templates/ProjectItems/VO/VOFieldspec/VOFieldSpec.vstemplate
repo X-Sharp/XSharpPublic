@@ -11,11 +11,6 @@
      <SortOrder>203</SortOrder>
   </TemplateData>
   <TemplateContent>
-    <References>
-      <Reference>
-        <Assembly>VulcanVOSystemClasses</Assembly>
-      </Reference>
-    </References>
     <ProjectItem OpenInEditor="false" ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.prg">VOFieldSpec.prg</ProjectItem>
     <ProjectItem OpenInEditor="true" ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.FieldSpecs.xsfs">VOFieldSpec.xsfs</ProjectItem>
   </TemplateContent>

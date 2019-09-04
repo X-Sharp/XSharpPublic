@@ -1,4 +1,4 @@
-ComposeEmailContextmenu MENU
+ ComposeEmailContextmenu MENU
 Begin
 	POPUP "Click"
 	BEGIN

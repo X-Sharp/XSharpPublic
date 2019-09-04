@@ -108,6 +108,32 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(" 123456789" , Str(123456789))
 			Assert.Equal("**********" , Str(12345678901))
 			
+			SetDecimal(2)
+			SetDecimalSep(Asc(","))
+			SetThousandSep(Asc("."))
+			Assert.Equal( "**",    Str(1.23 , 2 , 1) )
+			Assert.Equal( "1,2",   Str(1.2 , 3) )
+			Assert.Equal( "123",   Str(123.456 , 3) )
+
+			Assert.Equal( "123",   Str(123.4567 , 3 , 1) )
+			Assert.Equal( "123,",  Str(123.4567 , 4 , 2) )
+			Assert.Equal( "123,4", Str(123.4567 , 5 , 3) )
+			Assert.Equal( "****" , Str(123.4567 , 4 , 3) )
+			Assert.Equal( "*****", Str(123.4567 , 5 , 4) )
+
+			Assert.Equal( "***",   Str(-123.4567 , 3 , 1) )
+			Assert.Equal( "-123",  Str(-123.4567 , 4 , 2) )
+			Assert.Equal( "-123,", Str(-123.4567 , 5 , 3) )
+			Assert.Equal( "****" , Str(-123.4567 , 4 , 3) )
+			Assert.Equal( "*****", Str(-123.4567 , 5 , 4) )
+
+			Assert.Equal( "0,0",   Str(0.0 , -1) )
+			Assert.Equal( "0,1",   Str(0.1 , -1) )
+			Assert.Equal( "-0,1",  Str(-0.1 , -1) )
+			Assert.Equal( "0,000",   Str(0.0 , -1 , 3) )
+			Assert.Equal( "0,100",   Str(0.1 , -1 , 3) )
+			Assert.Equal( "-0,100",  Str(-0.1 , -1 , 3) )
+			
 	
 			SetDecimalSep(exact)
 			SetThousandSep(thou)

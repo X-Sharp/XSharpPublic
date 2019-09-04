@@ -7,6 +7,7 @@ using System.IO
 [STAThread];
 FUNCTION Start() AS VOID
     TRY
+        TestFileGarbage()
         //TestPackNtx()
         //TestZapNtx()
         //TestNullDate()
@@ -120,6 +121,16 @@ FUNCTION Start() AS VOID
     END TRY
     WAIT
     RETURN
+
+Function TestFileGarbage() as void
+LOCAL c AS STRING
+
+c := "D:\t?est\FileDoesnotExist.txt"  
+
+
+? File ( c ) 
+
+RETURN
 
 FUNCTION TestPackNtx() AS VOID
 	

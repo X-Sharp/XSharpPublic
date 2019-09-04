@@ -123,13 +123,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL locked AS LOGIC
             LOCAL orgToSkip AS INT
             LOCAL result := FALSE AS LOGIC
+            LOCAL forward := FALSE AS LOGIC
             // Default Position = Current Record
             IF nToSkip == 0
                 recno := SELF:_Recno
             ELSE
                 recno := 0
             ENDIF
-            
+            forward := nToSkip > 0
             isBof := FALSE
             isEof := FALSE
             changedBof := FALSE
@@ -181,16 +182,23 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     ENDIF
                 ENDIF
                 result := SELF:_oRdd:__Goto(recno)
-                IF !SELF:HasScope
-                    RETURN result
-                ENDIF
-                IF changedBof
-                    SELF:_oRdd:_Bof := isBof
-                ENDIF
-                IF changedEof
-                    SELF:_oRdd:_Eof := isEof
-                ENDIF
-                
+                 if recno == 0
+                    if Forward
+                        SELF:_oRdd:_Eof := true
+                    else
+                        SELF:_oRdd:_Bof := true
+                    endif
+                else
+                    IF !SELF:HasScope
+                        RETURN result
+                    ENDIF
+                    IF changedBof
+                        SELF:_oRdd:_Bof := isBof
+                    ENDIF
+                    IF changedEof
+                        SELF:_oRdd:_Eof := isEof
+                    ENDIF
+                endif                
             CATCH ex AS Exception
                 SELF:_oRdd:_dbfError(ex, SubCodes.EDB_SKIP,GenCode.EG_CORRUPTION,  "NtxOrder.SkipRaw") 
             FINALLY

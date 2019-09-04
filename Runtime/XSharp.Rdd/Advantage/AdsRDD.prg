@@ -126,6 +126,8 @@ INTERNAL METHOD _CheckRDDInfo() AS VOID
 			SELF:_Connection := p
 		ELSEIF oRet is DWORD VAR d
 			SELF:_Connection := IntPtr{d}
+		ELSE
+			SELF:_Connection := IntPtr.Zero
 		ENDIF
 	ELSE
 		SELF:_Connection := IntPtr.Zero
@@ -238,7 +240,9 @@ PROTECTED METHOD _FieldSub() AS LOGIC
 			RETURN FALSE
 		END SWITCH
 		fi:Alias := NULL
-		IF ! SELF:AddField(fi)
+		local oCol as AdsColumn
+		oCol := AdsColumn.Create(fi, SELF, eType, num)
+		IF ! SELF:AddField(oCol)
 			RETURN FALSE
 		ENDIF
 	NEXT
@@ -437,40 +441,10 @@ PROTECT OVERRIDE METHOD _checkFields(info AS RddFieldInfo) AS LOGIC
 	IF info:Name:Length > 10 
 		info:Name := info:Name:Substring(0,10)
 	ENDIF
-    //
-	SWITCH info:FieldType
-	CASE DbFieldType.Character
-		IF info:Length == 0  .OR.  info:Decimals > 0  .OR. info:Length > System.UInt16.MaxValue 
-			SELF:ADSERROR(ERDD.CREATE_FILE, XSharp.Gencode.EG_ARG )
-		ENDIF
-	CASE DbFieldType.Number
-		IF info:Length >= 1  .AND.  info:Length <= 255 
-			IF info:Decimals > 0 
-            // We must check that we have enough space for DOT and decimal
-				IF info:Length <= 2 .OR. info:Decimals >= info:Length -1 
-					SELF:ADSERROR( ERDD.CREATE_FILE, XSharp.Gencode.EG_ARG )
-				ENDIF
-			ENDIF
-		ELSE
-			SELF:ADSERROR( ERDD.CREATE_FILE, XSharp.Gencode.EG_ARG )
-		ENDIF
-	CASE DbFieldType.Date
-		IF info:Length != 8 .OR.  info:Decimals != 0 
-			SELF:ADSERROR( ERDD.CREATE_FILE, XSharp.Gencode.EG_ARG )
-		ENDIF
-	CASE DbFieldType.Logic
-		IF info:Length != 1 .OR. info:Decimals != 0 
-			SELF:ADSERROR( ERDD.CREATE_FILE, XSharp.Gencode.EG_ARG )
-		ENDIF
-	CASE DbFieldType.Memo
-		IF info:Length != 10 .OR. info:Decimals != 0 
-			SELF:ADSERROR( ERDD.CREATE_FILE, XSharp.Gencode.EG_ARG )
-		ENDIF
-	OTHERWISE
-        // To be done : Support of Fox Field Types, ....
-		info:FieldType := DbFieldType.Unknown
-	END SWITCH
-RETURN TRUE
+    IF ! info:Validate()
+    	SELF:ADSERROR(ERDD.CREATE_FILE, XSharp.Gencode.EG_ARG )
+    ENDIF
+    RETURN TRUE
 
 VIRTUAL METHOD AddField(info AS RddFieldInfo) AS LOGIC
 	LOCAL isOk AS LOGIC
@@ -663,7 +637,7 @@ VIRTUAL METHOD GoHot() AS LOGIC
 						SELF:_CheckError(result,EG_LOCK)
 					ENDIF
 				ENDIF
-				SELF:ADSERROR(ERDD.UNLOCKED, XSharp.Gencode.EG_STROVERFLOW, XSharp.Severity.ES_ERROR)
+				SELF:ADSERROR(ERDD.UNLOCKED, XSharp.Gencode.EG_LOCK, XSharp.Severity.ES_ERROR)
 			ENDIF
 		ENDIF
 	ENDIF
@@ -724,175 +698,10 @@ RETURN SELF:RecordMovement()
 
   #region Read and Write
 METHOD GetValue(nFldPos AS INT) AS OBJECT
-	LOCAL result    := 0 AS DWORD
-	LOCAL chars     := NULL AS CHAR[]
-	LOCAL bytes     := NULL AS BYTE[]
-	LOCAL length    := 0 AS DWORD
-	LOCAL isEmpty   := 0 AS WORD
-	LOCAL wType     AS WORD
 	LOCAL dwField  := (DWORD) nFldPos  AS DWORD
-	LOCAL fld       := SELF:_Fields[nFldPos-1] AS RddFieldInfo
-	length  := (DWORD) fld:Length +1
-	SELF:_CheckError(ACE.AdsGetFieldType(SELF:_Table, dwField, OUT wType),EG_READ)
-    LOCAL eType := (AdsFieldType) wType AS AdsFieldType
-	SWITCH fld:FieldType
-	CASE DbFieldType.Character
-		SWITCH eType
-		CASE AdsFieldType.TIME
-		CASE AdsFieldType.TIMESTAMP
-		CASE AdsFieldType.MONEY
-		CASE AdsFieldType.ROWVERSION
-		CASE AdsFieldType.MODTIME
-			_CheckError(ACE.AdsIsEmpty(SELF:_Table,  dwField , OUT isEmpty),EG_READ)
-			IF isEmpty == 1
-				RETURN NULL
-			ENDIF
-			chars := CHAR[] {length}
-			result := ACE.AdsGetField(SELF:_Table, dwField, chars, REF length ,0)
-		CASE AdsFieldType.STRING
-		CASE AdsFieldType.VARCHAR
-		CASE AdsFieldType.CISTRING
-		CASE AdsFieldType.VARCHAR_FOX
-		CASE AdsFieldType.NCHAR
-		CASE AdsFieldType.NVARCHAR
-			chars := CHAR[] {length}
-            IF eType:IsUnicode()
-			    result := ACE.AdsGetStringW(SELF:_Table, dwField, chars, REF length ,0)
-            ELSE
-			    result := ACE.AdsGetString(SELF:_Table, dwField, chars, REF length ,0)
-            ENDIF
-		OTHERWISE
-			SELF:ADSERROR(ERDD_DATATYPE, EG_DATATYPE)
-		END SWITCH
-		SWITCH result
-		CASE 0
-			IF eType:IsUnicode()
-                RETURN STRING{chars, 0, (INT) length}
-			ELSE
-				RETURN SELF:_Ansi2Unicode(chars, (INT) length)
-			ENDIF
-		CASE ACE.AE_NO_CURRENT_RECORD
-			RETURN STRING{' ', (INT) length}
-		OTHERWISE
-			SELF:_CheckError(result,EG_READ)
-		END SWITCH
-	CASE DbFieldType.Memo
-		SWITCH (AdsFieldType) wType
-		CASE AdsFieldType.MEMO
-		CASE AdsFieldType.NMEMO
-		CASE AdsFieldType.BINARY
-		CASE AdsFieldType.IMAGE
-			result := ACE.AdsGetMemoLength(SELF:_Table, dwField, OUT length )
-			SWITCH result
-			CASE 0
-				IF length == 0
-					RETURN string.Empty
-				ENDIF
-			CASE ACE.AE_NO_CURRENT_RECORD
-				IF eType:IsMemo()
-					RETURN string.Empty
-				ELSE    // image and binary
-					RETURN NULL
-				ENDIF
-			OTHERWISE
-				SELF:_CheckError(result,EG_READ)
-			END SWITCH
-			SWITCH eType
-			CASE AdsFieldType.MEMO
-				chars := CHAR[] {++length}
-				SELF:_CheckError(ACE.AdsGetString(SELF:_Table, dwField, chars, REF length ,0),EG_READ)
-				RETURN SELF:_Ansi2Unicode(chars, (INT) length)
-			CASE AdsFieldType.NMEMO
-				chars := CHAR[] {++length}
-				SELF:_CheckError(ACE.AdsGetStringW(SELF:_Table, dwField, chars, REF length ,0),EG_READ)
-			CASE AdsFieldType.BINARY
-			CASE AdsFieldType.IMAGE
-				bytes := BYTE[] {length}
-				SELF:_CheckError(ACE.AdsGetBinary(SELF:_Table, dwField, 0, bytes, REF length ),EG_READ)
-				RETURN bytes
-			END SWITCH
-			
-		CASE AdsFieldType.RAW
-		CASE AdsFieldType.VARBINARY_FOX
-			result := ACE.AdsIsEmpty(SELF:_Table, dwField, OUT isEmpty)
-			IF result == 0
-				IF isEmpty == 1
-					RETURN NULL
-				ENDIF
-			ELSE
-				SELF:_CheckError(result,EG_READ)
-			ENDIF
-			length := (DWORD) fld:Length
-			bytes := BYTE[] {length}
-			SELF:_CheckError(ACE.AdsGetBinary(SELF:_Table, dwField, 0, bytes, REF length ),EG_READ)
-			RETURN bytes
-		END SWITCH
-	CASE DbFieldType.Number
-		SWITCH eType
-		CASE AdsFieldType.NUMERIC
-		CASE AdsFieldType.DOUBLE
-		CASE AdsFieldType.INTEGER
-		CASE AdsFieldType.SHORTINT
-		CASE AdsFieldType.AUTOINC
-		CASE AdsFieldType.CURDOUBLE
-			LOCAL r8 AS REAL8
-			result := ACE.AdsGetDouble(SELF:_Table, dwField, OUT r8)
-			IF result == ACE.AE_NO_CURRENT_RECORD
-				r8 := 0.0
-			ENDIF
-			IF eType:IsDouble()
-				VAR value := r8:ToString()
-				VAR pos := VALUE:IndexOf('.')
-				RETURN DbFloat{r8, fld:Length, IIF(pos > 0, fld:Length - pos -1, 0)}
-			ELSE
-				RETURN DbFloat{r8, fld:Length, fld:Decimals}
-			ENDIF
-		OTHERWISE
-			SELF:ADSERROR(ERDD_DATATYPE, EG_DATATYPE)
-		END SWITCH
-		
-	CASE DbFieldType.Logic
-		LOCAL wValue AS WORD
-		result := ACE.AdsGetLogical(SELF:_Table, dwField, OUT wValue)
-		IF result ==  ACE.AE_NO_CURRENT_RECORD
-			wValue := 0
-		ELSEIF ! SELF:_CheckError(result,EG_READ)
-          // Exception
-		ENDIF
-		RETURN wValue != 0
-	CASE DbFieldType.Date
-		LOCAL lJulian AS LONG
-		result := ACE.AdsGetJulian(SELF:_Table, dwField, OUT lJulian)
-		IF result == ACE.AE_NO_CURRENT_RECORD
-			RETURN DbDate{0,0,0}
-		ELSEIF result != 0
-			SELF:_CheckError(result,EG_READ)
-		ENDIF
-		TRY
-			IF lJulian == 0
-				RETURN DbDate{0,0,0}
-			ELSE
-                // there is a function to convert julian to string but it does not always work correctly
-                // this seems to always do the job
-				LOCAL wLength := ACE.ADS_MAX_DATEMASK+1 AS DWORD
-				chars := CHAR[]{wLength}
-				result := ACE.AdsGetString(SELF:_Table, dwField, chars, REF wLength, 0)
-				VAR cDate := STRING{chars, 0, 8}
-				IF String.IsNullOrWhiteSpace(cDate)
-					RETURN DbDate{0,0,0}
-				ELSE
-					VAR dt := DateTime.ParseExact(cDate, "yyyyMMdd",NULL)
-					RETURN DbDate{dt:Year, dt:Month, dt:Day}
-				ENDIF
-			ENDIF
-		CATCH
-			
-		END TRY
-		RETURN DbDate{0,0,0}
-	OTHERWISE
-		SELF:ADSERROR(ERDD_DATATYPE, EG_DATATYPE)
-	END SWITCH
-RETURN NULL
+	LOCAL column   := (AdsColumn )SELF:_Fields[nFldPos-1] AS AdsColumn
+    RETURN column:GetValue()
+
 
 METHOD Pack () AS LOGIC
 	LOCAL options AS DWORD
@@ -909,9 +718,8 @@ METHOD Pack () AS LOGIC
 RETURN SELF:GoTop()
 
 METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
-	LOCAL tc AS TypeCode
 	LOCAL dwField  := (DWORD) nFldPos  AS DWORD
-	LOCAL fld := SELF:_Fields[nFldPos-1] AS RDDFieldInfo
+	LOCAL column := (AdsColumn) SELF:_Fields[nFldPos-1] AS AdsColumn
 	IF ! SELF:GoHot()
 		RETURN FALSE
 	ENDIF
@@ -919,129 +727,7 @@ METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
 		SELF:_CheckError(ACE.AdsSetEmpty(SELF:_Table, dwField),EG_WRITE)
 		RETURN TRUE
 	ENDIF
-    // Handle IDate and IFloat
-	IF oValue IS IDate VAR oDate
-		tc := TypeCode.DateTime
-		IF oDate:IsEmpty
-			oValue := DateTime.MinValue
-		ELSE
-			oValue := DateTime{oDate:Year, oDate:Month, oDate:Day}
-		ENDIF
-	ELSEIF oValue IS IFloat VAR floatValue
-		tc := TypeCode.Double
-		oValue := floatValue:Value
-	ELSE
-		tc := Type.GetTypeCode(oValue:GetType())
-	ENDIF
-	LOCAL wType AS WORD
-	LOCAL result := 0 AS DWORD
-	SELF:_CheckError(ACE.AdsGetFieldType(SELF:_Table, dwField, OUT wType),EG_READ)
-    LOCAL eType := (AdsFieldType) wType AS AdsFieldType
-	SWITCH fld:FieldType
-	CASE DbFieldType.Character
-	CASE DbFieldType.Memo
-		LOCAL length AS DWORD
-		LOCAL strValue AS STRING
-		SWITCH eType
-		CASE AdsFieldType.STRING
-		CASE AdsFieldType.MEMO
-		CASE AdsFieldType.VARCHAR
-        CASE AdsFieldType.VARCHAR_FOX
-		CASE AdsFieldType.CISTRING
-		CASE AdsFieldType.NCHAR
-		CASE AdsFieldType.NVARCHAR
-		CASE AdsFieldType.NMEMO
-			IF tc != TypeCode.String
-				SELF:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","String expected")
-			ENDIF
-			strValue := (STRING) oValue
-			length  := (DWORD) strValue:Length
-            IF ! eType:IsMemo()
-                length := Math.Min(length, (DWORD) fld:Length)
-            ENDIF
-			IF length == 0
-				result := ACE.AdsSetEmpty(SELF:_Table, dwField)
-			ELSE
-                IF eType:IsUnicode()
-                    result := ACE.AdsSetStringW(SELF:_Table, dwField, strValue, length)
-                ELSE
-                    result := ACE.AdsSetString(SELF:_Table, dwField, strValue, length)
-                ENDIF
-			ENDIF
-		CASE AdsFieldType.TIME
-		CASE AdsFieldType.TIMESTAMP
-		CASE AdsFieldType.MONEY
-		CASE AdsFieldType.ROWVERSION
-		CASE AdsFieldType.MODTIME
-			IF tc != TypeCode.String
-				SELF:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","String expected")
-			ENDIF
-			strValue := (STRING) oValue
-			length := (DWORD) strValue:Length
-			result := ACE.AdsSetField(SELF:_Table, dwField, strValue, length)
-		CASE AdsFieldType.BINARY
-		CASE AdsFieldType.IMAGE
-		CASE AdsFieldType.RAW
-		CASE AdsFieldType.VARBINARY_FOX
-			IF tc != TypeCode.String .AND. tc != TypeCode.Object
-				SELF:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","String or Object expected")
-			ENDIF
-			IF tc != TypeCode.String
-				strValue := (STRING) oValue
-				length := (DWORD) strValue:Length
-				result := ACE.AdsSetString(SELF:_Table, dwField, strValue, length)
-			ELSE
-				LOCAL bytes AS BYTE[]
-				bytes   := (BYTE[]) oValue
-				length  := (DWORD) bytes:Length
-				IF eType == AdsFieldType.RAW .OR. eType == AdsFieldType.VARBINARY_FOX
-					result := ACE.AdsSetField(SELF:_Table, dwField, bytes, length)
-				ELSE
-					result := ACE.AdsSetBinary(SELF:_Table, dwField, wType, length, 0, bytes, length)
-				ENDIF
-			ENDIF
-		OTHERWISE
-			SELF:ADSError(ERDD_DATATYPE, EG_DataType, "PutValue")
-		END SWITCH
-		IF result != 0 .AND. result != ACE.AE_DATA_TRUNCATED
-			SELF:ADSERROR(result, EG_WRITE, "PutValue")
-		ENDIF
-	CASE DbFieldType.Number
-		IF tc != TypeCode.Double .AND. tc != TypeCode.Int32 .AND. tc != TypeCode.Decimal
-			SELF:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","Numeric value expected")
-		ENDIF
-		IF wType != ACE.ADS_AUTOINC
-			LOCAL r8 AS REAL8
-			r8 := Convert.ToDouble(oValue)
-			SELF:_CheckError(ACE.AdsSetDouble(SELF:_Table, dwField, r8),EG_WRITE)
-		ELSE
-			NOP // Do not allow to write to AUTO INC field
-		ENDIF
-	CASE DbFieldType.Logic
-		IF tc != TypeCode.Boolean
-			SELF:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","Logic value expected")
-		ENDIF
-		SELF:_CheckError(ACE.AdsSetLogical(SELF:_Table, dwField, (WORD)  IIF( (LOGIC) oValue, 1, 0)),EG_WRITE)
-	CASE DbFieldType.Date
-        // Note that the XSharp.__Date type also returns a typecode of DateTime
-		IF tc != TypeCode.DateTime
-			SELF:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","Date or DateTime value expected")
-		ENDIF
-		LOCAL dt   := (DateTime) oValue AS DateTime
-        if (dt == DateTime.MinValue)
-            SELF:_CheckError(ACE.AdsSetEmpty(SELF:_Table, dwField),EG_WRITE)
-        ELSE
-		    LOCAL text := dt:ToString("yyyyMMdd") AS STRING
-		    LOCAL r8Julian AS REAL8
-		    SELF:_CheckError(AceUnPub.AdsConvertStringToJulian(text, (WORD) text:Length, OUT r8Julian),EG_WRITE)
-		    SELF:_CheckError(ACE.AdsSetJulian(SELF:_Table, dwField, (LONG) r8Julian),EG_WRITE)
-        ENDIF
-	OTHERWISE
-		SELF:ADSError(ERDD_DATATYPE, EG_DataType, "PutValue")
-	END SWITCH
-	
-RETURN result == 0
-
+    RETURN column:PutValue(oValue)
     #endregion
 
   #region Properties

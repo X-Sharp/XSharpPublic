@@ -8,7 +8,7 @@ LOCAL oWorksheet as Worksheet
 LOCAL oRange as Range
 LOCAL cFile as STRING
 cFile := "C:\ExcelTest\example.xls"
-DirMake(String2Psz("C:\ExcelTest"))
+DirMake("C:\ExcelTest")
 oExcel:=ApplicationClass{}
 oExcel:Visible:=FALSE // Don't show the EXCEL execute
 oExcel:DisplayAlerts:=FALSE // Don't show messages

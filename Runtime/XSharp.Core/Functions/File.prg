@@ -235,7 +235,7 @@ BEGIN NAMESPACE XSharp.IO
 		INTERNAL STATIC METHOD setErrorState ( o AS Exception ) AS VOID
             local e as Error
             e := Error{o}
-            e:StackTrace := o:StackTrace+System.Diagnostics.StackTrace{1,true}:ToString()
+            e:StackTrace := o:StackTrace+Environment.NewLine+System.Diagnostics.StackTrace{1,true}:ToString()
             lastException := e
             errorCode := _AND ( (DWORD) System.Runtime.InteropServices.Marshal.GetHRForException ( o ) , 0x0000FFFF )
             e:OsCode := errorCode

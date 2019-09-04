@@ -77,7 +77,7 @@ method BuildTreeViewItems()
 		oTreeViewItem := TreeViewItem{}
 		symParentItem				:= String2Symbol("Customers_" + AllTrim(AsString(oCustomerServer:CustNum)))
 		oTreeViewItem:NameSym		:= symParentItem
-		oTreeViewItem:Value			:= oCustomerServer:LastName
+		oTreeViewItem:@@Value			:= oCustomerServer:LastName
 		oTreeViewItem:ImageIndex	:= 2
 		oTreeViewItem:SelectedImageIndex := 1
 		oTreeView:AddItem(#Customer_Master, oTreeViewItem)
@@ -87,7 +87,7 @@ method BuildTreeViewItems()
 		do while !oOrdersServer:EOF
 			oTreeViewItem := TreeViewItem{}
 			oTreeViewItem:NameSym		:= String2Symbol("Orders_" + AllTrim(AsString(oOrdersServer:OrderNum)))
-			oTreeViewItem:Value			:= oOrdersServer:OrderNum
+			oTreeViewItem:@@Value			:= oOrdersServer:OrderNum
 			oTreeViewItem:ImageIndex	:= 1
 			oTreeView:AddItem(symParentItem, oTreeViewItem)
 			
@@ -264,7 +264,7 @@ method TreeViewSelectionChanged(oTreeViewSelectionEvent)
 	if oTreeViewItem != NULL_OBJECT .and. InStr("CUSTOMERS_", Upper(Symbol2String(oTreeViewItem:NameSym)))
 		// left-click occurred on a customer tree view item
 		self:DeleteListViewItems()
-		self:BuildListViewItems(oTreeViewItem:Value)
+		self:BuildListViewItems(oTreeViewItem:@@Value)
 	endif
 
 	return nil

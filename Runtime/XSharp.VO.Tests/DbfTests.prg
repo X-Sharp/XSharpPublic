@@ -163,14 +163,14 @@ BEGIN NAMESPACE XSharp.VO.Tests
 //			Appending in exclusive mode:
 			DbUseArea(, , cDbf , "alias2" , FALSE)
 			Assert.True( DbAppend() )
-			Assert.Equal( 1 , RecCount() )
+			Assert.Equal(  RecCount() ,1)
 			FieldPut(1, "test") // ok
 			DbCloseArea()
 			
 //			Appending in SHARED mode:
 			DbUseArea(, , cDbf , "alias2" , TRUE)
 			Assert.True( DbAppend() ) // returns true but does not append record
-			Assert.Equal( 2 , RecCount() ) // returns 1, wrong
+			Assert.Equal(  RecCount() ,2) // returns 1, wrong
 			DbCloseArea()
 		RETURN
 
@@ -204,7 +204,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			SetDecimalSep(Asc(","))
 			FieldPut(1 , 12.34) // not saved in the dbf
-			Assert.Equal(12.34 , (FLOAT) FieldGet(1)) // 0,00
+			Assert.Equal((FLOAT) FieldGet(1),12.34 ) // 0,00
 
 			SetDecimalSep(Asc("."))
 			FieldPut(1 , 12.34)
@@ -1838,7 +1838,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			NEXT
 			
 			DbGoTop()
-			Assert.Equal(7 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) ) // 7, correct
+			Assert.Equal((INT) DbOrderInfo( DBOI_KEYCOUNT ) ,7 ) // 7, correct
 			
 			// Setting order scope
 			OrdScope(TOPSCOPE, "G")
@@ -1846,7 +1846,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbGoTop()
 			
 			// VO: -2 with NTX, 4 with CDX
-			Assert.Equal(-2 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) )
+			Assert.Equal((INT) DbOrderInfo( DBOI_KEYCOUNT ) ,4)
 			
 			Assert.True( DbSeek("G")    ) // TRUE, correct
 			Assert.True( DbSeek("GOLD") ) // TRUE with NTX, FALSE with CDX. VO TRUE in both
@@ -1854,7 +1854,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			// Clearing order scope
 			OrdScope(TOPSCOPE, NIL)
 			OrdScope(BOTTOMSCOPE, NIL)
-			Assert.Equal( 7 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) )
+			Assert.Equal(  (INT) DbOrderInfo( DBOI_KEYCOUNT ) ,7)
 			Assert.True( DbSeek("G") )
 			Assert.True( DbSeek("GOLD") )
 			
@@ -1863,7 +1863,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			OrdScope(BOTTOMSCOPE, "G")
 			DbGoTop()
 			// VO: -2 with NTX, 4 with CDX
-			Assert.Equal(-2 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) )
+			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) ,4 )
 			
 			Assert.True( DbSeek("G")    ) // TRUE, correct
 			Assert.True( DbSeek("GOLD") ) // TRUE with NTX, FALSE with CDX. VO TRUE in both

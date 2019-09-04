@@ -1,4 +1,4 @@
-﻿#region DEFINES
+#region DEFINES
 DEFINE EMailForward := 3
 DEFINE EMailNewFrom := 0
 DEFINE EMailReply    := 1
@@ -413,7 +413,7 @@ METHOD FillListView( oTVI )
       ENDIF
 	ENDIF
 
-	cEbox := oTVI:Value
+	cEbox := oTVI:@@Value
 	SELF:oDCEmailListView:DeleteAll()
 
 	IF cEbox == "ROOT"
@@ -834,7 +834,7 @@ METHOD SendAllMail()
    oEmailServer:ClearOrderScope()
 
 	IF dwCount > 0 .and. MessageBox(null_ptr, ;
-			String2Psz("Confirm Transmission"), String2Psz("Send all " + NTrim(dwCount) + " unsent messages now..."), ;
+			Cast2Psz("Confirm Transmission"), Cast2Psz("Send all " + NTrim(dwCount) + " unsent messages now..."), ;
 			DWORD(MB_ICONINFORMATION+MB_YESNO)) = IDYES
 		
 		SELF:SendEmails(aRecords, dwTotalBytes)
@@ -933,11 +933,11 @@ METHOD SendReceive()
    	SELF:SendAllMail()
    
    	IF aMailInfo[DEF_HEADERS]
-   		IF MessageBox(NULL_PTR, String2Psz("Confirm Header Only Download"), String2Psz("Download all available headers"), MB_ICONINFORMATION+MB_YESNO) = IDYES
+   		IF MessageBox(NULL_PTR, PSZ("Confirm Header Only Download"), PSZ("Download all available headers"), MB_ICONINFORMATION+MB_YESNO) = IDYES
    		   SELF:CheckEmailHeaders()
    		ENDIF
    	ELSE
-   		IF MessageBox(NULL_PTR, String2Psz("Confirm Mail Download"), String2Psz("Download all available mail in full"), MB_ICONINFORMATION+MB_YESNO) = IDYES
+   		IF MessageBox(NULL_PTR, PSZ("Confirm Mail Download"), PSZ("Download all available mail in full"), MB_ICONINFORMATION+MB_YESNO) = IDYES
    		   SELF:CheckEmails()
    		ENDIF
    	ENDIF
@@ -1139,7 +1139,7 @@ METHOD TreeViewSelectionChanged(oTreeViewSelectionEvent)
 			oTVI:ImageIndex         := IMAGE_OPENBOOK
 			oTVI:SelectedImageIndex := IMAGE_OPENBOOK		
 			oDCEmailTreeView:SetItemAttributes(oTVI)
-			SELF:MailBox := oTVI:Value
+			SELF:MailBox := oTVI:@@Value
 			SELF:SetMenuAvailable(oTVI)
 			SELF:FillListView(oTVI)
 		ENDIF	

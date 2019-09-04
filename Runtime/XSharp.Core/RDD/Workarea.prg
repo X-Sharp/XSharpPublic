@@ -792,6 +792,7 @@ BEGIN NAMESPACE XSharp.RDD
 			VIRTUAL METHOD RelEval(relinfo AS DbRelInfo) AS LOGIC
                 // Evaluate block in the Area of the Parent
                 VAR originalArea := XSharp.RuntimeState.CurrentWorkArea
+                SELF:_EvalResult := NULL
                 TRY
                     XSharp.RuntimeState.CurrentWorkArea := relinfo:Parent:Area
                     SELF:_EvalResult := relinfo:Parent:EvalBlock(relinfo:Block)
@@ -966,22 +967,22 @@ BEGIN NAMESPACE XSharp.RDD
 			/// <inheritdoc />
 		VIRTUAL METHOD EvalBlock(oBlock AS ICodeblock) AS OBJECT
 				LOCAL currentWk AS DWORD
-                LOCAL result AS OBJECT
 				currentWk := XSharp.RuntimeState.Workareas:CurrentWorkAreaNO
                 // Only switch workarea when needed
+                SELF:_EvalResult := NULL
                 IF currentWk != SELF:Area
 				    TRY
 					    XSharp.RuntimeState.CurrentWorkArea := SELF:Area
-                        SELF:_EvalResult := result := oBlock:EvalBlock()
+                        SELF:_EvalResult := oBlock:EvalBlock()
                     CATCH
                         THROW
 				    FINALLY
 					    XSharp.RuntimeState.Workareas:CurrentWorkAreaNO := currentWk
                     END TRY
                 ELSE
-                    SELF:_EvalResult := result := oBlock:EvalBlock()
+                    SELF:_EvalResult := oBlock:EvalBlock()
                 ENDIF
-				RETURN result 
+				RETURN SELF:_EvalResult 
 			
 			/// <inheritdoc />
 		VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT

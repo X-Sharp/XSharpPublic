@@ -633,6 +633,7 @@ namespace XSharpColorizer
                             case XSharpLexer.CHAR_CONST:
                             case XSharpLexer.ESCAPED_STRING_CONST:
                             case XSharpLexer.INTERPOLATED_STRING_CONST:
+                            case XSharpLexer.TEXT_STRING_CONST:
                                 type = xsharpStringType;
                                 break;
                             case XSharpLexer.FALSE_CONST:

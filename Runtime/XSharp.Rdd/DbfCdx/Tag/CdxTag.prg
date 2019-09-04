@@ -495,7 +495,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:Descending := lWasDescending
                 ELSE
                      records := 0
-                    IF SELF:GoTop()
+                    IF SELF:GoTop() .and. ! SELF:Stack:Empty
                         VAR topStack := SELF:CurrentStack
                         VAR page     := topStack:Page
                         DO WHILE TRUE
@@ -592,6 +592,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ELSE
                     recno := 0
                 ENDIF
+                if (recno == 0 )
+                    if moveDirection == SkipDirection.Backward
+                        IF !SELF:Descending
+                            recno := -1
+                        ENDIF
+                    else
+                        // Goto 0 moves the record pointer to EOF which is correct
+                    endif
+                endif
             ENDIF
             RETURN recno
             

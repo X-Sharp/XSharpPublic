@@ -67,19 +67,19 @@ METHOD ControlVerify()
 	aCtrls := SELF:acontrols
 
 	FOR i := 1 UPTO ALen(aCtrls)
-		IF aCtrls[i]:NameSym == #COMPANY .and. ( IsNil(aCtrls[i]:Value) .or. Empty(aCtrls[i]:Value))
+		IF aCtrls[i]:NameSym == #COMPANY .and. ( IsNil(aCtrls[i]:@@Value) .or. Empty(aCtrls[i]:@@Value))
 			TextBox{SELF,"Error", "This control cannot be empty"}:Show()
 			aCtrls:SetFocus()
 			lRet := FALSE
 			EXIT
 		ENDIF
 		IF aCtrls[i]:NameSym == #EMAIL
-			IF IsNil(aCtrls[i]:Value) .or. Empty(aCtrls[i]:Value)
+			IF IsNil(aCtrls[i]:@@Value) .or. Empty(aCtrls[i]:@@Value)
 				TextBox{SELF,"Error", "This control cannot be empty"}:Show()
 				aCtrls:SetFocus()			
 				lRet := FALSE
 				EXIT
-			ELSEIF At( "@", aCtrls[i]:Value )==0 .or. At(".",aCtrls[i]:Value) == 0
+			ELSEIF At( "@", aCtrls[i]:@@Value )==0 .or. At(".",aCtrls[i]:@@Value) == 0
 				TextBox{SELF,"Error", "The Email address is in an invalid format"}:Show()
 				aCtrls:SetFocus()			
 				lRet := FALSE

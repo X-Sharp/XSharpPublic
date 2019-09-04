@@ -230,9 +230,9 @@ METHOD PBOK( )
 	LOCAL cDirectory AS STRING
 	LOCAL nError AS INT
 
-	cDirectory := Trim(SELF:oDCSLEDirectory:Value)	// trailing spaces will cause file name errors
+	cDirectory := Trim(SELF:oDCSLEDirectory:@@Value)	// trailing spaces will cause file name errors
 
-	nError := DirMake(String2Psz(cDirectory))
+	nError := DirMake(PSZ(cDirectory))
 	IF nError != NO_ERROR
 		IF nError != ERROR_ALREADY_EXISTS
 			ErrorBox{,"Cannot Create Folder - Choose again"}:Show()
@@ -246,15 +246,15 @@ METHOD PBOK( )
 	ENDIF
 
 	oReg := RegSetup{}
-	oReg:SetString("Email_Address",      Trim(SELF:oDCSLEEmail:Value))
-	oReg:SetString("Email_SmtpServer",   Trim(SELF:oDCSLESmtpServer:Value))
-	oReg:SetString("Email_PopServer",    Trim(SELF:oDCSLEPopServer:Value))	
-	oReg:SetString("Email_Fullname",     Trim(SELF:oDCSLEFullname:Value))
-	oReg:SetString("Email_Account",      Trim(SELF:oDCSLEAccount:Value))
-	oReg:SetString("Email_Password",     Crypt(Trim(SELF:oDCSLEPassword:Value),"VO SO GOOD"))
+	oReg:SetString("Email_Address",      Trim(SELF:oDCSLEEmail:@@Value))
+	oReg:SetString("Email_SmtpServer",   Trim(SELF:oDCSLESmtpServer:@@Value))
+	oReg:SetString("Email_PopServer",    Trim(SELF:oDCSLEPopServer:@@Value))	
+	oReg:SetString("Email_Fullname",     Trim(SELF:oDCSLEFullname:@@Value))
+	oReg:SetString("Email_Account",      Trim(SELF:oDCSLEAccount:@@Value))
+	oReg:SetString("Email_Password",     Crypt(Trim(SELF:oDCSLEPassword:@@Value),"VO SO GOOD"))
 	oReg:SetString("Email_Directory",    cDirectory)
-	oReg:SetString("Email_SmtpUserName", Trim(SELF:oDCSLESmtpUserName:Value))
-	oReg:SetString("Email_SmtpPassword", Crypt(Trim(SELF:oDCSLESmtpPassword:Value),"VO SO GOOD"))
+	oReg:SetString("Email_SmtpUserName", Trim(SELF:oDCSLESmtpUserName:@@Value))
+	oReg:SetString("Email_SmtpPassword", Crypt(Trim(SELF:oDCSLESmtpPassword:@@Value),"VO SO GOOD"))
 
 	oReg:SetInt("Email_SmtpAuthentication", if(SELF:oDCAuthentication:Checked, 1, 0))
 	oReg:SetInt("Email_InspectPopHeaders",  if(SELF:oDCInspectHeaders:Checked, 1, 0))
@@ -285,20 +285,20 @@ METHOD PostInit(oParent,uExtra)
 		cFolder := Left(cFolder, SLen(cFolder)-1)
 	ENDIF
 	
-	SELF:oDCSLEEmail:Value         := oReg:QueryString("Email_Address")
-	SELF:oDCSLESmtpServer:Value    := oReg:QueryString("Email_SmtpServer")
-	SELF:oDCSLEPopServer:Value     := oReg:QueryString("Email_PopServer")	
-	SELF:oDCSLEFullname:Value      := oReg:QueryString("Email_Fullname")
-	SELF:oDCSLEAccount:Value       := oReg:QueryString("Email_Account")
-	SELF:oDCSLEPassword:Value      := Crypt(oReg:QueryString("Email_Password"),"VO SO GOOD")
-	SELF:oDCSLEDirectory:Value     := cFolder
-	SELF:oDCSLESmtpPassword:Value  := Crypt(oReg:QueryString("Email_SmtpPassword"),"VO SO GOOD")
-	SELF:oDCSLESmtpUserName:Value  := oReg:QueryString("Email_SmtpUserName")	
-	SELF:oDCAuthentication:Value   := oReg:QueryInt("Email_SmtpAuthentication") = 1
-	SELF:oDCInspectHeaders:Value   := oReg:QueryInt("Email_InspectPopHeaders") = 1
-	SELF:oDCDeleteDownloads:Value  := oReg:QueryInt("Email_DeleteDownloads") = 1
-	SELF:oDCInboxStartup:Value     := oReg:QueryInt("Email_StartupInbox") = 1
-	SELF:oDCPeriod:Value           := oReg:QueryInt("Email_CheckDelay")
+	SELF:oDCSLEEmail:@@Value         := oReg:QueryString("Email_Address")
+	SELF:oDCSLESmtpServer:@@Value    := oReg:QueryString("Email_SmtpServer")
+	SELF:oDCSLEPopServer:@@Value     := oReg:QueryString("Email_PopServer")	
+	SELF:oDCSLEFullname:@@Value      := oReg:QueryString("Email_Fullname")
+	SELF:oDCSLEAccount:@@Value       := oReg:QueryString("Email_Account")
+	SELF:oDCSLEPassword:@@Value      := Crypt(oReg:QueryString("Email_Password"),"VO SO GOOD")
+	SELF:oDCSLEDirectory:@@Value     := cFolder
+	SELF:oDCSLESmtpPassword:@@Value  := Crypt(oReg:QueryString("Email_SmtpPassword"),"VO SO GOOD")
+	SELF:oDCSLESmtpUserName:@@Value  := oReg:QueryString("Email_SmtpUserName")	
+	SELF:oDCAuthentication:@@Value   := oReg:QueryInt("Email_SmtpAuthentication") = 1
+	SELF:oDCInspectHeaders:@@Value   := oReg:QueryInt("Email_InspectPopHeaders") = 1
+	SELF:oDCDeleteDownloads:@@Value  := oReg:QueryInt("Email_DeleteDownloads") = 1
+	SELF:oDCInboxStartup:@@Value     := oReg:QueryInt("Email_StartupInbox") = 1
+	SELF:oDCPeriod:@@Value           := oReg:QueryInt("Email_CheckDelay")
 	
 	SELF:SetSmtpAuthentication(SELF:oDCAuthentication:Checked)
 

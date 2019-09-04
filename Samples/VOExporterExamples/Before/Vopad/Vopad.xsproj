@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup>
-    <ProjectGuid>7DD3A029-F345-4854-A397-421854F0FB1F</ProjectGuid>
+    <ProjectGuid>58AA6767-5191-4F90-A756-4584A4C42279</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Vopad</RootNamespace>
@@ -40,6 +40,8 @@
     <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>true</VO16>
+    <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
+    <Nostandarddefs>false</Nostandarddefs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -57,8 +59,6 @@
     <DisabledWarnings>9032;9043;618;162;649;9025</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths />
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
@@ -75,204 +75,104 @@
     <PPO>false</PPO>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
-  <Import Project="$(MsBuildExtensionsPath)\XSharp\XSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="VulcanRT">
+    <Reference Include="XSharp.Core">
       <SpecificVersion>false</SpecificVersion>
     </Reference>
-    <Reference Include="VulcanRTFuncs">
+    <Reference Include="XSharp.RT">
       <SpecificVersion>false</SpecificVersion>
     </Reference>
-    <Reference Include="VulcanVOGUIClasses">
+    <Reference Include="XSharp.VO">
       <SpecificVersion>false</SpecificVersion>
     </Reference>
-    <Reference Include="VulcanVOSystemClasses">
+    <Reference Include="VOGUIClasses">
       <SpecificVersion>false</SpecificVersion>
     </Reference>
-    <Reference Include="VulcanVOWin32APILibrary">
+    <Reference Include="VOSystemClasses">
       <SpecificVersion>false</SpecificVersion>
     </Reference>
-    <Reference Include="SDK_DEFINES.dll">
-      <Name>SDK_DEFINES.dll</Name>
-      <AssemblyName>SDK_DEFINES.dll.dll</AssemblyName>
+    <Reference Include="VOWin32APILibrary">
       <SpecificVersion>false</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\SDK_DEFINES.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-<Compile Include="PadShell.prg">
-  <SubType>Code</SubType>
-</Compile>
-<NativeResource Include="PadShell.IDI_VOPADICON.rc">
-  <DependentUpon>PadShell.prg</DependentUpon>
-</NativeResource>
-<None Include="Properties\cavowed.inf" />
-<None Include="Properties\saswed.inf" />
-<None Include="Properties\GSGWED.INF" />
-<None Include="Properties\cavowed.tpl" />
-<None Include="Properties\cavoded.tpl" />
-<None Include="Properties\cavofed.tpl" />
-<None Include="Resources\VOPAD.ICO" />
-<None Include="Resources\VOPAD.ICO" />
-<None Include="Resources\HelpAbt.BMP" />
-<None Include="Resources\HelpAbt.BMP" />
-<None Include="Resources\VOPAD.BMP" />
-<None Include="Resources\VOPAD.BMP" />
-<None Include="Resources\cctl6.man" />
-<None Include="Resources\cctl6.man" />
-<Compile Include="PadStart.prg">
-  <SubType>Code</SubType>
-</Compile>
-<None Include="Properties\cavowed.inf" />
-<None Include="Properties\saswed.inf" />
-<None Include="Properties\GSGWED.INF" />
-<None Include="Properties\cavowed.tpl" />
-<None Include="Properties\cavoded.tpl" />
-<None Include="Properties\cavofed.tpl" />
-<None Include="Resources\VOPAD.ICO" />
-<None Include="Resources\VOPAD.ICO" />
-<None Include="Resources\HelpAbt.BMP" />
-<None Include="Resources\HelpAbt.BMP" />
-<None Include="Resources\VOPAD.BMP" />
-<None Include="Resources\VOPAD.BMP" />
-<None Include="Resources\cctl6.man" />
-<None Include="Resources\cctl6.man" />
-<Compile Include="PadHelp About.prg">
-  <SubType>Code</SubType>
-</Compile>
-<NativeResource Include="PadHelp About.HelpAbout.rc">
-  <DependentUpon>PadHelp About.prg</DependentUpon>
-</NativeResource>
-<NativeResource Include="PadHelp About.POWVOBMP.rc">
-  <DependentUpon>PadHelp About.prg</DependentUpon>
-</NativeResource>
-<VOBinary Include="PadHelp About.HELPABOUT.xsfrm">
-  <DependentUpon>PadHelp About.prg</DependentUpon>
-</VOBinary>
-<None Include="Properties\cavowed.inf" />
-<None Include="Properties\saswed.inf" />
-<None Include="Properties\GSGWED.INF" />
-<None Include="Properties\cavowed.tpl" />
-<None Include="Properties\cavoded.tpl" />
-<None Include="Properties\cavofed.tpl" />
-<None Include="Resources\VOPAD.ICO" />
-<None Include="Resources\VOPAD.ICO" />
-<None Include="Resources\HelpAbt.BMP" />
-<None Include="Resources\HelpAbt.BMP" />
-<None Include="Resources\VOPAD.BMP" />
-<None Include="Resources\VOPAD.BMP" />
-<None Include="Resources\cctl6.man" />
-<None Include="Resources\cctl6.man" />
-<Compile Include="PadWin.prg">
-  <SubType>Code</SubType>
-</Compile>
-<NativeResource Include="PadWin.oMarginDialog.rc">
-  <DependentUpon>PadWin.prg</DependentUpon>
-</NativeResource>
-<VOBinary Include="PadWin.oMarginDialog.xsfrm">
-  <DependentUpon>PadWin.prg</DependentUpon>
-</VOBinary>
-<None Include="Properties\cavowed.inf" />
-<None Include="Properties\saswed.inf" />
-<None Include="Properties\GSGWED.INF" />
-<None Include="Properties\cavowed.tpl" />
-<None Include="Properties\cavoded.tpl" />
-<None Include="Properties\cavofed.tpl" />
-<None Include="Resources\VOPAD.ICO" />
-<None Include="Resources\VOPAD.ICO" />
-<None Include="Resources\HelpAbt.BMP" />
-<None Include="Resources\HelpAbt.BMP" />
-<None Include="Resources\VOPAD.BMP" />
-<None Include="Resources\VOPAD.BMP" />
-<None Include="Resources\cctl6.man" />
-<None Include="Resources\cctl6.man" />
-<Compile Include="PadMenus.prg">
-  <SubType>Code</SubType>
-</Compile>
-<NativeResource Include="PadMenus.StandardPadMenu_Accelerator.rc">
-  <DependentUpon>PadMenus.prg</DependentUpon>
-</NativeResource>
-<NativeResource Include="PadMenus.StandardPadMenu.rc">
-  <DependentUpon>PadMenus.prg</DependentUpon>
-</NativeResource>
-<VOBinary Include="PadMenus.StandardPadMenu.xsmnu">
-  <DependentUpon>PadMenus.prg</DependentUpon>
-</VOBinary>
-<None Include="Properties\cavowed.inf" />
-<None Include="Properties\saswed.inf" />
-<None Include="Properties\GSGWED.INF" />
-<None Include="Properties\cavowed.tpl" />
-<None Include="Properties\cavoded.tpl" />
-<None Include="Properties\cavofed.tpl" />
-<None Include="Resources\VOPAD.ICO" />
-<None Include="Resources\VOPAD.ICO" />
-<None Include="Resources\HelpAbt.BMP" />
-<None Include="Resources\HelpAbt.BMP" />
-<None Include="Resources\VOPAD.BMP" />
-<None Include="Resources\VOPAD.BMP" />
-<None Include="Resources\cctl6.man" />
-<None Include="Resources\cctl6.man" />
-<Compile Include="image.prg">
-  <SubType>Code</SubType>
-</Compile>
-<NativeResource Include="image.IMAGE.rc">
-  <DependentUpon>image.prg</DependentUpon>
-</NativeResource>
-<None Include="Properties\cavowed.inf" />
-<None Include="Properties\saswed.inf" />
-<None Include="Properties\GSGWED.INF" />
-<None Include="Properties\cavowed.tpl" />
-<None Include="Properties\cavoded.tpl" />
-<None Include="Properties\cavofed.tpl" />
-<None Include="Resources\VOPAD.ICO" />
-<None Include="Resources\VOPAD.ICO" />
-<None Include="Resources\HelpAbt.BMP" />
-<None Include="Resources\HelpAbt.BMP" />
-<None Include="Resources\VOPAD.BMP" />
-<None Include="Resources\VOPAD.BMP" />
-<None Include="Resources\cctl6.man" />
-<None Include="Resources\cctl6.man" />
-<Compile Include="!Readme!.prg">
-  <SubType>Code</SubType>
-</Compile>
-<None Include="Properties\cavowed.inf" />
-<None Include="Properties\saswed.inf" />
-<None Include="Properties\GSGWED.INF" />
-<None Include="Properties\cavowed.tpl" />
-<None Include="Properties\cavoded.tpl" />
-<None Include="Properties\cavofed.tpl" />
-<None Include="Resources\VOPAD.ICO" />
-<None Include="Resources\VOPAD.ICO" />
-<None Include="Resources\HelpAbt.BMP" />
-<None Include="Resources\HelpAbt.BMP" />
-<None Include="Resources\VOPAD.BMP" />
-<None Include="Resources\VOPAD.BMP" />
-<None Include="Resources\cctl6.man" />
-<None Include="Resources\cctl6.man" />
-<Compile Include="Manifest.prg">
-  <SubType>Code</SubType>
-</Compile>
-<NativeResource Include="Manifest.CREATEPROCESS_MANIFEST_RESOURCE_ID.rc">
-  <DependentUpon>Manifest.prg</DependentUpon>
-</NativeResource>
-<None Include="Properties\cavowed.inf" />
-<None Include="Properties\saswed.inf" />
-<None Include="Properties\GSGWED.INF" />
-<None Include="Properties\cavowed.tpl" />
-<None Include="Properties\cavoded.tpl" />
-<None Include="Properties\cavofed.tpl" />
-<None Include="Resources\VOPAD.ICO" />
-<None Include="Resources\VOPAD.ICO" />
-<None Include="Resources\HelpAbt.BMP" />
-<None Include="Resources\HelpAbt.BMP" />
-<None Include="Resources\VOPAD.BMP" />
-<None Include="Resources\VOPAD.BMP" />
-<None Include="Resources\cctl6.man" />
-<None Include="Resources\cctl6.man" />
+    <Compile Include="PadShell.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <NativeResource Include="PadShell.IDI_VOPADICON.rc">
+      <DependentUpon>PadShell.prg</DependentUpon>
+    </NativeResource>
+    <Compile Include="PadStart.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PadHelp About.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <NativeResource Include="PadHelp About.HelpAbout.rc">
+      <DependentUpon>PadHelp About.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="PadHelp About.POWVOBMP.rc">
+      <DependentUpon>PadHelp About.prg</DependentUpon>
+    </NativeResource>
+    <VOBinary Include="PadHelp About.HELPABOUT.xsfrm">
+      <DependentUpon>PadHelp About.prg</DependentUpon>
+    </VOBinary>
+    <Compile Include="PadWin.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <NativeResource Include="PadWin.oMarginDialog.rc">
+      <DependentUpon>PadWin.prg</DependentUpon>
+    </NativeResource>
+    <VOBinary Include="PadWin.oMarginDialog.xsfrm">
+      <DependentUpon>PadWin.prg</DependentUpon>
+    </VOBinary>
+    <Compile Include="PadMenus.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <NativeResource Include="PadMenus.StandardPadMenu_Accelerator.rc">
+      <DependentUpon>PadMenus.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="PadMenus.StandardPadMenu.rc">
+      <DependentUpon>PadMenus.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="PadMenus.VS_VERSION_INFO.rc">
+      <DependentUpon>PadMenus.prg</DependentUpon>
+    </NativeResource>
+    <VOBinary Include="PadMenus.StandardPadMenu.xsmnu">
+      <DependentUpon>PadMenus.prg</DependentUpon>
+    </VOBinary>
+    <Compile Include="image.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <NativeResource Include="image.IMAGE.rc">
+      <DependentUpon>image.prg</DependentUpon>
+    </NativeResource>
+    <Compile Include="!Readme!.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Manifest.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <NativeResource Include="Manifest.CREATEPROCESS_MANIFEST_RESOURCE_ID.rc">
+      <DependentUpon>Manifest.prg</DependentUpon>
+    </NativeResource>
+    <None Include="Properties\cavowed.inf" />
+    <None Include="Properties\saswed.inf" />
+    <None Include="Properties\GSGWED.INF" />
+    <None Include="Properties\cavowed.tpl" />
+    <None Include="Properties\cavoded.tpl" />
+    <None Include="Properties\cavofed.tpl" />
+    <None Include="Resources\VOPAD.ICO" />
+    <None Include="Resources\HelpAbt.BMP" />
+    <None Include="Resources\VOPAD.BMP" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

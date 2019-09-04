@@ -61,27 +61,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
   
     internal class PPErrorMessage
     {
-        IToken _token;          // location to link error to
-        String _message;        // message
-        internal IToken Token { get { return _token; } }
-        internal String Message { get { return _message; } }
-        internal PPErrorMessage(IToken token, String message)
+        internal IToken Token { get; private set; }
+        internal string Message { get; private set; }
+        internal PPErrorMessage(IToken token, string message)
         {
-            _token = token;
-            _message = message;
+            Token = token;
+            Message = message;
         }
     }
 
 
-    [DebuggerDisplay("{GetCount()}")]
+    [DebuggerDisplay("{Key, nq}: {Count}")]
     internal class PPRules : List<PPRule>
     {
-        internal PPRules(): base()
+        internal string Key { get; private set; }
+        internal PPRules(string key): base()
         {
-        }
-        internal int GetCount()
-        {
-            return base.Count;
+            Key = key;
         }
     }
     /// <summary>
@@ -91,7 +87,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     /// </summary>
     internal class PPRuleDictionary
     {
-        Dictionary<String, PPRules> _rules;
+        Dictionary<string, PPRules> _rules;
         internal PPRuleDictionary()
         {
             _rules = new Dictionary<string, PPRules>(StringComparer.OrdinalIgnoreCase);
@@ -122,7 +118,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                list = new PPRules();
+                list = new PPRules(key);
                 _rules.Add(key, list);
             }
             list.Insert(0, rule);
@@ -131,7 +127,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal PPRule FindMatchingRule(IList<XSharpToken> tokens, out PPMatchRange[] matchInfo)
         {
             matchInfo = null;
-            if (tokens?.Count >= 0)
+            if (tokens?.Count > 0)
             {
                 var firsttoken = tokens[0];
                 var key = firsttoken.Text;
@@ -172,16 +168,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
     internal struct PPMatchRange
     {
+
         #region Fields
-        private int _length;
-        private int _start;
-        private bool _token;
         private IList<PPMatchRange> _children ;
         #endregion
         #region Properties
         internal bool IsList { get { return _children != null; } }
-        internal int Start { get { return _start; } }
-        internal int Length { get { return _length; } }
+        internal int Start { get; private set; }
+        internal int Length { get; private set; }
         internal int MatchCount
         {
             get
@@ -202,41 +196,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (_children?.Count > 0)
                     return _children[_children.Count - 1].End;
                 else
-                    return _start + _length - 1;
+                    return Start + Length - 1;
             }
         }
         internal IList<PPMatchRange> Children { get { return _children; } }
 
         internal bool Empty
         {
-            get { return !_token && _length == 0; }
+            get { return !IsToken && Length == 0; }
         }
-        internal bool IsToken
-        {
-            get { return _token; }
-        }
+        internal bool IsToken { get; private set; }
 
         internal void SetPos(int start, int end)
         {
-            _token = false;
+            IsToken = false;
             if (Empty)
             {
-                _start = start;
-                _length = end - start + 1;
+                Start = start;
+                Length = end - start + 1;
                 _children = null;
             }
             else
             {
                 if (start == this.End + 1)
                 {
-                    _length += (end-start)+1;
+                    Length += (end-start)+1;
                 }
                 else
                 {
                     _children = new List<PPMatchRange>();
                     _children.Add(Create(Start, End));
                     _children.Add(Create(start, end));
-                    _length = end - Start + 1;
+                    Length = end - Start + 1;
                 }
             }
         }
@@ -244,50 +235,50 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (Empty)
             {
-                _token = true;
-                _start = pos;
-                _length = 1;
+                IsToken = true;
+                Start = pos;
+                Length = 1;
                 _children = null;
             }
             else
             {
-                _token = true;
+                IsToken = true;
                 _children = new List<PPMatchRange>();
-                _children.Add(Token(_start));
+                _children.Add(Token(Start));
                 _children.Add(Token(pos));
             }
         }
         internal void  SetSkipped()
         {
-            _start = -1;
-            _length = 0;
-            _token = false;
+            Start = -1;
+            Length = 0;
+            IsToken = false;
             _children = null;
         }
 
-        #endregion
-        #region Constructors
+#endregion
+#region Constructors
         private static PPMatchRange Token(int pos)
         {
-            return new PPMatchRange() { _token = true, _start = pos, _length = 1, _children = null };
+            return new PPMatchRange() { IsToken = true, Start = pos, Length = 1, _children = null };
         }
         private static PPMatchRange Create( int start, int end)
         {
-            return new PPMatchRange() { _start = start, _length = end - start +1, _children = null};
+            return new PPMatchRange() { Start = start, Length = end - start +1, _children = null};
         }
-        #endregion
+#endregion
         internal string GetDebuggerDisplay()
         {
-            if (_token)
+            if (IsToken)
             {
                 if (_children != null)
                     return $"Token ({Children.Count}) {Start},{End}";
                 else
                     return $"Token ({Start})";
             }
-            if (_start == 0 && _length == 0)
+            if (Start == 0 && Length == 0)
                 return "Empty";
-            if (_start == -1 && _length == 0 )
+            if (Start == -1 && Length == 0 )
                 return "Skipped Optional marker";
             if (_children != null)
                 return $"List ({Children.Count}) {Start},{End}";

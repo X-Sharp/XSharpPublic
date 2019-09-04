@@ -4316,18 +4316,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             // Special case for PSZ(..) 
             // PSZ("String") becomes String2Psz("String")
+            // USUAL(<expr>) gets simplified to <expr>
             if (context.XType != null)
             {
                 var xtype = context.XType as XP.XbaseTypeContext;
-                if (xtype.Token.Type == XP.PSZ)
+                switch (xtype.Token.Type)
                 {
-                    ExpressionSyntax expr;
-                    if (GenerateLiteralPsz(context.Expr, out expr))
-                    {
-                        context.Put(expr);
+                    case XP.PSZ:
+                        ExpressionSyntax expr;
+                        if (GenerateLiteralPsz(context.Expr, out expr))
+                        {
+                            context.Put(expr);
+                            return;
+                        }
+                        break;
+                    case XP.USUAL:
+                        // no typecast needed
+                        context.Put(context.Expr.Get<ExpressionSyntax>());
                         return;
-                    }
-                 }
+                }
             }
             base.ExitVoConversionExpression(context);
         }
@@ -4335,17 +4342,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitTypeCast([NotNull] XP.TypeCastContext context)
         {
             // Special case for (PSZ) Expression, is stored in the PSZ Table when expression is a literal
+            // (USUAL) <expr> gets simplified to <expr>
             var dt = context.Type as XP.DatatypeContext;
             if (dt is XP.SimpleDatatypeContext sdt)
             {
-                if (sdt.TypeName.XType != null && sdt.TypeName.XType.Token.Type == XP.PSZ)
+                if (sdt.TypeName.XType != null )
                 {
-                    ExpressionSyntax expr;
-                    if (GenerateLiteralPsz(context.Expr, out expr))
+                    switch (sdt.TypeName.XType.Token.Type)
                     {
-                        context.Put(expr);
-                        return;
+                        case XP.PSZ:
+                            ExpressionSyntax expr;
+                            if (GenerateLiteralPsz(context.Expr, out expr))
+                            {
+                                context.Put(expr);
+                                return;
+                            }
+                            break;
+                        case XP.USUAL:
+                            // no typecast needed
+                            context.Put(context.Expr.Get<ExpressionSyntax>());
+                            return;
+                        default:
+                            break;
                     }
+
                 }
             }
             base.ExitTypeCast(context);
@@ -4355,17 +4375,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitVoCastExpression([NotNull] XP.VoCastExpressionContext context)
         {
             // PSZ(_CAST, literal) is stored in the PSZ Table
+            // USUAL(_CAST, <expr>) gets simplified to <expr>
             if (context.XType != null)
             {
                 var xtype = context.XType as XP.XbaseTypeContext;
-                if (xtype.Token.Type == XP.PSZ)
+                switch (xtype.Token.Type)
                 {
-                    ExpressionSyntax expr;
-                    if (GenerateLiteralPsz(context.Expr, out expr))
-                    {
-                        context.Put(expr);
+                    case XP.PSZ:
+                        ExpressionSyntax expr;
+                        if (GenerateLiteralPsz(context.Expr, out expr))
+                        {
+                            context.Put(expr);
+                            return;
+                        }
+                        break;
+                    case XP.USUAL:
+                        // no typecast needed
+                        context.Put(context.Expr.Get<ExpressionSyntax>());
                         return;
-                    }
                 }
             }
             base.ExitVoCastExpression(context);

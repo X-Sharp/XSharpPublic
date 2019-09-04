@@ -272,48 +272,52 @@ FUNCTION File(cFile AS STRING) AS LOGIC
     LOCAL lHasWildCards AS LOGIC
     LOCAL aPaths AS STRING[]
     LOCAL lFirst AS LOGIC
-    cFile := cFile?:Trim()
-    IF String.IsNullOrEmpty(cFile)
-        RETURN FALSE
-    ENDIF
-    lHasWildCards := cFile:IndexOfAny( <CHAR>{ '*', '?' } ) > 0
-    XSharp.IO.File.LastFound := ""
-    IF ! lHasWildCards
-        VAR cFound := XSharp.FileSearch.Worker(cFile)
-        IF ! String.IsNullOrEmpty(cFound)
-            XSharp.IO.File.LastFound := cFound
-            RETURN TRUE
+    TRY
+        cFile := cFile?:Trim()
+        IF String.IsNullOrEmpty(cFile)
+            RETURN FALSE
         ENDIF
-    ELSE
-        // wildcard, so use Directory.GetFiles()
-        LOCAL files     AS STRING[]
-        
-        IF Path.IsPathRooted(cFile)
-            files := Directory.GetFiles( Path.GetDirectoryName( cFile ), Path.GetFileName( cFile ) )
-            IF files:Length > 0
-                XSharp.IO.File.LastFound := files[1]
+        lHasWildCards := cFile:IndexOfAny( <CHAR>{ '*', '?' } ) > 0
+        XSharp.IO.File.LastFound := ""
+        IF ! lHasWildCards
+            VAR cFound := XSharp.FileSearch.Worker(cFile)
+            IF ! String.IsNullOrEmpty(cFound)
+                XSharp.IO.File.LastFound := cFound
                 RETURN TRUE
-            ELSE
-                // store the first path that we looked in even when the file is not found
-                // to be compatible with VO
-                XSharp.IO.File.LastFound := cFile
-                RETURN FALSE
             ENDIF
         ELSE
-            // Look in current directory first and if that fails through the whole normal search list
-            IF __FileHelper(Environment.CurrentDirectory, cFile, FALSE )
-                RETURN TRUE
-            ENDIF
-            aPaths := __GetSearchPaths()
-            lFirst := TRUE
-            FOREACH cPath AS STRING IN aPaths
-                IF __FileHelper(cPath, cFile, lFirst )
+            // wildcard, so use Directory.GetFiles()
+            LOCAL files     AS STRING[]
+        
+            IF Path.IsPathRooted(cFile)
+                files := Directory.GetFiles( Path.GetDirectoryName( cFile ), Path.GetFileName( cFile ) )
+                IF files:Length > 0
+                    XSharp.IO.File.LastFound := files[1]
+                    RETURN TRUE
+                ELSE
+                    // store the first path that we looked in even when the file is not found
+                    // to be compatible with VO
+                    XSharp.IO.File.LastFound := cFile
+                    RETURN FALSE
+                ENDIF
+            ELSE
+                // Look in current directory first and if that fails through the whole normal search list
+                IF __FileHelper(Environment.CurrentDirectory, cFile, FALSE )
                     RETURN TRUE
                 ENDIF
-                lFirst := FALSE
-            NEXT
+                aPaths := __GetSearchPaths()
+                lFirst := TRUE
+                FOREACH cPath AS STRING IN aPaths
+                    IF __FileHelper(cPath, cFile, lFirst )
+                        RETURN TRUE
+                    ENDIF
+                    lFirst := FALSE
+                NEXT
+            ENDIF
         ENDIF
-    ENDIF
+    CATCH e as Exception
+        XSharp.IO.File.setErrorState(e)
+    END TRY
     RETURN FALSE
     /// <summary>
     /// Return the name and path of the file that was used by FXOpen() or File().

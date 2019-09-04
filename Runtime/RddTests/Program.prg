@@ -7,7 +7,8 @@ using System.IO
 [STAThread];
 FUNCTION Start() AS VOID
     TRY
-        TestFileGarbage()
+        TestAnotherOrdScope()
+        //TestFileGarbage()
         //TestPackNtx()
         //TestZapNtx()
         //TestNullDate()
@@ -121,6 +122,42 @@ FUNCTION Start() AS VOID
     END TRY
     WAIT
     RETURN
+
+FUNCTION TestAnotherOrdScope() AS VOID
+	LOCAL cDbf AS STRING
+	cDbf := "c:\test\mynewtest"
+	
+	RddSetDefault("DBFCDX")
+	DbCreate(cDbf , {{"LAST" , "C" , 10,0}})
+	
+	DbUseArea(,,cDbf)
+	DbCreateIndex(cDbf,"Upper(LAST)")
+	
+	LOCAL aValues AS ARRAY
+	aValues := {"A", "DD", "BBB", "CC", "EEE", "DDD", "AA", "CC", "BBB", "EEE1"}
+	FOR LOCAL n := 1 AS DWORD UPTO ALen(aValues)
+		DbAppend()
+		FieldPut(1,aValues[n])
+	NEXT
+
+	? OrdScope(TOPSCOPE, "A")
+	? OrdScope(BOTTOMSCOPE, "C")
+
+	// following is OK
+	DbGoTop()
+	DO WHILE .not. Eof()
+		? RecNo()
+		DbSkip()
+	END DO
+	? 
+	// this never ends, get's stuck at record 11 (records are 10 actually)
+	DO WHILE .not. Bof()
+		? RecNo()
+		DbSkip(-1)
+	END DO
+	? 
+	DbCloseArea()
+RETURN
 
 Function TestFileGarbage() as void
 LOCAL c AS STRING

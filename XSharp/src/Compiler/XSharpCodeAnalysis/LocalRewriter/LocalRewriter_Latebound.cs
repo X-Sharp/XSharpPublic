@@ -52,7 +52,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (loweredReceiver.Type == _compilation.ArrayType())
             {
-                return MakeASend(loweredReceiver, name, args);
+                if (_compilation.Options.Dialect.AllowASend())
+                { 
+                    
+                    return MakeASend(loweredReceiver, name, args);
+                }
+                // This should not happen because we are not converting the method call to a dynamic call, but better safe than sorry.
+                return null;
             }
             var convArgs = new ArrayBuilder<BoundExpression>();
             var usualType = _compilation.UsualType();
@@ -90,6 +96,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     MakeConversionNode(loweredReceiver, arrayType, false),
                     new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
                     aArgs);
+            _diagnostics.Add(new CSDiagnostic(new CSDiagnosticInfo(ErrorCode.WRN_ASend, name), loweredReceiver.Syntax.Location));
             return expr;
         }
 

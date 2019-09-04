@@ -29,7 +29,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     }
     public static class DialectExtensions
     {
-        public static bool HasRuntime (this XSharpDialect dialect)
+        public static bool HasRuntime(this XSharpDialect dialect)
         {
             return dialect != XSharpDialect.Core;
         }
@@ -61,7 +61,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case XSharpDialect.VO:
                 case XSharpDialect.Harbour:
-				case XSharpDialect.XPP:
+                case XSharpDialect.XPP:
                 case XSharpDialect.FoxPro:
                     return true;
                 case XSharpDialect.Core:
@@ -90,7 +90,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case XSharpDialect.VO:
                 case XSharpDialect.Harbour:
-				case XSharpDialect.XPP:
+                case XSharpDialect.XPP:
                 case XSharpDialect.FoxPro:
                     return true;
                 case XSharpDialect.Core:
@@ -121,13 +121,28 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case XSharpDialect.VO:
                 case XSharpDialect.Harbour:
-				case XSharpDialect.XPP:
+                case XSharpDialect.XPP:
                 case XSharpDialect.FoxPro:
                     return true;
                 case XSharpDialect.Core:
                 case XSharpDialect.Vulcan:
                 default:
                     return false;
+            }
+        }
+        public static bool AllowASend(this XSharpDialect dialect)
+        {
+            switch (dialect)
+            {
+                case XSharpDialect.Core:
+                case XSharpDialect.Vulcan:
+                    return false;
+                case XSharpDialect.VO:
+                case XSharpDialect.Harbour:
+                case XSharpDialect.XPP:
+                case XSharpDialect.FoxPro:
+                default:
+                    return true;
             }
         }
     }

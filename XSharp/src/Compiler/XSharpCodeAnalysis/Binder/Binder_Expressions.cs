@@ -440,11 +440,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (isObject || isUsual || isArray)
                     {
                         var returnType = Compilation.UsualType();
-                        if (isArray)
+                        if (isArray )
                         {
                             // When method does not exist then do a late bound ASend()
-                            var m = Compilation.ArrayType().GetMembers(propName);
-                            earlyBound = m.Length > 0;
+                            if (Compilation.Options.Dialect.AllowASend())
+                            {
+                                var m = Compilation.ArrayType().GetMembers(propName);
+                                earlyBound = m.Length > 0;
+                            }
+                            else
+                            {
+                                earlyBound = true;
+                            }
                         }
                         else if (isUsual)
                         {

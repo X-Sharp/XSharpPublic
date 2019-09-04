@@ -242,6 +242,7 @@
                 case ErrorCode.WRN_EmptyCase:
                 case ErrorCode.WRN_ObsoleteInclude:
                 case ErrorCode.WRN_UnbalancedTextMergeOperators:
+                case ErrorCode.WRN_ASend:
                 case ErrorCode.WRN_XPPSuperIVarsAlwaysShared:
                 case ErrorCode.WRN_XPPFrozedNotSupported:
                 case ErrorCode.WRN_XPPVarIsInNotSupported:

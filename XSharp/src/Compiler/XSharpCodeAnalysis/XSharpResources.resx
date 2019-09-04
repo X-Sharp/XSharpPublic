@@ -5652,7 +5652,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Invalid {0} literal '{1}': {2}.</value>
   </data>
   <data name="WRN_ObsoleteInclude" xml:space="preserve">
-    <value>Include file '{0}' will be skipped because its values are included in assembly '{1}'.</value>
+    <value>Include file '{0}' will be skipped because its values are included in the assembly '{1}'.</value>
   </data>
   <data name="ERR_MissingWithStatement" xml:space="preserve">
     <value>Cannot locate WITH statement for DOT/COLON expression without left hand side.</value>
@@ -5669,4 +5669,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_MissingEndText" xml:space="preserve">
     <value>TEXT statement found without matching ENDTEXT.</value>
   </data>
+  <data name="WRN_ASend" xml:space="preserve">
+    <value>'ARRAY' does not have a method '{0}'. This code is converted to an 'ASend()' function call.</value>
+  </data>
+
+  
 </root>

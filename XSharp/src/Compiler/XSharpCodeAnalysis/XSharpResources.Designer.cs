@@ -12285,6 +12285,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;ARRAY&apos; does not have a method &apos;{0}&apos;. This code is converted to an &apos;ASend()&apos; function call..
+        /// </summary>
+        internal static string WRN_ASend {
+            get {
+                return ResourceManager.GetString("WRN_ASend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Attribute &apos;{0}&apos; from module &apos;{1}&apos; will be ignored in favor of the instance appearing in source.
         /// </summary>
         internal static string WRN_AssemblyAttributeFromModuleIsOverridden {
@@ -14910,7 +14919,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Include file &apos;{0}&apos; will be skipped because its values are included in assembly &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Include file &apos;{0}&apos; will be skipped because its values are included in the assembly &apos;{1}&apos;..
         /// </summary>
         internal static string WRN_ObsoleteInclude {
             get {
@@ -15344,7 +15353,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unbalanced textmerge operators &apos;&lt;&lt;&apos; and &apos;&gt;&gt;&apos;..
+        ///   Looks up a localized string similar to Unbalanced textmerge delimiters &apos;&lt;&lt;&apos; and &apos;&gt;&gt;&apos;..
         /// </summary>
         internal static string WRN_UnbalancedTextMergeOperators {
             get {

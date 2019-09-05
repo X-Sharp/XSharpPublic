@@ -66,7 +66,7 @@ BEGIN NAMESPACE XSharp
             SELF(__UsualType.Float)
             SELF:_valueData:r8		:= r8
             SELF:_flags:Width		:= -1
-            SELF:_flags:Decimals	:= RuntimeState.Decimals
+            SELF:_flags:Decimals	:= (Sbyte) RuntimeState.Decimals
             RETURN
 
         [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
@@ -200,13 +200,13 @@ BEGIN NAMESPACE XSharp
                     SELF:_flags			:= UsualFlags{__UsualType.Float}
                     SELF:_valueData:r8	:= (REAL4)o
                     SELF:_flags:width	:= -1
-                    SELF:_flags:decimals := RuntimeState.Decimals
+                    SELF:_flags:decimals := (Sbyte) RuntimeState.Decimals
 
                 CASE System.TypeCode.Double
                     SELF:_flags				:= UsualFlags{__UsualType.Float}
                     SELF:_valueData:r8 := (REAL8)o
                     SELF:_flags:width := -1
-                    SELF:_flags:decimals := RuntimeState.Decimals
+                    SELF:_flags:decimals := (Sbyte) RuntimeState.Decimals
 
                 CASE System.TypeCode.Decimal
                     SELF:_flags				:= UsualFlags{__UsualType.Decimal}
@@ -1115,6 +1115,8 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Int64		; RETURN u:_i64Value - 1
                 CASE __UsualType.Float		; RETURN u:_floatValue -1
                 CASE __UsualType.Decimal	; RETURN u:_decimalValue - 1
+                CASE __UsualType.Date	    ; RETURN u:_dateValue -1
+                CASE __UsualType.DateTime   ; RETURN u:_datetimeValue:AddDays(-1)
                 OTHERWISE
                     THROW UnaryError("--", u)
                 END SWITCH
@@ -1123,9 +1125,11 @@ BEGIN NAMESPACE XSharp
         STATIC OPERATOR ++(u AS __Usual) AS __Usual
             SWITCH u:_usualType
                 CASE __UsualType.LONG		; RETURN u:_intValue + 1
-             CASE __UsualType.Int64		; RETURN u:_i64Value + 1
+                CASE __UsualType.Int64		; RETURN u:_i64Value + 1
                 CASE __UsualType.Float		; RETURN u:_floatValue +1
                 CASE __UsualType.Decimal	; RETURN u:_decimalValue + 1
+                CASE __UsualType.Date	    ; RETURN u:_dateValue + 1
+                CASE __UsualType.DateTime   ; RETURN u:_datetimeValue:AddDays(1)
                 OTHERWISE
                     THROW UnaryError("++", u)
                 END SWITCH

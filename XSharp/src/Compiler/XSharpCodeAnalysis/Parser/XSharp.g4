@@ -1213,7 +1213,8 @@ xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+
 
 
 /// FoxPro Parser definities
-keywordfox          :Token=(ENDDEFINE|  LPARAMETERS| TEXT| ENDTEXT| ADDITIVE| FLAGS| PRETEXT| NOSHOW| TEXTMERGE | OLEPUBLIC | EXCLUDE | LOGIC_AND | LOGIC_OR | LOGIC_NOT)
+keywordfox          :Token=(ENDDEFINE|  LPARAMETERS| TEXT| ENDTEXT| ADDITIVE| FLAGS| PRETEXT| NOSHOW| TEXTMERGE | OLEPUBLIC | EXCLUDE )
+                    | { _input.Lt(0).Text[0] != '.' }? Token=(LOGIC_AND | LOGIC_OR | LOGIC_NOT)  // only when the tokens do not start with a '.' , so .AND. is not a keyword
                     ;
 // class declaration
 // text ... endtext

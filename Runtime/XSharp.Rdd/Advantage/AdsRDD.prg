@@ -698,7 +698,6 @@ RETURN SELF:RecordMovement()
 
   #region Read and Write
 METHOD GetValue(nFldPos AS INT) AS OBJECT
-	LOCAL dwField  := (DWORD) nFldPos  AS DWORD
 	LOCAL column   := (AdsColumn )SELF:_Fields[nFldPos-1] AS AdsColumn
     RETURN column:GetValue()
 

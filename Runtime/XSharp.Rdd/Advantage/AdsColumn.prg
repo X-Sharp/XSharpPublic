@@ -112,7 +112,7 @@ BEGIN NAMESPACE XSharp.ADS
 			    ENDIF
 			    strValue := (STRING) oValue
 			    slength  := (DWORD) strValue:Length
-                slength := Math.Min(slength, SELF:Length)
+                slength := Math.Min(slength, (DWORD) SELF:Length)
 			    IF slength == 0
 				    result := ACE.AdsSetEmpty(SELF:_Table, SELF:FieldPos)
 			    ELSE
@@ -151,7 +151,7 @@ BEGIN NAMESPACE XSharp.ADS
 
         OVERRIDE METHOD GetValue() AS OBJECT
             LOCAL result    := 0 as DWORD
-            LOCAL slength    := SELF:Length+1 AS DWORD
+            LOCAL slength    := (DWORD) SELF:Length+1 AS DWORD
 			LOCAL chars := CHAR[] {slength} as CHAR[]
 		    SWITCH SELF:AdsType
 		    CASE AdsFieldType.TIME
@@ -334,13 +334,10 @@ BEGIN NAMESPACE XSharp.ADS
 
 
       OVERRIDE METHOD PutValue(oValue AS OBJECT) AS LOGIC
-        VAR tc := Type.GetTypeCode(oValue:GetType())
       	IF oValue IS IFloat VAR floatValue
-		    tc := TypeCode.Double
 		    oValue := floatValue:Value
         ENDIF
         LOCAL wType AS WORD
-        LOCAL result := 0 AS DWORD
         SELF:RDD:_CheckError(ACE.AdsGetFieldType(SELF:_Table, SELF:FieldPos, OUT wType),EG_READ)
         IF wType != ACE.ADS_AUTOINC
 	        TRY
@@ -439,7 +436,7 @@ BEGIN NAMESPACE XSharp.ADS
 			    ELSE
 				    SELF:RDD:_CheckError(result,EG_READ)
 			    ENDIF
-			    mlength := SELF:Length
+			    mlength := (DWORD) SELF:Length
 			    bytes := BYTE[] {mlength}
 			    SELF:RDD:_CheckError(ACE.AdsGetBinary(SELF:_Table, SELF:FieldPos, 0, bytes, REF mlength ),EG_READ)
 			    RETURN bytes

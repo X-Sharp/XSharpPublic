@@ -23,7 +23,7 @@ FUNCTION Start( ) AS VOID
 	
 
 
-	? gUndefined // "NIL", VO prints "FALSE"
+	? gUndefined // "NIL", VO prints "FALSE"             
 	xAssertTrue(gUndefined == FALSE)
 	// this is what VO does, is it intentional???
 

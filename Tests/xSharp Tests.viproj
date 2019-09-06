@@ -69073,9 +69073,9 @@ FileType = Code
 CopyToBin = 0
 [C673 - Various issues with MEMVAR, PUBLIC etc References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.0.2.0
-ReferenceGAC = XSharp.RT,1,0,2.0.2.0
-ReferenceGAC = XSharp.VO,1,0,2.0.2.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,
+ReferenceGAC = CLR4,XSharp.RT,1,0,
+ReferenceGAC = CLR4,XSharp.VO,1,0,
 [C673 - Various issues with MEMVAR, PUBLIC etc Resources]
 [C673 - Various issues with MEMVAR, PUBLIC etc Native Resources]
 [C673 - Various issues with MEMVAR, PUBLIC etc License files]
@@ -69640,7 +69640,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = R678 Aliased Expressions
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C678 - Internal compielr error with __Usual.ToObject() and /lb+ *************
 Application = C678 - Internal compielr error with __Usual.ToObject() and /lb+
 IDEVersion = 1.06
@@ -70086,9 +70086,9 @@ FileType = Code
 CopyToBin = 0
 [R682 - FoxPro AND, OR, NOT References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,
-ReferenceGAC = CLR4,XSharp.RT,1,0,
-ReferenceGAC = CLR4,XSharp.VO,1,0,
+ReferenceGAC = XSharp.Core,1,0,
+ReferenceGAC = XSharp.RT,1,0,
+ReferenceGAC = XSharp.VO,1,0,
 [R682 - FoxPro AND, OR, NOT Resources]
 [R682 - FoxPro AND, OR, NOT Native Resources]
 [R682 - FoxPro AND, OR, NOT License files]
@@ -70188,9 +70188,9 @@ FileType = Code
 CopyToBin = 0
 [R683 FoxPro Text .. Endtext References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,
-ReferenceGAC = CLR4,XSharp.RT,1,0,
-ReferenceGAC = CLR4,XSharp.VO,1,0,
+ReferenceGAC = XSharp.Core,1,0,
+ReferenceGAC = XSharp.RT,1,0,
+ReferenceGAC = XSharp.VO,1,0,
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VFP.dll,1,1
 [R683 FoxPro Text .. Endtext Resources]
 [R683 FoxPro Text .. Endtext Native Resources]

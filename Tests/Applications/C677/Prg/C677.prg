@@ -33,6 +33,6 @@ CLASS TestClass
 		? s[1]
 	RETURN
 
-	METHOD TestParams(PARAMS ooo AS INT[]) AS VOID
+	METHOD TestParams( ooo PARAMS INT[]) AS VOID
 
 END CLASS

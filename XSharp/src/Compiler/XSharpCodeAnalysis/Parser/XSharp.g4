@@ -43,9 +43,8 @@ macroScript         : ( CbExpr=codeblock | Code=codeblockCode ) EOS
                       EOF
                     ;
 
-source              :  StmtBlk=statementBlock  // StatementList before any entities
-                      (Entities+=entity )*
-                      EOF
+source              : {!IsFox}?  (Entities+=entity )* EOF
+                    | {IsFox}? StmtBlk=statementBlock (Entities+=entity )* EOF // StatementList before any entities
                     ; 
 
 entity              : namespace_

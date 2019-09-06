@@ -268,18 +268,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitFielddecl(XSharpParser.FielddeclContext context)
         {
-            if (_options.Dialect != XSharpDialect.Core)
-            {
-                NotInDialect(context, "FIELD statement");
-            }
+           NotInCore(context, "FIELD statement");
         }
 
         public override void EnterFoxfield([NotNull] XSharpParser.FoxfieldContext context)
         {
-            string name = context.F.Name.GetText().ToUpper();
-            if (name.EndsWith("_COMATTRIB"))
+            if (_options.Dialect == XSharpDialect.FoxPro)
             {
-                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxPEMName_COMATTRIBClause));
+                string name = context.F.Name.GetText().ToUpper();
+                if (name.EndsWith("_COMATTRIB"))
+                {
+                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxPEMName_COMATTRIBClause));
+                }
             }
         }
         public override void ExitFoxclass([NotNull] XSharpParser.FoxclassContext context)
@@ -426,6 +426,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitXbaseType([NotNull] XSharpParser.XbaseTypeContext context)
         {
             NotInCore(context, context.Token.Text);
+            return;
         }
 
         public override void ExitAliasedMemvar([NotNull] XSharpParser.AliasedMemvarContext context)

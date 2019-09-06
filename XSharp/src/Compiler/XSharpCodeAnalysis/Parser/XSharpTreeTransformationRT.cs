@@ -1035,6 +1035,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return memvar;
         }
 
+        public override void ExitXbasedeclStmt([NotNull] XP.XbasedeclStmtContext context)
+        {
+            context.Put(context.xbasedecl().Get<StatementSyntax>());
+        }
         public override void ExitXbasedecl([NotNull] XP.XbasedeclContext context)
         {
             context.SetSequencePoint(context.end);

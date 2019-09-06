@@ -272,11 +272,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpLexer.AMP:
                 case XSharpLexer.TILDE:
                 case XSharpLexer.PIPE:
-                case XSharpLexer.LOGIC_AND:
                 case XSharpLexer.AND:
+                case XSharpLexer.OR:
+                case XSharpLexer.LOGIC_AND:
                 case XSharpLexer.LOGIC_XOR:
                 case XSharpLexer.LOGIC_OR:
-                case XSharpLexer.OR:
+                case XSharpLexer.FOX_AND:
+                case XSharpLexer.FOX_OR:
+                case XSharpLexer.FOX_XOR:
                     return true;
                 case XSharpLexer.COLON:
                 case XSharpLexer.DOT:
@@ -298,6 +301,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpLexer.DEC:
                 case XSharpLexer.INC:
                 case XSharpLexer.LOGIC_NOT:
+                case XSharpLexer.FOX_NOT:
                 case XSharpLexer.NOT:
                     return true;
             }

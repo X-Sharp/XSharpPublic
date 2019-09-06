@@ -5583,25 +5583,25 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Argument {0} is passed with REF keyword but should be passed with the '{1}' keyword</value>
   </data>
   <data name="ERR_XPPMultipleInheritance" xml:space="preserve">
-    <value>XPP: Multiple Inheritance is not supported by the .Net Runtime.</value>
+    <value>XPP Multiple Inheritance is not supported by the .Net Runtime.</value>
   </data>
   <data name="WRN_XPPSuperIVarsAlwaysShared" xml:space="preserve">
-    <value>XPP: The FROM clause is interpreted as SHARING because variables in parent classes are always shared in the .Net Runtime.</value>
+    <value>XPP The 'FROM' clause is interpreted as SHARING because variables in parent classes are always shared in the .Net Runtime.</value>
   </data>
   <data name="WRN_XPPFrozedNotSupported" xml:space="preserve">
-    <value>The XPP: FROZEN method modifier is not supported and ignored.</value>
+    <value>The XPP 'FROZEN' method modifier is not supported and ignored.</value>
   </data>
   <data name="WRN_XPPVarIsInNotSupported" xml:space="preserve">
-    <value>The XPP: VAR .. IS .. IN ..  clause is not supported. There is no multiple inheritance, so this is no longer needed.</value>
+    <value>The XPP 'VAR .. IS .. IN ..'  clause is not supported. There is no multiple inheritance, so this is no longer needed.</value>
   </data>
   <data name="WRN_XPPSharedIsDefault" xml:space="preserve">
-    <value>XPP: Variables are SHARED by default in .Net</value>
+    <value>XPP Variables are SHARED by default in .Net</value>
   </data>
   <data name="WRN_XPPAssignmentClause" xml:space="preserve">
-    <value>The XPP: ASSIGNMENT clause for instance variables is not supported (yet) and ignored.</value>
+    <value>The XPP 'ASSIGNMENT' clause for instance variables is not supported (yet) and ignored.</value>
   </data>
   <data name="WRN_XPPReadonlyClause" xml:space="preserve">
-    <value>The XPP: READONLY clause for instance variables is not supported (yet) and ignored.</value>
+    <value>The XPP 'READONLY' clause for instance variables is not supported (yet) and ignored.</value>
   </data>
   <data name="WRN_XPPMethodNotImplemented" xml:space="preserve">
     <value>XPP: Method {0} has been declared but has not been implemented.</value>
@@ -5672,6 +5672,29 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_ASend" xml:space="preserve">
     <value>'ARRAY' does not have a method '{0}'. This code is converted to an 'ASend()' function call.</value>
   </data>
-
+  <data name="WRN_FoxImplementsExcludeClause" xml:space="preserve">
+    <value>The 'EXCLUDE' clause for 'IMPLEMENTS' is not supported (yet) and ignored.</value>
+  </data>
+  <data name="WRN_FoxImplementsLibraryClause" xml:space="preserve">
+    <value>The 'IN' clause for 'IMPLEMENTS' is not supported (yet) and ignored.</value>
+  </data>
+  <data name="WRN_FoxHelpStringClause" xml:space="preserve">
+    <value>The 'HELPSTRING' clause for procedures and functions is not supported and ignored.</value>
+  </data>
+  <data name="WRN_FoxThisAccessClause" xml:space="preserve">
+    <value>The 'THIS_ACCESS' clause for procedures and functions is not supported (yet) and ignored.</value>
+  </data>
+  <data name="WRN_FoxOlePublicClause" xml:space="preserve">
+    <value>The 'OLEPUBLIC' clause for classes is not supported and ignored.</value>
+  </data>
+  <data name="WRN_FoxOfClasslibClause" xml:space="preserve">
+    <value>The 'OF ClassLibrary' clause for classes is not supported and ignored.</value>
+  </data>
+  <data name="WRN_FoxPEMName_COMATTRIBClause" xml:space="preserve">
+    <value>The 'PEMName_COMATTRIB' clause is not supported and ignored.</value>
+  </data>  
+  <data name="ERR_UnexpectedCommand" xml:space="preserve">
+    <value>Unexpected Command or Statement.</value>
+  </data>
   
 </root>

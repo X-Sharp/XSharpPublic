@@ -10205,6 +10205,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unexpected Command or Statement..
+        /// </summary>
+        internal static string ERR_UnexpectedCommand {
+            get {
+                return ResourceManager.GetString("ERR_UnexpectedCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected preprocessor directive.
         /// </summary>
         internal static string ERR_UnexpectedDirective {
@@ -10664,7 +10673,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to XPP: Multiple Inheritance is not supported by the .Net Runtime..
+        ///   Looks up a localized string similar to XPP Multiple Inheritance is not supported by the .Net Runtime..
         /// </summary>
         internal static string ERR_XPPMultipleInheritance {
             get {
@@ -14096,6 +14105,69 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The &apos;HELPSTRING&apos; clause for procedures and functions is not supported and ignored..
+        /// </summary>
+        internal static string WRN_FoxHelpStringClause {
+            get {
+                return ResourceManager.GetString("WRN_FoxHelpStringClause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;EXCLUDE&apos; clause for &apos;IMPLEMENTS&apos; is not supported (yet) and ignored..
+        /// </summary>
+        internal static string WRN_FoxImplementsExcludeClause {
+            get {
+                return ResourceManager.GetString("WRN_FoxImplementsExcludeClause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;IN&apos; clause for &apos;IMPLEMENTS&apos; is not supported (yet) and ignored..
+        /// </summary>
+        internal static string WRN_FoxImplementsLibraryClause {
+            get {
+                return ResourceManager.GetString("WRN_FoxImplementsLibraryClause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;OF ClassLibrary&apos; clause for classes is not supported and ignored..
+        /// </summary>
+        internal static string WRN_FoxOfClasslibClause {
+            get {
+                return ResourceManager.GetString("WRN_FoxOfClasslibClause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;OLEPUBLIC&apos; clause for classes is not supported and ignored..
+        /// </summary>
+        internal static string WRN_FoxOlePublicClause {
+            get {
+                return ResourceManager.GetString("WRN_FoxOlePublicClause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;PEMName_COMATTRIB&apos; clause is not supported and ignored..
+        /// </summary>
+        internal static string WRN_FoxPEMName_COMATTRIBClause {
+            get {
+                return ResourceManager.GetString("WRN_FoxPEMName_COMATTRIBClause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;THIS_ACCESS&apos; clause for procedures and functions is not supported (yet) and ignored..
+        /// </summary>
+        internal static string WRN_FoxThisAccessClause {
+            get {
+                return ResourceManager.GetString("WRN_FoxThisAccessClause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {3} &apos;{0}&apos; is ambiguous. Could be &apos;{1}&apos; or &apos;{2}&apos;. Using the function because in X# functions take precedence over static methods. To call the method use the fully qualified name..
         /// </summary>
         internal static string WRN_FunctionsTakePrecedenceOverMethods {
@@ -15868,7 +15940,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The XPP: ASSIGNMENT clause for instance variables is not supported (yet) and ignored..
+        ///   Looks up a localized string similar to The XPP &apos;ASSIGNMENT&apos; clause for instance variables is not supported (yet) and ignored..
         /// </summary>
         internal static string WRN_XPPAssignmentClause {
             get {
@@ -15877,7 +15949,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The XPP: FROZEN method modifier is not supported and ignored..
+        ///   Looks up a localized string similar to The XPP &apos;FROZEN&apos; method modifier is not supported and ignored..
         /// </summary>
         internal static string WRN_XPPFrozedNotSupported {
             get {
@@ -15904,7 +15976,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The XPP: READONLY clause for instance variables is not supported (yet) and ignored..
+        ///   Looks up a localized string similar to The XPP &apos;READONLY&apos; clause for instance variables is not supported (yet) and ignored..
         /// </summary>
         internal static string WRN_XPPReadonlyClause {
             get {
@@ -15913,7 +15985,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to XPP: Variables are SHARED by default in .Net.
+        ///   Looks up a localized string similar to XPP Variables are SHARED by default in .Net.
         /// </summary>
         internal static string WRN_XPPSharedIsDefault {
             get {
@@ -15922,7 +15994,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to XPP: The FROM clause is interpreted as SHARING because variables in parent classes are always shared in the .Net Runtime..
+        ///   Looks up a localized string similar to XPP The &apos;FROM&apos; clause is interpreted as SHARING because variables in parent classes are always shared in the .Net Runtime..
         /// </summary>
         internal static string WRN_XPPSuperIVarsAlwaysShared {
             get {
@@ -15931,7 +16003,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The XPP: VAR .. IS .. IN ..  clause is not supported. There is no multiple inheritance, so this is no longer needed..
+        ///   Looks up a localized string similar to The XPP &apos;VAR .. IS .. IN ..&apos;  clause is not supported. There is no multiple inheritance, so this is no longer needed..
         /// </summary>
         internal static string WRN_XPPVarIsInNotSupported {
             get {

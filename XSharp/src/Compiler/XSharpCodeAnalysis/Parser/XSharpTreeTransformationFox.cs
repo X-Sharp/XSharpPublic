@@ -46,36 +46,196 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
         }
 
+        public override void ExitSource([NotNull] XP.SourceContext context)
+        {
+            if (context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0)
+            {
+                // Generate leading code for the file
+                // Function needs at least an Id and a Statement Block
+                // The rest is default
+                var name = System.IO.Path.GetFileNameWithoutExtension(_fileName);
+                var entity = new XP.EntityContext(context, 0);
+                var func = new XP.FunctionContext(entity, 0);
+                var id = new XP.IdentifierContext(func, 0);
+                var token = new XSharpToken(XP.ID, name);
+                token.line = 1;
+                token.charPositionInLine = 1;
+                id.Start = id.Stop = token;
+                ExitIdentifier(id);    // Generate SyntaxToken
+                if (string.Equals(name, _entryPoint, StringComparison.OrdinalIgnoreCase))
+                {
+                    func.Type = new XP.DatatypeContext(func,0);
+                    func.Type.Start = new XSharpToken(XP.AS, "AS");
+                    func.Type.Stop = new XSharpToken(XP.VOID, "VOID");
+                    func.Type.Put(_voidType);
+                }
+                func.Id = id;
+                func.StmtBlk = context.StmtBlk;
+                context.StmtBlk.parent = func;
+                func.Start = func.StmtBlk.Start;
+                func.Stop = func.StmtBlk.Stop;
+                func.AddChild(func.Id);
+                func.AddChild(func.StmtBlk);
+                ExitFunction(func);     // Generate function
+                entity.Start = func.Start;
+                entity.Stop = func.Stop;
+                entity.AddChild(func);
+                ExitEntity(entity);
+                context._Entities.Insert(0, entity);
+            }
+            base.ExitSource(context);
+        }
+
         public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
         {
             CoreAccessMember(context);
         }
 
-         public override void ExitFoxclsvars([NotNull] XP.FoxclsvarsContext context)
+        public override void ExitMethodCall([NotNull] XP.MethodCallContext context)
         {
-            context.Put(context.Member.Get<MemberDeclarationSyntax>());
-        }
-        public override void ExitFoxfmethod([NotNull] XP.FoxfmethodContext context)
-        {
-            context.Put(context.Member.Get<MemberDeclarationSyntax>());
-        }
-        public override void ExitFoxpmethod([NotNull] XP.FoxpmethodContext context)
-        {
-            context.Put(context.Member.Get<MemberDeclarationSyntax>());
+            var expr = context.Expr.Get<ExpressionSyntax>();
+            string name = null;
+            if (expr is IdentifierNameSyntax)
+            {
+                // Intrinsic functions that depend on Vulcan types
+                IdentifierNameSyntax ins = expr as IdentifierNameSyntax;
+                name = ins.Identifier.Text.ToUpper();
+                if (name == XSharpIntrinsicNames.DoDefault)
+                {
+                    var entity = CurrentEntity;
+                    name = entity.ShortName;
+                    var super = GenerateSuper();
+                    var member = MakeSimpleMemberAccess(super, GenerateSimpleName(name));
+                    ArgumentListSyntax argList;
+                    if (context.ArgList != null)
+                    {
+                        argList = context.ArgList.Get<ArgumentListSyntax>();
+                    }
+                    else 
+                    {
+                        if (entity.Data.HasClipperCallingConvention)
+                            argList = MakeArgumentList(MakeArgument(GenerateSimpleName(XSharpSpecialNames.ClipperArgs)));
+                        else
+                            argList = EmptyArgumentList();
+                    }
+                    expr = _syntaxFactory.InvocationExpression(member, argList);
+                    context.Put(expr);
+                    return;
+                }
+            }
+            // all other method names or syntaxes
+            base.ExitMethodCall(context);
+            return;
         }
 
+        public override void ExitFoxclsvars([NotNull] XP.FoxclsvarsContext context)
+        {
+            context.SetSequencePoint(context.Member.end);
+            context.Put(context.Member.Get<MemberDeclarationSyntax>());
+        }
+        public override void ExitFoxmethod([NotNull] XP.FoxmethodContext context)
+        {
+            context.SetSequencePoint(context.Member.end);
+            context.Put(context.Member.Get<MemberDeclarationSyntax>());
+        }
         public override void EnterFoxclass([NotNull] XP.FoxclassContext context)
         {
+            ClassEntities.Push(CreateClassEntities());
+
         }
 
+        public override void ExitFoxfieldinitializer([NotNull] XP.FoxfieldinitializerContext context)
+        {
+            var id = context.Name.Get<ExpressionSyntax>();
+            var assign = MakeSimpleAssignment(id, context.Expr.Get<ExpressionSyntax>());
+            context.Put(assign);
+
+        }
+
+        public override void ExitFoxaddobject([NotNull] XP.FoxaddobjectContext context)
+        {
+            context.SetSequencePoint(context.Member.end);
+            context.Put(context.Member.Get<MemberDeclarationSyntax>());
+        }
+        public override void ExitFoxaddobjectclause([NotNull] XP.FoxaddobjectclauseContext context)
+        {
+            var modifiers = context.Modifiers?.GetList<SyntaxToken>() ?? TokenList(SyntaxKind.PublicKeyword);
+            var datatype = context.Type.Get<TypeSyntax>();
+            InitializerExpressionSyntax init = null;
+            if (context._FieldsInits.Count > 0)
+            {
+                init = _syntaxFactory.InitializerExpression(
+                    SyntaxKind.ObjectInitializerExpression,
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                    MakeSeparatedList<ExpressionSyntax>(context._FieldsInits),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+                
+            }
+            var initExpr = CreateObject(datatype, EmptyArgumentList(), init);
+            var attributeList = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+            var variable = GenerateVariable(context.Id.GetText(), initExpr);
+            var varList = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
+            varList.Add(variable);
+            var decl = _syntaxFactory.VariableDeclaration(type: datatype, variables: varList);
+            var fdecl = _syntaxFactory.FieldDeclaration(
+                                    attributeLists: attributeList,
+                                    modifiers: modifiers,
+                                    declaration: decl,
+                                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            context.Put(fdecl);
+            _pool.Free(varList);
+        }
+
+
+        public override void ExitFoxclassvar([NotNull] XP.FoxclassvarContext context)
+        {
+            var classvars = context.Parent as XP.FoxclassvarsContext;
+            var dataType = classvars.DataType;
+            var varType = dataType?.Get<TypeSyntax>() ?? _getMissingType();
+            ExpressionSyntax initExpr = null;
+            if (dataType != null)
+                initExpr = GenerateInitializer(dataType);
+            context.Put(GenerateVariable(context.Id.GetText(), initExpr));
+        }
+
+        public override void ExitFoxclassvars([NotNull] XP.FoxclassvarsContext context)
+        {
+            var varList = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
+            var varType = context.DataType?.Get<TypeSyntax>() ?? _getMissingType();
+            varType.XVoDecl = true;
+            foreach (var varCtx in context._Vars)
+            {
+                if (varList.Count > 0)
+                    varList.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                varList.Add(varCtx.Get<VariableDeclaratorSyntax>());
+            }
+            if (varList.Count > 0)
+            {
+                var decl = _syntaxFactory.VariableDeclaration( type: varType, variables: varList); 
+                var attributeList = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+                var modifiers = context.Modifiers?.GetList<SyntaxToken>() ?? TokenList(SyntaxKind.PublicKeyword);
+                context.Put(_syntaxFactory.FieldDeclaration(
+                                    attributeLists: attributeList,
+                                    modifiers: modifiers,
+                                    declaration: decl,
+                                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            }
+            _pool.Free(varList);
+        }
         public override void ExitFoxclass([NotNull] XP.FoxclassContext context)
         {
-            /*
+            var fieldNames = new List<String>();
             var members = _pool.Allocate<MemberDeclarationSyntax>();
             var generated = ClassEntities.Pop();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
             context.Data.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
-            if (generated.Members.Count > 0)
+            var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
+            var baseType = context.BaseType?.Get<TypeSyntax>();
+            if (baseType != null)
+            {
+                baseTypes.Add(_syntaxFactory.SimpleBaseType(baseType));
+            }
+            if  (generated.Members.Count > 0)  
             {
                 members.AddRange(generated.Members);
             }
@@ -88,38 +248,41 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         members.Add(prop);
                 }
             }
-            // check if class has Ctor. 
-            foreach (var mem in members.ToList())
-            {
-                // when an instant constructors then remember this
-                if (mem is ConstructorDeclarationSyntax && !((ConstructorDeclarationSyntax)mem).IsStatic())
-                {
-                    context.Data.HasInstanceCtor = true;
-                    break;
-                }
-            }
-
             // Do this after VOProps generation because GenerateVOProperty sets the members
             // for Access & Assign to NULL
             foreach (var mCtx in context._Members)
             {
                 if (mCtx.CsNode != null)
+                { 
                     members.Add(mCtx.Get<MemberDeclarationSyntax>());
+                }
+                if (mCtx is XP.FoxclsvarsContext fcfc)
+                {
+                    var mem = fcfc.Member;
+                    foreach (var v in mem._Vars)
+                    {
+                        fieldNames.Add(v.Id.GetText().ToLower());
+                    }
+                }
             }
             generated.Free();
-            var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
-            var baseType = context.BaseType?.Get<TypeSyntax>();
-            if (baseType != null)
+            foreach (var mem  in context._Members)
             {
-                baseTypes.Add(_syntaxFactory.SimpleBaseType(baseType));
+                if (mem is XP.FoximplementsContext fic)
+                {
+                    var clause = fic.Member as XP.FoximplementsclauseContext;
+                    var type = clause.Type.Get<TypeSyntax>();
+                    if (baseTypes.Count > 0)
+                        baseTypes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    baseTypes.Add(_syntaxFactory.SimpleBaseType(type));
+ 
+                }
             }
-            foreach (var iCtx in context._Implements)
+            var ctor = createConstructor(context, members, fieldNames);
+            if (ctor != null)
             {
-                if (baseTypes.Count > 0)
-                    baseTypes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
-                baseTypes.Add(_syntaxFactory.SimpleBaseType(iCtx.Get<TypeSyntax>()));
+                members.Add(ctor);
             }
-
             MemberDeclarationSyntax m = _syntaxFactory.ClassDeclaration(
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                 modifiers: mods,
@@ -143,49 +306,91 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 m = (MemberDeclarationSyntax)CheckTypeName(context, "CLASS", m);
             }
-            m = CheckForGarbage(m, context.Ignored, "Name after END CLASS");
+            
             context.Put(m);
             if (context.Data.Partial)
             {
                 GlobalEntities.NeedsProcessing = true;
             }
-            */
-        }
+        } 
 
-        public override void EnterFfunction([NotNull] XP.FfunctionContext context)
+        private ConstructorDeclarationSyntax createConstructor(XP.FoxclassContext context, SyntaxListBuilder<MemberDeclarationSyntax> members, List<String> fieldNames)
         {
-
-        }
-        public override void ExitFfunction([NotNull] XP.FfunctionContext context)
-        {
-
-        }
-        public override void EnterFprocedure([NotNull] XP.FprocedureContext context)
-        {
-
-        }
-        public override void ExitFprocedure([NotNull] XP.FprocedureContext context)
-        {
-
-        }
-
-        public override void EnterFoxfieldinitializer([NotNull] XP.FoxfieldinitializerContext context)
-        {
-
-        }
-
-        public override void ExitFoxfieldinitializer([NotNull] XP.FoxfieldinitializerContext context)
-        {
-
-        }
-
-        public override void EnterFoxaddobject([NotNull] XP.FoxaddobjectContext context)
-        {
-
-        }
-        public override void ExitFoxaddobject([NotNull] XP.FoxaddobjectContext context)
-        {
-
+            var stmts = new List<StatementSyntax>();
+            var attributeLists = _pool.Allocate<AttributeListSyntax>();
+            bool hasinit = false;
+            ParameterListSyntax initparams = EmptyParameterList();
+            ConstructorDeclarationSyntax ctor = null;
+            foreach (var member in context._Members)
+            {
+                if (member is XP.FoxclsvarinitContext cvi)
+                {
+                    var fldinit = cvi.Member.F;
+                    // skip PEMName_COMATTRIB  assignments
+                    if (fldinit.Name.GetText().ToUpper().EndsWith("_COMATTRIB"))
+                    {
+                        continue;
+                    }
+                    var assign = fldinit.Get<ExpressionSyntax>();
+                    // check to see if the field exists
+                    var fldName = fldinit.Name.GetText().ToLower();
+                    if (!fieldNames.Contains(fldName))
+                    {
+                        // create a field and set the value as default value
+                        fieldNames.Add(fldName);
+                        var list = MakeSeparatedList(GenerateVariable(fldinit.Name.GetText(), fldinit.Expr.Get<ExpressionSyntax>()));
+                        var decl = _syntaxFactory.VariableDeclaration(type: _usualType, list);
+                        var mods = TokenList(SyntaxKind.PublicKeyword);
+                        var fdecl = _syntaxFactory.FieldDeclaration(
+                                                attributeLists: attributeLists,
+                                                modifiers: mods,
+                                                declaration: decl,
+                                                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                        members.Add(fdecl);
+                        fldinit.Put(fdecl);
+                    }
+                    else
+                    {
+                        var stmt = GenerateExpressionStatement(assign);
+                        fldinit.Put(stmt);
+                        stmts.Add(stmt);
+                    }
+                }
+                else if (member is XP.FoxmethodContext fm)
+                {
+                    var method = fm.Member as XP.MethodContext;
+                    if (method.Id.GetText().ToLower() == "init")
+                    {
+                        var syntax = method.Get<MethodDeclarationSyntax>();
+                        initparams = syntax.ParameterList;
+                        attributeLists.AddRange( syntax.AttributeLists);
+                        hasinit = true;
+                    }
+                }
+            }
+            if (stmts.Count > 0 || hasinit)
+            {
+                var body= MakeBlock(stmts);
+                var argList = new List<ArgumentSyntax>();
+                for (int i = 0; i < initparams.Parameters.Count; i++)
+                {
+                    var par = initparams.Parameters[i];
+                    argList.Add(MakeArgument(GenerateSimpleName(par.Identifier.Text)));
+                }
+                ArgumentListSyntax args = MakeArgumentList(argList.ToArray());
+                var chain = _syntaxFactory.ConstructorInitializer(SyntaxKind.BaseConstructorInitializer,
+                                                                    SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
+                                                                    SyntaxFactory.MakeToken(SyntaxKind.BaseKeyword),
+                                                                    args
+                                                                    );
+                
+                GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGenerated);
+                var mods = TokenList(SyntaxKind.PublicKeyword);
+                ctor = _syntaxFactory.ConstructorDeclaration(attributeLists, mods, context.Id.Get<SyntaxToken>(), initparams, chain, body, null, null);
+                ctor.XGenerated = true;
+            }
+            _pool.Free(attributeLists);
+            return ctor;
         }
         #region TextMergeSupport
         private bool checkTextMergeDelimiters(string sourceText)

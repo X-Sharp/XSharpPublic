@@ -1290,7 +1290,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                 return ID;
 
                         case DEFINE:
-                            if (Dialect == XSharpDialect.FoxPro && keyword == CLASS)   // FoxPro uses DEFINE CLASS
+                            if (Dialect == XSharpDialect.FoxPro )   // FoxPro uses DEFINE CLASS
                                 return keyword;
                             else
                                 return ID;
@@ -1694,9 +1694,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     // normal keywords
                     {"THIS", SELF},
-                    {"AND", LOGIC_AND},
-                    {"OR", LOGIC_OR},
-                    {"NOT", LOGIC_NOT},
+                    {"THIS_ACCESS",THISACCESS },
+                    {"HELPSTRING",HELPSTRING },
+                    {"DIMENSION",DIMENSION}, 
+                    {"AND", FOX_AND},
+                    {"OR", FOX_OR},
+                    {"NOT", FOX_NOT},
+                    {"XOR", FOX_XOR},  
                 }; 
                 var vfpKeyWordAbbrev = new Dictionary<string, int>
                 {

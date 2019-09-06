@@ -55,6 +55,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVostruct([NotNull] XP.VostructContext context)
         {
+            context.SetSequencePoint(context.V, context.e.Stop);
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
             if (voStructHasDim)
             {
@@ -172,6 +173,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVounion([NotNull] XP.VounionContext context)
         {
+            context.SetSequencePoint(context.U, context.e.Stop);
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
             if (voStructHasDim)
             {

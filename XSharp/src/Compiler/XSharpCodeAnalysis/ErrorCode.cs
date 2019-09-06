@@ -1715,6 +1715,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_UnbalancedTextMergeOperators = 9085,
         ERR_MissingEndText = 9086,
         WRN_ASend = 9087,
+        ERR_UnexpectedCommand = 9088,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,
@@ -1727,7 +1728,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_XPPMethodNotImplemented = 9207,
         WRN_XPPMethodNotDeclared = 9208,
         ERR_XPPClassNotFound = 9209,
-        
+
+        WRN_FoxImplementsExcludeClause = 9230,
+        WRN_FoxImplementsLibraryClause = 9231,
+        WRN_FoxHelpStringClause = 9232,
+        WRN_FoxThisAccessClause = 9233,
+        WRN_FoxPEMName_COMATTRIBClause = 9234,
+        WRN_FoxOlePublicClause = 9235,
+        WRN_FoxOfClasslibClause = 9236,
         ERR_Internal = 9999
         #endregion X#-only messages
     }

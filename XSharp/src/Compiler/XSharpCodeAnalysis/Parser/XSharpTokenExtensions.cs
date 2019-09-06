@@ -588,6 +588,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.AND:
                 case XSharpParser.LOGIC_AND:
+                case XSharpParser.FOX_AND:
                     r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandAmpersandToken);
                     break;
                 case XSharpParser.VO_AND:
@@ -595,6 +596,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.OR:
                 case XSharpParser.LOGIC_OR:
+                case XSharpParser.FOX_OR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.BarBarToken);
                     break;
                 case XSharpParser.VO_OR:
@@ -657,9 +659,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.NOT:
                 case XSharpParser.LOGIC_NOT:
+                case XSharpParser.FOX_NOT:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ExclamationToken);
                     break;
                 case XSharpParser.LOGIC_XOR:
+                case XSharpParser.FOX_XOR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.CaretToken);
                     break;
                 case XSharpParser.TRUE_CONST:
@@ -708,9 +712,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.NOT:
                 case XSharpParser.LOGIC_NOT:
+                case XSharpParser.FOX_NOT:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ExclamationToken);
                     break;
                 case XSharpParser.LOGIC_XOR:
+                case XSharpParser.FOX_XOR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ExclamationToken);
                     break;
                 case XSharpParser.TRUE_CONST:
@@ -1282,6 +1288,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.AND:
                 case XSharpParser.LOGIC_AND:
+                case XSharpParser.FOX_AND:
                     r = SyntaxKind.LogicalAndExpression;
                     break;
                 case XSharpParser.VO_AND:
@@ -1289,12 +1296,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.OR:
                 case XSharpParser.LOGIC_OR:
+                case XSharpParser.FOX_OR:
                     r = SyntaxKind.LogicalOrExpression;
                     break;
                 case XSharpParser.VO_OR:
                     r = SyntaxKind.BitwiseOrExpression;
                     break;
                 case XSharpParser.LOGIC_XOR:
+                case XSharpParser.FOX_XOR:
                     r = SyntaxKind.ExclusiveOrExpression;
                     break;
                 case XSharpParser.VO_NOT:
@@ -1458,9 +1467,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.NOT:
                 case XSharpParser.LOGIC_NOT:
+                case XSharpParser.FOX_NOT:
                     r = SyntaxKind.LogicalNotExpression;
                     break;
                 case XSharpParser.LOGIC_XOR:
+                case XSharpParser.FOX_XOR:
                     r = SyntaxKind.LogicalNotExpression;
                     break;
                 default:

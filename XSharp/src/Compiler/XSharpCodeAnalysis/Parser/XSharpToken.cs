@@ -13,7 +13,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         //internal string SourceFileName;
         internal string MappedFileName;
         internal int OriginalChannel;
-        private int _originalTokenIndex = -1;
+        private int _originalTokenIndex = -1; 
         internal int MappedLine = -1;
         internal XSharpToken SourceSymbol;
         private XSharpToken _original = null;

@@ -652,6 +652,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case XSharpParser.LOGIC_AND:
                 case XSharpParser.LOGIC_OR:
                 case XSharpParser.LOGIC_XOR:
+                case XSharpParser.FOX_AND:
+                case XSharpParser.FOX_OR:
+                case XSharpParser.FOX_XOR:
                 case XSharpParser.AND:
                 case XSharpParser.OR:
                     var usualType = Compilation.UsualType();

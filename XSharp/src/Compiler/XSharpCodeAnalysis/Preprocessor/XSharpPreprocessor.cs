@@ -274,7 +274,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpDialect.XPP:
                     macroDefines.Add("__DIALECT_XBASEPP__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
-                    macroDefines.Add("__XPP__", () => new XSharpToken(XSharpLexer.STRING_CONST, '"' + global::XSharp.Constants.Version + '"'));
+                    macroDefines.Add("__XPP__", () => new XSharpToken(XSharpLexer.STRING_CONST, '"' + global::XSharp.Constants.FileVersion + '"'));
                     break;
                 case XSharpDialect.FoxPro:
                     macroDefines.Add("__DIALECT_FOXPRO__", () => new XSharpToken(XSharpLexer.TRUE_CONST));

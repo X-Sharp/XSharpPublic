@@ -639,7 +639,9 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
             // NOTE: passing "ReadOnlyStrict" here. 
             //       we should not get an address of a copy if at all possible
             var temp = EmitAddress(expression.Operand, AddressKind.ReadOnlyStrict);
+#if !XSHARP
             Debug.Assert(temp == null, "If the operand is addressable, then a temp shouldn't be required.");
+#endif
 
             if (used && !expression.IsManaged)
             {
@@ -869,11 +871,11 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
                         argRefKind = RefKind.Out;
                     }
 #endif
-
-                        Debug.Assert(argRefKind == parameters[i].RefKind ||
+#if !XSHARP
+                    Debug.Assert(argRefKind == parameters[i].RefKind ||
                             argRefKind == RefKindExtensions.StrictIn && parameters[i].RefKind == RefKind.In,
                             "in Emit the argument RefKind must be compatible with the corresponding parameter");
-
+#endif
                 }
                 else
                 {

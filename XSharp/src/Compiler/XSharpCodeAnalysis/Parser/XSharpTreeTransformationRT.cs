@@ -34,13 +34,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     {
         // XBase Type Names
         #region Fields
-        private readonly TypeSyntax _usualType;
-        private readonly TypeSyntax _floatType;
-        private readonly TypeSyntax _arrayType;
-        private readonly TypeSyntax _dateType;
-        private readonly TypeSyntax _symbolType;
-        private readonly TypeSyntax _pszType;
-        private readonly TypeSyntax _codeblockType;
+        protected readonly TypeSyntax _usualType;
+        protected readonly TypeSyntax _floatType;
+        protected readonly TypeSyntax _arrayType;
+        protected readonly TypeSyntax _dateType;
+        protected readonly TypeSyntax _symbolType;
+        protected readonly TypeSyntax _pszType;
+        protected readonly TypeSyntax _codeblockType;
         private readonly string _errorType;
         private readonly string _classLibraryType;
         private readonly string _wrappedExceptionType;
@@ -242,7 +242,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 name: GenerateQualifiedName(_classLibraryType), argumentList: MakeAttributeArgumentList(arguments)));
             arguments.Clear();
             // VulcanVersion
-            arguments.Add(_syntaxFactory.AttributeArgument(null, null, GenerateLiteral("X# " + global::XSharp.Constants.Version + " - dialect:" + _options.Dialect.ToString())));
+            arguments.Add(_syntaxFactory.AttributeArgument(null, null, GenerateLiteral("X# " + global::XSharp.Constants.FileVersion + " - dialect:" + _options.Dialect.ToString())));
             attributes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
             attributes.Add(_syntaxFactory.Attribute(
                 name: GenerateQualifiedName(_compilerVersionType), argumentList: MakeAttributeArgumentList(arguments)));
@@ -923,18 +923,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitArrayOfType([NotNull] XP.ArrayOfTypeContext context)
         {
-            if (!_options.XSharpRuntime)
-            {
-                context.Put(NotInDialect(_objectType, "ARRAY OF <type>"));
-            }
-            else
-            {
-                var type = MakeGenericName(OurTypeNames.ArrayBase, context.TypeName.Get<TypeSyntax>());
-                var qtype = _syntaxFactory.QualifiedName(GenerateSimpleName("XSharp"),
-                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                        type);
-                context.Put(qtype);
-            }
+            var type = MakeGenericName(OurTypeNames.ArrayBase, context.TypeName.Get<TypeSyntax>());
+            var qtype = _syntaxFactory.QualifiedName(GenerateSimpleName("XSharp"),
+                SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                type);
+            context.Put(qtype);
         }
         public override void EnterXbasedecl([NotNull] XP.XbasedeclContext context)
         {
@@ -3762,24 +3755,48 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             base.EnterMethod(context);
             Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Convention, context.Type);
-            if (context.T.Token.Type != XP.METHOD)
+            switch (context.RealType)
             {
-                context.Data.HasClipperCallingConvention = false;
-                context.Data.HasTypedParameter = true;          // this will set all missing types to USUAL
-            }
-            else
-            {
-                if (_options.VoInitAxitMethods && !context.isInInterface())
-                {
-                    var idName = context.Id.GetText();
-                    if (String.Equals(idName, XSharpIntrinsicNames.InitMethod, StringComparison.OrdinalIgnoreCase)
-                        || String.Equals(idName, XSharpIntrinsicNames.AxitMethod, StringComparison.OrdinalIgnoreCase))
+                case XP.ACCESS:
+                case XP.ASSIGN:
+                    context.Data.HasClipperCallingConvention = false;
+                    context.Data.HasTypedParameter = true;          // this will set all missing types to USUAL
+                    break;
+                case XP.METHOD:
+                    if (_options.VoInitAxitMethods && !context.isInInterface())
                     {
-                        context.Data.MustBeVoid = true;
-                        context.Data.IsInitAxit = true;
+                        var idName = context.Id.GetText();
+                        if (String.Equals(idName, XSharpIntrinsicNames.InitMethod, StringComparison.OrdinalIgnoreCase)
+                            || String.Equals(idName, XSharpIntrinsicNames.AxitMethod, StringComparison.OrdinalIgnoreCase))
+                        {
+                            context.Data.MustBeVoid = true;
+                            context.Data.IsInitAxit = true;
+                        }
                     }
-                }
-
+                    break;
+                case XP.FUNCTION:           // FoxPro
+                case XP.PROCEDURE:          // FoxPro
+                    var name = context.Id.GetText().ToUpper();
+                    if (name.EndsWith("_ASSIGN") )
+                    {
+                        context.Data.HasClipperCallingConvention = false;
+                        context.Data.HasTypedParameter = true;          // this will set all missing types to USUAL
+                        context.Data.MustBeVoid = true;
+                        context.RealType = XP.ASSIGN;                    }
+                    else if (name.EndsWith("_ACCESS"))
+                    {
+                        context.Data.HasClipperCallingConvention = false;
+                        context.Data.HasTypedParameter = true;          // this will set all missing types to USUAL
+                        context.RealType = XP.ACCESS;
+                    }
+                    else
+                    {
+                        context.RealType = XP.METHOD;
+                    }
+                    break;
+                default:
+                    break;
+            
             }
         }
         public override void EnterFunction([NotNull] XP.FunctionContext context)

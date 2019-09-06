@@ -27,7 +27,7 @@ using Microsoft.CodeAnalysis;
 using MCT = Microsoft.CodeAnalysis.Text;
 using CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 
-#endif
+#endif 
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     public partial class XSharpParser
@@ -168,6 +168,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             HasMemVars = 1 << 16,       // Member property
             HasYield = 1 << 17,         // Member property
             HasFormalParameters = 1 << 18,  // Member property
+            HasInit = 1 << 19,         // class property
         }
 
 
@@ -290,6 +291,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 get { return flags.HasFlag(EntityFlags.IsInitProcedure); }
                 set { flags = setFlag(flags, EntityFlags.IsInitProcedure, value); }
             }
+            public bool HasInit
+            {
+                get { return flags.HasFlag(EntityFlags.HasInit); }
+                set { flags = setFlag(flags, EntityFlags.HasInit, value); }
+            }
+
             private List<MemVarFieldInfo> Fields = null;
             internal void AddField(string Name, string Alias, bool Field, XSharpParserRuleContext context)
             {
@@ -389,6 +396,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
             }
             public StatementBlockContext Statements => StmtBlk;
+            public int RealType { get; set; } // fox FoxPro Function and Procedure will be come method, access or assign
         }
 
         public partial class EventAccessorContext : IEntityWithBodyContext
@@ -691,29 +699,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String ShortName => Id.GetText();
 
         }
-        public partial class FfunctionContext : IEntityWithBodyContext
-        {
-            EntityData data = new EntityData();
-            public EntityData Data => data;
-            public ParameterListContext Params => this.ParamList;
-            public DatatypeContext ReturnType => this.Type;
-            public String Name => ParentName + ShortName;
-            public String ShortName => this.Id.GetText();
-            public StatementBlockContext Statements => StmtBlk;
-
-        }
-        public partial class FprocedureContext: IEntityWithBodyContext
-        {
-            EntityData data = new EntityData();
-            public EntityData Data => data;
-            public ParameterListContext Params => this.ParamList;
-            public DatatypeContext ReturnType => this.Type;
-            public String Name => ParentName + ShortName;
-            public String ShortName => this.Id.GetText();
-            public StatementBlockContext Statements => StmtBlk;
-
-        }
-
+ 
 #endif
     }
 
@@ -953,9 +939,18 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             if (parent == null)
                 return false;
             if (parent is XSharpParser.ClassmemberContext)
-                return parent.Parent is XSharpParser.Class_Context;
-            else
-                return parent.isInClass();
+            {
+                if (parent.Parent is XSharpParser.Class_Context)
+                    return true;
+                if (parent.Parent is XSharpParser.FoxclassContext)
+                    return true;
+                return false;
+            }
+            else if (parent is XSharpParser.XppclassMemberContext)
+            {
+                return parent.Parent is XSharpParser.XppclassContext;
+            }
+            return parent.isInClass();
         }
         internal static bool isInStructure([NotNull] this RuleContext context)
         {

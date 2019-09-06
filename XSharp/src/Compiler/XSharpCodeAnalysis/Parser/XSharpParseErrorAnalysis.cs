@@ -27,6 +27,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private IList<ParseErrorData> _parseErrors;
         CSharpParseOptions _options;
 
+        public XSharpParseErrorAnalysis(XSharpParser parser, IList<ParseErrorData> parseErrors, CSharpParseOptions options)
+        {
+            _parser = parser;
+            _parseErrors = parseErrors;
+            _options = options;
+        }
+
+        private void NotInDialect(XSharpParserRuleContext context, string msg)
+        {
+            _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_FeatureNotAvailableInDialect, msg, _options.Dialect.ToString()));
+        }
+        private void NotInCore(XSharpParserRuleContext context, string msg)
+        {
+            if (_options.Dialect == XSharpDialect.Core)
+            {
+                NotInDialect(context, msg);
+            }
+        }
 
         private void checkMissingKeyword(object endToken, ParserRuleContext context, string msg)
         {
@@ -43,10 +61,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         haserrorinblock = true;
                         break;
-                       
+
                     }
                 }
-                if (! haserrorinblock)
+                if (!haserrorinblock)
                 {
                     var err = ErrorCode.ERR_SyntaxError;
                     IToken anchor = context.Stop;
@@ -56,7 +74,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _parseErrors.Add(errdata);
                 }
             }
-            return ;
+            return;
         }
 
         private void checkMissingToken(IToken l, IToken r, ParserRuleContext context)
@@ -90,12 +108,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        public XSharpParseErrorAnalysis(XSharpParser parser, IList<ParseErrorData> parseErrors, CSharpParseOptions options)
+        private void checkForGarbage(XSharpParserRuleContext context, string msg)
         {
-            _parser = parser;
-            _parseErrors = parseErrors;
-            _options = options;
+            if (context != null && !_options.Dialect.AllowGarbage())
+            {
+                NotInDialect(context, msg);
+            }
         }
+
 
         public override void VisitErrorNode([NotNull] IErrorNode node)
         {
@@ -133,13 +153,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitWhileStmt([NotNull] XSharpParser.WhileStmtContext context)
         {
             checkMissingKeyword(context.e, context, "END[DO]");
+            checkForGarbage(context.Ignored, "Expression after END [DO]");
         }
 
         public override void ExitWithBlock([NotNull] XSharpParser.WithBlockContext context)
         {
             checkMissingKeyword(context.e, context, "END [WITH]");
         }
-
         public override void ExitForStmt([NotNull] XSharpParser.ForStmtContext context)
         {
             checkMissingKeyword(context.e, context, "NEXT");
@@ -152,36 +172,40 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else if (context.AssignExpr is XSharpParser.AssignmentExpressionContext)
             {
                 var ass = context.AssignExpr as XSharpParser.AssignmentExpressionContext;
-                Op= ass.Op;
+                Op = ass.Op;
             }
             if (Op != null && Op.Type != XSharpParser.ASSIGN_OP && _options.Dialect != XSharpDialect.FoxPro)
             {
                 context.AddError(new ParseErrorData(context, ErrorCode.WRN_AssignmentOperatorExpected));
             }
+            checkForGarbage(context.Ignored, "Identifier after NEXT");
         }
         public override void ExitForeachStmt([NotNull] XSharpParser.ForeachStmtContext context)
         {
             checkMissingKeyword(context.e, context, "NEXT");
+            checkForGarbage(context.Ignored, "Identifier after NEXT");
         }
         public override void ExitIfStmt([NotNull] XSharpParser.IfStmtContext context)
         {
             checkMissingKeyword(context.e, context, "END[IF]");
+            checkForGarbage(context.Ignored, "Identifier after ENDIF");
         }
         public override void ExitCaseStmt([NotNull] XSharpParser.CaseStmtContext context)
         {
             checkMissingKeyword(context.CaseStmt?.Start, context, "CASE or OTHERWISE");
             checkMissingKeyword(context.e, context, "END[CASE]");
-        }
+        } 
         public override void ExitTryStmt([NotNull] XSharpParser.TryStmtContext context)
         {
             checkMissingKeyword(context.e, context, "END [TRY]");
         }
         public override void ExitSwitchStmt([NotNull] XSharpParser.SwitchStmtContext context)
         {
-             checkMissingKeyword(context.e, context, "END [SWITCH]");
+            checkMissingKeyword(context.e, context, "END [SWITCH]");
         }
         public override void ExitSeqStmt([NotNull] XSharpParser.SeqStmtContext context)
         {
+            NotInCore(context, "BEGIN SEQUENCE statement");
             checkMissingKeyword(context.e, context, "END SEQUENCE");
         }
 
@@ -198,7 +222,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 IToken anchor = context.Stop;
                 if (anchor == null)
                     anchor = context.Start;
-                var errdata = new ParseErrorData(anchor, err, "Expression after '"+context.Op.Text+"' operator");
+                var errdata = new ParseErrorData(anchor, err, "Expression after '" + context.Op.Text + "' operator");
                 _parseErrors.Add(errdata);
             }
         }
@@ -223,5 +247,296 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _parseErrors.Add(errdata);
             }
         }
+
+
+
+        public override void ExitTextStmt(XSharpParser.TextStmtContext context)
+        {
+            if (_options.Dialect != XSharpDialect.FoxPro)
+            {
+                NotInDialect(context, "TEXT .. ENDTEXT statement");
+            }
+            return;
+        }
+        public override void ExitTextoutStmt(XSharpParser.TextoutStmtContext context)
+        {
+            if (_options.Dialect != XSharpDialect.FoxPro)
+            {
+                NotInDialect(context, "TextMerge output statement ('\\' or '\\\\')");
+            }
+        }
+
+        public override void ExitFielddecl(XSharpParser.FielddeclContext context)
+        {
+            if (_options.Dialect != XSharpDialect.Core)
+            {
+                NotInDialect(context, "FIELD statement");
+            }
+        }
+
+        public override void EnterFoxfield([NotNull] XSharpParser.FoxfieldContext context)
+        {
+            string name = context.F.Name.GetText().ToUpper();
+            if (name.EndsWith("_COMATTRIB"))
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxPEMName_COMATTRIBClause));
+            }
+        }
+        public override void ExitFoxclass([NotNull] XSharpParser.FoxclassContext context)
+        {
+            if (_options.Dialect != XSharpDialect.FoxPro)
+            {
+                NotInDialect(context, "FOXPRO Class syntax");
+            }
+            else
+            {
+                if (context.Classlib != null)
+                {
+                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxOfClasslibClause));
+                }
+                if (context.OLEPUBLIC() != null)
+                {
+                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxOlePublicClause));
+                }
+            }
+        }
+
+        public override void ExitFoxpemcomattrib([NotNull] XSharpParser.FoxpemcomattribContext context)
+        {
+            if (_options.Dialect == XSharpDialect.FoxPro)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxPEMName_COMATTRIBClause));
+            }
+        }
+        public override void ExitFoximplementsclause([NotNull] XSharpParser.FoximplementsclauseContext context)
+        {
+            if (_options.Dialect == XSharpDialect.FoxPro)
+            {
+                if (context.Excl != null)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.Excl, ErrorCode.WRN_FoxImplementsExcludeClause));
+                }
+                if (context.Library != null)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.Library, ErrorCode.WRN_FoxImplementsLibraryClause));
+                }
+            }
+        }
+        public override void ExitMethod([NotNull] XSharpParser.MethodContext context)
+        {
+            if (context.T2 != null)
+            {
+                XSharpToken endToken = (XSharpToken)context.T2.Token;
+                if (endToken != null && endToken.Type != context.T.Token.Type)
+                {
+                    _parseErrors.Add(new ParseErrorData(endToken, ErrorCode.ERR_UnexpectedToken, endToken.SourceSymbol.Text));
+                }
+            }
+            if (context.HelpString != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context.HelpString, ErrorCode.WRN_FoxHelpStringClause));
+            }
+            if (context.ThisAccess != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context.ThisAccess, ErrorCode.WRN_FoxThisAccessClause));
+            }
+        }
+        public override void ExitXppclass([NotNull] XSharpParser.XppclassContext context)
+        {
+            if (_options.Dialect == XSharpDialect.XPP)
+            {
+                if (context._BaseTypes.Count == 1 && context.From.Type != XSharpParser.SHARING)
+                {
+                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_XPPSuperIVarsAlwaysShared));
+                }
+            }
+            else
+            {
+                NotInDialect(context, "Xbase++ CLASS Syntax");
+            }
+        }
+        public override void ExitXppmethod([NotNull] XSharpParser.XppmethodContext context)
+        {
+            if (_options.Dialect != XSharpDialect.XPP)
+            {
+                NotInDialect(context, "Xbase++ METHOD Syntax");
+            }
+        }
+
+        public override void ExitXppclassvars([NotNull] XSharpParser.XppclassvarsContext context)
+        {
+            if (_options.Dialect == XSharpDialect.XPP)
+            {
+                if (context.Is != null)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.Is, ErrorCode.WRN_XPPVarIsInNotSupported));
+                }
+                if (context.Shared != null)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.Shared, ErrorCode.WRN_XPPSharedIsDefault));
+                }
+                if (context.ReadOnly != null)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.ReadOnly, ErrorCode.WRN_XPPReadonlyClause));
+                }
+            }
+        }
+        public override void ExitXppclassModifiers([NotNull] XSharpParser.XppclassModifiersContext context)
+        {
+            if (_options.Dialect == XSharpDialect.XPP)
+            {
+                foreach (var m in context._Tokens)
+                {
+                    if (m.Type == XSharpParser.FREEZE)
+                    {
+                        _parseErrors.Add(new ParseErrorData(m, ErrorCode.WRN_XPPFrozedNotSupported));
+                    }
+                }
+            }
+        }
+
+        public override void ExitRecoverBlock([NotNull] XSharpParser.RecoverBlockContext context)
+        {
+            NotInCore(context, "RECOVER USING block");
+            return;
+        }
+
+        public override void ExitVostruct([NotNull] XSharpParser.VostructContext context)
+        {
+            if (_options.Dialect != XSharpDialect.VO && _options.Dialect != XSharpDialect.Vulcan)
+            {
+                NotInDialect(context, "VOSTRUCT");
+            }
+        }
+
+        public override void ExitVounion([NotNull] XSharpParser.VounionContext context)
+        {
+            if (_options.Dialect != XSharpDialect.VO && _options.Dialect != XSharpDialect.Vulcan)
+            {
+                NotInDialect(context, "UNION");
+            }
+        }
+        public override void ExitArrayOfType([NotNull] XSharpParser.ArrayOfTypeContext context)
+        {
+            if (!_options.XSharpRuntime)
+            {
+                NotInDialect(context, "ARRAY OF <type>");
+            }
+        }
+        public override void ExitXbaseType([NotNull] XSharpParser.XbaseTypeContext context)
+        {
+            NotInCore(context, context.Token.Text);
+        }
+
+        public override void ExitAliasedMemvar([NotNull] XSharpParser.AliasedMemvarContext context)
+        {
+            NotInCore(context, "ALIAS(->) operator");
+            return;
+        }
+        public override void ExitAliasedField([NotNull] XSharpParser.AliasedFieldContext context)
+        {
+            NotInCore(context, "ALIAS(->) operator");
+            return;
+        }
+
+        public override void ExitAliasedFieldLate([NotNull] XSharpParser.AliasedFieldLateContext context)
+        {
+            NotInCore(context, "ALIAS(->) operator");
+            return;
+        }
+
+        public override void ExitMacro([NotNull] XSharpParser.MacroContext context)
+        {
+            NotInCore(context, "MACRO compiler");
+            return;
+        }
+        public override void ExitMacroName([NotNull] XSharpParser.MacroNameContext context)
+        {
+            NotInCore(context, "MACRO compiler");
+            return;
+        }
+        public override void ExitAccessMemberLate([NotNull] XSharpParser.AccessMemberLateContext context)
+        {
+            NotInCore(context, "Late bound member access");
+            return;
+        }
+        public override void ExitAccessMemberLateName([NotNull] XSharpParser.AccessMemberLateNameContext context)
+        {
+            NotInCore(context, "Late bound member access");
+            return;
+        }
+        public override void ExitXbasedecl([NotNull] XSharpParser.XbasedeclContext context)
+        {
+            if (_options.Dialect == XSharpDialect.FoxPro && context.T.Type == XSharpParser.LPARAMETERS)
+                return;
+            if (_options.Dialect != XSharpDialect.Core && context.T.Type == XSharpParser.FIELD  )
+                return;
+            if (!_options.Dialect.AllowXBaseVariables() || !_options.SupportsMemvars)
+            {
+                NotInDialect(context, context.T.Text + " statement");
+            }
+        }
+        public override void ExitFilewidememvar([NotNull] XSharpParser.FilewidememvarContext context)
+        {
+            if (context._Vars.Count > 0)
+            {
+                NotInCore(context, "File Dynamic Memory Variables");
+            }
+
+        }
+
+        public override void ExitNamespace_([NotNull] XSharpParser.Namespace_Context context)
+        {
+            checkForGarbage(context.Ignored, "Expression after END NAMESPACE");
+        }
+        public override void ExitInterface_([NotNull] XSharpParser.Interface_Context context)
+        {
+            checkForGarbage(context.Ignored, "Expression after END INTERFACE");
+        }
+        public override void ExitClass_([NotNull] XSharpParser.Class_Context context)
+        {
+            checkForGarbage(context.Ignored, "Expression after END CLASS");
+        }
+        public override void ExitStructure_([NotNull] XSharpParser.Structure_Context context)
+        {
+            checkForGarbage(context.Ignored, "Expression after END STRUCTURE");
+        }
+        public override void ExitEnum_([NotNull] XSharpParser.Enum_Context context)
+        {
+            checkForGarbage(context.Ignored, "Expression after END ENUM");
+        }
+        public override void ExitEvent_([NotNull] XSharpParser.Event_Context context)
+        {
+            checkForGarbage(context.Ignored, "Expression after END EVENT");
+        }
+        public override void ExitProperty([NotNull] XSharpParser.PropertyContext context)
+        {
+            checkForGarbage(context.Ignored, "Expression after END PROPERTY");
+        }
+        public override void ExitJumpStmt([NotNull] XSharpParser.JumpStmtContext context)
+        {
+            if (context.Key.Type == XSharpParser.BREAK)
+            {
+                NotInCore(context, "BREAK statement");
+            }
+        }
+        public override void ExitExpressionStmt([NotNull] XSharpParser.ExpressionStmtContext context)
+        {
+            if (context.eq != null && _options.Dialect != XSharpDialect.FoxPro)
+            {
+                NotInDialect(context, "= Command");
+            }
+        }
+        public override void ExitSource([NotNull] XSharpParser.SourceContext context)
+        {
+            if (context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0)
+            {
+                if (_options.Dialect != XSharpDialect.FoxPro)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_UnexpectedCommand));
+                }
+            }
+        }
     }
+
 }

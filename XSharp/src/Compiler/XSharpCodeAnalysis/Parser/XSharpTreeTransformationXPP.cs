@@ -192,6 +192,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitXppclass([NotNull] XP.XppclassContext context)
         {
+            context.SetSequencePoint(context.C, context.e.Stop);
             var members = _pool.Allocate<MemberDeclarationSyntax>();
             var generated = ClassEntities.Pop();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
@@ -215,10 +216,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else if (context._BaseTypes.Count == 1)
             {
                 basetype = context._BaseTypes[0];
-                if (context.From.Type != XP.SHARING)
-                {
-                    context.AddError(new ParseErrorData(context, ErrorCode.WRN_XPPSuperIVarsAlwaysShared));
-                }
             }
             XppClassInfo thisClass = FindClassInfo(className);
             if (thisClass == null || thisClass.Entity != context)
@@ -255,7 +252,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 semicolonToken: null);
             _pool.Free(members);
             _pool.Free(baseTypes);
-            m = CheckForGarbage(m, context.Ignored, "Name after END CLASS");
             context.Put(m);
             _currentClass = null;
             
@@ -341,6 +337,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitXppproperty([NotNull] XP.XpppropertyContext context)
         {
+            context.SetSequencePoint(context.M, context.end.Stop);
 
         }
         public override void ExitXppclassvars([NotNull] XP.XppclassvarsContext context)
@@ -401,19 +398,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         declaration: decl,
                         semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
 
-
-                    if (context.Is != null)
-                    {
-                        fdecl = fdecl.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_XPPVarIsInNotSupported));
-                    }
-                    if (context.Shared != null)
-                    {
-                        fdecl = fdecl.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_XPPSharedIsDefault));
-                    }
-                    if (context.ReadOnly != null)
-                    {
-                        fdecl = fdecl.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_XPPReadonlyClause));
-                    }
                     ClassEntities.Peek().Members.Add(fdecl);
                     fieldList.Add(fdecl);
                 }
@@ -457,7 +441,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // should do the same as the 'normal' methods in VO Class
             // method init becomes constructor
             // method initClass becomes Class constructor
-            context.SetSequencePoint(context.end);
             Check4ClipperCC(context, context.ParamList?._Params, null, context.Type);
             CheckInitMethods(context);
             var decl = new XppDeclaredMethodInfo() { Name = context.ShortName, Parent = _currentClass, Visibility = _currentClass.CurrentVisibility, Declaration = context, Entity = context , Inline = true};
@@ -469,7 +452,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // should do the same as the 'normal' methods in VO Class
             // method init becomes constructor
             // method initClass becomes Class constructor
-            context.SetSequencePoint(context.end);
+            context.SetSequencePoint(context.I, context.end.Stop);
             if (context.Info == null)   // This should not happen
             {
                 context.AddError(new ParseErrorData(context, ErrorCode.WRN_XPPMethodNotDeclared, context.ShortName));
@@ -495,7 +478,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void EnterXppmethod([NotNull] XP.XppmethodContext context)
         {
-            context.SetSequencePoint(context.end);
             Check4ClipperCC(context, context.ParamList?._Params, null, context.Type);
             CheckInitMethods(context);
             string name ;
@@ -574,7 +556,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Retrieve visibility from the XppClassInfo, from the list of declared methods
             // when not declared produce warning (error ?)
             // When classname clause is missing then assume the last class in the file before this method
-            context.SetSequencePoint(context.end);
+            context.SetSequencePoint(context.M, context.end.Stop);
             if (context.Info == null)
             {
                 context.AddError(new ParseErrorData(context, ErrorCode.WRN_XPPMethodNotDeclared, context.ShortName));
@@ -840,7 +822,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var entities = new List<XSharpParserRuleContext>();
             // do not add the methods. These should be linked to a class
             entities.AddRange(context._Entities.Where(e => !(e.GetChild(0) is XP.XppmethodContext)));
-            _exitNamespace(context, context.Name.GetText(), context.Ignored, entities);
+            _exitNamespace(context, context.Name.GetText(), entities);
         }
         #endregion
         #region Modifiers
@@ -858,9 +840,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                     case XP.FINAL:
                         kw = SyntaxFactory.MakeToken(SyntaxKind.SealedKeyword, m.Text);
-                        break;
-                    case XP.FREEZE:
-                        context.AddError(new ParseErrorData(context, ErrorCode.WRN_XPPFrozedNotSupported));
                         break;
                     default:
                         break;

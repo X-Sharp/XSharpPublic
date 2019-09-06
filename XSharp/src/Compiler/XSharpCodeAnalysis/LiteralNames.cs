@@ -96,6 +96,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string InitMethod = "INIT";
         internal const string InitClassMethod = "INITCLASS";
         internal const string AxitMethod = "AXIT";
+        internal const string DoDefault = "DODEFAULT";
     }
     internal static class XSharpSpecialNames
     {

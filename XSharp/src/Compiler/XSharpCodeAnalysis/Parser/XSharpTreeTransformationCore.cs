@@ -107,19 +107,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _pool.Free(Members);
             }
 
-            internal void AddVoPropertyAccessor(XP.MethodContext accessor)
+            internal void AddVoPropertyAccessor(XP.MethodContext accessor, SyntaxToken idName)
             {
                 if (VoProperties == null)
                     VoProperties = new Dictionary<string, VoPropertyInfo>(CaseInsensitiveComparison.Comparer);
-                string name = accessor.Id.Get<SyntaxToken>().Text;
+                string name = idName.Text;
                 VoPropertyInfo propertyInfo;
                 if (!VoProperties.TryGetValue(name, out propertyInfo))
                 {
                     propertyInfo = new VoPropertyInfo();
-                    propertyInfo.idName = accessor.Id.Get<SyntaxToken>();
+                    propertyInfo.idName = idName;
                     VoProperties.Add(name, propertyInfo);
                 }
-                switch (accessor.T.Token.Type)
+                switch (accessor.RealType)
                 {
                     case XP.ACCESS:
                         if (propertyInfo.AccessMethodCtx != null)
@@ -274,7 +274,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     t.GlobalEntities.Members, eof).CreateRed());
             return tree;
         }
-
+        internal T NotInDialect<T>(T node, string feature, string additional = "") where T : CSharpSyntaxNode
+        {
+            return node.WithAdditionalDiagnostics(
+                new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, feature, _options.Dialect.ToString() + " " + additional));
+        }
 
         internal void Free()
         {
@@ -311,35 +315,46 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int iNest = 0;
             while (ctx != null)
             {
-                if (ctx is XP.Class_Context)
+                if (ctx is XP.Class_Context cc)
                 {
-                    name = ((XP.Class_Context)ctx).Id.GetText() + "." + name;
+                    name = cc.Id.GetText() + "." + name;
                     iNest++;
                 }
-                else if (ctx is XP.Structure_Context)
+                else if (ctx is XP.Structure_Context sc)
                 {
-                    name = ((XP.Structure_Context)ctx).Id.GetText() + "." + name;
+                    name = sc.Id.GetText() + "." + name;
                     iNest++;
                 }
-                else if (ctx is XP.Namespace_Context)
+                else if (ctx is XP.Namespace_Context nc)
                 {
-                    name = ((XP.Namespace_Context)ctx).Name.GetText() + "." + name;
+                    name = nc.Name.GetText() + "." + name;
                     iNest++;
                 }
-                else if (ctx is XP.Interface_Context)
+                else if (ctx is XP.Interface_Context ic)
                 {
-                    name = ((XP.Interface_Context)ctx).Id.GetText() + "." + name;
+                    name = ic.Id.GetText() + "." + name;
                     iNest++;
                 }
-                else if (ctx is XP.PropertyContext)
+                else if (ctx is XP.FoxclassContext fc)
                 {
-                    name = ((XP.PropertyContext)ctx).Id?.GetText() + "." + name;
+                    name = fc.Id.GetText() + "." + name;
+                    iNest++;
                 }
-                else if (ctx is XP.Event_Context)
+                else if (ctx is XP.XppclassContext xc)
                 {
-                    name = ((XP.Event_Context)ctx).Id.GetText() + "." + name;
+                    name = xc.Id.GetText() + "." + name;
+                    iNest++;
                 }
-                ctx = ctx.Parent;
+
+                else if (ctx is XP.PropertyContext pc)
+                {
+                    name = pc.Id?.GetText() + "." + name;
+                }
+                else if (ctx is XP.Event_Context ec)
+                {
+                    name = ec.Id.GetText() + "." + name;
+                }
+             ctx = ctx.Parent;
             }
             if (iNest == 1 && !String.IsNullOrEmpty(_options.DefaultNamespace))
             {
@@ -1015,23 +1030,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #region Code Generation Helpers
 
-        StatementSyntax CheckForGarbage(StatementSyntax stmt, XSharpParserRuleContext ignored, string message)
-        {
-            if (ignored != null && !_options.Dialect.AllowGarbage())
-            {
-                stmt = NotInDialect(stmt, message);
-            }
-            return stmt;
-        }
-        protected MemberDeclarationSyntax CheckForGarbage(MemberDeclarationSyntax member, XSharpParserRuleContext ignored, string message)
-        {
-            if (ignored != null && !_options.Dialect.AllowGarbage())
-            {
-                member = NotInDialect(member, message);
-            }
-            return member;
-        }
-
         protected ArrayRankSpecifierSyntax MakeArrayRankSpecifier(int ranks)
         {
             var sizes = _pool.AllocateSeparated<ExpressionSyntax>();
@@ -1701,6 +1699,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 met.CsNode = cmc.CsNode;
                             cmc.CsNode = null;
                         }
+                        else if (met.Parent is XP.FoxmethodContext fmc)
+                        {
+                            if (met.CsNode == null)
+                                met.CsNode = fmc.CsNode;
+                            fmc.CsNode = null;
+                        }
 
                     }
                     if (AccMet != null)
@@ -1964,9 +1968,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 accessors.Add(accessor);
                 AccMet.Put(accessor);
-                if (AccMet.Parent is XP.ClsmethodContext)
+                if (AccMet.Parent is XP.ClsmethodContext cmc)
                 {
-                    ((XP.ClsmethodContext)AccMet.Parent).CsNode = null;
+                    cmc.CsNode = null;
+                }
+                else if (AccMet.Parent is XP.FoxmethodContext fmc)
+                {
+                    fmc.CsNode = null;
                 }
                 xnode = AccMet;
             }
@@ -2061,9 +2069,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 accessors.Add(accessor);
                 AssMet.Put(accessor);
-                if (AssMet.Parent is XP.ClsmethodContext)
+                if (AssMet.Parent is XP.ClsmethodContext cmc)
                 {
-                    ((XP.ClsmethodContext)AssMet.Parent).CsNode = null;
+                    cmc.CsNode = null;
+                }
+                else if (AssMet.Parent is XP.FoxmethodContext fmc)
+                {
+                    fmc.CsNode = null;
                 }
                 if (xnode == null)
                     xnode = AssMet;
@@ -2488,7 +2500,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 
-        protected void _exitNamespace(XSharpParserRuleContext context, string name, XSharpParserRuleContext ignored, IList<XSharpParserRuleContext> entities)
+        protected void _exitNamespace(XSharpParserRuleContext context, string name, IList<XSharpParserRuleContext> entities)
         {
             var externs = _pool.Allocate<ExternAliasDirectiveSyntax>();
             var usings = _pool.Allocate<UsingDirectiveSyntax>();
@@ -2519,7 +2531,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(externs);
             _pool.Free(usings);
             _pool.Free(members);
-            ns = CheckForGarbage(ns, ignored, "Name after END NAMESPACE");
             context.Put(ns);
             // Now add our namespace to the usings list so functions etc can find members 
             string ourname = name;
@@ -2542,7 +2553,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var entities = new List<XSharpParserRuleContext>();
             entities.AddRange(context._Entities);
-            _exitNamespace(context, context.Name.GetText(), context.Ignored, entities);
+            _exitNamespace(context, context.Name.GetText(), entities);
         }
 
         protected void addGlobalEntity(MemberDeclarationSyntax m, bool isStatic)
@@ -2640,6 +2651,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitInterface_([NotNull] XP.Interface_Context context)
         {
+            context.SetSequencePoint(context.I, context.e.Stop);
             var members = _pool.Allocate<MemberDeclarationSyntax>();
             var generated = ClassEntities.Pop();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
@@ -2694,7 +2706,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 m = (MemberDeclarationSyntax)CheckTypeName(context, "INTERFACE", m);
             }
-            m = CheckForGarbage(m, context.Ignored, "Name after END INTERFACE");
             context.Put(m);
             if (context.Data.Partial)
             {
@@ -2709,6 +2720,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitClass_([NotNull] XP.Class_Context context)
         {
+            context.SetSequencePoint(context.C, context.e.Stop);
             var members = _pool.Allocate<MemberDeclarationSyntax>();
             var generated = ClassEntities.Pop();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
@@ -2781,7 +2793,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 m = (MemberDeclarationSyntax)CheckTypeName(context, "CLASS", m);
             }
-            m = CheckForGarbage(m, context.Ignored, "Name after END CLASS");
             context.Put(m);
             if (context.Data.Partial)
             {
@@ -2796,6 +2807,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitStructure_([NotNull] XP.Structure_Context context)
         {
+            context.SetSequencePoint(context.S, context.e.Stop);
             var members = _pool.Allocate<MemberDeclarationSyntax>();
             var generated = ClassEntities.Pop();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
@@ -2851,7 +2863,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 m = (MemberDeclarationSyntax)CheckTypeName(context, "STRUCTURE", m);
             }
-            m = CheckForGarbage(m, context.Ignored, "Name after END STRUCTURE");
             context.Put(m);
             if (context.Data.Partial)
             {
@@ -2861,6 +2872,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitDelegate_([NotNull] XP.Delegate_Context context)
         {
+            context.SetSequencePoint(context.D, context.e);
             MemberDeclarationSyntax m = _syntaxFactory.DelegateDeclaration(
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
@@ -2886,6 +2898,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Enums
         public override void ExitEnum_([NotNull] XP.Enum_Context context)
         {
+            context.SetSequencePoint(context.E, context.e.Stop);
             BaseListSyntax baselist = default(BaseListSyntax);
             var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
             if (context.Type != null)
@@ -2909,7 +2922,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 m = AddNameSpaceToMember(context.Namespace, m);
             }
-            m = CheckForGarbage(m, context.Ignored, "Name after END ENUM");
             context.Put(m);
             _pool.Free(baseTypes);
         }
@@ -2928,10 +2940,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Events
         public override void ExitEvent_([NotNull] XP.Event_Context context)
         {
+
             if (context.Multi != null)
-                context.SetSequencePoint(context.Multi.Start);
+                context.SetSequencePoint(context.E, context.Multi.Start);
             else
-                context.SetSequencePoint(context.end);
+                context.SetSequencePoint(context.E, context.end);
 
             var attrLists = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
             var type_ = context.Type?.Get<TypeSyntax>() ?? MissingType();
@@ -2979,7 +2992,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     explicitInterfaceSpecifier: explif,
                     identifier: context.Id.Get<SyntaxToken>(),
                     accessorList: acclist);
-                decl = CheckForGarbage(decl, context.Ignored, "Name after END EVENT");
                 context.Put(decl);
             }
             else if (multiLine)        // Multi line Syntax
@@ -2996,7 +3008,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     explicitInterfaceSpecifier: explif,
                     identifier: context.Id.Get<SyntaxToken>(),
                     accessorList: acclist);
-                decl = CheckForGarbage(decl, context.Ignored, "Name after END EVENT");
                 context.Put(decl);
             }
             else // Old Syntax, auto generate accessors
@@ -3051,7 +3062,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         explicitInterfaceSpecifier: explif,
                         identifier: context.Id.Get<SyntaxToken>(),
                         accessorList: acclist);
-                    decl = CheckForGarbage(decl, context.Ignored, "Name after END EVENT");
                     context.Put(decl);
                 }
                 else
@@ -3274,9 +3284,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitProperty([NotNull] XP.PropertyContext context)
         {
             if (context.Multi != null)
-                context.SetSequencePoint(context.Multi.Start);
+                context.SetSequencePoint(context.P, context.Multi.Start);
             else
-                context.SetSequencePoint(context.end);
+                context.SetSequencePoint(context.P, context.end);
             var isInInterface = context.isInInterface();
             var isExtern = context.Modifiers?.EXTERN().Count() > 0;
             var isAbstract = context.Modifiers?.ABSTRACT().Count() > 0;
@@ -3409,7 +3419,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                      expressionBody: null,
                      initializer: initializer,
                      semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-                propertydecl = CheckForGarbage(propertydecl, context.Ignored, "Name after END PROPERTY");
                 context.Put(propertydecl);
             }
             else
@@ -3426,12 +3435,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     accessorList: accessorList,
                     expressionBody: null, // TODO: (grammar) expressionBody methods
                     semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-                indexer = CheckForGarbage(indexer, context.Ignored, "Name after END PROPERTY");
                 context.Put(indexer);
             }
         }
 
-        private ExpressionSyntax GenerateInitializer(XP.DatatypeContext datatype)
+        protected ExpressionSyntax GenerateInitializer(XP.DatatypeContext datatype)
         {
             if (_options.VONullStrings && datatype != null)
             {
@@ -3740,7 +3748,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void EnterMethod([NotNull] XP.MethodContext context)
         {
-            context.Data.MustBeVoid = context.T.Token.Type == XP.ASSIGN;
+            context.RealType = context.T.Token.Type;
+            context.Data.MustBeVoid = context.RealType == XP.ASSIGN;
         }
 
         protected bool hasAttribute(SyntaxList<AttributeListSyntax> attributes, string attributeName)
@@ -3790,24 +3799,73 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             ExitAttributes(attributes);
         }
+        protected bool isAccessAssign(int t)
+        {
+            switch (t)
+            {
+                case XP.ASSIGN:
+                case XP.ACCESS:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        private XP.IEntityContext GetMethodParent(XP.MethodContext context)
+        {
+            var parent = context.Parent;
+            if (parent is XP.FoxmethodContext fmc)
+            {
+                var clsmember = fmc.Parent as XP.FoxclassmemberContext;
+                var cls = clsmember.Parent as XP.FoxclassContext;
+                return cls;
+            }
+            if (parent is XP.EntityContext)
+            {
+                return null;
+            }
+            if (parent is XP.ClassmemberContext cmc)
+            {
+                if (cmc.Parent is XP.Class_Context cls)
+                {
+                    return cls;
+                }
+                if (cmc.Parent is XP.Interface_Context interf_)
+                {
+                    return interf_;
+                }
+                if (cmc.Parent is XP.Structure_Context struct_)
+                {
+                    return struct_;
+                }
+            }
+            return null;
+        }
 
         public override void ExitMethod([NotNull] XP.MethodContext context)
         {
-            var idName = context.Id.Get<SyntaxToken>();
+            context.SetSequencePoint(context.T.Start,context.end.Stop);
+            var mName = context.Id.GetText();
             var isInInterface = context.isInInterface();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface, context.isInStructure(), context.TypeParameters != null);
             var isExtern = mods.Any((int)SyntaxKind.ExternKeyword);
             var isAbstract = mods.Any((int)SyntaxKind.AbstractKeyword);
             var hasNoBody = isInInterface || isExtern || isAbstract;
-            context.SetSequencePoint(context.end);
-            if (context.T2 != null)
+            if (_options.Dialect == XSharpDialect.FoxPro)
             {
-                if (context.T2.Token.Type != context.T.Token.Type)
+                var uName = mName.ToUpper();
+                if (uName.EndsWith("_ACCESS"))
                 {
-                    context.AddError(new ParseErrorData(context.T2, ErrorCode.ERR_UnexpectedToken,  context.T2.Token.Text));
+                    mName = mName.Substring(0, mName.Length - "_ACCESS".Length);
+                }
+                else if (uName.EndsWith("_ASSIGN"))
+                {
+                    mName = mName.Substring(0, mName.Length - "_ASSIGN".Length);
                 }
             }
-            if (context.T.Token.Type != XP.METHOD)
+            bool isAccessAssign = this.isAccessAssign(context.RealType);
+            var idName = SyntaxFactory.MakeIdentifier(mName);
+            if (isAccessAssign)
             {
                 // no type parameters on access and assign
                 if (context.TypeParameters != null || context._ConstraintsClauses.Count > 0)
@@ -3845,7 +3903,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
             bool hasExtensionAttribute = false;
-            if (context.T.Token.Type != XP.METHOD)
+            if (isAccessAssign)
             {
                 var vomods = _pool.Allocate();
                 vomods.Add(SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword));
@@ -3929,7 +3987,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var returntype = context.Type?.Get<TypeSyntax>();
             if (returntype == null)
             {
-                if (context.T.Token.Type == XP.ASSIGN)
+                if (context.RealType == XP.ASSIGN)
                 {
                     returntype = VoidType();
                 }
@@ -3949,7 +4007,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.StmtBlk.Put(body);
             }
-            if (context.T.Token.Type == XP.ASSIGN)
+            if (context.RealType == XP.ASSIGN)
             {
                 // Assign does not need a return. 
                 // So do not add missing returns
@@ -3983,21 +4041,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 bool GenClass = true;
                 if (context.isInClass())
                 {
+                    var parent = GetMethodParent(context);
                     string parentName;
-                    XP.Class_Context parent = null;
-                    if (context.Parent is XP.Class_Context)
-                    {
-                        parent = context.Parent as XP.Class_Context;
-                    }
-                    else if (context.Parent.Parent is XP.Class_Context)
-                    {
-                        parent = context.Parent.Parent as XP.Class_Context;
-                    }
                     if (parent != null)
                     {
-                        parentName = parent.Id.GetText();
-                        if (parent.Namespace != null)
-                            parentName = parent.Namespace.GetText() + parentName;
+                        parentName = parent.Name;
                         string className;
                         className = context.ClassId.GetText();
                         if (context.Namespace != null)
@@ -4017,7 +4065,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     MemberDeclarationSyntax mem = null;
                     var ce = new SyntaxClassEntities(_pool);
-                    if (context.T.Token.Type != XP.METHOD && context.Parent is XP.EntityContext)
+                    if (isAccessAssign && context.Parent is XP.EntityContext)
                     {
                         var parent = (ParserRuleContext)context.Parent;
                         // replace context in parent with new Class_Context
@@ -4032,7 +4080,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         cls.AddChild(context);
                         cls.Data.Partial = true;
                         context.parent = cls;
-                        ce.AddVoPropertyAccessor(context);
+                        ce.AddVoPropertyAccessor(context,idName);
                         context.Put(m); // this is needed by GenerateVOProperty
                         var vop = ce.VoProperties.Values.First();
                         var prop = GenerateVoProperty(vop, cls);
@@ -4055,7 +4103,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.Put(m);
             }
-            if (context.T.Token.Type != XP.METHOD && ! separateMethod)
+            if ( isAccessAssign && ! separateMethod)
             {
                 if (context.Data.HasClipperCallingConvention && context.CallingConvention != null)
                 {
@@ -4063,7 +4111,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     ErrorCode.ERR_NoClipperCallingConventionForAccessAssign));
                 }
                 context.Put(m);
-                ClassEntities.Peek().AddVoPropertyAccessor(context);
+                ClassEntities.Peek().AddVoPropertyAccessor(context, idName);
             }
         }
 
@@ -4524,6 +4572,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVodefine([NotNull] XP.VodefineContext context)
         {
+            context.SetSequencePoint(context.D, context.end);
             var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
             var expr = context.Expr.Get<ExpressionSyntax>();
             variables.Add(GenerateVariable(context.Id.Get<SyntaxToken>(), MakeChecked(expr,false)));
@@ -4927,7 +4976,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitFunction([NotNull] XP.FunctionContext context)
         {
-            context.SetSequencePoint(context.end);
+            if (context.F != null)
+            {
+                context.SetSequencePoint(context.F, context.end.Stop);
+            }
             var isInInterface = context.isInInterface();
             if (isInInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0)
             {
@@ -4982,7 +5034,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitProcedure([NotNull] XP.ProcedureContext context)
         {
             var isInInterface = context.isInInterface();
-            context.SetSequencePoint(context.end);
+            context.SetSequencePoint(context.P, context.end.Stop);
             if (isInInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0)
             {
                 context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_InterfaceMemberHasBody));
@@ -5265,7 +5317,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitClassModifiers([NotNull] XP.ClassModifiersContext context)
         {
-            HandleDefaultTypeModifiers(context, context._Tokens, true);
+            HandleDefaultTypeModifiers(context, context._Tokens, true); 
         }
         public override void ExitClassvarModifiers([NotNull] XP.ClassvarModifiersContext context)
         {
@@ -5779,7 +5831,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Expr.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
                 context.StmtBlk.Get<BlockSyntax>());
-            whileStmt = CheckForGarbage(whileStmt, context.Ignored, "Expression after END [DO]");
             context.Put(whileStmt);
         }
 
@@ -5944,7 +5995,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.StmtBlk.Get<BlockSyntax>());
             _pool.Free(init);
             _pool.Free(incr);
-            forStmt = CheckForGarbage(forStmt, context.Ignored, "Identifier after NEXT");
             context.Put(forStmt);
         }
 
@@ -5961,7 +6011,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Container.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
                 context.StmtBlk.Get<BlockSyntax>());
-            forStmt = CheckForGarbage(forStmt, context.Ignored, "Identifier after NEXT");
             context.Put(forStmt);
 
         }
@@ -5990,7 +6039,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             StatementSyntax ifStmt = context.IfStmt.Get<IfStatementSyntax>();
             context.SetSequencePoint(context.IfStmt.Cond);
-            ifStmt = CheckForGarbage(ifStmt, context.Ignored, "Expression after END IF");
             if (context.IfStmt.Cond.CsNode is IsPatternExpressionSyntax)
             {
                 // wrap the ifStmt in a block to make sure that variable introduced in IF x IS Foo oFoo is not visible after the block
@@ -6453,7 +6501,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                     break;
                 case XP.BREAK:
-                    context.Put(NotInDialect("BREAK statement"));
+                    // Error already handled in ParseErrorAnalysis
                     break;
                 case XP.THROW:
                     context.Put(_syntaxFactory.ThrowStatement(SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword),
@@ -6545,12 +6593,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(block);
             }
             _pool.Free(statements);
-            if (context.eq!= null && _options.Dialect != XSharpDialect.FoxPro)
-            {
-                var node = context.Get<StatementSyntax>();
-                node = NotInDialect(node, "= Command");
-                context.Put(node);
-            }
         }
 
 
@@ -7730,32 +7772,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitIdentifierString([NotNull] XP.IdentifierStringContext context)
         {
-            if (context.Token != null)
-                context.Put(GenerateLiteral(context.Token.Text ));
-            else if (context.XsToken != null)
-                context.Put(GenerateLiteral(context.XsToken.Token.Text));
-            else if (context.VnToken != null)
-                context.Put(GenerateLiteral(context.VnToken.Token.Text));
-            else if (context.XppToken != null)
-                context.Put(GenerateLiteral(context.XppToken.Token.Text));
-            else if (context.FoxToken != null)
-                context.Put(GenerateLiteral(context.FoxToken.Token.Text));
+            context.Put(GenerateLiteral(context.Start.Text));
         }
 
         public override void ExitIdentifier([NotNull] XP.IdentifierContext context)
         {
-            context.Put(context.Token?.SyntaxIdentifier()
-                ?? context.XsToken?.Token.SyntaxIdentifier()
-                ?? context.VnToken?.Token.SyntaxIdentifier()
-                ?? context.XppToken?.Token.SyntaxIdentifier()
-                ?? context.FoxToken?.Token.SyntaxIdentifier());
+            context.Put(context.Start.SyntaxIdentifier());
         }
 
         public override void ExitKeyword([NotNull] XP.KeywordContext context)
         {
-            context.Put(context.KwXs?.Token.SyntaxKeywordIdentifier()
-                ?? context.KwVn?.Token.SyntaxKeywordIdentifier()
-                ?? context.KwVo?.Token.SyntaxKeywordIdentifier());
+            context.Put(context.Start.SyntaxKeywordIdentifier());
         }
 
         public override void ExitKeywordxs([NotNull] XP.KeywordxsContext context)
@@ -7774,6 +7801,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
         public override void ExitKeywordfox([NotNull] XP.KeywordfoxContext context)
+        {
+            // caught by the keyword/identifier rule
+        }
+        public override void ExitKeywordxpp([NotNull] XP.KeywordxppContext context)
         {
             // caught by the keyword/identifier rule
         }
@@ -8856,18 +8887,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         #endregion  
 
-        #region Workareas
-        public override void ExitAliasedExpression([NotNull] XP.AliasedExpressionContext context)
-        {
-            context.Put(context.Expr.Get<ExpressionSyntax>());
-        }
-        public override void ExitAliasedExpr([NotNull] XP.AliasedExprContext context)
-        {
-            context.Put(NoAlias());
-            return;
-        }
-        #endregion
-
+ 
         #region  object and collection initializers
         public override void ExitObjectinitializer([NotNull] XP.ObjectinitializerContext context)
         {

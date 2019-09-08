@@ -25,6 +25,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 		PRIVATE Buffer   AS BYTE[]
 		// Hot ?  => Header has changed ?
 		INTERNAL isHot	AS LOGIC
+        PRIVATE _order as NtxOrder
+        PRIVATE PROPERTY Encoding as System.Text.Encoding GET _order:Encoding
 		
 		INTERNAL METHOD Read() AS LOGIC
 			LOCAL isOk AS LOGIC
@@ -45,8 +47,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 			
 			
 			
-		INTERNAL CONSTRUCTOR( fileHandle AS IntPtr )
+		INTERNAL CONSTRUCTOR( oOrder as NtxOrder, fileHandle AS IntPtr )
 			SELF:_hFile := fileHandle
+            SELF:_Order := oOrder
 			Buffer := BYTE[]{NTXHEADER_SIZE}
 			isHot  := FALSE
 			
@@ -62,7 +65,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 			IF count == -1
 				count := nSize
 			ENDIF
-			LOCAL str := System.Text.Encoding.ASCII:GetString( tmp,0, count ) AS STRING
+			LOCAL str := SELF:Encoding:GetString( tmp,0, count ) AS STRING
 			IF  str == NULL 
 				str := String.Empty
 			ENDIF
@@ -73,7 +76,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 		PRIVATE METHOD _SetString(nOffSet AS INT, nSize AS INT, sValue AS STRING) AS VOID
 			// Be sure to fill the Buffer with 0
 			Array.Clear( Buffer, nOffSet, nSize )
-			System.Text.Encoding.ASCII:GetBytes( sValue, 0, Math.Min(nSize,sValue:Length), Buffer, nOffSet)
+			SELF:Encoding:GetBytes( sValue, 0, Math.Min(nSize,sValue:Length), Buffer, nOffSet)
 			isHot := TRUE
 				
         [MethodImpl(MethodImplOptions.AggressiveInlining)];        

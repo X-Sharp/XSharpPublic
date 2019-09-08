@@ -846,25 +846,27 @@ METHOD Create(info AS DbOpenInfo) AS LOGIC
 	IF SELF:IsOpen
 		LOCAL fieldCount :=  SELF:_Fields:Length AS INT
 		LOCAL fieldDefSize := fieldCount * DbfField.SIZE AS INT
-        // First, just the Header
-		SELF:_Header:HeaderLen := SHORT(DbfHeader.SIZE + fieldDefSize+ 2 ) 
-		SELF:_Header:isHot := TRUE
-        //
 		LOCAL codePage AS LONG
-		IF XSharp.RuntimeState.Ansi
+        IF XSharp.RuntimeState.Ansi
 			SELF:_Ansi := TRUE
 			codePage := XSharp.RuntimeState.WinCodePage
 		ELSE
 			SELF:_Ansi := FALSE
 			codePage := XSharp.RuntimeState.DosCodePage
-		ENDIF
+		ENDIF        // First, just the Header
+		SELF:_Encoding := System.Text.Encoding.GetEncoding( codePage ) 
+
+		SELF:_Header:HeaderLen := SHORT(DbfHeader.SIZE + fieldDefSize+ 2 ) 
+		SELF:_Header:isHot := TRUE
+        //
+
+
 		IF SELF:_Ansi
 			SELF:_lockScheme:Initialize( DbfLockingModel.VoAnsi )
 		ELSE
 			SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )
 		ENDIF
 		
-		SELF:_Encoding := System.Text.Encoding.GetEncoding( codePage ) 
         //
         // Convert the Windows CodePage to a DBF CodePage
 		SELF:_Header:CodePage := CodePageExtensions.ToHeaderCodePage( (OsCodePage)codePage ) 
@@ -918,6 +920,7 @@ PROTECTED VIRTUAL METHOD _writeFieldsHeader() AS LOGIC
     // Now, create the Structure
 	LOCAL fieldsBuffer := BYTE[]{ fieldDefSize +1 } AS BYTE[] // +1 to add 0Dh stored as the field terminator.
 	LOCAL currentField := DbfField{} AS DbfField
+    currentField:Encoding := SELF:_Encoding
 	IF ! SELF:IsOpen
 		RETURN FALSE
 	ENDIF
@@ -1033,6 +1036,8 @@ PRIVATE METHOD _readHeader() AS LOGIC
 			RETURN FALSE
 		ENDIF
 		SELF:_RecCount := SELF:_Header:RecCount
+        SELF:_Encoding := System.Text.Encoding.GetEncoding( CodePageExtensions.ToCodePage( SELF:_Header:CodePage )  )
+
         // Move to top, after header
         isOk := FSeek3( SELF:_hFile, DbfHeader.SIZE, SeekOrigin.Begin ) == DbfHeader.SIZE 
 		IF isOk 
@@ -1056,6 +1061,7 @@ PRIVATE METHOD _readFieldsHeader() AS LOGIC
 	IF isOk 
 		SELF:_HasMemo := FALSE
 		VAR currentField := DbfField{}
+        currentField:Encoding := SELF:_Encoding
 		currentField:Initialize()
         // Now, process
         //SELF:_Fields := DbfRddFieldInfo[]{ fieldCount }
@@ -2502,7 +2508,7 @@ STRUCTURE DbfField
 	PRIVATE CONST OFFSET_HASTAG       := 31   AS BYTE
 	INTERNAL CONST NAME_SIZE           := 11  AS BYTE
 	INTERNAL CONST SIZE                := 32  AS BYTE
-	
+	INTERNAL Encoding as System.Text.Encoding
     // Fixed Buffer of 32 bytes
     // Matches the DBF layout
     // Read/Write to/from the Stream with the Buffer
@@ -2520,7 +2526,7 @@ PROPERTY Name		 AS STRING
 		IF count == -1
 			count := DbfField.NAME_SIZE
 		ENDIF
-		LOCAL str := System.Text.Encoding.ASCII:GetString( fieldName,0, count ) AS STRING
+		LOCAL str := Encoding:GetString( fieldName,0, count ) AS STRING
 		IF str == NULL 
 			str := String.Empty
 		ENDIF
@@ -2530,7 +2536,7 @@ PROPERTY Name		 AS STRING
 	SET
             // Be sure to fill the Buffer with 0
 		Array.Clear( Buffer, OFFSET_NAME, DbfField.NAME_SIZE )
-		System.Text.Encoding.ASCII:GetBytes( VALUE, 0, Math.Min(DbfField.NAME_SIZE,VALUE:Length), Buffer, OFFSET_NAME )
+		Encoding:GetBytes( VALUE, 0, Math.Min(DbfField.NAME_SIZE,VALUE:Length), Buffer, OFFSET_NAME )
 	END SET
 END PROPERTY
 

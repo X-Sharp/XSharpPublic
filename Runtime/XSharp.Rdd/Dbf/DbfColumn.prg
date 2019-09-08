@@ -584,6 +584,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL oField  as DbfField
             oField := DbfField{}
             oField:initialize()
+            oField:Encoding := SELF:RDD:_Encoding
             SELF:RDD:_readField(SELF:OffSetInHeader, oField)
             SELF:Counter := oField:Counter
             SELF:IncrStep := oField:IncStep
@@ -593,6 +594,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL oField  as DbfField
             oField := DbfField{}
             oField:initialize()
+            oField:Encoding := SELF:RDD:_Encoding
             SELF:RDD:_readField(SELF:OffSetInHeader, oField)
             oField:Counter := SELF:Counter 
             oField:IncStep := (BYTE) SELF:IncrStep 

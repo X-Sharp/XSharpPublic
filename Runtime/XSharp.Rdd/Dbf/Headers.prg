@@ -119,15 +119,12 @@ INTERNAL CLASS FlexHeader
     INTERNAL PROPERTY Root          AS LONG  GET BuffToLong(SELF:buffer, OFFSET_ROOT )      SET LongToBuff(VALUE, SELF:buffer, OFFSET_ROOT )
     INTERNAL PROPERTY UpdateCount   AS LONG  GET BuffToLong(SELF:buffer, OFFSET_UPDATE )    SET LongToBuff(VALUE, SELF:buffer, OFFSET_UPDATE )
     INTERNAL PROPERTY Signature     AS STRING
+        // We can use System.Text.Encoding.ASCII because the flexfile header has no special characters
         GET
-            LOCAL encoding AS System.Text.Encoding
-            encoding := System.Text.Encoding.ASCII
-            RETURN encoding:GetString(SELF:Buffer,0, 9)
+            RETURN System.Text.Encoding.ASCII:GetString(SELF:Buffer,0, 9)
         END GET
         SET
-            LOCAL encoding AS System.Text.Encoding
-            encoding := System.Text.Encoding.ASCII
-            VAR bytes := encoding:GetBytes(VALUE)
+            VAR bytes := System.Text.Encoding.ASCII:GetBytes(VALUE)
             System.Array.Copy(bytes,0, Buffer, OFFSET_SIGNATURE, LEN_SIGNATURE)
         END SET
     END PROPERTY

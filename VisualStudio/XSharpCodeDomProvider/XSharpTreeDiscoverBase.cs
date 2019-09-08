@@ -922,8 +922,11 @@ namespace XSharp.CodeDom
         public override void EnterUsing_([NotNull] XSharpParser.Using_Context context)
         {
             var import = new XCodeNamespaceImport(context.Name.GetText());
-            CurrentNamespace.Imports.Add(import);
-            _usings.Add(import.Namespace);
+            if (!_usings.Contains(import.Namespace))
+            {
+                CurrentNamespace.Imports.Add(import);
+                _usings.Add(import.Namespace);
+            }
         }
         #endregion
     }

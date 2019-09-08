@@ -7,7 +7,10 @@ using System.IO
 [STAThread];
 FUNCTION Start() AS VOID
     TRY
-        TestAnotherOrdScope()
+        testDbfEncoding()
+        //testDateInc()
+        //TestEmptyDbf()
+        //TestAnotherOrdScope()
         //TestFileGarbage()
         //TestPackNtx()
         //TestZapNtx()
@@ -123,6 +126,53 @@ FUNCTION Start() AS VOID
     WAIT
     RETURN
 
+FUNCTION TestDbfEncoding() AS VOID
+	LOCAL c AS STRING
+	LOCAL cDbf AS STRING
+	cDbf := "C:\test\strasse"
+	c := "STRAßE"
+	? c //"STRAßE", ok
+	DbCreate(cDBF,{{c,"C",10,0} ,{"AÖÄÜ","C",10,0}})
+	DbUseArea(,,cDBF)
+	? FieldName(1) // "STRA?E"
+	? FieldName(2) // A???
+    DbCreateIndex("STRASSE", "STRAßE")
+	DbCloseArea()
+RETURN
+
+function TestDateInc() as void
+  LOCAL u AS USUAL
+  LOCAL d AS DATE
+
+  d := Today()
+  ? ++ d // ok
+  ? d ++ // ok
+  ? d -- // ok
+
+  u := Today()
+  ? u 
+  ? ++ u // exception
+  ? u ++ // exception
+  ? u -- // exception
+  ? -- u // exception
+  u := DateTime.Now
+  ? u 
+  ? ++ u // exception
+  ? u ++ // exception
+  ? u -- // exception
+  ? -- u // exception
+
+RETURN
+FUNCTION TestEmptyDbf as void
+    DbCreate("Test",{{"VELD","C",10,0}},"DBFVFP")
+    DbuseArea(TRUE,"DBFVFP","test")
+    DbCreateOrder("VELD","TEST","VELD")
+    DbCloseArea()
+    DbuseArea(TRUE,"DBFVFP","test")
+    ? Len(FieldGetSym("veld"))
+    DbCloseArea()
+    WAIT
+    RETURN
 FUNCTION TestAnotherOrdScope() AS VOID
 	LOCAL cDbf AS STRING
 	cDbf := "c:\test\mynewtest"

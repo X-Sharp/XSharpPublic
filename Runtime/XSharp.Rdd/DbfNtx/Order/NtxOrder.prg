@@ -98,7 +98,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL PROPERTY HasScope AS LOGIC GET _Scopes[TOPSCOPE]:IsSet .OR. _Scopes[BOTTOMSCOPE]:IsSet
         INTERNAL PROPERTY TopScope AS OBJECT GET _Scopes[TOPSCOPE]:Value
         INTERNAL PROPERTY BottomScope AS OBJECT GET _Scopes[BOTTOMSCOPE]:VALUE
-
+        INTERNAL PROPERTY Encoding as System.Text.Encoding GET _oRdd:_Encoding
         INTERNAL PROPERTY FullPath AS STRING GET _fullPath
         INTERNAL PROPERTY HPLocking AS LOGIC GET _HpLocking
         INTERNAL PROPERTY Unique AS LOGIC GET _Unique
@@ -174,7 +174,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_oRDD:_dbfError( ERDD.OPEN_ORDER, GenCode.EG_OPEN, SELF:fileName)
                 RETURN FALSE
             ENDIF
-            SELF:_Header := NtxHeader{ SELF:_hFile }
+            SELF:_Header := NtxHeader{ SELF, SELF:_hFile }
             IF !SELF:_Header:Read()
                 SELF:_oRDD:_dbfError(ERDD.OPEN_ORDER, GenCode.EG_OPEN, SELF:fileName)
                 RETURN FALSE

@@ -1477,6 +1477,21 @@ CLASS ModuleDescriptor
 		NEXT
 	RETURN
 
+	METHOD ContainsEntity(cName AS STRING, cClass AS STRING) AS LOGIC
+		cName := cName:ToUpper()
+		cClass := cClass:ToUpper()
+		FOREACH oClass AS ClassDescriptor IN SELF:Classes
+			IF oClass:Name:ToUpper() == cClass
+				FOREACH oEntity AS EntityDescriptor IN oClass:Members
+					IF oEntity:Name:ToUpper() == cName
+						RETURN TRUE
+					END IF
+				NEXT
+			END IF
+		NEXT
+		
+	RETURN FALSE
+	
 	METHOD FindClass(cName AS STRING) AS ClassDescriptor
 		FOREACH oClass AS ClassDescriptor IN SELF:_aClasses
 			IF oClass:Name:ToUpper() == cName:ToUpper()
@@ -1798,6 +1813,7 @@ CLASS EntityDescriptor
 
 	PROPERTY Name AS STRING GET SELF:_cName
 	PROPERTY Type AS EntityType GET SELF:_eType
+	PROPERTY ClassName AS STRING GET SELF:_cClass
 	PROPERTY Lines AS List<LineObject> GET SELF:_aLines
 	PROPERTY IsClassOrMember AS LOGIC GET;
 			SELF:_eType == EntityType._Class .or. SELF:_eType == EntityType._Method .or. ;
@@ -1980,6 +1996,20 @@ CLASS EntityDescriptor
 			cLine := "// " + cLine
 			RETURN cLine
 		END IF
+		IF SELF:Type== EntityType._Class .and. cLineUpper:Trim():StartsWith("INSTANCE")
+			LOCAL cTemp AS STRING
+			cTemp := cLineUpper:Trim()
+			IF cTemp:Length > 9
+				cTemp := cTemp:Substring(9):Trim()
+				// The WED generates single instance vars per line, we do not want to touch user created ones
+				IF cTemp:Length > 0 .and. cTemp:IndexOf(',') == -1 .and. cTemp:IndexOf(' ') == -1
+					IF SELF:_oModule:ContainsEntity(cTemp, SELF:Name)
+						cLine := "// " + cLine
+						RETURN cLine
+					END IF
+				END IF
+			END IF
+		ENDIF
 
 		IF xPorter.Options:RemoveExportLocalClause .and. oLine:HasExportLocalClause
 			IF oLine:oMoreInfo:ExportLocalClause:Begins != 0

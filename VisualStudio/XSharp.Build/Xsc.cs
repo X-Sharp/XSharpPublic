@@ -67,6 +67,13 @@ namespace XSharp.Build
             set { base.Bag[nameof(INS)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(INS), false); }
         }
+
+        public Boolean InitLocals
+        {
+            set { base.Bag[nameof(InitLocals)] = value; }
+            get { return base.GetBoolParameterWithDefault(nameof(InitLocals), false); }
+        }
+
         public string[] IncludePaths
         {
             set { base.Bag[nameof(IncludePaths)] = value; }
@@ -181,6 +188,11 @@ namespace XSharp.Build
         {
             set { base.Bag[nameof(XPP2)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(XPP2), false); }
+        }
+        public Boolean FOX1
+        {
+            set { base.Bag[nameof(FOX1)] = value; }
+            get { return base.GetBoolParameterWithDefault(nameof(FOX1), false); }
         }
         public String CompilerPath
         {
@@ -670,6 +682,7 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitch("/az", base.Bag, nameof(AZ));
             //commandline.AppendPlusOrMinusSwitch("/cs", base.Bag, nameof(CS));
             commandline.AppendPlusOrMinusSwitch("/ins", base.Bag, nameof(INS));
+            commandline.AppendPlusOrMinusSwitch("/initlocals", base.Bag, nameof(InitLocals));
             commandline.AppendPlusOrMinusSwitch("/lb", base.Bag, nameof(LB));
             commandline.AppendPlusOrMinusSwitch("/namedarguments", base.Bag, nameof(NamedArgs));
             commandline.AppendPlusOrMinusSwitch("/memvar", base.Bag, nameof(MemVar));
@@ -694,6 +707,7 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitch("/vo16", base.Bag, nameof(VO16));
             commandline.AppendPlusOrMinusSwitch("/xpp1", base.Bag, nameof(XPP1));
             commandline.AppendPlusOrMinusSwitch("/xpp2", base.Bag, nameof(XPP2));
+            commandline.AppendPlusOrMinusSwitch("/fox1", base.Bag, nameof(FOX1));
 
             // User-defined CommandLine Option (in order to support switches unknown at that time)
             // cannot use appendswitch because it will quote the string when there are embedded spaces

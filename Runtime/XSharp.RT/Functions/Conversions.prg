@@ -396,7 +396,9 @@ FUNCTION PadC( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
     LOCAL ret     AS STRING
     LOCAL retlen  AS INT
 
-    IF uValue:isNumeric
+    IF uValue:IsNil
+        ret := ""
+    ELSEIF uValue:isNumeric
         ret := NTrim( uValue)
     ELSE
         ret := uValue:ToString()
@@ -406,7 +408,9 @@ FUNCTION PadC( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
     IF retlen > nLength
         ret := ret:Remove( nLength )
     ELSE
-        ret := ret:PadLeft( ( nLength - retlen ) / 2, cPad[0] ):PadRight( nLength, cPad[0] )
+        var leftSpace := Space(( nLength - retlen ) / 2)
+        ret := leftSpace+ret
+        ret := ret:PadRight( nLength, cPad[0] )
     ENDIF
 
     RETURN ret
@@ -425,7 +429,9 @@ FUNCTION PadL( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
         cPad := " "
     ENDIF
     LOCAL ret AS STRING
-    IF uValue:IsNumeric
+    IF uValue:IsNil
+        ret := ""
+    ELSEIF uValue:IsNumeric
         ret := NTrim( uValue)
     ELSE
         ret := uValue:ToString()
@@ -449,7 +455,9 @@ FUNCTION PadR( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
         cPad := " "
     ENDIF
     LOCAL ret AS STRING
-    IF uValue:IsNumeric
+    IF uValue:IsNil
+        ret := ""
+    ELSEIF uValue:IsNumeric
         ret := NTrim( uValue)
     ELSE
         ret := uValue:ToString()

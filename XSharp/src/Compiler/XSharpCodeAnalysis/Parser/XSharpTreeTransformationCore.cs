@@ -3845,7 +3845,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitMethod([NotNull] XP.MethodContext context)
         {
             context.SetSequencePoint(context.T.Start,context.end.Stop);
-            var mName = context.Id.GetText();
+            var idName = context.Id.Get<SyntaxToken>();
             var isInInterface = context.isInInterface();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface, context.isInStructure(), context.TypeParameters != null);
             var isExtern = mods.Any((int)SyntaxKind.ExternKeyword);
@@ -3853,18 +3853,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var hasNoBody = isInInterface || isExtern || isAbstract;
             if (_options.Dialect == XSharpDialect.FoxPro)
             {
-                var uName = mName.ToUpper();
-                if (uName.EndsWith("_ACCESS"))
+                var mName = idName.Text;
+                if (mName.EndsWith("_ACCESS",StringComparison.OrdinalIgnoreCase))
                 {
                     mName = mName.Substring(0, mName.Length - "_ACCESS".Length);
                 }
-                else if (uName.EndsWith("_ASSIGN"))
+                else if (mName.EndsWith("_ASSIGN", StringComparison.OrdinalIgnoreCase))
                 {
                     mName = mName.Substring(0, mName.Length - "_ASSIGN".Length);
                 }
+                idName = SyntaxFactory.MakeIdentifier(mName);
             }
             bool isAccessAssign = this.isAccessAssign(context.RealType);
-            var idName = SyntaxFactory.MakeIdentifier(mName);
             if (isAccessAssign)
             {
                 // no type parameters on access and assign

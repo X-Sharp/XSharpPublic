@@ -945,9 +945,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     foreach (var  m in clsctx.Type.PartialProperties)
                     {
-                        var name = m.Id.GetText();
-                        if (name.StartsWith("@@"))
-                            name = name.Substring(2);
+                        var idName = m.Id.Get<SyntaxToken>();
+                        var name = idName.Text;
                         if (dict.ContainsKey(name))
                         {
                             dict[name].Add(m);

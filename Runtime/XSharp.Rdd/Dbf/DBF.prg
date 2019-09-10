@@ -272,9 +272,9 @@ METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
 					SELF:_BufferValid   := TRUE
 					SELF:_isValid       := TRUE
 					SELF:_NewRecord     := TRUE
-                // Mark RecordBuffer and Header as Hot
+                    // Mark RecordBuffer and Header as Hot
 					SELF:_Hot           := TRUE
-                // Now, Save
+                    // Now, Save
 					IF SELF:_HeaderLocked 
 						SELF:GoCold()
 						SELF:AppendLock( DbLockMode.UnLock )

@@ -458,7 +458,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 IF SELF:_Scopes[BOTTOMSCOPE]:IsSet
                     itmBottomScope := SELF:_Scopes[BottomScope]:Value
                     SELF:_ToString(itmBottomScope, SELF:_keySize, SELF:_keyDecimals, SELF:_newValue:Key)
-                    IF SELF:__Compare(SELF:_newValue:Key, SELF:_currentValue:Key, SELF:_keySize) >= 0
+                    // Make sure we only compare the # of characters defined for the bottomScope
+                    local nKeyComp as INT
+                    nKeyComp := SELF:_Scopes[BOTTOMSCOPE]:Size
+                    IF SELF:__Compare(SELF:_newValue:Key, SELF:_currentValue:Key, nKeyComp) >= 0
                         isOk := TRUE
                     ENDIF
                 ELSE
@@ -482,6 +485,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL METHOD _GoToRecno(recno AS LONG ) AS LOGIC
             LOCAL result AS LOGIC
             result := TRUE
+            SELF:_oRDD:__GoTo(recno)
             SELF:_saveCurrentKey(recno,SELF:_currentValue)
             IF SELF:_goRecord(SELF:_currentValue:Key, SELF:_keySize, recno) != recno
                 IF SELF:_goRecord(NULL, 0, recno) != recno .and. recno <= self:_oRDD:Reccount
@@ -491,6 +495,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     ENDIF
                     SELF:ClearStack()
                 ENDIF
+            ENDIF
+            IF result
+                SELF:_oRDD:__GoTo(recno)
             ENDIF
             RETURN result
             
@@ -677,9 +684,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         IF len < SELF:_keySize
                             needPadStr := TRUE
                             IF SELF:_Descending
-                            bSearchKey[len] := Byte.MaxValue
+                            	bSearchKey[len] := Byte.MaxValue
                             ELSE
-                            bSearchKey[len] := 1
+                            	bSearchKey[len] := 1
                             ENDIF
                             padLen := len + 1
                             fSoft := seekInfo:SoftSeek
@@ -690,25 +697,26 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         padLen := len
                     ENDIF
                 recno := SELF:_locateKey(bSearchKey, padLen, IIF(seekInfo:SoftSeek , SearchMode.SoftSeek , SearchMode.Left))
-                    result := SELF:_oRdd:__Goto(recno)
+                result := SELF:_oRdd:__Goto(recno)
                 IF activeFilter
-                        SELF:_oRdd:SkipFilter(1)
-                        recno := SELF:_Recno
-                    ENDIF
+                    SELF:_oRdd:SkipFilter(1)
+                    recno := SELF:_Recno
+                ENDIF
                 LOCAL found := false AS LOGIC
-                    IF SELF:_oRdd:_isValid
-                        // Get Current Key
-                        VAR currentKeyBuffer := SELF:_currentvalue:Key
+                IF SELF:_oRdd:_isValid
+                    // Get Current Key
+                    VAR currentKeyBuffer := SELF:_currentvalue:Key
+                    // Note: Softseek will also be set when an incomplete key is passed
                     IF activeFilter .OR. seekInfo:SoftSeek .OR. seekInfo:Last
                             SELF:_ToString(seekInfo:Value, SELF:_keySize, SELF:_keyDecimals, SELF:_newValue:Key, REF SELF:_newKeyLen)
-                        strCmp := SELF:__Compare(bSearchKey, currentKeyBuffer, len)
+                            strCmp := SELF:__Compare(bSearchKey, currentKeyBuffer, len)
                             found := (strCmp == 0)
                             IF needPadStr .AND. !found
                                 IF SELF:_Descending
                                     SELF:_newValue:Key[len] := Byte.MaxValue
                                     temp:= currentKeyBuffer[len]
                                     currentKeyBuffer[len] := 1
-                                strCmpMaxMin := SELF:__Compare(bSearchKey, currentKeyBuffer, padLen)
+                                    strCmpMaxMin := SELF:__Compare(bSearchKey, currentKeyBuffer, padLen)
                                     IF strCmp < 0 .AND. strCmpMaxMin > 0
                                         found := TRUE
                                     ENDIF
@@ -742,6 +750,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                                 seekInfo:SoftSeek := fSoft
                             ENDIF
                             IF found
+                            // we are on the first matching key. When we seek Last then we 
+                            // skip to the last record that matches the key that we searched for
                                 IF seekInfo:Last
                                     DO WHILE strCmp == 0
                                         recnoOK := recno
@@ -763,7 +773,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                                         ENDIF
                                     ENDDO
                                     recno := recnoOK
-                                    result := SELF:_oRdd:__GoTo(recno)
+                                result := SELF:_GotoRecno(recno)
                                     IF recno != 0
                                         found := TRUE
                                     ENDIF
@@ -780,7 +790,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                                     ELSE
                                         IF diff == -strCmp
                                             found := TRUE
-                                            result := SELF:_oRdd:__Goto(recno)
+                                        result := SELF:_GotoRecno(recno)
                                         ELSE
                                             result := SELF:_oRdd:__Goto(0)
                                         ENDIF
@@ -792,19 +802,17 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                                 ENDIF
                             ENDIF
                     ENDIF
-                    if found
-                        strCmp := SELF:__Compare(bSearchKey, currentKeyBuffer, len)
-                            found := (strCmp == 0)
-                        ENDIF
-                    ELSE
-                        found := FALSE
-                    ENDIF
-                    IF !SELF:_oRdd:_isValid
-                        SELF:ClearStack()
-                    ENDIF
-                    SELF:_oRdd:_Bof := (SELF:_oRdd:RecCount == 0)
-                    SELF:_oRdd:_Found := found
-                    RETURN result
+                    strCmp := SELF:__Compare(bSearchKey, currentKeyBuffer, len)
+                    found := (strCmp == 0)
+                ELSE
+                    found := FALSE
+                ENDIF
+                IF !SELF:_oRdd:_isValid
+                    SELF:ClearStack()
+                ENDIF
+                SELF:_oRdd:_Bof := (SELF:_oRdd:RecCount == 0)
+                SELF:_oRdd:_Found := found
+                RETURN result
                 
             FINALLY
                 IF locked

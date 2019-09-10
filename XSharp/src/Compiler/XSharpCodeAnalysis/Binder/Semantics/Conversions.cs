@@ -241,6 +241,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             var dstType = destination.SpecialType;
             bool voCast = false;
             bool voConvert = false;
+            if (this.Compilation.Options.VOImplicitCastsAndConversions)
+            {
+                // Allow cast -> BOOLEAN
+                if (dstType == SpecialType.System_Boolean)
+                {
+                    return Conversion.Identity;
+                }
+            }
             if (sourceExpression.Syntax != null)
             {
                 var xNode = sourceExpression.Syntax.XNode;
@@ -267,8 +275,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     return Conversion.NoConversion;
                 }
-                // Allow cast -> BOOLEAN
-                // from all allowed types
+                // Allow LOGIC(_CAST
                 if (dstType == SpecialType.System_Boolean)
                 {
                     return Conversion.Identity;
@@ -300,6 +307,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
                 }
+
+
                 // Allow cast -> PTR when 
                 // source is integral and source size matches the Integral size
                 // source is Ptr, IntPtr, UintPtr

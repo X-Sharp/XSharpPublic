@@ -1962,7 +1962,48 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbCloseAll()
 		RETURN
 
-
+        // Descartes discovered a problem with DbSeek and Found
+        [Fact, Trait("Category", "DBF")];
+        METHOD DbSeekFound_test() AS VOID
+            LOCAL cPath, cDbf AS STRING
+            LOCAL cDefault AS STRING
+            RddSetDefault("DBFNTX")
+            
+            cPath := System.IO.Path.GetTempPath()
+            IF .NOT. cPath:EndsWith("\")
+                cPath += "\"
+            END IF
+            cDbf := "DbseekTest"
+            DbCreate(cDbf, {{"KEY","C",10,0}},"DBFNTX")
+            DbUseArea(TRUE,"DBFNTX",cDbf)
+            DbCreateIndex(cDbf,"KEY")
+            DbAppend()
+            var aValues := {"A","B","C","D","E","F"}
+            FOREACH sValue as STRING in aValues
+                DbAppend()
+                FieldPut(1, sValue)
+            NEXT
+            FOREACH sValue as STRING in aValues
+                Assert.True(DbSeek(sValue))
+                Assert.True(Found())
+            NEXT
+            DbCloseArea()
+            // Repeat for DBFCDX
+            DbCreate(cDbf, {{"KEY","C",10,0}},"DBFCDX")
+            DbUseArea(TRUE,"DBFCDX",cDbf)
+            DbCreateIndex(cDbf,"KEY")
+            DbAppend()
+            FOREACH sValue as STRING in aValues
+                DbAppend()
+                FieldPut(1, sValue)
+            NEXT
+            FOREACH sValue as STRING in aValues
+                Assert.True(DbSeek(sValue))
+                Assert.True(Found())
+            NEXT
+            DbCloseArea()
+            
+		
 
 		// TECH-0YI914Z4I2, Problem opening dbf with dbt via SetDefault()
 		[Fact, Trait("Category", "DBF")];

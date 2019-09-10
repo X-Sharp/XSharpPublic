@@ -489,6 +489,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _isBeforeBottomScope() AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL itmBottomScope AS OBJECT
+ 
             isOk := SELF:_oRdd:_Found
             IF !isOk .AND. SELF:_RecNo != 0
                 IF SELF:HasBottomScope
@@ -899,12 +900,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                     result := SELF:_oRdd:__Goto(0)
                                 ENDIF
                             ENDIF
-                        ENDIF
+                        ENDIF 
                     ENDIF
-                    if found
-                        strCmp := SELF:__Compare(bSearchKey, currentKeyBuffer, len)
-                        found := (strCmp == 0)
-                    endif
+                    strCmp := SELF:__Compare(bSearchKey, currentKeyBuffer, len)
+                    found := (strCmp == 0)
                 ELSE
                     found := FALSE
                 ENDIF

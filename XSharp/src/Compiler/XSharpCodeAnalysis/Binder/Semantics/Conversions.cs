@@ -241,28 +241,32 @@ namespace Microsoft.CodeAnalysis.CSharp
             var dstType = destination.SpecialType;
             bool voCast = false;
             bool voConvert = false;
-            if (this.Compilation.Options.VOImplicitCastsAndConversions)
-            {
-                // Allow cast -> BOOLEAN
-                if (dstType == SpecialType.System_Boolean)
-                {
-                    return Conversion.Identity;
-                }
-            }
+            bool typeCast = false;
             if (sourceExpression.Syntax != null)
             {
                 var xNode = sourceExpression.Syntax.XNode;
-                while (!(xNode is XP.VoCastExpressionContext) &&
-                    ! (xNode is XP.VoConversionExpressionContext) )
-                {
-                    if (xNode == null)
-                        break;
-                    xNode = xNode.Parent as IXParseTree;
-                }
-                if (xNode != null)
+                while (xNode != null)
                 {
                     voCast = xNode is XP.VoCastExpressionContext;
+                    if (voCast)
+                        break;
                     voConvert = xNode is XP.VoConversionExpressionContext;
+                    if (voConvert)
+                        break;
+                    typeCast = xNode is XP.TypeCastContext;
+                    if (typeCast)
+                        break;
+                    xNode = xNode.Parent as IXParseTree;
+                    if (xNode is XP.StatementContext)
+                        break;
+                }
+            }
+            if (this.Compilation.Options.VOImplicitCastsAndConversions && (typeCast || voCast || voConvert))
+            {
+                // Allow cast -> BOOLEAN
+                if (dstType == SpecialType.System_Boolean && srcType.IsIntegralType())
+                {
+                    return Conversion.Identity;
                 }
             }
             // TYPE(_CAST, expr) allows almost everything

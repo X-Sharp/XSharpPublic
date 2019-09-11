@@ -502,7 +502,7 @@ namespace XSharp.Build
             iResult = base.ExecuteTool(pathToTool, responseFileCommands, commandLineCommands);
             var time = DateTime.Now - start;
             var timestring = time.ToString();
-            Log.LogMessageFromText("XSharp Compilation time: " + timestring, MessageImportance.High);
+            Log.LogMessageFromText("XSharp Compilation time: " + timestring, MessageImportance.Normal);
             return iResult;
         }
 

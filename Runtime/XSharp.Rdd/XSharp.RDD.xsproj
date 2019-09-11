@@ -129,6 +129,7 @@
     <Compile Include="Dbf\DbMemo.prg" />
     <Compile Include="Dbf\FptEnums.prg" />
     <Compile Include="Enums.prg" />
+    <Compile Include="Other\TextRDD.prg" />
     <Compile Include="Other\DELIM.prg" />
     <Compile Include="Other\SDF.prg" />
     <Compile Include="Support.prg" />

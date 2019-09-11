@@ -76,11 +76,11 @@ namespace XSharp.Build {
         protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands) {
             int iResult;
             DateTime start = DateTime.Now;
-            Log.LogMessageFromText("Creating Native Resource file: \"" + this.outputFileName + "\"", MessageImportance.High);
+            Log.LogMessageFromText("Creating Native Resource file: \"" + this.outputFileName + "\"", MessageImportance.Normal);
             iResult = base.ExecuteTool(pathToTool, responseFileCommands, commandLineCommands);
             var time = DateTime.Now - start;
             var timestring = time.ToString();
-            Log.LogMessageFromText("Native Resource Compilation time: " + timestring, MessageImportance.High);
+            Log.LogMessageFromText("Native Resource Compilation time: " + timestring, MessageImportance.Normal);
             return iResult;
         }
 

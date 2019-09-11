@@ -30,35 +30,35 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
 	PROTECT _BlankBuffer    AS BYTE[]
 	INTERNAL _isValid        AS LOGIC    // Current Position is Valid
 	PROTECT _HasMemo		AS LOGIC
-	
+	PROTECT _wasChanged     AS LOGIC
 	
         //PROTECT _HasTags		AS LOGIC
         //PROTECT _HasAutoInc		AS LOGIC
         //PROTECT _HasTimeStamp	AS LOGIC
         //PROTECT _LastUpdate	    AS DateTime
-	PROTECT _RecCount		AS LONG
-	PROTECT _RecNo			AS LONG
+	    PROTECT _RecCount		AS LONG
+	    PROTECT _RecNo			AS LONG
         //PROTECT _Temporary		AS LOGIC
-	PROTECT _RecordChanged	AS LOGIC 	// Current record has changed ?
-	PROTECT _Positioned		AS LOGIC 	//
+	    PROTECT _RecordChanged	AS LOGIC 	// Current record has changed ?
+	    PROTECT _Positioned		AS LOGIC 	//
         //PROTECT _Appended		AS LOGIC	// Record has been added ?
-	PROTECT _Deleted		AS LOGIC	// Record has been deleted ?
+    	PROTECT _Deleted		AS LOGIC	// Record has been deleted ?
         //PROTECT _HeaderDirty	AS LOGIC	// Header is dirty ?
-	PROTECT _fLocked		AS LOGIC    // File Locked ?
-	PROTECT _HeaderLocked	AS LOGIC
+    	PROTECT _fLocked		AS LOGIC    // File Locked ?
+    	PROTECT _HeaderLocked	AS LOGIC
         //PROTECT _PackMemo		AS LOGIC
-	INTERNAL _OpenInfo		AS DbOpenInfo // current dbOpenInfo structure in OPEN/CREATE method
-	PROTECT _Locks			AS List<LONG>
+    	INTERNAL _OpenInfo		AS DbOpenInfo // current dbOpenInfo structure in OPEN/CREATE method
+    	PROTECT _Locks			AS List<LONG>
         //PROTECT _DirtyRead		AS LONG
         //PROTECT _HasTrigger		AS LOGIC
         //PROTECT _Encrypted		AS LOGIC	// Current record Encrypted
         //PROTECT _TableEncrypted 	AS LOGIC	// Whole table encrypted
         //PROTECT _CryptKey		AS STRING
         //PROTRECT _Trigger		as DbTriggerDelegate
-	PROTECT _oIndex			AS BaseIndex
-	PROTECT _Hot            AS LOGIC
-	PROTECT _lockScheme     AS DbfLocking
-	PROTECT _NewRecord      AS LOGIC
+	    PROTECT _oIndex			AS BaseIndex
+	    PROTECT _Hot            AS LOGIC
+	    PROTECT _lockScheme     AS DbfLocking
+	    PROTECT _NewRecord      AS LOGIC
         PROTECT INTERNAL _NullColumn    AS DbfNullColumn // Column definition for _NullFlags, used in DBFVFP driver
         PROTECT INTERNAL _NullCount      := 0 AS LONG   // to count the NULL and Length bits for DBFVFP
 	
@@ -263,7 +263,7 @@ METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
 							column:NewRecord(SELF:_RecordBuffer)
 						ENDIF   
 					NEXT
-                // Now, update state
+                    // Now, update state
 					SELF:_UpdateRecCount(SELF:_RecCount+1)
 					SELF:_RecNo         := SELF:_RecCount
 					SELF:_EOF           := FALSE
@@ -272,6 +272,7 @@ METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
 					SELF:_BufferValid   := TRUE
 					SELF:_isValid       := TRUE
 					SELF:_NewRecord     := TRUE
+                    SELF:_wasChanged    := TRUE 
                     // Mark RecordBuffer and Header as Hot
 					SELF:_Hot           := TRUE
                     // Now, Save
@@ -287,8 +288,9 @@ METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
 RETURN isOk
 
 PRIVATE METHOD _UpdateRecCount(nCount AS LONG) as LOGIC
-	SELF:_RecCount := nCount
+	SELF:_RecCount      := nCount
 	SELF:_Header:isHot  := TRUE
+    SELF:_wasChanged    := TRUE
 RETURN SELF:_writeHeader()
 
 
@@ -776,28 +778,26 @@ METHOD Close() 			AS LOGIC
     //
 		IF isOk 
 			SELF:UnLock(0)
-        //
-			IF !SELF:_ReadOnly
+			IF !SELF:_ReadOnly 
 				SELF:Flush()
 			ENDIF
 			IF SELF:_HeaderLocked 
 				SELF:HeaderLock( DbLockMode.UnLock )
 			ENDIF
-        //
-			TRY
-				isOk := FClose( SELF:_hFile )
-				IF SELF:_HasMemo 
-					SELF:CloseMemFile()
-				ENDIF
+        ENDIF
+		TRY
+			isOk := FClose( SELF:_hFile )
+			IF SELF:_HasMemo 
+				SELF:CloseMemFile()
+			ENDIF
 				
-				isOk := SUPER:Close() .AND. isOk
-			CATCH ex AS Exception
-				isOk := FALSE
-				SELF:_dbfError(ex, SubCodes.ERDD_CLOSE_FILE,GenCode.EG_CLOSE,  "DBF.Close") 
+			isOk := SUPER:Close() .AND. isOk
+		CATCH ex AS Exception
+			isOk := FALSE
+			SELF:_dbfError(ex, SubCodes.ERDD_CLOSE_FILE,GenCode.EG_CLOSE,  "DBF.Close") 
 				
-			END TRY
-			SELF:_hFile := F_ERROR
-		ENDIF
+		END TRY
+		SELF:_hFile := F_ERROR
 	ENDIF
 RETURN isOk
 
@@ -1314,8 +1314,9 @@ VIRTUAL PROTECTED METHOD _writeRecord() AS LOGIC
 			SELF:_DbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
 			isOk := FALSE
 		ELSE
-        // Write Current Data Buffer
-        // Record pos is One-Based
+            SELF:_wasChanged := TRUE
+            // Write Current Data Buffer
+            // Record pos is One-Based
 			LOCAL recordPos AS LONG
 			
 			recordPos := SELF:_HeaderLength + ( SELF:_RecNo - 1 ) * SELF:_RecordLength
@@ -1502,7 +1503,8 @@ METHOD Flush() 			AS LOGIC
 		RETURN FALSE
 	ENDIF
 	isOk := SELF:GoCold()
-	IF isOk
+
+	IF isOk .and. SELF:_wasChanged
 		IF SELF:Shared 
 			SELF:HeaderLock( DbLockMode.Lock )
 		ENDIF
@@ -1511,8 +1513,8 @@ METHOD Flush() 			AS LOGIC
 		IF SELF:Shared 
 			SELF:HeaderLock( DbLockMode.UnLock )
 		ENDIF
+    	FFlush( SELF:_hFile )
 	ENDIF
-	FFlush( SELF:_hFile )
     //
 	IF SELF:HasMemo
 		isOk := _Memo:Flush()

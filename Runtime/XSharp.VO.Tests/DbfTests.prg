@@ -9,6 +9,8 @@ USING System.Linq
 USING System.Text
 USING XUnit
 USING System.Globalization
+USING System.Threading
+USING System.IO
 
 BEGIN NAMESPACE XSharp.VO.Tests
 
@@ -1978,12 +1980,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
             DbUseArea(TRUE,"DBFNTX",cDbf)
             DbCreateIndex(cDbf,"KEY")
             DbAppend()
-            var aValues := {"A","B","C","D","E","F"}
-            FOREACH sValue as STRING in aValues
+            VAR aValues := {"A","B","C","D","E","F"}
+            FOREACH sValue AS STRING IN aValues
                 DbAppend()
                 FieldPut(1, sValue)
             NEXT
-            FOREACH sValue as STRING in aValues
+            FOREACH sValue AS STRING IN aValues
                 Assert.True(DbSeek(sValue))
                 Assert.True(Found())
             NEXT
@@ -1993,11 +1995,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
             DbUseArea(TRUE,"DBFCDX",cDbf)
             DbCreateIndex(cDbf,"KEY")
             DbAppend()
-            FOREACH sValue as STRING in aValues
+            FOREACH sValue AS STRING IN aValues
                 DbAppend()
                 FieldPut(1, sValue)
             NEXT
-            FOREACH sValue as STRING in aValues
+            FOREACH sValue AS STRING IN aValues
                 Assert.True(DbSeek(sValue))
                 Assert.True(Found())
             NEXT
@@ -2075,6 +2077,76 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbCloseArea()
 		RETURN
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD TestDBFFileStamps() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL dtDbf, dtIndex, dtMemo AS DateTime
+
+			cDbf := GetTempFileName()
+			CreateDatabase(cDbf, {{"TEST","C",10,0}} , {"aa","bb"})
+			DbCloseArea()
+			dtDbf := File.GetLastWriteTime(cDbf + ".dbf")
+			Thread.Sleep(100)
+
+			DbUseArea(,,cDbf)
+			DbCloseArea()
+			Assert.True(File.GetLastWriteTime(cDbf + ".dbf") == dtDbf)
+
+			DbUseArea(,,cDbf)
+			DbGoTop()
+			DbGoBottom()
+			DbSkip()
+			DbGoto(1)
+			DbCloseArea()
+			Assert.True(File.GetLastWriteTime(cDbf + ".dbf") == dtDbf)
+			
+
+
+			RddSetDefault("DBFNTX")
+			cDbf := GetTempFileName()
+			CreateDatabase(cDbf, {{"TEST","C",10,0},{"TEST2","M",10,0}} , {"aa","bb"})
+			FieldPut(2 ,"memo")
+			DbCreateIndex(cDbf,"TEST + TEST2")
+			DbCloseArea()
+			dtDbf := File.GetLastWriteTime(cDbf + ".dbf")
+			dtIndex := File.GetLastWriteTime(cDbf + ".ntx")
+			dtMemo := File.GetLastWriteTime(cDbf + ".dbt")
+			Thread.Sleep(100)
+
+			DbUseArea(,,cDbf)
+			DbGoBottom()
+			DbGoTop()
+			DbSkip(-1)
+			DbGoto(1)
+			DbCloseArea()
+			Assert.True(File.GetLastWriteTime(cDbf + ".dbf") == dtDbf)
+			Assert.True(File.GetLastWriteTime(cDbf + ".dbt") == dtMemo)
+			Assert.True(File.GetLastWriteTime(cDbf + ".ntx") == dtIndex)
+
+
+
+			RddSetDefault("DBFCDX")
+			cDbf := GetTempFileName()
+			CreateDatabase(cDbf, {{"TEST","C",10,0},{"TEST2","M",10,0}} , {"aa","bb"})
+			FieldPut(2 ,"memo")
+			DbCreateIndex(cDbf,"TEST + TEST2")
+			DbCloseArea()
+			dtDbf := File.GetLastWriteTime(cDbf + ".dbf")
+			dtIndex := File.GetLastWriteTime(cDbf + ".cdx")
+			dtMemo := File.GetLastWriteTime(cDbf + ".fpt")
+			Thread.Sleep(100)
+
+			DbUseArea(,,cDbf)
+			DbGoBottom()
+			DbGoTop()
+			DbSkip(-1)
+			DbGoto(1)
+			DbCloseArea()
+			Assert.True(File.GetLastWriteTime(cDbf + ".dbf") == dtDbf)
+			Assert.True(File.GetLastWriteTime(cDbf + ".fpt") == dtMemo)
+			Assert.True(File.GetLastWriteTime(cDbf + ".cdx") == dtIndex)
+		RETURN
+
 
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
@@ -2088,6 +2160,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			CreateDatabase(cFileName, aFields , {})
 		STATIC INTERNAL METHOD CreateDatabase(cFileName AS STRING, aFields AS ARRAY, aValues AS ARRAY) AS VOID
 			FErase ( cFileName + IndexExt() )
+			FErase ( cFileName + ".fpt" )
+			FErase ( cFileName + ".dbt" )
 			DbCreate( cFileName , aFields)
 			IF ALen(aValues) == 0
 				RETURN

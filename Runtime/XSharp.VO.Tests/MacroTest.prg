@@ -59,7 +59,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD FunctionOverloadTest AS VOID
 			LOCAL cMacro AS STRING
 			LOCAL bMacro AS USUAL
-		    cMacro := "Left('abcdefg',2)" // not existing field
+		    cMacro := "Left('abcdefg',2)" // should call my replacement function
 			bMacro := MCompile(cMacro)
 
             Assert.Equal("MyLeft", eval(bMacro))

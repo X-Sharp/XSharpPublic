@@ -2471,7 +2471,7 @@ BEGIN NAMESPACE XSharp
                 _uvalue := u
 
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
-            PUBLIC PROPERTY @@Value AS OBJECT GET _uvalue:VALUE
+            PUBLIC PROPERTY @@Value AS OBJECT GET _uvalue:Value
             PUBLIC PROPERTY Type  AS __UsualType GET _uvalue:_usualType
 
         END CLASS

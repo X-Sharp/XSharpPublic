@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,6 +27,27 @@ namespace XSharp.MacroCompiler
         internal bool HasGetAccess { get => access_.HasFlag(AccessMode.Get); }
         internal bool HasSetAccess { get => access_.HasFlag(AccessMode.Set); }
         internal bool HasRefAccess { get => access_.HasFlag(AccessMode.Ref); }
+        internal static Symbol Join(Symbol s, Symbol t)
+        {
+            if (t != null)
+            {
+                if (s != null)
+                {
+                    if (!(s is SymbolList))
+                        s = new SymbolList(s);
+                    if (!(t is SymbolList))
+                        (s as SymbolList).Add(t);
+                    else
+                    {
+                        foreach (var ts in (t as SymbolList).Symbols)
+                            (s as SymbolList).Add(ts);
+                    }
+                }
+                else
+                    return t;
+            }
+            return s;
+        }
     }
     internal abstract partial class TypedSymbol : Symbol
     {

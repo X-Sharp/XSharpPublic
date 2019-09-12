@@ -36,7 +36,11 @@ BEGIN NAMESPACE XSharp
         #region constructors
         /// <exclude />
         STATIC CONSTRUCTOR
-            _NIL := __Usual{__UsualType.Void}
+            IF RuntimeState.Dialect == XSharpDialect.FoxPro
+                _NIL := __Usual{__UsualType.Logic}
+            ELSE
+                _NIL := __Usual{__UsualType.Void}
+            ENDIF
             RETURN
 
         [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
@@ -938,8 +942,20 @@ BEGIN NAMESPACE XSharp
 
 
         INTERNAL METHOD UsualEquals( rhs AS __Usual, op AS STRING) AS LOGIC
-            IF rhs:IsNil
-                RETURN SELF:IsNil
+            IF SELF:IsNil .OR. rhs:IsNil
+                SWITCH RuntimeState.Dialect
+                CASE XSharpDialect.XPP
+                    RETURN SELF:IsNil .AND. rhs:IsNil   // only true when both are NIL
+                CASE XSharpDialect.FoxPro
+                    // Fox only allows comparison when both are NIL
+                    IF SELF:IsNil .AND. rhs:IsNil
+                        RETURN TRUE
+                    ENDIF
+                    THROW BinaryError(op, __CavoStr(VOErrors.ARGSINCOMPATIBLE), SELF:IsNil, SELF, rhs)
+                OTHERWISE
+                    // Exact equals, so no true when both are NIL
+                    RETURN SELF:IsNil .AND. rhs:IsNil
+                END SWITCH
             ENDIF
             SWITCH SELF:_usualType
                 CASE __UsualType.Object
@@ -948,10 +964,7 @@ BEGIN NAMESPACE XSharp
                     ELSE
                         NOP // error below
                     ENDIF
-
-                CASE __UsualType.Void
-                    RETURN rhs:_usualType == __UsualType.Void
-
+  
                 CASE __UsualType.Long
                     SWITCH rhs:_usualType
                         CASE __UsualType.Long		; RETURN SELF:_intValue == rhs:_intValue
@@ -2435,7 +2448,16 @@ BEGIN NAMESPACE XSharp
             IF lhs:IsString
                 RETURN __StringEquals( lhs:_stringValue, rhs)
             ELSEIF lhs:IsNil
-            	RETURN FALSE
+                SWITCH RuntimeState.Dialect
+                CASE XSharpDialect.XPP
+                    RETURN FALSE            // NIL is not equal to anything in Xbase++
+                CASE XSharpDialect.FoxPro
+                    // Fox throws an error
+                    THROW BinaryError("<>", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
+                OTHERWISE
+                    // VO treats NIL as "" for inexact comparison
+                    RETURN __StringEquals( "", rhs)
+                END SWITCH
             ELSE
                 THROW BinaryError("=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
             ENDIF
@@ -2444,20 +2466,49 @@ BEGIN NAMESPACE XSharp
         STATIC METHOD __InexactNotEquals( lhs AS __Usual, rhs AS __Usual ) AS LOGIC
             // emulate VO behavior for "" and NIL
             // "" = NIL but also "" != NIL, NIL = "" and NIL != ""
-            IF lhs:IsString
-                IF rhs:IsString
-                    RETURN __StringNotEquals( lhs:_stringValue, rhs:_stringValue)
-                ELSEIF rhs:IsNil .AND. lhs:_stringValue != NULL .AND. lhs:_stringValue:Length == 0
-                    RETURN FALSE
-                ENDIF
+            IF lhs:IsNil .OR. rhs:IsNil
+                SWITCH RuntimeState.Dialect
+                CASE XSharpDialect.XPP
+                    IF lhs:IsNil .AND. rhs:IsNil
+                        RETURN FALSE        // when both are NIL then equal, so notequals returns false
+                    ELSE
+                        RETURN TRUE         // one is NIL so notequals returns TRUE
+                    ENDIF
+                CASE XSharpDialect.FoxPro
+                    // Fox only allows comparisons between NILS
+                    IF lhs:IsNil .AND. rhs:IsNil
+                        return FALSE
+                    ELSE
+                        THROW BinaryError("<>", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
+                    ENDIF
+                OTHERWISE
+                    // treat NIL as ""
+                    IF rhs:IsString  
+                        RETURN __StringNotEquals( "", rhs:_stringValue)
+                    ELSEIF lhs:IsString 
+                        RETURN __StringNotEquals( lhs:_stringValue,"")
+                    ENDIF
+                END SWITCH
+            endif
+
+            IF lhs:IsString .AND. rhs:IsString
+                // we have already dealt with NIL values above
+                RETURN __StringNotEquals( lhs:_stringValue, rhs:_stringValue)
             ENDIF
-            IF rhs:IsString .AND. lhs:IsNil .AND. rhs:_stringValue != NULL .AND. rhs:_stringValue:Length == 0
-                RETURN FALSE
-            ELSE
-                RETURN ! lhs:UsualEquals(rhs, "<>")
-            ENDIF
+            RETURN ! lhs:UsualEquals(rhs, "<>")
+
             /// <summary>This method is used by the compiler for code that does an inexact comparison.</summary>
         STATIC METHOD __InexactNotEquals( lhs AS __Usual, rhs AS STRING ) AS LOGIC
+            IF lhs:IsNil 
+                SWITCH RuntimeState.Dialect
+                CASE XSharpDialect.XPP
+                    return true         // one is NIL so notequals returns TRUE
+                CASE XSharpDialect.FoxPro
+                    THROW BinaryError("<>", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
+                OTHERWISE
+                    RETURN __StringNotEquals( "", rhs)
+                END SWITCH
+            endif
             IF lhs:IsString
                 RETURN __StringNotEquals( lhs:_stringValue, rhs)
             ELSE

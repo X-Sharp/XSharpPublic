@@ -140,7 +140,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("123.456", AsString(Val("123.456")))
 			Assert.Equal("123.456", AsString(Val("123.456")))
 			Assert.Equal("123.456", AsString(Val("  123.456"  )))
-			Assert.Equal("123.456", AsString(Val("  123,456"  )))
 			Assert.Equal("-123.4567", AsString(Val(" - 123.4567")))
 
 			Assert.Equal( "  12345678901234567000", Str(Val("12345678901234567890"),22,-1) )
@@ -151,6 +150,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("-255", AsString(Val(" - 0xFF")))
 			Assert.Equal("65534", AsString(Val("0xFFFE")))
 			Assert.Equal("2147483648", AsString(Val(" 0X80000000")))
+
+            SetDecimalSep(',')
+            SetThousandSep('.') 
+			Assert.Equal("123,456", AsString(Val("  123.456"  )))
+			Assert.Equal("123,456", AsString(Val("  123,456"  )))
 
 		[Fact, Trait("Category", "Val")];
 		METHOD ValTests2() AS VOID

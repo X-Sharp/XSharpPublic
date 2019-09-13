@@ -5138,6 +5138,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Functions cannot have an INIT or EXIT clause..
+        /// </summary>
+        internal static string ERR_FunctionsCannotHaveInitExit {
+            get {
+                return ResourceManager.GetString("ERR_FunctionsCannotHaveInitExit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos;: static types cannot be used as type arguments.
         /// </summary>
         internal static string ERR_GenericArgIsStaticClass {
@@ -5867,7 +5876,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Interfaces cannot contain constructors.
+        ///   Looks up a localized string similar to Interfaces cannot contain constructors or destructors.
         /// </summary>
         internal static string ERR_InterfacesCantContainConstructors {
             get {

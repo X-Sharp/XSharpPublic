@@ -55,9 +55,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // The rest is default
                 var name = System.IO.Path.GetFileNameWithoutExtension(_fileName);
                 var entity = new XP.EntityContext(context, 0);
-                var func = new XP.FunctionContext(entity, 0);
+                var func = new XP.FuncprocContext(entity, 0);
                 var id = new XP.IdentifierContext(func, 0);
-                var token = new XSharpToken(XP.ID, name);
+                var token = new XSharpToken(XP.FUNCTION, "FUNCTION");
+                token.line = 1;
+                token.charPositionInLine = 1;
+                func.T = token;
+                token = new XSharpToken(XP.ID, name);
                 token.line = 1;
                 token.charPositionInLine = 1;
                 id.Start = id.Stop = token;
@@ -76,7 +80,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 func.Stop = func.StmtBlk.Stop;
                 func.AddChild(func.Id);
                 func.AddChild(func.StmtBlk);
-                ExitFunction(func);     // Generate function
+                ExitFuncproc(func);     // Generate function
                 entity.Start = func.Start;
                 entity.Stop = func.Stop;
                 entity.AddChild(func);

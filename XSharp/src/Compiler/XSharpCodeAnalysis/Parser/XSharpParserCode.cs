@@ -349,7 +349,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public StatementBlockContext Statements { get { return StmtBlk; } }
         }
 
-        public partial class ProcedureContext : IEntityWithBodyContext, IGlobalEntityContext
+        public partial class FuncprocContext : IEntityWithBodyContext, IGlobalEntityContext
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -361,19 +361,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public StatementBlockContext Statements => StmtBlk;
         }
 
-        public partial class FunctionContext : IEntityWithBodyContext, IGlobalEntityContext
-        {
-            EntityData data = new EntityData();
-            public EntityData Data => data;
-            public ParameterListContext Params => this.ParamList;
-            public DatatypeContext ReturnType => this.Type;
-            public String Name => ParentName + ShortName;
-            public String ShortName => this.Id.GetText();
-            public FuncprocModifiersContext FuncProcModifiers => Modifiers;
-            public StatementBlockContext Statements => StmtBlk;
-
-        }
-
+  
         public partial class MethodContext : IEntityWithBodyContext
         {
             EntityData data = new EntityData();

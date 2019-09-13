@@ -847,7 +847,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return GenerateQualifiedName(XSharpQualifiedFunctionNames.UsualNIL);
             else
                 return GenerateQualifiedName(VulcanQualifiedFunctionNames.UsualNIL);
-            //return MakeDefault(_usualType);
         }
         protected override ExpressionSyntax GenerateMissingExpression(bool AddError)
         {
@@ -1056,7 +1055,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                         var val = GenerateGetClipperParam(GenerateLiteral(i));
                         exp = GenerateMemVarPut(GenerateLiteral(name), val);
-                        stmts.Add(GenerateExpressionStatement(exp));
+                        var stmt = GenerateExpressionStatement(exp);
+                        memvar.Put(stmt);
+                        stmts.Add(stmt);
                     }
                     context.Put(MakeBlock(stmts));
                     _pool.Free(stmts);
@@ -1073,14 +1074,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (memvar.Expression != null)
                         {
                             exp = GenerateMemVarPut(GenerateLiteral(name), memvar.Expression.Get<ExpressionSyntax>());
-                            stmts2.Add(GenerateExpressionStatement(exp));
+                            var stmt = GenerateExpressionStatement(exp);
+                            memvar.Put(stmt);
+                            stmts2.Add(stmt);
                         }
                         else if (!isprivate)
                         {
                             // Assign FALSE to PUBLIC variables or TRUE when the name is CLIPPER
                             bool publicvalue = name.ToUpper() == "CLIPPER";
                             exp = GenerateMemVarPut(GenerateLiteral(name), GenerateLiteral(publicvalue));
-                            stmts2.Add(GenerateExpressionStatement(exp));
+                            var stmt = GenerateExpressionStatement(exp);
+                            memvar.Put(stmt);
+                            stmts2.Add(stmt);
                         }
                     }
                     context.Put(MakeBlock(stmts2));
@@ -1157,104 +1162,88 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             XP.ArgumentListContext args = null,
             bool isInInterface = false)
         {
-            if (modifiers.Any((int)SyntaxKind.ExternKeyword))
+            var attributes = atts?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+            var parameters = paramlist?.Get<ParameterListSyntax>() ?? EmptyParameterList();
+            var body = stmtblock?.Get<BlockSyntax>();
+            TypeSyntax returntype = null;
+            if (chain != null && context.Data.HasClipperCallingConvention)
             {
-                if (stmtblock?._Stmts?.Count > 0)
-                {
-                    errorcontext.AddError(new ParseErrorData(stmtblock, ErrorCode.ERR_ExternHasBody));
-                }
-                stmtblock = null;
+                var chainArgs = args?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
+                var chainExpr = MakeSimpleMemberAccess(
+                    chain.Start.Type == XP.SELF ? GenerateSelf() : GenerateSuper(),
+                    GenerateSimpleName(".ctor"));
+                body = MakeBlock(MakeList<StatementSyntax>(
+                    GenerateExpressionStatement(_syntaxFactory.InvocationExpression(chainExpr, chainArgs)),
+                    body));
+                chain = null;
             }
-            if (isInInterface)
+            ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
+            SyntaxToken typeId = null;
+            if (context is XP.MethodContext)
             {
-                errorcontext.AddError(new ParseErrorData(errorcontext.Start, ErrorCode.ERR_InterfacesCantContainConstructors));
+                var clsm = context as XP.MethodContext;
+                if (clsm.ClassId != null)
+                {
+                    // Method Init Class Foo
+                    typeId = clsm.ClassId.Get<SyntaxToken>();
+                }
+            }
+            else if (context is XP.ConstructorContext)
+            {
+                var clsc = context as XP.ConstructorContext;
+                if (clsc.ClassId != null)
+                {
+                    // Method Init Class Foo
+                    typeId = clsc.ClassId.Get<SyntaxToken>();
+                }
+            }
+            else if (context is XP.XppmethodContext)
+            {
+                var clsm = context as XP.XppmethodContext;
+                if (clsm.ClassId != null)
+                {
+                    // Method Init Class Foo
+                    typeId = clsm.ClassId.Get<SyntaxToken>();
+                }
+            }
+
+            if (typeId == null)
+            {
+                if (context.Parent is XP.ClsmethodContext |
+                    context.Parent is XP.ClsctorContext |
+                    context.Parent is XP.ClsdtorContext)
+                {
+                    {
+                        typeId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
+                            ?? (context.Parent.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
+                            ?? (context.Parent.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
+                    }
+                }
+                else if (context.Parent is XP.XppclassMemberContext)
+                {
+                    typeId = (context.Parent.Parent as XP.XppclassContext)?.Id.Get<SyntaxToken>();
+                }
+                else
+                {
+                    typeId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
+                        ?? (context.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
+                        ?? (context.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
+                }
+            }
+            if (typeId == null)
+            {
                 return null;
             }
-            else
-            {
-                var attributes = atts?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
-                var parameters = paramlist?.Get<ParameterListSyntax>() ?? EmptyParameterList();
-                var body = stmtblock?.Get<BlockSyntax>();
-                TypeSyntax returntype = null;
-                if (chain != null && context.Data.HasClipperCallingConvention)
-                {
-                    var chainArgs = args?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
-                    var chainExpr = MakeSimpleMemberAccess(
-                        chain.Start.Type == XP.SELF ? GenerateSelf() : GenerateSuper(),
-                        GenerateSimpleName(".ctor"));
-                    body = MakeBlock(MakeList<StatementSyntax>(
-                        GenerateExpressionStatement(_syntaxFactory.InvocationExpression(chainExpr, chainArgs)),
-                        body));
-                    chain = null;
-                }
-                ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
-                SyntaxToken typeId = null;
-                if (context is XP.MethodContext)
-                {
-                    var clsm = context as XP.MethodContext;
-                    if (clsm.ClassId != null)
-                    {
-                        // Method Init Class Foo
-                        typeId = clsm.ClassId.Get<SyntaxToken>();
-                    }
-                }
-                else if (context is XP.ConstructorContext)
-                {
-                    var clsc = context as XP.ConstructorContext;
-                    if (clsc.ClassId != null)
-                    {
-                        // Method Init Class Foo
-                        typeId = clsc.ClassId.Get<SyntaxToken>();
-                    }
-                }
-                else if (context is XP.XppmethodContext)
-                {
-                    var clsm = context as XP.XppmethodContext;
-                    if (clsm.ClassId != null)
-                    {
-                        // Method Init Class Foo
-                        typeId = clsm.ClassId.Get<SyntaxToken>();
-                    }
-                }
-
-                if (typeId == null)
-                {
-                    if (context.Parent is XP.ClsmethodContext |
-                        context.Parent is XP.ClsctorContext |
-                        context.Parent is XP.ClsdtorContext)
-                    {
-                        {
-                            typeId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
-                                ?? (context.Parent.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
-                                ?? (context.Parent.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
-                        }
-                    }
-                    else if (context.Parent is XP.XppclassMemberContext)
-                    {
-                        typeId = (context.Parent.Parent as XP.XppclassContext)?.Id.Get<SyntaxToken>();
-                    }
-                    else
-                    {
-                        typeId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
-                            ?? (context.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
-                            ?? (context.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
-                    }
-                }
-                if (typeId == null)
-                {
-                    return null;
-                }
-                return _syntaxFactory.ConstructorDeclaration(
-                    attributeLists: attributes,
-                    modifiers: modifiers,
-                    identifier: typeId,
-                    parameterList: parameters,
-                    initializer: createInitializer(chain),
-                    body: body,
-                    expressionBody: null,
-                    semicolonToken: (stmtblock?._Stmts?.Count > 0) ? null :
-                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            }
+            return _syntaxFactory.ConstructorDeclaration(
+                attributeLists: attributes,
+                modifiers: modifiers,
+                identifier: typeId,
+                parameterList: parameters,
+                initializer: createInitializer(chain),
+                body: body,
+                expressionBody: null,
+                semicolonToken: (stmtblock?._Stmts?.Count > 0) ? null :
+                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
 
         }
 
@@ -1266,51 +1255,36 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             XSharpParserRuleContext errorcontext,
             bool isInInterface = false)
         {
-            if (modifiers.Any((int)SyntaxKind.ExternKeyword))
+            // this is not caught in the ParserErrorAnalysis because this is an Axit method
+            // no return statement needed in DESTRUCTOR
+            // body = AddMissingReturnStatement(body, context.StmtBlk, null);
+            SyntaxToken parentId = null;
+            if (context is XP.MethodContext)
             {
-                if (stmtblock?._Stmts?.Count > 0)
+                var clsm = context as XP.MethodContext;
+                if (clsm.ClassId != null)
                 {
-                    errorcontext.AddError(new ParseErrorData(stmtblock, ErrorCode.ERR_ExternHasBody, "Destructor"));
+                    // Method Axit Class Foo
+                    parentId = clsm.ClassId.Get<SyntaxToken>();
                 }
-                stmtblock = null;
             }
-            if (isInInterface)
+            if (parentId == null)
             {
-                errorcontext.AddError(new ParseErrorData(errorcontext.Start, ErrorCode.ERR_InterfacesCantContainConstructors));
+                parentId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
+                    ?? (context.Parent.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
+                    ?? (context.Parent.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
             }
-            else
-            {
-                // no return statement needed in DESTRUCTOR
-                // body = AddMissingReturnStatement(body, context.StmtBlk, null);
-                SyntaxToken parentId = null;
-                if (context is XP.MethodContext)
-                {
-                    var clsm = context as XP.MethodContext;
-                    if (clsm.ClassId != null)
-                    {
-                        // Method Axit Class Foo
-                        parentId = clsm.ClassId.Get<SyntaxToken>();
-                    }
-                }
-                if (parentId == null)
-                {
-                    parentId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
-                        ?? (context.Parent.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
-                        ?? (context.Parent.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
-                }
-                if (parentId == null)
-                    return null;
-                return _syntaxFactory.DestructorDeclaration(
-                    attributeLists: atts?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                    modifiers: modifiers,
-                    tildeToken: SyntaxFactory.MakeToken(SyntaxKind.TildeToken),
-                    identifier: parentId,
-                    parameterList: EmptyParameterList(),
-                    body: stmtblock.Get<BlockSyntax>(),
-                    expressionBody: null,
-                    semicolonToken: (stmtblock != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            }
-            return null;
+            if (parentId == null)
+                return null;
+            return _syntaxFactory.DestructorDeclaration(
+                attributeLists: atts?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                modifiers: modifiers,
+                tildeToken: SyntaxFactory.MakeToken(SyntaxKind.TildeToken),
+                identifier: parentId,
+                parameterList: EmptyParameterList(),
+                body: stmtblock.Get<BlockSyntax>(),
+                expressionBody: null,
+                semicolonToken: (stmtblock != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
         }
 
 
@@ -1436,8 +1410,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.Data.HasClipperCallingConvention = false;
             }
-            var ctor = createConstructor(
-                context, mods, context.Attributes, context.ParamList, context.StmtBlk, context,
+            var ctor = createConstructor(context, mods, context.Attributes, context.ParamList, context.StmtBlk, context,
                 context.Chain, context.Chain?.ArgList, context.isInInterface());
             if (ctor != null)
             {
@@ -3187,13 +3160,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             bool isEntryPoint = false;
             bool hasConvention = false;
-            if (context is XP.FunctionContext fc)
+            if (context is XP.FuncprocContext fc)
             {
                 isEntryPoint = fc.Id.GetText().ToLower() == "start";
-            }
-            else if (context is XP.ProcedureContext pc)
-            {
-                isEntryPoint = pc.Id.GetText().ToLower() == "start";
             }
 
             context.Data.HasTypedParameter = false;
@@ -3803,15 +3772,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             
             }
         }
-        public override void EnterFunction([NotNull] XP.FunctionContext context)
+        public override void EnterFuncproc([NotNull] XP.FuncprocContext context)
         {
-            base.EnterFunction(context);
-            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Convention, context.Type);
-        }
-
-        public override void EnterProcedure([NotNull] XP.ProcedureContext context)
-        {
-            base.EnterProcedure(context);
+            base.EnterFuncproc(context);
             Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Convention, context.Type);
         }
 

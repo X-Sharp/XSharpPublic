@@ -209,11 +209,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // check if all declared methods have been implemented
             // and if so, then add the methods to the members list
             string className = context.Id.GetText();
-            if (context._BaseTypes.Count > 1)
-            {
-                context.AddError(new ParseErrorData(context, ErrorCode.ERR_XPPMultipleInheritance));
-            }
-            else if (context._BaseTypes.Count == 1)
+            if (context._BaseTypes.Count == 1)
             {
                 basetype = context._BaseTypes[0];
             }

@@ -160,6 +160,41 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             checkMissingKeyword(context.e, context, "END [WITH]");
         }
+
+        public override void ExitFuncproc([NotNull] XSharpParser.FuncprocContext context)
+        {
+            if (context.T.Type != XSharpParser.PROCEDURE)
+            {
+                if (context.InitExit != null)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.InitExit, ErrorCode.ERR_FunctionsCannotHaveInitExit));
+                }
+            }
+            if (context.T2 != null)
+            {
+                XSharpToken endToken = (XSharpToken)context.T2;
+                if (endToken != null && endToken.Type != context.T.Type)
+                {
+                    _parseErrors.Add(new ParseErrorData(endToken, ErrorCode.ERR_UnexpectedToken, endToken.SourceSymbol.Text));
+                }
+            }
+        }
+
+        public override void ExitLocalvar([NotNull] XSharpParser.LocalvarContext context)
+        {
+            bool isDim = context.Dim != null;
+            bool hasArraySub = context.ArraySub != null;
+            context.SetSequencePoint();
+            if (isDim && !hasArraySub)
+            {
+                _parseErrors.Add(new ParseErrorData(context.DIM(), ErrorCode.ERR_ArrayInitializerExpected)); 
+            }
+            if (!isDim && hasArraySub && _options.Dialect == XSharpDialect.Core)
+            {
+                _parseErrors.Add(new ParseErrorData(context.ArraySub, ErrorCode.ERR_FeatureNotAvailableInDialect, "Indexed Local", _options.Dialect.ToString()));
+            }
+        }
+
         public override void ExitForStmt([NotNull] XSharpParser.ForStmtContext context)
         {
             checkMissingKeyword(context.e, context, "NEXT");
@@ -322,8 +357,94 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
         }
+        public override void ExitConstructor([NotNull] XSharpParser.ConstructorContext context)
+        {
+            if (context.Modifiers?.EXTERN().Length > 0)
+            {
+                if (context.StmtBlk?._Stmts?.Count > 0)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody, "Constructor"));
+                }
+            }
+            if (context.isInInterface())
+            {
+                _parseErrors.Add(new ParseErrorData(context.c1, ErrorCode.ERR_InterfacesCantContainConstructors));
+            }
+        }
+
+        public override void ExitOperator_([NotNull] XSharpParser.Operator_Context context)
+        {
+            if (context.Modifiers?.EXTERN().Length > 0)
+            {
+                if (context.StmtBlk?._Stmts?.Count > 0)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody, "Operator"));
+                }
+            }
+
+        }
+        public override void ExitClsvars([NotNull] XSharpParser.ClsvarsContext context)
+        {
+            if (context.isInInterface())
+            {
+                _parseErrors.Add(new ParseErrorData(context.Member, ErrorCode.ERR_InterfacesCantContainFields));
+            }
+
+        }
+
+        private void interfacesCannotHaveTypes([NotNull] XSharpParser.ClassmemberContext context)
+        {
+            if (context.isInInterface())
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_InterfacesCannotContainTypes));
+            }
+        }
+
+        public override void ExitNestedClass([NotNull] XSharpParser.NestedClassContext context)
+        {
+            interfacesCannotHaveTypes(context);
+        }
+        public override void ExitNestedDelegate([NotNull] XSharpParser.NestedDelegateContext context)
+        {
+            interfacesCannotHaveTypes(context);
+        }
+
+        public override void ExitNestedEnum([NotNull] XSharpParser.NestedEnumContext context)
+        {
+            interfacesCannotHaveTypes(context);
+        }
+
+        public override void ExitNestedInterface([NotNull] XSharpParser.NestedInterfaceContext context)
+        {
+            interfacesCannotHaveTypes(context);
+        }
+
+        public override void ExitNestedStructure([NotNull] XSharpParser.NestedStructureContext context)
+        {
+            interfacesCannotHaveTypes(context);
+        }
+        public override void ExitDestructor([NotNull] XSharpParser.DestructorContext context)
+        {
+            if (context.Modifiers?.EXTERN().Length > 0)
+            {
+                if (context.StmtBlk?._Stmts?.Count > 0)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody, "Destructor"));
+                }
+            }
+            if (context.isInInterface())
+            {
+                _parseErrors.Add(new ParseErrorData(context.d1, ErrorCode.ERR_InterfacesCantContainConstructors));
+            }
+        }
+
+        
+
         public override void ExitMethod([NotNull] XSharpParser.MethodContext context)
         {
+            var isInInterface = context.isInInterface();
+            var isExtern = context.Modifiers?.EXTERN().Length > 0;
+            var isAbstract = context.Modifiers?.ABSTRACT().Length > 0;
             if (context.T2 != null)
             {
                 XSharpToken endToken = (XSharpToken)context.T2.Token;
@@ -340,6 +461,50 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.ThisAccess, ErrorCode.WRN_FoxThisAccessClause));
             }
+            if (isInInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0)
+            {
+                _parseErrors.Add(new ParseErrorData(context.Id, ErrorCode.ERR_InterfaceMemberHasBody));
+            }
+            if (isInInterface && context.ClassId != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context.ClassId, ErrorCode.ERR_InterfacesCannotContainTypes));
+            }
+            if (isInInterface && _options.VoInitAxitMethods)
+            {
+                var name = context.Id.GetText().ToLower();
+                if (name == "init" || name == "axit")
+                {
+                    _parseErrors.Add(new ParseErrorData(context.Start, ErrorCode.ERR_InterfacesCantContainConstructors));
+                }
+            }
+
+            if (isAbstract)
+            {
+                if (isExtern)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.Modifiers, ErrorCode.ERR_AbstractAndExtern));
+                }
+                if (context.StmtBlk?._Stmts?.Count > 0)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_AbstractHasBody));
+                }
+            }
+            else if (isExtern)
+            {
+                if (context.StmtBlk?._Stmts?.Count > 0)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody, "Method"));
+                }
+            }
+            if (context.T.Token.Type == XSharpParser.ASSIGN || context.T.Token.Type == XSharpParser.ACCESS)
+            {
+                // no type parameters on access and assign
+                if (context.TypeParameters != null || context._ConstraintsClauses.Count > 0)
+                {
+                    context.AddError(new ParseErrorData(context, ErrorCode.Err_TypeParametersAccessAssign));
+                }
+            }
+
         }
         public override void ExitXppclass([NotNull] XSharpParser.XppclassContext context)
         {
@@ -349,6 +514,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_XPPSuperIVarsAlwaysShared));
                 }
+                if (context._BaseTypes.Count > 1)
+                {
+                    context.AddError(new ParseErrorData(context, ErrorCode.ERR_XPPMultipleInheritance));
+                }
+
             }
             else
             {
@@ -498,6 +668,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             checkForGarbage(context.Ignored, "Expression after END CLASS");
         }
+
+        public override void ExitClassvar([NotNull] XSharpParser.ClassvarContext context)
+        {
+            bool isDim = context.Dim != null;
+            bool hasArraySub = context.ArraySub != null;
+            bool isFixed = (context.Parent.Parent as XSharpParser.ClassvarsContext)?.Modifiers?._FIXED != null;
+            if (isDim && !hasArraySub)
+            {
+                _parseErrors.Add(new ParseErrorData(context.DIM(), ErrorCode.ERR_ArrayInitializerExpected));
+            }
+            if (!isDim && hasArraySub && _options.Dialect == XSharpDialect.Core)
+            {
+                _parseErrors.Add(new ParseErrorData(context.ArraySub, ErrorCode.ERR_FeatureNotAvailableInDialect, "Indexed Class variable", _options.Dialect.ToString()));
+            }
+            if (!isDim && isFixed)
+            {
+                _parseErrors.Add(new ParseErrorData(context.Id, ErrorCode.ERR_SyntaxError, "DIM"));
+            }
+        }
+
         public override void ExitStructure_([NotNull] XSharpParser.Structure_Context context)
         {
             checkForGarbage(context.Ignored, "Expression after END STRUCTURE");
@@ -512,7 +702,40 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitProperty([NotNull] XSharpParser.PropertyContext context)
         {
+            var isInInterface = context.isInInterface();
+            var isExtern = context.Modifiers?.EXTERN().Length > 0;
+            var isAbstract = context.Modifiers?.ABSTRACT().Length > 0;
             checkForGarbage(context.Ignored, "Expression after END PROPERTY");
+            bool HasBody = (context.Auto != null || context.Multi != null);
+            if (!HasBody)
+            {
+                foreach (var aCtx in context._LineAccessors)
+                {
+                    if (aCtx.Expr != null && aCtx.ExprList != null)
+                    {
+                        HasBody = true;
+                    }
+                }
+            }
+            if (HasBody)
+            {
+                if (isInInterface)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.Start, ErrorCode.ERR_InterfaceMemberHasBody));
+                }
+                if (isExtern)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.Start, ErrorCode.ERR_ExternHasBody, "Property"));
+                }
+                if (isAbstract)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.Start, ErrorCode.ERR_AbstractHasBody));
+                }
+            }
+            if (isAbstract && context.Modifiers?.EXTERN().Length > 0)
+            {
+                _parseErrors.Add(new ParseErrorData(context.Modifiers, ErrorCode.ERR_AbstractAndExtern));
+            }
         }
         public override void ExitJumpStmt([NotNull] XSharpParser.JumpStmtContext context)
         {

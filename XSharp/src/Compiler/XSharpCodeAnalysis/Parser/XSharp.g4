@@ -61,8 +61,7 @@ entity              : namespace_
                     | vostruct                  // Compatibility (unsafe) structure
                     | vounion                   // Compatibility (unsafe) structure with members aligned at FieldOffSet 0
                     // members of the functions class
-                    | function                  // This will become part of the 'Globals' class
-                    | procedure                 // This will become part of the 'Globals' class
+                    | funcproc                  // This will become part of the 'Globals' class
                     | using_                    // Using Namespace
                     | vodefine                  // This will become part of the 'Globals' class
                     | voglobal                  // This will become part of the 'Globals' class
@@ -80,34 +79,21 @@ entity              : namespace_
 eos                 : EOS+ 
                     ;
 
-function            : (Attributes=attributes)? (Modifiers=funcprocModifiers)?   
-                      F=FUNCTION Id=identifier                             
+funcproc              : (Attributes=attributes)? (Modifiers=funcprocModifiers)?   
+                      T=(FUNCTION|PROCEDURE) Id=identifier                             
                       TypeParameters=typeparameters?                            
                       (ParamList=parameterList)?                                
                       (AS Type=datatype)?                                       
                       (ConstraintsClauses+=typeparameterconstraintsclause)*     
                       (CallingConvention=callingconvention)?                    
+                      InitExit=(INIT1|INIT2|INIT3|EXIT)?                        
                       (EXPORT LOCAL)?                                           // Optional (ignored)
                       (DLLEXPORT STRING_CONST)?                                 // Optional (ignored)
                       end=eos   
                       StmtBlk=statementBlock
-                      (END FUNCTION  Ignored=identifier? EOS )?
+                      (END T2=(FUNCTION|PROCEDURE)  Ignored=identifier? EOS )?
                     ;
 
-procedure           : (Attributes=attributes)? (Modifiers=funcprocModifiers)?   
-                      P=PROCEDURE Id=identifier                            
-                      TypeParameters=typeparameters?                            
-                      (ParamList=parameterList)?
-                      (AS Type=datatype)?                                      // FoxPro allows all types, other dialects only VOID
-                      (ConstraintsClauses+=typeparameterconstraintsclause)*     
-                      (CallingConvention=callingconvention)?                    
-                      InitExit=(INIT1|INIT2|INIT3|EXIT)?                        
-                      (EXPORT LOCAL)?                                           // Optional (ignored)
-                      (DLLEXPORT STRING_CONST)?                                 // Optional (ignored)
-                      end=eos                       
-                      StmtBlk=statementBlock
-                      (END PROCEDURE Ignored=identifier? EOS)?
-                    ;
 
 callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CALLBACK | FASTCALL | THISCALL)
                     ;
@@ -987,14 +973,12 @@ queryContinuation   : INTO Id=identifier Body=queryBody
 
 // All New Vulcan and X# keywords can also be recognized as Identifier
 identifier          : Token=(ID  | KWID)
-                    | VnToken=keywordvn
                     | XsToken=keywordxs
                     | XppToken=keywordxpp
                     | FoxToken=keywordfox
                     ;
 
 identifierString    : Token=(ID | KWID | STRING_CONST)
-                    | VnToken=keywordvn
                     | XsToken=keywordxs
                     | XppToken=keywordxpp
                     | FoxToken=keywordfox
@@ -1064,25 +1048,23 @@ literalValue        : Token=
                     ;
 
 
-keyword             : (KwVo=keywordvo | KwVn=keywordvn | KwXs=keywordxs | KwXpp=keywordxpp | KwFox=keywordfox) ;
+keyword             : (KwVo=keywordvo | KwXs=keywordxs | KwXpp=keywordxpp | KwFox=keywordfox) ;
 
 keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST | CLASS | DLL | DO 
                     | ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FOR | FUNCTION 
                     | HIDDEN | IF | IIF | IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE
                     | PRIVATE | PROCEDURE | PROTECTED | PTR | PUBLIC | RECOVER | RETURN | SELF| SIZEOF | SUPER
                     | TYPEOF | WHILE | TRY | VO_AND | VO_NOT | VO_OR | VO_XOR
-                    // The following new keywords cannot be in the keywordVN list because it will match an expression when used on their own
+                    // The following new keywords cannot be in the keywordxs list because it will match an expression when used on their own
                     | REPEAT | CONSTRUCTOR | CATCH | DESTRUCTOR | FINALLY 
                     )
                     ;
 
 
-keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CHAR | CONST |  DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | INITONLY | INTERNAL
-                    | LOCK | NAMESPACE | NEW | OUT | PARTIAL | REF | SCOPE | SEALED | SET |  TRY | UNICODE |  VALUE | VIRTUAL  
-                    )
-                    ;
-
-keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM 
+keywordxs           : Token=(ABSTRACT | ANSI | AUTO | CHAR | CONST |  DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | INITONLY | INTERNAL
+                    | LOCK | NAMESPACE | NEW | OUT | PARTIAL | REF | SCOPE | SEALED | SET |  TRY | UNICODE |  VALUE | VIRTUAL
+                    // The following did not exist in Vulcan
+                    | ADD | ARGLIST | ASCENDING | ASSEMBLY | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM 
                     | GROUP | INTO | JOIN | LET | MODULE | NAMEOF | NOP | OF | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE 
                     | SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR  | DECIMAL | DATETIME 
                     | MEMVAR | PARAMETERS  // Added as XS keywords to allow them to be treated as IDs
@@ -1090,7 +1072,7 @@ keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASTYPE | AS
                     | DEFINE| DELEGATE | ENUM | GLOBAL | INHERIT | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT   
                     // The following 'old' keywords are never used 'alone' and are harmless as identifiers
                     | ALIGN | CALLBACK | CLIPPER  | DECLARE | DIM | DOWNTO | DLLEXPORT | EVENT 
-                    | FASTCALL | IN | INSTANCE | PASCAL |  SEQUENCE 
+                    | FASTCALL | IN | INIT1 | INIT2 | INIT3 | INSTANCE | PASCAL |  SEQUENCE 
                     | STEP | STRICT | TO | THISCALL | UNION | UNTIL | UPTO | USING | WINCALL 
                     )
                     ;

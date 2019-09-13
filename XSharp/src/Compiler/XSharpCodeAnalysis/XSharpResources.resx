@@ -1500,7 +1500,7 @@ If such a class is used as a base class and if the deriving class defines a dest
     <value>Interfaces cannot contain fields</value>
   </data>
   <data name="ERR_InterfacesCantContainConstructors" xml:space="preserve">
-    <value>Interfaces cannot contain constructors</value>
+    <value>Interfaces cannot contain constructors or destructors</value>
   </data>
   <data name="ERR_NonInterfaceInInterfaceList" xml:space="preserve">
     <value>Type '{0}' in interface list is not an interface</value>
@@ -5695,6 +5695,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   </data>  
   <data name="ERR_UnexpectedCommand" xml:space="preserve">
     <value>Unexpected Command or Statement.</value>
+  </data>
+  <data name="ERR_FunctionsCannotHaveInitExit" xml:space="preserve">
+    <value>Functions cannot have an INIT or EXIT clause.</value>
   </data>
   
 </root>

@@ -1792,6 +1792,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "_INIT1", INIT1},
                     { "_INIT2", INIT2},
                     { "_INIT3", INIT3},
+                    { "INIT1", INIT1},
+                    { "INIT2", INIT2},
+                    { "INIT3", INIT3},
                     { "_SIZEOF", SIZEOF},
                     { "_TYPEOF", TYPEOF},  
                 

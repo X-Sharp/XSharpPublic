@@ -3573,10 +3573,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return null;
 
             else
-                return _syntaxFactory.ConstructorInitializer(chain.Start.CtorInitializerKind(),
+            {
+                var result = _syntaxFactory.ConstructorInitializer(chain.Start.CtorInitializerKind(),
                                             SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
                                             chain.Start.SyntaxKeyword(),
                                             chain.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList());
+                chain.Put(result);
+                return result;
+            }
+                
         }
 
         public override void ExitConstructor([NotNull] XP.ConstructorContext context)

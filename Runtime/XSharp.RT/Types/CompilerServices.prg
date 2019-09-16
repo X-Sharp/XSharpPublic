@@ -67,4 +67,27 @@ STATIC CLASS XSharp.Internal.CompilerServices
 	STATIC METHOD CanBreak AS LOGIC
 		RETURN RuntimeState.GetInstance():BreakLevel > 0
 
+    STATIC METHOD StringArrayInit(a as System.Array) AS VOID
+        LOCAL ranks     := a:Rank AS INT
+        LOCAL counters  := INT[]{ranks} as INT[]
+        LOCAL bounds    := INT[]{ranks} as INT[]
+        FOR VAR i := 1 to ranks
+            bounds[i] := A:GetLength(i-1)
+        NEXT
+        StringArrayInitHelper(a, counters, bounds, ranks)
+        RETURN
+
+    PRIVATE STATIC METHOD StringArrayInitHelper( s as System.Array, counters as  int[] , bounds as int[], rank as int) AS VOID
+        if  rank == 1
+            for var x:= 1 UPTO  Bounds[1] STEP 1
+                counters[rank] := x -1             // the counters array must be 0 based
+                s:SetValue( "", counters )
+            NEXT
+        else
+            for var x := 1 UPTO  Bounds[rank]  STEP 1
+                counters[rank] := x -1          // the counters array must be 0 based
+                StringArrayInitHelper( s, counters, bounds, rank - 1 )
+            NEXT
+        ENDIF
+
 END CLASS

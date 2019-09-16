@@ -1717,6 +1717,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_ASend = 9087,
         ERR_UnexpectedCommand = 9088,
         ERR_FunctionsCannotHaveInitExit = 9089,
+        ERR_DLLMethodNotSupported = 9090,  
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

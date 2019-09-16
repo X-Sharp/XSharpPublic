@@ -3160,11 +3160,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         type: varType,
                         variables: varList);
                 var attributeList = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
-                if (context.Modifiers == null)
-                {
-                    context.AddError(new ParseErrorData(context, ErrorCode.ERR_SyntaxError, "Classvar Modifier (EXPORT, PROTECTED, HIDDEN, PRIVATE, PUBLIC, INSTANCE, STATIC)  expected"));
-                }
-                else if (_options.HasRuntime)
+                if (_options.HasRuntime)
                 {
 
                     bool isInstance = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.INSTANCE);
@@ -4619,37 +4615,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             ExpressionSyntax dllExpr = GenerateLiteral(dllName);
             ExpressionSyntax entrypointExpr;
-            if (context.Ordinal != null)
-            {
-                entrypointExpr = GenerateLiteral(context.Ordinal.Text).WithAdditionalDiagnostics(
-                    new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidDLLEntryPoint, "A numeric entrypoint (" + context.Ordinal.Text.Substring(1) + ") is not supported in .Net"));
-            }
-            else
-            {
                 string entrypoint = context.Entrypoint.GetText();
-                entrypointExpr = GenerateLiteral(entrypoint);
 
-                if (context.Address != null || context.Number != null)
-                {
-                    if (context.Address == null || context.Number == null)
-                    {
-                        entrypointExpr = entrypointExpr.WithAdditionalDiagnostics(
-                            new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidDLLEntryPoint, "Both the @ sign and the number must be specified"));
-                    }
-                    else if (context.Address.StartIndex > context.Entrypoint.stop.StopIndex + 1
-                        || context.Number.StartIndex > context.Address.StopIndex + 1)
-                    {
-                        entrypointExpr = entrypointExpr.WithAdditionalDiagnostics(
-                            new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidDLLEntryPoint, "No spaces allowed in entrypoint name"));
-                    }
-                    else
-                    {
                         // the whole string from entrypointExpr - @int is the entrypoint
                         entrypoint = entrypoint + context.Address.Text + context.Number.Text;
                         entrypointExpr = GenerateLiteral(entrypoint);
-                    }
-                }
-            }
 
             var returnType = context.Type?.Get<TypeSyntax>() ?? (context.T.Type == XP.FUNCTION ? _getMissingType() : VoidType());
             returnType.XVoDecl = true;
@@ -4821,18 +4791,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.InitExit != null)
             {
-                if (!_options.HasRuntime)
-                {
-                    context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_FeatureNotAvailableInDialect, "Init/Exit procedure", _options.Dialect.ToString()));
-                }
-                else
-                {
-                    if (context.ParamList?._Params.Count > 0)
-                    {
-                        context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_InitProceduresCannotDefineParameters));
-                    }
-                    else
-                    {
                         int level = 0;
                         switch (context.InitExit.Type)
                         {
@@ -4852,8 +4810,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         GlobalEntities.InitProcedures.Add(new Tuple<int, string>(level, context.Id.GetText()));
                         context.Data.IsInitProcedure = true;
                         context.Data.HasClipperCallingConvention = false;
-                    }
-                }
             }
         }
 
@@ -4969,32 +4925,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterParameterList([NotNull] XP.ParameterListContext context)
         {
-            
-            foreach (var par in context._Params)
-            {
-                CurrentEntity.Data.HasFormalParameters = true;
-                if (par.Ellipsis != null)
-                {
-                    if (par != context._Params.Last())
-                    {
-                        par.AddError(new ParseErrorData(context, ErrorCode.ERR_VarargsLast, par));
-                    }
-                    //var parent = context.Parent;
-                    //if (!(parent is XP.VodllContext))
-                    //{
-                    //    parent.AddError(new ParseErrorData(ErrorCode.ERR_VarargNotVODLL, parent));
-                    //}
-                    //else
-                    //{
-                    //    var callConv = ((XP.VodllContext)parent).CallingConvention;
-                    //    if (callConv == null || callConv.Cc.Type != XP.STRICT)
-                    //    {
-                    //        parent.AddError(new ParseErrorData(ErrorCode.ERR_VarargNotVODLL, parent));
-                    //    }
-                    //}
-
-                }
-            }
+            CurrentEntity.Data.HasFormalParameters = true;
         }
         public override void ExitParameterList([NotNull] XP.ParameterListContext context)
         {
@@ -5380,11 +5311,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword), arrayType, init);
             }
             // multi dim is not supported yet in X# runtime.
-            if (_options.XSharpRuntime)
-            {
-                sub.AddError(new ParseErrorData(sub, ErrorCode.ERR_ParserError, "DIM string arrays must have one dimension"));
-                return null;
-            }
             // Vulcan has StringArrayInit, but that does not return a string, so we have to generate a special function for this
             // this function creates the array, initializes it and returns it.
             // StringArrayInit has no return type because it can handle arrays of different dimensions
@@ -5398,7 +5324,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var varname = GenerateSimpleName(XSharpSpecialNames.ArrayName);
             var args = MakeArgumentList(MakeArgument(varname));
-            stmt = GenerateExpressionStatement(GenerateMethodCall(VulcanQualifiedFunctionNames.StringArrayInit, args, true));
+            stmt = GenerateExpressionStatement(GenerateMethodCall(
+                _options.XSharpRuntime ?
+                XSharpQualifiedFunctionNames.StringArrayInit : 
+                VulcanQualifiedFunctionNames.StringArrayInit, args, true));
             stmt.XNode = sub.Parent as XSharpParserRuleContext;
             stmts.Add(stmt);
 

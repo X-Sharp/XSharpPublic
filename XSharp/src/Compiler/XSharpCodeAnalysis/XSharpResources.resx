@@ -5699,5 +5699,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_FunctionsCannotHaveInitExit" xml:space="preserve">
     <value>Functions cannot have an INIT or EXIT clause.</value>
   </data>
+  <data name="ERR_DLLMethodNotSupported" xml:space="preserve">
+    <value>The _DLL syntax for Methods, Accesses and Assigns is not supported and not needed in .Net. You should add a reference to the assembly.</value>
+  </data>
   
 </root>

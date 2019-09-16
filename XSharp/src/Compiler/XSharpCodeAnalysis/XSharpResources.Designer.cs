@@ -3698,6 +3698,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The _DLL syntax for Methods, Accesses and Assigns is not supported and not needed in .Net. You should add a reference to the assembly..
+        /// </summary>
+        internal static string ERR_DLLMethodNotSupported {
+            get {
+                return ResourceManager.GetString("ERR_DLLMethodNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error writing to XML documentation file: {0}.
         /// </summary>
         internal static string ERR_DocFileGen {

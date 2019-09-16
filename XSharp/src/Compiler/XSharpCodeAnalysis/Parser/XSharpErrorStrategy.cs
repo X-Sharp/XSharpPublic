@@ -174,6 +174,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
+                if (input.Length > 50)  
+                    input = input.Substring(0, 50);      
                 msg = "unexpected input " + EscapeWSAndQuote(input);
             }
             NotifyErrorListeners(recognizer, msg, e);

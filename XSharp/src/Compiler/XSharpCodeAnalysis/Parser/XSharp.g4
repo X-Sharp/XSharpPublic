@@ -124,11 +124,21 @@ vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? //
                        |  DOT Entrypoint=identifierString Address=ADDROF? Number=INT_CONST? (NEQ2 INT_CONST)? 
                       )
                        
-                      ( CharSet=(AUTO | ANSI | UNICODE) )?
+                      ( CharSet=(AUTO | ID) )?  // ID must be either ANSI or UNICODE
                       EOS
                     ;
 
 dllcallconv         : Cc=( CLIPPER | STRICT | PASCAL | THISCALL | FASTCALL | ASPEN | WINCALL | CALLBACK)
+                    ;
+
+
+// _DLL access Allpages :rp2DSN32.PtrDevice:Allpages:Access
+// _DLL method ImportCfg(cId,hFile) :rp2DSN32.PtrDevice:ImportCfg
+// _DLL assign LandScape(lValue) :rp2DSN32.PtrDevice:LandScape:Assign
+// _DLL CONSTRUCTOR(oWinOwner,oRptOwner) :rp2DSN32.PtrDevice:Init
+// _DLL DESTRUCTOR :rp2DSN32.PtrDevice:Axit
+
+vodllmethod         : D=DLL T=(METHOD|ACCESS|ASSIGN|CONSTRUCTOR|DESTRUCTOR) .*? EOS
                     ;
 
 
@@ -395,6 +405,7 @@ classmember         : Member=method                                 #clsmethod
                     | Member=enum_                                  #nestedEnum
                     | Member=event_                                 #nestedEvent
                     | Member=interface_                             #nestedInterface
+                    | Member=vodllmethod                            #clsdllmethod
                     | eos                                           #clseos// Blank Lines between entities
                     ;
 
@@ -417,7 +428,7 @@ constructorchain    : (SELF | SUPER)
 constructorModifiers: ( Tokens+=( PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | EXTERN | STATIC ) )+
                     ;
 
-declare             : DECLARE (ACCESS | ASSIGN | METHOD )  Ids+=identifier (COMMA Ids+=identifier)* eos
+declare             : DECLARE (ACCESS | ASSIGN | METHOD )  .*? eos
                     ;
 
 destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
@@ -588,6 +599,7 @@ statement           : Decl=localdecl                        #declarationStmt
                       // The second Rule matches a single expression with an extraneous RPAREN RCURLY or RBRKT
                       // The third rule matches more than one expression
                       // The EQ sign is supported for the FoxPro dialect
+                      // validExpressionStmt checks for CONSTRUCTOR( or DESTRUCTOR(
                     | {validExpressionStmt()}?
                       (eq=EQ)? Exprs+=expression  end=eos									                            #expressionStmt
                     | {validExpressionStmt()}?
@@ -1175,7 +1187,7 @@ xppmethod           : (Attributes=attributes)?                              // N
                       // no calling convention
                       end=eos
                       StmtBlk=statementBlock
-                      (END METHOD eos)?
+                      (END METHOD Ignored=identifier? eos)?
                     ;
 
 xppinlineMethod     : (Attributes=attributes)?                               // NEW Optional Attributes
@@ -1189,7 +1201,7 @@ xppinlineMethod     : (Attributes=attributes)?                               // 
                       // no calling convention
                       end=eos
                       StmtBlk=statementBlock
-                      (END METHOD eos)?
+                      (END METHOD Ignored=identifier? eos)?
                     ;
 
 xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+

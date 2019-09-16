@@ -226,6 +226,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string UsualNIL = "global::XSharp.__Usual._NIL";
         internal const string PszRelease = "global::XSharp.Internal.CompilerServices.String2PszRelease";
         internal const string String2Psz = "global::XSharp.Internal.CompilerServices.String2Psz";
+        internal const string StringArrayInit = "global::XSharp.Internal.CompilerServices.StringArrayInit";
         internal const string ArrayNew = "global::XSharp.__Array.__ArrayNew";
         internal const string EnterSequence = "global::XSharp.Internal.CompilerServices.EnterBeginSequence"; 
         internal const string ExitSequence = "global::XSharp.Internal.CompilerServices.ExitBeginSequence";

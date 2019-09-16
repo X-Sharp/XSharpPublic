@@ -18,6 +18,7 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
@@ -163,13 +164,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitFuncproc([NotNull] XSharpParser.FuncprocContext context)
         {
-            if (context.T.Type != XSharpParser.PROCEDURE)
+            if (context.InitExit != null)
             {
-                if (context.InitExit != null)
+                if (!_options.HasRuntime)
+                {
+                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_FeatureNotAvailableInDialect, "Init/Exit procedure", _options.Dialect.ToString()));
+                }
+
+                if (context.T.Type != XSharpParser.PROCEDURE)
                 {
                     _parseErrors.Add(new ParseErrorData(context.InitExit, ErrorCode.ERR_FunctionsCannotHaveInitExit));
                 }
+                else
+                {
+                    if (context.ParamList?._Params.Count > 0)
+                    {
+                        _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_InitProceduresCannotDefineParameters));
+                    }
+                }
             }
+
             if (context.T2 != null)
             {
                 XSharpToken endToken = (XSharpToken)context.T2;
@@ -184,7 +198,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             bool isDim = context.Dim != null;
             bool hasArraySub = context.ArraySub != null;
-            context.SetSequencePoint();
             if (isDim && !hasArraySub)
             {
                 _parseErrors.Add(new ParseErrorData(context.DIM(), ErrorCode.ERR_ArrayInitializerExpected)); 
@@ -400,6 +413,40 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        public override void ExitVodllmethod([NotNull] XSharpParser.VodllmethodContext context)
+        {
+            _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_DLLMethodNotSupported));
+        }
+
+        public override void ExitVodll([NotNull] XSharpParser.VodllContext context)
+        {
+          
+            if (context.Ordinal != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_InvalidDLLEntryPoint,
+                    "A numeric entrypoint (" + context.Ordinal.Text.Substring(1) + ") is not supported in .Net"));
+            }
+            if (context.Address != null || context.Number != null)
+            {
+                if (context.Address == null || context.Number == null)
+                {
+                    _parseErrors.Add(new ParseErrorData(context,ErrorCode.ERR_InvalidDLLEntryPoint, "Both the @ sign and the number must be specified"));
+                }
+                else if (context.Address.StartIndex > context.Entrypoint.stop.StopIndex + 1
+                    || context.Number.StartIndex > context.Address.StopIndex + 1)
+                {
+                    _parseErrors.Add(new ParseErrorData(context,ErrorCode.ERR_InvalidDLLEntryPoint, "No spaces allowed in entrypoint name"));
+                }
+            }
+            if (context.CharSet != null)
+            {
+                var text = context.CharSet.Text.ToUpper();
+                if (text != "AUTO" && text != "ANSI" && text != "UNICODE")
+                {
+                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_UnexpectedToken, context.CharSet.Text));
+                }
+            }
+        }
         public override void ExitNestedClass([NotNull] XSharpParser.NestedClassContext context)
         {
             interfacesCannotHaveTypes(context);
@@ -438,7 +485,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        
+
+        public override void ExitParameter([NotNull] XSharpParser.ParameterContext context)
+        {
+            if (context.Ellipsis != null)
+            {
+                var parlist = context.Parent as XSharpParser.ParameterListContext;
+                if (parlist._Params.Last() != context)
+                {
+                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_VarargsLast));
+                }
+            }
+        }
 
         public override void ExitMethod([NotNull] XSharpParser.MethodContext context)
         {
@@ -685,6 +743,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (!isDim && isFixed)
             {
                 _parseErrors.Add(new ParseErrorData(context.Id, ErrorCode.ERR_SyntaxError, "DIM"));
+            }
+        }
+        public override void ExitClassvars([NotNull] XSharpParser.ClassvarsContext context)
+        {
+            if (context.Vars._Var.Count > 0)
+            {
+                if (context.Modifiers == null)
+                {
+                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_SyntaxError, "Classvar Modifier (EXPORT, PROTECTED, HIDDEN, PRIVATE, PUBLIC, INSTANCE, STATIC) expected"));
+                }
             }
         }
 

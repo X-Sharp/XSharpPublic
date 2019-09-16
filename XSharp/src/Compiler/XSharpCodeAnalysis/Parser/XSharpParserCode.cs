@@ -843,9 +843,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
     }
 
-
+#endif
     internal static class RuleExtensions
     {
+#if !VSPARSER
 
         internal static bool IsStatic(this InternalSyntax.ClassDeclarationSyntax classdecl)
         {
@@ -910,6 +911,35 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
+        internal static bool IsRealCodeBlock([NotNull] this IXParseTree context)
+        {
+
+            if (context is XSharpParser.ArrayElementContext aelc)
+                return aelc.Expr.IsRealCodeBlock();
+            if (context is XSharpParser.PrimaryExpressionContext pec)
+                return pec.Expr.IsRealCodeBlock();
+            if (context is XSharpParser.CodeblockExpressionContext cec)
+                return cec.CbExpr.IsRealCodeBlock();
+            if (context is XSharpParser.AliasedExpressionContext aexc)
+            {
+                if (aexc.XSharpRuntime)
+                {
+                    return false;
+                }
+            }
+            if (context is XSharpParser.CodeblockCodeContext)
+                return ((IXParseTree)context.Parent).IsRealCodeBlock();
+            if (context is XSharpParser.CodeblockContext cbc)
+            {
+                if (cbc.lambda != null)
+                    return false;
+                // when no => operator and no explicit parameters
+                // then this is a true codeblock
+                return cbc.LambdaParamList == null || cbc.LambdaParamList.ImplicitParams != null;
+            }
+            return false;
+        }
+#endif
         internal static bool isInInterface([NotNull] this RuleContext context)
         {
             var parent = context.Parent;
@@ -951,34 +981,5 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return parent.isInStructure();
         }
 
-        internal static bool IsRealCodeBlock([NotNull] this IXParseTree context)
-        {
-
-            if (context is XSharpParser.ArrayElementContext aelc)
-                return aelc.Expr.IsRealCodeBlock();
-            if (context is XSharpParser.PrimaryExpressionContext pec)
-                return pec.Expr.IsRealCodeBlock();
-            if (context is XSharpParser.CodeblockExpressionContext cec)
-                return cec.CbExpr.IsRealCodeBlock();
-            if (context is XSharpParser.AliasedExpressionContext aexc)
-            {
-                if (aexc.XSharpRuntime)
-                { 
-                    return false;
-                }
-            }
-            if (context is XSharpParser.CodeblockCodeContext)
-                return ((IXParseTree) context.Parent).IsRealCodeBlock();
-            if (context is XSharpParser.CodeblockContext cbc)
-            {
-                if (cbc.lambda != null)
-                    return false;
-                // when no => operator and no explicit parameters
-                // then this is a true codeblock
-                return cbc.LambdaParamList == null || cbc.LambdaParamList.ImplicitParams != null;
-            }
-            return false;
-        }
     }
-#endif
 }

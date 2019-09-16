@@ -77,9 +77,6 @@ CHAR,INT64,UINT64,
 DYNAMIC, DECIMAL, DATETIME,
 LAST_TYPE,
 
-// Vulcan UDCs
-//WAIT, ACCEPT, CANCEL, QUIT,
-
 // UDC Tokens that should be shown in the keyword color
 UDC_KEYWORD,
 

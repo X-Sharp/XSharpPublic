@@ -1073,8 +1073,8 @@ keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST 
                     ;
 
 
-keywordxs           : Token=(ABSTRACT | ANSI | AUTO | CHAR | CONST |  DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | INITONLY | INTERNAL
-                    | LOCK | NAMESPACE | NEW | OUT | PARTIAL | REF | SCOPE | SEALED | SET |  TRY | UNICODE |  VALUE | VIRTUAL
+keywordxs           : Token=(ABSTRACT | AUTO | CHAR | CONST |  DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | INITONLY | INTERNAL
+                    | LOCK | NAMESPACE | NEW | OUT | PARTIAL | REF | SCOPE | SEALED | SET |  TRY | VALUE | VIRTUAL
                     // The following did not exist in Vulcan
                     | ADD | ARGLIST | ASCENDING | ASSEMBLY | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM 
                     | GROUP | INTO | JOIN | LET | MODULE | NAMEOF | NOP | OF | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE 

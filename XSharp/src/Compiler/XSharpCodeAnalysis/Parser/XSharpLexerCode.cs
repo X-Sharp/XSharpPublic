@@ -1800,7 +1800,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 
                     // Vulcan keywords
 			        { "ABSTRACT", ABSTRACT},
-                    { "ANSI", ANSI},
                     { "AUTO", AUTO},
                     { "__CASTCLASS", CASTCLASS},
                     { "CATCH", CATCH},
@@ -1842,7 +1841,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "THROW", THROW},
                     { "TRY", TRY},
                     { "TYPEOF", TYPEOF},
-                    { "UNICODE", UNICODE},
                     { "UNTIL", UNTIL},
                     { "VALUE", VALUE},
                     { "VIRTUAL", VIRTUAL},

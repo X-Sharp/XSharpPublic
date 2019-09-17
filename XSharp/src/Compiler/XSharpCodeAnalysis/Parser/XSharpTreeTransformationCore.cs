@@ -4615,11 +4615,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             ExpressionSyntax dllExpr = GenerateLiteral(dllName);
             ExpressionSyntax entrypointExpr;
-                string entrypoint = context.Entrypoint.GetText();
+            string entrypoint = context.Entrypoint.GetText();
 
-                        // the whole string from entrypointExpr - @int is the entrypoint
-                        entrypoint = entrypoint + context.Address.Text + context.Number.Text;
-                        entrypointExpr = GenerateLiteral(entrypoint);
+            // the whole string from entrypointExpr - @int is the entrypoint
+            if (context.Address != null && context.Number != null)
+            {
+                entrypoint = entrypoint + context.Address.Text + context.Number.Text;
+            }
+            entrypointExpr = GenerateLiteral(entrypoint);
 
             var returnType = context.Type?.Get<TypeSyntax>() ?? (context.T.Type == XP.FUNCTION ? _getMissingType() : VoidType());
             returnType.XVoDecl = true;

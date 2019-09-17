@@ -117,6 +117,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        private void checkForGarbage(XSharpParserRuleContext context, IToken token, string msg)
+        {
+            if (token != null && !_options.Dialect.AllowGarbage())
+            {
+                NotInDialect(context, msg);
+            }
+        }
+
+
 
         public override void VisitErrorNode([NotNull] IErrorNode node)
         {
@@ -274,6 +283,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _parseErrors.Add(errdata);
             }
         }
+		
         public override void ExitLiteralValue([NotNull] XSharpParser.LiteralValueContext context)
         {
             if (context.Token.Type == XSharpLexer.INCOMPLETE_STRING_CONST)
@@ -296,10 +306,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-
-
         public override void ExitTextStmt(XSharpParser.TextStmtContext context)
         {
+			// Should not happen, the TEXT keyword only exists in the FoxPro dialect
             if (_options.Dialect != XSharpDialect.FoxPro)
             {
                 NotInDialect(context, "TEXT .. ENDTEXT statement");
@@ -312,6 +321,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 NotInDialect(context, "TextMerge output statement ('\\' or '\\\\')");
             }
+			// Not handled for other dialects. The rule will never be matched			
         }
 
         public override void ExitFielddecl(XSharpParser.FielddeclContext context)
@@ -329,12 +339,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxPEMName_COMATTRIBClause));
                 }
             }
+			// Not handled for other dialects. The rule will never be matched			
         }
         public override void ExitFoxclass([NotNull] XSharpParser.FoxclassContext context)
         {
             if (_options.Dialect != XSharpDialect.FoxPro)
             {
-                NotInDialect(context, "FOXPRO Class syntax");
+				// Should not happen, the FoxPro Class syntax only exists in the FoxPro dialect
+                NotInDialect(context, "FoxPro Class syntax");
             }
             else
             {
@@ -355,6 +367,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxPEMName_COMATTRIBClause));
             }
+			// Not handled for other dialects. The rule will never be matched
         }
         public override void ExitFoximplementsclause([NotNull] XSharpParser.FoximplementsclauseContext context)
         {
@@ -369,6 +382,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _parseErrors.Add(new ParseErrorData(context.Library, ErrorCode.WRN_FoxImplementsLibraryClause));
                 }
             }
+            // Not handled for other dialects. The rule will never be matched        
         }
         public override void ExitConstructor([NotNull] XSharpParser.ConstructorContext context)
         {
@@ -383,6 +397,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.c1, ErrorCode.ERR_InterfacesCantContainConstructors));
             }
+            checkForGarbage(context, context.Ignored, "Code after END CONSTRUCTOR");
         }
 
         public override void ExitOperator_([NotNull] XSharpParser.Operator_Context context)
@@ -394,6 +409,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _parseErrors.Add(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody, "Operator"));
                 }
             }
+            checkForGarbage(context, context.Ignored, "Code after END OPERATOR");
 
         }
         public override void ExitClsvars([NotNull] XSharpParser.ClsvarsContext context)
@@ -483,6 +499,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.d1, ErrorCode.ERR_InterfacesCantContainConstructors));
             }
+            checkForGarbage(context, context.Ignored, "Code after END DESTRUCTOR");
         }
 
 
@@ -500,9 +517,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitMethod([NotNull] XSharpParser.MethodContext context)
         {
+            checkForGarbage(context,context.Ignored, "Code after END [METHOD]");
             var isInInterface = context.isInInterface();
             var isExtern = context.Modifiers?.EXTERN().Length > 0;
             var isAbstract = context.Modifiers?.ABSTRACT().Length > 0;
+			var hasbody = context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0;
             if (context.T2 != null)
             {
                 XSharpToken endToken = (XSharpToken)context.T2.Token;
@@ -519,7 +538,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.ThisAccess, ErrorCode.WRN_FoxThisAccessClause));
             }
-            if (isInInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0)
+            if (isInInterface && hasbody)
             {
                 _parseErrors.Add(new ParseErrorData(context.Id, ErrorCode.ERR_InterfaceMemberHasBody));
             }
@@ -540,16 +559,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (isExtern)
                 {
-                    _parseErrors.Add(new ParseErrorData(context.Modifiers, ErrorCode.ERR_AbstractAndExtern));
+                    _parseErrors.Add(new ParseErrorData(context.Modifiers, ErrorCode.ERR_AbstractAndExtern,"Method"));
                 }
-                if (context.StmtBlk?._Stmts?.Count > 0)
+                if (hasbody)
                 {
-                    _parseErrors.Add(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_AbstractHasBody));
+                    _parseErrors.Add(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_AbstractHasBody,"Method"));
                 }
             }
             else if (isExtern)
             {
-                if (context.StmtBlk?._Stmts?.Count > 0)
+                if (hasbody)
                 {
                     _parseErrors.Add(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody, "Method"));
                 }
@@ -580,6 +599,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
+				// Should not happen, the XPP Class syntax only exists in the Xbase++ dialect
                 NotInDialect(context, "Xbase++ CLASS Syntax");
             }
         }
@@ -716,15 +736,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitNamespace_([NotNull] XSharpParser.Namespace_Context context)
         {
-            checkForGarbage(context.Ignored, "Expression after END NAMESPACE");
+            checkForGarbage(context, context.Ignored, "Code after END NAMESPACE");
         }
         public override void ExitInterface_([NotNull] XSharpParser.Interface_Context context)
         {
-            checkForGarbage(context.Ignored, "Expression after END INTERFACE");
+            checkForGarbage(context, context.Ignored, "Code after END INTERFACE");
         }
         public override void ExitClass_([NotNull] XSharpParser.Class_Context context)
         {
-            checkForGarbage(context.Ignored, "Expression after END CLASS");
+            checkForGarbage(context, context.Ignored, "Code after END CLASS");
         }
 
         public override void ExitClassvar([NotNull] XSharpParser.ClassvarContext context)
@@ -758,22 +778,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitStructure_([NotNull] XSharpParser.Structure_Context context)
         {
-            checkForGarbage(context.Ignored, "Expression after END STRUCTURE");
+            checkForGarbage(context, context.Ignored, "Code after END STRUCTURE");
         }
         public override void ExitEnum_([NotNull] XSharpParser.Enum_Context context)
         {
-            checkForGarbage(context.Ignored, "Expression after END ENUM");
+            checkForGarbage(context, context.Ignored, "Code after END ENUM");
         }
         public override void ExitEvent_([NotNull] XSharpParser.Event_Context context)
         {
-            checkForGarbage(context.Ignored, "Expression after END EVENT");
+            checkForGarbage(context, context.Ignored, "Code after END EVENT");
         }
         public override void ExitProperty([NotNull] XSharpParser.PropertyContext context)
         {
+            checkForGarbage(context, context.Ignored, "Code after END PROPERTY");
             var isInInterface = context.isInInterface();
             var isExtern = context.Modifiers?.EXTERN().Length > 0;
             var isAbstract = context.Modifiers?.ABSTRACT().Length > 0;
-            checkForGarbage(context.Ignored, "Expression after END PROPERTY");
             bool HasBody = (context.Auto != null || context.Multi != null);
             if (!HasBody)
             {
@@ -789,7 +809,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (isInInterface)
                 {
-                    _parseErrors.Add(new ParseErrorData(context.Start, ErrorCode.ERR_InterfaceMemberHasBody));
+                    _parseErrors.Add(new ParseErrorData(context.Start, ErrorCode.ERR_InterfaceMemberHasBody, "Property"));
                 }
                 if (isExtern)
                 {
@@ -797,10 +817,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 if (isAbstract)
                 {
-                    _parseErrors.Add(new ParseErrorData(context.Start, ErrorCode.ERR_AbstractHasBody));
+                    _parseErrors.Add(new ParseErrorData(context.Start, ErrorCode.ERR_AbstractHasBody, "Property"));
                 }
             }
-            if (isAbstract && context.Modifiers?.EXTERN().Length > 0)
+            if (isAbstract && isExtern)
             {
                 _parseErrors.Add(new ParseErrorData(context.Modifiers, ErrorCode.ERR_AbstractAndExtern));
             }

@@ -91,7 +91,7 @@ funcproc              : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
                       (DLLEXPORT STRING_CONST)?                                 // Optional (ignored)
                       end=eos   
                       StmtBlk=statementBlock
-                      (END T2=(FUNCTION|PROCEDURE)  Ignored=identifier? EOS )?
+                      (END T2=(FUNCTION|PROCEDURE)  Ignored+=.*? EOS )?
                     ;
 
 
@@ -188,7 +188,7 @@ method              : (Attributes=attributes)? (Modifiers=memberModifiers)?
                       (ThisAccess=THISACCESS LPAREN MemberId=identifier RPAREN)?    // FoxPro only
                       end=eos
                       StmtBlk=statementBlock
-                      (END T2=methodtype Ignored=identifier? EOS)?
+                      (END T2=methodtype Ignored+=.*? EOS)?
                     ;
 
 methodtype          : Token=(METHOD | ACCESS | ASSIGN)
@@ -203,7 +203,7 @@ vodefine            : (Modifiers=funcprocModifiers)?
 vostruct            : (Modifiers=votypeModifiers)?
                       V=VOSTRUCT (Namespace=nameDot)? Id=identifier (ALIGN Alignment=INT_CONST)? e=eos
                       (Members+=vostructmember)+
-                      (END VOSTRUCT Ignored=identifier? EOS)?
+                      (END VOSTRUCT Ignored+=.*? EOS)?
                     ;
 
 vostructmember      : MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (As=(AS | IS) DataType=datatype)? eos
@@ -214,7 +214,7 @@ vostructmember      : MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT
 vounion             : (Modifiers=votypeModifiers)?
                       U=UNION (Namespace=nameDot)? Id=identifier e=eos
                       (Members+=vostructmember)+
-                      (END UNION Ignored=identifier? EOS)?
+                      (END UNION Ignored+=.*? EOS)?
                     ;
 
 votypeModifiers     : ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE | STATIC ) )+
@@ -223,7 +223,7 @@ votypeModifiers     : ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE | STATIC ) 
 
 namespace_          : BEGIN NAMESPACE Name=name e=eos
                       (Entities+=entity)*
-                      END NAMESPACE Ignored=name?  EOS
+                      END NAMESPACE Ignored+=.*?  EOS
                     ;
 
 interface_          : (Attributes=attributes)? (Modifiers=interfaceModifiers)?            
@@ -233,7 +233,7 @@ interface_          : (Attributes=attributes)? (Modifiers=interfaceModifiers)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)*              // Optional typeparameterconstraints for Generic Interface
                       e=eos
                       (Members+=classmember)*
-                      END INTERFACE Ignored=identifier?  EOS
+                      END INTERFACE Ignored+=.*? EOS
                     ;
 
 interfaceModifiers  : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
@@ -247,7 +247,7 @@ class_              : (Attributes=attributes)? (Modifiers=classModifiers)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)*             // Optional typeparameterconstraints for Generic Class
                       e=eos
                       (Members+=classmember)*
-                      END CLASS Ignored=identifier? EOS
+                      END CLASS Ignored+=.*? EOS
                     ;
 
 classModifiers      : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL) )+
@@ -280,7 +280,7 @@ structure_          : (Attributes=attributes)? (Modifiers=structureModifiers)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos
                       (Members+=classmember)*
-                      END STRUCTURE Ignored=identifier? EOS
+                      END STRUCTURE Ignored+=.*? EOS
                     ;
 
 structureModifiers  : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
@@ -303,7 +303,7 @@ delegateModifiers   : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | 
 enum_               : (Attributes=attributes)? (Modifiers=enumModifiers)?
                       E=ENUM (Namespace=nameDot)? Id=identifier ((AS|INHERIT) Type=datatype)? e=eos
                       (Members+=enummember)+
-                      END ENUM? Ignored=identifier? EOS
+                      END ENUM? Ignored+=.*? EOS
                     ;
 
 enumModifiers       : ( Tokens+=(NEW | PUBLIC| EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN) )+
@@ -316,7 +316,7 @@ event_              : (Attributes=attributes)? (Modifiers=eventModifiers)?
                        E=EVENT (ExplicitIface=nameDot)? Id=identifier (AS Type=datatype)?
                        ( end=EOS
                         | (LineAccessors += eventLineAccessor)+ end=EOS
-                        | Multi=eos (Accessors+=eventAccessor)+ END EVENT? Ignored=identifier? EOS
+                        | Multi=eos (Accessors+=eventAccessor)+ END EVENT? Ignored+=.*? EOS
                        )
                     ;
 
@@ -362,7 +362,7 @@ property            : (Attributes=attributes)? (Modifiers=memberModifiers)?
                       (AS Type=datatype)?
                       ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (Op=assignoperator Initializer=expression)? end=EOS	// Auto
                         | (LineAccessors+=propertyLineAccessor)+ end=EOS													// Single Line
-                        | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? Ignored=identifier?  EOS				// Multi Line
+                        | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? Ignored+=.*?  EOS				// Multi Line
                       )
                     ;
 
@@ -416,7 +416,7 @@ constructor         :  (Attributes=attributes)? (Modifiers=constructorModifiers)
                         end=eos
                       (Chain=constructorchain)?
                       StmtBlk=statementBlock
-                      (END c2=CONSTRUCTOR Ignored=identifier? EOS)?
+                      (END c2=CONSTRUCTOR Ignored+=.*? EOS)?
                     ;
 
 constructorchain    : (SELF | SUPER)
@@ -436,7 +436,7 @@ destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
                       (CLASS (Namespace=nameDot)? ClassId=identifier)?
                       end=eos
                       StmtBlk=statementBlock
-                      (END d2=DESTRUCTOR Ignored=identifier? EOS)?
+                      (END d2=DESTRUCTOR Ignored+=.*? EOS)?
                     ;
 
 destructorModifiers : ( Tokens+=EXTERN )+
@@ -467,7 +467,7 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
                       (AS Type=datatype)?
                       end=eos
                       StmtBlk=statementBlock
-                     (END o1=OPERATOR Ignored=identifier? EOS)?
+                     (END o1=OPERATOR Ignored+=.*? EOS)?
                       
                     ;
 

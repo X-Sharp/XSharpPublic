@@ -354,7 +354,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var walker = new ParseTreeWalker();
 
-
+ 
             if (_options.ParseLevel == ParseLevel.Complete)
             {
                 // check for parser errors, such as missing tokens

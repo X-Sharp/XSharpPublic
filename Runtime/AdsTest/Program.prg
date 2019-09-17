@@ -6,7 +6,18 @@ using VO
 FUNCTION MyThrow(e as Exception)
     THROW e
 
-function Start() as void
+function Start as void
+    DbUseArea(TRUE,"AXDBFCDX","c:\download\test\adssql\TagMenu","TagMenu",TRUE,FALSE)
+    ?  TagMenu->(DbOrderInfo(DBOI_ORDERCOUNT))
+    ?  TagMenu->(DbOrderInfo(DBOI_NAME,,1))
+    ?  TagMenu->(DbOrderInfo(DBOI_EXPRESSION,,1))
+    ? TagMenu->(DbAppend())
+    ? TagMenu->(Rlock())
+    ? TagMenu->(DbUnlock())
+    WAIT
+    DbCloseArea()
+    RETURN
+function StartSql() as void
 	local cPath			as string      
 	local cSelect		as string
 	local oServer		as AdsSqlServer
@@ -21,7 +32,10 @@ function Start() as void
 	nADSHandle		:= GetADSHandle( cPath )
 	AX_SetConnectionHandle( nADSHandle )
 	oServer			:= AdsSqlServer{ cSelect,,, "AXSQLCDX" }
+ 
 	oServer:GoTop()
+    ? oServer:UnLock()
+    wait
 	while ! oServer:EoF
 		WriteLine( DToC( oServer:FieldGet( "Datum" ) ) + " " + AllTrim( oServer:FieldGet( "Essen" ) ) )
 		oServer:Skip()

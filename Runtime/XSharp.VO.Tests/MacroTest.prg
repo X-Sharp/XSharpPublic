@@ -54,20 +54,20 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	        Assert.ThrowsAny<Exception>( { => Eval(bMacro,20,22) })
             RETURN
 
-
-		[Fact, Trait("Category", "Macro")]; 
-		METHOD FunctionOverloadTest AS VOID
-			LOCAL cMacro AS STRING
-			LOCAL bMacro AS USUAL
-		    cMacro := "Left('abcdefg',2)" // should call my replacement function
-			bMacro := MCompile(cMacro)
-
-            Assert.Equal("MyLeft", eval(bMacro))
-
-            RETURN
+//
+//		[Fact, Trait("Category", "Macro")]; 
+//		METHOD FunctionOverloadTest AS VOID
+//			LOCAL cMacro AS STRING
+//			LOCAL bMacro AS USUAL
+//		    cMacro := "Left('abcdefg',2)" // should call my replacement function
+//			bMacro := MCompile(cMacro)
+//
+//            Assert.Equal("MyLeft", eval(bMacro))
+//
+//            RETURN
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests
 
-FUNCTION Left(cValue as STRING, nLen as DWORD) AS STRING
-    RETURN "MyLeft"
+//FUNCTION Left(cValue as STRING, nLen as DWORD) AS STRING
+//    RETURN "MyLeft"

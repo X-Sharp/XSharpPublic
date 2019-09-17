@@ -67364,8 +67364,8 @@ FileType = Code
 CopyToBin = 0
 [C656 - Compiler error with DIM STRING and /vo2+ References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C656 - Compiler error with DIM STRING and /vo2+ Resources]
 [C656 - Compiler error with DIM STRING and /vo2+ Native Resources]
 [C656 - Compiler error with DIM STRING and /vo2+ License files]
@@ -69073,9 +69073,9 @@ FileType = Code
 CopyToBin = 0
 [C673 - Various issues with MEMVAR, PUBLIC etc References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,
-ReferenceGAC = CLR4,XSharp.RT,1,0,
-ReferenceGAC = CLR4,XSharp.VO,1,0,
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.0
+ReferenceGAC = XSharp.RT,1,0,
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.0
 [C673 - Various issues with MEMVAR, PUBLIC etc Resources]
 [C673 - Various issues with MEMVAR, PUBLIC etc Native Resources]
 [C673 - Various issues with MEMVAR, PUBLIC etc License files]

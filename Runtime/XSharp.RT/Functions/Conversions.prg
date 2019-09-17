@@ -408,7 +408,7 @@ FUNCTION PadC( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
     IF retlen > nLength
         ret := ret:Remove( nLength )
     ELSE
-        VAR leftSpace := Space(( nLength - retlen ) / 2)
+        VAR leftSpace := Space((DWORD) ( nLength - retlen ) / 2)
         ret := leftSpace+ret
         ret := ret:PadRight( nLength, cPad[0] )
     ENDIF

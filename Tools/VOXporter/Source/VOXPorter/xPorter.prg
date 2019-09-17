@@ -11,8 +11,7 @@ USING Xide
 GLOBAL gaNewKeywordsInXSharp := <STRING>{;
 	"EVENT","INT64","ENUM","DELEGATE","PARTIAL","INTERFACE",;
 	"CONSTRUCTOR","DESTRUCTOR","FINALLY","TRY","CATCH","THROW","SEALED","ABSTRACT","PUBLIC",;
-	"CONST","INITONLY","VIRTUAL","NEW","OPERATOR","EXPLICIT","IMPLICIT","PROPERTY",;
-	"AUTO","OUT","IMPLIED","DEBUG";
+	"CONST","INITONLY","VIRTUAL","OPERATOR","EXPLICIT","IMPLICIT","PROPERTY","IMPLIED","DEBUG";
 	} AS STRING[]
 
 GLOBAL DefaultOutputFolder := "" AS STRING
@@ -2081,7 +2080,7 @@ CLASS EntityDescriptor
 			CASE oWord:eStatus == WordStatus.Text // no literals or comments
 				cWordUpper := cWord:ToUpper()
 				DO CASE
-				CASE cWordUpper:StartsWith("STRU") .and. oWord:eSubStatus == WordSubStatus.TextReserved
+				CASE cWordUpper:StartsWith("STRU") .and. oWord:eSubStatus == WordSubStatus.TextReserved .and. oLine:oEntity != NULL
 					cWord := "VOSTRUCT"
 				CASE gaNewKeywordsInXSharp:Contains(cWordUpper) .and. (oPrevWord == NULL .or. .not. oPrevWord:cWord:StartsWith("@"))
 					cWord := "@@" + cWord

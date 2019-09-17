@@ -11,9 +11,9 @@
 
     #define VERSION_NUMBER_STR     "2.0.0.0"
     #define VERSION_NUMBER			2,0,0,0
-    #define FILEVERSION_NUMBER       2,0,6,0
-    #define FILEVERSION_NUMBER_STR   "2.0.6.0"
-    #define INFORMATIONAL_NUMBER_STR  "2.06 GA"
+    #define FILEVERSION_NUMBER       2,0,7,0
+    #define FILEVERSION_NUMBER_STR   "2.0.7.0"
+    #define INFORMATIONAL_NUMBER_STR  "2.07 GA"
 
     #ifdef __DEBUG__
         #define ASSEMBLY_CONFIGURATION "Debug"

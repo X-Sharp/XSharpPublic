@@ -4,10 +4,16 @@
 #include "dbcmds.vh"
 USING XSharp.RDD
 using System.IO
+using System.Threading
+
+
+
 [STAThread];
 FUNCTION Start() AS VOID
     TRY
-        testDbfEncoding()
+        TestTimeStamp()
+        //TestSeek()
+        //testDbfEncoding()
         //testDateInc()
         //TestEmptyDbf()
         //TestAnotherOrdScope()
@@ -124,6 +130,38 @@ FUNCTION Start() AS VOID
         ErrorDialog(e)
     END TRY
     WAIT
+    RETURN
+
+FUNCTION TestTimeStamp() AS VOID
+	LOCAL c AS STRING
+	c := "c:\test\mytest.dbf"
+	IF .not. File.Exists(c)
+		DbCreate(c,{{"TEST","C",10,0}})
+		DbUseArea(,,c)
+		DbAppend()
+		DbCloseArea()
+		Thread.Sleep(1500)
+	END IF
+	? FileInfo{c}:LastWriteTime
+	DbUseArea(,,c)
+    DbGoTop()
+	//DbCloseArea()
+	? FileInfo{c}:LastWriteTime // different to above
+RETURN
+
+FUNCTION TestSeek() AS VOID
+    RddSetDefault("DBFNTX")
+    ? DbUseArea(TRUE,,"c:\Descartes\dbfseek\relatie.dbf")
+    ? DbSetIndex("c:\Descartes\dbfseek\RELATIE1.ntx")
+    ? DbSeek("BAV01")
+    ? Found()
+    ? DbCloseArea()
+    RddSetDefault("DBFCDX")
+    ? DbUseArea(TRUE,,"c:\Descartes\dbfseek\relatie.dbf")
+    ? DbCreateIndex("c:\Descartes\dbfseek\RELATIE1.cdx","RELATIENR")
+    ? DbSeek("BAV01")
+    ? Found()
+    ? DbCloseArea()
     RETURN
 
 FUNCTION TestDbfEncoding() AS VOID

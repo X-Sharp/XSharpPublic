@@ -747,13 +747,13 @@ INTERNAL STATIC CLASS TransFormHelpers
         
         END CLASS
         
-/// <summary>Convert any value into a formatted string.</summary>        
-FUNCTION Transform( dValue AS DATE, cPicture AS STRING ) AS STRING
-    RETURN TransFormHelpers.TransformD(dValue, cPicture)	
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/transform/*" />     
+FUNCTION Transform( uValue AS DATE, cSayPicture AS STRING ) AS STRING
+    RETURN TransFormHelpers.TransformD(uValue, cSayPicture)	
     
-/// <summary>Convert any value into a formatted string.</summary>        
-FUNCTION Transform( lValue AS LOGIC, cPicture AS STRING ) AS STRING
-    RETURN TransFormHelpers.TransformL(lValue, cPicture)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/transform/*" />     
+FUNCTION Transform( uValue AS LOGIC, cSayPicture AS STRING ) AS STRING
+    RETURN TransFormHelpers.TransformL(uValue, cSayPicture)
     
 // /// <summary>Convert any value into a formatted string.</summary>        
 //FUNCTION Transform( nValue AS LONG, cPicture AS STRING ) AS STRING
@@ -763,45 +763,45 @@ FUNCTION Transform( lValue AS LOGIC, cPicture AS STRING ) AS STRING
 //FUNCTION Transform( nValue AS INT64, cPicture AS STRING ) AS STRING
 //    RETURN TransFormHelpers.TransformN( nValue, cPicture, TRUE)
     
-/// <summary>Convert any value into a formatted string.</summary>        
-FUNCTION Transform( nValue AS FLOAT, cPicture AS STRING ) AS STRING
-    RETURN TransFormHelpers.TransformN( nValue, cPicture, FALSE)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/transform/*" />     
+FUNCTION Transform( uValue AS FLOAT, cSayPicture AS STRING ) AS STRING
+    RETURN TransFormHelpers.TransformN( uValue, cSayPicture, FALSE)
     
-/// <summary>Convert any value into a formatted string.</summary>        
-FUNCTION Transform(cValue AS STRING, cPicture AS STRING) AS STRING
-    RETURN TransFormHelpers.TransformS(cValue, cPicture)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/transform/*" />     
+FUNCTION Transform(uValue AS STRING, cSayPicture AS STRING) AS STRING
+    RETURN TransFormHelpers.TransformS(uValue, cSayPicture)
     
-/// <summary>Convert any value into a formatted string.</summary>        
-FUNCTION Transform( uValue AS USUAL, cPicture AS STRING ) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/transform/*" />       
+FUNCTION Transform( uValue AS USUAL, cSayPicture AS STRING ) AS STRING
     LOCAL ret AS USUAL
     SWITCH uValue:_UsualType
     CASE __UsualType.Float
     CASE __UsualType.Decimal
-        ret := TransformHelpers.TransformN( (FLOAT) uValue, cPicture , FALSE)
+        ret := TransformHelpers.TransformN( (FLOAT) uValue, cSayPicture , FALSE)
     CASE __UsualType.Int64
     CASE __UsualType.Long
-        ret := TransformHelpers.TransformN( (INT64) uValue, cPicture , TRUE)
+        ret := TransformHelpers.TransformN( (INT64) uValue, cSayPicture , TRUE)
 	CASE __UsualType.Date
     CASE __UsualType.DateTime
-        ret := TransformHelpers.TransformD( (DATE) uValue, cPicture )
+        ret := TransformHelpers.TransformD( (DATE) uValue, cSayPicture )
     CASE __UsualType.Logic
-        ret := TransformHelpers.TransformL( (LOGIC) uValue, cPicture )
+        ret := TransformHelpers.TransformL( (LOGIC) uValue, cSayPicture )
     CASE __UsualType.String
     CASE __UsualType.Psz
-        ret := TransformHelpers.TransformS( (STRING) uValue,  cPicture )
+        ret := TransformHelpers.TransformS( (STRING) uValue,  cSayPicture )
     CASE __UsualType.Void
         ret := ""
     OTHERWISE
         IF uValue:IsObject .AND. IsMethod( uValue, #Transform )
-            ret := Send( uValue, "Transform" , cPicture )
+            ret := Send( uValue, "Transform" , cSayPicture )
         ELSE
             THROW Error.ArgumentError( __ENTITY__, NAMEOF(uValue),  "Invalid argument type"  ,1)
         ENDIF
     END SWITCH
     RETURN ret
     
-/// <summary>Convert a transformed string back to its original value.</summary>    
-FUNCTION Unformat( 	cValue	AS STRING,  cSayPicture AS STRING, cType AS STRING)	AS USUAL PASCAL
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/unformat/*" / 
+FUNCTION Unformat( 	cFormatString	AS STRING,  cSayPicture AS STRING, cType AS STRING)	AS USUAL PASCAL
 LOCAL uRetVal		AS USUAL
 LOCAL lNullable     AS LOGIC
 
@@ -815,13 +815,13 @@ cType		:= Upper(Left(cType, 1))
 cSayPicture := Upper( cSayPicture )
 SWITCH cType[0]
 CASE c'N'
-    uRetVal := TransFormHelpers.UnformatN(cValue, cSayPicture, lNullable)
+    uRetVal := TransFormHelpers.UnformatN(cFormatString, cSayPicture, lNullable)
 CASE c'C'
-    uRetVal := TransFormHelpers.UnformatC(cValue, cSayPicture, lNullable)
+    uRetVal := TransFormHelpers.UnformatC(cFormatString, cSayPicture, lNullable)
 CASE c'L'
-    uRetVal := TransFormHelpers.UnformatL(cValue, cSayPicture, lNullable)
+    uRetVal := TransFormHelpers.UnformatL(cFormatString, cSayPicture, lNullable)
 CASE c'D'
-    uRetVal := TransFormHelpers.UnformatD(cValue, cSayPicture, lNullable)
+    uRetVal := TransFormHelpers.UnformatD(cFormatString, cSayPicture, lNullable)
 OTHERWISE
     uRetVal := NIL
 END SWITCH

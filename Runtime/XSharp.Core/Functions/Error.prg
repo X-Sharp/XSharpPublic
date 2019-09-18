@@ -5,29 +5,21 @@
 //
 
 
-/// <summary>
-/// Return an error message associated with a system-generated error code.
-/// </summary>
-/// <param name="nGenCode">The error code exported by an error object. One of the GenCodes enum values</param>
-/// <returns>The message string associated with the error code.  Error messages are nation-dependent.</returns>
-FUNCTION ErrString(nGenCode AS DWORD) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errstring/*" />
+FUNCTION ErrString(dwNewReturnCode AS DWORD) AS STRING
 	LOCAL cResource AS STRING
-	IF nGenCode > XSharp.GenCode.EG_MAX
+	IF dwNewReturnCode > XSharp.GenCode.EG_MAX
 		cResource := "RT_MSG_ERR_UNKNOWN"
 	ELSE
-		cResource := "RT_MSG_ERR_" + nGenCode:ToString()
+		cResource := "RT_MSG_ERR_" + dwNewReturnCode:ToString()
 	ENDIF
 	RETURN Messages.GetString(cResource)
 	
 	
 	
-	/// <summary>
-	/// Return a description string for a DOS error number.
-	/// </summary>
-	/// <param name="nDosErr">The DOS error number that you want a description for.</param>
-	/// <returns>The message string associated with the error number.</returns>
-FUNCTION DosErrString(nDosErr AS DWORD) AS STRING
-    RETURN System.ComponentModel.Win32Exception{ (INT) nDosErr }.Message
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/doserrstring/*" />
+FUNCTION DosErrString(dwError AS DWORD) AS STRING
+    RETURN System.ComponentModel.Win32Exception{ (INT) dwError }.Message
 
 
 

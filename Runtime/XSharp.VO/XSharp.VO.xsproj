@@ -60,6 +60,8 @@
     <DisabledWarnings>162,171,553,1591</DisabledWarnings>
     <DocumentationFile>XSharp.VO.Xml</DocumentationFile>
     <CommandLineOption>/noclipcall</CommandLineOption>
+    <PreBuildEvent>copy $(Solutiondir)Runtime\XSharp.RT\VoFunctionDocs.xml $(Solutiondir)Runtime\XSharp.Vo\VoFunctionDocs.xml &gt;NUL</PreBuildEvent>
+    <PostBuildEvent>erase $(Solutiondir)Runtime\XSharp.Core\VoFunctionDocs.xml &gt;NUL</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>

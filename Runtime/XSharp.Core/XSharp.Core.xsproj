@@ -63,6 +63,8 @@
     <DisabledWarnings>168;9001;162;1591</DisabledWarnings>
     <DocumentationFile>XSharp.Core.Xml</DocumentationFile>
     <CommandLineOption>/noclipcall</CommandLineOption>
+    <PreBuildEvent>copy $(Solutiondir)Runtime\XSharp.RT\VoFunctionDocs.xml $(Solutiondir)Runtime\XSharp.Core\VoFunctionDocs.xml &gt;NUL</PreBuildEvent>
+    <PostBuildEvent>erase $(Solutiondir)Runtime\XSharp.Core\VoFunctionDocs.xml &gt;NUL</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
@@ -250,7 +252,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Language\Turkish.resx">
       <SubType>Designer</SubType>
-      <Generator> </Generator>
+      <Generator>
+      </Generator>
     </EmbeddedResource>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->

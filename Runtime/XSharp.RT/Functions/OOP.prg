@@ -690,30 +690,17 @@ INTERNAL STATIC CLASS OOPHelpers
 END CLASS
 		
 		
-/// <summary>
-/// Invoke a method for every element in an Array of objects.
-/// </summary>
-/// <param name="aTarget">The array to process.</param>
-/// <param name="symMethod">The method name, specified without parentheses.</param>
-/// <param name="args">A comma-separated list of arguments to pass to symMethod.</param>
-/// <returns>A reference to aTarget.</returns>
-FUNCTION ASend(aTarget AS ARRAY, cName AS STRING, args PARAMS USUAL[] ) AS ARRAY 
-	IF aTarget != NULL .AND. ! String.IsNullOrEmpty( cName )
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asend/*" />
+FUNCTION ASend(aTarget AS ARRAY, symMethod AS STRING, MethodArgList PARAMS USUAL[] ) AS ARRAY 
+	IF aTarget != NULL .AND. ! String.IsNullOrEmpty( symMethod )
 		FOREACH VAR x IN aTarget
-			__InternalSend( x, cName, args )
+			__InternalSend( x, symMethod, MethodArgList )
 		NEXT
 	ENDIF   
 	RETURN aTarget
 	
 	
-/// <summary>
-/// Determine if an object is an instance of a particular class.
-/// </summary>
-/// <param name="oObject">The object to check for.</param>
-/// <param name="symClassName">The class that oObject may be an instance of.</param>
-/// <returns>TRUE if oObject is an instance of symClassName; otherwise, an error is generated.  FALSE is returned if you choose to ignore the error.
-/// If oObject is a NULL_OBJECT, a FALSE is returned but no error is generated.
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/checkinstanceof/*" />
 FUNCTION CheckInstanceOf(oObject AS OBJECT,symClassName AS STRING) AS LOGIC
 	IF oObject == NULL_OBJECT
 		RETURN FALSE
@@ -725,21 +712,11 @@ FUNCTION CheckInstanceOf(oObject AS OBJECT,symClassName AS STRING) AS LOGIC
 	THROW oError
 	
 	
-/// <summary>
-/// Return the number of classes available to your application.
-/// </summary>
-/// <returns>
-/// The number of available classes.
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classcount/*" />
 FUNCTION ClassCount() AS DWORD
 	RETURN ClassList():Length
 	
-/// <summary>
-/// Return an Array of Symbols corresponding to the classes available to your application.
-/// </summary>
-/// <returns>
-/// Returns an Array with the name of all available classes
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classlist/*" />
 FUNCTION ClassList() AS ARRAY
 	LOCAL classes    := ARRAY{} AS ARRAY
 	LOCAL assemblies := System.AppDomain.CurrentDomain:GetAssemblies() AS System.Reflection.Assembly[]
@@ -758,38 +735,24 @@ FUNCTION ClassList() AS ARRAY
 	NEXT
 	RETURN classes
 	
-/// <summary>
-/// Get the class name of an object.
-/// </summary>
-/// <param name="o"></param>
-/// <returns>
-/// </returns>
-FUNCTION ClassName(o AS OBJECT) AS STRING
-	RETURN o?:GetType():Name:ToUpper()
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classname/*" />
+FUNCTION ClassName(oObject AS OBJECT) AS STRING
+	RETURN oObject?:GetType():Name:ToUpper()
 	
 	
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classtree/*" />
+FUNCTION ClassTree(oObject AS OBJECT) AS ARRAY
+	RETURN OOPHelpers.ClassTree(oObject?:GetType())
 	
-/// <summary>
-/// Get the class hierarchy of an object.
-/// </summary>
-/// <param name="o"></param>
-/// <returns>
-/// </returns>
-FUNCTION ClassTree(o AS OBJECT) AS ARRAY
-	RETURN OOPHelpers.ClassTree(o?:GetType())
-	
-/// <summary>Create a new instance of a named class</summary>
-/// <param name="cClassName">Specifies the class from which the new object is created.</param>
-/// <param name="_args">These optional parameters are passed to the constructor of the class </param>
-/// <returns>The object that was created</returns>
-FUNCTION CreateInstance(cClassName,_args) AS OBJECT CLIPPER
-	IF ! ( cClassName:IsSymbol || cClassName:IsString )
-		THROW Error.DataTypeError( __FUNCTION__, NAMEOF(cClassName), 1, cClassName)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/createinstance/*" />
+FUNCTION CreateInstance(symClassName,InitArgList) AS OBJECT CLIPPER
+	IF ! ( symClassName:IsSymbol || symClassName:IsString )
+		THROW Error.DataTypeError( __FUNCTION__, NAMEOF(symClassName), 1, symClassName)
 	ENDIF    	
-	VAR t := OOPHelpers.FindClass((STRING) cClassName)
+	VAR t := OOPHelpers.FindClass((STRING) symClassName)
 	IF t == NULL
-		 VAR oError := Error.VOError( EG_NOCLASS, __FUNCTION__, NAMEOF(cClassName), 1,  <OBJECT>{cClassName}  )
-         oError:Description := oError:Message+" '"+cClassName+"'"
+		 VAR oError := Error.VOError( EG_NOCLASS, __FUNCTION__, NAMEOF(symClassName), 1,  <OBJECT>{symClassName}  )
+         oError:Description := oError:Message+" '"+symClassName+"'"
          THROW oError
 	ENDIF
 	VAR constructors := t:getConstructors()
@@ -801,7 +764,7 @@ FUNCTION CreateInstance(cClassName,_args) AS OBJECT CLIPPER
     LOCAL ctor := OOPHelpers.FindBestOverLoad(constructors, __FUNCTION__ ,args) AS ConstructorInfo
 	IF ctor == NULL
     	VAR oError := Error.VOError( EG_NOMETHOD, __FUNCTION__, "Constructor", 0 , NULL)
-        oError:Description := "No CONSTRUCTOR defined for type "+ (String) cClassName
+        oError:Description := "No CONSTRUCTOR defined for type "+ (String) symClassName
         throw oError
     ENDIF
 	LOCAL oRet AS OBJECT  
@@ -823,14 +786,10 @@ FUNCTION CreateInstance(cClassName,_args) AS OBJECT CLIPPER
 	
 	
 	
-/// <summary>
-/// Get the class hierarchy of a class.
-/// </summary>
-/// <param name="symClassName"></param>
-/// <returns>
-/// </returns>
-FUNCTION ClassTreeClass(cName AS STRING) AS ARRAY
-	VAR t := OOPHelpers.FindClass(cName)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classtreeclass/*" />
+FUNCTION ClassTreeClass(symClass AS STRING) AS ARRAY
+	VAR t := OOPHelpers.FindClass(symClass)
 	IF t != NULL
 		RETURN OOPHelpers.ClassTree(t)
 	ELSE
@@ -840,54 +799,30 @@ FUNCTION ClassTreeClass(cName AS STRING) AS ARRAY
 	
 	
 	
-/// <summary>
-/// Check whether a particular access method can be sent to an object.
-/// </summary>
-/// <param name="o"></param>
-/// <param name="cName"></param>
-/// <returns>
-/// </returns>
-FUNCTION IsAccess(o AS OBJECT,cName AS STRING) AS LOGIC
-	VAR oprop := OOPHelpers.FindProperty(o?:GetType(), cName, TRUE, TRUE)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isaccess/*" />
+FUNCTION IsAccess(oObject AS OBJECT,symAccess AS STRING) AS LOGIC
+	VAR oprop := OOPHelpers.FindProperty(oObject?:GetType(), symAccess, TRUE, TRUE)
 	IF oProp != NULL_OBJECT
 		RETURN oProp:CanRead
 	ENDIF
 	RETURN FALSE
 
-/// <summary>
-/// Check whether a particular assign method can be sent to an object.
-/// </summary>
-/// <param name="o"></param>
-/// <param name="symAssignName"></param>
-/// <returns>
-/// </returns>
-FUNCTION IsAssign(o AS OBJECT,cName AS STRING) AS LOGIC
-	VAR oprop := OOPHelpers.FindProperty(o?:GetType(), cName, FALSE, TRUE)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isassign/*" />
+FUNCTION IsAssign(oObject AS OBJECT,symAssign AS STRING) AS LOGIC
+	VAR oprop := OOPHelpers.FindProperty(oObject?:GetType(), symAssign, FALSE, TRUE)
 	IF oProp != NULL_OBJECT
 		RETURN oProp:CanWrite
 	ENDIF
 	RETURN FALSE
 	
-/// <summary>
-/// Determine if a class exists.
-/// </summary>
-/// <param name="cClassName"></param>
-/// <returns>
-/// </returns>
-FUNCTION IsClass(cClassName AS STRING) AS LOGIC
-
-	RETURN OOPHelpers.FindClass(cClassName) != NULL
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isclass/*" />
+FUNCTION IsClass(symClassName AS STRING) AS LOGIC
+	RETURN OOPHelpers.FindClass(symClassName) != NULL
 	
-/// <summary>
-/// Determine if one class is a subclass of another class.
-/// </summary>
-/// <param name="symClassName"></param>
-/// <param name="symSuperClassName"></param>
-/// <returns>
-/// </returns>
-FUNCTION IsClassOf(cClassName AS STRING,cSuperClassName AS STRING) AS LOGIC
-	LOCAL tSub   := OOPHelpers.FindClass(cClassName) AS Type
-	LOCAL tSuper := OOPHelpers.FindClass(cSuperClassName) AS Type
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isclassof/*" />
+FUNCTION IsClassOf(symClassName AS STRING,symSuperClassName AS STRING) AS LOGIC
+	LOCAL tSub   := OOPHelpers.FindClass(symClassName) AS Type
+	LOCAL tSuper := OOPHelpers.FindClass(symSuperClassName) AS Type
 	// IsClassOf() in VO returns TRUE when child and parent class is the same (and it exists)
 	RETURN tSub != NULL .AND. tSuper != NULL .AND. (tSub == tSuper .OR. tSub:IsSubclassOf(tSuper))
 
@@ -902,19 +837,13 @@ FUNCTION FindClass(cClassname AS STRING) AS System.Type
 	RETURN OOPHelpers.FindClass(cClassName) 
 	
 	
-/// <summary>
-/// Determine if an object is an instance of a class.
-/// </summary>
-/// <param name="oObject"></param>
-/// <param name="cName"></param>
-/// <returns>
-/// </returns>
-FUNCTION IsInstanceOf(oObject AS OBJECT,cName AS STRING) AS LOGIC
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isinstanceof/*" />
+FUNCTION IsInstanceOf(oObject AS OBJECT,symClassName AS STRING) AS LOGIC
 	IF oObject == NULL_OBJECT
 		RETURN FALSE
 	ENDIF
 	// this was a smarter implemenation, but has performance issues
-	// especially when cName is not found, as we cannot cache that
+	// especially when symClassName is not found, as we cannot cache that
 /*	LOCAL oType := OOPHelpers.FindClass(cName, FALSE) AS System.Type
 	IF oType == NULL
 		RETURN FALSE
@@ -923,200 +852,118 @@ FUNCTION IsInstanceOf(oObject AS OBJECT,cName AS STRING) AS LOGIC
 	LOCAL oType AS Type
 	oType := oObject:GetType()
 	DO WHILE oType != NULL
-		IF String.Compare(oType:Name, cName, TRUE) == 0
+		IF String.Compare(oType:Name, symClassName, TRUE) == 0
 			RETURN TRUE
 		END IF
 		oType := oType:BaseType
 	END DO
 	RETURN FALSE
 	
-/// <summary>
-/// Determine if an object inside a Usual is an instance of a class.
-/// </summary>
-/// <param name="oX"></param>
-/// <param name="cName"></param>
-/// <returns>
-/// </returns>
-FUNCTION IsInstanceOfUsual(oX AS USUAL,cName AS STRING) AS LOGIC
-	IF ! oX:IsObject
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isinstanceofusual/*" />
+FUNCTION IsInstanceOfUsual(uObject AS USUAL,symClassName AS STRING) AS LOGIC
+	IF ! uObject:IsObject
 		RETURN FALSE
 	ENDIF
-	RETURN IsInstanceOf(oX, cName)
+	RETURN IsInstanceOf(uObject, symClassName)
 	
 	
 	
-/// <summary>
-/// Return the contents of an exported instance variable.
-/// </summary>
-/// <param name="o"></param>
-/// <param name="cIvar"></param>
-/// <returns>
-/// </returns>
-FUNCTION IVarGet(o AS OBJECT,cIvar AS STRING) AS USUAL
-	IF o == NULL_OBJECT
-		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(o),1)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarget/*" />
+FUNCTION IVarGet(oObject AS OBJECT,symInstanceVar AS STRING) AS USUAL
+	IF oObject == NULL_OBJECT
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(oObject),1)
 	ENDIF
-	IF String.IsNullOrEmpty(cIVar)
-		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(cIVar),2)
+	IF String.IsNullOrEmpty(symInstanceVar)
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(symInstanceVar),2)
 	ENDIF
-	RETURN OOPHelpers.IVarGet(o, cIVar, FALSE)
+	RETURN OOPHelpers.IVarGet(oObject, symInstanceVar, FALSE)
 	
-/// <summary>
-/// Get information about how a particular instance variable (or access method) was declared.
-/// </summary>
-/// <param name="o"></param>
-/// <param name="cIVar"></param>
-/// <returns>
-/// </returns>
-FUNCTION IVarGetInfo(o AS OBJECT,cIVar AS STRING) AS DWORD
-	RETURN OOPHelpers.IVarHelper(o, cIVar, TRUE)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivargetinfo/*" />
+FUNCTION IVarGetInfo(oObject AS OBJECT,symInstanceVar AS STRING) AS DWORD
+	RETURN OOPHelpers.IVarHelper(oObject, symInstanceVar, TRUE)
 	
 	
-/// <summary>
-/// Check whether a particular method can be sent to an object.
-/// </summary>
-/// <param name="o"></param>
-/// <param name="cMethodName"></param>
-/// <returns>
-/// </returns>
-FUNCTION IsMethod(o AS OBJECT,cMethodName AS STRING) AS LOGIC
-	RETURN OOPHelpers.IsMethod(o?:GetType(), cMethodName)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ismethod/*" />
+FUNCTION IsMethod(oObject AS OBJECT,symMethod AS STRING) AS LOGIC
+	RETURN OOPHelpers.IsMethod(oObject?:GetType(), symMethod)
 	
 	
-/// <summary>
-/// Check whether a particular method can be sent to an object inside a Usual.
-/// </summary>
-/// <param name="oX"></param>
-/// <param name="symMethodName"></param>
-/// <returns>
-/// </returns>
-FUNCTION IsMethodUsual(oX AS USUAL,cName AS STRING) AS LOGIC
-	IF oX:IsObject
-		RETURN IsMethod( oX, cName )
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ismethodusual/*" />
+FUNCTION IsMethodUsual(uObject AS USUAL,symMethod AS STRING) AS LOGIC
+	IF uObject:IsObject
+		RETURN IsMethod( uObject, symMethod )
 	ENDIF
 	RETURN FALSE
 	
-/// <summary>
-/// Check whether a particular method can be sent to a class.
-/// </summary>
-/// <param name="c"></param>
-/// <param name="cName"></param>
-/// <returns>
-/// </returns>
-FUNCTION IsMethodClass( c AS STRING, cName AS STRING ) AS LOGIC
-	VAR t := OOPHelpers.FindClass( c )
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ismethodclass/*" />
+FUNCTION IsMethodClass( symClass AS STRING, symMethod AS STRING ) AS LOGIC
+	VAR t := OOPHelpers.FindClass( symClass )
 	
 	IF t != NULL
-		RETURN OOPHelpers.IsMethod( t, cName )
+		RETURN OOPHelpers.IsMethod( t, symMethod )
 	ENDIF
 	RETURN FALSE
 	
 
-/// <summary>
-/// Return the contents of an instance variable.
-/// </summary>
-/// <param name="o"></param>
-/// <param name="cIVar"></param>
-/// <returns>
-/// </returns>
-FUNCTION IVarGetSelf(o AS OBJECT,cIVar AS STRING) AS USUAL
-	IF o == NULL_OBJECT
-		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(o),1)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivargetself/*" />
+FUNCTION IVarGetSelf(oObject AS OBJECT,symInstanceVar AS STRING) AS USUAL
+	IF oObject == NULL_OBJECT
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(oObject),1)
 	ENDIF
-	IF String.IsNullOrEmpty(cIVar)
-		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(cIVar),2)
+	IF String.IsNullOrEmpty(symInstanceVar)
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(symInstanceVar),2)
 	ENDIF
-	RETURN OOPHelpers.IVarGet(o, cIVar, TRUE)
+	RETURN OOPHelpers.IVarGet(oObject, symInstanceVar, TRUE)
 	
-/// <summary>
-/// Store all instance variables of an object into an Array.
-/// </summary>
-/// <param name="oObject"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarlist/*" />
 FUNCTION IvarList(oObject AS OBJECT) AS ARRAY
 	RETURN OOPHelpers.IVarList(oObject?:GetType())
 	
 	
-/// <summary>
-/// Store all instance variables of a class into an Array.
-/// </summary>
-/// <param name="symClassName"></param>
-/// <returns>
-/// </returns>
-FUNCTION IvarListClass(cName AS STRING) AS ARRAY
-	VAR t := OOPHelpers.FindClass(cName)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarlistclass/*" />
+FUNCTION IvarListClass(symClass AS STRING) AS ARRAY
+	VAR t := OOPHelpers.FindClass(symClass)
 	RETURN OOPHelpers.IVarList(t)
 	
 	
-/// <summary>
-/// Get information about how a particular instance variable (or assign method) was declared.
-/// </summary>
-/// <param name="o"></param>
-/// <param name="cIVar"></param>
-/// <returns>
-/// </returns>
-FUNCTION IVarPutInfo(o AS OBJECT,cIVar AS SYMBOL) AS DWORD
-	RETURN OOPHelpers.IVarHelper(o, cIVar, FALSE)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarputinfo/*" />
+FUNCTION IVarPutInfo(oObject AS OBJECT,symInstanceVar AS SYMBOL) AS DWORD
+	RETURN OOPHelpers.IVarHelper(oObject, symInstanceVar, FALSE)
 	
-/// <summary>
-/// Assign a value to an exported instance variable.
-/// </summary>
-/// <param name="o"></param>
-/// <param name="cIVar"></param>
-/// <param name="uValue"></param>
-/// <returns>
-/// </returns>
-FUNCTION IVarPut(o AS OBJECT,cIVar AS STRING,uValue AS USUAL) AS USUAL
-	IF o == NULL_OBJECT
-		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(o),1)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarput/*" />
+FUNCTION IVarPut(oObject AS OBJECT,symInstanceVar AS STRING,uValue AS USUAL) AS USUAL
+	IF oObject == NULL_OBJECT
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(oObject),1)
 	ENDIF
-	IF String.IsNullOrEmpty(cIVar)
-		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(cIVar),2)
+	IF String.IsNullOrEmpty(symInstanceVar)
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(symInstanceVar),2)
 	ENDIF
-	OOPHelpers.IVarPut(o, cIVar, uValue, FALSE)
+	OOPHelpers.IVarPut(oObject, symInstanceVar, uValue, FALSE)
 	RETURN uValue
 	
-/// <summary>
-/// Assign a value to an instance variable.
-/// </summary>
-/// <param name="o"></param>
-/// <param name="cIvar"></param>
-/// <param name="uValue"></param>
-/// <returns>
-/// </returns>
-FUNCTION IVarPutSelf(o AS OBJECT,cIVar AS STRING,uValue AS USUAL) AS USUAL
-	IF o == NULL_OBJECT
-		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(o),1)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarputself/*" />
+FUNCTION IVarPutSelf(oObject AS OBJECT,symInstanceVar AS STRING,uValue AS USUAL) AS USUAL
+	IF oObject == NULL_OBJECT
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(oObject),1)
 	ENDIF
-	IF String.IsNullOrEmpty(cIVar)
-		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(cIVar),2)
+	IF String.IsNullOrEmpty(symInstanceVar)
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(symInstanceVar),2)
 	ENDIF
-	OOPHelpers.IVarPut(o, cIVar, uValue,TRUE) 
+	OOPHelpers.IVarPut(oObject, symInstanceVar, uValue,TRUE) 
 	RETURN uValue
 	
 	
-/// <summary>
-/// Create a class list in the form of an Array for the specified object.
-/// </summary>
-/// <param name="o"></param>
-/// <returns>
-/// </returns>
-FUNCTION MethodList(o AS OBJECT) AS ARRAY
-	IF o != NULL
-		RETURN OOPHelpers.MethodList( o:GetType() )
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/methodlist/*" />
+FUNCTION MethodList(oClass AS OBJECT) AS ARRAY
+	IF oClass != NULL
+		RETURN OOPHelpers.MethodList( oClass:GetType() )
 	ENDIF
 	RETURN NULL_ARRAY
 	
-/// <summary>
-/// Create a class list in the form of an Array for the specified class.
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-FUNCTION MethodListClass( c AS STRING ) AS ARRAY
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/methodlistclass/*" />
+FUNCTION MethodListClass( symClass AS STRING ) AS ARRAY
 	LOCAL aReturn AS ARRAY
-	VAR t := OOPHelpers.FindClass( c )
+	VAR t := OOPHelpers.FindClass( symClass )
 	IF t != NULL
 		aReturn := OOpHelpers.MethodList( t )
 	ELSE
@@ -1127,37 +974,28 @@ FUNCTION MethodListClass( c AS STRING ) AS ARRAY
 	
 	
 	
-/// <summary>
-/// Identify an the last method call 
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/nomethod/*" />
 FUNCTION NoMethod() AS STRING
 	RETURN RuntimeState.NoMethod
 	
 	
-/// <summary>
-/// Convert the values of an object's instance variables to an Array.
-/// </summary>
-/// <param name="o"></param>
-/// <returns>
-/// </returns>
-FUNCTION Object2Array(o AS OBJECT) AS ARRAY
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/object2array/*" />
+FUNCTION Object2Array(oObject AS OBJECT) AS ARRAY
 	LOCAL t AS System.Type
-	IF o == NULL_OBJECT
+	IF oObject == NULL_OBJECT
 		RETURN NULL_ARRAY
 	ENDIF
 	LOCAL aProps AS PropertyInfo[]
 	LOCAL aFields AS FieldInfo[]
 	LOCAL aResult AS ARRAY
 	aResult := {}
-	t := o:GetType()
+	t := oObject:GetType()
 	aProps := t:GetProperties(BindingFlags.Instance | BindingFlags.Public)
     TRY
 	    FOREACH p AS PropertyInfo IN aProps
 		    LOCAL uVal AS USUAL
 		    IF p:CanRead 
-			    uVal := p:GetValue(o,NULL)
+			    uVal := p:GetValue(oObject,NULL)
 			    AAdd(aResult, uVal)
 		    ENDIF
 	    NEXT
@@ -1165,7 +1003,7 @@ FUNCTION Object2Array(o AS OBJECT) AS ARRAY
 	    FOREACH f AS FieldInfo IN aFields
 		    LOCAL uVal AS USUAL
 		    IF ! f:IsSpecialName
-			    uVal := f:GetValue(o)
+			    uVal := f:GetValue(oObject)
 			    AAdd(aResult, uVal)
 		    ENDIF
     	NEXT
@@ -1180,54 +1018,37 @@ FUNCTION Object2Array(o AS OBJECT) AS ARRAY
 	
 	
 	
-/// <summary>
-/// Return a multidimensional Array of all object-oriented programming Symbols that constitute the class.
-/// </summary>
-/// <param name="o"></param>
-/// <returns>
-/// </returns>
-FUNCTION OOPTree(o AS OBJECT) AS ARRAY
-	RETURN OOPHelpers.TreeHelper(o?:GetType())
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ooptree/*" />
+FUNCTION OOPTree(oObject AS OBJECT) AS ARRAY
+	RETURN OOPHelpers.TreeHelper(oObject?:GetType())
 	
-/// <summary>
-/// Return a multidimensional Array of all object-oriented programming Symbols that constitute the class of an object.
-/// </summary>
-/// <param name="s"></param>
-/// <returns>
-/// </returns>
-FUNCTION OOPTreeClass(cClass AS STRING) AS ARRAY
-	VAR type := OOPHelpers.FindClass(cClass)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ooptreeclass/*" />
+FUNCTION OOPTreeClass(symClass AS STRING) AS ARRAY
+	VAR type := OOPHelpers.FindClass(symClass)
 	RETURN OOPHelpers.TreeHelper(type)
 	
 	
-/// <summary>Invoke a method.</summary>
-/// <param name="o"></param>
-/// <param name="uMethod "></param>
-/// <returns>Return value of the method call. </returns>
-FUNCTION Send(o AS USUAL,uMethod AS USUAL, args PARAMS USUAL[]) AS USUAL 
-	IF !o:IsObject
-	     THROW Error.VOError( EG_DATATYPE, __FUNCTION__, NAMEOF(o), 1, <OBJECT>{ o}  )
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/send/*" />
+FUNCTION Send(oObject AS USUAL,symMethod AS USUAL, MethodArgList PARAMS USUAL[]) AS USUAL 
+	IF !oObject:IsObject
+	     THROW Error.VOError( EG_DATATYPE, __FUNCTION__, NAMEOF(oObject), 1, <OBJECT>{ oObject}  )
 	ENDIF
-	IF ! uMethod:IsString  .AND. ! uMethod:IsSymbol
-		THROW Error.VOError( EG_DATATYPE, __FUNCTION__, NAMEOF(uMethod) , 2, <OBJECT>{ uMethod } )
+	IF ! symMethod:IsString  .AND. ! symMethod:IsSymbol
+		THROW Error.VOError( EG_DATATYPE, __FUNCTION__, NAMEOF(symMethod) , 2, <OBJECT>{ symMethod } )
 	ENDIF
-    IF args == NULL
+    IF MethodArgList == NULL
         // this happens for SEND (oObject, "method", NULL)
-        args := <USUAL>{NULL}
+        MethodArgList := <USUAL>{NULL}
     ENDIF
-	LOCAL oObject := o AS OBJECT
-	LOCAL cMethod := uMethod AS STRING
+	LOCAL oToSend := oObject AS OBJECT
+	LOCAL cMethod := symMethod AS STRING
 	LOCAL uResult AS USUAL
-	uResult := OopHelpers.DoSend(oObject, cMethod, args)
+	uResult := OopHelpers.DoSend(oToSend, cMethod, MethodArgList)
 	RETURN uResult
 	
-/// <summary>Invoke a method.</summary>
-/// <param name="o"></param>
-/// <param name="symMethod"></param>
-/// <param name="args">A comma-separated list of arguments to pass to symMethod.</param>
-/// <returns>Return value of the method call. </returns>
-FUNCTION CSend(o AS OBJECT,symMethod AS STRING, args PARAMS USUAL[]) AS USUAL
-	RETURN __InternalSend(o, symMethod, args)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/send/*" />
+FUNCTION CSend(oObject AS OBJECT,symMethod AS STRING, MethodArgList PARAMS USUAL[]) AS USUAL
+	RETURN __InternalSend(oObject, symMethod, MethodArgList)
 	
 	// This is called by the compiler when a late bound call is made on a USUAL.
 	// It is strongly typed and more efficient than Send(), which must use the
@@ -1302,16 +1123,13 @@ FUNCTION _SendClassParams( oObject AS OBJECT, cmethod AS STRING, args AS ARRAY )
 	RETURN OopHelpers.DoSend(oObject, cMethod, uArgs )
 	
 	
-/// <summary>Return the number of arguments that a method is expecting.</summary>
-/// <param name="cClass">The symbol of the class containing the method to examine.</param>
-/// <param name="cMethod">The method name, specified without parentheses.</param>
-/// <returns>The number of arguments that a method is expecting.</returns>
-FUNCTION MParamCount(cClass AS STRING,cMethod AS STRING) AS DWORD
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mparamcount/*" />
+FUNCTION MParamCount(symClass AS STRING,symMethod AS STRING) AS DWORD
 	LOCAL type AS Type
-	type := OOPHelpers.FindClass(cClass)	
+	type := OOPHelpers.FindClass(symClass)	
 	IF type != NULL
 		LOCAL met AS MethodInfo
-		met := OOPHelpers.FindMethod(type, cMethod, TRUE)
+		met := OOPHelpers.FindMethod(type, symMethod, TRUE)
 		IF met != NULL
 			IF met:IsDefined(TYPEOF(ClipperCallingconventionAttribute),FALSE)
 				// calculate the # of parameters
@@ -1322,10 +1140,10 @@ FUNCTION MParamCount(cClass AS STRING,cMethod AS STRING) AS DWORD
 				RETURN (DWORD) met:GetParameters():Length
 			ENDIF
 		ELSE
-			THROW Error.VOError( EG_NOMETHOD,  "MParamCount", NAMEOF(cMethod), 2, <OBJECT>{cMethod} )
+			THROW Error.VOError( EG_NOMETHOD,  "MParamCount", NAMEOF(symMethod), 2, <OBJECT>{symMethod} )
 		ENDIF
 	ELSE
-		THROW Error.VOError( EG_WRONGCLASS,  "MParamCount", NAMEOF(cClass), 1, <OBJECT>{cClass} )
+		THROW Error.VOError( EG_WRONGCLASS,  "MParamCount", NAMEOF(symClass), 1, <OBJECT>{symClass} )
 	ENDIF
 
 	

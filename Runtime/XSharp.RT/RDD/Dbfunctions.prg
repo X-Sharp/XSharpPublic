@@ -20,7 +20,7 @@ FUNCTION _DbThrowErrorOnFailure(funcName AS STRING, resultToCheck AS LOGIC) AS L
     ENDIF
     RETURN resultToCheck
 
-
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/alias0/*" />
 FUNCTION Alias0() AS STRING
    LOCAL oRDD := VoDb.CWA("Alias0", FALSE) AS IRDD
     IF oRDD != NULL
@@ -28,97 +28,54 @@ FUNCTION Alias0() AS STRING
     ENDIF                            
     RETURN String.Empty
 
-    /// <summary>
-    /// Determine when beginning-of-file is encountered.
-    /// </summary>
-    /// <returns>TRUE after an attempt to skip backward beyond the first logical record in a database file or if
-    /// the current database file contains no records; otherwise, FALSE.  If there is no database file open in the
-    /// current work area, BOF() returns TRUE.</returns>
-    /// <remarks>BOF() is the same as CoreDbBOF().</remarks>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/bof/*" />
 FUNCTION Bof() AS LOGIC    
    RETURN VoDb.Bof()
 
-/// <summary>
-/// Return the full path of the file
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbf/*" />
 FUNCTION DBF() AS STRING
     RETURN VoDb.DBF()
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbpack/*" />
 FUNCTION DbPack() AS LOGIC STRICT
 	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Pack())
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrecall/*" />
 FUNCTION DbRecall() AS LOGIC STRICT
 	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Recall())
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbunlock/*" />
 FUNCTION DbUnLock() AS LOGIC STRICT
 	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Unlock(NULL_OBJECT))
 
-/// <summary>Remove all records from the current workarea./// </summary>
-/// <returns>TRUE if successful; otherwise, FALSE./// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbzap/*" />
 FUNCTION DbZap() AS LOGIC STRICT
 	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Zap())
 
 
-/// <summary>Release all locks for all work areas.</summary>
-/// <returns>TRUE if successful; otherwise, FALSE.</returns>
-/// <remarks>DBUnlockAll() releases any record or file locks obtained by the current process for any work area.
-/// DBUnlockAll() is only meaningful on a shared database.  It is equivalent to calling DBUnlock() on every occupied work area.</remarks>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbunlockall/*" />
 FUNCTION DbUnlockAll() AS LOGIC STRICT
 	RETURN VoDb.UnlockAll()
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/deleted/*" />
 FUNCTION Deleted() AS LOGIC STRICT
 	RETURN VoDb.Deleted()
 
-     /// <summary>
-    /// Determine when end-of-file is encountered.
-    /// </summary>
-    /// <returns>TRUE when an attempt is made to move the record pointer beyond the last logical record in a
-    /// database file or if the current database file contains no records; otherwise, FALSE.  If there is no
-    /// database file open in the current work area, EOF() returns TRUE.</returns>
-    /// <remarks>EOF() is the same as CoreDbEOF().</remarks>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/eof/*" />
 FUNCTION Eof() AS LOGIC
    RETURN VoDb.Eof()
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/flock/*" />
 FUNCTION Flock() AS LOGIC STRICT
 	RETURN VoDb.Flock()
 
 
-    /// <summary>
-    /// Return the number of fields in the current database file.
-    /// </summary>
-    /// <returns>
-    /// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fcount/*" />
 FUNCTION FCount() AS DWORD
     RETURN VoDb.FCount()    
     
-    /// <summary>
-    /// Return the name of a field as a string.
-    /// </summary>
-    /// <param name="dwFieldPos">The position of the field in the database file structure.</param>
-    /// <returns>The name of the specified field as a symbol.  If dwFieldPos does not correspond to an existing field in a database file
-    /// or if no database file is open, FieldName() return an empty string.
-    /// </returns>
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldname/*" />
 FUNCTION FieldName(dwFieldPos AS DWORD) AS STRING
     IF dwFieldPos > 0 .AND. dwFieldPos <= VoDb.FCount() 
         RETURN VoDb.FieldName(dwFieldPos)
@@ -126,13 +83,7 @@ FUNCTION FieldName(dwFieldPos AS DWORD) AS STRING
     RETURN String.Empty
     
 
-    /// <summary>
-    /// Return the name of a field as a symbol.
-    /// </summary>
-    /// <param name="dwFieldPos">The position of the field in the database file structure.</param>
-    /// <returns>The name of the specified field as a symbol.  If dwFieldPos does not correspond to an existing field in a database file
-    /// or if no database file is open, FieldSym() returns NULL_SYMBOL.
-    /// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldsym/*" />
 FUNCTION FieldSym(dwFieldPos AS DWORD) AS SYMBOL
     IF dwFieldPos > 0 .AND. dwFieldPos <= VoDb.FCount() 
         RETURN (SYMBOL) VoDb.FieldName(dwFieldPos)
@@ -140,53 +91,32 @@ FUNCTION FieldSym(dwFieldPos AS DWORD) AS SYMBOL
     RETURN NULL_SYMBOL
 
 
-    /// <summary>
-    /// Return the position of a field.
-    /// </summary>
-    /// <param name="sFieldName"></param>
-    /// <returns>
-    /// </returns>
-FUNCTION FieldPos(sFieldName AS STRING) AS DWORD
-    RETURN VoDb.FieldPos(sFieldName)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldpos/*" />
+FUNCTION FieldPos(cFieldName AS STRING) AS DWORD
+    RETURN VoDb.FieldPos(cFieldName)
     
-/// <summary>
-/// Return the position of a field.
-/// </summary>
-/// <param name="sFieldName"></param>
-/// <param name="nArea"></param>
-/// <returns>
-/// </returns>
-FUNCTION FieldPos(sFieldName AS STRING, nArea AS DWORD) AS DWORD
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldpos/*" />
+FUNCTION FieldPos(cFieldName AS STRING, nArea AS DWORD) AS DWORD
     LOCAL oRDD := RuntimeState.WorkAreas:GetRDD(nArea) AS IRDD
     IF oRDD != NULL_OBJECT
-        RETURN (DWORD) oRDD:FieldIndex(sFieldName) 
+        RETURN (DWORD) oRDD:FieldIndex(cFieldName) 
     ENDIF
     RETURN 0   
     
 
     
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/found/*" />
 FUNCTION Found() AS LOGIC 
 	RETURN VoDb.Found()
 
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/header/*" />
 FUNCTION Header() AS LONG
     LOCAL oValue := NULL AS OBJECT
 	VoDb.Info(DBI_GETHEADERSIZE, REF oValue)
     RETURN (LONG) oValue
 
-/// <summary>
-/// Return the number of records
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lastrec/*" />
 FUNCTION LastRec() AS DWORD
     RETURN (DWORD) VoDb.LastRec()
 
@@ -197,102 +127,62 @@ FUNCTION LastRec() AS DWORD
 FUNCTION DbBuffRefresh() AS LOGIC STRICT
 	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.BuffRefresh())
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclearfilter/*" />
 FUNCTION DbClearFilter() AS LOGIC STRICT
 	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.ClearFilter())
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclearrelation/*" />
 FUNCTION DbClearRelation() AS LOGIC STRICT
 	RETURN VoDb.ClearRelation()
 
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcloseall/*" />
 FUNCTION DbCloseAll() AS LOGIC STRICT
 	RETURN VoDb.CloseAll()
 
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclosearea/*" />
 FUNCTION DbCloseArea () AS LOGIC STRICT
 	RETURN VoDb.CloseArea()
 
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcommit/*" />
 FUNCTION DbCommit() AS LOGIC STRICT
 	RETURN VoDb.Commit()
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcommitall/*" />
 FUNCTION DbCommitAll() AS LOGIC STRICT
 	RETURN VoDb.CommitAll()
 
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcontinue/*" />
 FUNCTION DbContinue() AS LOGIC STRICT
 	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Continue())
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbdriver/*" />
 FUNCTION DbDriver() AS STRING STRICT
 	RETURN RddName()
 
 
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbfilter/*" />
 FUNCTION DbFilter() AS STRING STRICT
 	RETURN VoDb.Filter()
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgetselect/*" />
 FUNCTION DbGetSelect() AS DWORD STRICT
 	RETURN VoDb.GetSelect()
 
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgobottom/*" />
 FUNCTION DbGoBottom() AS LOGIC STRICT
 	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.GoBottom())
 
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgotop/*" />
 FUNCTION DbGoTop() AS LOGIC STRICT
 	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.GoTop())
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rddname/*" />
 FUNCTION RddName        () AS STRING STRICT
 	LOCAL cRet      AS STRING
 	IF Used()
@@ -303,51 +193,32 @@ FUNCTION RddName        () AS STRING STRICT
 	RETURN cRet
 
 
-
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rddsetdefault/*" />
 FUNCTION RddSetDefault  () AS STRING STRICT
     RETURN VoDb.RddSetDefault(NULL_STRING)
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
 
-FUNCTION RddSetDefault  (cDriver AS STRING) AS STRING
-    RETURN VoDb.RddSetDefault(cDriver)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rddsetdefault/*" />
+FUNCTION RddSetDefault  (cNewSetting AS STRING) AS STRING
+    RETURN VoDb.RddSetDefault(cNewSetting)
 
 
-/// <summary>
-/// Return the number of records
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/reccount/*" />
 FUNCTION RecCount() AS LONG
     RETURN VoDb.LastRec()
 
-
-/// <summary>
-/// Return the number of records
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/recno/*" />
 FUNCTION RecNo() AS DWORD
     RETURN VoDb.Recno()
 
-
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/recsize/*" />
 FUNCTION RecSize AS LONG
     RETURN VoDb.RecSize()
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rlock/*" />
 FUNCTION RLock() AS LOGIC STRICT
 	RETURN VoDb.Rlock(NULL)
 
-/// <summary>
-/// Determine whether a database file is open.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/used/*" />
 FUNCTION Used() AS LOGIC
     RETURN RuntimeState.Workareas:CurrentWorkArea != NULL
 

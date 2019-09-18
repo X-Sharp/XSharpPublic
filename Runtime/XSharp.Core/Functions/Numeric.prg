@@ -1,127 +1,64 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
 
-/// <summary>
-/// Return the absolute value of a strongly typed numeric expression, regardless of its sign.
-/// </summary>
-/// <param name="i"></param>
-/// <returns>
-/// </returns>
-FUNCTION AbsInt(i AS LONGINT) AS LONG
-	RETURN Math.Abs(i)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/absint/*" /> 
+FUNCTION AbsInt(liValue AS LONGINT) AS LONG
+	RETURN Math.Abs(liValue)
 
-/// <summary>
-/// Return the absolute value of a strongly typed numeric expression, regardless of its sign.
-/// </summary>
-/// <param name="li"></param>
-/// <returns>
-/// </returns>
-FUNCTION AbsLong(li AS LONGINT) AS LONG
-	RETURN Math.Abs(li)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/abslong/*" /> 
+FUNCTION AbsLong(liValue AS LONGINT) AS LONG
+	RETURN Math.Abs(liValue)
 
-/// <summary>
-/// Return the absolute value of a strongly typed numeric expression, regardless of its sign.
-/// </summary>
-/// <param name="r4"></param>
-/// <returns>
-/// </returns>
-FUNCTION AbsReal4(r4 AS REAL4) AS REAL4
-	RETURN Math.Abs(r4)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/absreal4/*" /> 
+FUNCTION AbsReal4(r4Value AS REAL4) AS REAL4
+	RETURN Math.Abs(r4Value)
 
-/// <summary>
-/// Return the absolute value of a strongly typed numeric expression, regardless of its sign.
-/// </summary>
-/// <param name="r8"></param>
-/// <returns>
-/// </returns>
-FUNCTION AbsReal8(r8 AS REAL8) AS REAL8
-	RETURN Math.Abs(r8)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/absreal8/*" />
+FUNCTION AbsReal8(r8Value AS REAL8) AS REAL8
+	RETURN Math.Abs(r8Value)
 
-/// <summary>
-/// Return the absolute value of a strongly typed numeric expression, regardless of its sign.
-/// </summary>
-/// <param name="si"></param>
-/// <returns>
-/// </returns>
-FUNCTION AbsShort(si AS SHORT) AS LONG
-	RETURN Math.Abs(si)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/absshort/*" />
+FUNCTION AbsShort(siValue AS SHORT) AS LONG
+	RETURN Math.Abs(siValue)
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mod/*" />
+FUNCTION Mod(nDividend AS REAL8, nDivisor AS REAL8) AS REAL8
+	RETURN nDividend % nDivisor
 
-/// <summary>
-/// Return the remainder of one number divided by another number
-/// </summary>
-/// <param name="dividend">The dividend of the division operation</param>
-/// <param name="divisor">The divisor of the division operation</param>
-/// <returns>A number representing the remainder of <paramref name="dividend"/> divided by <paramref name="divisor"/>.</returns>
-FUNCTION Mod(dividend AS REAL8, divisor AS REAL8) AS REAL8
-	RETURN dividend % divisor
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mod/*" />
+FUNCTION Mod(nDividend AS INT64, nDivisor AS INT64) AS INT64
+	RETURN nDividend % nDivisor
 
-/// <summary>
-/// Return the remainder of one number divided by another number
-/// </summary>
-/// <param name="dividend">The dividend of the division operation</param>
-/// <param name="divisor">The divisor of the division operation</param>
-/// <returns>A number representing the remainder of <paramref name="dividend"/> divided by <paramref name="divisor"/>.</returns>
-FUNCTION Mod(dividend AS INT64, divisor AS INT64) AS INT64
-	RETURN dividend % divisor
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mod/*" />
+FUNCTION Mod(nDividend AS LONG, nDivisor AS LONG) AS LONG
+	RETURN nDividend % nDivisor
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/swapbyte/*" />
+FUNCTION SwapByte(bSwap AS BYTE) AS BYTE
+	RETURN (BYTE)  ((bSwap << 4) | (bSwap >> 4))
 
-/// <summary>
-/// Return the remainder of one number divided by another number
-/// </summary>
-/// <param name="dividend">The dividend of the division operation</param>
-/// <param name="divisor">The divisor of the division operation</param>
-/// <returns>A number representing the remainder of <paramref name="dividend"/> divided by <paramref name="divisor"/>.</returns>
-FUNCTION Mod(dividend AS LONG, divisor AS LONG) AS LONG
-	RETURN dividend % divisor
-
-/// <summary>
-/// Exchange the right and left halves of a byte.
-/// </summary>
-/// <param name="b">The byte whose nibbles should be swaped.</param>
-/// <returns>
-/// New value with the nibbles swapped.
-/// </returns>
-FUNCTION SwapByte(b AS BYTE) AS BYTE
-	RETURN (BYTE)  ((b << 4) | (b >> 4))
-
-/// <summary>
-/// Exchange the right and left halves of a double word.
-/// </summary>
-/// <param name="dw"></param>
-/// <returns>
-/// </returns>
-FUNCTION SwapDWord(dw AS DWORD) AS DWORD
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/swapdword/*" />
+FUNCTION SwapDWord(dwSwap AS DWORD) AS DWORD
 	LOCAL dw1, dw2 AS DWORD
-	dw1 := (dw & 0x0000ffff) << 16
-	dw2 := (dw >> 16) & 0x0000ffff
-	dw := dw1 | dw2
-RETURN	dw
+	dw1 := (dwSwap & 0x0000ffff) << 16
+	dw2 := (dwSwap >> 16) & 0x0000ffff
+	dwSwap := dw1 | dw2
+RETURN	dwSwap
 
-/// <summary>
-/// Exchange the right and left halves of an integer.
-/// </summary>
-/// <param name="li"></param>
-/// <returns>
-/// </returns>
-FUNCTION SwapInt(li AS LONG) AS LONG
-	RETURN SwapLong(li) 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/swapint/*" />
+FUNCTION SwapInt(liSwap AS LONG) AS LONG
+	RETURN SwapLong(liSwap) 
 
-/// <summary>
-/// Exchange the right and left halves of a long integer.
-/// </summary>
-/// <param name="li"></param>
-/// <returns>
-/// </returns>
-FUNCTION SwapLong(li AS LONG) AS LONG
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/swaplong/*" />
+FUNCTION SwapLong(liSwap AS LONG) AS LONG
 	LOCAL li1, li2 AS LONG
-	li1 := (li & 0x0000ffff) << 16
-	li2 := (li >> 16) & 0x0000ffff
-	li := li1 | li2
-	RETURN li
+	li1 := (liSwap & 0x0000ffff) << 16
+	li2 := (liSwap >> 16) & 0x0000ffff
+	liSwap := li1 | li2
+	RETURN liSwap
 
 
 /// <summary>
@@ -133,50 +70,31 @@ FUNCTION SwapLong(li AS LONG) AS LONG
 FUNCTION SwapInt64( i64 AS INT64 ) AS INT64
    RETURN (INT64)  ( i64 << 32 ) | ( i64 >> 32 ) 
 
-/// <summary>
-/// Exchange the right and left halves of a short integer.
-/// </summary>
-/// <param name="si"></param>
-/// <returns>
-/// </returns>
-FUNCTION SwapShort(si AS SHORT) AS SHORT
-RETURN	 (SHORT) (((si & 0x00ff) << 8) | ((si >> 8) & 0x00ff))
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/swapshort/*" />
+FUNCTION SwapShort(siSwap AS SHORT) AS SHORT
+RETURN	 (SHORT) (((siSwap & 0x00ff) << 8) | ((siSwap >> 8) & 0x00ff))
 
-/// <summary>
-/// Exchange the right and left halves of a word.
-/// </summary>
-/// <param name="w"></param>
-/// <returns>
-/// </returns>
-FUNCTION SwapWord(w AS WORD) AS WORD
-RETURN (WORD) (((w & 0x00ff) << 8) | ((w >> 8) & 0x00ff))
-
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/swapword/*" />
+FUNCTION SwapWord(wSwap AS WORD) AS WORD
+RETURN (WORD) (((wSwap & 0x00ff) << 8) | ((wSwap >> 8) & 0x00ff))
 
 
 FUNCTION SwapQWord( qw AS UINT64 ) AS UINT64
    RETURN (UINT64)  ( qw << 32 ) | ( qw >> 32 ) 
 
- 
-
-
-
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/makedword/*" />
 FUNCTION MakeDWord( wLow AS WORD, wHigh AS WORD ) AS DWORD
 	RETURN DWORD( ( DWORD(wHigh) << 16 ) | wLow )
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/makelong/*" />
 FUNCTION MakeLong( wLow AS WORD, wHigh AS WORD ) AS INT
 	RETURN INT( ( DWORD(wHigh) << 16 ) | wLow )
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/makeword/*" />
 FUNCTION MakeWord( bLow AS BYTE, bHigh AS BYTE ) AS WORD
 	RETURN WORD( ( WORD(bHigh) << 8 ) | bLow )
 
-/// <summary>
-/// Get a particular Windows color.
-/// </summary>
-/// <param name="bR"></param>
-/// <param name="bG"></param>
-/// <param name="bB"></param>
-/// <returns>
-/// </returns>
-FUNCTION RGB(bR AS BYTE,bG AS BYTE,bB AS BYTE) AS DWORD
-	RETURN (DWORD(bB) << 16) + (DWORD(bG) << 8) + DWORD(bR)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rgb/*" />
+FUNCTION RGB(bRed AS BYTE,bGreen AS BYTE,bBlue AS BYTE) AS DWORD
+	RETURN (DWORD(bRed) << 16) + (DWORD(bGreen) << 8) + DWORD(bBlue)
 

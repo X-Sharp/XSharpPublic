@@ -9,53 +9,34 @@ USING System.Text
 
 #region functions
 
-/// <summary>
-/// Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
-/// </summary>
-/// <param name="pszDest"></param>
-/// <param name="pszSource"></param>
-/// <param name="dwCount"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/oem2ansibuff/*" />
 /// <include file="RTComments.xml" path="Comments/PSZ/*" />
-FUNCTION Oem2AnsiBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
+FUNCTION Oem2AnsiBuff(pszTarget AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 	VAR aSource := BYTE[]{dwCount}
 	VAR aDest   := BYTE[]{dwCount}
-	Marshal.Copy(pszDest:Address,aSource,0, (INT) dwCount)
+	Marshal.Copy(pszTarget:Address,aSource,0, (INT) dwCount)
 	XSharp.Core.Functions.Oem2AnsiBuff(aDest, aSource, dwCount)
-	Marshal.Copy(aDest,pszDest:Address,0, (INT) dwCount)
-	RETURN pszDest
+	Marshal.Copy(aDest,pszTarget:Address,0, (INT) dwCount)
+	RETURN pszTarget
 
-/// <summary>
-/// Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
-/// </summary>
-/// <param name="pszDest"></param>
-/// <param name="pszSource"></param>
-/// <param name="dwCount"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ansi2oembuff/*" />
 /// <include file="RTComments.xml" path="Comments/PSZ/*" />
-FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
+FUNCTION Ansi2OemBuff(pszTarget AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 	VAR aSource := BYTE[]{dwCount}
 	VAR aDest   := BYTE[]{dwCount}
-	Marshal.Copy(pszDest:Address,aSource,0, (INT) dwCount)
+	Marshal.Copy(pszTarget:Address,aSource,0, (INT) dwCount)
 	XSharp.Core.Functions.Ansi2OemBuff(aDest, aSource, dwCount)
-	Marshal.Copy(aDest,pszDest:Address,0, (INT) dwCount)
-	RETURN pszDest
+	Marshal.Copy(aDest,pszTarget:Address,0, (INT) dwCount)
+	RETURN pszTarget
 
 
 
 
-	/// <summary>
-	/// Convert a string containing an 8-bit logical into a logical value.
-	/// </summary>
-	/// <param name="pszC"></param>
-	/// <returns>
-	/// </returns>
+    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/bin2logic/*" />
     /// <include file="RTComments.xml" path="Comments/PSZ/*" />
-	FUNCTION Bin2Logic(pszC AS PSZ) AS LOGIC
-		IF pszC != NULL_PSZ
-			RETURN pszC:Item[0] != 0
+	FUNCTION Bin2Logic(pszLogical AS PSZ) AS LOGIC
+		IF pszLogical != NULL_PSZ
+			RETURN pszLogical:Item[0] != 0
 		ENDIF
 		RETURN FALSE
 
@@ -71,76 +52,45 @@ FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 
 
 
-	/// <summary>
-	/// Convert a null-terminated string to a strongly typed string.
-	/// </summary>
-	/// <param name="pszSource"></param>
-	/// <returns>
-	/// </returns>
+	/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/psz2string/*" />
     /// <include file="RTComments.xml" path="Comments/PSZ/*" />
-	FUNCTION Psz2String(pszSource AS PSZ) AS STRING
+	FUNCTION Psz2String(pszString AS PSZ) AS STRING
 		// The compiler converts to a call to the implicit converter
-		RETURN pszSource:ToString()
+		RETURN pszString:ToString()
 
-	/// <summary>
-	/// Convert a null-terminated string to a Usual with a string value
-	/// </summary>
-	/// <param name="pszSource"></param>
-	/// <returns>
-	/// </returns>
+	/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/psz2string/*" />
     /// <include file="RTComments.xml" path="Comments/PSZ/*" />
-	FUNCTION Psz2Usual(pszSource AS PSZ) AS USUAL
+	FUNCTION Psz2Usual(pszString AS PSZ) AS USUAL
 		// The compiler converts to a call to the implicit converter
-		RETURN pszSource
+		RETURN pszString
 
-	/// <summary>
-	/// Copy a buffer pointed to by a Psz to a newly allocated block of memory and return a new pointer to that memory.
-	/// </summary>
-	/// <param name="ptrSource"></param>
-	/// <returns>
-	/// </returns>
+	/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/pszalloc/*" />
     /// <include file="RTComments.xml" path="Comments/PSZ/*" />
-	FUNCTION PszAlloc(ptrSource AS PSZ) AS PSZ
-		RETURN PSZ{ ptrSource:Address }
+	FUNCTION PszAlloc(pszString AS PSZ) AS PSZ
+		RETURN PSZ{ pszString:Address }
 
-	/// <summary>
-	/// Return the length of a Psz.
-	/// </summary>
-	/// <param name="pszX"></param>
-	/// <returns>
-	/// </returns>
+	/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/pszalloc/*" />
     /// <include file="RTComments.xml" path="Comments/PSZ/*" />
-	FUNCTION PszLen(pszX AS PSZ) AS DWORD
-		RETURN pszX:Length
+	FUNCTION PszLen(pszString AS PSZ) AS DWORD
+		RETURN pszString:Length
 
 
 
-	/// <summary>
-	/// Copy a string to a newly allocated block of memory and return a Psz to the memory.
-	/// </summary>
-	/// <param name="cSource"></param>
-	/// <returns>
-	/// </returns>
+	/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/stringalloc/*" />
     /// <include file="RTComments.xml" path="Comments/PSZ/*" />
-	FUNCTION StringAlloc(cSource AS STRING) AS PSZ
-		LOCAL pMem := String2Mem(cSource) AS IntPtr
+	FUNCTION StringAlloc(cString AS STRING) AS PSZ
+		LOCAL pMem := String2Mem(cString) AS IntPtr
         RETURN PSZ{pMem}
 
 
 
 
-	/// <summary>
-	/// </summary>
-	/// <returns>
-	/// </returns>
+	/// <inheritdoc cref="M:XSharp.Core.Functions.Time()" />"
     /// <include file="RTComments.xml" path="Comments/PSZ/*" />
 	FUNCTION TimePsz() AS PSZ
 		RETURN String2Psz(Time())
 
-	/// <summary>
-	/// </summary>
-	/// <returns>
-	/// </returns>
+    /// <inheritdoc cref="M:XSharp.Core.Functions.Time24()" />"
     /// <include file="RTComments.xml" path="Comments/PSZ/*" />
 	FUNCTION TimePsz24() AS PSZ
 		RETURN String2Psz(Time24())
@@ -174,15 +124,15 @@ FUNCTION String2Mem(s AS STRING) AS IntPtr
 	ENDIF
 	RETURN result
     
-/// <exclude/>
-FUNCTION Mem2String(pString AS IntPtr, nLen AS DWORD) AS STRING
-	IF pString == IntPtr.Zero .OR. nLen == 0
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mem2string/*" />
+FUNCTION Mem2String(ptrSource AS IntPtr, dwCount AS DWORD) AS STRING
+	IF ptrSource == IntPtr.Zero .OR. dwCount == 0
 		RETURN String.Empty
 	ENDIF
 	VAR encoding := StringHelpers.WinEncoding
-	VAR numchars := encoding:GetCharCount( (BYTE PTR) pString, (INT) nLen)
+	VAR numchars := encoding:GetCharCount( (BYTE PTR) ptrSource, (INT) dwCount)
 	VAR buffer   := (CHAR PTR) MemAlloc( (DWORD) (numchars * SIZEOF(CHAR)) )
-	numchars     := encoding:GetChars((BYTE PTR) pString, (INT) nLen, buffer, numchars)
+	numchars     := encoding:GetChars((BYTE PTR) ptrSource, (INT) dwCount, buffer, numchars)
 	VAR result   := STRING {buffer, 0, numchars}
 	MemFree(buffer)
 RETURN result

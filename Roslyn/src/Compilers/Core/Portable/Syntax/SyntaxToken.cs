@@ -72,7 +72,7 @@ namespace Microsoft.CodeAnalysis
         /// <summary>
         /// The node that contains this token in its Children collection.
         /// </summary>
-        public SyntaxNode Parent { get; }
+        public SyntaxNode Parent { get;  }
 
         internal GreenNode Node { get; }
 
@@ -222,7 +222,7 @@ namespace Microsoft.CodeAnalysis
         /// </summary>
         public bool HasStructuredTrivia => Node?.ContainsStructuredTrivia ?? false;
 
-        #region Annotations
+#region Annotations
 
         /// <summary>
         /// True if this token or its trivia has any annotations.
@@ -388,7 +388,7 @@ namespace Microsoft.CodeAnalysis
             return token;
         }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// The list of trivia that appear before this token in the source code.

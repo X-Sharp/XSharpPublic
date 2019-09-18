@@ -34,7 +34,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         }
 #if !VSPARSER
-        public SyntaxTriviaList GetLeadingTrivia(CompilationUnitSyntax cu)
+        public SyntaxTriviaList GetLeadingTrivia(CSharpSyntaxNode parent, CompilationUnitSyntax cu)
         {
             var list = new SyntaxTriviaList();
             if (cu == null || !cu.HasDocComments)

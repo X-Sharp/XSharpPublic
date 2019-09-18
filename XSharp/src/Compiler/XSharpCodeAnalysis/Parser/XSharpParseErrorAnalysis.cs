@@ -117,16 +117,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        private void checkForGarbage(XSharpParserRuleContext context, IToken token, string msg)
-        {
-            if (token != null && !_options.Dialect.AllowGarbage())
-            {
-                NotInDialect(context, msg);
-            }
-        }
-
-
-
+   
         public override void VisitErrorNode([NotNull] IErrorNode node)
         {
             if (node.Symbol.Type == XSharpLexer.INCOMPLETE_STRING_CONST)
@@ -397,7 +388,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.c1, ErrorCode.ERR_InterfacesCantContainConstructors));
             }
-            checkForGarbage(context, context.Ignored, "Code after END CONSTRUCTOR");
         }
 
         public override void ExitOperator_([NotNull] XSharpParser.Operator_Context context)
@@ -409,7 +399,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _parseErrors.Add(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody, "Operator"));
                 }
             }
-            checkForGarbage(context, context.Ignored, "Code after END OPERATOR");
 
         }
         public override void ExitClsvars([NotNull] XSharpParser.ClsvarsContext context)
@@ -499,7 +488,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.d1, ErrorCode.ERR_InterfacesCantContainConstructors));
             }
-            checkForGarbage(context, context.Ignored, "Code after END DESTRUCTOR");
         }
 
 
@@ -517,7 +505,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitMethod([NotNull] XSharpParser.MethodContext context)
         {
-            checkForGarbage(context,context.Ignored, "Code after END [METHOD]");
+            checkForGarbage(context.Ignored, "Code after END [METHOD]");
             var isInInterface = context.isInInterface();
             var isExtern = context.Modifiers?.EXTERN().Length > 0;
             var isAbstract = context.Modifiers?.ABSTRACT().Length > 0;
@@ -736,15 +724,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitNamespace_([NotNull] XSharpParser.Namespace_Context context)
         {
-            checkForGarbage(context, context.Ignored, "Code after END NAMESPACE");
+            checkForGarbage(context.Ignored, "Code after END NAMESPACE");
         }
         public override void ExitInterface_([NotNull] XSharpParser.Interface_Context context)
         {
-            checkForGarbage(context, context.Ignored, "Code after END INTERFACE");
+            checkForGarbage(context.Ignored, "Code after END INTERFACE");
         }
         public override void ExitClass_([NotNull] XSharpParser.Class_Context context)
         {
-            checkForGarbage(context, context.Ignored, "Code after END CLASS");
+            checkForGarbage(context.Ignored, "Code after END CLASS");
         }
 
         public override void ExitClassvar([NotNull] XSharpParser.ClassvarContext context)
@@ -778,19 +766,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitStructure_([NotNull] XSharpParser.Structure_Context context)
         {
-            checkForGarbage(context, context.Ignored, "Code after END STRUCTURE");
+            checkForGarbage(context.Ignored, "Code after END STRUCTURE");
         }
         public override void ExitEnum_([NotNull] XSharpParser.Enum_Context context)
         {
-            checkForGarbage(context, context.Ignored, "Code after END ENUM");
+            checkForGarbage(context.Ignored, "Code after END ENUM");
         }
         public override void ExitEvent_([NotNull] XSharpParser.Event_Context context)
         {
-            checkForGarbage(context, context.Ignored, "Code after END EVENT");
+            checkForGarbage(context.Ignored, "Code after END EVENT");
         }
         public override void ExitProperty([NotNull] XSharpParser.PropertyContext context)
         {
-            checkForGarbage(context, context.Ignored, "Code after END PROPERTY");
+            checkForGarbage(context.Ignored, "Code after END PROPERTY");
             var isInInterface = context.isInInterface();
             var isExtern = context.Modifiers?.EXTERN().Length > 0;
             var isAbstract = context.Modifiers?.ABSTRACT().Length > 0;

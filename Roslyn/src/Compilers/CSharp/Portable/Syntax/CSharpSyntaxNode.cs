@@ -169,7 +169,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             XSharpParserRuleContext node = this.XNode as XSharpParserRuleContext;
             if (node != null && ! this.XGenerated)
             {
-                return node.GetLeadingTrivia(this.SyntaxTree.GetRoot() as CompilationUnitSyntax);
+                var result = node.GetLeadingTrivia(this, this.SyntaxTree.GetRoot() as CompilationUnitSyntax);
+                return result;
             }
 #endif
             var firstToken = this.GetFirstToken(includeZeroWidth: true);

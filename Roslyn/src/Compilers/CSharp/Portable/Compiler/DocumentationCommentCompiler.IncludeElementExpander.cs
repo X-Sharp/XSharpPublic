@@ -523,11 +523,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Location sourceLocation = originatingSyntax.Location;
 
                 RecordSyntaxDiagnostics(attrSyntax, sourceLocation); // Respects DocumentationMode.
-
+#if !XSHARP
                 MemberDeclarationSyntax memberDeclSyntax = BinderFactory.GetAssociatedMemberForXmlSyntax(originatingSyntax);
                 Debug.Assert(memberDeclSyntax != null,
                     "Why are we processing a documentation comment that is not attached to a member declaration?");
-
+#endif
                 DiagnosticBag nameDiagnostics = DiagnosticBag.GetInstance();
                 Binder binder = MakeNameBinder(isParameter, _memberSymbol, _compilation);
                 DocumentationCommentCompiler.BindName(attrSyntax, binder, _memberSymbol, ref _documentedParameters, ref _documentedTypeParameters, nameDiagnostics);

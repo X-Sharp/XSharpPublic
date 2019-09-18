@@ -173,7 +173,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         internal static bool ReportDocumentationCommentDiagnostics(this SyntaxTree tree)
         {
+#if XSHARP
+            if (tree?.Options != null)
+                return tree.Options.DocumentationMode >= DocumentationMode.Diagnose;
+            return false;
+#else
             return tree.Options.DocumentationMode >= DocumentationMode.Diagnose;
+#endif
         }
 
         /// <summary>

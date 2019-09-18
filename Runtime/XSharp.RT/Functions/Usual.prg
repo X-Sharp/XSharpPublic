@@ -22,7 +22,7 @@ FUNCTION EmptyUsual(kType AS DWORD) AS USUAL
 	CASE FLOAT; CASE REAL4; CASE REAL8; CASE (DWORD) __UsualType.Decimal
 		result := USUAL{0.0}
 	CASE STRING
-		result := USUAL{NULL_STRING}
+		result := USUAL{""}
 	CASE DATE
 		result := USUAL{(DATE) 0}
 	CASE (DWORD) __UsualType.DateTime

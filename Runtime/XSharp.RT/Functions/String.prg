@@ -5,21 +5,13 @@
 //
 USING System.Text
 
-/// <summary>
-/// Execute a code block for each of the individual characters in a string.
-/// </summary>
-/// <param name="cSource"></param>
-/// <param name="block"></param>
-/// <param name="nStart"></param>
-/// <param name="nCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION SEval(cSource ,block ,nStart ,nCount ) AS STRING CLIPPER
-	IF ! cSource:IsString
-		THROW Error.ArgumentError( __FUNCTION__, NAMEOF(cSource), 1, <OBJECT>{ cSource} )
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/seval/*" />
+FUNCTION SEval(cString ,cbBlock ,nStart ,nCount ) AS STRING CLIPPER
+	IF ! cString:IsString
+		THROW Error.ArgumentError( __FUNCTION__, NAMEOF(cString), 1, <OBJECT>{ cString} )
 	ENDIF
-	IF ! block:IsCodeBlock .OR. block == NULL_CODEBLOCK
-		THROW Error.ArgumentError( __FUNCTION__, NAMEOF(block), 2, <OBJECT>{ block} )
+	IF ! cbBlock:IsCodeBlock .OR. cbBlock == NULL_CODEBLOCK
+		THROW Error.ArgumentError( __FUNCTION__, NAMEOF(cbBlock), 2, <OBJECT>{ cbBlock} )
 	ENDIF
 	IF nStart == NIL
 		nStart := 1
@@ -27,11 +19,11 @@ FUNCTION SEval(cSource ,block ,nStart ,nCount ) AS STRING CLIPPER
 		THROW Error.ArgumentError( __FUNCTION__, NAMEOF(nStart), 3, <OBJECT>{ nStart} )
 	ENDIF
 	IF nCount == NIL
-		nCount := SLen(cSource) - nStart + 1
+		nCount := SLen(cString) - nStart + 1
 	ELSEIF ! nCount:IsNumeric
 		THROW Error.ArgumentError( __FUNCTION__, NAMEOF(nCount), 4, <OBJECT>{ nCount} )
 	ENDIF
-	RETURN SEvalWorker(cSource, block, nStart, nCount)
+	RETURN SEvalWorker(cString, cbBlock, nStart, nCount)
 
 
 INTERNAL FUNCTION SEvalWorker(cSource AS STRING, oBlock AS CODEBLOCK, nStart AS INT, nCount AS INT) AS STRING
@@ -96,20 +88,11 @@ INTERNAL FUNCTION __AtLenForStrTran( c1 AS STRING, c2 AS STRING, uiLen AS INT, c
 
    RETURN uiPos
 
-/// <summary>
-/// Search and replace characters within a string.
-/// </summary>
-/// <param name="c"></param>
-/// <param name="cSearch"></param>
-/// <param name="cReplace"></param>
-/// <param name="iStart"></param>
-/// <param name="nCount"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/strtran/*" />
 FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
 
    LOCAL cSource          AS STRING
-   LOCAL cSearch          AS STRING
+   LOCAL cSearch         AS STRING
    LOCAL cReplace         AS STRING
    LOCAL nStart := 1      AS INT
    LOCAL iCount := 0xFFF8 AS INT   // This is MAX_ALLOC in VO
@@ -292,14 +275,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
 FUNCTION SubS(cTarget ,nStart ,nCount ) AS STRING CLIPPER
 	RETURN SubStr(cTarget, nStart, nCount)
 
-/// <summary>
-/// Extract a substring from a string using untyped arguments
-/// </summary>
-/// <param name="cTarget">The string to be extracted from.</param>
-/// <param name="nStart">The starting position from which the substring should be extracted.</param>
-/// <param name="nCount">The number of characters to extract.  If omitted, the substring begins at
-/// <paramref name="nStart"/> and continues to the end of the string.  If <paramref name="nCount"/> is greater
-/// than the number of characters from <paramref name="nStart"/> to the end of <paramref name="cTarget"/>, the extra is ignored.</param>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/substr/*" />
 /// <seealso cref='M:XSharp.Core.Functions.SubStr3(System.String,System.UInt32,System.UInt32)' />
 /// <seealso cref='M:XSharp.RT.Functions.SubS(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' />
 FUNCTION SubStr(cTarget ,nStart ,nCount ) AS STRING CLIPPER

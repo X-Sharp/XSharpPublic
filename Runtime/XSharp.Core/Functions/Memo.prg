@@ -300,92 +300,55 @@ PUBLIC CLASS MemoHelpers
 		END		 CLASS
 		
 		
-	/// <summary>
-	/// Extract a line of text from a string, specifying an optional offset argument.
-	/// </summary>
-	/// <param name="cMemo"></param>
-	/// <param name="nLine"></param>
-	/// <returns>
-/// </returns>
-FUNCTION MLine(cMemo AS STRING,nLineNum AS DWORD) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mline/*" />
+FUNCTION MLine(cString AS STRING,nLine AS DWORD) AS STRING
 	LOCAL nOffset := 0 AS DWORD
-	RETURN MLine3(cMemo, nLineNum, REF nOffSet)
+	RETURN MLine3(cString, nLine, REF nOffSet)
 	
 	
-/// <summary>
-/// Extract a line of text from a string, specifying an optional offset argument.
-/// </summary>
-/// <param name="cMemo"></param>
-/// <param name="nLine"></param>
-/// <param name="nOffset"></param>
-/// <returns>
-/// </returns>
-FUNCTION MLine(cMemo AS STRING,nLineNum AS DWORD,nOffset REF DWORD) AS STRING
-	RETURN MLine3(cMemo, nLineNum, REF nOffSet)
-/// <summary>
-/// Extract a line of text from a string, specifying an optional offset argument.
-/// </summary>    
-FUNCTION MLine(cMemo AS STRING,nLineNum AS DWORD,nOffset AS DWORD) AS STRING
-	RETURN MLine3(cMemo, nLineNum, REF nOffSet)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mline/*" />
+FUNCTION MLine(cString AS STRING,nLine AS DWORD,nOffset REF DWORD) AS STRING
+	RETURN MLine3(cString, nLine, REF nOffSet)
+  
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mline/*" />
+FUNCTION MLine(cString AS STRING,nLine AS DWORD,nOffset AS DWORD) AS STRING
+	RETURN MLine3(cString, nLine, REF nOffSet)
 	
 	
-/// <summary>
-/// Extract a line of text from a string, specifying a required offset argument.
-/// </summary>
-/// <param name="cMemo"></param>
-/// <param name="nLineNum"></param>
-/// <param name="nOffSet"></param>
-/// <returns>
-/// </returns>
-FUNCTION MLine3(cMemo AS STRING,nLineNum AS DWORD,nOffSet REF DWORD) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mline3/*" />
+FUNCTION MLine3(cString AS STRING,dwLine AS DWORD,ptrN REF DWORD) AS STRING
 	LOCAL cResult AS STRING
-	LOCAL iOffSet := (INT) nOffSet AS INT
-	IF nOffSet < cMemo:Length
-		cResult := Trim(MemoHelpers.MLine( cMemo , (INT) nLineNum , MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH, TRUE, FALSE, REF iOffSet ))
+	LOCAL iOffSet := (INT) ptrN AS INT
+	IF ptrN < cString:Length
+		cResult := Trim(MemoHelpers.MLine( cString , (INT) dwLine , MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH, TRUE, FALSE, REF iOffSet ))
 	ELSE
 		cResult := ""
 	ENDIF
-	nOffSet := (DWORD) iOffSet
+	ptrN := (DWORD) iOffSet
 	RETURN cResult
 	
 	
-/// <summary>
-/// Extract a line of text from a string.
-/// </summary>
-/// <param name="cMemo"></param>
-/// <param name="wWidth"></param>
-/// <param name="wLineNum"></param> 
-/// <param name="wTabSize"></param>
-/// <param name="lWrap"></param>
-/// <returns>
-/// </returns>
-FUNCTION MemoLine(cMemo AS STRING, nLineLen := MemoHelpers.STD_MEMO_WIDTH AS DWORD, nLineNum := 1 AS DWORD,;
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memoline/*" />
+FUNCTION MemoLine(cString AS STRING, nLineLength := MemoHelpers.STD_MEMO_WIDTH AS DWORD, nLineNumber := 1 AS DWORD,;
 nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS STRING
 	LOCAL dPos := 0 AS INT
-	RETURN MemoHelpers.MLine(cMemo, (INT) nLineNum, (INT) nLineLen, (INT) nTabSize, lWrap, FALSE, REF DPos)
-	
-/// <summary>
-/// Return the contents of a text file as a string. The system assumes the source file has a 8 bit character format.
-/// For the conversion the system follows the global Ansi setting. The characters are encoded
-/// using either the current Ansi Windows codepage, or the current OEM Windows Codepage.
-/// </summary>
-/// <param name="cFile">The name of the text file to read from disk, including an optional drive, directory, and extension.  SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and directory as part of the file name.  No extension is assumed</param>
-/// <returns>The string as Unicode String
-/// </returns>
+	RETURN MemoHelpers.MLine(cString, (INT) nLineNumber, (INT) nLineLength, (INT) nTabSize, lWrap, FALSE, REF DPos)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memoread/*" />
 /// <remarks>This function should NOT be used to read the contents of a binary file (such as a word document).
 /// Use MemoReadBinary() in stead .</remarks>
 /// <seealso cref='M:XSharp.Core.Functions.MemoReadBinary(System.String)' >MemoReadBinary</seealso>
 /// <seealso cref='M:XSharp.Core.Functions.MemoWrit(System.String,System.String)' >MemoWrit</seealso>
-FUNCTION MemoRead(cFile AS STRING) AS STRING
+FUNCTION MemoRead(cFileName AS STRING) AS STRING
 	LOCAL cResult AS STRING
 	TRY
         XSharp.IO.File.clearErrorState()
-		IF File(cFile)
-			cFile := FPathName()
+		IF File(cFileName)
+			cFileName := FPathName()
             IF RuntimeState.Ansi
-			    cResult := System.IO.File.ReadAllText(cFile, RuntimeState.WinEncoding)
+			    cResult := System.IO.File.ReadAllText(cFileName, RuntimeState.WinEncoding)
             ELSE
-                cResult := System.IO.File.ReadAllText(cFile, RuntimeState.DosEncoding)
+                cResult := System.IO.File.ReadAllText(cFileName, RuntimeState.DosEncoding)
             ENDIF
 		ELSE
 			cResult := ""
@@ -422,26 +385,17 @@ FUNCTION MemoReadBinary(cFile AS STRING) AS BYTE[]
 	END TRY
 	RETURN bResult
 	
-	
-/// <summary>
-/// Write a string to a disk file. The text is written in 8 bit character format.
-/// For the conversion the system follows the global Ansi setting. The characters are encoded
-/// using either the current Ansi Windows codepage, or the current OEM Windows Codepage.
-/// </summary>
-/// <param name="cFile"></param>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memowrit/*" />	
 /// <seealso cref='M:XSharp.Core.Functions.MemoRead(System.String)' >MemoRead</seealso>
 /// <seealso cref='M:XSharp.Core.Functions.MemoWritBinary(System.String,System.Byte[])' >MemoWritBinary</seealso>
-FUNCTION MemoWrit(cFile AS STRING,c AS STRING) AS LOGIC
+FUNCTION MemoWrit(cFileName AS STRING,cString AS STRING) AS LOGIC
 	LOCAL lOk AS LOGIC
 	TRY
         XSharp.IO.File.clearErrorState()
         IF RuntimeState.Ansi
-			System.IO.File.WriteAllText(cFile, c, RuntimeState.WinEncoding)
+			System.IO.File.WriteAllText(cFileName, cString, RuntimeState.WinEncoding)
         ELSE
-            System.IO.File.WriteAllText(cFile, c, RuntimeState.DosEncoding)
+            System.IO.File.WriteAllText(cFileName, cString, RuntimeState.DosEncoding)
         ENDIF
 		
 		lOk := TRUE
@@ -451,10 +405,9 @@ FUNCTION MemoWrit(cFile AS STRING,c AS STRING) AS LOGIC
 	END TRY
 	RETURN lOk
 	
-/// <inheritdoc cref="M:XSharp.Core.Functions.MemoWritBinary(System.String,System.Byte[])" />
-
-FUNCTION MemoWrit(cFile AS STRING,bData AS BYTE[]) AS LOGIC
-    RETURN MemoWritBinary(cFile, bData)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memowrit/*" />	
+FUNCTION MemoWrit(cFileName AS STRING,cString AS BYTE[]) AS LOGIC
+    RETURN MemoWritBinary(cFileName, cString)
 
 /// <summary>
 /// Write binary data  o a disk file. Use this function for binary files instead of MemoWrit(). This day may be read with MemoReadBinary().
@@ -483,47 +436,30 @@ FUNCTION MemoWritBinary(cFile AS STRING,bData AS BYTE[]) AS LOGIC
 	RETURN lOk
 	
 	
-/// <summary>
-/// Determine the position of a line in a string.
-/// </summary>
-/// <param name="cMemo"></param>
-/// <param name="nLineNum"></param>
-/// <returns>
-/// </returns>
-FUNCTION MLPos2(cMemo AS STRING,nLineNum AS DWORD) AS DWORD
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mlpos2/*" />
+FUNCTION MLPos2(cString AS STRING,dwLine AS DWORD) AS DWORD
 	LOCAL nIndex := 0 AS INT
-	MemoHelpers.MLine( cMemo, (INT)  nLineNum, MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH, TRUE, TRUE, REF nIndex )
+	MemoHelpers.MLine( cString, (INT)  dwLine, MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH, TRUE, TRUE, REF nIndex )
 	RETURN (DWORD) nIndex
 	
 	
 	
 	
 	
-/// <summary>
-/// Count the number of lines in a string.
-/// </summary>
-/// <param name="cMemo"></param>
-/// <returns>
-/// </returns>
-	
-FUNCTION MLCount1( cMemo AS STRING) AS DWORD 
-	RETURN MemoHelpers.MLCount(cMemo, MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH , TRUE)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mlcount1/*" />
+FUNCTION MLCount1( cString AS STRING) AS DWORD 
+	RETURN MemoHelpers.MLCount(cString, MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH , TRUE)
 	
 	
 	
-/// <summary>
-/// Count the number of lines in a string or memo field.
-/// </summary>
-/// <param name="cMemo"></param>
-/// <returns>
-/// </returns>
-FUNCTION MemLines(cMemo AS STRING) AS DWORD
-	RETURN MemoHelpers.MLCount(cMemo, MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH , TRUE)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memlines/*" />
+FUNCTION MemLines(cString AS STRING) AS DWORD
+	RETURN MemoHelpers.MLCount(cString, MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH , TRUE)
 	
 /// <exclude />
 FUNCTION _MPosToLc(cMemo AS STRING,nLineLen AS DWORD,nPos AS DWORD,nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS Tuple<INT, INT>
 	RETURN MemoHelpers.MPosToLc(cMemo, (INT) nLineLen, (INT) nPos, (INT) nTabSize, lWrap)
 
-/// <summary>Return the position of a character in a formatted string.</summary>
-FUNCTION MLcToPos( cMemo AS STRING, nLineLen AS DWORD, nLineNum AS DWORD, nColumn AS DWORD, nTabSize AS DWORD, lWrap AS LOGIC) AS DWORD CLIPPER
-	RETURN MemoHelpers.MLcToPos(cMemo, (INT) nLineLen, (INT) nLineNum, (INT) nColumn, (INT) nTabSize, lWrap)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mlctopos/*" />
+FUNCTION MLcToPos( cText AS STRING, nWidth AS DWORD, nLine AS DWORD, nCol AS DWORD, nTabSize AS DWORD, lWrap AS LOGIC) AS DWORD CLIPPER
+	RETURN MemoHelpers.MLcToPos(cText, (INT) nWidth, (INT) nLine, (INT) nCol, (INT) nTabSize, lWrap)

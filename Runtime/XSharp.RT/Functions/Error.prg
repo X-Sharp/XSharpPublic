@@ -5,20 +5,13 @@
 //
 
 
-/// <summary>Break out of the current BEGIN SEQUENCE ... END</summary>
-/// <param name="uError"></param>
-/// <returns>
-/// </returns>
-FUNCTION _Break(uError AS USUAL) AS USUAL
-	BREAK uError
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/break/*" />
+FUNCTION _Break(uValue AS USUAL) AS USUAL
+	BREAK uValue
 
 
 
-/// <summary>
-/// Return the code block that is executed when a runtime error occurs.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errorblock/*" />
 FUNCTION ErrorBlock() AS USUAL STRICT
 	LOCAL cbOld AS CODEBLOCK
 	cbOld := XSharp.RuntimeState.GetValue<CODEBLOCK>(Set.ErrorBlock)
@@ -29,15 +22,11 @@ FUNCTION ErrorBlock() AS USUAL STRICT
 	RETURN cbOld
 
 
-
-
-/// <inheritdoc cref="M:XSharp.RT.Functions.ErrorBlock" />
-/// <param name="cobError"></param>
-/// <summary>Return and optionally change the code block that is executed when a runtime error occurs.</summary>
-FUNCTION ErrorBlock(cobError AS CODEBLOCK) AS USUAL
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errorblock/*" />
+FUNCTION ErrorBlock(cbNewSetting AS CODEBLOCK) AS USUAL
 	LOCAL cbOld AS CODEBLOCK
 	cbOld := XSharp.RuntimeState.GetValue<CODEBLOCK>(Set.ErrorBlock)
-	XSharp.RuntimeState.SetValue<CODEBLOCK>(Set.ErrorBlock, cobError)
+	XSharp.RuntimeState.SetValue<CODEBLOCK>(Set.ErrorBlock, cbNewSetting)
 	RETURN cbOld
 
 

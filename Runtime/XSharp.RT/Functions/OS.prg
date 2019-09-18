@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -7,41 +7,21 @@
 USING System.Reflection
 
 
-/// <summary>
-/// Change the current Windows directory.
-/// </summary>
-/// <param name="pszDir"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dirchange/*" />
 FUNCTION DirChange(pszDir AS PSZ) AS INT
 	RETURN XSharp.Core.Functions.DirChange(Psz2String(pszDir))
 	
-/// <summary>
-/// Create a directory.
-/// </summary>
-/// <param name="pszDir"></param>
-/// <returns>
-/// </returns>
-FUNCTION DirMake(pszDir AS PSZ) AS INT
-	RETURN XSharp.Core.Functions.DirMake(Psz2String(pszDir))
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dirmake/*" />
+FUNCTION DirMake(pszNewDir AS PSZ) AS INT
+	RETURN XSharp.Core.Functions.DirMake(Psz2String(pszNewDir))
 	
-/// <summary>
-/// Remove a directory.
-/// </summary>
-/// <param name="pszDir"></param>
-/// <returns>
-/// </returns>
-FUNCTION DirRemove(pszDir AS PSZ) AS INT
-	RETURN XSharp.Core.Functions.DirRemove(Psz2String(pszDir))
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dirremove/*" />
+FUNCTION DirRemove(pszDirName AS PSZ) AS INT
+	RETURN XSharp.Core.Functions.DirRemove(Psz2String(pszDirName))
 
-	/// <summary>
-	/// Change the current disk drive.
-	/// </summary>
-	/// <param name="pszDisk"></param>
-	/// <returns>
-	/// </returns>
-FUNCTION DiskChange(pszDisk AS PSZ) AS LOGIC
-	RETURN XSharp.Core.Functions.DiskChange(Psz2String(pszDisk))
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/diskchange/*" />
+FUNCTION DiskChange(pszDrive AS PSZ) AS LOGIC
+	RETURN XSharp.Core.Functions.DiskChange(Psz2String(pszDrive))
  
 	
 

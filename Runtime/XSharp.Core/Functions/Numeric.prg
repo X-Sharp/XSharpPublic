@@ -96,5 +96,6 @@ FUNCTION MakeWord( bLow AS BYTE, bHigh AS BYTE ) AS WORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rgb/*" />
 FUNCTION RGB(bRed AS BYTE,bGreen AS BYTE,bBlue AS BYTE) AS DWORD
-	RETURN (DWORD(bRed) << 16) + (DWORD(bGreen) << 8) + DWORD(bBlue)
+	var result :=  (DWORD(bBlue) << 16) + (DWORD(bGreen) << 8) + DWORD(bRed)
+    return result
 

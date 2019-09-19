@@ -72,7 +72,7 @@ FUNCTION QueryRTRegInt(cSubKey AS STRING,cKey AS STRING) AS DWORD
 	IF ! String.IsNullOrEmpty( cSubKey )
 		cFullKey += "\" + cSubKey
 	ENDIF
-	o := Registry.GetValue(cKey,cKey,NULL)
+	o := Registry.GetValue(cFullKey,cKey,NULL)
 	// If that fails then read from HKLM
 	IF o == NULL
 		cFullKey := VO_LOCALMACHINE

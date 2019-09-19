@@ -381,10 +381,12 @@ namespace XSharp.Project
             {
                 string specificVersion = this.GetProperty(ProjectFileConstants.SpecificVersion, "False");
 
-                if (String.IsNullOrEmpty(specificVersion))
+                if (string.IsNullOrEmpty(specificVersion))
                 {
-                    string include = this.GetProperty("Include", "False");
-                    return new System.Reflection.AssemblyName(include).Version != null;
+                    string include = this.GetProperty("Include", "");
+                    if (!string.IsNullOrEmpty(include))
+                        return new System.Reflection.AssemblyName(include).Version != null;
+                    return false;
                 }
                 else
                 {
@@ -393,10 +395,33 @@ namespace XSharp.Project
             }
             set
             {
-                if (!value )
-                    this.SetProperty(ProjectFileConstants.SpecificVersion, null);
+                this.SetProperty(ProjectFileConstants.SpecificVersion, value.ToString());
+                if (value)
+                {
+                    // if we can get the full name then we can remove the specific version xml tag
+                    var asmnode = this.Node as XSharpAssemblyReferenceNode;
+                    if (asmnode.ResolvedAssembly != null && ! string.IsNullOrEmpty(asmnode.ResolvedAssembly.FullName))
+                    {
+                        //this changes "XSharp.Core" to : "XSharp.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586"
+                        this.Node.ItemNode.Rename(asmnode.ResolvedAssembly.FullName);
+                        this.SetProperty(ProjectFileConstants.SpecificVersion, null);
+                    }
+                }
                 else
-                    this.SetProperty(ProjectFileConstants.SpecificVersion, value.ToString());
+                {
+                    string include = this.GetProperty("Include", "");
+                    if (!string.IsNullOrEmpty(include))
+                    {
+                        if (new System.Reflection.AssemblyName(include).Version != null)
+                        {
+                            var asmnode = this.Node as XSharpAssemblyReferenceNode;
+                            this.Node.ItemNode.Rename(asmnode.ResolvedAssembly.Name);
+                            this.SetProperty(ProjectFileConstants.SpecificVersion, null);
+
+                        }
+                    }
+                }
+
             }
         }
 

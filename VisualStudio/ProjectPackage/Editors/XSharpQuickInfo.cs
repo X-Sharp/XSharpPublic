@@ -36,6 +36,7 @@ namespace XSharp.Project
         }
         private int lastTriggerPoint = -1;
         private Inline[] lastHelp = null;
+        private String lastxmldoc = null;
         private ITrackingSpan lastSpan = null;
         private int lastVersion = -1;
         static void WriteOutputMessage(string message)
@@ -72,6 +73,8 @@ namespace XSharp.Project
                             var description = new TextBlock();
                             description.Inlines.AddRange(lastHelp);
                             qiContent.Add(description);
+                            if (lastxmldoc != null)
+                                qiContent.Add(lastxmldoc);
                             WriteOutputMessage($"Return last help content: {lastHelp}");
                         }
                         if (lastSpan != null)
@@ -145,7 +148,7 @@ namespace XSharp.Project
                                     qiContent.Add(description);
                                 }
                             }
-                            else if ( gotoElement.XSharpElement is XSharpModel.XTypeMember)
+                            else if (gotoElement.XSharpElement is XSharpModel.XTypeMember)
                             {
                                 QuickInfoTypeMember qitm = new QuickInfoTypeMember((XSharpModel.XTypeMember)gotoElement.XSharpElement);
                                 var description = new TextBlock();
@@ -212,6 +215,14 @@ namespace XSharp.Project
                         {
                             TextBlock description;
                             description = qiContent[0] as TextBlock;
+                            if (qiContent.Count > 1)
+                            {
+                                lastxmldoc = qiContent[1] as String;
+                            }
+                            else
+                            {
+                                lastxmldoc = null;
+                            }
                             if (description != null)
                             {
                                 lastHelp = new Inline[description.Inlines.Count];
@@ -375,9 +386,9 @@ namespace XSharp.Project
                     temp.Foreground = Brushes.Blue;
                     content.Add(temp);
                     //
-                    if ( this.IsStatic )
+                    if (this.IsStatic)
                     {
-                        temp = new Run( "STATIC" + " ");
+                        temp = new Run("STATIC" + " ");
                         temp.Foreground = Brushes.Blue;
                         content.Add(temp);
                     }
@@ -420,7 +431,7 @@ namespace XSharp.Project
                     temp.Foreground = Brushes.Blue;
                     content.Add(temp);
                     //
-                    if ((this.IsStatic)  && ((this.Kind != Kind.Function) && (this.Kind != Kind.Procedure)) )
+                    if ((this.IsStatic) && ((this.Kind != Kind.Function) && (this.Kind != Kind.Procedure)))
                     {
                         temp = new Run("STATIC" + " ");
                         temp.Foreground = Brushes.Blue;
@@ -509,7 +520,7 @@ namespace XSharp.Project
         {
             XSharpModel.XTypeMember typeMember;
 
-            internal QuickInfoTypeMember(XSharpModel.XTypeMember tm )
+            internal QuickInfoTypeMember(XSharpModel.XTypeMember tm)
             {
                 this.typeMember = tm;
             }
@@ -531,7 +542,7 @@ namespace XSharp.Project
                     temp.Foreground = Brushes.Blue;
                     content.Add(temp);
                     //
-                    if ( (this.typeMember.IsStatic) && ( (this.typeMember.Kind != Kind.Function) && (this.typeMember.Kind != Kind.Procedure) ) )
+                    if ((this.typeMember.IsStatic) && ((this.typeMember.Kind != Kind.Function) && (this.typeMember.Kind != Kind.Procedure)))
                     {
                         temp = new Run("STATIC" + " ");
                         temp.Foreground = Brushes.Blue;
@@ -644,7 +655,7 @@ namespace XSharp.Project
                         temp.Foreground = Brushes.Blue;
                         content.Add(temp);
                         //
-                        temp = new Run(this.xVar.TypeName );
+                        temp = new Run(this.xVar.TypeName);
                         temp.Foreground = Brushes.Blue;
                         content.Add(temp);
                         if (this.xVar.IsArray)

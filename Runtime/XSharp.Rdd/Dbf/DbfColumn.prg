@@ -297,7 +297,11 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:ClearNullValue()
             ENDIF
             IF oValue IS System.DateTime VAR dt
-                oValue := DbDate{dt:Year, dt:Month, dt:Day}
+                IF dt == DateTime.MinValue
+                    oValue := DbDate{0,0,0}
+                ELSE
+                    oValue := DbDate{dt:Year, dt:Month, dt:Day}
+                ENDIF
             ENDIF
             IF oValue IS IDate VAR dValue
                 LOCAL str AS STRING
@@ -580,6 +584,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL oField  as DbfField
             oField := DbfField{}
             oField:initialize()
+            oField:Encoding := SELF:RDD:_Encoding
             SELF:RDD:_readField(SELF:OffSetInHeader, oField)
             SELF:Counter := oField:Counter
             SELF:IncrStep := oField:IncStep
@@ -589,6 +594,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL oField  as DbfField
             oField := DbfField{}
             oField:initialize()
+            oField:Encoding := SELF:RDD:_Encoding
             SELF:RDD:_readField(SELF:OffSetInHeader, oField)
             oField:Counter := SELF:Counter 
             oField:IncStep := (BYTE) SELF:IncrStep 

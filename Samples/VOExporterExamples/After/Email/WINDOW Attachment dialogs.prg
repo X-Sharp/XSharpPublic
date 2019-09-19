@@ -130,7 +130,7 @@ METHOD PostInit(oParent,uExtra)
 
 METHOD ProceedButton( ) 
 	
-	SELF:cResult := SELF:oDCUserChoice:Value
+	SELF:cResult := SELF:oDCUserChoice:@@Value
 	SELF:EndDialog()
 
 	RETURN SELF
@@ -228,7 +228,7 @@ METHOD PostInit(oParent,uExtra)
 		cFolder := Left(cFolder, SLen(cFolder)-1)
 	ENDIF
 
-	SELF:oDCLocation:Value := cFolder
+	SELF:oDCLocation:@@Value := cFolder
 	
 	RETURN NIL
 

@@ -12,7 +12,7 @@ using XSharp.XPP
 FUNCTION MAIN(A,B,C) AS VOID clipper
     TRY
     ? XSharp.RuntimeState.Dialect:ToString() 
-    LOCAL uTest as usual
+    LOCAL uTest := NIL as usual
 
     SetDefault(@uTest, 123)
     ? uTest

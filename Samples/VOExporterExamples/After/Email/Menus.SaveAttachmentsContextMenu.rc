@@ -1,4 +1,4 @@
-SaveAttachmentsContextMenu MENU
+ SaveAttachmentsContextMenu MENU
 Begin
 	POPUP "Click"
 	BEGIN

@@ -159,7 +159,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
             
         PRIVATE METHOD _HeaderCreate(lScoped AS LOGIC) AS LOGIC
-            SELF:_Header := NtxHeader{ SELF:_hFile }
+            SELF:_Header := NtxHeader{ SELF, SELF:_hFile }
             SELF:_Header:Signature              := NtxHeaderFlags.Default
             SELF:_Header:IndexingVersion        := SELF:_indexVersion
             SELF:_Header:FirstPageOffset        := SELF:_firstPageOffset

@@ -1,38 +1,37 @@
 #region DEFINES
-STATIC DEFINE HELPABOUTDIALOG_ENDDIALOG := 102 
-STATIC DEFINE HELPABOUTDIALOG_LABEL1 := 100 
-STATIC DEFINE HELPABOUTDIALOG_LABEL2 := 101 
+STATIC DEFINE HELPABOUTDIALOG_LABEL1 := 100
+STATIC DEFINE HELPABOUTDIALOG_LABEL2 := 101
+STATIC DEFINE HELPABOUTDIALOG_ENDDIALOG := 102
 #endregion
 
-class HelpAboutDialog inherit DIALOGWINDOW 
+PARTIAL CLASS HelpAboutDialog INHERIT DIALOGWINDOW
+	PROTECT oDCLabel1 AS FIXEDTEXT
+	PROTECT oDCLabel2 AS FIXEDTEXT
+	PROTECT oCCEndDialog AS PUSHBUTTON
 
-	protect oDCLabel1 as FIXEDTEXT
-	protect oDCLabel2 as FIXEDTEXT
-	protect oCCEndDialog as PUSHBUTTON
+	// {{%UC%}} User code starts here (DO NOT remove this line)  
 
-  //{{%UC%}} USER CODE STARTS HERE (do NOT remove this line)
+CONSTRUCTOR(oParent,uExtra)
 
-CONSTRUCTOR(oParent,uExtra)  
+	SELF:PreInit(oParent,uExtra)
 
-self:PreInit(oParent,uExtra)
+	SUPER(oParent , ResourceID{"HelpAboutDialog" , _GetInst()} , TRUE)
 
-SUPER(oParent,ResourceID{"HelpAboutDialog",_GetInst()},TRUE)
+	SELF:oDCLabel1 := FIXEDTEXT{SELF , ResourceID{ HELPABOUTDIALOG_LABEL1  , _GetInst() } }
+	SELF:oDCLabel1:HyperLabel := HyperLabel{#Label1 , "CA-Visual Objects 2.5a" , NULL_STRING , NULL_STRING}
 
-oDCLabel1 := FixedText{self,ResourceID{HELPABOUTDIALOG_LABEL1,_GetInst()}}
-oDCLabel1:HyperLabel := HyperLabel{#Label1,"CA-Visual Objects 2.5a",NULL_STRING,NULL_STRING}
+	SELF:oDCLabel2 := FIXEDTEXT{SELF , ResourceID{ HELPABOUTDIALOG_LABEL2  , _GetInst() } }
+	SELF:oDCLabel2:HyperLabel := HyperLabel{#Label2 , "Explorer Sample" , NULL_STRING , NULL_STRING}
 
-oDCLabel2 := FixedText{self,ResourceID{HELPABOUTDIALOG_LABEL2,_GetInst()}}
-oDCLabel2:HyperLabel := HyperLabel{#Label2,"Explorer Sample",NULL_STRING,NULL_STRING}
+	SELF:oCCEndDialog := PUSHBUTTON{SELF , ResourceID{ HELPABOUTDIALOG_ENDDIALOG  , _GetInst() } }
+	SELF:oCCEndDialog:HyperLabel := HyperLabel{#EndDialog , "OK" , NULL_STRING , NULL_STRING}
 
-oCCEndDialog := PushButton{self,ResourceID{HELPABOUTDIALOG_ENDDIALOG,_GetInst()}}
-oCCEndDialog:HyperLabel := HyperLabel{#EndDialog,"OK",NULL_STRING,NULL_STRING}
+	SELF:Caption := "About Explorer Sample..."
+	SELF:HyperLabel := HyperLabel{#HelpAboutDialog , "About Explorer Sample..." , NULL_STRING , NULL_STRING}
 
-self:Caption := "About Explorer Sample..."
-self:HyperLabel := HyperLabel{#HelpAboutDialog,"About Explorer Sample...",NULL_STRING,NULL_STRING}
+	SELF:PostInit(oParent,uExtra)
 
-self:PostInit(oParent,uExtra)
-
-return self
+RETURN
 
 
 END CLASS

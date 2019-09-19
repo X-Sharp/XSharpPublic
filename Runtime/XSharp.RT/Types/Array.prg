@@ -28,6 +28,10 @@ BEGIN NAMESPACE XSharp
         CONSTRUCTOR(capacity AS DWORD)
             SUPER(capacity)
 
+            /// <inheritdoc />
+        CONSTRUCTOR(capacity AS DWORD, fill AS LOGIC)
+            SUPER(capacity, fill)
+
             /// <summary>Create an array and fill it with elements from an existing .Net array of USUALS</summary>
         CONSTRUCTOR( elements AS USUAL[] )
             SELF()
@@ -87,15 +91,15 @@ BEGIN NAMESPACE XSharp
             RETURN newArray
 
         INTERNAL STATIC METHOD __ArrayNewHelper(dimensions AS INT[], currentDim AS INT) AS ARRAY
-            LOCAL capacity  AS DWORD // one based ?
+            LOCAL size AS DWORD
             LOCAL newArray AS ARRAY
-            capacity := (DWORD) dimensions[currentDim]
-            newArray := ARRAY{capacity}
+            size := (DWORD) dimensions[currentDim]
+            newArray := ARRAY{size, TRUE} 
             IF currentDim != dimensions:Length
                 LOCAL nextDim := currentDim+1 AS INT
                 LOCAL index   := 1 AS INT
-                DO WHILE index <= capacity
-                    newArray:Add(USUAL{__ArrayNewHelper(dimensions,nextDim)})
+                DO WHILE index <= size
+                    newArray[index - 1 + __ARRAYBASE__] := USUAL{__ArrayNewHelper(dimensions,nextDim)}
                     index+=1
                 ENDDO
                 RETURN newArray
@@ -106,7 +110,7 @@ BEGIN NAMESPACE XSharp
             LOCAL aResult AS ARRAY
             LOCAL nCount AS DWORD
             nCount := (DWORD) _internalList:Count
-            aResult := ARRAY{nCount}
+            aResult := ARRAY{nCount, TRUE}
             IF nCount == 0
                 // warning, nCount-1 below will become MAXDWORD for nCount == 0
                 RETURN aResult

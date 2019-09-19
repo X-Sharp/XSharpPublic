@@ -252,19 +252,19 @@ METHOD PostInit(oWindow,iCtlID,oServer,uExtra)
    	SELF:oServer:Goto(nRecno) 
 	ENDIF 	
 	
-	SELF:oDCFromText:Value := SELF:oEmail:From
+	SELF:oDCFromText:@@Value := SELF:oEmail:From
 	
-	SELF:oDCDateText:Value := DToC(SELF:oEmail:MailDate)
+	SELF:oDCDateText:@@Value := DToC(SELF:oEmail:MailDate)
 	
 	SELF:oDCToMLE:ReadOnly := TRUE
 	SELF:oDCToMLE:SetExStyle(WS_EX_CLIENTEDGE, FALSE)
 	SELF:oDCCcMLE:ReadOnly := TRUE
 	SELF:oDCCcMLE:SetExStyle(WS_EX_CLIENTEDGE, FALSE)
 	
-	SELF:oDCToMLE:Value  := __Array2StrList(SELF:oEmail:DestList, ", ")
-	SELF:oDCCcMLE:Value  := __Array2StrList(SELF:oEmail:CCList, ", ")
+	SELF:oDCToMLE:@@Value  := __Array2StrList(SELF:oEmail:DestList, ", ")
+	SELF:oDCCcMLE:@@Value  := __Array2StrList(SELF:oEmail:CCList, ", ")
 
-	SELF:oDCSubjectText:Value := SELF:oEmail:Subject 
+	SELF:oDCSubjectText:@@Value := SELF:oEmail:Subject 
 	
 	IF SLen(oEmail:BodyHtml) > 0
 	   SELF:oDCWebBrowser:Display(SELF:oEmail:BodyHtml, TRUE)

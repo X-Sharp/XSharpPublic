@@ -1990,6 +1990,10 @@ namespace XSharp.Project
                 if (vers != null)
                 {
                     ok = vers.UnevaluatedValue == Constants.FileVersion;
+                    if (!ok)
+                    {
+                        ok = String.Compare(vers.UnevaluatedValue, "2.0.1.0") >= 0;
+                    }
                 }
                 else
                     ok = false;

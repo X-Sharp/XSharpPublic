@@ -1,4 +1,4 @@
-﻿#region DEFINES
+#region DEFINES
 STATIC DEFINE HELPABOUT_ABOUTTEXT := 100 
 STATIC DEFINE HELPABOUT_FIXEDBITMAP1 := 102 
 STATIC DEFINE HELPABOUT_PUSHBUTTON1 := 101 
@@ -48,7 +48,7 @@ METHOD PostInit(oParent,uExtra)
 	sVer := SubStr(sVer, RAt2(" ", sVer)+1)
 	oDCAboutText:CurrentText := _Chr(13)+" Visual Objects VOPad"+_Chr(13)+_Chr(13);
 		+" Version "+sVer+_Chr(13)+_Chr(13);
-		+" © 1994-"+Str2(Year(Today()),4)+" GrafX Software Dev. Inc.& CA INT"
+		+" � 1994-"+Str2(Year(Today()),4)+" GrafX Software Dev. Inc.& CA INT"
 		
 	IF IsThemeEnabled()
 		s := "Visit <A HREF="+_chr(34)+;

@@ -61,10 +61,11 @@ FUNCTION QQOut( o AS USUAL ) AS VOID
 FUNCTION QQOut( o PARAMS  USUAL[] ) AS VOID
    LOCAL count := o:Length AS INT
    LOCAL x                 AS INT
-
+   LOCAL lAddSpace         AS LOGIC
+   lAddSpace := RuntimeState.GetValue<LOGIC>(Set.Space)
    FOR x := 1 UPTO count
       QQOut( o[x] )
-      IF x < count
+      IF x < count .and. lAddSpace
          Console.Write( " " )
       ENDIF
    NEXT

@@ -74,7 +74,10 @@ namespace XSharp.Project
             {
                 try
                 {
-                    QueueOutputText(MessageImportance.High, $"{warnings} Warning(s), {errors} Error(s)\n");
+                    if (errors != 0)
+                        QueueOutputText(MessageImportance.High, $"{warnings} Warning(s), {errors} Error(s)\n");
+                    else
+                        QueueOutputText(MessageImportance.Normal, $"{warnings} Warning(s), {errors} Error(s)\n");
                     base.BuildFinishedHandler(sender, buildEvent);
                 }
                 catch (Exception e)

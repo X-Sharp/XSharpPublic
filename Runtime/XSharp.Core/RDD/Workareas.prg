@@ -13,7 +13,17 @@ CLASS WorkAreas
 	#region Constants
 		PUBLIC CONST MaxWorkAreas := 4096 AS DWORD
 	#endregion
-	
+
+    STATIC CONSTRUCTOR()
+        local domain := Appdomain.CurrentDomain as Appdomain
+        domain:ProcessExit += _CloseFiles
+        RETURN
+
+    STATIC METHOD _CloseFiles(sender as Object, e as EventArgs)  as void
+        // Get the state for all threads
+        RuntimeState.CloseWorkareasForAllThreads()           
+        RETURN
+
 	#region Fields
 	PRIVATE Aliases  AS Dictionary<STRING, DWORD>	// 1 based area numbers !
 	PRIVATE RDDs	 AS IRDD[]    
@@ -53,16 +63,17 @@ CLASS WorkAreas
 		LOCAL lResult := TRUE AS LOGIC
 		BEGIN LOCK RDDs      
 			RuntimeState.LastRDDError := NULL
-			FOR VAR i := 0 TO MaxWorkAreas-1
-				IF RDDs[i] != NULL
-					VAR oRdd := RDDs[i]
+			FOREACH var element in Aliases
+                var nArea := element:Value -1
+				IF RDDs[nArea] != NULL
+					VAR oRdd := RDDs[nArea]
 					TRY
 						lResult := lResult .AND. oRdd:Close()
 					CATCH e AS Exception
 						lResult := FALSE
 						RuntimeState.LastRDDError  := e
 					END TRY
-    				RDDs[i] 	:= NULL
+    				RDDs[nArea] 	:= NULL
 				ENDIF              
 			NEXT
 			Aliases:Clear()

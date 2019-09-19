@@ -5,9 +5,9 @@
 
 #define VERSION_NUMBER_STR     "2.0.0.0"
 #define VERSION_NUMBER			2,0,0,0
-#define FILEVERSION_NUMBER       2,0,4,0
-#define FILEVERSION_NUMBER_STR   "2.0.4.0"
-#define INFORMATIONAL_NUMBER_STR  "2.0 GA"
+#define FILEVERSION_NUMBER       2,0,7,0
+#define FILEVERSION_NUMBER_STR   "2.0.7.0"
+#define INFORMATIONAL_NUMBER_STR  "2.07 GA"
 
 #define COMPANY_NAME "XSharp B.V."
 #define COPYRIGHT_STR "Copyright © 1993-2019 Computer Associates & XSharp BV, All rights reserved"

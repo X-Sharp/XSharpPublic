@@ -9,6 +9,8 @@ USING System.Linq
 USING System.Text
 USING XUnit
 USING System.Globalization
+USING System.Threading
+USING System.IO
 
 BEGIN NAMESPACE XSharp.VO.Tests
 
@@ -163,14 +165,14 @@ BEGIN NAMESPACE XSharp.VO.Tests
 //			Appending in exclusive mode:
 			DbUseArea(, , cDbf , "alias2" , FALSE)
 			Assert.True( DbAppend() )
-			Assert.Equal( 1 , RecCount() )
+			Assert.Equal(  RecCount() ,1)
 			FieldPut(1, "test") // ok
 			DbCloseArea()
 			
 //			Appending in SHARED mode:
 			DbUseArea(, , cDbf , "alias2" , TRUE)
 			Assert.True( DbAppend() ) // returns true but does not append record
-			Assert.Equal( 2 , RecCount() ) // returns 1, wrong
+			Assert.Equal(  RecCount() ,2) // returns 1, wrong
 			DbCloseArea()
 		RETURN
 
@@ -204,7 +206,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			SetDecimalSep(Asc(","))
 			FieldPut(1 , 12.34) // not saved in the dbf
-			Assert.Equal(12.34 , (FLOAT) FieldGet(1)) // 0,00
+			Assert.Equal((FLOAT) FieldGet(1),12.34 ) // 0,00
 
 			SetDecimalSep(Asc("."))
 			FieldPut(1 , 12.34)
@@ -1838,7 +1840,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			NEXT
 			
 			DbGoTop()
-			Assert.Equal(7 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) ) // 7, correct
+			Assert.Equal((INT) DbOrderInfo( DBOI_KEYCOUNT ) ,7 ) // 7, correct
 			
 			// Setting order scope
 			OrdScope(TOPSCOPE, "G")
@@ -1846,7 +1848,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbGoTop()
 			
 			// VO: -2 with NTX, 4 with CDX
-			Assert.Equal(-2 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) )
+			Assert.Equal((INT) DbOrderInfo( DBOI_KEYCOUNT ) ,4)
 			
 			Assert.True( DbSeek("G")    ) // TRUE, correct
 			Assert.True( DbSeek("GOLD") ) // TRUE with NTX, FALSE with CDX. VO TRUE in both
@@ -1854,7 +1856,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			// Clearing order scope
 			OrdScope(TOPSCOPE, NIL)
 			OrdScope(BOTTOMSCOPE, NIL)
-			Assert.Equal( 7 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) )
+			Assert.Equal(  (INT) DbOrderInfo( DBOI_KEYCOUNT ) ,7)
 			Assert.True( DbSeek("G") )
 			Assert.True( DbSeek("GOLD") )
 			
@@ -1863,7 +1865,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			OrdScope(BOTTOMSCOPE, "G")
 			DbGoTop()
 			// VO: -2 with NTX, 4 with CDX
-			Assert.Equal(-2 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) )
+			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) ,4 )
 			
 			Assert.True( DbSeek("G")    ) // TRUE, correct
 			Assert.True( DbSeek("GOLD") ) // TRUE with NTX, FALSE with CDX. VO TRUE in both
@@ -1962,7 +1964,48 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbCloseAll()
 		RETURN
 
-
+        // Descartes discovered a problem with DbSeek and Found
+        [Fact, Trait("Category", "DBF")];
+        METHOD DbSeekFound_test() AS VOID
+            LOCAL cPath, cDbf AS STRING
+            LOCAL cDefault AS STRING
+            RddSetDefault("DBFNTX")
+            
+            cPath := System.IO.Path.GetTempPath()
+            IF .NOT. cPath:EndsWith("\")
+                cPath += "\"
+            END IF
+            cDbf := "DbseekTest"
+            DbCreate(cDbf, {{"KEY","C",10,0}},"DBFNTX")
+            DbUseArea(TRUE,"DBFNTX",cDbf)
+            DbCreateIndex(cDbf,"KEY")
+            DbAppend()
+            VAR aValues := {"A","B","C","D","E","F"}
+            FOREACH sValue AS STRING IN aValues
+                DbAppend()
+                FieldPut(1, sValue)
+            NEXT
+            FOREACH sValue AS STRING IN aValues
+                Assert.True(DbSeek(sValue))
+                Assert.True(Found())
+            NEXT
+            DbCloseArea()
+            // Repeat for DBFCDX
+            DbCreate(cDbf, {{"KEY","C",10,0}},"DBFCDX")
+            DbUseArea(TRUE,"DBFCDX",cDbf)
+            DbCreateIndex(cDbf,"KEY")
+            DbAppend()
+            FOREACH sValue AS STRING IN aValues
+                DbAppend()
+                FieldPut(1, sValue)
+            NEXT
+            FOREACH sValue AS STRING IN aValues
+                Assert.True(DbSeek(sValue))
+                Assert.True(Found())
+            NEXT
+            DbCloseArea()
+            
+		
 
 		// TECH-0YI914Z4I2, Problem opening dbf with dbt via SetDefault()
 		[Fact, Trait("Category", "DBF")];
@@ -2034,6 +2077,76 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbCloseArea()
 		RETURN
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD TestDBFFileStamps() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL dtDbf, dtIndex, dtMemo AS DateTime
+
+			cDbf := GetTempFileName()
+			CreateDatabase(cDbf, {{"TEST","C",10,0}} , {"aa","bb"})
+			DbCloseArea()
+			dtDbf := File.GetLastWriteTime(cDbf + ".dbf")
+			Thread.Sleep(100)
+
+			DbUseArea(,,cDbf)
+			DbCloseArea()
+			Assert.True(File.GetLastWriteTime(cDbf + ".dbf") == dtDbf)
+
+			DbUseArea(,,cDbf)
+			DbGoTop()
+			DbGoBottom()
+			DbSkip()
+			DbGoto(1)
+			DbCloseArea()
+			Assert.True(File.GetLastWriteTime(cDbf + ".dbf") == dtDbf)
+			
+
+
+			RddSetDefault("DBFNTX")
+			cDbf := GetTempFileName()
+			CreateDatabase(cDbf, {{"TEST","C",10,0},{"TEST2","M",10,0}} , {"aa","bb"})
+			FieldPut(2 ,"memo")
+			DbCreateIndex(cDbf,"TEST + TEST2")
+			DbCloseArea()
+			dtDbf := File.GetLastWriteTime(cDbf + ".dbf")
+			dtIndex := File.GetLastWriteTime(cDbf + ".ntx")
+			dtMemo := File.GetLastWriteTime(cDbf + ".dbt")
+			Thread.Sleep(100)
+
+			DbUseArea(,,cDbf)
+			DbGoBottom()
+			DbGoTop()
+			DbSkip(-1)
+			DbGoto(1)
+			DbCloseArea()
+			Assert.True(File.GetLastWriteTime(cDbf + ".dbf") == dtDbf)
+			Assert.True(File.GetLastWriteTime(cDbf + ".dbt") == dtMemo)
+			Assert.True(File.GetLastWriteTime(cDbf + ".ntx") == dtIndex)
+
+
+
+			RddSetDefault("DBFCDX")
+			cDbf := GetTempFileName()
+			CreateDatabase(cDbf, {{"TEST","C",10,0},{"TEST2","M",10,0}} , {"aa","bb"})
+			FieldPut(2 ,"memo")
+			DbCreateIndex(cDbf,"TEST + TEST2")
+			DbCloseArea()
+			dtDbf := File.GetLastWriteTime(cDbf + ".dbf")
+			dtIndex := File.GetLastWriteTime(cDbf + ".cdx")
+			dtMemo := File.GetLastWriteTime(cDbf + ".fpt")
+			Thread.Sleep(100)
+
+			DbUseArea(,,cDbf)
+			DbGoBottom()
+			DbGoTop()
+			DbSkip(-1)
+			DbGoto(1)
+			DbCloseArea()
+			Assert.True(File.GetLastWriteTime(cDbf + ".dbf") == dtDbf)
+			Assert.True(File.GetLastWriteTime(cDbf + ".fpt") == dtMemo)
+			Assert.True(File.GetLastWriteTime(cDbf + ".cdx") == dtIndex)
+		RETURN
+
 
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
@@ -2047,6 +2160,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			CreateDatabase(cFileName, aFields , {})
 		STATIC INTERNAL METHOD CreateDatabase(cFileName AS STRING, aFields AS ARRAY, aValues AS ARRAY) AS VOID
 			FErase ( cFileName + IndexExt() )
+			FErase ( cFileName + ".fpt" )
+			FErase ( cFileName + ".dbt" )
 			DbCreate( cFileName , aFields)
 			IF ALen(aValues) == 0
 				RETURN

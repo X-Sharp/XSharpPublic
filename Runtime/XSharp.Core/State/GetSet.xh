@@ -8,5 +8,5 @@
 		RETURN XSharp.RuntimeState.GetValue\< <type> \>( <SET> )
 
 #command SETSTATE <type> <SET>	<VALUE> =>				 ;
-		RETURN XSharp.RuntimeState.SetValue\< <type> \>( <SET> , <VALUE> )			 ;;
+		RETURN XSharp.RuntimeState.SetValue\< <type> \>( <SET> , <VALUE> )			 
 

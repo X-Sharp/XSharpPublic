@@ -48,7 +48,7 @@ BEGIN NAMESPACE XSharp.RDD
 	END CLASS
     INTERNAL ENUM SearchMode
         MEMBER Left
-        MEMBER LeftFound
+        MEMBER SoftSeek
         MEMBER Right
         MEMBER Bottom
         MEMBER Top

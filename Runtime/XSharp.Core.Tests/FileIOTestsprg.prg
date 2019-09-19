@@ -75,6 +75,13 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			Assert.Equal(sText , "abcdefgh")
 			
 		RETURN
-
+        [Fact, Trait("Category", "File IO")]; 
+		METHOD FileTest2() AS VOID
+            Assert.Equal(FALSE, File("D:\t?est\FileDoesnotExist.txt"))
+            Assert.Equal(87, (int) FError())   // Illegal characters in path
+            Assert.Equal(FALSE, FErase("D:\FileThatDoesNotExist"))
+            Assert.Equal(2, (int) FError())   // Ferase should set this to FileNotFound
+            Assert.Equal(FALSE, FRename("D:\FileThatDoesNotExist","D:\AnotherFileName.txt"))
+            Assert.Equal(2, (int) FError())   // FRename should set this to FileNotFound
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

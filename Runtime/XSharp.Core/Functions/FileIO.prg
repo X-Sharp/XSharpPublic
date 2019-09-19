@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -28,8 +28,12 @@ FUNCTION FRename( cOldFile AS STRING , cNewFile AS STRING) AS LOGIC
 	LOCAL renamed := FALSE AS LOGIC
 	TRY
         XSharp.IO.File.clearErrorState()
-		System.IO.File.Move(cOldFile, cNewFile)
-	    renamed := TRUE
+        IF System.IO.File.Exists(cOldFile)
+		    System.IO.File.Move(cOldFile, cNewFile)
+	        renamed := TRUE
+        ELSE
+            THROW FileNotfoundException { cOldFile }
+        ENDIF
 	CATCH e AS Exception
 		XSharp.IO.File.setErrorState(e)
 	END TRY
@@ -45,8 +49,12 @@ FUNCTION FErase(fileName AS STRING) AS LOGIC
 	LOCAL isDeleted := FALSE AS LOGIC
 	TRY
         XSharp.IO.File.clearErrorState()
-		System.IO.File.Delete(fileName)
-		isDeleted := TRUE
+        IF System.IO.File.Exists(fileName)
+		    System.IO.File.Delete(fileName)
+		    isDeleted := TRUE
+        ELSE
+            THROW FileNotfoundException { fileName }
+        ENDIF
 	CATCH e AS Exception
 		XSharp.IO.File.setErrorState(e)
 	END TRY

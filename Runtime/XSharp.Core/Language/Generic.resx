@@ -2555,7 +2555,7 @@
     <value>Subsystem</value>
   </data>
   <data name="ERROR_STACK" xml:space="preserve">
-    <value>Called from</value>
+    <value>Stack Trace</value>
   </data>
   <data name="ERROR_CALLEDFROM" xml:space="preserve">
     <value>Called from</value>

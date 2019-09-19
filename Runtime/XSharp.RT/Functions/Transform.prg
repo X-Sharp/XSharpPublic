@@ -637,17 +637,17 @@ INTERNAL STATIC CLASS TransFormHelpers
             
             IF nPicFunc:HasFLag(TransformPictures.ZeroBlank ) 
                 IF nValue == 0
-                    cReturn := Space(cReturn:Length)
+                    cReturn := Space((DWORD) cReturn:Length)
                     
                 ELSEIF lIsFloat .AND. Math.Abs( (REAL8) nValue) < 1.0
                     VAR x := cReturn:IndexOf('.')
                     IF x == -1
-                        cReturn := Space(cReturn:Length)
+                        cReturn := Space((DWORD) cReturn:Length)
                     ELSE
                         IF cReturn:IndexOf("-") != -1 .AND. x >= 2
-                            cReturn := Space( x - 2) + "- " + cReturn:Substring(x)
+                            cReturn := Space( (DWORD) x - 2) + "- " + cReturn:Substring(x)
                         ELSE
-                            cReturn := Space( x) + cReturn:Substring(x)
+                            cReturn := Space( (DWORD) x) + cReturn:Substring(x)
                         ENDIF
                     END IF
                 ENDIF

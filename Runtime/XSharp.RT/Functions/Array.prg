@@ -288,7 +288,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 /// An uninitialized of the given length.
 /// </returns>
 FUNCTION ArrayCreate(dwDim AS DWORD) AS ARRAY 
-	RETURN __Array{dwDim}
+	RETURN __Array{dwDim, TRUE}
 	
 	
 /// <summary>
@@ -974,9 +974,9 @@ FUNCTION ArrayNew<T>(nSize AS INT) AS __ArrayBase<T> WHERE T IS NEW()
 /// <returns>
 /// </returns>
 FUNCTION AReplicate(x AS USUAL,nCount AS DWORD) AS ARRAY
-	VAR a:= __Array{nCount} 
+	VAR a:= __Array{nCount, TRUE}
 	LOCAL i AS DWORD
-	FOR i := 1 TO nCount
+	FOR i := 1 UPTO nCount
 		a[i] := x
 	NEXT
 	RETURN a

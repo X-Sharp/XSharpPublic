@@ -11,14 +11,6 @@
      <SortOrder>204</SortOrder>
   </TemplateData>
   <TemplateContent>
-    <References>
-      <Reference>
-        <Assembly>VulcanVOSystemClasses</Assembly>
-      </Reference>
-      <Reference>
-        <Assembly>VulcanVORDDClasses</Assembly>
-      </Reference>
-    </References>
     <ProjectItem OpenInEditor="false" ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.prg">VODBServer.prg</ProjectItem>
     <ProjectItem OpenInEditor="true" ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.$fileinputname$.xsdbs">VODBServer.xsdbs</ProjectItem>
   </TemplateContent>

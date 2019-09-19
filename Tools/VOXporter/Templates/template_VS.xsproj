@@ -40,6 +40,8 @@
     <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>true</VO16>
+    <NoStandardDefs>false</NoStandardDefs>
+    <IncludePaths />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -58,8 +60,6 @@
     <WarningLevel>4</WarningLevel>
 ;    <CommandLineOption>/define:__VULCAN__</CommandLineOption>
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths />
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">

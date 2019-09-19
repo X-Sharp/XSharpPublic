@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,21 +33,28 @@ namespace XSharp.MacroCompiler
             }
             return false;
         }
-        internal static bool IsInXSharpRuntime(this MethodSymbol s)
+
+        internal static bool HasMethods(this Symbol s) => (s is MethodBaseSymbol) || (s as SymbolList)?.HasMethodBase == true;
+
+        internal static bool HasFunctions(this Symbol s)
         {
-            string asmName = s.Method.DeclaringType.Assembly.GetName().Name.ToLower();
-            switch (asmName)
+            if ((s as MethodSymbol)?.IsStatic == true)
+                return true;
+            if (s is SymbolList)
             {
-                case "xsharp.core":
-                case "xsharp.rdd":
-                case "xsharp.rt":
-                case "xsharp.vo":
-                case "xsharp.vfp":
-                case "xsharp.xpp":
-                    return true;
+                foreach (var m in (s as SymbolList).Symbols)
+                {
+                    if ((m as MethodSymbol)?.IsStatic == true)
+                        return true;
+                }
             }
             return false;
         }
+
+        internal static bool IsInXSharpRuntime(this Assembly a) => a.GetName().Name.ToLower().StartsWith("xsharp.");
+
+        internal static bool IsInXSharpRuntime(this MethodSymbol s) => s.Method.DeclaringType.Assembly.IsInXSharpRuntime();
+
         internal static Symbol UniqueIdent(this Symbol s)
         {
             if (s is SymbolList)
@@ -75,6 +82,25 @@ namespace XSharp.MacroCompiler
                 foreach (var m in (s as SymbolList).Symbols)
                 {
                     if (m is TypeSymbol)
+                    {
+                        if (u != null)
+                            return s;
+                        u = m;
+                    }
+                }
+                return u;
+            }
+            return s;
+        }
+
+        internal static Symbol UniqueTypeOrNamespace(this Symbol s)
+        {
+            if (s is SymbolList)
+            {
+                Symbol u = null;
+                foreach (var m in (s as SymbolList).Symbols)
+                {
+                    if (m is TypeSymbol || m is NamespaceSymbol)
                     {
                         if (u != null)
                             return s;

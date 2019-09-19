@@ -95,12 +95,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL PROPERTY OrderName AS STRING GET _orderName
 	    INTERNAL PROPERTY Shared    AS LOGIC GET _Shared
         INTERNAL PROPERTY _Recno AS LONG GET _oRdd:Recno
-        INTERNAL PROPERTY HasTopScope AS LOGIC GET _Scopes[TOPSCOPE]:IsSet
-        INTERNAL PROPERTY HasBottomScope AS LOGIC GET _Scopes[BOTTOMSCOPE]:IsSet
         INTERNAL PROPERTY HasScope AS LOGIC GET _Scopes[TOPSCOPE]:IsSet .OR. _Scopes[BOTTOMSCOPE]:IsSet
         INTERNAL PROPERTY TopScope AS OBJECT GET _Scopes[TOPSCOPE]:Value
         INTERNAL PROPERTY BottomScope AS OBJECT GET _Scopes[BOTTOMSCOPE]:VALUE
-
+        INTERNAL PROPERTY Encoding as System.Text.Encoding GET _oRdd:_Encoding
         INTERNAL PROPERTY FullPath AS STRING GET _fullPath
         INTERNAL PROPERTY HPLocking AS LOGIC GET _HpLocking
         INTERNAL PROPERTY Unique AS LOGIC GET _Unique
@@ -176,7 +174,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_oRDD:_dbfError( ERDD.OPEN_ORDER, GenCode.EG_OPEN, SELF:fileName)
                 RETURN FALSE
             ENDIF
-            SELF:_Header := NtxHeader{ SELF:_hFile }
+            SELF:_Header := NtxHeader{ SELF, SELF:_hFile }
             IF !SELF:_Header:Read()
                 SELF:_oRDD:_dbfError(ERDD.OPEN_ORDER, GenCode.EG_OPEN, SELF:fileName)
                 RETURN FALSE
@@ -338,7 +336,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PUBLIC METHOD Flush() AS LOGIC
             IF !SELF:Shared .AND. SELF:_Hot .AND. SELF:_hFile != F_ERROR
                 SELF:GoCold()
-                SELF:_PageList:Flush(TRUE)
+                SELF:_PageList:Flush(FALSE)
                 SELF:_Header:IndexingVersion        := 1
                 SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
                 SELF:_Header:FirstPageOffset        := SELF:_firstPageOffset

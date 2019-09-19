@@ -991,9 +991,6 @@ FUNCTION SClone(c AS STRING) AS STRING
 FUNCTION Space(count AS DWORD) AS STRING
 	RETURN STRING{' ',(INT)count}
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.Space(System.UInt32)" />
-FUNCTION Space(count AS INT) AS STRING
-	RETURN STRING{' ',count}
 
 /// <summary>
 /// Return the length of a strongly typed string.

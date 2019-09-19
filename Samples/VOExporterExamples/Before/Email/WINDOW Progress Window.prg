@@ -54,7 +54,7 @@ ASSIGN Count (nCount)
    RETURN nCount
 
 METHOD Dispatch (oEvent) 
-   LOCAL oEvt AS Event
+   LOCAL oEvt AS @@Event
 
    oEvt := oEvent
 	IF _lCanCancel .and. oEvt:message == WM_Command .AND. oEvt:wParam  == IDCancel

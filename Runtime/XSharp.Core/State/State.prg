@@ -22,7 +22,7 @@ CLASS XSharp.RuntimeState
 	// Static Fields
 	PRIVATE INITONLY STATIC initialState  AS RuntimeState 
 	// Static Methods and Constructor
-	PRIVATE STATIC currentState := ThreadLocal<RuntimeState>{ {=>  initialState:Clone()} }  AS ThreadLocal<RuntimeState> 
+	private STATIC currentState := ThreadLocal<RuntimeState>{ {=>  initialState:Clone()},TRUE }  AS ThreadLocal<RuntimeState> 
 	STATIC CONSTRUCTOR
 		initialState	:= RuntimeState{TRUE}
 		
@@ -81,6 +81,16 @@ CLASS XSharp.RuntimeState
 			oSettings:Clear()
 		ENDIF
 
+    STATIC METHOD CloseWorkareasForAllThreads() as VOID
+        TRY
+            FOREACH var state in currentState:Values
+                if state:_workareas != NULL
+                    state:_workareas:CloseAll()
+                ENDIF
+            NEXT
+        CATCH e as Exception
+            System.Diagnostics.Debug.WriteLine(e:ToString())
+        END TRY
 	PRIVATE METHOD Clone() AS RuntimeState
 		LOCAL oNew AS RuntimeState
 		oNew := RuntimeState{FALSE}		
@@ -492,6 +502,10 @@ CLASS XSharp.RuntimeState
 		SELF:_SetThreadValue(Set.EpochCent, (DWORD) 2000)
 		SELF:_SetThreadValue(Set.Intl, CollationMode.Windows)
         SELF:_SetThreadValue(Set.Dict, TRUE)
+        // FoxPro settings that do not hurt in other dialects
+        SELF:_SetThreadValue(Set.FullPath, TRUE)
+        SELF:_SetThreadValue(Set.Space, TRUE)
+        SELF:_SetThreadValue(Set.Textmerge, FALSE)
 		RETURN
 
 
@@ -567,7 +581,7 @@ CLASS XSharp.RuntimeState
 
 
 
-	PRIVATE _workareas AS WorkAreas
+	private _workareas AS WorkAreas
 	/// <summary>The workarea information for the current Thread.</summary>
 	PUBLIC STATIC PROPERTY Workareas AS WorkAreas
 	GET

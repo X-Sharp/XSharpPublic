@@ -17,19 +17,14 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
     EXPORT INSTANCE CopyButton AS System.Windows.Forms.Button
 
     CONSTRUCTOR( e AS Exception )
-      SUPER()
-      SELF:InitializeComponent()
-      SELF:SetLanguageStrings()
-      SELF:Text += System.Reflection.Assembly.GetCallingAssembly():Location
-      ErrorText:Text := e:ToString()
-      ErrorText:Select( 0, 0 )
+        SELF(e:ToString())
       RETURN
 
     CONSTRUCTOR( txt AS STRING )
       SUPER()
       SELF:InitializeComponent()
       SELF:SetLanguageStrings()
-      SELF:Text += System.Reflection.Assembly.GetCallingAssembly():Location
+      SELF:Text += System.Reflection.Assembly.GetEntryAssembly():Location
       ErrorText:Text := txt
       ErrorText:Select( 0, 0 )
       RETURN
@@ -67,9 +62,9 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
         SELF:CloseButton:Anchor := System.Windows.Forms.AnchorStyles.Bottom
         SELF:CloseButton:CausesValidation := FALSE
         SELF:CloseButton:DialogResult := System.Windows.Forms.DialogResult.OK
-        SELF:CloseButton:Location := System.Drawing.Point{302, 297}
+        SELF:CloseButton:Location := System.Drawing.Point{250, 297}
         SELF:CloseButton:Name := "CloseButton"
-        SELF:CloseButton:Size := System.Drawing.Size{75, 23}
+        SELF:CloseButton:Size := System.Drawing.Size{122, 23}
         SELF:CloseButton:TabIndex := 1
         SELF:CloseButton:Text := "Close"
         SELF:CloseButton:UseVisualStyleBackColor := TRUE
@@ -77,7 +72,7 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
         // CopyButton
         //
         SELF:CopyButton:Anchor := System.Windows.Forms.AnchorStyles.Bottom
-        SELF:CopyButton:Location := System.Drawing.Point{383, 297}
+        SELF:CopyButton:Location := System.Drawing.Point{410, 297}
         SELF:CopyButton:Name := "CopyButton"
         SELF:CopyButton:Size := System.Drawing.Size{122, 23}
         SELF:CopyButton:TabIndex := 2

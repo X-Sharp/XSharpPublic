@@ -104,8 +104,8 @@ METHOD Play(nFrom, nTo, nRepeatCount)
 	Default(@nTo, -1)
 	Default(@nRepeatCount, -1)
 
-	wFrom := WORD(_CAST, nFrom)
-	wTo := WORD(_CAST, nTo)
+	wFrom   := nFrom
+	wTo     := nTo
 	dwRepeatCount := DWORD(_CAST, nRepeatCount)
 
 	RETURN Animate_Play(SELF:Handle(), wFrom, wTo, dwRepeatCount)

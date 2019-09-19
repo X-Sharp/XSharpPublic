@@ -247,7 +247,7 @@ METHOD RecordInfo( kRecInfoType, nRecordNumber, uRecVal )
 	#ENDIF
 	RETURN uRecVal
 
-METHOD Refresh()
+METHOD Refresh() CLIPPER
 	LOCAL lRet AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL n AS DWORD

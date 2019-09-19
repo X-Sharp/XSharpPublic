@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,6 +42,7 @@ namespace XSharp.MacroCompiler
     {
         static NamespaceSymbol Global = null;
         static List<ContainerSymbol> Usings = null;
+        static List<ContainerSymbol> RuntimeFunctions = null;
         static Dictionary<Type, TypeSymbol> TypeCache = null;
 
         internal static StringComparer LookupComprer = StringComparer.OrdinalIgnoreCase;
@@ -77,6 +78,7 @@ namespace XSharp.MacroCompiler
 
             var global = new NamespaceSymbol();
             var usings = new List<ContainerSymbol>();
+            var rtFuncs = new List<ContainerSymbol>();
             var typeCache = new Dictionary<Type, TypeSymbol>();
 
             var usedSymbols = new HashSet<ContainerSymbol>();
@@ -182,6 +184,7 @@ namespace XSharp.MacroCompiler
                 {
                     if (a.IsDynamic)
                         continue;
+                    bool isXsRuntime = a.IsInXSharpRuntime();
                     var most_visible = a == System.Reflection.Assembly.GetEntryAssembly();
                     if (a.CustomAttributes != null)
                     {
@@ -215,10 +218,17 @@ namespace XSharp.MacroCompiler
                                     if (!string.IsNullOrEmpty(cls))
                                     {
                                         var s = LookupFullName(cls) as TypeSymbol;
-                                        if (s != null && !usedSymbols.Contains(s))
+                                        if (s != null)
                                         {
-                                            usedSymbols.Add(s);
-                                            usings.Add(s);
+                                            if (isXsRuntime)
+                                            {
+                                                rtFuncs.Add(s);
+                                            }
+                                            else if (!usedSymbols.Contains(s))
+                                            {
+                                                usedSymbols.Add(s);
+                                                usings.Add(s);
+                                            }
                                         }
                                     }
                                     // second element is the default namespace
@@ -240,6 +250,7 @@ namespace XSharp.MacroCompiler
             }
 
             usings = System.Threading.Interlocked.CompareExchange(ref Usings, usings, null);
+            rtFuncs = System.Threading.Interlocked.CompareExchange(ref RuntimeFunctions, rtFuncs, null);
         }
 
         internal static TypeSymbol FindType(Type t)
@@ -319,25 +330,11 @@ namespace XSharp.MacroCompiler
         {
             Symbol v = Global.Lookup(name);
             foreach (var u in Usings)
+                v = Symbol.Join(v, u.Lookup(name));
+            if (!v.HasFunctions())
             {
-                Symbol t = u.Lookup(name);
-                if (t != null)
-                {
-                    if (v != null)
-                    {
-                        if (!(v is SymbolList))
-                            v = new SymbolList(v);
-                        if (!(t is SymbolList))
-                            (v as SymbolList).Add(t);
-                        else
-                        {
-                            foreach (var ts in (t as SymbolList).Symbols)
-                                (v as SymbolList).Add(ts);
-                        }
-                    }
-                    else
-                        v = t;
-                }
+                foreach (var u in RuntimeFunctions)
+                    v = Symbol.Join(v, u.Lookup(name));
             }
             return v;
         }

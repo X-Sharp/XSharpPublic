@@ -70,7 +70,6 @@ namespace XSharp.CodeDom
 
         private XCodeMemberMethod initComponent;
         private IDictionary<string, System.Type> _locals;          // used to keep track of local vars
-        private int _startToken = 0;
 
         public XSharpClassDiscover(IProjectTypeHelper projectNode) : base(projectNode)
         {
@@ -88,7 +87,6 @@ namespace XSharp.CodeDom
             this._members = new Dictionary<string, XMemberType>(StringComparer.OrdinalIgnoreCase);
             //
             this.CurrentFile = "";
-            _startToken = 0;
             _tokens = null;
         }
 
@@ -98,15 +96,6 @@ namespace XSharp.CodeDom
         public Stack<XCodeNamespace> NamespaceStack { get; private set; }
         public Stack<XSharpParser.LocalvarContext> LocalDecls { get; private set; }
 
-        private void AddCodeBefore(IDictionary userData, int startIndex)
-        {
-            if (startIndex > _startToken)
-            {
-                int length = startIndex - _startToken;
-                string sourceCode = this.SourceCode.Substring(_startToken, length);
-                userData[XSharpCodeConstants.USERDATA_CODEBEFORE] = sourceCode.TrimStart();
-            }
-        }
 
         #region Members Cache
         private Dictionary<string, XMemberType> _members;  // member cache for our members and parent class members
@@ -385,9 +374,13 @@ namespace XSharp.CodeDom
         public override void EnterUsing_([NotNull] XSharpParser.Using_Context context)
         {
             var import = new XCodeNamespaceImport(context.Name.GetText());
-            writeTrivia(import, context);
-            CurrentNamespace.Imports.Add(import);
-            _usings.Add(import.Namespace);
+            if (! _usings.Contains(import.Namespace))
+            {
+                writeTrivia(import, context);
+                CurrentNamespace.Imports.Add(import);
+                _usings.Add(import.Namespace);
+            }
+
         }
 
         public override void EnterNamespace_(XSharpParser.Namespace_Context context)
@@ -400,27 +393,21 @@ namespace XSharp.CodeDom
                 newNamespaceName = this.CurrentNamespace.Name + "." + newNamespaceName;
             }
             XCodeNamespace newNamespace = new XCodeNamespace(newNamespaceName);
-            if (NamespaceStack.Count == 0)
-            {
-                AddCodeBefore(newNamespace.UserData, context.Start.StartIndex);
-                _startToken = context._Entities[0].Start.StartIndex;
-            }
-            //
             writeTrivia(newNamespace, context);
             this.NamespaceStack.Push(this.CurrentNamespace);
             //
-            if (string.IsNullOrEmpty(this.CurrentNamespace.Name))
-            {
-                // We could just have the empty fake Namespace here, but
-                // if we have some Usings inside we must copy them
-                if ((this.CurrentNamespace.Types.Count == 0) && (this.CurrentNamespace.Imports.Count > 0))
-                {
-                    // No Types means no Classes
-                    // Ok, copy
-                    foreach (CodeNamespaceImport import in this.CurrentNamespace.Imports)
-                        newNamespace.Imports.Add(import);
-                }
-            }
+            //if (string.IsNullOrEmpty(this.CurrentNamespace.Name))
+            //{
+            //    // We could just have the empty fake Namespace here, but
+            //    // if we have some Usings inside we must copy them
+            //    if ((this.CurrentNamespace.Types.Count == 0) && (this.CurrentNamespace.Imports.Count > 0))
+            //    {
+            //        // No Types means no Classes
+            //        // Ok, copy
+            //        foreach (CodeNamespaceImport import in this.CurrentNamespace.Imports)
+            //            newNamespace.Imports.Add(import);
+            //    }
+            //}
             //
             this.CurrentNamespace = newNamespace;
         }
@@ -584,7 +571,6 @@ namespace XSharp.CodeDom
                 if (_tokens[tokenIndex].Line > line)
                     break;
             }
-            _startToken = _tokens[tokenIndex].StartIndex;
         }
 
         public override void EnterStructure_(XSharpParser.Structure_Context context)
@@ -666,7 +652,6 @@ namespace XSharp.CodeDom
                 if (_tokens[tokenIndex].Line > line)
                     break;
             }
-            _startToken = _tokens[tokenIndex].StartIndex;
         }
 
         public override void ExitStructure_([NotNull] XSharpParser.Structure_Context context)

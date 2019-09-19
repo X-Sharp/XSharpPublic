@@ -113,6 +113,49 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			u := Val("12.34")
 			Assert.Equal(12.34, (FLOAT) u)
 
+
+            SetDecimalSep('.')
+            SetThousandSep(',') 
+
+            LOCAL cVal AS STRING
+            LOCAL uRet AS USUAL
+            
+            cVal := "123456789"; uRet := Val(cVal)
+			Assert.Equal(cVal, AsString(uRet))
+			Assert.Equal(1, (INT) UsualType(uRet))
+
+            cVal := "1234567890"; uRet := Val(cVal)
+			Assert.Equal(cVal, AsString(uRet))
+			Assert.Equal(3, (INT) UsualType(uRet))
+
+            cVal := "- 123456789"; uRet := Val(cVal); cVal := "-123456789"
+			Assert.Equal(cVal, AsString(uRet))
+			Assert.Equal(3, (INT) UsualType(uRet))
+
+            cVal := "   - 123"; uRet := Val(cVal); cVal := "-123"
+			Assert.Equal(cVal, AsString(uRet))
+			Assert.Equal(1, (INT) UsualType(uRet))
+
+
+			Assert.Equal("123.456", AsString(Val("123.456")))
+			Assert.Equal("123.456", AsString(Val("123.456")))
+			Assert.Equal("123.456", AsString(Val("  123.456"  )))
+			Assert.Equal("-123.4567", AsString(Val(" - 123.4567")))
+
+			Assert.Equal( "  12345678901234567000", Str(Val("12345678901234567890"),22,-1) )
+			Assert.Equal( " -12345678901234567000", Str(Val("-12345678901234567890"),22,-1) )
+
+			Assert.Equal("255", AsString(Val("0xFF")))
+			Assert.Equal("-255", AsString(Val("-0xFF")))
+			Assert.Equal("-255", AsString(Val(" - 0xFF")))
+			Assert.Equal("65534", AsString(Val("0xFFFE")))
+			Assert.Equal("2147483648", AsString(Val(" 0X80000000")))
+
+            SetDecimalSep(',')
+            SetThousandSep('.') 
+			Assert.Equal("123,456", AsString(Val("  123.456"  )))
+			Assert.Equal("123,456", AsString(Val("  123,456"  )))
+
 		[Fact, Trait("Category", "Val")];
 		METHOD ValTests2() AS VOID
 			SetDecimalSep(',')

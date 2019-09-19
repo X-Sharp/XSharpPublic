@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -35,7 +35,7 @@ STATIC CLASS XSharp.AssemblyHelper
                 VAR oAsm  := Assembly.LoadFrom(cFileName)
                 RETURN oAsm
             CATCH  AS Exception
-                THROW Error{EG_CORRUPTION, "", "Could not load "+cName+ " from the file "+cFileName}
+                THROW Error{EG_OPEN, "", "Could not load "+cName+ " from the file "+cFileName} {Filename := cFileName,FuncSym := "AssemblyLoader"}
             END TRY
         ENDIF
         // locate from the X# paths
@@ -46,8 +46,8 @@ STATIC CLASS XSharp.AssemblyHelper
                 VAR oAsm  := Assembly.LoadFrom(cFileName)
                 RETURN oAsm
             CATCH  AS Exception
-                THROW Error{EG_CORRUPTION, "", "Could not load "+cName+ " from the file "+cFileName}
+                THROW Error{EG_OPEN, "", "Could not load "+cName+ " from the file "+cFileName} {Filename := cFileName,FuncSym := "AssemblyLoader"}
             END TRY
         ENDIF
-        THROW Error{EG_CORRUPTION, "", "Could not load "+cName}
+        THROW Error{EG_OPEN, "", "Could not load "+cName} {Filename := cFileName,FuncSym := "AssemblyLoader"}
 END CLASS

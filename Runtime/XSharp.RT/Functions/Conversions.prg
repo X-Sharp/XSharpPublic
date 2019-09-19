@@ -396,7 +396,9 @@ FUNCTION PadC( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
     LOCAL ret     AS STRING
     LOCAL retlen  AS INT
 
-    IF uValue:isNumeric
+    IF uValue:IsNil
+        ret := ""
+    ELSEIF uValue:isNumeric
         ret := NTrim( uValue)
     ELSE
         ret := uValue:ToString()
@@ -406,7 +408,9 @@ FUNCTION PadC( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
     IF retlen > nLength
         ret := ret:Remove( nLength )
     ELSE
-        ret := ret:PadLeft( ( nLength - retlen ) / 2, cPad[0] ):PadRight( nLength, cPad[0] )
+        VAR leftSpace := Space((DWORD) ( nLength - retlen ) / 2)
+        ret := leftSpace+ret
+        ret := ret:PadRight( nLength, cPad[0] )
     ENDIF
 
     RETURN ret
@@ -425,7 +429,9 @@ FUNCTION PadL( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
         cPad := " "
     ENDIF
     LOCAL ret AS STRING
-    IF uValue:IsNumeric
+    IF uValue:IsNil
+        ret := ""
+    ELSEIF uValue:IsNumeric
         ret := NTrim( uValue)
     ELSE
         ret := uValue:ToString()
@@ -449,7 +455,9 @@ FUNCTION PadR( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
         cPad := " "
     ENDIF
     LOCAL ret AS STRING
-    IF uValue:IsNumeric
+    IF uValue:IsNil
+        ret := ""
+    ELSEIF uValue:IsNumeric
         ret := NTrim( uValue)
     ELSE
         ret := uValue:ToString()
@@ -506,13 +514,40 @@ FUNCTION Str(n ,uLen ,uDec ) AS STRING CLIPPER
     IF PCount() < 1 .OR. pCount() > 3
         RETURN ""
     ENDIF
+
+    // Handle integer values
+    IF n:IsInteger .and. (PCount() <= 2 .or. (PCount() == 3 .and. uDec:IsNumeric .and. uDec == 0) )
+    	LOCAL cRet AS STRING
+    	LOCAL nDigits AS INT
+
+    	cRet := ((INT64)n):ToString()
+
+    	IF uLen:IsNumeric
+    		IF uLen < 0
+    			nDigits := cRet:Length
+    		ELSE
+	    		nDigits := uLen
+    		END IF
+    	ELSE
+    		nDigits := (INT)RuntimeState.Digits
+    	END IF
+
+    	IF cRet:Length > nDigits
+    		cRet := System.String{c'*' , nDigits}
+    	ELSEIF cRet:Length < RuntimeState.Digits
+    		cRet := cRet:PadLeft(nDigits)
+    	END IF
+
+    	RETURN cRet
+    END IF
+
     LOCAL result AS STRING
     LOCAL nLen AS DWORD
     LOCAL nDec AS DWORD
     LOCAL lTrimSpaces := FALSE AS LOGIC
     IF uLen:IsNumeric
         IF uLen < 0
-            nLen := System.UInt32.MaxValue
+            nLen := System.UInt32.MaxValue - 1
             lTrimSpaces := TRUE
         ELSE
             nLen := (DWORD) uLen
@@ -791,7 +826,7 @@ FUNCTION Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 /// <returns>A string with DOT as decimal separator.</returns>
 FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 
-
+   LOCAL lUnspecifiedDecimals := dwDec == UInt32.MaxValue AS LOGIC
    IF dwDec == UInt32.MaxValue
         IF RuntimeState.Fixed
             dwDec := (DWORD) RuntimeState.Decimals
@@ -801,13 +836,24 @@ FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
    ELSE
       dwDec := Math.Min( dwDec, MAXDECIMALS )
    ENDIF
+   
+   // dwLen == UInt32.MaxValue     : Nil passed for 2nd param of Str()
+   // dwLen == UInt32.MaxValue - 1 : Negative value for 2nd param of Str()
     
-   IF dwLen == 0 .OR. dwLen == UInt32.MaxValue 
+   IF dwLen == 0 .OR. dwLen == UInt32.MaxValue .or. dwLen == UInt32.MaxValue - 1
         IF dwDec > 0
-            IF ConversionHelpers.GetSignificantWholeDigits(f) > RuntimeState.Digits
-                RETURN STRING{ c'*', (INT) (RuntimeState.Digits + dwDec +1) } // VO's behavior...
+        	LOCAL nSignificant AS INT
+        	nSignificant := ConversionHelpers.GetSignificantWholeDigits(f)
+            IF .not. dwLen == UInt32.MaxValue - 1
+	            IF nSignificant > RuntimeState.Digits
+	                RETURN STRING{ c'*', (INT) (RuntimeState.Digits + dwDec +1) } // VO's behavior...
+	            END IF
             END IF
-            dwLen := (DWORD) RuntimeState.Digits + dwDec +1
+            IF dwLen == UInt32.MaxValue - 1
+	            dwLen := (DWORD) nSignificant + dwDec + 2
+            ELSE
+	            dwLen := (DWORD) RuntimeState.Digits + dwDec +1
+            END IF
         ELSE
             dwLen := (DWORD) RuntimeState.Digits
         ENDIF
@@ -815,8 +861,8 @@ FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
       dwLen := Math.Min( dwLen, MAXDIGITS )
    ENDIF
 
- 
-   IF dwDec > 0 .AND. dwLen != UInt32.MaxValue .AND. ( dwLen < ( dwDec + 2 ) )
+
+ IF dwDec > 0 .AND. dwLen != UInt32.MaxValue .and. !lUnspecifiedDecimals .AND. ( dwLen < ( dwDec + 2 ) )
       RETURN STRING{ c'*', (INT) dwLen }
    ENDIF
    RETURN ConversionHelpers.FormatNumber(f, (INT) dwLen, (INT) dwDec)
@@ -835,7 +881,170 @@ FUNCTION StrToFloat(c AS STRING) AS FLOAT
 /// <param name="cNumber">Number to convert. This may contain decimal separator, Hex notation, U or L suffix or Exponential notation.</param>
 /// <returns>The numeric value as a USUAL.This may be a FLOAT, a LONG or an INT64.</returns>
 FUNCTION Val(cNumber AS STRING) AS USUAL
-    RETURN _Val(AllTrim(cNumber))
+    RETURN _VOVal(AllTrim(cNumber))
+
+//implements the quirks of VO's version of Val()
+INTERNAL FUNCTION _VOVal(cNumber AS STRING) AS USUAL
+    IF String.IsNullOrEmpty(cNumber)
+      RETURN 0
+    ENDIF
+    cNumber := cNumber:Trim():ToUpper()
+    // find non numeric characters in cNumber and trim the field to that length
+    VAR pos := 0
+    VAR done := FALSE
+    VAR hex  := FALSE
+    VAR hasdec := FALSE
+    VAR hasexp := FALSE
+    VAR lNoNumYet := TRUE
+    VAR cPrev := (CHAR) ' '
+    VAR cDec := (CHAR) RuntimeState.DecimalSep
+    
+    IF cDec != '.'
+        cNumber := cNumber:Replace('.', cDec) // VO behavior...
+        cNumber := cNumber:Replace(cDec, '.')
+    ENDIF
+    FOREACH VAR c IN cNumber
+        SWITCH c
+        CASE '0'
+        CASE '1'
+        CASE '2'
+        CASE '3'
+        CASE '4'
+        CASE '5'
+        CASE '6'
+        CASE '7'
+        CASE '8'
+        CASE '9'
+            lNoNumYet := FALSE
+        CASE '-'
+        CASE '+'
+            IF lNoNumYet
+                lNoNumYet := TRUE
+            ELSE
+            	done := TRUE
+            ENDIF
+        CASE ' '
+            IF .not. lNoNumYet
+            	done := TRUE
+            ENDIF
+        CASE '.'
+        CASE ','
+            IF c == ',' .AND. cDec != ',' // Don't ask, VO...
+                done := TRUE
+            ELSEIF hasdec
+                done := TRUE
+            ELSE
+                hasdec := TRUE
+            ENDIF
+        CASE 'A'
+        CASE 'B'
+        CASE 'C'
+        CASE 'D'
+        CASE 'F'
+            IF !hex
+                done := TRUE
+            ENDIF
+        CASE 'E'
+            // exponentional notation only allowed if decimal separator was there
+            IF hasdec
+                hasexp := TRUE
+            ELSE
+                IF !hex
+                    done := TRUE
+                ENDIF
+            ENDIF
+        CASE 'L'	// LONG result
+        CASE 'U'	// DWORD result
+            done := TRUE
+        CASE 'X'
+            IF cPrev == '0' .and. !hex
+                hex := TRUE
+            ELSE
+                done := TRUE
+            ENDIF
+        OTHERWISE
+            done := TRUE
+        END SWITCH
+        IF done
+            EXIT
+        ENDIF
+        pos += 1
+        cPrev := c
+    NEXT
+    IF pos < cNumber:Length
+        cNumber := cNumber:SubString(0, pos)
+    ENDIF
+    IF cNumber:IndexOf('-') == 0 .and. cNumber:Length > 2 .and. cNumber[1] == ' '
+        cNumber := "-" + cNumber:Substring(1):Trim()
+    END IF
+
+    IF cNumber:IndexOfAny(<CHAR> {'.'}) > -1
+
+        LOCAL r8Result := 0 AS REAL8
+        IF cDec != '.'
+            cNumber := cNumber:Replace(cDec, '.')
+        ENDIF
+        VAR style := NumberStyles.Number
+        IF hasexp
+            style |= NumberStyles.AllowExponent
+        ENDIF
+        IF System.Double.TryParse(cNumber, style, ConversionHelpers.usCulture, OUT r8Result)
+            RETURN __Float{ r8Result , cNumber:Length - cNumber:IndexOf('.') - 1}
+        ENDIF
+
+    ELSE
+
+        LOCAL style AS NumberStyles
+        IF hex
+
+            style := NumberStyles.HexNumber
+
+            LOCAL nHexTagPos AS INT
+            nHexTagPos := cNumber:IndexOf("0x")
+            IF nHexTagPos == -1
+                nHexTagPos := cNumber:IndexOf("0X")
+            ENDIF
+            IF nHexTagPos != -1
+                cNumber := cNumber:Substring(0, nHexTagPos) + cNumber:Substring(nHexTagPos + 2):Trim()
+            ENDIF
+            LOCAL lNegativeHex := FALSE AS LOGIC
+            IF cNumber:IndexOf('-') == 0
+            	cNumber := cNumber:Substring(1)
+            	lNegativeHex := TRUE
+            ELSEIF cNumber:IndexOf('+') == 0
+            	cNumber := cNumber:Substring(1)
+            END IF
+
+            LOCAL iResult := 0 AS INT64
+            System.Int64.TryParse(cNumber, style, ConversionHelpers.usCulture, OUT iResult)
+            IF lNegativeHex
+                iResult := - iResult
+            ENDIF
+            IF Math.Abs(iResult) <= Int32.MaxValue
+                RETURN (INT) iResult
+            ELSE
+                RETURN __Float{ (REAL8) iResult , 0 }
+            ENDIF
+           
+        ELSE
+
+            style := NumberStyles.Integer
+
+            IF cNumber:Length <= 9 // yes, no matter if there's a sign char or not
+                LOCAL iResult := 0 AS INT
+                System.Int32.TryParse(cNumber, style, ConversionHelpers.usCulture, OUT iResult)
+                RETURN iResult
+            ELSE
+                LOCAL rResult := 0 AS REAL8
+                System.Double.TryParse(cNumber, style, ConversionHelpers.usCulture, OUT rResult)
+                RETURN __Float{rResult, 0}
+            ENDIF
+
+        ENDIF
+
+    ENDIF
+    RETURN 0
+
 
 /// <summary>
 /// Convert an object containing a numeric value to a FLOAT

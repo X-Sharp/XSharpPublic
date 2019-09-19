@@ -11,8 +11,7 @@ USING Xide
 GLOBAL gaNewKeywordsInXSharp := <STRING>{;
 	"EVENT","INT64","ENUM","DELEGATE","PARTIAL","INTERFACE",;
 	"CONSTRUCTOR","DESTRUCTOR","FINALLY","TRY","CATCH","THROW","SEALED","ABSTRACT","PUBLIC",;
-	"CONST","INITONLY","VIRTUAL","NEW","OPERATOR","EXPLICIT","IMPLICIT","PROPERTY",;
-	"SET","GET","VALUE","AUTO","OUT","IMPLIED";
+	"CONST","INITONLY","VIRTUAL","OPERATOR","EXPLICIT","IMPLICIT","PROPERTY","IMPLIED","DEBUG";
 	} AS STRING[]
 
 GLOBAL DefaultOutputFolder := "" AS STRING
@@ -45,6 +44,7 @@ FUNCTION Start(asParams AS STRING[]) AS VOID
 	oOptions:SortEntitiesByName := TRUE
 	oOptions:UseXSharpRuntime := TRUE
     oOptions:CopyResourcesToProjectFolder := TRUE
+    oOptions:ReplaceResourceDefinesWithValues := TRUE
 	xPorter.Options := oOptions
 
 	ReadIni()
@@ -1476,6 +1476,21 @@ CLASS ModuleDescriptor
 		NEXT
 	RETURN
 
+	METHOD ContainsEntity(cName AS STRING, cClass AS STRING) AS LOGIC
+		cName := cName:ToUpper()
+		cClass := cClass:ToUpper()
+		FOREACH oClass AS ClassDescriptor IN SELF:Classes
+			IF oClass:Name:ToUpper() == cClass
+				FOREACH oEntity AS EntityDescriptor IN oClass:Members
+					IF oEntity:Name:ToUpper() == cName
+						RETURN TRUE
+					END IF
+				NEXT
+			END IF
+		NEXT
+		
+	RETURN FALSE
+	
 	METHOD FindClass(cName AS STRING) AS ClassDescriptor
 		FOREACH oClass AS ClassDescriptor IN SELF:_aClasses
 			IF oClass:Name:ToUpper() == cName:ToUpper()
@@ -1738,14 +1753,19 @@ CLASS ClassDescriptor
 				oCode:AddLine(e"\tTRY")
 				oCode:AddLine(e"\t\toXApp := " + SELF:_cName + "{}")
 				oCode:AddLine(e"\t\toXApp:Start()")
-				oCode:AddLine(e"\tCATCH e AS Exception")
-				oCode:AddLine(e"\t\tLOCAL cMessage AS STRING")
-				oCode:AddLine(e"\t\tcMessage := e:Message")
-				oCode:AddLine(e"\t\tDO WHILE e:InnerException != NULL_OBJECT")
-				oCode:AddLine(e"\t\t\te := e:InnerException")
-				oCode:AddLine(e"\t\t\tcMessage += CRLF+e:Message")
-				oCode:AddLine(e"\t\tENDDO")
-				oCode:AddLine(e"\t\tErrorBox{NIL, cMessage}:Show()")
+				oCode:AddLine(e"\tCATCH oException AS Exception")
+				IF xPorter.Options:UseXSharpRuntime
+					oCode:AddLine(e"\t\tErrorDialog(oException)")
+				ELSE
+					// not calling ErrorDialog(), because the vulcan version needs a Windows.Forms reference
+					oCode:AddLine(e"\t\tLOCAL cMessage AS STRING")
+					oCode:AddLine(e"\t\tcMessage := oException:Message")
+					oCode:AddLine(e"\t\tDO WHILE oException:InnerException != NULL_OBJECT")
+					oCode:AddLine(e"\t\t\toException := oException:InnerException")
+					oCode:AddLine(e"\t\t\tcMessage += CRLF+oException:Message")
+					oCode:AddLine(e"\t\tENDDO")
+					oCode:AddLine(e"\t\tErrorBox{NIL, cMessage}:Show()")
+				END IF
 				oCode:AddLine(e"\tEND TRY")
 				oCode:AddLine(e"RETURN 0")
 				oCode:AddLine(e"")
@@ -1792,6 +1812,7 @@ CLASS EntityDescriptor
 
 	PROPERTY Name AS STRING GET SELF:_cName
 	PROPERTY Type AS EntityType GET SELF:_eType
+	PROPERTY ClassName AS STRING GET SELF:_cClass
 	PROPERTY Lines AS List<LineObject> GET SELF:_aLines
 	PROPERTY IsClassOrMember AS LOGIC GET;
 			SELF:_eType == EntityType._Class .or. SELF:_eType == EntityType._Method .or. ;
@@ -1974,6 +1995,20 @@ CLASS EntityDescriptor
 			cLine := "// " + cLine
 			RETURN cLine
 		END IF
+		IF SELF:Type== EntityType._Class .and. cLineUpper:Trim():StartsWith("INSTANCE")
+			LOCAL cTemp AS STRING
+			cTemp := cLineUpper:Trim()
+			IF cTemp:Length > 9
+				cTemp := cTemp:Substring(9):Trim()
+				// The WED generates single instance vars per line, we do not want to touch user created ones
+				IF cTemp:Length > 0 .and. cTemp:IndexOf(',') == -1 .and. cTemp:IndexOf(' ') == -1
+					IF SELF:_oModule:ContainsEntity(cTemp, SELF:Name)
+						cLine := "// " + cLine
+						RETURN cLine
+					END IF
+				END IF
+			END IF
+		ENDIF
 
 		IF xPorter.Options:RemoveExportLocalClause .and. oLine:HasExportLocalClause
 			IF oLine:oMoreInfo:ExportLocalClause:Begins != 0
@@ -2037,10 +2072,15 @@ CLASS EntityDescriptor
 				oNextWord:cWord := VOFolder.Get() + "\Samples"
 				oNextNextWord:cWord := ""
 
+			CASE cWord == "." .and. oNextNextWord != NULL .and. oNextNextWord:cWord == "." .and. (oNextWord:cWord:ToUpper() == "AND" .or. oNextWord:cWord:ToUpper() == "OR") .and. oWord:eStatus != WordStatus.Comment // can be literal, if the parser thinks 1.and.2 is a numeric
+				cWord := " " + cWord
+			CASE cWord == "." .and. oPrevWord != NULL .and. (oPrevWord:cWord:ToUpper() == "AND" .or. oPrevWord:cWord:ToUpper() == "OR") .and. oNextWord != NULL .and. oNextWord:cWord:Trim():Length != 0 .and. oWord:eStatus != WordStatus.Comment // as above
+				cWord := cWord + " "
+
 			CASE oWord:eStatus == WordStatus.Text // no literals or comments
 				cWordUpper := cWord:ToUpper()
 				DO CASE
-				CASE cWordUpper:StartsWith("STRU") .and. oWord:eSubStatus == WordSubStatus.TextReserved
+				CASE cWordUpper:StartsWith("STRU") .and. oWord:eSubStatus == WordSubStatus.TextReserved .and. oLine:oEntity != NULL
 					cWord := "VOSTRUCT"
 				CASE gaNewKeywordsInXSharp:Contains(cWordUpper) .and. (oPrevWord == NULL .or. .not. oPrevWord:cWord:StartsWith("@"))
 					cWord := "@@" + cWord

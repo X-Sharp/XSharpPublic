@@ -353,22 +353,6 @@ END NAMESPACE
 
 
 STATIC CLASS AdsEnumExtensions
-    STATIC METHOD IsMemo(SELF type AS AdsFieldType ) AS LOGIC
-        SWITCH type
-        CASE AdsFieldType.MEMO
-        CASE AdsFieldType.NMEMO
-            RETURN TRUE
-        END SWITCH
-        RETURN FALSE
-
-    STATIC METHOD IsUnicode(SELF type AS AdsFieldType ) AS LOGIC
-        SWITCH type
-        CASE AdsFieldType.NCHAR
-        CASE AdsFieldType.NVARCHAR
-        CASE AdsFieldType.NMEMO
-            RETURN TRUE
-        END SWITCH
-        RETURN FALSE
 
     STATIC METHOD IsBinary(SELF type AS AdsFieldType ) AS LOGIC
         SWITCH type

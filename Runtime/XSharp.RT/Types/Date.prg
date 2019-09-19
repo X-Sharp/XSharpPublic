@@ -54,7 +54,7 @@ BEGIN NAMESPACE XSharp
 
 		#region datetime conversions
             /// <summary>Return DATE value as DateTime.</summary>
-			PUBLIC PROPERTY Value AS System.DateTime
+			PUBLIC PROPERTY @@Value AS System.DateTime
 				GET
 					IF (_ymd == 0)
 						RETURN System.DateTime.MinValue
@@ -598,7 +598,7 @@ BEGIN NAMESPACE XSharp
 					RETURN RuntimeState.NullDateString
 				ENDIF
 				IF (s == NULL)
-					s := XSharp.RuntimeState.DateFormat
+					s := XSharp.RuntimeState.GetValue<String>(Set.DateFormatNet)
 				ENDIF
 				RETURN SELF:Value:ToString(s, fp)
 		#endregion

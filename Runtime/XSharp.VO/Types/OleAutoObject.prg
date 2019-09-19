@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -456,7 +456,7 @@ STATIC METHOD  OleSend(oComObject AS OBJECT, oType AS System.Type, cName AS STRI
 							
 					IF IsPtr(oArg)
 						// By Reference ?
-						pArg     := (USUAL) oArg
+						pArg     := Usual{oArg}
 						oArgs[x] := pArg[1]
 								
 					ELSEIF oArg IS NamedArg

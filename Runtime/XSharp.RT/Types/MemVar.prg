@@ -97,7 +97,7 @@ PUBLIC CLASS XSharp.MemVar
     /// <summary>Name of the memory variable.</summary>
   	PUBLIC PROPERTY Name 	AS STRING AUTO
     /// <summary>Value of the memory variable. The default is NIL for PRIVATEs and FALSE for PUBLICs.</summary>
-  	PUBLIC PROPERTY Value AS USUAL AUTO
+  	PUBLIC PROPERTY @@Value AS USUAL AUTO
   	INTERNAL Level	AS MemVarLevel
 	CONSTRUCTOR (cName AS STRING, uValue AS USUAL)
 	  	SELF:Name := cName:ToUpper()

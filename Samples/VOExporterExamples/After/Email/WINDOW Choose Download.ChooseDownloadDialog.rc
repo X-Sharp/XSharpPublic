@@ -1,4 +1,4 @@
-ChooseDownloadDialog DIALOGEX  24, 38, 404, 200
+ ChooseDownloadDialog DIALOGEX  24, 38, 404, 200
 STYLE	4|2147483648|12582912|524288|262144
 CAPTION	"Choose Mail to Download or Delete"
 FONT	8, "MS Shell Dlg"

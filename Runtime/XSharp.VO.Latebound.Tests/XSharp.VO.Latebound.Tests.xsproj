@@ -47,7 +47,7 @@
     <VO15>true</VO15>
     <VO16>false</VO16>
     <NamedArgs>false</NamedArgs>
-    <XSharpProjectversion>2.0.4.0</XSharpProjectversion>
+    <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs />
   </PropertyGroup>

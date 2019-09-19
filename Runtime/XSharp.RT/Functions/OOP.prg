@@ -529,17 +529,25 @@ INTERNAL STATIC CLASS OOPHelpers
 		t := oObject:GetType()
 		//Todo: optimization
 		VAR fldInfo := FindField(t, cIVar, TRUE, lSelf)
-		IF fldInfo != NULL_OBJECT .AND. IsFieldVisible(fldInfo, lSelf)
-			RETURN fldInfo:GetValue(oObject)
-		ENDIF
-		VAR propInfo := FindProperty(t, cIVar, TRUE, lSelf) 
-		IF propInfo != NULL_OBJECT .AND. propInfo:CanRead .AND. IsPropertyMethodVisible(propInfo:GetMethod, lSelf)
-            IF propInfo:GetIndexParameters():Length == 0
-			    RETURN propInfo:GetValue(oObject, NULL)
-            ELSE
-                RETURN NIL
+        TRY
+		    IF fldInfo != NULL_OBJECT .AND. IsFieldVisible(fldInfo, lSelf)
+			    RETURN fldInfo:GetValue(oObject)
+		    ENDIF
+		    VAR propInfo := FindProperty(t, cIVar, TRUE, lSelf) 
+		    IF propInfo != NULL_OBJECT .AND. propInfo:CanRead .AND. IsPropertyMethodVisible(propInfo:GetMethod, lSelf)
+                IF propInfo:GetIndexParameters():Length == 0
+			        RETURN propInfo:GetValue(oObject, NULL)
+                ELSE
+                    RETURN NIL
+                ENDIF
             ENDIF
-		ENDIF
+        CATCH e as Exception
+            if e:InnerException != NULL
+                var er := Error{e:InnerException}   // this freezes the stacktrace
+                throw er
+            ENDIF
+            THROW // rethrow exception
+        END TRY
 		LOCAL result AS USUAL
 		IF sendHelper(oObject, "NoIVarGet", <USUAL>{String2Symbol(cIVar)}, OUT result)
 			RETURN result
@@ -550,27 +558,35 @@ INTERNAL STATIC CLASS OOPHelpers
 		
 	STATIC METHOD IVarPut(oObject AS OBJECT, cIVar AS STRING, oValue AS OBJECT, lSelf AS LOGIC)  AS VOID
 		LOCAL t AS Type
-		t := oObject:GetType()
-		VAR fldInfo := FindField(t, cIVar, FALSE, lSelf)
-		//Todo: optimization
-		IF fldInfo != NULL_OBJECT .AND. IsFieldVisible(fldInfo, lSelf)
-			oValue := VOConvert(oValue, fldInfo:FieldType)
-			fldInfo:SetValue(oObject, oValue)
-			RETURN
-		ENDIF
-		LOCAL propInfo AS PropertyInfo
-		propInfo := FindProperty(t, cIVar, FALSE, lSelf)
-		IF propInfo != NULL_OBJECT .AND. propInfo:CanWrite .AND. IsPropertyMethodVisible(propInfo:SetMethod, lSelf)
-			oValue := VOConvert(oValue, propInfo:PropertyType)
-			propInfo:SetValue(oObject,oValue , NULL)
-			RETURN
-		ENDIF
-		IF SendHelper(oObject, "NoIVarPut", <USUAL>{String2Symbol(cIVar), oValue})
-			RETURN
-		END IF
-		VAR oError :=  Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{oObject, cIVar, oValue, lSelf})
-		oError:Description := oError:Message+" '"+cIVar+"'"
-        THROW oError
+        TRY
+		    t := oObject:GetType()
+		    VAR fldInfo := FindField(t, cIVar, FALSE, lSelf)
+		
+		    IF fldInfo != NULL_OBJECT .AND. IsFieldVisible(fldInfo, lSelf)
+			    oValue := VOConvert(oValue, fldInfo:FieldType)
+			    fldInfo:SetValue(oObject, oValue)
+			    RETURN
+		    ENDIF
+		    LOCAL propInfo AS PropertyInfo
+		    propInfo := FindProperty(t, cIVar, FALSE, lSelf)
+		    IF propInfo != NULL_OBJECT .AND. propInfo:CanWrite .AND. IsPropertyMethodVisible(propInfo:SetMethod, lSelf)
+			    oValue := VOConvert(oValue, propInfo:PropertyType)
+			    propInfo:SetValue(oObject,oValue , NULL)
+			    RETURN
+		    ENDIF
+		    IF SendHelper(oObject, "NoIVarPut", <USUAL>{String2Symbol(cIVar), oValue})
+			    RETURN
+		    END IF
+		    VAR oError :=  Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{oObject, cIVar, oValue, lSelf})
+		    oError:Description := oError:Message+" '"+cIVar+"'"
+            THROW oError
+        CATCH e as Exception
+            if e:InnerException != NULL
+                var er := Error{e:InnerException}   // this freezes the stacktrace
+                throw er
+            ENDIF
+            THROW // rethrow exception
+        END TRY
 
     STATIC METHOD SendHelper(oObject AS OBJECT, cMethod AS STRING, uArgs AS USUAL[]) AS LOGIC
         LOCAL result AS USUAL
@@ -611,13 +627,21 @@ INTERNAL STATIC CLASS OOPHelpers
         result := NIL 
 		IF mi != NULL   
             VAR oArgs := MatchParameters(mi, uArgs) 
-			IF mi:ReturnType == typeof(USUAL)
-                result := mi:Invoke(oObject, oArgs)
-            ELSE
-                LOCAL oResult AS OBJECT
-                oResult := mi:Invoke(oObject, oArgs)
-                result := oResult
-            ENDIF
+            TRY
+			    IF mi:ReturnType == typeof(USUAL)
+                        result := mi:Invoke(oObject, oArgs)
+                ELSE
+                    LOCAL oResult AS OBJECT
+                    oResult := mi:Invoke(oObject, oArgs)
+                    result := oResult
+                ENDIF
+            CATCH e as Exception
+                if e:InnerException != NULL
+                    var er := Error{e:InnerException}   // this freezes the stacktrace
+                    throw er
+                ENDIF
+                THROW // rethrow exception
+            END TRY
 			
 		ENDIF
 		RETURN TRUE
@@ -787,8 +811,9 @@ FUNCTION CreateInstance(cClassName,_args) AS OBJECT CLIPPER
     CATCH e as Error
         THROW e
 	CATCH e as Exception
-        if e:InnerException IS Error
-            THROW e:InnerException
+        if e:InnerException != NULL
+            var er := Error{e:InnerException}   // this freezes the stacktrace
+            throw er
         ENDIF
 		VAR oError := Error{e}
         THROW oError
@@ -1128,23 +1153,30 @@ FUNCTION Object2Array(o AS OBJECT) AS ARRAY
 	aResult := {}
 	t := o:GetType()
 	aProps := t:GetProperties(BindingFlags.Instance | BindingFlags.Public)
-	FOREACH p AS PropertyInfo IN aProps
-		LOCAL uVal AS USUAL
-		IF p:CanRead 
-			uVal := p:GetValue(o,NULL)
-			AAdd(aResult, uVal)
-		ENDIF
-	NEXT
-	aFields := t:GetFields(BindingFlags.Instance | BindingFlags.Public)
-	FOREACH f AS FieldInfo IN aFields
-		LOCAL uVal AS USUAL
-		IF ! f:IsSpecialName
-			uVal := f:GetValue(o)
-			AAdd(aResult, uVal)
-		ENDIF
-	NEXT
-
-	RETURN aResult
+    TRY
+	    FOREACH p AS PropertyInfo IN aProps
+		    LOCAL uVal AS USUAL
+		    IF p:CanRead 
+			    uVal := p:GetValue(o,NULL)
+			    AAdd(aResult, uVal)
+		    ENDIF
+	    NEXT
+	    aFields := t:GetFields(BindingFlags.Instance | BindingFlags.Public)
+	    FOREACH f AS FieldInfo IN aFields
+		    LOCAL uVal AS USUAL
+		    IF ! f:IsSpecialName
+			    uVal := f:GetValue(o)
+			    AAdd(aResult, uVal)
+		    ENDIF
+    	NEXT
+    CATCH e as Exception
+        if e:InnerException != NULL
+            var er := Error{e:InnerException}   // this freezes the stacktrace
+            throw er
+        ENDIF
+        THROW // rethrow exception
+    END TRY
+   	RETURN aResult
 	
 	
 	

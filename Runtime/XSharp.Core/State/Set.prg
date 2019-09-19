@@ -586,6 +586,23 @@ FUNCTION SetSoftSeek(lSet AS LOGIC) AS LOGIC
 	SETSTATE LOGIC Set.SoftSeek lSet
 
 /// <summary>
+/// Return the setting that determines whether a space is displayed between fields or expressions when you use the ? or ?? command.
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION SetSpace() AS LOGIC
+	GETSTATE LOGIC Set.Space
+
+/// <summary>
+/// Change the setting that determines whether a space is displayed between fields or expressions when you use the ? or ?? command.
+/// </summary>
+/// <param name="lSet"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetSpace(lSet AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.Space lSet
+
+/// <summary>
 /// Return the setting that determines the thousands separation character to be used in numeric-to-string conversion functions.
 /// </summary>
 /// <returns>

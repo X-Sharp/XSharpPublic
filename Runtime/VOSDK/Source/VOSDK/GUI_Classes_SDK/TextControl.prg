@@ -227,7 +227,7 @@ ASSIGN ControlFont(oNewFont)
 	ENDIF
 
 	SELF:__RescalCntlB(hFont)
-	SendMessage(SELF:Handle(), WM_SETFONT, DWORD(_CAST, hFont), LONGINT(_CAST, TRUE))
+	SendMessage(SELF:Handle(), WM_SETFONT, DWORD(_CAST, hFont), 1)
 
 	RETURN 
 

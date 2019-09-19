@@ -181,7 +181,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
             ENDIF
         ENDIF
         BEGIN SWITCH nOrdinal
-    CASE DBOI_BAGEXT
+        CASE DBOI_BAGEXT
             IF SELF:oRDD:IsADT
                 info:Result :=  ".ADI"
             ELSE
@@ -193,55 +193,84 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
             ENDIF
             
     CASE DBOI_BAGNAME
-            num := MAX_PATH+1
-            chars := CHAR[]{ num}
-            SELF:_CheckError(ACE.AdsGetIndexFilename(hIndex, ACE.ADS_BASENAME, chars, REF num), EG_ARG)
-            info:Result := STRING{chars, 0, num}
-            
+            IF hIndex == IntPtr.Zero
+                info:Result := ""
+            ELSE
+                num := MAX_PATH+1
+                chars := CHAR[]{ num}
+                SELF:_CheckError(ACE.AdsGetIndexFilename(hIndex, ACE.ADS_BASENAME, chars, REF num), EG_ARG)
+                info:Result := STRING{chars, 0, num}
+            ENDIF
     CASE DBOI_CONDITION
-            num := ACE.ADS_MAX_INDEX_EXPR_LEN +1
-            chars := CHAR[]{ num }
-            SELF:_CheckError(ACE.AdsGetIndexCondition(hIndex, chars, REF num), EG_ARG)
-            info:Result := STRING{chars, 0, num}
+            IF hIndex == IntPtr.Zero
+                info:Result := ""
+            ELSE
+                num := ACE.ADS_MAX_INDEX_EXPR_LEN +1
+                chars := CHAR[]{ num }
+                SELF:_CheckError(ACE.AdsGetIndexCondition(hIndex, chars, REF num), EG_ARG)
+                info:Result := STRING{chars, 0, num}
+            ENDIF
             
     CASE DBOI_CUSTOM
-            LOCAL wIsCustom AS WORD
-            SELF:_CheckError(ACE.AdsIsIndexCustom(hIndex, OUT wIsCustom), EG_ARG)
-            info:Result := wIsCustom != 0
-            
+            IF hIndex == IntPtr.Zero
+                info:Result := FALSE
+            ELSE
+                LOCAL wIsCustom AS WORD
+                SELF:_CheckError(ACE.AdsIsIndexCustom(hIndex, OUT wIsCustom), EG_ARG)
+                info:Result := wIsCustom != 0
+            ENDIF            
     CASE DBOI_EXPRESSION
-            num := ACE.ADS_MAX_INDEX_EXPR_LEN +1
-            chars := CHAR[]{ num }
-            SELF:_CheckError(ACE.AdsGetIndexExpr(hIndex, chars, REF num), EG_ARG)
-            info:Result := STRING{chars, 0, num}
+            IF hIndex == IntPtr.Zero
+                info:Result := ""
+            ELSE
+                num := ACE.ADS_MAX_INDEX_EXPR_LEN +1
+                chars := CHAR[]{ num }
+                SELF:_CheckError(ACE.AdsGetIndexExpr(hIndex, chars, REF num), EG_ARG)
+                info:Result := STRING{chars, 0, num}
+            ENDIF
             
     CASE DBOI_FILEHANDLE
             info:Result := NULL
             
     CASE DBOI_FULLPATH
-            num := MAX_PATH+1
-            chars := CHAR[]{ num}
-            SELF:_CheckError(ACE.AdsGetIndexFilename(hIndex, ACE.ADS_FULLPATHNAME, chars, REF num), EG_ARG)
-            info:Result := STRING{chars, 0, num}
+            IF hIndex == IntPtr.Zero
+                info:Result := ""
+            ELSE
+                num := MAX_PATH+1
+                chars := CHAR[]{ num}
+                SELF:_CheckError(ACE.AdsGetIndexFilename(hIndex, ACE.ADS_FULLPATHNAME, chars, REF num), EG_ARG)
+                info:Result := STRING{chars, 0, num}
+            ENDIF
             
     CASE DBOI_HPLOCKING
             info:Result:= NULL
             
     CASE DBOI_ISCOND
-            num := ACE.ADS_MAX_INDEX_EXPR_LEN +1
-            chars := CHAR[]{ num }
-            SELF:_CheckError(ACE.AdsGetIndexCondition(hIndex, chars, REF num), EG_ARG)
-            info:Result:= num > 0
+            IF hIndex == IntPtr.Zero
+                info:Result := FALSE
+            ELSE
+                num := ACE.ADS_MAX_INDEX_EXPR_LEN +1
+                chars := CHAR[]{ num }
+                SELF:_CheckError(ACE.AdsGetIndexCondition(hIndex, chars, REF num), EG_ARG)
+                info:Result:= num > 0
+            ENDIF
             
     CASE DBOI_ISDESC
-            LOCAL wDescending AS WORD
-            SELF:_CheckError(ACE.AdsIsIndexDescending(hIndex, OUT wDescending), EG_ARG)
-            info:Result:= wDescending > 0
+            IF hIndex == IntPtr.Zero
+                info:Result := FALSE
+            ELSE
+                LOCAL wDescending AS WORD
+                SELF:_CheckError(ACE.AdsIsIndexDescending(hIndex, OUT wDescending), EG_ARG)
+                info:Result:= wDescending > 0
+            ENDIF
             
     CASE DBOI_KEYADD
-            SELF:_CheckError(ACE.AdsAddCustomKey(hIndex), EG_CORRUPTION)
-            info:Result := TRUE
-            
+            IF hIndex == IntPtr.Zero
+                info:Result := FALSE
+            ELSE
+                SELF:_CheckError(ACE.AdsAddCustomKey(hIndex), EG_CORRUPTION)
+                info:Result := TRUE
+            ENDIF    
     CASE DBOI_KEYCOUNT
             IF hIndex == IntPtr.Zero
                 info:Result:= 0
@@ -265,57 +294,78 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
             
     CASE DBOI_KEYDEC
     CASE DBOI_KEYSINCLUDED
-CASE DBOI_KEYNORAW
-CASE DBOI_LOCKOFFSET
+    CASE DBOI_KEYNORAW
+    CASE DBOI_LOCKOFFSET
     CASE DBOI_SETCODEBLOCK
     CASE DBOI_KEYCOUNTRAW
             info:Result := NULL
             
     CASE DBOI_KEYDELETE
-            SELF:_CheckError(ACE.AdsDeleteCustomKey(hIndex),EG_CORRUPTION)
-            info:Result := TRUE
+            IF hIndex == IntPtr.Zero
+                info:Result := FALSE
+            ELSE
+                SELF:_CheckError(ACE.AdsDeleteCustomKey(hIndex),EG_CORRUPTION)
+                info:Result := TRUE
+            ENDIF
             
     CASE DBOI_KEYSIZE 
-            SELF:_CheckError(ACE.AdsGetKeyLength(hIndex, OUT num),EG_CORRUPTION) 
-            info:Result := (LONG)num
+            IF hIndex == IntPtr.Zero
+                info:Result := 0
+            ELSE
+                SELF:_CheckError(ACE.AdsGetKeyLength(hIndex, OUT num),EG_CORRUPTION) 
+                info:Result := (LONG)num
+            ENDIF
             
     CASE DBOI_KEYTYPE
-            SELF:_CheckError(ACE.AdsGetKeyType(hIndex, OUT num),EG_CORRUPTION)
-        BEGIN SWITCH num
-    CASE ACE.ADS_STRING
-        info:Result  := TypeCode.String
-    CASE ACE.ADS_NUMERIC
-        info:Result  := TypeCode.Double
-    CASE ACE.ADS_DATE
-        info:Result  := TypeCode.DateTime
-    CASE ACE.ADS_LOGICAL
-        info:Result  := TypeCode.Boolean
-    CASE ACE.ADS_RAW
-        info:Result  := TypeCode.Byte
-    OTHERWISE
-        SELF:oRDD:ADSERROR(ERDD_UNSUPPORTED, EG_UNKNOWN, "OrderInfo")
-        END SWITCH
+            IF hIndex == IntPtr.Zero
+                info:Result := TypeCode.Empty
+            ELSE
+                SELF:_CheckError(ACE.AdsGetKeyType(hIndex, OUT num),EG_CORRUPTION)
+                    BEGIN SWITCH num
+                CASE ACE.ADS_STRING
+                    info:Result  := TypeCode.String
+                CASE ACE.ADS_NUMERIC
+                    info:Result  := TypeCode.Double
+                CASE ACE.ADS_DATE
+                    info:Result  := TypeCode.DateTime
+                CASE ACE.ADS_LOGICAL
+                    info:Result  := TypeCode.Boolean
+                CASE ACE.ADS_RAW
+                    info:Result  := TypeCode.Byte
+                OTHERWISE
+                    SELF:oRDD:ADSERROR(ERDD_UNSUPPORTED, EG_UNKNOWN, "OrderInfo")
+                    END SWITCH
+            ENDIF
+
     CASE DBOI_KEYVAL
-            num   := SELF:oRDD:_MaxKeySize + 1
-            chars := CHAR[]{num}
+            IF hIndex == IntPtr.Zero
+                info:Result := ""
+            ELSE
+                num   := SELF:oRDD:_MaxKeySize + 1
+                chars := CHAR[]{num}
             
-            SELF:_CheckError(ACE.AdsExtractKey(hIndex, chars, REF num), EG_CORRUPTION)
-            info:Result  := STRING{chars, 0, num}
+                SELF:_CheckError(ACE.AdsExtractKey(hIndex, chars, REF num), EG_CORRUPTION)
+                info:Result  := STRING{chars, 0, num}
+            ENDIF
             
     CASE DBOI_NAME
-            num  := MAX_PATH + 1
-            chars := CHAR[]{num}
+            IF hIndex == IntPtr.Zero
+                info:Result := ""
+            ELSE
+                num  := MAX_PATH + 1
+                chars := CHAR[]{num}
             
-            SELF:_CheckError(ACE.AdsGetIndexName(hIndex, chars, REF num), EG_CORRUPTION)
-            info:Result := STRING{chars, 0, num}
+                SELF:_CheckError(ACE.AdsGetIndexName(hIndex, chars, REF num), EG_CORRUPTION)
+                info:Result := STRING{chars, 0, num}
+            ENDIF
             
     CASE DBOI_NUMBER
-            IF (hIndex == IntPtr.Zero)
+            IF hIndex == IntPtr.Zero
                 info:Result  := 0
             ELSE
                 SELF:_CheckError(ACE.AdsGetIndexOrderByHandle(hIndex, OUT num), EG_CORRUPTION)
                 info:Result := (LONG)num
-        ENDIF
+            ENDIF
     CASE DBOI_ORDERCOUNT
             IF !string.IsNullOrEmpty(info:BagName)
                 LOCAL numindices := 3840 AS WORD
@@ -339,50 +389,67 @@ CASE DBOI_LOCKOFFSET
     CASE DBOI_POSITION
     CASE DBOI_RECNO
             LOCAL dwKeyNo AS DWORD
-            IF AX_SetExactKeyPos()
-                SELF:_CheckError(ACE.AdsGetKeyNum(hIndex, 1, OUT dwKeyNo), EG_CORRUPTION)
-                info:Result  := dwKeyNo
+            IF hIndex == IntPtr.Zero
+                info:Result  := 0
             ELSE
-                LOCAL dwCount AS DWORD
-                LOCAL r8Pos AS REAL8
-                SELF:_CheckError(ACE.AdsGetRecordCount(SELF:Table, ACE.ADS_IGNOREFILTERS, OUT dwCount), EG_CORRUPTION)
-                SELF:_CheckError(ACE.AdsGetRelKeyPos(hIndex, OUT r8Pos), EG_CORRUPTION)
-                info:Result := (DWORD) (r8Pos  * (REAL8) dwCount)
-            ENDIF
-            
-CASE DBOI_SCOPETOP
+                IF AX_SetExactKeyPos()
+                    SELF:_CheckError(ACE.AdsGetKeyNum(hIndex, 1, OUT dwKeyNo), EG_CORRUPTION)
+                    info:Result  := dwKeyNo
+                ELSE
+                    LOCAL dwCount AS DWORD
+                    LOCAL r8Pos AS REAL8
+                    SELF:_CheckError(ACE.AdsGetRecordCount(SELF:Table, ACE.ADS_IGNOREFILTERS, OUT dwCount), EG_CORRUPTION)
+                    SELF:_CheckError(ACE.AdsGetRelKeyPos(hIndex, OUT r8Pos), EG_CORRUPTION)
+                    info:Result := (DWORD) (r8Pos  * (REAL8) dwCount)
+                ENDIF
+            ENDIF            
+    CASE DBOI_SCOPETOP
     CASE DBOI_SCOPEBOTTOM
-            LOCAL wScopeOption AS WORD
-            wScopeOption  := IIF(nOrdinal != DBOI_SCOPEBOTTOM , 1 , 2)
-            IF (info:Result != NULL)
-                RETURN SELF:oRDD:_SetScope(hIndex, wScopeOption, info:Result)
-            ENDIF
-            num     := SELF:oRDD:_MaxKeySize +1
-            chars   := CHAR[]{ SELF:oRDD:_MaxKeySize +1}
-            result := ACE.AdsGetScope(hIndex, wScopeOption, chars, REF num)
-            IF result != ACE.AE_NO_SCOPE .AND. result != 0
-                SELF:_CheckError(result, EG_ARG)
-            ENDIF
-            info:Result := SELF:oRDD:_Ansi2Unicode(chars, num)
-            
-CASE DBOI_SCOPETOPCLEAR
-    CASE DBOI_SCOPEBOTTOMCLEAR
-            LOCAL wScopeOption AS WORD
-            wScopeOption  := IIF(nOrdinal != DBOI_SCOPEBOTTOMCLEAR , 1 , 2)
-            info:Result := NULL
-            RETURN SELF:oRDD:_SetScope(hIndex, wScopeOption, info:Result)
-            
-    CASE DBOI_SKIPUNIQUE
-            IF (info:Result != NULL)
-                SELF:_CheckError(ACE.AdsSkipUnique(hIndex, (LONG)info:Result ), EG_CORRUPTION)
+            IF hIndex == IntPtr.Zero
+                info:Result  := NULL
             ELSE
-                SELF:_CheckError(ACE.AdsSkipUnique(hIndex, 1), EG_CORRUPTION)
+                LOCAL wScopeOption AS WORD
+                wScopeOption  := IIF(nOrdinal != DBOI_SCOPEBOTTOM , 1 , 2)
+                IF (info:Result != NULL)
+                    RETURN SELF:oRDD:_SetScope(hIndex, wScopeOption, info:Result)
+                ENDIF
+                num     := SELF:oRDD:_MaxKeySize +1
+                chars   := CHAR[]{ SELF:oRDD:_MaxKeySize +1}
+                result := ACE.AdsGetScope(hIndex, wScopeOption, chars, REF num)
+                IF result != ACE.AE_NO_SCOPE .AND. result != 0
+                    SELF:_CheckError(result, EG_ARG)
+                ENDIF
+                info:Result := SELF:oRDD:_Ansi2Unicode(chars, num)
+           ENDIF            
+    CASE DBOI_SCOPETOPCLEAR
+    CASE DBOI_SCOPEBOTTOMCLEAR
+            IF hIndex == IntPtr.Zero
+                info:Result  := FALSE
+            ELSE
+                LOCAL wScopeOption AS WORD
+                wScopeOption  := IIF(nOrdinal != DBOI_SCOPEBOTTOMCLEAR , 1 , 2)
+                info:Result := NULL
+                RETURN SELF:oRDD:_SetScope(hIndex, wScopeOption, info:Result)
+            ENDIF            
+    CASE DBOI_SKIPUNIQUE
+           IF hIndex == IntPtr.Zero
+                info:Result  := FALSE
+            ELSE
+
+                IF (info:Result != NULL)
+                    SELF:_CheckError(ACE.AdsSkipUnique(hIndex, (LONG)info:Result ), EG_CORRUPTION)
+                ELSE
+                    SELF:_CheckError(ACE.AdsSkipUnique(hIndex, 1), EG_CORRUPTION)
+                ENDIF
+                info:Result  := SELF:oRDD:RecordMovement()
             ENDIF
-        RETURN SELF:oRDD:RecordMovement()
     CASE DBOI_UNIQUE
-            SELF:_CheckError(ACE.AdsIsIndexUnique(hIndex, OUT num), EG_CORRUPTION)
-            info:Result := num != 0
-            
+           IF hIndex == IntPtr.Zero
+                info:Result  := FALSE
+            ELSE
+                SELF:_CheckError(ACE.AdsIsIndexUnique(hIndex, OUT num), EG_CORRUPTION)
+                info:Result := num != 0
+            ENDIF    
     CASE DBOI_AXS_PERCENT_INDEXED
             info:Result := SELF:_iProgress
             
@@ -418,30 +485,39 @@ CASE DBOI_SCOPETOPCLEAR
         wLength := 1000
         indices := IntPtr[]{ wLength }
         cIndexName := info:BagName
-        SELF:_bagName := info:BagName 
-        
-        result := ACE.AdsOpenIndex(SELF:Table, cIndexName, indices, REF wLength)
-        IF result != ACE.AE_INDEX_ALREADY_OPEN 
-            SELF:_CheckError(result,EG_OPEN)
-            IF SELF:Index == IntPtr.Zero .AND. wLength > 0
-                wCurrent := numIndexes +1
-                LOCAL hIndex AS IntPtr
-                SELF:_CheckError(ACE.AdsGetIndexHandleByOrder(SELF:Table, wCurrent, OUT hIndex),EG_OPEN)
-                SELF:Index := hIndex
+        SELF:_bagName := info:BagName
+        LOCAL tries := 0 as LONG
+        REPEAT
+            // wait 100 ms before retrying
+            IF tries > 0
+                System.Threading.Thread.Sleep(100)
             ENDIF
-        ELSE
-            cIndexName := Path.GetFileNameWithoutExtension(cIndexName)
-            LOCAL pathName AS CHAR[]
-            pathName := CHAR[]{ MAX_PATH+1 }
-            FOR i := 0 TO wLength -1
-                VAR wLen := (WORD)pathName:Length
-                SELF:_CheckError(ACE.AdsGetIndexFilename(indices[i], 1, pathName, REF wLen),EG_OPEN)
-                IF string.Compare(info:BagName, STRING{pathName, 0, wLen}, TRUE) == 0
-                    SELF:Index := indices[i]
-                    EXIT
+            tries += 1
+            result := ACE.AdsOpenIndex(SELF:Table, cIndexName, indices, REF wLength)
+            IF result == ACE.AE_INDEX_ALREADY_OPEN 
+                cIndexName := Path.GetFileNameWithoutExtension(cIndexName)
+                LOCAL pathName AS CHAR[]
+                pathName := CHAR[]{ MAX_PATH+1 }
+                FOR i := 0 TO wLength -1
+                    VAR wLen := (WORD)pathName:Length
+                    SELF:_CheckError(ACE.AdsGetIndexFilename(indices[i], ACE.ADS_BASENAME, pathName, REF wLen),EG_OPEN)
+                    IF String.Compare(cIndexName, String{pathName, 0, wLen}, TRUE) == 0
+                        SELF:Index := indices[i]
+                        EXIT
+                    ENDIF
+                NEXT
+            ELSEIF result == ACE.AE_SUCCESS
+                // Only select the current index when we do not already have an index activated.
+                // So opening the second index file will keep focus on the first index
+                IF SELF:Index == IntPtr.Zero .AND. wLength > 0
+                    wCurrent := numIndexes +1
+                    LOCAL hIndex AS IntPtr
+                    SELF:_CheckError(ACE.AdsGetIndexHandleByOrder(SELF:Table, wCurrent, OUT hIndex ),EG_OPEN)
+                    SELF:Index := hIndex
                 ENDIF
-            NEXT
-        ENDIF
+            ENDIF
+        UNTIL tries == 10 .or. SELF:Index != IntPtr.Zero
+        SELF:_CheckError(result,EG_OPEN)
         RETURN SELF:oRDD:GoTop()
         
         /// <inheritdoc />
@@ -454,7 +530,7 @@ CASE DBOI_SCOPETOPCLEAR
     VIRTUAL METHOD OrderListFocus(info AS DBORDERINFO ) AS LOGIC
         LOCAL oTmpInfo AS DbOrderInfo
         oTmpInfo :=DbOrderInfo{}
-        SELF:OrderInfo(DBOI_NAME,oTmpInfo)
+        SELF:OrderInfo(DBOI_NAME,oTmpInfo) 
         info:Result := oTmpInfo:Result
         IF (info:Order == NULL)
             SELF:Index := IntPtr.Zero
@@ -464,7 +540,7 @@ CASE DBOI_SCOPETOPCLEAR
                 LOCAL hIndex AS IntPtr
                 SELF:_CheckError(ACE.AdsGetIndexHandle(SELF:Table, orderName, OUT hIndex),EG_ARG)
                 SELF:Index := hIndex
-                RETURN SELF:oRDD:GoTop()
+                SELF:oRDD:RecordMovement()
             ENDIF
             SELF:Index := IntPtr.Zero
         ELSE
@@ -478,7 +554,7 @@ CASE DBOI_SCOPETOPCLEAR
                 LOCAL hIndex AS IntPtr
                 SELF:_CheckError(ACE.AdsGetIndexHandleByOrder(SELF:Table, orderNum, OUT hIndex),EG_ARG)
                 SELF:Index := hIndex
-                RETURN SELF:oRDD:GoTop()
+                SELF:oRDD:RecordMovement()
             ELSE
                 SELF:Index := IntPtr.Zero
             ENDIF

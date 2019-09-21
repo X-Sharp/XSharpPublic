@@ -53,27 +53,32 @@ PUBLIC STATIC PARTIAL CLASS Funcs
          cInstallTemplatesFolder := ""
       END IF
    RETURN cInstallTemplatesFolder
-   
+
+   STATIC CONSTRUCTOR
+        var node := "HKEY_LOCAL_MACHINE\Software\XSharpBV\XSharp"
+        var InstallPath := (string)Microsoft.Win32.Registry.GetValue(node, "XSharpPath", "")
+        cInstallTemplatesFolder := InstallPath+"\Templates"
+
    INTERNAL STATIC METHOD SetCreateParams(p AS CreateParams , oDesign AS DesignWindowItem) AS VOID
       LOCAL nStyle , nExStyle AS INT
-   
+
       IF oDesign == NULL
          RETURN
       ENDIF
-   
+
       nStyle := p:Style
       nExStyle := p:ExStyle
-   
+
       nExStyle := Funcs.ApplyVOStyle(oDesign , "Static Edge" , nExStyle)
       nExStyle := Funcs.ApplyVOStyle(oDesign , "Client Edge" , nExStyle)
       nExStyle := Funcs.ApplyVOStyle(oDesign , "Modal Frame" , nExStyle)
-   
+
       nStyle := Funcs.ApplyVOStyle(oDesign , "Border" , nStyle)
-   
+
       p:Style := _OR(p:Style , nStyle)
       p:ExStyle := _OR(p:ExStyle , nExStyle)
    RETURN
-   
+
    INTERNAL STATIC METHOD ApplyVOStyle(oDesign AS DesignWindowItem , cProp AS STRING , nStyle AS INT) AS INT
       LOCAL oProp AS VODesignProperty
       oProp := oDesign:GetProperty(cProp)
@@ -235,15 +240,15 @@ PUBLIC STATIC PARTIAL CLASS Funcs
             RETURN cCaption
          ENDIF
       NEXT*/
-      
+
       IF lCode
          cRet := e"LoadResString(\"" + cDefCaption + e"\" , " + cIndex + ")"
       ELSE
          cRet := cDefCaption
       ENDIF
-      
+
    RETURN cRet
-   
+
    STATIC METHOD GetModuleNameFromBinary(cFileName AS STRING) AS STRING
       LOCAL cModuleName , cModuleFilename AS STRING
       IF SplitBinaryFilename(cFileName , cModuleName , cModuleFilename)
@@ -296,7 +301,7 @@ PUBLIC STATIC PARTIAL CLASS Funcs
          END CASE
       END IF
    RETURN
-   
+
    #endregion
 
 //	#define CRLF Chr(13)+Chr(10)

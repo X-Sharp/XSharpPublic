@@ -158,10 +158,12 @@ namespace Microsoft.VisualStudio.Project
     /// </summary>
     public static class DefaultSortOrderNode
     {
-        public const int HierarchyNode = 1000;
-        public const int FolderNode = 500;
+        public const int ProjectProperties = 100;
         public const int NestedProjectNode = 200;
         public const int ReferenceContainerNode = 300;
+        public const int FolderNode = 500;
+        public const int VOBinaryNode = 750;
+        public const int HierarchyNode = 1000;
     }
 
 }

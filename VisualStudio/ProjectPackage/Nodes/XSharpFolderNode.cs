@@ -74,6 +74,7 @@ namespace XSharp.Project
             return new XSharpPropertiesFolderNodeProperties(this);
 
         }
+        public override int SortPriority => DefaultSortOrderNode.ProjectProperties;
 
         /// <summary>
         /// Handles command status on a node. Should be overridden by descendant nodes. If a command cannot be handled then the base should be called.

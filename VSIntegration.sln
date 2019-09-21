@@ -29,7 +29,7 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpModelXs", "VisualStud
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XsCodeModelTest", "VisualStudio\XsCodeModelTest\XsCodeModelTest.xsproj", "{123EC0E4-F7EE-4556-90B0-2A28BDBDEB65}"
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "CodeGenerator", "VisualStudio\CodeGenerator\CodeGenerator.xsproj", "{B837AC3B-9C61-49E4-9F4F-C8AD1FAF21CC}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpCodeGenerator", "VisualStudio\CodeGenerator\XSharpCodeGenerator.xsproj", "{B837AC3B-9C61-49E4-9F4F-C8AD1FAF21CC}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VODesigners", "VisualStudio\VODesigners\VODesigners.xsproj", "{FAAC947E-0355-4F8D-ADB9-C57B1C9357D2}"
 EndProject

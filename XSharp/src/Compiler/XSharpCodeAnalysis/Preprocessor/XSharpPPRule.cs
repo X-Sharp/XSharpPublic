@@ -508,7 +508,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             while (i < max && matchTokens[i].Type != XSharpLexer.GT)
                             {
                                 token = matchTokens[i];
-                                more.Add(token);
+                                more.Add(token);            // we include the commas on purpose
                                 i++;
                             }
                             if (i == max)

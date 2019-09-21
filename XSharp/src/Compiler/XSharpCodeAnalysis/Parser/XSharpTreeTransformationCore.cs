@@ -61,7 +61,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Members = pool.Allocate<MemberDeclarationSyntax>();
                 GlobalClassMembers = pool.Allocate<MemberDeclarationSyntax>();
                 StaticGlobalClassMembers = pool.Allocate<MemberDeclarationSyntax>();
-                Members = pool.Allocate<MemberDeclarationSyntax>();
                 InitProcedures = new List<Tuple<int, String>>();
                 Globals = new List<FieldDeclarationSyntax>();
                 FileWidePublics = new List<MemVarFieldInfo>();
@@ -78,6 +77,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _pool.Free(Attributes);
                 _pool.Free(Usings);
                 _pool.Free(Externs);
+                _pool.Free(GlobalClassMembers);
+                _pool.Free(StaticGlobalClassMembers);
             }
         }
 
@@ -222,7 +223,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return className;
 
-        }
+        } 
 
         public virtual string GetGlobalClassName(XSharpTargetDLL targetDLL)
         {
@@ -315,14 +316,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int iNest = 0;
             while (ctx != null)
             {
-                if (ctx is XP.Class_Context cc)
+                if (ctx is XP.IEntityContext ent)
                 {
-                    name = cc.Id.GetText() + "." + name;
-                    iNest++;
-                }
-                else if (ctx is XP.Structure_Context sc)
-                {
-                    name = sc.Id.GetText() + "." + name;
+                    name = ent.Name + "." + name;
                     iNest++;
                 }
                 else if (ctx is XP.Namespace_Context nc)
@@ -330,31 +326,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     name = nc.Name.GetText() + "." + name;
                     iNest++;
                 }
-                else if (ctx is XP.Interface_Context ic)
-                {
-                    name = ic.Id.GetText() + "." + name;
-                    iNest++;
-                }
-                else if (ctx is XP.FoxclassContext fc)
-                {
-                    name = fc.Id.GetText() + "." + name;
-                    iNest++;
-                }
-                else if (ctx is XP.XppclassContext xc)
-                {
-                    name = xc.Id.GetText() + "." + name;
-                    iNest++;
-                }
-
-                else if (ctx is XP.PropertyContext pc)
-                {
-                    name = pc.Id?.GetText() + "." + name;
-                }
-                else if (ctx is XP.Event_Context ec)
-                {
-                    name = ec.Id.GetText() + "." + name;
-                }
-             ctx = ctx.Parent;
+              ctx = ctx.Parent;
             }
             if (iNest == 1 && !String.IsNullOrEmpty(_options.DefaultNamespace))
             {
@@ -4819,7 +4791,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitFuncproc([NotNull] XP.FuncprocContext context)
         {
-            if (context.T != null)
+            if (context.T != null && context.end  != null)
             {
                 context.SetSequencePoint(context.T, context.end.Stop);
             }
@@ -7502,10 +7474,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(context.Start.SyntaxIdentifier());
         }
 
-        public override void ExitKeyword([NotNull] XP.KeywordContext context)
-        {
-            context.Put(context.Start.SyntaxKeywordIdentifier());
-        }
 
         public override void ExitKeywordxs([NotNull] XP.KeywordxsContext context)
         {
@@ -7518,10 +7486,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // caught by the keyword/identifier rule
         }
 
-        public override void ExitKeywordfox([NotNull] XP.KeywordfoxContext context)
-        {
-            // caught by the keyword/identifier rule
-        }
         public override void ExitKeywordxpp([NotNull] XP.KeywordxppContext context)
         {
             // caught by the keyword/identifier rule

@@ -157,6 +157,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                     tree = parser.script();
             }
+            else if (_options.Dialect == XSharpDialect.FoxPro)
+                tree = parser.foxsource();
             else
                 tree = parser.source();
             return tree;

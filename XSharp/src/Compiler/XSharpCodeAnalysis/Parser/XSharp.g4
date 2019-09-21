@@ -43,15 +43,17 @@ macroScript         : ( CbExpr=codeblock | Code=codeblockCode ) EOS
                       EOF
                     ;
 
-source              : {!IsFox}?  (Entities+=entity )* EOF
-                    | {IsFox}? StmtBlk=statementBlock (Entities+=entity )* EOF // StatementList before any entities
+source              :  (Entities+=entity )* EOF
+                    ; 
+
+foxsource           :  StmtBlk=statementBlock (Entities+=entity )* EOF
                     ; 
 
 entity              : namespace_
                     // types
                     | class_
-                    | xppclass                  // XPP Class definition
                     | foxclass                  // FoxPro Class definition*/
+                    | xppclass                  // XPP Class definition
                     | structure_
                     | interface_
                     | delegate_
@@ -79,6 +81,7 @@ entity              : namespace_
 eos                 : EOS+ 
                     ;
 
+ 
 funcproc              : (Attributes=attributes)? (Modifiers=funcprocModifiers)?   
                       T=(FUNCTION|PROCEDURE) Id=identifier                             
                       TypeParameters=typeparameters?                            
@@ -91,7 +94,7 @@ funcproc              : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
                       (DLLEXPORT STRING_CONST)?                                 // Optional (ignored)
                       end=eos   
                       StmtBlk=statementBlock
-                      (END T2=(FUNCTION|PROCEDURE)  Ignored=identifier? EOS )?
+                      (END T2=(FUNCTION|PROCEDURE)   EOS )?
                     ;
 
 
@@ -188,11 +191,10 @@ method              : (Attributes=attributes)? (Modifiers=memberModifiers)?
                       (ThisAccess=THISACCESS LPAREN MemberId=identifier RPAREN)?    // FoxPro only
                       end=eos
                       StmtBlk=statementBlock
-                      (END T2=methodtype Ignored=identifier? EOS)?
+                      (END T2=methodtype EOS)?
                     ;
 
-methodtype          : Token=(METHOD | ACCESS | ASSIGN)
-                    | {IsFox}? Token=(FUNCTION | PROCEDURE)
+methodtype          : Token=(METHOD | ACCESS | ASSIGN | FUNCTION | PROCEDURE)
                     ;
 
 // Convert to constant on Globals class. Expression must be resolvable at compile time
@@ -203,7 +205,7 @@ vodefine            : (Modifiers=funcprocModifiers)?
 vostruct            : (Modifiers=votypeModifiers)?
                       V=VOSTRUCT (Namespace=nameDot)? Id=identifier (ALIGN Alignment=INT_CONST)? e=eos
                       (Members+=vostructmember)+
-                      (END VOSTRUCT Ignored=identifier? EOS)?
+                      (END VOSTRUCT EOS)?
                     ;
 
 vostructmember      : MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (As=(AS | IS) DataType=datatype)? eos
@@ -214,7 +216,7 @@ vostructmember      : MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT
 vounion             : (Modifiers=votypeModifiers)?
                       U=UNION (Namespace=nameDot)? Id=identifier e=eos
                       (Members+=vostructmember)+
-                      (END UNION Ignored=identifier? EOS)?
+                      (END UNION EOS)?
                     ;
 
 votypeModifiers     : ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE | STATIC ) )+
@@ -223,7 +225,7 @@ votypeModifiers     : ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE | STATIC ) 
 
 namespace_          : BEGIN NAMESPACE Name=name e=eos
                       (Entities+=entity)*
-                      END NAMESPACE Ignored=name?  EOS
+                      END NAMESPACE EOS
                     ;
 
 interface_          : (Attributes=attributes)? (Modifiers=interfaceModifiers)?            
@@ -233,7 +235,7 @@ interface_          : (Attributes=attributes)? (Modifiers=interfaceModifiers)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)*              // Optional typeparameterconstraints for Generic Interface
                       e=eos
                       (Members+=classmember)*
-                      END INTERFACE Ignored=identifier? EOS
+                      END INTERFACE EOS
                     ;
 
 interfaceModifiers  : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
@@ -247,7 +249,7 @@ class_              : (Attributes=attributes)? (Modifiers=classModifiers)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)*             // Optional typeparameterconstraints for Generic Class
                       e=eos
                       (Members+=classmember)*
-                      END CLASS Ignored=identifier? EOS
+                      END CLASS EOS
                     ;
 
 classModifiers      : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL) )+
@@ -280,7 +282,7 @@ structure_          : (Attributes=attributes)? (Modifiers=structureModifiers)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos
                       (Members+=classmember)*
-                      END STRUCTURE Ignored=identifier? EOS
+                      END STRUCTURE EOS
                     ;
 
 structureModifiers  : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
@@ -303,7 +305,7 @@ delegateModifiers   : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | 
 enum_               : (Attributes=attributes)? (Modifiers=enumModifiers)?
                       E=ENUM (Namespace=nameDot)? Id=identifier ((AS|INHERIT) Type=datatype)? e=eos
                       (Members+=enummember)+
-                      END ENUM? Ignored=identifier? EOS
+                      END ENUM? EOS
                     ;
 
 enumModifiers       : ( Tokens+=(NEW | PUBLIC| EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN) )+
@@ -316,7 +318,7 @@ event_              : (Attributes=attributes)? (Modifiers=eventModifiers)?
                        E=EVENT (ExplicitIface=nameDot)? Id=identifier (AS Type=datatype)?
                        ( end=EOS
                         | (LineAccessors += eventLineAccessor)+ end=EOS
-                        | Multi=eos (Accessors+=eventAccessor)+ END EVENT? Ignored=identifier? EOS
+                        | Multi=eos (Accessors+=eventAccessor)+ END EVENT? EOS
                        )
                     ;
 
@@ -362,7 +364,7 @@ property            : (Attributes=attributes)? (Modifiers=memberModifiers)?
                       (AS Type=datatype)?
                       ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (Op=assignoperator Initializer=expression)? end=EOS	// Auto
                         | (LineAccessors+=propertyLineAccessor)+ end=EOS													// Single Line
-                        | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? Ignored=identifier?  EOS				// Multi Line
+                        | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? EOS				// Multi Line
                       )
                     ;
 
@@ -484,7 +486,10 @@ attributeBlock      : LBRKT Target=attributeTarget? Attributes+=attribute (COMMA
                     ;
 
 attributeTarget     : Id=identifier COLON
-                    | Kw=keyword COLON
+                    | Kw=attributeTargetName COLON
+                    ;
+
+attributeTargetName : (CLASS | CONSTRUCTOR | DELEGATE | ENUM | EVENT | FIELD | INTERFACE | METHOD | PROPERTY  )
                     ;
 
 attribute           : Name=name (LPAREN (Params+=attributeParam (COMMA Params+=attributeParam)* )? RPAREN )?
@@ -510,7 +515,7 @@ statement           : Decl=localdecl                        #declarationStmt
                     | Decl=fielddecl                        #fieldStmt
                     | DO? WHILE Expr=expression end=eos
                       StmtBlk=statementBlock 
-                      ((e=END (DO|WHILE)? | e=ENDDO) Ignored=expression?  eos)?	#whileStmt
+                      ((e=END (DO|WHILE)? | e=ENDDO) eos)?	#whileStmt
                     | NOP (LPAREN RPAREN )? end=eos								#nopStmt
                     | FOR
                         ( AssignExpr=expression
@@ -520,9 +525,9 @@ statement           : Decl=localdecl                        #declarationStmt
                       Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
                       (STEP Step=expression)? end=eos
                       StmtBlk=statementBlock
-                      ((e = NEXT | e = END FOR)? Ignored=identifier? eos)?	      #forStmt
+                      ((e = NEXT | e = END FOR)? eos)?	      #forStmt
                     | IF IfStmt=ifElseBlock
-                      ((e=END IF? | e=ENDIF)   Ignored=expression? eos)?			#ifStmt
+                      ((e=END IF? | e=ENDIF)   eos)?			#ifStmt
                     | DO CASE end=eos
                       CaseStmt=caseBlock?
                       ((e=END CASE? | e=ENDCASE)   eos)?                  #caseStmt
@@ -533,79 +538,80 @@ statement           : Decl=localdecl                        #declarationStmt
                     | Q=(QMARK | QQMARK)
                        (Exprs+=expression (COMMA Exprs+=expression)*)?
                        end=eos                                            #qoutStmt
-                    | B=(BACKSLASH | BACKBACKSLASH) String=TEXT_STRING_CONST end=EOS #textoutStmt    // only supported in FoxPro dialect
                     | BEGIN SEQUENCE end=eos
                       StmtBlk=statementBlock
                       (RECOVER RecoverBlock=recoverBlock)?
                       (FINALLY eos FinBlock=statementBlock)?
-                      (e=END (SEQUENCE)? eos)?                              #seqStmt
+                      (e=END (SEQUENCE)? eos)?                            #seqStmt
                     //
                     // New in Vulcan
                     //
                     | REPEAT end=eos
                       StmtBlk=statementBlock
                       UNTIL Expr=expression
-                      eos                                                       #repeatStmt
+                      eos                                                 #repeatStmt
                     | FOREACH
                       (IMPLIED Id=identifier | Id=identifier AS Type=datatype| VAR Id=identifier)
                       IN Container=expression end=eos
                       StmtBlk=statementBlock
-                      ((e = NEXT | e = END FOR)? Ignored=identifier? eos)?	    #foreachStmt
-                    | Key=THROW Expr=expression? end=eos                        #jumpStmt
+                      ((e=NEXT |e=END FOR)? eos)?	    #foreachStmt
+                    | Key=THROW Expr=expression? end=eos                  #jumpStmt
                     | TRY end=eos StmtBlk=statementBlock
                       (CATCH CatchBlock+=catchBlock?)*
                       (FINALLY eos FinBlock=statementBlock)?
-                      (e=END TRY? eos)?								#tryStmt
+                      (e=END TRY? eos)?								                    #tryStmt
                     | BEGIN Key=LOCK Expr=expression end=eos
                       StmtBlk=statementBlock
-                      (e=END LOCK? eos)?						#blockStmt
+                      (e=END LOCK? eos)?						                      #blockStmt
                     | BEGIN Key=SCOPE end=eos
                       StmtBlk=statementBlock
-                      (e=END SCOPE? eos)?						#blockStmt
+                      (e=END SCOPE? eos)?						                      #blockStmt
                     //
                     // New XSharp Statements
                     //
                     | YIELD RETURN (VOID | Expr=expression)? end=eos			#yieldStmt
-                    | YIELD Break=(BREAK|EXIT) end=eos							#yieldStmt
+                    | YIELD Break=(BREAK|EXIT) end=eos							      #yieldStmt
                     | (BEGIN|DO)? SWITCH Expr=expression end=eos
                       (SwitchBlock+=switchBlock)+
-                      (e=END SWITCH? eos)?					#switchStmt
+                      (e=END SWITCH? eos)?					                      #switchStmt
                     | BEGIN Key=USING ( Expr=expression | VarDecl=variableDeclaration ) end=eos
                         StmtBlk=statementBlock
-                      (e=END USING? eos)?						#blockStmt
+                      (e=END USING? eos)?						                      #blockStmt
                     | BEGIN Key=UNSAFE end=eos
                       StmtBlk=statementBlock
-                      (e=END UNSAFE? eos)?						#blockStmt
+                      (e=END UNSAFE? eos)?						                    #blockStmt
                     | BEGIN Key=CHECKED end=eos
                       StmtBlk=statementBlock
-                      (e=END CHECKED? eos)?						#blockStmt
+                      (e=END CHECKED? eos)?						                    #blockStmt
                     | BEGIN Key=UNCHECKED end=eos
                       StmtBlk=statementBlock
-                      (e=END UNCHECKED? eos)?					#blockStmt
+                      (e=END UNCHECKED? eos)?					                    #blockStmt
                     | BEGIN Key=FIXED ( VarDecl=variableDeclaration ) end=eos
                       StmtBlk=statementBlock
-                      (e=END FIXED? eos)?						  #blockStmt
+                      (e=END FIXED? eos)?						                      #blockStmt
 
                     | WITH Expr=expression end=eos
                       StmtBlk=statementBlock
-                      (e=END WITH? eos)?              #withBlock
+                      (e=END WITH? eos)?                                  #withBlock
 
+
+                    // some statements that are only valid in FoxPro dialect
                     | TEXT (TO Id=identifier (Add=ADDITIVE)? (Merge=TEXTMERGE)? (NoShow=NOSHOW)? (FLAGS Flags=expression)? (PRETEXT Pretext=expression)? )? end=EOS
                        String=TEXT_STRING_CONST
-                       ENDTEXT e=eos                #textStmt   // only supported in FoxPro dialect
-
+                       ENDTEXT e=eos                                                  #foxtextStmt   
+                    | Eq=EQ Exprs+=expression  end=eos		                            #foxexpressionStmt
+                    | B=(BACKSLASH | BACKBACKSLASH) String=TEXT_STRING_CONST end=EOS  #foxtextoutStmt    
                       // NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
                       // The first ExpressonStmt rule matches a single expression
                       // The second Rule matches a single expression with an extraneous RPAREN RCURLY or RBRKT
                       // The third rule matches more than one expression
-                      // The EQ sign is supported for the FoxPro dialect
                       // validExpressionStmt checks for CONSTRUCTOR( or DESTRUCTOR(
+                   | {validExpressionStmt()}?
+                      Exprs+=expression  end=eos									                            #expressionStmt
                     | {validExpressionStmt()}?
-                      (eq=EQ)? Exprs+=expression  end=eos									                            #expressionStmt
+                      Exprs+=expression t=(RPAREN|RCURLY|RBRKT)  end=eos {eosExpected($t);}		#expressionStmt
                     | {validExpressionStmt()}?
-                      (eq=EQ)? Exprs+=expression t=(RPAREN|RCURLY|RBRKT)  end=eos {eosExpected($t);}		#expressionStmt
-                    | {validExpressionStmt()}?
-                      (eq=EQ)? Exprs+=expression (COMMA Exprs+=expression)+  end=eos			              #expressionStmt
+                      Exprs+=expression (COMMA Exprs+=expression)+  end=eos			              #expressionStmt
 	                ;
 
 
@@ -1060,8 +1066,6 @@ literalValue        : Token=
                     ;
 
 
-keyword             : (KwVo=keywordvo | KwXs=keywordxs | KwXpp=keywordxpp | KwFox=keywordfox) ;
-
 keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST | CLASS | DLL | DO 
                     | ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FOR | FUNCTION 
                     | HIDDEN | IF | IIF | IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE
@@ -1106,7 +1110,7 @@ xppclass           :  (Attributes=attributes)?                                //
                        // No type parameters and type parameter constraints
                       e=eos
                       (Members+=xppclassMember)*
-                      ENDCLASS Ignored=identifier?
+                      ENDCLASS 
                       eos
                     ;
 
@@ -1187,7 +1191,7 @@ xppmethod           : (Attributes=attributes)?                              // N
                       // no calling convention
                       end=eos
                       StmtBlk=statementBlock
-                      (END METHOD Ignored=identifier? eos)?
+                      (END METHOD eos)?
                     ;
 
 xppinlineMethod     : (Attributes=attributes)?                               // NEW Optional Attributes
@@ -1201,7 +1205,7 @@ xppinlineMethod     : (Attributes=attributes)?                               // 
                       // no calling convention
                       end=eos
                       StmtBlk=statementBlock
-                      (END METHOD Ignored=identifier? eos)?
+                      (END METHOD eos)?
                     ;
 
 xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+
@@ -1228,7 +1232,7 @@ foxclass            : (Attributes=attributes)?
                       (OLEPUBLIC) ?
                       e=eos
                       (Members+=foxclassmember)*
-                      (ENDDEFINE | END DEFINE) Ignored=identifier?   eos
+                      (ENDDEFINE | END DEFINE) eos
                     ;
 
 foxclassmember      : Member=foxclassvars          #foxclsvars

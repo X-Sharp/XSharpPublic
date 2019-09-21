@@ -98,7 +98,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    input = tokens.GetText(e.StartToken, e.OffendingToken);
+                    input = e.OffendingToken.Text;
                 }
             }
             else

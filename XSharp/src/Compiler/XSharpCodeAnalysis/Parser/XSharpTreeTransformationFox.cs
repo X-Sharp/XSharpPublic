@@ -46,7 +46,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
         }
 
-        public override void ExitSource([NotNull] XP.SourceContext context)
+        public override void EnterFoxsource([NotNull] XP.FoxsourceContext context)
+        {
+            base._enterSource();
+        }
+        public override void ExitFoxsource([NotNull] XP.FoxsourceContext context)
         {
             if (context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0)
             {
@@ -56,7 +60,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var name = System.IO.Path.GetFileNameWithoutExtension(_fileName);
                 var entity = new XP.EntityContext(context, 0);
                 var func = new XP.FuncprocContext(entity, 0);
-                var id = new XP.IdentifierContext(func, 0);
+                var id = new XP.IdentifierContext(func, 0); 
                 var token = new XSharpToken(XP.FUNCTION, "FUNCTION");
                 token.line = 1;
                 token.charPositionInLine = 1;
@@ -64,8 +68,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 token = new XSharpToken(XP.ID, name);
                 token.line = 1;
                 token.charPositionInLine = 1;
-                id.Start = id.Stop = token;
-                ExitIdentifier(id);    // Generate SyntaxToken
+                 id.Start = id.Stop = token;
+                ExitIdentifier(id);    // Generate SyntaxToken 
                 if (string.Equals(name, _entryPoint, StringComparison.OrdinalIgnoreCase))
                 {
                     func.Type = new XP.DatatypeContext(func,0);
@@ -73,6 +77,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     func.Type.Stop = new XSharpToken(XP.VOID, "VOID");
                     func.Type.Put(_voidType);
                 }
+                func.Attributes = new XP.AttributesContext(func,0);
+                func.Attributes.PutList(MakeCompilerGeneratedAttribute());
                 func.Id = id;
                 func.StmtBlk = context.StmtBlk;
                 context.StmtBlk.parent = func;
@@ -87,9 +93,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ExitEntity(entity);
                 context._Entities.Insert(0, entity);
             }
-            base.ExitSource(context);
+            var entities = new List<XSharpParserRuleContext>();
+            entities.AddRange(context._Entities);
+            _exitSource(context, entities);
         }
-
         public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
         {
             CoreAccessMember(context);
@@ -493,7 +500,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return source;
         }
 
-        public override void ExitTextStmt([NotNull] XP.TextStmtContext context)
+        public override void ExitFoxtextStmt([NotNull] XP.FoxtextStmtContext context)
         {
             var sourceText = context.String.Text;
             ExpressionSyntax stringExpr;
@@ -550,7 +557,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
-        public override void ExitTextoutStmt([NotNull] XP.TextoutStmtContext context)
+        public override void ExitFoxtextoutStmt([NotNull] XP.FoxtextoutStmtContext context)
         {
             var sourceText = context.String.Text;
             ExpressionSyntax expr;

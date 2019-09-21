@@ -842,6 +842,14 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CodeGenerator\CodeGenerator.xsproj">
+      <Project>{b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc}</Project>
+      <Name>CodeGenerator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VODesigners\VODesigners.xsproj">
+      <Project>{faac947e-0355-4f8d-adb9-c57b1c9357d2}</Project>
+      <Name>VODesigners</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XSharpCodeDomProvider\XSharpCodeDomProvider.csproj">
       <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b4}</Project>
       <Name>XSharpCodeDomProvider</Name>

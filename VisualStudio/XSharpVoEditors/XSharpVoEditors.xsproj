@@ -109,8 +109,8 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CodeGenerator\CodeGenerator.xsproj">
-      <Name>CodeGenerator</Name>
+    <ProjectReference Include="..\CodeGenerator\XSharpCodeGenerator.xsproj">
+      <Name>XSharpCodeGenerator</Name>
       <Project>{b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc}</Project>
       <Private>True</Private>
     </ProjectReference>

@@ -3,7 +3,7 @@
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <Import Project="..\Common.props" />
   <PropertyGroup>
-    <Name>CodeGenerator</Name>
+    <Name>XSharpCodeGenerator</Name>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <CfgPath>$(Configuration)_$(Platform)</CfgPath>

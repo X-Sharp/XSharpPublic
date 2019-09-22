@@ -85,12 +85,12 @@ FUNCTION Ansi2OemBuff(pszTarget AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 
 
 
-	/// <inheritdoc cref="M:XSharp.Core.Functions.Time()" />"
+	/// <inheritdoc cref="M:XSharp.Core.Functions.Time" />"
     /// <include file="RTComments.xml" path="Comments/PSZ/*" />
 	FUNCTION TimePsz() AS PSZ
 		RETURN String2Psz(Time())
 
-    /// <inheritdoc cref="M:XSharp.Core.Functions.Time24()" />"
+    /// <inheritdoc cref="M:XSharp.Core.Functions.Time24" />"
     /// <include file="RTComments.xml" path="Comments/PSZ/*" />
 	FUNCTION TimePsz24() AS PSZ
 		RETURN String2Psz(Time24())

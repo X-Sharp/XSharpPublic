@@ -5,24 +5,24 @@
 USING XSharp.RDD
 using System.IO
 using System.Threading
+    
+   
 
-
-
-[STAThread];
+[STAThread];     
 FUNCTION Start() AS VOID
-    TRY
-        TestTimeStamp()
-        //TestSeek()
+    TRY    
+        //TestTimeStamp()
+        //TestSeek()    
         //testDbfEncoding()
         //testDateInc()
         //TestEmptyDbf()
-        //TestAnotherOrdScope()
+        TestAnotherOrdScope()
         //TestFileGarbage()
-        //TestPackNtx()
+        //TestPackNtx()  
         //TestZapNtx()
         //TestNullDate()
         //TestZap3()
-        //SetNatDLL("TURKISH")
+        //SetNatDLL("TURKISH")    
         //TestZap2()
         //TestPack2()
         //DbSeekTest()
@@ -32,7 +32,7 @@ FUNCTION Start() AS VOID
         //FrankM()
         //Ticket118a()
         //Ticket118()
-        //Ticket120()
+        //Ticket120()   
         //Ticket103a()
         //Ticket103()
         //Ticket119()
@@ -222,14 +222,17 @@ FUNCTION TestAnotherOrdScope() AS VOID
 	DbCreateIndex(cDbf,"Upper(LAST)")
 	
 	LOCAL aValues AS ARRAY
+    FOR var test := 1 to 1000
 	aValues := {"A", "DD", "BBB", "CC", "EEE", "DDD", "AA", "CC", "BBB", "EEE1"}
 	FOR LOCAL n := 1 AS DWORD UPTO ALen(aValues)
 		DbAppend()
 		FieldPut(1,aValues[n])
 	NEXT
+    NEXT
 
-	? OrdScope(TOPSCOPE, "A")
-	? OrdScope(BOTTOMSCOPE, "C")
+	//? OrdScope(TOPSCOPE, "A")
+	//? OrdScope(BOTTOMSCOPE, "C")
+    DbOrderInfo(DBOI_USER+42)
 
 	// following is OK
 	DbGoTop()

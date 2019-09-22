@@ -397,7 +397,7 @@ FUNCTION PadL( uValue AS USUAL, nLength AS DWORD, cFillChar := " " AS STRING ) A
 FUNCTION PadR( uValue AS USUAL, nLength AS DWORD, cFillChar := " " AS STRING ) AS STRING
     RETURN PadR( uValue, (INT) nLength, cFillChar )
 
-/// <inheritdoc cref="M:XSharp.RT.Functions.PadR(XSharp.__Usual,System.Int32,System.String)" />
+/// <inheritdoc cref="M:XSharp.RT.Functions.PadR(XSharp.__Usual,System.UInt32,System.String)" />
 FUNCTION PadR( uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING ) AS STRING
     // If they send in an empty string then change to " "
     IF cFillChar == NULL .OR. cFillChar:Length == 0

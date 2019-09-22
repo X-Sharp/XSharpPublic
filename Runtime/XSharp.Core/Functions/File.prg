@@ -682,7 +682,7 @@ FUNCTION FWrite( pFile AS IntPtr, c AS STRING ) AS DWORD
 FUNCTION FWrite( ptrHandle AS IntPtr, cBuffer AS STRING, nBytes AS DWORD ) AS DWORD
 	RETURN FWrite( ptrHandle, cBuffer, nBytes, TRUE)
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FWrite(System.IntPtr,System.String, System.UInt32)" />	
+/// <inheritdoc cref="M:XSharp.Core.Functions.FWrite(System.IntPtr,System.String,System.UInt32)" />	
 /// <param name="lAnsi">If FALSE an OEM to ANSI conversion is made. </param>
 FUNCTION FWrite( ptrHandle AS IntPtr, cBuffer AS STRING, nBytes AS DWORD, lAnsi AS LOGIC) AS DWORD
 	RETURN (DWORD) XSharp.IO.File.write(ptrHandle, cBuffer, (INT) nBytes, lAnsi)

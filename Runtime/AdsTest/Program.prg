@@ -7,15 +7,28 @@ FUNCTION MyThrow(e as Exception)
     THROW e
 
 function Start as void
+    TRY
     DbUseArea(TRUE,"AXDBFCDX","c:\download\test\adssql\TagMenu","TagMenu",TRUE,FALSE)
+    DbSetIndex("c:\download\test\adssql\TagMenu1")
+    DbSetIndex("c:\download\test\adssql\TagMenu2")
+    ? DbSetOrder(0)
+    ? DbGoTop()
+    ? "before", Recno()
+    ? DbSetOrder("DATUM")
+    ? "after",Recno()
+    ? DbSetOrder(1)
+    ? "after",Recno()
     ?  TagMenu->(DbOrderInfo(DBOI_ORDERCOUNT))
     ?  TagMenu->(DbOrderInfo(DBOI_NAME,,1))
     ?  TagMenu->(DbOrderInfo(DBOI_EXPRESSION,,1))
     ? TagMenu->(DbAppend())
     ? TagMenu->(Rlock())
     ? TagMenu->(DbUnlock())
-    WAIT
     DbCloseArea()
+    CATCH e AS Exception
+        ? e:ToString()
+    END TRY
+    WAIT
     RETURN
 function StartSql() as void
 	local cPath			as string      

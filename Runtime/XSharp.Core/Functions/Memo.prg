@@ -460,5 +460,5 @@ FUNCTION _MPosToLc(cMemo AS STRING,nLineLen AS DWORD,nPos AS DWORD,nTabSize := M
 	RETURN MemoHelpers.MPosToLc(cMemo, (INT) nLineLen, (INT) nPos, (INT) nTabSize, lWrap)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mlctopos/*" />
-FUNCTION MLcToPos( cText AS STRING, nWidth AS DWORD, nLine AS DWORD, nCol AS DWORD, nTabSize AS DWORD, lWrap AS LOGIC) AS DWORD CLIPPER
+FUNCTION MLcToPos( cText AS STRING, nWidth AS DWORD, nLine AS DWORD, nCol AS DWORD, nTabSize AS DWORD, lWrap AS LOGIC) AS DWORD 
 	RETURN MemoHelpers.MLcToPos(cText, (INT) nWidth, (INT) nLine, (INT) nCol, (INT) nTabSize, lWrap)

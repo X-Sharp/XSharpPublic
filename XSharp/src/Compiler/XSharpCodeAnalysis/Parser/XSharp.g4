@@ -1044,12 +1044,14 @@ literalValue        : Token=
                     | NULL_SYMBOL )
                     ;
 
-
+                     
 keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST | CLASS | DLL | DO 
                     | ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FOR | FUNCTION 
                     | HIDDEN | IF | IIF | IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE
                     | PRIVATE | PROCEDURE | PROTECTED | PTR | PUBLIC | RECOVER | RETURN | SELF| SIZEOF | SUPER
                     | TYPEOF | WHILE | TRY | VO_AND | VO_NOT | VO_OR | VO_XOR
+                    // The following new keywords cannot be in the keywordxs list because it will match an expression when used on their own
+                    | REPEAT | CONSTRUCTOR | CATCH | DESTRUCTOR | FINALLY 
                     )
                     ;
 
@@ -1067,9 +1069,10 @@ keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS |
                     | FASTCALL | IN | INIT1 | INIT2 | INIT3 | INSTANCE | PASCAL |  SEQUENCE 
                     | STEP | STRICT | TO | THISCALL |  UPTO | USING | WINCALL 
                     // The following keywords are handled in the fixPositionalKeyword() method of the lexer and will only be keywords at the right place
-                    // DEFINE | TRY | SWITCH | EVENT| EXPLICIT | FOREACH | FINALLY | CATCH | REPEAT | UNTIL | PARAMETERS | YIELD | MEMVAR | NOP | CONSTRUCTOR | DESTRUCTOR |
-                    // PARTIAL | SEALED | ABSTRACT | UNSAFE | SCOPE | NAMESPACE | LOCK | IMPLICIT | IMPLIED | INITONLY | PROPERTY | INTERFACE |
-                    // VOSTRUCT | UNION | DECLARE | OPERATOR	| 
+                    // but when they code event->(DoSomething()) we still need them in this rule...
+                    | DEFINE | TRY | SWITCH | EVENT| EXPLICIT | FOREACH | UNTIL | PARAMETERS | YIELD | MEMVAR | NOP 
+                    | PARTIAL | SEALED | ABSTRACT | UNSAFE | SCOPE | NAMESPACE | LOCK | IMPLICIT | IMPLIED | INITONLY | PROPERTY | INTERFACE
+                    | VOSTRUCT | UNION | DECLARE | OPERATOR	
                     )
                     ;
 					

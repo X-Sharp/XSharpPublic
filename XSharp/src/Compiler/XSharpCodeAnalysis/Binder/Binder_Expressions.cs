@@ -169,10 +169,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 bool numericParams = false;
                 bool mustcast = false;
                 HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-                if (cf == usualType
+                if (cf != arrayType && (cf == usualType
                     || cf.ConstructedFrom == arrayBaseType
                     || cf.ImplementsInterface(indexedPropsType, ref useSiteDiagnostics)
-                    || cf.ImplementsInterface(indexerType, ref useSiteDiagnostics))
+                    || cf.ImplementsInterface(indexerType, ref useSiteDiagnostics)))
                 {
                     // Index operator on USUAL then we convert the usual to an array or indexer first
 
@@ -427,13 +427,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                     bool isObject = leftType.IsObjectType();
                     bool isUsual = false;
                     bool isArray = false;
+                    NamedTypeSymbol usualType = Compilation.UsualType();
+                    NamedTypeSymbol arrayType = Compilation.ArrayType();
                     if (! isObject)
                     {
                         if (leftType is NamedTypeSymbol)
                         {
                             var nts = leftType as NamedTypeSymbol;
-                            isUsual = nts.ConstructedFrom == Compilation.UsualType();
-                            isArray = nts.ConstructedFrom == Compilation.ArrayType();
+                            isUsual = nts.ConstructedFrom == usualType;
+                            isArray = nts.ConstructedFrom == arrayType;
                         }
                     }
                     // Late bound will only work for OBJECT or USUAL
@@ -445,8 +447,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                             // When method does not exist then do a late bound ASend()
                             if (Compilation.Options.Dialect.AllowASend())
                             {
-                                var m = Compilation.ArrayType().GetMembers(propName);
+                                var m = arrayType.GetMembers(propName);
                                 earlyBound = m.Length > 0;
+                                if (! earlyBound && Compilation.Options.XSharpRuntime)
+                                {
+                                    m = arrayType.BaseTypeNoUseSiteDiagnostics.GetMembers(propName);
+                                    earlyBound = m.Length > 0;
+                                }
                             }
                             else
                             {
@@ -456,7 +463,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         else if (isUsual)
                         {
                             // USUAL._NIL and USUAL.ToObject()
-                            var m = Compilation.UsualType().GetMembers(propName);
+                            var m = usualType.GetMembers(propName);
                             if (m.Length > 0 && m[0].IsStatic)
                                 earlyBound |= true;
                         }

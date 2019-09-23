@@ -135,9 +135,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             switch (dialect)
             {
                 case XSharpDialect.Core:
-                case XSharpDialect.Vulcan:
                     return false;
                 case XSharpDialect.VO:
+                case XSharpDialect.Vulcan:
                 case XSharpDialect.Harbour:
                 case XSharpDialect.XPP:
                 case XSharpDialect.FoxPro:

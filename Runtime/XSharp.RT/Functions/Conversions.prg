@@ -298,8 +298,6 @@ FUNCTION DescendA(uValue REF USUAL) AS USUAL
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ntrim/*" />
-/// <seealso cref='M:XSharp.Core.Functions.LTrim(System.String)'>LTrim</seealso>
-/// <seealso cref='M:XSharp.RT.Functions.Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>Str</seealso>
 FUNCTION NTrim(nNum AS USUAL) AS STRING
     LOCAL ret AS STRING
     SWITCH nNum:_UsualType
@@ -318,9 +316,6 @@ FUNCTION NTrim(nNum AS USUAL) AS STRING
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/pad/*" />
-/// <seealso cref="M:XSharp.RT.Functions.PadR(XSharp.__Usual,System.Int32,System.String)" />
-/// <seealso cref="M:XSharp.RT.Functions.PadC(XSharp.__Usual,System.Int32,System.String)" />
-/// <seealso cref="M:XSharp.RT.Functions.PadL(XSharp.__Usual,System.Int32,System.String)" />
 FUNCTION Pad( uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING ) AS STRING
     RETURN PadR( uValue, nLength, cFillChar )
 
@@ -330,9 +325,6 @@ FUNCTION Pad( uValue AS USUAL, nLength AS DWORD, cFillChar := " " AS STRING ) AS
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/padc/*" />
-/// <seealso cref="M:XSharp.RT.Functions.PadR(XSharp.__Usual,System.Int32,System.String)" />
-/// <seealso cref="M:XSharp.RT.Functions.PadL(XSharp.__Usual,System.Int32,System.String)" />
-/// <seealso cref="M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)" />
 FUNCTION PadC( uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING ) AS STRING
     // If they send in an empty string then change to " "
     IF cFillChar == NULL .OR. cFillChar :Length == 0
@@ -367,9 +359,6 @@ FUNCTION PadC( uValue AS USUAL, nLength AS DWORD, cFillChar := " " AS STRING ) A
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/padl/*" />
-/// <seealso cref="M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)" />
-/// <seealso cref="M:XSharp.RT.Functions.PadR(XSharp.__Usual,System.Int32,System.String)" />
-/// <seealso cref="M:XSharp.RT.Functions.PadC(XSharp.__Usual,System.Int32,System.String)" />
 FUNCTION PadL( uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING ) AS STRING
     // If they send in an empty string then change to " "
     IF cFillChar == NULL .OR. cFillChar :Length == 0
@@ -391,9 +380,6 @@ FUNCTION PadL( uValue AS USUAL, nLength AS DWORD, cFillChar := " " AS STRING ) A
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/padr/*" />
-/// <seealso cref="M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)" />
-/// <seealso cref="M:XSharp.RT.Functions.PadL(XSharp.__Usual,System.Int32,System.String)" />
-/// <seealso cref="M:XSharp.RT.Functions.PadC(XSharp.__Usual,System.Int32,System.String)" />
 FUNCTION PadR( uValue AS USUAL, nLength AS DWORD, cFillChar := " " AS STRING ) AS STRING
     RETURN PadR( uValue, (INT) nLength, cFillChar )
 
@@ -414,18 +400,6 @@ FUNCTION PadR( uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING ) AS 
     RETURN IIF( ret:Length > nLength, ret:Remove( nLength ), ret:PadRight( nLength, cFillChar[0] ) )
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/str/*" />
-/// <seealso cref="M:XSharp.RT.Functions.NTrim(XSharp.__Usual)" />
-/// <seealso cref="M:XSharp.RT.Functions.Str1(XSharp.__Usual)" />
-/// <seealso cref="M:XSharp.RT.Functions.Str2(XSharp.__Float,System.UInt32)" />
-/// <seealso cref="M:XSharp.RT.Functions.Str3(XSharp.__Float,System.UInt32,System.UInt32)" />
-/// <seealso cref="M:XSharp.RT.Functions.StrLong(System.Int32,System.UInt32,System.UInt32)" />
-/// <seealso cref="M:XSharp.RT.Functions.StrFloat(XSharp.__Float,System.UInt32,System.UInt32)" />
-/// <seealso cref="M:XSharp.Core.Functions.SetDigit(System.UInt32)" />
-/// <seealso cref="M:XSharp.Core.Functions.SetDigitFixed(System.Boolean)" />
-/// <seealso cref="M:XSharp.Core.Functions.SetDecimalSep(System.UInt32)" />
-/// <seealso cref="M:XSharp.Core.Functions.SetScience(System.Boolean)" />
-/// <seealso cref="M:XSharp.RT.Functions.Transform(XSharp.__Usual,System.String)" />
-/// <seealso cref="M:XSharp.RT.Functions.Val(System.String)" />
 FUNCTION Str(nNumber ,nLength ,nDecimals ) AS STRING CLIPPER
     IF PCount() < 1 .OR. pCount() > 3
         RETURN ""
@@ -746,7 +720,6 @@ FUNCTION StrToFloat(c AS STRING) AS FLOAT
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/val/*" />
-/// <seealso cref="M:XSharp.RT.Functions.Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)" />
 FUNCTION Val(cNumber AS STRING) AS USUAL
     RETURN _VOVal(AllTrim(cNumber))
 

@@ -221,7 +221,7 @@ CLASS XSharp.CoreDb
         /// <seealso cref="O:XSharp.RT.Functions.VoDbBlobInfo" >VoDbBlobInfo overloads </seealso>
         /// <seealso cref="O:XSharp.VoDb.BlobInfo" >BlobInfo overloads in VoDb</seealso>
         /// <seealso cref="O:XSharp.CoreDb.BlobInfo" >BlobInfo overloads in CoreDb</seealso>
-        
+         
     STATIC METHOD BlobInfo(nOrdinal AS DWORD,nPos AS DWORD,oRet AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         RETURN CoreDb.BlobInfo(nOrdinal, nPos, REF oRet)

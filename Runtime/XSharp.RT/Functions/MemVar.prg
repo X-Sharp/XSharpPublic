@@ -20,7 +20,6 @@ FUNCTION MemVarBlock(cMemvarName AS STRING) AS OBJECT
     
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memvarget/*" />
-/// <seealso cref='M:XSharp.RT.Functions.VarGet(System.String)' >VarGet</seealso>
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION MemVarGet(cVarName AS STRING) AS USUAL
     RETURN XSharp.MemVar.Get(cVarName)
@@ -28,7 +27,6 @@ FUNCTION MemVarGet(cVarName AS STRING) AS USUAL
     
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memvarput/*" />
-/// <seealso cref='M:XSharp.RT.Functions.VarPut(System.String,XSharp.__Usual)' >VarPut</seealso>
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION MemVarPut(cVarName AS STRING,uValue AS USUAL) AS USUAL
     RETURN XSharp.MemVar.Put(cVarName, uValue) 
@@ -61,14 +59,12 @@ FUNCTION MemVarRelease(symVar AS STRING) AS VOID
 
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/varget/*" />
-/// <seealso cref='M:XSharp.RT.Functions.MemVarGet(System.String)' >MemVarGet</seealso>
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION VarGet(cVarName AS STRING) AS USUAL
     RETURN __VarGet(cVarName)
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/varput/*" />    
-/// <seealso cref='M:XSharp.RT.Functions.MemVarPut(System.String,XSharp.__Usual)' >MemVarPut</seealso>
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION VarPut(cVarName AS STRING,uValue AS USUAL) AS USUAL
     RETURN __VarPut(cVarName, uValue)

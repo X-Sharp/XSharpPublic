@@ -270,14 +270,10 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
    RETURN sbRet:ToString()
 
 /// <inheritdoc cref="M:XSharp.RT.Functions.SubStr(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)" />
-/// <seealso cref='M:XSharp.RT.Functions.SubStr(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' />
-/// <seealso cref='M:XSharp.Core.Functions.SubStr3(System.String,System.UInt32,System.UInt32)' />
 FUNCTION SubS(cTarget ,nStart ,nCount ) AS STRING CLIPPER
 	RETURN SubStr(cTarget, nStart, nCount)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/substr/*" />
-/// <seealso cref='M:XSharp.Core.Functions.SubStr3(System.String,System.UInt32,System.UInt32)' />
-/// <seealso cref='M:XSharp.RT.Functions.SubS(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' />
 FUNCTION SubStr(cTarget ,nStart ,nCount ) AS STRING CLIPPER
 	IF ! cTarget:IsString
 		THROW Error.ArgumentError(__FUNCTION__, NAMEOF(cTarget), 1, <OBJECT>{cTarget})

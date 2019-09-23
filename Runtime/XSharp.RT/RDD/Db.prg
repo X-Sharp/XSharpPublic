@@ -849,18 +849,13 @@ FUNCTION AFields(acFieldNames, acTypes, anWidths, anDecimals)  AS DWORD CLIPPER
     
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcopystruct/*" />   
-/// <seealso cref='M:XSharp.Core.Functions.SetAnsi(System.Boolean)'>SetAnsi</seealso>
-/// <seealso cref='M:XSharp.RT.Functions.DbCopyXStruct(System.String)'>DbCopyXStruct</seealso>
 FUNCTION DbCopyStruct(cTargetFile AS STRING, acStruct := NULL_ARRAY AS ARRAY) AS LOGIC STRICT
     RETURN DBCREATE(cTargetFile, VoDb.FieldList(DbStruct(), acStruct, NULL_ARRAY) )
 
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcopyxstruct/*" /> 
-/// <seealso cref='M:XSharp.Core.Functions.SetAnsi(System.Boolean)'>SetAnsi</seealso>
-/// <seealso cref='M:XSharp.RT.Functions.DbCopyStruct(System.String,XSharp.__Array)'>DbCopyStruct</seealso>
 FUNCTION DbCopyXStruct(cTargetFile AS STRING) AS LOGIC STRICT
-
     LOCAL siSaveSel,n,i AS DWORD
     LOCAL aStruct       AS ARRAY
     LOCAL lRetCode  := FALSE AS LOGIC

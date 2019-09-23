@@ -10,13 +10,11 @@ USING System.IO
 	
 		
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/evaluate/*" />
-/// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String)" />
 FUNCTION Evaluate(cString AS STRING) AS USUAL
 	RETURN Evaluate(cString, TRUE)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/evaluate/*" />	
 /// <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters.</param>
-/// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String,System.Boolean)" />
 FUNCTION Evaluate(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS USUAL
 	LOCAL oMacro AS XSharp._Codeblock 
 	LOCAL uRes   AS USUAL
@@ -34,7 +32,6 @@ FUNCTION Evaluate(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS USUAL
 /// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._Codeblock in .Net.</note>
 /// <seealso cref="T:XSharp._Codeblock" />
 /// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String,System.Boolean)" />
-/// <seealso cref="M:XSharp.RT.Functions.MExec(XSharp.Codeblock)" />
 FUNCTION MCompile(cString AS STRING) AS XSharp._Codeblock
 	RETURN MCompile(cString, TRUE)
 
@@ -42,7 +39,6 @@ FUNCTION MCompile(cString AS STRING) AS XSharp._Codeblock
 /// <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters</param>
 /// <seealso cref="T:XSharp._Codeblock" />
 /// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String)" />
-/// <seealso cref="M:XSharp.RT.Functions.MExec(XSharp.Codeblock)" />
 FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Codeblock
 	
 	VAR oMC := XSharp.RuntimeState.MacroCompiler
@@ -65,7 +61,6 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mexec/*" />	
 /// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._Codeblock in .Net. Therefore the parameter of MExec is a Codeblock</note>
 /// <seealso cref="T:XSharp._Codeblock" />
-/// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String)" />
 /// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String,System.Boolean)" />
 FUNCTION MExec(cString AS CODEBLOCK) AS USUAL
 	IF cString:PCount() != -1

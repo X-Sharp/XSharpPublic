@@ -13,49 +13,33 @@ INTERNAL STATIC CLASS ConversionHelpers
         usCulture := CultureInfo{"en-US"}
 END CLASS
 
-/// <summary>
-/// Convert a string containing a 32-bit unsigned integer to a double word.
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-/// <seealso cref='M:XSharp.Core.Functions.W2Bin(System.UInt16)' >W2Bin</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.DW2Bin(System.UInt32)' >DW2Bin</seealso>
-FUNCTION Bin2DW(c AS STRING) AS DWORD
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/bin2dw/*" />
+FUNCTION Bin2DW(cUnsignedInt AS STRING) AS DWORD
     LOCAL dwResult := 0 AS DWORD
-    IF c!= NULL .AND. c:Length >= 4
+    IF cUnsignedInt!= NULL .AND. cUnsignedInt:Length >= 4
         LOCAL aBytes AS BYTE[]
         aBytes := BYTE[]{4}
-        aBytes[0] := (BYTE) _AND(c:Chars[0], 0xFF)
-        aBytes[1] := (BYTE) _AND(c:Chars[1], 0xFF)
-        aBytes[2] := (BYTE) _AND(c:Chars[2], 0xFF)
-        aBytes[3] := (BYTE) _AND(c:Chars[3], 0xFF)
+        aBytes[0] := (BYTE) _AND(cUnsignedInt:Chars[0], 0xFF)
+        aBytes[1] := (BYTE) _AND(cUnsignedInt:Chars[1], 0xFF)
+        aBytes[2] := (BYTE) _AND(cUnsignedInt:Chars[2], 0xFF)
+        aBytes[3] := (BYTE) _AND(cUnsignedInt:Chars[3], 0xFF)
         dwResult := BitConverter.ToUInt32(aBytes, 0)
     ENDIF
     RETURN dwResult
 
-/// <summary>
-/// Convert a string containing a 16-bit signed integer to a short integer.
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-/// <seealso cref='M:XSharp.Core.Functions.I2Bin(System.Int16)'>I2Bin</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.L2Bin(System.Int32)' >L2Bin</seealso>
-FUNCTION Bin2I(c AS STRING) AS SHORT
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/bin2i/*" />
+FUNCTION Bin2I(cSignedInt AS STRING) AS SHORT
     LOCAL siResult := 0 AS SHORT
-    IF c!= NULL .AND. c:Length >= 2
+    IF cSignedInt!= NULL .AND. cSignedInt:Length >= 2
         LOCAL aBytes AS BYTE[]
         aBytes := BYTE[]{2}
-        aBytes[0] := (BYTE) _AND(c:Chars[0], 0xFF)
-        aBytes[1] := (BYTE) _AND(c:Chars[1], 0xFF)
+        aBytes[0] := (BYTE) _AND(cSignedInt:Chars[0], 0xFF)
+        aBytes[1] := (BYTE) _AND(cSignedInt:Chars[1], 0xFF)
         siResult := BitConverter.ToInt16(aBytes, 0)
     ENDIF
     RETURN siResult
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/bin2l/*" />
-/// <seealso cref='M:XSharp.Core.Functions.I2Bin(System.Int16)'>I2Bin</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.L2Bin(System.Int32)' >L2Bin</seealso>
 FUNCTION Bin2L(cSignedInt AS STRING) AS LONG
     LOCAL liResult := 0 AS LONG
     IF cSignedInt!= NULL .AND. cSignedInt:Length >= 4
@@ -71,8 +55,6 @@ FUNCTION Bin2L(cSignedInt AS STRING) AS LONG
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/bin2logic/*" />
-/// <seealso cref='M:XSharp.Core.Functions.LTOC(System.Boolean)' >LTOC</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.Logic2Bin(System.Boolean)' >Logic2Bin</seealso>
 FUNCTION Bin2Logic(pszLogical AS STRING) AS LOGIC
     RETURN pszLogical != NULL .AND. pszLogical[0] != 0
 
@@ -101,9 +83,6 @@ FUNCTION Bin2Ptr(cPointer AS STRING) AS IntPtr
     ENDIF
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/bin2real4/*" />
-/// <seealso cref='M:XSharp.Core.Functions.Real42Bin(System.Single)' >Real42Bin</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.Real82Bin(System.Double)' >Real82Bin</seealso>
-
 FUNCTION Bin2Real4(cFloat AS STRING) AS REAL4
     LOCAL r4Result := 0 AS REAL4
     IF cFloat!= NULL .AND. cFloat:Length >= 4
@@ -119,8 +98,6 @@ FUNCTION Bin2Real4(cFloat AS STRING) AS REAL4
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/bin2real8/*" />
-/// <seealso cref='M:XSharp.Core.Functions.Real42Bin(System.Single)' >Real42Bin</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.Real82Bin(System.Double)' >Real82Bin</seealso>
 FUNCTION Bin2Real8(cFloat AS STRING) AS REAL8
     LOCAL r8Result := 0 AS REAL8
     IF cFloat!= NULL .AND. cFloat:Length >= 8
@@ -139,8 +116,6 @@ FUNCTION Bin2Real8(cFloat AS STRING) AS REAL8
     RETURN r8Result
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/bin2w/*" />
-/// <seealso cref='M:XSharp.Core.Functions.W2Bin(System.UInt16)' >W2Bin</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.DW2Bin(System.UInt32)' >DW2Bin</seealso>
 FUNCTION Bin2W(cUnsignedInt AS STRING) AS WORD
     LOCAL wResult := 0 AS WORD
     IF cUnsignedInt!= NULL .AND. cUnsignedInt:Length >= 2
@@ -169,7 +144,7 @@ FUNCTION CTOL(c AS STRING) AS LOGIC
             RETURN TRUE	
         ENDIF
     ENDIF
-    RETURN FALSE
+    RETURN FALSE 
 
 /// <summary>Convert a string value to a hexadecimal string.</summary>
 /// <param name="cSource">String to convert</param>
@@ -216,8 +191,6 @@ INTERNAL FUNCTION _bytes2String(byteArray AS BYTE[]) AS STRING
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dw2bin/*" />
-/// <seealso cref='M:XSharp.Core.Functions.Bin2W(System.String)' >Bin2W</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.Bin2DW(System.String)' >Bin2DW</seealso>
 FUNCTION DW2Bin(dwValue AS DWORD) AS STRING
     LOCAL byteArray := BitConverter.GetBytes( dwValue ) AS BYTE[]
     RETURN _bytes2String(byteArray)
@@ -242,7 +215,6 @@ FUNCTION I2Bin(siValue AS SHORT) AS STRING
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/l2bin/*" />
-/// <seealso cref='M:XSharp.Core.Functions.Bin2L(System.String)' >Bin2L</seealso>
 FUNCTION L2Bin(liValue AS LONG) AS STRING
     LOCAL byteArray := BitConverter.GetBytes( liValue ) AS BYTE[]
     RETURN _bytes2String(byteArray)
@@ -258,8 +230,6 @@ FUNCTION LoWord(dwValue AS DWORD) AS WORD
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/logic2bin/*" />
-/// <seealso cref='M:XSharp.Core.Functions.Bin2Logic(System.String)' >Bin2Logic</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.CTOL(System.String)' >CTOL</seealso>
 FUNCTION Logic2Bin(lValue AS LOGIC) AS STRING
     IF lValue
         RETURN e"\x0001"
@@ -269,8 +239,6 @@ FUNCTION Logic2Bin(lValue AS LOGIC) AS STRING
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ltoc/*" />
-/// <seealso cref='M:XSharp.Core.Functions.Bin2Logic(System.String)' >Bin2Logic</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.CTOL(System.String)' >CTOL</seealso>
 FUNCTION LTOC(lValue AS LOGIC) AS STRING
     IF lValue
         RETURN "T"
@@ -282,15 +250,11 @@ FUNCTION LTOC(lValue AS LOGIC) AS STRING
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/real42bin/*" />
-/// <seealso cref='M:XSharp.Core.Functions.Bin2Real8(System.String)' >Bin2Real8</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.Bin2Real4(System.String)' >Bin2Real4</seealso>
 FUNCTION Real42Bin(r4Value AS REAL4) AS STRING
     LOCAL byteArray := BitConverter.GetBytes( r4Value ) AS BYTE[]
     RETURN _bytes2String(byteArray)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/real82bin/*" />
-/// <seealso cref='M:XSharp.Core.Functions.Bin2Real8(System.String)' >Bin2Real8</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.Bin2Real4(System.String)' >Bin2Real4</seealso>
 FUNCTION Real82Bin(r8Value AS REAL8) AS STRING
     LOCAL byteArray := BitConverter.GetBytes( r8Value ) AS BYTE[]
     RETURN _bytes2String(byteArray)
@@ -298,18 +262,11 @@ FUNCTION Real82Bin(r8Value AS REAL8) AS STRING
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/w2bin/*" />
-/// <seealso cref='M:XSharp.Core.Functions.Bin2W(System.String)' >Bin2W</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.Bin2DW(System.String)' >Bin2DW</seealso>
 FUNCTION W2Bin(wValue AS WORD) AS STRING
     LOCAL byteArray := BitConverter.GetBytes( wValue ) AS BYTE[]
     RETURN _bytes2String(byteArray)
 
-/// <summary>
-/// Convert a string containing a numeric value to a numeric data type.
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/val/*" />
 FUNCTION _Val(cNumber AS STRING) AS OBJECT
     IF String.IsNullOrEmpty(cNumber)
       RETURN 0

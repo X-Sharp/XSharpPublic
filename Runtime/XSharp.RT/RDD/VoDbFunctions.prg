@@ -111,7 +111,7 @@ FUNCTION VoDbContinue() AS LOGIC
 /// <br/> <br/> <note type="tip">The difference between VoDbCreate and CoreDb.Create is that VoDbCreate takes a ARRAY parameter</note></remarks>
 FUNCTION VoDbCreate( cName AS STRING, aStruct AS ARRAY, cRddName AS STRING, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
     RETURN VoDb.Create(cName, VoDb.ArrayToFieldInfo(aStruct), cRddName, lNew, cAlias, cDelim, lKeep, lJustOpen)  
-
+     
 /// <inheritdoc cref="M:XSharp.CoreDb.Create(System.String,XSharp.RDD.Support.RddFieldInfo[],System.Type,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
 /// <param name="aStruct">Array with structure to use when creating the file.</param>
 /// <param name="oRddType">Type of the RDDs to use when creating the file</param>

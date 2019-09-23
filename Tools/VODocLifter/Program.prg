@@ -1,12 +1,21 @@
-﻿USING System
+USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
 using SYstem.Xml
+using System.Reflection
+
+global oCore as Assembly
+global oRT   as Assembly
+global oVO   as Assembly
+
 BEGIN NAMESPACE ConsoleApplication8
 
 	FUNCTION Start() AS VOID STRICT
         local oRdr := VoDocReader{} as VoDocReader
+        oCore  := System.Reflection.Assembly.LoadFrom("c:\XSharp\DevRt\Binaries\Documentation\XSharp.Core.dll")
+        oRT    := System.Reflection.Assembly.LoadFrom("c:\XSharp\DevRt\Binaries\Documentation\XSharp.RT.dll")
+        oVO    := System.Reflection.Assembly.LoadFrom("c:\XSharp\DevRt\Binaries\Documentation\XSharp.VO.dll")
         oRdr:Read()
 	
 END NAMESPACE 
@@ -25,6 +34,7 @@ CLASS VoDocReader
     protect Notes as List<String>
     protect Syntax as List<String>
     protect Examples as List<String>
+    protect SeeAlso as List<String>
     protect output as stringBuilder
     protect inCode as LOGIC
     CONSTRUCTOR()
@@ -56,6 +66,7 @@ CLASS VoDocReader
         Notes       := List<String>{}
         Syntax      := List<String>{}
         Examples    := List<String>{}
+        SeeAlso     := List<String>{}
         CurrentLines := Title
         oDoc:Load(reader)
         reader:Close()
@@ -70,15 +81,19 @@ CLASS VoDocReader
         foreach var sLine in Notes
             if sLine != "<br/>"
                 if (! hasNotes)
-                    Description:Add("<h2>Notes</h2>")
+                    Description:Add(e"<note type=\"tip\">")
                     hasNotes := true
                 endif
                 Description:Add(sLine)
             endif
         next
+        if (hasNotes)
+            Description:Add("</note>")
+        endif
         DumpSection(Description,"remarks")
         //DumpSection("Syntax", Syntax,"")
         DumpSection(Examples,"example")
+        DumpSection(Seealso,"")
         output:AppendLine("</"+sFile+">")
 
         
@@ -102,6 +117,10 @@ CLASS VoDocReader
         local lCode := FALSE as LOGIC
         if oNode:ChildNodes:Count > 0
             foreach oText as XmlNode in oNode:ChildNodes
+                if oText:Name == "link"
+                    // Process see also and other links later
+                    NOP
+                endif
                 if oText:Name == "tab"
                     cLine += "&#0009;"
                 endif
@@ -125,6 +144,9 @@ CLASS VoDocReader
                                     CurrentLines := Examples
                                 case "prototype"
                                     CurrentLines := Syntax
+                                case "seealso"
+                                case "see also"
+                                    CurrentLines := SeeAlso
                             end switch
                         case "Normal"
                             cLine += oText:InnerXML
@@ -159,6 +181,59 @@ CLASS VoDocReader
         local aTemp as List<String>
         local lHasCode := FALSE as LOGIC
         aTemp := List<string>{}
+        if (lines == SeeAlso)
+            foreach var c in Lines
+                var aElements := c:Split(',',StringSplitOptions.RemoveEmptyEntries)
+                foreach var s in aElements
+                    var sElement := s:Trim():Replace("()","")
+                    var type := oVO:GetType("XSharp.VO.Functions")
+                    var funcs := type:GetMember(sElement,BindingFlags.IgnoreCase+BindingFlags.Static+BindingFlags.Public)
+                    if funcs:Length == 0
+                        type := oRT:GetType("XSharp.RT.Functions")
+                        funcs := type:GetMember(sElement,BindingFlags.IgnoreCase+BindingFlags.Static+BindingFlags.Public)
+                    endif
+                    if funcs:Length == 0
+                        type := oCore:GetType("XSharp.Core.Functions")
+                        funcs := type:GetMember(sElement,BindingFlags.IgnoreCase+BindingFlags.Static+BindingFlags.Public)
+                    endif
+                    if funcs:Length > 1
+                        local proto as string
+                        // /// <seealso cref='M:XSharp.Core.Functions.L2Bin(System.Int32)' >L2Bin</seealso>
+                        proto := "O:"+type:FullName+"."+funcs[1]:Name
+                        var sLine := "<seealso cref='"+proto+"'>"+sElement+" Overload</seealso>"
+                        output:AppendLine(sLine)
+                    elseif funcs:Length == 1
+                        local funcinfo := (System.Reflection.MethodInfo) funcs[1] as System.Reflection.MethodInfo
+                        local proto as string
+                        // /// <seealso cref='M:XSharp.Core.Functions.L2Bin(System.Int32)' >L2Bin</seealso>
+                        proto := "M:"+type:FullName+"."+funcinfo:Name
+                        var pars := funcinfo:GetParameters()
+                        if pars:Length > 0
+                            proto += "("
+                            local first := true as logic
+                            foreach p as ParameterInfo in pars
+                                if ! first
+                                    proto += ","
+                                endif
+                                var partype := p:ParameterType:FullName
+                                if !String.IsNullOrEmpty(partype)
+                                    partype := partype:Replace("&","@")
+                                    proto += partype
+                                endif
+                                first := false
+                            next
+                            proto += ")"
+                        endif
+                        var sLine := "<seealso cref='"+proto+"'>"+sElement+"</seealso>"
+                        output:AppendLine(sLine)
+                    else
+                        var sLine := "<seealso>"+sElement:Trim()+"</seealso>"
+                        output:AppendLine(sLine)
+                    endif
+                next
+            next
+            RETURN
+        endif
         IF ! String.IsNullOrEmpty(tag)
             output:AppendLine("<"+tag+">")
             foreach var c in lines

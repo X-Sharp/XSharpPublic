@@ -9,9 +9,6 @@ USING System.Text
 INTERNAL GLOBAL trimChars := <CHAR>{ ' ' } AS CHAR[]
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/alltrim/*" />
-/// <seealso cref='M:XSharp.Core.Functions.Trim(System.String)' />
-/// <seealso cref='M:XSharp.Core.Functions.RTrim(System.String)' />
-/// <seealso cref='M:XSharp.Core.Functions.LTrim(System.String)' />
 /// <returns>A trimmed string, with leading and trailing spaces removed.</returns>
 FUNCTION AllTrim(cString AS STRING) AS STRING
 	IF ( cString == NULL )
@@ -395,8 +392,6 @@ FUNCTION Left(cString AS STRING, dwCount AS DWORD) AS STRING
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lower/*" />
-/// <seealso cref='M:XSharp.Core.Functions.LowerA(System.String@)'>LowerA</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.Upper(System.String)'>Upper</seealso>
 FUNCTION Lower(cString AS STRING) AS STRING
 	IF cString != NULL
 		cString := cString:ToLower()
@@ -404,7 +399,6 @@ FUNCTION Lower(cString AS STRING) AS STRING
 	RETURN cString
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lowera/*" />
-/// <seealso cref='M:XSharp.Core.Functions.Lower(System.String)'>Lower</seealso>
 FUNCTION LowerA(cString REF STRING) AS STRING
 	IF cString != NULL
 		cString := cString:ToLower()
@@ -412,9 +406,6 @@ FUNCTION LowerA(cString REF STRING) AS STRING
 	RETURN cString
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ltrim/*" />
-/// <seealso cref='M:XSharp.Core.Functions.RTrim(System.String)' />
-/// <seealso cref='M:XSharp.Core.Functions.Trim(System.String)' />
-/// <seealso cref='M:XSharp.Core.Functions.AllTrim(System.String)' />
 FUNCTION LTrim(cString AS STRING) AS STRING
 	IF (cString == NULL)
 		RETURN cString
@@ -456,10 +447,7 @@ FUNCTION Occurs3(cSearch AS STRING,cTarget AS STRING,dwOffset AS DWORD) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ansi2oem/*" />
 /// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
-/// <seealso cref="O:XSharp.Core.Functions.Ansi2OemA" />
 /// <seealso cref="M:XSharp.Core.Functions.Ansi2OemBuff(System.Byte[],System.Byte[],System.UInt32)" />
-/// <seealso cref="O:XSharp.Core.Functions.Oem2Ansi" />
-/// <seealso cref="O:XSharp.Core.Functions.Oem2AnsiA" />
 FUNCTION Ansi2Oem(cAnsiString AS STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -492,10 +480,7 @@ FUNCTION Ansi2Oem(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 /// </overloads>
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ansi2oema/*" />
 /// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
-/// <seealso cref="O:XSharp.Core.Functions.Ansi2Oem" />
 /// <seealso cref="M:XSharp.Core.Functions.Ansi2OemBuff(System.Byte[],System.Byte[],System.UInt32)" />
-/// <seealso cref="O:XSharp.Core.Functions.Oem2Ansi" />
-/// <seealso cref="O:XSharp.Core.Functions.Oem2AnsiA" />
 FUNCTION Ansi2OemA(cAnsiString REF STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -526,9 +511,6 @@ FUNCTION Ansi2OemA(bSource AS BYTE[]) AS VOID
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/oem2ansi/*" />
 /// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
 /// <seealso cref="M:XSharp.Core.Functions.Oem2AnsiBuff(System.Byte[],System.Byte[],System.UInt32)" />
-/// <seealso cref="O:XSharp.Core.Functions.Ansi2Oem" />
-/// <seealso cref="O:XSharp.Core.Functions.Ansi2OemA" />
-/// <seealso cref="O:XSharp.Core.Functions.Oem2AnsiA" />
 FUNCTION Oem2Ansi(cOemString AS STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -552,9 +534,6 @@ FUNCTION Oem2Ansi(bSource AS BYTE[]) AS BYTE[]
 /// </overloads>
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/oem2ansia/*" />
 /// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
-/// <seealso cref="O:XSharp.Core.Functions.Ansi2Oem" />
-/// <seealso cref="O:XSharp.Core.Functions.Ansi2OemA" />
-/// <seealso cref="O:XSharp.Core.Functions.Oem2Ansi" />
 FUNCTION Oem2AnsiA(cOemString REF STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -605,7 +584,6 @@ INTERNAL _DLL FUNCTION OemToCharBuffA( lpszSrc AS BYTE[], lpszDst AS BYTE[], cch
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/proper/*" />
-/// <seealso cref="M:XSharp.Core.Functions.ProperA(System.String@)" />
 FUNCTION Proper(cText AS STRING) AS STRING
 	LOCAL sb AS StringBuilder
 	LOCAL inside AS LOGIC
@@ -633,7 +611,6 @@ FUNCTION Proper(cText AS STRING) AS STRING
 	RETURN cText
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/propera/*" />
-/// <seealso cref="M:XSharp.Core.Functions.Proper(System.String)" />
 FUNCTION ProperA(cName REF STRING) AS STRING
 	cName := Proper(cName)
 	RETURN cName
@@ -649,9 +626,6 @@ FUNCTION QPEncString(cIn AS STRING) AS STRING
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rat/*" />
-/// <seealso cref="M:XSharp.Core.Functions.RAt3(System.String,System.String,System.UInt32)" />
-/// <seealso cref="M:XSharp.Core.Functions.RAt2(System.String,System.String)" />
-/// <seealso cref="M:XSharp.Core.Functions.RAt(System.String,System.String)" />
 FUNCTION RAt(cSearch AS STRING,cTarget AS STRING) AS DWORD
 	LOCAL rightMost := 0 AS DWORD
 	IF cSearch != NULL .AND. cTarget != NULL
@@ -726,9 +700,6 @@ FUNCTION Right(cString AS STRING,dwCount AS DWORD) AS STRING
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rtrim/*" />
-/// <seealso cref='M:XSharp.Core.Functions.LTrim(System.String)' />
-/// <seealso cref='M:XSharp.Core.Functions.Trim(System.String)' />
-/// <seealso cref='M:XSharp.Core.Functions.AllTrim(System.String)' />
 FUNCTION RTrim(cString AS STRING) AS STRING
 	IF ( cString == NULL )
 		RETURN cString
@@ -896,9 +867,6 @@ FUNCTION SubStr3(cTarget AS STRING,dwStart AS DWORD,dwLen AS DWORD) AS STRING
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/trim/*" />
-/// <seealso cref='M:XSharp.Core.Functions.RTrim(System.String)' />
-/// <seealso cref='M:XSharp.Core.Functions.LTrim(System.String)' />
-/// <seealso cref='M:XSharp.Core.Functions.AllTrim(System.String)' />
 FUNCTION Trim(cString AS STRING) AS STRING
 	IF ( cString == NULL )
 		RETURN cString
@@ -908,8 +876,6 @@ FUNCTION Trim(cString AS STRING) AS STRING
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/upper/*" />
-/// <seealso cref='M:XSharp.Core.Functions.UpperA(System.String@)'>UpperA</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.Lower(System.String)'>Lower</seealso>
 FUNCTION Upper(cString AS STRING) AS STRING
 	IF cString != NULL
 		cString := cString:ToUpper()
@@ -918,9 +884,6 @@ FUNCTION Upper(cString AS STRING) AS STRING
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/uppera/*" />
-/// <returns>String with all alphabetical characters converted to uppercase.  All other characters remain the same as in the original string.</returns>
-/// <seealso cref='M:XSharp.Core.Functions.Upper(System.String)'>Upper</seealso>
-/// <remarks>UpperA() is similar to Upper() except that it changes the contents of the argument as well as the return value.  See Upper() for details.</remarks>
 FUNCTION UpperA(cString REF STRING) AS STRING
 	IF cString != NULL
 		cString := cString:ToUpper()
@@ -955,8 +918,6 @@ FUNCTION UUEncLine(c AS STRING) AS STRING
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isalpha/*" />
-/// <seealso cref='M:XSharp.Core.Functions.IsAlNum(System.String)'>IsAlNum</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.IsAlphaNum(System.String)'>IsAlphaNum</seealso>
 FUNCTION IsAlpha(pszString AS STRING) AS LOGIC
 	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( pszString )
@@ -965,8 +926,6 @@ FUNCTION IsAlpha(pszString AS STRING) AS LOGIC
 	RETURN ret
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isalnum/*" />
-/// <seealso cref='M:XSharp.Core.Functions.IsAlNum(System.String)'>IsAlpha</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.IsAlphaNum(System.String)'>IsAlphaNum</seealso>
 FUNCTION IsAlNum(pszString AS STRING) AS LOGIC
 	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( pszString )
@@ -984,8 +943,6 @@ FUNCTION IsAlphaNum(cSource AS STRING) AS LOGIC
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isdigit/*" />
-/// <seealso cref='M:XSharp.Core.Functions.IsBDigit(System.String)'>IsBDigit</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.IsXDigit(System.String)'>IsXDigit</seealso>
 FUNCTION IsDigit(pszString AS STRING) AS LOGIC
 	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( pszString )
@@ -994,8 +951,6 @@ FUNCTION IsDigit(pszString AS STRING) AS LOGIC
 	RETURN ret
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isbdigit/*" />
-/// <seealso cref='M:XSharp.Core.Functions.IsXDigit(System.String)'>IsXDigit</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.IsDigit(System.String)'>IsDigit</seealso>
 FUNCTION IsBDigit(pszString AS STRING) AS LOGIC
 	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( pszString )
@@ -1008,8 +963,6 @@ FUNCTION IsBDigit(pszString AS STRING) AS LOGIC
 	RETURN ret
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isxdigit/*" />
-/// <seealso cref='M:XSharp.Core.Functions.IsBDigit(System.String)'>IsBDigit</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.IsDigit(System.String)'>IsDigit</seealso>
 FUNCTION IsXDigit(pszString AS STRING) AS LOGIC
 	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( pszString )
@@ -1024,8 +977,6 @@ FUNCTION IsXDigit(pszString AS STRING) AS LOGIC
 	RETURN ret
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isspace/*" />
-/// <param name="cSource">The string to examine.</param>
-/// <returns>TRUE if the first character of the string blank otherwise FALSE.</returns>
 FUNCTION IsSpace(pszString AS STRING) AS LOGIC
 	LOCAL ret := FALSE AS LOGIC
 	switch (int) pszString[0]
@@ -1040,7 +991,6 @@ FUNCTION IsSpace(pszString AS STRING) AS LOGIC
 	RETURN ret
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isupper/*" />
-/// <seealso cref='M:XSharp.Core.Functions.IsLower(System.String)'>IsLower</seealso>
 FUNCTION IsUpper(pszString AS STRING) AS LOGIC
 	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( pszString )
@@ -1049,7 +999,6 @@ FUNCTION IsUpper(pszString AS STRING) AS LOGIC
 	RETURN ret
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/islower/*" />
-/// <seealso cref='M:XSharp.Core.Functions.IsUpper(System.String)'>IsUpper</seealso>
 FUNCTION IsLower(pszString AS STRING) AS LOGIC
 	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( pszString )

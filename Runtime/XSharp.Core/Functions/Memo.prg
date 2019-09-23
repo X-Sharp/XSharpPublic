@@ -386,7 +386,6 @@ FUNCTION MemoReadBinary(cFile AS STRING) AS BYTE[]
 	RETURN bResult
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memowrit/*" />	
-/// <seealso cref='M:XSharp.Core.Functions.MemoRead(System.String)' >MemoRead</seealso>
 /// <seealso cref='M:XSharp.Core.Functions.MemoWritBinary(System.String,System.Byte[])' >MemoWritBinary</seealso>
 FUNCTION MemoWrit(cFileName AS STRING,cString AS STRING) AS LOGIC
 	LOCAL lOk AS LOGIC

@@ -744,24 +744,11 @@ FUNCTION AdjustFNameA(cFileName REF STRING) AS STRING
 
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fcreate/*" />
-/// <remarks>
-/// The possible values for the file attributes are:
-/// <list type="table">
-/// <listheader>
-/// <term>Constant</term> <description>Description</description>
-/// </listheader>
-///	<item><term>FC_ARCHIVED</term><description>Archived file </description></item>  
-/// <item><term>FC_HIDDEN</term> <description>Hidden File</description></item>  
-/// <item><term>FC_NORMAL</term> <description>Normal Read/write file</description></item>   
-/// <item><term>FC_READONLY</term> <description>Readonly file</description></item>   
-/// <item><term>FC_SYSTEM</term> <description>System file</description></item> 
-/// </list>
-/// </remarks> 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fcreate2/*" />
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FCreate2(cFileName AS STRING,kAttributes AS DWORD) AS IntPtr
+FUNCTION FCreate2(cFileName AS STRING,dwAttributes AS DWORD) AS IntPtr
 	LOCAL oFileMode AS VOFileMode
-	oFileMode := VOFileMode{ FO_CREATE, kAttributes }
+	oFileMode := VOFileMode{ FO_CREATE, dwAttributes }
 	RETURN XSharp.IO.File.CreateFile(cFileName, oFileMode)
 
 
@@ -785,8 +772,6 @@ FUNCTION FOpen(cFileName AS STRING) AS IntPtr
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fopen/*" />
 /// <include file="CoreComments.xml" path="Comments/FileHandle/*" /><br/>
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-/// <seealso cref="M:XSharp.Core.Functions.FError" />
-/// <seealso cref="M:XSharp.Core.Functions.FException" />
 FUNCTION FOpen(cFileName AS STRING,kMode AS DWORD) AS IntPtr
 	RETURN FOpen2(cFileName, kMode)
 

@@ -155,10 +155,13 @@ FUNCTION TestAdvantageSeek() AS VOID
 	? XSharp.RDD.Functions.AX_SetServerType(FALSE,FALSE,TRUE)
 	? DbUseArea(,,cDbf)
 	OrdSetFocus("MYORDER")
-    OrdSetFocus(0)
 	TRY
+        ? "OrdName", OrdName()
+        ? "OrdKey", DbOrderInfo(DBOI_EXPRESSION)
+        DbGoTop()
+        ? "Key", DbOrderInfo(DBOI_KEYVAL)
 		? "DBSeek() returns:"
-		? DbSeek(cValue)
+		? DbSeek(padr(cValue,10))
 	CATCH e AS Exception
 		? "Exception occured!"
 		?

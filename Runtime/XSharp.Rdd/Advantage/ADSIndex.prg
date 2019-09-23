@@ -541,8 +541,9 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
                 SELF:_CheckError(ACE.AdsGetIndexHandle(SELF:Table, orderName, OUT hIndex),EG_ARG)
                 SELF:Index := hIndex
                 SELF:oRDD:RecordMovement()
+            ELSE
+                SELF:Index := IntPtr.Zero
             ENDIF
-            SELF:Index := IntPtr.Zero
         ELSE
             LOCAL orderNum := 0 AS WORD
             TRY
@@ -581,7 +582,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         LOCAL found AS WORD
         LOCAL Key AS STRING
         IF SELF:Index == System.IntPtr.Zero
-            SELF:oRDD:ADSERROR(ERDD.DATATYPE, XSharp.Gencode.EG_NOORDER, "Seek")
+            SELF:oRDD:ADSERROR(ERDD.OPEN_ORDER , XSharp.Gencode.EG_NOORDER, "Seek")
         ENDIF
         SELF:_CheckError(SELF:oRDD:_CheckVODeletedFlag(),EG_CORRUPTION)
         Key := seekinfo:value:ToString()

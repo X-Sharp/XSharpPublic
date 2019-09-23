@@ -83,7 +83,7 @@ INTERNAL METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS ST
 	LOCAL message AS CHAR[]
 	LOCAL wBufLen AS WORD
 	LOCAL oError AS RddError
-	IF strMessage == String.Empty
+	if String.IsNullOrEmpty(strMessage)
       //
 		message := CHAR[]{ACE.ADS_MAX_ERROR_LEN}
 		wBufLen := (WORD) message:Length
@@ -91,6 +91,9 @@ INTERNAL METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS ST
 			strMessage := STRING{message, 0, wBufLen}
 		ENDIF
 	ENDIF
+    if String.IsNullOrEmpty(strMessage) .and. iSubCode != 0
+        strMessage := ErrString(iGenCode)
+    ENDIF 
 	oError   := AdsError{strMessage, iGenCode, iSubcode,_Driver, iSeverity, strFunction, _FileName}
 	RuntimeState.LastRDDError := oError
 	THROW oError

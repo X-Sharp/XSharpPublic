@@ -296,7 +296,7 @@ FUNCTION OrdKeyNo(uOrder, cIndexFile) 	AS USUAL CLIPPER
     RETURN result
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordkeyval/*" />	
-FUNCTION OrdKeyVal(uOrder,cIndexFile) AS USUAL STRICT
+FUNCTION OrdKeyVal(uOrder,cIndexFile) AS USUAL CLIPPER
     LOCAL result := NIL AS USUAL
     VoDb.OrderInfo(DBOI_KEYVAL, cIndexFile, uOrder, REF result)
     RETURN result

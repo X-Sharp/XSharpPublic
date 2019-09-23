@@ -10,13 +10,14 @@ using System.Threading
 
 [STAThread];     
 FUNCTION Start() AS VOID
-    TRY    
+    TRY
+        TestAdvantageSeek()
         //TestTimeStamp()
         //TestSeek()    
         //testDbfEncoding()
         //testDateInc()
         //TestEmptyDbf()
-        TestAnotherOrdScope()
+        //TestAnotherOrdScope()
         //TestFileGarbage()
         //TestPackNtx()  
         //TestZapNtx()
@@ -131,6 +132,47 @@ FUNCTION Start() AS VOID
     END TRY
     WAIT
     RETURN
+
+FUNCTION TestAdvantageSeek() AS VOID
+	LOCAL cDbf AS STRING
+	LOCAL cValue AS STRING
+
+	cDbf := "C:\test\MyDbf"
+	cValue := "abc"
+
+	FErase(cDbf + ".dbf")
+	FErase(cDbf + ".cdx")
+	? DbCreate(cDbf , {{"TEST","C",10,0}})
+	? DbUseArea(,"DBFCDX",cDbf)
+	DbAppend()
+	FieldPut(1,"abc")
+	DbGoTop()
+	? DbCreateOrder("MYORDER", cDbf , "TEST")
+	? DbCloseArea()
+	
+
+	RddSetDefault("AXDBFCDX")
+	? XSharp.RDD.Functions.AX_SetServerType(FALSE,FALSE,TRUE)
+	? DbUseArea(,,cDbf)
+	OrdSetFocus("MYORDER")
+    OrdSetFocus(0)
+	TRY
+		? "DBSeek() returns:"
+		? DbSeek(cValue)
+	CATCH e AS Exception
+		? "Exception occured!"
+		?
+		? "Message of exception:"
+		?
+		? e:Message
+		wait
+		?
+		? "Exception ToString():"
+		?
+		? e:ToString()
+	END TRY
+	? DbCloseArea()
+RETURN
 
 FUNCTION TestTimeStamp() AS VOID
 	LOCAL c AS STRING

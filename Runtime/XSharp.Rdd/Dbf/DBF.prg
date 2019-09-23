@@ -880,6 +880,7 @@ METHOD Create(info AS DbOpenInfo) AS LOGIC
 		SELF:_Header:RecordLen := (WORD) SELF:_RecordLength
         // This will fill the Date and RecCount
 		isOK := SELF:_writeHeader()
+        SELF:_wasChanged := TRUE
 		IF isOK 
 			SELF:_HeaderLength := SELF:_Header:HeaderLen
 			isOk := SELF:_writeFieldsHeader()

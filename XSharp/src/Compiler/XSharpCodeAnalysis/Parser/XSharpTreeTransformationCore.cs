@@ -3042,17 +3042,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
         }
-
+          
         public override void ExitEventLineAccessor([NotNull] XP.EventLineAccessorContext context)
         {
-            context.ExprList.SetSequencePoint();
-            context.Put(_syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
+            if (context.ExprList != null)
+            {
+                context.ExprList.SetSequencePoint();
+                context.Put(_syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
                 keyword: context.Key.SyntaxKeyword(),
                 body: MakeBlock(context.ExprList?.GetList<StatementSyntax>() ?? EmptyList<StatementSyntax>()),
                 expressionBody: null,
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            }
         }
         public override void EnterEventAccessor([NotNull] XP.EventAccessorContext context)
         {
@@ -4264,9 +4267,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitAttributeTarget([NotNull] XP.AttributeTargetContext context)
         {
-            context.Put(_syntaxFactory.AttributeTargetSpecifier(
-                context.Id?.Get<SyntaxToken>() ?? context.Kw.Get<SyntaxToken>(),
-                SyntaxFactory.MakeToken(SyntaxKind.ColonToken)));
+            switch (context.Token.Text.ToLower())
+            {
+                // Token=(ID | CLASS | CONSTRUCTOR | DELEGATE | ENUM | EVENT | FIELD | INTERFACE | METHOD | PROPERTY  | STRUCT )
+                case "assembly":
+                case "genericparameter":
+                case "module":
+                case "returnvalue":
+
+                case "class":
+                case "constructor":
+                case "delegate":
+                case "enum":
+                case "event":
+                case "field":
+                case "interface":
+                case "method":
+                case "parameter":
+                case "property":
+                case "struct":
+                    var id = SyntaxFactory.MakeIdentifier(context.Token.Text);
+                    context.Put(_syntaxFactory.AttributeTargetSpecifier(id, SyntaxFactory.MakeToken(SyntaxKind.ColonToken)));
+                    break;
+                default:
+                    context.AddError(new ParseErrorData(context, ErrorCode.ERR_UnexpectedToken, context.Token.Text));
+                    break;
+            }
         }
 
         public override void ExitAttribute([NotNull] XP.AttributeContext context)
@@ -4316,7 +4342,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     attributes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                 }
-                if (context.Target.Token.Type == XP.ASSEMBLY)
+                if (context.Target.Token.Text.ToLower() == "assembly")
                 {
                     string[] names = {  "AssemblyVersionAttribute","AssemblyVersion",
                                         "AssemblyFileVersionAttribute","AssemblyFileVersion",
@@ -4363,9 +4389,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitGlobalAttributeTarget([NotNull] XP.GlobalAttributeTargetContext context)
         {
-            context.Put(_syntaxFactory.AttributeTargetSpecifier(
-                context.Token.SyntaxKeywordIdentifier(),
-                SyntaxFactory.MakeToken(SyntaxKind.ColonToken)));
+            var text = context.Token.Text.ToLower();
+            if (text != "assembly" && text != "module")
+            {
+                context.AddError(new ParseErrorData(context, ErrorCode.ERR_UnexpectedToken, context.Token.Text));
+            }
+            else
+            {
+                context.Put(_syntaxFactory.AttributeTargetSpecifier(
+                    SyntaxFactory.Identifier(text),
+                    SyntaxFactory.MakeToken(SyntaxKind.ColonToken)));
+            }
         }
 
         #endregion  
@@ -5053,39 +5087,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(modifiers);
         }
 
-        public override void ExitDelegateModifiers([NotNull] XP.DelegateModifiersContext context)
-        {
-            HandleDefaultTypeModifiers(context, context._Tokens, true);
-        }
-        public override void ExitEnumModifiers([NotNull] XP.EnumModifiersContext context)
-        {
-            HandleDefaultTypeModifiers(context, context._Tokens, true);
-        }
-
-        public override void ExitEventModifiers([NotNull] XP.EventModifiersContext context)
-        {
-            SyntaxListBuilder modifiers = _pool.Allocate();
-            bool isInInterface = context.isInInterface();
-            AddUniqueModifiers(modifiers, context._Tokens, false, isInInterface);
-            if (!isInInterface)
-            {
-                modifiers.FixDefaultVisibility();
-                if (_options.VirtualInstanceMethods && !context.isInStructure())
-                    modifiers.FixDefaultVirtual();
-                else
-                    modifiers.FixDefaultMethod();
-            }
-            context.PutList(modifiers.ToList<SyntaxToken>());
-            _pool.Free(modifiers);
-        }
 
 
         public override void ExitDestructorModifiers([NotNull] XP.DestructorModifiersContext context)
-        {
-            HandleDefaultTypeModifiers(context, context._Tokens, true);
-        }
-
-        public override void ExitInterfaceModifiers([NotNull] XP.InterfaceModifiersContext context)
         {
             HandleDefaultTypeModifiers(context, context._Tokens, true);
         }
@@ -5171,10 +5175,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        public override void ExitStructureModifiers([NotNull] XP.StructureModifiersContext context)
-        {
-            HandleDefaultTypeModifiers(context, context._Tokens, true);
-        }
 
         public override void ExitVotypeModifiers([NotNull] XP.VotypeModifiersContext context)
         {
@@ -5191,7 +5191,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
 
-            HandleDefaultTypeModifiers(context, tokens, true);
+            HandleDefaultTypeModifiers(context, tokens, true); 
         }
 
         SyntaxList<SyntaxToken> GetFuncProcModifiers(XP.FuncprocModifiersContext context, bool isExtern, bool isInInterface)
@@ -8223,18 +8223,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 GenerateReturn(context.ReturnExpr.Get<ExpressionSyntax>())
                 )));
         }
-        public override void ExitAnonymousfunctionParameterModifier([NotNull] XP.AnonymousfunctionParameterModifierContext context)
-        {
-            SyntaxListBuilder modifiers = _pool.Allocate();
-            foreach (var m in context._Tokens)
-            {
-                if (m.Type != XP.AS)
-                    modifiers.AddCheckUnique(m.SyntaxKeyword());
-            }
-            context.PutList(modifiers.ToList<SyntaxToken>());
-            _pool.Free(modifiers);
-        }
-
         public override void ExitExplicitAnonymousFunctionParameter([NotNull] XP.ExplicitAnonymousFunctionParameterContext context)
         {
             var attributeList = EmptyList<AttributeListSyntax>();

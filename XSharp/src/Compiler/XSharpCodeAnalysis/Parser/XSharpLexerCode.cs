@@ -1186,6 +1186,55 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return t;
         }
 
+        private bool StartOfLine(int iToken)
+        {
+            switch (iToken)
+            {
+                case EOS:
+                case NL:
+                case SEMI:
+                    return true;
+            }
+            return false;
+        }
+
+        private bool IsModifier(int iToken)
+        {
+            switch (iToken)
+            {
+                case PUBLIC:
+                case EXPORT:
+                case PROTECTED:
+                case INTERNAL:
+                case PRIVATE:
+                case HIDDEN:
+                case UNSAFE:
+                case NEW:
+                case PARTIAL:
+                case ABSTRACT:
+                case SEALED:
+                case STATIC:
+                case VIRTUAL:
+                case OVERRIDE:
+                case VOLATILE:
+                case CONST:
+                case INITONLY:
+                case FIXED:
+                case INSTANCE:
+                case ASYNC:
+                    // Xbase++ modifiers
+                case FINAL:
+                case FREEZE:
+                case INTRODUCE:
+                case SYNC:
+                case DEFERRED:
+                case CLASS:
+                case INLINE:
+                    return true;
+            }
+            return false;
+        }
+
         #region Keywords and Preprocessor Lookup
         private int fixPositionalKeyword(int keyword, int lastToken)
         {
@@ -1214,36 +1263,49 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return ID;
                     }
                     break;
-                case DESTRUCTOR:
-                    // can also appear after attribute
-                    if (lastToken != EOS && lastToken != NL && lastToken != SEMI && lastToken != EXTERN && lastToken != RBRKT)
-                    {
-                        return ID;
-                    }
-                    break;
-                case ASSEMBLY:
-                case MODULE:
-                    if (lastToken != LBRKT)
-                    {
-                        return ID;
-                    }
-                    break;
+                    // Next tokens only at Start of Line
+                case FOREACH:
                 case FINALLY:
                 case CATCH:
                 case REPEAT:
                 case UNTIL:
                 case YIELD:
-                    if (lastToken != EOS && lastToken != NL && lastToken != SEMI)
+                case ENDDEFINE:
+                case ENDCLASS:
+                case TEXT:
+                case ENDTEXT:
+                case DIMENSION:
+                case DECLARE:
+                case MEMVAR:
+                case LPARAMETERS:
+                case NOP:
+                    if (!StartOfLine(lastToken))
                     {
                         return ID;
                     }
                     break;
+                // Next tokens only at Start of Line or after STATIC or INTERNAL
+                case DEFINE:
+                    if (!StartOfLine(lastToken) && !IsModifier(lastToken)  && lastToken != END )
+                    {
+                        return ID;
+                    }
+                    break;
+                // Next token only at Start of Line or after BEGIN, DO and END
                 case SWITCH:
-                    if (lastToken != EOS && lastToken != NL && lastToken != SEMI && lastToken != BEGIN && lastToken != DO && lastToken != END)
+                    if (!StartOfLine(lastToken) && lastToken != BEGIN && lastToken != DO && lastToken != END)
                     {
                         return ID;
                     }
                     break;
+                // Next token only at Start of Line or after BEGIN, and END
+                case TRY:
+                    if (!StartOfLine(lastToken) && lastToken != END)
+                    {
+                        return ID;
+                    }
+                    break;
+                // Next token only at Start of Line or after BEGIN, DO and END
                 case IMPLIED:
                     // after the following tokens it is always IMPLIED
                     switch (lastToken)
@@ -1258,6 +1320,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             return IMPLIED;
                     }
                     return ID;
+                // Next tokens only after BEGIN and END
                 case NAMESPACE:
                 case SCOPE:
                 case LOCK:
@@ -1269,7 +1332,56 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case PARAMETERS:
                     if (!AllowXBaseVariables)
                         return ID;
-                    if (lastToken != EOS && lastToken != NL && lastToken != SEMI)
+                    if (!(StartOfLine(lastToken)))
+                    {
+                        return ID;
+                    }
+                    break;
+                // Next token only on the line after TEXT
+                case ADDITIVE:
+                case TEXTMERGE:
+                case PRETEXT:
+                case FLAGS:
+                case NOSHOW:
+                    if (!_nextLineTextMode)
+                    {
+                        return ID;
+                    }
+                    break;
+                    // These entity types at start of line, after modifier or attribute, after DLL or after END
+                case CONSTRUCTOR:
+                case DESTRUCTOR:
+                case EVENT:
+                case PROPERTY:
+                case INTERFACE:
+                case VOSTRUCT:
+                case UNION:
+                case OPERATOR: 
+                    if (!StartOfLine(lastToken) && !IsModifier(lastToken) && lastToken != DLL && lastToken != LBRKT && lastToken != RBRKT && lastToken != END)
+                    {
+                        return ID;
+                    }
+                    break;
+                // These modifiers at start of line, after modifier or attribute
+                case INITONLY:
+                case PARTIAL:
+                case SEALED:
+                case ABSTRACT:
+                    // XBase++ modifiers
+                case FREEZE:
+                case FINAL:
+                case INTRODUCE:
+                case SYNC:
+                case DEFERRED:
+                case INLINE:    // should not appear after modifier ... 
+                    if (!StartOfLine(lastToken) && !IsModifier(lastToken) && lastToken != RBRKT )
+                    {
+                        return ID;
+                    }
+                    break;
+                    // This modifiers at start of line, after modifier or attribute and also after BEGIN or END
+                case UNSAFE:
+                    if (!StartOfLine(lastToken) && !IsModifier(lastToken) && lastToken != RBRKT && lastToken != BEGIN && lastToken != END)
                     {
                         return ID;
                     }
@@ -1837,7 +1949,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "SET", SET},
                     { "SIZEOF", SIZEOF},
                     { "STRUCTURE", STRUCTURE},
-                    { "STRUCT", STRUCTURE},
+                    { "STRUCT", STRUCTURE}, 
                     { "THROW", THROW},
                     { "TRY", TRY},
                     { "TYPEOF", TYPEOF},
@@ -1850,7 +1962,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 			        { "__ARGLIST", ARGLIST},
                     { "ADD", ADD},
                     { "ASCENDING", ASCENDING},
-                    { "ASSEMBLY", ASSEMBLY},
                     { "ASTYPE", ASTYPE},
                     { "ASYNC", ASYNC},
                     { "AWAIT", AWAIT},
@@ -1866,7 +1977,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "JOIN", JOIN},
                     { "LET", LET},
                     { "NOP", NOP},
-                    { "MODULE", MODULE},
                     { "NAMEOF", NAMEOF},
                     { "ORDERBY", ORDERBY},
                     { "OVERRIDE", OVERRIDE},

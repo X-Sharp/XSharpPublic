@@ -228,7 +228,7 @@ namespace_          : BEGIN NAMESPACE Name=name e=eos
                       END NAMESPACE EOS
                     ;
 
-interface_          : (Attributes=attributes)? (Modifiers=interfaceModifiers)?            
+interface_          : (Attributes=attributes)? (Modifiers=classModifiers)?            
                       I=INTERFACE (Namespace=nameDot)? Id=identifier                        
                       TypeParameters=typeparameters?                                      // TypeParameters indicate Generic Interface
                       ((INHERIT|COLON) Parents+=datatype)? (COMMA Parents+=datatype)*
@@ -238,8 +238,6 @@ interface_          : (Attributes=attributes)? (Modifiers=interfaceModifiers)?
                       END INTERFACE EOS
                     ;
 
-interfaceModifiers  : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
-                    ;
 
 class_              : (Attributes=attributes)? (Modifiers=classModifiers)?              
                       C=CLASS (Namespace=nameDot)? Id=identifier                          
@@ -276,7 +274,7 @@ typeparameterconstraint: Key=(CLASS|STRUCTURE)                    #classOrStruct
 
 // End of Extensions for Generic Classes
 
-structure_          : (Attributes=attributes)? (Modifiers=structureModifiers)?
+structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
                       S=STRUCTURE (Namespace=nameDot)? Id=identifier
                       TypeParameters=typeparameters?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
@@ -285,11 +283,9 @@ structure_          : (Attributes=attributes)? (Modifiers=structureModifiers)?
                       END STRUCTURE EOS
                     ;
 
-structureModifiers  : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
-                    ;
 
 
-delegate_           : (Attributes=attributes)? (Modifiers=delegateModifiers)?
+delegate_           : (Attributes=attributes)? (Modifiers=classModifiers)?
                       D=DELEGATE (Namespace=nameDot)? Id=identifier
                       TypeParameters=typeparameters?
                       ParamList=parameterList?
@@ -298,32 +294,23 @@ delegate_           : (Attributes=attributes)? (Modifiers=delegateModifiers)?
                       e=EOS
                     ;
 
-delegateModifiers   : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE) )+
-                    ;
 
-
-enum_               : (Attributes=attributes)? (Modifiers=enumModifiers)?
+enum_               : (Attributes=attributes)? (Modifiers=classModifiers)?
                       E=ENUM (Namespace=nameDot)? Id=identifier ((AS|INHERIT) Type=datatype)? e=eos
                       (Members+=enummember)+
                       END ENUM? EOS
                     ;
 
-enumModifiers       : ( Tokens+=(NEW | PUBLIC| EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN) )+
-                    ;
-
 enummember          : (Attributes=attributes)? MEMBER? Id=identifier (Op=assignoperator Expr=expression)? eos
                     ;
-
-event_              : (Attributes=attributes)? (Modifiers=eventModifiers)?
+                     
+event_              : (Attributes=attributes)? (Modifiers=memberModifiers)?
                        E=EVENT (ExplicitIface=nameDot)? Id=identifier (AS Type=datatype)?
                        ( end=EOS
                         | (LineAccessors += eventLineAccessor)+ end=EOS
                         | Multi=eos (Accessors+=eventAccessor)+ END EVENT? EOS
                        )
                     ;
-
-eventModifiers          : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | STATIC | VIRTUAL | SEALED | ABSTRACT | UNSAFE) )+
-                        ;
 
 
 eventLineAccessor   : Attributes=attributes? Modifiers=accessorModifiers?
@@ -485,11 +472,7 @@ attributes          : ( AttrBlk+=attributeBlock )+
 attributeBlock      : LBRKT Target=attributeTarget? Attributes+=attribute (COMMA Attributes+=attribute)* RBRKT
                     ;
 
-attributeTarget     : Id=identifier COLON
-                    | Kw=attributeTargetName COLON
-                    ;
-
-attributeTargetName : (CLASS | CONSTRUCTOR | DELEGATE | ENUM | EVENT | FIELD | INTERFACE | METHOD | PROPERTY  )
+attributeTarget     : Token=(ID | CLASS | CONSTRUCTOR | DELEGATE | ENUM | EVENT | FIELD | INTERFACE | METHOD | PROPERTY  | STRUCTURE) COLON
                     ;
 
 attribute           : Name=name (LPAREN (Params+=attributeParam (COMMA Params+=attributeParam)* )? RPAREN )?
@@ -502,7 +485,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
 globalAttributes    : LBRKT Target=globalAttributeTarget Attributes+=attribute (COMMA Attributes+=attribute)* RBRKT EOS
                     ;
 
-globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
+globalAttributeTarget : Token=ID COLON      // We'll  check for ASSEMBLY and MODULE later
                       ;
 
 filewidememvar      : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierName)* end=EOS
@@ -946,12 +929,8 @@ anonymousMethodExpression : (Async=ASYNC)? Delegate=DELEGATE (LPAREN ParamList=e
 explicitAnonymousFunctionParamList  : Params+=explicitAnonymousFunctionParameter (COMMA Params+=explicitAnonymousFunctionParameter)*
                                     ;
 
-explicitAnonymousFunctionParameter      : Id=identifier Mod=anonymousfunctionParameterModifier Type=datatype
+explicitAnonymousFunctionParameter      : Id=identifier Mod=parameterDeclMods Type=datatype
                                         ;
-
-anonymousfunctionParameterModifier      : Tokens+= (AS | REF | OUT)
-                                        ;
-
 
 
 // LINQ Support
@@ -1071,32 +1050,35 @@ keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST 
                     | HIDDEN | IF | IIF | IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE
                     | PRIVATE | PROCEDURE | PROTECTED | PTR | PUBLIC | RECOVER | RETURN | SELF| SIZEOF | SUPER
                     | TYPEOF | WHILE | TRY | VO_AND | VO_NOT | VO_OR | VO_XOR
-                    // The following new keywords cannot be in the keywordxs list because it will match an expression when used on their own
-                    | REPEAT | CONSTRUCTOR | CATCH | DESTRUCTOR | FINALLY 
                     )
                     ;
 
 
-keywordxs           : Token=(ABSTRACT | AUTO | CHAR | CONST |  DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | INITONLY | INTERNAL
-                    | LOCK | NAMESPACE | NEW | OUT | PARTIAL | REF | SCOPE | SEALED | SET |  TRY | VALUE | VIRTUAL
+keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS | NEW | OUT | REF | SET |  VALUE | VIRTUAL | INTERNAL
                     // The following did not exist in Vulcan
-                    | ADD | ARGLIST | ASCENDING | ASSEMBLY | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM 
-                    | GROUP | INTO | JOIN | LET | MODULE | NAMEOF | NOP | OF | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE 
-                    | SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR  | DECIMAL | DATETIME 
-                    | MEMVAR | PARAMETERS  // Added as XS keywords to allow them to be treated as IDs
+                    | ADD | ARGLIST | ASCENDING | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM 
+                    | GROUP | INTO | JOIN | LET | NAMEOF | OF | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE 
+                    | SELECT | UNCHECKED | VAR | VOLATILE | WHERE |  CHAR  | DECIMAL | DATETIME 
+                    // Added as XS keywords to allow them to be treated as IDs
                     // the following entity keywords will be never used 'alone' and can therefore be safely defined as identifiers
-                    | DEFINE| DELEGATE | ENUM | GLOBAL | INHERIT | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT   
+                    | DELEGATE | ENUM | GLOBAL | INHERIT | STRUCTURE    
                     // The following 'old' keywords are never used 'alone' and are harmless as identifiers
-                    | ALIGN | CALLBACK | CLIPPER  | DECLARE | DIM | DOWNTO | DLLEXPORT | EVENT 
+                    | ALIGN | CALLBACK | CLIPPER  | DIM | DOWNTO | DLLEXPORT  
                     | FASTCALL | IN | INIT1 | INIT2 | INIT3 | INSTANCE | PASCAL |  SEQUENCE 
-                    | STEP | STRICT | TO | THISCALL | UNION | UNTIL | UPTO | USING | WINCALL 
+                    | STEP | STRICT | TO | THISCALL |  UPTO | USING | WINCALL 
+                    // The following keywords are handled in the fixPositionalKeyword() method of the lexer and will only be keywords at the right place
+                    // DEFINE | TRY | SWITCH | EVENT| EXPLICIT | FOREACH | FINALLY | CATCH | REPEAT | UNTIL | PARAMETERS | YIELD | MEMVAR | NOP | CONSTRUCTOR | DESTRUCTOR |
+                    // PARTIAL | SEALED | ABSTRACT | UNSAFE | SCOPE | NAMESPACE | LOCK | IMPLICIT | IMPLIED | INITONLY | PROPERTY | INTERFACE |
+                    // VOSTRUCT | UNION | DECLARE | OPERATOR	| 
                     )
                     ;
 					
 /// XBase++ Parser definities					
 					
-keywordxpp         : Token=(ENDCLASS| FREEZE| FINAL| SHARING| SHARED| INLINE| SYNC| ASSIGNMENT| EXPORTED| READONLY| NOSAVE| INTRODUCE)
+keywordxpp         : Token=(SHARING| SHARED| ASSIGNMENT| EXPORTED| READONLY| NOSAVE )
                    ;
+                   // context sensitive keywords
+                   // ENDCLASS, FREEZE, FINAL, INTRODUCE, SYNC, DEFERRED, INLINE
 
 
 
@@ -1214,8 +1196,8 @@ xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+
 
 
 /// FoxPro Parser definities
-keywordfox          :  Token=(ENDDEFINE|  LPARAMETERS| TEXT| ENDTEXT| ADDITIVE| FLAGS| PRETEXT| NOSHOW| TEXTMERGE
-                              | OLEPUBLIC| EXCLUDE| THISACCESS| HELPSTRING| DIMENSION | FOX_AND| FOX_OR| FOX_NOT| FOX_XOR )  
+keywordfox          :  Token=( OLEPUBLIC| EXCLUDE| THISACCESS| HELPSTRING| FOX_AND| FOX_OR| FOX_NOT| FOX_XOR )
+                              // ENDDEFINE | TEXT| ENDTEXT | DIMENSION | LPARAMETERS | NOSHOW | TEXTMERGE | PRETEXT | FLAGS | ADDITIVE
                     ;
 // class declaration
 // text ... endtext
@@ -1249,7 +1231,6 @@ foxclassmember      : Member=foxclassvars          #foxclsvars
                     //| Member=structure_            #foxnestedStructure
                     //| Member=delegate_             #foxnestedDelegate
                     //| Member=enum_                 #foxnestedEnum
-                    //| Member=event_                #foxnestedEvent
                     //| Member=interface_            #foxnestedInterface
 
 foxclassvars        : (Attributes=attributes)? (Modifiers=classvarModifiers)? Vars += foxclassvar

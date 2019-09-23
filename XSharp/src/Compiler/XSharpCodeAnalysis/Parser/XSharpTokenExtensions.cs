@@ -973,13 +973,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.UNTIL:
                 case XSharpParser.VALUE:
                 case XSharpParser.VOSTRUCT:
-                case XSharpParser.ASSEMBLY:
                 //case XSharpParser.ASYNC:
                 //case XSharpParser.AWAIT:
                 //case XSharpParser.CHECKED:
                 //case XSharpParser.DEFAULT:
                 //case XSharpParser.EXTERN:
-                case XSharpParser.MODULE:
                 case XSharpParser.SWITCH:
                 //case XSharpParser.UNCHECKED:
                 //case XSharpParser.UNSAFE:

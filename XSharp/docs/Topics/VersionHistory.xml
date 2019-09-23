@@ -16,7 +16,7 @@
       <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">UDCs that were resulting in an empty list of tokens were triggering a compiler error in the preprocessor. This has been fixed.</text></li>
     </list>
     <list id="67" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">Calling a method on an array would be translated to a ASend() with the method name as parameter. This is compatible with Visual Objects but not with Vulcan.Net. </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">This is no longer allowed in the Core and Vulcan dialects. And in the other dialects the compiler will generate a warning now when this happens,. </text></li>
+      <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">Calling a method on an array would be translated to a ASend() with the method name as parameter when the method does not exist in the underlying array class.</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">The compiler will generate a warning now when this happens,. </text></li>
       <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">The compiler was producing incorrect code for (USUAL) casts. This has been fixed. In rare cases this may produce a compilation error. If that happens to you then simply create a usual by calling the USUAL constructor: &#160;USUAL{somevalue}</text></li>
       <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">Fixed several problems with methods declared outside of a CLASS .. END CLASS</text></li>
       <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">In the FoxPro dialect NOT, AND, OR and XOR are now allowed as alternate syntax for .NOT.,.AND., .OR. and .XOR.</text></li>
@@ -45,6 +45,7 @@
       <li styleclass="List">We have changed the Val() function to be more compatible with Visual Objects</li>
       <li styleclass="List">The runtime contained a second overload for the Space() function that accepted an Int parameter. This was causing problems in the macro compiler. This overload has been removed. You may have to change your code because of that.</li>
       <li styleclass="List">Fixed a problem in EnforceType() and EmptyUsual() with the STRING type</li>
+      <li styleclass="List">AEval and AEvalOld() now both pass the array index as second parameter to the codeblock that is evaluated</li>
     </list>
     <para styleclass="Heading2">RDD System</para>
     <list id="67" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -55,6 +56,7 @@
       <li styleclass="List">The runtime now contains code that closes all open workareas at shutdown. This should help to prevent DBF or index corruption.</li>
       <li styleclass="List">The Advantage RDD was automatically doing a GoTop after the index order was changed. This no longer happens.</li>
       <li styleclass="List">The Advantage RDD now retries opening DBF and Index files a couple of times before failing.</li>
+      <li styleclass="List">Fixed a small incompatibility between DBFCDX and AXDBFCDX</li>
     </list>
     <para styleclass="Heading2">VS Integration</para>
     <list id="67" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -74,7 +76,7 @@
     </list>
     <para styleclass="Heading2">Documentation</para>
     <list id="67" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">We have &quot;lifted&quot; some of the documentation of the Visual Objects runtime functions and added these to our runtime documentation. This is &apos;work in progress&apos;, some of the See Also information will be added later.</text></li>
+      <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">We have &quot;lifted&quot; some of the documentation of the Visual Objects runtime functions and added these to our runtime documentation. This is &apos;work in progress&apos;, some topics will need some extra work.</text></li>
     </list>
     <para styleclass="Heading1">Changes in 2.0.6.0 (Bandol GA 2.06)</para>
     <para styleclass="Heading2">General</para>

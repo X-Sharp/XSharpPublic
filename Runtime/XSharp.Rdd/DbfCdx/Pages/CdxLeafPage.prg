@@ -373,8 +373,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD SetRecordBits(numRecs as LONG) AS VOID
             VAR bits            := CdxHelpers.GetBits(SELF:KeyLength)
             DO CASE
-            CASE numRecs < 2^12
-                SELF:RecordBits     := 12
+//            CASE numRecs < 2^12
+//                SELF:RecordBits     := 12
             CASE numRecs < 2^16
                 SELF:RecordBits     := 16
             CASE numRecs < 2^24
@@ -749,7 +749,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR nTrail := leaf:Trail
                 IF nKey == 0
                     nDup := 0  // The first key cannot have any duplicates
-		ELSE
+		        ELSE
 		            NOP // The dup and trail values are already stored in the leaves
                 ENDIF
                 VAR nBytesToCopy := SELF:KeyLength - nDup - nTrail

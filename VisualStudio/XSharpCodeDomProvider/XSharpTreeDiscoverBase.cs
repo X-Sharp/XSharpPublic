@@ -250,7 +250,7 @@ namespace XSharp.CodeDom
             //
             return retValue;
         }
-        protected TypeAttributes ContextToStructureModifiers(XSharpParser.StructureModifiersContext modifiers)
+        protected TypeAttributes ContextToStructureModifiers(XSharpParser.ClassModifiersContext modifiers)
         {
             TypeAttributes retValue = TypeAttributes.Public;
             //
@@ -321,7 +321,7 @@ namespace XSharp.CodeDom
             return decodeMemberAttributes(modifiers._Tokens);
         }
 
-        protected MemberAttributes ContextToEventModifiers(XSharpParser.EventModifiersContext modifiers)
+        protected MemberAttributes ContextToEventModifiers(XSharpParser.MemberModifiersContext modifiers)
         {
             return decodeMemberAttributes(modifiers._Tokens);
         }

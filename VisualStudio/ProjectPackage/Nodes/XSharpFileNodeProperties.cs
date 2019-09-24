@@ -97,7 +97,6 @@ namespace XSharp.Project
             }
         }
 
-
         [Browsable(false)]
         public bool IsDependent { get; set; }
 

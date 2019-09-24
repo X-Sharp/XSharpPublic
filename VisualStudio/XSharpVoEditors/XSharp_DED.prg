@@ -67,7 +67,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 			LOCAL lInModule AS LOGIC
 			cName	  := oFile:FullPath
 			lInModule := Funcs.GetModuleFileNameFromBinary(cName):ToUpper() == cModule:ToUpper()
-			IF cName:ToUpper():Contains(".FIELDSPECS.VNFS") .or. ;
+			IF cName:ToUpper():Contains(".FIELDSPECS.VNFS") .OR. ;
 				cName:ToUpper():Contains(".FIELDSPECS.XSFS")
 				VAR aFS := VOFieldSpecEditor.OpenXML(cName, NULL)
 				SELF:aAvailableFieldSpecs:AddRange(aFs)
@@ -135,7 +135,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 		LOCAL lSuccess := FALSE AS LOGIC
 		LOCAL lAutoRecover AS LOGIC
 		
-		lAutoRecover := lSrvOnly .or. cFileName:ToUpper():Contains("~AUTORECOVER")
+		lAutoRecover := lSrvOnly .OR. cFileName:ToUpper():Contains("~AUTORECOVER")
 
 		IF SELF:oFileNameEdit:Focused
 		   IF SELF:oFileNameEdit:Text:Trim() != SELF:oMainDesign:GetProperty("filename"):TextValue
@@ -151,7 +151,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 			RETURN lSuccess
 		END IF
 
-		IF .not. SELF:CheckIfValid()
+		IF .NOT. SELF:CheckIfValid()
 			RETURN FALSE
 		END IF
 
@@ -182,7 +182,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 						EXIT
 					END IF
 				NEXT
-			ELSEIF .not. SELF:IsAvailableFieldSpec(cFieldSpec) // New FieldSpec
+			ELSEIF .NOT. SELF:IsAvailableFieldSpec(cFieldSpec) // New FieldSpec
 				lSaveFieldSpecs := TRUE
 				VAR oFieldSpec := FSEDesignFieldSpec{NULL , NULL}
 				aCode:Add(oFieldSpec)
@@ -191,7 +191,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 			END IF
 		NEXT
 
-		IF aFieldSpecs:Count != 0 .and. lSaveFieldSpecs
+		IF aFieldSpecs:Count != 0 .AND. lSaveFieldSpecs
 			LOCAL cFieldSpecFileName AS STRING
 			cFieldSpecFileName := cModule + ".FieldSpecs.vnfs"
 			XFuncs.DeleteFile(oXProject, cFieldSpecFileName)
@@ -201,7 +201,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 
 			FOREACH oFieldSpec AS  FSEDesignFieldSpec IN aFieldSpecs
 				VAR cFile := oFieldSpec:cVNfsFileName
-				IF .not. String.IsNullOrEmpty(cFile) .and. .not. oFieldSpec:cVNfsFileName:ToUpper():Contains(".FIELDSPECS.XSFS")
+				IF .NOT. String.IsNullOrEmpty(cFile) .AND. .NOT. oFieldSpec:cVNfsFileName:ToUpper():Contains(".FIELDSPECS.XSFS")
 					XFuncs.DeleteFile(oXProject, cFile)
 				END IF
 			NEXT
@@ -209,7 +209,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 
 		SELF:ReadAllAvailableFieldspecs(cModule)
 
-		lSrvOnly		:= lSrvOnly .or. SELF:lStandalone
+		lSrvOnly		:= lSrvOnly .OR. SELF:lStandalone
 		oPrgStream  := XSharp_EditorStream{}
 		IF SELF:GetSaveFileStreams(cFileName , oPrgStream , lSrvOnly)
 			TRY
@@ -267,13 +267,16 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 		//
 		SELF:SaveAccessAssign(oGenerator , cName , SELF:oMainDesign:GetProperty("noaccass"):TextValue:ToUpper() == "YES")
 		
+		oGenerator:WriteEndClass(cName)
+		
 		FOREACH  oFieldSpec AS FSEDesignFieldSpec IN aFieldSpecs
 			oCode := VOFieldSpecEditor.GetCodeContents(oFieldSpec)
 			cName := oFieldSpec:GetProperty("classname"):TextValue
 			oGenerator:WriteEntity(XIde.EntityType._Class ,      cName , cName , EntityOptions.AddUser, oCode:aClass)
 			oGenerator:WriteEntity(XIde.EntityType._Constructor, cName , cName , EntityOptions.None, oCode:aConstructor)
+			oGenerator:WriteEndClass(cName)
 		NEXT
-		oGenerator:WriteEndClass(cName)
+
 		oGenerator:EndCode()
 		oStream:Save()
 		
@@ -311,7 +314,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 			
 			cValue := oDesign:GetProperty("Type"):TextValue:ToUpper()
 			DO CASE
-			CASE cValue == "CHARACTER" .or. cValue == "MEMO"
+			CASE cValue == "CHARACTER" .OR. cValue == "MEMO"
 				cValue := "STRING"
 			CASE cValue == "NUMERIC"
 				cValue := "FLOAT"
@@ -331,7 +334,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 						aEntity:Add(cLine)
 					ENDIF
 				NEXT
-				LOCAL lDelete := lNoAccAss .or. oDesign:GetProperty("included"):TextValue == "0" AS LOGIC
+				LOCAL lDelete := lNoAccAss .OR. oDesign:GetProperty("included"):TextValue == "0" AS LOGIC
 				SELF:ProcessExtraEntity(aEntity, oGenerator, cClass, !lDelete)
 			NEXT
 		NEXT
@@ -341,7 +344,7 @@ END CLASS
 STATIC CLASS BufferExtensions
 		STATIC METHOD GetEntityObject(SELF editor AS XSharpBuffer, nItem AS LONG) AS XIDE.EntityObject
 			LOCAL oLine := editor:GetLine(nItem) AS XIde.LineObject
-			IF oLine != NULL .and. oLine:ContainsEntity
+			IF oLine != NULL .AND. oLine:ContainsEntity
 				RETURN oLine:LastEntity
 			ENDIF
 			RETURN NULL_OBJECT

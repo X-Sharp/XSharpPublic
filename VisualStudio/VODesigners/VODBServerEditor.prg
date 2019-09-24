@@ -216,15 +216,15 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		END TRY
 	RETURN
 	METHOD ImportDbf() AS LOGIC
-/*		LOCAL oDesign AS DBEDesignDBServer
+		LOCAL oDesign AS DBEDesignDBServer
 		LOCAL oOrder AS DBEDesignDBServer
 		LOCAL eResult AS DialogResult
 		LOCAL oDlg AS OpenFileDialog
 		LOCAL lDeleteOld AS LOGIC
 		LOCAL cFileName AS STRING
 		LOCAL cDriver AS STRING
-		LOCAL aIndexes AS ARRAY
-		LOCAL aStruct AS ARRAY
+//		LOCAL aIndexes AS ARRAY
+		LOCAL aStruct AS List<OBJECT>
 		LOCAL cType AS STRING
 		LOCAL nType AS INT
 		LOCAL d AS DWORD
@@ -243,14 +243,14 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		IF cDriver == String.Empty
 			cDriver := "DBFNTX"
 		END IF
-		DBUseArea(TRUE , cDriver , cFileName)
-		aStruct := DBStruct()
+		DBHelpers.DBH_DBUseArea(cDriver , cFileName)
+		aStruct := DBHelpers.DBH_DBStruct()
 //		aStruct := {}
 //		FOR d := 1 UPTO FCount()
 //			AAdd(aStruct , {FieldName(d), DBFieldInfo(2,d), DBFieldInfo(3,d), DBFieldInfo(4,d)})
 //		NEXT
 		
-		aIndexes := {}
+/*		aIndexes := {}
 		TRY
 			LOCAL nOrders AS INT
 			IF DBOrderInfo(DBOI_NAME , 1) != NIL .and. .not. String.IsNullOrEmpty(DBOrderInfo(DBOI_INDEXNAME , 1))
@@ -262,9 +262,9 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 			END IF
 		CATCH
 			ASize(aIndexes , 0)
-		END TRY
+		END TRY*/
 		
-		DBCloseArea()
+		DBHelpers.DBH_DBCloseArea()
 
 		IF SELF:oFieldList:Items:Count != 0
 			eResult := MessageBox.Show("Remove existing fields" , "Import dbf" , MessageBoxButtons.YesNoCancel , MessageBoxIcon.Question)
@@ -284,11 +284,11 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 			END DO
 		END IF
 		
-		FOR d := 1 UPTO ALen(aStruct)
+		FOREACH oRecord AS OBJECT[] IN aStruct
 			oDesign := (DBEDesignDBServer)SELF:StartAction(DesignerBasicActionType.Create , ActionData{NULL , SELF:oFieldList:Items:Count:ToString() , DBServerItemType.Field})
-			oDesign:InitValues((STRING)aStruct[d,1])
-			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , "fldName" , (STRING)aStruct[d,1]})
-			cType := Left((STRING)aStruct[d,2],1)
+			oDesign:InitValues((STRING)oRecord[1])
+			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , "fldName" , (STRING)oRecord[1]})
+			cType := Left((STRING)oRecord[2],1)
 			DO CASE
 			CASE cType == "C"
 				nType := 0
@@ -304,13 +304,13 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				nType := 0
 			END CASE
 			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , "type" , nType})
-			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , "len" , (INT)(DWORD)aStruct[d,3]})
-			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , "dec" , (INT)(DWORD)aStruct[d,4]})
+			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , "len" , (INT)oRecord[3]})
+			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , "dec" , (INT)oRecord[4]})
 		NEXT
 
 		SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{SELF:oMainDesign:cGuid , "filename" , cFileName})
 		
-		IF ALen(aIndexes) != 0
+/*		IF ALen(aIndexes) != 0
 			DO WHILE SELF:oIndexList:Items:Count != 0
 				SELF:StartAction(DesignerBasicActionType.Remove , ActionData{((DBEDesignListViewItem)SELF:oIndexList:Items[0]):oDesign:cGuid})
 			END DO
@@ -324,24 +324,24 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 					SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oOrder:cGuid , "keyexp" , (STRING)aIndexes[1,3,n,2]})
 				NEXT
 			END TRY
-		END IF
+		END IF*/
 
 		SELF:EndAction()
-*/		
+		
 	RETURN TRUE
 
 	METHOD ExportDbfClicked(o AS OBJECT , ee AS EventArgs) AS VOID
-/*		LOCAL lOldAnsi AS LOGIC
-		lOldAnsi := SetAnsi()
+		LOCAL lOldAnsi AS LOGIC
+		lOldAnsi := DBHelpers.DBH_SetAnsi()
 		TRY
 			SELF:ExportDbf()
 		CATCH e AS Exception
 			Funcs.ErrorBox(e:Message , "Error Exporting to dbf")
 		END TRY
-		SetAnsi(lOldAnsi)*/
+		DBHelpers.DBH_SetAnsi(lOldAnsi)
 	RETURN
 	METHOD ExportDbf() AS LOGIC
-/*		LOCAL oDesign AS DBEDesignDBServer
+		LOCAL oDesign AS DBEDesignDBServer
 		LOCAL eResult AS DialogResult
 		LOCAL oDlg AS SaveFileDialog
 		LOCAL nLen,nDec,nType AS INT
@@ -351,7 +351,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		LOCAL lSuccess AS LOGIC
 		LOCAL cDriver AS STRING
 		LOCAL cBackup AS STRING
-		LOCAL aFields AS ARRAY
+		LOCAL aFields AS List<OBJECT>
 		LOCAL lImport AS LOGIC
 		LOCAL cName AS STRING
 		LOCAL cType AS STRING
@@ -360,15 +360,15 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		IF .not. SELF:CheckIfValid()
 			RETURN FALSE
 		END IF
-
+		
 		eResult := MessageBox.Show("Export dbf in ANSI format? (Select no for OEM)" , "Export dbf" , MessageBoxButtons.YesNoCancel , MessageBoxIcon.Question)
 		DO CASE
 		CASE eResult == DialogResult.Cancel
 			RETURN FALSE
 		CASE eResult == DialogResult.Yes
-			SetAnsi(TRUE)
+			DBHelpers.DBH_SetAnsi(TRUE)
 		CASE eResult == DialogResult.No
-			SetAnsi(FALSE)
+			DBHelpers.DBH_SetAnsi(FALSE)
 		END CASE
 		
 		aDesign := SELF:GetAllIncludedFields()
@@ -410,7 +410,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 			END TRY
 		END IF
 		
-		aFields := {}
+		aFields := List<OBJECT>{}
 		FOR n := 0 UPTO aDesign:Count - 1
 			oDesign := (DBEDesignDBServer)aDesign[n]
 			cName := oDesign:Name
@@ -429,7 +429,8 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 			CASE nType==4
 				cType := "M"
 			END CASE
-			AAdd(aFields , {cName , cType , nLen , nDec})
+//			AAdd(aFields , {cName , cType , nLen , nDec})
+			aFields:Add(<OBJECT>{cName , cType , nLen , nDec})
 		NEXT
 		
 		cDriver := SELF:oMainDesign:GetProperty("rdd"):TextValue:Trim():ToUpper()
@@ -437,12 +438,12 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 			cDriver := "DBFNTX"
 		END IF
 
-		RDDInfo(104,FALSE) // _SET_AUTOOPEN
+		DBHelpers.DBH_RDDInfo(104,FALSE) // _SET_AUTOOPEN
 		TRY
-			lSuccess := DBCreate(cFileName , aFields , cDriver)
+			lSuccess := DBHelpers.DBH_DBCreate(cFileName , aFields , cDriver)
 			TRY
-				IF Used()
-					DBCloseArea()
+				IF DBHelpers.DBH_Used()
+					DBHelpers.DBH_DBCloseArea()
 				END IF
 			END TRY
 		CATCH e AS Exception
@@ -461,20 +462,20 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				LOCAL lFirst AS LOGIC
 				aFieldMap := List<DWORD>{}
 				TRY
-					DBUseArea(TRUE , cDriver , cFileName , "new" , FALSE , FALSE)
-					DBUseArea(TRUE , cDriver , cBackup , "old" , FALSE)
-					old -> DBGoTop()
+					DBHelpers.DBH_DBUseArea(cDriver , cFileName , "new")
+					DBHelpers.DBH_DBUseArea(cDriver , cBackup , "old")
+					DBHelpers.DBH_GoTop("old")
 					lFirst := TRUE
-					dFCount := old -> FCount()
-					dRCount := old -> LastRec()
+					dFCount := DBHelpers.DBH_FCount("old")
+					dRCount := DBHelpers.DBH_LastRec("old")
 					oProgressBar := ProgressBarForm{"Importing old dbf data" , (INT)dRCount}
 					nCount := 0
-					DO WHILE .not. old -> EOF()
-						NEW -> DBAppend(TRUE)
+					DO WHILE .not. DBHelpers.DBH_EOF("old")
+						DBHelpers.DBH_DBAppend("new", TRUE)
 						FOR d := 1 UPTO dFCount
 							IF lFirst
-								cField := old -> FieldName(d)
-								dPos := NEW -> FieldPos(cField)
+								cField := DBHelpers.DBH_FieldName("old", d)
+								dPos := DBHelpers.DBH_FieldPos("new", cField)
 								IF dPos == 0
 									dPos := d
 								END IF
@@ -483,7 +484,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 							END IF
 							IF dPos != 0
 								TRY
-									NEW -> FieldPut(dPos , old -> FieldGet(d))
+									DBHelpers.DBH_FieldPut("new", dPos , DBHelpers.DBH_FieldGet("old", d))
 								CATCH
 									dPos := 0
 								END TRY
@@ -493,7 +494,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 							END IF
 						NEXT
 						lFirst := FALSE
-						old -> DBSkip()
+						DBHelpers.DBH_DBSkip("old")
 						nCount ++
 						IF nCount % 100 == 0
 							oProgressBar:Show()
@@ -505,7 +506,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 						END IF
 					END DO
 				FINALLY
-					DBCloseAll()
+					DBHelpers.DBH_DBCloseAll()
 					oProgressBar:DoClose()
 				END TRY
 			END IF
@@ -527,7 +528,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				END IF
 			END IF
 			SELF:EndAction()
-		END IF*/
+		END IF
 	RETURN TRUE
 
 	METHOD ExportIndexes(cDbfFileName AS STRING) AS LOGIC
@@ -582,16 +583,17 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 	RETURN lSuccess
 
 	METHOD ExportIndex(oDesign AS DBEDesignDBServer , cDbfFileName AS STRING , cDriver AS STRING) AS LOGIC
-/*		LOCAL oOrder AS DBEDesignDBServer
+		LOCAL oOrder AS DBEDesignDBServer
 		LOCAL cFileName AS STRING
 		LOCAL lSuccess AS LOGIC
 		LOCAL cName AS STRING
 		LOCAL cKey AS STRING
 		LOCAL n AS INT
 		
-		RDDInfo(104,FALSE) // _SET_AUTOOPEN
+		DBHelpers.DBH_RDDInfo(104,FALSE) // _SET_AUTOOPEN
 		TRY
-			DBUseArea( , cDriver , cDbfFileName , , FALSE , FALSE)
+//			DBUseArea( , cDriver , cDbfFileName , , FALSE , FALSE)
+			DBHelpers.DBH_DBUseArea( cDriver , cDbfFileName )
 			
 			cFileName := oDesign:GetProperty("FileName"):TextValue
 			IF ! cFileName:Contains(":")
@@ -609,9 +611,9 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				oOrder := (DBEDesignDBServer)oDesign:aOrders[n]
 				cName := oOrder:Name
 				cKey := oOrder:GetProperty("KeyExp"):TextValue
-	//			cFor := oOrder:GetProperty_("ForExpression")
+	//			cFor := oOrder:GetProperty("ForExpression")
 				TRY
-					lSuccess := DBCreateOrder(cName , cFileName , cKey)
+					lSuccess := DBHelpers.DBH_DBCreateOrder(cName , cFileName , cKey)
 				CATCH e1 AS Exception
 					Funcs.ErrorBox("An error occured while creating order " + oOrder:Name + " for index file " + oDesign:GetProperty("filename"):TextValue + e"\r\n\r\n" + e1:Message , "DBServer Editor")
 				END TRY
@@ -631,12 +633,11 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 	
 		FINALLY
 	
-			DBCloseArea()
+			DBHelpers.DBH_DBCloseArea()
 	
 		END TRY
 	RETURN lSuccess
-*/	
-	RETURN TRUE
+	
 	METHOD FillOrders() AS VOID
 		LOCAL oDesign AS DBEDesignDBServer
 		LOCAL n AS INT
@@ -1256,7 +1257,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		CASE DesignerActionType.Cut
 		CASE DesignerActionType.Copy
 		CASE DesignerActionType.Paste
-            nop
+            NOP
 		CASE DesignerActionType.Undo
 			SELF:Undo()
 		CASE DesignerActionType.Redo
@@ -3007,3 +3008,73 @@ CLASS DBServerCode
 	
 END CLASS
 
+CLASS DBHelpers
+	STATIC METHOD DBH_DBUseArea(cDriver AS STRING, cDbfFileName AS STRING) AS LOGIC
+	RETURN DbUseArea(TRUE , cDriver , cDbfFileName , NIL , FALSE , FALSE)
+	STATIC METHOD DBH_DBUseArea(cDriver AS STRING, cDbfFileName AS STRING, cAlias AS STRING) AS LOGIC
+	RETURN DbUseArea(TRUE , cDriver , cDbfFileName , cAlias , FALSE , FALSE)
+	STATIC METHOD DBH_DBCreate(cFileName AS STRING, oFields AS List<OBJECT>, cDriver AS STRING) AS LOGIC
+		LOCAL aFields AS ARRAY
+		aFields := {}
+		FOREACH oRecord AS OBJECT[] IN oFields
+			AAdd(aFields, {oRecord[1], oRecord[2], oRecord[3], oRecord[4]})
+		NEXT
+	RETURN DbCreate(cFileName , aFields , cDriver)
+	STATIC METHOD DBH_DBCreateOrder(cName AS STRING, cFileName AS STRING, cKey AS STRING) AS LOGIC
+	RETURN DbCreateOrder(cName , cFileName , cKey)
+	
+	STATIC METHOD DBH_DBStruct() AS List<OBJECT>
+		LOCAL aStruct AS ARRAY
+		LOCAL aRet AS List<OBJECT>
+		aRet := List<OBJECT>{}
+		aStruct := DbStruct()
+		FOR LOCAL n := 1 AS DWORD UPTO ALen(aStruct)
+			aRet:Add(<OBJECT>{aStruct[n,1], aStruct[n,2], aStruct[n,3], aStruct[n,4]})
+		NEXT
+	RETURN aRet
+
+	STATIC METHOD DBH_DBCloseArea() AS LOGIC
+	RETURN DbCloseArea()
+	STATIC METHOD DBH_Used() AS LOGIC
+	RETURN Used()
+	STATIC METHOD DBH_SetAnsi() AS LOGIC
+	RETURN SetAnsi()
+	STATIC METHOD DBH_SetAnsi(lAnsi AS LOGIC) AS LOGIC
+	RETURN SetAnsi(lAnsi)
+	STATIC METHOD DBH_GoTop(cAlias AS STRING) AS LOGIC
+		DbSelectArea(cAlias)
+	RETURN DbGoTop()
+	STATIC METHOD DBH_DBSkip(cAlias AS STRING) AS LOGIC
+		DbSelectArea(cAlias)
+	RETURN DbSkip()
+	STATIC METHOD DBH_DBCloseAll() AS LOGIC
+	RETURN DbCloseAll()
+	STATIC METHOD DBH_FCount(cAlias AS STRING) AS DWORD
+		DbSelectArea(cAlias)
+	RETURN FCount()
+	STATIC METHOD DBH_FieldPos(cAlias AS STRING, cField AS STRING) AS DWORD
+		DbSelectArea(cAlias)
+	RETURN FieldPos(cField)
+	STATIC METHOD DBH_FieldName(cAlias AS STRING, dField AS DWORD) AS STRING
+		DbSelectArea(cAlias)
+	RETURN FieldName(dField)
+	STATIC METHOD DBH_FieldGet(cAlias AS STRING, dField AS DWORD) AS OBJECT
+		DbSelectArea(cAlias)
+	RETURN FieldGet(dField)
+	STATIC METHOD DBH_FieldPut(cAlias AS STRING, dField AS DWORD, oValue AS OBJECT) AS OBJECT
+		DbSelectArea(cAlias)
+	RETURN FieldPut(dField, oValue)
+	STATIC METHOD DBH_LastRec(cAlias AS STRING) AS DWORD
+		DbSelectArea(cAlias)
+	RETURN LastRec()
+	STATIC METHOD DBH_EOF(cAlias AS STRING) AS LOGIC
+		DbSelectArea(cAlias)
+	RETURN Eof()
+	STATIC METHOD DBH_DBAppend(cAlias AS STRING, lRelease AS LOGIC) AS LOGIC
+		DbSelectArea(cAlias)
+	RETURN DbAppend(lRelease)
+
+	STATIC METHOD DBH_RDDInfo(nOrdinal AS OBJECT, oNewVale AS OBJECT) AS LOGIC
+	RETURN RddInfo(nOrdinal, oNewVale)
+
+END CLASS

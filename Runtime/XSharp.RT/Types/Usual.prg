@@ -1677,16 +1677,33 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Int64		; RETURN UNCHECKED((BYTE) u:_i64Value)
                 CASE __UsualType.Float
                     IF RuntimeState.CompilerOptionVO11
-                        RETURN UNCHECKED(Convert.ToByte(u:_r8Value))
+                        IF RuntimeState.CompilerOptionOVF
+                            RETURN CHECKED(Convert.ToByte(u:_r8Value))
+                        ELSE
+                            RETURN UNCHECKED(Convert.ToByte(u:_r8Value))
+                        ENDIF
                     ELSE
-                        RETURN UNCHECKED((BYTE) u:_r8Value)
+                        IF RuntimeState.CompilerOptionOVF
+                            RETURN CHECKED((BYTE) u:_r8Value)
+                        ELSE
+                            RETURN UNCHECKED((BYTE) u:_r8Value)
+                        ENDIF
                     ENDIF
                 CASE __UsualType.Logic		; RETURN (BYTE) IIF(u:_logicValue, 1, 0)
                 CASE __UsualType.Decimal
                     IF RuntimeState.CompilerOptionVO11
-                        RETURN UNCHECKED(Convert.ToByte(u:_decimalValue ))
+                        IF RuntimeState.CompilerOptionOVF
+                            RETURN CHECKED(Convert.ToByte(u:_decimalValue ))
+                        ELSE
+                            RETURN UNCHECKED(Convert.ToByte(u:_decimalValue ))
+                        ENDIF
+
                     ELSE
-                        RETURN UNCHECKED((BYTE) u:_decimalValue )
+                        IF RuntimeState.CompilerOptionOVF
+                            RETURN CHECKED((BYTE) u:_decimalValue )
+                        ELSE
+                            RETURN UNCHECKED((BYTE) u:_decimalValue )
+                        ENDIF
                     ENDIF
                 CASE __UsualType.Void		; RETURN  0
                 OTHERWISE
@@ -1707,16 +1724,32 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Int64	; RETURN UNCHECKED((SHORT) u:_i64Value)
                 CASE __UsualType.Float
                     IF RuntimeState.CompilerOptionVO11
-                        RETURN UNCHECKED(Convert.ToInt16(u:_r8value))
+                        IF RuntimeState.CompilerOptionOVF
+                            RETURN CHECKED(Convert.ToInt16(u:_r8value))
+                        ELSE
+                            RETURN UNCHECKED(Convert.ToInt16(u:_r8value))
+                        ENDIF
                     ELSE
-                        RETURN UNCHECKED((SHORT) u:_r8Value)
+                        IF RuntimeState.CompilerOptionOVF
+                            RETURN CHECKED((SHORT) u:_r8Value)
+                        ELSE
+                            RETURN UNCHECKED((SHORT) u:_r8Value)
+                        ENDIF
                     ENDIF
 
                 CASE __UsualType.Decimal
                     IF RuntimeState.CompilerOptionVO11
-                        RETURN UNCHECKED(Convert.ToInt16(u:_decimalValue ))
+                        IF RuntimeState.CompilerOptionOVF
+                            RETURN CHECKED(Convert.ToInt16(u:_decimalValue ))
+                        ELSE
+                            RETURN UNCHECKED(Convert.ToInt16(u:_decimalValue ))
+                        ENDIF
                     ELSE
-                        RETURN UNCHECKED((SHORT) u:_decimalValue )
+                        IF RuntimeState.CompilerOptionOVF
+                            RETURN CHECKED((SHORT) u:_decimalValue )
+                        ELSE
+                            RETURN UNCHECKED((SHORT) u:_decimalValue )
+                        ENDIF
                     ENDIF
 
                 CASE __UsualType.Logic	; RETURN (SHORT) IIF(u:_logicValue, 1, 0)
@@ -1739,15 +1772,33 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Int64	; RETURN (LONG) u:_i64Value
                 CASE __UsualType.Float
                     IF RuntimeState.CompilerOptionVO11
-                        RETURN CHECKED(Convert.ToInt32(u:_r8Value))
+                        IF RuntimeState.CompilerOptionOVF
+                            RETURN CHECKED(Convert.ToInt32(u:_r8Value))
+                        ELSE
+                            RETURN UNCHECKED(Convert.ToInt32(u:_r8Value))
+                        ENDIF
                     ELSE
-                        RETURN  CHECKED((LONG) u:_r8Value)
+                        IF RuntimeState.CompilerOptionOVF
+                            RETURN CHECKED((LONG) u:_r8Value)
+                        ELSE
+                            RETURN UNCHECKED((LONG) u:_r8Value)
+                        ENDIF
+
                     ENDIF
                 CASE __UsualType.Decimal
                     IF RuntimeState.CompilerOptionVO11
-                        RETURN CHECKED(Convert.ToInt32(u:_decimalValue ))
+                        IF RuntimeState.CompilerOptionOVF
+                            RETURN CHECKED(Convert.ToInt32(u:_decimalValue ))
+                        ELSE
+                            RETURN UNCHECKED(Convert.ToInt32(u:_decimalValue ))
+                        ENDIF
                     ELSE
-                        RETURN CHECKED((LONG) u:_decimalValue )
+                        IF RuntimeState.CompilerOptionOVF
+                            RETURN CHECKED((LONG) u:_decimalValue )
+                        ELSE
+                            RETURN UNCHECKED((LONG) u:_decimalValue )
+                        ENDIF
+
                     ENDIF
                 CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
                 CASE __UsualType.Void	; RETURN 0
@@ -1867,9 +1918,24 @@ BEGIN NAMESPACE XSharp
             TRY
                 SWITCH u:_usualType
                 CASE __UsualType.Long     ; RETURN (DWORD) u:_intValue
-                CASE __UsualType.Int64    ; RETURN (DWORD) u:_i64Value
-                CASE __UsualType.Float    ; RETURN (DWORD) u:_r8Value
-                CASE __UsualType.Decimal  ; RETURN (DWORD) u:_decimalValue 
+                CASE __UsualType.Int64
+                    IF RuntimeState.CompilerOptionOVF
+                        RETURN CHECKED((DWORD) u:_i64Value)
+                    ELSE
+                        RETURN UNCHECKED((DWORD) u:_i64Value)
+                    ENDIF
+                CASE __UsualType.Float     
+                    IF RuntimeState.CompilerOptionOVF
+                        RETURN CHECKED((DWORD) u:_r8Value)
+                    ELSE
+                        RETURN UNCHECKED((DWORD) u:_r8Value)
+                    ENDIF
+                CASE __UsualType.Decimal  
+                    IF RuntimeState.CompilerOptionOVF
+                        RETURN CHECKED((DWORD) u:_decimalValue)
+                    ELSE
+                        RETURN UNCHECKED((DWORD) u:_decimalValue)
+                    ENDIF
                 CASE __UsualType.Logic    ; RETURN (DWORD) IIF(u:_logicValue, 1, 0)
                 CASE __UsualType.Void     ; RETURN 0
                 CASE __UsualType.Ptr

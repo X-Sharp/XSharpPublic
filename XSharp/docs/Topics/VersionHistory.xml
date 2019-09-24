@@ -11,8 +11,12 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Heading1">Changes in 2.0.7 (Bandol GA 2.07)</para>
+    <para styleclass="Heading2">Possible breaking change</para>
+    <list id="132" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">We have removed the #define CRLF from the standard header file. There is a DEFINE CRLF in XSharp.Core now. If you are compiling against Vulcan and you are seeing an error about a missing CRLF then you may want to add the following to your code:</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">DEFINE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> CRLF := e”\r\n”</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></li>
+    </list>
     <para styleclass="Heading2">Compiler</para>
-    <list id="66" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="132" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">UDCs that were resulting in an empty list of tokens were triggering a compiler error in the preprocessor. This has been fixed.</text></li>
     </list>
     <list id="67" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">

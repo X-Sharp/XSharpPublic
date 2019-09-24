@@ -152,7 +152,7 @@ CLASS DesignerGrid INHERIT Panel
 		LOCAL oDesign AS DesignItem
 		LOCAL aProperties AS ArrayList
 		LOCAL lSkip AS LOGIC
-		LOCAL n,m AS INT
+		LOCAL m AS INT
 		
 		SELF:oHierarchy:Items:Clear()
 
@@ -431,8 +431,8 @@ CLASS PropertyPanel INHERIT PictureBox
 			SELF:nCurY := 0
 		CASE Keys.Next
 			SELF:nCurY := SELF:aProperties:Count - 1
-		case Keys.Enter 
-        case Keys.F2
+		CASE Keys.Enter 
+        CASE Keys.F2
 			IF SELF:nCurX == 2
 				SELF:ShowControl()
 			ENDIF
@@ -504,7 +504,7 @@ CLASS PropertyPanel INHERIT PictureBox
 		END IF
 		
 		SWITCH SELF:oProperty:Type 
-		case PropertyType.Numeric 
+		CASE PropertyType.Numeric 
         CASE PropertyType.Text
 			SELF:oEdit:Text := SELF:oProperty:TextValue
 			SELF:oEdit:oProperty := SELF:oProperty

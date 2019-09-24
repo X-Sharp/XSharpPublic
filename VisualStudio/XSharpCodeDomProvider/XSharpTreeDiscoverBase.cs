@@ -250,7 +250,7 @@ namespace XSharp.CodeDom
             //
             return retValue;
         }
-        protected TypeAttributes ContextToStructureModifiers(XSharpParser.StructureModifiersContext modifiers)
+        protected TypeAttributes ContextToStructureModifiers(XSharpParser.ClassModifiersContext modifiers)
         {
             TypeAttributes retValue = TypeAttributes.Public;
             //
@@ -321,7 +321,7 @@ namespace XSharp.CodeDom
             return decodeMemberAttributes(modifiers._Tokens);
         }
 
-        protected MemberAttributes ContextToEventModifiers(XSharpParser.EventModifiersContext modifiers)
+        protected MemberAttributes ContextToEventModifiers(XSharpParser.MemberModifiersContext modifiers)
         {
             return decodeMemberAttributes(modifiers._Tokens);
         }
@@ -922,8 +922,11 @@ namespace XSharp.CodeDom
         public override void EnterUsing_([NotNull] XSharpParser.Using_Context context)
         {
             var import = new XCodeNamespaceImport(context.Name.GetText());
-            CurrentNamespace.Imports.Add(import);
-            _usings.Add(import.Namespace);
+            if (!_usings.Contains(import.Namespace))
+            {
+                CurrentNamespace.Imports.Add(import);
+                _usings.Add(import.Namespace);
+            }
         }
         #endregion
     }

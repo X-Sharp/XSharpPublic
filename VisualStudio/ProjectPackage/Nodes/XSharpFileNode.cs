@@ -447,7 +447,15 @@ namespace XSharp.Project
                 return hasSubType(ProjectFileAttributeValue.UserControl);
             }
         }
-
+        public override int SortPriority
+        {
+            get
+            {
+                if (FileType.IsVOBinary())
+                    return DefaultSortOrderNode.VOBinaryNode+ (int) FileType;
+                return DefaultSortOrderNode.HierarchyNode;
+            }
+        }
         private XFileType _fileType = XFileType.Unknown;
         internal XFileType FileType
         {

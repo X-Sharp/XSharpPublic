@@ -360,8 +360,8 @@ CLASS CodeEditor
 						EXIT
 					ENDIF
 				NEXT
-			case EntityType._Access 
-            case EntityType._Assign 
+			CASE EntityType._Access 
+            CASE EntityType._Assign 
             CASE EntityType._Method // Create it, at the end of the class
 				FOR n := 0 UPTO aEntities:Count - 1
 					oInfo := (ParseInfo)aEntities[n]
@@ -712,12 +712,12 @@ CLASS CodeEditor
 						cModifiers += cUpperWord + " "
 					END IF
 					SWITCH cUpperWord
-					case "PROTECT" 
-                    case "PROTECTED" 
-                    case "INSTANCE"
+					CASE "PROTECT" 
+                    CASE "PROTECTED" 
+                    CASE "INSTANCE"
 						eAccessLevel := AccessLevel.Protected
-					case "HIDDEN" 
-                    case "PRIVATE"
+					CASE "HIDDEN" 
+                    CASE "PRIVATE"
 						eAccessLevel := AccessLevel.Hidden
 					CASE "INTERNAL"
 						eAccessLevel := AccessLevel.Internal
@@ -765,8 +765,8 @@ CLASS CodeEditor
 							SWITCH cUpperWord
 							CASE "CLASS"
 								oInfo:cInherit := "System.Object"
-							case "STRUCTURE" 
-                            case "STRUCT"
+							CASE "STRUCTURE" 
+                            CASE "STRUCT"
 								oInfo:cInherit := "System.ValueType"
 							CASE "DELEGATE"
 								oInfo:cInherit := "System.MultiCastDelegate"
@@ -1044,16 +1044,16 @@ CLASS CodeEditor
 			eType := EntityType._Access
 		CASE "ASSIGN"
 			eType := EntityType._Assign
-		case "FUNCTION" 
+		CASE "FUNCTION" 
         CASE "FUNC"
 			eType := EntityType._Function
-		case "PROCEDURE" 
+		CASE "PROCEDURE" 
         CASE "PROC"
 			eType := EntityType._Function
 		CASE "ENUM"
 			eType := EntityType._Enum
-		case "STRUCTURE" 
-        case "STRUCT"
+		CASE "STRUCTURE" 
+        CASE "STRUCT"
 			eType := EntityType._Structure
 		CASE "VOSTRUCT"
 			eType := EntityType._VOStruct

@@ -368,6 +368,8 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 	    LOCAL PosData   AS LONG
 	    LOCAL PosStart  AS LONG
 	    LOCAL br        AS BinaryReader
+        LOCAL aBytes AS BYTE[]
+
 	    // Move RecHeader to the Top of File
 	    SELF:oMS:Position := SELF:PosBase
 	    SELF:aEnt := xARRAY{}
@@ -400,7 +402,6 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 				    IF oCurrentDesigner != NULL
 			        	SELF:oMS:Position := PosData+0
 				    	br := BinaryReader{ SELF:oMS }
-					    LOCAL aBytes AS BYTE[]
 					    aBytes := br:ReadBytes((LONG)SELF:oRecHeader:ulLength)
 					    oCurrentDesigner:Bytes := aBytes
 				    ENDIF
@@ -416,7 +417,6 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 				    IF nCurrentType == 16 .AND. oCurrentDesigner != NULL
 				        SELF:oMS:Position := PosData
 				    	br := BinaryReader{ SELF:oMS }
-					    LOCAL aBytes AS BYTE[]
 					    aBytes := br:ReadBytes((LONG)SELF:oRecHeader:ulLength)
 //					    oCurrentDesigner:AppendBytes(aBytes)
 				    END IF
@@ -473,7 +473,6 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 				    
 				    IF nCurrentType == 16
 				    	br := BinaryReader{ SELF:oMS }
-					    LOCAL aBytes AS BYTE[]
 					    aBytes := br:ReadBytes((LONG)SELF:oRecHeader:ulLength)
 					    oCurrentDesigner:Bytes := aBytes
 				    END IF

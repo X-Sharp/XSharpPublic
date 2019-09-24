@@ -745,9 +745,10 @@ namespace XSharp.CodeDom
 
         protected override void GenerateNamespaceImport(CodeNamespaceImport e)
         {
-            writeTrivia(e.UserData);
             if (!_using.Contains(e.Namespace.ToLowerInvariant()))
             {
+                writeCodeBefore(e.UserData);
+                writeTrivia(e.UserData);
                 base.Output.Write("USING ");
                 this.OutputIdentifier(e.Namespace);
                 base.Output.WriteLine();

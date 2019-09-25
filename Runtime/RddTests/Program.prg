@@ -11,7 +11,8 @@ using System.Threading
 [STAThread];     
 FUNCTION Start() AS VOID
     TRY
-        TestAdvantageSeek()
+        testadsmemo()
+        //TestAdvantageSeek()
         //TestTimeStamp()
         //TestSeek()    
         //testDbfEncoding()
@@ -132,6 +133,35 @@ FUNCTION Start() AS VOID
     END TRY
     WAIT
     RETURN
+
+function testadsmemo as void       
+LOCAL cDbf AS STRING
+	cDbf := "C:\test\memodbf"
+	FErase(cDbf + ".cdx")
+	FErase(cDbf + ".fpt")
+	FErase(cDbf + ".dbf")
+	
+	RddSetDefault("DBFCDX")
+    RDDINFO(SET.MEMOBLOCKSIZE, 512)
+
+	DbCreate(cDbf, {{"FLD1" , "C" , 10 , 0} , {"FLDM" , "M" , 10 , 0}})
+	DbUseArea(,,cDbf)
+	DbAppend()
+	FieldPut(1, "abc")
+	DbAppend()
+	FieldPut(2, "this is a somewhat long text")
+	DbCloseArea()
+	
+
+	RddSetDefault("AXDBFCDX")
+	? XSharp.RDD.Functions.AX_SetServerType(FALSE,FALSE,TRUE)
+	? DbUseArea(,,cDbf)
+	? FieldGet(2)
+	DbGoBottom()
+	? FieldGet(2)
+	? DbCloseArea()
+RETURN
+
 
 FUNCTION TestAdvantageSeek() AS VOID
 	LOCAL cDbf AS STRING

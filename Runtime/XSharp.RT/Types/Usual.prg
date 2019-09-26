@@ -943,19 +943,8 @@ BEGIN NAMESPACE XSharp
 
         INTERNAL METHOD UsualEquals( rhs AS __Usual, op AS STRING) AS LOGIC
             IF SELF:IsNil .OR. rhs:IsNil
-                SWITCH RuntimeState.Dialect
-                CASE XSharpDialect.XPP
-                    RETURN SELF:IsNil .AND. rhs:IsNil   // only true when both are NIL
-                CASE XSharpDialect.FoxPro
-                    // Fox only allows comparison when both are NIL
-                    IF SELF:IsNil .AND. rhs:IsNil
-                        RETURN TRUE
-                    ENDIF
-                    THROW BinaryError(op, __CavoStr(VOErrors.ARGSINCOMPATIBLE), SELF:IsNil, SELF, rhs)
-                OTHERWISE
-                    // Exact equals, so no true when both are NIL
-                    RETURN SELF:IsNil .AND. rhs:IsNil
-                END SWITCH
+                // Exact equals, so only true when both are NIL
+                RETURN SELF:IsNil .and. rhs:IsNil
             ENDIF
             SWITCH SELF:_usualType
                 CASE __UsualType.Object
@@ -2514,16 +2503,12 @@ BEGIN NAMESPACE XSharp
             IF lhs:IsString
                 RETURN __StringEquals( lhs:_stringValue, rhs)
             ELSEIF lhs:IsNil
-                SWITCH RuntimeState.Dialect
-                CASE XSharpDialect.XPP
-                    RETURN FALSE            // NIL is not equal to anything in Xbase++
-                CASE XSharpDialect.FoxPro
+                IF RuntimeState.Dialect == XSharpDialect.FoxPro
                     // Fox throws an error
                     THROW BinaryError("<>", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
-                OTHERWISE
-                    // VO treats NIL as "" for inexact comparison
-                    RETURN __StringEquals( "", rhs)
-                END SWITCH
+                ELSE
+                    RETURN FALSE            // NIL is not equal to anything 
+                ENDIF
             ELSE
                 THROW BinaryError("=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
             ENDIF
@@ -2533,28 +2518,11 @@ BEGIN NAMESPACE XSharp
             // emulate VO behavior for "" and NIL
             // "" = NIL but also "" != NIL, NIL = "" and NIL != ""
             IF lhs:IsNil .OR. rhs:IsNil
-                SWITCH RuntimeState.Dialect
-                CASE XSharpDialect.XPP
-                    IF lhs:IsNil .AND. rhs:IsNil
-                        RETURN FALSE        // when both are NIL then equal, so notequals returns false
-                    ELSE
-                        RETURN TRUE         // one is NIL so notequals returns TRUE
-                    ENDIF
-                CASE XSharpDialect.FoxPro
-                    // Fox only allows comparisons between NILS
-                    IF lhs:IsNil .AND. rhs:IsNil
-                        return FALSE
-                    ELSE
-                        THROW BinaryError("<>", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
-                    ENDIF
-                OTHERWISE
-                    // treat NIL as ""
-                    IF rhs:IsString  
-                        RETURN __StringNotEquals( "", rhs:_stringValue)
-                    ELSEIF lhs:IsString 
-                        RETURN __StringNotEquals( lhs:_stringValue,"")
-                    ENDIF
-                END SWITCH
+                IF lhs:IsNil .AND. rhs:IsNil
+                    RETURN FALSE        // when both are NIL then equal, so notequals returns false
+                ELSE
+                    RETURN TRUE         // one is NIL so notequals returns TRUE
+                ENDIF
             endif
 
             IF lhs:IsString .AND. rhs:IsString
@@ -2566,14 +2534,11 @@ BEGIN NAMESPACE XSharp
             /// <summary>This method is used by the compiler for code that does an inexact comparison.</summary>
         STATIC METHOD __InexactNotEquals( lhs AS __Usual, rhs AS STRING ) AS LOGIC
             IF lhs:IsNil 
-                SWITCH RuntimeState.Dialect
-                CASE XSharpDialect.XPP
-                    return true         // one is NIL so notequals returns TRUE
-                CASE XSharpDialect.FoxPro
+                IF RuntimeState.Dialect == XSharpDialect.FoxPro
                     THROW BinaryError("<>", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
-                OTHERWISE
-                    RETURN __StringNotEquals( "", rhs)
-                END SWITCH
+                ELSE
+                    return true         // one is NIL so notequals returns TRUE
+                ENDIF
             endif
             IF lhs:IsString
                 RETURN __StringNotEquals( lhs:_stringValue, rhs)

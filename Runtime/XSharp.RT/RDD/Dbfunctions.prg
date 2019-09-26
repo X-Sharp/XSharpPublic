@@ -45,9 +45,12 @@ FUNCTION DbRecall() AS LOGIC STRICT
 	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Recall())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbunlock/*" />
-FUNCTION DbUnLock(nRecord) AS LOGIC 
-	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Unlock(nRecord))
+FUNCTION DbUnLock() AS LOGIC STRICT
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Unlock(NULL_OBJECT))
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbunlock/*" />
+FUNCTION DbUnLock(nRecord AS LONG) AS LOGIC STRICT
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Unlock(nRecord))
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbzap/*" />
 FUNCTION DbZap() AS LOGIC STRICT

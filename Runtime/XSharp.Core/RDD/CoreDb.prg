@@ -159,11 +159,12 @@ CLASS XSharp.CoreDb
             IF lMakeUnique
                 LOCAL cTemp := cAlias AS STRING
                 LOCAL nCounter := 0 AS LONG
-                LOCAL nExistingArea := RuntimeState.Workareas.FindAlias(cAlias) as DWORD
+                VAR workareas := RuntimeState.Workareas
+                LOCAL nExistingArea := workareas:FindAlias(cAlias) as DWORD
                 DO WHILE nExistingArea != 0 
                     nCounter++
                     cAlias := cTemp+"_"+nCounter:ToString()
-                    nExistingArea := RuntimeState.Workareas.FindAlias(cAlias)
+                    nExistingArea := workareas:FindAlias(cAlias)
                 ENDDO
             ENDIF
         ENDIF
@@ -345,8 +346,9 @@ CLASS XSharp.CoreDb
         /// <note type="tip">VoDbCloseArea() and CoreDb.CloseArea() are aliases</note></remarks>
     STATIC METHOD CloseArea() AS LOGIC
         RETURN CoreDb.Do ({ =>
-            VAR uiNewArea := RuntimeState.Workareas:CurrentWorkAreaNO
-            RETURN RuntimeState.Workareas:CloseArea(uiNewArea)
+            var workareas := RuntimeState.Workareas
+            VAR uiNewArea := workareas:CurrentWorkAreaNO
+            RETURN workareas:CloseArea(uiNewArea)
         })
 
         /// <summary>
@@ -456,6 +458,7 @@ CLASS XSharp.CoreDb
         LOCAL uiOldArea := 0 AS DWORD
         LOCAL uiNewArea := 0 AS DWORD
         LOCAL ret   := FALSE   AS LOGIC
+        VAR workareas := RuntimeState.Workareas
         RuntimeState.LastRddError := NULL
         IF String.IsNullOrEmpty( cName )
             RddError.PostArgumentError( __FUNCTION__, EDB_USE, nameof(cName), 1, <OBJECT>{ cName } )
@@ -467,13 +470,13 @@ CLASS XSharp.CoreDb
             ret := TRUE   
         ENDIF
         IF lNew
-            uiNewArea := RuntimeState.Workareas:FindEmptyArea(TRUE)
+            uiNewArea := workareas:FindEmptyArea(TRUE)
         ELSE
             // VO Closes the current workarea
-            uiNewArea := RuntimeState.Workareas:CurrentWorkAreaNO
-            RuntimeState.Workareas:CloseArea(uiNewArea)
+            uiNewArea := workareas:CurrentWorkAreaNO
+            workareas:CloseArea(uiNewArea)
         ENDIF
-        RuntimeState.Workareas:CurrentWorkAreaNO := uiNewArea
+        workareas:CurrentWorkAreaNO := uiNewArea
         IF ret .AND. String.IsNullOrEmpty( cAlias ) && ! ( ret := CoreDb.AliasFromFilename( cName, cAlias ,!lKeep) )
             RddError.PostArgumentError( __FUNCTION__, EDB_BADALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
         ENDIF   
@@ -509,7 +512,7 @@ CLASS XSharp.CoreDb
                 dboi:Alias     := cAlias
                 dboi:WorkArea  := uiNewArea
                 oRDD:Alias     := cAlias
-                ret := RuntimeState.Workareas:SetArea(uiNewArea, oRDD)
+                ret := workareas:SetArea(uiNewArea, oRDD)
                 IF lJustOpen
                     ret := oRdd:Open( dboi )
                 ELSE
@@ -517,9 +520,9 @@ CLASS XSharp.CoreDb
                 ENDIF
             ENDIF
             IF ret .AND. ! lKeep
-                RuntimeState.Workareas:CloseArea(uiNewArea)
+                workareas:CloseArea(uiNewArea)
                 IF uiOldArea != 0
-                    RuntimeState.Workareas:CurrentWorkAreaNO := uiOldArea
+                    workareas:CurrentWorkAreaNO := uiOldArea
                 ENDIF
             ENDIF
         ENDIF
@@ -974,14 +977,15 @@ CLASS XSharp.CoreDb
         LOCAL oRDDDest AS IRDD
         LOCAL oRDDSrc AS IRDD
         LOCAL oValue  AS OBJECT
+        VAR workareas := RuntimeState.Workareas
         nCount := struList:Count
         nDestSel := struList:uiDestSel
-        oRDDDest := RuntimeState.Workareas.GetRDD(nDestSel)
+        oRDDDest := workareas:GetRDD(nDestSel)
         IF oRDDDest == NULL
             RddError.PostNoTableError(__FUNCTION__)
         ELSE
             FOR nFld := 0 TO nCount-1
-                oRDDSrc := RuntimeState.Workareas.GetRDD(struList:Fields[nFld]:Area)
+                oRDDSrc := workareas:GetRDD(struList:Fields[nFld]:Area)
                 IF oRDDSrc == NULL_OBJECT
                     RddError.PostNoTableError(__FUNCTION__)
                 ENDIF
@@ -1588,15 +1592,16 @@ CLASS XSharp.CoreDb
         
     STATIC METHOD Select(nNew AS DWORD,nOld REF DWORD ) AS LOGIC
         TRY
-            nOld := (DWORD) RuntimeState.Workareas:CurrentWorkAreaNO
+            VAR workareas := RuntimeState.Workareas
+            nOld := (DWORD) workareas:CurrentWorkAreaNO
             IF nNew != nOld
                 IF nNew == 0
-                    nNew := (DWORD) RuntimeState.Workareas:FindEmptyArea(TRUE)
+                    nNew := (DWORD) workareas:FindEmptyArea(TRUE)
                 ENDIF
                 IF nNew > WorkAreas.MaxWorkareas
                     RddError.PostArgumentError( __FUNCTION__, EDB_SELECT, nameof(nNew), 1, <OBJECT>{ nNew } )
                 ELSE
-                    RuntimeState.Workareas:CurrentWorkAreaNO :=  nNew
+                    workareas:CurrentWorkAreaNO :=  nNew
                 ENDIF
             ENDIF
             RETURN TRUE
@@ -1673,11 +1678,12 @@ CLASS XSharp.CoreDb
     STATIC METHOD SetRelation(cAlias AS STRING,oKey  AS ICodeblock,cKey AS STRING, cName AS STRING) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
-        LOCAL nDest := RuntimeState.Workareas.FindAlias(cAlias) AS DWORD
+        VAR workareas := RuntimeState.Workareas
+        LOCAL nDest := workareas:FindAlias(cAlias) AS DWORD
         IF nDest == 0
             RddError.PostArgumentError(__FUNCTION__,EDB_SETRELATION, nameof(cAlias), 1, <OBJECT>{cAlias})
         ENDIF
-        LOCAL oDest := RuntimeState.Workareas.GetRDD(nDest) AS IRDD
+        LOCAL oDest := workareas:GetRDD(nDest) AS IRDD
         IF oDest == NULL_OBJECT
             RddError.PostArgumentError(__FUNCTION__,EDB_SETRELATION, nameof(cAlias), 1, <OBJECT>{cAlias})
         ENDIF
@@ -1957,6 +1963,7 @@ CLASS XSharp.CoreDb
         RETURN CoreDb.Do ({ =>
         LOCAL ret   := FALSE AS LOGIC
         LOCAL area  := 0    AS DWORD
+        Var workareas := RuntimeState.Workareas
         IF String.IsNullOrEmpty( cName )
             RddError.PostArgumentError( __FUNCTION__, EDB_USE, nameof(cName), 3 , <OBJECT>{NULL})
         ELSE
@@ -1973,17 +1980,17 @@ CLASS XSharp.CoreDb
                 END TRY   
             ENDIF
             IF lNew
-                area := RuntimeState.Workareas:FindEmptyArea(TRUE)
+                area := workareas:FindEmptyArea(TRUE)
                 IF area > Workareas.MaxWorkareas  .OR. area == 0
                     ret := FALSE
                 ELSE
-                    RuntimeState.Workareas:CurrentWorkAreaNO := area
+                    workareas:CurrentWorkAreaNO := area
                 ENDIF
             ELSE
-                area := RuntimeState.Workareas:CurrentWorkAreaNO
+                area := workareas:CurrentWorkAreaNO
             ENDIF   
             IF ret
-                RuntimeState.Workareas:CloseArea(area)
+                workareas:CloseArea(area)
                 LOCAL rdd := CoreDb.CreateRDDInstance( rddType, cAlias ) AS IRDD
                 
                 IF rdd == NULL
@@ -1993,9 +2000,9 @@ CLASS XSharp.CoreDb
                     RddError.PostArgumentError( __FUNCTION__, EDB_DUPALIAS, nameof(cAlias), 4, <OBJECT>{ cAlias } )
                     ret := FALSE
                 ELSE
-                    LOCAL dboi := DBOPENINFO{} AS DBOPENINFO
+                    LOCAL dboi := DbOpenInfo{} AS DbOpenInfo
                     LOCAL uiArea AS DWORD
-                    uiArea := RuntimeState.Workareas:CurrentWorkAreaNO
+                    uiArea := workareas:CurrentWorkAreaNO
                     dboi:FileName     := Path.ChangeExtension( cName, NULL )
                     dboi:Extension    := Path.GetExtension( cName )
                     dboi:Shared      := lShare
@@ -2003,7 +2010,7 @@ CLASS XSharp.CoreDb
                     dboi:Alias       := cAlias
                     dboi:WorkArea    := uiArea
                     rdd:Alias        := cAlias
-                    ret := RuntimeState.Workareas:SetArea(uiArea, rdd)
+                    ret := workareas:SetArea(uiArea, rdd)
                     IF (ret)
                         TRY
                             RuntimeState.LastRddError := NULL
@@ -2014,9 +2021,9 @@ CLASS XSharp.CoreDb
                         END TRY
                     ENDIF
                     IF ! ret
-                        RuntimeState.Workareas:CloseArea(uiArea)
+                        workareas:CloseArea(uiArea)
                     ENDIF
-                    RuntimeState.Workareas:CurrentWorkAreaNO := uiArea
+                    workareas:CurrentWorkAreaNO := uiArea
                 ENDIF   
             ENDIF
         ENDIF

@@ -8,7 +8,7 @@
 //
 // Caution: do not modify this file. It will be overwritten during product updates
 //
-#xcommand ENDPROC => END PROCEDURE
-#xcommand ENDFUNC => END FUNCTION
-#xcommand ENDWITH => END WITH
-#xcommand ENDFOR  => NEXT
+#xcommand ENDPROC <*any*> => END PROCEDURE
+#xcommand ENDFUNC <*any*> => END FUNCTION
+#xcommand ENDWITH <*any*> => END WITH
+#xcommand ENDFOR  <*any*> => NEXT

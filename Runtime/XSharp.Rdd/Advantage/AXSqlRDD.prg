@@ -9,6 +9,9 @@ USING XSharp.RDD
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 USING System.Text
+USING System.Diagnostics
+
+[DebuggerDisplay("AXDBFVFP ({Alias,nq})")];
 CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
      PUBLIC _hStatement AS System.IntPtr
 

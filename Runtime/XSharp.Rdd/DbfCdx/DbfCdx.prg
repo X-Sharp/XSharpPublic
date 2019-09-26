@@ -8,10 +8,12 @@ USING XSharp.RDD.Support
 USING XSharp.RDD.CDX
 USING XSharp.RDD.Enums
 USING System.IO
+USING System.Diagnostics
 BEGIN NAMESPACE XSharp.RDD
     // Inherits all standard DBF and Memo behavior
     // Only adds Order Handling
     /// <summary>DBFCDX RDD. For DBF/FPT/CDX.</summary>
+[DebuggerDisplay("DBFCDX ({Alias,nq})")];
 CLASS DBFCDX INHERIT DBFFPT
 	INTERNAL _indexList  AS CdxOrderBagList
 INTERNAL PROPERTY CurrentOrder AS CdxTag GET _indexList:CurrentOrder

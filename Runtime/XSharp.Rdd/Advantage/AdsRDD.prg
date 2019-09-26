@@ -12,10 +12,12 @@ USING System.Text
 USING XSharp.RDD
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
-
+USING System.Diagnostics
+ 
 /// <summary>
 /// The AdsRDD class. 
 /// </summary>
+[DebuggerDisplay("AdsRDD ({Alias,nq})")];
 CLASS XSharp.ADS.AdsRDD INHERIT Workarea
   #region Fields
   //PRIVATE m_CallbackFn AS CallbackFn

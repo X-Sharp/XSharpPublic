@@ -12,10 +12,11 @@ USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 USING System.Globalization
 USING System.Collections.Generic
-
+USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBF RDD. Usually not used 'stand alone'</summary>
+[DebuggerDisplay("DBF ({Alias,nq})")];
 PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
 #region STATIC properties and fields
         STATIC PROTECT _Extension := ".DBF" AS STRING

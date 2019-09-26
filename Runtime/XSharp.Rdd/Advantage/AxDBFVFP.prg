@@ -6,9 +6,10 @@
 
 USING System
 USING XSharp.RDD
-
+USING System.Diagnostics
 
 /// <summary>Advantage.AXDBFVFP RDD </summary>
+[DebuggerDisplay("AXDBFVFP ({Alias,nq})")];
 CLASS XSharp.ADS.AXDBFVFP INHERIT ADSRDD
 	/// <summary>Create instande of RDD </summary>
     CONSTRUCTOR()
@@ -19,6 +20,7 @@ CLASS XSharp.ADS.AXDBFVFP INHERIT ADSRDD
 END CLASS
 
 /// <summary>Advantage.AXSQLVFP RDD </summary>
+[DebuggerDisplay("AXSQLVFP ({Alias,nq})")];
 CLASS XSharp.ADS.AXSQLVFP INHERIT AXSQLRDD 
 	/// <summary>Create instande of RDD </summary>
     CONSTRUCTOR()

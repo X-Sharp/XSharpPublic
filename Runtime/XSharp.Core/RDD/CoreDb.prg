@@ -137,7 +137,7 @@ CLASS XSharp.CoreDb
         info:Scope:Rest  := lRest     
         RETURN
         /// <exclude />   
-    INTERNAL STATIC METHOD AliasFromFilename( cFilename AS STRING, cAlias REF STRING ) AS LOGIC
+    INTERNAL STATIC METHOD AliasFromFilename( cFilename AS STRING, cAlias REF STRING , lMakeUnique as LOGIC) AS LOGIC
         LOCAL ret AS LOGIC
         TRY
             cAlias := Path.GetFileNameWithoutExtension( cFilename )
@@ -155,7 +155,17 @@ CLASS XSharp.CoreDb
                     sb:Append('_')
                 ENDIF
             NEXT
-            cAlias := sb:ToString()
+            cAlias := sb:ToString():ToUpper()
+            IF lMakeUnique
+                LOCAL cTemp := cAlias AS STRING
+                LOCAL nCounter := 0 AS LONG
+                LOCAL nExistingArea := RuntimeState.Workareas.FindAlias(cAlias) as DWORD
+                DO WHILE nExistingArea != 0 
+                    nCounter++
+                    cAlias := cTemp+"_"+nCounter:ToString()
+                    nExistingArea := RuntimeState.Workareas.FindAlias(cAlias)
+                ENDDO
+            ENDIF
         ENDIF
         RETURN ret   
         
@@ -464,7 +474,7 @@ CLASS XSharp.CoreDb
             RuntimeState.Workareas:CloseArea(uiNewArea)
         ENDIF
         RuntimeState.Workareas:CurrentWorkAreaNO := uiNewArea
-        IF ret .AND. String.IsNullOrEmpty( cAlias ) && ! ( ret := CoreDb.AliasFromFilename( cName, cAlias ) )
+        IF ret .AND. String.IsNullOrEmpty( cAlias ) && ! ( ret := CoreDb.AliasFromFilename( cName, cAlias ,!lKeep) )
             RddError.PostArgumentError( __FUNCTION__, EDB_BADALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
         ENDIF   
         IF ret .AND. ! ( ret := CoreDb.IsAliasUnused( cAlias ) )

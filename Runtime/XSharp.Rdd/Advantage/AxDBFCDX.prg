@@ -9,8 +9,9 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 USING XSharp.RDD
-
+USING System.Diagnostics
 /// <summary>Advantage.AXDBFCDX RDD </summary>
+[DebuggerDisplay("AXDBFCDX ({Alias,nq})")];
 CLASS XSharp.ADS.AXDBFCDX INHERIT ADSRDD
 	/// <summary>Create instande of RDD </summary>
 CONSTRUCTOR()
@@ -21,6 +22,7 @@ CONSTRUCTOR()
 END CLASS
 
 /// <summary>Advantage.AXSQLCDX RDD </summary>
+[DebuggerDisplay("AXSQLCDX ({Alias,nq})")];
 CLASS XSharp.ADS.AXSQLCDX INHERIT AXSQLRDD 
 	/// <summary>Create instande of RDD </summary>
 CONSTRUCTOR()

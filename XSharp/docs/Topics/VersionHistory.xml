@@ -10,13 +10,32 @@
     <header>
       <para styleclass="Heading1">Version History</para>
     </header>
+    <para styleclass="Heading1">Changes in 2.0.8 (Bandol GA 2.08)</para>
+    <para styleclass="Heading2">Compiler</para>
+    <para styleclass="Heading2">Runtime</para>
+    <list id="67" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">The DbCreate() function now creates a unique alias when the base filename of the file to create is already opened as an alias</li>
+      <li styleclass="List">The Numeric overflow checking for USUAL values now follows the overflow checks of the main app</li>
+      <li styleclass="List">DbUnLock() now accepts an (optional) record number as parameter</li>
+      <li styleclass="List">XMLGetChild() was throwing an exception when no elements were found </li>
+      <li styleclass="List">XMLGetChildren() was throwing an exception</li>
+    </list>
+    <para styleclass="Heading2">RDD System</para>
+    <list id="67" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Fixed a problem reading Advantage MEMO fields</li>
+    </list>
+    <para styleclass="Heading2">VS Integration</para>
+    <list id="67" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Fixed a problem with the code generation for DbServer and FieldSpec entities</li>
+      <li styleclass="List">Added support for the Import and Export buttons in the DbServer Editor</li>
+    </list>
     <para styleclass="Heading1">Changes in 2.0.7 (Bandol GA 2.07)</para>
     <para styleclass="Heading2">Possible breaking change</para>
-    <list id="132" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">We have removed the #define CRLF from the standard header file. There is a DEFINE CRLF in XSharp.Core now. If you are compiling against Vulcan and you are seeing an error about a missing CRLF then you may want to add the following to your code:</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">DEFINE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> CRLF := e”\r\n”</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></li>
+    <list id="66" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">We have removed the #define CRLF from the standard header file. There is a DEFINE CRLF in XSharp.Core now. If you are compiling against Vulcan and you are seeing an error about a missing CRLF then you may want to add the following to your code:</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">DEFINE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> CRLF := e”\r\n”</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></li>
     </list>
     <para styleclass="Heading2">Compiler</para>
-    <list id="132" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="66" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">UDCs that were resulting in an empty list of tokens were triggering a compiler error in the preprocessor. This has been fixed.</text></li>
     </list>
     <list id="67" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -101,7 +120,7 @@
       <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">Runtime errors in late bound code were always shown as TargetInvocationException. The true cause of the error was hidden that way. We are now unpacking the error and rethrowing the original error, including the callstack that was leading to that error</text></li>
       <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">Some texts in the string resources were updated</text></li>
       <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">Calling the Str() function with a -1 value for length and/or decimals produced results that were not compatible with VO. This was fixed.</text></li>
-      <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">Fixed a problem with DbZap() and files with a DBT memo.</text></li>
+      <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">Fixed a problem with </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbZap.htm" domain="XsRuntime.chm" styleclass="Normal">DBZap()</link><text style="font-weight:normal; font-style:normal; color:#000000;"> and files with a DBT memo.</text></li>
       <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">In some situations EOF and BOF were not set to TRUE when opening an empty DBF file. This has been fixed.</text></li>
       <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">PSZ values with an incorrect internal pointer are now displayed as &quot;&lt;Invalid PSZ&gt;(..)&quot;</text></li>
     </list>
@@ -197,7 +216,7 @@
     <para styleclass="Heading2">RDD System</para>
     <list id="67" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Fix locking problem in FPT files</li>
-      <li styleclass="List">Fixed several problems with OrdKeyCount() and filters, scopes and SetDeleted() setting</li>
+      <li styleclass="List">Fixed several problems with OrdKeyCount() and filters, scopes and <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDeleted.htm" domain="XsRuntime.chm" styleclass="Normal">SetDeleted()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">&#32;</text> setting</li>
       <li styleclass="List">Some DBF files have a value in the Decimals byte for field definitions for field types that do not support decimals. This was causing problems. These decimals are now ignored.</li>
       <li styleclass="List">Opening and closing a DBF without making changes was updating the time stamp. This has been fixed.</li>
       <li styleclass="List">Fixed problems in Pack() and Zap()</li>

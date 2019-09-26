@@ -25,7 +25,7 @@
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INTERNATIONAL">SET INTERNATIONAL</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetCollation">SetCollation()</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INTERNATIONAL">SET INTERNATIONAL</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetCollation.htm" domain="XsRuntime.chm">SetCollation()</link></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

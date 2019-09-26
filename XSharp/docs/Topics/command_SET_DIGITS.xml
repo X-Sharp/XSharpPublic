@@ -27,7 +27,7 @@
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetDigit">SetDigit()</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDigit.htm" domain="XsRuntime.chm">SetDigit()</link></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

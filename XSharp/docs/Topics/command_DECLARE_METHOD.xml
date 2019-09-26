@@ -12,11 +12,9 @@
     <header>
       <para styleclass="Heading1"> DECLARE METHOD Statement</para>
     </header>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Permit strong typing of METHODs, ACCESSes and ASSIGNs in &lt;%APP%&gt;.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">For strong typing of methods, use the following in the body of a class declaration:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example">DECLARE ( ACCESS | ASSIGN | METHOD ) &lt;message_identifier_list&gt;</para>
@@ -24,8 +22,7 @@
     <para styleclass="Normal">Although this declaration is optional, it is in some rare cases compulsory, this being the most adequate means of providing the &lt;%APP%&gt; system with a specific ordering of all typed methods introduced with the definition of the respective class. &#160;For more information, refer to the Typed Early Bound Methods section in the &quot;Objects, Classes, and Methods&quot; chapter of the <text styleclass="Italic">Programmer&apos;s Guide</text>.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>DECLARE and DECLARE METHOD are two completely different statements! </para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DECLARE">DECLARE</link></para>
     <para styleclass="Normal"></para>
   </body>

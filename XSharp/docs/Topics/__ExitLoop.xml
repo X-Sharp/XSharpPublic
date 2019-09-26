@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__ExitLoop</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__ExitLoop</para>
+    </header>
+    <para styleclass="List">EXIT<tab />Unconditionally branches control from within a FOR...NEXT or DO WHILE structure to the statement immediately following the corresponding ENDDO or NEXT statement.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">LOOP<tab />Branches control to the most recently executed FOR or DO WHILE statement.</para>
+  </body>
+</topic>

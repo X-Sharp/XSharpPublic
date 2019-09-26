@@ -1,12 +1,16 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>__IncludeLibRT</title>
+  <title>__IncludeLibCore</title>
+  <keywords>
+    <keyword>XSharp.Core.DLL</keyword>
+  </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">__IncludeLibRT</para>
+      <para styleclass="Heading1">__IncludeLibCore</para>
+      <para styleclass="Normal"></para>
     </header>
     <para styleclass="Heading1">Assembly</para>
-    <para styleclass="Normal">XSharp.RT.DLL</para>
+    <para styleclass="Normal">XSharp.Core.DLL</para>
   </body>
 </topic>

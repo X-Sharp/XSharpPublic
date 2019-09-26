@@ -25,11 +25,9 @@
     <para styleclass="List"></para>
     <para styleclass="List"><text styleclass="Normal">TO &lt;</text><text styleclass="Italic">idVarList</text><text styleclass="Normal">&gt;</text><tab /><text styleclass="Normal">A list of receiving variable or field names which will contain the average results. &#160;Variables that either do not exist or are not visible are created as private variables. &#160;&lt;</text><text styleclass="Italic">idVarList</text><text styleclass="Normal">&gt; must contain the same number of elements as &lt;</text><text styleclass="Italic">nValueList</text><text styleclass="Normal">&gt;.</text></para>
     <para styleclass="List"></para>
-    <para styleclass="List"><text styleclass="Normal">&lt;</text><text styleclass="Italic">Scope</text><text styleclass="Normal">&gt;</text><tab /><text styleclass="Normal">The portion of the current database file to process. &#160;The default is all visible records in &lt;</text><text styleclass="Italic">xcSourceFile</text><text styleclass="Normal">&gt;.</text></para>
-    <para styleclass="List"></para>
-    <para styleclass="List"><text styleclass="Normal">WHILE &lt;</text><text styleclass="Italic">lCondition</text><text styleclass="Normal">&gt;</text><tab /><text styleclass="Normal">A condition that each visible record within the scope must meet, starting with the current record. &#160;As soon as the while condition fails, the process terminates. &#160;If no &lt;</text><text styleclass="Italic">Scope</text><text styleclass="Normal">&gt; is specified, having a while condition changes the default scope to the rest of the visible records in the file.</text></para>
-    <para styleclass="List"></para>
-    <para styleclass="List"><text styleclass="Normal">FOR &lt;</text><text styleclass="Italic">lCondition</text><text styleclass="Normal">&gt;</text><tab /><text styleclass="Normal">A condition that each visible record within the scope must meet in order to be processed. &#160;If a record does not meet the specified condition, it is ignored and the next visible record is processed.</text></para>
+    <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
+    <para styleclass="List"><snippet src="__While" inline="false"/></para>
+    <para styleclass="List"><snippet src="__For" inline="false"/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
     <para styleclass="Normal">Zero (0) values are counted in the AVERAGE unless explicitly ruled out with a FOR condition.</para>
@@ -48,7 +46,7 @@
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COUNT">COUNT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBEval">DBEval()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SUM">SUM</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_TOTAL">TOTAL</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COUNT">COUNT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbEval.htm" domain="XsRuntime.chm">DBEval()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SUM">SUM</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_TOTAL">TOTAL</link></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

@@ -27,7 +27,7 @@
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBSetDriver">DBSetDriver()</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetDriver.htm" domain="XsRuntime.chm">DbSetDriver()</link></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

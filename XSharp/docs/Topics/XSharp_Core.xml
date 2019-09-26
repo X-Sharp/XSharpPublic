@@ -15,7 +15,7 @@
       <li styleclass="List">Runtime functions that use standard .Net datatypes such as SLen(), AllTrim(), SLen().</li>
     </list>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List">The Runtime State (SetDeleted(), SetExact() etc)</li>
+      <li styleclass="List">The Runtime State (<link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDeleted.htm" domain="XsRuntime.chm" styleclass="Normal">SetDeleted()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">&#32;</text>, SetExact() etc)</li>
       <li styleclass="List">The Workarea information </li>
       <li styleclass="List">The nation resources and collations.</li>
     </list>

@@ -17,14 +17,11 @@
     <header>
       <para styleclass="Heading1">PUBLIC Statement</para>
     </header>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Creates variables and arrays visible to all routines in an application.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal">PUBLIC &lt;<text styleclass="Italic">idVar</text>&gt; [:= &lt;<text styleclass="Italic">uValue</text>&gt;] | &lt;<text styleclass="Italic">ArraySpec</text>&gt; [, ...]</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">&lt;idVar&gt;<tab />A valid identifier name for the public variable to create.</para>
     <para styleclass="List"></para>
     <para styleclass="List">&lt;uValue&gt;<tab />The initial value to assign to the variable. &#160;This can be any valid expression. &#160;If &lt;uValue&gt; is not specified, the variable is initialized to FALSE.</para>
@@ -35,8 +32,7 @@
     <para styleclass="List"><tab />All dimensions except the first are optional.</para>
     <para styleclass="List"><tab />&lt;idArray&gt; is a valid identifier name for the array to create. &#160;Array elements are initialized to NIL.</para>
     <para styleclass="List"><tab />&lt;nElements&gt; defines the number of elements in a particular dimension of an array. &#160;The number of dimensions is determined by how many &lt;nElements&gt; arguments you specify.</para>
-    <para styleclass="List"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">PUBLIC is an executable statement which means you must specify it after any variable declaration statements (i.e., FIELD, LOCAL, and MEMVAR) in the routine that you are defining.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Warning! &#160;</text><text styleclass="Italic">Any reference to a variable created with this statement will produce a compiler error unless the Undeclared Variables compiler option is checked.</text></para>
@@ -55,10 +51,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This behavior has an interesting repercussion when you declare a public array using a variable name that already exists as private. &#160;For example:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example">PRIVATE x := 1000</para>
-    <para styleclass="Code Example">...</para>
-    <para styleclass="Code Example">PUBLIC x[10]</para>
-    <para styleclass="Code Example">? x[1]<tab /><tab /><tab /><tab />// Result: &#160;NIL</para>
+    <para styleclass="Code Example">PRIVATE x := 1000<br/>...<br/>PUBLIC x[10]<br/>? x[1]<tab /><tab /><tab /><tab />// Result: &#160;NIL</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">In this case, the PUBLIC statement is also treated as two separate statements:</para>
     <para styleclass="Normal"></para>
@@ -69,11 +62,9 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">In class methods, instance variables (with the exception of access/assign variables) are always more visible than public variables of the same name. &#160;Use the _MEMVAR-&gt; alias to access a public variable within a method if there is a name conflict. &#160;For access/assign variables, use the SELF: &#160;prefix to override a name conflict with a public variable.</para>
     <para styleclass="Normal">Public variables are dynamically scoped. &#160;They exist for the duration of the application or until explicitly released with CLEAR ALL or CLEAR MEMORY. &#160;For more information on variable declarations and scoping, refer to the &quot;Variables, Constants, and Declarations&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide</text>.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
+    <para styleclass="Heading1">Notes</para>
     <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">PUBLIC Clipper: &#160;</text>To include &lt;%APP%&gt; extensions in an application and still allow the application to run under dBASE III PLUS, the special public variable, Clipper, is initialized to TRUE when created with PUBLIC.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Heading1">Examples</para>
     <para styleclass="Normal">This example creates two PUBLIC arrays and one PUBLIC variable:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example">PUBLIC aArray1[10, 10], var2<br/>PUBLIC aArray2[20][10]</para>
@@ -81,8 +72,7 @@
     <para styleclass="Normal">The following PUBLIC statements create variables and initialize them with values:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example">PUBLIC cString := Space(10), cColor := SetColor()<br/>PUBLIC aArray := {1, 2, 3}, ;<br/><tab />aArray2 := ArrayNew(12, 24)</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_GLOBAL">GLOBAL</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_MEMVAR">MEMVAR</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PARAMETERS">PARAMETERS</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PRIVATE">PRIVATE</link></para>
     <para styleclass="Normal"></para>
   </body>

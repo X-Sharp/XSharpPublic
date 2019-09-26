@@ -21,13 +21,16 @@
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
     <para styleclass="Normal">SET DECIMALS TO [&lt;<text styleclass="Italic">nDecimals</text>&gt;]</para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List"><text styleclass="Italic">nDecimals</text>&#32;<tab />Specifies the minimum number of decimal places to display. The default is two decimal places. The maximum number of decimal places is 18; the minimum is zero</para>
+    <para styleclass="List"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
     <para styleclass="Normal">SET DECIMALS TO with no argument is equivalent to SET DECIMALS TO 0. &#160;SET DECIMALS is functionally equivalent to SetDecimal(). &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetDecimal">SetDecimal()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetDecimalSep">SetDecimalSep()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetFixed">SetFixed()</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDecimal.htm" domain="XsRuntime.chm">SetDecimal()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDecimalSep.htm" domain="XsRuntime.chm">SetDecimalSep()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetFixed.htm" domain="XsRuntime.chm">SetFixed()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">,</text></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

@@ -22,6 +22,11 @@
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
     <para styleclass="Normal">SET ANSI ON | OFF | (&lt;<text styleclass="Italic">lToggle</text>&gt;)</para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">ON <tab /></para>
+    <para styleclass="List">OFF<tab /></para>
+    <para styleclass="List">lToggle<tab /><text styleclass="Body Text">A logical expression which must appear in parentheses. True is equivalent to ON, False to OFF</text></para>
+    <para styleclass="List"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
     <para styleclass="Normal">SET ANSI is functionally equivalent to SetAnsi().</para>
     <para styleclass="Normal"></para>

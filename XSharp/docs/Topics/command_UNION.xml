@@ -43,11 +43,11 @@
     <para styleclass="List"></para>
     <para styleclass="List"><tab />&lt;nElements&gt; can be a literal numeric representation or a simple numeric expression involving only operators, literals, and DEFINE constants; however, more complicated expressions (such as function calls) are not allowed.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">AS &lt;idType&gt;<tab />Specifies the data type of the variable you are declaring (called <link displaytype="text" defaultstyle="true" type="topiclink" href="strong_typing_gloss" domain="CavoIde.hmxz">strong typing</link>). &#160;For DIM arrays, declares the data type for all array elements. &#160;The AS &lt;idType&gt; is required for all union members.</para>
+    <para styleclass="List">AS &lt;idType&gt;<tab />Specifies the data type of the variable you are declaring (called <link displaytype="text" defaultstyle="true" type="topiclink" href="Strong-Typing" styleclass="Normal">strong typing</link>). &#160;For DIM arrays, declares the data type for all array elements. &#160;The AS &lt;idType&gt; is required for all union members.</para>
     <para styleclass="List"></para>
     <para styleclass="List"><tab />Refer to the CLASS entry for a list of valid values for &lt;idType&gt;. &#160;Note that the following data types are not supported in unions because they are dynamic types that require garbage collection:</para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <list id="0" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <list id="1" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="List">ARRAY</li>
         <li styleclass="List">FLOAT</li>
         <li styleclass="List">OBJECT</li>

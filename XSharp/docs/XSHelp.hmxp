@@ -12,7 +12,6 @@
               <task-config-value name="deletetemp">1</task-config-value>
               <task-config-value name="make0include">CHM</task-config-value>
               <task-config-value name="make0status">*</task-config-value>
-              <task-config-value name="table_of_contents">Table of Contents</task-config-value>
             </task-config-group>
           </export-task>
           <export-task name="Publish as HTM" format="HTM">
@@ -68,7 +67,7 @@
       </styleclass>
       <styleclass name="Body Text" parentclass="Normal" shortcut="114"/>
       <styleclass name="List" parentclass="Body Text" shortcut="32882">
-        <style-set media="screen" type="para">text-indent:-125px; margin-bottom:0px; margin-left:125px; tabstops:144px left,192px left ;</style-set>
+        <style-set media="screen" type="para">text-indent:-192px; margin-left:192px; tabstops:192px left,240px left ;</style-set>
       </styleclass>
       <styleclass name="Bold" parentclass="Normal" shortcut="0">
         <style-set media="screen" type="text">font-weight:bold;</style-set>
@@ -636,10 +635,10 @@
     <config-group name="user">
       <config-group name="robert">
         <config-group name="project">
-          <config-value name="lastexport">3</config-value>
+          <config-value name="lastexport">0</config-value>
         </config-group>
         <config-group name="report">
-          <config-value name="type">6</config-value>
+          <config-value name="type">2</config-value>
           <config-value name="sort">1</config-value>
           <config-value name="include">ALL</config-value>
         </config-group>
@@ -666,7 +665,7 @@
       <config-value name="imageconversion">1</config-value>
       <config-value name="jpgquality">90</config-value>
       <config-value name="htmlpopup">3</config-value>
-      <config-value name="skin">D:\Products\vn2ado\Docs\Heliks.hmskin</config-value>
+      <config-value name="skin">XSharp.hmskin</config-value>
       <config-value name="outputfile">..\Binaries\Help\XSharp.chm</config-value>
       <config-value name="deletetemp">1</config-value>
       <config-value name="usesecondarywindows">0</config-value>
@@ -707,151 +706,6 @@
       <file-mod href="X-Compiler-Warnings.xml" build="CHM,HTML,HXS"/>
       <file-mod href="X-Compiler-Errors-and-Warnings.xml" build="EBOOK,PDF,PRINT"/>
       <file-mod href="new-feat-PROCEDURE-inside-CLASS.xml"/>
-      <file-mod href="Amp_Command.xml"/>
-      <file-mod href="Qout_Command.xml"/>
-      <file-mod href="X-Commands.xml"/>
-      <file-mod href="Commands-in-Alphabetical-Order.xml"/>
-      <file-mod href="Commands-by-Category.xml"/>
-      <file-mod href="cmd_cat_comment.xml"/>
-      <file-mod href="cmd_cat_concur.xml"/>
-      <file-mod href="cmd_cat_Database.xml"/>
-      <file-mod href="cmd_cat_date.xml"/>
-      <file-mod href="cmd_cat_entdecl.xml"/>
-      <file-mod href="cmd_cat_set.xml"/>
-      <file-mod href="cmd_cat_file.xml"/>
-      <file-mod href="cmd_cat_index.xml"/>
-      <file-mod href="cmd_cat_international.xml"/>
-      <file-mod href="cmd_cat_memvar.xml"/>
-      <file-mod href="cmd_cat_num.xml"/>
-      <file-mod href="cmd_cat_control.xml"/>
-      <file-mod href="cmd_cat_rtdecl.xml"/>
-      <file-mod href="cmd_cat_terminal.xml"/>
-      <file-mod href="cmd_cat_vardecl.xml"/>
-      <file-mod href="command_APPEND_BLANK.xml"/>
-      <file-mod href="command_APPEND_FROM.xml"/>
-      <file-mod href="command_AVERAGE.xml"/>
-      <file-mod href="command_CLEAR_ALL.xml"/>
-      <file-mod href="command_CONTINUE.xml"/>
-      <file-mod href="command_COPY_STRUCTURE.xml"/>
-      <file-mod href="command_COPY_STRUCTURE_EXTENDE.xml"/>
-      <file-mod href="command_COPY_TO.xml"/>
-      <file-mod href="command_COUNT.xml"/>
-      <file-mod href="command_CREATE.xml"/>
-      <file-mod href="command_CREATE_FROM.xml"/>
-      <file-mod href="command_DELETE.xml"/>
-      <file-mod href="command_GO.xml"/>
-      <file-mod href="command_JOIN.xml"/>
-      <file-mod href="command_LOCATE.xml"/>
-      <file-mod href="command_PACK.xml"/>
-      <file-mod href="command_RECALL.xml"/>
-      <file-mod href="command_REPLACE.xml"/>
-      <file-mod href="command_SELECT.xml"/>
-      <file-mod href="command_SET_DELETED.xml"/>
-      <file-mod href="command_SET_FILTER.xml"/>
-      <file-mod href="command_SET_MEMOBLOCK.xml"/>
-      <file-mod href="command_SET_RELATION.xml"/>
-      <file-mod href="command_SKIP.xml"/>
-      <file-mod href="command_SORT.xml"/>
-      <file-mod href="command_SUM.xml"/>
-      <file-mod href="command_TOTAL.xml"/>
-      <file-mod href="command_UPDATE.xml"/>
-      <file-mod href="command_ZAP.xml"/>
-      <file-mod href="command__DLL.xml"/>
-      <file-mod href="command_ACCESS.xml"/>
-      <file-mod href="command_ASSIGN.xml"/>
-      <file-mod href="command_CLASS.xml"/>
-      <file-mod href="command_INTERFACE.xml"/>
-      <file-mod href="command_CONSTRUCTOR.xml"/>
-      <file-mod href="command_DECLARE_METHOD.xml"/>
-      <file-mod href="command_DEFINE.xml"/>
-      <file-mod href="command_DESTRUCTOR.xml"/>
-      <file-mod href="command_EVENT.xml"/>
-      <file-mod href="command_FUNCTION.xml"/>
-      <file-mod href="command_GLOBAL.xml"/>
-      <file-mod href="command_METHOD.xml"/>
-      <file-mod href="command_OPERATOR.xml"/>
-      <file-mod href="command_PROCEDURE.xml"/>
-      <file-mod href="command_PROPERTY.xml"/>
-      <file-mod href="command_STRUCTURE.xml"/>
-      <file-mod href="command_UNION.xml"/>
-      <file-mod href="command_VOSTRUCT.xml"/>
-      <file-mod href="command_SET_ANSI.xml"/>
-      <file-mod href="command_SET_CENTURY.xml"/>
-      <file-mod href="command_SET_DATE.xml"/>
-      <file-mod href="command_SET_DATE_FORMAT.xml"/>
-      <file-mod href="command_SET_DRIVER.xml"/>
-      <file-mod href="command_SET_EPOCH.xml"/>
-      <file-mod href="command_SET_EXACT.xml"/>
-      <file-mod href="command_COPY_FILE.xml"/>
-      <file-mod href="command_DELETE_FILE.xml"/>
-      <file-mod href="command_DIR.xml"/>
-      <file-mod href="command_ERASE.xml"/>
-      <file-mod href="command_RENAME.xml"/>
-      <file-mod href="command_SET_DEFAULT.xml"/>
-      <file-mod href="command_SET_PATH.xml"/>
-      <file-mod href="command_CLOSE.xml"/>
-      <file-mod href="command_DELETE_TAG.xml"/>
-      <file-mod href="command_FIND.xml"/>
-      <file-mod href="command_INDEX.xml"/>
-      <file-mod href="command_REINDEX.xml"/>
-      <file-mod href="command_SEEK.xml"/>
-      <file-mod href="command_SET_DESCENDING.xml"/>
-      <file-mod href="command_SET_INDEX.xml"/>
-      <file-mod href="command_SET_OPTIMIZE.xml"/>
-      <file-mod href="command_SET_ORDER.xml"/>
-      <file-mod href="command_SET_SCOPE.xml"/>
-      <file-mod href="command_SET_SCOPEBOTTOM.xml"/>
-      <file-mod href="command_SET_SCOPETOP.xml"/>
-      <file-mod href="command_SET_SOFTSEEK.xml"/>
-      <file-mod href="command_SET_UNIQUE.xml"/>
-      <file-mod href="command_SET_COLLATION.xml"/>
-      <file-mod href="command_SET_INTERNATIONAL.xml"/>
-      <file-mod href="command_CLEAR_MEMORY.xml"/>
-      <file-mod href="command_PRIVATE.xml"/>
-      <file-mod href="command_RESTORE.xml"/>
-      <file-mod href="command_SAVE.xml"/>
-      <file-mod href="command_STORE.xml"/>
-      <file-mod href="command_SET_DECIMALS.xml"/>
-      <file-mod href="command_SET_DIGITFIXED.xml"/>
-      <file-mod href="command_SET_DIGITS.xml"/>
-      <file-mod href="command_SET_FIXED.xml"/>
-      <file-mod href="command_IFDEF.xml"/>
-      <file-mod href="command_IFNDEF.xml"/>
-      <file-mod href="command_BEGIN_SEQUENCE.xml"/>
-      <file-mod href="command_CANCEL.xml"/>
-      <file-mod href="command_DEFAULT.xml"/>
-      <file-mod href="command_DO_CASE.xml"/>
-      <file-mod href="command_DO.xml"/>
-      <file-mod href="command_DO_WHILE.xml"/>
-      <file-mod href="command_EXTERNAL.xml"/>
-      <file-mod href="command_FOR.xml"/>
-      <file-mod href="command_FOREACH.xml"/>
-      <file-mod href="command_IF.xml"/>
-      <file-mod href="command_NOP.xml"/>
-      <file-mod href="command_QUIT.xml"/>
-      <file-mod href="command_REPEAT_UNTIL.xml"/>
-      <file-mod href="command_RETURN.xml"/>
-      <file-mod href="command_RUN.xml"/>
-      <file-mod href="command_SWITCH.xml"/>
-      <file-mod href="command_TEXT.xml"/>
-      <file-mod href="command_TRY_CATCH.xml"/>
-      <file-mod href="command_DECLARE.xml"/>
-      <file-mod href="command_PARAMETERS.xml"/>
-      <file-mod href="command_PUBLIC.xml"/>
-      <file-mod href="command_RELEASE.xml"/>
-      <file-mod href="command_QUESTION.xml"/>
-      <file-mod href="command_ACCEPT.xml"/>
-      <file-mod href="command_SET_COLOR.xml"/>
-      <file-mod href="command_WAIT.xml"/>
-      <file-mod href="command_FIELD.xml"/>
-      <file-mod href="command_LOCAL.xml"/>
-      <file-mod href="command_MEMVAR.xml"/>
-      <file-mod href="command_STATIC.xml"/>
-      <file-mod href="command_COMMIT.xml"/>
-      <file-mod href="command_SET_EXCLUSIVE.xml"/>
-      <file-mod href="command_UNLOCK.xml"/>
-      <file-mod href="command_USE.xml"/>
-      <file-mod href="command_NOTE.xml"/>
       <file-mod href="Embedded_topics.xml"/>
       <file-mod href="__isType.xml"/>
       <file-mod href="__callingconvention.xml"/>
@@ -864,6 +718,7 @@
       <file-mod href="__asType.xml"/>
       <file-mod href="__typeList.xml"/>
       <file-mod href="Disclaimer.xml"/>
+      <file-mod href="__IncludeLibCore.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

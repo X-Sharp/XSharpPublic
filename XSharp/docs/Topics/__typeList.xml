@@ -8,18 +8,19 @@
     </header>
     <para styleclass="List"><tab />The valid values for &lt;idType&gt; and the initial values associated with each are listed in the table below:</para>
     <para styleclass="List"></para>
-    <para styleclass="List" style="text-indent:-174px; margin-left:304px; tabstops:144px left,385px left ;">Data Type<tab />Default/Initial Value<tab /></para>
-    <para styleclass="List" style="text-indent:-174px; margin-left:304px; tabstops:144px left,385px left ;">ARRAY<tab />NULL_ARRAY<tab /></para>
-    <para styleclass="List" style="text-indent:-174px; margin-left:304px; tabstops:144px left,385px left ;">CODEBLOCK<tab />NULL_CODEBLOCK<tab /></para>
-    <para styleclass="List" style="text-indent:-174px; margin-left:304px; tabstops:144px left,385px left ;">DATE<tab />NULL_DATE<tab /></para>
-    <para styleclass="List" style="text-indent:-174px; margin-left:304px; tabstops:144px left,385px left ;">LOGIC<tab />FALSE<tab /></para>
-    <para styleclass="List" style="text-indent:-174px; margin-left:304px; tabstops:144px left,385px left ;">OBJECT<tab />NULL_OBJECT<tab /></para>
-    <para styleclass="List" style="text-indent:-174px; margin-left:304px; tabstops:144px left,385px left ;">&lt;idClass&gt;<tab />NULL_OBJECT</para>
-    <para styleclass="List" style="text-indent:-174px; margin-left:304px; tabstops:144px left,385px left ;">STRING<tab />NULL_STRING<tab /></para>
-    <para styleclass="List" style="text-indent:-174px; margin-left:304px; tabstops:144px left,385px left ;">SYMBOL<tab />NULL_SYMBOL<tab /></para>
-    <para styleclass="List" style="text-indent:-174px; margin-left:304px; tabstops:144px left,385px left ;">All numerics<tab />0<tab /></para>
-    <para styleclass="List" style="text-indent:-174px; margin-left:304px; tabstops:144px left,385px left ;">USUAL<tab />NIL<tab /></para>
-    <para styleclass="List" style="text-indent:-174px; margin-left:304px; tabstops:144px left,385px left ;">PSZ<tab />NULL_PSZ<tab /></para>
-    <para styleclass="List" style="text-indent:-174px; margin-left:304px; tabstops:144px left,385px left ;">PTR<tab />NULL_PTR<tab /></para>
+    <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">Data Type<tab />Default/Initial Value<tab /></para>
+    <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">ARRAY<tab />NULL_ARRAY<tab /></para>
+    <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">CODEBLOCK<tab />NULL_CODEBLOCK<tab /></para>
+    <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">DATE<tab />NULL_DATE<tab /></para>
+    <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">LOGIC<tab />FALSE<tab /></para>
+    <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">OBJECT<tab />NULL_OBJECT<tab /></para>
+    <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">&lt;idClass&gt;<tab />NULL_OBJECT</para>
+    <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">STRING<tab />NULL_STRING<tab /></para>
+    <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">SYMBOL<tab />NULL_SYMBOL<tab /></para>
+    <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">All numerics<tab />0<tab /></para>
+    <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">USUAL<tab />NIL<tab /></para>
+    <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">PSZ<tab />NULL_PSZ<tab /></para>
+    <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">PTR<tab />NULL_PTR<tab /></para>
+    <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;"></para>
   </body>
 </topic>

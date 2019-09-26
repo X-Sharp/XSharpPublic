@@ -5,6 +5,9 @@
   </topicref>
   <topicref type="topic" id="436965854048353" modified="2019-08-27T15:20:43.693Z" icon="0" href="Embedded_topics">
     <caption translate="true">Embedded topics</caption>
+    <topicref type="topic" id="437327054001047" modified="2019-09-24T16:44:57.848Z" icon="0" href="__IncludeLibCore">
+      <caption translate="true">__IncludeLibCore</caption>
+    </topicref>
     <topicref type="topic" id="437046261841966" modified="2019-09-03T15:19:40.116Z" icon="0" href="__isType">
       <caption translate="true">__isType</caption>
     </topicref>
@@ -37,6 +40,21 @@
     </topicref>
     <topicref type="topic" id="437116843107858" modified="2019-09-03T15:31:32.101Z" icon="0" href="Disclaimer">
       <caption translate="true">__Disclaimer</caption>
+    </topicref>
+    <topicref type="topic" id="437330441530835" build="ALL" modified="2019-09-24T20:50:10.122Z" icon="0" href="__In">
+      <caption translate="true">__In</caption>
+    </topicref>
+    <topicref type="topic" id="437326588013049" build="ALL" modified="2019-09-24T15:12:08.647Z" icon="0" href="__Scope">
+      <caption translate="true">__Scope</caption>
+    </topicref>
+    <topicref type="topic" id="437329182366536" build="ALL" modified="2019-09-24T20:55:10.596Z" icon="0" href="__For">
+      <caption translate="true">__For</caption>
+    </topicref>
+    <topicref type="topic" id="437327618609533" build="ALL" modified="2019-09-24T20:55:24.780Z" icon="0" href="__While">
+      <caption translate="true">__While</caption>
+    </topicref>
+    <topicref type="topic" id="437330452404445" build="ALL" modified="2019-09-24T21:32:40.736Z" icon="0" href="__ExitLoop">
+      <caption translate="true">__ExitLoop</caption>
     </topicref>
   </topicref>
   <topicref type="topic" id="423886812341331" build="ALL" modified="2019-06-14T18:30:32.542Z" icon="0" href="XSharp">
@@ -369,6 +387,9 @@
       </topicref>
       <topicref type="topic" id="423891384096573" build="ALL" modified="2019-01-31T09:46:43.047Z" icon="0" href="XML-Documentation-Comments">
         <caption translate="true">XML Documentation Comments</caption>
+      </topicref>
+      <topicref type="topic" id="437324895106794" build="ALL" modified="2019-09-24T16:40:41.768Z" icon="0" href="Strong-Typing">
+        <caption translate="true">Strong Typing</caption>
       </topicref>
     </topicref>
     <topicref type="topic" id="427443291795393" build="ALL" modified="2017-01-09T09:11:10.581Z" icon="0" href="X-Reference">
@@ -771,538 +792,538 @@
             <caption translate="true">Workarea</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="436904872840076" modified="2019-08-27T14:17:37.792Z" icon="0" href="X-Commands">
+        <topicref type="topic" id="436904872840076" build="ALL" modified="2019-09-24T13:44:34.010Z" icon="0" href="X-Commands">
           <caption translate="true">X# Commands and Statements</caption>
-          <topicref type="topic" id="43689689406335" modified="2019-08-27T14:17:37.801Z" icon="0" href="Commands-in-Alphabetical-Order">
+          <topicref type="topic" id="43689689406335" build="ALL" modified="2019-09-24T13:44:34.016Z" icon="0" href="Commands-in-Alphabetical-Order">
             <caption translate="true">Commands in Alphabetical Order</caption>
           </topicref>
-          <topicref type="topic" id="436906885634999" modified="2019-08-27T14:17:37.810Z" icon="0" href="Commands-by-Category">
+          <topicref type="topic" id="436906885634999" build="ALL" modified="2019-09-24T13:44:34.021Z" icon="0" href="Commands-by-Category">
             <caption translate="true">Commands by Category</caption>
-            <topicref type="topic" id="436964307295986" modified="2019-08-27T14:17:37.819Z" icon="0" href="cmd_cat_comment">
+            <topicref type="topic" id="436964307295986" build="ALL" modified="2019-09-24T13:44:42.144Z" icon="0" href="cmd_cat_comment">
               <caption translate="true">Comment</caption>
-              <topicref type="topic" id="384614496544850" modified="2019-08-27T14:20:29.064Z" icon="0" href="command_NOTE">
+              <topicref type="topic" id="384614496544850" build="ALL" modified="2019-09-24T13:46:37.943Z" icon="0" href="command_NOTE">
                 <caption translate="true">NOTE Command</caption>
               </topicref>
             </topicref>
-            <topicref type="topic" id="436967444455831" modified="2019-08-27T14:17:37.828Z" icon="0" href="cmd_cat_concur">
+            <topicref type="topic" id="436967444455831" build="ALL" modified="2019-09-24T13:44:42.151Z" icon="0" href="cmd_cat_concur">
               <caption translate="true">Concurrency Control</caption>
-              <topicref type="topic" id="384612166350409" modified="2019-08-27T14:20:23.865Z" icon="0" href="command_COMMIT">
+              <topicref type="topic" id="384612166350409" build="ALL" modified="2019-09-24T13:46:33.719Z" icon="0" href="command_COMMIT">
                 <caption translate="true">COMMIT Command</caption>
               </topicref>
-              <topicref type="topic" id="384612650664417" modified="2019-08-27T14:20:23.872Z" icon="0" href="command_SET_EXCLUSIVE">
+              <topicref type="topic" id="384612650664417" build="ALL" modified="2019-09-24T13:46:33.725Z" icon="0" href="command_SET_EXCLUSIVE">
                 <caption translate="true">SET EXCLUSIVE Command</caption>
               </topicref>
-              <topicref type="topic" id="384614716522422" modified="2019-08-27T14:20:23.880Z" icon="0" href="command_UNLOCK">
+              <topicref type="topic" id="384614716522422" build="ALL" modified="2019-09-24T13:46:33.730Z" icon="0" href="command_UNLOCK">
                 <caption translate="true">UNLOCK Command</caption>
               </topicref>
-              <topicref type="topic" id="385415468003728" modified="2019-08-27T14:20:23.887Z" icon="0" href="command_USE">
+              <topicref type="topic" id="385415468003728" build="ALL" modified="2019-09-24T13:46:33.735Z" icon="0" href="command_USE">
                 <caption translate="true">USE Command</caption>
               </topicref>
             </topicref>
-            <topicref type="topic" id="436905850607204" modified="2019-08-27T14:17:37.836Z" icon="0" href="cmd_cat_Database">
+            <topicref type="topic" id="436905850607204" build="ALL" modified="2019-09-24T13:44:42.157Z" icon="0" href="cmd_cat_Database">
               <caption translate="true">Database</caption>
-              <topicref type="topic" id="436959948447118" modified="2019-08-27T14:17:53.592Z" icon="0" href="command_APPEND_BLANK">
+              <topicref type="topic" id="436959948447118" build="ALL" modified="2019-09-24T14:15:51.700Z" icon="0" href="command_APPEND_BLANK">
                 <caption translate="true">APPEND BLANK Command</caption>
               </topicref>
-              <topicref type="topic" id="436956696260961" modified="2019-08-27T14:17:53.607Z" icon="0" href="command_APPEND_FROM">
+              <topicref type="topic" id="436956696260961" build="ALL" modified="2019-09-24T14:15:51.706Z" icon="0" href="command_APPEND_FROM">
                 <caption translate="true">APPEND FROM Command</caption>
               </topicref>
-              <topicref type="topic" id="436959767492127" modified="2019-08-27T14:17:53.624Z" icon="0" href="command_AVERAGE">
+              <topicref type="topic" id="436959767492127" build="ALL" modified="2019-09-24T14:15:51.712Z" icon="0" href="command_AVERAGE">
                 <caption translate="true">AVERAGE Command</caption>
               </topicref>
-              <topicref type="topic" id="436959392659364" modified="2019-08-27T14:17:53.640Z" icon="0" href="command_CLEAR_ALL">
+              <topicref type="topic" id="436959392659364" build="ALL" modified="2019-09-24T14:15:51.719Z" icon="0" href="command_CLEAR_ALL">
                 <caption translate="true">CLEAR ALL Command</caption>
               </topicref>
-              <topicref type="topic" id="436959858002471" modified="2019-08-27T14:17:53.651Z" icon="0" href="command_CLOSE">
+              <topicref type="topic" id="436959858002471" build="ALL" modified="2019-09-24T14:15:51.725Z" icon="0" href="command_CLOSE">
                 <caption translate="true">CLOSE Command</caption>
               </topicref>
-              <topicref type="topic" id="436959353901900" modified="2019-08-27T14:17:53.660Z" icon="0" href="command_CONTINUE">
+              <topicref type="topic" id="436959353901900" build="ALL" modified="2019-09-24T14:15:51.731Z" icon="0" href="command_CONTINUE">
                 <caption translate="true">CONTINUE Command</caption>
               </topicref>
-              <topicref type="topic" id="436957491884871" modified="2019-08-27T14:17:53.671Z" icon="0" href="command_COPY_STRUCTURE">
+              <topicref type="topic" id="436957491884871" build="ALL" modified="2019-09-24T14:15:51.737Z" icon="0" href="command_COPY_STRUCTURE">
                 <caption translate="true">COPY STRUCTURE Command</caption>
               </topicref>
-              <topicref type="topic" id="436958956041974" modified="2019-08-27T14:17:53.685Z" icon="0" href="command_COPY_STRUCTURE_EXTENDE">
+              <topicref type="topic" id="436958956041974" build="ALL" modified="2019-09-24T14:15:51.742Z" icon="0" href="command_COPY_STRUCTURE_EXTENDE">
                 <caption translate="true">COPY STRUCTURE EXTENDED Command</caption>
               </topicref>
-              <topicref type="topic" id="436968195685008" modified="2019-08-27T14:17:53.695Z" icon="0" href="command_COPY_TO">
+              <topicref type="topic" id="436968195685008" build="ALL" modified="2019-09-24T14:15:51.747Z" icon="0" href="command_COPY_TO">
                 <caption translate="true">COPY TO Command</caption>
               </topicref>
-              <topicref type="topic" id="436966343721035" modified="2019-08-27T14:17:53.705Z" icon="0" href="command_COUNT">
+              <topicref type="topic" id="436966343721035" build="ALL" modified="2019-09-24T14:15:51.753Z" icon="0" href="command_COUNT">
                 <caption translate="true">COUNT Command</caption>
               </topicref>
-              <topicref type="topic" id="436967002478975" modified="2019-08-27T14:17:53.720Z" icon="0" href="command_CREATE">
+              <topicref type="topic" id="436967002478975" build="ALL" modified="2019-09-24T14:15:51.758Z" icon="0" href="command_CREATE">
                 <caption translate="true">CREATE Command</caption>
               </topicref>
-              <topicref type="topic" id="436966393377422" modified="2019-08-27T14:17:53.730Z" icon="0" href="command_CREATE_FROM">
+              <topicref type="topic" id="436966393377422" build="ALL" modified="2019-09-24T14:15:51.763Z" icon="0" href="command_CREATE_FROM">
                 <caption translate="true">CREATE FROM Command</caption>
               </topicref>
-              <topicref type="topic" id="436965452119672" modified="2019-08-27T14:17:53.741Z" icon="0" href="command_DELETE">
+              <topicref type="topic" id="436965452119672" build="ALL" modified="2019-09-24T14:15:51.768Z" icon="0" href="command_DELETE">
                 <caption translate="true">DELETE Command</caption>
               </topicref>
-              <topicref type="topic" id="436964392330070" modified="2019-08-27T14:17:53.754Z" icon="0" href="command_DELETE_TAG">
+              <topicref type="topic" id="436964392330070" build="ALL" modified="2019-09-24T14:15:51.773Z" icon="0" href="command_DELETE_TAG">
                 <caption translate="true">DELETE TAG Command</caption>
               </topicref>
-              <topicref type="topic" id="436968418695031" modified="2019-08-27T14:17:53.767Z" icon="0" href="command_FIND">
+              <topicref type="topic" id="436968418695031" build="ALL" modified="2019-09-24T14:15:51.779Z" icon="0" href="command_FIND">
                 <caption translate="true">FIND Command</caption>
               </topicref>
-              <topicref type="topic" id="436966502892146" modified="2019-08-27T14:17:53.785Z" icon="0" href="command_GO">
+              <topicref type="topic" id="436966502892146" build="ALL" modified="2019-09-24T14:15:51.784Z" icon="0" href="command_GO">
                 <caption translate="true">GO Command</caption>
               </topicref>
-              <topicref type="topic" id="436966281789646" modified="2019-08-27T14:17:53.803Z" icon="0" href="command_INDEX">
+              <topicref type="topic" id="436966281789646" build="ALL" modified="2019-09-24T14:15:51.790Z" icon="0" href="command_INDEX">
                 <caption translate="true">INDEX Command</caption>
               </topicref>
-              <topicref type="topic" id="436965560095848" modified="2019-08-27T14:17:53.819Z" icon="0" href="command_JOIN">
+              <topicref type="topic" id="436965560095848" build="ALL" modified="2019-09-24T14:15:51.795Z" icon="0" href="command_JOIN">
                 <caption translate="true">JOIN Command</caption>
               </topicref>
-              <topicref type="topic" id="436967129970219" modified="2019-08-27T14:17:53.837Z" icon="0" href="command_LOCATE">
+              <topicref type="topic" id="436967129970219" build="ALL" modified="2019-09-24T14:15:51.800Z" icon="0" href="command_LOCATE">
                 <caption translate="true">LOCATE Command</caption>
               </topicref>
-              <topicref type="topic" id="436967019277769" modified="2019-08-27T14:17:53.855Z" icon="0" href="command_PACK">
+              <topicref type="topic" id="436967019277769" build="ALL" modified="2019-09-24T14:15:51.805Z" icon="0" href="command_PACK">
                 <caption translate="true">PACK Command</caption>
               </topicref>
-              <topicref type="topic" id="436964499571576" modified="2019-08-27T14:17:53.872Z" icon="0" href="command_RECALL">
+              <topicref type="topic" id="436964499571576" build="ALL" modified="2019-09-24T14:15:51.810Z" icon="0" href="command_RECALL">
                 <caption translate="true">RECALL Command</caption>
               </topicref>
-              <topicref type="topic" id="436965840141424" modified="2019-08-27T14:17:53.888Z" icon="0" href="command_REINDEX">
+              <topicref type="topic" id="436965840141424" build="ALL" modified="2019-09-24T14:15:51.816Z" icon="0" href="command_REINDEX">
                 <caption translate="true">REINDEX Command</caption>
               </topicref>
-              <topicref type="topic" id="436964775577943" modified="2019-08-27T14:17:53.898Z" icon="0" href="command_REPLACE">
+              <topicref type="topic" id="436964775577943" build="ALL" modified="2019-09-24T14:15:51.821Z" icon="0" href="command_REPLACE">
                 <caption translate="true">REPLACE Command</caption>
               </topicref>
-              <topicref type="topic" id="436967949140943" modified="2019-08-27T14:17:53.909Z" icon="0" href="command_SEEK">
+              <topicref type="topic" id="436967949140943" build="ALL" modified="2019-09-24T14:15:51.827Z" icon="0" href="command_SEEK">
                 <caption translate="true">SEEK Command</caption>
               </topicref>
-              <topicref type="topic" id="436967563823030" modified="2019-08-27T14:17:53.926Z" icon="0" href="command_SELECT">
+              <topicref type="topic" id="436967563823030" build="ALL" modified="2019-09-24T14:15:51.832Z" icon="0" href="command_SELECT">
                 <caption translate="true">SELECT Command</caption>
               </topicref>
-              <topicref type="topic" id="436967282935349" modified="2019-08-27T14:17:53.944Z" icon="0" href="command_SET_DELETED">
+              <topicref type="topic" id="436967282935349" build="ALL" modified="2019-09-24T14:15:51.837Z" icon="0" href="command_SET_DELETED">
                 <caption translate="true">SET DELETED Command</caption>
               </topicref>
-              <topicref type="topic" id="436966329100851" modified="2019-08-27T14:17:53.960Z" icon="0" href="command_SET_DESCENDING">
+              <topicref type="topic" id="436966329100851" build="ALL" modified="2019-09-24T14:15:51.844Z" icon="0" href="command_SET_DESCENDING">
                 <caption translate="true">SET DESCENDING Command</caption>
               </topicref>
-              <topicref type="topic" id="436966462679483" modified="2019-08-27T14:17:53.974Z" icon="0" href="command_SET_DRIVER">
+              <topicref type="topic" id="436966462679483" build="ALL" modified="2019-09-24T14:15:51.850Z" icon="0" href="command_SET_DRIVER">
                 <caption translate="true">SET DRIVER Command</caption>
               </topicref>
-              <topicref type="topic" id="436964458216359" modified="2019-08-27T14:17:53.990Z" icon="0" href="command_SET_FILTER">
+              <topicref type="topic" id="436964458216359" build="ALL" modified="2019-09-24T14:15:51.855Z" icon="0" href="command_SET_FILTER">
                 <caption translate="true">SET FILTER Command</caption>
               </topicref>
-              <topicref type="topic" id="436964459026741" modified="2019-08-27T14:17:54.004Z" icon="0" href="command_SET_INDEX">
+              <topicref type="topic" id="436964459026741" build="ALL" modified="2019-09-24T14:15:51.860Z" icon="0" href="command_SET_INDEX">
                 <caption translate="true">SET INDEX Command</caption>
               </topicref>
-              <topicref type="topic" id="436965469408273" modified="2019-08-27T14:17:54.020Z" icon="0" href="command_SET_MEMOBLOCK">
+              <topicref type="topic" id="436965469408273" build="ALL" modified="2019-09-24T14:15:59.749Z" icon="0" href="command_SET_MEMOBLOCK">
                 <caption translate="true">SET MEMOBLOCK Command</caption>
               </topicref>
-              <topicref type="topic" id="436966554635745" modified="2019-08-27T14:17:54.035Z" icon="0" href="command_SET_OPTIMIZE">
+              <topicref type="topic" id="436966554635745" build="ALL" modified="2019-09-24T14:15:59.760Z" icon="0" href="command_SET_OPTIMIZE">
                 <caption translate="true">SET OPTIMIZE Command</caption>
               </topicref>
-              <topicref type="topic" id="436965760914770" modified="2019-08-27T14:17:54.046Z" icon="0" href="command_SET_ORDER">
+              <topicref type="topic" id="436965760914770" build="ALL" modified="2019-09-24T14:15:59.767Z" icon="0" href="command_SET_ORDER">
                 <caption translate="true">SET ORDER Command</caption>
               </topicref>
-              <topicref type="topic" id="436967275368455" modified="2019-08-27T14:17:54.055Z" icon="0" href="command_SET_RELATION">
+              <topicref type="topic" id="436967275368455" build="ALL" modified="2019-09-24T14:15:59.772Z" icon="0" href="command_SET_RELATION">
                 <caption translate="true">SET RELATION Command</caption>
               </topicref>
-              <topicref type="topic" id="436968331221065" modified="2019-08-27T14:17:54.069Z" icon="0" href="command_SET_SCOPE">
+              <topicref type="topic" id="436968331221065" build="ALL" modified="2019-09-24T14:15:59.777Z" icon="0" href="command_SET_SCOPE">
                 <caption translate="true">SET SCOPE Command</caption>
               </topicref>
-              <topicref type="topic" id="436965134966613" modified="2019-08-27T14:17:54.078Z" icon="0" href="command_SET_SCOPEBOTTOM">
+              <topicref type="topic" id="436965134966613" build="ALL" modified="2019-09-24T14:15:59.784Z" icon="0" href="command_SET_SCOPEBOTTOM">
                 <caption translate="true">SET SCOPEBOTTOM Command</caption>
               </topicref>
-              <topicref type="topic" id="436967115691796" modified="2019-08-27T14:17:54.088Z" icon="0" href="command_SET_SCOPETOP">
+              <topicref type="topic" id="436967115691796" build="ALL" modified="2019-09-24T14:15:59.790Z" icon="0" href="command_SET_SCOPETOP">
                 <caption translate="true">SET SCOPETOP Command</caption>
               </topicref>
-              <topicref type="topic" id="436965801737185" modified="2019-08-27T14:17:54.096Z" icon="0" href="command_SET_SOFTSEEK">
+              <topicref type="topic" id="436965801737185" build="ALL" modified="2019-09-24T14:15:59.795Z" icon="0" href="command_SET_SOFTSEEK">
                 <caption translate="true">SET SOFTSEEK Command</caption>
               </topicref>
-              <topicref type="topic" id="436965973735763" modified="2019-08-27T14:17:54.105Z" icon="0" href="command_SET_UNIQUE">
+              <topicref type="topic" id="436965973735763" build="ALL" modified="2019-09-24T14:15:59.801Z" icon="0" href="command_SET_UNIQUE">
                 <caption translate="true">SET UNIQUE Command</caption>
               </topicref>
-              <topicref type="topic" id="436965926570940" modified="2019-08-27T14:17:54.117Z" icon="0" href="command_SKIP">
+              <topicref type="topic" id="436965926570940" build="ALL" modified="2019-09-24T14:15:59.806Z" icon="0" href="command_SKIP">
                 <caption translate="true">SKIP Command</caption>
               </topicref>
-              <topicref type="topic" id="436964952992197" modified="2019-08-27T14:17:54.129Z" icon="0" href="command_SORT">
+              <topicref type="topic" id="436964952992197" build="ALL" modified="2019-09-24T14:15:59.811Z" icon="0" href="command_SORT">
                 <caption translate="true">SORT Command</caption>
               </topicref>
-              <topicref type="topic" id="436968546403547" modified="2019-08-27T14:17:54.139Z" icon="0" href="command_SUM">
+              <topicref type="topic" id="436968546403547" build="ALL" modified="2019-09-24T14:15:59.817Z" icon="0" href="command_SUM">
                 <caption translate="true">SUM Command</caption>
               </topicref>
-              <topicref type="topic" id="436966568640458" modified="2019-08-27T14:17:54.151Z" icon="0" href="command_TOTAL">
+              <topicref type="topic" id="436966568640458" build="ALL" modified="2019-09-24T14:15:59.822Z" icon="0" href="command_TOTAL">
                 <caption translate="true">TOTAL Command</caption>
               </topicref>
-              <topicref type="topic" id="436965041647076" modified="2019-08-27T14:17:54.163Z" icon="0" href="command_UPDATE">
+              <topicref type="topic" id="436965041647076" build="ALL" modified="2019-09-24T14:15:59.828Z" icon="0" href="command_UPDATE">
                 <caption translate="true">UPDATE Command</caption>
               </topicref>
-              <topicref type="topic" id="436964862908011" modified="2019-08-27T14:17:54.175Z" icon="0" href="command_USE">
+              <topicref type="topic" id="436964862908011" build="ALL" modified="2019-09-24T14:15:59.833Z" icon="0" href="command_USE">
                 <caption translate="true">USE Command</caption>
               </topicref>
-              <topicref type="topic" id="436964926565696" modified="2019-08-27T14:17:54.192Z" icon="0" href="command_ZAP">
+              <topicref type="topic" id="436964926565696" build="ALL" modified="2019-09-24T14:15:59.839Z" icon="0" href="command_ZAP">
                 <caption translate="true">ZAP Command</caption>
               </topicref>
             </topicref>
-            <topicref type="topic" id="43694637611075" modified="2019-08-27T14:17:37.845Z" icon="0" href="cmd_cat_date">
+            <topicref type="topic" id="43694637611075" build="ALL" modified="2019-09-24T13:44:42.162Z" icon="0" href="cmd_cat_date">
               <caption translate="true">Date and Time</caption>
-              <topicref type="topic" id="384615935739412" modified="2019-08-27T14:18:00.930Z" icon="0" href="command_SET_CENTURY">
+              <topicref type="topic" id="384615935739412" build="ALL" modified="2019-09-24T14:16:07.252Z" icon="0" href="command_SET_CENTURY">
                 <caption translate="true">SET CENTURY Command</caption>
               </topicref>
-              <topicref type="topic" id="384613369312902" modified="2019-08-27T14:18:00.940Z" icon="0" href="command_SET_DATE">
+              <topicref type="topic" id="384613369312902" build="ALL" modified="2019-09-24T14:16:07.258Z" icon="0" href="command_SET_DATE">
                 <caption translate="true">SET DATE Command</caption>
               </topicref>
-              <topicref type="topic" id="384614137980743" modified="2019-08-27T14:18:00.949Z" icon="0" href="command_SET_DATE_FORMAT">
+              <topicref type="topic" id="384614137980743" build="ALL" modified="2019-09-24T14:16:07.263Z" icon="0" href="command_SET_DATE_FORMAT">
                 <caption translate="true">SET DATE FORMAT Command</caption>
               </topicref>
-              <topicref type="topic" id="384613915494717" modified="2019-08-27T14:18:00.959Z" icon="0" href="command_SET_EPOCH">
+              <topicref type="topic" id="384613915494717" build="ALL" modified="2019-09-24T14:16:07.270Z" icon="0" href="command_SET_EPOCH">
                 <caption translate="true">SET EPOCH Command</caption>
               </topicref>
             </topicref>
-            <topicref type="topic" id="436966835316603" modified="2019-08-27T14:17:37.854Z" icon="0" href="cmd_cat_entdecl">
+            <topicref type="topic" id="436966835316603" build="ALL" modified="2019-09-24T13:44:42.167Z" icon="0" href="cmd_cat_entdecl">
               <caption translate="true">Entity Declaration</caption>
-              <topicref type="topic" id="384613959523963" modified="2019-08-27T14:18:09.047Z" icon="0" href="command__DLL">
+              <topicref type="topic" id="384613959523963" build="ALL" modified="2019-09-24T14:17:26.154Z" icon="0" href="command__DLL">
                 <caption translate="true">_DLL Statement</caption>
               </topicref>
-              <topicref type="topic" id="384615648750741" modified="2019-08-27T14:18:09.055Z" icon="0" href="command_ACCESS">
+              <topicref type="topic" id="384615648750741" build="ALL" modified="2019-09-24T14:17:26.159Z" icon="0" href="command_ACCESS">
                 <caption translate="true">ACCESS Statement</caption>
               </topicref>
-              <topicref type="topic" id="384614387635292" modified="2019-08-27T14:18:09.063Z" icon="0" href="command_ASSIGN">
+              <topicref type="topic" id="384614387635292" build="ALL" modified="2019-09-24T14:17:26.165Z" icon="0" href="command_ASSIGN">
                 <caption translate="true">ASSIGN Statement</caption>
               </topicref>
-              <topicref type="topic" id="384613776896508" modified="2019-08-27T14:18:09.072Z" icon="0" href="command_CLASS">
+              <topicref type="topic" id="384613776896508" build="ALL" modified="2019-09-24T14:17:26.170Z" icon="0" href="command_CLASS">
                 <caption translate="true">CLASS Statement</caption>
               </topicref>
-              <topicref type="topic" id="436995949548839" modified="2019-08-27T14:18:09.082Z" icon="0" href="command_INTERFACE">
+              <topicref type="topic" id="436995949548839" build="ALL" modified="2019-09-24T14:17:26.175Z" icon="0" href="command_INTERFACE">
                 <caption translate="true">INTERFACE Statement</caption>
               </topicref>
-              <topicref type="topic" id="436995536280198" modified="2019-08-27T14:18:09.091Z" icon="0" href="command_CONSTRUCTOR">
+              <topicref type="topic" id="436995536280198" build="ALL" modified="2019-09-24T14:17:26.181Z" icon="0" href="command_CONSTRUCTOR">
                 <caption translate="true">CONSTRUCTOR Statement</caption>
               </topicref>
-              <topicref type="topic" id="384616246317208" modified="2019-08-27T14:18:09.101Z" icon="0" href="command_DECLARE_METHOD">
+              <topicref type="topic" id="384616246317208" build="ALL" modified="2019-09-24T14:17:26.188Z" icon="0" href="command_DECLARE_METHOD">
                 <caption translate="true">DECLARE METHOD Statement</caption>
               </topicref>
-              <topicref type="topic" id="384613569689846" modified="2019-08-27T14:18:09.110Z" icon="0" href="command_DEFINE">
+              <topicref type="topic" id="384613569689846" build="ALL" modified="2019-09-24T14:17:26.193Z" icon="0" href="command_DEFINE">
                 <caption translate="true">DEFINE Statement</caption>
               </topicref>
-              <topicref type="topic" id="436998878760536" modified="2019-08-27T14:18:09.119Z" icon="0" href="command_DESTRUCTOR">
+              <topicref type="topic" id="436998878760536" build="ALL" modified="2019-09-24T14:17:26.199Z" icon="0" href="command_DESTRUCTOR">
                 <caption translate="true">DESTRUCTOR Statement</caption>
               </topicref>
-              <topicref type="topic" id="436996135072412" modified="2019-08-27T14:18:09.128Z" icon="0" href="command_EVENT">
+              <topicref type="topic" id="436996135072412" build="ALL" modified="2019-09-24T14:17:26.205Z" icon="0" href="command_EVENT">
                 <caption translate="true">EVENT Statement</caption>
               </topicref>
-              <topicref type="topic" id="384614238351044" modified="2019-08-27T14:18:09.138Z" icon="0" href="command_FUNCTION">
+              <topicref type="topic" id="384614238351044" build="ALL" modified="2019-09-24T14:17:26.210Z" icon="0" href="command_FUNCTION">
                 <caption translate="true">FUNCTION Statement</caption>
               </topicref>
-              <topicref type="topic" id="384615018311778" modified="2019-08-27T14:18:09.152Z" icon="0" href="command_GLOBAL">
+              <topicref type="topic" id="384615018311778" build="ALL" modified="2019-09-24T14:17:26.217Z" icon="0" href="command_GLOBAL">
                 <caption translate="true">GLOBAL Statement</caption>
               </topicref>
-              <topicref type="topic" id="38462307661086" modified="2019-08-27T14:18:09.169Z" icon="0" href="command_METHOD">
+              <topicref type="topic" id="38462307661086" build="ALL" modified="2019-09-24T14:17:26.223Z" icon="0" href="command_METHOD">
                 <caption translate="true">METHOD Statement</caption>
               </topicref>
-              <topicref type="topic" id="436998671179174" modified="2019-08-27T14:18:09.180Z" icon="0" href="command_OPERATOR">
+              <topicref type="topic" id="436998671179174" build="ALL" modified="2019-09-24T14:17:26.230Z" icon="0" href="command_OPERATOR">
                 <caption translate="true">OPERATOR Statement</caption>
               </topicref>
-              <topicref type="topic" id="384615026623733" modified="2019-08-27T14:18:09.190Z" icon="0" href="command_PROCEDURE">
+              <topicref type="topic" id="384615026623733" build="ALL" modified="2019-09-24T14:17:26.236Z" icon="0" href="command_PROCEDURE">
                 <caption translate="true">PROCEDURE Statement</caption>
               </topicref>
-              <topicref type="topic" id="436996775134688" modified="2019-08-27T14:18:09.199Z" icon="0" href="command_PROPERTY">
+              <topicref type="topic" id="436996775134688" build="ALL" modified="2019-09-24T14:17:26.244Z" icon="0" href="command_PROPERTY">
                 <caption translate="true">PROPERTY Statement</caption>
               </topicref>
-              <topicref type="topic" id="385274846261235" modified="2019-08-27T14:18:09.209Z" icon="0" href="command_STATIC">
+              <topicref type="topic" id="385274846261235" build="ALL" modified="2019-09-24T14:17:26.251Z" icon="0" href="command_STATIC">
                 <caption translate="true">STATIC Statement</caption>
               </topicref>
-              <topicref type="topic" id="436997490436234" modified="2019-08-27T14:18:09.218Z" icon="0" href="command_STRUCTURE">
+              <topicref type="topic" id="436997490436234" build="ALL" modified="2019-09-24T14:17:26.257Z" icon="0" href="command_STRUCTURE">
                 <caption translate="true">STRUCTURE Statement</caption>
               </topicref>
-              <topicref type="topic" id="384613186762724" modified="2019-08-27T14:18:09.228Z" icon="0" href="command_UNION">
+              <topicref type="topic" id="384613186762724" build="ALL" modified="2019-09-24T14:17:26.263Z" icon="0" href="command_UNION">
                 <caption translate="true">UNION Statement</caption>
               </topicref>
-              <topicref type="topic" id="385275819227227" modified="2019-08-27T14:18:09.237Z" icon="0" href="command_VOSTRUCT">
+              <topicref type="topic" id="385275819227227" build="ALL" modified="2019-09-24T14:17:26.270Z" icon="0" href="command_VOSTRUCT">
                 <caption translate="true">VOSTRUCT Statement</caption>
               </topicref>
             </topicref>
-            <topicref type="topic" id="436968382800624" modified="2019-08-27T14:17:37.861Z" icon="0" href="cmd_cat_set">
+            <topicref type="topic" id="436968382800624" build="ALL" modified="2019-09-24T13:44:42.172Z" icon="0" href="cmd_cat_set">
               <caption translate="true">Environment</caption>
-              <topicref type="topic" id="384613507102286" modified="2019-08-27T14:18:21.080Z" icon="0" href="command_SET_ANSI">
+              <topicref type="topic" id="384613507102286" build="ALL" modified="2019-09-24T14:17:44.030Z" icon="0" href="command_SET_ANSI">
                 <caption translate="true">SET ANSI Command</caption>
               </topicref>
-              <topicref type="topic" id="43700395884884" modified="2019-08-27T14:18:21.088Z" icon="0" href="command_SET_CENTURY">
+              <topicref type="topic" id="43700395884884" build="ALL" modified="2019-09-24T14:17:44.037Z" icon="0" href="command_SET_CENTURY">
                 <caption translate="true">SET CENTURY Command</caption>
               </topicref>
-              <topicref type="topic" id="436985524344551" modified="2019-08-27T14:18:21.099Z" icon="0" href="command_SET_DATE">
+              <topicref type="topic" id="436985524344551" build="ALL" modified="2019-09-24T14:17:44.043Z" icon="0" href="command_SET_DATE">
                 <caption translate="true">SET DATE Command</caption>
               </topicref>
-              <topicref type="topic" id="385413837929920" modified="2019-08-27T14:18:21.107Z" icon="0" href="command_SET_DATE_FORMAT">
+              <topicref type="topic" id="385413837929920" build="ALL" modified="2019-09-24T14:17:44.049Z" icon="0" href="command_SET_DATE_FORMAT">
                 <caption translate="true">SET DATE FORMAT Command</caption>
               </topicref>
-              <topicref type="topic" id="384613069718970" modified="2019-08-27T14:18:21.115Z" icon="0" href="command_SET_DECIMALS">
+              <topicref type="topic" id="384613069718970" build="ALL" modified="2019-09-24T14:17:44.056Z" icon="0" href="command_SET_DECIMALS">
                 <caption translate="true">SET DECIMALS Command</caption>
               </topicref>
-              <topicref type="topic" id="385414395175438" modified="2019-08-27T14:18:21.122Z" icon="0" href="command_SET_DEFAULT">
+              <topicref type="topic" id="385414395175438" build="ALL" modified="2019-09-24T14:17:44.062Z" icon="0" href="command_SET_DEFAULT">
                 <caption translate="true">SET DEFAULT Command</caption>
               </topicref>
-              <topicref type="topic" id="384614063710025" modified="2019-08-27T14:18:21.129Z" icon="0" href="command_SET_DIGITFIXED">
+              <topicref type="topic" id="384614063710025" build="ALL" modified="2019-09-24T14:17:44.067Z" icon="0" href="command_SET_DIGITFIXED">
                 <caption translate="true">SET DIGITFIXED Command</caption>
               </topicref>
-              <topicref type="topic" id="384612814452770" modified="2019-08-27T14:18:21.136Z" icon="0" href="command_SET_DIGITS">
+              <topicref type="topic" id="384612814452770" build="ALL" modified="2019-09-24T14:17:44.073Z" icon="0" href="command_SET_DIGITS">
                 <caption translate="true">SET DIGITS Command</caption>
               </topicref>
-              <topicref type="topic" id="385414484815343" modified="2019-08-27T14:18:21.143Z" icon="0" href="command_SET_DRIVER">
+              <topicref type="topic" id="385414484815343" build="ALL" modified="2019-09-24T14:17:44.079Z" icon="0" href="command_SET_DRIVER">
                 <caption translate="true">SET DRIVER Command</caption>
               </topicref>
-              <topicref type="topic" id="385412955773853" modified="2019-08-27T14:18:21.150Z" icon="0" href="command_SET_EPOCH">
+              <topicref type="topic" id="385412955773853" build="ALL" modified="2019-09-24T14:17:44.085Z" icon="0" href="command_SET_EPOCH">
                 <caption translate="true">SET EPOCH Command</caption>
               </topicref>
-              <topicref type="topic" id="384613116326190" modified="2019-08-27T14:18:21.158Z" icon="0" href="command_SET_EXACT">
+              <topicref type="topic" id="384613116326190" build="ALL" modified="2019-09-24T14:17:44.091Z" icon="0" href="command_SET_EXACT">
                 <caption translate="true">SET EXACT Command</caption>
               </topicref>
-              <topicref type="topic" id="384612443430574" modified="2019-08-27T14:18:21.166Z" icon="0" href="command_SET_FIXED">
+              <topicref type="topic" id="384612443430574" build="ALL" modified="2019-09-24T14:17:44.097Z" icon="0" href="command_SET_FIXED">
                 <caption translate="true">SET FIXED Command</caption>
               </topicref>
-              <topicref type="topic" id="385413402566730" modified="2019-08-27T14:18:21.173Z" icon="0" href="command_SET_PATH">
+              <topicref type="topic" id="385413402566730" build="ALL" modified="2019-09-24T14:17:44.103Z" icon="0" href="command_SET_PATH">
                 <caption translate="true">SET PATH Command</caption>
               </topicref>
             </topicref>
-            <topicref type="topic" id="436966332704012" modified="2019-08-27T14:17:37.869Z" icon="0" href="cmd_cat_file">
+            <topicref type="topic" id="436966332704012" build="ALL" modified="2019-09-24T13:44:42.177Z" icon="0" href="cmd_cat_file">
               <caption translate="true">File</caption>
-              <topicref type="topic" id="38460739823867" modified="2019-08-27T14:18:27.985Z" icon="0" href="command_COPY_FILE">
+              <topicref type="topic" id="38460739823867" build="ALL" modified="2019-09-24T14:18:26.519Z" icon="0" href="command_COPY_FILE">
                 <caption translate="true">COPY FILE Command</caption>
               </topicref>
-              <topicref type="topic" id="384615328358574" modified="2019-08-27T14:18:27.990Z" icon="0" href="command_DELETE_FILE">
+              <topicref type="topic" id="384615328358574" build="ALL" modified="2019-09-24T14:18:26.524Z" icon="0" href="command_DELETE_FILE">
                 <caption translate="true">DELETE FILE Command</caption>
               </topicref>
-              <topicref type="topic" id="384615191143206" modified="2019-08-27T14:18:27.997Z" icon="0" href="command_DIR">
+              <topicref type="topic" id="384615191143206" build="ALL" modified="2019-09-24T14:18:26.530Z" icon="0" href="command_DIR">
                 <caption translate="true">DIR Command</caption>
               </topicref>
-              <topicref type="topic" id="384615283978754" modified="2019-08-27T14:18:28.003Z" icon="0" href="command_ERASE">
+              <topicref type="topic" id="384615283978754" build="ALL" modified="2019-09-24T14:18:26.537Z" icon="0" href="command_ERASE">
                 <caption translate="true">ERASE Command</caption>
               </topicref>
-              <topicref type="topic" id="384613927016688" modified="2019-08-27T14:18:28.010Z" icon="0" href="command_RENAME">
+              <topicref type="topic" id="384613927016688" build="ALL" modified="2019-09-24T14:18:26.543Z" icon="0" href="command_RENAME">
                 <caption translate="true">RENAME Command</caption>
               </topicref>
-              <topicref type="topic" id="384613828801244" modified="2019-08-27T14:18:28.017Z" icon="0" href="command_SET_DEFAULT">
+              <topicref type="topic" id="384613828801244" build="ALL" modified="2019-09-24T14:18:26.548Z" icon="0" href="command_SET_DEFAULT">
                 <caption translate="true">SET DEFAULT Command</caption>
               </topicref>
-              <topicref type="topic" id="384613704359085" modified="2019-08-27T14:18:28.024Z" icon="0" href="command_SET_PATH">
+              <topicref type="topic" id="384613704359085" build="ALL" modified="2019-09-24T14:18:26.554Z" icon="0" href="command_SET_PATH">
                 <caption translate="true">SET PATH Command</caption>
               </topicref>
             </topicref>
-            <topicref type="topic" id="436966805247382" modified="2019-08-27T14:17:37.877Z" icon="0" href="cmd_cat_index">
+            <topicref type="topic" id="436966805247382" build="ALL" modified="2019-09-24T13:44:42.182Z" icon="0" href="cmd_cat_index">
               <caption translate="true">Index/Order</caption>
-              <topicref type="topic" id="385413109794967" modified="2019-08-27T14:18:35.145Z" icon="0" href="command_CLOSE">
+              <topicref type="topic" id="385413109794967" build="ALL" modified="2019-09-24T14:18:33.327Z" icon="0" href="command_CLOSE">
                 <caption translate="true">CLOSE Command</caption>
               </topicref>
-              <topicref type="topic" id="385413327814999" modified="2019-08-27T14:18:35.153Z" icon="0" href="command_DELETE_TAG">
+              <topicref type="topic" id="385413327814999" build="ALL" modified="2019-09-24T14:18:33.339Z" icon="0" href="command_DELETE_TAG">
                 <caption translate="true">DELETE TAG Command</caption>
               </topicref>
-              <topicref type="topic" id="384612688722303" modified="2019-08-27T14:18:35.162Z" icon="0" href="command_FIND">
+              <topicref type="topic" id="384612688722303" build="ALL" modified="2019-09-24T14:18:33.347Z" icon="0" href="command_FIND">
                 <caption translate="true">FIND Command</caption>
               </topicref>
-              <topicref type="topic" id="384613270948688" modified="2019-08-27T14:18:35.171Z" icon="0" href="command_INDEX">
+              <topicref type="topic" id="384613270948688" build="ALL" modified="2019-09-24T14:18:33.354Z" icon="0" href="command_INDEX">
                 <caption translate="true">INDEX Command</caption>
               </topicref>
-              <topicref type="topic" id="384615476754451" modified="2019-08-27T14:18:35.179Z" icon="0" href="command_REINDEX">
+              <topicref type="topic" id="384615476754451" build="ALL" modified="2019-09-24T14:18:33.361Z" icon="0" href="command_REINDEX">
                 <caption translate="true">REINDEX Command</caption>
               </topicref>
-              <topicref type="topic" id="384614857202088" modified="2019-08-27T14:18:35.188Z" icon="0" href="command_SEEK">
+              <topicref type="topic" id="384614857202088" build="ALL" modified="2019-09-24T14:18:33.367Z" icon="0" href="command_SEEK">
                 <caption translate="true">SEEK Command</caption>
               </topicref>
-              <topicref type="topic" id="384614273942449" modified="2019-08-27T14:18:35.196Z" icon="0" href="command_SET_DESCENDING">
+              <topicref type="topic" id="384614273942449" build="ALL" modified="2019-09-24T14:18:33.374Z" icon="0" href="command_SET_DESCENDING">
                 <caption translate="true">SET DESCENDING Command</caption>
               </topicref>
-              <topicref type="topic" id="384614110631580" modified="2019-08-27T14:18:35.203Z" icon="0" href="command_SET_INDEX">
+              <topicref type="topic" id="384614110631580" build="ALL" modified="2019-09-24T14:18:33.380Z" icon="0" href="command_SET_INDEX">
                 <caption translate="true">SET INDEX Command</caption>
               </topicref>
-              <topicref type="topic" id="385415017973126" modified="2019-08-27T14:18:35.211Z" icon="0" href="command_SET_OPTIMIZE">
+              <topicref type="topic" id="385415017973126" build="ALL" modified="2019-09-24T14:18:33.387Z" icon="0" href="command_SET_OPTIMIZE">
                 <caption translate="true">SET OPTIMIZE Command</caption>
               </topicref>
-              <topicref type="topic" id="384614321325935" modified="2019-08-27T14:18:35.219Z" icon="0" href="command_SET_ORDER">
+              <topicref type="topic" id="384614321325935" build="ALL" modified="2019-09-24T14:18:33.393Z" icon="0" href="command_SET_ORDER">
                 <caption translate="true">SET ORDER Command</caption>
               </topicref>
-              <topicref type="topic" id="384615107900420" modified="2019-08-27T14:18:35.226Z" icon="0" href="command_SET_SCOPE">
+              <topicref type="topic" id="384615107900420" build="ALL" modified="2019-09-24T14:18:33.400Z" icon="0" href="command_SET_SCOPE">
                 <caption translate="true">SET SCOPE Command</caption>
               </topicref>
-              <topicref type="topic" id="384616005582003" modified="2019-08-27T14:18:35.234Z" icon="0" href="command_SET_SCOPEBOTTOM">
+              <topicref type="topic" id="384616005582003" build="ALL" modified="2019-09-24T14:18:33.407Z" icon="0" href="command_SET_SCOPEBOTTOM">
                 <caption translate="true">SET SCOPEBOTTOM Command</caption>
               </topicref>
-              <topicref type="topic" id="384613546473992" modified="2019-08-27T14:18:35.245Z" icon="0" href="command_SET_SCOPETOP">
+              <topicref type="topic" id="384613546473992" build="ALL" modified="2019-09-24T14:18:33.413Z" icon="0" href="command_SET_SCOPETOP">
                 <caption translate="true">SET SCOPETOP Command</caption>
               </topicref>
-              <topicref type="topic" id="384614212760215" modified="2019-08-27T14:18:35.253Z" icon="0" href="command_SET_SOFTSEEK">
+              <topicref type="topic" id="384614212760215" build="ALL" modified="2019-09-24T14:18:33.421Z" icon="0" href="command_SET_SOFTSEEK">
                 <caption translate="true">SET SOFTSEEK Command</caption>
               </topicref>
-              <topicref type="topic" id="384616122645001" modified="2019-08-27T14:18:35.261Z" icon="0" href="command_SET_UNIQUE">
+              <topicref type="topic" id="384616122645001" build="ALL" modified="2019-09-24T14:18:33.427Z" icon="0" href="command_SET_UNIQUE">
                 <caption translate="true">SET UNIQUE Command</caption>
               </topicref>
             </topicref>
-            <topicref type="topic" id="436966257699611" modified="2019-08-27T14:19:42.319Z" icon="0" href="cmd_cat_international">
+            <topicref type="topic" id="436966257699611" build="ALL" modified="2019-09-24T13:44:42.186Z" icon="0" href="cmd_cat_international">
               <caption translate="true">International</caption>
-              <topicref type="topic" id="384613776732228" modified="2019-08-27T14:19:42.327Z" icon="0" href="command_SET_COLLATION">
+              <topicref type="topic" id="384613776732228" build="ALL" modified="2019-09-24T14:18:57.708Z" icon="0" href="command_SET_COLLATION">
                 <caption translate="true">SET COLLATION Command</caption>
               </topicref>
-              <topicref type="topic" id="384615263405968" modified="2019-08-27T14:19:42.335Z" icon="0" href="command_SET_INTERNATIONAL">
+              <topicref type="topic" id="384615263405968" build="ALL" modified="2019-09-24T14:18:57.714Z" icon="0" href="command_SET_INTERNATIONAL">
                 <caption translate="true">SET INTERNATIONAL Command</caption>
               </topicref>
             </topicref>
-            <topicref type="topic" id="436905710726514" modified="2019-08-27T14:19:42.344Z" icon="0" href="Macros">
+            <topicref type="topic" id="436905710726514" build="ALL" modified="2019-09-24T13:44:42.191Z" icon="0" href="Macros">
               <caption translate="true">Macros</caption>
-              <topicref type="topic" id="43692603731653" modified="2019-08-27T14:19:42.352Z" icon="0" href="Amp_Command">
+              <topicref type="topic" id="43692603731653" build="ALL" modified="2019-09-24T14:19:02.912Z" icon="0" href="Amp_Command">
                 <caption translate="true">&amp; Command</caption>
               </topicref>
             </topicref>
-            <topicref type="topic" id="436964703826547" modified="2019-08-27T14:19:42.362Z" icon="0" href="cmd_cat_memvar">
+            <topicref type="topic" id="436964703826547" build="ALL" modified="2019-09-24T13:44:42.195Z" icon="0" href="cmd_cat_memvar">
               <caption translate="true">Memory Variable</caption>
-              <topicref type="topic" id="384614637434115" modified="2019-08-27T14:19:42.372Z" icon="0" href="command_CLEAR_MEMORY">
+              <topicref type="topic" id="384614637434115" build="ALL" modified="2019-09-24T14:19:09.607Z" icon="0" href="command_CLEAR_MEMORY">
                 <caption translate="true">CLEAR MEMORY Command</caption>
               </topicref>
-              <topicref type="topic" id="385414682643284" modified="2019-08-27T14:19:42.381Z" icon="0" href="command_DECLARE">
+              <topicref type="topic" id="385414682643284" build="ALL" modified="2019-09-24T14:19:09.620Z" icon="0" href="command_DECLARE">
                 <caption translate="true">DECLARE Statement</caption>
               </topicref>
-              <topicref type="topic" id="385414626514556" modified="2019-08-27T14:19:42.390Z" icon="0" href="command_MEMVAR">
+              <topicref type="topic" id="385414626514556" build="ALL" modified="2019-09-24T14:19:09.629Z" icon="0" href="command_MEMVAR">
                 <caption translate="true">MEMVAR Statement</caption>
               </topicref>
-              <topicref type="topic" id="384615998847401" modified="2019-08-27T14:19:42.398Z" icon="0" href="command_PARAMETERS">
+              <topicref type="topic" id="384615998847401" build="ALL" modified="2019-09-24T14:19:09.636Z" icon="0" href="command_PARAMETERS">
                 <caption translate="true">PARAMETERS Statement</caption>
               </topicref>
-              <topicref type="topic" id="384612922797643" modified="2019-08-27T14:19:42.407Z" icon="0" href="command_PRIVATE">
+              <topicref type="topic" id="384612922797643" build="ALL" modified="2019-09-24T14:19:09.643Z" icon="0" href="command_PRIVATE">
                 <caption translate="true">PRIVATE statement</caption>
               </topicref>
-              <topicref type="topic" id="385415371996093" modified="2019-08-27T14:19:42.416Z" icon="0" href="command_PUBLIC">
+              <topicref type="topic" id="385415371996093" build="ALL" modified="2019-09-24T14:19:09.648Z" icon="0" href="command_PUBLIC">
                 <caption translate="true">PUBLIC Statement</caption>
               </topicref>
-              <topicref type="topic" id="38539576350877" modified="2019-08-27T14:19:42.425Z" icon="0" href="command_RELEASE">
+              <topicref type="topic" id="38539576350877" build="ALL" modified="2019-09-24T14:19:09.654Z" icon="0" href="command_RELEASE">
                 <caption translate="true">RELEASE Command</caption>
               </topicref>
-              <topicref type="topic" id="384613807507342" modified="2019-08-27T14:19:42.434Z" icon="0" href="command_RESTORE">
+              <topicref type="topic" id="384613807507342" build="ALL" modified="2019-09-24T14:19:09.660Z" icon="0" href="command_RESTORE">
                 <caption translate="true">RESTORE Command</caption>
               </topicref>
-              <topicref type="topic" id="384614269570999" modified="2019-08-27T14:19:42.444Z" icon="0" href="command_SAVE">
+              <topicref type="topic" id="384614269570999" build="ALL" modified="2019-09-24T14:19:09.666Z" icon="0" href="command_SAVE">
                 <caption translate="true">SAVE Command</caption>
               </topicref>
-              <topicref type="topic" id="384615761998452" modified="2019-08-27T14:19:42.453Z" icon="0" href="command_STORE">
+              <topicref type="topic" id="384615761998452" build="ALL" modified="2019-09-24T14:19:09.672Z" icon="0" href="command_STORE">
                 <caption translate="true">STORE Command</caption>
               </topicref>
             </topicref>
-            <topicref type="topic" id="436964407573243" modified="2019-08-27T14:17:37.913Z" icon="0" href="cmd_cat_num">
+            <topicref type="topic" id="436964407573243" build="ALL" modified="2019-09-24T13:44:42.200Z" icon="0" href="cmd_cat_num">
               <caption translate="true">Numeric</caption>
-              <topicref type="topic" id="385414610315142" modified="2019-08-27T14:19:54.272Z" icon="0" href="command_SET_DECIMALS">
+              <topicref type="topic" id="385414610315142" build="ALL" modified="2019-09-24T14:19:16.413Z" icon="0" href="command_SET_DECIMALS">
                 <caption translate="true">SET DECIMALS Command</caption>
               </topicref>
-              <topicref type="topic" id="385412794601021" modified="2019-08-27T14:19:54.279Z" icon="0" href="command_SET_DIGITFIXED">
+              <topicref type="topic" id="385412794601021" build="ALL" modified="2019-09-24T14:19:16.419Z" icon="0" href="command_SET_DIGITFIXED">
                 <caption translate="true">SET DIGITFIXED Command</caption>
               </topicref>
-              <topicref type="topic" id="385413909787819" modified="2019-08-27T14:19:54.286Z" icon="0" href="command_SET_DIGITS">
+              <topicref type="topic" id="385413909787819" build="ALL" modified="2019-09-24T14:19:16.425Z" icon="0" href="command_SET_DIGITS">
                 <caption translate="true">SET DIGITS Command</caption>
               </topicref>
-              <topicref type="topic" id="385416098540798" modified="2019-08-27T14:19:54.293Z" icon="0" href="command_SET_FIXED">
+              <topicref type="topic" id="385416098540798" build="ALL" modified="2019-09-24T14:19:16.430Z" icon="0" href="command_SET_FIXED">
                 <caption translate="true">SET FIXED Command</caption>
               </topicref>
             </topicref>
-            <topicref type="topic" id="436964675005123" modified="2019-08-27T14:19:54.301Z" icon="0" href="cmd_cat_control">
+            <topicref type="topic" id="436964675005123" build="ALL" modified="2019-09-24T13:44:42.205Z" icon="0" href="cmd_cat_control">
               <caption translate="true">Program Control</caption>
-              <topicref type="topic" id="384615443353630" modified="2019-08-27T14:19:54.309Z" icon="0" href="command_IFDEF">
+              <topicref type="topic" id="384615443353630" build="ALL" modified="2019-09-24T14:19:27.335Z" icon="0" href="command_IFDEF">
                 <caption translate="true">#ifdef Statement</caption>
               </topicref>
-              <topicref type="topic" id="384612076795495" modified="2019-08-27T14:19:54.317Z" icon="0" href="command_IFNDEF">
+              <topicref type="topic" id="384612076795495" build="ALL" modified="2019-09-24T14:19:27.347Z" icon="0" href="command_IFNDEF">
                 <caption translate="true">#ifndef Statement</caption>
               </topicref>
-              <topicref type="topic" id="384613465012339" modified="2019-08-27T14:19:54.325Z" icon="0" href="command_BEGIN_SEQUENCE">
+              <topicref type="topic" id="384613465012339" build="ALL" modified="2019-09-24T14:19:27.356Z" icon="0" href="command_BEGIN_SEQUENCE">
                 <caption translate="true">BEGIN SEQUENCE Statement</caption>
               </topicref>
-              <topicref type="topic" id="384612716846275" modified="2019-08-27T14:19:54.333Z" icon="0" href="command_CANCEL">
+              <topicref type="topic" id="384612716846275" build="ALL" modified="2019-09-24T14:19:27.363Z" icon="0" href="command_CANCEL">
                 <caption translate="true">CANCEL Command</caption>
               </topicref>
-              <topicref type="topic" id="384614041083108" modified="2019-08-27T14:19:54.341Z" icon="0" href="command_DEFAULT">
+              <topicref type="topic" id="384614041083108" build="ALL" modified="2019-09-24T14:19:27.369Z" icon="0" href="command_DEFAULT">
                 <caption translate="true">DEFAULT Command</caption>
               </topicref>
-              <topicref type="topic" id="384614597322040" modified="2019-08-27T14:19:54.349Z" icon="0" href="command_DO_CASE">
+              <topicref type="topic" id="384614597322040" build="ALL" modified="2019-09-24T14:19:27.375Z" icon="0" href="command_DO_CASE">
                 <caption translate="true">DO CASE Statement</caption>
               </topicref>
-              <topicref type="topic" id="384612279994244" modified="2019-08-27T14:19:54.357Z" icon="0" href="command_DO">
+              <topicref type="topic" id="384612279994244" build="ALL" modified="2019-09-24T14:19:27.381Z" icon="0" href="command_DO">
                 <caption translate="true">DO Statement</caption>
               </topicref>
-              <topicref type="topic" id="384614699101848" modified="2019-08-27T14:19:54.365Z" icon="0" href="command_DO_WHILE">
+              <topicref type="topic" id="384614699101848" build="ALL" modified="2019-09-24T14:19:27.386Z" icon="0" href="command_DO_WHILE">
                 <caption translate="true">DO WHILE Statement</caption>
               </topicref>
-              <topicref type="topic" id="384613350517014" modified="2019-08-27T14:19:54.373Z" icon="0" href="command_EXTERNAL">
+              <topicref type="topic" id="384613350517014" build="ALL" modified="2019-09-24T14:19:27.392Z" icon="0" href="command_EXTERNAL">
                 <caption translate="true">EXTERNAL Statement</caption>
               </topicref>
-              <topicref type="topic" id="384614708239396" modified="2019-08-27T14:19:54.381Z" icon="0" href="command_FOR">
+              <topicref type="topic" id="384614708239396" build="ALL" modified="2019-09-24T14:19:27.397Z" icon="0" href="command_FOR">
                 <caption translate="true">FOR Statement</caption>
               </topicref>
-              <topicref type="topic" id="436999119843888" modified="2019-08-27T14:19:54.389Z" icon="0" href="command_FOREACH">
+              <topicref type="topic" id="436999119843888" build="ALL" modified="2019-09-24T14:19:27.402Z" icon="0" href="command_FOREACH">
                 <caption translate="true">FOREACH Statement</caption>
               </topicref>
-              <topicref type="topic" id="384614779259998" modified="2019-08-27T14:19:54.398Z" icon="0" href="command_IF">
+              <topicref type="topic" id="384614779259998" build="ALL" modified="2019-09-24T14:19:27.408Z" icon="0" href="command_IF">
                 <caption translate="true">IF Statement</caption>
               </topicref>
-              <topicref type="topic" id="436997670757836" modified="2019-08-27T14:19:54.406Z" icon="0" href="command_NOP">
+              <topicref type="topic" id="436997670757836" build="ALL" modified="2019-09-24T14:19:27.413Z" icon="0" href="command_NOP">
                 <caption translate="true">NOP Statement</caption>
               </topicref>
-              <topicref type="topic" id="384612172638112" modified="2019-08-27T14:19:54.415Z" icon="0" href="command_QUIT">
+              <topicref type="topic" id="384612172638112" build="ALL" modified="2019-09-24T14:19:27.419Z" icon="0" href="command_QUIT">
                 <caption translate="true">QUIT Command</caption>
               </topicref>
-              <topicref type="topic" id="436997417190491" modified="2019-08-27T14:19:54.423Z" icon="0" href="command_REPEAT_UNTIL">
+              <topicref type="topic" id="436997417190491" build="ALL" modified="2019-09-24T14:19:27.424Z" icon="0" href="command_REPEAT_UNTIL">
                 <caption translate="true">REPEAT UNTIL Statement</caption>
               </topicref>
-              <topicref type="topic" id="384614113111175" modified="2019-08-27T14:19:54.432Z" icon="0" href="command_RETURN">
+              <topicref type="topic" id="384614113111175" build="ALL" modified="2019-09-24T14:19:27.429Z" icon="0" href="command_RETURN">
                 <caption translate="true">RETURN Statement</caption>
               </topicref>
-              <topicref type="topic" id="384615570493792" modified="2019-08-27T14:19:54.441Z" icon="0" href="command_RUN">
+              <topicref type="topic" id="384615570493792" build="ALL" modified="2019-09-24T14:19:27.435Z" icon="0" href="command_RUN">
                 <caption translate="true">RUN Command</caption>
               </topicref>
-              <topicref type="topic" id="43701717101438" modified="2019-08-27T14:19:54.450Z" icon="0" href="command_SWITCH">
+              <topicref type="topic" id="43701717101438" build="ALL" modified="2019-09-24T14:19:27.440Z" icon="0" href="command_SWITCH">
                 <caption translate="true">SWITCH Statement</caption>
               </topicref>
-              <topicref type="topic" id="436998364558141" modified="2019-08-27T14:19:54.459Z" icon="0" href="command_TEXT">
+              <topicref type="topic" id="436998364558141" build="ALL" modified="2019-09-24T14:19:27.446Z" icon="0" href="command_TEXT">
                 <caption translate="true">TEXT Statement</caption>
               </topicref>
-              <topicref type="topic" id="436999313841944" modified="2019-08-27T14:19:54.468Z" icon="0" href="command_TRY_CATCH">
+              <topicref type="topic" id="436999313841944" build="ALL" modified="2019-09-24T14:19:27.452Z" icon="0" href="command_TRY_CATCH">
                 <caption translate="true">TRY CATCH Statement</caption>
               </topicref>
             </topicref>
-            <topicref type="topic" id="436966329416659" modified="2019-08-27T14:17:37.937Z" icon="0" href="cmd_cat_rtdecl">
+            <topicref type="topic" id="436966329416659" build="ALL" modified="2019-09-24T13:44:42.209Z" icon="0" href="cmd_cat_rtdecl">
               <caption translate="true">Runtime Declaration</caption>
-              <topicref type="topic" id="384612342121699" modified="2019-08-27T14:20:04.376Z" icon="0" href="command_DECLARE">
+              <topicref type="topic" id="384612342121699" build="ALL" modified="2019-09-24T14:19:34.447Z" icon="0" href="command_DECLARE">
                 <caption translate="true">DECLARE Statement</caption>
               </topicref>
-              <topicref type="topic" id="385413433586111" modified="2019-08-27T14:20:04.384Z" icon="0" href="command_PARAMETERS">
+              <topicref type="topic" id="385413433586111" build="ALL" modified="2019-09-24T14:19:34.454Z" icon="0" href="command_PARAMETERS">
                 <caption translate="true">PARAMETERS Statement</caption>
               </topicref>
-              <topicref type="topic" id="384612252964058" modified="2019-08-27T14:20:04.391Z" icon="0" href="command_PUBLIC">
+              <topicref type="topic" id="384612252964058" build="ALL" modified="2019-09-24T14:19:34.462Z" icon="0" href="command_PUBLIC">
                 <caption translate="true">PUBLIC Statement</caption>
               </topicref>
-              <topicref type="topic" id="384615704509378" modified="2019-08-27T14:20:04.400Z" icon="0" href="command_RELEASE">
+              <topicref type="topic" id="384615704509378" build="ALL" modified="2019-09-24T14:19:34.471Z" icon="0" href="command_RELEASE">
                 <caption translate="true">RELEASE Command</caption>
               </topicref>
             </topicref>
-            <topicref type="topic" id="43688506710440" modified="2019-08-27T14:20:04.407Z" icon="0" href="cmd_cat_terminal">
+            <topicref type="topic" id="43688506710440" build="ALL" modified="2019-09-24T13:44:42.214Z" icon="0" href="cmd_cat_terminal">
               <caption translate="true">Terminal Window</caption>
-              <topicref type="topic" id="436905627487723" modified="2019-08-27T14:20:04.415Z" icon="0" href="Qout_Command">
-                <caption translate="true">? Command</caption>
-              </topicref>
-              <topicref type="topic" id="436965716006732" modified="2019-08-27T14:20:04.423Z" icon="0" href="command_QUESTION">
+              <topicref type="topic" id="436965716006732" build="ALL" modified="2019-09-24T14:19:41.732Z" icon="0" href="command_QUESTION">
                 <caption translate="true">?|?? Statement</caption>
               </topicref>
-              <topicref type="topic" id="436968219137144" modified="2019-08-27T14:20:04.431Z" icon="0" href="command_ACCEPT">
+              <topicref type="topic" id="437329592748324" build="ALL" modified="2019-09-24T21:35:31.529Z" icon="0" href="command_BACKSLASH">
+                <caption translate="true">\|\\ Statement</caption>
+              </topicref>
+              <topicref type="topic" id="436968219137144" build="ALL" modified="2019-09-24T14:19:41.739Z" icon="0" href="command_ACCEPT">
                 <caption translate="true">ACCEPT Command</caption>
               </topicref>
-              <topicref type="topic" id="436967895211580" modified="2019-08-27T14:20:04.439Z" icon="0" href="command_SET_COLOR">
+              <topicref type="topic" id="436967895211580" build="ALL" modified="2019-09-24T14:19:41.745Z" icon="0" href="command_SET_COLOR">
                 <caption translate="true">SET COLOR Command</caption>
               </topicref>
-              <topicref type="topic" id="436966366054767" modified="2019-08-27T14:20:04.448Z" icon="0" href="command_WAIT">
+              <topicref type="topic" id="436966366054767" build="ALL" modified="2019-09-24T14:19:41.752Z" icon="0" href="command_WAIT">
                 <caption translate="true">WAIT Command</caption>
               </topicref>
             </topicref>
-            <topicref type="topic" id="436966642707120" modified="2019-08-27T14:17:37.957Z" icon="0" href="cmd_cat_vardecl">
+            <topicref type="topic" id="436966642707120" build="ALL" modified="2019-09-24T13:44:42.219Z" icon="0" href="cmd_cat_vardecl">
               <caption translate="true">Variable Declaration</caption>
-              <topicref type="topic" id="384612535274782" modified="2019-08-27T14:20:13.152Z" icon="0" href="command_FIELD">
+              <topicref type="topic" id="384612535274782" build="ALL" modified="2019-09-24T14:19:49.120Z" icon="0" href="command_FIELD">
                 <caption translate="true">FIELD Statement</caption>
               </topicref>
-              <topicref type="topic" id="384615072995608" modified="2019-08-27T14:20:13.161Z" icon="0" href="command_LOCAL">
+              <topicref type="topic" id="384615072995608" build="ALL" modified="2019-09-24T14:19:49.132Z" icon="0" href="command_LOCAL">
                 <caption translate="true">LOCAL Statement</caption>
               </topicref>
-              <topicref type="topic" id="384612997845759" modified="2019-08-27T14:20:13.169Z" icon="0" href="command_MEMVAR">
+              <topicref type="topic" id="384612997845759" build="ALL" modified="2019-09-24T14:19:49.142Z" icon="0" href="command_MEMVAR">
                 <caption translate="true">MEMVAR Statement</caption>
               </topicref>
-              <topicref type="topic" id="384615064228400" modified="2019-08-27T14:20:13.176Z" icon="0" href="command_STATIC">
+              <topicref type="topic" id="384615064228400" build="ALL" modified="2019-09-24T14:19:49.149Z" icon="0" href="command_STATIC">
                 <caption translate="true">STATIC Statement</caption>
               </topicref>
             </topicref>

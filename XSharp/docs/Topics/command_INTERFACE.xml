@@ -18,18 +18,15 @@
     <header>
       <para styleclass="Heading1">INTERFACE Statement</para>
     </header>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Declare a interface name to the compiler.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal"><tab />[Attributes] </para>
     <para styleclass="Normal"><tab />[Modifiers] </para>
     <para styleclass="Normal"><tab />INTERFACE &lt;<text styleclass="Italic">idInterface</text>&gt; [INHERIT &lt;<text styleclass="Italic">idInterface</text>&gt;] <br/><tab />[IMPLEMENTS &lt;idInterface&gt;[, &lt;IdInterface2&gt;,..]</para>
     <para styleclass="Normal"><tab />[InterfaceMembers]</para>
     <para styleclass="Normal"><tab />END INTERFACE</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="Heading1">Arguments</para>
     <para styleclass="List"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
     <para styleclass="List"></para>
     <para styleclass="List">&lt;<text styleclass="Italic">idInterface</text>&gt;<tab />A valid identifier name for the class. &#160;A class is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a class and a global variable, for example, with the same name.</para>
@@ -40,11 +37,9 @@
     <para styleclass="List"></para>
     <para styleclass="List"></para>
     <para styleclass="List">ClassMembers<tab />This can be any of <link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCESS">ACCESS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPERATOR">OPERATOR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROPERTY">PROPERTY</link></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
-    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Heading1">Notess</para>
+    <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCESS" styleclass="List">ACCESS</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN" styleclass="List">ASSIGN</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS" styleclass="List">CLASS</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_EVENT" styleclass="List">EVENT</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD" styleclass="List">METHOD</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPERATOR" styleclass="List">OPERATOR</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROPERTY" styleclass="List">PROPERTY</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_STRUCTURE" styleclass="List">STRUCTURE</link></para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:12px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:144px left ;"></para>
   </body>

@@ -20,11 +20,9 @@
     <header>
       <para styleclass="Heading1">ACCESS Statement</para>
     </header>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Declare a method to access a non-exported or virtual instance variable.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal"><tab />[Attributes] </para>
     <para styleclass="Normal"><tab />[Modifiers] </para>
     <para styleclass="Normal"><tab /><text style="font-weight:bold;">ACCESS </text>&lt;<text styleclass="Italic">idName</text>&gt;</para>
@@ -34,8 +32,7 @@
     <para styleclass="Normal"><tab />[CLASS &lt;<text styleclass="Italic">idClass</text>&gt;]</para>
     <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">Declarations</text>&gt;]</para>
     <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">MethodBody</text>&gt;]</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="Heading1">Arguments</para>
     <para styleclass="Normal"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
     <para styleclass="List"><text styleclass="Normal">&lt;</text><text styleclass="Italic">idName</text><text styleclass="Normal">&gt;</text><tab /><text styleclass="Normal">A valid identifier name for the instance variable whose access method you are defining. &#160;Like other methods, access methods are entities; however, the system uses a unique naming scheme for them to prevent collisions with other entity names. &#160;Access method names must be unique within a class, but can share the same name as other entities in your application.</text></para>
     <para styleclass="Normal"><snippet src="__IncludeMethodParameters" inline="false"/></para>
@@ -58,7 +55,7 @@
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">ACCESS</text><text style="font-weight:bold; font-style:normal; color:#000000;"> y </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Test</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:bold; font-style:normal; color:#000000;"> y</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:bold; font-style:normal; color:#000000;"> UseClass</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:bold; font-style:normal; color:#000000;"> oTest </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Test</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">oTest </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Test</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">{}</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> oTest</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:</text><text style="font-weight:bold; font-style:normal; color:#000000;">x</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> oTest</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:</text><text style="font-weight:bold; font-style:normal; color:#000000;">y</text><tab /><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Using ACCESS method</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Non-exported variables come in three categories, each with its own properties (see the CLASS statement entry in this guide for details):</para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><tab /><text styleclass="Normal">INSTANCE</text></li>
       <li styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><tab /><text styleclass="Normal">PROTECT</text></li>
       <li styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><tab /><text styleclass="Normal">HIDDEN</text></li>

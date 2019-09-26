@@ -23,11 +23,11 @@
     <para styleclass="Normal">COPY STRUCTURE [FIELDS &lt;<text styleclass="Italic">idFieldList</text>&gt;] TO &lt;<text styleclass="Italic">xcTargetFile</text>&gt;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
-    <para styleclass="List">FIELDS &lt;idFieldList&gt;<tab /><tab />The set of fields to copy to the new database structure in the order specified. &#160;The default is all fields.</para>
+    <para styleclass="List">FIELDS &lt;idFieldList&gt;<tab />The set of fields to copy to the new database structure in the order specified. &#160;The default is all fields.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">TO &lt;xcTargetFile&gt;<tab /><tab />The name of the target database file, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD (see the &quot;RDD Specifics&quot; appendix in the Programmer&apos;s Guide for details on a particular RDD).</para>
+    <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />The name of the target database file, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD (see the &quot;RDD Specifics&quot; appendix in the Programmer&apos;s Guide for details on a particular RDD).</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab /><tab />If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. &#160;Refer to the &quot;Concurrency Control&quot; chapter in the Programmer&apos;s Guide for more information on resolving concurrency conflicts.</para>
+    <para styleclass="List"><tab />If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. &#160;</para>
     <para styleclass="List"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
     <para styleclass="Normal">In this example, COPY STRUCTURE creates a temporary file. &#160;After the user enters data into the temporary file, the master database file is updated with the new information:</para>
@@ -36,7 +36,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE_EXTENDE">COPY STRUCTURE EXTENDED</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE">CREATE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBCopyStruct">DBCopyStruct()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetDefault">SetDefault()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetPath">SetPath()</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE_EXTENDE">COPY STRUCTURE EXTENDED</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE">CREATE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbCopyStruct.htm" domain="XsRuntime.chm">DbCopyStruct()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDefault.htm" domain="XsRuntime.chm">SetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetPath.htm" domain="XsRuntime.chm">SetPath()</link></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

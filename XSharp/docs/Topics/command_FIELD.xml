@@ -14,13 +14,10 @@
     <header>
       <para styleclass="Heading1">FIELD Statement</para>
     </header>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Declare one or more database field names to be used by the current routine.</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal">FIELD &lt;<text styleclass="Italic">idFieldList</text>&gt; [IN &lt;<text styleclass="Italic">idAlias</text>&gt;]</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">&lt;idFieldList&gt;<tab />A list of names to declare as fields to the compiler.</para>
     <para styleclass="List"></para>

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__For</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__For</para>
+    </header>
+    <para styleclass="List">FOR &lt;lCondition&gt;<tab />A condition that each visible record within the scope must meet in order to be processed. &#160;If a record does not meet the specified condition, it is ignored and the next visible record is processed. &#160;If no &lt;Scope&gt; or WHILE clause is specified, having a for condition changes the default scope to all visible records.</para>
+    <para styleclass="List"></para>
+  </body>
+</topic>

@@ -43,7 +43,7 @@
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_DBCloseArea">DBCloseArea()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_FClose" styleclass="" style="font-family:Arial; font-size:10pt; text-decoration:underline; color:#000000;">FClose()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INDEX">SET INDEX</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbCloseArea.htm" domain="XsRuntime.chm">DBCloseArea()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_Core_Functions_FClose.htm" domain="XsRuntime.chm">FClose()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INDEX">SET INDEX</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

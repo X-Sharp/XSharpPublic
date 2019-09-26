@@ -33,10 +33,7 @@
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
     <para styleclass="List">&lt;lCondition&gt;<tab />The logical control expression for the DO WHILE loop.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">EXIT<tab />Unconditionally branches control from within a DO WHILE or FOR...NEXT structure to the statement immediately following the corresponding ENDDO or NEXT statement.</para>
-    <para styleclass="List"></para>
-    <para styleclass="List">LOOP<tab />Branches control to the most recently executed DO WHILE or FOR statement.</para>
-    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__ExitLoop" inline="false"/></para>
     <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
     <para styleclass="Normal">When the condition evaluates to TRUE, control passes into the structure and proceeds until an EXIT, LOOP, or ENDDO is encountered. &#160;ENDDO returns control to the DO WHILE statement and the process repeats itself. &#160;If the condition evaluates to FALSE, the DO WHILE construct terminates and control passes to the statement immediately following the ENDDO.</para>
     <para styleclass="Normal"></para>

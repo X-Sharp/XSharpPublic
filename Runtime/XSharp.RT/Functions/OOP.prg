@@ -659,6 +659,8 @@ INTERNAL STATIC CLASS OOPHelpers
                 RETURN (ARRAY) uValue
             ELSEIF uValue:IsObject .OR. uValue:IsCodeBlock
                 RETURN (OBJECT) uValue
+            ELSEIF uValue:IsPtr .and. totype == typeof(PTR)
+                return IntPtr{(PTR) uValue}
             ENDIF
       		
       		LOCAL oRet AS OBJECT

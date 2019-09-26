@@ -197,6 +197,26 @@ BEGIN NAMESPACE XSharpModel
 			IF oLast != NULL_OBJECT
 				oLast:oNext := oInfo
 			ENDIF
+            IF oInfo:eType == EntityType._Method .and. SELF:Dialect == XSharpDialect.XPP .and. ! oInfo:eModifiers:hasFlag(EntityModifiers._Inline)
+                LOCAL cLine  := SELF:aSourceLines[oLine:Line-1] as STRING
+                LOCAL nPos := cLine:IndexOf("METHOD", StringComparison.OrdinalIgnoreCase) as INT
+                IF nPos >= 0
+                    cLine := cLine:Substring(nPos+6):Trim() // after method
+                    nPos := cLine:IndexOf(":")
+                    IF nPos > 0
+                        local cClass := cLine:Substring(0, nPos) as string
+                        cLine := cLine:Substring(nPos+1)
+                        IF cLine:IndexOf("(") > 0
+                            cLine := cLine:Substring(0,cLine:IndexOf("("))
+                        endif
+                        oInfo:cName := cLine
+                        oInfo:cShortClassname := cClass
+                    ELSE
+                        // Just declaration, remove from list of entities
+                        aEntities:Remove(oInfo)
+                    ENDIF
+                ENDIF
+            ENDIF
 			RETURN
 
 		METHOD getParentType() AS EntityObject
@@ -290,7 +310,7 @@ BEGIN NAMESPACE XSharpModel
 			LOCAL context AS ParseContext
 			LOCAL xppVisibility AS STRING
 			LOCAL lForEach AS LOGIC
-			
+
 			aSourceLines := aLineCollection
 			aLineFields := List<EntityObject>{}
 			aLineLocals := List<EntityObject>{}
@@ -1506,6 +1526,8 @@ BEGIN NAMESPACE XSharpModel
 					eModifiers := eModifiers | EntityModifiers._Sealed
 				CASE "ABSTRACT"
 					eModifiers := eModifiers | EntityModifiers._Abstract
+                CASE "INLINE"
+					eModifiers := eModifiers | EntityModifiers._Inline
 			END SWITCH
 
 
@@ -1886,6 +1908,7 @@ BEGIN NAMESPACE XSharpModel
 		MEMBER _Static := 64		// 0x0040
 		MEMBER _Partial := 128		// 0x4000
 		MEMBER _New := 256			// 0x0200
+        MEMBER _Inline := 512       // not really a modifier
 		// roslyn also has these. Should we add these ?
 		// public			0x0001
 		// extern			0x0100

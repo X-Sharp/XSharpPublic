@@ -166,19 +166,13 @@ namespace XSharp.Parser
                 tokenStream.Fill();
                 tokens = tokenStream; 
                 GetLexerErrors(lexer, tokenStream, parseErrors);
-#region Determine if we need to preprocess
+                #region Determine if we need to preprocess
                 bool mustPreprocess = true;
-                if (lexer.HasPreprocessorTokens || !options.NoStdDef)
+                if (options.NoStdDef)
                 {
-                    // no need to pre process in partial compilation 
-                    // if lexer does not contain UDCs, Messages or Includes
-                    mustPreprocess = lexer.MustBeProcessed;
+                    mustPreprocess = lexer.MustBeProcessed || lexer.HasPreprocessorTokens;
                 }
-                else
-                {
-                    mustPreprocess = false;
-
-                }
+               
 #endregion
                 XSharpPreprocessor pp = null;
                 BufferedTokenStream ppStream = null;

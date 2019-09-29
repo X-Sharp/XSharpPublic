@@ -4273,8 +4273,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case "assembly":
                 case "genericparameter":
                 case "module":
-                case "returnvalue":
-
+                case "return":
                 case "class":
                 case "constructor":
                 case "delegate":
@@ -4286,7 +4285,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case "parameter":
                 case "property":
                 case "struct":
-                    var id = SyntaxFactory.MakeIdentifier(context.Token.Text);
+                    var id = SyntaxFactory.MakeIdentifier(context.Token.Text.ToLower());
                     context.Put(_syntaxFactory.AttributeTargetSpecifier(id, SyntaxFactory.MakeToken(SyntaxKind.ColonToken)));
                     break;
                 default:
@@ -5138,7 +5137,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.PutList(modifiers.ToList<SyntaxToken>());
             _pool.Free(modifiers);
         }
-
+         
         public override void ExitParameterDeclMods([NotNull] XP.ParameterDeclModsContext context)
         {
             SyntaxListBuilder modifiers = _pool.Allocate();

@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Using X# in Visual Studio</title>
   <body>
     <header>
       <para styleclass="Heading1">Using X# in Visual Studio</para>
     </header>
     <para styleclass="Normal">XSharp comes with 2 options for development environments:</para>
-    <list id="80" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+    <list id="3" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Chris Pyrgas has adjusted his existing IDE to support XSharp (it is now called XIDE, and compiled in XSharp !)</li>
-      <li styleclass="Normal">We supply Visual Studio integration for Visual Studio 2015. If you do not have Visual Studio 2015, you can download a (<text style="font-weight:bold;">free!) </text><text style="font-weight:normal;">community edition from Visual Studio from the web:</text></li>
+      <li styleclass="Normal">We supply Visual Studio integration for Visual Studio 2015 and later. If you do not have Visual Studio, you can download a (<text style="font-weight:bold;">free!) </text><text style="font-weight:normal;">community edition from Visual Studio from the web:</text></li>
     </list>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="weblink" href="https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx" target="_blank" style="font-weight:normal;">https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx</link></para>
     <para styleclass="Normal"><text style="font-weight:normal;">The Visual Studio integration is also work in progress. What is supported in this version is:</text></para>
-    <list id="81" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal"><text style="font-weight:normal;">Edit</text></li>
       <li styleclass="Normal"><text style="font-weight:normal;">Compile</text></li>
       <li styleclass="Normal"><text style="font-weight:normal;">Debug</text></li>
@@ -25,7 +25,7 @@
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text style="font-weight:normal;">Known issues:</text></para>
-    <list id="82" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal"><text style="font-weight:normal;">Some of the intellisense features are not supported yet.</text></li>
       <li styleclass="Normal"><text style="font-weight:normal;">There are no editors for VO Binary entities yet</text></li>
       <li styleclass="Normal"><text style="font-weight:normal;">No support yet for .Net Core, .Net Standard, Portable class libraries and shared projects</text></li>

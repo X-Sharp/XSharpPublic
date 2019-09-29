@@ -799,9 +799,9 @@
           </topicref>
           <topicref type="topic" id="436906885634999" build="ALL" modified="2019-09-24T13:44:34.021Z" icon="0" href="Commands-by-Category">
             <caption translate="true">Commands by Category</caption>
-            <topicref type="topic" id="436964307295986" build="ALL" modified="2019-09-24T13:44:42.144Z" icon="0" href="cmd_cat_comment">
+            <topicref type="topic" id="436964307295986" modified="2019-09-26T11:11:01.222Z" icon="0" href="cmd_cat_comment">
               <caption translate="true">Comment</caption>
-              <topicref type="topic" id="384614496544850" build="ALL" modified="2019-09-24T13:46:37.943Z" icon="0" href="command_NOTE">
+              <topicref type="topic" id="384614496544850" modified="2019-09-26T11:11:05.991Z" icon="0" href="command_NOTE">
                 <caption translate="true">NOTE Command</caption>
               </topicref>
             </topicref>

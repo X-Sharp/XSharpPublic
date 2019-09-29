@@ -8,7 +8,7 @@
     </header>
     <para styleclass="Body Text">The X# compiler can run in different dialects. The table below shows the differences between these dialects.<br/>You can use the /dialect compiler option to select the dialect that you want to use. The Core dialect is default.</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="40" colcount="6" style="width:auto; border-width:1px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="42" colcount="7" style="width:auto; border-width:1px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
       <thead style="vertical-align:top">
         <td style="width:40%;">
           <para styleclass="Normal"><text style="font-weight:bold;">Feature</text></para>
@@ -18,6 +18,9 @@
         </td>
         <td style="width:15%;">
           <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">VO &amp; Vulcan 1,2</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Vulcan</text></para>
         </td>
         <td style="width:15%;">
           <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Harbour 1,2</text></para>
@@ -39,16 +42,19 @@
           <para styleclass="Body Text">No</para>
         </td>
         <td>
-          <para styleclass="Normal">VO: Yes, Vulcan: No (Vulcan) <text style="font-size:7pt; font-weight:bold; vertical-align:super;">11</text></para>
+          <para styleclass="Normal">Yes &#160;<text style="font-size:7pt; font-weight:bold; vertical-align:super;">11</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Yes</para>
+          <para styleclass="Normal">No</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes &#160;<text style="font-size:7pt; font-weight:bold; vertical-align:super;">11</text></para>
         </td>
         <td>
           <para styleclass="Normal">Follow the conventions of Xbase++</para>
         </td>
         <td>
-          <para styleclass="Normal">Yes</para>
+          <para styleclass="Normal">Yes &#160;<text style="font-size:7pt; font-weight:bold; vertical-align:super;">11</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -59,7 +65,10 @@
           <para styleclass="Normal">No</para>
         </td>
         <td>
-          <para styleclass="Normal">VO: Yes Vulcan: No </para>
+          <para styleclass="Normal">Yes </para>
+        </td>
+        <td>
+          <para styleclass="Normal">No</para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
@@ -76,6 +85,9 @@
           <para styleclass="Normal"><text style="font-size:12pt; font-weight:bold;">*</text><text style="font-weight:normal;"> at beginning of line as comment character</text></para>
         </td>
         <td style="width:71px;">
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
@@ -110,6 +122,31 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">AND, NOT, OR, XOR </text>as alternatives for .AND., .NOT. etc</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">No</para>
+        </td>
+        <td>
+          <para styleclass="Normal">No</para>
+        </td>
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">No</para>
+        </td>
+        <td>
+          <para styleclass="Normal">No</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -117,6 +154,9 @@
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">No</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
@@ -150,6 +190,9 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -157,6 +200,9 @@
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">No</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
@@ -190,6 +236,9 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -200,6 +249,9 @@
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Yes</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
@@ -230,12 +282,18 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
           <para styleclass="Normal"><text style="font-weight:bold;">DATE and DateTime literals</text></para>
         </td>
         <td style="width:71px;">
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
@@ -270,6 +328,9 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -277,6 +338,9 @@
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">No</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
@@ -310,12 +374,18 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
           <para styleclass="Normal"><text style="font-weight:bold;">GLOBAL</text><text style="font-weight:normal;"> statement</text></para>
         </td>
         <td style="width:71px;">
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
@@ -342,6 +412,9 @@
           <para styleclass="Normal">Yes <text style="font-size:7pt; font-weight:bold; vertical-align:super;"> 7</text></para>
         </td>
         <td>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; font-weight:bold; vertical-align:super;"> 7</text></para>
+        </td>
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
@@ -357,6 +430,9 @@
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">No</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="color:#000000;">Yes (with /lb+)</text></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Yes (with /lb+)</text></para>
@@ -390,6 +466,9 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -399,7 +478,10 @@
           <para styleclass="Normal">No</para>
         </td>
         <td>
-          <para styleclass="Normal">VO: Yes, Vulcan: No</para>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">No</para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
@@ -430,6 +512,9 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -439,16 +524,19 @@
           <para styleclass="Normal">n/a</para>
         </td>
         <td>
-          <para styleclass="Normal">VO: 1 based, <br/>Vulcan 0 based</para>
+          <para styleclass="Normal">1 based</para>
         </td>
         <td>
-          <para styleclass="Normal">Yes</para>
+          <para styleclass="Normal">0 based</para>
         </td>
         <td>
-          <para styleclass="Normal">Yes</para>
+          <para styleclass="Normal">1 based</para>
         </td>
         <td>
-          <para styleclass="Normal">Yes</para>
+          <para styleclass="Normal">1 based</para>
+        </td>
+        <td>
+          <para styleclass="Normal">1 based</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -470,6 +558,9 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -477,6 +568,9 @@
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">No</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
@@ -510,12 +604,40 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+          <para styleclass="Normal">Yes 15</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">TEXT Command</text></para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">No</para>
+        </td>
+        <td>
+          <para styleclass="Normal">No</para>
+        </td>
+        <td>
+          <para styleclass="Normal">No</para>
+        </td>
+        <td>
+          <para styleclass="Normal">No</para>
+        </td>
+        <td>
+          <para styleclass="Normal">No</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
           <para styleclass="Normal"><text style="font-weight:bold;">Special features</text></para>
         </td>
         <td style="width:71px;">
+        </td>
+        <td>
         </td>
         <td>
         </td>
@@ -540,6 +662,9 @@
           <para styleclass="Normal">Yes 8</para>
         </td>
         <td>
+          <para styleclass="Normal">Yes 8</para>
+        </td>
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
@@ -555,6 +680,9 @@
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">No</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 3</para>
         </td>
         <td>
           <para styleclass="Normal">Yes 3</para>
@@ -588,12 +716,17 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
           <para styleclass="Normal"><text style="font-weight:bold; font-style:italic;">Pseudo functions</text></para>
         </td>
         <td style="width:71px;">
+        </td>
+        <td>
         </td>
         <td>
         </td>
@@ -613,6 +746,9 @@
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">No</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 4</para>
         </td>
         <td>
           <para styleclass="Normal">Yes 4</para>
@@ -646,6 +782,9 @@
         <td>
           <para styleclass="Normal">Yes 5</para>
         </td>
+        <td>
+          <para styleclass="Normal">Yes 5</para>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -653,6 +792,9 @@
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">No</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
@@ -686,6 +828,9 @@
         <td>
           <para styleclass="Normal">Yes 6</para>
         </td>
+        <td>
+          <para styleclass="Normal">Yes 6</para>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
@@ -693,6 +838,9 @@
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">No</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
@@ -726,12 +874,17 @@
         <td>
           <para styleclass="Normal">Yes</para>
         </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
           <para styleclass="Normal"><text style="font-weight:bold;">Other information</text></para>
         </td>
         <td style="width:71px;">
+        </td>
+        <td>
         </td>
         <td>
         </td>
@@ -749,7 +902,7 @@
         <td style="width:71px;">
           <para styleclass="Normal">Functions<br/>X$&lt;ModuleName&gt;$Functions <br/>for static functions and globals</para>
         </td>
-        <td colspan="3">
+        <td colspan="4">
           <para styleclass="Normal">&lt;AssemblyName&gt;.Functions (DLLs) <br/>&lt;AssemblyName&gt;.Exe.Functions (EXEs)<br/>&lt;AssemblyName&gt;.Exe.$&lt;ModuleName&gt;$.Functions <br/>for static functions and globals</para>
         </td>
         <td>
@@ -769,10 +922,13 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">Yes</para>
+          <para styleclass="Normal">No 10</para>
         </td>
         <td>
-          <para styleclass="Normal">Yes</para>
+          <para styleclass="Normal">No 10</para>
+        </td>
+        <td>
+          <para styleclass="Normal">No 10</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -789,10 +945,13 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">Yes</para>
+          <para styleclass="Normal">No 10</para>
         </td>
         <td>
-          <para styleclass="Normal">Yes</para>
+          <para styleclass="Normal">No 10</para>
+        </td>
+        <td>
+          <para styleclass="Normal">No 10</para>
         </td>
       </tr>
     </table></para>
@@ -812,6 +971,7 @@
       <li styleclass="List">The true and false expressions for an IIF() are optional in Harbour and XBase++</li>
       <li styleclass="List">The macro compiler is not supported. However when you use the RDD system in the Core dialect then the index expression will still use the macro compiler and a reference to the XSharp.RT.DLL is needed for the support of the macro compiler.</li>
       <li styleclass="List">This requires the XSharp runtime.</li>
+      <li styleclass="List">In FoxPro NIL is not allowed and redefined to FALSE.</li>
     </list>
   </body>
 </topic>

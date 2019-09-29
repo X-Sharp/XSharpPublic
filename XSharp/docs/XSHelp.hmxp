@@ -719,6 +719,8 @@
       <file-mod href="__typeList.xml"/>
       <file-mod href="Disclaimer.xml"/>
       <file-mod href="__IncludeLibCore.xml"/>
+      <file-mod href="cmd_cat_comment.xml"/>
+      <file-mod href="command_NOTE.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

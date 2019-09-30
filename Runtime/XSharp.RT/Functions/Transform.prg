@@ -800,7 +800,7 @@ FUNCTION Transform( uValue AS USUAL, cSayPicture AS STRING ) AS STRING
     END SWITCH
     RETURN ret
     
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/unformat/*" / 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/unformat/*" />
 FUNCTION Unformat( 	cFormatString	AS STRING,  cSayPicture AS STRING, cType AS STRING)	AS USUAL PASCAL
 LOCAL uRetVal		AS USUAL
 LOCAL lNullable     AS LOGIC

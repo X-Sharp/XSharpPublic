@@ -1776,7 +1776,11 @@ VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeblock
 	LOCAL result AS ICodeblock
 	result := SUPER:Compile(sBlock)
 	IF result == NULL
-		SELF:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBF.Compile")
+        var msg := "Could not compile epression '"+sBlock+"'"
+        if (runtimestate:LastRddError != NULL_OBJECT)
+            msg += "("+runtimestate:LastRddError:Message+")"
+        ENDIF
+		SELF:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBF.Compile", msg )
 	ENDIF
 RETURN result
 

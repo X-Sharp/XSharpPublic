@@ -92,6 +92,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     break;
 
+                case "initlocals":
+                    options.ExplicitInitLocals = true;
+                    options.InitLocals = positive;
+                    break;
+
                 case "ins":
                     options.ImplicitNameSpace = positive;
                     break;
@@ -552,12 +557,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     options.Vo15 = true;            // Untyped allowed
                 }
-                if (! options.ExplicitVO9 && options.Dialect == XSharpDialect.FoxPro)
+                if (options.Dialect == XSharpDialect.FoxPro)
                 {
-                    options.Vo9 = true;             // generate default return values
+                    if (!options.ExplicitVO9)
+                    {
+                        options.Vo9 = true;             // generate default return values
+                    }
+                    if (!options.ExplicitInitLocals)
+                    {
+                        options.InitLocals = true;
+                    }
                 }
             }
             options.Dialect = newDialect;
+           
         }
 
         private void OptionNotImplemented(List<Diagnostic> diagnostics, string option, string description )

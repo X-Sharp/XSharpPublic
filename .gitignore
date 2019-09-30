@@ -245,3 +245,6 @@ Tests/Applications/C493/Resources/NativeResources.res
 /Tests/XSharp.RT.dll
 /Tests/XSharp.Core.dll
 launchsettings.json
+/XSharp/docs/XsVOSDK.chm
+/XSharp/docs/XsRuntime.chw
+/XSharp/docs/XsRuntime.chm

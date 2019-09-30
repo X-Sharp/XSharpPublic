@@ -55,6 +55,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string SystemDir { get; internal set; } = _sysdir;
         public string IncludePaths { get; internal set; } = "";
         public bool ImplicitNameSpace { get; internal set; } = false;
+        public bool InitLocals { get; internal set; } = false;
         public bool LateBinding { get; internal set; } = false;
         public bool AllowNamedArguments { get; internal set; } = false;
         public bool NamedArgsHasBeenSet { get; internal set; } = false;
@@ -94,6 +95,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool XSharpVOIncluded=> RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVO);
         public bool XSharpCoreIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
         public bool XSharpXPPIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpXPP);
+        public bool ExplicitInitLocals { get; internal set; } = false;
         public bool ExplicitVO15 { get; internal set; } = false;
         public bool ExplicitVO9 { get; internal set; } = false;
         internal RuntimeAssemblies RuntimeAssemblies { get; set; } = RuntimeAssemblies.None;

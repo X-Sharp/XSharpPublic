@@ -1234,6 +1234,7 @@ foxclassmember      : Member=foxclassvars          #foxclsvars
                     //| Member=structure_            #foxnestedStructure
                     //| Member=delegate_             #foxnestedDelegate
                     //| Member=enum_                 #foxnestedEnum
+                    //| Member=event_                #foxnestedEvent
                     //| Member=interface_            #foxnestedInterface
 
 foxclassvars        : (Attributes=attributes)? (Modifiers=classvarModifiers)? Vars += foxclassvar

@@ -45,6 +45,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         //public bool VOUntypedAllowed { get; private set; }// Handled in the parser
         public XSharpDialect Dialect { get; private set; }
         public bool ImplicitNameSpace { get; private set; }
+        public bool InitLocals { get; private set; }
         public bool LateBinding { get; private set; }
         public bool NoClipCall { get; private set; }
         public bool HasDefaultTree { get; set; } = false;
@@ -109,6 +110,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ParseLevel = opt.ParseLevel;
                 TargetDLL = opt.TargetDLL;
                 RuntimeAssemblies = opt.RuntimeAssemblies;
+                InitLocals = opt.InitLocals;
                 
             }
         }
@@ -150,6 +152,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             ParseLevel = opt.ParseLevel;
             UndeclaredLocalVars = opt.UndeclaredLocalVars;
             MemVars = opt.MemVars;
+            InitLocals = opt.InitLocals;
         }
 
         internal CSharpCompilationOptions WithXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)

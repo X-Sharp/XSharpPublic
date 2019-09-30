@@ -875,6 +875,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        protected override ExpressionSyntax GenerateInitializer(XP.DatatypeContext datatype)
+        {
+            ExpressionSyntax value;
+            if (datatype == null || datatype.Get<TypeSyntax>() == _usualType)
+            {
+                value = GenerateNIL();
+                value.XGenerated = true;
+                return value;
+            }
+            return base.GenerateInitializer(datatype);
+        }
+
         protected override void VisitLocalvar([NotNull] XP.LocalvarContext context)
         {
             if (context.ArraySub != null && context.Dim == null &&
@@ -917,6 +929,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 context.Expression.Put(initializer);
             }
+            
             base.VisitLocalvar(context);
         }
 

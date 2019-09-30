@@ -89,6 +89,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool NoClipCall { get; internal set; } 
         public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
         public bool AllowNamedArguments { get; private set; }
+        public bool InitLocals { get; private set; } 
         public bool PreprocessorOutput { get; private set; }
         public bool SaveAsCSharp { get; private set; }
         public string StdDefs { get; private set; }
@@ -200,6 +201,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 AllowNamedArguments = opt.AllowNamedArguments;
                 SaveAsCSharp = opt.SaveAsCSharp;
                 MemVars = opt.MemVars;
+                InitLocals = opt.InitLocals;
             }
             LanguageVersion = LanguageVersion.CSharp7_3;
         }
@@ -267,6 +269,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
             LanguageVersion = LanguageVersion.CSharp7_3;
             MemVars = opt.MemVars;
+            InitLocals = opt.InitLocals;
         }
 
         public CSharpParseOptions WithXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)

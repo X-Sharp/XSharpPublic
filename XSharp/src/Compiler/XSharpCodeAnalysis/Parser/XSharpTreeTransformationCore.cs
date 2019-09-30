@@ -3170,6 +3170,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // nvk: Not handled here due to datatype, which is processed later
         }
 
+    
+
         protected virtual void VisitClassvar([NotNull] XP.ClassvarContext context)
         {
             bool isDim = context.Dim != null && context.ArraySub != null;
@@ -3217,6 +3219,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Initializer.SetSequencePoint();
             }
             else if (dataType != null && ! isDim && candefault)
+            {
+                initExpr = GenerateInitializer(dataType);
+            }
+            if (initExpr == null && _options.InitLocals)
             {
                 initExpr = GenerateInitializer(dataType);
             }
@@ -3352,7 +3358,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        protected ExpressionSyntax GenerateInitializer(XP.DatatypeContext datatype)
+        protected virtual ExpressionSyntax GenerateInitializer(XP.DatatypeContext datatype)
         {
             if (_options.VONullStrings && datatype != null)
             {
@@ -3369,6 +3375,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     value.XGenerated = true;
                     return value;
                 }
+            }
+            if (_options.InitLocals)
+            {
+                ExpressionSyntax value;
+                if (datatype == null)
+                {
+                    value = GenerateLiteralNull();
+                }
+                else
+                {
+                    value = MakeDefault(datatype.Get<TypeSyntax>());
+                }
+                value.XGenerated = true;
+                return value;
             }
             return null;
         }
@@ -5339,13 +5359,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool isDim = context.Dim != null && context.ArraySub != null;
             string staticName = null;
             TypeSyntax varType;
+            var initExpr = context.Expression?.Get<ExpressionSyntax>();
             if (context.DataType != null)
                 varType = context.DataType?.Get<TypeSyntax>();
             else
             {
                 varType = _getMissingType();
             }
-            var initExpr = context.Expression?.Get<ExpressionSyntax>();
             bool simpleInit = false;
             varType.XVoDecl = true;
             if (context.As?.Type == XP.IS)
@@ -5365,6 +5385,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var arrayType = _syntaxFactory.ArrayType(varType, context.ArraySub.Get<ArrayRankSpecifierSyntax>());            // with dimensions      string[10,10]
                 varType = _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(context.ArraySub._ArrayIndex.Count));        // without dimensions   string[,]
                 initExpr = GenerateDimArrayInitExpression(arrayType, context.ArraySub );
+            }
+            if (_options.InitLocals && initExpr == null)
+            {
+                initExpr = GenerateInitializer(context.DataType);
             }
             if (isStatic)
             {

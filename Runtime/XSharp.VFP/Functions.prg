@@ -49,3 +49,20 @@ ELSE
     oError:Throw()
 ENDIF
 RETURN cOld
+
+
+function ICase(lCond1, uExp1, lCond2, uExp2) as usual
+    for var nI := 1 to PCount()-1 step 2
+        local cond := _GetFParam(nI) as logic
+        if cond
+            return _GetFParam(nI+1)
+        endif
+    next
+    if PCount() % 2 == 1
+        return _args()[PCount()]
+    endif
+    if PCount() >= 2
+        var type := UsualType(_GetFParam(2))
+        return EmptyUsual(type)
+    ENDIF
+    return NIL

@@ -3222,10 +3222,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 initExpr = GenerateInitializer(dataType);
             }
-            if (initExpr == null && _options.InitLocals)
-            {
-                initExpr = GenerateInitializer(dataType);
-            }
             context.Put(GenerateVariable(context.Id.Get<SyntaxToken>(), initExpr));
         }
 

@@ -266,7 +266,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // Allow cast -> BOOLEAN
                 if (dstType == SpecialType.System_Boolean && srcType.IsIntegralType())
                 {
-                    return Conversion.Identity;
+                    if (sourceExpression is BoundExpression be && be.Type.SpecialType == SpecialType.System_Boolean)
+                    {
+                        return Conversion.Identity;
+                    }
                 }
             }
             // TYPE(_CAST, expr) allows almost everything

@@ -6,6 +6,7 @@ FUNCTION Start() AS VOID
 	? n
 RETURN
 
+// small git test
 CLASS TestClass
 	METHOD Test() AS INT
 	RETURN 0

@@ -94,6 +94,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             MethodSymbol getMethodOpt = null,
             BoundPropertyAccess oldNodeOpt = null)
         {
+#if XSHARP
+            if (property is XsVariableSymbol)
+            {
+                var getMethod = property.GetMethod;
+                Debug.Assert((object)getMethod != null);
+                return BoundCall.Synthesized(syntax, null, getMethod,
+                    new BoundLiteral(syntax, ConstantValue.Create(property.Name), _compilation.GetSpecialType(SpecialType.System_String)));
+            }
+#endif
             if (_inExpressionLambda && rewrittenArguments.IsEmpty)
             {
                 return oldNodeOpt != null ?

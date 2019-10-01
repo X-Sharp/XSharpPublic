@@ -24,6 +24,15 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("1234512345", Transform("1234512345", "XXXXXXXXXX") )
 			Assert.Equal("1234"      , Transform("1234", "XX99") )
 			Assert.Equal("ITALIA"    , Transform("Italia", "@!") )
+			
+			LOCAL c AS STRING
+			c := "Not nil!"
+			Assert.False(c == NIL)
+			Assert.True(c != NIL)
+			LOCAL u AS STRING
+			u := "Not nil!"
+			Assert.False(c == NIL)
+			Assert.True(c != NIL)
 		RETURN
 	
 		[Fact, Trait("Category", "StringEq")];
@@ -264,27 +273,27 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
             [Fact, Trait("Category", "Str")];
 		    METHOD Pad_Test() AS VOID
-                local u as usual
-                Assert.Equal(space(10), Padr(u,10))
-                Assert.Equal(space(10), Pad(u,10))
-                Assert.Equal(space(10), Padc(u,10))
-                Assert.Equal(space(10), Padl(u,10))
+                LOCAL u AS USUAL
+                Assert.Equal(Space(10), PadR(u,10))
+                Assert.Equal(Space(10), Pad(u,10))
+                Assert.Equal(Space(10), PadC(u,10))
+                Assert.Equal(Space(10), PadL(u,10))
                 u := "a"
-                Assert.Equal("a         ", Padr(u,10))
+                Assert.Equal("a         ", PadR(u,10))
                 Assert.Equal("a         ", Pad(u,10))
-                Assert.Equal("    a     ", Padc(u,10))
-                Assert.Equal("         a", Padl(u,10))
+                Assert.Equal("    a     ", PadC(u,10))
+                Assert.Equal("         a", PadL(u,10))
                 u := 1
-                Assert.Equal("1         ", Padr(u,10))
+                Assert.Equal("1         ", PadR(u,10))
                 Assert.Equal("1         ", Pad(u,10))
-                Assert.Equal("    1     ", Padc(u,10))
-                Assert.Equal("         1", Padl(u,10))
+                Assert.Equal("    1     ", PadC(u,10))
+                Assert.Equal("         1", PadL(u,10))
                 u := 1.23
-                SetDecimalSep(asc("."))
-                Assert.Equal("1.23      ", Padr(u,10))
+                SetDecimalSep(Asc("."))
+                Assert.Equal("1.23      ", PadR(u,10))
                 Assert.Equal("1.23      ", Pad(u,10))
-                Assert.Equal("   1.23   ", Padc(u,10))
-                Assert.Equal("      1.23", Padl(u,10))
+                Assert.Equal("   1.23   ", PadC(u,10))
+                Assert.Equal("      1.23", PadL(u,10))
 
 	END CLASS
 

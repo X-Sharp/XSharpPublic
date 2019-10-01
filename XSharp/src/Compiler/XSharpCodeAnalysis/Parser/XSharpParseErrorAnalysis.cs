@@ -708,22 +708,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitXbasedecl([NotNull] XSharpParser.XbasedeclContext context)
         {
-            if (_options.Dialect == XSharpDialect.FoxPro && context.T.Type == XSharpParser.LPARAMETERS)
-                return;
-            if (_options.Dialect != XSharpDialect.Core && context.T.Type == XSharpParser.FIELD  )
-                return;
-            if (!_options.Dialect.AllowXBaseVariables() || !_options.SupportsMemvars)
+
+            if (_options.Dialect == XSharpDialect.Core)
             {
-                NotInDialect(context, context.T.Text + " statement");
+                NotInCore(context, "Dynamic Memory Variables");
+                return;
+            }
+            if (context.T.Type == XSharpParser.LPARAMETERS || context.T.Type == XSharpParser.FIELD)
+            {
+                // this declares local vars or fields, so always allowed outside of the Core dialect
+                return;
+            }
+            if (!_options.SupportsMemvars)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_DynamicVariablesNotAllowed));
             }
         }
         public override void ExitFilewidememvar([NotNull] XSharpParser.FilewidememvarContext context)
         {
-            if (context._Vars.Count > 0)
-            {
-                NotInCore(context, "File Dynamic Memory Variables");
-            }
-
+           NotInCore(context, "Dynamic Memory Variables");
         }
 
 

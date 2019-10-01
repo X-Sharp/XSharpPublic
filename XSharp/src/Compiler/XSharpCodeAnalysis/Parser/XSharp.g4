@@ -73,7 +73,7 @@ entity              : namespace_
                     | {IsXPP}? xppmethod        // XPP method, will be linked to XPP Class
                     | constructor               // Constructor Class xxx syntax
                     | destructor                // Destructor Class xxx syntax
-                    | {AllowXBaseVariables}? filewidememvar      // memvar declared at file level
+                    | filewidememvar            // memvar declared at file level
                     | eos                       // Blank Lines between entities
                     ;
 
@@ -494,7 +494,7 @@ filewidememvar      : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierN
 
 
 statement           : Decl=localdecl                        #declarationStmt
-                    | {AllowXBaseVariables}? xbasedecl      #xbasedeclStmt
+                    | xbasedecl                             #xbasedeclStmt
                     | Decl=fielddecl                        #fieldStmt
                     | DO? WHILE Expr=expression end=eos
                       StmtBlk=statementBlock 

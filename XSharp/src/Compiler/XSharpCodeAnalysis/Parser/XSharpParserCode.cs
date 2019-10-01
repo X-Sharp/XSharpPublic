@@ -33,12 +33,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
     public partial class XSharpParser
     {
         public CSharpParseOptions Options { get; set; }
-        public XSharpDialect Dialect => Options.Dialect;
         public bool AllowNamedArgs => Options.AllowNamedArguments;
-        public bool AllowXBaseVariables => Dialect.AllowXBaseVariables();
-        public bool IsScript => Options.Kind == SourceCodeKind.Script;
         public bool IsXPP => Options.Dialect == XSharpDialect.XPP;
-        public bool IsFox => Options.Dialect == XSharpDialect.FoxPro;
         void unexpectedToken(string token)
         {
             if (Interpreter.PredictionMode == Antlr4.Runtime.Atn.PredictionMode.Sll)

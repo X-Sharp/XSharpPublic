@@ -4031,6 +4031,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to To use Dynamic variables (PUBLIC, PRIVATE, MEMVAR) you will have to pass the /memvar commandline option..
+        /// </summary>
+        internal static string ERR_DynamicVariablesNotAllowed {
+            get {
+                return ResourceManager.GetString("ERR_DynamicVariablesNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Empty character literal.
         /// </summary>
         internal static string ERR_EmptyCharConst {

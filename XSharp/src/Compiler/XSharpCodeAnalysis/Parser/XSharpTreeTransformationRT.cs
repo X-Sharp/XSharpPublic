@@ -771,7 +771,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 if (alias.ToUpper() == "M")
+                { 
                     return GenerateMemVarGet(field);
+                }
                 method = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.FieldGetWa : VulcanQualifiedFunctionNames.FieldGetWa;
                 var argWA = MakeArgument(GenerateLiteral(alias));
                 args = MakeArgumentList(argWA, argField);
@@ -818,17 +820,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 fieldInfo = CurrentEntity.Data.GetField(Name);
             }
-            if (fieldInfo != null)
+            context.MemVarInfo = fieldInfo;
+            if (fieldInfo != null && fieldInfo.IsField && !String.IsNullOrEmpty(fieldInfo.Alias))
             {
-                var name = GenerateLiteral(fieldInfo.Name);
-                if (fieldInfo.IsField)
+                if (fieldInfo.Alias.ToUpper() != "M")
                 {
+                    var name = GenerateLiteral(fieldInfo.Name);
                     expr = GenerateFieldGet(fieldInfo.Alias, name);
-
-                }
-                else
-                {
-                    expr = GenerateMemVarGet(name);
                 }
             }
             context.Put(expr);
@@ -1651,25 +1649,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     alias = fieldNodeLate.Alias?.GetText();
                     field = GenerateIdentifier(fieldNodeLate.Field);
                 }
-                expr = GenerateFieldGet(alias, field);
-                switch (Op.Type)
+                if (String.IsNullOrEmpty(alias) || alias.ToUpper() != "M")
                 {
-                    case XSharpLexer.INC:
-                        expr = GenerateAddOne(expr);
-                        expr = GenerateFieldSet(alias, field, expr);
-                        context.Put(expr);
-                        return;
-                    case XSharpLexer.DEC:
-                        expr = GenerateSubtractOne(expr);
-                        expr = GenerateFieldSet(alias, field, expr);
-                        context.Put(expr);
-                        return;
-                    case XSharpLexer.TILDE:
-                    case XSharpLexer.PLUS:
-                    case XSharpLexer.MINUS:
-                    case XSharpLexer.ADDROF:
-                        // these all are normal operators and do not change the field
-                        break;
+                    expr = GenerateFieldGet(alias, field);
+                    switch (Op.Type)
+                    {
+                        case XSharpLexer.INC:
+                            expr = GenerateAddOne(expr);
+                            expr = GenerateFieldSet(alias, field, expr);
+                            context.Put(expr);
+                            return;
+                        case XSharpLexer.DEC:
+                            expr = GenerateSubtractOne(expr);
+                            expr = GenerateFieldSet(alias, field, expr);
+                            context.Put(expr);
+                            return;
+                        case XSharpLexer.TILDE:
+                        case XSharpLexer.PLUS:
+                        case XSharpLexer.MINUS:
+                        case XSharpLexer.ADDROF:
+                            // these all are normal operators and do not change the field
+                            break;
+                    }
                 }
             }
             else if (expr.XNode is XP.PrimaryExpressionContext && expr.XNode.GetChild(0) is XP.NameExpressionContext)
@@ -1686,7 +1687,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             base.ExitPrefixExpression(context);
-
         }
 
         private ExpressionSyntax GeneratePrePostFixField(XP.NameExpressionContext nameExpr, IToken Op)
@@ -1699,17 +1699,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 fieldInfo = CurrentEntity.Data.GetField(field);
             }
-            if (fieldInfo != null)
+            // we do not update MemVars here. That is done later in the Expression Binder
+            if (fieldInfo != null && fieldInfo.IsField)
             {
                 var name = GenerateLiteral(fieldInfo.Name);
-                if (fieldInfo.IsField)
-                {
-                    expr = GenerateFieldGet(fieldInfo.Alias, name);
-                }
-                else
-                {
-                    expr = GenerateMemVarGet(name);
-                }
+                expr = GenerateFieldGet(fieldInfo.Alias, name);
 
                 if (Op.Type == XSharpLexer.INC)
                 {
@@ -1719,18 +1713,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     expr = GenerateSubtractOne(expr);
                 }
-                if (fieldInfo.IsField)
-                {
-                    expr = GenerateFieldSet(null, GenerateLiteral(field), expr);
-                }
-                else
-                {
-                    expr = GenerateMemVarPut(GenerateLiteral(field), expr);
-                }
+                expr = GenerateFieldSet(null, GenerateLiteral(field), expr);
             }
             return expr;
         }
-
         public override void ExitPostfixExpression([NotNull] XP.PostfixExpressionContext context)
         {
             ExpressionSyntax expr = context.Expr.Get<ExpressionSyntax>();
@@ -1785,7 +1771,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.ExitPostfixExpression(context);
 
         }
-
         private XP.AliasedFieldContext getAliasedFieldNode(XSharpParserRuleContext xnode)
         {
             if (xnode is XP.PrimaryExpressionContext prim)
@@ -1941,40 +1926,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;
 
             }
-            var memvarNode = getAliasedMemvarNode(context.Left);
 
-            if (memvarNode != null)
-            {
-                // Convert MEMVAR->NAME += 1 to MEMVAR->NAME := MEMVAR->NAME + 1
-
-                ExpressionSyntax expr;
-                string varName = memvarNode.VarName.GetText();
-                var name = GenerateLiteral(varName);
-                if (context.Op.Type == XP.ASSIGN_OP)
-                {
-                    expr = GenerateMemVarPut(name, right);
-                }
-                else
-                {
-                    // MEMVAR->NAME+= 1 gets converted to
-                    // MemVarPut("Name", MemVarGet("Name") + 1)
-                    // left already has the MemVarGet
-
-                    if (op == SyntaxKind.EmptyStatement)
-                    {
-                        expr = GenerateMemVarPut(name, right);
-                        expr = NotInDialect(expr, "Complex operation: " + context.Op.Text);
-                    }
-                    else
-                    {
-                        expr = _syntaxFactory.BinaryExpression(op, left, token, right);
-                        expr = GenerateMemVarPut(name, expr);
-                    }
-
-                }
-                context.Put(expr);
-                return;
-            }
             XP.NameExpressionContext namecontext = null;
             if (left.XNode is XP.PrimaryExpressionContext && left.XNode.GetChild(0) is XP.NameExpressionContext)
             {
@@ -1989,56 +1941,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     fieldInfo = CurrentEntity.Data.GetField(name);
                 }
-                if (fieldInfo != null)
+                if (fieldInfo != null && fieldInfo.IsField)
                 {
                     ExpressionSyntax expr;
                     var field = GenerateLiteral(fieldInfo.Name);
-                    if (fieldInfo.IsField)
+                    if (context.Op.Type == XP.ASSIGN_OP)
                     {
-                        if (context.Op.Type == XP.ASSIGN_OP)
-                        {
-                            expr = GenerateFieldSet(fieldInfo.Alias, field, right);
-                        }
-                        else
-                        {
-                            if (op == SyntaxKind.EmptyStatement)
-                            {
-                                expr = GenerateFieldSet(fieldInfo.Alias, field, right);
-                                expr = NotInDialect(expr, "Complex operation: " + context.Op.Text);
-                            }
-                            else
-                            {
-
-                                // AREA->NAME+= 1 gets converted to
-                                // __FieldSet("Area", "Name", __FieldGet("Area","Name") + 1)
-                                // left already has the FieldGet
-                                expr = _syntaxFactory.BinaryExpression(op, left, token, right);
-                                expr = GenerateFieldSet(fieldInfo.Alias, field, expr);
-                            }
-                        }
+                        expr = GenerateFieldSet(fieldInfo.Alias, field, right);
                     }
                     else
                     {
-                        if (context.Op.Type == XP.ASSIGN_OP)
+                        if (op == SyntaxKind.EmptyStatement)
                         {
-                            expr = GenerateMemVarPut(field, right);
+                            expr = GenerateFieldSet(fieldInfo.Alias, field, right);
+                            expr = NotInDialect(expr, "Complex operation: " + context.Op.Text);
                         }
                         else
                         {
-                            if (op == SyntaxKind.EmptyStatement)
-                            {
-                                expr = GenerateMemVarPut(field, right);
-                                expr = NotInDialect(expr, "Complex operation: " + context.Op.Text);
-                            }
-                            else
-                            {
-
-                                // NAME+= 1 gets converted to MemVarPut("Name", MemVarGet("Name") + 1)
-                                // left already has the MemVarGet
-                                // MemVarPut( "Name", __MemVarGet("Name") + 1)
-                                expr = _syntaxFactory.BinaryExpression(op, left, token, right);
-                                expr = GenerateMemVarPut(field, expr);
-                            }
+                            // AREA->NAME+= 1 gets converted to
+                            // __FieldSet("Area", "Name", __FieldGet("Area","Name") + 1)
+                            // left already has the FieldGet
+                            expr = _syntaxFactory.BinaryExpression(op, left, token, right);
+                            expr = GenerateFieldSet(fieldInfo.Alias, field, expr);
                         }
                     }
                     context.Put(expr);

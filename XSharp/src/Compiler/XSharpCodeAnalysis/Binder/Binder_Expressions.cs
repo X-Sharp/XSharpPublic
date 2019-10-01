@@ -27,6 +27,8 @@ using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using Microsoft.CodeAnalysis.PooledObjects;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+
 namespace Microsoft.CodeAnalysis.CSharp
 {
     /// <summary>
@@ -584,7 +586,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // declaration and if that declaration includes a type parameter with name I, then the
             // simple-name refers to that type parameter.
 
-            BoundExpression expression;
+            BoundExpression expression = null;
 
             // It's possible that the argument list is malformed; if so, do not attempt to bind it;
             // just use the null array.
@@ -772,29 +774,45 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             // undeclared variables are allowed when the dialect supports memvars and memvars are enabled
             // or in the 'full' macro compiler
-            else if (Compilation.Options.UndeclaredLocalVars
-                && (Compilation.Options.MacroScript || Compilation.Options.SupportsMemvars))
+            else if (Compilation.Options.MacroScript || Compilation.Options.SupportsMemvars)
             {
                 var type = Compilation.RuntimeFunctionsType();
+                bool declared = false;
                 var get = GetCandidateMembers(type, XSharpFunctionNames.VarGet, LookupOptions.MustNotBeInstance, this);
                 var set = GetCandidateMembers(type, XSharpFunctionNames.VarPut, LookupOptions.MustNotBeInstance, this);
-                if (get.Length == 1 && set.Length == 1 && get[0] is MethodSymbol && set[0] is MethodSymbol)
+                if (node.XNode is XSharpParser.PrimaryExpressionContext pe && pe.Expr is XSharpParser.NameExpressionContext nec)
                 {
-                    var ps = new XsVariableSymbol(name, (MethodSymbol)get[0], (MethodSymbol)set[0], Compilation.UsualType());
-                    expression = new BoundPropertyAccess(node, null, ps, LookupResultKind.Viable, Compilation.UsualType());
-                    if (!Compilation.Options.MacroScript)
+                    if (nec.MemVarInfo != null)
                     {
-                        Error(diagnostics, ErrorCode.WRN_UndeclaredVariable, node.Location, name);
+                        declared = true;
+                        if (nec.MemVarInfo.IsField)
+                        {
+                            get = GetCandidateMembers(type, XSharpFunctionNames.FieldGet, LookupOptions.MustNotBeInstance, this);
+                            set = GetCandidateMembers(type, XSharpFunctionNames.FieldPut, LookupOptions.MustNotBeInstance, this);
+                        }
+                        else
+                        {
+                            get = GetCandidateMembers(type, XSharpFunctionNames.MemVarGet, LookupOptions.MustNotBeInstance, this);
+                            set = GetCandidateMembers(type, XSharpFunctionNames.MemVarPut, LookupOptions.MustNotBeInstance, this);
+                        }
                     }
 
                 }
-                else
+                if (Compilation.Options.UndeclaredLocalVars || declared)
                 {
-                    expression = BadExpression(node);
-                    Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, XSharpFunctionNames.VarGet + "/" + XSharpFunctionNames.VarPut, Compilation.Options.Dialect.ToString());
+                    if (get.Length == 1 && set.Length == 1 && get[0] is MethodSymbol && set[0] is MethodSymbol)
+                    {
+                        var ps = new XsVariableSymbol(name, (MethodSymbol)get[0], (MethodSymbol)set[0], Compilation.UsualType());
+                        expression = new BoundPropertyAccess(node, null, ps, LookupResultKind.Viable, Compilation.UsualType());
+                        if (!Compilation.Options.MacroScript && !declared)
+                        {
+                            Error(diagnostics, ErrorCode.WRN_UndeclaredVariable, node.Location, name);
+                        }
+
+                    }
                 }
             }
-            else
+            if (expression == null)
             {
                 // Otherwise, the simple-name is undefined and a compile-time error occurs.
                 expression = BadExpression(node);

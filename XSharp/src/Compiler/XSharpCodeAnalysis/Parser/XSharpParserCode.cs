@@ -163,12 +163,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             PartialProps = 1 << 11,     // Class property
             HasDimVar = 1 << 12,        // Member property
             HasSync = 1 << 13,          // Member property
-			HasAddressOf = 1 << 14,     // Member property
+            HasAddressOf = 1 << 14,     // Member property
             IsInitProcedure = 1 << 15,  // Member property
             HasMemVars = 1 << 16,       // Member property
             HasYield = 1 << 17,         // Member property
             HasFormalParameters = 1 << 18,  // Member property
             HasInit = 1 << 19,         // class property
+            IsEntryPoint = 1 << 20 ,    // member property
         }
 
 
@@ -296,7 +297,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 get { return flags.HasFlag(EntityFlags.HasInit); }
                 set { flags = setFlag(flags, EntityFlags.HasInit, value); }
             }
-
+            public bool IsEntryPoint
+            {
+                get { return flags.HasFlag(EntityFlags.IsEntryPoint); }
+                set { flags = setFlag(flags, EntityFlags.IsEntryPoint, value); }
+            }
             private List<MemVarFieldInfo> Fields = null;
             internal void AddField(string Name, string Alias, bool Field, XSharpParserRuleContext context)
             {
@@ -687,7 +692,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String ShortName => Id.GetText();
 
         }
- 
+
+        public partial class NameExpressionContext
+        {
+            public MemVarFieldInfo MemVarInfo { get; set; }
+        }
 #endif
     }
 

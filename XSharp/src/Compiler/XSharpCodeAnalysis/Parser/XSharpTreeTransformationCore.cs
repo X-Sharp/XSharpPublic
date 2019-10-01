@@ -4805,9 +4805,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterFuncproc([NotNull] XP.FuncprocContext context)
         {
-            if (context.T != null && context.T.Type == XP.PROCEDURE)
+            if (context.T != null && context.T.Type == XP.PROCEDURE )
             {
-                context.Data.MustBeVoid = _options.Dialect != XSharpDialect.FoxPro;
+                context.Data.MustBeVoid = _options.Dialect != XSharpDialect.FoxPro ;
+            }
+            string name = context.Id.GetText();
+            context.Data.IsEntryPoint = string.Equals(name, _entryPoint, StringComparison.OrdinalIgnoreCase)
+                    && _options.CommandLineArguments.CompilationOptions.OutputKind.IsApplication();
+            if (context.Data.IsEntryPoint && context.Type == null)
+            {
+                context.Data.MustBeVoid = true;
             }
         }
 
@@ -4867,6 +4874,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parameters = UpdateVODLLParameters(parameters);
             }
             var body = hasnobody ? null : context.StmtBlk.Get<BlockSyntax>();
+ 
             var returntype = context.Type?.Get<TypeSyntax>() ?? _getMissingType();
             if (isprocedure)
             {
@@ -4881,22 +4889,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         returntype = _voidType;
                     }
                 }
+                else if (context.Data.IsEntryPoint)
+                {
+                    returntype = _voidType;
+                }
             }
 
             returntype.XVoDecl = true;
             var id = context.Id.Get<SyntaxToken>();
+
             if (!hasnobody)
             {
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
                 // Functions and FoxPro procedures must have a return value
-                bool addreturn = !isprocedure || _options.Dialect == XSharpDialect.FoxPro;
+                bool addreturn = !isprocedure;
+                if (_options.Dialect == XSharpDialect.FoxPro && isprocedure)
+                {
+                    addreturn = !context.Data.IsEntryPoint;
+                }
                 if (addreturn)
                 {
                     body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
                 }
                 // Special Handling of EntryPoint
-                if (string.Equals(id.Text, _entryPoint, StringComparison.OrdinalIgnoreCase)
-                    && _options.CommandLineArguments.CompilationOptions.OutputKind.IsApplication())
+                if (context.Data.IsEntryPoint)
                 {
                     body = GenerateEntryPoint(modifiers, context, body, attributes, parameters);
                 }
@@ -5582,8 +5598,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     iterExpr = assign.Left.Get<ExpressionSyntax>();
                     initExpr = assign.Right.Get<ExpressionSyntax>();
                     assignExpr = assign.Get<ExpressionSyntax>();
-                    iterExpr.XNode = assign;
-                    initExpr.XNode = assign;
+                    iterExpr.XNode = assign.Left;
+                    initExpr.XNode = assign.Right;
                 }
                 else // must be a binary expression then
                 {
@@ -5597,14 +5613,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     iterExpr = bin.Left.Get<ExpressionSyntax>();
                     initExpr = bin.Right.Get<ExpressionSyntax>();
                     assignExpr = MakeSimpleAssignment(iterExpr, initExpr);
-                    iterExpr.XNode = assign;
-                    initExpr.XNode = assign;
+                    iterExpr.XNode = bin.Left;
+                    initExpr.XNode = bin.Right;
                 }
             }
             else
             {
                 iterExpr = _syntaxFactory.IdentifierName(context.ForIter.Get<SyntaxToken>());
-                iterExpr.XNode = context.Expr;
+                iterExpr.XNode = context.ForIter;
                 initExpr = context.Expr.Get<ExpressionSyntax>();
                 assignExpr = MakeSimpleAssignment(iterExpr, initExpr);
                 assignExpr.XNode = context.Expr;
@@ -5668,11 +5684,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             SyntaxFactory.MakeToken(SyntaxKind.GreaterThanEqualsToken),
                             context.FinalExpr.Get<ExpressionSyntax>());
                     whileExpr = MakeConditional(compExpr,ltExpr,gtExpr);
-
+                    whileExpr.XGenerated = true;
                     incrExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.AddAssignmentExpression,
                                 iterExpr,
                                 SyntaxFactory.MakeToken(SyntaxKind.PlusEqualsToken),
                                 context.Step.Get<ExpressionSyntax>());
+                    incrExpr.XGenerated = true;
                     whileExpr.XNode = context.FinalExpr;
                     incrExpr.XNode = context.Step;
                     context.FinalExpr.SetSequencePoint();

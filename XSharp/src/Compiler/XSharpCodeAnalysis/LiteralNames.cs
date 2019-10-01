@@ -174,6 +174,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string RunInitProcs = "RunInitProcs";
         internal const string VarGet = "__VarGet";
         internal const string VarPut = "__VarPut";
+        internal const string MemVarGet = "__MemVarGet";
+        internal const string MemVarPut = "__MemVarPut";
+        internal const string FieldGet = "__FieldGet";
+        internal const string FieldPut = "__FieldSet";
         internal const string TextSupport = "__TextSupport";
         internal const string TextOut = "__TextOut";
         internal const string TextMergeCheck = "SetTextMerge";

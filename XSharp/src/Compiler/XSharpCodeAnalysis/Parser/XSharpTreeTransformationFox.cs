@@ -86,7 +86,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 func.Stop = func.StmtBlk.Stop;
                 func.AddChild(func.Id);
                 func.AddChild(func.StmtBlk);
+                Entities.Push(func);
                 ExitFuncproc(func);     // Generate function
+                Entities.Pop();
                 entity.Start = func.Start;
                 entity.Stop = func.Stop;
                 entity.AddChild(func);

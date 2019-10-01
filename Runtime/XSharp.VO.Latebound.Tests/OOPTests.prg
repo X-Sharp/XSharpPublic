@@ -421,7 +421,8 @@ END CLASS
 
 
 CLASS ClassWithNoMethod
-	METHOD NoMethod(cMethodName, arg1, arg2, arg3)
+	METHOD NoMethod(arg1, arg2, arg3)
+        VAR cMethodName := NoMethod()
 		IF cMethodName = "ADD"
 			RETURN arg1+arg2+arg3
 		ELSEIF cMethodName = "MUL"

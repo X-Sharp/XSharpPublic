@@ -12,9 +12,9 @@
     // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE CONSTANTS.CS FILE
     #define VERSION_NUMBER_STR     "2.0.0.0"
     #define VERSION_NUMBER			2,0.0,0
-    #define FILEVERSION_NUMBER       2,0,7,0
-    #define FILEVERSION_NUMBER_STR   "2.0.7.0"
-    #define INFORMATIONAL_NUMBER_STR  "2.07 GA"
+    #define FILEVERSION_NUMBER       2,0,7,1
+    #define FILEVERSION_NUMBER_STR   "2.0.7.1"
+    #define INFORMATIONAL_NUMBER_STR  "2.07a GA"
 
     // This is the file version number, which is ignored by .NET but used by Windows installer to determine
     // whether one file is newer than another.

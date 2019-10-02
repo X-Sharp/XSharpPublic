@@ -81,7 +81,7 @@ BEGIN NAMESPACE XSharpModel
 			currentDialect := XSharpDialect.Core
 			aEndMarkers :=  <STRING>{"END"}
 			aSpecialEndMarkers := <STRING>{"IF", "DO", "WHILE", "WITH" }
-			aSpecialEndClassMarkers := <STRING>{"END"}
+			aSpecialEndClassMarkers := <STRING>{}
 
 
 		STATIC CONSTRUCTOR()
@@ -290,6 +290,8 @@ BEGIN NAMESPACE XSharpModel
 			LOCAL context AS ParseContext
 			LOCAL xppVisibility AS STRING
 			LOCAL lForEach AS LOGIC
+
+			LOCAL lAttributeOnLine AS LOGIC
 			
 			aSourceLines := aLineCollection
 			aLineFields := List<EntityObject>{}
@@ -398,7 +400,7 @@ BEGIN NAMESPACE XSharpModel
 								END IF
 							NEXT
 						ENDIF
-						IF lNewCommandInLine
+						IF lNewCommandInLine .OR. (lContinueNextLine .AND. lAttributeOnLine )
 							lNewCommandInLine := FALSE
 							state:Reset()
 							nBracketCount := 0
@@ -417,6 +419,7 @@ BEGIN NAMESPACE XSharpModel
 							cRealChar := ' '
 							lEscapedWord := FALSE
 							lInAttribute := FALSE
+							lAttributeOnLine := FALSE
 							lAllowAttribute := TRUE
 							oInfo := NULL
 							nEntityStartLine := 0
@@ -599,6 +602,9 @@ BEGIN NAMESPACE XSharpModel
 
 					IF nBracketCount == 0
 						lInAttribute := lAllowAttribute .AND. cRealChar == '[' .AND. sWord:Length == 0
+						IF ( lInAttribute )
+							lAttributeOnLine := TRUE
+						ENDIF
 					ELSE
 						IF cChar == cBracketOpen
 							nBracketCount ++
@@ -899,13 +905,30 @@ BEGIN NAMESPACE XSharpModel
 								cClassNameSpace := ""
 								cClassType := ""
 								lInProperty := FALSE
-							ELSEIF eStep == ParseStep.AfterEnd .AND. cUpperWord == "PROPERTY"
-								_SetLineType(oStatementLine, LineType.EndProperty)
-								state:lEntityFound := FALSE
-								state:lEntityIsType := FALSE
-								state:lIgnore := TRUE
-								lInEnum := FALSE
-								lInProperty := FALSE
+							ELSEIF eStep == ParseStep.AfterEnd
+								VAR lValidEndEntity := FALSE
+								SWITCH cUpperWord
+									CASE "PROPERTY"
+										_SetLineType(oStatementLine, LineType.EndProperty)
+										lValidEndEntity := TRUE
+									CASE "METHOD"
+										_SetLineType(oStatementLine, LineType.OptionnalEnd)
+										//
+										LOCAL oCurrent AS EntityObject
+										IF aEntities:Count > 0
+											oCurrent := aEntities[aEntities:Count-1]
+											oCurrent:HasEnd := TRUE
+										ENDIF
+										//
+										lValidEndEntity := TRUE
+								END SWITCH
+								IF lValidEndEntity
+									state:lEntityFound := FALSE
+									state:lEntityIsType := FALSE
+									state:lIgnore := TRUE
+									lInEnum := FALSE
+									lInProperty := FALSE
+								ENDIF
 							ELSE
 								lInEnum := cUpperWord == "ENUM"
 								oInfo := EntityObject{GetEntityType(cUpperWord)}
@@ -1746,6 +1769,7 @@ BEGIN NAMESPACE XSharpModel
 		PROPERTY oCargo AS OBJECT AUTO
 		PROPERTY nPosition AS INT AUTO
 		PROPERTY Context AS ParseContext AUTO
+		PROPERTY HasEnd AS LOGIC AUTO
 
 		INTERNAL CONSTRUCTOR()
 			SUPER()
@@ -1986,6 +2010,7 @@ BEGIN NAMESPACE XSharpModel
 		MEMBER IfDefInOut
 		MEMBER IfdefOut
 		MEMBER EndProperty
+		MEMBER OptionnalEnd
 		//	MEMBER BeginProperty
 		MEMBER OtherDirective
 	END ENUM

@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharpModel
 		PRIVATE _parentName AS STRING
 
 		CONSTRUCTOR(name AS STRING, kind AS Kind, modifiers AS Modifiers, visibility AS Modifiers, ;
-		    span AS TextRange, position AS TextInterval, oFile as XFile)
+		    span AS TextRange, position AS TextInterval, oFile AS XFile)
 			SUPER(name, kind, modifiers, visibility, span, position)
 
 			SELF:_members := List<XTypeMember>{}

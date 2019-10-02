@@ -170,7 +170,7 @@ BEGIN NAMESPACE XSharpModel
 						SELF:Project:AddType(type:Value)
 					NEXT
 					SELF:_usings:AddRange(usings)
-					if SELF:_usings:IndexOf("XSharp") == -1
+					IF SELF:_usings:IndexOf("XSharp") == -1
 						SELF:_usings:Insert(0, "XSharp")
 					ENDIF
 					SELF:_usingStatics:AddRange(staticUsings)

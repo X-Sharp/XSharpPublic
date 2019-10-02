@@ -93,7 +93,7 @@ BEGIN NAMESPACE XSharpModel
 			    oEntityVisibility := Dictionary<STRING , STRING>{}
 			    oDirectives := Dictionary<STRING , STRING>{}
 			    hBrk := Dictionary<CHAR,CHAR>{}
-			    aTokenIn := <STRING>{"IF", "DO", "WHILE", "FOR", "FOREACH", "TRY", "REPEAT", "SWITCH", "WITH"}
+			    aTokenIn := <STRING>{"IF", "DO", "WHILE", "FOR", "FOREACH", "TRY", "REPEAT", "SWITCH", "WITH", "BEGIN","ADD","REMOVE"}
 			    aTokenInOut := <STRING>{"ELSE", "ELSEIF", "CASE", "OTHERWISE", "CATCH", "FINALLY", "RECOVER" }
 			    aTokenOut := <STRING>{"ENDIF", "ENDDO", "ENDCASE", "NEXT", "ENDTRY", "UNTIL", "ENDWITH", "END" }
 			    aEntityWords := <STRING>{"EVENT" , "PROTECT" , "PROTECTED", "INSTANCE" , "EXPORT" , "PUBLIC" , "PRIVATE" , "HIDDEN" , "INTERNAL" , "MEMBER" , "GLOBAL"}

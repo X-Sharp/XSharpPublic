@@ -131,7 +131,7 @@ namespace XSharpColorizer
             {
                 _bwBuildModel.RunWorkerAsync();
             }
-            catch  { }
+            catch { }
 
         }
         #region Lexer Methods
@@ -144,7 +144,7 @@ namespace XSharpColorizer
                 {
                     _bwClassify.RunWorkerAsync();
                 }
-                catch  { }
+                catch { }
             }
 
         }
@@ -351,7 +351,7 @@ namespace XSharpColorizer
                             }
                         }
                     }
-                    else if (oElement.HasEnd )
+                    else if (oElement.HasEnd)
                     {
                         optionnalEnd.Add(oElement);
                     }
@@ -374,6 +374,8 @@ namespace XSharpColorizer
                         if (oNext != null)
                         {
                             var nLine = oNext.nStartLine;
+                            if (oNext.VisualStartLine != -1)
+                                nLine = oNext.VisualStartLine;
                             // our lines are 1 based and we want the line before, so -2
                             nEnd = snapshot.GetLineFromLineNumber(nLine - 2).Start;
                         }
@@ -502,7 +504,7 @@ namespace XSharpColorizer
                                     // Fallthrough CASEs ??
                                     if ((nStart == nEnd) && (blStart.cArgument == "CASE"))
                                     {
-                                        if ( nRealStart == -1)
+                                        if (nRealStart == -1)
                                             nRealStart = nStart;
                                     }
                                     else
@@ -622,12 +624,12 @@ namespace XSharpColorizer
                     switch (token.Type)
                     {
                         case XSharpLexer.PP_REGION:
-                        //case XSharpLexer.PP_IFDEF:
-                        //case XSharpLexer.PP_IFNDEF:
+                            //case XSharpLexer.PP_IFDEF:
+                            //case XSharpLexer.PP_IFNDEF:
                             regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
                             break;
                         case XSharpLexer.PP_ENDREGION:
-                        //case XSharpLexer.PP_ENDIF:
+                            //case XSharpLexer.PP_ENDIF:
                             regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStop));
                             break;
                         default:
@@ -864,7 +866,7 @@ namespace XSharpColorizer
                     {
                         type = xsharpKwCloseType;
                     }
-                        break;
+                    break;
             }
             //
             if (type != null)

@@ -312,6 +312,7 @@ namespace XSharpColorizer
             var regions = new List<ClassificationSpan>();
             var classList = new List<EntityObject>();
             var propertyList = new List<EntityObject>();
+            var optionnalEnd = new List<EntityObject>();
             if (info != null && snapshot != null)
             {
 
@@ -350,10 +351,10 @@ namespace XSharpColorizer
                             }
                         }
                     }
-                    //else if (oElement.eType == EntityType._Property)
-                    //{
-                    //    classStack.Push(oElement);
-                    //}
+                    else if (oElement.HasEnd )
+                    {
+                        optionnalEnd.Add(oElement);
+                    }
                     else if (oElement.eType.HasBody()
                             || oElement.eType == EntityType._VOStruct
                             || oElement.eType == EntityType._Union)
@@ -427,6 +428,7 @@ namespace XSharpColorizer
             }
             var blockStack = new Stack<LineObject>();
             var nsStack = new Stack<LineObject>();
+            int nRealStart = -1;
             foreach (var oLine in info.SpecialLines)
             {
                 int nStart = 0, nEnd = 0;
@@ -464,6 +466,16 @@ namespace XSharpColorizer
                             AddRegionSpan(regions, snapshot, nStart, nEnd);
                         }
                         break;
+                    case LineType.OptionnalEnd:
+                        if (optionnalEnd.Count > 0)
+                        {
+                            var block = optionnalEnd[0];
+                            optionnalEnd.RemoveAt(0);
+                            nStart = block.nOffSet;
+                            nEnd = oLine.OffSet;
+                            AddRegionSpan(regions, snapshot, nStart, nEnd);
+                        }
+                        break;
                     case LineType.TokenIn:
                         blockStack.Push(oLine);
                         break;
@@ -487,7 +499,19 @@ namespace XSharpColorizer
                                     // our lines are 1 based.
                                     // we do not want to include the next case line in the block from the previous one
                                     nEnd = snapshot.GetLineFromLineNumber(oLine.Line - 2).Start;
-                                    AddRegionSpan(regions, snapshot, nStart, nEnd);
+                                    // Fallthrough CASEs ??
+                                    if ((nStart == nEnd) && (blStart.cArgument == "CASE"))
+                                    {
+                                        if ( nRealStart == -1)
+                                            nRealStart = nStart;
+                                    }
+                                    else
+                                    {
+                                        if (nRealStart != -1)
+                                            nStart = nRealStart;
+                                        AddRegionSpan(regions, snapshot, nStart, nEnd);
+                                        nRealStart = -1;
+                                    }
                                 }
                             }
                         }
@@ -500,7 +524,13 @@ namespace XSharpColorizer
                             while (blockStack.Count > 0 && blockStack.Peek().eType == LineType.TokenInOut)
                             {
                                 var blStart = blockStack.Pop();
-                                nStart = blStart.OffSet;
+                                if ((nRealStart != -1) && (blStart.cArgument == "CASE"))
+                                {
+                                    nStart = nRealStart;
+                                    nRealStart = -1;
+                                }
+                                else
+                                    nStart = blStart.OffSet;
                                 nEnd = snapshot.GetLineFromLineNumber(oLine.Line - 2).Start;
                                 AddRegionSpan(regions, snapshot, nStart, nEnd);
                             }

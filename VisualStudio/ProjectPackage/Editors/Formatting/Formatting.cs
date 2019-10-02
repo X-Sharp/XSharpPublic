@@ -325,9 +325,9 @@ namespace XSharp.Project
                                 char start = lineText.Substring(0, 1)[0];
                                 char end = lineText.Substring(lineText.Length - 1, 1)[0];
                                 //
-                                if (lineContinue==1)
+                                if (lineContinue == 1)
                                 {
-                                    if ( prevstart != '[')
+                                    if (prevstart != '[')
                                     {
                                         indentSize = prevIndentSize + continueOffset;
                                     }
@@ -337,7 +337,7 @@ namespace XSharp.Project
                                     }
 
                                 }
-                                else if (lineContinue>1)
+                                else if (lineContinue > 1)
                                 {
                                     indentSize = prevIndentSize;
                                 }
@@ -347,15 +347,15 @@ namespace XSharp.Project
                                 }
                                 prevstart = start;
                                 // Not in comment, Multiple line but not Attribute
-                                if (!inComment && (end == ';') )
+                                if (!inComment && (end == ';'))
                                 {
-                                    if (lineContinue==0)
+                                    if (lineContinue == 0)
                                     {
                                         // Keep the previous Indentation
                                         lineContinue = 1;
                                         prevIndentSize = indentSize;
                                     }
-                                    else if (lineContinue ==1)
+                                    else if (lineContinue == 1)
                                     {
                                         if (!lineAfterAttributes)
                                         {
@@ -366,7 +366,7 @@ namespace XSharp.Project
                                 }
                                 else
                                 {
-                                    lineContinue=0;
+                                    lineContinue = 0;
                                 }
                             }
                         }
@@ -493,6 +493,7 @@ namespace XSharp.Project
                             indentValue--;
                         }
                     }
+
                 }
                 else if ((snapLine.Start.Position > region.Item1.Start) && (snapLine.End.Position < region.Item2.Start))
                 {
@@ -514,6 +515,7 @@ namespace XSharp.Project
                     // We are between the opening Keyword and the closing Keyword
                     if (!_alignMethod)
                     {
+
                         indentValue++;
                     }
                     else
@@ -524,12 +526,26 @@ namespace XSharp.Project
                             indentValue++;
                         }
                     }
-
                     // Move back keywords ( ELSE, ELSEIF, FINALLY, CATCH, RECOVER )
                     string startToken = searchMiddleKeyword(openKeyword);
                     if (startToken != null)
                     {
                         indentValue--;
+                    }
+                    //
+                    if (openKeyword == "CASE")
+                    {
+                        // Ok, Inside a CASE...do we have a fallthrough ?
+                        int currentLength;
+                        currentLength = getLineLength(snapLine.Snapshot, snapLine.Start.Position);
+                        if (currentLength <= 0)
+                            currentLength = 1;
+                        // Get the opening keyword, at the beginning of the currently processed region
+                        string insideKeyword = getFirstKeywordInLine(snapLine, snapLine.Start.Position, currentLength);
+                        if (insideKeyword == "CASE")
+                        {
+                            indentValue--;
+                        }
                     }
                 }
                 else //if ((region.Item2.Start >= snapLine.Start.Position) && (region.Item2.End <= snapLine.End.Position))
@@ -537,10 +553,20 @@ namespace XSharp.Project
                     // We are on the closing Keyword
                     if (!_alignMethod)
                     {
-                        // no closing keyword
+                        // normally, no closing keyword
                         if (_codeBlockKeywords.Contains<String>(openKeyword))
                         {
-                            indentValue++;
+                            // Ok, CodeBlock, we can have an optionnal END as the last statement
+                            int currentLength;
+                            currentLength = getLineLength(snapLine.Snapshot, snapLine.Start.Position);
+                            if (currentLength <= 0)
+                                currentLength = 1;
+                            // Get the opening keyword, at the beginning of the currently processed region
+                            string insideKeyword = getFirstKeywordInLine(snapLine, snapLine.Start.Position, currentLength);
+                            if (insideKeyword != "END")
+                            {
+                                indentValue++;
+                            }
                         }
                     }
                     //
@@ -554,6 +580,7 @@ namespace XSharp.Project
                             indentValue++;
                         }
                     }
+
                 }
                 //}
                 //}
@@ -656,7 +683,7 @@ namespace XSharp.Project
                         continue;
                     }
                     keyword = "";
-                    if (XSharpLexer.IsKeyword(token.Type) || (token.Type >= XSharpLexer.PP_FIRST && token.Type <= XSharpLexer.PP_LAST ))
+                    if (XSharpLexer.IsKeyword(token.Type) || (token.Type >= XSharpLexer.PP_FIRST && token.Type <= XSharpLexer.PP_LAST))
                     {
                         keyword = token.Text.ToUpper();
                         // it could be modifier...
@@ -837,7 +864,7 @@ namespace XSharp.Project
                             }
                             catch (Exception ex)
                             {
-                                XSharpProjectPackage.Instance.DisplayOutPutMessage("Indentation of previous line failed" );
+                                XSharpProjectPackage.Instance.DisplayOutPutMessage("Indentation of previous line failed");
                                 XSharpProjectPackage.Instance.DisplayException(ex);
                             }
                         }
@@ -852,7 +879,7 @@ namespace XSharp.Project
                             }
                             else
                             {
-                                if (doSkipped && keyword == "CASE" )
+                                if (doSkipped && keyword == "CASE")
                                 {
                                     if (!_alignDoCase)
                                     {
@@ -886,7 +913,7 @@ namespace XSharp.Project
                                 }
                                 catch (Exception ex)
                                 {
-                                    XSharpProjectPackage.Instance.DisplayOutPutMessage("Error indenting of current line ") ;
+                                    XSharpProjectPackage.Instance.DisplayOutPutMessage("Error indenting of current line ");
                                     XSharpProjectPackage.Instance.DisplayException(ex);
                                 }
                             }
@@ -902,7 +929,7 @@ namespace XSharp.Project
             }
             catch (Exception ex)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("SmartIndent.GetDesiredIndentation failed: " );
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("SmartIndent.GetDesiredIndentation failed: ");
                 XSharpProjectPackage.Instance.DisplayException(ex);
             }
             return _lastIndentValue;
@@ -1041,10 +1068,10 @@ namespace XSharp.Project
                 len = len / _indentSize;
                 if (rest != 0)
                 {
-                    len+= 1;
+                    len += 1;
                 }
             }
-            return len* _indentSize;
+            return len * _indentSize;
         }
         /// <summary>
         /// Get the first keyword in Line. The keyword is in UPPERCASE The modifiers (Private, Protected, ... ) are ignored
@@ -1088,7 +1115,7 @@ namespace XSharp.Project
                         // it could be modifier...
                         if (keywordIsModifier(token.Type))
                         {
-                            index++ ;
+                            index++;
                             keyword = "";
                             continue;
                         }
@@ -1102,7 +1129,7 @@ namespace XSharp.Project
                     }
                     else if (XSharpLexer.IsComment(token.Type))
                     {
-                        keyword = token.Text.Substring(0,2);
+                        keyword = token.Text.Substring(0, 2);
                     }
                     break;
                 }

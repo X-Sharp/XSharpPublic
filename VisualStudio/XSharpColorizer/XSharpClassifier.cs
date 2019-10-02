@@ -374,8 +374,6 @@ namespace XSharpColorizer
                         if (oNext != null)
                         {
                             var nLine = oNext.nStartLine;
-                            if (oNext.VisualStartLine != -1)
-                                nLine = oNext.VisualStartLine;
                             // our lines are 1 based and we want the line before, so -2
                             nEnd = snapshot.GetLineFromLineNumber(nLine - 2).Start;
                         }

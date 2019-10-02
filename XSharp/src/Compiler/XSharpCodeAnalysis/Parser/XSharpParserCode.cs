@@ -647,10 +647,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             public string VarName;
         }
-        public partial class AliasedExprContext
-        {
-            public bool Hasbeenhandled;
-        }
         public partial class AliasedExpressionContext
         {
             public bool XSharpRuntime;
@@ -687,11 +683,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String Name => ParentName + ShortName;
             public String ShortName => Id.GetText();
 
-        }
-
-        public partial class NameExpressionContext
-        {
-            public MemVarFieldInfo MemVarInfo { get; set; }
         }
 #endif
     }
@@ -839,11 +830,18 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool IsField { get; private set; }
         public bool IsFileWidePublic { get; private set; }
         public XSharpParserRuleContext Context { get; set; }
-        internal MemVarFieldInfo(string name, string alias, bool field, bool filewidepublic = false)
+        internal MemVarFieldInfo(string name, string alias, bool filewidepublic = false)
         {
             Name = name;
             Alias = alias;
-            IsField = field;
+            if (!string.IsNullOrEmpty(alias) &&  alias.ToUpper() == "M")
+            {
+                IsField = false;
+            }
+            else
+            {
+                IsField = true;
+            }
             IsFileWidePublic = filewidepublic;
         }
     }

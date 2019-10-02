@@ -289,11 +289,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
 #if XSHARP
-            if (property is XsVariableSymbol)
+            if (property is XsVariableSymbol xsvar)
             {
-                return BoundCall.Synthesized(syntax, null, setMethod,
-                    new BoundLiteral(syntax, ConstantValue.Create(property.Name), _compilation.GetSpecialType(SpecialType.System_String)),
-                    MakeConversionNode(rewrittenRight, _compilation.UsualType(), false));
+                return MemVarFieldAssign(syntax, xsvar, rewrittenRight);
             }
 #endif
             // We have already lowered each argument, but we may need some additional rewriting for the arguments,

@@ -73185,9 +73185,9 @@ FileType = Code
 CopyToBin = 0
 [C673 - Various issues with MEMVAR, PUBLIC etc References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.0.0.0
-ReferenceGAC = XSharp.RT,1,0,
-ReferenceGAC = XSharp.VO,1,0,2.0.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VO.dll,1,1
 [C673 - Various issues with MEMVAR, PUBLIC etc Resources]
 [C673 - Various issues with MEMVAR, PUBLIC etc Native Resources]
 [C673 - Various issues with MEMVAR, PUBLIC etc License files]
@@ -73213,8 +73213,8 @@ VO14=0
 VO16=0
 LateBound=0
 Unsafe=0
-Undeclared=0
-MemVar=0
+Undeclared=1
+MemVar=1
 IgnoreStdDefs=0
 Ovf=0
 FOvf=0

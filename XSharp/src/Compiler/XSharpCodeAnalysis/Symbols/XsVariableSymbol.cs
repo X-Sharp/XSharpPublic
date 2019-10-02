@@ -13,9 +13,11 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
+    [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
     internal sealed class XsVariableSymbol : PropertySymbol
     {
         private readonly string _name;
+        private readonly string _alias;
         private readonly MethodSymbol _getMethod;
         private readonly MethodSymbol _setMethod;
         private TypeSymbol _type;
@@ -27,11 +29,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             _setMethod = setMethod;
             _type = type;
         }
+        internal XsVariableSymbol(string alias, string name, MethodSymbol getMethod, MethodSymbol setMethod, TypeSymbol type)
+        {
+            _alias = alias;
+            _name = name;
+            _getMethod = getMethod;
+            _setMethod = setMethod;
+            _type = type;
+        }
 
         public override RefKind RefKind => RefKind.None;
 
         public override TypeSymbol Type => _type;
         public override string Name => _name;
+        public string Alias => _alias;
+        public bool HasAlias => !string.IsNullOrEmpty(_alias);
 
         public override ImmutableArray<CustomModifier> TypeCustomModifiers => ImmutableArray<CustomModifier>.Empty;
 
@@ -74,5 +86,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal override bool MustCallMethodsDirectly => true;
 
         internal override ObsoleteAttributeData ObsoleteAttributeData => throw new System.NotImplementedException();
+        internal new string GetDebuggerDisplay()
+        {
+            if (string.IsNullOrEmpty(Alias))
+            {
+                return Name;
+            }
+            return Alias + "->" + Name;
+        }
     }
 }

@@ -663,146 +663,173 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             var name = node.Identifier.ValueText;
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-            if (nsOrTypesFirst)
-            { 
-               this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: LookupOptions.NamespacesOrTypesOnly);
-            }
-            if (lookupResult.IsClear)
+            var memvarorfield = name.IndexOf("->") >0;
+            // no need to look for our special names
+            if (!memvarorfield)
             {
-                this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
-            }
-            // when no field or local found then try to find defines
-            if (lookupResult.IsClear && !bindMethod)
-            {
-                this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options | LookupOptions.DefinesOnly);
-            }
-            if (preferStatic || lookupResult.IsClear)
-            {
-                bool lookupAgain = false;
-                if (lookupResult.Kind == LookupResultKind.StaticInstanceMismatch)
+                if (nsOrTypesFirst)
                 {
-                    // try again but now allow instance methods
-                    lookupAgain = true;
+                    this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: LookupOptions.NamespacesOrTypesOnly);
                 }
-                if (lookupResult.Kind == LookupResultKind.Viable && invoked && lookupResult.Symbols.Count != 0)
+                if (lookupResult.IsClear)
                 {
-                    Symbol s = lookupResult.Symbols[0];
-                    if (s.Kind != SymbolKind.Method)
-                        lookupAgain = true;
-                }
-                if (lookupAgain || lookupResult.IsClear)
-                {
-                    // This uses the 'original' BindIdentifier lookup mechanism
-                    options = originalOptions;
-                    useSiteDiagnostics = null;
-                    lookupResult.Clear();
                     this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
                 }
-            }
-            diagnostics.Add(node, useSiteDiagnostics);
-
-            if (lookupResult.Kind != LookupResultKind.Empty)
-            {
-                // have we detected an error with the current node?
-                bool isError = false;
-                bool wasError;
-                var members = ArrayBuilder<Symbol>.GetInstance();
-                Symbol symbol = null;
-                if (!invoked)
+                // when no field or local found then try to find defines
+                if (lookupResult.IsClear && !bindMethod)
                 {
-                    // not invoked, so prefer non-method symbols
-                    members.AddRange(lookupResult.Symbols.Where(f => f.Kind != SymbolKind.Method));
-                    if (members.Count == 1)
+                    this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options | LookupOptions.DefinesOnly);
+                }
+                if (preferStatic || lookupResult.IsClear)
+                {
+                    bool lookupAgain = false;
+                    if (lookupResult.Kind == LookupResultKind.StaticInstanceMismatch)
                     {
-                        symbol = members[0];
+                        // try again but now allow instance methods
+                        lookupAgain = true;
+                    }
+                    if (lookupResult.Kind == LookupResultKind.Viable && invoked && lookupResult.Symbols.Count != 0)
+                    {
+                        Symbol s = lookupResult.Symbols[0];
+                        if (s.Kind != SymbolKind.Method)
+                            lookupAgain = true;
+                    }
+                    if (lookupAgain || lookupResult.IsClear)
+                    {
+                        // This uses the 'original' BindIdentifier lookup mechanism
+                        options = originalOptions;
+                        useSiteDiagnostics = null;
+                        lookupResult.Clear();
+                        this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
                     }
                 }
-                if (symbol == null)
+                diagnostics.Add(node, useSiteDiagnostics);
+                if (lookupResult.Kind != LookupResultKind.Empty)
                 {
-                    members.Clear();
-                    symbol = GetSymbolOrMethodOrPropertyGroup(lookupResult, node, name, node.Arity, members, diagnostics, out wasError);  // reports diagnostics in result.
-                }
-                else
-                {
-                    wasError = false;
-                }
-
-                isError |= wasError;
-
-                if ((object)symbol == null)
-                {
-                    Debug.Assert(members.Count > 0);
-
-                    var receiver = SynthesizeMethodGroupReceiver(node, members);
-                    expression = ConstructBoundMemberGroupAndReportOmittedTypeArguments(
-                        node,
-                        typeArgumentList,
-                        typeArguments,
-                        receiver,
-                        name,
-                        members,
-                        lookupResult,
-                        receiver != null ? BoundMethodGroupFlags.HasImplicitReceiver : BoundMethodGroupFlags.None,
-                        isError,
-                        diagnostics);
-                }
-                else
-                {
-                    bool isNamedType = (symbol.Kind == SymbolKind.NamedType) || (symbol.Kind == SymbolKind.ErrorType);
-
-                    if (hasTypeArguments && isNamedType)
+                    // have we detected an error with the current node?
+                    bool isError = false;
+                    bool wasError;
+                    var members = ArrayBuilder<Symbol>.GetInstance();
+                    Symbol symbol = null;
+                    if (!invoked)
                     {
-                        symbol = ConstructNamedTypeUnlessTypeArgumentOmitted(node, (NamedTypeSymbol)symbol, typeArgumentList, typeArguments, diagnostics);
+                        // not invoked, so prefer non-method symbols
+                        members.AddRange(lookupResult.Symbols.Where(f => f.Kind != SymbolKind.Method));
+                        if (members.Count == 1)
+                        {
+                            symbol = members[0];
+                        }
+                    }
+                    if (symbol == null)
+                    {
+                        members.Clear();
+                        symbol = GetSymbolOrMethodOrPropertyGroup(lookupResult, node, name, node.Arity, members, diagnostics, out wasError);  // reports diagnostics in result.
+                    }
+                    else
+                    {
+                        wasError = false;
                     }
 
-                    expression = BindNonMethod(node, symbol, diagnostics, lookupResult.Kind, indexed: false, isError);
+                    isError |= wasError;
 
-                    if (!isNamedType && (hasTypeArguments || node.Kind() == SyntaxKind.GenericName))
+                    if ((object)symbol == null)
                     {
-                        diagnostics.Add(ErrorCode.ERR_InvalidExprTerm, node.Location, node.XNode.GetText());
-                        expression = new BoundBadExpression(
-                            syntax: node,
-                            resultKind: LookupResultKind.WrongArity,
-                            symbols: ImmutableArray.Create<Symbol>(symbol),
-                            childBoundNodes: ImmutableArray.Create<BoundExpression>(expression),
-                            type: expression.Type,
-                            hasErrors: true);
-                    }
-                }
+                        Debug.Assert(members.Count > 0);
 
-                members.Free();
+                        var receiver = SynthesizeMethodGroupReceiver(node, members);
+                        expression = ConstructBoundMemberGroupAndReportOmittedTypeArguments(
+                            node,
+                            typeArgumentList,
+                            typeArguments,
+                            receiver,
+                            name,
+                            members,
+                            lookupResult,
+                            receiver != null ? BoundMethodGroupFlags.HasImplicitReceiver : BoundMethodGroupFlags.None,
+                            isError,
+                            diagnostics);
+                    }
+                    else
+                    {
+                        bool isNamedType = (symbol.Kind == SymbolKind.NamedType) || (symbol.Kind == SymbolKind.ErrorType);
+
+                        if (hasTypeArguments && isNamedType)
+                        {
+                            symbol = ConstructNamedTypeUnlessTypeArgumentOmitted(node, (NamedTypeSymbol)symbol, typeArgumentList, typeArguments, diagnostics);
+                        }
+
+                        expression = BindNonMethod(node, symbol, diagnostics, lookupResult.Kind, indexed: false, isError);
+
+                        if (!isNamedType && (hasTypeArguments || node.Kind() == SyntaxKind.GenericName))
+                        {
+                            diagnostics.Add(ErrorCode.ERR_InvalidExprTerm, node.Location, node.XNode.GetText());
+                            expression = new BoundBadExpression(
+                                syntax: node,
+                                resultKind: LookupResultKind.WrongArity,
+                                symbols: ImmutableArray.Create<Symbol>(symbol),
+                                childBoundNodes: ImmutableArray.Create<BoundExpression>(expression),
+                                type: expression.Type,
+                                hasErrors: true);
+                        }
+                    }
+
+                    members.Free();
+                }
             }
             // undeclared variables are allowed when the dialect supports memvars and memvars are enabled
             // or in the 'full' macro compiler
-            else if (Compilation.Options.MacroScript || Compilation.Options.SupportsMemvars)
+            if (expression == null && (Compilation.Options.MacroScript || Compilation.Options.SupportsMemvars || memvarorfield))
             {
                 var type = Compilation.RuntimeFunctionsType();
                 bool declared = false;
+                string alias = null;
                 var get = GetCandidateMembers(type, XSharpFunctionNames.VarGet, LookupOptions.MustNotBeInstance, this);
                 var set = GetCandidateMembers(type, XSharpFunctionNames.VarPut, LookupOptions.MustNotBeInstance, this);
-                if (node.XNode is XSharpParser.PrimaryExpressionContext pe && pe.Expr is XSharpParser.NameExpressionContext nec)
+                if (memvarorfield)
                 {
-                    if (nec.MemVarInfo != null)
+                    // this is either:
+                    // alias->fieldname
+                    // Xs$Memvar->Memvarname
+                    // Xs$Field->Memvar
+                    var parts = name.Split(new string[] { "->" }, StringSplitOptions.None);
+                    if (parts.Length == 2)
                     {
                         declared = true;
-                        if (nec.MemVarInfo.IsField)
+                        name = parts[1];
+                        if (parts[0] == XSharpSpecialNames.MemVarPrefix)
+                        {
+                            get = GetCandidateMembers(type, XSharpFunctionNames.MemVarGet, LookupOptions.MustNotBeInstance, this);
+                            set = GetCandidateMembers(type, XSharpFunctionNames.MemVarPut, LookupOptions.MustNotBeInstance, this);
+
+                        }
+                        else if (parts[0] == XSharpSpecialNames.FieldPrefix)
                         {
                             get = GetCandidateMembers(type, XSharpFunctionNames.FieldGet, LookupOptions.MustNotBeInstance, this);
                             set = GetCandidateMembers(type, XSharpFunctionNames.FieldPut, LookupOptions.MustNotBeInstance, this);
                         }
                         else
                         {
-                            get = GetCandidateMembers(type, XSharpFunctionNames.MemVarGet, LookupOptions.MustNotBeInstance, this);
-                            set = GetCandidateMembers(type, XSharpFunctionNames.MemVarPut, LookupOptions.MustNotBeInstance, this);
+                            get = GetCandidateMembers(type, XSharpFunctionNames.FieldGetWa, LookupOptions.MustNotBeInstance, this);
+                            set = GetCandidateMembers(type, XSharpFunctionNames.FieldPutWa, LookupOptions.MustNotBeInstance, this);
+                            alias = parts[0];
                         }
                     }
-
                 }
+
                 if (Compilation.Options.UndeclaredLocalVars || declared)
                 {
                     if (get.Length == 1 && set.Length == 1 && get[0] is MethodSymbol && set[0] is MethodSymbol)
                     {
-                        var ps = new XsVariableSymbol(name, (MethodSymbol)get[0], (MethodSymbol)set[0], Compilation.UsualType());
+                        XsVariableSymbol ps;
+                        if (!String.IsNullOrEmpty(alias))
+                        {
+                            ps = new XsVariableSymbol(alias, name, (MethodSymbol)get[0], (MethodSymbol)set[0], Compilation.UsualType());
+                        }
+                        else
+                        {
+                            ps = new XsVariableSymbol(name, (MethodSymbol)get[0], (MethodSymbol)set[0], Compilation.UsualType());
+                        }
+
                         expression = new BoundPropertyAccess(node, null, ps, LookupResultKind.Viable, Compilation.UsualType());
                         if (!Compilation.Options.MacroScript && !declared)
                         {

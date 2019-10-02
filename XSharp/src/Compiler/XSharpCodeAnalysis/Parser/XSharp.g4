@@ -794,7 +794,7 @@ aliasExpression     : MEMVAR ALIAS VarName=identifier                           
                     | LPAREN Area=identifier RPAREN ALIAS AMP Field=expression  #aliasedFieldLate	  // (nCust)->&fldName
                     // Note that the LPAREN .. RPAREN has been added to make sure that the expression does not match the Paren Expression
                     // !(CUSTOMER)->(Eof()) .and. SomeOtherCondition
-                    // Beccause the subrule with LPAREN and RPAREN is listed first then only Eof() will be evaluated in the workarea.
+                    // Because the subrule with LPAREN and RPAREN is listed first then only Eof() will be evaluated in the workarea.
                     | ( Id=identifier | LPAREN Alias=expression RPAREN)
                        ALIAS ( (LPAREN Expr=expression RPAREN)
                       | Expr=expression )                                     #aliasedExpr          // id -> expr   or (expr) -> expr 

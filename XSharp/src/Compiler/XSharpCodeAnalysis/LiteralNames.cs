@@ -133,6 +133,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string ArrayName = "Xs$Array";
         internal const string WithVarName = "Xs$WithVar";
         internal const string PrivatesLevel = "Xs$PrivatesLevel";
+        internal const string MemVarPrefix = "Xs$MemVar";
+        internal const string FieldPrefix = "Xs$Field";
 
         internal const string FunctionsClass = "Functions";
         internal const string VOExeFunctionsClass = ".Exe.Functions";
@@ -178,6 +180,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string MemVarPut = "__MemVarPut";
         internal const string FieldGet = "__FieldGet";
         internal const string FieldPut = "__FieldSet";
+        internal const string FieldGetWa = "__FieldGetWa";
+        internal const string FieldPutWa = "__FieldSetWa";
         internal const string TextSupport = "__TextSupport";
         internal const string TextOut = "__TextOut";
         internal const string TextMergeCheck = "SetTextMerge";

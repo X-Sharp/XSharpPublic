@@ -2,6 +2,7 @@
 
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
@@ -31,7 +32,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             BoundPropertyAccess oldNodeOpt = null)
         {
 #if XSHARP
-            if (propertySymbol is XsVariableSymbol)
+            if (propertySymbol is XsVariableSymbol xsvar)
             {
                 if (isLeftOfAssignment && propertySymbol.RefKind == RefKind.None)
                 {
@@ -41,10 +42,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else
                 {
-                    var getMethod = propertySymbol.GetMethod;
-                    Debug.Assert((object)getMethod != null);
-                    return BoundCall.Synthesized(syntax, null, getMethod,
-                        new BoundLiteral(syntax, ConstantValue.Create(propertySymbol.Name), _compilation.GetSpecialType(SpecialType.System_String)));
+                    return MemVarFieldAccess(syntax, xsvar);
                 }
             }
 #endif
@@ -95,12 +93,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             BoundPropertyAccess oldNodeOpt = null)
         {
 #if XSHARP
-            if (property is XsVariableSymbol)
+            if (property is XsVariableSymbol xsvar)
             {
-                var getMethod = property.GetMethod;
-                Debug.Assert((object)getMethod != null);
-                return BoundCall.Synthesized(syntax, null, getMethod,
-                    new BoundLiteral(syntax, ConstantValue.Create(property.Name), _compilation.GetSpecialType(SpecialType.System_String)));
+                return MemVarFieldAccess(syntax, xsvar);
             }
 #endif
             if (_inExpressionLambda && rewrittenArguments.IsEmpty)

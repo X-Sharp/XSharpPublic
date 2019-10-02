@@ -292,6 +292,7 @@ BEGIN NAMESPACE XSharpModel
 			LOCAL lForEach AS LOGIC
 
 			LOCAL lAttributeOnLine AS LOGIC
+			LOCAL nRealStartLine AS INT
 			
 			aSourceLines := aLineCollection
 			aLineFields := List<EntityObject>{}
@@ -313,6 +314,7 @@ BEGIN NAMESPACE XSharpModel
 			state:Reset()
 			context := ParseContext{}
 
+			nRealStartLine := -1
 			nLine := 0
 			_nLength := 0
 			FOREACH cLine AS STRING IN aLineCollection
@@ -604,6 +606,9 @@ BEGIN NAMESPACE XSharpModel
 						lInAttribute := lAllowAttribute .AND. cRealChar == '[' .AND. sWord:Length == 0
 						IF ( lInAttribute )
 							lAttributeOnLine := TRUE
+							IF (nRealStartLine == -1 )
+								nRealStartLine := nLine
+							ENDIF
 						ENDIF
 					ELSE
 						IF cChar == cBracketOpen
@@ -912,6 +917,10 @@ BEGIN NAMESPACE XSharpModel
 										_SetLineType(oStatementLine, LineType.EndProperty)
 										lValidEndEntity := TRUE
 									CASE "METHOD"
+									CASE "FUNCTION"
+									CASE "PROCEDURE"
+									CASE "ACCESS"
+									CASE "ASSIGN"
 										_SetLineType(oStatementLine, LineType.OptionnalEnd)
 										//
 										LOCAL oCurrent AS EntityObject
@@ -1005,6 +1014,7 @@ BEGIN NAMESPACE XSharpModel
 								oInfo:eModifiers := eModifiers
 								IF oInfo:eType == EntityType._Constructor .OR. oInfo:eType == EntityType._Destructor
 									state:lNameFound := TRUE // Dont't wait for a name, add it to the list now
+									oInfo:VisualStartLine := nRealStartLine
 									oInfo:nStartLine := nEntityStartLine
 									oInfo:nCol		:= nEntityStartCol
 									oInfo:nOffSet	:= nEntityStartOffSet //+ oInfo:nCol ==> Now the Entity starts at the beginning of line
@@ -1014,6 +1024,7 @@ BEGIN NAMESPACE XSharpModel
 									oInfo:cClassNameSpace := cClassNameSpace
 									oInfo:cClassType := cClassType
 									AddEntity(oInfo, oLine)
+									nRealStartLine := -1
 									IF cChar == '('
 										state:lInParams := TRUE
 									END IF
@@ -1209,6 +1220,7 @@ BEGIN NAMESPACE XSharpModel
 										CASE .NOT. state:lNameFound
 											state:lNameFound := TRUE
 											oInfo:nStartLine := nEntityStartLine
+											oInfo:VisualStartLine := nRealStartLine
 											oInfo:nCol	:= nEntityStartCol
 											oInfo:nOffSet := nEntityStartOffSet //+ oInfo:nCol => Now, the Entyti starts at the beginning of line
 											oInfo:cName := cWord
@@ -1227,7 +1239,7 @@ BEGIN NAMESPACE XSharpModel
 												oInfo:lPartial := TRUE
 											END IF
 											AddEntity(oInfo, oLine)
-
+											nRealStartLine := -1
 											lPartial := FALSE
 									END CASE
 
@@ -1424,11 +1436,13 @@ BEGIN NAMESPACE XSharpModel
 								END IF
 							ENDIF
 							oInfo:nStartLine := nLine
+							oInfo:VisualStartLine := nRealStartLine
 							oInfo:cName		 := cWord
 							oInfo:cShortClassName := cShortClassName
 							oInfo:cTypedClassName := cTypedClassName
 							oInfo:cClassNameSpace := cClassNameSpace
 							oInfo:cClassType := cClassType
+							nRealStartLine := -1
 							IF state:lField
 								AddEntity(oInfo, oLine)
 							END IF
@@ -1770,6 +1784,7 @@ BEGIN NAMESPACE XSharpModel
 		PROPERTY nPosition AS INT AUTO
 		PROPERTY Context AS ParseContext AUTO
 		PROPERTY HasEnd AS LOGIC AUTO
+		PROPERTY VisualStartLine AS INT AUTO
 
 		INTERNAL CONSTRUCTOR()
 			SUPER()

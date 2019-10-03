@@ -62,6 +62,7 @@ namespace XSharpColorizer
         private ITokenStream _tokens;
         private ITextSnapshot _snapshot;
         private XFile _file;
+        private List<String> xtraKeywords;
         #endregion
 
         #region Properties
@@ -91,6 +92,8 @@ namespace XSharpColorizer
                 return;
             }
             _file = file;
+            // 
+            xtraKeywords = new List<string>();
             // Initialize our background workers
             this._buffer.Changed += Buffer_Changed;
             _bwClassify = new BackgroundWorker();
@@ -314,6 +317,11 @@ namespace XSharpColorizer
             var propertyList = new List<EntityObject>();
             var eventList = new List<EntityObject>();
             var optionnalEnd = new List<EntityObject>();
+            // TODO: Get theses from external config
+            string[] input = { "ENDFUNC", "ENDPROC", "ENDFOR", "ENDDEFINE" };
+            xtraKeywords.Clear();
+            xtraKeywords.AddRange( input );
+            //
             if (info != null && snapshot != null)
             {
 
@@ -693,7 +701,12 @@ namespace XSharpColorizer
                     IClassificationType type = null;
                     if (XSharpLexer.IsIdentifier(tokenType))
                     {
-                        type = xsharpIdentifierType;
+                        if (xtraKeywords.Find(kw => string.Compare(kw, token.Text, true) == 0) != null)
+                        {
+                            type = xsharpKeywordType;
+                        }
+                        else
+                            type = xsharpIdentifierType;
                     }
                     else if (XSharpLexer.IsConstant(tokenType))
                     {
@@ -1128,6 +1141,8 @@ namespace XSharpColorizer
             System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.GetTags()");
             return ret;
         }
+
+
 
         #region IClassifier
 

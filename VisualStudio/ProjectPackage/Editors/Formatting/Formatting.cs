@@ -36,6 +36,7 @@ namespace XSharp.Project
         private static String[][] _middleKeywords;
         private static String[][] _specialKeywords;
         private static String[][] _specialOutdentKeywords;
+        private static String[] _xtraKeywords;
 
         private XSharpParseOptions _parseoptions = null;
         private static void getKeywords()
@@ -53,6 +54,8 @@ namespace XSharp.Project
                 _specialKeywords = getSpecialMiddleKeywords();
                 // Build list for Outdent tokens
                 _specialOutdentKeywords = getSpecialOutdentKeywords();
+                // 
+                _xtraKeywords = getXtraKeywords();
             }
         }
 
@@ -135,6 +138,15 @@ namespace XSharp.Project
                 new String[]{ "OTHERWISE", "DO,SWITCH,BEGIN" }
             };
         }
+
+        private static String[] getXtraKeywords()
+        {
+            //
+            return new String[]{
+                "ENDFUNC", "ENDPROC", "ENDFOR", "ENDDEFINE"
+            };
+        }
+
         private static string searchMiddleKeyword(string keyword)
         {
             string startToken = null;
@@ -563,7 +575,7 @@ namespace XSharp.Project
                                 currentLength = 1;
                             // Get the opening keyword, at the beginning of the currently processed region
                             string insideKeyword = getFirstKeywordInLine(snapLine, snapLine.Start.Position, currentLength);
-                            if (insideKeyword != "END")
+                            if (Array.Find(_xtraKeywords, kw => string.Compare(kw, insideKeyword, true) == 0) == null)
                             {
                                 indentValue++;
                             }
@@ -682,8 +694,10 @@ namespace XSharp.Project
                         index++;
                         continue;
                     }
+
                     keyword = "";
-                    if (XSharpLexer.IsKeyword(token.Type) || (token.Type >= XSharpLexer.PP_FIRST && token.Type <= XSharpLexer.PP_LAST))
+                    if (XSharpLexer.IsKeyword(token.Type) || (token.Type >= XSharpLexer.PP_FIRST && token.Type <= XSharpLexer.PP_LAST)
+                        || (Array.Find(_xtraKeywords, kw => string.Compare(kw, token.Text, true) == 0) != null) )
                     {
                         keyword = token.Text.ToUpper();
                         // it could be modifier...

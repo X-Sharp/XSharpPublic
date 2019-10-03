@@ -177,7 +177,7 @@
   <PropertyGroup>
     <PreBuildEvent>
       $(AntlrCall) $(AntlrParams) $(AntlrInputdir)XSharpLexer.g4
-      $(AntlrCall) $(AntlrParams) -Xlog  $(AntlrInputdir)XSharp.g4
+      $(AntlrCall) $(AntlrParams) $(AntlrInputdir)XSharp.g4
       $(MSBuildThisFileDirectory)TouchFiles.exe  $(AntlrInputdir)XSharpLexer.g4 $(AntlrOutputdir)XSharpLexer.tokens $(AntlrOutputdir)XSharpLexer.cs
       $(MSBuildThisFileDirectory)TouchFiles.exe  $(AntlrInputdir)XSharp.g4      $(AntlrOutputdir)XSharp.tokens      $(AntlrOutputdir)XSharpParser.cs $(AntlrOutputdir)XSharpListener.cs  $(AntlrOutputdir)XSharpBaseListener.cs</PreBuildEvent>
   </PropertyGroup>

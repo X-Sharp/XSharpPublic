@@ -954,6 +954,9 @@ namespace XSharpColorizer
                 int iLastDocComment = -1;
                 int iLastUsing = -1;
                 newtags = new XClassificationSpans();
+                ClassificationSpan postponeSpan=null;
+                IToken postponeToken = null;
+                bool prevWasEvent = false;
                 keywordContext = null;
                 for (var iToken = 0; iToken < tokenStream.Size; iToken++)
                 {
@@ -967,7 +970,29 @@ namespace XSharpColorizer
                     var span = ClassifyToken(token, regionTags, snapshot);
                     if (span != null)
                     {
-                        newtags.Add(span);
+                        // !!! Special case : looking for Event(Keyword) followed by ->(operator)
+                        if ( !prevWasEvent && (span.ClassificationType == xsharpKeywordType) && (String.Compare(token.Text, "event", true) == 0))
+                        {
+                            postponeSpan = span;
+                            postponeToken = token;
+                            prevWasEvent = true;
+                        }
+                        else
+                        {
+                            if (prevWasEvent)
+                            {
+                                if (token.Type == XSharpLexer.ALIAS) //&& (String.Compare(token.Text, "->") == 0))
+                                {
+                                    // Ok, add the previous one, but change the type to Identifier
+                                    postponeSpan = Token2ClassificationSpan(postponeToken, snapshot, xsharpIdentifierType);
+                                }
+                                // EVENT, add it the way it is Keyword or Identifier
+                                newtags.Add(postponeSpan);
+                            }
+                            // don't forget the current one
+                            newtags.Add(span);
+                            prevWasEvent = false;
+                        }
                         // We can have some Open/Close keyword ( FOR..NEXT; WHILE...ENDDO; IF...ENDIF)
                         if (span.ClassificationType == xsharpKeywordType)
                         {
@@ -1208,6 +1233,7 @@ namespace XSharpColorizer
                 }
             }
         }
+
         internal List<ClassificationSpan> GetItemsForLine(int line)
         {
             lock (gate)

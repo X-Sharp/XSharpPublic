@@ -1198,7 +1198,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (_options.ParseLevel == ParseLevel.Complete || includeFile.MustBeProcessed || _lexer.HasPPIfdefs)
             {
                 var clone = includeFile.Tokens.CloneArray();
-                var tokenSource = new ListTokenSource(clone, nfp);
+                var tokenSource = new XSharpListTokenSource(_lexer, clone, nfp);
                 var tokenStream = new BufferedTokenStream(tokenSource);
                 tokenStream.Fill();
                 InsertStream(nfp, tokenStream, fileNameToken);

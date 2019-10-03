@@ -58,4 +58,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return Create(type, text);
         }
     }
+    public class XSharpListTokenSource : ListTokenSource
+    {
+        public XSharpListTokenSource(XSharpLexer lexer, IList<IToken> tokens)
+           : base(tokens)
+        {
+            this.TokenFactory = lexer.TokenFactory;
+        }
+        public XSharpListTokenSource(XSharpLexer lexer, IList<IToken> tokens, string sourceName)
+           : base(tokens,  sourceName)
+        {
+            this.TokenFactory = lexer.TokenFactory;
+        }
+    }
 }

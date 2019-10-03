@@ -202,7 +202,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // Exception during Lexing 
                 parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
                 // create empty token stream so we can continue the rest of the code
-                _lexerTokenStream = new BufferedTokenStream(new ListTokenSource(new List<IToken>()));
+                _lexerTokenStream = new BufferedTokenStream(new XSharpListTokenSource(lexer, new List<IToken>()));
             }
 #if DEBUG && DUMP_TIMES
             {
@@ -241,7 +241,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (mustPreprocess)
                     {
                         var ppTokens = pp.PreProcess();
-                        ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));
+                        ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, ppTokens));
                     }
                     else
                     {
@@ -256,7 +256,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         BufferedTokenStream ts = (BufferedTokenStream)_lexerTokenStream;
                         var tokens = ts.GetTokens();
                         // commontokenstream filters on tokens on the default channel. All other tokens are ignored
-                        ppStream = new CommonTokenStream(new ListTokenSource(tokens));
+                        ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, tokens));
                     }
                     ppStream.Fill();
                     _preprocessorTokenStream = ppStream;
@@ -267,7 +267,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // Exception during Preprocessing
                     parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
                     // create empty token stream so we can continue the rest of the code
-                    _preprocessorTokenStream = new BufferedTokenStream(new ListTokenSource(new List<IToken>()));
+                    _preprocessorTokenStream = new BufferedTokenStream(new XSharpListTokenSource(lexer, new List<IToken>()));
                 }
             }
 #if DEBUG && DUMP_TIMES

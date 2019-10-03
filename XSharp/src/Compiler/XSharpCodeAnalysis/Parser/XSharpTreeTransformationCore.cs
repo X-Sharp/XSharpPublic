@@ -8655,9 +8655,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             catch (Exception e)
             {
                 parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
-                tokenStream = new BufferedTokenStream(new ListTokenSource(new List<IToken>()));
+                tokenStream = new BufferedTokenStream(new XSharpListTokenSource(lexer, new List<IToken>()));
             }
-            tokenStream = new CommonTokenStream(new ListTokenSource(tokenStream.tokens));
+            tokenStream = new CommonTokenStream(new XSharpListTokenSource(lexer, tokenStream.tokens));
             tokenStream.Fill();
             var parser = new XSharpParser(tokenStream);
             XSharpParserRuleContext tree = null; ;

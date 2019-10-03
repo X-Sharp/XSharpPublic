@@ -107,13 +107,13 @@ namespace XSharp.Parser
                 if (mustPreprocess)
                 {
                     var ppTokens = pp.PreProcess();
-                    ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));
+                    ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, ppTokens));
                 }
                 else
                 {
                     // No Standard Defs and no preprocessor tokens in the lexer
                     // so we bypass the preprocessor and use the lexer token stream
-                    ppStream = new CommonTokenStream(new ListTokenSource(tokenStream.GetTokens()));
+                    ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, tokenStream.GetTokens()));
                 }
                 ppStream.Fill();
                 var parser = new XSharpParser(ppStream);
@@ -181,13 +181,13 @@ namespace XSharp.Parser
                 if (mustPreprocess)
                 {
                     var ppTokens = pp.PreProcess();
-                    ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));
+                    ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, ppTokens));
                 }
                 else
                 {
                     // No Standard Defs and no preprocessor tokens in the lexer
                     // so we bypass the preprocessor and use the lexer token stream
-                    ppStream = new CommonTokenStream(new ListTokenSource(tokenStream.GetTokens()));
+                    ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, tokenStream.GetTokens()));
                 }
                 ppStream.Fill();
             }

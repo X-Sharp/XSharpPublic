@@ -312,6 +312,7 @@ namespace XSharpColorizer
             var regions = new List<ClassificationSpan>();
             var classList = new List<EntityObject>();
             var propertyList = new List<EntityObject>();
+            var eventList = new List<EntityObject>();
             var optionnalEnd = new List<EntityObject>();
             if (info != null && snapshot != null)
             {
@@ -348,6 +349,33 @@ namespace XSharpColorizer
                             if (!singleLine)
                             {
                                 propertyList.Add(oElement);
+                            }
+                        }
+                    }
+                    else if (oElement.eType == EntityType._Event)
+                    {
+                        if (oElement.oParent?.eType != EntityType._Interface)
+                        {
+                            // make sure we only push multi line properties
+                            var text = snapshot.GetLineFromPosition(oElement.nOffSet).GetText();
+                            var substatements = text.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                            var words = substatements[0].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                            var singleLine = false;
+                            foreach (var word in words)
+                            {
+                                switch (word.ToLower())
+                                {
+                                    case "add":
+                                    case "remove":
+                                        singleLine = true;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            if (!singleLine)
+                            {
+                                eventList.Add(oElement);
                             }
                         }
                     }
@@ -463,6 +491,16 @@ namespace XSharpColorizer
                         {
                             var prop = propertyList[0];
                             propertyList.RemoveAt(0);
+                            nStart = prop.nOffSet;
+                            nEnd = oLine.OffSet;
+                            AddRegionSpan(regions, snapshot, nStart, nEnd);
+                        }
+                        break;
+                    case LineType.EndEvent:
+                        if (eventList.Count > 0)
+                        {
+                            var prop = eventList[0];
+                            eventList.RemoveAt(0);
                             nStart = prop.nOffSet;
                             nEnd = oLine.OffSet;
                             AddRegionSpan(regions, snapshot, nStart, nEnd);
